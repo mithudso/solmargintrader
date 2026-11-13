@@ -1935,21 +1935,21 @@
       "component": "website",
       "kind": "markdown",
       "summary": "Development, production setup and outstanding activation limits",
-      "lines": 137
+      "lines": 260
     },
     {
       "path": "website/src/worker.js",
       "component": "website",
       "kind": "javascript",
       "summary": "Account, billing, configuration and protected analysis API",
-      "lines": 365
+      "lines": 481
     },
     {
       "path": "website/api/openapi.json",
       "component": "website",
       "kind": "json",
       "summary": "Account and billing API contract",
-      "lines": 1794
+      "lines": 3036
     },
     {
       "path": "website/public/index.html",
@@ -1963,7 +1963,7 @@
       "component": "website",
       "kind": "javascript",
       "summary": "Wallet, workspace, membership and research UI",
-      "lines": 419
+      "lines": 482
     },
     {
       "path": "website/public/evidence.js",
@@ -1977,21 +1977,21 @@
       "component": "website",
       "kind": "css",
       "summary": "Responsive workspace design",
-      "lines": 6
+      "lines": 9
     },
     {
       "path": "website/wrangler.jsonc",
       "component": "website",
       "kind": "other",
       "summary": "Production Worker, D1 and custom-domain configuration",
-      "lines": 44
+      "lines": 46
     },
     {
       "path": "website/wrangler.dev.jsonc",
       "component": "website",
       "kind": "other",
       "summary": "Separate local origin and routing configuration",
-      "lines": 33
+      "lines": 35
     },
     {
       "path": "website/engine/server.py",
@@ -2026,7 +2026,7 @@
       "component": "website",
       "kind": "javascript",
       "summary": "SQLite-backed account and Stripe failure-mode tests",
-      "lines": 453
+      "lines": 779
     },
     {
       "path": "website/test/evidence.test.js",

@@ -343,12 +343,19 @@ runs the same locked toolchain in CI.
 The website uses Node’s `node:test` runner with SQLite-backed account fixtures.
 Its tests cover Ed25519 signatures, one-use challenge expiry/replay, secure
 sessions, tenant isolation, subscription gating, signed Stripe webhooks,
-Checkout/deletion races and the D1 cascade-deletion return contract. The pure
+Checkout/deletion races and the D1 cascade-deletion return contract. OAuth/MCP
+fixtures exercise actual synthetic Ed25519 login and policy signatures, PKCE,
+resource/redirect binding, replay, scopes, two-wallet status isolation, immediate
+revocation and missing-executor refusal. Atomic race tests cover plan invalidation,
+budget reservations, duplicate submissions and account deletion. Unknown outcomes
+retain budget. Active-grant history remains reachable for revocation. The pure
 browser evidence helper withholds expired directions.
 
 ```bash
 npm --prefix website test
 npm --prefix website run check
+npm --prefix website run test:browser
+node --test website/test/mcp-integration.test.js
 python3 -m unittest website.engine.test_server website.engine.test_research
 python3 -m website.scripts.export_research --check
 ruff check website/engine website/scripts/export_research.py
@@ -360,8 +367,16 @@ market history, run a trading worker or submit an order. Install the existing
 backtester/Oracle dependencies in an isolated Python environment first.
 `.github/workflows/website.yml` runs Node and Python source gates on relevant PRs.
 
+The browser command runs the original workspace suite and agent-consent suite
+in isolated Chrome with local account/wallet fixtures. Held callbacks verify
+sign-out invalidation, serialized transitions and frozen policy controls. Trading
+consent signs once per finite grant; no test adds a per-trade wallet prompt.
+Successful customer-adapter fixtures are mocks. They do not verify real wallet
+delegation, provider signing, venue reconciliation or an order.
+
 Deployed acceptance is separate: verify exact loaded asset bytes, desktop/mobile
-flows, actual wallet signature/session/deletion, Stripe Checkout and cancellation
+flows, actual hosted wallet signature/session/deletion, OAuth discovery/consent/
+PKCE/token/status/revocation, Stripe Checkout and cancellation
 when configured, and hosted analysis with its real inputs. Running
 `node website/scripts/smoke.mjs https://oraclebot.io` explicitly creates and
 deletes a throwaway account. The smoke verifies authentication and unpaid-access

@@ -1,0 +1,65 @@
+{
+  "version": "1.0.0",
+  "review": "independent scoped security and intent-boundary review, not whole-repository CLEAN",
+  "source_commit": "59140531",
+  "files": {
+    "website/src/worker.js": "e8f706e92a3d504e662629ff3dc4baab3f80cc60adcdc439499fa5f22307dc7a",
+    "website/src/oauth.js": "cc178b85af280ef9d471407194a3d5df9a4a734806b189bc6b7c4723d9f3c22a",
+    "website/src/mcp.js": "6f92d76eafef357b477bbdf7fe2820aecba7db665cb4f80ddccc9aa6e28a07eb",
+    "website/src/trades.js": "d9171c4ceb33febef71a91be5c111a9cf72904f4372832529122a7bfd19edb29",
+    "website/public/app.js": "558849869d4738d63829b2ea0d06bd63db41f05fda294164ef23b587e38046b2",
+    "website/public/agent-access.js": "be1e9f50046f2c491107d2fe3daa22e49a1e50ffa871f4a811bf10f952a1ef27",
+    "website/public/styles.css": "c1fbc764a6cc2a897a1a29365041a3e99ae821e44b71de271093ce28aefaa723",
+    "website/test/mcp-integration.test.js": "d39d196c981a4eb166b8347ac87a18fe0803d014606c5a9ae1683ec6d1fd5554",
+    "website/test/oauth.test.js": "1adac3e6a6e4b18b568d30726c24f43d4bbfe604ba276d9f06d53857b060b277",
+    "website/test/mcp.test.js": "9bfa3f0e9bb249326ea79d554242edf06c5baa6bdddd19414321e61d8dc62476",
+    "website/test/trades.test.js": "be0099e059a753ea67d4ab3aa89d9ecb4cb52b90b59bd4a1d5cbeb7cb2ffdc20",
+    "website/test/agent-browser.mjs": "3d84ab46668a52996548aa84667eda2aa74c3df07cda4e641b266ef02d34384d",
+    "website/migrations/0004_agent_access.sql": "2c15f42bbb4d83fa9795362c00afce9b59a70aeefc1415e4428a49ce65af3855",
+    "website/migrations/0005_agent_trades.sql": "5f6a362b3a2224550790e136b89058010582b6a2cf0cc90563cbf7fdc58e4263"
+  },
+  "findings_resolved": [
+    "current-plan NULL webhook race at reservation and submit",
+    "active grant hidden by inactive history",
+    "consent completion during sign-out",
+    "editable policy controls during signing",
+    "overlapping account transitions"
+  ],
+  "checks": [
+    {
+      "scope": "full website Node",
+      "tests": 106,
+      "exit_code": 0
+    },
+    {
+      "scope": "independent OAuth/MCP/trades/Worker integration",
+      "tests": 49,
+      "exit_code": 0
+    },
+    {
+      "scope": "actual Chrome browser groups",
+      "tests": 17,
+      "exit_code": 0
+    },
+    {
+      "scope": "independent actual Chrome groups",
+      "tests": 17,
+      "exit_code": 0
+    },
+    {
+      "scope": "JavaScript lint and typed evidence contract",
+      "exit_code": 0
+    },
+    {
+      "scope": "syntax, diff and Wrangler dry-run",
+      "exit_code": 0
+    }
+  ],
+  "qualification_limits": [
+    "synthetic Ed25519 keys, not customer wallet provider",
+    "explicit mocked execution adapter on successful fixture paths",
+    "no real delegated signer, venue reconciliation, provider order or fill",
+    "MCP2025-11-25 JSON POST only; browser MCP preflight unsupported",
+    "production deployment and hosted acceptance pending"
+  ]
+}

@@ -1,6 +1,6 @@
 # Every file in this repository
 
-**Generated** from `index/INDEX.json` at commit `0716a636` (2026-11-13T02:00:21+00:00). 3532 tracked files, 89.1 MB.
+**Generated** from `index/INDEX.json` at commit `1d49d5f7` (2026-11-13T02:54:02+00:00). 3548 tracked files, 89.5 MB.
 
 Regenerate with:
 
@@ -15,8 +15,8 @@ python3 index/build.py --check      # fail if the index is stale
 Every entry marks where its description came from, because a generated one-liner and a considered one should not look alike:
 
 - **curated** (42 files) — hand-written purpose and usage, in the `CURATED` table of `index/make_files_doc.py`. Used where extraction cannot give a reader what they need: the engine, the research drivers, the order-placing path, and the files with no prose of their own.
-- **extracted** (2879 files) — the file's own module docstring, JSDoc header, or frontmatter `summary`. Trustworthy here because 586/678 Python modules and 68/125 JS files carry a substantial one. (These counts are computed at generation time, not hardcoded — an earlier revision asserted a frozen ratio and it was wrong within a day as the repo grew.)
-- **derived** (341 files) — shape only, for generated artifacts: a CSV's header and row count, a JSON's keys. Prose for a result file would be invented.
+- **extracted** (2883 files) — the file's own module docstring, JSDoc header, or frontmatter `summary`. Trustworthy here because 586/678 Python modules and 69/134 JS files carry a substantial one. (These counts are computed at generation time, not hardcoded — an earlier revision asserted a frozen ratio and it was wrong within a day as the repo grew.)
+- **derived** (342 files) — shape only, for generated artifacts: a CSV's header and row count, a JSON's keys. Prose for a result file would be invented.
 
 *How to use* is curated where it matters and otherwise inferred from the file's kind — a test gets its runner, a CLI gets `--help`, a module gets its import path.
 
@@ -34,7 +34,7 @@ To *search* rather than browse: `python3 index/search.py "your question"`.
 ## Contents
 
 - [`(root)`](#root) — 94 files
-- [`docs`](#docs) — 153 files
+- [`docs`](#docs) — 154 files
 - [`index`](#index) — 7 files
 - [`backtester`](#backtester) — 1956 files
 - [`research`](#research) — 280 files
@@ -46,11 +46,11 @@ To *search* rather than browse: `python3 index/search.py "your question"`.
 - [`ecosystem`](#ecosystem) — 62 files
 - [`soltui`](#soltui) — 191 files
 - [`mongo`](#mongo) — 20 files
-- [`website`](#website) — 28 files
+- [`website`](#website) — 42 files
 - [`.github`](#github) — 12 files
 - [`tradingskilllist`](#tradingskilllist) — 1 files
 - [`.remember`](#remember) — 1 files
-- [`.cdo`](#cdo) — 116 files
+- [`.cdo`](#cdo) — 117 files
 - [`.claude`](#claude) — 2 files
 - [`.githooks`](#githooks) — 2 files
 - [`.postman`](#postman) — 1 files
@@ -591,41 +591,41 @@ Repository-level entry points and agent instructions. `AGENTS.md` and `CLAUDE.md
 
 #### `llms-facts.txt`
 
-`data` · 36 lines · 5,566 B · description: **derived**
+`data` · 40 lines · 7,177 B · description: **derived**
 
-**Purpose.** Generated report. Opens: # solmargintrader — atomic current facts / > Source: /Users/mitch/dev/solmargintrader · https://github.com/mithudso/solmargintrader @ 789d3bd + working changes
+**Purpose.** Generated report. Opens: # solmargintrader — atomic current facts / > Source: /Users/mitch/dev/oraclebot.io · https://github.com/mithudso/solmargintrader @ 1d49d5f7 + documentation delta
 
 **Use.** Read it.
 
 #### `llms-full.txt`
 
-`data` · 56 lines · 7,800 B · description: **derived**
+`data` · 62 lines · 9,662 B · description: **derived**
 
-**Purpose.** Generated report. Opens: # solmargintrader — current operator and architecture reference / > Source: /Users/mitch/dev/solmargintrader · https://github.com/mithudso/solmargintrader @ 789d3bd + working changes
+**Purpose.** Generated report. Opens: # solmargintrader — current operator and architecture reference / > Source: /Users/mitch/dev/oraclebot.io · https://github.com/mithudso/solmargintrader @ 1d49d5f7 + documentation delta
 
 **Use.** Read it.
 
 #### `llms-sitemap.txt`
 
-`data` · 3423 lines · 290,338 B · description: **derived**
+`data` · 3489 lines · 296,321 B · description: **derived**
 
-**Purpose.** Generated report. Opens: # solmargintrader — source sitemap / > Source: /Users/mitch/dev/solmargintrader · https://github.com/mithudso/solmargintrader @ 789d3bd + working changes
+**Purpose.** Generated report. Opens: # solmargintrader — source sitemap / > Source: /Users/mitch/dev/oraclebot.io · https://github.com/mithudso/solmargintrader @ 1d49d5f7 + documentation delta
 
 **Use.** Read it.
 
 #### `llms-small.txt`
 
-`data` · 34 lines · 4,764 B · description: **derived**
+`data` · 38 lines · 6,375 B · description: **derived**
 
-**Purpose.** Generated report. Opens: # solmargintrader — budgeted navigation digest / > Source: /Users/mitch/dev/solmargintrader · https://github.com/mithudso/solmargintrader @ 789d3bd + working changes
+**Purpose.** Generated report. Opens: # solmargintrader — budgeted navigation digest / > Source: /Users/mitch/dev/oraclebot.io · https://github.com/mithudso/solmargintrader @ 1d49d5f7 + documentation delta
 
 **Use.** Read it.
 
 #### `llms.txt`
 
-`data` · 16 lines · 1,088 B · description: **derived**
+`data` · 20 lines · 1,320 B · description: **derived**
 
-**Purpose.** Generated report. Opens: # solmargintrader — family index / > Source: /Users/mitch/dev/solmargintrader · https://github.com/mithudso/solmargintrader @ 789d3bd + working changes
+**Purpose.** Generated report. Opens: # solmargintrader — family index / > Source: /Users/mitch/dev/oraclebot.io · https://github.com/mithudso/solmargintrader @ 1d49d5f7 + documentation delta
 
 **Use.** Read it.
 
@@ -647,9 +647,9 @@ Repository-level entry points and agent instructions. `AGENTS.md` and `CLAUDE.md
 
 #### `memory.md`
 
-`doc` · 1739 lines · 375,217 B · description: **extracted**
+`doc` · 1797 lines · 390,486 B · description: **extracted**
 
-**Purpose.** Version: 507 Delta: v506 to v507; close actual UI delivery and combine all source gates before final four-process discovery. Delta: v505 to v506; preserve merged UI0.4.9 and verified trial evidence before final audit0.4.10 qualification.
+**Purpose.** Version: 510 Delta: v509 to v510; integrate the frozen audit in the isolated MCP branch while preserving all parallel continuation history. Delta: v508 to v509; qualify wallet-backed OAuth/MCP, finite preauthorization UI and independent security regressions before delivery.
 
 **Use.** Read it.
 
@@ -703,7 +703,7 @@ Repository-level entry points and agent instructions. `AGENTS.md` and `CLAUDE.md
 
 #### `package.json`
 
-`config` · 19 lines · 497 B · description: **derived**
+`config` · 19 lines · 528 B · description: **derived**
 
 **Purpose.** Generated JSON object, 6 keys (name, private, version, engines, scripts, devDependencies).
 
@@ -727,9 +727,9 @@ Repository-level entry points and agent instructions. `AGENTS.md` and `CLAUDE.md
 
 #### `prompts.md`
 
-`doc` · 2110 lines · 124,161 B · description: **extracted**
+`doc` · 2143 lines · 125,623 B · description: **extracted**
 
-**Purpose.** Version: 234 Delta: v233 to v234; preserve merged UI0.4.9 and verified trial evidence before final audit0.4.10 qualification. Delta: v232 to v233; preserve delivered upstream pipeline recovery and failed final audit gates.
+**Purpose.** Version: 235 Delta: v234 to v235; preserve corrected MCP/preauthorization and parallel audit/dashboard prompts together. Delta: v233 to v234; add authenticated wallet-bound MCP and preserve corrected preauthorization preference.
 
 **Use.** Read it.
 
@@ -835,7 +835,7 @@ Repository-level entry points and agent instructions. `AGENTS.md` and `CLAUDE.md
 
 Curated prose. `ARCHITECTURE.md` explains how the pieces fit, `TESTING.md` is the coverage contract, `SECURITY.md` covers the order-placing surface, and this file indexes everything.
 
-153 files.
+154 files.
 
 #### `docs/API.md`
 
@@ -847,7 +847,7 @@ Curated prose. `ARCHITECTURE.md` explains how the pieces fit, `TESTING.md` is th
 
 #### `docs/ARCHITECTURE.md`
 
-`doc` · 258 lines · 16,454 B · description: **extracted**
+`doc` · 280 lines · 18,016 B · description: **extracted**
 
 **Purpose.** Eleven components have explicit execution boundaries. Backtester, research, the Oracle forecast service, Bot Manager and ecosystem automation do not place orders. The separately enabled Oracle TradingView worker can submit Coinbase spot orders or
 
@@ -871,7 +871,7 @@ Curated prose. `ARCHITECTURE.md` explains how the pieces fit, `TESTING.md` is th
 
 #### `docs/COMPONENTS.md`
 
-`doc` · 318 lines · 16,264 B · description: **extracted**
+`doc` · 336 lines · 17,887 B · description: **extracted**
 
 **Purpose.** What each module is for, what it exposes, and what it depends on. `docs/codebase-overview.md` is the flat file map; this page is the shape of the thing. The eleven components have explicit ownership boundaries. `backtester/` supplies the
 
@@ -895,7 +895,7 @@ Curated prose. `ARCHITECTURE.md` explains how the pieces fit, `TESTING.md` is th
 
 #### `docs/CONCEPTS.md`
 
-`doc` · 323 lines · 20,593 B · description: **extracted**
+`doc` · 323 lines · 20,592 B · description: **extracted**
 
 **Purpose.** python3 index/build.py all # refresh python3 index/make_concepts_doc.py # rewrite this file python3 index/search.py --concepts # list them
 
@@ -959,7 +959,7 @@ Curated prose. `ARCHITECTURE.md` explains how the pieces fit, `TESTING.md` is th
 
 #### `docs/FILES.md`
 
-`doc` · 34001 lines · 1,681,770 B · description: **extracted**
+`doc` · 34091 lines · 1,685,291 B · description: **extracted**
 
 **Purpose.** Regenerate with: python3 index/build.py all # refresh the index python3 index/make_files_doc.py # rewrite this file
 
@@ -1069,6 +1069,14 @@ Curated prose. `ARCHITECTURE.md` explains how the pieces fit, `TESTING.md` is th
 
 **Use.** Read it.
 
+#### `docs/ORACLEBOT-MCP-DELIVERY-2026-11-13.md`
+
+`doc` · 15 lines · 2,549 B · description: **extracted**
+
+**Purpose.** Version: 0.1.0 Delta: Initial source qualification; hosted acceptance pending. Website0.3.0 adds wallet-bound OAuth and MCP access above the three subscription tiers. The owner corrected an accidental selection and chose finite preauthorization. A separate wallet-signed message grants an agent selected venues/assets, per-trade and cumulative USD limits, expiry and immediate revocation.
+
+**Use.** Read it.
+
 #### `docs/ORACLEBOT-OPERATIONS.md`
 
 `doc` · 169 lines · 10,263 B · description: **extracted**
@@ -1095,7 +1103,7 @@ Curated prose. `ARCHITECTURE.md` explains how the pieces fit, `TESTING.md` is th
 
 #### `docs/SECURITY.md`
 
-`doc` · 182 lines · 10,788 B · description: **extracted**
+`doc` · 207 lines · 12,444 B · description: **extracted**
 
 **Purpose.** This repository contains software that can move real money. Protect signing keys and venue credentials. The public website also holds wallet-account identities, server session records and payment-provider references. Each component has its
 
@@ -1111,7 +1119,7 @@ Curated prose. `ARCHITECTURE.md` explains how the pieces fit, `TESTING.md` is th
 
 #### `docs/TESTING.md`
 
-`doc` · 369 lines · 25,913 B · description: **extracted**
+`doc` · 384 lines · 26,926 B · description: **extracted**
 
 **Purpose.** The `botmanager/` package has its own unittest suite and CI job. Install the four regular local projects into an isolated Python 3.13 environment, then run from the repository root:
 
@@ -1551,7 +1559,7 @@ Curated prose. `ARCHITECTURE.md` explains how the pieces fit, `TESTING.md` is th
 
 #### `docs/tool-inventory.json`
 
-`doc` · 606 lines · 22,652 B · description: **derived**
+`doc` · 606 lines · 22,839 B · description: **derived**
 
 **Purpose.** Generated JSON object, 8 keys (schema_version, version, delta, generator, scope, limits...).
 
@@ -30635,7 +30643,7 @@ Derived research and public-market stores, loaders and analysis queries.
 
 The hosted wallet-account and subscription workspace. Stored bot definitions are paper-only; hosted engine and billing readiness remain separate capabilities.
 
-28 files.
+42 files.
 
 #### `website/.gitignore`
 
@@ -30647,7 +30655,7 @@ The hosted wallet-account and subscription workspace. Stored bot definitions are
 
 #### `website/README.md`
 
-`doc` · 138 lines · 6,246 B · description: **extracted**
+`doc` · 261 lines · 14,725 B · description: **extracted**
 
 **Purpose.** Cloudflare-hosted wallet account and research workspace. This is a separate web surface over the existing research tools. It never exposes the owner's control room, trading accounts, wallet keys or signing services.
 
@@ -30663,7 +30671,7 @@ The hosted wallet-account and subscription workspace. Stored bot definitions are
 
 #### `website/package.json`
 
-`config` · 23 lines · 690 B · description: **derived**
+`config` · 23 lines · 846 B · description: **derived**
 
 **Purpose.** Generated JSON object, 7 keys (name, private, version, type, engines, scripts...).
 
@@ -30671,7 +30679,7 @@ The hosted wallet-account and subscription workspace. Stored bot definitions are
 
 #### `website/wrangler.dev.jsonc`
 
-`other` · 0 lines · 698 B · description: **none**
+`other` · 0 lines · 776 B · description: **none**
 
 **Purpose.** _No description available._
 
@@ -30679,7 +30687,7 @@ The hosted wallet-account and subscription workspace. Stored bot definitions are
 
 #### `website/wrangler.jsonc`
 
-`other` · 0 lines · 918 B · description: **none**
+`other` · 0 lines · 996 B · description: **none**
 
 **Purpose.** _No description available._
 
@@ -30689,11 +30697,21 @@ The hosted wallet-account and subscription workspace. Stored bot definitions are
 
 #### `website/api/openapi.json`
 
-`config` · 1795 lines · 48,414 B · description: **derived**
+`config` · 3037 lines · 82,626 B · description: **derived**
 
 **Purpose.** Generated JSON object, 5 keys (openapi, info, servers, paths, components).
 
 **Use.** Configuration; nothing to run.
+
+### `website/docs/`
+
+#### `website/docs/MCP-DESIGN.md`
+
+`doc` · 45 lines · 5,589 B · description: **extracted**
+
+**Purpose.** Version: 0.1.1 Delta: v0.1.0 to v0.1.1; implement OAuth/MCP/intent ledgers and exact execution qualification limits. The owner explicitly chose preauthorized sessions. There is no per-trade wallet prompt requirement. Login proves wallet ownership; a separate, explicit consent grants an agent read access or a finite trading policy.
+
+**Use.** Read it.
 
 ### `website/engine/`
 
@@ -30769,11 +30787,35 @@ The hosted wallet-account and subscription workspace. Stored bot definitions are
 
 **Use.** Read it.
 
+#### `website/migrations/0003_subscription_tiers.sql`
+
+`other` · 0 lines · 858 B · description: **none**
+
+**Purpose.** _No description available._
+
+**Use.** Read it.
+
+#### `website/migrations/0004_agent_access.sql`
+
+`other` · 0 lines · 3,492 B · description: **none**
+
+**Purpose.** _No description available._
+
+**Use.** Read it.
+
+#### `website/migrations/0005_agent_trades.sql`
+
+`other` · 0 lines · 1,088 B · description: **none**
+
+**Purpose.** _No description available._
+
+**Use.** Read it.
+
 ### `website/postman/`
 
 #### `website/postman/acceptance.collection.json`
 
-`config` · 91 lines · 2,166 B · description: **derived**
+`config` · 178 lines · 4,964 B · description: **derived**
 
 **Purpose.** Generated JSON object, 3 keys (info, variable, item).
 
@@ -30781,9 +30823,19 @@ The hosted wallet-account and subscription workspace. Stored bot definitions are
 
 ### `website/public/`
 
+#### `website/public/agent-access.js`
+
+`code-js` · 202 lines · 17,070 B · description: **none**
+
+**Purpose.** _No description available._
+
+**Contents.** Defines `GRANT_ID`, `REQUEST_ID`, `SCOPE_LABELS`, `approvedRedirect`, `authorize`, `choices`, `class ConsentError`, `createAgentAccess`, `labelControl`, `loadConsent` and 3 more.
+
+**Use.** See `website/README.md`; run the workspace with `npm --prefix website run dev`.
+
 #### `website/public/app.js`
 
-`code-js` · 420 lines · 46,747 B · description: **none**
+`code-js` · 483 lines · 51,736 B · description: **none**
 
 **Purpose.** _No description available._
 
@@ -30819,7 +30871,7 @@ The hosted wallet-account and subscription workspace. Stored bot definitions are
 
 #### `website/public/styles.css`
 
-`code-web` · 7 lines · 23,400 B · description: **none**
+`code-web` · 10 lines · 25,696 B · description: **none**
 
 **Purpose.** _No description available._
 
@@ -30849,25 +30901,65 @@ The hosted wallet-account and subscription workspace. Stored bot definitions are
 
 ### `website/src/`
 
-#### `website/src/worker.js`
+#### `website/src/mcp.js`
 
-`code-js` · 366 lines · 28,064 B · description: **none**
+`code-js` · 156 lines · 14,084 B · description: **none**
 
 **Purpose.** _No description available._
 
-**Contents.** Defines `BLOCKED`, `CHECKOUT_SECONDS`, `COINS`, `MAX_BODY`, `SESSION_SECONDS`, `account`, `billingConfigured`, `bodyJSON`, `boundedText`, `challenge` and 24 more.
+**Contents.** Defines `MCP_PROTOCOL_VERSION`, `accountStatus`, `bodyJson`, `challenge`, `handleMcp`, `response`, `rpcError`, `toolResult`, `validOrigin`, `validate`.
+
+**Use.** See `website/README.md`; run the workspace with `npm --prefix website run dev`.
+
+#### `website/src/oauth.js`
+
+`code-js` · 423 lines · 30,461 B · description: **none**
+
+**Purpose.** _No description available._
+
+**Contents.** Defines `ACCESS_TTL`, `MAX_BODY`, `MAX_GRANT_TTL`, `SCOPES`, `activeGrant`, `audience`, `authenticateAgent`, `boundedText`, `class OAuthError`, `cleanupAgentAccess` and 16 more.
+
+**Use.** See `website/README.md`; run the workspace with `npm --prefix website run dev`.
+
+#### `website/src/trades.js`
+
+`code-js` · 255 lines · 19,774 B · description: **extracted**
+
+**Purpose.** Customer-only execution boundary. A configured binding must implement the verified adapter contract; this module does not implement a venue or signer.
+
+**Contents.** Defines `ASSETS`, `MAX_USD`, `VENUES`, `adapter`, `cents`, `class TradeError`, `currentPolicy`, `entitled`, `exact`, `executionAvailable` and 13 more.
+
+**Use.** See `website/README.md`; run the workspace with `npm --prefix website run dev`.
+
+#### `website/src/worker.js`
+
+`code-js` · 482 lines · 39,210 B · description: **none**
+
+**Purpose.** _No description available._
+
+**Contents.** Defines `BACKTEST_CONCURRENCY`, `BLOCKED`, `CHECKOUT_SECONDS`, `COINS`, `MAX_BODY`, `PLANS`, `RESERVATION_SECONDS`, `SESSION_SECONDS`, `WEBHOOK_LEASE_SECONDS`, `account` and 30 more.
 
 **Use.** See `website/README.md`; run the workspace with `npm --prefix website run dev`.
 
 ### `website/test/`
 
+#### `website/test/agent-browser.mjs`
+
+`test` · 212 lines · 18,281 B · description: **extracted**
+
+**Purpose.** Real Chrome against isolated HTTP/wallet fixtures. No provider or real key calls.
+
+**Contents.** Defines `body`, `reset`.
+
+**Use.** `node --test website/test/agent-browser.mjs`
+
 #### `website/test/api.test.js`
 
-`test` · 454 lines · 33,043 B · description: **none**
+`test` · 780 lines · 64,062 B · description: **none**
 
 **Purpose.** _No description available._
 
-**Contents.** Defines `ORIGIN`, `call`, `deliver`, `environment`, `grant`, `keypair`, `login`, `request`, `signedEvent`.
+**Contents.** Defines `ORIGIN`, `call`, `canonicalPlan`, `configuredEngine`, `deliver`, `deliverSubscription`, `environment`, `grant`, `keypair`, `login` and 2 more.
 
 **Use.** `node --test website/test/api.test.js`
 
@@ -30879,13 +30971,65 @@ The hosted wallet-account and subscription workspace. Stored bot definitions are
 
 **Use.** `node --test website/test/evidence.test.js`
 
+#### `website/test/mcp-integration.test.js`
+
+`test` · 127 lines · 10,229 B · description: **none**
+
+**Purpose.** _No description available._
+
+**Contents.** Defines `authorize`, `call`, `insertIntent`, `login`.
+
+**Use.** `node --test website/test/mcp-integration.test.js`
+
+#### `website/test/mcp.test.js`
+
+`test` · 146 lines · 13,601 B · description: **none**
+
+**Purpose.** _No description available._
+
+**Contents.** Defines `fixture`.
+
+**Use.** `node --test website/test/mcp.test.js`
+
+#### `website/test/oauth.test.js`
+
+`test` · 355 lines · 30,389 B · description: **none**
+
+**Purpose.** _No description available._
+
+**Contents.** Defines `account`, `approve`, `authorization`, `call`, `exchange`, `register`, `sameOrigin`, `session`, `sign`.
+
+**Use.** `node --test website/test/oauth.test.js`
+
+#### `website/test/trades.test.js`
+
+`test` · 190 lines · 16,067 B · description: **none**
+
+**Purpose.** _No description available._
+
+**Contents.** Defines `executor`, `fixture`, `preparedResponse`.
+
+**Use.** `node --test website/test/trades.test.js`
+
 #### `website/test/ui-browser.mjs`
 
-`test` · 101 lines · 6,123 B · description: **extracted**
+`test` · 157 lines · 10,774 B · description: **extracted**
 
 **Purpose.** Real browser regressions against local fixtures. No wallet, Stripe or venue calls.
 
 **Use.** `npm --prefix website run test:browser`
+
+### `website/test/helpers/`
+
+#### `website/test/helpers/d1.js`
+
+`test` · 80 lines · 3,706 B · description: **none**
+
+**Purpose.** _No description available._
+
+**Contents.** Defines `ORIGIN`, `createD1`, `environment`, `keypair`, `request`, `seedUser`.
+
+**Use.** `node --test website/test/helpers/d1.js`
 
 ### `website/typecheck/`
 
@@ -31041,7 +31185,7 @@ Session handoff notes, newest first. Prose, not machine-read.
 
 ## .cdo
 
-116 files.
+117 files.
 
 #### `.cdo/ledger.json`
 
@@ -31970,6 +32114,16 @@ Session handoff notes, newest first. Prose, not machine-read.
 `config` · 390 lines · 14,799 B · description: **derived**
 
 **Purpose.** Generated JSON object, 22 keys (file, lines_read, related_tests, reviewer_skills, findings, passes...).
+
+**Use.** Configuration; nothing to run.
+
+### `.cdo/reviews-2026-11-13/`
+
+#### `.cdo/reviews-2026-11-13/website-mcp-independent.json`
+
+`config` · 66 lines · 2,864 B · description: **derived**
+
+**Purpose.** Generated JSON object, 7 keys (version, review, source_commit, files, findings_resolved, checks...).
 
 **Use.** Configuration; nothing to run.
 

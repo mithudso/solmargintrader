@@ -96,7 +96,7 @@
     },
     {
       "path": "package.json",
-      "sha256": "59275dedc85df665d7ec27fc47d7c42c3fa956342219e667a0a7a8b20cca8882"
+      "sha256": "2203627ac63708509f3bc0c4724aa1202fca7ab4cfe7391b4cf6fe27e62d211f"
     },
     {
       "path": "scripts/build_operation_inventories.py",
@@ -132,7 +132,7 @@
     },
     {
       "path": "website/package.json",
-      "sha256": "0fa01da513c87021074bb34b8eba2ca43d491abd4656ba6ba1546cb61e387cd9"
+      "sha256": "4c22f907c365004fa824dc7823e27716f2626e2272335973fb7d3757b192ef24"
     }
   ],
   "operations": [

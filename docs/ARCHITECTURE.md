@@ -232,8 +232,10 @@ and has no native promotion path. See [the guide](optimization-workbench.md).
 
 The public website is an independent Cloudflare Worker and static application.
 D1 owns wallet accounts, one-use challenges, hashed sessions, subscriptions and
-per-account inactive paper bot definitions. The Worker applies the canonical
-origin check and keeps all account queries scoped to the authenticated user.
+per-account inactive paper bot definitions. It also owns scoped agent grants,
+hashed OAuth credentials and trade-intent reservations. Cookie mutations use
+canonical-origin checks. MCP derives the user and wallet from a resource-bound
+bearer grant; it never accepts a caller-supplied owner or wallet.
 
 ```text
 Browser wallet --signed login message--> website/src/worker.js --> D1
@@ -242,6 +244,9 @@ Stripe         --signed webhook--------> Worker --> verified entitlement in D1
 Browser        --analysis request------> Worker --server bearer--> Python adapter
                                                               --> canonical engines
                                                               --> dedicated public inputs
+Agent          --OAuth PKCE S256-------> Worker --> wallet-backed consent / D1
+Agent          --bearer MCP POST-------> Worker --> owned status / guarded intents
+                                                   --> customer executor (unprovisioned)
 ```
 
 Stripe access and analysis availability are independent capabilities. The
@@ -251,7 +256,24 @@ start a market feed, expose the owner control room or sign orders. Separate
 ladder/pair/event runners are outside this adapter. See `website/engine/README.md`
 from the repository root for exact supported limits.
 
-The initial deployment has no per-user live execution worker. Creating a paper
+Website 0.3.0 implements stateless MCP 2025-11-25 JSON POST before the asset
+fallback. It advertises neither the distinct 2026 discovery profile nor browser
+MCP preflight support. OAuth discovery/token endpoints have a separate CORS
+contract. Read consent and trading authority remain separate. One wallet-signed
+trading preauthorization binds the agent, wallet, scopes, finite venues/assets,
+per-trade/cumulative USD caps and expiry. Trades within that grant require no
+new wallet prompt. Settings can revoke the grant immediately.
+
+Preparation reserves the current grant budget and known-plan entitlement in
+one D1 write. Submission atomically claims the unchanged, fresh intent. Unknown
+submissions retain budget and cannot retry automatically. Cleanup expires only
+unsubmitted preparations; account deletion cannot erase unresolved submissions.
+
+The source has no provisioned per-user live execution worker. Creating a paper
 configuration persists a definition only. Public customers cannot inherit the
 owner’s local trading authorization or credentials. Cloudflare edge availability
 therefore establishes neither fresh analysis nor a functioning trading bot.
+`USER_TRADE_EXECUTOR` must separately qualify a customer-owned connection,
+delegated signer, fresh quote and venue reconciliation before orders can run.
+The default `LIVE_EXECUTION_ENABLED=false` and mocked adapter successes do not
+establish that authority. See `website/docs/MCP-DESIGN.md` for the exact boundary.
