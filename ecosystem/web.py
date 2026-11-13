@@ -351,6 +351,7 @@ def make_server(
                             values.get("instrument", "SOL/USD"),
                             interval=values.get("interval"),
                             strategy=values.get("strategy"),
+                            forecast_home=controls.home,
                         ),
                     )
                 elif target.path in {"/api/wiki", "/api/wiki/page"}:

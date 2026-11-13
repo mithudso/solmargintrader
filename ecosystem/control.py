@@ -46,6 +46,7 @@ ACTIONS = {
     "research.launch",
     "pnl.recording.set",
     "oracle.voters.set",
+    "oracle.forecast.set",
     *("manager." + command for command in MANAGER_ACTIONS),
 }
 SENSITIVE = re.compile(
@@ -469,6 +470,12 @@ class ControlPlane:
             if set(params) != {"instrument", "ids", "expected_revision"}:
                 raise ValueError("invalid_action_parameters")
             return set_voters(home, **params)
+        if action == "oracle.forecast.set":
+            from .forecast_preferences import set_seconds
+
+            if set(params) != {"instrument", "seconds", "expected_revision"}:
+                raise ValueError("invalid_action_parameters")
+            return {**set_seconds(self.home, **params), "scope": "shared_primary_market_forecast"}
         if home != self.home and home == self.home.parent / "ecosystem-paper-v1":
             raise ValueError("legacy_source_read_only")
         if action.startswith("recorder."):

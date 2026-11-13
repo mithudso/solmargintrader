@@ -130,6 +130,39 @@ class ControlHTTPTests(unittest.TestCase):
         self.assertEqual(conflict, 400)
         self.assertFalse(response["ok"])
 
+    def test_forecast_seconds_are_authenticated_versioned_and_separate_from_research(
+        self,
+    ):
+        from ecosystem.forecast_preferences import settings
+
+        identity = str(uuid4())
+        params = {"instrument": "SOL/USD", "seconds": 17, "expected_revision": 0}
+        denied, _ = self.action(
+            action="oracle.forecast.set", params=params, headers={"X-Sol-CSRF": "wrong"}
+        )
+        self.assertEqual(denied, 403)
+        self.assertFalse((self.home / "forecast-preferences.sqlite3").exists())
+        status, _ = self.action(
+            action="oracle.forecast.set", params=params, identity=identity
+        )
+        self.assertEqual(status, 202)
+        final = None
+        deadline = time.monotonic() + 3
+        while time.monotonic() < deadline:
+            _, value = self.request(f"/api/actions?id={identity}")
+            final = value["data"]["action"]
+            if final["state"] in ("succeeded", "failed"):
+                break
+            time.sleep(0.02)
+        self.assertEqual(final["state"], "succeeded", final)
+        self.assertEqual(
+            settings(self.home, "SOL/USD"),
+            {"instrument": "SOL/USD", "seconds": 17, "revision": 1},
+        )
+        self.assertEqual(final["result"]["scope"], "shared_primary_market_forecast")
+        self.assertFalse((self.home / "state.json").exists())
+        self.assertFalse((self.home / "oracle").exists())
+
     def test_unknown_order_paths_and_actions_are_not_available(self):
         status, data = self.request("/api/order", method="POST", body="{}")
         self.assertEqual(status, 404)

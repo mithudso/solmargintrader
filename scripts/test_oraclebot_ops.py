@@ -258,6 +258,75 @@ class RuntimeCoverageTests(unittest.TestCase):
         rows = ops.probe_runtime({}, 1001)
         self.assertFalse(any(row["ready"] for row in rows.values()))
 
+    def test_forecast_monitor_requires_current_actual_direction_and_price(self):
+        frame = {
+            "status": "fresh",
+            "instrument": "SOL/USD",
+            "refresh_seconds": 10,
+            "horizon_seconds": 10,
+            "issued_at": 1000,
+            "selected": {"direction": 1, "predicted_price": 100.5},
+            "source_current": True,
+            "settings": {"seconds": 10},
+        }
+        config = {
+            "forecast_python": "/fixture/python",
+            "pipeline_home": "/fixture/home",
+        }
+
+        def probe():
+            with patch.object(
+                ops,
+                "probe_output",
+                return_value=json.dumps({"ok": True, "data": frame}),
+            ):
+                return ops.probe_forecast(config, 1001)
+
+        self.assertTrue(probe()["ready"])
+        frame["status"] = "retained"
+        self.assertFalse(probe()["ready"])
+        frame["status"] = "fresh"
+        frame["issued_at"] = 900
+        self.assertFalse(probe()["ready"])
+        frame["issued_at"] = 1000
+        frame["selected"]["predicted_price"] = None
+        self.assertFalse(probe()["ready"])
+        frame["selected"]["predicted_price"] = float("nan")
+        self.assertFalse(probe()["ready"])
+        self.assertFalse(ops.probe_forecast({}, 1001)["ready"])
+
+    def test_healthy_original_workers_cannot_mask_a_failed_live_forecast(self):
+        with tempfile.TemporaryDirectory() as root:
+            home = Path(root)
+            db = ops.database(home)
+            self.addCleanup(db.close)
+            with (
+                patch.object(ops, "probe", return_value=health()),
+                patch.object(
+                    ops,
+                    "probe_runtime",
+                    return_value=ops.runtime_health(self.data(), 1001),
+                ),
+                patch.object(
+                    ops,
+                    "probe_forecast",
+                    return_value={
+                        "ready": False,
+                        "state": "down",
+                        "reason": "retained",
+                    },
+                ),
+                patch.object(ops, "deliver", return_value={"pending": 0}),
+                patch.object(ops, "heartbeat", return_value=True),
+                patch.object(ops, "reports"),
+            ):
+                status = ops.tick(home, {"solbot": "/fixture/solbot"}, db)
+            self.assertFalse(status["health"]["ready"])
+            self.assertEqual(status["health"]["overall"], "down")
+            self.assertFalse(
+                status["health"]["components"]["live_price_forecast"]["ready"]
+            )
+
 
 class IndependentWatchdogTests(unittest.TestCase):
     def test_missing_future_nonfinite_and_old_heartbeats_fail(self):
