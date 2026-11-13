@@ -1,6 +1,7 @@
 # Work continuation
 
-Version: 543
+Version: 544
+Delta: v543 to v544; restore the supported Oracle SDK after final CI exposed an upstream major-version regression.
 Delta: v542 to v543; qualify the interactive TUI and preserve final delivery checks.
 Delta: v541 to v542; implement and exercise the interactive Oracle workbench.
 Delta: v540 to v541; add editable winning-strategy TUI.
@@ -2262,3 +2263,7 @@ New research/zec_tui.py app, zec_tui_model.py isolatedworkingstate/indicators, z
 ## Interactive TUI final qualification
 
 The final 37 focused model, worker and Textual tests passed with exit 0. The complete 140-test research suite and qualified documentation check passed with exit 0. Independent production-source acceptance loaded six real 1m rows and six real 5m rows, verified configuration variants and reset, manual selections, independent refresh cadence, narrow/wide geometry, keyboard interaction and bounded teardown. The existing recorder remained PID 1673. Final receipt is under /Users/mitch/.local/state/solmargintrader/zec-winners-tui-20261113/acceptance/. Lifecycle models without a prospective directional adapter remain unavailable. The operation inventories were stale from upstream dependency manifest changes; regenerating their exact hashes repaired the required drift gate without changing dependencies or services. Final delivery still requires deterministic index regeneration, final-head CI, merge, canonical live acceptance and task completion. The private delivery receipt and full source manifest will be saved under /Users/mitch/.local/state/solmargintrader/zec-winners-tui-20261113/. Earlier research metadata publication task TASK-2152 remains separately blocked; this TUI does not rerun that research.
+
+## Required CI SDK compatibility repair
+
+PR258 initial CI failed three of 197 Oracle tests with `MCPError: Connection closed`. The upstream dependency-only PR221 changed mcp 1.30.0 to 2.3.0. Current official migration documentation and an isolated private 2.3.0 environment confirm that lowlevel Server has no list_tools decorator, which oracle/server.py uses. Restore the exact supported 1.30.0 pin in both Oracle manifests; do not migrate the protocol API or weaken tests during this TUI task. Dependency-review package-risk evidence is unavailable from Endor and therefore UNKNOWN; this rollback does not claim a security assessment. The private compatibility environment is disposable and no installed service changed. All 197 Oracle tests passed with exit 0 using the existing qualified environment with MCP 1.30.0. The first minimal private environment lacked NumPy and produced eight import errors; that setup-only attempt is preserved rather than counted as a protocol result. Initial failure log and dependency review are preserved under /Users/mitch/.local/state/solmargintrader/zec-winners-tui-20261113/. Final delivery and canonical acceptance remain pending.
