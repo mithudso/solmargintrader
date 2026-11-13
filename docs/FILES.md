@@ -1,6 +1,6 @@
 # Every file in this repository
 
-**Generated** from `index/INDEX.json` at commit `8f30b559` (2026-11-13T18:08:18+00:00). 3616 tracked files, 92.9 MB.
+**Generated** from `index/INDEX.json` at commit `e1f2af22` (2026-11-13T18:13:43+00:00). 3616 tracked files, 92.9 MB.
 
 Regenerate with:
 
@@ -647,7 +647,7 @@ Repository-level entry points and agent instructions. `AGENTS.md` and `CLAUDE.md
 
 #### `memory.md`
 
-`doc` · 2134 lines · 442,879 B · description: **extracted**
+`doc` · 2137 lines · 443,055 B · description: **extracted**
 
 **Purpose.** Version: 526 Delta: v525 to v526; diagnose and repair local Oracle archive compatibility and misleading forward/candidate statuses while preserving frozen evidence. Delta: v524 to v525; preserve the required-CI frozen SQLite reader watchdog correction and source manager0.7.4 identity.
 
@@ -959,7 +959,7 @@ Curated prose. `ARCHITECTURE.md` explains how the pieces fit, `TESTING.md` is th
 
 #### `docs/FILES.md`
 
-`doc` · 34793 lines · 1,710,754 B · description: **extracted**
+`doc` · 34813 lines · 1,711,457 B · description: **extracted**
 
 **Purpose.** Regenerate with: python3 index/build.py all # refresh the index python3 index/make_files_doc.py # rewrite this file
 

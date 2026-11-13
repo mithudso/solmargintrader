@@ -2373,7 +2373,7 @@
     "docs/ECOSYSTEM-SWAPS.md": 749,
     "docs/ECOSYSTEM-WIKI.md": 991,
     "docs/EXTENSION-TUI-PARITY.md": 893,
-    "docs/FILES.md": 170771,
+    "docs/FILES.md": 170841,
     "docs/HOOK-REPAIR-2026-11-12.md": 566,
     "docs/INSTALLATION.md": 998,
     "docs/JUPITER-EXPERIMENT-COSTS.md": 386,
@@ -2849,7 +2849,7 @@
     "llms/jupsol-llms.txt": 13811,
     "logging.md": 572,
     "market-graph-geometry-prompt.md": 728,
-    "memory.md": 44544,
+    "memory.md": 44553,
     "mongo/README.md": 1059,
     "mongo/__init__.py": 4,
     "mongo/cli.py": 189,
@@ -3617,7 +3617,7 @@
     "website/wrangler.dev.jsonc": 74,
     "website/wrangler.jsonc": 87
   },
-  "generatedAt": "2026-11-13T18:08:18+00:00",
+  "generatedAt": "2026-11-13T18:13:43+00:00",
   "postings": {
     "000": {
       "FILES.md": 1,
@@ -53435,6 +53435,9 @@
     },
     "aftersourcefreeze": {
       "docs/archive/memory-2026-11-10.md": 1
+    },
+    "afterthecodecommit": {
+      "memory.md": 1
     },
     "afterthesechanges": {
       "memory.md": 1
@@ -144083,7 +144086,7 @@
       "docs/COMPOUND-5M-PAPER.md": 1,
       "docs/COMPOUND-5M.md": 3,
       "docs/ECOSYSTEM-SWAPS.md": 1,
-      "docs/FILES.md": 91,
+      "docs/FILES.md": 92,
       "docs/JUPITER-EXPERIMENT-COSTS.md": 5,
       "docs/MOBILE-ALERTS-DESIGN.md": 1,
       "docs/SECURITY.md": 1,
@@ -217773,7 +217776,7 @@
       "docs/ECOSYSTEM-CONTROL-ROOM.md": 2,
       "docs/ECOSYSTEM-WIKI.md": 2,
       "docs/EXTENSION-TUI-PARITY.md": 2,
-      "docs/FILES.md": 63,
+      "docs/FILES.md": 64,
       "docs/JUPITER-EXPERIMENT-COSTS.md": 1,
       "docs/LIVE-PREDICTION-SCORE.md": 2,
       "docs/MARKET-EVENT-CAPTURE.md": 2,
@@ -232134,7 +232137,7 @@
       "backtester/strategy_cards/incomplete/publication-profiles/tv_y5n6dljm_spearman_rank_correlation_coefficient.md": 1,
       "backtester/tests/test_triggers.py": 2,
       "docs/COMPOUND-5M-PAPER.md": 1,
-      "docs/FILES.md": 4,
+      "docs/FILES.md": 6,
       "docs/backtester-history-handoff.md": 1,
       "memory.md": 1,
       "research/TRADINGVIEW-SCRIPT-CARDS.md": 1,
@@ -246590,7 +246593,7 @@
       "docs/ECOSYSTEM-BOOTSTRAP.md": 2,
       "docs/ECOSYSTEM-CONTROL-ROOM.md": 2,
       "docs/ECOSYSTEM-SWAPS.md": 1,
-      "docs/FILES.md": 23,
+      "docs/FILES.md": 24,
       "docs/LIVE-PREDICTION-SCORE.md": 1,
       "docs/META-FORWARD.md": 2,
       "docs/REPO-HEALTH-2026-11-12.md": 1,
@@ -323021,7 +323024,7 @@
       "botmanager/src/botmanager/blind.py": 2,
       "botmanager/src/botmanager/worker.py": 1,
       "code-deep-optimizer-2026-11-06.md": 1,
-      "docs/FILES.md": 2675,
+      "docs/FILES.md": 2677,
       "docs/HOOK-REPAIR-2026-11-12.md": 1,
       "docs/MARKET-EVENT-CAPTURE.md": 1,
       "docs/REPO-HEALTH-2026-11-12.md": 1,
@@ -327944,7 +327947,7 @@
       "docs/ECOSYSTEM-SWAPS.md": 7,
       "docs/ECOSYSTEM-WIKI.md": 6,
       "docs/EXTENSION-TUI-PARITY.md": 1,
-      "docs/FILES.md": 112,
+      "docs/FILES.md": 114,
       "docs/INSTALLATION.md": 3,
       "docs/MCP.md": 4,
       "docs/MOBILE-ALERTS-DESIGN.md": 2,
@@ -383281,7 +383284,7 @@
       "code-deep-optimizer-2026-11-06.md": 1,
       "code-deep-optimizer-2026-11-08.md": 2,
       "docs/BASE-WALLET-QUERIES.md": 1,
-      "docs/FILES.md": 2,
+      "docs/FILES.md": 3,
       "docs/MARKET-EVENT-CAPTURE.md": 9,
       "docs/MOBILE-ALERTS-DESIGN.md": 1,
       "docs/ORACLE-LIVE-FORECAST.md": 1,
@@ -397954,7 +397957,7 @@
       "backtester/strategy_research/tv_43000705489_relative_volume_at_time.md": 1,
       "backtester/strategy_research/tv_r8g2yhdg_order_block_finder_experimental.md": 1,
       "botmanager/README.md": 2,
-      "docs/FILES.md": 791,
+      "docs/FILES.md": 793,
       "docs/INSTALLATION.md": 1,
       "docs/TESTING.md": 1,
       "docs/TRADINGVIEW-CARD-READINESS.md": 134,
@@ -408096,7 +408099,7 @@
       "code-deep-optimizer-2026-11-08.md": 1,
       "docs/COMPONENTS.md": 3,
       "docs/COMPOUND-5M-PAPER.md": 2,
-      "docs/FILES.md": 286,
+      "docs/FILES.md": 287,
       "docs/SCRIPTS.md": 1,
       "docs/TRADINGVIEW-CARD-READINESS.md": 9,
       "docs/TRADINGVIEW-REFERENCE.md": 5,
@@ -413189,7 +413192,7 @@
       "design/bot-control-room/mockup.js": 3,
       "design/soltui-v2/DESIGN.md": 1,
       "design/soltui-v2/mockup.py": 1,
-      "docs/FILES.md": 3922,
+      "docs/FILES.md": 3924,
       "docs/INSTALLATION.md": 1,
       "docs/TRADINGVIEW-CARD-COVERAGE.md": 3,
       "docs/TRADINGVIEW-CARD-READINESS.md": 23,
@@ -435395,6 +435398,7 @@
     "discoveries": {
       "backtester/core/report.py": 1,
       "backtester/strategy_cards/incomplete/publication-profiles/tv_kvrhsptp_elliott_wave_luxalgo.md": 3,
+      "memory.md": 1,
       "research/NONLINEAR-LEAD-LAG-CHILDREN.md": 1,
       "research/TRADINGVIEW-SCRIPT-CARDS.md": 1,
       "research/nonlinear-lead-lag-children/accepted-gate-receipt.json": 1,
@@ -458983,6 +458987,7 @@
       "botmanager/tests/test_learning_job.py": 1,
       "coin-fit/README.md": 1,
       "design/bot-control-room/mockup.js": 1,
+      "docs/FILES.md": 1,
       "docs/ORACLE-LIVE-FORECAST.md": 1,
       "docs/ORACLEBOT-LAUNCH-READINESS.md": 3,
       "docs/archive/memory-2026-11-08.md": 1,
@@ -480140,7 +480145,7 @@
       "docs/ECOSYSTEM-CONTROL-ROOM.md": 32,
       "docs/ECOSYSTEM-SWAPS.md": 10,
       "docs/ECOSYSTEM-WIKI.md": 17,
-      "docs/FILES.md": 169,
+      "docs/FILES.md": 171,
       "docs/MCP.md": 1,
       "docs/META-FORWARD.md": 7,
       "docs/ORACLE-LIVE-FORECAST.md": 3,
@@ -551003,7 +551008,7 @@
       "llms-sitemap.txt": 5,
       "llms/aero-lp-explained-2026-11-06.md": 4,
       "llms/jupsol-llms.txt": 1,
-      "memory.md": 14,
+      "memory.md": 15,
       "mongo/load.py": 5,
       "mongo/schema.py": 2,
       "mongo/tests/test_snapshot_audit.py": 2,
@@ -554903,7 +554908,7 @@
       "design/bot-control-room/DESIGN.md": 2,
       "design/soltui-v2/DESIGN.md": 1,
       "docs/BASE-WALLET-QUERIES.md": 1,
-      "docs/FILES.md": 10,
+      "docs/FILES.md": 11,
       "docs/ORACLEBOT-LAUNCH-READINESS.md": 1,
       "docs/SCRIPTS.md": 3,
       "docs/SIGNAL-DESK.md": 1,
@@ -562974,7 +562979,7 @@
       "backtester/strategy_cards/incomplete/tv_gztrrvcd_distance_to_demand_vector.md": 1,
       "backtester/strategy_research/dex_cex_dislocation.md": 1,
       "design/chrome-workspace/acceptance.md": 3,
-      "docs/FILES.md": 2894,
+      "docs/FILES.md": 2896,
       "docs/TRADINGVIEW-CARD-READINESS.md": 1,
       "docs/archive/memory-2026-11-08.md": 1,
       "docs/backtester-history-handoff.md": 1,
@@ -603495,6 +603500,9 @@
     "finalcommit": {
       "memory.md": 3
     },
+    "finalcountsandderivedartifactsverifiedbeforepush": {
+      "memory.md": 1
+    },
     "finalcurrentdiscoverycounts900backtester": {
       "archive/memory-2026-11-08.md": 1,
       "docs/archive/memory-2026-11-08.md": 1
@@ -623967,7 +623975,7 @@
       "docs/COMPOUND-5M.md": 1,
       "docs/CONCEPTS.md": 4,
       "docs/ECOSYSTEM-BOOTSTRAP.md": 4,
-      "docs/FILES.md": 99,
+      "docs/FILES.md": 100,
       "docs/MARKET-EVENT-CAPTURE.md": 1,
       "docs/MCP.md": 1,
       "docs/ORACLE-LIVE-FORECAST.md": 16,
@@ -629263,7 +629271,7 @@
       "docs/ECOSYSTEM-CONTROL-ROOM.md": 15,
       "docs/ECOSYSTEM-WIKI.md": 3,
       "docs/EXTENSION-TUI-PARITY.md": 4,
-      "docs/FILES.md": 78,
+      "docs/FILES.md": 82,
       "docs/LIVE-PREDICTION-SCORE.md": 6,
       "docs/META-FORWARD-PROTOCOL.json": 2,
       "docs/META-FORWARD-RISK-AMENDMENT.json": 2,
@@ -629993,6 +630001,7 @@
       "tools/land.sh": 1
     },
     "forwardissuancetiming": {
+      "docs/FILES.md": 1,
       "soltui/tests/test_forward_causality.py": 2
     },
     "forwardledgertests": {
@@ -630044,6 +630053,7 @@
       "soltui/tests/test_forward_sort_refresh.py": 2
     },
     "forwardstatusprojection": {
+      "docs/FILES.md": 1,
       "ecosystem/tests/test_control_forward_status.py": 2
     },
     "forwardstrategy": {
@@ -631020,7 +631030,7 @@
       "llms-full.txt": 1,
       "llms/jupsol-llms.txt": 4,
       "logging.md": 2,
-      "memory.md": 66,
+      "memory.md": 67,
       "mongo/README.md": 1,
       "mongo/queries/05-backtests.js": 1,
       "mongo/tests/test_load.py": 1,
@@ -637708,7 +637718,7 @@
       "docs/ECOSYSTEM-CONTROL-ROOM.md": 7,
       "docs/ECOSYSTEM-SWAPS.md": 2,
       "docs/ECOSYSTEM-WIKI.md": 2,
-      "docs/FILES.md": 32,
+      "docs/FILES.md": 33,
       "docs/META-FORWARD-PROTOCOL.json": 3,
       "docs/META-FORWARD-RISK-AMENDMENT.json": 1,
       "docs/META-FORWARD.md": 6,
@@ -785581,7 +785591,7 @@
       "backtester/strategy_cards/incomplete/tv_25py1uvb_position_cost_distribution.md": 1,
       "docs/ECOSYSTEM-BOOTSTRAP.md": 1,
       "docs/ECOSYSTEM-CONTROL-ROOM.md": 1,
-      "docs/FILES.md": 2,
+      "docs/FILES.md": 3,
       "docs/LIVE-PREDICTION-SCORE.md": 1,
       "docs/ORACLE-LIVE-FORECAST.md": 1,
       "docs/TRADINGVIEW-CARD-READINESS.md": 1,
@@ -829645,7 +829655,7 @@
       "design/soltui-v2/mockup.py": 2,
       "design/soltui-v2/screens/02-signal.svg": 1,
       "docs/COMPOUND-5M-PAPER.md": 4,
-      "docs/FILES.md": 8,
+      "docs/FILES.md": 9,
       "docs/MARKET-EVENT-CAPTURE.md": 1,
       "docs/ORACLE-LIVE-FORECAST.md": 1,
       "docs/TRADINGVIEW-REFERENCE.md": 2,
@@ -853521,7 +853531,7 @@
       "codebase-overview.md": 1,
       "docs/API.md": 1,
       "docs/COMPONENTS.md": 1,
-      "docs/FILES.md": 3655,
+      "docs/FILES.md": 3657,
       "docs/TRADINGVIEW-CARD-COVERAGE.md": 7,
       "docs/TRADINGVIEW-CARD-FILES.md": 6,
       "docs/TRADINGVIEW-CARD-READINESS-FILES.md": 6,
@@ -929881,7 +929891,7 @@
       "backtester/tests/test_geometry.py": 2,
       "backtester/tests/test_intrabar_liquidation.py": 1,
       "design/bot-control-room/index.html": 1,
-      "docs/FILES.md": 4,
+      "docs/FILES.md": 5,
       "docs/META-FORWARD-PROTOCOL.json": 2,
       "docs/META-FORWARD.md": 3,
       "docs/ORACLE-LIVE-FORECAST.md": 2,
@@ -970292,7 +970302,7 @@
       "docs/ECOSYSTEM-CONTROL-ROOM.md": 13,
       "docs/ECOSYSTEM-SWAPS.md": 6,
       "docs/EXTENSION-TUI-PARITY.md": 1,
-      "docs/FILES.md": 76,
+      "docs/FILES.md": 77,
       "docs/HOOK-REPAIR-2026-11-12.md": 1,
       "docs/JUPITER-ZEC-WEBHOOK.md": 2,
       "docs/LIVE-PREDICTION-SCORE.md": 2,
@@ -972220,6 +972230,9 @@
     },
     "newtests": {
       ".cdo/reviews-2026-11-12/index.json": 2
+    },
+    "newtimingtestmoduleenterscanonicalcensus": {
+      "memory.md": 1
     },
     "newton": {
       "backtester/strategy_research/tv_sq5xt0ez_hyperfork_matrix.md": 1,
@@ -978150,7 +978163,7 @@
       "docs/COMPOUND-5M.md": 1,
       "docs/DEVELOPMENT.md": 2,
       "docs/ECOSYSTEM-CONTROL-ROOM.md": 1,
-      "docs/FILES.md": 39,
+      "docs/FILES.md": 40,
       "docs/HOOK-REPAIR-2026-11-12.md": 1,
       "docs/LIVE-PREDICTION-SCORE.md": 1,
       "docs/MARKET-EVENT-CAPTURE.md": 2,
@@ -983151,6 +983164,9 @@
     "notfound": {
       "research/coin-intelligence/trx-tron.md": 6,
       "research/coin-intelligence/zec-zcash.md": 1
+    },
+    "notfullrun": {
+      "memory.md": 1
     },
     "nothash": {
       "soltui/tests/test_liquidity.py": 1
@@ -1068453,7 +1068469,7 @@
       "docs/COUNCIL.md": 1,
       "docs/ECOSYSTEM-CONTROL-ROOM.md": 1,
       "docs/EXTENSION-TUI-PARITY.md": 2,
-      "docs/FILES.md": 22,
+      "docs/FILES.md": 23,
       "docs/JUPITER-ZEC-WEBHOOK.md": 1,
       "docs/MARKET-EVENT-CAPTURE.md": 2,
       "docs/MOBILE-ALERTS-DESIGN.md": 2,
@@ -1093553,7 +1093569,7 @@
       "botmanager/tests/test_suite.py": 3,
       "botmanager/tests/test_supervisor.py": 2,
       "docs/API.md": 1,
-      "docs/FILES.md": 4,
+      "docs/FILES.md": 5,
       "docs/MOBILE-ALERTS-DESIGN.md": 1,
       "docs/VOLTY-FORWARD-SERVICE.md": 1,
       "docs/ZEC-ENSEMBLES-FORWARD.md": 3,
@@ -1124182,7 +1124198,7 @@
       "botmanager/tests/test_status.py": 2,
       "docs/COUNCIL.md": 3,
       "docs/ECOSYSTEM-CONTROL-ROOM.md": 3,
-      "docs/FILES.md": 7,
+      "docs/FILES.md": 8,
       "docs/MOBILE-ALERTS-DESIGN.md": 7,
       "docs/ORACLE-LIVE-FORECAST.md": 1,
       "docs/ORACLEBOT-LAUNCH-READINESS.md": 1,
@@ -1144113,7 +1144129,7 @@
       "design/chrome-workspace/proposal.md": 2,
       "docs/ARCHITECTURE.md": 1,
       "docs/DEVELOPMENT.md": 2,
-      "docs/FILES.md": 3655,
+      "docs/FILES.md": 3657,
       "docs/INSTALLATION.md": 1,
       "docs/SCRIPTS.md": 21,
       "docs/THIRD-PARTY-NOTICES.md": 1,
@@ -1146716,7 +1146732,7 @@
       "code-optimizer-scope-2026-11-08.json": 2,
       "codebase-overview.md": 2,
       "docs/DEVELOPMENT.md": 3,
-      "docs/FILES.md": 337,
+      "docs/FILES.md": 339,
       "docs/INSTALLATION.md": 2,
       "docs/TESTING.md": 3,
       "docs/archive/memory-2026-11-08.md": 4,
@@ -1147426,7 +1147442,7 @@
       "docs/ECOSYSTEM-SWAPS.md": 1,
       "docs/ECOSYSTEM-WIKI.md": 3,
       "docs/EXTENSION-TUI-PARITY.md": 1,
-      "docs/FILES.md": 559,
+      "docs/FILES.md": 561,
       "docs/INSTALLATION.md": 13,
       "docs/MARKET-EVENT-CAPTURE.md": 1,
       "docs/MCP.md": 4,
@@ -1180419,7 +1180435,7 @@
       "docs/COMPONENTS.md": 1,
       "docs/ECOSYSTEM-SWAPS.md": 1,
       "docs/EXTENSION-TUI-PARITY.md": 1,
-      "docs/FILES.md": 24,
+      "docs/FILES.md": 25,
       "docs/MCP.md": 1,
       "docs/ORACLE-LIVE-FORECAST.md": 1,
       "docs/SCRIPTS.md": 1,
@@ -1369075,7 +1369091,7 @@
       "docs/ECOSYSTEM-SWAPS.md": 1,
       "docs/ECOSYSTEM-WIKI.md": 2,
       "docs/EXTENSION-TUI-PARITY.md": 6,
-      "docs/FILES.md": 664,
+      "docs/FILES.md": 667,
       "docs/INSTALLATION.md": 32,
       "docs/LIVE-PREDICTION-SCORE.md": 5,
       "docs/ORACLEBOT-OPERATIONS.md": 2,
@@ -1369895,6 +1369911,9 @@
       "extension/tools/control-room-e2e.mjs": 1,
       "extension/tools/e2e.mjs": 9,
       "prompts.md": 1
+    },
+    "soltuicases": {
+      "memory.md": 1
     },
     "soltuicommand": {
       "extension/e2e/lib/dashboard-workspace.mjs": 1,
@@ -1426593,7 +1426612,7 @@
       "llms-small.txt": 7,
       "llms/jupsol-llms.txt": 1,
       "market-graph-geometry-prompt.md": 2,
-      "memory.md": 99,
+      "memory.md": 100,
       "mongo/README.md": 3,
       "mongo/load.py": 20,
       "mongo/queries/08-provenance-and-health.js": 2,
@@ -1462771,6 +1462790,7 @@
       "botmanager/tests/test_legacy.py": 1
     },
     "test_control_forward_status": {
+      "docs/FILES.md": 2,
       "ecosystem/tests/test_control_forward_status.py": 1
     },
     "test_control_http": {
@@ -1466127,6 +1466147,7 @@
       "soltui/tests/test_compound.py": 1
     },
     "test_forward_causality": {
+      "docs/FILES.md": 2,
       "soltui/tests/test_forward_causality.py": 1
     },
     "test_forward_cursor_does_not_invent_missing_product_quote_times": {
@@ -1481800,7 +1481821,7 @@
       "docs/ECOSYSTEM-SWAPS.md": 3,
       "docs/ECOSYSTEM-WIKI.md": 2,
       "docs/EXTENSION-TUI-PARITY.md": 4,
-      "docs/FILES.md": 743,
+      "docs/FILES.md": 747,
       "docs/INSTALLATION.md": 9,
       "docs/LIVE-PREDICTION-SCORE.md": 3,
       "docs/MCP.md": 4,
@@ -1536894,7 +1536915,7 @@
       "design/soltui-v2/DESIGN.md": 1,
       "docs/COMPOUND-5M-PAPER.md": 3,
       "docs/COMPOUND-5M.md": 1,
-      "docs/FILES.md": 7,
+      "docs/FILES.md": 8,
       "docs/HOOK-REPAIR-2026-11-12.md": 1,
       "docs/ORACLEBOT-OPERATIONS.md": 1,
       "docs/SCRIPTS.md": 1,
@@ -1666070,7 +1666091,7 @@
       "docs/COMPOUND-5M.md": 14,
       "docs/CONCEPTS.md": 2,
       "docs/DEVELOPMENT.md": 1,
-      "docs/FILES.md": 75,
+      "docs/FILES.md": 76,
       "docs/HOOK-REPAIR-2026-11-12.md": 1,
       "docs/LIVE-PREDICTION-SCORE.md": 1,
       "docs/MARKET-EVENT-CAPTURE.md": 2,
@@ -1669573,7 +1669594,7 @@
       "docs/ECOSYSTEM-SWAPS.md": 1,
       "docs/ECOSYSTEM-WIKI.md": 3,
       "docs/EXTENSION-TUI-PARITY.md": 2,
-      "docs/FILES.md": 118,
+      "docs/FILES.md": 119,
       "docs/HOOK-REPAIR-2026-11-12.md": 1,
       "docs/INSTALLATION.md": 1,
       "docs/JUPITER-EXPERIMENT-COSTS.md": 2,
@@ -1714954,8 +1714975,8 @@
   "stats": {
     "avgDocLength": 1935.3,
     "documents": 3616,
-    "terms": 133697,
-    "termsBeforePrune": 133725,
-    "totalTokens": 6998091
+    "terms": 133702,
+    "termsBeforePrune": 133730,
+    "totalTokens": 6998170
   }
 }
