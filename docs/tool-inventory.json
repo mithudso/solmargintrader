@@ -60,7 +60,7 @@
     },
     {
       "path": "executor/pyproject.toml",
-      "sha256": "18ca9761e7d2191d08412f431bdffb9471c18e79c4a1a63f38bc5383154c6e47"
+      "sha256": "48191cf8b3b77ba6189c011d41cfe76243c93312556fbcc6d90a3da3c2a2fdf1"
     },
     {
       "path": "executor/src/executor/cli.py",
@@ -96,7 +96,7 @@
     },
     {
       "path": "oracle/pyproject.toml",
-      "sha256": "d2cd97ab94a0a0cd6e75d222a9083edc31ecd5f85e17c9eae5c5d58c9f715518"
+      "sha256": "4c21549fe2081d6ff9f7ee399bd0b70d1c4ce76d5f4a53d564d3c7364571cb6e"
     },
     {
       "path": "oracle/server.py",

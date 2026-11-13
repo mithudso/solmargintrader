@@ -1,6 +1,9 @@
 # Work continuation
 
-Version: 540
+Version: 543
+Delta: v542 to v543; qualify the interactive TUI and preserve final delivery checks.
+Delta: v541 to v542; implement and exercise the interactive Oracle workbench.
+Delta: v540 to v541; add editable winning-strategy TUI.
 Delta: v539 to v540; regenerate packaged wiki after CI detected documentation drift.
 Delta: v538 to v539; compact complete keyword index to satisfy remote size limit.
 Delta: v537 to v538; freeze live cycle fits across revised input candles.
@@ -2247,3 +2250,15 @@ The completed combinedresearch suite is113tests, allpassed0 (the prior115estimat
 ## Streaming delivery CI documentation correction
 
 PR255 initialreview7fae747 passedbacktester/docs/Oracle and311ecosystem tests, but packagedwiki --check correctlyreportedstale because its source documentation changed. Rebuilt ecosystem/wiki_content/pages.json andmanifest.json offline (1875pages), wiki/current andoperationinventorieschecks0; no installedservicechanged. Finalsource requiresnewCI andcanonicalacceptance afterthisdocumentation-onlyfollowup. DurableSteleoutboxids for thisrequest: c3f94b00(decision),31c42b5a(2158complete),e68d289f(2159claim),3138cc17(2159complete;finalsuitecountcorrectedhere113),2bf3b0f4(2160claim). MCPtransportremainsclosed; taskcompletionwillbequeuedwithactualmergedsource/acceptancereceipt. /Users/mitch/.local/state/solmargintrader/zec-winner-stream-20261113/delivery.json is the finaldeliveryreceipt location.
+
+## 2026-11-13 — Interactive winning-strategy Oracle TUI
+
+TASK-2164; phases2165/2166/2167. User wants focused timeframe, selectedstrategies, configuration editing/reset, adjustablecadence, observedshape position andrightnumericRSI/BOP/relatedindicators. Preserve original winningCSV/plan/P&L; editedparams areuntested variants withno inheritedreturn. Default1m/baseline/top6manualwatchlist; full908universe remainsselectable. Separate barhorizon, chartlookback andrefresh. Use observed48barrangeposition/episodeage, nofuturecompletionpercentage. SourceI/O/calculationrunsinboundedcoalescingworkers; quoteheartbeatindependent ofsignalrefresh. Preserve originalCLIJSON/plain path, recorder/services, archives, dry-run/risk/signing boundaries. Currentbaseline7c5f0dc includes upstreamdependency-only PRs221/222/223; noenvironment upgradesneeded (existingTextual8.2.8). PriorstreamPR255 isdelivered4d41d43/finalcanonical29checks0; oldgraph2157statusisstale pendingqueuedcompletions. NativepublicationTASK2152notrestarted. Pendingimplementation, UI/indicator/lifecycle tests, rendered/livecanonicalacceptance, CI/merge/cleanup.
+
+## Editable Oracle TUI implementation and focused checks
+
+New research/zec_tui.py app, zec_tui_model.py isolatedworkingstate/indicators, zec_tui_source.py worker-ownedcaches, zec_tui_workers.py boundedcoalescedLatestWorker; scriptdefaultsTUI andretains--plain/--json/--frames compatibility. UIcontrolswindow/mode/chart/manualselection/edit/reset/cadence/save; default6rows. Privateprefsoptionalatomic0600. Original908configs allroundtripunchanged; editedvariants hidehistoricalreturns. Causalobservedshapeepisode/range position andrightmarketnumbers (includingselectedRSI/BB/MACD/stochparams). Fixed512barseed independent ofchartcrop; quotes1s independent ofsignalrefresh.37focusedmodel/worker/UItests passed0 beforefinalsmallpanelcustomization; awaitingfinalqualification. Reviewfixedfailedpanelstaleclocks/values, canceledbootstrapbackoff andindicatorcursorreset; drainworkercompletionbeforeresubmit preventsstarvationatfastcadence. InitialUItest invalid→valid clicks neededframeworkbutton-effectsettlement (0.3s), notaproductparameterfailure. No recorder/services/orders/originalresearch changes. Pendingreal/renderedacceptance, fullrequiredgates/wiki/index, finalCI/merge/canonicalacceptance.
+
+## Interactive TUI final qualification
+
+The final 37 focused model, worker and Textual tests passed with exit 0. The complete 140-test research suite and qualified documentation check passed with exit 0. Independent production-source acceptance loaded six real 1m rows and six real 5m rows, verified configuration variants and reset, manual selections, independent refresh cadence, narrow/wide geometry, keyboard interaction and bounded teardown. The existing recorder remained PID 1673. Final receipt is under /Users/mitch/.local/state/solmargintrader/zec-winners-tui-20261113/acceptance/. Lifecycle models without a prospective directional adapter remain unavailable. The operation inventories were stale from upstream dependency manifest changes; regenerating their exact hashes repaired the required drift gate without changing dependencies or services. Final delivery still requires deterministic index regeneration, final-head CI, merge, canonical live acceptance and task completion. The private delivery receipt and full source manifest will be saved under /Users/mitch/.local/state/solmargintrader/zec-winners-tui-20261113/. Earlier research metadata publication task TASK-2152 remains separately blocked; this TUI does not rerun that research.

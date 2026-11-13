@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-11-13T22:44:01+00:00",
+  "generatedAt": "2026-11-13T23:53:10+00:00",
   "schemaVersion": 1,
   "note": "Concepts are derived from the repo's own vocabulary \u2014 the FAMILY dict, strategy-card frontmatter, docs/trading-signals-concept-family.md, and terms verified to recur in the corpus. A concept matching no file is dropped, not kept.",
   "counts": {
@@ -22,7 +22,7 @@
         "confirm",
         "fail-closed"
       ],
-      "matchingFiles": 1937,
+      "matchingFiles": 1938,
       "shown": 30,
       "files": [
         {
@@ -71,7 +71,7 @@
         },
         {
           "path": "memory.md",
-          "hits": 97
+          "hits": 98
         },
         {
           "path": ".cdo/reviews-2026-11-12/soltui-worker.json",
@@ -161,7 +161,7 @@
         "universe",
         "top_coins"
       ],
-      "matchingFiles": 1635,
+      "matchingFiles": 1642,
       "shown": 30,
       "files": [
         {
@@ -178,7 +178,7 @@
         },
         {
           "path": "memory.md",
-          "hits": 170
+          "hits": 176
         },
         {
           "path": "research/coin-intelligence/doge-dogecoin.md",
@@ -206,7 +206,7 @@
         },
         {
           "path": "prompts.md",
-          "hits": 56
+          "hits": 55
         },
         {
           "path": "research/results/minute_sweep_x1_common.txt",
@@ -439,7 +439,7 @@
         "centred",
         "shift"
       ],
-      "matchingFiles": 1497,
+      "matchingFiles": 1498,
       "shown": 30,
       "files": [
         {
@@ -578,7 +578,7 @@
         "perps",
         "solana"
       ],
-      "matchingFiles": 935,
+      "matchingFiles": 940,
       "shown": 30,
       "files": [
         {
@@ -607,7 +607,7 @@
         },
         {
           "path": "memory.md",
-          "hits": 188
+          "hits": 192
         },
         {
           "path": ".cdo/reviews-2026-11-12/ecosystem-combined-full-final.json",
@@ -671,7 +671,7 @@
         },
         {
           "path": "prompts.md",
-          "hits": 95
+          "hits": 96
         },
         {
           "path": ".cdo/reviews-2026-11-13/forecast-supplement-delta.json",
@@ -714,7 +714,7 @@
         "macd",
         "ichimoku"
       ],
-      "matchingFiles": 884,
+      "matchingFiles": 886,
       "shown": 30,
       "files": [
         {
@@ -990,7 +990,7 @@
         "monotone",
         "gap"
       ],
-      "matchingFiles": 773,
+      "matchingFiles": 774,
       "shown": 30,
       "files": [
         {
@@ -1125,7 +1125,7 @@
         "stochastic",
         "oscillator"
       ],
-      "matchingFiles": 559,
+      "matchingFiles": 562,
       "shown": 30,
       "files": [
         {
@@ -1260,7 +1260,7 @@
         "benchmark",
         "baseline"
       ],
-      "matchingFiles": 547,
+      "matchingFiles": 551,
       "shown": 30,
       "files": [
         {
@@ -1394,7 +1394,7 @@
         "buy_and_hold",
         "baseline"
       ],
-      "matchingFiles": 475,
+      "matchingFiles": 479,
       "shown": 30,
       "files": [
         {
@@ -1502,6 +1502,10 @@
           "hits": 21
         },
         {
+          "path": "memory.md",
+          "hits": 21
+        },
+        {
           "path": "research/tradingview-script-profiles/shard-b.jsonl",
           "hits": 21
         },
@@ -1511,10 +1515,6 @@
         },
         {
           "path": "archive/memory-2026-11-08.md",
-          "hits": 20
-        },
-        {
-          "path": "docs/archive/memory-2026-11-08.md",
           "hits": 20
         }
       ],
@@ -1939,7 +1939,7 @@
         "bb_breakout",
         "keltner"
       ],
-      "matchingFiles": 295,
+      "matchingFiles": 296,
       "shown": 30,
       "files": [
         {
@@ -2623,7 +2623,7 @@
         "vwap_reversion",
         "ou_reversion"
       ],
-      "matchingFiles": 151,
+      "matchingFiles": 153,
       "shown": 30,
       "files": [
         {
