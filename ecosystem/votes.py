@@ -245,9 +245,15 @@ def _report(
         / instrument.split("/")[0]
         / "history.sqlite3"
     )
+    archive_missing = False
     try:
         if path.parent.is_symlink() or path.parent.parent.is_symlink():
             raise ValueError("oracle_archive_unavailable")
+        try:
+            path.lstat()
+        except FileNotFoundError:
+            archive_missing = True
+            raise ValueError("oracle_archive_missing") from None
         engine = ReadOnlyOracle(path, instrument=instrument, archived_versions=True)
         prediction = engine.predictions(now)
         base["native_interval"] = _interval_name(engine.bar_seconds)
@@ -270,16 +276,22 @@ def _report(
             for item in engine.strategies()
         ]
     except (OSError, ValueError, TypeError, sqlite3.Error):
+        reason = (
+            "oracle_archive_missing"
+            if archive_missing
+            else "oracle_archive_unavailable_or_incompatible"
+        )
         return {
             **base,
             "status": "unavailable",
-            "reason": "oracle_archive_unavailable_or_incompatible",
+            "reason": reason,
             "signal": None,
             "balance_percent": None,
             "strategies": [],
-            "market": {"status": "unavailable"},
+            "market": {"status": "unavailable", "reason": reason},
             "aggregate": {
                 "status": "unavailable",
+                "reason": reason,
                 "signal": None,
                 "balance_percent": None,
                 "included": [],
@@ -289,7 +301,7 @@ def _report(
             "graph": {
                 "schema_version": 1,
                 "status": "unavailable",
-                "reason": "oracle_archive_unavailable_or_incompatible",
+                "reason": reason,
                 "instrument": instrument,
                 "ticks": [],
             },

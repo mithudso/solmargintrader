@@ -207,6 +207,114 @@ def _public(row) -> dict:
     }
 
 
+def _forward_timing(home: Path, state: dict, now: float) -> dict:
+    """Explain legacy non-due checks from native evidence without changing it."""
+    from soltui.f5_batch import INTERVAL_MINUTES
+
+    batch_id = state.get("batch_id")
+    batch = state.get("batch", {})
+    if (
+        not isinstance(batch_id, str)
+        or not re.fullmatch(r"[0-9a-f]{32}", batch_id)
+        or not state.get("supervisor_running")
+        or not batch.get("running")
+    ):
+        return state
+    directory = home / "batches" / batch_id
+    source = directory / "forward.sqlite3"
+    checks = []
+    for original in batch.get("forward_checks", []):
+        check = dict(original)
+        checks.append(check)
+        checked = check.get("at")
+        expected = check.get("trials_expected")
+        minutes = INTERVAL_MINUTES.get(check.get("interval"))
+        if (
+            check.get("message") not in {
+                "Forecast window elapsed during calculation",
+                "Checked the latest closed minute",
+            }
+            or check.get("error")
+            or check.get("recorded") != 0
+            or type(expected) is not int
+            or not 0 < expected <= 1000
+            or check.get("trials_recorded") != expected
+            or type(checked) not in (int, float)
+            or not math.isfinite(checked)
+            # A timing explanation must not make a stopped or stale owner
+            # appear to have performed a current successful check.
+            or not 0 <= now - checked <= 120
+            or minutes is None
+        ):
+            continue
+        try:
+            with closing(sqlite3.connect(
+                (directory / "batch.sqlite3").resolve().as_uri() + "?mode=ro",
+                uri=True, timeout=0,
+            )) as metadata, closing(sqlite3.connect(
+                source.resolve().as_uri() + "?mode=ro", uri=True, timeout=0,
+            )) as native:
+                metadata.execute("BEGIN")
+                native.execute("BEGIN")
+                selected = metadata.execute(
+                    "SELECT strategy,horizon FROM cell WHERE asset=? AND interval=? "
+                    "AND selected IS NOT NULL ORDER BY strategy,horizon LIMIT 1001",
+                    (check.get("asset"), check["interval"]),
+                ).fetchall()
+                if len(selected) != expected or len(set(selected)) != expected:
+                    continue
+                pending = []
+                for strategy, horizon in selected:
+                    label = f"f5:{batch_id}:{strategy}:{check['interval']}:{horizon}"
+                    rows = native.execute(
+                        "SELECT t.id,t.minutes,c.bar,c.issued,c.start,c.finish,c.outcome,c.expired "
+                        "FROM trial t LEFT JOIN call c ON c.trial=t.id "
+                        "AND c.bar=(SELECT max(bar) FROM call WHERE trial=t.id) "
+                        "WHERE t.asset=? AND t.label=?",
+                        (check.get("asset"), label),
+                    ).fetchall()
+                    if len(rows) != 1:
+                        break
+                    trial, duration, bar, issued, start, finish, outcome, expired = rows[0]
+                    if (
+                        duration != minutes
+                        or any(type(v) not in (int, float) or not math.isfinite(v)
+                               for v in (bar, issued, start, finish))
+                        or bar % 60 != 0
+                        or start != bar + 120
+                        or finish != start + minutes * 60
+                        or not bar + 60 <= issued < start - 1
+                        or issued > checked
+                        or outcome is not None
+                        or expired != 0
+                        # At the recorded check, even the latest possible next
+                        # window overlaps this call. Also require it pending now.
+                        or not (int(checked) // 60 + 1) * 60 < finish
+                        or not (int(now) // 60 + 1) * 60 < finish
+                        or not now < finish
+                    ):
+                        break
+                    pending.append({
+                        "trial_id": trial, "issued_at": issued,
+                        "opens_at": start, "target_at": finish,
+                    })
+                if len(pending) != expected:
+                    continue
+        except (OSError, ValueError, TypeError, sqlite3.Error):
+            continue
+        check.update(
+            owner_message=check["message"],
+            message="Waiting for existing forecast window",
+            timing={
+                "state": "pending_not_due", "observed_at": now,
+                "checked_at": checked, "source": "native_forward_call",
+                "source_path": str(source), "read_only_projection": True,
+                "pending_calls": pending,
+            },
+        )
+    return {**state, "batch": {**batch, "forward_checks": checks}}
+
+
 class ControlPlane:
     def __init__(self, home: Path, manager_home: Path | None = None):
         from botmanager.store import data_home
@@ -640,6 +748,10 @@ class ControlPlane:
                 return path
         raise ValueError("unknown_experiment")
 
+    def pipeline_status(self, run_id=None) -> dict:
+        home = self.experiment_home(run_id)
+        return _forward_timing(home, runner.status(home), time.time())
+
     def snapshot(self, run_id=None) -> dict:
         from backtester.core.strategies import REGISTRY
         from soltui import config, pricefeed
@@ -649,7 +761,7 @@ class ControlPlane:
 
         active_home = self.experiment_home(run_id)
         read_only_source = run_id == "legacy-v1"
-        state = runner.status(active_home)
+        state = self.pipeline_status(run_id)
         prefs = runtime_settings(active_home)
         active = state["supervisor_running"]
         controls_ready = state.get("control_contract_version") == 1
@@ -832,7 +944,7 @@ class ControlPlane:
         runs = []
         for row in self.experiments():
             try:
-                current = runner.status(self.experiment_home(row["id"]))
+                current = self.pipeline_status(row["id"])
                 b = current.get("batch", {})
                 total = b.get("total", 0)
                 done = sum(

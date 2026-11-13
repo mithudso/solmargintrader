@@ -1,6 +1,7 @@
 # Work continuation
 
-Version: 525
+Version: 526
+Delta: v525 to v526; diagnose and repair local Oracle archive compatibility and misleading forward/candidate statuses while preserving frozen evidence.
 Delta: v524 to v525; preserve the required-CI frozen SQLite reader watchdog correction and source manager0.7.4 identity.
 Delta: v523 to v524; preserve concurrent records and refresh stale public research/wiki derivatives exposed by final CI.
 Delta: v522 to v523; preserve concurrent ZEC research records and verified live Stripe provisioning.
@@ -2074,3 +2075,59 @@ COMMIT can return BUSY with an open reader; EXCLUSIVE detects that reader outsid
 WAL, while IMMEDIATE/EXCLUSIVE coincide under WAL.
 
 The verified reader-lock lesson is queued through Stele outbox 686aa42d.
+
+## 2026-11-13 — Local Oracle and forward readiness repair
+
+Owner authorized fixes after fresh read-only status. MILE-2120 owns diagnosis
+TASK-2121(completed), implementation TASK-2125(active) and delivery TASK-2127.
+Decision KNOW-2128 applies preserve-legacy rule KNOW-1215. Source base8f30b559.
+Fresh evidence: /Users/mitch/.local/state/oraclebot-status-20261113/local-receipt.json
+and /Users/mitch/.local/state/oraclebot-status-20261113/forward-diagnosis.json.
+Local9/9services up and independent SOL/ZEC10s projections advance, all0qualified.
+Main SOL schema2 archive valid but UI0.4.12 rejects original0.4.8 evaluator8d331176
+through oracle_policy_implementation_unavailable; ZEC native archive is absent,
+not an incompatible archive. Preserve exact original policyfe2e724d and producer.
+
+The one SOL/RSI1440minute paper call targets23:45UTCtoday; zero resolved is
+expected before that. A no-new-call-due path still computes a late-issuance warning.
+Fix status without forcing calls, overlapping windows, retiming or early outcomes.
+Two original failed RSI neighbours violate oversold<exit_level; retain those
+attempts and11successful variants/selectedperiod28. Validate future candidates.
+Never transplant current forwardtest.py into oldprefix: sourceepoch/candles and
+signal_interval trialidentity differ. Use preserved producer and compatible
+read-only status projection; install new UI/reader separately. Hosted analysis
+and customer execution remain separately unprovisioned; billing/livegates stayoff.
+
+Worktree /Users/mitch/dev/worktrees/oracle-forward-repair-20261113; runtime/evidence
+receipts belong under /Users/mitch/.local/state/oraclebot-local-repair-20261113/.
+Remaining: bounded source fixes/regressions, installed live acceptance, final
+source/derived docs checks, PR/CI/merge/default verification and owned cleanup.
+
+Implementation checks: Oracle197tests0; real oldSOLarchive is readable query-only
+without constructing engine/strategies, unchanged fileSHA. Forward52tests0 and
+strict touched-file Ruff0. Candidate171tests0, RSI13requested/11eligible/2excluded;
+zero introducedRuffdiagnostics relativeto53retainedbaselineissues. Root40HTTP/
+votes/timing tests0; initialrootHTTPmockpoint was wrong(moduleprivateimport),
+corrected withoutchangingbehavior. Independentreview caught a currentclock
+admissionboundaryP2; added bothclockguard and regression, now no openfindings.
+Source versions Oracle0.2.5/research-runtime0.4.2/manager0.7.5/ecosystem0.4.14
+with exact pins; original producer remains0.4.8 and pendingtarget23:45UTCtoday.
+
+Promotion must replace guarded suite/UI and rebind stableCLI/nativehost together,
+otherwise oldsuite can respawnoldUI. Keep pipeline/F5/recorder/forecast/observer
+services intact. Baseline/plan: /Users/mitch/.local/state/oraclebot-status-20261113/local-repair/promotion/.
+Newprefix must preserve forecastpolicy9492654016816127f256ab8631bbf7f8092bac6104b062e550519ec301c338af,
+including NumPy2.5.4. Constraints helper support passes26tests/strictRuff before final
+sourcefreeze/install. Newprovisionalprojection doesnotcreate missingZECnative
+history. Hostedanalysis/customerexecution and paidbilling activation remainopen.
+
+Rootscope corrections and finalsource tests: webAPIusesreadonlystatusprojection;
+missingnativearchivehasdistinctsymbolicreason; lockednativeDBleaveswarning
+unchangedwithtimeout0; independentreviewP2currentclockadmissionboundaryfixed.
+Root40tests0/strictRuff0. New setupconstraints26tests0 and fullRuff0. Exact
+accepted thirdpartyconstraints42packages SHA cf090f890dd4f898491c12c5493fe313a3cadb336384df7c1ff64e6d34dc015a,
+includingNumPy2.5.4; no global/privateprefixmutations yet. Docschecker counts
+1579committedSolTUIcases before the three new uncommitted timingtests are added;
+its documented census excludes uncommittednewfiles. Recount aftersourcecommit
+andupdatecountdocs/derivedartifacts beforepublishing. Discoveriesarenotexecuted
+suites. All source filepaths/actualexitlogs collectedinprivateevidencemanifest.

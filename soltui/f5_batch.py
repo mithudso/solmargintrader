@@ -73,6 +73,44 @@ def _code_id(sources: dict[str, str] | None = None) -> str:
     return hashlib.sha256(_dump(sources).encode()).hexdigest()
 
 
+def _candidate_templates(names: Sequence[str], horizons: Sequence[str], asset: str,
+                         interval: str) -> dict[str, Any]:
+    """Validate once per preset; expand only labels and ids across the universe."""
+    cards = _card_map()
+    templates = {}
+    for name in names:
+        card = cards.get(name)
+        if name.startswith("lev_") or card is None or not card.buildable or not card.data_available:
+            continue
+        for horizon in horizons:
+            excluded: list[bgqueue.CandidateExclusion] = []
+            jobs = bgqueue.jobs_for_card(card, horizon, asset, interval, max_tier=2,
+                                          exclusions=excluded)
+            def template(job: bgqueue.Job) -> dict[str, Any]:
+                return {k: v for k, v in job.to_dict().items() if k not in ("asset", "interval")}
+            templates[f"{name}:{horizon}"] = {
+                "jobs": [template(job) for job in jobs],
+                "exclusions": [{"job": template(item.job), "reason": item.reason,
+                                "detail": item.detail} for item in excluded],
+            }
+    return templates
+
+
+def _expand_candidates(template: dict[str, Any], asset: str,
+                        interval: str) -> tuple[list[bgqueue.Job], list[bgqueue.CandidateExclusion]]:
+    jobs = [bgqueue.Job(**item, asset=asset, interval=interval) for item in template["jobs"]]
+    exclusions = [bgqueue.CandidateExclusion(
+        bgqueue.Job(**item["job"], asset=asset, interval=interval), item["detail"], item["reason"])
+        for item in template["exclusions"]]
+    return jobs, exclusions
+
+
+def _candidate_counts(templates: dict[str, Any], copies: int) -> dict[str, int]:
+    eligible = sum(len(item["jobs"]) for item in templates.values()) * copies
+    excluded = sum(len(item["exclusions"]) for item in templates.values()) * copies
+    return {"requested": eligible + excluded, "eligible": eligible, "excluded": excluded}
+
+
 def catalog_coins() -> tuple[list[str], dict[str, Any]]:
     """Freeze the complete retained Coinbase spot catalogue, without network access."""
     from . import coinbase_account
@@ -149,6 +187,8 @@ def create(settings: config.Settings, coins: Sequence[str] | None = None, *, roo
         raise ValueError("unsupported interval or preset horizon")
     if any(name not in REGISTRY for name in names):
         raise ValueError("unknown registered strategy")
+    templates = _candidate_templates(names, horizons, assets[0], intervals[0])
+    candidate_counts = _candidate_counts(templates, len(assets) * len(intervals))
     run_id = uuid.uuid4().hex
     directory = _directory(run_id, root)
     directory.mkdir(mode=0o700, parents=True, exist_ok=False)
@@ -179,6 +219,7 @@ def create(settings: config.Settings, coins: Sequence[str] | None = None, *, roo
             for key, value in {"version": 1, "id": run_id, "phase": "planned", "created_at": time.time(),
                                "assets": assets, "intervals": intervals, "strategies": names, "horizons": horizons,
                                "longest_contiguous": longest_contiguous,
+                               "candidate_templates": templates, "candidate_counts": candidate_counts,
                                "settings": frozen, "code_id": _code_id(code_sources), "code_sources": code_sources,
                                "current": "", "universe": universe,
                                "notice": "Jupiter Perps scenario simulation. Each input is frozen when its series is first processed; selection uses CPCV results and is not independent validation. Leverage tiers require a perp-aware runner and are reported unsupported. Unresolved forward outcomes older than seven days remain pending until minute data can be recovered."}.items():
@@ -193,6 +234,7 @@ def create(settings: config.Settings, coins: Sequence[str] | None = None, *, roo
     return {"run_id": run_id, "directory": str(directory), "cells": total,
             "assets": assets, "intervals": list(intervals), "strategies": len(names),
             "horizons": list(horizons), "phase": "planned", "universe": universe,
+            "candidates": candidate_counts,
             "longest_contiguous": longest_contiguous}
 
 
@@ -307,6 +349,7 @@ def status(run_id: str, *, root: Path | None = None) -> dict[str, Any]:
                 "assets": _meta(db, "assets", []), "intervals": _meta(db, "intervals", []),
                 "universe": _meta(db, "universe", {}),
                 "longest_contiguous": _meta(db, "longest_contiguous", False),
+                "candidates": _meta(db, "candidate_counts", None),
                 "problems": problems, "problems_truncated": sum(counts.get(k, 0) for k in ("failed", "missing", "unsupported", "partial")) > len(problems),
                 "forward_checks": checks, "forward_backlog": _forward_backlog(directory),
                 "notice": _meta(db, "notice", ""),
@@ -343,8 +386,12 @@ def cells(run_id: str, *, root: Path | None = None, state: str | None = None,
         query = "SELECT * FROM cell" + (" WHERE state=?" if state else "") + " ORDER BY id LIMIT ? OFFSET ?"
         params = (state, limit, offset) if state else (limit, offset)
         rows = [dict(row) for row in db.execute(query, params)]
+        templates = _meta(db, "candidate_templates", None)
         for row in rows:
             row["selected"] = json.loads(row["selected"]) if row["selected"] else None
+            template = (templates or {}).get(f"{row['strategy']}:{row['horizon']}")
+            row["candidates"] = (bgqueue.candidate_census(*_expand_candidates(
+                template, row["asset"], row["interval"])) if template is not None else None)
         return rows
 
 
@@ -369,9 +416,19 @@ def proof(run_id: str, asset: str, interval: str, *, root: Path | None = None) -
         raise ValueError("unsupported interval")
     with closing(_connect(directory)) as db, db:
         series = db.execute("SELECT path,sha256 FROM series WHERE asset=? AND interval=?", (asset, interval)).fetchone()
+        templates = _meta(db, "candidate_templates", None)
+        candidate_plans = None
+        if (templates is not None and asset in _meta(db, "assets", [])
+                and interval in _meta(db, "intervals", [])):
+            candidate_plans = []
+            for template in templates.values():
+                jobs, exclusions = _expand_candidates(template, asset, interval)
+                candidate_plans.append({**bgqueue.candidate_census(jobs, exclusions),
+                                        "jobs": [{"job_id": job.job_id, **job.to_dict()} for job in jobs]})
         return {"run_id": run_id, "settings": _meta(db, "settings", {}),
                 "code_id": _meta(db, "code_id", ""), "code_sources": _meta(db, "code_sources", {}),
                 "series": dict(series) if series else None, "universe": _meta(db, "universe", {}),
+                "candidate_plans": candidate_plans,
                 "data_selection": _meta(db, f"data_selection:{asset}:{interval}", None)}
 
 
@@ -458,7 +515,17 @@ def _run_cell(db: sqlite3.Connection, row: sqlite3.Row, settings: config.Setting
     if card is None or not card.buildable or not card.data_available:
         _finish_cell(db, cell_id, "unsupported", "No buildable, data-supported strategy card for this registry entry")
         return
-    jobs = bgqueue.jobs_for_card(card, horizon, asset, interval, max_tier=2)
+    templates = _meta(db, "candidate_templates", None)
+    template = (templates or {}).get(f"{name}:{horizon}")
+    if templates is not None and template is None:
+        raise ValueError(f"frozen candidate plan missing for {name} · {horizon}")
+    exclusions: list[bgqueue.CandidateExclusion] = []
+    if template is None:
+        # Legacy plans remain readable; their code binding controls resumption.
+        jobs = bgqueue.jobs_for_card(card, horizon, asset, interval, max_tier=2,
+                                      exclusions=exclusions)
+    else:
+        jobs, exclusions = _expand_candidates(template, asset, interval)
     if not jobs:
         _finish_cell(db, cell_id, "unsupported", "No preset or required parameters are unavailable")
         return
@@ -516,6 +583,9 @@ def _run_cell(db: sqlite3.Connection, row: sqlite3.Row, settings: config.Setting
     bad = sum(r["state"] != "evaluated" for r in outcomes)
     selection = _meta(db, f"data_selection:{asset}:{interval}", None)
     reasons = [f"{bad} of {len(outcomes)} variants did not produce an evaluable result"] if bad else []
+    if exclusions:
+        reasons.append(f"{len(exclusions)} of {len(jobs) + len(exclusions)} requested candidates "
+                       "excluded before evaluation: invalid_parameters. See batch.proof for exact parameters.")
     if selection:
         reasons.append(f"Longest continuous window: {selection['selected_bars']} of {selection['source_bars']} original bars; {selection['gaps_excluded']} gaps excluded. See batch.proof for timestamps.")
     _finish_cell(db, cell_id, "partial" if bad else "completed", " ".join(reasons),

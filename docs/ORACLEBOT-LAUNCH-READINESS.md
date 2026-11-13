@@ -1,7 +1,7 @@
 # Oraclebot launch readiness
 
-Version: 0.1.4
-Delta: Verify the dedicated live merchant and provisioned billing bindings; retain closed launch gates and explicit provider lifecycle gaps.
+Version: 0.1.5
+Delta: Record the preservation-safe local Oracle/forward repair source and retain separate hosted-engine and billing launch requirements.
 Updated: 2026-11-13. Source verification and recorded deployment observations are separate below.
 
 ## Why the free trial did not start
@@ -77,16 +77,21 @@ receipts are recorded separately under:
 | Jupiter leveraged positions | Configuration surface | Supported perpetual-position integration, the customer's actual delegated signing authority and verified economics |
 | Agent MCP | Wallet-bound OAuth PKCE S256, scoped MCP status and trade intents, separately signed finite preauthorization, atomic budget reservations and immediate grant revocation | Actual customer execution/delegation path; synthetic deployed authentication/isolation already passed |
 
-The combined local control-room environment ecosystem `0.4.12`, Oracle `0.2.4`
-and observer `1.2.1` completed independent installed acceptance with twenty
-passing gates. Earlier `0.4.9` and `0.4.11` evidence remains historical. The active
-local pipeline retains its original `0.4.8` bundle and cohort. Local control-room
-and forecast improvements do not connect the public hosted engine.
+The earlier local control-room environment ecosystem `0.4.12`, Oracle `0.2.4`
+and observer `1.2.1` completed twenty installed acceptance gates. The local repair
+source uses ecosystem `0.4.14`, Oracle `0.2.5`, manager `0.7.5` and research-runtime
+`0.4.2`. It restores read-only access to the exact original SOL archive, explains
+non-due paper windows, and validates future candidate parameters. Promotion uses
+a separate immutable environment and dependency constraints; it preserves the
+original `0.4.8` paper producer, pending daily call and forecast policy.
 
-This follow-up also repairs a required-CI frozen SQLite reader recovery case in
-manager source `0.7.4`; ecosystem source `0.4.13` pins that manager version.
-The accepted installed `0.4.12` owner prefix was not modified or restarted.
-Source regression/CI checks are separate from a future owner runtime promotion.
+A missing ZEC canonical archive remains distinct from its updating independent
+short-horizon projections. Existing historical failed variants and not-yet-due
+outcomes are not rewritten. Actual local promotion/loaded acceptance belongs in:
+
+/Users/mitch/.local/state/oraclebot-local-repair-20261113/delivery.json
+
+Local repairs do not connect the public hosted analysis or execution service.
 
 The combined website source passes129Node cases,28actualChrome groups,
 JavaScript quality, syntax and Worker dry-run checks. Successful executor

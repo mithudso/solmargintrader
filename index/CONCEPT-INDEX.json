@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-11-13T16:54:31+00:00",
+  "generatedAt": "2026-11-13T18:08:18+00:00",
   "schemaVersion": 1,
   "note": "Concepts are derived from the repo's own vocabulary \u2014 the FAMILY dict, strategy-card frontmatter, docs/trading-signals-concept-family.md, and terms verified to recur in the corpus. A concept matching no file is dropped, not kept.",
   "counts": {
@@ -161,7 +161,7 @@
         "universe",
         "top_coins"
       ],
-      "matchingFiles": 1585,
+      "matchingFiles": 1587,
       "shown": 30,
       "files": [
         {
@@ -174,7 +174,7 @@
         },
         {
           "path": "docs/FILES.md",
-          "hits": 182
+          "hits": 181
         },
         {
           "path": "research/coin-intelligence/doge-dogecoin.md",
@@ -182,7 +182,7 @@
         },
         {
           "path": "memory.md",
-          "hits": 144
+          "hits": 145
         },
         {
           "path": "research/results/shape_spot_20261111_manifest.json",
@@ -595,7 +595,7 @@
         },
         {
           "path": "docs/FILES.md",
-          "hits": 388
+          "hits": 390
         },
         {
           "path": "FILES.md",
@@ -611,7 +611,7 @@
         },
         {
           "path": "memory.md",
-          "hits": 182
+          "hits": 187
         },
         {
           "path": "skills/trading-and-investing/references/jupiter-jlp-pool.md",
@@ -671,7 +671,7 @@
         },
         {
           "path": "prompts.md",
-          "hits": 93
+          "hits": 94
         },
         {
           "path": "archive/memory-2026-11-08.md",
@@ -714,7 +714,7 @@
         "macd",
         "ichimoku"
       ],
-      "matchingFiles": 871,
+      "matchingFiles": 872,
       "shown": 30,
       "files": [
         {
@@ -1125,7 +1125,7 @@
         "stochastic",
         "oscillator"
       ],
-      "matchingFiles": 545,
+      "matchingFiles": 548,
       "shown": 30,
       "files": [
         {
@@ -1260,7 +1260,7 @@
         "benchmark",
         "baseline"
       ],
-      "matchingFiles": 525,
+      "matchingFiles": 526,
       "shown": 30,
       "files": [
         {
@@ -1394,7 +1394,7 @@
         "buy_and_hold",
         "baseline"
       ],
-      "matchingFiles": 454,
+      "matchingFiles": 455,
       "shown": 30,
       "files": [
         {
@@ -1666,7 +1666,7 @@
         "hurst",
         "vol_regime"
       ],
-      "matchingFiles": 376,
+      "matchingFiles": 377,
       "shown": 30,
       "files": [
         {
@@ -2400,6 +2400,10 @@
           "hits": 11
         },
         {
+          "path": "soltui/tests/test_bgqueue.py",
+          "hits": 10
+        },
+        {
           "path": "research/triggers.py",
           "hits": 10
         },
@@ -2409,10 +2413,6 @@
         },
         {
           "path": "research/results/perturb_all_singles_medium.txt",
-          "hits": 9
-        },
-        {
-          "path": "soltui/tests/test_bgqueue.py",
           "hits": 9
         },
         {

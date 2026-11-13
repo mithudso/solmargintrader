@@ -1,6 +1,6 @@
 # Conceptual index
 
-**Generated** from `index/CONCEPT-INDEX.json` (2026-11-13T16:54:31+00:00). 21 concepts.
+**Generated** from `index/CONCEPT-INDEX.json` (2026-11-13T18:08:18+00:00). 21 concepts.
 
 ```bash
 python3 index/build.py all              # refresh
@@ -40,7 +40,7 @@ Full list: `python3 index/search.py --concept risk-rails -n 1926`
 
 ### Cross-asset and cross-timeframe transfer
 
-`transfer` · **1585 files** · matched on `cross_asset`, `cross-asset`, `transfer`, `doge`, `zec`, `universe`, `top_coins`
+`transfer` · **1587 files** · matched on `cross_asset`, `cross-asset`, `transfer`, `doge`, `zec`, `universe`, `top_coins`
 
 The same 25 strategies score 25/25 on BTC daily and 0/25 on SOL hourly. The dataset has repeatedly explained more than the strategy.
 
@@ -48,14 +48,14 @@ Strongest files:
 
 - `research/coin-intelligence/zec-zcash.md` (196 hits)
 - `research/results/coinbase50_20261111_summary.json` (183 hits)
-- `docs/FILES.md` (182 hits)
+- `docs/FILES.md` (181 hits)
 - `research/coin-intelligence/doge-dogecoin.md` (147 hits)
-- `memory.md` (144 hits)
+- `memory.md` (145 hits)
 - `research/results/shape_spot_20261111_manifest.json` (97 hits)
 - `research/tradingview-card-coverage.json` (90 hits)
 - `FILES.md` (78 hits)
 
-Full list: `python3 index/search.py --concept transfer -n 1585`
+Full list: `python3 index/search.py --concept transfer -n 1587`
 
 ### Cost model
 
@@ -106,11 +106,11 @@ Strongest files:
 - `research/strategy_experiment/results/results.json` (544 hits)
 - `llms/jupsol-llms.txt` (427 hits)
 - `research/strategy_experiment/results/initial-gapped-run/results.json` (408 hits)
-- `docs/FILES.md` (388 hits)
+- `docs/FILES.md` (390 hits)
 - `FILES.md` (283 hits)
 - `.cdo/reviews-2026-11-12/oracle.json` (271 hits)
 - `.cdo/reviews-2026-11-12/ecosystem-combined-full-final.json` (187 hits)
-- `memory.md` (182 hits)
+- `memory.md` (187 hits)
 
 Full list: `python3 index/search.py --concept execution-onchain -n 914`
 
@@ -154,7 +154,7 @@ Full list: `python3 index/search.py --concept data-integrity -n 763`
 
 ### Buy-and-hold benchmark
 
-`benchmark` · **525 files** · matched on `buy_and_hold`, `benchmark`, `baseline`
+`benchmark` · **526 files** · matched on `buy_and_hold`, `benchmark`, `baseline`
 
 Zero parameters, and it out-ranked all but one or two strategies on SOL and all five recommended configurations on ZEC.
 
@@ -169,7 +169,7 @@ Strongest files:
 - `docs/FILES.md` (87 hits)
 - `.cdo/reviews-2026-11-12/research-scripts.json` (81 hits)
 
-Full list: `python3 index/search.py --concept benchmark -n 525`
+Full list: `python3 index/search.py --concept benchmark -n 526`
 
 ### Evidence floor
 
@@ -257,11 +257,11 @@ The families also carry a historical measured finding. Of the study's 25 strateg
 
 | Family | Files | Matched on |
 |---|---|---|
-| `trend` | 871 | `trend`, `ma_crossover`, `macd`, `ichimoku` |
-| `oscillator-reversion` | 545 | `rsi`, `stochastic`, `oscillator` |
-| `baseline` | 454 | `buy_and_hold`, `baseline` |
+| `trend` | 872 | `trend`, `ma_crossover`, `macd`, `ichimoku` |
+| `oscillator-reversion` | 548 | `rsi`, `stochastic`, `oscillator` |
+| `baseline` | 455 | `buy_and_hold`, `baseline` |
 | `momentum` | 438 | `momentum`, `ts_momentum`, `dual_momentum` |
-| `regime-filter` | 376 | `regime`, `sma_regime`, `adx_trend`, `hurst`, `vol_regime` |
+| `regime-filter` | 377 | `regime`, `sma_regime`, `adx_trend`, `hurst`, `vol_regime` |
 | `breakout` | 289 | `breakout`, `bb_breakout`, `keltner` |
 | `volume-flow` | 161 | `obv`, `volume-flow` |
 | `mean-reversion` | 146 | `mean-reversion`, `zscore`, `bb_reversion`, `vwap_reversion`, `ou_reversion` |

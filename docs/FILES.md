@@ -1,6 +1,6 @@
 # Every file in this repository
 
-**Generated** from `index/INDEX.json` at commit `e19b692b` (2026-11-13T16:54:31+00:00). 3614 tracked files, 92.8 MB.
+**Generated** from `index/INDEX.json` at commit `8f30b559` (2026-11-13T18:08:18+00:00). 3616 tracked files, 92.9 MB.
 
 Regenerate with:
 
@@ -15,7 +15,7 @@ python3 index/build.py --check      # fail if the index is stale
 Every entry marks where its description came from, because a generated one-liner and a considered one should not look alike:
 
 - **curated** (42 files) — hand-written purpose and usage, in the `CURATED` table of `index/make_files_doc.py`. Used where extraction cannot give a reader what they need: the engine, the research drivers, the order-placing path, and the files with no prose of their own.
-- **extracted** (2893 files) — the file's own module docstring, JSDoc header, or frontmatter `summary`. Trustworthy here because 592/685 Python modules and 69/134 JS files carry a substantial one. (These counts are computed at generation time, not hardcoded — an earlier revision asserted a frozen ratio and it was wrong within a day as the repo grew.)
+- **extracted** (2895 files) — the file's own module docstring, JSDoc header, or frontmatter `summary`. Trustworthy here because 594/687 Python modules and 69/134 JS files carry a substantial one. (These counts are computed at generation time, not hardcoded — an earlier revision asserted a frozen ratio and it was wrong within a day as the repo grew.)
 - **derived** (396 files) — shape only, for generated artifacts: a CSV's header and row count, a JSON's keys. Prose for a result file would be invented.
 
 *How to use* is curated where it matters and otherwise inferred from the file's kind — a test gets its runner, a CLI gets `--help`, a module gets its import path.
@@ -43,8 +43,8 @@ To *search* rather than browse: `python3 index/search.py "your question"`.
 - [`executor`](#executor) — 48 files
 - [`liquidity`](#liquidity) — 61 files
 - [`botmanager`](#botmanager) — 91 files
-- [`ecosystem`](#ecosystem) — 67 files
-- [`soltui`](#soltui) — 191 files
+- [`ecosystem`](#ecosystem) — 68 files
+- [`soltui`](#soltui) — 192 files
 - [`mongo`](#mongo) — 20 files
 - [`website`](#website) — 42 files
 - [`.github`](#github) — 12 files
@@ -647,9 +647,9 @@ Repository-level entry points and agent instructions. `AGENTS.md` and `CLAUDE.md
 
 #### `memory.md`
 
-`doc` · 2077 lines · 438,728 B · description: **extracted**
+`doc` · 2134 lines · 442,879 B · description: **extracted**
 
-**Purpose.** Version: 525 Delta: v524 to v525; preserve the required-CI frozen SQLite reader watchdog correction and source manager0.7.4 identity. Delta: v523 to v524; preserve concurrent records and refresh stale public research/wiki derivatives exposed by final CI.
+**Purpose.** Version: 526 Delta: v525 to v526; diagnose and repair local Oracle archive compatibility and misleading forward/candidate statuses while preserving frozen evidence. Delta: v524 to v525; preserve the required-CI frozen SQLite reader watchdog correction and source manager0.7.4 identity.
 
 **Use.** Read it.
 
@@ -727,9 +727,9 @@ Repository-level entry points and agent instructions. `AGENTS.md` and `CLAUDE.md
 
 #### `prompts.md`
 
-`doc` · 2195 lines · 128,401 B · description: **extracted**
+`doc` · 2206 lines · 128,722 B · description: **extracted**
 
-**Purpose.** Version: 238 Delta: v237 to v238; preserve both concurrent Stripe and ZEC requests. Delta: v236 to v237; preserve the new dedicated live Stripe key provisioning request.
+**Purpose.** Version: 239 Delta: v238 to v239; preserve the live ecosystem status request and authorized local repairs. Delta: v237 to v238; preserve both concurrent Stripe and ZEC requests.
 
 **Use.** Read it.
 
@@ -959,7 +959,7 @@ Curated prose. `ARCHITECTURE.md` explains how the pieces fit, `TESTING.md` is th
 
 #### `docs/FILES.md`
 
-`doc` · 34793 lines · 1,710,595 B · description: **extracted**
+`doc` · 34793 lines · 1,710,754 B · description: **extracted**
 
 **Purpose.** Regenerate with: python3 index/build.py all # refresh the index python3 index/make_files_doc.py # rewrite this file
 
@@ -1063,17 +1063,17 @@ Curated prose. `ARCHITECTURE.md` explains how the pieces fit, `TESTING.md` is th
 
 #### `docs/ORACLE-LIVE-FORECAST.md`
 
-`doc` · 97 lines · 6,205 B · description: **extracted**
+`doc` · 116 lines · 7,443 B · description: **extracted**
 
-**Purpose.** Version: 1.0.1 Delta: v1.0.0 to v1.0.1; preserve retained horizons, isolate native qualification and harden preference/source/owner boundaries. The Oracle shows a direction, indicative target price, strategy, evaluation time
+**Purpose.** Version: 1.0.2 Delta: v1.0.1 to v1.0.2; distinguish the preserved native archive and pending daily forward window from independent display projections. The Oracle shows a direction, indicative target price, strategy, evaluation time
 
 **Use.** Read it.
 
 #### `docs/ORACLEBOT-LAUNCH-READINESS.md`
 
-`doc` · 230 lines · 13,780 B · description: **extracted**
+`doc` · 235 lines · 14,027 B · description: **extracted**
 
-**Purpose.** Version: 0.1.4 Delta: Verify the dedicated live merchant and provisioned billing bindings; retain closed launch gates and explicit provider lifecycle gaps. Updated: 2026-11-13. Source verification and recorded deployment observations are separate below.
+**Purpose.** Version: 0.1.5 Delta: Record the preservation-safe local Oracle/forward repair source and retain separate hosted-engine and billing launch requirements. Updated: 2026-11-13. Source verification and recorded deployment observations are separate below.
 
 **Use.** Read it.
 
@@ -24537,11 +24537,11 @@ Forecast evidence, strategy votes, archives and separately controlled webhook ex
 
 #### `oracle/reader.py`
 
-`code-python` · 366 lines · 14,973 B · description: **extracted**
+`code-python` · 374 lines · 15,367 B · description: **extracted**
 
 **Purpose.** Inert archive inspection through the canonical Oracle query implementation.
 
-**Contents.** Defines `LEGACY_EVALUATOR_SHA256`, `PARAMETER_TYPES`, `_recorded_catalog()`, `class RecordedStrategySet`, `class ReadOnlyStore`, `class ReadOnlyOracle`.
+**Contents.** Defines `LEGACY_EVALUATOR_SHA256`, `ARCHIVED_EVALUATOR_SHA256`, `PARAMETER_TYPES`, `_recorded_catalog()`, `class RecordedStrategySet`, `class ReadOnlyStore`, `class ReadOnlyOracle`.
 
 **Use.** `import oracle.reader`
 
@@ -24617,11 +24617,11 @@ Forecast evidence, strategy votes, archives and separately controlled webhook ex
 
 #### `oracle/tests/test_archived_reader.py`
 
-`test` · 157 lines · 6,615 B · description: **none**
+`test` · 295 lines · 13,429 B · description: **none**
 
 **Purpose.** _No description available._
 
-**Contents.** Defines `class ArchivedReaderTests`.
+**Contents.** Defines `ARCHIVED_SCHEMA2_EVALUATOR_SHA256`, `class ArchivedReaderTests`.
 
 **Use.** `python3 -m pytest oracle/tests/test_archived_reader.py -q`
 
@@ -28083,13 +28083,13 @@ Isolated bot-owner management, health journals and managed-suite supervision.
 
 The local control room, pipeline supervision, telemetry and embedded documentation.
 
-67 files.
+68 files.
 
 #### `ecosystem/README.md`
 
-`doc` · 95 lines · 6,078 B · description: **extracted**
+`doc` · 119 lines · 7,542 B · description: **extracted**
 
-**Purpose.** This source version pins Bot Manager0.7.4 for frozen SQLite reader recovery. The metadata update does not promote or restart an existing owner environment. The Oracle also runs an independent selected-strategy price projection. It
+**Purpose.** This source version restores read-only access to the known legacy SOL Oracle archive and explains pending forward windows without changing the producer. It pins Bot Manager0.7.5, Oracle0.2.5 and research-runtime0.4.2.
 
 **Use.** Read it.
 
@@ -28123,11 +28123,11 @@ The local control room, pipeline supervision, telemetry and embedded documentati
 
 #### `ecosystem/control.py`
 
-`code-python` · 940 lines · 36,996 B · description: **extracted**
+`code-python` · 1052 lines · 42,117 B · description: **extracted**
 
 **Purpose.** Durable, paper-only controls delegated to the established component owners.
 
-**Contents.** Defines `APP_ID`, `MANAGER_ACTIONS`, `ACTIONS`, `SENSITIVE`, `canonical()`, `runtime_settings()`, `recorder_recovery_enabled()`, `recovery_guard()`, `_safe_input()`, `database()` and 2 more. Depends on `backtester`, `soltui`.
+**Contents.** Defines `APP_ID`, `MANAGER_ACTIONS`, `ACTIONS`, `SENSITIVE`, `canonical()`, `runtime_settings()`, `recorder_recovery_enabled()`, `recovery_guard()`, `_safe_input()`, `database()` and 3 more. Depends on `backtester`, `soltui`.
 
 **Use.** `import ecosystem.control`
 
@@ -28173,11 +28173,11 @@ The local control room, pipeline supervision, telemetry and embedded documentati
 
 #### `ecosystem/installation.py`
 
-`code-python` · 438 lines · 16,365 B · description: **extracted**
+`code-python` · 496 lines · 19,131 B · description: **extracted**
 
 **Purpose.** Isolated local installation and bounded installed-runtime health checks. The bootstrap owns its dedicated virtual environment. No shell profile, global package environment, remote installer, recorder or wallet is modified here.
 
-**Contents.** Defines `PROJECTS`, `MODULES`, `RECEIPT_NAME`, `OWNER_NAME`, `MAX_HEALTH_BYTES`, `HEALTH_SCRIPT`, `_failure()`, `_manifests()`, `source_fingerprint()`, `_environment()` and 7 more.
+**Contents.** Defines `PROJECTS`, `MODULES`, `RECEIPT_NAME`, `OWNER_NAME`, `MAX_HEALTH_BYTES`, `MAX_CONSTRAINT_BYTES`, `HEALTH_SCRIPT`, `_failure()`, `_manifests()`, `source_fingerprint()` and 11 more.
 
 **Use.** `import ecosystem.installation`
 
@@ -28311,7 +28311,7 @@ The local control room, pipeline supervision, telemetry and embedded documentati
 
 #### `ecosystem/votes.py`
 
-`code-python` · 426 lines · 18,115 B · description: **extracted**
+`code-python` · 438 lines · 18,450 B · description: **extracted**
 
 **Purpose.** Versioned operator voter selection over unchanged prospective Oracle evidence.
 
@@ -28321,7 +28321,7 @@ The local control room, pipeline supervision, telemetry and embedded documentati
 
 #### `ecosystem/web.py`
 
-`code-python` · 587 lines · 23,627 B · description: **extracted**
+`code-python` · 587 lines · 23,604 B · description: **extracted**
 
 **Purpose.** Local paper controls and observability over the established ecosystem owners. ``make_server`` binds before returning. The caller owns serving and shutdown, so the supervisor can publish the actual ephemeral port without claiming liveness before bind succeeds. This module never starts a recorder, worker, or order path.
 
@@ -28353,7 +28353,7 @@ The local control room, pipeline supervision, telemetry and embedded documentati
 
 #### `ecosystem/api/control.openapi.json`
 
-`config` · 847 lines · 25,491 B · description: **derived**
+`config` · 848 lines · 25,981 B · description: **derived**
 
 **Purpose.** Generated JSON object, 5 keys (openapi, info, servers, paths, components).
 
@@ -28400,6 +28400,16 @@ The local control room, pipeline supervision, telemetry and embedded documentati
 **Contents.** Defines `class ControlTests`.
 
 **Use.** `python3 -m pytest ecosystem/tests/test_control.py -q`
+
+#### `ecosystem/tests/test_control_forward_status.py`
+
+`test` · 183 lines · 8,479 B · description: **extracted**
+
+**Purpose.** A new reader explains a frozen producer's pending window without changing it.
+
+**Contents.** Defines `BASE`, `LATE`, `class ForwardStatusProjection`.
+
+**Use.** `python3 -m pytest ecosystem/tests/test_control_forward_status.py -q`
 
 #### `ecosystem/tests/test_control_http.py`
 
@@ -28523,7 +28533,7 @@ The local control room, pipeline supervision, telemetry and embedded documentati
 
 #### `ecosystem/tests/test_setup.py`
 
-`test` · 269 lines · 11,186 B · description: **none**
+`test` · 398 lines · 18,589 B · description: **none**
 
 **Purpose.** _No description available._
 
@@ -28603,7 +28613,7 @@ The local control room, pipeline supervision, telemetry and embedded documentati
 
 #### `ecosystem/tests/test_votes.py`
 
-`test` · 249 lines · 12,025 B · description: **none**
+`test` · 269 lines · 13,160 B · description: **none**
 
 **Purpose.** _No description available._
 
@@ -28613,7 +28623,7 @@ The local control room, pipeline supervision, telemetry and embedded documentati
 
 #### `ecosystem/tests/test_web.py`
 
-`test` · 299 lines · 12,808 B · description: **extracted**
+`test` · 315 lines · 13,591 B · description: **extracted**
 
 **Purpose.** Actual loopback HTTP checks; synthetic owner records are test fixtures only.
 
@@ -28633,7 +28643,7 @@ The local control room, pipeline supervision, telemetry and embedded documentati
 
 #### `ecosystem/tests/test_wrapper.py`
 
-`test` · 45 lines · 1,450 B · description: **none**
+`test` · 85 lines · 3,439 B · description: **none**
 
 **Purpose.** _No description available._
 
@@ -28747,7 +28757,7 @@ The local control room, pipeline supervision, telemetry and embedded documentati
 
 The local TUI, browser workspace and service interfaces. Coinbase order execution requires separate explicit arming; Jupiter live submission remains blocked.
 
-191 files.
+192 files.
 
 #### `soltui/JUPITER_ORDER_WIDGET_IMPLEMENTATION_GUIDE.md`
 
@@ -28833,7 +28843,7 @@ The local TUI, browser workspace and service interfaces. Coinbase order executio
 
 #### `soltui/bgqueue.py`
 
-`code-python` · 958 lines · 37,658 B · description: **extracted**
+`code-python` · 1027 lines · 40,662 B · description: **extracted**
 
 **Purpose.** Job queue for the background backtest sweep. Pure logic; no UI, no processes. The TUI's own sweep (`runner.py`) evaluates the roster and blocks a thread until it finishes.
 
@@ -28843,7 +28853,7 @@ The local TUI, browser workspace and service interfaces. Coinbase order executio
 
 #### `soltui/bgworker.py`
 
-`code-python` · 644 lines · 25,783 B · description: **extracted**
+`code-python` · 665 lines · 27,118 B · description: **extracted**
 
 **Purpose.** The background backtest worker: a separate, low-priority process. python3 -m soltui.bgworker --asset SOL python3 -m soltui.bgworker --asset SOL --horizons medium --max-tier 1 --limit 50 Run directly it is a normal foreground script; the TUI launches it through `bgcontrol.start()`, which is what applies the background scheduling policy.
 
@@ -28923,7 +28933,7 @@ The local TUI, browser workspace and service interfaces. Coinbase order executio
 
 #### `soltui/commands.py`
 
-`code-python` · 3444 lines · 171,823 B · description: **extracted**
+`code-python` · 3452 lines · 172,247 B · description: **extracted**
 
 **Purpose.** The soltui command registry: one set of calls for the TUI, CLI, HTTP API and native host. Every action the console can take is a registered `Command`. Every surface goes through `dispatch(name, params, surface)`, which validates parameters, applies the confirm gate, runs the handler, wraps the outcome in the response envelope and appends one line to the call log.
 
@@ -29103,17 +29113,17 @@ The local TUI, browser workspace and service interfaces. Coinbase order executio
 
 #### `soltui/f5_batch.py`
 
-`code-python` · 746 lines · 39,541 B · description: **extracted**
+`code-python` · 816 lines · 43,605 B · description: **extracted**
 
 **Purpose.** Durable, isolated all-strategy backtest and prospective forward runner. The caller supplies the supported coin universe. The plan freezes it and the supported intervals before work starts. A worker is started only by explicit `start`, never import. All data stays under a run-specific directory and the existing queue is untouched.
 
-**Contents.** Defines `_REPO`, `_SOURCE_EPOCH`, `INTERVAL_MINUTES`, `PHASES`, `_root()`, `_directory()`, `_connect()`, `_dump()`, `_meta()`, `_set()` and 24 more. Depends on `backtester`.
+**Contents.** Defines `_REPO`, `_SOURCE_EPOCH`, `INTERVAL_MINUTES`, `PHASES`, `_root()`, `_directory()`, `_connect()`, `_dump()`, `_meta()`, `_set()` and 27 more. Depends on `backtester`.
 
 **Use.** `python3 soltui/f5_batch.py --help`
 
 #### `soltui/forwardtest.py`
 
-`code-python` · 675 lines · 34,270 B · description: **extracted**
+`code-python` · 680 lines · 34,687 B · description: **extracted**
 
 **Purpose.** Prospective, paper-only trials of registered strategies on closed Coinbase minutes.
 
@@ -29739,11 +29749,11 @@ The local TUI, browser workspace and service interfaces. Coinbase order executio
 
 #### `soltui/tests/test_bgqueue.py`
 
-`test` · 652 lines · 29,344 B · description: **extracted**
+`test` · 783 lines · 36,625 B · description: **extracted**
 
 **Purpose.** Tests for the background sweep's queue, file contract and leaderboard. The properties worth defending here are the ones a background process makes hard to notice going wrong: an ordering that stops putting the published preset first, a resume that re-runs finished work, a reader that dies on a torn line, and — most importantly — a leaderboard that quietly ranks a Sharpe computed from three trades.
 
-**Contents.** Defines `_result()`, `class TestJobIdentity`, `class TestPerturbation`, `class TestOrdering`, `class TestDedupe`, `class TestHorizonInterval`, `class TestBuildQueue`, `class TestPending`, `class TestFileContract`, `class TestLeaderboard` and 8 more. Depends on `backtester`, `soltui`.
+**Contents.** Defines `_result()`, `class TestJobIdentity`, `class TestPerturbation`, `class TestOrdering`, `class TestDedupe`, `class TestHorizonInterval`, `class TestBuildQueue`, `class TestCandidateValidation`, `class TestPending`, `class TestFileContract` and 9 more. Depends on `backtester`, `soltui`.
 
 **Use.** `python3 -m pytest soltui/tests/test_bgqueue.py -q`
 
@@ -29759,7 +29769,7 @@ The local TUI, browser workspace and service interfaces. Coinbase order executio
 
 #### `soltui/tests/test_bgworker_audit.py`
 
-`test` · 227 lines · 10,682 B · description: **extracted**
+`test` · 256 lines · 12,586 B · description: **extracted**
 
 **Purpose.** Offline regression cases for provenance, lock handoff, and job budgets.
 
@@ -30059,11 +30069,11 @@ The local TUI, browser workspace and service interfaces. Coinbase order executio
 
 #### `soltui/tests/test_f5_batch.py`
 
-`test` · 326 lines · 19,003 B · description: **extracted**
+`test` · 415 lines · 24,558 B · description: **extracted**
 
 **Purpose.** Bounded F5 orchestration tests: no production jobs, network or shared data.
 
-**Contents.** Defines `class BatchTests`, `class GapWindowTests`, `class SignalIntervalTests`, `class ProcessTests`. Depends on `soltui`.
+**Contents.** Defines `class BatchTests`, `class CandidatePlanTests`, `class GapWindowTests`, `class SignalIntervalTests`, `class ProcessTests`. Depends on `soltui`.
 
 **Use.** `python3 -m pytest soltui/tests/test_f5_batch.py -q`
 
@@ -30076,6 +30086,16 @@ The local TUI, browser workspace and service interfaces. Coinbase order executio
 **Contents.** Defines `class FrozenPolicyTests`. Depends on `backtester`, `soltui`.
 
 **Use.** `python3 -m pytest soltui/tests/test_f5_policy.py -q`
+
+#### `soltui/tests/test_forward_causality.py`
+
+`test` · 67 lines · 2,891 B · description: **extracted**
+
+**Purpose.** The issuance deadline cannot turn a non-due poll into a missed forecast.
+
+**Contents.** Defines `class ForwardIssuanceTiming`. Depends on `soltui`.
+
+**Use.** `python3 -m pytest soltui/tests/test_forward_causality.py -q`
 
 #### `soltui/tests/test_forward_sort_refresh.py`
 
@@ -30479,7 +30499,7 @@ The local TUI, browser workspace and service interfaces. Coinbase order executio
 
 #### `soltui/tests/test_strategy_history.py`
 
-`test` · 234 lines · 12,137 B · description: **extracted**
+`test` · 246 lines · 12,921 B · description: **extracted**
 
 **Purpose.** The Strategies tab's test history and its three Backtest buttons. History is derived from the background sweep's results file, so what it can get wrong is counting and choosing: a duplicate line counted as a second test, a best-of-many row shown as "the" result, an untestable strategy shown as merely untested, a button that starts a sweep that has nothing to do. Each test targets one of those.
 
@@ -33573,7 +33593,7 @@ Session handoff notes, newest first. Prose, not machine-read.
 
 #### `scripts/bootstrap_ecosystem.py`
 
-`code-python` · 51 lines · 1,644 B · description: **extracted**
+`code-python` · 57 lines · 1,962 B · description: **extracted**
 
 **Purpose.** Install, verify and start the resumable paper ecosystem; status/stop are inert.
 

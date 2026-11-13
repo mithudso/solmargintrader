@@ -35,7 +35,7 @@ def _load_sdk() -> None:
 
     _SDK_LOADED = True
 
-VERSION = "0.2.4"
+VERSION = "0.2.5"
 RESOURCE_NAMES = {
     f"oracle://{name}": name for name in ("market", "predictions", "status")
 }
