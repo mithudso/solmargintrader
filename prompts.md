@@ -1,6 +1,7 @@
 # Prompt history
 
-Version: 232
+Version: 233
+Delta: v232 to v233; preserve delivered upstream pipeline recovery and failed final audit gates.
 Delta: v231 to v232; preserve the upstream persistent Oraclebot monitoring request.
 Delta: v230 to v231; preserve upstream owner choice to retain Google Workspace.
 Delta: v229 to v230; preserve accepted upstream news and email workflow history during audit integration.
@@ -2079,3 +2080,16 @@ Keep Google Workspace
 ```text
 For the oraclebot, it's saying the ecosystem isn't up and running, 1) set that as an always runhing service. 2) Setup monitoring, alerting, and reporting for it.
 ```
+
+
+## Imported upstream pipeline workflow from 93312fd7
+
+The following original-owner continuation/request is preserved verbatim. Its versions belong to that concurrent history; actual installed acceptance is in its private delivery receipt.
+
+## 2026-11-12 — Runtime recovery screenshot
+
+```text
+[Image #1]
+```
+
+The attached local control-room image shows control server running, paper pipeline failed, backtest/forward worker failed, and Oracle forecasts stopped. This continues the existing always-running ecosystem and monitoring request.

@@ -31,7 +31,7 @@ from itertools import pairwise
 from pathlib import Path
 from urllib.parse import urlsplit
 
-VERSION = "1.0.1"
+VERSION = "1.1.1"
 LABEL = "com.mitchhudson.oraclebot-operations"
 COMPONENTS = ("suite", "manager", "control_room", "market_data")
 STOP = threading.Event()
@@ -66,9 +66,9 @@ def database(home):
     return connection
 
 
-def probe_output(solbot, limit=131072, timeout=15):
+def probe_output(solbot, limit=131072, timeout=15, *, arguments=None):
     """Read both child pipes under one byte/deadline budget; never buffer a flood."""
-    command = [str(solbot), "health-check"]
+    command = arguments if arguments is not None else [str(solbot), "health-check"]
     with subprocess.Popen(
         command,
         stdout=subprocess.PIPE,
@@ -152,6 +152,97 @@ def probe(solbot):
         }
 
 
+RUNTIME_COMPONENTS = (
+    "paper_pipeline",
+    "backtest_worker",
+    "oracle_forecasts",
+    "oracle_market_data",
+)
+
+
+def runtime_health(data, now):
+    """Observe actual pipeline/worker/Oracle owners, separately from UI liveness."""
+    heartbeat_at = data.get("heartbeat_at")
+    fresh = type(heartbeat_at) in (int, float) and -5 <= now - heartbeat_at <= 30
+    active = data.get("supervisor_running") is True and fresh
+    paused = data.get("phase") == "stopped" and not data.get("supervisor_running")
+    controls = data.get("runtime_controls_observed", {})
+    batch = data.get("batch", {})
+    oracle_rows = data.get("oracle", {})
+    desired = {
+        "paper_pipeline": not paused,
+        "backtest_worker": not paused and controls.get("batch_enabled") is not False,
+        "oracle_forecasts": not paused and controls.get("oracle_enabled") is not False,
+        "oracle_market_data": not paused
+        and controls.get("oracle_enabled") is not False,
+    }
+    observed = {
+        "paper_pipeline": active,
+        "backtest_worker": active
+        and batch.get("running") is True
+        and batch.get("phase") not in ("failed", "stopped"),
+        "oracle_forecasts": active and controls.get("oracle_enabled") is True,
+    }
+    observed["oracle_market_data"] = (
+        bool(oracle_rows)
+        and active
+        and all(
+            isinstance(row, dict)
+            and row.get("market") == "available"
+            and type(row.get("received_at")) in (int, float)
+            and -5 <= now - row["received_at"] <= 15
+            for row in oracle_rows.values()
+        )
+    )
+    return {
+        key: {
+            "ready": bool(observed[key] or not desired[key]),
+            "state": "paused"
+            if not desired[key]
+            else "up"
+            if observed[key]
+            else "down",
+            "reason": "operator_paused"
+            if not desired[key]
+            else "available"
+            if observed[key]
+            else key + "_unavailable",
+        }
+        for key in RUNTIME_COMPONENTS
+    }
+
+
+def probe_runtime(config, now):
+    try:
+        python, home = config["pipeline_python"], config["pipeline_home"]
+        raw = probe_output(
+            python,
+            limit=524288,
+            arguments=[python, "-I", "-m", "ecosystem.cli", "status", "--home", home],
+        )
+        value = json.loads(raw)
+        if value.get("ok") is not True or not isinstance(value.get("data"), dict):
+            raise ValueError("pipeline_probe_failed")
+        return runtime_health(value["data"], time.time())
+    except (
+        OSError,
+        subprocess.SubprocessError,
+        ValueError,
+        TypeError,
+        AttributeError,
+        KeyError,
+        OverflowError,
+    ):
+        return {
+            key: {
+                "ready": False,
+                "state": "unknown",
+                "reason": "pipeline_probe_unavailable",
+            }
+            for key in RUNTIME_COMPONENTS
+        }
+
+
 def record(db, health, now, threshold=2):
     """Persist transition and retry key together; debounce failure AND recovery."""
     with db:
@@ -175,7 +266,9 @@ def record(db, health, now, threshold=2):
                     "action": "trigger" if bad else "resolve",
                     "title": f"Oraclebot {component.replace('_', ' ')} {'unavailable' if bad else 'recovered'}",
                     "body": str(state.get("reason") or "unknown")[:120],
-                    "severity": "warning" if component == "market_data" else "critical",
+                    "severity": "warning"
+                    if component in {"market_data", "oracle_market_data"}
+                    else "critical",
                 }
                 db.execute(
                     "INSERT OR IGNORE INTO outbox(id,payload) VALUES(?,?)",
@@ -430,12 +523,17 @@ def reports(db, home, health, delivery, now):
     if local.hour >= 9 and not (folder / (previous_day + ".json")).exists():
         periods.append((previous_day, day_start, day_end))
     for name, start, end in periods:
-        samples = [
+        all_samples = [
             (at, json.loads(raw))
             for at, raw in db.execute(
                 "SELECT at,health FROM samples WHERE at>=? AND at<=? ORDER BY at",
                 (start, end),
             )
+        ]
+        samples = [
+            (at, value)
+            for at, value in all_samples
+            if all(key in value.get("components", {}) for key in RUNTIME_COMPONENTS)
         ]
         report = {
             "version": VERSION,
@@ -443,6 +541,7 @@ def reports(db, home, health, delivery, now):
             "period_start": start,
             "period_end": end,
             "observed_checks": len(samples),
+            "excluded_legacy_availability_checks": len(all_samples) - len(samples),
             "ready_checks": sum(row["ready"] for _, row in samples),
             "max_gap_seconds": max(
                 (b[0] - a[0] for a, b in pairwise(samples)), default=None
@@ -485,6 +584,17 @@ def reports(db, home, health, delivery, now):
 def tick(home, config, db):
     now = time.time()
     health = probe(config["solbot"])
+    health["components"].update(probe_runtime(config, now))
+    health["ready"] = health["ready"] and all(
+        health["components"][key]["ready"] for key in RUNTIME_COMPONENTS[:3]
+    )
+    health["overall"] = (
+        "down"
+        if not health["ready"]
+        else "degraded"
+        if any(not row["ready"] for row in health["components"].values())
+        else "up"
+    )
     record(db, health, now)
     delivery = deliver(db, config)
     delivery["external_heartbeat_accepted"] = heartbeat(config, health, now)
@@ -511,12 +621,21 @@ def _main(argv=None):
     parser.add_argument("--alertlane-url")
     parser.add_argument("--gh", type=Path)
     parser.add_argument("--github-repository", default="mithudso/solmargintrader")
+    parser.add_argument("--pipeline-python", type=Path)
+    parser.add_argument("--pipeline-home", type=Path)
     args = parser.parse_args(argv)
     if args.action == "install" and not all(
-        (args.solbot, args.alertlane_env, args.gh, args.alertlane_url)
+        (
+            args.solbot,
+            args.alertlane_env,
+            args.gh,
+            args.alertlane_url,
+            args.pipeline_python,
+            args.pipeline_home,
+        )
     ):
         parser.error(
-            "install requires --solbot, --alertlane-env, --alertlane-url and --gh"
+            "install requires --solbot, --alertlane-env, --alertlane-url, --gh, --pipeline-python and --pipeline-home"
         )
     home = args.home.expanduser().absolute()
     if args.action == "status":
@@ -537,8 +656,10 @@ def _main(argv=None):
             "alertlane_url": args.alertlane_url,
             "gh": str(args.gh.absolute()),
             "github_repository": args.github_repository,
+            "pipeline_python": str(args.pipeline_python.absolute()),
+            "pipeline_home": str(args.pipeline_home.absolute()),
         }
-        for executable in (args.solbot, args.gh):
+        for executable in (args.solbot, args.gh, args.pipeline_python):
             if not executable.is_file() or not os.access(executable, os.X_OK):
                 raise ValueError("installed_executable_required")
         ingest_token(args.alertlane_env)  # Validate without printing/copying it.

@@ -37,7 +37,15 @@ def build_parser() -> argparse.ArgumentParser:
     )
     parser.add_argument(
         "command",
-        choices=("start", "status", "stop", "registrations", "telemetry", "supervise"),
+        choices=(
+            "start",
+            "run",
+            "status",
+            "stop",
+            "registrations",
+            "telemetry",
+            "supervise",
+        ),
         nargs="?",
         default="start",
     )
@@ -104,14 +112,25 @@ def main(argv=None) -> int:
                     ),
                 }
             )
-        elif args.command == "supervise":
+        elif args.command in {"supervise", "run"}:
+            token = args.token
+            if args.command == "run":
+                token = runner.prepare_foreground(home)
+                if token is None:
+                    emit(
+                        {
+                            "ok": True,
+                            "data": {"status": "already_running_starting_or_paused"},
+                        }
+                    )
+                    return 0
             try:
-                return runner.supervise(home, args.token)
+                return runner.supervise(home, token)
             except Exception:  # noqa: BLE001 - fixed public failure, never echo upstream content
                 try:
                     with runner.lock(home):
                         state = runner.load(home)
-                        if state.get("supervisor_token") == args.token:
+                        if state.get("supervisor_token") == token:
                             state.update(
                                 phase="failed",
                                 error="supervisor_failed",

@@ -1,10 +1,14 @@
 from __future__ import annotations
 
 import tempfile
+import threading
+import types
 import unittest
+from contextlib import contextmanager, nullcontext
 from pathlib import Path
 from unittest.mock import Mock, patch
 
+from ecosystem import pipeline_service as service
 from ecosystem import runner
 from soltui import f5_batch
 
@@ -23,6 +27,202 @@ class RunnerTests(unittest.TestCase):
             recorder=False,
             manager_home=str(home / "manager"),
         )
+
+    def test_foreground_recovers_failed_generation_without_rewriting_batch(self):
+        with tempfile.TemporaryDirectory() as root:
+            home = Path(root)
+            state = self.plan(home)
+            state.update(
+                phase="failed",
+                error="supervisor_failed",
+                batch_id="a" * 32,
+                supervisor_pid=1234,
+            )
+            runner.save(home / "state.json", state)
+            with patch("ecosystem.runner.os.getpid", return_value=5678):
+                token = runner.prepare_foreground(home)
+            self.assertEqual(len(token), 32)
+            current = runner.load(home)
+            self.assertEqual(current["batch_id"], "a" * 32)
+            self.assertEqual(current["config"], state["config"])
+            self.assertEqual(current["phase"], "starting")
+            self.assertEqual(current["supervisor_pid"], 5678)
+            self.assertNotIn("error", current)
+
+    def test_foreground_honors_explicit_stop_and_live_owner(self):
+        with tempfile.TemporaryDirectory() as root:
+            home = Path(root)
+            state = self.plan(home)
+            state.update(phase="stopped", supervisor_token="b" * 32)
+            runner.save(home / "state.json", state)
+            marker = home / ("stop-" + "b" * 32)
+            marker.touch()
+            before = (home / "state.json").read_bytes()
+            self.assertIsNone(runner.prepare_foreground(home))
+            self.assertEqual((home / "state.json").read_bytes(), before)
+            marker.unlink()
+            with runner.lock(home):
+                self.assertIsNone(runner.prepare_foreground(home))
+            self.assertIsNotNone(runner.prepare_foreground(home))
+            self.assertIsNone(runner.prepare_foreground(home))
+
+    def test_acknowledged_stop_targets_the_claimed_generation(self):
+        with tempfile.TemporaryDirectory() as directory:
+            home = Path(directory)
+            config = {
+                "coins": ["SOL"],
+                "intervals": ["1d"],
+                "horizons": ["medium"],
+                "strategies": ["rsi"],
+                "start": "2025-01-01",
+                "end": "2025-02-01",
+                "offline": True,
+                "recorder": False,
+                "mode": "paper",
+                "market_venue": "coinbase_exchange",
+                "quote": "USD",
+            }
+            original = {
+                "schema_version": 1,
+                "run_id": "c" * 32,
+                "phase": "failed",
+                "supervisor_token": "a" * 32,
+                "batch_id": None,
+                "config": config,
+            }
+            runner.save(home / "state.json", original)
+            condition = threading.Condition()
+            done = threading.Event()
+            waiting = threading.Event()
+            errors = []
+            old_guard = getattr(
+                runner, "_generation_guard", lambda home, **kw: nullcontext()
+            )
+
+            @contextmanager
+            def observed_guard(home, **kwargs):
+                if threading.current_thread().name == "explicit-stop":
+                    with condition:
+                        waiting.set()
+                        condition.notify_all()
+                with old_guard(home, **kwargs):
+                    yield
+
+            def stop():
+                try:
+                    runner.stop(home)
+                except Exception as error:  # noqa: BLE001 - report owned fixture thread failures on the test thread
+                    errors.append(error)
+                finally:
+                    with condition:
+                        done.set()
+                        condition.notify_all()
+
+            thread = threading.Thread(target=stop, name="explicit-stop")
+            old_uuid = runner.uuid.uuid4
+            first = [True]
+
+            def next_uuid():
+                if not first[0]:
+                    return old_uuid()
+                first[0] = False
+                thread.start()
+                with condition:
+                    if not condition.wait_for(
+                        lambda: done.is_set() or waiting.is_set(), timeout=2
+                    ):
+                        raise AssertionError(
+                            "stop did not reach its observed coordination boundary"
+                        )
+                return types.SimpleNamespace(hex="b" * 32)
+
+            try:
+                with (
+                    patch.object(
+                        runner, "_generation_guard", observed_guard, create=True
+                    ),
+                    patch.object(runner.uuid, "uuid4", side_effect=next_uuid),
+                ):
+                    token = runner.prepare_foreground(home)
+                    thread.join(5)
+                self.assertFalse(thread.is_alive())
+                self.assertEqual(errors, [])
+                self.assertTrue(done.is_set())
+                current = runner.load(home)
+                self.assertEqual(current["supervisor_token"], token)
+                self.assertEqual(current["config"], original["config"])
+                self.assertTrue(
+                    (home / ("stop-" + current["supervisor_token"])).exists(),
+                    "acknowledged stop must fence the committed generation",
+                )
+            finally:
+                if thread.ident is not None:
+                    thread.join(5)
+
+    def test_disposable_installed_prefix_cannot_become_persistent_service(self):
+        with tempfile.TemporaryDirectory() as directory:
+            prefix = Path(directory) / "disposable-venv"
+            module = (
+                prefix / "lib/python3.13/site-packages/ecosystem/pipeline_service.py"
+            )
+            module.parent.mkdir(parents=True)
+            module.write_text('"""Synthetic normal-wheel path fixture."""')
+            home = Path(directory) / "planned"
+            home.mkdir()
+            user = Path(directory) / "synthetic-user"
+            user.mkdir()
+            with (
+                patch.object(service.sys, "platform", "darwin"),
+                patch.object(service.sys, "prefix", str(prefix)),
+                patch.object(service.sys, "executable", str(prefix / "bin/python")),
+                patch.object(service, "__file__", str(module)),
+                patch.object(Path, "home", return_value=user),
+                patch.object(
+                    service.runner,
+                    "load",
+                    return_value={"phase": "planned", "config": {"mode": "paper"}},
+                ),
+                patch.object(service, "registered", side_effect=[False, True]),
+                patch.object(
+                    service.subprocess,
+                    "run",
+                    return_value=types.SimpleNamespace(returncode=0),
+                ) as launch,
+            ):
+                with self.assertRaisesRegex(
+                    ValueError, "stable_installed_pipeline_required"
+                ):
+                    service.operate("install", home)
+                launch.assert_not_called()
+
+    def test_pipeline_service_status_accepts_a_stable_normal_install(self):
+        with tempfile.TemporaryDirectory() as directory:
+            home = Path(directory) / "planned"
+            home.mkdir()
+            user = Path(directory) / "synthetic-user"
+            user.mkdir()
+            prefix = Path("/opt/oraclebot-fixture/stable-env")
+            module = (
+                prefix / "lib/python3.13/site-packages/ecosystem/pipeline_service.py"
+            )
+            with (
+                patch.object(service.sys, "platform", "darwin"),
+                patch.object(service.sys, "prefix", str(prefix)),
+                patch.object(service.sys, "executable", str(prefix / "bin/python")),
+                patch.object(service, "__file__", str(module)),
+                patch.object(Path, "home", return_value=user),
+                patch.object(
+                    service.runner,
+                    "load",
+                    return_value={"phase": "planned", "config": {"mode": "paper"}},
+                ),
+                patch.object(service, "registered", return_value=False),
+                patch.object(service.subprocess, "run") as launch,
+            ):
+                result = service.operate("status", home)
+            self.assertFalse(result["registered"])
+            self.assertFalse(result["definition_present"])
+            launch.assert_not_called()
 
     def test_resume_preserves_frozen_matrix_and_rejects_changes(self):
         with tempfile.TemporaryDirectory() as root:

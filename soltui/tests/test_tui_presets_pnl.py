@@ -7,6 +7,7 @@ import json
 import os
 import shutil
 import tempfile
+import asyncio
 import unittest
 from pathlib import Path
 from unittest import mock
@@ -123,9 +124,12 @@ class TestPresets(Isolated):
 class TestPnlTab(Isolated):
     async def _compute(self, app, pilot, window="all"):
         app.query_one(TabbedContent).active = "tab-pnl"
-        await pilot.pause(2.0)   # first open computes; the roster backtests run in a worker thread
+        async with asyncio.timeout(10):
+            await pilot.pause()  # Dispatch the first-open tab event before inspecting workers.
+            for worker in list(app.workers):
+                if worker.group == "pnl":
+                    await worker.wait()  # The worker returns after _render_pnl has filled the tables.
         return app
-
     async def test_first_open_computes_and_fills_every_table(self) -> None:
         app = SolTuiApp(make_settings())
         async with app.run_test(size=TEST_SIZE) as pilot:

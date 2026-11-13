@@ -31,6 +31,7 @@ MANUAL_TOOLS = (
     ("operation-inventories", "scripts/build_operation_inventories.py", "python3 scripts/build_operation_inventories.py --help"),
     ("oraclebot-operations", "scripts/oraclebot_ops.py", "python3 scripts/oraclebot_ops.py --help"),
     ("oraclebot-watchdog", "scripts/oraclebot_watchdog.py", "python3 scripts/oraclebot_watchdog.py --help"),
+    ("ecosystem-pipeline-service", "ecosystem/pipeline_service.py", "python3 -m ecosystem.pipeline_service --help"),
 )
 
 
