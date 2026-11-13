@@ -64,7 +64,13 @@ from types import MappingProxyType
 from typing import Any, Iterable, Mapping, Sequence
 
 from backtester.core.assets import require_active_asset
-from backtester.core.strategy_cards import HORIZONS, StrategyCard, load_all
+from backtester.core.strategies import build as build_strategy
+from backtester.core.strategy_cards import (
+    HORIZONS,
+    StrategyCard,
+    _validate_param_value,
+    load_all,
+)
 
 from .config import CONFIG_DIR
 
@@ -195,6 +201,34 @@ class Job:
         base = f"{self.strategy} · {self.horizon}"
         return f"{base} · {self.variation}" if self.variation else base
 
+    def to_dict(self) -> dict[str, Any]:
+        """A persisted job specification; construction never validates old jobs."""
+        return {name: dict(self.params) if name == "params" else getattr(self, name)
+                for name in self.__dataclass_fields__}
+
+
+@dataclass(frozen=True)
+class CandidateExclusion:
+    """A prospective neighbour refused before evaluation; never an attempt row."""
+
+    job: Job
+    detail: str
+    reason: str = "invalid_parameters"
+
+    def to_dict(self) -> dict[str, Any]:
+        return {
+            "job_id": self.job.job_id,
+            **self.job.to_dict(),
+            "reason": self.reason,
+            "detail": self.detail,
+        }
+
+
+def candidate_census(jobs: Sequence[Job], exclusions: Sequence[CandidateExclusion]) -> dict[str, Any]:
+    """Count scheduled jobs and refused neighbours without labelling them failures."""
+    return {"requested": len(jobs) + len(exclusions), "eligible": len(jobs),
+            "excluded": len(exclusions), "exclusions": [item.to_dict() for item in exclusions]}
+
 
 @dataclass
 class JobResult:
@@ -288,6 +322,7 @@ class QueueState:
     results_path: str = ""
     recovered_from: str = ""
     recovery_note: str = ""
+    candidates: dict[str, Any] | None = None
 
     @property
     def remaining(self) -> int:
@@ -388,11 +423,17 @@ def jobs_for_card(
     interval: str | None = None,
     *,
     max_tier: int = 2,
+    exclusions: list[CandidateExclusion] | None = None,
 ) -> list[Job]:
     """Every job this card contributes, nearest-to-the-preset first.
 
     `interval` defaults to the one the horizon is defined at; pass it only to
     override, and only knowing the presets were not scaled for it.
+
+    Validation applies only to newly generated candidates. Persisted Job and
+    JobResult records retain their original identity and interpretation. Callers
+    use `exclusions` to report the exact refused neighbours separately from
+    evaluated or failed attempts.
     """
     interval = interval or HORIZON_INTERVAL.get(horizon, "1d")
     try:
@@ -417,6 +458,11 @@ def jobs_for_card(
             family=card.family,
         )
     ]
+    try:
+        _validate_candidate(card, jobs[0])
+    except ValueError as exc:
+        # Card drift must stop planning, rather than silently remove a preset.
+        raise ValueError(f"invalid preset for {strategy} · {horizon}: {exc}") from exc
     seen = {jobs[0].job_id}
 
     for tier, factors in enumerate(PERTURBATION_TIERS):
@@ -443,8 +489,24 @@ def jobs_for_card(
                 if job.job_id in seen:
                     continue
                 seen.add(job.job_id)
+                try:
+                    _validate_candidate(card, job)
+                except ValueError as exc:
+                    if exclusions is not None:
+                        exclusions.append(CandidateExclusion(
+                            job, f"{type(exc).__name__}: {' '.join(str(exc).split())}"[:500]))
+                    continue
                 jobs.append(job)
     return jobs
+
+
+def _validate_candidate(card: StrategyCard, job: Job) -> None:
+    """Reuse card bounds and pure constructors; never read bars or run a signal."""
+    for name, value in job.params.items():
+        _validate_param_value(name, value, card.params[name], card.id)
+    # Coupled constraints belong to the strategy. Independent perturbations can
+    # cross them even when every individual value satisfies its card bounds.
+    build_strategy(job.strategy, **job.params)
 
 
 def build_queue(
@@ -454,6 +516,7 @@ def build_queue(
     cards: dict[str, StrategyCard] | None = None,
     max_tier: int = 2,
     strategies: Sequence[str] | None = None,
+    exclusions: list[CandidateExclusion] | None = None,
 ) -> list[Job]:
     """The full job list, most promising first.
 
@@ -473,7 +536,8 @@ def build_queue(
         if wanted is not None and (card.registry_key or card.id) not in wanted:
             continue
         for horizon in horizons:
-            jobs.extend(jobs_for_card(card, horizon, asset, max_tier=max_tier))
+            jobs.extend(jobs_for_card(card, horizon, asset, max_tier=max_tier,
+                                      exclusions=exclusions))
     return dedupe(order_jobs(jobs))
 
 
@@ -723,6 +787,8 @@ def read_state(path: Path | None = None) -> QueueState:
     for name in ("phase", "current", "asset", "interval", "error", "results_path", "recovered_from", "recovery_note"):
         if name in clean and not isinstance(clean[name], str):
             clean[name] = str(clean[name])
+    if "candidates" in clean and not isinstance(clean["candidates"], dict):
+        clean["candidates"] = None
     try:
         return QueueState(**clean)
     except TypeError:
@@ -951,6 +1017,9 @@ def summarise(
         bits.append(f"previous results preserved at {state.recovered_from}; testing a separate evaluation context")
     if state.recovery_note:
         bits.append(state.recovery_note)
+    excluded = (state.candidates or {}).get("excluded", 0)
+    if type(excluded) is int and excluded > 0:
+        bits.append(f"{excluded} invalid candidate(s) excluded before evaluation")
     bits.append(f"{len(ranked)} rankable, {positive} with positive median Sharpe")
     if floor:
         bits.append(f"{len(floor)} below the {MIN_TRADES}-trade floor")

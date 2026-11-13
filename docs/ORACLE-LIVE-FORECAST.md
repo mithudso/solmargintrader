@@ -1,7 +1,7 @@
 # Continuous Oracle strategy forecasts
 
-Version: 1.0.1
-Delta: v1.0.0 to v1.0.1; preserve retained horizons, isolate native qualification and harden preference/source/owner boundaries.
+Version: 1.0.2
+Delta: v1.0.1 to v1.0.2; distinguish the preserved native archive and pending daily forward window from independent display projections.
 
 The Oracle shows a direction, indicative target price, strategy, evaluation time
 and target time. The default predicts the next **10 seconds** and produces a new
@@ -94,3 +94,22 @@ Existing Alertlane/native/GitHub transports and their delivery limits remain
 as documented in `docs/ORACLEBOT-OPERATIONS.md`.
 
 Initial preference creation publishes a fully initialized private SQLite inode atomically without replacing a concurrent winner. Stale first revisions do not create a database. Existing incompatible stores remain refused. Recorder failures and recovery emit only deduplicated fixed diagnostic states, without source content or paths. Native ensemble evidence keeps its own interval identity; a ten-second provisional projection cannot qualify minute evidence. Persistent service installation requires a stable environment, canonical owner home and confirmed launchd registration.
+
+## Native archive and paper-window diagnostics
+
+The control room can inspect the exact reviewed schema-2 evaluator from the
+original0.4.8 producer through the read-only archived-version adapter. It keeps
+recorded strategy versions and policy hashes; current writers and strict readers
+still refuse an incompatible policy. No archive metadata or outcomes are rebound.
+A missing native archive reports `oracle_archive_missing`, separately from an
+existing incompatible archive. The original operational pipeline records SOL.
+An independent ZEC projection does not create native ZEC qualification history.
+
+A pending daily paper forecast is not overdue before its saved target. The
+control status reader may explain a recent legacy warning as **Waiting for
+existing forecast window**, retaining `owner_message` and source/target timing.
+It requires complete valid pending-call evidence and checks both the original
+check clock and current clock against the next admission boundary. Stale, due,
+ambiguous or invalid histories retain their warning. Reads never insert a call
+or resolve an outcome. New producers distinguish empty issuance passes from
+a genuinely calculated forecast that missed its deadline; late calls still refuse.

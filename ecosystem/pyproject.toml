@@ -4,11 +4,11 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "solmargintrader-ecosystem"
-version = "0.4.13"
+version = "0.4.14"
 description = "Resumable headless paper-research bootstrap"
 readme = "README.md"
 requires-python = ">=3.13"
-dependencies = ["solmargintrader-oracle==0.2.4", "solbot-manager==0.7.4", "solmargintrader-research-runtime==0.4.1"]
+dependencies = ["solmargintrader-oracle==0.2.5", "solbot-manager==0.7.5", "solmargintrader-research-runtime==0.4.2"]
 
 [project.scripts]
 solecosystem = "ecosystem.cli:main"

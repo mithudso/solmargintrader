@@ -137,6 +137,7 @@ class EvaluationProofMismatch(ValueError):
 def verify_evaluation_proof(
     asset: str, settings: Settings, jobs: Sequence[Job], results: Sequence[JobResult],
     results_path: Path, *, persist: bool = True,
+    candidates: dict[str, Any] | None = None,
 ) -> dict[str, Any]:
     """Refuse incompatible historical rows; atomically bind new rows to proof.
 
@@ -159,11 +160,19 @@ def verify_evaluation_proof(
     if not isinstance(manifest, dict) or manifest.get("version") != 1 or not isinstance(manifest.get("assets"), dict):
         raise EvaluationProofMismatch(f"invalid evaluation proof at {path}; use --results-path for a fresh file")
     expected = {"evaluation_id": evaluation_id, "proof": proof}
-    if any(row.asset == asset for row in results) and manifest["assets"].get(asset) != expected:
+    previous = manifest["assets"].get(asset)
+    binding = ({key: previous.get(key) for key in expected} if isinstance(previous, dict) else previous)
+    if any(row.asset == asset for row in results) and binding != expected:
         raise EvaluationProofMismatch(
             f"evaluation proof is missing or differs for {asset} at {results_path}; "
             "preserve this history and use --results-path for a fresh file"
         )
+    # A larger compatible queue may reuse earlier evaluations. Candidate counts
+    # describe that queue; they do not change the price/settings/code binding.
+    if candidates is not None:
+        expected["candidates"] = candidates
+    elif isinstance(previous, dict) and "candidates" in previous:
+        expected["candidates"] = previous["candidates"]
     if persist and manifest["assets"].get(asset) != expected:
         manifest["assets"][asset] = expected
         ensure_dir(path.parent)
@@ -394,10 +403,14 @@ def run(
     # Validated before it can reach a file path; `build_queue` also validates,
     # but the symbol is used below to label state, so normalise it here too.
     asset = validate_asset(asset)
-    jobs = build_queue(asset, horizons=horizons, max_tier=max_tier, strategies=strategies)
+    exclusions: list[bgqueue.CandidateExclusion] = []
+    jobs = build_queue(asset, horizons=horizons, max_tier=max_tier, strategies=strategies,
+                       exclusions=exclusions)
+    candidates = bgqueue.candidate_census(jobs, exclusions)
     results = read_results(results_path)
     admit_read(asset, source="bg:" + str(results_path.resolve()), attempts=len(jobs))
-    proof = verify_evaluation_proof(asset, settings, jobs, results, results_path)
+    proof = verify_evaluation_proof(asset, settings, jobs, results, results_path,
+                                    candidates=candidates)
     already = completed_ids(results)
     todo = pending(jobs, already)
     if limit is not None:
@@ -414,6 +427,7 @@ def run(
         pid=os.getpid(),
         started_at=time.time(),
         updated_at=time.time(),
+        candidates=candidates,
     )
     write_state(state, state_path)
     if not todo:
@@ -537,14 +551,21 @@ def main(argv: Sequence[str] | None = None) -> int:
         settings = replace(settings, data_dir=str(args.data_dir.resolve()))
 
     if args.plan:
+        exclusions: list[bgqueue.CandidateExclusion] = []
         jobs = build_queue(args.asset, horizons=args.horizons, max_tier=args.max_tier,
-                           strategies=args.strategies)
+                           strategies=args.strategies, exclusions=exclusions)
+        candidates = bgqueue.candidate_census(jobs, exclusions)
         results = read_results(args.results_path)
         verify_evaluation_proof(validate_asset(args.asset), settings, jobs, results,
-                                args.results_path, persist=False)
+                                args.results_path, persist=False, candidates=candidates)
         done = completed_ids(results)
         todo = pending(jobs, done)
         print(f"{len(jobs)} jobs, {len(jobs) - len(todo)} already done, {len(todo)} pending")
+        print(f"Candidates: {candidates['requested']} requested, {candidates['eligible']} eligible, "
+              f"{candidates['excluded']} excluded before evaluation")
+        for exclusion in exclusions:
+            print(f"  excluded {exclusion.job.job_id} {exclusion.job.label}: "
+                  f"{exclusion.reason} ({exclusion.detail}); params={dict(exclusion.job.params)}")
         for job in todo[:40]:
             print(f"  tier {job.tier}  {job.likelihood:<9}  {job.label}  {job.params}")
         if len(todo) > 40:

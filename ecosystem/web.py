@@ -23,7 +23,7 @@ from pathlib import Path
 from urllib.parse import parse_qs, urlsplit
 from uuid import UUID, uuid4
 
-from ecosystem import __version__, registration, runner
+from ecosystem import __version__, registration
 
 SCHEMA_VERSION = 1
 STATIC = {
@@ -292,7 +292,7 @@ def make_server(
                     values = self._query(query, {"run_id"})
                     self._json(
                         200,
-                        runner.status(controls.experiment_home(values.get("run_id"))),
+                        controls.pipeline_status(values.get("run_id")),
                     )
                 elif target.path == "/api/session":
                     self._json(
