@@ -1,6 +1,8 @@
 # Work continuation
 
-Version: 532
+Version: 534
+Delta: v533 to v534; qualify all386BotManager tests after environment correction.
+Delta: v532 to v533; repair macOS zombie-group cleanup found by final CI.
 Delta: v531 to v532; verify integrated145-test gate and preserve native-publication blocker.
 Delta: integration to v531; preserve both local repair and expanded research, with exact historical source replay.
 Delta: v529 to v530; complete native evidence readback and final report qualification.
@@ -2205,3 +2207,11 @@ Upstream PR251 (7228397) arrived during publication. Its queue validation schedu
 Final post-integration gate:145focused research/queue tests passed0; updated docs count gate and Ruff passed0. All1535historical archive source hashes match; only catalogue/main diagnostics and whitespace differ in the delivered research module, with numeric-model AST unchanged. The historical and current complete1707candidate rows are equal. Final source snapshots and native manifests are finalized before the merge commit and remote CI gate.
 
 Native publication continuation: run revision50 remains readable with all numerical CSV/proof accepted. Final source-compatibility prose and delivery metadata writes fail through research_artifact_put, research_run_checkpoint and research_run_create with generic errors. Lease renewal/reacquisition succeeds; freshfence3 and unchangedcurrentrevision did notresolve it. No unsupported quota/auth diagnosis is asserted. Existing Mongo report retains correct numerical results; shared finalreport adds exactsourceZIP/currentqueue disclosure. Public mongo-artifacts.json explicitly marks the post-integration prose sync pending. A read-only service acceptance diagnostic is active; do not overwrite other repos or restart publishers blindly. Source/CI delivery proceeds independently and final native writes can resume without rerunning the matrix.
+
+## Required macOS judge cleanup correction
+
+PR253 head38aafed passed every required check except targetedmacOS judge isolation. The failure was ValueError("process output limit exceeded") masked by PermissionError[Errno1] from os.killpg(pid,SIGKILL), with pipes/reap skipped. TASK-2142/KNOW-2143 own the correction. LocalmacOS reproduces EPERM for zombie-only groups; a live same-session descendant still allows groupkill. The minimal botmanager.blind.bounded_process fix handles EPERM with Popen.kill and bounded reap, then probes signal0 only. It accepts only a vanished group; surviving/denied groups remain fatal. No SIGKILL is sent after reap, avoiding recycledPGID risk. Both pipes always close. Four meaningful regressions cover verified output/deadline refusals, reap/closure and surviving descendants. Specialist13focused tests with ResourceWarning aserror, wholecomponentRuff and formatting passed0. HostedmacOS gate and rootfullcomponent check remain required before delivery. No packageversion or installedservice change was made. Numerical sources/results remain unchanged.
+
+The initial fullBotManager suite in /Users/mitch/.venvs/soltui ran386tests with1environment error: importlib.metadata.PackageNotFoundError for solmargintrader-research-runtime. No numeric/process assertion failed. The required fullsuite is rerunning with the existing read-only /Users/mitch/.venvs/oraclebot-local-repair-0.4.14 interpreter (runtime0.4.2/manager0.7.5metadata present), while PYTHONPATH loads the task-owned newsource. No packages or services were changed. HostedresearchMCP nowalso returnsHTTP502 on research_run_list; the source host remains unknown afterread-onlyCloudflare/SSH diagnostics. Final nativepublication cannot be represented as complete.
+
+The full386-test BotManager suite now passes0 in the existing qualified interpreter with current tasksource on PYTHONPATH. No installation/service mutation occurred. Root wholecomponent/research Ruff and diffcheck pass0. Specialist13OS/process tests alreadypass0. Required finalhead hostedCI is next; sourcefix neverchanges judge sandboxpolicy, numericalengines or acceptedZEC outputs. ResearchMCP HTTP502 and unavailable serving-host SSH remain the separate post-integration publication blocker.

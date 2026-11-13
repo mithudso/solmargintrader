@@ -117,12 +117,28 @@ def bounded_process(argv, payload, *, cwd, env, timeout=15, limit=MAX_PACKET):
             # The direct child can exit while descendants keep its pipes open.
             # This process owns the whole new session, including that case.
             try:
-                os.killpg(process.pid, signal.SIGKILL)
-            except ProcessLookupError:
-                pass
-            process.wait()
-            process.stdout.close()
-            process.stderr.close()
+                try:
+                    os.killpg(process.pid, signal.SIGKILL)
+                except PermissionError:
+                    # macOS reports EPERM for a zombie-only group. Reap the
+                    # child, then require that the group disappeared. Probe
+                    # only: its ID could be reused after the child is reaped.
+                    process.kill()
+                    process.wait(timeout=1)
+                    try:
+                        os.killpg(process.pid, 0)
+                    except ProcessLookupError:
+                        pass
+                    else:
+                        raise
+                except ProcessLookupError:
+                    pass
+            finally:
+                try:
+                    process.wait(timeout=1)
+                finally:
+                    process.stdout.close()
+                    process.stderr.close()
 
 
 def _isolated(code, payload=b""):

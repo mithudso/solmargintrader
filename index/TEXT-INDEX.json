@@ -2233,7 +2233,7 @@
     "botmanager/src/botmanager/adapters/extension.py": 1983,
     "botmanager/src/botmanager/adapters/soltui.py": 2902,
     "botmanager/src/botmanager/backup.py": 1506,
-    "botmanager/src/botmanager/blind.py": 829,
+    "botmanager/src/botmanager/blind.py": 864,
     "botmanager/src/botmanager/blind_judge.py": 424,
     "botmanager/src/botmanager/browser_commands.py": 202,
     "botmanager/src/botmanager/cli.py": 232,
@@ -2278,7 +2278,7 @@
     "botmanager/tests/__init__.py": 70,
     "botmanager/tests/test_accounting.py": 678,
     "botmanager/tests/test_backup.py": 1348,
-    "botmanager/tests/test_blind.py": 605,
+    "botmanager/tests/test_blind.py": 1203,
     "botmanager/tests/test_browser_surfaces.py": 314,
     "botmanager/tests/test_cli.py": 587,
     "botmanager/tests/test_config.py": 943,
@@ -2849,7 +2849,7 @@
     "llms/jupsol-llms.txt": 13811,
     "logging.md": 572,
     "market-graph-geometry-prompt.md": 728,
-    "memory.md": 45627,
+    "memory.md": 45864,
     "mongo/README.md": 1059,
     "mongo/__init__.py": 4,
     "mongo/cli.py": 189,
@@ -3661,7 +3661,7 @@
     "website/wrangler.dev.jsonc": 74,
     "website/wrangler.jsonc": 87
   },
-  "generatedAt": "2026-11-13T20:06:28+00:00",
+  "generatedAt": "2026-11-13T20:41:43+00:00",
   "postings": {
     "000": {
       "FILES.md": 1,
@@ -32138,6 +32138,9 @@
     "acceptedui0": {
       "memory.md": 1
     },
+    "acceptedzec": {
+      "memory.md": 1
+    },
     "accepting": {
       ".superpowers/sdd/remaining-2026-11-10/task-4-report.md": 1,
       ".superpowers/sdd/remaining-2026-11-10/task-5-report.md": 1,
@@ -32281,7 +32284,7 @@
       "jupiter-trigger-contract.md": 1,
       "llms/basicmeory-llms.txt": 1,
       "llms/jupsol-llms.txt": 2,
-      "memory.md": 4,
+      "memory.md": 5,
       "mongo/README.md": 1,
       "mongo/tests/test_load.py": 1,
       "postman/mocks/botmanager-jupiter-swap-v1/README.md": 1,
@@ -55178,7 +55181,7 @@
       "botmanager/src/botmanager/reports.py": 1,
       "botmanager/src/botmanager/suite.py": 2,
       "botmanager/src/botmanager/walkthrough.py": 1,
-      "botmanager/tests/test_blind.py": 1,
+      "botmanager/tests/test_blind.py": 2,
       "botmanager/tests/test_continuation.py": 1,
       "botmanager/tests/test_editing.py": 3,
       "botmanager/tests/test_health.py": 2,
@@ -55475,6 +55478,9 @@
     },
     "afteroneget": {
       "postman/simulations/botmanager-swap-v1/botmanager-swap-v1.context.yaml": 1
+    },
+    "afterread": {
+      "memory.md": 1
     },
     "afterruntime": {
       "extension/test/file-store-safety.test.js": 3
@@ -64114,6 +64120,9 @@
     "all37_baseline_test_ast_unchanged": {
       ".cdo/reviews-2026-11-13/cdo-forecast-ops-tests-delta.json": 2
     },
+    "all386botmanager": {
+      "memory.md": 2
+    },
     "all39826": {
       "research/tradingview-script-profile-audits/shard-c.jsonl": 1
     },
@@ -66577,7 +66586,7 @@
       "liquidity/src/aero_lp/cli.py": 1,
       "liquidity/src/aero_lp/market.py": 2,
       "llms/jupsol-llms.txt": 1,
-      "memory.md": 2,
+      "memory.md": 3,
       "mongo/queries/07-documents-and-search.js": 2,
       "prompts.md": 1,
       "research/COMPOUND-FRONTIER.md": 1,
@@ -69934,6 +69943,9 @@
     "alreadyisolates9ownerroots": {
       "memory.md": 1
     },
+    "alreadypass0": {
+      "memory.md": 1
+    },
     "alreadyu": {
       "prompts.md": 1
     },
@@ -70922,7 +70934,7 @@
       "llms-full.txt": 1,
       "llms-small.txt": 1,
       "llms/jupsol-llms.txt": 1,
-      "memory.md": 3,
+      "memory.md": 4,
       "mongo/queries/05-backtests.js": 2,
       "optimization-workbench.md": 1,
       "profitable-crypto-strategies-analysis.md": 3,
@@ -77230,7 +77242,7 @@
       "botmanager/src/botmanager/strategies/arbitrage.py": 1,
       "botmanager/tests/test_accounting.py": 2,
       "botmanager/tests/test_backup.py": 4,
-      "botmanager/tests/test_blind.py": 5,
+      "botmanager/tests/test_blind.py": 7,
       "botmanager/tests/test_browser_surfaces.py": 1,
       "botmanager/tests/test_cli.py": 5,
       "botmanager/tests/test_config.py": 6,
@@ -85290,7 +85302,7 @@
       "botmanager/src/botmanager/walkthrough.py": 1,
       "botmanager/tests/test_accounting.py": 1,
       "botmanager/tests/test_backup.py": 3,
-      "botmanager/tests/test_blind.py": 2,
+      "botmanager/tests/test_blind.py": 6,
       "botmanager/tests/test_continuation.py": 3,
       "botmanager/tests/test_editing.py": 1,
       "botmanager/tests/test_learning.py": 4,
@@ -91534,7 +91546,7 @@
       "botmanager/src/botmanager/reports.py": 2,
       "botmanager/src/botmanager/suite.py": 1,
       "botmanager/src/botmanager/supervisor.py": 1,
-      "botmanager/tests/test_blind.py": 4,
+      "botmanager/tests/test_blind.py": 22,
       "botmanager/tests/test_cli.py": 4,
       "botmanager/tests/test_config.py": 1,
       "botmanager/tests/test_ecosystem_adapter.py": 4,
@@ -96296,6 +96308,9 @@
       "research/strategy_experiment/original.zip": 1,
       "research/zec-expanded-20261113.llms/simulation-source.zip": 1
     },
+    "aserror": {
+      "memory.md": 1
+    },
     "asev0vxd": {
       "FILES.md": 2,
       "TRADINGVIEW-CARD-COVERAGE.md": 1,
@@ -98053,7 +98068,7 @@
       "backtester/tests/test_volty_data_binding.py": 2,
       "botmanager/tests/test_accounting.py": 24,
       "botmanager/tests/test_backup.py": 13,
-      "botmanager/tests/test_blind.py": 11,
+      "botmanager/tests/test_blind.py": 23,
       "botmanager/tests/test_browser_surfaces.py": 9,
       "botmanager/tests/test_cli.py": 21,
       "botmanager/tests/test_config.py": 16,
@@ -98891,7 +98906,7 @@
       "ecosystem/web/vendor/lightweight-charts-5.2.1.mjs": 1,
       "extension/vendor/lightweight-charts/lightweight-charts.standalone.production.mjs": 1,
       "known-issues.md": 1,
-      "memory.md": 17,
+      "memory.md": 18,
       "research/CROSS-ASSET-TRANSFER.md": 2,
       "research/META-ANALYSIS.md": 1,
       "research/NONLINEAR-LEAD-LAG-CHILDREN.md": 11,
@@ -99212,6 +99227,7 @@
       "backtester/tests/test_triangle_input_guards.py": 3,
       "backtester/tests/test_trianglesim.py": 4,
       "botmanager/tests/test_accounting.py": 12,
+      "botmanager/tests/test_blind.py": 1,
       "botmanager/tests/test_browser_surfaces.py": 2,
       "botmanager/tests/test_ecosystem_adapter.py": 1,
       "botmanager/tests/test_editing.py": 1,
@@ -99788,7 +99804,7 @@
       "backtester/tests/test_triggers.py": 1,
       "backtester/tests/test_volty_data_binding.py": 1,
       "botmanager/tests/test_backup.py": 9,
-      "botmanager/tests/test_blind.py": 4,
+      "botmanager/tests/test_blind.py": 9,
       "botmanager/tests/test_cli.py": 1,
       "botmanager/tests/test_config.py": 11,
       "botmanager/tests/test_continuation.py": 7,
@@ -99929,7 +99945,7 @@
       "backtester/tests/test_sweep_pair_gate.py": 2,
       "backtester/tests/test_tool_launcher.py": 4,
       "backtester/tests/test_universe.py": 1,
-      "botmanager/tests/test_blind.py": 6,
+      "botmanager/tests/test_blind.py": 9,
       "botmanager/tests/test_continuation.py": 5,
       "botmanager/tests/test_executor_adapter.py": 1,
       "botmanager/tests/test_learning.py": 1,
@@ -100171,7 +100187,7 @@
       "backtester/tests/test_volty_data_binding.py": 2,
       "botmanager/tests/test_accounting.py": 3,
       "botmanager/tests/test_backup.py": 7,
-      "botmanager/tests/test_blind.py": 8,
+      "botmanager/tests/test_blind.py": 17,
       "botmanager/tests/test_browser_surfaces.py": 5,
       "botmanager/tests/test_cli.py": 3,
       "botmanager/tests/test_config.py": 1,
@@ -122507,6 +122523,7 @@
       "docs/COMPOUND-5M-PAPER.md": 1,
       "docs/FILES.md": 6,
       "docs/REPO-HEALTH-2026-11-12.md": 1,
+      "memory.md": 1,
       "oracle/quotes.py": 1,
       "research/STRATEGIES.md": 1,
       "research/TRADINGVIEW-SCRIPT-CARDS.md": 6,
@@ -172092,7 +172109,7 @@
       "botmanager/src/botmanager/research.py": 2,
       "botmanager/src/botmanager/research_owner.py": 1,
       "botmanager/src/botmanager/walkthrough.py": 1,
-      "botmanager/tests/test_blind.py": 29,
+      "botmanager/tests/test_blind.py": 45,
       "botmanager/tests/test_load.py": 1,
       "botmanager/tests/test_research.py": 2,
       "code-deep-optimizer-2026-11-06.md": 11,
@@ -172149,7 +172166,7 @@
       "extension/test/surfaces.test.js": 1,
       "known-issues.md": 1,
       "llms-sitemap.txt": 5,
-      "memory.md": 16,
+      "memory.md": 17,
       "prompts.md": 2,
       "repo-bootstrap-audit-2026-11-06.md": 1,
       "repository-review-2026-11-08.md": 8,
@@ -180161,7 +180178,7 @@
       "llms-full.txt": 1,
       "llms-sitemap.txt": 150,
       "llms-small.txt": 1,
-      "memory.md": 32,
+      "memory.md": 34,
       "oracle/guidance.py": 3,
       "postman/collections/botmanager-swap-v1.postman_collection.json": 2,
       "postman/mocks/botmanager-jupiter-swap-v1/README.md": 4,
@@ -184270,7 +184287,7 @@
       "botmanager/src/botmanager/supervisor.py": 3,
       "botmanager/src/botmanager/transport.py": 2,
       "botmanager/src/botmanager/walkthrough.py": 1,
-      "botmanager/tests/test_blind.py": 6,
+      "botmanager/tests/test_blind.py": 10,
       "botmanager/tests/test_cli.py": 1,
       "botmanager/tests/test_continuation.py": 1,
       "botmanager/tests/test_executor_adapter.py": 6,
@@ -184395,7 +184412,7 @@
       "known-issues.md": 1,
       "llms.txt": 2,
       "logging.md": 1,
-      "memory.md": 49,
+      "memory.md": 51,
       "mongo/queries/01-coins-and-bars.js": 1,
       "mongo/queries/05-backtests.js": 2,
       "mongo/schema.py": 1,
@@ -184546,11 +184563,11 @@
       "botmanager/src/botmanager/adapters/executor.py": 2,
       "botmanager/src/botmanager/blind.py": 3,
       "botmanager/src/botmanager/research_owner.py": 2,
-      "botmanager/tests/test_blind.py": 5,
+      "botmanager/tests/test_blind.py": 9,
       "botmanager/tests/test_executor_adapter.py": 5,
       "botmanager/tests/test_full_audit_regressions.py": 2,
       "docs/FILES.md": 1,
-      "memory.md": 1
+      "memory.md": 2
     },
     "bounded_ranges": {
       ".cdo/reviews-2026-11-13/cdo-forecast-main.json": 1
@@ -218891,6 +218908,7 @@
       "botmanager/src/botmanager/research_owner.py": 2,
       "botmanager/src/botmanager/walkthrough.py": 1,
       "botmanager/tests/test_backup.py": 3,
+      "botmanager/tests/test_blind.py": 10,
       "botmanager/tests/test_editing.py": 44,
       "botmanager/tests/test_executor_adapter.py": 13,
       "botmanager/tests/test_full_audit_regressions.py": 2,
@@ -219334,6 +219352,7 @@
       "backtester/tests/test_optional_tool_environment.py": 10,
       "backtester/tests/test_research_regressions.py": 3,
       "backtester/tests/test_tool_launcher.py": 1,
+      "botmanager/tests/test_blind.py": 4,
       "botmanager/tests/test_executor_adapter.py": 1,
       "botmanager/tests/test_operations.py": 1,
       "botmanager/tests/test_supervisor.py": 2,
@@ -219370,6 +219389,7 @@
       ".cdo/reviews-2026-11-12/operations-incoming-current.json": 1,
       "backtester/tests/test_analysis_regressions.py": 1,
       "backtester/tests/test_archive_integration.py": 1,
+      "botmanager/tests/test_blind.py": 1,
       "botmanager/tests/test_operations.py": 1,
       "botmanager/tests/test_supervisor.py": 5,
       "ecosystem/tests/test_volty_forward.py": 1,
@@ -219400,6 +219420,7 @@
       "backtester/tests/test_fetch_minutes.py": 1,
       "backtester/tests/test_index_search_tooling.py": 2,
       "backtester/tests/test_optional_tool_environment.py": 1,
+      "botmanager/tests/test_blind.py": 5,
       "botmanager/tests/test_executor_adapter.py": 2,
       "botmanager/tests/test_learning_job.py": 3,
       "botmanager/tests/test_operations.py": 3,
@@ -224656,7 +224677,7 @@
       "llms-small.txt": 3,
       "llms/aero-lp-explained-2026-11-06.md": 2,
       "llms/jupsol-llms.txt": 3,
-      "memory.md": 17,
+      "memory.md": 18,
       "mongo/README.md": 3,
       "mongo/load.py": 2,
       "mongo/queries/02-strategies-and-cards.js": 1,
@@ -252032,7 +252053,7 @@
       "llms/defillama-llms-free.txt": 4,
       "llms/defillama-llms.txt": 1,
       "llms/jupsol-llms.txt": 3,
-      "memory.md": 33,
+      "memory.md": 34,
       "mongo/queries/06-experiments-and-pbo.js": 1,
       "onboarding.md": 2,
       "optimization-workbench-plan.md": 1,
@@ -252666,7 +252687,7 @@
       "llms/aero-lp-explained-2026-11-06.md": 2,
       "llms/basicmeory-llms.txt": 1,
       "llms/jupsol-llms.txt": 2,
-      "memory.md": 70,
+      "memory.md": 71,
       "mongo/tests/test_analysis_regressions.py": 1,
       "mongo/tests/test_load_audit.py": 2,
       "mongo/tests/test_snapshot_audit.py": 4,
@@ -258523,7 +258544,7 @@
       "llms/defillama-llms.txt": 1,
       "llms/jupsol-llms.txt": 15,
       "market-graph-geometry-prompt.md": 1,
-      "memory.md": 81,
+      "memory.md": 83,
       "mongo/queries/03-signals-and-indicators.js": 1,
       "mongo/queries/08-provenance-and-health.js": 1,
       "mongo/tests/test_load.py": 1,
@@ -262392,12 +262413,12 @@
       "backtester/strategy_cards/incomplete/publication-profiles/tv_ujvs2xfg_monte_carlo_range_forecast_dw.md": 1,
       "backtester/tests/test_strategy_cards.py": 1,
       "bot-manager-handoff.md": 2,
-      "botmanager/src/botmanager/blind.py": 5,
+      "botmanager/src/botmanager/blind.py": 7,
       "botmanager/src/botmanager/cli.py": 2,
       "botmanager/src/botmanager/suite.py": 15,
       "botmanager/src/botmanager/supervisor.py": 16,
       "botmanager/src/botmanager/worker.py": 1,
-      "botmanager/tests/test_blind.py": 14,
+      "botmanager/tests/test_blind.py": 58,
       "botmanager/tests/test_load.py": 1,
       "botmanager/tests/test_machine_health.py": 1,
       "botmanager/tests/test_suite.py": 15,
@@ -262506,7 +262527,7 @@
       ".cdo/reviews-2026-11-12/ecosystem-combined-full-final.json": 1
     },
     "child_code": {
-      "botmanager/tests/test_blind.py": 2
+      "botmanager/tests/test_blind.py": 4
     },
     "child_completion": {
       ".cdo/reviews-2026-11-12/integration-fixture-corrections.json": 3
@@ -262573,7 +262594,7 @@
     "childprocesserror": {
       ".superpowers/sdd/remaining-2026-11-10/task-1-report.md": 1,
       ".superpowers/sdd/remaining-2026-11-10/task-1-review.md": 1,
-      "botmanager/tests/test_blind.py": 1
+      "botmanager/tests/test_blind.py": 5
     },
     "childprotocols": {
       "llms/defillama-llms-free.txt": 1
@@ -262610,7 +262631,7 @@
       "backtester/strategy_cards/hurst_regime_test.md": 1,
       "backtester/strategy_cards/incomplete/tv_mdtqpnt0_excalibur_ehlers_autocorrelation_periodogram_modified.md": 1,
       "botmanager/src/botmanager/supervisor.py": 15,
-      "botmanager/tests/test_blind.py": 3,
+      "botmanager/tests/test_blind.py": 18,
       "botmanager/tests/test_entry_controls.py": 10,
       "botmanager/tests/test_health.py": 2,
       "botmanager/tests/test_load.py": 20,
@@ -276018,6 +276039,7 @@
       ".cdo/reviews-2026-11-12/extension-root.json": 4,
       ".cdo/reviews-2026-11-12/operations-incoming-current.json": 1,
       ".cdo/reviews-2026-11-13/cdo-forecast-preferences-closure.json": 1,
+      "botmanager/tests/test_blind.py": 1,
       "botmanager/tests/test_supervisor.py": 1,
       "docs/archive/memory-2026-11-10.md": 1,
       "executor/tests/test_gate_integrity.py": 2,
@@ -276166,7 +276188,7 @@
       "ecosystem/tests/test_web.py": 1,
       "ecosystem/tests/test_wiki.py": 1,
       "ecosystem/tests/test_zec_forward.py": 1,
-      "memory.md": 44,
+      "memory.md": 47,
       "mongo/tests/test_load_audit.py": 1,
       "mongo/tests/test_query_scripts.py": 3,
       "mongo/tests/test_snapshot_audit.py": 1,
@@ -279697,7 +279719,7 @@
       "llms-sitemap.txt": 6,
       "llms/aero-lp-explained-2026-11-06.md": 2,
       "llms/jupsol-llms.txt": 9,
-      "memory.md": 28,
+      "memory.md": 29,
       "mongo/README.md": 1,
       "mongo/load.py": 2,
       "mongo/queries/01-coins-and-bars.js": 6,
@@ -281347,7 +281369,7 @@
       "botmanager/src/botmanager/strategies/grid.py": 1,
       "botmanager/src/botmanager/walkthrough.py": 1,
       "botmanager/tests/__init__.py": 1,
-      "botmanager/tests/test_blind.py": 3,
+      "botmanager/tests/test_blind.py": 11,
       "botmanager/tests/test_editing.py": 1,
       "botmanager/tests/test_learning.py": 7,
       "botmanager/tests/test_learning_job.py": 4,
@@ -282681,6 +282703,7 @@
       "extension/e2e/lib/signal-desk.mjs": 1,
       "extension/src/bg/service-worker.js": 1,
       "extension/src/ui/signal-desk.js": 2,
+      "memory.md": 1,
       "prompts.md": 1,
       "research/TRADINGVIEW-SCRIPT-CARDS.md": 1,
       "research/coin-intelligence/btc-bitcoin.md": 2,
@@ -343496,7 +343519,7 @@
       "docs/superpowers/specs/2026-11-09-bot-manager-design.md": 1,
       "docs/trading-signals-concept-family.md": 1,
       "extension/src/core/grid.js": 1,
-      "memory.md": 33,
+      "memory.md": 37,
       "optimization-workbench-run.md": 2,
       "prompts.md": 5,
       "research/COINBASE50-GRID-CYCLES.md": 2,
@@ -347972,6 +347995,7 @@
       "botmanager/src/botmanager/mutations.py": 1,
       "botmanager/src/botmanager/research.py": 7,
       "botmanager/src/botmanager/transport.py": 1,
+      "botmanager/tests/test_blind.py": 5,
       "botmanager/tests/test_continuation.py": 12,
       "botmanager/tests/test_executor_adapter.py": 2,
       "botmanager/tests/test_learning_job.py": 3,
@@ -350056,7 +350080,7 @@
       "llms-sitemap.txt": 1,
       "llms/aero-lp-explained-2026-11-06.md": 1,
       "llms/jupsol-llms.txt": 2,
-      "memory.md": 4,
+      "memory.md": 5,
       "mongo/load.py": 1,
       "mongo/tests/test_load.py": 1,
       "oracle/README.md": 1,
@@ -363886,7 +363910,7 @@
       "llms/defillama-llms-free.txt": 6,
       "llms/defillama-llms.txt": 8,
       "llms/jupsol-llms.txt": 4,
-      "memory.md": 177,
+      "memory.md": 178,
       "mongo/README.md": 2,
       "mongo/queries/04-decisions.js": 1,
       "mongo/queries/05-backtests.js": 1,
@@ -367286,7 +367310,7 @@
       "botmanager/src/botmanager/learning_job.py": 1,
       "botmanager/src/botmanager/research_owner.py": 1,
       "botmanager/src/botmanager/suite.py": 1,
-      "botmanager/tests/test_blind.py": 4,
+      "botmanager/tests/test_blind.py": 8,
       "botmanager/tests/test_executor_adapter.py": 1,
       "ecosystem/installation.py": 11,
       "ecosystem/runner.py": 1,
@@ -393119,7 +393143,7 @@
       "botmanager/src/botmanager/suite.py": 4,
       "botmanager/src/botmanager/supervisor.py": 17,
       "botmanager/src/botmanager/transport.py": 12,
-      "botmanager/tests/test_blind.py": 5,
+      "botmanager/tests/test_blind.py": 7,
       "botmanager/tests/test_entry_controls.py": 2,
       "botmanager/tests/test_executor_adapter.py": 1,
       "botmanager/tests/test_health.py": 2,
@@ -393170,7 +393194,7 @@
       "liquidity/tests/test_config_audit.py": 1,
       "liquidity/tests/test_executor.py": 8,
       "llms/jupsol-llms.txt": 1,
-      "memory.md": 7,
+      "memory.md": 8,
       "oracle/gum_orders.py": 6,
       "oracle/gum_webhook_orders.py": 1,
       "oracle/tests/test_gum_orders.py": 2,
@@ -413240,7 +413264,7 @@
       "ecosystem/README.md": 1,
       "ecosystem/web.py": 1,
       "extension/tools/bot-manager-e2e.mjs": 1,
-      "memory.md": 262,
+      "memory.md": 263,
       "optimization-workbench-plan.md": 5,
       "optimization-workbench-run.md": 7,
       "oracle-optimized-prompt.md": 3,
@@ -415379,7 +415403,7 @@
       "llms-small.txt": 5,
       "llms.txt": 6,
       "market-graph-geometry-prompt.md": 1,
-      "memory.md": 371,
+      "memory.md": 373,
       "optimization-workbench-plan.md": 2,
       "optimization-workbench-run.md": 2,
       "oracle/tests/test_quotes.py": 2,
@@ -416483,6 +416507,7 @@
       ".superpowers/sdd/remaining-2026-11-10/task-2-review.md": 1,
       "2026-11-10-bot-manager-remaining.md": 3,
       "botmanager/src/botmanager/blind.py": 1,
+      "botmanager/tests/test_blind.py": 1,
       "docs/TESTING.md": 1,
       "docs/archive/memory-2026-11-10.md": 1,
       "docs/superpowers/plans/2026-11-10-bot-manager-remaining.md": 3,
@@ -416512,7 +416537,7 @@
       "TRADINGVIEW-REFERENCE.md": 1,
       "archive/memory-2026-11-08.md": 1,
       "botmanager/src/botmanager/blind.py": 9,
-      "botmanager/tests/test_blind.py": 6,
+      "botmanager/tests/test_blind.py": 14,
       "design/bot-control-room/DESIGN.md": 1,
       "docs/FILES.md": 4,
       "docs/TRADINGVIEW-REFERENCE.md": 1,
@@ -416520,7 +416545,7 @@
       "docs/design/bot-control-room/DESIGN.md": 1,
       "docs/superpowers/plans/2026-11-10-bot-manager-remaining.md": 1,
       "ecosystem/tests/test_control_http.py": 2,
-      "memory.md": 1,
+      "memory.md": 2,
       "research/coin-intelligence/xrp-ripple.md": 3,
       "research/tradingview-card-coverage.json": 1,
       "soltui/app.py": 1,
@@ -420397,16 +420422,17 @@
       ".cdo/reviews-2026-11-13/soltui-full-a505-completion.json": 1,
       "archive/memory-2026-11-08.md": 1,
       "botmanager/src/botmanager/blind.py": 1,
-      "botmanager/tests/test_blind.py": 3,
+      "botmanager/tests/test_blind.py": 4,
       "docs/REPO-HEALTH-2026-11-12.md": 2,
       "docs/archive/memory-2026-11-08.md": 1,
-      "memory.md": 5,
+      "memory.md": 6,
       "soltui/tui.py": 1
     },
     "descendants": {
       ".cdo/reviews-2026-11-12/javascript-tooling-and-pool-fixture.json": 5,
       ".superpowers/sdd/2026-11-09-bot-manager/task-m4-report.md": 1,
-      "botmanager/src/botmanager/blind.py": 1
+      "botmanager/src/botmanager/blind.py": 1,
+      "memory.md": 1
     },
     "descending": {
       "FILES.md": 2,
@@ -433451,7 +433477,7 @@
       "external-calls.md": 3,
       "llms-sitemap.txt": 1,
       "logging.md": 2,
-      "memory.md": 17,
+      "memory.md": 18,
       "prompts.md": 2,
       "repository-review-2026-11-08.md": 1,
       "research/COINBASE50-GRID-CYCLES.md": 1,
@@ -434789,7 +434815,8 @@
     },
     "diffcheck": {
       ".cdo/reviews-2026-11-12/backtester-root-blind-fixes.json": 4,
-      ".cdo/reviews-2026-11-12/oracle.json": 1
+      ".cdo/reviews-2026-11-12/oracle.json": 1,
+      "memory.md": 1
     },
     "diffcheck0": {
       ".cdo/reviews-2026-11-12/botmanager-owner-endpoint-fixtures.json": 7,
@@ -440805,7 +440832,7 @@
       "botmanager/src/botmanager/service.py": 4,
       "botmanager/src/botmanager/suite.py": 31,
       "botmanager/src/botmanager/suite_service.py": 10,
-      "botmanager/tests/test_blind.py": 5,
+      "botmanager/tests/test_blind.py": 14,
       "botmanager/tests/test_browser_surfaces.py": 4,
       "botmanager/tests/test_entry_controls.py": 8,
       "botmanager/tests/test_executor_adapter.py": 4,
@@ -441874,6 +441901,7 @@
     },
     "disappeared": {
       "backtester/strategy_research/tv_43000678766_visible_average_price.md": 1,
+      "botmanager/src/botmanager/blind.py": 1,
       "executor/src/executor/authority.py": 3,
       "executor/tests/test_authority.py": 6,
       "memory.md": 3,
@@ -498064,7 +498092,7 @@
       "backtester/tests/test_research_regressions.py": 3,
       "backtester/tests/test_simulation_blind_audit.py": 1,
       "backtester/tests/test_tool_launcher.py": 3,
-      "botmanager/tests/test_blind.py": 2,
+      "botmanager/tests/test_blind.py": 10,
       "botmanager/tests/test_continuation.py": 7,
       "botmanager/tests/test_editing.py": 1,
       "botmanager/tests/test_entry_controls.py": 1,
@@ -503079,7 +503107,7 @@
       "botmanager/src/botmanager/adapters/extension.py": 14,
       "botmanager/src/botmanager/adapters/soltui.py": 31,
       "botmanager/src/botmanager/backup.py": 2,
-      "botmanager/src/botmanager/blind.py": 2,
+      "botmanager/src/botmanager/blind.py": 3,
       "botmanager/src/botmanager/blind_judge.py": 1,
       "botmanager/src/botmanager/cli.py": 3,
       "botmanager/src/botmanager/config.py": 10,
@@ -517425,7 +517453,7 @@
       "botmanager/src/botmanager/learning_job.py": 1,
       "botmanager/src/botmanager/research_owner.py": 4,
       "botmanager/src/botmanager/suite.py": 1,
-      "botmanager/tests/test_blind.py": 4,
+      "botmanager/tests/test_blind.py": 8,
       "botmanager/tests/test_cli.py": 8,
       "botmanager/tests/test_ecosystem_adapter.py": 3,
       "botmanager/tests/test_editing.py": 9,
@@ -518271,7 +518299,7 @@
       "liquidity/config.example.toml": 1,
       "liquidity/src/aero_lp/wallet.py": 1,
       "llms/jupsol-llms.txt": 5,
-      "memory.md": 44,
+      "memory.md": 46,
       "mongo/README.md": 1,
       "mongo/cli.py": 1,
       "mongo/load.py": 1,
@@ -519040,6 +519068,11 @@
       "research/strategy_experiment/candidate.zip": 1,
       "research/strategy_experiment/original.zip": 1,
       "research/zec-expanded-20261113.llms/simulation-source.zip": 1
+    },
+    "eperm": {
+      "botmanager/src/botmanager/blind.py": 1,
+      "botmanager/tests/test_blind.py": 1,
+      "memory.md": 2
     },
     "epf": {
       "research/strategy_experiment/candidate.zip": 1,
@@ -527098,6 +527131,9 @@
       "botmanager/src/botmanager/transport.py": 1,
       "ecosystem/tests/test_forecast_service_audit.py": 2
     },
+    "errno1": {
+      "memory.md": 1
+    },
     "erroneous": {
       ".cdo/ledger.json": 1,
       ".cdo/reviews-2026-11-12/backtester-root-blind-fixes.json": 2,
@@ -527370,6 +527406,7 @@
       "botmanager/src/botmanager/suite.py": 1,
       "botmanager/src/botmanager/supervisor.py": 2,
       "botmanager/src/botmanager/walkthrough.py": 1,
+      "botmanager/tests/test_blind.py": 4,
       "botmanager/tests/test_browser_surfaces.py": 1,
       "botmanager/tests/test_cli.py": 3,
       "botmanager/tests/test_continuation.py": 10,
@@ -527621,7 +527658,7 @@
       "llms/aero-lp-explained-2026-11-06.md": 1,
       "llms/jupsol-llms.txt": 15,
       "logging.md": 7,
-      "memory.md": 27,
+      "memory.md": 28,
       "mongo/README.md": 1,
       "mongo/cli.py": 7,
       "mongo/load.py": 2,
@@ -529174,6 +529211,7 @@
     "esrch": {
       ".cdo/reviews-2026-11-13/soltui-full-a505-completion.json": 1,
       ".cdo/reviews-2026-11-13/soltui-full-a505-independent.json": 1,
+      "botmanager/tests/test_blind.py": 1,
       "extension/test/e2e-harness.test.js": 1,
       "memory.md": 2
     },
@@ -542759,7 +542797,7 @@
       "llms/defillama-llms.txt": 1,
       "llms/jupsol-llms.txt": 14,
       "logging.md": 2,
-      "memory.md": 36,
+      "memory.md": 37,
       "mongo/README.md": 6,
       "mongo/load.py": 3,
       "mongo/queries/01-coins-and-bars.js": 2,
@@ -548186,7 +548224,7 @@
       "botmanager/src/botmanager/registry.py": 1,
       "botmanager/src/botmanager/reports.py": 1,
       "botmanager/src/botmanager/research.py": 1,
-      "botmanager/tests/test_blind.py": 1,
+      "botmanager/tests/test_blind.py": 3,
       "botmanager/tests/test_reports.py": 4,
       "design/bot-control-room/index.html": 1,
       "docs/FILES.md": 1,
@@ -548199,6 +548237,7 @@
       "ecosystem/performance.py": 3,
       "executor/src/executor/http.py": 1,
       "llms/jupsol-llms.txt": 2,
+      "memory.md": 1,
       "oracle/gum_orders.py": 1,
       "profitable-crypto-strategies-analysis.md": 1,
       "repo-bootstrap-audit-2026-11-08.md": 1,
@@ -548571,7 +548610,7 @@
       "botmanager/src/botmanager/adapters/extension.py": 7,
       "botmanager/src/botmanager/adapters/soltui.py": 13,
       "botmanager/src/botmanager/backup.py": 4,
-      "botmanager/src/botmanager/blind.py": 11,
+      "botmanager/src/botmanager/blind.py": 13,
       "botmanager/src/botmanager/cli.py": 1,
       "botmanager/src/botmanager/config.py": 2,
       "botmanager/src/botmanager/data.py": 3,
@@ -548602,7 +548641,7 @@
       "botmanager/src/botmanager/supervisor.py": 15,
       "botmanager/src/botmanager/transport.py": 5,
       "botmanager/src/botmanager/worker.py": 6,
-      "botmanager/tests/test_blind.py": 1,
+      "botmanager/tests/test_blind.py": 2,
       "botmanager/tests/test_legacy.py": 3,
       "botmanager/tests/test_load.py": 1,
       "botmanager/tests/test_machine_health.py": 2,
@@ -548693,7 +548732,7 @@
       "liquidity/tests/test_executor.py": 3,
       "liquidity/tests/test_network.py": 1,
       "llms/jupsol-llms.txt": 1,
-      "memory.md": 5,
+      "memory.md": 6,
       "mongo/cli.py": 2,
       "mongo/load.py": 4,
       "mongo/schema.py": 2,
@@ -552934,7 +552973,7 @@
       "botmanager/src/botmanager/suite_service.py": 6,
       "botmanager/src/botmanager/walkthrough.py": 3,
       "botmanager/tests/test_backup.py": 1,
-      "botmanager/tests/test_blind.py": 5,
+      "botmanager/tests/test_blind.py": 10,
       "botmanager/tests/test_cli.py": 3,
       "botmanager/tests/test_ecosystem_adapter.py": 1,
       "botmanager/tests/test_editing.py": 3,
@@ -560098,7 +560137,7 @@
       "llms-small.txt": 1,
       "llms/jupsol-llms.txt": 2,
       "market-graph-geometry-prompt.md": 1,
-      "memory.md": 141,
+      "memory.md": 143,
       "mongo/README.md": 1,
       "mongo/schema.py": 6,
       "mongo/tests/test_analysis_regressions.py": 1,
@@ -562343,6 +562382,7 @@
       "botmanager/src/botmanager/suite.py": 2,
       "botmanager/src/botmanager/supervisor.py": 1,
       "botmanager/src/botmanager/worker.py": 2,
+      "botmanager/tests/test_blind.py": 1,
       "botmanager/tests/test_entry_controls.py": 5,
       "botmanager/tests/test_executor_adapter.py": 4,
       "botmanager/tests/test_load.py": 1,
@@ -563037,7 +563077,7 @@
       "botmanager/src/botmanager/health.py": 2,
       "botmanager/src/botmanager/suite.py": 1,
       "botmanager/src/botmanager/supervisor.py": 1,
-      "botmanager/tests/test_blind.py": 2,
+      "botmanager/tests/test_blind.py": 4,
       "botmanager/tests/test_entry_controls.py": 2,
       "botmanager/tests/test_health.py": 8,
       "botmanager/tests/test_suite.py": 7,
@@ -563824,7 +563864,7 @@
       "extension/src/ui/signal-desk.css": 1,
       "extension/src/ui/soltui-panel.js": 1,
       "llms.txt": 4,
-      "memory.md": 21,
+      "memory.md": 20,
       "pagesource": 7,
       "prompts.md": 9,
       "research/COINBASE50-GRID-CYCLES.md": 1,
@@ -592170,7 +592210,7 @@
       "llms-sitemap.txt": 2,
       "llms/aero-lp-explained-2026-11-06.md": 1,
       "llms/jupsol-llms.txt": 5,
-      "memory.md": 66,
+      "memory.md": 67,
       "mongo/tests/test_load.py": 1,
       "mongo/tests/test_query_scripts.py": 4,
       "optimization-workbench-plan.md": 1,
@@ -597516,7 +597556,7 @@
       "docs/short-horizon-leverage-concept-family.md": 1,
       "extension/src/market/evm.js": 1,
       "extension/src/venues/triggerVenue.js": 1,
-      "memory.md": 5,
+      "memory.md": 6,
       "oracle/cli.py": 1,
       "prompts.md": 1,
       "research/RANKED_LISTS.md": 1,
@@ -613190,7 +613230,7 @@
       "botmanager/src/botmanager/suite_service.py": 1,
       "botmanager/src/botmanager/worker.py": 1,
       "botmanager/tests/test_backup.py": 2,
-      "botmanager/tests/test_blind.py": 2,
+      "botmanager/tests/test_blind.py": 3,
       "botmanager/tests/test_cli.py": 1,
       "botmanager/tests/test_config.py": 1,
       "botmanager/tests/test_full_audit_regressions.py": 1,
@@ -618081,7 +618121,7 @@
       "liquidity/tests/test_daemon.py": 1,
       "llms-sitemap.txt": 3,
       "llms/jupsol-llms.txt": 2,
-      "memory.md": 518,
+      "memory.md": 521,
       "mongo/queries/05-backtests.js": 1,
       "mongo/tests/test_query_scripts.py": 2,
       "optimization-workbench-plan.md": 12,
@@ -618879,6 +618919,9 @@
     "finalguarded191tests": {
       "memory.md": 1
     },
+    "finalhead": {
+      "memory.md": 1
+    },
     "finalhead5ef3df9": {
       "docs/archive/memory-2026-11-10.md": 1
     },
@@ -619121,7 +619164,7 @@
       "botmanager/src/botmanager/adapters/extension.py": 1,
       "botmanager/src/botmanager/adapters/soltui.py": 2,
       "botmanager/src/botmanager/backup.py": 2,
-      "botmanager/src/botmanager/blind.py": 2,
+      "botmanager/src/botmanager/blind.py": 4,
       "botmanager/src/botmanager/diagnostics_commands.py": 1,
       "botmanager/src/botmanager/health.py": 1,
       "botmanager/src/botmanager/learning_job.py": 2,
@@ -619135,7 +619178,7 @@
       "botmanager/src/botmanager/suite_service.py": 1,
       "botmanager/src/botmanager/supervisor.py": 2,
       "botmanager/src/botmanager/worker.py": 3,
-      "botmanager/tests/test_blind.py": 1,
+      "botmanager/tests/test_blind.py": 2,
       "botmanager/tests/test_continuation.py": 1,
       "botmanager/tests/test_entry_controls.py": 1,
       "botmanager/tests/test_health.py": 1,
@@ -628551,7 +628594,7 @@
       "liquidity/src/aero_lp/wallet.py": 2,
       "llms/basicmeory-llms.txt": 1,
       "logging.md": 1,
-      "memory.md": 34,
+      "memory.md": 35,
       "mongo/tests/test_query_scripts.py": 1,
       "optimization-workbench-run.md": 1,
       "prompts.md": 11,
@@ -629790,6 +629833,7 @@
       "botmanager/src/botmanager/walkthrough.py": 1,
       "botmanager/tests/test_accounting.py": 15,
       "botmanager/tests/test_backup.py": 4,
+      "botmanager/tests/test_blind.py": 1,
       "botmanager/tests/test_cli.py": 1,
       "botmanager/tests/test_continuation.py": 7,
       "botmanager/tests/test_editing.py": 4,
@@ -639192,6 +639236,7 @@
       "backtester/tests/test_index_search_tooling.py": 10,
       "backtester/tests/test_signal_redundancy.py": 4,
       "bot-manager-handoff.md": 2,
+      "botmanager/tests/test_blind.py": 1,
       "docs/COMPOUND-5M.md": 1,
       "docs/CONCEPTS.md": 1,
       "docs/FILES.md": 12,
@@ -642041,7 +642086,7 @@
       "liquidity/src/aero_lp/providers_report.py": 2,
       "llms/basicmeory-llms.txt": 1,
       "market-graph-geometry-prompt.md": 1,
-      "memory.md": 4,
+      "memory.md": 5,
       "repo-bootstrap-audit-2026-11-08.md": 1,
       "research/TRADINGVIEW-SCRIPT-CARDS.md": 5,
       "research/tradingview-card-coverage.json": 8,
@@ -646247,7 +646292,7 @@
       "liquidity/tests/test_submission_audit.py": 1,
       "llms/defillama-llms-free.txt": 3,
       "llms/jupsol-llms.txt": 3,
-      "memory.md": 38,
+      "memory.md": 40,
       "mongo/load.py": 3,
       "optimization-workbench-plan.md": 1,
       "optimization-workbench-run.md": 1,
@@ -646789,7 +646834,7 @@
       "llms-full.txt": 1,
       "llms/jupsol-llms.txt": 4,
       "logging.md": 2,
-      "memory.md": 68,
+      "memory.md": 69,
       "mongo/README.md": 1,
       "mongo/queries/05-backtests.js": 1,
       "mongo/tests/test_load.py": 1,
@@ -657336,6 +657381,9 @@
     "full381lines": {
       ".cdo/reviews-2026-11-12/botmanager-root.json": 2
     },
+    "full386": {
+      "memory.md": 1
+    },
     "full3file": {
       ".cdo/reviews-2026-11-12/operations-incoming-current.json": 1
     },
@@ -657887,6 +657935,9 @@
       "TRADINGVIEW-REFERENCE.md": 1,
       "docs/TRADINGVIEW-REFERENCE.md": 1
     },
+    "fullbotmanager": {
+      "memory.md": 1
+    },
     "fullbytehashes": {
       "research/zec-fee-sensitivity-20261113.llms/audit.json": 1
     },
@@ -658133,7 +658184,7 @@
       ".cdo/reviews-2026-11-12/soltui-fullsuite-fixture-deltas.json": 5,
       "docs/AUDIT-FILE-MANIFEST-2026-11-12.md": 1,
       "docs/FILES.md": 1,
-      "memory.md": 2
+      "memory.md": 3
     },
     "fullsuiteconceptualexitsaturated": {
       "archive/memory-2026-11-08.md": 1,
@@ -689871,8 +689922,10 @@
       "backtester/tests/test_cross_asset_cpcv.py": 2,
       "backtester/tests/test_research_regressions.py": 2,
       "backtester/tests/test_sweep_pair_gate.py": 2,
+      "botmanager/src/botmanager/blind.py": 2,
       "botmanager/src/botmanager/learning_job.py": 2,
       "botmanager/src/botmanager/suite_service.py": 1,
+      "botmanager/tests/test_blind.py": 30,
       "botmanager/tests/test_suite_service.py": 1,
       "code-deep-optimizer-2026-11-08.md": 6,
       "design/bot-control-room/DESIGN.md": 2,
@@ -689942,7 +689995,7 @@
       "liquidity/tests/test_submission_audit.py": 2,
       "llms-sitemap.txt": 2,
       "llms/jupsol-llms.txt": 2,
-      "memory.md": 4,
+      "memory.md": 7,
       "mongo/README.md": 1,
       "mongo/load.py": 2,
       "mongo/queries/01-coins-and-bars.js": 4,
@@ -690067,6 +690120,9 @@
     "group_of": {
       "soltui/pnl.py": 4,
       "soltui/tests/test_pnl.py": 1
+    },
+    "group_signal": {
+      "botmanager/tests/test_blind.py": 14
     },
     "group_slot": {
       "code-deep-optimizer-2026-11-08.md": 1,
@@ -690240,6 +690296,9 @@
       "TRADINGVIEW-REFERENCE.md": 1,
       "docs/TRADINGVIEW-REFERENCE.md": 1
     },
+    "groupkill": {
+      "memory.md": 1
+    },
     "groupofshapes": {
       "TRADINGVIEW-REFERENCE.md": 1,
       "docs/TRADINGVIEW-REFERENCE.md": 1
@@ -690365,7 +690424,7 @@
       "index/make_files_doc.py": 1,
       "liquidity/tests/test_cdo_recovery.py": 2,
       "llms/jupsol-llms.txt": 2,
-      "memory.md": 7,
+      "memory.md": 9,
       "oracle/README.md": 1,
       "oracle/engine.py": 7,
       "research/FIVE-MINUTE-PERPS.md": 1,
@@ -700129,7 +700188,7 @@
       "liquidity/tests/test_providers.py": 1,
       "llms.txt": 2,
       "llms/jupsol-llms.txt": 3,
-      "memory.md": 6,
+      "memory.md": 7,
       "research/RANKED_LISTS.md": 1,
       "research/STRATEGIES.md": 1,
       "research/TRADINGVIEW-SCRIPT-CARDS.md": 1,
@@ -706053,6 +706112,9 @@
     "head1d3": {
       "docs/archive/memory-2026-11-10.md": 1
     },
+    "head38aafed": {
+      "memory.md": 1
+    },
     "head5ef": {
       "docs/archive/memory-2026-11-10.md": 1
     },
@@ -707529,7 +707591,7 @@
       "botmanager/src/botmanager/suite.py": 2,
       "botmanager/src/botmanager/supervisor.py": 14,
       "botmanager/src/botmanager/worker.py": 6,
-      "botmanager/tests/test_blind.py": 6,
+      "botmanager/tests/test_blind.py": 12,
       "botmanager/tests/test_editing.py": 1,
       "botmanager/tests/test_executor_adapter.py": 1,
       "botmanager/tests/test_full_audit_regressions.py": 4,
@@ -717999,7 +718061,7 @@
       "llms/defillama-llms-free.txt": 16,
       "llms/defillama-llms.txt": 17,
       "llms/jupsol-llms.txt": 2,
-      "memory.md": 49,
+      "memory.md": 48,
       "mongo/tests/test_analysis_regressions.py": 1,
       "optimization-workbench-plan.md": 1,
       "optimization-workbench.md": 1,
@@ -728960,7 +729022,7 @@
       "llms-small.txt": 1,
       "llms/defillama-llms.txt": 1,
       "llms/jupsol-llms.txt": 2,
-      "memory.md": 20,
+      "memory.md": 22,
       "mongo/cli.py": 1,
       "oracle/README.md": 1,
       "postman/collections/botmanager-swap-v1.postman_collection.json": 2,
@@ -729075,6 +729137,7 @@
       "CLAUDE.md": 1,
       "README.md": 3,
       "TRADINGVIEW-REFERENCE.md": 7,
+      "botmanager/tests/test_blind.py": 1,
       "docs/ARCHITECTURE.md": 1,
       "docs/COMPONENTS.md": 1,
       "docs/DEVELOPMENT.md": 1,
@@ -729131,10 +729194,19 @@
     "hostedanalysis": {
       "memory.md": 1
     },
+    "hostedci": {
+      "memory.md": 1
+    },
+    "hostedmacos": {
+      "memory.md": 1
+    },
     "hostedmcp": {
       "memory.md": 1
     },
     "hostedpreparation": {
+      "memory.md": 1
+    },
+    "hostedresearchmcp": {
       "memory.md": 1
     },
     "hostenv": {
@@ -732898,6 +732970,9 @@
     },
     "http403": {
       "memory.md": 2
+    },
+    "http502": {
+      "memory.md": 1
     },
     "http_": {
       "scripts/oraclebot_ops.py": 1
@@ -755241,6 +755316,7 @@
       "backtester/tests/test_universe.py": 2,
       "botmanager/src/botmanager/diagnostics_commands.py": 3,
       "ecosystem/installation.py": 5,
+      "memory.md": 1,
       "oracle/tests/test_gum_orders.py": 5,
       "oracle/tests/test_gum_webhook_orders.py": 2,
       "oracle/tests/test_multi_instrument.py": 2,
@@ -775962,7 +776038,7 @@
       "liquidity/src/aero_lp/daemon.py": 1,
       "llms-sitemap.txt": 7,
       "market-graph-geometry-prompt.md": 2,
-      "memory.md": 48,
+      "memory.md": 49,
       "optimization-workbench-run.md": 1,
       "oracle-optimized-prompt.md": 1,
       "oracle/README.md": 1,
@@ -784035,7 +784111,7 @@
       "llms-sitemap.txt": 5,
       "llms-small.txt": 1,
       "llms/jupsol-llms.txt": 1,
-      "memory.md": 40,
+      "memory.md": 41,
       "mongo/README.md": 1,
       "optimization-workbench-run.md": 2,
       "oracle/README.md": 2,
@@ -784659,6 +784735,9 @@
     },
     "installedreadiness": {
       ".cdo/reviews-2026-11-12/operations-watchdog-remediation.json": 1
+    },
+    "installedservice": {
+      "memory.md": 1
     },
     "installedsourcebfc": {
       "memory.md": 1
@@ -789145,7 +789224,7 @@
       ".cdo/reviews-2026-11-12/repo-scope-assessment.json": 1
     },
     "integrated145": {
-      "memory.md": 2
+      "memory.md": 1
     },
     "integrated26": {
       "memory.md": 1
@@ -794145,7 +794224,7 @@
       "docs/superpowers/plans/2026-11-09-bot-manager.md": 1,
       "docs/superpowers/plans/2026-11-10-bot-manager-remaining.md": 1,
       "high_signal_file_index.json": 1,
-      "memory.md": 16,
+      "memory.md": 18,
       "mongo/README.md": 2,
       "mongo/load.py": 1,
       "repo-bootstrap-audit-2026-11-06.md": 2,
@@ -803683,7 +803762,7 @@
       "botmanager/src/botmanager/store.py": 1,
       "botmanager/src/botmanager/suite_service.py": 1,
       "botmanager/tests/test_backup.py": 2,
-      "botmanager/tests/test_blind.py": 1,
+      "botmanager/tests/test_blind.py": 2,
       "botmanager/tests/test_cli.py": 1,
       "design/soltui-v2/mockup.py": 1,
       "docs/bot-manager-handoff.md": 2,
@@ -806155,7 +806234,7 @@
       "ecosystem/tests/test_ui_contract.py": 2,
       "ecosystem/web.py": 1,
       "extension/src/core/grid.js": 1,
-      "memory.md": 5,
+      "memory.md": 6,
       "mongo/README.md": 1,
       "oracle-optimized-prompt.md": 1,
       "oracle/README.md": 2,
@@ -821794,7 +821873,7 @@
       "docs/superpowers/prompts/2026-11-09-bot-manager-original.txt": 2,
       "docs/superpowers/specs/2026-11-09-bot-manager-design.md": 10,
       "llms-sitemap.txt": 1,
-      "memory.md": 11,
+      "memory.md": 14,
       "prompts.md": 2,
       "research/STRATEGIES.md": 1,
       "research/TRADINGVIEW-SCRIPT-CARDS.md": 3,
@@ -832479,6 +832558,7 @@
       "backtester/tests/test_index_search_tooling.py": 1,
       "botmanager/README.md": 1,
       "botmanager/src/botmanager/adapters/extension.py": 4,
+      "botmanager/src/botmanager/blind.py": 1,
       "botmanager/src/botmanager/status.py": 2,
       "botmanager/src/botmanager/suite.py": 1,
       "botmanager/src/botmanager/supervisor.py": 3,
@@ -832598,7 +832678,7 @@
       "llms-full.txt": 1,
       "llms-small.txt": 1,
       "llms/aero-lp-explained-2026-11-06.md": 9,
-      "memory.md": 18,
+      "memory.md": 19,
       "oracle/README.md": 3,
       "oracle/tests/test_gum_webhook_orders.py": 1,
       "oracle/webhook.py": 1,
@@ -832782,10 +832862,11 @@
       ".cdo/reviews-2026-11-12/extension-independent-wrapper-recheck.json": 2
     },
     "killpg": {
-      "botmanager/src/botmanager/blind.py": 1,
+      "botmanager/src/botmanager/blind.py": 2,
       "botmanager/src/botmanager/learning_job.py": 1,
-      "botmanager/tests/test_blind.py": 1,
-      "ecosystem/installation.py": 2
+      "botmanager/tests/test_blind.py": 16,
+      "ecosystem/installation.py": 2,
+      "memory.md": 1
     },
     "killruntime": {
       "extension/src/core/commands.js": 1,
@@ -837369,7 +837450,7 @@
       "liquidity/tests/test_gates.py": 3,
       "liquidity/tests/test_providers_network.py": 1,
       "llms-sitemap.txt": 2,
-      "memory.md": 56,
+      "memory.md": 57,
       "onboarding.md": 1,
       "prompts.md": 10,
       "research/5minleveragestrategies.json": 7,
@@ -841005,7 +841086,7 @@
       "backtester/tests/test_ratio_rotation.py": 2,
       "backtester/tests/test_research_regressions.py": 1,
       "backtester/tests/test_volty_data_binding.py": 2,
-      "botmanager/tests/test_blind.py": 4,
+      "botmanager/tests/test_blind.py": 12,
       "botmanager/tests/test_continuation.py": 2,
       "botmanager/tests/test_entry_controls.py": 2,
       "botmanager/tests/test_executor_adapter.py": 4,
@@ -874808,7 +874889,7 @@
       "botmanager/src/botmanager/suite.py": 8,
       "botmanager/src/botmanager/transport.py": 3,
       "botmanager/src/botmanager/walkthrough.py": 9,
-      "botmanager/tests/test_blind.py": 2,
+      "botmanager/tests/test_blind.py": 4,
       "botmanager/tests/test_continuation.py": 7,
       "botmanager/tests/test_editing.py": 2,
       "botmanager/tests/test_executor_adapter.py": 1,
@@ -874957,7 +875038,7 @@
       "llms/defillama-llms.txt": 1,
       "llms/jupsol-llms.txt": 38,
       "logging.md": 1,
-      "memory.md": 3,
+      "memory.md": 4,
       "mongo/README.md": 1,
       "mongo/queries/01-coins-and-bars.js": 2,
       "mongo/queries/02-strategies-and-cards.js": 1,
@@ -881865,6 +881946,7 @@
       "botmanager/src/botmanager/supervisor.py": 3,
       "botmanager/src/botmanager/transport.py": 1,
       "botmanager/src/botmanager/walkthrough.py": 2,
+      "botmanager/tests/test_blind.py": 1,
       "botmanager/tests/test_cli.py": 2,
       "botmanager/tests/test_ecosystem_adapter.py": 1,
       "botmanager/tests/test_editing.py": 1,
@@ -882089,7 +882171,7 @@
       "llms/jupsol-llms.txt": 4,
       "logging.md": 1,
       "market-graph-geometry-prompt.md": 1,
-      "memory.md": 8,
+      "memory.md": 9,
       "mongo/README.md": 2,
       "mongo/load.py": 32,
       "mongo/queries/03-signals-and-indicators.js": 1,
@@ -884167,6 +884249,7 @@
       "botmanager/src/botmanager/status.py": 4,
       "botmanager/src/botmanager/strategies/arbitrage.py": 1,
       "botmanager/src/botmanager/walkthrough.py": 2,
+      "botmanager/tests/test_blind.py": 2,
       "botmanager/tests/test_config.py": 1,
       "botmanager/tests/test_editing.py": 1,
       "botmanager/tests/test_executor_adapter.py": 7,
@@ -884474,7 +884557,7 @@
       "llms/aero-lp-explained-2026-11-06.md": 1,
       "llms/basicmeory-llms.txt": 6,
       "llms/jupsol-llms.txt": 11,
-      "memory.md": 130,
+      "memory.md": 131,
       "mongo/README.md": 1,
       "mongo/load.py": 9,
       "mongo/queries/02-strategies-and-cards.js": 2,
@@ -889606,7 +889689,7 @@
       "liquidity/tests/test_providers.py": 1,
       "liquidity/tests/test_safe_exit.py": 1,
       "liquidity/tests/test_submission_audit.py": 1,
-      "memory.md": 4,
+      "memory.md": 5,
       "mongo/README.md": 1,
       "mongo/load.py": 3,
       "mongo/tests/test_load.py": 3,
@@ -891606,6 +891689,9 @@
       "soltui/native_host.py": 1,
       "tools/land.sh": 1,
       "tradingview/tradingviewinputoptimizer_v2-7/README.md": 2
+    },
+    "localmacos": {
+      "memory.md": 1
     },
     "localmaster": {
       "memory.md": 1
@@ -911189,10 +911275,11 @@
       "backtester/tests/test_index_search_tooling.py": 1,
       "bot-manager-handoff.md": 3,
       "botmanager/README.md": 3,
-      "botmanager/src/botmanager/blind.py": 2,
+      "botmanager/src/botmanager/blind.py": 3,
       "botmanager/src/botmanager/service.py": 1,
       "botmanager/src/botmanager/transport.py": 1,
       "botmanager/src/botmanager/walkthrough.py": 5,
+      "botmanager/tests/test_blind.py": 1,
       "botmanager/tests/test_load.py": 4,
       "codebase-overview.md": 1,
       "design/bot-control-room/DESIGN.md": 1,
@@ -911246,7 +911333,7 @@
       "llms-facts.txt": 1,
       "llms-full.txt": 1,
       "llms-small.txt": 1,
-      "memory.md": 19,
+      "memory.md": 22,
       "onboarding.md": 1,
       "prompts.md": 1,
       "repo-bootstrap-audit-2026-11-06.md": 3,
@@ -911734,7 +911821,7 @@
       "liquidity/src/aero_lp/executor.py": 1,
       "llms/basicmeory-llms.txt": 1,
       "llms/jupsol-llms.txt": 1,
-      "memory.md": 2,
+      "memory.md": 3,
       "mongo/README.md": 1,
       "postman/mocks/botmanager-jupiter-swap-v1/README.md": 1,
       "prompts.md": 6,
@@ -917155,7 +917242,7 @@
       "docs/FILES.md": 1,
       "docs/archive/memory-2026-11-10.md": 9,
       "ecosystem/README.md": 2,
-      "memory.md": 21
+      "memory.md": 22
     },
     "manager10": {
       ".cdo/reviews-2026-11-12/soltui-owner-evidence.json": 6
@@ -926147,6 +926234,7 @@
       ".cdo/reviews-2026-11-12/pipeline-pr241-incoming-review.json": 1,
       ".cdo/reviews-2026-11-12/pipeline-pr241-ui-current.json": 1,
       "backtester/tests/test_geometry.py": 1,
+      "memory.md": 1,
       "research/tradingview-card-coverage.json": 5,
       "research/verify_numbers.py": 1,
       "scripts/test_oraclebot_ops.py": 1,
@@ -935816,7 +935904,7 @@
       "docs/superpowers/plans/2026-11-09-bot-manager.md": 1,
       "extension/README.md": 1,
       "extension/src/core/pnl.js": 1,
-      "memory.md": 4,
+      "memory.md": 5,
       "optimization-workbench-plan.md": 1,
       "research/CROSS-ASSET-TRANSFER.md": 1,
       "research/STRATEGIES.md": 2,
@@ -946202,7 +946290,7 @@
       "llms/jupsol-llms.txt": 15,
       "logging.md": 3,
       "market-graph-geometry-prompt.md": 1,
-      "memory.md": 67,
+      "memory.md": 69,
       "mongo/README.md": 1,
       "mongo/load.py": 22,
       "mongo/schema.py": 1,
@@ -953507,7 +953595,7 @@
       "liquidity/src/aero_lp/abi.py": 2,
       "liquidity/src/aero_lp/submissions.py": 1,
       "llms/jupsol-llms.txt": 2,
-      "memory.md": 3,
+      "memory.md": 4,
       "prompts.md": 1,
       "repo-bootstrap-audit-2026-11-06.md": 2,
       "research/5minleveragestrategies.json": 1,
@@ -957452,7 +957540,7 @@
       "llms-small.txt": 2,
       "llms.txt": 2,
       "llms/aero-lp-explained-2026-11-06.md": 1,
-      "memory.md": 336,
+      "memory.md": 338,
       "oracle/README.md": 19,
       "postman/mocks/botmanager-jupiter-swap-v1/README.md": 2,
       "profitable-crypto-strategies-analysis.md": 1,
@@ -960442,7 +960530,7 @@
       "backtester/tests/test_volty_data_binding.py": 1,
       "botmanager/tests/__init__.py": 1,
       "botmanager/tests/test_backup.py": 1,
-      "botmanager/tests/test_blind.py": 3,
+      "botmanager/tests/test_blind.py": 7,
       "botmanager/tests/test_browser_surfaces.py": 1,
       "botmanager/tests/test_config.py": 1,
       "botmanager/tests/test_continuation.py": 5,
@@ -969304,7 +969392,7 @@
       "botmanager/src/botmanager/suite.py": 8,
       "botmanager/src/botmanager/supervisor.py": 6,
       "botmanager/src/botmanager/transport.py": 3,
-      "botmanager/tests/test_blind.py": 1,
+      "botmanager/tests/test_blind.py": 2,
       "botmanager/tests/test_entry_controls.py": 2,
       "botmanager/tests/test_health.py": 4,
       "botmanager/tests/test_learning.py": 2,
@@ -969387,7 +969475,7 @@
       "superpowers/plans/2026-11-09-bot-control-room.md": 1
     },
     "monotonic_ns": {
-      "botmanager/tests/test_blind.py": 1
+      "botmanager/tests/test_blind.py": 2
     },
     "monotonically": {
       "ECOSYSTEM-BOOTSTRAP.md": 1,
@@ -976988,7 +977076,7 @@
       "extension/src/storage/fileStore.js": 4,
       "extension/test/engine-command-audit.test.js": 1,
       "extension/test/file-store-safety.test.js": 7,
-      "memory.md": 11,
+      "memory.md": 12,
       "oracle/gum_webhook_orders.py": 1,
       "research/signal_redundancy.py": 1,
       "research/strategy_experiment/audit_integrity.json": 1,
@@ -986620,7 +986708,7 @@
       "llms-sitemap.txt": 15,
       "llms-small.txt": 1,
       "llms/jupsol-llms.txt": 16,
-      "memory.md": 110,
+      "memory.md": 109,
       "mongo/README.md": 3,
       "mongo/queries/01-coins-and-bars.js": 2,
       "mongo/schema.py": 2,
@@ -987110,6 +987198,9 @@
       "scripts/test_capture_market.py": 2
     },
     "nativeorigin": {
+      "memory.md": 1
+    },
+    "nativepublication": {
       "memory.md": 1
     },
     "nativeq": {
@@ -996270,7 +996361,7 @@
       "botmanager/tests/__init__.py": 1,
       "botmanager/tests/test_accounting.py": 1,
       "botmanager/tests/test_backup.py": 1,
-      "botmanager/tests/test_blind.py": 1,
+      "botmanager/tests/test_blind.py": 2,
       "botmanager/tests/test_continuation.py": 1,
       "botmanager/tests/test_editing.py": 1,
       "botmanager/tests/test_executor_adapter.py": 2,
@@ -996933,6 +997024,9 @@
       ".cdo/reviews-2026-11-12/research-scripts.json": 1
     },
     "nevercallthis": {
+      "memory.md": 1
+    },
+    "neverchanges": {
       "memory.md": 1
     },
     "neverclaimfulljudgeisolationpassed": {
@@ -1000311,7 +1000405,7 @@
       "research/tradingview-card-coverage.json": 2
     },
     "newsource": {
-      "memory.md": 1
+      "memory.md": 2
     },
     "newsourcegreen": {
       "memory.md": 1
@@ -1000912,7 +1001006,7 @@
       "llms-sitemap.txt": 3,
       "llms/aero-lp-explained-2026-11-06.md": 1,
       "llms/jupsol-llms.txt": 5,
-      "memory.md": 24,
+      "memory.md": 25,
       "mongo/README.md": 1,
       "mongo/load.py": 1,
       "mongo/queries/02-strategies-and-cards.js": 1,
@@ -1013550,7 +1013644,7 @@
       "llms/aero-lp-explained-2026-11-06.md": 2,
       "llms/defillama-llms-free.txt": 1,
       "logging.md": 1,
-      "memory.md": 101,
+      "memory.md": 102,
       "mongo/load.py": 3,
       "mongo/queries/01-coins-and-bars.js": 1,
       "mongo/tests/test_load.py": 1,
@@ -1013819,6 +1013913,9 @@
     },
     "now_ts": {
       "backtester/core/scorecard.py": 2
+    },
+    "nowalso": {
+      "memory.md": 1
     },
     "nowauthorized": {
       ".cdo/reviews-2026-11-12/operations-watchdog-tests-initial.json": 1
@@ -1015527,7 +1015624,7 @@
       "research/zec-expanded-20261113.llms/simulation-source.zip": 1
     },
     "nsubprocess": {
-      "botmanager/tests/test_blind.py": 1
+      "botmanager/tests/test_blind.py": 2
     },
     "nsum": {
       "research/tradingview-script-profiles/shard-b.jsonl": 1,
@@ -1018074,7 +1018171,7 @@
       "liquidity/tests/test_cdo_gates.py": 2,
       "liquidity/tests/test_metrics.py": 2,
       "llms/jupsol-llms.txt": 1,
-      "memory.md": 7,
+      "memory.md": 8,
       "mongo/load.py": 1,
       "optimization-workbench-plan.md": 1,
       "oracle/engine.py": 1,
@@ -1019347,7 +1019444,7 @@
       "docs/bot-manager-managed-suite.md": 1,
       "docs/codebase-overview.md": 1,
       "docs/high_signal_file_index.json": 1,
-      "memory.md": 7,
+      "memory.md": 8,
       "research/COINBASE50-GRID-CYCLES.md": 1,
       "research/FIVE-MINUTE-PERPS.md": 1,
       "research/META-ANALYSIS.md": 2,
@@ -1019373,6 +1019470,9 @@
       "research/zec-expanded-20261113.llms/mongo-artifacts.json": 2,
       "skills/trading-and-investing/references/ai-and-ml-for-trading.md": 1,
       "soltui/experiment_runner.py": 2
+    },
+    "numericalengines": {
+      "memory.md": 1
     },
     "numericalfixturedecide": {
       "memory.md": 1
@@ -1021634,7 +1021734,7 @@
       "research/zec-expanded-20261113.llms/simulation-source.zip": 1
     },
     "nwhile": {
-      "botmanager/tests/test_blind.py": 1,
+      "botmanager/tests/test_blind.py": 2,
       "research/tradingview-script-profiles/shard-c.jsonl": 1,
       "research/tradingview-script-understanding.json": 5,
       "research/tradingview-strategy-card-locations.json": 2,
@@ -1025677,7 +1025777,7 @@
       "botmanager/src/botmanager/learning_job.py": 2,
       "botmanager/src/botmanager/machine_health.py": 1,
       "botmanager/src/botmanager/receipts.py": 1,
-      "botmanager/tests/test_blind.py": 4,
+      "botmanager/tests/test_blind.py": 12,
       "botmanager/tests/test_config.py": 1,
       "botmanager/tests/test_continuation.py": 1,
       "botmanager/tests/test_full_audit_regressions.py": 4,
@@ -1030118,7 +1030218,7 @@
       "ecosystem/tests/test_telemetry.py": 2,
       "ecosystem/web/app.js": 1,
       "extension/src/storage/store.js": 1,
-      "memory.md": 20,
+      "memory.md": 21,
       "prompts.md": 1,
       "repo-bootstrap-audit-2026-11-06.md": 1,
       "research/META-ANALYSIS.md.ddo-report.md": 1,
@@ -1043459,6 +1043559,9 @@
     "onlycfandprivategates": {
       "memory.md": 1
     },
+    "onlycloudflare": {
+      "memory.md": 1
+    },
     "onlydelta": {
       "memory.md": 1
     },
@@ -1052550,7 +1052653,7 @@
       "llms-sitemap.txt": 2,
       "llms-small.txt": 2,
       "llms.txt": 2,
-      "memory.md": 261,
+      "memory.md": 262,
       "package-lock.json": 2,
       "package.json": 1,
       "prompts.md": 14,
@@ -1062118,7 +1062221,7 @@
       "botmanager/src/botmanager/strategies/arbitrage.py": 4,
       "botmanager/src/botmanager/suite_service.py": 1,
       "botmanager/src/botmanager/walkthrough.py": 7,
-      "botmanager/tests/test_blind.py": 2,
+      "botmanager/tests/test_blind.py": 4,
       "botmanager/tests/test_cli.py": 10,
       "botmanager/tests/test_ecosystem_adapter.py": 1,
       "botmanager/tests/test_editing.py": 1,
@@ -1062277,7 +1062380,7 @@
       "llms/jupsol-llms.txt": 8,
       "logging.md": 4,
       "market-graph-geometry-prompt.md": 6,
-      "memory.md": 16,
+      "memory.md": 18,
       "mongo/README.md": 1,
       "mongo/load.py": 3,
       "mongo/queries/01-coins-and-bars.js": 2,
@@ -1063284,7 +1063387,7 @@
       "liquidity/src/aero_lp/chain.py": 1,
       "liquidity/src/aero_lp/providers.py": 1,
       "liquidity/tests/test_providers.py": 1,
-      "memory.md": 14,
+      "memory.md": 15,
       "mongo/tests/test_snapshot_audit.py": 2,
       "oracle/quotes.py": 2,
       "oracle/tests/test_multi_instrument.py": 1,
@@ -1068922,7 +1069025,7 @@
       "llms/basicmeory-llms.txt": 3,
       "llms/defillama-llms-free.txt": 1,
       "llms/jupsol-llms.txt": 16,
-      "memory.md": 19,
+      "memory.md": 20,
       "mongo/README.md": 2,
       "mongo/load.py": 2,
       "mongo/queries/02-strategies-and-cards.js": 3,
@@ -1069401,7 +1069504,7 @@
       "liquidity/src/aero_lp/recovery.py": 1,
       "liquidity/src/aero_lp/wallet.py": 3,
       "liquidity/tests/test_abi_config_wallet.py": 2,
-      "memory.md": 83,
+      "memory.md": 84,
       "mongo/tests/test_query_scripts.py": 6,
       "oracle/README.md": 1,
       "oracle/guidance.py": 1,
@@ -1074887,7 +1074990,8 @@
       "docs/archive/memory-2026-11-10.md": 1
     },
     "packagenotfounderror": {
-      "botmanager/src/botmanager/diagnostics_commands.py": 1
+      "botmanager/src/botmanager/diagnostics_commands.py": 1,
+      "memory.md": 1
     },
     "packages": {
       ".cdo/reviews-2026-11-12/botmanager-root.json": 1,
@@ -1074967,7 +1075071,7 @@
       "llms-facts.txt": 1,
       "llms-full.txt": 1,
       "llms-small.txt": 1,
-      "memory.md": 2,
+      "memory.md": 3,
       "mongo/README.md": 1,
       "mongo/cli.py": 4,
       "mongo/tests/test_query_scripts.py": 1,
@@ -1075005,6 +1075109,9 @@
       "research/strategy_experiment/results/manifest.json": 1
     },
     "packagesplannedmanager0": {
+      "memory.md": 1
+    },
+    "packageversion": {
       "memory.md": 1
     },
     "packageversions": {
@@ -1083954,7 +1084061,7 @@
       "botmanager/src/botmanager/suite.py": 3,
       "botmanager/src/botmanager/suite_service.py": 1,
       "botmanager/src/botmanager/worker.py": 5,
-      "botmanager/tests/test_blind.py": 4,
+      "botmanager/tests/test_blind.py": 6,
       "botmanager/tests/test_entry_controls.py": 2,
       "botmanager/tests/test_learning.py": 3,
       "botmanager/tests/test_load.py": 1,
@@ -1084247,7 +1084354,7 @@
       "research/five-minute-perps-suite/full-suite-receipt.json": 1
     },
     "parent_code": {
-      "botmanager/tests/test_blind.py": 2
+      "botmanager/tests/test_blind.py": 4
     },
     "parent_fixture_gate": {
       ".cdo/reviews-2026-11-13/cdo-forecast-ops-delta.json": 1
@@ -1089106,7 +1089213,7 @@
       "bot-manager-quickstart.md": 1,
       "botmanager/README.md": 1,
       "botmanager/src/botmanager/adapters/soltui.py": 1,
-      "botmanager/src/botmanager/blind.py": 2,
+      "botmanager/src/botmanager/blind.py": 3,
       "botmanager/src/botmanager/cli.py": 1,
       "botmanager/src/botmanager/diagnostics_commands.py": 4,
       "botmanager/src/botmanager/learning_job.py": 1,
@@ -1089114,7 +1089221,7 @@
       "botmanager/src/botmanager/suite.py": 1,
       "botmanager/src/botmanager/supervisor.py": 4,
       "botmanager/src/botmanager/walkthrough.py": 2,
-      "botmanager/tests/test_blind.py": 1,
+      "botmanager/tests/test_blind.py": 2,
       "botmanager/tests/test_legacy.py": 4,
       "botmanager/tests/test_operations.py": 1,
       "botmanager/tests/test_suite.py": 4,
@@ -1089451,7 +1089558,7 @@
       ".cdo/reviews-2026-11-12/backtester-root-blind-fixes.json": 3,
       ".cdo/reviews-2026-11-12/soltui-root-ui-tests.json": 12,
       "docs/REPO-HEALTH-2026-11-12.md": 1,
-      "memory.md": 11
+      "memory.md": 12
     },
     "pass0fail": {
       ".cdo/reviews-2026-11-12/website-ui.json": 1
@@ -1091396,7 +1091503,7 @@
       "liquidity/tests/test_daemon.py": 1,
       "liquidity/tests/test_gates.py": 2,
       "llms/jupsol-llms.txt": 2,
-      "memory.md": 116,
+      "memory.md": 117,
       "optimization-workbench-run.md": 3,
       "postman/mocks/botmanager-jupiter-swap-v1/README.md": 1,
       "postman/simulations/botmanager-swap-v1/botmanager-swap-v1.context.yaml": 1,
@@ -1091467,7 +1091574,7 @@
     "passed0": {
       ".cdo/reviews-2026-11-12/backtester-final-production.json": 1,
       "docs/ORACLEBOT-MCP-DELIVERY-2026-11-13.md": 2,
-      "memory.md": 17
+      "memory.md": 18
     },
     "passed100": {
       "research/zec-expanded-20261113.llms/audit-expanded-receipt.json": 1,
@@ -1092002,7 +1092109,7 @@
     },
     "passes0": {
       "docs/REPO-HEALTH-2026-11-12.md": 1,
-      "memory.md": 4
+      "memory.md": 5
     },
     "passes129node": {
       "docs/ORACLEBOT-LAUNCH-READINESS.md": 1,
@@ -1092833,7 +1092940,7 @@
       "bot-manager-oracle-interface.md": 1,
       "botmanager/tests/__init__.py": 2,
       "botmanager/tests/test_backup.py": 10,
-      "botmanager/tests/test_blind.py": 7,
+      "botmanager/tests/test_blind.py": 19,
       "botmanager/tests/test_browser_surfaces.py": 2,
       "botmanager/tests/test_config.py": 2,
       "botmanager/tests/test_continuation.py": 15,
@@ -1093498,7 +1093605,7 @@
       "botmanager/src/botmanager/walkthrough.py": 5,
       "botmanager/src/botmanager/worker.py": 9,
       "botmanager/tests/test_backup.py": 15,
-      "botmanager/tests/test_blind.py": 5,
+      "botmanager/tests/test_blind.py": 7,
       "botmanager/tests/test_browser_surfaces.py": 5,
       "botmanager/tests/test_cli.py": 4,
       "botmanager/tests/test_config.py": 4,
@@ -1094489,7 +1094596,7 @@
       "botmanager/src/botmanager/transport.py": 1,
       "botmanager/src/botmanager/worker.py": 1,
       "botmanager/tests/test_backup.py": 1,
-      "botmanager/tests/test_blind.py": 3,
+      "botmanager/tests/test_blind.py": 5,
       "botmanager/tests/test_browser_surfaces.py": 1,
       "botmanager/tests/test_cli.py": 1,
       "botmanager/tests/test_config.py": 1,
@@ -1105656,8 +1105763,10 @@
       ".cdo/reviews-2026-11-12/index.json": 1,
       ".cdo/reviews-2026-11-12/news-event-incoming.json": 1,
       "backtester/tests/test_index_runtime_guards.py": 1,
-      "botmanager/src/botmanager/blind.py": 6,
+      "botmanager/src/botmanager/blind.py": 7,
+      "botmanager/tests/test_blind.py": 7,
       "ecosystem/tests/test_setup.py": 1,
+      "memory.md": 1,
       "soltui/docs_browser.py": 4,
       "soltui/tests/test_cdo_tui_regressions.py": 1,
       "soltui/tests/test_docs_browser.py": 3,
@@ -1109918,14 +1110027,14 @@
       "archive/memory-2026-11-08.md": 9,
       "backtester/core/universe.py": 6,
       "botmanager/src/botmanager/backup.py": 3,
-      "botmanager/src/botmanager/blind.py": 1,
+      "botmanager/src/botmanager/blind.py": 2,
       "botmanager/src/botmanager/health.py": 1,
       "botmanager/src/botmanager/learning_job.py": 1,
       "botmanager/src/botmanager/ledger.py": 12,
       "botmanager/src/botmanager/machine_health.py": 4,
       "botmanager/src/botmanager/suite.py": 4,
       "botmanager/src/botmanager/worker.py": 4,
-      "botmanager/tests/test_blind.py": 2,
+      "botmanager/tests/test_blind.py": 18,
       "botmanager/tests/test_entry_controls.py": 10,
       "botmanager/tests/test_health.py": 3,
       "botmanager/tests/test_learning.py": 2,
@@ -1109971,7 +1110080,7 @@
       "liquidity/tests/test_providers.py": 3,
       "llms-facts.txt": 1,
       "llms-full.txt": 1,
-      "memory.md": 21,
+      "memory.md": 22,
       "research/META-ANALYSIS.md": 1,
       "research/run_backfill.sh": 15,
       "research/strategy_experiment/candidate.zip": 1,
@@ -1112533,7 +1112642,7 @@
       "botmanager/tests/test_blind.py": 2,
       "docs/REPO-HEALTH-2026-11-12.md": 1,
       "liquidity/tests/test_providers.py": 1,
-      "memory.md": 1,
+      "memory.md": 3,
       "scripts/oraclebot_ops.py": 1
     },
     "pipette": {
@@ -1125424,7 +1125533,7 @@
       "botmanager/src/botmanager/transport.py": 1,
       "botmanager/src/botmanager/worker.py": 1,
       "botmanager/tests/test_backup.py": 2,
-      "botmanager/tests/test_blind.py": 1,
+      "botmanager/tests/test_blind.py": 2,
       "botmanager/tests/test_browser_surfaces.py": 2,
       "botmanager/tests/test_extension_adapter.py": 17,
       "botmanager/tests/test_learning_job.py": 6,
@@ -1126816,7 +1126925,7 @@
       "botmanager/src/botmanager/blind.py": 1,
       "botmanager/src/botmanager/learning_job.py": 1,
       "botmanager/src/botmanager/suite.py": 3,
-      "botmanager/tests/test_blind.py": 9,
+      "botmanager/tests/test_blind.py": 26,
       "botmanager/tests/test_editing.py": 2,
       "botmanager/tests/test_learning_job.py": 11,
       "botmanager/tests/test_machine_health.py": 1,
@@ -1126835,7 +1126944,7 @@
       "ecosystem/ui_service.py": 1,
       "index/idle.py": 1,
       "index/ollama_ensure.py": 7,
-      "memory.md": 2,
+      "memory.md": 3,
       "oracle/tests/test_webhook.py": 1,
       "scripts/oraclebot_ops.py": 1,
       "scripts/test_oraclebot_ops.py": 4,
@@ -1130795,7 +1130904,7 @@
       "llms-full.txt": 1,
       "llms-small.txt": 1,
       "llms/jupsol-llms.txt": 86,
-      "memory.md": 20,
+      "memory.md": 21,
       "oracle/gum_orders.py": 4,
       "oracle/gum_webhook_orders.py": 1,
       "oracle/tests/test_gum_orders.py": 11,
@@ -1132904,6 +1133013,9 @@
       "memory.md": 2
     },
     "pr251": {
+      "memory.md": 1
+    },
+    "pr253": {
       "memory.md": 1
     },
     "pr2tvrj": {
@@ -1139039,6 +1139151,7 @@
       "botmanager/README.md": 4,
       "botmanager/src/botmanager/diagnostics_commands.py": 1,
       "botmanager/src/botmanager/service.py": 5,
+      "botmanager/tests/test_blind.py": 1,
       "botmanager/tests/test_supervisor.py": 1,
       "code-deep-optimizer-2026-11-06.md": 5,
       "code-deep-optimizer-2026-11-08.md": 2,
@@ -1139122,7 +1139235,7 @@
       "liquidity/src/aero_lp/cli.py": 1,
       "liquidity/src/aero_lp/ledger.py": 1,
       "liquidity/tests/test_providers.py": 4,
-      "memory.md": 5,
+      "memory.md": 6,
       "mongo/README.md": 1,
       "mongo/schema.py": 1,
       "mongo/tests/test_query_scripts.py": 1,
@@ -1140376,7 +1140489,7 @@
       "known-issues.md": 1,
       "liquidity/tests/test_executor_audit.py": 2,
       "logging.md": 1,
-      "memory.md": 200,
+      "memory.md": 198,
       "mongo/tests/test_analysis_regressions.py": 1,
       "optimization-workbench-plan.md": 7,
       "optimization-workbench-run.md": 1,
@@ -1141775,6 +1141888,7 @@
       "botmanager/README.md": 5,
       "botmanager/tests/test_accounting.py": 1,
       "botmanager/tests/test_backup.py": 1,
+      "botmanager/tests/test_blind.py": 2,
       "botmanager/tests/test_continuation.py": 2,
       "botmanager/tests/test_editing.py": 1,
       "botmanager/tests/test_full_audit_regressions.py": 1,
@@ -1153305,7 +1153419,7 @@
       "bot-manager-handoff.md": 3,
       "botmanager/README.md": 1,
       "botmanager/src/botmanager/adapters/executor.py": 6,
-      "botmanager/src/botmanager/blind.py": 2,
+      "botmanager/src/botmanager/blind.py": 3,
       "botmanager/src/botmanager/diagnostics_commands.py": 1,
       "botmanager/src/botmanager/executor_commands.py": 1,
       "botmanager/src/botmanager/machine_health.py": 15,
@@ -1153313,7 +1153427,7 @@
       "botmanager/src/botmanager/suite.py": 7,
       "botmanager/src/botmanager/supervisor.py": 2,
       "botmanager/tests/__init__.py": 1,
-      "botmanager/tests/test_blind.py": 2,
+      "botmanager/tests/test_blind.py": 7,
       "botmanager/tests/test_load.py": 5,
       "botmanager/tests/test_machine_health.py": 4,
       "botmanager/tests/test_suite.py": 6,
@@ -1153386,6 +1153500,9 @@
     },
     "probe_dexes": {
       "liquidity/src/aero_lp/providers.py": 3
+    },
+    "probe_error": {
+      "botmanager/tests/test_blind.py": 4
     },
     "probe_failed": {
       ".cdo/reviews-2026-11-12/operations-incoming-current.json": 2,
@@ -1153537,7 +1153654,7 @@
       "extension/tools/e2e.mjs": 1,
       "external-calls.md": 1,
       "liquidity/src/aero_lp/executor.py": 4,
-      "memory.md": 13,
+      "memory.md": 14,
       "research/TRADINGVIEW-SCRIPT-CARDS.md": 1,
       "research/coin-intelligence/xrp-ripple.md": 2,
       "research/five-minute-perps-suite/full-suite-receipt.json": 2,
@@ -1154208,7 +1154325,7 @@
       "botmanager/src/botmanager/adapters/__init__.py": 1,
       "botmanager/src/botmanager/adapters/executor.py": 2,
       "botmanager/src/botmanager/adapters/soltui.py": 1,
-      "botmanager/src/botmanager/blind.py": 28,
+      "botmanager/src/botmanager/blind.py": 31,
       "botmanager/src/botmanager/executor_commands.py": 1,
       "botmanager/src/botmanager/health.py": 6,
       "botmanager/src/botmanager/health_commands.py": 1,
@@ -1154220,7 +1154337,7 @@
       "botmanager/src/botmanager/supervisor.py": 30,
       "botmanager/src/botmanager/walkthrough.py": 2,
       "botmanager/src/botmanager/worker.py": 1,
-      "botmanager/tests/test_blind.py": 14,
+      "botmanager/tests/test_blind.py": 20,
       "botmanager/tests/test_editing.py": 7,
       "botmanager/tests/test_executor_adapter.py": 11,
       "botmanager/tests/test_full_audit_regressions.py": 3,
@@ -1154372,7 +1154489,7 @@
       "liquidity/tests/test_engine.py": 2,
       "llms-sitemap.txt": 2,
       "llms/jupsol-llms.txt": 2,
-      "memory.md": 49,
+      "memory.md": 53,
       "mongo/tests/test_query_scripts.py": 3,
       "optimization-workbench-plan.md": 2,
       "optimization-workbench-run.md": 1,
@@ -1154818,9 +1154935,9 @@
       "memory.md": 1
     },
     "processlookuperror": {
-      "botmanager/src/botmanager/blind.py": 1,
+      "botmanager/src/botmanager/blind.py": 2,
       "botmanager/src/botmanager/learning_job.py": 1,
-      "botmanager/tests/test_blind.py": 1,
+      "botmanager/tests/test_blind.py": 2,
       "ecosystem/installation.py": 2
     },
     "processor": {
@@ -1180368,7 +1180485,7 @@
       "ecosystem/tests/test_ui_service.py": 2,
       "extension/tools/bot-manager-e2e.mjs": 4,
       "extension/tools/control-room-e2e.mjs": 4,
-      "memory.md": 12,
+      "memory.md": 14,
       "oracle/tests/test_cli.py": 1,
       "oracle/tests/test_multi_instrument.py": 1,
       "oracle/tests/test_selected_server.py": 1,
@@ -1189803,7 +1189920,7 @@
       "ecosystem/forecast.py": 2,
       "ecosystem/tests/test_forecast.py": 2,
       "ecosystem/web/app.js": 5,
-      "memory.md": 36,
+      "memory.md": 37,
       "prompts.md": 4,
       "research/META-ANALYSIS.md": 1,
       "research/RANKED_LISTS.md": 2,
@@ -1190062,7 +1190179,7 @@
       "llms-facts.txt": 1,
       "llms-full.txt": 1,
       "llms-small.txt": 1,
-      "memory.md": 15,
+      "memory.md": 17,
       "oracle/strategies.py": 1,
       "oracle/webhook_orders.py": 2,
       "research/CROSS-ASSET-TRANSFER.md": 1,
@@ -1200341,6 +1200458,7 @@
       "backtester/README.md": 1,
       "backtester/tests/test_kucoin_history.py": 5,
       "bot-manager-handoff.md": 2,
+      "botmanager/tests/test_blind.py": 1,
       "botmanager/tests/test_research.py": 1,
       "code-deep-optimizer-2026-11-06.md": 1,
       "code-deep-optimizer-2026-11-08.md": 1,
@@ -1201145,7 +1201263,7 @@
       "botmanager/src/botmanager/adapters/extension.py": 28,
       "botmanager/src/botmanager/adapters/soltui.py": 46,
       "botmanager/src/botmanager/backup.py": 32,
-      "botmanager/src/botmanager/blind.py": 8,
+      "botmanager/src/botmanager/blind.py": 9,
       "botmanager/src/botmanager/blind_judge.py": 12,
       "botmanager/src/botmanager/browser_commands.py": 2,
       "botmanager/src/botmanager/cli.py": 1,
@@ -1201181,6 +1201299,7 @@
       "botmanager/src/botmanager/supervisor.py": 8,
       "botmanager/src/botmanager/transport.py": 15,
       "botmanager/src/botmanager/worker.py": 3,
+      "botmanager/tests/test_blind.py": 3,
       "botmanager/tests/test_learning.py": 2,
       "botmanager/tests/test_legacy.py": 1,
       "botmanager/tests/test_load.py": 1,
@@ -1202152,6 +1202271,9 @@
       "memory.md": 1
     },
     "ran378tests": {
+      "memory.md": 1
+    },
+    "ran386tests": {
       "memory.md": 1
     },
     "ran_before_review": {
@@ -1207715,6 +1207837,7 @@
       "botmanager/src/botmanager/ledger.py": 1,
       "botmanager/src/botmanager/transport.py": 1,
       "botmanager/src/botmanager/walkthrough.py": 1,
+      "botmanager/tests/test_blind.py": 1,
       "botmanager/tests/test_machine_health.py": 1,
       "code-deep-optimizer-2026-11-06.md": 1,
       "code-deep-optimizer-2026-11-08.md": 7,
@@ -1212833,7 +1212956,7 @@
       "botmanager/src/botmanager/transport.py": 4,
       "botmanager/src/botmanager/walkthrough.py": 6,
       "botmanager/tests/test_backup.py": 7,
-      "botmanager/tests/test_blind.py": 2,
+      "botmanager/tests/test_blind.py": 4,
       "botmanager/tests/test_browser_surfaces.py": 2,
       "botmanager/tests/test_cli.py": 1,
       "botmanager/tests/test_config.py": 3,
@@ -1213185,7 +1213308,7 @@
       "llms/aero-lp-explained-2026-11-06.md": 1,
       "llms/basicmeory-llms.txt": 6,
       "llms/jupsol-llms.txt": 34,
-      "memory.md": 93,
+      "memory.md": 94,
       "mongo/README.md": 4,
       "mongo/load.py": 26,
       "mongo/queries/01-coins-and-bars.js": 1,
@@ -1214404,7 +1214527,7 @@
       "botmanager/src/botmanager/learning_job.py": 1,
       "botmanager/src/botmanager/research_owner.py": 2,
       "botmanager/tests/test_backup.py": 1,
-      "botmanager/tests/test_blind.py": 2,
+      "botmanager/tests/test_blind.py": 4,
       "botmanager/tests/test_config.py": 3,
       "botmanager/tests/test_editing.py": 1,
       "botmanager/tests/test_executor_adapter.py": 1,
@@ -1220131,13 +1220254,14 @@
       ".superpowers/sdd/remaining-2026-11-10/textual-teardown-report.md": 2,
       ".superpowers/sdd/suite-2026-11-10/core-report.md": 2,
       "FILES.md": 1,
+      "botmanager/src/botmanager/blind.py": 1,
       "botmanager/src/botmanager/suite.py": 1,
       "botmanager/src/botmanager/supervisor.py": 5,
       "botmanager/tests/test_suite.py": 3,
       "docs/FILES.md": 3,
       "docs/REPO-HEALTH-2026-11-12.md": 1,
       "docs/external-calls.md": 1,
-      "memory.md": 4,
+      "memory.md": 8,
       "research/tradingview-card-coverage.json": 1,
       "soltui/experiment_jobs.py": 4,
       "soltui/f5_batch.py": 2,
@@ -1220158,6 +1220282,7 @@
       ".cdo/reviews-2026-11-13/soltui-full-a505-independent.json": 1,
       ".cdo/reviews-2026-11-13/soltui-spawn-harness-qualified.json": 2,
       ".superpowers/sdd/remaining-2026-11-10/task-1-report.md": 1,
+      "botmanager/src/botmanager/blind.py": 1,
       "botmanager/src/botmanager/learning_job.py": 1,
       "botmanager/tests/test_blind.py": 1,
       "botmanager/tests/test_learning_job.py": 1,
@@ -1220234,6 +1220359,7 @@
       ".superpowers/sdd/remaining-2026-11-10/task-3-report.md": 2,
       ".superpowers/sdd/remaining-2026-11-10/task-5-report.md": 1,
       ".superpowers/sdd/suite-2026-11-10/core-report.md": 1,
+      "botmanager/tests/test_blind.py": 1,
       "botmanager/tests/test_learning_job.py": 1,
       "botmanager/tests/test_load.py": 1,
       "soltui/tests/test_experiment_interface.py": 1
@@ -1234615,6 +1234741,9 @@
       "soltui/tests/test_bgcontrol.py": 1,
       "soltui/tests/test_bgcontrol_identity.py": 2
     },
+    "recycledpgid": {
+      "memory.md": 1
+    },
     "recycles": {
       "soltui/bgcontrol.py": 1
     },
@@ -1240067,7 +1240196,7 @@
       "botmanager/src/botmanager/blind.py": 1,
       "botmanager/src/botmanager/strategies/__init__.py": 1,
       "botmanager/src/botmanager/walkthrough.py": 1,
-      "botmanager/tests/test_blind.py": 1,
+      "botmanager/tests/test_blind.py": 2,
       "botmanager/tests/test_editing.py": 22,
       "botmanager/tests/test_executor_adapter.py": 1,
       "botmanager/tests/test_operations.py": 1,
@@ -1240214,7 +1240343,7 @@
       "extension/README.md": 1,
       "high_signal_file_index.json": 1,
       "index/make_files_doc.py": 1,
-      "memory.md": 9,
+      "memory.md": 10,
       "research/cross_asset_cpcv.py": 1,
       "soltui/tests/test_docs_browser.py": 2,
       "website/README.md": 1,
@@ -1240610,7 +1240739,7 @@
       "botmanager/src/botmanager/ledger.py": 1,
       "botmanager/src/botmanager/research_owner.py": 1,
       "botmanager/src/botmanager/walkthrough.py": 1,
-      "botmanager/tests/test_blind.py": 2,
+      "botmanager/tests/test_blind.py": 3,
       "botmanager/tests/test_executor_adapter.py": 1,
       "botmanager/tests/test_full_audit_regressions.py": 1,
       "botmanager/tests/test_machine_health.py": 2,
@@ -1245514,7 +1245643,7 @@
       "liquidity/tests/test_executor_audit.py": 2,
       "liquidity/tests/test_full_audit_regressions.py": 2,
       "llms-sitemap.txt": 9,
-      "memory.md": 12,
+      "memory.md": 13,
       "mongo/README.md": 1,
       "mongo/tests/test_analysis_regressions.py": 2,
       "mongo/tests/test_load_audit.py": 2,
@@ -1252789,7 +1252918,7 @@
       "llms-small.txt": 2,
       "llms/jupsol-llms.txt": 2,
       "logging.md": 2,
-      "memory.md": 183,
+      "memory.md": 187,
       "optimization-workbench-plan.md": 2,
       "optimization-workbench-run.md": 2,
       "optimization-workbench.md": 4,
@@ -1253899,6 +1254028,7 @@
       "botmanager/src/botmanager/supervisor.py": 2,
       "botmanager/src/botmanager/walkthrough.py": 1,
       "botmanager/tests/test_accounting.py": 1,
+      "botmanager/tests/test_blind.py": 1,
       "botmanager/tests/test_learning_reads.py": 1,
       "botmanager/tests/test_research.py": 1,
       "botmanager/tests/test_strategy_parity.py": 1,
@@ -1254041,7 +1254171,7 @@
       "llms-facts.txt": 3,
       "llms-full.txt": 3,
       "llms-small.txt": 2,
-      "memory.md": 158,
+      "memory.md": 159,
       "optimization-workbench.md": 4,
       "oracle-optimized-prompt.md": 1,
       "oracle/README.md": 6,
@@ -1258529,7 +1258659,7 @@
       "docs/superpowers/specs/2026-11-09-bot-manager-design.md": 1,
       "ecosystem/README.md": 1,
       "extension/src/ui/control-room.js": 1,
-      "memory.md": 81,
+      "memory.md": 83,
       "oracle-optimized-prompt.md": 2,
       "oracle/README.md": 1,
       "prompts.md": 11,
@@ -1260448,7 +1260578,7 @@
       "liquidity/tests/test_submission_audit.py": 1,
       "llms.txt": 1,
       "llms/aero-lp-explained-2026-11-06.md": 4,
-      "memory.md": 15,
+      "memory.md": 14,
       "optimization-workbench-plan.md": 1,
       "optimization-workbench.md": 1,
       "oracle/README.md": 2,
@@ -1263029,11 +1263159,13 @@
       "bot-manager-oracle-interface.md": 1,
       "bot-manager-quickstart.md": 1,
       "botmanager/README.md": 10,
+      "botmanager/src/botmanager/blind.py": 1,
       "botmanager/src/botmanager/registry.py": 1,
       "botmanager/src/botmanager/report_commands.py": 1,
       "botmanager/src/botmanager/reports.py": 7,
       "botmanager/src/botmanager/research.py": 3,
       "botmanager/src/botmanager/walkthrough.py": 2,
+      "botmanager/tests/test_blind.py": 2,
       "botmanager/tests/test_full_audit_regressions.py": 1,
       "botmanager/tests/test_load.py": 5,
       "botmanager/tests/test_reports.py": 9,
@@ -1265800,6 +1265932,7 @@
       "docs/design/bot-control-room/SKILLS.md": 1,
       "docs/design/soltui-v2/mockup.py": 1,
       "docs/short-horizon-leverage-concept-family.md": 1,
+      "memory.md": 1,
       "prompts.md": 3,
       "research/TRADINGVIEW-SCRIPT-CARDS.md": 2,
       "research/ZEC-GRANULAR-BACKTESTS.md": 1,
@@ -1266303,7 +1266436,7 @@
       "docs/dso-skill/references/passes.md": 1,
       "dso-skill/references/passes.md": 1,
       "index/make_files_doc.py": 2,
-      "memory.md": 1,
+      "memory.md": 2,
       "mongo/queries/05-backtests.js": 1,
       "mongo/schema.py": 1,
       "research/CROSS-ASSET-TRANSFER.md": 6,
@@ -1268644,6 +1268777,7 @@
       "botmanager/README.md": 7,
       "botmanager/src/botmanager/adapters/extension.py": 1,
       "botmanager/src/botmanager/backup.py": 1,
+      "botmanager/src/botmanager/blind.py": 1,
       "botmanager/src/botmanager/blind_judge.py": 1,
       "botmanager/src/botmanager/ledger.py": 2,
       "botmanager/src/botmanager/mutations.py": 1,
@@ -1271135,7 +1271269,7 @@
       "docs/DEVELOPMENT.md": 1,
       "docs/archive/memory-2026-11-10.md": 1,
       "docs/backtester-history-handoff.md": 1,
-      "memory.md": 4
+      "memory.md": 5
     },
     "reruns": {
       ".cdo/reviews-2026-11-12/backtester-independent-initial.json": 1,
@@ -1271838,6 +1271972,9 @@
       "memory.md": 1,
       "research/zec-expanded-20261113.llms/mongo-artifacts.json": 1
     },
+    "research_run_list": {
+      "memory.md": 1
+    },
     "research_runs": {
       "run-log.jsonl": 3
     },
@@ -1271990,6 +1272127,9 @@
       "research/tradingview-script-profiles/shard-c.jsonl": 1,
       "research/tradingview-script-understanding.json": 1,
       "skills/trading-and-investing/references/trading-risks-and-protections.md": 1
+    },
+    "researchmcp": {
+      "memory.md": 1
     },
     "researchorsemanticgate": {
       "archive/memory-2026-11-08.md": 1,
@@ -1275905,6 +1276045,7 @@
     "resourcewarning": {
       ".cdo/reviews-2026-11-12/oracle.json": 6,
       "docs/repo-bootstrap-audit-2026-11-11.md": 1,
+      "memory.md": 1,
       "mongo/tests/test_load.py": 1
     },
     "resourcewarnings": {
@@ -1280063,7 +1280204,7 @@
       "llms-sitemap.txt": 136,
       "llms.txt": 2,
       "logging.md": 1,
-      "memory.md": 43,
+      "memory.md": 44,
       "mongo/README.md": 7,
       "mongo/load.py": 29,
       "mongo/queries/05-backtests.js": 2,
@@ -1286020,7 +1286161,7 @@
       "botmanager/src/botmanager/blind.py": 1,
       "botmanager/src/botmanager/service.py": 2,
       "botmanager/src/botmanager/suite_service.py": 11,
-      "botmanager/tests/test_blind.py": 1,
+      "botmanager/tests/test_blind.py": 5,
       "botmanager/tests/test_cli.py": 3,
       "botmanager/tests/test_ecosystem_adapter.py": 1,
       "botmanager/tests/test_editing.py": 3,
@@ -1287082,6 +1287223,9 @@
     },
     "returnsanalysis": {
       "research/tradingview-card-coverage.json": 1
+    },
+    "returnshttp502": {
+      "memory.md": 1
     },
     "returnstrue": {
       ".cdo/reviews-2026-11-13/cdo-forecast-ops-delta.json": 1
@@ -1288482,6 +1288626,7 @@
       "bot-manager-handoff.md": 2,
       "bot-manager-oracle-interface.md": 2,
       "botmanager/README.md": 3,
+      "botmanager/src/botmanager/blind.py": 1,
       "botmanager/src/botmanager/store.py": 1,
       "botmanager/tests/test_load.py": 4,
       "code-deep-optimizer-2026-11-06.md": 1,
@@ -1297172,7 +1297317,7 @@
       "llms/aero-lp-explained-2026-11-06.md": 2,
       "llms/jupsol-llms.txt": 2,
       "logging.md": 2,
-      "memory.md": 24,
+      "memory.md": 25,
       "onboarding.md": 1,
       "optimization-workbench-plan.md": 3,
       "oracle/guidance.py": 1,
@@ -1301304,7 +1301449,7 @@
       "liquidity/tests/test_submission_audit.py": 4,
       "llms-full.txt": 1,
       "llms-sitemap.txt": 20,
-      "memory.md": 172,
+      "memory.md": 173,
       "mongo/README.md": 1,
       "mongo/queries/08-provenance-and-health.js": 1,
       "mongo/tests/test_analysis_regressions.py": 12,
@@ -1301644,6 +1301789,9 @@
       "memory.md": 1
     },
     "rootfull303sourcecheckisrunningbeforefinalrecordscommit": {
+      "memory.md": 1
+    },
+    "rootfullcomponent": {
       "memory.md": 1
     },
     "rootgate": {
@@ -1308518,7 +1308666,7 @@
       "liquidity/CLAUDE.md": 1,
       "liquidity/pyproject.toml": 3,
       "liquidity/uv.lock": 21,
-      "memory.md": 60,
+      "memory.md": 61,
       "optimization-workbench-run.md": 1,
       "oracle/README.md": 1,
       "prompts.md": 1,
@@ -1313092,7 +1313240,7 @@
       "llms/aero-lp-explained-2026-11-06.md": 1,
       "llms/basicmeory-llms.txt": 8,
       "logging.md": 2,
-      "memory.md": 140,
+      "memory.md": 141,
       "mongo/README.md": 15,
       "mongo/cli.py": 2,
       "mongo/load.py": 62,
@@ -1319277,7 +1319425,7 @@
       "llms-full.txt": 2,
       "llms-sitemap.txt": 2,
       "llms-small.txt": 2,
-      "memory.md": 68,
+      "memory.md": 69,
       "onboarding.md": 1,
       "optimization-workbench-plan.md": 1,
       "optimization-workbench.md": 2,
@@ -1319416,7 +1319564,7 @@
       ".superpowers/sdd/remaining-2026-11-10/progress.md": 1,
       "docs/FILES.md": 1,
       "ecosystem/README.md": 3,
-      "memory.md": 14
+      "memory.md": 15
     },
     "runtime4": {
       "docs/archive/memory-2026-11-10.md": 1
@@ -1327223,6 +1327371,9 @@
     "sandboxing": {
       "TRADINGVIEW-REFERENCE.md": 1,
       "docs/TRADINGVIEW-REFERENCE.md": 1
+    },
+    "sandboxpolicy": {
+      "memory.md": 1
     },
     "sandp500": {
       "research/tradingview-card-coverage.json": 1,
@@ -1354822,7 +1354973,7 @@
       "liquidity/tests/test_submission_audit.py": 4,
       "llms/aero-lp-explained-2026-11-06.md": 1,
       "llms/jupsol-llms.txt": 2,
-      "memory.md": 5,
+      "memory.md": 6,
       "oracle/tests/test_webhook_orders.py": 1,
       "research/coin-intelligence/hype-hyperliquid.md": 1,
       "research/run_backfill.sh": 1,
@@ -1355793,7 +1355944,7 @@
       "llms/basicmeory-llms.txt": 1,
       "llms/defillama-llms.txt": 4,
       "llms/jupsol-llms.txt": 4,
-      "memory.md": 81,
+      "memory.md": 82,
       "mongo/README.md": 2,
       "mongo/load.py": 1,
       "mongo/queries/01-coins-and-bars.js": 1,
@@ -1360377,7 +1360528,7 @@
       "llms-sitemap.txt": 11,
       "llms-small.txt": 3,
       "logging.md": 2,
-      "memory.md": 72,
+      "memory.md": 73,
       "mongo/README.md": 1,
       "onboarding.md": 2,
       "optimization-workbench-plan.md": 2,
@@ -1360631,7 +1360782,7 @@
       "external-calls.md": 4,
       "integrations-and-assumptions.md": 5,
       "llms/defillama-llms.txt": 1,
-      "memory.md": 19,
+      "memory.md": 20,
       "mongo/cli.py": 3,
       "optimization-workbench-run.md": 1,
       "requirements.md": 2,
@@ -1360716,6 +1360867,7 @@
       "docs/TRADINGVIEW-REFERENCE.md": 2,
       "ecosystem/web.py": 2,
       "executor/src/executor/api.py": 1,
+      "memory.md": 1,
       "research/TRADINGVIEW-SCRIPT-CARDS.md": 1,
       "research/tradingview-card-coverage.json": 4,
       "research/tradingview-script-profiles/shard-b.jsonl": 1,
@@ -1362115,7 +1362267,7 @@
       "llms/basicmeory-llms.txt": 4,
       "llms/jupsol-llms.txt": 3,
       "logging.md": 1,
-      "memory.md": 18,
+      "memory.md": 19,
       "oracle/server.py": 11,
       "oracle/tests/test_server.py": 16,
       "prompts.md": 15,
@@ -1378178,7 +1378330,7 @@
       "botmanager/src/botmanager/learning.py": 3,
       "botmanager/src/botmanager/strategies/base.py": 1,
       "botmanager/tests/test_accounting.py": 2,
-      "botmanager/tests/test_blind.py": 2,
+      "botmanager/tests/test_blind.py": 10,
       "botmanager/tests/test_continuation.py": 9,
       "botmanager/tests/test_editing.py": 1,
       "botmanager/tests/test_entry_controls.py": 4,
@@ -1378594,7 +1378746,7 @@
       "backtester/tests/test_research_regressions.py": 3,
       "backtester/tests/test_simulation_blind_audit.py": 1,
       "backtester/tests/test_tool_launcher.py": 3,
-      "botmanager/tests/test_blind.py": 2,
+      "botmanager/tests/test_blind.py": 10,
       "botmanager/tests/test_continuation.py": 7,
       "botmanager/tests/test_editing.py": 1,
       "botmanager/tests/test_entry_controls.py": 1,
@@ -1379134,6 +1379286,7 @@
       "backtester/tests/test_strategy_cards.py": 8,
       "botmanager/src/botmanager/suite.py": 5,
       "botmanager/src/botmanager/supervisor.py": 5,
+      "botmanager/tests/test_blind.py": 6,
       "code-deep-optimizer-2026-11-08.md": 1,
       "design/soltui-v2/mockup.py": 2,
       "docs/TRADINGVIEW-REFERENCE.md": 2,
@@ -1379314,13 +1379467,13 @@
       "botmanager/README.md": 1,
       "botmanager/src/botmanager/blind.py": 1,
       "botmanager/src/botmanager/learning_job.py": 1,
-      "botmanager/tests/test_blind.py": 1,
+      "botmanager/tests/test_blind.py": 4,
       "botmanager/tests/test_supervisor.py": 1,
       "ecosystem/installation.py": 1,
       "extension/e2e/lib/cdp.mjs": 1,
       "extension/test/e2e-harness.test.js": 1,
       "extension/test/file-store-safety.test.js": 3,
-      "memory.md": 3,
+      "memory.md": 5,
       "research/run_backfill.sh": 1,
       "soltui/bgcontrol.py": 2
     },
@@ -1381468,7 +1381621,7 @@
       "botmanager/src/botmanager/strategies/base.py": 2,
       "botmanager/src/botmanager/suite.py": 7,
       "botmanager/src/botmanager/supervisor.py": 7,
-      "botmanager/tests/test_blind.py": 2,
+      "botmanager/tests/test_blind.py": 35,
       "botmanager/tests/test_legacy.py": 1,
       "botmanager/tests/test_load.py": 3,
       "botmanager/tests/test_strategy_parity.py": 1,
@@ -1381895,7 +1382048,7 @@
       "website/src/worker.js": 2
     },
     "signal0": {
-      "memory.md": 1
+      "memory.md": 2
     },
     "signal13": {
       "research/tradingview-script-profile-audits/shard-b.jsonl": 1
@@ -1381952,6 +1382105,9 @@
       "soltui/forwardtest.py": 2,
       "soltui/tests/test_f5_batch.py": 3,
       "soltui/tests/test_health_boundaries.py": 1
+    },
+    "signal_group": {
+      "botmanager/tests/test_blind.py": 6
     },
     "signal_groups": {
       "archive/memory-2026-11-08.md": 1,
@@ -1394921,7 +1395077,7 @@
       "liquidity/src/aero_lp/scout.py": 1,
       "liquidity/tests/test_allocator_ledger.py": 2,
       "liquidity/tests/test_metrics.py": 2,
-      "memory.md": 6,
+      "memory.md": 7,
       "mongo/tests/test_analysis_regressions.py": 1,
       "optimization-workbench-run.md": 1,
       "prompts.md": 1,
@@ -1395585,7 +1395741,7 @@
       "botmanager/src/botmanager/operations_commands.py": 1,
       "botmanager/src/botmanager/suite.py": 2,
       "botmanager/src/botmanager/supervisor.py": 1,
-      "botmanager/tests/test_blind.py": 5,
+      "botmanager/tests/test_blind.py": 9,
       "botmanager/tests/test_entry_controls.py": 2,
       "botmanager/tests/test_health.py": 1,
       "botmanager/tests/test_learning.py": 1,
@@ -1408280,7 +1408436,7 @@
       "llms-sitemap.txt": 6,
       "llms-small.txt": 6,
       "llms.txt": 5,
-      "memory.md": 157,
+      "memory.md": 158,
       "mongo/README.md": 5,
       "mongo/load.py": 1,
       "mongo/queries/01-coins-and-bars.js": 2,
@@ -1408901,7 +1409057,7 @@
       "llms-sitemap.txt": 216,
       "llms-small.txt": 2,
       "logging.md": 1,
-      "memory.md": 106,
+      "memory.md": 107,
       "mongo/README.md": 1,
       "mongo/load.py": 5,
       "mongo/requirements.txt": 1,
@@ -1412970,6 +1413126,9 @@
       "extension/tools/bot-manager-e2e.mjs": 3,
       "mongo/queries/08-provenance-and-health.js": 1
     },
+    "sourcefix": {
+      "memory.md": 1
+    },
     "sourceforecast": {
       "archive/memory-2026-11-08.md": 1,
       "docs/archive/memory-2026-11-08.md": 1
@@ -1414313,7 +1414472,7 @@
       "llms-small.txt": 1,
       "llms/jupsol-llms.txt": 3,
       "market-graph-geometry-prompt.md": 2,
-      "memory.md": 5,
+      "memory.md": 6,
       "mongo/load.py": 5,
       "mongo/queries/03-signals-and-indicators.js": 4,
       "mongo/schema.py": 1,
@@ -1418288,6 +1418447,12 @@
       "optimization-workbench-run.md": 1,
       "skills/trading-and-investing/references/ai-and-ml-for-trading.md": 1,
       "skills/trading-and-investing/references/stock-and-equity-trading.md": 2
+    },
+    "specialist13focused": {
+      "memory.md": 1
+    },
+    "specialist13os": {
+      "memory.md": 1
     },
     "specialistpendingcapacity": {
       ".superpowers/sdd/remaining-2026-11-10/progress.md": 1
@@ -1428560,7 +1428725,7 @@
       "executor/CLAUDE.md": 1,
       "executor/src/executor/config.py": 1,
       "liquidity/config.example.toml": 1,
-      "memory.md": 2,
+      "memory.md": 4,
       "prompts.md": 4,
       "soltui/README.md": 2,
       "soltui/commands.py": 1,
@@ -1433961,7 +1434126,7 @@
       "botmanager/src/botmanager/walkthrough.py": 11,
       "botmanager/src/botmanager/worker.py": 1,
       "botmanager/tests/test_backup.py": 7,
-      "botmanager/tests/test_blind.py": 4,
+      "botmanager/tests/test_blind.py": 12,
       "botmanager/tests/test_browser_surfaces.py": 7,
       "botmanager/tests/test_cli.py": 1,
       "botmanager/tests/test_continuation.py": 31,
@@ -1441964,7 +1442129,7 @@
       "botmanager/src/botmanager/learning_job.py": 12,
       "botmanager/src/botmanager/suite.py": 5,
       "botmanager/src/botmanager/suite_service.py": 1,
-      "botmanager/tests/test_blind.py": 1,
+      "botmanager/tests/test_blind.py": 5,
       "botmanager/tests/test_cli.py": 7,
       "botmanager/tests/test_ecosystem_adapter.py": 1,
       "botmanager/tests/test_editing.py": 7,
@@ -1442480,7 +1442645,7 @@
       "botmanager/src/botmanager/learning_job.py": 3,
       "botmanager/src/botmanager/suite.py": 2,
       "botmanager/src/botmanager/suite_service.py": 2,
-      "botmanager/tests/test_blind.py": 1,
+      "botmanager/tests/test_blind.py": 5,
       "botmanager/tests/test_cli.py": 13,
       "botmanager/tests/test_ecosystem_adapter.py": 2,
       "botmanager/tests/test_editing.py": 9,
@@ -1443819,6 +1443984,7 @@
       "backtester/tests/test_simulation_blind_audit.py": 1,
       "backtester/tests/test_strategy_candidate.py": 1,
       "backtester/tests/test_strategy_cards.py": 2,
+      "botmanager/tests/test_blind.py": 2,
       "botmanager/tests/test_executor_adapter.py": 1,
       "botmanager/tests/test_read_consistency.py": 1,
       "code-deep-optimizer-2026-11-08.md": 1,
@@ -1446804,7 +1446970,7 @@
       "botmanager/src/botmanager/supervisor.py": 5,
       "botmanager/src/botmanager/walkthrough.py": 2,
       "botmanager/tests/test_backup.py": 2,
-      "botmanager/tests/test_blind.py": 2,
+      "botmanager/tests/test_blind.py": 4,
       "botmanager/tests/test_browser_surfaces.py": 2,
       "botmanager/tests/test_continuation.py": 2,
       "botmanager/tests/test_editing.py": 12,
@@ -1446975,7 +1447141,7 @@
     },
     "stopped_at": {
       "botmanager/src/botmanager/adapters/soltui.py": 1,
-      "botmanager/tests/test_blind.py": 2,
+      "botmanager/tests/test_blind.py": 4,
       "botmanager/tests/test_legacy.py": 1,
       "soltui/bots.py": 14,
       "soltui/live_tools.py": 3,
@@ -1448765,7 +1448931,7 @@
       "botmanager/src/botmanager/worker.py": 2,
       "botmanager/tests/__init__.py": 1,
       "botmanager/tests/test_backup.py": 14,
-      "botmanager/tests/test_blind.py": 2,
+      "botmanager/tests/test_blind.py": 4,
       "botmanager/tests/test_browser_surfaces.py": 2,
       "botmanager/tests/test_cli.py": 3,
       "botmanager/tests/test_config.py": 1,
@@ -1459571,7 +1459737,7 @@
       "botmanager/src/botmanager/service.py": 7,
       "botmanager/src/botmanager/suite.py": 5,
       "botmanager/src/botmanager/suite_service.py": 3,
-      "botmanager/tests/test_blind.py": 5,
+      "botmanager/tests/test_blind.py": 14,
       "botmanager/tests/test_cli.py": 4,
       "botmanager/tests/test_ecosystem_adapter.py": 2,
       "botmanager/tests/test_editing.py": 8,
@@ -1461210,6 +1461376,7 @@
       "backtester/tests/test_trianglesim.py": 1,
       "backtester/tests/test_triggers.py": 1,
       "backtester/tests/test_universe.py": 1,
+      "botmanager/tests/test_blind.py": 1,
       "botmanager/tests/test_config.py": 3,
       "botmanager/tests/test_continuation.py": 2,
       "botmanager/tests/test_editing.py": 2,
@@ -1462963,6 +1463130,7 @@
       "botmanager/README.md": 3,
       "botmanager/src/botmanager/receipts.py": 2,
       "botmanager/src/botmanager/suite.py": 1,
+      "botmanager/tests/test_blind.py": 1,
       "botmanager/tests/test_extension_adapter.py": 1,
       "botmanager/tests/test_operations.py": 1,
       "botmanager/tests/test_receipts.py": 1,
@@ -1466858,7 +1467026,7 @@
       "llms-small.txt": 7,
       "llms/jupsol-llms.txt": 1,
       "market-graph-geometry-prompt.md": 2,
-      "memory.md": 101,
+      "memory.md": 103,
       "mongo/README.md": 3,
       "mongo/load.py": 20,
       "mongo/queries/08-provenance-and-health.js": 2,
@@ -1477994,6 +1478162,7 @@
       "docs/strategy-optimization-concept-family.md": 2,
       "docs/worktree-consolidation-2026-11-10.md": 1,
       "index/make_files_doc.py": 1,
+      "memory.md": 2,
       "research/CROSS-ASSET-TRANSFER.md": 1,
       "research/FIVE-MINUTE-PERPS.md": 1,
       "research/RANKED_LISTS.md": 3,
@@ -1485584,7 +1485753,7 @@
       "botmanager/src/botmanager/transport.py": 2,
       "botmanager/src/botmanager/walkthrough.py": 16,
       "botmanager/tests/test_backup.py": 2,
-      "botmanager/tests/test_blind.py": 9,
+      "botmanager/tests/test_blind.py": 15,
       "botmanager/tests/test_cli.py": 4,
       "botmanager/tests/test_ecosystem_adapter.py": 2,
       "botmanager/tests/test_editing.py": 4,
@@ -1493683,7 +1493852,7 @@
     "targetedmacos": {
       ".cdo/reviews-2026-11-13/soltui-spawn-harness-qualified.json": 1,
       "docs/REPO-HEALTH-2026-11-12.md": 1,
-      "memory.md": 1
+      "memory.md": 2
     },
     "targetedmacosjob": {
       "memory.md": 1
@@ -1494248,7 +1494417,7 @@
       "external-calls.md": 1,
       "llms-sitemap.txt": 24,
       "llms/basicmeory-llms.txt": 2,
-      "memory.md": 244,
+      "memory.md": 246,
       "optimization-workbench-run.md": 11,
       "oracle-optimized-prompt.md": 3,
       "oracle/server.py": 4,
@@ -1494635,6 +1494804,9 @@
     },
     "tasks1107": {
       "docs/archive/memory-2026-11-10.md": 1
+    },
+    "tasksource": {
+      "memory.md": 1
     },
     "tasktask2034": {
       "memory.md": 1
@@ -1497453,7 +1497625,7 @@
       "botmanager/src/botmanager/learning_job.py": 3,
       "botmanager/src/botmanager/suite.py": 2,
       "botmanager/tests/test_backup.py": 2,
-      "botmanager/tests/test_blind.py": 5,
+      "botmanager/tests/test_blind.py": 9,
       "botmanager/tests/test_browser_surfaces.py": 3,
       "botmanager/tests/test_cli.py": 2,
       "botmanager/tests/test_continuation.py": 12,
@@ -1498249,7 +1498421,7 @@
       "backtester/tests/test_volty_data_binding.py": 2,
       "botmanager/src/botmanager/blind.py": 1,
       "botmanager/tests/test_backup.py": 1,
-      "botmanager/tests/test_blind.py": 4,
+      "botmanager/tests/test_blind.py": 8,
       "botmanager/tests/test_browser_surfaces.py": 2,
       "botmanager/tests/test_cli.py": 1,
       "botmanager/tests/test_continuation.py": 6,
@@ -1504867,6 +1505039,12 @@
     "test_delta_merges_latest_competing_trend_field": {
       "botmanager/tests/test_read_consistency.py": 1
     },
+    "test_denied_descendant_group_is_refused_and_fixture_cleans_it_up": {
+      "botmanager/tests/test_blind.py": 1
+    },
+    "test_denied_live_group_still_reaps_child_and_preserves_deadline": {
+      "botmanager/tests/test_blind.py": 1
+    },
     "test_deploy_arm_proportional_amounts_for_a_partly_used_token": {
       "liquidity/tests/test_daemon.py": 2
     },
@@ -1506198,6 +1506376,9 @@
     },
     "test_exit_requires_a_sell_and_skips_the_trade_cap": {
       "executor/tests/test_rails.py": 2
+    },
+    "test_exited_child_group_signal_denial_preserves_output_refusal": {
+      "botmanager/tests/test_blind.py": 1
     },
     "test_exited_child_is_not_retried_and_slow_start_is_unavailable": {
       "ecosystem/tests/test_ui_service.py": 1
@@ -1507961,6 +1508142,9 @@
     },
     "test_gross_beats_net_by_the_cost_drag": {
       "backtester/tests/test_engine.py": 1
+    },
+    "test_group_still_present_after_denied_signal_never_reports_success": {
+      "botmanager/tests/test_blind.py": 1
     },
     "test_groups_asset_rows_under_one_rank": {
       "soltui/tests/test_top5.py": 1
@@ -1523290,7 +1523474,7 @@
       "llms-small.txt": 1,
       "llms.txt": 1,
       "market-graph-geometry-prompt.md": 1,
-      "memory.md": 177,
+      "memory.md": 181,
       "mongo/README.md": 7,
       "mongo/load.py": 11,
       "mongo/queries/02-strategies-and-cards.js": 1,
@@ -1524784,7 +1524968,7 @@
       "botmanager/src/botmanager/store.py": 22,
       "botmanager/src/botmanager/suite_service.py": 3,
       "botmanager/tests/test_backup.py": 13,
-      "botmanager/tests/test_blind.py": 4,
+      "botmanager/tests/test_blind.py": 7,
       "botmanager/tests/test_cli.py": 3,
       "botmanager/tests/test_config.py": 3,
       "botmanager/tests/test_ecosystem_adapter.py": 1,
@@ -1539262,7 +1539446,7 @@
       "botmanager/src/botmanager/transport.py": 4,
       "botmanager/src/botmanager/walkthrough.py": 1,
       "botmanager/tests/test_backup.py": 8,
-      "botmanager/tests/test_blind.py": 10,
+      "botmanager/tests/test_blind.py": 18,
       "botmanager/tests/test_continuation.py": 2,
       "botmanager/tests/test_entry_controls.py": 6,
       "botmanager/tests/test_extension_adapter.py": 1,
@@ -1541730,7 +1541914,7 @@
       "botmanager/src/botmanager/adapters/extension.py": 2,
       "botmanager/src/botmanager/adapters/soltui.py": 9,
       "botmanager/src/botmanager/backup.py": 2,
-      "botmanager/src/botmanager/blind.py": 4,
+      "botmanager/src/botmanager/blind.py": 6,
       "botmanager/src/botmanager/health.py": 1,
       "botmanager/src/botmanager/learning.py": 1,
       "botmanager/src/botmanager/learning_job.py": 5,
@@ -1541743,7 +1541927,7 @@
       "botmanager/src/botmanager/suite.py": 3,
       "botmanager/src/botmanager/suite_service.py": 1,
       "botmanager/src/botmanager/supervisor.py": 6,
-      "botmanager/tests/test_blind.py": 4,
+      "botmanager/tests/test_blind.py": 7,
       "botmanager/tests/test_cli.py": 4,
       "botmanager/tests/test_ecosystem_adapter.py": 1,
       "botmanager/tests/test_editing.py": 3,
@@ -1578681,7 +1578865,7 @@
       "botmanager/src/botmanager/adapters/extension.py": 7,
       "botmanager/src/botmanager/adapters/soltui.py": 11,
       "botmanager/src/botmanager/backup.py": 4,
-      "botmanager/src/botmanager/blind.py": 11,
+      "botmanager/src/botmanager/blind.py": 14,
       "botmanager/src/botmanager/cli.py": 1,
       "botmanager/src/botmanager/config.py": 2,
       "botmanager/src/botmanager/data.py": 2,
@@ -1578712,7 +1578896,7 @@
       "botmanager/src/botmanager/supervisor.py": 17,
       "botmanager/src/botmanager/transport.py": 4,
       "botmanager/src/botmanager/worker.py": 6,
-      "botmanager/tests/test_blind.py": 2,
+      "botmanager/tests/test_blind.py": 4,
       "botmanager/tests/test_continuation.py": 1,
       "botmanager/tests/test_entry_controls.py": 1,
       "botmanager/tests/test_health.py": 1,
@@ -1631842,7 +1632026,7 @@
       "liquidity/tests/test_engine.py": 1,
       "liquidity/tests/test_full_audit_regressions.py": 2,
       "liquidity/tests/test_metrics.py": 1,
-      "memory.md": 34,
+      "memory.md": 35,
       "mongo/README.md": 1,
       "mongo/cli.py": 1,
       "mongo/queries/04-decisions.js": 1,
@@ -1632912,7 +1633096,7 @@
       "liquidity/tests/test_daemon.py": 1,
       "llms.txt": 1,
       "llms/jupsol-llms.txt": 1,
-      "memory.md": 76,
+      "memory.md": 77,
       "mongo/cli.py": 2,
       "optimization-workbench-plan.md": 1,
       "optimization-workbench-run.md": 1,
@@ -1637849,7 +1638033,7 @@
       "botmanager/tests/__init__.py": 1,
       "botmanager/tests/test_accounting.py": 2,
       "botmanager/tests/test_backup.py": 3,
-      "botmanager/tests/test_blind.py": 5,
+      "botmanager/tests/test_blind.py": 9,
       "botmanager/tests/test_browser_surfaces.py": 3,
       "botmanager/tests/test_cli.py": 2,
       "botmanager/tests/test_config.py": 3,
@@ -1639111,7 +1639295,7 @@
       "llms/aero-lp-explained-2026-11-06.md": 1,
       "llms/jupsol-llms.txt": 1,
       "logging.md": 1,
-      "memory.md": 31,
+      "memory.md": 32,
       "mongo/README.md": 1,
       "mongo/load.py": 6,
       "mongo/schema.py": 1,
@@ -1656123,7 +1656307,7 @@
       "llms/aero-lp-explained-2026-11-06.md": 1,
       "llms/defillama-llms.txt": 2,
       "llms/jupsol-llms.txt": 3,
-      "memory.md": 334,
+      "memory.md": 336,
       "oracle/README.md": 19,
       "postman/mocks/botmanager-jupiter-swap-v1/README.md": 2,
       "profitable-crypto-strategies-analysis.md": 1,
@@ -1664472,9 +1664656,15 @@
       "memory.md": 1
     },
     "v531": {
-      "memory.md": 4
+      "memory.md": 2
     },
     "v532": {
+      "memory.md": 3
+    },
+    "v533": {
+      "memory.md": 4
+    },
+    "v534": {
       "memory.md": 2
     },
     "v53t": {
@@ -1671677,7 +1671867,7 @@
       "botmanager/src/botmanager/suite_service.py": 1,
       "botmanager/src/botmanager/supervisor.py": 1,
       "botmanager/src/botmanager/transport.py": 8,
-      "botmanager/tests/test_blind.py": 9,
+      "botmanager/tests/test_blind.py": 11,
       "botmanager/tests/test_continuation.py": 2,
       "botmanager/tests/test_executor_adapter.py": 1,
       "botmanager/tests/test_full_audit_regressions.py": 1,
@@ -1671784,6 +1671974,7 @@
       "liquidity/tests/test_providers.py": 1,
       "liquidity/tests/test_safe_exit.py": 1,
       "liquidity/tests/test_strategy.py": 4,
+      "memory.md": 1,
       "mongo/load.py": 10,
       "mongo/schema.py": 2,
       "mongo/tests/test_analysis_regressions.py": 5,
@@ -1674037,7 +1674228,8 @@
     },
     "vanished": {
       "backtester/core/trianglesim.py": 1,
-      "extension/test/core.test.js": 1
+      "extension/test/core.test.js": 1,
+      "memory.md": 1
     },
     "vanishes": {
       ".remember/remember.md": 1,
@@ -1678918,7 +1679110,7 @@
       "extension/tools/control-room-e2e.mjs": 1,
       "extension/tools/soltui-transport.js": 2,
       "index/idle.py": 1,
-      "memory.md": 35,
+      "memory.md": 37,
       "oracle/README.md": 14,
       "research/COINBASE50-GRID-CYCLES.md": 1,
       "research/META-ANALYSIS.md": 1,
@@ -1681131,7 +1681323,7 @@
       "llms.txt": 3,
       "llms/jupsol-llms.txt": 3,
       "market-graph-geometry-prompt.md": 2,
-      "memory.md": 112,
+      "memory.md": 113,
       "optimization-workbench-plan.md": 2,
       "optimization-workbench-run.md": 2,
       "oracle-optimized-prompt.md": 1,
@@ -1682629,7 +1682821,7 @@
       "llms-sitemap.txt": 2,
       "llms-small.txt": 1,
       "llms/jupsol-llms.txt": 23,
-      "memory.md": 76,
+      "memory.md": 75,
       "mongo/README.md": 1,
       "mongo/cli.py": 1,
       "mongo/queries/07-documents-and-search.js": 1,
@@ -1700117,12 +1700309,13 @@
       "backtester/tests/test_index_search_tooling.py": 1,
       "backtester/tests/test_kucoin_history.py": 1,
       "botmanager/README.md": 1,
-      "botmanager/src/botmanager/blind.py": 3,
+      "botmanager/src/botmanager/blind.py": 4,
       "botmanager/src/botmanager/learning_job.py": 1,
       "botmanager/src/botmanager/operations_commands.py": 4,
       "botmanager/src/botmanager/suite.py": 4,
       "botmanager/src/botmanager/walkthrough.py": 1,
       "botmanager/src/botmanager/worker.py": 4,
+      "botmanager/tests/test_blind.py": 1,
       "botmanager/tests/test_load.py": 2,
       "botmanager/tests/test_operations.py": 1,
       "botmanager/tests/test_recovery.py": 1,
@@ -1700556,7 +1700749,7 @@
       ".superpowers/sdd/remaining-2026-11-10/task-1-report.md": 1,
       ".superpowers/sdd/remaining-2026-11-10/task-1-review.md": 1,
       "botmanager/src/botmanager/blind.py": 1,
-      "botmanager/tests/test_blind.py": 1
+      "botmanager/tests/test_blind.py": 5
     },
     "waits": {
       ".cdo/reviews-2026-11-12/executor.json": 23,
@@ -1714500,6 +1714693,12 @@
     "wholeauditstillactive": {
       "memory.md": 1
     },
+    "wholecomponent": {
+      "memory.md": 1
+    },
+    "wholecomponentruff": {
+      "memory.md": 1
+    },
     "wholesale": {
       ".cdo/reviews-2026-11-12/extension-root.json": 81,
       ".cdo/reviews-2026-11-12/research-scripts.json": 1,
@@ -1719024,6 +1719223,9 @@
     "with19": {
       "memory.md": 1
     },
+    "with1environment": {
+      "memory.md": 1
+    },
     "with1medium": {
       "memory.md": 1
     },
@@ -1722785,7 +1722987,7 @@
       "research/zec-expanded-20261113.llms/simulation-source.zip": 1
     },
     "wnohang": {
-      "botmanager/tests/test_blind.py": 1
+      "botmanager/tests/test_blind.py": 5
     },
     "wnot": {
       "research/strategy_experiment/candidate.zip": 1,
@@ -1728957,7 +1729159,7 @@
       "botmanager/src/botmanager/suite_service.py": 1,
       "botmanager/src/botmanager/supervisor.py": 5,
       "botmanager/tests/test_backup.py": 8,
-      "botmanager/tests/test_blind.py": 2,
+      "botmanager/tests/test_blind.py": 3,
       "botmanager/tests/test_editing.py": 4,
       "botmanager/tests/test_extension_adapter.py": 1,
       "botmanager/tests/test_full_audit_regressions.py": 5,
@@ -1729627,7 +1729829,7 @@
       "botmanager/src/botmanager/backup.py": 2,
       "botmanager/src/botmanager/blind.py": 2,
       "botmanager/tests/test_backup.py": 7,
-      "botmanager/tests/test_blind.py": 2,
+      "botmanager/tests/test_blind.py": 3,
       "botmanager/tests/test_editing.py": 3,
       "botmanager/tests/test_full_audit_regressions.py": 2,
       "botmanager/tests/test_health.py": 2,
@@ -1766615,8 +1766817,10 @@
       "research/zec-expanded-20261113.llms/simulation-source.zip": 3
     },
     "zombie": {
+      "botmanager/src/botmanager/blind.py": 1,
       "docs/superpowers/prompts/2026-11-09-bot-manager-audit.md": 1,
       "docs/superpowers/prompts/2026-11-09-bot-manager-original.txt": 1,
+      "memory.md": 3,
       "prompts.md": 1,
       "research/tradingview-card-coverage.json": 4,
       "superpowers/prompts/2026-11-09-bot-manager-audit.md": 1,
@@ -1770818,10 +1771022,10 @@
   },
   "schemaVersion": 1,
   "stats": {
-    "avgDocLength": 1954.6,
+    "avgDocLength": 1954.9,
     "documents": 3660,
-    "terms": 136418,
-    "termsBeforePrune": 136444,
-    "totalTokens": 7153982
+    "terms": 136466,
+    "termsBeforePrune": 136492,
+    "totalTokens": 7154852
   }
 }
