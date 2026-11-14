@@ -803,8 +803,17 @@ $('#year').textContent = new Date().getFullYear();
 render();
 async function initialize() {
   const epoch = state.accountEpoch; const navigation = state.navigationEpoch;
-  const results = await Promise.allSettled([api('/api/config'), api('/research/catalog.json'), api('/api/strategies').catch(() => api('/research/strategies.json')), refreshAccount()]);
-  if (results[0].status === 'fulfilled') { state.config = { ...state.config, ...results[0].value }; if (!Array.isArray(state.config.coins) || !state.config.coins.length) state.config.coins = ['SOL', 'BTC', 'ETH', 'ZEC']; }
+  const config = api('/api/config').then(value => {
+    if (!value || typeof value !== 'object' || Array.isArray(value)) throw new Error('The configuration service returned invalid settings.');
+    state.config = { ...state.config, ...value, customerConnectionsConfigured: value.customerConnectionsConfigured === true };
+    if (!Array.isArray(state.config.coins) || !state.config.coins.length) state.config.coins = ['SOL', 'BTC', 'ETH', 'ZEC'];
+    // Account hydration can render Settings first. Do not wait for unrelated metadata.
+    if (!state.accountTransition && state.accountStatus === 'ready') {
+      if (state.view === 'settings') render();
+      else if (state.view === 'backtest') populateSelects(main);
+    }
+  });
+  const results = await Promise.allSettled([config, api('/research/catalog.json'), api('/api/strategies').catch(() => api('/research/strategies.json')), refreshAccount()]);
   if (results[1].status === 'fulfilled') state.articles = results[1].value.articles || [];
   if (results[2].status === 'fulfilled') state.strategies = results[2].value.strategies || [];
   if (state.accountEpoch === epoch && state.navigationEpoch === navigation) {

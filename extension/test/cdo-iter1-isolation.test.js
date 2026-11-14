@@ -1,3 +1,4 @@
+import { compileFunction } from 'node:vm';
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { EventEmitter } from 'node:events';
@@ -50,7 +51,7 @@ test('CDO-f6d08a1598 an observed unsafe installation aborts dependent dispatch',
   const marker = source.indexOf("await check('installs disarmed,");
   const prefix = source.lastIndexOf('  let installSafe', marker);
   const block = source.slice(prefix >= 0 ? prefix : marker, source.indexOf("  await check('onInstalled logged", marker));
-  const execute = new Function('check', 'sw', 'popup', 'eq', 'send', `return (async () => { ${block}; await send('tick'); })()`);
+  const execute = fixtureFunction('check', 'sw', 'popup', 'eq', 'send', `return (async () => { ${block}; await send('tick'); })()`);
   for (const stored of [{ config: { mode: 'full-auto' }, runtime: { armed: true, killSwitch: false } }, {},
     { config: { mode: 'dry-run' }, runtime: { armed: true, killSwitch: false } }]) {
     const sent = [];
@@ -64,7 +65,7 @@ test('CDO-b9c31bc0e4 lost click acknowledgement still enters test-owned cleanup'
   const source=await sourceText('tools/control-room-e2e.mjs'), click="await browser.evaluate(pageSession, `document.getElementById('controlRoomStart').click()`);";
   const at=source.indexOf(click), before=source.lastIndexOf('  started = true;',at), start=before>=at-30?before:at;
   const block=source.slice(start,source.indexOf('  const healthy =',at));
-  const execute=new Function('browser',`return (async()=>{let started=false,cleaned=false;const pageSession='fixture';try{${block}}catch{}finally{if(started)cleaned=true;}return cleaned;})()`);
+  const execute=fixtureFunction('browser',`return (async()=>{let started=false,cleaned=false;const pageSession='fixture';try{${block}}catch{}finally{if(started)cleaned=true;}return cleaned;})()`);
   assert.equal(await execute({evaluate:async()=>{throw new Error('owned click acknowledgement lost');}}),true);
 });
 test('CDO-129039c193 paper gate refuses price failure and requires positive simulated placement', async()=>{
@@ -85,3 +86,8 @@ test('CDO-e072af742a screenshot artifacts use distinct private directories and e
     for(const file of files){assert.equal((await fs.stat(file)).mode&0o777,0o600);assert.equal((await fs.stat(path.dirname(file))).mode&0o777,0o700);}
   }finally{for(const file of files)await fs.rm(path.dirname(file),{recursive:true,force:true});}
 });
+
+function fixtureFunction(...parts) {
+  const body = parts.pop();
+  return compileFunction(body, parts);
+}

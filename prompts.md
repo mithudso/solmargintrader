@@ -1,6 +1,7 @@
 # Prompt history
 
-Version: 247
+Version: 248
+Delta: v247 to v248; preserve the screenshot showing the disabled Coinbase form on direct Settings entry.
 Delta: v246 to v247; record the owner request for two masked Coinbase credential fields.
 Delta: v245 to v246; preserve the full hosted goal, provider-confirmation replies and observed-price-shape visual-guide request verbatim.
 Delta: v244 to v245; preserve the complete hosted goal, provider-confirmation replies and interactive winning-ZEC TUI request verbatim.
@@ -2277,6 +2278,14 @@ For the shape analysis, make it explain and show what the shape is so I can unde
 ## 2026-11-13 — Masked Coinbase credential entry
 
 My coinbase API keys are two strings, I don't have a file. Just make it an obfuscated text entry box with two fields for the key id and secret.
+
+## 2026-11-14 — Disabled Coinbase connection screenshot
+
+User message: `[Image #1]`
+
+Image supplied at /var/folders/hz/s7btlxx54c32yt375m03q0h40000gn/T/F26E3A26-F5A8-4729-9C1B-873A649B85AC-742-00000482BD4AAF1E/pasted-image-20261114-010418-54370D17-3C9C-4FF4-9C07-81D664F0776A.png. The screenshot shows disabled Key ID, Secret, optional portfolio and Verify and connect controls, with Customer account connections are not available yet. Durable private screenshot: /Users/mitch/.local/state/oraclebot-settings-startup-20261114/reported-disabled-form.png. No credentials are present. Treat this as a request to fix the blocked onboarding.
+
+## Retained PR 235 integration record
 
 ## Preserved PR 235 maintenance checkpoint (before master integration)
 

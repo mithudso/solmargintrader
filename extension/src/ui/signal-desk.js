@@ -4,6 +4,11 @@ import { mountCouncil } from './council.js';
 import { DESK_PAGES, DESK_READS, commandBlock, finite, numberText, percentText,
   runFromEnvelope, comparisonStatus, handoffValues, forwardColumns } from './desk-model.js';
 
+function savedRun(value) {
+  try { return runFromEnvelope({ ok: true, command: 'backtest.results', result: value }); }
+  catch { return null; } // A malformed persisted draft cannot disable the workspace.
+}
+
 const STORE = 'signalDesk.v1';
 const TITLE = { signal: 'Live signals', research: 'Backtesting', forward: 'Forward testing', bots: 'Bot monitor' };
 const PURPOSE = { signal: 'Prices and current strategy signals.',
