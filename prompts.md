@@ -3,6 +3,7 @@
 Version: 244
 Delta: v243 to v244; preserve hosted provider-confirmation replies and the streaming winning-ZEC strategy request verbatim.
 Delta: v242 to v243; record owner confirmation of Sandbox credentials and Workers Paid activation.
+Parallel delta: v242 to v243; add editable winning-strategy TUI.
 Delta: v241 to v242; preserve the complete hosted-ecosystem request and concurrent expanded ZEC strategy, shape and frequency request verbatim.
 Delta: v240 to v241; record explicit authorization to complete the hosted ecosystem.
 
@@ -2258,3 +2259,7 @@ Done
 ## 2026-11-13 — Streaming winning ZEC strategies
 
 Write a script that displays the oracle up/down/flat prediction for all of the winning short term strategies using streaming real time data, include the graph shape if it's available.
+
+## 2026-11-13 — Interactive winning-strategy Oracle TUI
+
+There are qute a lot of strategies displayed in that script, let me select the specific time window I'm looking for. Make this a TUI, with the ability to edit each configuration, select time windows, choose which ones to display manually, increase or decrease the refresh window, see where we are in the shape, also have a list of indicators like RSI, balance of power, and the other succesful ones showing their numbers on the right.
