@@ -1,6 +1,7 @@
 # Work continuation
 
-Version: 544
+Version: 545
+Delta: v544 to v545; stop TUI callbacks before child teardown and verify the deterministic regression.
 Delta: v543 to v544; restore the supported Oracle SDK after final CI exposed an upstream major-version regression.
 Delta: v542 to v543; qualify the interactive TUI and preserve final delivery checks.
 Delta: v541 to v542; implement and exercise the interactive Oracle workbench.
@@ -2267,3 +2268,7 @@ The final 37 focused model, worker and Textual tests passed with exit 0. The com
 ## Required CI SDK compatibility repair
 
 PR258 initial CI failed three of 197 Oracle tests with `MCPError: Connection closed`. The upstream dependency-only PR221 changed mcp 1.30.0 to 2.3.0. Current official migration documentation and an isolated private 2.3.0 environment confirm that lowlevel Server has no list_tools decorator, which oracle/server.py uses. Restore the exact supported 1.30.0 pin in both Oracle manifests; do not migrate the protocol API or weaken tests during this TUI task. Dependency-review package-risk evidence is unavailable from Endor and therefore UNKNOWN; this rollback does not claim a security assessment. The private compatibility environment is disposable and no installed service changed. All 197 Oracle tests passed with exit 0 using the existing qualified environment with MCP 1.30.0. The first minimal private environment lacked NumPy and produced eight import errors; that setup-only attempt is preserved rather than counted as a protocol result. Initial failure log and dependency review are preserved under /Users/mitch/.local/state/solmargintrader/zec-winners-tui-20261113/. Final delivery and canonical acceptance remain pending.
+
+## Final macOS teardown correction
+
+PR258 second CI passed every job except two TUI tests. During framework shutdown, a queued timer called paint after child widgets detached but before App Unmount. The literal failure was textual.css.query.NoMatches: No nodes match '#market' on Screen(id='_default'). In Textual 8.2.8, is_running becomes false before child closure. The app now uses that public lifecycle guard at request/poll/paint boundaries. Its public exit() invokes an idempotent owned stop routine before child teardown; on_unmount retains the same cleanup fallback. No Textual private production lifecycle override or _closed mutation was added. A deterministic test reproduced the failure on f9a7ccc (exit 1), then passed with the fix. The final 39-test focused model/worker/UI suite passed with exit 0. Actual parameter/source/model behavior is unchanged. CI and a fresh canonical live acceptance must bind this final source hash before completion.

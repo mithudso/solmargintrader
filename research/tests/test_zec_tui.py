@@ -211,6 +211,38 @@ class Interface(unittest.IsolatedAsyncioTestCase):
             self.assertGreater(app.data_worker.generation, 1)
             self.assertIsNotNone(app.current_frame)
 
+    async def test_queued_poll_after_child_detach_before_app_unmount_is_inert(self):
+        app = self.app()
+        async with app.run_test(size=(130, 44)) as pilot:
+            await self.ready(app, pilot)
+            app._poll_timer.pause()
+            # Textual 8.2.8 _shutdown marks the pump stopped before awaiting
+            # child closure, and only then dispatches the app's Unmount event.
+            app._running = False
+            await app.screen.remove_children()
+            self.assertFalse(app._display_stopping)
+            self.assertFalse(app.query("#market"))
+            app.poll_workers()  # Reproduce an already queued timer callback.
+            app.paint()  # Other already queued rendering must also be inert.
+            app.request_data(clear=True)
+            self.assertTrue(app._display_stopping)
+        self.assertFalse(app.data_worker.alive)
+        self.assertFalse(app.quote_worker.alive)
+
+    async def test_public_exit_stops_display_before_child_unmount(self):
+        app = self.app()
+        async with app.run_test(size=(130, 44)) as pilot:
+            await self.ready(app, pilot)
+            market = app.query_one("#market", Static)
+            app.exit()
+            self.assertTrue(app._display_stopping)
+            # is_attached becomes false as soon as App.exit sets its flag,
+            # even though the child still has its DOM parent at this point.
+            self.assertIs(market.parent, app.screen)
+            app.poll_workers()
+        self.assertFalse(app.data_worker.alive)
+        self.assertFalse(app.quote_worker.alive)
+
     async def test_worker_failure_clears_all_previous_indicator_and_chart_labels(self):
         source = DataSession(Client(), clock=lambda: self.now[0])
         fail = [False]

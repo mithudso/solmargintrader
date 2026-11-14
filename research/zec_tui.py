@@ -341,7 +341,7 @@ class OracleWinnersApp(App):
         self.set_class(event.size.width < 110, "compact")
 
     def request_data(self, *, clear=False):
-        if self._display_stopping:
+        if self._display_stopping or not self.is_running:
             return
         if clear:
             self.current_frame = None
@@ -357,7 +357,10 @@ class OracleWinnersApp(App):
         self._next_data = time.monotonic() + self.state.refresh
 
     def poll_workers(self):
-        if self._display_stopping:
+        # Textual stops the app's pump before detaching its children; App
+        # Unmount arrives later. A queued timer must not query that torn-down DOM.
+        if self._display_stopping or not self.is_running:
+            self._stop_display()
             return
         now = time.monotonic()
         # Drain before scheduling: submit deliberately supersedes unread output.
@@ -487,6 +490,8 @@ class OracleWinnersApp(App):
         self.update_focus()
 
     def paint(self):
+        if self._display_stopping or not self.is_running:
+            return
         quote = (self.quote_result or {}).get("quote")
         good = (
             quote
@@ -659,12 +664,21 @@ class OracleWinnersApp(App):
             self.request_data(clear=True)
             self.notice("Focused configuration reset to its immutable original.")
 
-    def on_unmount(self):
+    def _stop_display(self):
+        if self._display_stopping:
+            return
         self._display_stopping = True
         if hasattr(self, "_poll_timer"):
             self._poll_timer.stop()
         self.data_worker.close(0.1)
         self.quote_worker.close(0.1)
+
+    def exit(self, result=None, return_code=0, message=None):
+        self._stop_display()
+        super().exit(result, return_code=return_code, message=message)
+
+    def on_unmount(self):
+        self._stop_display()
 
 
 def main(argv=None):
