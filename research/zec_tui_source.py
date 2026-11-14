@@ -7,6 +7,8 @@ import time
 
 from oracle.feeds import FeedUnavailable, RecorderFeed
 from research import zec_live as live
+from research.zec_tui_alerts import HALF
+from research.zec_tui_metrics import STREAK_HASH, streak_reference
 from research.zec_tui_model import market_details
 
 
@@ -128,6 +130,74 @@ class DataSession:
                 "calculated_at": self.clock(),
                 "error": exc.code,
             }
+
+
+class AlertSession(DataSession):
+    """Small fixed-five-minute cache, independent of the selected chart seed."""
+
+    def __init__(self, client=None, clock=time.time):
+        super().__init__(client, clock)
+        self.context = None
+        self.retry_at = -1e12
+        self.last_error = None
+
+    def __call__(self, request, cancelled):
+        now = self.clock()
+        end = int((now - live.SETTLE_SECONDS) // HALF) * HALF
+        try:
+            if cancelled():
+                raise Cancelled()
+            if self.last_error and now < self.retry_at:
+                raise FeedUnavailable(self.last_error)
+            if (
+                self.context is None
+                or self.context["end"] != end
+                or request.get("force") is True
+            ) and now >= self.retry_at:
+                # Six actual closed 5m constituents cover both prior full 10m
+                # bars and the current first half. The venue has no 600s candles.
+                rows = self.fetch(HALF, end - 6 * HALF, end, cancelled)
+                if cancelled():
+                    raise Cancelled()
+                rows = {t: bar for t, bar in rows.items() if end - 6 * HALF <= t < end}
+                if end - HALF not in rows:
+                    raise FeedUnavailable("alert_recent_candle_missing")
+                try:
+                    stats = streak_reference()[600]["conditional"]["up2"]
+                    reference = {
+                        "reversals": stats["next_down"],
+                        "total": stats["n"],
+                        "source_sha256": STREAK_HASH,
+                    }
+                except (OSError, KeyError, ValueError):
+                    reference = None
+                self.context = {
+                    "rows": rows,
+                    "end": end,
+                    "calculated_at": self.clock(),
+                    "error": None,
+                    "reference": reference,
+                }
+                self.last_error, self.retry_at = None, -1e12
+            return copy.deepcopy(self.context)
+        except Cancelled:
+            raise
+        except FeedUnavailable as exc:
+            if self.last_error is None or now >= self.retry_at:
+                self.retry_at = self.clock() + 15
+            self.last_error = exc.code
+            return {
+                "rows": {},
+                "end": end,
+                "calculated_at": self.clock(),
+                "error": exc.code,
+                "reference": None,
+            }
+
+
+def disabled_alert_source(request, cancelled):
+    """Injected apps must explicitly opt into a real alert-history reader."""
+    return {"error": "alert_source_not_attached"}
 
 
 class QuoteReader:

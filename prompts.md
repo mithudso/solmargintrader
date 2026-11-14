@@ -1,6 +1,7 @@
 # Prompt history
 
-Version: 252
+Version: 253
+Delta: v252 to v253; record fixed ten-minute bearish-only reversal alerts.
 Delta: v251 to v252; record streaming indicators, click-to-chart overlays and two-bar TUI request.
 Delta: integrated to v251; retain parallel automated merge ancestry and all owner/research/AdSense records.
 Delta: v249 to v250; merge concurrent AdSense verification and ZEC working-paper request records.
@@ -2309,4 +2310,11 @@ Two things: 1)  If this is true, can I bet on a reversal after two ups or two do
 
 ```text
 1) Add this two bars in a row check to the /Users/mitch/.venvs/soltui/bin/python /Users/mitch/dev/solmargintrader/scripts/oracle_winners.py tui, also add a "refresh now" button which refreshes all the data, also the market indicators should be a streaming and constantly changing set of numbers. Also if I click on an indicator make it project the numbers onto the graph.
+```
+
+
+## Ten-minute bearish alerts in Oracle winners TUI — 2026-11-14
+
+```text
+FOr the  /Users/mitch/.venvs/soltui/bin/python /Users/mitch/dev/solmargintrader/scripts/oracle_winners.py tui add a check that if a full 10 min bar passes up, and midway through the 2nd 10min bar it starts to go down, consider that a reversal. And alert that on the screen near the top. If two full 10 min bars pass up/up, also alert that that the next one is very likely to be down. Don't do the same with down down up/
 ```
