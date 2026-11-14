@@ -41,26 +41,47 @@ class DataSession:
         now = self.clock()
         end = int((now - live.SETTLE_SECONDS) // step) * step
         window = self.windows.setdefault(
-            interval, {"raw": {}, "end": None, "attempt": -1e12, "cycle": {}}
+            interval,
+            {
+                "raw": {},
+                "end": None,
+                "attempt": -1e12,
+                "retry_at": -1e12,
+                "last_error": None,
+                "cycle": {},
+            },
         )
         raw = window["raw"]
         try:
+            if now < window["retry_at"] and window["last_error"]:
+                raise FeedUnavailable(window["last_error"])
             if raw and (end - min(raw)) // step > live.MAX_HISTORY:
                 raise FeedUnavailable("history_capacity_exceeded")
             # Fixed seed: chart lookback and manual selection do not change a
             # stateful strategy's initial conditions or the cycle decision clock.
-            if window["end"] != end and now - window["attempt"] >= 15:
+            force = request.get("force") is True
+            needs_fetch = window["end"] != end or force
+            permitted = now >= window["retry_at"] and (
+                force or now - window["attempt"] >= 15
+            )
+            if needs_fetch and permitted:
                 start = (
                     max(min(raw), max(raw) - 3 * base_step) if raw else end - 512 * step
                 )
                 window["attempt"] = now
                 fetched = self.fetch(base_step, start, end, cancelled)
+                window["last_error"] = None
                 raw.update(fetched)
                 complete = (
                     live.aggregate(raw, base_step, step) if step != base_step else raw
                 )
                 if end - step in complete:
                     window["end"] = end
+                    window["retry_at"] = -1e12
+                else:
+                    # A successful but incomplete provider response is not a
+                    # reason to hammer the endpoint on repeated manual clicks.
+                    window["retry_at"] = now + 15
             rows = live.aggregate(raw, base_step, step) if step != base_step else raw
             if cancelled():
                 raise Cancelled()
@@ -72,10 +93,16 @@ class DataSession:
             )
             if cancelled():
                 raise Cancelled()
+            market_rows = {t: bar for t, bar in rows.items() if t < end}
             return {
                 "interval": interval,
                 "rows": evaluated,
                 "details": details,
+                "market_rows": market_rows,
+                "market_token": live.digest(
+                    live.canonical([interval, end, market_rows]).encode()
+                ),
+                "end": end,
                 "calculated_at": self.clock(),
                 "error": None,
             }
@@ -83,6 +110,9 @@ class DataSession:
             window["attempt"] = -1e12
             raise
         except FeedUnavailable as exc:
+            if window["last_error"] is None or now >= window["retry_at"]:
+                window["retry_at"] = self.clock() + 15
+            window["last_error"] = exc.code
             return {
                 "interval": interval,
                 "rows": [

@@ -316,7 +316,34 @@ def market_details(rows, interval, end, lookback=96, configs=()):
         "shape": live.latest_shape(bars, valid, live.STEPS[interval]),
         "indicators": [],
     }
-    values = result["indicators"]
+    result["indicators"] = market_indicators(clean, configs)
+    if n >= 48:
+        frame = pd.DataFrame(
+            {"timestamp": clean["ts"], "close": close, "high": high, "low": low}
+        )
+        tag = detect_shapes(frame, window=48).iloc[-1]
+        result["shape"].update(
+            episode_age_bars=int(tag.episode_age_bars),
+            turn_phase=str(tag.turn_phase),
+            range_low=float(np.min(low[-48:])),
+            range_high=float(np.max(high[-48:])),
+            trace=close[-48:].tolist(),
+            trace_start=int(clean["ts"][-48]),
+            trace_end=int(clean["ts"][-1]),
+            fitted_turn_bars_ago=(
+                float(tag.fitted_turn_bars_ago)
+                if np.isfinite(tag.fitted_turn_bars_ago)
+                else None
+            ),
+        )
+    return result
+
+
+def market_indicators(clean, configs=()):
+    """Canonical trailing scalar readings; callers control completed/live inputs."""
+    close, high, low = (clean[k] for k in ("close", "high", "low"))
+    n = len(close)
+    values = []
 
     def add(name, value, ready=True):
         values.append(
@@ -399,24 +426,4 @@ def market_details(rows, interval, end, lookback=96, configs=()):
                 add(f"Stoch K{k_period}/D{d_period} %K", k_value)
                 add(f"Stoch K{k_period}/D{d_period} %D", d_value)
     # Multiple strategies can share the same indicator parameters.
-    result["indicators"] = list({r["name"]: r for r in values}.values())
-    if n >= 48:
-        frame = pd.DataFrame(
-            {"timestamp": clean["ts"], "close": close, "high": high, "low": low}
-        )
-        tag = detect_shapes(frame, window=48).iloc[-1]
-        result["shape"].update(
-            episode_age_bars=int(tag.episode_age_bars),
-            turn_phase=str(tag.turn_phase),
-            range_low=float(np.min(low[-48:])),
-            range_high=float(np.max(high[-48:])),
-            trace=close[-48:].tolist(),
-            trace_start=int(clean["ts"][-48]),
-            trace_end=int(clean["ts"][-1]),
-            fitted_turn_bars_ago=(
-                float(tag.fitted_turn_bars_ago)
-                if np.isfinite(tag.fitted_turn_bars_ago)
-                else None
-            ),
-        )
-    return result
+    return list({r["name"]: r for r in values}.values())

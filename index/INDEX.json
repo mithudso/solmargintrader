@@ -1,16 +1,16 @@
 {
-  "generatedAt": "2026-11-14T06:56:48+00:00",
+  "generatedAt": "2026-11-14T08:28:25+00:00",
   "schemaVersion": 1,
   "repoRoot": "~/dev/solmargintrader",
-  "commit": "8c0f31bc",
+  "commit": "f74eeed",
   "counts": {
-    "files": 3725,
-    "bytes": 118369240,
+    "files": 3730,
+    "bytes": 118460937,
     "byKind": {
       "strategy-card": 1478,
       "doc": 795,
-      "test": 406,
-      "code-python": 373,
+      "test": 408,
+      "code-python": 376,
       "config": 275,
       "result": 133,
       "code-js": 114,
@@ -23,7 +23,7 @@
     },
     "byTopDir": {
       "backtester": 1956,
-      "research": 355,
+      "research": 360,
       "soltui": 192,
       ".cdo": 161,
       "docs": 156,
@@ -58,7 +58,7 @@
       "archive": 1,
       "tradingskilllist": 1
     },
-    "withSummary": 3393
+    "withSummary": 3398
   },
   "files": [
     {
@@ -3257,9 +3257,9 @@
       "title": "Read-only by default; nothing here needs write access to the repo.",
       "summary": "",
       "summarySource": "none",
-      "bytes": 21481,
+      "bytes": 21552,
       "lines": 483,
-      "sha1": "412318b168a226c06ffb993bddaa9f11b38927f1",
+      "sha1": "727802daa289bfc94767e144de7ba5aca8aaf84b",
       "symbols": [],
       "imports": [],
       "internalImports": [],
@@ -73589,11 +73589,11 @@
       "ext": ".md",
       "kind": "doc",
       "title": "Oracle winning-strategy TUI",
-      "summary": "Start the interactive, read-only workbench: /Users/mitch/.venvs/soltui/bin/python /Users/mitch/dev/solmargintrader/scripts/oracle_winners.py It opens a focused **1m / baseline / six-strategy** watchlist, with a price and",
+      "summary": "Version: 1.1.0 Delta: add a genuine foreground trade stream, provisional indicator overlays, full refresh and completed two-bar context. Start the interactive, read-only workbench:",
       "summarySource": "opening-prose",
-      "bytes": 13192,
-      "lines": 220,
-      "sha1": "079b0fedb33ca6101c4efbe1f4f0265f9e6133a6",
+      "bytes": 18017,
+      "lines": 286,
+      "sha1": "8671267db79401be4ca163cc5988d5c47e0cbec0",
       "symbols": [],
       "imports": [],
       "internalImports": [],
@@ -86576,11 +86576,11 @@
       "ext": ".md",
       "kind": "doc",
       "title": "Work continuation",
-      "summary": "Version: 559 Delta: integrated to v559; retain parallel automated merge ancestry and all owner/research/AdSense records. Delta: v557 to v558; merge concurrent AdSense and ZEC working-paper continuation records.",
+      "summary": "Version: 562 Delta: v561 to v562; qualify final300s input rendering and complete independent candidate/fixture checks. Delta: v560 to v561; qualify combined80-case source gate and independent32-check live candidate before delivery.",
       "summarySource": "opening-prose",
-      "bytes": 514931,
-      "lines": 2427,
-      "sha1": "09b32eada4b7df381ca0e70d4f2ad16566410762",
+      "bytes": 521495,
+      "lines": 2461,
+      "sha1": "af33f701d600a92f364264a544f5588d6afa1284",
       "symbols": [],
       "imports": [],
       "internalImports": [],
@@ -88857,11 +88857,11 @@
       "ext": ".md",
       "kind": "doc",
       "title": "Prompt history",
-      "summary": "Version: 251 Delta: integrated to v251; retain parallel automated merge ancestry and all owner/research/AdSense records. Delta: v249 to v250; merge concurrent AdSense verification and ZEC working-paper request records.",
+      "summary": "Version: 252 Delta: v251 to v252; record streaming indicators, click-to-chart overlays and two-bar TUI request. Delta: integrated to v251; retain parallel automated merge ancestry and all owner/research/AdSense records.",
       "summarySource": "opening-prose",
-      "bytes": 134659,
-      "lines": 2305,
-      "sha1": "27ca372fa8fc8cc0960af209150cef3d5a0201e2",
+      "bytes": 135211,
+      "lines": 2313,
+      "sha1": "69d529e0bfa715be87080a0b12a79c11a3fd9e94",
       "symbols": [],
       "imports": [],
       "internalImports": [],
@@ -96019,11 +96019,12 @@
       "title": "test_zec_tui",
       "summary": "Real Textual keyboard/mouse, background lifecycle and layout regressions.",
       "summarySource": "docstring",
-      "bytes": 15009,
-      "lines": 346,
-      "sha1": "03e7b20f20e8913fc8c32ae279f382a95206b43c",
+      "bytes": 29449,
+      "lines": 684,
+      "sha1": "6a37d5965d491a43cf91ce176a4fbc317a6dd421",
       "symbols": [
         "class Client",
+        "class FixtureStream",
         "class Interface"
       ],
       "imports": [
@@ -96038,6 +96039,39 @@
         "unittest"
       ],
       "internalImports": [
+        "research"
+      ],
+      "frontmatter": {}
+    },
+    {
+      "id": "research/tests/test_zec_tui_metrics.py",
+      "path": "research/tests/test_zec_tui_metrics.py",
+      "dir": "research/tests",
+      "name": "test_zec_tui_metrics.py",
+      "ext": ".py",
+      "kind": "test",
+      "title": "test_zec_tui_metrics",
+      "summary": "Closed streak causality, live trade isolation, units and history alignment.",
+      "summarySource": "docstring",
+      "bytes": 11272,
+      "lines": 273,
+      "sha1": "a97fa50b562f88129b095fa0ce7c408a2d112667",
+      "symbols": [
+        "sample()",
+        "class TwoBars",
+        "class Metrics",
+        "class Charts"
+      ],
+      "imports": [
+        "__future__",
+        "backtester",
+        "copy",
+        "numpy",
+        "research",
+        "unittest"
+      ],
+      "internalImports": [
+        "backtester",
         "research"
       ],
       "frontmatter": {}
@@ -96073,6 +96107,46 @@
       ],
       "internalImports": [
         "research"
+      ],
+      "frontmatter": {}
+    },
+    {
+      "id": "research/tests/test_zec_tui_stream.py",
+      "path": "research/tests/test_zec_tui_stream.py",
+      "dir": "research/tests",
+      "name": "test_zec_tui_stream.py",
+      "ext": ".py",
+      "kind": "test",
+      "title": "test_zec_tui_stream",
+      "summary": "Actual trade folding, bounded session ownership and loopback RFC6455 tests.",
+      "summarySource": "docstring",
+      "bytes": 12769,
+      "lines": 338,
+      "sha1": "620318e418eb76eff80f76319942a0ddf69cd532",
+      "symbols": [
+        "event()",
+        "class Accumulator",
+        "class SourceRefresh",
+        "class FakeConnection",
+        "class StreamLifecycle"
+      ],
+      "imports": [
+        "__future__",
+        "datetime",
+        "json",
+        "oracle",
+        "queue",
+        "research",
+        "socket",
+        "soltui",
+        "struct",
+        "threading",
+        "time",
+        "unittest"
+      ],
+      "internalImports": [
+        "research",
+        "soltui"
       ],
       "frontmatter": {}
     },
@@ -98217,10 +98291,11 @@
       "title": "zec_tui",
       "summary": "Interactive read-only Oracle workbench for the frozen ZEC winner universe.",
       "summarySource": "docstring",
-      "bytes": 29717,
-      "lines": 763,
-      "sha1": "a405ae709aa303fd749deafdd3218629bb7eed25",
+      "bytes": 41647,
+      "lines": 1048,
+      "sha1": "2e0058cea1c6a7e9e02fac64079be94a9c521c4d",
       "symbols": [
+        "class IndicatorTable",
         "class StrategyPicker",
         "class ConfigEditor",
         "class ShapeGuide",
@@ -98244,6 +98319,75 @@
       "frontmatter": {}
     },
     {
+      "id": "research/zec_tui_chart.py",
+      "path": "research/zec_tui_chart.py",
+      "dir": "research",
+      "name": "zec_tui_chart.py",
+      "ext": ".py",
+      "kind": "code-python",
+      "title": "zec_tui_chart",
+      "summary": "Timestamp-aligned terminal price/indicator plots without a plotting dependency.",
+      "summarySource": "docstring",
+      "bytes": 5105,
+      "lines": 140,
+      "sha1": "d6aaa48bbcf3aa1d18ca893bc13669e7f32069f7",
+      "symbols": [
+        "finite()",
+        "plot_text()",
+        "class MarketChart"
+      ],
+      "imports": [
+        "__future__",
+        "math",
+        "research",
+        "rich",
+        "textual"
+      ],
+      "internalImports": [
+        "research"
+      ],
+      "frontmatter": {}
+    },
+    {
+      "id": "research/zec_tui_metrics.py",
+      "path": "research/zec_tui_metrics.py",
+      "dir": "research",
+      "name": "zec_tui_metrics.py",
+      "ext": ".py",
+      "kind": "code-python",
+      "title": "zec_tui_metrics",
+      "summary": "Causal, display-only streaming indicators and captured-day streak context. Developing trade bars never enter the authoritative winner or shape adapters. Closed history is cached; a new trade computes only one provisional point.",
+      "summarySource": "docstring",
+      "bytes": 11840,
+      "lines": 303,
+      "sha1": "3c6312c8640ec2131e09906bcef0d0081af4d688",
+      "symbols": [
+        "STREAK_HASH",
+        "streak_reference()",
+        "two_bar_context()",
+        "indicator_units()",
+        "compact_two_bar()",
+        "clean_bars()",
+        "valid_live_bar()",
+        "class IndicatorSession"
+      ],
+      "imports": [
+        "__future__",
+        "copy",
+        "functools",
+        "hashlib",
+        "json",
+        "math",
+        "numpy",
+        "research",
+        "time"
+      ],
+      "internalImports": [
+        "research"
+      ],
+      "frontmatter": {}
+    },
+    {
       "id": "research/zec_tui_model.py",
       "path": "research/zec_tui_model.py",
       "dir": "research",
@@ -98253,9 +98397,9 @@
       "title": "zec_tui_model",
       "summary": "Editable display state and causal market details; no trading or UI imports.",
       "summarySource": "docstring",
-      "bytes": 15686,
-      "lines": 423,
-      "sha1": "797e1b33f359aeb2b95588a93339f51665e1aef7",
+      "bytes": 15929,
+      "lines": 430,
+      "sha1": "2876883640d8e790c564bb086ee02c2cc3304283",
       "symbols": [
         "CONFIG_KEYS",
         "LOOKBACKS",
@@ -98266,7 +98410,8 @@
         "default_path()",
         "validate_reference()",
         "class WorkingSet",
-        "market_details()"
+        "market_details()",
+        "market_indicators()"
       ],
       "imports": [
         "__future__",
@@ -98298,9 +98443,9 @@
       "title": "zec_tui_source",
       "summary": "Worker-owned market sessions for the editable read-only Oracle TUI.",
       "summarySource": "docstring",
-      "bytes": 5233,
-      "lines": 144,
-      "sha1": "aa35237bd74befc98ac0532c02566b639b1494d4",
+      "bytes": 6498,
+      "lines": 174,
+      "sha1": "f890e2e49d6baa181e76631d982e287414e4f663",
       "symbols": [
         "class Cancelled",
         "class DataSession",
@@ -98316,6 +98461,48 @@
       ],
       "internalImports": [
         "research"
+      ],
+      "frontmatter": {}
+    },
+    {
+      "id": "research/zec_tui_stream.py",
+      "path": "research/zec_tui_stream.py",
+      "dir": "research",
+      "name": "zec_tui_stream.py",
+      "ext": ".py",
+      "kind": "code-python",
+      "title": "zec_tui_stream",
+      "summary": "Session-owned public trade stream for provisional indicator readings. This is an in-memory subscriber, never a recorder or a trading connection. A first candle starts at the first trade actually observed; it cannot claim the unobserved open, high, low or volume from before attachment or a reconnect.",
+      "summarySource": "docstring",
+      "bytes": 10821,
+      "lines": 314,
+      "sha1": "8079eb9d2a45f708a2fac2c8648758bb969f3b14",
+      "symbols": [
+        "WS_URL",
+        "PRODUCT",
+        "SUBSCRIPTION",
+        "STALE_SECONDS",
+        "_positive()",
+        "_trade_id()",
+        "_timestamp()",
+        "class TradeAccumulator",
+        "class DisabledStream",
+        "class TradeStream"
+      ],
+      "imports": [
+        "__future__",
+        "copy",
+        "datetime",
+        "json",
+        "math",
+        "research",
+        "soltui",
+        "threading",
+        "time"
+      ],
+      "internalImports": [
+        "research",
+        "soltui"
       ],
       "frontmatter": {}
     },

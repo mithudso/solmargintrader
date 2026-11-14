@@ -1,6 +1,7 @@
 # Prompt history
 
-Version: 251
+Version: 252
+Delta: v251 to v252; record streaming indicators, click-to-chart overlays and two-bar TUI request.
 Delta: integrated to v251; retain parallel automated merge ancestry and all owner/research/AdSense records.
 Delta: v249 to v250; merge concurrent AdSense verification and ZEC working-paper request records.
 Delta: integrated to v250; preserve concurrent published ZEC reversal paper and qualified AdSense verification changes.
@@ -2301,4 +2302,11 @@ Supplied screenshots preserved privately under /Users/mitch/.local/state/oracleb
 
 ```text
 Two things: 1)  If this is true, can I bet on a reversal after two ups or two down 10 mins?  10 minutes                          1.80 bars                        1.72 bars                20.8%                    41.4%     and 2) Can you write this up into a paper and post it on the oraclebot.io site?
+```
+
+
+## Oracle winner live indicators and two-bar check — 2026-11-14
+
+```text
+1) Add this two bars in a row check to the /Users/mitch/.venvs/soltui/bin/python /Users/mitch/dev/solmargintrader/scripts/oracle_winners.py tui, also add a "refresh now" button which refreshes all the data, also the market indicators should be a streaming and constantly changing set of numbers. Also if I click on an indicator make it project the numbers onto the graph.
 ```
