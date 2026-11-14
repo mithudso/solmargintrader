@@ -60,15 +60,12 @@ def export(repo=ROOT):
         if any(word in source.lower() for word in EXCLUDE_WORDS) or Path(source).name in ("FILES.md",):
             skipped.append({"source": source, "reason": "workflow_or_review_artifact"})
             continue
-        path = repo / source
-        relative = Path(source)
-        if (relative.is_absolute() or ".." in relative.parts
-                or any((repo / Path(*relative.parts[:i])).is_symlink()
-                       for i in range(1, len(relative.parts) + 1))
-                or not path.resolve().is_relative_to(repo)
-                or not stat.S_ISREG(path.stat().st_mode)):
-            raise ValueError(f"unsafe publication source: {source}")
-        original = path.read_bytes()
+        candidate = repo / source
+        # Git tracks symlinks, and an untracked parent can also redirect a tracked
+        # name. Refuse both before reading any content outside the publication tree.
+        if candidate.resolve() != candidate:
+            raise ValueError(f"symlink refused in {source}")
+        original = candidate.read_bytes()
         text = original.decode("utf-8")
         if SENSITIVE.search(text):
             raise ValueError(f"credential-like content refused in {source}")

@@ -92,6 +92,7 @@ export function viableScoutPools(scoutPools, { minNetAprPct }) {
     .filter((p) => p.confidence === 'high' || p.confidence === 'medium')
     .filter((p) => Array.isArray(p.flags) && p.flags.length === 0)
     .filter((p) => p.gauge_active === true)
+    .filter((p) => finite(p.break_even_deposit_usd) !== null && p.break_even_deposit_usd >= 0)
     .sort((a, b) => b.expected_net_apr - a.expected_net_apr);
 }
 

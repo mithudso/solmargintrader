@@ -177,6 +177,7 @@ export async function launch({ chrome, extension, noSandbox = false, headless = 
     version = (await call('Browser.getVersion')).product;
     if (beforeLoad) await beforeLoad({ call, on, close });
     ({ id: extensionId } = await call('Extensions.loadUnpacked', { path: path.resolve(extension) }));
+    version = (await call('Browser.getVersion')).product;
   } catch (e) {
     await close();
     throw e;

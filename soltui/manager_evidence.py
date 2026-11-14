@@ -517,11 +517,17 @@ class ManagerEvidence:
         with self._connect() as db:
             clients = [
                 dict(r)
-                for r in db.execute("SELECT root,kind,active FROM manager_clients")
+                for r in db.execute("SELECT root,kind,active,identity FROM manager_clients")
             ]
         for client in clients:
-            client["active"] = bool(client["active"])
-            self.manager_register_client(client)
+            previous = json.loads(client["identity"])
+            declared = previous.get("declared_active")
+            # An observed flock may later clear. Explicit manual declarations
+            # and legacy records whose origin is unknown remain conservative.
+            self.manager_register_client({
+                "root": client["root"], "kind": client["kind"],
+                "active": declared if type(declared) is bool else bool(client["active"]),
+            })
         with self._connect() as db:
             db.execute("BEGIN IMMEDIATE")
             state = db.execute(
@@ -792,6 +798,7 @@ class ManagerEvidence:
         from .research_admission import inspect_history
 
         evidence = inspect_history(root, descriptor["kind"])
+        evidence["declared_active"] = descriptor["active"]
         with self._connect() as db:
             previous = db.execute(
                 "SELECT kind,identity FROM manager_clients WHERE root=?", (str(root),)

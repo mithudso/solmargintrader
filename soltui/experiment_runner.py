@@ -28,6 +28,10 @@ from . import bots, pricefeed
 from .config import Settings
 from .experiments import ExperimentError, ExperimentStore, preview_space
 from .research_admission import native_authority, optimizer_lease, participating
+from .source_epoch import SourceEpoch, SourceEpochChanged
+
+_REPO = Path(__file__).resolve().parents[1]
+_SOURCE_EPOCH = SourceEpoch.capture(_REPO)
 
 SCHEMA_VERSION = 1
 MAX_EVALUATIONS = 20_000
@@ -81,7 +85,8 @@ def run_active(run_id: str, store: ExperimentStore | None = None) -> bool:
         return True
 
 
-def _code_fingerprint() -> str:
+def _disk_code_fingerprint() -> str:
+    """Hash current path bytes; this helper alone makes no loaded-code claim."""
     root = Path(__file__).resolve().parents[1]
     paths = sorted((root / "backtester" / "core").rglob("*.py"))
     paths += [root / "soltui" / name for name in ("bots.py", "trend.py", "experiment_runner.py", "experiments.py")]
@@ -92,6 +97,12 @@ def _code_fingerprint() -> str:
         h.update(path.read_bytes())
         h.update(b"\0")
     return h.hexdigest()
+
+
+def _code_fingerprint() -> str:
+    """Admit current disk identity only within this fresh worker import epoch."""
+    _SOURCE_EPOCH.verify(_REPO)
+    return _disk_code_fingerprint()
 
 
 def _settings(settings: Any = None) -> dict[str, Any]:
@@ -258,6 +269,7 @@ def preview_experiment(bot: str, settings: Any = None, *, space: dict | None = N
                        max_evaluations: int = MAX_EVALUATIONS, store: ExperimentStore | None = None,
                        config_coin: str | None = None) -> dict[str, Any]:
     """Read local inputs and return the exact workload; never run a simulator."""
+    _SOURCE_EPOCH.verify(_REPO)
     bot = bots._bot(bot)
     windows, window_days, max_candidates, max_evaluations = _limits(windows, window_days, max_candidates, max_evaluations)
     if config_coin is not None and (bot == "triangle" or not coins or len(coins) != 1
@@ -303,6 +315,7 @@ def preview_experiment(bot: str, settings: Any = None, *, space: dict | None = N
 
 def prepare_experiment(bot: str, settings: Any = None, **kwargs: Any) -> dict[str, Any]:
     """Persist a complete immutable experiment specification before evaluation."""
+    _SOURCE_EPOCH.verify(_REPO)
     store = kwargs.pop("store", None) or ExperimentStore()
     preview = preview_experiment(bot, settings, store=store, **kwargs)
     spec = {**preview, "schema_version": SCHEMA_VERSION, "source": "native",
@@ -321,6 +334,7 @@ def prepare_experiment(bot: str, settings: Any = None, **kwargs: Any) -> dict[st
                            "borrow_bps_per_day": 0.0, "fill_delay": None if preview["bot"] == "triangle" else 1}}
     spec["data_fingerprint"] = _digest([{k: row[k] for k in ("key", "data_fingerprint")} for row in spec["windows"]])
     spec["fingerprint"] = _digest(spec)
+    _SOURCE_EPOCH.verify(_REPO)
     run_id = store.create_run(spec)
     return store.get_run(run_id)
 
@@ -396,6 +410,7 @@ def _halt(store: ExperimentStore, run_id: str) -> bool:
 
 def _evaluate(store: ExperimentStore, run_id: str, spec: dict, settings: Any, descriptors: list[dict],
               indices: list[int], progress: Callable[[float, str], None] | None) -> bool:
+    _SOURCE_EPOCH.verify(_REPO)
     completed = {(c["candidate_id"], c["cell_key"]): c for c in store.cells(run_id, include_holdout=True)}
     costs = bots._costs(settings)
     loaded: dict[str, dict] = {}
@@ -404,6 +419,7 @@ def _evaluate(store: ExperimentStore, run_id: str, spec: dict, settings: Any, de
     total = max(1, len(descriptors) * len(indices))
     done = 0
     for window in descriptors:
+        _SOURCE_EPOCH.verify(_REPO)
         if _halt(store, run_id):
             return False
         # Verify even fully checkpointed windows. A resumed report must not hide
@@ -419,6 +435,7 @@ def _evaluate(store: ExperimentStore, run_id: str, spec: dict, settings: Any, de
         else:
             data = _reload_bar(window, settings, loaded)
         for index in indices:
+            _SOURCE_EPOCH.verify(_REPO)
             if _halt(store, run_id):
                 return False
             candidate_id = str(index)
@@ -430,6 +447,9 @@ def _evaluate(store: ExperimentStore, run_id: str, spec: dict, settings: Any, de
                 try:
                     record["metrics"] = _metrics(spec["bot"], spec["candidates"][index], data, costs,
                                                    window["coin"], spec["products"])
+                    _SOURCE_EPOCH.verify(_REPO)
+                except SourceEpochChanged:
+                    raise
                 except (ValueError, RuntimeError, ArithmeticError) as exc:
                     record.update(status="failed", metrics={}, error=f"{type(exc).__name__}: {exc}")
                 store.record_cell(run_id, candidate_id, window["key"], record)
@@ -595,6 +615,7 @@ def run_experiment(run_id: str, settings: Any = None, *, final: bool = False, ad
     finishes, commits and then acknowledges the request. A process death releases
     the OS lock and leaves exactly the committed cells available for resumption.
     """
+    _SOURCE_EPOCH.verify(_REPO)
     store = store or ExperimentStore()
     native_authority(store)
     with optimizer_lease(store.root), _lock(store, "run:" + run_id):

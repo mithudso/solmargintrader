@@ -1,7 +1,8 @@
 # The extension has zero runtime and zero dev dependencies by design (see
-# CLAUDE.md, House style), so it has no npm ecosystem entry. The separate hosted
-# website has a pinned development tool and its own lockfile. Action SHAs and
-# Python component requirements are maintained separately.
+# CLAUDE.md, House style), so there is deliberately no npm ecosystem entry: an
+# npm updater for the extension would have nothing to update. The separate
+# website uses pinned Wrangler development tooling and needs its own npm entry.
+# Pinned action SHAs and Python requirements also need maintenance.
 version: 2
 updates:
   - package-ecosystem: github-actions
@@ -80,6 +81,7 @@ updates:
       prefix: "deps"
     open-pull-requests-limit: 3
 
+  # Development tooling only; website has no runtime npm dependencies.
   - package-ecosystem: npm
     directory: /website
     schedule:

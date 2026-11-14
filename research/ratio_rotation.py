@@ -1378,6 +1378,12 @@ def main(argv: Sequence[str] | None = None) -> int:
     if (args.leverage != 1.0 or args.fill_delay != 0) and not args.sweep:
         ap.error("--leverage and --fill-delay require --sweep")
 
+    if args.leverage != 1.0 or args.fill_delay != 0:
+        ap.error("--leverage and --fill-delay are not wired to these study actions; use the simulate() API explicitly")
+    if not any((args.self_test, args.universes, args.turnover_table, args.demo_chain, args.sweep, args.carry)):
+        ap.print_help()
+        return 0
+
     if args.self_test:
         return self_test()
 

@@ -1,0 +1,17 @@
+{
+  "full_csv_readback": true,
+  "bytes": 17637322,
+  "sha256": "1ec8410c4f465de50d71d792c1c3fba0af6085dd1656f76dfce14f396d7b24ed",
+  "encoded_chars": 2711016,
+  "transport_fragments": 24,
+  "rows": 85312,
+  "full_proof_readback": true,
+  "proof_bytes": 167645,
+  "proof_sha256": "0bdd4ddd317887ac1f7a26121a2236f16072197886ddde735ca1c6d7632068b5",
+  "full_frozen_plan_readback": true,
+  "frozen_plan_bytes": 2630507,
+  "frozen_plan_sha256": "64a162296edecf416afeaa77b8ae00a834e841af0cd10788811bd9883d8719dd",
+  "actual_plan_reconstructed_exact_json": true,
+  "identity_1535_hashes_reconstructed_exact": true,
+  "all_fits_nulls_coverage_input_audits_match": true
+}

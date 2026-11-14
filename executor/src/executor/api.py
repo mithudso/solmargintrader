@@ -21,6 +21,7 @@ from __future__ import annotations
 import argparse
 import hmac
 import json
+import logging
 import os
 import re
 import secrets
@@ -39,8 +40,10 @@ from .errors import ExecutorError
 HOST = "127.0.0.1"
 DEFAULT_PORT = 8789
 MAX_BODY_BYTES = 1024 * 1024
+LOGGER = logging.getLogger(__name__)
+
 MAX_CONNECTIONS = 16
-REQUEST_TIMEOUT_S = 10.0
+REQUEST_TIMEOUT_S = 5.0
 
 
 class BoundedHTTPServer(ThreadingHTTPServer):
@@ -117,11 +120,25 @@ def make_handler(token: str):
         server_version = "executor-api"
         protocol_version = "HTTP/1.1"
 
+        def setup(self):
+            super().setup()
+            self.connection.settimeout(REQUEST_TIMEOUT_S)
+
         def log_message(self, fmt: str, *args: Any) -> None:  # request lines carry query values
             pass
 
         def _send(self, status: int, body: str) -> None:
             data = body.encode("utf-8")
+            LOGGER.log(
+                logging.WARNING if status >= 400 else logging.INFO,
+                json.dumps(
+                    {
+                        "event": "executor_api_response",
+                        "status": status,
+                        "command": getattr(self, "_safe_command", "unknown"),
+                    }
+                ),
+            )
             self.send_response(status)
             self.send_header("content-type", "application/json; charset=utf-8")
             self.send_header("content-length", str(len(data)))
@@ -133,22 +150,16 @@ def make_handler(token: str):
             self.wfile.write(data)
 
         def _refuse(self, status: int, code: str, message: str, name: str = "") -> None:
+            self.close_connection = True  # Early refusals may leave an unread request body.
             self._send(status, registry.dumps(registry.error_envelope(name, code, message)))
 
         def _handle(self, method: str) -> None:
-            # POST refusals may leave an unread body. Close every POST rather
-            # than interpreting those bytes as the next persistent request.
-            if method == "POST":
-                self.close_connection = True
+            self._safe_command = "unknown"
             try:
-                length = self._body_length()
-                if method == "GET" and length:
-                    raise ExecutorError("GET request bodies are not supported", "bad_params")
-            except ExecutorError as exc:
-                self.close_connection = True
-                self._refuse(413 if "too large" in exc.message else 400, exc.code, exc.message)
+                url = urlsplit(self.path)
+            except ValueError:
+                self._refuse(400, "bad_params", "invalid request target")
                 return
-            url = urlsplit(self.path)
             path = url.path.rstrip("/")
             if path == "/v1/health" and method == "GET":
                 self._send(200, registry.dumps({"ok": True, "service": "executor", "commands": len(registry.COMMANDS)}))
@@ -176,6 +187,7 @@ def make_handler(token: str):
                 env = registry.dispatch(name, {}, surface="api")  # logged like every other call
                 self._send(404, registry.dumps(env))
                 return
+            self._safe_command = name
             try:
                 if method == "GET":
                     if not cmd.read_only:
@@ -193,16 +205,22 @@ def make_handler(token: str):
 
         def _body_length(self) -> int:
             lengths = self.headers.get_all("Content-Length", [])
-            if self.headers.get("Transfer-Encoding") is not None or len(lengths) > 1:
-                raise ExecutorError("unsupported or ambiguous request framing", "bad_params")
+            if self.headers.get("Transfer-Encoding") is not None or len(self.headers.get_all("Content-Length", [])) > 1:
+                self.close_connection = True
+                raise ExecutorError("unsupported request body framing", "bad_params")
             try:
                 text = lengths[0].strip() if lengths else "0"
                 if not text.isascii() or not text.isdecimal():
                     raise ValueError
                 length = int(text)
             except ValueError:
+                self.close_connection = True
                 raise ExecutorError("bad Content-Length", "bad_params") from None
+            if length < 0:
+                self.close_connection = True
+                raise ExecutorError("bad Content-Length", "bad_params")
             if length > MAX_BODY_BYTES:
+                self.close_connection = True
                 raise ExecutorError("request body too large", "bad_params")
             return length
 
@@ -245,9 +263,15 @@ def create_server(port: int = 0, token: str | None = None) -> ThreadingHTTPServe
 
 
 def main(argv: list[str] | None = None) -> int:
-    parser = argparse.ArgumentParser(prog="executor api", description="executor HTTP API on 127.0.0.1")
-    parser.add_argument("--port", type=int, default=int(os.environ.get("EXECUTOR_API_PORT", DEFAULT_PORT)))
+    parser = argparse.ArgumentParser(
+        prog="executor api",
+        description="executor HTTP API on 127.0.0.1",
+        epilog="Example: executor api --port 8789 (token stays in the protected token file)",
+    )
+    parser.add_argument("--port", type=int, default=os.environ.get("EXECUTOR_API_PORT", DEFAULT_PORT))
     args = parser.parse_args(argv)
+    if not 0 <= args.port <= 65535:
+        parser.error("--port must be between 0 and 65535")
     server = create_server(args.port)
     print(f"executor API on http://{HOST}:{server.server_address[1]}  token file: {token_path()}", file=sys.stderr)
     try:

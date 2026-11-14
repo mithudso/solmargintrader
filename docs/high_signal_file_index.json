@@ -11,9 +11,16 @@
     "executor",
     "botmanager",
     "oracle",
-    "ecosystem"
+    "ecosystem",
+    "website"
   ],
   "files": [
+    {
+      "path": "website",
+      "component": "website",
+      "kind": "directory",
+      "summary": "JavaScript ESM/Python | Stripe billing can charge members when configured; saved trading definitions remain inactive"
+    },
     {
       "path": "ecosystem",
       "component": "ecosystem",
@@ -75,18 +82,130 @@
       "summary": "Python 3.13 + solders (own venv) | Yes \u2014 guarded Jupiter swaps (dry-run by default)"
     },
     {
+      "path": "website/README.md",
+      "component": "website",
+      "kind": "markdown",
+      "summary": "Implemented website scope, independent readiness gates, setup and deployment",
+      "lines": 127
+    },
+    {
+      "path": "website/package.json",
+      "component": "website",
+      "kind": "json",
+      "summary": "Node test/syntax commands and pinned Wrangler development tool",
+      "lines": 20
+    },
+    {
+      "path": "website/package-lock.json",
+      "component": "website",
+      "kind": "json",
+      "summary": "Locked website development dependencies",
+      "lines": 1604
+    },
+    {
+      "path": "website/wrangler.jsonc",
+      "component": "website",
+      "kind": "other",
+      "summary": "Production Worker, assets, D1 and cron bindings",
+      "lines": 44
+    },
+    {
+      "path": "website/wrangler.dev.jsonc",
+      "component": "website",
+      "kind": "other",
+      "summary": "Separate local development configuration without production routes",
+      "lines": 33
+    },
+    {
+      "path": "website/src/worker.js",
+      "component": "website",
+      "kind": "javascript",
+      "summary": "Wallet authentication, tenant API, Stripe entitlement and read-only analysis proxy",
+      "lines": 344
+    },
+    {
+      "path": "website/public/app.js",
+      "component": "website",
+      "kind": "javascript",
+      "summary": "Browser account, research and inactive-paper-definition interface",
+      "lines": 445
+    },
+    {
+      "path": "website/public/evidence.js",
+      "component": "website",
+      "kind": "javascript",
+      "summary": "Research/Oracle evidence presentation and expiry checks",
+      "lines": 6
+    },
+    {
+      "path": "website/engine/server.py",
+      "component": "website",
+      "kind": "python",
+      "summary": "Bounded canonical backtests and inert Oracle archive HTTP adapter",
+      "lines": 350
+    },
+    {
+      "path": "website/engine/README.md",
+      "component": "website",
+      "kind": "markdown",
+      "summary": "Analysis request, token, input and provenance contract",
+      "lines": 57
+    },
+    {
+      "path": "website/scripts/export_research.py",
+      "component": "website",
+      "kind": "python",
+      "summary": "Deterministic public research catalog/body export and hash checks",
+      "lines": 127
+    },
+    {
+      "path": "website/test/api.test.js",
+      "component": "website",
+      "kind": "javascript",
+      "summary": "Worker account, tenant, billing and refusal fixtures",
+      "lines": 347
+    },
+    {
+      "path": "website/test/evidence.test.js",
+      "component": "website",
+      "kind": "javascript",
+      "summary": "Evidence units, freshness and eligibility regressions",
+      "lines": 11
+    },
+    {
+      "path": "website/engine/test_server.py",
+      "component": "website",
+      "kind": "python",
+      "summary": "Synthetic analysis requests, limits and authentication tests",
+      "lines": 228
+    },
+    {
+      "path": "website/engine/test_research.py",
+      "component": "website",
+      "kind": "python",
+      "summary": "Public-export source selection and content regression tests",
+      "lines": 84
+    },
+    {
+      "path": ".github/workflows/website.yml",
+      "component": "repo",
+      "kind": "yaml",
+      "summary": "Website Node/Python/export CI gates",
+      "lines": 29
+    },
+    {
       "path": "ecosystem/cli.py",
       "component": "ecosystem",
       "kind": "python",
       "summary": "Installed solecosystem command parser and dispatch",
-      "lines": 212
+      "lines": 217
     },
     {
       "path": "ecosystem/runner.py",
       "component": "ecosystem",
       "kind": "python",
       "summary": "Resumable paper pipeline coordination",
-      "lines": 662
+      "lines": 667
     },
     {
       "path": "ecosystem/recovery.py",
@@ -107,14 +226,14 @@
       "component": "ecosystem",
       "kind": "python",
       "summary": "Loopback control room and collector routes",
-      "lines": 555
+      "lines": 561
     },
     {
       "path": "ecosystem/ui_service.py",
       "component": "ecosystem",
       "kind": "python",
       "summary": "Verified UI checkpoint, manager binding and startup",
-      "lines": 401
+      "lines": 445
     },
     {
       "path": "ecosystem/wiki.py",
@@ -128,49 +247,49 @@
       "component": "repo",
       "kind": "python",
       "summary": "Offline public-document snapshot generator",
-      "lines": 209
+      "lines": 218
     },
     {
       "path": "docs/ECOSYSTEM-WIKI.md",
       "component": "repo",
       "kind": "markdown",
       "summary": "Project wiki navigation and maintenance ownership",
-      "lines": 151
+      "lines": 152
     },
     {
       "path": "oracle/cli.py",
       "component": "oracle",
       "kind": "python",
       "summary": "Explicit source/archive CLI",
-      "lines": 327
+      "lines": 328
     },
     {
       "path": "oracle/engine.py",
       "component": "oracle",
       "kind": "python",
       "summary": "Observation and strategy evaluation owner",
-      "lines": 570
+      "lines": 575
     },
     {
       "path": "oracle/store.py",
       "component": "oracle",
       "kind": "python",
       "summary": "Historical observation archive",
-      "lines": 129
+      "lines": 141
     },
     {
       "path": "oracle/reader.py",
       "component": "oracle",
       "kind": "python",
       "summary": "Bounded read-only archive access",
-      "lines": 365
+      "lines": 405
     },
     {
       "path": "oracle/server.py",
       "component": "oracle",
       "kind": "python",
       "summary": "Read-only MCP tools and subscriptions",
-      "lines": 430
+      "lines": 436
     },
     {
       "path": "oracle/guidance.py",
@@ -191,14 +310,14 @@
       "component": "oracle",
       "kind": "python",
       "summary": "Bounded authenticated TradingView ingress and durable deduplication",
-      "lines": 213
+      "lines": 246
     },
     {
       "path": "oracle/webhook_orders.py",
       "component": "oracle",
       "kind": "python",
       "summary": "Journal, one-shot Coinbase submission and read-only reconciliation",
-      "lines": 237
+      "lines": 261
     },
     {
       "path": "oracle/coinbase_orders.py",
@@ -212,14 +331,14 @@
       "component": "oracle",
       "kind": "python",
       "summary": "Durable GUM close/settle/open position transitions",
-      "lines": 452
+      "lines": 454
     },
     {
       "path": "oracle/gum_orders.py",
       "component": "oracle",
       "kind": "python",
       "summary": "Verified locally constructed ZEC order Actions and fill read-back",
-      "lines": 957
+      "lines": 958
     },
     {
       "path": "oracle/gum_signer.py",
@@ -254,21 +373,21 @@
       "component": "botmanager",
       "kind": "python",
       "summary": "Durable runtime/account state",
-      "lines": 1736
+      "lines": 1751
     },
     {
       "path": "botmanager/src/botmanager/suite.py",
       "component": "botmanager",
       "kind": "python",
       "summary": "Availability supervision and bounded component alerts",
-      "lines": 915
+      "lines": 919
     },
     {
       "path": "botmanager/src/botmanager/suite_service.py",
       "component": "botmanager",
       "kind": "python",
       "summary": "Fixed installed launchd/systemd user-service definitions",
-      "lines": 364
+      "lines": 391
     },
     {
       "path": "botmanager/src/botmanager/machine_health.py",
@@ -310,7 +429,7 @@
       "component": "backtester",
       "kind": "python",
       "summary": "Entry point for the bot simulators: the DCA safety-order bot and the triangular-arbitrage replay over recorded quotes",
-      "lines": 161
+      "lines": 176
     },
     {
       "path": "backtester/paircli.py",
@@ -357,21 +476,21 @@
       "component": "backtester",
       "kind": "python",
       "summary": "The bar loop. Owns the per-bar ordering that makes lookahead impossible",
-      "lines": 958
+      "lines": 972
     },
     {
       "path": "backtester/core/types.py",
       "component": "backtester",
       "kind": "python",
       "summary": "BarWindow (the structural lookahead guard), CostConfig, RunManifest",
-      "lines": 501
+      "lines": 505
     },
     {
       "path": "backtester/core/indicators.py",
       "component": "backtester",
       "kind": "python",
       "summary": "Trailing-window indicator functions, each returning a scalar for the current bar",
-      "lines": 479
+      "lines": 478
     },
     {
       "path": "backtester/core/metrics.py",
@@ -392,105 +511,105 @@
       "component": "backtester",
       "kind": "python",
       "summary": "Ladder-grid simulator; a port of extension/src/core/grid.js that must agree with it",
-      "lines": 932
+      "lines": 945
     },
     {
       "path": "backtester/core/dcasim.py",
       "component": "backtester",
       "kind": "python",
       "summary": "DCA safety-order bot simulator: base order, deeper safety orders, take-profit above the average entry; gridsim's bar order and pessimism",
-      "lines": 537
+      "lines": 544
     },
     {
       "path": "backtester/core/trianglesim.py",
       "component": "backtester",
       "kind": "python",
       "summary": "Triangular-arbitrage L1 replay: detect on one snapshot, execute at the quotes latency_s later; reads recorded snapshot files",
-      "lines": 415
+      "lines": 421
     },
     {
       "path": "backtester/core/data.py",
       "component": "backtester",
       "kind": "python",
       "summary": "CsvLoader, SyntheticLoader, bar validation, checksums",
-      "lines": 358
+      "lines": 359
     },
     {
       "path": "backtester/core/fetch.py",
       "component": "backtester",
       "kind": "python",
       "summary": "Explicit Coinbase OHLCV fetch into a local CSV cache; the engine stays offline",
-      "lines": 221
+      "lines": 237
     },
     {
       "path": "backtester/core/fetch_minutes.py",
       "component": "backtester",
       "kind": "python",
       "summary": "Resumable minute-bar cache fetch with rate limiting and coverage",
-      "lines": 751
+      "lines": 795
     },
     {
       "path": "backtester/core/fetch_minutes_alt.py",
       "component": "backtester",
       "kind": "python",
       "summary": "Minute bars from OKX/KuCoin/Bitget/WhiteBIT for coins Coinbase does not list",
-      "lines": 325
+      "lines": 350
     },
     {
       "path": "backtester/core/ticks.py",
       "component": "backtester",
       "kind": "python",
       "summary": "Explicit Coinbase trade-tick fetch and bar aggregation",
-      "lines": 315
+      "lines": 322
     },
     {
       "path": "backtester/core/funding.py",
       "component": "backtester",
       "kind": "python",
       "summary": "Signed Hyperliquid funding history, optional OKX cross-check",
-      "lines": 491
+      "lines": 509
     },
     {
       "path": "backtester/core/archive_price.py",
       "component": "backtester",
       "kind": "python",
       "summary": "Jupiter spot-price snapshot (this is what data/JLP_spot.csv is)",
-      "lines": 153
+      "lines": 166
     },
     {
       "path": "backtester/core/cpcv.py",
       "component": "backtester",
       "kind": "python",
       "summary": "Combinatorial purged cross-validation",
-      "lines": 333
+      "lines": 339
     },
     {
       "path": "backtester/core/cointegration.py",
       "component": "backtester",
       "kind": "python",
       "summary": "Cointegration tests for the pairs work",
-      "lines": 197
+      "lines": 221
     },
     {
       "path": "backtester/core/pairs.py",
       "component": "backtester",
       "kind": "python",
       "summary": "Pairs-trading construction",
-      "lines": 172
+      "lines": 176
     },
     {
       "path": "backtester/core/universe.py",
       "component": "backtester",
       "kind": "python",
       "summary": "Asset universe selection, with the survivorship-bias refusal",
-      "lines": 323
+      "lines": 328
     },
     {
       "path": "backtester/core/report.py",
       "component": "backtester",
       "kind": "python",
       "summary": "Run reports, walk-forward splits and manifest-last artifact hashes",
-      "lines": 369
+      "lines": 379
     },
     {
       "path": "backtester/core/plotting.py",
@@ -504,21 +623,21 @@
       "component": "backtester",
       "kind": "python",
       "summary": "Parses the cards and is checked against the registry both ways",
-      "lines": 667
+      "lines": 674
     },
     {
       "path": "backtester/core/scorecard.py",
       "component": "backtester",
       "kind": "python",
       "summary": "Compound five-minute scorecard: causal per-metric scores, family-deduped regime-weighted aggregate, veto gates, next-bar forecast statistics",
-      "lines": 2031
+      "lines": 2033
     },
     {
       "path": "backtester/core/compound.py",
       "component": "backtester",
       "kind": "python",
       "summary": "Backtests a scorecard configuration on 5m bars through the engine, in-sample vs out-of-sample, gaps split into segments",
-      "lines": 487
+      "lines": 495
     },
     {
       "path": "backtester/core/strategies/__init__.py",
@@ -532,21 +651,21 @@
       "component": "backtester",
       "kind": "python",
       "summary": "Indicator-driven strategies, one screen each",
-      "lines": 442
+      "lines": 446
     },
     {
       "path": "backtester/core/strategies/advanced.py",
       "component": "backtester",
       "kind": "python",
       "summary": "The nine implemented from spec-only cards, incl. the Ichimoku displacement trap",
-      "lines": 468
+      "lines": 482
     },
     {
       "path": "backtester/core/strategies/textbook.py",
       "component": "backtester",
       "kind": "python",
       "summary": "DCA, EMA crossover, PPO, Fibonacci retracement and swing-confluence: the mechanisms the cited trading guides name (tradingstrategyresults.json)",
-      "lines": 238
+      "lines": 241
     },
     {
       "path": "backtester/core/strategies/breakout.py",
@@ -567,7 +686,7 @@
       "component": "backtester",
       "kind": "python",
       "summary": "RSI mean reversion",
-      "lines": 77
+      "lines": 95
     },
     {
       "path": "backtester/core/strategies/buy_and_hold.py",
@@ -581,7 +700,28 @@
       "component": "backtester",
       "kind": "python",
       "summary": "Combines strategies under a COMBINE_MODES rule",
-      "lines": 71
+      "lines": 74
+    },
+    {
+      "path": "research/meta_analysis.py",
+      "component": "research",
+      "kind": "python",
+      "summary": "Source-bound trial consolidation preserving original units, exclusions and explicit extra receipts",
+      "lines": 168
+    },
+    {
+      "path": "research/meta_followups.py",
+      "component": "research",
+      "kind": "python",
+      "summary": "Actual-fee canonical spot replays and fixed-slot concentration attribution",
+      "lines": 277
+    },
+    {
+      "path": "research/META-ANALYSIS.md",
+      "component": "research",
+      "kind": "markdown",
+      "summary": "Evidence synthesis, independent comparison, implemented followups and investment decision",
+      "lines": 400
     },
     {
       "path": "research/decide.py",
@@ -595,49 +735,49 @@
       "component": "research",
       "kind": "python",
       "summary": "Parameter sweeps",
-      "lines": 882
+      "lines": 889
     },
     {
       "path": "research/cpcv_sweep.py",
       "component": "research",
       "kind": "python",
       "summary": "CPCV sweep plus interpret(), which exists to kill the \"lots of strategies work\" misreading",
-      "lines": 519
+      "lines": 524
     },
     {
       "path": "research/cross_asset_cpcv.py",
       "component": "research",
       "kind": "python",
       "summary": "Whether a result on one coin transfers to another",
-      "lines": 834
+      "lines": 838
     },
     {
       "path": "research/turnover_table.py",
       "component": "research",
       "kind": "python",
       "summary": "One turnover pull shared by all ten coin spokes",
-      "lines": 199
+      "lines": 203
     },
     {
       "path": "research/verify_numbers.py",
       "component": "research",
       "kind": "python",
       "summary": "Re-derives every figure quoted in the research docs; exit 0 means they all check out",
-      "lines": 1101
+      "lines": 1121
     },
     {
       "path": "research/full_suite.py",
       "component": "research",
       "kind": "python",
       "summary": "One command: fetch fresh candles and funding for the universe, then the registry sweep and the compound 5m sweep on every asset",
-      "lines": 249
+      "lines": 254
     },
     {
       "path": "research/geometry.py",
       "component": "research",
       "kind": "python",
       "summary": "Grid geometry helpers",
-      "lines": 299
+      "lines": 320
     },
     {
       "path": "research/shape_study.py",
@@ -651,7 +791,7 @@
       "component": "research",
       "kind": "python",
       "summary": "Verify artifact/source hashes and regenerate the measured shape-study report",
-      "lines": 333
+      "lines": 341
     },
     {
       "path": "research/SHAPE-AWARE-SPOT.md",
@@ -665,21 +805,21 @@
       "component": "research",
       "kind": "python",
       "summary": "Irregular-time ZEC periodicity tests, searched-frequency nulls and frozen harmonic forecasts",
-      "lines": 471
+      "lines": 477
     },
     {
       "path": "research/coinbase50_data.py",
       "component": "research",
       "kind": "python",
       "summary": "Identity-bound Coinbase universe and resumable native-candle evidence collection",
-      "lines": 150
+      "lines": 163
     },
     {
       "path": "research/coinbase50_stats.py",
       "component": "research",
       "kind": "python",
       "summary": "Cross-coin period stability, frozen forecasts and corrected hour-of-day tests",
-      "lines": 177
+      "lines": 179
     },
     {
       "path": "research/coinbase50_grid.py",
@@ -693,14 +833,14 @@
       "component": "research",
       "kind": "python",
       "summary": "Protected-window study runner, matched-budget factorial portfolios and source-bound manifests",
-      "lines": 314
+      "lines": 332
     },
     {
       "path": "research/coinbase50_report.py",
       "component": "research",
       "kind": "python",
       "summary": "Top50 numerical report and standalone scientific figures",
-      "lines": 113
+      "lines": 141
     },
     {
       "path": "research/COINBASE50-GRID-CYCLES.md",
@@ -714,7 +854,7 @@
       "component": "research",
       "kind": "python",
       "summary": "Verify cycle artifacts and render the evidence report and figures",
-      "lines": 432
+      "lines": 440
     },
     {
       "path": "research/ZEC-CYCLE-VALIDATION.md",
@@ -728,7 +868,7 @@
       "component": "research",
       "kind": "python",
       "summary": "Parameter perturbation for robustness",
-      "lines": 452
+      "lines": 458
     },
     {
       "path": "research/STRATEGIES.md",
@@ -803,14 +943,14 @@
       "component": "extension",
       "kind": "markdown",
       "summary": "Includes the Verification status section; read it before extending",
-      "lines": 666
+      "lines": 670
     },
     {
       "path": "extension/src/core/commands.js",
       "component": "extension",
       "kind": "javascript",
       "summary": "The single registry. Every action lives here or the parity test fails",
-      "lines": 980
+      "lines": 986
     },
     {
       "path": "extension/src/core/risk.js",
@@ -824,42 +964,42 @@
       "component": "extension",
       "kind": "javascript",
       "summary": "Ladder geometry. backtester/core/gridsim.py is its port",
-      "lines": 387
+      "lines": 388
     },
     {
       "path": "extension/src/core/pnl.js",
       "component": "extension",
       "kind": "javascript",
       "summary": "FIFO/paired-lot attribution, fees included",
-      "lines": 252
+      "lines": 266
     },
     {
       "path": "extension/src/core/engine.js",
       "component": "extension",
       "kind": "javascript",
       "summary": "The tick loop: reconcile, then plan",
-      "lines": 613
+      "lines": 630
     },
     {
       "path": "extension/src/bg/service-worker.js",
       "component": "extension",
       "kind": "javascript",
       "summary": "MV3 service worker and its timer constraints",
-      "lines": 470
+      "lines": 483
     },
     {
       "path": "extension/src/jupiter/http.js",
       "component": "extension",
       "kind": "javascript",
       "summary": "The HTTP layer for every Jupiter call",
-      "lines": 165
+      "lines": 167
     },
     {
       "path": "extension/src/jupiter/trigger.js",
       "component": "extension",
       "kind": "javascript",
       "summary": "Trigger order API; the order-list response envelope is guessed",
-      "lines": 339
+      "lines": 331
     },
     {
       "path": "extension/src/jupiter/price.js",
@@ -880,14 +1020,14 @@
       "component": "extension",
       "kind": "javascript",
       "summary": "Venue adapter over the Trigger API",
-      "lines": 519
+      "lines": 520
     },
     {
       "path": "extension/src/venues/index.js",
       "component": "extension",
       "kind": "javascript",
       "summary": "Venue selection",
-      "lines": 256
+      "lines": 259
     },
     {
       "path": "extension/src/wallet/solana.js",
@@ -908,147 +1048,147 @@
       "component": "extension",
       "kind": "javascript",
       "summary": "Storage interface",
-      "lines": 257
+      "lines": 270
     },
     {
       "path": "extension/src/storage/fileStore.js",
       "component": "extension",
       "kind": "javascript",
       "summary": "Mode-0600 file store for secret material",
-      "lines": 156
+      "lines": 188
     },
     {
       "path": "extension/src/storage/memoryStore.js",
       "component": "extension",
       "kind": "javascript",
       "summary": "In-memory store for tests",
-      "lines": 72
+      "lines": 73
     },
     {
       "path": "extension/src/core/alerts.js",
       "component": "extension",
       "kind": "javascript",
       "summary": "Pure alert rules: only fresh, gated scout figures may say \"act\", backtest says \"review\", quoted APY is only a lead",
-      "lines": 256
+      "lines": 259
     },
     {
       "path": "extension/src/market/holdings.js",
       "component": "extension",
       "kind": "javascript",
       "summary": "Read-only Base and Solana balances in USD; partial failures named, never zeroed",
-      "lines": 295
+      "lines": 312
     },
     {
       "path": "extension/src/market/quote.js",
       "component": "extension",
       "kind": "javascript",
       "summary": "Swap quotes only: Jupiter Metis, and Slipstream on-chain CL math that refuses past the active range",
-      "lines": 200
+      "lines": 205
     },
     {
       "path": "extension/src/market/pools.js",
       "component": "extension",
       "kind": "javascript",
       "summary": "DefiLlama yields, ranked by 30-day mean; every APY labelled quoted",
-      "lines": 100
+      "lines": 101
     },
     {
       "path": "extension/src/market/net.js",
       "component": "extension",
       "kind": "javascript",
       "summary": "Read-only fetch and JSON-RPC; refuses any non-read method",
-      "lines": 114
+      "lines": 117
     },
     {
       "path": "extension/src/ui/dashboard.js",
       "component": "extension",
       "kind": "javascript",
       "summary": "Signal Desk shell and hash router; four priority workflows and advanced views",
-      "lines": 199
+      "lines": 214
     },
     {
       "path": "extension/src/ui/view-overview.js",
       "component": "extension",
       "kind": "javascript",
       "summary": "Overview and Alerts views",
-      "lines": 149
+      "lines": 161
     },
     {
       "path": "extension/src/ui/view-markets.js",
       "component": "extension",
       "kind": "javascript",
       "summary": "Holdings, Profit & loss and Discover views",
-      "lines": 221
+      "lines": 231
     },
     {
       "path": "extension/src/ui/view-trade.js",
       "component": "extension",
       "kind": "javascript",
       "summary": "Backtest & strategies and Swap views",
-      "lines": 276
+      "lines": 286
     },
     {
       "path": "extension/src/ui/view-grid.js",
       "component": "extension",
       "kind": "javascript",
       "summary": "The experimental grid's forms, charts and journal",
-      "lines": 374
+      "lines": 395
     },
     {
       "path": "extension/src/ui/popup.js",
       "component": "extension",
       "kind": "javascript",
       "summary": "Popup: signal/process glance, four workflow shortcuts and collapsed wallet/grid controls",
-      "lines": 290
+      "lines": 304
     },
     {
       "path": "extension/tools/cli.js",
       "component": "extension",
       "kind": "javascript",
       "summary": "CLI surface over the registry",
-      "lines": 216
+      "lines": 220
     },
     {
       "path": "extension/tools/api-server.js",
       "component": "extension",
       "kind": "javascript",
       "summary": "Local HTTP surface; reads SMT_API_PORT, SMT_API_TOKEN, SMT_PASSPHRASE",
-      "lines": 281
+      "lines": 286
     },
     {
       "path": "extension/tools/dryrun.js",
       "component": "extension",
       "kind": "javascript",
       "summary": "The headless integration gate \u2014 a round trip must close positive",
-      "lines": 162
+      "lines": 171
     },
     {
       "path": "extension/tools/verify-endpoints.js",
       "component": "extension",
       "kind": "javascript",
       "summary": "Live Jupiter reachability; reads JUPITER_API_KEY",
-      "lines": 79
+      "lines": 95
     },
     {
       "path": "extension/tools/deps.js",
       "component": "extension",
       "kind": "javascript",
       "summary": "Dependency wiring",
-      "lines": 93
+      "lines": 94
     },
     {
       "path": "extension/test/core.test.js",
       "component": "extension",
       "kind": "javascript",
       "summary": "Grid, risk, P&L, reconciliation, tick guards",
-      "lines": 1554
+      "lines": 1563
     },
     {
       "path": "extension/test/surfaces.test.js",
       "component": "extension",
       "kind": "javascript",
       "summary": "Parity across the three surfaces",
-      "lines": 468
+      "lines": 482
     },
     {
       "path": "extension/test/wallet.test.js",
@@ -1062,7 +1202,7 @@
       "component": "soltui",
       "kind": "python",
       "summary": "The menu-bar app",
-      "lines": 283
+      "lines": 339
     },
     {
       "path": "soltui/menubar_launcher.py",
@@ -1076,21 +1216,21 @@
       "component": "soltui",
       "kind": "python",
       "summary": "Terminal UI",
-      "lines": 8282
+      "lines": 8289
     },
     {
       "path": "soltui/shell.py",
       "component": "soltui",
       "kind": "python",
       "summary": "v2 navigation over the TUI's panes: five destinations, health strip, Now overview builders, registry palette, Explain, theme (docs/design/soltui-v2/DESIGN.md)",
-      "lines": 729
+      "lines": 735
     },
     {
       "path": "soltui/signals.py",
       "component": "soltui",
       "kind": "python",
       "summary": "Signal derivation for display",
-      "lines": 368
+      "lines": 379
     },
     {
       "path": "soltui/status.py",
@@ -1104,21 +1244,21 @@
       "component": "soltui",
       "kind": "python",
       "summary": "Watched-asset roster",
-      "lines": 164
+      "lines": 171
     },
     {
       "path": "soltui/paper.py",
       "component": "soltui",
       "kind": "python",
       "summary": "Paper positions",
-      "lines": 197
+      "lines": 203
     },
     {
       "path": "soltui/runner.py",
       "component": "soltui",
       "kind": "python",
       "summary": "The loop that refreshes state",
-      "lines": 315
+      "lines": 316
     },
     {
       "path": "soltui/bgcontrol.py",
@@ -1132,28 +1272,28 @@
       "component": "soltui",
       "kind": "python",
       "summary": "Detached offline sweep worker and per-process array cache",
-      "lines": 635
+      "lines": 638
     },
     {
       "path": "soltui/compound.py",
       "component": "soltui",
       "kind": "python",
       "summary": "Compound 5m tab backend: saved config, public live reads (Coinbase, Hyperliquid, RSS), forward-test ledger, sweeps; CLI python3 -m soltui.compound",
-      "lines": 2091
+      "lines": 2100
     },
     {
       "path": "soltui/liquidity.py",
       "component": "soltui",
       "kind": "python",
       "summary": "Reads daemon state; creates/removes only the KILL flag",
-      "lines": 600
+      "lines": 603
     },
     {
       "path": "soltui/bots.py",
       "component": "soltui",
       "kind": "python",
       "summary": "Five-bot list and Grid, Arbitrage, DCA and Trend settings, backtests, recorded-stream forward tests and gated optimization",
-      "lines": 1649
+      "lines": 1658
     },
     {
       "path": "soltui/trend.py",
@@ -1167,35 +1307,35 @@
       "component": "soltui",
       "kind": "python",
       "summary": "Immutable experiment/cell SQLite evidence, typed search spaces, sparse observed heatmaps, TradingView import and comparison",
-      "lines": 906
+      "lines": 916
     },
     {
       "path": "soltui/experiment_runner.py",
       "component": "soltui",
       "kind": "python",
       "summary": "Frozen native bar/recorded-triangle evaluation, per-cell checkpoints, exploration exposure and fresh final holdout guards",
-      "lines": 728
+      "lines": 737
     },
     {
       "path": "soltui/experiment_jobs.py",
       "component": "soltui",
       "kind": "python",
       "summary": "Explicit background experiment processes, inherited leases, pause/cancel requests and interrupted-worker recovery",
-      "lines": 230
+      "lines": 249
     },
     {
       "path": "soltui/experiment_screens.py",
       "component": "soltui",
       "kind": "python",
       "summary": "Experiment workbench: typed search editor, explorer, observed maps, worker controls and CSV comparison",
-      "lines": 799
+      "lines": 820
     },
     {
       "path": "soltui/pricefeed.py",
       "component": "soltui",
       "kind": "python",
       "summary": "Streaming price recorder: stdlib WebSocket to Coinbase level2_batch + ticker, one-second gzip JSONL snapshots, detached process",
-      "lines": 1036
+      "lines": 1057
     },
     {
       "path": "soltui/serve.py",
@@ -1209,14 +1349,14 @@
       "component": "soltui",
       "kind": "other",
       "summary": "Shell launcher with interpreter override",
-      "lines": 51
+      "lines": 52
     },
     {
       "path": "soltui/config.py",
       "component": "soltui",
       "kind": "python",
       "summary": "Configuration",
-      "lines": 292
+      "lines": 294
     },
     {
       "path": "soltui/setup_app.py",
@@ -1230,14 +1370,14 @@
       "component": "soltui",
       "kind": "python",
       "summary": "Generates SolTUI.icns",
-      "lines": 280
+      "lines": 277
     },
     {
       "path": "soltui/soltui-service",
       "component": "soltui",
       "kind": "other",
       "summary": "status / start / stop / build / install for the launchd agent",
-      "lines": 404
+      "lines": 453
     },
     {
       "path": "soltui/README.md",
@@ -1278,21 +1418,21 @@
       "component": "mongo",
       "kind": "markdown",
       "summary": "Entry point: setup, collection map, question -> query index",
-      "lines": 189
+      "lines": 219
     },
     {
       "path": "mongo/schema.py",
       "component": "mongo",
       "kind": "python",
       "summary": "Collection specs, $jsonSchema validators, indexes. --describe needs no server",
-      "lines": 480
+      "lines": 529
     },
     {
       "path": "mongo/load.py",
       "component": "mongo",
       "kind": "python",
       "summary": "The loader. Drops and rebuilds, stamping provenance on every document",
-      "lines": 859
+      "lines": 881
     },
     {
       "path": "mongo/requirements.txt",
@@ -1306,14 +1446,14 @@
       "component": "mongo",
       "kind": "python",
       "summary": "20 tests: idempotency, provenance, strict validation, card semantics",
-      "lines": 345
+      "lines": 309
     },
     {
       "path": "mongo/queries/01-coins-and-bars.js",
       "component": "mongo",
       "kind": "javascript",
       "summary": "Price history, staleness, per-coin return, biggest drops",
-      "lines": 109
+      "lines": 112
     },
     {
       "path": "mongo/queries/02-strategies-and-cards.js",
@@ -1341,14 +1481,14 @@
       "component": "mongo",
       "kind": "javascript",
       "summary": "Manifests, per-strategy metrics, drawdown, fills",
-      "lines": 118
+      "lines": 132
     },
     {
       "path": "mongo/queries/06-experiments-and-pbo.js",
       "component": "mongo",
       "kind": "javascript",
       "summary": "CPCV, sweeps, and PBO -- read this before any Sharpe",
-      "lines": 150
+      "lines": 151
     },
     {
       "path": "mongo/queries/07-documents-and-search.js",
@@ -1369,7 +1509,7 @@
       "component": "repo",
       "kind": "markdown",
       "summary": "Agent instructions and the per-component non-negotiables",
-      "lines": 218
+      "lines": 234
     },
     {
       "path": "AGENTS.md",
@@ -1383,21 +1523,21 @@
       "component": "repo",
       "kind": "markdown",
       "summary": "Gemini CLI equivalent",
-      "lines": 63
+      "lines": 71
     },
     {
       "path": ".github/copilot-instructions.md",
       "component": "repo",
       "kind": "markdown",
       "summary": "Copilot CLI equivalent",
-      "lines": 94
+      "lines": 117
     },
     {
       "path": ".github/workflows/ci.yml",
       "component": "repo",
       "kind": "yaml",
       "summary": "Extension, backtester, soltui, mongo, liquidity, executor and doc/index drift jobs",
-      "lines": 470
+      "lines": 484
     },
     {
       "path": "CONTRIBUTING.md",
@@ -1418,13 +1558,13 @@
       "component": "repo",
       "kind": "markdown",
       "summary": "Existing functional/runtime/safety requirements",
-      "lines": 40
+      "lines": 49
     },
     {
       "path": "docs/MCP.md",
       "component": "repo",
       "kind": "markdown",
-      "summary": "No repo MCP server; global connectors and offline fallback",
+      "summary": "Oracle's read-only stdio MCP contract, host-specific registration and offline retrieval fallback",
       "lines": 81
     },
     {
@@ -1432,7 +1572,7 @@
       "component": "repo",
       "kind": "markdown",
       "summary": "Cache freshness and performance invariants",
-      "lines": 35
+      "lines": 37
     },
     {
       "path": "docs/runbooks/incident.md",
@@ -1447,6 +1587,20 @@
       "kind": "markdown",
       "summary": "Revert code without discarding execution state",
       "lines": 33
+    },
+    {
+      "path": "scripts/capture_market.py",
+      "component": "repo",
+      "kind": "python",
+      "summary": "Bounded public raw-event spool and independent dedicated MongoDB uploader",
+      "lines": 481
+    },
+    {
+      "path": "scripts/test_capture_market.py",
+      "component": "repo",
+      "kind": "python",
+      "summary": "Disposable spool, deadline, upload ambiguity and native MongoDB boundary tests",
+      "lines": 295
     },
     {
       "path": "docs/runbooks/handoff.md",
@@ -1508,14 +1662,14 @@
       "component": "executor",
       "kind": "python",
       "summary": "~/.executor/config.toml (mode 600), rails and defaults, fail-closed validation",
-      "lines": 257
+      "lines": 270
     },
     {
       "path": "executor/src/executor/tokens.py",
       "component": "executor",
       "kind": "python",
       "summary": "Token table, exact amount conversion; unknown tokens are refused",
-      "lines": 70
+      "lines": 89
     },
     {
       "path": "executor/src/executor/jupiter.py",
@@ -1536,21 +1690,21 @@
       "component": "executor",
       "kind": "python",
       "summary": "Cross-chain quote, quote only",
-      "lines": 108
+      "lines": 144
     },
     {
       "path": "executor/src/executor/txverify.py",
       "component": "executor",
       "kind": "python",
       "summary": "Semantic transaction verifier: program allowlist, instruction decoding, balance deltas",
-      "lines": 508
+      "lines": 539
     },
     {
       "path": "executor/src/executor/rails.py",
       "component": "executor",
       "kind": "python",
       "summary": "Every order rail, as code",
-      "lines": 180
+      "lines": 182
     },
     {
       "path": "executor/src/executor/gates.py",
@@ -1564,14 +1718,14 @@
       "component": "executor",
       "kind": "python",
       "summary": "Pure positions and realized P&L from the journal",
-      "lines": 132
+      "lines": 140
     },
     {
       "path": "executor/src/executor/journal.py",
       "component": "executor",
       "kind": "python",
       "summary": "Append-only intent and result journal; unknown sends block",
-      "lines": 238
+      "lines": 243
     },
     {
       "path": "executor/src/executor/signer.py",
@@ -1585,21 +1739,21 @@
       "component": "executor",
       "kind": "python",
       "summary": "Solana JSON-RPC client; a send is never retried",
-      "lines": 138
+      "lines": 190
     },
     {
       "path": "executor/src/executor/engine.py",
       "component": "executor",
       "kind": "python",
       "summary": "The swap pipeline shared by dry-run and live, and reconcile",
-      "lines": 785
+      "lines": 798
     },
     {
       "path": "executor/src/executor/registry.py",
       "component": "executor",
       "kind": "python",
       "summary": "Command registry, response envelope, call log",
-      "lines": 536
+      "lines": 538
     },
     {
       "path": "executor/src/executor/cli.py",
@@ -1613,7 +1767,7 @@
       "component": "executor",
       "kind": "python",
       "summary": "Loopback HTTP API (bearer token, Origin refusal)",
-      "lines": 198
+      "lines": 259
     },
     {
       "path": "liquidity/README.md",
@@ -1655,119 +1809,119 @@
       "component": "liquidity",
       "kind": "python",
       "summary": "Base RPC and Multicall3 read boundary",
-      "lines": 485
+      "lines": 504
     },
     {
       "path": "liquidity/src/aero_lp/market.py",
       "component": "liquidity",
       "kind": "python",
       "summary": "GeckoTerminal transport/cache and income model helpers",
-      "lines": 199
+      "lines": 218
     },
     {
       "path": "liquidity/src/aero_lp/providers.py",
       "component": "liquidity",
       "kind": "python",
       "summary": "Read-only provider comparison and source labels",
-      "lines": 1624
+      "lines": 1646
     },
     {
       "path": "liquidity/src/aero_lp/validation.py",
       "component": "liquidity",
       "kind": "python",
       "summary": "Shared finite-number validation for liquidity safety configuration",
-      "lines": 31
+      "lines": 35
     },
     {
       "path": "liquidity/src/aero_lp/config.py",
       "component": "liquidity",
       "kind": "python",
       "summary": "TOML risk/custody/configuration boundary",
-      "lines": 242
+      "lines": 248
     },
     {
       "path": "liquidity/src/aero_lp/state.py",
       "component": "liquidity",
       "kind": "python",
       "summary": "Daemon state directory and state-file writes",
-      "lines": 79
+      "lines": 91
     },
     {
       "path": "liquidity/src/aero_lp/wallet.py",
       "component": "liquidity",
       "kind": "python",
       "summary": "Mode-0600 key file / Keychain loading; never print its output",
-      "lines": 77
+      "lines": 85
     },
     {
       "path": "liquidity/src/aero_lp/metrics.py",
       "component": "liquidity",
       "kind": "python",
       "summary": "Every profitability measure for one pool",
-      "lines": 437
+      "lines": 470
     },
     {
       "path": "liquidity/src/aero_lp/scout.py",
       "component": "liquidity",
       "kind": "python",
       "summary": "Candidate discovery and ranking",
-      "lines": 155
+      "lines": 204
     },
     {
       "path": "liquidity/src/aero_lp/allocator.py",
       "component": "liquidity",
       "kind": "python",
       "summary": "Pure deploy / experiment / graduation decisions",
-      "lines": 188
+      "lines": 189
     },
     {
       "path": "liquidity/src/aero_lp/ledger.py",
       "component": "liquidity",
       "kind": "python",
       "summary": "SQLite P&L ledger",
-      "lines": 430
+      "lines": 431
     },
     {
       "path": "liquidity/src/aero_lp/submissions.py",
       "component": "liquidity",
       "kind": "python",
       "summary": "Durable owner-bound transaction journal; unresolved submissions block new writes",
-      "lines": 247
+      "lines": 255
     },
     {
       "path": "liquidity/src/aero_lp/recovery.py",
       "component": "liquidity",
       "kind": "python",
       "summary": "Receipt-based idempotent ledger recovery and historical slot attribution",
-      "lines": 181
+      "lines": 205
     },
     {
       "path": "liquidity/src/aero_lp/daemon.py",
       "component": "liquidity",
       "kind": "python",
       "summary": "The loop: manage, compound, scout, allocate, status",
-      "lines": 1381
+      "lines": 1388
     },
     {
       "path": "liquidity/src/aero_lp/executor.py",
       "component": "liquidity",
       "kind": "python",
       "summary": "Transaction sequences; SimRunner (eth_simulateV1) and LiveRunner",
-      "lines": 1171
+      "lines": 1222
     },
     {
       "path": "liquidity/scripts/aero-lp-service",
       "component": "liquidity",
       "kind": "other",
       "summary": "launchd install / status / kill / resume",
-      "lines": 60
+      "lines": 46
     },
     {
       "path": ".claude/agents/aero-pool-scout.md",
       "component": "repo",
       "kind": "markdown",
       "summary": "Read-only research agent that second-guesses the scout",
-      "lines": 41
+      "lines": 47
     },
     {
       "path": "docs/repo-bootstrap-audit-2026-11-06.md",
@@ -1837,7 +1991,7 @@
       "component": "extension",
       "kind": "javascript",
       "summary": "Registry workspace groups, structured result tables, chart points and safe CSV conversion.",
-      "lines": 84
+      "lines": 88
     },
     {
       "path": "docs/EXTENSION-TUI-PARITY.md",
@@ -1872,14 +2026,14 @@
       "component": "extension",
       "kind": "javascript",
       "summary": "Real-data workflow composition, local run comparisons, pinned paper drafts, evidence dialogs and read-only refresh lifecycle.",
-      "lines": 333
+      "lines": 350
     },
     {
       "path": "extension/src/ui/desk-model.js",
       "component": "extension",
       "kind": "javascript",
       "summary": "Pure compatibility, source snapshot, eligibility explanation and archived-control presentation contracts.",
-      "lines": 60
+      "lines": 63
     },
     {
       "path": "extension/src/ui/signal-desk.css",
@@ -1901,6 +2055,34 @@
       "kind": "markdown",
       "summary": "UI workflows, persistence, provenance boundaries and use instructions.",
       "lines": 151
+    },
+    {
+      "path": "website/api/openapi.json",
+      "component": "website",
+      "kind": "json",
+      "summary": "Account and billing API contract",
+      "lines": 1794
+    },
+    {
+      "path": "website/public/index.html",
+      "component": "website",
+      "kind": "html",
+      "summary": "Accessible static application shell",
+      "lines": 46
+    },
+    {
+      "path": "website/public/styles.css",
+      "component": "website",
+      "kind": "css",
+      "summary": "Responsive workspace design",
+      "lines": 4
+    },
+    {
+      "path": "website/scripts/smoke.mjs",
+      "component": "website",
+      "kind": "other",
+      "summary": "Explicit deployed wallet account creation/deletion acceptance",
+      "lines": 38
     }
   ]
 }

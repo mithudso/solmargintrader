@@ -45,14 +45,12 @@ export function mountSignalDesk(root, { ask, openTool, refreshLive, transport, p
     const s = value?.[STORE];
     if (!s || disposed) return;
     if (['coinbase', 'jupiter'].includes(s.source) && $('#soltuiPriceSource')) $('#soltuiPriceSource').value = s.source;
-    const savedRun = value => {
-      const run = runFromEnvelope({ ok: true, command: 'backtest.results', result: value });
-      if (!run || (run.context.created_at != null && !validStamp(run.context.created_at))) return null;
-      const window = run.context.data_selection;
-      if (window && ![window.first_ts, window.last_ts].every(validStamp)) return null;
-      return run;
-    };
-    runs = Array.isArray(s.runs) ? s.runs.map(savedRun).filter(Boolean).slice(0, 12) : [];
+    runs = (Array.isArray(s.runs) ? s.runs : []).slice(0, 12).flatMap((saved) => {
+      try {
+        const run = runFromEnvelope({ ok: true, command: 'backtest.results', result: saved });
+        return run ? [run] : [];
+      } catch { return []; } // One corrupt browser record cannot disable the workspace.
+    });
     selected = new Set(Array.isArray(s.selected) ? s.selected.filter((id) => runs.some((r) => r.id === id)) : []);
     const restoredDraft = s.draft?.run ? savedRun(s.draft.run) : null;
     draft = restoredDraft && handoffValues(restoredDraft, s.draft?.row) ? { run: restoredDraft, row: s.draft.row } : null;

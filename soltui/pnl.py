@@ -196,6 +196,7 @@ class Curve:
     value_only: bool = False
 
     def __post_init__(self) -> None:
+        # Stable time ordering keeps the last observed equity when several fills share a tick.
         self.points = sorted(((float(t), float(v)) for t, v in self.points
                               if math.isfinite(t) and math.isfinite(v)), key=lambda point: point[0])
 
@@ -331,22 +332,26 @@ def drawdown_report(base: float, days: Sequence[Day]) -> dict[str, Any]:
 
     `recovered` is the first day equity is back at the old peak, `recovery_days` the days from the
     trough to it, None while it has not recovered. The USD drawdown is reported beside the
-    percentage because a series that starts at zero has no meaningful percentage.
+    percentage because a series that starts at zero has no meaningful percentage. Dollar and
+    percentage maxima can occur on different days. The unprefixed episode fields describe the
+    dollar maximum; `percentage_*` fields describe the percentage maximum.
     """
     if not days:
         return {"max_drawdown_pct": None, "max_drawdown_usd": 0.0, "peak_date": None,
                 "trough_date": None, "recovered_date": None, "recovery_days": None,
                 "recovered": None}
     peak_v, peak_d = base, None
-    worst_usd, worst_pct = 0.0, None
+    worst_usd, worst_pct = 0.0, 0.0 if base > 0 else None
     best = None  # (usd, peak_value, peak_date, trough_date)
-    best_pct = None
+    percentage_best = None
     for d in days:
         if d.equity > peak_v:
             peak_v, peak_d = d.equity, d.date
         usd = peak_v - d.equity
-        if peak_v > 0 and (best_pct is None or usd / peak_v > best_pct[0]):
-            best_pct = (usd / peak_v, usd, peak_v, peak_d, d.date)
+        pct = -(usd / peak_v) if peak_v > 0 else None
+        if pct is not None and (worst_pct is None or pct < worst_pct):
+            worst_pct = pct
+            percentage_best = (usd, peak_v, peak_d, d.date)
         if usd > worst_usd + 1e-12:
             worst_usd = usd
             best = (usd, peak_v, peak_d, d.date)
@@ -354,16 +359,31 @@ def drawdown_report(base: float, days: Sequence[Day]) -> dict[str, Any]:
         return {"max_drawdown_pct": 0.0 if base > 0 else None, "max_drawdown_usd": 0.0,
                 "peak_date": None, "trough_date": None, "recovered_date": None,
                 "recovery_days": None, "recovered": None}
-    usd, pk, pk_date, tr_date = best_pct[1:] if best_pct is not None else best
-    pct = -best_pct[0] if best_pct is not None else None
+    usd, pk, pk_date, tr_date = best
+    pct = -(usd / pk) if pk > 0 else None
     rec_date = next((d.date for d in days if d.date > tr_date and d.equity >= pk - 1e-12), None)
+    percentage_episode = {}
+    if percentage_best is not None:
+        _, percent_peak, percent_peak_date, percent_trough = percentage_best
+        percent_recovered = next((d.date for d in days
+                                 if d.date > percent_trough and d.equity >= percent_peak - 1e-12), None)
+        percentage_episode = {
+            "percentage_peak_date": percent_peak_date.isoformat() if percent_peak_date else "window start",
+            "percentage_trough_date": percent_trough.isoformat(),
+            "percentage_recovered_date": percent_recovered.isoformat() if percent_recovered else None,
+            "percentage_recovery_days": ((percent_recovered - percent_trough).days
+                                         if percent_recovered else None),
+            "percentage_recovered": percent_recovered is not None,
+        }
     return {
-        "max_drawdown_pct": pct, "max_drawdown_usd": -worst_usd,
+        "max_drawdown_pct": worst_pct, "max_drawdown_usd": -usd,
+        "percent_at_max_drawdown_usd": pct,
         "peak_date": pk_date.isoformat() if pk_date else "window start",
         "trough_date": tr_date.isoformat(),
         "recovered_date": rec_date.isoformat() if rec_date else None,
         "recovery_days": (rec_date - tr_date).days if rec_date else None,
         "recovered": rec_date is not None,
+        **percentage_episode,
     }
 
 
@@ -552,6 +572,10 @@ def curves_from_journal(doc: Any, label_note: str = "") -> list[Curve]:
         return []
     fills_raw = doc.get("fills") or {}
     carry_raw = doc.get("carry") or {}
+    if not isinstance(fills_raw, (dict, list, tuple)):
+        return []
+    if not isinstance(carry_raw, (dict, list, tuple)):
+        carry_raw = ()
     fills = sorted((f for f in (fills_raw.values() if isinstance(fills_raw, dict) else fills_raw)
                     if isinstance(f, dict) and _num(f.get("tsMs")) is not None),
                    key=lambda f: f["tsMs"])
@@ -563,7 +587,7 @@ def curves_from_journal(doc: Any, label_note: str = "") -> list[Curve]:
     for f in fills:
         ts = f["tsMs"] / 1000.0
         qty, px, fee = _num(f.get("baseQty")), _num(f.get("priceUsd")), _num(f.get("feeUsd")) or 0.0
-        if qty is None or px is None or qty <= 0:
+        if qty is None or px is None or qty <= 0 or px <= 0 or f.get("side") not in ("buy", "sell"):
             continue
         if f.get("side") == "buy":
             lots.append([qty, px, fee / qty])
@@ -585,6 +609,8 @@ def curves_from_journal(doc: Any, label_note: str = "") -> list[Curve]:
             ts = c["tsMs"] / 1000.0
             events.append((ts, -c["costUsd"], Fill(ts, borrow=c["costUsd"])))
     events.sort(key=lambda e: e[0])
+    if not events:
+        return []
     running, points = 0.0, []
     for ts, delta, _ in events:
         running += delta
@@ -596,9 +622,12 @@ def curves_from_journal(doc: Any, label_note: str = "") -> list[Curve]:
 
 
 def _num(v: Any) -> float | None:
-    if isinstance(v, bool) or not isinstance(v, (int, float)) or not math.isfinite(v):
+    if isinstance(v, bool) or not isinstance(v, (int, float)):
         return None
-    return float(v)
+    try:
+        return float(v) if math.isfinite(v) else None
+    except OverflowError:
+        return None
 
 
 # -- liquidity daemon -------------------------------------------------------------------------------
@@ -656,14 +685,26 @@ def curve_from_lp_ledger(conn: Any, mode: Any) -> Curve | None:
     basis = sum(usd for _, kind, usd in flows if kind in ("deposit", "topup"))
     latest: dict[str, float] = {}
     points: list[tuple[float, float]] = []
-    for ts in sorted({r[1] for r in snaps}):
-        for slot, t, value, unclaimed in snaps:
-            if t == ts:
-                latest[slot] = (value or 0.0) + (unclaimed or 0.0)
-        net_flow = sum((usd if kind in ("deposit", "topup") else -usd)
-                       for t, kind, usd in flows if t <= ts)
-        claimed = sum(r for t, kind, g, r in events if t <= ts and kind in ("claim", "collect"))
-        gas = sum(g for t, kind, g, r in events if t <= ts)
+    snapshots_at: dict[float, list[tuple[str, float]]] = {}
+    for slot, ts, value, unclaimed in snaps:
+        snapshots_at.setdefault(ts, []).append((slot, (value or 0.0) + (unclaimed or 0.0)))
+    flow_rows, event_rows = iter(flows), iter(events)
+    flow, event = next(flow_rows, None), next(event_rows, None)
+    net_flow = claimed = gas = 0.0
+    for ts in sorted(snapshots_at):
+        for slot, value in snapshots_at[ts]:
+            latest[slot] = value
+        # Both queries are time-ordered. Consume each row once instead of rescanning the full
+        # ledger for every snapshot; long-running histories must remain usable in the P&L view.
+        while flow is not None and flow[0] <= ts:
+            _, kind, usd = flow
+            net_flow += usd if kind in ("deposit", "topup") else -usd
+            flow = next(flow_rows, None)
+        while event is not None and event[0] <= ts:
+            _, kind, fee, reward = event
+            claimed += reward if kind in ("claim", "collect") else 0.0
+            gas += fee
+            event = next(event_rows, None)
         points.append((ts, basis + sum(latest.values()) - net_flow + claimed - gas))
     fills = [Fill(t, fee=g or 0.0,
                   realized=((r if kind in ("claim", "collect") else 0.0) or 0.0) - (g or 0.0))

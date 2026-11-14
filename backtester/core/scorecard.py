@@ -103,6 +103,12 @@ class Bars:
         self.ts, self.open, self.high, self.low, self.close, self.volume = arrays
         if n > 1 and np.any(np.diff(self.ts) <= 0):
             raise ScorecardError("timestamps must be strictly ascending")
+        if np.any(self.ts < 0) or np.any(self.ts != np.floor(self.ts)):
+            raise ScorecardError("timestamps must be nonnegative whole epoch seconds")
+        if any(np.any(a <= 0) for a in (self.open, self.high, self.low, self.close)) or np.any(self.volume < 0):
+            raise ScorecardError("OHLC prices must be positive and volume nonnegative")
+        if np.any(self.high < np.maximum(self.open, self.close)) or np.any(self.low > np.minimum(self.open, self.close)) or np.any(self.high < self.low):
+            raise ScorecardError("OHLC high/low bounds are inconsistent")
 
     def __len__(self) -> int:
         return int(self.close.size)
@@ -378,6 +384,13 @@ _ATR = P("atr", 14, 2, 200, "int", "ATR period used to normalise distances")
 FORMULA_VERSIONS: dict[str, int] = {
     "vwap_side": 2,       # 2026-11-07: VWAP distance scaled by its typical size, not one 5m ATR
     "vwap_reversion": 2,  # same; the ATR version clipped to +/-1 on 57% of SOL bars
+    # Invalid auxiliary observations used to become finite votes or passing gates.
+    # Future forward records must not inherit those older observations.
+    "funding": 2,
+    "premium": 2,
+    "book_imbalance": 2,
+    "gate_events": 2,
+    "gate_news": 2,
 }
 
 
@@ -667,10 +680,19 @@ def _aligned_last(series_ts: np.ndarray, values: np.ndarray, bar_ts: np.ndarray,
     A value older than `max_age` seconds is NaN, not carried forward: a funding cache that
     stopped in August must not keep scoring November bars with August's rate.
     """
+    if series_ts.ndim != 1 or values.ndim != 1 or series_ts.size != values.size:
+        raise ScorecardError("auxiliary timestamps and values must be aligned one-dimensional arrays")
+    try:
+        if not np.isfinite(series_ts).all() or not np.isfinite(values).all() or np.any(series_ts < 0):
+            raise ScorecardError("auxiliary observations must have finite timestamps and values")
+    except TypeError as exc:
+        raise ScorecardError("auxiliary observations must be numeric") from exc
     if series_ts.size == 0:
         return np.full(bar_ts.size, np.nan)
     order = np.argsort(series_ts)
     st, sv = np.asarray(series_ts)[order], np.asarray(values, dtype="float64")[order]
+    if np.any(np.diff(st) <= 0):
+        raise ScorecardError("auxiliary timestamps must not repeat")
     close = bar_ts + BAR_SECONDS
     idx = np.searchsorted(st, close, side="right") - 1
     safe = np.clip(idx, 0, None)
@@ -698,7 +720,7 @@ def _live_only(b: Bars, value: float | None) -> np.ndarray:
 def _c_premium(b: Bars, p: Params, aux: Params) -> np.ndarray:
     live = aux.get("live") or {}
     prem = live.get("premium")
-    if prem is None or not math.isfinite(float(prem)):
+    if prem is None or isinstance(prem, bool) or not math.isfinite(float(prem)):
         return _live_only(b, None)
     return _live_only(b, -math.tanh(float(prem) / (p["scale_bps"] * 1e-4)))
 
@@ -725,7 +747,7 @@ def _c_oi(b: Bars, p: Params, aux: Params) -> np.ndarray:
 def _c_book(b: Bars, p: Params, aux: Params) -> np.ndarray:
     live = aux.get("live") or {}
     imb = live.get("book_imbalance")
-    if imb is None or not math.isfinite(float(imb)):
+    if imb is None or isinstance(imb, bool) or not math.isfinite(float(imb)):
         return _live_only(b, None)
     return _live_only(b, max(-1.0, min(1.0, float(imb) / p["scale"])))
 
@@ -944,6 +966,8 @@ def _g_events(b: Bars, p: Params, aux: Params) -> np.ndarray:
     blocked = np.zeros(len(b), dtype=bool)
     for ev in events:
         at = float(ev["ts"])
+        if not math.isfinite(at) or isinstance(ev["ts"], bool):
+            raise ScorecardError("scheduled event timestamp must be finite")
         blocked |= (end >= at - p["before_min"] * 60) & (end <= at + p["after_min"] * 60)
     return blocked
 
@@ -958,7 +982,7 @@ def _g_volume(b: Bars, p: Params, aux: Params) -> np.ndarray:
 def _g_news(b: Bars, p: Params, aux: Params) -> np.ndarray:
     live = aux.get("live") or {}
     out = np.zeros(len(b), dtype=bool)
-    if "news_error" in live:
+    if "news_error" in live or "news_hits" not in live:
         out[-1:] = True  # fail closed: an enabled news gate that could not look blocks the call
         return out
     hits = live.get("news_hits")
@@ -1344,7 +1368,9 @@ def normalise_config(raw: Mapping[str, Any] | None) -> dict[str, Any]:
         return cfg
     if not isinstance(raw, Mapping):
         raise ScorecardError("config must be an object")
-    comps = raw.get("components") or {}
+    comps = raw.get("components", {})
+    if comps is None:
+        comps = {}
     if not isinstance(comps, Mapping):
         raise ScorecardError("components must be an object")
     for cid, entry in comps.items():
@@ -1354,13 +1380,17 @@ def normalise_config(raw: Mapping[str, Any] | None) -> dict[str, Any]:
             raise ScorecardError(f"{cid}: entry must be an object")
         comp, out = BY_ID[cid], cfg["components"][cid]
         if "enabled" in entry:
-            out["enabled"] = bool(entry["enabled"])
+            if not isinstance(entry["enabled"], bool):
+                raise ScorecardError(f"{cid}: enabled must be a boolean")
+            out["enabled"] = entry["enabled"]
         if "weight" in entry:
             try:
                 out["weight"] = P("weight", 1, 0, 10, "float").coerce(entry["weight"])
             except ScorecardError as exc:
                 raise ScorecardError(f"{cid}: {exc}") from exc
-        params = entry.get("params") or {}
+        params = entry.get("params", {})
+        if params is None:
+            params = {}
         if not isinstance(params, Mapping):
             raise ScorecardError(f"{cid}: params must be an object")
         specs = {p.name: p for p in comp.params}
@@ -1372,7 +1402,9 @@ def normalise_config(raw: Mapping[str, Any] | None) -> dict[str, Any]:
             except ScorecardError as exc:
                 raise ScorecardError(f"{cid}: {exc}") from exc
     for section, specs in (("aggregate", AGGREGATE_SPECS), ("execution", EXECUTION_SPECS)):
-        given = raw.get(section) or {}
+        given = raw.get(section, {})
+        if given is None:
+            given = {}
         if not isinstance(given, Mapping):
             raise ScorecardError(f"{section} must be an object")
         known = {s.name: s for s in specs}
@@ -1666,6 +1698,10 @@ def evaluate(bars: Bars, config: Mapping[str, Any] | None = None,
     errors: dict[str, str] = {}
     tuned: dict[str, list[tuple[int, dict[str, Any]]]] = {}
     directions: dict[str, np.ndarray] = {}
+    if not n:
+        return Evaluation(bars, cfg, scores, gates, np.array([], dtype=object),
+                          np.array([], dtype=float), np.array([], dtype=float),
+                          np.array([], dtype=bool), np.array([], dtype="int8"), errors)
     for comp in COMPONENTS:
         entry = cfg["components"][comp.id]
         if not entry["enabled"]:
@@ -1677,10 +1713,10 @@ def evaluate(bars: Bars, config: Mapping[str, Any] | None = None,
                     tuned[comp.id] = moves
             else:
                 values = comp.fn(bars, dict(entry["params"]), aux_)
-        except ScorecardError as exc:
+        except (ScorecardError, ValueError, TypeError, KeyError, OverflowError) as exc:
             # Never drop an enabled component silently: an errored gate BLOCKS (fails closed)
             # and an errored score counts as undefined, which lowers coverage.
-            errors[comp.id] = str(exc)
+            errors[comp.id] = str(exc) if isinstance(exc, ScorecardError) else f"{comp.id}: input unavailable ({type(exc).__name__})"
             if comp.kind == "gate":
                 gates[comp.id] = np.ones(n, dtype=bool)
             continue

@@ -25,25 +25,17 @@ import { readFileSync } from 'node:fs';
 import { tick } from '../src/core/engine.js';
 import { MemoryStore } from '../src/storage/memoryStore.js';
 import { ConfigStore, DEFAULT_CONFIG } from '../src/storage/store.js';
+import { fileURLToPath } from 'node:url';
+import { toolArgs, toolFailure } from './args.js';
+
+const USAGE = 'Usage: node tools/measure-recentre.js [--csv PATH] [--column INDEX]\nDefault: repository data/SOL_1d.csv; reads local data only.\nExample: node tools/measure-recentre.js --csv /path/to/candles.csv';
 
 function parseArgs(argv) {
-  const out = { csv: '../data/SOL_1d.csv', column: null };
-  for (let i = 0; i < argv.length; i += 2) {
-    const flag = argv[i];
-    if (!flag?.startsWith('--')) throw new Error(`expected a --flag, got "${flag}"`);
-    const key = flag.slice(2);
-    // Object.hasOwn, not `in`: `in` walks the prototype chain, so --constructor
-    // and --__proto__ would pass a check that looks like a whitelist.
-    if (!Object.hasOwn(out, key)) throw new Error(`unknown flag --${key}`);
-    const value = argv[i + 1];
-    if (value === undefined) throw new Error(`--${key} needs a value`);
-    if (key === 'column') {
-      const n = Number(value);
-      if (!Number.isInteger(n) || n < 0) throw new Error(`--column must be a non-negative integer, got "${value}"`);
-      out.column = n;
-    } else {
-      out[key] = value;
-    }
+  const out = toolArgs(argv, { csv: fileURLToPath(new URL('../../data/SOL_1d.csv', import.meta.url)), column: null }, { usage: USAGE });
+  if (out.column !== null) {
+    const n = Number(out.column);
+    if (!Number.isSafeInteger(n) || n < 0) throw Object.assign(new Error(`--column must be a non-negative integer\n${USAGE}`), { exitCode: 2 });
+    out.column = n;
   }
   return out;
 }
@@ -127,6 +119,7 @@ async function run({ closes, autoRecentre }) {
 
 async function main() {
   const args = parseArgs(process.argv.slice(2));
+  if (args.help) { console.log(USAGE); return 0; }
   const lines = readFileSync(args.csv, 'utf8').trim().split('\n');
   const { column, hasHeader } = closeColumn(lines[0], args.column);
   const closes = lines
@@ -159,7 +152,4 @@ async function main() {
 
 main().then((code) => {
   process.exitCode = code;
-}).catch((err) => {
-  console.error(`error: ${err.message}`);
-  process.exitCode = 1;
-});
+}).catch(toolFailure);

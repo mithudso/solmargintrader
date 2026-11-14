@@ -1,11 +1,13 @@
 """Offline durability/namespace regressions; native Mongo requires explicit disposable opt-in."""
 import importlib.util
+import io
 import json
 import math
 import os
 import tempfile
 import unittest
 from pathlib import Path
+from contextlib import redirect_stderr
 from unittest.mock import patch
 from urllib.parse import parse_qs, urlsplit
 
@@ -24,9 +26,24 @@ class CaptureTests(unittest.TestCase):
 
     def spool(self, raw='{"type":"match","time":"2026-11-12T00:00:00.123456Z","price":"23.123456789","trade_id":1}'):
         s = m.Spool(self.home, self.cfg)
-        row = s.append(raw, "connection-a")
-        s.close()
-        return row
+        try:
+            return s.append(raw, "connection-a")
+        finally:
+            s.close()
+
+    def test_upload_missing_dependency_names_its_isolated_setup_command(self):
+        for missing, package in (("pymongo", "pymongo"), ("dotenv", "python-dotenv")):
+            stderr = io.StringIO()
+            with self.subTest(missing=missing), redirect_stderr(stderr), patch(
+                "importlib.util.find_spec", side_effect=lambda name: None if name == missing else object()
+            ), patch.object(m, "upload", return_value=0) as upload:
+                self.assertEqual(m.main(["upload", "--home", str(self.home)]), 3)
+                upload.assert_not_called()
+                result = json.loads(stderr.getvalue())
+                self.assertEqual(result["missing_package"], package)
+                self.assertIn("uv run --with-requirements", result["setup_command"])
+                self.assertIn(str(m.ROOT / "scripts/requirements-market-capture.txt"), result["setup_command"])
+                self.assertIn("--help", result["setup_command"])
 
     def test_deadline_is_persisted_and_prepare_refuses_overwrite(self):
         self.assertEqual(self.cfg["deadline_epoch"] - self.cfg["start_epoch"], 86400)
@@ -46,6 +63,18 @@ class CaptureTests(unittest.TestCase):
         self.assertEqual(doc["payload"]["price"], "23.123456789")
         self.assertEqual(doc["received_ns"], row["received_ns"])
         self.assertEqual(doc["meta"]["product"], "ZEC-USD")
+
+    def test_invalid_message_type_retains_raw_without_interrupting_spool(self):
+        for value in ([], {}, 4, None, True, ""):
+            with self.subTest(value=value):
+                raw = json.dumps({"type": value, "price": "23.1"})
+                row = self.spool(raw)
+                self.assertEqual(row["type"], "unparsed")
+                self.assertEqual(row["raw"], raw)
+                m.atomic_json(self.home / "status.json", {"types": {row["type"]: 1}})
+        rows, _ = m.read_batch(self.home / "events.jsonl", 0)
+        self.assertEqual(len(rows), 6)
+        self.assertEqual([r["seq"] for r in rows], list(range(1, 7)))
 
     def test_unparsed_payload_is_retained(self):
         row = self.spool('not JSON 🚀')

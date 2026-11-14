@@ -55,3 +55,80 @@ The single worker slot bounds active calculations; production provisioning must
 also set CPU/memory/request-rate limits and align edge request timeouts with the
 chosen compute tier. This synchronous adapter is a bounded research path, not a
 durable job scheduler or unattended trading service.
+
+## Dedicated hosted runtime
+
+The Container starts `python -I -m website.engine.runtime`; the standalone
+read-only listener above remains available for compatibility. The dedicated
+runtime explicitly acquires public Coinbase Exchange USD candles, maintains
+separate native SOL/BTC/ETH/ZEC Oracle archives, and runs durable pure-analysis
+jobs. It needs its own state root, owner epoch and authenticated R2 checkpoint
+bridge. It never reads the owner's cached files, keys or control room.
+
+Cold start restores and validates state before writers or jobs become ready.
+Native SQLite backups, input data and job results use hash-checked R2 chunks
+and an epoch/sequence-fenced manifest. The published manifest commits a state;
+ephemeral container disk and a shutdown handler do not establish durability.
+Dependencies are pinned in `constraints.txt`, and the image installs this
+package before isolated-mode startup.
+The MCP SDK pin follows the canonical Oracle package: `mcp==2.3.0`.
+
+Historical1m closes initialize feature context only after their candles are
+closed. They retain their actual candle bucket-start index and the explicit
+`closed_candle_start_index` timestamp label, with actual current receipt time.
+They are derived reference samples, not instantaneous trades or execution quotes.
+The latest closed index is at least60seconds old, beyond the native15second
+freshness gate, so this step creates **zero historical forecasts or resolutions**.
+The CSV hash and sample semantics are recorded. Forecasts and measured accuracy
+begin with genuine current provider events; missing buckets reset native warmup
+and are never forward-filled. Qualification requires real prospective outcomes;
+no leader or accuracy is invented during warmup.
+
+`GET /health`, `POST /v1/jobs` and `GET /v1/jobs/{id}` supplement the unchanged
+three analysis endpoints. New jobs pin their exact provider CSV and acquisition
+metadata. One spawned child calculation runs at a time, with a45second deadline;
+the legacy synchronous path uses the same durable executor with a15second
+calculation deadline. Results are published only after durable checkpointing.
+Source schema, deployment gates and tests are in `website/runtime/README.md`.
+
+For a structurally valid job ID and canonical request, unsupported strategies,
+invalid semantic parameters, queue-capacity refusal and input/history failures
+produce a durable terminal `failed` receipt. The exact ID and request hash are
+retained before returning HTTP200. Replaying the same ID cannot turn that
+refusal into a new accepted job when a cache or strategy later becomes available.
+The edge releases its own reserved credit only after verifying that terminal
+receipt. Malformed JSON, malformed envelopes/IDs and idempotency conflicts still
+reject without creating another accepted receipt. A failed checkpoint returns
+an unavailable response rather than publishing uncommitted terminal state.
+
+## Trusted strategy targets
+
+The dedicated runtime adds `POST /v1/signals` with the exact JSON keys `coin`,
+`strategy`, and `interval`. It computes the canonical default strategy in spot
+mode over the latest fully closed contiguous public Coinbase USD bars, up to
+6,000. Stateful callbacks receive the same guarded `BarWindow` and spot target
+normalization as the canonical engine. The last closed-bar target applies to the
+next bar (`fillDelay:1`); its historical close is never an execution quote.
+
+An available response has `desiredExposure` exactly `0` or `1`, a stable
+`signalId`, full selected-bar `inputHash`, raw-cache `sourceHash`, loaded
+`sourceIdentity`, `strategyRevision`, `economicVersion`, `barStart`, `barEnd`,
+`asOf`, `expiresAt`, and `executionQuote:false`. `marketObservation` includes
+actual provider event and receipt times and identity, without a price. The ID
+binds the market, strategy, interval, completed bar, selected inputs and strategy
+revision. Changing an excluded partial candle cannot change that ID. The
+revision binds the loaded source hash, strategy class/default parameters and
+spot/fill-delay semantics. Each `GET /v1/strategies` row exposes the identical
+`strategyRevision` for wallet-signed preauthorization.
+
+Missing/stale selected history can trigger one bounded explicit public refresh
+and a durable checkpoint before calculation. Canonical strategy calculation
+never fetches data. A separate genuine current venue observation must be at most
+15 seconds old; historical feature bootstrap cannot satisfy it. Signals expire
+no later than that observation or the next bar end. Fractions, non-finite
+targets, gaps, stale/missing observations, unusable strategies and a five-second
+callback-loop compute budget produce explicit unavailable reasons. One shared
+compute slot bounds signals and backtests; a busy runtime returns unavailable.
+The authenticated trading driver must independently obtain a fresh execution
+quote and enforce the customer's signed wallet policy. This endpoint supplies
+no account, wallet, permission, order, execution price or signing capability.

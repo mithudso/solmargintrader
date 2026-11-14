@@ -56,6 +56,7 @@ from typing import Any
 
 import numpy as np
 
+from .continuation import configuration_binding
 from .metrics import Metrics, compute_metrics
 from .types import (
     INTERVAL_SECONDS,
@@ -335,8 +336,10 @@ def run_dca_backtest(
     _finite("risk_free_rate", risk_free_rate)
 
     checked = validate_bar_arrays(arrays, interval, require_open_volume=False)
+    if "open" not in checked:
+        raise ValueError("open prices are required for DCA next-open fills")
     ts, highs, lows, closes = (checked[name] for name in ("ts", "high", "low", "close"))
-    opens = checked.get("open", closes)
+    opens = checked["open"]
     n = closes.size
     observed = checked["observed"]
     fee = costs.fee_bps / 10_000.0
@@ -358,10 +361,13 @@ def run_dca_backtest(
     equity = np.empty(n, dtype="float64")
     exposure = np.zeros(n, dtype="float64")
 
-    from dataclasses import asdict
     offset = 0
     length_sum = length_count = 0
-    binding = repr((cfg.to_dict(), capital, interval, asdict(costs)))
+    metric_initial_equity = capital
+    baseline = _baseline_equity(closes, capital, costs)
+    baseline_units = float(baseline[0] / closes[0])
+    baseline_initial_equity = capital
+    binding = configuration_binding(cfg.to_dict(), capital, interval, costs)
     if continuation is not None:
         if continuation["binding"] != binding:
             raise ValueError("continuation configuration changed")
@@ -377,6 +383,14 @@ def run_dca_backtest(
         if continuation["deal"] is not None:
             deal = _Deal(1, 0)
             deal.__dict__.update(continuation["deal"])
+        last_close = continuation.get("last_close")
+        baseline_units = continuation.get("baseline_units")
+        if any(isinstance(value, bool) or not isinstance(value, Real) or not math.isfinite(value)
+               for value in (last_close, baseline_units)) or last_close <= 0 or baseline_units < 0:
+            raise ValueError("continuation is missing a valid valuation boundary")
+        metric_initial_equity = cash + (deal.qty * last_close if deal is not None else 0.0)
+        baseline_initial_equity = baseline_units * last_close
+        baseline = baseline_units * closes.astype("float64")
 
     def buy(price_level: float, usd: float, i: int, reason: str) -> bool:
         nonlocal cash, fees_paid, slip_paid
@@ -492,12 +506,14 @@ def run_dca_backtest(
             exposure[-1] = 0.0
 
     ppy = periods_per_year(interval)
-    metrics = compute_metrics(equity, ts, trades, exposure, ppy, risk_free_rate, 0, initial_equity=capital)
-    baseline = _baseline_equity(closes, capital, costs, observed)
+    metrics = compute_metrics(equity, ts, trades, exposure, ppy, risk_free_rate, 0,
+                              initial_equity=metric_initial_equity if metric_initial_equity > 0 else None)
     baseline_metrics = compute_metrics(baseline, ts, [], np.ones(n, dtype="float64"), ppy,
-                                       risk_free_rate, 0, initial_equity=capital)
+                                       risk_free_rate, 0,
+                                       initial_equity=baseline_initial_equity if baseline_initial_equity > 0 else None)
     state = {
         "schema_version": 1, "cursor": offset + n, "last_ts": int(ts[-1]), "binding": binding,
+        "last_close": float(closes[-1]), "baseline_units": float(baseline_units),
         "control": [cash, pending, pending_index, cooldown_until],
         "counts": [deals_completed, deals_stopped, safety_filled_total, max_safety_used],
         "totals": [realized, fees_paid, slip_paid], "deal": vars(deal).copy() if deal else None,
@@ -533,12 +549,11 @@ def run_dca_backtest(
 def rebind_dca_state(state, cfg, *, initial_capital, interval, costs):
     """Replace a paused flat deal constructor while preserving its cash book."""
     import copy
-    from dataclasses import asdict
 
     if (state.get("schema_version") != 1 or state["deal"] is not None
             or state["control"][1] is not None):
         raise ValueError("DCA configuration adoption requires a flat account without pending intent")
     result = copy.deepcopy(state)
-    result["binding"] = repr((cfg.to_dict(), initial_capital, interval, asdict(costs)))
+    result["binding"] = configuration_binding(cfg.to_dict(), initial_capital, interval, costs)
     result["first_plan"] = None
     return result

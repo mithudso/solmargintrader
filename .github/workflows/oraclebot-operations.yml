@@ -1,0 +1,44 @@
+name: Oraclebot operations
+on:
+  pull_request:
+    paths: ['scripts/oraclebot_ops.py', 'scripts/oraclebot_watchdog.py', 'scripts/test_oraclebot_ops.py', '.github/workflows/oraclebot-operations.yml']
+  push:
+    branches: [master]
+    paths: ['scripts/oraclebot_ops.py', 'scripts/oraclebot_watchdog.py', 'scripts/test_oraclebot_ops.py', '.github/workflows/oraclebot-operations.yml']
+  schedule:
+    - cron: '3-58/5 * * * *'
+    - cron: '0 14 * * 1-5'
+  workflow_dispatch:
+    inputs:
+      acceptance_mode:
+        type: choice
+        description: Isolated alert lifecycle acceptance; never changes real service state
+        default: normal
+        options: [normal, failure, recovery]
+permissions:
+  contents: read
+concurrency:
+  group: oraclebot-operations
+  cancel-in-progress: false
+jobs:
+  checks:
+    if: github.event_name == 'push' || github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+      - run: python3 -m unittest discover -s scripts -p test_oraclebot_ops.py -v
+  availability:
+    if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      issues: write
+    timeout-minutes: 3
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+      - name: Observe independent heartbeat and reconcile incident
+        run: python3 scripts/oraclebot_watchdog.py
+        env:
+          GH_TOKEN: ${{ github.token }}
+          ORACLEBOT_HEARTBEAT: ${{ vars.ORACLEBOT_HEARTBEAT }}
+          ACCEPTANCE_MODE: ${{ inputs.acceptance_mode || 'normal' }}

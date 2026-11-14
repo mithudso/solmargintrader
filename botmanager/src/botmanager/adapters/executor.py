@@ -124,7 +124,7 @@ class ExecutorAdapter:
                 raise ValueError
             if not result["ok"]:
                 if not isinstance(result["error"], dict):
-                    raise ValueError
+                    raise TypeError
                 code = result["error"].get("code")
                 raise ManagerError(
                     "executor_"

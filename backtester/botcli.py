@@ -22,7 +22,7 @@ import sys
 from pathlib import Path
 from typing import Sequence
 
-from .core.data import CsvLoader, SyntheticLoader, frame_to_arrays, resolve_data_dir
+from .core.data import CsvLoader, SyntheticLoader, describe_data_error, frame_to_arrays, resolve_data_dir
 from .core.dcasim import DcaConfig, plan_deal, run_dca_backtest
 from .core.trianglesim import (
     TriangleConfig,
@@ -40,12 +40,12 @@ DISCLAIMER = (
 )
 
 
-def _boolean(value):
+def _boolean(value: str) -> bool:
     if value.lower() in ("1", "true", "yes"):
         return True
     if value.lower() in ("0", "false", "no"):
         return False
-    raise argparse.ArgumentTypeError("expected true/false, yes/no, or 1/0")
+    raise argparse.ArgumentTypeError("expected true/false, yes/no or 1/0")
 
 
 def _add_dataclass_args(group: argparse._ArgumentGroup, cls: type) -> None:
@@ -61,7 +61,8 @@ def _add_dataclass_args(group: argparse._ArgumentGroup, cls: type) -> None:
 def build_parser() -> argparse.ArgumentParser:
     ap = argparse.ArgumentParser(prog="python -m backtester.botcli",
                                  description="Backtest a DCA bot or replay triangular arbitrage. "
-                                             "Historical simulation only, NOT investment advice.")
+                                             "Historical simulation only, NOT investment advice.",
+                                 epilog="Example: python -m backtester.botcli dca --synthetic 100")
     sub = ap.add_subparsers(dest="bot")
     dca = sub.add_parser("dca", formatter_class=argparse.ArgumentDefaultsHelpFormatter,
                          help="DCA safety-order bot over cached OHLCV")
@@ -91,6 +92,9 @@ def build_parser() -> argparse.ArgumentParser:
 
 
 def _dca(args: argparse.Namespace) -> int:
+    if args.synthetic is not None and args.synthetic < 1:
+        print("error: --synthetic must be at least 1", file=sys.stderr)
+        return 2
     try:
         cfg = DcaConfig(**{f.name: getattr(args, f.name) for f in dataclasses.fields(DcaConfig)})
         costs = CostConfig(fee_bps=args.fee_bps, slippage_bps=args.slippage_bps)
@@ -105,7 +109,7 @@ def _dca(args: argparse.Namespace) -> int:
             df = CsvLoader(path, allow_gaps=args.allow_gaps).load(args.asset, args.start, args.end,
                                                                     args.interval)
         except (OSError, ValueError) as exc:
-            print(f"error: {exc}\nfetch first: python -m backtester.core.fetch --asset {args.asset} "
+            print(f"error: {describe_data_error(exc)}\nfetch first: python -m backtester.core.fetch --asset {args.asset} "
                   f"--interval {args.interval}", file=sys.stderr)
             return 1
     try:
@@ -138,7 +142,7 @@ def _triangle(args: argparse.Namespace) -> int:
         return 1
     snaps = read_snapshot_files(args.snapshots)
     if not snaps:
-        print("error: no usable snapshots", file=sys.stderr)
+        print("error: no usable recorded snapshots; verify the requested recording files", file=sys.stderr)
         return 1
     products = {p for _, quotes in snaps for p in quotes}
     tris = triangles_from_products(products)

@@ -49,6 +49,27 @@ class ResearchExportTests(unittest.TestCase):
         catalog = json.loads(export(self.repo)["catalog.json"])
         self.assertEqual([a["source"] for a in catalog["articles"]], ["research/RESULT.md"])
 
+    def test_tracked_symlinks_cannot_publish_files_outside_research_scope(self):
+        private = self.repo / "private-note.md"
+        private.write_text("# Private note\n\nDo not publish this fixture.")
+        alias = self.repo / "research" / "alias.md"
+        alias.symlink_to(private)
+        subprocess.run(["git", "add", "research/alias.md"], cwd=self.repo, check=True)
+        with self.assertRaisesRegex(ValueError, "symlink refused"):
+            export(self.repo)
+
+    def test_symlink_parent_cannot_redirect_a_tracked_research_file(self):
+        self.add("research/study/result.md", "# Public result")
+        public = self.repo / "research" / "study"
+        (public / "result.md").unlink()
+        public.rmdir()
+        private = self.repo / "private"
+        private.mkdir()
+        (private / "result.md").write_text("# Private fixture")
+        public.symlink_to(private, target_is_directory=True)
+        with self.assertRaisesRegex(ValueError, "symlink refused"):
+            export(self.repo)
+
     def test_incomplete_cards_cannot_be_presented_as_runnable(self):
         self.add("backtester/strategy_cards/incomplete/sample.md", "# Experimental card\n\nNot implemented.")
         article = json.loads(export(self.repo)["catalog.json"])["articles"][0]

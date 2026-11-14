@@ -17,6 +17,7 @@
   let markers;
   let graphData = null;
   let selected = null;
+  let knownStrategies = new Set();
   let signature = "";
   let renderGeneration = 0;
   let libraryPromise;
@@ -35,6 +36,7 @@
   async function ensureChart() {
     if (chart) return;
     const library = await loadLibrary();
+    if (chart) return;
     chart = library.createChart(byId("oracle-chart"), {
       autoSize: true,
       layout: { background: { color: "#fff" }, textColor: "#42536a", attributionLogo: true },
@@ -129,8 +131,12 @@
   function createLegend(strategies) {
     const container = byId("oracle-chart-legend");
     const ids = strategies.map((row) => row.strategy_id);
-    if (!selected) selected = new Set([...ids, "__aggregate__"]);
-    else ids.forEach((id) => selected.add(id));
+    if (!selected) {
+      selected = new Set([...ids, "__aggregate__"]);
+      knownStrategies = new Set(ids);
+    } else ids.forEach((id) => {
+      if (!knownStrategies.has(id)) { selected.add(id); knownStrategies.add(id); }
+    });
     const fragment = document.createDocumentFragment();
     strategies.forEach((row, index) => {
       const label = document.createElement("label");

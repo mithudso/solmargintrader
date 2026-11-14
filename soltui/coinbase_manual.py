@@ -171,6 +171,14 @@ def _details(product_id: str, side: str, size: str, size_currency: str,
         raise ValueError(f'Insufficient available {wanted} balance at the limit price')
     if side == 'BUY' and prices and amount * prices['limit_price'] + fee > MAX_QUOTE:
         raise ValueError('Manual orders are limited to an estimated 100 USD or USDC per order')
+    if order_type == 'market' and size_currency == 'base':
+        # Bind the cap to the requested quantity as well as provider totals.
+        # Inconsistent quote fields must not hide a larger base-sized order.
+        implied_total = amount * price + (fee if side == 'BUY' else Decimal(0))
+        if side == 'BUY' and implied_total > available:
+            raise ValueError(f'Insufficient available {wanted} balance')
+        if implied_total > MAX_QUOTE:
+            raise ValueError('Manual orders are limited to an estimated 100 USD or USDC per order')
     if gross > MAX_QUOTE or (side == 'BUY' and total > MAX_QUOTE) or (side == 'BUY' and size_currency == 'quote' and amount > MAX_QUOTE):
         raise ValueError('Manual orders are limited to an estimated 100 USD or USDC per order')
     quoted_size = amount if (side, size_currency) == ('BUY', 'quote') else gross

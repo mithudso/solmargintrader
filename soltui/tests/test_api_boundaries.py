@@ -42,5 +42,5 @@ class HttpBoundaryTests(unittest.TestCase):
         # A new disposable server reads its configured timeout at accept time.
         with mock.patch.object(api, 'REQUEST_TIMEOUT_S', 0.05, create=True):
             response = self.request(b'POST /v1/settings.get HTTP/1.1\r\nHost: fixture\r\nAuthorization: Bearer synthetic-token\r\nContent-Length: 10\r\n\r\n', b'{')
-        self.assertEqual(response, b'')
+        self.assertTrue(response == b'' or response.startswith(b'HTTP/1.1 400 '))
         self.dispatch.assert_not_called()

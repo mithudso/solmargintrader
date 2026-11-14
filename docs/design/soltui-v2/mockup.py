@@ -1,16 +1,25 @@
 #!/usr/bin/env python3
 """SolTUI v2 -- a clickable layout mockup on fixture data.
 
-This is a design artefact, not a feature. It imports nothing from ``soltui/``,
-reads no files, opens no sockets and runs no command: every number below is a
-fixture lifted from committed result files (cited in ``DESIGN.md``) or made up to
-look like them. Actions in the command palette only raise a toast that names the
-real command they stand for.
+This design artefact imports nothing from ``soltui/``. Its UI uses fixture data
+and opens no market connections. Optional setup writes only its marked private
+environment and executes declared dependency installation. Every displayed number
+is a fixture from committed results (cited in ``DESIGN.md``) or illustrative data.
+Command-palette actions only raise a toast naming the represented real command.
 
-Run it (needs Textual 8.2.8 and textual-plotext):
+Run directly; missing optional modules provision a marked local environment:
 
-    python3 docs/design/soltui-v2/mockup.py              # interactive
-    python3 docs/design/soltui-v2/mockup.py --shots DIR  # write one SVG per screen
+    python3 docs/design/soltui-v2/mockup.py
+
+Or select isolated dependencies explicitly with uv:
+
+    uv run --no-project --with textual==8.2.8 --with textual-plotext python docs/design/soltui-v2/mockup.py
+
+Add ``--shots DIR`` to write one SVG per screen. ``--help`` and invalid-argument
+validation work with the standard library alone. Direct Python execution requires
+the optional dependencies in its selected environment or the owned local bootstrap.
+Set TOOL_NO_VENV=1 for preflight-only CI: missing modules then exit3 and name the
+isolated uv command. Setup never changes system Python or starts a service.
 """
 
 from __future__ import annotations
@@ -18,21 +27,94 @@ from __future__ import annotations
 import argparse
 import asyncio
 import math
+import os
 import random
+import shlex
+import sys
 from collections.abc import Callable
 from dataclasses import dataclass, field
 from pathlib import Path
 
-from rich.console import Group
-from rich.table import Table
-from rich.text import Text
-from textual.app import App, ComposeResult
-from textual.binding import Binding
-from textual.command import DiscoveryHit, Hit, Hits, Provider
-from textual.containers import Horizontal, Vertical
-from textual.theme import Theme
-from textual.widgets import ContentSwitcher, DataTable, Digits, Footer, Input, Sparkline, Static
-from textual_plotext import PlotextPlot
+
+def _size(raw: str) -> tuple[int, int]:
+    try:
+        cols, rows = (int(value) for value in raw.lower().split("x"))
+        if min(cols, rows) <= 0:
+            raise ValueError
+    except ValueError as exc:
+        raise argparse.ArgumentTypeError("size must be positive COLSxROWS, for example 160x48") from exc
+    return cols, rows
+
+
+def _arguments(argv=None):
+    parser = argparse.ArgumentParser(description=__doc__.splitlines()[0],
+        epilog="Example: python3 mockup.py --shots ./screens --size 160x48")
+    parser.add_argument("--shots", type=Path, help="write one SVG per screen into this directory and exit")
+    parser.add_argument("--size", type=_size, default=(160, 48), help="terminal size for --shots, COLSxROWS")
+    return parser.parse_args(argv)
+
+
+_CLI_ARGS = _arguments() if __name__ == "__main__" else None
+
+class PrototypeSetupError(RuntimeError):
+    """A safe, actionable private setup failure."""
+
+
+def _bootstrap_and_reexec() -> None:
+    script = Path(__file__).resolve()
+    if os.environ.get("ORACLEBOT_PROTOTYPE_REEXEC") == str(script):
+        raise PrototypeSetupError("the private environment still cannot load the optional modules")
+    repo = next((parent for parent in script.parents if (parent / "backtester" / "run.py").is_file()), None)
+    if repo is None:
+        raise PrototypeSetupError("repository bootstrap unavailable; use the isolated uv command below")
+    if str(repo) not in sys.path:
+        sys.path.insert(0, str(repo))
+    from backtester.run import PrerequisiteError, ensure_environment
+
+    try:
+        python = ensure_environment(script.parent,
+            requirements=("textual==8.2.8", "textual-plotext"),
+            required_modules=("rich", "textual", "textual_plotext"),
+            owner="oraclebot-design-prototype/v1", entrypoint=script)
+    except PrerequisiteError as exc:
+        raise PrototypeSetupError(str(exc)) from None
+    os.execve(str(python), [str(python), str(script), *sys.argv[1:]],
+              {**os.environ, "ORACLEBOT_PROTOTYPE_REEXEC": str(script)})
+
+
+try:
+    from rich.console import Group
+    from rich.table import Table
+    from rich.text import Text
+    from textual.app import App, ComposeResult
+    from textual.binding import Binding
+    from textual.command import DiscoveryHit, Hit, Hits, Provider
+    from textual.containers import Horizontal, Vertical
+    from textual.theme import Theme
+    from textual.widgets import (
+        ContentSwitcher,
+        DataTable,
+        Digits,
+        Footer,
+        Input,
+        Sparkline,
+        Static,
+    )
+    from textual_plotext import PlotextPlot
+except ModuleNotFoundError as exc:
+    if __name__ != "__main__":
+        raise
+    if os.environ.get("TOOL_NO_VENV") != "1":
+        try:
+            _bootstrap_and_reexec()
+        except PrototypeSetupError as setup_error:
+            print(f"Private tool setup refused: {setup_error}", file=sys.stderr)
+        except Exception as setup_error:  # noqa: BLE001 -- safe CLI boundary; expose failure type only
+            print(f"Private tool setup failed ({type(setup_error).__name__})", file=sys.stderr)
+    command = shlex.join(["uv", "run", "--no-project", "--with", "textual==8.2.8", "--with",
+                          "textual-plotext", "python", str(Path(__file__).resolve())])
+    print(f"Missing optional Python module: {exc.name}. Run in an isolated environment:\n{command}", file=sys.stderr)
+    raise SystemExit(3) from None
 
 # --------------------------------------------------------------------------- tokens
 # One source of colour truth. The up/down pair is the diverging pair for every
@@ -1155,13 +1237,9 @@ async def take_shots(out: Path, size: tuple[int, int]) -> None:
 
 
 def main() -> None:
-    parser = argparse.ArgumentParser(description=__doc__.splitlines()[0])
-    parser.add_argument("--shots", type=Path, help="write one SVG per screen into this directory and exit")
-    parser.add_argument("--size", default="160x48", help="terminal size for --shots, COLSxROWS")
-    args = parser.parse_args()
+    args = _CLI_ARGS or _arguments()
     if args.shots:
-        cols, rows = (int(x) for x in args.size.lower().split("x"))
-        asyncio.run(take_shots(args.shots, (cols, rows)))
+        asyncio.run(take_shots(args.shots, args.size))
     else:
         SolTUIMockup().run()
 

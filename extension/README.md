@@ -373,6 +373,38 @@ Useful CLI flags: `--json` for machine output, `--ephemeral` for throwaway in-me
 `--store-path` / `--config-path` to isolate a run. An unknown flag is rejected rather than ignored;
 a silently dropped `--notionalPerRungUsd` would be a money bug.
 
+File-backed CLI/API execution holds an exclusive filesystem lease for the full
+reconcile, plan, journal and submit operation. Another process receives
+`FILE_STORE_BUSY` and places nothing. Corrupt JSON or journal shapes are refused;
+invalid persisted risk limits block admission. Only the boolean `armed: true`
+counts as permission, and an invalid kill-switch value remains engaged.
+
+`kill` persists the emergency latch independently of a busy journal owner. Once
+that write is acknowledged, the final serialized permission check prevents a
+new venue invocation. A call already started can still complete and must be
+reconciled; kill does not claim to reverse it. `disarm` uses the journal lease
+and can report `FILE_STORE_BUSY`; use `kill` for the emergency path. Arm and
+clear-kill compare the recorded stop generation, so an older request cannot
+clear a newer stop. Missing legacy generations start at zero; explicitly
+malformed generations remain held for review.
+
+HTTP response bodies have a four MiB default limit and a deadline through body
+reading. The large DefiLlama pool feed explicitly allows up to32MiB. Writes are
+never retried automatically. Swap quotes bind the input amount, tokens, mode
+and tolerance; editing the form also invalidates any pending quote response.
+
+The Node entrypoints support `--help` before reading state, fetching data or
+starting a listener. Unknown or missing arguments exit2 with usage. The API
+requires its bearer token in the service environment and reports missing
+configuration before creating its stores.
+
+A crash leaves `<canonical-journal-path>.lock` in place. The next process never
+steals it by PID or elapsed time. For recovery, stop all owners of that journal
+and check every `UNKNOWN` or `SUBMITTING` intent against the venue. Only after
+that review may a human remove the exact stale lock directory. Keep the journal
+and its evidence. Symlink changes and hard-linked journals are refused because
+they cannot establish one stable execution owner.
+
 Full reference: [../docs/API.md](../docs/API.md).
 
 ---

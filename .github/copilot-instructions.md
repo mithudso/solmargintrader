@@ -19,6 +19,7 @@ repository; this file is a pointer plus the rules that get broken most often.
 
 | Component | Language | Risk |
 | --- | --- | --- |
+| `website/` | JavaScript ESM/Python | Public wallet accounts and optional Stripe charges; trading definitions inactive, analysis adapter read-only |
 | `backtester/` | Python 3.13 | Offline simulation; no live trading |
 | `research/` | Python 3.13 | Analysis and prospective paper evidence; no live trading |
 | `oracle/` | Python 3.13 | Shadow forecasts and read-only MCP; separately enabled TradingView worker can submit Coinbase spot or GUM ZEC perpetual orders |
@@ -71,16 +72,20 @@ funding boundary. Do not enable live mode during a code audit.
 ## Build, Test, and Validation Commands
 
 ```bash
-python3 -m unittest discover -s backtester/tests -t .   # 1081 tests
-python3 -m unittest discover -s soltui/tests -t .       # 1582 tests (full suite; optional in CI)
-python3 -m unittest discover -s mongo/tests -t .        # 62 tests
-(cd extension && npm test)                              # 509 tests
-(cd extension && node tools/dryrun.js --ticks 8 --osc 6 --offline 100 --assert-economics) # a round trip must close positive
+python3 -m unittest discover -s backtester/tests -t .   # 1196 tests
+python3 -m unittest discover -s soltui/tests -t .       # 1692 tests (TUI dependencies required)
+python3 -m unittest discover -s mongo/tests -t .        # 73 tests
+cd extension && npm test                                # 555 tests
+node tools/dryrun.js --ticks 8 --osc 6 --offline 100    # a round trip must close positive
 python3 scripts/check_docs.py                           # doc counts and retrieval indexes
 python3 -m unittest discover -s oracle/tests -t . -v
 ruff check oracle
 python3 -m unittest discover -s ecosystem/tests -t . -v
 ruff check ecosystem oracle scripts/bootstrap_ecosystem.py
+npm --prefix website test
+npm --prefix website run check
+python3 -m unittest website.engine.test_server website.engine.test_research
+python3 -m website.scripts.export_research --check
 ```
 
 `cd extension && npm run e2e` verifies an unpacked extension in a temporary Chrome
@@ -115,3 +120,11 @@ Trigger semantic verifier. Oracle's GUM order Action verifier is a separate boun
 it does not verify arbitrary funding transactions. Unit tests and a successful
 preflight do not prove live fills or a profitable strategy. See `docs/known-issues.md`
 and `docs/JUPITER-ZEC-WEBHOOK.md`.
+
+## Hosted website boundaries
+
+`website/README.md` defines the Cloudflare account, billing and analysis layout.
+Wallet sign-in is account authentication, not delegated trading authority. Keep
+Stripe and engine credentials server-side. Membership entitlement comes from the
+verified subscription, not a Checkout redirect. Saved paper configurations do
+not start workers or authorize live Coinbase/Jupiter orders.

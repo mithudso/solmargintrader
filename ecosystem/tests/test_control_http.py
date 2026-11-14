@@ -8,6 +8,7 @@ import time
 import unittest
 from contextlib import closing
 from pathlib import Path
+from unittest.mock import patch
 from uuid import uuid4
 
 from ecosystem.web import make_server
@@ -21,7 +22,9 @@ class ControlHTTPTests(unittest.TestCase):
         self.server = make_server(
             self.home, manager_home=Path(self.temp.name) / "manager", port=0
         )
-        self.thread = threading.Thread(target=self.server.serve_forever, daemon=True)
+        self.thread = threading.Thread(
+            target=lambda: self.server.serve_forever(poll_interval=0.01), daemon=True
+        )
         self.thread.start()
         self.addCleanup(self.close)
         self.origin = f"http://127.0.0.1:{self.server.server_port}"
@@ -129,6 +132,113 @@ class ControlHTTPTests(unittest.TestCase):
         )
         self.assertEqual(conflict, 400)
         self.assertFalse(response["ok"])
+
+    def test_store_failure_logs_fixed_metadata_and_preserves_secret_boundary(self):
+        with (
+            patch.object(
+                self.server.controls,
+                "submit",
+                side_effect=OSError("private-store-canary"),
+            ),
+            self.assertLogs("ecosystem.web", level="WARNING") as logged,
+        ):
+            status, body = self.action()
+        self.assertEqual(status, 503)
+        self.assertEqual(body["error"], "control_store_unavailable")
+        record = json.loads(logged.records[0].getMessage())
+        self.assertEqual(record["event"], "ecosystem_owner_unavailable")
+        self.assertEqual(record["operation"], "submit_control_action")
+        self.assertEqual(record["error_type"], "OSError")
+        self.assertNotIn(
+            "private-store-canary", json.dumps(body) + " ".join(logged.output)
+        )
+        self.assertNotIn(self.nonce, " ".join(logged.output))
+        self.assertFalse((self.home / "control.sqlite3").exists())
+
+    def test_forecast_seconds_are_authenticated_versioned_and_separate_from_research(
+        self,
+    ):
+        from ecosystem.forecast_preferences import settings
+
+        identity = str(uuid4())
+        params = {"instrument": "SOL/USD", "seconds": 17, "expected_revision": 0}
+        denied, _ = self.action(
+            action="oracle.forecast.set", params=params, headers={"X-Sol-CSRF": "wrong"}
+        )
+        self.assertEqual(denied, 403)
+        self.assertFalse((self.home / "forecast-preferences.sqlite3").exists())
+        status, _ = self.action(
+            action="oracle.forecast.set", params=params, identity=identity
+        )
+        self.assertEqual(status, 202)
+        final = None
+        deadline = time.monotonic() + 3
+        while time.monotonic() < deadline:
+            _, value = self.request(f"/api/actions?id={identity}")
+            final = value["data"]["action"]
+            if final["state"] in ("succeeded", "failed"):
+                break
+            time.sleep(0.02)
+        self.assertEqual(final["state"], "succeeded", final)
+        self.assertEqual(
+            settings(self.home, "SOL/USD"),
+            {"instrument": "SOL/USD", "seconds": 17, "revision": 1},
+        )
+        self.assertEqual(final["result"]["scope"], "shared_primary_market_forecast")
+        self.assertFalse((self.home / "state.json").exists())
+        self.assertFalse((self.home / "oracle").exists())
+
+    def test_selected_research_forecast_seconds_persist_only_in_control_owner_home(self):
+        from ecosystem.control import database
+        from ecosystem.forecast_preferences import path, settings
+
+        run_id = "selected-research"
+        selected_home = self.home / "research" / run_id
+        selected_home.mkdir(parents=True)
+        with database(self.home) as db:
+            db.execute(
+                "INSERT INTO experiment VALUES(?,?,?,?)",
+                (run_id, "Selected research fixture", str(selected_home), time.time()),
+            )
+        self.assertEqual(self.server.controls.experiment_home(run_id), selected_home)
+
+        identity = str(uuid4())
+        status, _ = self.action(
+            action="oracle.forecast.set",
+            identity=identity,
+            params={
+                "run_id": run_id,
+                "instrument": "SOL/USD",
+                "seconds": 17,
+                "expected_revision": 0,
+            },
+        )
+        self.assertEqual(status, 202)
+        final = None
+        deadline = time.monotonic() + 3
+        while time.monotonic() < deadline:
+            _, value = self.request(f"/api/actions?id={identity}")
+            final = value["data"]["action"]
+            if final["state"] in ("succeeded", "failed"):
+                break
+            time.sleep(0.02)
+        self.assertIsNotNone(final)
+        self.assertEqual(final["state"], "succeeded", final)
+        self.assertEqual(
+            final["result"],
+            {
+                "instrument": "SOL/USD",
+                "seconds": 17,
+                "revision": 1,
+                "scope": "shared_primary_market_forecast",
+            },
+        )
+        self.assertEqual(
+            settings(self.home, "SOL/USD"),
+            {"instrument": "SOL/USD", "seconds": 17, "revision": 1},
+        )
+        self.assertFalse(path(selected_home).exists())
+        self.assertEqual(settings(selected_home, "SOL/USD")["revision"], 0)
 
     def test_unknown_order_paths_and_actions_are_not_available(self):
         status, data = self.request("/api/order", method="POST", body="{}")

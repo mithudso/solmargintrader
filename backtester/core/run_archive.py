@@ -171,7 +171,8 @@ def backup_archive(archive: str | Path, destination: str | Path) -> None:
 
 
 def main() -> None:
-    parser = argparse.ArgumentParser(description=__doc__)
+    parser = argparse.ArgumentParser(description=__doc__,
+                                     epilog="Example: python -m backtester.core.run_archive runs.db results/")
     parser.add_argument("archive", type=Path)
     parser.add_argument("directory", type=Path, help="completed output directory")
     args = parser.parse_args()

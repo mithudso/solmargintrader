@@ -1,0 +1,169 @@
+{
+  "agent": "research-contract-auditor",
+  "definition_version": "1.0.0",
+  "status": "complete",
+  "evidence": [
+    {
+      "source": "/Users/mitch/.local/state/solmargintrader/zec-fee-sensitivity-20261113/attempt-01/manifest.json",
+      "observed_at": "2026-11-13T17:28:16Z",
+      "supported_claim": "All13 artifact hashes verified;7060 exact unique expected rows,statuses3252 completed/3780 insufficient warmup/28 unsupported."
+    },
+    {
+      "source": "/Users/mitch/.local/state/solmargintrader/zec-fee-sensitivity-20261113/attempt-01/identity.json",
+      "observed_at": "2026-11-13T17:28:16Z",
+      "supported_claim": "All52 source file hashes and runtime equal accepted baseline and current fee-rerun worktree;only fee plan differs."
+    },
+    {
+      "source": "/Users/mitch/.local/state/solmargintrader/zec-fee-sensitivity-20261113/attempt-01/tape.npz",
+      "observed_at": "2026-11-13T17:28:16Z",
+      "supported_claim": "Full-byte hash equals original accepted immutable attempt03 tape;capture.json and original WAL bytes independently rehashed equal baseline,so prior100 raw-book reconstruction audit is reusable."
+    },
+    {
+      "source": "/Users/mitch/.local/state/solmargintrader/zec-fee-sensitivity-20261113/attempt-01/results.json",
+      "observed_at": "2026-11-13T17:28:16Z",
+      "supported_claim": "All3516 25bps rows exactly equal prior accepted results when keyed by interval/candidate;14 full direct-math SMA and hold cases independently reproduced across both rates."
+    },
+    {
+      "source": "/Users/mitch/.local/state/solmargintrader/zec-fee-sensitivity-20261113/attempt-01/fills.jsonl",
+      "observed_at": "2026-11-13T17:28:16Z",
+      "supported_claim": "All217445 fills independently checked against book depth,first eligible quote,latency,price,per-fill fee,cash,position,carry and final equity;108720 are15bps and108725 are25bps."
+    },
+    {
+      "source": "/Users/mitch/.local/state/solmargintrader/zec-fee-sensitivity-20261113/attempt-01/rerun-provenance.json",
+      "observed_at": "2026-11-13T17:28:16Z",
+      "supported_claim": "Parent manifest and actual run.py hashes match recorded provenance;owner clarification is0.25percent and0.15percent,encoded25/15bps per fill."
+    }
+  ],
+  "changes": [
+    "/Users/mitch/.local/state/solmargintrader/zec-fee-sensitivity-20261113/audit-attempt-01-ledger.json",
+    "/Users/mitch/.local/state/solmargintrader/zec-fee-sensitivity-20261113/audit-attempt-01-receipt.json"
+  ],
+  "remaining": [],
+  "details": {
+    "contract": "Read-only audit of unchanged-source/tape ZEC fee sensitivity at25 and15bps each fill on both sides;no network,inference,indexing,services or orders.",
+    "gate_matrix": {
+      "exact_catalog": "passed7060",
+      "artifact_hashes": "passed13",
+      "source_runtime_identity": "passed52codefiles_and_current_runtime",
+      "input_identity_for_raw_audit_reuse": "passed_tape_capture_and_originalWAL_fullbytehashes",
+      "all25bps_baseline_rows": "passed3516_exactdictmatches",
+      "all15bps_fill_ledger": "passed108720",
+      "all25bps_fill_ledger": "passed108725",
+      "complete_direct_math_replays": "passed14",
+      "terminal_settlement": "passed_all_positions_closed_at1e-8_tolerance",
+      "fee_units_and_both_sides": "passed_abs_fill_notional_times_fee_bps_div10000"
+    },
+    "claim_verdicts": [
+      {
+        "fee_bps_each_fill": 25,
+        "interval": "1m",
+        "active_configurations": 836,
+        "positive_configurations": 0,
+        "best_candidate_id": "d827700f49973baa9d7be1ab",
+        "best_return_pct": -0.336328644647399,
+        "best_fills": 2,
+        "best_family": "hierarchical-permission"
+      },
+      {
+        "fee_bps_each_fill": 25,
+        "interval": "5m",
+        "active_configurations": 386,
+        "positive_configurations": 53,
+        "best_candidate_id": "45597a372b39b37adfed9ded",
+        "best_return_pct": 1.082211684004264,
+        "best_fills": 8,
+        "best_family": "regime-routes-trend-or-reversion"
+      },
+      {
+        "fee_bps_each_fill": 25,
+        "interval": "10m",
+        "active_configurations": 167,
+        "positive_configurations": 32,
+        "best_candidate_id": "1b60f67f4c3b3759b50b1a33",
+        "best_return_pct": 1.8229554559842542,
+        "best_fills": 2,
+        "best_family": "2-member-vote"
+      },
+      {
+        "fee_bps_each_fill": 25,
+        "interval": "1h",
+        "active_configurations": 44,
+        "positive_configurations": 2,
+        "best_candidate_id": "volty-4-1.25",
+        "best_return_pct": 0.24663131185893583,
+        "best_fills": 2,
+        "best_family": "volty-stop"
+      },
+      {
+        "fee_bps_each_fill": 15,
+        "interval": "1m",
+        "active_configurations": 836,
+        "positive_configurations": 1,
+        "best_candidate_id": "747d4ac6565683c939535bcf",
+        "best_return_pct": 0.630761035136862,
+        "best_fills": 18,
+        "best_family": "guide-and-family-committee"
+      },
+      {
+        "fee_bps_each_fill": 15,
+        "interval": "5m",
+        "active_configurations": 386,
+        "positive_configurations": 62,
+        "best_candidate_id": "45597a372b39b37adfed9ded",
+        "best_return_pct": 1.893912112894669,
+        "best_fills": 8,
+        "best_family": "regime-routes-trend-or-reversion"
+      },
+      {
+        "fee_bps_each_fill": 15,
+        "interval": "10m",
+        "active_configurations": 167,
+        "positive_configurations": 32,
+        "best_candidate_id": "1b60f67f4c3b3759b50b1a33",
+        "best_return_pct": 2.026802371446057,
+        "best_fills": 2,
+        "best_family": "2-member-vote"
+      },
+      {
+        "fee_bps_each_fill": 15,
+        "interval": "1h",
+        "active_configurations": 44,
+        "positive_configurations": 3,
+        "best_candidate_id": "volty-4-1.25",
+        "best_return_pct": 0.44573770496072473,
+        "best_fills": 2,
+        "best_family": "volty-stop"
+      }
+    ],
+    "read_bindings": {
+      "source": "/Users/mitch/dev/solmargintrader-zec-fees25-15-20261113",
+      "parent_attempt": "/Users/mitch/.local/state/solmargintrader/zec-granular-backtests-20261113/attempt-03",
+      "parent_raw_audit": "/Users/mitch/.local/state/solmargintrader/zec-granular-backtests-20261113/audit-attempt-03-raw-book.json",
+      "new_ledger": "/Users/mitch/.local/state/solmargintrader/zec-fee-sensitivity-20261113/audit-attempt-01-ledger.json"
+    },
+    "origin_groups": "Separate deterministic arithmetic ledger and direct SMA/hold mathematics;original raw-book audit reused only after exact byte-hash verification.",
+    "negation_evidence": "Exact unchanged25bps results rule out unintended scenario drift;every buy and sell pays positive scenario rate;no open positions or unsupported-case invented results.",
+    "telemetry": {
+      "independent_audit_exit_code": 0,
+      "runtime_identity_check_exit_code": 0,
+      "fills_checked": 217445,
+      "15bps_fills_checked": 108720,
+      "25bps_fills_checked": 108725,
+      "full_direct_math_cases": 14,
+      "max_cash_error_usd": 9.367795428261161e-11,
+      "max_execution_price_error": 7.958078640513122e-13,
+      "tests": "No source changes;caller reports39 targeted tests passed,not separately rerun in this fee audit."
+    },
+    "publication_receipt": {
+      "manifest": "/Users/mitch/.local/state/solmargintrader/zec-fee-sensitivity-20261113/attempt-01/manifest.json",
+      "scope": "Local immutable run only;auditor did not publish externally."
+    },
+    "qualification_verdict": "Accepted for descriptive conditional25/15bps fee-sensitivity reporting.No material correctness findings.",
+    "limitations": [
+      "Crossing-book receive-time model does not establish maker fills,queue priority or live venue execution.",
+      "Prior sampled exchange timestamp lag reached13.27seconds;input evidence and model assumptions are unchanged.",
+      "Positive configuration counts include aliases and one-day sample outcomes;they do not establish independent profitable strategies or repeatable edge.",
+      "1h Volty outcomes are explicitly synthetic long/short spot-reference results,not actual perpetual-venue returns."
+    ]
+  }
+}

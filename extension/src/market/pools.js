@@ -12,14 +12,14 @@
  * funds on as soon as it is parsed.
  */
 
-import { getJson } from './net.js';
+import { getJson, MarketError } from './net.js';
 import { ENDPOINTS } from './tokens.js';
 
 const CHAIN_NAMES = { Base: 'base', Solana: 'solana' };
 
 /** One raw DefiLlama row to the shape the UI and alerts use. Null for unusable rows. Pure. */
 export function normalisePool(raw) {
-  const chain = CHAIN_NAMES[raw?.chain];
+  const chain = Object.hasOwn(CHAIN_NAMES, raw?.chain) ? CHAIN_NAMES[raw.chain] : null;
   // Number(null) is 0: a missing APY would rank as a real 0%. Missing is missing.
   const num = (v) => ((typeof v === 'number' || typeof v === 'string' && v.trim() !== '') && Number.isFinite(Number(v)) ? Number(v) : null);
   const apy = num(raw?.apy);
@@ -80,8 +80,9 @@ export function newPoolIds(previousIds, current) {
 
 /** Fetch the feed and normalise the Base and Solana rows. */
 export async function fetchPools(deps) {
-  const body = await getJson(deps, ENDPOINTS.llamaYields, { source: 'defillama yields', timeoutMs: 30_000, maxAttempts: 2 });
-  if (!Array.isArray(body?.data)) throw new Error('DefiLlama feed response has no data array');
+  const body = await getJson(deps, ENDPOINTS.llamaYields, { source: 'defillama yields', timeoutMs: 30_000, maxAttempts: 2,
+    maxResponseBytes: 32 * 1024 * 1024 });
+  if (!Array.isArray(body?.data)) throw new MarketError('defillama yields', 'unexpected pools response');
   const rows = body.data;
   return rows.map(normalisePool).filter(Boolean);
 }

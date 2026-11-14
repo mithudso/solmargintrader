@@ -37,6 +37,7 @@ inputs at all.
 from __future__ import annotations
 
 import argparse
+import math
 import sys
 from collections import defaultdict
 from pathlib import Path
@@ -278,7 +279,7 @@ def s5_attribution(frames: dict[str, pd.DataFrame], swing: int) -> list[str]:
             continue
         # Drop non-finite scores first: sort_values places NaN last, which would hand a
         # missing result the worst rank and manufacture an S5 swing that is really a gap.
-        df = df[np.isfinite(pd.to_numeric(df["median_sharpe"], errors="coerce"))]
+        df = df[df["median_sharpe"].map(math.isfinite)]
         for asset, sub in (
             df.groupby("asset") if "asset" in df else [(name, df)]
         ):

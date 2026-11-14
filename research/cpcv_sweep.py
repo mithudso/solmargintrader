@@ -210,9 +210,14 @@ def bind_experiment(
         row.update({key: json.dumps(value, sort_keys=True) if isinstance(value, (dict, list)) else value
                     for key, value in metadata.items() if key != "manifest"})
     pbo.update(metadata)
-    columns = list(rows[0]) if rows else ["horizon", "kind", "strategy", "label", "family", "n_paths", "usable_blocks", "median_sharpe", "q1_sharpe", "q3_sharpe", "iqr_spread", "frac_paths_positive", "median_path_return", "total_trades", "insufficient", "reason", *metadata]
-    frame = pd.DataFrame(rows, columns=columns)
-    frame["insufficient"] = frame["insufficient"].astype(bool)
+    frame = pd.DataFrame(rows)
+    if frame.empty:
+        # Zero admitted configurations is a valid denominator, not a malformed
+        # result. Keep downstream selection/reporting columns and boolean mask.
+        frame = pd.DataFrame({
+            "horizon": pd.Series(dtype="str"), "kind": pd.Series(dtype="str"),
+            "insufficient": pd.Series(dtype=bool), "median_sharpe": pd.Series(dtype=float),
+        })
     return frame, pbo
 
 

@@ -20,6 +20,7 @@ import { INTENT_STATUS } from '../storage/store.js';
 // Store identity survives separate IndexedDB connections and FileStore wrappers in
 // the same runtime. Memory stores keep their own independent queue.
 const engineQueues = new Map();
+const intentStatuses = new Set(Object.values(INTENT_STATUS));
 const storeIdentity = (store) => store.path ? `file:${store.path}` : store.db?.name ? `indexeddb:${store.db.name}` : store;
 const queueFor = (store) => {
   const key = storeIdentity(store);
@@ -32,7 +33,11 @@ export function withStoreLock(store, operation) {
   // `pending` counts operations queued or running, so an outside observer can
   // tell "nothing is mid-tick" without joining the queue.
   queue.pending++;
-  const result = queue.tail.then(operation);
+  // File-backed CLI/API processes need one filesystem owner for the complete
+  // reconcile-plan-submit operation. Atomic journal writes alone do not fence
+  // another process which already planned against the same earlier snapshot.
+  const result = queue.tail.then(() => typeof store.withExecutionLease === 'function'
+    ? store.withExecutionLease(operation) : operation());
   queue.tail = result.catch(() => {});
   const settled = () => { queue.pending--; };
   result.then(settled, settled);
@@ -346,7 +351,12 @@ async function tickUnlocked({
 
   const today = dayKey(now);
 
-  const effectiveLimits = { ...limits, killSwitch: limits.killSwitch || runtime.killSwitch };
+  const limitsObject = limits && typeof limits === 'object' && !Array.isArray(limits);
+  const effectiveLimits = limitsObject ? {
+    ...limits,
+    killSwitch: runtime.killSwitch !== false
+      || (Object.hasOwn(limits, 'killSwitch') && limits.killSwitch !== false),
+  } : limits;
 
   const result = {
     tsMs: now,
@@ -369,6 +379,13 @@ async function tickUnlocked({
 
   let stage = 'price';
   try {
+    const initialJournal = await store.allIntents();
+    if (initialJournal.some(intent => typeof intent?.intentKey !== 'string' || !intent.intentKey
+        || !intentStatuses.has(intent.status))) {
+      result.skipped.push({ reason: 'journal-evidence-needs-review' });
+      log({ level: 'warn', msg: 'journal intent identity or status is unusable; trading held for review' });
+      return result;
+    }
     const price = await venue.getPrice();
     // A NaN or non-positive price would flow into P&L, get persisted as the
     // daily realized figure, and permanently poison the daily-loss rail. Stop
@@ -437,7 +454,8 @@ async function tickUnlocked({
       return result;
     }
 
-    if (!runtime.armed || queueFor(store).stopped) {
+    const planningRuntime = await configStore.getRuntime();
+    if (planningRuntime.armed !== true || planningRuntime.killSwitch !== false || queueFor(store).stopped) {
       result.skipped.push({ reason: 'not-armed' });
       await persistRuntime();
       return result;
@@ -545,7 +563,7 @@ async function tickUnlocked({
     stage = 'submit';
     for (const intent of admitted) {
       const currentRuntime = await configStore.getRuntime();
-      if (queueFor(store).stopped || !currentRuntime.armed || currentRuntime.killSwitch) {
+      if (queueFor(store).stopped || currentRuntime.armed !== true || currentRuntime.killSwitch !== false) {
         result.skipped.push({ reason: 'execution-stopped' });
         break;
       }
@@ -568,11 +586,30 @@ async function tickUnlocked({
       }
 
       try {
-        const placed = await venue.placeOrder({
+        const invoke = () => venue.placeOrder({
           intent,
           slippageBps: config.slippageBps,
           ttlMs: config.ttlMs,
         });
+        const permitted = () => !queueFor(store).stopped;
+        let permission;
+        if (typeof configStore.withExecutionPermission === 'function') {
+          permission = await configStore.withExecutionPermission(invoke, permitted);
+        } else {
+          if (config.mode !== 'dry-run') throw new Error('atomic execution permission is unavailable');
+          // Legacy test/paper adapters still refresh after write-ahead. Live
+          // execution must never fall back to an unprotected permission read.
+          const latest = await configStore.getRuntime();
+          permission = latest.armed === true && latest.killSwitch === false && permitted()
+            ? { allowed: true, pending: Promise.resolve(invoke()) } : { allowed: false };
+        }
+        if (!permission.allowed) {
+          await store.updateIntent(intent.intentKey, { status: INTENT_STATUS.FAILED,
+            error: 'execution stopped before venue submission', definitelyNotSubmitted: true });
+          result.skipped.push({ reason: 'execution-stopped' });
+          break;
+        }
+        const placed = await permission.pending;
         await store.updateIntent(intent.intentKey, {
           status: INTENT_STATUS.RESTING,
           venueOrderId: placed.venueOrderId,

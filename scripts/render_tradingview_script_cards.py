@@ -162,10 +162,13 @@ def check_readiness(profile: dict) -> None:
 
 
 def card_path(source: dict, profile: dict) -> Path:
+    publication_id = source.get("publication_id")
+    if not isinstance(publication_id, str) or not re.fullmatch(r"[A-Za-z0-9_-]{1,128}", publication_id):
+        raise ValueError("Invalid publication_id for card filename")
     slug = re.sub(r"[^a-z0-9]+", "_", source["name"].lower()).strip("_")[:80]
     # These reviews qualify source interpretation, not a self-contained coin test.
     directory = INCOMPLETE_DIR
-    return directory / f"tv_{source['publication_id'].lower()}_{slug or 'script'}.md"
+    return directory / f"tv_{publication_id.lower()}_{slug or 'script'}.md"
 
 
 def bullets(lines: list[str]) -> str:

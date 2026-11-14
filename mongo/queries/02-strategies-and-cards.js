@@ -2,15 +2,15 @@
 //
 //   mongosh solmargintrader mongo/queries/02-strategies-and-cards.js
 //
-// One document per strategy card (45). The card's own vocabulary is preserved
+// One document per loaded strategy card. The card's own vocabulary is preserved
 // rather than flattened into a boolean:
 //
-//   registry_key  a string for the 25 registered `Strategy` implementations,
+//   registry_key  a string for registered `Strategy` implementations,
 //                 null otherwise. NOT the same as "unimplemented" -- the ladder
 //                 grid is implemented and has no key because it is not a Strategy.
 //   status        measured | implemented | spec-only
 //   runner        backtester.cli | backtester.gridcli | backtester.paircli | null
-//   registry      live code facts (params, warmup, class) for the registered 25
+//   registry      live code facts (params, warmup, class) for registered implementations
 //
 // Indexes: status_family, family, registry_key_unique (partial, string only),
 // feasibility (data_available + success_likelihood).
@@ -25,9 +25,9 @@ printjson(
     .toArray(),
 );
 
-print("\n=== the 25 that actually run, by family ===");
+print("\n=== registered strategies, by family ===");
 // The partial index on registry_key serves this filter: it indexes only the string
-// values, so the 20 nulls cost nothing.
+// values, so null keys occupy no entries.
 printjson(
   db.strategies
     .aggregate([
@@ -86,12 +86,16 @@ print("\n=== one card in full, prose included ===");
 // The body is the card's own reasoning and limitations. Numbers in a card are
 // checked against the code by tests; the prose is not, so read it as argument.
 const card = db.strategies.findOne({ registry_key: "breakout" });
-print(`${card._id}: ${card.name}  [${card.status}, ${card.family}]`);
-print(`  registry: ${JSON.stringify(card.registry)}`);
-print(`  presets:  ${JSON.stringify(card.presets)}`);
-print(`  source:   ${card.source_path}`);
-print("");
-print(card.body.split("\n").slice(0, 12).join("\n"));
+if (card) {
+  print(`${card._id}: ${card.name}  [${card.status}, ${card.family}]`);
+  print(`  registry: ${JSON.stringify(card.registry)}`);
+  print(`  presets:  ${JSON.stringify(card.presets)}`);
+  print(`  source:   ${card.source_path}`);
+  print("");
+  print(card.body.split("\n").slice(0, 12).join("\n"));
+} else {
+  print("No breakout strategy card is loaded.");
+}
 
 print("\n=== every card's provenance, so a claim can be traced to a file ===");
 printjson(

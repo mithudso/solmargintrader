@@ -1,0 +1,2272 @@
+{
+  "schema_version": 1,
+  "reviewer": "/root/executor_blind_review",
+  "timestamp_utc": "2026-11-12T16:55:34.075267+00:00",
+  "worktree": "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112",
+  "scope": "Exactly the 15 assigned extension test files and 4 assigned e2e/lib helpers. No whole-extension, whole-repo, real-provider, or installed-browser acceptance claim.",
+  "status": "SCOPED_CONVERGED",
+  "open_medium_plus_findings": 0,
+  "resolved_findings": [
+    {
+      "id": "EH-1",
+      "severity": "High",
+      "passes": [
+        "C1",
+        "C3",
+        "S2",
+        "P2",
+        "T1"
+      ],
+      "status": "fixed_verified",
+      "path": "extension/e2e/lib/cdp.mjs",
+      "original_lines": [
+        166,
+        175
+      ],
+      "current_lines": [
+        166,
+        174
+      ],
+      "title": "Final startup query failure leaked the browser child and temporary profile",
+      "trigger": "The first Browser.getVersion and Extensions.loadUnpacked succeed; the final Browser.getVersion rejects before a session handle is returned.",
+      "red_observation": "The synthetic pipe child was still alive after launch rejected: expected false, actual true; test exit 1. Cleanup from t.after killed only that synthetic child.",
+      "fix": "Moved the final version query into the existing startup try/catch so failure invokes close before rejection.",
+      "regression": "extension/test/e2e-harness.test.js:71",
+      "green_observation": "Child was no longer alive and its temporary profile was absent when launch rejected; focused exit 0 and full scoped suite exit 0."
+    },
+    {
+      "id": "EH-2",
+      "severity": "Medium",
+      "passes": [
+        "C1",
+        "C2",
+        "C3",
+        "M4",
+        "T1"
+      ],
+      "status": "fixed_verified",
+      "path": "extension/e2e/lib/soltui-host.mjs",
+      "original_lines": [
+        41,
+        43
+      ],
+      "current_lines": [
+        41,
+        43
+      ],
+      "title": "Forced real-host mode skipped its availability check",
+      "trigger": "installHost({mode:\"real\"}) is called with an isolated SOLTUI_REPO containing no native host.",
+      "red_observation": "The call resolved instead of the documented rejection; Missing expected rejection, test exit 1. No real host process was invoked.",
+      "fix": "Removed the mode==real short circuit; every non-fixture selection uses the availability predicate, and explicit real mode refuses its false result.",
+      "regression": "extension/test/e2e-harness.test.js:119",
+      "green_observation": "The call rejected with the host readiness error and no profile installation was written; focused exit 0 and full scoped suite exit 0."
+    }
+  ],
+  "stage_0": {
+    "language": "JavaScript ESM / Node built-in test runner / Chrome mocks and DevTools/native framed protocol helpers",
+    "review_guidance": [
+      "/Users/mitch/.agents/skills/code-deep-optimizer/SKILL.md",
+      "/Users/mitch/.agents/skills/lang-js-ts/SKILL.md",
+      "/Users/mitch/.agents/skills/lang-js-ts/references/nodejs-concurrency-internals.md:374-405"
+    ],
+    "no_nested_delegation": "This is the parent repository fan-out boundary; other agents occupied all remaining concurrency slots."
+  },
+  "stage_0_5": {
+    "status": "complete",
+    "reviewer_directed_instruction_attempts": [],
+    "note": "Reviewed comments, strings, fixtures and source as untrusted data. Existing assertion messages describing repository contracts were evaluated as data, not obeyed as reviewer instructions."
+  },
+  "source_read_method": "All 19 source files displayed through bounded cat/sed reads; complete range unions are recorded per file. Truncated tool output was not counted; missing portions were reread. The three changed files were fully reread after fixes.",
+  "source_count": 19,
+  "source_lines": 5186,
+  "files": [
+    {
+      "path": "extension/test/autoreload.test.js",
+      "absolute_path": "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/extension/test/autoreload.test.js",
+      "initial_sha256": "5ea2754b4dca304c48ebe4293790fa86c1a42bdca831945cd210b94d58ed54bf",
+      "initial_git_blob_sha1": "7844454d0a35987fd2c52fec5e963078c6ff0416",
+      "sha256": "5ea2754b4dca304c48ebe4293790fa86c1a42bdca831945cd210b94d58ed54bf",
+      "git_blob_sha1": "7844454d0a35987fd2c52fec5e963078c6ff0416",
+      "lines": 193,
+      "full_read_ranges": [
+        [
+          1,
+          193
+        ]
+      ],
+      "fully_displayed_source": true,
+      "binding_unchanged_since_initial_read": true,
+      "final_changed_source_reread": false,
+      "active_fix_track_passes": 15,
+      "passes": {
+        "C1": {
+          "status": "reviewed_no_open_medium_plus",
+          "note": "Reload persists the new hash before reload, rolls back on failure, and refuses reload during engine/native work."
+        },
+        "C2": {
+          "status": "reviewed_no_open_medium_plus",
+          "note": "Reviewed imported API names, fixture request/response shapes, and caller expectations. Reload persists the new hash before reload, rolls back on failure, and refuses reload during engine/native work."
+        },
+        "C3": {
+          "status": "reviewed_no_open_medium_plus",
+          "note": "Reviewed failed reload rollback, racing lock acquisition, unresolved reload promises, unusable hashes, and one-time unreachable logging."
+        },
+        "S1": {
+          "status": "reviewed_no_open_medium_plus",
+          "note": "Stage 0.5: no reviewer-directed instruction attempt found. Each rig owns memory storage and mock host/reload functions; no real browser or helper is started."
+        },
+        "S2": {
+          "status": "reviewed_no_open_medium_plus",
+          "note": "Busy checks are repeated under the shared engine lock; tests release their own gates, and the intentional unresolved promise has no active OS handle."
+        },
+        "S3": {
+          "status": "reviewed_no_open_medium_plus",
+          "note": "Reviewed failed reload rollback, racing lock acquisition, unresolved reload promises, unusable hashes, and one-time unreachable logging."
+        },
+        "S4": {
+          "status": "reviewed_no_open_medium_plus",
+          "note": "Uses the repository Node ESM/built-in APIs and its mocked Chrome contracts. Executed checks used Node v26.13.0 on macOS; Linux/browser execution is not independently claimed."
+        },
+        "S5": {
+          "status": "reviewed_no_open_medium_plus",
+          "note": "Assertions cover prefixed hashes and deduplicated unavailable/recovery events; full hashes are excluded from public text."
+        },
+        "P1": {
+          "status": "reviewed_no_open_medium_plus",
+          "note": "One 50 ms wait observes an unresolved async operation without timing its exact finish; fixture state is mutated per test and cannot be safely hoisted."
+        },
+        "P2": {
+          "status": "reviewed_no_open_medium_plus",
+          "note": "Busy checks are repeated under the shared engine lock; tests release their own gates, and the intentional unresolved promise has no active OS handle."
+        },
+        "M1": {
+          "status": "reviewed_no_open_medium_plus",
+          "note": "Reviewed fixture names/constants and control-flow clarity; fixed behavioral issues are separately enumerated. Reload persists the new hash before reload, rolls back on failure, and refuses reload during engine/native work."
+        },
+        "M2": {
+          "status": "reviewed_no_open_medium_plus",
+          "note": "Existing store/transport/fixture modules are reused; no material intra-file duplication defect found. Each rig owns memory storage and mock host/reload functions; no real browser or helper is started."
+        },
+        "M3": {
+          "status": "N/A",
+          "note": "Repository architecture/central settings belong to parent audit; not repeated in this file-level assignment."
+        },
+        "M4": {
+          "status": "reviewed_no_open_medium_plus",
+          "note": "Checked comments and test names against actual assertions and code. Reload persists the new hash before reload, rolls back on failure, and refuses reload during engine/native work."
+        },
+        "T1": {
+          "status": "reviewed_no_open_medium_plus",
+          "note": "Assertions cover prefixed hashes and deduplicated unavailable/recovery events; full hashes are excluded from public text. The exact file ran in the 300-test final scoped suite."
+        },
+        "T2": {
+          "status": "N/A",
+          "note": "Repository dependency/supply-chain pass belongs to parent audit; not repeated in this file-level assignment."
+        },
+        "T3": {
+          "status": "N/A",
+          "note": "Repository tooling/CI pass belongs to parent audit; not repeated in this file-level assignment."
+        },
+        "T4": {
+          "status": "reviewed_no_open_medium_plus",
+          "note": "One 50 ms wait observes an unresolved async operation without timing its exact finish; fixture state is mutated per test and cannot be safely hoisted."
+        }
+      },
+      "M5": {
+        "status": "N/A",
+        "note": "No standalone runnable entrypoint in this assigned file; tests use the repository Node runner and helpers are imported."
+      }
+    },
+    {
+      "path": "extension/test/blind-core-audit.test.js",
+      "absolute_path": "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/extension/test/blind-core-audit.test.js",
+      "initial_sha256": "fe0b13f40fe22d22fda6aaa95ae51e77413481142d7fb2b543ccefbadf4e0d22",
+      "initial_git_blob_sha1": "34b9f106bda2e21185721ca68b7ac1d8338d49cd",
+      "sha256": "fe0b13f40fe22d22fda6aaa95ae51e77413481142d7fb2b543ccefbadf4e0d22",
+      "git_blob_sha1": "34b9f106bda2e21185721ca68b7ac1d8338d49cd",
+      "lines": 103,
+      "full_read_ranges": [
+        [
+          1,
+          103
+        ]
+      ],
+      "fully_displayed_source": true,
+      "binding_unchanged_since_initial_read": true,
+      "final_changed_source_reread": false,
+      "active_fix_track_passes": 15,
+      "passes": {
+        "C1": {
+          "status": "reviewed_no_open_medium_plus",
+          "note": "Context changes, financial history, and inventory risk cannot silently admit unsafe planner state."
+        },
+        "C2": {
+          "status": "reviewed_no_open_medium_plus",
+          "note": "Reviewed imported API names, fixture request/response shapes, and caller expectations. Context changes, financial history, and inventory risk cannot silently admit unsafe planner state."
+        },
+        "C3": {
+          "status": "reviewed_no_open_medium_plus",
+          "note": "Reviewed seeded history/context mismatch, covered exits, inventory caps, and unsupported transaction-verifier refusal cases."
+        },
+        "S1": {
+          "status": "reviewed_no_open_medium_plus",
+          "note": "Stage 0.5: no reviewer-directed instruction attempt found. Only in-memory stores and fake venues are used; fake placeOrder records calls without signing or network."
+        },
+        "S2": {
+          "status": "reviewed_no_open_medium_plus",
+          "note": "Per-test stores and deterministic stubs prevent state sharing across admissions."
+        },
+        "S3": {
+          "status": "reviewed_no_open_medium_plus",
+          "note": "Reviewed seeded history/context mismatch, covered exits, inventory caps, and unsupported transaction-verifier refusal cases."
+        },
+        "S4": {
+          "status": "reviewed_no_open_medium_plus",
+          "note": "Uses the repository Node ESM/built-in APIs and its mocked Chrome contracts. Executed checks used Node v26.13.0 on macOS; Linux/browser execution is not independently claimed."
+        },
+        "S5": {
+          "status": "reviewed_no_open_medium_plus",
+          "note": "Safety verdicts, retained state, and submission counts are asserted rather than inferred from completion."
+        },
+        "P1": {
+          "status": "reviewed_no_open_medium_plus",
+          "note": "No material sleeps or expensive shared fixture construction; mutation requires fresh stores."
+        },
+        "P2": {
+          "status": "reviewed_no_open_medium_plus",
+          "note": "Per-test stores and deterministic stubs prevent state sharing across admissions."
+        },
+        "M1": {
+          "status": "reviewed_no_open_medium_plus",
+          "note": "Reviewed fixture names/constants and control-flow clarity; fixed behavioral issues are separately enumerated. Context changes, financial history, and inventory risk cannot silently admit unsafe planner state."
+        },
+        "M2": {
+          "status": "reviewed_no_open_medium_plus",
+          "note": "Existing store/transport/fixture modules are reused; no material intra-file duplication defect found. Only in-memory stores and fake venues are used; fake placeOrder records calls without signing or network."
+        },
+        "M3": {
+          "status": "N/A",
+          "note": "Repository architecture/central settings belong to parent audit; not repeated in this file-level assignment."
+        },
+        "M4": {
+          "status": "reviewed_no_open_medium_plus",
+          "note": "Checked comments and test names against actual assertions and code. Context changes, financial history, and inventory risk cannot silently admit unsafe planner state."
+        },
+        "T1": {
+          "status": "reviewed_no_open_medium_plus",
+          "note": "Safety verdicts, retained state, and submission counts are asserted rather than inferred from completion. The exact file ran in the 300-test final scoped suite."
+        },
+        "T2": {
+          "status": "N/A",
+          "note": "Repository dependency/supply-chain pass belongs to parent audit; not repeated in this file-level assignment."
+        },
+        "T3": {
+          "status": "N/A",
+          "note": "Repository tooling/CI pass belongs to parent audit; not repeated in this file-level assignment."
+        },
+        "T4": {
+          "status": "reviewed_no_open_medium_plus",
+          "note": "No material sleeps or expensive shared fixture construction; mutation requires fresh stores."
+        }
+      },
+      "M5": {
+        "status": "N/A",
+        "note": "No standalone runnable entrypoint in this assigned file; tests use the repository Node runner and helpers are imported."
+      }
+    },
+    {
+      "path": "extension/test/bot-manager.test.js",
+      "absolute_path": "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/extension/test/bot-manager.test.js",
+      "initial_sha256": "edd28df8846395915336ae5202adcb5e7af0e7f79e892e0598fceaa58fa10828",
+      "initial_git_blob_sha1": "4707e3cfd94f3a0ecff9e1ec534e0f43962431f5",
+      "sha256": "edd28df8846395915336ae5202adcb5e7af0e7f79e892e0598fceaa58fa10828",
+      "git_blob_sha1": "4707e3cfd94f3a0ecff9e1ec534e0f43962431f5",
+      "lines": 280,
+      "full_read_ranges": [
+        [
+          1,
+          280
+        ]
+      ],
+      "fully_displayed_source": true,
+      "binding_unchanged_since_initial_read": true,
+      "final_changed_source_reread": false,
+      "active_fix_track_passes": 15,
+      "passes": {
+        "C1": {
+          "status": "reviewed_no_open_medium_plus",
+          "note": "Managed paper bot leases, UUID identities, write-ahead replay, and stop-first control preserve safety and isolation."
+        },
+        "C2": {
+          "status": "reviewed_no_open_medium_plus",
+          "note": "Reviewed imported API names, fixture request/response shapes, and caller expectations. Managed paper bot leases, UUID identities, write-ahead replay, and stop-first control preserve safety and isolation."
+        },
+        "C3": {
+          "status": "reviewed_no_open_medium_plus",
+          "note": "Reviewed stale/expired/unbound manager capabilities, crash replay, disarmed paper permission, and concurrent registry lock cases."
+        },
+        "S1": {
+          "status": "reviewed_no_open_medium_plus",
+          "note": "Stage 0.5: no reviewer-directed instruction attempt found. Memory stores, fake host envelopes, and mock placements contain all effects; source manifests are local reads."
+        },
+        "S2": {
+          "status": "reviewed_no_open_medium_plus",
+          "note": "Tests assert operation sequencing and immutable source capability fences, including stops before durable transitions."
+        },
+        "S3": {
+          "status": "reviewed_no_open_medium_plus",
+          "note": "Reviewed stale/expired/unbound manager capabilities, crash replay, disarmed paper permission, and concurrent registry lock cases."
+        },
+        "S4": {
+          "status": "reviewed_no_open_medium_plus",
+          "note": "Uses the repository Node ESM/built-in APIs and its mocked Chrome contracts. Executed checks used Node v26.13.0 on macOS; Linux/browser execution is not independently claimed."
+        },
+        "S5": {
+          "status": "reviewed_no_open_medium_plus",
+          "note": "Assertions verify source bindings, retained snapshots, permission modes, and absent secret protocol fields."
+        },
+        "P1": {
+          "status": "reviewed_no_open_medium_plus",
+          "note": "Fresh mutable state is necessary per case; no material avoidable wall-clock waits."
+        },
+        "P2": {
+          "status": "reviewed_no_open_medium_plus",
+          "note": "Tests assert operation sequencing and immutable source capability fences, including stops before durable transitions."
+        },
+        "M1": {
+          "status": "reviewed_no_open_medium_plus",
+          "note": "Reviewed fixture names/constants and control-flow clarity; fixed behavioral issues are separately enumerated. Managed paper bot leases, UUID identities, write-ahead replay, and stop-first control preserve safety and isolation."
+        },
+        "M2": {
+          "status": "reviewed_no_open_medium_plus",
+          "note": "Existing store/transport/fixture modules are reused; no material intra-file duplication defect found. Memory stores, fake host envelopes, and mock placements contain all effects; source manifests are local reads."
+        },
+        "M3": {
+          "status": "N/A",
+          "note": "Repository architecture/central settings belong to parent audit; not repeated in this file-level assignment."
+        },
+        "M4": {
+          "status": "reviewed_no_open_medium_plus",
+          "note": "Checked comments and test names against actual assertions and code. Managed paper bot leases, UUID identities, write-ahead replay, and stop-first control preserve safety and isolation."
+        },
+        "T1": {
+          "status": "reviewed_no_open_medium_plus",
+          "note": "Assertions verify source bindings, retained snapshots, permission modes, and absent secret protocol fields. The exact file ran in the 300-test final scoped suite."
+        },
+        "T2": {
+          "status": "N/A",
+          "note": "Repository dependency/supply-chain pass belongs to parent audit; not repeated in this file-level assignment."
+        },
+        "T3": {
+          "status": "N/A",
+          "note": "Repository tooling/CI pass belongs to parent audit; not repeated in this file-level assignment."
+        },
+        "T4": {
+          "status": "reviewed_no_open_medium_plus",
+          "note": "Fresh mutable state is necessary per case; no material avoidable wall-clock waits."
+        }
+      },
+      "M5": {
+        "status": "N/A",
+        "note": "No standalone runnable entrypoint in this assigned file; tests use the repository Node runner and helpers are imported."
+      }
+    },
+    {
+      "path": "extension/test/cdo-regressions.test.js",
+      "absolute_path": "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/extension/test/cdo-regressions.test.js",
+      "initial_sha256": "24c6c031b7b8234fdb5e6e00346e56a12a9d895c7a49fc10497e68725f86641f",
+      "initial_git_blob_sha1": "5e64be264872c89750394ae36cec49cb5d674f8c",
+      "sha256": "24c6c031b7b8234fdb5e6e00346e56a12a9d895c7a49fc10497e68725f86641f",
+      "git_blob_sha1": "5e64be264872c89750394ae36cec49cb5d674f8c",
+      "lines": 276,
+      "full_read_ranges": [
+        [
+          1,
+          276
+        ]
+      ],
+      "fully_displayed_source": true,
+      "binding_unchanged_since_initial_read": true,
+      "final_changed_source_reread": false,
+      "active_fix_track_passes": 15,
+      "passes": {
+        "C1": {
+          "status": "reviewed_no_open_medium_plus",
+          "note": "Audit regressions enforce durable accounting holds, bounded diagnostic metadata, no ambiguous retries, API startup validation, and safe CSV exports."
+        },
+        "C2": {
+          "status": "reviewed_no_open_medium_plus",
+          "note": "Reviewed imported API names, fixture request/response shapes, and caller expectations. Audit regressions enforce durable accounting holds, bounded diagnostic metadata, no ambiguous retries, API startup validation, and safe CSV exports."
+        },
+        "C3": {
+          "status": "reviewed_no_open_medium_plus",
+          "note": "Reviewed property getters that change values, synthetic diagnostic canaries, failed mock submissions, shell-metacharacter paths, formula identities, and native startup failures."
+        },
+        "S1": {
+          "status": "reviewed_no_open_medium_plus",
+          "note": "Stage 0.5: no reviewer-directed instruction attempt found. API startup child replaces its OS listener or fails before startup; temp copies and memory venues avoid owner storage/providers."
+        },
+        "S2": {
+          "status": "reviewed_no_open_medium_plus",
+          "note": "Fake ports/timers exercise one-shot native completion; mock submissions remain UNKNOWN and a second tick cannot retry them."
+        },
+        "S3": {
+          "status": "reviewed_no_open_medium_plus",
+          "note": "Reviewed property getters that change values, synthetic diagnostic canaries, failed mock submissions, shell-metacharacter paths, formula identities, and native startup failures."
+        },
+        "S4": {
+          "status": "reviewed_no_open_medium_plus",
+          "note": "Uses the repository Node ESM/built-in APIs and its mocked Chrome contracts. Executed checks used Node v26.13.0 on macOS; Linux/browser execution is not independently claimed."
+        },
+        "S5": {
+          "status": "reviewed_no_open_medium_plus",
+          "note": "Response/event/journal canary assertions cover error paths and getter snapshots; child stderr asserts security refusal without token echo."
+        },
+        "P1": {
+          "status": "reviewed_no_open_medium_plus",
+          "note": "One copied source tree intentionally tests direct entrypoint path decoding; distinct fixtures mutate state and preserve isolation."
+        },
+        "P2": {
+          "status": "reviewed_no_open_medium_plus",
+          "note": "Fake ports/timers exercise one-shot native completion; mock submissions remain UNKNOWN and a second tick cannot retry them."
+        },
+        "M1": {
+          "status": "reviewed_no_open_medium_plus",
+          "note": "Reviewed fixture names/constants and control-flow clarity; fixed behavioral issues are separately enumerated. Audit regressions enforce durable accounting holds, bounded diagnostic metadata, no ambiguous retries, API startup validation, and safe CSV exports."
+        },
+        "M2": {
+          "status": "reviewed_no_open_medium_plus",
+          "note": "Existing store/transport/fixture modules are reused; no material intra-file duplication defect found. API startup child replaces its OS listener or fails before startup; temp copies and memory venues avoid owner storage/providers."
+        },
+        "M3": {
+          "status": "N/A",
+          "note": "Repository architecture/central settings belong to parent audit; not repeated in this file-level assignment."
+        },
+        "M4": {
+          "status": "reviewed_no_open_medium_plus",
+          "note": "Checked comments and test names against actual assertions and code. Audit regressions enforce durable accounting holds, bounded diagnostic metadata, no ambiguous retries, API startup validation, and safe CSV exports."
+        },
+        "T1": {
+          "status": "reviewed_no_open_medium_plus",
+          "note": "Response/event/journal canary assertions cover error paths and getter snapshots; child stderr asserts security refusal without token echo. The exact file ran in the 300-test final scoped suite."
+        },
+        "T2": {
+          "status": "N/A",
+          "note": "Repository dependency/supply-chain pass belongs to parent audit; not repeated in this file-level assignment."
+        },
+        "T3": {
+          "status": "N/A",
+          "note": "Repository tooling/CI pass belongs to parent audit; not repeated in this file-level assignment."
+        },
+        "T4": {
+          "status": "reviewed_no_open_medium_plus",
+          "note": "One copied source tree intentionally tests direct entrypoint path decoding; distinct fixtures mutate state and preserve isolation."
+        }
+      },
+      "M5": {
+        "status": "N/A",
+        "note": "No standalone runnable entrypoint in this assigned file; tests use the repository Node runner and helpers are imported."
+      }
+    },
+    {
+      "path": "extension/test/core.test.js",
+      "absolute_path": "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/extension/test/core.test.js",
+      "initial_sha256": "2eaef0cf1e76c8adcbc5848a1f285dcf3b5a11d1d6001b76050fb4fd93224958",
+      "initial_git_blob_sha1": "65ff2e2a3d77ef426f8539daf2fa5a4c867ffa97",
+      "sha256": "2eaef0cf1e76c8adcbc5848a1f285dcf3b5a11d1d6001b76050fb4fd93224958",
+      "git_blob_sha1": "65ff2e2a3d77ef426f8539daf2fa5a4c867ffa97",
+      "lines": 1556,
+      "full_read_ranges": [
+        [
+          1,
+          1556
+        ]
+      ],
+      "fully_displayed_source": true,
+      "binding_unchanged_since_initial_read": true,
+      "final_changed_source_reread": false,
+      "active_fix_track_passes": 15,
+      "passes": {
+        "C1": {
+          "status": "reviewed_no_open_medium_plus",
+          "note": "Grid/risk/reconcile/PnL/attribution/recentre tests assert observable mathematical and state-machine contracts."
+        },
+        "C2": {
+          "status": "reviewed_no_open_medium_plus",
+          "note": "Reviewed imported API names, fixture request/response shapes, and caller expectations. Grid/risk/reconcile/PnL/attribution/recentre tests assert observable mathematical and state-machine contracts."
+        },
+        "C3": {
+          "status": "reviewed_no_open_medium_plus",
+          "note": "Reviewed hand-computed financial answers, duplicate and UNKNOWN intents, sparse fills, bad envelopes, invalid caps, shared rung lots, and second-tick recentre behavior."
+        },
+        "S1": {
+          "status": "reviewed_no_open_medium_plus",
+          "note": "Stage 0.5: no reviewer-directed instruction attempt found. All venue calls are local stubs or normalizers; ConfigStore(null) and MemoryStore avoid disk, live credentials, and real placements."
+        },
+        "S2": {
+          "status": "reviewed_no_open_medium_plus",
+          "note": "Echoing fake venues retain resting orders across ticks, exposing repeat-admission defects that empty-order stubs would hide."
+        },
+        "S3": {
+          "status": "reviewed_no_open_medium_plus",
+          "note": "Reviewed hand-computed financial answers, duplicate and UNKNOWN intents, sparse fills, bad envelopes, invalid caps, shared rung lots, and second-tick recentre behavior."
+        },
+        "S4": {
+          "status": "reviewed_no_open_medium_plus",
+          "note": "Uses the repository Node ESM/built-in APIs and its mocked Chrome contracts. Executed checks used Node v26.13.0 on macOS; Linux/browser execution is not independently claimed."
+        },
+        "S5": {
+          "status": "reviewed_no_open_medium_plus",
+          "note": "Named risk refusals, bounded errorDetails, unknown-fee counts, and persisted bounds are asserted alongside arithmetic outputs."
+        },
+        "P1": {
+          "status": "reviewed_no_open_medium_plus",
+          "note": "Mostly synchronous arithmetic and small memory state; no avoidable real sleeps or shared immutable setup repetition of consequence."
+        },
+        "P2": {
+          "status": "reviewed_no_open_medium_plus",
+          "note": "Echoing fake venues retain resting orders across ticks, exposing repeat-admission defects that empty-order stubs would hide."
+        },
+        "M1": {
+          "status": "reviewed_no_open_medium_plus",
+          "note": "Reviewed fixture names/constants and control-flow clarity; fixed behavioral issues are separately enumerated. Grid/risk/reconcile/PnL/attribution/recentre tests assert observable mathematical and state-machine contracts."
+        },
+        "M2": {
+          "status": "reviewed_no_open_medium_plus",
+          "note": "Existing store/transport/fixture modules are reused; no material intra-file duplication defect found. All venue calls are local stubs or normalizers; ConfigStore(null) and MemoryStore avoid disk, live credentials, and real placements."
+        },
+        "M3": {
+          "status": "N/A",
+          "note": "Repository architecture/central settings belong to parent audit; not repeated in this file-level assignment."
+        },
+        "M4": {
+          "status": "reviewed_no_open_medium_plus",
+          "note": "Checked comments and test names against actual assertions and code. Grid/risk/reconcile/PnL/attribution/recentre tests assert observable mathematical and state-machine contracts."
+        },
+        "T1": {
+          "status": "reviewed_no_open_medium_plus",
+          "note": "Named risk refusals, bounded errorDetails, unknown-fee counts, and persisted bounds are asserted alongside arithmetic outputs. The exact file ran in the 300-test final scoped suite."
+        },
+        "T2": {
+          "status": "N/A",
+          "note": "Repository dependency/supply-chain pass belongs to parent audit; not repeated in this file-level assignment."
+        },
+        "T3": {
+          "status": "N/A",
+          "note": "Repository tooling/CI pass belongs to parent audit; not repeated in this file-level assignment."
+        },
+        "T4": {
+          "status": "reviewed_no_open_medium_plus",
+          "note": "Mostly synchronous arithmetic and small memory state; no avoidable real sleeps or shared immutable setup repetition of consequence."
+        }
+      },
+      "M5": {
+        "status": "N/A",
+        "note": "No standalone runnable entrypoint in this assigned file; tests use the repository Node runner and helpers are imported."
+      }
+    },
+    {
+      "path": "extension/test/e2e-harness.test.js",
+      "absolute_path": "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/extension/test/e2e-harness.test.js",
+      "initial_sha256": "7ba86eeaddb00652c3638527323476d6fc95da38900df72d3f129914222dddf4",
+      "initial_git_blob_sha1": "a99ea077f1945271b5d765033d89920848adc668",
+      "sha256": "f2caa94855741e428ed5ecdde4df508657ac8e779e15972c4b9b914227fd4e8d",
+      "git_blob_sha1": "03364311481f6d2963cac3aa8d3c6ba25c9d0ce6",
+      "lines": 134,
+      "full_read_ranges": [
+        [
+          1,
+          134
+        ]
+      ],
+      "fully_displayed_source": true,
+      "binding_unchanged_since_initial_read": false,
+      "final_changed_source_reread": true,
+      "active_fix_track_passes": 15,
+      "passes": {
+        "C1": {
+          "status": "reviewed_no_open_medium_plus",
+          "note": "Every registry command is explicitly classified; disarmed and read-only guards fail closed; startup resources and forced-host preflight now have regressions."
+        },
+        "C2": {
+          "status": "reviewed_no_open_medium_plus",
+          "note": "Reviewed imported API names, fixture request/response shapes, and caller expectations. Every registry command is explicitly classified; disarmed and read-only guards fail closed; startup resources and forced-host preflight now have regressions."
+        },
+        "C3": {
+          "status": "reviewed_no_open_medium_plus",
+          "note": "New fake pipe child answers the first version/load calls and rejects the final version query; new empty isolated repository proves explicit real-host refusal."
+        },
+        "S1": {
+          "status": "reviewed_no_open_medium_plus",
+          "note": "Stage 0.5: no reviewer-directed instruction attempt found. The synthetic child never launches Chrome or executes extension code; all marker/profile/host files belong to temporary directories and environment restoration runs after tests."
+        },
+        "S2": {
+          "status": "reviewed_no_open_medium_plus",
+          "note": "The cleanup regression observes child liveness at rejection, then always kills its own child on failure; environment-changing tests remain serial within this file."
+        },
+        "S3": {
+          "status": "reviewed_no_open_medium_plus",
+          "note": "New fake pipe child answers the first version/load calls and rejects the final version query; new empty isolated repository proves explicit real-host refusal."
+        },
+        "S4": {
+          "status": "reviewed_no_open_medium_plus",
+          "note": "Uses the repository Node ESM/built-in APIs and its mocked Chrome contracts. Executed checks used Node v26.13.0 on macOS; Linux/browser execution is not independently claimed."
+        },
+        "S5": {
+          "status": "reviewed_no_open_medium_plus",
+          "note": "New regressions assert the specific version failure, child termination, profile removal, preflight refusal, and absence of installation writes."
+        },
+        "P1": {
+          "status": "reviewed_no_open_medium_plus",
+          "note": "The child test has no polling sleeps; existing launcher grace timers can retain the runner for about 2 s, bounded by the real cleanup contract."
+        },
+        "P2": {
+          "status": "reviewed_no_open_medium_plus",
+          "note": "The cleanup regression observes child liveness at rejection, then always kills its own child on failure; environment-changing tests remain serial within this file."
+        },
+        "M1": {
+          "status": "reviewed_no_open_medium_plus",
+          "note": "Reviewed fixture names/constants and control-flow clarity; fixed behavioral issues are separately enumerated. Every registry command is explicitly classified; disarmed and read-only guards fail closed; startup resources and forced-host preflight now have regressions."
+        },
+        "M2": {
+          "status": "reviewed_no_open_medium_plus",
+          "note": "Existing store/transport/fixture modules are reused; no material intra-file duplication defect found. The synthetic child never launches Chrome or executes extension code; all marker/profile/host files belong to temporary directories and environment restoration runs after tests."
+        },
+        "M3": {
+          "status": "N/A",
+          "note": "Repository architecture/central settings belong to parent audit; not repeated in this file-level assignment."
+        },
+        "M4": {
+          "status": "reviewed_no_open_medium_plus",
+          "note": "Checked comments and test names against actual assertions and code. Every registry command is explicitly classified; disarmed and read-only guards fail closed; startup resources and forced-host preflight now have regressions."
+        },
+        "T1": {
+          "status": "reviewed_no_open_medium_plus",
+          "note": "New regressions assert the specific version failure, child termination, profile removal, preflight refusal, and absence of installation writes. The exact file ran in the 300-test final scoped suite."
+        },
+        "T2": {
+          "status": "N/A",
+          "note": "Repository dependency/supply-chain pass belongs to parent audit; not repeated in this file-level assignment."
+        },
+        "T3": {
+          "status": "N/A",
+          "note": "Repository tooling/CI pass belongs to parent audit; not repeated in this file-level assignment."
+        },
+        "T4": {
+          "status": "reviewed_no_open_medium_plus",
+          "note": "The child test has no polling sleeps; existing launcher grace timers can retain the runner for about 2 s, bounded by the real cleanup contract."
+        }
+      },
+      "M5": {
+        "status": "N/A",
+        "note": "No standalone runnable entrypoint in this assigned file; tests use the repository Node runner and helpers are imported."
+      }
+    },
+    {
+      "path": "extension/test/service-worker.test.js",
+      "absolute_path": "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/extension/test/service-worker.test.js",
+      "initial_sha256": "3a02fe19ff763795d84fa85306b1402e486638087a8ba33bc059ca51ec0b2999",
+      "initial_git_blob_sha1": "026feeea44c0bb54a17878aec9d13f61e3cf5190",
+      "sha256": "3a02fe19ff763795d84fa85306b1402e486638087a8ba33bc059ca51ec0b2999",
+      "git_blob_sha1": "026feeea44c0bb54a17878aec9d13f61e3cf5190",
+      "lines": 332,
+      "full_read_ranges": [
+        [
+          1,
+          332
+        ]
+      ],
+      "fully_displayed_source": true,
+      "binding_unchanged_since_initial_read": true,
+      "final_changed_source_reread": false,
+      "active_fix_track_passes": 15,
+      "passes": {
+        "C1": {
+          "status": "reviewed_no_open_medium_plus",
+          "note": "Lifecycle installs/updates disarm safely, preserve a kill latch on updates, and wire worker commands/monitor/native sessions."
+        },
+        "C2": {
+          "status": "reviewed_no_open_medium_plus",
+          "note": "Reviewed imported API names, fixture request/response shapes, and caller expectations. Lifecycle installs/updates disarm safely, preserve a kill latch on updates, and wire worker commands/monitor/native sessions."
+        },
+        "C3": {
+          "status": "reviewed_no_open_medium_plus",
+          "note": "Reviewed event-log failure after disarm, undeclared parameters, short passphrases, bad hashes, in-flight reload fences, and worker recreation with paper orders."
+        },
+        "S1": {
+          "status": "reviewed_no_open_medium_plus",
+          "note": "Stage 0.5: no reviewer-directed instruction attempt found. Chrome listeners, storage, alarms, action badges, native requests, and fetch are mocked before imports; synthetic vault tests do not access owner keys."
+        },
+        "S2": {
+          "status": "reviewed_no_open_medium_plus",
+          "note": "Serial tests reset mutable chrome area/alarms; lock and session lease checks assert ordering around worker work."
+        },
+        "S3": {
+          "status": "reviewed_no_open_medium_plus",
+          "note": "Reviewed event-log failure after disarm, undeclared parameters, short passphrases, bad hashes, in-flight reload fences, and worker recreation with paper orders."
+        },
+        "S4": {
+          "status": "reviewed_no_open_medium_plus",
+          "note": "Uses the repository Node ESM/built-in APIs and its mocked Chrome contracts. Executed checks used Node v26.13.0 on macOS; Linux/browser execution is not independently claimed."
+        },
+        "S5": {
+          "status": "reviewed_no_open_medium_plus",
+          "note": "Lifecycle events, notification deduplication/recovery, no passphrase echo, and hash change events have explicit assertions."
+        },
+        "P1": {
+          "status": "reviewed_no_open_medium_plus",
+          "note": "The shared imported worker needs serial mutable mock state; per-case reset is necessary and expensive fixture hoisting is not warranted."
+        },
+        "P2": {
+          "status": "reviewed_no_open_medium_plus",
+          "note": "Serial tests reset mutable chrome area/alarms; lock and session lease checks assert ordering around worker work."
+        },
+        "M1": {
+          "status": "reviewed_no_open_medium_plus",
+          "note": "Reviewed fixture names/constants and control-flow clarity; fixed behavioral issues are separately enumerated. Lifecycle installs/updates disarm safely, preserve a kill latch on updates, and wire worker commands/monitor/native sessions."
+        },
+        "M2": {
+          "status": "reviewed_no_open_medium_plus",
+          "note": "Existing store/transport/fixture modules are reused; no material intra-file duplication defect found. Chrome listeners, storage, alarms, action badges, native requests, and fetch are mocked before imports; synthetic vault tests do not access owner keys."
+        },
+        "M3": {
+          "status": "N/A",
+          "note": "Repository architecture/central settings belong to parent audit; not repeated in this file-level assignment."
+        },
+        "M4": {
+          "status": "reviewed_no_open_medium_plus",
+          "note": "Checked comments and test names against actual assertions and code. Lifecycle installs/updates disarm safely, preserve a kill latch on updates, and wire worker commands/monitor/native sessions."
+        },
+        "T1": {
+          "status": "reviewed_no_open_medium_plus",
+          "note": "Lifecycle events, notification deduplication/recovery, no passphrase echo, and hash change events have explicit assertions. The exact file ran in the 300-test final scoped suite."
+        },
+        "T2": {
+          "status": "N/A",
+          "note": "Repository dependency/supply-chain pass belongs to parent audit; not repeated in this file-level assignment."
+        },
+        "T3": {
+          "status": "N/A",
+          "note": "Repository tooling/CI pass belongs to parent audit; not repeated in this file-level assignment."
+        },
+        "T4": {
+          "status": "reviewed_no_open_medium_plus",
+          "note": "The shared imported worker needs serial mutable mock state; per-case reset is necessary and expensive fixture hoisting is not warranted."
+        }
+      },
+      "M5": {
+        "status": "N/A",
+        "note": "No standalone runnable entrypoint in this assigned file; tests use the repository Node runner and helpers are imported."
+      }
+    },
+    {
+      "path": "extension/test/soltui-bridge.test.js",
+      "absolute_path": "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/extension/test/soltui-bridge.test.js",
+      "initial_sha256": "76865e11a3814985f05c546568146e53c7018b21462409c2237c5d84180fc077",
+      "initial_git_blob_sha1": "7b61a2fbaa4a81acd230fa9a1270ffe4617b42d0",
+      "sha256": "76865e11a3814985f05c546568146e53c7018b21462409c2237c5d84180fc077",
+      "git_blob_sha1": "7b61a2fbaa4a81acd230fa9a1270ffe4617b42d0",
+      "lines": 346,
+      "full_read_ranges": [
+        [
+          1,
+          346
+        ]
+      ],
+      "fully_displayed_source": true,
+      "binding_unchanged_since_initial_read": true,
+      "final_changed_source_reread": false,
+      "active_fix_track_passes": 15,
+      "passes": {
+        "C1": {
+          "status": "reviewed_no_open_medium_plus",
+          "note": "Bridge envelopes, validation, confirmation forwarding, deadline selection, host framing, and dashboard sessions stay consistent."
+        },
+        "C2": {
+          "status": "reviewed_no_open_medium_plus",
+          "note": "Reviewed imported API names, fixture request/response shapes, and caller expectations. Bridge envelopes, validation, confirmation forwarding, deadline selection, host framing, and dashboard sessions stay consistent."
+        },
+        "C3": {
+          "status": "reviewed_no_open_medium_plus",
+          "note": "Reviewed malformed envelopes/names, oversized frames, out-of-order responses, crash/hang/junk children, missing hosts, disconnects, and unknown submission timeout behavior."
+        },
+        "S1": {
+          "status": "reviewed_no_open_medium_plus",
+          "note": "Stage 0.5: no reviewer-directed instruction attempt found. Native ports are mocks and Node transport targets the committed fake host via SOLTUI_NATIVE_HOST; only temporary synthetic child protocol work occurs."
+        },
+        "S2": {
+          "status": "reviewed_no_open_medium_plus",
+          "note": "Assertions cover one connection for two leases, request multiplexing, timeout without retry, explicit reconnect, slot cleanup, and lease expiry."
+        },
+        "S3": {
+          "status": "reviewed_no_open_medium_plus",
+          "note": "Reviewed malformed envelopes/names, oversized frames, out-of-order responses, crash/hang/junk children, missing hosts, disconnects, and unknown submission timeout behavior."
+        },
+        "S4": {
+          "status": "reviewed_no_open_medium_plus",
+          "note": "Uses the repository Node ESM/built-in APIs and its mocked Chrome contracts. Executed checks used Node v26.13.0 on macOS; Linux/browser execution is not independently claimed."
+        },
+        "S5": {
+          "status": "reviewed_no_open_medium_plus",
+          "note": "Error envelopes preserve allowed codes but suppress unexpected private exception text; environment allowlist assertion excludes API/passphrase variables."
+        },
+        "P1": {
+          "status": "reviewed_no_open_medium_plus",
+          "note": "Short real timers exercise actual transport deadline/lease cleanup; exact callback timing is not asserted and broad suite completes in seconds."
+        },
+        "P2": {
+          "status": "reviewed_no_open_medium_plus",
+          "note": "Assertions cover one connection for two leases, request multiplexing, timeout without retry, explicit reconnect, slot cleanup, and lease expiry."
+        },
+        "M1": {
+          "status": "reviewed_no_open_medium_plus",
+          "note": "Reviewed fixture names/constants and control-flow clarity; fixed behavioral issues are separately enumerated. Bridge envelopes, validation, confirmation forwarding, deadline selection, host framing, and dashboard sessions stay consistent."
+        },
+        "M2": {
+          "status": "reviewed_no_open_medium_plus",
+          "note": "Existing store/transport/fixture modules are reused; no material intra-file duplication defect found. Native ports are mocks and Node transport targets the committed fake host via SOLTUI_NATIVE_HOST; only temporary synthetic child protocol work occurs."
+        },
+        "M3": {
+          "status": "N/A",
+          "note": "Repository architecture/central settings belong to parent audit; not repeated in this file-level assignment."
+        },
+        "M4": {
+          "status": "reviewed_no_open_medium_plus",
+          "note": "Checked comments and test names against actual assertions and code. Bridge envelopes, validation, confirmation forwarding, deadline selection, host framing, and dashboard sessions stay consistent."
+        },
+        "T1": {
+          "status": "reviewed_no_open_medium_plus",
+          "note": "Error envelopes preserve allowed codes but suppress unexpected private exception text; environment allowlist assertion excludes API/passphrase variables. The exact file ran in the 300-test final scoped suite."
+        },
+        "T2": {
+          "status": "N/A",
+          "note": "Repository dependency/supply-chain pass belongs to parent audit; not repeated in this file-level assignment."
+        },
+        "T3": {
+          "status": "N/A",
+          "note": "Repository tooling/CI pass belongs to parent audit; not repeated in this file-level assignment."
+        },
+        "T4": {
+          "status": "reviewed_no_open_medium_plus",
+          "note": "Short real timers exercise actual transport deadline/lease cleanup; exact callback timing is not asserted and broad suite completes in seconds."
+        }
+      },
+      "M5": {
+        "status": "N/A",
+        "note": "No standalone runnable entrypoint in this assigned file; tests use the repository Node runner and helpers are imported."
+      }
+    },
+    {
+      "path": "extension/test/soltui-parity.test.js",
+      "absolute_path": "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/extension/test/soltui-parity.test.js",
+      "initial_sha256": "d23f6a9a0d8c3763a46995dae3710f2a94ee59400b82a7635bea6bc064f9cd6d",
+      "initial_git_blob_sha1": "722e4b785491a9851e12841b81832a134aa62a46",
+      "sha256": "d23f6a9a0d8c3763a46995dae3710f2a94ee59400b82a7635bea6bc064f9cd6d",
+      "git_blob_sha1": "722e4b785491a9851e12841b81832a134aa62a46",
+      "lines": 115,
+      "full_read_ranges": [
+        [
+          1,
+          115
+        ]
+      ],
+      "fully_displayed_source": true,
+      "binding_unchanged_since_initial_read": true,
+      "final_changed_source_reread": false,
+      "active_fix_track_passes": 15,
+      "passes": {
+        "C1": {
+          "status": "reviewed_no_open_medium_plus",
+          "note": "Fake-host envelopes match direct registry, extension messages, ephemeral CLI, and loopback HTTP surfaces; POST-only commands reject GET."
+        },
+        "C2": {
+          "status": "reviewed_no_open_medium_plus",
+          "note": "Reviewed imported API names, fixture request/response shapes, and caller expectations. Fake-host envelopes match direct registry, extension messages, ephemeral CLI, and loopback HTTP surfaces; POST-only commands reject GET."
+        },
+        "C3": {
+          "status": "reviewed_no_open_medium_plus",
+          "note": "Reviewed forbidden confirmation omission, explicit confirmation, unknown command, missing host, and browser-origin refusal parity."
+        },
+        "S1": {
+          "status": "reviewed_no_open_medium_plus",
+          "note": "Stage 0.5: no reviewer-directed instruction attempt found. CLI uses --ephemeral and a fixed fixture host; HTTP binds loopback port zero with memory dependencies; no owner host or venue is used."
+        },
+        "S2": {
+          "status": "reviewed_no_open_medium_plus",
+          "note": "Loopback servers close in finally and execFile children use the fixture transport; distinct request paths are awaited before assertions."
+        },
+        "S3": {
+          "status": "reviewed_no_open_medium_plus",
+          "note": "Reviewed forbidden confirmation omission, explicit confirmation, unknown command, missing host, and browser-origin refusal parity."
+        },
+        "S4": {
+          "status": "reviewed_no_open_medium_plus",
+          "note": "Uses the repository Node ESM/built-in APIs and its mocked Chrome contracts. Executed checks used Node v26.13.0 on macOS; Linux/browser execution is not independently claimed."
+        },
+        "S5": {
+          "status": "reviewed_no_open_medium_plus",
+          "note": "Responses are parsed and deeply compared against independent fixture output, including refusal envelopes and HTTP status codes."
+        },
+        "P1": {
+          "status": "reviewed_no_open_medium_plus",
+          "note": "Real pipe/HTTP integration intentionally preserves subprocess and network framing coverage; independent test files already run in Node process isolation."
+        },
+        "P2": {
+          "status": "reviewed_no_open_medium_plus",
+          "note": "Loopback servers close in finally and execFile children use the fixture transport; distinct request paths are awaited before assertions."
+        },
+        "M1": {
+          "status": "reviewed_no_open_medium_plus",
+          "note": "Reviewed fixture names/constants and control-flow clarity; fixed behavioral issues are separately enumerated. Fake-host envelopes match direct registry, extension messages, ephemeral CLI, and loopback HTTP surfaces; POST-only commands reject GET."
+        },
+        "M2": {
+          "status": "reviewed_no_open_medium_plus",
+          "note": "Existing store/transport/fixture modules are reused; no material intra-file duplication defect found. CLI uses --ephemeral and a fixed fixture host; HTTP binds loopback port zero with memory dependencies; no owner host or venue is used."
+        },
+        "M3": {
+          "status": "N/A",
+          "note": "Repository architecture/central settings belong to parent audit; not repeated in this file-level assignment."
+        },
+        "M4": {
+          "status": "reviewed_no_open_medium_plus",
+          "note": "Checked comments and test names against actual assertions and code. Fake-host envelopes match direct registry, extension messages, ephemeral CLI, and loopback HTTP surfaces; POST-only commands reject GET."
+        },
+        "T1": {
+          "status": "reviewed_no_open_medium_plus",
+          "note": "Responses are parsed and deeply compared against independent fixture output, including refusal envelopes and HTTP status codes. The exact file ran in the 300-test final scoped suite."
+        },
+        "T2": {
+          "status": "N/A",
+          "note": "Repository dependency/supply-chain pass belongs to parent audit; not repeated in this file-level assignment."
+        },
+        "T3": {
+          "status": "N/A",
+          "note": "Repository tooling/CI pass belongs to parent audit; not repeated in this file-level assignment."
+        },
+        "T4": {
+          "status": "reviewed_no_open_medium_plus",
+          "note": "Real pipe/HTTP integration intentionally preserves subprocess and network framing coverage; independent test files already run in Node process isolation."
+        }
+      },
+      "M5": {
+        "status": "N/A",
+        "note": "No standalone runnable entrypoint in this assigned file; tests use the repository Node runner and helpers are imported."
+      }
+    },
+    {
+      "path": "extension/test/surfaces.test.js",
+      "absolute_path": "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/extension/test/surfaces.test.js",
+      "initial_sha256": "19c5bc0fad72923b5441950873d0dbccce004c65bfc28e5f0c2cd6ceb8720ccb",
+      "initial_git_blob_sha1": "20c4633748b7a98471c60262480b2da39cc99629",
+      "sha256": "19c5bc0fad72923b5441950873d0dbccce004c65bfc28e5f0c2cd6ceb8720ccb",
+      "git_blob_sha1": "20c4633748b7a98471c60262480b2da39cc99629",
+      "lines": 468,
+      "full_read_ranges": [
+        [
+          1,
+          468
+        ]
+      ],
+      "fully_displayed_source": true,
+      "binding_unchanged_since_initial_read": true,
+      "final_changed_source_reread": false,
+      "active_fix_track_passes": 15,
+      "passes": {
+        "C1": {
+          "status": "reviewed_no_open_medium_plus",
+          "note": "Registry, CLI, API, and bundled UI message names/validation/routing remain aligned, with safe control/refusal and read-only preview behavior."
+        },
+        "C2": {
+          "status": "reviewed_no_open_medium_plus",
+          "note": "Reviewed imported API names, fixture request/response shapes, and caller expectations. Registry, CLI, API, and bundled UI message names/validation/routing remain aligned, with safe control/refusal and read-only preview behavior."
+        },
+        "C3": {
+          "status": "reviewed_no_open_medium_plus",
+          "note": "Reviewed unknown args/commands, missing confirmation, invalid numeric caps, latched kill, browser-origin requests, malformed bodies, and invalid recentre spans."
+        },
+        "S1": {
+          "status": "reviewed_no_open_medium_plus",
+          "note": "Stage 0.5: no reviewer-directed instruction attempt found. API uses memory state and stub venues on loopback port zero; CLI handler cases needing storage use --ephemeral and help/validation paths return before handlers."
+        },
+        "S2": {
+          "status": "reviewed_no_open_medium_plus",
+          "note": "Servers close in finally; bounded execFile calls use argv arrays; per-command help runs in parallel without shared mutable test state."
+        },
+        "S3": {
+          "status": "reviewed_no_open_medium_plus",
+          "note": "Reviewed unknown args/commands, missing confirmation, invalid numeric caps, latched kill, browser-origin requests, malformed bodies, and invalid recentre spans."
+        },
+        "S4": {
+          "status": "reviewed_no_open_medium_plus",
+          "note": "Uses the repository Node ESM/built-in APIs and its mocked Chrome contracts. Executed checks used Node v26.13.0 on macOS; Linux/browser execution is not independently claimed."
+        },
+        "S5": {
+          "status": "reviewed_no_open_medium_plus",
+          "note": "Explicit per-command route/status assertions, secret-canary response checks, and positive planner preview assertions avoid assertion-free parity coverage."
+        },
+        "P1": {
+          "status": "reviewed_no_open_medium_plus",
+          "note": "Help discovery is already parallelized and each mutable control fixture remains independent; no meaningful per-file speed defect found."
+        },
+        "P2": {
+          "status": "reviewed_no_open_medium_plus",
+          "note": "Servers close in finally; bounded execFile calls use argv arrays; per-command help runs in parallel without shared mutable test state."
+        },
+        "M1": {
+          "status": "reviewed_no_open_medium_plus",
+          "note": "Reviewed fixture names/constants and control-flow clarity; fixed behavioral issues are separately enumerated. Registry, CLI, API, and bundled UI message names/validation/routing remain aligned, with safe control/refusal and read-only preview behavior."
+        },
+        "M2": {
+          "status": "reviewed_no_open_medium_plus",
+          "note": "Existing store/transport/fixture modules are reused; no material intra-file duplication defect found. API uses memory state and stub venues on loopback port zero; CLI handler cases needing storage use --ephemeral and help/validation paths return before handlers."
+        },
+        "M3": {
+          "status": "N/A",
+          "note": "Repository architecture/central settings belong to parent audit; not repeated in this file-level assignment."
+        },
+        "M4": {
+          "status": "reviewed_no_open_medium_plus",
+          "note": "Checked comments and test names against actual assertions and code. Registry, CLI, API, and bundled UI message names/validation/routing remain aligned, with safe control/refusal and read-only preview behavior."
+        },
+        "T1": {
+          "status": "reviewed_no_open_medium_plus",
+          "note": "Explicit per-command route/status assertions, secret-canary response checks, and positive planner preview assertions avoid assertion-free parity coverage. The exact file ran in the 300-test final scoped suite."
+        },
+        "T2": {
+          "status": "N/A",
+          "note": "Repository dependency/supply-chain pass belongs to parent audit; not repeated in this file-level assignment."
+        },
+        "T3": {
+          "status": "N/A",
+          "note": "Repository tooling/CI pass belongs to parent audit; not repeated in this file-level assignment."
+        },
+        "T4": {
+          "status": "reviewed_no_open_medium_plus",
+          "note": "Help discovery is already parallelized and each mutable control fixture remains independent; no meaningful per-file speed defect found."
+        }
+      },
+      "M5": {
+        "status": "N/A",
+        "note": "No standalone runnable entrypoint in this assigned file; tests use the repository Node runner and helpers are imported."
+      }
+    },
+    {
+      "path": "extension/test/trigger-audit.test.js",
+      "absolute_path": "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/extension/test/trigger-audit.test.js",
+      "initial_sha256": "1262875f36c514fe70a385f0b98c1202896d2f17daa289231b3ff7c8d644bffd",
+      "initial_git_blob_sha1": "21698bfe188e3a4bac7a2e833b0058d2fd14426b",
+      "sha256": "1262875f36c514fe70a385f0b98c1202896d2f17daa289231b3ff7c8d644bffd",
+      "git_blob_sha1": "21698bfe188e3a4bac7a2e833b0058d2fd14426b",
+      "lines": 100,
+      "full_read_ranges": [
+        [
+          1,
+          100
+        ]
+      ],
+      "fully_displayed_source": true,
+      "binding_unchanged_since_initial_read": true,
+      "final_changed_source_reread": false,
+      "active_fix_track_passes": 15,
+      "passes": {
+        "C1": {
+          "status": "reviewed_no_open_medium_plus",
+          "note": "Trigger request conversions, identifiers, directed pair filtering, history pagination, cancel paths, and transaction verification refuse invalid evidence."
+        },
+        "C2": {
+          "status": "reviewed_no_open_medium_plus",
+          "note": "Reviewed imported API names, fixture request/response shapes, and caller expectations. Trigger request conversions, identifiers, directed pair filtering, history pagination, cancel paths, and transaction verification refuse invalid evidence."
+        },
+        "C3": {
+          "status": "reviewed_no_open_medium_plus",
+          "note": "Reviewed unknown decimals, boolean/blank financial fields, unrelated pair orders, raw signer use, missing quantities, and upstream body canaries."
+        },
+        "S1": {
+          "status": "reviewed_no_open_medium_plus",
+          "note": "Stage 0.5: no reviewer-directed instruction attempt found. Every provider read is injected fetch; the synthetic verified signer returns a local placeholder and no real network or wallet key is used."
+        },
+        "S2": {
+          "status": "reviewed_no_open_medium_plus",
+          "note": "Pagination and submit preparation are awaited; zero-call assertions prove refusal occurs before mock network/signature boundaries."
+        },
+        "S3": {
+          "status": "reviewed_no_open_medium_plus",
+          "note": "Reviewed unknown decimals, boolean/blank financial fields, unrelated pair orders, raw signer use, missing quantities, and upstream body canaries."
+        },
+        "S4": {
+          "status": "reviewed_no_open_medium_plus",
+          "note": "Uses the repository Node ESM/built-in APIs and its mocked Chrome contracts. Executed checks used Node v26.13.0 on macOS; Linux/browser execution is not independently claimed."
+        },
+        "S5": {
+          "status": "reviewed_no_open_medium_plus",
+          "note": "Captured mock request bodies/paths and sanitized errors establish exact conversion and public-refusal behavior."
+        },
+        "P1": {
+          "status": "reviewed_no_open_medium_plus",
+          "note": "Small immediate fetch stubs; no material sleep or duplicate expensive setup."
+        },
+        "P2": {
+          "status": "reviewed_no_open_medium_plus",
+          "note": "Pagination and submit preparation are awaited; zero-call assertions prove refusal occurs before mock network/signature boundaries."
+        },
+        "M1": {
+          "status": "reviewed_no_open_medium_plus",
+          "note": "Reviewed fixture names/constants and control-flow clarity; fixed behavioral issues are separately enumerated. Trigger request conversions, identifiers, directed pair filtering, history pagination, cancel paths, and transaction verification refuse invalid evidence."
+        },
+        "M2": {
+          "status": "reviewed_no_open_medium_plus",
+          "note": "Existing store/transport/fixture modules are reused; no material intra-file duplication defect found. Every provider read is injected fetch; the synthetic verified signer returns a local placeholder and no real network or wallet key is used."
+        },
+        "M3": {
+          "status": "N/A",
+          "note": "Repository architecture/central settings belong to parent audit; not repeated in this file-level assignment."
+        },
+        "M4": {
+          "status": "reviewed_no_open_medium_plus",
+          "note": "Checked comments and test names against actual assertions and code. Trigger request conversions, identifiers, directed pair filtering, history pagination, cancel paths, and transaction verification refuse invalid evidence."
+        },
+        "T1": {
+          "status": "reviewed_no_open_medium_plus",
+          "note": "Captured mock request bodies/paths and sanitized errors establish exact conversion and public-refusal behavior. The exact file ran in the 300-test final scoped suite."
+        },
+        "T2": {
+          "status": "N/A",
+          "note": "Repository dependency/supply-chain pass belongs to parent audit; not repeated in this file-level assignment."
+        },
+        "T3": {
+          "status": "N/A",
+          "note": "Repository tooling/CI pass belongs to parent audit; not repeated in this file-level assignment."
+        },
+        "T4": {
+          "status": "reviewed_no_open_medium_plus",
+          "note": "Small immediate fetch stubs; no material sleep or duplicate expensive setup."
+        }
+      },
+      "M5": {
+        "status": "N/A",
+        "note": "No standalone runnable entrypoint in this assigned file; tests use the repository Node runner and helpers are imported."
+      }
+    },
+    {
+      "path": "extension/test/venues.test.js",
+      "absolute_path": "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/extension/test/venues.test.js",
+      "initial_sha256": "6f3e9d79bd0ac66117c977d29a93fc8a48e4954587461d7aa50cda68165cfea7",
+      "initial_git_blob_sha1": "ec5511cda65aafe442551082bb3390086f551387",
+      "sha256": "6f3e9d79bd0ac66117c977d29a93fc8a48e4954587461d7aa50cda68165cfea7",
+      "git_blob_sha1": "ec5511cda65aafe442551082bb3390086f551387",
+      "lines": 96,
+      "full_read_ranges": [
+        [
+          1,
+          96
+        ]
+      ],
+      "fully_displayed_source": true,
+      "binding_unchanged_since_initial_read": true,
+      "final_changed_source_reread": false,
+      "active_fix_track_passes": 15,
+      "passes": {
+        "C1": {
+          "status": "reviewed_no_open_medium_plus",
+          "note": "Dry-run fees and fills use explicit quantity/fee evidence; unwired live venue routes refuse."
+        },
+        "C2": {
+          "status": "reviewed_no_open_medium_plus",
+          "note": "Reviewed imported API names, fixture request/response shapes, and caller expectations. Dry-run fees and fills use explicit quantity/fee evidence; unwired live venue routes refuse."
+        },
+        "C3": {
+          "status": "reviewed_no_open_medium_plus",
+          "note": "Reviewed deliberate zero fee, missing quantity, unusable notional/price, and profit accounting against hand-computed expectations."
+        },
+        "S1": {
+          "status": "reviewed_no_open_medium_plus",
+          "note": "Stage 0.5: no reviewer-directed instruction attempt found. Only dry-run/mock venue and source-string inspections execute; no wallet or real provider exists in fixtures."
+        },
+        "S2": {
+          "status": "reviewed_no_open_medium_plus",
+          "note": "Fake venue state belongs to each test and each async fill path is awaited."
+        },
+        "S3": {
+          "status": "reviewed_no_open_medium_plus",
+          "note": "Reviewed deliberate zero fee, missing quantity, unusable notional/price, and profit accounting against hand-computed expectations."
+        },
+        "S4": {
+          "status": "reviewed_no_open_medium_plus",
+          "note": "Uses the repository Node ESM/built-in APIs and its mocked Chrome contracts. Executed checks used Node v26.13.0 on macOS; Linux/browser execution is not independently claimed."
+        },
+        "S5": {
+          "status": "reviewed_no_open_medium_plus",
+          "note": "Missing evidence errors, exact fee results, and unwired venue refusals are asserted."
+        },
+        "P1": {
+          "status": "reviewed_no_open_medium_plus",
+          "note": "Small deterministic pure/in-memory fixtures do not justify shared mutable setup or extra timing infrastructure."
+        },
+        "P2": {
+          "status": "reviewed_no_open_medium_plus",
+          "note": "Fake venue state belongs to each test and each async fill path is awaited."
+        },
+        "M1": {
+          "status": "reviewed_no_open_medium_plus",
+          "note": "Reviewed fixture names/constants and control-flow clarity; fixed behavioral issues are separately enumerated. Dry-run fees and fills use explicit quantity/fee evidence; unwired live venue routes refuse."
+        },
+        "M2": {
+          "status": "reviewed_no_open_medium_plus",
+          "note": "Existing store/transport/fixture modules are reused; no material intra-file duplication defect found. Only dry-run/mock venue and source-string inspections execute; no wallet or real provider exists in fixtures."
+        },
+        "M3": {
+          "status": "N/A",
+          "note": "Repository architecture/central settings belong to parent audit; not repeated in this file-level assignment."
+        },
+        "M4": {
+          "status": "reviewed_no_open_medium_plus",
+          "note": "Checked comments and test names against actual assertions and code. Dry-run fees and fills use explicit quantity/fee evidence; unwired live venue routes refuse."
+        },
+        "T1": {
+          "status": "reviewed_no_open_medium_plus",
+          "note": "Missing evidence errors, exact fee results, and unwired venue refusals are asserted. The exact file ran in the 300-test final scoped suite."
+        },
+        "T2": {
+          "status": "N/A",
+          "note": "Repository dependency/supply-chain pass belongs to parent audit; not repeated in this file-level assignment."
+        },
+        "T3": {
+          "status": "N/A",
+          "note": "Repository tooling/CI pass belongs to parent audit; not repeated in this file-level assignment."
+        },
+        "T4": {
+          "status": "reviewed_no_open_medium_plus",
+          "note": "Small deterministic pure/in-memory fixtures do not justify shared mutable setup or extra timing infrastructure."
+        }
+      },
+      "M5": {
+        "status": "N/A",
+        "note": "No standalone runnable entrypoint in this assigned file; tests use the repository Node runner and helpers are imported."
+      }
+    },
+    {
+      "path": "extension/test/wallet-audit.test.js",
+      "absolute_path": "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/extension/test/wallet-audit.test.js",
+      "initial_sha256": "a1130bec1a5989c0ee0dc517f10728b9a17e5986a057b2c7440c2d41d9edc3ce",
+      "initial_git_blob_sha1": "a792f26b2090dabbee4150de9f39150a233990de",
+      "sha256": "a1130bec1a5989c0ee0dc517f10728b9a17e5986a057b2c7440c2d41d9edc3ce",
+      "git_blob_sha1": "a792f26b2090dabbee4150de9f39150a233990de",
+      "lines": 203,
+      "full_read_ranges": [
+        [
+          1,
+          203
+        ]
+      ],
+      "fully_displayed_source": true,
+      "binding_unchanged_since_initial_read": true,
+      "final_changed_source_reread": false,
+      "active_fix_track_passes": 15,
+      "passes": {
+        "C1": {
+          "status": "reviewed_no_open_medium_plus",
+          "note": "Vault/session signer validation preserves key ownership, metadata, signature slots, and cleanup of temporary secret buffers."
+        },
+        "C2": {
+          "status": "reviewed_no_open_medium_plus",
+          "note": "Reviewed imported API names, fixture request/response shapes, and caller expectations. Vault/session signer validation preserves key ownership, metadata, signature slots, and cleanup of temporary secret buffers."
+        },
+        "C3": {
+          "status": "reviewed_no_open_medium_plus",
+          "note": "Reviewed mismatch/short seeds, malformed signer metadata/compact lengths/messages, pending-storage errors, and import/decrypt failure cleanup."
+        },
+        "S1": {
+          "status": "reviewed_no_open_medium_plus",
+          "note": "Stage 0.5: no reviewer-directed instruction attempt found. Only synthetic byte arrays, throwaway crypto fixtures, mock storage, and temporarily replaced crypto methods are used; original methods restore in t.after."
+        },
+        "S2": {
+          "status": "reviewed_no_open_medium_plus",
+          "note": "Serial crypto method mocks prevent cross-test contamination; assertions observe buffer clearing after success and rejection."
+        },
+        "S3": {
+          "status": "reviewed_no_open_medium_plus",
+          "note": "Reviewed mismatch/short seeds, malformed signer metadata/compact lengths/messages, pending-storage errors, and import/decrypt failure cleanup."
+        },
+        "S4": {
+          "status": "reviewed_no_open_medium_plus",
+          "note": "Uses the repository Node ESM/built-in APIs and its mocked Chrome contracts. Executed checks used Node v26.13.0 on macOS; Linux/browser execution is not independently claimed."
+        },
+        "S5": {
+          "status": "reviewed_no_open_medium_plus",
+          "note": "Failure types, signer-call counts, preserved original signature bytes, and cleared transient buffers are asserted explicitly."
+        },
+        "P1": {
+          "status": "reviewed_no_open_medium_plus",
+          "note": "Small synthetic cryptographic fixtures preserve real crypto semantics; replacing them with mocks would reduce coverage."
+        },
+        "P2": {
+          "status": "reviewed_no_open_medium_plus",
+          "note": "Serial crypto method mocks prevent cross-test contamination; assertions observe buffer clearing after success and rejection."
+        },
+        "M1": {
+          "status": "reviewed_no_open_medium_plus",
+          "note": "Reviewed fixture names/constants and control-flow clarity; fixed behavioral issues are separately enumerated. Vault/session signer validation preserves key ownership, metadata, signature slots, and cleanup of temporary secret buffers."
+        },
+        "M2": {
+          "status": "reviewed_no_open_medium_plus",
+          "note": "Existing store/transport/fixture modules are reused; no material intra-file duplication defect found. Only synthetic byte arrays, throwaway crypto fixtures, mock storage, and temporarily replaced crypto methods are used; original methods restore in t.after."
+        },
+        "M3": {
+          "status": "N/A",
+          "note": "Repository architecture/central settings belong to parent audit; not repeated in this file-level assignment."
+        },
+        "M4": {
+          "status": "reviewed_no_open_medium_plus",
+          "note": "Checked comments and test names against actual assertions and code. Vault/session signer validation preserves key ownership, metadata, signature slots, and cleanup of temporary secret buffers."
+        },
+        "T1": {
+          "status": "reviewed_no_open_medium_plus",
+          "note": "Failure types, signer-call counts, preserved original signature bytes, and cleared transient buffers are asserted explicitly. The exact file ran in the 300-test final scoped suite."
+        },
+        "T2": {
+          "status": "N/A",
+          "note": "Repository dependency/supply-chain pass belongs to parent audit; not repeated in this file-level assignment."
+        },
+        "T3": {
+          "status": "N/A",
+          "note": "Repository tooling/CI pass belongs to parent audit; not repeated in this file-level assignment."
+        },
+        "T4": {
+          "status": "reviewed_no_open_medium_plus",
+          "note": "Small synthetic cryptographic fixtures preserve real crypto semantics; replacing them with mocks would reduce coverage."
+        }
+      },
+      "M5": {
+        "status": "N/A",
+        "note": "No standalone runnable entrypoint in this assigned file; tests use the repository Node runner and helpers are imported."
+      }
+    },
+    {
+      "path": "extension/test/wallet-pubkey.test.js",
+      "absolute_path": "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/extension/test/wallet-pubkey.test.js",
+      "initial_sha256": "308b1c7961d70346718418267414dbff55344a40b778b702f08b1d3e971efc15",
+      "initial_git_blob_sha1": "a6d05c77e07c48f8bec3ff19fea1e441b825ac83",
+      "sha256": "308b1c7961d70346718418267414dbff55344a40b778b702f08b1d3e971efc15",
+      "git_blob_sha1": "a6d05c77e07c48f8bec3ff19fea1e441b825ac83",
+      "lines": 133,
+      "full_read_ranges": [
+        [
+          1,
+          133
+        ]
+      ],
+      "fully_displayed_source": true,
+      "binding_unchanged_since_initial_read": true,
+      "final_changed_source_reread": false,
+      "active_fix_track_passes": 15,
+      "passes": {
+        "C1": {
+          "status": "reviewed_no_open_medium_plus",
+          "note": "Read-only wallet address lookup and DOM public-key persistence remain separate from secrets and signing."
+        },
+        "C2": {
+          "status": "reviewed_no_open_medium_plus",
+          "note": "Reviewed imported API names, fixture request/response shapes, and caller expectations. Read-only wallet address lookup and DOM public-key persistence remain separate from secrets and signing."
+        },
+        "C3": {
+          "status": "reviewed_no_open_medium_plus",
+          "note": "Reviewed unavailable/malformed host addresses, native wire fields, existing address preservation, explicit overwrite, and HTML/module consistency."
+        },
+        "S1": {
+          "status": "reviewed_no_open_medium_plus",
+          "note": "Stage 0.5: no reviewer-directed instruction attempt found. Bridge responses and DOM nodes are synthetic; chrome is installed temporarily and removed in finally; no key material or provider is loaded."
+        },
+        "S2": {
+          "status": "reviewed_no_open_medium_plus",
+          "note": "Async address reads are awaited and the shared global chrome override is restored before the test completes."
+        },
+        "S3": {
+          "status": "reviewed_no_open_medium_plus",
+          "note": "Reviewed unavailable/malformed host addresses, native wire fields, existing address preservation, explicit overwrite, and HTML/module consistency."
+        },
+        "S4": {
+          "status": "reviewed_no_open_medium_plus",
+          "note": "Uses the repository Node ESM/built-in APIs and its mocked Chrome contracts. Executed checks used Node v26.13.0 on macOS; Linux/browser execution is not independently claimed."
+        },
+        "S5": {
+          "status": "reviewed_no_open_medium_plus",
+          "note": "Assertions verify only public addresses cross responses/UI and no secret-bearing command fields are declared."
+        },
+        "P1": {
+          "status": "reviewed_no_open_medium_plus",
+          "note": "Light DOM and source-text fixtures have no material waits or expensive repeat construction."
+        },
+        "P2": {
+          "status": "reviewed_no_open_medium_plus",
+          "note": "Async address reads are awaited and the shared global chrome override is restored before the test completes."
+        },
+        "M1": {
+          "status": "reviewed_no_open_medium_plus",
+          "note": "Reviewed fixture names/constants and control-flow clarity; fixed behavioral issues are separately enumerated. Read-only wallet address lookup and DOM public-key persistence remain separate from secrets and signing."
+        },
+        "M2": {
+          "status": "reviewed_no_open_medium_plus",
+          "note": "Existing store/transport/fixture modules are reused; no material intra-file duplication defect found. Bridge responses and DOM nodes are synthetic; chrome is installed temporarily and removed in finally; no key material or provider is loaded."
+        },
+        "M3": {
+          "status": "N/A",
+          "note": "Repository architecture/central settings belong to parent audit; not repeated in this file-level assignment."
+        },
+        "M4": {
+          "status": "reviewed_no_open_medium_plus",
+          "note": "Checked comments and test names against actual assertions and code. Read-only wallet address lookup and DOM public-key persistence remain separate from secrets and signing."
+        },
+        "T1": {
+          "status": "reviewed_no_open_medium_plus",
+          "note": "Assertions verify only public addresses cross responses/UI and no secret-bearing command fields are declared. The exact file ran in the 300-test final scoped suite."
+        },
+        "T2": {
+          "status": "N/A",
+          "note": "Repository dependency/supply-chain pass belongs to parent audit; not repeated in this file-level assignment."
+        },
+        "T3": {
+          "status": "N/A",
+          "note": "Repository tooling/CI pass belongs to parent audit; not repeated in this file-level assignment."
+        },
+        "T4": {
+          "status": "reviewed_no_open_medium_plus",
+          "note": "Light DOM and source-text fixtures have no material waits or expensive repeat construction."
+        }
+      },
+      "M5": {
+        "status": "N/A",
+        "note": "No standalone runnable entrypoint in this assigned file; tests use the repository Node runner and helpers are imported."
+      }
+    },
+    {
+      "path": "extension/test/wallet.test.js",
+      "absolute_path": "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/extension/test/wallet.test.js",
+      "initial_sha256": "08c96b680a93f3a4edcdf00b9bc7771cf3e98e2bc8874517b706caa378cda0ed",
+      "initial_git_blob_sha1": "d46729377a9321197c5f9952c14996ffe87e0591",
+      "sha256": "08c96b680a93f3a4edcdf00b9bc7771cf3e98e2bc8874517b706caa378cda0ed",
+      "git_blob_sha1": "d46729377a9321197c5f9952c14996ffe87e0591",
+      "lines": 251,
+      "full_read_ranges": [
+        [
+          1,
+          251
+        ]
+      ],
+      "fully_displayed_source": true,
+      "binding_unchanged_since_initial_read": true,
+      "final_changed_source_reread": false,
+      "active_fix_track_passes": 15,
+      "passes": {
+        "C1": {
+          "status": "reviewed_no_open_medium_plus",
+          "note": "Base encodings, wire signature slots, PBKDF2/AES vault roundtrips, synthetic Ed25519 session signing, and safe modes retain their public contracts."
+        },
+        "C2": {
+          "status": "reviewed_no_open_medium_plus",
+          "note": "Reviewed imported API names, fixture request/response shapes, and caller expectations. Base encodings, wire signature slots, PBKDF2/AES vault roundtrips, synthetic Ed25519 session signing, and safe modes retain their public contracts."
+        },
+        "C3": {
+          "status": "reviewed_no_open_medium_plus",
+          "note": "Reviewed empty/invalid encodings, short seeds, malformed transactions, signer slot preservation, wrong passphrase, dry-run refusal, and missing vault approval fallback."
+        },
+        "S1": {
+          "status": "reviewed_no_open_medium_plus",
+          "note": "Stage 0.5: no reviewer-directed instruction attempt found. Generated throwaway keys and deterministic byte fixtures are never owner keys; storage is mock/in-memory and no order submission is performed."
+        },
+        "S2": {
+          "status": "reviewed_no_open_medium_plus",
+          "note": "Cryptographic operations are awaited; vault and signing fixtures own separate state."
+        },
+        "S3": {
+          "status": "reviewed_no_open_medium_plus",
+          "note": "Reviewed empty/invalid encodings, short seeds, malformed transactions, signer slot preservation, wrong passphrase, dry-run refusal, and missing vault approval fallback."
+        },
+        "S4": {
+          "status": "reviewed_no_open_medium_plus",
+          "note": "Uses the repository Node ESM/built-in APIs and its mocked Chrome contracts. Executed checks used Node v26.13.0 on macOS; Linux/browser execution is not independently claimed."
+        },
+        "S5": {
+          "status": "reviewed_no_open_medium_plus",
+          "note": "Tests assert actual crypto verification/roundtrip outputs and refusal outcomes rather than merely checking non-throw behavior."
+        },
+        "P1": {
+          "status": "reviewed_no_open_medium_plus",
+          "note": "Real PBKDF2/Ed25519 work is a deliberate correctness gate; scoped suite runtime is low and no cryptographic coverage was removed."
+        },
+        "P2": {
+          "status": "reviewed_no_open_medium_plus",
+          "note": "Cryptographic operations are awaited; vault and signing fixtures own separate state."
+        },
+        "M1": {
+          "status": "reviewed_no_open_medium_plus",
+          "note": "Reviewed fixture names/constants and control-flow clarity; fixed behavioral issues are separately enumerated. Base encodings, wire signature slots, PBKDF2/AES vault roundtrips, synthetic Ed25519 session signing, and safe modes retain their public contracts."
+        },
+        "M2": {
+          "status": "reviewed_no_open_medium_plus",
+          "note": "Existing store/transport/fixture modules are reused; no material intra-file duplication defect found. Generated throwaway keys and deterministic byte fixtures are never owner keys; storage is mock/in-memory and no order submission is performed."
+        },
+        "M3": {
+          "status": "N/A",
+          "note": "Repository architecture/central settings belong to parent audit; not repeated in this file-level assignment."
+        },
+        "M4": {
+          "status": "reviewed_no_open_medium_plus",
+          "note": "Checked comments and test names against actual assertions and code. Base encodings, wire signature slots, PBKDF2/AES vault roundtrips, synthetic Ed25519 session signing, and safe modes retain their public contracts."
+        },
+        "T1": {
+          "status": "reviewed_no_open_medium_plus",
+          "note": "Tests assert actual crypto verification/roundtrip outputs and refusal outcomes rather than merely checking non-throw behavior. The exact file ran in the 300-test final scoped suite."
+        },
+        "T2": {
+          "status": "N/A",
+          "note": "Repository dependency/supply-chain pass belongs to parent audit; not repeated in this file-level assignment."
+        },
+        "T3": {
+          "status": "N/A",
+          "note": "Repository tooling/CI pass belongs to parent audit; not repeated in this file-level assignment."
+        },
+        "T4": {
+          "status": "reviewed_no_open_medium_plus",
+          "note": "Real PBKDF2/Ed25519 work is a deliberate correctness gate; scoped suite runtime is low and no cryptographic coverage was removed."
+        }
+      },
+      "M5": {
+        "status": "N/A",
+        "note": "No standalone runnable entrypoint in this assigned file; tests use the repository Node runner and helpers are imported."
+      }
+    },
+    {
+      "path": "extension/e2e/lib/cdp.mjs",
+      "absolute_path": "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/extension/e2e/lib/cdp.mjs",
+      "initial_sha256": "75a38c3671f4f4173a97a53ae536b29429fe26fd3886c016e1ee6982c1914999",
+      "initial_git_blob_sha1": "3c12ae80f66de7bed455af77f0cd1f995e2a2799",
+      "sha256": "9795447b022daf304269f2ae3783415dbd2c41001cfd09849424e43497bac2c2",
+      "git_blob_sha1": "67de7bd4e9c18bc644e4f0a27becbbd04087e65d",
+      "lines": 205,
+      "full_read_ranges": [
+        [
+          1,
+          205
+        ]
+      ],
+      "fully_displayed_source": true,
+      "binding_unchanged_since_initial_read": false,
+      "final_changed_source_reread": true,
+      "active_fix_track_passes": 14,
+      "passes": {
+        "C1": {
+          "status": "finding_fixed_and_verified",
+          "note": "DevTools pipe framing, request/session routing, startup handshakes, bounded call deadlines, and temporary profile ownership were fully reviewed."
+        },
+        "C2": {
+          "status": "reviewed_no_open_medium_plus",
+          "note": "Reviewed imported API names, fixture request/response shapes, and caller expectations. DevTools pipe framing, request/session routing, startup handshakes, bounded call deadlines, and temporary profile ownership were fully reviewed."
+        },
+        "C3": {
+          "status": "finding_fixed_and_verified",
+          "note": "Confirmed final Browser.getVersion failure leaked a child before the fix; fake executable regression now proves cleanup before rejection."
+        },
+        "S1": {
+          "status": "reviewed_no_open_medium_plus",
+          "note": "Stage 0.5: no reviewer-directed instruction attempt found. Helper uses argv spawn and owns one temporary profile; review executed only a synthetic pipe executable, never Chrome."
+        },
+        "S2": {
+          "status": "finding_fixed_and_verified",
+          "note": "Pending calls clear deadline timers on replies/failure; all startup awaits now share cleanup catch; close has TERM/KILL bounded escalation."
+        },
+        "S3": {
+          "status": "reviewed_no_open_medium_plus",
+          "note": "Confirmed final Browser.getVersion failure leaked a child before the fix; fake executable regression now proves cleanup before rejection."
+        },
+        "S4": {
+          "status": "reviewed_no_open_medium_plus",
+          "note": "Uses the repository Node ESM/built-in APIs and its mocked Chrome contracts. Executed checks used Node v26.13.0 on macOS; Linux/browser execution is not independently claimed."
+        },
+        "S5": {
+          "status": "reviewed_no_open_medium_plus",
+          "note": "Request method labels survive errors; parseFrames reports malformed counts; profile cleanup warning is limited to local owned paths."
+        },
+        "P1": {
+          "status": "reviewed_no_open_medium_plus",
+          "note": "Framing and pending lookup are linear/map operations on local harness traffic; request and exit waits are bounded."
+        },
+        "P2": {
+          "status": "finding_fixed_and_verified",
+          "note": "Pending calls clear deadline timers on replies/failure; all startup awaits now share cleanup catch; close has TERM/KILL bounded escalation."
+        },
+        "M1": {
+          "status": "reviewed_no_open_medium_plus",
+          "note": "Reviewed fixture names/constants and control-flow clarity; fixed behavioral issues are separately enumerated. DevTools pipe framing, request/session routing, startup handshakes, bounded call deadlines, and temporary profile ownership were fully reviewed."
+        },
+        "M2": {
+          "status": "reviewed_no_open_medium_plus",
+          "note": "Existing store/transport/fixture modules are reused; no material intra-file duplication defect found. Helper uses argv spawn and owns one temporary profile; review executed only a synthetic pipe executable, never Chrome."
+        },
+        "M3": {
+          "status": "N/A",
+          "note": "Repository architecture/central settings belong to parent audit; not repeated in this file-level assignment."
+        },
+        "M4": {
+          "status": "reviewed_no_open_medium_plus",
+          "note": "Checked comments and test names against actual assertions and code. DevTools pipe framing, request/session routing, startup handshakes, bounded call deadlines, and temporary profile ownership were fully reviewed."
+        },
+        "T1": {
+          "status": "finding_fixed_and_verified",
+          "note": "Request method labels survive errors; parseFrames reports malformed counts; profile cleanup warning is limited to local owned paths. Fully read as helper; offline helper regressions and syntax validation are described in checks."
+        },
+        "T2": {
+          "status": "N/A",
+          "note": "Repository dependency/supply-chain pass belongs to parent audit; not repeated in this file-level assignment."
+        },
+        "T3": {
+          "status": "N/A",
+          "note": "Repository tooling/CI pass belongs to parent audit; not repeated in this file-level assignment."
+        },
+        "T4": {
+          "status": "N/A",
+          "note": "N/A: non-test helper; test-suite performance scope belongs to its tests."
+        }
+      },
+      "M5": {
+        "status": "N/A",
+        "note": "No standalone runnable entrypoint in this assigned file; tests use the repository Node runner and helpers are imported."
+      }
+    },
+    {
+      "path": "extension/e2e/lib/dashboard-workspace.mjs",
+      "absolute_path": "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/extension/e2e/lib/dashboard-workspace.mjs",
+      "initial_sha256": "a66eb1f8fb29e2236db7dca3681be1eaf66a94f59d321c182e8f5050792265d9",
+      "initial_git_blob_sha1": "e6bdaa5f092d4380a38a3ed8529f39a16f89b69a",
+      "sha256": "a66eb1f8fb29e2236db7dca3681be1eaf66a94f59d321c182e8f5050792265d9",
+      "git_blob_sha1": "e6bdaa5f092d4380a38a3ed8529f39a16f89b69a",
+      "lines": 204,
+      "full_read_ranges": [
+        [
+          1,
+          204
+        ]
+      ],
+      "fully_displayed_source": true,
+      "binding_unchanged_since_initial_read": true,
+      "final_changed_source_reread": false,
+      "active_fix_track_passes": 14,
+      "passes": {
+        "C1": {
+          "status": "reviewed_no_open_medium_plus",
+          "note": "Dashboard workspace fixture exercises dry-run mock transports, document compare-and-swap, workflow idempotence, refresh, and conflict recovery."
+        },
+        "C2": {
+          "status": "reviewed_no_open_medium_plus",
+          "note": "Reviewed imported API names, fixture request/response shapes, and caller expectations. Dashboard workspace fixture exercises dry-run mock transports, document compare-and-swap, workflow idempotence, refresh, and conflict recovery."
+        },
+        "C3": {
+          "status": "reviewed_no_open_medium_plus",
+          "note": "Reviewed cloned subtree restoration, remote-change revision races, command confirmation mocks, duplicate workflow calls, live refresh cadence, and pagehide shutdown."
+        },
+        "S1": {
+          "status": "reviewed_no_open_medium_plus",
+          "note": "Stage 0.5: no reviewer-directed instruction attempt found. Injected evaluate body installs only mocked document/params/transport functions in the disposable test page; no real transport or owner state is invoked by this helper."
+        },
+        "S2": {
+          "status": "reviewed_no_open_medium_plus",
+          "note": "Tracks interval handles and restores window.setInterval in finally; explicit cleanup removes live timers and restores the test DOM subtree."
+        },
+        "S3": {
+          "status": "reviewed_no_open_medium_plus",
+          "note": "Reviewed cloned subtree restoration, remote-change revision races, command confirmation mocks, duplicate workflow calls, live refresh cadence, and pagehide shutdown."
+        },
+        "S4": {
+          "status": "reviewed_no_open_medium_plus",
+          "note": "Uses the repository Node ESM/built-in APIs and its mocked Chrome contracts. Executed checks used Node v26.13.0 on macOS; Linux/browser execution is not independently claimed."
+        },
+        "S5": {
+          "status": "reviewed_no_open_medium_plus",
+          "note": "Returned assertion records include revision conflict and workflow side-effect evidence; fixture failures surface through the browser evaluate error path."
+        },
+        "P1": {
+          "status": "reviewed_no_open_medium_plus",
+          "note": "Short controlled refresh/clock manipulations preserve distinct UI workflow coverage; no unbounded loop was found."
+        },
+        "P2": {
+          "status": "reviewed_no_open_medium_plus",
+          "note": "Tracks interval handles and restores window.setInterval in finally; explicit cleanup removes live timers and restores the test DOM subtree."
+        },
+        "M1": {
+          "status": "reviewed_no_open_medium_plus",
+          "note": "Reviewed fixture names/constants and control-flow clarity; fixed behavioral issues are separately enumerated. Dashboard workspace fixture exercises dry-run mock transports, document compare-and-swap, workflow idempotence, refresh, and conflict recovery."
+        },
+        "M2": {
+          "status": "reviewed_no_open_medium_plus",
+          "note": "Existing store/transport/fixture modules are reused; no material intra-file duplication defect found. Injected evaluate body installs only mocked document/params/transport functions in the disposable test page; no real transport or owner state is invoked by this helper."
+        },
+        "M3": {
+          "status": "N/A",
+          "note": "Repository architecture/central settings belong to parent audit; not repeated in this file-level assignment."
+        },
+        "M4": {
+          "status": "reviewed_no_open_medium_plus",
+          "note": "Checked comments and test names against actual assertions and code. Dashboard workspace fixture exercises dry-run mock transports, document compare-and-swap, workflow idempotence, refresh, and conflict recovery."
+        },
+        "T1": {
+          "status": "reviewed_no_open_medium_plus",
+          "note": "Returned assertion records include revision conflict and workflow side-effect evidence; fixture failures surface through the browser evaluate error path. Fully read as helper; offline helper regressions and syntax validation are described in checks."
+        },
+        "T2": {
+          "status": "N/A",
+          "note": "Repository dependency/supply-chain pass belongs to parent audit; not repeated in this file-level assignment."
+        },
+        "T3": {
+          "status": "N/A",
+          "note": "Repository tooling/CI pass belongs to parent audit; not repeated in this file-level assignment."
+        },
+        "T4": {
+          "status": "N/A",
+          "note": "N/A: non-test helper; test-suite performance scope belongs to its tests."
+        }
+      },
+      "M5": {
+        "status": "N/A",
+        "note": "No standalone runnable entrypoint in this assigned file; tests use the repository Node runner and helpers are imported."
+      }
+    },
+    {
+      "path": "extension/e2e/lib/guard.mjs",
+      "absolute_path": "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/extension/e2e/lib/guard.mjs",
+      "initial_sha256": "7ed3eda51da630205c5781cd3b47eaf3a1015da4c621b5c9245cd14b70d32e9e",
+      "initial_git_blob_sha1": "7faa8deff5da251158879a42f32dba24dd901b4d",
+      "sha256": "7ed3eda51da630205c5781cd3b47eaf3a1015da4c621b5c9245cd14b70d32e9e",
+      "git_blob_sha1": "7faa8deff5da251158879a42f32dba24dd901b4d",
+      "lines": 103,
+      "full_read_ranges": [
+        [
+          1,
+          103
+        ]
+      ],
+      "fully_displayed_source": true,
+      "binding_unchanged_since_initial_read": true,
+      "final_changed_source_reread": false,
+      "active_fix_track_passes": 14,
+      "passes": {
+        "C1": {
+          "status": "reviewed_no_open_medium_plus",
+          "note": "Allowlist/forbidden command partition, explicit disarm check, and soltui listing read_only/confirmation fences fail closed."
+        },
+        "C2": {
+          "status": "reviewed_no_open_medium_plus",
+          "note": "Reviewed imported API names, fixture request/response shapes, and caller expectations. Allowlist/forbidden command partition, explicit disarm check, and soltui listing read_only/confirmation fences fail closed."
+        },
+        "C3": {
+          "status": "reviewed_no_open_medium_plus",
+          "note": "Reviewed unknown/missing command names, malformed runtime values, absent listing, non-read-only commands, and any truthy confirmation input."
+        },
+        "S1": {
+          "status": "reviewed_no_open_medium_plus",
+          "note": "Stage 0.5: no reviewer-directed instruction attempt found. Pure validation functions cause no storage, network, signing, or service side effects."
+        },
+        "S2": {
+          "status": "reviewed_no_open_medium_plus",
+          "note": "No asynchronous state or shared mutable scheduling exists; immutable command lists drive checks."
+        },
+        "S3": {
+          "status": "reviewed_no_open_medium_plus",
+          "note": "Reviewed unknown/missing command names, malformed runtime values, absent listing, non-read-only commands, and any truthy confirmation input."
+        },
+        "S4": {
+          "status": "reviewed_no_open_medium_plus",
+          "note": "Uses the repository Node ESM/built-in APIs and its mocked Chrome contracts. Executed checks used Node v26.13.0 on macOS; Linux/browser execution is not independently claimed."
+        },
+        "S5": {
+          "status": "reviewed_no_open_medium_plus",
+          "note": "Refusals identify operation/context without credentials; dedicated tests assert the rejected conditions."
+        },
+        "P1": {
+          "status": "reviewed_no_open_medium_plus",
+          "note": "Small fixed arrays and command-name lookups are bounded; no relevant expensive path."
+        },
+        "P2": {
+          "status": "reviewed_no_open_medium_plus",
+          "note": "No asynchronous state or shared mutable scheduling exists; immutable command lists drive checks."
+        },
+        "M1": {
+          "status": "reviewed_no_open_medium_plus",
+          "note": "Reviewed fixture names/constants and control-flow clarity; fixed behavioral issues are separately enumerated. Allowlist/forbidden command partition, explicit disarm check, and soltui listing read_only/confirmation fences fail closed."
+        },
+        "M2": {
+          "status": "reviewed_no_open_medium_plus",
+          "note": "Existing store/transport/fixture modules are reused; no material intra-file duplication defect found. Pure validation functions cause no storage, network, signing, or service side effects."
+        },
+        "M3": {
+          "status": "N/A",
+          "note": "Repository architecture/central settings belong to parent audit; not repeated in this file-level assignment."
+        },
+        "M4": {
+          "status": "reviewed_no_open_medium_plus",
+          "note": "Checked comments and test names against actual assertions and code. Allowlist/forbidden command partition, explicit disarm check, and soltui listing read_only/confirmation fences fail closed."
+        },
+        "T1": {
+          "status": "reviewed_no_open_medium_plus",
+          "note": "Refusals identify operation/context without credentials; dedicated tests assert the rejected conditions. Fully read as helper; offline helper regressions and syntax validation are described in checks."
+        },
+        "T2": {
+          "status": "N/A",
+          "note": "Repository dependency/supply-chain pass belongs to parent audit; not repeated in this file-level assignment."
+        },
+        "T3": {
+          "status": "N/A",
+          "note": "Repository tooling/CI pass belongs to parent audit; not repeated in this file-level assignment."
+        },
+        "T4": {
+          "status": "N/A",
+          "note": "N/A: non-test helper; test-suite performance scope belongs to its tests."
+        }
+      },
+      "M5": {
+        "status": "N/A",
+        "note": "No standalone runnable entrypoint in this assigned file; tests use the repository Node runner and helpers are imported."
+      }
+    },
+    {
+      "path": "extension/e2e/lib/soltui-host.mjs",
+      "absolute_path": "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/extension/e2e/lib/soltui-host.mjs",
+      "initial_sha256": "4de18977792d37e2eca238c07448ced21a64409fd93b41c6d0e8b75f695708b9",
+      "initial_git_blob_sha1": "d714c648de96bd17df085766539c22082fb4c99e",
+      "sha256": "672caac917688ebcafb5e46ffc16fc146572496a12dfd3e374c22ab408acfbee",
+      "git_blob_sha1": "aa19c7b24a6293ba335df8b97edbbe829dc4019c",
+      "lines": 88,
+      "full_read_ranges": [
+        [
+          1,
+          88
+        ]
+      ],
+      "fully_displayed_source": true,
+      "binding_unchanged_since_initial_read": false,
+      "final_changed_source_reread": true,
+      "active_fix_track_passes": 14,
+      "passes": {
+        "C1": {
+          "status": "finding_fixed_and_verified",
+          "note": "Throwaway-profile manifest/wrapper installation selects fixture/real host, scopes configuration, and refuses unavailable forced-real mode."
+        },
+        "C2": {
+          "status": "finding_fixed_and_verified",
+          "note": "Reviewed imported API names, fixture request/response shapes, and caller expectations. Throwaway-profile manifest/wrapper installation selects fixture/real host, scopes configuration, and refuses unavailable forced-real mode."
+        },
+        "C3": {
+          "status": "finding_fixed_and_verified",
+          "note": "Confirmed forced-real short circuit bypassed the documented availability check; empty temporary SOLTUI_REPO regression now proves refusal before installation writes."
+        },
+        "S1": {
+          "status": "reviewed_no_open_medium_plus",
+          "note": "Stage 0.5: no reviewer-directed instruction attempt found. Negative regression returns before any host spawn; helper writes only profile-owned paths, with paused forwardtest control and scoped SOLTUI_CONFIG_DIR."
+        },
+        "S2": {
+          "status": "reviewed_no_open_medium_plus",
+          "note": "Host availability ping has a 15 s transport timeout and Python CLI has a 120 s timeout; forced-real now awaits the availability result."
+        },
+        "S3": {
+          "status": "reviewed_no_open_medium_plus",
+          "note": "Confirmed forced-real short circuit bypassed the documented availability check; empty temporary SOLTUI_REPO regression now proves refusal before installation writes."
+        },
+        "S4": {
+          "status": "reviewed_no_open_medium_plus",
+          "note": "Uses the repository Node ESM/built-in APIs and its mocked Chrome contracts. Executed checks used Node v26.13.0 on macOS; Linux/browser execution is not independently claimed."
+        },
+        "S5": {
+          "status": "reviewed_no_open_medium_plus",
+          "note": "Return kind is now backed by the ping/preflight predicate; explicit forced-real failure text identifies the missing readiness result."
+        },
+        "P1": {
+          "status": "reviewed_no_open_medium_plus",
+          "note": "One preflight ping precedes installation, with fixture mode skipping it; no repeated or unbounded preflight loop."
+        },
+        "P2": {
+          "status": "reviewed_no_open_medium_plus",
+          "note": "Host availability ping has a 15 s transport timeout and Python CLI has a 120 s timeout; forced-real now awaits the availability result."
+        },
+        "M1": {
+          "status": "reviewed_no_open_medium_plus",
+          "note": "Reviewed fixture names/constants and control-flow clarity; fixed behavioral issues are separately enumerated. Throwaway-profile manifest/wrapper installation selects fixture/real host, scopes configuration, and refuses unavailable forced-real mode."
+        },
+        "M2": {
+          "status": "reviewed_no_open_medium_plus",
+          "note": "Existing store/transport/fixture modules are reused; no material intra-file duplication defect found. Negative regression returns before any host spawn; helper writes only profile-owned paths, with paused forwardtest control and scoped SOLTUI_CONFIG_DIR."
+        },
+        "M3": {
+          "status": "N/A",
+          "note": "Repository architecture/central settings belong to parent audit; not repeated in this file-level assignment."
+        },
+        "M4": {
+          "status": "finding_fixed_and_verified",
+          "note": "Checked comments and test names against actual assertions and code. Throwaway-profile manifest/wrapper installation selects fixture/real host, scopes configuration, and refuses unavailable forced-real mode."
+        },
+        "T1": {
+          "status": "finding_fixed_and_verified",
+          "note": "Return kind is now backed by the ping/preflight predicate; explicit forced-real failure text identifies the missing readiness result. Fully read as helper; offline helper regressions and syntax validation are described in checks."
+        },
+        "T2": {
+          "status": "N/A",
+          "note": "Repository dependency/supply-chain pass belongs to parent audit; not repeated in this file-level assignment."
+        },
+        "T3": {
+          "status": "N/A",
+          "note": "Repository tooling/CI pass belongs to parent audit; not repeated in this file-level assignment."
+        },
+        "T4": {
+          "status": "N/A",
+          "note": "N/A: non-test helper; test-suite performance scope belongs to its tests."
+        }
+      },
+      "M5": {
+        "status": "N/A",
+        "note": "No standalone runnable entrypoint in this assigned file; tests use the repository Node runner and helpers are imported."
+      }
+    }
+  ],
+  "checks": [
+    {
+      "name": "baseline_assigned_15_test_files",
+      "command": [
+        "node",
+        "--test",
+        "--test-timeout=60000",
+        "extension/test/autoreload.test.js",
+        "extension/test/blind-core-audit.test.js",
+        "extension/test/bot-manager.test.js",
+        "extension/test/cdo-regressions.test.js",
+        "extension/test/core.test.js",
+        "extension/test/e2e-harness.test.js",
+        "extension/test/service-worker.test.js",
+        "extension/test/soltui-bridge.test.js",
+        "extension/test/soltui-parity.test.js",
+        "extension/test/surfaces.test.js",
+        "extension/test/trigger-audit.test.js",
+        "extension/test/venues.test.js",
+        "extension/test/wallet-audit.test.js",
+        "extension/test/wallet-pubkey.test.js",
+        "extension/test/wallet.test.js"
+      ],
+      "exit_code": 0,
+      "tests": 298,
+      "pass": 298,
+      "fail": 0,
+      "skipped": 0,
+      "duration_ms": 2517.384625,
+      "log": {
+        "path": "/tmp/oraclebot-extension-tests-harness-baseline.log",
+        "sha256": "8a1740b715a15dad4ecf4f2b56c95247c7f2f6ed796216094f71ddef824f471d",
+        "bytes": 29095
+      }
+    },
+    {
+      "name": "fresh_counterexamples_before_fixes",
+      "command": [
+        "node",
+        "--test",
+        "--test-timeout=10000",
+        "--test-name-pattern=failed final CDP|forcing a real host",
+        "extension/test/e2e-harness.test.js"
+      ],
+      "exit_code": 1,
+      "tests": 2,
+      "pass": 0,
+      "fail": 2,
+      "duration_ms": 203.499917,
+      "log": {
+        "path": "/tmp/oraclebot-extension-tests-harness-red.log",
+        "sha256": "6f47787ddfc99db2bee3260069baf96af0eb19342bbd32ee150e9e834f65b6c4",
+        "bytes": 1905
+      }
+    },
+    {
+      "name": "fresh_counterexamples_after_fixes",
+      "command": [
+        "node",
+        "--test",
+        "--test-timeout=10000",
+        "--test-name-pattern=failed final CDP|forcing a real host",
+        "extension/test/e2e-harness.test.js"
+      ],
+      "exit_code": 0,
+      "tests": 2,
+      "pass": 2,
+      "fail": 0,
+      "duration_ms": 2165.047417,
+      "log": {
+        "path": "/tmp/oraclebot-extension-tests-harness-green.log",
+        "sha256": "4cc11949a097388b4438deb87ca1055d2ab37cc442841b73ef6347c2abec9873",
+        "bytes": 321
+      }
+    },
+    {
+      "name": "final_assigned_15_test_files",
+      "command": [
+        "node",
+        "--test",
+        "--test-timeout=60000",
+        "extension/test/autoreload.test.js",
+        "extension/test/blind-core-audit.test.js",
+        "extension/test/bot-manager.test.js",
+        "extension/test/cdo-regressions.test.js",
+        "extension/test/core.test.js",
+        "extension/test/e2e-harness.test.js",
+        "extension/test/service-worker.test.js",
+        "extension/test/soltui-bridge.test.js",
+        "extension/test/soltui-parity.test.js",
+        "extension/test/surfaces.test.js",
+        "extension/test/trigger-audit.test.js",
+        "extension/test/venues.test.js",
+        "extension/test/wallet-audit.test.js",
+        "extension/test/wallet-pubkey.test.js",
+        "extension/test/wallet.test.js"
+      ],
+      "exit_code": 0,
+      "tests": 300,
+      "pass": 300,
+      "fail": 0,
+      "skipped": 0,
+      "duration_ms": 2503.046375,
+      "log": {
+        "path": "/tmp/oraclebot-extension-tests-harness-final.log",
+        "sha256": "1caaec6d3a335b70264261164f999359566a12c59bd757b7c87b297374d49314",
+        "bytes": 29273
+      }
+    },
+    {
+      "name": "all_19_node_syntax_checks",
+      "exit_code": 0,
+      "individual_checks": [
+        {
+          "command": [
+            "node",
+            "--check",
+            "extension/test/autoreload.test.js"
+          ],
+          "exit_code": 0,
+          "stdout": "",
+          "stderr": ""
+        },
+        {
+          "command": [
+            "node",
+            "--check",
+            "extension/test/blind-core-audit.test.js"
+          ],
+          "exit_code": 0,
+          "stdout": "",
+          "stderr": ""
+        },
+        {
+          "command": [
+            "node",
+            "--check",
+            "extension/test/bot-manager.test.js"
+          ],
+          "exit_code": 0,
+          "stdout": "",
+          "stderr": ""
+        },
+        {
+          "command": [
+            "node",
+            "--check",
+            "extension/test/cdo-regressions.test.js"
+          ],
+          "exit_code": 0,
+          "stdout": "",
+          "stderr": ""
+        },
+        {
+          "command": [
+            "node",
+            "--check",
+            "extension/test/core.test.js"
+          ],
+          "exit_code": 0,
+          "stdout": "",
+          "stderr": ""
+        },
+        {
+          "command": [
+            "node",
+            "--check",
+            "extension/test/e2e-harness.test.js"
+          ],
+          "exit_code": 0,
+          "stdout": "",
+          "stderr": ""
+        },
+        {
+          "command": [
+            "node",
+            "--check",
+            "extension/test/service-worker.test.js"
+          ],
+          "exit_code": 0,
+          "stdout": "",
+          "stderr": ""
+        },
+        {
+          "command": [
+            "node",
+            "--check",
+            "extension/test/soltui-bridge.test.js"
+          ],
+          "exit_code": 0,
+          "stdout": "",
+          "stderr": ""
+        },
+        {
+          "command": [
+            "node",
+            "--check",
+            "extension/test/soltui-parity.test.js"
+          ],
+          "exit_code": 0,
+          "stdout": "",
+          "stderr": ""
+        },
+        {
+          "command": [
+            "node",
+            "--check",
+            "extension/test/surfaces.test.js"
+          ],
+          "exit_code": 0,
+          "stdout": "",
+          "stderr": ""
+        },
+        {
+          "command": [
+            "node",
+            "--check",
+            "extension/test/trigger-audit.test.js"
+          ],
+          "exit_code": 0,
+          "stdout": "",
+          "stderr": ""
+        },
+        {
+          "command": [
+            "node",
+            "--check",
+            "extension/test/venues.test.js"
+          ],
+          "exit_code": 0,
+          "stdout": "",
+          "stderr": ""
+        },
+        {
+          "command": [
+            "node",
+            "--check",
+            "extension/test/wallet-audit.test.js"
+          ],
+          "exit_code": 0,
+          "stdout": "",
+          "stderr": ""
+        },
+        {
+          "command": [
+            "node",
+            "--check",
+            "extension/test/wallet-pubkey.test.js"
+          ],
+          "exit_code": 0,
+          "stdout": "",
+          "stderr": ""
+        },
+        {
+          "command": [
+            "node",
+            "--check",
+            "extension/test/wallet.test.js"
+          ],
+          "exit_code": 0,
+          "stdout": "",
+          "stderr": ""
+        },
+        {
+          "command": [
+            "node",
+            "--check",
+            "extension/e2e/lib/cdp.mjs"
+          ],
+          "exit_code": 0,
+          "stdout": "",
+          "stderr": ""
+        },
+        {
+          "command": [
+            "node",
+            "--check",
+            "extension/e2e/lib/dashboard-workspace.mjs"
+          ],
+          "exit_code": 0,
+          "stdout": "",
+          "stderr": ""
+        },
+        {
+          "command": [
+            "node",
+            "--check",
+            "extension/e2e/lib/guard.mjs"
+          ],
+          "exit_code": 0,
+          "stdout": "",
+          "stderr": ""
+        },
+        {
+          "command": [
+            "node",
+            "--check",
+            "extension/e2e/lib/soltui-host.mjs"
+          ],
+          "exit_code": 0,
+          "stdout": "",
+          "stderr": ""
+        }
+      ],
+      "log": {
+        "path": "/tmp/oraclebot-extension-tests-harness-syntax.json",
+        "sha256": "42a121a2586c9c56920fdd3d862f79dba7ff747aae9639ee8867567203a609fa",
+        "bytes": 3071
+      }
+    },
+    {
+      "name": "owned_diff_whitespace",
+      "command": [
+        "git",
+        "diff",
+        "--check",
+        "--",
+        "extension/test/e2e-harness.test.js",
+        "extension/e2e/lib/cdp.mjs",
+        "extension/e2e/lib/soltui-host.mjs"
+      ],
+      "exit_code": 0
+    }
+  ],
+  "prechange_bindings": {
+    "path": "/tmp/oraclebot-extension-tests-harness-before.json",
+    "sha256": "3cf25ef15b0fcc9e1b3c528653710a3c95567d9a51d6adf921e7f348bc523d84",
+    "bytes": 4057
+  },
+  "changes": [
+    "extension/e2e/lib/cdp.mjs",
+    "extension/e2e/lib/soltui-host.mjs",
+    "extension/test/e2e-harness.test.js"
+  ],
+  "backup_directory": "/tmp/oraclebot-extension-tests-harness-backup",
+  "restore_command": "cp /tmp/oraclebot-extension-tests-harness-backup/cdp.mjs /Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/extension/e2e/lib/cdp.mjs && cp /tmp/oraclebot-extension-tests-harness-backup/soltui-host.mjs /Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/extension/e2e/lib/soltui-host.mjs && cp /tmp/oraclebot-extension-tests-harness-backup/e2e-harness.test.js /Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/extension/test/e2e-harness.test.js",
+  "limitations": [
+    "No actual Chrome, owner native host, real account keys, signing of real transactions, external provider calls, installed services, or inference/indexing jobs were invoked.",
+    "Qualified checks used synthetic throwaway crypto, fixture host subprocesses, temporary files, in-memory stores, and ephemeral loopback HTTP. Parent owns real-browser and full-repository verification/delivery.",
+    "Dashboard workspace helper received full static review and syntax validation; its actual browser DOM behavior was not independently rerun in this assignment.",
+    "The host regression covers unavailable explicit-real preflight; it does not certify availability or behavior of an installed production host.",
+    "Repository-wide M3, T2, T3 and parallelization eligibility belong to the parent audit. T4 is N/A for the 4 non-test helpers.",
+    "Prior accepted executor and execution-permission production changes were not re-audited. No production source or owner configuration was edited.",
+    "Parent retains prompt, continuation, tracker, version, commit, integration and delivery responsibilities. This agent made no commit or graph mutation."
+  ]
+}

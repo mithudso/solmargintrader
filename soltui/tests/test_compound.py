@@ -20,7 +20,7 @@ from backtester.core import scorecard as sc
 from backtester.tests.test_scorecard import synthetic
 from soltui import commands, compound
 from soltui import config as config_mod
-from soltui.tests.test_tui import TEST_SIZE, make_settings, text_of
+from soltui.tests.test_tui import TEST_SIZE, make_settings, offline_console_reads, text_of
 from soltui.tui import SolTuiApp
 
 T0 = 1_794_000_000  # a 5m boundary
@@ -684,24 +684,22 @@ class UnattendedTests(TempConfig):
         self.assertFalse(paths["pid"].exists())
         self.assertFalse(compound.unattended_status("SOL")["running"])   # lock released
 
-    def test_status_and_stop_use_the_lock_and_signal_the_pid(self) -> None:
-        import subprocess
+    def test_status_and_stop_use_the_lock_without_signalling_a_recorded_pid(self) -> None:
         paths = compound.unattended_paths("SOL")
         fd = compound._try_lock(paths["lock"])                 # pretend a run holds the lock
-        sleeper = subprocess.Popen(["sleep", "30"])
         try:
-            paths["pid"].write_text(str(sleeper.pid))
+            paths["pid"].write_text("424242")
             self.assertTrue(compound.unattended_status("SOL")["running"])
             with self.assertRaises(compound.CompoundError):
                 compound.start_unattended("SOL")
-            out = compound.stop_unattended("SOL")
+            with mock.patch.object(os, "kill") as kill:
+                out = compound.stop_unattended("SOL")
+                kill.assert_not_called()
             self.assertTrue(out["stopping"])
-            self.assertEqual(sleeper.wait(timeout=5), -15)       # SIGTERM delivered
             self.assertTrue(paths["stop"].exists())
+            self.assertTrue(compound.unattended_status("SOL")["running"])
         finally:
             os.close(fd)
-            if sleeper.poll() is None:
-                sleeper.kill()
         self.assertFalse(compound.unattended_status("SOL")["running"])
         self.assertEqual(compound.stop_unattended("SOL")["message"], "not running")
 
@@ -929,7 +927,8 @@ class CompoundAgentTests(unittest.TestCase):
             (repo / ".git").write_text("gitdir: /elsewhere\n")
             py = repo / "python"
             py.write_text("")
-            with mock.patch.dict(os.environ, {"SOLTUI_LAUNCHAGENTS_DIR": str(repo / "agents")}):
+            with mock.patch.dict(os.environ, {"SOLTUI_LAUNCHAGENTS_DIR": str(repo / "agents")}), \
+                    mock.patch.object(compound_agent, "log_path", return_value=repo / "logs" / "compound-autopilot.log"):
                 with self.assertRaises(SystemExit):
                     compound_agent.install(py, repo, start=False)
                 (repo / ".git").unlink()
@@ -940,6 +939,7 @@ class CompoundAgentTests(unittest.TestCase):
 
 class CompoundTab(unittest.IsolatedAsyncioTestCase):
     def setUp(self) -> None:
+        self.enterContext(offline_console_reads())
         tmp = TemporaryDirectory()
         self.addCleanup(tmp.cleanup)
         patcher = mock.patch.object(config_mod, "CONFIG_DIR", Path(tmp.name))
@@ -1042,6 +1042,7 @@ class CompoundTab(unittest.IsolatedAsyncioTestCase):
 
 class CompoundTabClicks(unittest.IsolatedAsyncioTestCase):
     def setUp(self) -> None:
+        self.enterContext(offline_console_reads())
         tmp = TemporaryDirectory()
         self.addCleanup(tmp.cleanup)
         patcher = mock.patch.object(config_mod, "CONFIG_DIR", Path(tmp.name))
@@ -1194,6 +1195,9 @@ class CompoundTabClicks(unittest.IsolatedAsyncioTestCase):
 
 
 class CompoundTimerTests(unittest.IsolatedAsyncioTestCase):
+    def setUp(self) -> None:
+        self.enterContext(offline_console_reads())
+
     async def test_the_20s_timer_is_a_no_op_while_the_app_tears_down(self) -> None:
         # CI 2026-11-07: the timer fired during teardown and query_one raised NoMatches.
         app = SolTuiApp(make_settings())
@@ -1208,6 +1212,7 @@ class CompoundTimerTests(unittest.IsolatedAsyncioTestCase):
 
 class EditorBarTests(unittest.IsolatedAsyncioTestCase):
     def setUp(self) -> None:
+        self.enterContext(offline_console_reads())
         tmp = TemporaryDirectory()
         self.addCleanup(tmp.cleanup)
         self.dir = Path(tmp.name)

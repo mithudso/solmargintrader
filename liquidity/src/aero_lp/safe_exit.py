@@ -24,6 +24,7 @@ from __future__ import annotations
 import math
 import time
 from dataclasses import asdict, dataclass, field
+from fractions import Fraction
 from pathlib import Path
 from typing import Any
 
@@ -138,25 +139,27 @@ def plan_conversion(eng: Engine, token: str, amount: int, target: str, prices: d
         (route.token0.decimals, route.token1.decimals) if fwd else (route.token1.decimals, route.token0.decimals)
     )
     pin, pout = prices.get(token.lower(), 0.0), prices.get(target.lower(), 0.0)
-    if not all(
-        isinstance(p, int | float) and not isinstance(p, bool) and math.isfinite(p) and p > 0
-        for p in (pin, pout, route.raw_price)
-    ):
+    try:
+        finite_number(pin, "input token USD price", positive=True)
+        finite_number(pout, "output token USD price", positive=True)
+    except ValueError:
         step.refused = "no USD price for both coins: cannot check the pool price"
         return step
-    raw_p = route.raw_price
-    expected = amount * raw_p * (1 - route.fee) if fwd else amount / raw_p * (1 - route.fee)
-    in_usd, out_usd = amount / 10**dec_in * pin, expected / 10**dec_out * pout
-    if not all(math.isfinite(v) and v > 0 for v in (expected, in_usd, out_usd)):
-        step.refused = "invalid conversion value or output"
+    try:
+        finite_number(route.raw_price, "pool conversion price", positive=True)
+        expected = (amount * route.raw_price if fwd else amount / route.raw_price) * (1 - route.fee)
+        finite_number(expected, "expected conversion output", positive=True)
+    except ValueError:
+        step.refused = "invalid expected conversion output: cannot check the pool price"
         return step
-    if out_usd < in_usd * (1 - CONVERT_PRICE_TOLERANCE):
-        step.refused = (
-            f"pool would pay ${out_usd:.2f} for ${in_usd:.2f} (more than {CONVERT_PRICE_TOLERANCE:.0%} below market)"
-        )
+    # Exact values avoid inf < inf and underflow when individually finite quotes are extreme.
+    in_usd = Fraction(amount, 10**dec_in) * Fraction(pin)
+    out_usd = Fraction(expected) / 10**dec_out * Fraction(pout)
+    if out_usd < in_usd * Fraction(1 - CONVERT_PRICE_TOLERANCE):
+        step.refused = f"pool output is more than {CONVERT_PRICE_TOLERANCE:.0%} below market"
         return step
     if in_usd < eng.cfg.execution.min_swap_usd:
-        step.refused = f"${in_usd:.2f} is below execution.min_swap_usd"
+        step.refused = f"${float(in_usd):.2f} is below execution.min_swap_usd"
         return step
     step.expected_out_raw = int(expected)
     step.min_out_raw = int(expected * (1 - eng.cfg.execution.max_slippage_bps / 1e4))
@@ -169,9 +172,13 @@ def plan_conversion(eng: Engine, token: str, amount: int, target: str, prices: d
 
 def _value_usd(pos: PositionState, prices: dict[str, float], amounts: tuple[int, int]) -> float | None:
     p0, p1 = prices.get(pos.pool.token0.address.lower(), 0.0), prices.get(pos.pool.token1.address.lower(), 0.0)
-    if not (p0 > 0 and p1 > 0):
+    try:
+        finite_number(p0, "token0 USD price", positive=True)
+        finite_number(p1, "token1 USD price", positive=True)
+    except ValueError:
         return None
-    return amounts[0] / 10**pos.pool.token0.decimals * p0 + amounts[1] / 10**pos.pool.token1.decimals * p1
+    value = amounts[0] / 10**pos.pool.token0.decimals * p0 + amounts[1] / 10**pos.pool.token1.decimals * p1
+    return value if math.isfinite(value) else None
 
 
 def _conversion_steps(

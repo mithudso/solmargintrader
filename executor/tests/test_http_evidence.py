@@ -54,7 +54,7 @@ def test_adapter_logs_one_safe_request_and_outcome_without_credentials(method, t
     assert result["value"] == 7 and len(calls) == 1
     own = [r for r in caplog.records if r.name == "executor.http"]
     assert sum("http_request" in r.getMessage() for r in own) == 1
-    assert sum("http_outcome" in r.getMessage() for r in own) == 1
+    assert sum("http_result" in r.getMessage() for r in own) == 1
     assert canary not in caplog.text
     assert all(canary not in repr(r.args) for r in caplog.records)
 
@@ -75,7 +75,7 @@ def test_invalid_json_fails_with_a_safe_outcome(transport_client, caplog):
     client = transport_client(lambda request: httpx.Response(200, content=b"PRIVATE-SYNTHETIC-CANARY"))
     with caplog.at_level(logging.INFO), pytest.raises(ExecutorError, match="non-JSON"):
         client.get_json("https://fixture.invalid/")
-    assert "http_outcome" in caplog.text and "invalid_json" in caplog.text
+    assert "http_result" in caplog.text and "ExecutorError" in caplog.text
     assert "PRIVATE-SYNTHETIC-CANARY" not in caplog.text
 
 
@@ -91,7 +91,7 @@ def test_post_timeout_never_retries_or_logs_exception_text(transport_client, cap
         client.post_json("https://fixture.invalid", {})
     assert len(calls) == 1
     assert "ReadTimeout" in str(error.value)
-    assert "http_outcome" in caplog.text
+    assert "http_result" in caplog.text
     assert "PRIVATE-SYNTHETIC-CANARY" not in caplog.text + str(error.value)
 
 

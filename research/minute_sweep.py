@@ -60,6 +60,8 @@ from __future__ import annotations
 
 import argparse
 import hashlib
+import io
+import json
 import os
 import sys
 import tempfile
@@ -181,41 +183,61 @@ def slice_key(asset: str, bars: int | None, window: tuple[int, int] | None) -> s
     return f"{asset}_{bars or 'all'}_{lo}_{hi}"
 
 
+def _slice_bytes(path: Path, expected_source: str | None = None) -> bytes:
+    """Refuse stale/unbound caches; never silently rewrite historical slices."""
+    try:
+        binding = json.loads(path.with_suffix(".json").read_text())
+        raw = path.read_bytes()
+    except (OSError, ValueError) as exc:
+        raise ValueError("minute cache binding unavailable; use a fresh slice directory") from exc
+    if (not isinstance(binding, dict) or binding.get("version") != 1
+            or binding.get("slice_key") != path.stem
+            or binding.get("cache_sha256") != hashlib.sha256(raw).hexdigest()
+            or (expected_source is not None and binding.get("source_sha256") != expected_source)):
+        raise ValueError("minute cache binding changed; use a fresh slice directory")
+    return raw
+
+
 def build_slice(asset: str, bars: int | None, window: tuple[int, int] | None) -> Path:
-    """Parse the CSV once in the parent and write the sliced arrays to .npz."""
+    """Parse one source snapshot in the parent; bind both CSV and cached bytes."""
+    raw = minute_path(asset).read_bytes()
+    source_sha = hashlib.sha256(raw).hexdigest()
     SLICES.mkdir(parents=True, exist_ok=True)
-    source = minute_path(asset)
-    with source.open("rb") as handle:
-        source_sha = hashlib.file_digest(handle, "sha256").hexdigest()
-    path = SLICES / f"{slice_key(asset, bars, window)}_{source_sha}.npz"
-    if path.exists():
-        try:
-            with np.load(path) as archive:
-                for name in archive.files:
-                    archive[name]  # Force lazy ZIP/member validation before reuse.
-            return path
-        except (OSError, ValueError, EOFError, zipfile.BadZipFile):
-            pass
-    df = load_minutes(asset)
-    with source.open("rb") as handle:
-        if hashlib.file_digest(handle, "sha256").hexdigest() != source_sha:
-            raise ValueError("minute source changed while preparing slice")
+    path = SLICES / f"{slice_key(asset, bars, window)}.npz"
+    if path.exists() or path.with_suffix(".json").exists():
+        _slice_bytes(path, source_sha)
+        return path
+    df = (pd.read_csv(io.BytesIO(raw)).drop_duplicates(subset="timestamp")
+          .sort_values("timestamp").reset_index(drop=True))
     if window is not None:
         lo, hi = window
         df = df[(df["timestamp"] >= lo) & (df["timestamp"] <= hi)]
     if bars is not None and len(df) > bars:
         df = df.tail(bars)
     df = df.reset_index(drop=True)
-    fd, temporary = tempfile.mkstemp(prefix=".slice-", suffix=".tmp", dir=SLICES)
+    with tempfile.NamedTemporaryFile(dir=SLICES, suffix=".npz", delete=False) as temporary:
+        temporary_path = Path(temporary.name)
+        try:
+            np.savez(temporary, **{c: df[c].to_numpy() for c in df.columns})
+            temporary.flush()
+            os.fsync(temporary.fileno())
+        except BaseException:
+            temporary_path.unlink(missing_ok=True)
+            raise
     try:
-        with os.fdopen(fd, "wb") as handle:
-            np.savez(handle, **{c: df[c].to_numpy() for c in df.columns})
-            handle.flush()
-            os.fsync(handle.fileno())
-        os.replace(temporary, path)
+        cache_sha = hashlib.sha256(temporary_path.read_bytes()).hexdigest()
+        os.replace(temporary_path, path)
     finally:
-        Path(temporary).unlink(missing_ok=True)
-    del df
+        temporary_path.unlink(missing_ok=True)
+    binding = {"version": 1, "slice_key": path.stem, "source_sha256": source_sha,
+               "cache_sha256": cache_sha}
+    with tempfile.NamedTemporaryFile(dir=SLICES, mode="w", suffix=".json", delete=False) as marker:
+        marker_path = Path(marker.name)
+        json.dump(binding, marker, sort_keys=True)
+    try:
+        os.replace(marker_path, path.with_suffix(".json"))
+    finally:
+        marker_path.unlink(missing_ok=True)
     return path
 
 
@@ -228,7 +250,7 @@ def _arrays_for(asset: str, bars: int | None, window: tuple[int, int] | None, pa
     path = Path(path) if path is not None else build_slice(asset, bars, window)
     key = str(path)
     if key not in _ARRAYS:
-        with np.load(path) as data:
+        with np.load(io.BytesIO(_slice_bytes(SLICES / f"{key}.npz"))) as data:
             frame = pd.DataFrame({c: data[c] for c in data.files})
         ts = frame["timestamp"].to_numpy(dtype="int64")
         _ARRAYS.clear()          # one asset-slice per worker; keep memory flat

@@ -60,20 +60,20 @@ function coerce(param, raw) {
     if (typeof raw !== 'string' || !raw.trim()) throw new CommandError(`--${param.name} must be a number`, 400);
     const n = Number(raw);
     if (!Number.isFinite(n)) {
-      throw new CommandError(`--${param.name} must be a number, got "${raw}"`, 400);
+      throw new CommandError(`--${param.name} must be a number`, 400);
     }
     return n;
   }
   if (param.type === TYPE.BOOL) {
     if (raw === true || raw === 'true' || raw === '1' || raw === 'yes') return true;
     if (raw === 'false' || raw === '0' || raw === 'no') return false;
-    throw new CommandError(`--${param.name} must be a boolean, got "${raw}"`, 400);
+    throw new CommandError(`--${param.name} must be a boolean`, 400);
   }
   if (param.type === TYPE.JSON) {
     try {
       return JSON.parse(raw);
-    } catch (err) {
-      throw new CommandError(`--${param.name} must be valid JSON: ${err.message}`, 400);
+    } catch {
+      throw new CommandError(`--${param.name} must be valid JSON`, 400);
     }
   }
   return String(raw);

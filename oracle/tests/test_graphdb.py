@@ -4,6 +4,7 @@ import hashlib
 import sqlite3
 import tempfile
 import unittest
+from contextlib import closing
 from pathlib import Path
 
 from oracle.engine import OracleEngine
@@ -31,6 +32,24 @@ class GraphDBTests(unittest.TestCase):
         self.addCleanup(self.temp.cleanup)
         self.path = Path(self.temp.name) / "history.sqlite3"
         self.engine = OracleEngine(self.path, minimum_resolved=1)
+
+    def test_incompatible_writer_refuses_before_migrating_legacy_archive(self):
+        policy = {**self.engine.policy, "schema_version": 1,
+                  "implementation_sha256": LEGACY_EVALUATOR_SHA256}
+        policy.pop("minimum_vote_accuracy")
+        policy.pop("vote_threshold_semantics")
+        with closing(sqlite3.connect(self.path)) as db, db:
+            db.execute("UPDATE metadata SET body=? WHERE key='policy'", (canonical(policy),))
+            db.execute("DROP TABLE graphdb_predictions")
+            db.execute("DROP TABLE graphdb_ticks")
+            db.execute("PRAGMA user_version=1")
+        before = self.path.read_bytes()
+        with self.assertRaisesRegex(ValueError, "archive_policy_mismatch"):
+            OracleEngine(self.path, minimum_resolved=1)
+        self.assertEqual(self.path.read_bytes(), before)
+        with closing(sqlite3.connect(self.path)) as db:
+            self.assertEqual(db.execute("PRAGMA user_version").fetchone()[0], 1)
+            self.assertIsNone(db.execute("SELECT name FROM sqlite_master WHERE name='graphdb_ticks'").fetchone())
 
     def test_each_evaluated_bar_records_all_strategies_and_aggregate(self):
         for index, price in enumerate((100, 101, 99)):
@@ -77,7 +96,7 @@ class GraphDBTests(unittest.TestCase):
                   "implementation_sha256": LEGACY_EVALUATOR_SHA256}
         policy.pop("minimum_vote_accuracy")
         policy.pop("vote_threshold_semantics")
-        with sqlite3.connect(self.path) as db:
+        with closing(sqlite3.connect(self.path)) as db, db:
             db.execute("UPDATE metadata SET body=? WHERE key='policy'", (canonical(policy),))
             db.execute("DROP TABLE graphdb_predictions")
             db.execute("DROP TABLE graphdb_ticks")

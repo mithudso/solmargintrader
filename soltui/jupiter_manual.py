@@ -23,17 +23,20 @@ from typing import Any, Callable
 
 # Ensure executor is importable
 try:
-    from executor import txverify
     from executor.signer import load_keypair
+
+    from executor import txverify
 except ImportError:
     _repo_root = Path(__file__).resolve().parents[1]
     _executor_src = _repo_root / "executor" / "src"
     if _executor_src.is_dir() and str(_executor_src) not in sys.path:
         sys.path.insert(0, str(_executor_src))
-    from executor import txverify
     from executor.signer import load_keypair
 
+    from executor import txverify
+
 from . import jupiter_tokens
+from .diagnostics import external_read
 
 MAX_QUOTE = Decimal("100")  # Hard per-order cap in USD / USDC
 SUBMISSION_UNAVAILABLE = "Jupiter Swap v2 submission is unavailable without independent economic verification"
@@ -188,6 +191,7 @@ def _usd_price(token: dict[str, Any]) -> Decimal:
         raise ValueError(f"Cannot value input or size base units without a verified price for {token['symbol']}") from None
 
 
+@external_read("jupiter.account_info")
 def _get_rpc_account_info(rpc_url: str, pubkey: str, http_call: Callable[..., Any] | None = None) -> dict[str, Any] | None:
     payload = {
         "jsonrpc": "2.0",
@@ -206,6 +210,7 @@ def _get_rpc_account_info(rpc_url: str, pubkey: str, http_call: Callable[..., An
     return val if isinstance(val, dict) else None
 
 
+@external_read("jupiter.balance")
 def _get_solana_balance(rpc_url: str, owner: str, mint: str, http_call: Callable[..., Any] | None = None) -> int:
     """Returns balance in base units (lamports for SOL, raw token units for SPL)."""
     if mint == WSOL_MINT:
@@ -242,6 +247,7 @@ def _get_solana_balance(rpc_url: str, owner: str, mint: str, http_call: Callable
         return total
 
 
+@external_read("jupiter.lookup_tables")
 def _resolve_lut_tables(rpc_url: str, table_keys: list[str], http_call: Callable[..., Any] | None = None) -> dict[str, list[str]]:
     tables: dict[str, list[str]] = {}
     if not table_keys:
@@ -359,8 +365,7 @@ def order_preview(params: dict[str, Any], taker_pubkey: str,
             quote_data = http_client.get(url, params=query_params)
         else:
             req = urllib.request.Request(url, headers={"Accept": "application/json", **({"x-api-key": api_key} if api_key else {})})
-            with urllib.request.urlopen(req, timeout=12.0) as resp:
-                quote_data = json.loads(resp.read().decode("utf-8"))
+            quote_data = jupiter_tokens._authenticated_json(req)
 
         if not isinstance(quote_data, dict) or not quote_data.get("transaction"):
             raise ValueError("Jupiter returned an invalid quote/order response")
@@ -449,6 +454,7 @@ def order_submit(preview_id: str, keypair_path: str, expected_pubkey: str,
     raise ValueError(SUBMISSION_UNAVAILABLE)
 
 
+@external_read("jupiter.reconcile")
 def order_reconcile(preview_id_or_sig: str, *, rpc_url: str | None = None, http_client: Any = None) -> dict[str, Any]:
     identifier = preview_id_or_sig.strip()
     rpc = rpc_url or os.environ.get("SOLANA_RPC_URL", DEFAULT_RPC)

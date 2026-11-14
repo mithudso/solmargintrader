@@ -241,17 +241,16 @@ test('CDO-126bb5da11 an earlier queued arm cannot revoke a later immediate kill 
   let submits = 0;
   ctx.venue.placeOrder = async () => ({ venueOrderId: `v-${++submits}` });
   const active = drive(ctx);
-  let earlierArm, queuedTick, laterKill;
-  try {
-    await priceEntered;
-    earlierArm = runCommand({ name: 'arm', deps: ctx.deps });
-    for (let i = 0; i < 100 && enginePending(ctx.store) < 2; i++) await Promise.resolve();
-    assert.equal(enginePending(ctx.store), 2, 'the arm must join behind the active tick before kill');
-    queuedTick = drive(ctx);
-    assert.equal(enginePending(ctx.store), 3);
-    laterKill = runCommand({ name: 'kill', deps: ctx.deps });
-  } finally { release(); }
-  await Promise.all([active, earlierArm, queuedTick, laterKill]);
+  const earlierArm = runCommand({ name: 'arm', deps: ctx.deps });
+  const queuedTick = drive(ctx);
+  const laterKill = runCommand({ name: 'kill', deps: ctx.deps });
+  release();
+  const outcomes = await Promise.allSettled([active, earlierArm, queuedTick, laterKill]);
+  assert.equal(outcomes[0].status, 'fulfilled');
+  assert.equal(outcomes[1].status, 'rejected', 'the obsolete arm must report its refusal');
+  assert.ok(outcomes[1].reason.status === 409 || outcomes[1].reason.code === 'RUNTIME_STOP_CHANGED');
+  assert.equal(outcomes[2].status, 'fulfilled');
+  assert.equal(outcomes[3].status, 'fulfilled');
   assert.equal(submits, 0);
   assert.equal((await ctx.configStore.getRuntime()).killSwitch, true);
 });

@@ -13,9 +13,12 @@ from textual.app import ComposeResult
 from textual.containers import Horizontal, Vertical
 from textual.widgets import Button, DataTable
 
+from .csv_safety import spreadsheet_safe_text
+
 
 def _plain(value: object) -> str:
-    return value.plain if isinstance(value, Text) else str(value) if value is not None else ""
+    text = value.plain if isinstance(value, Text) else str(value) if value is not None else ""
+    return spreadsheet_safe_text(text)
 
 
 def _spreadsheet_cell(value: object) -> str:
@@ -37,7 +40,7 @@ def _spreadsheet_cell(value: object) -> str:
 
 
 def export_table(table: DataTable, directory: Path | None = None) -> Path:
-    """Save the visible rows in their current order without overwriting a prior export."""
+    """Save ordered displayed rows, escaping formula-like text and preserving prior exports."""
     directory = directory or Path.home() / "Downloads"
     stem = (table.id or "table") + "-" + datetime.now().strftime("%Y%m%d-%H%M%S")
     for suffix in range(10000):
@@ -77,6 +80,7 @@ class ExportPanel(Vertical):
     def compose(self) -> ComposeResult:
         with Horizontal():
             button = Button("Export CSV", classes="export-csv")
+            button.tooltip = "Save the displayed table rows and columns to a new CSV file in Downloads. Formula-like text is escaped; existing files are preserved."
             button.styles.border = ("none", "transparent")
             yield button
         yield self.table

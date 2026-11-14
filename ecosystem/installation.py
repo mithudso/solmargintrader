@@ -12,6 +12,7 @@ import json
 import os
 import select
 import signal
+import stat
 import subprocess
 import sys
 import tempfile
@@ -25,6 +26,7 @@ MODULES = ("backtester", "oracle", "botmanager", "soltui", "ecosystem")
 RECEIPT_NAME = "ecosystem-install-receipt.json"
 OWNER_NAME = "ecosystem-install-owner.json"
 MAX_HEALTH_BYTES = 128_000
+MAX_CONSTRAINT_BYTES = 128_000
 
 HEALTH_SCRIPT = r"""
 import asyncio
@@ -72,7 +74,7 @@ async def check_mcp():
             market = await client.call_tool("oracle_market", {})
             if len(tools.tools) != 8 or len(resources.resources) != 3 or not initialized.capabilities.resources.subscribe:
                 raise RuntimeError("mcp_contract_mismatch")
-            if not market.structuredContent["ok"] or market.structuredContent["data"]["status"] != "unavailable":
+            if not market.model_dump(by_alias=True)["structuredContent"]["ok"] or market.model_dump(by_alias=True)["structuredContent"]["data"]["status"] != "unavailable":
                 raise RuntimeError("mcp_abstention_failed")
             return {"tools": len(tools.tools), "resources": len(resources.resources), "subscriptions": True, "no_data_abstention": True, "stdio_closed": True}
 
@@ -111,6 +113,8 @@ def source_fingerprint(repo: Path) -> str:
                 for part in relative.parts
             ):
                 continue
+            if path.is_symlink():
+                raise ValueError("source_symlink_refused")
             if path.is_file() and path.suffix in (
                 ".py",
                 ".toml",
@@ -122,8 +126,6 @@ def source_fingerprint(repo: Path) -> str:
                 ".mjs",
                 ".json",
             ):
-                if path.is_symlink():
-                    raise ValueError("source_symlink_refused")
                 digest.update(f"{name}/{relative}".encode())
                 digest.update(b"\0")
                 digest.update(path.read_bytes())
@@ -327,6 +329,36 @@ def _write_receipt(path: Path, value: dict) -> None:
         os.fsync(handle.fileno())
 
 
+def _constraints_hash(path: Path) -> str:
+    """Read a bounded regular file without following a replacement symlink."""
+    if path.is_symlink():
+        raise ValueError("constraints_symlink_refused")
+    fd = os.open(path, os.O_RDONLY | os.O_NOFOLLOW | os.O_NONBLOCK)
+    with os.fdopen(fd, "rb") as handle:
+        info = os.fstat(handle.fileno())
+        if not stat.S_ISREG(info.st_mode) or info.st_size > MAX_CONSTRAINT_BYTES:
+            raise ValueError("invalid_constraints_file")
+        contents = handle.read(MAX_CONSTRAINT_BYTES + 1)
+        if len(contents) > MAX_CONSTRAINT_BYTES:
+            raise ValueError("invalid_constraints_file")
+    return hashlib.sha256(contents).hexdigest()
+
+
+def _constraints_unchanged(path: Path | None, expected: str | None) -> bool:
+    if path is None:
+        return True
+    try:
+        return _constraints_hash(path) == expected
+    except (OSError, ValueError):
+        return False
+
+
+def _intent_mismatch(saved: dict, expected: dict) -> dict:
+    if saved.get("constraints_sha256") != expected.get("constraints_sha256"):
+        return _failure("environment_constraints_changed_use_new_venv")
+    return _failure("environment_source_changed_use_new_venv")
+
+
 @contextmanager
 def _installation_lock(directory: Path):
     fd = os.open(directory / ".ecosystem-install.lock", os.O_RDWR | os.O_CREAT, 0o600)
@@ -337,18 +369,30 @@ def _installation_lock(directory: Path):
         os.close(fd)
 
 
-def install_environment(repo: Path, venv_dir: Path) -> dict:
+def install_environment(repo: Path, venv_dir: Path, *, constraints_file: Path | None = None) -> dict:
     """Install local projects once; reuse only an exact verified source receipt.
 
     An ownership marker permits a failed first install to resume. A completed
     environment is immutable for this source identity so active workers cannot
     have their imports replaced by an implicit upgrade.
+
+    Explicit constraints add their content hash to ownership and completion
+    receipts. Reuse requires the same explicit constraint intent. Receipts never
+    retain constraint contents or repository credentials from those contents.
     """
     if sys.version_info < (3, 13):
         return _failure("python_313_required")
     try:
         repo = Path(repo).expanduser().resolve()
         venv_dir = Path(venv_dir).expanduser().absolute()
+        constraints = None
+        constraints_sha256 = None
+        if constraints_file is not None:
+            try:
+                constraints = Path(constraints_file).expanduser().absolute()
+                constraints_sha256 = _constraints_hash(constraints)
+            except (OSError, ValueError, TypeError):
+                return _failure("constraints_file_unavailable")
         expected = _manifests(repo)
         fingerprint = source_fingerprint(repo)
         python = venv_dir / "bin" / "python"
@@ -359,18 +403,24 @@ def install_environment(repo: Path, venv_dir: Path) -> dict:
             "source_fingerprint": fingerprint,
             "projects": expected,
         }
+        if constraints_sha256 is not None:
+            receipt["constraints_sha256"] = constraints_sha256
+        constraint_result = ({"constraints_sha256": constraints_sha256}
+                             if constraints_sha256 is not None else {})
         if venv_dir.is_symlink():
             return _failure("environment_symlink_refused")
         if venv_dir.exists():
             if receipt_path.exists():
                 saved = _read_receipt(receipt_path)
                 if saved != receipt:
-                    return _failure("environment_source_changed_use_new_venv")
+                    return _intent_mismatch(saved, receipt)
                 health = verify_environment(python, repo)
                 if health.get("status") != "complete":
                     return health
                 if source_fingerprint(repo) != fingerprint:
                     return _failure("source_changed_during_install")
+                if not _constraints_unchanged(constraints, constraints_sha256):
+                    return _failure("constraints_changed_during_install")
                 return {
                     "schema_version": 1,
                     "status": "complete",
@@ -378,11 +428,13 @@ def install_environment(repo: Path, venv_dir: Path) -> dict:
                     "source_fingerprint": fingerprint,
                     "reused": True,
                     "health": health,
+                    **constraint_result,
                 }
             if not owner_path.exists():
                 return _failure("environment_receipt_missing_use_new_venv")
-            if _read_receipt(owner_path) != receipt:
-                return _failure("environment_source_changed_use_new_venv")
+            saved = _read_receipt(owner_path)
+            if saved != receipt:
+                return _intent_mismatch(saved, receipt)
         else:
             venv_dir.parent.mkdir(parents=True, exist_ok=True, mode=0o700)
             venv_dir.mkdir(mode=0o700)
@@ -410,12 +462,15 @@ def install_environment(repo: Path, venv_dir: Path) -> dict:
                 )
                 if code != 0:
                     return _failure("environment_creation_failed")
+            if not _constraints_unchanged(constraints, constraints_sha256):
+                return _failure("constraints_changed_during_install")
             code, _ = _run(
                 [
                     str(python),
                     "-m",
                     "pip",
                     "install",
+                    *(["--constraint", str(constraints)] if constraints is not None else []),
                     *[str(repo / name) for name in PROJECTS],
                 ],
                 cwd=cwd,
@@ -430,6 +485,8 @@ def install_environment(repo: Path, venv_dir: Path) -> dict:
                 return health
             if source_fingerprint(repo) != fingerprint:
                 return _failure("source_changed_during_install")
+            if not _constraints_unchanged(constraints, constraints_sha256):
+                return _failure("constraints_changed_during_install")
             _write_receipt(receipt_path, receipt)
         return {
             "schema_version": 1,
@@ -438,6 +495,7 @@ def install_environment(repo: Path, venv_dir: Path) -> dict:
             "source_fingerprint": fingerprint,
             "reused": False,
             "health": health,
+            **constraint_result,
         }
     except BlockingIOError:
         return _failure("environment_install_running")

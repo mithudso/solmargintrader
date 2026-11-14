@@ -8,8 +8,10 @@ import numpy as np
 
 from backtester.core.types import validate_bar_arrays
 from . import compound, forwardtest
+from .market_diagnostics import market_operation
 
 
+@market_operation("signal.current_check")
 def check(asset: str, trials: list[dict], *, fetch=None, clock=time.time) -> dict[str, Any]:
     now = clock()
     raw = (fetch or compound.fetch_closed_candles)(asset, now=now, bars=forwardtest.HISTORY,
@@ -27,7 +29,8 @@ def check(asset: str, trials: list[dict], *, fetch=None, clock=time.time) -> dic
         label = trial['label']
         spec = trial['members']
         try:
-            prediction = forwardtest._predict(spec, trial.get('mode', 'all'), bars, allow_short=True)
+            with market_operation("signal.strategy_check"):
+                prediction = forwardtest._predict(spec, trial.get('mode', 'all'), bars, allow_short=True)
             rows.append({'strategy': label, 'prediction': {1: 'UP', -1: 'DOWN', 0: 'FLAT'}.get(prediction, 'Warming up'),
                          'vote': prediction, 'error': ''})
         except Exception as exc:

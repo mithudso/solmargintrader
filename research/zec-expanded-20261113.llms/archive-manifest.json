@@ -1,0 +1,136 @@
+{
+  "version": "1.0.0",
+  "files": [
+    {
+      "name": "audit-expanded-contexts.json",
+      "bytes": 520,
+      "sha256": "8ad53c0b713b0762dce40eda19aa8f14b2ed36c8a2831ba9ad219b53dbbc8dab"
+    },
+    {
+      "name": "audit-expanded-direct-controls.json",
+      "bytes": 370,
+      "sha256": "623129985c8cabd67aac58f07f59fc32e67923681478d092d2323899dcd03580"
+    },
+    {
+      "name": "audit-expanded-ledger.json",
+      "bytes": 801,
+      "sha256": "a53d66a9dbc9e4865971623f58fd8bcaa04b16f4a6ff053b69f2b71d043d8535"
+    },
+    {
+      "name": "audit-expanded-lifecycle-nulls.json",
+      "bytes": 351,
+      "sha256": "63c336947526967d9862149c9533f027a513db0234e15e510f564964296e568b"
+    },
+    {
+      "name": "audit-expanded-receipt.json",
+      "bytes": 10503,
+      "sha256": "fdd26f8fcce1e315e2d56471fe4bafcf55a197fb50f7a1d3f30a6ccd97bb7390"
+    },
+    {
+      "name": "coverage.json",
+      "bytes": 1016,
+      "sha256": "f1e06c64616ac6582e435602ba743ca7e4d6306037f7933821fa365bbe9a4a8b"
+    },
+    {
+      "name": "cycle-null-tests.json",
+      "bytes": 95175,
+      "sha256": "8a1074ee68e16a819d1994a2058425366e99b70e724751c01137f7e760492aa1"
+    },
+    {
+      "name": "frequency-fits-10m.json",
+      "bytes": 1198,
+      "sha256": "fa7751d1e21bfdb154422b70e40fb87fece091c70475c503575c3a6d89ef2d12"
+    },
+    {
+      "name": "frequency-fits-1h.json",
+      "bytes": 3,
+      "sha256": "37517e5f3dc66819f61f5a7bb8ace1921282415f10551d2defa5c3eb0985b570"
+    },
+    {
+      "name": "frequency-fits-1m.json",
+      "bytes": 108751,
+      "sha256": "97d2733d34afc5d613427f466f1aad552c3497efd020ce774cc7e73c0c3efd12"
+    },
+    {
+      "name": "frequency-fits-5m.json",
+      "bytes": 16014,
+      "sha256": "a2c75b7eae89a2e381c4873fbe08513c6ee6ab05e686e32d0c7b42e754487b77"
+    },
+    {
+      "name": "identity.json",
+      "bytes": 252456,
+      "sha256": "4f5ed06245563a97c82983bf26f46677899a653e1dddb1ff58e5c2cb7457dc3b"
+    },
+    {
+      "name": "input-provenance.json",
+      "bytes": 684,
+      "sha256": "5cc8942aa69aa91721ff0d303b7ab4f07c7c84c626f8826ede39e5e1c32b694c"
+    },
+    {
+      "name": "integration-source-proof.json",
+      "bytes": 782,
+      "sha256": "1a22949ca81472ed2e2766a33b9bcaa9eae013511778db5b897e8c5176a247e5"
+    },
+    {
+      "name": "llms.txt",
+      "bytes": 1716,
+      "sha256": "15aabebe9abdad745b5fdf93df0a2d8698bba8944c1570038e0f214c3b975b35"
+    },
+    {
+      "name": "manifest.json",
+      "bytes": 258835,
+      "sha256": "9d2564d8f976c69a578d4d2237fb866bcf0d90bdadd541b3fc696494339d1773"
+    },
+    {
+      "name": "mongo-artifacts.json",
+      "bytes": 16140,
+      "sha256": "7b58dbe267cbe8cd8ba7cf05397a16ef5a24b974f1abc5041fca78a109edbd9f"
+    },
+    {
+      "name": "mongo-readback-receipt.json",
+      "bytes": 664,
+      "sha256": "c64fc9c06b650c01427d0b20b7d27bd7c9ff74b2e880342e602c876b07da248c"
+    },
+    {
+      "name": "paired-comparisons.json",
+      "bytes": 6948,
+      "sha256": "a26680d7a334ad0111444cf18679307b442c1a99be95cecf6f713c060620ad73"
+    },
+    {
+      "name": "plan.json.gz",
+      "bytes": 206295,
+      "sha256": "cc802c846b8541442b29f0804781bf82aa1a7443551b74b827a9b1b741e7d51b"
+    },
+    {
+      "name": "results.csv",
+      "bytes": 17637322,
+      "sha256": "1ec8410c4f465de50d71d792c1c3fba0af6085dd1656f76dfce14f396d7b24ed"
+    },
+    {
+      "name": "simulation-source.zip",
+      "bytes": 3979986,
+      "sha256": "f57fff5a874051fefa2ce7f413dff47cfe21a430a460837fd2efe2f3d5ffdb5a"
+    },
+    {
+      "name": "special-runner-summary.json",
+      "bytes": 130612,
+      "sha256": "782eaac5d1dddccb50a9edbe1337f169d86a63540ec890de6af288ab06bdf847"
+    },
+    {
+      "name": "summary-statistics.json",
+      "bytes": 13267,
+      "sha256": "b68a9ba8a5985a0265f6da3e1d4496618427a9dec84c63e2d0456b2368eb5c67"
+    },
+    {
+      "name": "summary.json",
+      "bytes": 916,
+      "sha256": "58c3fb88e6bab35688d27eed56c468340f06580673a54761baf27d73137e61c7"
+    }
+  ],
+  "report": {
+    "name": "../ZEC-EXPANDED-STRATEGIES.md",
+    "bytes": 14301,
+    "sha256": "d1121f7892c1087c65c81211d64f67c2be39fbc36b2f0fd5b514692f6fb3e320"
+  },
+  "run_rows": 85312
+}

@@ -353,7 +353,7 @@ class LiveRunner:
             }
             req["gas"] = int(self._estimate_gas(req) * 1.25)  # reverts here if the tx would fail
             if self.before_send is not None:
-                self.before_send()
+                self.before_send()  # An RPC wait may have outlived the permission checked above.
             signed = self.acct.sign_transaction(req)
             h = HexBytes(signed.hash)
             # Recorded before broadcasting: the RPC layer retries transport errors, so a send that raises may
@@ -370,16 +370,15 @@ class LiveRunner:
             )
             try:
                 if self.before_send is not None:
-                    self.before_send()
+                    self.before_send()  # Persistence may have outlived the last permission check.
             except BaseException:
-                # This exact call has not entered the RPC send boundary. Do not leave an
-                # invented unknown submission blocking recovery after a late KILL.
-                self.journal.cancel_before_broadcast(_hex(h))
+                # Only this synchronous refusal proves no send was attempted. A crash or any exception
+                # after entering send_raw_transaction must keep the intent unresolved instead.
+                self.journal.cancel_before_broadcast(_hex(h), self.group)
                 self._uncertain = False
                 raise
             self._next_nonce = req["nonce"] + 1
             self.sent_hashes.append(_hex(h))
-            self._uncertain = True
             try:
                 self.w3.eth.send_raw_transaction(signed.raw_transaction)
             except Exception:

@@ -1,0 +1,208 @@
+{
+  "agent": "/root/guarded_soltui_final",
+  "definition_version": "1.0.0",
+  "status": "complete",
+  "observed_at": "2026-11-13T04:09:00.325097+00:00",
+  "head": "a5053e9c859505a895935702a51180830b69b89f",
+  "actual_launcher_exit": 0,
+  "tests": 1563,
+  "canonical_id_sha256": "1e0178fb5fb8e8d9dfc32daed922962cc443d997e279c43471b31c260ffe4272",
+  "exact_observed_union": true,
+  "observed_outcome_counts": {
+    "success": 1549,
+    "skip": 14
+  },
+  "rows": [
+    {
+      "shard": 0,
+      "tests": 391,
+      "seconds": 937.9010740420053,
+      "actual_test_exit": 0,
+      "actual_finalizer_exit": 0,
+      "failures": 0,
+      "errors": 0,
+      "skips": 3,
+      "source_manifest_sha256": "bf5829e790be02a6a155452a7d4ab61f92430ab0473afcd56820e849cd2193b9",
+      "result_sha256": "c8578f91eddf154be849c91c3bc039832aad6f65ff3b364d21298b239d065b0e",
+      "final_receipt_sha256": "02f365397dfa43586b3888b1ecc2adf568f6248c370631ed96da2567d8fe8a34",
+      "native_children": 6,
+      "inherited_children": 13,
+      "remaining": []
+    },
+    {
+      "shard": 1,
+      "tests": 391,
+      "seconds": 1121.172997916001,
+      "actual_test_exit": 0,
+      "actual_finalizer_exit": 0,
+      "failures": 0,
+      "errors": 0,
+      "skips": 3,
+      "source_manifest_sha256": "bf5829e790be02a6a155452a7d4ab61f92430ab0473afcd56820e849cd2193b9",
+      "result_sha256": "0b650675f94959dead7f51e7b24db030994a12f316ba041e11046e6744a10949",
+      "final_receipt_sha256": "900b2c13f482053369d49dc4d573e529115ccc6ec187bce62bb9d57ecc655844",
+      "native_children": 6,
+      "inherited_children": 4,
+      "remaining": []
+    },
+    {
+      "shard": 2,
+      "tests": 391,
+      "seconds": 2216.0393600829993,
+      "actual_test_exit": 0,
+      "actual_finalizer_exit": 0,
+      "failures": 0,
+      "errors": 0,
+      "skips": 5,
+      "source_manifest_sha256": "bf5829e790be02a6a155452a7d4ab61f92430ab0473afcd56820e849cd2193b9",
+      "result_sha256": "8e874446b76bb08668e6a626c57c0e734661d4e8c8d422d79be93080cc7cf73a",
+      "final_receipt_sha256": "65b51bddd47eec961826b1d50d51f95d25cb75a4cb5c43ec4551ff6233d04ecb",
+      "native_children": 8,
+      "inherited_children": 9,
+      "remaining": []
+    },
+    {
+      "shard": 3,
+      "tests": 390,
+      "seconds": 576.3362455409952,
+      "actual_test_exit": 0,
+      "actual_finalizer_exit": 0,
+      "failures": 0,
+      "errors": 0,
+      "skips": 3,
+      "source_manifest_sha256": "bf5829e790be02a6a155452a7d4ab61f92430ab0473afcd56820e849cd2193b9",
+      "result_sha256": "bce842601631445f1199d06c9ebf934d181310daa3e0a9637e196510bfd334d1",
+      "final_receipt_sha256": "a4859f53eb2b9c51906e2042f0457a50ca9697cb612edaffb48778e103a2ef12",
+      "native_children": 8,
+      "inherited_children": 5,
+      "remaining": []
+    }
+  ],
+  "failures": [],
+  "errors": [],
+  "canonical_skips": [
+    {
+      "test": "soltui.tests.test_service.BuildNeedsALoadablePython.test_runtime_ok_when_any_location_exists",
+      "reason": "macos-launchd-supervisor (private git dependency) is not installed"
+    },
+    {
+      "test": "soltui.tests.test_service.StartLoadsTheAgent.test_fails_when_kickstart_fails",
+      "reason": "macos-launchd-supervisor (private git dependency) is not installed"
+    },
+    {
+      "test": "soltui.tests.test_service_plist_parity.PlistParity.test_no_run_at_load",
+      "reason": "macos-launchd-supervisor (private git dependency) is not installed"
+    },
+    {
+      "test": "soltui.tests.test_service.BuildNeedsALoadablePython.test_runtime_problem_when_every_location_dangles",
+      "reason": "macos-launchd-supervisor (private git dependency) is not installed"
+    },
+    {
+      "test": "soltui.tests.test_service.StartLoadsTheAgent.test_fails_when_the_agent_cannot_be_loaded",
+      "reason": "macos-launchd-supervisor (private git dependency) is not installed"
+    },
+    {
+      "test": "soltui.tests.test_service_plist_parity.PlistParity.test_written_bytes_parse_to_the_same_plist",
+      "reason": "macos-launchd-supervisor (private git dependency) is not installed"
+    },
+    {
+      "test": "soltui.tests.test_bgcontrol.TestTaskpolicyLookup.test_non_darwin_never_claims_taskpolicy",
+      "reason": "darwin host"
+    },
+    {
+      "test": "soltui.tests.test_service.BuildNeedsALoadablePython.test_build_refuses_a_non_framework_interpreter",
+      "reason": "macos-launchd-supervisor (private git dependency) is not installed"
+    },
+    {
+      "test": "soltui.tests.test_service.StartLoadsTheAgent.test_bootstraps_when_the_agent_is_not_loaded",
+      "reason": "macos-launchd-supervisor (private git dependency) is not installed"
+    },
+    {
+      "test": "soltui.tests.test_service.StartLoadsTheAgent.test_fails_when_there_is_no_agent_plist",
+      "reason": "macos-launchd-supervisor (private git dependency) is not installed"
+    },
+    {
+      "test": "soltui.tests.test_tradingstrategyresults_coverage.TestCatalogueCoverage.test_the_map_matches_the_catalogue_file_when_it_is_present",
+      "reason": "tradingstrategyresults.json is not in this checkout"
+    },
+    {
+      "test": "soltui.tests.test_service.BuildNeedsALoadablePython.test_executable_path_is_resolved_inside_the_bundle",
+      "reason": "macos-launchd-supervisor (private git dependency) is not installed"
+    },
+    {
+      "test": "soltui.tests.test_service.StartLoadsTheAgent.test_does_not_rebootstrap_when_already_loaded",
+      "reason": "macos-launchd-supervisor (private git dependency) is not installed"
+    },
+    {
+      "test": "soltui.tests.test_service_plist_parity.PlistParity.test_agent_plist_equals_the_pre_migration_plist",
+      "reason": "macos-launchd-supervisor (private git dependency) is not installed"
+    }
+  ],
+  "canonical_skip_reasons": {
+    "macos-launchd-supervisor (private git dependency) is not installed": 12,
+    "darwin host": 1,
+    "tradingstrategyresults.json is not in this checkout": 1
+  },
+  "all_post_exit_blocked_events": [],
+  "inherited_children": 31,
+  "native_children": 28,
+  "native_actual_exits": [
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+  ],
+  "native_reaped_cleanup_no_signal_events": 28,
+  "native_cleanup_limit": "Only exact fresh-session deny-fork native judges model ESRCH after reaping; no OS signal for modeled cleanup. Ordinary descendant handling retained.",
+  "remaining_owned_pids": [],
+  "head_clean_unchanged": true,
+  "source_namespace_launcher_external_hashes_unchanged": true,
+  "external_pins": {
+    "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/botmanager/src/botmanager/blind.py": "7cf01662af641c44efc0f2b0e47c1d1eec9dd081f0a88c4a89e09c0970fe5e36",
+    "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/botmanager/src/botmanager/blind_judge.py": "71e601bb6c0914db9bdf9401b0588fca00b2c8cfba89f68797f2675b6590724d",
+    "/opt/homebrew/Cellar/python@3.13/3.13.18/Frameworks/Python.framework/Versions/3.13/Resources/Python.app/Contents/MacOS/Python": "a457b0384643f4c394885874c99a82f58da72497407fa5b652d1329f00149e57",
+    "/opt/homebrew/Cellar/python@3.13/3.13.18/Frameworks/Python.framework/Versions/3.13/bin/python3.13": "506f8a19083f841c29a3675a05c66a35a070080571064ac98f9b0ec4615d659d",
+    "/opt/homebrew/Cellar/python@3.13/3.13.18/Frameworks/Python.framework/Versions/3.13/lib/python3.13/sitecustomize.py": "5ea40f0744c252ac64ad8588afa98c985e0adb1da10cfdf92a73ebaa0fff0852"
+  },
+  "launcher_sha256": "3f1e3d0cdde3641eac4396763e682150f2aac79735fce49a7a6109390ce0bf57",
+  "entry_sha256": "6ce18fe466d430f0678a863b4fd4ef453b5755bd252e359276149bc08fc6916e",
+  "aggregate_sha256": "39a6562c616066caf8a96301ef9088cafa00a2b996508e9e11479ad765362001",
+  "wall_seconds_launch_through_final_aggregate": 2221.631855,
+  "original_spawn_regression": {
+    "run_id": "full-a5053e9c8595-s2",
+    "pid": 57697,
+    "time": 1794542669.435209,
+    "phase": "stop",
+    "test": "soltui.tests.test_manager_controls.ManagerControls.test_separate_processes_cannot_both_start_the_empty_family",
+    "outcomes": [
+      "success"
+    ]
+  },
+  "scope": "Complete fresh source-qualified four-process SolTUI discovery under inherited/native guard; original assertions/deadlines/economics and14canonical skips retained.",
+  "installed_acceptance": "Not exercised; owner services/configuration and paused operations untouched.",
+  "prior_failed_attempts_preserved": true
+}

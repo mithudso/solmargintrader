@@ -82,7 +82,9 @@ class OwnerClient:
             ):
                 raise ValueError
             result = envelope["result"]
-            if not isinstance(result, dict) or (
+            if not isinstance(result, dict):
+                raise TypeError
+            if (
                 operation != "describe"
                 and result.get("identity") != d["expected_identity"]
             ):

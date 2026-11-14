@@ -1,0 +1,143 @@
+{
+  "schema": 1,
+  "status": "CLEAN within new generator/test scope; repository architecture and global gates remain separate",
+  "files": [
+    {
+      "path": "scripts/build_operation_inventories.py",
+      "blob_sha": "5fad01cdd806914fd64a31fe3b11e053c9788d55",
+      "sha256": "5594594c6f425718fcc3d971e8b93a7219cf43f8b5116a854d57159c0993c669",
+      "lines": 321,
+      "read_evidence": "Complete authored source and all final hardening deltas reviewed; fresh independent final source-bound review; full current range1-321",
+      "passes": {
+        "C1": "ran: literal static metadata extraction, nested value isolation, exact current inline flags, ID uniqueness and deterministic drift semantics reviewed.",
+        "C2": "ran: actual three registry decorator/object contracts, seven project manifests, declared module paths and package scripts inspected without imports; unsupported declaration shapes refuse.",
+        "C3": "ran: six independently authored refusal counterexamples failed before remediation and pass afterward;11 permanent cases cover nested flags, duplicates, unsupported shapes, symlink escape and no-write drift.",
+        "S1": "ran: no application imports, JS eval, handler execution, secrets, network, signing, service or owner state; descriptions remain JSON data.",
+        "S2": "ran: bounded source parsing and explicitly selected repository output paths; --check never writes; source/destination symlink escape refuses.",
+        "S3": "ran: literal booleans and names, unknown/expanded/duplicate Python keywords, spread/computed/alias/shorthand JS properties and duplicate global tool IDs refuse.",
+        "S4": "ran: standard-library Python3.11+ parsing only; actual bare-stdlib help and badargs verified; configured Ruff0 and current source syntax exercised.",
+        "S5": "ran: explicit CLI current/drift/refusal outcomes; diagnostics expose operation/type, not raw source/provider contents. No external call or financial retry layer exists.",
+        "P1": "ran: bounded fixed source set and linear lexical/AST parsing; no filesystem-wide scan, service or empirical strategy run.",
+        "P2": "N/A: single-process documentation generator with no runtime queue or money-state mutation.",
+        "M1": "ran: constrained source-reader helpers and named metadata scope; actual support limits documented rather than a claimed general JavaScript parser.",
+        "M2": "ran: stdlib AST/TOML/JSON, shared uniqueness and deterministic build/materialize paths; no copied runtime dispatch implementation.",
+        "M3": "N/A: central architecture residuals remain separately classified.",
+        "M4": "ran: docs-only scope, supported literal formats, help/gate navigation and non-exhaustive/error-remediation/signing limits are explicit.",
+        "T1": "ran: final11 permanent tests0, six independent original probes0, independent current-positive/determinism/no-write controls0; initial failures preserved.",
+        "T2": "N/A: no dependency added; central supply-chain assessment separate.",
+        "T3": "N/A: central CI row records new drift gate and pinned root lint.",
+        "T4": "N/A: non-test source",
+        "M5": "ran: stdlib-only one command; help0, unknown arguments2, drift1 and current0; missing dependencies/venv setup not applicable."
+      },
+      "verdict": "CLEAN",
+      "findings_fixed": [
+        "INV-1",
+        "INV-2",
+        "INV-3"
+      ]
+    },
+    {
+      "path": "backtester/tests/test_operation_inventories.py",
+      "blob_sha": "0dc569cea32af10eb277688dd895318a91a6635c",
+      "sha256": "0b8da9d4f13cd7b8a3ca0890940fa067c02f050d2ae5284d69e5d31973a57ec7",
+      "lines": 132,
+      "read_evidence": "Complete authored source and all final hardening deltas reviewed; fresh independent final source-bound review; full current range1-132",
+      "passes": {
+        "C1": "ran: literal static metadata extraction, nested value isolation, exact current inline flags, ID uniqueness and deterministic drift semantics reviewed.",
+        "C2": "ran: actual three registry decorator/object contracts, seven project manifests, declared module paths and package scripts inspected without imports; unsupported declaration shapes refuse.",
+        "C3": "ran: six independently authored refusal counterexamples failed before remediation and pass afterward;11 permanent cases cover nested flags, duplicates, unsupported shapes, symlink escape and no-write drift.",
+        "S1": "ran: no application imports, JS eval, handler execution, secrets, network, signing, service or owner state; descriptions remain JSON data.",
+        "S2": "ran: bounded source parsing and explicitly selected repository output paths; --check never writes; source/destination symlink escape refuses.",
+        "S3": "ran: literal booleans and names, unknown/expanded/duplicate Python keywords, spread/computed/alias/shorthand JS properties and duplicate global tool IDs refuse.",
+        "S4": "ran: standard-library Python3.11+ parsing only; actual bare-stdlib help and badargs verified; configured Ruff0 and current source syntax exercised.",
+        "S5": "ran: explicit CLI current/drift/refusal outcomes; diagnostics expose operation/type, not raw source/provider contents. No external call or financial retry layer exists.",
+        "P1": "ran: bounded fixed source set and linear lexical/AST parsing; no filesystem-wide scan, service or empirical strategy run.",
+        "P2": "N/A: single-process documentation generator with no runtime queue or money-state mutation.",
+        "M1": "ran: constrained source-reader helpers and named metadata scope; actual support limits documented rather than a claimed general JavaScript parser.",
+        "M2": "ran: stdlib AST/TOML/JSON, shared uniqueness and deterministic build/materialize paths; no copied runtime dispatch implementation.",
+        "M3": "N/A: central architecture residuals remain separately classified.",
+        "M4": "ran: docs-only scope, supported literal formats, help/gate navigation and non-exhaustive/error-remediation/signing limits are explicit.",
+        "T1": "ran: final11 permanent tests0, six independent original probes0, independent current-positive/determinism/no-write controls0; initial failures preserved.",
+        "T2": "N/A: no dependency added; central supply-chain assessment separate.",
+        "T3": "N/A: central CI row records new drift gate and pinned root lint.",
+        "T4": "ran: temp-file/mocked discovery with no sleeps, applications, external processes or owner state; no setup/behavior equivalence weakened.",
+        "M5": "N/A: test module"
+      },
+      "verdict": "CLEAN",
+      "findings_fixed": [
+        "INV-1",
+        "INV-2",
+        "INV-3"
+      ]
+    }
+  ],
+  "outputs": [
+    {
+      "path": "docs/operations-registry.json",
+      "sha256": "b245a4ad4b804e26f4cc5ab42c7d6a033fa2812d663345128681c87b79ba1a1e",
+      "version": "1.0.0",
+      "entries": 221,
+      "bound_sources": 28,
+      "scope": "Three authoritative command registries, declared Python entrypoints, explicit source tools and existing npm scripts.",
+      "limits": [
+        "Not an exhaustive list of every internal function, external call, research script or runtime operation.",
+        "No shared runtime error schema, generic retry or remediation implementation is claimed.",
+        "Source/help/gate references are navigation; they do not establish live signing, installation or production acceptance."
+      ]
+    },
+    {
+      "path": "docs/tool-inventory.json",
+      "sha256": "72fcd179917665a80d9167caae4d44b2a5e39214f389647a28dbc63c782bbaaa",
+      "version": "1.0.0",
+      "entries": 31,
+      "bound_sources": 28,
+      "scope": "Three authoritative command registries, declared Python entrypoints, explicit source tools and existing npm scripts.",
+      "limits": [
+        "Not an exhaustive list of every internal function, external call, research script or runtime operation.",
+        "No shared runtime error schema, generic retry or remediation implementation is claimed.",
+        "Source/help/gate references are navigation; they do not establish live signing, installation or production acceptance."
+      ]
+    }
+  ],
+  "checks": [
+    {
+      "command": "11 permanent pure static/temp-file tests",
+      "log": "/tmp/oraclebot-operation-inventories-refusal-green.log",
+      "exit": 0
+    },
+    {
+      "command": "six original independent refusal probes",
+      "initial_exit": 1,
+      "final_exit": 0,
+      "receipt": "inventory-independent-final.json"
+    },
+    {
+      "command": "generator --check",
+      "exit": 0
+    },
+    {
+      "command": "bare-stdlib --help",
+      "exit": 0
+    },
+    {
+      "command": "bare-stdlib unknown argument",
+      "exit": 2
+    },
+    {
+      "command": "expanded existing root CI lint scope plus new test",
+      "exit": 0,
+      "diagnostics": 0
+    },
+    {
+      "command": "main --check with missing temp output and build metadata fixture; assert no writes",
+      "exit": 1,
+      "expected_exit": 1,
+      "log": "/tmp/oraclebot-operation-inventories-cli-drift.log"
+    }
+  ],
+  "limits": [
+    "Documentation metadata adds no runtime financial dispatch, shared error schema, retry, remediation or signing capability.",
+    "Inventories are not exhaustive internal/external operation call graphs.",
+    "Initial generator tests passed but independent refusal controls exposed3Medium groups; both initial and accepted final receipts are retained."
+  ]
+}

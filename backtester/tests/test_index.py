@@ -14,6 +14,8 @@ one `import` away from the engine, and nothing else in the suite would notice.
 
 from __future__ import annotations
 
+import hashlib
+
 import ast
 import json
 import subprocess
@@ -90,7 +92,7 @@ class IsolationTests(unittest.TestCase):
                     if m.split(".")[0] in {"build", "search", "make_files_doc",
                                            "make_concepts_doc", "index", "idle",
                                            "ollama_ensure"}:
-                        if py.name not in {"test_index.py", "test_index_search_tooling.py"}:
+                        if py.name not in {"test_index.py", "test_index_search_tooling.py", "test_index_runtime_guards.py"}:
                             offenders.append(f"{py.relative_to(REPO)} imports {m}")
         self.assertEqual(offenders, [], "engine code must not import index tooling")
 
@@ -267,14 +269,14 @@ class StalenessGateTests(unittest.TestCase):
 
         # Git emits a path for each unmerged stage; Docs uses that path as a
         # unique table key. Hash comparisons alone used to hide the duplicates.
-        git_result = subprocess.CompletedProcess([], 0, stdout="README.md\nREADME.md\nREADME.md\n")
+        git_result = subprocess.CompletedProcess([], 0, stdout="README.md\0README.md\0README.md\0")
         with mock.patch.object(build.subprocess, "run", return_value=git_result):
             self.assertEqual(build.tracked_files(), ["README.md"])
         with tempfile.TemporaryDirectory() as directory:
             root = Path(directory)
             source = root / "README.md"
             source.write_text("valid source")
-            entry = {"path": "README.md", "sha1": build.sha1_of(source)}
+            entry = {"path": "README.md", "sha1": hashlib.sha1(source.read_bytes()).hexdigest()}
             catalog = root / "INDEX.json"
             catalog.write_text(json.dumps({"files": [entry, entry], "generatedAt": "test"}))
             output = io.StringIO()

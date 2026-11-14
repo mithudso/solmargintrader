@@ -741,7 +741,7 @@ export const COMMANDS = {
     params: [
       { name: 'confirmLive', type: TYPE.BOOL, describe: 'Required to arm any non-dry-run mode.' },
     ],
-    async handler({ deps, args, stopGeneration }) {
+    async handler({ deps, args, stopGeneration, requestedStopGeneration }) {
       const config = await deps.configStore.getConfig();
       const runtime = await deps.configStore.getRuntime();
       if (runtime.killSwitch) {
@@ -754,7 +754,7 @@ export const COMMANDS = {
         );
       }
       validateConfig(config);
-      const next = await deps.configStore.setRuntime({ armed: true });
+      const next = await deps.configStore.setRuntime({ armed: true }, { expectedStopGeneration: requestedStopGeneration });
       resumeEngine(deps.store, stopGeneration);
       return { runtime: next };
     },
@@ -770,15 +770,15 @@ export const COMMANDS = {
     describe: 'Latching hard stop: disarms and blocks every rail until cleared.',
     params: [],
     handler: async ({ deps }) => ({
-      runtime: await deps.configStore.setRuntime({ armed: false, killSwitch: true }),
+      runtime: await deps.configStore.killRuntime(),
     }),
   },
 
   clearKill: {
     describe: 'Release the kill switch. Does not re-arm.',
     params: [],
-    handler: async ({ deps }) => ({
-      runtime: await deps.configStore.setRuntime({ killSwitch: false }),
+    handler: async ({ deps, requestedStopGeneration }) => ({
+      runtime: await deps.configStore.setRuntime({ killSwitch: false }, { expectedStopGeneration: requestedStopGeneration }),
     }),
   },
 
@@ -799,7 +799,8 @@ export const COMMANDS = {
       for (let i = 0; i < count; i++) {
         const result = await tick({
           buildVenue: () => deps.buildVenue(),
-          readLimits: async () => ({ ...DEFAULT_LIMITS, ...(await deps.configStore.get('limits', {})) }),
+          // Keep malformed persisted documents visible to the risk gate.
+          readLimits: () => deps.configStore.get('limits', {}),
           store: deps.store,
           configStore: paperConfigStore(deps.configStore, typeof deps.loadedSourceHash === 'function' ? deps.loadedSourceHash : undefined),
           clock: deps.clock,
@@ -957,13 +958,34 @@ export async function runCommand({ name, args = {}, deps }) {
   }
   if (name === 'kill' || name === 'disarm' || (name === 'reset' && args.confirm === true)) stopEngine(deps.store);
   const stopGeneration = engineStopGeneration(deps.store);
-  const operation = async () => {
-    if (['kill', 'disarm', 'arm', 'setConfig', 'reset'].includes(name)) {
+  const requestedStopGeneration = ['arm', 'clearKill'].includes(name)
+    ? (await deps.configStore.getRuntime()).stopGeneration : null;
+  const stopManagedPaper = async () => {
+    // Durable lifecycle state shares the execution lease. A queued owner may
+    // advance its generation while an immediate stop waits for the queue.
+    if (['kill', 'disarm', 'arm', 'clearKill', 'setConfig', 'reset'].includes(name)) {
       const manager = await deps.configStore.get(MANAGER_KEY, null);
       if (manager?.running) await deps.configStore.set(MANAGER_KEY, { ...manager, running: false, generation: manager.generation + 1 });
     }
-    return command.handler({ deps, args, stopGeneration });
   };
+  const operation = () => {
+    const invoke = () => command.handler({ deps, args, stopGeneration, requestedStopGeneration });
+    // Browser UI relays must reach the owner synchronously while the user's
+    // activation is still present. Only lifecycle commands await coordination.
+    return ['kill', 'disarm', 'arm', 'clearKill', 'setConfig', 'reset'].includes(name)
+      ? stopManagedPaper().then(invoke) : invoke();
+  };
+  if (name === 'kill') {
+    // Revoke permission before waiting on an owner which may be mid-submit.
+    // A fresh runtime read fences every subsequent irreversible placement.
+    const outcome = await command.handler({ deps, args, stopGeneration });
+    try { return await withStoreLock(deps.store, async () => { await stopManagedPaper(); return outcome; }); }
+    catch (error) {
+      if (error.code !== 'FILE_STORE_BUSY') throw error;
+      return { ...outcome, executionOwnerBusy: true,
+        note: 'Kill is latched. An already submitted order still requires venue reconciliation.' };
+    }
+  }
   // Tick owns its per-iteration queue entry so lifecycle/limit changes can run
   // between ticks in a count=N command. Read-only commands never mutate state.
   return command.readOnly || command.unlocked || name === 'tick' ? operation() : withStoreLock(deps.store, operation);

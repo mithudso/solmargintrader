@@ -14,7 +14,6 @@ import unittest
 import numpy as np
 
 from backtester.core.cointegration import (
-    AdfResult,
     adf_pvalue,
     adf_test,
     engle_granger,
@@ -101,6 +100,14 @@ class TestEngleGranger(unittest.TestCase):
 
 
 class TestAlignPeer(unittest.TestCase):
+    def test_malformed_peer_observations_are_refused_without_coercing_identity(self):
+        cases = [([100.5], [100], [1.0]), ([100], [100.5], [1.0]),
+                 ([100], [100, 100], [1.0, 2.0]), ([100], [100], [float("nan")]),
+                 ([100], [100], [0.0]), ([[100]], [100], [1.0])]
+        for base, peer, prices in cases:
+            with self.subTest(base=base, peer=peer, prices=prices), self.assertRaises(ValueError):
+                align_peer(np.array(base), np.array(peer), np.array(prices))
+
     def test_a_gap_is_refused_rather_than_filled(self) -> None:
         # Forward-filling a gap would make the spread look calmer than it was,
         # which flatters every reversion statistic computed from it.

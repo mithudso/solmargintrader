@@ -12,6 +12,7 @@ signal that nothing is reaching a venue.
 from __future__ import annotations
 
 import unittest
+from contextlib import contextmanager
 from pathlib import Path
 from tempfile import TemporaryDirectory
 from unittest import mock
@@ -38,6 +39,19 @@ def _queue_row(job_id: str, sharpe: float, trades: int) -> bgqueue.JobResult:
 # OutOfBounds for widgets outside the visible region, and the default 80x24 is
 # too small for these forms.
 TEST_SIZE = (180, 55)
+
+
+@contextmanager
+def offline_console_reads():
+    """Keep default headless mount reads inside deterministic test fixtures.
+
+    Tests of explicit recorder or LaunchAgent actions can replace these mocks
+    inside this context without weakening the transport or process guards.
+    """
+    with mock.patch('soltui.pricefeed.stream_products', return_value=['SOL-USD', 'BTC-USD', 'ETH-USD']), \
+            mock.patch('soltui.compound_agent.status', return_value={
+                'label': 'headless fixture', 'plist_exists': False, 'loaded': False}):
+        yield
 
 
 def text_of(app, selector: str) -> str:
@@ -85,6 +99,7 @@ class TestSortKey(unittest.TestCase):
 
 
 class TestSortableTables(unittest.IsolatedAsyncioTestCase):
+
     """Clicking a column header sorts the table; clicking again flips it.
 
     Driven by posting `DataTable.HeaderSelected` from the table (what a real
@@ -92,6 +107,9 @@ class TestSortableTables(unittest.IsolatedAsyncioTestCase):
     `pilot.click` at a pixel coordinate, which would couple the test to
     column widths.
     """
+
+    def setUp(self):
+        self.enterContext(offline_console_reads())
 
     @staticmethod
     def _column_values(table, column_index: int) -> list[str]:
@@ -138,7 +156,11 @@ class TestSortableTables(unittest.IsolatedAsyncioTestCase):
 
 
 class TestAppMounts(unittest.IsolatedAsyncioTestCase):
+
     """The app composes and every tab is reachable."""
+
+    def setUp(self):
+        self.enterContext(offline_console_reads())
 
     async def test_mounts_and_has_five_tabs(self) -> None:
         """All five requested tabs exist."""
@@ -173,8 +195,12 @@ class TestAppMounts(unittest.IsolatedAsyncioTestCase):
 
 
 class TestQueueTab(unittest.IsolatedAsyncioTestCase):
+
     """The Queue tab reads files another process writes, so its tests point at
     the reading, not at a sweep."""
+
+    def setUp(self):
+        self.enterContext(offline_console_reads())
 
     def _patch_paths(self, tmp: Path):
         """Point the pane at a scratch results/state pair, not the real one."""
@@ -325,7 +351,11 @@ class TestQueueTab(unittest.IsolatedAsyncioTestCase):
 
 
 class TestExecuteTabSafety(unittest.IsolatedAsyncioTestCase):
+
     """The Execute tab's mode must be unmistakable."""
+
+    def setUp(self):
+        self.enterContext(offline_console_reads())
 
     async def test_execute_tab_declares_dry_run(self) -> None:
         """The banner is the user's only in-app signal that nothing reaches a venue."""
@@ -351,7 +381,11 @@ class TestExecuteTabSafety(unittest.IsolatedAsyncioTestCase):
 
 
 class TestStrategiesTab(unittest.IsolatedAsyncioTestCase):
+
     """Add/remove wiring."""
+
+    def setUp(self):
+        self.enterContext(offline_console_reads())
 
     async def test_roster_table_starts_populated(self) -> None:
         """The default roster is visible on open."""
@@ -447,7 +481,7 @@ class TestStrategiesTab(unittest.IsolatedAsyncioTestCase):
         async with app.run_test(size=TEST_SIZE) as pilot:
             await pilot.pause()
             app._open_strategy_file("not_a_real_strategy")
-            await pilot.pause()
+            # This method reports synchronously; a later Docs row event is unrelated navigation.
             self.assertIn("not in the Docs catalogue",
                           text_of(app, "#docs-view-status"))
 
@@ -474,7 +508,11 @@ class TestStrategiesTab(unittest.IsolatedAsyncioTestCase):
 
 
 class TestSignalsTab(unittest.IsolatedAsyncioTestCase):
+
     """The reference tables."""
+
+    def setUp(self):
+        self.enterContext(offline_console_reads())
 
     async def test_signal_and_family_tables_are_populated(self) -> None:
         """Both reference tables render their full content."""
@@ -499,7 +537,11 @@ class TestSignalsTab(unittest.IsolatedAsyncioTestCase):
 
 
 class TestSettingsTab(unittest.IsolatedAsyncioTestCase):
+
     """The settings form."""
+
+    def setUp(self):
+        self.enterContext(offline_console_reads())
 
     async def test_form_is_prefilled_from_settings(self) -> None:
         """Open state reflects the loaded config."""
@@ -529,11 +571,11 @@ class TestSettingsTab(unittest.IsolatedAsyncioTestCase):
 
 
 class TestSignalsTabEditable(unittest.IsolatedAsyncioTestCase):
+
     """The Signals tab edits values, not just displays them."""
 
     def setUp(self):
-        from soltui.tests.bridge_support import World
-        self.enterContext(World())
+        self.enterContext(offline_console_reads())
 
     async def test_inputs_exist_for_every_tunable(self) -> None:
         """Every signal field must have an editable input."""
@@ -610,6 +652,7 @@ class TestSignalsTabEditable(unittest.IsolatedAsyncioTestCase):
 
 
 class TestDocsTab(unittest.IsolatedAsyncioTestCase):
+
     """The click-to-open bug: a row cursor move must load the viewer.
 
     `DataTable.RowSelected` (Enter) was previously the only wired event, and
@@ -618,6 +661,9 @@ class TestDocsTab(unittest.IsolatedAsyncioTestCase):
     `pilot.click` on a table cell because it is what a click, an arrow key,
     and the "o" binding all ultimately act on: the row cursor position.
     """
+
+    def setUp(self):
+        self.enterContext(offline_console_reads())
 
     async def test_table_uses_row_cursor_not_cell(self) -> None:
         """Without this, a click never fires RowHighlighted at all."""
@@ -863,7 +909,11 @@ class TestDocsTab(unittest.IsolatedAsyncioTestCase):
 
 
 class TestHeaderGlossary(unittest.IsolatedAsyncioTestCase):
+
     """Hovering a column header explains the term (Sharpe, IQR, ...)."""
+
+    def setUp(self):
+        self.enterContext(offline_console_reads())
 
     async def test_every_column_header_in_the_app_has_a_glossary_entry(self) -> None:
         """Pins coverage: a future table column without a definition fails
@@ -916,7 +966,11 @@ class TestHeaderGlossary(unittest.IsolatedAsyncioTestCase):
 
 
 class TestTop5Tab(unittest.IsolatedAsyncioTestCase):
+
     """The recommended-configurations tab: evidence shown, re-test wired."""
+
+    def setUp(self):
+        self.enterContext(offline_console_reads())
 
     async def _open(self, app, pilot):
         from textual.widgets import TabbedContent
@@ -1020,7 +1074,11 @@ class _VimHarness(App):
 
 
 class TestVimTextArea(unittest.IsolatedAsyncioTestCase):
+
     """The subset documented on `VimTextArea` itself."""
+
+    def setUp(self):
+        self.enterContext(offline_console_reads())
 
     async def test_starts_in_normal_mode(self) -> None:
         from soltui.tui import VimTextArea
@@ -1222,7 +1280,11 @@ class TestVimTextArea(unittest.IsolatedAsyncioTestCase):
 
 
 class BacktestTabTests(unittest.IsolatedAsyncioTestCase):
+
     """What Run backtest tests is visible and choosable; the untested button starts real work."""
+
+    def setUp(self):
+        self.enterContext(offline_console_reads())
 
     async def test_picker_lists_the_roster_and_runs_only_the_pick(self):
         from textual.widgets import Select
@@ -1285,7 +1347,11 @@ class BacktestTabTests(unittest.IsolatedAsyncioTestCase):
 
 
 class WalletRestoreTests(unittest.IsolatedAsyncioTestCase):
+
     """After a restart the Wallet tab shows the last scan at once, then refreshes it."""
+
+    def setUp(self):
+        self.enterContext(offline_console_reads())
 
     async def test_last_scan_is_shown_and_refreshed_at_start(self):
         import os
@@ -1325,26 +1391,49 @@ class WalletRestoreTests(unittest.IsolatedAsyncioTestCase):
 
 
 class TableTitleTests(unittest.IsolatedAsyncioTestCase):
+
     """Every table has a title line above it saying what it shows (owner, 2026-11-07)."""
 
-    async def test_every_table_has_a_title_above_it(self):
+    def setUp(self):
+        self.enterContext(offline_console_reads())
+
+    @staticmethod
+    def missing_titles(app):
         from textual.containers import Horizontal
+        from soltui.csv_table import ExportPanel
+
+        missing = []
+        for table in app.query(DataTable):
+            # ExportPanel adds controls inside the table's visual section. Its
+            # heading remains above the wrapper, or above a side-by-side pair.
+            anchor = table.parent if isinstance(table.parent, ExportPanel) else table
+            if isinstance(anchor.parent, Horizontal):
+                anchor = anchor.parent
+            siblings = list(anchor.parent.children)
+            before = []
+            for widget in reversed(siblings[:siblings.index(anchor)]):
+                if isinstance(widget, DataTable) or widget.query(DataTable):
+                    break
+                before.append(widget)
+            titled = [widget for widget in before[:4] if widget.has_class("table-title")]
+            if not titled or not any(str(widget.render()).strip() for widget in titled):
+                missing.append(table.id)
+        return missing
+
+    async def test_heading_guard_still_detects_a_removed_wrapped_table_title(self):
         app = SolTuiApp(make_settings())
         async with app.run_test(size=TEST_SIZE) as pilot:
             await pilot.pause()
-            missing = []
-            for table in app.query(DataTable):
-                anchor = table.parent if isinstance(table.parent, Horizontal) else table
-                siblings = list(anchor.parent.children)
-                before = []
-                for w in reversed(siblings[:siblings.index(anchor)]):
-                    if isinstance(w, DataTable) or w.query(DataTable):
-                        break  # the title must belong to this table, not to the one above it
-                    before.append(w)
-                titled = [w for w in before[:4] if w.has_class("table-title")]
-                if not titled or not any(str(w.render()).strip() for w in titled):
-                    missing.append(table.id)
-            self.assertEqual(missing, [])
+            self.assertNotIn("results-table", self.missing_titles(app))
+            heading = app.query_one("#tab-backtest .table-title", Static)
+            heading.remove_class("table-title")
+            self.assertIn("results-table", self.missing_titles(app))
+
+    async def test_every_table_has_a_title_above_it(self):
+        app = SolTuiApp(make_settings())
+        async with app.run_test(size=TEST_SIZE) as pilot:
+            await pilot.pause()
+            self.assertEqual(self.missing_titles(app), [])
             app.query_one(TabbedContent).active = "tab-compound"
             await pilot.pause()
             self.assertIn("Metrics and gates for SOL", text_of(app, "#compound-table-title"))

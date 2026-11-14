@@ -1,0 +1,682 @@
+{
+  "agent": "backtester_blind_acceptance",
+  "definition_version": "2.0.0",
+  "stage": "authorized_focused_postremediation_acceptance",
+  "status": "complete",
+  "acceptance": "accepted_with_explicit_scope_limits",
+  "observed_at": "2026-11-12T18:43:48.094771+00:00",
+  "root": "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112",
+  "scope": "Original seven-file backtester cohort plus its new 53-line continuation identity helper; final integration correction only; no whole-repository clean claim.",
+  "per_file": [
+    {
+      "repo_relative_path": "backtester/core/engine.py",
+      "path": "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/backtester/core/engine.py",
+      "sha256": "e7a2ca7c277a277f8c03cb7b9082c15e28d9841d757f8e6412590ddc3a2d7f27",
+      "initial_sha256": "24a88843c0366bbd5797543024be191a9ace706b04e70150ad67b7f425c25705",
+      "line_count": 979,
+      "initial_full_read_ranges": [
+        [
+          1,
+          240
+        ],
+        [
+          241,
+          490
+        ],
+        [
+          488,
+          740
+        ],
+        [
+          741,
+          973
+        ]
+      ],
+      "final_read": "unchanged bytes retain original full review; changed production diff and new changed ranges read independently; no author tests or reports read",
+      "previous_final_gate_sha256": "88d4967c839ebae911317e1f2625d3b2eea3a70a89a6e5d518cfe6bcf9ac9e57",
+      "final_delta_verification": "Reverse exactly one result[binding] replacement and SHA256 equals previous bound final gate source; final source stable before and after all focused probes.",
+      "final_pass_dispositions": {
+        "C1": "no_unresolved_corroborated_medium_plus_within_reviewed_scope",
+        "C2": "no_unresolved_corroborated_medium_plus_within_reviewed_scope",
+        "C3": "no_unresolved_corroborated_medium_plus_within_reviewed_scope",
+        "S1": "no_unresolved_corroborated_medium_plus_within_reviewed_scope",
+        "S2": "no_unresolved_corroborated_medium_plus_within_reviewed_scope",
+        "S3": "no_unresolved_corroborated_medium_plus_within_reviewed_scope",
+        "S4": "no_unresolved_corroborated_medium_plus_within_reviewed_scope",
+        "S5": "no_unresolved_corroborated_medium_plus_within_reviewed_scope",
+        "P1": "no_unresolved_corroborated_medium_plus_within_reviewed_scope",
+        "P2": "no_unresolved_corroborated_medium_plus_within_reviewed_scope",
+        "M1": "no_unresolved_corroborated_medium_plus_within_reviewed_scope",
+        "M2": "no_unresolved_corroborated_medium_plus_within_reviewed_scope",
+        "M4": "no_unresolved_corroborated_medium_plus_within_reviewed_scope",
+        "T1": "no_unresolved_corroborated_medium_plus_within_reviewed_scope",
+        "M3": "N/A parent repository-level pass",
+        "T2": "N/A parent repository-level pass",
+        "T3": "N/A parent repository-level pass",
+        "T4": "N/A production source"
+      }
+    },
+    {
+      "repo_relative_path": "backtester/core/gridsim.py",
+      "path": "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/backtester/core/gridsim.py",
+      "sha256": "868aca15de0d3f47719b498282e93e7e5d9a84631c8645ea853c908b01126c09",
+      "initial_sha256": "c20ea5bba916301d3f9ab442c84f90cd4186c0a2df68f225faa46ff931f7bab8",
+      "line_count": 946,
+      "initial_full_read_ranges": [
+        [
+          1,
+          260
+        ],
+        [
+          261,
+          520
+        ],
+        [
+          521,
+          760
+        ],
+        [
+          337,
+          368
+        ],
+        [
+          761,
+          945
+        ]
+      ],
+      "final_read": "unchanged bytes retain original full review; changed production diff and new changed ranges read independently; no author tests or reports read",
+      "final_pass_dispositions": {
+        "C1": "no_unresolved_corroborated_medium_plus_within_reviewed_scope",
+        "C2": "no_unresolved_corroborated_medium_plus_within_reviewed_scope",
+        "C3": "no_unresolved_corroborated_medium_plus_within_reviewed_scope",
+        "S1": "no_unresolved_corroborated_medium_plus_within_reviewed_scope",
+        "S2": "no_unresolved_corroborated_medium_plus_within_reviewed_scope",
+        "S3": "no_unresolved_corroborated_medium_plus_within_reviewed_scope",
+        "S4": "no_unresolved_corroborated_medium_plus_within_reviewed_scope",
+        "S5": "no_unresolved_corroborated_medium_plus_within_reviewed_scope",
+        "P1": "no_unresolved_corroborated_medium_plus_within_reviewed_scope",
+        "P2": "no_unresolved_corroborated_medium_plus_within_reviewed_scope",
+        "M1": "no_unresolved_corroborated_medium_plus_within_reviewed_scope",
+        "M2": "no_unresolved_corroborated_medium_plus_within_reviewed_scope",
+        "M4": "no_unresolved_corroborated_medium_plus_within_reviewed_scope",
+        "T1": "no_unresolved_corroborated_medium_plus_within_reviewed_scope",
+        "M3": "N/A parent repository-level pass",
+        "T2": "N/A parent repository-level pass",
+        "T3": "N/A parent repository-level pass",
+        "T4": "N/A production source"
+      }
+    },
+    {
+      "repo_relative_path": "backtester/core/dcasim.py",
+      "path": "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/backtester/core/dcasim.py",
+      "sha256": "47d35a1c7ab329cf96524e9201eb4d8ec96c93e6b7fef16eeabeeb1043211c87",
+      "initial_sha256": "8dc4b68ed27692e07dc830c8ca7fadb6db185e47844af99d88be0ff8742b64d3",
+      "line_count": 552,
+      "initial_full_read_ranges": [
+        [
+          1,
+          280
+        ],
+        [
+          281,
+          551
+        ]
+      ],
+      "final_read": "unchanged bytes retain original full review; changed production diff and new changed ranges read independently; no author tests or reports read",
+      "final_pass_dispositions": {
+        "C1": "no_unresolved_corroborated_medium_plus_within_reviewed_scope",
+        "C2": "no_unresolved_corroborated_medium_plus_within_reviewed_scope",
+        "C3": "no_unresolved_corroborated_medium_plus_within_reviewed_scope",
+        "S1": "no_unresolved_corroborated_medium_plus_within_reviewed_scope",
+        "S2": "no_unresolved_corroborated_medium_plus_within_reviewed_scope",
+        "S3": "no_unresolved_corroborated_medium_plus_within_reviewed_scope",
+        "S4": "no_unresolved_corroborated_medium_plus_within_reviewed_scope",
+        "S5": "no_unresolved_corroborated_medium_plus_within_reviewed_scope",
+        "P1": "no_unresolved_corroborated_medium_plus_within_reviewed_scope",
+        "P2": "no_unresolved_corroborated_medium_plus_within_reviewed_scope",
+        "M1": "no_unresolved_corroborated_medium_plus_within_reviewed_scope",
+        "M2": "no_unresolved_corroborated_medium_plus_within_reviewed_scope",
+        "M4": "no_unresolved_corroborated_medium_plus_within_reviewed_scope",
+        "T1": "no_unresolved_corroborated_medium_plus_within_reviewed_scope",
+        "M3": "N/A parent repository-level pass",
+        "T2": "N/A parent repository-level pass",
+        "T3": "N/A parent repository-level pass",
+        "T4": "N/A production source"
+      }
+    },
+    {
+      "repo_relative_path": "backtester/core/pairs.py",
+      "path": "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/backtester/core/pairs.py",
+      "sha256": "5747e3b36e20abba8c5c50898a7fc7206dd58fea86c69e428d3e28c04799839a",
+      "initial_sha256": "5747e3b36e20abba8c5c50898a7fc7206dd58fea86c69e428d3e28c04799839a",
+      "line_count": 187,
+      "initial_full_read_ranges": [
+        [
+          1,
+          187
+        ]
+      ],
+      "final_read": "unchanged bytes retain original full review; changed production diff and new changed ranges read independently; no author tests or reports read",
+      "final_pass_dispositions": {
+        "C1": "no_unresolved_corroborated_medium_plus_within_reviewed_scope",
+        "C2": "no_unresolved_corroborated_medium_plus_within_reviewed_scope",
+        "C3": "no_unresolved_corroborated_medium_plus_within_reviewed_scope",
+        "S1": "no_unresolved_corroborated_medium_plus_within_reviewed_scope",
+        "S2": "no_unresolved_corroborated_medium_plus_within_reviewed_scope",
+        "S3": "no_unresolved_corroborated_medium_plus_within_reviewed_scope",
+        "S4": "no_unresolved_corroborated_medium_plus_within_reviewed_scope",
+        "S5": "no_unresolved_corroborated_medium_plus_within_reviewed_scope",
+        "P1": "no_unresolved_corroborated_medium_plus_within_reviewed_scope",
+        "P2": "no_unresolved_corroborated_medium_plus_within_reviewed_scope",
+        "M1": "no_unresolved_corroborated_medium_plus_within_reviewed_scope",
+        "M2": "no_unresolved_corroborated_medium_plus_within_reviewed_scope",
+        "M4": "no_unresolved_corroborated_medium_plus_within_reviewed_scope",
+        "T1": "no_unresolved_corroborated_medium_plus_within_reviewed_scope",
+        "M3": "N/A parent repository-level pass",
+        "T2": "N/A parent repository-level pass",
+        "T3": "N/A parent repository-level pass",
+        "T4": "N/A production source"
+      }
+    },
+    {
+      "repo_relative_path": "backtester/core/zec_ensemble.py",
+      "path": "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/backtester/core/zec_ensemble.py",
+      "sha256": "3ee5d03678c70db202586ebe36ab980db9025ab9cc638a5ae455927b9e5c5f4c",
+      "initial_sha256": "24634e3a69495f90908c5349cf423acd4fa05f1ee04f78840c324809d8b0f6c7",
+      "line_count": 459,
+      "initial_full_read_ranges": [
+        [
+          1,
+          220
+        ],
+        [
+          221,
+          421
+        ]
+      ],
+      "final_read": "unchanged bytes retain original full review; changed production diff and new changed ranges read independently; no author tests or reports read",
+      "final_pass_dispositions": {
+        "C1": "no_unresolved_corroborated_medium_plus_within_reviewed_scope",
+        "C2": "no_unresolved_corroborated_medium_plus_within_reviewed_scope",
+        "C3": "no_unresolved_corroborated_medium_plus_within_reviewed_scope",
+        "S1": "no_unresolved_corroborated_medium_plus_within_reviewed_scope",
+        "S2": "no_unresolved_corroborated_medium_plus_within_reviewed_scope",
+        "S3": "no_unresolved_corroborated_medium_plus_within_reviewed_scope",
+        "S4": "no_unresolved_corroborated_medium_plus_within_reviewed_scope",
+        "S5": "no_unresolved_corroborated_medium_plus_within_reviewed_scope",
+        "P1": "no_unresolved_corroborated_medium_plus_within_reviewed_scope",
+        "P2": "no_unresolved_corroborated_medium_plus_within_reviewed_scope",
+        "M1": "no_unresolved_corroborated_medium_plus_within_reviewed_scope",
+        "M2": "no_unresolved_corroborated_medium_plus_within_reviewed_scope",
+        "M4": "no_unresolved_corroborated_medium_plus_within_reviewed_scope",
+        "T1": "no_unresolved_corroborated_medium_plus_within_reviewed_scope",
+        "M3": "N/A parent repository-level pass",
+        "T2": "N/A parent repository-level pass",
+        "T3": "N/A parent repository-level pass",
+        "T4": "N/A production source"
+      }
+    },
+    {
+      "repo_relative_path": "backtester/core/metrics.py",
+      "path": "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/backtester/core/metrics.py",
+      "sha256": "cf229ed2c31ab1fb2a2ae1a8235006451340f3a0b9b1faecdad580ef0bc0db4f",
+      "initial_sha256": "cf229ed2c31ab1fb2a2ae1a8235006451340f3a0b9b1faecdad580ef0bc0db4f",
+      "line_count": 274,
+      "initial_full_read_ranges": [
+        [
+          1,
+          160
+        ],
+        [
+          161,
+          274
+        ]
+      ],
+      "final_read": "unchanged bytes retain original full review; changed production diff and new changed ranges read independently; no author tests or reports read",
+      "final_pass_dispositions": {
+        "C1": "no_unresolved_corroborated_medium_plus_within_reviewed_scope",
+        "C2": "no_unresolved_corroborated_medium_plus_within_reviewed_scope",
+        "C3": "no_unresolved_corroborated_medium_plus_within_reviewed_scope",
+        "S1": "no_unresolved_corroborated_medium_plus_within_reviewed_scope",
+        "S2": "no_unresolved_corroborated_medium_plus_within_reviewed_scope",
+        "S3": "no_unresolved_corroborated_medium_plus_within_reviewed_scope",
+        "S4": "no_unresolved_corroborated_medium_plus_within_reviewed_scope",
+        "S5": "no_unresolved_corroborated_medium_plus_within_reviewed_scope",
+        "P1": "no_unresolved_corroborated_medium_plus_within_reviewed_scope",
+        "P2": "no_unresolved_corroborated_medium_plus_within_reviewed_scope",
+        "M1": "no_unresolved_corroborated_medium_plus_within_reviewed_scope",
+        "M2": "no_unresolved_corroborated_medium_plus_within_reviewed_scope",
+        "M4": "no_unresolved_corroborated_medium_plus_within_reviewed_scope",
+        "T1": "no_unresolved_corroborated_medium_plus_within_reviewed_scope",
+        "M3": "N/A parent repository-level pass",
+        "T2": "N/A parent repository-level pass",
+        "T3": "N/A parent repository-level pass",
+        "T4": "N/A production source"
+      }
+    },
+    {
+      "repo_relative_path": "backtester/core/cpcv.py",
+      "path": "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/backtester/core/cpcv.py",
+      "sha256": "b9a35a17e9a64de812ae14ffd9a0a86e46851b9402227ae0ab3bdb66b5f0231f",
+      "initial_sha256": "b63e0d84793df57de1f0a504ceb2405281e9dd0683daf61e18e66f8a16460326",
+      "line_count": 358,
+      "initial_full_read_ranges": [
+        [
+          1,
+          190
+        ],
+        [
+          191,
+          352
+        ]
+      ],
+      "final_read": "unchanged bytes retain original full review; changed production diff and new changed ranges read independently; no author tests or reports read",
+      "final_pass_dispositions": {
+        "C1": "no_unresolved_corroborated_medium_plus_within_reviewed_scope",
+        "C2": "no_unresolved_corroborated_medium_plus_within_reviewed_scope",
+        "C3": "no_unresolved_corroborated_medium_plus_within_reviewed_scope",
+        "S1": "no_unresolved_corroborated_medium_plus_within_reviewed_scope",
+        "S2": "no_unresolved_corroborated_medium_plus_within_reviewed_scope",
+        "S3": "no_unresolved_corroborated_medium_plus_within_reviewed_scope",
+        "S4": "no_unresolved_corroborated_medium_plus_within_reviewed_scope",
+        "S5": "no_unresolved_corroborated_medium_plus_within_reviewed_scope",
+        "P1": "no_unresolved_corroborated_medium_plus_within_reviewed_scope",
+        "P2": "no_unresolved_corroborated_medium_plus_within_reviewed_scope",
+        "M1": "no_unresolved_corroborated_medium_plus_within_reviewed_scope",
+        "M2": "no_unresolved_corroborated_medium_plus_within_reviewed_scope",
+        "M4": "no_unresolved_corroborated_medium_plus_within_reviewed_scope",
+        "T1": "no_unresolved_corroborated_medium_plus_within_reviewed_scope",
+        "M3": "N/A parent repository-level pass",
+        "T2": "N/A parent repository-level pass",
+        "T3": "N/A parent repository-level pass",
+        "T4": "N/A production source"
+      }
+    },
+    {
+      "repo_relative_path": "backtester/core/continuation.py",
+      "path": "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/backtester/core/continuation.py",
+      "sha256": "7c543441b7d0a780f4c6e395256887314f6c4b74f53cb5bb47059d8059b14a84",
+      "line_count": 53,
+      "read_ranges": [
+        [
+          1,
+          53
+        ]
+      ],
+      "read_complete": true,
+      "final_pass_dispositions": {
+        "C1": "no_unresolved_corroborated_medium_plus_within_reviewed_scope",
+        "C2": "no_unresolved_corroborated_medium_plus_within_reviewed_scope",
+        "C3": "no_unresolved_corroborated_medium_plus_within_reviewed_scope",
+        "S1": "no_unresolved_corroborated_medium_plus_within_reviewed_scope",
+        "S2": "no_unresolved_corroborated_medium_plus_within_reviewed_scope",
+        "S3": "no_unresolved_corroborated_medium_plus_within_reviewed_scope",
+        "S4": "no_unresolved_corroborated_medium_plus_within_reviewed_scope",
+        "S5": "no_unresolved_corroborated_medium_plus_within_reviewed_scope",
+        "P1": "no_unresolved_corroborated_medium_plus_within_reviewed_scope",
+        "P2": "no_unresolved_corroborated_medium_plus_within_reviewed_scope",
+        "M1": "no_unresolved_corroborated_medium_plus_within_reviewed_scope",
+        "M2": "no_unresolved_corroborated_medium_plus_within_reviewed_scope",
+        "M4": "no_unresolved_corroborated_medium_plus_within_reviewed_scope",
+        "T1": "no_unresolved_corroborated_medium_plus_within_reviewed_scope",
+        "M3": "N/A parent repository-level pass",
+        "T2": "N/A parent repository-level pass",
+        "T3": "N/A parent repository-level pass",
+        "T4": "N/A production source"
+      }
+    }
+  ],
+  "findings": [
+    {
+      "id": "BA-1",
+      "initial_severity": "High",
+      "status": "independently_verified_resolved"
+    },
+    {
+      "id": "BA-2",
+      "initial_severity": "Medium",
+      "status": "independently_verified_resolved"
+    },
+    {
+      "id": "BA-3",
+      "initial_severity": "Medium",
+      "status": "independently_verified_resolved"
+    },
+    {
+      "id": "BA-4",
+      "initial_severity": "Medium",
+      "status": "independently_verified_resolved"
+    },
+    {
+      "id": "BA-5",
+      "initial_severity": "Medium",
+      "status": "independently_verified_resolved",
+      "support": "Exact one-line source delta and signal_rebind_binding original failed control now passes."
+    }
+  ],
+  "remaining_medium_plus": [],
+  "preserved_evidence": [
+    {
+      "path": "/tmp/oraclebot-backtester-independent-review-20261112.json",
+      "claim": "Initial complete seven-file read and four counterexamples; initial suite exit1."
+    },
+    {
+      "path": "/tmp/oraclebot-backtester-independent-probes-initial-20261112.json",
+      "claim": "Initial failed acceptance assertions and positive controls preserved unchanged."
+    },
+    {
+      "path": "/tmp/oraclebot-backtester-independent-review-final-20261112.json",
+      "sha256": "3c91f3295a2723f7cc06ade49dba66c218a7e2bd4c6d5edcbd3037d914dd3435",
+      "claim": "First final gate retained unchanged: 17probes,16pass,1integrationfailure,process exit1."
+    },
+    {
+      "path": "/tmp/oraclebot-backtester-final-probes-20261112.json",
+      "claim": "All four original findings fixed. 6570bars across6513retained-tail bound match full-vs-chunk equity exactly,6467fills match,altered-overlap refused. Same and reconstructed intrabar identities pass; changed observation refuses."
+    }
+  ],
+  "focused_recheck": {
+    "completed_process_exit": 0,
+    "tool_chunk": "c19a46",
+    "command": "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=botmanager/src:.:executor/src INDEX_NO_AUTO=1 .venv/bin/python /tmp/oraclebot-backtester-postremediation-20261112.py > /tmp/oraclebot-backtester-postremediation-probes-20261112.log 2>&1",
+    "cwd": "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112",
+    "counts": {
+      "probes": 15,
+      "passed": 15,
+      "failed": 0
+    },
+    "results": [
+      {
+        "probe": "basic_engine",
+        "status": "pass",
+        "completed_exit": 0,
+        "detail": {
+          "equity": [
+            998.801438274071,
+            998.801438274071,
+            998.801438274071,
+            998.801438274071,
+            998.801438274071,
+            997.602876548142
+          ],
+          "final": 997.602876548142,
+          "trade_count": 1
+        }
+      },
+      {
+        "probe": "engine_causal",
+        "status": "pass",
+        "completed_exit": 0,
+        "detail": {
+          "first_fill": {
+            "ts": 1800003600,
+            "bar_index": 1,
+            "side": "long",
+            "price": 101.0,
+            "units": 9.893075638499102,
+            "notional": 999.2006394884094,
+            "fee": 0.5995203836930456,
+            "slippage": 0.19984012789768188,
+            "borrow_fee_settled": 0.0,
+            "realized_pnl": 0.0,
+            "equity_after": 999.2006394884093,
+            "reason": "open"
+          },
+          "prefix_equity": [
+            1000.0,
+            999.2006394884093,
+            1009.0937151269083,
+            1018.9867907654074
+          ]
+        }
+      },
+      {
+        "probe": "engine_continue",
+        "status": "pass",
+        "completed_exit": 0,
+        "detail": [
+          {
+            "mode": "spot",
+            "delay": 0,
+            "fills": 18,
+            "final": 993.4512345374644
+          },
+          {
+            "mode": "spot",
+            "delay": 1,
+            "fills": 18,
+            "final": 973.3603277244156
+          },
+          {
+            "mode": "spot",
+            "delay": 3,
+            "fills": 16,
+            "final": 972.2469349627622
+          },
+          {
+            "mode": "perp",
+            "delay": 0,
+            "fills": 23,
+            "final": 975.5561243618151
+          },
+          {
+            "mode": "perp",
+            "delay": 1,
+            "fills": 22,
+            "final": 901.3709329819297
+          },
+          {
+            "mode": "perp",
+            "delay": 3,
+            "fills": 20,
+            "final": 900.9815272251489
+          }
+        ]
+      },
+      {
+        "probe": "engine_invalid",
+        "status": "pass",
+        "completed_exit": 0,
+        "detail": {
+          "refusals": 8
+        }
+      },
+      {
+        "probe": "dca_known",
+        "status": "pass",
+        "completed_exit": 0,
+        "detail": {
+          "final": 1006.811,
+          "expected": 1006.811,
+          "trades": [
+            {
+              "ts": 1800003600,
+              "bar_index": 1,
+              "side": "buy",
+              "price": 101.0,
+              "units": 0.9900990099009901,
+              "notional": 100,
+              "fee": 1.0,
+              "slippage": 0.9900990099009901,
+              "borrow_fee_settled": 0.0,
+              "realized_pnl": 0.0,
+              "equity_after": 998.009900990099,
+              "reason": "open"
+            },
+            {
+              "ts": 1800007200,
+              "bar_index": 2,
+              "side": "sell",
+              "price": 109.989,
+              "units": 0.9900990099009901,
+              "notional": 108.9,
+              "fee": 1.0890000000000002,
+              "slippage": 1.100000000000004,
+              "borrow_fee_settled": 0.0,
+              "realized_pnl": 6.811000000000007,
+              "equity_after": 1006.811,
+              "reason": "dca_take_profit"
+            }
+          ]
+        }
+      },
+      {
+        "probe": "dca_no_open",
+        "status": "pass",
+        "completed_exit": 0,
+        "detail": {
+          "missing_open_refused": true
+        }
+      },
+      {
+        "probe": "grid_known",
+        "status": "pass",
+        "completed_exit": 0,
+        "detail": {
+          "final": 1010.8577799999999,
+          "expected": 1010.85778,
+          "trades": [
+            {
+              "ts": 1800003600,
+              "bar_index": 1,
+              "side": "buy",
+              "price": 90.018,
+              "units": 1.1111111111111112,
+              "notional": 100.02000000000001,
+              "fee": 0.10002,
+              "slippage": 0.02000000000000076,
+              "borrow_fee_settled": 0.0,
+              "realized_pnl": 0.0,
+              "equity_after": 999.8999799999999,
+              "reason": "grid_entry"
+            },
+            {
+              "ts": 1800007200,
+              "bar_index": 2,
+              "side": "sell",
+              "price": 99.98,
+              "units": -1.1111111111111112,
+              "notional": 111.0888888888889,
+              "fee": 0.11108888888888892,
+              "slippage": 0.022222222222217803,
+              "borrow_fee_settled": 0.0,
+              "realized_pnl": 10.857780000000002,
+              "equity_after": 1010.8577799999999,
+              "reason": "grid_exit"
+            }
+          ]
+        }
+      },
+      {
+        "probe": "ladders_continue",
+        "status": "pass",
+        "completed_exit": 0,
+        "detail": [
+          {
+            "kind": "grid",
+            "fills": 15,
+            "final": 1011.0407677323581
+          },
+          {
+            "kind": "dca",
+            "fills": 23,
+            "final": 893.5436617214666
+          }
+        ]
+      },
+      {
+        "probe": "pair_alignment",
+        "status": "pass",
+        "completed_exit": 0,
+        "detail": {
+          "exact_reindex": [
+            2,
+            1,
+            3
+          ],
+          "malformed_refusals": 5
+        }
+      },
+      {
+        "probe": "metrics_known",
+        "status": "pass",
+        "completed_exit": 0,
+        "detail": {
+          "total_return": -0.020000000000000018,
+          "max_drawdown": -0.02,
+          "returns": [
+            -0.01,
+            -0.010101010101010055
+          ]
+        }
+      },
+      {
+        "probe": "pbo_combinations",
+        "status": "pass",
+        "completed_exit": 0,
+        "detail": {
+          "pbo": 0.0,
+          "n_splits": 6.0,
+          "n_configs": 2.0
+        }
+      },
+      {
+        "probe": "pbo_ties",
+        "status": "pass",
+        "completed_exit": 0,
+        "detail": {
+          "pbo": 0.0,
+          "n_splits": 6.0,
+          "n_configs": 3.0
+        }
+      },
+      {
+        "probe": "ensemble_ids",
+        "status": "pass",
+        "completed_exit": 0,
+        "detail": {
+          "id": "739aac1fcb6d280d48c9b03b",
+          "canonical_weights": [
+            0.5,
+            0.5
+          ]
+        }
+      },
+      {
+        "probe": "ensemble_continue",
+        "status": "pass",
+        "completed_exit": 0,
+        "detail": {
+          "continued": true
+        }
+      },
+      {
+        "probe": "signal_rebind_binding",
+        "status": "pass",
+        "completed_exit": 0,
+        "detail": {
+          "flat_rebound_continues": true
+        }
+      }
+    ],
+    "structured_results": "/tmp/oraclebot-backtester-postremediation-probes-20261112.json",
+    "stdout_stderr_log": "/tmp/oraclebot-backtester-postremediation-probes-20261112.log",
+    "delta_proof": "Exact one-line delta verified by reversing the new result[binding] configuration_binding call and matching prior engine SHA25688d4967c839ebae911317e1f2625d3b2eea3a70a89a6e5d518cfe6bcf9ac9e57. Other seven production hashes unchanged. All eight hashes checked again after probes."
+  },
+  "independence": {
+    "author_audit_receipts_or_reports_read": false,
+    "author_test_assertions_read": false,
+    "repository_edits_staging_or_commits": false,
+    "live_market_or_private_data_access": false,
+    "orders_signatures_models_services_or_installs": false,
+    "only_task_owned_tmp_artifacts_written": true
+  },
+  "limits": [
+    "Acceptance applies only to this reviewed cohort and the preserved synthetic contracts. Parent owns aggregate repository audit, required suites, ledger, workflow records and delivery.",
+    "No profitability, economic strategy search or real-venue qualification performed.",
+    "Runtime-source epoch, CLI bootstrap, private data, owner homes, services, frozen environments and real orders/signatures remain outside scope.",
+    "P1/P2 disposition is static scoped review; representative performance benchmarks and concurrency stress were not run.",
+    "T1 uses independent synthetic risky-path assertions, not exhaustive branch coverage or a whole-suite claim.",
+    "The engine causal future-suffix toy emits the previously recorded CAGR overflow warning for the changed short high-return suffix. That limitation does not affect the causal-prefix assertions or cash accounting.",
+    "No new discovery rounds followed final source freeze. The only postremediation delta is the exact authorized binding replacement."
+  ]
+}

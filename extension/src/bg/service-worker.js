@@ -339,7 +339,8 @@ export async function handleInstalled(details = {}, { store } = {}) {
   const fresh = reason === 'install';
 
   if (fresh) {
-    await configStore.setRuntime({ armed: false, killSwitch: false });
+    const stopGeneration = (await configStore.getRuntime()).stopGeneration;
+    await configStore.setRuntime({ armed: false, killSwitch: false }, { expectedStopGeneration: stopGeneration });
     await configStore.setConfig({ mode: MODE.DRY_RUN });
   } else {
     await configStore.setRuntime({ armed: false });

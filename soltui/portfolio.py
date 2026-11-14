@@ -331,6 +331,9 @@ def value_rows(snaps: list[dict[str, Any]]) -> tuple[list[dict[str, Any]], int]:
 
 def main(argv: list[str] | None = None) -> int:  # pragma: no cover - thin wrapper over the registry
     """`python -m soltui.portfolio` takes one snapshot through the registry (the LaunchAgent's job)."""
+    import argparse
+
+    argparse.ArgumentParser(description="Scan configured public wallets and save one portfolio snapshot.").parse_args(argv)
     from . import commands
 
     env = commands.dispatch("portfolio.snapshot", {}, surface="cli")

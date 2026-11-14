@@ -24,6 +24,7 @@ there is no live account here -- see `status.py`.
 from __future__ import annotations
 
 import json
+
 import shlex
 import subprocess
 import sys
@@ -116,7 +117,8 @@ def build_app(settings: Settings | None = None):
     if rumps is None:
         raise RuntimeError(
             "rumps is not installed. It is macOS-only:\n"
-            "    pip install -r soltui/requirements.txt"
+            f"    uv pip install --python {shlex.quote(sys.executable)} -r "
+            f"{shlex.quote(str(REPO / 'soltui' / 'requirements.txt'))}"
         )
 
     cfg = settings or load_settings()
@@ -219,7 +221,7 @@ def build_app(settings: Settings | None = None):
                 rumps.notification(
                     "soltui", "Console did not start",
                     err or "Is textual-serve installed? "
-                           "python3 -m pip install textual-serve")
+                           f"uv pip install --python {shlex.quote(sys.executable)} 'textual-serve>=1.1,<2'")
                 return
             webbrowser.open(serve_mod.url_for(port))
 
@@ -327,6 +329,9 @@ def build_app(settings: Settings | None = None):
 
 def main(argv: list[str] | None = None) -> int:
     """Entry point. Reports the install command when rumps is missing."""
+    import argparse
+
+    argparse.ArgumentParser(description="Open the SolTUI macOS menu bar application.").parse_args(argv)
     try:
         build_app().run()
     except RuntimeError as exc:

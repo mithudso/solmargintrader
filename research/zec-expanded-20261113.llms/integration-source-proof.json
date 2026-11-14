@@ -1,0 +1,30 @@
+{
+  "source_archive_files": 1535,
+  "source_archive_all_hashes_match": true,
+  "current_source_differences": [
+    "research/zec_expanded.py",
+    "soltui/bgqueue.py"
+  ],
+  "all_numeric_model_ast_unchanged": true,
+  "allowed_research_changes": [
+    "catalogue diagnostics",
+    "main plan diagnostics",
+    "whitespace"
+  ],
+  "upstream": "7228397",
+  "historical_queue_jobs": 1059,
+  "scheduled_current_queue_jobs": 1011,
+  "distinct_current_exclusion_job_ids": 50,
+  "historical_jobs_now_excluded": 48,
+  "exclusion_aliases_previously_deduplicated": 2,
+  "all_1707_full_candidate_rows_equal": true,
+  "integration_tests": 145,
+  "integration_exit_code": 0,
+  "old_dedupe_key": [
+    "strategy",
+    "asset",
+    "interval",
+    "params"
+  ],
+  "job_id_includes_horizon": true
+}

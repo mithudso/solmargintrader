@@ -149,7 +149,7 @@ class ProtocolSchedulingTests(unittest.IsolatedAsyncioTestCase):
                     if stuck == "initialize": await asyncio.Event().wait()
                 async def call_tool(self, name, arguments, stuck=stuck):
                     if name == stuck: await asyncio.Event().wait()
-                    return SimpleNamespace(structuredContent={"ok": True, "data": {"instrument": "ETH/USD", "status": "unavailable"}})
+                    return SimpleNamespace(model_dump=lambda **kwargs: {"structuredContent": {"ok": True, "data": {"instrument": "ETH/USD", "status": "unavailable"}}})
 
             async def short_wait(awaitable, timeout, seen=seen):
                 seen.append(timeout)
@@ -189,7 +189,8 @@ class ProtocolSchedulingTests(unittest.IsolatedAsyncioTestCase):
         timer = threading.Timer(0.3, released.set)
         timer.start()
         try:
-            with mock.patch.object(server, "Server", FakeServer):
+            server._load_sdk()
+            with mock.patch.object(server, "Server", FakeServer), mock.patch.object(server, "_SDK_V2", False):
                 protocol, _hub = server.build_server(Engine())
             async with protocol.lifespan(protocol):
                 self.assertTrue(await asyncio.to_thread(entered.wait, 0.5))

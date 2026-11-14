@@ -68,6 +68,7 @@ from typing import Any, Callable, Iterable, Sequence
 from urllib.parse import urlsplit
 
 from . import config as config_mod
+from .diagnostics import external_read
 
 WS_URL = "wss://ws-feed.exchange.coinbase.com"
 PRODUCTS_URL = "https://api.exchange.coinbase.com/products"
@@ -89,6 +90,7 @@ FLUSH_SECONDS = 10.0
 RECV_TIMEOUT_S = 1.0
 RECEIVE_IDLE_S = 10.0
 MAX_FRAME_BYTES = 8 * 1024 * 1024
+MAX_MESSAGE_FRAGMENTS = 1024
 
 
 class PriceFeedError(RuntimeError):
@@ -261,12 +263,13 @@ class WebSocket:
             elif opcode == OP_CLOSE:
                 raise ConnectionClosed("server sent a close frame")
             elif opcode in (OP_TEXT, OP_BINARY, OP_CONT):
-                self._parts_bytes += len(payload)
-                if self._parts_bytes > MAX_FRAME_BYTES:
-                    self._parts = []
+                if (self._parts_bytes + len(payload) > MAX_FRAME_BYTES
+                        or len(self._parts) >= MAX_MESSAGE_FRAGMENTS):
+                    self._parts.clear()
                     self._parts_bytes = 0
-                    raise PriceFeedError("oversized fragmented WebSocket message")
+                    raise PriceFeedError("WebSocket message exceeds the bounded message limit")
                 self._parts.append(payload)
+                self._parts_bytes += len(payload)
                 if fin:
                     text = b"".join(self._parts).decode("utf-8", errors="replace")
                     self._parts = []
@@ -357,6 +360,7 @@ def _active_products(products: Iterable[str]) -> list[str]:
     return active
 
 
+@external_read("pricefeed.market_catalog")
 def _get_json(url: str) -> Any:
     import urllib.request
 
@@ -395,7 +399,7 @@ def apply_ticker(state: dict[str, list[Any]], msg: dict[str, Any], received: flo
         return False
     qt = _iso_to_epoch(msg.get("time"))
     if qt is None:
-        return False
+        return False  # Receipt time cannot establish the age of an exchange quote.
     state[product] = [bid, ask, last, _num(msg.get("best_bid_size")), _num(msg.get("best_ask_size")),
                       round(qt, 3)]
     return True

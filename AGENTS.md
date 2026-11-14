@@ -12,7 +12,7 @@ Follow the workflow-record rule in `CLAUDE.md` before implementation and at deli
 | [oracle](.claude/agents/oracle.md) | Oracle inspection and guide routing | inherit | Market provenance, strategy votes, lifecycle and readiness | Bash and Read; no signing or orders |
 | [aero-pool-scout](.claude/agents/aero-pool-scout.md) | Archived `liquidity/` research procedure | sonnet | Only after a new explicit owner request to run the scout; keep the daemon disabled and kill switch set | Bash, Read, Write, WebSearch, WebFetch; Base RPC and public market sources; no signing, reactivation or config changes |
 
-The agent definition is the source of truth. The agent definitions are the source of truth.
+The agent definitions are the source of truth.
 
 Summary of the rules most often broken here:
 

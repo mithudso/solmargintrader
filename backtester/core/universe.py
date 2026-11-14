@@ -172,6 +172,8 @@ def list_coinbase_products(get_json: Callable[[str], list] | None = None) -> tup
 
         get_json = _get_json
     payload = get_json(COINBASE_PRODUCTS_URL)
+    if not isinstance(payload, list):
+        raise FetchError("Coinbase product catalogue response must be a list")
     out = []
     for entry in payload:
         if not isinstance(entry, dict):
@@ -237,6 +239,7 @@ def main(argv: Sequence[str] | None = None) -> int:
     """CLI entry point. Prints the plan, then refuses a partial universe by default."""
     ap = argparse.ArgumentParser(
         description="Fetch a multi-asset universe into the local CSV cache.",
+        epilog="Example: python -m backtester.core.universe --assets BTC,ETH --plan-only",
     )
     ap.add_argument(
         "--assets",
@@ -270,7 +273,13 @@ def main(argv: Sequence[str] | None = None) -> int:
     if removed:
         ap.error(f"removed from active coin lists: {', '.join(removed)}")
     assets = list(filter_removed_assets(assets))
-    listed = list_coinbase_products()
+    if not assets:
+        ap.error("at least one asset is required")
+    try:
+        listed = list_coinbase_products()
+    except FetchError as exc:
+        print(f"error: product catalogue unavailable ({type(exc).__name__})", file=sys.stderr)
+        return 1
     plan = plan_universe_fetch(assets, listed, args.quote)
 
     for asset in assets:

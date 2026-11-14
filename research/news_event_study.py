@@ -9,15 +9,17 @@ from __future__ import annotations
 import argparse
 import csv
 import hashlib
+import importlib
 import json
 import math
+import os
 import re
+import shlex
+import sys
 from collections import Counter, defaultdict
 from datetime import UTC, datetime
 from pathlib import Path
 from urllib.parse import urlsplit, urlunsplit
-
-import numpy as np
 
 VERSION = "1.0.0"
 SEED = 20261112
@@ -44,6 +46,62 @@ COMMENTARY = re.compile(
     r"^what is\b|^how to\b|\bexplained\b|presale|sponsored|press release",
     re.IGNORECASE,
 )
+
+
+class NewsPrerequisiteError(RuntimeError):
+    """A named optional dependency failed before any study/report output writes."""
+
+
+def _preflight(*, plotting=False):
+    missing = []
+    modules = ("numpy", "matplotlib", "matplotlib.pyplot") if plotting else ("numpy",)
+    for name in modules:
+        try:
+            module = importlib.import_module(name)
+            if name == "matplotlib":
+                module.use("Agg")
+        except Exception:  # noqa: BLE001 -- safe dependency boundary; no import payloads
+            missing.append(name)
+    if missing:
+        raise NewsPrerequisiteError("Unavailable optional Python modules: " + ", ".join(missing))
+
+
+def _bootstrap_and_reexec(script: Path, arguments):
+    """Provision only the helper-owned research environment, then reexecute once."""
+    if os.environ.get("ORACLEBOT_NEWS_REEXEC") == str(script):
+        raise NewsPrerequisiteError("the private environment still cannot load optional modules")
+    repo = script.parent.parent
+    if str(repo) not in sys.path:
+        sys.path.insert(0, str(repo))
+    from backtester.run import ensure_environment
+
+    python = ensure_environment(
+        script.parent,
+        requirements=("numpy>=2.5.4", "matplotlib>=3.11.2"),
+        required_modules=("numpy", "matplotlib"),
+        owner="oraclebot-news-event-tools/v1", entrypoint=script,
+    )
+    os.execve(str(python), [str(python), str(script), *arguments],
+              {**os.environ, "ORACLEBOT_NEWS_REEXEC": str(script)})
+
+
+def _prepare_cli(script: Path, arguments, *, plotting=False):
+    try:
+        _preflight(plotting=plotting)
+        return True
+    except NewsPrerequisiteError as exc:
+        missing = str(exc)
+    if os.environ.get("TOOL_NO_VENV") != "1":
+        try:
+            _bootstrap_and_reexec(script, arguments)
+        except Exception as exc:  # noqa: BLE001 -- safe CLI boundary; expose failure type only
+            print(f"Private news tool setup failed ({type(exc).__name__})", file=sys.stderr)
+    command = shlex.join([
+        "uv", "run", "--no-project", "--with", "numpy>=2.5.4", "--with",
+        "matplotlib>=3.11.2", "python", str(script), *arguments,
+    ])
+    print(f"{missing}. Run in an isolated environment:\n{command}", file=sys.stderr)
+    return False
 
 
 def epoch(value: str) -> int:
@@ -173,6 +231,8 @@ def event_returns(prices, entry: int, minutes: int):
 
 
 def relative_return(coin, prices, entry, minutes):
+    import numpy as np
+
     own = event_returns(prices.get(coin, {}), entry, minutes)
     market = [event_returns(prices.get(c, {}), entry, minutes) for c in controls(coin)]
     if own is None or any(r is None for r in market):
@@ -182,6 +242,8 @@ def relative_return(coin, prices, entry, minutes):
 
 
 def measure(events, prices):
+    import numpy as np
+
     rows = []
     for event in events:
         coin, entry = event["coin"], event["entry"]
@@ -247,10 +309,16 @@ def cluster_interval(rows, field, replicates=1999):
         return None, None, 0
     groups = defaultdict(list)
     for row in valid:
-        block = epoch(row["published_at"][:10] + "T00:00:00Z") // (7 * 86400)
+        published = row["published_at"]
+        # Preserve the date-only library input convention as midnight UTC.
+        if len(published) == 10:
+            published += "T00:00:00Z"
+        block = epoch(published) // (7 * 86400)
         groups[block].append(float(row[field]))
     if len(groups) < 2:
         return None, None, len(groups)
+    import numpy as np
+
     sums = np.array([sum(v) for v in groups.values()])
     sizes = np.array([len(v) for v in groups.values()])
     rng = np.random.default_rng(SEED)
@@ -261,6 +329,8 @@ def cluster_interval(rows, field, replicates=1999):
 
 
 def summarize(rows):
+    import numpy as np
+
     result = []
     for coin in COINS + ("ALL",):
         for horizon in HORIZONS:
@@ -355,6 +425,7 @@ def reviewed_events(home: Path):
 
 
 def run(home: Path, output: Path):
+    _preflight()
     if output.exists():
         raise ValueError("use a fresh output directory")
     events = reviewed_events(home)
@@ -391,11 +462,14 @@ def run(home: Path, output: Path):
     return manifest
 
 
-if __name__ == "__main__":
+def main(argv=None):
+    arguments = list(sys.argv[1:] if argv is None else argv)
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--home", type=Path, required=True)
     parser.add_argument("--output", type=Path, required=True)
-    args = parser.parse_args()
+    args = parser.parse_args(arguments)
+    if not _prepare_cli(Path(__file__).resolve(), arguments):
+        return 3
     print(
         json.dumps(
             {
@@ -405,3 +479,8 @@ if __name__ == "__main__":
             }
         )
     )
+    return 0
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())

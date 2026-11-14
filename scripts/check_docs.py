@@ -329,21 +329,18 @@ def check_components_covered() -> list[str]:
     A missing component section is the failure this repo actually had: soltui
     existed for weeks with 95 tests and appeared in no top-level document.
     """
+    if __package__:
+        from .build_doc_index import COMPONENTS
+    else:
+        from build_doc_index import COMPONENTS
+
     path = REPO / OVERVIEW_MD
     if not path.exists():
         return []
     text = path.read_text(encoding="utf-8").lower()
     return [
         f"{OVERVIEW_MD}: no section for component {name}/"
-        for name in (
-            "backtester",
-            "research",
-            "extension",
-            "soltui",
-            "mongo",
-            "liquidity",
-            "executor",
-        )
+        for name in COMPONENTS
         if f"{name}/" not in text
     ]
 

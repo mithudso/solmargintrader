@@ -65,6 +65,12 @@ def _peer(connection):
             raise ManagerError(
                 "unsafe_transport", "Socket peer is not the current user.", 3
             )
+    else:
+        raise ManagerError(
+            "unsafe_transport",
+            "Socket peer credentials are unavailable on this platform.",
+            3,
+        )
 
 
 def _remaining(connection, deadline):

@@ -10,9 +10,14 @@ Save requests in `prompts.md` and versioned continuation records in `memory.md`,
 
 | Component | Risk |
 | --- | --- |
+| `website/` (JavaScript/Python) | Public wallet-account and subscription workspace on Cloudflare; Stripe can charge members when configured. Trading definitions remain inactive paper configurations. The separate Python adapter only reads public-market analysis inputs. No owner keys or local control-room access. |
+| `oracle/` (Python) | Forecast/MCP reads are separate from the explicitly enabled TradingView venue worker |
+| `botmanager/` (Python) | Fenced paper lifecycle; no signing |
+| `ecosystem/` (Python) | Paper coordination and authenticated local controls; no order submission |
+| `executor/` (Python, own environment) | Guarded Jupiter spot execution, dry-run by default; read `executor/CLAUDE.md` |
 | `backtester/` (Python) | Simulation only. **Never add live-trading capability.** The danger is a dishonest backtest |
 | `research/` (Python) | Analysis on the backtester. The danger is overstating a result |
-| `soltui/` (Python) | Research console; separately armed manual Coinbase spot orders. Jupiter V2 submission remains blocked |
+| `soltui/` (Python) | Research console with separately armed manual Coinbase controls; Jupiter V2 submission remains blocked |
 | `mongo/` (Python) | Derived local datastore plus a query reference. Rebuildable; nothing else imports it |
 | `extension/` (JavaScript) | **Can place real orders and move real money.** Treat every change as production software |
 | `liquidity/` (Python, own venv) | Retained Base signing code; daemon and scout archived, disabled and killed. Read `liquidity/CLAUDE.md` first |
@@ -45,11 +50,11 @@ See [its guide](website/README.md) for independent billing, analysis and executi
 ## Before claiming a change works
 
 ```bash
-python3 -m unittest discover -s backtester/tests -t .   # 1081 tests
-python3 -m unittest discover -s soltui/tests -t .       # 1582 tests (full suite; optional in CI)
-python3 -m unittest discover -s mongo/tests -t .        # 62 tests
-(cd extension && npm test)                              # 509 tests
-(cd extension && node tools/dryrun.js --ticks 8 --osc 6 --offline 100 --assert-economics) # a round trip must close positive
+python3 -m unittest discover -s backtester/tests -t .   # 1196 tests
+python3 -m unittest discover -s soltui/tests -t .       # 1692 tests (TUI dependencies required)
+python3 -m unittest discover -s mongo/tests -t .        # 73 tests
+cd extension && npm test                                # 555 tests
+node tools/dryrun.js --ticks 8 --osc 6 --offline 100    # a round trip must close positive
 python3 scripts/check_docs.py                           # doc counts and retrieval indexes
 ```
 

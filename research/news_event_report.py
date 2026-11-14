@@ -7,10 +7,14 @@ import csv
 import hashlib
 import json
 import shutil
+import sys
 from collections import Counter
 from pathlib import Path
 
-from research.news_event_study import COINS, write_csv
+if __package__ in (None, ""):
+    sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
+
+from research.news_event_study import COINS, _preflight, _prepare_cli, write_csv
 
 PREFIX = "news_events_20261112"
 
@@ -25,6 +29,7 @@ def interval(row, field):
 
 
 def render(home: Path, analyzed: Path, repo: Path):
+    _preflight(plotting=True)
     manifest = json.loads((analyzed / "results.json").read_text())
     selection = json.loads((home / "selection-v2-manifest.json").read_text())
     timing = json.loads((home / "timestamp-audit.json").read_text())
@@ -327,10 +332,18 @@ def _figure(summary, path):
     plt.close(fig)
 
 
-if __name__ == "__main__":
+def main(argv=None):
+    arguments = list(sys.argv[1:] if argv is None else argv)
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--home", type=Path, required=True)
     parser.add_argument("--analyzed", type=Path, required=True)
     parser.add_argument("--repo", type=Path, required=True)
-    args = parser.parse_args()
+    args = parser.parse_args(arguments)
+    if not _prepare_cli(Path(__file__).resolve(), arguments, plotting=True):
+        return 3
     print(render(args.home, args.analyzed, args.repo))
+    return 0
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())

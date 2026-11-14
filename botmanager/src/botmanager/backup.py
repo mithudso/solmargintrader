@@ -41,8 +41,11 @@ def _json(path):
     if path.is_symlink() or not path.is_file() or path.stat().st_size > MAX_JSON:
         raise _error("Required snapshot document is missing, unsafe or oversized.")
     try:
-        return json.loads(path.read_text())
-    except (OSError, ValueError) as exc:
+        body = json.loads(path.read_text())
+        if not isinstance(body, dict):
+            raise TypeError
+        return body
+    except (OSError, TypeError, ValueError) as exc:
         raise _error("Snapshot document is unreadable.") from exc
 
 

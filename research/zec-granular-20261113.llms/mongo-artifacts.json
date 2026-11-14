@@ -1,0 +1,71 @@
+{
+  "version": "1.0.1",
+  "run_id": "run:55f2cb71690fb0115c42324012967ff835eb3137e4a7f3cd6a80522a335123d0",
+  "run_revision": 18,
+  "mode": "empirical_existing_strategy_simulation",
+  "result_csv_sha256": "0cf84609dce34714c29730709bb717032c795cec5b3acd075dd433545db809b3",
+  "result_csv_bytes": 1904716,
+  "csv_encoding": "concatenate ordered results.csv.gz.b64.part-N-of-8 texts; base64 decode; gzip decompress",
+  "full_csv_readback": "passed_byte_for_byte",
+  "superseded_artifact": "art:ac797b34254c0534e170d2f88717ddb00a87d8dddd8a79c36b8d6a66aa542f42",
+  "final_report_artifact": "art:f3b779cd44fa6d7bf0eafd20d2afde1893af997f28c63caa41d73a17eefebf87",
+  "qualification": "Independent computational audit accepted within receive-time simulation contract; Mongo artifact persistence is not trusted literature qualification.",
+  "artifacts": [
+    {
+      "name": "ZEC-GRANULAR-BACKTESTS.md",
+      "id": "art:ac797b34254c0534e170d2f88717ddb00a87d8dddd8a79c36b8d6a66aa542f42"
+    },
+    {
+      "name": "results.csv.gz.b64.part-1-of-8",
+      "id": "art:0487cb77236e510cc7754610d543044e6640751be69c731718926375ff996fa2"
+    },
+    {
+      "name": "results.csv.gz.b64.part-2-of-8",
+      "id": "art:4faac2e58b2a217f27f7e7c0946f8a3297a3471fcac4acd1cc4e52c41110af6e"
+    },
+    {
+      "name": "results.csv.gz.b64.part-3-of-8",
+      "id": "art:36c05fa2cb4aab5897a803cf5a019478903585c9924cce9746bb80f17ea3e071"
+    },
+    {
+      "name": "results.csv.gz.b64.part-4-of-8",
+      "id": "art:22f6e3ad3aa6c4f917d03edec8211c835319b30fc0d71c853243696961eb5d42"
+    },
+    {
+      "name": "results.csv.gz.b64.part-5-of-8",
+      "id": "art:32e1c2648bc2a84a073c73ceba80b306e8d717ee23050ad8a172d35f29b39860"
+    },
+    {
+      "name": "results.csv.gz.b64.part-6-of-8",
+      "id": "art:b26158b3cdf52946fe2baec9c5ecdd3507b5ba4522ea80cbd54bc36a84fbf5b2"
+    },
+    {
+      "name": "results.csv.gz.b64.part-7-of-8",
+      "id": "art:164060dbe6bef6d3d8536d34e18e79cef897fdcf3314feeb51a4f936cf0eb8b1"
+    },
+    {
+      "name": "results.csv.gz.b64.part-8-of-8",
+      "id": "art:c43b66bc5d7fdcbb871adb6506986f78a011486130f6286e6a2720619c1029ef"
+    },
+    {
+      "name": "ZEC-GRANULAR-BACKTESTS.v1.0.1.md",
+      "id": "art:f3b779cd44fa6d7bf0eafd20d2afde1893af997f28c63caa41d73a17eefebf87"
+    },
+    {
+      "name": "audit-attempt-03.json",
+      "id": "art:5085bafd33c030a79b2c26df47b127296f9f2515c1585caa887fb2fa7e7cb7f4"
+    },
+    {
+      "name": "plan.json.gz.base64",
+      "id": "art:f771fdb4759e9a5a3cb245a61add0042bf34d27faaf69d452e9b9e275396b10a"
+    },
+    {
+      "name": "summary.json",
+      "id": "art:3d5b6765afa33cec6bf2b7108b58dfa6d0e034653728fab9ccbeca12222b2143"
+    },
+    {
+      "name": "run-manifest.json",
+      "id": "art:32711815464bcd2ac08413699c359c0899497dfc93e3a29541adb1048ba48a84"
+    }
+  ]
+}

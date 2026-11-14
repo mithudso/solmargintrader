@@ -1,0 +1,716 @@
+{
+  "agent": "backtester_blind_acceptance",
+  "definition_version": "2.0.0",
+  "stage": "independent_initial_acceptance",
+  "status": "partial",
+  "acceptance": "failed_pending_author_remediation",
+  "observed_at": "2026-11-12T18:29:30.223945+00:00",
+  "root": "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112",
+  "scope": [
+    "backtester/core/engine.py",
+    "backtester/core/gridsim.py",
+    "backtester/core/dcasim.py",
+    "backtester/core/pairs.py",
+    "backtester/core/zec_ensemble.py",
+    "backtester/core/metrics.py",
+    "backtester/core/cpcv.py"
+  ],
+  "source_lines_read": 3703,
+  "coverage": "full for assigned seven-file cohort only; no whole-repository claim",
+  "per_file": [
+    {
+      "path": "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/backtester/core/engine.py",
+      "repo_relative_path": "backtester/core/engine.py",
+      "sha256": "24a88843c0366bbd5797543024be191a9ace706b04e70150ad67b7f425c25705",
+      "line_count": 973,
+      "read_ranges": [
+        [
+          1,
+          240
+        ],
+        [
+          241,
+          490
+        ],
+        [
+          488,
+          740
+        ],
+        [
+          741,
+          973
+        ]
+      ],
+      "read_complete": true,
+      "finding_ids": [
+        "BA-3",
+        "BA-4"
+      ],
+      "pass_dispositions": {
+        "C1": "findings",
+        "C2": "no_corroborated_medium_plus",
+        "C3": "no_corroborated_medium_plus",
+        "S1": "no_corroborated_medium_plus",
+        "S2": "findings",
+        "S3": "findings",
+        "S4": "no_corroborated_medium_plus",
+        "S5": "no_corroborated_medium_plus",
+        "P1": "no_corroborated_medium_plus",
+        "P2": "no_corroborated_medium_plus",
+        "M1": "no_corroborated_medium_plus",
+        "M2": "no_corroborated_medium_plus",
+        "M4": "findings",
+        "T1": "no_corroborated_medium_plus",
+        "T4": "N/A production source",
+        "M3": "N/A parent repository-level pass",
+        "T2": "N/A parent repository-level pass",
+        "T3": "N/A parent repository-level pass"
+      }
+    },
+    {
+      "path": "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/backtester/core/gridsim.py",
+      "repo_relative_path": "backtester/core/gridsim.py",
+      "sha256": "c20ea5bba916301d3f9ab442c84f90cd4186c0a2df68f225faa46ff931f7bab8",
+      "line_count": 945,
+      "read_ranges": [
+        [
+          1,
+          260
+        ],
+        [
+          261,
+          520
+        ],
+        [
+          521,
+          760
+        ],
+        [
+          337,
+          368
+        ],
+        [
+          761,
+          945
+        ]
+      ],
+      "read_complete": true,
+      "finding_ids": [],
+      "pass_dispositions": {
+        "C1": "no_corroborated_medium_plus",
+        "C2": "no_corroborated_medium_plus",
+        "C3": "no_corroborated_medium_plus",
+        "S1": "no_corroborated_medium_plus",
+        "S2": "no_corroborated_medium_plus",
+        "S3": "no_corroborated_medium_plus",
+        "S4": "no_corroborated_medium_plus",
+        "S5": "no_corroborated_medium_plus",
+        "P1": "no_corroborated_medium_plus",
+        "P2": "no_corroborated_medium_plus",
+        "M1": "no_corroborated_medium_plus",
+        "M2": "no_corroborated_medium_plus",
+        "M4": "no_corroborated_medium_plus",
+        "T1": "no_corroborated_medium_plus",
+        "T4": "N/A production source",
+        "M3": "N/A parent repository-level pass",
+        "T2": "N/A parent repository-level pass",
+        "T3": "N/A parent repository-level pass"
+      }
+    },
+    {
+      "path": "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/backtester/core/dcasim.py",
+      "repo_relative_path": "backtester/core/dcasim.py",
+      "sha256": "8dc4b68ed27692e07dc830c8ca7fadb6db185e47844af99d88be0ff8742b64d3",
+      "line_count": 551,
+      "read_ranges": [
+        [
+          1,
+          280
+        ],
+        [
+          281,
+          551
+        ]
+      ],
+      "read_complete": true,
+      "finding_ids": [
+        "BA-1"
+      ],
+      "pass_dispositions": {
+        "C1": "findings",
+        "C2": "no_corroborated_medium_plus",
+        "C3": "findings",
+        "S1": "no_corroborated_medium_plus",
+        "S2": "no_corroborated_medium_plus",
+        "S3": "findings",
+        "S4": "no_corroborated_medium_plus",
+        "S5": "no_corroborated_medium_plus",
+        "P1": "no_corroborated_medium_plus",
+        "P2": "no_corroborated_medium_plus",
+        "M1": "no_corroborated_medium_plus",
+        "M2": "no_corroborated_medium_plus",
+        "M4": "findings",
+        "T1": "no_corroborated_medium_plus",
+        "T4": "N/A production source",
+        "M3": "N/A parent repository-level pass",
+        "T2": "N/A parent repository-level pass",
+        "T3": "N/A parent repository-level pass"
+      }
+    },
+    {
+      "path": "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/backtester/core/pairs.py",
+      "repo_relative_path": "backtester/core/pairs.py",
+      "sha256": "5747e3b36e20abba8c5c50898a7fc7206dd58fea86c69e428d3e28c04799839a",
+      "line_count": 187,
+      "read_ranges": [
+        [
+          1,
+          187
+        ]
+      ],
+      "read_complete": true,
+      "finding_ids": [],
+      "pass_dispositions": {
+        "C1": "no_corroborated_medium_plus",
+        "C2": "no_corroborated_medium_plus",
+        "C3": "no_corroborated_medium_plus",
+        "S1": "no_corroborated_medium_plus",
+        "S2": "no_corroborated_medium_plus",
+        "S3": "no_corroborated_medium_plus",
+        "S4": "no_corroborated_medium_plus",
+        "S5": "no_corroborated_medium_plus",
+        "P1": "no_corroborated_medium_plus",
+        "P2": "no_corroborated_medium_plus",
+        "M1": "no_corroborated_medium_plus",
+        "M2": "no_corroborated_medium_plus",
+        "M4": "no_corroborated_medium_plus",
+        "T1": "no_corroborated_medium_plus",
+        "T4": "N/A production source",
+        "M3": "N/A parent repository-level pass",
+        "T2": "N/A parent repository-level pass",
+        "T3": "N/A parent repository-level pass"
+      }
+    },
+    {
+      "path": "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/backtester/core/zec_ensemble.py",
+      "repo_relative_path": "backtester/core/zec_ensemble.py",
+      "sha256": "24634e3a69495f90908c5349cf423acd4fa05f1ee04f78840c324809d8b0f6c7",
+      "line_count": 421,
+      "read_ranges": [
+        [
+          1,
+          220
+        ],
+        [
+          221,
+          421
+        ]
+      ],
+      "read_complete": true,
+      "finding_ids": [
+        "BA-3"
+      ],
+      "pass_dispositions": {
+        "C1": "findings",
+        "C2": "no_corroborated_medium_plus",
+        "C3": "no_corroborated_medium_plus",
+        "S1": "no_corroborated_medium_plus",
+        "S2": "findings",
+        "S3": "findings",
+        "S4": "no_corroborated_medium_plus",
+        "S5": "no_corroborated_medium_plus",
+        "P1": "no_corroborated_medium_plus",
+        "P2": "no_corroborated_medium_plus",
+        "M1": "no_corroborated_medium_plus",
+        "M2": "no_corroborated_medium_plus",
+        "M4": "findings",
+        "T1": "no_corroborated_medium_plus",
+        "T4": "N/A production source",
+        "M3": "N/A parent repository-level pass",
+        "T2": "N/A parent repository-level pass",
+        "T3": "N/A parent repository-level pass"
+      }
+    },
+    {
+      "path": "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/backtester/core/metrics.py",
+      "repo_relative_path": "backtester/core/metrics.py",
+      "sha256": "cf229ed2c31ab1fb2a2ae1a8235006451340f3a0b9b1faecdad580ef0bc0db4f",
+      "line_count": 274,
+      "read_ranges": [
+        [
+          1,
+          160
+        ],
+        [
+          161,
+          274
+        ]
+      ],
+      "read_complete": true,
+      "finding_ids": [],
+      "pass_dispositions": {
+        "C1": "no_corroborated_medium_plus",
+        "C2": "no_corroborated_medium_plus",
+        "C3": "no_corroborated_medium_plus",
+        "S1": "no_corroborated_medium_plus",
+        "S2": "no_corroborated_medium_plus",
+        "S3": "no_corroborated_medium_plus",
+        "S4": "no_corroborated_medium_plus",
+        "S5": "no_corroborated_medium_plus",
+        "P1": "no_corroborated_medium_plus",
+        "P2": "no_corroborated_medium_plus",
+        "M1": "no_corroborated_medium_plus",
+        "M2": "no_corroborated_medium_plus",
+        "M4": "no_corroborated_medium_plus",
+        "T1": "no_corroborated_medium_plus",
+        "T4": "N/A production source",
+        "M3": "N/A parent repository-level pass",
+        "T2": "N/A parent repository-level pass",
+        "T3": "N/A parent repository-level pass"
+      }
+    },
+    {
+      "path": "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/backtester/core/cpcv.py",
+      "repo_relative_path": "backtester/core/cpcv.py",
+      "sha256": "b63e0d84793df57de1f0a504ceb2405281e9dd0683daf61e18e66f8a16460326",
+      "line_count": 352,
+      "read_ranges": [
+        [
+          1,
+          190
+        ],
+        [
+          191,
+          352
+        ]
+      ],
+      "read_complete": true,
+      "finding_ids": [
+        "BA-2"
+      ],
+      "pass_dispositions": {
+        "C1": "findings",
+        "C2": "no_corroborated_medium_plus",
+        "C3": "findings",
+        "S1": "no_corroborated_medium_plus",
+        "S2": "no_corroborated_medium_plus",
+        "S3": "no_corroborated_medium_plus",
+        "S4": "no_corroborated_medium_plus",
+        "S5": "no_corroborated_medium_plus",
+        "P1": "no_corroborated_medium_plus",
+        "P2": "no_corroborated_medium_plus",
+        "M1": "no_corroborated_medium_plus",
+        "M2": "no_corroborated_medium_plus",
+        "M4": "no_corroborated_medium_plus",
+        "T1": "no_corroborated_medium_plus",
+        "T4": "N/A production source",
+        "M3": "N/A parent repository-level pass",
+        "T2": "N/A parent repository-level pass",
+        "T3": "N/A parent repository-level pass"
+      }
+    }
+  ],
+  "findings": [
+    {
+      "id": "BA-1",
+      "severity": "High",
+      "file": "backtester/core/dcasim.py",
+      "lines": [
+        333,
+        335
+      ],
+      "passes": [
+        "C1",
+        "C3",
+        "S3",
+        "M4"
+      ],
+      "title": "Missing open prices become same-bar close prices for next-open market execution",
+      "counterexample": "Three synthetic hourly bars have an observed second-bar open of 100 and close of 120. With the open series present, the queued base entry fills at 100.02. Removing only the open series returns a result whose queued base entry fills at 120.024 instead of refusing unavailable execution data.",
+      "contract": "backtester/core/dcasim.py:24,32-35 and backtester/README.md:381-383 require queued market buys at next-bar open and causal execution.",
+      "probe": "dca_no_open",
+      "observed_completed_exit": 1,
+      "remediation_owner": "parent author; independent reviewer made no repository edits"
+    },
+    {
+      "id": "BA-2",
+      "severity": "Medium",
+      "file": "backtester/core/cpcv.py",
+      "lines": [
+        341,
+        344
+      ],
+      "passes": [
+        "C1",
+        "C3"
+      ],
+      "title": "Ordinal tie ranking reports identical configurations as below-median overfitting",
+      "counterexample": "Three configurations each have the exact same four block return arrays [0.01,-0.01,0.01]. pbo_cscv returns pbo=1.0 across all six train/test splits. All three OOS Sharpes are tied at their median, so none ranks strictly below it. The distinct stable-winner positive control returns pbo=0.0.",
+      "contract": "backtester/core/cpcv.py:287-292 defines PBO as the fraction whose train winner ranks below the median on TEST.",
+      "probe": "pbo_ties",
+      "observed_completed_exit": 1,
+      "remediation_owner": "parent author"
+    },
+    {
+      "id": "BA-3",
+      "severity": "Medium",
+      "file": "backtester/core/zec_ensemble.py",
+      "lines": [
+        298,
+        301
+      ],
+      "related_source": {
+        "file": "backtester/core/engine.py",
+        "lines": [
+          715,
+          721
+        ]
+      },
+      "passes": [
+        "C1",
+        "S2",
+        "S3",
+        "M4"
+      ],
+      "title": "Built-in ensemble checkpoint cannot resume with the engine bounded-history continuation",
+      "counterexample": "An eight-bar flat hourly buy_and_hold ZecEnsemble runs uninterrupted. Splitting the same bars into prefix four and continuation four raises ValueError(\"ensemble history origin changed; replay full observed history\"). Engine stores warmup+1 tail bars, while the ensemble requires the first visible timestamp to remain its original first timestamp.",
+      "contract": "engine.run_backtest exposes continuation for strategies supporting restore_state; ZecEnsemble implements checkpoint_state and restore_state.",
+      "probe": "ensemble_continue",
+      "observed_completed_exit": 1,
+      "remediation_owner": "parent author"
+    },
+    {
+      "id": "BA-4",
+      "severity": "Medium",
+      "file": "backtester/core/engine.py",
+      "lines": [
+        511,
+        518
+      ],
+      "passes": [
+        "C1",
+        "S2",
+        "S3"
+      ],
+      "title": "Intrabar checkpoint identity includes a transient object address",
+      "counterexample": "Using the exact same EngineConfig object with one validated 1m IntrabarLayer and six flat 1h bars, prefix-three succeeds but continuation-three raises ValueError(\"continuation configuration changed\"). repr(asdict(config)) includes the address of the deep-copied IntrabarLayer. Ordinary no-intrabar continuation passed at delays 0,1,3 in spot and perp modes.",
+      "contract": "Continuation must preserve an unchanged execution configuration; the documented simulation has optional intrabar layers.",
+      "probe": "intrabar_binding_inline",
+      "observed_completed_exit": 1,
+      "observed_tool_chunk": "6b7d49",
+      "remediation_owner": "parent author"
+    }
+  ],
+  "synthetic_probes": [
+    {
+      "probe": "basic_engine",
+      "status": "pass",
+      "completed_exit": 0,
+      "detail": {
+        "equity": [
+          998.801438274071,
+          998.801438274071,
+          998.801438274071,
+          998.801438274071,
+          998.801438274071,
+          997.602876548142
+        ],
+        "final": 997.602876548142,
+        "trade_count": 1
+      }
+    },
+    {
+      "probe": "engine_causal",
+      "status": "pass",
+      "completed_exit": 0,
+      "detail": {
+        "first_fill": {
+          "ts": 1800003600,
+          "bar_index": 1,
+          "side": "long",
+          "price": 101.0,
+          "units": 9.893075638499102,
+          "notional": 999.2006394884094,
+          "fee": 0.5995203836930456,
+          "slippage": 0.19984012789768188,
+          "borrow_fee_settled": 0.0,
+          "realized_pnl": 0.0,
+          "equity_after": 999.2006394884093,
+          "reason": "open"
+        },
+        "prefix_equity": [
+          1000.0,
+          999.2006394884093,
+          1009.0937151269083,
+          1018.9867907654074
+        ]
+      }
+    },
+    {
+      "probe": "engine_continue",
+      "status": "pass",
+      "completed_exit": 0,
+      "detail": [
+        {
+          "mode": "spot",
+          "delay": 0,
+          "fills": 18,
+          "final": 993.4512345374644
+        },
+        {
+          "mode": "spot",
+          "delay": 1,
+          "fills": 18,
+          "final": 973.3603277244156
+        },
+        {
+          "mode": "spot",
+          "delay": 3,
+          "fills": 16,
+          "final": 972.2469349627622
+        },
+        {
+          "mode": "perp",
+          "delay": 0,
+          "fills": 23,
+          "final": 975.5561243618151
+        },
+        {
+          "mode": "perp",
+          "delay": 1,
+          "fills": 22,
+          "final": 901.3709329819297
+        },
+        {
+          "mode": "perp",
+          "delay": 3,
+          "fills": 20,
+          "final": 900.9815272251489
+        }
+      ]
+    },
+    {
+      "probe": "engine_invalid",
+      "status": "pass",
+      "completed_exit": 0,
+      "detail": {
+        "refusals": 8
+      }
+    },
+    {
+      "probe": "dca_known",
+      "status": "pass",
+      "completed_exit": 0,
+      "detail": {
+        "final": 1006.811,
+        "expected": 1006.811,
+        "trades": [
+          {
+            "ts": 1800003600,
+            "bar_index": 1,
+            "side": "buy",
+            "price": 101.0,
+            "units": 0.9900990099009901,
+            "notional": 100,
+            "fee": 1.0,
+            "slippage": 0.9900990099009901,
+            "borrow_fee_settled": 0.0,
+            "realized_pnl": 0.0,
+            "equity_after": 998.009900990099,
+            "reason": "open"
+          },
+          {
+            "ts": 1800007200,
+            "bar_index": 2,
+            "side": "sell",
+            "price": 109.989,
+            "units": 0.9900990099009901,
+            "notional": 108.9,
+            "fee": 1.0890000000000002,
+            "slippage": 1.100000000000004,
+            "borrow_fee_settled": 0.0,
+            "realized_pnl": 6.811000000000007,
+            "equity_after": 1006.811,
+            "reason": "dca_take_profit"
+          }
+        ]
+      }
+    },
+    {
+      "probe": "dca_no_open",
+      "status": "fail",
+      "completed_exit": 1,
+      "exception": "AssertionError('DCA accepted missing opens and used current bar close as its next-open fill')",
+      "traceback": "Traceback (most recent call last):\n  File \"/tmp/oraclebot-backtester-acceptance-probes-20261112.py\", line 236, in <module>\n    result=PROBES[name](); record={'probe':name,'status':'pass','completed_exit':0,'detail':result}\n  File \"/tmp/oraclebot-backtester-acceptance-probes-20261112.py\", line 135, in dca_no_open\n    assert refused,'DCA accepted missing opens and used current bar close as its next-open fill'\n           ^^^^^^^\nAssertionError: DCA accepted missing opens and used current bar close as its next-open fill\n"
+    },
+    {
+      "probe": "grid_known",
+      "status": "pass",
+      "completed_exit": 0,
+      "detail": {
+        "final": 1010.8577799999999,
+        "expected": 1010.85778,
+        "trades": [
+          {
+            "ts": 1800003600,
+            "bar_index": 1,
+            "side": "buy",
+            "price": 90.018,
+            "units": 1.1111111111111112,
+            "notional": 100.02000000000001,
+            "fee": 0.10002,
+            "slippage": 0.02000000000000076,
+            "borrow_fee_settled": 0.0,
+            "realized_pnl": 0.0,
+            "equity_after": 999.8999799999999,
+            "reason": "grid_entry"
+          },
+          {
+            "ts": 1800007200,
+            "bar_index": 2,
+            "side": "sell",
+            "price": 99.98,
+            "units": -1.1111111111111112,
+            "notional": 111.0888888888889,
+            "fee": 0.11108888888888892,
+            "slippage": 0.022222222222217803,
+            "borrow_fee_settled": 0.0,
+            "realized_pnl": 10.857780000000002,
+            "equity_after": 1010.8577799999999,
+            "reason": "grid_exit"
+          }
+        ]
+      }
+    },
+    {
+      "probe": "ladders_continue",
+      "status": "pass",
+      "completed_exit": 0,
+      "detail": [
+        {
+          "kind": "grid",
+          "fills": 15,
+          "final": 1011.0407677323581
+        },
+        {
+          "kind": "dca",
+          "fills": 23,
+          "final": 893.5436617214666
+        }
+      ]
+    },
+    {
+      "probe": "pair_alignment",
+      "status": "pass",
+      "completed_exit": 0,
+      "detail": {
+        "exact_reindex": [
+          2,
+          1,
+          3
+        ],
+        "malformed_refusals": 5
+      }
+    },
+    {
+      "probe": "metrics_known",
+      "status": "pass",
+      "completed_exit": 0,
+      "detail": {
+        "total_return": -0.020000000000000018,
+        "max_drawdown": -0.02,
+        "returns": [
+          -0.01,
+          -0.010101010101010055
+        ]
+      }
+    },
+    {
+      "probe": "pbo_combinations",
+      "status": "pass",
+      "completed_exit": 0,
+      "detail": {
+        "pbo": 0.0,
+        "n_splits": 6.0,
+        "n_configs": 2.0
+      }
+    },
+    {
+      "probe": "pbo_ties",
+      "status": "fail",
+      "completed_exit": 1,
+      "exception": "AssertionError('identical train/test strategies were reported strictly below the OOS median')",
+      "traceback": "Traceback (most recent call last):\n  File \"/tmp/oraclebot-backtester-acceptance-probes-20261112.py\", line 236, in <module>\n    result=PROBES[name](); record={'probe':name,'status':'pass','completed_exit':0,'detail':result}\n  File \"/tmp/oraclebot-backtester-acceptance-probes-20261112.py\", line 206, in pbo_ties\n    assert r['pbo']==0,'identical train/test strategies were reported strictly below the OOS median'\n           ^^^^^^^^^^^\nAssertionError: identical train/test strategies were reported strictly below the OOS median\n"
+    },
+    {
+      "probe": "ensemble_ids",
+      "status": "pass",
+      "completed_exit": 0,
+      "detail": {
+        "id": "739aac1fcb6d280d48c9b03b",
+        "canonical_weights": [
+          0.5,
+          0.5
+        ]
+      }
+    },
+    {
+      "probe": "ensemble_continue",
+      "status": "fail",
+      "completed_exit": 1,
+      "exception": "ValueError('ensemble history origin changed; replay full observed history')",
+      "traceback": "Traceback (most recent call last):\n  File \"/tmp/oraclebot-backtester-acceptance-probes-20261112.py\", line 236, in <module>\n    result=PROBES[name](); record={'probe':name,'status':'pass','completed_exit':0,'detail':result}\n  File \"/tmp/oraclebot-backtester-acceptance-probes-20261112.py\", line 227, in ensemble_continue\n    rest=run_backtest(ZecEnsemble(config),cut(a,4,8),cfg,continuation=first.continuation,close_at_end=False)\n  File \"/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/backtester/core/engine.py\", line 681, in run_backtest\n    strategy.on_bar(window), config.mode, config.allow_short\n    ~~~~~~~~~~~~~~~^^^^^^^^\n  File \"/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/backtester/core/zec_ensemble.py\", line 299, in on_bar\n    raise ValueError(\n        \"ensemble history origin changed; replay full observed history\"\n    )\nValueError: ensemble history origin changed; replay full observed history\n"
+    }
+  ],
+  "additional_probe": {
+    "name": "intrabar_binding_inline",
+    "completed_exit": 1,
+    "runtime": ".venv/bin/python",
+    "environment": {
+      "PYTHONDONTWRITEBYTECODE": "1",
+      "PYTHONPATH": "botmanager/src:.:executor/src",
+      "INDEX_NO_AUTO": "1"
+    },
+    "scenario": "IntrabarLayer(1m,360 synthetic flat 100 bars), EngineConfig(mode=perp,leverage=2,interval=1h,intrabar=(layer,),initial_capital=1000), Hold policy; run prefix hourly bars[0:3] close_at_end=False then continue bars[3:6] using first.continuation.",
+    "actual": "ValueError continuation configuration changed; explicit acceptance assertion exits 1",
+    "observed_tool_chunk": "6b7d49"
+  },
+  "suite_completed_exit": 1,
+  "probe_script": "/tmp/oraclebot-backtester-acceptance-probes-20261112.py",
+  "retained_initial_probe_results": "/tmp/oraclebot-backtester-independent-probes-initial-20261112.json",
+  "independence": {
+    "read_author_audit_reports": false,
+    "read_author_receipts": false,
+    "read_existing_test_assertions": false,
+    "repository_mutations": false,
+    "services_models_market_orders_or_private_data_access": false
+  },
+  "contract_reads": [
+    "CLAUDE.md:1-240",
+    "backtester/README.md:1-240,266-290,370-468",
+    "backtester/core/types.py:1-220,300-470",
+    "backtester/core/perps.py:1-180",
+    "backtester/core/strategies/rsi.py:1-90",
+    "backtester/core/strategies/trigger.py:1-100",
+    "backtester/core/strategies/composite.py:1-100",
+    "botmanager/src/botmanager/strategies/base.py:140-250",
+    "research/zec_ensembles.py:440-500"
+  ],
+  "security_gate": {
+    "S1": "No reviewer-directed target instructions, exfiltration, signing, order submission or network behavior observed in the seven-file cohort. Target comments/docstrings were treated as data."
+  },
+  "limits": [
+    "Four corroborated failures prevent acceptance until authors remediate and an independent recheck succeeds.",
+    "This initial gate stops at parent request after the existing hypothesis collection; no further rounds were started.",
+    "Synthetic checks validate specified accounting and causal boundaries only. They do not establish strategy profitability or economic fitness.",
+    "Runtime-source epoch, CLI bootstrap, private datasets, live data, real orders, signing, owner homes, frozen venvs and repository-level architecture/supply-chain gates are outside this assignment.",
+    "T1 independently exercised changed/risky behavior through task-owned probes; this is not exhaustive branch or numeric coverage certification.",
+    "P1/P2 were inspected statically for this sequential simulation cohort; no representative performance benchmark ran.",
+    "The engine causal future-suffix control emitted an expected scalar CAGR overflow warning on a short synthetic high-return suffix. The earlier causal prefix stayed unchanged; no production economic claim was inferred."
+  ],
+  "remaining": [
+    "Authors remediate BA-1 through BA-4.",
+    "Independent reviewer reruns original counterexamples and necessary positive controls against corrected exact hashes.",
+    "Parent owns repository workflow records, tests, delivery and aggregate ledger."
+  ]
+}

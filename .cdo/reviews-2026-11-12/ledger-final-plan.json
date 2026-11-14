@@ -1,0 +1,22 @@
+{
+  "observed_at": "2026-11-12T21:35:50.082313+00:00",
+  "command": [
+    "python3",
+    "/Users/mitch/.agents/skills/code-deep-optimizer/scripts/cdo_ledger.py",
+    "plan",
+    "--repo",
+    "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112",
+    "--json"
+  ],
+  "first_exit": 0,
+  "repeat_unchanged_exit": 0,
+  "identical_repeat": true,
+  "plan": {
+    "review": [],
+    "deferred": [],
+    "unchanged_skipped": 824,
+    "removed_from_disk": [],
+    "full": false
+  },
+  "coverage_distinction": "824 helper-classified unchanged paths comprise819semanticapplication files and5HTML-data classifications;22supplements separate. Historical S1/M4data fields persist by helper union and are not18passcodecredit."
+}

@@ -13,6 +13,7 @@ test('CDO-c808500bbb journal acknowledgment requires file and directory fsync', 
   const imported = source.match(/import \{[^\n]+\} from 'node:fs\/promises';/)[0];
   const calls = []; let failFileSync = false;
   globalThis.__durableFS = {
+    realpath: async path => path, lstat: async () => ({ isFile: () => true, nlink: 1 }),
     mkdir: async () => {}, unlink: async () => {}, rename: async () => calls.push('rename'),
     writeFile: async () => calls.push('unsynced-write'),
     open: async (_path, mode) => mode === 'r' ? { sync: async () => calls.push('directory-sync'), close: async () => {} }

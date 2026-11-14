@@ -1,5 +1,6 @@
 import os
 import stat
+from decimal import Decimal, localcontext
 
 import pytest
 
@@ -24,6 +25,22 @@ def test_ui_to_raw_rejects(bad):
 def test_ui_to_raw_rejects_numbers_that_are_not_strings():
     with pytest.raises(BadParams):
         ui_to_raw(1.5, 6)  # type: ignore[arg-type]
+
+
+@pytest.mark.parametrize(
+    "amount", ["1.0000000000000000000000000001", "1e-100000000", "1e100000000", "18446744073.709551616"]
+)
+def test_ui_to_raw_never_rounds_underflows_or_exceeds_solana_u64(amount):
+    with pytest.raises(BadParams):
+        ui_to_raw(amount, 9)
+
+
+def test_amount_conversion_is_independent_of_decimal_context():
+    with localcontext() as ctx:
+        ctx.prec = 6
+        assert ui_to_raw("1.000000001", 9) == 1_000_000_001
+        assert raw_to_ui(1_000_000_001, 9) == Decimal("1.000000001")
+    assert ui_to_raw("18446744073.709551615", 9) == 2**64 - 1
 
 
 def test_resolve_symbol_and_mint_and_unknown():
@@ -70,6 +87,7 @@ def test_config_round_trips_overrides(tmp_path):
         ('mode = "dry-run"', 'mode = "yolo"'),
         ("daily_loss_stop_usd = 10.0", 'daily_loss_stop_usd = "ten"'),
         ("daily_loss_stop_usd = 10.0", "daily_loss_stop_usd = nan"),
+        ("daily_loss_stop_usd = 10.0", "daily_loss_stop_usd = " + str(10**1000)),
         ('allowed_mints = ["SOL", "USDC"]', 'allowed_mints = ["SOL", "BONK"]'),
         ('allowed_mints = ["SOL", "USDC"]', "allowed_mints = []"),
         ("max_slippage_bps = 50", "max_slippage_bpz = 50"),  # typo = unknown key

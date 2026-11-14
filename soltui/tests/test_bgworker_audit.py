@@ -119,6 +119,35 @@ class TestEvaluationProof(unittest.TestCase):
             self.assertEqual(bgworker.main(["--plan", "--results-path", str(self.results)]), 0)
         read.assert_called_once_with(self.results)
 
+    def test_rsi_exclusions_are_bound_to_proof_and_status_without_attempts(self):
+        with mock.patch.object(bgworker, "build_queue", side_effect=bgqueue.build_queue):
+            state = self.run_worker(horizons=["medium"], strategies=["rsi"])
+        self.assertEqual(state.phase, "done")
+        self.assertEqual(state.total, 11)
+        self.assertEqual({key: state.candidates[key] for key in ("requested", "eligible", "excluded")},
+                         {"requested": 13, "eligible": 11, "excluded": 2})
+        rows = bgqueue.read_results(self.results)
+        self.assertEqual(len(rows), 11)
+        self.assertTrue(all(row.evaluable for row in rows))
+        manifest = json.loads(self.results.with_name("results.jsonl.proof.json").read_text())
+        self.assertEqual(manifest["assets"]["SOL"]["candidates"], state.candidates)
+        self.assertEqual({e["job_id"] for e in state.candidates["exclusions"]},
+                         {"cb9b5d612027b69d", "3873501191efbebb"})
+
+    def test_plan_prints_exact_exclusions_without_writing_results(self):
+        output = io.StringIO()
+        with mock.patch.object(bgworker, "build_queue", side_effect=bgqueue.build_queue), \
+                mock.patch.object(bgworker, "load_settings", return_value=self.settings), \
+                contextlib.redirect_stdout(output):
+            code = bgworker.main(["--plan", "--asset", "SOL", "--horizons", "medium",
+                                  "--strategies", "rsi", "--results-path", str(self.results)])
+        self.assertEqual(code, 0)
+        self.assertIn("13 requested, 11 eligible, 2 excluded before evaluation", output.getvalue())
+        self.assertIn("cb9b5d612027b69d", output.getvalue())
+        self.assertIn("3873501191efbebb", output.getvalue())
+        self.assertFalse(self.results.exists())
+        self.assertFalse(self.results.with_name("results.jsonl.proof.json").exists())
+
 
 class TestInheritedLock(unittest.TestCase):
     def setUp(self) -> None:

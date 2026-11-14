@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import { importSource } from './helpers/import-source.js';
 import { DEFAULT_CONFIG } from '../src/storage/store.js';
 const tool = suffix => importSource('tools/verify-endpoints.js', { replace: [['const apiKey = process.env.JUPITER_API_KEY;', 'const apiKey = null;']],
-  tail: 'console.log(`checking Jupiter endpoints', append: `export { checkPrice, checkTriggerReachable }; export const failuresNow = () => failures; // ${suffix}` });
+  tail: 'async function main()', append: `export { checkPrice, checkTriggerReachable }; export const failuresNow = () => failures; // ${suffix}` });
 async function fixture(fn) {
   const saved = globalThis.fetch, log = console.log;
   console.log = () => {};

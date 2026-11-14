@@ -11,7 +11,7 @@ from unittest import mock
 from textual.widgets import Button, Checkbox, DataTable, Input, Select, Static, TabbedContent
 
 from soltui import config
-from soltui.tests.test_tui import TEST_SIZE, make_settings
+from soltui.tests.test_tui import TEST_SIZE, make_settings, offline_console_reads
 from soltui.tui import SolTuiApp
 
 
@@ -27,6 +27,7 @@ def preview(expires=None):
 
 class CoinbaseManualUiTests(unittest.IsolatedAsyncioTestCase):
     async def asyncSetUp(self):
+        self.enterContext(offline_console_reads())
         self.tmp = tempfile.TemporaryDirectory()
         self.addAsyncCleanup(self._clean)
         self.patch = mock.patch.object(config, "CONFIG_DIR", Path(self.tmp.name))

@@ -30,9 +30,9 @@ py2app>=0.28.10 ; sys_platform == "darwin"
 PyYAML>=6.0.3
 
 # Solana transaction signing and verification for Jupiter Swap v2
-solders>=0.26,<0.28
+solders>=0.29.0,<0.30
 httpx>=0.27,<1
 
 # Renders and loads the LaunchAgent for soltui/soltui-service (plist, bootout/bootstrap).
 # Needed wherever that script runs. Private repo: needs git credentials for github.com/mithudso.
-macos-launchd-supervisor @ git+https://github.com/mithudso/macos-launchd-supervisor@33ba467eb5e2448ed188cc2076bba5984fd09d0e
+macos-launchd-supervisor @ git+https://github.com/mithudso/macos-launchd-supervisor@6379b2299cf01a17d57a01a9cdd5e3788ad2837e

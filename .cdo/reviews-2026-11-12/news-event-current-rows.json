@@ -1,0 +1,267 @@
+{
+  "schema": "oraclebot-full-source-review/v1",
+  "source_receipt": "news-event-incoming.json",
+  "source_receipt_sha256": "7212a502e8071e276e087eb16bea6cc5333e731d32432cdd20c6553ff3720fe7",
+  "status": "COMPLETE_STATIC_AND_AUTHOR_DELTA_REVIEW_FOCUSED_GREEN_PARENT_INDEPENDENT_READ_ACCEPTED_FULL_INTEGRATION_PENDING",
+  "files": [
+    {
+      "path": "research/news_event_report.py",
+      "sha256": "6d5498e352cb1d2dfbcb910174e8bcc88a1030ab448da0c4fb62a4046eea9363",
+      "blob_sha": "5e22f9c6b8772c36bc1555c5944d3d9a3e1fd7b5",
+      "lines": 349,
+      "read_evidence": {
+        "method": "Prior complete immutable source bound to unchanged postmerge baseline; every author diff hunk and targeted helper/caller spans read; no duplicate full-file review claimed.",
+        "prior_complete_read_ranges": [
+          [
+            1,
+            180
+          ],
+          [
+            181,
+            336
+          ]
+        ],
+        "baseline_sha256": "c525758fae026b95ef8472449e807626a0f5d44b723231e24d58f09fa6d3699a",
+        "final_delta_ranges": [
+          [
+            7,
+            20
+          ],
+          [
+            29,
+            35
+          ],
+          [
+            332,
+            349
+          ]
+        ],
+        "source_receipt": "news-event-incoming.json",
+        "immutable_original_full_read_lines": 336
+      },
+      "passes": {
+        "C1": "ran: Focused known-answer normalization verified. Equivalent offset timestamps produce one UTC week; same local-date observations on opposite UTC sides produce two. Other math/cohort behavior retains prior full static review and existing synthetic controls.",
+        "C2": "ran: Successful run/render signatures and return schemas retained. Date-only clustering remains midnight UTC. main(argv=None) adds stdlib-first CLI handling; help exits0, malformed/missing args2, missing prerequisites3.",
+        "C3": "ran: Original offset and preflight/partial-output counterexamples reproduced with completed RED exit1, then permanent focused regressions GREEN. Additional mocked bootstrap failure, recursion, report-only and all-dependency naming controls pass. Parent supplies independent acceptance; this followup is author verification.",
+        "S1": "ran: No reviewer-directed instructions, exfiltration, network/acquisition/signing/order calls found. New subprocess fixture is an exact fixed dependency blocker with temporary paths; private guard binds test, payload, source, candidate binary, argv, cwd and roots.",
+        "S2": "ran: Dependency preflight now occurs first in public run/render before reads/output writes. Missing plotting dependencies preserve existing synthetic report bytes. Actual installs/reexec mocked; helper owns environment policy. General I/O failures after valid preflight are not made transaction-atomic by this bounded fix.",
+        "S3": "ran: Original cohort hashes, identities, exact candle times and positive finite prices unchanged. Dependency failures safely name declared imports without private exception payloads. TOOL_NO_VENV1 never installs and reexec marker prevents recursive setup.",
+        "S4": "ran: Qualified candidate Python3.13 used; syntax also follows root py311 lint target. Direct script reexec supports report sibling import through explicit candidate repo path. Agg is selected before pyplot import. No service/platform execution.",
+        "S5": "ran: Broad import and CLI setup boundaries are explicit, narrowly documented and Ruff-qualified. CLI exposes safe declared module names/failure types and exact isolated repair. No new raw debug output or silent application failure.",
+        "P1": "ran: No economic search or representative benchmark. Existing1999-replicate deterministic bootstrap unchanged; local NumPy imports use normal cache. Focused22 tests complete below1second in recorded guarded run.",
+        "P2": "ran: Sequential execution; no new worker/concurrent shared-state path. Managed bootstrap retains established ownership/locking via ensure_environment. General concurrent report writers remain operator-managed, outside this bounded fix.",
+        "M1": "ran: Final files remain below500lines: research/news_event_report.py=349, research/news_event_study.py=486, research/tests/test_news_event_study.py=386. Setup is shared in study; parser boundaries live in both tools. Exact production delta and all test additions read after prior966-line complete review.",
+        "M2": "ran: Shared _preflight/_prepare_cli and existing backtester.run.ensure_environment reused. No independent installer, fetcher or execution engine added.",
+        "M3": "ran: Three-file imports remain acyclic (report -> study; helper imported lazily). Whole-repository settings/common-error/remediation/sink residuals remain parent repo-scope findings; no new repo-wide review credit.",
+        "M4": "ran: UTC seven-day docstring now agrees with normalized instants. Helper comments explain date-only compatibility, report-only mode, privacy and environment ownership. Historical empirical prose/results are unchanged and not requalified.",
+        "T1": "ran: Existing14 synthetic tests plus8 meaningful regressions complete22, GREEN exit0. First6 additions on baseline completed20 RED exit1 with12 assertion/subtest failures and3 errors for missing new entrypoints. Original failures preserved. No test assertion weakens accepted cohort/causality controls.",
+        "T2": "ran: No dependency manifest/lock edits in scope. Explicit helper requirements match already declared backtester floors; supply-chain/licence/advisory/CI limits remain repo-owned. No installation attempted.",
+        "T3": "ran: Exact pinned root Ruff0.17.4 check3files completed0; compile() and diff-check0. Full research/backtester/Oracle/ecosystem/SolTUI integration suites remain HOLD pending root index signal.",
+        "T4": "ran: Synthetic tests only. Every fixture is fresh temp state. Ten child invocations carry inherited guard and TOOL_NO_VENV1. No provider/data acquisition, original private data, real report, orders, signatures, model or service operations. Parent canonical equivalence limitations are unchanged.",
+        "M5": "ran: {\"E1\": \"Single python -m research.news_event_study/report invocation; direct-script bootstrap reexec supported.\", \"E2\": \"Required named argparse options; stdlib-only help0/error2 verified with NumPy unavailable.\", \"E3\": \"Validated arguments precede preflight; error exits2. No bootstrap on help/bad args.\", \"E4\": \"Source contract implements own marked research/.tools/.venv through established ensure_environment with explicit owner, entrypoint, requirements and one-shot reexec. Exact setup and exec argv checked with mocks; no real install/reexec or environment-write qualification is claimed.\", \"E5\": \"Complete dependency import/use preflight before report/study outputs. Study requires NumPy; report names NumPy, matplotlib and matplotlib.pyplot. TOOL_NO_VENV1 is report-only exit3 with exact shlex-quoted isolated uv repair. Exceptions expose declared names/types, never private payloads.\", \"E6\": \"Argparse documents help/options. Repair commands reproduce validated arguments with source absolute path and declared isolated requirements. Historical generated documentation left unchanged per scope.\", \"active\": true}"
+      },
+      "verdict": "REVIEWED-FIXED",
+      "findings": [
+        {
+          "id": "NEWS-1",
+          "severity": "Medium",
+          "status": "fixed_in_frozen_source_author_verified",
+          "counterexample": "1970-01-08T00:30:00+01:00 equals1970-01-07T23:30:00Z; original clustering incorrectly yielded2weeks",
+          "fix": "cluster_interval uses normalized publication epoch for seven-day block identity; legacy date-only rows retain UTC-midnight convention",
+          "red": "research.tests.test_news_event_study.NewsEvents.test_utc_week_uses_instant_across_offset_boundary",
+          "green": "same assertion and opposite-boundary positive control passed"
+        },
+        {
+          "id": "NEWS-2",
+          "severity": "Medium",
+          "status": "fixed_in_frozen_source_author_verified",
+          "counterexample": "NumPy absence preempted --help/error parsing; late matplotlib absence overwrote existing CSV outputs before failure",
+          "fix": "stdlib-first main, delayed statistical imports, complete preflight at run/render entry, own helper-owned environment/reexec, report-only exit3 and safe exact repair",
+          "red": "CLI help, valid invocation and existing-report sentinel controls failed on immutable baseline",
+          "green": "all CLI dependency combinations, sentinel preservation, mocked ownership/reexec, report-only/loop/failure and all-name controls passed"
+        }
+      ]
+    },
+    {
+      "path": "research/news_event_study.py",
+      "sha256": "ae059d145603e89798af535f96ca023000aec7cf58db23dec00daa6e43cf10f6",
+      "blob_sha": "8eca09bf05b2fdfa60514333a84b7756b9aa1f1e",
+      "lines": 486,
+      "read_evidence": {
+        "method": "Prior complete immutable source bound to unchanged postmerge baseline; every author diff hunk and targeted helper/caller spans read; no duplicate full-file review claimed.",
+        "prior_complete_read_ranges": [
+          [
+            1,
+            210
+          ],
+          [
+            211,
+            407
+          ]
+        ],
+        "baseline_sha256": "a2f1ed56737c2dfda2c8293c0c31ab04e074a31805068534b27db35797fad7dc",
+        "final_delta_ranges": [
+          [
+            9,
+            26
+          ],
+          [
+            48,
+            109
+          ],
+          [
+            231,
+            238
+          ],
+          [
+            242,
+            249
+          ],
+          [
+            309,
+            324
+          ],
+          [
+            329,
+            336
+          ],
+          [
+            425,
+            431
+          ],
+          [
+            462,
+            475
+          ],
+          [
+            479,
+            486
+          ]
+        ],
+        "source_receipt": "news-event-incoming.json",
+        "immutable_original_full_read_lines": 407
+      },
+      "passes": {
+        "C1": "ran: Focused known-answer normalization verified. Equivalent offset timestamps produce one UTC week; same local-date observations on opposite UTC sides produce two. Other math/cohort behavior retains prior full static review and existing synthetic controls.",
+        "C2": "ran: Successful run/render signatures and return schemas retained. Date-only clustering remains midnight UTC. main(argv=None) adds stdlib-first CLI handling; help exits0, malformed/missing args2, missing prerequisites3.",
+        "C3": "ran: Original offset and preflight/partial-output counterexamples reproduced with completed RED exit1, then permanent focused regressions GREEN. Additional mocked bootstrap failure, recursion, report-only and all-dependency naming controls pass. Parent supplies independent acceptance; this followup is author verification.",
+        "S1": "ran: No reviewer-directed instructions, exfiltration, network/acquisition/signing/order calls found. New subprocess fixture is an exact fixed dependency blocker with temporary paths; private guard binds test, payload, source, candidate binary, argv, cwd and roots.",
+        "S2": "ran: Dependency preflight now occurs first in public run/render before reads/output writes. Missing plotting dependencies preserve existing synthetic report bytes. Actual installs/reexec mocked; helper owns environment policy. General I/O failures after valid preflight are not made transaction-atomic by this bounded fix.",
+        "S3": "ran: Original cohort hashes, identities, exact candle times and positive finite prices unchanged. Dependency failures safely name declared imports without private exception payloads. TOOL_NO_VENV1 never installs and reexec marker prevents recursive setup.",
+        "S4": "ran: Qualified candidate Python3.13 used; syntax also follows root py311 lint target. Direct script reexec supports report sibling import through explicit candidate repo path. Agg is selected before pyplot import. No service/platform execution.",
+        "S5": "ran: Broad import and CLI setup boundaries are explicit, narrowly documented and Ruff-qualified. CLI exposes safe declared module names/failure types and exact isolated repair. No new raw debug output or silent application failure.",
+        "P1": "ran: No economic search or representative benchmark. Existing1999-replicate deterministic bootstrap unchanged; local NumPy imports use normal cache. Focused22 tests complete below1second in recorded guarded run.",
+        "P2": "ran: Sequential execution; no new worker/concurrent shared-state path. Managed bootstrap retains established ownership/locking via ensure_environment. General concurrent report writers remain operator-managed, outside this bounded fix.",
+        "M1": "ran: Final files remain below500lines: research/news_event_report.py=349, research/news_event_study.py=486, research/tests/test_news_event_study.py=386. Setup is shared in study; parser boundaries live in both tools. Exact production delta and all test additions read after prior966-line complete review.",
+        "M2": "ran: Shared _preflight/_prepare_cli and existing backtester.run.ensure_environment reused. No independent installer, fetcher or execution engine added.",
+        "M3": "ran: Three-file imports remain acyclic (report -> study; helper imported lazily). Whole-repository settings/common-error/remediation/sink residuals remain parent repo-scope findings; no new repo-wide review credit.",
+        "M4": "ran: UTC seven-day docstring now agrees with normalized instants. Helper comments explain date-only compatibility, report-only mode, privacy and environment ownership. Historical empirical prose/results are unchanged and not requalified.",
+        "T1": "ran: Existing14 synthetic tests plus8 meaningful regressions complete22, GREEN exit0. First6 additions on baseline completed20 RED exit1 with12 assertion/subtest failures and3 errors for missing new entrypoints. Original failures preserved. No test assertion weakens accepted cohort/causality controls.",
+        "T2": "ran: No dependency manifest/lock edits in scope. Explicit helper requirements match already declared backtester floors; supply-chain/licence/advisory/CI limits remain repo-owned. No installation attempted.",
+        "T3": "ran: Exact pinned root Ruff0.17.4 check3files completed0; compile() and diff-check0. Full research/backtester/Oracle/ecosystem/SolTUI integration suites remain HOLD pending root index signal.",
+        "T4": "ran: Synthetic tests only. Every fixture is fresh temp state. Ten child invocations carry inherited guard and TOOL_NO_VENV1. No provider/data acquisition, original private data, real report, orders, signatures, model or service operations. Parent canonical equivalence limitations are unchanged.",
+        "M5": "ran: {\"E1\": \"Single python -m research.news_event_study/report invocation; direct-script bootstrap reexec supported.\", \"E2\": \"Required named argparse options; stdlib-only help0/error2 verified with NumPy unavailable.\", \"E3\": \"Validated arguments precede preflight; error exits2. No bootstrap on help/bad args.\", \"E4\": \"Source contract implements own marked research/.tools/.venv through established ensure_environment with explicit owner, entrypoint, requirements and one-shot reexec. Exact setup and exec argv checked with mocks; no real install/reexec or environment-write qualification is claimed.\", \"E5\": \"Complete dependency import/use preflight before report/study outputs. Study requires NumPy; report names NumPy, matplotlib and matplotlib.pyplot. TOOL_NO_VENV1 is report-only exit3 with exact shlex-quoted isolated uv repair. Exceptions expose declared names/types, never private payloads.\", \"E6\": \"Argparse documents help/options. Repair commands reproduce validated arguments with source absolute path and declared isolated requirements. Historical generated documentation left unchanged per scope.\", \"active\": true}"
+      },
+      "verdict": "REVIEWED-FIXED",
+      "findings": [
+        {
+          "id": "NEWS-1",
+          "severity": "Medium",
+          "status": "fixed_in_frozen_source_author_verified",
+          "counterexample": "1970-01-08T00:30:00+01:00 equals1970-01-07T23:30:00Z; original clustering incorrectly yielded2weeks",
+          "fix": "cluster_interval uses normalized publication epoch for seven-day block identity; legacy date-only rows retain UTC-midnight convention",
+          "red": "research.tests.test_news_event_study.NewsEvents.test_utc_week_uses_instant_across_offset_boundary",
+          "green": "same assertion and opposite-boundary positive control passed"
+        },
+        {
+          "id": "NEWS-2",
+          "severity": "Medium",
+          "status": "fixed_in_frozen_source_author_verified",
+          "counterexample": "NumPy absence preempted --help/error parsing; late matplotlib absence overwrote existing CSV outputs before failure",
+          "fix": "stdlib-first main, delayed statistical imports, complete preflight at run/render entry, own helper-owned environment/reexec, report-only exit3 and safe exact repair",
+          "red": "CLI help, valid invocation and existing-report sentinel controls failed on immutable baseline",
+          "green": "all CLI dependency combinations, sentinel preservation, mocked ownership/reexec, report-only/loop/failure and all-name controls passed"
+        }
+      ]
+    },
+    {
+      "path": "research/tests/test_news_event_study.py",
+      "sha256": "e996cb04fd485d2bdb14270ca1a9e17176a0b10cd8b36d919bdc844d7cd1e87e",
+      "blob_sha": "8a2f9494ebd23a32e8b50bd2f1ecaff3fd5ddd29",
+      "lines": 386,
+      "read_evidence": {
+        "method": "Prior complete immutable source bound to unchanged postmerge baseline; every author diff hunk and targeted helper/caller spans read; no duplicate full-file review claimed.",
+        "prior_complete_read_ranges": [
+          [
+            1,
+            223
+          ]
+        ],
+        "baseline_sha256": "01db2f817d5cfaeebfa5816d3716a63a0b0f15be9bb9b5a3868e3a2c5ec6e5e3",
+        "final_delta_ranges": [
+          [
+            2,
+            16
+          ],
+          [
+            23,
+            61
+          ],
+          [
+            255,
+            386
+          ]
+        ],
+        "source_receipt": "news-event-incoming.json",
+        "immutable_original_full_read_lines": 223
+      },
+      "passes": {
+        "C1": "ran: Focused known-answer normalization verified. Equivalent offset timestamps produce one UTC week; same local-date observations on opposite UTC sides produce two. Other math/cohort behavior retains prior full static review and existing synthetic controls.",
+        "C2": "ran: Successful run/render signatures and return schemas retained. Date-only clustering remains midnight UTC. main(argv=None) adds stdlib-first CLI handling; help exits0, malformed/missing args2, missing prerequisites3.",
+        "C3": "ran: Original offset and preflight/partial-output counterexamples reproduced with completed RED exit1, then permanent focused regressions GREEN. Additional mocked bootstrap failure, recursion, report-only and all-dependency naming controls pass. Parent supplies independent acceptance; this followup is author verification.",
+        "S1": "ran: No reviewer-directed instructions, exfiltration, network/acquisition/signing/order calls found. New subprocess fixture is an exact fixed dependency blocker with temporary paths; private guard binds test, payload, source, candidate binary, argv, cwd and roots.",
+        "S2": "ran: Dependency preflight now occurs first in public run/render before reads/output writes. Missing plotting dependencies preserve existing synthetic report bytes. Actual installs/reexec mocked; helper owns environment policy. General I/O failures after valid preflight are not made transaction-atomic by this bounded fix.",
+        "S3": "ran: Original cohort hashes, identities, exact candle times and positive finite prices unchanged. Dependency failures safely name declared imports without private exception payloads. TOOL_NO_VENV1 never installs and reexec marker prevents recursive setup.",
+        "S4": "ran: Qualified candidate Python3.13 used; syntax also follows root py311 lint target. Direct script reexec supports report sibling import through explicit candidate repo path. Agg is selected before pyplot import. No service/platform execution.",
+        "S5": "ran: Broad import and CLI setup boundaries are explicit, narrowly documented and Ruff-qualified. CLI exposes safe declared module names/failure types and exact isolated repair. No new raw debug output or silent application failure.",
+        "P1": "ran: No economic search or representative benchmark. Existing1999-replicate deterministic bootstrap unchanged; local NumPy imports use normal cache. Focused22 tests complete below1second in recorded guarded run.",
+        "P2": "ran: Sequential execution; no new worker/concurrent shared-state path. Managed bootstrap retains established ownership/locking via ensure_environment. General concurrent report writers remain operator-managed, outside this bounded fix.",
+        "M1": "ran: Final files remain below500lines: research/news_event_report.py=349, research/news_event_study.py=486, research/tests/test_news_event_study.py=386. Setup is shared in study; parser boundaries live in both tools. Exact production delta and all test additions read after prior966-line complete review.",
+        "M2": "ran: Shared _preflight/_prepare_cli and existing backtester.run.ensure_environment reused. No independent installer, fetcher or execution engine added.",
+        "M3": "ran: Three-file imports remain acyclic (report -> study; helper imported lazily). Whole-repository settings/common-error/remediation/sink residuals remain parent repo-scope findings; no new repo-wide review credit.",
+        "M4": "ran: UTC seven-day docstring now agrees with normalized instants. Helper comments explain date-only compatibility, report-only mode, privacy and environment ownership. Historical empirical prose/results are unchanged and not requalified.",
+        "T1": "ran: Existing14 synthetic tests plus8 meaningful regressions complete22, GREEN exit0. First6 additions on baseline completed20 RED exit1 with12 assertion/subtest failures and3 errors for missing new entrypoints. Original failures preserved. No test assertion weakens accepted cohort/causality controls.",
+        "T2": "ran: No dependency manifest/lock edits in scope. Explicit helper requirements match already declared backtester floors; supply-chain/licence/advisory/CI limits remain repo-owned. No installation attempted.",
+        "T3": "ran: Exact pinned root Ruff0.17.4 check3files completed0; compile() and diff-check0. Full research/backtester/Oracle/ecosystem/SolTUI integration suites remain HOLD pending root index signal.",
+        "T4": "ran: Synthetic tests only. Every fixture is fresh temp state. Ten child invocations carry inherited guard and TOOL_NO_VENV1. No provider/data acquisition, original private data, real report, orders, signatures, model or service operations. Parent canonical equivalence limitations are unchanged.",
+        "M5": "N/A: unittest module exercises the two CLI contracts; no new standalone user tool."
+      },
+      "verdict": "REVIEWED-FIXED",
+      "findings": [
+        {
+          "id": "NEWS-1",
+          "severity": "Medium",
+          "status": "fixed_in_frozen_source_author_verified",
+          "counterexample": "1970-01-08T00:30:00+01:00 equals1970-01-07T23:30:00Z; original clustering incorrectly yielded2weeks",
+          "fix": "cluster_interval uses normalized publication epoch for seven-day block identity; legacy date-only rows retain UTC-midnight convention",
+          "red": "research.tests.test_news_event_study.NewsEvents.test_utc_week_uses_instant_across_offset_boundary",
+          "green": "same assertion and opposite-boundary positive control passed"
+        },
+        {
+          "id": "NEWS-2",
+          "severity": "Medium",
+          "status": "fixed_in_frozen_source_author_verified",
+          "counterexample": "NumPy absence preempted --help/error parsing; late matplotlib absence overwrote existing CSV outputs before failure",
+          "fix": "stdlib-first main, delayed statistical imports, complete preflight at run/render entry, own helper-owned environment/reexec, report-only exit3 and safe exact repair",
+          "red": "CLI help, valid invocation and existing-report sentinel controls failed on immutable baseline",
+          "green": "all CLI dependency combinations, sentinel preservation, mocked ownership/reexec, report-only/loop/failure and all-name controls passed"
+        }
+      ]
+    }
+  ],
+  "limits": [
+    "No new full-file read credit substituted for bound original966lines plus exact authored deltas.",
+    "Test-moduleM5 is inapplicable; it validates the two CLI source contracts.",
+    "No research job, installation, reexec or published artifact rewrite occurred."
+  ]
+}

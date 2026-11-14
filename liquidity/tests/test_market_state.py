@@ -104,7 +104,7 @@ def _market(handler) -> MarketData:
     return MarketData(ttl=60, client=httpx.Client(transport=httpx.MockTransport(handler)))
 
 
-def test_token_prices_observe_stables_and_use_the_cache():
+def test_token_prices_fetch_stables_and_use_the_cache():
     calls = []
 
     def handler(req: httpx.Request) -> httpx.Response:
@@ -116,7 +116,7 @@ def test_token_prices_observe_stables_and_use_the_cache():
     m = _market(handler)
     prices = m.token_prices_usd([WETH.upper().replace("0X", "0x"), USDC])
     assert prices == {USDC: 0.97, WETH: 2500.5}
-    assert USDC in STABLES and USDC in calls[0]  # a peg is observed, never assumed
+    assert USDC in STABLES and USDC in calls[0]  # Classification never substitutes for a market quote.
     m.token_prices_usd([WETH, USDC])
     assert len(calls) == 1  # second call served from the cache
 

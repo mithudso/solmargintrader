@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import hashlib
 import json
 import sys
 import tempfile
@@ -89,6 +90,134 @@ class SetupTests(unittest.TestCase):
         )
         self.assertNotIn("--upgrade", install)
         self.assertTrue((self.venv / setup.RECEIPT_NAME).is_file())
+        receipt = json.loads((self.venv / setup.RECEIPT_NAME).read_text())
+        self.assertEqual(set(receipt), {"schema_version", "source_fingerprint", "projects"})
+        self.assertNotIn("constraints_sha256", first)
+
+    def test_explicit_constraints_bind_pip_owner_and_completion_without_contents(self):
+        constraints = self.root / "private-constraints.txt"
+        contents = b"numpy==2.5.4\n# private-index-credential\n"
+        constraints.write_bytes(contents)
+        expected = hashlib.sha256(contents).hexdigest()
+        commands = []
+        with (
+            patch.object(setup, "_run", side_effect=self.fake_run(commands)),
+            patch.object(setup, "verify_environment", return_value=self.fake_health()),
+        ):
+            first = setup.install_environment(self.repo, self.venv, constraints_file=constraints)
+            second = setup.install_environment(self.repo, self.venv, constraints_file=constraints)
+        self.assertEqual(first["status"], "complete")
+        self.assertEqual(first["constraints_sha256"], expected)
+        self.assertTrue(second["reused"])
+        self.assertEqual(len(commands), 2)
+        self.assertEqual(commands[1][0][4:6], ["--constraint", str(constraints.absolute())])
+        self.assertEqual(commands[1][0][6:], [str(self.repo.resolve() / name) for name in setup.PROJECTS])
+        for name in (setup.OWNER_NAME, setup.RECEIPT_NAME):
+            raw = (self.venv / name).read_text()
+            self.assertEqual(json.loads(raw)["constraints_sha256"], expected)
+            self.assertNotIn("private-index-credential", raw)
+            self.assertNotIn(str(constraints), raw)
+        self.assertNotIn("private-index-credential", json.dumps(first))
+
+    def test_completed_constraints_environment_refuses_missing_or_changed_intent(self):
+        constraints = self.root / "constraints.txt"
+        constraints.write_text("numpy==2.5.4\n")
+        with (
+            patch.object(setup, "_run", side_effect=self.fake_run([])),
+            patch.object(setup, "verify_environment", return_value=self.fake_health()),
+        ):
+            self.assertEqual(setup.install_environment(
+                self.repo, self.venv, constraints_file=constraints)["status"], "complete")
+        original = {name: (self.venv / name).read_bytes()
+                    for name in (setup.OWNER_NAME, setup.RECEIPT_NAME)}
+        with patch.object(setup, "_run") as run, patch.object(setup, "verify_environment") as health:
+            missing = setup.install_environment(self.repo, self.venv)
+            constraints.write_text("numpy==2.6.0\n")
+            changed = setup.install_environment(self.repo, self.venv, constraints_file=constraints)
+        self.assertEqual(missing["reason"], "environment_constraints_changed_use_new_venv")
+        self.assertEqual(changed["reason"], "environment_constraints_changed_use_new_venv")
+        self.assertEqual({name: (self.venv / name).read_bytes() for name in original}, original)
+        run.assert_not_called()
+        health.assert_not_called()
+
+    def test_constraints_cannot_be_added_to_an_existing_completed_environment(self):
+        with (
+            patch.object(setup, "_run", side_effect=self.fake_run([])),
+            patch.object(setup, "verify_environment", return_value=self.fake_health()),
+        ):
+            self.assertEqual(setup.install_environment(self.repo, self.venv)["status"], "complete")
+        constraints = self.root / "constraints.txt"
+        constraints.write_text("numpy==2.5.4\n")
+        before = (self.venv / setup.RECEIPT_NAME).read_bytes()
+        with patch.object(setup, "_run") as run:
+            result = setup.install_environment(self.repo, self.venv, constraints_file=constraints)
+        self.assertEqual(result["reason"], "environment_constraints_changed_use_new_venv")
+        self.assertEqual((self.venv / setup.RECEIPT_NAME).read_bytes(), before)
+        run.assert_not_called()
+
+    def test_constraints_drift_during_creation_stops_before_pip(self):
+        constraints = self.root / "constraints.txt"
+        constraints.write_text("numpy==2.5.4\n")
+        commands = []
+        fake_run = self.fake_run(commands)
+
+        def change_after_creation(command, **kwargs):
+            result = fake_run(command, **kwargs)
+            constraints.write_text("numpy==2.6.0\n")
+            return result
+
+        with patch.object(setup, "_run", side_effect=change_after_creation):
+            result = setup.install_environment(self.repo, self.venv, constraints_file=constraints)
+        self.assertEqual(result["reason"], "constraints_changed_during_install")
+        self.assertEqual(len(commands), 1)
+        self.assertFalse((self.venv / setup.RECEIPT_NAME).exists())
+
+    def test_constraints_drift_during_health_prevents_completed_receipt(self):
+        constraints = self.root / "constraints.txt"
+        constraints.write_text("numpy==2.5.4\n")
+
+        def changing_health(*_):
+            constraints.write_text("numpy==2.6.0\n")
+            return self.fake_health()
+
+        with (
+            patch.object(setup, "_run", side_effect=self.fake_run([])),
+            patch.object(setup, "verify_environment", side_effect=changing_health),
+        ):
+            result = setup.install_environment(self.repo, self.venv, constraints_file=constraints)
+        self.assertEqual(result["reason"], "constraints_changed_during_install")
+        self.assertFalse((self.venv / setup.RECEIPT_NAME).exists())
+
+    def test_failed_install_cannot_resume_with_different_constraints(self):
+        constraints = self.root / "constraints.txt"
+        constraints.write_text("numpy==2.5.4\n")
+        with patch.object(setup, "_run", side_effect=self.fake_run([], fail_pip=True)):
+            setup.install_environment(self.repo, self.venv, constraints_file=constraints)
+        original = (self.venv / setup.OWNER_NAME).read_bytes()
+        constraints.write_text("numpy==2.6.0\n")
+        with patch.object(setup, "_run") as run:
+            result = setup.install_environment(self.repo, self.venv, constraints_file=constraints)
+        self.assertEqual(result["reason"], "environment_constraints_changed_use_new_venv")
+        self.assertEqual((self.venv / setup.OWNER_NAME).read_bytes(), original)
+        run.assert_not_called()
+
+    def test_constraints_require_a_readable_bounded_regular_nonsymlink_file(self):
+        target = self.root / "target.txt"
+        target.write_text("numpy==2.5.4\n")
+        symlink = self.root / "linked.txt"
+        symlink.symlink_to(target)
+        oversized = self.root / "oversized.txt"
+        oversized.write_bytes(b"x" * (setup.MAX_CONSTRAINT_BYTES + 1))
+        for path in (self.root / "missing.txt", self.root, symlink, oversized):
+            with self.subTest(path=path), patch.object(setup, "_run") as run:
+                result = setup.install_environment(self.repo, self.venv, constraints_file=path)
+                self.assertEqual(result["reason"], "constraints_file_unavailable")
+                self.assertFalse(self.venv.exists())
+                run.assert_not_called()
+        with patch.object(setup.os, "open", side_effect=PermissionError), patch.object(setup, "_run") as run:
+            result = setup.install_environment(self.repo, self.venv, constraints_file=target)
+        self.assertEqual(result["reason"], "constraints_file_unavailable")
+        run.assert_not_called()
 
     def test_failed_first_install_resumes_owned_environment_without_recreating_it(self):
         commands = []
@@ -218,13 +347,23 @@ class SetupTests(unittest.TestCase):
     def test_source_fingerprint_binds_each_shipped_web_asset_type(self):
         web = self.repo / "ecosystem" / "web"
         web.mkdir()
-        for suffix in (".html", ".css", ".js", ".json"):
+        for suffix in (".html", ".css", ".js", ".mjs", ".json"):
             with self.subTest(suffix=suffix):
                 asset = web / f"dashboard{suffix}"
                 asset.write_text("original shipped content")
                 before = setup.source_fingerprint(self.repo)
                 asset.write_text("changed shipped content")
                 self.assertNotEqual(setup.source_fingerprint(self.repo), before)
+
+    def test_source_fingerprint_refuses_symlinked_code_directories(self):
+        external = self.root / "external-code"
+        external.mkdir()
+        (external / "module.py").write_text("UNBOUND_CODE = True\n")
+        (self.repo / "oracle" / "linked_code").symlink_to(
+            external, target_is_directory=True
+        )
+        with self.assertRaisesRegex(ValueError, "source_symlink_refused"):
+            setup.source_fingerprint(self.repo)
 
     def test_health_stdout_flood_is_bounded_before_child_finishes(self):
         started = time.monotonic()

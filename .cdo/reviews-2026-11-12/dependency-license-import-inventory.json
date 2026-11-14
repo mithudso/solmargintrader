@@ -1,0 +1,981 @@
+{
+  "inventory": [
+    {
+      "name": "aiohappyeyeballs",
+      "version": "2.7.1",
+      "license_expression": null,
+      "license_classifiers": [
+        "License :: OSI Approved :: Python Software Foundation License"
+      ],
+      "legacy_license": "PSF-2.0",
+      "requires_python": ">=3.10",
+      "metadata_only": true
+    },
+    {
+      "name": "aiohttp",
+      "version": "3.14.5",
+      "license_expression": "Apache-2.0 AND MIT",
+      "license_classifiers": [],
+      "legacy_license": "",
+      "requires_python": ">=3.10",
+      "metadata_only": true
+    },
+    {
+      "name": "aiohttp-jinja2",
+      "version": "1.6",
+      "license_expression": null,
+      "license_classifiers": [
+        "License :: OSI Approved :: Apache Software License"
+      ],
+      "legacy_license": "Apache 2",
+      "requires_python": ">=3.8",
+      "metadata_only": true
+    },
+    {
+      "name": "aiosignal",
+      "version": "1.4.0",
+      "license_expression": null,
+      "license_classifiers": [
+        "License :: OSI Approved :: Apache Software License"
+      ],
+      "legacy_license": "Apache 2.0",
+      "requires_python": ">=3.9",
+      "metadata_only": true
+    },
+    {
+      "name": "annotated-types",
+      "version": "0.8.0",
+      "license_expression": "MIT",
+      "license_classifiers": [
+        "License :: OSI Approved :: MIT License"
+      ],
+      "legacy_license": "",
+      "requires_python": ">=3.10",
+      "metadata_only": true
+    },
+    {
+      "name": "anyio",
+      "version": "4.16.0",
+      "license_expression": "MIT",
+      "license_classifiers": [],
+      "legacy_license": "",
+      "requires_python": ">=3.10",
+      "metadata_only": true
+    },
+    {
+      "name": "attrs",
+      "version": "26.1.0",
+      "license_expression": "MIT",
+      "license_classifiers": [],
+      "legacy_license": "",
+      "requires_python": ">=3.9",
+      "metadata_only": true
+    },
+    {
+      "name": "certifi",
+      "version": "2026.10.23",
+      "license_expression": null,
+      "license_classifiers": [
+        "License :: OSI Approved :: Mozilla Public License 2.0 (MPL 2.0)"
+      ],
+      "legacy_license": "MPL-2.0",
+      "requires_python": ">=3.7",
+      "metadata_only": true
+    },
+    {
+      "name": "cffi",
+      "version": "2.1.1",
+      "license_expression": "MIT-0",
+      "license_classifiers": [],
+      "legacy_license": "",
+      "requires_python": ">=3.10",
+      "metadata_only": true
+    },
+    {
+      "name": "click",
+      "version": "8.5.1",
+      "license_expression": "BSD-3-Clause",
+      "license_classifiers": [],
+      "legacy_license": "",
+      "requires_python": ">=3.10",
+      "metadata_only": true
+    },
+    {
+      "name": "cloudpickle",
+      "version": "3.1.2",
+      "license_expression": null,
+      "license_classifiers": [
+        "License :: OSI Approved :: BSD License"
+      ],
+      "legacy_license": "BSD-3-Clause",
+      "requires_python": ">=3.8",
+      "metadata_only": true
+    },
+    {
+      "name": "contourpy",
+      "version": "1.4.0",
+      "license_expression": "BSD-3-Clause",
+      "license_classifiers": [],
+      "legacy_license": "",
+      "requires_python": ">=3.12",
+      "metadata_only": true
+    },
+    {
+      "name": "cryptography",
+      "version": "50.0.2",
+      "license_expression": "Apache-2.0 OR BSD-3-Clause",
+      "license_classifiers": [],
+      "legacy_license": "",
+      "requires_python": ">=3.9, !=3.9.0, !=3.9.1",
+      "metadata_only": true
+    },
+    {
+      "name": "cycler",
+      "version": "0.12.1",
+      "license_expression": null,
+      "license_classifiers": [
+        "License :: OSI Approved :: BSD License"
+      ],
+      "legacy_license": "long license text present; inspect license files",
+      "requires_python": ">=3.8",
+      "metadata_only": true
+    },
+    {
+      "name": "Cython",
+      "version": "3.3.1",
+      "license_expression": null,
+      "license_classifiers": [],
+      "legacy_license": "Apache-2.0",
+      "requires_python": ">=3.9",
+      "metadata_only": true
+    },
+    {
+      "name": "Deprecated",
+      "version": "3.0.1",
+      "license_expression": "MIT",
+      "license_classifiers": [],
+      "legacy_license": "",
+      "requires_python": ">=3.12",
+      "metadata_only": true
+    },
+    {
+      "name": "dnspython",
+      "version": "2.9.2",
+      "license_expression": "ISC",
+      "license_classifiers": [],
+      "legacy_license": "",
+      "requires_python": ">=3.11",
+      "metadata_only": true
+    },
+    {
+      "name": "executor",
+      "version": "0.2.0",
+      "license_expression": null,
+      "license_classifiers": [],
+      "legacy_license": "MIT",
+      "requires_python": "<3.15,>=3.13",
+      "metadata_only": true
+    },
+    {
+      "name": "fonttools",
+      "version": "4.68.0",
+      "license_expression": null,
+      "license_classifiers": [],
+      "legacy_license": "MIT",
+      "requires_python": ">=3.11",
+      "metadata_only": true
+    },
+    {
+      "name": "frozenlist",
+      "version": "1.8.0",
+      "license_expression": null,
+      "license_classifiers": [],
+      "legacy_license": "Apache-2.0",
+      "requires_python": ">=3.9",
+      "metadata_only": true
+    },
+    {
+      "name": "h11",
+      "version": "0.16.0",
+      "license_expression": null,
+      "license_classifiers": [
+        "License :: OSI Approved :: MIT License"
+      ],
+      "legacy_license": "MIT",
+      "requires_python": ">=3.8",
+      "metadata_only": true
+    },
+    {
+      "name": "httpcore",
+      "version": "1.0.9",
+      "license_expression": "BSD-3-Clause",
+      "license_classifiers": [
+        "License :: OSI Approved :: BSD License"
+      ],
+      "legacy_license": "",
+      "requires_python": ">=3.8",
+      "metadata_only": true
+    },
+    {
+      "name": "httpx",
+      "version": "0.28.1",
+      "license_expression": null,
+      "license_classifiers": [
+        "License :: OSI Approved :: BSD License"
+      ],
+      "legacy_license": "BSD-3-Clause",
+      "requires_python": ">=3.8",
+      "metadata_only": true
+    },
+    {
+      "name": "httpx-sse",
+      "version": "0.4.3",
+      "license_expression": null,
+      "license_classifiers": [],
+      "legacy_license": "MIT",
+      "requires_python": ">=3.9",
+      "metadata_only": true
+    },
+    {
+      "name": "idna",
+      "version": "3.20",
+      "license_expression": "BSD-3-Clause",
+      "license_classifiers": [],
+      "legacy_license": "",
+      "requires_python": ">=3.9",
+      "metadata_only": true
+    },
+    {
+      "name": "iniconfig",
+      "version": "2.3.1",
+      "license_expression": "MIT",
+      "license_classifiers": [],
+      "legacy_license": "",
+      "requires_python": ">=3.10",
+      "metadata_only": true
+    },
+    {
+      "name": "Jinja2",
+      "version": "3.1.6",
+      "license_expression": null,
+      "license_classifiers": [
+        "License :: OSI Approved :: BSD License"
+      ],
+      "legacy_license": "",
+      "requires_python": ">=3.7",
+      "metadata_only": true
+    },
+    {
+      "name": "joblib",
+      "version": "1.6.0",
+      "license_expression": "BSD-3-Clause",
+      "license_classifiers": [],
+      "legacy_license": "",
+      "requires_python": ">=3.10",
+      "metadata_only": true
+    },
+    {
+      "name": "jsonalias",
+      "version": "0.1.1",
+      "license_expression": null,
+      "license_classifiers": [],
+      "legacy_license": "",
+      "requires_python": ">=3.7,<4.0",
+      "metadata_only": true
+    },
+    {
+      "name": "jsonschema",
+      "version": "4.26.0",
+      "license_expression": "MIT",
+      "license_classifiers": [],
+      "legacy_license": "",
+      "requires_python": ">=3.10",
+      "metadata_only": true
+    },
+    {
+      "name": "jsonschema-specifications",
+      "version": "2025.9.1",
+      "license_expression": "MIT",
+      "license_classifiers": [],
+      "legacy_license": "",
+      "requires_python": ">=3.9",
+      "metadata_only": true
+    },
+    {
+      "name": "kiwisolver",
+      "version": "1.5.1",
+      "license_expression": null,
+      "license_classifiers": [
+        "License :: OSI Approved :: BSD License"
+      ],
+      "legacy_license": "long license text present; inspect license files",
+      "requires_python": ">=3.10",
+      "metadata_only": true
+    },
+    {
+      "name": "linkify-it-py",
+      "version": "2.2.0",
+      "license_expression": null,
+      "license_classifiers": [
+        "License :: OSI Approved :: MIT License"
+      ],
+      "legacy_license": "MIT",
+      "requires_python": ">=3.10",
+      "metadata_only": true
+    },
+    {
+      "name": "markdown-it-py",
+      "version": "4.3.0",
+      "license_expression": null,
+      "license_classifiers": [
+        "License :: OSI Approved :: MIT License"
+      ],
+      "legacy_license": "",
+      "requires_python": ">=3.10",
+      "metadata_only": true
+    },
+    {
+      "name": "MarkupSafe",
+      "version": "3.0.4",
+      "license_expression": "BSD-3-Clause",
+      "license_classifiers": [],
+      "legacy_license": "",
+      "requires_python": ">=3.9",
+      "metadata_only": true
+    },
+    {
+      "name": "matplotlib",
+      "version": "3.11.2",
+      "license_expression": null,
+      "license_classifiers": [
+        "License :: OSI Approved :: Python Software Foundation License"
+      ],
+      "legacy_license": "long license text present; inspect license files",
+      "requires_python": ">=3.11",
+      "metadata_only": true
+    },
+    {
+      "name": "mcp",
+      "version": "1.30.0",
+      "license_expression": null,
+      "license_classifiers": [
+        "License :: OSI Approved :: MIT License"
+      ],
+      "legacy_license": "MIT",
+      "requires_python": ">=3.10",
+      "metadata_only": true
+    },
+    {
+      "name": "mdit-py-plugins",
+      "version": "0.7.0",
+      "license_expression": null,
+      "license_classifiers": [
+        "License :: OSI Approved :: MIT License"
+      ],
+      "legacy_license": "",
+      "requires_python": ">=3.10",
+      "metadata_only": true
+    },
+    {
+      "name": "mdurl",
+      "version": "0.1.2",
+      "license_expression": null,
+      "license_classifiers": [
+        "License :: OSI Approved :: MIT License"
+      ],
+      "legacy_license": "",
+      "requires_python": ">=3.7",
+      "metadata_only": true
+    },
+    {
+      "name": "multidict",
+      "version": "7.2.1",
+      "license_expression": "Apache-2.0",
+      "license_classifiers": [],
+      "legacy_license": "",
+      "requires_python": ">=3.11",
+      "metadata_only": true
+    },
+    {
+      "name": "narwhals",
+      "version": "2.28.0",
+      "license_expression": "MIT",
+      "license_classifiers": [],
+      "legacy_license": "",
+      "requires_python": ">=3.10",
+      "metadata_only": true
+    },
+    {
+      "name": "numpy",
+      "version": "2.5.4",
+      "license_expression": "BSD-3-Clause AND 0BSD AND MIT AND Zlib AND CC0-1.0",
+      "license_classifiers": [],
+      "legacy_license": "",
+      "requires_python": ">=3.12",
+      "metadata_only": true
+    },
+    {
+      "name": "packaging",
+      "version": "26.3",
+      "license_expression": "Apache-2.0 OR BSD-2-Clause",
+      "license_classifiers": [],
+      "legacy_license": "",
+      "requires_python": ">=3.9",
+      "metadata_only": true
+    },
+    {
+      "name": "pandas",
+      "version": "3.1.1",
+      "license_expression": "BSD-3-Clause",
+      "license_classifiers": [],
+      "legacy_license": "",
+      "requires_python": ">=3.11",
+      "metadata_only": true
+    },
+    {
+      "name": "persim",
+      "version": "0.4.1",
+      "license_expression": null,
+      "license_classifiers": [
+        "License :: OSI Approved :: MIT License"
+      ],
+      "legacy_license": "",
+      "requires_python": null,
+      "metadata_only": true
+    },
+    {
+      "name": "pillow",
+      "version": "13.0.0",
+      "license_expression": "MIT-CMU",
+      "license_classifiers": [],
+      "legacy_license": "",
+      "requires_python": ">=3.11",
+      "metadata_only": true
+    },
+    {
+      "name": "platformdirs",
+      "version": "4.14.5",
+      "license_expression": "MIT",
+      "license_classifiers": [],
+      "legacy_license": "",
+      "requires_python": ">=3.11",
+      "metadata_only": true
+    },
+    {
+      "name": "pluggy",
+      "version": "1.7.0",
+      "license_expression": null,
+      "license_classifiers": [
+        "License :: OSI Approved :: MIT License"
+      ],
+      "legacy_license": "MIT",
+      "requires_python": ">=3.10",
+      "metadata_only": true
+    },
+    {
+      "name": "propcache",
+      "version": "0.5.4",
+      "license_expression": null,
+      "license_classifiers": [],
+      "legacy_license": "Apache-2.0",
+      "requires_python": ">=3.10",
+      "metadata_only": true
+    },
+    {
+      "name": "pycparser",
+      "version": "3.12",
+      "license_expression": "BSD-3-Clause",
+      "license_classifiers": [],
+      "legacy_license": "",
+      "requires_python": ">=3.11",
+      "metadata_only": true
+    },
+    {
+      "name": "pydantic",
+      "version": "2.14.3",
+      "license_expression": "MIT",
+      "license_classifiers": [],
+      "legacy_license": "",
+      "requires_python": ">=3.10",
+      "metadata_only": true
+    },
+    {
+      "name": "pydantic-settings",
+      "version": "2.16.2",
+      "license_expression": "MIT",
+      "license_classifiers": [
+        "License :: OSI Approved :: MIT License"
+      ],
+      "legacy_license": "",
+      "requires_python": ">=3.11",
+      "metadata_only": true
+    },
+    {
+      "name": "pydantic_core",
+      "version": "2.50.4",
+      "license_expression": "MIT",
+      "license_classifiers": [],
+      "legacy_license": "",
+      "requires_python": ">=3.10",
+      "metadata_only": true
+    },
+    {
+      "name": "Pygments",
+      "version": "2.21.0",
+      "license_expression": "BSD-2-Clause",
+      "license_classifiers": [],
+      "legacy_license": "",
+      "requires_python": ">=3.9",
+      "metadata_only": true
+    },
+    {
+      "name": "PyJWT",
+      "version": "2.15.1",
+      "license_expression": "MIT",
+      "license_classifiers": [],
+      "legacy_license": "",
+      "requires_python": ">=3.9",
+      "metadata_only": true
+    },
+    {
+      "name": "pymongo",
+      "version": "4.19.0",
+      "license_expression": "Apache-2.0",
+      "license_classifiers": [],
+      "legacy_license": "",
+      "requires_python": ">=3.11",
+      "metadata_only": true
+    },
+    {
+      "name": "pyparsing",
+      "version": "3.3.3",
+      "license_expression": "MIT",
+      "license_classifiers": [],
+      "legacy_license": "",
+      "requires_python": ">=3.9",
+      "metadata_only": true
+    },
+    {
+      "name": "pytest",
+      "version": "9.2.0",
+      "license_expression": "MIT",
+      "license_classifiers": [],
+      "legacy_license": "",
+      "requires_python": ">=3.10",
+      "metadata_only": true
+    },
+    {
+      "name": "python-dateutil",
+      "version": "4.0.0",
+      "license_expression": "BSD-3-Clause",
+      "license_classifiers": [],
+      "legacy_license": "",
+      "requires_python": ">=3.11",
+      "metadata_only": true
+    },
+    {
+      "name": "python-dotenv",
+      "version": "1.2.4",
+      "license_expression": null,
+      "license_classifiers": [],
+      "legacy_license": "BSD-3-Clause",
+      "requires_python": ">=3.10",
+      "metadata_only": true
+    },
+    {
+      "name": "python-multipart",
+      "version": "0.0.33",
+      "license_expression": "Apache-2.0",
+      "license_classifiers": [
+        "License :: OSI Approved :: Apache Software License"
+      ],
+      "legacy_license": "",
+      "requires_python": ">=3.11",
+      "metadata_only": true
+    },
+    {
+      "name": "PyYAML",
+      "version": "6.0.3",
+      "license_expression": null,
+      "license_classifiers": [
+        "License :: OSI Approved :: MIT License"
+      ],
+      "legacy_license": "MIT",
+      "requires_python": ">=3.8",
+      "metadata_only": true
+    },
+    {
+      "name": "referencing",
+      "version": "0.37.0",
+      "license_expression": "MIT",
+      "license_classifiers": [],
+      "legacy_license": "",
+      "requires_python": ">=3.10",
+      "metadata_only": true
+    },
+    {
+      "name": "rich",
+      "version": "15.0.0",
+      "license_expression": null,
+      "license_classifiers": [
+        "License :: OSI Approved :: MIT License"
+      ],
+      "legacy_license": "MIT",
+      "requires_python": ">=3.9.0",
+      "metadata_only": true
+    },
+    {
+      "name": "ripser",
+      "version": "0.6.15",
+      "license_expression": null,
+      "license_classifiers": [
+        "License :: OSI Approved :: MIT License"
+      ],
+      "legacy_license": "",
+      "requires_python": null,
+      "metadata_only": true
+    },
+    {
+      "name": "rpds-py",
+      "version": "2026.9.1",
+      "license_expression": "MIT",
+      "license_classifiers": [],
+      "legacy_license": "",
+      "requires_python": ">=3.11",
+      "metadata_only": true
+    },
+    {
+      "name": "scikit-learn",
+      "version": "1.9.1",
+      "license_expression": "BSD-3-Clause",
+      "license_classifiers": [],
+      "legacy_license": "",
+      "requires_python": ">=3.11",
+      "metadata_only": true
+    },
+    {
+      "name": "scipy",
+      "version": "1.18.1",
+      "license_expression": null,
+      "license_classifiers": [
+        "License :: OSI Approved :: BSD License"
+      ],
+      "legacy_license": "long license text present; inspect license files",
+      "requires_python": ">=3.12",
+      "metadata_only": true
+    },
+    {
+      "name": "solbot-manager",
+      "version": "0.7.2",
+      "license_expression": null,
+      "license_classifiers": [],
+      "legacy_license": "",
+      "requires_python": ">=3.13",
+      "metadata_only": true
+    },
+    {
+      "name": "solders",
+      "version": "0.27.1",
+      "license_expression": null,
+      "license_classifiers": [],
+      "legacy_license": "MIT",
+      "requires_python": ">=3.8,<4.0",
+      "metadata_only": true
+    },
+    {
+      "name": "solmargintrader-backtester",
+      "version": "0.2.0",
+      "license_expression": null,
+      "license_classifiers": [],
+      "legacy_license": "",
+      "requires_python": ">=3.13",
+      "metadata_only": true
+    },
+    {
+      "name": "solmargintrader-ecosystem",
+      "version": "0.4.5",
+      "license_expression": null,
+      "license_classifiers": [],
+      "legacy_license": "",
+      "requires_python": ">=3.13",
+      "metadata_only": true
+    },
+    {
+      "name": "solmargintrader-oracle",
+      "version": "0.2.3",
+      "license_expression": null,
+      "license_classifiers": [],
+      "legacy_license": "",
+      "requires_python": ">=3.13",
+      "metadata_only": true
+    },
+    {
+      "name": "solmargintrader-research-runtime",
+      "version": "0.4.0",
+      "license_expression": null,
+      "license_classifiers": [],
+      "legacy_license": "",
+      "requires_python": ">=3.13",
+      "metadata_only": true
+    },
+    {
+      "name": "sse-starlette",
+      "version": "3.7.0",
+      "license_expression": "BSD-3-Clause",
+      "license_classifiers": [],
+      "legacy_license": "",
+      "requires_python": ">=3.11",
+      "metadata_only": true
+    },
+    {
+      "name": "starlette",
+      "version": "1.10.0",
+      "license_expression": "BSD-3-Clause",
+      "license_classifiers": [],
+      "legacy_license": "",
+      "requires_python": ">=3.11",
+      "metadata_only": true
+    },
+    {
+      "name": "textual",
+      "version": "8.2.8",
+      "license_expression": null,
+      "license_classifiers": [
+        "License :: OSI Approved :: MIT License"
+      ],
+      "legacy_license": "MIT",
+      "requires_python": ">=3.9,<4.0",
+      "metadata_only": true
+    },
+    {
+      "name": "textual-serve",
+      "version": "1.1.3",
+      "license_expression": "MIT",
+      "license_classifiers": [],
+      "legacy_license": "",
+      "requires_python": ">=3.9",
+      "metadata_only": true
+    },
+    {
+      "name": "threadpoolctl",
+      "version": "3.8.0",
+      "license_expression": "BSD-3-Clause",
+      "license_classifiers": [],
+      "legacy_license": "",
+      "requires_python": ">=3.10",
+      "metadata_only": true
+    },
+    {
+      "name": "typing-inspection",
+      "version": "0.4.5",
+      "license_expression": "MIT",
+      "license_classifiers": [],
+      "legacy_license": "",
+      "requires_python": ">=3.10",
+      "metadata_only": true
+    },
+    {
+      "name": "typing_extensions",
+      "version": "4.16.0",
+      "license_expression": "PSF-2.0",
+      "license_classifiers": [],
+      "legacy_license": "",
+      "requires_python": ">=3.9",
+      "metadata_only": true
+    },
+    {
+      "name": "tzdata",
+      "version": "2026.6",
+      "license_expression": null,
+      "license_classifiers": [],
+      "legacy_license": "Apache-2.0",
+      "requires_python": ">=2",
+      "metadata_only": true
+    },
+    {
+      "name": "uvicorn",
+      "version": "0.54.0",
+      "license_expression": "BSD-3-Clause",
+      "license_classifiers": [],
+      "legacy_license": "",
+      "requires_python": ">=3.10",
+      "metadata_only": true
+    },
+    {
+      "name": "wrapt",
+      "version": "2.5.2",
+      "license_expression": "BSD-2-Clause",
+      "license_classifiers": [],
+      "legacy_license": "",
+      "requires_python": ">=3.9",
+      "metadata_only": true
+    },
+    {
+      "name": "yarl",
+      "version": "1.25.1",
+      "license_expression": null,
+      "license_classifiers": [],
+      "legacy_license": "Apache-2.0",
+      "requires_python": ">=3.10",
+      "metadata_only": true
+    }
+  ],
+  "declared_components": [
+    {
+      "component": "backtester",
+      "manifest": "backtester/pyproject.toml",
+      "python_files_AST_scanned": 125,
+      "dependencies": [
+        {
+          "requirement": "numpy>=2.5.4",
+          "top_level_import_observed": true,
+          "status": "observed import mapping"
+        },
+        {
+          "requirement": "pandas>=3.1.0",
+          "top_level_import_observed": true,
+          "status": "observed import mapping"
+        }
+      ],
+      "evidence_kind": "mechanical import/dependency comparison; not semantic or deletion authorization"
+    },
+    {
+      "component": "botmanager",
+      "manifest": "botmanager/pyproject.toml",
+      "python_files_AST_scanned": 88,
+      "dependencies": [
+        {
+          "requirement": "solmargintrader-backtester==0.2.1",
+          "top_level_import_observed": true,
+          "status": "observed import mapping"
+        },
+        {
+          "requirement": "solmargintrader-research-runtime==0.4.1",
+          "top_level_import_observed": true,
+          "status": "observed import mapping"
+        },
+        {
+          "requirement": "solmargintrader-oracle==0.2.4",
+          "top_level_import_observed": true,
+          "status": "observed import mapping"
+        }
+      ],
+      "evidence_kind": "mechanical import/dependency comparison; not semantic or deletion authorization"
+    },
+    {
+      "component": "oracle",
+      "manifest": "oracle/pyproject.toml",
+      "python_files_AST_scanned": 40,
+      "dependencies": [
+        {
+          "requirement": "solmargintrader-backtester==0.2.1",
+          "top_level_import_observed": true,
+          "status": "observed import mapping"
+        },
+        {
+          "requirement": "mcp==1.30.0",
+          "top_level_import_observed": true,
+          "status": "observed import mapping"
+        },
+        {
+          "requirement": "cryptography==50.0.2",
+          "top_level_import_observed": true,
+          "status": "observed import mapping"
+        }
+      ],
+      "evidence_kind": "mechanical import/dependency comparison; not semantic or deletion authorization"
+    },
+    {
+      "component": "executor",
+      "manifest": "executor/pyproject.toml",
+      "python_files_AST_scanned": 38,
+      "dependencies": [
+        {
+          "requirement": "solders>=0.26,<0.28",
+          "top_level_import_observed": true,
+          "status": "observed import mapping"
+        },
+        {
+          "requirement": "httpx>=0.27,<1",
+          "top_level_import_observed": true,
+          "status": "observed import mapping"
+        }
+      ],
+      "evidence_kind": "mechanical import/dependency comparison; not semantic or deletion authorization"
+    },
+    {
+      "component": "ecosystem",
+      "manifest": "ecosystem/pyproject.toml",
+      "python_files_AST_scanned": 48,
+      "dependencies": [
+        {
+          "requirement": "solmargintrader-oracle==0.2.4",
+          "top_level_import_observed": true,
+          "status": "observed import mapping"
+        },
+        {
+          "requirement": "solbot-manager==0.7.3",
+          "top_level_import_observed": true,
+          "status": "observed import mapping"
+        },
+        {
+          "requirement": "solmargintrader-research-runtime==0.4.1",
+          "top_level_import_observed": true,
+          "status": "observed import mapping"
+        }
+      ],
+      "evidence_kind": "mechanical import/dependency comparison; not semantic or deletion authorization"
+    },
+    {
+      "component": "liquidity",
+      "manifest": "liquidity/pyproject.toml",
+      "python_files_AST_scanned": 52,
+      "dependencies": [
+        {
+          "requirement": "web3>=7.6,<9",
+          "top_level_import_observed": true,
+          "status": "literal top-level import observed; distribution absent from shared audit interpreter mapping"
+        },
+        {
+          "requirement": "eth-account>=0.13",
+          "top_level_import_observed": true,
+          "status": "literal top-level import observed; distribution absent from shared audit interpreter mapping"
+        },
+        {
+          "requirement": "hexbytes>=1.2",
+          "top_level_import_observed": true,
+          "status": "literal top-level import observed; distribution absent from shared audit interpreter mapping"
+        },
+        {
+          "requirement": "requests>=2.31",
+          "top_level_import_observed": true,
+          "status": "literal top-level import observed; distribution absent from shared audit interpreter mapping"
+        },
+        {
+          "requirement": "httpx>=0.27",
+          "top_level_import_observed": true,
+          "status": "observed import mapping"
+        }
+      ],
+      "evidence_kind": "mechanical import/dependency comparison; not semantic or deletion authorization"
+    },
+    {
+      "component": "soltui",
+      "manifest": "soltui/pyproject.toml",
+      "python_files_AST_scanned": 180,
+      "dependencies": [
+        {
+          "requirement": "solmargintrader-backtester==0.2.1",
+          "top_level_import_observed": true,
+          "status": "observed import mapping"
+        }
+      ],
+      "evidence_kind": "mechanical import/dependency comparison; not semantic or deletion authorization"
+    }
+  ],
+  "limits": [
+    "Metadata classifiers and AST import presence do not determine legal compatibility or prove unused dependency.",
+    "Optional native environments not represented by this audit interpreter require separate resolution qualification.",
+    "No packages installed, updated, removed or imported by these metadata queries."
+  ]
+}

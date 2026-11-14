@@ -7,6 +7,7 @@ Kelly, and Drawdown.
 
 from __future__ import annotations
 
+import argparse
 import sys
 from pathlib import Path
 
@@ -17,7 +18,9 @@ if str(REPO) not in sys.path:
 from backtester.core.strategies import REGISTRY
 from research.sweep import HORIZONS, load_horizon, walk_forward, Row, fmt_table
 
-def main() -> int:
+def main(argv: list[str] | None = None) -> int:
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.parse_args(argv)
     # 1. Identify untested strategies in the REGISTRY
     tested_short = set(HORIZONS["short"]["params"].keys())
     tested_medium = set(HORIZONS["medium"]["params"].keys())

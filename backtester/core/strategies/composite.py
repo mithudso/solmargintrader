@@ -54,6 +54,9 @@ class Composite:
         self.params: dict[str, Any] = {
             "mode": mode,
             "members": {m.name: dict(m.params) for m in self.members},
+            # Keep the legacy name map, while binding repeated names and order
+            # without losing any member's parameters.
+            "member_specs": [{"name": m.name, "params": dict(m.params)} for m in self.members],
         }
 
     def warmup_bars(self) -> int:
@@ -64,7 +67,7 @@ class Composite:
         """Combine member targets under the configured mode."""
         targets = [float(m.on_bar(history)) for m in self.members]
         if not all(math.isfinite(target) for target in targets):
-            raise ValueError("composite member exposure must be finite")
+            raise ValueError("Composite member returned a non-finite exposure")
         if self.mode == "all":
             return min(targets)
         if self.mode == "any":

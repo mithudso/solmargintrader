@@ -1,0 +1,17 @@
+# ZEC25/15bps fee sensitivity
+
+Version: 1.0.0
+Owner confirmed0.25% and0.15% perfill. Conditional fee-only sensitivity; crossing-book execution does not establish maker fills.
+
+- [Report](llms-full.txt): complete methods, outcomes and limitations.
+- [Results](results.csv): all7060rows.
+- [Summary](summary.json): bothfee scenarios and configurations.
+- [Frozen plan](plan.json.gz): gzip JSON for the unchanged finite universe.
+- [Coverage](coverage.json): actual bars/history.
+- [Identity](identity.json): source/runtime hashes.
+- [Provenance](rerun-provenance.json): clarified units and unchanged-input contract.
+- [Audit](audit.json): independent fill/row/replication checks.
+- [Original run manifest](manifest.json): complete replay artifacts.
+- [Mongo handles](mongo-artifacts.json): immutable storage and readback.
+
+Mongo run: run:80719ee0ab3841dcabf1d0723c982e16f8385d3b082f988d4641d55c97df0bfa. One-day descriptive outcomes, not forecast accuracy or a persistent edge.

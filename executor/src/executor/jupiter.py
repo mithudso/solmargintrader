@@ -50,7 +50,7 @@ def _int(v: Any, name: str) -> int:
             raise ValueError
         n = int(str(v))
     except (TypeError, ValueError):
-        raise Refused(f"quote field {name} is missing or not an integer: {v!r}") from None
+        raise Refused(f"quote field {name} is missing or not an integer") from None
     return n
 
 
@@ -61,10 +61,10 @@ def parse_quote(raw: Any, input_mint: str, output_mint: str, in_raw: int, slippa
     if raw.get("inputMint") != input_mint or raw.get("outputMint") != output_mint:
         raise Refused("quote mints do not match the request")
     if raw.get("swapMode") != "ExactIn":
-        raise Refused(f"quote swapMode is {raw.get('swapMode')!r}, expected ExactIn")
+        raise Refused("quote swapMode must be ExactIn")
     got_in = _int(raw.get("inAmount"), "inAmount")
     if got_in != in_raw:
-        raise Refused(f"quote inAmount {got_in} != requested {in_raw}")
+        raise Refused("quote inAmount does not echo the request")
     out_raw = _int(raw.get("outAmount"), "outAmount")
     min_out = _int(raw.get("otherAmountThreshold"), "otherAmountThreshold")
     if out_raw <= 0 or min_out <= 0 or min_out > out_raw:
@@ -176,7 +176,7 @@ class Jupiter:
         if not isinstance(resp, dict) or not isinstance(resp.get("swapTransaction"), str):
             raise Refused("swap response has no swapTransaction")
         if resp.get("simulationError"):
-            raise Refused(f"Jupiter's own simulation failed: {str(resp['simulationError'])[:200]}")
+            raise Refused("Jupiter's own simulation failed")
         lvbh = resp.get("lastValidBlockHeight")
         if not isinstance(lvbh, int) or lvbh <= 0:
             raise Refused("swap response has no lastValidBlockHeight")

@@ -73,6 +73,16 @@ class WindowTests(unittest.TestCase):
 
 
 class RunStatsTests(unittest.TestCase):
+    def test_equal_timestamp_points_keep_the_last_observed_equity(self) -> None:
+        timestamp = at("2026-01-01")
+        c = Curve("dry-run", "same tick", "SOL", 100, [(timestamp, 100), (timestamp, 90)])
+        self.assertEqual(pnl.run_stats(c, Window("all")).final, 90)
+        self.assertEqual(pnl.combine_daily([c], Window("all"))[1][-1].equity, 90)
+        doc = {"fills": [{"tsMs": timestamp * 1000, "side": "buy", "baseQty": 1,
+                          "priceUsd": 100, "feeUsd": .1} for _ in range(2)]}
+        journal, = pnl.curves_from_journal(doc)
+        self.assertAlmostEqual(pnl.run_stats(journal, Window("all")).net, -.2)
+
     def setUp(self) -> None:
         # 1000 -> 1100 -> 1050 -> 1200 over four days.
         self.c = curve([("2026-01-01", 0, 1000), ("2026-01-02", 0, 1100), ("2026-01-03", 0, 1050),
@@ -164,6 +174,16 @@ class SeriesTests(unittest.TestCase):
 
 
 class DrawdownTests(unittest.TestCase):
+    def test_percentage_maximum_is_independent_of_dollar_maximum(self) -> None:
+        base, days = self.days([50, 100, 1000, 800])
+        report = pnl.drawdown_report(base, days)
+        self.assertAlmostEqual(report["max_drawdown_pct"], -.5)
+        self.assertEqual(report["max_drawdown_usd"], -200)
+        self.assertAlmostEqual(report["percent_at_max_drawdown_usd"], -.2)
+        self.assertEqual(report["trough_date"], "2026-01-04")
+        self.assertEqual(report["percentage_trough_date"], "2026-01-01")
+        self.assertEqual(report["percentage_recovered_date"], "2026-01-02")
+
     def days(self, equities, base=100.0):
         out, prev, peak = [], base, base
         for i, e in enumerate(equities):
@@ -325,6 +345,29 @@ class SectionTests(unittest.TestCase):
 
 
 class JournalTests(unittest.TestCase):
+    def test_malformed_fill_and_carry_containers_do_not_break_other_sources(self) -> None:
+        for fills in (1, "malformed", True):
+            with self.subTest(fills=fills):
+                self.assertEqual(pnl.curves_from_journal({"fills": fills}), [])
+        for carry in (1, "malformed", True):
+            with self.subTest(carry=carry):
+                doc = self.doc()
+                doc["carry"] = carry
+                journal, = pnl.curves_from_journal(doc)
+                self.assertAlmostEqual(journal.points[-1][1], 24.6)
+        self.assertEqual(pnl.curves_from_journal({"fills": [{"tsMs": 10**1000}]}), [])
+
+    def test_invalid_side_and_nonpositive_prices_cannot_create_fifo_profit(self) -> None:
+        doc = self.doc()
+        doc["fills"]["3"]["side"] = "unknown"
+        curve, = pnl.curves_from_journal(doc)
+        self.assertFalse(any(fill.realized is not None for fill in curve.fills))
+        self.assertAlmostEqual(curve.points[-1][1], -.7)
+        for price in (-10, 0):
+            with self.subTest(price=price):
+                self.assertEqual(pnl.curves_from_journal({"fills": [{
+                    "tsMs": 1000, "side": "buy", "baseQty": 1, "priceUsd": price, "feeUsd": .1}]}), [])
+
     def doc(self):
         def fill(i, side, qty, px, fee, t):
             return {"id": i, "side": side, "baseQty": qty, "priceUsd": px, "feeUsd": fee, "tsMs": t * 1000}
@@ -363,6 +406,28 @@ def ledger() -> sqlite3.Connection:
 
 
 class LiquidityTests(unittest.TestCase):
+    def test_history_reads_rows_linearly_and_keeps_deposits_out_of_profit(self) -> None:
+        visits = [0]
+        class CountedRows(list):
+            def __iter__(self):
+                for row in super().__iter__():
+                    visits[0] += 1
+                    yield row
+        count = 100
+        class Connection:
+            def execute(self, sql):
+                if "FROM snapshots" in sql:
+                    rows = [("one", t, 100 + t, 0) for t in range(count)]
+                elif "FROM flows" in sql:
+                    rows = [(0, "deposit", 100)]
+                else:
+                    rows = [(t, "claim", 1, 2) for t in range(count)]
+                return type("Query", (), {"fetchall": lambda self: CountedRows(rows)})()
+        curve = pnl.curve_from_lp_ledger(Connection(), "live")
+        self.assertEqual(curve.initial, 100)
+        self.assertEqual(curve.points[-1][1], 299)
+        self.assertLess(visits[0], 10 * count, "a snapshot must not rescan the complete history")
+
     def test_ledger_history_is_pnl_on_constant_basis(self) -> None:
         c = ledger()
         c.execute("INSERT INTO flows(slot,ts,kind,amount0,amount1,usd) VALUES ('1',?, 'deposit',0,0,100)", (at("2026-01-01"),))

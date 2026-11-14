@@ -111,9 +111,11 @@ def call_badge(call: str, width: int = 14) -> Text:
 
 def div_bar(value: float, maxabs: float = 1.0, half: int = 8) -> Text:
     """Diverging bar at half-cell resolution: down grows left of the axis, up grows right."""
-    cells = min(half * 2, round(abs(value) / maxabs * half * 2)) if maxabs else 0
+    value, maxabs = _num(value), _num(maxabs)
+    cells = (round(min(abs(value), maxabs) / maxabs * half * 2)
+             if value is not None and maxabs is not None and maxabs > 0 else 0)
     full, part = divmod(cells, 2)
-    if value >= 0:
+    if value is None or value >= 0:
         left, right = " " * half, ("█" * full + ("▌" if part else "")).ljust(half)
     else:
         left, right = (("▐" if part else "") + "█" * full).rjust(half), " " * half
@@ -125,7 +127,8 @@ def div_bar(value: float, maxabs: float = 1.0, half: int = 8) -> Text:
 
 
 def meter(frac: float, width: int, colour: str = TOK["accent"]) -> Text:
-    n = max(0, min(width, round(frac * width)))
+    frac = _num(frac)
+    n = round(max(0.0, min(1.0, frac)) * width) if frac is not None else 0
     out = Text()
     out.append("━" * n, colour)
     out.append("━" * (width - n), TOK["dim"])
@@ -133,6 +136,7 @@ def meter(frac: float, width: int, colour: str = TOK["accent"]) -> Text:
 
 
 def fmt_age(seconds: float | None) -> str:
+    seconds = _num(seconds)
     if seconds is None or seconds < 0:
         return "?"
     if seconds < 90:
@@ -145,11 +149,13 @@ def fmt_age(seconds: float | None) -> str:
 
 
 def _num(value: Any) -> float | None:
+    if isinstance(value, bool):
+        return None
     try:
         out = float(value)
-    except (TypeError, ValueError):
+    except (TypeError, ValueError, OverflowError):
         return None
-    return out if out == out else None  # NaN reads as missing, never as a number
+    return out if math.isfinite(out) else None
 
 
 # -- navigation model ---------------------------------------------------------------------------
@@ -566,9 +572,11 @@ def tiles(reads: Mapping[str, Mapping[str, Any] | None], *, forward: Mapping[str
     q = _ok(reads.get("queue.progress"))
     if q is not None:
         state = q.get("state") or {}
-        done, total = state.get("done") or 0, state.get("total") or 0
-        frac = done / total if total else 0.0
-        value = Text(f"{done} / {total}" if total else str(state.get("phase") or "idle"), f"bold {TOK['fg']}")
+        done, total = _num(state.get("done")), _num(state.get("total"))
+        available = done is not None and done >= 0 and total is not None and total > 0
+        frac = min(done, total) / total if available else 0.0
+        value = Text(f"{done:g} / {total:g}" if available else str(state.get("phase") or "idle"),
+                     f"bold {TOK['fg']}")
         out.append(("Sweep", value, meter(frac, 12)))
 
     if forward:
@@ -621,7 +629,12 @@ def activity_text(events: Iterable[tuple[float, str, str]]) -> Text:
         glyph, colour = STATUS.get(kind, STATUS["idle"])
         if i:
             out.append("\n")
-        out.append(time.strftime("%m-%d %H:%M  ", time.localtime(ts)), TOK["muted"])
+        try:
+            stamp = _num(ts)
+            when = time.strftime("%m-%d %H:%M  ", time.localtime(stamp)) if stamp is not None else "date unavailable  "
+        except (OSError, OverflowError, ValueError):
+            when = "date unavailable  "
+        out.append(when, TOK["muted"])
         out.append(f"{glyph} ", colour)
         out.append(msg, TOK["fg"])
     if not out.plain:

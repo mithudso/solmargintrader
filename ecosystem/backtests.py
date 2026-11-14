@@ -54,13 +54,15 @@ def code_fingerprint() -> str:
     import backtester.core
 
     root = Path(inspect.getfile(backtester.core)).parent
-    digest = hashlib.sha256()
-    for path in sorted(root.rglob("*.py")):
-        digest.update(str(path.relative_to(root)).encode())
-        digest.update(path.read_bytes())
-    digest.update(np.__version__.encode())
-    digest.update(pd.__version__.encode())
-    return digest.hexdigest()
+    sources = {
+        str(path.relative_to(root)): hashlib.sha256(path.read_bytes()).hexdigest()
+        for path in sorted(root.rglob("*.py"))
+    }
+    return hashlib.sha256(
+        canonical(
+            {"sources": sources, "numpy": np.__version__, "pandas": pd.__version__}
+        )
+    ).hexdigest()
 
 
 def backtest(

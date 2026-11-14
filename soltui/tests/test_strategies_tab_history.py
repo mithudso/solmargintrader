@@ -11,7 +11,7 @@ from textual.widgets import DataTable, TabbedContent
 
 from soltui import bgcontrol, bgqueue
 from soltui.tests.test_strategy_history import row
-from soltui.tests.test_tui import TEST_SIZE, make_settings, text_of
+from soltui.tests.test_tui import TEST_SIZE, make_settings, offline_console_reads, text_of
 from soltui.tui import SolTuiApp
 
 
@@ -23,6 +23,7 @@ def cells(app, name: str) -> dict[str, str]:
 
 class StrategiesTabHistory(unittest.IsolatedAsyncioTestCase):
     def setUp(self) -> None:
+        self.enterContext(offline_console_reads())
         tmp = TemporaryDirectory()
         self.addCleanup(tmp.cleanup)
         self.results = Path(tmp.name) / "results.jsonl"

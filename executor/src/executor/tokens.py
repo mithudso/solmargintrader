@@ -60,30 +60,25 @@ def ui_to_raw(amount: str, decimals: int) -> int:
         raise BadParams(f"amount {amount!r} is not a decimal number") from None
     if not d.is_finite() or d <= 0:
         raise BadParams("amount must be a positive finite number")
-    if type(decimals) is not int or not 0 <= decimals <= 255:
-        raise BadParams("token decimals must be an integer in 0..255")
-    _, digits, exponent = d.as_tuple()
-    digits = list(digits)
-    while digits[-1] == 0:
-        digits.pop()
-        exponent += 1
+    # Tuple arithmetic is exact even when another caller changes Decimal's context.
+    sign, digits, exponent = d.as_tuple()
     shift = exponent + decimals
     if shift < 0:
-        raise BadParams(f"amount {amount!r} has more than {decimals} decimal places")
-    # SPL token quantities are uint64. Check the exponent before constructing a
-    # power of ten, so an untrusted scientific-notation amount cannot allocate
-    # an arbitrarily large integer. No decimal-context rounding is permitted.
+        trim = -shift
+        if trim > len(digits) or any(digits[-trim:]):
+            raise BadParams(f"amount has more than {decimals} decimal places")
+        digits = digits[:-trim]
+        shift = 0
+    # Every supported Solana token amount is an unsigned 64-bit integer. Bound
+    # the exponent before constructing an int, including scientific notation.
     if len(digits) + shift > 20:
-        raise BadParams("amount exceeds the token quantity range")
-    coefficient = 0
-    for digit in digits:
-        coefficient = coefficient * 10 + digit
-    raw = coefficient * 10**shift
-    if raw >= 2**64:
-        raise BadParams("amount exceeds the token quantity range")
+        raise BadParams("amount exceeds the Solana unsigned 64-bit limit")
+    raw = int(Decimal((sign, digits, shift)))
+    if not 0 < raw < 2**64:
+        raise BadParams("amount exceeds the Solana unsigned 64-bit limit")
     return raw
 
 
 def raw_to_ui(raw: int, decimals: int) -> Decimal:
-    # Tuple construction is exact even when a caller uses a small local context.
-    return Decimal((int(raw < 0), tuple(map(int, str(abs(raw)))), -decimals))
+    sign, digits, exponent = Decimal(raw).as_tuple()
+    return Decimal((sign, digits, exponent - decimals))

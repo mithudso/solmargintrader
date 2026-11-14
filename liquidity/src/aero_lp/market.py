@@ -57,19 +57,20 @@ class MarketData:
         raise RuntimeError(f"rate limited by {url}")
 
     def token_prices_usd(self, addresses: list[str]) -> dict[str, float]:
-        addrs = [a.lower() for a in addresses]
-        out = {}
-        need = list(dict.fromkeys(addrs))
-        if need:
-            data = self._get(f"{GT}/simple/networks/base/token_price/{','.join(need)}")
+        """Return observed positive prices only. Stablecoins can depeg; a peg is not a quote."""
+        addrs = list(dict.fromkeys(a.lower() for a in addresses))
+        out: dict[str, float] = {}
+        if addrs:
+            data = self._get(f"{GT}/simple/networks/base/token_price/{','.join(addrs)}")
             for a, v in (data.get("data", {}).get("attributes", {}).get("token_prices") or {}).items():
-                if v is not None:
-                    if isinstance(v, bool):
-                        raise ValueError("market USD price must be a positive finite number")
+                if v is None or isinstance(v, bool) or a.lower() not in addrs:
+                    continue
+                try:
                     price = float(v)
-                    finite_number(price, "market USD price", positive=True)
-                    if a.lower() in need:
-                        out[a.lower()] = price
+                except (TypeError, ValueError, OverflowError):
+                    continue  # Invalid quotes stay unavailable; the execution gates refuse missing prices.
+                if math.isfinite(price) and price > 0:
+                    out[a.lower()] = price
         return out
 
     def pool_info(self, pool: str) -> dict[str, float]:

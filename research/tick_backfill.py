@@ -30,8 +30,10 @@ Phases, each skippable and each checkpointed:
 
 from __future__ import annotations
 
-import argparse
 import fcntl
+
+import argparse
+import hashlib
 import json
 import os
 import signal
@@ -130,6 +132,13 @@ def _page(product: str, after: int | None) -> pd.DataFrame:
     return _parse_trades(_get_json(f"{COINBASE_BASE}/products/{product}/trades?{params}"))
 
 
+def _checkpoint_binding(product: str, interval: str, start_ts: float, end_ts: float) -> dict:
+    """Future writer identity; never infer product or source from legacy state."""
+    return {"schema_version": 1, "product": product, "interval": interval,
+            "start_timestamp": start_ts, "end_timestamp": end_ts,
+            "collector_sha256": hashlib.sha256(Path(__file__).read_bytes()).hexdigest()}
+
+
 def backfill(
     asset: str, quote: str, start: str, end: str, interval: str,
     ck_dir: Path, out_dir: Path, *, pause: float, verbose: bool = True,
@@ -140,6 +149,7 @@ def backfill(
     seconds = INTERVAL_SECONDS[interval]
     start_ts = pd.Timestamp(start, tz="UTC").timestamp()
     end_ts = pd.Timestamp(end, tz="UTC").timestamp()
+    binding = _checkpoint_binding(product, interval, start_ts, end_ts)
 
     ck_dir.mkdir(parents=True, exist_ok=True)
     ck = ck_dir / f"{asset}_{quote}_{interval}_{start}_{end}.json"
@@ -150,6 +160,8 @@ def backfill(
 
     if ck.exists():
         state = json.loads(ck.read_text())
+        if state.get("binding") != binding:
+            raise FetchError("tick_checkpoint_identity_unavailable_or_mismatch_use_new_checkpoint_directory")
         agg.load(state["bars"])
         cursor = state["cursor"]
         pages, trades_seen = state["pages"], state["trades"]
@@ -172,25 +184,25 @@ def backfill(
                 break
             oldest_id = int(page["trade_id"].min())
             if oldest_id >= cursor:
-                print("  stalled cursor: incomplete; preserving checkpoint", file=sys.stderr)
-                break
+                # A stalled endpoint is unavailable evidence, not the start of
+                # history. Preserve the prior checkpoint and output on refusal.
+                raise FetchError("tick_backfill_nonprogress")
             agg.add(page[(page["timestamp"] >= start_ts) & (page["timestamp"] < end_ts)])
             pages += 1
             trades_seen += len(page)
-            oldest_id = int(page["trade_id"].min())
             oldest_ts = float(page["timestamp"].min())
             if oldest_ts < start_ts:
                 done = True
                 break
             cursor = oldest_id
             if pages % CHECKPOINT_EVERY == 0:
-                _write_ck(ck, agg, cursor, pages, trades_seen, done)
+                _write_ck(ck, agg, cursor, pages, trades_seen, done, binding=binding)
                 if verbose:
                     print(f"  {asset}: {pages} pages, {trades_seen} trades, "
                           f"at {pd.Timestamp(oldest_ts, unit='s', tz='UTC')}",
                           file=sys.stderr)
             time.sleep(pause)
-        _write_ck(ck, agg, cursor, pages, trades_seen, done)
+        _write_ck(ck, agg, cursor, pages, trades_seen, done, binding=binding)
 
     if not done:
         print(f"  {asset}: INCOMPLETE (interrupted) — rerun to continue", file=sys.stderr)
@@ -209,10 +221,10 @@ def backfill(
     return out
 
 
-def _write_ck(ck: Path, agg, cursor, pages, trades, done) -> None:
+def _write_ck(ck: Path, agg, cursor, pages, trades, done, *, binding: dict) -> None:
     tmp = ck.with_suffix(".tmp")
     tmp.write_text(json.dumps(
-        {"cursor": cursor, "pages": pages, "trades": trades, "done": done,
+        {"binding": binding, "cursor": cursor, "pages": pages, "trades": trades, "done": done,
          "bars": agg.state()}))
     tmp.replace(ck)  # atomic: a killed job never leaves a half-written checkpoint
 

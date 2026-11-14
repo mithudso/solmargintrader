@@ -19,7 +19,7 @@ from __future__ import annotations
 
 import math
 from collections.abc import Callable
-from dataclasses import dataclass, field
+from dataclasses import dataclass, field, fields
 from enum import StrEnum
 
 from . import clmath
@@ -229,11 +229,8 @@ class CostInputs:
     block_time_s: float = 2.0
 
     def __post_init__(self) -> None:
-        for name in self.__dataclass_fields__:
-            finite_number(getattr(self, name), name, integer=name == "penalty_blocks_left")
-        for name in ("pool_fee", "swap_fraction", "penalty_rate"):
-            if getattr(self, name) > 1:
-                raise ValueError(f"{name} must be at most 1")
+        for item in fields(self):
+            finite_number(getattr(self, item.name), item.name, integer=item.name == "penalty_blocks_left")
 
 
 @dataclass(frozen=True)
@@ -244,8 +241,8 @@ class EarnInputs:
     lvr_usd_per_day_current: float = 0.0  # 0 when out of range (an idle deposit has no LVR)
 
     def __post_init__(self) -> None:
-        for name in self.__dataclass_fields__:
-            finite_number(getattr(self, name), name)
+        for item in fields(self):
+            finite_number(getattr(self, item.name), item.name)
 
 
 @dataclass
@@ -332,8 +329,8 @@ def decide(
     net_new = earn.earn_usd_per_day_new - cfg.lvr_weight * earn.lvr_usd_per_day_new
     net_cur = earn.earn_usd_per_day_current - cfg.lvr_weight * earn.lvr_usd_per_day_current
     benefit = (net_new * occupancy - net_cur) * cfg.horizon_days
-    if not all(math.isfinite(value) for value in (net_new, net_cur, benefit, occupancy)):
-        raise ValueError("derived rebalance economics must be finite")
+    if not all(math.isfinite(value) for value in (*parts.values(), total_cost, net_new, net_cur, benefit)):
+        raise ValueError("rebalance cost and benefit must be finite; refusing unavailable economic evidence")
     breakdown = {**parts, "benefit": benefit, "occupancy": occupancy, "lvr_new_day": earn.lvr_usd_per_day_new}
     if net_new <= 0 and not in_range:
         return Decision(

@@ -189,7 +189,7 @@ def classify(rel: str) -> str:
     p = Path(rel)
     ext = p.suffix
     parts = p.parts
-    if "tests" in parts or p.name.startswith("test_"):
+    if "tests" in parts or "test" in parts or p.name.startswith("test_"):
         return "test"
     if "strategy_cards" in parts:
         return "strategy-card"
@@ -493,7 +493,7 @@ def build_text(meta: dict[str, Any]) -> dict[str, Any]:
             postings[term][e["id"]] = n
 
     # Terms in almost every file carry no discriminating power and inflate the
-    # artifact; terms in exactly one file are usually a typo or a hash.
+    # artifact. Rare terms stay searchable, including identifiers found once.
     n_docs = len(lengths)
     pruned = {t: d for t, d in postings.items() if len(d) <= n_docs * 0.6}
     return {
@@ -956,7 +956,9 @@ def main(argv: list[str] | None = None) -> int:
     if args.command in {"all", "text", "concepts"}:
         text = build_text(meta)
         if args.command in {"all", "text"}:
-            TEXT_JSON.write_text(json.dumps(text, indent=2, sort_keys=True) + "\n")
+            # Whitespace alone pushed the complete research index over GitHub's
+            # 100 MiB file limit. Compact JSON preserves every posting and score.
+            TEXT_JSON.write_text(json.dumps(text, separators=(",", ":"), sort_keys=True) + "\n")
             s = text["stats"]
             print(f"{TEXT_JSON.relative_to(REPO)}: {s['terms']} terms "
                   f"(pruned from {s['termsBeforePrune']}), "

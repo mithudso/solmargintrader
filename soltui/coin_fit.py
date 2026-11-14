@@ -25,11 +25,12 @@ from typing import Any
 import numpy as np
 
 from backtester.core.coinfit import simulate
-from backtester.core.data import CsvLoader
+from backtester.core.data import CsvLoader, describe_data_error
 from backtester.core.dcasim import DcaConfig, capital_required_usd, safety_sizes_usd
 from backtester.core.types import CostConfig, validate_bar_arrays
 
 from . import bots
+from .csv_safety import spreadsheet_safe_text
 
 VERSION = "1.0.0"
 TEMPLATE_FIELDS = (
@@ -78,7 +79,7 @@ def _finite(value: Any, name: str, minimum: float = 0) -> float:
         raise bots.BotError(f"{name} must be a finite number")
     try:
         result = float(value)
-    except (TypeError, ValueError) as exc:
+    except (TypeError, ValueError, OverflowError) as exc:
         raise bots.BotError(f"{name} must be a finite number") from exc
     if not math.isfinite(result) or result < minimum:
         raise bots.BotError(f"{name} must be finite and at least {minimum}")
@@ -861,7 +862,7 @@ def rank_coins(
         try:
             loaded[coin] = load_coin(coin, captured)
         except (ValueError, OSError, KeyError, TypeError) as exc:
-            errors[coin] = str(exc)
+            errors[coin] = str(exc) if isinstance(exc, bots.BotError) else describe_data_error(exc)
     end = (
         _stamp(reference_end)
         if reference_end is not None
@@ -910,7 +911,7 @@ def rank_coins(
             )
             rows.append(row)
         except (ValueError, OSError, KeyError, TypeError, FloatingPointError) as exc:
-            errors[coin] = str(exc)
+            errors[coin] = str(exc) if isinstance(exc, bots.BotError) else describe_data_error(exc)
     present = {r["coin"] for r in rows}
     for coin in names:
         if coin not in present:
@@ -1093,7 +1094,7 @@ def render_report(reports: list[dict[str, Any]], fmt: str = "markdown") -> str:
         output = io.StringIO(newline="")
         writer = csv.writer(output, lineterminator="\n")
         writer.writerow(headers)
-        writer.writerows(table)
+        writer.writerows([spreadsheet_safe_text(cell) for cell in row] for row in table)
         return output.getvalue()
     escape = lambda value: str(value).replace("|", "\\|").replace("\n", " ")
     lines = [
@@ -1374,6 +1375,9 @@ def cli_main(argv: list[str] | None = None) -> int:
             reports.append(report)
         text = render_report(reports, args.format)
         if args.output:
+            if any(args.output.resolve() == Path(row["data_source"]).resolve()
+                   for report in reports for row in report["rows"] if row.get("data_source")):
+                raise bots.BotError("output must not overwrite cached candle input")
             args.output.parent.mkdir(parents=True, exist_ok=True)
             args.output.write_text(text)
         else:

@@ -1,0 +1,297 @@
+{
+  "agent": "backtester_blind_acceptance",
+  "definition_version": "2.0.0",
+  "version": 1,
+  "delta": "Permanent scoped source-fixture corrections and exact private guard compatibility after failed first full gates; full reruns await refreshed index",
+  "status": "partial",
+  "observed_at": "2026-11-12T22:02:28.928818+00:00",
+  "source_frozen": true,
+  "source": [
+    {
+      "path": "backtester/tests/test_cross_asset_cpcv.py",
+      "sha256": "61bd0ad0fc862f2d6ff5e3b71a9a22aea324c5a73716ff268695192a57b6756a",
+      "snapshot": "/tmp/oraclebot-component-compat-20261112/backtester__tests__test_cross_asset_cpcv.py.baseline",
+      "lines": 1197,
+      "current_sha256": "e7149812ca9faa61250a987b26bdcebd3a2d7b271bd8ee77e402204bc98eb836",
+      "current_lines": 1202,
+      "review_scope": "Only exact failing fixture delta and whole16-line new helper; no new full-source review credit for the pre-reviewed existing test modules."
+    },
+    {
+      "path": "ecosystem/tests/test_manager_editing.py",
+      "sha256": "09bde7ca1db858230c8e83ce0bd56cd003a86f48786078f2c23e75a08dc8ed91",
+      "snapshot": "/tmp/oraclebot-component-compat-20261112/ecosystem__tests__test_manager_editing.py.baseline",
+      "lines": 412,
+      "current_sha256": "a1c02f5ee97647efda621328a0ed5844b7ea9f0940080771105c8057cdee7aa7",
+      "current_lines": 432,
+      "review_scope": "Only exact failing fixture delta and whole16-line new helper; no new full-source review credit for the pre-reviewed existing test modules."
+    },
+    {
+      "path": "ecosystem/tests/__init__.py",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "snapshot": "/tmp/oraclebot-component-compat-20261112/ecosystem__tests____init__.py.baseline",
+      "lines": 0,
+      "current_sha256": "1aaebff21d3ab3bbf2994f31ca20aac02a22646f2c64a83d2d5a3739d2c15a14",
+      "current_lines": 16,
+      "review_scope": "Only exact failing fixture delta and whole16-line new helper; no new full-source review credit for the pre-reviewed existing test modules."
+    }
+  ],
+  "source_diff": {
+    "path": "/tmp/oraclebot-component-compat-20261112/fixture-final.diff",
+    "sha256": "bc926667189c80fd5b277535efd836928b70edf87acfac9fd68dd32e5f142785"
+  },
+  "all18pass_dispositions": {
+    "C1": "The invalid duplicated-minute CSV remains invalid; source fixture now binds production SOLMT_DATA_DIR override to the same temporary data tree. All original assertions retained.",
+    "C2": "Ecosystem default-owner isolation is case-scoped and restored. Nested explicit endpoint overrides remain effective and restore the fixture value afterward.",
+    "C3": "Original full RED records retained. Focused existing counterexamples and extra scope/restoration control pass under strict private boundaries. Oracle omitted actual stdio fixtures pass with complete assertions.",
+    "S1": "No secrets/exfiltration/reviewer instructions or new production access. Fixed stdio/timeout payloads fully inspected; unknown argv/mode/payload/cwd/module remains refused.",
+    "S2": "Endpoint reservation socket closes before use; TestCase.enterContext restores environment during cleanup. Original temporary directories and child timeout/cleanup assertions retained.",
+    "S3": "No owner port exception. Every default endpoint is newly reserved/closed per case; original guarded fallback can reach only its run-owned record. Explicit protocol endpoint overrides are preserved.",
+    "S4": "TestCase.enterContext is supported by required Python3.13. Private Popen facade preserves class, generic annotations, names/doc/signature and dispatches construction through original guarded factory.",
+    "S5": "No production logging/error changes. Read-only private per-Popen PID/argv-hash/completion accounting records Python and native children without adding cleanup signals.",
+    "P1": "Only focused synthetic fixture cases executed after corrections; no economic sweep, provider acquisition or model. Fixed60-second sleepers are terminated by original bounded timeout/flood paths.",
+    "P2": "Case-local context/env cleanup retains isolation in serial suite. No thread-parallel/global-mock rewrite or setup hoisting.",
+    "M1": "Tiny shared16-line helper matches existing repository fixture pattern. No unrelated production or test organization change.",
+    "M2": "Pattern mirrored within ecosystem/tests package; no cross-installed-test import dependency. Established guarded factory reused by typed facade.",
+    "M3": "No repository runtime architecture/config changes or new review credit. Existing Medium repo-scope settings/error/remediation/sink residuals remain.",
+    "M4": "New comments state env override precedence and scoped default-owner intent. No historical result/installed/source/profitability claim.",
+    "T1": "Original assertions preserved. New1 ecosystem case verifies default scope restoration and explicit nested override. Focused1+11+3 completedGREEN0, no errors/skips/loader errors/violations.",
+    "T2": "No dependency/package/lock/install changes. No global or private environment provisioning.",
+    "T3": "Ecosystem exact2-file Ruff0; diff-check/compile0. Backtester root Ruff remains5 identical baseline diagnostics (four existing unused E402 suppressions and one existing RUF012); no universal lint pass claimed.",
+    "T4": "Canonical source fixture corrections replace unsafe default-owner/env leakage. Full integration remains HOLD until refreshed index authorization; prior diagnostic attempts remain failures. No distinct assertion/test removed."
+  },
+  "M5": "N/A test/helper fixture delta; private guard metadata/admission is harness qualification, not shipped application CLI.",
+  "initial_failed_gates": {
+    "path": "/tmp/oraclebot-initial-three-gates-20261112/initial-receipt.json",
+    "sha256": "108199480cea11632cfb369fb182db699c9bc0f4be89c80c54a719a4537c2d49",
+    "scope": "Our three initial gates preserved. Parent owns original failed BotManager fourth gate and its independent receipt; no fourth result invented here."
+  },
+  "focused": [
+    {
+      "component": "backtester",
+      "command": [
+        "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/.venv/bin/python",
+        "/tmp/oraclebot-component-compat-20261112/focused.py",
+        "backtester"
+      ],
+      "cwd": "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112",
+      "launch": "/tmp/oraclebot-component-compat-20261112/backtester-focused-launch.json",
+      "result": "/tmp/oraclebot-backtester-focused-bghbvoyc/result.json",
+      "log": "/tmp/oraclebot-backtester-focused-bghbvoyc/output.log",
+      "completed_exit": 0,
+      "tests": 1,
+      "seconds": 0.011947915991186164,
+      "skips": [],
+      "loader_errors": [],
+      "blocked": [],
+      "source_stable": true,
+      "harness_stable": true,
+      "registered_children": [],
+      "child_completion": [],
+      "after_exit_os_identity": []
+    },
+    {
+      "component": "ecosystem",
+      "command": [
+        "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/.venv/bin/python",
+        "/tmp/oraclebot-component-compat-20261112/focused.py",
+        "ecosystem"
+      ],
+      "cwd": "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112",
+      "launch": "/tmp/oraclebot-component-compat-20261112/ecosystem-focused-launch.json",
+      "result": "/tmp/oraclebot-ecosystem-focused-z8xgibrp/result.json",
+      "log": "/tmp/oraclebot-ecosystem-focused-z8xgibrp/output.log",
+      "completed_exit": 0,
+      "tests": 11,
+      "seconds": 0.41305825000745244,
+      "skips": [],
+      "loader_errors": [],
+      "blocked": [],
+      "source_stable": true,
+      "harness_stable": true,
+      "registered_children": [
+        {
+          "child_pid": 86865,
+          "executable": "python",
+          "argv_sha256": "75541725940c1f0c24ae8e3ebd62f53411a937a3d2d4df19cc881b559479290b"
+        },
+        {
+          "child_pid": 86868,
+          "executable": "python",
+          "argv_sha256": "d4e3aae28ebc0e970543b70be8bf5d2784def5ac953a90dcc84a694a2b6018f0"
+        }
+      ],
+      "child_completion": [
+        {
+          "child_pid": 86865,
+          "returncode": -15
+        },
+        {
+          "child_pid": 86868,
+          "returncode": -15
+        }
+      ],
+      "after_exit_os_identity": [
+        {
+          "pid": 86865,
+          "exit": 1,
+          "state": ""
+        },
+        {
+          "pid": 86868,
+          "exit": 1,
+          "state": ""
+        }
+      ]
+    },
+    {
+      "component": "oracle",
+      "command": [
+        "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/.venv/bin/python",
+        "/tmp/oraclebot-component-compat-20261112/focused.py",
+        "oracle"
+      ],
+      "cwd": "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112",
+      "launch": "/tmp/oraclebot-component-compat-20261112/oracle-focused-launch.json",
+      "result": "/tmp/oraclebot-oracle-focused-k9bp8tqf/result.json",
+      "log": "/tmp/oraclebot-oracle-focused-k9bp8tqf/output.log",
+      "completed_exit": 0,
+      "tests": 3,
+      "seconds": 2.8760295840038452,
+      "skips": [],
+      "loader_errors": [],
+      "blocked": [],
+      "source_stable": true,
+      "harness_stable": true,
+      "registered_children": [
+        {
+          "child_pid": 86884,
+          "executable": "python",
+          "argv_sha256": "c56519f995888271ad51f7c5dd48b472215928616b2a07c827cecb261b92a8c2"
+        },
+        {
+          "child_pid": 86899,
+          "executable": "python",
+          "argv_sha256": "c985038c8d8f3ff7c6d0738ca358131afbe17ff7fdb7e22b7349d15af7a8eb3e"
+        },
+        {
+          "child_pid": 86902,
+          "executable": "python",
+          "argv_sha256": "985e2b5f7d721180b73819d89e599acc4928c4d42b170c229277f4a5e5fffda4"
+        }
+      ],
+      "child_completion": [
+        {
+          "child_pid": 86884,
+          "returncode": 0
+        },
+        {
+          "child_pid": 86899,
+          "returncode": 0
+        },
+        {
+          "child_pid": 86902,
+          "returncode": 0
+        }
+      ],
+      "after_exit_os_identity": [
+        {
+          "pid": 86884,
+          "exit": 1,
+          "state": ""
+        },
+        {
+          "pid": 86899,
+          "exit": 1,
+          "state": ""
+        },
+        {
+          "pid": 86902,
+          "exit": 1,
+          "state": ""
+        }
+      ]
+    }
+  ],
+  "negative_compatibility_controls": [
+    {
+      "component": "oracle",
+      "completed_exit": 0,
+      "count": 22,
+      "result": "/tmp/oraclebot-oracle-compat-yvburmrn/result.json",
+      "log": "/tmp/oraclebot-oracle-compat-yvburmrn/output.log",
+      "purpose": "Exact argv/cwd/source/binary/payload mutation refusals; Oracle typed/subscriptable metadata/signature and unchanged guarded constructor path. No application payload executed."
+    },
+    {
+      "component": "ecosystem",
+      "completed_exit": 0,
+      "count": 12,
+      "result": "/tmp/oraclebot-ecosystem-compat-dl11shbt/result.json",
+      "log": "/tmp/oraclebot-ecosystem-compat-dl11shbt/output.log",
+      "purpose": "Exact argv/cwd/source/binary/payload mutation refusals; Oracle typed/subscriptable metadata/signature and unchanged guarded constructor path. No application payload executed."
+    }
+  ],
+  "inherited_full_guard_selfchecks": [
+    {
+      "component": "backtester",
+      "completed_exit": 0,
+      "result": "/tmp/oraclebot-backtester-selfcheck-state-c57ie5g8/selfcheck.json"
+    },
+    {
+      "component": "oracle",
+      "completed_exit": 0,
+      "result": "/tmp/oraclebot-oracle-selfcheck-state-pfs07wi7/selfcheck.json"
+    },
+    {
+      "component": "ecosystem",
+      "completed_exit": 0,
+      "result": "/tmp/oraclebot-ecosystem-selfcheck-state-7igoc4l5/selfcheck.json"
+    }
+  ],
+  "private_adaptations": [
+    "Oracle Popen typed facade delegates every constructor to unchanged guarded factory; generic/class metadata and original constructor signature retained.",
+    "Three exact Oracle source/test/argv/payload/temporary archive-bound stdio fixtures added; no blanket -m permission.",
+    "Two exact ecosystem source/test/payload-bound sleep/flood fixtures admitted only from fresh run-owned temporary cwd.",
+    "Per-Popen child PID/argv hash and after-wait poll accounting added; no process/signal admission relaxation.",
+    "Only two reviewed ecosystem test source hashes refreshed from captured original preimages; current source authored in assigned scope.",
+    "Ecosystem expected count249\u2192250 for one new restoration test; no assertion/test omitted."
+  ],
+  "private_source_binding_delta": "/tmp/oraclebot-component-compat-20261112/ecosystem-fixture-source-admission-delta.json",
+  "harness_current": {
+    "backtester": {
+      "sitecustomize.py": "8ac6272adb2fbab773bccdb20dddbd36b481459fd45144c2c01fc0e04726689b",
+      "guard.py": "be1c8428a3d390ca39052eb57addd0bfaac1644b675a57cf19f20808545e834a",
+      "run_suite.py": "361a853b20f325a0036edb07a1e2a09cac84a3712c53a5c4bdd39da8cfafd916",
+      "admissions.json": "e07c1c4634b56512a35337c1d7c22d5fed4dea6726b1b445b8705b5a803c0c81"
+    },
+    "oracle": {
+      "sitecustomize.py": "8ac6272adb2fbab773bccdb20dddbd36b481459fd45144c2c01fc0e04726689b",
+      "guard.py": "ecead37813e5e7e6b424a7a4300288d88deb6ea4c95994289f8bd7dcdb1dfcd0",
+      "run_suite.py": "0f8ab753730c6d489df7a45cbe4b0429f76d14cad178c7871107217a6da7affe",
+      "admissions.json": "a13a75fbb9b218f130623eab6881fe34fa7a5fe0426a1cab6a23687e0ccbea2a"
+    },
+    "ecosystem": {
+      "sitecustomize.py": "8ac6272adb2fbab773bccdb20dddbd36b481459fd45144c2c01fc0e04726689b",
+      "guard.py": "cfe3debaca0f1db13b38304bd7f682c5b1a9cf736def052ddec5a32b82641544",
+      "run_suite.py": "0e45ce025645a7927f02ca2377d871994b42bfb6abb2a5071b3a6c82cc8a4dfd",
+      "admissions.json": "8475be8015be5d58e4dbdd7c6e806a2157a2e4ee96a3167c97abb89a4f53fa3d"
+    }
+  },
+  "checks": "/tmp/oraclebot-component-compat-20261112/fixture-checks.json",
+  "full_expected_counts": {
+    "backtester": 1120,
+    "oracle": 193,
+    "ecosystem": 250
+  },
+  "remaining": [
+    "Root/parent accept exact source fixture deltas, refresh index/current-source signal.",
+    "Run complete1120/193/250 gates under final private guards and retain actual completed exits/child cleanup evidence.",
+    "Parent owns BotManager gate, docs/ledger/version metadata and commit/delivery."
+  ],
+  "limits": [
+    "No full rerun since fixture correction; no pass inferred from focused gates.",
+    "Source fixtures changed only assigned test files; no production default/math/SDK or owner state changed.",
+    "No owner/network exception, research acquisition, real report, installation, model/service, venue/signing/order operation.",
+    "Private Oracle focused3 passed before constructor __signature__ metadata-only addition; final22 pure metadata/admission controls pass after it. Full rerun must bind final guard.",
+    "Current source/harness may be integrated only by parent after next index signal."
+  ]
+}

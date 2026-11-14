@@ -1,0 +1,218 @@
+{
+  "schema_version": 1,
+  "root_task": "TASK-2079",
+  "review_kind": "full per-file CDO review with parent-authorized test assertion hardening",
+  "scope": "/Users/mitch/dev/worktrees/oraclebot-authenticated-mcp-20261113/website/test/mcp-integration.test.js",
+  "skill": {
+    "path": "/Users/mitch/.agents/skills/code-deep-optimizer/SKILL.md",
+    "version": "1.17.1"
+  },
+  "reviewer_skills": [
+    "lang-js-ts",
+    "security-review (security-reviewer reference)",
+    "software-engineering-patterns (code-reviewer and coding-standards references)",
+    "software-engineering-patterns (testing reference; general async/isolation rules only)",
+    "misc-catch-all (WebCrypto reference; randomness and error handling sections only)"
+  ],
+  "injection_gate": {
+    "applied": true,
+    "directive_findings": [],
+    "hostile_content": false
+  },
+  "initial_file": {
+    "bytes": 10229,
+    "lines": 126,
+    "sha256": "d39d196c981a4eb166b8347ac87a18fe0803d014606c5a9ae1683ec6d1fd5554",
+    "computed_git_blob_sha1": "4afb9ff7e5bd7994829d7bb00f4bb52dbb5723c5",
+    "bounded_read_ranges": [
+      [
+        1,
+        65
+      ],
+      [
+        66,
+        126
+      ]
+    ],
+    "coverage_complete": true
+  },
+  "final_file": {
+    "bytes": 11639,
+    "lines": 147,
+    "sha256": "5ef5cec23839d104a546620e1949c0d8bea77317d789e4352804d26292aecd63",
+    "computed_git_blob_sha1": "bb97e329b827f0a434c9c68930c04674329f4346",
+    "bounded_read_ranges": [
+      [
+        1,
+        80
+      ],
+      [
+        81,
+        147
+      ]
+    ],
+    "coverage_complete": true
+  },
+  "passes": [
+    {
+      "id": "C1",
+      "state": "pass",
+      "reason": "Reviewed helper control flow and all five asynchronous tests. Worker responses are awaited and response bodies consumed. Assertions fail through node:test; the new account snapshots are taken before deletion and compare the same owner afterward."
+    },
+    {
+      "id": "C2",
+      "state": "pass",
+      "reason": "Login, registration, authorization, signed consent, token exchange, MCP calls, and scheduled cleanup use the real Worker entrypoints. HTTP status, account identity, RPC error codes, and persisted state are checked. The local fixture adapter remains a boundary; no remote D1 interface proof is claimed."
+    },
+    {
+      "id": "C3",
+      "state": "pass",
+      "reason": "Checked hostile ownership, cookie-only access, injected wallet arguments, missing executor, unresolved intent cleanup, and the submit-before-delete batch interleaving. Two thought counterexamples exposed insufficient assertions: mutate-then-404 revocation and partial deletion preserving an intent. New assertions now reject those outcomes. No production bug or red-to-green product fix is claimed."
+    },
+    {
+      "id": "S1",
+      "state": "pass",
+      "reason": "Stage 0.5 applied to the entire file, including names, strings and test fixtures. No directive addressed to the reviewer or hostile instruction found. Real Ed25519 signing and random S256 verifier generation are used for synthetic users. No real credential or hardcoded secret appears. Fixture hashed credential rows stay inside in-memory equality assertions."
+    },
+    {
+      "id": "S2",
+      "state": "pass",
+      "reason": "Every worker call, signature, digest, scheduled operation, and assertion-relevant async operation is awaited. The file contains no swallowed catch or manual resource lifecycle. DB fixture disposal belongs to the imported environment helper, which is outside this assigned-file implementation review."
+    },
+    {
+      "id": "S3",
+      "state": "pass",
+      "reason": "All fixture SQL values are parameter bound; interpolated request IDs and grant IDs originate from the Worker fixture. The tests reject a cross-account wallet argument, foreign revocation, and cookie-only MCP authentication, and now verify the denied revoke had no persisted mutation."
+    },
+    {
+      "id": "S4",
+      "state": "pass",
+      "reason": "The target explicitly uses node:test, Buffer, Web Crypto and a Node SQLite fixture. The focused command completed on the current runtime. No OS path, shell dependency, eval, unsupported syntax, or hidden platform branch occurs inside the test file; repository/runtime deployment checks remain root scope."
+    },
+    {
+      "id": "S5",
+      "state": "pass",
+      "reason": "The file has no custom log sink or caught-and-suppressed error. Assertion and DB errors reach node:test. The observed focused run emitted categorical structured security/failure events without fixture tokens, wallet values, or credential hashes. Complete production logging coverage is not established by this single integration test file."
+    },
+    {
+      "id": "P1",
+      "state": "pass",
+      "reason": "Five short integration cases use bounded fixture data, small payloads and equality checks. No unbounded loop, repeated external request, oversized fixture, or hot-path complexity issue is present. The focused run reported 111.442167 ms total."
+    },
+    {
+      "id": "P2",
+      "state": "pass",
+      "reason": "Each case creates its own environment; shared module state is the stateless TextEncoder and helpers. Required login/consent/token dependencies remain sequential. The deletion race is injected deterministically at DB.batch and asserts the submitting intent plus unchanged authorization rows; no timing sleep is used."
+    },
+    {
+      "id": "M1",
+      "state": "pass",
+      "reason": "Named helpers isolate Worker response parsing, login, consent, RPC calls, intent fixtures and account authorization snapshots. Numeric trade amounts and time offsets are bounded test inputs rather than scattered production settings. No Medium+ readability or dead-code defect identified."
+    },
+    {
+      "id": "M2",
+      "state": "pass",
+      "reason": "The existing auth and RPC helpers avoid repeated protocol implementation; a small accountAuthorizationRows helper now shares the ownership-filtered deletion snapshot query across both refused-deletion cases. No reusable production library is reimplemented in this file."
+    },
+    {
+      "id": "M3",
+      "state": "na",
+      "reason": "Repository architecture and centralized configuration are root-level passes; this assignment owns one test file only."
+    },
+    {
+      "id": "M4",
+      "state": "pass",
+      "reason": "Test names and helper behavior agree within their fixture scope. The wallet flow performs cryptographic signatures with generated test keys and the real Worker, while the receipt explicitly limits this to synthetic local integration. No public library API or usage guide is shipped by this file."
+    },
+    {
+      "id": "T1",
+      "state": "pass",
+      "reason": "Assertions cover protocol routing, bearer challenge, owner identity and foreign-data exclusion, invalid wallet argument, cookie-only denial, executor refusal with no intent, foreign revoke without mutation, continued owner bearer access, immediate owner revocation, prepared-only cleanup, initial unresolved-deletion refusal, and deletion-race authorization preservation. Two concrete coverage robustness gaps were hardened. Replay/PKCE negative cases are not in this file and must be reconciled at root scope rather than inferred here."
+    },
+    {
+      "id": "T2",
+      "state": "na",
+      "reason": "Dependency and supply-chain inventory is a root-level pass; no package or lockfile is owned by this single-file assignment."
+    },
+    {
+      "id": "T3",
+      "state": "na",
+      "reason": "Repository runner, lint, type-checking and CI configuration are root-level passes. The assigned conventional node:test entrypoint ran successfully; no tooling scaffold was changed."
+    },
+    {
+      "id": "T4",
+      "state": "pass",
+      "reason": "No real sleep, polling timer, network service, or heavyweight fixture rebuild is used. Fresh environments, users and grants are mutated in every test, so hoisting would lose isolation. The deterministic DB.batch interleaving avoids flaky concurrency timing."
+    },
+    {
+      "id": "M5",
+      "state": "na",
+      "reason": "This is a test-runner asset, not a user-facing runnable tool or CLI entrypoint; tool bootstrap and argument ergonomics are not applicable."
+    }
+  ],
+  "active_fix_track_passes": 15,
+  "fixed_track_passes_total": 18,
+  "findings": [
+    {
+      "id": "T1-foreign-revoke-effects",
+      "pass": "T1",
+      "severity": "Medium",
+      "kind": "coverage robustness gap, not a demonstrated product bug",
+      "original_lines": [
+        95,
+        97
+      ],
+      "final_lines": [
+        95,
+        102
+      ],
+      "impact": "The old sequence could not distinguish a denied foreign revocation with no effect from a grant mutation hidden behind a 404 before the owner revoked it.",
+      "fix": "Snapshot the complete grant row before foreign revocation, compare it unchanged afterward, require the owner bearer to remain usable with status 200 and matching wallet, then retain owner-revoke 401 proof.",
+      "status": "fixed; focused test passed"
+    },
+    {
+      "id": "T1-refused-deletion-atomicity",
+      "pass": "T1",
+      "severity": "Medium",
+      "kind": "coverage robustness gap, not a demonstrated product bug",
+      "original_lines": [
+        106,
+        126
+      ],
+      "final_lines": [
+        111,
+        147
+      ],
+      "impact": "The old refused-deletion assertions did not establish that all user, session and grant rows survived, especially in the submit-after-initial-check race.",
+      "fix": "Take owner-scoped full user/session/grant row snapshots, require 1 row in each baseline, and compare unchanged authorization rows after both 409 refusals while retaining intent-state assertions.",
+      "status": "fixed; focused test passed"
+    }
+  ],
+  "remaining_medium_plus_findings": [],
+  "verification": {
+    "command": "node --test website/test/mcp-integration.test.js",
+    "cwd": "/Users/mitch/dev/worktrees/oraclebot-authenticated-mcp-20261113",
+    "exit_code": 0,
+    "tests": 5,
+    "passed": 5,
+    "failed": 0,
+    "skipped": 0,
+    "cancelled": 0,
+    "todo": 0,
+    "duration_ms": 111.442167,
+    "completed": true,
+    "execution_count": 1
+  },
+  "not_run": [
+    "No full 129-test suite repeat; root owns final suite and supplied its earlier baseline.",
+    "No remote D1, network service, customer executor, installation, inference, or agent dispatch.",
+    "No Git mutation; root owns workflow records, loop and delivery."
+  ],
+  "limitations": [
+    "Local generated-wallet and D1-fixture integration does not prove a physical wallet, hosted remote D1 semantics, or real customer trade execution.",
+    "This file alone does not establish all replay, wrong-verifier, expiry or OAuth negative cases; root must combine the sibling test review.",
+    "No global CLEAN/convergence or release verdict is issued by this per-file receipt."
+  ],
+  "summary": "Complete final-file read; 15 of 18 fixed-track passes active plus M5 not applicable; two T1 coverage robustness gaps hardened; no supported Medium+ finding remains in the assigned file; focused tests passed.",
+  "status": "PER_FILE_COMPLETE_WITH_QUALIFIED_NONE_REMAINING"
+}

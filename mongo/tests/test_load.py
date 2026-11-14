@@ -5,8 +5,8 @@ therefore *idempotent*: loading twice must leave identical counts. Without that,
 the time series collections would silently double on a second run -- they accept no
 unique index, so nothing else would catch it.
 
-Native tests require explicit SOLMARGINTRADER_MONGO_TEST_URI opt-in. They use a
-unique disposable database; an explicitly unreachable URI fails instead of skipping.
+Tests needing a server skip cleanly when one is not listening. Each fixture owns
+a fresh `solmargintrader_test_<uuid>` database and removes only that database.
 """
 
 from __future__ import annotations
@@ -14,7 +14,11 @@ from __future__ import annotations
 import math
 import sys
 import unittest
+from contextlib import contextmanager
+from datetime import datetime, timezone
 from pathlib import Path
+from unittest import mock
+from uuid import uuid4
 
 REPO = Path(__file__).resolve().parents[2]
 if str(REPO) not in sys.path:
@@ -22,6 +26,20 @@ if str(REPO) not in sys.path:
 
 from mongo import load, schema
 from mongo.tests.mongo_fixture import DisposableMongoFixture
+
+
+@contextmanager
+def isolated_store():
+    """Select and clean up only a fresh, private integration-test database."""
+    client = schema.connect()
+    name = f"{schema.DB_NAME}_test_{uuid4().hex}"
+    try:
+        yield client[name]
+    finally:
+        try:
+            client.drop_database(name)
+        finally:
+            client.close()
 
 
 class TestPureHelpers(unittest.TestCase):
@@ -149,7 +167,7 @@ class TestSchemaLayout(unittest.TestCase):
 
 
 class TestLoadedStore(unittest.TestCase):
-    """Assertions against the store as loaded by `python3 mongo/load.py`."""
+    """Assertions against an isolated store built from tracked reference data."""
 
     @classmethod
     def setUpClass(cls) -> None:
@@ -191,7 +209,7 @@ class TestLoadedStore(unittest.TestCase):
     def test_strategy_cards_keep_their_own_vocabulary(self) -> None:
         """One document per card, exactly one per registry key, every key real.
 
-        No invented `registered` flag: the 20 without a key are not simply
+        No invented `registered` flag: cards without a key are not simply
         unregistered -- the ladder grid is `implemented` and has no key because it is
         not a `Strategy` at all.
         """

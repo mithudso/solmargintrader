@@ -1,12 +1,14 @@
 # Build context: repository root. Run behind an authenticated HTTPS gateway.
-FROM python:3.13-slim
+FROM python:3.13.18-slim
 WORKDIR /app
 COPY backtester /app/backtester
 COPY oracle /app/oracle
 COPY website/engine /app/website/engine
-RUN python -m pip install --no-cache-dir ./backtester ./oracle \
-    && useradd --uid 10001 --create-home analysis
+RUN python -m pip install --no-cache-dir --constraint website/engine/constraints.txt ./backtester ./oracle ./website/engine \
+    && python -I -c "import shutil; [shutil.rmtree(path) for path in ('/app/backtester', '/app/oracle', '/app/website')]" \
+    && useradd --uid 10001 --create-home analysis \
+    && mkdir /data && chown analysis:analysis /data
 USER 10001:10001
 ENV PYTHONDONTWRITEBYTECODE=1 PYTHONUNBUFFERED=1
 EXPOSE 8790
-CMD ["python", "-m", "website.engine.server", "--host", "0.0.0.0"]
+CMD ["python", "-I", "-m", "website.engine.runtime", "--host", "0.0.0.0"]

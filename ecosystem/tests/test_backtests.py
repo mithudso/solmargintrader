@@ -9,7 +9,13 @@ from unittest.mock import patch
 
 import pandas as pd
 
-from ecosystem.backtests import backtest, batch_cells, create_batch, strategies
+from ecosystem.backtests import (
+    backtest,
+    batch_cells,
+    code_fingerprint,
+    create_batch,
+    strategies,
+)
 from ecosystem.data import acquire
 
 START = "2020-01-01"
@@ -31,6 +37,22 @@ def frame() -> pd.DataFrame:
 
 
 class BacktestTests(unittest.TestCase):
+    def test_fingerprint_binds_file_boundaries_not_just_concatenated_bytes(self):
+        with tempfile.TemporaryDirectory() as root:
+            core = Path(root)
+            (core / "__init__.py").write_text("")
+            first = core / "a.py"
+            first.write_text("# marker b.pyraise RuntimeError('different')")
+            with patch(
+                "ecosystem.backtests.inspect.getfile",
+                return_value=str(core / "__init__.py"),
+            ):
+                before = code_fingerprint()
+                first.write_text("# marker ")
+                (core / "b.py").write_text("raise RuntimeError('different')")
+                after = code_fingerprint()
+            self.assertNotEqual(before, after)
+
     def test_all_registered_names_are_explicit(self):
         self.assertIn("lev_high", strategies())
         self.assertIn("trigger_trade", strategies())

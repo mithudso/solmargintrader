@@ -86,8 +86,9 @@ def _write_bundle(path: Path, setup: dict, components: dict) -> Path:
         with zipfile.ZipFile(temp, "w", compression=zipfile.ZIP_DEFLATED) as archive:
             for name, body in report.items():
                 archive.writestr(name, body)
-        os.replace(temp, path)
-        os.chmod(path, stat.S_IRUSR | stat.S_IWUSR)
+        # Publish without replacing a contender's file after the initial check.
+        # Both paths share a directory; the private temporary inode stays 0600.
+        os.link(temp, path)
     finally:
         temp.unlink(missing_ok=True)
     return path

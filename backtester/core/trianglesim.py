@@ -103,6 +103,8 @@ class TriangleConfig:
     use_displayed_size: bool = True
 
     def __post_init__(self) -> None:
+        if not isinstance(self.use_displayed_size, bool):
+            raise ValueError("use_displayed_size must be a boolean")
         for name in ("min_edge_bps", "taker_fee_bps", "latency_s", "notional_usd",
                      "max_quote_age_s", "cooldown_s"):
             _finite(name, getattr(self, name))
@@ -123,11 +125,17 @@ class TriangleConfig:
 def _usable(q: Quote | None, now: float, max_age: float) -> bool:
     if q is None:
         return False
-    bid, ask = q[0], q[1]
-    return (math.isfinite(bid) and math.isfinite(ask) and 0 < bid <= ask
-            and math.isfinite(now) and math.isfinite(q[4])
-            and 0 <= now - q[4] <= max_age
-            and all(size is None or (math.isfinite(size) and size >= 0) for size in q[2:4]))
+    try:
+        bid, ask, bid_size, ask_size, quote_time = q
+        if any(isinstance(value, bool) for value in (bid, ask, quote_time)):
+            return False
+        sizes_valid = all(size is None or (not isinstance(size, bool) and math.isfinite(size) and size > 0)
+                          for size in (bid_size, ask_size))
+        return (math.isfinite(now) and math.isfinite(quote_time) and math.isfinite(bid)
+                and math.isfinite(ask) and 0 < bid <= ask and sizes_valid
+                and 0 <= now - quote_time <= max_age)
+    except (TypeError, ValueError, OverflowError):
+        return False
 
 
 def cycle_edges_bps(tri: Triangle, quotes: Mapping[str, Quote], fee_bps: float,
@@ -143,7 +151,8 @@ def cycle_edges_bps(tri: Triangle, quotes: Mapping[str, Quote], fee_bps: float,
     keep = (1.0 - fee_bps / 10_000.0) ** 3
     fwd = (1.0 / qa[1]) * qab[0] * qb[0] * keep
     rev = (1.0 / qb[1]) * (1.0 / qab[1]) * qa[0] * keep
-    return 10_000.0 * (fwd - 1.0), 10_000.0 * (rev - 1.0)
+    edges = 10_000.0 * (fwd - 1.0), 10_000.0 * (rev - 1.0)
+    return edges if all(math.isfinite(edge) for edge in edges) else None
 
 
 def _size_cap_usd(tri: Triangle, direction: str, quotes: Mapping[str, Quote], fee_bps: float = 0.0) -> float:
@@ -226,7 +235,7 @@ class TriangleReplay:
         self.pending: list[tuple[float, Triangle, str, float, float]] = []
 
     def feed(self, now: float, quotes: Mapping[str, Quote]) -> None:
-        now = float(now)
+        now = _finite("snapshot time", now)
         if self.end_ts is not None and now < self.end_ts:
             raise ValueError("snapshots must be in ascending time order")
         self.book = {**self.book, **quotes}
@@ -272,6 +281,8 @@ class TriangleReplay:
         if not math.isfinite(notional) or notional <= 0:
             return
         pnl = notional * realized / 10_000.0
+        if notional <= 0 or not math.isfinite(pnl):
+            return
         row = self.per[tri.name]
         row["executed"] += 1
         row["wins"] += int(pnl > 0)
@@ -354,24 +365,30 @@ def parse_snapshot_line(line: str, *, require_quote_time: bool = False) -> tuple
 
     try:
         row = json.loads(line)
+        if isinstance(row["t"], bool):
+            return None
         t = float(row["t"])
         raw = row["q"]
-    except (ValueError, KeyError, TypeError):
+    except (ValueError, KeyError, TypeError, OverflowError):
         return None
     if not math.isfinite(t) or not isinstance(raw, dict):
         return None
     quotes: dict[str, Quote] = {}
     for product, v in raw.items():
         try:
+            if not isinstance(v, (list, tuple)) or len(v) < 2 or any(isinstance(value, bool) for value in v):
+                continue
             bid, ask = float(v[0]), float(v[1])
             bsz = float(v[3]) if len(v) > 3 and v[3] is not None else None
             asz = float(v[4]) if len(v) > 4 and v[4] is not None else None
             if require_quote_time and (len(v) <= 5 or v[5] is None or isinstance(v[5], bool)):
                 continue
             qt = float(v[5]) if len(v) > 5 and v[5] is not None else t
-            if require_quote_time and (not math.isfinite(qt) or qt > t):
+            if not math.isfinite(qt) or qt > t:
                 continue
-        except (TypeError, ValueError, IndexError):
+            if any(size is not None and (not math.isfinite(size) or size <= 0) for size in (bsz, asz)):
+                continue
+        except (TypeError, ValueError, IndexError, OverflowError):
             continue
         if math.isfinite(bid) and math.isfinite(ask) and 0 < bid <= ask:
             quotes[str(product)] = (bid, ask, bsz, asz, qt)

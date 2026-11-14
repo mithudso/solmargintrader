@@ -49,6 +49,15 @@ class DataValidationError(ValueError):
     """Raised when a loaded series violates the bar contract."""
 
 
+def describe_data_error(error: Exception) -> str:
+    """Keep owned validation guidance without echoing arbitrary CSV cell text."""
+    if isinstance(error, DataValidationError):
+        return str(error)
+    if isinstance(error, FileNotFoundError) and error.filename:
+        return f"required data file is missing: {error.filename}"
+    return f"{type(error).__name__}; check CSV columns, numeric OHLCV values and the UTC date range"
+
+
 @runtime_checkable
 class DataLoader(Protocol):
     """Anything that can produce a validated OHLCV frame."""

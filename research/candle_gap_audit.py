@@ -48,6 +48,10 @@ from backtester.core.types import BAR_COLUMNS, INTERVAL_SECONDS  # noqa: E402
 PAD_BARS = 2
 
 
+class TickFetchUnavailable(RuntimeError):
+    """Unavailable trade evidence cannot establish a quiet market or a repair."""
+
+
 def gap_runs(df: pd.DataFrame, seconds: int) -> list[tuple[int, int]]:
     """Contiguous runs of missing bars as (first_missing_ts, last_missing_ts)."""
     ts = df["timestamp"].to_numpy()
@@ -94,18 +98,20 @@ def classify_run(
 
 def _fetch_window(
     product: str, start_ts: int, end_ts: int, *, verbose: bool = False
-) -> pd.DataFrame | None:
-    """Ticks for [start_ts, end_ts), or None if the endpoint returned nothing."""
+) -> pd.DataFrame:
+    """Ticks for [start_ts, end_ts); an empty verified response is distinct from failure."""
     try:
-        return fetch_trades(
+        trades = fetch_trades(
             product,
             pd.Timestamp(start_ts, unit="s", tz="UTC").isoformat(),
             pd.Timestamp(end_ts, unit="s", tz="UTC").isoformat(),
             verbose=verbose,
         )
-    except Exception as exc:  # network or empty window
-        print(f"    fetch failed: {exc}", file=sys.stderr)
-        return None
+    except Exception:  # noqa: BLE001 -- never convert provider failure into no-trade evidence.
+        raise TickFetchUnavailable("tick_fetch_unavailable") from None
+    if not isinstance(trades, pd.DataFrame):
+        raise TickFetchUnavailable("tick_fetch_unavailable")
+    return trades
 
 
 def repair_window(
@@ -157,7 +163,7 @@ def repair_window(
     return bars.reset_index(drop=True), diffs
 
 
-def main(argv: list[str] | None = None) -> int:
+def _run(argv: list[str] | None = None) -> int:
     ap = argparse.ArgumentParser(description=__doc__.splitlines()[0])
     ap.add_argument("--assets", default="SOL")
     ap.add_argument("--quote", default="USD")
@@ -196,7 +202,7 @@ def main(argv: list[str] | None = None) -> int:
         if not path.exists():
             print(f"{asset}: no candle cache at {path}, skipping", file=sys.stderr)
             continue
-        candles = pd.read_csv(path)
+        candles = validate_bars(pd.read_csv(path), args.interval, strict_gaps=False)
         runs = gap_runs(candles, seconds)
         product = f"{asset}-{args.quote.upper()}"
         missing = sum((b - a) // seconds + 1 for a, b in runs)
@@ -288,6 +294,14 @@ def main(argv: list[str] | None = None) -> int:
         Path(args.report).write_text(header + "".join(lines))
         print(f"\nreport: {args.report}", file=sys.stderr)
     return 0
+
+
+def main(argv: list[str] | None = None) -> int:
+    try:
+        return _run(argv)
+    except TickFetchUnavailable:
+        print("Candle-gap audit unavailable: tick_fetch_unavailable; no quiet-market or repair conclusion.", file=sys.stderr)
+        return 3
 
 
 if __name__ == "__main__":

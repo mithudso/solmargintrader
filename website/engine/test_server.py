@@ -7,6 +7,7 @@ import json
 import tempfile
 import threading
 import unittest
+from contextlib import redirect_stderr, redirect_stdout
 from pathlib import Path
 from unittest import mock
 
@@ -25,6 +26,7 @@ from website.engine.server import (
     Server,
     catalogue,
     choose_top,
+    main,
     make_server,
 )
 
@@ -86,6 +88,11 @@ class AnalysisTests(unittest.TestCase):
             with self.subTest(body=body), self.assertRaises(RequestError):
                 self.analysis.backtest(body)
 
+    def test_huge_integers_are_rejected_as_invalid_input(self):
+        for field in ("capital", "leverage"):
+            with self.subTest(field=field), self.assertRaisesRegex(RequestError, "invalid_capital_or_leverage"):
+                self.analysis.backtest({"coin": "SOL", "strategy": "buy_and_hold", field: 10 ** 1000})
+
     def test_concurrent_backtest_refused(self):
         self.analysis.slot.acquire()
         try:
@@ -114,7 +121,12 @@ class AnalysisTests(unittest.TestCase):
         self.assertIsNone(self.analysis.oracle("BTC")["topStrategy"])
         path = self.analysis.oracle_dir / "SOL/history.sqlite3"
         OracleEngine(path, instrument="SOL/USD")
-        self.assertEqual(self.analysis.oracle("SOL")["reason"], "oracle_evidence_unavailable")
+        with self.assertLogs("website.engine.server", level="WARNING") as logs:
+            self.assertEqual(self.analysis.oracle("SOL")["reason"], "oracle_evidence_unavailable")
+        event = json.loads(logs.records[0].getMessage())
+        self.assertEqual(event["event"], "analysis_oracle_unavailable")
+        self.assertEqual(event["coin"], "SOL")
+        self.assertNotIn(str(path), "\n".join(logs.output))
 
     def test_ranking_is_eligible_deterministic_and_not_ineligible_high_score(self):
         snap = {"status": "available", "aggregate": {"included": [{"strategy_id": "b"}, {"strategy_id": "a"}]},
@@ -151,16 +163,57 @@ class HttpTests(unittest.TestCase):
         conn = http.client.HTTPConnection("127.0.0.1", self.server.server_port, timeout=5)
         merged = {"Authorization": f"Bearer {self.token}"} if token else {}
         merged.update(headers or {})
-        conn.request(method, path, body=body, headers=merged)
-        result = conn.getresponse()
-        status, response = result.status, json.loads(result.read())
-        conn.close()
-        return status, response
+        try:
+            conn.request(method, path, body=body, headers=merged)
+            result = conn.getresponse()
+            return result.status, json.loads(result.read())
+        finally:
+            conn.close()
 
     def test_auth_before_any_research_or_error(self):
-        self.assertEqual(self.request("/v1/strategies", token=False)[0], 401)
-        self.assertEqual(self.request("/v1/strategies")[0], 200)
-        self.assertEqual(self.request("/v1/strategies", headers={"Origin": "https://malicious.invalid"})[0], 403)
+        secret = "secret-not-for-logs"
+        with self.assertLogs("website.engine.server", level="INFO") as logs:
+            self.assertEqual(self.request(f"/v1/strategies?token={secret}", headers={"Authorization": f"Bearer {secret}"})[0], 401)
+            self.assertEqual(self.request("/v1/strategies")[0], 200)
+            self.assertEqual(self.request("/v1/strategies", headers={"Origin": f"https://{secret}.invalid"})[0], 403)
+        events = [json.loads(record.getMessage()) for record in logs.records]
+        self.assertEqual([event["status"] for event in events], [401, 200, 403])
+        self.assertTrue(all(event["event"] == "analysis_http_response" for event in events))
+        self.assertNotIn(secret, "\n".join(logs.output))
+        self.assertNotIn(self.token, "\n".join(logs.output))
+
+    def test_malformed_request_target_has_a_symbolic_error(self):
+        conn = http.client.HTTPConnection("127.0.0.1", self.server.server_port, timeout=5)
+        try:
+            # Bypass the client's own URL parser to exercise the server boundary.
+            conn.putrequest("GET", "http://[broken", skip_host=True)
+            conn.putheader("Authorization", f"Bearer {self.token}")
+            conn.endheaders()
+            response = conn.getresponse()
+            self.assertEqual((response.status, json.loads(response.read())),
+                             (400, {"error": "invalid_request"}))
+        finally:
+            conn.close()
+
+    def test_unexpected_failure_logs_safe_context_and_keeps_response_symbolic(self):
+        detail = "/private/secret-provider-token"
+        with mock.patch.object(self.analysis, "oracle", side_effect=RuntimeError(detail)), \
+                self.assertLogs("website.engine.server", level="WARNING") as logs:
+            status, response = self.request("/v1/oracle?coin=SOL")
+        self.assertEqual((status, response), (503, {"error": "analysis_unavailable"}))
+        events = [json.loads(record.getMessage()) for record in logs.records]
+        failure = next(event for event in events if event["event"] == "analysis_request_failed")
+        self.assertEqual(failure["operation"], "oracle")
+        self.assertEqual(failure["error_type"], "RuntimeError")
+        self.assertNotIn(detail, "\n".join(logs.output))
+        self.assertNotIn(self.token, "\n".join(logs.output))
+
+    def test_body_limit_refuses_before_analysis(self):
+        with mock.patch.object(self.analysis, "backtest") as backtest:
+            status, response = self.request("/v1/backtests", method="POST", body="x" * 4097,
+                                            headers={"Content-Type": "application/json"})
+        self.assertEqual((status, response), (413, {"error": "invalid_body_size"}))
+        backtest.assert_not_called()
 
         with mock.patch("website.engine.server.catalogue") as dispatch:
             for credentials in ("Bearer wrong", "Basic " + self.token, "Bearer", self.token):
@@ -182,6 +235,34 @@ class HttpTests(unittest.TestCase):
     def test_short_token_cannot_start(self):
         with self.assertRaises(ValueError):
             make_server(self.analysis, "short", port=0)
+
+    def test_cli_invalid_configuration_reports_usage_without_starting(self):
+        cases = (({"ENGINE_TOKEN": "short"}, [], "ENGINE_TOKEN"),
+                 ({"ENGINE_ORACLE_QUOTE": "EUR"}, [], "unsupported_oracle_quote"),
+                 ({}, ["--port", "-1"], "--port"))
+        for changes, arguments, message in cases:
+            stderr = io.StringIO()
+            environment = {"ENGINE_DATA_DIR": self.temp.name, "ENGINE_ORACLE_DIR": self.temp.name,
+                           "ENGINE_TOKEN": self.token, "ENGINE_ORACLE_QUOTE": "USD", **changes}
+            with self.subTest(message=message):
+                with mock.patch.dict("os.environ", environment), \
+                        mock.patch("sys.argv", ["analysis-server", *arguments]), redirect_stderr(stderr), \
+                        mock.patch("website.engine.server.make_server") as make, \
+                        self.assertRaises(SystemExit) as exited:
+                    main()
+                make.assert_not_called()
+                self.assertEqual(exited.exception.code, 2)
+                self.assertIn(message, stderr.getvalue())
+                self.assertNotIn("Traceback", stderr.getvalue())
+
+    def test_cli_help_explains_environment_and_gives_an_example(self):
+        stdout = io.StringIO()
+        with mock.patch("sys.argv", ["analysis-server", "--help"]), redirect_stdout(stdout), \
+                self.assertRaises(SystemExit) as exited:
+            main()
+        self.assertEqual(exited.exception.code, 0)
+        for text in ("Example:", "ENGINE_DATA_DIR", "ENGINE_ORACLE_DIR", "ENGINE_TOKEN"):
+            self.assertIn(text, stdout.getvalue())
 
 
 class OfflineBoundaryTests(unittest.TestCase):

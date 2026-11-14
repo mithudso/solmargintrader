@@ -38,7 +38,7 @@ for (const [id, file, tail, args] of [
   }finally{delete globalThis.__jsonFixture;}
 });
 test('CDO-79434217f6 explicit economics gate rejects a zero-trip successful synthetic engine', async()=>{
-  const {main}=await importSource('tools/dryrun.js',{replace:[['const args = parseArgs(process.argv.slice(2));',"const args = {offline:100,ticks:1,'assert-economics':true};"],["import { tick } from '../src/core/engine.js';",'const tick=async()=>({price:100,placed:[],rejected:[],errors:[],skipped:[]});']],tail:'main().catch',append:'export {main};'});
+  const {main}=await importSource('tools/dryrun.js',{replace:[['const args = parseArgs(process.argv.slice(2));',"const args = {offline:100,ticks:1,walk:0,osc:0,'assert-economics':true};"],["import { tick } from '../src/core/engine.js';",'const tick=async()=>({price:100,placed:[],rejected:[],errors:[],skipped:[]});']],tail:'main().catch',append:'export {main};'});
   const log=console.log; console.log=()=>{};
   try {await assert.rejects(main(),/positive closed round trip/);}finally{console.log=log;}
 });

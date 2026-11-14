@@ -3,7 +3,8 @@ or sends anything, and none needs the key. They use the owner's public address o
 
 import pytest
 
-from executor.config import load_config
+from executor.authority import WalletAuthority
+from executor.config import home, load_config
 from executor.engine import Engine
 from executor.http import HttpxHttp
 from executor.rpc import Rpc
@@ -12,11 +13,15 @@ pytestmark = pytest.mark.network
 
 
 @pytest.fixture
-def live():
+def live(isolated):
+    # Enrollment here belongs only to pytest's temporary wallet authority.
+    assert home().resolve().is_relative_to(isolated.resolve())
     cfg = load_config()
     cfg.dry_run = True
     engine = Engine(cfg)
-    engine.authority.register("100", [{"root": str(engine.root), "aware": True}], True)
+    authority = engine.authority
+    assert authority.root.resolve().is_relative_to(isolated.resolve())
+    authority.register("100", [{"root": str(home()), "aware": True}], True)
     return cfg, engine
 
 

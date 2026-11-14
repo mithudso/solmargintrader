@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 import json
+import logging
 import math
 import os
 import re
@@ -11,6 +12,34 @@ from typing import Any
 
 API = "https://api.jup.ag"
 MINT = re.compile(r"[1-9A-HJ-NP-Za-km-z]{32,44}\Z")
+MAX_API_BYTES = 8 * 1024 * 1024
+_LOGGER = logging.getLogger(__name__)
+
+
+class _NoRedirect(urllib.request.HTTPRedirectHandler):
+    def redirect_request(self, request, response, code, message, headers, new_url):
+        raise ValueError("Jupiter authenticated redirects are refused")
+
+
+def _authenticated_json(request: urllib.request.Request, timeout: float = 12.) -> Any:
+    """Keep API keys on the intended host and bound provider response memory."""
+    target = urllib.parse.urlsplit(request.full_url)
+    if (target.scheme != "https" or target.hostname not in ("api.jup.ag", "lite-api.jup.ag")
+            or target.username or target.password or target.port not in (None, 443)):
+        raise ValueError("Unsupported Jupiter API origin")
+    _LOGGER.debug("Jupiter API read", extra={"operation": "jupiter.api", "phase": "request"})
+    try:
+        with urllib.request.build_opener(_NoRedirect()).open(request, timeout=timeout) as response:
+            raw = response.read(MAX_API_BYTES + 1)
+        if len(raw) > MAX_API_BYTES:
+            raise ValueError("Jupiter API response exceeds the size limit")
+        payload = json.loads(raw)
+    except Exception as exc:
+        _LOGGER.warning("Jupiter API read failed", extra={"operation": "jupiter.api", "phase": "failure",
+                                                        "error_kind": type(exc).__name__})
+        raise ValueError(f"Jupiter request failed ({type(exc).__name__})") from None
+    _LOGGER.debug("Jupiter API read", extra={"operation": "jupiter.api", "phase": "success"})
+    return payload
 
 
 def get(path: str, params: dict[str, str]) -> Any:
@@ -19,11 +48,7 @@ def get(path: str, params: dict[str, str]) -> Any:
         raise ValueError("JUPITER_API_KEY is required for Jupiter token discovery")
     req = urllib.request.Request(API + path + "?" + urllib.parse.urlencode(params),
                                  headers={"x-api-key": key, "Accept": "application/json"})
-    try:
-        with urllib.request.urlopen(req, timeout=12) as response:
-            return json.load(response)
-    except Exception as exc:
-        raise ValueError(f"Jupiter request failed ({type(exc).__name__})") from None
+    return _authenticated_json(req)
 
 
 def _search_all(query: str) -> list[dict[str, Any]]:

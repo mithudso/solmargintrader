@@ -74,9 +74,29 @@ class VoteSelectionTests(unittest.TestCase):
         absent = self.home / "absent"
         result = votes.report(absent, "SOL/USD", now=1000)
         self.assertEqual(result["status"], "unavailable")
+        self.assertEqual(result["reason"], "oracle_archive_missing")
+        self.assertEqual(result["aggregate"]["reason"], "oracle_archive_missing")
+        self.assertEqual(result["graph"]["reason"], "oracle_archive_missing")
         self.assertEqual(len(result["catalog"]), 14)
         self.assertEqual(len(result["selected_ids"]), 14)
         self.assertFalse(absent.exists())
+
+    def test_existing_invalid_archive_is_not_reported_as_missing(self):
+        path = self.home / "oracle/ZEC/history.sqlite3"
+        path.parent.mkdir(parents=True)
+        path.write_bytes(b"invalid existing archive")
+        before = path.read_bytes()
+        result = votes.report(self.home, "ZEC/USD", now=1000)
+        self.assertEqual(result["status"], "unavailable")
+        self.assertEqual(result["reason"], "oracle_archive_unavailable_or_incompatible")
+        self.assertEqual(path.read_bytes(), before)
+
+    def test_symlinked_parent_is_not_treated_as_missing_history(self):
+        target = self.home / "missing-target"
+        (self.home / "oracle").symlink_to(target, target_is_directory=True)
+        result = votes.report(self.home, "ZEC/USD", now=1000)
+        self.assertEqual(result["reason"], "oracle_archive_unavailable_or_incompatible")
+        self.assertFalse(target.exists())
 
     def test_display_strategy_native_frequency_is_readonly_and_drops_archived_aggregate(self):
         path, card = self.archive()
@@ -84,6 +104,9 @@ class VoteSelectionTests(unittest.TestCase):
         saved = votes.settings(self.home, "SOL/USD")
         view = votes.report(self.home, "SOL/USD", now=1001, interval="1m", strategy=card)
         self.assertEqual(view["display"]["available_intervals"], ["1m"])
+        seconds = votes.report(self.home, "SOL/USD", now=1001, interval="17s")
+        self.assertEqual(seconds["display"]["live_refresh_seconds"], 17)
+        self.assertEqual(seconds["display"]["live_forecast_seconds_range"], [5, 300])
         self.assertEqual(view["selected_ids"], [card])
         self.assertTrue(view["preview"])
         self.assertEqual(view["signal"], "Strong Buy")
@@ -95,6 +118,34 @@ class VoteSelectionTests(unittest.TestCase):
         self.assertEqual(mismatch["status"], "unavailable")
         self.assertIn("no_native_forecasts", mismatch["reason"])
         self.assertEqual(mismatch["graph"]["ticks"], [])
+        self.assertEqual(saved, votes.settings(self.home, "SOL/USD"))
+        self.assertEqual(before, hashlib.sha256(path.read_bytes()).hexdigest())
+
+    def test_ten_second_live_view_cannot_qualify_native_minute_ensemble(self):
+        path, _ = self.archive()
+        before = hashlib.sha256(path.read_bytes()).hexdigest()
+        saved = votes.settings(self.home, "SOL/USD")
+        native = votes.report(self.home, "SOL/USD", now=1001, interval="1m")
+        self.assertEqual(native["status"], "available")
+        self.assertEqual(native["signal"], "Strong Buy")
+        self.assertEqual(native["display"]["available_intervals"], ["1m"])
+        self.assertTrue(native["graph"]["ticks"])
+
+        requested = votes.report(self.home, "SOL/USD", now=1001, interval="10s")
+        self.assertEqual(requested["display"]["interval"], "10s")
+        self.assertEqual(requested["status"], "unavailable")
+        self.assertEqual(requested["reason"], "requested_interval_unavailable_no_native_forecasts")
+        self.assertIsNone(requested["signal"])
+        self.assertIsNone(requested["balance_percent"])
+        self.assertEqual(requested["aggregate"]["status"], "unavailable")
+        self.assertIsNone(requested["aggregate"]["signal"])
+        self.assertIsNone(requested["aggregate"]["balance_percent"])
+        self.assertEqual(requested["aggregate"]["included"], [])
+        self.assertEqual(requested["graph"]["ticks"], [])
+        self.assertEqual(requested["live_forecast"]["status"], "waiting")
+        self.assertEqual(requested["live_forecast"]["instrument"], "SOL/USD")
+        self.assertEqual(requested["live_forecast"]["horizon_seconds"], 10)
+        self.assertEqual(requested["live_forecast"]["refresh_seconds"], 10)
         self.assertEqual(saved, votes.settings(self.home, "SOL/USD"))
         self.assertEqual(before, hashlib.sha256(path.read_bytes()).hexdigest())
 

@@ -279,7 +279,7 @@ def load_spot_prices() -> list[dict[str, Any]]:
 def load_strategies() -> list[dict[str, Any]]:
     """One document per strategy card, with live registry facts where they exist.
 
-    No invented `registered` flag: `registry_key` is null for the 20 cards that are
+    No invented `registered` flag: `registry_key` is null for cards that are
     not `Strategy` implementations, and `status` and `runner` carry the rest -- the
     ladder grid is `implemented` with no registry key because it is not a `Strategy`
     at all.
@@ -692,8 +692,10 @@ SUITE_PATHS: dict[str, str] = {
 }
 
 SUITE_COMMANDS: dict[str, list[str]] = {
-    "backtester": ["python3", "-m", "unittest", "discover", "-s", "backtester/tests", "-t", "."],
-    "soltui": ["python3", "-m", "unittest", "discover", "-s", "soltui/tests", "-t", "."],
+    # An explicit venv interpreter does not activate its directory on PATH.
+    # Keep test observations in the same environment as the loader.
+    "backtester": [sys.executable, "-m", "unittest", "discover", "-s", "backtester/tests", "-t", "."],
+    "soltui": [sys.executable, "-m", "unittest", "discover", "-s", "soltui/tests", "-t", "."],
 }
 
 
@@ -805,7 +807,8 @@ def build_all(
 
 def main(argv: list[str] | None = None) -> int:
     """CLI entry point."""
-    ap = argparse.ArgumentParser(description=__doc__.splitlines()[0])
+    ap = argparse.ArgumentParser(description=__doc__.splitlines()[0],
+                                 epilog="Example: .venv/bin/python mongo/load.py --dry-run --only signals,indicators")
     ap.add_argument("--uri", default="mongodb://localhost:27017")
     ap.add_argument(
         "--only",
@@ -878,4 +881,5 @@ def main(argv: list[str] | None = None) -> int:
 
 
 if __name__ == "__main__":
-    raise SystemExit(main())
+    from mongo.cli import run_cli
+    raise SystemExit(run_cli(main, REPO))

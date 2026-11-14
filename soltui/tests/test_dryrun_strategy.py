@@ -7,7 +7,7 @@ from unittest import mock
 from backtester.core.data import SyntheticLoader, frame_to_arrays
 from backtester.core.strategies import build
 from soltui import live_run
-from soltui.tests.test_tui import make_settings
+from soltui.tests.test_tui import make_settings, offline_console_reads
 
 
 class DryRunStrategyTests(unittest.TestCase):
@@ -56,8 +56,12 @@ class DryRunStrategyTests(unittest.TestCase):
 
 
 class DryRunUiTests(unittest.IsolatedAsyncioTestCase):
+    def setUp(self):
+        self.enterContext(offline_console_reads())
+
     async def test_selected_strategy_runs_and_status_reopens(self):
         from textual.widgets import Select, TabbedContent, TextArea
+
         from soltui.tests.test_tui import TEST_SIZE
         from soltui.tui import SolTuiApp
         arrays = frame_to_arrays(SyntheticLoader(n_bars=300, seed=4).load("SOL", None, None, "1d"))
@@ -80,6 +84,7 @@ class DryRunUiTests(unittest.IsolatedAsyncioTestCase):
 
     async def test_start_and_status_are_visible_in_a_narrow_terminal(self):
         from textual.widgets import Button, TabbedContent
+
         from soltui.tui import SolTuiApp
         app = SolTuiApp(make_settings())
         async with app.run_test(size=(100, 45)) as pilot:

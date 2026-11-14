@@ -27,3 +27,11 @@ for _name, _sub in (("HOME", "home"), ("XDG_CONFIG_HOME", "xdg-config"),
     os.environ[_name] = os.path.join(_ROOT, _sub)
 
 os.makedirs(os.environ["HOME"], exist_ok=True)
+for _name, _sub in (("SOLTUI_CONFIG_DIR", "config"), ("SOLTUI_LOG_DIR", "logs"),
+                    ("SOLTUI_SUPPORT_DIR", "support"), ("SOLMARGINTRADER_STORAGE", "manual-storage"),
+                    ("SOLBOT_HOME", "manager"), ("SOLBOT_ECOSYSTEM_HOME", "ecosystem"),
+                    ("AERO_LP_HOME", "liquidity"), ("SOLMT_DATA_DIR", "market-data"),
+                    ("SOLTUI_KEY_DIR", "keys")):
+    # Inherited settings may be the real owner environment. Tests always own a
+    # fresh root; individual fixtures can explicitly patch their own subpaths.
+    os.environ[_name] = os.path.join(_ROOT, _sub)

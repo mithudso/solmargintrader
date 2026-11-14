@@ -19,15 +19,18 @@
   ],
   "vars": {
     "APP_ORIGIN": "http://localhost:8799",
-    "RELEASE": "website-0.1.0",
-    "APP_VERSION": "0.1.0"
+    "RELEASE": "website-0.4.0",
+    "APP_VERSION": "0.4.0",
+    "BILLING_LAUNCH_ENABLED": "false",
+    "LIVE_EXECUTION_ENABLED": "false"
   },
   "observability": {
     "enabled": true
   },
   "triggers": {
     "crons": [
-      "0 3 * * *"
+      "0 3 * * *",
+      "* * * * *"
     ]
   }
 }

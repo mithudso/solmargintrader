@@ -1,7 +1,8 @@
 # Bounded raw market-event capture
 
-Version: 1.0.1
-Delta: ignore unused URI default database; retain explicit capture and X509 namespaces.
+Version: 1.0.3
+Delta: record the completed 24 hour ZEC window and full MongoDB readback.
+Previous delta: preserve malformed event type labels as raw payloads while keeping status counters serializable.
 
 `scripts/capture_market.py` records each application message received from a
 single Coinbase USD product. It does not sign, trade or alter the existing
@@ -23,7 +24,10 @@ deadline. The collector holds a per-product singleton lock plus a run lock.
 Each event receives a per-run sequence, local nanosecond receipt timestamp,
 original exchange time/sequence/trade ID when present, connection ID, and exact
 raw text. Each complete JSONL line is flushed and fsynced before proceeding.
-Only an incomplete trailing line is removed during recovery.
+Only an incomplete trailing line is removed during recovery. A non-string or empty
+message type is counted as `unparsed`; its exact original message remains in the
+raw field. Malformed public labels cannot terminate the collector or break status
+serialization.
 
 The collector and uploader run independently. Database outages leave the durable
 raw stream recording. The uploader checkpoints acknowledged batches and reports
@@ -80,4 +84,69 @@ The initial deployment receipt is maintained outside Git at
 `/Users/mitch/.local/state/solmargintrader/market-captures/zec-capture-delivery-20261112.json`.
 It records the actual run directory, source revision, launchd labels, UTC deadline,
 initial observations and MongoDB write/readback status. A running collector is
-not a completed24hour dataset. A local spool is not a successful MongoDB upload.
+not a completed 24 hour dataset. A local spool is not a successful MongoDB upload.
+
+
+## Completed ZEC-USD capture, November 12–13, 2026 UTC
+
+The fixed 24 hour capture and MongoDB persistence are complete. The collector and
+uploader both exited successfully after the original deadline. No records were
+changed or inserted during the final read-only audit.
+
+| Measurement | Verified result |
+| --- | --- |
+| Scheduled start | 2026-11-12T04:56:27.224912Z |
+| Fixed deadline | 2026-11-13T04:56:27.224912Z |
+| Stored records | 1,459,542, with sequence 1–1,459,542 present exactly once |
+| Raw JSONL archive | 1,561,825,045 bytes; complete trailing newline |
+| Level2 updates | 1,238,392 |
+| Trade matches | 134,746 |
+| Heartbeats | 86,370 |
+| Other records | 7 snapshots, 7 last-match messages, 7 subscription messages, 7 connection-open markers, 6 connection-gap markers |
+| Connection segments | 7, with 6 recorded reconnect gaps |
+| Observed public-message receipt gaps over 2 seconds | 8; longest 17.307175 seconds |
+| Unobserved trade-ID candidates within the observed match-ID range | 54 |
+
+The observed local receipt span was 86,399.736219 seconds. The first record arrived
+0.263455seconds after the scheduled start; the final record arrived about
+0.000326seconds before the deadline. The average was 16.89 records per second;
+individual records preserve their original nanosecond receipt times.
+
+The final audit streamed every raw record and every MongoDB document. It
+verified all sequence numbers, rejected duplicates or extra records, and
+compared a SHA256 digest of every complete uploader projection against its
+corresponding raw record. Only MongoDB's generated `_id` was excluded. Parsed
+payload, exchange metadata, original nanosecond receipt, run metadata and the
+BSON millisecond datetime all matched. The upload checkpoint covered the full
+raw file, with no pending in-flight batch. The native time-series collection
+has `received_at` as its time field, `meta` as its metadata field, seconds
+granularity and no expiry.
+
+An independent verifier confirmed the native count and collection layout,
+compared nine independently selected complete records, reviewed the all-record
+audit algorithm, and verified both supervised jobs were idle after successful
+exit 0. Its 16 checks passed.
+
+These results establish persistence of the received stream. They do not
+establish uninterrupted or exchange-wide coverage: the six reconnects, eight
+receipt gaps and 54 unobserved-ID candidates remain explicit. The public order
+book is provider-batched at 50 ms. No missing events were invented or silently
+backfilled. This collection alone does not establish forecast accuracy or
+profitability.
+
+The destination is
+`market_capture.events_zec_usd_857db4e0787d4d17bc41e5a3e34ecbec`, run
+`50dbd4f31de24c36a30d8c3786495ad5`. The exact wire text remains in
+`/Users/mitch/.local/state/solmargintrader/market-captures/zec-usd-20261112T045627Z/events.jsonl`.
+Its SHA256 is
+`eea4a026d1a093a2be996d32c552262358516ca27494f60df3091d54312f3d31`.
+
+Complete audit evidence and coverage intervals are under
+`/Users/mitch/.local/state/solmargintrader/market-captures/zec-final-audit-20261113/`.
+`final-audit.json` has SHA256
+`8d8808e35fec78a633037b426d114e58d57dd20c79538590a66576d0b7d7a26d`;
+`acceptance.json` has SHA256
+`549d4aab72394b36800c7ff9b5e0e11315ea9d9a5c57135b3571d1658c4ed9ed`.
+The final `delivery.json` and `file-manifest.json` retain the release and complete
+private artifact inventory. Credentials and raw market data are not published
+in Git.

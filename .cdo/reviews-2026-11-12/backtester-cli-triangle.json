@@ -1,0 +1,775 @@
+{
+  "schema": 1,
+  "reviewer": "/root/full_repo_health",
+  "observed_at": "2026-11-12T16:49:38.247406+00:00",
+  "status": "bounded batch complete; full-repo audit remains active",
+  "files": [
+    {
+      "path": "backtester/cli.py",
+      "blob_sha": "45d1eb92f50232bd38021bd680b086ae391f8ef4",
+      "sha256": "16c30ac9bb6cb44c90ee0a29c1d29e84827f67feed12f922bd4dd16d9f48ccca",
+      "lines": 357,
+      "original_lines": 350,
+      "original_full_read_ranges": [
+        [
+          1,
+          210
+        ],
+        [
+          211,
+          350
+        ]
+      ],
+      "final_review": "Complete original ranges plus owned final diff; new files and launcher reread in full. data.py prior complete receipt plus final error-formatter delta.",
+      "read_evidence": "[(1, 210), (211, 350)]; Parser, source priority, split warmup, engine settings, reporting/manifest seed identity and exception boundaries.",
+      "passes": {
+        "C1": "ran: Parser, source priority, split warmup, engine settings, reporting/manifest seed identity and exception boundaries.",
+        "C2": "ran: compared actual call/return/config schemas, source identity and persisted output compatibility; legacy missing-quote-time fallback retained",
+        "C3": "ran: malformed, empty, nonfinite, changed-source, zero and split-boundary cases examined; corroborated defects have offline RED/GREEN probes",
+        "S1": "ran: source/fixtures treated as data; no secret/owner data or live venue accessed; arbitrary CSV exception text cannot cross CLI output boundary",
+        "S2": "ran: unavailable inputs propagate explicit status; private setup subprocesses bounded; file/figure cleanup and no implicit service start inspected",
+        "S3": "ran: timestamp/grid, price/size, source checksum and parse bytes, seed and boolean/schema trust boundaries inspected",
+        "S4": "ran: declared Python3.13/numpy/pandas APIs and pure offline fixture portability; selected fatal Ruff and final executed tests passed",
+        "S5": "ran: named operation/context, explicit usage/unavailable status and sanitized parser errors; reports retain model and evidence limitations",
+        "P1": "ran: bounded quote book/replay and source parsing/report work inspected; no statistical approximation changed for speed",
+        "P2": "N/A: synchronous invocation-owned state with no shared async writer",
+        "M1": "ran: existing parser/config/report conventions preserved; no historical style-only rewrite",
+        "M2": "ran: shared data-error formatter, canonical validate_bars, existing engine/metric/config and dataclass helpers reused",
+        "M3": "N/A: repo-scope architecture row separate",
+        "M4": "ran: help examples/defaults and historical model boundaries compared with actual behavior; research study is explicitly selected, never part of setup",
+        "T1": "ran: actual historical known-answer and new adversarial output/refusal tests completed; 61 focused tests exit0",
+        "T2": "N/A: repo-scope supply-chain row separate",
+        "T3": "N/A: repo-scope tooling row separate",
+        "T4": "N/A: non-test source",
+        "M5": "ran: canonical stdlib launcher automatically creates only a marked repository-local environment, validates tool before setup, and all12 actual tool help invocations work from outside repo; legacy direct module form still expects installed project dependencies"
+      },
+      "findings": [
+        "CSV-cell leak",
+        "ambiguous/empty synthetic sources",
+        "explicit zero seed"
+      ],
+      "verdict": "REVIEWED-FIXED"
+    },
+    {
+      "path": "backtester/botcli.py",
+      "blob_sha": "f199991c5d660c8a6b76bbb611938919e135a083",
+      "sha256": "fc4769ef02636a9a32faa64b317715ad3a551d5bb43a035f048cef79de512bc4",
+      "lines": 176,
+      "original_lines": 161,
+      "original_full_read_ranges": [
+        [
+          1,
+          161
+        ]
+      ],
+      "final_review": "Complete original ranges plus owned final diff; new files and launcher reread in full. data.py prior complete receipt plus final error-formatter delta.",
+      "read_evidence": "[(1, 161)]; DCA source/config construction and triangle recorded-quote replay, dataclass flag coercion and empty-input status.",
+      "passes": {
+        "C1": "ran: DCA source/config construction and triangle recorded-quote replay, dataclass flag coercion and empty-input status.",
+        "C2": "ran: compared actual call/return/config schemas, source identity and persisted output compatibility; legacy missing-quote-time fallback retained",
+        "C3": "ran: malformed, empty, nonfinite, changed-source, zero and split-boundary cases examined; corroborated defects have offline RED/GREEN probes",
+        "S1": "ran: source/fixtures treated as data; no secret/owner data or live venue accessed; arbitrary CSV exception text cannot cross CLI output boundary",
+        "S2": "ran: unavailable inputs propagate explicit status; private setup subprocesses bounded; file/figure cleanup and no implicit service start inspected",
+        "S3": "ran: timestamp/grid, price/size, source checksum and parse bytes, seed and boolean/schema trust boundaries inspected",
+        "S4": "ran: declared Python3.13/numpy/pandas APIs and pure offline fixture portability; selected fatal Ruff and final executed tests passed",
+        "S5": "ran: named operation/context, explicit usage/unavailable status and sanitized parser errors; reports retain model and evidence limitations",
+        "P1": "ran: bounded quote book/replay and source parsing/report work inspected; no statistical approximation changed for speed",
+        "P2": "N/A: synchronous invocation-owned state with no shared async writer",
+        "M1": "ran: existing parser/config/report conventions preserved; no historical style-only rewrite",
+        "M2": "ran: shared data-error formatter, canonical validate_bars, existing engine/metric/config and dataclass helpers reused",
+        "M3": "N/A: repo-scope architecture row separate",
+        "M4": "ran: help examples/defaults and historical model boundaries compared with actual behavior; research study is explicitly selected, never part of setup",
+        "T1": "ran: actual historical known-answer and new adversarial output/refusal tests completed; 61 focused tests exit0",
+        "T2": "N/A: repo-scope supply-chain row separate",
+        "T3": "N/A: repo-scope tooling row separate",
+        "T4": "N/A: non-test source",
+        "M5": "ran: canonical stdlib launcher automatically creates only a marked repository-local environment, validates tool before setup, and all12 actual tool help invocations work from outside repo; legacy direct module form still expects installed project dependencies"
+      },
+      "findings": [
+        "CSV-cell leak",
+        "ambiguous/empty synthetic sources",
+        "triangle boolean/empty evidence"
+      ],
+      "verdict": "REVIEWED-FIXED"
+    },
+    {
+      "path": "backtester/gridcli.py",
+      "blob_sha": "828ab6e897676286a9059e30ce0dea5bfa19cfa8",
+      "sha256": "0c09537073b0f95cf2b1e588dc88df7ab14aa40df2c6122c90191e47d10932db",
+      "lines": 308,
+      "original_lines": 307,
+      "original_full_read_ranges": [
+        [
+          1,
+          220
+        ],
+        [
+          221,
+          307
+        ]
+      ],
+      "final_review": "Complete original ranges plus owned final diff; new files and launcher reread in full. data.py prior complete receipt plus final error-formatter delta.",
+      "read_evidence": "[(1, 220), (221, 307)]; Grid config, historical/synthetic source, level/preview modes and metrics/report output boundary.",
+      "passes": {
+        "C1": "ran: Grid config, historical/synthetic source, level/preview modes and metrics/report output boundary.",
+        "C2": "ran: compared actual call/return/config schemas, source identity and persisted output compatibility; legacy missing-quote-time fallback retained",
+        "C3": "ran: malformed, empty, nonfinite, changed-source, zero and split-boundary cases examined; corroborated defects have offline RED/GREEN probes",
+        "S1": "ran: source/fixtures treated as data; no secret/owner data or live venue accessed; arbitrary CSV exception text cannot cross CLI output boundary",
+        "S2": "ran: unavailable inputs propagate explicit status; private setup subprocesses bounded; file/figure cleanup and no implicit service start inspected",
+        "S3": "ran: timestamp/grid, price/size, source checksum and parse bytes, seed and boolean/schema trust boundaries inspected",
+        "S4": "ran: declared Python3.13/numpy/pandas APIs and pure offline fixture portability; selected fatal Ruff and final executed tests passed",
+        "S5": "ran: named operation/context, explicit usage/unavailable status and sanitized parser errors; reports retain model and evidence limitations",
+        "P1": "ran: bounded quote book/replay and source parsing/report work inspected; no statistical approximation changed for speed",
+        "P2": "N/A: synchronous invocation-owned state with no shared async writer",
+        "M1": "ran: existing parser/config/report conventions preserved; no historical style-only rewrite",
+        "M2": "ran: shared data-error formatter, canonical validate_bars, existing engine/metric/config and dataclass helpers reused",
+        "M3": "N/A: repo-scope architecture row separate",
+        "M4": "ran: help examples/defaults and historical model boundaries compared with actual behavior; research study is explicitly selected, never part of setup",
+        "T1": "ran: actual historical known-answer and new adversarial output/refusal tests completed; 61 focused tests exit0",
+        "T2": "N/A: repo-scope supply-chain row separate",
+        "T3": "N/A: repo-scope tooling row separate",
+        "T4": "N/A: non-test source",
+        "M5": "ran: canonical stdlib launcher automatically creates only a marked repository-local environment, validates tool before setup, and all12 actual tool help invocations work from outside repo; legacy direct module form still expects installed project dependencies"
+      },
+      "findings": [
+        "CSV-cell leak"
+      ],
+      "verdict": "REVIEWED-FIXED"
+    },
+    {
+      "path": "backtester/paircli.py",
+      "blob_sha": "9b12c10926e0ab2cab9573e7f86dbb8a80e98503",
+      "sha256": "0a6d2998cc47ca26a1dca4a22a35de5fa8e17864454543fc438400f690339f71",
+      "lines": 253,
+      "original_lines": 237,
+      "original_full_read_ranges": [
+        [
+          1,
+          237
+        ]
+      ],
+      "final_review": "Complete original ranges plus owned final diff; new files and launcher reread in full. data.py prior complete receipt plus final error-formatter delta.",
+      "read_evidence": "[(1, 237)]; Aligned peer source, causal strategy config, full-sample diagnostic and split warmup/refusal.",
+      "passes": {
+        "C1": "ran: Aligned peer source, causal strategy config, full-sample diagnostic and split warmup/refusal.",
+        "C2": "ran: compared actual call/return/config schemas, source identity and persisted output compatibility; legacy missing-quote-time fallback retained",
+        "C3": "ran: malformed, empty, nonfinite, changed-source, zero and split-boundary cases examined; corroborated defects have offline RED/GREEN probes",
+        "S1": "ran: source/fixtures treated as data; no secret/owner data or live venue accessed; arbitrary CSV exception text cannot cross CLI output boundary",
+        "S2": "ran: unavailable inputs propagate explicit status; private setup subprocesses bounded; file/figure cleanup and no implicit service start inspected",
+        "S3": "ran: timestamp/grid, price/size, source checksum and parse bytes, seed and boolean/schema trust boundaries inspected",
+        "S4": "ran: declared Python3.13/numpy/pandas APIs and pure offline fixture portability; selected fatal Ruff and final executed tests passed",
+        "S5": "ran: named operation/context, explicit usage/unavailable status and sanitized parser errors; reports retain model and evidence limitations",
+        "P1": "ran: bounded quote book/replay and source parsing/report work inspected; no statistical approximation changed for speed",
+        "P2": "N/A: synchronous invocation-owned state with no shared async writer",
+        "M1": "ran: existing parser/config/report conventions preserved; no historical style-only rewrite",
+        "M2": "ran: shared data-error formatter, canonical validate_bars, existing engine/metric/config and dataclass helpers reused",
+        "M3": "N/A: repo-scope architecture row separate",
+        "M4": "ran: help examples/defaults and historical model boundaries compared with actual behavior; research study is explicitly selected, never part of setup",
+        "T1": "ran: actual historical known-answer and new adversarial output/refusal tests completed; 61 focused tests exit0",
+        "T2": "N/A: repo-scope supply-chain row separate",
+        "T3": "N/A: repo-scope tooling row separate",
+        "T4": "N/A: non-test source",
+        "M5": "ran: canonical stdlib launcher automatically creates only a marked repository-local environment, validates tool before setup, and all12 actual tool help invocations work from outside repo; legacy direct module form still expects installed project dependencies"
+      },
+      "findings": [
+        "CSV-cell leak",
+        "unavailable pair diagnostics/settings/split"
+      ],
+      "verdict": "REVIEWED-FIXED"
+    },
+    {
+      "path": "backtester/voltycli.py",
+      "blob_sha": "3df4459a2221e82d1403252cc73f16ec29d9c815",
+      "sha256": "425982a08d385353e9289aea723806483a95c8fae62914adcaa56c862e68d405",
+      "lines": 199,
+      "original_lines": 187,
+      "original_full_read_ranges": [
+        [
+          1,
+          187
+        ]
+      ],
+      "final_review": "Complete original ranges plus owned final diff; new files and launcher reread in full. data.py prior complete receipt plus final error-formatter delta.",
+      "read_evidence": "[(1, 187)]; Source manifest and parse binding, interval completeness/resampling, output provenance and explicitly selected exploratory study. No study was run.",
+      "passes": {
+        "C1": "ran: Source manifest and parse binding, interval completeness/resampling, output provenance and explicitly selected exploratory study. No study was run.",
+        "C2": "ran: compared actual call/return/config schemas, source identity and persisted output compatibility; legacy missing-quote-time fallback retained",
+        "C3": "ran: malformed, empty, nonfinite, changed-source, zero and split-boundary cases examined; corroborated defects have offline RED/GREEN probes",
+        "S1": "ran: source/fixtures treated as data; no secret/owner data or live venue accessed; arbitrary CSV exception text cannot cross CLI output boundary",
+        "S2": "ran: unavailable inputs propagate explicit status; private setup subprocesses bounded; file/figure cleanup and no implicit service start inspected",
+        "S3": "ran: timestamp/grid, price/size, source checksum and parse bytes, seed and boolean/schema trust boundaries inspected",
+        "S4": "ran: declared Python3.13/numpy/pandas APIs and pure offline fixture portability; selected fatal Ruff and final executed tests passed",
+        "S5": "ran: named operation/context, explicit usage/unavailable status and sanitized parser errors; reports retain model and evidence limitations",
+        "P1": "ran: bounded quote book/replay and source parsing/report work inspected; no statistical approximation changed for speed",
+        "P2": "ran: launcher refuses foreign/symlink private env and concurrent bootstrap; Volty parses same read_bytes snapshot it hashes; no hostile filesystem-race atomicity claim",
+        "M1": "ran: existing parser/config/report conventions preserved; no historical style-only rewrite",
+        "M2": "ran: shared data-error formatter, canonical validate_bars, existing engine/metric/config and dataclass helpers reused",
+        "M3": "N/A: repo-scope architecture row separate",
+        "M4": "ran: help examples/defaults and historical model boundaries compared with actual behavior; research study is explicitly selected, never part of setup",
+        "T1": "ran: actual historical known-answer and new adversarial output/refusal tests completed; 61 focused tests exit0",
+        "T2": "N/A: repo-scope supply-chain row separate",
+        "T3": "N/A: repo-scope tooling row separate",
+        "T4": "N/A: non-test source",
+        "M5": "ran: canonical stdlib launcher automatically creates only a marked repository-local environment, validates tool before setup, and all12 actual tool help invocations work from outside repo; legacy direct module form still expects installed project dependencies"
+      },
+      "findings": [
+        "Volty source hash/parse identity",
+        "off-grid source"
+      ],
+      "verdict": "REVIEWED-FIXED"
+    },
+    {
+      "path": "backtester/core/plotting.py",
+      "blob_sha": "530f944917ce030fbca534d85657990b7611e381",
+      "sha256": "f95f3233694e0d6a24e9e8f3829a9841a557ef53c94f89939d6a978407304566",
+      "lines": 99,
+      "original_lines": 99,
+      "original_full_read_ranges": [
+        [
+          1,
+          99
+        ]
+      ],
+      "final_review": "Complete original ranges plus owned final diff; new files and launcher reread in full. data.py prior complete receipt plus final error-formatter delta.",
+      "read_evidence": "[(1, 99)]; Optional chart import, file lifetime, equity/drawdown/turnover geometry, empty curve and figure closure.",
+      "passes": {
+        "C1": "ran: Optional chart import, file lifetime, equity/drawdown/turnover geometry, empty curve and figure closure.",
+        "C2": "ran: compared actual call/return/config schemas, source identity and persisted output compatibility; legacy missing-quote-time fallback retained",
+        "C3": "ran: malformed, empty, nonfinite, changed-source, zero and split-boundary cases examined; corroborated defects have offline RED/GREEN probes",
+        "S1": "ran: source/fixtures treated as data; no secret/owner data or live venue accessed; arbitrary CSV exception text cannot cross CLI output boundary",
+        "S2": "ran: unavailable inputs propagate explicit status; private setup subprocesses bounded; file/figure cleanup and no implicit service start inspected",
+        "S3": "ran: timestamp/grid, price/size, source checksum and parse bytes, seed and boolean/schema trust boundaries inspected",
+        "S4": "ran: declared Python3.13/numpy/pandas APIs and pure offline fixture portability; selected fatal Ruff and final executed tests passed",
+        "S5": "N/A: pure library/test; owning CLI exposes operational outcome",
+        "P1": "ran: bounded quote book/replay and source parsing/report work inspected; no statistical approximation changed for speed",
+        "P2": "N/A: synchronous invocation-owned state with no shared async writer",
+        "M1": "ran: existing parser/config/report conventions preserved; no historical style-only rewrite",
+        "M2": "ran: shared data-error formatter, canonical validate_bars, existing engine/metric/config and dataclass helpers reused",
+        "M3": "N/A: repo-scope architecture row separate",
+        "M4": "ran: help examples/defaults and historical model boundaries compared with actual behavior; research study is explicitly selected, never part of setup",
+        "T1": "ran: actual historical known-answer and new adversarial output/refusal tests completed; 61 focused tests exit0",
+        "T2": "N/A: repo-scope supply-chain row separate",
+        "T3": "N/A: repo-scope tooling row separate",
+        "T4": "N/A: non-test source",
+        "M5": "N/A: library or test input"
+      },
+      "findings": [],
+      "verdict": "CLEAN"
+    },
+    {
+      "path": "backtester/core/report.py",
+      "blob_sha": "cbc03fc7cfa56d6913b38cd66a949d090ae2fae8",
+      "sha256": "814854a51c1501cb5803d9f07505db10223791cca43dcef9ff1f9a45314ada45",
+      "lines": 369,
+      "original_lines": 369,
+      "original_full_read_ranges": [
+        [
+          1,
+          210
+        ],
+        [
+          211,
+          369
+        ]
+      ],
+      "final_review": "Complete original ranges plus owned final diff; new files and launcher reread in full. data.py prior complete receipt plus final error-formatter delta.",
+      "read_evidence": "[(1, 210), (211, 369)]; JSON/Markdown scalar encoding, report paths, price versus total-return benchmark labels, split tables and chart references.",
+      "passes": {
+        "C1": "ran: JSON/Markdown scalar encoding, report paths, price versus total-return benchmark labels, split tables and chart references.",
+        "C2": "ran: compared actual call/return/config schemas, source identity and persisted output compatibility; legacy missing-quote-time fallback retained",
+        "C3": "ran: malformed, empty, nonfinite, changed-source, zero and split-boundary cases examined; corroborated defects have offline RED/GREEN probes",
+        "S1": "ran: source/fixtures treated as data; no secret/owner data or live venue accessed; arbitrary CSV exception text cannot cross CLI output boundary",
+        "S2": "ran: unavailable inputs propagate explicit status; private setup subprocesses bounded; file/figure cleanup and no implicit service start inspected",
+        "S3": "ran: timestamp/grid, price/size, source checksum and parse bytes, seed and boolean/schema trust boundaries inspected",
+        "S4": "ran: declared Python3.13/numpy/pandas APIs and pure offline fixture portability; selected fatal Ruff and final executed tests passed",
+        "S5": "ran: named operation/context, explicit usage/unavailable status and sanitized parser errors; reports retain model and evidence limitations",
+        "P1": "ran: bounded quote book/replay and source parsing/report work inspected; no statistical approximation changed for speed",
+        "P2": "N/A: synchronous invocation-owned state with no shared async writer",
+        "M1": "ran: existing parser/config/report conventions preserved; no historical style-only rewrite",
+        "M2": "ran: shared data-error formatter, canonical validate_bars, existing engine/metric/config and dataclass helpers reused",
+        "M3": "N/A: repo-scope architecture row separate",
+        "M4": "ran: help examples/defaults and historical model boundaries compared with actual behavior; research study is explicitly selected, never part of setup",
+        "T1": "ran: actual historical known-answer and new adversarial output/refusal tests completed; 61 focused tests exit0",
+        "T2": "N/A: repo-scope supply-chain row separate",
+        "T3": "N/A: repo-scope tooling row separate",
+        "T4": "N/A: non-test source",
+        "M5": "N/A: library or test input"
+      },
+      "findings": [],
+      "verdict": "CLEAN"
+    },
+    {
+      "path": "backtester/core/volty.py",
+      "blob_sha": "62f784f03db94e32cfe1d19cc8ae44fb27495cc2",
+      "sha256": "735932f834cf0fefcfa45571386728455b69b3552f2a5161eab217e62e4dbc47",
+      "lines": 180,
+      "original_lines": 180,
+      "original_full_read_ranges": [
+        [
+          1,
+          180
+        ]
+      ],
+      "final_review": "Complete original ranges plus owned final diff; new files and launcher reread in full. data.py prior complete receipt plus final error-formatter delta.",
+      "read_evidence": "[(1, 180)]; Stop entry timing from prior close, bars/quote constraints, leverage/cost/carry accounting and forced final liquidation. Numerical model assumptions retained.",
+      "passes": {
+        "C1": "ran: Stop entry timing from prior close, bars/quote constraints, leverage/cost/carry accounting and forced final liquidation. Numerical model assumptions retained.",
+        "C2": "ran: compared actual call/return/config schemas, source identity and persisted output compatibility; legacy missing-quote-time fallback retained",
+        "C3": "ran: malformed, empty, nonfinite, changed-source, zero and split-boundary cases examined; corroborated defects have offline RED/GREEN probes",
+        "S1": "ran: source/fixtures treated as data; no secret/owner data or live venue accessed; arbitrary CSV exception text cannot cross CLI output boundary",
+        "S2": "ran: unavailable inputs propagate explicit status; private setup subprocesses bounded; file/figure cleanup and no implicit service start inspected",
+        "S3": "ran: timestamp/grid, price/size, source checksum and parse bytes, seed and boolean/schema trust boundaries inspected",
+        "S4": "ran: declared Python3.13/numpy/pandas APIs and pure offline fixture portability; selected fatal Ruff and final executed tests passed",
+        "S5": "N/A: pure library/test; owning CLI exposes operational outcome",
+        "P1": "ran: bounded quote book/replay and source parsing/report work inspected; no statistical approximation changed for speed",
+        "P2": "N/A: synchronous invocation-owned state with no shared async writer",
+        "M1": "ran: existing parser/config/report conventions preserved; no historical style-only rewrite",
+        "M2": "ran: shared data-error formatter, canonical validate_bars, existing engine/metric/config and dataclass helpers reused",
+        "M3": "N/A: repo-scope architecture row separate",
+        "M4": "ran: help examples/defaults and historical model boundaries compared with actual behavior; research study is explicitly selected, never part of setup",
+        "T1": "ran: actual historical known-answer and new adversarial output/refusal tests completed; 61 focused tests exit0",
+        "T2": "N/A: repo-scope supply-chain row separate",
+        "T3": "N/A: repo-scope tooling row separate",
+        "T4": "N/A: non-test source",
+        "M5": "N/A: library or test input"
+      },
+      "findings": [],
+      "verdict": "CLEAN"
+    },
+    {
+      "path": "backtester/core/trianglesim.py",
+      "blob_sha": "42484d5db461ff55793c4cbf83116cbbe0fa52e7",
+      "sha256": "5c5adbbb43b1c9e6355e92c030d85de894543b4bd75cd7bcb430ee7f49232c3e",
+      "lines": 434,
+      "original_lines": 415,
+      "original_full_read_ranges": [
+        [
+          1,
+          260
+        ],
+        [
+          261,
+          415
+        ]
+      ],
+      "final_review": "Complete original ranges plus owned final diff; new files and launcher reread in full. data.py prior complete receipt plus final error-formatter delta.",
+      "read_evidence": "[(1, 260), (261, 415)]; Triangle generation, fee/latency/size arithmetic, chronological replay, pending fills, quote-age checks and legacy recorded-file parser.",
+      "passes": {
+        "C1": "ran: Triangle generation, fee/latency/size arithmetic, chronological replay, pending fills, quote-age checks and legacy recorded-file parser.",
+        "C2": "ran: compared actual call/return/config schemas, source identity and persisted output compatibility; legacy missing-quote-time fallback retained",
+        "C3": "ran: malformed, empty, nonfinite, changed-source, zero and split-boundary cases examined; corroborated defects have offline RED/GREEN probes",
+        "S1": "ran: source/fixtures treated as data; no secret/owner data or live venue accessed; arbitrary CSV exception text cannot cross CLI output boundary",
+        "S2": "ran: unavailable inputs propagate explicit status; private setup subprocesses bounded; file/figure cleanup and no implicit service start inspected",
+        "S3": "ran: timestamp/grid, price/size, source checksum and parse bytes, seed and boolean/schema trust boundaries inspected",
+        "S4": "ran: declared Python3.13/numpy/pandas APIs and pure offline fixture portability; selected fatal Ruff and final executed tests passed",
+        "S5": "N/A: pure library/test; owning CLI exposes operational outcome",
+        "P1": "ran: bounded quote book/replay and source parsing/report work inspected; no statistical approximation changed for speed",
+        "P2": "N/A: synchronous invocation-owned state with no shared async writer",
+        "M1": "ran: existing parser/config/report conventions preserved; no historical style-only rewrite",
+        "M2": "ran: shared data-error formatter, canonical validate_bars, existing engine/metric/config and dataclass helpers reused",
+        "M3": "N/A: repo-scope architecture row separate",
+        "M4": "ran: help examples/defaults and historical model boundaries compared with actual behavior; research study is explicitly selected, never part of setup",
+        "T1": "ran: actual historical known-answer and new adversarial output/refusal tests completed; 61 focused tests exit0",
+        "T2": "N/A: repo-scope supply-chain row separate",
+        "T3": "N/A: repo-scope tooling row separate",
+        "T4": "N/A: non-test source",
+        "M5": "N/A: library or test input"
+      },
+      "findings": [
+        "invalid triangle evidence"
+      ],
+      "verdict": "REVIEWED-FIXED"
+    },
+    {
+      "path": "backtester/tests/test_gridcli.py",
+      "blob_sha": "bb557bec7b564125827e72c03312f4f14165019c",
+      "sha256": "6ca7f3ef562f20b4a01baa860b75cdb2ababa9a72d8bdab42389c64e68050ea0",
+      "lines": 172,
+      "original_lines": 172,
+      "original_full_read_ranges": [
+        [
+          1,
+          172
+        ]
+      ],
+      "final_review": "Complete original ranges plus owned final diff; new files and launcher reread in full. data.py prior complete receipt plus final error-formatter delta.",
+      "read_evidence": "[(1, 172)]; Actual argparse defaults, grid levels, data refusal, summary/output manifests and dry historical execution assertions.",
+      "passes": {
+        "C1": "ran: Actual argparse defaults, grid levels, data refusal, summary/output manifests and dry historical execution assertions.",
+        "C2": "ran: compared actual call/return/config schemas, source identity and persisted output compatibility; legacy missing-quote-time fallback retained",
+        "C3": "ran: malformed, empty, nonfinite, changed-source, zero and split-boundary cases examined; corroborated defects have offline RED/GREEN probes",
+        "S1": "ran: source/fixtures treated as data; no secret/owner data or live venue accessed; arbitrary CSV exception text cannot cross CLI output boundary",
+        "S2": "ran: unavailable inputs propagate explicit status; private setup subprocesses bounded; file/figure cleanup and no implicit service start inspected",
+        "S3": "ran: timestamp/grid, price/size, source checksum and parse bytes, seed and boolean/schema trust boundaries inspected",
+        "S4": "ran: declared Python3.13/numpy/pandas APIs and pure offline fixture portability; selected fatal Ruff and final executed tests passed",
+        "S5": "ran: named operation/context, explicit usage/unavailable status and sanitized parser errors; reports retain model and evidence limitations",
+        "P1": "ran: bounded quote book/replay and source parsing/report work inspected; no statistical approximation changed for speed",
+        "P2": "N/A: synchronous invocation-owned state with no shared async writer",
+        "M1": "ran: existing parser/config/report conventions preserved; no historical style-only rewrite",
+        "M2": "ran: shared data-error formatter, canonical validate_bars, existing engine/metric/config and dataclass helpers reused",
+        "M3": "N/A: repo-scope architecture row separate",
+        "M4": "ran: help examples/defaults and historical model boundaries compared with actual behavior; research study is explicitly selected, never part of setup",
+        "T1": "ran: actual historical known-answer and new adversarial output/refusal tests completed; 61 focused tests exit0",
+        "T2": "N/A: repo-scope supply-chain row separate",
+        "T3": "N/A: repo-scope tooling row separate",
+        "T4": "ran: fixtures use temporary inputs, deterministic tiny histories, mocked parse-time replacement and no network/study; 61 tests0 in0.164s",
+        "M5": "ran: canonical stdlib launcher automatically creates only a marked repository-local environment, validates tool before setup, and all12 actual tool help invocations work from outside repo; legacy direct module form still expects installed project dependencies"
+      },
+      "findings": [],
+      "verdict": "CLEAN"
+    },
+    {
+      "path": "backtester/tests/test_botcli.py",
+      "blob_sha": "c8dfced95dffb36faeab27f0e37fc7a700b0f32c",
+      "sha256": "fe872b0bc3aae5372534d9b626eb5a9409590ca60cf8f597d3ebe89757f7a7e6",
+      "lines": 61,
+      "original_lines": 61,
+      "original_full_read_ranges": [
+        [
+          1,
+          61
+        ]
+      ],
+      "final_review": "Complete original ranges plus owned final diff; new files and launcher reread in full. data.py prior complete receipt plus final error-formatter delta.",
+      "read_evidence": "[(1, 61)]; DCA preview/synthetic and triangle replay/report CLI behavior; missing recording is now explicitly unavailable.",
+      "passes": {
+        "C1": "ran: DCA preview/synthetic and triangle replay/report CLI behavior; missing recording is now explicitly unavailable.",
+        "C2": "ran: compared actual call/return/config schemas, source identity and persisted output compatibility; legacy missing-quote-time fallback retained",
+        "C3": "ran: malformed, empty, nonfinite, changed-source, zero and split-boundary cases examined; corroborated defects have offline RED/GREEN probes",
+        "S1": "ran: source/fixtures treated as data; no secret/owner data or live venue accessed; arbitrary CSV exception text cannot cross CLI output boundary",
+        "S2": "ran: unavailable inputs propagate explicit status; private setup subprocesses bounded; file/figure cleanup and no implicit service start inspected",
+        "S3": "ran: timestamp/grid, price/size, source checksum and parse bytes, seed and boolean/schema trust boundaries inspected",
+        "S4": "ran: declared Python3.13/numpy/pandas APIs and pure offline fixture portability; selected fatal Ruff and final executed tests passed",
+        "S5": "ran: named operation/context, explicit usage/unavailable status and sanitized parser errors; reports retain model and evidence limitations",
+        "P1": "ran: bounded quote book/replay and source parsing/report work inspected; no statistical approximation changed for speed",
+        "P2": "N/A: synchronous invocation-owned state with no shared async writer",
+        "M1": "ran: existing parser/config/report conventions preserved; no historical style-only rewrite",
+        "M2": "ran: shared data-error formatter, canonical validate_bars, existing engine/metric/config and dataclass helpers reused",
+        "M3": "N/A: repo-scope architecture row separate",
+        "M4": "ran: help examples/defaults and historical model boundaries compared with actual behavior; research study is explicitly selected, never part of setup",
+        "T1": "ran: actual historical known-answer and new adversarial output/refusal tests completed; 61 focused tests exit0",
+        "T2": "N/A: repo-scope supply-chain row separate",
+        "T3": "N/A: repo-scope tooling row separate",
+        "T4": "ran: fixtures use temporary inputs, deterministic tiny histories, mocked parse-time replacement and no network/study; 61 tests0 in0.164s",
+        "M5": "ran: canonical stdlib launcher automatically creates only a marked repository-local environment, validates tool before setup, and all12 actual tool help invocations work from outside repo; legacy direct module form still expects installed project dependencies"
+      },
+      "findings": [],
+      "verdict": "CLEAN"
+    },
+    {
+      "path": "backtester/tests/test_full_suite.py",
+      "blob_sha": "aa3e0a3fc278ef574ccedcb1ac6777312518b1e1",
+      "sha256": "36593c3861b8221323e5a3590fc8b643a303ed0dd87a4a8758cca9203814c1db",
+      "lines": 77,
+      "original_lines": 77,
+      "original_full_read_ranges": [
+        [
+          1,
+          77
+        ]
+      ],
+      "final_review": "Complete original ranges plus owned final diff; new files and launcher reread in full. data.py prior complete receipt plus final error-formatter delta.",
+      "read_evidence": "[(1, 77)]; Existing research.full_suite integration assertions, precision and asset baseline report semantics; no strategy sweep executed.",
+      "passes": {
+        "C1": "ran: Existing research.full_suite integration assertions, precision and asset baseline report semantics; no strategy sweep executed.",
+        "C2": "ran: compared actual call/return/config schemas, source identity and persisted output compatibility; legacy missing-quote-time fallback retained",
+        "C3": "ran: malformed, empty, nonfinite, changed-source, zero and split-boundary cases examined; corroborated defects have offline RED/GREEN probes",
+        "S1": "ran: source/fixtures treated as data; no secret/owner data or live venue accessed; arbitrary CSV exception text cannot cross CLI output boundary",
+        "S2": "ran: unavailable inputs propagate explicit status; private setup subprocesses bounded; file/figure cleanup and no implicit service start inspected",
+        "S3": "ran: timestamp/grid, price/size, source checksum and parse bytes, seed and boolean/schema trust boundaries inspected",
+        "S4": "ran: declared Python3.13/numpy/pandas APIs and pure offline fixture portability; selected fatal Ruff and final executed tests passed",
+        "S5": "N/A: pure library/test; owning CLI exposes operational outcome",
+        "P1": "ran: bounded quote book/replay and source parsing/report work inspected; no statistical approximation changed for speed",
+        "P2": "N/A: synchronous invocation-owned state with no shared async writer",
+        "M1": "ran: existing parser/config/report conventions preserved; no historical style-only rewrite",
+        "M2": "ran: shared data-error formatter, canonical validate_bars, existing engine/metric/config and dataclass helpers reused",
+        "M3": "N/A: repo-scope architecture row separate",
+        "M4": "ran: help examples/defaults and historical model boundaries compared with actual behavior; research study is explicitly selected, never part of setup",
+        "T1": "ran: actual historical known-answer and new adversarial output/refusal tests completed; 61 focused tests exit0",
+        "T2": "N/A: repo-scope supply-chain row separate",
+        "T3": "N/A: repo-scope tooling row separate",
+        "T4": "ran: fixtures use temporary inputs, deterministic tiny histories, mocked parse-time replacement and no network/study; 61 tests0 in0.164s",
+        "M5": "N/A: library or test input"
+      },
+      "findings": [],
+      "verdict": "CLEAN"
+    },
+    {
+      "path": "backtester/tests/test_trianglesim.py",
+      "blob_sha": "25fe59410a0bd34d65661a58aae5a035a70c604a",
+      "sha256": "53bce409753eb706554779bae4c4b55af1586059f9809a8f648f2ecd65a6446a",
+      "lines": 196,
+      "original_lines": 196,
+      "original_full_read_ranges": [
+        [
+          1,
+          196
+        ]
+      ],
+      "final_review": "Complete original ranges plus owned final diff; new files and launcher reread in full. data.py prior complete receipt plus final error-formatter delta.",
+      "read_evidence": "[(1, 196)]; Known-answer cycle fees/spreads, displayed-size cap, stale quote, latency, chronology and input recording fixtures.",
+      "passes": {
+        "C1": "ran: Known-answer cycle fees/spreads, displayed-size cap, stale quote, latency, chronology and input recording fixtures.",
+        "C2": "ran: compared actual call/return/config schemas, source identity and persisted output compatibility; legacy missing-quote-time fallback retained",
+        "C3": "ran: malformed, empty, nonfinite, changed-source, zero and split-boundary cases examined; corroborated defects have offline RED/GREEN probes",
+        "S1": "ran: source/fixtures treated as data; no secret/owner data or live venue accessed; arbitrary CSV exception text cannot cross CLI output boundary",
+        "S2": "ran: unavailable inputs propagate explicit status; private setup subprocesses bounded; file/figure cleanup and no implicit service start inspected",
+        "S3": "ran: timestamp/grid, price/size, source checksum and parse bytes, seed and boolean/schema trust boundaries inspected",
+        "S4": "ran: declared Python3.13/numpy/pandas APIs and pure offline fixture portability; selected fatal Ruff and final executed tests passed",
+        "S5": "N/A: pure library/test; owning CLI exposes operational outcome",
+        "P1": "ran: bounded quote book/replay and source parsing/report work inspected; no statistical approximation changed for speed",
+        "P2": "N/A: synchronous invocation-owned state with no shared async writer",
+        "M1": "ran: existing parser/config/report conventions preserved; no historical style-only rewrite",
+        "M2": "ran: shared data-error formatter, canonical validate_bars, existing engine/metric/config and dataclass helpers reused",
+        "M3": "N/A: repo-scope architecture row separate",
+        "M4": "ran: help examples/defaults and historical model boundaries compared with actual behavior; research study is explicitly selected, never part of setup",
+        "T1": "ran: actual historical known-answer and new adversarial output/refusal tests completed; 61 focused tests exit0",
+        "T2": "N/A: repo-scope supply-chain row separate",
+        "T3": "N/A: repo-scope tooling row separate",
+        "T4": "ran: fixtures use temporary inputs, deterministic tiny histories, mocked parse-time replacement and no network/study; 61 tests0 in0.164s",
+        "M5": "N/A: library or test input"
+      },
+      "findings": [],
+      "verdict": "CLEAN"
+    },
+    {
+      "path": "backtester/core/data.py",
+      "blob_sha": "2f3b44bf56bdf57de4e7ef19a644e056d4553c03",
+      "sha256": "f6aec96626e330ed3cdc4ad305a3a94486831921d1ce7ab83496801310b2fcab",
+      "lines": 367,
+      "original_lines": 358,
+      "original_full_read_ranges": [
+        [
+          1,
+          358
+        ]
+      ],
+      "final_review": "Complete original ranges plus owned final diff; new files and launcher reread in full. data.py prior complete receipt plus final error-formatter delta.",
+      "read_evidence": "[(1, 358)]; Prior whole-file data receipt plus all final delta: owned DataValidationError guidance retained; arbitrary parser exceptions reduced to class and actionable schema hint.",
+      "passes": {
+        "C1": "ran: Prior whole-file data receipt plus all final delta: owned DataValidationError guidance retained; arbitrary parser exceptions reduced to class and actionable schema hint.",
+        "C2": "ran: compared actual call/return/config schemas, source identity and persisted output compatibility; legacy missing-quote-time fallback retained",
+        "C3": "ran: malformed, empty, nonfinite, changed-source, zero and split-boundary cases examined; corroborated defects have offline RED/GREEN probes",
+        "S1": "ran: source/fixtures treated as data; no secret/owner data or live venue accessed; arbitrary CSV exception text cannot cross CLI output boundary",
+        "S2": "ran: unavailable inputs propagate explicit status; private setup subprocesses bounded; file/figure cleanup and no implicit service start inspected",
+        "S3": "ran: timestamp/grid, price/size, source checksum and parse bytes, seed and boolean/schema trust boundaries inspected",
+        "S4": "ran: declared Python3.13/numpy/pandas APIs and pure offline fixture portability; selected fatal Ruff and final executed tests passed",
+        "S5": "N/A: pure library/test; owning CLI exposes operational outcome",
+        "P1": "ran: bounded quote book/replay and source parsing/report work inspected; no statistical approximation changed for speed",
+        "P2": "N/A: synchronous invocation-owned state with no shared async writer",
+        "M1": "ran: existing parser/config/report conventions preserved; no historical style-only rewrite",
+        "M2": "ran: shared data-error formatter, canonical validate_bars, existing engine/metric/config and dataclass helpers reused",
+        "M3": "N/A: repo-scope architecture row separate",
+        "M4": "ran: help examples/defaults and historical model boundaries compared with actual behavior; research study is explicitly selected, never part of setup",
+        "T1": "ran: actual historical known-answer and new adversarial output/refusal tests completed; 61 focused tests exit0",
+        "T2": "N/A: repo-scope supply-chain row separate",
+        "T3": "N/A: repo-scope tooling row separate",
+        "T4": "N/A: non-test source",
+        "M5": "N/A: library or test input"
+      },
+      "findings": [
+        "CSV-cell leak"
+      ],
+      "verdict": "REVIEWED-FIXED"
+    },
+    {
+      "path": "backtester/run.py",
+      "blob_sha": "9440a454a7c1255ff480f579086a4d64361dd76b",
+      "sha256": "0a89e144ba1570d5be0774215d4a17a06263cba42f51bfd1d12ef195a364eda1",
+      "lines": 134,
+      "original_lines": 134,
+      "original_full_read_ranges": [
+        [
+          1,
+          134
+        ]
+      ],
+      "final_review": "Complete original ranges plus owned final diff; new files and launcher reread in full. data.py prior complete receipt plus final error-formatter delta.",
+      "read_evidence": "[(1, 134)]; Explicit 12-tool allowlist, private marked venv ownership, isolated prerequisites, bounded install/check subprocesses, lock cleanup and argument forwarding.",
+      "passes": {
+        "C1": "ran: Explicit 12-tool allowlist, private marked venv ownership, isolated prerequisites, bounded install/check subprocesses, lock cleanup and argument forwarding.",
+        "C2": "ran: compared actual call/return/config schemas, source identity and persisted output compatibility; legacy missing-quote-time fallback retained",
+        "C3": "ran: malformed, empty, nonfinite, changed-source, zero and split-boundary cases examined; corroborated defects have offline RED/GREEN probes",
+        "S1": "ran: source/fixtures treated as data; no secret/owner data or live venue accessed; arbitrary CSV exception text cannot cross CLI output boundary",
+        "S2": "ran: unavailable inputs propagate explicit status; private setup subprocesses bounded; file/figure cleanup and no implicit service start inspected",
+        "S3": "ran: timestamp/grid, price/size, source checksum and parse bytes, seed and boolean/schema trust boundaries inspected",
+        "S4": "ran: declared Python3.13/numpy/pandas APIs and pure offline fixture portability; selected fatal Ruff and final executed tests passed",
+        "S5": "ran: named operation/context, explicit usage/unavailable status and sanitized parser errors; reports retain model and evidence limitations",
+        "P1": "ran: bounded quote book/replay and source parsing/report work inspected; no statistical approximation changed for speed",
+        "P2": "ran: launcher refuses foreign/symlink private env and concurrent bootstrap; Volty parses same read_bytes snapshot it hashes; no hostile filesystem-race atomicity claim",
+        "M1": "ran: existing parser/config/report conventions preserved; no historical style-only rewrite",
+        "M2": "ran: shared data-error formatter, canonical validate_bars, existing engine/metric/config and dataclass helpers reused",
+        "M3": "N/A: repo-scope architecture row separate",
+        "M4": "ran: help examples/defaults and historical model boundaries compared with actual behavior; research study is explicitly selected, never part of setup",
+        "T1": "ran: actual historical known-answer and new adversarial output/refusal tests completed; 61 focused tests exit0",
+        "T2": "N/A: repo-scope supply-chain row separate",
+        "T3": "N/A: repo-scope tooling row separate",
+        "T4": "N/A: non-test source",
+        "M5": "ran: canonical stdlib launcher automatically creates only a marked repository-local environment, validates tool before setup, and all12 actual tool help invocations work from outside repo; legacy direct module form still expects installed project dependencies"
+      },
+      "findings": [
+        "M5 private setup"
+      ],
+      "verdict": "REVIEWED-FIXED"
+    },
+    {
+      "path": "backtester/tests/test_cli_boundaries_audit.py",
+      "blob_sha": "73d0108f66accd8f6caf40113d45c994c717a165",
+      "sha256": "172ce40c1a589fcfebbfaa482ee46a474fa91e388ed05894d80aa6d3337f754d",
+      "lines": 93,
+      "original_lines": 0,
+      "original_full_read_ranges": [
+        [
+          1,
+          93
+        ]
+      ],
+      "final_review": "Complete original ranges plus owned final diff; new files and launcher reread in full. data.py prior complete receipt plus final error-formatter delta.",
+      "read_evidence": "[[1, 93]]; All new regression source read in full: actual malformed temp CSV cannot leak canary, source refusal, zero seed, pair diagnostic/split and triangle usage/evidence errors.",
+      "passes": {
+        "C1": "ran: All new regression source read in full: actual malformed temp CSV cannot leak canary, source refusal, zero seed, pair diagnostic/split and triangle usage/evidence errors.",
+        "C2": "ran: compared actual call/return/config schemas, source identity and persisted output compatibility; legacy missing-quote-time fallback retained",
+        "C3": "ran: malformed, empty, nonfinite, changed-source, zero and split-boundary cases examined; corroborated defects have offline RED/GREEN probes",
+        "S1": "ran: source/fixtures treated as data; no secret/owner data or live venue accessed; arbitrary CSV exception text cannot cross CLI output boundary",
+        "S2": "ran: unavailable inputs propagate explicit status; private setup subprocesses bounded; file/figure cleanup and no implicit service start inspected",
+        "S3": "ran: timestamp/grid, price/size, source checksum and parse bytes, seed and boolean/schema trust boundaries inspected",
+        "S4": "ran: declared Python3.13/numpy/pandas APIs and pure offline fixture portability; selected fatal Ruff and final executed tests passed",
+        "S5": "N/A: pure library/test; owning CLI exposes operational outcome",
+        "P1": "ran: bounded quote book/replay and source parsing/report work inspected; no statistical approximation changed for speed",
+        "P2": "N/A: synchronous invocation-owned state with no shared async writer",
+        "M1": "ran: existing parser/config/report conventions preserved; no historical style-only rewrite",
+        "M2": "ran: shared data-error formatter, canonical validate_bars, existing engine/metric/config and dataclass helpers reused",
+        "M3": "N/A: repo-scope architecture row separate",
+        "M4": "ran: help examples/defaults and historical model boundaries compared with actual behavior; research study is explicitly selected, never part of setup",
+        "T1": "ran: actual historical known-answer and new adversarial output/refusal tests completed; 61 focused tests exit0",
+        "T2": "N/A: repo-scope supply-chain row separate",
+        "T3": "N/A: repo-scope tooling row separate",
+        "T4": "ran: fixtures use temporary inputs, deterministic tiny histories, mocked parse-time replacement and no network/study; 61 tests0 in0.164s",
+        "M5": "N/A: library or test input"
+      },
+      "findings": [
+        "CSV-cell leak",
+        "ambiguous/empty synthetic sources",
+        "explicit zero seed",
+        "unavailable pair diagnostics/settings/split",
+        "triangle boolean/empty evidence"
+      ],
+      "verdict": "REVIEWED-FIXED"
+    },
+    {
+      "path": "backtester/tests/test_volty_data_binding.py",
+      "blob_sha": "35055f1a1e63c4d09ef31fc35390746ef6f8c14a",
+      "sha256": "d077851526f9b53881754199b08e3b4cf686694066ca832af5dfeb865e5f2afa",
+      "lines": 65,
+      "original_lines": 0,
+      "original_full_read_ranges": [
+        [
+          1,
+          65
+        ]
+      ],
+      "final_review": "Complete original ranges plus owned final diff; new files and launcher reread in full. data.py prior complete receipt plus final error-formatter delta.",
+      "read_evidence": "[[1, 65]]; All new regression source read in full: immutable source bytes under controlled parse-time replacement; off-grid minute source refuses before derived publication.",
+      "passes": {
+        "C1": "ran: All new regression source read in full: immutable source bytes under controlled parse-time replacement; off-grid minute source refuses before derived publication.",
+        "C2": "ran: compared actual call/return/config schemas, source identity and persisted output compatibility; legacy missing-quote-time fallback retained",
+        "C3": "ran: malformed, empty, nonfinite, changed-source, zero and split-boundary cases examined; corroborated defects have offline RED/GREEN probes",
+        "S1": "ran: source/fixtures treated as data; no secret/owner data or live venue accessed; arbitrary CSV exception text cannot cross CLI output boundary",
+        "S2": "ran: unavailable inputs propagate explicit status; private setup subprocesses bounded; file/figure cleanup and no implicit service start inspected",
+        "S3": "ran: timestamp/grid, price/size, source checksum and parse bytes, seed and boolean/schema trust boundaries inspected",
+        "S4": "ran: declared Python3.13/numpy/pandas APIs and pure offline fixture portability; selected fatal Ruff and final executed tests passed",
+        "S5": "N/A: pure library/test; owning CLI exposes operational outcome",
+        "P1": "ran: bounded quote book/replay and source parsing/report work inspected; no statistical approximation changed for speed",
+        "P2": "N/A: synchronous invocation-owned state with no shared async writer",
+        "M1": "ran: existing parser/config/report conventions preserved; no historical style-only rewrite",
+        "M2": "ran: shared data-error formatter, canonical validate_bars, existing engine/metric/config and dataclass helpers reused",
+        "M3": "N/A: repo-scope architecture row separate",
+        "M4": "ran: help examples/defaults and historical model boundaries compared with actual behavior; research study is explicitly selected, never part of setup",
+        "T1": "ran: actual historical known-answer and new adversarial output/refusal tests completed; 61 focused tests exit0",
+        "T2": "N/A: repo-scope supply-chain row separate",
+        "T3": "N/A: repo-scope tooling row separate",
+        "T4": "ran: fixtures use temporary inputs, deterministic tiny histories, mocked parse-time replacement and no network/study; 61 tests0 in0.164s",
+        "M5": "N/A: library or test input"
+      },
+      "findings": [
+        "Volty source hash/parse identity",
+        "off-grid source"
+      ],
+      "verdict": "REVIEWED-FIXED"
+    },
+    {
+      "path": "backtester/tests/test_triangle_input_guards.py",
+      "blob_sha": "7d592cbf92965bbd5aa036922e027081f7dc0e47",
+      "sha256": "f7efc8447f8749b9394b11dbb930c8004e0b350c12b5a9ef64aff90bf433fac7",
+      "lines": 57,
+      "original_lines": 0,
+      "original_full_read_ranges": [
+        [
+          1,
+          57
+        ]
+      ],
+      "final_review": "Complete original ranges plus owned final diff; new files and launcher reread in full. data.py prior complete receipt plus final error-formatter delta.",
+      "read_evidence": "[[1, 57]]; All new regression source read in full: invalid/future/nonfinite quotes and sizes cannot execute, malformed/overflow records stay unavailable and feed time cannot poison state.",
+      "passes": {
+        "C1": "ran: All new regression source read in full: invalid/future/nonfinite quotes and sizes cannot execute, malformed/overflow records stay unavailable and feed time cannot poison state.",
+        "C2": "ran: compared actual call/return/config schemas, source identity and persisted output compatibility; legacy missing-quote-time fallback retained",
+        "C3": "ran: malformed, empty, nonfinite, changed-source, zero and split-boundary cases examined; corroborated defects have offline RED/GREEN probes",
+        "S1": "ran: source/fixtures treated as data; no secret/owner data or live venue accessed; arbitrary CSV exception text cannot cross CLI output boundary",
+        "S2": "ran: unavailable inputs propagate explicit status; private setup subprocesses bounded; file/figure cleanup and no implicit service start inspected",
+        "S3": "ran: timestamp/grid, price/size, source checksum and parse bytes, seed and boolean/schema trust boundaries inspected",
+        "S4": "ran: declared Python3.13/numpy/pandas APIs and pure offline fixture portability; selected fatal Ruff and final executed tests passed",
+        "S5": "N/A: pure library/test; owning CLI exposes operational outcome",
+        "P1": "ran: bounded quote book/replay and source parsing/report work inspected; no statistical approximation changed for speed",
+        "P2": "N/A: synchronous invocation-owned state with no shared async writer",
+        "M1": "ran: existing parser/config/report conventions preserved; no historical style-only rewrite",
+        "M2": "ran: shared data-error formatter, canonical validate_bars, existing engine/metric/config and dataclass helpers reused",
+        "M3": "N/A: repo-scope architecture row separate",
+        "M4": "ran: help examples/defaults and historical model boundaries compared with actual behavior; research study is explicitly selected, never part of setup",
+        "T1": "ran: actual historical known-answer and new adversarial output/refusal tests completed; 61 focused tests exit0",
+        "T2": "N/A: repo-scope supply-chain row separate",
+        "T3": "N/A: repo-scope tooling row separate",
+        "T4": "ran: fixtures use temporary inputs, deterministic tiny histories, mocked parse-time replacement and no network/study; 61 tests0 in0.164s",
+        "M5": "N/A: library or test input"
+      },
+      "findings": [
+        "invalid triangle evidence"
+      ],
+      "verdict": "REVIEWED-FIXED"
+    }
+  ],
+  "checks": [
+    {
+      "command": ".venv/bin/python -m unittest backtester.tests.test_tool_launcher backtester.tests.test_cli_boundaries_audit backtester.tests.test_volty_data_binding backtester.tests.test_triangle_input_guards backtester.tests.test_trianglesim backtester.tests.test_gridcli backtester.tests.test_botcli backtester.tests.test_full_suite",
+      "exit_code": 0,
+      "tests": 61,
+      "log": "/tmp/oraclebot-cli-triangle-final.log"
+    },
+    {
+      "command": "ruff check --select F,E9 on 11 changed/new batch files",
+      "exit_code": 0
+    },
+    {
+      "command": ".venv/bin/python -m ruff check (same paths)",
+      "exit_code": 1,
+      "reason": "ruff is not installed as a Python module in project environment; actual /opt/homebrew/bin/ruff fallback completed0"
+    }
+  ],
+  "red_logs": [
+    "/tmp/oraclebot-volty-inputs-red.log",
+    "/tmp/oraclebot-cli-boundaries-red.log",
+    "/tmp/oraclebot-triangle-inputs-red.log"
+  ],
+  "snapshots": [
+    "/Users/mitch/.claude/skill-consolidation/backups/oraclebot-volty-inputs-20261112",
+    "/Users/mitch/.claude/skill-consolidation/backups/oraclebot-cli-boundaries-20261112",
+    "/Users/mitch/.claude/skill-consolidation/backups/oraclebot-triangle-inputs-20261112"
+  ],
+  "limits": [
+    "No study, parameter search or economic/statistical qualification executed.",
+    "No live orders, collector starts, paused service activation or old owner environment changes.",
+    "Legacy missing quote time remains optional fallback. Future/supplied invalid time and liquidity are refused.",
+    "Canonical launcher12-tool actual help receipt separate; direct legacy module invocations still expect installed dependencies.",
+    "Independent fresh batch acceptance and final integrated full-repository checks remain pending."
+  ]
+}

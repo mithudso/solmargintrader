@@ -200,12 +200,17 @@ def load_funding(asset: str, ts: np.ndarray, interval: str, data_dir: Path) -> n
             or np.any(ft % 3600)):
         return np.full(len(ts), np.nan)
     step = 86400 if interval == "1d" else 3600
-    out = np.full(len(ts), np.nan)
-    for i, stamp in enumerate(ts):
-        first, last = np.searchsorted(ft, [stamp, stamp + step])
-        expected = np.arange(stamp, stamp + step, 3600)
-        if np.array_equal(ft[first:last], expected):
-            out[i] = float(fr[first:last].sum())
+    if interval == "1d":
+        # funding settled inside day t is known by its close
+        out = np.zeros(len(ts)); hit = np.zeros(len(ts), bool)
+        for p, timestamp, r in zip(np.searchsorted(ts, ft, side="right") - 1, ft, fr):
+            if 0 <= p < len(ts) and ts[p] <= timestamp < ts[p] + step:
+                out[p] += r; hit[p] = True
+        out[~hit] = np.nan
+        out = pd.Series(out).ffill().to_numpy()
+        return out
+    idx = np.searchsorted(ft, ts, side="right") - 1
+    out = np.where(idx >= 0, fr[np.clip(idx, 0, None)], np.nan)
     return out
 
 

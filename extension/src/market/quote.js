@@ -175,7 +175,11 @@ export async function quoteSolana(deps, { from, to, amount, slippageBps = 50 }) 
   const url = `${ENDPOINTS.jupiterQuote}?inputMint=${tin.address}&outputMint=${tout.address}`
     + `&amount=${raw}&slippageBps=${slippageBps}&swapMode=ExactIn`;
   const q = await getJson(deps, url, { source: 'jupiter quote' });
-  if (q?.inputMint !== tin.address || q?.outputMint !== tout.address || q?.inAmount !== raw.toString() || q?.swapMode !== 'ExactIn' || !Array.isArray(q?.routePlan) || !/^\d+$/.test(q?.otherAmountThreshold ?? '') || !/^\d+$/.test(String(q?.outAmount ?? '')) || BigInt(q.otherAmountThreshold) > BigInt(q.outAmount)) {
+  const units = value => typeof value === 'string' && /^\d{1,20}$/.test(value) && BigInt(value) <= (1n << 64n) - 1n;
+  if (q?.inputMint !== tin.address || q?.outputMint !== tout.address || q.inAmount !== String(raw)
+      || q.swapMode !== 'ExactIn' || q.slippageBps !== slippageBps || !units(q.outAmount)
+      || BigInt(q.outAmount) <= 0n || !units(q.otherAmountThreshold)
+      || BigInt(q.otherAmountThreshold) > BigInt(q.outAmount) || !Array.isArray(q.routePlan)) {
     throw new MarketError('jupiter quote', 'response did not match the request');
   }
   const impact = Number(q.priceImpactPct);

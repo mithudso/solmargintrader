@@ -1,0 +1,629 @@
+{
+  "schema_version": 1,
+  "agent": "/root/full_repo_health/website_worker_review",
+  "observed_at": "2026-11-12T18:58:01.014801+00:00",
+  "repository": "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112",
+  "scope": "Read-only T2 refinement: supported dependency use, jsonalias authoritative licensing provenance, liquidity audit and bounded current-release metadata.",
+  "status": "COMPLETE_BOUNDED_SUPPLEMENT_WITH_RESIDUAL_PACKAGING_GAP",
+  "repository_writes": [],
+  "environment_mutations": [],
+  "parent_report_mutations": [],
+  "dependency_use": {
+    "source": "/tmp/oraclebot-dependency-license-unused-current-20261112.json",
+    "installed_distribution_count": 85,
+    "supported_component_count": 7,
+    "components": [
+      {
+        "component": "backtester",
+        "declared_direct_count": 2,
+        "every_declared_dependency_has_import_evidence": true
+      },
+      {
+        "component": "botmanager",
+        "declared_direct_count": 3,
+        "every_declared_dependency_has_import_evidence": true
+      },
+      {
+        "component": "oracle",
+        "declared_direct_count": 3,
+        "every_declared_dependency_has_import_evidence": true
+      },
+      {
+        "component": "executor",
+        "declared_direct_count": 2,
+        "every_declared_dependency_has_import_evidence": true
+      },
+      {
+        "component": "ecosystem",
+        "declared_direct_count": 3,
+        "every_declared_dependency_has_import_evidence": true
+      },
+      {
+        "component": "liquidity",
+        "declared_direct_count": 5,
+        "every_declared_dependency_has_import_evidence": true
+      },
+      {
+        "component": "soltui",
+        "declared_direct_count": 1,
+        "every_declared_dependency_has_import_evidence": true
+      }
+    ],
+    "conclusion": "All direct declared dependencies in these seven supported component manifests have import-presence evidence. No dependency deletion is justified by this comparison.",
+    "limit": "Parent AST/import mapping is mechanical evidence; it does not prove every optional/test/build/CLI path is used or unused. No source-wide full semantic re-review was performed for this supplement."
+  },
+  "license_metadata": {
+    "installed_metadata_inventory_count": 85,
+    "missing_license_metadata": [
+      {
+        "name": "jsonalias",
+        "version": "0.1.1"
+      },
+      {
+        "name": "solbot-manager",
+        "version": "0.7.2"
+      },
+      {
+        "name": "solmargintrader-backtester",
+        "version": "0.2.0"
+      },
+      {
+        "name": "solmargintrader-ecosystem",
+        "version": "0.4.5"
+      },
+      {
+        "name": "solmargintrader-oracle",
+        "version": "0.2.3"
+      },
+      {
+        "name": "solmargintrader-research-runtime",
+        "version": "0.4.0"
+      }
+    ],
+    "missing_first_party_count": 5,
+    "missing_public_package_count": 1,
+    "conclusion": "Absent license metadata is not evidence of an incompatible license. The five first-party packages are governed by repository policy; the one public omission is traced separately below. This supplement does not certify all transitive legal obligations."
+  },
+  "jsonalias": {
+    "in_supported_component_closure": true,
+    "dependency_chain": [
+      {
+        "manifest": "executor/pyproject.toml",
+        "requires": "solders>=0.26,<0.28"
+      },
+      {
+        "manifest": "soltui/requirements.txt",
+        "requires": "solders>=0.26,<0.28"
+      },
+      {
+        "installed_distribution": "solders",
+        "version": "0.27.1",
+        "requires": [
+          "jsonalias ==0.1.1"
+        ],
+        "metadata_path": "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/.venv/lib/python3.13/site-packages/solders-0.27.1.dist-info/METADATA",
+        "metadata_sha256": "8c1a28b578d2f2b3603188c0f3830ffbd1931dfc631b041a08e858b18495fe68"
+      },
+      {
+        "installed_distribution": "jsonalias",
+        "version": "0.1.1",
+        "source_path": "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/.venv/lib/python3.13/site-packages/jsonalias/__init__.py",
+        "source_sha256": "35a9a4b543e6f08ad0f8f7f91d0ed53cbd7e0f7925a4aeab5cf52b2e6cfa6db1"
+      }
+    ],
+    "installed_version": "0.1.1",
+    "upstream_identified_license": "MIT",
+    "upstream_project": "https://github.com/kevinheavey/jsonalias",
+    "immutable_license_url": "https://github.com/kevinheavey/jsonalias/blob/2a98db9c4024b1914f198f088f2aaa15a8cd7423/LICENSE",
+    "upstream_license_git_blob_sha": "8aa26455d23acf904be3ed9dfb3a3efe3e49245a",
+    "upstream_license_text_sha256": "002c2696d92b5c8cf956c11072baa58eaf9f6ade995c031ea635c6a1ee342ad1",
+    "upstream_license_text": "MIT License\n\nCopyright (c) [year] [fullname]\n\nPermission is hereby granted, free of charge, to any person obtaining a copy\nof this software and associated documentation files (the \"Software\"), to deal\nin the Software without restriction, including without limitation the rights\nto use, copy, modify, merge, publish, distribute, sublicense, and/or sell\ncopies of the Software, and to permit persons to whom the Software is\nfurnished to do so, subject to the following conditions:\n\nThe above copyright notice and this permission notice shall be included in all\ncopies or substantial portions of the Software.\n\nTHE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR\nIMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,\nFITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE\nAUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER\nLIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,\nOUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE\nSOFTWARE.\n",
+    "chronology": {
+      "pypi_0_1_1_wheel_uploaded_at": "2022-10-28T22:57:54.763463Z",
+      "license_addition_commit": {
+        "sha": "2a98db9c4024b1914f198f088f2aaa15a8cd7423",
+        "html_url": "https://github.com/kevinheavey/jsonalias/commit/2a98db9c4024b1914f198f088f2aaa15a8cd7423",
+        "commit": {
+          "message": "add license and metadata",
+          "committer_date": "2022-10-30T22:43:15Z"
+        }
+      },
+      "license_addition_pyproject_version": "0.1.2",
+      "license_added_after_0_1_1_upload": true
+    },
+    "published_release_metadata": {
+      "name": "jsonalias",
+      "version": "0.1.1",
+      "license": "",
+      "license_expression": null,
+      "license_files": null,
+      "project_urls": null,
+      "classifiers": [
+        "Programming Language :: Python :: 3",
+        "Programming Language :: Python :: 3.10",
+        "Programming Language :: Python :: 3.7",
+        "Programming Language :: Python :: 3.8",
+        "Programming Language :: Python :: 3.9"
+      ],
+      "requires_python": ">=3.7,<4.0"
+    },
+    "latest_release_metadata": {
+      "name": "jsonalias",
+      "version": "0.1.2",
+      "license": "MIT",
+      "license_expression": null,
+      "license_files": null,
+      "project_urls": {
+        "Homepage": "https://github.com/kevinheavey/jsonalias"
+      },
+      "classifiers": [
+        "License :: OSI Approved :: MIT License",
+        "Programming Language :: Python :: 3",
+        "Programming Language :: Python :: 3.10",
+        "Programming Language :: Python :: 3.7",
+        "Programming Language :: Python :: 3.8",
+        "Programming Language :: Python :: 3.9"
+      ]
+    },
+    "source_comparison": {
+      "url": "https://raw.githubusercontent.com/kevinheavey/jsonalias/2a98db9c4024b1914f198f088f2aaa15a8cd7423/jsonalias/__init__.py",
+      "sha256": "35a9a4b543e6f08ad0f8f7f91d0ed53cbd7e0f7925a4aeab5cf52b2e6cfa6db1",
+      "byte_identical_to_installed_0_1_1_module": true,
+      "newlines_normalized_identical": true
+    },
+    "finding": {
+      "id": "T2-JSONALIAS-NOTICE-PROVENANCE",
+      "severity": "Medium",
+      "status": "UPSTREAM_LICENSE_IDENTIFIED_ARTIFACT_NOTICE_GAP_REMAINS",
+      "trigger": "Supported solders0.27.1 pins jsonalias==0.1.1. The installed0.1.1 distribution and its PyPI metadata omit the license notice. Upstream later added MIT in0.1.2; the installed module is byte-identical to the MIT-licensed source at that immutable commit.",
+      "conclusion": "The public upstream license is MIT; no incompatible license was established. Preserve MIT notice/provenance when distributing this dependency. The upstream copyright line remains the literal placeholder [year] [fullname], and the installed0.1.1 artifact itself is not retroactively rewritten by this evidence.",
+      "follow_up": "Parent may document/include the upstream notice in release attribution or pursue a supported upstream dependency-pin update with qualification. Do not upgrade jsonalias independently against solders exact pin or change frozen environments."
+    },
+    "source_fetch_limits": [
+      "PyPI0.1.1 has no Project-URL field, so current0.1.2 publisher metadata and upstream repository/source identity supply the public project binding.",
+      "Current GitHub project recognition of MIT and identical module bytes do not supply a legal compatibility opinion for every redistribution context.",
+      "Initial speculative main/LICENSE URL was not found; actual default master and immutable commit URLs succeeded. No error was treated as a successful source read."
+    ]
+  },
+  "liquidity_advisory_check": {
+    "artifact": "/tmp/oraclebot-liquidity-python-audit-current-20261112.json",
+    "log": "/tmp/oraclebot-liquidity-python-audit-current-20261112.log",
+    "actual_process_exit_code": 0,
+    "exit_evidence": "Parent supplied completed final exit0; this reviewer independently parsed JSON and read No known vulnerabilities found log. Exact parent command line was not supplied in this refinement message.",
+    "distribution_count": 50,
+    "publicly_auditable": 49,
+    "listed_vulnerability_count": 0,
+    "skipped": [
+      {
+        "name": "aero-lp",
+        "skip_reason": "Dependency not found on PyPI and could not be audited: aero-lp (0.1.0)"
+      }
+    ],
+    "fix_entries": 0,
+    "qualification": "The isolated liquidity audit has50 distributions,49 public audit entries and one skipped local aero-lp distribution with historical installed metadata0.1.0. It does not prove deployed/loaded liquidity code or alter the retired service state."
+  },
+  "bounded_current_release_metadata": {
+    "artifact": "/tmp/oraclebot-t2-public-metadata-20261112.json",
+    "public_direct_package_count": 10,
+    "failed_fetches": 0,
+    "packages": [
+      {
+        "name": "cryptography",
+        "url": "https://pypi.org/pypi/cryptography/json",
+        "raw_response_sha256": "32975256deff83cfe92bfcb93233debf77ddc6e8222b2227dec5f45094173d66",
+        "latest_version": "50.0.2",
+        "requires_python": "!=3.9.0,!=3.9.1,>=3.9",
+        "license_expression": "Apache-2.0 OR BSD-3-Clause",
+        "legacy_license": null,
+        "license_classifiers": [],
+        "project_urls": {
+          "changelog": "https://cryptography.io/en/latest/changelog/",
+          "documentation": "https://cryptography.io/",
+          "homepage": "https://github.com/pyca/cryptography",
+          "issues": "https://github.com/pyca/cryptography/issues",
+          "source": "https://github.com/pyca/cryptography/"
+        },
+        "yanked": false,
+        "declared_requirements": [
+          {
+            "component": "oracle",
+            "requirement": "cryptography==50.0.2"
+          }
+        ],
+        "installed_comparisons": [
+          {
+            "scope": "shared_audit_environment",
+            "installed_version": "50.0.2",
+            "registry_latest_newer": false
+          }
+        ],
+        "status": "METADATA_READ_ONLY_NO_UPGRADE_OR_COMPATIBILITY_QUALIFICATION"
+      },
+      {
+        "name": "eth-account",
+        "url": "https://pypi.org/pypi/eth-account/json",
+        "raw_response_sha256": "567c3b13eb980050da47c85cfa115f744bbb99d7cab14608192680528a8291f4",
+        "latest_version": "0.14.0",
+        "requires_python": "<4,>=3.10",
+        "license_expression": "MIT",
+        "legacy_license": null,
+        "license_classifiers": [],
+        "project_urls": {
+          "Documentation": "https://eth-account.readthedocs.io/",
+          "Homepage": "https://github.com/ApeWorX/eth-account",
+          "Issues": "https://github.com/ApeWorX/eth-account/issues",
+          "Repository": "https://github.com/ApeWorX/eth-account.git"
+        },
+        "yanked": false,
+        "declared_requirements": [
+          {
+            "component": "liquidity",
+            "requirement": "eth-account>=0.13"
+          }
+        ],
+        "installed_comparisons": [
+          {
+            "scope": "liquidity_audit_environment",
+            "installed_version": "0.14.0",
+            "registry_latest_newer": false
+          }
+        ],
+        "status": "METADATA_READ_ONLY_NO_UPGRADE_OR_COMPATIBILITY_QUALIFICATION"
+      },
+      {
+        "name": "hexbytes",
+        "url": "https://pypi.org/pypi/hexbytes/json",
+        "raw_response_sha256": "3e850d2c1d660c8d89909c9ce0bb34953de8cf637cd78fc750cf7da64ce32603",
+        "latest_version": "2.0.0",
+        "requires_python": "<4,>=3.10",
+        "license_expression": "MIT",
+        "legacy_license": null,
+        "license_classifiers": [],
+        "project_urls": {
+          "Documentation": "https://hexbytes.readthedocs.io/",
+          "Homepage": "https://github.com/ApeWorX/hexbytes",
+          "Issues": "https://github.com/ApeWorX/hexbytes/issues",
+          "Repository": "https://github.com/ApeWorX/hexbytes.git"
+        },
+        "yanked": false,
+        "declared_requirements": [
+          {
+            "component": "liquidity",
+            "requirement": "hexbytes>=1.2"
+          }
+        ],
+        "installed_comparisons": [
+          {
+            "scope": "liquidity_audit_environment",
+            "installed_version": "2.0.0",
+            "registry_latest_newer": false
+          }
+        ],
+        "status": "METADATA_READ_ONLY_NO_UPGRADE_OR_COMPATIBILITY_QUALIFICATION"
+      },
+      {
+        "name": "httpx",
+        "url": "https://pypi.org/pypi/httpx/json",
+        "raw_response_sha256": "bb69a37ba295d008ec1ae05b324c4f5e64fba48b7276189ebf2a2920dd2f1fc8",
+        "latest_version": "0.28.1",
+        "requires_python": ">=3.8",
+        "license_expression": null,
+        "legacy_license": "BSD-3-Clause",
+        "license_classifiers": [
+          "License :: OSI Approved :: BSD License"
+        ],
+        "project_urls": {
+          "Changelog": "https://github.com/encode/httpx/blob/master/CHANGELOG.md",
+          "Documentation": "https://www.python-httpx.org",
+          "Homepage": "https://github.com/encode/httpx",
+          "Source": "https://github.com/encode/httpx"
+        },
+        "yanked": false,
+        "declared_requirements": [
+          {
+            "component": "executor",
+            "requirement": "httpx>=0.27,<1"
+          },
+          {
+            "component": "liquidity",
+            "requirement": "httpx>=0.27"
+          }
+        ],
+        "installed_comparisons": [
+          {
+            "scope": "shared_audit_environment",
+            "installed_version": "0.28.1",
+            "registry_latest_newer": false
+          },
+          {
+            "scope": "liquidity_audit_environment",
+            "installed_version": "0.28.1",
+            "registry_latest_newer": false
+          }
+        ],
+        "status": "METADATA_READ_ONLY_NO_UPGRADE_OR_COMPATIBILITY_QUALIFICATION"
+      },
+      {
+        "name": "mcp",
+        "url": "https://pypi.org/pypi/mcp/json",
+        "raw_response_sha256": "dbf6d84210b202e6bdeecd90e6c386c41c4727d4f4bbafe7807eccf464f5f204",
+        "latest_version": "2.3.0",
+        "requires_python": ">=3.10",
+        "license_expression": null,
+        "legacy_license": "MIT",
+        "license_classifiers": [
+          "License :: OSI Approved :: MIT License"
+        ],
+        "project_urls": {
+          "Documentation": "https://py.sdk.modelcontextprotocol.io/",
+          "Homepage": "https://modelcontextprotocol.io",
+          "Issues": "https://github.com/modelcontextprotocol/python-sdk/issues",
+          "Repository": "https://github.com/modelcontextprotocol/python-sdk"
+        },
+        "yanked": false,
+        "declared_requirements": [
+          {
+            "component": "oracle",
+            "requirement": "mcp==1.30.0"
+          }
+        ],
+        "installed_comparisons": [
+          {
+            "scope": "shared_audit_environment",
+            "installed_version": "1.30.0",
+            "registry_latest_newer": true
+          }
+        ],
+        "status": "METADATA_READ_ONLY_NO_UPGRADE_OR_COMPATIBILITY_QUALIFICATION"
+      },
+      {
+        "name": "numpy",
+        "url": "https://pypi.org/pypi/numpy/json",
+        "raw_response_sha256": "b433c2327cadf3d9872156b22061dfae8968bd1ee5e4768ac267e5411ad74620",
+        "latest_version": "2.5.4",
+        "requires_python": ">=3.12",
+        "license_expression": "BSD-3-Clause AND 0BSD AND MIT AND Zlib AND CC0-1.0",
+        "legacy_license": null,
+        "license_classifiers": [],
+        "project_urls": {
+          "documentation": "https://numpy.org/doc/",
+          "download": "https://pypi.org/project/numpy/#files",
+          "homepage": "https://numpy.org",
+          "release notes": "https://numpy.org/doc/stable/release",
+          "source": "https://github.com/numpy/numpy",
+          "tracker": "https://github.com/numpy/numpy/issues"
+        },
+        "yanked": false,
+        "declared_requirements": [
+          {
+            "component": "backtester",
+            "requirement": "numpy>=2.5.4"
+          }
+        ],
+        "installed_comparisons": [
+          {
+            "scope": "shared_audit_environment",
+            "installed_version": "2.5.4",
+            "registry_latest_newer": false
+          }
+        ],
+        "status": "METADATA_READ_ONLY_NO_UPGRADE_OR_COMPATIBILITY_QUALIFICATION"
+      },
+      {
+        "name": "pandas",
+        "url": "https://pypi.org/pypi/pandas/json",
+        "raw_response_sha256": "fdc4efa1ffd6b3849a055b69ee1d220dcf367f3eb0ccb23c916180024b0c3cb0",
+        "latest_version": "3.1.1",
+        "requires_python": ">=3.11",
+        "license_expression": "BSD-3-Clause",
+        "legacy_license": null,
+        "license_classifiers": [],
+        "project_urls": {
+          "changelog": "https://pandas.pydata.org/docs/whatsnew/index.html",
+          "documentation": "https://pandas.pydata.org/docs/",
+          "funding": "https://opencollective.com/pandas",
+          "homepage": "https://pandas.pydata.org",
+          "issues": "https://github.com/pandas-dev/pandas/issues",
+          "source": "https://github.com/pandas-dev/pandas"
+        },
+        "yanked": false,
+        "declared_requirements": [
+          {
+            "component": "backtester",
+            "requirement": "pandas>=3.1.0"
+          }
+        ],
+        "installed_comparisons": [
+          {
+            "scope": "shared_audit_environment",
+            "installed_version": "3.1.1",
+            "registry_latest_newer": false
+          }
+        ],
+        "status": "METADATA_READ_ONLY_NO_UPGRADE_OR_COMPATIBILITY_QUALIFICATION"
+      },
+      {
+        "name": "requests",
+        "url": "https://pypi.org/pypi/requests/json",
+        "raw_response_sha256": "bcfc6a202592e4e90f5a28ff002694eaa7c58ba741b76077f432b8bee1480111",
+        "latest_version": "2.34.2",
+        "requires_python": ">=3.10",
+        "license_expression": null,
+        "legacy_license": "Apache-2.0",
+        "license_classifiers": [
+          "License :: OSI Approved :: Apache Software License"
+        ],
+        "project_urls": {
+          "Documentation": "https://requests.readthedocs.io",
+          "Source": "https://github.com/psf/requests"
+        },
+        "yanked": false,
+        "declared_requirements": [
+          {
+            "component": "liquidity",
+            "requirement": "requests>=2.31"
+          }
+        ],
+        "installed_comparisons": [
+          {
+            "scope": "liquidity_audit_environment",
+            "installed_version": "2.34.2",
+            "registry_latest_newer": false
+          }
+        ],
+        "status": "METADATA_READ_ONLY_NO_UPGRADE_OR_COMPATIBILITY_QUALIFICATION"
+      },
+      {
+        "name": "solders",
+        "url": "https://pypi.org/pypi/solders/json",
+        "raw_response_sha256": "3fc0d6708d832bf8159a73d8326eefaec70b631da7c28bbd3bb76529c10effaf",
+        "latest_version": "0.29.0",
+        "requires_python": "<4.0,>=3.10",
+        "license_expression": null,
+        "legacy_license": null,
+        "license_classifiers": [],
+        "project_urls": {
+          "changelog": "https://github.com/kevinheavey/solders/blob/main/CHANGELOG.md",
+          "documentation": "https://kevinheavey.github.io/solders/",
+          "homepage": "https://github.com/kevinheavey/solders",
+          "repository": "https://github.com/kevinheavey/solders"
+        },
+        "yanked": false,
+        "declared_requirements": [
+          {
+            "component": "executor",
+            "requirement": "solders>=0.26,<0.28"
+          }
+        ],
+        "installed_comparisons": [
+          {
+            "scope": "shared_audit_environment",
+            "installed_version": "0.27.1",
+            "registry_latest_newer": true
+          }
+        ],
+        "status": "METADATA_READ_ONLY_NO_UPGRADE_OR_COMPATIBILITY_QUALIFICATION"
+      },
+      {
+        "name": "web3",
+        "url": "https://pypi.org/pypi/web3/json",
+        "raw_response_sha256": "3544718d838530f3a972e01c80f172746dcf6997bfdaa4c3ae9a84439272e98d",
+        "latest_version": "8.0.0",
+        "requires_python": "<4,>=3.10",
+        "license_expression": "MIT",
+        "legacy_license": null,
+        "license_classifiers": [],
+        "project_urls": {
+          "Documentation": "https://web3py.readthedocs.io/",
+          "Funding": "https://github.com/sponsors/ApeWorX",
+          "Homepage": "https://github.com/ApeWorX/web3.py",
+          "Issues": "https://github.com/ApeWorX/web3.py/issues",
+          "Repository": "https://github.com/ApeWorX/web3.py.git"
+        },
+        "yanked": false,
+        "declared_requirements": [
+          {
+            "component": "liquidity",
+            "requirement": "web3>=7.6,<9"
+          }
+        ],
+        "installed_comparisons": [
+          {
+            "scope": "liquidity_audit_environment",
+            "installed_version": "8.0.0",
+            "registry_latest_newer": false
+          }
+        ],
+        "status": "METADATA_READ_ONLY_NO_UPGRADE_OR_COMPATIBILITY_QUALIFICATION"
+      }
+    ],
+    "newer_registry_versions": [
+      {
+        "name": "mcp",
+        "latest": "2.3.0",
+        "installed_comparisons": [
+          {
+            "scope": "shared_audit_environment",
+            "installed_version": "1.30.0",
+            "registry_latest_newer": true
+          }
+        ]
+      },
+      {
+        "name": "solders",
+        "latest": "0.29.0",
+        "installed_comparisons": [
+          {
+            "scope": "shared_audit_environment",
+            "installed_version": "0.27.1",
+            "registry_latest_newer": true
+          }
+        ]
+      }
+    ],
+    "interpretation": "Only mcp2.3.0 and solders0.29.0 are newer than their supported installed versions among these10 direct public packages. Both newer versions fall outside the deliberate supported pins/ranges (mcp==1.30.0 and solders<0.28). They are recorded as constrained upgrades, not proven security defects or permission to upgrade. jsonalias0.1.2 is likewise newer but blocked by solders exact transitive pin.",
+    "limits": [
+      "This checks public registry release labels for10 direct packages at observation time; it is not an85-package latest-version census.",
+      "Latest release metadata does not prove Python/platform compatibility, economic equivalence or suitability for frozen evidence.",
+      "No install, upgrade, resolver mutation, package source import, strategy execution, service/network market call or owner-state change occurred."
+    ]
+  },
+  "checks": [
+    {
+      "operation": "Parse parent85-distribution license inventory and seven declared dependency/import comparisons",
+      "exit_code": 0
+    },
+    {
+      "operation": "Read installed importlib.metadata metadata and jsonalias module bytes without importing target packages",
+      "exit_code": 0
+    },
+    {
+      "operation": "Read public PyPI/GitHub metadata and immutable source with bounded HTTPS response sizes",
+      "exit_code": 0,
+      "public_direct_package_queries": 10,
+      "failed_direct_package_queries": 0
+    },
+    {
+      "operation": "Byte-compare installed jsonalias0.1.1 module with MIT-licensed immutable upstream source",
+      "exit_code": 0,
+      "byte_identical": true
+    },
+    {
+      "operation": "Parse liquidity advisory JSON and log",
+      "exit_code": 0,
+      "parent_audit_final_exit": 0
+    }
+  ],
+  "artifact_bindings": [
+    {
+      "path": "/tmp/oraclebot-dependency-license-unused-current-20261112.json",
+      "bytes": 27062,
+      "sha256": "a8849356d468d24b40b780469e01480f505b9481a498e2d963c849b2031a6dbe"
+    },
+    {
+      "path": "/tmp/oraclebot-t2-public-metadata-20261112.json",
+      "bytes": 16807,
+      "sha256": "ef010423e83c9a5fcf3134ddeb5f9dd75c8c63212179c1dbadf9fc8d995482b2"
+    },
+    {
+      "path": "/tmp/oraclebot-t2-jsonalias-chain-20261112.json",
+      "bytes": 2166,
+      "sha256": "b940881de58b1dba46162a1a631b2308ea64e7ed444fe06c29cb4888615e8097"
+    },
+    {
+      "path": "/tmp/oraclebot-liquidity-python-audit-current-20261112.json",
+      "bytes": 2882,
+      "sha256": "c6bad89ecf55beb3cd2a8662b5bc4754b75cc2fe7ce80d6e706f0de452e410e3"
+    },
+    {
+      "path": "/tmp/oraclebot-liquidity-python-audit-current-20261112.log",
+      "bytes": 31,
+      "sha256": "15950a68a7ed99c59779717acefdceb3f69cfd31bde67d2c954f2a3cea4d7955"
+    }
+  ],
+  "remaining": [
+    "Parent owns CI/pin/attribution/docs fixes and whole-repository report assembly.",
+    "Keep the jsonalias0.1.1 notice/provenance gap explicit; current MIT source identification removes the unsupported inference that missing metadata means incompatible licensing.",
+    "No broad unused-dependency deletion, blanket transitive license clearance or automatic constrained-major update is justified."
+  ]
+}

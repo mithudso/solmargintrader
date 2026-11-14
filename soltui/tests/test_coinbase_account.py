@@ -5,6 +5,7 @@ from pathlib import Path
 from unittest import mock
 from urllib.parse import parse_qs, urlparse
 
+from soltui.tests.test_tui import offline_console_reads
 from soltui import coinbase_account as cb, config
 
 
@@ -100,6 +101,9 @@ class CoinbaseAccountTests(unittest.TestCase):
 
 
 class CoinbasePaneTests(unittest.IsolatedAsyncioTestCase):
+    def setUp(self):
+        self.enterContext(offline_console_reads())
+
     async def test_wallet_displays_trading_and_staked_positions_separately(self):
         from textual.widgets import DataTable, TabbedContent
         from soltui.tests.test_tui import TEST_SIZE, make_settings

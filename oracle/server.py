@@ -13,18 +13,50 @@ from contextlib import asynccontextmanager
 from pathlib import Path
 from typing import Any
 
-import jsonschema
-import mcp.server.stdio
-from mcp import types
-from mcp.server.lowlevel import NotificationOptions, Server
-from mcp.server.lowlevel.helper_types import ReadResourceContents
-from mcp.server.models import InitializationOptions
-from pydantic import AnyUrl
-
 from .feeds import validate_instrument
 from .guidance import guidance, readiness, veto
 
-VERSION = "0.2.3"
+_SDK_LOADED = False
+_SDK_V2 = False
+
+
+def _load_sdk() -> None:
+    """Defer optional protocol imports so CLI help works before environment setup."""
+    global _SDK_LOADED, _SDK_V2, jsonschema, mcp, types, NotificationOptions, Server
+    global ReadResourceContents, InitializationOptions, AnyUrl
+    if _SDK_LOADED:
+        return
+    import jsonschema
+    import mcp.server.stdio
+    from mcp import types
+    from mcp.server.lowlevel import NotificationOptions, Server
+    from mcp.server.lowlevel.helper_types import ReadResourceContents
+    from mcp.server.models import InitializationOptions
+    from pydantic import AnyUrl
+
+    _SDK_V2 = not hasattr(Server, "list_tools")
+    _SDK_LOADED = True
+
+
+def _sdk_model(model: Any, **fields: Any) -> Any:
+    """Keep Python SDK field spelling separate from the unchanged wire schema."""
+    aliases = {
+        "input_schema": "inputSchema",
+        "output_schema": "outputSchema",
+        "read_only_hint": "readOnlyHint",
+        "destructive_hint": "destructiveHint",
+        "idempotent_hint": "idempotentHint",
+        "open_world_hint": "openWorldHint",
+        "structured_content": "structuredContent",
+        "is_error": "isError",
+        "mime_type": "mimeType",
+    }
+    if not _SDK_V2:
+        fields = {aliases.get(key, key): value for key, value in fields.items()}
+    return model(**fields)
+
+
+VERSION = "0.2.5"
 RESOURCE_NAMES = {
     f"oracle://{name}": name for name in ("market", "predictions", "status")
 }
@@ -97,6 +129,7 @@ class SubscriptionHub:
     """Coalesce resource changes with no unbounded event queue or cross-session state."""
 
     def __init__(self, *, timeout: float = 2.0) -> None:
+        _load_sdk()
         self.timeout = timeout
         self._lock = asyncio.Lock()
         self._sessions: dict[Any, dict[str, str | None]] = {}
@@ -151,6 +184,7 @@ def build_server(
     poll_seconds: float = 0.5,
     prediction_view: Callable[[], dict] | None = None,
 ) -> tuple[Server, SubscriptionHub]:
+    _load_sdk()
     if not 0.1 <= poll_seconds <= 60:
         raise ValueError("invalid poll interval")
     hub = SubscriptionHub()
@@ -203,38 +237,25 @@ def build_server(
                 pass
             await hub.clear()
 
-    server = Server("solmargintrader-oracle", version=VERSION, lifespan=lifespan)
-
-    @server.list_tools()
     async def list_tools() -> list[types.Tool]:
         return [
-            types.Tool(
+            _sdk_model(
+                types.Tool,
                 name=name,
                 description=DESCRIPTIONS[name],
-                inputSchema=schema,
-                outputSchema=ENVELOPE_SCHEMA,
-                annotations=types.ToolAnnotations(
-                    readOnlyHint=True,
-                    destructiveHint=False,
-                    idempotentHint=True,
-                    openWorldHint=False,
+                input_schema=schema,
+                output_schema=ENVELOPE_SCHEMA,
+                annotations=_sdk_model(
+                    types.ToolAnnotations,
+                    read_only_hint=True,
+                    destructive_hint=False,
+                    idempotent_hint=True,
+                    open_world_hint=False,
                 ),
             )
             for name, schema in TOOL_SCHEMAS.items()
         ]
 
-    def tool_data(name, arguments):
-        if name == "oracle_guidance":
-            return guidance(**arguments, repo=repo)
-        if name == "oracle_readiness":
-            return readiness(engine, manager_home=manager_home)
-        if name == "oracle_veto":
-            return veto(SelectedView())
-        if name == "oracle_predictions":
-            return predictions()
-        return getattr(engine, name.removeprefix("oracle_"))(**arguments)
-
-    @server.call_tool(validate_input=False)
     async def call_tool(name: str, arguments: dict[str, Any]) -> types.CallToolResult:
         try:
             if name not in TOOL_SCHEMAS:
@@ -244,45 +265,116 @@ def build_server(
             result = envelope(error="invalid_request")
         else:
             try:
-                data = await asyncio.to_thread(tool_data, name, arguments)
+                if name == "oracle_guidance":
+                    data = guidance(**arguments, repo=repo)
+                elif name == "oracle_readiness":
+                    data = readiness(engine, manager_home=manager_home)
+                elif name == "oracle_veto":
+                    data = veto(SelectedView())
+                elif name == "oracle_predictions":
+                    data = predictions()
+                else:
+                    data = getattr(engine, name.removeprefix("oracle_"))(**arguments)
                 result = envelope(data)
                 encode(result)
             except Exception:  # noqa: BLE001 -- Public response boundary never serializes dependency exception text.
                 result = envelope(error="archive_unavailable")
-        return types.CallToolResult(
+        return _sdk_model(
+            types.CallToolResult,
             content=[types.TextContent(type="text", text=encode(result))],
-            structuredContent=result,
-            isError=not result["ok"],
+            structured_content=result,
+            is_error=not result["ok"],
         )
 
-    @server.list_resources()
     async def list_resources() -> list[types.Resource]:
         return [
-            types.Resource(
-                uri=AnyUrl(uri),
+            _sdk_model(
+                types.Resource,
+                uri=uri,
                 name=name,
-                mimeType="application/json",
+                mime_type="application/json",
                 description="Read a snapshot; subscribe for invalidation notices, then read again.",
             )
             for uri, name in RESOURCE_NAMES.items()
         ]
 
-    @server.read_resource()
-    async def read_resource(uri: AnyUrl) -> list[ReadResourceContents]:
-        value = await asyncio.to_thread(resource, str(uri))
+    def resource_text(uri: AnyUrl) -> str:
+        value = resource(str(uri))
         try:
             text = encode(value)
         except (ValueError, TypeError, OverflowError):
             text = encode(envelope(error="snapshot_unavailable"))
-        return [ReadResourceContents(text, "application/json")]
+        return text
 
-    @server.subscribe_resource()
-    async def subscribe(uri: AnyUrl) -> None:
-        await hub.subscribe(server.request_context.session, str(uri))
+    if _SDK_V2:
 
-    @server.unsubscribe_resource()
-    async def unsubscribe(uri: AnyUrl) -> None:
-        await hub.unsubscribe(server.request_context.session, str(uri))
+        async def on_list_tools(ctx: Any, params: Any) -> types.ListToolsResult:
+            return types.ListToolsResult(tools=await list_tools())
+
+        async def on_call_tool(ctx: Any, params: Any) -> types.CallToolResult:
+            return await call_tool(params.name, params.arguments or {})
+
+        async def on_list_resources(ctx: Any, params: Any) -> types.ListResourcesResult:
+            return types.ListResourcesResult(resources=await list_resources())
+
+        async def on_read_resource(ctx: Any, params: Any) -> types.ReadResourceResult:
+            return types.ReadResourceResult(
+                contents=[
+                    _sdk_model(
+                        types.TextResourceContents,
+                        uri=str(params.uri),
+                        text=resource_text(params.uri),
+                        mime_type="application/json",
+                    )
+                ]
+            )
+
+        async def on_subscribe(ctx: Any, params: Any) -> types.EmptyResult:
+            # SDK2 creates a fresh session proxy for each request. Retain one
+            # notification proxy per connection lifespan so unsubscribe finds
+            # the same subscription owner without sharing another client's state.
+            session = ctx.lifespan_context.setdefault(
+                "subscription_session", ctx.session
+            )
+            await hub.subscribe(session, str(params.uri))
+            return types.EmptyResult()
+
+        async def on_unsubscribe(ctx: Any, params: Any) -> types.EmptyResult:
+            session = ctx.lifespan_context.setdefault(
+                "subscription_session", ctx.session
+            )
+            await hub.unsubscribe(session, str(params.uri))
+            return types.EmptyResult()
+
+        server = Server(
+            "solmargintrader-oracle",
+            version=VERSION,
+            lifespan=lifespan,
+            on_list_tools=on_list_tools,
+            on_call_tool=on_call_tool,
+            on_list_resources=on_list_resources,
+            on_read_resource=on_read_resource,
+            on_subscribe_resource=on_subscribe,
+            on_unsubscribe_resource=on_unsubscribe,
+        )
+    else:
+        server = Server("solmargintrader-oracle", version=VERSION, lifespan=lifespan)
+
+        async def read_resource(uri: AnyUrl) -> list[ReadResourceContents]:
+            return [ReadResourceContents(resource_text(uri), "application/json")]
+
+        async def subscribe(uri: AnyUrl) -> None:
+            await hub.subscribe(server.request_context.session, str(uri))
+
+        async def unsubscribe(uri: AnyUrl) -> None:
+            await hub.unsubscribe(server.request_context.session, str(uri))
+
+        server.list_tools()(list_tools)
+        server.call_tool(validate_input=False)(call_tool)
+        server.list_resources()(list_resources)
+        server.read_resource()(read_resource)
+        server.subscribe_resource()(subscribe)
+        server.unsubscribe_resource()(unsubscribe)
 
     return server, hub
 
@@ -363,6 +455,7 @@ async def run(
     poll_seconds: float = 0.5,
     control_home: Path | None = None,
 ) -> None:
+    _load_sdk()
     from .engine import OracleEngine
 
     home = selection_home(archive, instrument, control_home)
@@ -398,6 +491,7 @@ async def run(
 
 class Parser(argparse.ArgumentParser):
     def error(self, message: str) -> None:
+        self.print_usage(sys.stderr)
         raise ValueError("invalid command arguments")
 
 
@@ -416,6 +510,7 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--poll-seconds", type=float, default=0.5)
     try:
         args = parser.parse_args(argv)
+        _load_sdk()
         asyncio.run(
             run(
                 args.archive,
@@ -426,6 +521,11 @@ def main(argv: list[str] | None = None) -> int:
                 control_home=args.control_home,
             )
         )
+    except ModuleNotFoundError as error:
+        from .cli import prerequisite_message
+
+        print(prerequisite_message(error), file=sys.stderr)
+        return 3
     except (Exception, KeyboardInterrupt):  # noqa: BLE001 -- CLI failure boundary suppresses dependency details.
         print("Oracle MCP server stopped or unavailable.", file=sys.stderr)
         return 2

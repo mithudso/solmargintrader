@@ -1,6 +1,6 @@
 # Every file in this repository
 
-**Generated** from `index/INDEX.json` at commit `5914d22` (2026-11-12T08:58:07+00:00). 3349 tracked files, 80.3 MB.
+**Generated** from `index/INDEX.json` at commit `1c544fc1` (2026-11-13T18:23:57+00:00). 3630 tracked files, 94.2 MB.
 
 Regenerate with:
 
@@ -15,8 +15,8 @@ python3 index/build.py --check      # fail if the index is stale
 Every entry marks where its description came from, because a generated one-liner and a considered one should not look alike:
 
 - **curated** (42 files) — hand-written purpose and usage, in the `CURATED` table of `index/make_files_doc.py`. Used where extraction cannot give a reader what they need: the engine, the research drivers, the order-placing path, and the files with no prose of their own.
-- **extracted** (2816 files) — the file's own module docstring, JSDoc header, or frontmatter `summary`. Trustworthy here because 540/634 Python modules and 66/120 JS files carry a substantial one. (These counts are computed at generation time, not hardcoded — an earlier revision asserted a frozen ratio and it was wrong within a day as the repo grew.)
-- **derived** (227 files) — shape only, for generated artifacts: a CSV's header and row count, a JSON's keys. Prose for a result file would be invented.
+- **extracted** (2896 files) — the file's own module docstring, JSDoc header, or frontmatter `summary`. Trustworthy here because 594/687 Python modules and 69/134 JS files carry a substantial one. (These counts are computed at generation time, not hardcoded — an earlier revision asserted a frozen ratio and it was wrong within a day as the repo grew.)
+- **derived** (408 files) — shape only, for generated artifacts: a CSV's header and row count, a JSON's keys. Prose for a result file would be invented.
 
 *How to use* is curated where it matters and otherwise inferred from the file's kind — a test gets its runner, a CLI gets `--help`, a module gets its import path.
 
@@ -25,7 +25,7 @@ Every entry marks where its description came from, because a generated one-liner
 This file is the **exhaustive** one: every tracked file, no exceptions, regenerated from the index. For orientation rather than lookup, read these first — they are shorter and they explain *why* the pieces fit together:
 
 - `docs/codebase-overview.md` — the narrative tour.
-- `docs/ARCHITECTURE.md` — how the three components relate.
+- `docs/ARCHITECTURE.md` — how the components relate.
 - `docs/COMPONENTS.md` — component-level responsibilities.
 - `docs/CONCEPTS.md` — the conceptual index: which files bear on which idea.
 
@@ -33,41 +33,41 @@ To *search* rather than browse: `python3 index/search.py "your question"`.
 
 ## Contents
 
-- [`(root)`](#root) — 89 files
-- [`docs`](#docs) — 142 files
+- [`(root)`](#root) — 94 files
+- [`docs`](#docs) — 155 files
 - [`index`](#index) — 7 files
-- [`backtester`](#backtester) — 1934 files
-- [`research`](#research) — 279 files
-- [`extension`](#extension) — 126 files
-- [`soltui`](#soltui) — 181 files
-- [`.github`](#github) — 10 files
+- [`backtester`](#backtester) — 1956 files
+- [`research`](#research) — 310 files
+- [`oracle`](#oracle) — 43 files
+- [`extension`](#extension) — 131 files
+- [`executor`](#executor) — 48 files
+- [`liquidity`](#liquidity) — 61 files
+- [`botmanager`](#botmanager) — 91 files
+- [`ecosystem`](#ecosystem) — 68 files
+- [`soltui`](#soltui) — 192 files
+- [`mongo`](#mongo) — 20 files
+- [`website`](#website) — 42 files
+- [`.github`](#github) — 12 files
 - [`tradingskilllist`](#tradingskilllist) — 1 files
 - [`.remember`](#remember) — 1 files
-- [`.cdo`](#cdo) — 2 files
+- [`.cdo`](#cdo) — 161 files
 - [`.claude`](#claude) — 2 files
 - [`.githooks`](#githooks) — 2 files
 - [`.postman`](#postman) — 1 files
 - [`.superpowers`](#superpowers) — 32 files
 - [`.vscode`](#vscode) — 3 files
 - [`archive`](#archive) — 1 files
-- [`botmanager`](#botmanager) — 90 files
 - [`coin-fit`](#coin-fit) — 6 files
 - [`design`](#design) — 32 files
 - [`dso-skill`](#dso-skill) — 3 files
-- [`ecosystem`](#ecosystem) — 61 files
-- [`executor`](#executor) — 47 files
-- [`liquidity`](#liquidity) — 60 files
 - [`llms`](#llms) — 5 files
-- [`mongo`](#mongo) — 18 files
-- [`oracle`](#oracle) — 43 files
 - [`postman`](#postman) — 8 files
 - [`runbooks`](#runbooks) — 3 files
-- [`scripts`](#scripts) — 26 files
+- [`scripts`](#scripts) — 31 files
 - [`skills`](#skills) — 67 files
 - [`superpowers`](#superpowers) — 12 files
 - [`tools`](#tools) — 3 files
 - [`tradingview`](#tradingview) — 26 files
-- [`website`](#website) — 26 files
 
 ---
 
@@ -75,7 +75,7 @@ To *search* rather than browse: `python3 index/search.py "your question"`.
 
 Repository-level entry points and agent instructions. `AGENTS.md` and `CLAUDE.md` are the operative rules for anyone — human or agent — changing this repo; read them before the code.
 
-89 files.
+94 files.
 
 #### `.editorconfig`
 
@@ -87,7 +87,7 @@ Repository-level entry points and agent instructions. `AGENTS.md` and `CLAUDE.md
 
 #### `.env.example`
 
-`config` · 37 lines · 1,787 B · description: **none**
+`config` · 55 lines · 2,382 B · description: **none**
 
 **Purpose.** _No description available._
 
@@ -95,7 +95,7 @@ Repository-level entry points and agent instructions. `AGENTS.md` and `CLAUDE.md
 
 #### `.gitattributes`
 
-`other` · 28 lines · 744 B · description: **curated**
+`other` · 32 lines · 975 B · description: **curated**
 
 **Purpose.** Per-path git behaviour: line-ending normalisation, and which files are treated as binary or excluded from diffs and archives. Keeps a CSV or a generated artifact from producing noise in review.
 
@@ -127,7 +127,7 @@ Repository-level entry points and agent instructions. `AGENTS.md` and `CLAUDE.md
 
 #### `AGENTS.md`
 
-`doc` · 29 lines · 1,660 B · description: **curated**
+`doc` · 29 lines · 1,615 B · description: **curated**
 
 **Purpose.** The operative rules for changing this repo. The backtester never gains live-trading capability, no lookahead, costs are never optional, the engine does not touch the network; the extension defaults to dry-run and its risk rails fail closed.
 
@@ -159,7 +159,7 @@ Repository-level entry points and agent instructions. `AGENTS.md` and `CLAUDE.md
 
 #### `CLAUDE.md`
 
-`doc` · 219 lines · 16,232 B · description: **curated**
+`doc` · 241 lines · 17,575 B · description: **curated**
 
 **Purpose.** Agent-facing companion to AGENTS.md — the same non-negotiables plus the workflow conventions (commit discipline, where numbers may come from, what must be regenerable).
 
@@ -279,7 +279,7 @@ Repository-level entry points and agent instructions. `AGENTS.md` and `CLAUDE.md
 
 #### `GEMINI.md`
 
-`doc` · 64 lines · 3,497 B · description: **extracted**
+`doc` · 69 lines · 4,281 B · description: **extracted**
 
 **Purpose.** Agent instructions for this repository live in [CLAUDE.md](CLAUDE.md). Read that file first — it is the single source of truth, and this file only points at it. Save requests in `prompts.md` and versioned continuation records in `memory.md`, as
 
@@ -343,9 +343,9 @@ Repository-level entry points and agent instructions. `AGENTS.md` and `CLAUDE.md
 
 #### `README.md`
 
-`doc` · 224 lines · 14,470 B · description: **curated**
+`doc` · 225 lines · 14,787 B · description: **curated**
 
-**Purpose.** Entry point: what the project is, the three components, and the honest summary of what the research established.
+**Purpose.** Entry point: what the project is, its components, and the honest summary of what the research established.
 
 **Use.** Start here.
 
@@ -541,6 +541,14 @@ Repository-level entry points and agent instructions. `AGENTS.md` and `CLAUDE.md
 
 **Use.** Read it.
 
+#### `eslint.config.mjs`
+
+`code-js` · 55 lines · 1,797 B · description: **none**
+
+**Purpose.** _No description available._
+
+**Use.** Loaded by the extension; see `extension/manifest.json` for entry points.
+
 #### `external-calls.md`
 
 `doc` · 136 lines · 14,812 B · description: **extracted**
@@ -583,41 +591,41 @@ Repository-level entry points and agent instructions. `AGENTS.md` and `CLAUDE.md
 
 #### `llms-facts.txt`
 
-`data` · 36 lines · 5,566 B · description: **derived**
+`data` · 40 lines · 7,177 B · description: **derived**
 
-**Purpose.** Generated report. Opens: # solmargintrader — atomic current facts / > Source: /Users/mitch/dev/solmargintrader · https://github.com/mithudso/solmargintrader @ 789d3bd + working changes
+**Purpose.** Generated report. Opens: # solmargintrader — atomic current facts / > Source: /Users/mitch/dev/oraclebot.io · https://github.com/mithudso/solmargintrader @ 1d49d5f7 + documentation delta
 
 **Use.** Read it.
 
 #### `llms-full.txt`
 
-`data` · 56 lines · 7,800 B · description: **derived**
+`data` · 62 lines · 9,662 B · description: **derived**
 
-**Purpose.** Generated report. Opens: # solmargintrader — current operator and architecture reference / > Source: /Users/mitch/dev/solmargintrader · https://github.com/mithudso/solmargintrader @ 789d3bd + working changes
+**Purpose.** Generated report. Opens: # solmargintrader — current operator and architecture reference / > Source: /Users/mitch/dev/oraclebot.io · https://github.com/mithudso/solmargintrader @ 1d49d5f7 + documentation delta
 
 **Use.** Read it.
 
 #### `llms-sitemap.txt`
 
-`data` · 3423 lines · 290,338 B · description: **derived**
+`data` · 3489 lines · 296,321 B · description: **derived**
 
-**Purpose.** Generated report. Opens: # solmargintrader — source sitemap / > Source: /Users/mitch/dev/solmargintrader · https://github.com/mithudso/solmargintrader @ 789d3bd + working changes
+**Purpose.** Generated report. Opens: # solmargintrader — source sitemap / > Source: /Users/mitch/dev/oraclebot.io · https://github.com/mithudso/solmargintrader @ 1d49d5f7 + documentation delta
 
 **Use.** Read it.
 
 #### `llms-small.txt`
 
-`data` · 34 lines · 4,764 B · description: **derived**
+`data` · 38 lines · 6,375 B · description: **derived**
 
-**Purpose.** Generated report. Opens: # solmargintrader — budgeted navigation digest / > Source: /Users/mitch/dev/solmargintrader · https://github.com/mithudso/solmargintrader @ 789d3bd + working changes
+**Purpose.** Generated report. Opens: # solmargintrader — budgeted navigation digest / > Source: /Users/mitch/dev/oraclebot.io · https://github.com/mithudso/solmargintrader @ 1d49d5f7 + documentation delta
 
 **Use.** Read it.
 
 #### `llms.txt`
 
-`data` · 16 lines · 1,088 B · description: **derived**
+`data` · 28 lines · 1,964 B · description: **derived**
 
-**Purpose.** Generated report. Opens: # solmargintrader — family index / > Source: /Users/mitch/dev/solmargintrader · https://github.com/mithudso/solmargintrader @ 789d3bd + working changes
+**Purpose.** Generated report. Opens: # solmargintrader — family index / > Source: /Users/mitch/dev/oraclebot.io · https://github.com/mithudso/solmargintrader @ 1d49d5f7 + documentation delta
 
 **Use.** Read it.
 
@@ -639,9 +647,9 @@ Repository-level entry points and agent instructions. `AGENTS.md` and `CLAUDE.md
 
 #### `memory.md`
 
-`doc` · 1276 lines · 239,085 B · description: **extracted**
+`doc` · 2179 lines · 447,183 B · description: **extracted**
 
-**Purpose.** Version: 477 Delta: v476 to v477; begin timestamped coin-news price-reaction study. Delta: v475 to v476; verify ZEC uploader resumed after owner Atlas IP update.
+**Purpose.** Version: 529 Delta: v528 to v529; record the qualified immutable installation, guarded UI promotion and real backtest probe. Delta: v527 to v528; preserve both concurrent research and local repair records during integration.
 
 **Use.** Read it.
 
@@ -685,6 +693,22 @@ Repository-level entry points and agent instructions. `AGENTS.md` and `CLAUDE.md
 
 **Use.** Read it.
 
+#### `package-lock.json`
+
+`config` · 1493 lines · 51,562 B · description: **derived**
+
+**Purpose.** Generated JSON object, 5 keys (name, version, lockfileVersion, requires, packages).
+
+**Use.** Configuration; nothing to run.
+
+#### `package.json`
+
+`config` · 19 lines · 539 B · description: **derived**
+
+**Purpose.** Generated JSON object, 6 keys (name, private, version, engines, scripts, devDependencies).
+
+**Use.** Configuration; nothing to run.
+
 #### `pagesource`
 
 `other` · 54 lines · 113,673 B · description: **curated**
@@ -703,9 +727,9 @@ Repository-level entry points and agent instructions. `AGENTS.md` and `CLAUDE.md
 
 #### `prompts.md`
 
-`doc` · 1990 lines · 119,682 B · description: **extracted**
+`doc` · 2217 lines · 129,056 B · description: **extracted**
 
-**Purpose.** Version: 225 Delta: v224 to v225; capture historical coin-news and subsequent-price event-study request. Delta: v223 to v224; record owner IP access-list update and verify resumed ZEC uploads.
+**Purpose.** Version: 240 Delta: v239 to v240; preserve both concurrent local repairs and fee research requests. Delta: v238 to v239; preserve the live ecosystem status request and authorized local repairs.
 
 **Use.** Read it.
 
@@ -743,11 +767,19 @@ Repository-level entry points and agent instructions. `AGENTS.md` and `CLAUDE.md
 
 #### `requirements.txt`
 
-`data` · 215 lines · 4,290 B · description: **derived**
+`data` · 221 lines · 4,682 B · description: **derived**
 
-**Purpose.** Generated report. Opens: aiofile==3.12.3 / aiohappyeyeballs==2.7.1
+**Purpose.** Generated report. Opens: # Historical environment export; last committed update: 2026-11-10. / # This file is retained for provenance, not supported installation or resolution.
 
 **Use.** Read it.
+
+#### `ruff.toml`
+
+`config` · 54 lines · 4,396 B · description: **none**
+
+**Purpose.** _No description available._
+
+**Use.** Configuration; nothing to run.
 
 #### `run-log.jsonl`
 
@@ -789,13 +821,21 @@ Repository-level entry points and agent instructions. `AGENTS.md` and `CLAUDE.md
 
 **Use.** Read it.
 
+#### `tsconfig.checkjs.json`
+
+`config` · 18 lines · 338 B · description: **derived**
+
+**Purpose.** Generated JSON object, 2 keys (compilerOptions, files).
+
+**Use.** Configuration; nothing to run.
+
 ---
 
 ## docs
 
 Curated prose. `ARCHITECTURE.md` explains how the pieces fit, `TESTING.md` is the coverage contract, `SECURITY.md` covers the order-placing surface, and this file indexes everything.
 
-142 files.
+155 files.
 
 #### `docs/API.md`
 
@@ -807,9 +847,17 @@ Curated prose. `ARCHITECTURE.md` explains how the pieces fit, `TESTING.md` is th
 
 #### `docs/ARCHITECTURE.md`
 
-`doc` · 230 lines · 14,858 B · description: **extracted**
+`doc` · 280 lines · 18,016 B · description: **extracted**
 
-**Purpose.** Ten components have explicit execution boundaries. Backtester, research, the Oracle forecast service, Bot Manager and ecosystem automation do not place orders. The separately enabled Oracle TradingView worker can submit Coinbase spot orders or
+**Purpose.** Eleven components have explicit execution boundaries. Backtester, research, the Oracle forecast service, Bot Manager and ecosystem automation do not place orders. The separately enabled Oracle TradingView worker can submit Coinbase spot orders or
+
+**Use.** Read it.
+
+#### `docs/AUDIT-FILE-MANIFEST-2026-11-12.md`
+
+`doc` · 636 lines · 70,751 B · description: **extracted**
+
+**Purpose.** Version: 0.1.5 Delta: include the deterministic Textual shutdown correction and bound final failure/repair evidence. This inventory names every repository path changed in the combined audit release relative to default-branch commit 240e617a0faba0c32ed2b8873d36480b8552752a.
 
 **Use.** Read it.
 
@@ -823,9 +871,9 @@ Curated prose. `ARCHITECTURE.md` explains how the pieces fit, `TESTING.md` is th
 
 #### `docs/COMPONENTS.md`
 
-`doc` · 295 lines · 14,657 B · description: **extracted**
+`doc` · 336 lines · 17,887 B · description: **extracted**
 
-**Purpose.** What each module is for, what it exposes, and what it depends on. `docs/codebase-overview.md` is the flat file map; this page is the shape of the thing. The ten components have explicit ownership boundaries. `backtester/` supplies the
+**Purpose.** What each module is for, what it exposes, and what it depends on. `docs/codebase-overview.md` is the flat file map; this page is the shape of the thing. The eleven components have explicit ownership boundaries. `backtester/` supplies the
 
 **Use.** Read it.
 
@@ -847,7 +895,7 @@ Curated prose. `ARCHITECTURE.md` explains how the pieces fit, `TESTING.md` is th
 
 #### `docs/CONCEPTS.md`
 
-`doc` · 323 lines · 20,564 B · description: **extracted**
+`doc` · 323 lines · 20,592 B · description: **extracted**
 
 **Purpose.** python3 index/build.py all # refresh python3 index/make_concepts_doc.py # rewrite this file python3 index/search.py --concepts # list them
 
@@ -863,7 +911,7 @@ Curated prose. `ARCHITECTURE.md` explains how the pieces fit, `TESTING.md` is th
 
 #### `docs/DEVELOPMENT.md`
 
-`doc` · 220 lines · 11,008 B · description: **extracted**
+`doc` · 246 lines · 12,206 B · description: **extracted**
 
 **Purpose.** Setup, the commands you will actually use, and the environment each component needs. Backtester and research use NumPy and pandas; mongo uses pymongo; soltui uses Textual and optional macOS packaging dependencies. Liquidity has a separate web3/httpx stack.
 
@@ -911,15 +959,23 @@ Curated prose. `ARCHITECTURE.md` explains how the pieces fit, `TESTING.md` is th
 
 #### `docs/FILES.md`
 
-`doc` · 32511 lines · 1,626,105 B · description: **extracted**
+`doc` · 34929 lines · 1,715,767 B · description: **extracted**
 
 **Purpose.** Regenerate with: python3 index/build.py all # refresh the index python3 index/make_files_doc.py # rewrite this file
 
 **Use.** Read it.
 
+#### `docs/HOOK-REPAIR-2026-11-12.md`
+
+`doc` · 91 lines · 5,341 B · description: **extracted**
+
+**Purpose.** Version: 1.2.0 Delta: v1.1.0 to v1.2.0; repair metadata-only recurrence, restore Stripe declarations and record independent natural acceptance. Delta: v1.0.0 to v1.1.0; add independent loaded-daemon acceptance.
+
+**Use.** Read it.
+
 #### `docs/INSTALLATION.md`
 
-`doc` · 191 lines · 8,236 B · description: **extracted**
+`doc` · 211 lines · 9,422 B · description: **extracted**
 
 **Purpose.** The managed paper suite installs the headless manager, research runtime, Oracle and control room together. See [managed suite setup](bot-manager-managed-suite.md) for macOS/Linux/Windows comparison.
 
@@ -951,9 +1007,9 @@ Curated prose. `ARCHITECTURE.md` explains how the pieces fit, `TESTING.md` is th
 
 #### `docs/MARKET-EVENT-CAPTURE.md`
 
-`doc` · 84 lines · 4,849 B · description: **extracted**
+`doc` · 153 lines · 8,611 B · description: **extracted**
 
-**Purpose.** Version: 1.0.1 Delta: ignore unused URI default database; retain explicit capture and X509 namespaces. single Coinbase USD product. It does not sign, trade or alter the existing
+**Purpose.** Version: 1.0.3 Delta: record the completed 24 hour ZEC window and full MongoDB readback. Previous delta: preserve malformed event type labels as raw payloads while keeping status counters serializable.
 
 **Use.** Read it.
 
@@ -1005,6 +1061,46 @@ Curated prose. `ARCHITECTURE.md` explains how the pieces fit, `TESTING.md` is th
 
 **Use.** Read it.
 
+#### `docs/ORACLE-LIVE-FORECAST.md`
+
+`doc` · 116 lines · 7,443 B · description: **extracted**
+
+**Purpose.** Version: 1.0.2 Delta: v1.0.1 to v1.0.2; distinguish the preserved native archive and pending daily forward window from independent display projections. The Oracle shows a direction, indicative target price, strategy, evaluation time
+
+**Use.** Read it.
+
+#### `docs/ORACLEBOT-LAUNCH-READINESS.md`
+
+`doc` · 235 lines · 14,027 B · description: **extracted**
+
+**Purpose.** Version: 0.1.5 Delta: Record the preservation-safe local Oracle/forward repair source and retain separate hosted-engine and billing launch requirements. Updated: 2026-11-13. Source verification and recorded deployment observations are separate below.
+
+**Use.** Read it.
+
+#### `docs/ORACLEBOT-MCP-DELIVERY-2026-11-13.md`
+
+`doc` · 17 lines · 3,507 B · description: **extracted**
+
+**Purpose.** Version: 0.1.1 Delta: v0.1.0 to v0.1.1; qualify account-generation, repeat-trial, diagnostics and exact-cent corrections; hosted acceptance pending. Website0.3.0 adds wallet-bound OAuth and MCP access above the three subscription tiers. The owner corrected an accidental selection and chose finite preauthorization.
+
+**Use.** Read it.
+
+#### `docs/ORACLEBOT-OPERATIONS.md`
+
+`doc` · 197 lines · 11,926 B · description: **extracted**
+
+**Purpose.** Version: 1.2.0 Delta: Monitor the separate continuous price forecast at its saved per-coin interval. Delta: Evaluate monitored runtime and forecast freshness after each bounded probe returns.
+
+**Use.** Read it.
+
+#### `docs/REPO-HEALTH-2026-11-12.md`
+
+`doc` · 208 lines · 45,493 B · description: **extracted**
+
+**Purpose.** Version: 0.1.13 Delta: preserve the failed final CI, prove the Textual shutdown counterexample, and track the new source-bound repair gates. This is a source-qualification checkpoint. Historical attempts below retain their exact source bindings.
+
+**Use.** Read it.
+
 #### `docs/SCRIPTS.md`
 
 `doc` · 1041 lines · 52,964 B · description: **extracted**
@@ -1015,9 +1111,9 @@ Curated prose. `ARCHITECTURE.md` explains how the pieces fit, `TESTING.md` is th
 
 #### `docs/SECURITY.md`
 
-`doc` · 155 lines · 9,098 B · description: **extracted**
+`doc` · 207 lines · 12,444 B · description: **extracted**
 
-**Purpose.** This repository contains software that can move real money. Two assets matter: **signing keys** and the **Jupiter API key**. For the extension, `full-auto` is the only mode that uses its local signing key. Rules, all enforced in
+**Purpose.** This repository contains software that can move real money. Protect signing keys and venue credentials. The public website also holds wallet-account identities, server session records and payment-provider references. Each component has its
 
 **Use.** Read it.
 
@@ -1031,9 +1127,17 @@ Curated prose. `ARCHITECTURE.md` explains how the pieces fit, `TESTING.md` is th
 
 #### `docs/TESTING.md`
 
-`doc` · 307 lines · 22,732 B · description: **extracted**
+`doc` · 384 lines · 26,926 B · description: **extracted**
 
 **Purpose.** The `botmanager/` package has its own unittest suite and CI job. Install the four regular local projects into an isolated Python 3.13 environment, then run from the repository root:
+
+**Use.** Read it.
+
+#### `docs/THIRD-PARTY-NOTICES.md`
+
+`doc` · 58 lines · 2,589 B · description: **extracted**
+
+**Purpose.** Version: 0.1.0 Delta: Initial source attribution for the supported jsonalias dependency. Executor and SolTUI support solders 0.27.1, whose package metadata requires
 
 **Use.** Read it.
 
@@ -1133,6 +1237,30 @@ Curated prose. `ARCHITECTURE.md` explains how the pieces fit, `TESTING.md` is th
 
 **Use.** Read it.
 
+#### `docs/audit-2026-11-12.md`
+
+`doc` · 72 lines · 5,577 B · description: **extracted**
+
+**Purpose.** Version: 1.1.0 Delta: retain completed baseline failures, qualify isolated dependencies, and disclose supply-chain checks. Profile: default. Mode: full. Full review: true.
+
+**Use.** Read it.
+
+#### `docs/audit-checkpoint-2026-11-12.md`
+
+`doc` · 45 lines · 2,704 B · description: **extracted**
+
+**Purpose.** Version: 1.0.0 Delta: preserve verified work while the full source review continues. This is an unfinished draft checkpoint. The full code-deep-optimizer has not
+
+**Use.** Read it.
+
+#### `docs/audit-checkpoint-manifest-2026-11-12.json`
+
+`doc` · 162 lines · 5,493 B · description: **derived**
+
+**Purpose.** Generated JSON object, 9 keys (schema_version, status, source_worktree, branch, base, selected_paths...).
+
+**Use.** Read it.
+
 #### `docs/backtester-history-handoff.md`
 
 `doc` · 200 lines · 33,137 B · description: **extracted**
@@ -1143,9 +1271,9 @@ Curated prose. `ARCHITECTURE.md` explains how the pieces fit, `TESTING.md` is th
 
 #### `docs/bot-manager-0.6-operations.md`
 
-`doc` · 197 lines · 12,699 B · description: **extracted**
+`doc` · 218 lines · 13,549 B · description: **extracted**
 
-**Purpose.** Version: 1.1.0 Delta: v1.0.0 to v1.1.0; distinguish the current 0.6 candidate from the delivered historical M4 0.5 release and align the coordinated package matrix. Release status: check the versioned source, installed acceptance and delivery receipt linked from the handoff.
+**Purpose.** Version: 1.2.0 Delta: v1.1.0 to v1.2.0; add the current audit source candidate and preserve the historical 0.6 package matrix. Delta: v1.0.0 to v1.1.0; distinguish the current 0.6 candidate from the delivered historical M4 0.5 release and align the coordinated package matrix.
 
 **Use.** Read it.
 
@@ -1247,9 +1375,9 @@ Curated prose. `ARCHITECTURE.md` explains how the pieces fit, `TESTING.md` is th
 
 #### `docs/codebase-overview.md`
 
-`doc` · 452 lines · 31,864 B · description: **extracted**
+`doc` · 479 lines · 33,720 B · description: **extracted**
 
-**Purpose.** A file map for orientation, grouped by directory. Every path here is checked by Ten components with separate execution boundaries: Read `CLAUDE.md` before changing any of them; it carries the non-negotiables per
+**Purpose.** A file map for orientation, grouped by directory. Every path here is checked by Eleven components with separate execution boundaries: Read `CLAUDE.md` before changing any of them; it carries the non-negotiables per
 
 **Use.** Read it.
 
@@ -1271,7 +1399,7 @@ Curated prose. `ARCHITECTURE.md` explains how the pieces fit, `TESTING.md` is th
 
 #### `docs/external-calls.md`
 
-`doc` · 189 lines · 21,917 B · description: **extracted**
+`doc` · 206 lines · 24,073 B · description: **extracted**
 
 **Purpose.** The original inventory was reviewed on 2026-11-06. The managed-suite, Oracle and ecosystem boundary supplement below was reviewed on 2026-11-10. A call includes public HTTP/RPC, MongoDB, browser/OS services, and child processes. The tables name the transport
 
@@ -1279,7 +1407,7 @@ Curated prose. `ARCHITECTURE.md` explains how the pieces fit, `TESTING.md` is th
 
 #### `docs/high_signal_file_index.json`
 
-`doc` · 1907 lines · 57,733 B · description: **derived**
+`doc` · 2054 lines · 62,047 B · description: **derived**
 
 **Purpose.** Generated JSON object, 4 keys ($comment, repo, components, files).
 
@@ -1287,7 +1415,7 @@ Curated prose. `ARCHITECTURE.md` explains how the pieces fit, `TESTING.md` is th
 
 #### `docs/integrations-and-assumptions.md`
 
-`doc` · 113 lines · 6,835 B · description: **extracted**
+`doc` · 132 lines · 7,988 B · description: **extracted**
 
 **Purpose.** External services this repo depends on, and the assumptions baked into the code that would be wrong somewhere else. The second list is the one that bites. Full per-call detail — timeouts, retries, what is logged — is in `docs/external-calls.md`.
 
@@ -1311,7 +1439,7 @@ Curated prose. `ARCHITECTURE.md` explains how the pieces fit, `TESTING.md` is th
 
 #### `docs/logging.md`
 
-`doc` · 146 lines · 9,156 B · description: **extracted**
+`doc` · 183 lines · 11,463 B · description: **extracted**
 
 **Purpose.** What each component records, where it goes, and — the part worth reading — which paths currently record nothing. The extension's real log is **not the console**. `src/storage/store.js` defines four
 
@@ -1322,6 +1450,14 @@ Curated prose. `ARCHITECTURE.md` explains how the pieces fit, `TESTING.md` is th
 `doc` · 157 lines · 6,919 B · description: **extracted**
 
 **Purpose.** An offline verification path, followed by optional component setup. Read each execution boundary before running any live command. Ten components with different failure modes: Read `CLAUDE.md` before touching anything. It carries the non-negotiables per component and
+
+**Use.** Read it.
+
+#### `docs/operations-registry.json`
+
+`doc` · 4528 lines · 223,170 B · description: **derived**
+
+**Purpose.** Generated JSON object, 8 keys (schema_version, version, delta, generator, scope, limits...).
 
 **Use.** Read it.
 
@@ -1426,6 +1562,14 @@ Curated prose. `ARCHITECTURE.md` explains how the pieces fit, `TESTING.md` is th
 `doc` · 303 lines · 19,699 B · description: **extracted**
 
 **Purpose.** Scoping document for `/dso` (deep strategy optimizer). Written to answer one question: **what would a strategy optimizer have to do to be worth running on this repo, given what this repo has already measured?**
+
+**Use.** Read it.
+
+#### `docs/tool-inventory.json`
+
+`doc` · 640 lines · 24,241 B · description: **derived**
+
+**Purpose.** Generated JSON object, 8 keys (schema_version, version, delta, generator, scope, limits...).
 
 **Use.** Read it.
 
@@ -1717,11 +1861,11 @@ Curated prose. `ARCHITECTURE.md` explains how the pieces fit, `TESTING.md` is th
 
 #### `docs/design/soltui-v2/mockup.py`
 
-`doc` · 1171 lines · 55,693 B · description: **extracted**
+`doc` · 1249 lines · 58,921 B · description: **extracted**
 
-**Purpose.** SolTUI v2 -- a clickable layout mockup on fixture data. This is a design artefact, not a feature. It imports nothing from ``soltui/``, reads no files, opens no sockets and runs no command: every number below is a fixture lifted from committed result files (cited in ``DESIGN.md``) or made up to look like them.
+**Purpose.** SolTUI v2 -- a clickable layout mockup on fixture data. This design artefact imports nothing from ``soltui/``. Its UI uses fixture data and opens no market connections. Optional setup writes only its marked private environment and executes declared dependency installation. Every displayed number is a fixture from committed results (cited in ``DESIGN.md``) or illustrative data.
 
-**Contents.** Defines `STATUS`, `CALL`, `NIGHT`, `status()`, `call_text()`, `call_badge()`, `delta()`, `money()`, `div_bar()`, `meter()` and 30 more.
+**Contents.** Defines `_size()`, `_arguments()`, `_CLI_ARGS`, `class PrototypeSetupError`, `_bootstrap_and_reexec()`, `STATUS`, `CALL`, `NIGHT`, `status()`, `call_text()` and 30 more. Depends on `backtester`.
 
 **Use.** Read it.
 
@@ -1975,7 +2119,7 @@ The search layer over the repo itself. Generators plus three committed indexes; 
 
 #### `index/README.md`
 
-`doc` · 167 lines · 9,855 B · description: **extracted**
+`doc` · 167 lines · 9,867 B · description: **extracted**
 
 **Purpose.** A searchable index over every tracked file in this repo: what exists, which files contain a word, which files mean something like a question, and which bear on an idea. Built to answer "where is the thing that does X" without reading every file.
 
@@ -1983,7 +2127,7 @@ The search layer over the repo itself. Generators plus three committed indexes; 
 
 #### `index/build.py`
 
-`code-python` · 906 lines · 38,895 B · description: **curated**
+`code-python` · 915 lines · 39,478 B · description: **curated**
 
 **Purpose.** Builds the four indexes over every tracked file: metadata, BM25 text, concepts, and the opt-in semantic embeddings. `--check` re-hashes the tree so a stale index fails loudly.
 
@@ -1993,17 +2137,17 @@ The search layer over the repo itself. Generators plus three committed indexes; 
 
 #### `index/idle.py`
 
-`code-python` · 306 lines · 12,385 B · description: **extracted**
+`code-python` · 322 lines · 13,072 B · description: **extracted**
 
 **Purpose.** Idle index check: rebuild the semantic index in the background when it is out of date. python3 index/idle.py --status # fresh / stale / missing, and why python3 index/idle.py --once # check; start a background rebuild if warranted python3 index/idle.py --force # rebuild now, ignoring load and throttle (foreground) python3 index/idle.py --install-schedule # hourly launchd agent (macOS): runs --once
 
-**Contents.** Defines `HERE`, `OUT`, `STATE_FILE`, `LOCK_FILE`, `LOG_FILE`, `MIN_INTERVAL`, `DEFAULT_THRESHOLD`, `FORCE_INTERVAL`, `LABEL`, `DEFAULT_PYTHON` and 17 more.
+**Contents.** Defines `HERE`, `OUT`, `STATE_FILE`, `LOCK_FILE`, `LOG_FILE`, `MIN_INTERVAL`, `DEFAULT_THRESHOLD`, `FORCE_INTERVAL`, `LABEL`, `DEFAULT_PYTHON` and 18 more.
 
 **Use.** `python3 index/idle.py --help`
 
 #### `index/make_concepts_doc.py`
 
-`code-python` · 160 lines · 6,405 B · description: **extracted**
+`code-python` · 160 lines · 6,414 B · description: **extracted**
 
 **Purpose.** Generate `docs/CONCEPTS.md` — the conceptual index, as prose. python3 index/make_concepts_doc.py python3 index/make_concepts_doc.py --stdout Reads `index/CONCEPT-INDEX.json`, so run `python3 index/build.py all` first. The concepts are not an invented taxonomy.
 
@@ -2013,7 +2157,7 @@ The search layer over the repo itself. Generators plus three committed indexes; 
 
 #### `index/make_files_doc.py`
 
-`code-python` · 538 lines · 28,249 B · description: **curated**
+`code-python` · 550 lines · 29,429 B · description: **curated**
 
 **Purpose.** Generates `docs/FILES.md` from the index plus the curated table in this module, so per-file documentation is regenerable and curation is never discarded by a rebuild.
 
@@ -2023,7 +2167,7 @@ The search layer over the repo itself. Generators plus three committed indexes; 
 
 #### `index/ollama_ensure.py`
 
-`code-python` · 166 lines · 7,197 B · description: **extracted**
+`code-python` · 182 lines · 7,780 B · description: **extracted**
 
 **Purpose.** Make sure a LOCAL ollama server is reachable, starting it if it is not. python3 index/ollama_ensure.py # check, start if needed, report the model python3 index/ollama_ensure.py --pull # also pull the embedding model if absent Used by `search.py` (semantic and hybrid), `build.py semantic` and `idle.py`, so the three share one definition of "ollama is ready". Standard library only.
 
@@ -2033,7 +2177,7 @@ The search layer over the repo itself. Generators plus three committed indexes; 
 
 #### `index/search.py`
 
-`code-python` · 427 lines · 17,814 B · description: **curated**
+`code-python` · 440 lines · 18,771 B · description: **curated**
 
 **Purpose.** Query the index three ways — exact (BM25), meaning (cosine over embeddings), or concept — with rank fusion as the default because a reader rarely knows which kind of query they are typing.
 
@@ -2047,7 +2191,7 @@ The search layer over the repo itself. Generators plus three committed indexes; 
 
 The simulation engine and everything that supports it. Never gains live-trading capability, never touches the network, and costs are never optional. `core/` is the engine; `strategy_cards/` are the specs; `tests/` is the acceptance suite.
 
-1934 files.
+1956 files.
 
 #### `backtester/.gitignore`
 
@@ -2083,17 +2227,17 @@ The simulation engine and everything that supports it. Never gains live-trading 
 
 #### `backtester/botcli.py`
 
-`code-python` · 162 lines · 7,427 B · description: **extracted**
+`code-python` · 177 lines · 8,068 B · description: **extracted**
 
 **Purpose.** Bot backtest entry point: the DCA safety-order bot and the triangular-arbitrage replay. python -m backtester.botcli dca --synthetic 500 python -m backtester.botcli dca --asset SOL --interval 1h --start 2025-01-01 --take-profit-pct 2 python -m backtester.botcli triangle --snapshots ~/.config/soltui/prices/2026-11-08.jsonl.gz Separate from `backtester.cli` and `backtester.gridcli` on purpose: each b
 
-**Contents.** Defines `DISCLAIMER`, `_add_dataclass_args()`, `build_parser()`, `_dca()`, `_triangle()`, `main()`.
+**Contents.** Defines `DISCLAIMER`, `_boolean()`, `_add_dataclass_args()`, `build_parser()`, `_dca()`, `_triangle()`, `main()`.
 
 **Use.** `python3 backtester/botcli.py --help`
 
 #### `backtester/cli.py`
 
-`code-python` · 351 lines · 13,124 B · description: **extracted**
+`code-python` · 358 lines · 13,701 B · description: **extracted**
 
 **Purpose.** Command-line entry point. python -m backtester.cli --asset SOL --strategy all --out results/ Running with no arguments prints usage rather than starting a long fetch.
 
@@ -2103,7 +2247,7 @@ The simulation engine and everything that supports it. Never gains live-trading 
 
 #### `backtester/gridcli.py`
 
-`code-python` · 308 lines · 12,295 B · description: **extracted**
+`code-python` · 309 lines · 12,422 B · description: **extracted**
 
 **Purpose.** Ladder-grid backtest entry point. python -m backtester.gridcli --lower 60 --upper 90 --rungs 7 --notional-per-rung 12 --synthetic 400 Separate from `backtester.cli` on purpose. That CLI runs `Strategy` objects — one target exposure per bar — and this one runs the resting-ladder simulator, whose config surface (lower/upper/rungs/notional) and execution model are different.
 
@@ -2113,7 +2257,7 @@ The simulation engine and everything that supports it. Never gains live-trading 
 
 #### `backtester/paircli.py`
 
-`code-python` · 238 lines · 9,682 B · description: **extracted**
+`code-python` · 254 lines · 10,571 B · description: **extracted**
 
 **Purpose.** Peer-relative-value backtest entry point. python -m backtester.paircli --asset SOL --peer BTC --interval 1d --split 0.7 Separate from `backtester.cli` because this strategy needs **two** price series, and the strategy registry builds from zero arguments.
 
@@ -2137,9 +2281,19 @@ The simulation engine and everything that supports it. Never gains live-trading 
 
 **Use.** `python3 -m pip install -r backtester/requirements.txt`.
 
+#### `backtester/run.py`
+
+`code-python` · 157 lines · 8,378 B · description: **extracted**
+
+**Purpose.** Run an explicit backtester tool in its own repository-local environment.
+
+**Contents.** Defines `TOOLS`, `OWNER`, `REQUIRED_MODULES`, `class PrerequisiteError`, `_python()`, `_repair_command()`, `_missing_modules()`, `ensure_environment()`, `main()`.
+
+**Use.** `python3 backtester/run.py --help`
+
 #### `backtester/voltycli.py`
 
-`code-python` · 188 lines · 10,792 B · description: **extracted**
+`code-python` · 200 lines · 11,381 B · description: **extracted**
 
 **Purpose.** Costed ZEC Volty stop-entry sweep and five expanding walk-forward tests. Fetching is separate: this command reads observed local CSVs only. A fresh virtual book starts at each evaluation boundary; preceding bars warm stops.
 
@@ -2159,11 +2313,11 @@ The simulation engine and everything that supports it. Never gains live-trading 
 
 #### `backtester/core/archive_price.py`
 
-`code-python` · 154 lines · 5,934 B · description: **extracted**
+`code-python` · 170 lines · 6,560 B · description: **extracted**
 
 **Purpose.** Append-only spot-price archiver, for series nobody publishes history for. python -m backtester.core.archive_price --mint JLP --out data/JLP_spot.csv Some cards are blocked on data that **cannot be fetched retroactively**. JLP is the clearest case: Jupiter's Price API serves its current price keyless, no exchange this repo can reach lists a JLP pair, and there is no charts endpoint.
 
-**Contents.** Defines `PRICE_URL`, `KNOWN_MINTS`, `HEADER`, `class ArchiveError`, `fetch_spot()`, `append_observation()`, `count_rows()`, `main()`.
+**Contents.** Defines `PRICE_URL`, `KNOWN_MINTS`, `HEADER`, `class ArchiveError`, `_validated_price()`, `fetch_spot()`, `append_observation()`, `count_rows()`, `main()`.
 
 **Use.** `python3 backtester/core/archive_price.py --help`
 
@@ -2199,7 +2353,7 @@ The simulation engine and everything that supports it. Never gains live-trading 
 
 #### `backtester/core/compound.py`
 
-`code-python` · 488 lines · 23,425 B · description: **extracted**
+`code-python` · 492 lines · 23,861 B · description: **extracted**
 
 **Purpose.** Backtest a scorecard configuration on 5m bars: direction accuracy and net P&L, IS vs OOS. from backtester.core.compound import run_compound, load_bars_5m report = run_compound("SOL", config) Two different questions, answered separately because they disagree at 5m: * **Does the call predict the next bar?** `forecast_stats` scores every bar's call against sign(close[t+1] - close[t]).
 
@@ -2207,29 +2361,39 @@ The simulation engine and everything that supports it. Never gains live-trading 
 
 **Use.** `import backtester.core.compound`
 
+#### `backtester/core/continuation.py`
+
+`code-python` · 54 lines · 2,364 B · description: **extracted**
+
+**Purpose.** Deterministic configuration identity for newly produced continuation state. Bindings describe values and intrabar content, never Python object addresses. The version prefix intentionally refuses legacy repr-based checkpoints.
+
+**Contents.** Defines `_value()`, `configuration_binding()`.
+
+**Use.** `import backtester.core.continuation`
+
 #### `backtester/core/cpcv.py`
 
-`code-python` · 334 lines · 13,051 B · description: **curated**
+`code-python` · 359 lines · 14,160 B · description: **curated**
 
 **Purpose.** Combinatorial purged cross-validation and PBO. Produces a distribution of out-of-sample paths instead of one split, and measures whether the in-sample ranking predicts anything.
 
-**Contents.** Defines `class BlockResult`, `class CpcvResult`, `make_groups()`, `evaluate_block()`, `_sharpe()`, `cpcv_evaluate()`, `pbo_cscv()`.
+**Contents.** Defines `class BlockResult`, `class CpcvResult`, `make_groups()`, `evaluate_block()`, `_sharpe()`, `cpcv_evaluate()`, `_combination_at()`, `pbo_cscv()`.
 
 **Use.** `from backtester.core.cpcv import cpcv_evaluate, pbo_cscv`. Note that a configuration below `min_total_trades` is marked `insufficient` and printed DROPPED but still returns a full path count.
 
 #### `backtester/core/data.py`
 
-`code-python` · 359 lines · 14,279 B · description: **curated**
+`code-python` · 368 lines · 14,728 B · description: **curated**
 
 **Purpose.** Loading and validating bars. Refuses gaps rather than filling them, resolves columns by name, and requires monotone de-duplicated timestamps — a forward-filled gap flatters every volatility and reversion statistic computed after it.
 
-**Contents.** Defines `resolve_data_dir()`, `class DataValidationError`, `class DataLoader`, `validate_bars()`, `_slice_dates()`, `checksum_frame()`, `class CsvLoader`, `class SyntheticLoader`, `frame_to_arrays()`, `class SnapshotLoader`.
+**Contents.** Defines `resolve_data_dir()`, `class DataValidationError`, `describe_data_error()`, `class DataLoader`, `validate_bars()`, `_slice_dates()`, `checksum_frame()`, `class CsvLoader`, `class SyntheticLoader`, `frame_to_arrays()` and 1 more.
 
 **Use.** `CsvLoader(path, allow_gaps=False).load(asset, start, end, interval)`.
 
 #### `backtester/core/dcasim.py`
 
-`code-python` · 538 lines · 24,702 B · description: **extracted**
+`code-python` · 553 lines · 25,784 B · description: **extracted**
 
 **Purpose.** DCA (dollar-cost averaging) safety-order bot simulator. This is the "DCA bot" of the 3Commas / Pionex kind, not the periodic-purchase `dca` exposure strategy in `strategies/textbook.py`. A deal works like this: 1. a **base order** buys at market; 2.
 
@@ -2239,7 +2403,7 @@ The simulation engine and everything that supports it. Never gains live-trading 
 
 #### `backtester/core/deflated_sharpe.py`
 
-`code-python` · 245 lines · 10,129 B · description: **extracted**
+`code-python` · 264 lines · 11,210 B · description: **extracted**
 
 **Purpose.** Deflated Sharpe Ratio: the haircut a Sharpe owes to the size of the search. PBO answers "is this leaderboard informative?" The Deflated Sharpe Ratio answers a different question that PBO leaves open: **given that N configurations were tried, how much of this particular Sharpe is simply the expected maximum of N draws?** Comparing a best-of-N Sharpe against zero is the mistake.
 
@@ -2249,7 +2413,7 @@ The simulation engine and everything that supports it. Never gains live-trading 
 
 #### `backtester/core/engine.py`
 
-`code-python` · 959 lines · 36,987 B · description: **curated**
+`code-python` · 980 lines · 38,402 B · description: **curated**
 
 **Purpose.** The event loop: maps a strategy's target exposure to fills, applies costs exactly once, and marks the book every bar. `fill_delay=1` is what keeps a signal at bar t from being filled at bar t.
 
@@ -2259,7 +2423,7 @@ The simulation engine and everything that supports it. Never gains live-trading 
 
 #### `backtester/core/fetch.py`
 
-`code-python` · 222 lines · 7,788 B · description: **extracted**
+`code-python` · 225 lines · 8,067 B · description: **extracted**
 
 **Purpose.** Explicit historical data fetch from the Coinbase Exchange public API. Never called implicitly by a backtest. Run it once to populate the local CSV cache, then every run and every test reads from disk. Two hazards this module exists to handle: 1. Coinbase returns rows as [time, low, high, open, close, volume] -- NOT in OHLCV order.
 
@@ -2269,27 +2433,27 @@ The simulation engine and everything that supports it. Never gains live-trading 
 
 #### `backtester/core/fetch_minutes.py`
 
-`code-python` · 752 lines · 34,579 B · description: **extracted**
+`code-python` · 765 lines · 35,104 B · description: **extracted**
 
 **Purpose.** Resumable, parallel 1-minute candle fetch with an honest coverage manifest. python3 -m backtester.core.fetch_minutes --asset BTC --years 5 python3 -m backtester.core.fetch_minutes --all --years 5 --workers 6 ## Why this is not `fetch.py` `fetch_coinbase` chains a cursor: each request's window start comes from the previous response's oldest bar.
 
-**Contents.** Defines `MINUTE`, `WINDOW_SECONDS`, `REQUEST_TIMEOUT`, `REQUEST_RETRIES`, `RATE_LIMIT_PER_SECOND`, `MINUTE_ASSETS`, `DATA`, `MANIFEST`, `class RateLimiter`, `_retry_after()` and 23 more.
+**Contents.** Defines `MINUTE`, `WINDOW_SECONDS`, `REQUEST_TIMEOUT`, `REQUEST_RETRIES`, `RATE_LIMIT_PER_SECOND`, `MINUTE_ASSETS`, `DATA`, `MANIFEST`, `class RateLimiter`, `_retry_after()` and 24 more.
 
 **Use.** `python3 backtester/core/fetch_minutes.py --help`
 
 #### `backtester/core/fetch_minutes_alt.py`
 
-`code-python` · 326 lines · 14,559 B · description: **extracted**
+`code-python` · 361 lines · 16,047 B · description: **extracted**
 
 **Purpose.** 1-minute candles for coins Coinbase does not list, from the venue that does. python3 -m backtester.core.fetch_minutes_alt --plan python3 -m backtester.core.fetch_minutes_alt --assets TRX,LEO --years 7 Like `fetch.py` and `fetch_minutes.py`, this is an explicit network step that writes the local cache; no backtest calls it.
 
-**Contents.** Defines `USER_AGENT`, `EMPTY_PAGES_TO_STOP`, `SANITY_FAIL_LIMIT`, `class AltFetchError`, `class Venue`, `_okx_rows()`, `_kucoin_rows()`, `_bitget_rows()`, `_whitebit_rows()`, `http_json()` and 7 more.
+**Contents.** Defines `USER_AGENT`, `EMPTY_PAGES_TO_STOP`, `SANITY_FAIL_LIMIT`, `class AltFetchError`, `class Venue`, `_parser_boundary()`, `_provider_rows()`, `_okx_rows()`, `_kucoin_rows()`, `_bitget_rows()` and 9 more.
 
 **Use.** `python3 backtester/core/fetch_minutes_alt.py --help`
 
 #### `backtester/core/funding.py`
 
-`code-python` · 492 lines · 19,640 B · description: **extracted**
+`code-python` · 528 lines · 22,685 B · description: **extracted**
 
 **Purpose.** Explicit historical **funding-rate** fetch, for the carry question `perps.py` cannot answer. python3 -m backtester.core.funding --plan-only python3 -m backtester.core.funding --assets BTC,ETH,SOL,DOGE,ZEC python3 -m backtester.core.funding --assets BTC --cross-check-okx Never called implicitly by a backtest.
 
@@ -2299,7 +2463,7 @@ The simulation engine and everything that supports it. Never gains live-trading 
 
 #### `backtester/core/gridsim.py`
 
-`code-python` · 933 lines · 39,190 B · description: **extracted**
+`code-python` · 946 lines · 40,144 B · description: **extracted**
 
 **Purpose.** Resting-ladder grid simulator — the strategy the extension actually trades. This is deliberately NOT a `Strategy` in the `core.engine` sense. That protocol maps history to one target exposure filled at a bar boundary, and a grid's entire edge comes from **resting limit orders that fill intrabar at known prices**.
 
@@ -2309,7 +2473,7 @@ The simulation engine and everything that supports it. Never gains live-trading 
 
 #### `backtester/core/history_store.py`
 
-`code-python` · 165 lines · 8,200 B · description: **extracted**
+`code-python` · 168 lines · 8,402 B · description: **extracted**
 
 **Purpose.** Immutable, validated offline OHLCV snapshots backed by SQLite. Source labels are supplied by the operator; they are not independently verified. Import leaves the original file untouched. The caller owns independent backups.
 
@@ -2329,7 +2493,7 @@ The simulation engine and everything that supports it. Never gains live-trading 
 
 #### `backtester/core/kucoin_history.py`
 
-`code-python` · 286 lines · 14,396 B · description: **extracted**
+`code-python` · 291 lines · 14,630 B · description: **extracted**
 
 **Purpose.** Resumable, source-preserving KuCoin spot candle collection. Each completed time window commits its raw response and normalized observations in one SQLite transaction. Missing candles remain missing; no prices are invented. Only fully closed UTC minutes are requested. This module never trades.
 
@@ -2347,6 +2511,16 @@ The simulation engine and everything that supports it. Never gains live-trading 
 
 **Use.** `import backtester.core.leverage`
 
+#### `backtester/core/market_diagnostics.py`
+
+`code-python` · 23 lines · 1,046 B · description: **extracted**
+
+**Purpose.** Safe request events; application logging configuration owns persistence.
+
+**Contents.** Defines `_LOGGER`, `_OPERATIONS`, `market_request()`.
+
+**Use.** `import backtester.core.market_diagnostics`
+
 #### `backtester/core/metrics.py`
 
 `code-python` · 275 lines · 9,942 B · description: **extracted**
@@ -2359,11 +2533,11 @@ The simulation engine and everything that supports it. Never gains live-trading 
 
 #### `backtester/core/pairs.py`
 
-`code-python` · 173 lines · 7,071 B · description: **extracted**
+`code-python` · 188 lines · 7,894 B · description: **extracted**
 
 **Purpose.** Peer-relative-value reversion: trade a cointegrated spread, not a raw price. One mechanism serving two cards. `pairs_cointegration.md` runs it against BTC or ETH, which this repo can fetch keyless; `jlp_vs_sol_relative_value.md` runs it against JLP, whose price history nobody publishes — the code is identical and only the peer series differs.
 
-**Contents.** Defines `align_peer()`, `class PeerSpreadReversion`.
+**Contents.** Defines `_aligned_timestamps()`, `align_peer()`, `class PeerSpreadReversion`.
 
 **Use.** `import backtester.core.pairs`
 
@@ -2399,7 +2573,7 @@ The simulation engine and everything that supports it. Never gains live-trading 
 
 #### `backtester/core/run_archive.py`
 
-`code-python` · 183 lines · 8,119 B · description: **extracted**
+`code-python` · 184 lines · 8,230 B · description: **extracted**
 
 **Purpose.** Transactional archive for completed backtester artifact bundles. A manifest proves byte consistency, not the accuracy or completeness of a model. This module does not execute strategies or fetch market data.
 
@@ -2409,7 +2583,7 @@ The simulation engine and everything that supports it. Never gains live-trading 
 
 #### `backtester/core/scorecard.py`
 
-`code-python` · 2032 lines · 102,203 B · description: **extracted**
+`code-python` · 2068 lines · 104,605 B · description: **extracted**
 
 **Purpose.** Compound five-minute scorecard: score each metric, aggregate into an UP / DOWN / FLAT call. from backtester.core.scorecard import default_config, evaluate, explain, Bars Every component maps visible history to a score in [-1, 1] (+1 = the metric says the next bar closes higher, -1 = lower, 0 = no opinion, NaN = undefined here). Gates map history to "blocked" (no trade, whatever the score says).
 
@@ -2429,17 +2603,17 @@ The simulation engine and everything that supports it. Never gains live-trading 
 
 #### `backtester/core/strategy_cards.py`
 
-`code-python` · 668 lines · 27,707 B · description: **extracted**
+`code-python` · 709 lines · 29,831 B · description: **extracted**
 
 **Purpose.** Strategy cards: one self-contained file per strategy or signal. A card is a Markdown file with YAML-subset frontmatter under `backtester/strategy_cards/`.
 
-**Contents.** Defines `CARD_DIR`, `FRONTMATTER_FENCE`, `STATUSES`, `KINDS`, `RUNNERS`, `REQUIRED_FIELDS`, `SUCCESS_LIKELIHOODS`, `SUCCESS_BASES`, `HORIZONS`, `ALLOWED_FIELDS` and 13 more.
+**Contents.** Defines `CARD_DIR`, `FRONTMATTER_FENCE`, `STATUSES`, `KINDS`, `RUNNERS`, `REQUIRED_FIELDS`, `SUCCESS_LIKELIHOODS`, `SUCCESS_BASES`, `HORIZONS`, `ALLOWED_FIELDS` and 15 more.
 
-**Use.** `import backtester.core.strategy_cards`
+**Use.** `python3 backtester/core/strategy_cards.py --help`
 
 #### `backtester/core/ticks.py`
 
-`code-python` · 316 lines · 13,073 B · description: **extracted**
+`code-python` · 341 lines · 14,616 B · description: **extracted**
 
 **Purpose.** Explicit trade-tick fetch from the Coinbase Exchange public API. Sibling of fetch.py, and deliberately separate from it. Candles and ticks are different contracts: a tick frame is not a bar frame and must never be loaded as one, so nothing here writes into the `data/<ASSET>_<interval>.csv` namespace that CsvLoader reads. Ticks land under `data/ticks/`.
 
@@ -2449,7 +2623,7 @@ The simulation engine and everything that supports it. Never gains live-trading 
 
 #### `backtester/core/trianglesim.py`
 
-`code-python` · 416 lines · 18,203 B · description: **extracted**
+`code-python` · 435 lines · 19,308 B · description: **extracted**
 
 **Purpose.** Triangular-arbitrage event replay over top-of-book quote snapshots. `guides/triangular_arbitrage.md` specifies the mechanism; this module is the event replay it calls for. A triangle is USD plus two coins A and B with three markets: `A-USD`, `B-USD` and the cross `A-B` (quoted in B per A).
 
@@ -2479,7 +2653,7 @@ The simulation engine and everything that supports it. Never gains live-trading 
 
 #### `backtester/core/universe.py`
 
-`code-python` · 324 lines · 13,442 B · description: **extracted**
+`code-python` · 333 lines · 13,875 B · description: **extracted**
 
 **Purpose.** Fetch a multi-asset universe into the local CSV cache. `fetch.py` fetches one product. This fetches a named set of them and, more importantly, is honest about the set it could not fetch. The reason that matters more than the loop: **the venue does not list every asset in the universe.** The 2026-08-04 screen is in `research/TOP_COINS.md`.
 
@@ -2499,7 +2673,7 @@ The simulation engine and everything that supports it. Never gains live-trading 
 
 #### `backtester/core/zec_ensemble.py`
 
-`code-python` · 408 lines · 15,256 B · description: **extracted**
+`code-python` · 460 lines · 18,115 B · description: **extracted**
 
 **Purpose.** Serializable causal ZEC ensemble policies shared by research and paper workers. This module only computes exposures. It has no network or order-submission path. Member policies use the canonical registry. Stateful members are advanced from all prior bars, including before the ensemble's longest warmup completes.
 
@@ -2551,7 +2725,7 @@ The simulation engine and everything that supports it. Never gains live-trading 
 
 #### `backtester/core/strategies/composite.py`
 
-`code-python` · 72 lines · 2,875 B · description: **extracted**
+`code-python` · 78 lines · 3,261 B · description: **extracted**
 
 **Purpose.** Combine several signals into one strategy. This is what makes pair and multi-signal testing possible without writing a bespoke class per combination. Four combination modes, because the choice materially changes what is being tested: * ``all`` -- min of member exposures. Every member must agree. Cuts trade count hard and raises precision at the cost of recall.
 
@@ -20893,6 +21067,16 @@ The simulation engine and everything that supports it. Never gains live-trading 
 
 **Use.** `python3 -m pytest backtester/tests/test_advanced_strategies.py -q`
 
+#### `backtester/tests/test_alternate_fetch_boundaries.py`
+
+`test` · 45 lines · 2,283 B · description: **extracted**
+
+**Purpose.** Malformed provider pages and worker crashes must remain visible failures.
+
+**Contents.** Defines `class AlternateBoundariesTests`. Depends on `backtester`.
+
+**Use.** `python3 -m pytest backtester/tests/test_alternate_fetch_boundaries.py -q`
+
 #### `backtester/tests/test_analysis_regressions.py`
 
 `test` · 270 lines · 16,736 B · description: **extracted**
@@ -20912,6 +21096,16 @@ The simulation engine and everything that supports it. Never gains live-trading 
 **Contents.** Defines `class ArchiveIntegrationTests`. Depends on `backtester`.
 
 **Use.** `python3 -m pytest backtester/tests/test_archive_integration.py -q`
+
+#### `backtester/tests/test_archive_price_audit.py`
+
+`test` · 53 lines · 2,288 B · description: **extracted**
+
+**Purpose.** Unusable provider observations cannot poison the append-only spot archive.
+
+**Contents.** Defines `class ArchivePriceTests`. Depends on `backtester`.
+
+**Use.** `python3 -m pytest backtester/tests/test_archive_price_audit.py -q`
 
 #### `backtester/tests/test_botcli.py`
 
@@ -20943,6 +21137,26 @@ The simulation engine and everything that supports it. Never gains live-trading 
 
 **Use.** `python3 -m pytest backtester/tests/test_candle_gap_audit.py -q`
 
+#### `backtester/tests/test_card_inputs_audit.py`
+
+`test` · 35 lines · 1,443 B · description: **extracted**
+
+**Purpose.** Declared card schemas apply equally to defaults and per-horizon presets.
+
+**Contents.** Defines `class CardInputTests`. Depends on `backtester`.
+
+**Use.** `python3 -m pytest backtester/tests/test_card_inputs_audit.py -q`
+
+#### `backtester/tests/test_cli_boundaries_audit.py`
+
+`test` · 94 lines · 4,891 B · description: **extracted**
+
+**Purpose.** CLI failures preserve safe errors, source selection and explicit seed values.
+
+**Contents.** Defines `class CliBoundariesTests`. Depends on `backtester`.
+
+**Use.** `python3 -m pytest backtester/tests/test_cli_boundaries_audit.py -q`
+
 #### `backtester/tests/test_coinfit.py`
 
 `test` · 156 lines · 5,511 B · description: **extracted**
@@ -20963,9 +21177,29 @@ The simulation engine and everything that supports it. Never gains live-trading 
 
 **Use.** `python3 -m pytest backtester/tests/test_compound_backtest.py -q`
 
+#### `backtester/tests/test_continuation_identity_regressions.py`
+
+`test` · 137 lines · 6,806 B · description: **extracted**
+
+**Purpose.** Continuation must retain causal policy state and actual intrabar data identity.
+
+**Contents.** Defines `bars()`, `cut()`, `class Holding`, `class ContinuationIdentityTests`. Depends on `backtester`.
+
+**Use.** `python3 -m pytest backtester/tests/test_continuation_identity_regressions.py -q`
+
+#### `backtester/tests/test_continuation_metrics_audit.py`
+
+`test` · 144 lines · 7,881 B · description: **extracted**
+
+**Purpose.** Metric windows retain current performance and every modeled boundary cost.
+
+**Contents.** Defines `class Holding`, `bars()`, `class ContinuationMetricTests`, `class CpcvCostBoundaryTests`, `class BotContinuationMetricTests`. Depends on `backtester`.
+
+**Use.** `python3 -m pytest backtester/tests/test_continuation_metrics_audit.py -q`
+
 #### `backtester/tests/test_cpcv.py`
 
-`test` · 279 lines · 12,378 B · description: **extracted**
+`test` · 299 lines · 13,368 B · description: **extracted**
 
 **Purpose.** Known-answer tests for combinatorial purged CV and PBO. The PBO cases are constructed so the correct answer is known by design: a signal set where the in-sample winner always wins out-of-sample must yield PBO ~ 0, and one where in-sample rank carries no information must yield PBO ~ 0.5. Without those two anchors, a PBO implementation can be arbitrarily wrong and still look plausible.
 
@@ -20975,13 +21209,23 @@ The simulation engine and everything that supports it. Never gains live-trading 
 
 #### `backtester/tests/test_cross_asset_cpcv.py`
 
-`test` · 1198 lines · 58,911 B · description: **extracted**
+`test` · 1203 lines · 59,198 B · description: **extracted**
 
 **Purpose.** The cross-asset CPCV script's pure parts. No test here loads a price file, runs the engine, or writes anywhere under `research/results/`. That is not tidiness -- it is what makes these tests runnable at all, and safe to run: * `data/` is gitignored, so a test that opened `data/BTC_1d.csv` would pass on a development machine and fail in CI for a reason unrelated to the code.
 
 **Contents.** Defines `REPO`, `SHARPES`, `RETURNS`, `TRADES`, `USABLE`, `N_PATHS`, `cpcv_result()`, `class PatchMixin`, `class Top5SpecTests`, `class MakeTop5StrategyTests` and 7 more. Depends on `backtester`, `research`.
 
 **Use.** `python3 -m pytest backtester/tests/test_cross_asset_cpcv.py -q`
+
+#### `backtester/tests/test_dca_cpcv_blind_regressions.py`
+
+`test` · 100 lines · 3,491 B · description: **extracted**
+
+**Purpose.** Synthetic known answers from the independent backtester acceptance gate.
+
+**Contents.** Defines `market_bars()`, `class DcaObservedOpenTests`, `class CscvTiedRankTests`. Depends on `backtester`.
+
+**Use.** `python3 -m pytest backtester/tests/test_dca_cpcv_blind_regressions.py -q`
 
 #### `backtester/tests/test_dcasim.py`
 
@@ -21015,7 +21259,7 @@ The simulation engine and everything that supports it. Never gains live-trading 
 
 #### `backtester/tests/test_deflated_sharpe.py`
 
-`test` · 194 lines · 9,192 B · description: **extracted**
+`test` · 209 lines · 10,048 B · description: **extracted**
 
 **Purpose.** Tests for the Deflated Sharpe Ratio. The first test is the one that matters: it pins the implementation to a figure the source paper states in prose, so the formula cannot drift into something plausible but wrong. Bailey & López de Prado report that at N=1,000 independent trials with unit cross-sectional variance and zero mean, the expected maximum Sharpe is **3.26**.
 
@@ -21043,6 +21287,26 @@ The simulation engine and everything that supports it. Never gains live-trading 
 
 **Use.** `python3 -m pytest backtester/tests/test_engine_audit.py -q`
 
+#### `backtester/tests/test_ensemble_state_audit.py`
+
+`test` · 48 lines · 1,969 B · description: **extracted**
+
+**Purpose.** Policy normalization and rejected checkpoint restore preserve exposure meaning.
+
+**Contents.** Defines `config()`, `class EnsembleStateTests`. Depends on `backtester`.
+
+**Use.** `python3 -m pytest backtester/tests/test_ensemble_state_audit.py -q`
+
+#### `backtester/tests/test_evidence_inputs_audit.py`
+
+`test` · 116 lines · 6,499 B · description: **extracted**
+
+**Purpose.** Invalid market observations never become complete replay or funding evidence.
+
+**Contents.** Defines `class EvidenceInputTests`, `class OfflineCacheTests`. Depends on `backtester`.
+
+**Use.** `python3 -m pytest backtester/tests/test_evidence_inputs_audit.py -q`
+
 #### `backtester/tests/test_fetch_minutes.py`
 
 `test` · 387 lines · 17,630 B · description: **extracted**
@@ -21062,6 +21326,16 @@ The simulation engine and everything that supports it. Never gains live-trading 
 **Contents.** Defines `NOW`, `class ParserTests`, `class WalkTests`, `class ManifestTests`. Depends on `backtester`.
 
 **Use.** `python3 -m pytest backtester/tests/test_fetch_minutes_alt.py -q`
+
+#### `backtester/tests/test_fetch_validation_audit.py`
+
+`test` · 72 lines · 2,957 B · description: **extracted**
+
+**Purpose.** The gap opt-in cannot authorize malformed bars or replace a good cache.
+
+**Contents.** Defines `_bars()`, `class FetchValidationTests`. Depends on `backtester`.
+
+**Use.** `python3 -m pytest backtester/tests/test_fetch_validation_audit.py -q`
 
 #### `backtester/tests/test_full_suite.py`
 
@@ -21115,7 +21389,7 @@ The simulation engine and everything that supports it. Never gains live-trading 
 
 #### `backtester/tests/test_index.py`
 
-`test` · 267 lines · 12,355 B · description: **extracted**
+`test` · 267 lines · 12,387 B · description: **extracted**
 
 **Purpose.** The repository index: isolation, correctness, and the staleness gate. No test here builds the real index or calls the network. `index/build.py`'s `semantic` subcommand is the only thing in this repo that opens a socket, and it talks to localhost ollama; a test that exercised it would be neither deterministic nor available in CI. The load-bearing test is the first one.
 
@@ -21123,9 +21397,19 @@ The simulation engine and everything that supports it. Never gains live-trading 
 
 **Use.** `python3 -m pytest backtester/tests/test_index.py -q`
 
+#### `backtester/tests/test_index_runtime_guards.py`
+
+`test` · 138 lines · 7,560 B · description: **extracted**
+
+**Purpose.** Offline index regressions. All model, HTTP and subprocess work is mocked.
+
+**Contents.** Defines `class IndexRuntimeGuards`.
+
+**Use.** `python3 -m pytest backtester/tests/test_index_runtime_guards.py -q`
+
 #### `backtester/tests/test_index_search_tooling.py`
 
-`test` · 378 lines · 19,385 B · description: **extracted**
+`test` · 384 lines · 19,702 B · description: **extracted**
 
 **Purpose.** The index helper scripts: ollama auto-start, the idle rebuild decision, and library search. No test touches a real ollama or embeds anything. Servers, clocks, load and processes are injected or patched, so these are deterministic and offline.
 
@@ -21135,7 +21419,7 @@ The simulation engine and everything that supports it. Never gains live-trading 
 
 #### `backtester/tests/test_indicators.py`
 
-`test` · 329 lines · 14,341 B · description: **extracted**
+`test` · 346 lines · 15,245 B · description: **extracted**
 
 **Purpose.** Known-answer tests for indicators, strategies, and the composite combiner. Indicator values here are hand-computed, not captured from a previous run, so a regression points at the arithmetic rather than at "something changed".
 
@@ -21173,6 +21457,26 @@ The simulation engine and everything that supports it. Never gains live-trading 
 
 **Use.** `python3 -m pytest backtester/tests/test_kucoin_history.py -q`
 
+#### `backtester/tests/test_market_request_logging.py`
+
+`test` · 53 lines · 2,909 B · description: **extracted**
+
+**Purpose.** Request diagnostics stay useful without copying private provider content.
+
+**Contents.** Defines `class MarketRequestLoggingTests`. Depends on `backtester`.
+
+**Use.** `python3 -m pytest backtester/tests/test_market_request_logging.py -q`
+
+#### `backtester/tests/test_minute_progress_boundaries.py`
+
+`test` · 48 lines · 2,076 B · description: **extracted**
+
+**Purpose.** Progress cache fallbacks and long-plan coverage must remain bounded.
+
+**Contents.** Defines `class ProgressBoundariesTests`. Depends on `backtester`.
+
+**Use.** `python3 -m pytest backtester/tests/test_minute_progress_boundaries.py -q`
+
 #### `backtester/tests/test_open_prefix.py`
 
 `test` · 81 lines · 2,688 B · description: **extracted**
@@ -21183,9 +21487,29 @@ The simulation engine and everything that supports it. Never gains live-trading 
 
 **Use.** `python3 -m pytest backtester/tests/test_open_prefix.py -q`
 
+#### `backtester/tests/test_operation_inventories.py`
+
+`test` · 133 lines · 6,878 B · description: **extracted**
+
+**Purpose.** Inventory discovery is static and drift checks cannot execute or change tools.
+
+**Contents.** Defines `PYTHON_REGISTRY`, `JAVASCRIPT_REGISTRY`, `class InventoryTests`.
+
+**Use.** `python3 -m pytest backtester/tests/test_operation_inventories.py -q`
+
+#### `backtester/tests/test_optional_tool_environment.py`
+
+`test` · 116 lines · 6,687 B · description: **extracted**
+
+**Purpose.** Optional design tools provision only an explicitly owned private environment.
+
+**Contents.** Defines `class OptionalEnvironmentTests`. Depends on `backtester`.
+
+**Use.** `python3 -m pytest backtester/tests/test_optional_tool_environment.py -q`
+
 #### `backtester/tests/test_pairs.py`
 
-`test` · 204 lines · 9,082 B · description: **extracted**
+`test` · 211 lines · 9,585 B · description: **extracted**
 
 **Purpose.** Tests for cointegration and peer-relative-value reversion. The statistics are checked against series whose answer is known by construction — white noise is stationary, a random walk is not, a synthetic pair is cointegrated and two independent walks are not.
 
@@ -21232,6 +21556,16 @@ The simulation engine and everything that supports it. Never gains live-trading 
 **Contents.** Defines `synthetic()`, `aux_for()`, `slice_aux()`, `same()`, `class PrefixInvarianceTests`, `class ConfigTests`, `only()`, `class AggregationTests`, `class AdaptiveTests`, `class TuningTests` and 3 more. Depends on `backtester`.
 
 **Use.** `python3 -m pytest backtester/tests/test_scorecard.py -q`
+
+#### `backtester/tests/test_scorecard_inputs_audit.py`
+
+`test` · 62 lines · 3,168 B · description: **extracted**
+
+**Purpose.** Unknown scorecard inputs stay unavailable and enabled gates fail closed.
+
+**Contents.** Defines `class ScorecardInputTests`. Depends on `backtester`.
+
+**Use.** `python3 -m pytest backtester/tests/test_scorecard_inputs_audit.py -q`
 
 #### `backtester/tests/test_segmented_history.py`
 
@@ -21335,7 +21669,7 @@ The simulation engine and everything that supports it. Never gains live-trading 
 
 #### `backtester/tests/test_tick_backfill.py`
 
-`test` · 146 lines · 6,174 B · description: **extracted**
+`test` · 150 lines · 6,519 B · description: **extracted**
 
 **Purpose.** Incremental aggregation and checkpoint round-trip in `research/tick_backfill.py`. The backfill walks a month of trades BACKWARD in pages, folding each page into a running per-bar aggregate. That means a bar's opening trade usually arrives *after* its closing trade, and often in a different page entirely.
 
@@ -21352,6 +21686,26 @@ The simulation engine and everything that supports it. Never gains live-trading 
 **Contents.** Defines `RAW`, `class TestParseTrades`, `class TestTradesToBars`, `class TestTruncationIsNotWritableBySilence`. Depends on `backtester`.
 
 **Use.** `python3 -m pytest backtester/tests/test_ticks.py -q`
+
+#### `backtester/tests/test_tool_launcher.py`
+
+`test` · 119 lines · 6,391 B · description: **extracted**
+
+**Purpose.** The canonical launcher provisions only a private marked environment.
+
+**Contents.** Defines `class ToolLauncherTests`. Depends on `backtester`.
+
+**Use.** `python3 -m pytest backtester/tests/test_tool_launcher.py -q`
+
+#### `backtester/tests/test_triangle_input_guards.py`
+
+`test` · 58 lines · 2,565 B · description: **extracted**
+
+**Purpose.** Invalid market evidence cannot become a simulated execution or poison time.
+
+**Contents.** Defines `TRIANGLE`, `_book()`, `class TriangleInputTests`. Depends on `backtester`.
+
+**Use.** `python3 -m pytest backtester/tests/test_triangle_input_guards.py -q`
 
 #### `backtester/tests/test_trianglesim.py`
 
@@ -21383,13 +21737,23 @@ The simulation engine and everything that supports it. Never gains live-trading 
 
 **Use.** `python3 -m pytest backtester/tests/test_universe.py -q`
 
+#### `backtester/tests/test_volty_data_binding.py`
+
+`test` · 66 lines · 2,894 B · description: **extracted**
+
+**Purpose.** Preparation binds exact source bytes without executing the strategy study.
+
+**Contents.** Defines `class VoltyInputTests`. Depends on `backtester`.
+
+**Use.** `python3 -m pytest backtester/tests/test_volty_data_binding.py -q`
+
 ---
 
 ## research
 
 Drivers that produce the numbers, and the write-ups that quote them. Everything here is reproducible from a committed script — the two occasions that was not true both produced a wrong published figure.
 
-279 files.
+310 files.
 
 #### `research/5minleveragestrategies.json`
 
@@ -21607,9 +21971,25 @@ Drivers that produce the numbers, and the write-ups that quote them. Everything 
 
 **Use.** Read it.
 
+#### `research/ZEC-GRANULAR-BACKTESTS.md`
+
+`doc` · 79 lines · 10,162 B · description: **extracted**
+
+**Purpose.** Version: 1.0.1 The full finite matrix finished on 2026-11-13: **10,576 rows**, including 4,878 completed strategy/benchmark rows, 5,670 insufficient-warm-up rows and 28 explicit exclusions. Results describe one captured day; they do not establish a durable edge or 70% next-minute accuracy. At a 60 bps fee per fill, every active 1m spot policy lost money.
+
+**Use.** Read it.
+
+#### `research/ZEC-GRANULAR-FEE-SENSITIVITY.md`
+
+`doc` · 58 lines · 6,057 B · description: **extracted**
+
+**Purpose.** Version: 1.0.0 The owner clarified the requested fees as **0.25% and 0.15%**, equivalent to **25 and 15 basis points per fill**. Both entries and exits pay that scenario rate. This reruns the complete prior captured-event matrix, changing fees only. Best *active* spot return in each interval, after all modelled costs:
+
+**Use.** Read it.
+
 #### `research/candle_crosscheck.py`
 
-`code-python` · 155 lines · 6,668 B · description: **extracted**
+`code-python` · 167 lines · 7,525 B · description: **extracted**
 
 **Purpose.** Check the candle cache against itself: does a 1d bar equal its own 24 1h bars? No network, no ticks, and it covers the **entire** history rather than the month a tick rebuild can reach. That matters because the alternative -- rebuilding five years of ticks to audit the 1d series -- is several days of API calls, and this answers a large part of the same question in seconds.
 
@@ -21619,11 +21999,11 @@ Drivers that produce the numbers, and the write-ups that quote them. Everything 
 
 #### `research/candle_gap_audit.py`
 
-`code-python` · 286 lines · 11,708 B · description: **extracted**
+`code-python` · 300 lines · 12,306 B · description: **extracted**
 
 **Purpose.** Audit -- and optionally repair -- gaps in Coinbase 1m candle data using ticks. Why this exists. A missing 1m candle has two possible causes that look identical in the file and have opposite consequences: * the minute genuinely had no trades (thin market), or * the minute traded and the candle endpoint dropped it. The first is honest data.
 
-**Contents.** Defines `REPO`, `PAD_BARS`, `gap_runs()`, `classify_run()`, `_fetch_window()`, `repair_window()`, `main()`. Depends on `backtester`.
+**Contents.** Defines `REPO`, `PAD_BARS`, `class TickFetchUnavailable`, `gap_runs()`, `classify_run()`, `_fetch_window()`, `repair_window()`, `_run()`, `main()`. Depends on `backtester`.
 
 **Use.** `python3 research/candle_gap_audit.py --help`
 
@@ -21677,7 +22057,7 @@ Drivers that produce the numbers, and the write-ups that quote them. Everything 
 
 #### `research/coinbase50_study.py`
 
-`code-python` · 315 lines · 18,307 B · description: **extracted**
+`code-python` · 318 lines · 18,384 B · description: **extracted**
 
 **Purpose.** Coinbase survivor-cohort study. Explicit data, no orders or runtime changes.
 
@@ -21687,7 +22067,7 @@ Drivers that produce the numbers, and the write-ups that quote them. Everything 
 
 #### `research/cpcv_sweep.py`
 
-`code-python` · 520 lines · 23,822 B · description: **curated**
+`code-python` · 528 lines · 24,232 B · description: **curated**
 
 **Purpose.** The primary evaluation driver: CPCV over singles, pairs and triples, then PBO across the configuration set. Prints its own legend so the numbers cannot travel without their meaning.
 
@@ -21725,7 +22105,7 @@ Drivers that produce the numbers, and the write-ups that quote them. Everything 
 
 #### `research/dso_audit.py`
 
-`code-python` · 365 lines · 16,073 B · description: **extracted**
+`code-python` · 366 lines · 16,096 B · description: **extracted**
 
 **Purpose.** Mechanical half of the /dso statistical-honesty passes, run over the CPCV result CSVs. python3 research/dso_audit.py # audit every cpcv_* result file python3 research/dso_audit.py --floor 30 # raise the evidence floor `/dso` (the deep-strategy-optimizer skill) defines 19 audit passes.
 
@@ -21793,7 +22173,7 @@ Drivers that produce the numbers, and the write-ups that quote them. Everything 
 
 #### `research/grid_holdout.py`
 
-`code-python` · 83 lines · 3,278 B · description: **extracted**
+`code-python` · 85 lines · 3,336 B · description: **extracted**
 
 **Purpose.** Run the predeclared ladder from research/results/grid_review_20261107.json on bars it never saw. The review used a cache that ended 2026-08-04. This script scores the same configuration (bounds 85%-115% of the first close, seven geometric rungs, $12 per rung, $144 account) on bars from 2026-08-05 onward, at the review's costs and at twice those costs. Nothing is fitted.
 
@@ -21823,11 +22203,11 @@ Drivers that produce the numbers, and the write-ups that quote them. Everything 
 
 #### `research/meta_analysis.py`
 
-`code-python` · 165 lines · 8,311 B · description: **extracted**
+`code-python` · 175 lines · 8,606 B · description: **extracted**
 
 **Purpose.** Consolidate trial evidence without treating overlapping artifacts as studies. The single JSON output preserves original records and units. The prose synthesis uses family-level findings; it never pools incompatible returns into a grand mean.
 
-**Contents.** Defines `sha()`, `clean()`, `load()`, `family()`, `role()`, `sources()`, `consolidate()`, `main()`.
+**Contents.** Defines `sha()`, `clean()`, `load()`, `_decode_bytes()`, `family()`, `role()`, `sources()`, `consolidate()`, `main()`.
 
 **Use.** `python3 research/meta_analysis.py --help`
 
@@ -21843,37 +22223,37 @@ Drivers that produce the numbers, and the write-ups that quote them. Everything 
 
 #### `research/minute_sweep.py`
 
-`code-python` · 481 lines · 22,623 B · description: **extracted**
+`code-python` · 526 lines · 24,745 B · description: **extracted**
 
 **Purpose.** Preliminary backtest of every registered strategy against every 1-minute series. python3 research/minute_sweep.py # default 500k-bar window python3 research/minute_sweep.py --all-bars # full history, hours python3 research/minute_sweep.py --common-window # one calendar for all assets python3 research/minute_sweep.py --param-scale 60 # wall-clock-preserving params ## This is preliminary, and the wo
 
-**Contents.** Defines `REPO`, `OUT`, `BAR_KEYS`, `FEE_BPS`, `SLIPPAGE_BPS`, `DEFAULT_BARS`, `MINUTE`, `SLICES`, `class Cell`, `scaled_params()` and 10 more. Depends on `backtester`, `research`.
+**Contents.** Defines `REPO`, `OUT`, `BAR_KEYS`, `FEE_BPS`, `SLIPPAGE_BPS`, `DEFAULT_BARS`, `MINUTE`, `SLICES`, `class Cell`, `scaled_params()` and 11 more. Depends on `backtester`, `research`.
 
 **Use.** `python3 research/minute_sweep.py --help`
 
 #### `research/news_event_report.py`
 
-`code-python` · 337 lines · 18,424 B · description: **extracted**
+`code-python` · 350 lines · 18,816 B · description: **extracted**
 
 **Purpose.** Render the frozen coin-news event study without fetching or selecting events.
 
-**Contents.** Defines `PREFIX`, `number()`, `interval()`, `render()`, `_paired_latency()`, `_figure()`. Depends on `research`.
+**Contents.** Defines `PREFIX`, `number()`, `interval()`, `render()`, `_paired_latency()`, `_figure()`, `main()`. Depends on `research`.
 
 **Use.** `python3 research/news_event_report.py --help`
 
 #### `research/news_event_study.py`
 
-`code-python` · 408 lines · 15,962 B · description: **extracted**
+`code-python` · 487 lines · 18,746 B · description: **extracted**
 
 **Purpose.** Exploratory publication-time event study on frozen local news and prices. The analysis never fetches, fills missing candles, or submits orders. A minute open is a bucket proxy; it is not the trade available at publication time.
 
-**Contents.** Defines `VERSION`, `SEED`, `COINS`, `HORIZONS`, `COIN_WORDS`, `EVENT_TYPES`, `COMMENTARY`, `epoch()`, `iso()`, `canonical_url()` and 12 more.
+**Contents.** Defines `VERSION`, `SEED`, `COINS`, `HORIZONS`, `COIN_WORDS`, `EVENT_TYPES`, `COMMENTARY`, `class NewsPrerequisiteError`, `_preflight()`, `_bootstrap_and_reexec()` and 17 more. Depends on `backtester`.
 
 **Use.** `python3 research/news_event_study.py --help`
 
 #### `research/perturb.py`
 
-`code-python` · 453 lines · 18,930 B · description: **curated**
+`code-python` · 464 lines · 19,701 B · description: **curated**
 
 **Purpose.** The second independent robustness axis: nudge each parameter ±10% and re-run CPCV. A point that collapses under a small nudge was fitted to noise, whatever its Sharpe.
 
@@ -21891,7 +22271,7 @@ Drivers that produce the numbers, and the write-ups that quote them. Everything 
 
 #### `research/ratio_rotation.py`
 
-`code-python` · 1501 lines · 64,816 B · description: **extracted**
+`code-python` · 1507 lines · 65,143 B · description: **extracted**
 
 **Purpose.** Numeraire-switching rotation: hold whichever coin is cheapest against its peers. python3 research/ratio_rotation.py --self-test python3 research/ratio_rotation.py --turnover-table python3 research/ratio_rotation.py --demo-chain python3 research/ratio_rotation.py --sweep python3 research/ratio_rotation.py --sweep --assets BTC,ETH,SOL,DOGE,ZEC,XRP This answers a question the single-asset engine cann
 
@@ -21901,7 +22281,7 @@ Drivers that produce the numbers, and the write-ups that quote them. Everything 
 
 #### `research/run_backfill.sh`
 
-`code-shell` · 111 lines · 4,015 B · description: **none**
+`code-shell` · 179 lines · 6,631 B · description: **none**
 
 **Purpose.** _No description available._
 
@@ -21919,7 +22299,7 @@ Drivers that produce the numbers, and the write-ups that quote them. Everything 
 
 #### `research/shape_study.py`
 
-`code-python` · 667 lines · 26,596 B · description: **extracted**
+`code-python` · 668 lines · 26,650 B · description: **extracted**
 
 **Purpose.** Causal price-path geometry and unlevered spot research; never submits orders. Run with local Coinbase USD candle files. The geometric rules are hypotheses, not the unsupported effect sizes quoted in the earlier geometry dossier.
 
@@ -21949,11 +22329,11 @@ Drivers that produce the numbers, and the write-ups that quote them. Everything 
 
 #### `research/strategy_aux_compare.py`
 
-`code-python` · 298 lines · 16,732 B · description: **extracted**
+`code-python` · 302 lines · 16,860 B · description: **extracted**
 
 **Purpose.** Offline paired comparison of executable mechanisms outside the strategy registry.
 
-**Contents.** Defines `REPO`, `sha()`, `module()`, `paired_bots()`, `paired_peer()`, `run()`, `main()`. Depends on `backtester`, `research`.
+**Contents.** Defines `REPO`, `sha()`, `_percent()`, `module()`, `paired_bots()`, `paired_peer()`, `run()`, `main()`. Depends on `backtester`, `research`.
 
 **Use.** `python3 research/strategy_aux_compare.py --help`
 
@@ -21969,7 +22349,7 @@ Drivers that produce the numbers, and the write-ups that quote them. Everything 
 
 #### `research/strategy_config_sweep.py`
 
-`code-python` · 548 lines · 27,372 B · description: **extracted**
+`code-python` · 555 lines · 27,864 B · description: **extracted**
 
 **Purpose.** Resumable, parallel CPCV sweep over every active cached coin and buildable card. This command reads cached candles only. Use ``--plan`` first; fetching is a separate, explicit command. Results are append-only JSONL under the selected output directory and are flushed after every completed configuration.
 
@@ -21999,7 +22379,7 @@ Drivers that produce the numbers, and the write-ups that quote them. Everything 
 
 #### `research/sweep_untested.py`
 
-`code-python` · 103 lines · 3,769 B · description: **extracted**
+`code-python` · 106 lines · 3,900 B · description: **extracted**
 
 **Purpose.** Finds and sweeps untested strategies and configurations. Identifies strategies in the REGISTRY that do not have baseline parameters in `research/sweep.py` or runs new configurations for existing strategies to compute profitability metrics like Sharpe, Kelly, and Drawdown.
 
@@ -22009,11 +22389,11 @@ Drivers that produce the numbers, and the write-ups that quote them. Everything 
 
 #### `research/tick_backfill.py`
 
-`code-python` · 351 lines · 14,899 B · description: **extracted**
+`code-python` · 366 lines · 15,854 B · description: **extracted**
 
 **Purpose.** Long-running, resumable tick backfill and candle-integrity audit. Built to run for hours at low priority in the background. See `research/run_backfill.sh` for the wrapper that sets the priority. Why a streaming walk instead of `candle_gap_audit.py`'s per-gap fetch.
 
-**Contents.** Defines `REPO`, `PAGE`, `CHECKPOINT_EVERY`, `_handle_stop()`, `class MinuteAggregator`, `_page()`, `backfill()`, `_write_ck()`, `audit()`, `rerun_decision()` and 1 more. Depends on `backtester`.
+**Contents.** Defines `REPO`, `PAGE`, `CHECKPOINT_EVERY`, `_handle_stop()`, `class MinuteAggregator`, `_page()`, `_checkpoint_binding()`, `backfill()`, `_write_ck()`, `audit()` and 2 more. Depends on `backtester`.
 
 **Use.** `python3 research/tick_backfill.py --help`
 
@@ -22125,7 +22505,7 @@ Drivers that produce the numbers, and the write-ups that quote them. Everything 
 
 #### `research/triggers.py`
 
-`code-python` · 606 lines · 29,750 B · description: **extracted**
+`code-python` · 607 lines · 29,757 B · description: **extracted**
 
 **Purpose.** Reliable-trigger miner: which conjunctions of conditions predict direction, and how well. python3 -m research.triggers --asset SOL --interval 1d python3 -m research.triggers --asset SOL --interval 1h python3 -m research.triggers --asset SOL --interval 1d --backtest Simulation and research only: no network, no keys, no orders.
 
@@ -22145,7 +22525,7 @@ Drivers that produce the numbers, and the write-ups that quote them. Everything 
 
 #### `research/verify_numbers.py`
 
-`code-python` · 1102 lines · 49,895 B · description: **curated**
+`code-python` · 1104 lines · 49,973 B · description: **curated**
 
 **Purpose.** The figure gate. Re-checks every number quoted in `RANKED_LISTS.md` and `STRATEGIES.md` against the result files that produced them, so a transcription slip cannot survive in prose. CI runs it.
 
@@ -22192,6 +22572,16 @@ Drivers that produce the numbers, and the write-ups that quote them. Everything 
 **Contents.** Defines `ROOT`, `VERSION`, `GUIDE`, `COSTS`, `sha()`, `atomic_json()`, `spec()`, `catalog()`, `component_specs()`, `_init_worker()` and 12 more. Depends on `backtester`.
 
 **Use.** `python3 research/zec_ensembles.py --help`
+
+#### `research/zec_granular.py`
+
+`code-python` · 572 lines · 27,336 B · description: **extracted**
+
+**Purpose.** Offline, receive-time ZEC tape replay. No network or live execution path. The book is sampled at the first received update in each UTC second. Orders wait at least one second after a closed-bar decision (or observed stop trigger), then use the first sampled book at/after eligibility. This is deliberately not an exchange matching-engine or queue-position simulation.
+
+**Contents.** Defines `VERSION`, `STEPS`, `NS`, `CAPTURE_HASH`, `CAPTURE_START`, `CAPTURE_END`, `DEPTH`, `LATENCY_NS`, `MAX_WAIT_NS`, `digest()` and 15 more. Depends on `backtester`, `research`.
+
+**Use.** `python3 research/zec_granular.py --help`
 
 ### `research/coin-intelligence/`
 
@@ -23715,6 +24105,16 @@ Drivers that produce the numbers, and the write-ups that quote them. Everything 
 
 ### `research/tests/`
 
+#### `research/tests/test_audit_boundaries.py`
+
+`test` · 430 lines · 24,030 B · description: **extracted**
+
+**Purpose.** Synthetic evidence and launch boundaries; no external data or strategy search.
+
+**Contents.** Defines `candles()`, `class AuditBoundaryTests`, `class RemainingAuditBoundaries`. Depends on `research`.
+
+**Use.** `python3 -m pytest research/tests/test_audit_boundaries.py -q`
+
 #### `research/tests/test_coinbase50_study.py`
 
 `test` · 267 lines · 14,828 B · description: **extracted**
@@ -23757,11 +24157,11 @@ Drivers that produce the numbers, and the write-ups that quote them. Everything 
 
 #### `research/tests/test_news_event_study.py`
 
-`test` · 224 lines · 7,855 B · description: **extracted**
+`test` · 387 lines · 16,651 B · description: **extracted**
 
 **Purpose.** Protect timestamp alignment, selection independence and missing-data behavior.
 
-**Contents.** Defines `class NewsEvents`. Depends on `research`.
+**Contents.** Defines `CLI_BLOCKER`, `class NewsEvents`, `class NewsPrerequisites`. Depends on `research`.
 
 **Use.** `python3 -m pytest research/tests/test_news_event_study.py -q`
 
@@ -23825,6 +24225,16 @@ Drivers that produce the numbers, and the write-ups that quote them. Everything 
 
 **Use.** `python3 -m pytest research/tests/test_zec_ensembles.py -q`
 
+#### `research/tests/test_zec_granular.py`
+
+`test` · 226 lines · 10,940 B · description: **extracted**
+
+**Purpose.** Causal execution, coverage and book-capacity regression gates.
+
+**Contents.** Defines `fixture_tape()`, `class GranularReplay`. Depends on `backtester`, `research`.
+
+**Use.** `python3 -m pytest research/tests/test_zec_granular.py -q`
+
 ### `research/tradingview-script-profile-audits/`
 
 #### `research/tradingview-script-profile-audits/shard-a.jsonl`
@@ -23877,17 +24287,661 @@ Drivers that produce the numbers, and the write-ups that quote them. Everything 
 
 **Use.** Read it.
 
+### `research/zec-fee-sensitivity-20261113.llms/`
+
+#### `research/zec-fee-sensitivity-20261113.llms/archive-manifest.json`
+
+`config` · 19 lines · 1,208 B · description: **derived**
+
+**Purpose.** Generated JSON object, 3 keys (version, artifacts, report_sha256).
+
+**Use.** Configuration; nothing to run.
+
+#### `research/zec-fee-sensitivity-20261113.llms/audit-ledger.json`
+
+`config` · 24 lines · 693 B · description: **derived**
+
+**Purpose.** Generated JSON object, 15 keys (audit, attempt, artifact_hashes_verified, rows, statuses, exact_catalog_census...).
+
+**Use.** Configuration; nothing to run.
+
+#### `research/zec-fee-sensitivity-20261113.llms/audit.json`
+
+`config` · 170 lines · 8,171 B · description: **derived**
+
+**Purpose.** Generated JSON object, 7 keys (agent, definition_version, status, evidence, changes, remaining...).
+
+**Use.** Configuration; nothing to run.
+
+#### `research/zec-fee-sensitivity-20261113.llms/coverage.json`
+
+`config` · 35 lines · 810 B · description: **derived**
+
+**Purpose.** Generated JSON object, 4 keys (10m, 1h, 1m, 5m).
+
+**Use.** Configuration; nothing to run.
+
+#### `research/zec-fee-sensitivity-20261113.llms/identity.json`
+
+`config` · 61 lines · 5,662 B · description: **derived**
+
+**Purpose.** Generated JSON object, 5 keys (code, executable, numpy, pandas, python).
+
+**Use.** Configuration; nothing to run.
+
+#### `research/zec-fee-sensitivity-20261113.llms/llms-full.txt`
+
+`data` · 58 lines · 6,057 B · description: **derived**
+
+**Purpose.** Generated report. Opens: # ZEC fee sensitivity at 0.25% and 0.15% per fill / Version: 1.0.0
+
+**Use.** Read it.
+
+#### `research/zec-fee-sensitivity-20261113.llms/llms.txt`
+
+`data` · 18 lines · 976 B · description: **derived**
+
+**Purpose.** Generated report. Opens: # ZEC25/15bps fee sensitivity / Version: 1.0.0
+
+**Use.** Read it.
+
+#### `research/zec-fee-sensitivity-20261113.llms/manifest.json`
+
+`config` · 86 lines · 7,212 B · description: **derived**
+
+**Purpose.** Generated JSON object, 6 keys (artifacts, capture_sha256, identity, rows, statuses, version).
+
+**Use.** Configuration; nothing to run.
+
+#### `research/zec-fee-sensitivity-20261113.llms/mongo-artifacts.json`
+
+`config` · 75 lines · 2,584 B · description: **derived**
+
+**Purpose.** Generated JSON object, 11 keys (status, artifacts, csv_bytes, csv_sha256, full_csv_readback, other_readbacks...).
+
+**Use.** Configuration; nothing to run.
+
+#### `research/zec-fee-sensitivity-20261113.llms/plan.json.gz`
+
+`other` · 0 lines · 20,015 B · description: **none**
+
+**Purpose.** _No description available._
+
+**Use.** Read it.
+
+#### `research/zec-fee-sensitivity-20261113.llms/rerun-provenance.json`
+
+`config` · 17 lines · 831 B · description: **derived**
+
+**Purpose.** Generated JSON object, 11 keys (clarification, driver, driver_sha256, execution_model, fee_bps, other_changes...).
+
+**Use.** Configuration; nothing to run.
+
+#### `research/zec-fee-sensitivity-20261113.llms/results.csv`
+
+`data` · 7062 lines · 1,271,529 B · description: **derived**
+
+**Purpose.** Generated data: 7060 rows x 21 columns (interval, candidate_id, family, fee_bps, eligible_signal_bars, market, status, return_pct...).
+
+**Contents.** Columns: `interval`, `candidate_id`, `family`, `fee_bps`, `eligible_signal_bars`, `market`, `status`, `return_pct`, `end_equity`, `fees_usd`, `turnover_usd`, `residual_slippage_usd`, `carry_usd`, `fills`, `decision_fill_drawdown_pct`, `rejections`, `open_units`, `terminal_mark_ns`, `terminal_mark_age_seconds`, `terminal_state`, `reason`.
+
+**Use.** Read it.
+
+#### `research/zec-fee-sensitivity-20261113.llms/summary.json`
+
+`config` · 788 lines · 26,797 B · description: **derived**
+
+**Purpose.** Generated JSON object, 11 keys (coverage, fee_bps, fee_percent, mongo_run_id, original_source_sha256, parent_run_id...).
+
+**Use.** Configuration; nothing to run.
+
+### `research/zec-granular-20261113.llms/`
+
+#### `research/zec-granular-20261113.llms/archive-manifest.json`
+
+`config` · 20 lines · 1,233 B · description: **derived**
+
+**Purpose.** Generated JSON object, 4 keys (artifacts, attempt, report_sha256, version).
+
+**Use.** Configuration; nothing to run.
+
+#### `research/zec-granular-20261113.llms/audit-ledger.json`
+
+`config` · 22 lines · 593 B · description: **derived**
+
+**Purpose.** Generated JSON object, 13 keys (audit, attempt, artifact_hashes_verified, rows, statuses, exact_catalog_census...).
+
+**Use.** Configuration; nothing to run.
+
+#### `research/zec-granular-20261113.llms/audit-raw-book.json`
+
+`config` · 18 lines · 547 B · description: **derived**
+
+**Purpose.** Generated JSON object, 11 keys (attempt, original_wal_sha256, records_verified, all_trade_rows_verified, book_samples_independently_sorted_from_raw, connection_ids...).
+
+**Use.** Configuration; nothing to run.
+
+#### `research/zec-granular-20261113.llms/audit.json`
+
+`config` · 88 lines · 5,207 B · description: **derived**
+
+**Purpose.** Generated JSON object, 7 keys (agent, definition_version, status, evidence, changes, remaining...).
+
+**Use.** Configuration; nothing to run.
+
+#### `research/zec-granular-20261113.llms/coverage.json`
+
+`config` · 35 lines · 810 B · description: **derived**
+
+**Purpose.** Generated JSON object, 4 keys (10m, 1h, 1m, 5m).
+
+**Use.** Configuration; nothing to run.
+
+#### `research/zec-granular-20261113.llms/identity.json`
+
+`config` · 61 lines · 5,662 B · description: **derived**
+
+**Purpose.** Generated JSON object, 5 keys (code, executable, numpy, pandas, python).
+
+**Use.** Configuration; nothing to run.
+
+#### `research/zec-granular-20261113.llms/llms-full.txt`
+
+`data` · 79 lines · 10,162 B · description: **derived**
+
+**Purpose.** Generated report. Opens: # ZEC captured-event backtests / Version: 1.0.1
+
+**Use.** Read it.
+
+#### `research/zec-granular-20261113.llms/llms.txt`
+
+`data` · 16 lines · 1,021 B · description: **derived**
+
+**Purpose.** Generated report. Opens: # ZEC captured-event backtests / Version: 1.0.1
+
+**Use.** Read it.
+
+#### `research/zec-granular-20261113.llms/manifest.json`
+
+`config` · 85 lines · 7,116 B · description: **derived**
+
+**Purpose.** Generated JSON object, 6 keys (artifacts, capture_sha256, identity, rows, statuses, version).
+
+**Use.** Configuration; nothing to run.
+
+#### `research/zec-granular-20261113.llms/mongo-artifacts.json`
+
+`config` · 72 lines · 2,813 B · description: **derived**
+
+**Purpose.** Generated JSON object, 12 keys (version, run_id, run_revision, mode, result_csv_sha256, result_csv_bytes...).
+
+**Use.** Configuration; nothing to run.
+
+#### `research/zec-granular-20261113.llms/plan.json.gz`
+
+`other` · 0 lines · 20,018 B · description: **none**
+
+**Purpose.** _No description available._
+
+**Use.** Read it.
+
+#### `research/zec-granular-20261113.llms/results.csv`
+
+`data` · 10578 lines · 1,904,716 B · description: **derived**
+
+**Purpose.** Generated data: 10576 rows x 21 columns (interval, candidate_id, family, fee_bps, eligible_signal_bars, market, status, return_pct...).
+
+**Contents.** Columns: `interval`, `candidate_id`, `family`, `fee_bps`, `eligible_signal_bars`, `market`, `status`, `return_pct`, `end_equity`, `fees_usd`, `turnover_usd`, `residual_slippage_usd`, `carry_usd`, `fills`, `decision_fill_drawdown_pct`, `rejections`, `open_units`, `terminal_mark_ns`, `terminal_mark_age_seconds`, `terminal_state`, `reason`.
+
+**Use.** Read it.
+
+#### `research/zec-granular-20261113.llms/summary.json`
+
+`config` · 879 lines · 29,411 B · description: **derived**
+
+**Purpose.** Generated JSON object, 8 keys (attempt, capture_sha256, costs, coverage, matrix_rows, statuses...).
+
+**Use.** Configuration; nothing to run.
+
+---
+
+## oracle
+
+Forecast evidence, strategy votes, archives and separately controlled webhook execution.
+
+43 files.
+
+#### `oracle/README.md`
+
+`doc` · 336 lines · 19,202 B · description: **extracted**
+
+**Purpose.** Oracle is a local shadow signal service, defaulting to SOL/USDC. Explicit CLI and MCP process to that instrument. No quote conversion is implied. A single foreground daemon consumes source-labelled observations into a durable historical SQLite archive.
+
+**Use.** Read it.
+
+#### `oracle/__init__.py`
+
+`code-python` · 2 lines · 80 B · description: **extracted**
+
+**Purpose.** Oracle forecasts and optional explicitly enabled Coinbase webhook orders.
+
+**Use.** `import oracle.__init__`
+
+#### `oracle/__main__.py`
+
+`code-python` · 4 lines · 48 B · description: **none**
+
+**Purpose.** _No description available._
+
+**Use.** `import oracle.__main__`
+
+#### `oracle/cli.py`
+
+`code-python` · 341 lines · 13,439 B · description: **extracted**
+
+**Purpose.** Oracle forecasts, inert queries and explicitly enabled venue webhooks.
+
+**Contents.** Defines `default_archive()`, `emit()`, `prerequisite_message()`, `owner()`, `snapshot()`, `run()`, `class Parser`, `main()`.
+
+**Use.** `python3 oracle/cli.py --help`
+
+#### `oracle/coinbase_orders.py`
+
+`code-python` · 333 lines · 13,193 B · description: **extracted**
+
+**Purpose.** Exact Coinbase spot sizing and one-shot official CLI order transport. Credentials remain in the official CLI's configured credential store. This adapter neither reads credentials nor retries an order submission.
+
+**Contents.** Defines `MAX_PAGES`, `MAX_OUTPUT`, `PAIR`, `IDENTITY`, `PLAIN_DECIMAL`, `ORDER_FIELDS`, `class CoinbaseError`, `class CoinbaseAmbiguous`, `_decimal()`, `_identity()` and 2 more.
+
+**Use.** `import oracle.coinbase_orders`
+
+#### `oracle/engine.py`
+
+`code-python` · 571 lines · 23,896 B · description: **extracted**
+
+**Purpose.** Prospective, source-bound shadow forecasts; no execution capability.
+
+**Contents.** Defines `SCHEMA_VERSION`, `IDENTITY`, `number()`, `class OracleEngine`.
+
+**Use.** `import oracle.engine`
+
+#### `oracle/feeds.py`
+
+`code-python` · 298 lines · 11,777 B · description: **extracted**
+
+**Purpose.** Read-only market adapters with explicit source and clock semantics. No adapter starts the shared recorder, loads a signing key, or obtains a swap. Jupiter's Price V3 API supplies USD reference prices, not a SOL/USDC execution quote or a push stream. Its response has block IDs but no market-event timestamp.
+
+**Contents.** Defines `SOL_MINT`, `USDC_MINT`, `JUPITER_PRICE_URL`, `MAX_RESPONSE_BYTES`, `INSTRUMENT`, `MINT`, `validate_instrument()`, `class FeedUnavailable`, `_number()`, `_identity()` and 4 more.
+
+**Use.** `import oracle.feeds`
+
+#### `oracle/graphdb.py`
+
+`code-python` · 206 lines · 7,577 B · description: **extracted**
+
+**Purpose.** Append-only per-evaluation graph snapshots in the Oracle archive.
+
+**Contents.** Defines `GRAPH_SCHEMA_VERSION`, `DEFAULT_LIMIT`, `MAX_LIMIT`, `market_shape()`, `record_tick()`, `history()`.
+
+**Use.** `import oracle.graphdb`
+
+#### `oracle/guidance.py`
+
+`code-python` · 187 lines · 6,297 B · description: **extracted**
+
+**Purpose.** Read-only guide routing and conservative lifecycle/readiness summaries.
+
+**Contents.** Defines `REPO`, `STAGES`, `GUIDES`, `guidance()`, `manager_inventory()`, `readiness()`, `veto()`.
+
+**Use.** `import oracle.guidance`
+
+#### `oracle/gum_orders.py`
+
+`code-python` · 958 lines · 37,485 B · description: **extracted**
+
+**Purpose.** Exact ZEC isolated-perpetual orders through the official GUM JTX Action API. Order messages are constructed locally from checked economics. This module never signs a server-supplied transaction, creates an account, deposits, or retries a write. The optional signer signs bytes and returns 64 Ed25519 signature bytes. The binary layout follows jupnet/gum-perp-sdk 0.2.0 action.rs/request.rs.
+
+**Contents.** Defines `BASE_URL`, `PROGRAM_ID`, `MARKET_ID`, `ALPHABET`, `U64_MAX`, `MAX_RESPONSE`, `TERMINAL`, `class GumError`, `class GumAmbiguous`, `b58encode()` and 13 more.
+
+**Use.** `import oracle.gum_orders`
+
+#### `oracle/gum_signer.py`
+
+`code-python` · 65 lines · 2,188 B · description: **extracted**
+
+**Purpose.** Private, owner-bound Ed25519 signing for locally constructed GUM Actions.
+
+**Contents.** Defines `_decode()`, `load_signer()`.
+
+**Use.** `import oracle.gum_signer`
+
+#### `oracle/gum_webhook_orders.py`
+
+`code-python` · 453 lines · 16,974 B · description: **extracted**
+
+**Purpose.** Durable GUM position changes; an accepted action is never treated as a fill.
+
+**Contents.** Defines `VENUE`, `PRODUCT`, `client_order_id()`, `_decimal()`, `_json()`, `_save()`, `_refuse()`, `_identity()`, `_acceptance()`, `_receipt()` and 4 more.
+
+**Use.** `import oracle.gum_webhook_orders`
+
+#### `oracle/mcp-requirements.txt`
+
+`data` · 3 lines · 98 B · description: **derived**
+
+**Purpose.** Generated report. Opens: # The MCP adapter is optional; the observation and strategy engine stay stdlib-first. / mcp==1.30.0
+
+**Use.** Read it.
+
+#### `oracle/pyproject.toml`
+
+`config` · 20 lines · 524 B · description: **none**
+
+**Purpose.** _No description available._
+
+**Use.** Configuration; nothing to run.
+
+#### `oracle/quotes.py`
+
+`code-python` · 499 lines · 18,032 B · description: **extracted**
+
+**Purpose.** Explicit opt-in Swap v1 evidence owned by the existing shared Oracle archive. This module never builds transactions, signs, retries, or starts a collector. Quoted outputs and cost assumptions remain distinct from observed execution.
+
+**Contents.** Defines `ENDPOINT`, `MINT`, `MAX_RESPONSE`, `ROUTE_POLICY`, `QUOTE_BUDGET_PATH`, `class QuoteError`, `_hash()`, `_raw()`, `validate_request()`, `capture_quote()` and 7 more.
+
+**Use.** `import oracle.quotes`
+
+#### `oracle/reader.py`
+
+`code-python` · 374 lines · 15,367 B · description: **extracted**
+
+**Purpose.** Inert archive inspection through the canonical Oracle query implementation.
+
+**Contents.** Defines `LEGACY_EVALUATOR_SHA256`, `ARCHIVED_EVALUATOR_SHA256`, `PARAMETER_TYPES`, `_recorded_catalog()`, `class RecordedStrategySet`, `class ReadOnlyStore`, `class ReadOnlyOracle`.
+
+**Use.** `import oracle.reader`
+
+#### `oracle/server.py`
+
+`code-python` · 452 lines · 15,956 B · description: **extracted**
+
+**Purpose.** Local stdio MCP views over the Oracle archive; never a submission surface.
+
+**Contents.** Defines `_SDK_LOADED`, `_load_sdk()`, `VERSION`, `RESOURCE_NAMES`, `EMPTY`, `ENVELOPE_SCHEMA`, `TOOL_SCHEMAS`, `DESCRIPTIONS`, `envelope()`, `encode()` and 7 more.
+
+**Use.** `python3 oracle/server.py --help`
+
+#### `oracle/store.py`
+
+`code-python` · 142 lines · 6,932 B · description: **extracted**
+
+**Purpose.** Private append-only SQLite Oracle event archive with transactional state.
+
+**Contents.** Defines `canonical()`, `class Store`.
+
+**Use.** `import oracle.store`
+
+#### `oracle/strategies.py`
+
+`code-python` · 131 lines · 4,744 B · description: **extracted**
+
+**Purpose.** Pinned adapters over fourteen existing price-only strategy cards. These are exposure rules reused as prospective directional hypotheses. A flat exposure remains FLAT; it is never silently reinterpreted as a bearish forecast.
+
+**Contents.** Defines `STRATEGY_IDS`, `REPLAY_BARS`, `class StrategySet`. Depends on `backtester`.
+
+**Use.** `import oracle.strategies`
+
+#### `oracle/voting.py`
+
+`code-python` · 129 lines · 4,098 B · description: **extracted**
+
+**Purpose.** Pure prospective-vote aggregation; inputs are not proof of their provenance.
+
+**Contents.** Defines `MINIMUM_ACCURACY`, `class Vote`, `aggregate()`.
+
+**Use.** `import oracle.voting`
+
+#### `oracle/webhook.py`
+
+`code-python` · 243 lines · 8,308 B · description: **extracted**
+
+**Purpose.** TradingView signal reception with explicitly selected venue dispatch.
+
+**Contents.** Defines `MAX_BODY`, `HTTP_TIMEOUT`, `MAX_HTTP_WORKERS`, `EVENT_ID`, `SYMBOL`, `class _WebhookHTTPServer`, `accept_signal()`, `serve()`.
+
+**Use.** `import oracle.webhook`
+
+#### `oracle/webhook_orders.py`
+
+`code-python` · 247 lines · 8,563 B · description: **extracted**
+
+**Purpose.** Durable Coinbase webhook dispatch; Oracle votes do not qualify these orders.
+
+**Contents.** Defines `TERMINAL`, `BLOCKING`, `database()`, `records()`, `_update()`, `recover_planning()`, `_reconcile()`, `process_one()`.
+
+**Use.** `import oracle.webhook_orders`
+
+### `oracle/tests/`
+
+#### `oracle/tests/__init__.py`
+
+`test` · 0 lines · 0 B · description: **none**
+
+**Purpose.** _No description available._
+
+**Use.** `python3 -m pytest oracle/tests/__init__.py -q`
+
+#### `oracle/tests/test_archived_reader.py`
+
+`test` · 295 lines · 13,429 B · description: **none**
+
+**Purpose.** _No description available._
+
+**Contents.** Defines `ARCHIVED_SCHEMA2_EVALUATOR_SHA256`, `class ArchivedReaderTests`.
+
+**Use.** `python3 -m pytest oracle/tests/test_archived_reader.py -q`
+
+#### `oracle/tests/test_cli.py`
+
+`test` · 134 lines · 6,014 B · description: **none**
+
+**Purpose.** _No description available._
+
+**Contents.** Defines `class CliTests`.
+
+**Use.** `python3 -m pytest oracle/tests/test_cli.py -q`
+
+#### `oracle/tests/test_coinbase_orders.py`
+
+`test` · 293 lines · 11,430 B · description: **none**
+
+**Purpose.** _No description available._
+
+**Contents.** Defines `PORTFOLIO`, `CLIENT_ID`, `ORDER_ID`, `account()`, `class Provider`, `class CoinbaseOrdersTests`.
+
+**Use.** `python3 -m pytest oracle/tests/test_coinbase_orders.py -q`
+
+#### `oracle/tests/test_core.py`
+
+`test` · 186 lines · 7,268 B · description: **none**
+
+**Purpose.** _No description available._
+
+**Contents.** Defines `observation()`, `class CoreTests`.
+
+**Use.** `python3 -m pytest oracle/tests/test_core.py -q`
+
+#### `oracle/tests/test_feeds.py`
+
+`test` · 204 lines · 7,638 B · description: **none**
+
+**Purpose.** _No description available._
+
+**Contents.** Defines `class RecorderFeedTests`, `class JupiterFeedTests`.
+
+**Use.** `python3 -m pytest oracle/tests/test_feeds.py -q`
+
+#### `oracle/tests/test_graphdb.py`
+
+`test` · 114 lines · 5,364 B · description: **none**
+
+**Purpose.** _No description available._
+
+**Contents.** Defines `observation()`, `class GraphDBTests`.
+
+**Use.** `python3 -m pytest oracle/tests/test_graphdb.py -q`
+
+#### `oracle/tests/test_guidance.py`
+
+`test` · 61 lines · 2,317 B · description: **none**
+
+**Purpose.** _No description available._
+
+**Contents.** Defines `class Engine`, `class GuidanceTests`.
+
+**Use.** `python3 -m pytest oracle/tests/test_guidance.py -q`
+
+#### `oracle/tests/test_gum_cli.py`
+
+`test` · 107 lines · 3,932 B · description: **extracted**
+
+**Purpose.** CLI policy units and explicit live selection are part of the order boundary.
+
+**Contents.** Defines `class GumCliTests`.
+
+**Use.** `python3 -m pytest oracle/tests/test_gum_cli.py -q`
+
+#### `oracle/tests/test_gum_orders.py`
+
+`test` · 578 lines · 23,759 B · description: **none**
+
+**Purpose.** _No description available._
+
+**Contents.** Defines `OWNER`, `ACCOUNT`, `ISOLATED`, `BLOCKHASH`, `CLIENT_ID`, `PREFIX`, `OPEN_VECTOR`, `CLOSE_VECTOR`, `class Provider`, `class GumOrderTests`.
+
+**Use.** `python3 -m pytest oracle/tests/test_gum_orders.py -q`
+
+#### `oracle/tests/test_gum_signer.py`
+
+`test` · 71 lines · 2,784 B · description: **extracted**
+
+**Purpose.** The live signer rejects replaced, public, malformed and wrong-owner keys.
+
+**Contents.** Defines `encode()`, `class GumSignerTests`.
+
+**Use.** `python3 -m pytest oracle/tests/test_gum_signer.py -q`
+
+#### `oracle/tests/test_gum_webhook_orders.py`
+
+`test` · 657 lines · 26,728 B · description: **extracted**
+
+**Purpose.** GUM reversals require durable per-leg identity, a fill and settled collateral.
+
+**Contents.** Defines `class Venue`, `class LifecycleProvider`, `class GumWebhookOrderTests`.
+
+**Use.** `python3 -m pytest oracle/tests/test_gum_webhook_orders.py -q`
+
+#### `oracle/tests/test_multi_instrument.py`
+
+`test` · 266 lines · 10,575 B · description: **none**
+
+**Purpose.** _No description available._
+
+**Contents.** Defines `HAS_MCP`, `REPO`, `tick()`, `class MultiInstrumentTests`, `class MultiInstrumentProtocolTests`.
+
+**Use.** `python3 -m pytest oracle/tests/test_multi_instrument.py -q`
+
+#### `oracle/tests/test_quotes.py`
+
+`test` · 296 lines · 10,317 B · description: **none**
+
+**Purpose.** _No description available._
+
+**Contents.** Defines `SOL`, `USDC`, `fixture()`, `class QuoteTests`, `class QuoteEvidenceReviewTests`, `class QuotePageTests`.
+
+**Use.** `python3 -m pytest oracle/tests/test_quotes.py -q`
+
+#### `oracle/tests/test_selected_server.py`
+
+`test` · 215 lines · 9,041 B · description: **none**
+
+**Purpose.** _No description available._
+
+**Contents.** Defines `HAS_MCP`, `REPO`, `class SelectionBindingTests`, `class SelectedProtocolTests`.
+
+**Use.** `python3 -m pytest oracle/tests/test_selected_server.py -q`
+
+#### `oracle/tests/test_server.py`
+
+`test` · 175 lines · 6,864 B · description: **none**
+
+**Purpose.** _No description available._
+
+**Contents.** Defines `HAS_MCP`, `REPO`, `class SubscriptionTests`, `class ProtocolTests`.
+
+**Use.** `python3 -m pytest oracle/tests/test_server.py -q`
+
+#### `oracle/tests/test_store.py`
+
+`test` · 47 lines · 1,838 B · description: **none**
+
+**Purpose.** _No description available._
+
+**Contents.** Defines `class StoreTests`.
+
+**Use.** `python3 -m pytest oracle/tests/test_store.py -q`
+
+#### `oracle/tests/test_strategies.py`
+
+`test` · 115 lines · 4,582 B · description: **none**
+
+**Purpose.** _No description available._
+
+**Contents.** Defines `class StrategyTests`. Depends on `backtester`.
+
+**Use.** `python3 -m pytest oracle/tests/test_strategies.py -q`
+
+#### `oracle/tests/test_voting.py`
+
+`test` · 76 lines · 2,823 B · description: **none**
+
+**Purpose.** _No description available._
+
+**Contents.** Defines `class VotingTests`.
+
+**Use.** `python3 -m pytest oracle/tests/test_voting.py -q`
+
+#### `oracle/tests/test_webhook.py`
+
+`test` · 248 lines · 9,366 B · description: **none**
+
+**Purpose.** _No description available._
+
+**Contents.** Defines `class WebhookTests`.
+
+**Use.** `python3 -m pytest oracle/tests/test_webhook.py -q`
+
+#### `oracle/tests/test_webhook_orders.py`
+
+`test` · 309 lines · 12,059 B · description: **extracted**
+
+**Purpose.** Webhook sends bind durable identity and never retry ambiguous orders.
+
+**Contents.** Defines `class Venue`, `class WebhookOrderTests`.
+
+**Use.** `python3 -m pytest oracle/tests/test_webhook_orders.py -q`
+
 ---
 
 ## extension
 
-The Chrome extension, and the only component that can place a real order. Dry-run is the default, risk rails live in code and fail closed, and a fresh install must not be able to trade.
+The Chrome extension has a separately armed trading surface. Dry-run is the default, risk rails live in code and fail closed, and a fresh install must not be able to trade.
 
-126 files.
+131 files.
 
 #### `extension/README.md`
 
-`doc` · 667 lines · 45,601 B · description: **extracted**
+`doc` · 699 lines · 47,602 B · description: **extracted**
 
 **Purpose.** A Chrome MV3 extension for the owner's Base and Solana money: **holdings, profit and loss, pool discovery, backtests and strategy changes, swap quotes, and alerts** when a more profitable pool or strategy appears. It also keeps an **experimental grid trading strategy on Jupiter (Solana)** with
 
@@ -23933,7 +24987,7 @@ The Chrome extension, and the only component that can place a real order. Dry-ru
 
 #### `extension/e2e/lib/cdp.mjs`
 
-`code-js` · 206 lines · 7,244 B · description: **extracted**
+`code-js` · 206 lines · 7,249 B · description: **extracted**
 
 **Purpose.** Minimal Chrome DevTools Protocol client over the DevTools pipe. Why the pipe and not a WebSocket: `Extensions.loadUnpacked` is only exposed on `--remote-debugging-pipe` (with `--enable-unsafe-extension-debugging`), and the branded Chrome channel ignores `--load-extension`. So this needs Chrome for Testing or Chromium, and it needs no port, no HTTP discovery and no package.
 
@@ -23963,7 +25017,7 @@ The Chrome extension, and the only component that can place a real order. Dry-ru
 
 #### `extension/e2e/lib/signal-desk.mjs`
 
-`code-js` · 328 lines · 33,145 B · description: **extracted**
+`code-js` · 331 lines · 33,368 B · description: **extracted**
 
 **Purpose.** Independent Signal Desk acceptance in an actual MV3 page, with native writes isolated in memory.
 
@@ -23973,7 +25027,7 @@ The Chrome extension, and the only component that can place a real order. Dry-ru
 
 #### `extension/e2e/lib/soltui-host.mjs`
 
-`code-js` · 89 lines · 4,287 B · description: **extracted**
+`code-js` · 89 lines · 4,266 B · description: **extracted**
 
 **Purpose.** The soltui native messaging host, for the real-browser e2e. Chrome for Testing runs with a throwaway --user-data-dir, and Chrome looks for native messaging host manifests in <user-data-dir>/NativeMessagingHosts first.
 
@@ -24039,7 +25093,7 @@ The Chrome extension, and the only component that can place a real order. Dry-ru
 
 #### `extension/src/bg/service-worker.js`
 
-`code-js` · 471 lines · 21,477 B · description: **extracted**
+`code-js` · 472 lines · 21,597 B · description: **extracted**
 
 **Purpose.** MV3 service worker — the extension surface of the command registry. There is no long-lived process here. The worker is woken by an alarm, runs one tick, and is free to die. Nothing may be held in module scope that the next tick depends on: everything durable lives in IndexedDB or chrome.storage.local, and the tick rebuilds its world from those plus the venue's live state.
 
@@ -24061,7 +25115,7 @@ The Chrome extension, and the only component that can place a real order. Dry-ru
 
 #### `extension/src/core/alerts.js`
 
-`code-js` · 257 lines · 13,110 B · description: **extracted**
+`code-js` · 258 lines · 13,221 B · description: **extracted**
 
 **Purpose.** Alerts: "there is a more profitable pool or strategy than what you have now". Pure. No I/O, no chrome.*, no clock of its own: the scan in commands.js reads the inputs, and this file decides.
 
@@ -24081,17 +25135,17 @@ The Chrome extension, and the only component that can place a real order. Dry-ru
 
 #### `extension/src/core/bot-manager.js`
 
-`code-js` · 152 lines · 10,499 B · description: **extracted**
+`code-js` · 164 lines · 11,186 B · description: **extracted**
 
 **Purpose.** Durable browser-owner protocol helpers; public actions live in commands.js.
 
-**Contents.** Defines `CONTROL_KEYS`, `MANAGER_KEY`, `MANAGER_PROTOCOL`, `SHA`, `UUID`, `applyManagerControl`, `digest`, `managerPoll`, `managerSnapshot`, `paperConfigStore` and 3 more.
+**Contents.** Defines `CONTROL_KEYS`, `MANAGER_KEY`, `MANAGER_PROTOCOL`, `SHA`, `UUID`, `applyManagerControl`, `digest`, `managerPoll`, `managerSnapshot`, `paperConfigStore` and 4 more.
 
 **Use.** Loaded by the extension; see `extension/manifest.json` for entry points.
 
 #### `extension/src/core/commands.js`
 
-`code-js` · 981 lines · 44,717 B · description: **extracted**
+`code-js` · 1005 lines · 46,186 B · description: **extracted**
 
 **Purpose.** The command registry — single source of truth for every action this project can perform. Three surfaces drive this one registry: extension src/bg/service-worker.js (chrome.runtime messages) CLI tools/cli.js (argv) HTTP API tools/api-server.js (POST /v1/<command>) Nothing may be reachable from one surface and not the others.
 
@@ -24101,7 +25155,7 @@ The Chrome extension, and the only component that can place a real order. Dry-ru
 
 #### `extension/src/core/control-room.js`
 
-`code-js` · 82 lines · 4,611 B · description: **extracted**
+`code-js` · 83 lines · 4,658 B · description: **extracted**
 
 **Purpose.** Availability only: the managed suite owns processes and the control room owns stage decisions.
 
@@ -24121,7 +25175,7 @@ The Chrome extension, and the only component that can place a real order. Dry-ru
 
 #### `extension/src/core/engine.js`
 
-`code-js` · 624 lines · 26,302 B · description: **extracted**
+`code-js` · 661 lines · 28,552 B · description: **extracted**
 
 **Purpose.** The tick. Order of operations is the whole design: RECONCILE before PLAN, always. A MV3 service worker can be killed at any moment, including between "write the intent" and "the venue accepted the order". So the venue's live order list — not our local records — is the source of truth at the top of every tick. Local state is a cache and a journal, nothing more.
 
@@ -24161,7 +25215,7 @@ The Chrome extension, and the only component that can place a real order. Dry-ru
 
 #### `extension/src/core/risk.js`
 
-`code-js` · 293 lines · 11,797 B · description: **extracted**
+`code-js` · 300 lines · 11,949 B · description: **extracted**
 
 **Purpose.** Risk rails. Every rail is enforced here, in code, as a gate the executor must pass before anything is submitted. A rail that lives only in the README is not a rail. `evaluate()` is pure so the dashboard can show exactly which rail would block a grid before you arm it.
 
@@ -24193,11 +25247,11 @@ The Chrome extension, and the only component that can place a real order. Dry-ru
 
 #### `extension/src/jupiter/http.js`
 
-`code-js` · 166 lines · 6,195 B · description: **extracted**
+`code-js` · 209 lines · 8,073 B · description: **extracted**
 
 **Purpose.** HTTP layer for the Jupiter APIs. A grid ticking every 30s across N rungs will hit rate limits on the free tier, so retry/backoff and a per-tick request budget are part of the client rather than something callers remember to add.
 
-**Contents.** Defines `DEFAULT_TIMEOUT_MS`, `RETRYABLE_STATUS`, `backoffDelayMs`, `class JupiterHttpError`, `class RequestBudget`, `defaultRequestLog`, `headers`, `request`, `safePath`.
+**Contents.** Defines `DEFAULT_RESPONSE_BYTES`, `DEFAULT_TIMEOUT_MS`, `MAX_RESPONSE_BYTES`, `RETRYABLE_STATUS`, `backoffDelayMs`, `boundedText`, `class JupiterHttpError`, `class RequestBudget`, `defaultRequestLog`, `headers` and 2 more.
 
 **Use.** Loaded by the extension; see `extension/manifest.json` for entry points.
 
@@ -24235,17 +25289,17 @@ The Chrome extension, and the only component that can place a real order. Dry-ru
 
 #### `extension/src/market/holdings.js`
 
-`code-js` · 296 lines · 12,337 B · description: **extracted**
+`code-js` · 314 lines · 13,333 B · description: **extracted**
 
 **Purpose.** Live holdings: what the owner's public Base and Solana addresses hold, in USD. Read-only. No key, no signature, no transaction: Base is read with eth_getBalance and ERC-20 balanceOf through one JSON-RPC batch, Solana with getBalance and getTokenAccountsByOwner, prices from DefiLlama (Base) and the keyless Jupiter price API (Solana).
 
-**Contents.** Defines `DUST_USD`, `MIN_LIQUIDITY_USD`, `SOLANA_KNOWN`, `STABLE_MINTS`, `chainResult`, `fail`, `finish`, `readBase`, `readHoldings`, `readSolana` and 3 more.
+**Contents.** Defines `DUST_USD`, `MIN_LIQUIDITY_USD`, `SOLANA_KNOWN`, `STABLE_MINTS`, `balanceNumber`, `chainResult`, `fail`, `finish`, `readBase`, `readHoldings` and 4 more.
 
 **Use.** Loaded by the extension; see `extension/manifest.json` for entry points.
 
 #### `extension/src/market/net.js`
 
-`code-js` · 115 lines · 4,533 B · description: **extracted**
+`code-js` · 115 lines · 4,569 B · description: **extracted**
 
 **Purpose.** Read-only network access for the market modules (holdings, pools, quotes). Everything here goes through `request` in src/jupiter/http.js, so the timeout, retry and JSON handling are the same ones the trading path uses. The fetch implementation comes from `deps.fetch`: the service worker, the CLI and the HTTP API inject the platform fetch, and tests inject a stub.
 
@@ -24255,7 +25309,7 @@ The Chrome extension, and the only component that can place a real order. Dry-ru
 
 #### `extension/src/market/pools.js`
 
-`code-js` · 101 lines · 4,403 B · description: **extracted**
+`code-js` · 103 lines · 4,576 B · description: **extracted**
 
 **Purpose.** Pool discovery from DefiLlama yields (keyless, https://yields.llama.fi/pools). Every APY here is QUOTED by DefiLlama, not measured by this project. It includes reward emissions and can be a short-window spike.
 
@@ -24265,7 +25319,7 @@ The Chrome extension, and the only component that can place a real order. Dry-ru
 
 #### `extension/src/market/quote.js`
 
-`code-js` · 201 lines · 10,579 B · description: **extracted**
+`code-js` · 208 lines · 11,145 B · description: **extracted**
 
 **Purpose.** Swap quotes. Quote only: nothing here builds, signs or sends a transaction. The extension's signer has no semantic transaction verifier, so live signing stays blocked (CLAUDE.md, "Known-unverified areas"). A quote is handed to the venue's own page, where the owner reviews and signs in their wallet. See Stele KNOW-837.
 
@@ -24287,11 +25341,11 @@ The Chrome extension, and the only component that can place a real order. Dry-ru
 
 #### `extension/src/storage/fileStore.js`
 
-`code-js` · 157 lines · 4,443 B · description: **extracted**
+`code-js` · 348 lines · 13,553 B · description: **extracted**
 
 **Purpose.** Node-side persistence, API-compatible with the browser surfaces. The CLI and HTTP API need the same durability the extension gets from IndexedDB + chrome.storage.local, so this provides: FileStore the Store API (intents, fills, carry, events) on a JSON file createFileArea a chrome.storage.local-shaped {get,set} on a JSON file, so ConfigStore works unchanged outside the browser Writes go through a
 
-**Contents.** Defines `DEFAULT_CONFIG_PATH`, `DEFAULT_DATA_DIR`, `DEFAULT_STORE_PATH`, `class FileStore`, `createFileArea`, `readJson`, `writeJsonAtomic`.
+**Contents.** Defines `DEFAULT_CONFIG_PATH`, `DEFAULT_DATA_DIR`, `DEFAULT_STORE_PATH`, `acquireLease`, `assertPath`, `canonicalPath`, `checkedStorePath`, `class FileStore`, `createFileArea`, `mutatePath` and 8 more.
 
 **Use.** Loaded by the extension; see `extension/manifest.json` for entry points.
 
@@ -24307,11 +25361,11 @@ The Chrome extension, and the only component that can place a real order. Dry-ru
 
 #### `extension/src/storage/store.js`
 
-`code-js` · 258 lines · 8,470 B · description: **extracted**
+`code-js` · 328 lines · 12,461 B · description: **extracted**
 
 **Purpose.** Persistence. Two surfaces, chosen by what the data is: chrome.storage.local — config and limits. Small, synchronously readable at worker start, and NEVER `.sync` (that would push settings, and anything near them, to Google's servers). IndexedDB — the intent journal and fill log.
 
-**Contents.** Defines `CONFIG_KEY`, `DB_NAME`, `DB_VERSION`, `DEFAULT_CONFIG`, `INTENT_STATUS`, `RUNTIME_KEY`, `STORES`, `class ConfigStore`, `class Store`, `openDb` and 1 more.
+**Contents.** Defines `CONFIG_KEY`, `DB_NAME`, `DB_VERSION`, `DEFAULT_CONFIG`, `INTENT_STATUS`, `RUNTIME_KEY`, `STORES`, `class ConfigStore`, `class Store`, `openDb` and 2 more.
 
 **Use.** Loaded by the extension; see `extension/manifest.json` for entry points.
 
@@ -24357,7 +25411,7 @@ The Chrome extension, and the only component that can place a real order. Dry-ru
 
 #### `extension/src/ui/dashboard.html`
 
-`code-web` · 612 lines · 36,953 B · description: **curated**
+`code-web` · 613 lines · 37,075 B · description: **curated**
 
 **Purpose.** Full-page dashboard shell for open state, ladder rungs and recent ticks. Markup only.
 
@@ -24487,7 +25541,7 @@ The Chrome extension, and the only component that can place a real order. Dry-ru
 
 #### `extension/src/ui/signal-desk.js`
 
-`code-js` · 334 lines · 28,156 B · description: **extracted**
+`code-js` · 339 lines · 28,350 B · description: **extracted**
 
 **Purpose.** Composed Signal Desk screens over the same reviewed native command registry.
 
@@ -24565,7 +25619,7 @@ The Chrome extension, and the only component that can place a real order. Dry-ru
 
 #### `extension/src/ui/view-trade.js`
 
-`code-js` · 277 lines · 12,477 B · description: **extracted**
+`code-js` · 287 lines · 12,774 B · description: **extracted**
 
 **Purpose.** Backtest & strategies and Swap views. Strategy work runs in soltui (the backtester is Python): Top 5 evidence, the roster, CPCV sweeps and signal defaults. Swaps are quotes from the extension's registry (swapQuote); signing happens on the venue page (Stele KNOW-837).
 
@@ -24617,7 +25671,7 @@ The Chrome extension, and the only component that can place a real order. Dry-ru
 
 #### `extension/src/venues/triggerVenue.js`
 
-`code-js` · 520 lines · 20,938 B · description: **extracted**
+`code-js` · 518 lines · 20,825 B · description: **extracted**
 
 **Purpose.** Jupiter Trigger V2 venue adapter. Live writes require a trusted semantic-verification signing bridge. The bundled raw session-key signer does not provide one, so it cannot sign remote-crafted money movements. A grid is a ladder of resting price orders, which is exactly what this API is for, and V2 keeps pending orders off-chain so the ladder is not a public roadmap for front-runners.
 
@@ -24651,93 +25705,93 @@ The Chrome extension, and the only component that can place a real order. Dry-ru
 
 #### `extension/test/accounting-audit.test.js`
 
-`code-js` · 35 lines · 1,879 B · description: **none**
+`test` · 35 lines · 1,879 B · description: **none**
 
 **Purpose.** _No description available._
 
-**Use.** Loaded by the extension; see `extension/manifest.json` for entry points.
+**Use.** `node --test extension/test/accounting-audit.test.js`
 
 #### `extension/test/alerts.test.js`
 
-`code-js` · 316 lines · 18,301 B · description: **none**
+`test` · 326 lines · 18,913 B · description: **none**
 
 **Purpose.** _No description available._
 
 **Contents.** Defines `NOW`, `deps`, `soltuiStub`.
 
-**Use.** Loaded by the extension; see `extension/manifest.json` for entry points.
+**Use.** `node --test extension/test/alerts.test.js`
 
 #### `extension/test/api-audit.test.js`
 
-`code-js` · 42 lines · 1,845 B · description: **none**
+`test` · 42 lines · 1,845 B · description: **none**
 
 **Purpose.** _No description available._
 
-**Use.** Loaded by the extension; see `extension/manifest.json` for entry points.
+**Use.** `node --test extension/test/api-audit.test.js`
 
 #### `extension/test/autoreload.test.js`
 
-`code-js` · 194 lines · 8,353 B · description: **none**
+`test` · 194 lines · 8,353 B · description: **none**
 
 **Purpose.** _No description available._
 
 **Contents.** Defines `rig`.
 
-**Use.** Loaded by the extension; see `extension/manifest.json` for entry points.
+**Use.** `node --test extension/test/autoreload.test.js`
 
 #### `extension/test/blind-core-audit.test.js`
 
-`code-js` · 104 lines · 6,923 B · description: **none**
+`test` · 104 lines · 6,923 B · description: **none**
 
 **Purpose.** _No description available._
 
 **Contents.** Defines `setup`.
 
-**Use.** Loaded by the extension; see `extension/manifest.json` for entry points.
+**Use.** `node --test extension/test/blind-core-audit.test.js`
 
 #### `extension/test/bot-manager.test.js`
 
-`code-js` · 281 lines · 14,747 B · description: **none**
+`test` · 281 lines · 14,747 B · description: **none**
 
 **Purpose.** _No description available._
 
 **Contents.** Defines `command`, `deps`, `reply`.
 
-**Use.** Loaded by the extension; see `extension/manifest.json` for entry points.
+**Use.** `node --test extension/test/bot-manager.test.js`
 
 #### `extension/test/cdo-regressions.test.js`
 
-`code-js` · 277 lines · 14,383 B · description: **none**
+`test` · 277 lines · 14,383 B · description: **none**
 
 **Purpose.** _No description available._
 
 **Contents.** Defines `engineFixture`, `fakePort`.
 
-**Use.** Loaded by the extension; see `extension/manifest.json` for entry points.
+**Use.** `node --test extension/test/cdo-regressions.test.js`
 
 #### `extension/test/charts.test.js`
 
-`code-js` · 157 lines · 5,561 B · description: **none**
+`test` · 157 lines · 5,561 B · description: **none**
 
 **Purpose.** _No description available._
 
 **Contents.** Defines `POINTS`, `VENDOR`, `fakeElement`, `fakeLib`.
 
-**Use.** Loaded by the extension; see `extension/manifest.json` for entry points.
+**Use.** `node --test extension/test/charts.test.js`
 
 #### `extension/test/control-room.test.js`
 
-`code-js` · 123 lines · 8,187 B · description: **none**
+`test` · 135 lines · 8,940 B · description: **none**
 
 **Purpose.** _No description available._
 
 **Contents.** Defines `fixture`.
 
-**Use.** Loaded by the extension; see `extension/manifest.json` for entry points.
+**Use.** `node --test extension/test/control-room.test.js`
 
 #### `extension/test/core.test.js`
 
-`code-js` · 1557 lines · 61,893 B · description: **curated**
+`test` · 1557 lines · 61,893 B · description: **curated**
 
 **Purpose.** Node test-runner suite for the pure core — grid maths, planner, reconciler. No `chrome.*`, so it runs headless.
 
@@ -24747,157 +25801,175 @@ The Chrome extension, and the only component that can place a real order. Dry-ru
 
 #### `extension/test/e2e-harness.test.js`
 
-`code-js` · 66 lines · 3,192 B · description: **extracted**
+`test` · 135 lines · 6,625 B · description: **extracted**
 
 **Purpose.** The browser e2e (tools/e2e.mjs) cannot run under `node --test`: it needs Chrome for Testing. What can be tested without a browser is the part that makes it safe.
 
-**Use.** Loaded by the extension; see `extension/manifest.json` for entry points.
+**Use.** `node --test extension/test/e2e-harness.test.js`
 
 #### `extension/test/engine-command-audit.test.js`
 
-`code-js` · 247 lines · 14,178 B · description: **none**
+`test` · 252 lines · 14,543 B · description: **none**
 
 **Purpose.** _No description available._
 
 **Contents.** Defines `setup`.
 
-**Use.** Loaded by the extension; see `extension/manifest.json` for entry points.
+**Use.** `node --test extension/test/engine-command-audit.test.js`
+
+#### `extension/test/file-store-safety.test.js`
+
+`test` · 467 lines · 24,205 B · description: **none**
+
+**Purpose.** _No description available._
+
+**Contents.** Defines `fixture`, `launch`.
+
+**Use.** `node --test extension/test/file-store-safety.test.js`
 
 #### `extension/test/final-gate-audit.test.js`
 
-`code-js` · 52 lines · 2,499 B · description: **none**
+`test` · 52 lines · 2,499 B · description: **none**
 
 **Purpose.** _No description available._
 
 **Contents.** Defines `context`.
 
-**Use.** Loaded by the extension; see `extension/manifest.json` for entry points.
+**Use.** `node --test extension/test/final-gate-audit.test.js`
 
 #### `extension/test/grid-audit.test.js`
 
-`code-js` · 12 lines · 518 B · description: **none**
+`test` · 12 lines · 518 B · description: **none**
 
 **Purpose.** _No description available._
 
-**Use.** Loaded by the extension; see `extension/manifest.json` for entry points.
+**Use.** `node --test extension/test/grid-audit.test.js`
 
 #### `extension/test/http-audit.test.js`
 
-`code-js` · 53 lines · 2,326 B · description: **none**
+`test` · 97 lines · 4,453 B · description: **none**
 
 **Purpose.** _No description available._
 
-**Use.** Loaded by the extension; see `extension/manifest.json` for entry points.
+**Use.** `node --test extension/test/http-audit.test.js`
 
 #### `extension/test/live-score.test.js`
 
-`code-js` · 46 lines · 2,614 B · description: **none**
+`test` · 46 lines · 2,614 B · description: **none**
 
 **Purpose.** _No description available._
 
-**Use.** Loaded by the extension; see `extension/manifest.json` for entry points.
+**Use.** `node --test extension/test/live-score.test.js`
 
 #### `extension/test/live-tools.test.js`
 
-`code-js` · 126 lines · 7,394 B · description: **none**
+`test` · 126 lines · 7,394 B · description: **none**
 
 **Purpose.** _No description available._
 
 **Contents.** Defines `event`, `fixture`, `owner`.
 
-**Use.** Loaded by the extension; see `extension/manifest.json` for entry points.
+**Use.** `node --test extension/test/live-tools.test.js`
 
 #### `extension/test/market.test.js`
 
-`code-js` · 377 lines · 21,757 B · description: **none**
+`test` · 441 lines · 25,449 B · description: **none**
 
 **Purpose.** _No description available._
 
 **Contents.** Defines `MID`, `MID75`, `OWNER`, `PRICE_MID`, `SOL_OWNER`, `USDC`, `baseRpc`, `slipstreamRpc`, `stubFetch`.
 
-**Use.** Loaded by the extension; see `extension/manifest.json` for entry points.
+**Use.** `node --test extension/test/market.test.js`
 
 #### `extension/test/node-deps-audit.test.js`
 
-`code-js` · 25 lines · 1,099 B · description: **none**
+`test` · 25 lines · 1,099 B · description: **none**
 
 **Purpose.** _No description available._
 
-**Use.** Loaded by the extension; see `extension/manifest.json` for entry points.
+**Use.** `node --test extension/test/node-deps-audit.test.js`
+
+#### `extension/test/persisted-safety-audit.test.js`
+
+`test` · 150 lines · 8,205 B · description: **none**
+
+**Purpose.** _No description available._
+
+**Use.** `node --test extension/test/persisted-safety-audit.test.js`
 
 #### `extension/test/prediction-recovery.test.js`
 
-`code-js` · 84 lines · 4,146 B · description: **none**
+`test` · 84 lines · 4,146 B · description: **none**
 
 **Purpose.** _No description available._
 
-**Use.** Loaded by the extension; see `extension/manifest.json` for entry points.
+**Use.** `node --test extension/test/prediction-recovery.test.js`
 
 #### `extension/test/risk-audit.test.js`
 
-`code-js` · 47 lines · 2,043 B · description: **none**
+`test` · 47 lines · 2,043 B · description: **none**
 
 **Purpose.** _No description available._
 
-**Use.** Loaded by the extension; see `extension/manifest.json` for entry points.
+**Use.** `node --test extension/test/risk-audit.test.js`
 
 #### `extension/test/service-worker.test.js`
 
-`code-js` · 333 lines · 15,577 B · description: **none**
+`test` · 333 lines · 15,577 B · description: **none**
 
 **Purpose.** _No description available._
 
-**Use.** Loaded by the extension; see `extension/manifest.json` for entry points.
+**Use.** `node --test extension/test/service-worker.test.js`
 
 #### `extension/test/session-key-form.test.js`
 
-`code-js` · 51 lines · 2,137 B · description: **none**
+`test` · 51 lines · 2,137 B · description: **none**
 
 **Purpose.** _No description available._
 
-**Use.** Loaded by the extension; see `extension/manifest.json` for entry points.
+**Use.** `node --test extension/test/session-key-form.test.js`
 
 #### `extension/test/signal-desk.test.js`
 
-`code-js` · 55 lines · 3,875 B · description: **none**
+`test` · 55 lines · 3,875 B · description: **none**
 
 **Purpose.** _No description available._
 
-**Use.** Loaded by the extension; see `extension/manifest.json` for entry points.
+**Use.** `node --test extension/test/signal-desk.test.js`
 
 #### `extension/test/soltui-bridge.test.js`
 
-`code-js` · 347 lines · 17,813 B · description: **none**
+`test` · 347 lines · 17,813 B · description: **none**
 
 **Purpose.** _No description available._
 
 **Contents.** Defines `HOST`, `fakePort`, `fakeTransport`.
 
-**Use.** Loaded by the extension; see `extension/manifest.json` for entry points.
+**Use.** `node --test extension/test/soltui-bridge.test.js`
 
 #### `extension/test/soltui-panel.test.js`
 
-`code-js` · 114 lines · 7,736 B · description: **none**
+`test` · 114 lines · 7,736 B · description: **none**
 
 **Purpose.** _No description available._
 
 **Contents.** Defines `ROOT`.
 
-**Use.** Loaded by the extension; see `extension/manifest.json` for entry points.
+**Use.** `node --test extension/test/soltui-panel.test.js`
 
 #### `extension/test/soltui-parity.test.js`
 
-`code-js` · 116 lines · 6,553 B · description: **none**
+`test` · 116 lines · 6,553 B · description: **none**
 
 **Purpose.** _No description available._
 
 **Contents.** Defines `HOST`, `ROOT`, `TOKEN`, `everySurface`, `withApi`.
 
-**Use.** Loaded by the extension; see `extension/manifest.json` for entry points.
+**Use.** `node --test extension/test/soltui-parity.test.js`
 
 #### `extension/test/surfaces.test.js`
 
-`code-js` · 469 lines · 18,523 B · description: **curated**
+`test` · 469 lines · 18,523 B · description: **curated**
 
 **Purpose.** Covers the command registry as driven by each surface (popup, dashboard, CLI), so one registry change cannot silently break one caller.
 
@@ -24905,65 +25977,83 @@ The Chrome extension, and the only component that can place a real order. Dry-ru
 
 **Use.** `node --test extension/test/`.
 
-#### `extension/test/tradingview.test.js`
+#### `extension/test/swap-view.test.js`
 
-`code-js` · 14 lines · 683 B · description: **none**
+`test` · 58 lines · 2,963 B · description: **none**
 
 **Purpose.** _No description available._
 
-**Use.** Loaded by the extension; see `extension/manifest.json` for entry points.
+**Contents.** Defines `class Element`.
+
+**Use.** `node --test extension/test/swap-view.test.js`
+
+#### `extension/test/tool-help.test.js`
+
+`test` · 50 lines · 2,819 B · description: **none**
+
+**Purpose.** _No description available._
+
+**Use.** `node --test extension/test/tool-help.test.js`
+
+#### `extension/test/tradingview.test.js`
+
+`test` · 14 lines · 683 B · description: **none**
+
+**Purpose.** _No description available._
+
+**Use.** `node --test extension/test/tradingview.test.js`
 
 #### `extension/test/trigger-audit.test.js`
 
-`code-js` · 101 lines · 5,608 B · description: **none**
+`test` · 101 lines · 5,608 B · description: **none**
 
 **Purpose.** _No description available._
 
 **Contents.** Defines `BASE`, `QUOTE`, `venue`.
 
-**Use.** Loaded by the extension; see `extension/manifest.json` for entry points.
+**Use.** `node --test extension/test/trigger-audit.test.js`
 
 #### `extension/test/venues.test.js`
 
-`code-js` · 97 lines · 4,474 B · description: **none**
+`test` · 97 lines · 4,474 B · description: **none**
 
 **Purpose.** _No description available._
 
 **Contents.** Defines `CONFIG`.
 
-**Use.** Loaded by the extension; see `extension/manifest.json` for entry points.
+**Use.** `node --test extension/test/venues.test.js`
 
 #### `extension/test/version.test.js`
 
-`code-js` · 27 lines · 1,259 B · description: **extracted**
+`test` · 27 lines · 1,259 B · description: **extracted**
 
 **Purpose.** The manifest version is what the owner sees in chrome://extensions and in the popup header. A change that ships without bumping it looks like no change at all (2026-11-07: the SolTUI panel shipped as 0.1.0 and read as "nothing changed"). CI also fails a pull request that edits src/ or manifest.json without bumping the version; this test keeps the two version fields in step.
 
-**Use.** Loaded by the extension; see `extension/manifest.json` for entry points.
+**Use.** `node --test extension/test/version.test.js`
 
 #### `extension/test/wallet-audit.test.js`
 
-`code-js` · 204 lines · 10,343 B · description: **none**
+`test` · 204 lines · 10,343 B · description: **none**
 
 **Purpose.** _No description available._
 
 **Contents.** Defines `transaction`.
 
-**Use.** Loaded by the extension; see `extension/manifest.json` for entry points.
+**Use.** `node --test extension/test/wallet-audit.test.js`
 
 #### `extension/test/wallet-pubkey.test.js`
 
-`code-js` · 134 lines · 6,669 B · description: **none**
+`test` · 134 lines · 6,669 B · description: **none**
 
 **Purpose.** _No description available._
 
 **Contents.** Defines `EVM`, `ROOT`, `SOL`, `bridge`, `fakeRoot`.
 
-**Use.** Loaded by the extension; see `extension/manifest.json` for entry points.
+**Use.** `node --test extension/test/wallet-pubkey.test.js`
 
 #### `extension/test/wallet.test.js`
 
-`code-js` · 252 lines · 9,200 B · description: **curated**
+`test` · 252 lines · 9,200 B · description: **curated**
 
 **Purpose.** Wallet and signing path tests, including the refusals — the cases that must NOT produce a transaction.
 
@@ -24975,11 +26065,21 @@ The Chrome extension, and the only component that can place a real order. Dry-ru
 
 #### `extension/tools/api-server.js`
 
-`code-js` · 282 lines · 10,456 B · description: **extracted**
+`code-js` · 277 lines · 10,946 B · description: **extracted**
 
 **Purpose.** HTTP API surface. Routes are generated from the registry in src/core/commands.js — the same registry the CLI and the extension use — so no endpoint can drift from the extension's behaviour.
 
-**Contents.** Defines `API_MESSAGES`, `MAX_BODY_BYTES`, `coerceQuery`, `createApiServer`, `createRequestHandler`, `logApiEvent`, `main`, `parseArgs`, `ranDirectly`, `readJsonBody` and 2 more.
+**Contents.** Defines `API_MESSAGES`, `MAX_BODY_BYTES`, `USAGE`, `coerceQuery`, `createApiServer`, `createRequestHandler`, `logApiEvent`, `main`, `ranDirectly`, `readJsonBody` and 2 more.
+
+**Use.** Loaded by the extension; see `extension/manifest.json` for entry points.
+
+#### `extension/tools/args.js`
+
+`code-js` · 25 lines · 968 B · description: **extracted**
+
+**Purpose.** Strict argument handling shared by the small Node entrypoints. No I/O.
+
+**Contents.** Defines `toolArgs`, `toolFailure`.
 
 **Use.** Loaded by the extension; see `extension/manifest.json` for entry points.
 
@@ -24995,7 +26095,7 @@ The Chrome extension, and the only component that can place a real order. Dry-ru
 
 #### `extension/tools/cli.js`
 
-`code-js` · 217 lines · 6,971 B · description: **extracted**
+`code-js` · 217 lines · 6,921 B · description: **extracted**
 
 **Purpose.** CLI surface. Every command is generated from the registry in src/core/commands.js, so this file contains no per-command logic and cannot fall behind the extension. Add a command there and it appears here, in the help text, and in the HTTP API.
 
@@ -25025,11 +26125,11 @@ The Chrome extension, and the only component that can place a real order. Dry-ru
 
 #### `extension/tools/dryrun.js`
 
-`code-js` · 163 lines · 6,054 B · description: **extracted**
+`code-js` · 157 lines · 6,533 B · description: **extracted**
 
-**Purpose.** Headless dry run. Runs the real tick — real Jupiter price, real grid engine, real risk rails, real journal — with simulated fills, in Node. This is the integration gate: loading an unpacked extension cannot be automated (chrome://extensions needs a human), so end-to-end verification happens here instead.
+**Purpose.** Headless dry run. Runs the real tick — real Jupiter price, real grid engine, real risk rails, real journal — with simulated fills, in Node. This is the integration gate: real-browser loading is checked separately by tools/e2e.mjs. This gate checks the paper economics rather than browser installation or live execution.
 
-**Contents.** Defines `class ScriptedPriceVenue`, `main`, `parseArgs`, `round`.
+**Contents.** Defines `USAGE`, `class ScriptedPriceVenue`, `main`, `round`.
 
 **Use.** Loaded by the extension; see `extension/manifest.json` for entry points.
 
@@ -25045,11 +26145,11 @@ The Chrome extension, and the only component that can place a real order. Dry-ru
 
 #### `extension/tools/measure-recentre.js`
 
-`code-js` · 160 lines · 6,399 B · description: **extracted**
+`code-js` · 150 lines · 6,259 B · description: **extracted**
 
 **Purpose.** How often does the shipped auto-recentre gate actually open? node tools/measure-recentre.js --csv ../data/SOL_1d.csv `recentreDecision()` refuses to move the ladder while anything is resting or any lot is open, because `tick()` cannot cancel. That gate is deliberately tight, and the honest question is whether it is so tight the feature never fires.
 
-**Contents.** Defines `closeColumn`, `main`, `parseArgs`, `recordingVenue`, `run`.
+**Contents.** Defines `USAGE`, `closeColumn`, `main`, `parseArgs`, `recordingVenue`, `run`.
 
 **Use.** Loaded by the extension; see `extension/manifest.json` for entry points.
 
@@ -25065,11 +26165,11 @@ The Chrome extension, and the only component that can place a real order. Dry-ru
 
 #### `extension/tools/verify-endpoints.js`
 
-`code-js` · 80 lines · 3,155 B · description: **extracted**
+`code-js` · 85 lines · 3,602 B · description: **extracted**
 
 **Purpose.** Live endpoint check. Confirms the read-side assumptions this extension hardcodes still hold, so a Jupiter API change surfaces here rather than mid-tick. Read-only: nothing is signed, deposited, or ordered. node tools/verify-endpoints.js JUPITER_API_KEY=... node tools/verify-endpoints.js # also checks the keyed tier
 
-**Contents.** Defines `MINTS`, `checkPrice`, `checkTriggerReachable`, `report`.
+**Contents.** Defines `MINTS`, `USAGE`, `checkPrice`, `checkTriggerReachable`, `main`, `report`.
 
 **Use.** Loaded by the extension; see `extension/manifest.json` for entry points.
 
@@ -25109,11 +26209,2671 @@ The Chrome extension, and the only component that can place a real order. Dry-ru
 
 ---
 
+## executor
+
+The separately armed Jupiter execution library and its fail-closed risk and reconciliation boundaries.
+
+48 files.
+
+#### `executor/.gitignore`
+
+`other` · 13 lines · 118 B · description: **none**
+
+**Purpose.** _No description available._
+
+**Use.** Read it.
+
+#### `executor/CLAUDE.md`
+
+`doc` · 87 lines · 6,504 B · description: **extracted**
+
+**Purpose.** Guarded spot swaps on Solana through Jupiter. **It signs and sends real transactions from the owner's wallet.** Treat every change as production software. Read the root `CLAUDE.md` "Live on-chain actions" first; its six conditions bind you here too.
+
+**Use.** Read it.
+
+#### `executor/README.md`
+
+`doc` · 103 lines · 6,559 B · description: **extracted**
+
+**Purpose.** The **executor** component of solmargintrader: best-price spot swaps on Solana through Jupiter, behind a semantic transaction verifier, hard rails, a research gate, a dry-run soak and an append-only journal. cd executor
+
+**Use.** Read it.
+
+#### `executor/pyproject.toml`
+
+`config` · 38 lines · 947 B · description: **none**
+
+**Purpose.** _No description available._
+
+**Use.** Configuration; nothing to run.
+
+#### `executor/uv.lock`
+
+`other` · 0 lines · 19,617 B · description: **none**
+
+**Purpose.** _No description available._
+
+**Use.** Read it.
+
+### `executor/src/executor/`
+
+#### `executor/src/executor/__init__.py`
+
+`code-python` · 4 lines · 136 B · description: **extracted**
+
+**Purpose.** executor: a guarded spot-swap executor for Solana (Jupiter). It can move real money; read CLAUDE.md first.
+
+**Use.** `import executor.src.executor.__init__`
+
+#### `executor/src/executor/api.py`
+
+`code-python` · 236 lines · 9,534 B · description: **extracted**
+
+**Purpose.** HTTP surface: `executor api [--port N]`. Stdlib `http.server`; the same access model as extension/tools/api-server.js. GET /v1/health liveness, no auth GET /v1/commands the `list` envelope GET /v1/<command>?a=1 read-only commands, args from the query string POST /v1/<command> any command, args from a JSON object body Command routes return the registry envelope exactly as `registry.dumps` renders i
+
+**Contents.** Defines `HOST`, `DEFAULT_PORT`, `MAX_BODY_BYTES`, `LOGGER`, `_ROUTE`, `_STATUS`, `token_path()`, `load_token()`, `token_matches()`, `make_handler()` and 2 more.
+
+**Use.** `python3 executor/src/executor/api.py --help`
+
+#### `executor/src/executor/authority.py`
+
+`code-python` · 491 lines · 23,438 B · description: **extracted**
+
+**Purpose.** One wallet authority across executor homes; enrollment never enables live mode. The authority location depends only on the OS user's home and wallet. Client homes cannot select another authority. All supported live writers use this lock, shared journal, immutable request bindings and conservative aggregate limits.
+
+**Contents.** Defines `RISK_LIMITS`, `STRATEGIES`, `encoded()`, `digest()`, `wallet_root()`, `default_client_root()`, `positive()`, `identity()`, `class WalletAuthority`.
+
+**Use.** `import executor.src.executor.authority`
+
+#### `executor/src/executor/cli.py`
+
+`code-python` · 121 lines · 4,656 B · description: **extracted**
+
+**Purpose.** Command line: `executor quote|swap|status|journal|kill|resume|gates|reconcile|list|call|api`. The CLI prints the registry envelope exactly as the HTTP API returns it (same serializer, byte-identical), and exits 0 when `ok` is true, 1 otherwise, 2 for a usage error.
+
+**Contents.** Defines `_emit()`, `_parser()`, `_params()`, `main()`.
+
+**Use.** `python3 executor/src/executor/cli.py --help`
+
+#### `executor/src/executor/config.py`
+
+`code-python` · 261 lines · 10,928 B · description: **extracted**
+
+**Purpose.** Configuration: `~/.executor/config.toml` (or `$EXECUTOR_HOME/config.toml`), created mode 600 with safe defaults. Fail closed: an unknown key, a wrong type, a non-finite or non-positive number, or a file that other users can write is an error. Defaults are the owner's (2026-11-07): max position $25 per strategy, daily loss stop $10.
+
+**Contents.** Defines `OWNER_SOLANA`, `OWNER_BASE`, `VALIDATION_STRATEGY`, `VALIDATION_MAX_TRADE_USD`, `VALIDATION_MAX_DAILY_USD`, `HEADER`, `class Rails`, `class Gates`, `class Validation`, `class Bridge` and 11 more.
+
+**Use.** `import executor.src.executor.config`
+
+#### `executor/src/executor/engine.py`
+
+`code-python` · 786 lines · 38,104 B · description: **extracted**
+
+**Purpose.** The swap pipeline. Dry-run and live share every step up to the signature, so dry-run simulates exactly what live would send (the same pattern as liquidity's Rebalancer/Runner). resolve -> quote + independent price -> rails -> /swap -> decode -> VERIFY (static) -> pre-state -> simulate -> VERIFY (economic) ........ dry-run stops here ........
+
+**Contents.** Defines `LOOKUP_TABLE_PROGRAM`, `BLOCKHASH_MARGIN`, `class Engine`, `_recorded_sol_price()`, `_tokens()`, `realized_from_meta()`.
+
+**Use.** `import executor.src.executor.engine`
+
+#### `executor/src/executor/errors.py`
+
+`code-python` · 70 lines · 2,105 B · description: **extracted**
+
+**Purpose.** Error types. Every refusal carries a code that maps to the envelope `error.code`.
+
+**Contents.** Defines `CODES`, `class ExecutorError`, `class BadParams`, `class Refused`, `class Forbidden`, `class Ambiguous`, `class RpcError`, `class WalletError`, `class SendRejected`, `class HttpError`.
+
+**Use.** `import executor.src.executor.errors`
+
+#### `executor/src/executor/gates.py`
+
+`code-python` · 351 lines · 14,064 B · description: **extracted**
+
+**Purpose.** Pre-live gates, per strategy: a dry-run soak and a research gate. Same pattern as liquidity/src/aero_lp/gates.py. 1. Dry-run soak. A strategy must have run in dry-run for `[gates].soak_hours` (24 h) with at least `[gates].min_dry_runs` fully simulated dry-run swaps before it may go live. Every dry-run swap that passes the whole pipeline credits one tick (`record_dry_run`).
+
+**Contents.** Defines `SOAK_SCHEMA`, `RESEARCH_SCHEMA`, `MAX_TICK_GAP_S`, `_sync_directory()`, `_atomic_write()`, `_state_lock()`, `_nonnegative_number()`, `_nonblank()`, `_json_object()`, `_invalid_constant()` and 17 more.
+
+**Use.** `import executor.src.executor.gates`
+
+#### `executor/src/executor/http.py`
+
+`code-python` · 164 lines · 6,843 B · description: **extracted**
+
+**Purpose.** Bounded HTTP seam; provider data and credentials never enter diagnostics.
+
+**Contents.** Defines `LOGGER`, `MAX_RESPONSE_BYTES`, `_PRIVATE_DIAGNOSTICS`, `_FACTORY_LOCK`, `_private_diagnostics()`, `class Http`, `class HttpxHttp`.
+
+**Use.** `import executor.src.executor.http`
+
+#### `executor/src/executor/journal.py`
+
+`code-python` · 239 lines · 9,826 B · description: **extracted**
+
+**Purpose.** Append-only journal of intents and results: `$EXECUTOR_HOME/journal.jsonl`, mode 600. Every swap that will be sent is written BEFORE sending (`intent`, then `sending` with the signature) and its outcome AFTER (`result`). Lines are only ever appended, each under an exclusive lock and fsynced. State is derived by replaying the file; nothing is rewritten.
+
+**Contents.** Defines `TERMINAL`, `KINDS`, `OUTCOMES`, `_unique_object()`, `_record_problem()`, `_apply_record()`, `class Journal`, `failed_accounting_missing()`, `require_clear()`.
+
+**Use.** `import executor.src.executor.journal`
+
+#### `executor/src/executor/jupiter.py`
+
+`code-python` · 199 lines · 8,068 B · description: **extracted**
+
+**Purpose.** Jupiter Swap API v1 client (quote + swap) and the Jupiter Price API (the independent reference). Verified 2026-11-07 against https://dev.jup.ag/docs/swap/get-quote: base URL `https://api.jup.ag` (key via the `x-api-key` header) and the keyless `https://lite-api.jup.ag`, the host the extension's manifest also lists.
+
+**Contents.** Defines `class RouteLeg`, `class Quote`, `_int()`, `parse_quote()`, `class Jupiter`.
+
+**Use.** `import executor.src.executor.jupiter`
+
+#### `executor/src/executor/jupiter_route.py`
+
+`code-python` · 209 lines · 7,561 B · description: **extracted**
+
+**Purpose.** Strict Borsh layout decoder for the two supported Jupiter V6 ExactIn routes. Layout source (pinned, not fetched at runtime): https://github.com/jup-ag/jupiter-amm-implementation/blob/cc068c9d1df0060c62f9a8a4fc37ea13ea7b9b39/idls/jupiter_aggregator_v6.json IDL blob f554d1c7635b3497c022109fca231a15cb3642bd.
+
+**Contents.** Defines `BPS_DENOMINATOR`, `MAX_PAYLOAD_BYTES`, `class RouteBound`, `class _Cursor`, `decode_route()`.
+
+**Use.** `import executor.src.executor.jupiter_route`
+
+#### `executor/src/executor/ledger.py`
+
+`code-python` · 133 lines · 5,261 B · description: **extracted**
+
+**Purpose.** Pure accounting over the journal: per-strategy position (cost basis) and realized P&L per UTC day. Only confirmed trades create positions or trading profit. Confirmed and failed on-chain attempts both incur network fees. The quote asset is always USDC, so cost and proceeds are exact USDC amounts taken from the transaction itself; the base-asset quantity is the transaction's measured delta.
+
+**Contents.** Defines `class Position`, `_confirmed_trades()`, `positions()`, `utc_day()`, `_failed_fee_usd()`, `realized_pnl_usd()`, `trades_notional_usd()`, `is_quote()`.
+
+**Use.** `import executor.src.executor.ledger`
+
+#### `executor/src/executor/lifi.py`
+
+`code-python` · 109 lines · 4,405 B · description: **extracted**
+
+**Purpose.** Cross-chain quote, QUOTE ONLY. Nothing here builds, signs or sends a cross-chain transaction. LI.FI's `/v1/quote` answers without an API key (checked 2026-11-07; unauthenticated use is rate limited). It also returns a `transactionRequest`; this module drops it on purpose so that no caller can execute from it.
+
+**Contents.** Defines `CHAINS`, `SOLANA_CHAIN`, `_dec()`, `quote_cross_chain()`.
+
+**Use.** `import executor.src.executor.lifi`
+
+#### `executor/src/executor/manager.py`
+
+`code-python` · 260 lines · 10,868 B · description: **extracted**
+
+**Purpose.** Strict manager admission delegates signing to the existing executor pipeline. Scoped certificates are read from executor-owned authority storage. A manager's claims, paper balance or boolean cannot manufacture certification. This release issues no certificates: current reference-only research remains unavailable.
+
+**Contents.** Defines `SCOPE_FIELDS`, `SWAP_FIELDS`, `capabilities()`, `validate()`, `admit()`, `execute()`.
+
+**Use.** `import executor.src.executor.manager`
+
+#### `executor/src/executor/quote.py`
+
+`code-python` · 151 lines · 5,758 B · description: **extracted**
+
+**Purpose.** Quote evaluation: the best route Jupiter finds, checked against an independent price reference. A quote is only usable when (a) every number is present, (b) its price impact is within `max_price_impact_bps`, (c) its implied rate is within `max_price_deviation_bps` of the Jupiter Price API (a separate service and data path from the quote engine), and (d) its slippage cap is within `max_slippage_bps
+
+**Contents.** Defines `class QuoteReport`, `evaluate()`, `fetch_report()`.
+
+**Use.** `import executor.src.executor.quote`
+
+#### `executor/src/executor/rails.py`
+
+`code-python` · 181 lines · 8,527 B · description: **extracted**
+
+**Purpose.** Rails: every limit an order must pass, as code. A rail documented but not enforced is not a rail. All rails fail closed: a missing price, an unknown side, an unreadable record or a non-finite number is a refusal, never a pass. `check_trade` returns every problem at once so a caller sees the whole picture.
+
+**Contents.** Defines `class Decision`, `classify()`, `check_trade()`, `_loss_today()`.
+
+**Use.** `import executor.src.executor.rails`
+
+#### `executor/src/executor/registry.py`
+
+`code-python` · 535 lines · 19,570 B · description: **extracted**
+
+**Purpose.** The executor command registry: one set of calls for the CLI and the HTTP API. Every surface calls `dispatch(name, params, surface)`, which validates parameters, applies the confirm gate, runs the handler, wraps the outcome in the response envelope and appends one line to the call log. The surfaces only carry bytes; none holds command logic.
+
+**Contents.** Defines `LOG_ROTATE_BYTES`, `PARAM_TYPES`, `class CommandError`, `class Param`, `class Command`, `CONFIRM_PARAM`, `P()`, `command()`, `class Context`, `dumps()` and 28 more.
+
+**Use.** `import executor.src.executor.registry`
+
+#### `executor/src/executor/rpc.py`
+
+`code-python` · 140 lines · 6,079 B · description: **extracted**
+
+**Purpose.** Solana JSON-RPC client over the injectable HTTP seam. Read calls retry (bounded, with backoff) because repeating a read is harmless. `send_transaction` NEVER retries: a send that errors or times out has an unknown outcome, and the caller must journal it as such.
+
+**Contents.** Defines `READ_RETRIES`, `class Rpc`, `_account()`.
+
+**Use.** `import executor.src.executor.rpc`
+
+#### `executor/src/executor/signer.py`
+
+`code-python` · 74 lines · 2,663 B · description: **extracted**
+
+**Purpose.** Signing key loading. The key is never printed, logged, hashed, copied, or included in an exception message. The file must be a regular file, owned by the current user, with no group or other permission bits (mode 600 or stricter). The same open file descriptor is used for the checks and the read, so the file cannot be swapped in between.
+
+**Contents.** Defines `check_key_file_mode()`, `_open()`, `_check_fd()`, `load_keypair()`.
+
+**Use.** `import executor.src.executor.signer`
+
+#### `executor/src/executor/tokens.py`
+
+`code-python` · 85 lines · 3,119 B · description: **extracted**
+
+**Purpose.** Token table and exact amount conversion. Only tokens listed here can ever be traded: decimals come from this table, never from a guess. A mint that is not here is refused even when it is in the config allowlist, because an unknown decimal count turns a $1 order into a $1,000,000 one.
+
+**Contents.** Defines `WSOL_MINT`, `USDC_MINT`, `USDT_MINT`, `class Token`, `QUOTE_MINT`, `resolve()`, `ui_to_raw()`, `raw_to_ui()`.
+
+**Use.** `import executor.src.executor.tokens`
+
+#### `executor/src/executor/txverify.py`
+
+`code-python` · 509 lines · 23,233 B · description: **extracted**
+
+**Purpose.** Semantic transaction verifier: what the extension never had. Runs BEFORE anything is signed. Jupiter's `/swap` returns a serialized transaction. That response is untrusted: a compromised or buggy API could return a transaction that drains the wallet while still "being a swap". Nothing is signed until two layers pass. Layer 1, `check_static` (pure, no network): reads the transaction itself.
+
+**Contents.** Defines `JUPITER_V6`, `TOKEN_PROGRAM`, `TOKEN_2022`, `ATA_PROGRAM`, `COMPUTE_BUDGET`, `SYSTEM_PROGRAM`, `JUPITER_ALLOWED_DISCRIMINATORS`, `TOKEN_ACCOUNT_RENT_LAMPORTS`, `BASE_FEE_PER_SIGNATURE`, `MAX_INSTRUCTIONS` and 17 more.
+
+**Use.** `import executor.src.executor.txverify`
+
+### `executor/tests/`
+
+#### `executor/tests/conftest.py`
+
+`test` · 421 lines · 15,009 B · description: **extracted**
+
+**Purpose.** Shared test machinery: an isolated home, a fixture-backed HTTP seam, an in-memory chain, and a transaction builder. No test here touches the network. Recorded responses live in tests/fixtures (captured from the live services on 2026-11-07); everything else is built in memory.
+
+**Contents.** Defines `FIX`, `SYSTEM`, `TOKEN`, `ATA`, `CB`, `JUP`, `SHARED_ROUTE`, `fixture()`, `isolated()`, `pk()` and 30 more.
+
+**Use.** `python3 -m pytest executor/tests/conftest.py -q`
+
+#### `executor/tests/test_authority.py`
+
+`test` · 766 lines · 32,627 B · description: **extracted**
+
+**Purpose.** Shared wallet authority, request replay and scoped admission adversarial tests.
+
+**Contents.** Defines `request()`, `certify()`, `buyer()`, `seed()`, `test_new_home_cannot_select_new_wallet_authority()`, `test_portfolio_cap_is_explicit_and_finite()`, `test_cap_cannot_be_increased_by_new_client_or_configuration()`, `test_unaware_writer_cannot_be_omitted_to_reopen_admission()`, `test_missing_request_ledger_is_never_recreated()`, `test_local_writer_history_change_blocks_shared_writer()` and 30 more.
+
+**Use.** `python3 -m pytest executor/tests/test_authority.py -q`
+
+#### `executor/tests/test_engine.py`
+
+`test` · 348 lines · 14,913 B · description: **extracted**
+
+**Purpose.** The swap pipeline end to end against an in-memory chain: dry-run, live, and every way a send can go wrong.
+
+**Contents.** Defines `AMOUNT_UI`, `AMOUNT`, `FEE`, `OUT`, `sell_setup()`, `live_cfg()`, `swap()`, `kinds()`, `test_dry_run_simulates_and_sends_nothing()`, `test_mode_live_without_the_live_flag_is_still_a_dry_run()` and 26 more.
+
+**Use.** `python3 -m pytest executor/tests/test_engine.py -q`
+
+#### `executor/tests/test_engine_integrity.py`
+
+`test` · 209 lines · 8,582 B · description: **extracted**
+
+**Purpose.** Crash and incomplete-evidence regressions over a synthetic chain and temporary homes.
+
+**Contents.** Defines `pending_engine()`, `test_present_nonterminal_status_never_clears_unknown()`, `test_processed_error_remains_unknown_until_confirmed()`, `test_confirmation_waits_for_confirmed_error()`, `test_kill_appearing_during_journal_flush_prevents_send()`, `test_reconcile_shares_swap_lock()`, `test_missing_or_malformed_token_balance_arrays_are_not_zero()`, `test_malformed_token_amount_is_unreadable()`, `test_explicit_empty_opening_array_supports_new_token_account()`, `test_confirmed_incomplete_metadata_preserves_hold_until_recovered()` and 5 more.
+
+**Use.** `python3 -m pytest executor/tests/test_engine_integrity.py -q`
+
+#### `executor/tests/test_failed_fees.py`
+
+`test` · 166 lines · 7,135 B · description: **extracted**
+
+**Purpose.** Failed on-chain attempts incur measured fees even though they create no position.
+
+**Contents.** Defines `NOW`, `DAY`, `MISSING`, `failed_attempt()`, `test_failed_fee_is_a_loss_without_any_trade_or_position()`, `test_failed_fees_reach_daily_stop_for_regular_live_buy()`, `test_failed_fees_are_scoped_to_the_requested_strategy_and_utc_day()`, `test_missing_or_invalid_failed_fee_refuses_without_exposing_values()`, `test_explicit_zero_failed_fee_is_not_missing_evidence()`, `test_missing_failed_fee_does_not_block_a_proven_reduce_only_exit()` and 4 more.
+
+**Use.** `python3 -m pytest executor/tests/test_failed_fees.py -q`
+
+#### `executor/tests/test_gate_integrity.py`
+
+`test` · 315 lines · 11,889 B · description: **extracted**
+
+**Purpose.** Persisted gate evidence must fail closed and survive concurrent writers.
+
+**Contents.** Defines `soak_record()`, `test_malformed_soak_blocks_and_restarts_without_credit()`, `test_backward_clock_restarts_soak_instead_of_reusing_elapsed_time()`, `test_explicit_zero_soak_still_needs_a_valid_successful_dry_run()`, `research_record()`, `test_malformed_newer_research_never_falls_back_to_an_old_pass()`, `test_research_schema_is_required_and_damage_is_preserved()`, `test_invalid_recording_clock_cannot_write_gate_evidence()`, `test_research_same_timestamp_uses_the_last_recorded_result()`, `test_research_clock_regression_retains_failure_and_blocks_prior_pass()` and 10 more.
+
+**Use.** `python3 -m pytest executor/tests/test_gate_integrity.py -q`
+
+#### `executor/tests/test_http_boundaries.py`
+
+`test` · 262 lines · 10,409 B · description: **extracted**
+
+**Purpose.** Real HTTPX mock transports exercise privacy and bounded stream consumption.
+
+**Contents.** Defines `SECRET`, `class TrackedStream`, `client()`, `test_actual_httpx_and_httpcore_records_omit_private_request_details()`, `test_actual_quote_registry_envelope_omits_malformed_provider_value()`, `test_swap_simulation_refusal_does_not_echo_provider_body()`, `test_body_budget_applies_to_status_length_and_decoded_content()`, `test_small_valid_encoded_json_is_accepted_and_closed()`, `test_trickled_stream_hits_total_budget_without_sleep_or_retry()`, `test_midstream_transport_failure_closes_once_and_never_retries()` and 4 more.
+
+**Use.** `python3 -m pytest executor/tests/test_http_boundaries.py -q`
+
+#### `executor/tests/test_journal_integrity.py`
+
+`test` · 241 lines · 9,055 B · description: **extracted**
+
+**Purpose.** Crash and corruption counterexamples for the journal's write-before-send boundary.
+
+**Contents.** Defines `write_record()`, `test_invalid_record_envelopes_are_corruption()`, `test_invalid_transition_cannot_clear_or_replace_pending_send()`, `test_orphan_lifecycle_events_are_corruption()`, `test_nonmonotonic_or_malformed_sequence_is_corruption()`, `test_short_write_finishes_before_append_reports_success()`, `test_zero_progress_write_refuses()`, `test_append_syncs_content_then_directory_entry_before_success()`, `test_directory_sync_failure_never_reports_append_success()`, `test_write_error_after_partial_send_record_never_returns_success()` and 6 more.
+
+**Use.** `python3 -m pytest executor/tests/test_journal_integrity.py -q`
+
+#### `executor/tests/test_journal_ledger_signer.py`
+
+`test` · 182 lines · 7,437 B · description: **none**
+
+**Purpose.** _No description available._
+
+**Contents.** Defines `test_journal_is_append_only_fsynced_and_mode_600()`, `test_states_replay()`, `test_unknown_blocks_until_reconciled_and_never_clears_itself()`, `test_a_late_unknown_does_not_reopen_a_terminal_state()`, `test_torn_line_is_surfaced_not_skipped()`, `test_records_carry_no_key_material()`, `trade()`, `test_average_cost_positions_and_realized_pnl()`, `test_failed_and_unknown_trades_do_not_count()`, `test_a_sell_beyond_the_tracked_quantity_realizes_no_phantom_profit()` and 5 more.
+
+**Use.** `python3 -m pytest executor/tests/test_journal_ledger_signer.py -q`
+
+#### `executor/tests/test_network.py`
+
+`test` · 67 lines · 2,628 B · description: **extracted**
+
+**Purpose.** Live, READ-ONLY checks (run with `pytest -m network`). They quote, build and simulate against mainnet; none signs or sends anything, and none needs the key. They use the owner's public address only to build a transaction.
+
+**Contents.** Defines `live()`, `test_live_quote_is_acceptable_and_has_a_second_price()`, `test_live_price_impact_units_agree_with_the_independent_reference()`, `test_live_dry_run_swap_builds_verifies_and_simulates()`, `test_live_cross_chain_quote_is_quote_only()`, `test_live_rpc_reads()`.
+
+**Use.** `python3 -m pytest executor/tests/test_network.py -q`
+
+#### `executor/tests/test_optimizer_regressions.py`
+
+`test` · 776 lines · 32,010 B · description: **extracted**
+
+**Purpose.** Offline regression coverage for reviewed safety boundaries.
+
+**Contents.** Defines `test_final_read_guards()`, `test_failed_chain_fee()`, `test_failed_missing_fee_stays_blocking()`, `test_legacy_failed_needs_accounting()`, `test_existing_wsol_cannot_hide_loss()`, `test_legitimate_wsol_closure_actual_amount()`, `test_journal_short_write()`, `test_journal_zero_write()`, `test_replenishing_buy()`, `test_public_rpc_host()` and 30 more.
+
+**Use.** `python3 -m pytest executor/tests/test_optimizer_regressions.py -q`
+
+#### `executor/tests/test_quote.py`
+
+`test` · 182 lines · 6,752 B · description: **none**
+
+**Purpose.** _No description available._
+
+**Contents.** Defines `PRICE_MAP`, `quote()`, `test_recorded_quote_parses_and_is_acceptable()`, `test_malformed_quote_is_refused()`, `test_price_impact_over_cap_is_a_problem()`, `test_deviation_worse_and_better_than_reference_both_refused()`, `test_missing_price_refuses_rather_than_guessing()`, `test_prices_endpoint_drops_unusable_entries()`, `test_fetch_report_enforces_allowlist_and_same_token()`, `test_jupiter_retries_429_a_bounded_number_of_times()` and 8 more.
+
+**Use.** `python3 -m pytest executor/tests/test_quote.py -q`
+
+#### `executor/tests/test_rails.py`
+
+`test` · 353 lines · 14,212 B · description: **extracted**
+
+**Purpose.** Every rail, one test each, plus the property that dry-run applies the same trade rails as live.
+
+**Contents.** Defines `PRICE_MAP`, `NOW`, `report()`, `journal_with()`, `check()`, `refused()`, `test_side_classification()`, `test_max_trade_usd()`, `test_max_position_usd_is_per_strategy()`, `test_position_cap_default_is_the_owners_25()` and 26 more.
+
+**Use.** `python3 -m pytest executor/tests/test_rails.py -q`
+
+#### `executor/tests/test_surfaces.py`
+
+`test` · 429 lines · 17,330 B · description: **extracted**
+
+**Purpose.** One registry, two surfaces: the CLI and the HTTP API return byte-identical envelopes, with the same access model as extension/tools/api-server.js and the same logging.
+
+**Contents.** Defines `wired()`, `run_cli()`, `server()`, `request()`, `test_every_command_is_declared_the_same_way()`, `test_envelope_shape_ok_and_error()`, `test_error_codes()`, `test_resume_removes_kill_only_with_confirm()`, `test_unexpected_exceptions_become_failed_envelopes_without_details()`, `test_the_swap_command_defaults_to_dry_run()` and 30 more.
+
+**Use.** `python3 -m pytest executor/tests/test_surfaces.py -q`
+
+#### `executor/tests/test_tokens_config.py`
+
+`test` · 130 lines · 4,536 B · description: **none**
+
+**Purpose.** _No description available._
+
+**Contents.** Defines `test_ui_to_raw_exact()`, `test_ui_to_raw_rejects()`, `test_ui_to_raw_rejects_numbers_that_are_not_strings()`, `test_ui_to_raw_never_rounds_underflows_or_exceeds_solana_u64()`, `test_amount_conversion_is_independent_of_decimal_context()`, `test_resolve_symbol_and_mint_and_unknown()`, `test_config_created_mode_600_with_owner_defaults()`, `test_code_defaults_are_dry_run_and_match_the_generated_file()`, `test_config_round_trips_overrides()`, `test_config_fails_closed()` and 3 more.
+
+**Use.** `python3 -m pytest executor/tests/test_tokens_config.py -q`
+
+#### `executor/tests/test_txverify.py`
+
+`test` · 413 lines · 16,533 B · description: **extracted**
+
+**Purpose.** The semantic verifier: honest transactions pass; every malicious fixture is refused, each for its own reason.
+
+**Contents.** Defines `AMOUNT`, `MIN_OUT`, `RESERVE`, `exp()`, `static()`, `honest()`, `has()`, `test_honest_sol_to_usdc_passes()`, `test_honest_usdc_to_sol_passes()`, `test_foreign_fee_payer_is_refused()` and 30 more.
+
+**Use.** `python3 -m pytest executor/tests/test_txverify.py -q`
+
+### `executor/tests/fixtures/`
+
+#### `executor/tests/fixtures/alt_accounts.json`
+
+`test` · 13 lines · 2,887 B · description: **derived**
+
+**Purpose.** Generated JSON object, 1 keys (23iTfgGpQMxmeDhF4BcjW6D33UYG4Up25ttdc27vDD42).
+
+**Use.** `python3 -m pytest executor/tests/fixtures/alt_accounts.json -q`
+
+#### `executor/tests/fixtures/jup_prices.json`
+
+`test` · 18 lines · 494 B · description: **derived**
+
+**Purpose.** Generated JSON object, 2 keys (EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v, So11111111111111111111111111111111111111112).
+
+**Use.** `python3 -m pytest executor/tests/fixtures/jup_prices.json -q`
+
+#### `executor/tests/fixtures/jup_quote_sol_usdc.json`
+
+`test` · 42 lines · 1,164 B · description: **derived**
+
+**Purpose.** Generated JSON object, 21 keys (contextSlot, inAmount, inputMint, instructionVersion, loadedLongtailToken, longtailMarketQuoteReport...).
+
+**Use.** `python3 -m pytest executor/tests/fixtures/jup_quote_sol_usdc.json -q`
+
+#### `executor/tests/fixtures/jup_swap_sol_usdc.json`
+
+`test` · 21 lines · 1,354 B · description: **derived**
+
+**Purpose.** Generated JSON object, 14 keys (addressesByLookupTableAddress, computeUnitLimit, createAtaTimeTaken, dynamicSlippageReport, lastValidBlockHeight, loadedAccountsDataSize...).
+
+**Use.** `python3 -m pytest executor/tests/fixtures/jup_swap_sol_usdc.json -q`
+
+#### `executor/tests/fixtures/lifi_quote_usdc_base.json`
+
+`test` · 145 lines · 3,858 B · description: **derived**
+
+**Purpose.** Generated JSON object, 8 keys (estimate, executionType, id, integrator, recommendedSlippage, tool...).
+
+**Use.** `python3 -m pytest executor/tests/fixtures/lifi_quote_usdc_base.json -q`
+
+---
+
+## liquidity
+
+Pool research and separately controlled liquidity automation with owned ledgers.
+
+61 files.
+
+#### `liquidity/.gitignore`
+
+`other` · 13 lines · 118 B · description: **none**
+
+**Purpose.** _No description available._
+
+**Use.** Read it.
+
+#### `liquidity/CLAUDE.md`
+
+`doc` · 68 lines · 5,260 B · description: **extracted**
+
+**Purpose.** The Aero Slipstream LP manager. See README.md. **It can move real money.** On 2026-11-06 the owner authorized autonomous live operation for the owner's own wallet The repo-wide standing authorization for live on-chain actions is in the root `CLAUDE.md`
+
+**Use.** Read it.
+
+#### `liquidity/README.md`
+
+`doc` · 200 lines · 13,404 B · description: **extracted**
+
+**Purpose.** The **liquidity** component of solmargintrader. It manages concentrated-liquidity positions on **Aero** (aero.xyz) **Slipstream** on **Base**, in one daemon: soltui's **Liquidity** tab shows all of it. The tab reads the daemon's state files and nothing else (see
+
+**Use.** Read it.
+
+#### `liquidity/STATE_FILES.md`
+
+`doc` · 155 lines · 7,018 B · description: **extracted**
+
+**Purpose.** The liquidity daemon (`aero-lp daemon`) writes these files. `soltui`'s Liquidity tab only **reads** them; the one exception is the kill-switch file, which soltui may create or delete. soltui never imports `aero_lp`, web3 or any key material.
+
+**Use.** Read it.
+
+#### `liquidity/config.example.toml`
+
+`config` · 54 lines · 3,281 B · description: **none**
+
+**Purpose.** _No description available._
+
+**Use.** Configuration; nothing to run.
+
+#### `liquidity/pyproject.toml`
+
+`config` · 40 lines · 884 B · description: **none**
+
+**Purpose.** _No description available._
+
+**Use.** Configuration; nothing to run.
+
+#### `liquidity/pyrightconfig.json`
+
+`config` · 7 lines · 100 B · description: **derived**
+
+**Purpose.** Generated JSON object, 4 keys (venvPath, venv, extraPaths, typeCheckingMode).
+
+**Use.** Configuration; nothing to run.
+
+#### `liquidity/uv.lock`
+
+`other` · 0 lines · 392,323 B · description: **none**
+
+**Purpose.** _No description available._
+
+**Use.** Read it.
+
+### `liquidity/scripts/`
+
+#### `liquidity/scripts/aero-lp-service`
+
+`other` · 68 lines · 2,993 B · description: **none**
+
+**Purpose.** _No description available._
+
+**Use.** Read it.
+
+### `liquidity/src/aero_lp/`
+
+#### `liquidity/src/aero_lp/__init__.py`
+
+`code-python` · 4 lines · 103 B · description: **extracted**
+
+**Purpose.** aero-lp: cost-aware auto-rebalancer for Aero Slipstream deposits on Base.
+
+**Use.** `import liquidity.src.aero_lp.__init__`
+
+#### `liquidity/src/aero_lp/abi.py`
+
+`code-python` · 245 lines · 9,756 B · description: **extracted**
+
+**Purpose.** Minimal ABIs for the Aero Slipstream contracts the bot touches. Signatures were copied from github.com/dromos-labs/metadex-slipstream-public (v1.1.0): contracts/periphery/interfaces/INonfungiblePositionManager.sol contracts/core/interfaces/pool/ICLPoolState.sol, ICLPoolConstants.sol contracts/gauge/interfaces/ICLGauge.sol, IGauge.sol, ICLGaugeFactory.sol contracts/periphery/interfaces/ISwapRouter.
+
+**Contents.** Defines `_p()`, `fn()`, `ev()`, `ERC20`, `_MINT`, `_DECREASE`, `_COLLECT`, `_INCREASE`, `NPM`, `CL_POOL` and 11 more.
+
+**Use.** `import liquidity.src.aero_lp.abi`
+
+#### `liquidity/src/aero_lp/addresses.py`
+
+`code-python` · 55 lines · 2,976 B · description: **extracted**
+
+**Purpose.** Aero contract addresses on Base (chain id 8453). Every address here appears in two independent sources that agree: 1. Aero docs "Security Overview" -> "Contract addresses" (https://aero.xyz/docs/security) 2.
+
+**Contents.** Defines `BASE_CHAIN_ID`, `CL_FACTORY`, `NONFUNGIBLE_POSITION_MANAGER`, `SWAP_ROUTER`, `METAQUOTER`, `CL_GAUGE_FACTORY`, `LEAF_VOTER`, `AERO_TOKEN`, `WETH`, `UNISWAP_V3_FACTORY` and 11 more.
+
+**Use.** `import liquidity.src.aero_lp.addresses`
+
+#### `liquidity/src/aero_lp/allocator.py`
+
+`code-python` · 189 lines · 8,031 B · description: **extracted**
+
+**Purpose.** Put idle wallet coins to work, but only when a pool is worth it. A pool qualifies only when **both** independent estimates clear `min_net_apr`: * the model: income - LVR - rebalance cost at the optimized width (metrics.expected_net_apr); * the replay: the best width on the pool's actual recent price path vs holding the pair (metrics.backtest_net_apr).
+
+**Contents.** Defines `CONF_RANK`, `MIN_BACKTEST_DAYS`, `ARM_SIZE_FLOOR`, `class Candidate`, `class Arm`, `class AllocationPlan`, `_at_least()`, `_sym_ok()`, `qualify()`, `plan_allocation()` and 2 more.
+
+**Use.** `import liquidity.src.aero_lp.allocator`
+
+#### `liquidity/src/aero_lp/backtest.py`
+
+`code-python` · 134 lines · 4,851 B · description: **extracted**
+
+**Purpose.** Hourly backtest of range widths on a historical price path. Model (deliberately simple and conservative): * Earnings while in range = yield_per_usd_day(half_width) * position value / 24 per hour, where the yield curve comes from today's on-chain pool economics (fee or AERO flow per unit liquidity). * Out of range earns nothing.
+
+**Contents.** Defines `class BacktestResult`, `_amounts()`, `_liq_for_value()`, `run()`, `format_table()`.
+
+**Use.** `import liquidity.src.aero_lp.backtest`
+
+#### `liquidity/src/aero_lp/chain.py`
+
+`code-python` · 486 lines · 21,362 B · description: **extracted**
+
+**Purpose.** Read-only access to Aero Slipstream state on Base. All multi-value reads go through Multicall3 in one eth_call pinned to one block, so a snapshot is internally consistent and public RPC rate limits are respected.
+
+**Contents.** Defines `ZERO`, `MULTICALL3`, `MULTICALL3_ABI`, `DEFAULT_RPCS`, `MAX_HEAD_LAG_S`, `_type_str()`, `MIN_BLOCK_READ_TRIES`, `MIN_BLOCK_READ_DELAY_S`, `class PositionGone`, `class Call` and 7 more.
+
+**Use.** `import liquidity.src.aero_lp.chain`
+
+#### `liquidity/src/aero_lp/cli.py`
+
+`code-python` · 576 lines · 25,845 B · description: **extracted**
+
+**Purpose.** aero-lp command line. aero-lp verify check contract addresses + RPC freshness aero-lp pools top Aero Slipstream pools on Base (GeckoTerminal) aero-lp positions --owner 0x..
+
+**Contents.** Defines `_print_eval()`, `_print_result()`, `cmd_verify()`, `cmd_pools()`, `cmd_positions()`, `_engine()`, `cmd_status()`, `cmd_simulate()`, `cmd_withdraw()`, `_live_gate()` and 9 more.
+
+**Use.** `python3 liquidity/src/aero_lp/cli.py --help`
+
+#### `liquidity/src/aero_lp/clmath.py`
+
+`code-python` · 240 lines · 8,698 B · description: **extracted**
+
+**Purpose.** Concentrated-liquidity math for Slipstream (Uniswap-v3-compatible tick math). Integer functions are exact ports of TickMath / SqrtPriceMath / LiquidityAmounts. Float helpers are for planning and reporting only, never for on-chain min-amount checks without a slippage margin.
+
+**Contents.** Defines `Q96`, `Q128`, `MIN_TICK`, `MAX_TICK`, `MIN_SQRT_RATIO`, `MAX_SQRT_RATIO`, `UINT128_MAX`, `LOG_BASE`, `get_sqrt_ratio_at_tick()`, `tick_from_price()` and 19 more.
+
+**Use.** `import liquidity.src.aero_lp.clmath`
+
+#### `liquidity/src/aero_lp/config.py`
+
+`code-python` · 243 lines · 10,855 B · description: **extracted**
+
+**Purpose.** TOML configuration.
+
+**Contents.** Defines `REWARD_MODES`, `class SafetyConfig`, `DEFAULT_ALLOWED`, `class AllocatorConfig`, `SAFE_EXIT_TARGETS`, `class GateConfig`, `class SafeExitConfig`, `class Config`, `_pick()`, `load()`.
+
+**Use.** `import liquidity.src.aero_lp.config`
+
+#### `liquidity/src/aero_lp/daemon.py`
+
+`code-python` · 1383 lines · 66,556 B · description: **extracted**
+
+**Purpose.** The liquidity daemon: one loop that manages every position, compounds, scouts and allocates. Each tick, in order: 1. Kill switch. If `$AERO_LP_HOME/KILL` exists, the tick takes no on-chain action; it still reads and reports. 2. Wallet snapshot: balances of the allowed tokens plus native ETH, recorded in the ledger for idle detection. 3.
+
+**Contents.** Defines `STATUS_SCHEMA`, `SYMBOL_TO_ADDR`, `CONVERT_PRICE_TOLERANCE`, `SCOUT_MAX_AGE_INTERVALS`, `PRICE_RETRY_S`, `SCOUT_BUDGET_S`, `class KillSwitchEngaged`, `class Timers`, `class Daemon`.
+
+**Use.** `import liquidity.src.aero_lp.daemon`
+
+#### `liquidity/src/aero_lp/engine.py`
+
+`code-python` · 667 lines · 30,322 B · description: **extracted**
+
+**Purpose.** Glue: read chain + market state, decide, preflight-simulate, and (in live mode) execute.
+
+**Contents.** Defines `_finite()`, `class Evaluation`, `class Engine`, `defer_sigint()`, `_single_width_cfg()`, `forced_decision()`.
+
+**Use.** `import liquidity.src.aero_lp.engine`
+
+#### `liquidity/src/aero_lp/executor.py`
+
+`code-python` · 1186 lines · 52,726 B · description: **extracted**
+
+**Purpose.** Builds and runs the rebalance transaction sequence. Sequence (one stage at a time; later stages are sized from the real results of earlier ones): A. unstake gauge.withdraw(tokenId) (only if staked; claims AERO to owner) B. remove npm.multicall([decreaseLiquidity, collect, burn]) C. swap approve(tokenIn -> SwapRouter), exactInputSingle on the same pool D.
+
+**Contents.** Defines `T`, `UINT128_MAX`, `TRANSFER_TOPIC`, `class ExecConfig`, `class PlannedTx`, `class ConfirmedTx`, `class StageResult`, `class Runner`, `_hex()`, `token_delta()` and 13 more.
+
+**Use.** `import liquidity.src.aero_lp.executor`
+
+#### `liquidity/src/aero_lp/gates.py`
+
+`code-python` · 314 lines · 12,744 B · description: **extracted**
+
+**Purpose.** Pre-live gates: a dry-run soak and a research-gate check. Why these exist: on 2026-11-06 the bot was built, its research gate failed (9 of 70 claims unsupported), and it was switched to live signing within hours. Two gates now stand between a configuration and live signing. 1. Dry-run soak.
+
+**Contents.** Defines `SOAK_SCHEMA`, `RESEARCH_SCHEMA`, `MAX_TICK_GAP_S`, `MAX_RESETS_KEPT`, `class LiveGateError`, `config_fingerprint()`, `_soak_path()`, `load_soak()`, `_record_lock()`, `_empty()` and 13 more.
+
+**Use.** `import liquidity.src.aero_lp.gates`
+
+#### `liquidity/src/aero_lp/ledger.py`
+
+`code-python` · 431 lines · 16,363 B · description: **extracted**
+
+**Purpose.** P&L ledger (SQLite, stdlib only). A *slot* is one strategy line. It keeps its id when a rebalance replaces the NFT, so its P&L runs across rebalances. Money flows in and out of a slot as `flows` (deposit, topup, withdraw). Gas and rewards are `events`. Periodic `snapshots` hold the slot's market value and its HODL value: what the deposited token amounts would be worth now if never deployed.
+
+**Contents.** Defines `IDLE_MAX_GAP_S`, `SCHEMA`, `class SlotPnl`, `class Ledger`.
+
+**Use.** `import liquidity.src.aero_lp.ledger`
+
+#### `liquidity/src/aero_lp/market.py`
+
+`code-python` · 206 lines · 9,229 B · description: **extracted**
+
+**Purpose.** Off-chain market data (GeckoTerminal public API) and the earnings model. GeckoTerminal lists Aero Slipstream on Base as dex id `aero-slipstream-base`. The free API allows about 30 requests/minute, so responses are cached for `ttl` seconds.
+
+**Contents.** Defines `GT`, `STABLES`, `class MarketData`, `vol_from_closes()`, `class PoolEconomics`, `fee_usd_per_liquidity_per_day()`, `liquidity_for_usd()`, `earn_usd_per_day()`, `with_realized_fees()`.
+
+**Use.** `import liquidity.src.aero_lp.market`
+
+#### `liquidity/src/aero_lp/metrics.py`
+
+`code-python` · 438 lines · 17,939 B · description: **extracted**
+
+**Purpose.** Every measure of a pool's likely profit or loss for a concentrated-liquidity deposit. Income (what the deposit earns while in range), measured, not quoted: * fee income - change in feeGrowthGlobal over the last day. CLPool.calculateFees credits it per unit of *unstaked* in-range liquidity, net of the unstaked fee, so it already reflects dynamic fees, router discounts and MEV capture.
+
+**Contents.** Defines `REF_HALF_WIDTH`, `NO_DATA`, `KNOWN_TOKENS`, `class PoolMetrics`, `economics_from()`, `pool_economics()`, `pool_sigma()`, `BACKTEST_WIDTHS_PCT`, `backtest_best()`, `backtest_at_width()` and 4 more.
+
+**Use.** `import liquidity.src.aero_lp.metrics`
+
+#### `liquidity/src/aero_lp/providers.py`
+
+`code-python` · 1629 lines · 66,591 B · description: **extracted**
+
+**Purpose.** Liquidity-provider comparison: which AMMs on a chain pay a small passive LP, and how sure are we? The Aero scout judges Slipstream pools only. This module widens the same judgement to every provider DefiLlama lists on the chain, in two tiers: Tier 1, *measured* (on chain).
+
+**Contents.** Defines `SCHEMA`, `LLAMA_POOLS_URL`, `LLAMA_COINS`, `GT`, `LLAMA_TTL_S`, `NATIVE`, `CHAIN_LABELS`, `BLOCKS_PER_DAY`, `CHART_MAX_POINTS`, `CONF_ORDER` and 30 more.
+
+**Use.** `import liquidity.src.aero_lp.providers`
+
+#### `liquidity/src/aero_lp/providers_report.py`
+
+`code-python` · 299 lines · 11,732 B · description: **extracted**
+
+**Purpose.** Markdown report for `aero-lp providers` (providers-report.md). Pure formatting: no I/O, no network.
+
+**Contents.** Defines `_pct()`, `_usd()`, `_ratio()`, `_cell()`, `_table()`, `provider_table()`, `pool_table()`, `HOW_TO_READ`, `HOW_TO_READ_2`, `single_sided_tables()` and 2 more.
+
+**Use.** `import liquidity.src.aero_lp.providers_report`
+
+#### `liquidity/src/aero_lp/recovery.py`
+
+`code-python` · 182 lines · 9,814 B · description: **extracted**
+
+**Purpose.** Shared, idempotent ledger recovery for daemon and CLI submission journals. Construct LedgerRecovery with the recorded ledger and a fresh-price callback, then pass apply as the journal's reconciliation callback. It never broadcasts or retries a transaction.
+
+**Contents.** Defines `class LedgerRecovery`.
+
+**Use.** `import liquidity.src.aero_lp.recovery`
+
+#### `liquidity/src/aero_lp/safe_exit.py`
+
+`code-python` · 372 lines · 16,844 B · description: **extracted**
+
+**Purpose.** Exit to safe: take every managed LP position out and leave the coins in the wallet. This is separate from the kill switch. KILL only halts the daemon: positions stay open and keep losing money. `exit-to-safe` removes the liquidity (unstake, remove, collect fees, burn the empty NFT), and can optionally convert the withdrawn coins into a stable coin.
+
+**Contents.** Defines `REPORT_SCHEMA`, `CONVERT_PRICE_TOLERANCE`, `SYMBOL_TO_ADDRESS`, `class ConvertStep`, `class PositionPlan`, `class ExitReport`, `managed_token_ids()`, `best_direct_pool()`, `plan_conversion()`, `_value_usd()` and 7 more.
+
+**Use.** `import liquidity.src.aero_lp.safe_exit`
+
+#### `liquidity/src/aero_lp/scout.py`
+
+`code-python` · 156 lines · 6,569 B · description: **extracted**
+
+**Purpose.** Pool scout: find the Aero Slipstream pools most likely to be profitable for a deposit of a given size. Candidates come from two places, because the most profitable pools for a small passive deposit are usually *not* the highest-volume ones: 1. the top pools by 24h volume on GeckoTerminal (dex `aero-slipstream-base`); 2.
+
+**Contents.** Defines `SCHEMA`, `_SYM`, `discover_correlated()`, `candidate_pools()`, `rank()`, `run_scout()`, `load_scout()`, `format_report()`.
+
+**Use.** `import liquidity.src.aero_lp.scout`
+
+#### `liquidity/src/aero_lp/state.py`
+
+`code-python` · 80 lines · 2,693 B · description: **extracted**
+
+**Purpose.** Small JSON state file: which NFT currently represents each managed slot, plus hysteresis counters. A rebalance burns the old NFT and mints a new one, so the bot tracks positions by *slot* (the token id it was first configured with) and follows the chain of replacements.
+
+**Contents.** Defines `class SlotState`, `home()`, `atomic_write_json()`, `_sync_directory()`, `class State`.
+
+**Use.** `import liquidity.src.aero_lp.state`
+
+#### `liquidity/src/aero_lp/strategy.py`
+
+`code-python` · 376 lines · 15,310 B · description: **extracted**
+
+**Purpose.** Range selection and the rebalance decision. Pure functions: no I/O, fully unit-tested. Profit model ------------ A concentrated deposit earns only while price sits inside its range.
+
+**Contents.** Defines `class Action`, `class StrategyConfig`, `class Range`, `half_width_log()`, `lvr_fraction_per_day()`, `rebalances_per_day()`, `class WidthScore`, `score_widths()`, `best_width()`, `target_range()` and 8 more.
+
+**Use.** `import liquidity.src.aero_lp.strategy`
+
+#### `liquidity/src/aero_lp/submissions.py`
+
+`code-python` · 261 lines · 11,793 B · description: **extracted**
+
+**Purpose.** Durable public transaction intents. Unknown outcomes block another live runner. The journal stores hashes and decoded intent metadata, never calldata, signed payloads or keys. A receipt is retained until the caller applies its state/accounting effects idempotently.
+
+**Contents.** Defines `class PendingSubmission`, `_hex()`, `receipt_metadata()`, `transaction_intent()`, `class SubmissionJournal`.
+
+**Use.** `import liquidity.src.aero_lp.submissions`
+
+#### `liquidity/src/aero_lp/validation.py`
+
+`code-python` · 32 lines · 1,245 B · description: **extracted**
+
+**Purpose.** Shared numeric validation for safety settings. Never coerce TOML strings or booleans.
+
+**Contents.** Defines `finite_number()`, `measured_gas()`.
+
+**Use.** `import liquidity.src.aero_lp.validation`
+
+#### `liquidity/src/aero_lp/wallet.py`
+
+`code-python` · 78 lines · 2,870 B · description: **extracted**
+
+**Purpose.** Signing key loading. The key is never printed, logged or written to disk by this program. Sources, in order: 0. `key_file` in the config (or AERO_LP_KEY_FILE): a file holding the hex key. It must be owned by the current user and not readable by group or others (chmod 600), or it is refused. 1. macOS Keychain generic password, service "aero-lp", account = owner address (lowercase).
+
+**Contents.** Defines `class WalletError`, `_from_keychain()`, `_from_file()`, `load_signer()`.
+
+**Use.** `import liquidity.src.aero_lp.wallet`
+
+### `liquidity/tests/`
+
+#### `liquidity/tests/test_abi_config_wallet.py`
+
+`test` · 126 lines · 5,229 B · description: **none**
+
+**Purpose.** _No description available._
+
+**Contents.** Defines `test_abi_parser_tuple_array_and_names()`, `test_abis_encode_offline()`, `test_minted_token_id_parses_transfer_from_zero()`, `test_config_load_and_reject_unknown()`, `test_example_config_parses()`, `test_wallet_rejects_mismatch_without_leaking_key()`, `test_misplaced_strategy_slippage_key_warns_instead_of_silently_doing_nothing()`, `test_config_rejects_negative_safety_limits()`, `test_key_file_must_be_private_and_owned()`.
+
+**Use.** `python3 -m pytest liquidity/tests/test_abi_config_wallet.py -q`
+
+#### `liquidity/tests/test_allocator_ledger.py`
+
+`test` · 310 lines · 12,926 B · description: **none**
+
+**Purpose.** _No description available._
+
+**Contents.** Defines `WETH`, `WSTETH`, `CBETH`, `USDC`, `SCAM`, `row()`, `test_both_estimates_must_clear_threshold()`, `test_filters_reject_risky_pools()`, `test_single_clear_winner_gets_everything_capped_per_position()`, `test_close_candidates_become_side_by_side_experiment()` and 20 more.
+
+**Use.** `python3 -m pytest liquidity/tests/test_allocator_ledger.py -q`
+
+#### `liquidity/tests/test_backtest.py`
+
+`test` · 49 lines · 2,002 B · description: **none**
+
+**Purpose.** _No description available._
+
+**Contents.** Defines `test_flat_price_earns_yield_and_never_rebalances()`, `test_trend_out_of_range_triggers_rebalances_and_costs()`, `test_wider_range_rebalances_less()`, `test_format_table_has_header_and_rows()`, `test_net_apr_is_on_starting_capital_not_end_hodl_value()`.
+
+**Use.** `python3 -m pytest liquidity/tests/test_backtest.py -q`
+
+#### `liquidity/tests/test_cdo_execution.py`
+
+`test` · 58 lines · 2,346 B · description: **extracted**
+
+**Purpose.** Mock-only confirmed outcome and cooldown regressions.
+
+**Contents.** Defines `test_confirmed_transfer_amounts_survive_failed_postreceipt_read()`, `test_recovered_replacement_resets_cooldown_once()`.
+
+**Use.** `python3 -m pytest liquidity/tests/test_cdo_execution.py -q`
+
+#### `liquidity/tests/test_cdo_gates.py`
+
+`test` · 116 lines · 4,520 B · description: **extracted**
+
+**Purpose.** Offline regressions for finite, durable pre-live evidence.
+
+**Contents.** Defines `OWNER`, `test_strategy_numeric_fields_refuse_invalid_evidence()`, `test_strategy_toml_refuses_nonfinite_and_fractional_confirmations()`, `test_corrupt_soak_evidence_never_opens_gate()`, `test_corrupt_research_timestamp_cannot_fall_back_to_pass()`, `test_gate_writers_refuse_nonfinite_time()`, `test_research_writers_serialize_read_append_replace()`, `test_equal_research_timestamps_keep_latest_failure()`.
+
+**Use.** `python3 -m pytest liquidity/tests/test_cdo_gates.py -q`
+
+#### `liquidity/tests/test_cdo_recovery.py`
+
+`test` · 253 lines · 10,260 B · description: **extracted**
+
+**Purpose.** Synthetic receipt groups and isolated ledgers; no chain or keys.
+
+**Contents.** Defines `receipt()`, `record()`, `test_registration_refuses_missing_or_invalid_basis_then_recovers()`, `test_reconciliation_checks_ledger_binding_before_callback()`, `test_runner_persists_explicit_slot_and_wallet_scopes_before_send()`, `test_daemon_runner_supplies_known_slot_or_explicit_wallet_context()`, `test_legacy_unattributed_journal_refuses_without_consuming_receipt()`, `test_aero_reward_counted_once_after_failed_or_successful_removal()`, `test_reinvested_aero_is_not_double_counted_on_recovered_mint()`, `test_new_wallet_funded_mint_binds_approval_fees_to_proven_nft()` and 1 more.
+
+**Use.** `python3 -m pytest liquidity/tests/test_cdo_recovery.py -q`
+
+#### `liquidity/tests/test_chain_audit.py`
+
+`test` · 127 lines · 4,488 B · description: **extracted**
+
+**Purpose.** Pinned-state, economic ownership and unknown-penalty regressions.
+
+**Contents.** Defines `staked_chain()`, `test_head_pins_at_our_receipt_and_retries_lagging_nodes()`, `test_old_postmint_snapshot_cannot_prove_position_gone()`, `test_foreign_staked_hint_is_not_an_economic_owner()`, `test_unknown_or_invalid_penalty_cannot_become_zero()`, `test_staked_membership_must_be_positive_evidence()`, `test_penalty_bounds_are_validated()`, `test_verified_staked_owner_retains_measured_active_penalty()`, `test_explicit_zero_penalty_is_allowed()`, `test_unknown_accrued_reward_cannot_erase_early_exit_cost()`.
+
+**Use.** `python3 -m pytest liquidity/tests/test_chain_audit.py -q`
+
+#### `liquidity/tests/test_chain_vol.py`
+
+`test` · 82 lines · 3,073 B · description: **none**
+
+**Purpose.** _No description available._
+
+**Contents.** Defines `_window_average_ticks()`, `test_twap_window_vol_is_unbiased()`, `test_vol_needs_enough_points()`, `test_twap_series_spans_the_requested_hours_not_a_window_count()`, `test_latest_balance_reads_are_pinned_to_a_block_no_older_than_our_last_transaction()`.
+
+**Use.** `python3 -m pytest liquidity/tests/test_chain_vol.py -q`
+
+#### `liquidity/tests/test_clmath.py`
+
+`test` · 88 lines · 3,625 B · description: **none**
+
+**Purpose.** _No description available._
+
+**Contents.** Defines `test_sqrt_ratio_known_points()`, `test_sqrt_ratio_matches_high_precision_reference()`, `test_sqrt_ratio_monotonic()`, `test_human_price_weth_usdc()`, `test_liquidity_amount_round_trip()`, `test_amounts_single_sided_outside_range()`, `test_fee_growth_inside_wraparound()`, `test_value0_fraction_bounds()`, `test_swap_to_ratio_hits_target()`, `test_impermanent_loss_zero_at_entry_and_negative_after_move()`.
+
+**Use.** `python3 -m pytest liquidity/tests/test_clmath.py -q`
+
+#### `liquidity/tests/test_config_audit.py`
+
+`test` · 48 lines · 1,824 B · description: **extracted**
+
+**Purpose.** Configuration must not disable a safety gate through coercion or IEEE special values.
+
+**Contents.** Defines `OWNER`, `test_all_execution_and_safety_numbers_must_be_finite()`, `test_estimates_and_intervals_cannot_disable_gas_or_scheduling_checks()`, `test_allocator_settings_reject_boolean_and_collection_coercion()`, `test_execution_timing_requires_positive_whole_seconds()`.
+
+**Use.** `python3 -m pytest liquidity/tests/test_config_audit.py -q`
+
+#### `liquidity/tests/test_daemon.py`
+
+`test` · 1336 lines · 55,857 B · description: **extracted**
+
+**Purpose.** Offline tests of the daemon with a stubbed chain, market, engine and rebalancer. The stubs record every call, so the tests can prove what the daemon did and did not send: which runner kind each rebalancer call received ("sim" or "live"), and that nothing signs in dry run or under the kill switch.
+
+**Contents.** Defines `OWNER`, `WETH`, `USDC`, `AERO`, `WSTETH`, `GAUGE`, `DEC`, `PRICES`, `addr()`, `tick_for()` and 30 more.
+
+**Use.** `python3 -m pytest liquidity/tests/test_daemon.py -q`
+
+#### `liquidity/tests/test_daemon_audit.py`
+
+`test` · 219 lines · 8,296 B · description: **extracted**
+
+**Purpose.** Every live path shares safety gates; capital and ownership cannot bypass them.
+
+**Contents.** Defines `make_daemon()`, `test_every_live_write_path_honors_zero_gas_cap()`, `test_foreign_direct_wallet_position_is_not_registered()`, `test_compound_clamps_rewards_to_fresh_position_and_total_caps()`, `test_pool_pushed_during_conversions_cannot_be_deployed()`, `test_compound_rechecks_total_exposure_after_simulation()`, `test_successful_compound_refreshes_snapshot_before_later_allocation()`, `test_deploy_checks_twap_after_the_simulation_too()`, `test_missing_simulation_gas_evidence_refuses_write()`, `test_preflight_never_uses_cached_price_when_feed_is_down()` and 2 more.
+
+**Use.** `python3 -m pytest liquidity/tests/test_daemon_audit.py -q`
+
+#### `liquidity/tests/test_engine.py`
+
+`test` · 282 lines · 11,379 B · description: **extracted**
+
+**Purpose.** Engine safety gates and partial-failure bookkeeping, with the chain and market stubbed out.
+
+**Contents.** Defines `OWNER`, `NEW_RANGE`, `make_engine()`, `chain_stub()`, `make_ev()`, `test_clean_evaluation_passes_live_safety()`, `test_live_mode_fails_closed()`, `test_dry_run_only_reports_unknown_twap_and_missing_prices()`, `_step_with()`, `test_failed_stake_keeps_tracking_the_minted_nft()` and 14 more.
+
+**Use.** `python3 -m pytest liquidity/tests/test_engine.py -q`
+
+#### `liquidity/tests/test_engine_audit.py`
+
+`test` · 103 lines · 3,673 B · description: **extracted**
+
+**Purpose.** Live safety and interrupted-operation persistence regressions (all I/O stubbed).
+
+**Contents.** Defines `setup_live()`, `test_fresh_position_above_cap_never_reaches_live_runner()`, `test_invalid_market_eth_quote_cannot_withdraw_live()`, `test_deferred_stop_persists_successful_withdraw()`, `test_deferred_stop_persists_rebalance_history_and_cooldown()`.
+
+**Use.** `python3 -m pytest liquidity/tests/test_engine_audit.py -q`
+
+#### `liquidity/tests/test_executor.py`
+
+`test` · 907 lines · 38,360 B · description: **extracted**
+
+**Purpose.** Offline tests of the rebalance sequence with a fake chain and a fake runner.
+
+**Contents.** Defines `W3`, `OWNER`, `GAUGE`, `T0`, `T1`, `AERO`, `HUGE`, `transfer_log()`, `increase_log()`, `class FakeChain` and 30 more.
+
+**Use.** `python3 -m pytest liquidity/tests/test_executor.py -q`
+
+#### `liquidity/tests/test_executor_audit.py`
+
+`test` · 177 lines · 7,158 B · description: **extracted**
+
+**Purpose.** Transaction-scoped accounting and receipt-recovery regressions.
+
+**Contents.** Defines `test_topup_drift_aborts_before_swapping_and_restakes()`, `test_incoming_transfer_during_remove_never_enters_rebalance_budget()`, `test_increase_receipt_survives_failed_state_read()`, `test_missing_remove_transfer_evidence_aborts_before_spending()`, `test_actual_mint_amounts_come_from_confirmed_increase_receipt()`, `test_unrelated_incoming_transfer_during_topup_unstake_stays_out_of_budget()`, `test_mint_without_increase_evidence_stops_but_preserves_new_nft()`, `test_live_increase_receipt_is_kept_before_failed_postreceipt_read()`, `test_repeated_transaction_labels_preserve_total_gas()`, `test_capped_topup_leaves_unstake_proceeds_in_wallet()`.
+
+**Use.** `python3 -m pytest liquidity/tests/test_executor_audit.py -q`
+
+#### `liquidity/tests/test_full_audit_regressions.py`
+
+`test` · 441 lines · 17,301 B · description: **extracted**
+
+**Purpose.** Full-review counterexamples. Only mock HTTP, temporary state and a copied service launcher run.
+
+**Contents.** Defines `test_market_stablecoin_uses_observed_depeg_price()`, `test_market_never_invents_stablecoin_price_for_missing_or_invalid_quote()`, `test_provider_stablecoin_uses_observed_depeg_price()`, `test_live_runner_stops_before_signing_next_transaction_after_kill()`, `test_cli_live_run_checks_kill_before_chain_or_key()`, `test_slipstream_fallback_has_an_abi_for_every_requested_function()`, `test_report_uses_the_same_apr_threshold_as_its_document()`, `test_conversion_rejects_nonfinite_or_boolean_market_prices()`, `service_copy()`, `test_service_install_defaults_to_unsigned_dry_run()` and 14 more.
+
+**Use.** `python3 -m pytest liquidity/tests/test_full_audit_regressions.py -q`
+
+#### `liquidity/tests/test_gates.py`
+
+`test` · 202 lines · 8,547 B · description: **extracted**
+
+**Purpose.** Soak gate, research gate, grandfather record and the CLI refusal. Offline; nothing is signed.
+
+**Contents.** Defines `OWNER`, `H`, `cfg()`, `passing()`, `soak()`, `test_live_refused_without_a_soak_record()`, `test_live_allowed_after_the_configured_soak()`, `test_default_soak_is_24_hours()`, `test_downtime_between_dry_run_ticks_is_not_credited()`, `test_strategy_or_cap_change_resets_the_soak()` and 11 more.
+
+**Use.** `python3 -m pytest liquidity/tests/test_gates.py -q`
+
+#### `liquidity/tests/test_market_state.py`
+
+`test` · 181 lines · 6,897 B · description: **extracted**
+
+**Purpose.** Earnings model, volatility estimate, price cache and state file (offline).
+
+**Contents.** Defines `WETH`, `USDC`, `econ()`, `test_earn_staked_is_share_of_emissions()`, `test_earn_unstaked_is_share_of_net_fees()`, `test_earn_is_zero_out_of_range_or_without_liquidity()`, `test_liquidity_for_usd_round_trips_to_the_requested_value()`, `test_vol_from_closes_scales_hourly_to_daily()`, `test_vol_from_closes_ignores_bid_ask_bounce_but_keeps_real_moves()`, `_market()` and 4 more.
+
+**Use.** `python3 -m pytest liquidity/tests/test_market_state.py -q`
+
+#### `liquidity/tests/test_metrics.py`
+
+`test` · 236 lines · 8,856 B · description: **extracted**
+
+**Purpose.** Metrics and scout numeric edge cases, with a stubbed chain and market (no network).
+
+**Contents.** Defines `WETH`, `WSTETH`, `AERO`, `POOL`, `GAUGE`, `PRICES`, `make_pool()`, `class StubChain`, `class StubMarket`, `wobble()` and 15 more.
+
+**Use.** `python3 -m pytest liquidity/tests/test_metrics.py -q`
+
+#### `liquidity/tests/test_network.py`
+
+`test` · 71 lines · 2,574 B · description: **extracted**
+
+**Purpose.** Live Base checks. Run with: pytest -m network They read public chain state and run eth_simulateV1. Nothing is signed or broadcast.
+
+**Contents.** Defines `USDC`, `chain()`, `test_deployment_verifies()`, `test_weth_usdc_pool_state()`, `_find_staked_position()`, `test_full_rebalance_simulates_on_a_real_staked_position()`.
+
+**Use.** `python3 -m pytest liquidity/tests/test_network.py -q`
+
+#### `liquidity/tests/test_providers.py`
+
+`test` · 1045 lines · 49,038 B · description: **extracted**
+
+**Purpose.** Provider comparison (offline): DefiLlama parsing, AMM mapping, Tier 2 LVR, the generic v3 and v4 readers against a fake chain, ranking, and the report. HTTP goes through httpx.MockTransport; no network, no chain.
+
+**Contents.** Defines `WETH`, `USDC`, `USDT`, `CBBTC`, `POOL`, `raw_pool()`, `test_llama_pool_parses_fee_tick_spacing_and_native_tokens()`, `test_llama_pool_tolerates_missing_and_null_numbers()`, `test_quoted_base_apy_falls_back_to_the_total_less_rewards_for_vaults()`, `test_amm_type_mapping()` and 30 more.
+
+**Use.** `python3 -m pytest liquidity/tests/test_providers.py -q`
+
+#### `liquidity/tests/test_providers_network.py`
+
+`test` · 62 lines · 2,573 B · description: **extracted**
+
+**Purpose.** Live Base reads for the provider comparison. Run with: pytest -m network Reads public chain state, GeckoTerminal and DefiLlama. Nothing is signed or broadcast.
+
+**Contents.** Defines `USDC`, `V4_USDC_USDT`, `chain()`, `test_registry_addresses_verify_on_chain()`, `test_a_real_uniswap_v3_weth_usdc_pool_scores_with_finite_measured_numbers()`, `test_a_real_uniswap_v4_pool_reads_through_state_view()`.
+
+**Use.** `python3 -m pytest liquidity/tests/test_providers_network.py -q`
+
+#### `liquidity/tests/test_safe_exit.py`
+
+`test` · 442 lines · 17,901 B · description: **extracted**
+
+**Purpose.** exit-to-safe with a stubbed engine: dry run signs nothing, live sets KILL, every check fails closed.
+
+**Contents.** Defines `OWNER`, `WETH`, `USDC`, `PRICES`, `token()`, `POOL`, `pos()`, `result()`, `class StubEngine`, `run()` and 24 more.
+
+**Use.** `python3 -m pytest liquidity/tests/test_safe_exit.py -q`
+
+#### `liquidity/tests/test_strategy.py`
+
+`test` · 144 lines · 5,113 B · description: **none**
+
+**Purpose.** _No description available._
+
+**Contents.** Defines `cost()`, `decide()`, `test_target_range_contains_tick_and_is_snapped()`, `test_target_range_minimum_width()`, `test_hold_when_centered()`, `test_rebalance_when_out_of_range_and_profitable()`, `test_cooldown_blocks()`, `test_edge_needs_confirmation()`, `test_unprofitable_when_costs_dominate()`, `test_waits_out_gauge_penalty_when_cheaper()` and 7 more.
+
+**Use.** `python3 -m pytest liquidity/tests/test_strategy.py -q`
+
+#### `liquidity/tests/test_submission_audit.py`
+
+`test` · 395 lines · 17,250 B · description: **extracted**
+
+**Purpose.** Ambiguous broadcasts stay blocked until durable receipt and ownership reconciliation.
+
+**Contents.** Defines `test_simrunner_requires_positive_measured_gas()`, `test_engine_rejects_unknown_sequence_gas()`, `test_live_runner_refuses_to_broadcast_without_durable_journal()`, `mint_transaction()`, `late_mint_receipt()`, `test_journal_is_durable_before_send_and_blocks_another_runner()`, `test_late_mint_is_tracked_across_daemon_restart_before_retry()`, `proven_receipt()`, `test_late_rebalance_mint_recovers_engine_state_and_existing_slot()`, `test_recovered_position_flows_are_idempotent()` and 5 more.
+
+**Use.** `python3 -m pytest liquidity/tests/test_submission_audit.py -q`
+
+---
+
+## botmanager
+
+Isolated bot-owner management, health journals and managed-suite supervision.
+
+91 files.
+
+#### `botmanager/.gitignore`
+
+`other` · 5 lines · 45 B · description: **none**
+
+**Purpose.** _No description available._
+
+**Use.** Read it.
+
+#### `botmanager/README.md`
+
+`doc` · 824 lines · 52,744 B · description: **extracted**
+
+**Purpose.** The supervisor detects a frozen SQLite reader as well as a frozen writer. It defers only transient stopped-peer journal contention so its owned-process watchdog can recover without admitting another worker or losing checkpoint state.
+
+**Use.** Read it.
+
+#### `botmanager/pyproject.toml`
+
+`config` · 18 lines · 492 B · description: **none**
+
+**Purpose.** _No description available._
+
+**Use.** Configuration; nothing to run.
+
+### `botmanager/src/botmanager/`
+
+#### `botmanager/src/botmanager/__init__.py`
+
+`code-python` · 6 lines · 136 B · description: **extracted**
+
+**Purpose.** Standalone Solana bot manager. Importing this package performs no I/O.
+
+**Use.** `import botmanager.src.botmanager.__init__`
+
+#### `botmanager/src/botmanager/__main__.py`
+
+`code-python` · 6 lines · 84 B · description: **none**
+
+**Purpose.** _No description available._
+
+**Use.** `import botmanager.src.botmanager.__main__`
+
+#### `botmanager/src/botmanager/accounting.py`
+
+`code-python` · 250 lines · 9,804 B · description: **extracted**
+
+**Purpose.** Pure cash-flow and FIFO accounting; unavailable inputs never become zero. Exact ledgers use decimal strings. Canonical simulator checkpoints retain their original float lineage and are never silently re-priced by the FIFO projection.
+
+**Contents.** Defines `measurement()`, `_decimal()`, `_reference()`, `accounting_snapshot()`, `_exact()`.
+
+**Use.** `import botmanager.src.botmanager.accounting`
+
+#### `botmanager/src/botmanager/backup.py`
+
+`code-python` · 449 lines · 17,746 B · description: **extracted**
+
+**Purpose.** Quiescent manager snapshots; canonical research authority stays external. Restore verifies dependencies before creating a new home. It never installs a service, starts a worker, or copies the canonical optimizer database.
+
+**Contents.** Defines `DATABASES`, `MAX_JSON`, `_error()`, `_json()`, `_hash()`, `_read_db()`, `_cutoff()`, `_authority_binding()`, `_validate_authority()`, `_dependencies()` and 3 more.
+
+**Use.** `import botmanager.src.botmanager.backup`
+
+#### `botmanager/src/botmanager/blind.py`
+
+`code-python` · 221 lines · 8,731 B · description: **extracted**
+
+**Purpose.** Resolver boundary and OS-enforced, bounded deterministic judge process.
+
+**Contents.** Defines `verify()`, `resolve_tie()`, `_runtime()`, `_profile()`, `bounded_process()`, `_isolated()`, `probe_isolation()`, `run_judge()`.
+
+**Use.** `import botmanager.src.botmanager.blind`
+
+#### `botmanager/src/botmanager/blind_judge.py`
+
+`code-python` · 138 lines · 4,759 B · description: **extracted**
+
+**Purpose.** Self-contained deterministic anonymous judge; copied into a deny-default sandbox.
+
+**Contents.** Defines `MAX_PACKET`, `POLICY`, `digest()`, `keys()`, `number()`, `decide()`.
+
+**Use.** `import botmanager.src.botmanager.blind_judge`
+
+#### `botmanager/src/botmanager/browser_commands.py`
+
+`code-python` · 60 lines · 1,930 B · description: **extracted**
+
+**Purpose.** Manager registry definitions for browser-owned singleton paper control.
+
+**Contents.** Defines `browser_status()`, `browser_control()`, `browser_receipt()`, `command_specs()`.
+
+**Use.** `import botmanager.src.botmanager.browser_commands`
+
+#### `botmanager/src/botmanager/cli.py`
+
+`code-python` · 76 lines · 2,291 B · description: **extracted**
+
+**Purpose.** Parse, dispatch, render, and select an exit code; no application logic.
+
+**Contents.** Defines `class InputError`, `class SafeParser`, `parser()`, `main()`.
+
+**Use.** `python3 botmanager/src/botmanager/cli.py --help`
+
+#### `botmanager/src/botmanager/config.py`
+
+`code-python` · 364 lines · 12,625 B · description: **extracted**
+
+**Purpose.** Typed constructor snapshots, with exact-context learned-default adoption.
+
+**Contents.** Defines `SOURCE_REVISION`, `SOL_MINT`, `USDC_MINT`, `STRATEGY_VERSIONS`, `MODELS`, `DEFAULT_CONTEXT`, `COMMON`, `DEFAULTS`, `SOURCE_FILES`, `SHARED_PROTECTED_FIELDS` and 9 more.
+
+**Use.** `import botmanager.src.botmanager.config`
+
+#### `botmanager/src/botmanager/data.py`
+
+`code-python` · 364 lines · 12,525 B · description: **extracted**
+
+**Purpose.** Read-only, bounded snapshots of an explicitly registered Coinbase recorder. A sampled midpoint candle is a reference input, never an observed venue candle or an executable Jupiter quote. Recorder format v1 does not record book/ticker provenance. Preserve that uncertainty instead of inferring it from quote age.
+
+**Contents.** Defines `MAX_BARS`, `MAX_FILE_BYTES`, `MAX_SCAN_BYTES`, `_cached_engine_identity()`, `engine_identity()`, `_number()`, `load_recording()`, `validate_snapshot()`. Depends on `backtester`, `soltui`.
+
+**Use.** `import botmanager.src.botmanager.data`
+
+#### `botmanager/src/botmanager/diagnostics_commands.py`
+
+`code-python` · 122 lines · 5,247 B · description: **extracted**
+
+**Purpose.** Local, shareable setup diagnostics with an explicit data allowlist.
+
+**Contents.** Defines `_setup_report()`, `_component_report()`, `_write_bundle()`, `diagnostics_command()`, `command_specs()`.
+
+**Use.** `import botmanager.src.botmanager.diagnostics_commands`
+
+#### `botmanager/src/botmanager/domain.py`
+
+`code-python` · 328 lines · 11,784 B · description: **extracted**
+
+**Purpose.** Versioned immutable specifications; no owner imports or state access.
+
+**Contents.** Defines `SCHEMA_VERSION`, `class ManagerError`, `plain()`, `freeze()`, `canonical()`, `fingerprint()`, `utc_now()`, `class ResolvedConfig`, `class BotSpec`.
+
+**Use.** `import botmanager.src.botmanager.domain`
+
+#### `botmanager/src/botmanager/executor_commands.py`
+
+`code-python` · 172 lines · 6,538 B · description: **extracted**
+
+**Purpose.** Manager registry exports for guarded executor delegation; never signs or enrolls capital.
+
+**Contents.** Defines `_adapter()`, `_request()`, `_operation()`, `command_specs()`.
+
+**Use.** `import botmanager.src.botmanager.executor_commands`
+
+#### `botmanager/src/botmanager/health.py`
+
+`code-python` · 419 lines · 16,911 B · description: **extracted**
+
+**Purpose.** Independent health dimensions and a durable, bounded alert projection.
+
+**Contents.** Defines `_finite()`, `clock_age()`, `health_snapshot()`, `class HealthStore`, `entries_paused()`, `rotate_diagnostics()`.
+
+**Use.** `import botmanager.src.botmanager.health`
+
+#### `botmanager/src/botmanager/health_commands.py`
+
+`code-python` · 112 lines · 3,487 B · description: **extracted**
+
+**Purpose.** Registry definitions for explicit operational actions.
+
+**Contents.** Defines `_spec()`, `health_command()`, `alerts_command()`, `entry_control()`, `backup_command()`, `restore_command()`, `command_specs()`.
+
+**Use.** `import botmanager.src.botmanager.health_commands`
+
+#### `botmanager/src/botmanager/input_commands.py`
+
+`code-python` · 214 lines · 7,393 B · description: **extracted**
+
+**Purpose.** Versioned reference preparation and data diagnosis behind the command registry.
+
+**Contents.** Defines `read_document()`, `prepare()`, `check()`.
+
+**Use.** `import botmanager.src.botmanager.input_commands`
+
+#### `botmanager/src/botmanager/learning.py`
+
+`code-python` · 644 lines · 23,437 B · description: **extracted**
+
+**Purpose.** Attributed learning projections and owner-authorized account transitions. Wall clocks and canonical scope quotas belong to the registered research owner. A normal loss is a label, never an instruction to edit a specification.
+
+**Contents.** Defines `TUNABLES`, `canonical_scope()`, `comparable_identity()`, `classify_outcome()`, `outcome_summary()`, `learned_spec()`, `runtime_outcomes()`, `shadow_input_binding()`, `pointer_counts()`, `shadow_pair()` and 4 more.
+
+**Use.** `import botmanager.src.botmanager.learning`
+
+#### `botmanager/src/botmanager/learning_commands.py`
+
+`code-python` · 131 lines · 4,128 B · description: **extracted**
+
+**Purpose.** Registry-owned learning commands; no client clocks or outcome-count inputs.
+
+**Contents.** Defines `_owner()`, `_labels()`, `_propose()`, `_inspect()`, `_shadow()`, `_promote()`, `_rollback()`, `command_specs()`.
+
+**Use.** `import botmanager.src.botmanager.learning_commands`
+
+#### `botmanager/src/botmanager/learning_job.py`
+
+`code-python` · 368 lines · 12,751 B · description: **extracted**
+
+**Purpose.** One nonblocking daily canonical-owner helper inside an explicit daemon. Status reads never start a schedule. The helper is the registered owner process itself, so cancellation owns one process group and cannot orphan an adapter.
+
+**Contents.** Defines `STATUS_FILE`, `OUTPUT_LIMIT`, `TIMEOUT_SECONDS`, `MAX_CLOCK`, `_clock()`, `_bounded_value()`, `_schedule_result()`, `_status()`, `_read()`, `schedule_snapshot()` and 1 more.
+
+**Use.** `import botmanager.src.botmanager.learning_job`
+
+#### `botmanager/src/botmanager/ledger.py`
+
+`code-python` · 1737 lines · 73,645 B · description: **extracted**
+
+**Purpose.** Transactional intent, generation fencing and reference-paper fill ledger. The specification database and this separate runtime journal has its own version and must be included in backups with the specifications.
+
+**Contents.** Defines `RESTART_DELAYS`, `FAILURE_WINDOW`, `MAX_ACTIVE`, `MAX_INSTANCES`, `MAX_REQUESTS`, `STOP_RECEIPT_RESERVE`, `INTEGRITY_ERRORS`, `class RuntimeLedger`.
+
+**Use.** `import botmanager.src.botmanager.ledger`
+
+#### `botmanager/src/botmanager/machine_health.py`
+
+`code-python` · 316 lines · 11,826 B · description: **extracted**
+
+**Purpose.** Bounded, inert availability measurements for collectors and alert engines. This module never opens an owner for writing. Availability is not a claim about financial reconciliation, market certification or permission to trade.
+
+**Contents.** Defines `SCHEMA_VERSION`, `MAX_BYTES`, `SUITE_STALE_SECONDS`, `MARKET_STALE_SECONDS`, `COMPONENTS`, `STATES`, `private_read()`, `homes()`, `component()`, `_held()` and 7 more.
+
+**Use.** `import botmanager.src.botmanager.machine_health`
+
+#### `botmanager/src/botmanager/mutations.py`
+
+`code-python` · 283 lines · 9,799 B · description: **extracted**
+
+**Purpose.** Serialized saved-spec mutations and attributable, replay-only receipts.
+
+**Contents.** Defines `MAX_MUTATIONS`, `request_identity()`, `check_revision()`, `mutation_lock()`, `request_body()`, `mutation_result()`, `save_mutation()`, `validate_tables()`, `_validate_acceptance()`, `replay_mutation()`.
+
+**Use.** `import botmanager.src.botmanager.mutations`
+
+#### `botmanager/src/botmanager/operations_commands.py`
+
+`code-python` · 167 lines · 5,077 B · description: **extracted**
+
+**Purpose.** Registered suite operations and verified local control-room discovery.
+
+**Contents.** Defines `_UI_READY_SECONDS`, `_UI_POLL_SECONDS`, `_UI_PENDING_REASONS`, `_ecosystem_home()`, `stack_command()`, `ui_command()`, `health_check_command()`, `metrics_command()`, `component_alerts_command()`, `command_specs()`.
+
+**Use.** `import botmanager.src.botmanager.operations_commands`
+
+#### `botmanager/src/botmanager/oracle_data.py`
+
+`code-python` · 629 lines · 22,250 B · description: **extracted**
+
+**Purpose.** Inert Oracle accepted-observation snapshots and bounded prospective pages. No Oracle producer class is imported here. A descriptor freezes source consent, policy, activation and assumed costs. The existing archive owner alone appends.
+
+**Contents.** Defines `MAX_OBSERVATIONS`, `PAGE_SIZE`, `KNOWN_ARCHIVE`, `SCOPE`, `read_page()`, `cost_profile()`, `prepare_descriptor()`, `_validate()`, `_bars()`, `_seal()` and 4 more. Depends on `backtester`.
+
+**Use.** `import botmanager.src.botmanager.oracle_data`
+
+#### `botmanager/src/botmanager/receipts.py`
+
+`code-python` · 171 lines · 6,272 B · description: **extracted**
+
+**Purpose.** Validated per-bot control records, separate from transport success envelopes. No receipt is produced by draft controls. Actual owners must supply outcomes in the delegated-control milestone. Acknowledgment is not proof of cleared exposure.
+
+**Contents.** Defines `RECEIPT_SCHEMA_VERSION`, `OPERATIONS`, `OUTCOMES`, `_reference()`, `_invalid()`, `class CommandReceipt`.
+
+**Use.** `import botmanager.src.botmanager.receipts`
+
+#### `botmanager/src/botmanager/registry.py`
+
+`code-python` · 1043 lines · 35,527 B · description: **extracted**
+
+**Purpose.** One application registry, shared by CLI and future local transports.
+
+**Contents.** Defines `class CommandContext`, `class CommandSpec`, `GLOBAL_ARGUMENTS`, `_argument_schema()`, `_store()`, `_identity()`, `_settings()`, `_create()`, `_list()`, `_config()` and 29 more. Depends on `research`.
+
+**Use.** `import botmanager.src.botmanager.registry`
+
+#### `botmanager/src/botmanager/report_commands.py`
+
+`code-python` · 74 lines · 2,268 B · description: **extracted**
+
+**Purpose.** Report command definitions imported lazily by the application registry.
+
+**Contents.** Defines `report_command()`, `command_specs()`.
+
+**Use.** `import botmanager.src.botmanager.report_commands`
+
+#### `botmanager/src/botmanager/reports.py`
+
+`code-python` · 407 lines · 14,647 B · description: **extracted**
+
+**Purpose.** Read-only attributed reports and SQL-bounded stable event/history pages.
+
+**Contents.** Defines `REPORT_MAX_BYTES`, `REPORT_MAX_ROWS`, `REPORT_MAX_SEGMENTS`, `REPORT_SQL_STEPS`, `_budget_error()`, `_report_connection()`, `_evidence_budget()`, `_bounds()`, `_page()`, `event_page()` and 7 more.
+
+**Use.** `import botmanager.src.botmanager.reports`
+
+#### `botmanager/src/botmanager/research.py`
+
+`code-python` · 528 lines · 19,101 B · description: **extracted**
+
+**Purpose.** Offline canonical replay and preregistered manager research protocol 2. The existing ExperimentStore owns temporal exposure, attempts and trials. This module never opens an owner database and never edits a strategy configuration.
+
+**Contents.** Defines `partition()`, `candidate_spec()`, `candidates()`, `feature_horizon()`, `default_plan()`, `backtest()`, `final_comparison()`, `_slice()`, `execute()`, `reconcile_proposal()`.
+
+**Use.** `import botmanager.src.botmanager.research`
+
+#### `botmanager/src/botmanager/research_owner.py`
+
+`code-python` · 182 lines · 6,198 B · description: **extracted**
+
+**Purpose.** Explicit reviewed owner installation adapter; no source-path injection.
+
+**Contents.** Defines `class OwnerClient`, `write_document()`, `prepare_descriptor()`.
+
+**Use.** `import botmanager.src.botmanager.research_owner`
+
+#### `botmanager/src/botmanager/service.py`
+
+`code-python` · 237 lines · 8,838 B · description: **extracted**
+
+**Purpose.** Explicit per-home launchd installation from a stable installed environment.
+
+**Contents.** Defines `installed_executable()`, `_registered()`, `service()`.
+
+**Use.** `import botmanager.src.botmanager.service`
+
+#### `botmanager/src/botmanager/status.py`
+
+`code-python` · 742 lines · 29,941 B · description: **extracted**
+
+**Purpose.** Pure, versioned draft views; configuration is never a runtime observation.
+
+**Contents.** Defines `STATUS_SCHEMA_VERSION`, `RUNTIME_UNAVAILABLE`, `ACTION_SEMANTICS`, `unavailable()`, `browser_snapshot()`, `_evidence()`, `draft_snapshot()`, `legacy_snapshot()`, `_editing_status()`, `runtime_snapshot()`.
+
+**Use.** `import botmanager.src.botmanager.status`
+
+#### `botmanager/src/botmanager/store.py`
+
+`code-python` · 708 lines · 28,751 B · description: **extracted**
+
+**Purpose.** Local SQLite ledger. Constructing a store and reading absent state are inert.
+
+**Contents.** Defines `STORE_SCHEMA_VERSION`, `BACKUP_DESCRIPTOR_VERSION`, `MIGRATIONS`, `data_home()`, `class ManagerStore`.
+
+**Use.** `import botmanager.src.botmanager.store`
+
+#### `botmanager/src/botmanager/suite.py`
+
+`code-python` · 916 lines · 33,278 B · description: **extracted**
+
+**Purpose.** One availability parent around the existing manager and control-room owner. The suite does not create bot intent, record market data or start research. Its OS service restarts availability; the existing Supervisor retains trading state.
+
+**Contents.** Defines `MAX_ALERTS`, `ALERT_COOLDOWN_SECONDS`, `STARTUP_SECONDS`, `_ALERT_JOURNAL_LOCK`, `_directory()`, `_write()`, `save_config()`, `alerts()`, `class AlertJournal`, `_terminate()` and 10 more.
+
+**Use.** `python3 botmanager/src/botmanager/suite.py --help`
+
+#### `botmanager/src/botmanager/suite_service.py`
+
+`code-python` · 365 lines · 12,942 B · description: **extracted**
+
+**Purpose.** Explicit user-service installation for the availability suite. launchd starts at user login, not before login/FileVault unlock. Linux uses the user systemd manager; a persistent user manager across logout requires linger.
+
+**Contents.** Defines `label()`, `_invoke()`, `_registered()`, `_directory()`, `_enabled()`, `_quote()`, `definition()`, `_path()`, `_supported()`, `_read_definition()` and 1 more.
+
+**Use.** `import botmanager.src.botmanager.suite_service`
+
+#### `botmanager/src/botmanager/supervisor.py`
+
+`code-python` · 363 lines · 14,787 B · description: **extracted**
+
+**Purpose.** Explicit foreground daemon, four process slots, no unbounded tick queue.
+
+**Contents.** Defines `class Supervisor`.
+
+**Use.** `import botmanager.src.botmanager.supervisor`
+
+#### `botmanager/src/botmanager/transport.py`
+
+`code-python` · 190 lines · 6,234 B · description: **extracted**
+
+**Purpose.** Bounded mode-0600 local command socket; registry is the sole dispatcher.
+
+**Contents.** Defines `MAX_REQUEST`, `MAX_RESPONSE`, `CLIENT_REQUEST_SECONDS`, `SERVER_REQUEST_SECONDS`, `_owner_path()`, `_peer()`, `_remaining()`, `_read()`, `request()`, `class CommandServer`.
+
+**Use.** `import botmanager.src.botmanager.transport`
+
+#### `botmanager/src/botmanager/walkthrough.py`
+
+`code-python` · 368 lines · 22,913 B · description: **extracted**
+
+**Purpose.** One ordered, copyable workflow shared by terminal and structured help. Examples are data. Importing this module never probes an owner or starts a process. The parser tests bind every example to the real command registry.
+
+**Contents.** Defines `class Stage`, `SETUP`, `STAGES`, `workflow()`, `render()`.
+
+**Use.** `import botmanager.src.botmanager.walkthrough`
+
+#### `botmanager/src/botmanager/worker.py`
+
+`code-python` · 143 lines · 5,025 B · description: **extracted**
+
+**Purpose.** One isolated reference-paper worker, holding its lock for its lifetime.
+
+**Contents.** Defines `HEARTBEAT_SECONDS`, `STALE_SECONDS`, `BARS_PER_TICK`, `lifetime_lock()`, `lock_held()`, `prospective_tick()`, `run_worker()`.
+
+**Use.** `import botmanager.src.botmanager.worker`
+
+### `botmanager/src/botmanager/adapters/`
+
+#### `botmanager/src/botmanager/adapters/__init__.py`
+
+`code-python` · 101 lines · 3,455 B · description: **extracted**
+
+**Purpose.** Installation discovery is read-only and never spawns an owner/native host.
+
+**Contents.** Defines `SOURCE_REVISION`, `default_installations()`, `class Inventory`, `discover_installations()`. Depends on `soltui`.
+
+**Use.** `import botmanager.src.botmanager.adapters.__init__`
+
+#### `botmanager/src/botmanager/adapters/ecosystem.py`
+
+`code-python` · 41 lines · 1,118 B · description: **extracted**
+
+**Purpose.** Explicit read-only discovery of externally owned ecosystem paper trials.
+
+**Contents.** Defines `discover_ecosystem()`.
+
+**Use.** `import botmanager.src.botmanager.adapters.ecosystem`
+
+#### `botmanager/src/botmanager/adapters/executor.py`
+
+`code-python` · 211 lines · 7,077 B · description: **extracted**
+
+**Purpose.** Optional, bounded installed executor transport. The manager never imports a signer.
+
+**Contents.** Defines `COMMANDS`, `class ExecutorAdapter`, `prepare_descriptor()`.
+
+**Use.** `import botmanager.src.botmanager.adapters.executor`
+
+#### `botmanager/src/botmanager/adapters/extension.py`
+
+`code-python` · 650 lines · 25,577 B · description: **extracted**
+
+**Purpose.** Browser-owner native registration and durable delegated paper-control mailbox. No Chrome files are opened. Only the extension can report its singleton slot.
+
+**Contents.** Defines `PROTOCOL`, `STALE_SECONDS`, `MAX_REQUESTS`, `MAX_INSTALLATIONS`, `_MISSING`, `SLOT`, `SNAPSHOT_FIELDS`, `CONTROL_FIELDS`, `RECEIPT_FIELDS`, `_fail()` and 10 more.
+
+**Use.** `import botmanager.src.botmanager.adapters.extension`
+
+#### `botmanager/src/botmanager/adapters/soltui.py`
+
+`code-python` · 942 lines · 36,345 B · description: **extracted**
+
+**Purpose.** Bounded loopback owner adapter. Discovery never starts an owner or creates state.
+
+**Contents.** Defines `SAFE_COMMANDS`, `CONTROL_PARAMS`, `FAMILIES`, `_MISSING`, `_fail()`, `_hash()`, `_sha()`, `_session()`, `_control_semantics()`, `_invalid_receipt()` and 5 more.
+
+**Use.** `import botmanager.src.botmanager.adapters.soltui`
+
+### `botmanager/src/botmanager/strategies/`
+
+#### `botmanager/src/botmanager/strategies/__init__.py`
+
+`code-python` · 236 lines · 8,089 B · description: **extracted**
+
+**Purpose.** One canonical strategy dispatcher for workers, ledger and command surfaces.
+
+**Contents.** Defines `evaluate()`, `validate_registration()`, `validate_checkpoint()`, `rebind_checkpoint()`. Depends on `backtester`, `soltui`.
+
+**Use.** `import botmanager.src.botmanager.strategies.__init__`
+
+#### `botmanager/src/botmanager/strategies/arbitrage.py`
+
+`code-python` · 172 lines · 6,404 B · description: **extracted**
+
+**Purpose.** Conditional directed Solana quote-cycle diagnosis, never an order executor.
+
+**Contents.** Defines `diagnose_cycle()`.
+
+**Use.** `import botmanager.src.botmanager.strategies.arbitrage`
+
+#### `botmanager/src/botmanager/strategies/base.py`
+
+`code-python` · 307 lines · 11,063 B · description: **extracted**
+
+**Purpose.** Shared account normalization; strategy decisions belong to canonical engines.
+
+**Contents.** Defines `MAX_RUNTIME_LOOKBACK_BARS`, `MAX_RUNTIME_RETAINED_BARS`, `validate_runtime_config()`, `compatible_engine()`, `validate_input()`, `identity()`, `evaluate_family()`, `research_metrics()`. Depends on `backtester`, `soltui`.
+
+**Use.** `import botmanager.src.botmanager.strategies.base`
+
+#### `botmanager/src/botmanager/strategies/dca.py`
+
+`code-python` · 6 lines · 110 B · description: **extracted**
+
+**Purpose.** Canonical dca reference adapter.
+
+**Use.** `import botmanager.src.botmanager.strategies.dca`
+
+#### `botmanager/src/botmanager/strategies/grid.py`
+
+`code-python` · 236 lines · 8,289 B · description: **extracted**
+
+**Purpose.** Bounded prefix replay of the canonical ladder; no copied trading algorithm.
+
+**Contents.** Defines `MAX_REFERENCE_RUNGS`, `MAX_REFERENCE_RANGE_PCT`, `REFERENCE_BAR_SECONDS`, `_configuration()`, `run_identity()`, `validate_checkpoint()`, `evaluate()`. Depends on `backtester`.
+
+**Use.** `import botmanager.src.botmanager.strategies.grid`
+
+#### `botmanager/src/botmanager/strategies/momentum.py`
+
+`code-python` · 6 lines · 115 B · description: **extracted**
+
+**Purpose.** Canonical momentum reference adapter.
+
+**Use.** `import botmanager.src.botmanager.strategies.momentum`
+
+#### `botmanager/src/botmanager/strategies/trend.py`
+
+`code-python` · 6 lines · 112 B · description: **extracted**
+
+**Purpose.** Canonical trend reference adapter.
+
+**Use.** `import botmanager.src.botmanager.strategies.trend`
+
+### `botmanager/tests/`
+
+#### `botmanager/tests/__init__.py`
+
+`test` · 16 lines · 572 B · description: **extracted**
+
+**Purpose.** Scoped synthetic owner endpoints for Bot Manager tests.
+
+**Contents.** Defines `isolated_default_owner()`.
+
+**Use.** `python3 -m pytest botmanager/tests/__init__.py -q`
+
+#### `botmanager/tests/test_accounting.py`
+
+`test` · 188 lines · 7,603 B · description: **none**
+
+**Purpose.** _No description available._
+
+**Contents.** Defines `fixture()`, `class AccountingTests`.
+
+**Use.** `python3 -m pytest botmanager/tests/test_accounting.py -q`
+
+#### `botmanager/tests/test_backup.py`
+
+`test` · 382 lines · 15,983 B · description: **none**
+
+**Purpose.** _No description available._
+
+**Contents.** Defines `class BackupTests`.
+
+**Use.** `python3 -m pytest botmanager/tests/test_backup.py -q`
+
+#### `botmanager/tests/test_blind.py`
+
+`test` · 237 lines · 8,726 B · description: **none**
+
+**Purpose.** _No description available._
+
+**Contents.** Defines `packet()`, `class BlindTests`.
+
+**Use.** `python3 -m pytest botmanager/tests/test_blind.py -q`
+
+#### `botmanager/tests/test_browser_surfaces.py`
+
+`test` · 95 lines · 3,987 B · description: **none**
+
+**Purpose.** _No description available._
+
+**Contents.** Defines `class BrowserSurfaceTests`.
+
+**Use.** `python3 -m pytest botmanager/tests/test_browser_surfaces.py -q`
+
+#### `botmanager/tests/test_cli.py`
+
+`test` · 163 lines · 6,688 B · description: **none**
+
+**Purpose.** _No description available._
+
+**Contents.** Defines `class CliTests`.
+
+**Use.** `python3 -m pytest botmanager/tests/test_cli.py -q`
+
+#### `botmanager/tests/test_config.py`
+
+`test` · 279 lines · 10,959 B · description: **none**
+
+**Purpose.** _No description available._
+
+**Contents.** Defines `learned()`, `class ConfigTests`.
+
+**Use.** `python3 -m pytest botmanager/tests/test_config.py -q`
+
+#### `botmanager/tests/test_continuation.py`
+
+`test` · 808 lines · 35,279 B · description: **extracted**
+
+**Purpose.** Segment boundaries preserve the canonical economic account and timing.
+
+**Contents.** Defines `prices()`, `run()`, `class ContinuationTests`. Depends on `backtester`, `soltui`.
+
+**Use.** `python3 -m pytest botmanager/tests/test_continuation.py -q`
+
+#### `botmanager/tests/test_ecosystem_adapter.py`
+
+`test` · 113 lines · 4,318 B · description: **none**
+
+**Purpose.** _No description available._
+
+**Contents.** Defines `class EcosystemAdapterTests`, `class EcosystemEditingCliTests`, `class GlobalArgumentContractTests`.
+
+**Use.** `python3 -m pytest botmanager/tests/test_ecosystem_adapter.py -q`
+
+#### `botmanager/tests/test_editing.py`
+
+`test` · 623 lines · 26,075 B · description: **none**
+
+**Purpose.** _No description available._
+
+**Contents.** Defines `class EditingTests`.
+
+**Use.** `python3 -m pytest botmanager/tests/test_editing.py -q`
+
+#### `botmanager/tests/test_entry_controls.py`
+
+`test` · 198 lines · 8,910 B · description: **none**
+
+**Purpose.** _No description available._
+
+**Contents.** Defines `class EntryControlTests`, `held_exit_worker()`, `class ActiveEntryControlTests`.
+
+**Use.** `python3 -m pytest botmanager/tests/test_entry_controls.py -q`
+
+#### `botmanager/tests/test_executor_adapter.py`
+
+`test` · 260 lines · 9,859 B · description: **none**
+
+**Purpose.** _No description available._
+
+**Contents.** Defines `descriptor()`, `response()`, `class ExecutorAdapterTests`, `class ExecutorManagerAuthorizationTests`.
+
+**Use.** `python3 -m pytest botmanager/tests/test_executor_adapter.py -q`
+
+#### `botmanager/tests/test_extension_adapter.py`
+
+`test` · 185 lines · 6,630 B · description: **none**
+
+**Purpose.** _No description available._
+
+**Contents.** Defines `ORIGIN`, `snapshot()`, `class BrowserTests`.
+
+**Use.** `python3 -m pytest botmanager/tests/test_extension_adapter.py -q`
+
+#### `botmanager/tests/test_full_audit_regressions.py`
+
+`test` · 303 lines · 12,838 B · description: **extracted**
+
+**Purpose.** Offline trust-boundary counterexamples from the complete component audit.
+
+**Contents.** Defines `class FullAuditRegressionTests`.
+
+**Use.** `python3 -m pytest botmanager/tests/test_full_audit_regressions.py -q`
+
+#### `botmanager/tests/test_health.py`
+
+`test` · 249 lines · 10,642 B · description: **none**
+
+**Purpose.** _No description available._
+
+**Contents.** Defines `runtime()`, `class HealthTests`.
+
+**Use.** `python3 -m pytest botmanager/tests/test_health.py -q`
+
+#### `botmanager/tests/test_learning.py`
+
+`test` · 599 lines · 25,510 B · description: **none**
+
+**Purpose.** _No description available._
+
+**Contents.** Defines `class LearningTests`, `controlled_shadow_worker()`, `class RealShadowWorkerTests`, `class LearningLocalReadTests`, `class ShadowActivationRecoveryTests`. Depends on `soltui`.
+
+**Use.** `python3 -m pytest botmanager/tests/test_learning.py -q`
+
+#### `botmanager/tests/test_learning_job.py`
+
+`test` · 323 lines · 13,720 B · description: **extracted**
+
+**Purpose.** Nonblocking daily scheduling and owned helper lifecycle fixtures.
+
+**Contents.** Defines `class DailyLearningJobTests`.
+
+**Use.** `python3 -m pytest botmanager/tests/test_learning_job.py -q`
+
+#### `botmanager/tests/test_learning_reads.py`
+
+`test` · 121 lines · 4,745 B · description: **extracted**
+
+**Purpose.** Resource and corruption boundaries for inert shared learning pointers.
+
+**Contents.** Defines `class LearningReadBudgetTests`.
+
+**Use.** `python3 -m pytest botmanager/tests/test_learning_reads.py -q`
+
+#### `botmanager/tests/test_legacy.py`
+
+`test` · 875 lines · 36,979 B · description: **extracted**
+
+**Purpose.** Real loopback HTTP fixtures verify transport and authority, not live trading.
+
+**Contents.** Defines `owner()`, `class Legacy`.
+
+**Use.** `python3 -m pytest botmanager/tests/test_legacy.py -q`
+
+#### `botmanager/tests/test_load.py`
+
+`test` · 715 lines · 31,729 B · description: **extracted**
+
+**Purpose.** Real paper workers and a canonical optimizer over isolated numerical inputs.
+
+**Contents.** Defines `optimizer_recording()`, `optimizer_judge()`, `optimizer_pressure()`, `class LoadTests`, `journal_lock_worker()`, `class LockedJournalWatchdogTests`. Depends on `soltui`.
+
+**Use.** `python3 -m pytest botmanager/tests/test_load.py -q`
+
+#### `botmanager/tests/test_machine_health.py`
+
+`test` · 264 lines · 11,027 B · description: **extracted**
+
+**Purpose.** Collectors must measure observed owners without creating runtime state.
+
+**Contents.** Defines `class MachineHealthTests`.
+
+**Use.** `python3 -m pytest botmanager/tests/test_machine_health.py -q`
+
+#### `botmanager/tests/test_operations.py`
+
+`test` · 319 lines · 12,903 B · description: **none**
+
+**Purpose.** _No description available._
+
+**Contents.** Defines `class OperationsTests`.
+
+**Use.** `python3 -m pytest botmanager/tests/test_operations.py -q`
+
+#### `botmanager/tests/test_oracle_data.py`
+
+`test` · 381 lines · 15,106 B · description: **none**
+
+**Purpose.** _No description available._
+
+**Contents.** Defines `START`, `archive()`, `append()`, `class ArchiveTests`, `class ProspectiveWorkerTests`, `class ArchiveAdversarialTests`.
+
+**Use.** `python3 -m pytest botmanager/tests/test_oracle_data.py -q`
+
+#### `botmanager/tests/test_paper.py`
+
+`test` · 229 lines · 8,903 B · description: **none**
+
+**Purpose.** _No description available._
+
+**Contents.** Defines `recording()`, `grid()`, `class PaperTests`. Depends on `backtester`.
+
+**Use.** `python3 -m pytest botmanager/tests/test_paper.py -q`
+
+#### `botmanager/tests/test_read_consistency.py`
+
+`test` · 290 lines · 11,776 B · description: **none**
+
+**Purpose.** _No description available._
+
+**Contents.** Defines `class ReadConsistencyTests`.
+
+**Use.** `python3 -m pytest botmanager/tests/test_read_consistency.py -q`
+
+#### `botmanager/tests/test_receipts.py`
+
+`test` · 189 lines · 7,723 B · description: **none**
+
+**Purpose.** _No description available._
+
+**Contents.** Defines `class ReceiptTests`.
+
+**Use.** `python3 -m pytest botmanager/tests/test_receipts.py -q`
+
+#### `botmanager/tests/test_recovery.py`
+
+`test` · 568 lines · 25,733 B · description: **none**
+
+**Purpose.** _No description available._
+
+**Contents.** Defines `class RecoveryTests`, `class InterleavingLedger`.
+
+**Use.** `python3 -m pytest botmanager/tests/test_recovery.py -q`
+
+#### `botmanager/tests/test_reports.py`
+
+`test` · 284 lines · 11,871 B · description: **none**
+
+**Purpose.** _No description available._
+
+**Contents.** Defines `class ReportTests`.
+
+**Use.** `python3 -m pytest botmanager/tests/test_reports.py -q`
+
+#### `botmanager/tests/test_research.py`
+
+`test` · 342 lines · 13,752 B · description: **none**
+
+**Purpose.** _No description available._
+
+**Contents.** Defines `class ResearchTests`. Depends on `soltui`.
+
+**Use.** `python3 -m pytest botmanager/tests/test_research.py -q`
+
+#### `botmanager/tests/test_solana_cycles.py`
+
+`test` · 111 lines · 4,112 B · description: **none**
+
+**Purpose.** _No description available._
+
+**Contents.** Defines `quote()`, `costs()`, `class CycleTests`.
+
+**Use.** `python3 -m pytest botmanager/tests/test_solana_cycles.py -q`
+
+#### `botmanager/tests/test_status.py`
+
+`test` · 379 lines · 16,018 B · description: **none**
+
+**Purpose.** _No description available._
+
+**Contents.** Defines `class StatusTests`.
+
+**Use.** `python3 -m pytest botmanager/tests/test_status.py -q`
+
+#### `botmanager/tests/test_store.py`
+
+`test` · 169 lines · 7,355 B · description: **none**
+
+**Purpose.** _No description available._
+
+**Contents.** Defines `class StoreTests`.
+
+**Use.** `python3 -m pytest botmanager/tests/test_store.py -q`
+
+#### `botmanager/tests/test_strategy_parity.py`
+
+`test` · 172 lines · 7,193 B · description: **none**
+
+**Purpose.** _No description available._
+
+**Contents.** Defines `class FamilyParityTests`. Depends on `backtester`, `soltui`.
+
+**Use.** `python3 -m pytest botmanager/tests/test_strategy_parity.py -q`
+
+#### `botmanager/tests/test_suite.py`
+
+`test` · 482 lines · 19,463 B · description: **extracted**
+
+**Purpose.** Availability ownership, real process recovery and bounded durable alerts.
+
+**Contents.** Defines `class ReadyUi`, `eventually()`, `class SuiteTests`, `class AlertTests`, `class UiMonitorTests`.
+
+**Use.** `python3 -m pytest botmanager/tests/test_suite.py -q`
+
+#### `botmanager/tests/test_suite_service.py`
+
+`test` · 216 lines · 8,404 B · description: **extracted**
+
+**Purpose.** Service fixtures never call the machine's actual user service manager.
+
+**Contents.** Defines `class ServiceManager`, `class SuiteServiceTests`.
+
+**Use.** `python3 -m pytest botmanager/tests/test_suite_service.py -q`
+
+#### `botmanager/tests/test_supervisor.py`
+
+`test` · 748 lines · 29,933 B · description: **none**
+
+**Purpose.** _No description available._
+
+**Contents.** Defines `stalled_worker()`, `stalled_prospective_worker()`, `hard_crash()`, `class SupervisorTests`, `class LaunchctlFixture`.
+
+**Use.** `python3 -m pytest botmanager/tests/test_supervisor.py -q`
+
+#### `botmanager/tests/test_walkthrough.py`
+
+`test` · 113 lines · 4,172 B · description: **none**
+
+**Purpose.** _No description available._
+
+**Contents.** Defines `FIXTURE_ENV`, `command_examples()`, `class WalkthroughTests`.
+
+**Use.** `python3 -m pytest botmanager/tests/test_walkthrough.py -q`
+
+---
+
+## ecosystem
+
+The local control room, pipeline supervision, telemetry and embedded documentation.
+
+68 files.
+
+#### `ecosystem/README.md`
+
+`doc` · 119 lines · 7,542 B · description: **extracted**
+
+**Purpose.** This source version restores read-only access to the known legacy SOL Oracle archive and explains pending forward windows without changing the producer. It pins Bot Manager0.7.5, Oracle0.2.5 and research-runtime0.4.2.
+
+**Use.** Read it.
+
+#### `ecosystem/__init__.py`
+
+`code-python` · 4 lines · 97 B · description: **extracted**
+
+**Purpose.** Resumable installation and paper-research lifecycle orchestration.
+
+**Use.** `import ecosystem.__init__`
+
+#### `ecosystem/backtests.py`
+
+`code-python` · 226 lines · 8,318 B · description: **extracted**
+
+**Purpose.** Costed single-cell receipts and thin adapters to the established F5 owner. The F5 batch runner remains the durable orchestration and prospective-forward owner. These adapters do not create a second queue, worker or paper ledger.
+
+**Contents.** Defines `strategies()`, `_safe()`, `code_fingerprint()`, `backtest()`, `create_batch()`, `start_batch()`, `batch_status()`, `batch_cells()`. Depends on `backtester`, `soltui`.
+
+**Use.** `import ecosystem.backtests`
+
+#### `ecosystem/cli.py`
+
+`code-python` · 236 lines · 8,927 B · description: **extracted**
+
+**Purpose.** Installable control surface for the paper ecosystem supervisor.
+
+**Contents.** Defines `default_home()`, `emit()`, `class Parser`, `build_parser()`, `main()`. Depends on `backtester`, `soltui`.
+
+**Use.** `python3 ecosystem/cli.py --help`
+
+#### `ecosystem/control.py`
+
+`code-python` · 1052 lines · 42,117 B · description: **extracted**
+
+**Purpose.** Durable, paper-only controls delegated to the established component owners.
+
+**Contents.** Defines `APP_ID`, `MANAGER_ACTIONS`, `ACTIONS`, `SENSITIVE`, `canonical()`, `runtime_settings()`, `recorder_recovery_enabled()`, `recovery_guard()`, `_safe_input()`, `database()` and 3 more. Depends on `backtester`, `soltui`.
+
+**Use.** `import ecosystem.control`
+
+#### `ecosystem/data.py`
+
+`code-python` · 274 lines · 9,422 B · description: **extracted**
+
+**Purpose.** Source-bound OHLCV acquisition for the ecosystem bootstrap. Acquisition is explicit. Backtests never fetch implicitly, unknown legacy files are never relabelled, and every accepted input is frozen with a SHA-256 receipt. Requested ranges are UTC bar-open times in [start, end); all requested bars must be present and closed. The caller selects a fresh data directory for a new range.
+
+**Contents.** Defines `OWNER_UNIVERSE`, `ASSET_PATTERN`, `SOURCE`, `universe()`, `_symbol()`, `_epoch()`, `canonical()`, `file_sha256()`, `_closed_frame()`, `_publish()` and 2 more. Depends on `backtester`.
+
+**Use.** `import ecosystem.data`
+
+#### `ecosystem/forecast.py`
+
+`code-python` · 700 lines · 28,647 B · description: **extracted**
+
+**Purpose.** Continuous, provisional price projections. No orders or account mutations. The direction is the chosen price-only strategy's exposure sign on ten-second reference bars. The target distance is the recent median absolute reference move at the requested horizon. It is an indicative projection, not a fitted expected return or a calibrated probability.
+
+**Contents.** Defines `BAR_SECONDS`, `REFRESH_SECONDS`, `HORIZONS`, `MAX_AGE`, `APP_ID`, `MAX_SNAPSHOT_BYTES`, `LOGGER`, `METHOD`, `finite()`, `canonical()` and 13 more.
+
+**Use.** `python3 ecosystem/forecast.py --help`
+
+#### `ecosystem/forecast_preferences.py`
+
+`code-python` · 111 lines · 4,147 B · description: **extracted**
+
+**Purpose.** Versioned per-instrument display cadence, separate from research policies.
+
+**Contents.** Defines `APP_ID`, `path()`, `valid_seconds()`, `settings()`, `_publish_initialized_store()`, `set_seconds()`.
+
+**Use.** `import ecosystem.forecast_preferences`
+
+#### `ecosystem/forecast_service.py`
+
+`code-python` · 193 lines · 7,106 B · description: **extracted**
+
+**Purpose.** Explicit launchd ownership for the independent ten-second display evaluator.
+
+**Contents.** Defines `_FAILURE_REMEDIATION`, `definition()`, `operate()`, `main()`.
+
+**Use.** `python3 ecosystem/forecast_service.py --help`
+
+#### `ecosystem/installation.py`
+
+`code-python` · 496 lines · 19,131 B · description: **extracted**
+
+**Purpose.** Isolated local installation and bounded installed-runtime health checks. The bootstrap owns its dedicated virtual environment. No shell profile, global package environment, remote installer, recorder or wallet is modified here.
+
+**Contents.** Defines `PROJECTS`, `MODULES`, `RECEIPT_NAME`, `OWNER_NAME`, `MAX_HEALTH_BYTES`, `MAX_CONSTRAINT_BYTES`, `HEALTH_SCRIPT`, `_failure()`, `_manifests()`, `source_fingerprint()` and 11 more.
+
+**Use.** `import ecosystem.installation`
+
+#### `ecosystem/meta_forward.py`
+
+`code-python` · 591 lines · 30,777 B · description: **extracted**
+
+**Purpose.** Isolated, frozen Coinbase hourly PAPER cohort. No signing or order interface. Targets commit and receive a separate post-commit confirmation before their eligible future candle. Closed candles are reference fills, not venue fills. An outage blocks the cohort rather than backfilling missed decisions.
+
+**Contents.** Defines `APP_ID`, `STEP`, `ASSETS`, `KEYS`, `MAX_BARS`, `canonical()`, `implementation()`, `default_config()`, `validate_config()`, `_path()` and 21 more. Depends on `backtester`.
+
+**Use.** `python3 ecosystem/meta_forward.py --help`
+
+#### `ecosystem/observability.py`
+
+`code-python` · 119 lines · 4,143 B · description: **extracted**
+
+**Purpose.** Bounded, redacted tails of explicit owner log sinks; no arbitrary file API.
+
+**Contents.** Defines `SENSITIVE`, `OPAQUE`, `MAX_BYTES`, `redact()`, `_tail()`, `logs()`. Depends on `soltui`.
+
+**Use.** `import ecosystem.observability`
+
+#### `ecosystem/performance.py`
+
+`code-python` · 681 lines · 26,283 B · description: **extracted**
+
+**Purpose.** Source-bound forward paper accounting, separate from the owner's journals. Native returns already include costs. Each trial is its own non-overlapping virtual account; capital is a frozen display basis, never allocated shared cash.
+
+**Contents.** Defines `APP_ID`, `PAGE`, `MAX_ROWS`, `IDENTITY`, `SECRET`, `FIELDS`, `_json()`, `_finite()`, `_safe()`, `_path()` and 11 more.
+
+**Use.** `import ecosystem.performance`
+
+#### `ecosystem/pipeline_service.py`
+
+`code-python` · 151 lines · 4,946 B · description: **extracted**
+
+**Purpose.** Install only the planned paper pipeline's foreground launchd owner.
+
+**Contents.** Defines `label()`, `definition()`, `registered()`, `operate()`, `main()`.
+
+**Use.** `python3 ecosystem/pipeline_service.py --help`
+
+#### `ecosystem/pyproject.toml`
+
+`config` · 23 lines · 729 B · description: **none**
+
+**Purpose.** _No description available._
+
+**Use.** Configuration; nothing to run.
+
+#### `ecosystem/recovery.py`
+
+`code-python` · 235 lines · 8,224 B · description: **extracted**
+
+**Purpose.** Recover the owner's exact unstarted F5 plan after a bootstrap checkpoint gap. The caller supplies a batch root dedicated to one bootstrap. Existing evidence is read only. Ambiguous or partly used plans are preserved and refused.
+
+**Contents.** Defines `ERROR`, `RUN_ID`, `SCORING`, `_json()`, `_idle()`, `_expected()`, `_adopt()`, `ensure_batch()`. Depends on `soltui`.
+
+**Use.** `import ecosystem.recovery`
+
+#### `ecosystem/registration.py`
+
+`code-python` · 451 lines · 18,168 B · description: **extracted**
+
+**Purpose.** Durable external trial identities observed from the existing F5 owner. Registration does not create a manager draft or start a worker. The original batch and forward databases remain the only evidence for lifecycle observations.
+
+**Contents.** Defines `SCHEMA_VERSION`, `APPLICATION_ID`, `MAX_CELLS`, `SAFE_NAME`, `INTERVALS`, `CELL_STATES`, `_json()`, `_path()`, `_read()`, `_ledger()` and 5 more.
+
+**Use.** `import ecosystem.registration`
+
+#### `ecosystem/runner.py`
+
+`code-python` · 732 lines · 27,709 B · description: **extracted**
+
+**Purpose.** Durable paper-only supervisor over the existing F5 worker and recorder.
+
+**Contents.** Defines `save()`, `PHASES`, `validate_config()`, `load()`, `lock()`, `_generation_guard()`, `running()`, `plan()`, `status()`, `start()` and 5 more. Depends on `backtester`, `soltui`.
+
+**Use.** `import ecosystem.runner`
+
+#### `ecosystem/swap_web.py`
+
+`code-python` · 163 lines · 6,293 B · description: **extracted**
+
+**Purpose.** A public-only loopback origin for manually loaded third-party wallet UI.
+
+**Contents.** Defines `class SwapServer`, `make_server()`.
+
+**Use.** `import ecosystem.swap_web`
+
+#### `ecosystem/swaps.py`
+
+`code-python` · 129 lines · 5,445 B · description: **extracted**
+
+**Purpose.** Public manual-swap settings and explicit, provider-independent paper costs. This module reads no credentials, wallets, owner stores or execution interfaces. An assumed paper fee is never evidence of a live Jupiter route's actual costs.
+
+**Contents.** Defines `ULTRA_REFERRAL_ACCOUNT`, `SWAP_TRIGGER_REFERRAL_ACCOUNT`, `DEFAULT_REFERRAL_FEE_BPS`, `MINIMUM_REFERRAL_FEE_BPS`, `MAXIMUM_REFERRAL_FEE_BPS`, `PLUGIN_SRC`, `ASSET`, `config()`, `validate_cost_model()`.
+
+**Use.** `import ecosystem.swaps`
+
+#### `ecosystem/telemetry.py`
+
+`code-python` · 807 lines · 29,590 B · description: **extracted**
+
+**Purpose.** Bounded, sanitized observations of manager events; never manager control. The mirror is incremental and private. Original event journals and log files remain with their existing owner. Free-form log content is never mirrored.
+
+**Contents.** Defines `SCHEMA_VERSION`, `APPLICATION_ID`, `SOURCE_PAGE`, `MAX_LOG_TAIL`, `SOURCES`, `KINDS`, `SECRET_KEY`, `STATES`, `PHASES`, `sanitize()` and 20 more.
+
+**Use.** `import ecosystem.telemetry`
+
+#### `ecosystem/ui_service.py`
+
+`code-python` · 402 lines · 13,735 B · description: **extracted**
+
+**Purpose.** Keep the installed control room independent of the paper pipeline process. A process ID is diagnostic. Readiness requires the canonical owner lock, its private generation checkpoint and a matching response from the bound HTTP port.
+
+**Contents.** Defines `LOCK_NAME`, `CHECKPOINT_NAME`, `LAUNCH_LOCK_NAME`, `STARTUP_SECONDS`, `POLL_SECONDS`, `HTTP_TIMEOUT`, `MAX_BYTES`, `INSTANCE`, `_home()`, `_identity()` and 15 more.
+
+**Use.** `import ecosystem.ui_service`
+
+#### `ecosystem/volty_forward.py`
+
+`code-python` · 416 lines · 21,332 B · description: **extracted**
+
+**Purpose.** Frozen, prospective Volty OHLC paper observation. Never signs or submits. Closed public Binance ZECUSDT candles are reference data. Decisions are durable before their first eligible bar, with one additional bar of observation delay. An outage never backfills missing decisions. Restart resumes the same cohort.
+
+**Contents.** Defines `APP_ID`, `STEPS`, `FIELDS`, `API`, `MAX_BARS`, `TERMINAL`, `canonical()`, `implementation()`, `_path()`, `connection()` and 11 more. Depends on `backtester`.
+
+**Use.** `python3 ecosystem/volty_forward.py --help`
+
+#### `ecosystem/votes.py`
+
+`code-python` · 438 lines · 18,450 B · description: **extracted**
+
+**Purpose.** Versioned operator voter selection over unchanged prospective Oracle evidence.
+
+**Contents.** Defines `APP_ID`, `catalog()`, `_ids()`, `_path()`, `_read()`, `_row()`, `settings()`, `set_voters()`, `_warmup_reference()`, `_report()` and 3 more. Depends on `backtester`.
+
+**Use.** `import ecosystem.votes`
+
+#### `ecosystem/web.py`
+
+`code-python` · 587 lines · 23,604 B · description: **extracted**
+
+**Purpose.** Local paper controls and observability over the established ecosystem owners. ``make_server`` binds before returning. The caller owns serving and shutdown, so the supervisor can publish the actual ephemeral port without claiming liveness before bind succeeds. This module never starts a recorder, worker, or order path.
+
+**Contents.** Defines `SCHEMA_VERSION`, `STATIC`, `SECRET_KEY`, `MAX_RESPONSE`, `_owner_failure()`, `_redact()`, `_telemetry()`, `_component_health()`, `_availability_ready()`, `class ControlRoomServer` and 2 more.
+
+**Use.** `python3 ecosystem/web.py --help`
+
+#### `ecosystem/wiki.py`
+
+`code-python` · 340 lines · 12,510 B · description: **extracted**
+
+**Purpose.** Search the packaged documentation snapshot without opening caller paths. Markdown and its links are untrusted document content. This module returns text and provenance; callers must render it without evaluating HTML or instructions.
+
+**Contents.** Defines `SCHEMA_VERSION`, `SNAPSHOT_DIR`, `CANONICAL_REPO`, `MAX_BUNDLE_BYTES`, `MAX_MANIFEST_BYTES`, `MAX_PAGE_BYTES`, `MAX_PAGES`, `PAGE_ID`, `SHA256`, `COMMIT` and 13 more.
+
+**Use.** `import ecosystem.wiki`
+
+#### `ecosystem/zec_forward.py`
+
+`code-python` · 606 lines · 32,133 B · description: **extracted**
+
+**Purpose.** Independent, source-bound ZEC ensemble paper accounts and Oracle publication. All decisions use closed Binance spot candles. The canonical engine applies an issued target at the following observed candle open. This is reference paper accounting, never evidence of an executable fill or a probability of profit.
+
+**Contents.** Defines `APP_ID`, `INTERVALS`, `SOURCE`, `INSTRUMENT`, `API`, `_invalid_json()`, `canonical()`, `digest()`, `implementation()`, `_path()` and 17 more. Depends on `backtester`.
+
+**Use.** `python3 ecosystem/zec_forward.py --help`
+
+### `ecosystem/api/`
+
+#### `ecosystem/api/control.openapi.json`
+
+`config` · 848 lines · 25,981 B · description: **derived**
+
+**Purpose.** Generated JSON object, 5 keys (openapi, info, servers, paths, components).
+
+**Use.** Configuration; nothing to run.
+
+### `ecosystem/tests/`
+
+#### `ecosystem/tests/__init__.py`
+
+`test` · 17 lines · 570 B · description: **extracted**
+
+**Purpose.** Scoped synthetic owner endpoints for ecosystem tests.
+
+**Contents.** Defines `isolated_default_owner()`.
+
+**Use.** `python3 -m pytest ecosystem/tests/__init__.py -q`
+
+#### `ecosystem/tests/test_backtests.py`
+
+`test` · 126 lines · 4,785 B · description: **none**
+
+**Purpose.** _No description available._
+
+**Contents.** Defines `START`, `END`, `EPOCH`, `frame()`, `class BacktestTests`. Depends on `soltui`.
+
+**Use.** `python3 -m pytest ecosystem/tests/test_backtests.py -q`
+
+#### `ecosystem/tests/test_cli.py`
+
+`test` · 150 lines · 6,309 B · description: **extracted**
+
+**Purpose.** CLI home selection and observed UI readiness; never starts a real service.
+
+**Contents.** Defines `class CliTests`.
+
+**Use.** `python3 -m pytest ecosystem/tests/test_cli.py -q`
+
+#### `ecosystem/tests/test_control.py`
+
+`test` · 350 lines · 14,163 B · description: **none**
+
+**Purpose.** _No description available._
+
+**Contents.** Defines `class ControlTests`.
+
+**Use.** `python3 -m pytest ecosystem/tests/test_control.py -q`
+
+#### `ecosystem/tests/test_control_forward_status.py`
+
+`test` · 183 lines · 8,479 B · description: **extracted**
+
+**Purpose.** A new reader explains a frozen producer's pending window without changing it.
+
+**Contents.** Defines `BASE`, `LATE`, `class ForwardStatusProjection`.
+
+**Use.** `python3 -m pytest ecosystem/tests/test_control_forward_status.py -q`
+
+#### `ecosystem/tests/test_control_http.py`
+
+`test` · 299 lines · 11,806 B · description: **none**
+
+**Purpose.** _No description available._
+
+**Contents.** Defines `class ControlHTTPTests`.
+
+**Use.** `python3 -m pytest ecosystem/tests/test_control_http.py -q`
+
+#### `ecosystem/tests/test_data.py`
+
+`test` · 142 lines · 5,814 B · description: **none**
+
+**Purpose.** _No description available._
+
+**Contents.** Defines `START`, `END`, `EPOCH`, `frame()`, `class DataTests`.
+
+**Use.** `python3 -m pytest ecosystem/tests/test_data.py -q`
+
+#### `ecosystem/tests/test_forecast.py`
+
+`test` · 403 lines · 18,044 B · description: **none**
+
+**Purpose.** _No description available._
+
+**Contents.** Defines `class Strategies`, `class ForecastTests`.
+
+**Use.** `python3 -m pytest ecosystem/tests/test_forecast.py -q`
+
+#### `ecosystem/tests/test_forecast_service_audit.py`
+
+`test` · 257 lines · 10,430 B · description: **extracted**
+
+**Purpose.** Isolated lifecycle regressions; no test may call the owner's launchd service.
+
+**Contents.** Defines `class ForecastServiceAuditTests`.
+
+**Use.** `python3 -m pytest ecosystem/tests/test_forecast_service_audit.py -q`
+
+#### `ecosystem/tests/test_machine_health_http.py`
+
+`test` · 116 lines · 4,663 B · description: **extracted**
+
+**Purpose.** Collector endpoints preserve compact, inert and origin-bound contracts.
+
+**Contents.** Defines `class MachineHealthHttpTests`.
+
+**Use.** `python3 -m pytest ecosystem/tests/test_machine_health_http.py -q`
+
+#### `ecosystem/tests/test_manager_editing.py`
+
+`test` · 433 lines · 18,950 B · description: **none**
+
+**Purpose.** _No description available._
+
+**Contents.** Defines `recording()`, `class ManagerEditingIntegrationTests`, `class DefaultOwnerScopeTests`.
+
+**Use.** `python3 -m pytest ecosystem/tests/test_manager_editing.py -q`
+
+#### `ecosystem/tests/test_meta_forward.py`
+
+`test` · 328 lines · 16,087 B · description: **extracted**
+
+**Purpose.** Future-only decisions, atomic books and current-cost paper comparators.
+
+**Contents.** Defines `class MetaForwardTests`.
+
+**Use.** `python3 -m pytest ecosystem/tests/test_meta_forward.py -q`
+
+#### `ecosystem/tests/test_observability.py`
+
+`test` · 58 lines · 2,370 B · description: **none**
+
+**Purpose.** _No description available._
+
+**Contents.** Defines `class LogTests`.
+
+**Use.** `python3 -m pytest ecosystem/tests/test_observability.py -q`
+
+#### `ecosystem/tests/test_performance.py`
+
+`test` · 261 lines · 11,522 B · description: **none**
+
+**Purpose.** _No description available._
+
+**Contents.** Defines `class PerformanceTests`.
+
+**Use.** `python3 -m pytest ecosystem/tests/test_performance.py -q`
+
+#### `ecosystem/tests/test_recovery.py`
+
+`test` · 230 lines · 8,606 B · description: **none**
+
+**Purpose.** _No description available._
+
+**Contents.** Defines `class RecoveryTests`. Depends on `soltui`.
+
+**Use.** `python3 -m pytest ecosystem/tests/test_recovery.py -q`
+
+#### `ecosystem/tests/test_registration.py`
+
+`test` · 190 lines · 7,884 B · description: **none**
+
+**Purpose.** _No description available._
+
+**Contents.** Defines `BATCH`, `class RegistrationTests`.
+
+**Use.** `python3 -m pytest ecosystem/tests/test_registration.py -q`
+
+#### `ecosystem/tests/test_runner.py`
+
+`test` · 382 lines · 15,991 B · description: **none**
+
+**Purpose.** _No description available._
+
+**Contents.** Defines `class RunnerTests`, `class RecoveryTests`. Depends on `soltui`.
+
+**Use.** `python3 -m pytest ecosystem/tests/test_runner.py -q`
+
+#### `ecosystem/tests/test_setup.py`
+
+`test` · 398 lines · 18,589 B · description: **none**
+
+**Purpose.** _No description available._
+
+**Contents.** Defines `class SetupTests`.
+
+**Use.** `python3 -m pytest ecosystem/tests/test_setup.py -q`
+
+#### `ecosystem/tests/test_swap_web.py`
+
+`test` · 148 lines · 5,797 B · description: **extracted**
+
+**Purpose.** Real isolated HTTP checks; no third-party SDK, wallet or order is executed.
+
+**Contents.** Defines `class SwapWebTests`.
+
+**Use.** `python3 -m pytest ecosystem/tests/test_swap_web.py -q`
+
+#### `ecosystem/tests/test_swaps.py`
+
+`test` · 199 lines · 9,956 B · description: **extracted**
+
+**Purpose.** Explicit assumptions and manual SDK contracts; no wallet or provider call.
+
+**Contents.** Defines `class SwapTests`.
+
+**Use.** `python3 -m pytest ecosystem/tests/test_swaps.py -q`
+
+#### `ecosystem/tests/test_telemetry.py`
+
+`test` · 342 lines · 14,168 B · description: **none**
+
+**Purpose.** _No description available._
+
+**Contents.** Defines `class TelemetryTests`.
+
+**Use.** `python3 -m pytest ecosystem/tests/test_telemetry.py -q`
+
+#### `ecosystem/tests/test_tradingview_chart.py`
+
+`test` · 67 lines · 2,853 B · description: **extracted**
+
+**Purpose.** The external chart must not gain the local control room's origin or session.
+
+**Contents.** Defines `WEB`, `HARNESS`, `class TradingViewChartTests`.
+
+**Use.** `python3 -m pytest ecosystem/tests/test_tradingview_chart.py -q`
+
+#### `ecosystem/tests/test_ui_contract.py`
+
+`test` · 522 lines · 42,473 B · description: **extracted**
+
+**Purpose.** Client safety checks; a VM DOM does not replace installed browser acceptance.
+
+**Contents.** Defines `WEB`, `class Document`, `HARNESS`, `class UiContractTests`.
+
+**Use.** `python3 -m pytest ecosystem/tests/test_ui_contract.py -q`
+
+#### `ecosystem/tests/test_ui_service.py`
+
+`test` · 305 lines · 12,669 B · description: **extracted**
+
+**Purpose.** Isolated HTTP identity and simulated process-launch checks; no production start.
+
+**Contents.** Defines `class UiServiceTests`.
+
+**Use.** `python3 -m pytest ecosystem/tests/test_ui_service.py -q`
+
+#### `ecosystem/tests/test_volty_forward.py`
+
+`test` · 322 lines · 18,097 B · description: **extracted**
+
+**Purpose.** Prospective stop issuance, open-book replay and persistent service boundaries.
+
+**Contents.** Defines `bars()`, `class VoltyForwardTests`. Depends on `backtester`.
+
+**Use.** `python3 -m pytest ecosystem/tests/test_volty_forward.py -q`
+
+#### `ecosystem/tests/test_votes.py`
+
+`test` · 269 lines · 13,160 B · description: **none**
+
+**Purpose.** _No description available._
+
+**Contents.** Defines `class VoteSelectionTests`.
+
+**Use.** `python3 -m pytest ecosystem/tests/test_votes.py -q`
+
+#### `ecosystem/tests/test_web.py`
+
+`test` · 315 lines · 13,591 B · description: **extracted**
+
+**Purpose.** Actual loopback HTTP checks; synthetic owner records are test fixtures only.
+
+**Contents.** Defines `class WebTests`.
+
+**Use.** `python3 -m pytest ecosystem/tests/test_web.py -q`
+
+#### `ecosystem/tests/test_wiki.py`
+
+`test` · 236 lines · 9,985 B · description: **extracted**
+
+**Purpose.** Real temporary Git snapshots exercise provenance and the inert read boundary.
+
+**Contents.** Defines `class WikiTests`.
+
+**Use.** `python3 -m pytest ecosystem/tests/test_wiki.py -q`
+
+#### `ecosystem/tests/test_wrapper.py`
+
+`test` · 85 lines · 3,439 B · description: **none**
+
+**Purpose.** _No description available._
+
+**Contents.** Defines `class WrapperTests`.
+
+**Use.** `python3 -m pytest ecosystem/tests/test_wrapper.py -q`
+
+#### `ecosystem/tests/test_zec_forward.py`
+
+`test` · 277 lines · 15,725 B · description: **extracted**
+
+**Purpose.** Causal reference-paper accounting and exact study-policy continuation.
+
+**Contents.** Defines `arrays()`, `class ZecForwardTests`. Depends on `backtester`.
+
+**Use.** `python3 -m pytest ecosystem/tests/test_zec_forward.py -q`
+
+### `ecosystem/web/`
+
+#### `ecosystem/web/app.js`
+
+`code-js` · 1299 lines · 108,150 B · description: **none**
+
+**Purpose.** _No description available._
+
+**Contents.** Defines `actionBlocked`, `actionButton`, `actionKey`, `actionRun`, `aggregate`, `announce`, `appendInline`, `array`, `botPnl`, `changeOracleDisplay` and 30 more.
+
+**Use.** Loaded by the extension; see `extension/manifest.json` for entry points.
+
+#### `ecosystem/web/index.html`
+
+`code-web` · 90 lines · 32,530 B · description: **none**
+
+**Purpose.** _No description available._
+
+**Use.** Read it.
+
+#### `ecosystem/web/oracle-chart.js`
+
+`code-js` · 252 lines · 11,633 B · description: **none**
+
+**Purpose.** _No description available._
+
+**Contents.** Defines `createLegend`, `drawMarkers`, `ensureChart`, `loadLibrary`, `render`, `renderLatestRows`, `setStatus`, `updateShape`.
+
+**Use.** Loaded by the extension; see `extension/manifest.json` for entry points.
+
+#### `ecosystem/web/styles.css`
+
+`code-web` · 37 lines · 46,344 B · description: **none**
+
+**Purpose.** _No description available._
+
+**Use.** Read it.
+
+#### `ecosystem/web/swap.html`
+
+`code-web` · 42 lines · 4,865 B · description: **none**
+
+**Purpose.** _No description available._
+
+**Use.** Read it.
+
+#### `ecosystem/web/swap.js`
+
+`code-js` · 107 lines · 5,995 B · description: **none**
+
+**Purpose.** _No description available._
+
+**Contents.** Defines `SDK_SRC`, `loadManually`, `loadSdk`, `readConfig`, `selectedFee`, `state`, `updateFee`, `validFee`.
+
+**Use.** Loaded by the extension; see `extension/manifest.json` for entry points.
+
+#### `ecosystem/web/tradingview-chart.js`
+
+`code-js` · 41 lines · 1,792 B · description: **none**
+
+**Purpose.** _No description available._
+
+**Use.** Loaded by the extension; see `extension/manifest.json` for entry points.
+
+### `ecosystem/web/vendor/`
+
+#### `ecosystem/web/vendor/LICENSE`
+
+`other` · 202 lines · 11,347 B · description: **none**
+
+**Purpose.** _No description available._
+
+**Use.** Read it.
+
+#### `ecosystem/web/vendor/NOTICE`
+
+`other` · 3 lines · 101 B · description: **none**
+
+**Purpose.** _No description available._
+
+**Use.** Read it.
+
+#### `ecosystem/web/vendor/lightweight-charts-5.2.1.mjs`
+
+`code-js` · 8 lines · 197,827 B · description: **none**
+
+**Purpose.** _No description available._
+
+**Use.** Loaded by the extension; see `extension/manifest.json` for entry points.
+
+---
+
 ## soltui
 
-The macOS menu-bar app that surfaces state locally. Packaged with py2app and supervised by launchd.
+The local TUI, browser workspace and service interfaces. Coinbase order execution requires separate explicit arming; Jupiter live submission remains blocked.
 
-181 files.
+192 files.
 
 #### `soltui/JUPITER_ORDER_WIDGET_IMPLEMENTATION_GUIDE.md`
 
@@ -25149,7 +28909,7 @@ The macOS menu-bar app that surfaces state locally. Packaged with py2app and sup
 
 #### `soltui/analyze.py`
 
-`code-python` · 274 lines · 11,390 B · description: **extracted**
+`code-python` · 274 lines · 11,376 B · description: **extracted**
 
 **Purpose.** What every strategy, signal and indicator said about one coin at one moment. Pure logic behind the Analyze tab. No Textual import, no widget. ## It wraps `research/decide.py`; it does not reimplement it `decide.py`'s one substantive guarantee is that the exposures it reports are the numbers the engine would have acted on.
 
@@ -25159,17 +28919,17 @@ The macOS menu-bar app that surfaces state locally. Packaged with py2app and sup
 
 #### `soltui/api.py`
 
-`code-python` · 203 lines · 8,302 B · description: **extracted**
+`code-python` · 235 lines · 9,821 B · description: **extracted**
 
 **Purpose.** HTTP surface: `soltui api [--port N]`. Stdlib `http.server`; mirrors extension/tools/api-server.js. GET /v1/health liveness, no auth GET /v1/commands the `list` envelope GET /v1/<command>?a=1 read-only commands, args from the query string POST /v1/<command> any command, args from a JSON object body Command routes return the registry envelope exactly as `commands.dumps` renders it, so the body is b
 
-**Contents.** Defines `HOST`, `DEFAULT_PORT`, `MAX_BODY_BYTES`, `_ROUTE`, `_STATUS`, `support_dir()`, `token_path()`, `load_token()`, `token_matches()`, `make_handler()` and 2 more.
+**Contents.** Defines `HOST`, `DEFAULT_PORT`, `MAX_BODY_BYTES`, `REJECT_DRAIN_TIMEOUT_S`, `REQUEST_READ_TIMEOUT_S`, `_ROUTE`, `_STATUS`, `support_dir()`, `token_path()`, `load_token()` and 4 more.
 
 **Use.** `python3 soltui/api.py --help`
 
 #### `soltui/app.py`
 
-`code-python` · 284 lines · 11,787 B · description: **extracted**
+`code-python` · 289 lines · 12,059 B · description: **extracted**
 
 **Purpose.** macOS menu-bar shell. Thin by design. python3 -m soltui.app Mirrors `netdnsmonitor/app.py`: every decision lives in already-tested modules (`status`, `config`, `roster`, `runner`), and this file only wires them to a `rumps.Timer` and a status-item title.
 
@@ -25179,7 +28939,7 @@ The macOS menu-bar app that surfaces state locally. Packaged with py2app and sup
 
 #### `soltui/backtest_log.py`
 
-`code-python` · 53 lines · 1,940 B · description: **extracted**
+`code-python` · 54 lines · 2,083 B · description: **extracted**
 
 **Purpose.** Bounded, nonblocking reads of the detached backtest worker's append-only log.
 
@@ -25199,7 +28959,7 @@ The macOS menu-bar app that surfaces state locally. Packaged with py2app and sup
 
 #### `soltui/bgqueue.py`
 
-`code-python` · 941 lines · 36,849 B · description: **extracted**
+`code-python` · 1027 lines · 40,662 B · description: **extracted**
 
 **Purpose.** Job queue for the background backtest sweep. Pure logic; no UI, no processes. The TUI's own sweep (`runner.py`) evaluates the roster and blocks a thread until it finishes.
 
@@ -25209,11 +28969,11 @@ The macOS menu-bar app that surfaces state locally. Packaged with py2app and sup
 
 #### `soltui/bgworker.py`
 
-`code-python` · 636 lines · 25,404 B · description: **extracted**
+`code-python` · 665 lines · 27,118 B · description: **extracted**
 
 **Purpose.** The background backtest worker: a separate, low-priority process. python3 -m soltui.bgworker --asset SOL python3 -m soltui.bgworker --asset SOL --horizons medium --max-tier 1 --limit 50 Run directly it is a normal foreground script; the TUI launches it through `bgcontrol.start()`, which is what applies the background scheduling policy.
 
-**Contents.** Defines `REPO`, `NICE_LEVEL`, `evaluation_code_fingerprint()`, `_file_hash()`, `evaluation_proof()`, `class EvaluationProofMismatch`, `verify_evaluation_proof()`, `_validate_limit()`, `_limit_argument()`, `class EvaluationContextChanged` and 10 more. Depends on `backtester`.
+**Contents.** Defines `REPO`, `_SOURCE_EPOCH`, `NICE_LEVEL`, `evaluation_code_fingerprint()`, `_file_hash()`, `evaluation_proof()`, `class EvaluationProofMismatch`, `verify_evaluation_proof()`, `_validate_limit()`, `_limit_argument()` and 11 more. Depends on `backtester`.
 
 **Use.** `python3 soltui/bgworker.py --help`
 
@@ -25259,7 +29019,7 @@ The macOS menu-bar app that surfaces state locally. Packaged with py2app and sup
 
 #### `soltui/coin_fit.py`
 
-`code-python` · 1385 lines · 49,321 B · description: **extracted**
+`code-python` · 1389 lines · 49,847 B · description: **extracted**
 
 **Purpose.** Single/bulk coin suitability, quick ranking and a fixed-configuration audit. All market data comes from explicit local caches. No order path, automatic configuration adoption, recorder startup, or background fetching exists here.
 
@@ -25269,7 +29029,7 @@ The macOS menu-bar app that surfaces state locally. Packaged with py2app and sup
 
 #### `soltui/coinbase_account.py`
 
-`code-python` · 269 lines · 12,710 B · description: **extracted**
+`code-python` · 273 lines · 12,876 B · description: **extracted**
 
 **Purpose.** Coinbase market catalog and consumer-account reads; no signing or order execution. The Coinbase for Agents CLI owns its credentials. The app invokes it with argument arrays and never loads, stores, or logs keys. Market data uses the public Advanced Trade endpoint and publishes a complete snapshot only after every page succeeds.
 
@@ -25279,7 +29039,7 @@ The macOS menu-bar app that surfaces state locally. Packaged with py2app and sup
 
 #### `soltui/coinbase_manual.py`
 
-`code-python` · 338 lines · 19,136 B · description: **extracted**
+`code-python` · 346 lines · 19,696 B · description: **extracted**
 
 **Purpose.** Explicitly reviewed Coinbase spot orders. Never retries a submitted order.
 
@@ -25289,7 +29049,7 @@ The macOS menu-bar app that surfaces state locally. Packaged with py2app and sup
 
 #### `soltui/commands.py`
 
-`code-python` · 3435 lines · 171,357 B · description: **extracted**
+`code-python` · 3452 lines · 172,247 B · description: **extracted**
 
 **Purpose.** The soltui command registry: one set of calls for the TUI, CLI, HTTP API and native host. Every action the console can take is a registered `Command`. Every surface goes through `dispatch(name, params, surface)`, which validates parameters, applies the confirm gate, runs the handler, wraps the outcome in the response envelope and appends one line to the call log.
 
@@ -25299,7 +29059,7 @@ The macOS menu-bar app that surfaces state locally. Packaged with py2app and sup
 
 #### `soltui/compound.py`
 
-`code-python` · 2092 lines · 103,587 B · description: **extracted**
+`code-python` · 2098 lines · 104,071 B · description: **extracted**
 
 **Purpose.** Compound five-minute tester: saved configuration, live reads, forward ledger, sweeps. python3 -m soltui.compound signal --asset SOL # score now, explain every metric python3 -m soltui.compound forward --asset SOL --loop # record a call per closed 5m bar python3 -m soltui.compound status --asset SOL # forward-test hit rates python3 -m soltui.compound backtest --asset SOL # compound + each component
 
@@ -25337,9 +29097,19 @@ The macOS menu-bar app that surfaces state locally. Packaged with py2app and sup
 
 **Use.** `python3 soltui/council.py --help`
 
+#### `soltui/csv_safety.py`
+
+`code-python` · 21 lines · 859 B · description: **extracted**
+
+**Purpose.** Keep exported display strings literal when opened by spreadsheet software. Call ``spreadsheet_safe_text(cell)`` before passing cells to ``csv.writer``. Formula-like strings receive an apostrophe. Signed numeric values, including grouped numbers, scientific notation and percentages, keep their numeric text. This helper has no UI dependency, so headless reports can share the same policy.
+
+**Contents.** Defines `_NUMBER`, `spreadsheet_safe_text()`.
+
+**Use.** `import soltui.csv_safety`
+
 #### `soltui/csv_table.py`
 
-`code-python` · 73 lines · 2,563 B · description: **extracted**
+`code-python` · 77 lines · 2,819 B · description: **extracted**
 
 **Purpose.** CSV export for Textual tables.
 
@@ -25349,7 +29119,7 @@ The macOS menu-bar app that surfaces state locally. Packaged with py2app and sup
 
 #### `soltui/cumulative.py`
 
-`code-python` · 242 lines · 9,053 B · description: **extracted**
+`code-python` · 243 lines · 9,099 B · description: **extracted**
 
 **Purpose.** Aggregate every committed backtest result — with the evidence floor applied. Pure logic behind the Cumulative tab. No Textual import, no widget. ## The defect this module is built to avoid `cpcv_evaluate` marks a configuration `insufficient` when it falls below `min_total_trades`, prints it **DROPPED**, and **still returns a full path count**.
 
@@ -25359,7 +29129,7 @@ The macOS menu-bar app that surfaces state locally. Packaged with py2app and sup
 
 #### `soltui/current_signal.py`
 
-`code-python` · 42 lines · 2,137 B · description: **extracted**
+`code-python` · 45 lines · 2,292 B · description: **extracted**
 
 **Purpose.** Fresh strategy assessments, independent from saved forecast eligibility.
 
@@ -25376,6 +29146,16 @@ The macOS menu-bar app that surfaces state locally. Packaged with py2app and sup
 **Contents.** Defines `context_id()`, `research_context()`, `handoff_plan()`.
 
 **Use.** `import soltui.desk`
+
+#### `soltui/diagnostics.py`
+
+`code-python` · 27 lines · 1,083 B · description: **extracted**
+
+**Purpose.** Fixed metadata for external reads; never pass URLs or provider text as labels. Use ``@external_read("component.operation")`` on a transport wrapper, or use the same helper as a context manager. Request/success use DEBUG; failure uses WARNING with the exception class only. The original exception still propagates. The helper uses the Python standard library and needs no separate setup.
+
+**Contents.** Defines `_LOGGER`, `external_read()`.
+
+**Use.** `import soltui.diagnostics`
 
 #### `soltui/docs_browser.py`
 
@@ -25419,17 +29199,17 @@ The macOS menu-bar app that surfaces state locally. Packaged with py2app and sup
 
 #### `soltui/experiment_runner.py`
 
-`code-python` · 729 lines · 42,316 B · description: **extracted**
+`code-python` · 750 lines · 43,085 B · description: **extracted**
 
 **Purpose.** Durable native optimization over frozen local evidence. Exploration never evaluates the final windows. Final validation freezes one train winner and spends its temporal evidence before running either paired simulator. The ledger records exposure as well as final reservations: changing window sizes cannot turn dates already used for selection into an untouched final test.
 
-**Contents.** Defines `SCHEMA_VERSION`, `MAX_EVALUATIONS`, `_canonical()`, `_digest()`, `_runtime_descriptor()`, `_root()`, `_lock()`, `run_active()`, `_code_fingerprint()`, `_settings()` and 23 more.
+**Contents.** Defines `_REPO`, `_SOURCE_EPOCH`, `SCHEMA_VERSION`, `MAX_EVALUATIONS`, `_canonical()`, `_digest()`, `_runtime_descriptor()`, `_root()`, `_lock()`, `run_active()` and 26 more.
 
 **Use.** `import soltui.experiment_runner`
 
 #### `soltui/experiment_screens.py`
 
-`code-python` · 800 lines · 45,455 B · description: **extracted**
+`code-python` · 800 lines · 45,491 B · description: **extracted**
 
 **Purpose.** Presentation for the optimization workbench; every operation uses the registry.
 
@@ -25449,21 +29229,21 @@ The macOS menu-bar app that surfaces state locally. Packaged with py2app and sup
 
 #### `soltui/f5_batch.py`
 
-`code-python` · 728 lines · 38,913 B · description: **extracted**
+`code-python` · 816 lines · 43,605 B · description: **extracted**
 
 **Purpose.** Durable, isolated all-strategy backtest and prospective forward runner. The caller supplies the supported coin universe. The plan freezes it and the supported intervals before work starts. A worker is started only by explicit `start`, never import. All data stays under a run-specific directory and the existing queue is untouched.
 
-**Contents.** Defines `INTERVAL_MINUTES`, `PHASES`, `_root()`, `_directory()`, `_connect()`, `_dump()`, `_meta()`, `_set()`, `_code_id()`, `catalog_coins()` and 22 more. Depends on `backtester`.
+**Contents.** Defines `_REPO`, `_SOURCE_EPOCH`, `INTERVAL_MINUTES`, `PHASES`, `_root()`, `_directory()`, `_connect()`, `_dump()`, `_meta()`, `_set()` and 27 more. Depends on `backtester`.
 
 **Use.** `python3 soltui/f5_batch.py --help`
 
 #### `soltui/forwardtest.py`
 
-`code-python` · 649 lines · 33,049 B · description: **extracted**
+`code-python` · 680 lines · 34,687 B · description: **extracted**
 
 **Purpose.** Prospective, paper-only trials of registered strategies on closed Coinbase minutes.
 
-**Contents.** Defines `HORIZONS`, `HISTORY`, `WARM_REPLAY`, `KNOBS`, `revision()`, `_json()`, `_MIGRATIONS`, `_schema_current()`, `_db()`, `save_session()` and 16 more. Depends on `backtester`.
+**Contents.** Defines `_SOURCE_ROOT`, `_SOURCE_EPOCH`, `HORIZONS`, `HISTORY`, `WARM_REPLAY`, `KNOBS`, `revision()`, `_disk_revision()`, `_json()`, `_MIGRATIONS` and 19 more. Depends on `backtester`.
 
 **Use.** `import soltui.forwardtest`
 
@@ -25479,11 +29259,11 @@ The macOS menu-bar app that surfaces state locally. Packaged with py2app and sup
 
 #### `soltui/help.py`
 
-`code-python` · 727 lines · 103,865 B · description: **extracted**
+`code-python` · 775 lines · 110,052 B · description: **extracted**
 
 **Purpose.** Plain-language help shared by hover tooltips and the F1 reference.
 
-**Contents.** Defines `HEADER_GLOSSARY`, `TAB_HELP`, `SETTING_HELP`, `SIGNAL_HELP`, `CONTROL_HELP`, `TERMS`, `column_help()`, `control_help()`, `row_help()`.
+**Contents.** Defines `HEADER_GLOSSARY`, `TAB_HELP`, `SETTING_HELP`, `SIGNAL_HELP`, `CONTROL_HELP`, `TERMS`, `column_help()`, `SIMULATION_HELP`, `control_help()`, `row_help()`.
 
 **Use.** `import soltui.help`
 
@@ -25499,7 +29279,7 @@ The macOS menu-bar app that surfaces state locally. Packaged with py2app and sup
 
 #### `soltui/jupiter_manual.py`
 
-`code-python` · 512 lines · 22,129 B · description: **extracted**
+`code-python` · 518 lines · 22,247 B · description: **extracted**
 
 **Purpose.** Unsigned Jupiter Swap API v2 previews with structural checks and disk locking. Enforces the $100 input-value cap using positive independent USD valuation. Submission is unavailable until the exact V2 transaction has independent economic verification. Historical ambiguous submissions remain blocked until chain evidence resolves them.
 
@@ -25509,11 +29289,11 @@ The macOS menu-bar app that surfaces state locally. Packaged with py2app and sup
 
 #### `soltui/jupiter_tokens.py`
 
-`code-python` · 66 lines · 2,600 B · description: **extracted**
+`code-python` · 91 lines · 3,992 B · description: **extracted**
 
 **Purpose.** Jupiter token discovery. Symbols are never treated as unique mint identities.
 
-**Contents.** Defines `API`, `MINT`, `get()`, `search()`, `resolve()`.
+**Contents.** Defines `API`, `MINT`, `MAX_API_BYTES`, `_LOGGER`, `class _NoRedirect`, `_authenticated_json()`, `get()`, `search()`, `resolve()`.
 
 **Use.** `import soltui.jupiter_tokens`
 
@@ -25529,7 +29309,7 @@ The macOS menu-bar app that surfaces state locally. Packaged with py2app and sup
 
 #### `soltui/liquidity.py`
 
-`code-python` · 601 lines · 20,353 B · description: **extracted**
+`code-python` · 608 lines · 20,549 B · description: **extracted**
 
 **Purpose.** Liquidity tab logic: read the Aero LP daemon's state files, format them. Pure, stdlib-only, and read-only with one exception. The liquidity daemon (`liquidity/`, `aero-lp daemon`) writes `status.json` and `scout.json`; this module only reads them. The single write is the `KILL` switch file, which `set_kill()` creates or deletes. The contract is `liquidity/STATE_FILES.md`.
 
@@ -25539,7 +29319,7 @@ The macOS menu-bar app that surfaces state locally. Packaged with py2app and sup
 
 #### `soltui/live_price.py`
 
-`code-python` · 55 lines · 2,371 B · description: **extracted**
+`code-python` · 56 lines · 2,464 B · description: **extracted**
 
 **Purpose.** Display-only Jupiter prices. Token symbols never choose an ambiguous mint.
 
@@ -25559,7 +29339,7 @@ The macOS menu-bar app that surfaces state locally. Packaged with py2app and sup
 
 #### `soltui/live_score.py`
 
-`code-python` · 129 lines · 6,947 B · description: **extracted**
+`code-python` · 132 lines · 6,973 B · description: **extracted**
 
 **Purpose.** Read-only forward-prediction agreement for live displays, never an order signal. Keep this out of forwardtest.py: that file's hash partitions trainer evidence. The browser adapter uses the same contract and tests against the same vectors.
 
@@ -25579,17 +29359,17 @@ The macOS menu-bar app that surfaces state locally. Packaged with py2app and sup
 
 #### `soltui/make_icon.py`
 
-`code-python` · 281 lines · 10,446 B · description: **extracted**
+`code-python` · 310 lines · 12,532 B · description: **extracted**
 
 **Purpose.** Generate the SolTUI app icon: a tree of life whose roots are the Solana mark. python3 soltui/make_icon.py # writes soltui/SolTUI.icns python3 soltui/make_icon.py --preview # also writes a 512px PNG to look at ## The design constraint that drives everything The icon has to work at **16px** (menu bar, Finder list, Cmd-Tab at small sizes), not at 1024. A finely detailed tree becomes mush there.
 
-**Contents.** Defines `HERE`, `PURPLE`, `GREEN`, `BACKDROP`, `SS`, `BASE`, `ICONSET`, `vertical_gradient()`, `rounded_tile()`, `draw_branches()` and 5 more.
+**Contents.** Defines `HERE`, `_arguments()`, `_CLI_ARGS`, `PURPLE`, `GREEN`, `BACKDROP`, `SS`, `BASE`, `ICONSET`, `vertical_gradient()` and 7 more. Depends on `backtester`.
 
 **Use.** `python3 soltui/make_icon.py --help`
 
 #### `soltui/manager_evidence.py`
 
-`code-python` · 828 lines · 36,134 B · description: **extracted**
+`code-python` · 835 lines · 36,576 B · description: **extracted**
 
 **Purpose.** Protocol 2 additions to ExperimentStore; no second temporal authority. Legacy schema 1 rows, splits and retries retain their original meaning. Manager trials are consumed before execution and final exposure is irreversible.
 
@@ -25597,9 +29377,19 @@ The macOS menu-bar app that surfaces state locally. Packaged with py2app and sup
 
 **Use.** `import soltui.manager_evidence`
 
+#### `soltui/market_diagnostics.py`
+
+`code-python` · 35 lines · 1,225 B · description: **extracted**
+
+**Purpose.** Safe read-only market operation events through the standard logging handler. Use ``with market_operation("fixed.operation")`` or apply it as a decorator. Operation names are source constants. Never pass symbols, URLs or user text. The logger emits only operation, outcome and exception class; handlers own storage.
+
+**Contents.** Defines `LOGGER`, `market_operation()`.
+
+**Use.** `import soltui.market_diagnostics`
+
 #### `soltui/menubar_launcher.py`
 
-`code-python` · 52 lines · 1,919 B · description: **extracted**
+`code-python` · 52 lines · 1,998 B · description: **extracted**
 
 **Purpose.** py2app entry point for the menu-bar app. ## Why this file exists py2app executes its target as a **top-level script**, not as a module inside a package.
 
@@ -25669,7 +29459,7 @@ The macOS menu-bar app that surfaces state locally. Packaged with py2app and sup
 
 #### `soltui/pnl.py`
 
-`code-python` · 688 lines · 31,138 B · description: **extracted**
+`code-python` · 732 lines · 33,536 B · description: **extracted**
 
 **Purpose.** Profit and loss over a variable window: the maths behind the P&L tab. Pure functions over plain data, so every figure can be checked with a fixture and no event loop, network or price file.
 
@@ -25679,7 +29469,7 @@ The macOS menu-bar app that surfaces state locally. Packaged with py2app and sup
 
 #### `soltui/portfolio.py`
 
-`code-python` · 307 lines · 13,314 B · description: **extracted**
+`code-python` · 310 lines · 13,459 B · description: **extracted**
 
 **Purpose.** Portfolio monitoring: timestamped per-chain snapshots, the changes between them, and a notice line. A snapshot is one line of `snapshots.jsonl` under `~/Library/Application Support/soltui/portfolio/` (mode 600). It holds per-chain balances by symbol, a USD value, the prices used and the script types an xpub scan found.
 
@@ -25719,7 +29509,7 @@ The macOS menu-bar app that surfaces state locally. Packaged with py2app and sup
 
 #### `soltui/pricefeed.py`
 
-`code-python` · 1037 lines · 43,810 B · description: **extracted**
+`code-python` · 1050 lines · 44,454 B · description: **extracted**
 
 **Purpose.** Streaming coin prices: the public Coinbase Exchange `ticker` channel, recorded to disk. python -m soltui.pricefeed record # the recorder loop (the console starts it detached) python -m soltui.pricefeed status # what is recorded, and the latest prices Before this module the console polled prices (Coinbase REST spot, closed 5m candles) and kept nothing between bars.
 
@@ -25747,7 +29537,7 @@ The macOS menu-bar app that surfaces state locally. Packaged with py2app and sup
 
 #### `soltui/requirements.txt`
 
-`data` · 39 lines · 1,964 B · description: **curated**
+`data` · 39 lines · 2,005 B · description: **curated**
 
 **Purpose.** Runtime dependencies for the menu-bar app (rumps/pyobjc and the py2app build tooling).
 
@@ -25795,7 +29585,7 @@ The macOS menu-bar app that surfaces state locally. Packaged with py2app and sup
 
 #### `soltui/serve.py`
 
-`code-python` · 134 lines · 4,875 B · description: **extracted**
+`code-python` · 170 lines · 6,551 B · description: **extracted**
 
 **Purpose.** Serve the Textual console as a real window, without needing a TTY. python3 -m soltui.serve # then open the printed URL python3 -m soltui.serve --port 8899 --no-open ## Why this exists The console has had five tabs, buttons and settings since it was written — but the only way to reach them was `app.py`'s "Open TUI" menu item, which does: tell application "Terminal" to do script "cd <repo> && python
 
@@ -25815,7 +29605,7 @@ The macOS menu-bar app that surfaces state locally. Packaged with py2app and sup
 
 #### `soltui/shell.py`
 
-`code-python` · 730 lines · 31,906 B · description: **extracted**
+`code-python` · 749 lines · 32,823 B · description: **extracted**
 
 **Purpose.** SolTUI v2 shell: five destinations, the health strip, the Now overview, the palette and Explain. Design: docs/design/soltui-v2/DESIGN.md. The classic console grouped eighteen peer tabs; this module groups the same panes by the question the owner brings (does anything need me, what is the call, what works, what is my money doing, what does this mean).
 
@@ -25825,7 +29615,7 @@ The macOS menu-bar app that surfaces state locally. Packaged with py2app and sup
 
 #### `soltui/signals.py`
 
-`code-python` · 369 lines · 15,557 B · description: **extracted**
+`code-python` · 387 lines · 16,301 B · description: **extracted**
 
 **Purpose.** Editable signal parameters: the tunables behind the Signals tab. ## The model, because it needs to be unambiguous A *signal* is an indicator with a period or threshold (RSI's period, Bollinger's width, MACD's spans). A *strategy* is a rule built on one or more signals. The same signal is shared by several strategies -- `rsi` and any composite containing it both read the RSI period.
 
@@ -25845,15 +29635,25 @@ The macOS menu-bar app that surfaces state locally. Packaged with py2app and sup
 
 #### `soltui/soltui-service`
 
-`other` · 405 lines · 16,240 B · description: **curated**
+`other` · 471 lines · 18,946 B · description: **curated**
 
 **Purpose.** Install-and-supervise script for the menu-bar app: builds the py2app bundle, writes the launchd agent, and manages the flag file that is the real off switch (because `KeepAlive` necessarily overrides the app's own Quit item).
 
 **Use.** `python3 soltui/soltui-service status|start|stop|build`.
 
+#### `soltui/source_epoch.py`
+
+`code-python` · 45 lines · 1,675 B · description: **extracted**
+
+**Purpose.** Prospective source admission for a supported fresh worker import epoch. This detects production source edits after capture. It does not capture compiled code, validate modules imported before capture, or establish historical identity. Callers keep their separate evidence manifests and immutable archive fences.
+
+**Contents.** Defines `class SourceEpochChanged`, `_manifest()`, `class SourceEpoch`.
+
+**Use.** `import soltui.source_epoch`
+
 #### `soltui/spot_prices.py`
 
-`code-python` · 37 lines · 1,582 B · description: **extracted**
+`code-python` · 40 lines · 1,696 B · description: **extracted**
 
 **Purpose.** USD spot prices from Coinbase's public endpoint (no key). A price it cannot give is None, never 0. `https://api.coinbase.com/v2/prices/<SYMBOL>-USD/spot` answers `{"data": {"amount": "76021.455"}}`. A symbol Coinbase does not list answers an error body; that, a network failure and a non-positive or non-finite amount all become None, so the caller reports the value as unknown instead of as zero.
 
@@ -25873,7 +29673,7 @@ The macOS menu-bar app that surfaces state locally. Packaged with py2app and sup
 
 #### `soltui/top5.py`
 
-`code-python` · 219 lines · 8,608 B · description: **extracted**
+`code-python` · 224 lines · 8,995 B · description: **extracted**
 
 **Purpose.** The five recommended configurations, read from the committed evidence. Pure logic behind the Top 5 tab. No Textual import, no widget, and — like `cumulative.py` — no re-computation: this reads what the research drivers wrote and cannot disagree with `verify_numbers.py`.
 
@@ -25893,7 +29693,7 @@ The macOS menu-bar app that surfaces state locally. Packaged with py2app and sup
 
 #### `soltui/tui.py`
 
-`code-python` · 8283 lines · 452,818 B · description: **extracted**
+`code-python` · 8300 lines · 453,874 B · description: **extracted**
 
 **Purpose.** Textual TUI: the console over the backtester. python3 -m soltui.tui The panes (Settings, Strategies, Signals, Compound 5m, Backtest, Execute, ... Docs, and Now) are grouped by `shell.py` into six destinations; `--classic` shows the original tab bar. All decisions live in the pure modules (`config`, `roster`, `runner`, `paper`, `status`); this file is presentation and wiring.
 
@@ -25903,7 +29703,7 @@ The macOS menu-bar app that surfaces state locally. Packaged with py2app and sup
 
 #### `soltui/utxo_scan.py`
 
-`code-python` · 227 lines · 10,859 B · description: **extracted**
+`code-python` · 234 lines · 11,079 B · description: **extracted**
 
 **Purpose.** Watch a Bitcoin, Litecoin or Dogecoin wallet from its extended PUBLIC key. Read-only, keyless. The xpub is turned into addresses on this machine (`hdwallet`). Only addresses are sent to the public explorers, never the xpub, and the derived addresses are never logged, printed or returned: a result carries counts and balances only. ## How a wallet is found * Chains 0 (receive) and 1 (change).
 
@@ -25913,7 +29713,7 @@ The macOS menu-bar app that surfaces state locally. Packaged with py2app and sup
 
 #### `soltui/vote_explanation.py`
 
-`code-python` · 164 lines · 11,807 B · description: **extracted**
+`code-python` · 165 lines · 11,903 B · description: **extracted**
 
 **Purpose.** Explain a saved current call without substituting a new quote or future winners.
 
@@ -25923,7 +29723,7 @@ The macOS menu-bar app that surfaces state locally. Packaged with py2app and sup
 
 #### `soltui/wallet.py`
 
-`code-python` · 987 lines · 51,694 B · description: **extracted**
+`code-python` · 1039 lines · 55,395 B · description: **extracted**
 
 **Purpose.** Read-only wallet discovery: what the owner's two public addresses hold, and where it lives. Nothing here can move funds. There is no key, no signature, no transaction and no write to a chain: only JSON-RPC reads (`getBalance`, `getTokenAccountsByOwner`, `getProgramAccounts`, `eth_getBalance`, `eth_call` to `balanceOf`), the public Jupiter, DefiLlama and DexScreener price APIs, the optional configu
 
@@ -25933,11 +29733,11 @@ The macOS menu-bar app that surfaces state locally. Packaged with py2app and sup
 
 #### `soltui/wallet_activity.py`
 
-`code-python` · 217 lines · 12,475 B · description: **extracted**
+`code-python` · 240 lines · 13,380 B · description: **extracted**
 
 **Purpose.** Bounded, read-only wallet history. CLI credentials and stderr stay outside replies. The rail worker calls this module; a status poll never starts network requests. Base uses the same configured CDP CLI as wallet discovery. Unsolicited token contracts are neither called nor visited. Solana history has explicit address- only coverage rather than claiming an exhaustive token-account index.
 
-**Contents.** Defines `HASH`, `SIGNATURE`, `WINDOW_DAYS`, `BUDGET_SECONDS`, `_timestamp()`, `_cdp_query()`, `_rpc()`, `_base()`, `_solana()`, `snapshot()`.
+**Contents.** Defines `HASH`, `SIGNATURE`, `WINDOW_DAYS`, `BUDGET_SECONDS`, `_observed()`, `_timestamp()`, `_cdp_query()`, `_rpc()`, `_base()`, `_solana()` and 1 more.
 
 **Use.** `import soltui.wallet_activity`
 
@@ -25955,7 +29755,7 @@ The macOS menu-bar app that surfaces state locally. Packaged with py2app and sup
 
 #### `soltui/tests/__init__.py`
 
-`test` · 19 lines · 740 B · description: **curated**
+`test` · 24 lines · 1,157 B · description: **curated**
 
 **Purpose.** Package marker for the app's tests. Empty.
 
@@ -25983,9 +29783,19 @@ The macOS menu-bar app that surfaces state locally. Packaged with py2app and sup
 
 **Use.** `python3 -m pytest soltui/tests/research_fixtures.py -q`
 
+#### `soltui/tests/test_admission_activity_refresh.py`
+
+`test` · 52 lines · 2,514 B · description: **extracted**
+
+**Purpose.** Observed process liveness can refresh without clearing explicit owner fences.
+
+**Contents.** Defines `class ActivityRefreshTests`. Depends on `soltui`.
+
+**Use.** `python3 -m pytest soltui/tests/test_admission_activity_refresh.py -q`
+
 #### `soltui/tests/test_advanced_order_ui.py`
 
-`test` · 350 lines · 19,716 B · description: **extracted**
+`test` · 398 lines · 22,459 B · description: **extracted**
 
 **Purpose.** Advanced order ticket: fail closed and dispatch only mocked Coinbase requests.
 
@@ -26015,11 +29825,11 @@ The macOS menu-bar app that surfaces state locally. Packaged with py2app and sup
 
 #### `soltui/tests/test_batch_ui.py`
 
-`test` · 148 lines · 7,733 B · description: **extracted**
+`test` · 163 lines · 8,347 B · description: **extracted**
 
 **Purpose.** F5 UI orchestration uses mocked batches and never launches a real sweep.
 
-**Contents.** Defines `envelope()`, `class BatchUiTests`, `class BatchRegistryTests`. Depends on `soltui`.
+**Contents.** Defines `envelope()`, `settle_batch()`, `class BatchUiTests`, `class BatchRegistryTests`. Depends on `soltui`.
 
 **Use.** `python3 -m pytest soltui/tests/test_batch_ui.py -q`
 
@@ -26055,11 +29865,11 @@ The macOS menu-bar app that surfaces state locally. Packaged with py2app and sup
 
 #### `soltui/tests/test_bgqueue.py`
 
-`test` · 652 lines · 29,344 B · description: **extracted**
+`test` · 783 lines · 36,625 B · description: **extracted**
 
 **Purpose.** Tests for the background sweep's queue, file contract and leaderboard. The properties worth defending here are the ones a background process makes hard to notice going wrong: an ordering that stops putting the published preset first, a resume that re-runs finished work, a reader that dies on a torn line, and — most importantly — a leaderboard that quietly ranks a Sharpe computed from three trades.
 
-**Contents.** Defines `_result()`, `class TestJobIdentity`, `class TestPerturbation`, `class TestOrdering`, `class TestDedupe`, `class TestHorizonInterval`, `class TestBuildQueue`, `class TestPending`, `class TestFileContract`, `class TestLeaderboard` and 8 more. Depends on `backtester`, `soltui`.
+**Contents.** Defines `_result()`, `class TestJobIdentity`, `class TestPerturbation`, `class TestOrdering`, `class TestDedupe`, `class TestHorizonInterval`, `class TestBuildQueue`, `class TestCandidateValidation`, `class TestPending`, `class TestFileContract` and 9 more. Depends on `backtester`, `soltui`.
 
 **Use.** `python3 -m pytest soltui/tests/test_bgqueue.py -q`
 
@@ -26075,7 +29885,7 @@ The macOS menu-bar app that surfaces state locally. Packaged with py2app and sup
 
 #### `soltui/tests/test_bgworker_audit.py`
 
-`test` · 227 lines · 10,682 B · description: **extracted**
+`test` · 256 lines · 12,586 B · description: **extracted**
 
 **Purpose.** Offline regression cases for provenance, lock handoff, and job budgets.
 
@@ -26095,7 +29905,7 @@ The macOS menu-bar app that surfaces state locally. Packaged with py2app and sup
 
 #### `soltui/tests/test_bots.py`
 
-`test` · 757 lines · 41,435 B · description: **extracted**
+`test` · 761 lines · 41,711 B · description: **extracted**
 
 **Purpose.** The Bots tab's engine: configs, data, backtests, forward tests and the auto-optimize gate. No network and no real price data: bars come from `SyntheticLoader` written to a temporary data directory, and recorded snapshots are written to a temporary prices directory.
 
@@ -26105,7 +29915,7 @@ The macOS menu-bar app that surfaces state locally. Packaged with py2app and sup
 
 #### `soltui/tests/test_bots_manual_editor.py`
 
-`test` · 290 lines · 16,327 B · description: **extracted**
+`test` · 293 lines · 16,423 B · description: **extracted**
 
 **Purpose.** Manual bot settings remain scoped, editable and unsaved until Apply.
 
@@ -26135,7 +29945,7 @@ The macOS menu-bar app that surfaces state locally. Packaged with py2app and sup
 
 #### `soltui/tests/test_bridge_surfaces.py`
 
-`test` · 397 lines · 20,702 B · description: **extracted**
+`test` · 399 lines · 20,817 B · description: **extracted**
 
 **Purpose.** Access, framing, logging and install behaviour of the command bridge.
 
@@ -26175,7 +29985,7 @@ The macOS menu-bar app that surfaces state locally. Packaged with py2app and sup
 
 #### `soltui/tests/test_coin_fit_ui.py`
 
-`test` · 401 lines · 20,769 B · description: **extracted**
+`test` · 403 lines · 20,876 B · description: **extracted**
 
 **Purpose.** Suitability command parity and real Textual worker/cancellation behavior; no network.
 
@@ -26185,7 +29995,7 @@ The macOS menu-bar app that surfaces state locally. Packaged with py2app and sup
 
 #### `soltui/tests/test_coinbase_account.py`
 
-`test` · 124 lines · 6,776 B · description: **extracted**
+`test` · 128 lines · 6,905 B · description: **extracted**
 
 **Purpose.** Coinbase snapshots preserve existing data and expose incomplete catalog scopes.
 
@@ -26195,7 +30005,7 @@ The macOS menu-bar app that surfaces state locally. Packaged with py2app and sup
 
 #### `soltui/tests/test_coinbase_manual.py`
 
-`test` · 228 lines · 12,889 B · description: **extracted**
+`test` · 246 lines · 13,918 B · description: **extracted**
 
 **Purpose.** Manual orders use exact reviewed contracts and fail closed on ambiguity.
 
@@ -26205,7 +30015,7 @@ The macOS menu-bar app that surfaces state locally. Packaged with py2app and sup
 
 #### `soltui/tests/test_coinbase_manual_ui.py`
 
-`test` · 371 lines · 19,807 B · description: **extracted**
+`test` · 372 lines · 19,881 B · description: **extracted**
 
 **Purpose.** Manual Coinbase order UI: review, explicit arm, one submit, and reconciliation.
 
@@ -26215,7 +30025,7 @@ The macOS menu-bar app that surfaces state locally. Packaged with py2app and sup
 
 #### `soltui/tests/test_compound.py`
 
-`test` · 1355 lines · 74,983 B · description: **extracted**
+`test` · 1360 lines · 75,313 B · description: **extracted**
 
 **Purpose.** Compound five-minute tester: saved config, live reads, forward ledger, and the tab.
 
@@ -26225,7 +30035,7 @@ The macOS menu-bar app that surfaces state locally. Packaged with py2app and sup
 
 #### `soltui/tests/test_compound_pool_capture.py`
 
-`test` · 43 lines · 1,384 B · description: **extracted**
+`test` · 45 lines · 1,474 B · description: **extracted**
 
 **Purpose.** Exercise a real spawn under the console's active Textual output capture.
 
@@ -26245,7 +30055,7 @@ The macOS menu-bar app that surfaces state locally. Packaged with py2app and sup
 
 #### `soltui/tests/test_csv_table.py`
 
-`test` · 67 lines · 2,928 B · description: **extracted**
+`test` · 85 lines · 3,994 B · description: **extracted**
 
 **Purpose.** Exports preserve displayed order, formatting, and existing files.
 
@@ -26285,7 +30095,7 @@ The macOS menu-bar app that surfaces state locally. Packaged with py2app and sup
 
 #### `soltui/tests/test_docs_search.py`
 
-`test` · 148 lines · 6,821 B · description: **extracted**
+`test` · 149 lines · 6,895 B · description: **extracted**
 
 **Purpose.** Docs-tab index search: the `docs.search` commands and the lazy loading around them. The memory claim is the point: the keyword postings, the embedding matrix and the ~670 MB embedding model must not be loaded until someone searches, and must be releasable. Ollama and the idle indexer are patched out; nothing here embeds anything or starts a process.
 
@@ -26293,9 +30103,19 @@ The macOS menu-bar app that surfaces state locally. Packaged with py2app and sup
 
 **Use.** `python3 -m pytest soltui/tests/test_docs_search.py -q`
 
+#### `soltui/tests/test_domain_audit_boundaries.py`
+
+`test` · 182 lines · 9,850 B · description: **extracted**
+
+**Purpose.** Malformed local evidence and public explorer data never become valid facts.
+
+**Contents.** Defines `class DomainBoundaryTests`. Depends on `soltui`.
+
+**Use.** `python3 -m pytest soltui/tests/test_domain_audit_boundaries.py -q`
+
 #### `soltui/tests/test_dryrun_strategy.py`
 
-`test` · 93 lines · 4,945 B · description: **extracted**
+`test` · 98 lines · 5,043 B · description: **extracted**
 
 **Purpose.** Dry Run executes the selected registered strategy, not the extension grid.
 
@@ -26305,7 +30125,7 @@ The macOS menu-bar app that surfaces state locally. Packaged with py2app and sup
 
 #### `soltui/tests/test_editor_backtest.py`
 
-`test` · 55 lines · 2,334 B · description: **extracted**
+`test` · 58 lines · 2,438 B · description: **extracted**
 
 **Purpose.** Editor ownership and progress routing for interactive backtests.
 
@@ -26343,6 +30163,16 @@ The macOS menu-bar app that surfaces state locally. Packaged with py2app and sup
 
 **Use.** `python3 -m pytest soltui/tests/test_experiment_runner.py -q`
 
+#### `soltui/tests/test_experiment_source_epoch.py`
+
+`test` · 50 lines · 2,402 B · description: **extracted**
+
+**Purpose.** Changed source refuses a fresh experiment before admission or publication.
+
+**Contents.** Defines `class ExperimentEpochTests`. Depends on `soltui`.
+
+**Use.** `python3 -m pytest soltui/tests/test_experiment_source_epoch.py -q`
+
 #### `soltui/tests/test_experiments.py`
 
 `test` · 497 lines · 29,415 B · description: **extracted**
@@ -26355,11 +30185,11 @@ The macOS menu-bar app that surfaces state locally. Packaged with py2app and sup
 
 #### `soltui/tests/test_f5_batch.py`
 
-`test` · 326 lines · 19,003 B · description: **extracted**
+`test` · 415 lines · 24,558 B · description: **extracted**
 
 **Purpose.** Bounded F5 orchestration tests: no production jobs, network or shared data.
 
-**Contents.** Defines `class BatchTests`, `class GapWindowTests`, `class SignalIntervalTests`, `class ProcessTests`. Depends on `soltui`.
+**Contents.** Defines `class BatchTests`, `class CandidatePlanTests`, `class GapWindowTests`, `class SignalIntervalTests`, `class ProcessTests`. Depends on `soltui`.
 
 **Use.** `python3 -m pytest soltui/tests/test_f5_batch.py -q`
 
@@ -26373,9 +30203,19 @@ The macOS menu-bar app that surfaces state locally. Packaged with py2app and sup
 
 **Use.** `python3 -m pytest soltui/tests/test_f5_policy.py -q`
 
+#### `soltui/tests/test_forward_causality.py`
+
+`test` · 67 lines · 2,891 B · description: **extracted**
+
+**Purpose.** The issuance deadline cannot turn a non-due poll into a missed forecast.
+
+**Contents.** Defines `class ForwardIssuanceTiming`. Depends on `soltui`.
+
+**Use.** `python3 -m pytest soltui/tests/test_forward_causality.py -q`
+
 #### `soltui/tests/test_forward_sort_refresh.py`
 
-`test` · 51 lines · 2,511 B · description: **extracted**
+`test` · 56 lines · 2,680 B · description: **extracted**
 
 **Purpose.** Forward results retain the user's sort and selected trial during redraws.
 
@@ -26385,7 +30225,7 @@ The macOS menu-bar app that surfaces state locally. Packaged with py2app and sup
 
 #### `soltui/tests/test_forwardtest.py`
 
-`test` · 386 lines · 20,835 B · description: **extracted**
+`test` · 392 lines · 21,145 B · description: **extracted**
 
 **Purpose.** Prospective evidence, horizon isolation, and the roster keyboard workflow.
 
@@ -26413,9 +30253,19 @@ The macOS menu-bar app that surfaces state locally. Packaged with py2app and sup
 
 **Use.** `python3 -m pytest soltui/tests/test_hdwallet.py -q`
 
+#### `soltui/tests/test_health_boundaries.py`
+
+`test` · 1221 lines · 51,076 B · description: **extracted**
+
+**Purpose.** Offline stream bounds and test-owner isolation; no sockets or application jobs.
+
+**Contents.** Defines `class ApiError`, `isolated_api()`, `class HttpBodyBoundaryTests`, `class TestOwnerBootstrapTests`, `isolated_service()`, `class ServiceOwnerBoundaryTests`, `class ForwardIdentityBoundaryTests`, `class WalletReadBoundaryTests`, `class CompoundProcessBoundaryTests`, `class RecordedQuoteBoundaryTests` and 6 more. Depends on `soltui`.
+
+**Use.** `python3 -m pytest soltui/tests/test_health_boundaries.py -q`
+
 #### `soltui/tests/test_help.py`
 
-`test` · 132 lines · 6,406 B · description: **extracted**
+`test` · 141 lines · 6,923 B · description: **extracted**
 
 **Purpose.** Exercise help discovery and keyboard/mouse access without invoking actions.
 
@@ -26425,7 +30275,7 @@ The macOS menu-bar app that surfaces state locally. Packaged with py2app and sup
 
 #### `soltui/tests/test_jupiter_live_ui.py`
 
-`test` · 146 lines · 7,308 B · description: **extracted**
+`test` · 148 lines · 7,415 B · description: **extracted**
 
 **Purpose.** The optional Jupiter reader must never block or publish across UI contexts.
 
@@ -26435,7 +30285,7 @@ The macOS menu-bar app that surfaces state locally. Packaged with py2app and sup
 
 #### `soltui/tests/test_jupiter_manual.py`
 
-`test` · 273 lines · 12,227 B · description: **extracted**
+`test` · 274 lines · 12,250 B · description: **extracted**
 
 **Purpose.** Unsigned Jupiter previews, structural checks and conservative historic recovery.
 
@@ -26485,7 +30335,7 @@ The macOS menu-bar app that surfaces state locally. Packaged with py2app and sup
 
 #### `soltui/tests/test_liquidity.py`
 
-`test` · 581 lines · 27,044 B · description: **extracted**
+`test` · 582 lines · 27,118 B · description: **extracted**
 
 **Purpose.** The Liquidity tab: loader tolerance, formatting, summary math, KILL toggle. The logic is in `soltui.liquidity` (pure); the last class mounts the real app against a fixture state dir. Fixtures follow `liquidity/STATE_FILES.md`. The load-bearing test is `test_every_percentage_column_carries_a_source_word`: a bare "+4.6%" under a header with no source reads as "my money is up".
 
@@ -26533,6 +30383,16 @@ The macOS menu-bar app that surfaces state locally. Packaged with py2app and sup
 
 **Use.** `python3 -m pytest soltui/tests/test_manager_evidence.py -q`
 
+#### `soltui/tests/test_market_diagnostics.py`
+
+`test` · 53 lines · 2,707 B · description: **extracted**
+
+**Purpose.** Read-only market failures retain safe diagnostics without transport secrets.
+
+**Contents.** Defines `class MarketDiagnosticTests`. Depends on `soltui`.
+
+**Use.** `python3 -m pytest soltui/tests/test_market_diagnostics.py -q`
+
 #### `soltui/tests/test_native_host_registration.py`
 
 `test` · 53 lines · 2,153 B · description: **extracted**
@@ -26555,9 +30415,9 @@ The macOS menu-bar app that surfaces state locally. Packaged with py2app and sup
 
 #### `soltui/tests/test_panes.py`
 
-`test` · 265 lines · 11,810 B · description: **extracted**
+`test` · 270 lines · 12,087 B · description: **extracted**
 
-**Purpose.** The four modules behind the new console tabs. No test here drives a terminal, opens a socket, or reads `data/`. That is the same split the rest of this package keeps: `tui.py` is presentation, and the logic lives in modules that can be tested without an event loop. The two worth reading first are `test_a_below_floor_row_is_never_rankable` and `test_slicing_happens_before_the_replay`.
+**Purpose.** The four modules behind the new console tabs. No test here drives a terminal or reads `data/`. Port discovery uses an owned ephemeral loopback endpoint. The rest of this package keeps the same split: `tui.py` is presentation, and the logic lives in modules that can be tested without an event loop.
 
 **Contents.** Defines `write_index()`, `class DocsBrowserTests`, `class CumulativeTests`, `class AnalyzeTests`, `class ServeTests`. Depends on `soltui`.
 
@@ -26565,7 +30425,7 @@ The macOS menu-bar app that surfaces state locally. Packaged with py2app and sup
 
 #### `soltui/tests/test_paper_experiments.py`
 
-`test` · 127 lines · 7,053 B · description: **extracted**
+`test` · 131 lines · 7,190 B · description: **extracted**
 
 **Purpose.** Prospective paper experiments stay isolated, causal and fee-aware.
 
@@ -26585,7 +30445,7 @@ The macOS menu-bar app that surfaces state locally. Packaged with py2app and sup
 
 #### `soltui/tests/test_pnl.py`
 
-`test` · 406 lines · 20,458 B · description: **extracted**
+`test` · 471 lines · 23,938 B · description: **extracted**
 
 **Purpose.** The P&L maths, on fixtures: window edges, costs, realized vs unrealized, drawdown, the no-data case. No test here reads a price file, a state file or the network. The numbers are small round ones so each expected value can be checked by hand.
 
@@ -26595,7 +30455,7 @@ The macOS menu-bar app that surfaces state locally. Packaged with py2app and sup
 
 #### `soltui/tests/test_portfolio.py`
 
-`test` · 261 lines · 14,479 B · description: **extracted**
+`test` · 263 lines · 14,721 B · description: **extracted**
 
 **Purpose.** Snapshots, balance changes, the notice line, the wallet value curve and the hourly LaunchAgent plist.
 
@@ -26605,7 +30465,7 @@ The macOS menu-bar app that surfaces state locally. Packaged with py2app and sup
 
 #### `soltui/tests/test_prediction_controls.py`
 
-`test` · 105 lines · 5,739 B · description: **extracted**
+`test` · 106 lines · 5,813 B · description: **extracted**
 
 **Purpose.** Real mounted controls with isolated command transport; no detached producers.
 
@@ -26625,7 +30485,7 @@ The macOS menu-bar app that surfaces state locally. Packaged with py2app and sup
 
 #### `soltui/tests/test_presets_netpct.py`
 
-`test` · 307 lines · 15,158 B · description: **extracted**
+`test` · 307 lines · 15,116 B · description: **extracted**
 
 **Purpose.** Top 5 presets, the net % helper, and the P&L commands end to end on synthetic data. No price file, state file or network: the series is `SyntheticLoader`, the Top 5 evidence is a temp CSV, the liquidity home and journal are temp paths.
 
@@ -26635,13 +30495,23 @@ The macOS menu-bar app that surfaces state locally. Packaged with py2app and sup
 
 #### `soltui/tests/test_pricefeed.py`
 
-`test` · 412 lines · 18,782 B · description: **extracted**
+`test` · 415 lines · 18,941 B · description: **extracted**
 
 **Purpose.** The streaming price recorder: RFC 6455 framing, the handshake, books, snapshots and files. No network: every socket here is a fake, and every file lives in a temporary directory.
 
 **Contents.** Defines `class FakeSock`, `server_frame()`, `connected()`, `class Framing`, `class Client`, `class Products`, `class Books`, `class Recording`, `class Status`, `class Agent`. Depends on `backtester`, `soltui`.
 
 **Use.** `python3 -m pytest soltui/tests/test_pricefeed.py -q`
+
+#### `soltui/tests/test_remaining_audit_boundaries.py`
+
+`test` · 101 lines · 5,116 B · description: **extracted**
+
+**Purpose.** Known-answer final production boundaries; no live work or image rendering.
+
+**Contents.** Defines `class RemainingBoundaryTests`. Depends on `soltui`.
+
+**Use.** `python3 -m pytest soltui/tests/test_remaining_audit_boundaries.py -q`
 
 #### `soltui/tests/test_research_owner.py`
 
@@ -26675,7 +30545,7 @@ The macOS menu-bar app that surfaces state locally. Packaged with py2app and sup
 
 #### `soltui/tests/test_shortcuts_everything.py`
 
-`test` · 78 lines · 4,274 B · description: **extracted**
+`test` · 81 lines · 4,370 B · description: **extracted**
 
 **Purpose.** Shortcut behavior without starting background jobs or paper experiments.
 
@@ -26685,7 +30555,7 @@ The macOS menu-bar app that surfaces state locally. Packaged with py2app and sup
 
 #### `soltui/tests/test_signal_live.py`
 
-`test` · 379 lines · 21,231 B · description: **extracted**
+`test` · 382 lines · 21,489 B · description: **extracted**
 
 **Purpose.** Tests for Signal tab Live page: live graph, real-time streaming price, and forward test predictions.
 
@@ -26715,7 +30585,7 @@ The macOS menu-bar app that surfaces state locally. Packaged with py2app and sup
 
 #### `soltui/tests/test_status_console.py`
 
-`test` · 101 lines · 5,417 B · description: **extracted**
+`test` · 104 lines · 5,513 B · description: **extracted**
 
 **Purpose.** Status views reconnect to each job without taking over unrelated editor work.
 
@@ -26735,7 +30605,7 @@ The macOS menu-bar app that surfaces state locally. Packaged with py2app and sup
 
 #### `soltui/tests/test_strategies_tab_history.py`
 
-`test` · 105 lines · 4,910 B · description: **extracted**
+`test` · 106 lines · 4,984 B · description: **extracted**
 
 **Purpose.** The Strategies tab as a user sees it: history columns and the three Backtest buttons.
 
@@ -26745,7 +30615,7 @@ The macOS menu-bar app that surfaces state locally. Packaged with py2app and sup
 
 #### `soltui/tests/test_strategy_history.py`
 
-`test` · 234 lines · 12,137 B · description: **extracted**
+`test` · 246 lines · 12,921 B · description: **extracted**
 
 **Purpose.** The Strategies tab's test history and its three Backtest buttons. History is derived from the background sweep's results file, so what it can get wrong is counting and choosing: a duplicate line counted as a second test, a best-of-many row shown as "the" result, an untestable strategy shown as merely untested, a button that starts a sweep that has nothing to do. Each test targets one of those.
 
@@ -26785,17 +30655,17 @@ The macOS menu-bar app that surfaces state locally. Packaged with py2app and sup
 
 #### `soltui/tests/test_tui.py`
 
-`test` · 1380 lines · 62,385 B · description: **extracted**
+`test` · 1473 lines · 64,964 B · description: **extracted**
 
 **Purpose.** Smoke tests for the Textual app, driven through Textual's own test harness. An app that imports cleanly but explodes on mount is not working, so these actually mount it, click things, and assert on widget state. `run_test()` runs a headless terminal, so no TTY is required and this is safe in CI.
 
-**Contents.** Defines `_queue_row()`, `TEST_SIZE`, `text_of()`, `make_settings()`, `class TestSortKey`, `class TestSortableTables`, `class TestAppMounts`, `class TestQueueTab`, `class TestExecuteTabSafety`, `class TestStrategiesTab` and 12 more. Depends on `backtester`, `soltui`.
+**Contents.** Defines `_queue_row()`, `TEST_SIZE`, `offline_console_reads()`, `text_of()`, `make_settings()`, `class TestSortKey`, `class TestSortableTables`, `class TestAppMounts`, `class TestQueueTab`, `class TestExecuteTabSafety` and 13 more. Depends on `backtester`, `soltui`.
 
 **Use.** `python3 -m pytest soltui/tests/test_tui.py -q`
 
 #### `soltui/tests/test_tui_presets_pnl.py`
 
-`test` · 210 lines · 10,466 B · description: **extracted**
+`test` · 215 lines · 10,780 B · description: **extracted**
 
 **Purpose.** The Top 5 presets in three tabs, the P&L tab, and the "every percentage names its source" rule across every table in the app. Driven through Textual's headless harness.
 
@@ -26815,7 +30685,7 @@ The macOS menu-bar app that surfaces state locally. Packaged with py2app and sup
 
 #### `soltui/tests/test_v2_shell.py`
 
-`test` · 300 lines · 16,307 B · description: **extracted**
+`test` · 334 lines · 18,588 B · description: **extracted**
 
 **Purpose.** The v2 shell: every classic pane stays reachable, and the new chrome reads without writing. The redesign (docs/design/soltui-v2/DESIGN.md) regroups the classic tabs into destinations. Its one non-negotiable is that no function is lost, so the coverage test asserts every pane of `#main-tabs` against the live navigation, including a pane added after the map was written.
 
@@ -26825,7 +30695,7 @@ The macOS menu-bar app that surfaces state locally. Packaged with py2app and sup
 
 #### `soltui/tests/test_vote_explanation.py`
 
-`test` · 126 lines · 6,705 B · description: **extracted**
+`test` · 149 lines · 8,019 B · description: **extracted**
 
 **Purpose.** Saved-call explanations preserve latest-trial eligibility and candle causality.
 
@@ -26835,7 +30705,7 @@ The macOS menu-bar app that surfaces state locally. Packaged with py2app and sup
 
 #### `soltui/tests/test_wallet.py`
 
-`test` · 721 lines · 38,662 B · description: **extracted**
+`test` · 721 lines · 38,737 B · description: **extracted**
 
 **Purpose.** Wallet discovery on recorded fixtures: no network, no key, no transaction. `fixtures/wallet/*.json` hold real replies recorded on 2026-11-07 for the owner's two public addresses (Solana token accounts, Jupiter price and token data, Base eth_getBalance / balanceOf / DefiLlama / DexScreener).
 
@@ -26855,7 +30725,7 @@ The macOS menu-bar app that surfaces state locally. Packaged with py2app and sup
 
 #### `soltui/tests/test_wallet_integration.py`
 
-`test` · 287 lines · 14,924 B · description: **extracted**
+`test` · 305 lines · 15,527 B · description: **extracted**
 
 **Purpose.** Wallet discovery wired into the console: Settings addresses, the key-source row, `portfolio.scan`, the Wallet tab, and the separate `wallet (live)` section of the P&L tab. The network is replaced by the recorded-fixture `Fake` from test_wallet; nothing here reads a key file.
 
@@ -26865,7 +30735,7 @@ The macOS menu-bar app that surfaces state locally. Packaged with py2app and sup
 
 #### `soltui/tests/test_wallet_settings.py`
 
-`test` · 231 lines · 11,041 B · description: **extracted**
+`test` · 236 lines · 11,210 B · description: **extracted**
 
 **Purpose.** Wallet fields in Settings: validation, private-key refusal, redaction, file mode, and the read-only `wallet.addresses` command the extension's Wallet pubkey button uses.
 
@@ -26911,11 +30781,605 @@ The macOS menu-bar app that surfaces state locally. Packaged with py2app and sup
 
 ---
 
+## mongo
+
+Derived research and public-market stores, loaders and analysis queries.
+
+20 files.
+
+#### `mongo/README.md`
+
+`doc` · 208 lines · 10,544 B · description: **extracted**
+
+**Purpose.** A read-mostly MongoDB copy of everything this repo has measured: price history, strategies and their cards, the signal and indicator layers, per-bar readouts, backtest runs, CPCV and sweep results, the coin write-ups, and the test-suite
+
+**Use.** Read it.
+
+#### `mongo/__init__.py`
+
+`code-python` · 0 lines · 0 B · description: **none**
+
+**Purpose.** _No description available._
+
+**Use.** `import mongo.__init__`
+
+#### `mongo/cli.py`
+
+`code-python` · 39 lines · 1,923 B · description: **extracted**
+
+**Purpose.** CLI-only prerequisite messages; importing the research libraries stays unchanged.
+
+**Contents.** Defines `run_cli()`.
+
+**Use.** `import mongo.cli`
+
+#### `mongo/load.py`
+
+`code-python` · 864 lines · 32,974 B · description: **extracted**
+
+**Purpose.** Load the repo's research artifacts into the local MongoDB store. pip install -r mongo/requirements.txt python3 mongo/load.py # everything python3 mongo/load.py --only bars,strategies python3 mongo/load.py --dry-run # count what would load, write nothing Derived artifact collections are dropped and rebuilt to prevent duplicate time series measurements.
+
+**Contents.** Defines `REPO`, `LOADED_AT`, `sha256()`, `source_snapshot()`, `provenance()`, `clean()`, `maybe_number()`, `read_csv_snapshot()`, `read_csv_rows()`, `read_bar_snapshot()` and 27 more. Depends on `backtester`, `research`.
+
+**Use.** `python3 mongo/load.py --help`
+
+#### `mongo/requirements.txt`
+
+`data` · 6 lines · 290 B · description: **derived**
+
+**Purpose.** Generated report. Opens: # Deliberately separate from backtester/requirements.txt. The backtester is / # stdlib-first and its dependency list is short on purpose; a driver needed only
+
+**Use.** Read it.
+
+#### `mongo/schema.py`
+
+`code-python` · 487 lines · 20,664 B · description: **extracted**
+
+**Purpose.** Collection layout for the local research store: specs, validators, indexes. python3 mongo/schema.py --create # rebuild derived data; retain test receipts python3 mongo/schema.py --describe # print the layout, touch nothing Design notes, because the shape is the part worth arguing about: * **Bars are a native time series collection.** Per-bar, time-ordered, append-only measurements are what that co
+
+**Contents.** Defines `DB_NAME`, `PROVENANCE_REQUIRED`, `_doc()`, `ALL_COLLECTIONS`, `connect()`, `create()`, `describe()`, `main()`.
+
+**Use.** `python3 mongo/schema.py --help`
+
+### `mongo/queries/`
+
+#### `mongo/queries/01-coins-and-bars.js`
+
+`code-js` · 110 lines · 3,592 B · description: **extracted**
+
+**Purpose.** Coins and price history. mongosh solmargintrader mongo/queries/01-coins-and-bars.js `bars` is a native time series collection: `ts` is the time field and `series` the metaField, so every query below should filter on `series.*` and a time range. MongoDB creates the meta+time index itself; there are no user indexes to add.
+
+**Use.** Loaded by the extension; see `extension/manifest.json` for entry points.
+
+#### `mongo/queries/02-strategies-and-cards.js`
+
+`code-js` · 109 lines · 3,664 B · description: **extracted**
+
+**Purpose.** Strategies and their cards. mongosh solmargintrader mongo/queries/02-strategies-and-cards.js One document per loaded strategy card. The card's own vocabulary is preserved rather than flattened into a boolean: registry_key a string for registered `Strategy` implementations, null otherwise.
+
+**Use.** Loaded by the extension; see `extension/manifest.json` for entry points.
+
+#### `mongo/queries/03-signals-and-indicators.js`
+
+`code-js` · 72 lines · 2,423 B · description: **extracted**
+
+**Purpose.** Signals and indicators — the two layers beneath the strategies. mongosh solmargintrader mongo/queries/03-signals-and-indicators.js These are small reference collections. They exist so a reader can answer "what does this rule actually compare?" without opening research/decide.py, and so the readouts in `decisions` can be joined to their definitions.
+
+**Use.** Loaded by the extension; see `extension/manifest.json` for entry points.
+
+#### `mongo/queries/04-decisions.js`
+
+`code-js` · 135 lines · 4,379 B · description: **extracted**
+
+**Purpose.** Per-bar readouts: what every rule said about the last bar of a series. mongosh solmargintrader mongo/queries/04-decisions.js Each document is `research.decide.build_report()` output verbatim, plus provenance. That is deliberate -- re-deriving a Mongo-specific shape would let the store and the readout disagree about what a strategy said. Read the header fields before the verdicts.
+
+**Use.** Loaded by the extension; see `extension/manifest.json` for entry points.
+
+#### `mongo/queries/05-backtests.js`
+
+`code-js` · 123 lines · 3,941 B · description: **extracted**
+
+**Purpose.** Backtest runs: manifests, per-strategy metrics, equity curves, fills. mongosh solmargintrader mongo/queries/05-backtests.js Three collections, split by cardinality rather than by topic: backtest_runs one document per run. The manifest is embedded because it is always read with the run, and the per-strategy metrics table is bounded by the strategies that ran.
+
+**Use.** Loaded by the extension; see `extension/manifest.json` for entry points.
+
+#### `mongo/queries/06-experiments-and-pbo.js`
+
+`code-js` · 151 lines · 4,901 B · description: **extracted**
+
+**Purpose.** Experiments: CPCV, sweeps, perturbations, geometry — and PBO. mongosh solmargintrader mongo/queries/06-experiments-and-pbo.js Two collections: experiments one document per result file: kind, name, columns, and the JSON sidecar when it is a single object. experiment_rows one document per row.
+
+**Use.** Loaded by the extension; see `extension/manifest.json` for entry points.
+
+#### `mongo/queries/07-documents-and-search.js`
+
+`code-js` · 75 lines · 2,642 B · description: **extracted**
+
+**Purpose.** Reference prose: coin intelligence, research write-ups, component docs. mongosh solmargintrader mongo/queries/07-documents-and-search.js One document per markdown file, with a full-text index on title and body. A server allows one text index per collection, and this is it. Caveat worth keeping in mind: prose in a strategy card is *argument*, not checked fact.
+
+**Use.** Loaded by the extension; see `extension/manifest.json` for entry points.
+
+#### `mongo/queries/08-provenance-and-health.js`
+
+`code-js` · 127 lines · 4,443 B · description: **extracted**
+
+**Purpose.** Provenance, freshness and store health — run this before trusting anything else. mongosh solmargintrader mongo/queries/08-provenance-and-health.js Every document carries `source_path`, `source_sha256` and `loaded_at`. That is not bookkeeping: it is what lets a number here be traced to a file, and a file to the run that produced it. A figure with no provenance is not a figure.
+
+**Use.** Loaded by the extension; see `extension/manifest.json` for entry points.
+
+### `mongo/tests/`
+
+#### `mongo/tests/__init__.py`
+
+`test` · 0 lines · 0 B · description: **none**
+
+**Purpose.** _No description available._
+
+**Use.** `python3 -m pytest mongo/tests/__init__.py -q`
+
+#### `mongo/tests/test_analysis_regressions.py`
+
+`test` · 199 lines · 11,970 B · description: **extracted**
+
+**Purpose.** Mongo contracts tested with byte snapshots and fake collections only.
+
+**Contents.** Defines `class AnalysisLoaderRegressions`, `class AdditionalLoaderRegressions`. Depends on `backtester`.
+
+**Use.** `python3 -m pytest mongo/tests/test_analysis_regressions.py -q`
+
+#### `mongo/tests/test_load.py`
+
+`test` · 361 lines · 15,865 B · description: **extracted**
+
+**Purpose.** Tests for the local MongoDB research store. The load is destructive by design, so the test that matters most asserts it is therefore *idempotent*: loading twice must leave identical counts. Without that, the time series collections would silently double on a second run -- they accept no unique index, so nothing else would catch it. Tests needing a server skip cleanly when one is not listening.
+
+**Contents.** Defines `REPO`, `server_available()`, `SERVER`, `isolated_store()`, `class TestPureHelpers`, `class TestSchemaLayout`, `class TestLoadedStore`, `class TestIdempotency`. Depends on `backtester`, `research`.
+
+**Use.** `python3 -m pytest mongo/tests/test_load.py -q`
+
+#### `mongo/tests/test_load_audit.py`
+
+`test` · 157 lines · 8,012 B · description: **extracted**
+
+**Purpose.** Offline loader regressions: fixtures and fake databases only.
+
+**Contents.** Defines `class FakeDatabase`, `class LoaderAuditTests`.
+
+**Use.** `python3 -m pytest mongo/tests/test_load_audit.py -q`
+
+#### `mongo/tests/test_query_scripts.py`
+
+`test` · 253 lines · 12,748 B · description: **extracted**
+
+**Purpose.** Run mongosh examples against inert cursors; never connect to a database.
+
+**Contents.** Defines `QUERY_DIR`, `REPO`, `NODE`, `MOCK_SHELL`, `class QueryScriptRegressions`, `class NativeFixtureIsolation`, `class LoaderInterpreterRegression`, `class CLIPrerequisiteRegressions`.
+
+**Use.** `python3 -m pytest mongo/tests/test_query_scripts.py -q`
+
+#### `mongo/tests/test_snapshot_audit.py`
+
+`test` · 96 lines · 4,694 B · description: **extracted**
+
+**Purpose.** Source byte and run-artifact identity, without a MongoDB connection.
+
+**Contents.** Defines `class SnapshotAudit`. Depends on `backtester`.
+
+**Use.** `python3 -m pytest mongo/tests/test_snapshot_audit.py -q`
+
+---
+
+## website
+
+The hosted wallet-account and subscription workspace. Stored bot definitions are paper-only; hosted engine and billing readiness remain separate capabilities.
+
+42 files.
+
+#### `website/.gitignore`
+
+`other` · 5 lines · 48 B · description: **none**
+
+**Purpose.** _No description available._
+
+**Use.** Read it.
+
+#### `website/README.md`
+
+`doc` · 270 lines · 15,703 B · description: **extracted**
+
+**Purpose.** Cloudflare-hosted wallet account and research workspace. This is a separate web surface over the existing research tools. It never exposes the owner's control room, trading accounts, wallet keys or signing services.
+
+**Use.** Read it.
+
+#### `website/package-lock.json`
+
+`config` · 1635 lines · 51,361 B · description: **derived**
+
+**Purpose.** Generated JSON object, 5 keys (name, version, lockfileVersion, requires, packages).
+
+**Use.** Configuration; nothing to run.
+
+#### `website/package.json`
+
+`config` · 23 lines · 857 B · description: **derived**
+
+**Purpose.** Generated JSON object, 7 keys (name, private, version, type, engines, scripts...).
+
+**Use.** Configuration; nothing to run.
+
+#### `website/wrangler.dev.jsonc`
+
+`other` · 0 lines · 776 B · description: **none**
+
+**Purpose.** _No description available._
+
+**Use.** Read it.
+
+#### `website/wrangler.jsonc`
+
+`other` · 0 lines · 996 B · description: **none**
+
+**Purpose.** _No description available._
+
+**Use.** Read it.
+
+### `website/api/`
+
+#### `website/api/openapi.json`
+
+`config` · 3103 lines · 84,429 B · description: **derived**
+
+**Purpose.** Generated JSON object, 5 keys (openapi, info, servers, paths, components).
+
+**Use.** Configuration; nothing to run.
+
+### `website/docs/`
+
+#### `website/docs/MCP-DESIGN.md`
+
+`doc` · 51 lines · 6,550 B · description: **extracted**
+
+**Purpose.** Version: 0.1.2 Delta: v0.1.1 to v0.1.2; bind browser account generations, exact cents and private diagnostics. The owner explicitly chose preauthorized sessions. There is no per-trade wallet prompt requirement. Login proves wallet ownership; a separate, explicit consent grants an agent read access or a finite trading policy.
+
+**Use.** Read it.
+
+### `website/engine/`
+
+#### `website/engine/Dockerfile`
+
+`other` · 13 lines · 468 B · description: **none**
+
+**Purpose.** _No description available._
+
+**Use.** Read it.
+
+#### `website/engine/README.md`
+
+`doc` · 58 lines · 3,764 B · description: **extracted**
+
+**Purpose.** This service exposes the canonical Python exposure-strategy backtester and inert Oracle archive reader. It cannot sign, submit orders, read account portfolios or control the owner's local services. The website Worker keeps its bearer token
+
+**Use.** Read it.
+
+#### `website/engine/__init__.py`
+
+`code-python` · 2 lines · 79 B · description: **extracted**
+
+**Purpose.** Read-only hosted market analysis bridge. No signing or order capability.
+
+**Use.** `import website.engine.__init__`
+
+#### `website/engine/server.py`
+
+`code-python` · 318 lines · 15,414 B · description: **extracted**
+
+**Purpose.** Bearer-authenticated adapter to canonical local research engines. Run behind an HTTPS private gateway. The edge website must never forward a browser-selected URL or expose the local control room through this service.
+
+**Contents.** Defines `COINS`, `INTERVALS`, `MAX_BARS`, `MAX_CACHE_BYTES`, `MAX_BODY`, `LOGGER`, `OPERATIONS`, `class RequestError`, `finite()`, `record_event()` and 8 more. Depends on `backtester`.
+
+**Use.** `python3 website/engine/server.py --help`
+
+#### `website/engine/test_research.py`
+
+`test` · 89 lines · 3,965 B · description: **none**
+
+**Purpose.** _No description available._
+
+**Contents.** Defines `class ResearchExportTests`.
+
+**Use.** `python3 -m pytest website/engine/test_research.py -q`
+
+#### `website/engine/test_server.py`
+
+`test` · 249 lines · 12,608 B · description: **none**
+
+**Purpose.** _No description available._
+
+**Contents.** Defines `class AnalysisTests`, `class HttpTests`. Depends on `backtester`.
+
+**Use.** `python3 -m pytest website/engine/test_server.py -q`
+
+### `website/migrations/`
+
+#### `website/migrations/0001_accounts.sql`
+
+`other` · 0 lines · 2,105 B · description: **none**
+
+**Purpose.** _No description available._
+
+**Use.** Read it.
+
+#### `website/migrations/0002_challenge_wallet_index.sql`
+
+`other` · 0 lines · 85 B · description: **none**
+
+**Purpose.** _No description available._
+
+**Use.** Read it.
+
+#### `website/migrations/0003_subscription_tiers.sql`
+
+`other` · 0 lines · 858 B · description: **none**
+
+**Purpose.** _No description available._
+
+**Use.** Read it.
+
+#### `website/migrations/0004_agent_access.sql`
+
+`other` · 0 lines · 3,492 B · description: **none**
+
+**Purpose.** _No description available._
+
+**Use.** Read it.
+
+#### `website/migrations/0005_agent_trades.sql`
+
+`other` · 0 lines · 1,088 B · description: **none**
+
+**Purpose.** _No description available._
+
+**Use.** Read it.
+
+### `website/postman/`
+
+#### `website/postman/acceptance.collection.json`
+
+`config` · 178 lines · 4,964 B · description: **derived**
+
+**Purpose.** Generated JSON object, 3 keys (info, variable, item).
+
+**Use.** Configuration; nothing to run.
+
+### `website/public/`
+
+#### `website/public/agent-access.js`
+
+`code-js` · 202 lines · 17,071 B · description: **none**
+
+**Purpose.** _No description available._
+
+**Contents.** Defines `GRANT_ID`, `REQUEST_ID`, `SCOPE_LABELS`, `approvedRedirect`, `authorize`, `choices`, `class ConsentError`, `createAgentAccess`, `labelControl`, `loadConsent` and 3 more.
+
+**Use.** See `website/README.md`; run the workspace with `npm --prefix website run dev`.
+
+#### `website/public/app.js`
+
+`code-js` · 577 lines · 58,858 B · description: **none**
+
+**Purpose.** _No description available._
+
+**Contents.** Defines `TIMING`, `accountActionReady`, `accountContext`, `accountNotice`, `api`, `appendText`, `articleView`, `backtestView`, `beginAccountTransition`, `billingAction` and 30 more.
+
+**Use.** See `website/README.md`; run the workspace with `npm --prefix website run dev`.
+
+#### `website/public/evidence.js`
+
+`code-js` · 17 lines · 727 B · description: **extracted**
+
+**Purpose.** @typedef {{expiresAt: number, direction: 'up' | 'down' | 'flat', [key: string]: unknown}} StrategyForecast @typedef {{status?: string, topStrategy?: StrategyForecast | null}} OracleSnapshot
+
+**Contents.** Defines `freshStrategy`.
+
+**Use.** See `website/README.md`; run the workspace with `npm --prefix website run dev`.
+
+#### `website/public/favicon.svg`
+
+`other` · 0 lines · 366 B · description: **none**
+
+**Purpose.** _No description available._
+
+**Use.** Read it.
+
+#### `website/public/index.html`
+
+`code-web` · 47 lines · 6,268 B · description: **none**
+
+**Purpose.** _No description available._
+
+**Use.** Read it.
+
+#### `website/public/styles.css`
+
+`code-web` · 10 lines · 25,696 B · description: **none**
+
+**Purpose.** _No description available._
+
+**Use.** Read it.
+
+### `website/scripts/`
+
+#### `website/scripts/export_research.py`
+
+`code-python` · 124 lines · 6,829 B · description: **extracted**
+
+**Purpose.** Export tracked public research into deterministic metadata and body shards. This is a publication transform, not another research verdict. Original source hashes and transformed-body hashes remain distinct. Never export private stores, local account state, workflows, credentials or the scraped jup.ag mirror.
+
+**Contents.** Defines `ROOT`, `OUTPUT`, `SHARD_BYTES`, `EXCLUDE_WORDS`, `SENSITIVE`, `encoded()`, `public_body()`, `title_summary()`, `export()`, `main()`.
+
+**Use.** `python3 website/scripts/export_research.py --help`
+
+#### `website/scripts/smoke.mjs`
+
+`code-js` · 61 lines · 3,535 B · description: **none**
+
+**Purpose.** _No description available._
+
+**Contents.** Defines `request`.
+
+**Use.** See `website/README.md`; run the workspace with `npm --prefix website run dev`.
+
+### `website/src/`
+
+#### `website/src/mcp.js`
+
+`code-js` · 184 lines · 15,398 B · description: **none**
+
+**Purpose.** _No description available._
+
+**Contents.** Defines `DIAGNOSTIC_EVENTS`, `MCP_PROTOCOL_VERSION`, `accountStatus`, `bodyJson`, `challenge`, `diagnostic`, `handleMcp`, `response`, `rpcError`, `toolResult` and 2 more.
+
+**Use.** See `website/README.md`; run the workspace with `npm --prefix website run dev`.
+
+#### `website/src/oauth.js`
+
+`code-js` · 447 lines · 32,132 B · description: **none**
+
+**Purpose.** _No description available._
+
+**Contents.** Defines `ACCESS_TTL`, `MAX_BODY`, `MAX_GRANT_TTL`, `SCOPES`, `SECURITY_EVENTS`, `activeGrant`, `audience`, `authenticateAgent`, `boundedText`, `class OAuthError` and 18 more.
+
+**Use.** See `website/README.md`; run the workspace with `npm --prefix website run dev`.
+
+#### `website/src/trades.js`
+
+`code-js` · 298 lines · 22,132 B · description: **extracted**
+
+**Purpose.** Customer-only execution boundary. A configured binding must implement the verified adapter contract; this module does not implement a venue or signer.
+
+**Contents.** Defines `ASSETS`, `EVENT_CATEGORIES`, `MAX_USD`, `VENUES`, `adapter`, `cents`, `class ExecutionFailure`, `class TradeError`, `currentPolicy`, `entitled` and 18 more.
+
+**Use.** See `website/README.md`; run the workspace with `npm --prefix website run dev`.
+
+#### `website/src/worker.js`
+
+`code-js` · 528 lines · 42,330 B · description: **none**
+
+**Purpose.** _No description available._
+
+**Contents.** Defines `BACKTEST_CONCURRENCY`, `BLOCKED`, `CHECKOUT_SECONDS`, `COINS`, `MAX_BODY`, `PLANS`, `RESERVATION_SECONDS`, `SESSION_SECONDS`, `WEBHOOK_LEASE_SECONDS`, `account` and 30 more.
+
+**Use.** See `website/README.md`; run the workspace with `npm --prefix website run dev`.
+
+### `website/test/`
+
+#### `website/test/agent-browser.mjs`
+
+`test` · 240 lines · 20,209 B · description: **extracted**
+
+**Purpose.** Real Chrome against isolated HTTP/wallet fixtures. No provider or real key calls.
+
+**Contents.** Defines `body`, `reset`.
+
+**Use.** `node --test website/test/agent-browser.mjs`
+
+#### `website/test/api.test.js`
+
+`test` · 968 lines · 78,166 B · description: **none**
+
+**Purpose.** _No description available._
+
+**Contents.** Defines `ORIGIN`, `ORIGINAL_DIAGNOSTIC_METHODS`, `call`, `canonicalPlan`, `configuredEngine`, `deliver`, `deliverSubscription`, `environment`, `grant`, `keypair` and 3 more.
+
+**Use.** `node --test website/test/api.test.js`
+
+#### `website/test/evidence.test.js`
+
+`test` · 12 lines · 723 B · description: **none**
+
+**Purpose.** _No description available._
+
+**Use.** `node --test website/test/evidence.test.js`
+
+#### `website/test/mcp-integration.test.js`
+
+`test` · 148 lines · 11,639 B · description: **none**
+
+**Purpose.** _No description available._
+
+**Contents.** Defines `accountAuthorizationRows`, `authorize`, `call`, `insertIntent`, `login`.
+
+**Use.** `node --test website/test/mcp-integration.test.js`
+
+#### `website/test/mcp.test.js`
+
+`test` · 256 lines · 21,756 B · description: **none**
+
+**Purpose.** _No description available._
+
+**Contents.** Defines `assertPrivate`, `diagnostics`, `fixture`.
+
+**Use.** `node --test website/test/mcp.test.js`
+
+#### `website/test/oauth.test.js`
+
+`test` · 447 lines · 37,246 B · description: **none**
+
+**Purpose.** _No description available._
+
+**Contents.** Defines `account`, `approve`, `assertRedacted`, `authorization`, `call`, `exchange`, `register`, `sameOrigin`, `securityEvents`, `session` and 1 more.
+
+**Use.** `node --test website/test/oauth.test.js`
+
+#### `website/test/trades.test.js`
+
+`test` · 327 lines · 26,428 B · description: **none**
+
+**Purpose.** _No description available._
+
+**Contents.** Defines `captureEvents`, `executor`, `fixture`, `preparedResponse`.
+
+**Use.** `node --test website/test/trades.test.js`
+
+#### `website/test/ui-browser.mjs`
+
+`test` · 370 lines · 26,668 B · description: **extracted**
+
+**Purpose.** Real browser regressions against local fixtures. No wallet, Stripe or venue calls.
+
+**Contents.** Defines `accountSnapshot`.
+
+**Use.** `npm --prefix website run test:browser`
+
+### `website/test/helpers/`
+
+#### `website/test/helpers/d1.js`
+
+`test` · 80 lines · 3,706 B · description: **none**
+
+**Purpose.** _No description available._
+
+**Contents.** Defines `ORIGIN`, `createD1`, `environment`, `keypair`, `request`, `seedUser`.
+
+**Use.** `node --test website/test/helpers/d1.js`
+
+### `website/typecheck/`
+
+#### `website/typecheck/evidence-contract.ts`
+
+`other` · 0 lines · 885 B · description: **none**
+
+**Purpose.** _No description available._
+
+**Use.** Read it.
+
+---
+
 ## .github
 
 CI. Runs the test suite and the figure verifier.
 
-10 files.
+12 files.
 
 #### `.github/CODEOWNERS`
 
@@ -26951,7 +31415,7 @@ CI. Runs the test suite and the figure verifier.
 
 #### `.github/copilot-instructions.md`
 
-`ci` · 112 lines · 6,512 B · description: **extracted**
+`ci` · 125 lines · 7,268 B · description: **extracted**
 
 **Purpose.** Read [CLAUDE.md](../CLAUDE.md) before proposing a change. It is the source of truth for this repository; this file is a pointer plus the rules that get broken most often. 1. Read relevant source before editing; never invent a command or path.
 
@@ -26959,7 +31423,7 @@ CI. Runs the test suite and the figure verifier.
 
 #### `.github/dependabot.yml`
 
-`ci` · 83 lines · 2,149 B · description: **curated**
+`ci` · 92 lines · 2,431 B · description: **curated**
 
 **Purpose.** Dependency update schedule. The dependency surface here is deliberately thin — pandas and numpy for the engine, node built-ins for the extension — so updates should be few and individually reviewable.
 
@@ -26987,15 +31451,31 @@ CI. Runs the test suite and the figure verifier.
 
 #### `.github/workflows/ci.yml`
 
-`ci` · 479 lines · 20,902 B · description: **curated**
+`ci` · 481 lines · 21,196 B · description: **curated**
 
 **Purpose.** The gate. Runs the Python suite and `research/verify_numbers.py`, so a documented figure that no longer matches its result file fails the build rather than surviving in prose.
 
 **Use.** Runs on push. Reproduce locally with `python3 -m pytest backtester/tests -q` and `python3 research/verify_numbers.py`.
 
+#### `.github/workflows/javascript-quality.yml`
+
+`ci` · 23 lines · 529 B · description: **none**
+
+**Purpose.** _No description available._
+
+**Use.** Read it.
+
+#### `.github/workflows/oraclebot-operations.yml`
+
+`ci` · 45 lines · 1,664 B · description: **none**
+
+**Purpose.** _No description available._
+
+**Use.** Read it.
+
 #### `.github/workflows/website.yml`
 
-`ci` · 30 lines · 1,071 B · description: **none**
+`ci` · 34 lines · 1,232 B · description: **none**
 
 **Purpose.** _No description available._
 
@@ -27037,11 +31517,11 @@ Session handoff notes, newest first. Prose, not machine-read.
 
 ## .cdo
 
-2 files.
+161 files.
 
 #### `.cdo/ledger.json`
 
-`config` · 371 lines · 7,182 B · description: **derived**
+`config` · 20530 lines · 317,530 B · description: **derived**
 
 **Purpose.** Generated JSON object, 3 keys (files, runs, version).
 
@@ -27052,6 +31532,1282 @@ Session handoff notes, newest first. Prose, not machine-read.
 `config` · 2765 lines · 50,992 B · description: **derived**
 
 **Purpose.** Generated JSON object, 5 keys (review, deferred, unchanged_skipped, removed_from_disk, full).
+
+**Use.** Configuration; nothing to run.
+
+### `.cdo/reviews-2026-11-12/`
+
+#### `.cdo/reviews-2026-11-12/backtester-boundaries-tools.json`
+
+`config` · 365 lines · 54,304 B · description: **derived**
+
+**Purpose.** Generated JSON object, 9 keys (version, reviewer, self_review, independent_acceptance, files, checks...).
+
+**Use.** Configuration; nothing to run.
+
+#### `.cdo/reviews-2026-11-12/backtester-cli-triangle.json`
+
+`config` · 776 lines · 59,815 B · description: **derived**
+
+**Purpose.** Generated JSON object, 9 keys (schema, reviewer, observed_at, status, files, checks...).
+
+**Use.** Configuration; nothing to run.
+
+#### `.cdo/reviews-2026-11-12/backtester-data-boundaries.iter1.json`
+
+`config` · 895 lines · 77,171 B · description: **derived**
+
+**Purpose.** Generated JSON object, 7 keys (schema, status, files, checks, red_logs, snapshots...).
+
+**Use.** Configuration; nothing to run.
+
+#### `.cdo/reviews-2026-11-12/backtester-data-boundaries.json`
+
+`config` · 910 lines · 79,773 B · description: **derived**
+
+**Purpose.** Generated JSON object, 7 keys (schema, status, files, checks, red_logs, snapshots...).
+
+**Use.** Configuration; nothing to run.
+
+#### `.cdo/reviews-2026-11-12/backtester-final-production.json`
+
+`config` · 1129 lines · 108,370 B · description: **derived**
+
+**Purpose.** Generated JSON object, 9 keys (schema, reviewer, observed_at, status, files, checks...).
+
+**Use.** Configuration; nothing to run.
+
+#### `.cdo/reviews-2026-11-12/backtester-final-tests.json`
+
+`config` · 353 lines · 30,204 B · description: **derived**
+
+**Purpose.** Generated JSON object, 7 keys (schema, reviewer, status, observed_at, files, checks...).
+
+**Use.** Configuration; nothing to run.
+
+#### `.cdo/reviews-2026-11-12/backtester-full-final.json`
+
+`config` · 253 lines · 9,405 B · description: **derived**
+
+**Purpose.** Generated JSON object, 50 keys (agent, definition_version, observed_at, component, stage, status...).
+
+**Use.** Configuration; nothing to run.
+
+#### `.cdo/reviews-2026-11-12/backtester-independent-final-failed.json`
+
+`config` · 575 lines · 18,282 B · description: **derived**
+
+**Purpose.** Generated JSON object, 19 keys (agent, definition_version, stage, status, acceptance, observed_at...).
+
+**Use.** Configuration; nothing to run.
+
+#### `.cdo/reviews-2026-11-12/backtester-independent-final.json`
+
+`config` · 682 lines · 27,775 B · description: **derived**
+
+**Purpose.** Generated JSON object, 15 keys (agent, definition_version, stage, status, acceptance, observed_at...).
+
+**Use.** Configuration; nothing to run.
+
+#### `.cdo/reviews-2026-11-12/backtester-independent-initial.json`
+
+`config` · 716 lines · 25,510 B · description: **derived**
+
+**Purpose.** Generated JSON object, 22 keys (agent, definition_version, stage, status, acceptance, observed_at...).
+
+**Use.** Configuration; nothing to run.
+
+#### `.cdo/reviews-2026-11-12/backtester-math-strategies.json`
+
+`config` · 574 lines · 51,223 B · description: **derived**
+
+**Purpose.** Generated JSON object, 9 keys (schema, reviewer, status, files, checks, red_logs...).
+
+**Use.** Configuration; nothing to run.
+
+#### `.cdo/reviews-2026-11-12/backtester-root-blind-fixes.json`
+
+`config` · 261 lines · 21,762 B · description: **derived**
+
+**Purpose.** Generated JSON object, 8 keys (schema, reviewer, status, created_at, files, checks...).
+
+**Use.** Configuration; nothing to run.
+
+#### `.cdo/reviews-2026-11-12/backtester-simulators-launcher.json`
+
+`config` · 309 lines · 25,142 B · description: **derived**
+
+**Purpose.** Generated JSON object, 9 keys (schema, reviewer, status, files, checks, red_logs...).
+
+**Use.** Configuration; nothing to run.
+
+#### `.cdo/reviews-2026-11-12/botmanager-full-final.json`
+
+`config` · 808 lines · 15,223 B · description: **derived**
+
+**Purpose.** Generated JSON object, 24 keys (agent, observed_at, status, head, command, process_exit...).
+
+**Use.** Configuration; nothing to run.
+
+#### `.cdo/reviews-2026-11-12/botmanager-owner-endpoint-fixtures.json`
+
+`config` · 520 lines · 42,004 B · description: **derived**
+
+**Purpose.** Generated JSON object, 10 keys (schema, observed_at, reviewer, status, files, canonical_gate...).
+
+**Use.** Configuration; nothing to run.
+
+#### `.cdo/reviews-2026-11-12/botmanager-root.json`
+
+`config` · 3672 lines · 355,778 B · description: **derived**
+
+**Purpose.** Generated JSON object, 8 keys (schema, reviewer, status, created_at, files, checks...).
+
+**Use.** Configuration; nothing to run.
+
+#### `.cdo/reviews-2026-11-12/ci-ui-readiness-final.json`
+
+`config` · 336 lines · 22,664 B · description: **derived**
+
+**Purpose.** Generated JSON object, 10 keys (schema, observed_at, status, files, ci_failed_checkpoint, full_failed_checkpoint...).
+
+**Use.** Configuration; nothing to run.
+
+#### `.cdo/reviews-2026-11-12/coverage.json`
+
+`config` · 7645 lines · 288,439 B · description: **derived**
+
+**Purpose.** Generated JSON object, 2 keys (summary, files).
+
+**Use.** Configuration; nothing to run.
+
+#### `.cdo/reviews-2026-11-12/data-exclusions.json`
+
+`config` · 101 lines · 2,767 B · description: **derived**
+
+**Purpose.** Generated JSON object, 2 keys (files, note).
+
+**Use.** Configuration; nothing to run.
+
+#### `.cdo/reviews-2026-11-12/dependency-license-import-inventory.json`
+
+`config` · 982 lines · 27,062 B · description: **derived**
+
+**Purpose.** Generated JSON object, 3 keys (inventory, declared_components, limits).
+
+**Use.** Configuration; nothing to run.
+
+#### `.cdo/reviews-2026-11-12/dependency-supplement.json`
+
+`config` · 630 lines · 26,377 B · description: **derived**
+
+**Purpose.** Generated JSON object, 17 keys (schema_version, agent, observed_at, repository, scope, status...).
+
+**Use.** Configuration; nothing to run.
+
+#### `.cdo/reviews-2026-11-12/design-prototypes.iter1.json`
+
+`config` · 602 lines · 33,848 B · description: **derived**
+
+**Purpose.** Generated JSON object, 8 keys (schema, reviewer, observed_at, status, files, findings...).
+
+**Use.** Configuration; nothing to run.
+
+#### `.cdo/reviews-2026-11-12/design-prototypes.json`
+
+`config` · 752 lines · 37,909 B · description: **derived**
+
+**Purpose.** Generated JSON object, 8 keys (schema, reviewer, observed_at, status, files, findings...).
+
+**Use.** Configuration; nothing to run.
+
+#### `.cdo/reviews-2026-11-12/ecosystem-combined-full-final.json`
+
+`config` · 3611 lines · 222,395 B · description: **derived**
+
+**Purpose.** Generated JSON object, 33 keys (agent, observed_at, status, component, command, launch...).
+
+**Use.** Configuration; nothing to run.
+
+#### `.cdo/reviews-2026-11-12/ecosystem-full-final.json`
+
+`config` · 3385 lines · 100,023 B · description: **derived**
+
+**Purpose.** Generated JSON object, 50 keys (agent, definition_version, observed_at, component, stage, status...).
+
+**Use.** Configuration; nothing to run.
+
+#### `.cdo/reviews-2026-11-12/ecosystem.json`
+
+`config` · 7824 lines · 345,848 B · description: **derived**
+
+**Purpose.** Generated JSON object, 40 keys (component, status, coverage, files_reviewed_new, files_reused_prior, original_lines_new...).
+
+**Use.** Configuration; nothing to run.
+
+#### `.cdo/reviews-2026-11-12/executor-ci-import-deltas.json`
+
+`config` · 300 lines · 17,724 B · description: **derived**
+
+**Purpose.** Generated JSON object, 12 keys (schema, observed_at, status, files, root_applied, executor_full_result...).
+
+**Use.** Configuration; nothing to run.
+
+#### `.cdo/reviews-2026-11-12/executor-independent-final.json`
+
+`config` · 443 lines · 18,221 B · description: **derived**
+
+**Purpose.** Generated JSON object, 16 keys (additional_preserved_contract_results, artifacts_created_this_recheck, conclusion, created_at, earlier_assigned_sources_not_reread, fresh_source_bindings...).
+
+**Use.** Configuration; nothing to run.
+
+#### `.cdo/reviews-2026-11-12/executor-remediation.json`
+
+`config` · 821 lines · 41,043 B · description: **derived**
+
+**Purpose.** Generated JSON object, 26 keys (schema, created_at, status, scope_root, independent_report, independent_probes...).
+
+**Use.** Configuration; nothing to run.
+
+#### `.cdo/reviews-2026-11-12/executor.json`
+
+`config` · 5451 lines · 213,308 B · description: **derived**
+
+**Purpose.** Generated JSON object, 17 keys (component, status, coverage, files_reviewed, original_lines, final_lines...).
+
+**Use.** Configuration; nothing to run.
+
+#### `.cdo/reviews-2026-11-12/extension-independent-wrapper-recheck.json`
+
+`config` · 782 lines · 25,355 B · description: **derived**
+
+**Purpose.** Generated JSON object, 17 keys (artifacts_created, conclusion, created_at, fresh_source_bindings, head, independence...).
+
+**Use.** Configuration; nothing to run.
+
+#### `.cdo/reviews-2026-11-12/extension-root.json`
+
+`config` · 2525 lines · 291,674 B · description: **derived**
+
+**Purpose.** Generated JSON object, 10 keys (schema, reviewer, status, created_at, files, checks...).
+
+**Use.** Configuration; nothing to run.
+
+#### `.cdo/reviews-2026-11-12/extension-tests-harness.json`
+
+`config` · 2273 lines · 118,498 B · description: **derived**
+
+**Purpose.** Generated JSON object, 20 keys (schema_version, reviewer, timestamp_utc, worktree, scope, status...).
+
+**Use.** Configuration; nothing to run.
+
+#### `.cdo/reviews-2026-11-12/final-nonfunctional-deltas.json`
+
+`config` · 37 lines · 2,122 B · description: **derived**
+
+**Purpose.** Generated JSON object, 3 keys (files, root_authorized, status).
+
+**Use.** Configuration; nothing to run.
+
+#### `.cdo/reviews-2026-11-12/final-owned-integration.json`
+
+`config` · 1530 lines · 109,283 B · description: **derived**
+
+**Purpose.** Generated JSON object, 9 keys (schema, reviewer, observed_at, status, files, checks...).
+
+**Use.** Configuration; nothing to run.
+
+#### `.cdo/reviews-2026-11-12/final-toolchain-fixes.json`
+
+`config` · 114 lines · 4,461 B · description: **derived**
+
+**Purpose.** Generated JSON object, 8 keys (schema, status, files, locks, checks, failed_intermediate_attempts...).
+
+**Use.** Configuration; nothing to run.
+
+#### `.cdo/reviews-2026-11-12/index.json`
+
+`config` · 271 lines · 10,237 B · description: **derived**
+
+**Purpose.** Generated JSON object, 13 keys (reviewer, created_at, scope, baseline_read_ranges, final_review, passes...).
+
+**Use.** Configuration; nothing to run.
+
+#### `.cdo/reviews-2026-11-12/initial-short-integration-attempts.json`
+
+`config` · 804 lines · 44,568 B · description: **derived**
+
+**Purpose.** Generated JSON object, 7 keys (observed_at, head, status, rows, repo_or_guard_edits, classification...).
+
+**Use.** Configuration; nothing to run.
+
+#### `.cdo/reviews-2026-11-12/integration-fixture-corrections.json`
+
+`config` · 298 lines · 14,988 B · description: **derived**
+
+**Purpose.** Generated JSON object, 22 keys (agent, definition_version, version, delta, status, observed_at...).
+
+**Use.** Configuration; nothing to run.
+
+#### `.cdo/reviews-2026-11-12/integration-fixture-current-rows.json`
+
+`config` · 316 lines · 24,826 B · description: **derived**
+
+**Purpose.** Generated JSON object, 11 keys (schema, observed_at, status, files, source_receipt, source_receipt_sha256...).
+
+**Use.** Configuration; nothing to run.
+
+#### `.cdo/reviews-2026-11-12/inventory-independent-final.json`
+
+`config` · 182 lines · 7,527 B · description: **derived**
+
+**Purpose.** Generated JSON object, 16 keys (agent, definition_version, status, verdict, round, observed_at...).
+
+**Use.** Configuration; nothing to run.
+
+#### `.cdo/reviews-2026-11-12/inventory-independent-initial.json`
+
+`config` · 954 lines · 18,668 B · description: **derived**
+
+**Purpose.** Generated JSON object, 12 keys (agent, definition_version, status, observed_at, root, scope...).
+
+**Use.** Configuration; nothing to run.
+
+#### `.cdo/reviews-2026-11-12/javascript-tooling-and-pool-fixture.json`
+
+`config` · 304 lines · 29,609 B · description: **derived**
+
+**Purpose.** Generated JSON object, 9 keys (schema, reviewer, status, created_at, files, metadata...).
+
+**Use.** Configuration; nothing to run.
+
+#### `.cdo/reviews-2026-11-12/jsonalias-notice-receipt.json`
+
+`config` · 10 lines · 469 B · description: **derived**
+
+**Purpose.** Generated JSON object, 7 keys (path, sha256, license_text_exactly_preserved, license_sha256, dependency_constraints_changed, version...).
+
+**Use.** Configuration; nothing to run.
+
+#### `.cdo/reviews-2026-11-12/ledger-final-plan.json`
+
+`config` · 23 lines · 721 B · description: **derived**
+
+**Purpose.** Generated JSON object, 7 keys (observed_at, command, first_exit, repeat_unchanged_exit, identical_repeat, plan...).
+
+**Use.** Configuration; nothing to run.
+
+#### `.cdo/reviews-2026-11-12/ledger-final-receipt.md`
+
+`doc` · 30 lines · 1,636 B · description: **extracted**
+
+**Purpose.** Fix-track passes that ran: 17 of 18 (+1 conditional) Mode: full Status: FULL_SOURCE_INSPECTION_PARTIAL_CONVERGENCE_INTEGRATION_PENDING Files reviewed this run: 891
+
+**Use.** Read it.
+
+#### `.cdo/reviews-2026-11-12/ledger-post-executor-imports-plan.json`
+
+`config` · 21 lines · 390 B · description: **derived**
+
+**Purpose.** Generated JSON object, 3 keys (observed_at, status, plans).
+
+**Use.** Configuration; nothing to run.
+
+#### `.cdo/reviews-2026-11-12/ledger-post-executor-imports-receipt.md`
+
+`doc` · 30 lines · 1,614 B · description: **extracted**
+
+**Purpose.** Fix-track passes that ran: 17 of 18 (+0 conditional) Mode: incremental Status: FULL_SOURCE_INSPECTION_SHORT_INTEGRATION_GREEN_SOLTUI_AND_DELIVERY_PENDING Files reviewed this run: 4
+
+**Use.** Read it.
+
+#### `.cdo/reviews-2026-11-12/ledger-post-fixture-plan.json`
+
+`config` · 17 lines · 389 B · description: **derived**
+
+**Purpose.** Generated JSON object, 5 keys (observed_at, completed_exits, identical, plan, note).
+
+**Use.** Configuration; nothing to run.
+
+#### `.cdo/reviews-2026-11-12/ledger-post-fixture-receipt.md`
+
+`doc` · 30 lines · 1,453 B · description: **extracted**
+
+**Purpose.** Fix-track passes that ran: 17 of 18 (+0 conditional) Mode: incremental Status: FOUR_FIXTURE_DELTAS_REVIEWED_FULL_INTEGRATION_PENDING Files reviewed this run: 4
+
+**Use.** Read it.
+
+#### `.cdo/reviews-2026-11-12/ledger-post-operations-plan.json`
+
+`config` · 21 lines · 402 B · description: **derived**
+
+**Purpose.** Generated JSON object, 3 keys (observed_at, status, plans).
+
+**Use.** Configuration; nothing to run.
+
+#### `.cdo/reviews-2026-11-12/ledger-post-operations-receipt.md`
+
+`doc` · 30 lines · 1,784 B · description: **extracted**
+
+**Purpose.** Fix-track passes that ran: 17 of 18 (+1 conditional) Mode: incremental Status: FULL_SOURCE_INSPECTION_INCOMING_OPERATIONS_GREEN_SOLTUI_AND_DELIVERY_PENDING Files reviewed this run: 4
+
+**Use.** Read it.
+
+#### `.cdo/reviews-2026-11-12/ledger-post-pipeline-plan.json`
+
+`config` · 31 lines · 650 B · description: **derived**
+
+**Purpose.** Generated JSON object, 4 keys (observed_at, status, command, plans).
+
+**Use.** Configuration; nothing to run.
+
+#### `.cdo/reviews-2026-11-12/ledger-post-pipeline-receipt.md`
+
+`doc` · 30 lines · 2,199 B · description: **extracted**
+
+**Purpose.** Fix-track passes that ran: 17 of 18 (+1 conditional) Mode: incremental Status: FULL_SOURCE_INSPECTION_PIPELINE_UI_BOUNDARIES_GREEN_SOLTUI_SHARDS_AND_DELIVERY_PENDING Files reviewed this run: 18
+
+**Use.** Read it.
+
+#### `.cdo/reviews-2026-11-12/liquidity-independent-final.json`
+
+`config` · 311 lines · 11,121 B · description: **derived**
+
+**Purpose.** Generated JSON object, 19 keys (agent, definition_version, status, acceptance_status, profile, mode...).
+
+**Use.** Configuration; nothing to run.
+
+#### `.cdo/reviews-2026-11-12/liquidity-independent-iter1.json`
+
+`config` · 487 lines · 18,495 B · description: **derived**
+
+**Purpose.** Generated JSON object, 17 keys (agent, definition_version, status, review_status, profile, mode...).
+
+**Use.** Configuration; nothing to run.
+
+#### `.cdo/reviews-2026-11-12/liquidity-python-advisories.json`
+
+`config` · 2 lines · 2,882 B · description: **derived**
+
+**Purpose.** Generated JSON object, 2 keys (dependencies, fixes).
+
+**Use.** Configuration; nothing to run.
+
+#### `.cdo/reviews-2026-11-12/liquidity.iter1.json`
+
+`config` · 7367 lines · 316,673 B · description: **derived**
+
+**Purpose.** Generated JSON object, 20 keys (schema, project, task, component, worktree, status...).
+
+**Use.** Configuration; nothing to run.
+
+#### `.cdo/reviews-2026-11-12/liquidity.json`
+
+`config` · 7745 lines · 347,506 B · description: **derived**
+
+**Purpose.** Generated JSON object, 21 keys (schema, project, task, component, worktree, status...).
+
+**Use.** Configuration; nothing to run.
+
+#### `.cdo/reviews-2026-11-12/medium-files.json`
+
+`config` · 2048 lines · 222,666 B · description: **derived**
+
+**Purpose.** Generated JSON object, 3 keys (version, reviewer, files).
+
+**Use.** Configuration; nothing to run.
+
+#### `.cdo/reviews-2026-11-12/mongo.json`
+
+`config` · 2642 lines · 116,545 B · description: **derived**
+
+**Purpose.** Generated JSON object, 19 keys (agent, definition_version, observed_at, status, root, scope...).
+
+**Use.** Configuration; nothing to run.
+
+#### `.cdo/reviews-2026-11-12/news-event-current-rows.json`
+
+`config` · 268 lines · 25,170 B · description: **derived**
+
+**Purpose.** Generated JSON object, 6 keys (schema, source_receipt, source_receipt_sha256, status, files, limits).
+
+**Use.** Configuration; nothing to run.
+
+#### `.cdo/reviews-2026-11-12/news-event-incoming.json`
+
+`config` · 410 lines · 31,402 B · description: **derived**
+
+**Purpose.** Generated JSON object, 27 keys (agent, definition_version, version, delta, status, stage...).
+
+**Use.** Configuration; nothing to run.
+
+#### `.cdo/reviews-2026-11-12/news-event-independent-final.json`
+
+`config` · 58 lines · 3,010 B · description: **derived**
+
+**Purpose.** Generated JSON object, 9 keys (reviewer, reviewed_at, scope, source_sha256, protected_artifacts_unchanged, protected_count...).
+
+**Use.** Configuration; nothing to run.
+
+#### `.cdo/reviews-2026-11-12/operation-inventory-generator.json`
+
+`config` · 144 lines · 9,483 B · description: **derived**
+
+**Purpose.** Generated JSON object, 6 keys (schema, status, files, outputs, checks, limits).
+
+**Use.** Configuration; nothing to run.
+
+#### `.cdo/reviews-2026-11-12/operations-incoming-current.json`
+
+`config` · 1340 lines · 77,212 B · description: **derived**
+
+**Purpose.** Generated JSON object, 17 keys (schema, observed_at, status, incoming_commits, files, source_only_version...).
+
+**Use.** Configuration; nothing to run.
+
+#### `.cdo/reviews-2026-11-12/operations-independent-final.json`
+
+`config` · 64 lines · 4,277 B · description: **derived**
+
+**Purpose.** Generated JSON object, 19 keys (agent, role, definition_version, materialized_at, review_mode, baseline_origin_master...).
+
+**Use.** Configuration; nothing to run.
+
+#### `.cdo/reviews-2026-11-12/operations-independent-initial.json`
+
+`config` · 57 lines · 3,414 B · description: **derived**
+
+**Purpose.** Generated JSON object, 18 keys (agent, role, definition_version, materialized_at, review_mode, baseline_origin_master...).
+
+**Use.** Configuration; nothing to run.
+
+#### `.cdo/reviews-2026-11-12/operations-observer-initial.json`
+
+`config` · 167 lines · 8,848 B · description: **derived**
+
+**Purpose.** Generated JSON object, 10 keys (agent, observed_at, status, repo, incoming_commit, files...).
+
+**Use.** Configuration; nothing to run.
+
+#### `.cdo/reviews-2026-11-12/operations-watchdog-remediation.json`
+
+`config` · 302 lines · 16,395 B · description: **derived**
+
+**Purpose.** Generated JSON object, 24 keys (agent, definition_version, version, delta, status, stage...).
+
+**Use.** Configuration; nothing to run.
+
+#### `.cdo/reviews-2026-11-12/operations-watchdog-tests-initial.json`
+
+`config` · 304 lines · 18,657 B · description: **derived**
+
+**Purpose.** Generated JSON object, 19 keys (agent, definition_version, version, status, stage, observed_at...).
+
+**Use.** Configuration; nothing to run.
+
+#### `.cdo/reviews-2026-11-12/oracle-full-final.json`
+
+`config` · 430 lines · 14,350 B · description: **derived**
+
+**Purpose.** Generated JSON object, 50 keys (agent, definition_version, observed_at, component, stage, status...).
+
+**Use.** Configuration; nothing to run.
+
+#### `.cdo/reviews-2026-11-12/oracle.json`
+
+`config` · 5223 lines · 280,880 B · description: **derived**
+
+**Purpose.** Generated JSON object, 20 keys (agent, definition_version, observed_at, status, root, scope...).
+
+**Use.** Configuration; nothing to run.
+
+#### `.cdo/reviews-2026-11-12/owned-fixes.json`
+
+`config` · 401 lines · 48,870 B · description: **derived**
+
+**Purpose.** Generated JSON object, 3 keys (version, reviewer, files).
+
+**Use.** Configuration; nothing to run.
+
+#### `.cdo/reviews-2026-11-12/pipeline-boundary-gates.json`
+
+`config` · 189 lines · 8,421 B · description: **derived**
+
+**Purpose.** Generated JSON object, 5 keys (schema, observed_at, status, gates, limits).
+
+**Use.** Configuration; nothing to run.
+
+#### `.cdo/reviews-2026-11-12/pipeline-cli-combined-final.json`
+
+`config` · 121 lines · 6,885 B · description: **derived**
+
+**Purpose.** Generated JSON object, 7 keys (observed_at, status, cases, guard_sha256, manifest, manifest_sha256...).
+
+**Use.** Configuration; nothing to run.
+
+#### `.cdo/reviews-2026-11-12/pipeline-pr241-incoming-review.json`
+
+`config` · 1255 lines · 98,436 B · description: **derived**
+
+**Purpose.** Generated JSON object, 11 keys (schema, observed_at, status, incoming_commit, files, new_application_source_count...).
+
+**Use.** Configuration; nothing to run.
+
+#### `.cdo/reviews-2026-11-12/pipeline-pr241-ui-current.json`
+
+`config` · 3236 lines · 294,765 B · description: **derived**
+
+**Purpose.** Generated JSON object, 12 keys (schema, observed_at, status, incoming_commits, application_source_denominator, raw_helper_denominator...).
+
+**Use.** Configuration; nothing to run.
+
+#### `.cdo/reviews-2026-11-12/pipeline-three-boundaries-independent.json`
+
+`config` · 39 lines · 2,681 B · description: **derived**
+
+**Purpose.** Generated JSON object, 12 keys (agent, definition_version, status, observed_at, scope, source_sha256...).
+
+**Use.** Configuration; nothing to run.
+
+#### `.cdo/reviews-2026-11-12/pipeline-ui-supplement-delta.json`
+
+`config` · 45 lines · 4,840 B · description: **derived**
+
+**Purpose.** Generated JSON object, 4 keys (schema, observed_at, files, limits).
+
+**Use.** Configuration; nothing to run.
+
+#### `.cdo/reviews-2026-11-12/preserved-owner-bindings.json`
+
+`config` · 71 lines · 3,372 B · description: **derived**
+
+**Purpose.** Generated JSON object, 4 keys (observed_at, source, owners, environments).
+
+**Use.** Configuration; nothing to run.
+
+#### `.cdo/reviews-2026-11-12/python-advisories.json`
+
+`config` · 2 lines · 5,326 B · description: **derived**
+
+**Purpose.** Generated JSON object, 2 keys (dependencies, fixes).
+
+**Use.** Configuration; nothing to run.
+
+#### `.cdo/reviews-2026-11-12/recorded.json`
+
+`config` · 849 lines · 68,848 B · description: **derived**
+
+**Purpose.** Generated JSON object, 846 keys (backtester/__init__.py, backtester/botcli.py, backtester/cli.py, backtester/core/__init__.py, backtester/core/archive_price.py, backtester/core/assets.py...).
+
+**Use.** Configuration; nothing to run.
+
+#### `.cdo/reviews-2026-11-12/remaining-source-dispositions.json`
+
+`config` · 433 lines · 39,240 B · description: **derived**
+
+**Purpose.** Generated JSON object, 9 keys (schema, status, M5_partial_files, count, counts_by_component, scope_note...).
+
+**Use.** Configuration; nothing to run.
+
+#### `.cdo/reviews-2026-11-12/remaining.json`
+
+`config` · 147 lines · 4,787 B · description: **derived**
+
+**Purpose.** Generated JSON object, 8 keys (backtester, botmanager, ecosystem, executor, liquidity, oracle...).
+
+**Use.** Configuration; nothing to run.
+
+#### `.cdo/reviews-2026-11-12/repo-scope-assessment.json`
+
+`config` · 921 lines · 43,625 B · description: **derived**
+
+**Purpose.** Generated JSON object, 15 keys (schema_version, agent, observed_at, repository, task, assessment_status...).
+
+**Use.** Configuration; nothing to run.
+
+#### `.cdo/reviews-2026-11-12/repo-scope-final-dispositions.json`
+
+`config` · 880 lines · 56,580 B · description: **derived**
+
+**Purpose.** Generated JSON object, 17 keys (agent, definition_version, schema_version, observed_at, repository, stage...).
+
+**Use.** Configuration; nothing to run.
+
+#### `.cdo/reviews-2026-11-12/research-scripts.json`
+
+`config` · 11814 lines · 559,980 B · description: **derived**
+
+**Purpose.** Generated JSON object, 24 keys (agent, definition_version, observed_at, status, status_detail, root...).
+
+**Use.** Configuration; nothing to run.
+
+#### `.cdo/reviews-2026-11-12/runtime-source-supplement.json`
+
+`config` · 259 lines · 11,547 B · description: **derived**
+
+**Purpose.** Generated JSON object, 9 keys (schema, status, raw_helper_source_census, captured_html_ts_exclusions_pending_binding, supplement_candidates, candidate_lines...).
+
+**Use.** Configuration; nothing to run.
+
+#### `.cdo/reviews-2026-11-12/runtime-supplement-coverage.json`
+
+`config` · 362 lines · 16,793 B · description: **derived**
+
+**Purpose.** Generated JSON object, 6 keys (status, original_inventory_candidates, complete, raw_helper_coverage_separate, note, files).
+
+**Use.** Configuration; nothing to run.
+
+#### `.cdo/reviews-2026-11-12/runtime-supplement-health.json`
+
+`config` · 212 lines · 17,332 B · description: **derived**
+
+**Purpose.** Generated JSON object, 7 keys (schema, reviewer, status, observed_at, files, checks...).
+
+**Use.** Configuration; nothing to run.
+
+#### `.cdo/reviews-2026-11-12/scanner-shared-observability-closure.json`
+
+`config` · 134 lines · 8,898 B · description: **derived**
+
+**Purpose.** Generated JSON object, 4 keys (schema, status, files, no_new_test_or_full_read_credit).
+
+**Use.** Configuration; nothing to run.
+
+#### `.cdo/reviews-2026-11-12/small-files.json`
+
+`config` · 1188 lines · 76,176 B · description: **derived**
+
+**Purpose.** Generated JSON object, 3 keys (version, reviewer, files).
+
+**Use.** Configuration; nothing to run.
+
+#### `.cdo/reviews-2026-11-12/soltui-domain-work-log.md`
+
+`doc` · 17 lines · 1,803 B · description: **extracted**
+
+**Purpose.** Owner: `/root/full_repo_health`. Root owns existing test files; this batch owns twelve domain production modules and the new domain regression test only. No owner home, feed, model, service, wallet, signing or order is exercised.
+
+**Use.** Read it.
+
+#### `.cdo/reviews-2026-11-12/soltui-domain.json`
+
+`config` · 1418 lines · 71,089 B · description: **derived**
+
+**Purpose.** Generated JSON object, 8 keys (schema, reviewer, observed_at, status, files, checks...).
+
+**Use.** Configuration; nothing to run.
+
+#### `.cdo/reviews-2026-11-12/soltui-fullsuite-fixture-deltas.json`
+
+`config` · 561 lines · 41,928 B · description: **derived**
+
+**Purpose.** Generated JSON object, 8 keys (schema, reviewer, status, created_at, files, checks...).
+
+**Use.** Configuration; nothing to run.
+
+#### `.cdo/reviews-2026-11-12/soltui-independent.json`
+
+`config` · 3594 lines · 146,841 B · description: **derived**
+
+**Purpose.** Generated JSON object, 21 keys (agent, definition_version, status, review_status, profile, mode...).
+
+**Use.** Configuration; nothing to run.
+
+#### `.cdo/reviews-2026-11-12/soltui-owner-evidence.json`
+
+`config` · 377 lines · 23,310 B · description: **derived**
+
+**Purpose.** Generated JSON object, 8 keys (schema, reviewer, observed_at, status, files, findings...).
+
+**Use.** Configuration; nothing to run.
+
+#### `.cdo/reviews-2026-11-12/soltui-root-lifecycle-tests.json`
+
+`config` · 360 lines · 34,215 B · description: **derived**
+
+**Purpose.** Generated JSON object, 7 keys (schema, reviewer, status, created_at, files, checks...).
+
+**Use.** Configuration; nothing to run.
+
+#### `.cdo/reviews-2026-11-12/soltui-root-tests.json`
+
+`config` · 564 lines · 58,850 B · description: **derived**
+
+**Purpose.** Generated JSON object, 7 keys (schema, reviewer, status, created_at, files, checks...).
+
+**Use.** Configuration; nothing to run.
+
+#### `.cdo/reviews-2026-11-12/soltui-root-ui-tests.json`
+
+`config` · 717 lines · 74,530 B · description: **derived**
+
+**Purpose.** Generated JSON object, 7 keys (schema, reviewer, status, created_at, files, checks...).
+
+**Use.** Configuration; nothing to run.
+
+#### `.cdo/reviews-2026-11-12/soltui-worker.json`
+
+`config` · 12598 lines · 568,084 B · description: **derived**
+
+**Purpose.** Generated JSON object, 22 keys (agent, definition_version, observed_at, status, status_detail, root...).
+
+**Use.** Configuration; nothing to run.
+
+#### `.cdo/reviews-2026-11-12/source-epoch-timing.json`
+
+`config` · 69 lines · 3,013 B · description: **derived**
+
+**Purpose.** Generated JSON object, 5 keys (records, inherited_guard_hashes_before, inherited_guard_hashes_after, claim, observed_ratios).
+
+**Use.** Configuration; nothing to run.
+
+#### `.cdo/reviews-2026-11-12/source-version-deltas.json`
+
+`config` · 864 lines · 79,322 B · description: **derived**
+
+**Purpose.** Generated JSON object, 7 keys (schema, reviewer, status, created_at, files, checks...).
+
+**Use.** Configuration; nothing to run.
+
+#### `.cdo/reviews-2026-11-12/tool-launcher-live-help.iter1.json`
+
+`config` · 67 lines · 1,639 B · description: **derived**
+
+**Purpose.** Generated JSON object, 4 keys (checks, private_environment, marker, no_fetch_or_service_started).
+
+**Use.** Configuration; nothing to run.
+
+#### `.cdo/reviews-2026-11-12/tool-launcher-live-help.iter2.json`
+
+`config` · 109 lines · 2,923 B · description: **derived**
+
+**Purpose.** Generated JSON object, 5 keys (checks, private_environment, marker, no_fetch_or_service_or_study_started, note).
+
+**Use.** Configuration; nothing to run.
+
+#### `.cdo/reviews-2026-11-12/tool-launcher-live-help.iter3.json`
+
+`config` · 133 lines · 3,560 B · description: **derived**
+
+**Purpose.** Generated JSON object, 5 keys (checks, private_environment, marker, no_fetch_or_service_or_study_started, note).
+
+**Use.** Configuration; nothing to run.
+
+#### `.cdo/reviews-2026-11-12/tool-launcher-live-help.json`
+
+`config` · 141 lines · 3,769 B · description: **derived**
+
+**Purpose.** Generated JSON object, 5 keys (checks, private_environment, marker, no_fetch_or_service_or_study_started, note).
+
+**Use.** Configuration; nothing to run.
+
+#### `.cdo/reviews-2026-11-12/ui-help.json`
+
+`config` · 204 lines · 7,740 B · description: **derived**
+
+**Purpose.** Generated JSON object, 13 keys (created_at, reviewer, scope, full_read_ranges, final_diff_review, passes...).
+
+**Use.** Configuration; nothing to run.
+
+#### `.cdo/reviews-2026-11-12/vote-explanation-interval.json`
+
+`config` · 198 lines · 13,430 B · description: **derived**
+
+**Purpose.** Generated JSON object, 10 keys (schema, reviewer, observed_at, status, files, red...).
+
+**Use.** Configuration; nothing to run.
+
+#### `.cdo/reviews-2026-11-12/website-engine.json`
+
+`config` · 256 lines · 8,878 B · description: **derived**
+
+**Purpose.** Generated JSON object, 13 keys (scope, status, coverage, read_ranges, original_blobs, final_blobs...).
+
+**Use.** Configuration; nothing to run.
+
+#### `.cdo/reviews-2026-11-12/website-npm-advisories.json`
+
+`config` · 23 lines · 361 B · description: **derived**
+
+**Purpose.** Generated JSON object, 3 keys (auditReportVersion, vulnerabilities, metadata).
+
+**Use.** Configuration; nothing to run.
+
+#### `.cdo/reviews-2026-11-12/website-ui.json`
+
+`config` · 166 lines · 7,233 B · description: **derived**
+
+**Purpose.** Generated JSON object, 10 keys (reviewer, date, scope, source_read_evidence, files, passes...).
+
+**Use.** Configuration; nothing to run.
+
+#### `.cdo/reviews-2026-11-12/website-worker.json`
+
+`config` · 390 lines · 14,799 B · description: **derived**
+
+**Purpose.** Generated JSON object, 22 keys (file, lines_read, related_tests, reviewer_skills, findings, passes...).
+
+**Use.** Configuration; nothing to run.
+
+### `.cdo/reviews-2026-11-13/`
+
+#### `.cdo/reviews-2026-11-13/cdo-forecast-app-delta.json`
+
+`config` · 2515 lines · 210,670 B · description: **derived**
+
+**Purpose.** Generated JSON object, 21 keys (schema, mode, path, absolute_path, baseline_commit, baseline_identity...).
+
+**Use.** Configuration; nothing to run.
+
+#### `.cdo/reviews-2026-11-13/cdo-forecast-control-delta.json`
+
+`config` · 916 lines · 46,872 B · description: **derived**
+
+**Purpose.** Generated JSON object, 14 keys (schema, observed_at, status, scope, baseline, current...).
+
+**Use.** Configuration; nothing to run.
+
+#### `.cdo/reviews-2026-11-13/cdo-forecast-inventory-delta.json`
+
+`config` · 360 lines · 24,992 B · description: **derived**
+
+**Purpose.** Generated JSON object, 17 keys (schema, observed_at, status, owner_task, mode, stage_0...).
+
+**Use.** Configuration; nothing to run.
+
+#### `.cdo/reviews-2026-11-13/cdo-forecast-main-closure.json`
+
+`config` · 162 lines · 6,729 B · description: **derived**
+
+**Purpose.** Generated JSON object, 18 keys (schema_version, created_at, reviewer, parent_task, mode, skill_version...).
+
+**Use.** Configuration; nothing to run.
+
+#### `.cdo/reviews-2026-11-13/cdo-forecast-main.json`
+
+`config` · 329 lines · 13,423 B · description: **derived**
+
+**Purpose.** Generated JSON object, 24 keys (schema_version, task_owner, parent_task, created_at, mode, skill...).
+
+**Use.** Configuration; nothing to run.
+
+#### `.cdo/reviews-2026-11-13/cdo-forecast-ops-delta.json`
+
+`config` · 558 lines · 32,743 B · description: **derived**
+
+**Purpose.** Generated JSON object, 31 keys (schema, observed_at, status, mode, root_task, scope...).
+
+**Use.** Configuration; nothing to run.
+
+#### `.cdo/reviews-2026-11-13/cdo-forecast-ops-tests-delta.json`
+
+`config` · 273 lines · 12,422 B · description: **derived**
+
+**Purpose.** Generated JSON object, 21 keys (schema, observed_at, task, status, path, absolute_path...).
+
+**Use.** Configuration; nothing to run.
+
+#### `.cdo/reviews-2026-11-13/cdo-forecast-preferences-closure.json`
+
+`config` · 206 lines · 10,798 B · description: **derived**
+
+**Purpose.** Generated JSON object, 24 keys (active_fix_track_passes, authored_diff_review, boundaries, conditional_M5, created_at, fixed_track_total...).
+
+**Use.** Configuration; nothing to run.
+
+#### `.cdo/reviews-2026-11-13/cdo-forecast-preferences.json`
+
+`config` · 201 lines · 12,457 B · description: **derived**
+
+**Purpose.** Generated JSON object, 21 keys (activated_skills, active_fix_track_passes, boundaries, conditional_M5, created_at, file...).
+
+**Use.** Configuration; nothing to run.
+
+#### `.cdo/reviews-2026-11-13/cdo-forecast-service-tests.json`
+
+`config` · 603 lines · 17,827 B · description: **derived**
+
+**Purpose.** Generated JSON object, 27 keys (schema_version, task, generated_at_utc, target, review_mode, status...).
+
+**Use.** Configuration; nothing to run.
+
+#### `.cdo/reviews-2026-11-13/cdo-forecast-service.json`
+
+`config` · 453 lines · 21,679 B · description: **derived**
+
+**Purpose.** Generated JSON object, 29 keys (schema_version, skill, mode, target, identity, coverage...).
+
+**Use.** Configuration; nothing to run.
+
+#### `.cdo/reviews-2026-11-13/cdo-forecast-tests.json`
+
+`config` · 259 lines · 9,702 B · description: **derived**
+
+**Purpose.** Generated JSON object, 37 keys (schema_version, task, reviewer, created_at, target, relative_path...).
+
+**Use.** Configuration; nothing to run.
+
+#### `.cdo/reviews-2026-11-13/cdo-forecast-version.json`
+
+`config` · 209 lines · 9,802 B · description: **derived**
+
+**Purpose.** Generated JSON object, 23 keys (schema, version, delta, created_at, reviewer, parent_task...).
+
+**Use.** Configuration; nothing to run.
+
+#### `.cdo/reviews-2026-11-13/cdo-forecast-votes-delta.json`
+
+`config` · 893 lines · 46,638 B · description: **derived**
+
+**Purpose.** Generated JSON object, 19 keys (schema, observed_at, status, scope, injection_gate, activated_skills...).
+
+**Use.** Configuration; nothing to run.
+
+#### `.cdo/reviews-2026-11-13/cdo-forecast-web-delta.json`
+
+`config` · 905 lines · 44,926 B · description: **derived**
+
+**Purpose.** Generated JSON object, 18 keys (schema, observed_at, status, scope, baseline, current...).
+
+**Use.** Configuration; nothing to run.
+
+#### `.cdo/reviews-2026-11-13/ci-a505-completed.json`
+
+`config` · 2 lines · 5,481 B · description: **derived**
+
+**Purpose.** Generated JSON object, 3 keys (headRefOid, state, statusCheckRollup).
+
+**Use.** Configuration; nothing to run.
+
+#### `.cdo/reviews-2026-11-13/combined-final-plan.json`
+
+`config` · 8 lines · 109 B · description: **derived**
+
+**Purpose.** Generated JSON object, 5 keys (review, deferred, unchanged_skipped, removed_from_disk, full).
+
+**Use.** Configuration; nothing to run.
+
+#### `.cdo/reviews-2026-11-13/forecast-after-review-plan.json`
+
+`config` · 8 lines · 104 B · description: **derived**
+
+**Purpose.** Generated JSON object, 5 keys (review, deferred, unchanged_skipped, removed_from_disk, full).
+
+**Use.** Configuration; nothing to run.
+
+#### `.cdo/reviews-2026-11-13/forecast-integrated-0.4.12-ops1.2.1-gates.json`
+
+`config` · 80 lines · 3,790 B · description: **derived**
+
+**Purpose.** Generated JSON object, 10 keys (schema, version, status, rows, fresh_cli_receipt, fresh_cli_sha256...).
+
+**Use.** Configuration; nothing to run.
+
+#### `.cdo/reviews-2026-11-13/forecast-integrated-final-gates.json`
+
+`config` · 79 lines · 3,677 B · description: **derived**
+
+**Purpose.** Generated JSON object, 9 keys (schema, version, status, rows, fresh_cli_receipt, fresh_cli_sha256...).
+
+**Use.** Configuration; nothing to run.
+
+#### `.cdo/reviews-2026-11-13/forecast-integration-cdo.initial.json`
+
+`config` · 2308 lines · 109,474 B · description: **derived**
+
+**Purpose.** Generated JSON object, 8 keys (schema, version, status, baseline_commit, incoming_commit, files...).
+
+**Use.** Configuration; nothing to run.
+
+#### `.cdo/reviews-2026-11-13/forecast-integration-cdo.json`
+
+`config` · 2310 lines · 109,697 B · description: **derived**
+
+**Purpose.** Generated JSON object, 10 keys (schema, version, status, baseline_commit, incoming_commit, files...).
+
+**Use.** Configuration; nothing to run.
+
+#### `.cdo/reviews-2026-11-13/forecast-pass-receipt.md`
+
+`doc` · 30 lines · 1,199 B · description: **extracted**
+
+**Purpose.** Fix-track passes that ran: 16 of 18 (+0 conditional) Mode: incremental Status: SOURCE_REVIEW_COMPLETE_GLOBAL_CONVERGENCE_PARTIAL Files reviewed this run: 17
+
+**Use.** Read it.
+
+#### `.cdo/reviews-2026-11-13/forecast-supplement-delta.json`
+
+`config` · 31 lines · 17,723 B · description: **derived**
+
+**Purpose.** Generated JSON object, 3 keys (schema, files, limits).
+
+**Use.** Configuration; nothing to run.
+
+#### `.cdo/reviews-2026-11-13/fresh-cli-forecast-final.json`
+
+`config` · 232 lines · 12,253 B · description: **derived**
+
+**Purpose.** Generated JSON object, 7 keys (observed_at, status, cases, guard_sha256, manifest, manifest_sha256...).
+
+**Use.** Configuration; nothing to run.
+
+#### `.cdo/reviews-2026-11-13/fresh-cli-forecast-ops1.2.1-final.json`
+
+`config` · 232 lines · 12,253 B · description: **derived**
+
+**Purpose.** Generated JSON object, 7 keys (observed_at, status, cases, guard_sha256, manifest, manifest_sha256...).
+
+**Use.** Configuration; nothing to run.
+
+#### `.cdo/reviews-2026-11-13/ledger-after-wallet-render-plan.json`
+
+`config` · 8 lines · 104 B · description: **derived**
+
+**Purpose.** Generated JSON object, 5 keys (review, deferred, unchanged_skipped, removed_from_disk, full).
+
+**Use.** Configuration; nothing to run.
+
+#### `.cdo/reviews-2026-11-13/node-sqlite-runtime-floor.json`
+
+`config` · 10 lines · 774 B · description: **derived**
+
+**Purpose.** Generated JSON object, 7 keys (version, finding, source, documentation_lookup, change, verification...).
+
+**Use.** Configuration; nothing to run.
+
+#### `.cdo/reviews-2026-11-13/soltui-full-a505-completion.json`
+
+`config` · 209 lines · 8,455 B · description: **derived**
+
+**Purpose.** Generated JSON object, 33 keys (agent, definition_version, status, observed_at, head, actual_launcher_exit...).
+
+**Use.** Configuration; nothing to run.
+
+#### `.cdo/reviews-2026-11-13/soltui-full-a505-independent.json`
+
+`config` · 108 lines · 4,784 B · description: **derived**
+
+**Purpose.** Generated JSON object, 11 keys (agent, definition_version, status, observed_at, scope, evidence...).
+
+**Use.** Configuration; nothing to run.
+
+#### `.cdo/reviews-2026-11-13/soltui-spawn-harness-qualified.json`
+
+`config` · 81 lines · 4,663 B · description: **derived**
+
+**Purpose.** Generated JSON object, 14 keys (agent, definition_version, status, scope, observed_at, source_identity_observed...).
+
+**Use.** Configuration; nothing to run.
+
+#### `.cdo/reviews-2026-11-13/tab-activation-lifecycle.json`
+
+`config` · 359 lines · 20,825 B · description: **derived**
+
+**Purpose.** Generated JSON object, 8 keys (version, observed_at, status, source_delta, independent_review, lint_baseline_comparison...).
+
+**Use.** Configuration; nothing to run.
+
+#### `.cdo/reviews-2026-11-13/wallet-pnl-render-readiness.json`
+
+`config` · 73 lines · 2,071 B · description: **derived**
+
+**Purpose.** Generated JSON object, 14 keys (version, path, blob_sha, sha256, scope, original_blob_sha...).
+
+**Use.** Configuration; nothing to run.
+
+#### `.cdo/reviews-2026-11-13/website-mcp-independent.json`
+
+`config` · 66 lines · 2,864 B · description: **derived**
+
+**Purpose.** Generated JSON object, 7 keys (version, review, source_commit, files, findings_resolved, checks...).
+
+**Use.** Configuration; nothing to run.
+
+#### `.cdo/reviews-2026-11-13/website-preauthorization-cdo.json`
+
+`config` · 676 lines · 33,796 B · description: **derived**
+
+**Purpose.** Generated JSON object, 9 keys (schema, version, status, source_base_commit, files, checks...).
+
+**Use.** Configuration; nothing to run.
+
+#### `.cdo/reviews-2026-11-13/website-preauthorization-pass-receipt.md`
+
+`doc` · 30 lines · 1,099 B · description: **extracted**
+
+**Purpose.** Fix-track passes that ran: 18 of 18 (+1 conditional) Mode: incremental Status: SCOPED_REVIEW_GREEN_GLOBAL_CONVERGENCE_PARTIAL Files reviewed this run: 17
+
+**Use.** Read it.
+
+#### `.cdo/reviews-2026-11-13/website-preauthorization-plan.json`
+
+`config` · 8 lines · 104 B · description: **derived**
+
+**Purpose.** Generated JSON object, 5 keys (review, deferred, unchanged_skipped, removed_from_disk, full).
+
+**Use.** Configuration; nothing to run.
+
+#### `.cdo/reviews-2026-11-13/website-test-agent-browser.json`
+
+`config` · 208 lines · 10,659 B · description: **derived**
+
+**Purpose.** Generated JSON object, 16 keys (schema_version, created_at, root_task, skill, scope, mode...).
+
+**Use.** Configuration; nothing to run.
+
+#### `.cdo/reviews-2026-11-13/website-test-api.json`
+
+`config` · 168 lines · 8,811 B · description: **derived**
+
+**Purpose.** Generated JSON object, 21 keys (schemaVersion, reviewMode, status, target, skill, fileSHA256...).
+
+**Use.** Configuration; nothing to run.
+
+#### `.cdo/reviews-2026-11-13/website-test-d1.json`
+
+`config` · 191 lines · 10,267 B · description: **derived**
+
+**Purpose.** Generated JSON object, 16 keys (reviewer, root_task, recorded_at_utc, skill, target, stage_0...).
+
+**Use.** Configuration; nothing to run.
+
+#### `.cdo/reviews-2026-11-13/website-test-integration.json`
+
+`config` · 219 lines · 11,193 B · description: **derived**
+
+**Purpose.** Generated JSON object, 19 keys (schema_version, root_task, review_kind, scope, skill, reviewer_skills...).
+
+**Use.** Configuration; nothing to run.
+
+#### `.cdo/reviews-2026-11-13/website-test-mcp.json`
+
+`config` · 416 lines · 14,199 B · description: **derived**
+
+**Purpose.** Generated JSON object, 25 keys (schema_version, completed_at, scope, file, skill, reviewed_initial...).
+
+**Use.** Configuration; nothing to run.
+
+#### `.cdo/reviews-2026-11-13/website-test-oauth.json`
+
+`config` · 184 lines · 7,975 B · description: **derived**
+
+**Purpose.** Generated JSON object, 19 keys (review_type, status, scope, file, sha256, git_blob...).
+
+**Use.** Configuration; nothing to run.
+
+#### `.cdo/reviews-2026-11-13/website-test-trades.json`
+
+`config` · 295 lines · 10,955 B · description: **derived**
+
+**Purpose.** Generated JSON object, 21 keys (schema_version, reviewer, task, skill, reviewed_at_utc, file...).
+
+**Use.** Configuration; nothing to run.
+
+#### `.cdo/reviews-2026-11-13/website-test-ui-browser.json`
+
+`config` · 223 lines · 10,763 B · description: **derived**
+
+**Purpose.** Generated JSON object, 14 keys (skill, skill_version, scope, file, status, severity_threshold...).
 
 **Use.** Configuration; nothing to run.
 
@@ -27429,902 +33185,6 @@ Session handoff notes, newest first. Prose, not machine-read.
 
 ---
 
-## botmanager
-
-90 files.
-
-#### `botmanager/.gitignore`
-
-`other` · 5 lines · 45 B · description: **none**
-
-**Purpose.** _No description available._
-
-**Use.** Read it.
-
-#### `botmanager/README.md`
-
-`doc` · 819 lines · 52,433 B · description: **extracted**
-
-**Purpose.** Run `solbot --help` for the complete ordered command walkthrough. `solbot ui open` starts the managed suite and opens its verified local control room. The component health and alerts, Chrome recovery, and macOS/Linux/Windows support.
-
-**Use.** Read it.
-
-#### `botmanager/pyproject.toml`
-
-`config` · 18 lines · 492 B · description: **none**
-
-**Purpose.** _No description available._
-
-**Use.** Configuration; nothing to run.
-
-### `botmanager/src/botmanager/`
-
-#### `botmanager/src/botmanager/__init__.py`
-
-`code-python` · 6 lines · 136 B · description: **extracted**
-
-**Purpose.** Standalone Solana bot manager. Importing this package performs no I/O.
-
-**Use.** `import botmanager.src.botmanager.__init__`
-
-#### `botmanager/src/botmanager/__main__.py`
-
-`code-python` · 6 lines · 84 B · description: **none**
-
-**Purpose.** _No description available._
-
-**Use.** `import botmanager.src.botmanager.__main__`
-
-#### `botmanager/src/botmanager/accounting.py`
-
-`code-python` · 250 lines · 9,804 B · description: **extracted**
-
-**Purpose.** Pure cash-flow and FIFO accounting; unavailable inputs never become zero. Exact ledgers use decimal strings. Canonical simulator checkpoints retain their original float lineage and are never silently re-priced by the FIFO projection.
-
-**Contents.** Defines `measurement()`, `_decimal()`, `_reference()`, `accounting_snapshot()`, `_exact()`.
-
-**Use.** `import botmanager.src.botmanager.accounting`
-
-#### `botmanager/src/botmanager/backup.py`
-
-`code-python` · 446 lines · 17,648 B · description: **extracted**
-
-**Purpose.** Quiescent manager snapshots; canonical research authority stays external. Restore verifies dependencies before creating a new home. It never installs a service, starts a worker, or copies the canonical optimizer database.
-
-**Contents.** Defines `DATABASES`, `MAX_JSON`, `_error()`, `_json()`, `_hash()`, `_read_db()`, `_cutoff()`, `_authority_binding()`, `_validate_authority()`, `_dependencies()` and 3 more.
-
-**Use.** `import botmanager.src.botmanager.backup`
-
-#### `botmanager/src/botmanager/blind.py`
-
-`code-python` · 217 lines · 8,542 B · description: **extracted**
-
-**Purpose.** Resolver boundary and OS-enforced, bounded deterministic judge process.
-
-**Contents.** Defines `verify()`, `resolve_tie()`, `_runtime()`, `_profile()`, `bounded_process()`, `_isolated()`, `probe_isolation()`, `run_judge()`.
-
-**Use.** `import botmanager.src.botmanager.blind`
-
-#### `botmanager/src/botmanager/blind_judge.py`
-
-`code-python` · 138 lines · 4,759 B · description: **extracted**
-
-**Purpose.** Self-contained deterministic anonymous judge; copied into a deny-default sandbox.
-
-**Contents.** Defines `MAX_PACKET`, `POLICY`, `digest()`, `keys()`, `number()`, `decide()`.
-
-**Use.** `import botmanager.src.botmanager.blind_judge`
-
-#### `botmanager/src/botmanager/browser_commands.py`
-
-`code-python` · 60 lines · 1,930 B · description: **extracted**
-
-**Purpose.** Manager registry definitions for browser-owned singleton paper control.
-
-**Contents.** Defines `browser_status()`, `browser_control()`, `browser_receipt()`, `command_specs()`.
-
-**Use.** `import botmanager.src.botmanager.browser_commands`
-
-#### `botmanager/src/botmanager/cli.py`
-
-`code-python` · 76 lines · 2,291 B · description: **extracted**
-
-**Purpose.** Parse, dispatch, render, and select an exit code; no application logic.
-
-**Contents.** Defines `class InputError`, `class SafeParser`, `parser()`, `main()`.
-
-**Use.** `python3 botmanager/src/botmanager/cli.py --help`
-
-#### `botmanager/src/botmanager/config.py`
-
-`code-python` · 364 lines · 12,625 B · description: **extracted**
-
-**Purpose.** Typed constructor snapshots, with exact-context learned-default adoption.
-
-**Contents.** Defines `SOURCE_REVISION`, `SOL_MINT`, `USDC_MINT`, `STRATEGY_VERSIONS`, `MODELS`, `DEFAULT_CONTEXT`, `COMMON`, `DEFAULTS`, `SOURCE_FILES`, `SHARED_PROTECTED_FIELDS` and 9 more.
-
-**Use.** `import botmanager.src.botmanager.config`
-
-#### `botmanager/src/botmanager/data.py`
-
-`code-python` · 357 lines · 12,221 B · description: **extracted**
-
-**Purpose.** Read-only, bounded snapshots of an explicitly registered Coinbase recorder. A sampled midpoint candle is a reference input, never an observed venue candle or an executable Jupiter quote. Recorder format v1 does not record book/ticker provenance. Preserve that uncertainty instead of inferring it from quote age.
-
-**Contents.** Defines `MAX_BARS`, `MAX_FILE_BYTES`, `MAX_SCAN_BYTES`, `engine_identity()`, `_number()`, `load_recording()`, `validate_snapshot()`. Depends on `backtester`, `soltui`.
-
-**Use.** `import botmanager.src.botmanager.data`
-
-#### `botmanager/src/botmanager/diagnostics_commands.py`
-
-`code-python` · 121 lines · 5,142 B · description: **extracted**
-
-**Purpose.** Local, shareable setup diagnostics with an explicit data allowlist.
-
-**Contents.** Defines `_setup_report()`, `_component_report()`, `_write_bundle()`, `diagnostics_command()`, `command_specs()`.
-
-**Use.** `import botmanager.src.botmanager.diagnostics_commands`
-
-#### `botmanager/src/botmanager/domain.py`
-
-`code-python` · 328 lines · 11,784 B · description: **extracted**
-
-**Purpose.** Versioned immutable specifications; no owner imports or state access.
-
-**Contents.** Defines `SCHEMA_VERSION`, `class ManagerError`, `plain()`, `freeze()`, `canonical()`, `fingerprint()`, `utc_now()`, `class ResolvedConfig`, `class BotSpec`.
-
-**Use.** `import botmanager.src.botmanager.domain`
-
-#### `botmanager/src/botmanager/executor_commands.py`
-
-`code-python` · 172 lines · 6,538 B · description: **extracted**
-
-**Purpose.** Manager registry exports for guarded executor delegation; never signs or enrolls capital.
-
-**Contents.** Defines `_adapter()`, `_request()`, `_operation()`, `command_specs()`.
-
-**Use.** `import botmanager.src.botmanager.executor_commands`
-
-#### `botmanager/src/botmanager/health.py`
-
-`code-python` · 393 lines · 16,159 B · description: **extracted**
-
-**Purpose.** Independent health dimensions and a durable, bounded alert projection.
-
-**Contents.** Defines `_finite()`, `health_snapshot()`, `class HealthStore`, `entries_paused()`, `rotate_diagnostics()`.
-
-**Use.** `import botmanager.src.botmanager.health`
-
-#### `botmanager/src/botmanager/health_commands.py`
-
-`code-python` · 112 lines · 3,487 B · description: **extracted**
-
-**Purpose.** Registry definitions for explicit operational actions.
-
-**Contents.** Defines `_spec()`, `health_command()`, `alerts_command()`, `entry_control()`, `backup_command()`, `restore_command()`, `command_specs()`.
-
-**Use.** `import botmanager.src.botmanager.health_commands`
-
-#### `botmanager/src/botmanager/input_commands.py`
-
-`code-python` · 211 lines · 7,306 B · description: **extracted**
-
-**Purpose.** Versioned reference preparation and data diagnosis behind the command registry.
-
-**Contents.** Defines `read_document()`, `prepare()`, `check()`.
-
-**Use.** `import botmanager.src.botmanager.input_commands`
-
-#### `botmanager/src/botmanager/learning.py`
-
-`code-python` · 644 lines · 23,437 B · description: **extracted**
-
-**Purpose.** Attributed learning projections and owner-authorized account transitions. Wall clocks and canonical scope quotas belong to the registered research owner. A normal loss is a label, never an instruction to edit a specification.
-
-**Contents.** Defines `TUNABLES`, `canonical_scope()`, `comparable_identity()`, `classify_outcome()`, `outcome_summary()`, `learned_spec()`, `runtime_outcomes()`, `shadow_input_binding()`, `pointer_counts()`, `shadow_pair()` and 4 more.
-
-**Use.** `import botmanager.src.botmanager.learning`
-
-#### `botmanager/src/botmanager/learning_commands.py`
-
-`code-python` · 131 lines · 4,128 B · description: **extracted**
-
-**Purpose.** Registry-owned learning commands; no client clocks or outcome-count inputs.
-
-**Contents.** Defines `_owner()`, `_labels()`, `_propose()`, `_inspect()`, `_shadow()`, `_promote()`, `_rollback()`, `command_specs()`.
-
-**Use.** `import botmanager.src.botmanager.learning_commands`
-
-#### `botmanager/src/botmanager/learning_job.py`
-
-`code-python` · 368 lines · 12,751 B · description: **extracted**
-
-**Purpose.** One nonblocking daily canonical-owner helper inside an explicit daemon. Status reads never start a schedule. The helper is the registered owner process itself, so cancellation owns one process group and cannot orphan an adapter.
-
-**Contents.** Defines `STATUS_FILE`, `OUTPUT_LIMIT`, `TIMEOUT_SECONDS`, `MAX_CLOCK`, `_clock()`, `_bounded_value()`, `_schedule_result()`, `_status()`, `_read()`, `schedule_snapshot()` and 1 more.
-
-**Use.** `import botmanager.src.botmanager.learning_job`
-
-#### `botmanager/src/botmanager/ledger.py`
-
-`code-python` · 1737 lines · 73,645 B · description: **extracted**
-
-**Purpose.** Transactional intent, generation fencing and reference-paper fill ledger. The specification database and this separate runtime journal has its own version and must be included in backups with the specifications.
-
-**Contents.** Defines `RESTART_DELAYS`, `FAILURE_WINDOW`, `MAX_ACTIVE`, `MAX_INSTANCES`, `MAX_REQUESTS`, `STOP_RECEIPT_RESERVE`, `INTEGRITY_ERRORS`, `class RuntimeLedger`.
-
-**Use.** `import botmanager.src.botmanager.ledger`
-
-#### `botmanager/src/botmanager/machine_health.py`
-
-`code-python` · 316 lines · 11,826 B · description: **extracted**
-
-**Purpose.** Bounded, inert availability measurements for collectors and alert engines. This module never opens an owner for writing. Availability is not a claim about financial reconciliation, market certification or permission to trade.
-
-**Contents.** Defines `SCHEMA_VERSION`, `MAX_BYTES`, `SUITE_STALE_SECONDS`, `MARKET_STALE_SECONDS`, `COMPONENTS`, `STATES`, `private_read()`, `homes()`, `component()`, `_held()` and 7 more.
-
-**Use.** `import botmanager.src.botmanager.machine_health`
-
-#### `botmanager/src/botmanager/mutations.py`
-
-`code-python` · 283 lines · 9,799 B · description: **extracted**
-
-**Purpose.** Serialized saved-spec mutations and attributable, replay-only receipts.
-
-**Contents.** Defines `MAX_MUTATIONS`, `request_identity()`, `check_revision()`, `mutation_lock()`, `request_body()`, `mutation_result()`, `save_mutation()`, `validate_tables()`, `_validate_acceptance()`, `replay_mutation()`.
-
-**Use.** `import botmanager.src.botmanager.mutations`
-
-#### `botmanager/src/botmanager/operations_commands.py`
-
-`code-python` · 167 lines · 5,077 B · description: **extracted**
-
-**Purpose.** Registered suite operations and verified local control-room discovery.
-
-**Contents.** Defines `_UI_READY_SECONDS`, `_UI_POLL_SECONDS`, `_UI_PENDING_REASONS`, `_ecosystem_home()`, `stack_command()`, `ui_command()`, `health_check_command()`, `metrics_command()`, `component_alerts_command()`, `command_specs()`.
-
-**Use.** `import botmanager.src.botmanager.operations_commands`
-
-#### `botmanager/src/botmanager/oracle_data.py`
-
-`code-python` · 629 lines · 22,250 B · description: **extracted**
-
-**Purpose.** Inert Oracle accepted-observation snapshots and bounded prospective pages. No Oracle producer class is imported here. A descriptor freezes source consent, policy, activation and assumed costs. The existing archive owner alone appends.
-
-**Contents.** Defines `MAX_OBSERVATIONS`, `PAGE_SIZE`, `KNOWN_ARCHIVE`, `SCOPE`, `read_page()`, `cost_profile()`, `prepare_descriptor()`, `_validate()`, `_bars()`, `_seal()` and 4 more. Depends on `backtester`.
-
-**Use.** `import botmanager.src.botmanager.oracle_data`
-
-#### `botmanager/src/botmanager/receipts.py`
-
-`code-python` · 171 lines · 6,272 B · description: **extracted**
-
-**Purpose.** Validated per-bot control records, separate from transport success envelopes. No receipt is produced by draft controls. Actual owners must supply outcomes in the delegated-control milestone. Acknowledgment is not proof of cleared exposure.
-
-**Contents.** Defines `RECEIPT_SCHEMA_VERSION`, `OPERATIONS`, `OUTCOMES`, `_reference()`, `_invalid()`, `class CommandReceipt`.
-
-**Use.** `import botmanager.src.botmanager.receipts`
-
-#### `botmanager/src/botmanager/registry.py`
-
-`code-python` · 1043 lines · 35,527 B · description: **extracted**
-
-**Purpose.** One application registry, shared by CLI and future local transports.
-
-**Contents.** Defines `class CommandContext`, `class CommandSpec`, `GLOBAL_ARGUMENTS`, `_argument_schema()`, `_store()`, `_identity()`, `_settings()`, `_create()`, `_list()`, `_config()` and 29 more. Depends on `research`.
-
-**Use.** `import botmanager.src.botmanager.registry`
-
-#### `botmanager/src/botmanager/report_commands.py`
-
-`code-python` · 74 lines · 2,268 B · description: **extracted**
-
-**Purpose.** Report command definitions imported lazily by the application registry.
-
-**Contents.** Defines `report_command()`, `command_specs()`.
-
-**Use.** `import botmanager.src.botmanager.report_commands`
-
-#### `botmanager/src/botmanager/reports.py`
-
-`code-python` · 390 lines · 13,948 B · description: **extracted**
-
-**Purpose.** Read-only attributed reports and SQL-bounded stable event/history pages.
-
-**Contents.** Defines `REPORT_MAX_BYTES`, `REPORT_MAX_ROWS`, `REPORT_MAX_SEGMENTS`, `REPORT_SQL_STEPS`, `_budget_error()`, `_report_connection()`, `_evidence_budget()`, `_bounds()`, `_page()`, `event_page()` and 7 more.
-
-**Use.** `import botmanager.src.botmanager.reports`
-
-#### `botmanager/src/botmanager/research.py`
-
-`code-python` · 528 lines · 19,101 B · description: **extracted**
-
-**Purpose.** Offline canonical replay and preregistered manager research protocol 2. The existing ExperimentStore owns temporal exposure, attempts and trials. This module never opens an owner database and never edits a strategy configuration.
-
-**Contents.** Defines `partition()`, `candidate_spec()`, `candidates()`, `feature_horizon()`, `default_plan()`, `backtest()`, `final_comparison()`, `_slice()`, `execute()`, `reconcile_proposal()`.
-
-**Use.** `import botmanager.src.botmanager.research`
-
-#### `botmanager/src/botmanager/research_owner.py`
-
-`code-python` · 180 lines · 6,121 B · description: **extracted**
-
-**Purpose.** Explicit reviewed owner installation adapter; no source-path injection.
-
-**Contents.** Defines `class OwnerClient`, `write_document()`, `prepare_descriptor()`.
-
-**Use.** `import botmanager.src.botmanager.research_owner`
-
-#### `botmanager/src/botmanager/service.py`
-
-`code-python` · 221 lines · 8,103 B · description: **extracted**
-
-**Purpose.** Explicit per-home launchd installation from a stable installed environment.
-
-**Contents.** Defines `installed_executable()`, `_registered()`, `service()`.
-
-**Use.** `import botmanager.src.botmanager.service`
-
-#### `botmanager/src/botmanager/status.py`
-
-`code-python` · 750 lines · 30,093 B · description: **extracted**
-
-**Purpose.** Pure, versioned draft views; configuration is never a runtime observation.
-
-**Contents.** Defines `STATUS_SCHEMA_VERSION`, `RUNTIME_UNAVAILABLE`, `ACTION_SEMANTICS`, `unavailable()`, `browser_snapshot()`, `_evidence()`, `draft_snapshot()`, `legacy_snapshot()`, `_editing_status()`, `runtime_snapshot()`.
-
-**Use.** `import botmanager.src.botmanager.status`
-
-#### `botmanager/src/botmanager/store.py`
-
-`code-python` · 708 lines · 28,751 B · description: **extracted**
-
-**Purpose.** Local SQLite ledger. Constructing a store and reading absent state are inert.
-
-**Contents.** Defines `STORE_SCHEMA_VERSION`, `BACKUP_DESCRIPTOR_VERSION`, `MIGRATIONS`, `data_home()`, `class ManagerStore`.
-
-**Use.** `import botmanager.src.botmanager.store`
-
-#### `botmanager/src/botmanager/suite.py`
-
-`code-python` · 916 lines · 33,278 B · description: **extracted**
-
-**Purpose.** One availability parent around the existing manager and control-room owner. The suite does not create bot intent, record market data or start research. Its OS service restarts availability; the existing Supervisor retains trading state.
-
-**Contents.** Defines `MAX_ALERTS`, `ALERT_COOLDOWN_SECONDS`, `STARTUP_SECONDS`, `_ALERT_JOURNAL_LOCK`, `_directory()`, `_write()`, `save_config()`, `alerts()`, `class AlertJournal`, `_terminate()` and 10 more.
-
-**Use.** `python3 botmanager/src/botmanager/suite.py --help`
-
-#### `botmanager/src/botmanager/suite_service.py`
-
-`code-python` · 365 lines · 12,942 B · description: **extracted**
-
-**Purpose.** Explicit user-service installation for the availability suite. launchd starts at user login, not before login/FileVault unlock. Linux uses the user systemd manager; a persistent user manager across logout requires linger.
-
-**Contents.** Defines `label()`, `_invoke()`, `_registered()`, `_directory()`, `_enabled()`, `_quote()`, `definition()`, `_path()`, `_supported()`, `_read_definition()` and 1 more.
-
-**Use.** `import botmanager.src.botmanager.suite_service`
-
-#### `botmanager/src/botmanager/supervisor.py`
-
-`code-python` · 348 lines · 13,954 B · description: **extracted**
-
-**Purpose.** Explicit foreground daemon, four process slots, no unbounded tick queue.
-
-**Contents.** Defines `class Supervisor`.
-
-**Use.** `import botmanager.src.botmanager.supervisor`
-
-#### `botmanager/src/botmanager/transport.py`
-
-`code-python` · 184 lines · 6,066 B · description: **extracted**
-
-**Purpose.** Bounded mode-0600 local command socket; registry is the sole dispatcher.
-
-**Contents.** Defines `MAX_REQUEST`, `MAX_RESPONSE`, `CLIENT_REQUEST_SECONDS`, `SERVER_REQUEST_SECONDS`, `_owner_path()`, `_peer()`, `_remaining()`, `_read()`, `request()`, `class CommandServer`.
-
-**Use.** `import botmanager.src.botmanager.transport`
-
-#### `botmanager/src/botmanager/walkthrough.py`
-
-`code-python` · 368 lines · 22,913 B · description: **extracted**
-
-**Purpose.** One ordered, copyable workflow shared by terminal and structured help. Examples are data. Importing this module never probes an owner or starts a process. The parser tests bind every example to the real command registry.
-
-**Contents.** Defines `class Stage`, `SETUP`, `STAGES`, `workflow()`, `render()`.
-
-**Use.** `import botmanager.src.botmanager.walkthrough`
-
-#### `botmanager/src/botmanager/worker.py`
-
-`code-python` · 143 lines · 5,025 B · description: **extracted**
-
-**Purpose.** One isolated reference-paper worker, holding its lock for its lifetime.
-
-**Contents.** Defines `HEARTBEAT_SECONDS`, `STALE_SECONDS`, `BARS_PER_TICK`, `lifetime_lock()`, `lock_held()`, `prospective_tick()`, `run_worker()`.
-
-**Use.** `import botmanager.src.botmanager.worker`
-
-### `botmanager/src/botmanager/adapters/`
-
-#### `botmanager/src/botmanager/adapters/__init__.py`
-
-`code-python` · 101 lines · 3,455 B · description: **extracted**
-
-**Purpose.** Installation discovery is read-only and never spawns an owner/native host.
-
-**Contents.** Defines `SOURCE_REVISION`, `default_installations()`, `class Inventory`, `discover_installations()`. Depends on `soltui`.
-
-**Use.** `import botmanager.src.botmanager.adapters.__init__`
-
-#### `botmanager/src/botmanager/adapters/ecosystem.py`
-
-`code-python` · 41 lines · 1,118 B · description: **extracted**
-
-**Purpose.** Explicit read-only discovery of externally owned ecosystem paper trials.
-
-**Contents.** Defines `discover_ecosystem()`.
-
-**Use.** `import botmanager.src.botmanager.adapters.ecosystem`
-
-#### `botmanager/src/botmanager/adapters/executor.py`
-
-`code-python` · 208 lines · 6,947 B · description: **extracted**
-
-**Purpose.** Optional, bounded installed executor transport. The manager never imports a signer.
-
-**Contents.** Defines `COMMANDS`, `class ExecutorAdapter`, `prepare_descriptor()`.
-
-**Use.** `import botmanager.src.botmanager.adapters.executor`
-
-#### `botmanager/src/botmanager/adapters/extension.py`
-
-`code-python` · 650 lines · 25,577 B · description: **extracted**
-
-**Purpose.** Browser-owner native registration and durable delegated paper-control mailbox. No Chrome files are opened. Only the extension can report its singleton slot.
-
-**Contents.** Defines `PROTOCOL`, `STALE_SECONDS`, `MAX_REQUESTS`, `MAX_INSTALLATIONS`, `_MISSING`, `SLOT`, `SNAPSHOT_FIELDS`, `CONTROL_FIELDS`, `RECEIPT_FIELDS`, `_fail()` and 10 more.
-
-**Use.** `import botmanager.src.botmanager.adapters.extension`
-
-#### `botmanager/src/botmanager/adapters/soltui.py`
-
-`code-python` · 942 lines · 36,345 B · description: **extracted**
-
-**Purpose.** Bounded loopback owner adapter. Discovery never starts an owner or creates state.
-
-**Contents.** Defines `SAFE_COMMANDS`, `CONTROL_PARAMS`, `FAMILIES`, `_MISSING`, `_fail()`, `_hash()`, `_sha()`, `_session()`, `_control_semantics()`, `_invalid_receipt()` and 5 more.
-
-**Use.** `import botmanager.src.botmanager.adapters.soltui`
-
-### `botmanager/src/botmanager/strategies/`
-
-#### `botmanager/src/botmanager/strategies/__init__.py`
-
-`code-python` · 223 lines · 7,520 B · description: **extracted**
-
-**Purpose.** One canonical strategy dispatcher for workers, ledger and command surfaces.
-
-**Contents.** Defines `evaluate()`, `validate_registration()`, `validate_checkpoint()`, `rebind_checkpoint()`. Depends on `backtester`, `soltui`.
-
-**Use.** `import botmanager.src.botmanager.strategies.__init__`
-
-#### `botmanager/src/botmanager/strategies/arbitrage.py`
-
-`code-python` · 172 lines · 6,404 B · description: **extracted**
-
-**Purpose.** Conditional directed Solana quote-cycle diagnosis, never an order executor.
-
-**Contents.** Defines `diagnose_cycle()`.
-
-**Use.** `import botmanager.src.botmanager.strategies.arbitrage`
-
-#### `botmanager/src/botmanager/strategies/base.py`
-
-`code-python` · 307 lines · 11,063 B · description: **extracted**
-
-**Purpose.** Shared account normalization; strategy decisions belong to canonical engines.
-
-**Contents.** Defines `MAX_RUNTIME_LOOKBACK_BARS`, `MAX_RUNTIME_RETAINED_BARS`, `validate_runtime_config()`, `compatible_engine()`, `validate_input()`, `identity()`, `evaluate_family()`, `research_metrics()`. Depends on `backtester`, `soltui`.
-
-**Use.** `import botmanager.src.botmanager.strategies.base`
-
-#### `botmanager/src/botmanager/strategies/dca.py`
-
-`code-python` · 6 lines · 110 B · description: **extracted**
-
-**Purpose.** Canonical dca reference adapter.
-
-**Use.** `import botmanager.src.botmanager.strategies.dca`
-
-#### `botmanager/src/botmanager/strategies/grid.py`
-
-`code-python` · 236 lines · 8,289 B · description: **extracted**
-
-**Purpose.** Bounded prefix replay of the canonical ladder; no copied trading algorithm.
-
-**Contents.** Defines `MAX_REFERENCE_RUNGS`, `MAX_REFERENCE_RANGE_PCT`, `REFERENCE_BAR_SECONDS`, `_configuration()`, `run_identity()`, `validate_checkpoint()`, `evaluate()`. Depends on `backtester`.
-
-**Use.** `import botmanager.src.botmanager.strategies.grid`
-
-#### `botmanager/src/botmanager/strategies/momentum.py`
-
-`code-python` · 6 lines · 115 B · description: **extracted**
-
-**Purpose.** Canonical momentum reference adapter.
-
-**Use.** `import botmanager.src.botmanager.strategies.momentum`
-
-#### `botmanager/src/botmanager/strategies/trend.py`
-
-`code-python` · 6 lines · 112 B · description: **extracted**
-
-**Purpose.** Canonical trend reference adapter.
-
-**Use.** `import botmanager.src.botmanager.strategies.trend`
-
-### `botmanager/tests/`
-
-#### `botmanager/tests/__init__.py`
-
-`test` · 2 lines · 1 B · description: **none**
-
-**Purpose.** _No description available._
-
-**Use.** `python3 -m pytest botmanager/tests/__init__.py -q`
-
-#### `botmanager/tests/test_accounting.py`
-
-`test` · 188 lines · 7,603 B · description: **none**
-
-**Purpose.** _No description available._
-
-**Contents.** Defines `fixture()`, `class AccountingTests`.
-
-**Use.** `python3 -m pytest botmanager/tests/test_accounting.py -q`
-
-#### `botmanager/tests/test_backup.py`
-
-`test` · 382 lines · 15,983 B · description: **none**
-
-**Purpose.** _No description available._
-
-**Contents.** Defines `class BackupTests`.
-
-**Use.** `python3 -m pytest botmanager/tests/test_backup.py -q`
-
-#### `botmanager/tests/test_blind.py`
-
-`test` · 186 lines · 6,674 B · description: **none**
-
-**Purpose.** _No description available._
-
-**Contents.** Defines `packet()`, `class BlindTests`.
-
-**Use.** `python3 -m pytest botmanager/tests/test_blind.py -q`
-
-#### `botmanager/tests/test_browser_surfaces.py`
-
-`test` · 95 lines · 3,987 B · description: **none**
-
-**Purpose.** _No description available._
-
-**Contents.** Defines `class BrowserSurfaceTests`.
-
-**Use.** `python3 -m pytest botmanager/tests/test_browser_surfaces.py -q`
-
-#### `botmanager/tests/test_cli.py`
-
-`test` · 149 lines · 6,029 B · description: **none**
-
-**Purpose.** _No description available._
-
-**Contents.** Defines `class CliTests`.
-
-**Use.** `python3 -m pytest botmanager/tests/test_cli.py -q`
-
-#### `botmanager/tests/test_config.py`
-
-`test` · 279 lines · 10,959 B · description: **none**
-
-**Purpose.** _No description available._
-
-**Contents.** Defines `learned()`, `class ConfigTests`.
-
-**Use.** `python3 -m pytest botmanager/tests/test_config.py -q`
-
-#### `botmanager/tests/test_continuation.py`
-
-`test` · 808 lines · 35,279 B · description: **extracted**
-
-**Purpose.** Segment boundaries preserve the canonical economic account and timing.
-
-**Contents.** Defines `prices()`, `run()`, `class ContinuationTests`. Depends on `backtester`, `soltui`.
-
-**Use.** `python3 -m pytest botmanager/tests/test_continuation.py -q`
-
-#### `botmanager/tests/test_ecosystem_adapter.py`
-
-`test` · 108 lines · 4,202 B · description: **none**
-
-**Purpose.** _No description available._
-
-**Contents.** Defines `class EcosystemAdapterTests`, `class EcosystemEditingCliTests`, `class GlobalArgumentContractTests`.
-
-**Use.** `python3 -m pytest botmanager/tests/test_ecosystem_adapter.py -q`
-
-#### `botmanager/tests/test_editing.py`
-
-`test` · 623 lines · 26,075 B · description: **none**
-
-**Purpose.** _No description available._
-
-**Contents.** Defines `class EditingTests`.
-
-**Use.** `python3 -m pytest botmanager/tests/test_editing.py -q`
-
-#### `botmanager/tests/test_entry_controls.py`
-
-`test` · 198 lines · 8,910 B · description: **none**
-
-**Purpose.** _No description available._
-
-**Contents.** Defines `class EntryControlTests`, `held_exit_worker()`, `class ActiveEntryControlTests`.
-
-**Use.** `python3 -m pytest botmanager/tests/test_entry_controls.py -q`
-
-#### `botmanager/tests/test_executor_adapter.py`
-
-`test` · 260 lines · 9,859 B · description: **none**
-
-**Purpose.** _No description available._
-
-**Contents.** Defines `descriptor()`, `response()`, `class ExecutorAdapterTests`, `class ExecutorManagerAuthorizationTests`.
-
-**Use.** `python3 -m pytest botmanager/tests/test_executor_adapter.py -q`
-
-#### `botmanager/tests/test_extension_adapter.py`
-
-`test` · 185 lines · 6,630 B · description: **none**
-
-**Purpose.** _No description available._
-
-**Contents.** Defines `ORIGIN`, `snapshot()`, `class BrowserTests`.
-
-**Use.** `python3 -m pytest botmanager/tests/test_extension_adapter.py -q`
-
-#### `botmanager/tests/test_health.py`
-
-`test` · 249 lines · 10,642 B · description: **none**
-
-**Purpose.** _No description available._
-
-**Contents.** Defines `runtime()`, `class HealthTests`.
-
-**Use.** `python3 -m pytest botmanager/tests/test_health.py -q`
-
-#### `botmanager/tests/test_learning.py`
-
-`test` · 599 lines · 25,510 B · description: **none**
-
-**Purpose.** _No description available._
-
-**Contents.** Defines `class LearningTests`, `controlled_shadow_worker()`, `class RealShadowWorkerTests`, `class LearningLocalReadTests`, `class ShadowActivationRecoveryTests`. Depends on `soltui`.
-
-**Use.** `python3 -m pytest botmanager/tests/test_learning.py -q`
-
-#### `botmanager/tests/test_learning_job.py`
-
-`test` · 312 lines · 13,168 B · description: **extracted**
-
-**Purpose.** Nonblocking daily scheduling and owned helper lifecycle fixtures.
-
-**Contents.** Defines `class DailyLearningJobTests`.
-
-**Use.** `python3 -m pytest botmanager/tests/test_learning_job.py -q`
-
-#### `botmanager/tests/test_learning_reads.py`
-
-`test` · 121 lines · 4,745 B · description: **extracted**
-
-**Purpose.** Resource and corruption boundaries for inert shared learning pointers.
-
-**Contents.** Defines `class LearningReadBudgetTests`.
-
-**Use.** `python3 -m pytest botmanager/tests/test_learning_reads.py -q`
-
-#### `botmanager/tests/test_legacy.py`
-
-`test` · 875 lines · 36,979 B · description: **extracted**
-
-**Purpose.** Real loopback HTTP fixtures verify transport and authority, not live trading.
-
-**Contents.** Defines `owner()`, `class Legacy`.
-
-**Use.** `python3 -m pytest botmanager/tests/test_legacy.py -q`
-
-#### `botmanager/tests/test_load.py`
-
-`test` · 627 lines · 27,326 B · description: **extracted**
-
-**Purpose.** Real paper workers and a canonical optimizer over isolated numerical inputs.
-
-**Contents.** Defines `optimizer_recording()`, `optimizer_judge()`, `optimizer_pressure()`, `class LoadTests`, `journal_lock_worker()`, `class LockedJournalWatchdogTests`. Depends on `soltui`.
-
-**Use.** `python3 -m pytest botmanager/tests/test_load.py -q`
-
-#### `botmanager/tests/test_machine_health.py`
-
-`test` · 262 lines · 10,863 B · description: **extracted**
-
-**Purpose.** Collectors must measure observed owners without creating runtime state.
-
-**Contents.** Defines `class MachineHealthTests`.
-
-**Use.** `python3 -m pytest botmanager/tests/test_machine_health.py -q`
-
-#### `botmanager/tests/test_operations.py`
-
-`test` · 319 lines · 12,903 B · description: **none**
-
-**Purpose.** _No description available._
-
-**Contents.** Defines `class OperationsTests`.
-
-**Use.** `python3 -m pytest botmanager/tests/test_operations.py -q`
-
-#### `botmanager/tests/test_oracle_data.py`
-
-`test` · 381 lines · 15,106 B · description: **none**
-
-**Purpose.** _No description available._
-
-**Contents.** Defines `START`, `archive()`, `append()`, `class ArchiveTests`, `class ProspectiveWorkerTests`, `class ArchiveAdversarialTests`.
-
-**Use.** `python3 -m pytest botmanager/tests/test_oracle_data.py -q`
-
-#### `botmanager/tests/test_paper.py`
-
-`test` · 229 lines · 8,903 B · description: **none**
-
-**Purpose.** _No description available._
-
-**Contents.** Defines `recording()`, `grid()`, `class PaperTests`. Depends on `backtester`.
-
-**Use.** `python3 -m pytest botmanager/tests/test_paper.py -q`
-
-#### `botmanager/tests/test_read_consistency.py`
-
-`test` · 288 lines · 11,683 B · description: **none**
-
-**Purpose.** _No description available._
-
-**Contents.** Defines `class ReadConsistencyTests`.
-
-**Use.** `python3 -m pytest botmanager/tests/test_read_consistency.py -q`
-
-#### `botmanager/tests/test_receipts.py`
-
-`test` · 189 lines · 7,723 B · description: **none**
-
-**Purpose.** _No description available._
-
-**Contents.** Defines `class ReceiptTests`.
-
-**Use.** `python3 -m pytest botmanager/tests/test_receipts.py -q`
-
-#### `botmanager/tests/test_recovery.py`
-
-`test` · 568 lines · 25,733 B · description: **none**
-
-**Purpose.** _No description available._
-
-**Contents.** Defines `class RecoveryTests`, `class InterleavingLedger`.
-
-**Use.** `python3 -m pytest botmanager/tests/test_recovery.py -q`
-
-#### `botmanager/tests/test_reports.py`
-
-`test` · 284 lines · 11,871 B · description: **none**
-
-**Purpose.** _No description available._
-
-**Contents.** Defines `class ReportTests`.
-
-**Use.** `python3 -m pytest botmanager/tests/test_reports.py -q`
-
-#### `botmanager/tests/test_research.py`
-
-`test` · 342 lines · 13,752 B · description: **none**
-
-**Purpose.** _No description available._
-
-**Contents.** Defines `class ResearchTests`. Depends on `soltui`.
-
-**Use.** `python3 -m pytest botmanager/tests/test_research.py -q`
-
-#### `botmanager/tests/test_solana_cycles.py`
-
-`test` · 111 lines · 4,112 B · description: **none**
-
-**Purpose.** _No description available._
-
-**Contents.** Defines `quote()`, `costs()`, `class CycleTests`.
-
-**Use.** `python3 -m pytest botmanager/tests/test_solana_cycles.py -q`
-
-#### `botmanager/tests/test_status.py`
-
-`test` · 376 lines · 15,924 B · description: **none**
-
-**Purpose.** _No description available._
-
-**Contents.** Defines `class StatusTests`.
-
-**Use.** `python3 -m pytest botmanager/tests/test_status.py -q`
-
-#### `botmanager/tests/test_store.py`
-
-`test` · 169 lines · 7,355 B · description: **none**
-
-**Purpose.** _No description available._
-
-**Contents.** Defines `class StoreTests`.
-
-**Use.** `python3 -m pytest botmanager/tests/test_store.py -q`
-
-#### `botmanager/tests/test_strategy_parity.py`
-
-`test` · 172 lines · 7,193 B · description: **none**
-
-**Purpose.** _No description available._
-
-**Contents.** Defines `class FamilyParityTests`. Depends on `backtester`, `soltui`.
-
-**Use.** `python3 -m pytest botmanager/tests/test_strategy_parity.py -q`
-
-#### `botmanager/tests/test_suite.py`
-
-`test` · 482 lines · 19,463 B · description: **extracted**
-
-**Purpose.** Availability ownership, real process recovery and bounded durable alerts.
-
-**Contents.** Defines `class ReadyUi`, `eventually()`, `class SuiteTests`, `class AlertTests`, `class UiMonitorTests`.
-
-**Use.** `python3 -m pytest botmanager/tests/test_suite.py -q`
-
-#### `botmanager/tests/test_suite_service.py`
-
-`test` · 216 lines · 8,404 B · description: **extracted**
-
-**Purpose.** Service fixtures never call the machine's actual user service manager.
-
-**Contents.** Defines `class ServiceManager`, `class SuiteServiceTests`.
-
-**Use.** `python3 -m pytest botmanager/tests/test_suite_service.py -q`
-
-#### `botmanager/tests/test_supervisor.py`
-
-`test` · 702 lines · 28,089 B · description: **none**
-
-**Purpose.** _No description available._
-
-**Contents.** Defines `stalled_worker()`, `stalled_prospective_worker()`, `hard_crash()`, `class SupervisorTests`, `class LaunchctlFixture`.
-
-**Use.** `python3 -m pytest botmanager/tests/test_supervisor.py -q`
-
-#### `botmanager/tests/test_walkthrough.py`
-
-`test` · 113 lines · 4,172 B · description: **none**
-
-**Purpose.** _No description available._
-
-**Contents.** Defines `FIXTURE_ENV`, `command_examples()`, `class WalkthroughTests`.
-
-**Use.** `python3 -m pytest botmanager/tests/test_walkthrough.py -q`
-
----
-
 ## coin-fit
 
 6 files.
@@ -28587,11 +33447,11 @@ Session handoff notes, newest first. Prose, not machine-read.
 
 #### `design/soltui-v2/mockup.py`
 
-`code-python` · 1171 lines · 55,693 B · description: **extracted**
+`code-python` · 1249 lines · 58,921 B · description: **extracted**
 
-**Purpose.** SolTUI v2 -- a clickable layout mockup on fixture data. This is a design artefact, not a feature. It imports nothing from ``soltui/``, reads no files, opens no sockets and runs no command: every number below is a fixture lifted from committed result files (cited in ``DESIGN.md``) or made up to look like them.
+**Purpose.** SolTUI v2 -- a clickable layout mockup on fixture data. This design artefact imports nothing from ``soltui/``. Its UI uses fixture data and opens no market connections. Optional setup writes only its marked private environment and executes declared dependency installation. Every displayed number is a fixture from committed results (cited in ``DESIGN.md``) or illustrative data.
 
-**Contents.** Defines `STATUS`, `CALL`, `NIGHT`, `status()`, `call_text()`, `call_badge()`, `delta()`, `money()`, `div_bar()`, `meter()` and 30 more.
+**Contents.** Defines `_size()`, `_arguments()`, `_CLI_ARGS`, `class PrototypeSetupError`, `_bootstrap_and_reexec()`, `STATUS`, `CALL`, `NIGHT`, `status()`, `call_text()` and 30 more. Depends on `backtester`.
 
 **Use.** `python3 design/soltui-v2/mockup.py --help`
 
@@ -28687,1658 +33547,6 @@ Session handoff notes, newest first. Prose, not machine-read.
 
 ---
 
-## ecosystem
-
-61 files.
-
-#### `ecosystem/README.md`
-
-`doc` · 56 lines · 3,464 B · description: **extracted**
-
-**Purpose.** The headless service coordinates the existing F5 Backtester, prospective forward trials, per-instrument Oracle archives and Bot Manager. Its independent local control room remains available when a pipeline stops. It provides scoped action
-
-**Use.** Read it.
-
-#### `ecosystem/__init__.py`
-
-`code-python` · 4 lines · 96 B · description: **extracted**
-
-**Purpose.** Resumable installation and paper-research lifecycle orchestration.
-
-**Use.** `import ecosystem.__init__`
-
-#### `ecosystem/backtests.py`
-
-`code-python` · 224 lines · 8,299 B · description: **extracted**
-
-**Purpose.** Costed single-cell receipts and thin adapters to the established F5 owner. The F5 batch runner remains the durable orchestration and prospective-forward owner. These adapters do not create a second queue, worker or paper ledger.
-
-**Contents.** Defines `strategies()`, `_safe()`, `code_fingerprint()`, `backtest()`, `create_batch()`, `start_batch()`, `batch_status()`, `batch_cells()`. Depends on `backtester`, `soltui`.
-
-**Use.** `import ecosystem.backtests`
-
-#### `ecosystem/cli.py`
-
-`code-python` · 213 lines · 8,279 B · description: **extracted**
-
-**Purpose.** Installable control surface for the paper ecosystem supervisor.
-
-**Contents.** Defines `default_home()`, `emit()`, `class Parser`, `build_parser()`, `main()`. Depends on `backtester`, `soltui`.
-
-**Use.** `python3 ecosystem/cli.py --help`
-
-#### `ecosystem/control.py`
-
-`code-python` · 925 lines · 36,189 B · description: **extracted**
-
-**Purpose.** Durable, paper-only controls delegated to the established component owners.
-
-**Contents.** Defines `APP_ID`, `MANAGER_ACTIONS`, `ACTIONS`, `SENSITIVE`, `canonical()`, `runtime_settings()`, `recorder_recovery_enabled()`, `recovery_guard()`, `_safe_input()`, `database()` and 2 more. Depends on `backtester`, `soltui`.
-
-**Use.** `import ecosystem.control`
-
-#### `ecosystem/data.py`
-
-`code-python` · 274 lines · 9,422 B · description: **extracted**
-
-**Purpose.** Source-bound OHLCV acquisition for the ecosystem bootstrap. Acquisition is explicit. Backtests never fetch implicitly, unknown legacy files are never relabelled, and every accepted input is frozen with a SHA-256 receipt. Requested ranges are UTC bar-open times in [start, end); all requested bars must be present and closed. The caller selects a fresh data directory for a new range.
-
-**Contents.** Defines `OWNER_UNIVERSE`, `ASSET_PATTERN`, `SOURCE`, `universe()`, `_symbol()`, `_epoch()`, `canonical()`, `file_sha256()`, `_closed_frame()`, `_publish()` and 2 more. Depends on `backtester`.
-
-**Use.** `import ecosystem.data`
-
-#### `ecosystem/installation.py`
-
-`code-python` · 437 lines · 16,349 B · description: **extracted**
-
-**Purpose.** Isolated local installation and bounded installed-runtime health checks. The bootstrap owns its dedicated virtual environment. No shell profile, global package environment, remote installer, recorder or wallet is modified here.
-
-**Contents.** Defines `PROJECTS`, `MODULES`, `RECEIPT_NAME`, `OWNER_NAME`, `MAX_HEALTH_BYTES`, `HEALTH_SCRIPT`, `_failure()`, `_manifests()`, `source_fingerprint()`, `_environment()` and 7 more.
-
-**Use.** `import ecosystem.installation`
-
-#### `ecosystem/meta_forward.py`
-
-`code-python` · 587 lines · 30,639 B · description: **extracted**
-
-**Purpose.** Isolated, frozen Coinbase hourly PAPER cohort. No signing or order interface. Targets commit and receive a separate post-commit confirmation before their eligible future candle. Closed candles are reference fills, not venue fills. An outage blocks the cohort rather than backfilling missed decisions.
-
-**Contents.** Defines `APP_ID`, `STEP`, `ASSETS`, `KEYS`, `MAX_BARS`, `canonical()`, `implementation()`, `default_config()`, `validate_config()`, `_path()` and 21 more. Depends on `backtester`.
-
-**Use.** `python3 ecosystem/meta_forward.py --help`
-
-#### `ecosystem/observability.py`
-
-`code-python` · 119 lines · 4,143 B · description: **extracted**
-
-**Purpose.** Bounded, redacted tails of explicit owner log sinks; no arbitrary file API.
-
-**Contents.** Defines `SENSITIVE`, `OPAQUE`, `MAX_BYTES`, `redact()`, `_tail()`, `logs()`. Depends on `soltui`.
-
-**Use.** `import ecosystem.observability`
-
-#### `ecosystem/performance.py`
-
-`code-python` · 681 lines · 26,283 B · description: **extracted**
-
-**Purpose.** Source-bound forward paper accounting, separate from the owner's journals. Native returns already include costs. Each trial is its own non-overlapping virtual account; capital is a frozen display basis, never allocated shared cash.
-
-**Contents.** Defines `APP_ID`, `PAGE`, `MAX_ROWS`, `IDENTITY`, `SECRET`, `FIELDS`, `_json()`, `_finite()`, `_safe()`, `_path()` and 11 more.
-
-**Use.** `import ecosystem.performance`
-
-#### `ecosystem/pyproject.toml`
-
-`config` · 23 lines · 728 B · description: **none**
-
-**Purpose.** _No description available._
-
-**Use.** Configuration; nothing to run.
-
-#### `ecosystem/recovery.py`
-
-`code-python` · 232 lines · 8,109 B · description: **extracted**
-
-**Purpose.** Recover the owner's exact unstarted F5 plan after a bootstrap checkpoint gap. The caller supplies a batch root dedicated to one bootstrap. Existing evidence is read only. Ambiguous or partly used plans are preserved and refused.
-
-**Contents.** Defines `ERROR`, `RUN_ID`, `SCORING`, `_json()`, `_idle()`, `_expected()`, `_adopt()`, `ensure_batch()`. Depends on `soltui`.
-
-**Use.** `import ecosystem.recovery`
-
-#### `ecosystem/registration.py`
-
-`code-python` · 448 lines · 18,026 B · description: **extracted**
-
-**Purpose.** Durable external trial identities observed from the existing F5 owner. Registration does not create a manager draft or start a worker. The original batch and forward databases remain the only evidence for lifecycle observations.
-
-**Contents.** Defines `SCHEMA_VERSION`, `APPLICATION_ID`, `MAX_CELLS`, `SAFE_NAME`, `INTERVALS`, `CELL_STATES`, `_json()`, `_path()`, `_read()`, `_ledger()` and 5 more.
-
-**Use.** `import ecosystem.registration`
-
-#### `ecosystem/runner.py`
-
-`code-python` · 663 lines · 25,307 B · description: **extracted**
-
-**Purpose.** Durable paper-only supervisor over the existing F5 worker and recorder.
-
-**Contents.** Defines `save()`, `PHASES`, `validate_config()`, `load()`, `lock()`, `running()`, `plan()`, `status()`, `start()`, `stop()` and 3 more. Depends on `backtester`, `soltui`.
-
-**Use.** `import ecosystem.runner`
-
-#### `ecosystem/swap_web.py`
-
-`code-python` · 163 lines · 6,293 B · description: **extracted**
-
-**Purpose.** A public-only loopback origin for manually loaded third-party wallet UI.
-
-**Contents.** Defines `class SwapServer`, `make_server()`.
-
-**Use.** `import ecosystem.swap_web`
-
-#### `ecosystem/swaps.py`
-
-`code-python` · 129 lines · 5,445 B · description: **extracted**
-
-**Purpose.** Public manual-swap settings and explicit, provider-independent paper costs. This module reads no credentials, wallets, owner stores or execution interfaces. An assumed paper fee is never evidence of a live Jupiter route's actual costs.
-
-**Contents.** Defines `ULTRA_REFERRAL_ACCOUNT`, `SWAP_TRIGGER_REFERRAL_ACCOUNT`, `DEFAULT_REFERRAL_FEE_BPS`, `MINIMUM_REFERRAL_FEE_BPS`, `MAXIMUM_REFERRAL_FEE_BPS`, `PLUGIN_SRC`, `ASSET`, `config()`, `validate_cost_model()`.
-
-**Use.** `import ecosystem.swaps`
-
-#### `ecosystem/telemetry.py`
-
-`code-python` · 797 lines · 29,165 B · description: **extracted**
-
-**Purpose.** Bounded, sanitized observations of manager events; never manager control. The mirror is incremental and private. Original event journals and log files remain with their existing owner. Free-form log content is never mirrored.
-
-**Contents.** Defines `SCHEMA_VERSION`, `APPLICATION_ID`, `SOURCE_PAGE`, `MAX_LOG_TAIL`, `SOURCES`, `KINDS`, `SECRET_KEY`, `STATES`, `PHASES`, `sanitize()` and 20 more.
-
-**Use.** `import ecosystem.telemetry`
-
-#### `ecosystem/ui_service.py`
-
-`code-python` · 402 lines · 13,735 B · description: **extracted**
-
-**Purpose.** Keep the installed control room independent of the paper pipeline process. A process ID is diagnostic. Readiness requires the canonical owner lock, its private generation checkpoint and a matching response from the bound HTTP port.
-
-**Contents.** Defines `LOCK_NAME`, `CHECKPOINT_NAME`, `LAUNCH_LOCK_NAME`, `STARTUP_SECONDS`, `POLL_SECONDS`, `HTTP_TIMEOUT`, `MAX_BYTES`, `INSTANCE`, `_home()`, `_identity()` and 15 more.
-
-**Use.** `import ecosystem.ui_service`
-
-#### `ecosystem/volty_forward.py`
-
-`code-python` · 412 lines · 21,193 B · description: **extracted**
-
-**Purpose.** Frozen, prospective Volty OHLC paper observation. Never signs or submits. Closed public Binance ZECUSDT candles are reference data. Decisions are durable before their first eligible bar, with one additional bar of observation delay. An outage never backfills missing decisions. Restart resumes the same cohort.
-
-**Contents.** Defines `APP_ID`, `STEPS`, `FIELDS`, `API`, `MAX_BARS`, `TERMINAL`, `canonical()`, `implementation()`, `_path()`, `connection()` and 11 more. Depends on `backtester`.
-
-**Use.** `python3 ecosystem/volty_forward.py --help`
-
-#### `ecosystem/votes.py`
-
-`code-python` · 416 lines · 17,553 B · description: **extracted**
-
-**Purpose.** Versioned operator voter selection over unchanged prospective Oracle evidence.
-
-**Contents.** Defines `APP_ID`, `catalog()`, `_ids()`, `_path()`, `_read()`, `_row()`, `settings()`, `set_voters()`, `_warmup_reference()`, `_report()` and 3 more. Depends on `backtester`.
-
-**Use.** `import ecosystem.votes`
-
-#### `ecosystem/web.py`
-
-`code-python` · 558 lines · 22,791 B · description: **extracted**
-
-**Purpose.** Local paper controls and observability over the established ecosystem owners. ``make_server`` binds before returning. The caller owns serving and shutdown, so the supervisor can publish the actual ephemeral port without claiming liveness before bind succeeds. This module never starts a recorder, worker, or order path.
-
-**Contents.** Defines `SCHEMA_VERSION`, `STATIC`, `SECRET_KEY`, `MAX_RESPONSE`, `_redact()`, `_telemetry()`, `_component_health()`, `_availability_ready()`, `class ControlRoomServer`, `make_server()` and 1 more.
-
-**Use.** `python3 ecosystem/web.py --help`
-
-#### `ecosystem/wiki.py`
-
-`code-python` · 340 lines · 12,510 B · description: **extracted**
-
-**Purpose.** Search the packaged documentation snapshot without opening caller paths. Markdown and its links are untrusted document content. This module returns text and provenance; callers must render it without evaluating HTML or instructions.
-
-**Contents.** Defines `SCHEMA_VERSION`, `SNAPSHOT_DIR`, `CANONICAL_REPO`, `MAX_BUNDLE_BYTES`, `MAX_MANIFEST_BYTES`, `MAX_PAGE_BYTES`, `MAX_PAGES`, `PAGE_ID`, `SHA256`, `COMMIT` and 13 more.
-
-**Use.** `import ecosystem.wiki`
-
-#### `ecosystem/zec_forward.py`
-
-`code-python` · 602 lines · 31,996 B · description: **extracted**
-
-**Purpose.** Independent, source-bound ZEC ensemble paper accounts and Oracle publication. All decisions use closed Binance spot candles. The canonical engine applies an issued target at the following observed candle open. This is reference paper accounting, never evidence of an executable fill or a probability of profit.
-
-**Contents.** Defines `APP_ID`, `INTERVALS`, `SOURCE`, `INSTRUMENT`, `API`, `_invalid_json()`, `canonical()`, `digest()`, `implementation()`, `_path()` and 17 more. Depends on `backtester`.
-
-**Use.** `python3 ecosystem/zec_forward.py --help`
-
-### `ecosystem/api/`
-
-#### `ecosystem/api/control.openapi.json`
-
-`config` · 847 lines · 25,491 B · description: **derived**
-
-**Purpose.** Generated JSON object, 5 keys (openapi, info, servers, paths, components).
-
-**Use.** Configuration; nothing to run.
-
-### `ecosystem/tests/`
-
-#### `ecosystem/tests/__init__.py`
-
-`test` · 0 lines · 0 B · description: **none**
-
-**Purpose.** _No description available._
-
-**Use.** `python3 -m pytest ecosystem/tests/__init__.py -q`
-
-#### `ecosystem/tests/test_backtests.py`
-
-`test` · 104 lines · 4,008 B · description: **none**
-
-**Purpose.** _No description available._
-
-**Contents.** Defines `START`, `END`, `EPOCH`, `frame()`, `class BacktestTests`. Depends on `soltui`.
-
-**Use.** `python3 -m pytest ecosystem/tests/test_backtests.py -q`
-
-#### `ecosystem/tests/test_cli.py`
-
-`test` · 100 lines · 4,213 B · description: **extracted**
-
-**Purpose.** CLI home selection and observed UI readiness; never starts a real service.
-
-**Contents.** Defines `class CliTests`.
-
-**Use.** `python3 -m pytest ecosystem/tests/test_cli.py -q`
-
-#### `ecosystem/tests/test_control.py`
-
-`test` · 350 lines · 14,163 B · description: **none**
-
-**Purpose.** _No description available._
-
-**Contents.** Defines `class ControlTests`.
-
-**Use.** `python3 -m pytest ecosystem/tests/test_control.py -q`
-
-#### `ecosystem/tests/test_control_http.py`
-
-`test` · 189 lines · 7,316 B · description: **none**
-
-**Purpose.** _No description available._
-
-**Contents.** Defines `class ControlHTTPTests`.
-
-**Use.** `python3 -m pytest ecosystem/tests/test_control_http.py -q`
-
-#### `ecosystem/tests/test_data.py`
-
-`test` · 142 lines · 5,814 B · description: **none**
-
-**Purpose.** _No description available._
-
-**Contents.** Defines `START`, `END`, `EPOCH`, `frame()`, `class DataTests`.
-
-**Use.** `python3 -m pytest ecosystem/tests/test_data.py -q`
-
-#### `ecosystem/tests/test_machine_health_http.py`
-
-`test` · 106 lines · 4,490 B · description: **extracted**
-
-**Purpose.** Collector endpoints preserve compact, inert and origin-bound contracts.
-
-**Contents.** Defines `class MachineHealthHttpTests`.
-
-**Use.** `python3 -m pytest ecosystem/tests/test_machine_health_http.py -q`
-
-#### `ecosystem/tests/test_manager_editing.py`
-
-`test` · 413 lines · 17,956 B · description: **none**
-
-**Purpose.** _No description available._
-
-**Contents.** Defines `recording()`, `class ManagerEditingIntegrationTests`.
-
-**Use.** `python3 -m pytest ecosystem/tests/test_manager_editing.py -q`
-
-#### `ecosystem/tests/test_meta_forward.py`
-
-`test` · 328 lines · 16,087 B · description: **extracted**
-
-**Purpose.** Future-only decisions, atomic books and current-cost paper comparators.
-
-**Contents.** Defines `class MetaForwardTests`.
-
-**Use.** `python3 -m pytest ecosystem/tests/test_meta_forward.py -q`
-
-#### `ecosystem/tests/test_observability.py`
-
-`test` · 58 lines · 2,370 B · description: **none**
-
-**Purpose.** _No description available._
-
-**Contents.** Defines `class LogTests`.
-
-**Use.** `python3 -m pytest ecosystem/tests/test_observability.py -q`
-
-#### `ecosystem/tests/test_performance.py`
-
-`test` · 261 lines · 11,522 B · description: **none**
-
-**Purpose.** _No description available._
-
-**Contents.** Defines `class PerformanceTests`.
-
-**Use.** `python3 -m pytest ecosystem/tests/test_performance.py -q`
-
-#### `ecosystem/tests/test_recovery.py`
-
-`test` · 185 lines · 6,932 B · description: **none**
-
-**Purpose.** _No description available._
-
-**Contents.** Defines `class RecoveryTests`. Depends on `soltui`.
-
-**Use.** `python3 -m pytest ecosystem/tests/test_recovery.py -q`
-
-#### `ecosystem/tests/test_registration.py`
-
-`test` · 180 lines · 7,395 B · description: **none**
-
-**Purpose.** _No description available._
-
-**Contents.** Defines `BATCH`, `class RegistrationTests`.
-
-**Use.** `python3 -m pytest ecosystem/tests/test_registration.py -q`
-
-#### `ecosystem/tests/test_runner.py`
-
-`test` · 182 lines · 7,379 B · description: **none**
-
-**Purpose.** _No description available._
-
-**Contents.** Defines `class RunnerTests`, `class RecoveryTests`. Depends on `soltui`.
-
-**Use.** `python3 -m pytest ecosystem/tests/test_runner.py -q`
-
-#### `ecosystem/tests/test_setup.py`
-
-`test` · 259 lines · 10,723 B · description: **none**
-
-**Purpose.** _No description available._
-
-**Contents.** Defines `class SetupTests`.
-
-**Use.** `python3 -m pytest ecosystem/tests/test_setup.py -q`
-
-#### `ecosystem/tests/test_swap_web.py`
-
-`test` · 146 lines · 5,747 B · description: **extracted**
-
-**Purpose.** Real isolated HTTP checks; no third-party SDK, wallet or order is executed.
-
-**Contents.** Defines `class SwapWebTests`.
-
-**Use.** `python3 -m pytest ecosystem/tests/test_swap_web.py -q`
-
-#### `ecosystem/tests/test_swaps.py`
-
-`test` · 158 lines · 7,627 B · description: **extracted**
-
-**Purpose.** Explicit assumptions and manual SDK contracts; no wallet or provider call.
-
-**Contents.** Defines `class SwapTests`.
-
-**Use.** `python3 -m pytest ecosystem/tests/test_swaps.py -q`
-
-#### `ecosystem/tests/test_telemetry.py`
-
-`test` · 295 lines · 12,292 B · description: **none**
-
-**Purpose.** _No description available._
-
-**Contents.** Defines `class TelemetryTests`.
-
-**Use.** `python3 -m pytest ecosystem/tests/test_telemetry.py -q`
-
-#### `ecosystem/tests/test_tradingview_chart.py`
-
-`test` · 67 lines · 2,853 B · description: **extracted**
-
-**Purpose.** The external chart must not gain the local control room's origin or session.
-
-**Contents.** Defines `WEB`, `HARNESS`, `class TradingViewChartTests`.
-
-**Use.** `python3 -m pytest ecosystem/tests/test_tradingview_chart.py -q`
-
-#### `ecosystem/tests/test_ui_contract.py`
-
-`test` · 237 lines · 16,026 B · description: **extracted**
-
-**Purpose.** Client safety checks; a VM DOM does not replace installed browser acceptance.
-
-**Contents.** Defines `WEB`, `class Document`, `HARNESS`, `class UiContractTests`.
-
-**Use.** `python3 -m pytest ecosystem/tests/test_ui_contract.py -q`
-
-#### `ecosystem/tests/test_ui_service.py`
-
-`test` · 305 lines · 12,669 B · description: **extracted**
-
-**Purpose.** Isolated HTTP identity and simulated process-launch checks; no production start.
-
-**Contents.** Defines `class UiServiceTests`.
-
-**Use.** `python3 -m pytest ecosystem/tests/test_ui_service.py -q`
-
-#### `ecosystem/tests/test_volty_forward.py`
-
-`test` · 322 lines · 18,097 B · description: **extracted**
-
-**Purpose.** Prospective stop issuance, open-book replay and persistent service boundaries.
-
-**Contents.** Defines `bars()`, `class VoltyForwardTests`. Depends on `backtester`.
-
-**Use.** `python3 -m pytest ecosystem/tests/test_volty_forward.py -q`
-
-#### `ecosystem/tests/test_votes.py`
-
-`test` · 218 lines · 10,051 B · description: **none**
-
-**Purpose.** _No description available._
-
-**Contents.** Defines `class VoteSelectionTests`.
-
-**Use.** `python3 -m pytest ecosystem/tests/test_votes.py -q`
-
-#### `ecosystem/tests/test_web.py`
-
-`test` · 235 lines · 10,709 B · description: **extracted**
-
-**Purpose.** Actual loopback HTTP checks; synthetic owner records are test fixtures only.
-
-**Contents.** Defines `class WebTests`.
-
-**Use.** `python3 -m pytest ecosystem/tests/test_web.py -q`
-
-#### `ecosystem/tests/test_wiki.py`
-
-`test` · 236 lines · 9,985 B · description: **extracted**
-
-**Purpose.** Real temporary Git snapshots exercise provenance and the inert read boundary.
-
-**Contents.** Defines `class WikiTests`.
-
-**Use.** `python3 -m pytest ecosystem/tests/test_wiki.py -q`
-
-#### `ecosystem/tests/test_wrapper.py`
-
-`test` · 45 lines · 1,450 B · description: **none**
-
-**Purpose.** _No description available._
-
-**Contents.** Defines `class WrapperTests`.
-
-**Use.** `python3 -m pytest ecosystem/tests/test_wrapper.py -q`
-
-#### `ecosystem/tests/test_zec_forward.py`
-
-`test` · 277 lines · 15,725 B · description: **extracted**
-
-**Purpose.** Causal reference-paper accounting and exact study-policy continuation.
-
-**Contents.** Defines `arrays()`, `class ZecForwardTests`. Depends on `backtester`.
-
-**Use.** `python3 -m pytest ecosystem/tests/test_zec_forward.py -q`
-
-### `ecosystem/web/`
-
-#### `ecosystem/web/app.js`
-
-`code-js` · 1125 lines · 90,307 B · description: **none**
-
-**Purpose.** _No description available._
-
-**Contents.** Defines `actionBlocked`, `actionButton`, `actionKey`, `actionRun`, `aggregate`, `announce`, `appendInline`, `array`, `botPnl`, `changeOracleDisplay` and 30 more.
-
-**Use.** Loaded by the extension; see `extension/manifest.json` for entry points.
-
-#### `ecosystem/web/index.html`
-
-`code-web` · 90 lines · 31,895 B · description: **none**
-
-**Purpose.** _No description available._
-
-**Use.** Read it.
-
-#### `ecosystem/web/oracle-chart.js`
-
-`code-js` · 246 lines · 11,453 B · description: **none**
-
-**Purpose.** _No description available._
-
-**Contents.** Defines `createLegend`, `drawMarkers`, `ensureChart`, `loadLibrary`, `render`, `renderLatestRows`, `setStatus`, `updateShape`.
-
-**Use.** Loaded by the extension; see `extension/manifest.json` for entry points.
-
-#### `ecosystem/web/styles.css`
-
-`code-web` · 35 lines · 46,135 B · description: **none**
-
-**Purpose.** _No description available._
-
-**Use.** Read it.
-
-#### `ecosystem/web/swap.html`
-
-`code-web` · 42 lines · 4,865 B · description: **none**
-
-**Purpose.** _No description available._
-
-**Use.** Read it.
-
-#### `ecosystem/web/swap.js`
-
-`code-js` · 103 lines · 5,830 B · description: **none**
-
-**Purpose.** _No description available._
-
-**Contents.** Defines `SDK_SRC`, `loadManually`, `loadSdk`, `readConfig`, `selectedFee`, `state`, `updateFee`, `validFee`.
-
-**Use.** Loaded by the extension; see `extension/manifest.json` for entry points.
-
-#### `ecosystem/web/tradingview-chart.js`
-
-`code-js` · 41 lines · 1,792 B · description: **none**
-
-**Purpose.** _No description available._
-
-**Use.** Loaded by the extension; see `extension/manifest.json` for entry points.
-
-### `ecosystem/web/vendor/`
-
-#### `ecosystem/web/vendor/LICENSE`
-
-`other` · 202 lines · 11,347 B · description: **none**
-
-**Purpose.** _No description available._
-
-**Use.** Read it.
-
-#### `ecosystem/web/vendor/NOTICE`
-
-`other` · 3 lines · 101 B · description: **none**
-
-**Purpose.** _No description available._
-
-**Use.** Read it.
-
-#### `ecosystem/web/vendor/lightweight-charts-5.2.1.mjs`
-
-`code-js` · 8 lines · 197,827 B · description: **none**
-
-**Purpose.** _No description available._
-
-**Use.** Loaded by the extension; see `extension/manifest.json` for entry points.
-
----
-
-## executor
-
-47 files.
-
-#### `executor/.gitignore`
-
-`other` · 13 lines · 118 B · description: **none**
-
-**Purpose.** _No description available._
-
-**Use.** Read it.
-
-#### `executor/CLAUDE.md`
-
-`doc` · 87 lines · 6,504 B · description: **extracted**
-
-**Purpose.** Guarded spot swaps on Solana through Jupiter. **It signs and sends real transactions from the owner's wallet.** Treat every change as production software. Read the root `CLAUDE.md` "Live on-chain actions" first; its six conditions bind you here too.
-
-**Use.** Read it.
-
-#### `executor/README.md`
-
-`doc` · 103 lines · 6,559 B · description: **extracted**
-
-**Purpose.** The **executor** component of solmargintrader: best-price spot swaps on Solana through Jupiter, behind a semantic transaction verifier, hard rails, a research gate, a dry-run soak and an append-only journal. cd executor
-
-**Use.** Read it.
-
-#### `executor/pyproject.toml`
-
-`config` · 38 lines · 947 B · description: **none**
-
-**Purpose.** _No description available._
-
-**Use.** Configuration; nothing to run.
-
-#### `executor/uv.lock`
-
-`other` · 0 lines · 19,617 B · description: **none**
-
-**Purpose.** _No description available._
-
-**Use.** Read it.
-
-### `executor/src/executor/`
-
-#### `executor/src/executor/__init__.py`
-
-`code-python` · 4 lines · 136 B · description: **extracted**
-
-**Purpose.** executor: a guarded spot-swap executor for Solana (Jupiter). It can move real money; read CLAUDE.md first.
-
-**Use.** `import executor.src.executor.__init__`
-
-#### `executor/src/executor/api.py`
-
-`code-python` · 199 lines · 8,058 B · description: **extracted**
-
-**Purpose.** HTTP surface: `executor api [--port N]`. Stdlib `http.server`; the same access model as extension/tools/api-server.js. GET /v1/health liveness, no auth GET /v1/commands the `list` envelope GET /v1/<command>?a=1 read-only commands, args from the query string POST /v1/<command> any command, args from a JSON object body Command routes return the registry envelope exactly as `registry.dumps` renders i
-
-**Contents.** Defines `HOST`, `DEFAULT_PORT`, `MAX_BODY_BYTES`, `_ROUTE`, `_STATUS`, `token_path()`, `load_token()`, `token_matches()`, `make_handler()`, `create_server()` and 1 more.
-
-**Use.** `python3 executor/src/executor/api.py --help`
-
-#### `executor/src/executor/authority.py`
-
-`code-python` · 491 lines · 23,438 B · description: **extracted**
-
-**Purpose.** One wallet authority across executor homes; enrollment never enables live mode. The authority location depends only on the OS user's home and wallet. Client homes cannot select another authority. All supported live writers use this lock, shared journal, immutable request bindings and conservative aggregate limits.
-
-**Contents.** Defines `RISK_LIMITS`, `STRATEGIES`, `encoded()`, `digest()`, `wallet_root()`, `default_client_root()`, `positive()`, `identity()`, `class WalletAuthority`.
-
-**Use.** `import executor.src.executor.authority`
-
-#### `executor/src/executor/cli.py`
-
-`code-python` · 117 lines · 4,536 B · description: **extracted**
-
-**Purpose.** Command line: `executor quote|swap|status|journal|kill|resume|gates|reconcile|list|call|api`. The CLI prints the registry envelope exactly as the HTTP API returns it (same serializer, byte-identical), and exits 0 when `ok` is true, 1 otherwise, 2 for a usage error.
-
-**Contents.** Defines `_emit()`, `_parser()`, `_params()`, `main()`.
-
-**Use.** `python3 executor/src/executor/cli.py --help`
-
-#### `executor/src/executor/config.py`
-
-`code-python` · 258 lines · 10,846 B · description: **extracted**
-
-**Purpose.** Configuration: `~/.executor/config.toml` (or `$EXECUTOR_HOME/config.toml`), created mode 600 with safe defaults. Fail closed: an unknown key, a wrong type, a non-finite or non-positive number, or a file that other users can write is an error. Defaults are the owner's (2026-11-07): max position $25 per strategy, daily loss stop $10.
-
-**Contents.** Defines `OWNER_SOLANA`, `OWNER_BASE`, `VALIDATION_STRATEGY`, `VALIDATION_MAX_TRADE_USD`, `VALIDATION_MAX_DAILY_USD`, `HEADER`, `class Rails`, `class Gates`, `class Validation`, `class Bridge` and 11 more.
-
-**Use.** `import executor.src.executor.config`
-
-#### `executor/src/executor/engine.py`
-
-`code-python` · 786 lines · 38,104 B · description: **extracted**
-
-**Purpose.** The swap pipeline. Dry-run and live share every step up to the signature, so dry-run simulates exactly what live would send (the same pattern as liquidity's Rebalancer/Runner). resolve -> quote + independent price -> rails -> /swap -> decode -> VERIFY (static) -> pre-state -> simulate -> VERIFY (economic) ........ dry-run stops here ........
-
-**Contents.** Defines `LOOKUP_TABLE_PROGRAM`, `BLOCKHASH_MARGIN`, `class Engine`, `_recorded_sol_price()`, `_tokens()`, `realized_from_meta()`.
-
-**Use.** `import executor.src.executor.engine`
-
-#### `executor/src/executor/errors.py`
-
-`code-python` · 70 lines · 2,105 B · description: **extracted**
-
-**Purpose.** Error types. Every refusal carries a code that maps to the envelope `error.code`.
-
-**Contents.** Defines `CODES`, `class ExecutorError`, `class BadParams`, `class Refused`, `class Forbidden`, `class Ambiguous`, `class RpcError`, `class WalletError`, `class SendRejected`, `class HttpError`.
-
-**Use.** `import executor.src.executor.errors`
-
-#### `executor/src/executor/gates.py`
-
-`code-python` · 351 lines · 14,064 B · description: **extracted**
-
-**Purpose.** Pre-live gates, per strategy: a dry-run soak and a research gate. Same pattern as liquidity/src/aero_lp/gates.py. 1. Dry-run soak. A strategy must have run in dry-run for `[gates].soak_hours` (24 h) with at least `[gates].min_dry_runs` fully simulated dry-run swaps before it may go live. Every dry-run swap that passes the whole pipeline credits one tick (`record_dry_run`).
-
-**Contents.** Defines `SOAK_SCHEMA`, `RESEARCH_SCHEMA`, `MAX_TICK_GAP_S`, `_sync_directory()`, `_atomic_write()`, `_state_lock()`, `_nonnegative_number()`, `_nonblank()`, `_json_object()`, `_invalid_constant()` and 17 more.
-
-**Use.** `import executor.src.executor.gates`
-
-#### `executor/src/executor/http.py`
-
-`code-python` · 51 lines · 1,855 B · description: **extracted**
-
-**Purpose.** Minimal HTTP seam so every network client can be tested with recorded fixtures and no live network.
-
-**Contents.** Defines `class Http`, `class HttpxHttp`.
-
-**Use.** `import executor.src.executor.http`
-
-#### `executor/src/executor/journal.py`
-
-`code-python` · 239 lines · 9,826 B · description: **extracted**
-
-**Purpose.** Append-only journal of intents and results: `$EXECUTOR_HOME/journal.jsonl`, mode 600. Every swap that will be sent is written BEFORE sending (`intent`, then `sending` with the signature) and its outcome AFTER (`result`). Lines are only ever appended, each under an exclusive lock and fsynced. State is derived by replaying the file; nothing is rewritten.
-
-**Contents.** Defines `TERMINAL`, `KINDS`, `OUTCOMES`, `_unique_object()`, `_record_problem()`, `_apply_record()`, `class Journal`, `failed_accounting_missing()`, `require_clear()`.
-
-**Use.** `import executor.src.executor.journal`
-
-#### `executor/src/executor/jupiter.py`
-
-`code-python` · 199 lines · 8,150 B · description: **extracted**
-
-**Purpose.** Jupiter Swap API v1 client (quote + swap) and the Jupiter Price API (the independent reference). Verified 2026-11-07 against https://dev.jup.ag/docs/swap/get-quote: base URL `https://api.jup.ag` (key via the `x-api-key` header) and the keyless `https://lite-api.jup.ag`, the host the extension's manifest also lists.
-
-**Contents.** Defines `class RouteLeg`, `class Quote`, `_int()`, `parse_quote()`, `class Jupiter`.
-
-**Use.** `import executor.src.executor.jupiter`
-
-#### `executor/src/executor/jupiter_route.py`
-
-`code-python` · 209 lines · 7,561 B · description: **extracted**
-
-**Purpose.** Strict Borsh layout decoder for the two supported Jupiter V6 ExactIn routes. Layout source (pinned, not fetched at runtime): https://github.com/jup-ag/jupiter-amm-implementation/blob/cc068c9d1df0060c62f9a8a4fc37ea13ea7b9b39/idls/jupiter_aggregator_v6.json IDL blob f554d1c7635b3497c022109fca231a15cb3642bd.
-
-**Contents.** Defines `BPS_DENOMINATOR`, `MAX_PAYLOAD_BYTES`, `class RouteBound`, `class _Cursor`, `decode_route()`.
-
-**Use.** `import executor.src.executor.jupiter_route`
-
-#### `executor/src/executor/ledger.py`
-
-`code-python` · 133 lines · 5,261 B · description: **extracted**
-
-**Purpose.** Pure accounting over the journal: per-strategy position (cost basis) and realized P&L per UTC day. Only confirmed trades create positions or trading profit. Confirmed and failed on-chain attempts both incur network fees. The quote asset is always USDC, so cost and proceeds are exact USDC amounts taken from the transaction itself; the base-asset quantity is the transaction's measured delta.
-
-**Contents.** Defines `class Position`, `_confirmed_trades()`, `positions()`, `utc_day()`, `_failed_fee_usd()`, `realized_pnl_usd()`, `trades_notional_usd()`, `is_quote()`.
-
-**Use.** `import executor.src.executor.ledger`
-
-#### `executor/src/executor/lifi.py`
-
-`code-python` · 109 lines · 4,405 B · description: **extracted**
-
-**Purpose.** Cross-chain quote, QUOTE ONLY. Nothing here builds, signs or sends a cross-chain transaction. LI.FI's `/v1/quote` answers without an API key (checked 2026-11-07; unauthenticated use is rate limited). It also returns a `transactionRequest`; this module drops it on purpose so that no caller can execute from it.
-
-**Contents.** Defines `CHAINS`, `SOLANA_CHAIN`, `_dec()`, `quote_cross_chain()`.
-
-**Use.** `import executor.src.executor.lifi`
-
-#### `executor/src/executor/manager.py`
-
-`code-python` · 260 lines · 10,868 B · description: **extracted**
-
-**Purpose.** Strict manager admission delegates signing to the existing executor pipeline. Scoped certificates are read from executor-owned authority storage. A manager's claims, paper balance or boolean cannot manufacture certification. This release issues no certificates: current reference-only research remains unavailable.
-
-**Contents.** Defines `SCOPE_FIELDS`, `SWAP_FIELDS`, `capabilities()`, `validate()`, `admit()`, `execute()`.
-
-**Use.** `import executor.src.executor.manager`
-
-#### `executor/src/executor/quote.py`
-
-`code-python` · 151 lines · 5,758 B · description: **extracted**
-
-**Purpose.** Quote evaluation: the best route Jupiter finds, checked against an independent price reference. A quote is only usable when (a) every number is present, (b) its price impact is within `max_price_impact_bps`, (c) its implied rate is within `max_price_deviation_bps` of the Jupiter Price API (a separate service and data path from the quote engine), and (d) its slippage cap is within `max_slippage_bps
-
-**Contents.** Defines `class QuoteReport`, `evaluate()`, `fetch_report()`.
-
-**Use.** `import executor.src.executor.quote`
-
-#### `executor/src/executor/rails.py`
-
-`code-python` · 181 lines · 8,527 B · description: **extracted**
-
-**Purpose.** Rails: every limit an order must pass, as code. A rail documented but not enforced is not a rail. All rails fail closed: a missing price, an unknown side, an unreadable record or a non-finite number is a refusal, never a pass. `check_trade` returns every problem at once so a caller sees the whole picture.
-
-**Contents.** Defines `class Decision`, `classify()`, `check_trade()`, `_loss_today()`.
-
-**Use.** `import executor.src.executor.rails`
-
-#### `executor/src/executor/registry.py`
-
-`code-python` · 537 lines · 19,608 B · description: **extracted**
-
-**Purpose.** The executor command registry: one set of calls for the CLI and the HTTP API. Every surface calls `dispatch(name, params, surface)`, which validates parameters, applies the confirm gate, runs the handler, wraps the outcome in the response envelope and appends one line to the call log. The surfaces only carry bytes; none holds command logic.
-
-**Contents.** Defines `LOG_ROTATE_BYTES`, `PARAM_TYPES`, `class CommandError`, `class Param`, `class Command`, `CONFIRM_PARAM`, `P()`, `command()`, `class Context`, `dumps()` and 28 more.
-
-**Use.** `import executor.src.executor.registry`
-
-#### `executor/src/executor/rpc.py`
-
-`code-python` · 139 lines · 5,952 B · description: **extracted**
-
-**Purpose.** Solana JSON-RPC client over the injectable HTTP seam. Read calls retry (bounded, with backoff) because repeating a read is harmless. `send_transaction` NEVER retries: a send that errors or times out has an unknown outcome, and the caller must journal it as such.
-
-**Contents.** Defines `READ_RETRIES`, `class Rpc`, `_account()`.
-
-**Use.** `import executor.src.executor.rpc`
-
-#### `executor/src/executor/signer.py`
-
-`code-python` · 74 lines · 2,663 B · description: **extracted**
-
-**Purpose.** Signing key loading. The key is never printed, logged, hashed, copied, or included in an exception message. The file must be a regular file, owned by the current user, with no group or other permission bits (mode 600 or stricter). The same open file descriptor is used for the checks and the read, so the file cannot be swapped in between.
-
-**Contents.** Defines `check_key_file_mode()`, `_open()`, `_check_fd()`, `load_keypair()`.
-
-**Use.** `import executor.src.executor.signer`
-
-#### `executor/src/executor/tokens.py`
-
-`code-python` · 71 lines · 2,416 B · description: **extracted**
-
-**Purpose.** Token table and exact amount conversion. Only tokens listed here can ever be traded: decimals come from this table, never from a guess. A mint that is not here is refused even when it is in the config allowlist, because an unknown decimal count turns a $1 order into a $1,000,000 one.
-
-**Contents.** Defines `WSOL_MINT`, `USDC_MINT`, `USDT_MINT`, `class Token`, `QUOTE_MINT`, `resolve()`, `ui_to_raw()`, `raw_to_ui()`.
-
-**Use.** `import executor.src.executor.tokens`
-
-#### `executor/src/executor/txverify.py`
-
-`code-python` · 509 lines · 23,233 B · description: **extracted**
-
-**Purpose.** Semantic transaction verifier: what the extension never had. Runs BEFORE anything is signed. Jupiter's `/swap` returns a serialized transaction. That response is untrusted: a compromised or buggy API could return a transaction that drains the wallet while still "being a swap". Nothing is signed until two layers pass. Layer 1, `check_static` (pure, no network): reads the transaction itself.
-
-**Contents.** Defines `JUPITER_V6`, `TOKEN_PROGRAM`, `TOKEN_2022`, `ATA_PROGRAM`, `COMPUTE_BUDGET`, `SYSTEM_PROGRAM`, `JUPITER_ALLOWED_DISCRIMINATORS`, `TOKEN_ACCOUNT_RENT_LAMPORTS`, `BASE_FEE_PER_SIGNATURE`, `MAX_INSTRUCTIONS` and 17 more.
-
-**Use.** `import executor.src.executor.txverify`
-
-### `executor/tests/`
-
-#### `executor/tests/conftest.py`
-
-`test` · 421 lines · 15,009 B · description: **extracted**
-
-**Purpose.** Shared test machinery: an isolated home, a fixture-backed HTTP seam, an in-memory chain, and a transaction builder. No test here touches the network. Recorded responses live in tests/fixtures (captured from the live services on 2026-11-07); everything else is built in memory.
-
-**Contents.** Defines `FIX`, `SYSTEM`, `TOKEN`, `ATA`, `CB`, `JUP`, `SHARED_ROUTE`, `fixture()`, `isolated()`, `pk()` and 30 more.
-
-**Use.** `python3 -m pytest executor/tests/conftest.py -q`
-
-#### `executor/tests/test_authority.py`
-
-`test` · 766 lines · 32,627 B · description: **extracted**
-
-**Purpose.** Shared wallet authority, request replay and scoped admission adversarial tests.
-
-**Contents.** Defines `request()`, `certify()`, `buyer()`, `seed()`, `test_new_home_cannot_select_new_wallet_authority()`, `test_portfolio_cap_is_explicit_and_finite()`, `test_cap_cannot_be_increased_by_new_client_or_configuration()`, `test_unaware_writer_cannot_be_omitted_to_reopen_admission()`, `test_missing_request_ledger_is_never_recreated()`, `test_local_writer_history_change_blocks_shared_writer()` and 30 more.
-
-**Use.** `python3 -m pytest executor/tests/test_authority.py -q`
-
-#### `executor/tests/test_engine.py`
-
-`test` · 348 lines · 14,913 B · description: **extracted**
-
-**Purpose.** The swap pipeline end to end against an in-memory chain: dry-run, live, and every way a send can go wrong.
-
-**Contents.** Defines `AMOUNT_UI`, `AMOUNT`, `FEE`, `OUT`, `sell_setup()`, `live_cfg()`, `swap()`, `kinds()`, `test_dry_run_simulates_and_sends_nothing()`, `test_mode_live_without_the_live_flag_is_still_a_dry_run()` and 26 more.
-
-**Use.** `python3 -m pytest executor/tests/test_engine.py -q`
-
-#### `executor/tests/test_engine_integrity.py`
-
-`test` · 209 lines · 8,582 B · description: **extracted**
-
-**Purpose.** Crash and incomplete-evidence regressions over a synthetic chain and temporary homes.
-
-**Contents.** Defines `pending_engine()`, `test_present_nonterminal_status_never_clears_unknown()`, `test_processed_error_remains_unknown_until_confirmed()`, `test_confirmation_waits_for_confirmed_error()`, `test_kill_appearing_during_journal_flush_prevents_send()`, `test_reconcile_shares_swap_lock()`, `test_missing_or_malformed_token_balance_arrays_are_not_zero()`, `test_malformed_token_amount_is_unreadable()`, `test_explicit_empty_opening_array_supports_new_token_account()`, `test_confirmed_incomplete_metadata_preserves_hold_until_recovered()` and 5 more.
-
-**Use.** `python3 -m pytest executor/tests/test_engine_integrity.py -q`
-
-#### `executor/tests/test_failed_fees.py`
-
-`test` · 166 lines · 7,135 B · description: **extracted**
-
-**Purpose.** Failed on-chain attempts incur measured fees even though they create no position.
-
-**Contents.** Defines `NOW`, `DAY`, `MISSING`, `failed_attempt()`, `test_failed_fee_is_a_loss_without_any_trade_or_position()`, `test_failed_fees_reach_daily_stop_for_regular_live_buy()`, `test_failed_fees_are_scoped_to_the_requested_strategy_and_utc_day()`, `test_missing_or_invalid_failed_fee_refuses_without_exposing_values()`, `test_explicit_zero_failed_fee_is_not_missing_evidence()`, `test_missing_failed_fee_does_not_block_a_proven_reduce_only_exit()` and 4 more.
-
-**Use.** `python3 -m pytest executor/tests/test_failed_fees.py -q`
-
-#### `executor/tests/test_gate_integrity.py`
-
-`test` · 315 lines · 11,889 B · description: **extracted**
-
-**Purpose.** Persisted gate evidence must fail closed and survive concurrent writers.
-
-**Contents.** Defines `soak_record()`, `test_malformed_soak_blocks_and_restarts_without_credit()`, `test_backward_clock_restarts_soak_instead_of_reusing_elapsed_time()`, `test_explicit_zero_soak_still_needs_a_valid_successful_dry_run()`, `research_record()`, `test_malformed_newer_research_never_falls_back_to_an_old_pass()`, `test_research_schema_is_required_and_damage_is_preserved()`, `test_invalid_recording_clock_cannot_write_gate_evidence()`, `test_research_same_timestamp_uses_the_last_recorded_result()`, `test_research_clock_regression_retains_failure_and_blocks_prior_pass()` and 10 more.
-
-**Use.** `python3 -m pytest executor/tests/test_gate_integrity.py -q`
-
-#### `executor/tests/test_journal_integrity.py`
-
-`test` · 241 lines · 9,055 B · description: **extracted**
-
-**Purpose.** Crash and corruption counterexamples for the journal's write-before-send boundary.
-
-**Contents.** Defines `write_record()`, `test_invalid_record_envelopes_are_corruption()`, `test_invalid_transition_cannot_clear_or_replace_pending_send()`, `test_orphan_lifecycle_events_are_corruption()`, `test_nonmonotonic_or_malformed_sequence_is_corruption()`, `test_short_write_finishes_before_append_reports_success()`, `test_zero_progress_write_refuses()`, `test_append_syncs_content_then_directory_entry_before_success()`, `test_directory_sync_failure_never_reports_append_success()`, `test_write_error_after_partial_send_record_never_returns_success()` and 6 more.
-
-**Use.** `python3 -m pytest executor/tests/test_journal_integrity.py -q`
-
-#### `executor/tests/test_journal_ledger_signer.py`
-
-`test` · 182 lines · 7,437 B · description: **none**
-
-**Purpose.** _No description available._
-
-**Contents.** Defines `test_journal_is_append_only_fsynced_and_mode_600()`, `test_states_replay()`, `test_unknown_blocks_until_reconciled_and_never_clears_itself()`, `test_a_late_unknown_does_not_reopen_a_terminal_state()`, `test_torn_line_is_surfaced_not_skipped()`, `test_records_carry_no_key_material()`, `trade()`, `test_average_cost_positions_and_realized_pnl()`, `test_failed_and_unknown_trades_do_not_count()`, `test_a_sell_beyond_the_tracked_quantity_realizes_no_phantom_profit()` and 5 more.
-
-**Use.** `python3 -m pytest executor/tests/test_journal_ledger_signer.py -q`
-
-#### `executor/tests/test_network.py`
-
-`test` · 61 lines · 2,237 B · description: **extracted**
-
-**Purpose.** Live, READ-ONLY checks (run with `pytest -m network`). They quote, build and simulate against mainnet; none signs or sends anything, and none needs the key. They use the owner's public address only to build a transaction.
-
-**Contents.** Defines `live()`, `test_live_quote_is_acceptable_and_has_a_second_price()`, `test_live_price_impact_units_agree_with_the_independent_reference()`, `test_live_dry_run_swap_builds_verifies_and_simulates()`, `test_live_cross_chain_quote_is_quote_only()`, `test_live_rpc_reads()`.
-
-**Use.** `python3 -m pytest executor/tests/test_network.py -q`
-
-#### `executor/tests/test_optimizer_regressions.py`
-
-`test` · 697 lines · 28,723 B · description: **extracted**
-
-**Purpose.** Offline regression coverage for reviewed safety boundaries.
-
-**Contents.** Defines `test_final_read_guards()`, `test_failed_chain_fee()`, `test_failed_missing_fee_stays_blocking()`, `test_legacy_failed_needs_accounting()`, `test_existing_wsol_cannot_hide_loss()`, `test_legitimate_wsol_closure_actual_amount()`, `test_journal_short_write()`, `test_journal_zero_write()`, `test_replenishing_buy()`, `test_public_rpc_host()` and 27 more.
-
-**Use.** `python3 -m pytest executor/tests/test_optimizer_regressions.py -q`
-
-#### `executor/tests/test_quote.py`
-
-`test` · 182 lines · 6,752 B · description: **none**
-
-**Purpose.** _No description available._
-
-**Contents.** Defines `PRICE_MAP`, `quote()`, `test_recorded_quote_parses_and_is_acceptable()`, `test_malformed_quote_is_refused()`, `test_price_impact_over_cap_is_a_problem()`, `test_deviation_worse_and_better_than_reference_both_refused()`, `test_missing_price_refuses_rather_than_guessing()`, `test_prices_endpoint_drops_unusable_entries()`, `test_fetch_report_enforces_allowlist_and_same_token()`, `test_jupiter_retries_429_a_bounded_number_of_times()` and 8 more.
-
-**Use.** `python3 -m pytest executor/tests/test_quote.py -q`
-
-#### `executor/tests/test_rails.py`
-
-`test` · 353 lines · 14,127 B · description: **extracted**
-
-**Purpose.** Every rail, one test each, plus the property that dry-run applies the same trade rails as live.
-
-**Contents.** Defines `PRICE_MAP`, `NOW`, `report()`, `journal_with()`, `check()`, `refused()`, `test_side_classification()`, `test_max_trade_usd()`, `test_max_position_usd_is_per_strategy()`, `test_position_cap_default_is_the_owners_25()` and 26 more.
-
-**Use.** `python3 -m pytest executor/tests/test_rails.py -q`
-
-#### `executor/tests/test_surfaces.py`
-
-`test` · 342 lines · 13,856 B · description: **extracted**
-
-**Purpose.** One registry, two surfaces: the CLI and the HTTP API return byte-identical envelopes, with the same access model as extension/tools/api-server.js and the same logging.
-
-**Contents.** Defines `wired()`, `run_cli()`, `server()`, `request()`, `test_every_command_is_declared_the_same_way()`, `test_envelope_shape_ok_and_error()`, `test_error_codes()`, `test_resume_removes_kill_only_with_confirm()`, `test_unexpected_exceptions_become_failed_envelopes_without_details()`, `test_the_swap_command_defaults_to_dry_run()` and 23 more.
-
-**Use.** `python3 -m pytest executor/tests/test_surfaces.py -q`
-
-#### `executor/tests/test_tokens_config.py`
-
-`test` · 112 lines · 3,829 B · description: **none**
-
-**Purpose.** _No description available._
-
-**Contents.** Defines `test_ui_to_raw_exact()`, `test_ui_to_raw_rejects()`, `test_ui_to_raw_rejects_numbers_that_are_not_strings()`, `test_resolve_symbol_and_mint_and_unknown()`, `test_config_created_mode_600_with_owner_defaults()`, `test_code_defaults_are_dry_run_and_match_the_generated_file()`, `test_config_round_trips_overrides()`, `test_config_fails_closed()`, `test_config_refused_when_writable_by_others()`, `test_fingerprint_changes_with_rails_and_strategy()` and 1 more.
-
-**Use.** `python3 -m pytest executor/tests/test_tokens_config.py -q`
-
-#### `executor/tests/test_txverify.py`
-
-`test` · 413 lines · 16,533 B · description: **extracted**
-
-**Purpose.** The semantic verifier: honest transactions pass; every malicious fixture is refused, each for its own reason.
-
-**Contents.** Defines `AMOUNT`, `MIN_OUT`, `RESERVE`, `exp()`, `static()`, `honest()`, `has()`, `test_honest_sol_to_usdc_passes()`, `test_honest_usdc_to_sol_passes()`, `test_foreign_fee_payer_is_refused()` and 30 more.
-
-**Use.** `python3 -m pytest executor/tests/test_txverify.py -q`
-
-### `executor/tests/fixtures/`
-
-#### `executor/tests/fixtures/alt_accounts.json`
-
-`test` · 13 lines · 2,887 B · description: **derived**
-
-**Purpose.** Generated JSON object, 1 keys (23iTfgGpQMxmeDhF4BcjW6D33UYG4Up25ttdc27vDD42).
-
-**Use.** `python3 -m pytest executor/tests/fixtures/alt_accounts.json -q`
-
-#### `executor/tests/fixtures/jup_prices.json`
-
-`test` · 18 lines · 494 B · description: **derived**
-
-**Purpose.** Generated JSON object, 2 keys (EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v, So11111111111111111111111111111111111111112).
-
-**Use.** `python3 -m pytest executor/tests/fixtures/jup_prices.json -q`
-
-#### `executor/tests/fixtures/jup_quote_sol_usdc.json`
-
-`test` · 42 lines · 1,164 B · description: **derived**
-
-**Purpose.** Generated JSON object, 21 keys (contextSlot, inAmount, inputMint, instructionVersion, loadedLongtailToken, longtailMarketQuoteReport...).
-
-**Use.** `python3 -m pytest executor/tests/fixtures/jup_quote_sol_usdc.json -q`
-
-#### `executor/tests/fixtures/jup_swap_sol_usdc.json`
-
-`test` · 21 lines · 1,354 B · description: **derived**
-
-**Purpose.** Generated JSON object, 14 keys (addressesByLookupTableAddress, computeUnitLimit, createAtaTimeTaken, dynamicSlippageReport, lastValidBlockHeight, loadedAccountsDataSize...).
-
-**Use.** `python3 -m pytest executor/tests/fixtures/jup_swap_sol_usdc.json -q`
-
-#### `executor/tests/fixtures/lifi_quote_usdc_base.json`
-
-`test` · 145 lines · 3,858 B · description: **derived**
-
-**Purpose.** Generated JSON object, 8 keys (estimate, executionType, id, integrator, recommendedSlippage, tool...).
-
-**Use.** `python3 -m pytest executor/tests/fixtures/lifi_quote_usdc_base.json -q`
-
----
-
-## liquidity
-
-60 files.
-
-#### `liquidity/.gitignore`
-
-`other` · 13 lines · 118 B · description: **none**
-
-**Purpose.** _No description available._
-
-**Use.** Read it.
-
-#### `liquidity/CLAUDE.md`
-
-`doc` · 68 lines · 5,260 B · description: **extracted**
-
-**Purpose.** The Aero Slipstream LP manager. See README.md. **It can move real money.** On 2026-11-06 the owner authorized autonomous live operation for the owner's own wallet The repo-wide standing authorization for live on-chain actions is in the root `CLAUDE.md`
-
-**Use.** Read it.
-
-#### `liquidity/README.md`
-
-`doc` · 200 lines · 13,404 B · description: **extracted**
-
-**Purpose.** The **liquidity** component of solmargintrader. It manages concentrated-liquidity positions on **Aero** (aero.xyz) **Slipstream** on **Base**, in one daemon: soltui's **Liquidity** tab shows all of it. The tab reads the daemon's state files and nothing else (see
-
-**Use.** Read it.
-
-#### `liquidity/STATE_FILES.md`
-
-`doc` · 155 lines · 7,018 B · description: **extracted**
-
-**Purpose.** The liquidity daemon (`aero-lp daemon`) writes these files. `soltui`'s Liquidity tab only **reads** them; the one exception is the kill-switch file, which soltui may create or delete. soltui never imports `aero_lp`, web3 or any key material.
-
-**Use.** Read it.
-
-#### `liquidity/config.example.toml`
-
-`config` · 54 lines · 3,281 B · description: **none**
-
-**Purpose.** _No description available._
-
-**Use.** Configuration; nothing to run.
-
-#### `liquidity/pyproject.toml`
-
-`config` · 40 lines · 884 B · description: **none**
-
-**Purpose.** _No description available._
-
-**Use.** Configuration; nothing to run.
-
-#### `liquidity/pyrightconfig.json`
-
-`config` · 7 lines · 100 B · description: **derived**
-
-**Purpose.** Generated JSON object, 4 keys (venvPath, venv, extraPaths, typeCheckingMode).
-
-**Use.** Configuration; nothing to run.
-
-#### `liquidity/uv.lock`
-
-`other` · 0 lines · 392,323 B · description: **none**
-
-**Purpose.** _No description available._
-
-**Use.** Read it.
-
-### `liquidity/scripts/`
-
-#### `liquidity/scripts/aero-lp-service`
-
-`other` · 61 lines · 2,793 B · description: **none**
-
-**Purpose.** _No description available._
-
-**Use.** Read it.
-
-### `liquidity/src/aero_lp/`
-
-#### `liquidity/src/aero_lp/__init__.py`
-
-`code-python` · 4 lines · 103 B · description: **extracted**
-
-**Purpose.** aero-lp: cost-aware auto-rebalancer for Aero Slipstream deposits on Base.
-
-**Use.** `import liquidity.src.aero_lp.__init__`
-
-#### `liquidity/src/aero_lp/abi.py`
-
-`code-python` · 245 lines · 9,756 B · description: **extracted**
-
-**Purpose.** Minimal ABIs for the Aero Slipstream contracts the bot touches. Signatures were copied from github.com/dromos-labs/metadex-slipstream-public (v1.1.0): contracts/periphery/interfaces/INonfungiblePositionManager.sol contracts/core/interfaces/pool/ICLPoolState.sol, ICLPoolConstants.sol contracts/gauge/interfaces/ICLGauge.sol, IGauge.sol, ICLGaugeFactory.sol contracts/periphery/interfaces/ISwapRouter.
-
-**Contents.** Defines `_p()`, `fn()`, `ev()`, `ERC20`, `_MINT`, `_DECREASE`, `_COLLECT`, `_INCREASE`, `NPM`, `CL_POOL` and 11 more.
-
-**Use.** `import liquidity.src.aero_lp.abi`
-
-#### `liquidity/src/aero_lp/addresses.py`
-
-`code-python` · 55 lines · 2,976 B · description: **extracted**
-
-**Purpose.** Aero contract addresses on Base (chain id 8453). Every address here appears in two independent sources that agree: 1. Aero docs "Security Overview" -> "Contract addresses" (https://aero.xyz/docs/security) 2.
-
-**Contents.** Defines `BASE_CHAIN_ID`, `CL_FACTORY`, `NONFUNGIBLE_POSITION_MANAGER`, `SWAP_ROUTER`, `METAQUOTER`, `CL_GAUGE_FACTORY`, `LEAF_VOTER`, `AERO_TOKEN`, `WETH`, `UNISWAP_V3_FACTORY` and 11 more.
-
-**Use.** `import liquidity.src.aero_lp.addresses`
-
-#### `liquidity/src/aero_lp/allocator.py`
-
-`code-python` · 189 lines · 8,031 B · description: **extracted**
-
-**Purpose.** Put idle wallet coins to work, but only when a pool is worth it. A pool qualifies only when **both** independent estimates clear `min_net_apr`: * the model: income - LVR - rebalance cost at the optimized width (metrics.expected_net_apr); * the replay: the best width on the pool's actual recent price path vs holding the pair (metrics.backtest_net_apr).
-
-**Contents.** Defines `CONF_RANK`, `MIN_BACKTEST_DAYS`, `ARM_SIZE_FLOOR`, `class Candidate`, `class Arm`, `class AllocationPlan`, `_at_least()`, `_sym_ok()`, `qualify()`, `plan_allocation()` and 2 more.
-
-**Use.** `import liquidity.src.aero_lp.allocator`
-
-#### `liquidity/src/aero_lp/backtest.py`
-
-`code-python` · 134 lines · 4,851 B · description: **extracted**
-
-**Purpose.** Hourly backtest of range widths on a historical price path. Model (deliberately simple and conservative): * Earnings while in range = yield_per_usd_day(half_width) * position value / 24 per hour, where the yield curve comes from today's on-chain pool economics (fee or AERO flow per unit liquidity). * Out of range earns nothing.
-
-**Contents.** Defines `class BacktestResult`, `_amounts()`, `_liq_for_value()`, `run()`, `format_table()`.
-
-**Use.** `import liquidity.src.aero_lp.backtest`
-
-#### `liquidity/src/aero_lp/chain.py`
-
-`code-python` · 486 lines · 21,362 B · description: **extracted**
-
-**Purpose.** Read-only access to Aero Slipstream state on Base. All multi-value reads go through Multicall3 in one eth_call pinned to one block, so a snapshot is internally consistent and public RPC rate limits are respected.
-
-**Contents.** Defines `ZERO`, `MULTICALL3`, `MULTICALL3_ABI`, `DEFAULT_RPCS`, `MAX_HEAD_LAG_S`, `_type_str()`, `MIN_BLOCK_READ_TRIES`, `MIN_BLOCK_READ_DELAY_S`, `class PositionGone`, `class Call` and 7 more.
-
-**Use.** `import liquidity.src.aero_lp.chain`
-
-#### `liquidity/src/aero_lp/cli.py`
-
-`code-python` · 559 lines · 25,364 B · description: **extracted**
-
-**Purpose.** aero-lp command line. aero-lp verify check contract addresses + RPC freshness aero-lp pools top Aero Slipstream pools on Base (GeckoTerminal) aero-lp positions --owner 0x..
-
-**Contents.** Defines `_print_eval()`, `_print_result()`, `cmd_verify()`, `cmd_pools()`, `cmd_positions()`, `_engine()`, `cmd_status()`, `cmd_simulate()`, `cmd_withdraw()`, `_live_gate()` and 9 more.
-
-**Use.** `python3 liquidity/src/aero_lp/cli.py --help`
-
-#### `liquidity/src/aero_lp/clmath.py`
-
-`code-python` · 240 lines · 8,698 B · description: **extracted**
-
-**Purpose.** Concentrated-liquidity math for Slipstream (Uniswap-v3-compatible tick math). Integer functions are exact ports of TickMath / SqrtPriceMath / LiquidityAmounts. Float helpers are for planning and reporting only, never for on-chain min-amount checks without a slippage margin.
-
-**Contents.** Defines `Q96`, `Q128`, `MIN_TICK`, `MAX_TICK`, `MIN_SQRT_RATIO`, `MAX_SQRT_RATIO`, `UINT128_MAX`, `LOG_BASE`, `get_sqrt_ratio_at_tick()`, `tick_from_price()` and 19 more.
-
-**Use.** `import liquidity.src.aero_lp.clmath`
-
-#### `liquidity/src/aero_lp/config.py`
-
-`code-python` · 243 lines · 10,855 B · description: **extracted**
-
-**Purpose.** TOML configuration.
-
-**Contents.** Defines `REWARD_MODES`, `class SafetyConfig`, `DEFAULT_ALLOWED`, `class AllocatorConfig`, `SAFE_EXIT_TARGETS`, `class GateConfig`, `class SafeExitConfig`, `class Config`, `_pick()`, `load()`.
-
-**Use.** `import liquidity.src.aero_lp.config`
-
-#### `liquidity/src/aero_lp/daemon.py`
-
-`code-python` · 1382 lines · 66,508 B · description: **extracted**
-
-**Purpose.** The liquidity daemon: one loop that manages every position, compounds, scouts and allocates. Each tick, in order: 1. Kill switch. If `$AERO_LP_HOME/KILL` exists, the tick takes no on-chain action; it still reads and reports. 2. Wallet snapshot: balances of the allowed tokens plus native ETH, recorded in the ledger for idle detection. 3.
-
-**Contents.** Defines `STATUS_SCHEMA`, `SYMBOL_TO_ADDR`, `CONVERT_PRICE_TOLERANCE`, `SCOUT_MAX_AGE_INTERVALS`, `PRICE_RETRY_S`, `SCOUT_BUDGET_S`, `class KillSwitchEngaged`, `class Timers`, `class Daemon`.
-
-**Use.** `import liquidity.src.aero_lp.daemon`
-
-#### `liquidity/src/aero_lp/engine.py`
-
-`code-python` · 666 lines · 30,286 B · description: **extracted**
-
-**Purpose.** Glue: read chain + market state, decide, preflight-simulate, and (in live mode) execute.
-
-**Contents.** Defines `_finite()`, `class Evaluation`, `class Engine`, `defer_sigint()`, `_single_width_cfg()`, `forced_decision()`.
-
-**Use.** `import liquidity.src.aero_lp.engine`
-
-#### `liquidity/src/aero_lp/executor.py`
-
-`code-python` · 1172 lines · 51,911 B · description: **extracted**
-
-**Purpose.** Builds and runs the rebalance transaction sequence. Sequence (one stage at a time; later stages are sized from the real results of earlier ones): A. unstake gauge.withdraw(tokenId) (only if staked; claims AERO to owner) B. remove npm.multicall([decreaseLiquidity, collect, burn]) C. swap approve(tokenIn -> SwapRouter), exactInputSingle on the same pool D.
-
-**Contents.** Defines `T`, `UINT128_MAX`, `TRANSFER_TOPIC`, `class ExecConfig`, `class PlannedTx`, `class ConfirmedTx`, `class StageResult`, `class Runner`, `_hex()`, `token_delta()` and 13 more.
-
-**Use.** `import liquidity.src.aero_lp.executor`
-
-#### `liquidity/src/aero_lp/gates.py`
-
-`code-python` · 314 lines · 12,744 B · description: **extracted**
-
-**Purpose.** Pre-live gates: a dry-run soak and a research-gate check. Why these exist: on 2026-11-06 the bot was built, its research gate failed (9 of 70 claims unsupported), and it was switched to live signing within hours. Two gates now stand between a configuration and live signing. 1. Dry-run soak.
-
-**Contents.** Defines `SOAK_SCHEMA`, `RESEARCH_SCHEMA`, `MAX_TICK_GAP_S`, `MAX_RESETS_KEPT`, `class LiveGateError`, `config_fingerprint()`, `_soak_path()`, `load_soak()`, `_record_lock()`, `_empty()` and 13 more.
-
-**Use.** `import liquidity.src.aero_lp.gates`
-
-#### `liquidity/src/aero_lp/ledger.py`
-
-`code-python` · 431 lines · 16,363 B · description: **extracted**
-
-**Purpose.** P&L ledger (SQLite, stdlib only). A *slot* is one strategy line. It keeps its id when a rebalance replaces the NFT, so its P&L runs across rebalances. Money flows in and out of a slot as `flows` (deposit, topup, withdraw). Gas and rewards are `events`. Periodic `snapshots` hold the slot's market value and its HODL value: what the deposited token amounts would be worth now if never deployed.
-
-**Contents.** Defines `IDLE_MAX_GAP_S`, `SCHEMA`, `class SlotPnl`, `class Ledger`.
-
-**Use.** `import liquidity.src.aero_lp.ledger`
-
-#### `liquidity/src/aero_lp/market.py`
-
-`code-python` · 200 lines · 8,825 B · description: **extracted**
-
-**Purpose.** Off-chain market data (GeckoTerminal public API) and the earnings model. GeckoTerminal lists Aero Slipstream on Base as dex id `aero-slipstream-base`. The free API allows about 30 requests/minute, so responses are cached for `ttl` seconds.
-
-**Contents.** Defines `GT`, `STABLES`, `class MarketData`, `vol_from_closes()`, `class PoolEconomics`, `fee_usd_per_liquidity_per_day()`, `liquidity_for_usd()`, `earn_usd_per_day()`, `with_realized_fees()`.
-
-**Use.** `import liquidity.src.aero_lp.market`
-
-#### `liquidity/src/aero_lp/metrics.py`
-
-`code-python` · 438 lines · 17,939 B · description: **extracted**
-
-**Purpose.** Every measure of a pool's likely profit or loss for a concentrated-liquidity deposit. Income (what the deposit earns while in range), measured, not quoted: * fee income - change in feeGrowthGlobal over the last day. CLPool.calculateFees credits it per unit of *unstaked* in-range liquidity, net of the unstaked fee, so it already reflects dynamic fees, router discounts and MEV capture.
-
-**Contents.** Defines `REF_HALF_WIDTH`, `NO_DATA`, `KNOWN_TOKENS`, `class PoolMetrics`, `economics_from()`, `pool_economics()`, `pool_sigma()`, `BACKTEST_WIDTHS_PCT`, `backtest_best()`, `backtest_at_width()` and 4 more.
-
-**Use.** `import liquidity.src.aero_lp.metrics`
-
-#### `liquidity/src/aero_lp/providers.py`
-
-`code-python` · 1625 lines · 66,259 B · description: **extracted**
-
-**Purpose.** Liquidity-provider comparison: which AMMs on a chain pay a small passive LP, and how sure are we? The Aero scout judges Slipstream pools only. This module widens the same judgement to every provider DefiLlama lists on the chain, in two tiers: Tier 1, *measured* (on chain).
-
-**Contents.** Defines `SCHEMA`, `LLAMA_POOLS_URL`, `LLAMA_COINS`, `GT`, `LLAMA_TTL_S`, `NATIVE`, `CHAIN_LABELS`, `BLOCKS_PER_DAY`, `CHART_MAX_POINTS`, `CONF_ORDER` and 30 more.
-
-**Use.** `import liquidity.src.aero_lp.providers`
-
-#### `liquidity/src/aero_lp/providers_report.py`
-
-`code-python` · 300 lines · 11,664 B · description: **extracted**
-
-**Purpose.** Markdown report for `aero-lp providers` (providers-report.md). Pure formatting: no I/O, no network.
-
-**Contents.** Defines `BAR_NOTE`, `_pct()`, `_usd()`, `_ratio()`, `_cell()`, `_table()`, `provider_table()`, `pool_table()`, `HOW_TO_READ`, `HOW_TO_READ_2` and 3 more.
-
-**Use.** `import liquidity.src.aero_lp.providers_report`
-
-#### `liquidity/src/aero_lp/recovery.py`
-
-`code-python` · 182 lines · 9,814 B · description: **extracted**
-
-**Purpose.** Shared, idempotent ledger recovery for daemon and CLI submission journals. Construct LedgerRecovery with the recorded ledger and a fresh-price callback, then pass apply as the journal's reconciliation callback. It never broadcasts or retries a transaction.
-
-**Contents.** Defines `class LedgerRecovery`.
-
-**Use.** `import liquidity.src.aero_lp.recovery`
-
-#### `liquidity/src/aero_lp/safe_exit.py`
-
-`code-python` · 359 lines · 16,180 B · description: **extracted**
-
-**Purpose.** Exit to safe: take every managed LP position out and leave the coins in the wallet. This is separate from the kill switch. KILL only halts the daemon: positions stay open and keep losing money. `exit-to-safe` removes the liquidity (unstake, remove, collect fees, burn the empty NFT), and can optionally convert the withdrawn coins into a stable coin.
-
-**Contents.** Defines `REPORT_SCHEMA`, `CONVERT_PRICE_TOLERANCE`, `SYMBOL_TO_ADDRESS`, `class ConvertStep`, `class PositionPlan`, `class ExitReport`, `managed_token_ids()`, `best_direct_pool()`, `plan_conversion()`, `_value_usd()` and 7 more.
-
-**Use.** `import liquidity.src.aero_lp.safe_exit`
-
-#### `liquidity/src/aero_lp/scout.py`
-
-`code-python` · 156 lines · 6,569 B · description: **extracted**
-
-**Purpose.** Pool scout: find the Aero Slipstream pools most likely to be profitable for a deposit of a given size. Candidates come from two places, because the most profitable pools for a small passive deposit are usually *not* the highest-volume ones: 1. the top pools by 24h volume on GeckoTerminal (dex `aero-slipstream-base`); 2.
-
-**Contents.** Defines `SCHEMA`, `_SYM`, `discover_correlated()`, `candidate_pools()`, `rank()`, `run_scout()`, `load_scout()`, `format_report()`.
-
-**Use.** `import liquidity.src.aero_lp.scout`
-
-#### `liquidity/src/aero_lp/state.py`
-
-`code-python` · 80 lines · 2,693 B · description: **extracted**
-
-**Purpose.** Small JSON state file: which NFT currently represents each managed slot, plus hysteresis counters. A rebalance burns the old NFT and mints a new one, so the bot tracks positions by *slot* (the token id it was first configured with) and follows the chain of replacements.
-
-**Contents.** Defines `class SlotState`, `home()`, `atomic_write_json()`, `_sync_directory()`, `class State`.
-
-**Use.** `import liquidity.src.aero_lp.state`
-
-#### `liquidity/src/aero_lp/strategy.py`
-
-`code-python` · 366 lines · 14,770 B · description: **extracted**
-
-**Purpose.** Range selection and the rebalance decision. Pure functions: no I/O, fully unit-tested. Profit model ------------ A concentrated deposit earns only while price sits inside its range.
-
-**Contents.** Defines `class Action`, `class StrategyConfig`, `class Range`, `half_width_log()`, `lvr_fraction_per_day()`, `rebalances_per_day()`, `class WidthScore`, `score_widths()`, `best_width()`, `target_range()` and 8 more.
-
-**Use.** `import liquidity.src.aero_lp.strategy`
-
-#### `liquidity/src/aero_lp/submissions.py`
-
-`code-python` · 248 lines · 10,958 B · description: **extracted**
-
-**Purpose.** Durable public transaction intents. Unknown outcomes block another live runner. The journal stores hashes and decoded intent metadata, never calldata, signed payloads or keys. A receipt is retained until the caller applies its state/accounting effects idempotently.
-
-**Contents.** Defines `class PendingSubmission`, `_hex()`, `receipt_metadata()`, `transaction_intent()`, `class SubmissionJournal`.
-
-**Use.** `import liquidity.src.aero_lp.submissions`
-
-#### `liquidity/src/aero_lp/validation.py`
-
-`code-python` · 32 lines · 1,245 B · description: **extracted**
-
-**Purpose.** Shared numeric validation for safety settings. Never coerce TOML strings or booleans.
-
-**Contents.** Defines `finite_number()`, `measured_gas()`.
-
-**Use.** `import liquidity.src.aero_lp.validation`
-
-#### `liquidity/src/aero_lp/wallet.py`
-
-`code-python` · 78 lines · 2,870 B · description: **extracted**
-
-**Purpose.** Signing key loading. The key is never printed, logged or written to disk by this program. Sources, in order: 0. `key_file` in the config (or AERO_LP_KEY_FILE): a file holding the hex key. It must be owned by the current user and not readable by group or others (chmod 600), or it is refused. 1. macOS Keychain generic password, service "aero-lp", account = owner address (lowercase).
-
-**Contents.** Defines `class WalletError`, `_from_keychain()`, `_from_file()`, `load_signer()`.
-
-**Use.** `import liquidity.src.aero_lp.wallet`
-
-### `liquidity/tests/`
-
-#### `liquidity/tests/test_abi_config_wallet.py`
-
-`test` · 126 lines · 5,229 B · description: **none**
-
-**Purpose.** _No description available._
-
-**Contents.** Defines `test_abi_parser_tuple_array_and_names()`, `test_abis_encode_offline()`, `test_minted_token_id_parses_transfer_from_zero()`, `test_config_load_and_reject_unknown()`, `test_example_config_parses()`, `test_wallet_rejects_mismatch_without_leaking_key()`, `test_misplaced_strategy_slippage_key_warns_instead_of_silently_doing_nothing()`, `test_config_rejects_negative_safety_limits()`, `test_key_file_must_be_private_and_owned()`.
-
-**Use.** `python3 -m pytest liquidity/tests/test_abi_config_wallet.py -q`
-
-#### `liquidity/tests/test_allocator_ledger.py`
-
-`test` · 310 lines · 12,926 B · description: **none**
-
-**Purpose.** _No description available._
-
-**Contents.** Defines `WETH`, `WSTETH`, `CBETH`, `USDC`, `SCAM`, `row()`, `test_both_estimates_must_clear_threshold()`, `test_filters_reject_risky_pools()`, `test_single_clear_winner_gets_everything_capped_per_position()`, `test_close_candidates_become_side_by_side_experiment()` and 20 more.
-
-**Use.** `python3 -m pytest liquidity/tests/test_allocator_ledger.py -q`
-
-#### `liquidity/tests/test_backtest.py`
-
-`test` · 49 lines · 2,002 B · description: **none**
-
-**Purpose.** _No description available._
-
-**Contents.** Defines `test_flat_price_earns_yield_and_never_rebalances()`, `test_trend_out_of_range_triggers_rebalances_and_costs()`, `test_wider_range_rebalances_less()`, `test_format_table_has_header_and_rows()`, `test_net_apr_is_on_starting_capital_not_end_hodl_value()`.
-
-**Use.** `python3 -m pytest liquidity/tests/test_backtest.py -q`
-
-#### `liquidity/tests/test_cdo_execution.py`
-
-`test` · 58 lines · 2,346 B · description: **extracted**
-
-**Purpose.** Mock-only confirmed outcome and cooldown regressions.
-
-**Contents.** Defines `test_confirmed_transfer_amounts_survive_failed_postreceipt_read()`, `test_recovered_replacement_resets_cooldown_once()`.
-
-**Use.** `python3 -m pytest liquidity/tests/test_cdo_execution.py -q`
-
-#### `liquidity/tests/test_cdo_gates.py`
-
-`test` · 116 lines · 4,520 B · description: **extracted**
-
-**Purpose.** Offline regressions for finite, durable pre-live evidence.
-
-**Contents.** Defines `OWNER`, `test_strategy_numeric_fields_refuse_invalid_evidence()`, `test_strategy_toml_refuses_nonfinite_and_fractional_confirmations()`, `test_corrupt_soak_evidence_never_opens_gate()`, `test_corrupt_research_timestamp_cannot_fall_back_to_pass()`, `test_gate_writers_refuse_nonfinite_time()`, `test_research_writers_serialize_read_append_replace()`, `test_equal_research_timestamps_keep_latest_failure()`.
-
-**Use.** `python3 -m pytest liquidity/tests/test_cdo_gates.py -q`
-
-#### `liquidity/tests/test_cdo_recovery.py`
-
-`test` · 253 lines · 10,260 B · description: **extracted**
-
-**Purpose.** Synthetic receipt groups and isolated ledgers; no chain or keys.
-
-**Contents.** Defines `receipt()`, `record()`, `test_registration_refuses_missing_or_invalid_basis_then_recovers()`, `test_reconciliation_checks_ledger_binding_before_callback()`, `test_runner_persists_explicit_slot_and_wallet_scopes_before_send()`, `test_daemon_runner_supplies_known_slot_or_explicit_wallet_context()`, `test_legacy_unattributed_journal_refuses_without_consuming_receipt()`, `test_aero_reward_counted_once_after_failed_or_successful_removal()`, `test_reinvested_aero_is_not_double_counted_on_recovered_mint()`, `test_new_wallet_funded_mint_binds_approval_fees_to_proven_nft()` and 1 more.
-
-**Use.** `python3 -m pytest liquidity/tests/test_cdo_recovery.py -q`
-
-#### `liquidity/tests/test_chain_audit.py`
-
-`test` · 127 lines · 4,488 B · description: **extracted**
-
-**Purpose.** Pinned-state, economic ownership and unknown-penalty regressions.
-
-**Contents.** Defines `staked_chain()`, `test_head_pins_at_our_receipt_and_retries_lagging_nodes()`, `test_old_postmint_snapshot_cannot_prove_position_gone()`, `test_foreign_staked_hint_is_not_an_economic_owner()`, `test_unknown_or_invalid_penalty_cannot_become_zero()`, `test_staked_membership_must_be_positive_evidence()`, `test_penalty_bounds_are_validated()`, `test_verified_staked_owner_retains_measured_active_penalty()`, `test_explicit_zero_penalty_is_allowed()`, `test_unknown_accrued_reward_cannot_erase_early_exit_cost()`.
-
-**Use.** `python3 -m pytest liquidity/tests/test_chain_audit.py -q`
-
-#### `liquidity/tests/test_chain_vol.py`
-
-`test` · 82 lines · 3,073 B · description: **none**
-
-**Purpose.** _No description available._
-
-**Contents.** Defines `_window_average_ticks()`, `test_twap_window_vol_is_unbiased()`, `test_vol_needs_enough_points()`, `test_twap_series_spans_the_requested_hours_not_a_window_count()`, `test_latest_balance_reads_are_pinned_to_a_block_no_older_than_our_last_transaction()`.
-
-**Use.** `python3 -m pytest liquidity/tests/test_chain_vol.py -q`
-
-#### `liquidity/tests/test_clmath.py`
-
-`test` · 88 lines · 3,625 B · description: **none**
-
-**Purpose.** _No description available._
-
-**Contents.** Defines `test_sqrt_ratio_known_points()`, `test_sqrt_ratio_matches_high_precision_reference()`, `test_sqrt_ratio_monotonic()`, `test_human_price_weth_usdc()`, `test_liquidity_amount_round_trip()`, `test_amounts_single_sided_outside_range()`, `test_fee_growth_inside_wraparound()`, `test_value0_fraction_bounds()`, `test_swap_to_ratio_hits_target()`, `test_impermanent_loss_zero_at_entry_and_negative_after_move()`.
-
-**Use.** `python3 -m pytest liquidity/tests/test_clmath.py -q`
-
-#### `liquidity/tests/test_config_audit.py`
-
-`test` · 48 lines · 1,824 B · description: **extracted**
-
-**Purpose.** Configuration must not disable a safety gate through coercion or IEEE special values.
-
-**Contents.** Defines `OWNER`, `test_all_execution_and_safety_numbers_must_be_finite()`, `test_estimates_and_intervals_cannot_disable_gas_or_scheduling_checks()`, `test_allocator_settings_reject_boolean_and_collection_coercion()`, `test_execution_timing_requires_positive_whole_seconds()`.
-
-**Use.** `python3 -m pytest liquidity/tests/test_config_audit.py -q`
-
-#### `liquidity/tests/test_daemon.py`
-
-`test` · 1336 lines · 55,839 B · description: **extracted**
-
-**Purpose.** Offline tests of the daemon with a stubbed chain, market, engine and rebalancer. The stubs record every call, so the tests can prove what the daemon did and did not send: which runner kind each rebalancer call received ("sim" or "live"), and that nothing signs in dry run or under the kill switch.
-
-**Contents.** Defines `OWNER`, `WETH`, `USDC`, `AERO`, `WSTETH`, `GAUGE`, `DEC`, `PRICES`, `addr()`, `tick_for()` and 30 more.
-
-**Use.** `python3 -m pytest liquidity/tests/test_daemon.py -q`
-
-#### `liquidity/tests/test_daemon_audit.py`
-
-`test` · 219 lines · 8,296 B · description: **extracted**
-
-**Purpose.** Every live path shares safety gates; capital and ownership cannot bypass them.
-
-**Contents.** Defines `make_daemon()`, `test_every_live_write_path_honors_zero_gas_cap()`, `test_foreign_direct_wallet_position_is_not_registered()`, `test_compound_clamps_rewards_to_fresh_position_and_total_caps()`, `test_pool_pushed_during_conversions_cannot_be_deployed()`, `test_compound_rechecks_total_exposure_after_simulation()`, `test_successful_compound_refreshes_snapshot_before_later_allocation()`, `test_deploy_checks_twap_after_the_simulation_too()`, `test_missing_simulation_gas_evidence_refuses_write()`, `test_preflight_never_uses_cached_price_when_feed_is_down()` and 2 more.
-
-**Use.** `python3 -m pytest liquidity/tests/test_daemon_audit.py -q`
-
-#### `liquidity/tests/test_engine.py`
-
-`test` · 282 lines · 11,379 B · description: **extracted**
-
-**Purpose.** Engine safety gates and partial-failure bookkeeping, with the chain and market stubbed out.
-
-**Contents.** Defines `OWNER`, `NEW_RANGE`, `make_engine()`, `chain_stub()`, `make_ev()`, `test_clean_evaluation_passes_live_safety()`, `test_live_mode_fails_closed()`, `test_dry_run_only_reports_unknown_twap_and_missing_prices()`, `_step_with()`, `test_failed_stake_keeps_tracking_the_minted_nft()` and 14 more.
-
-**Use.** `python3 -m pytest liquidity/tests/test_engine.py -q`
-
-#### `liquidity/tests/test_engine_audit.py`
-
-`test` · 103 lines · 3,673 B · description: **extracted**
-
-**Purpose.** Live safety and interrupted-operation persistence regressions (all I/O stubbed).
-
-**Contents.** Defines `setup_live()`, `test_fresh_position_above_cap_never_reaches_live_runner()`, `test_invalid_market_eth_quote_cannot_withdraw_live()`, `test_deferred_stop_persists_successful_withdraw()`, `test_deferred_stop_persists_rebalance_history_and_cooldown()`.
-
-**Use.** `python3 -m pytest liquidity/tests/test_engine_audit.py -q`
-
-#### `liquidity/tests/test_executor.py`
-
-`test` · 907 lines · 38,360 B · description: **extracted**
-
-**Purpose.** Offline tests of the rebalance sequence with a fake chain and a fake runner.
-
-**Contents.** Defines `W3`, `OWNER`, `GAUGE`, `T0`, `T1`, `AERO`, `HUGE`, `transfer_log()`, `increase_log()`, `class FakeChain` and 30 more.
-
-**Use.** `python3 -m pytest liquidity/tests/test_executor.py -q`
-
-#### `liquidity/tests/test_executor_audit.py`
-
-`test` · 177 lines · 7,158 B · description: **extracted**
-
-**Purpose.** Transaction-scoped accounting and receipt-recovery regressions.
-
-**Contents.** Defines `test_topup_drift_aborts_before_swapping_and_restakes()`, `test_incoming_transfer_during_remove_never_enters_rebalance_budget()`, `test_increase_receipt_survives_failed_state_read()`, `test_missing_remove_transfer_evidence_aborts_before_spending()`, `test_actual_mint_amounts_come_from_confirmed_increase_receipt()`, `test_unrelated_incoming_transfer_during_topup_unstake_stays_out_of_budget()`, `test_mint_without_increase_evidence_stops_but_preserves_new_nft()`, `test_live_increase_receipt_is_kept_before_failed_postreceipt_read()`, `test_repeated_transaction_labels_preserve_total_gas()`, `test_capped_topup_leaves_unstake_proceeds_in_wallet()`.
-
-**Use.** `python3 -m pytest liquidity/tests/test_executor_audit.py -q`
-
-#### `liquidity/tests/test_gates.py`
-
-`test` · 202 lines · 8,547 B · description: **extracted**
-
-**Purpose.** Soak gate, research gate, grandfather record and the CLI refusal. Offline; nothing is signed.
-
-**Contents.** Defines `OWNER`, `H`, `cfg()`, `passing()`, `soak()`, `test_live_refused_without_a_soak_record()`, `test_live_allowed_after_the_configured_soak()`, `test_default_soak_is_24_hours()`, `test_downtime_between_dry_run_ticks_is_not_credited()`, `test_strategy_or_cap_change_resets_the_soak()` and 11 more.
-
-**Use.** `python3 -m pytest liquidity/tests/test_gates.py -q`
-
-#### `liquidity/tests/test_market_state.py`
-
-`test` · 179 lines · 6,838 B · description: **extracted**
-
-**Purpose.** Earnings model, volatility estimate, price cache and state file (offline).
-
-**Contents.** Defines `WETH`, `USDC`, `econ()`, `test_earn_staked_is_share_of_emissions()`, `test_earn_unstaked_is_share_of_net_fees()`, `test_earn_is_zero_out_of_range_or_without_liquidity()`, `test_liquidity_for_usd_round_trips_to_the_requested_value()`, `test_vol_from_closes_scales_hourly_to_daily()`, `test_vol_from_closes_ignores_bid_ask_bounce_but_keeps_real_moves()`, `_market()` and 4 more.
-
-**Use.** `python3 -m pytest liquidity/tests/test_market_state.py -q`
-
-#### `liquidity/tests/test_metrics.py`
-
-`test` · 236 lines · 8,856 B · description: **extracted**
-
-**Purpose.** Metrics and scout numeric edge cases, with a stubbed chain and market (no network).
-
-**Contents.** Defines `WETH`, `WSTETH`, `AERO`, `POOL`, `GAUGE`, `PRICES`, `make_pool()`, `class StubChain`, `class StubMarket`, `wobble()` and 15 more.
-
-**Use.** `python3 -m pytest liquidity/tests/test_metrics.py -q`
-
-#### `liquidity/tests/test_network.py`
-
-`test` · 71 lines · 2,574 B · description: **extracted**
-
-**Purpose.** Live Base checks. Run with: pytest -m network They read public chain state and run eth_simulateV1. Nothing is signed or broadcast.
-
-**Contents.** Defines `USDC`, `chain()`, `test_deployment_verifies()`, `test_weth_usdc_pool_state()`, `_find_staked_position()`, `test_full_rebalance_simulates_on_a_real_staked_position()`.
-
-**Use.** `python3 -m pytest liquidity/tests/test_network.py -q`
-
-#### `liquidity/tests/test_providers.py`
-
-`test` · 1044 lines · 48,994 B · description: **extracted**
-
-**Purpose.** Provider comparison (offline): DefiLlama parsing, AMM mapping, Tier 2 LVR, the generic v3 and v4 readers against a fake chain, ranking, and the report. HTTP goes through httpx.MockTransport; no network, no chain.
-
-**Contents.** Defines `WETH`, `USDC`, `USDT`, `CBBTC`, `POOL`, `raw_pool()`, `test_llama_pool_parses_fee_tick_spacing_and_native_tokens()`, `test_llama_pool_tolerates_missing_and_null_numbers()`, `test_quoted_base_apy_falls_back_to_the_total_less_rewards_for_vaults()`, `test_amm_type_mapping()` and 30 more.
-
-**Use.** `python3 -m pytest liquidity/tests/test_providers.py -q`
-
-#### `liquidity/tests/test_providers_network.py`
-
-`test` · 62 lines · 2,573 B · description: **extracted**
-
-**Purpose.** Live Base reads for the provider comparison. Run with: pytest -m network Reads public chain state, GeckoTerminal and DefiLlama. Nothing is signed or broadcast.
-
-**Contents.** Defines `USDC`, `V4_USDC_USDT`, `chain()`, `test_registry_addresses_verify_on_chain()`, `test_a_real_uniswap_v3_weth_usdc_pool_scores_with_finite_measured_numbers()`, `test_a_real_uniswap_v4_pool_reads_through_state_view()`.
-
-**Use.** `python3 -m pytest liquidity/tests/test_providers_network.py -q`
-
-#### `liquidity/tests/test_safe_exit.py`
-
-`test` · 442 lines · 17,901 B · description: **extracted**
-
-**Purpose.** exit-to-safe with a stubbed engine: dry run signs nothing, live sets KILL, every check fails closed.
-
-**Contents.** Defines `OWNER`, `WETH`, `USDC`, `PRICES`, `token()`, `POOL`, `pos()`, `result()`, `class StubEngine`, `run()` and 24 more.
-
-**Use.** `python3 -m pytest liquidity/tests/test_safe_exit.py -q`
-
-#### `liquidity/tests/test_strategy.py`
-
-`test` · 144 lines · 5,113 B · description: **none**
-
-**Purpose.** _No description available._
-
-**Contents.** Defines `cost()`, `decide()`, `test_target_range_contains_tick_and_is_snapped()`, `test_target_range_minimum_width()`, `test_hold_when_centered()`, `test_rebalance_when_out_of_range_and_profitable()`, `test_cooldown_blocks()`, `test_edge_needs_confirmation()`, `test_unprofitable_when_costs_dominate()`, `test_waits_out_gauge_penalty_when_cheaper()` and 7 more.
-
-**Use.** `python3 -m pytest liquidity/tests/test_strategy.py -q`
-
-#### `liquidity/tests/test_submission_audit.py`
-
-`test` · 395 lines · 17,250 B · description: **extracted**
-
-**Purpose.** Ambiguous broadcasts stay blocked until durable receipt and ownership reconciliation.
-
-**Contents.** Defines `test_simrunner_requires_positive_measured_gas()`, `test_engine_rejects_unknown_sequence_gas()`, `test_live_runner_refuses_to_broadcast_without_durable_journal()`, `mint_transaction()`, `late_mint_receipt()`, `test_journal_is_durable_before_send_and_blocks_another_runner()`, `test_late_mint_is_tracked_across_daemon_restart_before_retry()`, `proven_receipt()`, `test_late_rebalance_mint_recovers_engine_state_and_existing_slot()`, `test_recovered_position_flows_are_idempotent()` and 5 more.
-
-**Use.** `python3 -m pytest liquidity/tests/test_submission_audit.py -q`
-
----
-
 ## llms
 
 5 files.
@@ -30382,598 +33590,6 @@ Session handoff notes, newest first. Prose, not machine-read.
 **Purpose.** Generated report. Opens: # Jupiter / > Jupiter is DeFi infrastructure on Solana. All APIs are REST/JSON, require no RPC node, and return clean responses that LLMs and AI agents can parse directly.
 
 **Use.** Read it.
-
----
-
-## mongo
-
-18 files.
-
-#### `mongo/README.md`
-
-`doc` · 190 lines · 9,465 B · description: **extracted**
-
-**Purpose.** A read-mostly MongoDB copy of everything this repo has measured: price history, strategies and their cards, the signal and indicator layers, per-bar readouts, backtest runs, CPCV and sweep results, the coin write-ups, and the test-suite
-
-**Use.** Read it.
-
-#### `mongo/__init__.py`
-
-`code-python` · 0 lines · 0 B · description: **none**
-
-**Purpose.** _No description available._
-
-**Use.** `import mongo.__init__`
-
-#### `mongo/load.py`
-
-`code-python` · 860 lines · 32,661 B · description: **extracted**
-
-**Purpose.** Load the repo's research artifacts into the local MongoDB store. pip install -r mongo/requirements.txt python3 mongo/load.py # everything python3 mongo/load.py --only bars,strategies python3 mongo/load.py --dry-run # count what would load, write nothing Derived artifact collections are dropped and rebuilt to prevent duplicate time series measurements.
-
-**Contents.** Defines `REPO`, `LOADED_AT`, `sha256()`, `source_snapshot()`, `provenance()`, `clean()`, `maybe_number()`, `read_csv_snapshot()`, `read_csv_rows()`, `read_bar_snapshot()` and 27 more. Depends on `backtester`, `research`.
-
-**Use.** `python3 mongo/load.py --help`
-
-#### `mongo/requirements.txt`
-
-`data` · 6 lines · 290 B · description: **derived**
-
-**Purpose.** Generated report. Opens: # Deliberately separate from backtester/requirements.txt. The backtester is / # stdlib-first and its dependency list is short on purpose; a driver needed only
-
-**Use.** Read it.
-
-#### `mongo/schema.py`
-
-`code-python` · 481 lines · 20,393 B · description: **extracted**
-
-**Purpose.** Collection layout for the local research store: specs, validators, indexes. python3 mongo/schema.py --create # rebuild derived data; retain test receipts python3 mongo/schema.py --describe # print the layout, touch nothing Design notes, because the shape is the part worth arguing about: * **Bars are a native time series collection.** Per-bar, time-ordered, append-only measurements are what that co
-
-**Contents.** Defines `DB_NAME`, `PROVENANCE_REQUIRED`, `_doc()`, `ALL_COLLECTIONS`, `connect()`, `create()`, `describe()`, `main()`.
-
-**Use.** `python3 mongo/schema.py --help`
-
-### `mongo/queries/`
-
-#### `mongo/queries/01-coins-and-bars.js`
-
-`code-js` · 110 lines · 3,592 B · description: **extracted**
-
-**Purpose.** Coins and price history. mongosh solmargintrader mongo/queries/01-coins-and-bars.js `bars` is a native time series collection: `ts` is the time field and `series` the metaField, so every query below should filter on `series.*` and a time range. MongoDB creates the meta+time index itself; there are no user indexes to add.
-
-**Use.** Loaded by the extension; see `extension/manifest.json` for entry points.
-
-#### `mongo/queries/02-strategies-and-cards.js`
-
-`code-js` · 105 lines · 3,577 B · description: **extracted**
-
-**Purpose.** Strategies and their cards. mongosh solmargintrader mongo/queries/02-strategies-and-cards.js One document per strategy card (45). The card's own vocabulary is preserved rather than flattened into a boolean: registry_key a string for the 25 registered `Strategy` implementations, null otherwise.
-
-**Use.** Loaded by the extension; see `extension/manifest.json` for entry points.
-
-#### `mongo/queries/03-signals-and-indicators.js`
-
-`code-js` · 72 lines · 2,448 B · description: **extracted**
-
-**Purpose.** Signals and indicators — the two layers beneath the strategies. mongosh solmargintrader mongo/queries/03-signals-and-indicators.js These are small reference collections (15 and 20 documents). They exist so a reader can answer "what does this rule actually compare?" without opening research/decide.py, and so the readouts in `decisions` can be joined to their definitions.
-
-**Use.** Loaded by the extension; see `extension/manifest.json` for entry points.
-
-#### `mongo/queries/04-decisions.js`
-
-`code-js` · 131 lines · 4,298 B · description: **extracted**
-
-**Purpose.** Per-bar readouts: what every rule said about the last bar of a series. mongosh solmargintrader mongo/queries/04-decisions.js Each document is `research.decide.build_report()` output verbatim, plus provenance. That is deliberate -- re-deriving a Mongo-specific shape would let the store and the readout disagree about what a strategy said. Read the header fields before the verdicts.
-
-**Use.** Loaded by the extension; see `extension/manifest.json` for entry points.
-
-#### `mongo/queries/05-backtests.js`
-
-`code-js` · 119 lines · 3,852 B · description: **extracted**
-
-**Purpose.** Backtest runs: manifests, per-strategy metrics, equity curves, fills. mongosh solmargintrader mongo/queries/05-backtests.js Three collections, split by cardinality rather than by topic: backtest_runs one document per run. The manifest is embedded because it is always read with the run, and the per-strategy metrics table is bounded by the strategies that ran.
-
-**Use.** Loaded by the extension; see `extension/manifest.json` for entry points.
-
-#### `mongo/queries/06-experiments-and-pbo.js`
-
-`code-js` · 151 lines · 4,901 B · description: **extracted**
-
-**Purpose.** Experiments: CPCV, sweeps, perturbations, geometry — and PBO. mongosh solmargintrader mongo/queries/06-experiments-and-pbo.js Two collections: experiments one document per result file: kind, name, columns, and the JSON sidecar when it is a single object. experiment_rows one document per row.
-
-**Use.** Loaded by the extension; see `extension/manifest.json` for entry points.
-
-#### `mongo/queries/07-documents-and-search.js`
-
-`code-js` · 75 lines · 2,642 B · description: **extracted**
-
-**Purpose.** Reference prose: coin intelligence, research write-ups, component docs. mongosh solmargintrader mongo/queries/07-documents-and-search.js One document per markdown file, with a full-text index on title and body. A server allows one text index per collection, and this is it. Caveat worth keeping in mind: prose in a strategy card is *argument*, not checked fact.
-
-**Use.** Loaded by the extension; see `extension/manifest.json` for entry points.
-
-#### `mongo/queries/08-provenance-and-health.js`
-
-`code-js` · 125 lines · 4,287 B · description: **extracted**
-
-**Purpose.** Provenance, freshness and store health — run this before trusting anything else. mongosh solmargintrader mongo/queries/08-provenance-and-health.js Every document carries `source_path`, `source_sha256` and `loaded_at`. That is not bookkeeping: it is what lets a number here be traced to a file, and a file to the run that produced it. A figure with no provenance is not a figure.
-
-**Use.** Loaded by the extension; see `extension/manifest.json` for entry points.
-
-### `mongo/tests/`
-
-#### `mongo/tests/__init__.py`
-
-`test` · 0 lines · 0 B · description: **none**
-
-**Purpose.** _No description available._
-
-**Use.** `python3 -m pytest mongo/tests/__init__.py -q`
-
-#### `mongo/tests/test_analysis_regressions.py`
-
-`test` · 199 lines · 11,970 B · description: **extracted**
-
-**Purpose.** Mongo contracts tested with byte snapshots and fake collections only.
-
-**Contents.** Defines `class AnalysisLoaderRegressions`, `class AdditionalLoaderRegressions`. Depends on `backtester`.
-
-**Use.** `python3 -m pytest mongo/tests/test_analysis_regressions.py -q`
-
-#### `mongo/tests/test_load.py`
-
-`test` · 346 lines · 14,942 B · description: **extracted**
-
-**Purpose.** Tests for the local MongoDB research store. The load is destructive by design, so the test that matters most asserts it is therefore *idempotent*: loading twice must leave identical counts. Without that, the time series collections would silently double on a second run -- they accept no unique index, so nothing else would catch it.
-
-**Contents.** Defines `REPO`, `server_available()`, `SERVER`, `class TestPureHelpers`, `class TestSchemaLayout`, `class TestLoadedStore`, `class TestIdempotency`. Depends on `backtester`, `research`.
-
-**Use.** `python3 -m pytest mongo/tests/test_load.py -q`
-
-#### `mongo/tests/test_load_audit.py`
-
-`test` · 157 lines · 8,012 B · description: **extracted**
-
-**Purpose.** Offline loader regressions: fixtures and fake databases only.
-
-**Contents.** Defines `class FakeDatabase`, `class LoaderAuditTests`.
-
-**Use.** `python3 -m pytest mongo/tests/test_load_audit.py -q`
-
-#### `mongo/tests/test_snapshot_audit.py`
-
-`test` · 96 lines · 4,694 B · description: **extracted**
-
-**Purpose.** Source byte and run-artifact identity, without a MongoDB connection.
-
-**Contents.** Defines `class SnapshotAudit`. Depends on `backtester`.
-
-**Use.** `python3 -m pytest mongo/tests/test_snapshot_audit.py -q`
-
----
-
-## oracle
-
-43 files.
-
-#### `oracle/README.md`
-
-`doc` · 326 lines · 18,577 B · description: **extracted**
-
-**Purpose.** Oracle is a local shadow signal service, defaulting to SOL/USDC. Explicit CLI and MCP process to that instrument. No quote conversion is implied. A single foreground daemon consumes source-labelled observations into a durable historical SQLite archive.
-
-**Use.** Read it.
-
-#### `oracle/__init__.py`
-
-`code-python` · 2 lines · 80 B · description: **extracted**
-
-**Purpose.** Oracle forecasts and optional explicitly enabled Coinbase webhook orders.
-
-**Use.** `import oracle.__init__`
-
-#### `oracle/__main__.py`
-
-`code-python` · 4 lines · 48 B · description: **none**
-
-**Purpose.** _No description available._
-
-**Use.** `import oracle.__main__`
-
-#### `oracle/cli.py`
-
-`code-python` · 328 lines · 12,686 B · description: **extracted**
-
-**Purpose.** Oracle forecasts, inert queries and explicitly enabled venue webhooks.
-
-**Contents.** Defines `default_archive()`, `emit()`, `owner()`, `snapshot()`, `run()`, `class Parser`, `main()`.
-
-**Use.** `python3 oracle/cli.py --help`
-
-#### `oracle/coinbase_orders.py`
-
-`code-python` · 333 lines · 13,193 B · description: **extracted**
-
-**Purpose.** Exact Coinbase spot sizing and one-shot official CLI order transport. Credentials remain in the official CLI's configured credential store. This adapter neither reads credentials nor retries an order submission.
-
-**Contents.** Defines `MAX_PAGES`, `MAX_OUTPUT`, `PAIR`, `IDENTITY`, `PLAIN_DECIMAL`, `ORDER_FIELDS`, `class CoinbaseError`, `class CoinbaseAmbiguous`, `_decimal()`, `_identity()` and 2 more.
-
-**Use.** `import oracle.coinbase_orders`
-
-#### `oracle/engine.py`
-
-`code-python` · 571 lines · 23,856 B · description: **extracted**
-
-**Purpose.** Prospective, source-bound shadow forecasts; no execution capability.
-
-**Contents.** Defines `SCHEMA_VERSION`, `IDENTITY`, `number()`, `class OracleEngine`.
-
-**Use.** `import oracle.engine`
-
-#### `oracle/feeds.py`
-
-`code-python` · 298 lines · 11,777 B · description: **extracted**
-
-**Purpose.** Read-only market adapters with explicit source and clock semantics. No adapter starts the shared recorder, loads a signing key, or obtains a swap. Jupiter's Price V3 API supplies USD reference prices, not a SOL/USDC execution quote or a push stream. Its response has block IDs but no market-event timestamp.
-
-**Contents.** Defines `SOL_MINT`, `USDC_MINT`, `JUPITER_PRICE_URL`, `MAX_RESPONSE_BYTES`, `INSTRUMENT`, `MINT`, `validate_instrument()`, `class FeedUnavailable`, `_number()`, `_identity()` and 4 more.
-
-**Use.** `import oracle.feeds`
-
-#### `oracle/graphdb.py`
-
-`code-python` · 206 lines · 7,577 B · description: **extracted**
-
-**Purpose.** Append-only per-evaluation graph snapshots in the Oracle archive.
-
-**Contents.** Defines `GRAPH_SCHEMA_VERSION`, `DEFAULT_LIMIT`, `MAX_LIMIT`, `market_shape()`, `record_tick()`, `history()`.
-
-**Use.** `import oracle.graphdb`
-
-#### `oracle/guidance.py`
-
-`code-python` · 187 lines · 6,297 B · description: **extracted**
-
-**Purpose.** Read-only guide routing and conservative lifecycle/readiness summaries.
-
-**Contents.** Defines `REPO`, `STAGES`, `GUIDES`, `guidance()`, `manager_inventory()`, `readiness()`, `veto()`.
-
-**Use.** `import oracle.guidance`
-
-#### `oracle/gum_orders.py`
-
-`code-python` · 958 lines · 37,485 B · description: **extracted**
-
-**Purpose.** Exact ZEC isolated-perpetual orders through the official GUM JTX Action API. Order messages are constructed locally from checked economics. This module never signs a server-supplied transaction, creates an account, deposits, or retries a write. The optional signer signs bytes and returns 64 Ed25519 signature bytes. The binary layout follows jupnet/gum-perp-sdk 0.2.0 action.rs/request.rs.
-
-**Contents.** Defines `BASE_URL`, `PROGRAM_ID`, `MARKET_ID`, `ALPHABET`, `U64_MAX`, `MAX_RESPONSE`, `TERMINAL`, `class GumError`, `class GumAmbiguous`, `b58encode()` and 13 more.
-
-**Use.** `import oracle.gum_orders`
-
-#### `oracle/gum_signer.py`
-
-`code-python` · 65 lines · 2,188 B · description: **extracted**
-
-**Purpose.** Private, owner-bound Ed25519 signing for locally constructed GUM Actions.
-
-**Contents.** Defines `_decode()`, `load_signer()`.
-
-**Use.** `import oracle.gum_signer`
-
-#### `oracle/gum_webhook_orders.py`
-
-`code-python` · 453 lines · 16,974 B · description: **extracted**
-
-**Purpose.** Durable GUM position changes; an accepted action is never treated as a fill.
-
-**Contents.** Defines `VENUE`, `PRODUCT`, `client_order_id()`, `_decimal()`, `_json()`, `_save()`, `_refuse()`, `_identity()`, `_acceptance()`, `_receipt()` and 4 more.
-
-**Use.** `import oracle.gum_webhook_orders`
-
-#### `oracle/mcp-requirements.txt`
-
-`data` · 3 lines · 98 B · description: **derived**
-
-**Purpose.** Generated report. Opens: # The MCP adapter is optional; the observation and strategy engine stay stdlib-first. / mcp==1.30.0
-
-**Use.** Read it.
-
-#### `oracle/pyproject.toml`
-
-`config` · 20 lines · 524 B · description: **none**
-
-**Purpose.** _No description available._
-
-**Use.** Configuration; nothing to run.
-
-#### `oracle/quotes.py`
-
-`code-python` · 499 lines · 18,032 B · description: **extracted**
-
-**Purpose.** Explicit opt-in Swap v1 evidence owned by the existing shared Oracle archive. This module never builds transactions, signs, retries, or starts a collector. Quoted outputs and cost assumptions remain distinct from observed execution.
-
-**Contents.** Defines `ENDPOINT`, `MINT`, `MAX_RESPONSE`, `ROUTE_POLICY`, `QUOTE_BUDGET_PATH`, `class QuoteError`, `_hash()`, `_raw()`, `validate_request()`, `capture_quote()` and 7 more.
-
-**Use.** `import oracle.quotes`
-
-#### `oracle/reader.py`
-
-`code-python` · 366 lines · 14,973 B · description: **extracted**
-
-**Purpose.** Inert archive inspection through the canonical Oracle query implementation.
-
-**Contents.** Defines `LEGACY_EVALUATOR_SHA256`, `PARAMETER_TYPES`, `_recorded_catalog()`, `class RecordedStrategySet`, `class ReadOnlyStore`, `class ReadOnlyOracle`.
-
-**Use.** `import oracle.reader`
-
-#### `oracle/server.py`
-
-`code-python` · 431 lines · 15,323 B · description: **extracted**
-
-**Purpose.** Local stdio MCP views over the Oracle archive; never a submission surface.
-
-**Contents.** Defines `VERSION`, `RESOURCE_NAMES`, `EMPTY`, `ENVELOPE_SCHEMA`, `TOOL_SCHEMAS`, `DESCRIPTIONS`, `envelope()`, `encode()`, `class SubscriptionHub`, `build_server()` and 5 more.
-
-**Use.** `python3 oracle/server.py --help`
-
-#### `oracle/store.py`
-
-`code-python` · 130 lines · 5,996 B · description: **extracted**
-
-**Purpose.** Private append-only SQLite Oracle event archive with transactional state.
-
-**Contents.** Defines `canonical()`, `class Store`.
-
-**Use.** `import oracle.store`
-
-#### `oracle/strategies.py`
-
-`code-python` · 123 lines · 4,508 B · description: **extracted**
-
-**Purpose.** Pinned adapters over fourteen existing price-only strategy cards. These are exposure rules reused as prospective directional hypotheses. A flat exposure remains FLAT; it is never silently reinterpreted as a bearish forecast.
-
-**Contents.** Defines `STRATEGY_IDS`, `REPLAY_BARS`, `class StrategySet`. Depends on `backtester`.
-
-**Use.** `import oracle.strategies`
-
-#### `oracle/voting.py`
-
-`code-python` · 129 lines · 4,098 B · description: **extracted**
-
-**Purpose.** Pure prospective-vote aggregation; inputs are not proof of their provenance.
-
-**Contents.** Defines `MINIMUM_ACCURACY`, `class Vote`, `aggregate()`.
-
-**Use.** `import oracle.voting`
-
-#### `oracle/webhook.py`
-
-`code-python` · 243 lines · 8,308 B · description: **extracted**
-
-**Purpose.** TradingView signal reception with explicitly selected venue dispatch.
-
-**Contents.** Defines `MAX_BODY`, `HTTP_TIMEOUT`, `MAX_HTTP_WORKERS`, `EVENT_ID`, `SYMBOL`, `class _WebhookHTTPServer`, `accept_signal()`, `serve()`.
-
-**Use.** `import oracle.webhook`
-
-#### `oracle/webhook_orders.py`
-
-`code-python` · 247 lines · 8,563 B · description: **extracted**
-
-**Purpose.** Durable Coinbase webhook dispatch; Oracle votes do not qualify these orders.
-
-**Contents.** Defines `TERMINAL`, `BLOCKING`, `database()`, `records()`, `_update()`, `recover_planning()`, `_reconcile()`, `process_one()`.
-
-**Use.** `import oracle.webhook_orders`
-
-### `oracle/tests/`
-
-#### `oracle/tests/__init__.py`
-
-`test` · 0 lines · 0 B · description: **none**
-
-**Purpose.** _No description available._
-
-**Use.** `python3 -m pytest oracle/tests/__init__.py -q`
-
-#### `oracle/tests/test_archived_reader.py`
-
-`test` · 157 lines · 6,615 B · description: **none**
-
-**Purpose.** _No description available._
-
-**Contents.** Defines `class ArchivedReaderTests`.
-
-**Use.** `python3 -m pytest oracle/tests/test_archived_reader.py -q`
-
-#### `oracle/tests/test_cli.py`
-
-`test` · 73 lines · 2,522 B · description: **none**
-
-**Purpose.** _No description available._
-
-**Contents.** Defines `class CliTests`.
-
-**Use.** `python3 -m pytest oracle/tests/test_cli.py -q`
-
-#### `oracle/tests/test_coinbase_orders.py`
-
-`test` · 293 lines · 11,430 B · description: **none**
-
-**Purpose.** _No description available._
-
-**Contents.** Defines `PORTFOLIO`, `CLIENT_ID`, `ORDER_ID`, `account()`, `class Provider`, `class CoinbaseOrdersTests`.
-
-**Use.** `python3 -m pytest oracle/tests/test_coinbase_orders.py -q`
-
-#### `oracle/tests/test_core.py`
-
-`test` · 177 lines · 6,775 B · description: **none**
-
-**Purpose.** _No description available._
-
-**Contents.** Defines `observation()`, `class CoreTests`.
-
-**Use.** `python3 -m pytest oracle/tests/test_core.py -q`
-
-#### `oracle/tests/test_feeds.py`
-
-`test` · 204 lines · 7,638 B · description: **none**
-
-**Purpose.** _No description available._
-
-**Contents.** Defines `class RecorderFeedTests`, `class JupiterFeedTests`.
-
-**Use.** `python3 -m pytest oracle/tests/test_feeds.py -q`
-
-#### `oracle/tests/test_graphdb.py`
-
-`test` · 95 lines · 4,229 B · description: **none**
-
-**Purpose.** _No description available._
-
-**Contents.** Defines `observation()`, `class GraphDBTests`.
-
-**Use.** `python3 -m pytest oracle/tests/test_graphdb.py -q`
-
-#### `oracle/tests/test_guidance.py`
-
-`test` · 61 lines · 2,317 B · description: **none**
-
-**Purpose.** _No description available._
-
-**Contents.** Defines `class Engine`, `class GuidanceTests`.
-
-**Use.** `python3 -m pytest oracle/tests/test_guidance.py -q`
-
-#### `oracle/tests/test_gum_cli.py`
-
-`test` · 107 lines · 3,932 B · description: **extracted**
-
-**Purpose.** CLI policy units and explicit live selection are part of the order boundary.
-
-**Contents.** Defines `class GumCliTests`.
-
-**Use.** `python3 -m pytest oracle/tests/test_gum_cli.py -q`
-
-#### `oracle/tests/test_gum_orders.py`
-
-`test` · 578 lines · 23,759 B · description: **none**
-
-**Purpose.** _No description available._
-
-**Contents.** Defines `OWNER`, `ACCOUNT`, `ISOLATED`, `BLOCKHASH`, `CLIENT_ID`, `PREFIX`, `OPEN_VECTOR`, `CLOSE_VECTOR`, `class Provider`, `class GumOrderTests`.
-
-**Use.** `python3 -m pytest oracle/tests/test_gum_orders.py -q`
-
-#### `oracle/tests/test_gum_signer.py`
-
-`test` · 71 lines · 2,784 B · description: **extracted**
-
-**Purpose.** The live signer rejects replaced, public, malformed and wrong-owner keys.
-
-**Contents.** Defines `encode()`, `class GumSignerTests`.
-
-**Use.** `python3 -m pytest oracle/tests/test_gum_signer.py -q`
-
-#### `oracle/tests/test_gum_webhook_orders.py`
-
-`test` · 657 lines · 26,728 B · description: **extracted**
-
-**Purpose.** GUM reversals require durable per-leg identity, a fill and settled collateral.
-
-**Contents.** Defines `class Venue`, `class LifecycleProvider`, `class GumWebhookOrderTests`.
-
-**Use.** `python3 -m pytest oracle/tests/test_gum_webhook_orders.py -q`
-
-#### `oracle/tests/test_multi_instrument.py`
-
-`test` · 266 lines · 10,575 B · description: **none**
-
-**Purpose.** _No description available._
-
-**Contents.** Defines `HAS_MCP`, `REPO`, `tick()`, `class MultiInstrumentTests`, `class MultiInstrumentProtocolTests`.
-
-**Use.** `python3 -m pytest oracle/tests/test_multi_instrument.py -q`
-
-#### `oracle/tests/test_quotes.py`
-
-`test` · 296 lines · 10,317 B · description: **none**
-
-**Purpose.** _No description available._
-
-**Contents.** Defines `SOL`, `USDC`, `fixture()`, `class QuoteTests`, `class QuoteEvidenceReviewTests`, `class QuotePageTests`.
-
-**Use.** `python3 -m pytest oracle/tests/test_quotes.py -q`
-
-#### `oracle/tests/test_selected_server.py`
-
-`test` · 215 lines · 9,041 B · description: **none**
-
-**Purpose.** _No description available._
-
-**Contents.** Defines `HAS_MCP`, `REPO`, `class SelectionBindingTests`, `class SelectedProtocolTests`.
-
-**Use.** `python3 -m pytest oracle/tests/test_selected_server.py -q`
-
-#### `oracle/tests/test_server.py`
-
-`test` · 175 lines · 6,864 B · description: **none**
-
-**Purpose.** _No description available._
-
-**Contents.** Defines `HAS_MCP`, `REPO`, `class SubscriptionTests`, `class ProtocolTests`.
-
-**Use.** `python3 -m pytest oracle/tests/test_server.py -q`
-
-#### `oracle/tests/test_store.py`
-
-`test` · 47 lines · 1,838 B · description: **none**
-
-**Purpose.** _No description available._
-
-**Contents.** Defines `class StoreTests`.
-
-**Use.** `python3 -m pytest oracle/tests/test_store.py -q`
-
-#### `oracle/tests/test_strategies.py`
-
-`test` · 77 lines · 2,776 B · description: **none**
-
-**Purpose.** _No description available._
-
-**Contents.** Defines `class StrategyTests`. Depends on `backtester`.
-
-**Use.** `python3 -m pytest oracle/tests/test_strategies.py -q`
-
-#### `oracle/tests/test_voting.py`
-
-`test` · 76 lines · 2,823 B · description: **none**
-
-**Purpose.** _No description available._
-
-**Contents.** Defines `class VotingTests`.
-
-**Use.** `python3 -m pytest oracle/tests/test_voting.py -q`
-
-#### `oracle/tests/test_webhook.py`
-
-`test` · 248 lines · 9,366 B · description: **none**
-
-**Purpose.** _No description available._
-
-**Contents.** Defines `class WebhookTests`.
-
-**Use.** `python3 -m pytest oracle/tests/test_webhook.py -q`
-
-#### `oracle/tests/test_webhook_orders.py`
-
-`test` · 309 lines · 12,059 B · description: **extracted**
-
-**Purpose.** Webhook sends bind durable identity and never retry ambiguous orders.
-
-**Contents.** Defines `class Venue`, `class WebhookOrderTests`.
-
-**Use.** `python3 -m pytest oracle/tests/test_webhook_orders.py -q`
 
 ---
 
@@ -31029,7 +33645,7 @@ Session handoff notes, newest first. Prose, not machine-read.
 
 #### `postman/mocks/botmanager-jupiter-swap-v1/default.js`
 
-`code-js` · 72 lines · 3,017 B · description: **extracted**
+`code-js` · 84 lines · 3,536 B · description: **extracted**
 
 **Purpose.** Local provider-contract stand-in. All quote values are documentation fixtures.
 
@@ -31089,11 +33705,11 @@ Session handoff notes, newest first. Prose, not machine-read.
 
 ## scripts
 
-26 files.
+31 files.
 
 #### `scripts/bootstrap_ecosystem.py`
 
-`code-python` · 51 lines · 1,644 B · description: **extracted**
+`code-python` · 57 lines · 1,962 B · description: **extracted**
 
 **Purpose.** Install, verify and start the resumable paper ecosystem; status/stop are inert.
 
@@ -31103,7 +33719,7 @@ Session handoff notes, newest first. Prose, not machine-read.
 
 #### `scripts/build_doc_index.py`
 
-`code-python` · 181 lines · 6,342 B · description: **extracted**
+`code-python` · 183 lines · 6,431 B · description: **extracted**
 
 **Purpose.** Generate `docs/high_signal_file_index.json` from `docs/codebase-overview.md`. python3 scripts/build_doc_index.py The overview is the human-readable file map; the JSON is the machine-readable one for LLM retrieval.
 
@@ -31121,6 +33737,16 @@ Session handoff notes, newest first. Prose, not machine-read.
 
 **Use.** `python3 scripts/build_ecosystem_wiki.py --help`
 
+#### `scripts/build_operation_inventories.py`
+
+`code-python` · 327 lines · 18,144 B · description: **extracted**
+
+**Purpose.** Generate docs-only operation/tool inventories from authoritative source metadata. Run ``python3 scripts/build_operation_inventories.py --check`` in CI. This stdlib-only tool parses source; it never imports an application, executes a handler, starts a service, signs an order or installs a dependency.
+
+**Contents.** Defines `ROOT`, `COMPONENTS`, `REGISTRIES`, `MANUAL_TOOLS`, `class InventoryError`, `_literal()`, `python_commands()`, `_object_properties()`, `javascript_commands()`, `_javascript_text()` and 6 more.
+
+**Use.** `python3 scripts/build_operation_inventories.py --help`
+
 #### `scripts/build_tradingview_script_profiles.py`
 
 `code-python` · 305 lines · 11,940 B · description: **extracted**
@@ -31133,7 +33759,7 @@ Session handoff notes, newest first. Prose, not machine-read.
 
 #### `scripts/capture_market.py`
 
-`code-python` · 451 lines · 19,809 B · description: **extracted**
+`code-python` · 468 lines · 20,961 B · description: **extracted**
 
 **Purpose.** Bounded public market-event capture with durable spool and separate Mongo upload. No orders, private market subscriptions, sampling, or drop/rebuild operations. The capture and upload roles have separate locks and independent lifecycles.
 
@@ -31143,7 +33769,7 @@ Session handoff notes, newest first. Prose, not machine-read.
 
 #### `scripts/check_docs.py`
 
-`code-python` · 420 lines · 15,747 B · description: **extracted**
+`code-python` · 417 lines · 15,705 B · description: **extracted**
 
 **Purpose.** Fail the build when the docs drift from the repo. python3 scripts/check_docs.py python3 scripts/check_docs.py --prune # drop dead index entries Two kinds of rot, both of which happened here before this existed: * **Stale test counts.** The docs claimed 250 backtester tests for several commits while the suite had grown to 454.
 
@@ -31183,7 +33809,7 @@ Session handoff notes, newest first. Prose, not machine-read.
 
 #### `scripts/html_to_markdown.py`
 
-`code-python` · 366 lines · 11,996 B · description: **extracted**
+`code-python` · 373 lines · 12,430 B · description: **extracted**
 
 **Purpose.** Recursively convert saved HTML to text-only Markdown, without network or dependencies. Usage: python3 scripts/html_to_markdown.py SOURCE [--output OUTPUT] [--overwrite] The default SOURCE is the current directory. OUTPUT defaults to a sibling directory named SOURCE-markdown. Original HTML is never modified; existing outputs are skipped.
 
@@ -31201,9 +33827,29 @@ Session handoff notes, newest first. Prose, not machine-read.
 
 **Use.** `python3 scripts/mcp_remote_client.py --help`
 
+#### `scripts/oraclebot_ops.py`
+
+`code-python` · 820 lines · 30,516 B · description: **extracted**
+
+**Purpose.** Read-only Oraclebot operations observer; no trading or service repair commands. A separate launchd job samples the existing solbot owner. SQLite preserves incidents and delivery retries. Reports count observed samples, not uptime.
+
+**Contents.** Defines `VERSION`, `LABEL`, `COMPONENTS`, `FORECAST_SOURCE_MAX_AGE`, `STOP`, `write_json()`, `database()`, `probe_output()`, `probe()`, `PIPELINE_COMPONENTS` and 15 more.
+
+**Use.** `python3 scripts/oraclebot_ops.py --help`
+
+#### `scripts/oraclebot_watchdog.py`
+
+`code-python` · 180 lines · 7,189 B · description: **extracted**
+
+**Purpose.** Independent GitHub-hosted availability observer for the Oraclebot Mac service.
+
+**Contents.** Defines `MARKER`, `TITLE`, `assess()`, `api()`, `website_health()`, `reconcile()`, `main()`.
+
+**Use.** `python3 scripts/oraclebot_watchdog.py --help`
+
 #### `scripts/render_tradingview_script_cards.py`
 
-`code-python` · 814 lines · 34,651 B · description: **extracted**
+`code-python` · 817 lines · 34,865 B · description: **extracted**
 
 **Purpose.** Render and verify source-reviewed documentation cards for saved trading scripts. The authored JSONL records are the semantic input. Rendering does no semantic classification. Final rendering requires an independent review of every record. The raw HTML stays local; the default check uses only committed artifacts.
 
@@ -31241,7 +33887,7 @@ Session handoff notes, newest first. Prose, not machine-read.
 
 #### `scripts/test_capture_market.py`
 
-`test` · 230 lines · 10,928 B · description: **extracted**
+`test` · 259 lines · 12,610 B · description: **extracted**
 
 **Purpose.** Durability, namespace and ambiguous-write regressions; no live network or DB.
 
@@ -31261,7 +33907,7 @@ Session handoff notes, newest first. Prose, not machine-read.
 
 #### `scripts/test_html_to_markdown.py`
 
-`test` · 143 lines · 6,180 B · description: **extracted**
+`test` · 158 lines · 6,945 B · description: **extracted**
 
 **Purpose.** Behavior checks for offline HTML conversion and safe recursive output.
 
@@ -31279,6 +33925,26 @@ Session handoff notes, newest first. Prose, not machine-read.
 
 **Use.** `python3 -m pytest scripts/test_mcp_remote_client.py -q`
 
+#### `scripts/test_oraclebot_ops.py`
+
+`test` · 1092 lines · 41,551 B · description: **extracted**
+
+**Purpose.** Synthetic observer transitions, retry delivery and independent outage checks.
+
+**Contents.** Defines `load()`, `health()`, `class OperationsTests`, `class RuntimeCoverageTests`, `class IndependentWatchdogTests`, `class ObserverBoundaryTests`, `class ObserverPositiveControls`, `class _WatchdogBoundaryResponse`, `class IndependentWatchdogBoundaryTests`, `class RemoteOrderTests`.
+
+**Use.** `python3 -m pytest scripts/test_oraclebot_ops.py -q`
+
+#### `scripts/test_research_backfill.py`
+
+`test` · 124 lines · 5,954 B · description: **extracted**
+
+**Purpose.** Launcher contracts use isolated shell stubs; never start or signal a collector.
+
+**Contents.** Defines `SCRIPT`, `class BackfillLauncherTests`.
+
+**Use.** `python3 -m pytest scripts/test_research_backfill.py -q`
+
 #### `scripts/test_soltui_ci.py`
 
 `test` · 49 lines · 2,441 B · description: **none**
@@ -31291,7 +33957,7 @@ Session handoff notes, newest first. Prose, not machine-read.
 
 #### `scripts/test_tradingview_script_profiles.py`
 
-`test` · 160 lines · 6,291 B · description: **extracted**
+`test` · 167 lines · 6,746 B · description: **extracted**
 
 **Purpose.** Failure checks for the independent source-review gate and literal evidence.
 
@@ -32027,7 +34693,7 @@ Session handoff notes, newest first. Prose, not machine-read.
 
 #### `tools/install-hooks.sh`
 
-`code-shell` · 23 lines · 865 B · description: **none**
+`code-shell` · 23 lines · 866 B · description: **none**
 
 **Purpose.** _No description available._
 
@@ -32260,251 +34926,3 @@ Session handoff notes, newest first. Prose, not machine-read.
 **Purpose.** Precondition: the original local bundle and documentation exist. Inspect `memory.md` and the existing external index manifest. Preserve other sessions and paused services. 1. Run `python3 /Users/mitch/.global-ai-hub/indexes/tradingviewinputoptimizer_v2-7/retrieval.py check` to compare current source hashes with the recorded corpus. 2.
 
 **Use.** Read it.
-
----
-
-## website
-
-26 files.
-
-#### `website/.gitignore`
-
-`other` · 5 lines · 48 B · description: **none**
-
-**Purpose.** _No description available._
-
-**Use.** Read it.
-
-#### `website/README.md`
-
-`doc` · 128 lines · 5,915 B · description: **extracted**
-
-**Purpose.** Cloudflare-hosted wallet account and research workspace. This is a separate web surface over the existing research tools. It never exposes the owner's control room, trading accounts, wallet keys or signing services.
-
-**Use.** Read it.
-
-#### `website/package-lock.json`
-
-`config` · 1605 lines · 50,378 B · description: **derived**
-
-**Purpose.** Generated JSON object, 5 keys (name, version, lockfileVersion, requires, packages).
-
-**Use.** Configuration; nothing to run.
-
-#### `website/package.json`
-
-`config` · 21 lines · 609 B · description: **derived**
-
-**Purpose.** Generated JSON object, 7 keys (name, private, version, type, engines, scripts...).
-
-**Use.** Configuration; nothing to run.
-
-#### `website/wrangler.dev.jsonc`
-
-`other` · 0 lines · 698 B · description: **none**
-
-**Purpose.** _No description available._
-
-**Use.** Read it.
-
-#### `website/wrangler.jsonc`
-
-`other` · 0 lines · 918 B · description: **none**
-
-**Purpose.** _No description available._
-
-**Use.** Read it.
-
-### `website/api/`
-
-#### `website/api/openapi.json`
-
-`config` · 1795 lines · 48,414 B · description: **derived**
-
-**Purpose.** Generated JSON object, 5 keys (openapi, info, servers, paths, components).
-
-**Use.** Configuration; nothing to run.
-
-### `website/engine/`
-
-#### `website/engine/Dockerfile`
-
-`other` · 13 lines · 468 B · description: **none**
-
-**Purpose.** _No description available._
-
-**Use.** Read it.
-
-#### `website/engine/README.md`
-
-`doc` · 58 lines · 3,764 B · description: **extracted**
-
-**Purpose.** This service exposes the canonical Python exposure-strategy backtester and inert Oracle archive reader. It cannot sign, submit orders, read account portfolios or control the owner's local services. The website Worker keeps its bearer token
-
-**Use.** Read it.
-
-#### `website/engine/__init__.py`
-
-`code-python` · 2 lines · 79 B · description: **extracted**
-
-**Purpose.** Read-only hosted market analysis bridge. No signing or order capability.
-
-**Use.** `import website.engine.__init__`
-
-#### `website/engine/server.py`
-
-`code-python` · 285 lines · 13,765 B · description: **extracted**
-
-**Purpose.** Bearer-authenticated adapter to canonical local research engines. Run behind an HTTPS private gateway. The edge website must never forward a browser-selected URL or expose the local control room through this service.
-
-**Contents.** Defines `COINS`, `INTERVALS`, `MAX_BARS`, `MAX_CACHE_BYTES`, `MAX_BODY`, `class RequestError`, `finite()`, `json_safe()`, `catalogue()`, `choose_top()` and 4 more. Depends on `backtester`.
-
-**Use.** `python3 website/engine/server.py --help`
-
-#### `website/engine/test_research.py`
-
-`test` · 68 lines · 2,947 B · description: **none**
-
-**Purpose.** _No description available._
-
-**Contents.** Defines `class ResearchExportTests`.
-
-**Use.** `python3 -m pytest website/engine/test_research.py -q`
-
-#### `website/engine/test_server.py`
-
-`test` · 166 lines · 7,706 B · description: **none**
-
-**Purpose.** _No description available._
-
-**Contents.** Defines `class AnalysisTests`, `class HttpTests`. Depends on `backtester`.
-
-**Use.** `python3 -m pytest website/engine/test_server.py -q`
-
-### `website/migrations/`
-
-#### `website/migrations/0001_accounts.sql`
-
-`other` · 0 lines · 2,105 B · description: **none**
-
-**Purpose.** _No description available._
-
-**Use.** Read it.
-
-#### `website/migrations/0002_challenge_wallet_index.sql`
-
-`other` · 0 lines · 85 B · description: **none**
-
-**Purpose.** _No description available._
-
-**Use.** Read it.
-
-### `website/postman/`
-
-#### `website/postman/acceptance.collection.json`
-
-`config` · 91 lines · 2,166 B · description: **derived**
-
-**Purpose.** Generated JSON object, 3 keys (info, variable, item).
-
-**Use.** Configuration; nothing to run.
-
-### `website/public/`
-
-#### `website/public/app.js`
-
-`code-js` · 412 lines · 45,740 B · description: **none**
-
-**Purpose.** _No description available._
-
-**Contents.** Defines `api`, `appendText`, `articleView`, `backtestView`, `billingAction`, `botsView`, `coinTabs`, `connectWallet`, `currency`, `displayNumber` and 30 more.
-
-**Use.** Loaded by the extension; see `extension/manifest.json` for entry points.
-
-#### `website/public/evidence.js`
-
-`code-js` · 7 lines · 377 B · description: **none**
-
-**Purpose.** _No description available._
-
-**Contents.** Defines `freshStrategy`.
-
-**Use.** Loaded by the extension; see `extension/manifest.json` for entry points.
-
-#### `website/public/favicon.svg`
-
-`other` · 0 lines · 366 B · description: **none**
-
-**Purpose.** _No description available._
-
-**Use.** Read it.
-
-#### `website/public/index.html`
-
-`code-web` · 47 lines · 6,266 B · description: **none**
-
-**Purpose.** _No description available._
-
-**Use.** Read it.
-
-#### `website/public/styles.css`
-
-`code-web` · 5 lines · 23,342 B · description: **none**
-
-**Purpose.** _No description available._
-
-**Use.** Read it.
-
-### `website/scripts/`
-
-#### `website/scripts/export_research.py`
-
-`code-python` · 118 lines · 6,495 B · description: **extracted**
-
-**Purpose.** Export tracked public research into deterministic metadata and body shards. This is a publication transform, not another research verdict. Original source hashes and transformed-body hashes remain distinct. Never export private stores, local account state, workflows, credentials or the scraped jup.ag mirror.
-
-**Contents.** Defines `ROOT`, `OUTPUT`, `SHARD_BYTES`, `EXCLUDE_WORDS`, `SENSITIVE`, `encoded()`, `public_body()`, `title_summary()`, `export()`, `main()`.
-
-**Use.** `python3 website/scripts/export_research.py --help`
-
-#### `website/scripts/smoke.mjs`
-
-`code-js` · 41 lines · 2,794 B · description: **none**
-
-**Purpose.** _No description available._
-
-**Contents.** Defines `request`.
-
-**Use.** Loaded by the extension; see `extension/manifest.json` for entry points.
-
-### `website/src/`
-
-#### `website/src/worker.js`
-
-`code-js` · 345 lines · 26,234 B · description: **none**
-
-**Purpose.** _No description available._
-
-**Contents.** Defines `BLOCKED`, `CHECKOUT_SECONDS`, `COINS`, `MAX_BODY`, `SESSION_SECONDS`, `account`, `billingConfigured`, `bodyJSON`, `boundedText`, `challenge` and 22 more.
-
-**Use.** Loaded by the extension; see `extension/manifest.json` for entry points.
-
-### `website/test/`
-
-#### `website/test/api.test.js`
-
-`code-js` · 348 lines · 26,014 B · description: **none**
-
-**Purpose.** _No description available._
-
-**Contents.** Defines `ORIGIN`, `call`, `deliver`, `environment`, `grant`, `keypair`, `login`, `request`, `signedEvent`.
-
-**Use.** Loaded by the extension; see `extension/manifest.json` for entry points.
-
-#### `website/test/evidence.test.js`
-
-`code-js` · 12 lines · 723 B · description: **none**
-
-**Purpose.** _No description available._
-
-**Use.** Loaded by the extension; see `extension/manifest.json` for entry points.

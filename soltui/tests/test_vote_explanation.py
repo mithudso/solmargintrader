@@ -1,6 +1,8 @@
 """Saved-call explanations preserve latest-trial eligibility and candle causality."""
 from __future__ import annotations
 
+import hashlib
+import json
 import sqlite3
 import unittest
 from pathlib import Path
@@ -67,6 +69,28 @@ class SavedVoteExplanation(unittest.TestCase):
         self.assertEqual(current["chart"], original["chart"])
         self.assertEqual(current["calls"][0]["recorded_signal_basis"], original["calls"][0]["recorded_signal_basis"])
         self.assertLessEqual(max(c["time"] for c in current["chart"]["candles"]), current["calls"][0]["bar"])
+
+    def test_other_interval_and_legacy_keys_cannot_verify_minute_features(self):
+        current_key = self.key
+        for interval in ("5m", None):
+            with self.subTest(interval=interval):
+                identity = [ft.revision(), "SOL", "probe", 1, 16., "all", self.members]
+                if interval is not None:
+                    identity.append(interval)
+                other_key = hashlib.sha256(ft._json(identity).encode()).hexdigest()
+                self.assertNotEqual(other_key, self.key)
+                with closing(sqlite3.connect(self.path)) as db, db:
+                    db.execute("UPDATE trial SET id=? WHERE id=?", (other_key, current_key))
+                    db.execute("UPDATE call SET trial=? WHERE trial=?", (other_key, current_key))
+                current_key = other_key
+                result = self.result()
+                self.assertTrue(result["available"])
+                self.assertEqual(result["calls"][0]["trial_id"], other_key)
+                basis = result["calls"][0]["recorded_signal_basis"]
+                self.assertFalse(basis["contract_verified"])
+                self.assertFalse(basis["features_available"])
+                self.assertEqual(result["chart"]["series"], [])
+                self.assertTrue(result["chart"]["markers"])
 
     def test_expired_call_remains_inspectable_but_cannot_vote(self):
         result = self.result(now=BASE + 200)

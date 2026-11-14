@@ -9,6 +9,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import logging
 import math
 import os
 import re
@@ -22,7 +23,7 @@ from pathlib import Path
 from urllib.parse import parse_qs, urlsplit
 from uuid import UUID, uuid4
 
-from ecosystem import __version__, registration, runner
+from ecosystem import __version__, registration
 
 SCHEMA_VERSION = 1
 STATIC = {
@@ -30,7 +31,10 @@ STATIC = {
     "/app.js": ("app.js", "text/javascript; charset=utf-8"),
     "/oracle-chart.js": ("oracle-chart.js", "text/javascript; charset=utf-8"),
     "/tradingview-chart.js": ("tradingview-chart.js", "text/javascript; charset=utf-8"),
-    "/lightweight-charts.mjs": ("vendor/lightweight-charts-5.2.1.mjs", "text/javascript; charset=utf-8"),
+    "/lightweight-charts.mjs": (
+        "vendor/lightweight-charts-5.2.1.mjs",
+        "text/javascript; charset=utf-8",
+    ),
     "/styles.css": ("styles.css", "text/css; charset=utf-8"),
 }
 SECRET_KEY = re.compile(
@@ -38,6 +42,20 @@ SECRET_KEY = re.compile(
     re.IGNORECASE,
 )
 MAX_RESPONSE = 8 * 1024 * 1024
+
+
+def _owner_failure(operation: str, error: Exception) -> None:
+    """Log fixed operation metadata; raw requests and exception text stay private."""
+    logging.getLogger(__name__).warning(
+        json.dumps(
+            {
+                "event": "ecosystem_owner_unavailable",
+                "operation": operation,
+                "error_type": type(error).__name__,
+            },
+            sort_keys=True,
+        )
+    )
 
 
 def _redact(value, depth=0):
@@ -278,7 +296,7 @@ def make_server(
                     values = self._query(query, {"run_id"})
                     self._json(
                         200,
-                        runner.status(controls.experiment_home(values.get("run_id"))),
+                        controls.pipeline_status(values.get("run_id")),
                     )
                 elif target.path == "/api/session":
                     self._json(
@@ -347,7 +365,9 @@ def make_server(
                 elif target.path == "/api/oracle":
                     from .votes import report
 
-                    values = self._query(query, {"instrument", "run_id", "interval", "strategy"})
+                    values = self._query(
+                        query, {"instrument", "run_id", "interval", "strategy"}
+                    )
                     self._json(
                         200,
                         report(
@@ -355,6 +375,7 @@ def make_server(
                             values.get("instrument", "SOL/USD"),
                             interval=values.get("interval"),
                             strategy=values.get("strategy"),
+                            forecast_home=controls.home,
                         ),
                     )
                 elif target.path in {"/api/wiki", "/api/wiki/page"}:
@@ -439,10 +460,11 @@ def make_server(
                     self._json(404, error="not_found")
             except (ValueError, TypeError):
                 self._json(400, error="invalid_request_or_owner_data")
-            except (OSError, ImportError, RuntimeError):
+            except (OSError, ImportError, RuntimeError) as exc:
+                _owner_failure("read_owner_data", exc)
                 self._json(503, error="owner_data_unavailable")
-            except Exception:  # noqa: BLE001 - fixed public owner boundary, never echo input
-                # Owner exceptions never become an HTTP traceback or raw log.
+            except Exception as exc:  # noqa: BLE001 - fixed public owner boundary, never echo input
+                _owner_failure("read_owner_data", exc)
                 self._json(503, error="owner_data_unavailable")
 
         def _query(self, query, allowed):
@@ -493,7 +515,8 @@ def make_server(
                 self._json(202 if created else 200, action)
             except (ValueError, TypeError, UnicodeError):
                 self._json(400, error="invalid_action_or_conflicting_request")
-            except (OSError, sqlite3.Error, TimeoutError):
+            except (OSError, sqlite3.Error, TimeoutError) as exc:
+                _owner_failure("submit_control_action", exc)
                 self._json(503, error="control_store_unavailable")
 
         def _read_only(self):
@@ -514,7 +537,11 @@ def make_server(
 
 
 def main(argv=None) -> int:
-    parser = argparse.ArgumentParser(description=__doc__)
+    parser = argparse.ArgumentParser(
+        description=__doc__,
+        epilog="Example: python -m ecosystem.web "
+        "--home /tmp/oraclebot-paper-demo --port 0",
+    )
     parser.add_argument("--home", type=Path, required=True)
     parser.add_argument("--manager-home", type=Path)
     parser.add_argument("--port", type=int, default=8768)
@@ -533,7 +560,9 @@ def main(argv=None) -> int:
             make_server(home, args.manager_home, port=args.port) as server,
         ):
             url = f"http://127.0.0.1:{server.server_port}"
-            ui_service.checkpoint(home, server.control_instance, url, manager_home=args.manager_home)
+            ui_service.checkpoint(
+                home, server.control_instance, url, manager_home=args.manager_home
+            )
             print(
                 json.dumps(
                     {

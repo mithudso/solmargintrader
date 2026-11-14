@@ -116,6 +116,24 @@ class ManualOrderTests(unittest.TestCase):
                     cm.preview('SOL-USDC', 'BUY', '0.012', 'base', estimate)
         self.assertFalse(any(c[:2] == ['orders','create'] for c in self.venue.calls))
 
+    def test_market_base_size_cannot_hide_notional_behind_small_preview_totals(self):
+        # The venue fixture returns price89.4 but gross1.99/total2. A request
+        # for2SOL is therefore over the100USD cap despite those small totals.
+        for side in ('BUY', 'SELL'):
+            with self.subTest(side=side), self.assertRaisesRegex(ValueError, 'limited'):
+                cm.preview('SOL-USDC', side, '2', 'base', self.venue)
+        self.assertFalse(any(c[:2] == ['orders', 'create'] for c in self.venue.calls))
+
+    def test_market_base_buy_checks_implied_quote_balance(self):
+        def low_balance(args):
+            result = self.venue(args)
+            if args[0] == 'balance':
+                result['accounts'][0]['available_balance']['value'] = '50'
+            return result
+        with self.assertRaisesRegex(ValueError, 'Insufficient available'):
+            cm.preview('SOL-USDC', 'BUY', '1', 'base', low_balance)
+        self.assertFalse(any(c[:2] == ['orders', 'create'] for c in self.venue.calls))
+
     def test_conditional_orders_recheck_and_submit_exact_prices(self):
         for order_type, side, limit, stop in [('limit', 'BUY', '90', ''),
                                                ('stop_limit', 'SELL', '79', '80'),

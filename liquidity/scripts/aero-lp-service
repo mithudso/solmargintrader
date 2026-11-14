@@ -1,6 +1,6 @@
 #!/bin/zsh
 # Run the liquidity daemon as a per-user launchd agent.
-#   aero-lp-service install [--dry-run|--live] write the plist and start it (dry-run by default)
+#   aero-lp-service install [--live]      write the plist and start it (dry-run unless --live)
 #   aero-lp-service uninstall             stop it and remove the plist
 #   aero-lp-service status | logs         launchctl state / tail the log
 #   aero-lp-service kill | resume         pause on-chain actions (KILL file) / resume them
@@ -18,11 +18,17 @@ DOMAIN="gui/$(id -u)"
 
 case "${1:-}" in
   install)
+    [[ $# -le 2 && ( -z "${2:-}" || "${2:-}" == "--dry-run" || "${2:-}" == "--live" ) ]] || {
+      echo "usage: $0 install [--dry-run|--live]" >&2; exit 2;
+    }
     [[ -x "$BIN" ]] || { echo "missing $BIN — run: cd $LIQ && uv sync --extra dev -p 3.13"; exit 1; }
     [[ -f "$CONFIG" ]] || { echo "missing $CONFIG — copy $LIQ/config.example.toml there and edit it"; exit 1; }
-    [[ "$#" -le 2 ]] || { echo "install accepts only --dry-run or --live" >&2; exit 2; }
-    mode="${2:---dry-run}"
-    [[ "$mode" == "--dry-run" || "$mode" == "--live" ]] || { echo "unknown install mode" >&2; exit 2; }
+    mode_args=""
+    mode_label="dry-run"
+    if [[ "${2:-}" == "--live" ]]; then
+      mode_args="<string>--live</string>"
+      mode_label="live"
+    fi
     mkdir -p "$LP_HOME" "${PLIST:h}"
     temporary="$(mktemp "${PLIST}.XXXXXX")"
     trap 'rm -f "$temporary"' EXIT
@@ -30,7 +36,7 @@ case "${1:-}" in
     mv "$temporary" "$PLIST"
     launchctl bootout "$DOMAIN/$LABEL" 2>/dev/null || true
     launchctl bootstrap "$DOMAIN" "$PLIST"
-    echo "started $LABEL (${mode#--}); log: $LP_HOME/daemon.log"
+    echo "started $LABEL ($mode_label); log: $LP_HOME/daemon.log"
     ;;
   uninstall)
     launchctl bootout "$DOMAIN/$LABEL" 2>/dev/null || true

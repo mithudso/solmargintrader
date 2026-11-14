@@ -19,6 +19,7 @@ silently passing.
 
 from __future__ import annotations
 
+import argparse
 import itertools
 import json
 import re
@@ -878,6 +879,7 @@ def _check_geometry_pbo(section: str, failures: list[str]) -> int:
 
 def main() -> int:
     """Verify every parseable figure; exit non-zero on any mismatch."""
+    argparse.ArgumentParser(description=__doc__).parse_args()
     df = load()
     cpcv = load_cpcv()
     perturb = load_perturb()

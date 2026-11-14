@@ -13,6 +13,7 @@ import time
 import tempfile
 from collections.abc import Callable
 from contextlib import closing
+from itertools import pairwise
 from pathlib import Path
 from threading import Event
 from typing import Any
@@ -21,10 +22,14 @@ import numpy as np
 
 from backtester.core import scorecard
 from backtester.core.strategies import REGISTRY, build, build_composite
-from backtester.core.types import BarWindow, INTERVAL_SECONDS, validate_bar_arrays
+from backtester.core.types import INTERVAL_SECONDS, BarWindow, validate_bar_arrays
 
 from . import compound, config, simulation
 from .research_admission import admit_read, participating
+from .source_epoch import SourceEpoch
+
+_SOURCE_ROOT = Path(__file__).resolve().parents[1]
+_SOURCE_EPOCH = SourceEpoch.capture(_SOURCE_ROOT)
 
 HORIZONS = (1, 5, 10, 30)
 HISTORY = 600
@@ -35,6 +40,12 @@ Spec = list[dict[str, Any]]
 
 def revision() -> str:
     """Partition evidence if strategy code or the forecast/scoring contract changes."""
+    _SOURCE_EPOCH.verify(_SOURCE_ROOT)
+    return _disk_revision()
+
+
+def _disk_revision() -> str:
+    """Hash source bytes only; this does not attest loaded or historical code."""
     core = Path(scorecard.__file__).parent
     files = [Path(__file__), Path(compound.__file__), Path(simulation.__file__), *sorted(core.glob("*.py")),
              *sorted((core / "strategies").glob("*.py"))]
@@ -74,36 +85,29 @@ def _db(path: Path | None = None) -> sqlite3.Connection:
         if _schema_current(db):
             return db
         db.execute("BEGIN IMMEDIATE")
-        for statement in """
+        for statement in ("""
         CREATE TABLE IF NOT EXISTS candle (
             asset TEXT, ts INTEGER, open REAL, high REAL, low REAL, close REAL, volume REAL,
             PRIMARY KEY(asset, ts)
-        );
-        CREATE TABLE IF NOT EXISTS session (id INTEGER PRIMARY KEY CHECK(id=1), plan TEXT NOT NULL);
-        CREATE TABLE IF NOT EXISTS trial (
+        )""", """
+        CREATE TABLE IF NOT EXISTS session (id INTEGER PRIMARY KEY CHECK(id=1), plan TEXT NOT NULL)
+        """, """CREATE TABLE IF NOT EXISTS trial (
             id TEXT PRIMARY KEY, asset TEXT, label TEXT, mode TEXT, minutes INTEGER,
             cost REAL, active TEXT, generation INTEGER DEFAULT 0, moved INTEGER DEFAULT 0,
             note TEXT DEFAULT ''
-        );
-        CREATE TABLE IF NOT EXISTS call (
+        )""", """CREATE TABLE IF NOT EXISTS call (
             trial TEXT, bar INTEGER, issued REAL, start INTEGER, finish INTEGER,
             generation INTEGER, guesses TEXT, prediction INTEGER, outcome INTEGER,
             bps REAL, expired INTEGER DEFAULT 0, PRIMARY KEY(trial, bar)
-        );
-        CREATE INDEX IF NOT EXISTS call_pending ON call(trial, finish)
-            WHERE outcome IS NULL AND expired = 0;
-        CREATE INDEX IF NOT EXISTS call_training ON call(trial, generation, bar)
-            WHERE outcome IS NOT NULL;
-        CREATE TABLE IF NOT EXISTS adoption (
+        )""", """CREATE INDEX IF NOT EXISTS call_pending ON call(trial, finish)
+            WHERE outcome IS NULL AND expired = 0
+        """, """CREATE INDEX IF NOT EXISTS call_training ON call(trial, generation, bar)
+            WHERE outcome IS NOT NULL
+        """, """CREATE TABLE IF NOT EXISTS adoption (
             trial TEXT, at INTEGER, previous TEXT, next TEXT, confidence REAL,
             samples INTEGER, PRIMARY KEY(trial, at)
-        );
-        CREATE TABLE IF NOT EXISTS default_export (
-            trial TEXT, at INTEGER, document TEXT NOT NULL, PRIMARY KEY(trial, at)
-        );
-        """.split(";"):
-            if statement.strip():
-                db.execute(statement)
+        )"""):
+            db.execute(statement)
         # Recheck under the migration lock: another writer may have migrated
         # between the initial schema read and BEGIN IMMEDIATE.
         for table, columns in _MIGRATIONS.items():
@@ -353,7 +357,7 @@ def _resolve(db: sqlite3.Connection, key: str, generation: int, active: Spec, mo
                     raise ValueError("Missing retained OHLC candles for paper settlement")
                 result = simulation.settle(profile, prediction, prices)
             else:
-                result = dict(net_return=0.0, fees_bps=0.0, borrow_bps=0.0, slippage_bps=0.0, liquidated=0)
+                result = {"net_return": 0.0, "fees_bps": 0.0, "borrow_bps": 0.0, "slippage_bps": 0.0, "liquidated": 0}
             db.execute("""UPDATE call SET net_return=:net_return,fees_bps=:fees_bps,
                 borrow_bps=:borrow_bps,slippage_bps=:slippage_bps,liquidated=:liquidated
                 WHERE trial=:trial AND bar=:bar""", dict(result, trial=key, bar=origin))
@@ -392,6 +396,7 @@ def tick(asset: str, trials: list[dict], horizons: tuple[int, ...], cost: float,
     setting that tested superior on paired calls, and that setting is saved as the trial's
     default (`save_default`). Without it settings stay fixed; calls are still recorded and scored.
     """
+    _SOURCE_EPOCH.verify(_SOURCE_ROOT)
     profile = simulation.Execution(**execution) if execution else None
     fetch = fetch or compound.fetch_closed_candles
     stop = stop if stop is not None else Event()
@@ -423,13 +428,15 @@ def tick(asset: str, trials: list[dict], horizons: tuple[int, ...], cost: float,
     # outside the latest contiguous signal segment. Gaps remain real gaps.
     breaks = np.flatnonzero(np.diff(ts) != 60)
     boundaries = [0, *(int(i) + 1 for i in breaks), len(ts)]
-    for first, last in zip(boundaries[:-1], boundaries[1:], strict=True):
+    for first, last in pairwise(boundaries):
         validate_bar_arrays({k: v[first:last] for k, v in raw.items()}, "1m")
     rows = [(asset, int(t), float(o), float(h), float(l), float(c), float(v))
             for t, o, h, l, c, v in zip(*(raw[k] for k in
                 ("ts", "open", "high", "low", "close", "volume")), strict=True)]
     # Existing valid observations stay immutable. A malformed legacy row can
     # be replaced only by a newly validated candle for that exact asset/time.
+    retained = []
+    _SOURCE_EPOCH.verify(_SOURCE_ROOT)
     with closing(_db(db_path)) as db, db:
         for row in rows:
             old = db.execute("SELECT open,high,low,close,volume FROM candle WHERE asset=? AND ts=?",
@@ -440,13 +447,16 @@ def tick(asset: str, trials: list[dict], horizons: tuple[int, ...], cost: float,
                          and min(o, h, low, c) > 0 and v >= 0
                          and h >= low and h >= max(o, c) - 1e-9 and low <= min(o, c) + 1e-9)
                 if valid:
+                    retained.append((row[1], *old))
                     continue
                 db.execute("DELETE FROM candle WHERE asset=? AND ts=?", row[:2])
             db.execute("INSERT INTO candle VALUES (?,?,?,?,?,?,?)", row)
-        retained = db.execute("SELECT ts,open,high,low,close,volume FROM candle WHERE asset=? AND ts>=? AND ts<=? ORDER BY ts",
-                              (asset, int(ts[0]), int(ts[-1]))).fetchall()
-    raw = {name: np.asarray([row[i] for row in retained], dtype="int64" if name == "ts" else "float64")
-           for i, name in enumerate(("ts", "open", "high", "low", "close", "volume"))}
+            retained.append(row[1:])
+    # Forecasts and directional settlement must use the same immutable snapshot
+    # that paper execution later reads, even if a provider revises an old candle.
+    raw = {name: np.asarray([row[index] for row in retained],
+                           dtype="int64" if name == "ts" else "float64")
+           for index, name in enumerate(("ts", "open", "high", "low", "close", "volume"))}
     ts = raw["ts"]
     # Keep gaps visible for settlement. The signal itself sees only the latest contiguous segment.
     candles = {int(t): (float(o), float(c)) for t, o, c in zip(ts, raw["open"], raw["close"], strict=True)
@@ -475,9 +485,12 @@ def tick(asset: str, trials: list[dict], horizons: tuple[int, ...], cost: float,
     start = bar + 120  # next minute that has not opened yet
     forecasts: dict[tuple, int | None] = {}
     staged = []
+    pending_windows = 0
+    due_trials = 0
     active_keys = {}
     _export_committed_defaults(db_path)
     defaults = load_defaults()
+    _SOURCE_EPOCH.verify(_SOURCE_ROOT)
     with closing(_db(db_path)) as db, db:
         db.execute("BEGIN IMMEDIATE")
         for trial in trials:
@@ -486,7 +499,9 @@ def tick(asset: str, trials: list[dict], horizons: tuple[int, ...], cost: float,
                 # The key stays the configured seed; a saved default only sets where a new trial starts.
                 trial_cost = (profile.round_trip_bps + max(profile.borrow_long_bps_hour,
                               profile.borrow_short_bps_hour) * h / 60) if profile else cost
-                identity = [code, asset, label, h, trial_cost, mode, seed]
+                # A period counts signal bars. Minute and five-minute inputs
+                # cannot share a track record even when the label/settings match.
+                identity = [code, asset, label, h, trial_cost, mode, seed, signal_interval]
                 if execution:
                     identity.append(execution)
                 key = hashlib.sha256(_json(identity).encode()).hexdigest()
@@ -501,10 +516,9 @@ def tick(asset: str, trials: list[dict], horizons: tuple[int, ...], cost: float,
             check_stop()
 
             def adopt(spec: Spec, previous: Spec, probability: float, samples: int,
-                      label: str = label, h: int = h, key: str = key) -> None:
-                document = dict(asset=asset, label=label, minutes=h, spec=spec, previous=previous,
-                                probability=probability, samples=samples, bar=bar)
-                db.execute("INSERT OR REPLACE INTO default_export VALUES (?,?,?)", (key, bar, _json(document)))
+                      label: str = label, h: int = h) -> None:
+                _SOURCE_EPOCH.verify(_SOURCE_ROOT)
+                save_default(asset, label, h, spec, previous, probability=probability, samples=samples, bar=bar)
 
             active, gen = _resolve(db, key, gen, json.loads(raw_spec), moved, trial_cost, candles, bar,
                                    h, tune and key in active_keys, adopt, expire_missing=expire_missing,
@@ -515,7 +529,9 @@ def tick(asset: str, trials: list[dict], horizons: tuple[int, ...], cost: float,
                                   (key,)).fetchone()
             # One call per non-overlapping window. A 30m move is one observation, not 30.
             if previous and start < previous[0]:
+                pending_windows += 1
                 continue
+            due_trials += 1
             guesses = []
             note = ""
             for spec in (neighbours(active, mode) if tune else [active]):
@@ -546,8 +562,12 @@ def tick(asset: str, trials: list[dict], horizons: tuple[int, ...], cost: float,
                                confidence, traded))
             db.execute("UPDATE trial SET note=? WHERE id=?", (note, key))
         check_stop()
+        _SOURCE_EPOCH.verify(_SOURCE_ROOT)
         issued = clock()
-        fresh = bar + 60 <= observed < start and issued < start - 1
+        # The issuance deadline applies only to a calculated call. A poll that
+        # merely checks an existing long window can cross a minute boundary
+        # without missing any forecast opportunity.
+        fresh = bar + 60 <= observed < start and (not staged or issued < start - 1)
         if fresh:
             db.executemany("""INSERT OR IGNORE INTO call
                 (trial,bar,start,finish,generation,guesses,prediction,confidence,traded,issued) VALUES (?,?,?,?,?,?,?,?,?,?)""",
@@ -556,6 +576,7 @@ def tick(asset: str, trials: list[dict], horizons: tuple[int, ...], cost: float,
     return {"bar": bar if fresh else None, "recorded": len(staged) if fresh else 0,
             "message": ("Waiting for a fresh candle" if not bar + 60 <= observed < start
                         else "Forecast window elapsed during calculation" if not fresh
+                        else "Waiting for existing forecast window" if pending_windows and not due_trials
                         else "Checked the latest closed minute"),
             "rows": status(asset, db_path=db_path)}
 

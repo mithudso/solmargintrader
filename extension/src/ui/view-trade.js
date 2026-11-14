@@ -205,11 +205,13 @@ function showBalance(state) {
 
 export function mountSwap(state) {
   const form = $('#swapForm');
+  let generation = 0;
+  // Form edits invalidate pending responses as well as the currently shown quote.
   const stale = () => {
-    ++swapGeneration;
+    generation++;
     $('#swapQuote').hidden = true;
-    $('#swapHandoff').removeAttribute('href');
     form.elements.out.value = '';
+    $('#swapError').textContent = '';
   };
   for (const b of form.querySelectorAll('[data-chain]')) {
     b.addEventListener('click', () => {
@@ -234,8 +236,8 @@ export function mountSwap(state) {
   form.addEventListener('submit', async (e) => {
     e.preventDefault();
     stale();
-    const generation = swapGeneration;
     const f = form.elements;
+    const requestGeneration = ++generation;
     $('#swapError').textContent = '';
     $('#swapQuote').hidden = true;
     // The tolerance sets "minimum received": never substitute one the owner did not type.
@@ -250,7 +252,7 @@ export function mountSwap(state) {
         type: 'swapQuote', chain: swapChain, from: f.from.value, to: f.to.value,
         amount: f.amount.value.trim(), slippageBps,
       });
-      if (generation !== swapGeneration) return;
+      if (requestGeneration !== generation) return;
       f.out.value = amount(q.to.amount);
       $('#swapVenue').textContent = q.venue;
       const rows = [
@@ -270,7 +272,7 @@ export function mountSwap(state) {
       link.textContent = `Review and sign on ${q.chain === 'base' ? 'Aerodrome' : 'Jupiter'} ↗`;
       $('#swapQuote').hidden = false;
     } catch (err) {
-      if (generation !== swapGeneration) return;
+      if (requestGeneration !== generation) return;
       f.out.value = '';
       $('#swapError').textContent = err.message;
     }

@@ -28,6 +28,10 @@ def sha(path: Path) -> str:
     return h.hexdigest()
 
 
+def _percent(value: float | None) -> str:
+    return 'undefined' if value is None else f'{value:.2%}'
+
+
 def module(variant: str, name: str) -> Any:
     return importlib.import_module('_strategy_compare_' + variant + '.' + name)
 
@@ -285,8 +289,8 @@ def main() -> int:
         a, b = (score[v]['accuracy'] for v in ('original', 'candidate'))
         lines += ['', '## Directional accuracy', '',
                   f"Scorecard common executable next-open-to-close accuracy: {a['correct_calls']}/{a['active_calls']} "
-                  f"({percentage(a['accuracy'])}) original, {b['correct_calls']}/{b['active_calls']} ({percentage(b['accuracy'])}) candidate. "
-                  f"Flat calls abstain; coverage {percentage(b['coverage'])}; same-active-bar majority baseline {percentage(b['majority_baseline'])}. "
+                  f"({_percent(a['accuracy'])}) original, {b['correct_calls']}/{b['active_calls']} ({_percent(b['accuracy'])}) candidate. "
+                  f"Flat calls abstain; coverage {_percent(b['coverage'])}; same-active-bar majority baseline {_percent(b['majority_baseline'])}. "
                   'Ties count as incorrect in this common diagnostic.', '',
                   'Native forecast reporting uses a different interval boundary and excludes ties. Its old/new percentages change '
                   'because the label changed from previous-close to executable next-open. That is a measurement correction, not an improved signal. '

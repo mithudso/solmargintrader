@@ -1,0 +1,191 @@
+{
+  "agent": "research-contract-auditor",
+  "definition_version": "1.0.0",
+  "status": "partial",
+  "evidence": [
+    {
+      "source": "/Users/mitch/.local/state/solmargintrader/zec-expanded-20261113/attempt-01/manifest.json",
+      "observed_at": "2026-11-13T18:46:48Z",
+      "supported_claim": "All20 artifact hashes and85312 exact unique expected matrix keys verified;38664 completed,46648 insufficient history;all1535 current code/card hashes match saved identity."
+    },
+    {
+      "source": "/Users/mitch/.local/state/solmargintrader/zec-expanded-20261113/attempt-01/input-provenance.json",
+      "observed_at": "2026-11-13T18:46:48Z",
+      "supported_claim": "Actual parentmanifest,capture andtape hashes equal accepted sharedmanifest and frozenplan,allowing reuse of prior original-WAL/book proof."
+    },
+    {
+      "source": "/Users/mitch/.local/state/solmargintrader/zec-expanded-20261113/attempt-01/results.json.gz",
+      "observed_at": "2026-11-13T18:46:48Z",
+      "supported_claim": "All7032 prior baselinealias rows reproduce accepted fee-study metrics exactly;all81936 spotcandidate history-control masks independently verified."
+    },
+    {
+      "source": "/Users/mitch/.local/state/solmargintrader/zec-expanded-20261113/attempt-01/fills.jsonl.gz",
+      "observed_at": "2026-11-13T18:46:48Z",
+      "supported_claim": "All1563853 emitted fills reconcile independently;2334 stricttradecross/limit guards;16260 singleflight lifecyclefills;14560 DCA state/basis transitions;910 gridbuysizing checks;zero open positions."
+    },
+    {
+      "source": "/Users/mitch/.local/state/solmargintrader/zec-expanded-20261113/attempt-01/cycle-null-tests.json",
+      "observed_at": "2026-11-13T18:46:48Z",
+      "supported_claim": "All200 saved nullrows exactly reproduce at4999replicates/model;independent globalHolm minp0.84,no adjusted significance."
+    },
+    {
+      "source": "/Users/mitch/.local/state/solmargintrader/zec-expanded-20261113/audit-expanded-direct-controls.json",
+      "observed_at": "2026-11-13T18:46:48Z",
+      "supported_claim": "68 complete SMA20/50 and buy-hold cases across baseline/shape/frequency/controls reproduce via independent signal,gate and spotledger arithmetic."
+    },
+    {
+      "source": "/Users/mitch/dev/solmargintrader-zec-expanded-20261113/research/tests/test_zec_expanded.py",
+      "observed_at": "2026-11-13T18:46:48Z",
+      "supported_claim": "Combined expanded,granular,ensemble,andVolty focused suite passed54 tests with actual exit0."
+    }
+  ],
+  "changes": [
+    "/Users/mitch/.local/state/solmargintrader/zec-expanded-20261113/audit-expanded-ledger.json",
+    "/Users/mitch/.local/state/solmargintrader/zec-expanded-20261113/audit-expanded-contexts.json",
+    "/Users/mitch/.local/state/solmargintrader/zec-expanded-20261113/audit-expanded-lifecycle-nulls.json",
+    "/Users/mitch/.local/state/solmargintrader/zec-expanded-20261113/audit-expanded-direct-controls.json",
+    "/Users/mitch/.local/state/solmargintrader/zec-expanded-20261113/audit-expanded-receipt.json"
+  ],
+  "remaining": [
+    "Original full-matrix OS exit code was not recoverable;it remains unknown.All independent artifact verification commands completed with exit0."
+  ],
+  "details": {
+    "contract": "Final read-only audit of85312-row expanded ZEC baseline/shape/frequency study at1m5m10m1h,25/15bps,including matched-history controls and grid/DCA reference adapters.",
+    "gate_matrix": {
+      "exact_complete_matrix": "passed85312",
+      "artifact_hashes": "passed20",
+      "source_cards_runtime_identity": "passed1535code_card_hashes_plus_runtime",
+      "accepted_input_hash_binding": "passed",
+      "prior_baseline_alias_consistency": "passed7032_exactcomparisons",
+      "fill_timing_capacity_prices_fees_cash_positions_carry": "passed1563853",
+      "limit_guard_and_observed_trigger": "passed2334",
+      "lifecycle_singleflight": "passed16260",
+      "DCAdealbasis_and_TP_state": "passed14560",
+      "grid_buy_sizing": "passed910",
+      "frequency_context_windows_harmonic_selection_coefficients": "passed100_directOLSfits",
+      "shape_saved_context_arrays": "passed4cadences_using_pinned_causal_detector",
+      "matched_history_masks": "passed81936",
+      "null_fields_reproduced": "passed_all200_at4999replicates",
+      "globalHolm": "passed_independent_adjustment_minp0.84",
+      "complete_direct_strategy_control_replays": "passed68",
+      "focused_tests": "passed54_exit0",
+      "original_fullrun_OS_exit": "unavailable_unknown"
+    },
+    "claim_verdicts": {
+      "artifact_correctness": "Accepted within declared descriptive receive-time-reference model.",
+      "global_corrected_spectral_significance": "No tests significant;minimum Holm-adjusted p0.84.",
+      "repeatable_profitability_forecast_accuracy_or_live_maker_execution": "Not established.",
+      "original_run_exit0": "Unverifiable;do not claim."
+    },
+    "read_bindings": {
+      "input_manifest_sha256": "fc78e47ac211bf55b47c21229b50c9e39bd3460a38be353330a92445d7eab106",
+      "input_capture_sha256": "89502534e0f80f17475c3212a98f01ed24a4b4c5ac00c52a5bf488e036325e88",
+      "input_tape_sha256": "21db6ff5a1b6fdd12f887ef506f654ff634af3c355ca898d2f0838de09fd6f4c",
+      "source_WAL_sha256": "eea4a026d1a093a2be996d32c552262358516ca27494f60df3091d54312f3d31",
+      "checks": {
+        "audit-expanded-ledger.json": {
+          "attempt": "attempt-01",
+          "rows": 85312,
+          "status_counts": {
+            "completed": 38664,
+            "insufficient_contiguous_history": 46648
+          },
+          "artifact_hashes": 20,
+          "code_and_card_hashes": 1535,
+          "input_provenance_matches": true,
+          "exact_baseline_alias_rows": 7032,
+          "unique_replay_ids": 18550,
+          "fills_checked": 1563853,
+          "limit_guarded_fills_checked": 2334,
+          "emergency_delayed_exits": 0,
+          "fill_counts_by_family": {
+            "existing-ensemble-catalog": 406597,
+            "card-preset-parameter-perturbation": 806908,
+            "volty-stop": 334072,
+            "ladder_grid_reference": 1700,
+            "dca_safety_reference": 14560,
+            "benchmark": 16
+          },
+          "max_cash_error_usd": 9.754330676514655e-11,
+          "max_execution_price_error": 7.958078640513122e-13,
+          "open_position_replays": 0,
+          "run_os_exit_code": null
+        },
+        "audit-expanded-contexts.json": {
+          "contexts_independently_checked": 4,
+          "fit_windows_independently_derived": 100,
+          "harmonic_selection_and_coefficients": "all100_direct_OLS",
+          "shape_contexts": "all_saved_labels_zones_positions_match_pinned_causal_detector",
+          "candidate_history_masks_checked": 81936,
+          "null_rows_checked": 200,
+          "null_replicates": 4999,
+          "full_null_models_reproduced": 3,
+          "holm_independently_verified": true,
+          "min_conservative_p": 0.0042,
+          "min_holm_p": 0.84,
+          "holm_significant_tests": 0,
+          "run_os_exit_code": null
+        },
+        "audit-expanded-lifecycle-nulls.json": {
+          "strict_observed_trade_crosses_checked": 2334,
+          "lifecycle_singleflight_fills_checked": 16260,
+          "dca_fills_and_deal_basis_checked": 14560,
+          "grid_buy_sizing_checked": 910,
+          "full_null_fits_reproduced": 100,
+          "full_null_rows_reproduced": 200,
+          "replicates_per_model": 4999,
+          "all_saved_null_fields_exact": true,
+          "run_os_exit_code": null
+        },
+        "audit-expanded-direct-controls.json": {
+          "full_direct_math_cases": 68,
+          "strategies": [
+            "buy_and_hold",
+            "ma_crossover20_50"
+          ],
+          "modes": [
+            "baseline",
+            "shape",
+            "shape_control",
+            "frequency",
+            "frequency_control",
+            "linear_control"
+          ],
+          "checks": "Independent signals,gates,book fills,fees,cash and terminal equity;completed applicable rows only",
+          "audit_exit_code": 0
+        }
+      }
+    },
+    "origin_groups": "Independent raw-book proof reused only after exact hash binding.New fills,contexts,regression selection,Holm,deal accounting and representative complete strategy/control replays independently checked.No new topic research.",
+    "negation_evidence": "Future-gap and price-poison prefix regressions,past-only fit membership,insufficient-history cases,limit rejection,cash limits,stale DCA TP cancellation and independent linear-only control checked.",
+    "telemetry": {
+      "audit_commands_exit_codes": [
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "focused_test_exit_code": 0,
+      "focused_tests": 54,
+      "original_full_matrix_exit_code": null,
+      "max_cash_error_usd": 9.754330676514655e-11,
+      "max_execution_price_error": 7.958078640513122e-13
+    },
+    "publication_receipt": {
+      "scope": "Immutable local artifact set verified;auditor has not published or finalized an external research run.",
+      "manifest": "/Users/mitch/.local/state/solmargintrader/zec-expanded-20261113/attempt-01/manifest.json"
+    },
+    "qualification_verdict": "All requested artifact correctness gates accepted with no remaining material correctness finding.Receipt remains partial solely because the original run OS exit is unavailable;do not upgrade that telemetry to success.",
+    "limitations": [
+      "Original full-matrix OS exit unknown;manifest presence is not used as proof of process success.",
+      "One captured day,parameter aliases and many comparisons do not establish profitable strategies or forecast accuracy.",
+      "No globally Holm-significant frequency finding exists in these outputs.",
+      "1h shape/frequency contexts are unavailable;10m frequency has only1 fit and15 known context bars.",
+      "Crossing-book and observed-cross delayed limit-guard models do not prove passive maker execution or venue queue priority.",
+      "Volty long/short outcomes use a synthetic1x spot-reference ledger,not an actual perpetual venue.",
+      "Every emitted fill was checked against its cached book;prior raw-source reconstruction independently sampled100books,not every native book.",
+      "Grid economics were checked through the canonical planner source review,all fill/trigger/limit/accounting checks and910 buy sizing checks;an independent full reimplementation of its complete planner state machine was not performed."
+    ]
+  }
+}

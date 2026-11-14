@@ -9,6 +9,7 @@ import threading
 from concurrent.futures import ThreadPoolExecutor
 from decimal import Decimal
 
+import httpx
 import pytest
 from conftest import PRICES, QUOTE_SOL_USDC, FakeHttp, delta_native, delta_token, token_account, tx_json
 from test_engine import AMOUNT, FEE, live_engine, swap
@@ -20,6 +21,7 @@ from executor import txverify as tv
 from executor.config import Config, fingerprint, load_config, public_view, validate
 from executor.engine import realized_from_meta
 from executor.errors import Ambiguous, ExecutorError, Refused, RpcError, SendRejected, WalletError
+from executor.http import HttpxHttp
 from executor.journal import Journal, require_clear
 from executor.jupiter import Jupiter
 from executor.quote import fetch_report
@@ -697,3 +699,80 @@ def test_integrated_fee_exit_exception_never_admits_unknown_or_wallet_sell(
             "SOL", "USDC", "0.01", strategy=strategy, live=True, exit_only=True, reason="must retain unresolved barrier"
         )
     assert chain.sent == []
+
+
+@pytest.mark.parametrize("mode", ["http_error", "non_json", "transport_error", "success"])
+@pytest.mark.parametrize("method", ["GET", "POST"])
+def test_transport_diagnostics_exclude_upstream_content_and_credentials(mode, method, caplog):
+    secret = "synthetic-private-api-key"
+    calls = []
+
+    def respond(request):
+        calls.append(request)
+        if mode == "transport_error":
+            raise httpx.ConnectError(secret, request=request)
+        return httpx.Response(
+            401 if mode == "http_error" else 200,
+            json={"message": secret} if mode != "non_json" else None,
+            text=secret if mode == "non_json" else None,
+        )
+
+    transport = object.__new__(HttpxHttp)
+    transport._client = httpx.Client(transport=httpx.MockTransport(respond), timeout=20, trust_env=False)
+
+    def invoke():
+        headers = {"x-api-key": secret}
+        url = f"https://user:{secret}@rpc.invalid/private?key={secret}"
+        if method == "GET":
+            return transport.get_json(url, headers=headers)
+        return transport.post_json(url, {"signed": secret}, headers=headers)
+
+    try:
+        with caplog.at_level("INFO", logger="executor.http"):
+            if mode == "success":
+                assert invoke()["message"] == secret
+            else:
+                with pytest.raises(ExecutorError) as error:
+                    invoke()
+                assert secret not in str(error.value)
+    finally:
+        transport._client.close()
+    assert len(calls) == 1  # A transport failure must never repeat a send.
+    records = [json.loads(record.message) for record in caplog.records if record.name == "executor.http"]
+    assert len(records) == 2 and records[0]["event"] == "executor_http_request"
+    assert records[1]["event"] == "executor_http_result"
+    assert records[1]["ok"] is (mode == "success")
+    assert secret not in caplog.text and "/private" not in caplog.text and "user" not in caplog.text
+
+
+@pytest.mark.parametrize("kind", ["response", "exception"])
+def test_rpc_read_errors_never_echo_provider_content(kind):
+    secret = "synthetic-private-rpc-key"
+    http = FakeHttp()
+    if kind == "response":
+        http.on("/rpc", {"error": {"code": -32000, "message": secret}})
+    else:
+
+        def fail(_body):
+            raise RuntimeError(secret)
+
+        http.on("/rpc", fail)
+    with pytest.raises(RpcError) as error:
+        Rpc("http://127.0.0.1/rpc", http, sleep=lambda _seconds: None).call("getBalance", [], retries=0)
+    assert secret not in str(error.value)
+    assert "getBalance" in str(error.value)
+
+
+def test_network_fixture_enrolls_only_its_temporary_authority(monkeypatch, tmp_path):
+    import test_network
+    from conftest import FakeRpc
+
+    from executor.config import home
+    from executor.engine import Engine
+
+    monkeypatch.setattr(test_network, "Engine", lambda cfg: Engine(cfg, http=FakeHttp(), rpc=FakeRpc()))
+    _cfg, engine = test_network.live.__wrapped__(tmp_path)
+    assert engine.authority.check()["wallet"] == engine.cfg.owner
+    assert home().resolve().is_relative_to(tmp_path.resolve())
+    assert engine.authority.root.resolve().is_relative_to(tmp_path.resolve())
+    assert engine.cfg.mode == "dry-run" and engine.rpc.sent == []

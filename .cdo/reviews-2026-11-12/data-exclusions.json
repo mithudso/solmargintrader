@@ -1,0 +1,100 @@
+{
+  "files": [
+    {
+      "path": "scripts/referral_scripts/claim-all-fees.ts",
+      "sha256": "ad2a8f99dc5314ae830c08d636031114cdb919047002ad25d587058a61c992bf",
+      "reason": "Captured GitHub HTML (DOCTYPE/html/title/og:url), not executable TypeScript. Original capture preserved; no source-logic review credit claimed.",
+      "classification_ranges": [
+        [
+          1,
+          24
+        ],
+        [
+          112,
+          112
+        ],
+        [
+          169,
+          169
+        ]
+      ]
+    },
+    {
+      "path": "scripts/referral_scripts/create-referral-account.ts",
+      "sha256": "a59c50a7b40266c72299a237d5cc2f03e0b3d228cac81ab000cb9a2b2b92b33a",
+      "reason": "Captured GitHub HTML (DOCTYPE/html/title/og:url), not executable TypeScript. Original capture preserved; no source-logic review credit claimed.",
+      "classification_ranges": [
+        [
+          1,
+          24
+        ],
+        [
+          112,
+          112
+        ],
+        [
+          169,
+          169
+        ]
+      ]
+    },
+    {
+      "path": "scripts/referral_scripts/create-referral-token-account.ts",
+      "sha256": "73847da918d34d04cc8b88c04697e41d29dc6805fa67c4478dda680a81fa5d4e",
+      "reason": "Captured GitHub HTML (DOCTYPE/html/title/og:url), not executable TypeScript. Original capture preserved; no source-logic review credit claimed.",
+      "classification_ranges": [
+        [
+          1,
+          24
+        ],
+        [
+          112,
+          112
+        ],
+        [
+          169,
+          169
+        ]
+      ]
+    },
+    {
+      "path": "scripts/referral_scripts/get-referral-account.ts",
+      "sha256": "3bbccdc0aa664544354f273cedc0000fdd5a230f9736e9ef3df13c9df420d1c9",
+      "reason": "Captured GitHub HTML (DOCTYPE/html/title/og:url), not executable TypeScript. Original capture preserved; no source-logic review credit claimed.",
+      "classification_ranges": [
+        [
+          1,
+          24
+        ],
+        [
+          112,
+          112
+        ],
+        [
+          169,
+          169
+        ]
+      ]
+    },
+    {
+      "path": "scripts/referral_scripts/get-referral-token-account.ts",
+      "sha256": "052f815d3d52f2c957f76cfcece0e6d26a8c0f2a5625cd0f4d0ee85753a7810b",
+      "reason": "Captured GitHub HTML (DOCTYPE/html/title/og:url), not executable TypeScript. Original capture preserved; no source-logic review credit claimed.",
+      "classification_ranges": [
+        [
+          1,
+          24
+        ],
+        [
+          112,
+          112
+        ],
+        [
+          169,
+          169
+        ]
+      ]
+    }
+  ],
+  "note": "Captured GitHub HTML data disguised by .ts suffix; full application-code coverage explicitly excludes these preserved bytes. No semantic code review credit."
+}

@@ -1,0 +1,781 @@
+{
+  "artifacts_created": [
+    "/tmp/oraclebot_extension_wrapper_fixed_baseline.mjs",
+    "/tmp/oraclebot-extension-wrapper-fixed-baseline-results.json",
+    "/tmp/oraclebot_extension_wrapper_fixed_boundary.mjs",
+    "/tmp/oraclebot-extension-wrapper-fixed-boundary-results.json",
+    "/tmp/oraclebot_extension_paper_grant_probe.mjs",
+    "/tmp/oraclebot-extension-paper-grant-results.json",
+    "/tmp/oraclebot-extension-independent-wrapper-recheck.json",
+    "/tmp/oraclebot-extension-final-independent-lhr9nm",
+    "/tmp/oraclebot-extension-permission-boundary-KYsD8g",
+    "/tmp/oraclebot-paper-grant-independent-EfC7Np"
+  ],
+  "conclusion": "No Medium+ finding remains in the bounded recheck of the five original extension findings and their post-journal/wrapper permission variants. This is not a whole-extension, installed-browser or whole-repository clean verdict.",
+  "created_at": "2026-11-12T16:41:01.236342+00:00",
+  "fresh_source_bindings": [
+    {
+      "actual_fresh_read_ranges": [
+        [
+          1,
+          163
+        ]
+      ],
+      "coverage": "complete",
+      "git_blob": "398eeefa78e82fac7b2c64e26b06ddb9a196585a",
+      "line_count": 163,
+      "path": "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/extension/src/core/bot-manager.js",
+      "repo_relative_path": "extension/src/core/bot-manager.js",
+      "sha256": "0303935f71f7795f712799d5641342cf5b67f9b6631ccfcac7fba2be59638df1"
+    },
+    {
+      "actual_fresh_read_ranges": [
+        [
+          1,
+          199
+        ],
+        [
+          200,
+          327
+        ]
+      ],
+      "coverage": "complete",
+      "git_blob": "ed5679de475473e6f814785f82425ca3f77230eb",
+      "line_count": 327,
+      "path": "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/extension/src/storage/store.js",
+      "repo_relative_path": "extension/src/storage/store.js",
+      "sha256": "fd6351422859af43bd180932c5e6bbb463743db8044b684a308d5e55e19e84a8"
+    },
+    {
+      "actual_fresh_read_ranges": [
+        [
+          1,
+          220
+        ],
+        [
+          221,
+          440
+        ],
+        [
+          441,
+          529
+        ],
+        [
+          530,
+          640
+        ],
+        [
+          640,
+          660
+        ]
+      ],
+      "coverage": "complete",
+      "git_blob": "a647fb4130169fac85b8051222e8d9b13ce032ff",
+      "line_count": 660,
+      "path": "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/extension/src/core/engine.js",
+      "repo_relative_path": "extension/src/core/engine.js",
+      "sha256": "b2a08540eba40bcb0428f7988c14a9dd010e1b33e3311a7b6637bc751370fafb"
+    }
+  ],
+  "head": "e78464e7d98f1d5c823755422635f27556d767ca",
+  "independence": {
+    "accepted_executor_retouched": false,
+    "author_full_suite_or_browser_pass_adopted": false,
+    "author_regression_tests_read_or_used_as_evidence": false,
+    "owner_configuration_mutated": false,
+    "production_edits": false,
+    "real_network_or_accounts": false,
+    "runtime_services_or_inference": false,
+    "signing_or_real_orders": false
+  },
+  "limitations": [
+    "This verdict covers the bound extension stop/permission paths and retained original counterexamples only, not a whole-repository audit.",
+    "Three changed files were freshly read completely this round: 1150 lines. Eight previously fully read files were hash-verified unchanged.",
+    "The separate-process tests use actual file-backed persistence and injected scheduling barriers, but every venue invocation is a local synthetic callback.",
+    "The shared Chrome-shaped area exercises the runtime queue contract in Node; it does not qualify an installed Chrome multi-context runtime.",
+    "No real provider/network/account, actual key/signature/order, service start, model job or owner configuration was used.",
+    "The parent-reported focused/full Node/offline/browser results are separate evidence and were not adopted as this reviewer's own checks.",
+    "No strict physical cancellation of an already begun venue operation is claimed. The tested contract is that kill acknowledgement orders correctly against new synchronous invocation starts.",
+    "Source edits after these hashes require a new targeted recheck."
+  ],
+  "paper_grant_checks": {
+    "eligibility": [
+      {
+        "allowed": true,
+        "calls": 1,
+        "delegated": {
+          "expectedStopGeneration": 0,
+          "paperGrant": true
+        },
+        "options": {
+          "armed": false,
+          "mode": "dry-run",
+          "running": true
+        },
+        "rawArmed": false
+      },
+      {
+        "allowed": false,
+        "calls": 0,
+        "delegated": {
+          "expectedStopGeneration": 0,
+          "paperGrant": false
+        },
+        "options": {
+          "armed": false,
+          "mode": "dry-run",
+          "running": false
+        },
+        "rawArmed": false
+      },
+      {
+        "allowed": false,
+        "calls": 0,
+        "delegated": {
+          "expectedStopGeneration": 0,
+          "paperGrant": false
+        },
+        "options": {
+          "armed": false,
+          "hashMatches": false,
+          "mode": "dry-run",
+          "running": true
+        },
+        "rawArmed": false
+      },
+      {
+        "allowed": false,
+        "calls": 0,
+        "delegated": {
+          "expectedStopGeneration": 0,
+          "paperGrant": false
+        },
+        "options": {
+          "armed": false,
+          "killed": true,
+          "mode": "dry-run",
+          "running": true
+        },
+        "rawArmed": false
+      },
+      {
+        "allowed": false,
+        "calls": 0,
+        "delegated": {
+          "expectedStopGeneration": 0,
+          "paperGrant": false
+        },
+        "options": {
+          "armed": false,
+          "mode": "semi-auto",
+          "running": true
+        },
+        "rawArmed": false
+      },
+      {
+        "allowed": false,
+        "calls": 0,
+        "delegated": {
+          "expectedStopGeneration": 0,
+          "paperGrant": false
+        },
+        "options": {
+          "armed": false,
+          "mode": "full-auto",
+          "running": true
+        },
+        "rawArmed": false
+      },
+      {
+        "allowed": true,
+        "calls": 1,
+        "delegated": {
+          "expectedStopGeneration": 0,
+          "paperGrant": false
+        },
+        "options": {
+          "armed": true,
+          "mode": "full-auto",
+          "running": true
+        },
+        "rawArmed": true
+      }
+    ],
+    "root": "/tmp/oraclebot-paper-grant-independent-EfC7Np",
+    "sharedChromeShapedQueue": {
+      "events": [
+        "invoked",
+        "kill-acknowledged"
+      ],
+      "finalRuntime": {
+        "armed": false,
+        "dayKey": null,
+        "killSwitch": true,
+        "lastTickDeltaMs": null,
+        "lastTickMs": null,
+        "realizedPnlUsdToday": 0,
+        "stopGeneration": 1
+      },
+      "leaseReleasedBeforeResponse": true
+    },
+    "staleEpochAfterExplicitUnlatch": {
+      "allowed": false,
+      "calls": 0,
+      "runtime": {
+        "armed": false,
+        "dayKey": null,
+        "killSwitch": false,
+        "lastTickDeltaMs": null,
+        "lastTickMs": null,
+        "realizedPnlUsdToday": 0,
+        "stopGeneration": 1
+      }
+    },
+    "wrappedPendingResponse": {
+      "events": [
+        "wrapped-invoked",
+        "kill-acknowledged"
+      ],
+      "leaseReleasedBeforeResponse": true
+    }
+  },
+  "prior_findings": [
+    {
+      "evidence": {
+        "case": "limits-null",
+        "effectiveRead": null,
+        "holds": [
+          "above-market-entry-not-taken",
+          "above-market-entry-not-taken",
+          "above-market-entry-not-taken"
+        ],
+        "limitProblems": [
+          "limits must be an object; admission refused"
+        ],
+        "persistedLimits": null,
+        "syntheticPlacementCalls": 0
+      },
+      "id": "EXT-INDEP-1",
+      "state": "closed_for_original_counterexample"
+    },
+    {
+      "evidence": {
+        "errors": [],
+        "storedAfter": {
+          "gridId": "grid-1",
+          "intentKey": "grid-1:buy:60000000",
+          "level": 60,
+          "notionalUsd": 12,
+          "side": "buy",
+          "status": "CORRUPT_STATUS",
+          "txSignature": "synthetic-ambiguous-marker"
+        },
+        "storedBefore": {
+          "gridId": "grid-1",
+          "intentKey": "grid-1:buy:60000000",
+          "level": 60,
+          "notionalUsd": 12,
+          "side": "buy",
+          "status": "CORRUPT_STATUS",
+          "txSignature": "synthetic-ambiguous-marker"
+        },
+        "syntheticPlacements": []
+      },
+      "id": "EXT-INDEP-2",
+      "state": "closed_for_original_counterexample"
+    },
+    {
+      "after_journal_case": {
+        "childExit": {
+          "code": 0,
+          "signal": null
+        },
+        "killOutcome": {
+          "executionOwnerBusy": true,
+          "note": "Kill is latched. An already submitted order still requires venue reconciliation.",
+          "runtime": {
+            "armed": false,
+            "dayKey": null,
+            "killSwitch": true,
+            "lastTickDeltaMs": null,
+            "lastTickMs": null,
+            "realizedPnlUsdToday": 0,
+            "stopGeneration": 1
+          }
+        },
+        "latchedBeforeRelease": {
+          "armed": false,
+          "dayKey": null,
+          "killSwitch": true,
+          "lastTickDeltaMs": null,
+          "lastTickMs": null,
+          "realizedPnlUsdToday": 0,
+          "stopGeneration": 1
+        },
+        "ownerResult": {
+          "errorDetails": [],
+          "errors": [],
+          "feeUnknownFills": 0,
+          "lastTickDeltaMs": null,
+          "limitProblems": [],
+          "mode": "dry-run",
+          "orphaned": [],
+          "placed": [],
+          "pnl": {
+            "avgEntryUsd": 0,
+            "carryUsd": 0,
+            "feeTotalUsd": 0,
+            "openBaseQty": 0,
+            "openCostUsd": 0,
+            "openLotCount": 0,
+            "openMarketUsd": 0,
+            "realizedFeeUsd": 0,
+            "realizedGrossUsd": 0,
+            "realizedNetUsd": 0,
+            "roundTripCount": 0,
+            "totalNetUsd": 0,
+            "unmatchedSellQty": 0,
+            "unrealizedNetUsd": 0,
+            "winRate": 0
+          },
+          "price": 75,
+          "realizedPnlUsdToday": 0,
+          "recentre": {
+            "applied": false,
+            "from": {
+              "lower": 60,
+              "upper": 90
+            },
+            "reason": "auto-recentre-disabled",
+            "to": {
+              "lower": 60,
+              "upper": 90
+            }
+          },
+          "rejected": [],
+          "skipped": [
+            {
+              "level": 78.62224182626692,
+              "reason": "above-market-entry-not-taken"
+            },
+            {
+              "level": 84.11897386656607,
+              "reason": "above-market-entry-not-taken"
+            },
+            {
+              "level": 90,
+              "reason": "above-market-entry-not-taken"
+            },
+            {
+              "reason": "execution-stopped"
+            }
+          ],
+          "tsMs": 1794501490555,
+          "unknownIntents": []
+        },
+        "ownerSyntheticCalls": []
+      },
+      "after_permission_read_full_auto_case": {
+        "childExit": {
+          "code": 0,
+          "signal": null
+        },
+        "outcome": {
+          "executionOwnerBusy": true,
+          "note": "Kill is latched. An already submitted order still requires venue reconciliation.",
+          "runtime": {
+            "armed": false,
+            "dayKey": null,
+            "killSwitch": true,
+            "lastTickDeltaMs": null,
+            "lastTickMs": null,
+            "realizedPnlUsdToday": 0,
+            "stopGeneration": 1
+          }
+        },
+        "owner": {
+          "calls": [],
+          "mode": "full-auto",
+          "result": {
+            "errorDetails": [],
+            "errors": [],
+            "feeUnknownFills": 0,
+            "lastTickDeltaMs": null,
+            "limitProblems": [],
+            "mode": "full-auto",
+            "orphaned": [],
+            "placed": [],
+            "pnl": {
+              "avgEntryUsd": 0,
+              "carryUsd": 0,
+              "feeTotalUsd": 0,
+              "openBaseQty": 0,
+              "openCostUsd": 0,
+              "openLotCount": 0,
+              "openMarketUsd": 0,
+              "realizedFeeUsd": 0,
+              "realizedGrossUsd": 0,
+              "realizedNetUsd": 0,
+              "roundTripCount": 0,
+              "totalNetUsd": 0,
+              "unmatchedSellQty": 0,
+              "unrealizedNetUsd": 0,
+              "winRate": 0
+            },
+            "price": 75,
+            "realizedPnlUsdToday": 0,
+            "recentre": {
+              "applied": false,
+              "from": {
+                "lower": 60,
+                "upper": 90
+              },
+              "reason": "auto-recentre-disabled",
+              "to": {
+                "lower": 60,
+                "upper": 90
+              }
+            },
+            "rejected": [],
+            "skipped": [
+              {
+                "level": 78.62224182626692,
+                "reason": "above-market-entry-not-taken"
+              },
+              {
+                "level": 84.11897386656607,
+                "reason": "above-market-entry-not-taken"
+              },
+              {
+                "level": 90,
+                "reason": "above-market-entry-not-taken"
+              },
+              {
+                "reason": "execution-stopped"
+              }
+            ],
+            "tsMs": 1794501490336,
+            "unknownIntents": []
+          },
+          "wrapperHasPermissionGate": true
+        },
+        "runtime": {
+          "armed": false,
+          "dayKey": null,
+          "killSwitch": true,
+          "lastTickDeltaMs": null,
+          "lastTickMs": null,
+          "realizedPnlUsdToday": 0,
+          "stopGeneration": 1
+        }
+      },
+      "direct_lease_release": {
+        "deniedAfterLatch": true,
+        "events": [
+          "venue-invoked",
+          "kill-acknowledged"
+        ],
+        "leaseReleasedWhileResponsePending": true
+      },
+      "id": "EXT-INDEP-3",
+      "original_busy_owner_case": {
+        "childExit": {
+          "code": 0,
+          "signal": null
+        },
+        "contenderCode": "FILE_STORE_BUSY",
+        "contenderSyntheticCalls": 0,
+        "killCode": null,
+        "killOutcome": {
+          "executionOwnerBusy": true,
+          "note": "Kill is latched. An already submitted order still requires venue reconciliation.",
+          "runtime": {
+            "armed": false,
+            "dayKey": null,
+            "killSwitch": true,
+            "lastTickDeltaMs": null,
+            "lastTickMs": null,
+            "realizedPnlUsdToday": 0,
+            "stopGeneration": 1
+          }
+        },
+        "ownerSyntheticCalls": [
+          "grid-1:buy:60000000"
+        ],
+        "runtimeAfterKill": {
+          "armed": false,
+          "dayKey": null,
+          "killSwitch": true,
+          "lastTickDeltaMs": null,
+          "lastTickMs": null,
+          "realizedPnlUsdToday": 0,
+          "stopGeneration": 1
+        }
+      },
+      "shared_chrome_shaped_queue": {
+        "events": [
+          "invoked",
+          "kill-acknowledged"
+        ],
+        "finalRuntime": {
+          "armed": false,
+          "dayKey": null,
+          "killSwitch": true,
+          "lastTickDeltaMs": null,
+          "lastTickMs": null,
+          "realizedPnlUsdToday": 0,
+          "stopGeneration": 1
+        },
+        "leaseReleasedBeforeResponse": true
+      },
+      "state": "closed_in_bounded_recheck",
+      "wrapper_lease_release": {
+        "events": [
+          "wrapped-invoked",
+          "kill-acknowledged"
+        ],
+        "leaseReleasedBeforeResponse": true
+      }
+    },
+    {
+      "evidence": "An acknowledged kill after actual journal write causes zero venue invocations and retains the denied record as definitely-not-submitted in the independently rerun baseline.",
+      "id": "EXT-INDEP-3-WRITEAHEAD",
+      "state": "closed"
+    },
+    {
+      "evidence": "The unchanged prior safe-outcome boundary script now observes wrapperHasPermissionGate:true and zero full-auto placement calls after the acknowledged kill.",
+      "id": "EXT-INDEP-3-WRAPPER-PERMISSION",
+      "state": "closed"
+    },
+    {
+      "evidence": {
+        "missingBreakEvenIdleActions": [],
+        "missingBreakEvenPositionActions": []
+      },
+      "id": "EXT-INDEP-4",
+      "state": "closed_for_original_missing_break_even_counterexample"
+    },
+    {
+      "evidence": {
+        "aboveHardCapError": "RangeError",
+        "aboveHardCapFetches": 0,
+        "bytes": 11534469,
+        "defaultLargeStatus": 413,
+        "normalizedPools": 1
+      },
+      "id": "EXT-INDEP-5",
+      "state": "closed_for_original_large_feed_counterexample"
+    }
+  ],
+  "reviewer": "executor_blind_review",
+  "root": "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112",
+  "schema": "oraclebot-extension-independent-wrapper-recheck/v1",
+  "source_findings_closed_by": {
+    "atomic_epoch_and_latch_check": {
+      "lines": [
+        307,
+        325
+      ],
+      "observation": "The gate checks current latch and stop epoch while serializing synchronous invocation. It returns the pending response in an object so the lock is not held until response completion.",
+      "path": "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/extension/src/storage/store.js"
+    },
+    "grant_limited_to_paper": {
+      "lines": [
+        136,
+        143
+      ],
+      "observation": "Only matching manager state in dry-run can provide a virtual grant. Disarmed semi-auto/full-auto callbacks were denied; armed full-auto used raw authority with paperGrant:false.",
+      "path": "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/extension/src/core/bot-manager.js"
+    },
+    "live_fallback_refused": {
+      "lines": [
+        589,
+        597
+      ],
+      "observation": "Source inspection confirms that legacy adapters without the atomic gate refuse non-dry-run mode.",
+      "path": "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/extension/src/core/engine.js"
+    },
+    "wrapper_gate_preserved": {
+      "lines": [
+        153,
+        159
+      ],
+      "observation": "Every wrapper permission decision delegates to the underlying atomic gate, with a paperGrant boolean and expected stop epoch.",
+      "path": "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/extension/src/core/bot-manager.js"
+    }
+  },
+  "status": "BOUNDED_RECHECK_PASS",
+  "unchanged_accepted_scope_bindings": [
+    {
+      "coverage": "Earlier complete independent read retained; current hash confirmed unchanged.",
+      "current_sha256": "2478c2930e280ef4b4bcb9b4632e2e38540c077bb587659ef0f551b7ef757107",
+      "path": "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/extension/src/core/commands.js",
+      "prior_actual_read_ranges": [
+        [
+          1,
+          250
+        ],
+        [
+          251,
+          371
+        ],
+        [
+          365,
+          405
+        ],
+        [
+          405,
+          500
+        ],
+        [
+          501,
+          750
+        ],
+        [
+          735,
+          1004
+        ]
+      ],
+      "prior_sha256": "2478c2930e280ef4b4bcb9b4632e2e38540c077bb587659ef0f551b7ef757107",
+      "repo_relative_path": "extension/src/core/commands.js",
+      "unchanged": true
+    },
+    {
+      "coverage": "Earlier complete independent read retained; current hash confirmed unchanged.",
+      "current_sha256": "85e15da8bb4149dc331aec71782e3ad6d5bc6ec60bce5a62e93b7ca463ffba44",
+      "path": "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/extension/src/core/risk.js",
+      "prior_actual_read_ranges": [
+        [
+          1,
+          299
+        ]
+      ],
+      "prior_sha256": "85e15da8bb4149dc331aec71782e3ad6d5bc6ec60bce5a62e93b7ca463ffba44",
+      "repo_relative_path": "extension/src/core/risk.js",
+      "unchanged": true
+    },
+    {
+      "coverage": "Earlier complete independent read retained; current hash confirmed unchanged.",
+      "current_sha256": "05a2fbe2ada55c662735e04f269bc2f928280e8f856ece1b571aebe7911a4c07",
+      "path": "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/extension/src/core/alerts.js",
+      "prior_actual_read_ranges": [
+        [
+          1,
+          257
+        ]
+      ],
+      "prior_sha256": "05a2fbe2ada55c662735e04f269bc2f928280e8f856ece1b571aebe7911a4c07",
+      "repo_relative_path": "extension/src/core/alerts.js",
+      "unchanged": true
+    },
+    {
+      "coverage": "Earlier complete independent read retained; current hash confirmed unchanged.",
+      "current_sha256": "99ccb1e892821b86caa61433d564a93e63974f653a10f373195ee8b266125086",
+      "path": "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/extension/src/core/control-room.js",
+      "prior_actual_read_ranges": [
+        [
+          1,
+          82
+        ]
+      ],
+      "prior_sha256": "99ccb1e892821b86caa61433d564a93e63974f653a10f373195ee8b266125086",
+      "repo_relative_path": "extension/src/core/control-room.js",
+      "unchanged": true
+    },
+    {
+      "coverage": "Earlier complete independent read retained; current hash confirmed unchanged.",
+      "current_sha256": "5ef26fa7ee37c5e44739fd3c29d18190a2c1d5eb8670561b49937afad7d40287",
+      "path": "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/extension/src/storage/fileStore.js",
+      "prior_actual_read_ranges": [
+        [
+          1,
+          220
+        ],
+        [
+          221,
+          346
+        ]
+      ],
+      "prior_sha256": "5ef26fa7ee37c5e44739fd3c29d18190a2c1d5eb8670561b49937afad7d40287",
+      "repo_relative_path": "extension/src/storage/fileStore.js",
+      "unchanged": true
+    },
+    {
+      "coverage": "Earlier complete independent read retained; current hash confirmed unchanged.",
+      "current_sha256": "35996937a7d7d09f9a1ed959a45695d7061ed785704420078db092beaa517858",
+      "path": "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/extension/src/jupiter/http.js",
+      "prior_actual_read_ranges": [
+        [
+          1,
+          208
+        ]
+      ],
+      "prior_sha256": "35996937a7d7d09f9a1ed959a45695d7061ed785704420078db092beaa517858",
+      "repo_relative_path": "extension/src/jupiter/http.js",
+      "unchanged": true
+    },
+    {
+      "coverage": "Earlier complete independent read retained; current hash confirmed unchanged.",
+      "current_sha256": "b520fafb8831050669da4817402717cc4f40152d3599286db8b2a1856864fa13",
+      "path": "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/extension/src/market/net.js",
+      "prior_actual_read_ranges": [
+        [
+          1,
+          16
+        ],
+        [
+          17,
+          47
+        ],
+        [
+          48,
+          114
+        ]
+      ],
+      "prior_sha256": "b520fafb8831050669da4817402717cc4f40152d3599286db8b2a1856864fa13",
+      "repo_relative_path": "extension/src/market/net.js",
+      "unchanged": true
+    },
+    {
+      "coverage": "Earlier complete independent read retained; current hash confirmed unchanged.",
+      "current_sha256": "1c09f8438627530611fe2e3020b50005f591aebdc97ff047ea1c135ce75fbf42",
+      "path": "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/extension/src/market/pools.js",
+      "prior_actual_read_ranges": [
+        [
+          1,
+          102
+        ]
+      ],
+      "prior_sha256": "1c09f8438627530611fe2e3020b50005f591aebdc97ff047ea1c135ce75fbf42",
+      "repo_relative_path": "extension/src/market/pools.js",
+      "unchanged": true
+    }
+  ],
+  "unresolved_findings": [],
+  "verification": [
+    {
+      "command": "node /tmp/oraclebot_extension_wrapper_fixed_baseline.mjs",
+      "description": "Retained safe-outcome baseline; assertions unchanged. Only the result-artifact path changed to preserve historical evidence.",
+      "exit_code": 0,
+      "result_artifact": "/tmp/oraclebot-extension-wrapper-fixed-baseline-results.json",
+      "result_sha256": "e998314e075da5aa2525af433ff115849cd29b0a4f7bdfdc15466d38027b103e",
+      "script_sha256": "c3c710e55da0a94ed5dc3e0c6e4bb5a31ef8aabc8dcf49027c11414d56b60721"
+    },
+    {
+      "command": "node /tmp/oraclebot_extension_wrapper_fixed_boundary.mjs",
+      "description": "Prior direct-gate and separate-process after-permission-read safety assertions unchanged; both pass. Only the result-artifact path changed.",
+      "exit_code": 0,
+      "result_artifact": "/tmp/oraclebot-extension-wrapper-fixed-boundary-results.json",
+      "result_sha256": "f34b41a34803c7ef10c8c2da918859ab0612a759e6e282df5816bbb4ffeb3b8e",
+      "script_sha256": "ba7629660bf2f0eb9e11b2b676bb44da4a625789acff636457be4d2cf5225616"
+    },
+    {
+      "command": "node /tmp/oraclebot_extension_paper_grant_probe.mjs",
+      "description": "Independent seven-case grant eligibility, stale grant after kill/unlatch, wrapped pending response lease-release, and shared Chrome-shaped queue probes.",
+      "exit_code": 0,
+      "result_artifact": "/tmp/oraclebot-extension-paper-grant-results.json",
+      "result_sha256": "59391a3d66da3f4c58e457797cbc689771e3ad67eba2854d8e4c0ac61b2066bc",
+      "script_sha256": "986faf0f1e454ef1a8a235abdd965321567cde62a713524fe0ebb3849e802414"
+    }
+  ]
+}

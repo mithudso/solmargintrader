@@ -20,6 +20,7 @@ shows up here rather than silently producing a dead index entry.
 
 from __future__ import annotations
 
+import argparse
 import json
 import re
 import subprocess
@@ -155,6 +156,7 @@ def build() -> tuple[list[dict[str, object]], list[str]]:
 
 def main() -> int:
     """Write the index; report any row that names a path which no longer exists."""
+    argparse.ArgumentParser(description=__doc__).parse_args()
     entries, missing = build()
     payload = {
         "$comment": (

@@ -1,0 +1,17 @@
+{
+  "attempt": "attempt-03",
+  "original_wal_sha256": "eea4a026d1a093a2be996d32c552262358516ca27494f60df3091d54312f3d31",
+  "records_verified": 1459542,
+  "all_trade_rows_verified": 134746,
+  "book_samples_independently_sorted_from_raw": 100,
+  "connection_ids": 7,
+  "all_connection_changes_marked": true,
+  "receipt_silences_over2s": 9,
+  "quote_samples": 86352,
+  "terminal_quote_age_seconds": 0.220432,
+  "sampled_exchange_lag_seconds": {
+    "min": 0.01345515251159668,
+    "median": 0.030727028846740723,
+    "max": 13.265785932540894
+  }
+}

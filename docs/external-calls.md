@@ -187,30 +187,19 @@ is not fill evidence. Account provisioning, GUM application-wallet funding and
 perps collateral deposits are separate operations and are not implemented by the
 order adapter. Coinbase portfolio transfers are not onchain withdrawals.
 
-## Executor, hosted website and raw-capture supplement — 2026-11-12
+## Hosted Oraclebot boundaries — reviewed 2026-11-12
 
-These source-bound rows add logical transport owners omitted from the older inventory.
-They do not certify an exhaustive call-site census or full five-standard compliance.
-Offline fixtures remain separate from live provider acceptance.
-
-| ID | Source / logical boundary | Target / effect | Bounds, retry, diagnostics and verification |
+| ID | Caller | Target and effect | Bounds, retries and proof |
 | --- | --- | --- | --- |
-| EX1 | `executor/src/executor/http.py` `HttpxHttp`; `jupiter.py` `Jupiter` | Jupiter Swap v1 quote/build and Price reads over HTTP | Default 20s HTTP timeout, redirects refused, no retry in the common HTTP seam; Jupiter paces calls and retries only bounded 429 responses. Engine/journal record operation outcomes, not every transport attempt. `executor/tests/test_quote.py`, `test_engine.py`; `executor/README.md` |
-| EX2 | `executor/src/executor/rpc.py` `Rpc.call`, `simulate` | Solana account/height/signature/transaction reads and exact swap simulation | Bounded read retries/backoff through EX1; no claim that a simulation is a mined result. Offline engine/verifier/RPC fixtures under `executor/tests/`; explicit `network` tests are separate |
-| EX3 | `executor/src/executor/rpc.py` `Rpc.send_transaction`; `engine.py` | One application-level signed Solana send and later reconciliation | No application-level automatic send retry. Journal records the sending signature before network invocation; unknown outcomes hold new live swaps. RPC node rebroadcast of the same bytes differs from another application submit. `executor/tests/test_authority.py`, `test_optimizer_regressions.py`; `executor/CLAUDE.md` |
-| EX4 | `executor/src/executor/lifi.py` `quote_cross_chain` | LI.FI cross-chain quote-only GET through EX1 | No local retry wrapper; validates quote amounts and drops transaction requests. Does not sign or bridge. `executor/tests/test_quote.py`; `executor/README.md` |
-| WEB1 | `website/src/worker.js` `query`, account/bot/subscription routes | Cloudflare D1 prepared/bound SQL and static-asset binding | Tenant scope, atomic single-use challenges and expiring hashed sessions; D1 state is not a common error log. Account/billing fixtures in `website/test/api.test.js`; actual deployed storage acceptance is separate. `website/README.md` |
-| WEB2 | `website/src/worker.js` `stripe`, `checkout`, webhook handler | Stripe customer/Checkout/portal requests and canonical subscription reads | 10s abort deadline, redirects refused, response bound; no automatic transport retry. Idempotency keys and pending-checkout claim bound creation; signed webhook plus canonical subscription establishes entitlement. Fixed public errors and D1 receipts, no common attempt sink. `website/test/api.test.js`; `website/README.md` |
-| WEB3 | `website/src/worker.js` `engine`; `website/engine/server.py` | Named HTTPS backtest/Oracle requests to the separate read-only Python adapter | 20s edge abort deadline, redirects refused, 2MB reply bound, server-side bearer credential; no automatic retry. Python input/work/cache bounds and unavailable responses preserve provenance. `website/engine/test_server.py`; `website/engine/README.md` |
-| WEB4 | `website/scripts/export_research.py` | Explicit local public-research catalog/body-shard generation | Deterministic tracked-source selection and source/published hashes; no market/network request or inference. `--check` verifies freshness; `website/engine/test_research.py`. Generated copies retain source limitations |
-| CAP1 | `scripts/capture_market.py` `capture`, `Spool` | Public Coinbase `matches`, `level2_batch` and heartbeat WebSocket input into a durable local spool | Separate producer lock, persisted fixed deadline, reconnect/status evidence, local receipt time and original exchange payload. Provider-batched book messages are not every internal exchange event. No orders or signing. `scripts/test_capture_market.py`; [capture command boundary](SCRIPTS.md#bounded-raw-event-capture) |
-| CAP2 | `scripts/capture_market.py` `mongo_client`, `upload_once`, `upload` | X509 MongoDB upload to the dedicated raw-event time-series namespace | 10s server selection, 5s connect timeout and majority write concern. Pre-insert connection failures can retry; an inflight/ambiguous insert stops automatic upload and preserves a reconciliation marker. Acknowledged batches advance the durable spool offset; independent remote read-back remains separate. Disposable native MongoDB plus injected transport tests in `scripts/test_capture_market.py` |
+| WEB1 | `website/src/worker.js` `stripe` | Stripe customer, subscription, Checkout and portal HTTPS API | 10s timeout and bounded response; server credentials only; no automatic write retry; customer/Checkout idempotency and ambiguous-create lock; `website/test/api.test.js` |
+| WEB2 | `website/src/worker.js` `webhook` | Inbound Stripe subscription/Checkout events plus canonical subscription read through WEB1 | Raw-body HMAC and timestamp validation, durable processed-event identity and current-state reconciliation; no browser success entitlement |
+| WEB3 | `website/src/worker.js` `engine` | Operator-configured HTTPS public-analysis adapter | Fixed allow-listed paths, server bearer, 20s timeout, redirect rejection and bounded JSON; no signing or order endpoint |
+| WEB4 | `website/src/worker.js` `query`, account/bot routes | Cloudflare D1 account, challenge, session, billing and inactive configuration storage | Bound SQL, tenant predicates, atomic challenge consumption and conditional deletion; SQL behavior exercised through SQLite fixtures and deployed acceptance |
+| WEB5 | `website/public/app.js` `api`, wallet sign-in | Same-origin account/analysis API and injected Solana wallet message signing | Abort deadline; account message only, no transaction signing; safe DOM rendering and explicit unavailable states |
+| WEB6 | `website/engine/server.py` | Inbound bearer-authenticated public-analysis HTTP and dedicated local cache/archive reads | Bounded bodies/cache sizes, one calculation slot, symbolic errors; no browser Origin, feed acquisition, signing or order submission |
 
-The executor, website and capture have existing CLI/API entry points and component
-journals or status views. They do not implement one generated operation registry,
-shared JSONL failure schema, complete remediation map or generated per-call dashboard.
-Those standards remain absent or partial. Read-only EX2/EX4/WEB3 operations do not
-need invented datastore writes. WEB1/WEB2/CAP2 persistence must be checked at the
-owning boundary; a mock response, local journal or acknowledgment is not universal
-proof of externally landed data. Never add generic retries to EX3 or ambiguous
-CAP2 writes, or tunnel local trading services to satisfy a dashboard requirement.
+These rows describe actual boundaries; they do not establish universal five-standard
+compliance or a provisioned analysis service. The website’s current package has
+no common persistent request/outcome/remediation sink. Retry policy must preserve
+the distinction between safe reads and an ambiguous side effect. Billing and
+analysis calls remain unavailable when their required server configuration is absent.

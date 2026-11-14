@@ -30,8 +30,12 @@ from backtester.core.strategies import REGISTRY
 from backtester.core.strategy_cards import HORIZONS, load_all
 
 from . import bgqueue, bgworker, config, forwardtest
-from .research_admission import admit_read, participating
 from .runner import engine_config
+from .research_admission import admit_read, participating
+from .source_epoch import SourceEpoch, SourceEpochChanged
+
+_REPO = Path(__file__).resolve().parent.parent
+_SOURCE_EPOCH = SourceEpoch.capture(_REPO)
 
 INTERVAL_MINUTES = {"1m": 1, "5m": 5, "15m": 15, "1h": 60, "6h": 360, "1d": 1440}
 PHASES = {"planned", "backtesting", "stopped", "failed", "forward", "forward_partial"}
@@ -96,6 +100,44 @@ def _code_id(sources: dict[str, str] | None = None) -> str:
     return hashlib.sha256(_dump(sources).encode()).hexdigest()
 
 
+def _candidate_templates(names: Sequence[str], horizons: Sequence[str], asset: str,
+                         interval: str) -> dict[str, Any]:
+    """Validate once per preset; expand only labels and ids across the universe."""
+    cards = _card_map()
+    templates = {}
+    for name in names:
+        card = cards.get(name)
+        if name.startswith("lev_") or card is None or not card.buildable or not card.data_available:
+            continue
+        for horizon in horizons:
+            excluded: list[bgqueue.CandidateExclusion] = []
+            jobs = bgqueue.jobs_for_card(card, horizon, asset, interval, max_tier=2,
+                                          exclusions=excluded)
+            def template(job: bgqueue.Job) -> dict[str, Any]:
+                return {k: v for k, v in job.to_dict().items() if k not in ("asset", "interval")}
+            templates[f"{name}:{horizon}"] = {
+                "jobs": [template(job) for job in jobs],
+                "exclusions": [{"job": template(item.job), "reason": item.reason,
+                                "detail": item.detail} for item in excluded],
+            }
+    return templates
+
+
+def _expand_candidates(template: dict[str, Any], asset: str,
+                        interval: str) -> tuple[list[bgqueue.Job], list[bgqueue.CandidateExclusion]]:
+    jobs = [bgqueue.Job(**item, asset=asset, interval=interval) for item in template["jobs"]]
+    exclusions = [bgqueue.CandidateExclusion(
+        bgqueue.Job(**item["job"], asset=asset, interval=interval), item["detail"], item["reason"])
+        for item in template["exclusions"]]
+    return jobs, exclusions
+
+
+def _candidate_counts(templates: dict[str, Any], copies: int) -> dict[str, int]:
+    eligible = sum(len(item["jobs"]) for item in templates.values()) * copies
+    excluded = sum(len(item["exclusions"]) for item in templates.values()) * copies
+    return {"requested": eligible + excluded, "eligible": eligible, "excluded": excluded}
+
+
 def catalog_coins() -> tuple[list[str], dict[str, Any]]:
     """Freeze the complete retained Coinbase spot catalogue, without network access."""
     from . import coinbase_account
@@ -155,6 +197,7 @@ def create(settings: config.Settings, coins: Sequence[str] | None = None, *, roo
     This may create a large plan; callers must run it off the UI thread. `start`
     is a separate explicit action and `create` does not run any tests.
     """
+    _SOURCE_EPOCH.verify(_REPO)
     if coins is None:
         assets, universe = catalog_coins()
     else:
@@ -171,6 +214,8 @@ def create(settings: config.Settings, coins: Sequence[str] | None = None, *, roo
         raise ValueError("unsupported interval or preset horizon")
     if any(name not in REGISTRY for name in names):
         raise ValueError("unknown registered strategy")
+    templates = _candidate_templates(names, horizons, assets[0], intervals[0])
+    candidate_counts = _candidate_counts(templates, len(assets) * len(intervals))
     run_id = uuid.uuid4().hex
     directory = _directory(run_id, root)
     directory.mkdir(mode=0o700, parents=True, exist_ok=False)
@@ -201,6 +246,7 @@ def create(settings: config.Settings, coins: Sequence[str] | None = None, *, roo
             for key, value in {"version": 1, "id": run_id, "phase": "planned", "created_at": time.time(),
                                "assets": assets, "intervals": intervals, "strategies": names, "horizons": horizons,
                                "longest_contiguous": longest_contiguous,
+                               "candidate_templates": templates, "candidate_counts": candidate_counts,
                                "settings": frozen, "code_id": _code_id(code_sources), "code_sources": code_sources,
                                "current": "", "universe": universe,
                                "notice": "Jupiter Perps scenario simulation. Each input is frozen when its series is first processed; selection uses CPCV results and is not independent validation. Leverage tiers require a perp-aware runner and are reported unsupported. Unresolved forward outcomes older than seven days remain pending until minute data can be recovered."}.items():
@@ -215,6 +261,7 @@ def create(settings: config.Settings, coins: Sequence[str] | None = None, *, roo
     return {"run_id": run_id, "directory": str(directory), "cells": total,
             "assets": assets, "intervals": list(intervals), "strategies": len(names),
             "horizons": list(horizons), "phase": "planned", "universe": universe,
+            "candidates": candidate_counts,
             "longest_contiguous": longest_contiguous}
 
 
@@ -242,6 +289,7 @@ def _global_lock(root: Path | None = None) -> int | None:
 
 def start(run_id: str, *, root: Path | None = None) -> dict[str, Any]:
     """Start or resume exactly this batch; does not interact with other workers."""
+    _SOURCE_EPOCH.verify(_REPO)
     directory = _directory(run_id, root)
     if not (directory / "batch.sqlite3").is_file():
         raise ValueError("batch does not exist")
@@ -328,6 +376,7 @@ def status(run_id: str, *, root: Path | None = None) -> dict[str, Any]:
                 "assets": _meta(db, "assets", []), "intervals": _meta(db, "intervals", []),
                 "universe": _meta(db, "universe", {}),
                 "longest_contiguous": _meta(db, "longest_contiguous", False),
+                "candidates": _meta(db, "candidate_counts", None),
                 "problems": problems, "problems_truncated": sum(counts.get(k, 0) for k in ("failed", "missing", "unsupported", "partial")) > len(problems),
                 "forward_checks": checks, "forward_backlog": _forward_backlog(directory),
                 "notice": _meta(db, "notice", ""),
@@ -364,8 +413,12 @@ def cells(run_id: str, *, root: Path | None = None, state: str | None = None,
         query = "SELECT * FROM cell" + (" WHERE state=?" if state else "") + " ORDER BY id LIMIT ? OFFSET ?"
         params = (state, limit, offset) if state else (limit, offset)
         rows = [dict(row) for row in db.execute(query, params)]
+        templates = _meta(db, "candidate_templates", None)
         for row in rows:
             row["selected"] = json.loads(row["selected"]) if row["selected"] else None
+            template = (templates or {}).get(f"{row['strategy']}:{row['horizon']}")
+            row["candidates"] = (bgqueue.candidate_census(*_expand_candidates(
+                template, row["asset"], row["interval"])) if template is not None else None)
         return rows
 
 
@@ -390,9 +443,19 @@ def proof(run_id: str, asset: str, interval: str, *, root: Path | None = None) -
         raise ValueError("unsupported interval")
     with closing(_connect(directory)) as db, db:
         series = db.execute("SELECT path,sha256 FROM series WHERE asset=? AND interval=?", (asset, interval)).fetchone()
+        templates = _meta(db, "candidate_templates", None)
+        candidate_plans = None
+        if (templates is not None and asset in _meta(db, "assets", [])
+                and interval in _meta(db, "intervals", [])):
+            candidate_plans = []
+            for template in templates.values():
+                jobs, exclusions = _expand_candidates(template, asset, interval)
+                candidate_plans.append({**bgqueue.candidate_census(jobs, exclusions),
+                                        "jobs": [{"job_id": job.job_id, **job.to_dict()} for job in jobs]})
         return {"run_id": run_id, "settings": _meta(db, "settings", {}),
                 "code_id": _meta(db, "code_id", ""), "code_sources": _meta(db, "code_sources", {}),
                 "series": dict(series) if series else None, "universe": _meta(db, "universe", {}),
+                "candidate_plans": candidate_plans,
                 "data_selection": _meta(db, f"data_selection:{asset}:{interval}", None)}
 
 
@@ -466,6 +529,7 @@ def _save_forward_check(db: sqlite3.Connection, asset: str, interval: str, recor
 
 def _run_cell(db: sqlite3.Connection, row: sqlite3.Row, settings: config.Settings,
               cards: dict[str, Any], cancelled: Callable[[], bool]) -> None:
+    _SOURCE_EPOCH.verify(_REPO)
     from backtester.core.types import validate_bar_arrays
 
     cell_id, asset, interval, name, horizon = (row[k] for k in ("id", "asset", "interval", "strategy", "horizon"))
@@ -478,7 +542,17 @@ def _run_cell(db: sqlite3.Connection, row: sqlite3.Row, settings: config.Setting
     if card is None or not card.buildable or not card.data_available:
         _finish_cell(db, cell_id, "unsupported", "No buildable, data-supported strategy card for this registry entry")
         return
-    jobs = bgqueue.jobs_for_card(card, horizon, asset, interval, max_tier=2)
+    templates = _meta(db, "candidate_templates", None)
+    template = (templates or {}).get(f"{name}:{horizon}")
+    if templates is not None and template is None:
+        raise ValueError(f"frozen candidate plan missing for {name} · {horizon}")
+    exclusions: list[bgqueue.CandidateExclusion] = []
+    if template is None:
+        # Legacy plans remain readable; their code binding controls resumption.
+        jobs = bgqueue.jobs_for_card(card, horizon, asset, interval, max_tier=2,
+                                      exclusions=exclusions)
+    else:
+        jobs, exclusions = _expand_candidates(template, asset, interval)
     if not jobs:
         _finish_cell(db, cell_id, "unsupported", "No preset or required parameters are unavailable")
         return
@@ -513,9 +587,13 @@ def _run_cell(db: sqlite3.Connection, row: sqlite3.Row, settings: config.Setting
         if prior:
             continue
         try:
+            _SOURCE_EPOCH.verify(_REPO)
             result = bgworker.evaluate(job, arrays, engine_config(settings, interval), settings)
+            _SOURCE_EPOCH.verify(_REPO)
             payload = dataclasses.asdict(result)
             attempt_state = "evaluated" if result.evaluable else "not_evaluable"
+        except SourceEpochChanged:
+            raise
         except Exception as exc:
             payload = {"reason": f"{type(exc).__name__}: {exc}"[:500], "params": dict(job.params)}
             attempt_state = "failed"
@@ -532,6 +610,9 @@ def _run_cell(db: sqlite3.Connection, row: sqlite3.Row, settings: config.Setting
     bad = sum(r["state"] != "evaluated" for r in outcomes)
     selection = _meta(db, f"data_selection:{asset}:{interval}", None)
     reasons = [f"{bad} of {len(outcomes)} variants did not produce an evaluable result"] if bad else []
+    if exclusions:
+        reasons.append(f"{len(exclusions)} of {len(jobs) + len(exclusions)} requested candidates "
+                       "excluded before evaluation: invalid_parameters. See batch.proof for exact parameters.")
     if selection:
         reasons.append(f"Longest continuous window: {selection['selected_bars']} of {selection['source_bars']} original bars; {selection['gaps_excluded']} gaps excluded. See batch.proof for timestamps.")
     _finish_cell(db, cell_id, "partial" if bad else "completed", " ".join(reasons),
@@ -562,6 +643,7 @@ def run(run_id: str, *, root: Path | None = None, max_cells: int | None = None,
         forward_cycles: int | None = None, tick: Callable[..., dict[str, Any]] | None = None,
         wait: Callable[[float], None] = time.sleep, token: str = "test") -> None:
     """Run or resume a batch under a caller-held lock; limits exist for deterministic tests."""
+    _SOURCE_EPOCH.verify(_REPO)
     from . import compound
 
     directory = _directory(run_id, root)
@@ -596,6 +678,8 @@ def run(run_id: str, *, root: Path | None = None, max_cells: int | None = None,
             print(f"Backtest {row['asset']} {row['interval']} {row['strategy']} {row['horizon']}", flush=True)
             try:
                 _run_cell(db, row, settings, cards, cancel)
+            except SourceEpochChanged:
+                raise
             except sqlite3.Error:
                 raise  # A damaged or unwritable ledger is not an ordinary failed configuration.
             except Exception as exc:
@@ -625,6 +709,7 @@ def run(run_id: str, *, root: Path | None = None, max_cells: int | None = None,
         cached: dict[str, Any] = {}
         signal_cache: dict[tuple[str, str, int], dict[str, Any]] = {}
         while not cancel():
+            _SOURCE_EPOCH.verify(_REPO)
             pairs = db.execute("SELECT DISTINCT asset,interval FROM cell WHERE selected IS NOT NULL ORDER BY asset,interval").fetchall()
             for pair in pairs:
                 if cancel():
@@ -670,6 +755,7 @@ def run(run_id: str, *, root: Path | None = None, max_cells: int | None = None,
                                   db_path=directory / "forward.sqlite3", history=history, fetch=fetch, stop=stop_event,
                                   signal_interval=interval, signal_fetch=signal_fetch, expire_missing=False,
                                   execution=from_settings(settings).to_dict())
+                    _SOURCE_EPOCH.verify(_REPO)
                     recorded = int(result.get("recorded", 0))
                     wanted = {trial["label"] for trial in trials}
                     seen = {row["label"] for row in result.get("rows", [])
@@ -677,6 +763,8 @@ def run(run_id: str, *, root: Path | None = None, max_cells: int | None = None,
                             and row.get("last_issued") is not None}
                     _save_forward_check(db, asset, interval, recorded, "; ".join(member_errors),
                                         str(result.get("message", "")), len(selected), len(seen))
+                except SourceEpochChanged:
+                    raise
                 except Exception as exc:
                     _save_forward_check(db, asset, interval, 0, f"{type(exc).__name__}: {exc}",
                                         expected=len(selected))

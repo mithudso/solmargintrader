@@ -18,6 +18,14 @@ from .voting import MINIMUM_ACCURACY
 
 LEGACY_EVALUATOR_SHA256 = "2470d1d4c20043cb34ba48a4e9c1f1ff84682c512ce84ceac845099e5deaab9b"
 
+# These exact implementations have reviewed read compatibility. The schema-2
+# producer predates constructor/store guards and single-read card hashing; its
+# query, voting and graph semantics are unchanged. This permits inspection only.
+ARCHIVED_EVALUATOR_SHA256 = {
+    1: (LEGACY_EVALUATOR_SHA256,),
+    2: ("8d3311760e2d61f160b7e3877d753a7805dbfcff5f511a171d2435cccf551a98",),
+}
+
 # This is the stored schema of the original fourteen cards, not constructors or
 # current defaults. Inspection must never execute an archived strategy.
 PARAMETER_TYPES = {
@@ -211,8 +219,8 @@ class ReadOnlyStore(Store):
 class ReadOnlyOracle(OracleEngine):
     """Load the recorded policy without constructing a writer or changing DDL.
 
-    Query methods remain the engine's own implementation. A changed evaluator or
-    card identity refuses rather than grading old evidence under new code.
+    Query methods remain the engine's own implementation. Recorded mode permits
+    only reviewed evaluator identities and never constructs archived strategies.
     """
 
     def __init__(
@@ -256,12 +264,12 @@ class ReadOnlyOracle(OracleEngine):
             implementation.update(name.encode())
             implementation.update(Path(__file__).with_name(name).read_bytes())
         evaluator = policy.get("implementation_sha256")
-        legacy_evaluator = (
+        archived_evaluator = (
             archived_versions
-            and policy.get("schema_version") == 1
-            and evaluator == LEGACY_EVALUATOR_SHA256
+            and evaluator
+            in ARCHIVED_EVALUATOR_SHA256.get(policy.get("schema_version"), ())
         )
-        if evaluator != implementation.hexdigest() and not legacy_evaluator:
+        if evaluator != implementation.hexdigest() and not archived_evaluator:
             raise ValueError("oracle_policy_implementation_unavailable")
         if policy.get("schema_version") == 2 and (
             policy.get("minimum_vote_accuracy") != MINIMUM_ACCURACY

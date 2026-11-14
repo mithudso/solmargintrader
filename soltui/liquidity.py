@@ -114,7 +114,10 @@ def num(value: Any) -> float | None:
     """A finite number, else None. Bools are not numbers here."""
     if isinstance(value, bool) or not isinstance(value, (int, float)):
         return None
-    return float(value) if math.isfinite(value) else None
+    try:
+        return float(value) if math.isfinite(value) else None
+    except OverflowError:
+        return None
 
 
 def _dicts(value: Any) -> list[dict[str, Any]]:
@@ -236,7 +239,8 @@ def fmt_ts(ts: Any, tz: tzinfo | None = None) -> str:
 
 
 def fmt_age(seconds: float | None) -> str:
-    if seconds is None:
+    seconds = num(seconds)
+    if seconds is None or seconds < 0:
         return "age unknown"
     s = max(0, int(seconds))
     if s < 90:
@@ -250,7 +254,8 @@ def age_seconds(generated_at: Any, now: float | None = None) -> float | None:
     g = num(generated_at)
     if g is None:
         return None
-    return (time.time() if now is None else now) - g
+    age = num((time.time() if now is None else now) - g)
+    return age if age is not None and age >= 0 else None
 
 
 def tx_link(tx: Any) -> str:
@@ -309,10 +314,9 @@ class Summary:
 
 def _sum(rows: list[dict[str, Any]], key: str) -> float | None:
     vals = [num(r.get(key)) for r in rows]
-    if not vals or any(v is None for v in vals):
+    if not vals or any(value is None for value in vals):
         return None
-    total = sum(vals)
-    return total if math.isfinite(total) else None
+    return num(sum(vals))
 
 
 def summarise(

@@ -174,7 +174,9 @@ def evaluate_block(
     liqs = sum(1 for t in res.trades if t.reason == "liquidation" and t.bar_index >= warm)
     return BlockResult(
         index=-1, start=start, end=end,
-        returns=simple_returns(equity, initial_equity=float(res.equity[warm - 1]) if warm else cfg.initial_capital), trades=trades, usable=True,
+        # A close-fill entry can charge costs at the first measured point.
+        # Retain that boundary charge without inventing an extra elapsed bar.
+        returns=simple_returns(equity, initial_equity=cfg.initial_capital), trades=trades, usable=True,
         liquidations=liqs,
     )
 
@@ -267,6 +269,24 @@ def split_positions(total: int, maximum: int) -> set[int]:
     return set(np.linspace(0, total - 1, count, dtype=int).tolist())
 
 
+def _combination_at(n: int, k: int, rank: int) -> tuple[int, ...]:
+    """Return one lexicographic combination without enumerating earlier ones."""
+    if not 0 <= rank < math.comb(n, k):
+        raise ValueError("combination rank is outside its space")
+    result = []
+    candidate = 0
+    for remaining in range(k, 0, -1):
+        while candidate <= n - remaining:
+            count = math.comb(n - candidate - 1, remaining - 1)
+            if rank < count:
+                result.append(candidate)
+                candidate += 1
+                break
+            rank -= count
+            candidate += 1
+    return tuple(result)
+
+
 def pbo_cscv(
     block_returns: dict[str, list[np.ndarray]], max_splits: int = 200
 ) -> dict[str, float]:
@@ -276,6 +296,10 @@ def pbo_cscv(
     configuration with the best TRAIN Sharpe, then find its percentile rank
     among all configurations on TEST. **PBO is the fraction of splits where the
     train-winner lands below the median out-of-sample.**
+
+    Equal test scores share their average ordinal rank. A tie at the median
+    does not count as below it; zero PBO for identical scores establishes no
+    performance advantage.
 
     Interpretation: PBO near 0 means in-sample winners generalise. PBO at or
     above 0.5 means selecting on in-sample performance is no better than
@@ -307,29 +331,30 @@ def pbo_cscv(
         sd = float(np.std(cat, ddof=1))
         return 0.0 if sd <= 1e-15 else float(np.mean(cat) / sd)
 
-    # Deterministically sample positions spanning the entire combination space.
+    # Select the same evenly spaced lexicographic positions directly. Walking
+    # every skipped combination makes a small cap unbounded on large spaces.
     total_splits = math.comb(n_blocks, half)
-    positions = split_positions(total_splits, max_splits)
+    positions = sorted(split_positions(total_splits, max_splits))
 
     below_median = 0
     splits = 0
-    for position, train_idx in enumerate(itertools.combinations(range(n_blocks), half)):
-        if position not in positions:
-            continue
+    for position in positions:
+        if splits >= max_splits:
+            break
+        train_idx = _combination_at(n_blocks, half, position)
         test_idx = [i for i in range(n_blocks) if i not in train_idx]
         train_s = {l: raw_sharpe([block_returns[l][i] for i in train_idx]) for l in labels}
         test_s = {l: raw_sharpe([block_returns[l][i] for i in test_idx]) for l in labels}
         valid = [l for l in labels if np.isfinite(train_s[l]) and np.isfinite(test_s[l])]
         if len(valid) < 2:
             continue
-        best_train = max(train_s[label] for label in valid)
-        winners = [label for label in valid if train_s[label] == best_train]
-        test_values = [test_s[label] for label in valid]
-        ranks = [(sum(value < test_s[winner] for value in test_values)
-                  + .5 * (sum(value == test_s[winner] for value in test_values) - 1))
-                 / (len(valid) - 1) for winner in winners]
-        # A train tie is unresolved selection, so average its possible winners.
-        below_median += sum(rank < .5 for rank in ranks) / len(ranks)
+        winner = max(valid, key=lambda l: train_s[l])
+        winner_score = test_s[winner]
+        lower = sum(test_s[label] < winner_score for label in valid)
+        tied = sum(test_s[label] == winner_score for label in valid)
+        rank = (lower + (tied - 1) / 2) / (len(valid) - 1)
+        if rank < 0.5:
+            below_median += 1
         splits += 1
 
     return {

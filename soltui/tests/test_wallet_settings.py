@@ -169,9 +169,9 @@ class KeySourceLabelTests(unittest.TestCase):
 
 class TuiSettingsTests(unittest.IsolatedAsyncioTestCase):
     def setUp(self) -> None:
-        self.world = World()
-        self.world.__enter__()
-        self.addCleanup(self.world.__exit__, None, None, None)
+        super().setUp()
+        from soltui.tests.test_tui import offline_console_reads
+        self.enterContext(offline_console_reads())
 
     async def test_xpub_inputs_are_blank_and_blank_keeps_the_saved_key(self) -> None:
         config.save_settings(config.Settings(btc_xpub=V2_M))

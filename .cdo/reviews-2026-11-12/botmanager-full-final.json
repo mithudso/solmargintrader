@@ -1,0 +1,807 @@
+{
+  "agent": "full_repo_health",
+  "observed_at": "2026-11-12T22:18:08.832040+00:00",
+  "status": "COMPLETE_GUARDED_BOTMANAGER_SUITE_SOURCE_ACCEPTED",
+  "head": "d22bd2454a41ab54020f6363fe505901873891ef",
+  "command": [
+    "ORACLEBOT_MERGED_CURRENT=1",
+    "ORACLEBOT_CANONICAL_OWNER_FIXTURE=1",
+    "python3",
+    "/tmp/oraclebot-botmanager-guard-launch-20261112.py",
+    "suite-final"
+  ],
+  "process_exit": 0,
+  "tests": 378,
+  "seconds": 121.42643262499769,
+  "failures": 0,
+  "errors": 0,
+  "skips": 0,
+  "loader_errors": 0,
+  "forbidden_events": 0,
+  "source_changed": [],
+  "harness_stable_during_and_after": true,
+  "test_result": "/tmp/oraclebot-botmanager-suite-final-4onmve5o/result.json",
+  "log": "/tmp/oraclebot-botmanager-suite-final-4onmve5o/output.log",
+  "run_id": "botmanager-suite-final-c935c36c093f425c8778d5ab17164854",
+  "process_accounting": {
+    "unique_recorded_pids_including_parent": 136,
+    "guarded_inherited_pids_including_parent": 107,
+    "native_Seatbelt_children": 8,
+    "registered_multiprocessing_handles": 44,
+    "fixed_isolated_child_pids": 19,
+    "ordinary_isolated_orphan_session_pids": 2,
+    "category_counts_overlap": true,
+    "leftover_pids": [],
+    "all_recorded_pid_postchecks": [
+      {
+        "pid": 14315,
+        "ps_exit": 1,
+        "remaining": ""
+      },
+      {
+        "pid": 14326,
+        "ps_exit": 1,
+        "remaining": ""
+      },
+      {
+        "pid": 14328,
+        "ps_exit": 1,
+        "remaining": ""
+      },
+      {
+        "pid": 14330,
+        "ps_exit": 1,
+        "remaining": ""
+      },
+      {
+        "pid": 14331,
+        "ps_exit": 1,
+        "remaining": ""
+      },
+      {
+        "pid": 14332,
+        "ps_exit": 1,
+        "remaining": ""
+      },
+      {
+        "pid": 14336,
+        "ps_exit": 1,
+        "remaining": ""
+      },
+      {
+        "pid": 14337,
+        "ps_exit": 1,
+        "remaining": ""
+      },
+      {
+        "pid": 14338,
+        "ps_exit": 1,
+        "remaining": ""
+      },
+      {
+        "pid": 14340,
+        "ps_exit": 1,
+        "remaining": ""
+      },
+      {
+        "pid": 14343,
+        "ps_exit": 1,
+        "remaining": ""
+      },
+      {
+        "pid": 14345,
+        "ps_exit": 1,
+        "remaining": ""
+      },
+      {
+        "pid": 14348,
+        "ps_exit": 1,
+        "remaining": ""
+      },
+      {
+        "pid": 14350,
+        "ps_exit": 1,
+        "remaining": ""
+      },
+      {
+        "pid": 14352,
+        "ps_exit": 1,
+        "remaining": ""
+      },
+      {
+        "pid": 14354,
+        "ps_exit": 1,
+        "remaining": ""
+      },
+      {
+        "pid": 14356,
+        "ps_exit": 1,
+        "remaining": ""
+      },
+      {
+        "pid": 14358,
+        "ps_exit": 1,
+        "remaining": ""
+      },
+      {
+        "pid": 14360,
+        "ps_exit": 1,
+        "remaining": ""
+      },
+      {
+        "pid": 14362,
+        "ps_exit": 1,
+        "remaining": ""
+      },
+      {
+        "pid": 14364,
+        "ps_exit": 1,
+        "remaining": ""
+      },
+      {
+        "pid": 14366,
+        "ps_exit": 1,
+        "remaining": ""
+      },
+      {
+        "pid": 14368,
+        "ps_exit": 1,
+        "remaining": ""
+      },
+      {
+        "pid": 14370,
+        "ps_exit": 1,
+        "remaining": ""
+      },
+      {
+        "pid": 14372,
+        "ps_exit": 1,
+        "remaining": ""
+      },
+      {
+        "pid": 14374,
+        "ps_exit": 1,
+        "remaining": ""
+      },
+      {
+        "pid": 14376,
+        "ps_exit": 1,
+        "remaining": ""
+      },
+      {
+        "pid": 14378,
+        "ps_exit": 1,
+        "remaining": ""
+      },
+      {
+        "pid": 14380,
+        "ps_exit": 1,
+        "remaining": ""
+      },
+      {
+        "pid": 14601,
+        "ps_exit": 1,
+        "remaining": ""
+      },
+      {
+        "pid": 14603,
+        "ps_exit": 1,
+        "remaining": ""
+      },
+      {
+        "pid": 14605,
+        "ps_exit": 1,
+        "remaining": ""
+      },
+      {
+        "pid": 14608,
+        "ps_exit": 1,
+        "remaining": ""
+      },
+      {
+        "pid": 14610,
+        "ps_exit": 1,
+        "remaining": ""
+      },
+      {
+        "pid": 14614,
+        "ps_exit": 1,
+        "remaining": ""
+      },
+      {
+        "pid": 14616,
+        "ps_exit": 1,
+        "remaining": ""
+      },
+      {
+        "pid": 14617,
+        "ps_exit": 1,
+        "remaining": ""
+      },
+      {
+        "pid": 14620,
+        "ps_exit": 1,
+        "remaining": ""
+      },
+      {
+        "pid": 14621,
+        "ps_exit": 1,
+        "remaining": ""
+      },
+      {
+        "pid": 14624,
+        "ps_exit": 1,
+        "remaining": ""
+      },
+      {
+        "pid": 14633,
+        "ps_exit": 1,
+        "remaining": ""
+      },
+      {
+        "pid": 14636,
+        "ps_exit": 1,
+        "remaining": ""
+      },
+      {
+        "pid": 14638,
+        "ps_exit": 1,
+        "remaining": ""
+      },
+      {
+        "pid": 14640,
+        "ps_exit": 1,
+        "remaining": ""
+      },
+      {
+        "pid": 14643,
+        "ps_exit": 1,
+        "remaining": ""
+      },
+      {
+        "pid": 14649,
+        "ps_exit": 1,
+        "remaining": ""
+      },
+      {
+        "pid": 14650,
+        "ps_exit": 1,
+        "remaining": ""
+      },
+      {
+        "pid": 14654,
+        "ps_exit": 1,
+        "remaining": ""
+      },
+      {
+        "pid": 14656,
+        "ps_exit": 1,
+        "remaining": ""
+      },
+      {
+        "pid": 14658,
+        "ps_exit": 1,
+        "remaining": ""
+      },
+      {
+        "pid": 14662,
+        "ps_exit": 1,
+        "remaining": ""
+      },
+      {
+        "pid": 14665,
+        "ps_exit": 1,
+        "remaining": ""
+      },
+      {
+        "pid": 14671,
+        "ps_exit": 1,
+        "remaining": ""
+      },
+      {
+        "pid": 14676,
+        "ps_exit": 1,
+        "remaining": ""
+      },
+      {
+        "pid": 14730,
+        "ps_exit": 1,
+        "remaining": ""
+      },
+      {
+        "pid": 14752,
+        "ps_exit": 1,
+        "remaining": ""
+      },
+      {
+        "pid": 14758,
+        "ps_exit": 1,
+        "remaining": ""
+      },
+      {
+        "pid": 14759,
+        "ps_exit": 1,
+        "remaining": ""
+      },
+      {
+        "pid": 14760,
+        "ps_exit": 1,
+        "remaining": ""
+      },
+      {
+        "pid": 14761,
+        "ps_exit": 1,
+        "remaining": ""
+      },
+      {
+        "pid": 14762,
+        "ps_exit": 1,
+        "remaining": ""
+      },
+      {
+        "pid": 14763,
+        "ps_exit": 1,
+        "remaining": ""
+      },
+      {
+        "pid": 14764,
+        "ps_exit": 1,
+        "remaining": ""
+      },
+      {
+        "pid": 14765,
+        "ps_exit": 1,
+        "remaining": ""
+      },
+      {
+        "pid": 14766,
+        "ps_exit": 1,
+        "remaining": ""
+      },
+      {
+        "pid": 14767,
+        "ps_exit": 1,
+        "remaining": ""
+      },
+      {
+        "pid": 14768,
+        "ps_exit": 1,
+        "remaining": ""
+      },
+      {
+        "pid": 14769,
+        "ps_exit": 1,
+        "remaining": ""
+      },
+      {
+        "pid": 14770,
+        "ps_exit": 1,
+        "remaining": ""
+      },
+      {
+        "pid": 14771,
+        "ps_exit": 1,
+        "remaining": ""
+      },
+      {
+        "pid": 14772,
+        "ps_exit": 1,
+        "remaining": ""
+      },
+      {
+        "pid": 14773,
+        "ps_exit": 1,
+        "remaining": ""
+      },
+      {
+        "pid": 15202,
+        "ps_exit": 1,
+        "remaining": ""
+      },
+      {
+        "pid": 15222,
+        "ps_exit": 1,
+        "remaining": ""
+      },
+      {
+        "pid": 15273,
+        "ps_exit": 1,
+        "remaining": ""
+      },
+      {
+        "pid": 16200,
+        "ps_exit": 1,
+        "remaining": ""
+      },
+      {
+        "pid": 16202,
+        "ps_exit": 1,
+        "remaining": ""
+      },
+      {
+        "pid": 16204,
+        "ps_exit": 1,
+        "remaining": ""
+      },
+      {
+        "pid": 16206,
+        "ps_exit": 1,
+        "remaining": ""
+      },
+      {
+        "pid": 16208,
+        "ps_exit": 1,
+        "remaining": ""
+      },
+      {
+        "pid": 16235,
+        "ps_exit": 1,
+        "remaining": ""
+      },
+      {
+        "pid": 16258,
+        "ps_exit": 1,
+        "remaining": ""
+      },
+      {
+        "pid": 16262,
+        "ps_exit": 1,
+        "remaining": ""
+      },
+      {
+        "pid": 17757,
+        "ps_exit": 1,
+        "remaining": ""
+      },
+      {
+        "pid": 17761,
+        "ps_exit": 1,
+        "remaining": ""
+      },
+      {
+        "pid": 17763,
+        "ps_exit": 1,
+        "remaining": ""
+      },
+      {
+        "pid": 17765,
+        "ps_exit": 1,
+        "remaining": ""
+      },
+      {
+        "pid": 17768,
+        "ps_exit": 1,
+        "remaining": ""
+      },
+      {
+        "pid": 17773,
+        "ps_exit": 1,
+        "remaining": ""
+      },
+      {
+        "pid": 17781,
+        "ps_exit": 1,
+        "remaining": ""
+      },
+      {
+        "pid": 17784,
+        "ps_exit": 1,
+        "remaining": ""
+      },
+      {
+        "pid": 17794,
+        "ps_exit": 1,
+        "remaining": ""
+      },
+      {
+        "pid": 18023,
+        "ps_exit": 1,
+        "remaining": ""
+      },
+      {
+        "pid": 18067,
+        "ps_exit": 1,
+        "remaining": ""
+      },
+      {
+        "pid": 18429,
+        "ps_exit": 1,
+        "remaining": ""
+      },
+      {
+        "pid": 19151,
+        "ps_exit": 1,
+        "remaining": ""
+      },
+      {
+        "pid": 19155,
+        "ps_exit": 1,
+        "remaining": ""
+      },
+      {
+        "pid": 19159,
+        "ps_exit": 1,
+        "remaining": ""
+      },
+      {
+        "pid": 19162,
+        "ps_exit": 1,
+        "remaining": ""
+      },
+      {
+        "pid": 19164,
+        "ps_exit": 1,
+        "remaining": ""
+      },
+      {
+        "pid": 19168,
+        "ps_exit": 1,
+        "remaining": ""
+      },
+      {
+        "pid": 19170,
+        "ps_exit": 1,
+        "remaining": ""
+      },
+      {
+        "pid": 19172,
+        "ps_exit": 1,
+        "remaining": ""
+      },
+      {
+        "pid": 19174,
+        "ps_exit": 1,
+        "remaining": ""
+      },
+      {
+        "pid": 19197,
+        "ps_exit": 1,
+        "remaining": ""
+      },
+      {
+        "pid": 19199,
+        "ps_exit": 1,
+        "remaining": ""
+      },
+      {
+        "pid": 19203,
+        "ps_exit": 1,
+        "remaining": ""
+      },
+      {
+        "pid": 19205,
+        "ps_exit": 1,
+        "remaining": ""
+      },
+      {
+        "pid": 19207,
+        "ps_exit": 1,
+        "remaining": ""
+      },
+      {
+        "pid": 19209,
+        "ps_exit": 1,
+        "remaining": ""
+      },
+      {
+        "pid": 19212,
+        "ps_exit": 1,
+        "remaining": ""
+      },
+      {
+        "pid": 19214,
+        "ps_exit": 1,
+        "remaining": ""
+      },
+      {
+        "pid": 19216,
+        "ps_exit": 1,
+        "remaining": ""
+      },
+      {
+        "pid": 19218,
+        "ps_exit": 1,
+        "remaining": ""
+      },
+      {
+        "pid": 19220,
+        "ps_exit": 1,
+        "remaining": ""
+      },
+      {
+        "pid": 19222,
+        "ps_exit": 1,
+        "remaining": ""
+      },
+      {
+        "pid": 19224,
+        "ps_exit": 1,
+        "remaining": ""
+      },
+      {
+        "pid": 19226,
+        "ps_exit": 1,
+        "remaining": ""
+      },
+      {
+        "pid": 19289,
+        "ps_exit": 1,
+        "remaining": ""
+      },
+      {
+        "pid": 19291,
+        "ps_exit": 1,
+        "remaining": ""
+      },
+      {
+        "pid": 19559,
+        "ps_exit": 1,
+        "remaining": ""
+      },
+      {
+        "pid": 19791,
+        "ps_exit": 1,
+        "remaining": ""
+      },
+      {
+        "pid": 19795,
+        "ps_exit": 1,
+        "remaining": ""
+      },
+      {
+        "pid": 19799,
+        "ps_exit": 1,
+        "remaining": ""
+      },
+      {
+        "pid": 19802,
+        "ps_exit": 1,
+        "remaining": ""
+      },
+      {
+        "pid": 19805,
+        "ps_exit": 1,
+        "remaining": ""
+      },
+      {
+        "pid": 19808,
+        "ps_exit": 1,
+        "remaining": ""
+      },
+      {
+        "pid": 19811,
+        "ps_exit": 1,
+        "remaining": ""
+      },
+      {
+        "pid": 19814,
+        "ps_exit": 1,
+        "remaining": ""
+      },
+      {
+        "pid": 19816,
+        "ps_exit": 1,
+        "remaining": ""
+      },
+      {
+        "pid": 19819,
+        "ps_exit": 1,
+        "remaining": ""
+      },
+      {
+        "pid": 19821,
+        "ps_exit": 1,
+        "remaining": ""
+      },
+      {
+        "pid": 19822,
+        "ps_exit": 1,
+        "remaining": ""
+      },
+      {
+        "pid": 19825,
+        "ps_exit": 1,
+        "remaining": ""
+      },
+      {
+        "pid": 19827,
+        "ps_exit": 1,
+        "remaining": ""
+      },
+      {
+        "pid": 19831,
+        "ps_exit": 1,
+        "remaining": ""
+      }
+    ],
+    "all_fixed_isolated_terminal": [
+      {
+        "pid": 14330,
+        "exit": -9
+      },
+      {
+        "pid": 14336,
+        "exit": -9
+      },
+      {
+        "pid": 14337,
+        "exit": -9
+      },
+      {
+        "pid": 14758,
+        "exit": 0
+      },
+      {
+        "pid": 14759,
+        "exit": 0
+      },
+      {
+        "pid": 14760,
+        "exit": 0
+      },
+      {
+        "pid": 14761,
+        "exit": 0
+      },
+      {
+        "pid": 14762,
+        "exit": 0
+      },
+      {
+        "pid": 14763,
+        "exit": 0
+      },
+      {
+        "pid": 14764,
+        "exit": 0
+      },
+      {
+        "pid": 14765,
+        "exit": 0
+      },
+      {
+        "pid": 14766,
+        "exit": 0
+      },
+      {
+        "pid": 14767,
+        "exit": 0
+      },
+      {
+        "pid": 14768,
+        "exit": 0
+      },
+      {
+        "pid": 14769,
+        "exit": 0
+      },
+      {
+        "pid": 14770,
+        "exit": -9
+      },
+      {
+        "pid": 14771,
+        "exit": -9
+      },
+      {
+        "pid": 14772,
+        "exit": -9
+      },
+      {
+        "pid": 14773,
+        "exit": -9
+      }
+    ],
+    "native_explicit_wait_qualification": "Canonical native judge and probe process paths retain original wait/deadline/assertions. OS absence after suite independently checked for recorded native PIDs.",
+    "native_pid_limit": "Literal /bin/sh -n walkthrough is synchronous subprocess.run with completed source assertion, but original BotMguard does not retain its native PID. Routine guard self-identity ps probes are excluded from fixture-child counts."
+  },
+  "private_guard_current_mp_sha256": "65a3973e6f92c1a8a7bbe99125914abad22e7160c94412c0dbfe26e472fdd352",
+  "private_stale_control": "/tmp/oraclebot-mp-live-and-external-reap-ry1nt7bh/result.json",
+  "private_independent_review": "guardian static acceptance of65a3973 and exact external-reap control; no independent reviewer runtime claim",
+  "previous_failed_full": "/tmp/oraclebot-botmanager-suite-hjfkdaq8/result.json",
+  "limits": [
+    "Full-source inspection retains repository M3/M5/T4partial convergence; this suite does not establish hosted/live execution or profitability.",
+    "Native Seatbelt and fixed isolated children are explicitly distinct from inherited Python audit hooks.",
+    "Expected artificial-load CAGR overflow warnings are retained in raw log and are not hidden as a lint/performance pass."
+  ]
+}

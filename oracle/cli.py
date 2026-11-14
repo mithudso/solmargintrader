@@ -29,6 +29,15 @@ def emit(data: dict) -> None:
     )
 
 
+def prerequisite_message(error: ModuleNotFoundError) -> str:
+    packages = {"numpy": "numpy", "pandas": "pandas", "mcp": "mcp",
+                "jsonschema": "jsonschema", "pydantic": "pydantic",
+                "cryptography": "cryptography", "backtester": "solmargintrader-backtester"}
+    package = packages.get((error.name or "").split(".")[0], "a required Python package")
+    return (f"Missing {package}. From the repository root, run: "
+            "uv pip install --python .venv/bin/python -e ./backtester -e ./oracle")
+
+
 @contextmanager
 def owner(archive: Path):
     archive.parent.mkdir(parents=True, exist_ok=True, mode=0o700)
@@ -152,6 +161,7 @@ def run(args) -> int:
 
 class Parser(argparse.ArgumentParser):
     def error(self, message: str) -> None:
+        self.print_usage(sys.stderr)
         print("Invalid Oracle command arguments.", file=sys.stderr)
         raise SystemExit(2)
 
@@ -243,7 +253,18 @@ def main(argv=None) -> int:
                 raise ValueError("jupiter_requires_explicit_account_and_policy")
             secret = os.environ.get("ORACLE_WEBHOOK_SECRET", "")
             if args.secret_file:
-                secret = read_private_secret(args.secret_file)
+                fd = os.open(args.secret_file, os.O_RDONLY | os.O_NOFOLLOW | os.O_NONBLOCK)
+                with os.fdopen(fd) as handle:
+                    info = os.fstat(handle.fileno())
+                    if (
+                        not stat.S_ISREG(info.st_mode)
+                        or info.st_uid != os.getuid()
+                        or info.st_mode & 0o077
+                    ):
+                        raise ValueError("secret_file_must_be_private")
+                    secret = handle.read(4097).strip()
+                    if len(secret) > 4096:
+                        raise ValueError("secret_file_too_large")
             venue = None
             if args.coinbase:
                 from .coinbase_orders import CoinbaseOrders
@@ -319,6 +340,9 @@ def main(argv=None) -> int:
                 data = veto(engine)
         emit({"ok": True, "data": data})
         return 0
+    except ModuleNotFoundError as error:
+        emit({"ok": False, "error": "oracle_prerequisite_unavailable", "remedy": prerequisite_message(error)})
+        return 3
     except (OSError, ValueError, RuntimeError, sqlite3.Error):
         emit({"ok": False, "error": "oracle_operation_failed"})
         return 2

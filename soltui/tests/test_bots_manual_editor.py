@@ -5,7 +5,7 @@ from unittest import mock
 from textual.widgets import Input, Select, TabbedContent
 
 from soltui import bots
-from soltui.tests.test_tui import TEST_SIZE, make_settings
+from soltui.tests.test_tui import TEST_SIZE, make_settings, offline_console_reads
 from soltui.tui import BotSettingsScreen, SolTuiApp
 
 
@@ -14,6 +14,9 @@ def envelope(value):
 
 
 class BotManualEditorTests(unittest.IsolatedAsyncioTestCase):
+    def setUp(self):
+        self.enterContext(offline_console_reads())
+
     async def test_scope_edits_defaults_and_cancel_are_not_saved(self):
         app = SolTuiApp(make_settings())
         async with app.run_test(size=TEST_SIZE) as pilot:

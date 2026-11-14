@@ -34,7 +34,7 @@ import numpy as np
 import pandas as pd
 
 from . import scorecard as sc
-from .data import resolve_data_dir
+from .data import describe_data_error, resolve_data_dir, validate_bars
 from .engine import EngineConfig, run_backtest
 from .types import BarWindow, CostConfig, Mode
 
@@ -50,16 +50,12 @@ class CompoundDataError(RuntimeError):
     """No usable 5m data for an asset."""
 
 
-def _read(path: Path) -> pd.DataFrame:
-    df = pd.read_csv(path)
-    need = ["timestamp", "open", "high", "low", "close", "volume"]
-    missing = [c for c in need if c not in df.columns]
-    if missing:
-        raise CompoundDataError(f"{path} lacks columns {missing}")
-    df = df[need].dropna()
-    df = df.drop_duplicates("timestamp").sort_values("timestamp").reset_index(drop=True)
-    df["timestamp"] = df["timestamp"].astype("int64")
-    return df
+def _read(path: Path, interval: str = "5m") -> pd.DataFrame:
+    try:
+        df = pd.read_csv(path)
+        return validate_bars(df, interval, strict_gaps=False)
+    except (ValueError, OSError) as exc:
+        raise CompoundDataError(f"compound source {path}: {describe_data_error(exc)}") from exc
 
 
 def resample_complete(df_1m: pd.DataFrame, minutes: int = 5) -> pd.DataFrame:
@@ -73,8 +69,15 @@ def resample_complete(df_1m: pd.DataFrame, minutes: int = 5) -> pd.DataFrame:
     checks read. The `minutes` column records how many 1m candles each bar was built from, and
     the backtest reports the incomplete share per coin so a reader can discount it.
     """
+    if isinstance(minutes, bool) or not isinstance(minutes, int) or minutes < 1:
+        raise CompoundDataError("resample interval must be a positive whole minute")
+    try:
+        d = validate_bars(df_1m, "1m", strict_gaps=False)
+    except ValueError as exc:
+        raise CompoundDataError(f"compound minute source: {describe_data_error(exc)}") from exc
+    if (d["timestamp"] % 60).any():
+        raise CompoundDataError("compound source minutes must align to their UTC minute grid")
     step = minutes * 60
-    d = df_1m.copy()
     d["bucket"] = (d["timestamp"] // step) * step
     g = d.groupby("bucket", sort=True)
     return pd.DataFrame({
@@ -106,7 +109,7 @@ def load_bars_5m(asset: str, data_dir: Path | None = None) -> tuple[pd.DataFrame
     for path, how in candidate_files(asset, data_dir):
         if not path.exists():
             continue
-        df = _read(path)
+        df = _read(path, "1m" if how == "1m->5m" else "5m")
         if how == "1m->5m":
             df = resample_complete(df)
         if best is None or len(df) > len(best[0]):
@@ -115,7 +118,8 @@ def load_bars_5m(asset: str, data_dir: Path | None = None) -> tuple[pd.DataFrame
             if sidecar.exists():  # a non-Coinbase venue: say which, and that it is a USDT pair
                 try:
                     meta = json.loads(sidecar.read_text())
-                    label = f"{path.name} ({how}, {meta.get('venue')} {meta.get('pair')})"
+                    if isinstance(meta, dict):
+                        label = f"{path.name} ({how}, {meta.get('venue')} {meta.get('pair')})"
                 except (OSError, ValueError):
                     pass
             best = (df, label)

@@ -1083,3 +1083,26 @@ is too large for your machine.
 `--param-scale 60` multiplies it. `rsi` extrapolates to ~1.8h per asset on a full 2.6M-bar series.
 Bound it with `--bars`.
 
+
+
+## Hosted Stripe lifecycle verifier
+
+`website/scripts/verify-stripe-lifecycle.mjs` prepares a test-only provider
+acceptance run over the production subscription module and private SQLite state.
+Its default plan prints required gates without reading credentials or making HTTP
+requests. The following plan command was executed successfully; provider execution
+remains unrun while the intended merchant's sandbox key is absent.
+
+```sh
+node website/scripts/verify-stripe-lifecycle.mjs --plan
+```
+
+Execution requires explicit `--execute`, an absolute private `--run-dir`, a strict
+Oraclebot test key and an expected merchant account match before object writes.
+The runner rejects live keys without HTTP. Its source-bound manifest preserves
+owned fixtures, deterministic idempotency, interrupted operations and cleanup.
+`--resume` continues that same manifest. `--cleanup` deletes only verified owned
+test-clock fixtures and archives its catalog. The key stays in the private
+environment; it never appears in command arguments or receipts. Real Checkout
+browser behavior, genuine Stripe-to-Worker webhook delivery and production
+entitlement projection remain separate acceptance gates.

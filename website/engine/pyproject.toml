@@ -1,0 +1,18 @@
+[build-system]
+requires = ["setuptools>=77"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "oraclebot-analysis-runtime"
+version = "1.0.0"
+description = "Dedicated public-data, native Oracle and durable backtest runtime"
+readme = "README.md"
+requires-python = ">=3.13"
+dependencies = ["solmargintrader-backtester==0.2.1", "solmargintrader-oracle==0.2.5"]
+
+[tool.setuptools]
+packages = ["website.engine"]
+package-dir = {"website.engine" = "."}
+
+[tool.setuptools.package-data]
+"website.engine" = ["README.md", "constraints.txt"]

@@ -10,6 +10,7 @@ from __future__ import annotations
 import argparse
 import concurrent.futures
 import hashlib
+import io
 import json
 import math
 import os
@@ -87,16 +88,20 @@ def _derived_interval(source: Path, asset: str, interval: str, output_dir: Path)
     import pandas as pd
 
     target = output_dir / "derived" / f"{asset}_{interval}.csv"
-    source_hash = _hash(source)
+    source_bytes = source.read_bytes()
+    source_hash = hashlib.sha256(source_bytes).hexdigest()
     marker = target.with_suffix(target.suffix + ".source.json")
     try:
         saved = json.loads(marker.read_text(encoding="utf-8"))
-        if (saved.get("sha256") == source_hash and saved.get("aggregation_version") == 4
-                and target.is_file()):
-            return target
     except (OSError, ValueError, AttributeError):
-        pass
-    raw = pd.read_csv(source)
+        saved = None
+    if target.exists() or marker.exists():
+        if (not isinstance(saved, dict) or saved.get("sha256") != source_hash
+                or saved.get("aggregation_version") != 4 or not target.is_file()
+                or saved.get("derived_sha256") != _hash(target)):
+            raise ValueError("derived cache checksum or binding changed; choose a new output directory")
+        return target
+    raw = pd.read_csv(io.BytesIO(source_bytes))
     required = {"timestamp", "open", "high", "low", "close", "volume"}
     if not required.issubset(raw.columns) or raw.empty:
         raise ValueError(f"invalid one-minute cache for {asset}")
@@ -139,10 +144,12 @@ def _derived_interval(source: Path, asset: str, interval: str, output_dir: Path)
     bars.insert(0, "timestamp", [int(stamp.timestamp()) for stamp in bars.index])
     target.parent.mkdir(parents=True, exist_ok=True)
     temp = target.with_suffix(target.suffix + ".tmp")
-    bars.to_csv(temp, index=False)
+    derived_bytes = bars.to_csv(index=False).encode("utf-8")
+    temp.write_bytes(derived_bytes)
     os.replace(temp, target)
     _atomic_json(marker, {"source": source.name, "sha256": source_hash, "interval": interval,
                           "aggregation_version": 4,
+                          "derived_sha256": hashlib.sha256(derived_bytes).hexdigest(),
                           "aggregation": "complete UTC buckets only", "source_rows": source_rows,
                           "exact_duplicate_rows_removed": source_rows - len(raw),
                           "derived_rows": len(bars)})

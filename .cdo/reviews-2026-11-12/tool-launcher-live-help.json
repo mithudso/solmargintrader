@@ -1,0 +1,140 @@
+{
+  "checks": [
+    {
+      "tool": "archive_price",
+      "module": "backtester.core.archive_price",
+      "exit_code": 0,
+      "example_present": true,
+      "mode": "help only",
+      "cwd": "outside repository"
+    },
+    {
+      "tool": "backtest",
+      "module": "backtester.cli",
+      "exit_code": 0,
+      "example_present": true,
+      "mode": "help only",
+      "cwd": "outside repository"
+    },
+    {
+      "tool": "bot",
+      "module": "backtester.botcli",
+      "exit_code": 0,
+      "example_present": true,
+      "mode": "help only",
+      "cwd": "outside repository"
+    },
+    {
+      "tool": "fetch",
+      "module": "backtester.core.fetch",
+      "exit_code": 0,
+      "example_present": true,
+      "mode": "help only",
+      "cwd": "outside repository"
+    },
+    {
+      "tool": "fetch_minutes",
+      "module": "backtester.core.fetch_minutes",
+      "exit_code": 0,
+      "example_present": true,
+      "mode": "help only",
+      "cwd": "outside repository"
+    },
+    {
+      "tool": "fetch_minutes_alt",
+      "module": "backtester.core.fetch_minutes_alt",
+      "exit_code": 0,
+      "example_present": true,
+      "mode": "help only",
+      "cwd": "outside repository"
+    },
+    {
+      "tool": "grid",
+      "module": "backtester.gridcli",
+      "exit_code": 0,
+      "example_present": true,
+      "mode": "help only",
+      "cwd": "outside repository"
+    },
+    {
+      "tool": "history_store",
+      "module": "backtester.core.history_store",
+      "exit_code": 0,
+      "example_present": true,
+      "mode": "help only",
+      "cwd": "outside repository"
+    },
+    {
+      "tool": "kucoin_history",
+      "module": "backtester.core.kucoin_history",
+      "exit_code": 0,
+      "example_present": true,
+      "mode": "help only",
+      "cwd": "outside repository"
+    },
+    {
+      "tool": "pair",
+      "module": "backtester.paircli",
+      "exit_code": 0,
+      "example_present": true,
+      "mode": "help only",
+      "cwd": "outside repository"
+    },
+    {
+      "tool": "run_archive",
+      "module": "backtester.core.run_archive",
+      "exit_code": 0,
+      "example_present": true,
+      "mode": "help only",
+      "cwd": "outside repository"
+    },
+    {
+      "tool": "volty",
+      "module": "backtester.voltycli",
+      "exit_code": 0,
+      "example_present": true,
+      "mode": "help only",
+      "cwd": "outside repository"
+    },
+    {
+      "tool": "funding",
+      "module": "backtester.core.funding",
+      "exit_code": 0,
+      "example_present": true,
+      "mode": "help only",
+      "cwd": "outside repository"
+    },
+    {
+      "tool": "ticks",
+      "module": "backtester.core.ticks",
+      "exit_code": 0,
+      "example_present": true,
+      "mode": "help only",
+      "cwd": "outside repository"
+    },
+    {
+      "tool": "universe",
+      "module": "backtester.core.universe",
+      "exit_code": 0,
+      "example_present": true,
+      "mode": "help only",
+      "cwd": "outside repository"
+    },
+    {
+      "tool": "strategy_cards",
+      "module": "backtester.core.strategy_cards",
+      "exit_code": 0,
+      "example_present": true,
+      "mode": "help only",
+      "cwd": "outside repository"
+    }
+  ],
+  "private_environment": "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/backtester/.tools/.venv",
+  "marker": {
+    "owner": "oraclebot-backtester-tools/v1",
+    "project": "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/backtester",
+    "project_sha256": "56838fa06f95e37edb8db05fc9dfaa556f8915e5ddede5d6fc79d123f5939e31"
+  },
+  "no_fetch_or_service_or_study_started": true,
+  "note": "All16 canonical allowlisted tools returned actual help with examples; direct legacy module forms still require installed dependencies. No selected task or service ran."
+}

@@ -26,6 +26,7 @@ print("\n=== what reproduces the run: the cost and execution settings ===");
 const run = db.backtest_runs.findOne();
 if (!run) {
   print("No backtest run is loaded; selected-run reports unavailable.");
+  print("first and last few fills: unavailable without a selected run");
 } else {
 if (!db.equity_points.findOne({ "curve.run_id": run._id })) {
   print("No equity points match the selected run; curve report unavailable.");

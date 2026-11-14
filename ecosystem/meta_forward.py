@@ -556,7 +556,11 @@ def run(home, poll=15):
 
 
 def main(argv=None):
-    parser = argparse.ArgumentParser(description=__doc__)
+    parser = argparse.ArgumentParser(
+        description=__doc__,
+        epilog="Example: python -m ecosystem.meta_forward "
+        "--home /path/to/existing-cohort status (read-only).",
+    )
     parser.add_argument("--home", required=True, type=Path)
     commands = parser.add_subparsers(dest="command", required=True)
     init = commands.add_parser("init")

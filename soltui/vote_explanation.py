@@ -103,7 +103,8 @@ def explain(asset, label, *, now=None, min_accuracy=60., min_resolved=20):
                 members, execution = [], None
             contract = False
             if seed:
-                identity = [forwardtest.revision(), asset, label, horizon, cost, mode, seed]
+                # Retained candles and feature reconstruction here are one-minute inputs.
+                identity = [forwardtest.revision(), asset, label, horizon, cost, mode, seed, "1m"]
                 if execution:
                     identity.append(execution)
                 contract = hashlib.sha256(forwardtest._json(identity).encode()).hexdigest() == key

@@ -146,18 +146,30 @@ export async function managerPoll(deps) {
 
 /** Explicit paper grant cannot authorize any live venue or persist an armed flag. */
 export function paperConfigStore(configStore, verifySource = async () => {}) {
+  async function permissionSnapshot() {
+    await verifySource();
+    const runtime = await configStore.getRuntime();
+    const config = await configStore.getConfig();
+    const state = await configStore.get(MANAGER_KEY, null);
+    const allowed = config.mode === 'dry-run' && state?.running === true
+      && state.config_hash === await digest(stable(config)) && runtime.armed === false && !runtime.killSwitch;
+    return { runtime, allowed };
+  }
   return {
     get: (...args) => configStore.get(...args),
     set: (...args) => configStore.set(...args),
     getConfig: () => configStore.getConfig(),
     async getRuntime() {
-      await verifySource();
-      const runtime = await configStore.getRuntime();
-      const config = await configStore.getConfig();
-      const state = await configStore.get(MANAGER_KEY, null);
-      const allowed = config.mode === 'dry-run' && state?.running === true
-        && state.config_hash === await digest(stable(config)) && runtime.armed === false && !runtime.killSwitch;
+      const { runtime, allowed } = await permissionSnapshot();
       return { ...runtime, armed: runtime.armed === true || allowed };
+    },
+    async withExecutionPermission(invoke, permitted) {
+      const { runtime, allowed } = await permissionSnapshot();
+      if (typeof configStore.withExecutionPermission !== 'function') throw new Error('atomic execution permission is unavailable');
+      // Snapshot reads may yield. The underlying gate rechecks the current
+      // stop epoch and kill latch after those reads, for every venue mode.
+      return configStore.withExecutionPermission(invoke, permitted,
+        { paperGrant: allowed, expectedStopGeneration: runtime.stopGeneration });
     },
     setRuntime: patch => configStore.setRuntime(Object.fromEntries(Object.entries(patch).filter(([key]) => key !== 'armed'))),
   };

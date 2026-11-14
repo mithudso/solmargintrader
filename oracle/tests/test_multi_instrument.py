@@ -248,16 +248,27 @@ class MultiInstrumentProtocolTests(unittest.IsolatedAsyncioTestCase):
                 status = await asyncio.wait_for(
                     client.call_tool("oracle_status", {}), 5
                 )
-                self.assertTrue(status.structuredContent["ok"])
+                self.assertTrue(
+                    status.model_dump(by_alias=True)["structuredContent"]["ok"]
+                )
                 self.assertEqual(
-                    status.structuredContent["data"]["instrument"], "ETH/USD"
+                    status.model_dump(by_alias=True)["structuredContent"]["data"][
+                        "instrument"
+                    ],
+                    "ETH/USD",
                 )
                 market = await asyncio.wait_for(client.call_tool("oracle_market", {}), 10)
                 self.assertEqual(
-                    market.structuredContent["data"]["instrument"], "ETH/USD"
+                    market.model_dump(by_alias=True)["structuredContent"]["data"][
+                        "instrument"
+                    ],
+                    "ETH/USD",
                 )
                 self.assertEqual(
-                    market.structuredContent["data"]["status"], "unavailable"
+                    market.model_dump(by_alias=True)["structuredContent"]["data"][
+                        "status"
+                    ],
+                    "unavailable",
                 )
 
 

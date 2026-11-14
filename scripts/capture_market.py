@@ -7,11 +7,13 @@ from __future__ import annotations
 
 import argparse
 import fcntl
+import importlib.util
 import json
 import math
 import os
 import re
 import signal
+import shlex
 import sys
 import tempfile
 import time
@@ -28,7 +30,7 @@ if str(ROOT) not in sys.path:
 
 from soltui.pricefeed import WebSocket
 
-VERSION = "1.0.1"
+VERSION = "1.0.2"
 DATABASE = "market_capture"
 CHANNELS = ["matches", "level2_batch", "heartbeat"]
 SUBSCRIPTION_ACK_TIMEOUT_S = 10.0
@@ -180,13 +182,14 @@ class Spool:
             payload = {}
         if not isinstance(payload, dict):
             payload = {}
-        event_type = control or payload.get("type", "unparsed")
-        if not isinstance(event_type, str) or not event_type:
-            event_type = "unparsed"
-        event_type = event_type[:128]
+        # Retain arbitrary public payloads without letting their type label break
+        # the counter or status serialization. The original message stays in raw.
+        message_type = control or payload.get("type")
+        if not isinstance(message_type, str) or not message_type:
+            message_type = "unparsed"
         row = {"run_id": self.cfg["run_id"], "seq": self.sequence,
                "received_ns": ns, "received_utc": utc(ns / 1e9),
-               "connection_id": connection_id, "type": event_type,
+               "connection_id": connection_id, "type": message_type,
                "exchange_time_raw": payload.get("time"), "exchange_sequence": payload.get("sequence"),
                "trade_id": payload.get("trade_id"), "raw": raw}
         self.handle.write(json.dumps(row, separators=(",", ":"), ensure_ascii=False) + "\n")
@@ -449,7 +452,10 @@ def upload(home):
 
 
 def main(argv=None):
-    parser = argparse.ArgumentParser(description=__doc__)
+    parser = argparse.ArgumentParser(description=__doc__, epilog=(
+        "Example: python scripts/capture_market.py status --home /absolute/capture-run\n"
+        "Upload dependencies: uv run --with-requirements scripts/requirements-market-capture.txt "
+        "python scripts/capture_market.py --help"))
     parser.add_argument("action", choices=["prepare", "capture", "upload", "status"])
     parser.add_argument("--home", type=Path, required=True)
     parser.add_argument("--product", default="ZEC-USD")
@@ -467,6 +473,13 @@ def main(argv=None):
         if args.action == "capture":
             return capture(args.home)
         if args.action == "upload":
+            for module, package in (("pymongo", "pymongo"), ("dotenv", "python-dotenv")):
+                if importlib.util.find_spec(module) is None:
+                    setup = ["uv", "run", "--with-requirements", str(ROOT / "scripts/requirements-market-capture.txt"),
+                             "python", str(Path(__file__).resolve()), "--help"]
+                    print(json.dumps({"error_type": "missing_dependency", "missing_package": package,
+                                      "setup_command": shlex.join(setup)}), file=sys.stderr)
+                    return 3
             return upload(args.home)
         print(json.dumps({"config": config(args.home), "capture": read_json(args.home / "capture-status.json"),
                           "upload": read_json(args.home / "upload-status.json")}, sort_keys=True))

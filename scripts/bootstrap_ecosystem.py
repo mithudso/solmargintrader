@@ -15,14 +15,19 @@ sys.path.insert(0, str(REPO))
 
 def main(argv=None) -> int:
     arguments = list(sys.argv[1:] if argv is None else argv)
-    if "--help" in arguments or "-h" in arguments:
-        from ecosystem.cli import main as cli_main
-
-        return cli_main(["--help"])
     parser = argparse.ArgumentParser(add_help=False)
     parser.add_argument(
         "--venv", type=Path, default=Path.home() / ".venvs/solecosystem-0.4.2"
     )
+    parser.add_argument(
+        "--constraints", type=Path,
+        help="Optional pip constraints file for online start; its SHA-256 binds immutable installation receipts.",
+    )
+    if "--help" in arguments or "-h" in arguments:
+        from ecosystem.cli import main as cli_main
+
+        parser.print_help()
+        return cli_main(["--help"])
     args, forwarded = parser.parse_known_args(arguments)
     from ecosystem.cli import build_parser
 
@@ -32,7 +37,8 @@ def main(argv=None) -> int:
 
     python = args.venv.expanduser().absolute() / "bin/python"
     if command == "start" and not parsed.offline:
-        result = install_environment(REPO, args.venv)
+        options = {"constraints_file": args.constraints} if args.constraints is not None else {}
+        result = install_environment(REPO, args.venv, **options)
     else:
         if not python.is_file():
             print(json.dumps({"ok": False, "error": "ecosystem_not_installed"}))

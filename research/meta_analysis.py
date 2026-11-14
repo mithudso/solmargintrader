@@ -32,10 +32,12 @@ def clean(value):
 
 def load(path, raw=None):
     path = Path(path)
-    raw = path.read_bytes() if raw is None else raw
-    if path.name.endswith(".gz"):
-        raw = gzip.decompress(raw)
-    with io.StringIO(raw.decode("utf-8-sig")) as stream:
+    return _decode_bytes(path, path.read_bytes())
+
+
+def _decode_bytes(path, raw):
+    decoded = gzip.decompress(raw) if path.name.endswith(".gz") else raw
+    with io.StringIO(decoded.decode("utf-8-sig")) as stream:
         if path.suffix in (".md", ".txt"):
             return "text_report", stream.read()
         if path.name.endswith((".csv", ".csv.gz")):
@@ -123,11 +125,15 @@ def consolidate(paths, exclusions=()):
         path = Path(path).resolve()
         try:
             raw = path.read_bytes()
-            digest = hashlib.sha256(raw).hexdigest()
-            if digest in payloads:
-                aliases.append({"path": str(path), "same_bytes_as": payloads[digest]["source_path"], "sha256": digest})
-                continue
-            kind, data = load(path, raw)
+        except OSError as exc:
+            errors.append({"path": str(path), "error": str(exc)})
+            continue
+        digest = hashlib.sha256(raw).hexdigest()
+        if digest in payloads:
+            aliases.append({"path": str(path), "same_bytes_as": payloads[digest]["source_path"], "sha256": digest})
+            continue
+        try:
+            kind, data = _decode_bytes(path, raw)
         except (ValueError, OSError) as exc:
             errors.append({"path": str(path), "error": str(exc)})
             continue

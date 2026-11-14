@@ -194,9 +194,7 @@ def _check_type(param: Param, value: Any) -> None:
     kind = param.type
     ok = (
         (kind == "string" and isinstance(value, str))
-        or (
-            kind == "number" and isinstance(value, int | float) and not isinstance(value, bool) and math.isfinite(value)
-        )
+        or (kind == "number" and (type(value) is int or (type(value) is float and math.isfinite(value))))
         or (kind == "bool" and isinstance(value, bool))
         or kind == "json"
     )

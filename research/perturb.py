@@ -157,6 +157,8 @@ class Report:
         if not self.usable:
             return "INCONCLUSIVE — no perturbation produced an evaluable result"
         r = self.ratio_to_iqr
+        if not self.baseline.evaluable or not np.isfinite(r):
+            return "INCONCLUSIVE — baseline path IQR or median cannot support the stability comparison"
         flips = len(self.sign_flips)
         parts = [
             f"max |Δ median Sharpe| = {self.max_abs_delta:.3f} against a baseline "
@@ -305,7 +307,7 @@ def render(report: Report) -> str:
 
 
 def run_all_singles(
-    horizon: str, pct: float, groups: int, k: int, asset: str = "SOL",
+    horizon: str, pct: float, groups: int, k: int, *, asset: str = "SOL"
 ) -> list[Report]:
     """Perturbation check for every single strategy in the horizon's grid."""
     reports: list[Report] = []
@@ -315,7 +317,7 @@ def run_all_singles(
     return reports
 
 
-def render_batch(horizon: str, reports: list[Report], asset: str = "SOL") -> str:
+def render_batch(horizon: str, reports: list[Report], pct: float = 0.10) -> str:
     """Stability table for a whole horizon, most robust first.
 
     Sorted by ratio, NOT by median Sharpe. The interesting question is whether the
@@ -327,8 +329,8 @@ def render_batch(horizon: str, reports: list[Report], asset: str = "SOL") -> str
     rows.sort(key=lambda r: r.ratio_to_iqr)
 
     lines = [
-        f"PERTURBATION STABILITY — {asset}, every single strategy, {horizon} horizon",
-        f"perturbation: +/-10% one at a time; ratio = max|delta median| / baseline path IQR",
+        f"PERTURBATION STABILITY — every single strategy, {horizon} horizon",
+        f"perturbation: +/-{pct * 100:g}% one at a time; ratio = max|delta median| / baseline path IQR",
         "",
         f"{'strategy':<28}{'median':>9}{'IQR':>7}{'max|d|':>8}{'ratio':>7}"
         f"{'flips':>8}{'%pos':>7}",
@@ -391,15 +393,19 @@ def main(argv: list[str] | None = None) -> int:
     ap.add_argument("--no-geometry", action="store_true")
     ap.add_argument("--out", default=None, help="also write the report here")
     args = ap.parse_args(argv)
+    args.asset = args.asset.strip().upper()
+    if not args.asset.isascii() or not args.asset.isalnum():
+        ap.error("--asset must be an ASCII alphanumeric base symbol")
 
     if args.all_singles:
         OUT.mkdir(parents=True, exist_ok=True)
         reports = run_all_singles(args.horizon, args.pct, args.groups, args.k, asset=args.asset)
-        text = render_batch(args.horizon, reports, asset=args.asset)
+        text = render_batch(args.horizon, reports, args.pct)
         print(text)
-        stem = f"perturb_all_singles_{args.horizon}"
-        if args.asset != "SOL":
-            stem += "_" + args.asset
+        if args.out:
+            Path(args.out).write_text(text + "\n")
+        asset_prefix = "" if args.asset.upper() == "SOL" else args.asset.lower() + "_"
+        stem = f"perturb_all_singles_{asset_prefix}{args.horizon}"
         (OUT / f"{stem}.txt").write_text(text + "\n")
         pd.DataFrame([
             {"asset": args.asset, "horizon": args.horizon, "label": r.baseline.label,
@@ -431,9 +437,12 @@ def main(argv: list[str] | None = None) -> int:
                  geometry=not args.no_geometry, asset=args.asset)
     text = render(report)
     print(text)
+    if args.out:
+        Path(args.out).write_text(text + "\n")
 
     OUT.mkdir(parents=True, exist_ok=True)
-    stem = f"perturb_{args.horizon}_{report.target.replace('(', '_').replace(')', '').replace('+', '_')}"
+    asset_prefix = "" if args.asset.upper() == "SOL" else args.asset.lower() + "_"
+    stem = f"perturb_{asset_prefix}{args.horizon}_{report.target.replace('(', '_').replace(')', '').replace('+', '_')}"
     (OUT / f"{stem}.txt").write_text(text + "\n")
     pd.DataFrame(
         [{"what": t.what, "median_sharpe": t.median_sharpe, "iqr": t.iqr,

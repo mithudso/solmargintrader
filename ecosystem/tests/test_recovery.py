@@ -6,11 +6,13 @@ import json
 import os
 import sqlite3
 import tempfile
+import threading
 import unittest
 from contextlib import closing
 from pathlib import Path
 from unittest.mock import patch
 
+from ecosystem import recovery
 from ecosystem.backtests import create_batch
 from ecosystem.recovery import ensure_batch
 from soltui.config import Settings
@@ -178,6 +180,49 @@ class RecoveryTests(unittest.TestCase):
             return_value={"changed.py": "a" * 64},
         ):
             self.assert_refuses()
+
+    def test_directory_lock_is_not_accepted_as_idle(self):
+        self.create()
+        (self.root / "f5-worker.lock").mkdir()
+        self.assert_refuses()
+
+    def test_fifo_owner_lock_is_refused_without_blocking(self):
+        batch = self.create()
+        before = hashlib.sha256(self.db(batch).read_bytes()).hexdigest()
+        fifo = self.root / "f5-worker.lock"
+        os.mkfifo(fifo, 0o600)
+        entered, done = threading.Event(), threading.Event()
+        errors = []
+        opened = os.open
+
+        def inspect_open(path, flags, *args):
+            if Path(path) == fifo:
+                entered.set()
+            return opened(path, flags, *args)
+
+        def inspect():
+            try:
+                ensure_batch(self.settings, self.cfg, self.root)
+            except ValueError as error:
+                errors.append(str(error))
+            finally:
+                done.set()
+
+        with patch.object(recovery.os, "open", side_effect=inspect_open):
+            thread = threading.Thread(target=inspect, daemon=True)
+            thread.start()
+            self.assertTrue(entered.wait(2))
+            finished = done.wait(0.2)
+            if not finished:
+                writer = opened(fifo, os.O_WRONLY | os.O_NONBLOCK)
+                os.close(writer)
+            thread.join(timeout=2)
+        self.assertFalse(thread.is_alive())
+        self.assertTrue(finished, "recovery blocked before validating the owner lock")
+        self.assertEqual(errors, ["batch_recovery_unavailable"])
+        self.assertEqual(
+            hashlib.sha256(self.db(batch).read_bytes()).hexdigest(), before
+        )
 
 
 if __name__ == "__main__":

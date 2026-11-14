@@ -68,6 +68,8 @@ class ConfirmGateTests(unittest.TestCase):
             self.assertTrue(liq.is_killed())
 
     def test_tui_resume_button_asks_twice(self) -> None:
+        from soltui.tests.test_tui import offline_console_reads
+        self.enterContext(offline_console_reads())
         import asyncio
         from soltui.config import Settings
         from soltui.tui import SolTuiApp

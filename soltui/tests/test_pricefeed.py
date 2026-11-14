@@ -345,6 +345,9 @@ class Agent(unittest.TestCase):
         env = mock.patch.dict("os.environ", {"SOLTUI_LAUNCHAGENTS_DIR": str(self.root / "agents")})
         env.start()
         self.addCleanup(env.stop)
+        log = mock.patch.object(pf, "agent_log_path", return_value=self.root / "logs" / "pricefeed.log")
+        log.start()
+        self.addCleanup(log.stop)
         self.calls: list[tuple] = []
 
         def fake_launchctl(*args):

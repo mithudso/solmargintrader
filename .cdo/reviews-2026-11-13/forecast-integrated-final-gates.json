@@ -1,0 +1,78 @@
+{
+  "schema": "guarded-component-gate-v1",
+  "version": "1.0.0",
+  "status": "COMPLETE_ACTUAL_PASS",
+  "rows": [
+    {
+      "phase": "full",
+      "tests": 291,
+      "seconds": 23.966793791987584,
+      "process_seconds": 25.942778291995637,
+      "actual_exit": 0,
+      "failures": 0,
+      "errors": 0,
+      "skips": 0,
+      "forbidden": 0,
+      "source_and_harness_stable": true,
+      "created_children": 121,
+      "completed_children": 121,
+      "recorded_pids": 122,
+      "remaining_owned_pids": [],
+      "result": "/tmp/oraclebot-forecast-combined-gate-_s1g_dzq/runs/combined-ecosystem-full-90e91764f04c4af5aee4c0ec54aeaede/result.json",
+      "result_sha256": "b5ffa76e985ff7136c196b180a7450a697b1d04970735aa40d35ac7be22da8a1",
+      "source_before": "/tmp/oraclebot-forecast-combined-gate-_s1g_dzq/runs/combined-ecosystem-full-90e91764f04c4af5aee4c0ec54aeaede/source-before.json",
+      "source_after": "/tmp/oraclebot-forecast-combined-gate-_s1g_dzq/runs/combined-ecosystem-full-90e91764f04c4af5aee4c0ec54aeaede/source-after.json",
+      "admissions_sha256": "fbd57fcef8e4a4a0d2bf3b8166f4493f996425f85e6f07cec1114f97e648a5d8",
+      "harness": {
+        "sitecustomize.py": "a1b9ad9703ba4183f14c537420ea967f7e6d20814f67301c28773b327e9dd949",
+        "guard.py": "696b35e663e752fb2e69992332aa3f15b429c7cc7a361f3b9636fe87b74abd25",
+        "run_suite.py": "f15f0c990ea48a5cf76c86caaeb7dbe3d2bab143614b87327e5220b073b9bdcc"
+      }
+    },
+    {
+      "phase": "ops",
+      "tests": 43,
+      "seconds": 0.5698885419988073,
+      "process_seconds": 1.066571292001754,
+      "actual_exit": 0,
+      "failures": 0,
+      "errors": 0,
+      "skips": 0,
+      "forbidden": 0,
+      "source_and_harness_stable": true,
+      "created_children": 0,
+      "completed_children": 0,
+      "recorded_pids": 1,
+      "remaining_owned_pids": [],
+      "result": "/tmp/oraclebot-forecast-combined-gate-_s1g_dzq/runs/combined-ecosystem-ops-84e51664f2a74ec3b28d17e17801e4dd/result.json",
+      "result_sha256": "2c437bb034ff1d32eedb88cca5ef5641a4693072ac87fb7f2099bb240d9f845d",
+      "source_before": "/tmp/oraclebot-forecast-combined-gate-_s1g_dzq/runs/combined-ecosystem-ops-84e51664f2a74ec3b28d17e17801e4dd/source-before.json",
+      "source_after": "/tmp/oraclebot-forecast-combined-gate-_s1g_dzq/runs/combined-ecosystem-ops-84e51664f2a74ec3b28d17e17801e4dd/source-after.json",
+      "admissions_sha256": "fbd57fcef8e4a4a0d2bf3b8166f4493f996425f85e6f07cec1114f97e648a5d8",
+      "harness": {
+        "sitecustomize.py": "a1b9ad9703ba4183f14c537420ea967f7e6d20814f67301c28773b327e9dd949",
+        "guard.py": "696b35e663e752fb2e69992332aa3f15b429c7cc7a361f3b9636fe87b74abd25",
+        "run_suite.py": "f15f0c990ea48a5cf76c86caaeb7dbe3d2bab143614b87327e5220b073b9bdcc"
+      }
+    }
+  ],
+  "fresh_cli_receipt": "/tmp/oraclebot-pr241-review-20261112/fresh-cli-forecast-final.json",
+  "fresh_cli_sha256": "8e9255610fed7187647deef2e81da5d99bd0215a0ffbd51a4b232fb0a0fe6a95",
+  "prior_attempts": [
+    "forecast-regressions-red-launch.json",
+    "forecast-full-289-first-failed-launch.json",
+    "forecast-review_red-launch.json",
+    "forecast-ui_red_second-launch.json",
+    "forecast-ops-source-age-red-launch.json"
+  ],
+  "limits": [
+    "Source-only owned fixtures; no venue/signing/network/launchd changes or installed acceptance. Optional MongoDB discovery is disabled.",
+    "Initial a505 full1563 gate and its final15CIpasses/3skips retain separate exact source bindings.",
+    "Fresh CLI8help/invalidcases plus40refusalcontrols establish parsing only."
+  ],
+  "source_scope": {
+    "ecosystem": "0.4.12",
+    "oracle": "0.2.4",
+    "operations_observer": "1.2.0"
+  }
+}

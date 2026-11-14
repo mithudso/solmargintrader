@@ -31,8 +31,8 @@ gate that could not read its feed blocks the call (fails closed).
 * `ctx`     -- Hyperliquid open interest snapshots, which `oi_flow` needs a history of.
 
 Each component's own score is logged with every call, so one forward run tests the compound
-AND each enabled component as a standalone call. No order is ever placed: soltui has no
-order path.
+AND each enabled component as a standalone call. This paper module never places an order.
+The console's separate manual Coinbase ticket has its own arming and submission controls.
 """
 
 from __future__ import annotations
@@ -68,6 +68,7 @@ from backtester.core import universe as cu  # noqa: E402
 from backtester.core import perps  # noqa: E402
 from backtester.core.types import Side  # noqa: E402
 
+from .diagnostics import external_read
 from . import config as config_mod  # noqa: E402
 from . import wallet as wallet_mod  # noqa: E402
 
@@ -368,6 +369,7 @@ def aggregate_patch(values: Mapping[str, float]) -> dict[str, Any]:
 Fetcher = Callable[..., Any]
 
 
+@external_read("compound.http_json")
 def http_json(url: str, body: Mapping[str, Any] | None = None) -> Any:
     data = None if body is None else json.dumps(body).encode()
     headers = {"User-Agent": USER_AGENT, "Accept": "application/json"}
@@ -378,6 +380,7 @@ def http_json(url: str, body: Mapping[str, Any] | None = None) -> Any:
         return json.loads(resp.read().decode())
 
 
+@external_read("compound.http_text")
 def http_text(url: str) -> str:
     req = urllib.request.Request(url, headers={"User-Agent": USER_AGENT})
     with urllib.request.urlopen(req, timeout=HTTP_TIMEOUT) as resp:  # noqa: S310 - fixed public hosts
@@ -1142,15 +1145,16 @@ def horizon_status(ledger: Sequence[Mapping[str, Any]], recent: int = 30) -> dic
     return {"horizons": by_horizon, "recent": rows}
 
 
-def _tally(pairs: Sequence[tuple[int, float] | tuple[int, float, float]], rt: float) -> dict[str, Any]:
-    observations = [(pair[0], pair[1], pair[2] if len(pair) == 3 else rt) for pair in pairs]
-    decided = [(d, r) for d, r, _ in observations if d != 0 and r != 0]
+def _tally(pairs: Sequence[tuple[int, float]], rt: float,
+           costs: Sequence[float] | None = None) -> dict[str, Any]:
+    decided = [(d, r) for d, r in pairs if d != 0 and r != 0]
     hits = sum(1 for d, r in decided if (r > 0) == (d > 0))
     n = len(decided)
-    signed = [d * r for d, r, _ in observations if d != 0]
-    net = [d * r - cost for d, r, cost in observations if d != 0]
+    signed = [d * r for d, r in pairs if d != 0]
+    net = [d * r - (costs[i] if costs is not None else rt)
+           for i, (d, r) in enumerate(pairs) if d != 0]
     return {
-        "calls": sum(1 for d, _, _ in observations if d != 0), "decided": n,
+        "calls": sum(1 for d, _ in pairs if d != 0), "decided": n,
         "hit_rate": None if n == 0 else round(hits / n, 4),
         "z_vs_coinflip": None if n == 0 else round((hits - 0.5 * n) / math.sqrt(0.25 * n), 2),
         "gross_bps_per_call": None if not signed else round(sum(signed) / len(signed), 3),
@@ -1172,16 +1176,19 @@ def forward_status(asset: str, config_hash: str | None = None, recent: int = 20)
             seen.add(r.get("id"))
             calls.append(r)
     done = [(c, res[c["id"]]) for c in calls if c["id"] in res]
-    rt = float(done[0][0].get("round_trip_bps", 16.0)) if done else 16.0
+    costs = [float(c.get("round_trip_bps", 16.0)) for c, _ in done]
+    rt = sum(costs) / len(costs) if costs else 16.0
     dirs = {"UP": 1, "DOWN": -1}
-    compound = _tally([(dirs.get(c["call"], 0), float(r["ret_bps"]), float(c.get("round_trip_bps", 16.0))) for c, r in done], rt)
-    ungated = _tally([(int(c.get("ungated", 0)), float(r["ret_bps"]), float(c.get("round_trip_bps", 16.0))) for c, r in done], rt)
+    compound = _tally([(dirs.get(c["call"], 0), float(r["ret_bps"])) for c, r in done], rt, costs)
+    ungated = _tally([(int(c.get("ungated", 0)), float(r["ret_bps"])) for c, r in done], rt, costs)
     per: dict[str, list[tuple[int, float]]] = {}
+    per_costs: dict[str, list[float]] = {}
     for c, r in done:
         entry = float(c.get("entry", 0.25))
         for cid, s in (c.get("scores") or {}).items():
             d = 0 if s is None or abs(s) < entry else (1 if s > 0 else -1)
-            per.setdefault(cid, []).append((d, float(r["ret_bps"]), float(c.get("round_trip_bps", 16.0))))
+            per.setdefault(cid, []).append((d, float(r["ret_bps"])))
+            per_costs.setdefault(cid, []).append(float(c.get("round_trip_bps", 16.0)))
     rows = []
     for c in calls[-recent:]:
         r = res.get(c["id"])
@@ -1192,15 +1199,17 @@ def forward_status(asset: str, config_hash: str | None = None, recent: int = 20)
                      else (r["ret_bps"] > 0) == (c["call"] == "UP")})
     # Paper dollars at the wallet size recorded with each call: what trading every compound call
     # for one bar would have made after costs. Calls made without a wallet reading are left out.
-    sized = [(dirs[c["call"]], float(r["ret_bps"]), float(c["notional_usd"]), float(c.get("round_trip_bps", 16.0))) for c, r in done
+    sized = [(dirs[c["call"]], float(r["ret_bps"]), float(c["notional_usd"]),
+              float(c.get("round_trip_bps", 16.0))) for c, r in done
              if c["call"] in dirs and c.get("notional_usd")]
     paper = {"label": "paper $ at wallet size", "calls": len(sized),
-             "net_usd": round(sum(n * (d * ret - rt) / 1e4 for d, ret, n, rt in sized), 2) if sized else None,
-             "costs_usd": round(sum(n * rt / 1e4 for _, _, n, rt in sized), 2) if sized else None}
+             "net_usd": round(sum(n * (d * ret - cost) / 1e4 for d, ret, n, cost in sized), 2) if sized else None,
+             "costs_usd": round(sum(n * cost / 1e4 for _, _, n, cost in sized), 2) if sized else None}
     return {"asset": asset, "calls_recorded": len(calls), "resolved": len(done), "paper": paper,
             "pending": len(calls) - len(done), "round_trip_bps": rt,
+            "round_trip_bps_basis": "mean of resolved calls; each outcome uses its recorded cost",
             "compound": compound, "compound_ungated": ungated,
-            "components": {cid: _tally(v, rt) for cid, v in sorted(per.items())},
+            "components": {cid: _tally(v, rt, per_costs[cid]) for cid, v in sorted(per.items())},
             "recent": rows, "horizon_results": horizon_status(ledger)}
 
 
@@ -1818,10 +1827,11 @@ def stop_unattended_all(coin_list: Sequence[str] | None = None) -> dict[str, Any
 
 
 def stop_unattended(asset: str) -> dict[str, Any]:
-    """Ask the loop to drop this coin (a stop file it checks every second). SIGTERM goes to the
-    process only when no other running coin shares it, so stopping one coin never stops the rest."""
-    import signal as signal_mod
+    """Ask the loop to drop this coin through its cooperative stop file.
 
+    The worker checks between ticks and during waits. A recorded PID never
+    authorizes a signal: it may name an unrelated process after a crash.
+    """
     a = _asset(asset)
     paths = unattended_paths(a)
     status = unattended_status(a)
@@ -1829,12 +1839,6 @@ def stop_unattended(asset: str) -> dict[str, Any]:
         return {"stopping": False, "asset": a, "message": "not running"}
     paths["stop"].write_text("stop\n")
     pid = status["pid"]
-    shared = pid and any(unattended_status(c)["pid"] == pid for c in coins() if _asset(c) != a)
-    if pid and not shared:
-        try:
-            os.kill(pid, signal_mod.SIGTERM)
-        except ProcessLookupError:
-            pass
     # Autopilot keeps every coin training; a stopped coin comes back at its next check.
     try:
         restarts = autopilot_enabled()

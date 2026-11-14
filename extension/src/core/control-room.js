@@ -13,7 +13,8 @@ export function controlRoomTransitions(snapshot, previous, now) {
   const alerts = [];
   for (const name of COMPONENTS) {
     const old = saved[name] ?? {};
-    const current = snapshot.helper === 'available' ? snapshot.components?.find(item => item.name === name)?.state : 'unknown';
+    const current = snapshot.helper === 'available' && Array.isArray(snapshot.components)
+      ? snapshot.components.find(item => item?.name === name)?.state : 'unknown';
     if (!['up', 'down', 'degraded'].includes(current)) { components[name] = old; continue; }
     const row = { state: current, seen_up: old.seen_up === true || current === 'up',
       active: old.active === true, last_notified_at: Number.isFinite(old.last_notified_at) ? old.last_notified_at : null };
@@ -53,11 +54,12 @@ export async function controlRoomSnapshot(deps, action = 'status') {
   if (result?.schema_version !== 1 || result.capability !== 'control-room-v1'
       || !result.status || result.health?.schema_version !== 1) return absent('incompatible', 'helper_incompatible');
   const health = result.health;
+  if (!health.components || typeof health.components !== 'object') return absent('incompatible', 'helper_incompatible');
   const source = Array.isArray(health.components) ? health.components : Object.entries(health.components ?? {})
-    .map(([name, value]) => ({ name, ...value }));
+    .map(([name, value]) => value && typeof value === 'object' ? { name, ...value } : null);
   if (source.some(value => !value || typeof value !== 'object' || Array.isArray(value))) return absent('incompatible', 'helper_incompatible');
   const components = COMPONENTS.map(name => {
-    const item = source.find(value => (value.name ?? value.id ?? value.component) === name);
+    const item = source.find(value => (value?.name ?? value?.id ?? value?.component) === name);
     return { name, state: STATES.has(item?.state) ? item.state : 'unknown' };
   });
   const starting = ['starting', 'pending'].includes(result.status.state);
