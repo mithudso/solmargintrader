@@ -1,6 +1,9 @@
 # Work continuation
 
-Version: 559
+Version: 562
+Delta: v561 to v562; qualify final300s input rendering and complete independent candidate/fixture checks.
+Delta: v560 to v561; qualify combined80-case source gate and independent32-check live candidate before delivery.
+Delta: v559 to v560; record streaming indicators, click-to-chart overlays and two-bar TUI request.
 Delta: integrated to v559; retain parallel automated merge ancestry and all owner/research/AdSense records.
 Delta: v557 to v558; merge concurrent AdSense and ZEC working-paper continuation records.
 Delta: integrated to v558; preserve concurrent published ZEC reversal paper and qualified AdSense verification changes.
@@ -2424,3 +2427,34 @@ Incoming main18dae4cef65b51633f1f4bf2f96aba85f931f988/PR263 publishes a separate
 ## Parallel branch integration qualification
 
 Preserve remoteGitHubAgentMerge commitdaba39a62e4345c12c7421237bc77f4389ca5264 as a mergeparent alongside the localmain integration; noforcepush. Both variants containall nonblank recordbodylines; retainall Delta descriptions andthe complete localintegrationcheckpoint. All8AdSense implementationfiles andincomingpaper/results/PDF/catalog/export bytes remainexact. The first publicexportcheck useddefaultPython withoutpandas andexited1; theexisting qualifiedMCP2.3environment ran the same23filecheck successfully0 withnosource ordependency changes. Finalqualifiedexport/wiki/inventory/index/diff gates andnewtipCI are mandatory before delivery.
+
+
+## Oracle winner live indicators and two-bar check — 2026-11-14
+
+Version: 1.1.0
+Delta: implement and peer-review source/stream/UI; qualify80unique focused tests and preliminary real trade feed.
+
+Owner requests genuine streaming indicator numbers, a full Refresh now button, clickable aligned indicator overlays and the two-consecutive-bar reversal check in the existing oracle_winners.py TUI. Starting clean master f74eeed573a92f6a7d6331ea38c7bab4d4ea9874. Isolated task worktree /Users/mitch/dev/worktrees/zec-tui-live-indicators-20261114; evidence /Users/mitch/.local/state/zec-tui-live-indicators-20261114. Stele create queued as3acd3f35 after Transport closed; no task ID guessed/claimed.
+
+Steps: (1) causal indicator-series/two-bar model and genuine market stream, completed; (2) Textual lifecycle/UI/buttons/overlay implementation and meaningful tests, completed; (3) independent candidate viewport/live checks, integrated gates, PR/CI/merge and canonical acceptance, in progress. Root owns metrics/chart/model/tests/docs/workflow/Git; textual-job-lifecycle-specialist owns TUI/source/stream workers and UI/source/stream tests in the shared isolated worktree. Preserve concurrent work.
+
+Use existing stdlib soltui.pricefeed.WebSocket for foreground, memory-only public ZEC-USD matches+heartbeat; no recorder/service/archive changes. Mark first developing candle partial since attach/reconnect and show gap/stale state. Never invent full-period volume or feed provisional bars into authoritative strategies/shapes. Background calculations coalesce and remain cancelable; retain is_running/_display_stopping/public exit guards. Force-refresh bypasses successful per-bar cache but preserves provider backoff and fixed seed/cycle origins.
+
+Two-bar display uses only completed contiguous trade candles; historical one-day body-color results are exploratory reference counts, not calibrated live probabilities or a new registered strategy. Reference results /Users/mitch/dev/solmargintrader/research/zec-two-bar-reversal-20261114/results.json SHA25683c4b4b15f990a8d7b7e4804f6c1d2ea15d3f784c2d500033cc4c94fc33734df. Show rolling versus newly formed two-bar run, flat/no-trigger, source/target timestamps and stale state.
+
+Overlay histories align timestamps with price; price-level metrics share USD axis, oscillators have an explicitly separate scale. One indicator toggles by click/Enter; keep labels/units and preserve all existing timeframe/strategy/editor/lookback/shape-guide controls and preferences. No orders, new backtests, paid research, embedding, historical result edits or website changes.
+
+
+Current source qualification: root20metric/chart tests,17original model tests and26legacy live/shape tests pass0. Specialist final60UI/model/worker/source/stream tests pass27.093s/0, Ruff0/diff0; combined unique focused coverage is80tests. Separate read-only peer inspection found no material metric/chart causality, unit, timestamp or target issue under validated source inputs. Source is frozen for candidate acceptance.
+
+A real foreground probe received3snapshots/4actualZEC-USD trades with changing observed OHLCV, first-bar partialtrue/gapfalse, then thread stopped, exit0. This is preliminary availability, not final source/canonical qualification. Specialist used actual loopback RFC6455 handshake/subscription tests. Exact frozen owned receipt /Users/mitch/.local/state/zec-tui-live-indicators-20261114/textual-worker-receipt.json; root supplemental record model-checks.json.
+
+Single-click DataTable default only selected an already-highlighted row; IndicatorTable now explicitly handles one first click while Enter remains supported. Real Textual click tests pass. A300s max-refresh/1m boundary case initially stopped live points because the current trade bucket no longer matched cached end; source now caps refresh at new settled bar boundaries and regression proves real newly completed candle fetch/resumption. Initial fixture expected100.60 instead of100.56 was corrected without changing production math. Price caption now counts95closed+1partial within96total points and uses actual plot timestamps.
+
+Root Stele remains disconnected: create3acd3f35 and decisionb75246e9queued; actual task ID/claim unresolved. No guessed claim. Independent verifier observed existing recorder1673 and user TUI22015; preserve both and any unsaved view. New code applies on a fresh canonical TUI launch; do not hot-reload/kill the user process. Final verification/delivery receipt at /Users/mitch/.local/state/zec-tui-live-indicators-20261114/delivery.json will supersede in-progress wording.
+
+
+Combined final focused suite passed80tests in27.188s, exit0; all actual model/UI/source/stream/worker gates ran together. Root legacy live/shape26tests and independent candidate real-market32checks also passed0. Candidate proves actual same10-minute candle OHLCV/indicator changes while completed strategy targets stay fixed, real R/button forced REST overlap/quote refresh, first-click/Enter overlays, independent/shared scales, aligned96timestamps and95+1caption, usable wide/narrow controls and owned-thread shutdown. Receipt /Users/mitch/.local/state/zec-tui-live-indicators-20261114/acceptance/candidate-1/live-receipt.json. Labelled two-bar/warmup/backoff/boundary fixture/visual checks, deterministic metadata gates, final-headCI, merge and final canonical/PTY acceptance remain. No canonical completion claim yet.
+
+
+Final source freeze: independent candidate32real-market and28controlled-case checks plus wide168x60/narrow90x40 visual review passed0. Existing owner recorder1673 and user TUI22015 remain untouched. The only final production change after that acceptance is CSS refresh-input width8→12: old source red1 visibly clipped300.0 to30; final real-render regression and entire23-case UI module passed27.206s/0, Ruff0/diff0. Independent final canonical probe will verify the CSS-only difference and full saved/applied300 values without repeating accepted source research. Final appSHA46a42a81034c1152577ede1bb8f846ba795c462b42f46de67753ed884f9e8120 and testSHAeeb750072d5439ca53a93c323e926645105a61482b5275410741658af27f3b54. All production source is frozen; only deterministic metadata/Git delivery/canonical acceptance remain.

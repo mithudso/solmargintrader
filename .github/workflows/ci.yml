@@ -290,7 +290,7 @@ jobs:
       - name: Install headless research owners for actual macOS judge checks
         run: python -m pip install ./backtester ./oracle ./soltui ./botmanager
       - name: Oracle winning-strategy TUI interactions
-        run: python -m unittest research.tests.test_zec_tui -v
+        run: python -m unittest research.tests.test_zec_tui research.tests.test_zec_tui_metrics research.tests.test_zec_tui_stream -v
       - name: Actual operating-system judge isolation
         run: python -m unittest discover -s botmanager/tests -t botmanager -p test_blind.py
       - name: Actual optimizer and stalled-writer capacity under macOS isolation

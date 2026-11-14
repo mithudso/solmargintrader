@@ -12,6 +12,8 @@ from rich.text import Text
 from textual import on
 from textual.app import App, ComposeResult
 from textual.containers import Horizontal, Vertical, VerticalScroll
+from textual.events import Click
+from textual.message import Message
 from textual.screen import ModalScreen
 from textual.widgets import (
     Button,
@@ -21,16 +23,40 @@ from textual.widgets import (
     Input,
     Label,
     Select,
-    Sparkline,
     Static,
     TextArea,
 )
 
 from research import zec_live as live
 from research.zec_shape_view import shape_guide, shape_summary
+from research.zec_tui_chart import MarketChart
+from research.zec_tui_metrics import IndicatorSession
 from research.zec_tui_model import LOOKBACKS, WorkingSet, default_path, label, row_key
 from research.zec_tui_source import DataSession, QuoteReader, live_view
+from research.zec_tui_stream import DisabledStream, TradeStream
 from research.zec_tui_workers import LatestWorker
+
+
+class IndicatorTable(DataTable):
+    """A single mouse click plots a row, independent of cursor highlight."""
+
+    class IndicatorClicked(Message):
+        def __init__(self, name):
+            super().__init__()
+            self.name = name
+
+    def on_click(self, event: Click):
+        row = event.style.meta.get("row")
+        if type(row) is not int or not 0 <= row < self.row_count:
+            return
+        # DataTable's normal mouse handler only selects an already highlighted
+        # cell. Plotting must also work on the first click of a different row.
+        event.prevent_default()
+        event.stop()
+        self.focus()
+        self.move_cursor(row=row, animate=False)
+        name = self.coordinate_to_cell_key(self.cursor_coordinate).row_key.value
+        self.post_message(self.IndicatorClicked(name))
 
 
 class StrategyPicker(ModalScreen[set | None]):
@@ -240,7 +266,7 @@ class OracleWinnersApp(App):
     Select { width: 17; margin-right: 1; }
     #timeframe { width: 11; }
     #lookback { width: 13; }
-    #refresh-seconds { width: 8; margin-right: 1; }
+    #refresh-seconds { width: 12; margin-right: 1; }
     Button { min-width: 7; margin-right: 1; }
     #faster, #slower { min-width: 4; width: 4; }
     #market { height: 2; padding: 0 1; background: #132237; }
@@ -248,17 +274,19 @@ class OracleWinnersApp(App):
     #workspace { height: 1fr; padding: 0 1; }
     #left { width: 1fr; min-width: 40; overflow-y: auto; }
     #shape { height: auto; min-height: 9; border: round #2c637d; padding: 0 1; }
-    #price-chart { height: 4; color: #68d7e3; }
+    #price-chart { height: 8; color: #68d7e3; }
     #chart-clock { height: 2; color: #a8c1dd; }
     #watchlist { height: 1fr; min-height: 7; }
     #focus-detail { height: 4; color: #a8c1dd; }
-    #right { width: 36; margin-left: 1; border: round #2c637d; }
+    #right { width: 39; margin-left: 1; border: round #2c637d; }
     #indicator-title { height: 2; text-style: bold; padding: 0 1; }
-    #indicator-clock { height: 3; padding: 0 1; color: #a8c1dd; }
+    #indicator-clock { height: 4; padding: 0 1; color: #a8c1dd; }
+    #indicator-hint { height: 2; padding: 0 1; color: #d5a8ed; }
+    #two-bar { height: auto; min-height: 5; padding: 0 1; border-top: solid #2c637d; color: #c3d8ed; }
     #indicators { height: 1fr; min-height: 8; }
     .compact #workspace { layout: vertical; overflow-y: auto; }
-    .compact #left { width: 1fr; height: 32; }
-    .compact #right { width: 1fr; height: 23; margin: 1 0 0 0; }
+    .compact #left { width: 1fr; height: 39; }
+    .compact #right { width: 1fr; height: 33; margin: 1 0 0 0; }
     ModalScreen { align: center middle; background: #06101bd9; }
     #picker-dialog, #editor-dialog { width: 94%; height: 90%; background: #152338; border: thick #418aab; padding: 1; }
     .dialog-title { height: 2; text-style: bold; }
@@ -277,6 +305,8 @@ class OracleWinnersApp(App):
         settings_path=None,
         data_loader=None,
         quote_loader=None,
+        stream=None,
+        indicator_loader=None,
         clock=time.time,
     ):
         super().__init__()
@@ -289,7 +319,25 @@ class OracleWinnersApp(App):
         self.quote_worker = LatestWorker(
             quote_loader or QuoteReader(), name="oracle-quotes"
         )
+        self.indicator_worker = LatestWorker(
+            indicator_loader or IndicatorSession(clock=clock), name="oracle-indicators"
+        )
+        # Dependency-injected loaders must never secretly create a real network
+        # subscription in tests or an embedding application.
+        self.trade_stream = (
+            stream
+            if stream is not None
+            else DisabledStream()
+            if data_loader is not None or quote_loader is not None
+            else TradeStream(clock=clock)
+        )
         self.current_frame, self.quote_result = None, None
+        self.indicator_frame = None
+        self.selected_indicator = None
+        self._view_generation = self._source_version = 0
+        self._market_token = None
+        self._indicator_request_key = None
+        self._pending_force = self._pending_quote = False
         self.row_order = []
         self.indicator_keys = []
         self.latest_rows = {}
@@ -334,16 +382,17 @@ class OracleWinnersApp(App):
                 id="lookback",
             )
         with Horizontal(classes="controls"):
-            yield Label("Signal refresh s")
+            yield Label("Max refresh s")
             yield Input(str(self.state.refresh), id="refresh-seconds", type="number")
             yield Button("−", id="faster")
             yield Button("+", id="slower")
             yield Button("Apply", id="apply-refresh")
             yield Button("Choose strategies", id="choose-strategies")
         with Horizontal(classes="controls"):
-            yield Button("Edit focused", id="edit-focused")
-            yield Button("Reset focused", id="reset-focused")
-            yield Button("Save view", id="save-view")
+            yield Button("Refresh now [R]", id="refresh-now", variant="primary")
+            yield Button("Edit", id="edit-focused")
+            yield Button("Reset", id="reset-focused")
+            yield Button("Save", id="save-view")
             yield Button("Shape guide [H]", id="show-shape-guide")
         yield Static("Connecting to existing ZEC/USD recorder…", id="market")
         yield Static(
@@ -353,14 +402,20 @@ class OracleWinnersApp(App):
         with Horizontal(id="workspace"):
             with Vertical(id="left"):
                 yield Static("Shape: waiting for completed bars", id="shape")
-                yield Sparkline([], id="price-chart")
+                yield MarketChart([], id="price-chart")
                 yield Static("", id="chart-clock")
                 yield DataTable(id="watchlist", cursor_type="row")
                 yield Static("", id="focus-detail")
             with VerticalScroll(id="right"):
                 yield Label("Market indicators", id="indicator-title")
                 yield Static("Completed trade candles", id="indicator-clock")
-                yield DataTable(id="indicators", cursor_type="row")
+                yield Static(
+                    "Two-bar reversal · waiting for completed candles.", id="two-bar"
+                )
+                yield Static(
+                    "Click / Enter plots a metric; repeat clears.", id="indicator-hint"
+                )
+                yield IndicatorTable(id="indicators", cursor_type="row")
         yield Footer()
 
     def on_mount(self):
@@ -376,6 +431,8 @@ class OracleWinnersApp(App):
         self.set_class(self.size.width < 110, "compact")
         self.request_data(clear=True)
         self.quote_worker.submit(None)
+        self._next_quote = time.monotonic() + 1
+        self.trade_stream.start()
         self._poll_timer = self.set_interval(0.25, self.poll_workers)
         self.query_one("#watchlist", DataTable).focus()
         if self.startup_warning:
@@ -384,10 +441,13 @@ class OracleWinnersApp(App):
     def on_resize(self, event):
         self.set_class(event.size.width < 110, "compact")
 
-    def request_data(self, *, clear=False):
+    def request_data(self, *, clear=False, force=False):
         if self._display_stopping or not self.is_running:
             return
         if clear:
+            self._view_generation += 1
+            self.indicator_frame = None
+            self._indicator_request_key = None
             self.current_frame = None
             self.paint_rows(self.state.visible())
             self.clear_details("Loading this window's completed candles…")
@@ -396,9 +456,61 @@ class OracleWinnersApp(App):
                 "interval": self.state.interval,
                 "lookback": self.state.lookback,
                 "rows": self.state.visible(),
+                "force": bool(force or self._pending_force),
             }
         )
-        self._next_data = time.monotonic() + self.state.refresh
+        self._pending_force = False
+        self._next_data = time.monotonic() + self.data_refresh_delay()
+
+    def data_refresh_delay(self):
+        step = live.STEPS[self.state.interval]
+        now = self.clock()
+        next_boundary = (int((now - live.SETTLE_SECONDS) // step) + 1) * step
+        until_boundary = next_boundary + live.SETTLE_SECONDS - now
+        return min(self.state.refresh, max(0.2, until_boundary))
+
+    def indicator_context(self):
+        return (
+            self._view_generation,
+            self._source_version,
+            self.state.interval,
+            self.state.lookback,
+        )
+
+    def request_indicators(self, *, force=False):
+        frame = self.current_frame
+        if (
+            self._display_stopping
+            or not self.is_running
+            or not frame
+            or not frame.get("details")
+            or "market_rows" not in frame
+            or "end" not in frame
+        ):
+            return
+        snapshot = self.trade_stream.snapshot(self.state.interval)
+        key = (self.indicator_context(), snapshot.get("version"), int(self.clock()))
+        if not force:
+            if key == self._indicator_request_key:
+                return
+            if (
+                self.indicator_worker.busy
+                and self._indicator_request_key is not None
+                and self._indicator_request_key[0] == self.indicator_context()
+            ):
+                return
+        self._indicator_request_key = key
+        self.indicator_worker.submit(
+            {
+                "context": self.indicator_context(),
+                "interval": self.state.interval,
+                "end": frame["end"],
+                "lookback": self.state.lookback,
+                "rows": frame["market_rows"],
+                "configs": [w["config"] for w in self.state.visible()],
+                "live": snapshot,
+            }
+        )
 
     def poll_workers(self):
         # Textual stops the app's pump before detaching its children; App
@@ -434,6 +546,16 @@ class OracleWinnersApp(App):
                 self.current_frame = completed.value
                 if self.current_frame.get("error"):
                     self._next_data = now + 15
+            token = self.current_frame.get("market_token", self.data_worker.generation)
+            if token != self._market_token or self.current_frame.get("error"):
+                self._market_token = token
+                self._source_version += 1
+                self.indicator_frame = None
+                self._indicator_request_key = None
+            if self.current_frame.get("error"):
+                self.clear_details(
+                    "Market data unavailable: " + str(self.current_frame["error"])
+                )
         quoted = self.quote_worker.poll()
         if quoted is not None:
             self.quote_result = (
@@ -441,11 +563,38 @@ class OracleWinnersApp(App):
                 if not quoted.error
                 else {"quote": None, "error": "quote_reader_failed"}
             )
-        if now >= self._next_quote and not self.quote_worker.busy:
+        indicated = self.indicator_worker.poll()
+        if indicated is not None:
+            if (
+                not indicated.error
+                and indicated.value.get("context") == self.indicator_context()
+            ):
+                self.indicator_frame = indicated.value
+            elif indicated.error:
+                self.indicator_frame = None
+        if (
+            self._pending_quote or now >= self._next_quote
+        ) and not self.quote_worker.busy:
             self.quote_worker.submit(None)
+            self._pending_quote = False
             self._next_quote = now + 1
-        if now >= self._next_data and not self.data_worker.busy:
-            self.request_data()
+        # The chosen cadence is a maximum wait. A slow setting cannot strand
+        # streaming indicators behind an already completed bar boundary.
+        if self.current_frame and self.current_frame.get("end") is not None:
+            settled_end = (
+                int(
+                    (self.clock() - live.SETTLE_SECONDS)
+                    // live.STEPS[self.state.interval]
+                )
+                * live.STEPS[self.state.interval]
+            )
+            if settled_end > self.current_frame["end"]:
+                self._next_data = min(self._next_data, now)
+        if (
+            self._pending_force or now >= self._next_data
+        ) and not self.data_worker.busy:
+            self.request_data(force=self._pending_force)
+        self.request_indicators()
         self.paint()
 
     def notice(self, text):
@@ -455,10 +604,14 @@ class OracleWinnersApp(App):
         self.query_one("#shape", Static).update(Text(message))
         self.query_one("#indicators", DataTable).clear()
         self.indicator_keys = []
+        self.indicator_frame = None
         self.query_one("#indicator-clock", Static).update(
             "Indicators unavailable; awaiting valid completed candles."
         )
-        self.query_one("#price-chart", Sparkline).data = []
+        self.query_one("#two-bar", Static).update(
+            "Two-bar reversal unavailable; awaiting completed candles."
+        )
+        self.query_one("#price-chart", MarketChart).set_frame(None)
         self.query_one("#chart-clock", Static).update(
             "Chart unavailable; awaiting valid completed candles."
         )
@@ -547,7 +700,7 @@ class OracleWinnersApp(App):
         price = f"${quote['price']:.5f}" if good else "source unavailable / stale"
         self.query_one("#market", Static).update(
             Text(
-                f"ZEC/USD  {price}   ·   next {self.state.interval} bar   ·   signal refresh {self.state.refresh:g}s\n{len(self.state.visible())} selected / {len(self.state.choices())} in this view · quote heartbeat 1s",
+                f"ZEC/USD  {price}   ·   next {self.state.interval} bar   ·   max refresh {self.state.refresh:g}s + bar closes\n{len(self.state.visible())} selected / {len(self.state.choices())} in this view · quote heartbeat 1s",
                 style="bold",
             )
         )
@@ -567,39 +720,147 @@ class OracleWinnersApp(App):
         )
         if isinstance(self.screen, ShapeGuide):
             self.screen.update_details(details, self.state.interval)
-        self.query_one("#price-chart", Sparkline).data = details["chart"]
-        first = (
-            live.iso(details["chart_start"])
+        metrics = self.indicator_frame
+        if metrics and metrics.get("context") != self.indicator_context():
+            metrics = None
+        readings = (metrics or {}).get("indicators", details["indicators"])
+        if self.selected_indicator and self.selected_indicator not in {
+            item["name"] for item in readings
+        }:
+            self.selected_indicator = None
+        chart_frame = metrics or {
+            "chart": details["chart"],
+            "times": [
+                details["chart_start"] + i * live.STEPS[self.state.interval]
+                for i in range(len(details["chart"]))
+            ]
             if details["chart_start"] is not None
-            else "—"
+            else [],
+            "series": {},
+            "indicators": readings,
+        }
+        self.query_one("#price-chart", MarketChart).set_frame(
+            chart_frame, self.selected_indicator
         )
-        self.query_one("#chart-clock", Static).update(
+        times = chart_frame.get("times", [])
+        point_count = len(chart_frame.get("chart", []))
+        developing = bool(metrics and metrics.get("live"))
+        completed_count = point_count - int(developing)
+        first = live.iso(times[0])[5:19].replace("T", " ") if times else "—"
+        last = live.iso(times[-1])[5:19].replace("T", " ") if times else "—"
+        live_label = (
+            " + 1 partial"
+            if developing and metrics.get("partial")
+            else " + 1 developing"
+            if developing
+            else ""
+        )
+        forming_clock = (
+            f"Forming starts {live.iso(times[-1])[11:19]} UTC · "
+            if developing and times
+            else ""
+        )
+        chart_clock = self.query_one("#chart-clock", Static)
+        chart_clock.tooltip = (
+            f"Actual plotted candle starts: {live.iso(times[0])} → {live.iso(times[-1])}\n"
+            f"{completed_count} completed + {int(developing)} developing = {point_count} plotted points."
+            if times
+            else "No valid plotted candles"
+        )
+        chart_clock.update(
             Text(
-                f"{len(details['chart'])} completed bars · {first} → {live.iso(details['asof'])}\n{details['contiguous_bars']} contiguous bars · {'RETAINED / STALE' if details['stale'] else 'current window'}"
+                f"{completed_count} completed{live_label} · {first} → {last} UTC starts\n"
+                f"{forming_clock}source {details['contiguous_bars']} contiguous · {'RETAINED / STALE' if details['stale'] else 'current'}"
             )
         )
-        self.query_one("#indicator-clock", Static).update(
+        if metrics and metrics.get("live"):
+            status = (
+                "LIVE · partial observed candle"
+                if metrics.get("partial")
+                else "LIVE · developing trade candle"
+            )
+            indicator_clock = (
+                f"{self.state.interval} · {status}\n"
+                f"Trade {live.iso(metrics['live_at'])[11:19]} UTC\n"
+                "Volume: observed trades only\n"
+                "Provisional; closed signals fixed"
+            )
+        else:
+            reason = (metrics or {}).get("reason") or "indicator_calculation_pending"
+            indicator_clock = (
+                f"{self.state.interval} · completed candles\n"
+                f"As of {live.iso(details['asof'])}\n"
+                f"{'RETAINED / STALE · ' if details['stale'] else ''}{reason}"
+            )
+        indicator_clock_widget = self.query_one("#indicator-clock", Static)
+        indicator_clock_widget.tooltip = (
+            f"Latest observed trade: {live.iso(metrics['live_at'])}\n"
+            "The first candle after attachment/reconnect is partial. Volume counts only actual observed trades."
+            if metrics and metrics.get("live")
+            else "Completed readings retained until a fresh contiguous streaming trade bar is available."
+        )
+        indicator_clock_widget.update(Text(indicator_clock))
+        two_bar = (metrics or {}).get("two_bar") or {}
+        two_bar_widget = self.query_one("#two-bar", Static)
+        two_bar_widget.tooltip = two_bar.get("text")
+        two_bar_widget.update(
             Text(
-                f"{self.state.interval} trade candles\nAs of {live.iso(details['asof'])}\n{'RETAINED / STALE' if details['stale'] else 'Market context only'}"
+                ("STALE / EXPIRED · " if two_bar.get("stale") else "")
+                + two_bar.get(
+                    "compact_text",
+                    two_bar.get(
+                        "text", "Two-bar reversal · calculating completed-bar context…"
+                    ),
+                )
+            )
+        )
+        self.query_one("#indicator-hint", Static).update(
+            Text(
+                f"Plot: {self.selected_indicator} · repeat selection clears"
+                if self.selected_indicator
+                else "Click / Enter plots a metric; repeat clears."
             )
         )
         table = self.query_one("#indicators", DataTable)
-        names = [item["name"] for item in details["indicators"]]
+        names = [item["name"] for item in readings]
         rebuild = names != self.indicator_keys
         if rebuild:
             table.clear()
             self.indicator_keys = names
-        for item in details["indicators"]:
+        for item in readings:
             value = item["value"]
             rendered = (
                 "—"
                 if value is None
-                else Text(f"{value:,.5f}", style="dim" if details["stale"] else "white")
+                else Text(
+                    f"{value:,.5f}",
+                    style="dim"
+                    if (metrics or {}).get("stale", details["stale"])
+                    else "white",
+                )
+            )
+            name = Text(
+                ("● " if item["name"] == self.selected_indicator else "")
+                + item["name"],
+                style="bold magenta" if item["name"] == self.selected_indicator else "",
             )
             if rebuild:
-                table.add_row(Text(item["name"]), rendered, key=item["name"])
+                table.add_row(name, rendered, key=item["name"])
             else:
+                table.update_cell(item["name"], next(iter(table.columns)), name)
                 table.update_cell(item["name"], list(table.columns)[1], rendered)
+
+    @on(DataTable.RowSelected, "#indicators")
+    def select_indicator(self, event):
+        self.toggle_indicator(event.row_key.value)
+
+    @on(IndicatorTable.IndicatorClicked)
+    def clicked_indicator(self, event):
+        self.toggle_indicator(event.name)
+
+    def toggle_indicator(self, name):
+        self.selected_indicator = None if self.selected_indicator == name else name
+        self.paint()
 
     @on(Select.Changed)
     def changed_window(self, event):
@@ -630,9 +891,9 @@ class OracleWinnersApp(App):
             return
         self.state.refresh = seconds
         self.query_one("#refresh-seconds", Input).value = f"{seconds:g}"
-        self._next_data = time.monotonic() + seconds
+        self._next_data = time.monotonic() + self.data_refresh_delay()
         self.notice(
-            f"Signal refresh set to {seconds:g}s; forecast horizon remains {self.state.interval}."
+            f"Maximum refresh set to {seconds:g}s; bar-close data stays live and the horizon remains {self.state.interval}."
         )
 
     @on(Input.Submitted, "#refresh-seconds")
@@ -673,7 +934,25 @@ class OracleWinnersApp(App):
             )
 
     def action_refresh_now(self):
-        self.request_data()
+        if self._display_stopping or not self.is_running:
+            return
+        self._view_generation += 1
+        self.indicator_frame = None
+        self._indicator_request_key = None
+        self._pending_force = self._pending_quote = True
+        self.trade_stream.refresh()
+        # Repeated manual clicks retain one successor. They do not cancel a
+        # bootstrap repeatedly and prevent it from ever producing a frame.
+        if not self.data_worker.busy:
+            self.request_data(force=True)
+        if not self.quote_worker.busy:
+            self.quote_worker.submit(None)
+            self._pending_quote = False
+            self._next_quote = time.monotonic() + 1
+        self.request_indicators()
+        self.notice(
+            "Refreshing all displayed data; provider failure backoff remains in force."
+        )
 
     def action_save_view(self):
         try:
@@ -689,6 +968,7 @@ class OracleWinnersApp(App):
 
     def on_button_pressed(self, event):
         actions = {
+            "refresh-now": self.action_refresh_now,
             "choose-strategies": self.action_choose,
             "show-shape-guide": self.action_shape_guide,
             "edit-focused": self.action_edit,
@@ -719,6 +999,8 @@ class OracleWinnersApp(App):
             self._poll_timer.stop()
         self.data_worker.close(0.1)
         self.quote_worker.close(0.1)
+        self.indicator_worker.close(0.1)
+        self.trade_stream.close(0.3)
 
     def exit(self, result=None, return_code=0, message=None):
         self._stop_display()
@@ -751,7 +1033,10 @@ def main(argv=None):
             parser.error("refresh must be from 0.2 through 300 seconds")
         state.refresh = args.refresh
     app = OracleWinnersApp(
-        state, settings_path=args.settings, quote_loader=QuoteReader(args.prices)
+        state,
+        settings_path=args.settings,
+        quote_loader=QuoteReader(args.prices),
+        stream=TradeStream(),
     )
     app.startup_warning = warning
     app.run()

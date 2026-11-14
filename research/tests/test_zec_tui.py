@@ -13,6 +13,8 @@ from textual.widgets import DataTable, Input, Select, Sparkline, Static, TextAre
 
 from research.tests.test_zec_tui_model import original
 from research.zec_tui import ConfigEditor, OracleWinnersApp, ShapeGuide, StrategyPicker
+from research.zec_tui_chart import MarketChart
+from research.zec_tui_metrics import IndicatorSession
 from research.zec_tui_model import WorkingSet
 from research.zec_tui_source import DataSession
 
@@ -32,6 +34,55 @@ class Client:
         }
 
 
+class FixtureStream:
+    def __init__(self, clock):
+        self.clock = clock
+        self.alive = False
+        self.version = 0
+        self.refreshes = 0
+        self.price, self.high, self.low, self.volume = 100.6, 101.0, 100.0, 1.0
+        self.connected = True
+
+    def start(self):
+        self.alive = True
+
+    def update(self, price):
+        self.price = price
+        self.high = max(self.high, price)
+        self.low = min(self.low, price)
+        self.volume += 2
+        self.version += 1
+
+    def snapshot(self, interval):
+        from research.zec_live import STEPS
+
+        now = self.clock()
+        return {
+            "bar": {
+                "ts": int(now // STEPS[interval]) * STEPS[interval],
+                "open": 100.2,
+                "high": self.high,
+                "low": self.low,
+                "close": self.price,
+                "volume": self.volume,
+            },
+            "observed_at": now,
+            "event_at": now,
+            "connected": self.connected,
+            "partial": True,
+            "gap": False,
+            "started_at": now - 1,
+            "version": self.version,
+            "reason": None if self.connected else "stream_disconnected",
+        }
+
+    def refresh(self):
+        self.refreshes += 1
+
+    def close(self, timeout=0.3):
+        self.alive = False
+
+
 class Interface(unittest.IsolatedAsyncioTestCase):
     def setUp(self):
         self.directory = tempfile.TemporaryDirectory()
@@ -46,7 +97,7 @@ class Interface(unittest.IsolatedAsyncioTestCase):
             ]
         )
 
-    def app(self, loader=None):
+    def app(self, loader=None, **kwargs):
         return OracleWinnersApp(
             self.state,
             settings_path=self.settings,
@@ -56,6 +107,7 @@ class Interface(unittest.IsolatedAsyncioTestCase):
                 "error": None,
             },
             clock=lambda: self.now[0],
+            **kwargs,
         )
 
     async def ready(self, app, pilot):
@@ -64,6 +116,268 @@ class Interface(unittest.IsolatedAsyncioTestCase):
             self.assertLess(time.monotonic(), deadline)
             await pilot.pause(0.04)
         await pilot.pause(0.05)
+
+    async def indicators_ready(self, app, pilot, predicate=lambda frame: True):
+        deadline = time.monotonic() + 5
+        while app.indicator_frame is None or not predicate(app.indicator_frame):
+            self.assertLess(time.monotonic(), deadline)
+            await pilot.pause(0.04)
+        await pilot.pause(0.05)
+
+    async def test_streaming_numbers_change_without_barclose_or_strategy_recalculation(
+        self,
+    ):
+        stream = FixtureStream(lambda: self.now[0])
+        self.state.refresh = 300
+        source = DataSession(Client(), clock=lambda: self.now[0])
+        calls = []
+
+        def loader(request, cancelled):
+            calls.append(request)
+            return source(request, cancelled)
+
+        app = self.app(loader, stream=stream)
+        async with app.run_test(size=(150, 52)) as pilot:
+            await self.ready(app, pilot)
+            await self.indicators_ready(app, pilot, lambda frame: frame["live"])
+            before = {x["name"]: x["value"] for x in app.indicator_frame["indicators"]}
+            frozen_rows = json.loads(json.dumps(app.current_frame["rows"]))
+            stream.update(104)
+            await self.indicators_ready(
+                app,
+                pilot,
+                lambda frame: frame["live"] and frame["chart"][-1] == 104,
+            )
+            after = {x["name"]: x["value"] for x in app.indicator_frame["indicators"]}
+            self.assertNotEqual(before["RSI 14"], after["RSI 14"])
+            self.assertNotEqual(before["Balance of power"], after["Balance of power"])
+            self.assertEqual(len(calls), 1)
+            self.assertEqual(app.current_frame["rows"], frozen_rows)
+            self.assertIn(
+                "LIVE", str(app.query_one("#indicator-clock", Static).content)
+            )
+            self.assertIn(
+                "partial", str(app.query_one("#indicator-clock", Static).content)
+            )
+            chart = app.query_one("#price-chart", MarketChart)
+            clock = app.query_one("#chart-clock", Static)
+            self.assertIn(
+                f"{len(chart.data) - 1} completed + 1 partial", str(clock.content)
+            )
+            self.assertIn("Forming starts", str(clock.content))
+            self.assertEqual(
+                chart.frame["times"][0],
+                app.current_frame["details"]["chart_start"] + 60,
+            )
+            self.assertIn("96 plotted points", str(clock.tooltip))
+            table = app.query_one("#indicators", DataTable)
+            self.assertEqual(str(table.get_row("RSI 14")[1]), f"{after['RSI 14']:,.5f}")
+        self.assertFalse(app.indicator_worker.alive)
+        self.assertFalse(stream.alive)
+
+    async def test_indicator_enter_and_mouse_click_toggle_actual_chart_series(self):
+        stream = FixtureStream(lambda: self.now[0])
+        app = self.app(stream=stream)
+        async with app.run_test(size=(150, 52)) as pilot:
+            await self.ready(app, pilot)
+            await self.indicators_ready(app, pilot)
+            table = app.query_one("#indicators", DataTable)
+            names = [x["name"] for x in app.indicator_frame["indicators"]]
+            table.focus()
+            table.move_cursor(row=names.index("RSI 14"))
+            await pilot.press("enter")
+            chart = app.query_one("#price-chart", MarketChart)
+            self.assertEqual(chart.selected_indicator, "RSI 14")
+            self.assertEqual(
+                chart.frame["series"]["RSI 14"][-1],
+                next(
+                    x["value"]
+                    for x in app.indicator_frame["indicators"]
+                    if x["name"] == "RSI 14"
+                ),
+            )
+            await pilot.press("enter")
+            self.assertIsNone(chart.selected_indicator)
+            await pilot.click("#indicators", offset=(5, 2))
+            self.assertIsNotNone(app.selected_indicator)
+            self.assertEqual(chart.selected_indicator, app.selected_indicator)
+            await pilot.click("#indicators", offset=(5, 2))
+            self.assertIsNone(app.selected_indicator)
+
+    async def test_refresh_now_button_forces_candles_quote_stream_and_indicators(self):
+        stream = FixtureStream(lambda: self.now[0])
+        self.state.refresh = 300
+
+        class CountingClient(Client):
+            calls = 0
+
+            def fetch(self, *args):
+                self.calls += 1
+                return super().fetch(*args)
+
+        client = CountingClient()
+        app = self.app(DataSession(client, clock=lambda: self.now[0]), stream=stream)
+        async with app.run_test(size=(150, 52)) as pilot:
+            await self.ready(app, pilot)
+            await self.indicators_ready(app, pilot)
+            before, quote_generation = client.calls, app.quote_worker.generation
+            context = app.indicator_context()
+            await pilot.click("#refresh-now")
+            deadline = time.monotonic() + 5
+            while client.calls == before or app.data_worker.busy:
+                self.assertLess(time.monotonic(), deadline)
+                await pilot.pause(0.04)
+            await self.indicators_ready(app, pilot)
+            self.assertGreater(client.calls, before)
+            self.assertGreater(app.quote_worker.generation, quote_generation)
+            self.assertEqual(stream.refreshes, 1)
+            self.assertNotEqual(app.indicator_context(), context)
+            self.assertEqual(app.indicator_frame["context"], app.indicator_context())
+
+    async def test_repeated_refresh_during_busy_bootstrap_coalesces_one_successor(self):
+        entered, release = threading.Event(), threading.Event()
+        source = DataSession(Client(), clock=lambda: self.now[0])
+        calls, cancellation = [], []
+
+        def blocked(request, cancelled):
+            calls.append(request.get("force"))
+            if len(calls) == 1:
+                entered.set()
+                if not release.wait(3):
+                    raise TimeoutError("test release did not arrive")
+                cancellation.append(cancelled())
+            return source(request, cancelled)
+
+        self.addCleanup(release.set)
+        stream = FixtureStream(lambda: self.now[0])
+        app = self.app(blocked, stream=stream)
+        async with app.run_test(size=(150, 52)) as pilot:
+            await pilot.pause(0.05)
+            self.assertTrue(entered.is_set())
+            await pilot.click("#refresh-now")
+            for _ in range(4):
+                app.action_refresh_now()
+            self.assertEqual(calls, [False])
+            release.set()
+            deadline = time.monotonic() + 5
+            while len(calls) < 2 or app.data_worker.busy:
+                self.assertLess(time.monotonic(), deadline)
+                await pilot.pause(0.04)
+            self.assertEqual(calls, [False, True])
+            self.assertEqual(cancellation, [False])
+            self.assertEqual(stream.refreshes, 5)
+            await self.indicators_ready(app, pilot)
+
+    async def test_ten_minute_two_bar_check_retains_one_day_qualification(self):
+        self.state.interval = "10m"
+        app = self.app()
+        async with app.run_test(size=(150, 52)) as pilot:
+            await self.ready(app, pilot)
+            await self.indicators_ready(app, pilot)
+            text = str(app.query_one("#two-bar", Static).content)
+            explanation = str(app.query_one("#two-bar", Static).tooltip)
+            self.assertIn("UU", text)
+            self.assertIn("19/24 = 79.2%", text)
+            self.assertIn("NOT LIVE ODDS", text)
+            self.assertIn("ONE CAPTURED DAY", explanation)
+            self.assertIn("not live probability", explanation)
+
+    async def test_disconnected_stream_falls_back_and_expired_check_is_labelled(self):
+        stream = FixtureStream(lambda: self.now[0])
+        self.state.refresh = 300
+        hold = [False]
+        source = DataSession(Client(), clock=lambda: self.now[0])
+
+        def loader(request, cancelled):
+            while hold[0] and not cancelled():
+                time.sleep(0.005)
+            return source(request, cancelled)
+
+        app = self.app(loader, stream=stream)
+        async with app.run_test(size=(150, 52)) as pilot:
+            await self.ready(app, pilot)
+            await self.indicators_ready(app, pilot, lambda frame: frame["live"])
+            stream.connected = False
+            stream.version += 1
+            await self.indicators_ready(app, pilot, lambda frame: not frame["live"])
+            self.assertIn(
+                "stream_disconnected",
+                str(app.query_one("#indicator-clock", Static).content),
+            )
+            hold[0] = True
+            self.now[0] += 120
+            await self.indicators_ready(app, pilot, lambda frame: frame.get("stale"))
+            self.assertIn(
+                "STALE / EXPIRED", str(app.query_one("#two-bar", Static).content)
+            )
+
+    async def test_slow_refresh_fetches_new_completed_bar_and_resumes_live_values(self):
+        self.state.refresh = 300
+        stream = FixtureStream(lambda: self.now[0])
+
+        class CountingClient(Client):
+            calls = 0
+
+            def fetch(self, *args):
+                self.calls += 1
+                return super().fetch(*args)
+
+        client = CountingClient()
+        app = self.app(DataSession(client, clock=lambda: self.now[0]), stream=stream)
+        async with app.run_test(size=(150, 52)) as pilot:
+            await self.ready(app, pilot)
+            await self.indicators_ready(app, pilot, lambda frame: frame["live"])
+            old_end, calls = app.current_frame["end"], client.calls
+            self.assertLessEqual(app.data_refresh_delay(), 60)
+            self.now[0] = old_end + 64
+            stream.update(104)
+            deadline = time.monotonic() + 5
+            while app.current_frame.get("end") == old_end or app.data_worker.busy:
+                self.assertLess(time.monotonic(), deadline)
+                await pilot.pause(0.04)
+            await self.indicators_ready(
+                app, pilot, lambda frame: frame["live"] and frame["end"] == old_end + 60
+            )
+            self.assertGreater(client.calls, calls)
+            self.assertIn(old_end, app.current_frame["market_rows"])
+            self.assertEqual(
+                app.current_frame["market_rows"][old_end]["close"],
+                100.5 + (old_end // 60 % 10) / 100,
+            )
+            self.assertEqual(app.indicator_frame["chart"][-1], 104)
+            self.assertEqual(self.state.refresh, 300)
+
+    async def test_window_change_cancels_old_indicator_history_before_it_can_paint(
+        self,
+    ):
+        entered, cancelled_seen = threading.Event(), threading.Event()
+        metrics = IndicatorSession(clock=lambda: self.now[0])
+
+        def slow(request, cancelled):
+            if request["interval"] == "1m" and not entered.is_set():
+                entered.set()
+                while not cancelled():
+                    time.sleep(0.005)
+                cancelled_seen.set()
+            return metrics(request, cancelled)
+
+        stream = FixtureStream(lambda: self.now[0])
+        app = self.app(stream=stream, indicator_loader=slow)
+        async with app.run_test(size=(150, 52)) as pilot:
+            await self.ready(app, pilot)
+            deadline = time.monotonic() + 5
+            while not entered.is_set():
+                self.assertLess(time.monotonic(), deadline)
+                await pilot.pause(0.04)
+            app.query_one("#timeframe", Select).value = "5m"
+            await self.indicators_ready(
+                app, pilot, lambda frame: frame["interval"] == "5m"
+            )
+            self.assertTrue(cancelled_seen.is_set())
+            self.assertEqual(app.indicator_frame["context"], app.indicator_context())
+            self.assertEqual(
+                app.query_one("#price-chart", MarketChart).frame["interval"], "5m"
+            )
 
     async def test_initial_view_has_shape_numeric_right_panel_and_focused_rows(self):
         app = self.app()
@@ -220,6 +534,30 @@ class Interface(unittest.IsolatedAsyncioTestCase):
             loaded = WorkingSet(list(self.state.originals.values()))
             loaded.load(self.settings)
             self.assertEqual(loaded.refresh, 2)
+
+    async def test_unfocused_three_digit_refresh_fits_visible_narrow_input(self):
+        # A saved float initializes as "300.0"; applying it formats as "300".
+        # Check actual cropped render strips in both unfocused states.
+        self.state.refresh = 300.0
+        app = self.app()
+        async with app.run_test(size=(90, 40)) as pilot:
+            await self.ready(app, pilot)
+            field = app.query_one("#refresh-seconds", Input)
+            self.assertFalse(field.has_focus)
+            visible = (
+                field.render_line(0).crop(0, field.scrollable_content_region.width).text
+            )
+            self.assertIn("300.0", visible)
+            field.focus()
+            field.value = "300"
+            await pilot.click("#apply-refresh")
+            await pilot.pause(0.1)
+            self.assertFalse(field.has_focus)
+            visible = (
+                field.render_line(0).crop(0, field.scrollable_content_region.width).text
+            )
+            self.assertIn("300", visible)
+            self.assertEqual(self.state.refresh, 300)
 
     async def test_modal_escape_and_navigation_stay_responsive_during_slow_loader(self):
         started = threading.Event()

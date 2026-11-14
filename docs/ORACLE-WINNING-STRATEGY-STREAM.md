@@ -1,5 +1,8 @@
 # Oracle winning-strategy TUI
 
+Version: 1.1.0
+Delta: add a genuine foreground trade stream, provisional indicator overlays, full refresh and completed two-bar context.
+
 Start the interactive, read-only workbench:
 
 ```sh
@@ -18,16 +21,17 @@ already provides Textual; this entry point does not install or start a service.
 | --- | --- |
 | Bar window | Select 1m, 5m, 10m or 1h; calls concern the next bar of this actual timeframe. |
 | Study mode | Baseline, shape, frequency, named controls, or all modes in the chosen window. |
-| Chart | Display 48, 96, 192 or 300 completed bars; this does not reseed the strategy or change its warmup. |
-| Signal refresh | Enter 0.2–300 seconds and Apply, or use minus/plus. The quote heartbeat remains independent at one second. |
+| Chart | Display up to48,96,192 or300 timestamp-aligned points, including the labelled developing point when available; this does not reseed strategies or change their warmup. |
+| Refresh now [R] | Request fresh completed-candle overlap, quote, trade snapshot and indicator calculation for the displayed window; provider error backoff stays enforced. |
+| Click / Enter on indicator | Toggle that indicator on the chart; repeat to clear. EMA/Bollinger price levels share the USD axis; oscillators use an explicitly labelled independent right scale. |
+| Maximum signal refresh | Enter0.2–300seconds and Apply, or use minus/plus. New settled bar boundaries also refresh closed inputs so streaming indicators keep advancing. The quote heartbeat stays independent at1second. |
 | Choose strategies | Search names, parameters or IDs. Space/Enter toggles a row; Select/Clear visible affects only the current search. Apply preserves choices in other windows. |
 | Edit focused | Edit the focused row's JSON parameters/ensemble; Apply validates before changing the working variant. |
 | Reset focused | Restore the immutable original configuration and its original evidence. |
 | Save view | Persist windows, chart length, cadence, manual selections and edited variants privately. |
 | Shape guide [H] | Explain the detected shape, show its actual 48-bar price trace and an illustrative sketch, and describe what to watch or what would challenge the interpretation. |
 
-Keys: **S** opens strategies, **E** edits the focused row, **R** requests a
-refresh, **H** opens the shape guide, **Ctrl-S** saves the view, **Q** quits. Escape cancels a modal without
+Keys: **S** opens strategies, **E** edits the focused row, **R** requests the same full displayed-data refresh as the button, **H** opens the shape guide, **Ctrl-S** saves the view, **Q** quits. Escape cancels a modal without
 changing its selection or configuration. Arrow/Page keys navigate the tables.
 On narrow terminals the indicator panel stacks below the watchlist; scroll or
 Tab to it. Wide terminals show it on the right. Tables can scroll horizontally.
@@ -53,7 +57,7 @@ until Save view is chosen.
 
 ## Shape and indicator panels
 
-The chart uses the selected number of completed trade candles. The shape panel
+The chart plots actual observed prices on the selected timeframe. Streaming mode can append a clearly labelled developing candle, keeping the selected total point limit. Closed strategy calls and the48-bar shape still use only completed candles. The shape panel
 shows the detected range/trend/V/bowl/cap/compression, range zone, observed shape
 episode age and fitted-turn phase where available. Its marker locates the **live
 quote in the preceding48-bar observed range**; the last completed close is used
@@ -85,19 +89,81 @@ return to the watchlist.
 The right panel shows RSI14, balance of power, MACD line/signal/histogram,
 Bollinger bands and%B, ADX/DI, stochastic, ATR, EMA20/50, z-score and ROC.
 Selected configurations add their actual RSI periods and custom Bollinger,
-MACD and stochastic parameter readings. Numbers use the active bar window,
-reset at gaps and retain their bar-close timestamp. Balance of power is
-`(close-open)/(high-low)` for the completed candle; a zero range is unavailable.
-ROC is displayed in percent. BOP is requested market context, not a newly
-backtested winning strategy. None of these numbers is a profit probability.
+MACD and stochastic parameter readings. Indicator histories use the canonical
+trailing functions at each timestamp, with warmup values left unavailable and
+real gaps breaking history. Balance of power is `(close-open)/(high-low)`;
+a zero range is unavailable. ROC is percent. These are market context, not new
+backtested winners or profit probabilities.
 
-Quote age and completed-bar expiry are checked against the current screen
-clock, even with a long signal refresh. Retained indicator values are explicitly
-marked stale; failed source/calculation windows clear dependent numbers and
-charts. Refreshes preserve cursor position so the right panel can be read while
-prices update. A configuration/window change cannot install an older worker's
-response. One coalescing calculation worker and one quote worker keep the event
-loop responsive; page fetches check cancellation between bounded requests.
+### Streaming readings and clickable overlays
+
+The TUI owns one foreground, memory-only public Coinbase Exchange subscription
+for `ZEC-USD` on `matches` and `heartbeat`. It reuses the existing stdlib
+WebSocket transport. It never starts, replaces or writes to the shared recorder,
+installs a service or opens an account connection. The first `last_match` is a
+historical subscription snapshot and is not added to live volume. Unique actual
+matches provide open/high/low/close and the sum of observed trade sizes.
+
+The first candle after attachment or reconnect is **partial since attachment**:
+the stream does not know the earlier open, high, low or volume. The label changes
+to a developing full-period observation only after a clean boundary. Trade-ID
+and heartbeat gap candidates, disconnects and old trade/receipt timestamps
+withhold the live point; no price or volume is filled in. Clean later boundaries
+can recover. In a quiet market, unchanged values are honest; the display does
+not animate invented changes. UI polling occurs four times per second, separately
+from the chosen maximum completed-signal refresh interval. Closed history also advances at each newly settled bar boundary, even when the maximum interval is longer than that bar.
+
+Live scalar readings add the current trade candle to the contiguous completed
+indicator history only when its timestamp is the immediately adjacent current
+bucket. They remain **provisional**. They do not change strategy signals,
+historical P&L, cycle training, shape classification or fixed forecast targets.
+The three-second settlement period may briefly withhold the live point until
+the previous completed candle is available. Unavailable streaming data leaves
+explicitly labelled completed readings rather than simulated ticks.
+
+Click an indicator row, or focus it and press Enter, to draw its actual historical
+values on the price graph. Repeat to remove it. The selection marker, numeric
+legend and units identify the plotted measure. Price levels such as EMA20 or
+Bollinger bands share the USD scale. RSI, volume, MACD changes and other
+oscillators use a separately labelled right scale; their apparent vertical
+position is not a dollar price or future target. Missing/warmup points do not
+produce invented lines. The drawing stops at the latest observed candle.
+
+### Completed two-bar reversal check
+
+The separate panel checks the last two contiguous **completed** candle bodies
+for UU or DD and distinguishes the first two candles of a new streak from a
+rolling pair inside a longer streak. Mixed, flat or missing bars show no valid
+same-color condition. The signal and next-bar target timestamps stay fixed;
+expired context is marked stale rather than given a fresh target on every paint.
+
+Historical fractions come from the immutable November12–13 one-day study,
+verified by its retained results hash. At ten minutes, rolling UU preceded D
+in19/24 cases (79.2%); rolling DD preceded U in16/29 (55.2%), with one flat.
+New-streak definitions instead give14/19 (73.7%) and6/13 (46.2%). These are
+**one-day historical counts, not live odds**, use the captured receipt clock
+rather than this live exchange-time feed, and do not establish profitable trades.
+Hourly samples are explicitly tiny. Full definitions and qualifications appear
+in the panel tooltip and the paper:
+https://oraclebot.io/#research/zec-two-bar-reversal-8b2f7af3
+
+### Refresh, backoff and teardown
+
+Refresh now coalesces a request for fresh completed-candle overlap and a fresh
+recorder read, wakes a disconnected trade subscriber, and recalculates displayed
+indicators. It preserves the fixed starting history, cycle fits, parameters,
+watchlist and user settings. Repeated clicks cannot bypass the15-second retry
+backoff after provider errors, rate limits or incomplete responses. Refresh
+means all data in the displayed window; it does not redownload the complete
+historical matrix or evaluate every hidden strategy.
+
+Completed evaluation, recorder reads, indicator calculations and the trade
+subscription each have an owned background lifecycle. Results carry view/source
+generations so late output cannot replace a new timeframe or edited configuration.
+Closed indicator history is cached; live ticks calculate only the newest point.
+The UI never does network I/O. Quit/exit/unmount stop timers and request bounded
+worker/socket shutdown without replacing Textual's own lifecycle fields. Existing
+services, capture archives and signing settings remain unchanged.
 
 ## Plain and machine-readable compatibility
 

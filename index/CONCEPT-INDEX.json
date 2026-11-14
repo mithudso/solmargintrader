@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-11-14T06:56:48+00:00",
+  "generatedAt": "2026-11-14T08:28:25+00:00",
   "schemaVersion": 1,
   "note": "Concepts are derived from the repo's own vocabulary \u2014 the FAMILY dict, strategy-card frontmatter, docs/trading-signals-concept-family.md, and terms verified to recur in the corpus. A concept matching no file is dropped, not kept.",
   "counts": {
@@ -67,7 +67,7 @@
         },
         {
           "path": "memory.md",
-          "hits": 106
+          "hits": 107
         },
         {
           "path": "research/tradingview-script-profiles/shard-b.jsonl",
@@ -161,12 +161,12 @@
         "universe",
         "top_coins"
       ],
-      "matchingFiles": 1669,
+      "matchingFiles": 1674,
       "shown": 30,
       "files": [
         {
           "path": "memory.md",
-          "hits": 202
+          "hits": 208
         },
         {
           "path": "docs/FILES.md",
@@ -202,7 +202,7 @@
         },
         {
           "path": "prompts.md",
-          "hits": 63
+          "hits": 62
         },
         {
           "path": "research/results/frontier-2026-11-07.json",
@@ -439,7 +439,7 @@
         "centred",
         "shift"
       ],
-      "matchingFiles": 1505,
+      "matchingFiles": 1506,
       "shown": 30,
       "files": [
         {
@@ -559,7 +559,7 @@
           "hits": 15
         },
         {
-          "path": "ecosystem/meta_forward.py",
+          "path": "memory.md",
           "hits": 14
         }
       ],
@@ -578,7 +578,7 @@
         "perps",
         "solana"
       ],
-      "matchingFiles": 959,
+      "matchingFiles": 961,
       "shown": 30,
       "files": [
         {
@@ -607,7 +607,7 @@
         },
         {
           "path": "memory.md",
-          "hits": 213
+          "hits": 215
         },
         {
           "path": ".cdo/reviews-2026-11-12/ecosystem-combined-full-final.json",
@@ -658,6 +658,10 @@
           "hits": 104
         },
         {
+          "path": "prompts.md",
+          "hits": 99
+        },
+        {
           "path": "pagesource",
           "hits": 98
         },
@@ -667,10 +671,6 @@
         },
         {
           "path": ".cdo/reviews-2026-11-12/coverage.json",
-          "hits": 97
-        },
-        {
-          "path": "prompts.md",
           "hits": 97
         },
         {
@@ -714,7 +714,7 @@
         "macd",
         "ichimoku"
       ],
-      "matchingFiles": 887,
+      "matchingFiles": 889,
       "shown": 30,
       "files": [
         {
@@ -852,7 +852,7 @@
         "anchor_window",
         "levels"
       ],
-      "matchingFiles": 871,
+      "matchingFiles": 872,
       "shown": 30,
       "files": [
         {
@@ -990,7 +990,7 @@
         "monotone",
         "gap"
       ],
-      "matchingFiles": 781,
+      "matchingFiles": 786,
       "shown": 30,
       "files": [
         {
@@ -1125,7 +1125,7 @@
         "stochastic",
         "oscillator"
       ],
-      "matchingFiles": 571,
+      "matchingFiles": 573,
       "shown": 30,
       "files": [
         {
