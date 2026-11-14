@@ -6,6 +6,7 @@ import { readFile, writeFile } from 'node:fs/promises';
 import { fileURLToPath } from 'node:url';
 import { chromium } from 'playwright';
 import { base58Encode } from '../../extension/src/wallet/solana.js';
+import { importSigningKey } from '../execution/coinbase.js';
 
 const root = new URL('../public/', import.meta.url);
 const types = { js: 'text/javascript', html: 'text/html', css: 'text/css', svg: 'image/svg+xml', json: 'application/json' };
@@ -21,6 +22,11 @@ const wallets = await Promise.all([0, 1].map(async () => {
   const keys = await crypto.subtle.generateKey('Ed25519', true, ['sign', 'verify']);
   return { keys, user: { id: crypto.randomUUID(), wallet: base58Encode(new Uint8Array(await crypto.subtle.exportKey('raw', keys.publicKey))) }, pkcs8: Buffer.from(await crypto.subtle.exportKey('pkcs8', keys.privateKey)).toString('base64') };
 }));
+const coinbaseKeys = await crypto.subtle.generateKey({ name: 'ECDSA', namedCurve: 'P-256' }, true, ['sign', 'verify']);
+const coinbaseKeyBody = Buffer.from(await crypto.subtle.exportKey('pkcs8', coinbaseKeys.privateKey)).toString('base64');
+const coinbaseKeyName = 'organizations/synthetic-org/apiKeys/synthetic-key';
+const coinbasePem = `-----BEGIN PRIVATE KEY-----\n${coinbaseKeyBody.match(/.{1,64}/g).join('\n')}\n-----END PRIVATE KEY-----`;
+const normalizedCoinbasePem = `-----BEGIN PRIVATE KEY-----\n${coinbaseKeyBody}\n-----END PRIVATE KEY-----`;
 const short = value => `${value.slice(0, 4)}…${value.slice(-4)}`;
 const server = createServer(async (request, response) => {
   const pathname = new URL(request.url, 'http://localhost').pathname;
@@ -117,6 +123,19 @@ async function group(name, run) {
   finally { await f.close(); }
 }
 const writes = (f, suffix) => f.requests.filter(entry => entry.method === 'POST' && entry.path.endsWith(suffix));
+async function assertCoinbaseKey(pem) {
+  assert.equal(pem, normalizedCoinbasePem);
+  const key = await importSigningKey(pem); const challenge = new TextEncoder().encode('Synthetic browser credential normalization');
+  const signature = await crypto.subtle.sign({ name: 'ECDSA', hash: 'SHA-256' }, key, challenge);
+  assert.equal(await crypto.subtle.verify({ name: 'ECDSA', hash: 'SHA-256' }, coinbaseKeys.publicKey, signature, challenge), true);
+}
+async function assertNoCoinbaseDisclosure(f) {
+  const snapshot = await f.page.evaluate(() => JSON.stringify({ html: document.documentElement.outerHTML, text: document.body.innerText, localStorage: { ...localStorage }, sessionStorage: { ...sessionStorage } }));
+  for (const marker of [coinbaseKeyName, coinbaseKeyBody]) {
+    assert.equal(snapshot.includes(marker), false);
+    assert.equal(f.diagnostics.some(value => value.includes(marker)), false);
+  }
+}
 const result = value => ({ metrics: { total_return: value, final_equity: 1000 * (1 + value), total_fees: 1 }, equity: [1000, 1000 * (1 + value)], provenance: 'Synthetic historical fixture' });
 async function openAutomation(f) {
   await f.go('bots'); await f.page.getByRole('button', { name: 'Automation & authorization' }).click();
@@ -183,25 +202,100 @@ try {
     assert.equal(f.requests.find(entry => entry.path === `/api/backtest-jobs/${id}`).account, wallets[0].user.id);
     assert.equal(f.requests.filter(entry => entry.path === '/api/backtest-jobs' && entry.method === 'GET').at(-1).account, wallets[1].user.id);
   });
-  await group('Coinbase JSON upload binds the current account and never renders key material or provider errors', async f => {
-    const marker = 'SYNTHETIC_COINBASE_KEY_MUST_NOT_RENDER'; const privateKey = `-----BEGIN PRIVATE KEY-----\n${marker}\n-----END PRIVATE KEY-----`;
+  await group('masked Coinbase fields preserve a pasted ECDSA key, bind the account and clear before the response', async f => {
+    const gate = deferred(); const started = deferred(); f.releases.push(gate.resolve);
     f.onApi = async (route, entry) => {
       if (entry.path === '/api/connections' && entry.method === 'POST') {
-        assert.equal(entry.account, wallets[0].user.id); assert.equal(entry.body.privateKey, privateKey);
-        assert.equal(entry.body.apiKeyName, 'organizations/fixture/apiKeys/fixture'); assert.equal(entry.body.venue, 'coinbase');
-        await f.json(route, { error: 'connection_conflict', message: `Unsafe provider detail: ${privateKey}` }, 409); return true;
+        assert.equal(entry.account, wallets[0].user.id); await assertCoinbaseKey(entry.body.privateKey);
+        assert.equal(entry.body.apiKeyName, coinbaseKeyName); assert.equal(entry.body.venue, 'coinbase');
+        assert.equal(entry.body.portfolioId, f.connection.portfolioId); assert.match(entry.body.idempotencyKey, /^[0-9a-f-]{36}$/);
+        started.resolve(); await gate.promise;
+        await f.json(route, { error: 'connection_conflict', message: `Unsafe provider detail: ${coinbaseKeyName} ${coinbaseKeyBody}` }, 409); return true;
       }
       return false;
     };
     await f.go('settings');
-    await f.page.locator('.connection-form input[type="file"]').setInputFiles({ name: 'synthetic-coinbase.json', mimeType: 'application/json', buffer: Buffer.from(JSON.stringify({ name: 'organizations/fixture/apiKeys/fixture', privateKey })) });
-    assert.equal((await f.page.content()).includes(marker), false);
-    await f.page.locator('.connection-form button[type="submit"]').click();
+    const keyId = f.page.getByLabel('Key ID', { exact: true }); const secret = f.page.getByLabel('Secret', { exact: true });
+    assert.equal(await f.page.locator('.connection-form input[type="file"]').count(), 0);
+    for (const input of [keyId, secret]) {
+      assert.equal(await input.getAttribute('type'), 'password'); assert.equal(await input.getAttribute('autocomplete'), 'off');
+      assert.equal(await input.getAttribute('spellcheck'), 'false'); assert.equal(await input.getAttribute('autocapitalize'), 'none');
+      assert.equal(await input.evaluate(value => value.required), true);
+    }
+    await keyId.fill(` ${coinbaseKeyName} `); await secret.fill(coinbasePem);
+    const pastedSecret = await secret.inputValue();
+    assert.doesNotMatch(pastedSecret, /[\r\n]/); assert.equal(pastedSecret.replace(/\s/g, ''), coinbasePem.replace(/\s/g, ''));
+    await f.page.getByLabel('Dedicated portfolio ID (optional)', { exact: true }).fill(f.connection.portfolioId);
+    await assertNoCoinbaseDisclosure(f);
+    await f.page.locator('.connection-form button[type="submit"]').click(); await started.promise;
+    assert.equal(await keyId.inputValue(), ''); assert.equal(await secret.inputValue(), '');
+    assert.equal(await f.page.locator('.connection-form button[type="submit"]').isDisabled(), true);
+    await assertNoCoinbaseDisclosure(f); gate.resolve();
     await f.page.waitForFunction(() => document.querySelector('.connection-form .form-message')?.textContent.length > 0);
-    assert.equal((await f.page.content()).includes(marker), false);
-    assert.equal(f.diagnostics.some(value => value.includes(marker)), false);
-    assert.equal(await f.page.locator('.connection-form input[type="file"]').inputValue(), '');
+    assert.match(await f.page.locator('.connection-form .form-message').innerText(), /could not be verified/);
+    await assertNoCoinbaseDisclosure(f);
     assert.equal(writes(f, '/connections').length, 1);
+  });
+  await group('masked Coinbase fields accept escaped PEM newlines and omit an unspecified portfolio', async f => {
+    f.onApi = async (route, entry) => {
+      if (entry.path === '/api/connections' && entry.method === 'POST') {
+        assert.equal(entry.account, wallets[0].user.id); assert.equal(entry.body.apiKeyName, coinbaseKeyName);
+        assert.equal(Object.hasOwn(entry.body, 'portfolioId'), false); await assertCoinbaseKey(entry.body.privateKey);
+        await f.json(route, f.connection); return true;
+      }
+      return false;
+    };
+    await f.go('settings');
+    await f.page.getByLabel('Key ID', { exact: true }).fill(coinbaseKeyName);
+    await f.page.getByLabel('Secret', { exact: true }).fill(coinbasePem.replaceAll('\n', '\\n'));
+    await f.page.locator('.connection-form button[type="submit"]').click();
+    await f.page.waitForFunction(() => document.querySelector('.connection-form .form-message')?.textContent.includes('Trade-only portfolio verified'));
+    assert.equal(await f.page.getByLabel('Key ID', { exact: true }).inputValue(), '');
+    assert.equal(await f.page.getByLabel('Secret', { exact: true }).inputValue(), '');
+    await assertNoCoinbaseDisclosure(f); assert.equal(writes(f, '/connections').length, 1);
+  });
+  await group('navigation clears unsent Coinbase inputs and account replacement discards a held connection result', async f => {
+    const gate = deferred(); const started = deferred(); f.releases.push(gate.resolve);
+    f.onApi = async (route, entry) => {
+      if (entry.path === '/api/connections' && entry.method === 'POST') {
+        assert.equal(entry.account, wallets[0].user.id); await assertCoinbaseKey(entry.body.privateKey);
+        started.resolve(); await gate.promise; await f.json(route, f.connection); return true;
+      }
+      return false;
+    };
+    await f.go('settings');
+    const keyId = await f.page.getByLabel('Key ID', { exact: true }).elementHandle();
+    const secret = await f.page.getByLabel('Secret', { exact: true }).elementHandle();
+    await keyId.fill(coinbaseKeyName); await secret.fill(coinbasePem);
+    await f.page.evaluate(() => { location.hash = 'backtest'; }); await f.page.waitForSelector('#backtest-form');
+    assert.equal(await keyId.evaluate(input => input.value), ''); assert.equal(await secret.evaluate(input => input.value), '');
+    assert.equal(writes(f, '/connections').length, 0);
+    await f.page.evaluate(() => { location.hash = 'settings'; }); await f.page.waitForSelector('.connection-form');
+    await f.page.getByLabel('Key ID', { exact: true }).fill(coinbaseKeyName);
+    await f.page.getByLabel('Secret', { exact: true }).fill(coinbasePem);
+    await f.page.locator('.connection-form button[type="submit"]').click(); await started.promise;
+    const pendingKey = await f.page.getByLabel('Key ID', { exact: true }).elementHandle();
+    const pendingSecret = await f.page.getByLabel('Secret', { exact: true }).elementHandle();
+    // Even newly typed values in the pending form must not survive an account transition.
+    await pendingKey.fill(coinbaseKeyName); await pendingSecret.fill(coinbasePem);
+    await f.switchAccount(); gate.resolve(); await f.drain();
+    assert.equal(await pendingKey.evaluate(input => input.value), ''); assert.equal(await pendingSecret.evaluate(input => input.value), '');
+    assert.equal(await f.page.getByLabel('Key ID', { exact: true }).inputValue(), '');
+    assert.equal(await f.page.getByLabel('Secret', { exact: true }).inputValue(), '');
+    assert.doesNotMatch(await f.page.locator('main').innerText(), /Trade-only portfolio verified/);
+    assert.equal(f.requests.filter(entry => entry.path === '/api/connections' && entry.method === 'GET').at(-1).account, wallets[1].user.id);
+    await assertNoCoinbaseDisclosure(f); assert.equal(writes(f, '/connections').length, 1);
+  });
+  await group('unsupported Coinbase credential formats clear without a connection request', async f => {
+    await f.go('settings');
+    for (const [keyId, secret] of [[crypto.randomUUID(), coinbasePem], [coinbaseKeyName, 'synthetic-hmac-secret'], [coinbaseKeyName, coinbasePem.replace('END PRIVATE KEY', 'END EC PRIVATE KEY')]]) {
+      await f.page.getByLabel('Key ID', { exact: true }).fill(keyId); await f.page.getByLabel('Secret', { exact: true }).fill(secret);
+      await f.page.locator('.connection-form button[type="submit"]').click();
+      assert.equal(await f.page.getByLabel('Key ID', { exact: true }).inputValue(), '');
+      assert.equal(await f.page.getByLabel('Secret', { exact: true }).inputValue(), '');
+      assert.match(await f.page.locator('.connection-form .form-message').innerText(), /could not be verified/);
+    }
+    assert.equal(writes(f, '/connections').length, 0); await assertNoCoinbaseDisclosure(f);
   });
   await group('billing quote and keep-current collect no charge; confirm and scheduled undo are explicit', async f => {
     let quotes = 0;

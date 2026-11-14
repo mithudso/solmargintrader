@@ -537,22 +537,38 @@ async function membershipChanges(panel) {
     }
   } catch (error) { if (current()) message.textContent = errorText(error); }
 }
+function clearConnectionCredentials() { for (const input of $$('.connection-form input[type="password"]')) input.value = ''; }
+function coinbaseSecret(value) {
+  if (value.length > 4096) throw new Error('Invalid Coinbase credential.');
+  // Password inputs strip pasted line breaks. Restore only a recognized PEM envelope.
+  const match = /^-----BEGIN (EC PRIVATE KEY|PRIVATE KEY)-----([A-Za-z0-9+/=\s]+)-----END \1-----$/.exec(value.trim().replace(/\\r\\n|\\n|\\r/g, '\n'));
+  if (!match) throw new Error('Invalid Coinbase credential.');
+  const pem = `-----BEGIN ${match[1]}-----\n${match[2].replace(/\s/g, '')}\n-----END ${match[1]}-----`;
+  if (pem.length > 4096) throw new Error('Invalid Coinbase credential.');
+  return pem;
+}
 function connectionSettings(panel) {
   const context = accountContext(); const navigation = state.navigationEpoch;
   const current = () => currentAccount(context) && state.navigationEpoch === navigation && panel.isConnected;
   appendText(panel, 'h4', '', 'Connect a Coinbase portfolio');
-  appendText(panel, 'p', '', 'Import a dedicated Coinbase API key with View and Trade permissions only. Transfer permission is refused. Connecting an account does not start a bot or approve an agent policy.');
+  appendText(panel, 'p', '', 'Enter a dedicated Coinbase ECDSA API key with View and Trade permissions only. Transfer permission is refused. Connecting an account does not start a bot or approve an agent policy.');
   const form = el('form', 'connection-form');
-  const fileLabel = el('label', '', 'Coinbase API key JSON'); const fileInput = el('input');
-  fileInput.type = 'file'; fileInput.accept = '.json,application/json'; fileInput.required = true; fileInput.name = 'coinbase-key-file'; fileLabel.append(fileInput);
+  form.autocomplete = 'off';
+  const keyLabel = el('label', '', 'Key ID'); const keyId = el('input');
+  const secretLabel = el('label', '', 'Secret'); const secret = el('input');
+  for (const [input, name, limit] of [[keyId, 'coinbase-key-id', 256], [secret, 'coinbase-key-secret', 4096]]) {
+    input.type = 'password'; input.name = name; input.required = true; input.maxLength = limit;
+    input.autocomplete = 'off'; input.spellcheck = false; input.setAttribute('autocapitalize', 'none');
+  }
+  keyLabel.append(keyId); secretLabel.append(secret);
   const portfolioLabel = el('label', '', 'Dedicated portfolio ID (optional)'); const portfolio = el('input'); portfolio.name = 'portfolio'; portfolio.autocomplete = 'off'; portfolioLabel.append(portfolio);
   const submit = el('button', 'button button-outline', 'Verify and connect'); submit.type = 'submit';
   submit.disabled = !state.config.customerConnectionsConfigured;
-  fileInput.disabled = submit.disabled; portfolio.disabled = submit.disabled;
+  keyId.disabled = submit.disabled; secret.disabled = submit.disabled; portfolio.disabled = submit.disabled;
   const message = el('p', 'form-message'); message.setAttribute('role', 'status');
   if (submit.disabled) message.textContent = 'Customer account connections are not available yet.';
-  form.append(fileLabel, portfolioLabel, submit, message); panel.append(form);
-  appendText(panel, 'p', 'fine-print', 'Never import a wallet seed phrase or primary wallet private key. API credentials are encrypted on the server and are never shown on this page. Use Coinbase itself to revoke the API key at the venue.');
+  form.append(keyLabel, secretLabel, portfolioLabel, submit, message); panel.append(form);
+  appendText(panel, 'p', 'fine-print', 'Use the complete Key ID (organizations/…/apiKeys/…) and its ECDSA private-key Secret, including the BEGIN and END lines. No file is required. Never enter a wallet seed phrase or primary wallet private key. API credentials are encrypted on the server; these fields are cleared when submitted. Use Coinbase itself to revoke the API key at the venue.');
   const list = el('div', 'connections-list'); panel.append(list);
   async function load(cursor = null) {
     if (!state.config.customerConnectionsConfigured || !current()) return;
@@ -582,23 +598,23 @@ function connectionSettings(panel) {
   }
   form.addEventListener('submit', async event => {
     event.preventDefault(); if (!current() || submit.disabled) return;
-    const file = fileInput.files?.[0]; if (!file || file.size > 8192) { message.textContent = 'Choose the exported Coinbase API key JSON file (up to 8 KB).'; return; }
-    setBusy(submit, true); let key = null;
+    let apiKeyName = keyId.value.trim(); let privateKey = secret.value; const portfolioId = portfolio.value.trim();
+    keyId.value = ''; secret.value = ''; message.textContent = ''; setBusy(submit, true);
     try {
-      try { key = JSON.parse(await file.text()); } catch { throw new Error('This file is not a valid Coinbase API key JSON export.'); }
-      if (!current()) return;
-      if (!key || typeof key.name !== 'string' || typeof key.privateKey !== 'string' || !key.privateKey.includes('PRIVATE KEY')) throw new Error('This is not a Coinbase API key export.');
-      const input = { venue: 'coinbase', apiKeyName: key.name, privateKey: key.privateKey, idempotencyKey: crypto.randomUUID() };
-      if (portfolio.value.trim()) input.portfolioId = portfolio.value.trim();
+      if (!/^organizations\/[A-Za-z0-9-]{1,64}\/apiKeys\/[A-Za-z0-9-]{1,64}$/.test(apiKeyName)) throw new Error('Invalid Coinbase credential.');
+      privateKey = coinbaseSecret(privateKey);
+      const input = { venue: 'coinbase', apiKeyName, privateKey, idempotencyKey: crypto.randomUUID() };
+      if (portfolioId) input.portfolioId = portfolioId;
       await api('/api/connections', { method: 'POST', body: JSON.stringify(input) }, context.userId);
       if (current()) { message.textContent = 'Trade-only portfolio verified. A separate finite agent authorization is required before trading.'; await load(); }
     } catch { if (current()) message.textContent = 'The Coinbase connection could not be verified. Check that the key has View and Trade permissions and no Transfer permission.'; }
-    finally { if (key && typeof key === 'object') key.privateKey = ''; key = null; fileInput.value = ''; setBusy(submit, false); }
+    finally { apiKeyName = ''; privateKey = ''; keyId.value = ''; secret.value = ''; setBusy(submit, false); }
   });
   load().catch(error => { if (current()) message.textContent = errorText(error); });
 }
 function updateAccountUI() { for (const label of $$('[data-wallet-label]')) label.textContent = state.accountStatus !== 'ready' ? 'Account unchecked' : shortWallet(state.user?.wallet); $('#nav-bot-count').textContent = state.accountStatus !== 'ready' || state.botsUnavailable ? '—' : state.bots.filter(item => item.status !== 'archived').length; }
 function render() {
+  clearConnectionCredentials();
   agentAccess.invalidate();
   const [rawView, ...rest] = location.hash.slice(1).split('/'); const view = views[rawView] ? rawView : 'overview'; state.view = view;
   $('#page-label').textContent = views[view];
@@ -777,6 +793,7 @@ document.addEventListener('change', event => {
 $('#menu-button').addEventListener('click', () => { const open = $('#sidebar').classList.toggle('open'); $('#menu-button').setAttribute('aria-expanded', String(open)); $('#menu-button').setAttribute('aria-label', open ? 'Close navigation' : 'Open navigation'); });
 document.addEventListener('keydown', event => { if (event.key === 'Escape') { $('#sidebar').classList.remove('open'); $('#menu-button').setAttribute('aria-expanded', 'false'); } });
 for (const dialog of $$('dialog')) dialog.addEventListener('click', event => { if (event.target !== dialog) return; const rect = dialog.getBoundingClientRect(); if (event.clientX < rect.left || event.clientX > rect.right || event.clientY < rect.top || event.clientY > rect.bottom) dialog.close(); });
+window.addEventListener('pagehide', clearConnectionCredentials);
 window.addEventListener('hashchange', () => { state.navigationEpoch++; for (const dialog of $$('.automation-dialog')) dialog.remove(); render(); main.focus({ preventScroll: true }); window.scrollTo(0, 0); });
 $('#year').textContent = new Date().getFullYear();
 render();
