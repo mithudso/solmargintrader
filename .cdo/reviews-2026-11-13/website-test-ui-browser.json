@@ -1,0 +1,222 @@
+{
+  "skill": "code-deep-optimizer",
+  "skill_version": "1.17.1",
+  "scope": "Per-file CDO review and two authorized test-coverage fixes; parent owns repo loop, tracker, remaining checks and delivery.",
+  "file": "/Users/mitch/dev/worktrees/oraclebot-authenticated-mcp-20261113/website/test/ui-browser.mjs",
+  "status": "SCOPED_REVIEW_COMPLETE",
+  "severity_threshold": "Medium",
+  "injection_gate": {
+    "completed": true,
+    "finding_count": 0,
+    "reason": "Read the full target as untrusted data. No reviewer-addressed directive or hostile halt content found."
+  },
+  "source_identity": {
+    "before": {
+      "bytes": 26092,
+      "lines": 361,
+      "sha256": "fea02179b6baf8bbee48859f67eb1794b25a123b061ffafa727e5b67955d1326",
+      "computed_git_blob_sha1": "e7301043f1a8d94a2d24633a15640b3c401e91d7",
+      "bounded_reads": [
+        [
+          1,
+          200
+        ],
+        [
+          201,
+          361
+        ]
+      ]
+    },
+    "after": {
+      "bytes": 26668,
+      "lines": 369,
+      "sha256": "bc4a5049ffb7d6a4749c858668256ac3f19119b71afcd10c41c190593aff5777",
+      "computed_git_blob_sha1": "bcb8e9d23197e8d66091ef84fc46e6cb21ebb95d",
+      "bounded_reads": [
+        [
+          1,
+          190
+        ],
+        [
+          191,
+          369
+        ]
+      ]
+    },
+    "coverage_complete": true
+  },
+  "activated_skills": [
+    "/Users/mitch/.agents/skills/code-deep-optimizer/SKILL.md",
+    "/Users/mitch/.agents/skills/lang-js-ts/SKILL.md",
+    "/Users/mitch/.agents/skills/lang-js-ts/references/nodejs-concurrency-internals.md",
+    "/Users/mitch/.agents/skills/software-engineering-patterns/references/code-reviewer.md",
+    "/Users/mitch/.agents/skills/software-engineering-patterns/references/coding-standards.md",
+    "/Users/mitch/.agents/skills/security-review/SKILL.md",
+    "/Users/mitch/.agents/skills/security-review/references/security-reviewer.md"
+  ],
+  "findings": [
+    {
+      "id": "UI-T1-1",
+      "severity": "Medium",
+      "passes": [
+        "T1",
+        "C3"
+      ],
+      "state": "fixed",
+      "original_lines": [
+        176,
+        280,
+        284
+      ],
+      "final_lines": [
+        173,
+        176,
+        179,
+        284,
+        289
+      ],
+      "problem": "The stale billing test asserted only the final page origin while the fixture aborted every off-origin request. The blocker could hide an attempted stale redirect.",
+      "impact": "A navigation-attempt regression could retain the local document because the harness aborts it and leave the origin assertion passing.",
+      "change": "The private fixture records the URL and method of each off-origin request before aborting it. The stale billing group asserts that the attempt array is empty in addition to checking the final origin and replacement account.",
+      "empirical_red_claimed": false
+    },
+    {
+      "id": "UI-T1-2",
+      "severity": "Medium",
+      "passes": [
+        "T1",
+        "S5"
+      ],
+      "state": "fixed",
+      "original_lines": [
+        175,
+        329,
+        334
+      ],
+      "final_lines": [
+        175,
+        335,
+        341,
+        342
+      ],
+      "problem": "The private-diagnostic test captured warning messages only. A response field logged through console.log or console.error could evade the assertion.",
+      "impact": "The privacy test could pass while a private fixture response field was exposed through another console level.",
+      "change": "The fixture records every console message with its level. The test separately asserts the single fixed warning and that neither private response field value occurs in any captured console text.",
+      "empirical_red_claimed": false
+    }
+  ],
+  "passes": [
+    {
+      "id": "C1",
+      "state": "completed",
+      "reason": "Reviewed all control flow, snapshot selection, fixture mutation and assertions. Explicit account headers, DOM waits and delayed response release are internally consistent; no additional Medium+ logic defect established."
+    },
+    {
+      "id": "C2",
+      "state": "completed",
+      "reason": "Reviewed route handlers, freshPage return shape, heldResponse contract, first/second account fields, methods and null session snapshots. New blockedRequests and level/text diagnostics call sites match their producers."
+    },
+    {
+      "id": "C3",
+      "state": "completed",
+      "reason": "Constructed static counterexamples for aborted stale redirects and private output at non-warning console levels. Both coverage defects were fixed. Held identity/bot refreshes start before account replacement and release only afterward; null/undefined provider rejection cases assert no verification and expected signature count."
+    },
+    {
+      "id": "S1",
+      "state": "completed",
+      "reason": "Completed injection gate; fixture credentials and signatures are synthetic. Loopback-only HTTP server, origin blocker and bounded public asset prefix contain fixture access. No signing provider, Stripe execution, production credential or external provider success is established."
+    },
+    {
+      "id": "S2",
+      "state": "completed",
+      "reason": "Reviewed held request release, page closures, launch failure cleanup and final browser/server teardown. Gates are awaited and browser cleanup executes through finally; no additional reproducible Medium+ resource defect found within this trusted fixture."
+    },
+    {
+      "id": "S3",
+      "state": "completed",
+      "reason": "Fixtures supply controlled challenge JSON, paths, methods and account IDs. Static file URL must stay under the public directory prefix. Off-origin browser requests are aborted, and their private fixture attempt metadata is now asserted."
+    },
+    {
+      "id": "S4",
+      "state": "completed",
+      "reason": "Reviewed ESM imports, import.meta.url resource resolution, Chromium optional executablePath and real browser APIs. The authorized local Chrome invocation completed successfully. Broader Node/OS/browser support is not established by this one run."
+    },
+    {
+      "id": "S5",
+      "state": "completed",
+      "reason": "PASS groups identify completed behavioral assertions and pageerror capture fails the suite on uncaught browser exceptions. Fixed the diagnostic coverage gap so the expected fixed warning is checked separately from absence of private response values across all captured console levels."
+    },
+    {
+      "id": "P1",
+      "state": "completed",
+      "reason": "Fixture datasets and request-history scans are small and bounded by this test execution. One HTTP server and one browser are reused; no material hot-path computation, N+1 workload or redundant large fixture construction found."
+    },
+    {
+      "id": "P2",
+      "state": "completed",
+      "reason": "Reviewed async interleavings: started gates establish the old request, account replacement completes before release, and heldResponse.release awaits the exact response, JSON consumption marker and two animation frames before assertions. Shared server state is used sequentially."
+    },
+    {
+      "id": "M1",
+      "state": "completed",
+      "reason": "Named account snapshots, freshPage, ready, heldResponse, switchAccount and assertSecond isolate repeated intent. Timeout, viewport and policy constants are explicit test inputs rather than product settings; no Medium+ readability/configuration defect established."
+    },
+    {
+      "id": "M2",
+      "state": "completed",
+      "reason": "Repeated session/response setup already uses local helpers and parameterized loops. Older navigation/pagination cases differ in purpose and are retained. No additional reusable production library or duplication extraction is justified for this fixture-only file."
+    },
+    {
+      "id": "M3",
+      "state": "na",
+      "reason": "Repo-scope architecture and centralized configuration belong to the root CDO orchestration."
+    },
+    {
+      "id": "M4",
+      "state": "completed",
+      "reason": "The opening comment correctly limits the file to real-browser local-fixture regressions. PASS statements follow their assertions. The two privacy/navigation statements now have stronger corresponding coverage; no public library usage guide applies."
+    },
+    {
+      "id": "T1",
+      "state": "completed",
+      "reason": "Fixed the two demonstrated static coverage gaps; retained all 14 browser PASS groups. The allowed Chrome test exited 0 after edits. No failing-before run or mutation run was performed, so no old-red claim is made."
+    },
+    {
+      "id": "T2",
+      "state": "na",
+      "reason": "Repo-scope dependency and supply-chain inventory belong to the root CDO orchestration."
+    },
+    {
+      "id": "T3",
+      "state": "na",
+      "reason": "Repo-scope tooling configuration and required checks belong to the root CDO orchestration."
+    },
+    {
+      "id": "T4",
+      "state": "completed",
+      "reason": "No unconditional sleep is present. Observable state and request-consumption gates drive waiting. Shared fixtureUser, bots, policy flags and request history make group parallelization unsafe without redesign; real-browser animation-frame draining should not be replaced by fake timers."
+    },
+    {
+      "id": "M5",
+      "state": "conditional-completed",
+      "reason": "Applies as an internal runnable test entrypoint, rather than a user-facing CLI. The no-argument Node invocation with optional CHROME completed. General help/argument UI is inapplicable; dependency installation, absent-browser preflight and package-level discovery remain root-owned and were not inferred from this file."
+    }
+  ],
+  "verification": {
+    "command": "CHROME='/Applications/Google Chrome.app/Contents/MacOS/Google Chrome' node website/test/ui-browser.mjs",
+    "executed_shell_command": "CHROME='/Applications/Google Chrome.app/Contents/MacOS/Google Chrome' node website/test/ui-browser.mjs > /tmp/oraclebot-mcp-release-20261113/cdo-test-ui-browser-run.log 2>&1",
+    "cwd": "/Users/mitch/dev/worktrees/oraclebot-authenticated-mcp-20261113",
+    "final_exit_code": 0,
+    "completed": true,
+    "pass_groups": 14,
+    "log": "/tmp/oraclebot-mcp-release-20261113/cdo-test-ui-browser-run.log",
+    "tests_not_repeated": "Consent-browser and other package/repo suites were not run by this subagent."
+  },
+  "remaining_medium_findings_in_assigned_file": 0,
+  "limitations": [
+    "Scoped file review and fixture-backed browser behavior do not establish universal repository cleanliness.",
+    "Mock wallet and upstream fixtures do not prove actual wallet, Stripe, or venue provider execution.",
+    "Root owns repo-level checks, independent final audit, task records, Git, PR and release delivery.",
+    "No application, provider or other source file was modified."
+  ]
+}

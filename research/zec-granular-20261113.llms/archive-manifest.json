@@ -1,0 +1,19 @@
+{
+  "artifacts": {
+    "audit-ledger.json": "119678cd690e0b8c6eaa72fb9bd682188a9f6c284d7059ccc8a8ba5e96d3db20",
+    "audit-raw-book.json": "0c10baf3854f08ce71567f870550e2f4f6f1367a64ad1320558d0d2dff7023a9",
+    "audit.json": "df95e2b3868202d63cf84e79ab0bf693d42cfedc3fcd5c24f080cd44364ad0f8",
+    "coverage.json": "fdd1d29de23f8d4de8c0b94ec3eab354a82217b302df79fbbf1d5cd5b9f9e0ee",
+    "identity.json": "94fd3b470e03a3b6d8effd0b3eaf210f8e38f65409dbcf12a08142a85cf0df38",
+    "llms-full.txt": "d7cb9df251027923826fa9d94cbdd59c31423ad715e684601dc434d12b4b6597",
+    "llms.txt": "9a249eb59456c5b756f1bac87cc984c9b2226f1edd2c10b1a3575af7f06959f1",
+    "manifest.json": "fc78e47ac211bf55b47c21229b50c9e39bd3460a38be353330a92445d7eab106",
+    "mongo-artifacts.json": "360abe68dd74bce4e84b0648b82be6ee265877d6dc9e75b93bdbb0a580ce5e19",
+    "plan.json.gz": "dc4147e019b3f5d632eda06988e37561bfb29b53f7cf3b5a0b69cac1a27ec39c",
+    "results.csv": "0cf84609dce34714c29730709bb717032c795cec5b3acd075dd433545db809b3",
+    "summary.json": "ea4a9f0f33493502742c5918e6ec91106c05b6a24e90e4c2add16bcfbbf7a735"
+  },
+  "attempt": "attempt-03",
+  "report_sha256": "d7cb9df251027923826fa9d94cbdd59c31423ad715e684601dc434d12b4b6597",
+  "version": "1.0.1"
+}

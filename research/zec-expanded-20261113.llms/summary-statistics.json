@@ -1,0 +1,614 @@
+[
+  {
+    "fee": 25,
+    "interval": "1m",
+    "mode": "baseline",
+    "active": 1623,
+    "positive": 8,
+    "unique_active": 1236,
+    "best": {
+      "candidate_id": "2f141f2e6767bb1c932eb93d",
+      "return_pct": 0.9059161171711017,
+      "fills": 2,
+      "family": "card-preset-parameter-perturbation"
+    }
+  },
+  {
+    "fee": 25,
+    "interval": "1m",
+    "mode": "shape",
+    "active": 1578,
+    "positive": 1,
+    "unique_active": 916,
+    "best": {
+      "candidate_id": "e1d6817dfd408647468f3091",
+      "return_pct": 0.06597356641158125,
+      "fills": 4,
+      "family": "card-preset-parameter-perturbation"
+    }
+  },
+  {
+    "fee": 25,
+    "interval": "1m",
+    "mode": "shape_control",
+    "active": 1620,
+    "positive": 8,
+    "unique_active": 1212,
+    "best": {
+      "candidate_id": "a971695f0c8c1e868bac77ec",
+      "return_pct": 1.237572583729274,
+      "fills": 6,
+      "family": "card-preset-parameter-perturbation"
+    }
+  },
+  {
+    "fee": 25,
+    "interval": "1m",
+    "mode": "frequency",
+    "active": 1618,
+    "positive": 0,
+    "unique_active": 1213,
+    "best": {
+      "candidate_id": "36afb4a682dece770ee8b5f3",
+      "return_pct": -0.140280666880932,
+      "fills": 5,
+      "family": "card-preset-parameter-perturbation"
+    }
+  },
+  {
+    "fee": 25,
+    "interval": "1m",
+    "mode": "frequency_control",
+    "active": 1623,
+    "positive": 8,
+    "unique_active": 1236,
+    "best": {
+      "candidate_id": "2f141f2e6767bb1c932eb93d",
+      "return_pct": 0.9059161171711017,
+      "fills": 2,
+      "family": "card-preset-parameter-perturbation"
+    }
+  },
+  {
+    "fee": 25,
+    "interval": "1m",
+    "mode": "linear_control",
+    "active": 1613,
+    "positive": 12,
+    "unique_active": 1202,
+    "best": {
+      "candidate_id": "4258a69c8c923e02935d3af9",
+      "return_pct": 0.7139122545851695,
+      "fills": 8,
+      "family": "card-preset-parameter-perturbation"
+    }
+  },
+  {
+    "fee": 25,
+    "interval": "5m",
+    "mode": "baseline",
+    "active": 789,
+    "positive": 81,
+    "unique_active": 516,
+    "best": {
+      "candidate_id": "b4ab2da280eb76f871a76e16",
+      "return_pct": 1.082211684004264,
+      "fills": 8,
+      "family": "existing-ensemble-catalog"
+    }
+  },
+  {
+    "fee": 25,
+    "interval": "5m",
+    "mode": "shape",
+    "active": 424,
+    "positive": 52,
+    "unique_active": 249,
+    "best": {
+      "candidate_id": "72f97deee37821ebd58aa055",
+      "return_pct": 1.7933245735034964,
+      "fills": 10,
+      "family": "card-preset-parameter-perturbation"
+    }
+  },
+  {
+    "fee": 25,
+    "interval": "5m",
+    "mode": "shape_control",
+    "active": 786,
+    "positive": 87,
+    "unique_active": 453,
+    "best": {
+      "candidate_id": "72f97deee37821ebd58aa055",
+      "return_pct": 1.7071277837070076,
+      "fills": 8,
+      "family": "card-preset-parameter-perturbation"
+    }
+  },
+  {
+    "fee": 25,
+    "interval": "5m",
+    "mode": "frequency",
+    "active": 742,
+    "positive": 1,
+    "unique_active": 415,
+    "best": {
+      "candidate_id": "cbb46628ab5021fca7c1528b",
+      "return_pct": 0.13792076063410263,
+      "fills": 2,
+      "family": "card-preset-parameter-perturbation"
+    }
+  },
+  {
+    "fee": 25,
+    "interval": "5m",
+    "mode": "frequency_control",
+    "active": 781,
+    "positive": 68,
+    "unique_active": 442,
+    "best": {
+      "candidate_id": "449a0dd7901f0aa3f65aa755",
+      "return_pct": 1.049842359087072,
+      "fills": 4,
+      "family": "card-preset-parameter-perturbation"
+    }
+  },
+  {
+    "fee": 25,
+    "interval": "5m",
+    "mode": "linear_control",
+    "active": 493,
+    "positive": 15,
+    "unique_active": 280,
+    "best": {
+      "candidate_id": "449a0dd7901f0aa3f65aa755",
+      "return_pct": 0.809306844474933,
+      "fills": 2,
+      "family": "card-preset-parameter-perturbation"
+    }
+  },
+  {
+    "fee": 25,
+    "interval": "10m",
+    "mode": "baseline",
+    "active": 385,
+    "positive": 85,
+    "unique_active": 260,
+    "best": {
+      "candidate_id": "1148ff1ce2c2b74bdf9dd66b",
+      "return_pct": 2.272384918793602,
+      "fills": 2,
+      "family": "card-preset-parameter-perturbation"
+    }
+  },
+  {
+    "fee": 25,
+    "interval": "10m",
+    "mode": "shape",
+    "active": 173,
+    "positive": 84,
+    "unique_active": 80,
+    "best": {
+      "candidate_id": "1148ff1ce2c2b74bdf9dd66b",
+      "return_pct": 2.272384918793602,
+      "fills": 2,
+      "family": "card-preset-parameter-perturbation"
+    }
+  },
+  {
+    "fee": 25,
+    "interval": "10m",
+    "mode": "shape_control",
+    "active": 334,
+    "positive": 90,
+    "unique_active": 132,
+    "best": {
+      "candidate_id": "1148ff1ce2c2b74bdf9dd66b",
+      "return_pct": 2.272384918793602,
+      "fills": 2,
+      "family": "card-preset-parameter-perturbation"
+    }
+  },
+  {
+    "fee": 25,
+    "interval": "10m",
+    "mode": "frequency",
+    "active": 37,
+    "positive": 3,
+    "unique_active": 25,
+    "best": {
+      "candidate_id": "a2ec144be93b7f6610ac728c",
+      "return_pct": 0.030284515253486965,
+      "fills": 2,
+      "family": "card-preset-parameter-perturbation"
+    }
+  },
+  {
+    "fee": 25,
+    "interval": "10m",
+    "mode": "frequency_control",
+    "active": 37,
+    "positive": 30,
+    "unique_active": 25,
+    "best": {
+      "candidate_id": "826ac5e44df8d3f9099c60b3",
+      "return_pct": 1.197739757110683,
+      "fills": 4,
+      "family": "existing-ensemble-catalog"
+    }
+  },
+  {
+    "fee": 25,
+    "interval": "10m",
+    "mode": "linear_control",
+    "active": 0,
+    "positive": 0,
+    "unique_active": 0,
+    "best": null
+  },
+  {
+    "fee": 25,
+    "interval": "1h",
+    "mode": "baseline",
+    "active": 35,
+    "positive": 1,
+    "unique_active": 22,
+    "best": {
+      "candidate_id": "e92847e411a2f4c10043b470",
+      "return_pct": 0.34113703021745323,
+      "fills": 2,
+      "family": "card-preset-parameter-perturbation"
+    }
+  },
+  {
+    "fee": 25,
+    "interval": "1h",
+    "mode": "shape",
+    "active": 0,
+    "positive": 0,
+    "unique_active": 0,
+    "best": null
+  },
+  {
+    "fee": 25,
+    "interval": "1h",
+    "mode": "shape_control",
+    "active": 0,
+    "positive": 0,
+    "unique_active": 0,
+    "best": null
+  },
+  {
+    "fee": 25,
+    "interval": "1h",
+    "mode": "frequency",
+    "active": 0,
+    "positive": 0,
+    "unique_active": 0,
+    "best": null
+  },
+  {
+    "fee": 25,
+    "interval": "1h",
+    "mode": "frequency_control",
+    "active": 0,
+    "positive": 0,
+    "unique_active": 0,
+    "best": null
+  },
+  {
+    "fee": 25,
+    "interval": "1h",
+    "mode": "linear_control",
+    "active": 0,
+    "positive": 0,
+    "unique_active": 0,
+    "best": null
+  },
+  {
+    "fee": 15,
+    "interval": "1m",
+    "mode": "baseline",
+    "active": 1623,
+    "positive": 22,
+    "unique_active": 1236,
+    "best": {
+      "candidate_id": "2c188b13f7776ad7e2b58f75",
+      "return_pct": 1.8653652201108928,
+      "fills": 16,
+      "family": "card-preset-parameter-perturbation"
+    }
+  },
+  {
+    "fee": 15,
+    "interval": "1m",
+    "mode": "shape",
+    "active": 1578,
+    "positive": 3,
+    "unique_active": 916,
+    "best": {
+      "candidate_id": "e1d6817dfd408647468f3091",
+      "return_pct": 0.4668699083192118,
+      "fills": 4,
+      "family": "card-preset-parameter-perturbation"
+    }
+  },
+  {
+    "fee": 15,
+    "interval": "1m",
+    "mode": "shape_control",
+    "active": 1620,
+    "positive": 25,
+    "unique_active": 1212,
+    "best": {
+      "candidate_id": "a971695f0c8c1e868bac77ec",
+      "return_pct": 1.8465938075036048,
+      "fills": 6,
+      "family": "card-preset-parameter-perturbation"
+    }
+  },
+  {
+    "fee": 15,
+    "interval": "1m",
+    "mode": "frequency",
+    "active": 1618,
+    "positive": 0,
+    "unique_active": 1213,
+    "best": {
+      "candidate_id": "5191555f3426c9fe709c668a",
+      "return_pct": -0.010140862238172677,
+      "fills": 10,
+      "family": "existing-ensemble-catalog"
+    }
+  },
+  {
+    "fee": 15,
+    "interval": "1m",
+    "mode": "frequency_control",
+    "active": 1623,
+    "positive": 22,
+    "unique_active": 1236,
+    "best": {
+      "candidate_id": "2c188b13f7776ad7e2b58f75",
+      "return_pct": 1.8653652201108928,
+      "fills": 16,
+      "family": "card-preset-parameter-perturbation"
+    }
+  },
+  {
+    "fee": 15,
+    "interval": "1m",
+    "mode": "linear_control",
+    "active": 1613,
+    "positive": 26,
+    "unique_active": 1202,
+    "best": {
+      "candidate_id": "877d71edfc35f2ee9134fd01",
+      "return_pct": 1.8675326861264052,
+      "fills": 12,
+      "family": "card-preset-parameter-perturbation"
+    }
+  },
+  {
+    "fee": 15,
+    "interval": "5m",
+    "mode": "baseline",
+    "active": 789,
+    "positive": 101,
+    "unique_active": 516,
+    "best": {
+      "candidate_id": "72f97deee37821ebd58aa055",
+      "return_pct": 2.1074970001561555,
+      "fills": 18,
+      "family": "card-preset-parameter-perturbation"
+    }
+  },
+  {
+    "fee": 15,
+    "interval": "5m",
+    "mode": "shape",
+    "active": 424,
+    "positive": 77,
+    "unique_active": 249,
+    "best": {
+      "candidate_id": "72f97deee37821ebd58aa055",
+      "return_pct": 2.8158787223624193,
+      "fills": 10,
+      "family": "card-preset-parameter-perturbation"
+    }
+  },
+  {
+    "fee": 15,
+    "interval": "5m",
+    "mode": "shape_control",
+    "active": 786,
+    "positive": 106,
+    "unique_active": 453,
+    "best": {
+      "candidate_id": "72f97deee37821ebd58aa055",
+      "return_pct": 2.5237333326578515,
+      "fills": 8,
+      "family": "card-preset-parameter-perturbation"
+    }
+  },
+  {
+    "fee": 15,
+    "interval": "5m",
+    "mode": "frequency",
+    "active": 742,
+    "positive": 1,
+    "unique_active": 415,
+    "best": {
+      "candidate_id": "cbb46628ab5021fca7c1528b",
+      "return_pct": 0.338387606793189,
+      "fills": 2,
+      "family": "card-preset-parameter-perturbation"
+    }
+  },
+  {
+    "fee": 15,
+    "interval": "5m",
+    "mode": "frequency_control",
+    "active": 781,
+    "positive": 93,
+    "unique_active": 442,
+    "best": {
+      "candidate_id": "449a0dd7901f0aa3f65aa755",
+      "return_pct": 1.454692046235695,
+      "fills": 4,
+      "family": "card-preset-parameter-perturbation"
+    }
+  },
+  {
+    "fee": 15,
+    "interval": "5m",
+    "mode": "linear_control",
+    "active": 493,
+    "positive": 39,
+    "unique_active": 280,
+    "best": {
+      "candidate_id": "449a0dd7901f0aa3f65aa755",
+      "return_pct": 1.0110955893150253,
+      "fills": 2,
+      "family": "card-preset-parameter-perturbation"
+    }
+  },
+  {
+    "fee": 15,
+    "interval": "10m",
+    "mode": "baseline",
+    "active": 385,
+    "positive": 89,
+    "unique_active": 260,
+    "best": {
+      "candidate_id": "1148ff1ce2c2b74bdf9dd66b",
+      "return_pct": 2.4771137039386604,
+      "fills": 2,
+      "family": "card-preset-parameter-perturbation"
+    }
+  },
+  {
+    "fee": 15,
+    "interval": "10m",
+    "mode": "shape",
+    "active": 173,
+    "positive": 86,
+    "unique_active": 80,
+    "best": {
+      "candidate_id": "1148ff1ce2c2b74bdf9dd66b",
+      "return_pct": 2.4771137039386604,
+      "fills": 2,
+      "family": "card-preset-parameter-perturbation"
+    }
+  },
+  {
+    "fee": 15,
+    "interval": "10m",
+    "mode": "shape_control",
+    "active": 334,
+    "positive": 93,
+    "unique_active": 132,
+    "best": {
+      "candidate_id": "1148ff1ce2c2b74bdf9dd66b",
+      "return_pct": 2.4771137039386604,
+      "fills": 2,
+      "family": "card-preset-parameter-perturbation"
+    }
+  },
+  {
+    "fee": 15,
+    "interval": "10m",
+    "mode": "frequency",
+    "active": 37,
+    "positive": 32,
+    "unique_active": 25,
+    "best": {
+      "candidate_id": "a2ec144be93b7f6610ac728c",
+      "return_pct": 0.23051655548580463,
+      "fills": 2,
+      "family": "card-preset-parameter-perturbation"
+    }
+  },
+  {
+    "fee": 15,
+    "interval": "10m",
+    "mode": "frequency_control",
+    "active": 37,
+    "positive": 33,
+    "unique_active": 25,
+    "best": {
+      "candidate_id": "826ac5e44df8d3f9099c60b3",
+      "return_pct": 1.6031820416313458,
+      "fills": 4,
+      "family": "existing-ensemble-catalog"
+    }
+  },
+  {
+    "fee": 15,
+    "interval": "10m",
+    "mode": "linear_control",
+    "active": 0,
+    "positive": 0,
+    "unique_active": 0,
+    "best": null
+  },
+  {
+    "fee": 15,
+    "interval": "1h",
+    "mode": "baseline",
+    "active": 35,
+    "positive": 1,
+    "unique_active": 22,
+    "best": {
+      "candidate_id": "e92847e411a2f4c10043b470",
+      "return_pct": 0.5420007101579305,
+      "fills": 2,
+      "family": "card-preset-parameter-perturbation"
+    }
+  },
+  {
+    "fee": 15,
+    "interval": "1h",
+    "mode": "shape",
+    "active": 0,
+    "positive": 0,
+    "unique_active": 0,
+    "best": null
+  },
+  {
+    "fee": 15,
+    "interval": "1h",
+    "mode": "shape_control",
+    "active": 0,
+    "positive": 0,
+    "unique_active": 0,
+    "best": null
+  },
+  {
+    "fee": 15,
+    "interval": "1h",
+    "mode": "frequency",
+    "active": 0,
+    "positive": 0,
+    "unique_active": 0,
+    "best": null
+  },
+  {
+    "fee": 15,
+    "interval": "1h",
+    "mode": "frequency_control",
+    "active": 0,
+    "positive": 0,
+    "unique_active": 0,
+    "best": null
+  },
+  {
+    "fee": 15,
+    "interval": "1h",
+    "mode": "linear_control",
+    "active": 0,
+    "positive": 0,
+    "unique_active": 0,
+    "best": null
+  }
+]

@@ -25,6 +25,7 @@ Three hazards this module exists to handle:
 from __future__ import annotations
 
 import argparse
+import math
 import sys
 import time
 import urllib.parse
@@ -46,8 +47,22 @@ def _parse_trades(rows: list[dict]) -> pd.DataFrame:
     Named explicitly for the same reason fetch.COINBASE_ROW is: a positional
     or guessed mapping corrupts everything downstream and looks fine.
     """
+    if not isinstance(rows, list):
+        raise FetchError("trade response must be a list")
     if not rows:
         return pd.DataFrame({c: [] for c in TRADE_COLUMNS})
+    try:
+        for row in rows:
+            identity = row["trade_id"]
+            if isinstance(identity, bool) or not 0 < int(identity) <= 2**63 - 1 or float(identity) != int(identity):
+                raise ValueError
+            for key in ("price", "size"):
+                if isinstance(row[key], bool) or not math.isfinite(float(row[key])) or float(row[key]) <= 0:
+                    raise ValueError
+            if row["side"] not in ("buy", "sell") or pd.isna(pd.Timestamp(row["time"])):
+                raise ValueError
+    except (KeyError, TypeError, ValueError, OverflowError) as exc:
+        raise FetchError("trade response has invalid identity, time, price, size or side") from exc
     df = pd.DataFrame(
         {
             # format="ISO8601" (not a fixed format string) because Coinbase
@@ -67,6 +82,8 @@ def _parse_trades(rows: list[dict]) -> pd.DataFrame:
             "side": [str(r["side"]) for r in rows],
         }
     )
+    if not df["timestamp"].ge(0).all():
+        raise FetchError("trade timestamps must be nonnegative epoch seconds")
     return df.loc[:, list(TRADE_COLUMNS)]
 
 
@@ -140,6 +157,8 @@ def fetch_trades(
     end_ts = pd.Timestamp(end, tz="UTC").timestamp()
     if end_ts <= start_ts:
         raise ValueError(f"end ({end}) must be after start ({start})")
+    if isinstance(max_trades, bool) or not isinstance(max_trades, int) or max_trades < 1 or not math.isfinite(pause) or pause < 0:
+        raise ValueError("max_trades must be a positive integer and pause finite and nonnegative")
 
     cursor = seek_trade_id(product, end_ts, pause=pause, verbose=verbose) + 1
     pages: list[pd.DataFrame] = []
@@ -164,6 +183,7 @@ def fetch_trades(
             break
         if oldest_id >= cursor:
             # No backward progress; stop rather than loop forever.
+            truncated = True
             break
         if collected >= max_trades:
             truncated = True
@@ -243,7 +263,8 @@ def default_tick_path(asset: str, start: str, end: str) -> Path:
 def main(argv: list[str] | None = None) -> int:
     """CLI entry point for the explicit tick fetch step."""
     ap = argparse.ArgumentParser(
-        description="Fetch trade ticks from Coinbase into a local CSV cache."
+        description="Fetch trade ticks from Coinbase into a local CSV cache.",
+        epilog="Example: python -m backtester.core.ticks --asset SOL --start 2026-01-01 --end 2026-01-02 --out new-ticks.csv",
     )
     ap.add_argument("--asset", default="SOL")
     ap.add_argument("--quote", default="USD")
@@ -276,7 +297,11 @@ def main(argv: list[str] | None = None) -> int:
     out.parent.mkdir(parents=True, exist_ok=True)
 
     print(f"Fetching {product} trades {args.start}..{args.end}", file=sys.stderr)
-    trades = fetch_trades(product, args.start, args.end, max_trades=args.max_trades)
+    try:
+        trades = fetch_trades(product, args.start, args.end, max_trades=args.max_trades)
+    except (ValueError, FetchError, OSError) as exc:
+        print(f"error: trade history unavailable ({type(exc).__name__}); verify the requested window and recorded venue response", file=sys.stderr)
+        return 1
 
     # A truncated frame carries `attrs`, but `to_csv` drops attrs, so on disk a
     # partial month is indistinguishable from a complete one -- and the file

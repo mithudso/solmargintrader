@@ -1,0 +1,308 @@
+{
+  "schema": "oraclebot-complete-file-review/v1",
+  "reviewer": "full_repo_health",
+  "status": "IN_PROGRESS_FULL_REPOSITORY",
+  "files": [
+    {
+      "path": "backtester/core/gridsim.py",
+      "blob_sha": "50acc265882abb65e5f299e0aa6141af4a08a03b",
+      "sha256": "c20ea5bba916301d3f9ab442c84f90cd4186c0a2df68f225faa46ff931f7bab8",
+      "lines": 945,
+      "original_lines": 932,
+      "read_evidence": "1-220,221-440,441-660,661-880,881-932; final metric/state patch reviewed; Resting order eligibility, paired-lot/FIFO attribution, adverse fills, carry solvency refusal and full runtime/cost validation. Continuation retains last observed mark and comparator units, so fresh-window metrics cannot repeat prior performance. Lifetime book/counts and order chronology remain intact.",
+      "passes": {
+        "C1": "ran: Resting order eligibility, paired-lot/FIFO attribution, adverse fills, carry solvency refusal and full runtime/cost validation. Continuation retains last observed mark and comparator units, so fresh-window metrics cannot repeat prior performance. Lifetime book/counts and order chronology remain intact.",
+        "C2": "ran: matching call signatures, return/checkpoint fields, explicit compatibility/refusal boundaries and observable result semantics",
+        "C3": "ran: deterministic prefix/full replay, legacy missing-field and mocked setup failures; no unfounded economic parameter claim",
+        "S1": "ran: injection gate held; no code executes from source/test text; environment ownership/path/symlink and secret-safe errors reviewed",
+        "S2": "ran: error propagation, subprocess failure/deadline and lock-finally release; pure simulations own no external runtime resources",
+        "S3": "ran: config domains, bar shape, checkpoint valuation and module allowlist validation inspected",
+        "S4": "ran: Python3.13 project contract, platform-specific private interpreter path, stdlib bootstrap; no optional model/service dependency",
+        "S5": "N/A: pure simulation library; owning operation boundary supplies diagnostics",
+        "P1": "ran: O(bars*rungs/lots) existing simulator behavior inspected; no new parameter searches; launch setup cached by manifest fingerprint",
+        "P2": "ran: simulator state is per invocation; marked setup directory uses exclusive lock without stale takeover",
+        "M1": "ran: explicit metric/baseline naming and fixed failure strings; no unrelated reformat",
+        "M2": "ran: canonical metrics/cost/bar validators reused; one launcher covers all seven data tools",
+        "M3": "N/A: repo-scope row separate",
+        "M4": "ran: observed-bar chronology, continuous comparator and future-only checkpoint identity claims agree with code",
+        "T1": "ran: exact accounting/refusal/CLI outcomes asserted; frozen evidence untouched",
+        "T2": "N/A: repo-scope row separate",
+        "T3": "N/A: repo-scope row separate",
+        "T4": "N/A: non-test source",
+        "M5": "N/A: library or test runner input"
+      },
+      "findings": [
+        {
+          "id": "GRID-DCA-CONTINUATION",
+          "status": "fixed and verified"
+        }
+      ]
+    },
+    {
+      "path": "backtester/core/dcasim.py",
+      "blob_sha": "df880d1cf502c8a706e358cbc33627e7b7a1f7b6",
+      "sha256": "8dc4b68ed27692e07dc830c8ca7fadb6db185e47844af99d88be0ff8742b64d3",
+      "lines": 551,
+      "original_lines": 537,
+      "read_evidence": "1-210,211-420,421-537; final metric/state patch reviewed; Base/safety/TP sequencing, same-bar buy deferral, stop-loss next-open, capital/fee limits, retained control and cumulative deal statistics. New continuation metrics use prior equity and continuous comparator units; missing valuation fields refuse.",
+      "passes": {
+        "C1": "ran: Base/safety/TP sequencing, same-bar buy deferral, stop-loss next-open, capital/fee limits, retained control and cumulative deal statistics. New continuation metrics use prior equity and continuous comparator units; missing valuation fields refuse.",
+        "C2": "ran: matching call signatures, return/checkpoint fields, explicit compatibility/refusal boundaries and observable result semantics",
+        "C3": "ran: deterministic prefix/full replay, legacy missing-field and mocked setup failures; no unfounded economic parameter claim",
+        "S1": "ran: injection gate held; no code executes from source/test text; environment ownership/path/symlink and secret-safe errors reviewed",
+        "S2": "ran: error propagation, subprocess failure/deadline and lock-finally release; pure simulations own no external runtime resources",
+        "S3": "ran: config domains, bar shape, checkpoint valuation and module allowlist validation inspected",
+        "S4": "ran: Python3.13 project contract, platform-specific private interpreter path, stdlib bootstrap; no optional model/service dependency",
+        "S5": "N/A: pure simulation library; owning operation boundary supplies diagnostics",
+        "P1": "ran: O(bars*rungs/lots) existing simulator behavior inspected; no new parameter searches; launch setup cached by manifest fingerprint",
+        "P2": "ran: simulator state is per invocation; marked setup directory uses exclusive lock without stale takeover",
+        "M1": "ran: explicit metric/baseline naming and fixed failure strings; no unrelated reformat",
+        "M2": "ran: canonical metrics/cost/bar validators reused; one launcher covers all seven data tools",
+        "M3": "N/A: repo-scope row separate",
+        "M4": "ran: observed-bar chronology, continuous comparator and future-only checkpoint identity claims agree with code",
+        "T1": "ran: exact accounting/refusal/CLI outcomes asserted; frozen evidence untouched",
+        "T2": "N/A: repo-scope row separate",
+        "T3": "N/A: repo-scope row separate",
+        "T4": "N/A: non-test source",
+        "M5": "N/A: library or test runner input"
+      },
+      "findings": [
+        {
+          "id": "GRID-DCA-CONTINUATION",
+          "status": "fixed and verified"
+        }
+      ]
+    },
+    {
+      "path": "backtester/tests/test_gridsim.py",
+      "blob_sha": "2c022126291287949dcd607596b4f737d808c62c",
+      "sha256": "e11483dc9cd1dcbd0189ddec58276d61bdda0b51fce8958544320e41b9735942",
+      "lines": 530,
+      "original_lines": 530,
+      "read_evidence": "1-220,221-440,441-530; Independent rung/cost/book arithmetic, paired exits before FIFO, no initial/same-bar fills, carry/funding loss cases, inventory and baseline assertions. Small mutable fixtures stay isolated; no strategy search.",
+      "passes": {
+        "C1": "ran: Independent rung/cost/book arithmetic, paired exits before FIFO, no initial/same-bar fills, carry/funding loss cases, inventory and baseline assertions. Small mutable fixtures stay isolated; no strategy search.",
+        "C2": "ran: matching call signatures, return/checkpoint fields, explicit compatibility/refusal boundaries and observable result semantics",
+        "C3": "ran: deterministic prefix/full replay, legacy missing-field and mocked setup failures; no unfounded economic parameter claim",
+        "S1": "ran: injection gate held; no code executes from source/test text; environment ownership/path/symlink and secret-safe errors reviewed",
+        "S2": "ran: error propagation, subprocess failure/deadline and lock-finally release; pure simulations own no external runtime resources",
+        "S3": "ran: config domains, bar shape, checkpoint valuation and module allowlist validation inspected",
+        "S4": "ran: Python3.13 project contract, platform-specific private interpreter path, stdlib bootstrap; no optional model/service dependency",
+        "S5": "ran: assertion outcomes and error/canary effects inspected",
+        "P1": "ran: O(bars*rungs/lots) existing simulator behavior inspected; no new parameter searches; launch setup cached by manifest fingerprint",
+        "P2": "ran: simulator state is per invocation; marked setup directory uses exclusive lock without stale takeover",
+        "M1": "ran: explicit metric/baseline naming and fixed failure strings; no unrelated reformat",
+        "M2": "ran: canonical metrics/cost/bar validators reused; one launcher covers all seven data tools",
+        "M3": "N/A: repo-scope row separate",
+        "M4": "ran: observed-bar chronology, continuous comparator and future-only checkpoint identity claims agree with code",
+        "T1": "ran: exact accounting/refusal/CLI outcomes asserted; frozen evidence untouched",
+        "T2": "N/A: repo-scope row separate",
+        "T3": "N/A: repo-scope row separate",
+        "T4": "ran: small deterministic fixtures and temporary mock bootstrap; no sleeps or strategy parameter search added",
+        "M5": "N/A: library or test runner input"
+      },
+      "findings": []
+    },
+    {
+      "path": "backtester/tests/test_dcasim.py",
+      "blob_sha": "acedf5b8200c6dc4368134619614f155f0f2adbc",
+      "sha256": "d4a34f55440973633b1e0de006a4b69b4e3e57e93d691ec47ed3eadfbdd99759",
+      "lines": 201,
+      "original_lines": 201,
+      "read_evidence": "1-201; Safety-depth/size known answers, next-open fills/stops, no same-bar safety/TP invention, future-prefix invariance, unfundable skips and source/cost summaries. No live API.",
+      "passes": {
+        "C1": "ran: Safety-depth/size known answers, next-open fills/stops, no same-bar safety/TP invention, future-prefix invariance, unfundable skips and source/cost summaries. No live API.",
+        "C2": "ran: matching call signatures, return/checkpoint fields, explicit compatibility/refusal boundaries and observable result semantics",
+        "C3": "ran: deterministic prefix/full replay, legacy missing-field and mocked setup failures; no unfounded economic parameter claim",
+        "S1": "ran: injection gate held; no code executes from source/test text; environment ownership/path/symlink and secret-safe errors reviewed",
+        "S2": "ran: error propagation, subprocess failure/deadline and lock-finally release; pure simulations own no external runtime resources",
+        "S3": "ran: config domains, bar shape, checkpoint valuation and module allowlist validation inspected",
+        "S4": "ran: Python3.13 project contract, platform-specific private interpreter path, stdlib bootstrap; no optional model/service dependency",
+        "S5": "ran: assertion outcomes and error/canary effects inspected",
+        "P1": "ran: O(bars*rungs/lots) existing simulator behavior inspected; no new parameter searches; launch setup cached by manifest fingerprint",
+        "P2": "ran: simulator state is per invocation; marked setup directory uses exclusive lock without stale takeover",
+        "M1": "ran: explicit metric/baseline naming and fixed failure strings; no unrelated reformat",
+        "M2": "ran: canonical metrics/cost/bar validators reused; one launcher covers all seven data tools",
+        "M3": "N/A: repo-scope row separate",
+        "M4": "ran: observed-bar chronology, continuous comparator and future-only checkpoint identity claims agree with code",
+        "T1": "ran: exact accounting/refusal/CLI outcomes asserted; frozen evidence untouched",
+        "T2": "N/A: repo-scope row separate",
+        "T3": "N/A: repo-scope row separate",
+        "T4": "ran: small deterministic fixtures and temporary mock bootstrap; no sleeps or strategy parameter search added",
+        "M5": "N/A: library or test runner input"
+      },
+      "findings": []
+    },
+    {
+      "path": "backtester/tests/test_open_prefix.py",
+      "blob_sha": "f3b31da89ffae6efe46b2d7bcf3a2dff7886a6c4",
+      "sha256": "dc9ec9ef8f08965a85a01fed147e038825ac6114826b11fcedb3e7d815f1fccd",
+      "lines": 80,
+      "original_lines": 80,
+      "read_evidence": "1-80; Open account/pending exposure and whole-prefix parity; price-only volume refusal and deliberate future access rejection. Existing extreme one-minute synthetic annualization warning is preserved/disclosed.",
+      "passes": {
+        "C1": "ran: Open account/pending exposure and whole-prefix parity; price-only volume refusal and deliberate future access rejection. Existing extreme one-minute synthetic annualization warning is preserved/disclosed.",
+        "C2": "ran: matching call signatures, return/checkpoint fields, explicit compatibility/refusal boundaries and observable result semantics",
+        "C3": "ran: deterministic prefix/full replay, legacy missing-field and mocked setup failures; no unfounded economic parameter claim",
+        "S1": "ran: injection gate held; no code executes from source/test text; environment ownership/path/symlink and secret-safe errors reviewed",
+        "S2": "ran: error propagation, subprocess failure/deadline and lock-finally release; pure simulations own no external runtime resources",
+        "S3": "ran: config domains, bar shape, checkpoint valuation and module allowlist validation inspected",
+        "S4": "ran: Python3.13 project contract, platform-specific private interpreter path, stdlib bootstrap; no optional model/service dependency",
+        "S5": "ran: assertion outcomes and error/canary effects inspected",
+        "P1": "ran: O(bars*rungs/lots) existing simulator behavior inspected; no new parameter searches; launch setup cached by manifest fingerprint",
+        "P2": "ran: simulator state is per invocation; marked setup directory uses exclusive lock without stale takeover",
+        "M1": "ran: explicit metric/baseline naming and fixed failure strings; no unrelated reformat",
+        "M2": "ran: canonical metrics/cost/bar validators reused; one launcher covers all seven data tools",
+        "M3": "N/A: repo-scope row separate",
+        "M4": "ran: observed-bar chronology, continuous comparator and future-only checkpoint identity claims agree with code",
+        "T1": "ran: exact accounting/refusal/CLI outcomes asserted; frozen evidence untouched",
+        "T2": "N/A: repo-scope row separate",
+        "T3": "N/A: repo-scope row separate",
+        "T4": "ran: small deterministic fixtures and temporary mock bootstrap; no sleeps or strategy parameter search added",
+        "M5": "N/A: library or test runner input"
+      },
+      "findings": []
+    },
+    {
+      "path": "backtester/tests/test_continuation_metrics_audit.py",
+      "blob_sha": "e387238c6fd05500947e9ca010661c163a50f1a6",
+      "sha256": "2ab566bf33353919093a6415a98afe4d8e65f607470f83c0214c7bf6026c7295",
+      "lines": 143,
+      "original_lines": null,
+      "read_evidence": "Original101lines fully read earlier; all authored continuation additions and full final file reviewed; Spot/perp/Grid/DCA flat new chunks cannot repeat historical returns/costs. Grid/DCA comparator curve matches uninterrupted replay, retained book/control/totals match. Missing new checkpoint valuation fields refuse; independent flat fee arithmetic retained.",
+      "passes": {
+        "C1": "ran: Spot/perp/Grid/DCA flat new chunks cannot repeat historical returns/costs. Grid/DCA comparator curve matches uninterrupted replay, retained book/control/totals match. Missing new checkpoint valuation fields refuse; independent flat fee arithmetic retained.",
+        "C2": "ran: matching call signatures, return/checkpoint fields, explicit compatibility/refusal boundaries and observable result semantics",
+        "C3": "ran: deterministic prefix/full replay, legacy missing-field and mocked setup failures; no unfounded economic parameter claim",
+        "S1": "ran: injection gate held; no code executes from source/test text; environment ownership/path/symlink and secret-safe errors reviewed",
+        "S2": "ran: error propagation, subprocess failure/deadline and lock-finally release; pure simulations own no external runtime resources",
+        "S3": "ran: config domains, bar shape, checkpoint valuation and module allowlist validation inspected",
+        "S4": "ran: Python3.13 project contract, platform-specific private interpreter path, stdlib bootstrap; no optional model/service dependency",
+        "S5": "ran: assertion outcomes and error/canary effects inspected",
+        "P1": "ran: O(bars*rungs/lots) existing simulator behavior inspected; no new parameter searches; launch setup cached by manifest fingerprint",
+        "P2": "ran: simulator state is per invocation; marked setup directory uses exclusive lock without stale takeover",
+        "M1": "ran: explicit metric/baseline naming and fixed failure strings; no unrelated reformat",
+        "M2": "ran: canonical metrics/cost/bar validators reused; one launcher covers all seven data tools",
+        "M3": "N/A: repo-scope row separate",
+        "M4": "ran: observed-bar chronology, continuous comparator and future-only checkpoint identity claims agree with code",
+        "T1": "ran: exact accounting/refusal/CLI outcomes asserted; frozen evidence untouched",
+        "T2": "N/A: repo-scope row separate",
+        "T3": "N/A: repo-scope row separate",
+        "T4": "ran: small deterministic fixtures and temporary mock bootstrap; no sleeps or strategy parameter search added",
+        "M5": "N/A: library or test runner input"
+      },
+      "findings": [
+        {
+          "id": "GRID-DCA-CONTINUATION",
+          "status": "fixed and verified"
+        }
+      ]
+    },
+    {
+      "path": "backtester/run.py",
+      "blob_sha": "17b82934ae1065922de147f4ac7cfb424af4a569",
+      "sha256": "04ea56db4fcb5f1aa6fc87e11e5fc0ec90c2e7af1d2dcb44617fdc494f376d97",
+      "lines": 132,
+      "original_lines": null,
+      "read_evidence": "Entire new file authored and reread; Stdlib entrypoint with allowlisted modules and no-argument help before setup. Marked private environment, symlink/unowned refusal, exclusive setup lease, manifest fingerprint, stdlib venv and private installers only. Fixed safe prerequisites exit3; module parser status propagated.",
+      "passes": {
+        "C1": "ran: Stdlib entrypoint with allowlisted modules and no-argument help before setup. Marked private environment, symlink/unowned refusal, exclusive setup lease, manifest fingerprint, stdlib venv and private installers only. Fixed safe prerequisites exit3; module parser status propagated.",
+        "C2": "ran: matching call signatures, return/checkpoint fields, explicit compatibility/refusal boundaries and observable result semantics",
+        "C3": "ran: deterministic prefix/full replay, legacy missing-field and mocked setup failures; no unfounded economic parameter claim",
+        "S1": "ran: injection gate held; no code executes from source/test text; environment ownership/path/symlink and secret-safe errors reviewed",
+        "S2": "ran: error propagation, subprocess failure/deadline and lock-finally release; pure simulations own no external runtime resources",
+        "S3": "ran: config domains, bar shape, checkpoint valuation and module allowlist validation inspected",
+        "S4": "ran: Python3.13 project contract, platform-specific private interpreter path, stdlib bootstrap; no optional model/service dependency",
+        "S5": "ran: launcher named operation/fixed failure exit, pure simulation errors propagate to owning adapters; no raw private subprocess output",
+        "P1": "ran: O(bars*rungs/lots) existing simulator behavior inspected; no new parameter searches; launch setup cached by manifest fingerprint",
+        "P2": "ran: simulator state is per invocation; marked setup directory uses exclusive lock without stale takeover",
+        "M1": "ran: explicit metric/baseline naming and fixed failure strings; no unrelated reformat",
+        "M2": "ran: canonical metrics/cost/bar validators reused; one launcher covers all seven data tools",
+        "M3": "N/A: repo-scope row separate",
+        "M4": "ran: observed-bar chronology, continuous comparator and future-only checkpoint identity claims agree with code",
+        "T1": "ran: exact accounting/refusal/CLI outcomes asserted; frozen evidence untouched",
+        "T2": "N/A: repo-scope row separate",
+        "T3": "N/A: repo-scope row separate",
+        "T4": "N/A: non-test source",
+        "M5": "ran: actual private-env seven tool --help0, invalid flag2; mocked no-uv fallback and missing-module3; no services/fetches"
+      },
+      "findings": [
+        {
+          "id": "M5-PRIVATE-LAUNCHER",
+          "status": "fixed and verified"
+        }
+      ]
+    },
+    {
+      "path": "backtester/tests/test_tool_launcher.py",
+      "blob_sha": "8f6956180f28d66942674df11438750c3777521f",
+      "sha256": "1531997f7c13dfe89dbadc623f36b916915ed55b773a9d7c97400d39def9c5ba",
+      "lines": 118,
+      "original_lines": null,
+      "read_evidence": "Entire new file authored and reread; No-argument/help/invalid tools cannot provision, selected dispatch preserves args/status, private pip fallback and reuse, missing package guidance, foreign ownership/lock/symlink refusal. All provisioning mocked; actual help acceptance independently bound separately.",
+      "passes": {
+        "C1": "ran: No-argument/help/invalid tools cannot provision, selected dispatch preserves args/status, private pip fallback and reuse, missing package guidance, foreign ownership/lock/symlink refusal. All provisioning mocked; actual help acceptance independently bound separately.",
+        "C2": "ran: matching call signatures, return/checkpoint fields, explicit compatibility/refusal boundaries and observable result semantics",
+        "C3": "ran: deterministic prefix/full replay, legacy missing-field and mocked setup failures; no unfounded economic parameter claim",
+        "S1": "ran: injection gate held; no code executes from source/test text; environment ownership/path/symlink and secret-safe errors reviewed",
+        "S2": "ran: error propagation, subprocess failure/deadline and lock-finally release; pure simulations own no external runtime resources",
+        "S3": "ran: config domains, bar shape, checkpoint valuation and module allowlist validation inspected",
+        "S4": "ran: Python3.13 project contract, platform-specific private interpreter path, stdlib bootstrap; no optional model/service dependency",
+        "S5": "ran: assertion outcomes and error/canary effects inspected",
+        "P1": "ran: O(bars*rungs/lots) existing simulator behavior inspected; no new parameter searches; launch setup cached by manifest fingerprint",
+        "P2": "ran: simulator state is per invocation; marked setup directory uses exclusive lock without stale takeover",
+        "M1": "ran: explicit metric/baseline naming and fixed failure strings; no unrelated reformat",
+        "M2": "ran: canonical metrics/cost/bar validators reused; one launcher covers all seven data tools",
+        "M3": "N/A: repo-scope row separate",
+        "M4": "ran: observed-bar chronology, continuous comparator and future-only checkpoint identity claims agree with code",
+        "T1": "ran: exact accounting/refusal/CLI outcomes asserted; frozen evidence untouched",
+        "T2": "N/A: repo-scope row separate",
+        "T3": "N/A: repo-scope row separate",
+        "T4": "ran: small deterministic fixtures and temporary mock bootstrap; no sleeps or strategy parameter search added",
+        "M5": "N/A: library or test runner input"
+      },
+      "findings": [
+        {
+          "id": "M5-PRIVATE-LAUNCHER",
+          "status": "fixed and verified"
+        }
+      ]
+    }
+  ],
+  "checks": [
+    {
+      "command": ".venv/bin/python -m unittest backtester.tests.test_continuation_metrics_audit backtester.tests.test_dcasim backtester.tests.test_gridsim backtester.tests.test_open_prefix",
+      "exit_code": 0,
+      "tests": 60,
+      "log": "/tmp/oraclebot-grid-dca-continuation-green.log"
+    },
+    {
+      "command": "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=botmanager/src:. .venv/bin/python -m unittest discover -s botmanager/tests -t botmanager -p test_strategy_parity.py",
+      "exit_code": 0,
+      "tests": 3,
+      "log": "/tmp/oraclebot-manager-grid-dca-parity-final.log"
+    },
+    {
+      "command": ".venv/bin/python -m unittest backtester.tests.test_tool_launcher",
+      "exit_code": 0,
+      "tests": 8,
+      "log": "/tmp/oraclebot-tool-launcher-final.log"
+    },
+    {
+      "command": "uvx ruff check --select F,E9 backtester/run.py backtester/tests/test_tool_launcher.py backtester/core/gridsim.py backtester/core/dcasim.py backtester/tests/test_continuation_metrics_audit.py",
+      "exit_code": 0
+    }
+  ],
+  "red_logs": [
+    "/tmp/oraclebot-grid-dca-continuation-red.log",
+    "/tmp/oraclebot-backtester-missing-deps-red.log"
+  ],
+  "snapshots": "/Users/mitch/.claude/skill-consolidation/backups/oraclebot-grid-dca-continuation-20261112",
+  "canonical_launcher_acceptance": ".cdo/reviews-2026-11-12/tool-launcher-live-help.json",
+  "limitations": [
+    "All tests are synthetic/mocked or help only; no study/provider/service/order/owner state was run.",
+    "Exact old checkpoint source identities stay frozen. Newly required valuation fields refuse old unbound checkpoints.",
+    "One existing overflow warning in annualized-return calculation for an extreme one-minute test remains; no failure exit or profitability conclusion.",
+    "No whole-repository clean verdict; full source census review continues."
+  ]
+}

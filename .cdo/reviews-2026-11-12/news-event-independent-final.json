@@ -1,0 +1,57 @@
+{
+  "reviewer": "root",
+  "reviewed_at": "2026-11-12T21:34:29.314215+00:00",
+  "scope": "independent complete authored diff review against immutable4ab/61b sources; not a new research run",
+  "source_sha256": {
+    "research/news_event_study.py": "ae059d145603e89798af535f96ca023000aec7cf58db23dec00daa6e43cf10f6",
+    "research/news_event_report.py": "6d5498e352cb1d2dfbcb910174e8bcc88a1030ab448da0c4fb62a4046eea9363",
+    "research/tests/test_news_event_study.py": "e996cb04fd485d2bdb14270ca1a9e17176a0b10cd8b36d919bdc844d7cd1e87e"
+  },
+  "protected_artifacts_unchanged": [
+    {
+      "path": "research/NEWS-EVENT-STUDY.md",
+      "sha256": "d99f8620a58e8615574779b27ae944c8ad2cc5fdba27291a0410f70ab3ca5e59"
+    },
+    {
+      "path": "research/results/news_events_20261112_eligibility.csv",
+      "sha256": "e21d2f18433a0aa4295db1038fd790c270146ada98923b77aee1581c14372574"
+    },
+    {
+      "path": "research/results/news_events_20261112_event_returns.csv",
+      "sha256": "205031bb21fd6d60cbfb761c8f6b13ce8bd5fa5ef344dc3bc40d9129349183b9"
+    },
+    {
+      "path": "research/results/news_events_20261112_latency5_paired.csv",
+      "sha256": "fd4e0212d2c79473b1c5e38dadf9d55e38c12ca1339f4eac6f6a30b670f463cc"
+    },
+    {
+      "path": "research/results/news_events_20261112_latency5_summary.csv",
+      "sha256": "00211ca3c6c4be587b9fc51fca79641607ff837ec87e4a6023318d69e1be6346"
+    },
+    {
+      "path": "research/results/news_events_20261112_manifest.json",
+      "sha256": "8cbadbce840ecd03078f011d60c62649848cb9873301f4074c73d32d158c8d65"
+    },
+    {
+      "path": "research/results/news_events_20261112_reactions.png",
+      "sha256": "d3942a1ffab39f35a8f08cbb2ee92f6c29c0ef54dc5bc4fa263ce9ce54d8d87f"
+    },
+    {
+      "path": "research/results/news_events_20261112_summary.csv",
+      "sha256": "a1beb37fbbf8c45215a5cbd964fc5e197a7574e9bb00e5fe08dcf4ee2b896db4"
+    }
+  ],
+  "protected_count": 8,
+  "verdict": "PASS_BOUNDED_UTC_AND_CLI_PREREQUISITE_DELTAS",
+  "claims": [
+    "Full aware epoch uses existing Unix-anchored seven-day buckets, preserving original UTC-day anchor while merging equal offset instants.",
+    "Lazy NumPy imports preserve library calculations; stdlib argparse precedes dependency bootstrap.",
+    "Plotting prerequisites are admitted before report input/output mutation; missing module names and bootstrap failures redact dependency payloads.",
+    "Private environment uses the existing owned helper and supported NumPy/Matplotlib requirements; tests mock setup/reexec, no actual install.",
+    "Author22GREEN and20RED results are retained without claiming all22cases failed initially; this reviewer did not rerun the study or the functional suite."
+  ],
+  "limits": [
+    "This is a source/delta and immutable-artifact read verification; no event study, report render, bootstrap, network or signal was run by this reviewer.",
+    "Actual provisioned private dependency environment remains unexecuted; inherited installed owner cohorts are not qualified."
+  ]
+}

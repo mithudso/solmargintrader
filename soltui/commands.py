@@ -30,6 +30,7 @@ from __future__ import annotations
 
 import dataclasses
 import json
+import logging
 import math
 import os
 import subprocess
@@ -449,7 +450,15 @@ def coerce_pairs(name: str, pairs: dict[str, str]) -> dict[str, Any]:
 
 # -- dispatch ------------------------------------------------------------------------------------
 
-_DOMAIN_ERRORS = (ValueError, RuntimeError, OSError)
+_DOMAIN_ERRORS = (ValueError, RuntimeError)
+_LOGGER = logging.getLogger(__name__)
+
+
+def _unexpected_failure(name: str, error: Exception) -> dict[str, Any]:
+    """Report fixed diagnostics; exception text may contain provider credentials."""
+    _LOGGER.warning("command failed", extra={"operation": name, "phase": "failure",
+                                             "error_kind": type(error).__name__})
+    return error_envelope(name, "failed", f"Operation unavailable ({type(error).__name__}); retry after checking prerequisites")
 
 
 def describe_commands() -> list[dict[str, Any]]:
@@ -478,7 +487,7 @@ def _execute(name: str, params: Any, ctx: Context | None) -> dict[str, Any]:
     except _DOMAIN_ERRORS as exc:
         return error_envelope(name, "failed", str(exc))
     except Exception as exc:  # noqa: BLE001 - a surface must always get an envelope back
-        return error_envelope(name, "failed", f"{type(exc).__name__}: {exc}")
+        return _unexpected_failure(name, exc)
 
 
 def dispatch(name: str, params: dict[str, Any] | None = None, surface: str = "api",
@@ -1845,13 +1854,20 @@ def queue_backtest(ctx: Context, p: dict[str, Any]) -> Any:
     asset = ctx.settings.asset
     if not names:
         return {"started": False, "scope": scope, "strategies": [], "jobs": 0,
+                "candidates": bgqueue.candidate_census([], []),
                 "message": "nothing to backtest: every strategy already has a recorded run"
                 + (" and enough testing" if scope == "undertested" else "")}
-    jobs = bgqueue.build_queue(asset, max_tier=max_tier, strategies=names)
+    exclusions: list[bgqueue.CandidateExclusion] = []
+    jobs = bgqueue.build_queue(asset, max_tier=max_tier, strategies=names,
+                               exclusions=exclusions)
+    candidates = bgqueue.candidate_census(jobs, exclusions)
+    if exclusions:
+        note += f"; {len(exclusions)} invalid candidate(s) excluded before evaluation"
     todo = bgqueue.pending(jobs, bgqueue.completed_ids(bgqueue.read_results()))
     if not todo:
         return {"started": False, "scope": scope, "strategies": names, "jobs": 0,
-                "message": f"already tested: all {len(jobs)} configuration(s) have recorded results"}
+                "candidates": candidates,
+                "message": f"already tested: all {len(jobs)} configuration(s) have recorded results{note}"}
     try:
         bgcontrol.start(asset, max_tier=max_tier, strategies=names)
     except RuntimeError as exc:
@@ -1860,6 +1876,7 @@ def queue_backtest(ctx: Context, p: dict[str, Any]) -> Any:
     except Exception as exc:  # noqa: BLE001
         raise CommandError("failed", f"{type(exc).__name__}: {exc}") from exc
     return {"started": True, "scope": scope, "strategies": names, "jobs": len(todo), "asset": asset,
+            "candidates": candidates,
             "message": f"started: {len(todo)} configuration(s) across {len(names)} strategy(ies){note}, "
                        "results appear in the table as they finish"}
 

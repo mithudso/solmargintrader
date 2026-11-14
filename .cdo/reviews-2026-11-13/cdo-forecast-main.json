@@ -1,0 +1,328 @@
+{
+  "schema_version": 1,
+  "task_owner": "/root/cdo_forecast_main",
+  "parent_task": "TASK-1540",
+  "created_at": "2026-11-13T04:41:02.380536+00:00",
+  "mode": [
+    "full_per_file",
+    "read_only",
+    "static",
+    "no_verify",
+    "no_empirical"
+  ],
+  "skill": {
+    "path": "/Users/mitch/.agents/skills/code-deep-optimizer/SKILL.md",
+    "version": "1.17.1"
+  },
+  "scope": [
+    "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/ecosystem/forecast.py"
+  ],
+  "source": {
+    "sha256": "331485bbeca51a31c014b76d6950cac07037ca6229b75e34775040711d03ead6",
+    "git_blob_computed": "990bf70d2f00abae955445f043370cd6e618bfcc",
+    "bytes": 27525,
+    "lines": 674,
+    "unchanged_at_receipt": true
+  },
+  "coverage": {
+    "bounded_ranges": [
+      [
+        1,
+        175
+      ],
+      [
+        176,
+        350
+      ],
+      [
+        351,
+        525
+      ],
+      [
+        526,
+        674
+      ]
+    ],
+    "complete": true,
+    "truncated_source_reads": false,
+    "hash_is_not_coverage": true
+  },
+  "injection_gate": {
+    "ran_before_review": true,
+    "status": "pass",
+    "reviewer_directives_found": [],
+    "halted": false
+  },
+  "activated_skills": [
+    "lang-python",
+    "lang-python (references/python-logging-observability.md)",
+    "software-engineering-patterns (references/code-reviewer.md + references/coding-standards.md)",
+    "security-review (references/security-reviewer.md)"
+  ],
+  "memory_central": {
+    "lessons_consulted": 2,
+    "conventions_consulted": 10,
+    "regression_checks_fired": 0,
+    "note": "solmargintrader inherited project rows were read as data; no historic row determined a finding. No memory writes."
+  },
+  "passes": [
+    {
+      "id": "C1",
+      "state": "complete",
+      "assessment": "Checked control flow, arithmetic domains, completed-bar construction, scheduling, calls and settlement, retained status.",
+      "findings": [
+        "forecast-F01",
+        "forecast-F02"
+      ]
+    },
+    {
+      "id": "C2",
+      "state": "complete",
+      "assessment": "Checked local signatures, return shapes, horizon/strategy validation, SQL row use, frame policy/scope/instrument/horizon identity; external definitions remain root context.",
+      "findings": []
+    },
+    {
+      "id": "C3",
+      "state": "complete",
+      "assessment": "Constructed static underflow and double-window age counterexamples; checked invalid numeric values, empty pairs, missing outcomes, overflow and zero distance.",
+      "findings": [
+        "forecast-F01",
+        "forecast-F02"
+      ]
+    },
+    {
+      "id": "S1",
+      "state": "complete",
+      "assessment": "Injection gate passed. No reviewer-directed instructions, dynamic evaluation, network calls, secrets, or non-parameterized user SQL found. Checked private paths, symlink barriers and trace digest.",
+      "findings": []
+    },
+    {
+      "id": "S2",
+      "state": "complete",
+      "assessment": "Checked context-managed connections, gzip boundaries, I/O and JSON catches, timed SQLite connection, owner lock closure, stop lifecycle and fail-closed reporting.",
+      "findings": [
+        "forecast-F01",
+        "forecast-F03"
+      ]
+    },
+    {
+      "id": "S3",
+      "state": "complete",
+      "assessment": "Checked exact instrument handling, integer direction and horizon checks, finite quote validation, timestamp ordering, input byte caps and trace-id validation.",
+      "findings": [
+        "forecast-F01",
+        "forecast-F02"
+      ]
+    },
+    {
+      "id": "S4",
+      "state": "complete",
+      "assessment": "Checked declared macOS/POSIX fcntl and signal use, Python UTC/stdlib use, absolute file URI paths. No supported-platform incompatibility established.",
+      "findings": []
+    },
+    {
+      "id": "S5",
+      "state": "complete",
+      "assessment": "Checked critical I/O error and state transition visibility. Routine recorder failures have no cause-specific log or diagnostic state.",
+      "findings": [
+        "forecast-F03"
+      ]
+    },
+    {
+      "id": "P1",
+      "state": "complete",
+      "assessment": "Checked bounded recorder read/decode sizes, 3600-second-window storage logic, 300-bar contiguous view, 120 move pairs/traces, per-strategy 110-call retention and SQL indexes. No measured performance claim.",
+      "findings": []
+    },
+    {
+      "id": "P2",
+      "state": "complete",
+      "assessment": "Checked owner flock, try/finally fd close, single worker loop, per-connection SQLite transactions, idempotent call keys and serialized writes. No proven additional Medium race.",
+      "findings": []
+    },
+    {
+      "id": "M1",
+      "state": "complete",
+      "assessment": "Checked names, comments, local constants and the long evaluate flow. No objective Medium maintainability issue established without changing model or owner policy.",
+      "findings": []
+    },
+    {
+      "id": "M2",
+      "state": "complete",
+      "assessment": "Checked within-file repetition and existing stdlib reuse. No demonstrated Medium duplicate implementation; cross-file duplication belongs to root.",
+      "findings": []
+    },
+    {
+      "id": "M3",
+      "state": "na",
+      "assessment": "Repo-scope architecture and centralized configuration owned by root.",
+      "findings": []
+    },
+    {
+      "id": "M4",
+      "state": "complete",
+      "assessment": "Checked source docstrings and limitations against projection method, score meaning, gzip-member behavior, no-orders boundary and retained status. No additional Medium documentation contradiction.",
+      "findings": []
+    },
+    {
+      "id": "T1",
+      "state": "complete_static_source_review",
+      "assessment": "Reviewed risky branch behavior and supplied regression sketches for numeric/freshness/logging findings. Existing tests, numeric coverage and test execution are not attested by this one-file source audit; root owns them.",
+      "findings": [
+        "forecast-F01",
+        "forecast-F02",
+        "forecast-F03"
+      ]
+    },
+    {
+      "id": "T2",
+      "state": "na",
+      "assessment": "Repo-scope dependencies and supply chain owned by root.",
+      "findings": []
+    },
+    {
+      "id": "T3",
+      "state": "na",
+      "assessment": "Repo-scope tooling owned by root.",
+      "findings": []
+    },
+    {
+      "id": "T4",
+      "state": "na",
+      "assessment": "Non-test source file.",
+      "findings": []
+    },
+    {
+      "id": "M5",
+      "state": "complete_static_entrypoint_review",
+      "assessment": "Runnable argparse main exists. Required --home produces usage on omission; --status uses a structured result/error, signals request graceful stop, imports are stdlib and project packages. Environment/install/preflight acceptance is not executed or attested here.",
+      "findings": []
+    }
+  ],
+  "counts": {
+    "fixed_passes_assessed": 18,
+    "fixed_passes_active": 14,
+    "fixed_passes_na": 4,
+    "conditional_M5_active": true,
+    "critical": 0,
+    "high": 0,
+    "medium": 3
+  },
+  "findings": [
+    {
+      "id": "forecast-F01",
+      "passes": [
+        "C1",
+        "C3",
+        "S2",
+        "S3",
+        "T1"
+      ],
+      "severity": "Medium",
+      "file": "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/ecosystem/forecast.py",
+      "line": 100,
+      "related_lines": [
+        93,
+        95,
+        147,
+        150,
+        256,
+        267,
+        322
+      ],
+      "title": "A valid positive quote can underflow to a zero midpoint and terminate evaluation",
+      "evidence": "snapshot accepts bid=ask=5e-324 as positive finite floats, but bid / 2 + ask / 2 evaluates to zero. Bars retains that price. A horizon pair using that sample reaches math.log(0) in evaluate without a catch.",
+      "impact": "A malformed numeric source quote can stop the continuous paper forecast worker and leave retained output. This does not submit orders.",
+      "fix": "Validate the computed midpoint as finite and strictly positive before admitting it, or use a stable midpoint calculation with the same positive/finite postcondition. Keep the current projection formula and policies.",
+      "counterexample_sketch": "With now=t=observed=100 and q[SOL-USD]=[5e-324,5e-324,0,0,0,100], require snapshot to emit no zero-price quote. A warmed Worker must survive this input without persisting it.",
+      "verification": "Static arithmetic/control-flow counterexample; no test executed by this agent. Root owns the regression test."
+    },
+    {
+      "id": "forecast-F02",
+      "passes": [
+        "C1",
+        "C3",
+        "S3",
+        "T1"
+      ],
+      "severity": "Medium",
+      "file": "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/ecosystem/forecast.py",
+      "line": 95,
+      "related_lines": [
+        78,
+        97,
+        100,
+        267,
+        315,
+        338,
+        388,
+        389,
+        390,
+        562,
+        563,
+        568
+      ],
+      "title": "Two independent freshness windows admit observations twice as old as MAX_AGE",
+      "evidence": "For now=100, raw.t=85, and quote.observed=70, both now-stamp<=15 and stamp-observed<=15 hold. snapshot therefore admits an observation 30 seconds old. report separately rejects observed age above15.",
+      "impact": "The immediate old frame is correctly retained, so this is not a proven falsely fresh display. However a warmed Worker still inserts the old midpoint into Bars and issues calls at100 with target110 against an entry observed at70. A timely observation at110 can then credit an old-entry comparison as a prospective10-second hit or miss, affecting later genuinely fresh rankings.",
+      "fix": "Also enforce 0 <= now-observed <= MAX_AGE before admitting the quote. Bootstrap continues to pass stamp as now, so its historical per-record freshness semantics remain unchanged. Consider the same absolute-age invariant at issuance if evaluation can be delayed.",
+      "counterexample_sketch": "Require snapshot to reject now=100,t=85,observed=70. With warmed bars, ensure rejected input creates no calls; a later valid observation recovers normally. Retain existing frame rather than erase it.",
+      "verification": "Static value and control-flow trace only; no tests executed."
+    },
+    {
+      "id": "forecast-F03",
+      "passes": [
+        "S2",
+        "S5",
+        "T1"
+      ],
+      "severity": "Medium",
+      "file": "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/ecosystem/forecast.py",
+      "line": 264,
+      "related_lines": [
+        260,
+        261,
+        262,
+        263,
+        265,
+        577,
+        641,
+        642
+      ],
+      "title": "Recorder read and decode failures have no actionable diagnostic",
+      "evidence": "sample catches OSError and ValueError and assigns quotes={}, and oversized input takes the same empty path. There is no logger or diagnostic state in this file. run continues to loop. report exposes only generic awaiting/retained reasons.",
+      "impact": "A missing, permission-denied, malformed, or oversized latest.json leaves the worker running with retained forecasts while concealing the cause needed to repair the feed. This is an observability gap, not an order-safety issue.",
+      "fix": "Emit sanitized reason-coded, rate-limited or transition-only warnings for read/decode/size failures and a recovery event. Preserve fail-closed quote rejection and retained output. Do not log raw recorder bodies, prices payloads, or exception text that could expose source content.",
+      "counterexample_sketch": "Corrupt latest.json and separately deny/open-fail the source; verify one bounded safe diagnostic per transition and recovery when valid data returns, with no raw input in emitted messages.",
+      "verification": "Static catch/control-flow review only. Existing log assertion coverage is root-owned and not attested here."
+    }
+  ],
+  "arithmetic_invariants": {
+    "midpoint": "Only identified gap: accepted positive inputs can yield zero midpoint.",
+    "distance": "With positive finite stored samples, log differences and their median are finite.",
+    "projection": "exp OverflowError is caught; nonfinite or nonpositive projected values are rejected.",
+    "scores": "resolved is checked before division; hit values are created as0/1 and query limits score count."
+  },
+  "verification": {
+    "executed": false,
+    "reason": "Read-only static child assignment explicitly prohibits tests, services, installs, network, inference and Git mutations. Root owns runtime/test gates.",
+    "loaded_state_credit": false,
+    "prior_cdo_credit": false
+  },
+  "diff": null,
+  "snapshot_rollback": "Not applicable: target unchanged. Only this receipt is written.",
+  "blind_reaudit": "Root-owned after fixes; not a CLEAN claim.",
+  "status": "STATIC_REVIEW_COMPLETE_WITH_FINDINGS",
+  "not_a_repo_convergence_exit": true,
+  "limitations": [
+    "Exactly one production source file audited.",
+    "No independent existing-test coverage attestation.",
+    "No external API documentation fetched because network prohibited.",
+    "No repo changes, test runs, Git mutations, installs, services, network, inference, or child agents."
+  ],
+  "root_next_steps": [
+    "Triage the three concrete findings.",
+    "Write and run canonical regressions under the root guard before minimal fixes.",
+    "Re-audit changed source, run root verification and independent loaded-state gate, then complete delivery."
+  ]
+}

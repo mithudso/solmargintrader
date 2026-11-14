@@ -17,6 +17,7 @@ from textual.widgets import OptionList, Static, TabbedContent, TabPane
 from soltui import shell
 from soltui.commands import COMMANDS
 from soltui.config import Settings
+from soltui.tests.test_tui import offline_console_reads
 from soltui.tui import SolTuiApp
 
 SIZE = (170, 50)
@@ -27,6 +28,38 @@ def ok(result):
 
 
 class PureBuilderTests(unittest.TestCase):
+    def test_nonfinite_numeric_inputs_do_not_crash_or_claim_valid_figures(self) -> None:
+        for value in (float("inf"), float("-inf"), float("nan"), True, 10**1000):
+            with self.subTest(value=type(value).__name__):
+                hero = shell.signal_hero({"call": "UP", "composite": value}).plain
+                self.assertNotIn("composite", hero)
+                self.assertEqual(shell.price_line({"prices.status": ok({"prices": {
+                    "SOL-USD": {"mid": value}}})}), "")
+                events = shell.activity({"adoptions": [{"ts": value}]}, {})
+                self.assertEqual(events, [])
+        self.assertIn("composite +0.50", shell.signal_hero({"composite": .5}).plain)
+
+    def test_invalid_progress_and_unrepresentable_activity_time_remain_renderable(self) -> None:
+        for done, total in ((float("inf"), 1), (1, float("nan")), ("invalid", 1), (1, -1)):
+            with self.subTest(done=done, total=total):
+                rows = shell.tiles({"queue.progress": ok({"state": {
+                    "phase": "running", "done": done, "total": total}})})
+                self.assertNotIn("inf", rows[-1][1].plain)
+                self.assertNotIn("nan", rows[-1][1].plain)
+        self.assertIn("event survives", shell.activity_text([(1e300, "ok", "event survives")]).plain)
+        rows = shell.tiles({"queue.progress": ok({"state": {"done": 3, "total": 10}})})
+        self.assertEqual(rows[-1][1].plain, "3 / 10")
+
+    def test_running_recorder_requires_valid_freshness_evidence(self) -> None:
+        for age in (None, float("nan"), float("inf"), -1, True):
+            with self.subTest(age=age):
+                reads = {"prices.status": ok({"running": True, "snapshot_age_s": age})}
+                prices = next(item for item in shell.health_items(reads) if item.label == "Prices")
+                self.assertEqual(prices.kind, "warn")
+                self.assertTrue(any("freshness" in item.title for item in shell.needs(reads)))
+        reads = {"prices.status": ok({"running": True, "snapshot_age_s": 0})}
+        self.assertEqual(next(item for item in shell.health_items(reads) if item.label == "Prices").kind, "ok")
+
     def test_every_classic_tab_has_a_home(self) -> None:
         classic = {"tab-settings", "tab-strategies", "tab-signals", "tab-compound", "tab-forwardtest",
                    "tab-bots", "tab-backtest", "tab-top5", "tab-liverun", "tab-execute", "tab-analyze",
@@ -143,6 +176,7 @@ class PureBuilderTests(unittest.TestCase):
 
 class ShellAppTests(unittest.IsolatedAsyncioTestCase):
     async def asyncSetUp(self) -> None:
+        self.enterContext(offline_console_reads())
         self.tmp = TemporaryDirectory()
         self.addCleanup(self.tmp.cleanup)
 

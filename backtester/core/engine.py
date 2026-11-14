@@ -25,6 +25,7 @@ from typing import Any, Protocol, runtime_checkable
 import numpy as np
 
 from . import perps
+from .continuation import configuration_binding
 from .metrics import Metrics, compute_metrics
 from .types import (
     INTERVAL_SECONDS,
@@ -497,6 +498,8 @@ def run_backtest(
     """Run one strategy over one price series.
 
     See the module docstring for the per-bar ordering that prevents look-ahead.
+    Continued results describe only the newly supplied bars. Their metric baseline
+    is the retained account at its prior close; the checkpoint keeps lifetime totals.
     """
     config.validate()
     if type(close_at_end) is not bool or type(price_only) is not bool:
@@ -506,7 +509,7 @@ def run_backtest(
     )
     if "open" not in arrays:
         raise ValueError("next-open execution requires observed open prices")
-    binding = repr((strategy.name, strategy.params, asdict(config)))
+    binding = configuration_binding(strategy.name, strategy.params, config)
     start = offset = 0
     totals = {"fees_paid": 0.0, "slippage_paid": 0.0, "borrow_paid": 0.0, "realized_pnl": 0.0}
     if continuation is not None:
@@ -536,6 +539,12 @@ def run_backtest(
     warmup = strategy.warmup_bars()
     if isinstance(warmup, bool) or not isinstance(warmup, Integral) or warmup < 0:
         raise ValueError("strategy warmup_bars must be a nonnegative integer")
+    tail_size = warmup + 1
+    if hasattr(strategy, "continuation_history_bars"):
+        retained = strategy.continuation_history_bars()
+        if isinstance(retained, bool) or not isinstance(retained, Integral) or retained < tail_size:
+            raise ValueError("strategy continuation history must include its warmup")
+        tail_size = retained
     if warmup >= n and close_at_end:
         raise ValueError(
             f"strategy '{strategy.name}' needs {warmup} warmup bars but the "
@@ -562,6 +571,19 @@ def run_backtest(
         if book.pos.is_open:
             book.pos.opened_index -= offset
         pending = {int(k) - offset: v for k, v in continuation["pending"].items()}
+
+    metric_initial_equity = gross_initial_equity = config.initial_capital
+    initial_liquidations = book.liquidations
+    if continuation is not None:
+        # A retained account can already contain gains, losses and entry costs.
+        # Those belong to earlier chunks, not the new result's observation window.
+        previous_close = float(cl[start - 1])
+        metric_initial_equity = book.equity(previous_close)
+        gross_initial_equity = book.gross_equity(previous_close)
+        # A wiped account has no positive return denominator; use the existing
+        # zero-curve convention rather than repeating its historical total loss.
+        metric_initial_equity = metric_initial_equity if metric_initial_equity > 0 else None
+        gross_initial_equity = gross_initial_equity if gross_initial_equity > 0 else None
 
     # Coverage of each coarse bar by each finer layer, computed once. A bar is
     # refined by the FIRST (finest) layer that covers it completely.
@@ -697,7 +719,6 @@ def run_backtest(
         for key, attr in (("fees_paid", "fee"), ("slippage_paid", "slippage"),
                           ("borrow_paid", "borrow_fee_settled"), ("realized_pnl", "realized_pnl")):
             totals[key] += getattr(trade, attr)
-    tail_size = strategy.warmup_bars() + 1
     state = {
         "schema_version": 1, "binding": binding, "cursor": offset + n, "last_ts": int(ts[-1]),
         "tail": {k: v[-tail_size:].tolist() for k, v in arrays.items()},
@@ -716,8 +737,8 @@ def run_backtest(
         exposure_curve,
         ppy,
         config.risk_free_rate,
-        book.liquidations,
-        initial_equity=config.initial_capital,
+        book.liquidations - initial_liquidations,
+        initial_equity=metric_initial_equity,
     )
     gross = compute_metrics(
         gross_curve,
@@ -727,7 +748,7 @@ def run_backtest(
         ppy,
         config.risk_free_rate,
         0,
-        initial_equity=config.initial_capital,
+        initial_equity=gross_initial_equity,
     )
 
     return BacktestResult(
@@ -740,7 +761,7 @@ def run_backtest(
         trades=book.trades,
         metrics=net,
         gross_metrics=gross,
-        liquidation_count=book.liquidations,
+        liquidation_count=book.liquidations - initial_liquidations,
         first_tradeable_index=first_tradeable,
         mode=str(config.mode),
         leverage=config.leverage,
@@ -950,7 +971,7 @@ def rebind_signal_state(state, strategy, config):
     if len(state["tail"]["ts"]) < needed:
         raise ValueError("new signal warmup exceeds retained observed history")
     result = copy.deepcopy(state)
-    result["binding"] = repr((strategy.name, strategy.params, asdict(config)))
+    result["binding"] = configuration_binding(strategy.name, strategy.params, config)
     result["tail"] = {k: v[-needed:] for k, v in state["tail"].items()}
     # At a flat adoption boundary the new strategy begins with no held signal.
     # Its first new observed bar computes indicators from the retained prices.

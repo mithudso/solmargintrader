@@ -1,0 +1,107 @@
+{
+  "agent": "/root/guarded_soltui_final",
+  "definition_version": "1.0.0",
+  "status": "complete",
+  "observed_at": "2026-11-13T04:11:02.408668+00:00",
+  "scope": "Complete fresh four-process guarded SolTUI integration gate at frozen a5053e9c859505a895935702a51180830b69b89f",
+  "evidence": [
+    {
+      "source": "/tmp/oraclebot-full-shards-20261113/spawnfix/groups/full-a5053e9c8595/completion.json",
+      "observed_at": "2026-11-13T04:09:00.325097+00:00",
+      "sha256": "4b212d0236277857b237fbe89a9b0befd68e4b42886587459178e24c40cce22d",
+      "supported_claim": "Independent completed final integrity0; 1563exactobserved IDs=1549success+14canonical skips; all test/finalizer/launcher exits0; zero failures/errors/post-exit forbidden;31inherited+28native accounted,no owned survivors; all sealed source/runtime/helper hashes preserved."
+    },
+    {
+      "source": "/tmp/oraclebot-full-shards-20261113/spawnfix/groups/full-a5053e9c8595/aggregate.json",
+      "observed_at": "2026-11-13T04:08:17.317132+00:00",
+      "sha256": "39a6562c616066caf8a96301ef9088cafa00a2b996508e9e11479ad765362001",
+      "supported_claim": "Actual complete four-shard selection and observed-ID/skip/source aggregation, exact clean frozen HEAD before/after."
+    },
+    {
+      "source": "/tmp/oraclebot-full-shards-20261113/spawnfix/ready-seal.json",
+      "observed_at": "2026-11-13T03:04:43.143229+00:00",
+      "sha256": "1f893906cbefb55b121e412d78e251132d93c022caf75acc4b234a42e90639a0",
+      "supported_claim": "Prequalified conventional-main entry and guard/native/interpreter/helper bindings matched before and after actual complete run."
+    }
+  ],
+  "changes": [
+    "Private harness qualification, evidence, logs and versioned continuation records only.",
+    "No repository source/test/Git/owner configuration or service changes by this child.",
+    "Earlier failed full and diagnostic receipts preserved; exact spawn-import defect corrected only in the new qualified private candidate."
+  ],
+  "remaining": [],
+  "details": {
+    "entrypoint": "/tmp/oraclebot-full-shards-20261113/spawnfix/launch.py",
+    "lifecycle_map": "Four fresh isolated sessions, source-qualified Python startup, per-case guard/run metadata plus stable ID journals; original test assertions/deadlines/economics; native judge admission separately bound to deny-default OS sandbox; wait actual process exit, actual per-shard finalizer then exact aggregate and independent final integrity.",
+    "terminal_states": {
+      "launcher": "completed0",
+      "four_test_processes": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "four_finalizers": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "source_integrity": "completed0",
+      "prior_attempt": "failed1 preserved"
+    },
+    "log_paths": [
+      "/tmp/oraclebot-full-shards-20261113/spawnfix/groups/full-a5053e9c8595/shard-0.log",
+      "/tmp/oraclebot-full-shards-20261113/spawnfix/groups/full-a5053e9c8595/shard-1.log",
+      "/tmp/oraclebot-full-shards-20261113/spawnfix/groups/full-a5053e9c8595/shard-2.log",
+      "/tmp/oraclebot-full-shards-20261113/spawnfix/groups/full-a5053e9c8595/shard-3.log"
+    ],
+    "cancellation_evidence": "Existing qualified cancellation predicates retained.28native reaped cleanup events model ESRCH with no OS signal only for exact fresh-session deny-fork judge. Original ordinary child lifecycle/cancellation assertions retained; no external/owner signals.",
+    "watcher_teardown": "No owner watcher/service started; all31inherited and28native children accounted with no remaining run-owned PIDs after main exits.",
+    "tests": {
+      "discovered_unique": 1563,
+      "observed_unique": 1563,
+      "success": 1549,
+      "canonical_skips": 14,
+      "failures": 0,
+      "errors": 0,
+      "forbidden_events": 0,
+      "native_actual_exits": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "source_manifest_sha256": "bf5829e790be02a6a155452a7d4ab61f92430ab0473afcd56820e849cd2193b9",
+      "canonical_id_sha256": "1e0178fb5fb8e8d9dfc32daed922962cc443d997e279c43471b31c260ffe4272",
+      "wall_seconds": 2221.631855
+    },
+    "installed_acceptance": "Outside assigned scope; not exercised. Owner services/configuration and paused operations untouched."
+  },
+  "handoff": "Root received completed gate paths/hashes and may release source freeze for final audit records/delivery; no repeat child tests/probes required.",
+  "artifact_manifest": "/tmp/oraclebot-full-shards-20261113/spawnfix/artifacts-manifest.json"
+}

@@ -54,11 +54,13 @@ verdict printed over a check that did not happen:
 from __future__ import annotations
 
 import io
+import os
 import sys
 import unittest
 from contextlib import redirect_stdout
 from pathlib import Path
 from tempfile import TemporaryDirectory
+from unittest.mock import patch
 
 import numpy as np
 import pandas as pd
@@ -874,7 +876,10 @@ class DataPreflightTests(PatchMixin):
             "1600000000,1,1,1,1,1\n"
             "1600000000,1,1,1,1,1\n"
         )
-        problems = cac.unusable_data_files(["BROKEN"], ["medium"])
+        # The production environment override takes precedence over mocked REPO.
+        # Bind it to this same fixture and restore the caller's setting afterward.
+        with patch.dict(os.environ, {"SOLMT_DATA_DIR": str(root / "data")}):
+            problems = cac.unusable_data_files(["BROKEN"], ["medium"])
         self.assertEqual(len(problems), 1)
         self.assertIn("BROKEN_1d.csv", problems[0])
         self.assertNotIn("absent", problems[0])

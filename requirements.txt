@@ -1,3 +1,9 @@
+# Historical environment export; last committed update: 2026-11-10.
+# This file is retained for provenance, not supported installation or resolution.
+# Its broad snapshot includes versions that conflict with component constraints.
+# Install from each component pyproject.toml/requirements.txt; Executor and
+# liquidity use their committed uv.lock files. Do not install this export globally.
+
 aiofile==3.12.3
 aiohappyeyeballs==2.7.1
 aiohttp==3.13.5

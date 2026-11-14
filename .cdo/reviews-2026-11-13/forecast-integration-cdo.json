@@ -1,0 +1,2309 @@
+{
+  "schema": "cdo-bound-source-delta-v1",
+  "version": "1.0.1",
+  "status": "SOURCE_DELTA_REVIEW_COMPLETE_SCOPED_VERIFY_GREEN_GLOBAL_CONVERGENCE_PARTIAL",
+  "baseline_commit": "a5053e9c859505a895935702a51180830b69b89f",
+  "incoming_commit": "ef202543b43503c1c9f01b1d59507f03b3633f1d",
+  "files": [
+    {
+      "path": "ecosystem/forecast.py",
+      "sha256": "2d8ea6635c276fc8886a707b241fa3c4ac2dd39d2ed384b9134218aa12879963",
+      "blob_sha": "ae4508fd4105081ad871df1d590cd9fb003cca05",
+      "lines": 699,
+      "evidence": ".cdo/reviews-2026-11-13/cdo-forecast-main.json",
+      "passes": [
+        {
+          "id": "C1",
+          "state": "complete",
+          "assessment": "Checked control flow, arithmetic domains, completed-bar construction, scheduling, calls and settlement, retained status.",
+          "findings": [
+            "forecast-F01",
+            "forecast-F02"
+          ]
+        },
+        {
+          "id": "C2",
+          "state": "complete",
+          "assessment": "Checked local signatures, return shapes, horizon/strategy validation, SQL row use, frame policy/scope/instrument/horizon identity; external definitions remain root context.",
+          "findings": []
+        },
+        {
+          "id": "C3",
+          "state": "complete",
+          "assessment": "Constructed static underflow and double-window age counterexamples; checked invalid numeric values, empty pairs, missing outcomes, overflow and zero distance.",
+          "findings": [
+            "forecast-F01",
+            "forecast-F02"
+          ]
+        },
+        {
+          "id": "S1",
+          "state": "complete",
+          "assessment": "Injection gate passed. No reviewer-directed instructions, dynamic evaluation, network calls, secrets, or non-parameterized user SQL found. Checked private paths, symlink barriers and trace digest.",
+          "findings": []
+        },
+        {
+          "id": "S2",
+          "state": "complete",
+          "assessment": "Checked context-managed connections, gzip boundaries, I/O and JSON catches, timed SQLite connection, owner lock closure, stop lifecycle and fail-closed reporting.",
+          "findings": [
+            "forecast-F01",
+            "forecast-F03"
+          ]
+        },
+        {
+          "id": "S3",
+          "state": "complete",
+          "assessment": "Checked exact instrument handling, integer direction and horizon checks, finite quote validation, timestamp ordering, input byte caps and trace-id validation.",
+          "findings": [
+            "forecast-F01",
+            "forecast-F02"
+          ]
+        },
+        {
+          "id": "S4",
+          "state": "complete",
+          "assessment": "Checked declared macOS/POSIX fcntl and signal use, Python UTC/stdlib use, absolute file URI paths. No supported-platform incompatibility established.",
+          "findings": []
+        },
+        {
+          "id": "S5",
+          "state": "complete",
+          "assessment": "Checked critical I/O error and state transition visibility. Routine recorder failures have no cause-specific log or diagnostic state.",
+          "findings": [
+            "forecast-F03"
+          ]
+        },
+        {
+          "id": "P1",
+          "state": "complete",
+          "assessment": "Checked bounded recorder read/decode sizes, 3600-second-window storage logic, 300-bar contiguous view, 120 move pairs/traces, per-strategy 110-call retention and SQL indexes. No measured performance claim.",
+          "findings": []
+        },
+        {
+          "id": "P2",
+          "state": "complete",
+          "assessment": "Checked owner flock, try/finally fd close, single worker loop, per-connection SQLite transactions, idempotent call keys and serialized writes. No proven additional Medium race.",
+          "findings": []
+        },
+        {
+          "id": "M1",
+          "state": "complete",
+          "assessment": "Checked names, comments, local constants and the long evaluate flow. No objective Medium maintainability issue established without changing model or owner policy.",
+          "findings": []
+        },
+        {
+          "id": "M2",
+          "state": "complete",
+          "assessment": "Checked within-file repetition and existing stdlib reuse. No demonstrated Medium duplicate implementation; cross-file duplication belongs to root.",
+          "findings": []
+        },
+        {
+          "id": "M3",
+          "state": "na",
+          "assessment": "Repo-scope architecture and centralized configuration owned by root.",
+          "findings": []
+        },
+        {
+          "id": "M4",
+          "state": "complete",
+          "assessment": "Checked source docstrings and limitations against projection method, score meaning, gzip-member behavior, no-orders boundary and retained status. No additional Medium documentation contradiction.",
+          "findings": []
+        },
+        {
+          "id": "T1",
+          "state": "complete_static_source_review",
+          "assessment": "Reviewed risky branch behavior and supplied regression sketches for numeric/freshness/logging findings. Existing tests, numeric coverage and test execution are not attested by this one-file source audit; root owns them.",
+          "findings": [
+            "forecast-F01",
+            "forecast-F02",
+            "forecast-F03"
+          ]
+        },
+        {
+          "id": "T2",
+          "state": "na",
+          "assessment": "Repo-scope dependencies and supply chain owned by root.",
+          "findings": []
+        },
+        {
+          "id": "T3",
+          "state": "na",
+          "assessment": "Repo-scope tooling owned by root.",
+          "findings": []
+        },
+        {
+          "id": "T4",
+          "state": "na",
+          "assessment": "Non-test source file.",
+          "findings": []
+        },
+        {
+          "id": "M5",
+          "state": "complete_static_entrypoint_review",
+          "assessment": "Runnable argparse main exists. Required --home produces usage on omission; --status uses a structured result/error, signals request graceful stop, imports are stdlib and project packages. Environment/install/preflight acceptance is not executed or attested here.",
+          "findings": []
+        }
+      ],
+      "active_passes": [
+        "C1",
+        "C2",
+        "C3",
+        "S1",
+        "S2",
+        "S3",
+        "S4",
+        "S5",
+        "P1",
+        "P2",
+        "M1",
+        "M2",
+        "M4",
+        "T1",
+        "M5"
+      ],
+      "review_method": "Complete original source read or exact hash-verified inherited complete read, plus complete recorded current delta. See the linked per-file receipt; hashes never substitute for semantic reads.",
+      "closure": ".cdo/reviews-2026-11-13/cdo-forecast-main-closure.json",
+      "root_final_delta": "Exactly two source-state timestamp output fields added after independent closure, with exact inverse SHA verified. These allow observer return-clock validation. Parent final291/43 gates cover them."
+    },
+    {
+      "path": "ecosystem/forecast_preferences.py",
+      "sha256": "3f62b49b9f97e30f0c8becfb3aa581ff695e5ed4977aa631050fdfc29a36bd78",
+      "blob_sha": "d26d83c36520e7eed27c311e0d22888cd4d96a6c",
+      "lines": 110,
+      "evidence": ".cdo/reviews-2026-11-13/cdo-forecast-preferences.json",
+      "passes": {
+        "C1": {
+          "reason": "Traced default missing-store reads, strict cadence values, existing-store application ID checks, latest revision selection, append result, and failed first CAS. Finding FP-1: a conflict after first creation rolls schema initialization back while leaving an empty published file.",
+          "state": "ran"
+        },
+        "C2": {
+          "reason": "Checked consistent instrument/seconds/revision result dictionaries; strict integer and revision input checks; inspected the bounded control action caller with exact parameter keys and trusted configured home. No independent Medium finding; initialized-store CAS returns a new revision and never silently accepts a stale expected revision.",
+          "state": "ran"
+        },
+        "C3": {
+          "reason": "Constructed static counterexamples for expected_revision=1 against an absent store and a read scheduled between os.open and first initialization commit. Also traced bool, fractional/string/out-of-range cadence, negative revision, incompatible application ID and invalid stored row rejection. Counterexamples were not executed because parent reserves all tests. FP-1 captures both initialization counterexamples.",
+          "state": "ran"
+        },
+        "M1": {
+          "reason": "Reviewed names, constants, control-flow precedence, strict bounds and default/config semantics. Cadence defaults and range are centralized in this dedicated preference module and are consistent with bounded documentation. Missing annotations alone are below Medium; no speculative formatting or behavior change requested.",
+          "state": "ran"
+        },
+        "M2": {
+          "reason": "Checked intra-file duplication and simplification. The two latest-revision queries intentionally read different shapes for readonly display versus locked CAS; no repeated custom utility or unnecessary dependency established.",
+          "state": "ran"
+        },
+        "M3": {
+          "reason": "Repository architecture and centralized configuration cross-file pass is owned by the root orchestration; not repeated by this per-file reviewer.",
+          "state": "na"
+        },
+        "M4": {
+          "reason": "Compared module purpose and API semantics against bounded ORACLE-LIVE-FORECAST.md:69-88 and ORACLEBOT-OPERATIONS.md:174-181. Docs consistently state default 10, whole numbers 5..300, shared primary per-instrument scope and separation from account/research policy. Read API does not create files. No independent Medium documentation defect identified.",
+          "state": "ran"
+        },
+        "M5": {
+          "reason": "Library-only module; no runnable entrypoint, argument parser or tool bootstrap surface.",
+          "state": "na"
+        },
+        "P1": {
+          "reason": "Latest-row queries constrain instrument and order by revision against PRIMARY KEY(instrument,revision), so normal lookup can use the existing composite index. No N+1 loop, unbounded application-level scan, allocation issue or demonstrated hot-path bottleneck in this 96-line module.",
+          "state": "ran"
+        },
+        "P2": {
+          "reason": "BEGIN IMMEDIATE and the locked reread serialize competing initialized-store updates; insert and revision comparison share one transaction. FP-1: first initialization publishes an empty file before its transaction commits, so a concurrent readonly settings call observes application_id 0 rather than a valid old/default or new view.",
+          "state": "ran"
+        },
+        "S1": {
+          "reason": "Injection gate completed across every assigned line; no directive addressed to the reviewer found. Bound SQL values prevent input SQL injection; SQL f-strings contain only static APP_ID and UPDATE/DELETE tuple constants. No signing, orders, network calls or secrets. Final symlink/non-file write checks reviewed. Parent confirms home is owner configured and public preference input cannot supply it, so same-user ancestor permissions are not invented as a tenant trust boundary.",
+          "state": "ran"
+        },
+        "S2": {
+          "reason": "Checked descriptor closure, connection closure, bounded SQLite timeouts, transaction rollback/commit and explicit ValueError propagation. No swallowed error or connection leak identified. FP-1 records first-create rollback side effects and the read failure that propagates into the worker.",
+          "state": "ran"
+        },
+        "S3": {
+          "reason": "Strict type(value) is int rejects booleans, floats and strings; inclusive 5..300 range and nonnegative integer expected_revision checked before normal I/O. Read validates persisted seconds and positive integer revision. Instrument goes through existing validate_instrument. Parent confirms home is a trusted local configuration value, separate from web action parameters. No independent Medium finding.",
+          "state": "ran"
+        },
+        "S4": {
+          "reason": "Reviewed pathlib expansion/absolute URI construction, sqlite3 URI readonly mode, contextlib.closing and standard POSIX file creation against repository Python 3.13/macOS environment. No new third-party or version-specific runtime dependency and no independent Medium finding. Other operating systems were not executed.",
+          "state": "ran"
+        },
+        "S5": {
+          "reason": "Reviewed explicit conflict/incompatible/invalid/unavailable error signals, durable created timestamp/history, returned applied revision and source-level owner-action test evidence. This persistence helper does not swallow failures; caller owns action/error reporting. FP-1 already covers propagation of initialization failure. No independent Medium observability finding established from bounded scope.",
+          "state": "ran"
+        },
+        "T1": {
+          "reason": "Read bounded existing test_forecast.py:160-240 and test_control_http.py:158-189. Existing assertions cover absent readonly forecast creation behavior, persistent arbitrary cadence, initialized-store stale revision rejection, per-instrument defaults, maximum cadence, invalid cadence no-write behavior and authenticated durable action application. FP-1 identifies missing meaningful first-CAS-rejection and concurrent-first-publication regression cases. No tests were run or written by this reviewer; root owns canonical regression edits and verification.",
+          "state": "ran"
+        },
+        "T2": {
+          "reason": "Dependency and supply-chain repository pass is root-owned; this module imports only stdlib plus the existing oracle.feeds validator.",
+          "state": "na"
+        },
+        "T3": {
+          "reason": "Repository tooling-gap pass is root-owned; no new tooling or installation performed.",
+          "state": "na"
+        },
+        "T4": {
+          "reason": "Non-test source file. Test-suite performance is outside this per-file source pass.",
+          "state": "na"
+        }
+      },
+      "active_passes": [
+        "C1",
+        "C2",
+        "C3",
+        "M1",
+        "M2",
+        "M4",
+        "P1",
+        "P2",
+        "S1",
+        "S2",
+        "S3",
+        "S4",
+        "S5",
+        "T1"
+      ],
+      "review_method": "Complete original source read or exact hash-verified inherited complete read, plus complete recorded current delta. See the linked per-file receipt; hashes never substitute for semantic reads.",
+      "closure": ".cdo/reviews-2026-11-13/cdo-forecast-preferences-closure.json"
+    },
+    {
+      "path": "ecosystem/forecast_service.py",
+      "sha256": "cacbce9d6f12df6da63601bf6596648647e4376cc22a35135952fe1a91f126a7",
+      "blob_sha": "9b856469ac011ec230f5d93b896cab02bcd1d069",
+      "lines": 192,
+      "evidence": ".cdo/reviews-2026-11-13/cdo-forecast-service.json",
+      "passes": [
+        {
+          "id": "C1",
+          "state": "reviewed",
+          "result": "FS2 and FS3; other action dispatch/control flow reviewed.",
+          "post_fix_result": "Accepted linked findings patched; final source statically reread. See fixed_line_ranges and test_summary; empirical verification belongs to parent."
+        },
+        {
+          "id": "C2",
+          "state": "reviewed",
+          "result": "FS2; argparse action contract and JSON response contract checked.",
+          "post_fix_result": "Accepted linked findings patched; final source statically reread. See fixed_line_ranges and test_summary; empirical verification belongs to parent."
+        },
+        {
+          "id": "C3",
+          "state": "reviewed",
+          "result": "Static adversarial counterexamples for temporary prefix, absent post-bootstrap registration, canonical-home aliases, and existing logs. Proposed tests recorded only.",
+          "post_fix_result": "Accepted linked findings patched; final source statically reread. See fixed_line_ranges and test_summary; empirical verification belongs to parent."
+        },
+        {
+          "id": "S1",
+          "state": "reviewed",
+          "result": "FS4; no injection directives, literal secrets, shell invocation or network calls in target.",
+          "post_fix_result": "No secret literals, reviewer directives, shell=True, or raw exception/subprocess output disclosure introduced. Original log-mode candidate is qualified/excluded."
+        },
+        {
+          "id": "S2",
+          "state": "reviewed",
+          "result": "FS2; finite subprocess timeouts, context-managed plist write, conservative bootout confirmation checked.",
+          "post_fix_result": "Accepted linked findings patched; final source statically reread. See fixed_line_ranges and test_summary; empirical verification belongs to parent."
+        },
+        {
+          "id": "S3",
+          "state": "reviewed",
+          "result": "FS1, FS3, FS4; owned home, module containment and plist identity checks inspected.",
+          "post_fix_result": "Accepted linked findings patched; final source statically reread. See fixed_line_ranges and test_summary; empirical verification belongs to parent."
+        },
+        {
+          "id": "S4",
+          "state": "reviewed",
+          "result": "FS1; macOS restriction and Python 3.13 repository contract inspected.",
+          "post_fix_result": "Accepted linked findings patched; final source statically reread. See fixed_line_ranges and test_summary; empirical verification belongs to parent."
+        },
+        {
+          "id": "S5",
+          "state": "reviewed",
+          "result": "FS5; lifecycle subprocess failure and preflight diagnostics inspected.",
+          "post_fix_result": "Accepted linked findings patched; final source statically reread. See fixed_line_ranges and test_summary; empirical verification belongs to parent."
+        },
+        {
+          "id": "P1",
+          "state": "reviewed",
+          "result": "No concrete Medium+ performance issue in bounded CLI paths."
+        },
+        {
+          "id": "P2",
+          "state": "reviewed",
+          "result": "FS3 duplicate owners; exclusive plist creation and recheck-before-unlink inspected. No unsupported same-user race/security claim added.",
+          "post_fix_result": "Accepted linked findings patched; final source statically reread. See fixed_line_ranges and test_summary; empirical verification belongs to parent."
+        },
+        {
+          "id": "M1",
+          "state": "reviewed",
+          "result": "No standalone Medium+ readability/constants issue established for 123-line service module."
+        },
+        {
+          "id": "M2",
+          "state": "reviewed",
+          "result": "No intra-file Medium+ duplication. Cross-file comparison limited to explicitly permitted pipeline service and used for FS1/FS2."
+        },
+        {
+          "id": "M3",
+          "state": "na",
+          "reason": "Repo-scope architecture/configuration pass belongs to parent."
+        },
+        {
+          "id": "M4",
+          "state": "reviewed",
+          "result": "Module description and emitted fields inspected; no concrete misleading target documentation beyond recorded behavior gaps."
+        },
+        {
+          "id": "M5",
+          "state": "reviewed",
+          "result": "E1 one module entrypoint; E2/E3 argparse usage and invalid choices; E4 installed-environment preflight; E5 fails via FS1/FS5; E6 --help exists, no example (low only). Public README/packaging outside authorized source scope.",
+          "post_fix_result": "Accepted linked findings patched; final source statically reread. See fixed_line_ranges and test_summary; empirical verification belongs to parent."
+        },
+        {
+          "id": "T1",
+          "state": "reviewed",
+          "result": "Source-risk and testability review completed; behavioral regression prescriptions recorded for FS1-FS5. Test-file coverage not established or credited because source-only scope and no test execution were authorized.",
+          "post_fix_result": "12 new assertion-bearing isolated regression tests statically reviewed in full; none executed here. No blanket coverage or prior-suite credit."
+        },
+        {
+          "id": "T2",
+          "state": "na",
+          "reason": "Repo-scope dependency/supply-chain pass belongs to parent."
+        },
+        {
+          "id": "T3",
+          "state": "na",
+          "reason": "Repo-scope tooling pass belongs to parent."
+        },
+        {
+          "id": "T4",
+          "state": "na",
+          "reason": "Assigned target is non-test source.",
+          "new_test_result": "New test file reviewed for suite performance: no sleeps/timers, no network or real subprocesses. Temporary fixture setup cannot be hoisted because tests mutate definitions and mock state."
+        }
+      ],
+      "active_passes": [
+        "C1",
+        "C2",
+        "C3",
+        "S1",
+        "S2",
+        "S3",
+        "S4",
+        "S5",
+        "P1",
+        "P2",
+        "M1",
+        "M2",
+        "M4",
+        "M5",
+        "T1"
+      ],
+      "review_method": "Complete original source read or exact hash-verified inherited complete read, plus complete recorded current delta. See the linked per-file receipt; hashes never substitute for semantic reads."
+    },
+    {
+      "path": "ecosystem/tests/test_forecast.py",
+      "sha256": "afea70c97fddca014a87ed18835fa7963682ce4bd1259d56a181c71af8a26421",
+      "blob_sha": "e6ad284d93836c89704bef21e2489c10a60e518c",
+      "lines": 402,
+      "evidence": ".cdo/reviews-2026-11-13/cdo-forecast-tests.json",
+      "passes": [
+        {
+          "pass": "C1",
+          "state": "done",
+          "mode": "static",
+          "result": "Static control flow and assertion logic checked across every test. No runtime result inferred."
+        },
+        {
+          "pass": "C2",
+          "state": "done",
+          "mode": "static",
+          "result": "Fixture call signatures, report keys, SQLite row use and mock return shapes checked within assigned file; implementation cross-file contract belongs to root."
+        },
+        {
+          "pass": "C3",
+          "state": "done",
+          "mode": "static",
+          "result": "Adversarial static cases checked: same-slot issue, source loss, empty/rejected preference stores, concurrent publication, subnormal midpoint, stale/future/nonfinite quotes, gzip truncation and timing. Identified positive-count-only late-outcome test weakness and fixed only its assertion."
+        },
+        {
+          "pass": "S1",
+          "state": "done",
+          "mode": "static",
+          "result": "Injection gate completed before audit: no reviewer directives or hostile content found. Fixtures contain public synthetic quotes and a local privacy canary. No secret material found."
+        },
+        {
+          "pass": "S2",
+          "state": "done",
+          "mode": "static",
+          "result": "TemporaryDirectory addCleanup, closing database contexts and ThreadPoolExecutor context cleanup inspected; barrier timeout bounds the injected collision rendezvous."
+        },
+        {
+          "pass": "S3",
+          "state": "done",
+          "mode": "static",
+          "result": "Stale/future/crossed/bool/nonfinite and invalid preference-value fixtures inspected. Test values remain data and JSON parsing is not code execution."
+        },
+        {
+          "pass": "S4",
+          "state": "done",
+          "mode": "static",
+          "result": "Python unittest/stdlib usage inspected. Arbitrary mocked PID collision risk fixed with deterministic distinct issuer and owner PIDs; no further Medium+ static finding."
+        },
+        {
+          "pass": "S5",
+          "state": "done",
+          "mode": "static",
+          "result": "Structured JSON event bodies, exact WARNING/INFO levels, duplicate-transition suppression, source/path privacy and logger-sink failure behavior are asserted. Deterministic RecursionError injection is read but not executed."
+        },
+        {
+          "pass": "P1",
+          "state": "done",
+          "mode": "static",
+          "result": "Fixture sizes are bounded (largest explicit seed loop 601 samples), no sleeps and no unbounded test loops found."
+        },
+        {
+          "pass": "P2",
+          "state": "done",
+          "mode": "static",
+          "result": "ThreadPoolExecutor lifetime, global mock restoration order and Barrier timeout inspected. Temporary fixture directory and mutable Worker are per-test."
+        },
+        {
+          "pass": "M1",
+          "state": "done",
+          "mode": "static",
+          "result": "Behavioral names and small test methods checked. Numeric fixture values express boundary scenarios rather than scattered product settings."
+        },
+        {
+          "pass": "M2",
+          "state": "done",
+          "mode": "static",
+          "result": "Shared quote/seed/variable_seed and synthetic strategy helpers cover repeated fixture work; no Medium duplication established."
+        },
+        {
+          "pass": "M4",
+          "state": "done",
+          "mode": "static",
+          "result": "Names/comments reviewed against assertions. Late-outcome comment now has positive NULL existence and zero non-NULL assertions."
+        },
+        {
+          "pass": "T1",
+          "state": "done",
+          "mode": "static",
+          "result": "All assertion quality and edge-case checks completed. Hardened late-outcome proof with zero non-NULL late hits and made issuer/owner provenance PIDs deterministic while preserving original assertions. No further Medium+ static finding; root owns execution."
+        },
+        {
+          "pass": "T4",
+          "state": "done",
+          "mode": "static",
+          "result": "No real sleeps or avoidable repeated immutable heavyweight setup found. Worker/storage state is mutated by tests, so setup is not safe to hoist. Collision barrier wait is deliberate and bounded."
+        },
+        {
+          "pass": "M3",
+          "state": "na",
+          "reason": "Repository-scope architecture and central configuration pass owned by root."
+        },
+        {
+          "pass": "T2",
+          "state": "na",
+          "reason": "Repository-scope dependency and supply-chain pass owned by root."
+        },
+        {
+          "pass": "T3",
+          "state": "na",
+          "reason": "Repository-scope tooling pass owned by root."
+        },
+        {
+          "pass": "M5",
+          "state": "na",
+          "reason": "Conventional unittest test module; unittest.main is a harness entrypoint, not a standalone user tool."
+        }
+      ],
+      "active_passes": [
+        "C1",
+        "C2",
+        "C3",
+        "S1",
+        "S2",
+        "S3",
+        "S4",
+        "S5",
+        "P1",
+        "P2",
+        "M1",
+        "M2",
+        "M4",
+        "T1",
+        "T4"
+      ],
+      "review_method": "Complete original source read or exact hash-verified inherited complete read, plus complete recorded current delta. See the linked per-file receipt; hashes never substitute for semantic reads.",
+      "root_final_delta": "Exactly four observed/sampled timestamp assertions added after the full independent test review; exact inverse SHA verifies inherited byte identity. Parent final291 gate exercises them."
+    },
+    {
+      "path": "ecosystem/tests/test_forecast_service_audit.py",
+      "sha256": "970ea320deb4d6d3cbac9c61c4e9ea551074f9d21dcb2dde47bec6feb2217377",
+      "blob_sha": "4c80c7aa617e82c9187e8b57387a1a976b9a549b",
+      "lines": 256,
+      "evidence": ".cdo/reviews-2026-11-13/cdo-forecast-service-tests.json",
+      "passes": [
+        {
+          "id": "C1",
+          "state": "pass",
+          "evidence_lines": [
+            [
+              21,
+              79
+            ],
+            [
+              81,
+              252
+            ]
+          ],
+          "conclusion": "Fixture setup, stdout JSON decoding, alias iteration, expected six registered calls and assertions are internally consistent. Each test creates its own state; no unreachable assertion or incorrect success/failure expectation was identified.",
+          "findings": []
+        },
+        {
+          "id": "C2",
+          "state": "pass",
+          "evidence_lines": [
+            [
+              34,
+              65
+            ],
+            [
+              67,
+              79
+            ],
+            [
+              145,
+              180
+            ],
+            [
+              204,
+              252
+            ]
+          ],
+          "conclusion": "Mocks replace the names forecast_service actually looks up. Helpers pass Path-compatible CLI values and validate the structured main result, error reasons and subprocess contract; no signature or return-shape mismatch found.",
+          "findings": []
+        },
+        {
+          "id": "C3",
+          "state": "pass",
+          "evidence_lines": [
+            [
+              81,
+              143
+            ],
+            [
+              145,
+              202
+            ],
+            [
+              222,
+              252
+            ]
+          ],
+          "conclusion": "Adversarial static probes covered temporary/worktree prefixes, out-of-prefix module, parent/symlink aliases, final-component symlink, unconfirmed start, conflicting existing plist, non-macOS platform, unknown ValueError, OSError, CalledProcessError and missing launchctl. No violating path found in the assigned file; no counterexample test was executed or written.",
+          "findings": []
+        },
+        {
+          "id": "S1",
+          "state": "pass",
+          "evidence_lines": [
+            [
+              1,
+              1
+            ],
+            [
+              21,
+              65
+            ],
+            [
+              182,
+              193
+            ],
+            [
+              222,
+              243
+            ]
+          ],
+          "conclusion": "No reviewer-directed prompt injection, embedded credential or command injection. Error content is explicitly synthetic. Every service subprocess is mocked and owned plist writes are redirected to the protected temporary root.",
+          "findings": []
+        },
+        {
+          "id": "S2",
+          "state": "pass",
+          "evidence_lines": [
+            [
+              21,
+              65
+            ],
+            [
+              67,
+              73
+            ],
+            [
+              121,
+              134
+            ],
+            [
+              204,
+              252
+            ]
+          ],
+          "conclusion": "TemporaryDirectory cleanup is registered before stack.close, so unittest LIFO cleanup restores all global patches before removing the directory. Both cleanups are registered before test operations and also run after assertion/setup failures. Context-managed inner patches restore each subcase.",
+          "findings": []
+        },
+        {
+          "id": "S3",
+          "state": "pass",
+          "evidence_lines": [
+            [
+              67,
+              73
+            ],
+            [
+              81,
+              119
+            ],
+            [
+              136,
+              143
+            ],
+            [
+              204,
+              252
+            ]
+          ],
+          "conclusion": "Inputs are fixture-owned paths and explicit synthetic failures. Tests check refusal before service lookup, preserve conflicting file bytes, and assert sanitized output envelopes without interpolating data into shell commands.",
+          "findings": []
+        },
+        {
+          "id": "S4",
+          "state": "pass",
+          "evidence_lines": [
+            [
+              21,
+              65
+            ],
+            [
+              121,
+              143
+            ],
+            [
+              153,
+              163
+            ],
+            [
+              195,
+              202
+            ]
+          ],
+          "conclusion": "macOS lifecycle assumptions are explicit and sys.platform, sys.prefix, sys.executable, module path and Path.home are controlled. The repository targets Python 3.13/macOS; stdlib unittest, symlinks and os.getuid usage match that supported environment.",
+          "findings": []
+        },
+        {
+          "id": "S5",
+          "state": "pass",
+          "evidence_lines": [
+            [
+              145,
+              171
+            ],
+            [
+              182,
+              202
+            ],
+            [
+              204,
+              252
+            ]
+          ],
+          "conclusion": "Tests assert observable success/failure results, safe exact known-error envelopes, required remediation text and secret-free unknown/subprocess error diagnostics. The test harness itself has no production logging responsibility.",
+          "findings": []
+        },
+        {
+          "id": "P1",
+          "state": "pass",
+          "evidence_lines": [
+            [
+              21,
+              79
+            ],
+            [
+              81,
+              107
+            ],
+            [
+              121,
+              134
+            ],
+            [
+              204,
+              243
+            ]
+          ],
+          "conclusion": "Only small temporary fixtures, bounded seven-prefix/error-map loops, tiny plist I/O and synchronous mocks are used. No real sleeps, external calls, oversized fixture rebuild or material redundant computation found.",
+          "findings": []
+        },
+        {
+          "id": "P2",
+          "state": "pass",
+          "evidence_lines": [
+            [
+              21,
+              65
+            ],
+            [
+              91,
+              98
+            ],
+            [
+              127,
+              134
+            ],
+            [
+              204,
+              243
+            ]
+          ],
+          "conclusion": "All operations are synchronous with per-test mocks and fixture state; no jobs, threads, async work or unjoined cleanup. sys/Path/subprocess patches are process-global, so same-process threaded execution would require isolation; the target uses ordinary serial unittest and does not introduce such execution.",
+          "findings": []
+        },
+        {
+          "id": "M1",
+          "state": "pass",
+          "evidence_lines": [
+            [
+              20,
+              79
+            ],
+            [
+              81,
+              252
+            ]
+          ],
+          "conclusion": "Test names state observable behaviors and helper names match their purpose. Small functions keep setup/act/assert readable. Synthetic paths, exit codes, mode bits and timeout assertions are meaningful contract fixtures rather than scattered runtime configuration.",
+          "findings": []
+        },
+        {
+          "id": "M2",
+          "state": "pass",
+          "evidence_lines": [
+            [
+              21,
+              79
+            ],
+            [
+              81,
+              107
+            ],
+            [
+              204,
+              243
+            ]
+          ],
+          "conclusion": "Shared setup, invocation and definition-path helpers remove material duplication; subtests retain distinct boundary assertions. No reusable product implementation or needless local reimplementation appears in this test module.",
+          "findings": []
+        },
+        {
+          "id": "M3",
+          "state": "na",
+          "evidence_lines": [],
+          "conclusion": "Repository-scope architecture and centralized configuration are owned by root; not repeated for this single test file.",
+          "findings": []
+        },
+        {
+          "id": "M4",
+          "state": "pass",
+          "evidence_lines": [
+            [
+              1,
+              1
+            ],
+            [
+              20,
+              79
+            ],
+            [
+              81,
+              252
+            ]
+          ],
+          "conclusion": "The isolation docstring matches the global mocks and temporary path routing. Behavioral test names match their assertions; no stale API documentation or public library usage guide obligation in this file.",
+          "findings": []
+        },
+        {
+          "id": "T1",
+          "state": "pass",
+          "evidence_lines": [
+            [
+              81,
+              252
+            ]
+          ],
+          "conclusion": "All 12 methods assert outcomes or side effects. The changed lifecycle concerns have meaningful positive and negative checks: refusal before lookup/write, canonical identity, preserved/plist mode bytes, exact bootstrap flags, failed versus confirmed start, status read-only behavior and safe diagnostics. No numeric coverage claim is made.",
+          "findings": []
+        },
+        {
+          "id": "T2",
+          "state": "na",
+          "evidence_lines": [],
+          "conclusion": "Repository-scope dependency and supply-chain review is owned by root.",
+          "findings": []
+        },
+        {
+          "id": "T3",
+          "state": "na",
+          "evidence_lines": [],
+          "conclusion": "Repository-scope tooling-gap review and detected verification are owned by root.",
+          "findings": []
+        },
+        {
+          "id": "T4",
+          "state": "pass",
+          "evidence_lines": [
+            [
+              21,
+              65
+            ],
+            [
+              121,
+              134
+            ],
+            [
+              145,
+              193
+            ],
+            [
+              204,
+              243
+            ]
+          ],
+          "conclusion": "No real sleeps/timers or slow subprocesses remain to replace. Each test mutates mocks, filesystem state or patch values, so hoisting setup would alter isolation. Preserve per-test setup and all distinct assertions. Thread parallelism is not statically equivalent because patches affect global modules; process isolation is required before a separate repository-level parallelization change.",
+          "findings": []
+        }
+      ],
+      "active_passes": [
+        "C1",
+        "C2",
+        "C3",
+        "S1",
+        "S2",
+        "S3",
+        "S4",
+        "S5",
+        "P1",
+        "P2",
+        "M1",
+        "M2",
+        "M4",
+        "T1",
+        "T4"
+      ],
+      "review_method": "Complete original source read or exact hash-verified inherited complete read, plus complete recorded current delta. See the linked per-file receipt; hashes never substitute for semantic reads."
+    },
+    {
+      "path": "ecosystem/control.py",
+      "sha256": "31ff5361ecca187cf53fe09f75bb845ead135f8d7b1f24bc4456a94a9fe504d6",
+      "blob_sha": "532cc6e90fd340814ac75779c9cd6d80e3f51ca6",
+      "lines": 939,
+      "evidence": ".cdo/reviews-2026-11-13/cdo-forecast-control-delta.json",
+      "passes": [
+        {
+          "id": "C1",
+          "state": "reviewed",
+          "reason": "Finite action registry reaches new branch before generic oracle lifecycle handler; no order/runtime toggle path added. Lines 49,435-478,500-541.",
+          "findings": []
+        },
+        {
+          "id": "C2",
+          "state": "reviewed",
+          "reason": "Exact parameter keys are enforced after run_id removal; result preserves set_seconds contract with explicit shared_primary_market_forecast scope. Lines 438-439,473-478.",
+          "findings": []
+        },
+        {
+          "id": "C3",
+          "state": "reviewed",
+          "reason": "Statically traced missing/extra keys, invalid instrument/types/bounds, stale revision, duplicate request_id and selected-run home. No execution by this reviewer. Lines 260-299,435-478,621-641; helper context.",
+          "findings": []
+        },
+        {
+          "id": "S1",
+          "state": "reviewed",
+          "reason": "Stage 0.5 found no reviewer directive in fresh delta/context. HTTP caller requires same-origin nonce before durable submit; owner home rather than submitted path controls preference destination. Lines 260-299,473-478; web.py:473-516.",
+          "findings": []
+        },
+        {
+          "id": "S2",
+          "state": "reviewed",
+          "reason": "Preference errors flow through existing failed-action public error sanitization; result is recorded after helper returns committed state. Ambiguous interrupted mutations are not retried. Lines 301-352,473-478.",
+          "findings": []
+        },
+        {
+          "id": "S3",
+          "state": "reviewed",
+          "reason": "Exact keys plus helper strict int bounds 5..300, nonnegative exact-int revision and canonical instrument validation reject malformed inputs; run_id resolves only owned experiment entries. Lines 132-160,438-439,476-478,621-641.",
+          "findings": []
+        },
+        {
+          "id": "S4",
+          "state": "reviewed",
+          "reason": "Delta uses existing Python dict unpacking/module import/stdlib API surface; inherited Python 3.13/POSIX contract retained.",
+          "findings": []
+        },
+        {
+          "id": "S5",
+          "state": "reviewed",
+          "reason": "Existing durable action journal exposes queued/running/succeeded/failed/interrupted and fixed credential-free errors; successful forecast action adds explicit shared scope. Lines 198-207,283-299,301-346,478.",
+          "findings": []
+        },
+        {
+          "id": "P1",
+          "state": "reviewed",
+          "reason": "Only constant-size registry entry and synchronous bounded helper call added to existing serialized worker; no unbounded allocation introduced.",
+          "findings": []
+        },
+        {
+          "id": "P2",
+          "state": "reviewed",
+          "reason": "Existing owner flock serializes durable actions. Helper transaction uses BEGIN IMMEDIATE and revision CAS; stale writes fail rather than retry. Lines 301-352 and forecast_preferences.py:50-96 as read context.",
+          "findings": []
+        },
+        {
+          "id": "M1",
+          "state": "reviewed",
+          "reason": "Small dispatch branch follows adjacent voter/recording action pattern. Long return expression is style only, not Medium.",
+          "findings": []
+        },
+        {
+          "id": "M2",
+          "state": "reviewed",
+          "reason": "Validation/storage reuse forecast_preferences.set_seconds; no copied forecast algorithm or financial model.",
+          "findings": []
+        },
+        {
+          "id": "M3",
+          "state": "na",
+          "reason": "Repository-scope architecture/configuration remains root-owned.",
+          "findings": []
+        },
+        {
+          "id": "M4",
+          "state": "reviewed",
+          "reason": "Paper-only module contract and explicit shared result scope agree with owner-home write. No strategy/forecast model claim changed.",
+          "findings": []
+        },
+        {
+          "id": "T1",
+          "state": "addressed_verification_pending",
+          "reason": "Missing selected-run owner-home boundary test authored at ecosystem/tests/test_control_http.py:191-241 and entire authored delta reread. Root owns guarded execution; no pass result claimed.",
+          "findings": [
+            "CONTROL-T1-OWNER-HOME"
+          ]
+        },
+        {
+          "id": "T2",
+          "state": "na",
+          "reason": "Repository-scope dependency/supply-chain review remains root-owned.",
+          "findings": []
+        },
+        {
+          "id": "T3",
+          "state": "na",
+          "reason": "Repository-scope tooling review remains root-owned.",
+          "findings": []
+        },
+        {
+          "id": "T4",
+          "state": "na",
+          "reason": "Production module, not a test source; suite timing/fixture isolation is not in this file.",
+          "findings": []
+        },
+        {
+          "id": "M5",
+          "state": "na",
+          "reason": "Library dispatch module has no owner-facing runnable entrypoint.",
+          "findings": []
+        }
+      ],
+      "active_passes": [
+        "C1",
+        "C2",
+        "C3",
+        "S1",
+        "S2",
+        "S3",
+        "S4",
+        "S5",
+        "P1",
+        "P2",
+        "M1",
+        "M2",
+        "M4"
+      ],
+      "review_method": "Complete original source read or exact hash-verified inherited complete read, plus complete recorded current delta. See the linked per-file receipt; hashes never substitute for semantic reads."
+    },
+    {
+      "path": "ecosystem/tests/test_control_http.py",
+      "sha256": "efb3092e3bf1233d099fb7cbcba81e484ccb7faff817a2716edcec7d68fa9789",
+      "blob_sha": "c422567e468ab91b4bd9b9c565d460a3d104fe1c",
+      "lines": 298,
+      "evidence": ".cdo/reviews-2026-11-13/cdo-forecast-control-delta.json",
+      "passes": {
+        "C1": "reviewed: registered research path must satisfy experiment_home before real queued dispatch; result and primary/selected stores distinguish binding.",
+        "C2": "reviewed: authenticated action JSON includes exact declared keys plus existing run_id envelope; expected result scope/revision are asserted.",
+        "C3": "reviewed: test would fail if self.home were replaced by selected home; nonexistence and default selected revision both assert absent mutation.",
+        "S1": "reviewed: temporary fixture only; same-origin/nonce action helper retained; no external provider or live owner operation invoked by test body.",
+        "S2": "reviewed: existing fixture cleanup closes server/worker; monotonic deadline bounds asynchronous receipt polling.",
+        "S3": "reviewed: finite fixed instrument/seconds/revision/run_id fixture; DB insertion is parameterized and validates path fixture through public resolver.",
+        "S4": "reviewed: existing unittest/stdlib/loopback integration conventions retained.",
+        "S5": "reviewed: asserts persisted action state/result and primary/selected storage effects; no sensitive content logged.",
+        "P1": "reviewed: one small fixture registration and bounded polling; no generated payloads or broad scans.",
+        "P2": "reviewed: fixture registration commits before action submit; durable worker serialization remains real; no live service/process invocation.",
+        "M1": "reviewed: explicit behavior-focused test name and straightforward fixture/action/assertions; adjacent test preserved.",
+        "M2": "reviewed: uses existing action/request helpers and control/preferences APIs; no model logic copied.",
+        "M3": "N/A: root-owned repository architecture pass.",
+        "M4": "reviewed: test name and assertions agree with shared owner scope.",
+        "T1": "reviewed: adds missing ownership boundary regression assertions; root guarded execution remains pending.",
+        "T2": "N/A: root-owned repository dependency pass.",
+        "T3": "N/A: root-owned repository tooling pass.",
+        "T4": "reviewed: real short poll is necessary for genuine asynchronous loopback integration; bounded existing monotonic pattern retained, no fake-timer rewrite or fixture hoist.",
+        "M5": "N/A: test file has no owner-facing standalone entrypoint."
+      },
+      "active_passes": [
+        "C1",
+        "C2",
+        "C3",
+        "S1",
+        "S2",
+        "S3",
+        "S4",
+        "S5",
+        "P1",
+        "P2",
+        "M1",
+        "M2",
+        "M4",
+        "T1",
+        "T4"
+      ],
+      "review_method": "Complete original source read or exact hash-verified inherited complete read, plus complete recorded current delta. See the linked per-file receipt; hashes never substitute for semantic reads."
+    },
+    {
+      "path": "ecosystem/web.py",
+      "sha256": "2b6468d6eb5dca218dc90f366a0488098d41812e6b67ad33fbaf569cb295c53d",
+      "blob_sha": "d7ffd21f3b453337313590d5b4ff369f6955901b",
+      "lines": 586,
+      "evidence": ".cdo/reviews-2026-11-13/cdo-forecast-web-delta.json",
+      "passes": [
+        {
+          "id": "C1",
+          "state": "reviewed",
+          "reason": "Read exact added keyword and report call. controls.experiment_home(run_id) continues to select ensemble/archive data; controls.home selects the independent forecast owner. No changed runtime correctness defect substantiated.",
+          "findings": []
+        },
+        {
+          "id": "C2",
+          "state": "reviewed",
+          "reason": "votes.report accepts keyword-only forecast_home. It passes the same primary home to forecast_settings and forecast_report, while the original positional home continues through _report. Existing report return envelope is unchanged.",
+          "findings": []
+        },
+        {
+          "id": "C3",
+          "state": "reviewed",
+          "reason": "Constructed static counterexamples for registered non-current run, unknown run, forged forecast_home query, repeated interval, 4s/301s horizons, missing frame and stale primary source. Unknown/duplicate/forged parameters reject; forecasts remain bounds checked and retained/waiting state remains explicit. Missing distinct-home GET regression is T1.",
+          "findings": []
+        },
+        {
+          "id": "S1",
+          "state": "reviewed",
+          "reason": "Stage 0.5 repeated before source inspection; no reviewer-directed directive or hostile halt trigger found. Added owner home is server-owned, not user-supplied. Loopback/Host/Origin/CSP gates remain intact before report execution; response redaction remains in _json.",
+          "findings": []
+        },
+        {
+          "id": "S2",
+          "state": "reviewed",
+          "reason": "No new resource ownership or exception handling added. Forecast read uses a closing read-only SQLite connection; route retains fixed JSON 400/503 boundaries and structured owner-failure logging. Missing or invalid source frames cannot become a fresh result.",
+          "findings": []
+        },
+        {
+          "id": "S3",
+          "state": "reviewed",
+          "reason": "_query accepts only instrument, run_id, interval and strategy, with exactly one value per key. Registered experiment validation remains in experiment_home. Forecast horizon is integer 5..300 through valid_seconds; no request can choose forecast_home or a path.",
+          "findings": []
+        },
+        {
+          "id": "S4",
+          "state": "reviewed",
+          "reason": "New keyword argument uses supported Python syntax and standard Path ownership already established at make_server. No platform, dependency or CLI compatibility change introduced.",
+          "findings": []
+        },
+        {
+          "id": "S5",
+          "state": "reviewed",
+          "reason": "Previously audited _owner_failure still emits only fixed event, operation and exception class. GET failures still return fixed owner_data_unavailable JSON without exception text, request targets, headers or nonce. The delta adds no external call or hidden operational action.",
+          "findings": []
+        },
+        {
+          "id": "P1",
+          "state": "reviewed",
+          "reason": "Added argument reads an existing attribute. Bounded settings/frame reads already occur in votes.report; no duplicated operation or new scan introduced by the line.",
+          "findings": []
+        },
+        {
+          "id": "P2",
+          "state": "reviewed",
+          "reason": "controls.home is fixed when the control plane is constructed. Per-request selected home remains local. The delta adds no mutable state, worker/service start, lock or retry.",
+          "findings": []
+        },
+        {
+          "id": "M1",
+          "state": "reviewed",
+          "reason": "The explicit forecast_home keyword makes the two owner scopes readable and introduces no magic value or new configurable parameter.",
+          "findings": []
+        },
+        {
+          "id": "M2",
+          "state": "reviewed",
+          "reason": "The route delegates through the existing report implementation. No duplicate forecast reader, configuration logic or reusable utility added.",
+          "findings": []
+        },
+        {
+          "id": "M3",
+          "state": "na",
+          "reason": "Repository-scope pass owned by root; this bounded file delta does not establish repository coverage.",
+          "findings": []
+        },
+        {
+          "id": "M4",
+          "state": "reviewed",
+          "reason": "Inspected make_server and module docstrings plus report docstring. GET remains an owner-derived local read, with independent live projection scope in the returned display metadata. No documentation contradicted by the one-line delta.",
+          "findings": []
+        },
+        {
+          "id": "T1",
+          "state": "reviewed",
+          "reason": "Inspected meaningful selected-run HTTP regression authored at ecosystem/tests/test_web.py:210. WEB-FORECAST-T1-1 is fixed in source pending parent qualified execution; no unrelated test or source altered.",
+          "findings": [
+            "WEB-FORECAST-T1-1"
+          ]
+        },
+        {
+          "id": "T2",
+          "state": "na",
+          "reason": "Repository-scope pass owned by root; this bounded file delta does not establish repository coverage.",
+          "findings": []
+        },
+        {
+          "id": "T3",
+          "state": "na",
+          "reason": "Repository-scope pass owned by root; this bounded file delta does not establish repository coverage.",
+          "findings": []
+        },
+        {
+          "id": "T4",
+          "state": "na",
+          "reason": "Non-test production source; suite performance remains root/test-file scope.",
+          "findings": []
+        },
+        {
+          "id": "M5",
+          "state": "reviewed",
+          "reason": "Conditional active: module ships main entrypoint. Inspected argparse own-module example, required home, safe port default and fixed owner-unavailable exit. One keyword in the GET route changes no entrypoint/environment/preflight behavior; inherited M5 resolution retained. No subprocess or live entrypoint verification performed.",
+          "findings": []
+        }
+      ],
+      "active_passes": [
+        "C1",
+        "C2",
+        "C3",
+        "S1",
+        "S2",
+        "S3",
+        "S4",
+        "S5",
+        "P1",
+        "P2",
+        "M1",
+        "M2",
+        "M4",
+        "T1",
+        "M5"
+      ],
+      "review_method": "Complete original source read or exact hash-verified inherited complete read, plus complete recorded current delta. See the linked per-file receipt; hashes never substitute for semantic reads."
+    },
+    {
+      "path": "ecosystem/tests/test_web.py",
+      "sha256": "3ff24f783a5a34f805bef221e92fbd93a0da2cc4a48df186e74afcf538cddb16",
+      "blob_sha": "3e74a07aea9f5c23ed8ed92ebfc705e14c309ba7",
+      "lines": 298,
+      "evidence": ".cdo/reviews-2026-11-13/cdo-forecast-web-delta.json",
+      "passes": [
+        {
+          "id": "C1",
+          "state": "reviewed",
+          "reason": "Registered experiment row commits before HTTP request. Query resolves to a real selected research home. Assertions prove HTTP success, selected ensemble home, distinct primary forecast home and exact instrument/strategy/17s interval.",
+          "findings": []
+        },
+        {
+          "id": "C2",
+          "state": "reviewed",
+          "reason": "assert_called_once_with matches votes.report keyword-only forecast_home and existing interval/strategy API. Test uses existing body helper and public ControlPlane experiment_home contract.",
+          "findings": []
+        },
+        {
+          "id": "C3",
+          "state": "reviewed",
+          "reason": "Counterexample replacing forecast_home with selected_home fails the new assertion because selected_home != controls.home; routing the ensemble to primary home also fails. Explicit run_id exercises the formerly untested selected-home branch.",
+          "findings": []
+        },
+        {
+          "id": "S1",
+          "state": "reviewed",
+          "reason": "Injection gate repeated for authored test data; fixture labels and query are inert. Only temporary registered homes used; no secrets or live owner reads. votes.report mocked at the route owner boundary.",
+          "findings": []
+        },
+        {
+          "id": "S2",
+          "state": "reviewed",
+          "reason": "Existing per-test server/temp cleanup remains intact. database context closes/commits before GET. No new threads, subprocesses, network beyond qualified loopback test fixture, sleeps or external resources added.",
+          "findings": []
+        },
+        {
+          "id": "S3",
+          "state": "reviewed",
+          "reason": "Valid registered run_id and percent-encoded instrument pass through actual GET parsing. Assertions retain exact ZEC/USDT instrument, macd strategy and 17s horizon selector.",
+          "findings": []
+        },
+        {
+          "id": "S4",
+          "state": "reviewed",
+          "reason": "Stdlib unittest/Path and existing control.database context used; no platform-specific fixture or dependency added.",
+          "findings": []
+        },
+        {
+          "id": "S5",
+          "state": "reviewed",
+          "reason": "New success route is checked through JSON envelope ok plus exact owner call. Existing fixed failure metadata, redaction and WARNING assertions unchanged.",
+          "findings": []
+        },
+        {
+          "id": "P1",
+          "state": "reviewed",
+          "reason": "One constant-sized synthetic experiment row and one request; no corpus scan or unnecessary fixture duplication.",
+          "findings": []
+        },
+        {
+          "id": "P2",
+          "state": "reviewed",
+          "reason": "Fixture database commits before server thread reads it; mock encloses request lifecycle. Test uses existing per-test independent homes and server teardown.",
+          "findings": []
+        },
+        {
+          "id": "M1",
+          "state": "reviewed",
+          "reason": "Descriptive test name identifies the primary forecast owner invariant. Literal fixture values are deterministic test inputs, not production settings.",
+          "findings": []
+        },
+        {
+          "id": "M2",
+          "state": "reviewed",
+          "reason": "Reuses WebTests setup/body and existing control.database helper; no new request/server utility.",
+          "findings": []
+        },
+        {
+          "id": "M3",
+          "state": "na",
+          "reason": "Repository-scope pass owned by root.",
+          "findings": []
+        },
+        {
+          "id": "M4",
+          "state": "reviewed",
+          "reason": "Existing module description remains accurate. Test name and assertions document the two-home boundary without changing public usage.",
+          "findings": []
+        },
+        {
+          "id": "T1",
+          "state": "reviewed",
+          "reason": "New real HTTP selected-run regression closes WEB-FORECAST-T1-1 at source level and catches either owner being swapped, lost/mutated selectors or unsuccessful route. Parent guarded execution remains pending.",
+          "findings": []
+        },
+        {
+          "id": "T2",
+          "state": "na",
+          "reason": "Repository-scope pass owned by root.",
+          "findings": []
+        },
+        {
+          "id": "T3",
+          "state": "na",
+          "reason": "Repository-scope pass owned by root.",
+          "findings": []
+        },
+        {
+          "id": "T4",
+          "state": "reviewed",
+          "reason": "Added test reuses existing 0.01-second fixture shutdown polling and performs no sleep/poll loop. Mutating SQLite fixture stays per test; no timing configuration or isolation weakened.",
+          "findings": []
+        },
+        {
+          "id": "M5",
+          "state": "na",
+          "reason": "Test module; no owner-facing application entrypoint changed.",
+          "findings": []
+        }
+      ],
+      "active_passes": [
+        "C1",
+        "C2",
+        "C3",
+        "S1",
+        "S2",
+        "S3",
+        "S4",
+        "S5",
+        "P1",
+        "P2",
+        "M1",
+        "M2",
+        "M4",
+        "T1",
+        "T4"
+      ],
+      "review_method": "Complete original source read or exact hash-verified inherited complete read, plus complete recorded current delta. See the linked per-file receipt; hashes never substitute for semantic reads."
+    },
+    {
+      "path": "ecosystem/web/app.js",
+      "sha256": "dffa59ad04d65461bded9e369f83214cff69f74bab9f7f0cdc2724c4f37a2b6b",
+      "blob_sha": "ee8549383740eea8b153b32a5dd6ac5e9df23ed6",
+      "lines": 1298,
+      "evidence": ".cdo/reviews-2026-11-13/cdo-forecast-app-delta.json",
+      "passes": [
+        {
+          "id": "C1",
+          "state": "ran",
+          "reason": "Traced storage validation/defaults, preference sync, cache/holding render and failure/success receipt transitions; found the two concrete state paths recorded below. Both root-qualified failing paths now have minimal fixes statically rereviewed.",
+          "finding_ids": [
+            "forecast-app-legacy-guard",
+            "forecast-app-hold-after-receipt"
+          ]
+        },
+        {
+          "id": "C2",
+          "state": "ran",
+          "reason": "Compared new action payload and settings revision to control.py473-478 and test_control_http.py158-241; compared waiting frame shape to forecast.py511-607. Found legacy guard mismatch and missing post-receipt hold.",
+          "finding_ids": [
+            "forecast-app-legacy-guard",
+            "forecast-app-hold-after-receipt"
+          ]
+        },
+        {
+          "id": "C3",
+          "state": "ran",
+          "reason": "Authored mocked DOM counterexamples for legacy edit with other rails blocked, and success-before-first-new-horizon frame plus correct replacement. Tests were not executed by this agent; root owns qualified RED/GREEN.",
+          "finding_ids": [
+            "forecast-app-legacy-guard",
+            "forecast-app-hold-after-receipt"
+          ]
+        },
+        {
+          "id": "S1",
+          "state": "ran",
+          "reason": "Injection gate ran on all delta/context reads. No reviewer directives found. Dynamic forecast strategy/price/ranking/error text reaches textContent; no HTML/eval/signing/credentials or new endpoint transport introduced.",
+          "finding_ids": []
+        },
+        {
+          "id": "S2",
+          "state": "ran",
+          "reason": "Traced submitAction five/15second timeout, durable unknown/refused action states, finally cleanup and forecast failed/interrupted rollback; no new automatic submit retry. Legacy refusal mismatch is recorded as correctness/contract finding.",
+          "finding_ids": [
+            "forecast-app-legacy-guard"
+          ]
+        },
+        {
+          "id": "S3",
+          "state": "ran",
+          "reason": "Reviewed safe integer5-300 input bounds, v2 persisted interval schema, instrument/horizon/cadence/source/kind/time/positiveprice/direction/version/selected-strategy gates. Cached content retains captured frame identity.",
+          "finding_ids": []
+        },
+        {
+          "id": "S4",
+          "state": "ran",
+          "reason": "Uses existing browser features only: Map/Set/optional chaining/Intl/AbortController/fetch and DOM textContent. No dependency/runtime/platform boundary change; no browser acceptance claimed.",
+          "finding_ids": []
+        },
+        {
+          "id": "S5",
+          "state": "ran",
+          "reason": "Invalid input announces bounded guidance. Actions retain refusal, unknown, success and revision feedback in existing durable ledger. Retained, provisional and previous-horizon strings inspected for truthful status; hold-loss finding recorded.",
+          "finding_ids": []
+        },
+        {
+          "id": "P1",
+          "state": "ran",
+          "reason": "Delta does finite per-render catalog scans and one lookup/cache per view; no new polling loop, network fan-out or CPU-heavy work. Formatter allocation is small; no measured performance finding invented.",
+          "finding_ids": []
+        },
+        {
+          "id": "P2",
+          "state": "ran",
+          "reason": "Traced captured run/coin/strategy at save, forecastSaving scope, pendingPrefs CAS, oracleViewKey response guard, interval switch microtask refresh, run/coin/strategy cache separation. Post-save frame readiness race recorded.",
+          "finding_ids": [
+            "forecast-app-hold-after-receipt"
+          ]
+        },
+        {
+          "id": "M1",
+          "state": "ran",
+          "reason": "Existing style and helpers retained. Bounds5-300 and10second bars are fixed public contract checks, not new tunable configuration. Unused forecastPreferenceScopes/display locals are Low only and omitted.",
+          "finding_ids": []
+        },
+        {
+          "id": "M2",
+          "state": "ran",
+          "reason": "Reuses text/node/fillSelect/get/submitAction/preferences and current renderer. Repeated two-control pair literals are small and have no concrete Medium impact.",
+          "finding_ids": []
+        },
+        {
+          "id": "M4",
+          "state": "ran",
+          "reason": "Compared copy to source: chosen strategy, uncalibrated recent calls, reference price/source,10second bars, horizon/cadence and indicative/non-profit semantics. Held values must retain actual frame horizon/issued/target, as enforced by new test.",
+          "finding_ids": []
+        },
+        {
+          "id": "T1",
+          "state": "ran",
+          "reason": "Read relevant mock DOM harness/test_ui_contract.py1-225 plus new219-261 cases and HTTP preference contract158-241. Existing tests cover bounds, cache isolation, queued hold, success with ready frame and stale request response; new tests cover the two missing transitions.",
+          "finding_ids": [
+            "forecast-app-legacy-guard",
+            "forecast-app-hold-after-receipt"
+          ]
+        },
+        {
+          "id": "M3",
+          "state": "na",
+          "reason": "Repo-scope architecture/settings assessment is root-owned; this delta audit covers one browser file."
+        },
+        {
+          "id": "T2",
+          "state": "na",
+          "reason": "Repo-scope supply-chain assessment is root-owned; this delta adds no dependency."
+        },
+        {
+          "id": "T3",
+          "state": "na",
+          "reason": "Repo-scope tooling assessment and all commands are root-owned."
+        },
+        {
+          "id": "T4",
+          "state": "na",
+          "reason": "Non-test app source; separate test_file_review runs T4 on the changed test delta."
+        },
+        {
+          "id": "M5",
+          "state": "na",
+          "reason": "Browser asset loaded by existing UI; no new runnable CLI/entrypoint, flags or environment setup."
+        }
+      ],
+      "active_passes": [
+        "C1",
+        "C2",
+        "C3",
+        "S1",
+        "S2",
+        "S3",
+        "S4",
+        "S5",
+        "P1",
+        "P2",
+        "M1",
+        "M2",
+        "M4",
+        "T1"
+      ],
+      "review_method": "Complete original source read or exact hash-verified inherited complete read, plus complete recorded current delta. See the linked per-file receipt; hashes never substitute for semantic reads."
+    },
+    {
+      "path": "ecosystem/tests/test_ui_contract.py",
+      "sha256": "c9ceee657a54e98d82f8e4e197d9e926a3312caea00d82b4caba1c49d8e4d27c",
+      "blob_sha": "49898d083c249d546bfa0511e5b8d6c2f098eb66",
+      "lines": 521,
+      "evidence": ".cdo/reviews-2026-11-13/cdo-forecast-app-delta.json",
+      "passes": [
+        {
+          "id": "C1",
+          "state": "ran",
+          "reason": "Read the entire HEAD-to-current test delta and required current fixture/assertion/subprocess context. v2 settings schema, live price cache, hold transitions and request identity assertions agree with final app behavior.",
+          "findings": []
+        },
+        {
+          "id": "C2",
+          "state": "ran",
+          "reason": "Asserted new action name, captured legacy run, instrument, seconds and expected revision; waiting DTO is the actual report shape, and successful revision does not imply first-frame availability.",
+          "findings": []
+        },
+        {
+          "id": "C3",
+          "state": "ran",
+          "reason": "Two independently diagnosed counterexamples were added before their fixes. Root separately reproduced legacy POSTcount0 and post-receipt Unavailable failures. New assertions require held real horizon/times plus valid-new-frame replacement.",
+          "findings": []
+        },
+        {
+          "id": "S1",
+          "state": "ran",
+          "reason": "Injection gate ran on complete delta/context; fixture text stayed data. New fetch implementations are local async stubs; no credentials/signing/provider/service network added.",
+          "findings": []
+        },
+        {
+          "id": "S2",
+          "state": "ran",
+          "reason": "Existing bounded Node subprocess wrappers and error propagation remain unchanged. Both new fixtures replace fetch and freeze polling; errors throw offline rather than touching owners.",
+          "findings": []
+        },
+        {
+          "id": "S3",
+          "state": "ran",
+          "reason": "Fixtures distinguish5-300 validation, changed coin/strategy/horizon/run scopes and CASrevision. No removed safety assertion or widened action allowlist in test expectations.",
+          "findings": []
+        },
+        {
+          "id": "S4",
+          "state": "ran",
+          "reason": "No new dependency or runtime requirement. Existing Python unittest/Node VM process boundary and timeouts are unchanged; platform/browser acceptance remains separate.",
+          "findings": []
+        },
+        {
+          "id": "S5",
+          "state": "ran",
+          "reason": "Behavioral assertions verify user-visible price, delayed/waiting labels, horizon/cadence/timestamps, legacy policy feedback and durable revision completion; no assertion-free coverage exercise.",
+          "findings": []
+        },
+        {
+          "id": "P1",
+          "state": "ran",
+          "reason": "Added constant-size fixtures only. No data acquisition, large input or real timer/sleep in new cases; no speculative optimization.",
+          "findings": []
+        },
+        {
+          "id": "P2",
+          "state": "ran",
+          "reason": "New success-before-frame test reproduces the actual action-ledger-before-selected-render order and requires replacement only on valid new frame. Each fixture owns VM/DOM/state; no shared-state hoisting.",
+          "findings": []
+        },
+        {
+          "id": "M1",
+          "state": "ran",
+          "reason": "New cases follow existing harness and use distinct action IDs. Explicit failure messages describe the invariant; public data values are synthetic.",
+          "findings": []
+        },
+        {
+          "id": "M2",
+          "state": "ran",
+          "reason": "Reuses existing fixture/read/element helpers; mutable per-case forecast DTOs remain isolated. No new general framework or runtime code copy.",
+          "findings": []
+        },
+        {
+          "id": "M4",
+          "state": "ran",
+          "reason": "Existing VM DOM limitation remains explicit. Delta test comments describe actual source/run/cache constraints; no installed-browser or financial-return success claim.",
+          "findings": []
+        },
+        {
+          "id": "T1",
+          "state": "ran",
+          "reason": "Full delta assertions reviewed: schema migration, rejected oldhour input, retained unavailable frame, exact coin/strategy/horizon cache gates, editable bounds/CAS, queued/applied waiting and valid replacement, legacy-exception with other guards retained.",
+          "findings": []
+        },
+        {
+          "id": "T4",
+          "state": "ran",
+          "reason": "Reviewed test-suite performance pass: new cases use existing fake timers and independent mutable VM state, no real sleeps or process additions. Hoisting would share mutation and is not justified; Node subprocess timeout remains30seconds.",
+          "findings": []
+        },
+        {
+          "id": "M3",
+          "state": "na",
+          "reason": "Root-owned repo architecture; test delta only."
+        },
+        {
+          "id": "T2",
+          "state": "na",
+          "reason": "Root-owned repo supply chain; no dependency change."
+        },
+        {
+          "id": "T3",
+          "state": "na",
+          "reason": "Root-owned tooling/verify commands; none executed by this agent."
+        },
+        {
+          "id": "M5",
+          "state": "na",
+          "reason": "unittest/Node fixture, no new public tool entrypoint."
+        }
+      ],
+      "active_passes": [
+        "C1",
+        "C2",
+        "C3",
+        "S1",
+        "S2",
+        "S3",
+        "S4",
+        "S5",
+        "P1",
+        "P2",
+        "M1",
+        "M2",
+        "M4",
+        "T1",
+        "T4"
+      ],
+      "review_method": "Complete original source read or exact hash-verified inherited complete read, plus complete recorded current delta. See the linked per-file receipt; hashes never substitute for semantic reads."
+    },
+    {
+      "path": "ecosystem/votes.py",
+      "sha256": "9871ad3b02d3c983913a30152c58c58d3c39ea50e3d5acef4a2d843df7025241",
+      "blob_sha": "d56e2d528a6aaa2d276cb43fca59d704c46b2a80",
+      "lines": 425,
+      "evidence": ".cdo/reviews-2026-11-13/cdo-forecast-votes-delta.json",
+      "passes": {
+        "C1": {
+          "state": "reviewed",
+          "reason": "Reviewed complete integration delta plus exact one-line closure. Native interval mismatch now always calls _unavailable_display; independent live_forecast is appended afterward and does not inherit ensemble authority."
+        },
+        "C2": {
+          "state": "reviewed",
+          "reason": "Exact instrument/strategy/forecast owner binding preserved. Removing the ten-second bypass restores native ensemble interval identity without changing live horizon/cadence inputs."
+        },
+        "C3": {
+          "state": "reviewed",
+          "reason": "Root guarded RED actually reached the new status assertion and failed available != unavailable. Exact source one-line closure restores the previously accepted mismatch path; root GREEN remains pending."
+        },
+        "S1": {
+          "state": "reviewed",
+          "reason": "Injection gate ran before source review. No reviewer-directed directive, secret, code evaluation or order operation found in reviewed delta and context."
+        },
+        "S2": {
+          "state": "reviewed",
+          "reason": "Reviewed new preference/report read paths and existing error contracts. No write, provider call, resource creation or service lifecycle added by votes.report; downstream forecast readers use bounded read-only connections."
+        },
+        "S3": {
+          "state": "reviewed",
+          "reason": "String validation and downstream integer 5-300 validation preserved. Native mismatches now always clear qualification and graph, including ten seconds; no input normalization added."
+        },
+        "S4": {
+          "state": "reviewed",
+          "reason": "New local imports and integer conversion use repository-supported Python/stdlib features. No new runtime or platform compatibility assumption introduced."
+        },
+        "S5": {
+          "state": "reviewed",
+          "reason": "Inspected live_refresh_seconds, supported range, independent scope and existing explicit unavailable reasons. No new silent catch or secret output in votes delta."
+        },
+        "P1": {
+          "state": "reviewed",
+          "reason": "New work is a constant number of preference/report reads. No source scan, unbounded collection or algorithm duplication added in votes delta."
+        },
+        "P2": {
+          "state": "reviewed",
+          "reason": "votes.report remains a read path. It does not mutate saved voter selection, research policy, frame state or worker ownership; current preference and frame carry their own instrument/scope identity."
+        },
+        "M1": {
+          "state": "reviewed",
+          "reason": "New argument, local imports and metadata follow existing module conventions. No Medium readability defect beyond the behavioral interval condition."
+        },
+        "M2": {
+          "state": "reviewed",
+          "reason": "Separate forecast.report is reused; no forecast mathematics or preference storage logic copied into votes.py."
+        },
+        "M3": {
+          "state": "na",
+          "reason": "N/A: repository architecture and centralized-configuration pass is root-owned."
+        },
+        "M4": {
+          "state": "reviewed",
+          "reason": "Read-only/native cadence docstring and independent projection scope now agree with interval guard. Supported seconds metadata remains [5,300]."
+        },
+        "T1": {
+          "state": "reviewed",
+          "reason": "Counterexample authored and actual guarded RED inspected with bound source/test hashes. Original native proof assertions retained. Root GREEN/current combined gate pending."
+        },
+        "T2": {
+          "state": "na",
+          "reason": "N/A: repository dependency/supply-chain pass is root-owned."
+        },
+        "T3": {
+          "state": "na",
+          "reason": "N/A: repository tooling pass is root-owned."
+        },
+        "T4": {
+          "state": "na",
+          "reason": "N/A: votes.py is production source; test-file performance disposition appears in the extended test receipt."
+        },
+        "M5": {
+          "state": "na",
+          "reason": "N/A: votes.py is a library module with no standalone runnable entrypoint."
+        }
+      },
+      "active_passes": [
+        "C1",
+        "C2",
+        "C3",
+        "S1",
+        "S2",
+        "S3",
+        "S4",
+        "S5",
+        "P1",
+        "P2",
+        "M1",
+        "M2",
+        "M4",
+        "T1"
+      ],
+      "review_method": "Complete original source read or exact hash-verified inherited complete read, plus complete recorded current delta. See the linked per-file receipt; hashes never substitute for semantic reads."
+    },
+    {
+      "path": "ecosystem/tests/test_votes.py",
+      "sha256": "5064b875d48c9b473cee5a109716152aeaea66d62b26e40a817091b87824f70e",
+      "blob_sha": "43c3cd77f330e474a5b9f578f0fb38fba0246b7b",
+      "lines": 248,
+      "evidence": ".cdo/reviews-2026-11-13/cdo-forecast-votes-delta.json",
+      "passes": {
+        "C1": {
+          "state": "reviewed",
+          "reason": "Real native archive establishes available one-minute ensemble, then ten-second request must clear ensemble signal/balance/qualified members and graph; independent ten-second response remains inspectable."
+        },
+        "C2": {
+          "state": "reviewed",
+          "reason": "Calls the public votes.report API and asserts both native and requested identities. Original native frequency, version provenance and immutability assertions remain."
+        },
+        "C3": {
+          "state": "reviewed",
+          "reason": "Root guarded RED passed the native available/Strong Buy/graph assertions before failing precisely at requested status available != unavailable; test bytes match the immutable source-before manifest."
+        },
+        "S1": {
+          "state": "reviewed",
+          "reason": "Entire existing test and added delta inspected as untrusted data. No reviewer-directed directive or hostile content found. All archive state is isolated under TemporaryDirectory."
+        },
+        "S2": {
+          "state": "reviewed",
+          "reason": "Uses existing per-test owned temporary archive and cleanup. No service, network, subprocess or external owner state in new test."
+        },
+        "S3": {
+          "state": "reviewed",
+          "reason": "Fixed SOL/USD, 1m and 10s fixtures exercise interval identity and separate live_forecast metadata without relaxing source validation."
+        },
+        "S4": {
+          "state": "reviewed",
+          "reason": "Uses existing unittest/stdlib/hashlib fixture conventions and no new dependencies."
+        },
+        "S5": {
+          "state": "reviewed",
+          "reason": "Assertions inspect explicit unavailable reason, empty qualification and graph, live projection metadata and archive/settings read-only effects."
+        },
+        "P1": {
+          "state": "reviewed",
+          "reason": "Adds one small archive fixture and two public report reads. No sleep, process or broad scan added."
+        },
+        "P2": {
+          "state": "reviewed",
+          "reason": "No asynchronous or shared mutable state added; each test keeps its own temporary archive."
+        },
+        "M1": {
+          "state": "reviewed",
+          "reason": "Behavior-focused test name and explicit externally visible assertions. Existing test body and incoming 17s metadata assertions preserved."
+        },
+        "M2": {
+          "state": "reviewed",
+          "reason": "Reuses archive and settings helpers; does not duplicate forecast implementation."
+        },
+        "M3": {
+          "state": "na",
+          "reason": "N/A: repository architecture and centralized-configuration pass is root-owned."
+        },
+        "M4": {
+          "state": "reviewed",
+          "reason": "Test name and native/mismatched/independent assertions describe actual requested contract."
+        },
+        "T1": {
+          "state": "reviewed",
+          "reason": "Meaningful regression added and root guarded RED confirmed against exact test/source hashes. Native control, cleared mismatch outputs and preserved independent ten-second response are asserted; root GREEN is pending."
+        },
+        "T2": {
+          "state": "na",
+          "reason": "N/A: repository dependency/supply-chain pass is root-owned."
+        },
+        "T3": {
+          "state": "na",
+          "reason": "N/A: repository tooling pass is root-owned."
+        },
+        "T4": {
+          "state": "reviewed",
+          "reason": "Per-test mutable SQLite fixture stays isolated. No timers or sleeps added; two bounded reads do not warrant fixture hoisting or parallelization changes."
+        },
+        "M5": {
+          "state": "na",
+          "reason": "Test module has no owner-facing standalone entrypoint."
+        }
+      },
+      "active_passes": [
+        "C1",
+        "C2",
+        "C3",
+        "S1",
+        "S2",
+        "S3",
+        "S4",
+        "S5",
+        "P1",
+        "P2",
+        "M1",
+        "M2",
+        "M4",
+        "T1",
+        "T4"
+      ],
+      "review_method": "Complete original source read or exact hash-verified inherited complete read, plus complete recorded current delta. See the linked per-file receipt; hashes never substitute for semantic reads."
+    },
+    {
+      "path": "scripts/oraclebot_ops.py",
+      "sha256": "67e95016b9a56f2c21f3968563eb93122b9a6fd2595175851ac83f57e84f4a2b",
+      "blob_sha": "b487dd650173e2d22ab552e0799c5c616ec6cb29",
+      "lines": 819,
+      "evidence": ".cdo/reviews-2026-11-13/cdo-forecast-ops-delta.json",
+      "passes": {
+        "C1": {
+          "state": "ran",
+          "result": "source finding statically closed; root verification pending",
+          "detail": "Traced ninth-component addition, mandatory readiness conjunction, five-runtime vs four-pipeline split, report exclusion via expanded RUNTIME_COMPONENTS, install configuration and return-time frame-age check. Source-heartbeat freshness is not recomputed at return; see OPS-FORECAST-1.",
+          "initial_result": "finding",
+          "closure": "Reviewed exact10-line source-only fix and relevant unchanged context. Both source epochs now fail closed at return-time age0..15; no new Medium+ from the closure delta."
+        },
+        "C2": {
+          "state": "ran",
+          "result": "source finding statically closed; root verification pending",
+          "detail": "Read forecast report/main status contract and observer call sites. Fixed --status argv uses the separately declared interpreter and existing pipeline_home; output is ready/state/reason. Current response lacks latest source timestamps, preventing return-time source validation; see OPS-FORECAST-1.",
+          "initial_result": "finding",
+          "closure": "Reviewed exact10-line source-only fix and relevant unchanged context. Both source epochs now fail closed at return-time age0..15; no new Medium+ from the closure delta."
+        },
+        "C3": {
+          "state": "ran",
+          "result": "source finding statically closed; root verification pending",
+          "detail": "Reasoned through absent config, malformed mappings/JSON, bool-as-number, non-finite/overflow price, invalid directions/settings, stale/future issuance, and 300-second horizon with delayed source-status return. Concrete static counterexample OPS-FORECAST-1; no test was run or written.",
+          "initial_result": "finding",
+          "closure": "Reviewed exact10-line source-only fix and relevant unchanged context. Both source epochs now fail closed at return-time age0..15; no new Medium+ from the closure delta."
+        },
+        "S1": {
+          "state": "ran",
+          "result": "no additional Medium+",
+          "detail": "Stage0.5 applied before source read. No reviewer directive/hostile content in inspected delta/context. New subprocess uses an argv array and -I; it executes read-only --status. No shell, provider request, signing/order/control action, credential exposure or widening of existing transport/token/native-owner boundaries."
+        },
+        "S2": {
+          "state": "ran",
+          "result": "no additional Medium+",
+          "detail": "New probe reuses existing shared stdout/stderr 131072-byte, 15-second deadline and exact constructed-child cleanup. Mapping/config/JSON/IO/subprocess/overflow errors become fixed unknown/unavailable output. No retry, raw error/child output publication, or source replacement added."
+        },
+        "S3": {
+          "state": "ran",
+          "result": "source finding statically closed; root verification pending",
+          "detail": "Exact integer interval5..300, horizon/cadence agreement, exact bool source flag, SOL/USD, exact integer direction-1/0/1, finite positive numeric projection and bounded issuance age traced. Source-current flag remains temporally trusted across child return; see OPS-FORECAST-1.",
+          "initial_result": "finding",
+          "closure": "Reviewed exact10-line source-only fix and relevant unchanged context. Both source epochs now fail closed at return-time age0..15; no new Medium+ from the closure delta."
+        },
+        "S4": {
+          "state": "ran",
+          "result": "no additional Medium+",
+          "detail": "Delta adds only stdlib math and Python3-compatible tuple unpacking. Existing stdlib/macOS native constraints, isolated installed-interpreter command and installer checks are preserved; no dependency/runtime installation performed."
+        },
+        "S5": {
+          "state": "ran",
+          "result": "no additional Medium+",
+          "detail": "Forecast outcomes use fixed available/live_forecast_not_current/live_forecast_probe_unavailable reasons and enter existing SQLite samples, incidents/outbox, reports and source-hashed status. Raw payloads, interpreter stderr and credentials are not echoed by the added branch."
+        },
+        "P1": {
+          "state": "ran",
+          "result": "no additional Medium+",
+          "detail": "One bounded local status subprocess per tick, bounded JSON output/finite fixed health fields. Extra status read is additive within existing per-probe budget; no unbounded queue or network fan-out introduced."
+        },
+        "P2": {
+          "state": "ran",
+          "result": "no additional Medium+",
+          "detail": "Sequential sampling retains existing owner.lock and native configuration/definition mismatch refusal. New probe mutates no worker/forecast owner and introduces no shared concurrent writer. Source freshness issue is OPS-FORECAST-1."
+        },
+        "M1": {
+          "state": "ran",
+          "result": "no additional Medium+",
+          "detail": "Separate PIPELINE_COMPONENTS and combined RUNTIME_COMPONENTS maintain legacy indexing semantics; new forecast probe remains a focused adjacent helper. Existing one-file source-hashed installer architecture retained. Unused incoming now parameter is minor only."
+        },
+        "M2": {
+          "state": "ran",
+          "result": "no additional Medium+",
+          "detail": "Reuses existing byte/deadline subprocess helper, health envelope, record/delivery/report lifecycle, installer and settings supplied by forecast CLI. No duplicated evaluator or economic engine."
+        },
+        "M3": {
+          "state": "na",
+          "reason": "Repository architecture/settings review belongs to root; inherited residuals are not closed by this single-file delta."
+        },
+        "M4": {
+          "state": "ran",
+          "result": "no additional Medium+",
+          "detail": "Read observer module/function docs and operations guide130..205. Ninth component, saved5..300-second interval, legacy sample exclusion and separate installed-interpreter/native-migration boundaries match code except heartbeat timing issue OPS-FORECAST-1. Historical install command is explicitly labelled historical."
+        },
+        "T1": {
+          "state": "ran",
+          "result": "source finding statically closed; root verification pending",
+          "detail": "Read existing relevant runtime and new forecast assertions220..386. New tests cover retained/stale/missing/non-finite projections, missing config, return-time frame freshness and mandatory forecast failure. Missing delayed-return source-heartbeat expiration regression is part of OPS-FORECAST-1. Parent provided Ops40 pass is qualified fixture evidence, not a test executed here.",
+          "initial_result": "finding",
+          "closure": "Parent qualified43Ops RED reproduces21 subtest failures,0errors/forbidden/drift. Test file is owned by another reviewer; no test edits/execution here. Fresh GREEN belongs to root."
+        },
+        "T2": {
+          "state": "na",
+          "reason": "Repository dependency/supply-chain review belongs to root. Delta adds only stdlib math."
+        },
+        "T3": {
+          "state": "na",
+          "reason": "Repository tooling/gates and actual test/lint execution belong to root; this subagent may not execute tests or modify tooling."
+        },
+        "T4": {
+          "state": "na",
+          "reason": "Production source, not a test file; no suite parallelization change."
+        },
+        "M5": {
+          "state": "ran",
+          "result": "no additional Medium+",
+          "detail": "Runnable entrypoint conditional applies. Read parser, required install flags, executable validation, usage/missing-prerequisite handling and native source-copy/mismatch admission. New --forecast-python is explicit/required only for install; no interpreter/service install or CLI action executed here. Full current CLI/installed acceptance remains root-owned."
+        }
+      },
+      "active_passes": [
+        "C1",
+        "C2",
+        "C3",
+        "S1",
+        "S2",
+        "S3",
+        "S4",
+        "S5",
+        "P1",
+        "P2",
+        "M1",
+        "M2",
+        "M4",
+        "T1",
+        "M5"
+      ],
+      "review_method": "Complete original source read or exact hash-verified inherited complete read, plus complete recorded current delta. See the linked per-file receipt; hashes never substitute for semantic reads.",
+      "root_final_delta": "Unique observer1.2.1 identity replaces released1.2.0. Exact inverse SHA proves only VERSION changed after independent closure. Fresh291core/43observer/8CLI gates bind final metadata and scripts."
+    },
+    {
+      "path": "scripts/test_oraclebot_ops.py",
+      "sha256": "4235c3b834687bb1a4ebf47e911dbe9403eddb8c6995e18eb85ec95ad26dc964",
+      "blob_sha": "bb75960de30cf4097e1a351774bef82cef34a15f",
+      "lines": 1091,
+      "evidence": ".cdo/reviews-2026-11-13/cdo-forecast-ops-tests-delta.json",
+      "passes": {
+        "C1": {
+          "state": "ran",
+          "detail": "Read every current frozen line and all101 incoming lines. New positive/retained/stale/None/NaN/missing-config assertions and ninth-component tick failure correctly address observer readiness. Later authored refusal matrices are unexecuted and require root RED/GREEN."
+        },
+        "C2": {
+          "state": "ran",
+          "detail": "Compared test fixtures with probe_forecast, runtime_health, reports and tick contracts. Observed forecast ready/state/reason values and canonical source loader. Authored tick fixture now uses actual live_forecast_not_current reason."
+        },
+        "C3": {
+          "state": "ran",
+          "detail": "Static counterexample: deleting source_current/instrument/direction/cadence guards would preserve all three frozen incoming tests. Return-clock issued1009 succeeds at1010 after caller1000; issued990 fails at1010 despite passing caller1000 age bound. No reproduction test executed by this worker."
+        },
+        "S1": {
+          "state": "ran",
+          "detail": "Stage0.5 applied before source review. Full972line frozen test file contained no reviewer-directed hostile instruction. Synthetic token/paths only; new probes mocked; no real secrets, network, provider or service touched."
+        },
+        "S2": {
+          "state": "ran",
+          "detail": "New patches are context-managed and restore after each helper/subtest. New tick test owns a temporary database/home and registers close cleanup. No shared mutable fixture hoisting or new unbounded I/O."
+        },
+        "S3": {
+          "state": "ran",
+          "detail": "Checked current/retained, age, actual finite positive price, canonical instrument/direction/cadence contracts. Frozen source-clock and provenance rejection coverage gap recorded as T1-1. Authored source predicates are strictly0..15s inclusive, distinct from frame future tolerance."
+        },
+        "S4": {
+          "state": "ran",
+          "detail": "Stdlib unittest/mock/tempfile/json only. Added tests use existing supported Python constructs and no dependencies or OS-specific service action. No runtime import/test execution in review."
+        },
+        "S5": {
+          "state": "ran",
+          "detail": "Frozen new assertions check ready/overall/component readiness but omit refusal state/reason. Authored matrices assert exact up/available versus down/live_forecast_not_current outcomes. Test assertions never echo private/provider values."
+        },
+        "P1": {
+          "state": "ran",
+          "detail": "Fixed-size synthetic fixtures and bounded subtest tables only. No inference, empirical optimization, services or paid acquisition."
+        },
+        "P2": {
+          "state": "ran",
+          "detail": "No new async/thread machinery. Patches and local frame objects remain test-local; helper returns a fresh nested dict. Existing loopback/thread test is retained unchanged."
+        },
+        "M1": {
+          "state": "ran",
+          "detail": "Existing unittest structure preserved. New fields are explicit source clocks. Authored forecast_frame helper removes repeated valid fixtures and mutable source cases restore from a fresh valid frame."
+        },
+        "M2": {
+          "state": "ran",
+          "detail": "No runtime predicate copied into tests. Expected source ages and refusal values are independently authored. Helper shares fixture construction only; every distinct assertion remains."
+        },
+        "M3": {
+          "state": "na",
+          "reason": "Repository-scope architecture/settings pass belongs to root TASK-1540."
+        },
+        "M4": {
+          "state": "ran",
+          "detail": "Frozen test name claims actual direction coverage but never exercises direction rejection; included in T1-1 rather than separate severity. Receipt distinguishes inherited baseline review, full current reads, static AST retention and unexecuted authored tests."
+        },
+        "T1": {
+          "state": "ran",
+          "detail": "Found T1-1 Medium in frozen incoming tests. All37 baseline methods AST-identical; frozen40 methods present. Per root authorization, authored3 additional methods plus helper/source clocks, retaining all37 baseline methods. Root owns guarded RED/GREEN and full291 outcome."
+        },
+        "T2": {
+          "state": "na",
+          "reason": "Repository-scope dependency/supply-chain pass belongs to root TASK-1540; no dependency change."
+        },
+        "T3": {
+          "state": "na",
+          "reason": "Repository-scope tooling pass belongs to root TASK-1540; no lint/test command run here."
+        },
+        "T4": {
+          "state": "ran",
+          "detail": "No added sleep, real timer wait, network or process. Frozen return-clock cases use patched clock. Authored refusal matrix uses isolated fresh dicts and does not merge/remove distinct original assertions. Existing shared-global/thread tests were not parallelized."
+        },
+        "M5": {
+          "state": "na",
+          "reason": "Test module only; unchanged unittest.main entrypoint is not a new public owner tool."
+        }
+      },
+      "active_passes": [
+        "C1",
+        "C2",
+        "C3",
+        "S1",
+        "S2",
+        "S3",
+        "S4",
+        "S5",
+        "P1",
+        "P2",
+        "M1",
+        "M2",
+        "M4",
+        "T1",
+        "T4"
+      ],
+      "review_method": "Complete original source read or exact hash-verified inherited complete read, plus complete recorded current delta. See the linked per-file receipt; hashes never substitute for semantic reads."
+    },
+    {
+      "path": "ecosystem/__init__.py",
+      "sha256": "584a5f61d3fe499c23aff8bc4ce7035851c04d38f9dab5e50c3173e62806c4a9",
+      "blob_sha": "6a423094ac762da631ab4002ad8d6bb041bcddf0",
+      "lines": 3,
+      "evidence": ".cdo/reviews-2026-11-13/cdo-forecast-version.json",
+      "passes": {
+        "C1": {
+          "state": "ran",
+          "reason": "Static inspection of all lines confirms a docstring and one string-literal version assignment. The exact byte replacement is 0.4.10 to 0.4.12 only."
+        },
+        "C2": {
+          "state": "ran",
+          "reason": "The exported __version__ remains a string, and version 0.4.12 agrees with the project version in ecosystem/pyproject.toml. The manifest retains solmargintrader-oracle==0.2.4."
+        },
+        "C3": {
+          "state": "ran",
+          "reason": "Adversarial static invariants reject extra statements, targets, non-string values, extra lines, or non-version mutations. Exact inverse replacement and normalized AST equality succeeded. No target code or tests executed."
+        },
+        "S1": {
+          "state": "ran",
+          "reason": "All three lines were read as untrusted data before passes. No reviewer directive, hostile content, secret, dynamic evaluation, executable call, or security-control change appears."
+        },
+        "S2": {
+          "state": "na",
+          "reason": "No I/O, error-handling branch, acquired resource, retry, or timeout exists in this initializer."
+        },
+        "S3": {
+          "state": "na",
+          "reason": "The initializer accepts no input and crosses no external trust boundary."
+        },
+        "S4": {
+          "state": "ran",
+          "reason": "Static ast.parse succeeded for the unchanged docstring and literal assignment shape. This does not establish installed runtime compatibility or behavior."
+        },
+        "S5": {
+          "state": "na",
+          "reason": "No operation, error path, state transition, external call, or logging surface requires instrumentation. No observability credit claimed."
+        },
+        "P1": {
+          "state": "na",
+          "reason": "Only a module docstring and one literal assignment; no algorithm, loop, allocation-heavy path, or I/O warrants a performance pass."
+        },
+        "P2": {
+          "state": "na",
+          "reason": "No concurrency, async work, lock, process lifecycle, or shared mutable operation. No concurrency credit claimed."
+        },
+        "M1": {
+          "state": "ran",
+          "reason": "The established __version__ name, one-line literal assignment, and layout remain readable and unchanged except for the version value."
+        },
+        "M2": {
+          "state": "na",
+          "reason": "No implementation logic exists to deduplicate or extract; package version parity is addressed under C2."
+        },
+        "M3": {
+          "state": "na",
+          "reason": "Repository-scope architecture is outside this three-line file assignment. Existing root-owned M3 Medium residuals remain open."
+        },
+        "M4": {
+          "state": "ran",
+          "reason": "The unchanged lifecycle-orchestration module docstring still describes package scope. This metadata-only delta adds no API or usage behavior requiring new documentation."
+        },
+        "T1": {
+          "state": "na",
+          "reason": "No behavioral branch changed and parent explicitly forbids tests in this subtask. Static identity and AST checks are reported separately, with no runtime or regression-test credit."
+        },
+        "T2": {
+          "state": "na",
+          "reason": "Repository-scope dependency and supply-chain audit is outside scope. Only the requested local Oracle 0.2.4 pin-preservation check was performed."
+        },
+        "T3": {
+          "state": "na",
+          "reason": "Repository-scope tooling audit is outside scope. Parsing this file is not credited as test, lint, CI, or tooling qualification."
+        },
+        "T4": {
+          "state": "na",
+          "reason": "Production metadata source, not a test file. Existing repository T4 blocked residuals remain unchanged."
+        },
+        "M5": {
+          "state": "na",
+          "reason": "This initializer is not a runnable tool entrypoint. Existing repository M5 qualification limits remain unchanged."
+        }
+      },
+      "active_passes": [
+        "C1",
+        "C2",
+        "C3",
+        "S1",
+        "S4",
+        "M1",
+        "M4"
+      ],
+      "review_method": "Complete original source read or exact hash-verified inherited complete read, plus complete recorded current delta. See the linked per-file receipt; hashes never substitute for semantic reads."
+    },
+    {
+      "path": "scripts/build_operation_inventories.py",
+      "sha256": "c7285f8d7aa0e30084863786e7f3f8603ed2066b49b76a865664ef69956a3785",
+      "blob_sha": "60c7af028c0f34752776d487fd433569b2289c22",
+      "lines": 326,
+      "evidence": ".cdo/reviews-2026-11-13/cdo-forecast-inventory-delta.json",
+      "passes": {
+        "C1": {
+          "state": "ran",
+          "conclusion": "Exactly two literal metadata entries at lines 35-36. Removing only those entries makes the entire attribute-free AST identical to HEAD. Deleting only those two source lines byte-matches HEAD. No function or parser semantic change."
+        },
+        "C2": {
+          "state": "ran",
+          "conclusion": "Each entry is a three-string tuple matching the name, source, help_command unpacking contract at lines 262-268. Both source files exist within the repository. Module names map exactly to their source paths. Manual names remain unique; generated IDs use tool: and the unchanged global uniqueness gate at lines 279-281."
+        },
+        "C3": {
+          "state": "ran",
+          "conclusion": "Static adversarial checks considered arity/type mismatch, duplicate explicit IDs, path escape/missing paths and command injection. Both tuples are three nonempty string literals, IDs are distinct, source paths resolve inside root, and the commands are inert help_command strings. No counterexample found. No tests written or run in this bounded assignment."
+        },
+        "S1": {
+          "state": "ran",
+          "conclusion": "Stage 0.5 applied before reviewing source. No reviewer-directed instruction, credential or hostile content found. The tuple values are consumed as JSON metadata, never evaluated or dispatched. The new source files are read as bytes by the unchanged _read helper; they are not imported."
+        },
+        "S2": {
+          "state": "ran",
+          "conclusion": "Both added source paths exist and resolve within root. They use the unchanged _read path and source-hash guard at lines 214-220. No resource ownership, retry or error-handling branch changed."
+        },
+        "S3": {
+          "state": "ran",
+          "conclusion": "New entries are trusted authored literal strings in the existing explicit-source registry. Source containment checks and duplicate-ID refusal remain unchanged. No external input or new trust boundary is introduced."
+        },
+        "S4": {
+          "state": "ran",
+          "conclusion": "Both command texts use the existing python3 -m PACKAGE.MODULE --help form. Module text maps to the corresponding source path. The Python AST parses with no target import. Actual module-help execution and package environment checks remain parent-owned."
+        },
+        "S5": {
+          "state": "na",
+          "reason": "Metadata-only delta introduces no executable event, external call, error branch, log or state transition. Existing logging semantics are unchanged and covered by the inherited complete review."
+        },
+        "P1": {
+          "state": "ran",
+          "conclusion": "Adds two fixed source reads to the existing bounded list; no new traversal, computation loop or unbounded work. The help_command values are stored, not run."
+        },
+        "P2": {
+          "state": "na",
+          "reason": "No asynchronous work, concurrency or shared mutable runtime state changes in two constant tuple additions."
+        },
+        "M1": {
+          "state": "ran",
+          "conclusion": "Names and module-help commands match their source modules and the neighboring ecosystem-pipeline-service convention. Entries stay in the central MANUAL_TOOLS constant."
+        },
+        "M2": {
+          "state": "ran",
+          "conclusion": "Both rows reuse the existing shared tuple schema, containment reader and deterministic metadata path. No runtime logic or dispatch is duplicated."
+        },
+        "M3": {
+          "state": "na",
+          "reason": "Single-file two-row metadata delta. Repository architecture and configuration assessment belongs to the root review and is not re-certified here."
+        },
+        "M4": {
+          "state": "ran",
+          "conclusion": "Help commands accurately identify the module paths. Existing inventory side-effect/signing/ambiguity limitations at lines 264-268 and 285-287 remain unchanged. These entries add navigation metadata and do not claim successful module execution or live forecast operation."
+        },
+        "T1": {
+          "state": "partial",
+          "conclusion": "Inherited complete baseline review records the existing 11 permanent parser tests passing. No parser or function changed. This worker did not run tests; parent owns current real inventory generation/check and preservation of the fresh module-help parse gates."
+        },
+        "T2": {
+          "state": "na",
+          "reason": "No dependency or supply-chain change; repository-scope assessment remains separate."
+        },
+        "T3": {
+          "state": "na",
+          "reason": "No tooling or verification configuration changed. Current lint, build and inventory check execution belongs to the parent."
+        },
+        "T4": {
+          "state": "na",
+          "reason": "Non-test source and no test-suite performance change."
+        },
+        "M5": {
+          "state": "partial",
+          "conclusion": "Static module-help spelling and entrypoint source paths reviewed. No new generator CLI behavior. Actual module-help parse gates are mandatory parent acceptance checks and were not executed by this worker."
+        }
+      },
+      "active_passes": [
+        "C1",
+        "C2",
+        "C3",
+        "S1",
+        "S2",
+        "S3",
+        "S4",
+        "P1",
+        "M1",
+        "M2",
+        "M4"
+      ],
+      "review_method": "Complete original source read or exact hash-verified inherited complete read, plus complete recorded current delta. See the linked per-file receipt; hashes never substitute for semantic reads."
+    }
+  ],
+  "gates": ".cdo/reviews-2026-11-13/forecast-integrated-0.4.12-ops1.2.1-gates.json",
+  "limits": [
+    "No incoming PR244 hashes/tests were credited as semantic reads. New files have complete bounded reads; changed files have exact original review inheritance plus complete current deltas.",
+    "All declared test passes are parent root gates. Static reviewers did not execute tests or change owner services.",
+    "The a505 full1563 and15CI-success/3-skip receipt remains a separate exact baseline proof, not a claim of new forecast coverage.",
+    "Existing global M3 architecture,41M5 qualification limits and T4 equivalence disposition remain partial. No CLEAN/CONVERGED claim.",
+    "Installed0.4.11 forecast/UI/observer and pipeline0.4.8 remain unchanged; combined0.4.12 promotion and final CI/delivery are pending."
+  ],
+  "delta": "Bind unique observer1.2.1 and final complete gates including inventory metadata.",
+  "previous_version_sha256": "44f8102a29914d1d8c7d4596e8edadc080bb3678e9351119f7f42bb815d91db6"
+}

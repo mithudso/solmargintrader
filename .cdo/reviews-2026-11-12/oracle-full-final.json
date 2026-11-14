@@ -1,0 +1,429 @@
+{
+  "agent": "backtester_blind_acceptance",
+  "definition_version": "2.0.0",
+  "observed_at": "2026-11-12T22:15:14.841765+00:00",
+  "component": "oracle",
+  "stage": "complete_current_source_offline_integration_gate",
+  "status": "pass",
+  "run_id": "oracle-suite-f320daad2e794c0cabf48b3ed418c1b9",
+  "repo": "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112",
+  "head": "d22bd2454a41ab54020f6363fe505901873891ef",
+  "git_head_query_exit": 0,
+  "git_status_query_exit": 0,
+  "git_status_porcelain": "",
+  "command": [
+    "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/.venv/bin/python",
+    "/tmp/oraclebot-final-oracle-20261112-2x6meqqi/run_suite.py"
+  ],
+  "authorization": {
+    "ORACLEBOT_INDEX_CURRENT": "1",
+    "ORACLEBOT_MERGED_CURRENT": "1",
+    "source": "explicit parent START_FOUR_SHORT_GATES at clean HEADd22bd245"
+  },
+  "launch": "/tmp/oraclebot-final-three-gates-20261112/oracle-final-launch.json",
+  "log": "/tmp/oraclebot-oracle-suite-state-yx7314_9/output.log",
+  "completed_process_exit": 0,
+  "process_seconds": 8.773070416005794,
+  "suite_result": "/tmp/oraclebot-final-oracle-20261112-2x6meqqi/runs/oracle-suite-f320daad2e794c0cabf48b3ed418c1b9/result.json",
+  "suite_seconds": 7.588386374991387,
+  "discovered": {
+    "count": 193,
+    "loader_errors": []
+  },
+  "tests": 193,
+  "failures": [],
+  "errors": [],
+  "skips": [],
+  "loader_errors": [],
+  "forbidden_events": [],
+  "guarded_python_pids": [
+    14523,
+    14537,
+    14540,
+    14542,
+    14544,
+    14546,
+    14549,
+    14551,
+    14562,
+    14590,
+    14599,
+    14612
+  ],
+  "constructed_children": [
+    {
+      "parent_pid": 14523,
+      "test": "oracle.tests.test_cli.CliTests.test_bad_arguments_show_usage_without_echoing_private_values",
+      "child_pid": 14537,
+      "executable": "python",
+      "argv_sha256": "e2baa49591128d290a4e308ed8de2e1e361bc1e6f76b49c8e4e36876f520fdbc",
+      "completed_returncode": 2,
+      "inherited_guard_seen": true
+    },
+    {
+      "parent_pid": 14523,
+      "test": "oracle.tests.test_cli.CliTests.test_bad_arguments_show_usage_without_echoing_private_values",
+      "child_pid": 14540,
+      "executable": "python",
+      "argv_sha256": "b05e35b1ffbb42c1bbedf8da131cf3c74f8002d626fd1e9cb5fc0ee3b96c0b06",
+      "completed_returncode": 2,
+      "inherited_guard_seen": true
+    },
+    {
+      "parent_pid": 14523,
+      "test": "oracle.tests.test_cli.CliTests.test_missing_dependencies_are_cli_prerequisites_and_help_remains_available",
+      "child_pid": 14542,
+      "executable": "python",
+      "argv_sha256": "d7826ffc83526d417023b680dfe4821766b310e1acb8409a00749d77bf80440a",
+      "completed_returncode": 3,
+      "inherited_guard_seen": true
+    },
+    {
+      "parent_pid": 14523,
+      "test": "oracle.tests.test_cli.CliTests.test_missing_dependencies_are_cli_prerequisites_and_help_remains_available",
+      "child_pid": 14544,
+      "executable": "python",
+      "argv_sha256": "5c361d381ec5636e919a4fa780b12aec2c2fd92c992b89ed638dda34eecaa92e",
+      "completed_returncode": 0,
+      "inherited_guard_seen": true
+    },
+    {
+      "parent_pid": 14523,
+      "test": "oracle.tests.test_cli.CliTests.test_missing_dependencies_are_cli_prerequisites_and_help_remains_available",
+      "child_pid": 14546,
+      "executable": "python",
+      "argv_sha256": "a2492e5a891ef1b3fed57604f45f7c4e84639897bde866f83640c4828c6c7677",
+      "completed_returncode": 3,
+      "inherited_guard_seen": true
+    },
+    {
+      "parent_pid": 14523,
+      "test": "oracle.tests.test_cli.CliTests.test_missing_dependencies_are_cli_prerequisites_and_help_remains_available",
+      "child_pid": 14549,
+      "executable": "python",
+      "argv_sha256": "671e96bc870a0cff7f14207246daa79ba2753a1ae27d561163d95f8cd57e63bd",
+      "completed_returncode": 0,
+      "inherited_guard_seen": true
+    },
+    {
+      "parent_pid": 14523,
+      "test": "oracle.tests.test_cli.CliTests.test_secret_fifo_is_refused_before_starting_a_listener",
+      "child_pid": 14551,
+      "executable": "python",
+      "argv_sha256": "025feee8a167ca6377379ed024bc18aa60e29a13d33c9309240514e198505854",
+      "completed_returncode": 2,
+      "inherited_guard_seen": true
+    },
+    {
+      "parent_pid": 14523,
+      "test": "oracle.tests.test_multi_instrument.MultiInstrumentProtocolTests.test_stdio_reader_uses_explicit_archive_instrument",
+      "child_pid": 14562,
+      "executable": "python",
+      "argv_sha256": "07d9b67fac9f5f17fa5ae713d1a377927a8049e5d52f89905d53828bbe78e5af",
+      "completed_returncode": 0,
+      "inherited_guard_seen": true
+    },
+    {
+      "parent_pid": 14523,
+      "test": "oracle.tests.test_selected_server.SelectedProtocolTests.test_actual_stdio_tools_resources_and_selection_invalidation",
+      "child_pid": 14590,
+      "executable": "python",
+      "argv_sha256": "306c86750911240c31a7a763891800a7944acce74614ac2a05636232fd2113fd",
+      "completed_returncode": 0,
+      "inherited_guard_seen": true
+    },
+    {
+      "parent_pid": 14523,
+      "test": "oracle.tests.test_server.ProtocolTests.test_real_stdio_discovery_calls_notifications_and_clean_exit",
+      "child_pid": 14599,
+      "executable": "python",
+      "argv_sha256": "d12523127df41ba316130cb7c9c5d70b97ebfc92e16fbfad118b148b1b923eac",
+      "completed_returncode": 0,
+      "inherited_guard_seen": true
+    },
+    {
+      "parent_pid": 14523,
+      "test": "oracle.tests.test_webhook.WebhookTests.test_http_listener_records_without_order_submission",
+      "child_pid": 14612,
+      "executable": "python",
+      "argv_sha256": "50d136f003783765da07f636efb703648d95568f70bafd76e7f55eace0c6b735",
+      "completed_returncode": 0,
+      "inherited_guard_seen": true
+    }
+  ],
+  "native_children": [],
+  "all_constructed_children_have_completed_wait_poll": true,
+  "os_after_exit": [
+    {
+      "pid": 14523,
+      "query": [
+        "ps",
+        "-p",
+        "14523",
+        "-o",
+        "pid=,ppid=,pgid=,stat=,lstart="
+      ],
+      "completed_exit": 1,
+      "state": ""
+    },
+    {
+      "pid": 14537,
+      "query": [
+        "ps",
+        "-p",
+        "14537",
+        "-o",
+        "pid=,ppid=,pgid=,stat=,lstart="
+      ],
+      "completed_exit": 1,
+      "state": ""
+    },
+    {
+      "pid": 14540,
+      "query": [
+        "ps",
+        "-p",
+        "14540",
+        "-o",
+        "pid=,ppid=,pgid=,stat=,lstart="
+      ],
+      "completed_exit": 1,
+      "state": ""
+    },
+    {
+      "pid": 14542,
+      "query": [
+        "ps",
+        "-p",
+        "14542",
+        "-o",
+        "pid=,ppid=,pgid=,stat=,lstart="
+      ],
+      "completed_exit": 1,
+      "state": ""
+    },
+    {
+      "pid": 14544,
+      "query": [
+        "ps",
+        "-p",
+        "14544",
+        "-o",
+        "pid=,ppid=,pgid=,stat=,lstart="
+      ],
+      "completed_exit": 1,
+      "state": ""
+    },
+    {
+      "pid": 14546,
+      "query": [
+        "ps",
+        "-p",
+        "14546",
+        "-o",
+        "pid=,ppid=,pgid=,stat=,lstart="
+      ],
+      "completed_exit": 1,
+      "state": ""
+    },
+    {
+      "pid": 14549,
+      "query": [
+        "ps",
+        "-p",
+        "14549",
+        "-o",
+        "pid=,ppid=,pgid=,stat=,lstart="
+      ],
+      "completed_exit": 1,
+      "state": ""
+    },
+    {
+      "pid": 14551,
+      "query": [
+        "ps",
+        "-p",
+        "14551",
+        "-o",
+        "pid=,ppid=,pgid=,stat=,lstart="
+      ],
+      "completed_exit": 1,
+      "state": ""
+    },
+    {
+      "pid": 14562,
+      "query": [
+        "ps",
+        "-p",
+        "14562",
+        "-o",
+        "pid=,ppid=,pgid=,stat=,lstart="
+      ],
+      "completed_exit": 1,
+      "state": ""
+    },
+    {
+      "pid": 14590,
+      "query": [
+        "ps",
+        "-p",
+        "14590",
+        "-o",
+        "pid=,ppid=,pgid=,stat=,lstart="
+      ],
+      "completed_exit": 1,
+      "state": ""
+    },
+    {
+      "pid": 14599,
+      "query": [
+        "ps",
+        "-p",
+        "14599",
+        "-o",
+        "pid=,ppid=,pgid=,stat=,lstart="
+      ],
+      "completed_exit": 1,
+      "state": ""
+    },
+    {
+      "pid": 14612,
+      "query": [
+        "ps",
+        "-p",
+        "14612",
+        "-o",
+        "pid=,ppid=,pgid=,stat=,lstart="
+      ],
+      "completed_exit": 1,
+      "state": ""
+    }
+  ],
+  "os_all_recorded_pids_absent": true,
+  "loaded_first_party": [
+    {
+      "pid": 14546,
+      "modules": {
+        "oracle": "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/oracle/__init__.py"
+      }
+    },
+    {
+      "pid": 14562,
+      "modules": {
+        "backtester": "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/backtester/__init__.py",
+        "oracle": "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/oracle/__init__.py"
+      }
+    },
+    {
+      "pid": 14544,
+      "modules": {
+        "oracle": "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/oracle/__init__.py"
+      }
+    },
+    {
+      "pid": 14540,
+      "modules": {
+        "oracle": "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/oracle/__init__.py"
+      }
+    },
+    {
+      "pid": 14599,
+      "modules": {
+        "backtester": "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/backtester/__init__.py",
+        "oracle": "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/oracle/__init__.py"
+      }
+    },
+    {
+      "pid": 14523,
+      "modules": {
+        "backtester": "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/backtester/__init__.py",
+        "oracle": "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/oracle/__init__.py",
+        "ecosystem": "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/ecosystem/__init__.py"
+      }
+    },
+    {
+      "pid": 14542,
+      "modules": {
+        "oracle": "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/oracle/__init__.py"
+      }
+    },
+    {
+      "pid": 14537,
+      "modules": {
+        "oracle": "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/oracle/__init__.py"
+      }
+    },
+    {
+      "pid": 14612,
+      "modules": {
+        "oracle": "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/oracle/__init__.py"
+      }
+    },
+    {
+      "pid": 14549,
+      "modules": {
+        "oracle": "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/oracle/__init__.py"
+      }
+    },
+    {
+      "pid": 14590,
+      "modules": {
+        "backtester": "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/backtester/__init__.py",
+        "oracle": "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/oracle/__init__.py",
+        "ecosystem": "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/ecosystem/__init__.py"
+      }
+    },
+    {
+      "pid": 14551,
+      "modules": {
+        "oracle": "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/oracle/__init__.py"
+      }
+    }
+  ],
+  "source_before": "/tmp/oraclebot-final-oracle-20261112-2x6meqqi/runs/oracle-suite-f320daad2e794c0cabf48b3ed418c1b9/source-before.json",
+  "source_before_sha256": "7eef5f976214fb524cde10830d1b4af36b0b03d7849f7f1f9ee5f32fd0648a7b",
+  "source_after": "/tmp/oraclebot-final-oracle-20261112-2x6meqqi/runs/oracle-suite-f320daad2e794c0cabf48b3ed418c1b9/source-after.json",
+  "source_after_sha256": "7eef5f976214fb524cde10830d1b4af36b0b03d7849f7f1f9ee5f32fd0648a7b",
+  "source_file_count": 682,
+  "source_stable": true,
+  "harness_before": {
+    "sitecustomize.py": "8ac6272adb2fbab773bccdb20dddbd36b481459fd45144c2c01fc0e04726689b",
+    "guard.py": "ecead37813e5e7e6b424a7a4300288d88deb6ea4c95994289f8bd7dcdb1dfcd0",
+    "run_suite.py": "0f8ab753730c6d489df7a45cbe4b0429f76d14cad178c7871107217a6da7affe"
+  },
+  "harness_after": {
+    "sitecustomize.py": "8ac6272adb2fbab773bccdb20dddbd36b481459fd45144c2c01fc0e04726689b",
+    "guard.py": "ecead37813e5e7e6b424a7a4300288d88deb6ea4c95994289f8bd7dcdb1dfcd0",
+    "run_suite.py": "0f8ab753730c6d489df7a45cbe4b0429f76d14cad178c7871107217a6da7affe"
+  },
+  "harness_current": {
+    "sitecustomize.py": "8ac6272adb2fbab773bccdb20dddbd36b481459fd45144c2c01fc0e04726689b",
+    "guard.py": "ecead37813e5e7e6b424a7a4300288d88deb6ea4c95994289f8bd7dcdb1dfcd0",
+    "run_suite.py": "0f8ab753730c6d489df7a45cbe4b0429f76d14cad178c7871107217a6da7affe"
+  },
+  "harness_stable": true,
+  "admissions_sha256": "a13a75fbb9b218f130623eab6881fe34fa7a5fe0426a1cab6a23687e0ccbea2a",
+  "home": "/Users/mitch",
+  "fresh_state_roots": {
+    "SOLTUI_CONFIG_DIR": "/tmp/oraclebot-oracle-suite-state-yx7314_9/soltui_config_dir",
+    "SOLTUI_LOG_DIR": "/tmp/oraclebot-oracle-suite-state-yx7314_9/soltui_log_dir",
+    "SOLTUI_SUPPORT_DIR": "/tmp/oraclebot-oracle-suite-state-yx7314_9/soltui_support_dir",
+    "SOLMARGINTRADER_STORAGE": "/tmp/oraclebot-oracle-suite-state-yx7314_9/solmargintrader_storage",
+    "SOLBOT_HOME": "/tmp/oraclebot-oracle-suite-state-yx7314_9/solbot_home",
+    "SOLBOT_ECOSYSTEM_HOME": "/tmp/oraclebot-oracle-suite-state-yx7314_9/solbot_ecosystem_home",
+    "AERO_LP_HOME": "/tmp/oraclebot-oracle-suite-state-yx7314_9/aero_lp_home",
+    "SOLMT_DATA_DIR": "/tmp/oraclebot-oracle-suite-state-yx7314_9/solmt_data_dir",
+    "SOLTUI_KEY_DIR": "/tmp/oraclebot-oracle-suite-state-yx7314_9/soltui_key_dir",
+    "SOLTUI_LAUNCHAGENTS_DIR": "/tmp/oraclebot-oracle-suite-state-yx7314_9/soltui_launchagents_dir",
+    "SOLTUI_JOURNAL": "/tmp/oraclebot-oracle-suite-state-yx7314_9/soltui_journal",
+    "SOLTUI_APP_SUPPORT_ROOT": "/tmp/oraclebot-oracle-suite-state-yx7314_9/soltui_app_support_root"
+  },
+  "first_failed_attempt_receipt": "/tmp/oraclebot-initial-three-gates-20261112/initial-receipt.json",
+  "focused_remediation_receipt": "/tmp/oraclebot-component-compat-20261112/fixture-final-receipt.json",
+  "limits": [
+    "Only this component suite at exact frozen source/harness is qualified. No whole-repository CLEAN/convergence, profitability, installed/live deployment, billing or service readiness claim.",
+    "Native Node/Git children do not inherit Python hooks. Their exact source/test/payload/binary admissions and completed child accounting qualify only the reviewed fixture commands.",
+    "No source/docs/report/index/ledger/HEAD edits, install, research acquisition, parameter search, provider/model/service/live venue operation, signing or orders.",
+    "First failed full attempts remain failures; this is a separate fresh full run."
+  ]
+}

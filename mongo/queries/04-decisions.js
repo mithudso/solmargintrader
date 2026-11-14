@@ -34,14 +34,18 @@ printjson(
 
 print("\n=== SOL 1d: what each strategy wants ===");
 const sol = db.decisions.findOne({ asset: "SOL", interval: "1d" });
-print(`  bar ${sol.decision_bar.utc}  close ${sol.decision_bar.close}`);
-print(`  executes at: ${sol.execution.applies_to}`);
-sol.strategies.forEach((s) =>
-  print(`  ${s.key.padEnd(18)} ${s.family.padEnd(22)} ${s.action.padEnd(10)} ${s.detail}`),
-);
+if (sol) {
+  print(`  bar ${sol.decision_bar.utc}  close ${sol.decision_bar.close}`);
+  print(`  executes at: ${sol.execution.applies_to}`);
+  sol.strategies.forEach((s) =>
+    print(`  ${s.key.padEnd(18)} ${s.family.padEnd(22)} ${s.action.padEnd(10)} ${s.detail}`),
+  );
+} else {
+  print("No SOL 1d readout is loaded.");
+}
 
 print("\n=== the informative part: which families disagree, per coin ===");
-// A tally across all 25 would read as a vote; these rules are not independent.
+// A tally across all strategies would read as a vote; these rules are not independent.
 // Disagreement BETWEEN families is what carries information.
 printjson(
   db.decisions

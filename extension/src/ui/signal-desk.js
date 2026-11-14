@@ -42,7 +42,12 @@ export function mountSignalDesk(root, { ask, openTool, refreshLive, transport, p
     const s = value?.[STORE];
     if (!s || disposed) return;
     if (['coinbase', 'jupiter'].includes(s.source) && $('#soltuiPriceSource')) $('#soltuiPriceSource').value = s.source;
-    runs = Array.isArray(s.runs) ? s.runs.filter((r) => r?.context?.schema === 1 && Array.isArray(r.rows)).slice(0, 12) : [];
+    runs = (Array.isArray(s.runs) ? s.runs : []).slice(0, 12).flatMap((saved) => {
+      try {
+        const run = runFromEnvelope({ ok: true, command: 'backtest.results', result: saved });
+        return run ? [run] : [];
+      } catch { return []; } // One corrupt browser record cannot disable the workspace.
+    });
     selected = new Set(Array.isArray(s.selected) ? s.selected.filter((id) => runs.some((r) => r.id === id)) : []);
     draft = s.draft?.run && s.draft?.row ? s.draft : null;
     if (/^[A-Z0-9]{1,20}$/.test(s.asset ?? '')) $('#soltuiLiveAsset').value = s.asset;

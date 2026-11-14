@@ -19,7 +19,7 @@ from __future__ import annotations
 
 import math
 from collections.abc import Callable
-from dataclasses import dataclass, field
+from dataclasses import dataclass, field, fields
 from enum import StrEnum
 
 from . import clmath
@@ -225,6 +225,10 @@ class CostInputs:
     penalty_blocks_left: int = 0
     block_time_s: float = 2.0
 
+    def __post_init__(self) -> None:
+        for item in fields(self):
+            finite_number(getattr(self, item.name), item.name, integer=item.name == "penalty_blocks_left")
+
 
 @dataclass(frozen=True)
 class EarnInputs:
@@ -232,6 +236,10 @@ class EarnInputs:
     earn_usd_per_day_current: float  # current deposit's earnings (0 when out of range)
     lvr_usd_per_day_new: float = 0.0  # expected adverse-selection cost of the fresh range while active
     lvr_usd_per_day_current: float = 0.0  # 0 when out of range (an idle deposit has no LVR)
+
+    def __post_init__(self) -> None:
+        for item in fields(self):
+            finite_number(getattr(self, item.name), item.name)
 
 
 @dataclass
@@ -317,6 +325,8 @@ def decide(
     net_new = earn.earn_usd_per_day_new - cfg.lvr_weight * earn.lvr_usd_per_day_new
     net_cur = earn.earn_usd_per_day_current - cfg.lvr_weight * earn.lvr_usd_per_day_current
     benefit = (net_new * occupancy - net_cur) * cfg.horizon_days
+    if not all(math.isfinite(value) for value in (*parts.values(), total_cost, net_new, net_cur, benefit)):
+        raise ValueError("rebalance cost and benefit must be finite; refusing unavailable economic evidence")
     breakdown = {**parts, "benefit": benefit, "occupancy": occupancy, "lvr_new_day": earn.lvr_usd_per_day_new}
     if net_new <= 0 and not in_range:
         return Decision(

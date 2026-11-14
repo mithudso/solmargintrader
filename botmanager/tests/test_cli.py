@@ -2,18 +2,23 @@ from __future__ import annotations
 
 import json
 import os
+import socket
 import subprocess
 import sys
 import tempfile
 import unittest
 import zipfile
 from pathlib import Path
+from urllib.parse import urlsplit
 
 from botmanager.registry import CommandContext, dispatch
+
+from tests import isolated_default_owner
 
 
 class CliTests(unittest.TestCase):
     def setUp(self):
+        self.enterContext(isolated_default_owner())
         self.temp = tempfile.TemporaryDirectory()
         self.addCleanup(self.temp.cleanup)
         self.home = Path(self.temp.name) / "manager"
@@ -35,6 +40,15 @@ class CliTests(unittest.TestCase):
         self.assertEqual(run.returncode, expected, (run.stdout, run.stderr))
         self.assertNotIn("credential-canary-98", run.stdout + run.stderr)
         return json.loads(run.stdout)
+
+    def test_owner_endpoint_fixture_refuses_and_restores(self):
+        original = os.environ.get("SOLBOT_SOLTUI_ENDPOINT")
+        with isolated_default_owner() as endpoint:
+            address = urlsplit(endpoint)
+            self.assertEqual(os.environ["SOLBOT_SOLTUI_ENDPOINT"], endpoint)
+            with self.assertRaises(ConnectionRefusedError):
+                socket.create_connection((address.hostname, address.port), timeout=1)
+        self.assertEqual(os.environ.get("SOLBOT_SOLTUI_ENDPOINT"), original)
 
     def test_empty_reads_and_help_leave_no_home(self):
         self.assertEqual(self.cli("list")["data"]["bots"], [])

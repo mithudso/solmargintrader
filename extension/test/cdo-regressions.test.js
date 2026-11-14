@@ -159,6 +159,77 @@ test('caught price failure persists its phase and type without upstream messages
   assert.equal((await ctx.store.recentEvents())[1].summary.errorDetails[0].stage, 'price');
 });
 
+test('caught venue failures keep configured mock credentials out of every diagnostic sink', async () => {
+  for (const [operation, stage] of [['getPrice', 'price'], ['getOpenOrders', 'reconcile'], ['getFills', 'fills']]) {
+    const ctx = await engineFixture(), logs = [];
+    const credential = 'synthetic-configured-diagnostic-canary';
+    await ctx.configStore.set('secrets', { apiKey: credential });
+    ctx.venue[operation] = async () => {
+      const { apiKey } = await ctx.configStore.get('secrets', {});
+      const error = new Error(`Authorization: Bearer ${apiKey}; x-api-key=${apiKey}`);
+      error.name = apiKey; // Upstream class names are untrusted too.
+      error.status = 503;
+      throw error;
+    };
+    const result = await tick({ ...ctx, log: (event) => logs.push(event) });
+    assert.equal(result.errors.length, 1, operation);
+    assert.deepEqual(result.errorDetails, [{ stage, kind: 'Error', status: 503 }]);
+    assert.equal((await ctx.configStore.getRuntime()).armed, false);
+    assert.equal((await ctx.store.allIntents()).length, 0);
+    for (const [sink, value] of Object.entries({ result, logs, events: await ctx.store.recentEvents() })) {
+      assert.ok(!JSON.stringify(value).includes(credential), `${operation}: ${sink} must exclude upstream diagnostics`);
+    }
+    assert.equal(logs.at(-1).error, result.errors[0].error);
+  }
+});
+
+test('failed mock submissions persist bounded diagnostics and remain unknown without retry', async () => {
+  const ctx = await engineFixture(), logs = [];
+  const credential = 'synthetic-submit-diagnostic-canary';
+  await ctx.configStore.set('secrets', { apiKey: credential });
+  await ctx.configStore.setRuntime({ armed: true }); // In-memory mock venue only.
+  let calls = 0;
+  ctx.venue.placeOrder = async () => {
+    calls++;
+    const { apiKey } = await ctx.configStore.get('secrets', {});
+    const error = new TypeError(`upstream response body: ${apiKey}`);
+    error.status = 502;
+    throw error;
+  };
+  const first = await tick({ ...ctx, log: (event) => logs.push(event) });
+  const intents = await ctx.store.allIntents();
+  assert.ok(calls > 0, 'the mock must reach the submission catch');
+  assert.equal(first.errors.length, calls);
+  assert.ok(intents.every((intent) => intent.status === 'unknown'));
+  assert.ok(first.errorDetails.every((entry) => entry.stage === 'submit' && entry.kind === 'TypeError' && entry.status === 502));
+  assert.ok(intents.every((intent) => intent.error === first.errors.find((entry) => entry.intentKey === intent.intentKey).error));
+  const callsAfterFailure = calls;
+  const second = await tick({ ...ctx, log: (event) => logs.push(event) });
+  assert.equal(calls, callsAfterFailure, 'ambiguous submissions cannot be retried');
+  assert.deepEqual(new Set(second.unknownIntents), new Set(intents.map((intent) => intent.intentKey)));
+  for (const [sink, value] of Object.entries({ first, second, intents, logs, events: await ctx.store.recentEvents() })) {
+    assert.ok(!JSON.stringify(value).includes(credential), `${sink} must exclude upstream diagnostics`);
+  }
+});
+
+test('diagnostic metadata validates the same property values that it copies', async () => {
+  const ctx = await engineFixture(), logs = [];
+  let nameReads = 0, statusReads = 0;
+  ctx.venue.getPrice = async () => {
+    const error = new Error('private-canary');
+    Object.defineProperties(error, {
+      name: { get: () => ++nameReads === 1 ? 'TypeError' : 'private-canary' },
+      status: { get: () => ++statusReads <= 3 ? 503 : 'private-canary' },
+    });
+    throw error;
+  };
+  const result = await tick({ ...ctx, log: (event) => logs.push(event) });
+  assert.equal(nameReads, 1);
+  assert.equal(statusReads, 1);
+  assert.deepEqual(result.errorDetails, [{ stage: 'price', kind: 'TypeError', status: 503 }]);
+  assert.ok(!JSON.stringify({ result, logs, events: await ctx.store.recentEvents() }).includes('private-canary'));
+});
+
 test('production API startup wires security diagnostics without credentials', () => {
   // A fresh child exercises main's real dependency wiring; only the OS listener
   // is replaced, so this fixture cannot bind a port or use owner storage.

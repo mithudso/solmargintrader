@@ -111,6 +111,10 @@ class PaperExperimentTests(unittest.TestCase):
 
 
 class ExperimentPaneTests(unittest.IsolatedAsyncioTestCase):
+    def setUp(self):
+        from soltui.tests.test_tui import offline_console_reads
+        self.enterContext(offline_console_reads())
+
     async def test_tab_shows_strategy_selection_and_paper_run_controls(self):
         from textual.widgets import Button, Select, TabbedContent
         from soltui.tests.test_tui import TEST_SIZE, make_settings

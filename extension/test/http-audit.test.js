@@ -50,3 +50,47 @@ test('transport diagnostics identify attempts and outcomes without headers, quer
   assert.ok(logs.some((event) => event.level === 'error' && event.status === 503));
   assert.ok(!JSON.stringify(logs).includes('TEST_PRIVATE_'));
 });
+
+
+test('response bodies stop at a byte cap and cancel the stream for success and error statuses', async () => {
+  for (const status of [200, 503]) {
+    let pulls = 0, cancelled = false, calls = 0;
+    const body = new ReadableStream({
+      pull(controller) {
+        pulls++;
+        controller.enqueue(new Uint8Array(1024).fill(32));
+        if (pulls === 20) controller.close();
+      },
+      cancel() { cancelled = true; },
+    });
+    await assert.rejects(() => request({
+      url: 'https://unit.invalid/read', maxResponseBytes: 1024, maxAttempts: 1, log: () => {},
+      fetchImpl: async () => { calls++; return new Response(body, { status }); },
+    }), /response exceeds size limit/);
+    assert.equal(calls, 1);
+    assert.ok(pulls < 20);
+    assert.equal(cancelled, true);
+  }
+});
+
+test('response byte cap preserves valid UTF-8 JSON and refuses oversized declared bodies', async () => {
+  const encoded = new TextEncoder().encode('{"value":"😀"}');
+  assert.deepEqual(await request({ url: 'https://unit.invalid/read', maxResponseBytes: encoded.length,
+    fetchImpl: async () => new Response(new ReadableStream({ start(controller) {
+      const cut = encoded.indexOf(0xf0) + 2;
+      controller.enqueue(encoded.slice(0, cut)); controller.enqueue(encoded.slice(cut)); controller.close();
+    } })), log: () => {} }), { value: '😀' });
+  await assert.rejects(() => request({ url: 'https://unit.invalid/read', maxResponseBytes: encoded.length - 1,
+    fetchImpl: async () => new Response(encoded), log: () => {} }), /response exceeds size limit/);
+});
+
+
+test('oversized Content-Length refuses before pulling any body bytes', async () => {
+  let read = false, cancelled = false;
+  await assert.rejects(() => request({ url: 'https://unit.invalid/read', maxResponseBytes: 100, log: () => {},
+    fetchImpl: async () => ({ status: 200, ok: true, headers: { get: () => '101' },
+      body: { cancel() { cancelled = true; return Promise.resolve(); } },
+      text() { read = true; return Promise.resolve('{}'); } }),
+  }), /response exceeds size limit/);
+  assert.equal(read, false); assert.equal(cancelled, true);
+});

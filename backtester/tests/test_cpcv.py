@@ -11,12 +11,13 @@ from __future__ import annotations
 
 import itertools
 import math
+import subprocess
+import sys
 import unittest
 
 import numpy as np
 
 from backtester.core.cpcv import (
-    CpcvResult,
     cpcv_evaluate,
     evaluate_block,
     make_groups,
@@ -25,7 +26,6 @@ from backtester.core.cpcv import (
 from backtester.core.data import SyntheticLoader, frame_to_arrays
 from backtester.core.engine import EngineConfig
 from backtester.core.strategies import build
-from backtester.core.types import BarWindow
 
 
 class TestMakeGroups(unittest.TestCase):
@@ -264,6 +264,26 @@ class TestPboCscv(unittest.TestCase):
         configs = {f"c{i}": [rng.normal(0, 0.01, 30) for _ in range(12)] for i in range(4)}
         out = pbo_cscv(configs, max_splits=25)
         self.assertLessEqual(out["n_splits"], 25)
+
+    def test_combination_positions_match_the_independent_lexicographic_reference(self):
+        from backtester.core.cpcv import _combination_at
+
+        for n in range(4, 13):
+            k = n // 2
+            for rank, expected in enumerate(itertools.combinations(range(n), k)):
+                self.assertEqual(_combination_at(n, k, rank), expected)
+
+    def test_large_combination_space_finishes_under_the_split_cap(self) -> None:
+        """A two-split cap cannot enumerate68billion skipped combinations."""
+        code = (
+            "import numpy as np; from backtester.core.cpcv import pbo_cscv; "
+            "blocks=[np.array([.001,.002,.003]) for _ in range(40)]; "
+            "out=pbo_cscv({'a':blocks,'b':blocks},max_splits=2); "
+            "assert out['n_splits']==2, out"
+        )
+        result = subprocess.run([sys.executable, "-B", "-c", code],
+                                capture_output=True, text=True, timeout=5, check=False)
+        self.assertEqual(result.returncode, 0, result.stderr)
 
     def test_pbo_is_a_probability(self) -> None:
         """Result must lie in [0, 1]."""

@@ -20,7 +20,11 @@ def _emit(env: dict[str, Any]) -> int:
 
 
 def _parser() -> argparse.ArgumentParser:
-    ap = argparse.ArgumentParser(prog="executor", description="Guarded Solana spot-swap executor (dry-run by default)")
+    ap = argparse.ArgumentParser(
+        prog="executor",
+        description="Guarded Solana spot-swap executor (dry-run by default)",
+        epilog="Example: executor list (lists commands without contacting a venue)",
+    )
     sub = ap.add_subparsers(dest="cmd", required=True)
 
     q = sub.add_parser("quote", help="best price, with an independent price reference")
@@ -101,7 +105,7 @@ def main(argv: list[str] | None = None) -> int:
     if ns.cmd == "api":
         from . import api
 
-        return api.main(["--port", str(ns.port)] if ns.port else [])
+        return api.main(["--port", str(ns.port)] if ns.port is not None else [])
     if ns.cmd == "call":
         try:
             params = json.loads(ns.json_) if ns.json_ else {}

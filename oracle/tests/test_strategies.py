@@ -1,6 +1,9 @@
 from __future__ import annotations
 
+import hashlib
+import tempfile
 import unittest
+from pathlib import Path
 from unittest.mock import patch
 
 from backtester.core.strategies import REGISTRY
@@ -8,6 +11,41 @@ from oracle.strategies import STRATEGY_IDS, StrategySet
 
 
 class StrategyTests(unittest.TestCase):
+    def test_card_parameters_and_hashes_share_the_exact_parsed_snapshot(self):
+        from backtester.core import strategy_cards
+
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            for card in strategy_cards.load_all().values():
+                if card.registry_key in STRATEGY_IDS:
+                    (root / card.path.name).write_bytes(card.path.read_bytes())
+            target = root / "ma_crossover.md"
+            before = target.read_bytes()
+            changed = before.replace(b"fast: {default: 20,", b"fast: {default: 21,", 1)
+            self.assertNotEqual(changed, before)
+            with patch.object(strategy_cards, "CARD_DIR", root):
+                expected = StrategySet().catalog()[0]
+                read_bytes, read_text = Path.read_bytes, Path.read_text
+
+                def mutate_after_bytes(path):
+                    raw = read_bytes(path)
+                    if path == target:
+                        path.write_bytes(changed)
+                    return raw
+
+                def mutate_after_text(path, *args, **kwargs):
+                    text = read_text(path, *args, **kwargs)
+                    if path == target:
+                        path.write_bytes(changed)
+                    return text
+
+                with patch.object(Path, "read_bytes", mutate_after_bytes), patch.object(Path, "read_text", mutate_after_text):
+                    actual = StrategySet().catalog()[0]
+            self.assertEqual(actual["parameters"]["fast"], 20)
+            self.assertEqual(actual["card_sha256"], hashlib.sha256(before).hexdigest())
+            self.assertEqual(actual["version"], expected["version"])
+            self.assertEqual(target.read_bytes(), changed)
+
     def test_fourteen_card_backed_price_only_rules(self):
         strategies = StrategySet()
         self.assertEqual(len(strategies.catalog()), 14)

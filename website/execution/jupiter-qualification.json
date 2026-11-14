@@ -1,0 +1,57 @@
+{
+  "version": 1,
+  "asOf": "2026-11-13",
+  "productionEnabled": false,
+  "scope": "Restricted expiring policy authority and native Perps request creation in isolated LiteSVM with deployed program bytes, captured protocol accounts and clock, and generated local wallets with virtual funds.",
+  "smartAccount": {
+    "program": "SMRTzfY6DfH5ik3TKiyLFfXexV8uSG3d2UksSCYdunG",
+    "programData": "2g3u9qgz4adKQVN1TUoh7bbBKqaSsjXtz1yX2ptagW5T",
+    "deploySlot": 443245754,
+    "capturedSlot": 469053206,
+    "binaryBytes": 1651997,
+    "sha256": "1c95bd7be140589d2aec38a85d7ecfe70ec69639277f622c898f821ab1d636fa",
+    "referenceRepository": "https://github.com/Squads-Protocol/smart-account-program",
+    "referenceCommit": "c1e23c50d6b43461a5c85dfed83ad665c4e7bed8",
+    "sourceBuildEquivalenceProven": false,
+    "note": "The fresh binary's effective ELF matches the official fixture; extra allocated trailing zero padding changes the full-file hash. The tested narrow policy ABI is observed directly against deployed bytes; the complete SDK/IDL is not qualified."
+  },
+  "nativePerps": {
+    "program": "PERPHjGBqRHArX4DySjwM6UJHiR3sWAatqfdBS2qQJu",
+    "programData": "C258LjtN8Q928yz2nJe5kwQycckGfWBSrhZBP2mTpLQt",
+    "deploySlot": 465131236,
+    "capturedSlot": 469054553,
+    "binaryBytes": 10485715,
+    "sha256": "b1d35ccd58b3e8a113612be100fbfe99cd50773ed6e098088498ae0c2f938b9d",
+    "referenceRepository": "https://github.com/julianfssen/jupiter-perps-anchor-idl-parsing",
+    "referenceCommit": "630cfd72cad499f45453a53383d7ac6d3e09e022",
+    "requestDiscriminator": "b855c71869ab9c38",
+    "requestCloseDiscriminator": "7a822112d32ca13a",
+    "observedSuccessfulRequestSignature": "3oYR8w5YMtbuqYzf7zQFoBjrG7usWBaBnCCnxGZYHhWvFrrQbnjXvdruursawRtEmYUKMD1ZS4yvGyqoNb3T1L7b",
+    "observedSuccessfulRequestSlot": 469060954,
+    "clockSnapshotSlot": 469061733,
+    "note": "A default local clock caused InvalidAccountData for both direct and PDA controls. Loading the captured Clock sysvar resolved it; the original failing receipts are retained. No transaction was broadcast."
+  },
+  "passedLocalChecks": [
+    "Only the generated customer owner can change settings; a service delegate has no settings authority.",
+    "A finite-expiry ProgramInteractionPolicy executes an allowed System CPI and rejects wrong program, account, amount, expired authority and owner revocation.",
+    "Native Perps SOL/USDC short request creation succeeds with a direct generated signer and through the restricted policy-vault PDA.",
+    "Native Perps ETH long request creation succeeds with a direct generated signer and through the restricted policy-vault PDA.",
+    "The native Perps policy rejects increased notional, increased collateral, changed side, changed instruction discriminator and substituted custody before moving vault funds.",
+    "After policy expiry, the customer sole settings signer closes the unfilled native request through its vault using ClosePositionRequest3; request accounts are deleted and all virtual collateral returns to the original vault funding account. This is unfilled-request recovery, not a filled leveraged position close."
+  ],
+  "remainingActivationGates": [
+    "Persist and verify the exact customer-owned policy vault, sole settings owner, restricted delegate, expiry, revocation and allowed assets/accounts/data in a production connection flow.",
+    "Pin and recheck deployed binary hashes; refuse upgrades until the used ABI and constraints are requalified.",
+    "Enforce a non-bypassable cumulative funding/spend limit for delegated automation, beyond a per-instruction notional cap.",
+    "Capture fresh pool/custody/oracle inputs, prove conservative economics and exercise the asynchronous keeper fill plus cancel/decrease/close lifecycle and uncertain-outcome reconciliation.",
+    "Verify native BTC support using its own captured custody, mint and oracle state; SOL/ETH simulation cannot certify it.",
+    "Implement the private production Jupiter signer/adapter and owner-bound automated bot activation; obtain explicit coordination before any real funding or financial acceptance test."
+  ],
+  "excluded": [
+    "Squads v4 unrestricted service member",
+    "Full non-revocable GUM/JTX session delegation",
+    "Native ZEC perpetual support",
+    "Live funding, network submission or keeper fill proof",
+    "Primary customer wallet keys"
+  ]
+}

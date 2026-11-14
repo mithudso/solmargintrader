@@ -32,11 +32,13 @@ jobs:
         with:
           python-version: "3.13"
       - name: Install all headless owners
-        run: python -m pip install ./backtester ./oracle ./botmanager ./soltui ./ecosystem ruff
+        run: python -m pip install ./backtester ./oracle ./botmanager ./soltui ./ecosystem ruff==0.17.4
       - name: Bootstrap, telemetry, control room and owner contracts
         run: python -m unittest discover -s ecosystem/tests -t . -v
       - name: Packaged wiki matches tracked source documentation
         run: python scripts/build_ecosystem_wiki.py --check
+      - name: Operation and tool inventories match authoritative registries
+        run: python scripts/build_operation_inventories.py --check
       - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1
         with:
           node-version: "22"
@@ -51,7 +53,7 @@ jobs:
           solecosystem --help
           solecosystem-ui --help
       - name: Lint
-        run: ruff check ecosystem oracle scripts/bootstrap_ecosystem.py scripts/build_ecosystem_wiki.py
+        run: ruff check ecosystem oracle scripts/bootstrap_ecosystem.py scripts/build_ecosystem_wiki.py scripts/build_operation_inventories.py
 
   oracle:
     name: oracle (python)
@@ -62,7 +64,7 @@ jobs:
         with:
           python-version: "3.13"
       - name: Install Oracle and canonical strategies
-        run: python -m pip install ./backtester ./oracle ./botmanager ./soltui ruff
+        run: python -m pip install ./backtester ./oracle ./botmanager ./soltui ruff==0.17.4
       - name: Oracle lifecycle, archive and MCP contracts
         run: python -m unittest discover -s oracle/tests -t . -v
       - name: Oracle lint
@@ -201,8 +203,8 @@ jobs:
       - name: Import check
         run: python3 -c "import backtester.cli; print('imports ok')"
 
-      - name: Causal shape, cycle and frozen Volty diagnostics
-        run: python3 -m unittest research.tests.test_shape_study research.tests.test_zec_cycles research.tests.test_volty_zec research.tests.test_volty_predictive_checks -v
+      - name: Causal shape, cycle, Volty and news-event diagnostics
+        run: python3 -m unittest research.tests.test_shape_study research.tests.test_zec_cycles research.tests.test_volty_zec research.tests.test_volty_predictive_checks research.tests.test_news_event_study research.tests.test_zec_granular research.tests.test_zec_expanded research.tests.test_zec_live research.tests.test_zec_tui_model research.tests.test_zec_tui_workers research.tests.test_zec_shape_view -v
 
       - name: Meta evidence consolidation and actual-cost replay contracts
         run: python3 -m unittest research.tests.test_meta_analysis research.tests.test_meta_followups -v
@@ -287,6 +289,8 @@ jobs:
         run: python3 -m unittest scripts.test_soltui_ci
       - name: Install headless research owners for actual macOS judge checks
         run: python -m pip install ./backtester ./oracle ./soltui ./botmanager
+      - name: Oracle winning-strategy TUI interactions
+        run: python -m unittest research.tests.test_zec_tui -v
       - name: Actual operating-system judge isolation
         run: python -m unittest discover -s botmanager/tests -t botmanager -p test_blind.py
       - name: Actual optimizer and stalled-writer capacity under macOS isolation
@@ -347,6 +351,11 @@ jobs:
 
       - name: Unit and integration tests
         run: python3 -m unittest discover -s mongo/tests -t .
+
+      - name: Raw event capture durability and upload boundaries
+        env:
+          MARKET_CAPTURE_REQUIRE_MONGO: '1'
+        run: python3 -m unittest discover -s scripts -p test_capture_market.py -v
 
   # Documentation drift is a build failure, not a nit: the docs claimed 250
   # backtester tests for several commits while the suite had grown to 454, and
@@ -450,10 +459,10 @@ jobs:
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
       - uses: astral-sh/setup-uv@68559e99cc807c1eb7e9238fd43a15bba460eec2 # v10.3.3
-      - run: uv sync --extra dev -p 3.13
-      - run: uv run ruff check src tests
-      - run: uv run ruff format --check src tests
-      - run: uv run pytest -q
+      - run: uv sync --extra dev -p 3.13 --locked
+      - run: uv run --locked ruff check src tests
+      - run: uv run --locked ruff format --check src tests
+      - run: uv run --locked pytest -q
 
   # executor/ signs and sends real Jupiter swaps on Solana. It has its own pyproject + lock (solders lives only
   # here), so it gets its own job, like liquidity. Network tests (-m network) are excluded by default: they
@@ -467,7 +476,7 @@ jobs:
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
       - uses: astral-sh/setup-uv@68559e99cc807c1eb7e9238fd43a15bba460eec2 # v10.3.3
-      - run: uv sync --extra dev -p 3.13 --frozen
-      - run: uv run ruff check src tests
-      - run: uv run ruff format --check src tests
-      - run: uv run pytest -q
+      - run: uv sync --extra dev -p 3.13 --locked
+      - run: uv run --locked ruff check src tests
+      - run: uv run --locked ruff format --check src tests
+      - run: uv run --locked pytest -q

@@ -1,0 +1,69 @@
+{
+  "records": [
+    {
+      "guarded": false,
+      "run_id": "epoch-timing-2b90b530fd8346b28ca849f292e3a8a9",
+      "process_exit": 0,
+      "process_wall_seconds": 0.5012456660042517,
+      "state": "/tmp/oraclebot-epoch-timing-state-m_dcu_wj",
+      "timing": {
+        "observed_at": "2026-11-12T19:48:18.532845+00:00",
+        "interpreter": "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/.venv/bin/python",
+        "guarded": false,
+        "capture_seconds": 0.11851904199284036,
+        "verify_seconds": [
+          0.1163778329937486,
+          0.11869983401265927,
+          0.11627729100291617
+        ],
+        "verify_calls": 3,
+        "source_files": 1348,
+        "source_epoch_sha256": "63124118d8d8005647855a781ad0c28c5807f467e803bf7429878a28c99658c6",
+        "home_preserved": true,
+        "scope": "current capture+3verify timings only; no pre-change or regression inference"
+      }
+    },
+    {
+      "guarded": true,
+      "run_id": "epoch-timing-bdfa080113e749f19abdd2340c775374",
+      "process_exit": 0,
+      "process_wall_seconds": 1.0825758330029203,
+      "state": "/tmp/oraclebot-epoch-timing-state-117gs3bg",
+      "timing": {
+        "observed_at": "2026-11-12T19:48:19.615495+00:00",
+        "interpreter": "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/.venv/bin/python",
+        "guarded": true,
+        "capture_seconds": 0.2605597910005599,
+        "verify_seconds": [
+          0.2572589170013089,
+          0.26187645898608025,
+          0.25814945800811984
+        ],
+        "verify_calls": 3,
+        "source_files": 1348,
+        "source_epoch_sha256": "63124118d8d8005647855a781ad0c28c5807f467e803bf7429878a28c99658c6",
+        "home_preserved": true,
+        "scope": "current capture+3verify timings only; no pre-change or regression inference"
+      }
+    }
+  ],
+  "inherited_guard_hashes_before": {
+    "finalize.py": "42ab2c5bd5679616c0def8c102fb76dce21b14b8cddb506e16ba9de265eb7364",
+    "self_check.py": "ab37d1b626fbdf71bd2c41b30b5ffbb1a1414d787a70c8426f90dbef16ecab76",
+    "sitecustomize.py": "8ac6272adb2fbab773bccdb20dddbd36b481459fd45144c2c01fc0e04726689b",
+    "guard.py": "478870b9ac8cb6abe22ec86cf12ce6d895e1ac2d79fb6e2bb2efc8840c50e203",
+    "run_suite.py": "e5a54ed6ba69e35cb075d32345beb67f5d3662de5d28f78b38024685af6b63a9"
+  },
+  "inherited_guard_hashes_after": {
+    "finalize.py": "42ab2c5bd5679616c0def8c102fb76dce21b14b8cddb506e16ba9de265eb7364",
+    "self_check.py": "ab37d1b626fbdf71bd2c41b30b5ffbb1a1414d787a70c8426f90dbef16ecab76",
+    "sitecustomize.py": "8ac6272adb2fbab773bccdb20dddbd36b481459fd45144c2c01fc0e04726689b",
+    "guard.py": "478870b9ac8cb6abe22ec86cf12ce6d895e1ac2d79fb6e2bb2efc8840c50e203",
+    "run_suite.py": "e5a54ed6ba69e35cb075d32345beb67f5d3662de5d28f78b38024685af6b63a9"
+  },
+  "claim": "Current observed overhead only; no pre-change/regression inference; no application evaluation.",
+  "observed_ratios": {
+    "capture": 2.1984635263614445,
+    "verify_total": 2.212249510863262
+  }
+}

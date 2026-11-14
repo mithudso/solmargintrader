@@ -1,0 +1,72 @@
+{
+  "version": "1.0.0",
+  "path": "soltui/tests/test_wallet_integration.py",
+  "blob_sha": "aed3c3777a5c940738f7ae60cbd5504327a10a22",
+  "sha256": "d33e095e96a15ecb8714ee99a629ac38c6a0074042f559fd365f49fe6b208be3",
+  "scope": "Original full-file review plus independently reviewed render-event/import delta; no production change",
+  "original_blob_sha": "ab50742d2fcf90b9aca39353ca365b2ff60ff317",
+  "original_evidence": ".cdo/reviews-2026-11-12/soltui-worker.json",
+  "delta_review": "Original renderer completes before Event is set; patch encloses app lifecycle; original three assertions unchanged. Removed unused Static import after RuffF401.",
+  "passes": [
+    "C1",
+    "C2",
+    "C3",
+    "S1",
+    "S2",
+    "S4",
+    "P1",
+    "P2",
+    "M1",
+    "M2",
+    "M4",
+    "T1",
+    "T4"
+  ],
+  "not_applicable": {
+    "S3": "No new input parsing or trust boundary",
+    "S5": "No new production logging surface"
+  },
+  "checks": [
+    {
+      "kind": "old2secondpause with real registry call delayed3seconds",
+      "tests": 1,
+      "exit_code": 1,
+      "expected": "empty summary assertion",
+      "forbidden_events": 0
+    },
+    {
+      "kind": "new callback completion with identical delayed call",
+      "tests": 1,
+      "exit_code": 0,
+      "forbidden_events": 0
+    },
+    {
+      "kind": "final full wallet integration module",
+      "tests": 23,
+      "exit_code": 0,
+      "failures": 0,
+      "errors": 0,
+      "skips": 0,
+      "forbidden_events": 0,
+      "source_changed": []
+    },
+    {
+      "kind": "final Ruff",
+      "exit_code": 0
+    }
+  ],
+  "private_artifacts": "/tmp/oraclebot-wallet-pnl-render-20261113",
+  "ci_preimage": {
+    "source": "92c75a58468fccc0802c2945b7a4a282639ce764",
+    "tests": 877,
+    "seconds": 2634.313,
+    "exit_code": 1,
+    "failure": "wallet summary after fixed2secondpause",
+    "log": "/tmp/oraclebot-final-delivery-20261112/ci-92c75-failed.log"
+  },
+  "limits": [
+    "Synthetic recorded wallet only",
+    "Global M3/M5/T4 qualifications unchanged",
+    "Fresh full1563 and pushed CI still required"
+  ]
+}

@@ -1,0 +1,863 @@
+{
+  "schema": "oraclebot-full-source-review/v1",
+  "reviewer": "root",
+  "status": "REVIEWED_SOURCE_VERSION_DELTAS_NOT_INSTALLED_ACCEPTANCE",
+  "created_at": "2026-11-12T17:48:01.967146+00:00",
+  "files": [
+    {
+      "path": "backtester/pyproject.toml",
+      "sha256": "d5f9d3b02e49ea4821a93c4b11a60eed0c646363ab18204e9af0ef215ee2a2b4",
+      "blob_sha": "6e0ce2adc8310cf6d1f66aa48a0b589ff752e77d",
+      "lines": 20,
+      "read_evidence": {
+        "method": "full current metadata parse or inherited full semantic source plus exact version-only reviewed delta",
+        "prior_complete_review": null,
+        "inverse_delta_sha256_verified": true,
+        "version_only_ast_verified": false
+      },
+      "passes": {
+        "C1": "ran: exact reviewed version/pin edits only; inverse transformation matches the recorded preimage SHA256.",
+        "C2": "ran: all local exact dependency pins agree with coordinated future versions; extension package and manifest versions agree.",
+        "C3": "ran: changed-source AST differs only at reviewed version string constants; any additional file mutation refuses receipt generation.",
+        "S1": "ran: fixed literal source versions only; no approval, credential, arming or actual owner configuration included.",
+        "S2": "N/A: metadata-only replacement; inherited full implementation review is referenced for Python source, and repository architecture/supply-chain/testing gates remain separate.",
+        "S3": "N/A: metadata-only replacement; inherited full implementation review is referenced for Python source, and repository architecture/supply-chain/testing gates remain separate.",
+        "S4": "ran: runtime constraints and dependency API ranges unchanged; final parsing succeeds.",
+        "S5": "N/A: metadata-only replacement; inherited full implementation review is referenced for Python source, and repository architecture/supply-chain/testing gates remain separate.",
+        "P1": "N/A: metadata-only replacement; inherited full implementation review is referenced for Python source, and repository architecture/supply-chain/testing gates remain separate.",
+        "P2": "N/A: metadata-only replacement; inherited full implementation review is referenced for Python source, and repository architecture/supply-chain/testing gates remain separate.",
+        "M1": "ran: descriptive existing version declarations retained, no unrelated formatting.",
+        "M2": "N/A: metadata-only replacement; inherited full implementation review is referenced for Python source, and repository architecture/supply-chain/testing gates remain separate.",
+        "M3": "N/A: metadata-only replacement; inherited full implementation review is referenced for Python source, and repository architecture/supply-chain/testing gates remain separate.",
+        "M4": "ran: current candidate docs updated; historical release/cohort identities retained.",
+        "T1": "ran: static metadata syntax, exact-pin/manifest parity and inverse-delta/AST proof0; final integration tests remain pending.",
+        "T2": "N/A: metadata-only replacement; inherited full implementation review is referenced for Python source, and repository architecture/supply-chain/testing gates remain separate.",
+        "T3": "N/A: metadata-only replacement; inherited full implementation review is referenced for Python source, and repository architecture/supply-chain/testing gates remain separate.",
+        "T4": "N/A: metadata-only replacement; inherited full implementation review is referenced for Python source, and repository architecture/supply-chain/testing gates remain separate.",
+        "M5": "N/A: metadata-only replacement; inherited full implementation review is referenced for Python source, and repository architecture/supply-chain/testing gates remain separate."
+      },
+      "edits": [
+        {
+          "before": "version = \"0.2.0\"",
+          "after": "version = \"0.2.1\""
+        }
+      ]
+    },
+    {
+      "path": "backtester/__init__.py",
+      "sha256": "bea1163c33eb3137362a8e34be4fa17e2eb34d070f768e8831cb5253832ecd3e",
+      "blob_sha": "073884f266ad2ef011565fabdbc22d033a1f8b59",
+      "lines": 3,
+      "read_evidence": {
+        "method": "full current metadata parse or inherited full semantic source plus exact version-only reviewed delta",
+        "prior_complete_review": {
+          "receipt": ".cdo/reviews-2026-11-12/small-files.json",
+          "sha256": "e8ec2adb61ed053752ee5e5a3ad60931d846061a311589c133cc4e94487651a0",
+          "semantic_scope": "full source review in referenced receipt"
+        },
+        "inverse_delta_sha256_verified": true,
+        "version_only_ast_verified": true
+      },
+      "passes": {
+        "C1": "ran: exact reviewed version/pin edits only; inverse transformation matches the recorded preimage SHA256.",
+        "C2": "ran: all local exact dependency pins agree with coordinated future versions; extension package and manifest versions agree.",
+        "C3": "ran: changed-source AST differs only at reviewed version string constants; any additional file mutation refuses receipt generation.",
+        "S1": "ran: fixed literal source versions only; no approval, credential, arming or actual owner configuration included.",
+        "S2": "N/A: metadata-only replacement; inherited full implementation review is referenced for Python source, and repository architecture/supply-chain/testing gates remain separate.",
+        "S3": "N/A: metadata-only replacement; inherited full implementation review is referenced for Python source, and repository architecture/supply-chain/testing gates remain separate.",
+        "S4": "ran: runtime constraints and dependency API ranges unchanged; final parsing succeeds.",
+        "S5": "N/A: metadata-only replacement; inherited full implementation review is referenced for Python source, and repository architecture/supply-chain/testing gates remain separate.",
+        "P1": "N/A: metadata-only replacement; inherited full implementation review is referenced for Python source, and repository architecture/supply-chain/testing gates remain separate.",
+        "P2": "N/A: metadata-only replacement; inherited full implementation review is referenced for Python source, and repository architecture/supply-chain/testing gates remain separate.",
+        "M1": "ran: descriptive existing version declarations retained, no unrelated formatting.",
+        "M2": "N/A: metadata-only replacement; inherited full implementation review is referenced for Python source, and repository architecture/supply-chain/testing gates remain separate.",
+        "M3": "N/A: metadata-only replacement; inherited full implementation review is referenced for Python source, and repository architecture/supply-chain/testing gates remain separate.",
+        "M4": "ran: current candidate docs updated; historical release/cohort identities retained.",
+        "T1": "ran: static metadata syntax, exact-pin/manifest parity and inverse-delta/AST proof0; final integration tests remain pending.",
+        "T2": "N/A: metadata-only replacement; inherited full implementation review is referenced for Python source, and repository architecture/supply-chain/testing gates remain separate.",
+        "T3": "N/A: metadata-only replacement; inherited full implementation review is referenced for Python source, and repository architecture/supply-chain/testing gates remain separate.",
+        "T4": "N/A: metadata-only replacement; inherited full implementation review is referenced for Python source, and repository architecture/supply-chain/testing gates remain separate.",
+        "M5": "N/A: metadata-only replacement; inherited full implementation review is referenced for Python source, and repository architecture/supply-chain/testing gates remain separate."
+      },
+      "edits": [
+        {
+          "before": "__version__ = \"0.2.0\"",
+          "after": "__version__ = \"0.2.1\""
+        }
+      ]
+    },
+    {
+      "path": "oracle/pyproject.toml",
+      "sha256": "4e226e4cd773e9d47e0817d98197415ca58038de8a54809aa1cbf2a3b87a5dec",
+      "blob_sha": "eb06787d80c075b958270d7bdaef4e167d3e7d6b",
+      "lines": 19,
+      "read_evidence": {
+        "method": "full current metadata parse or inherited full semantic source plus exact version-only reviewed delta",
+        "prior_complete_review": null,
+        "inverse_delta_sha256_verified": true,
+        "version_only_ast_verified": false
+      },
+      "passes": {
+        "C1": "ran: exact reviewed version/pin edits only; inverse transformation matches the recorded preimage SHA256.",
+        "C2": "ran: all local exact dependency pins agree with coordinated future versions; extension package and manifest versions agree.",
+        "C3": "ran: changed-source AST differs only at reviewed version string constants; any additional file mutation refuses receipt generation.",
+        "S1": "ran: fixed literal source versions only; no approval, credential, arming or actual owner configuration included.",
+        "S2": "N/A: metadata-only replacement; inherited full implementation review is referenced for Python source, and repository architecture/supply-chain/testing gates remain separate.",
+        "S3": "N/A: metadata-only replacement; inherited full implementation review is referenced for Python source, and repository architecture/supply-chain/testing gates remain separate.",
+        "S4": "ran: runtime constraints and dependency API ranges unchanged; final parsing succeeds.",
+        "S5": "N/A: metadata-only replacement; inherited full implementation review is referenced for Python source, and repository architecture/supply-chain/testing gates remain separate.",
+        "P1": "N/A: metadata-only replacement; inherited full implementation review is referenced for Python source, and repository architecture/supply-chain/testing gates remain separate.",
+        "P2": "N/A: metadata-only replacement; inherited full implementation review is referenced for Python source, and repository architecture/supply-chain/testing gates remain separate.",
+        "M1": "ran: descriptive existing version declarations retained, no unrelated formatting.",
+        "M2": "N/A: metadata-only replacement; inherited full implementation review is referenced for Python source, and repository architecture/supply-chain/testing gates remain separate.",
+        "M3": "N/A: metadata-only replacement; inherited full implementation review is referenced for Python source, and repository architecture/supply-chain/testing gates remain separate.",
+        "M4": "ran: current candidate docs updated; historical release/cohort identities retained.",
+        "T1": "ran: static metadata syntax, exact-pin/manifest parity and inverse-delta/AST proof0; final integration tests remain pending.",
+        "T2": "N/A: metadata-only replacement; inherited full implementation review is referenced for Python source, and repository architecture/supply-chain/testing gates remain separate.",
+        "T3": "N/A: metadata-only replacement; inherited full implementation review is referenced for Python source, and repository architecture/supply-chain/testing gates remain separate.",
+        "T4": "N/A: metadata-only replacement; inherited full implementation review is referenced for Python source, and repository architecture/supply-chain/testing gates remain separate.",
+        "M5": "N/A: metadata-only replacement; inherited full implementation review is referenced for Python source, and repository architecture/supply-chain/testing gates remain separate."
+      },
+      "edits": [
+        {
+          "before": "version = \"0.2.3\"",
+          "after": "version = \"0.2.4\""
+        },
+        {
+          "before": "solmargintrader-backtester==0.2.0",
+          "after": "solmargintrader-backtester==0.2.1"
+        }
+      ]
+    },
+    {
+      "path": "oracle/server.py",
+      "sha256": "79e75e6e7491473f72b0662f459ce5f690640a10481e7a5e409814e20c7d4503",
+      "blob_sha": "4abd57e1dfa18f4e64798a61b341e9f65c647473",
+      "lines": 451,
+      "read_evidence": {
+        "method": "full current metadata parse or inherited full semantic source plus exact version-only reviewed delta",
+        "prior_complete_review": {
+          "receipt": ".cdo/reviews-2026-11-12/oracle.json",
+          "sha256": "6cbe7a0abbf22c6e9f7f6c8580eb5b42093948ba8cd883f1e736168899059c60",
+          "semantic_scope": "full newly assigned semantic review"
+        },
+        "inverse_delta_sha256_verified": true,
+        "version_only_ast_verified": true
+      },
+      "passes": {
+        "C1": "ran: exact reviewed version/pin edits only; inverse transformation matches the recorded preimage SHA256.",
+        "C2": "ran: all local exact dependency pins agree with coordinated future versions; extension package and manifest versions agree.",
+        "C3": "ran: changed-source AST differs only at reviewed version string constants; any additional file mutation refuses receipt generation.",
+        "S1": "ran: fixed literal source versions only; no approval, credential, arming or actual owner configuration included.",
+        "S2": "N/A: metadata-only replacement; inherited full implementation review is referenced for Python source, and repository architecture/supply-chain/testing gates remain separate.",
+        "S3": "N/A: metadata-only replacement; inherited full implementation review is referenced for Python source, and repository architecture/supply-chain/testing gates remain separate.",
+        "S4": "ran: runtime constraints and dependency API ranges unchanged; final parsing succeeds.",
+        "S5": "N/A: metadata-only replacement; inherited full implementation review is referenced for Python source, and repository architecture/supply-chain/testing gates remain separate.",
+        "P1": "N/A: metadata-only replacement; inherited full implementation review is referenced for Python source, and repository architecture/supply-chain/testing gates remain separate.",
+        "P2": "N/A: metadata-only replacement; inherited full implementation review is referenced for Python source, and repository architecture/supply-chain/testing gates remain separate.",
+        "M1": "ran: descriptive existing version declarations retained, no unrelated formatting.",
+        "M2": "N/A: metadata-only replacement; inherited full implementation review is referenced for Python source, and repository architecture/supply-chain/testing gates remain separate.",
+        "M3": "N/A: metadata-only replacement; inherited full implementation review is referenced for Python source, and repository architecture/supply-chain/testing gates remain separate.",
+        "M4": "ran: current candidate docs updated; historical release/cohort identities retained.",
+        "T1": "ran: static metadata syntax, exact-pin/manifest parity and inverse-delta/AST proof0; final integration tests remain pending.",
+        "T2": "N/A: metadata-only replacement; inherited full implementation review is referenced for Python source, and repository architecture/supply-chain/testing gates remain separate.",
+        "T3": "N/A: metadata-only replacement; inherited full implementation review is referenced for Python source, and repository architecture/supply-chain/testing gates remain separate.",
+        "T4": "N/A: metadata-only replacement; inherited full implementation review is referenced for Python source, and repository architecture/supply-chain/testing gates remain separate.",
+        "M5": "N/A: metadata-only replacement; inherited full implementation review is referenced for Python source, and repository architecture/supply-chain/testing gates remain separate."
+      },
+      "edits": [
+        {
+          "before": "VERSION = \"0.2.3\"",
+          "after": "VERSION = \"0.2.4\""
+        }
+      ]
+    },
+    {
+      "path": "soltui/pyproject.toml",
+      "sha256": "d279ca16788c58e113a15996827db5d78cfd94eed87005a0daa647f787de0d0e",
+      "blob_sha": "272ea134e26a15cf4549dd9371b21c1b5877ec7a",
+      "lines": 14,
+      "read_evidence": {
+        "method": "full current metadata parse or inherited full semantic source plus exact version-only reviewed delta",
+        "prior_complete_review": null,
+        "inverse_delta_sha256_verified": true,
+        "version_only_ast_verified": false
+      },
+      "passes": {
+        "C1": "ran: exact reviewed version/pin edits only; inverse transformation matches the recorded preimage SHA256.",
+        "C2": "ran: all local exact dependency pins agree with coordinated future versions; extension package and manifest versions agree.",
+        "C3": "ran: changed-source AST differs only at reviewed version string constants; any additional file mutation refuses receipt generation.",
+        "S1": "ran: fixed literal source versions only; no approval, credential, arming or actual owner configuration included.",
+        "S2": "N/A: metadata-only replacement; inherited full implementation review is referenced for Python source, and repository architecture/supply-chain/testing gates remain separate.",
+        "S3": "N/A: metadata-only replacement; inherited full implementation review is referenced for Python source, and repository architecture/supply-chain/testing gates remain separate.",
+        "S4": "ran: runtime constraints and dependency API ranges unchanged; final parsing succeeds.",
+        "S5": "N/A: metadata-only replacement; inherited full implementation review is referenced for Python source, and repository architecture/supply-chain/testing gates remain separate.",
+        "P1": "N/A: metadata-only replacement; inherited full implementation review is referenced for Python source, and repository architecture/supply-chain/testing gates remain separate.",
+        "P2": "N/A: metadata-only replacement; inherited full implementation review is referenced for Python source, and repository architecture/supply-chain/testing gates remain separate.",
+        "M1": "ran: descriptive existing version declarations retained, no unrelated formatting.",
+        "M2": "N/A: metadata-only replacement; inherited full implementation review is referenced for Python source, and repository architecture/supply-chain/testing gates remain separate.",
+        "M3": "N/A: metadata-only replacement; inherited full implementation review is referenced for Python source, and repository architecture/supply-chain/testing gates remain separate.",
+        "M4": "ran: current candidate docs updated; historical release/cohort identities retained.",
+        "T1": "ran: static metadata syntax, exact-pin/manifest parity and inverse-delta/AST proof0; final integration tests remain pending.",
+        "T2": "N/A: metadata-only replacement; inherited full implementation review is referenced for Python source, and repository architecture/supply-chain/testing gates remain separate.",
+        "T3": "N/A: metadata-only replacement; inherited full implementation review is referenced for Python source, and repository architecture/supply-chain/testing gates remain separate.",
+        "T4": "N/A: metadata-only replacement; inherited full implementation review is referenced for Python source, and repository architecture/supply-chain/testing gates remain separate.",
+        "M5": "N/A: metadata-only replacement; inherited full implementation review is referenced for Python source, and repository architecture/supply-chain/testing gates remain separate."
+      },
+      "edits": [
+        {
+          "before": "version = \"0.4.0\"",
+          "after": "version = \"0.4.1\""
+        },
+        {
+          "before": "solmargintrader-backtester==0.2.0",
+          "after": "solmargintrader-backtester==0.2.1"
+        }
+      ]
+    },
+    {
+      "path": "botmanager/pyproject.toml",
+      "sha256": "28295b3411159982e4f4b19dbd8369f1e70068ad9094fc5dae5ac674179ef2e6",
+      "blob_sha": "f2e809ffea6982dddad775eb6e032ebb69e83f78",
+      "lines": 17,
+      "read_evidence": {
+        "method": "full current metadata parse or inherited full semantic source plus exact version-only reviewed delta",
+        "prior_complete_review": null,
+        "inverse_delta_sha256_verified": true,
+        "version_only_ast_verified": false
+      },
+      "passes": {
+        "C1": "ran: exact reviewed version/pin edits only; inverse transformation matches the recorded preimage SHA256.",
+        "C2": "ran: all local exact dependency pins agree with coordinated future versions; extension package and manifest versions agree.",
+        "C3": "ran: changed-source AST differs only at reviewed version string constants; any additional file mutation refuses receipt generation.",
+        "S1": "ran: fixed literal source versions only; no approval, credential, arming or actual owner configuration included.",
+        "S2": "N/A: metadata-only replacement; inherited full implementation review is referenced for Python source, and repository architecture/supply-chain/testing gates remain separate.",
+        "S3": "N/A: metadata-only replacement; inherited full implementation review is referenced for Python source, and repository architecture/supply-chain/testing gates remain separate.",
+        "S4": "ran: runtime constraints and dependency API ranges unchanged; final parsing succeeds.",
+        "S5": "N/A: metadata-only replacement; inherited full implementation review is referenced for Python source, and repository architecture/supply-chain/testing gates remain separate.",
+        "P1": "N/A: metadata-only replacement; inherited full implementation review is referenced for Python source, and repository architecture/supply-chain/testing gates remain separate.",
+        "P2": "N/A: metadata-only replacement; inherited full implementation review is referenced for Python source, and repository architecture/supply-chain/testing gates remain separate.",
+        "M1": "ran: descriptive existing version declarations retained, no unrelated formatting.",
+        "M2": "N/A: metadata-only replacement; inherited full implementation review is referenced for Python source, and repository architecture/supply-chain/testing gates remain separate.",
+        "M3": "N/A: metadata-only replacement; inherited full implementation review is referenced for Python source, and repository architecture/supply-chain/testing gates remain separate.",
+        "M4": "ran: current candidate docs updated; historical release/cohort identities retained.",
+        "T1": "ran: static metadata syntax, exact-pin/manifest parity and inverse-delta/AST proof0; final integration tests remain pending.",
+        "T2": "N/A: metadata-only replacement; inherited full implementation review is referenced for Python source, and repository architecture/supply-chain/testing gates remain separate.",
+        "T3": "N/A: metadata-only replacement; inherited full implementation review is referenced for Python source, and repository architecture/supply-chain/testing gates remain separate.",
+        "T4": "N/A: metadata-only replacement; inherited full implementation review is referenced for Python source, and repository architecture/supply-chain/testing gates remain separate.",
+        "M5": "N/A: metadata-only replacement; inherited full implementation review is referenced for Python source, and repository architecture/supply-chain/testing gates remain separate."
+      },
+      "edits": [
+        {
+          "before": "version = \"0.7.2\"",
+          "after": "version = \"0.7.3\""
+        },
+        {
+          "before": "solmargintrader-backtester==0.2.0",
+          "after": "solmargintrader-backtester==0.2.1"
+        },
+        {
+          "before": "solmargintrader-research-runtime==0.4.0",
+          "after": "solmargintrader-research-runtime==0.4.1"
+        },
+        {
+          "before": "solmargintrader-oracle==0.2.3",
+          "after": "solmargintrader-oracle==0.2.4"
+        }
+      ]
+    },
+    {
+      "path": "botmanager/src/botmanager/__init__.py",
+      "sha256": "1e2e58607dd6f518d95c344f195497a991d5bb3598e0908444287bdcddd45e4b",
+      "blob_sha": "65e761defdf7bfe174a015d2a044d2a6f534a453",
+      "lines": 5,
+      "read_evidence": {
+        "method": "full current metadata parse or inherited full semantic source plus exact version-only reviewed delta",
+        "prior_complete_review": {
+          "receipt": ".cdo/reviews-2026-11-12/small-files.json",
+          "sha256": "4353e50144fb84e4cc10c117d5808e7c177055ed0d96061bd0ec7511a02d76c6",
+          "semantic_scope": "full source review in referenced receipt"
+        },
+        "inverse_delta_sha256_verified": true,
+        "version_only_ast_verified": true
+      },
+      "passes": {
+        "C1": "ran: exact reviewed version/pin edits only; inverse transformation matches the recorded preimage SHA256.",
+        "C2": "ran: all local exact dependency pins agree with coordinated future versions; extension package and manifest versions agree.",
+        "C3": "ran: changed-source AST differs only at reviewed version string constants; any additional file mutation refuses receipt generation.",
+        "S1": "ran: fixed literal source versions only; no approval, credential, arming or actual owner configuration included.",
+        "S2": "N/A: metadata-only replacement; inherited full implementation review is referenced for Python source, and repository architecture/supply-chain/testing gates remain separate.",
+        "S3": "N/A: metadata-only replacement; inherited full implementation review is referenced for Python source, and repository architecture/supply-chain/testing gates remain separate.",
+        "S4": "ran: runtime constraints and dependency API ranges unchanged; final parsing succeeds.",
+        "S5": "N/A: metadata-only replacement; inherited full implementation review is referenced for Python source, and repository architecture/supply-chain/testing gates remain separate.",
+        "P1": "N/A: metadata-only replacement; inherited full implementation review is referenced for Python source, and repository architecture/supply-chain/testing gates remain separate.",
+        "P2": "N/A: metadata-only replacement; inherited full implementation review is referenced for Python source, and repository architecture/supply-chain/testing gates remain separate.",
+        "M1": "ran: descriptive existing version declarations retained, no unrelated formatting.",
+        "M2": "N/A: metadata-only replacement; inherited full implementation review is referenced for Python source, and repository architecture/supply-chain/testing gates remain separate.",
+        "M3": "N/A: metadata-only replacement; inherited full implementation review is referenced for Python source, and repository architecture/supply-chain/testing gates remain separate.",
+        "M4": "ran: current candidate docs updated; historical release/cohort identities retained.",
+        "T1": "ran: static metadata syntax, exact-pin/manifest parity and inverse-delta/AST proof0; final integration tests remain pending.",
+        "T2": "N/A: metadata-only replacement; inherited full implementation review is referenced for Python source, and repository architecture/supply-chain/testing gates remain separate.",
+        "T3": "N/A: metadata-only replacement; inherited full implementation review is referenced for Python source, and repository architecture/supply-chain/testing gates remain separate.",
+        "T4": "N/A: metadata-only replacement; inherited full implementation review is referenced for Python source, and repository architecture/supply-chain/testing gates remain separate.",
+        "M5": "N/A: metadata-only replacement; inherited full implementation review is referenced for Python source, and repository architecture/supply-chain/testing gates remain separate."
+      },
+      "edits": [
+        {
+          "before": "__version__ = \"0.7.2\"",
+          "after": "__version__ = \"0.7.3\""
+        }
+      ]
+    },
+    {
+      "path": "ecosystem/pyproject.toml",
+      "sha256": "9a39f94b3f53e9bc401e08b4cc737de12e505e89c174a3923ffa99b889a54af2",
+      "blob_sha": "53ebb284ae0aadb20e863bd26d6c356ccaf9bbc6",
+      "lines": 22,
+      "read_evidence": {
+        "method": "full current metadata parse or inherited full semantic source plus exact version-only reviewed delta",
+        "prior_complete_review": null,
+        "inverse_delta_sha256_verified": true,
+        "version_only_ast_verified": false
+      },
+      "passes": {
+        "C1": "ran: exact reviewed version/pin edits only; inverse transformation matches the recorded preimage SHA256.",
+        "C2": "ran: all local exact dependency pins agree with coordinated future versions; extension package and manifest versions agree.",
+        "C3": "ran: changed-source AST differs only at reviewed version string constants; any additional file mutation refuses receipt generation.",
+        "S1": "ran: fixed literal source versions only; no approval, credential, arming or actual owner configuration included.",
+        "S2": "N/A: metadata-only replacement; inherited full implementation review is referenced for Python source, and repository architecture/supply-chain/testing gates remain separate.",
+        "S3": "N/A: metadata-only replacement; inherited full implementation review is referenced for Python source, and repository architecture/supply-chain/testing gates remain separate.",
+        "S4": "ran: runtime constraints and dependency API ranges unchanged; final parsing succeeds.",
+        "S5": "N/A: metadata-only replacement; inherited full implementation review is referenced for Python source, and repository architecture/supply-chain/testing gates remain separate.",
+        "P1": "N/A: metadata-only replacement; inherited full implementation review is referenced for Python source, and repository architecture/supply-chain/testing gates remain separate.",
+        "P2": "N/A: metadata-only replacement; inherited full implementation review is referenced for Python source, and repository architecture/supply-chain/testing gates remain separate.",
+        "M1": "ran: descriptive existing version declarations retained, no unrelated formatting.",
+        "M2": "N/A: metadata-only replacement; inherited full implementation review is referenced for Python source, and repository architecture/supply-chain/testing gates remain separate.",
+        "M3": "N/A: metadata-only replacement; inherited full implementation review is referenced for Python source, and repository architecture/supply-chain/testing gates remain separate.",
+        "M4": "ran: current candidate docs updated; historical release/cohort identities retained.",
+        "T1": "ran: static metadata syntax, exact-pin/manifest parity and inverse-delta/AST proof0; final integration tests remain pending.",
+        "T2": "N/A: metadata-only replacement; inherited full implementation review is referenced for Python source, and repository architecture/supply-chain/testing gates remain separate.",
+        "T3": "N/A: metadata-only replacement; inherited full implementation review is referenced for Python source, and repository architecture/supply-chain/testing gates remain separate.",
+        "T4": "N/A: metadata-only replacement; inherited full implementation review is referenced for Python source, and repository architecture/supply-chain/testing gates remain separate.",
+        "M5": "N/A: metadata-only replacement; inherited full implementation review is referenced for Python source, and repository architecture/supply-chain/testing gates remain separate."
+      },
+      "edits": [
+        {
+          "before": "version = \"0.4.5\"",
+          "after": "version = \"0.4.6\""
+        },
+        {
+          "before": "solmargintrader-oracle==0.2.3",
+          "after": "solmargintrader-oracle==0.2.4"
+        },
+        {
+          "before": "solbot-manager==0.7.2",
+          "after": "solbot-manager==0.7.3"
+        },
+        {
+          "before": "solmargintrader-research-runtime==0.4.0",
+          "after": "solmargintrader-research-runtime==0.4.1"
+        }
+      ]
+    },
+    {
+      "path": "ecosystem/__init__.py",
+      "sha256": "4185ead8102feb45a7515f7642a86b4f98b48c8e5ad60bb4045d7a2a77ae9daf",
+      "blob_sha": "aeb0195fdb6cdc2bcc551d5757702ab96c588e6c",
+      "lines": 3,
+      "read_evidence": {
+        "method": "full current metadata parse or inherited full semantic source plus exact version-only reviewed delta",
+        "prior_complete_review": {
+          "receipt": ".cdo/reviews-2026-11-12/small-files.json",
+          "sha256": "fa93aed99e29c9435f8cf379c2605ea2b99cc6dcc9c9f09b6799bb0aef6e58c6",
+          "semantic_scope": "full source review in referenced receipt"
+        },
+        "inverse_delta_sha256_verified": true,
+        "version_only_ast_verified": true
+      },
+      "passes": {
+        "C1": "ran: exact reviewed version/pin edits only; inverse transformation matches the recorded preimage SHA256.",
+        "C2": "ran: all local exact dependency pins agree with coordinated future versions; extension package and manifest versions agree.",
+        "C3": "ran: changed-source AST differs only at reviewed version string constants; any additional file mutation refuses receipt generation.",
+        "S1": "ran: fixed literal source versions only; no approval, credential, arming or actual owner configuration included.",
+        "S2": "N/A: metadata-only replacement; inherited full implementation review is referenced for Python source, and repository architecture/supply-chain/testing gates remain separate.",
+        "S3": "N/A: metadata-only replacement; inherited full implementation review is referenced for Python source, and repository architecture/supply-chain/testing gates remain separate.",
+        "S4": "ran: runtime constraints and dependency API ranges unchanged; final parsing succeeds.",
+        "S5": "N/A: metadata-only replacement; inherited full implementation review is referenced for Python source, and repository architecture/supply-chain/testing gates remain separate.",
+        "P1": "N/A: metadata-only replacement; inherited full implementation review is referenced for Python source, and repository architecture/supply-chain/testing gates remain separate.",
+        "P2": "N/A: metadata-only replacement; inherited full implementation review is referenced for Python source, and repository architecture/supply-chain/testing gates remain separate.",
+        "M1": "ran: descriptive existing version declarations retained, no unrelated formatting.",
+        "M2": "N/A: metadata-only replacement; inherited full implementation review is referenced for Python source, and repository architecture/supply-chain/testing gates remain separate.",
+        "M3": "N/A: metadata-only replacement; inherited full implementation review is referenced for Python source, and repository architecture/supply-chain/testing gates remain separate.",
+        "M4": "ran: current candidate docs updated; historical release/cohort identities retained.",
+        "T1": "ran: static metadata syntax, exact-pin/manifest parity and inverse-delta/AST proof0; final integration tests remain pending.",
+        "T2": "N/A: metadata-only replacement; inherited full implementation review is referenced for Python source, and repository architecture/supply-chain/testing gates remain separate.",
+        "T3": "N/A: metadata-only replacement; inherited full implementation review is referenced for Python source, and repository architecture/supply-chain/testing gates remain separate.",
+        "T4": "N/A: metadata-only replacement; inherited full implementation review is referenced for Python source, and repository architecture/supply-chain/testing gates remain separate.",
+        "M5": "N/A: metadata-only replacement; inherited full implementation review is referenced for Python source, and repository architecture/supply-chain/testing gates remain separate."
+      },
+      "edits": [
+        {
+          "before": "__version__ = \"0.4.5\"",
+          "after": "__version__ = \"0.4.6\""
+        }
+      ]
+    },
+    {
+      "path": "executor/pyproject.toml",
+      "sha256": "18ca9761e7d2191d08412f431bdffb9471c18e79c4a1a63f38bc5383154c6e47",
+      "blob_sha": "595dc8092133b96f7e4695acc094d2ac7f5189b3",
+      "lines": 37,
+      "read_evidence": {
+        "method": "full current metadata parse or inherited full semantic source plus exact version-only reviewed delta",
+        "prior_complete_review": null,
+        "inverse_delta_sha256_verified": true,
+        "version_only_ast_verified": false
+      },
+      "passes": {
+        "C1": "ran: exact reviewed version/pin edits only; inverse transformation matches the recorded preimage SHA256.",
+        "C2": "ran: all local exact dependency pins agree with coordinated future versions; extension package and manifest versions agree.",
+        "C3": "ran: changed-source AST differs only at reviewed version string constants; any additional file mutation refuses receipt generation.",
+        "S1": "ran: fixed literal source versions only; no approval, credential, arming or actual owner configuration included.",
+        "S2": "N/A: metadata-only replacement; inherited full implementation review is referenced for Python source, and repository architecture/supply-chain/testing gates remain separate.",
+        "S3": "N/A: metadata-only replacement; inherited full implementation review is referenced for Python source, and repository architecture/supply-chain/testing gates remain separate.",
+        "S4": "ran: runtime constraints and dependency API ranges unchanged; final parsing succeeds.",
+        "S5": "N/A: metadata-only replacement; inherited full implementation review is referenced for Python source, and repository architecture/supply-chain/testing gates remain separate.",
+        "P1": "N/A: metadata-only replacement; inherited full implementation review is referenced for Python source, and repository architecture/supply-chain/testing gates remain separate.",
+        "P2": "N/A: metadata-only replacement; inherited full implementation review is referenced for Python source, and repository architecture/supply-chain/testing gates remain separate.",
+        "M1": "ran: descriptive existing version declarations retained, no unrelated formatting.",
+        "M2": "N/A: metadata-only replacement; inherited full implementation review is referenced for Python source, and repository architecture/supply-chain/testing gates remain separate.",
+        "M3": "N/A: metadata-only replacement; inherited full implementation review is referenced for Python source, and repository architecture/supply-chain/testing gates remain separate.",
+        "M4": "ran: current candidate docs updated; historical release/cohort identities retained.",
+        "T1": "ran: static metadata syntax, exact-pin/manifest parity and inverse-delta/AST proof0; final integration tests remain pending.",
+        "T2": "N/A: metadata-only replacement; inherited full implementation review is referenced for Python source, and repository architecture/supply-chain/testing gates remain separate.",
+        "T3": "N/A: metadata-only replacement; inherited full implementation review is referenced for Python source, and repository architecture/supply-chain/testing gates remain separate.",
+        "T4": "N/A: metadata-only replacement; inherited full implementation review is referenced for Python source, and repository architecture/supply-chain/testing gates remain separate.",
+        "M5": "N/A: metadata-only replacement; inherited full implementation review is referenced for Python source, and repository architecture/supply-chain/testing gates remain separate."
+      },
+      "edits": [
+        {
+          "before": "version = \"0.2.0\"",
+          "after": "version = \"0.2.1\""
+        }
+      ]
+    },
+    {
+      "path": "executor/src/executor/__init__.py",
+      "sha256": "8217ca965e5e0e83a7fb58a553dc9198d129f7ed5255e6a399aa8e0a60d36b13",
+      "blob_sha": "87a3489e9c281b83190050ca79bb2f8501893954",
+      "lines": 3,
+      "read_evidence": {
+        "method": "full current metadata parse or inherited full semantic source plus exact version-only reviewed delta",
+        "prior_complete_review": {
+          "receipt": ".cdo/reviews-2026-11-12/small-files.json",
+          "sha256": "a547dc3bde496bd0b509a18dfad4b8033663ec98559508508efb9712851d3d6e",
+          "semantic_scope": "full source review in referenced receipt"
+        },
+        "inverse_delta_sha256_verified": true,
+        "version_only_ast_verified": true
+      },
+      "passes": {
+        "C1": "ran: exact reviewed version/pin edits only; inverse transformation matches the recorded preimage SHA256.",
+        "C2": "ran: all local exact dependency pins agree with coordinated future versions; extension package and manifest versions agree.",
+        "C3": "ran: changed-source AST differs only at reviewed version string constants; any additional file mutation refuses receipt generation.",
+        "S1": "ran: fixed literal source versions only; no approval, credential, arming or actual owner configuration included.",
+        "S2": "N/A: metadata-only replacement; inherited full implementation review is referenced for Python source, and repository architecture/supply-chain/testing gates remain separate.",
+        "S3": "N/A: metadata-only replacement; inherited full implementation review is referenced for Python source, and repository architecture/supply-chain/testing gates remain separate.",
+        "S4": "ran: runtime constraints and dependency API ranges unchanged; final parsing succeeds.",
+        "S5": "N/A: metadata-only replacement; inherited full implementation review is referenced for Python source, and repository architecture/supply-chain/testing gates remain separate.",
+        "P1": "N/A: metadata-only replacement; inherited full implementation review is referenced for Python source, and repository architecture/supply-chain/testing gates remain separate.",
+        "P2": "N/A: metadata-only replacement; inherited full implementation review is referenced for Python source, and repository architecture/supply-chain/testing gates remain separate.",
+        "M1": "ran: descriptive existing version declarations retained, no unrelated formatting.",
+        "M2": "N/A: metadata-only replacement; inherited full implementation review is referenced for Python source, and repository architecture/supply-chain/testing gates remain separate.",
+        "M3": "N/A: metadata-only replacement; inherited full implementation review is referenced for Python source, and repository architecture/supply-chain/testing gates remain separate.",
+        "M4": "ran: current candidate docs updated; historical release/cohort identities retained.",
+        "T1": "ran: static metadata syntax, exact-pin/manifest parity and inverse-delta/AST proof0; final integration tests remain pending.",
+        "T2": "N/A: metadata-only replacement; inherited full implementation review is referenced for Python source, and repository architecture/supply-chain/testing gates remain separate.",
+        "T3": "N/A: metadata-only replacement; inherited full implementation review is referenced for Python source, and repository architecture/supply-chain/testing gates remain separate.",
+        "T4": "N/A: metadata-only replacement; inherited full implementation review is referenced for Python source, and repository architecture/supply-chain/testing gates remain separate.",
+        "M5": "N/A: metadata-only replacement; inherited full implementation review is referenced for Python source, and repository architecture/supply-chain/testing gates remain separate."
+      },
+      "edits": [
+        {
+          "before": "__version__ = \"0.2.0\"",
+          "after": "__version__ = \"0.2.1\""
+        }
+      ]
+    },
+    {
+      "path": "liquidity/pyproject.toml",
+      "sha256": "41942bab72fca03d8837a2a109d9cf6db1c88140bf7fdbb0dffac4f7048377c5",
+      "blob_sha": "174bc53811ff14131bb28cd174e1bdfbaabff313",
+      "lines": 39,
+      "read_evidence": {
+        "method": "full current metadata parse or inherited full semantic source plus exact version-only reviewed delta",
+        "prior_complete_review": null,
+        "inverse_delta_sha256_verified": true,
+        "version_only_ast_verified": false
+      },
+      "passes": {
+        "C1": "ran: exact reviewed version/pin edits only; inverse transformation matches the recorded preimage SHA256.",
+        "C2": "ran: all local exact dependency pins agree with coordinated future versions; extension package and manifest versions agree.",
+        "C3": "ran: changed-source AST differs only at reviewed version string constants; any additional file mutation refuses receipt generation.",
+        "S1": "ran: fixed literal source versions only; no approval, credential, arming or actual owner configuration included.",
+        "S2": "N/A: metadata-only replacement; inherited full implementation review is referenced for Python source, and repository architecture/supply-chain/testing gates remain separate.",
+        "S3": "N/A: metadata-only replacement; inherited full implementation review is referenced for Python source, and repository architecture/supply-chain/testing gates remain separate.",
+        "S4": "ran: runtime constraints and dependency API ranges unchanged; final parsing succeeds.",
+        "S5": "N/A: metadata-only replacement; inherited full implementation review is referenced for Python source, and repository architecture/supply-chain/testing gates remain separate.",
+        "P1": "N/A: metadata-only replacement; inherited full implementation review is referenced for Python source, and repository architecture/supply-chain/testing gates remain separate.",
+        "P2": "N/A: metadata-only replacement; inherited full implementation review is referenced for Python source, and repository architecture/supply-chain/testing gates remain separate.",
+        "M1": "ran: descriptive existing version declarations retained, no unrelated formatting.",
+        "M2": "N/A: metadata-only replacement; inherited full implementation review is referenced for Python source, and repository architecture/supply-chain/testing gates remain separate.",
+        "M3": "N/A: metadata-only replacement; inherited full implementation review is referenced for Python source, and repository architecture/supply-chain/testing gates remain separate.",
+        "M4": "ran: current candidate docs updated; historical release/cohort identities retained.",
+        "T1": "ran: static metadata syntax, exact-pin/manifest parity and inverse-delta/AST proof0; final integration tests remain pending.",
+        "T2": "N/A: metadata-only replacement; inherited full implementation review is referenced for Python source, and repository architecture/supply-chain/testing gates remain separate.",
+        "T3": "N/A: metadata-only replacement; inherited full implementation review is referenced for Python source, and repository architecture/supply-chain/testing gates remain separate.",
+        "T4": "N/A: metadata-only replacement; inherited full implementation review is referenced for Python source, and repository architecture/supply-chain/testing gates remain separate.",
+        "M5": "N/A: metadata-only replacement; inherited full implementation review is referenced for Python source, and repository architecture/supply-chain/testing gates remain separate."
+      },
+      "edits": [
+        {
+          "before": "version = \"0.1.0\"",
+          "after": "version = \"0.1.1\""
+        }
+      ]
+    },
+    {
+      "path": "liquidity/src/aero_lp/__init__.py",
+      "sha256": "1e61c815125af958cddcd4b7d37e69eb7d8dcf663c29f2cc8bbce2f0d0a66090",
+      "blob_sha": "37528fbd4c3e7f4732793d6291ecbdb856c9b231",
+      "lines": 3,
+      "read_evidence": {
+        "method": "full current metadata parse or inherited full semantic source plus exact version-only reviewed delta",
+        "prior_complete_review": {
+          "receipt": ".cdo/reviews-2026-11-12/small-files.json",
+          "sha256": "79e9cd44556ffed69482a4b8317303292e21cffad6f63508bdf941adceacb68f",
+          "semantic_scope": "full source review in referenced receipt"
+        },
+        "inverse_delta_sha256_verified": true,
+        "version_only_ast_verified": true
+      },
+      "passes": {
+        "C1": "ran: exact reviewed version/pin edits only; inverse transformation matches the recorded preimage SHA256.",
+        "C2": "ran: all local exact dependency pins agree with coordinated future versions; extension package and manifest versions agree.",
+        "C3": "ran: changed-source AST differs only at reviewed version string constants; any additional file mutation refuses receipt generation.",
+        "S1": "ran: fixed literal source versions only; no approval, credential, arming or actual owner configuration included.",
+        "S2": "N/A: metadata-only replacement; inherited full implementation review is referenced for Python source, and repository architecture/supply-chain/testing gates remain separate.",
+        "S3": "N/A: metadata-only replacement; inherited full implementation review is referenced for Python source, and repository architecture/supply-chain/testing gates remain separate.",
+        "S4": "ran: runtime constraints and dependency API ranges unchanged; final parsing succeeds.",
+        "S5": "N/A: metadata-only replacement; inherited full implementation review is referenced for Python source, and repository architecture/supply-chain/testing gates remain separate.",
+        "P1": "N/A: metadata-only replacement; inherited full implementation review is referenced for Python source, and repository architecture/supply-chain/testing gates remain separate.",
+        "P2": "N/A: metadata-only replacement; inherited full implementation review is referenced for Python source, and repository architecture/supply-chain/testing gates remain separate.",
+        "M1": "ran: descriptive existing version declarations retained, no unrelated formatting.",
+        "M2": "N/A: metadata-only replacement; inherited full implementation review is referenced for Python source, and repository architecture/supply-chain/testing gates remain separate.",
+        "M3": "N/A: metadata-only replacement; inherited full implementation review is referenced for Python source, and repository architecture/supply-chain/testing gates remain separate.",
+        "M4": "ran: current candidate docs updated; historical release/cohort identities retained.",
+        "T1": "ran: static metadata syntax, exact-pin/manifest parity and inverse-delta/AST proof0; final integration tests remain pending.",
+        "T2": "N/A: metadata-only replacement; inherited full implementation review is referenced for Python source, and repository architecture/supply-chain/testing gates remain separate.",
+        "T3": "N/A: metadata-only replacement; inherited full implementation review is referenced for Python source, and repository architecture/supply-chain/testing gates remain separate.",
+        "T4": "N/A: metadata-only replacement; inherited full implementation review is referenced for Python source, and repository architecture/supply-chain/testing gates remain separate.",
+        "M5": "N/A: metadata-only replacement; inherited full implementation review is referenced for Python source, and repository architecture/supply-chain/testing gates remain separate."
+      },
+      "edits": [
+        {
+          "before": "__version__ = \"0.1.0\"",
+          "after": "__version__ = \"0.1.1\""
+        }
+      ]
+    },
+    {
+      "path": "extension/package.json",
+      "sha256": "c55de8f707d8bd48a18a8c85d4904fde445c74cfab0ee87cce7472459e3933da",
+      "blob_sha": "73648bcbf9f95e88e975f60b0252afab0e1dd069",
+      "lines": 21,
+      "read_evidence": {
+        "method": "full current metadata parse or inherited full semantic source plus exact version-only reviewed delta",
+        "prior_complete_review": null,
+        "inverse_delta_sha256_verified": true,
+        "version_only_ast_verified": false
+      },
+      "passes": {
+        "C1": "ran: exact reviewed version/pin edits only; inverse transformation matches the recorded preimage SHA256.",
+        "C2": "ran: all local exact dependency pins agree with coordinated future versions; extension package and manifest versions agree.",
+        "C3": "ran: changed-source AST differs only at reviewed version string constants; any additional file mutation refuses receipt generation.",
+        "S1": "ran: fixed literal source versions only; no approval, credential, arming or actual owner configuration included.",
+        "S2": "N/A: metadata-only replacement; inherited full implementation review is referenced for Python source, and repository architecture/supply-chain/testing gates remain separate.",
+        "S3": "N/A: metadata-only replacement; inherited full implementation review is referenced for Python source, and repository architecture/supply-chain/testing gates remain separate.",
+        "S4": "ran: runtime constraints and dependency API ranges unchanged; final parsing succeeds.",
+        "S5": "N/A: metadata-only replacement; inherited full implementation review is referenced for Python source, and repository architecture/supply-chain/testing gates remain separate.",
+        "P1": "N/A: metadata-only replacement; inherited full implementation review is referenced for Python source, and repository architecture/supply-chain/testing gates remain separate.",
+        "P2": "N/A: metadata-only replacement; inherited full implementation review is referenced for Python source, and repository architecture/supply-chain/testing gates remain separate.",
+        "M1": "ran: descriptive existing version declarations retained, no unrelated formatting.",
+        "M2": "N/A: metadata-only replacement; inherited full implementation review is referenced for Python source, and repository architecture/supply-chain/testing gates remain separate.",
+        "M3": "N/A: metadata-only replacement; inherited full implementation review is referenced for Python source, and repository architecture/supply-chain/testing gates remain separate.",
+        "M4": "ran: current candidate docs updated; historical release/cohort identities retained.",
+        "T1": "ran: static metadata syntax, exact-pin/manifest parity and inverse-delta/AST proof0; final integration tests remain pending.",
+        "T2": "N/A: metadata-only replacement; inherited full implementation review is referenced for Python source, and repository architecture/supply-chain/testing gates remain separate.",
+        "T3": "N/A: metadata-only replacement; inherited full implementation review is referenced for Python source, and repository architecture/supply-chain/testing gates remain separate.",
+        "T4": "N/A: metadata-only replacement; inherited full implementation review is referenced for Python source, and repository architecture/supply-chain/testing gates remain separate.",
+        "M5": "N/A: metadata-only replacement; inherited full implementation review is referenced for Python source, and repository architecture/supply-chain/testing gates remain separate."
+      },
+      "edits": [
+        {
+          "before": "\"version\": \"0.6.6\"",
+          "after": "\"version\": \"0.6.7\""
+        }
+      ]
+    },
+    {
+      "path": "extension/manifest.json",
+      "sha256": "b950085989b1dc61ef1a21d62d60d82d6f0f6854032e5a0ac4bcbb475eb7e405",
+      "blob_sha": "dbb7514258e9fc28d5a8843fdad80b87aa949a60",
+      "lines": 46,
+      "read_evidence": {
+        "method": "full current metadata parse or inherited full semantic source plus exact version-only reviewed delta",
+        "prior_complete_review": null,
+        "inverse_delta_sha256_verified": true,
+        "version_only_ast_verified": false
+      },
+      "passes": {
+        "C1": "ran: exact reviewed version/pin edits only; inverse transformation matches the recorded preimage SHA256.",
+        "C2": "ran: all local exact dependency pins agree with coordinated future versions; extension package and manifest versions agree.",
+        "C3": "ran: changed-source AST differs only at reviewed version string constants; any additional file mutation refuses receipt generation.",
+        "S1": "ran: fixed literal source versions only; no approval, credential, arming or actual owner configuration included.",
+        "S2": "N/A: metadata-only replacement; inherited full implementation review is referenced for Python source, and repository architecture/supply-chain/testing gates remain separate.",
+        "S3": "N/A: metadata-only replacement; inherited full implementation review is referenced for Python source, and repository architecture/supply-chain/testing gates remain separate.",
+        "S4": "ran: runtime constraints and dependency API ranges unchanged; final parsing succeeds.",
+        "S5": "N/A: metadata-only replacement; inherited full implementation review is referenced for Python source, and repository architecture/supply-chain/testing gates remain separate.",
+        "P1": "N/A: metadata-only replacement; inherited full implementation review is referenced for Python source, and repository architecture/supply-chain/testing gates remain separate.",
+        "P2": "N/A: metadata-only replacement; inherited full implementation review is referenced for Python source, and repository architecture/supply-chain/testing gates remain separate.",
+        "M1": "ran: descriptive existing version declarations retained, no unrelated formatting.",
+        "M2": "N/A: metadata-only replacement; inherited full implementation review is referenced for Python source, and repository architecture/supply-chain/testing gates remain separate.",
+        "M3": "N/A: metadata-only replacement; inherited full implementation review is referenced for Python source, and repository architecture/supply-chain/testing gates remain separate.",
+        "M4": "ran: current candidate docs updated; historical release/cohort identities retained.",
+        "T1": "ran: static metadata syntax, exact-pin/manifest parity and inverse-delta/AST proof0; final integration tests remain pending.",
+        "T2": "N/A: metadata-only replacement; inherited full implementation review is referenced for Python source, and repository architecture/supply-chain/testing gates remain separate.",
+        "T3": "N/A: metadata-only replacement; inherited full implementation review is referenced for Python source, and repository architecture/supply-chain/testing gates remain separate.",
+        "T4": "N/A: metadata-only replacement; inherited full implementation review is referenced for Python source, and repository architecture/supply-chain/testing gates remain separate.",
+        "M5": "N/A: metadata-only replacement; inherited full implementation review is referenced for Python source, and repository architecture/supply-chain/testing gates remain separate."
+      },
+      "edits": [
+        {
+          "before": "\"version\": \"0.6.6\"",
+          "after": "\"version\": \"0.6.7\""
+        }
+      ]
+    },
+    {
+      "path": "oracle/README.md",
+      "sha256": "ba0906b9578039bcf7ac07e4e7250e5e1d63395c018f3557e105ccb23c49e057",
+      "blob_sha": "3262a4ba48b620225189db134ccee709e041ef81",
+      "lines": 335,
+      "read_evidence": {
+        "method": "full current metadata parse or inherited full semantic source plus exact version-only reviewed delta",
+        "prior_complete_review": null,
+        "inverse_delta_sha256_verified": true,
+        "version_only_ast_verified": false
+      },
+      "passes": {
+        "C1": "ran: exact reviewed version/pin edits only; inverse transformation matches the recorded preimage SHA256.",
+        "C2": "ran: all local exact dependency pins agree with coordinated future versions; extension package and manifest versions agree.",
+        "C3": "ran: changed-source AST differs only at reviewed version string constants; any additional file mutation refuses receipt generation.",
+        "S1": "ran: fixed literal source versions only; no approval, credential, arming or actual owner configuration included.",
+        "S2": "N/A: metadata-only replacement; inherited full implementation review is referenced for Python source, and repository architecture/supply-chain/testing gates remain separate.",
+        "S3": "N/A: metadata-only replacement; inherited full implementation review is referenced for Python source, and repository architecture/supply-chain/testing gates remain separate.",
+        "S4": "ran: runtime constraints and dependency API ranges unchanged; final parsing succeeds.",
+        "S5": "N/A: metadata-only replacement; inherited full implementation review is referenced for Python source, and repository architecture/supply-chain/testing gates remain separate.",
+        "P1": "N/A: metadata-only replacement; inherited full implementation review is referenced for Python source, and repository architecture/supply-chain/testing gates remain separate.",
+        "P2": "N/A: metadata-only replacement; inherited full implementation review is referenced for Python source, and repository architecture/supply-chain/testing gates remain separate.",
+        "M1": "ran: descriptive existing version declarations retained, no unrelated formatting.",
+        "M2": "N/A: metadata-only replacement; inherited full implementation review is referenced for Python source, and repository architecture/supply-chain/testing gates remain separate.",
+        "M3": "N/A: metadata-only replacement; inherited full implementation review is referenced for Python source, and repository architecture/supply-chain/testing gates remain separate.",
+        "M4": "ran: current candidate docs updated; historical release/cohort identities retained.",
+        "T1": "ran: static metadata syntax, exact-pin/manifest parity and inverse-delta/AST proof0; final integration tests remain pending.",
+        "T2": "N/A: metadata-only replacement; inherited full implementation review is referenced for Python source, and repository architecture/supply-chain/testing gates remain separate.",
+        "T3": "N/A: metadata-only replacement; inherited full implementation review is referenced for Python source, and repository architecture/supply-chain/testing gates remain separate.",
+        "T4": "N/A: metadata-only replacement; inherited full implementation review is referenced for Python source, and repository architecture/supply-chain/testing gates remain separate.",
+        "M5": "N/A: metadata-only replacement; inherited full implementation review is referenced for Python source, and repository architecture/supply-chain/testing gates remain separate."
+      },
+      "edits": [
+        {
+          "before": "# Oracle 0.2.3",
+          "after": "# Oracle 0.2.4"
+        }
+      ]
+    },
+    {
+      "path": "ecosystem/README.md",
+      "sha256": "4e5f71b8c0acd9985ffe1e00c77bb2c9cef40bcfa37277ca403c529f1b2e71cd",
+      "blob_sha": "2fad52b0ffcdd78c49d4069d15255d2489c50334",
+      "lines": 60,
+      "read_evidence": {
+        "method": "full current metadata parse or inherited full semantic source plus exact version-only reviewed delta",
+        "prior_complete_review": null,
+        "inverse_delta_sha256_verified": true,
+        "version_only_ast_verified": false
+      },
+      "passes": {
+        "C1": "ran: exact reviewed version/pin edits only; inverse transformation matches the recorded preimage SHA256.",
+        "C2": "ran: all local exact dependency pins agree with coordinated future versions; extension package and manifest versions agree.",
+        "C3": "ran: changed-source AST differs only at reviewed version string constants; any additional file mutation refuses receipt generation.",
+        "S1": "ran: fixed literal source versions only; no approval, credential, arming or actual owner configuration included.",
+        "S2": "N/A: metadata-only replacement; inherited full implementation review is referenced for Python source, and repository architecture/supply-chain/testing gates remain separate.",
+        "S3": "N/A: metadata-only replacement; inherited full implementation review is referenced for Python source, and repository architecture/supply-chain/testing gates remain separate.",
+        "S4": "ran: runtime constraints and dependency API ranges unchanged; final parsing succeeds.",
+        "S5": "N/A: metadata-only replacement; inherited full implementation review is referenced for Python source, and repository architecture/supply-chain/testing gates remain separate.",
+        "P1": "N/A: metadata-only replacement; inherited full implementation review is referenced for Python source, and repository architecture/supply-chain/testing gates remain separate.",
+        "P2": "N/A: metadata-only replacement; inherited full implementation review is referenced for Python source, and repository architecture/supply-chain/testing gates remain separate.",
+        "M1": "ran: descriptive existing version declarations retained, no unrelated formatting.",
+        "M2": "N/A: metadata-only replacement; inherited full implementation review is referenced for Python source, and repository architecture/supply-chain/testing gates remain separate.",
+        "M3": "N/A: metadata-only replacement; inherited full implementation review is referenced for Python source, and repository architecture/supply-chain/testing gates remain separate.",
+        "M4": "ran: current candidate docs updated; historical release/cohort identities retained.",
+        "T1": "ran: static metadata syntax, exact-pin/manifest parity and inverse-delta/AST proof0; final integration tests remain pending.",
+        "T2": "N/A: metadata-only replacement; inherited full implementation review is referenced for Python source, and repository architecture/supply-chain/testing gates remain separate.",
+        "T3": "N/A: metadata-only replacement; inherited full implementation review is referenced for Python source, and repository architecture/supply-chain/testing gates remain separate.",
+        "T4": "N/A: metadata-only replacement; inherited full implementation review is referenced for Python source, and repository architecture/supply-chain/testing gates remain separate.",
+        "M5": "N/A: metadata-only replacement; inherited full implementation review is referenced for Python source, and repository architecture/supply-chain/testing gates remain separate."
+      },
+      "edits": [
+        {
+          "before": "# Paper ecosystem control room 0.4.5",
+          "after": "# Paper ecosystem control room 0.4.6"
+        }
+      ]
+    },
+    {
+      "path": "botmanager/README.md",
+      "sha256": "195f40adae0ce675f63de9b066c0249c412cba6cac086c3af2897eea8a25b305",
+      "blob_sha": "75258564a17e75422ab7f5bace167626f3d70a94",
+      "lines": 818,
+      "read_evidence": {
+        "method": "full current metadata parse or inherited full semantic source plus exact version-only reviewed delta",
+        "prior_complete_review": null,
+        "inverse_delta_sha256_verified": true,
+        "version_only_ast_verified": false
+      },
+      "passes": {
+        "C1": "ran: exact reviewed version/pin edits only; inverse transformation matches the recorded preimage SHA256.",
+        "C2": "ran: all local exact dependency pins agree with coordinated future versions; extension package and manifest versions agree.",
+        "C3": "ran: changed-source AST differs only at reviewed version string constants; any additional file mutation refuses receipt generation.",
+        "S1": "ran: fixed literal source versions only; no approval, credential, arming or actual owner configuration included.",
+        "S2": "N/A: metadata-only replacement; inherited full implementation review is referenced for Python source, and repository architecture/supply-chain/testing gates remain separate.",
+        "S3": "N/A: metadata-only replacement; inherited full implementation review is referenced for Python source, and repository architecture/supply-chain/testing gates remain separate.",
+        "S4": "ran: runtime constraints and dependency API ranges unchanged; final parsing succeeds.",
+        "S5": "N/A: metadata-only replacement; inherited full implementation review is referenced for Python source, and repository architecture/supply-chain/testing gates remain separate.",
+        "P1": "N/A: metadata-only replacement; inherited full implementation review is referenced for Python source, and repository architecture/supply-chain/testing gates remain separate.",
+        "P2": "N/A: metadata-only replacement; inherited full implementation review is referenced for Python source, and repository architecture/supply-chain/testing gates remain separate.",
+        "M1": "ran: descriptive existing version declarations retained, no unrelated formatting.",
+        "M2": "N/A: metadata-only replacement; inherited full implementation review is referenced for Python source, and repository architecture/supply-chain/testing gates remain separate.",
+        "M3": "N/A: metadata-only replacement; inherited full implementation review is referenced for Python source, and repository architecture/supply-chain/testing gates remain separate.",
+        "M4": "ran: current candidate docs updated; historical release/cohort identities retained.",
+        "T1": "ran: static metadata syntax, exact-pin/manifest parity and inverse-delta/AST proof0; final integration tests remain pending.",
+        "T2": "N/A: metadata-only replacement; inherited full implementation review is referenced for Python source, and repository architecture/supply-chain/testing gates remain separate.",
+        "T3": "N/A: metadata-only replacement; inherited full implementation review is referenced for Python source, and repository architecture/supply-chain/testing gates remain separate.",
+        "T4": "N/A: metadata-only replacement; inherited full implementation review is referenced for Python source, and repository architecture/supply-chain/testing gates remain separate.",
+        "M5": "N/A: metadata-only replacement; inherited full implementation review is referenced for Python source, and repository architecture/supply-chain/testing gates remain separate."
+      },
+      "edits": [
+        {
+          "before": "# Solbot manager 0.7.2",
+          "after": "# Solbot manager 0.7.3"
+        },
+        {
+          "before": "exact local `solmargintrader-backtester==0.2.0`",
+          "after": "exact local `solmargintrader-backtester==0.2.1`"
+        },
+        {
+          "before": "The current reviewed installation must contain manager 0.7.2,\nresearch-runtime 0.4.0, backtester 0.2.0 and Oracle 0.2.3.",
+          "after": "The coordinated source candidate pins manager 0.7.3, research-runtime 0.4.1,\nbacktester 0.2.1 and Oracle 0.2.4. Installed acceptance remains a separate check."
+        }
+      ]
+    },
+    {
+      "path": "README.md",
+      "sha256": "a5887ca9e46b3494b8d7fbb3aec1e729f9f6026379e551ad7137c0814d2db9ba",
+      "blob_sha": "e4af8f2c336dff96f21678cf5a35643e583fe362",
+      "lines": 217,
+      "read_evidence": {
+        "method": "full current metadata parse or inherited full semantic source plus exact version-only reviewed delta",
+        "prior_complete_review": null,
+        "inverse_delta_sha256_verified": true,
+        "version_only_ast_verified": false
+      },
+      "passes": {
+        "C1": "ran: exact reviewed version/pin edits only; inverse transformation matches the recorded preimage SHA256.",
+        "C2": "ran: all local exact dependency pins agree with coordinated future versions; extension package and manifest versions agree.",
+        "C3": "ran: changed-source AST differs only at reviewed version string constants; any additional file mutation refuses receipt generation.",
+        "S1": "ran: fixed literal source versions only; no approval, credential, arming or actual owner configuration included.",
+        "S2": "N/A: metadata-only replacement; inherited full implementation review is referenced for Python source, and repository architecture/supply-chain/testing gates remain separate.",
+        "S3": "N/A: metadata-only replacement; inherited full implementation review is referenced for Python source, and repository architecture/supply-chain/testing gates remain separate.",
+        "S4": "ran: runtime constraints and dependency API ranges unchanged; final parsing succeeds.",
+        "S5": "N/A: metadata-only replacement; inherited full implementation review is referenced for Python source, and repository architecture/supply-chain/testing gates remain separate.",
+        "P1": "N/A: metadata-only replacement; inherited full implementation review is referenced for Python source, and repository architecture/supply-chain/testing gates remain separate.",
+        "P2": "N/A: metadata-only replacement; inherited full implementation review is referenced for Python source, and repository architecture/supply-chain/testing gates remain separate.",
+        "M1": "ran: descriptive existing version declarations retained, no unrelated formatting.",
+        "M2": "N/A: metadata-only replacement; inherited full implementation review is referenced for Python source, and repository architecture/supply-chain/testing gates remain separate.",
+        "M3": "N/A: metadata-only replacement; inherited full implementation review is referenced for Python source, and repository architecture/supply-chain/testing gates remain separate.",
+        "M4": "ran: current candidate docs updated; historical release/cohort identities retained.",
+        "T1": "ran: static metadata syntax, exact-pin/manifest parity and inverse-delta/AST proof0; final integration tests remain pending.",
+        "T2": "N/A: metadata-only replacement; inherited full implementation review is referenced for Python source, and repository architecture/supply-chain/testing gates remain separate.",
+        "T3": "N/A: metadata-only replacement; inherited full implementation review is referenced for Python source, and repository architecture/supply-chain/testing gates remain separate.",
+        "T4": "N/A: metadata-only replacement; inherited full implementation review is referenced for Python source, and repository architecture/supply-chain/testing gates remain separate.",
+        "M5": "N/A: metadata-only replacement; inherited full implementation review is referenced for Python source, and repository architecture/supply-chain/testing gates remain separate."
+      },
+      "edits": [
+        {
+          "before": "The current coordinated candidate is manager 0.7.2, research-runtime 0.4.0 and\necosystem 0.4.4, with backtester 0.2.0, Oracle 0.2.3, optional executor 0.2.0\nand extension source 0.6.6.",
+          "after": "The current coordinated source candidate is manager 0.7.3, research-runtime 0.4.1\nand ecosystem 0.4.6, with backtester 0.2.1, Oracle 0.2.4, optional executor 0.2.1\nand extension source 0.6.7. Archived liquidity source is 0.1.1 and remains disabled."
+        }
+      ]
+    },
+    {
+      "path": "docs/TESTING.md",
+      "sha256": "a26aa89b7d238fb1402015d903bd676e0fd1cf7c056444f1891585ad1d4fa0f9",
+      "blob_sha": "ef725ac37470b04033ca3e7a7d769671f3a0fa28",
+      "lines": 335,
+      "read_evidence": {
+        "method": "full current metadata parse or inherited full semantic source plus exact version-only reviewed delta",
+        "prior_complete_review": null,
+        "inverse_delta_sha256_verified": true,
+        "version_only_ast_verified": false
+      },
+      "passes": {
+        "C1": "ran: exact reviewed version/pin edits only; inverse transformation matches the recorded preimage SHA256.",
+        "C2": "ran: all local exact dependency pins agree with coordinated future versions; extension package and manifest versions agree.",
+        "C3": "ran: changed-source AST differs only at reviewed version string constants; any additional file mutation refuses receipt generation.",
+        "S1": "ran: fixed literal source versions only; no approval, credential, arming or actual owner configuration included.",
+        "S2": "N/A: metadata-only replacement; inherited full implementation review is referenced for Python source, and repository architecture/supply-chain/testing gates remain separate.",
+        "S3": "N/A: metadata-only replacement; inherited full implementation review is referenced for Python source, and repository architecture/supply-chain/testing gates remain separate.",
+        "S4": "ran: runtime constraints and dependency API ranges unchanged; final parsing succeeds.",
+        "S5": "N/A: metadata-only replacement; inherited full implementation review is referenced for Python source, and repository architecture/supply-chain/testing gates remain separate.",
+        "P1": "N/A: metadata-only replacement; inherited full implementation review is referenced for Python source, and repository architecture/supply-chain/testing gates remain separate.",
+        "P2": "N/A: metadata-only replacement; inherited full implementation review is referenced for Python source, and repository architecture/supply-chain/testing gates remain separate.",
+        "M1": "ran: descriptive existing version declarations retained, no unrelated formatting.",
+        "M2": "N/A: metadata-only replacement; inherited full implementation review is referenced for Python source, and repository architecture/supply-chain/testing gates remain separate.",
+        "M3": "N/A: metadata-only replacement; inherited full implementation review is referenced for Python source, and repository architecture/supply-chain/testing gates remain separate.",
+        "M4": "ran: current candidate docs updated; historical release/cohort identities retained.",
+        "T1": "ran: static metadata syntax, exact-pin/manifest parity and inverse-delta/AST proof0; final integration tests remain pending.",
+        "T2": "N/A: metadata-only replacement; inherited full implementation review is referenced for Python source, and repository architecture/supply-chain/testing gates remain separate.",
+        "T3": "N/A: metadata-only replacement; inherited full implementation review is referenced for Python source, and repository architecture/supply-chain/testing gates remain separate.",
+        "T4": "N/A: metadata-only replacement; inherited full implementation review is referenced for Python source, and repository architecture/supply-chain/testing gates remain separate.",
+        "M5": "N/A: metadata-only replacement; inherited full implementation review is referenced for Python source, and repository architecture/supply-chain/testing gates remain separate."
+      },
+      "edits": [
+        {
+          "before": "The coordinated candidate uses manager 0.7.2, research-runtime 0.4.0 and ecosystem\n0.4.4.",
+          "after": "The coordinated source candidate uses manager 0.7.3, research-runtime 0.4.1 and\necosystem 0.4.6."
+        }
+      ]
+    }
+  ],
+  "checks": [
+    {
+      "command": "parseJSON/TOML/AST; reverseall20reviewededitsets topreimagehash; normalize6PythonversionconstantASTs; exactlocalpinsandextensionmanifestparity",
+      "exit_code": 0
+    }
+  ],
+  "limits": [
+    "No owner environment, arming, disabled archived service, actual installed runtime or frozen historical cohort was changed.",
+    "Version-only deltas inherit complete prior implementation reviews; they do not claim a fresh full reread of unchanged implementation text.",
+    "Final integrated checks, offlineindex freshness, packaging, CI, merge and deployed acceptance remain pending."
+  ]
+}

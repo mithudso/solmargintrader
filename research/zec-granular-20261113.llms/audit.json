@@ -1,0 +1,87 @@
+{
+  "agent": "research-contract-auditor",
+  "definition_version": "1.0.0",
+  "status": "complete",
+  "evidence": [
+    {
+      "source": "/Users/mitch/.local/state/solmargintrader/zec-granular-backtests-20261113/attempt-03/manifest.json",
+      "observed_at": "2026-11-13T16:16:48Z",
+      "supported_claim": "All12 declared artifact hashes verified;10576 unique expected rows and status census match."
+    },
+    {
+      "source": "/Users/mitch/.local/state/solmargintrader/zec-granular-backtests-20261113/audit-attempt-03-ledger.json",
+      "observed_at": "2026-11-13T16:16:48Z",
+      "supported_claim": "All326173 emitted fills independently reconcile to observed book depth, timing, fees, cash and positions;21 full direct-math SMA/buy-and-hold cases reproduce."
+    },
+    {
+      "source": "/Users/mitch/.local/state/solmargintrader/zec-granular-backtests-20261113/audit-attempt-03-raw-book.json",
+      "observed_at": "2026-11-13T16:16:48Z",
+      "supported_claim": "Original WAL hash and1459542 sequences verified;all134746 trades match;100 selected books independently reconstruct exactly;all7 connection changes are marked."
+    },
+    {
+      "source": "/Users/mitch/dev/solmargintrader-zec-granular-20261113/research/tests/test_zec_granular.py",
+      "observed_at": "2026-11-13T16:16:48Z",
+      "supported_claim": "Final22 tests pass exit0 including gap causality, weighted training prefix, deadband exit and receipt-silence/reconnect behavior."
+    }
+  ],
+  "changes": [
+    "/Users/mitch/.local/state/solmargintrader/zec-granular-backtests-20261113/audit-attempt-02-ledger.json",
+    "/Users/mitch/.local/state/solmargintrader/zec-granular-backtests-20261113/audit-attempt-03-ledger.json",
+    "/Users/mitch/.local/state/solmargintrader/zec-granular-backtests-20261113/audit-attempt-03-raw-book.json",
+    "/Users/mitch/.local/state/solmargintrader/zec-granular-backtests-20261113/audit-attempt-03-receipt.json"
+  ],
+  "remaining": [],
+  "details": {
+    "contract": "Audit final attempt03 offline receive-time ZEC finite catalog at1m5m10m1h;read-only source;no network, services, inference or orders.",
+    "gate_matrix": {
+      "original_bytes_and_sequences": "passed",
+      "native_trade_arrays": "passed_all134746",
+      "book_reconstruction": "passed100_selected_samples",
+      "finite_catalog_completeness": "passed10576_exact_unique_keys",
+      "source_runtime_identity": "passed_all_recorded_code_hashes_current",
+      "first_eligible_quote_and_latency": "passed_all326173_fills",
+      "independent_depth_vwap_fees_cash_positions": "passed_all326173_fills",
+      "direct_registry_math_full_replays": "passed21_cases",
+      "synthetic_carry_ledger": "passed_for_closed_positions_all_final_positions_closed",
+      "terminal_settlement": "passed_zero_open_units_at1e-8_tolerance",
+      "causality_regressions": "passed",
+      "required_focused_tests": "passed22_exit0"
+    },
+    "claim_verdicts": {
+      "60bps_1m": "0positive_of836_active",
+      "60bps_5m": "1positive_of386_active_best0.20218102228306556percent_2fills",
+      "60bps_10m": "11positive_of167_active_best1.1126826354501684percent_2fills_some_aliases",
+      "60bps_1h": "0positive_of44_active",
+      "60bps_capture_hold": "minus9.787894025377241percent_2fills",
+      "repeatable_edge_or_accuracy": "not_established"
+    },
+    "read_bindings": {
+      "original_wal_sha256": "eea4a026d1a093a2be996d32c552262358516ca27494f60df3091d54312f3d31",
+      "selected_book_samples": 100,
+      "all_fills": 326173,
+      "full_direct_math_cases": 21
+    },
+    "origin_groups": "Computational audit;independence supplied by direct raw reconstruction and separate arithmetic ledger.No new external topic research.",
+    "negation_evidence": "Adversarial future gap, missing trade, rejected depth, cash cap and invalid-signal deadband regression gates pass.",
+    "telemetry": {
+      "test_exit_code": 0,
+      "tests_passed": 22,
+      "raw_audit_exit_code": 0,
+      "ledger_audit_exit_code": 0,
+      "max_cash_error_usd": 9.367795428261161e-11,
+      "max_execution_price_error": 9.094947017729282e-13
+    },
+    "publication_receipt": {
+      "scope": "Immutable local attempt03 artifact set;external publication not requested for auditor.",
+      "manifest": "/Users/mitch/.local/state/solmargintrader/zec-granular-backtests-20261113/attempt-03/manifest.json"
+    },
+    "qualification_verdict": "Accepted for descriptive receive-time-reference backtest reporting within declared synthetic execution assumptions.No remaining material correctness finding in audited scope.",
+    "limitations": [
+      "Only100 of86352 native sampled books were independently rebuilt from raw;every emitted fill was checked against its cached book.",
+      "Sampled exchange message lag reached13.265785932540894seconds during recovery.Receive-time quotes do not prove currently executable venue prices.",
+      "Decision/fill drawdown omits intermediate equity extrema.",
+      "One captured day and many aliases/configurations do not establish expected profit, forecast accuracy or live perpetual-venue performance.",
+      "Attempt02 remains superseded and unqualified;its receipt is retained separately."
+    ]
+  }
+}

@@ -83,7 +83,8 @@
           "503": {
             "description": "Owner or durable evidence unavailable"
           }
-        }
+        },
+        "description": "Returns the selected native owner status. A read-only timing annotation may explain a recent no-new-call-due check when every selected trial has a correctly issued, unexpired pending call and the next window remains non-due at both the owner check and current observation. The original text remains in owner_message. Missing, stale, invalid, ambiguous or due evidence preserves the owner warning. This read never starts workers, inserts calls or changes outcomes."
       }
     },
     "/api/control": {

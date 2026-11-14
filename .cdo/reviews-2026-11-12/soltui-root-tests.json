@@ -1,0 +1,563 @@
+{
+  "schema": "oraclebot-full-source-review/v1",
+  "reviewer": "root",
+  "status": "FILE_PASSES_AND_LOCAL_VERIFICATION_COMPLETED_IN_SCOPE",
+  "created_at": "2026-11-12T17:45:49.940648+00:00",
+  "files": [
+    {
+      "path": "soltui/tests/test_coin_fit.py",
+      "sha256": "84ccc3d4c99208f0299edf273b67358de1451c914024b8ae626bd4cb020f1e76",
+      "blob_sha": "1443b70f43b39b2829a73da86a2dfa35504e1a15",
+      "lines": 293,
+      "read_evidence": {
+        "method": "full displayed source plus reviewed authored two small test deltas",
+        "ranges": [
+          {
+            "sha256": "84ccc3d4c99208f0299edf273b67358de1451c914024b8ae626bd4cb020f1e76",
+            "start": 1,
+            "end": 293,
+            "lines": 293
+          }
+        ]
+      },
+      "semantic_note": "Full293lines. Read-only30day demo is built once at class scope and individual mutation cases copy arrays or use separate temp CSV. Quick scores exclude heldout prices, bound audit requires source/config/cost identity, cancellation preserves all requested rows and CLI errors preserve exit2. No config/results/market fetch allowed.",
+      "passes": {
+        "C1": "ran: Full293lines. Read-only30day demo is built once at class scope and individual mutation cases copy arrays or use separate temp CSV. Quick scores exclude heldout prices, bound audit requires source/config/cost identity, cancellation preserves all requested rows and CLI errors preserve exit2. No config/results/market fetch allowed.",
+        "C2": "ran: caller/return and versioned envelope contracts, strict scalar/object shapes and unavailable-state semantics reviewed for this file.",
+        "C3": "ran: malformed/replayed/foreign/stale inputs, state fences, I/O failure and resource bounds considered. Proven defects bind regression checks below; no speculative live action was attempted.",
+        "S1": "ran: source treated as data; path/argv/SQL/HTTP authority, secret-safe errors, fixture isolation and signing/order boundary reviewed according to the contract above.",
+        "S2": "ran: subprocess/socket/SQLite/file/thread lifetimes, deadlines, final cleanup and refusal propagation inspected. Real OS fixture ownership remains scoped to temporary homes.",
+        "S3": "ran: strict booleans, finite clocks/numbers, bounded structured data and identity/config/generation bindings inspected where present.",
+        "S4": "ran: currentPython3.13/runtime, OS process semantics and Textualheadless APIs inspected. Actual macOS fixture acceptance does not certify Linuxinstalled behavior.",
+        "S5": "ran: structured command/error/receipt/health visibility and no raw dependency payload or credential reflection inspected. Existing bounded journals remain authoritative; no global log sink or owner service restart introduced.",
+        "P1": "ran: allocation/row/byte/work/candidate/tail bounds and repeated evaluation considered; account arithmetic and economic thresholds preserved.",
+        "P2": "ran: transactional snapshot/CAS/generation or fixture concurrency and cleanup boundaries inspected; no ambiguous write automatically retries.",
+        "M1": "ran: test names, local helpers, fixture ownership and assertion intent inspected. Two small authored test deltas are described in semantic_note; no formatter change is claimed for this cohort.",
+        "M2": "ran: existing shared test helpers, isolated temporary stores, synthetic loaders and explicit dependency injection inspected/reused. No duplicate production implementation added.",
+        "M3": "N/A per file: architecture/central-settings review is repository scope, owned by full_repo_health.",
+        "M4": "ran: fixture comments and evidence/source labels inspected; runtime/source coverage limits listed in note.",
+        "T1": "ran: full meaningful assertions/error paths inspected. Two test weaknesses proved and corrected; guarded191testbatch exits0 with0outbound attempts.",
+        "T2": "N/A per file: exact package pins and dependency/supply-chain review are repository scope.",
+        "T3": "N/A per file: lint/CI/tooling coverage is repository scope; full Bot Manager Ruff currently exits0.",
+        "T4": "ran: mutable fixture homes/databases remain per-test. CoinFit immutable demo already class-scoped. Simulation puremath remains fast; UI event waits and real detached-process lifetime cannot be replaced without losing observed behavior. UTXO retry pauses already injected.",
+        "M5": "N/A: test module. Actual CLI behavior exercised by test_coin_fit; production tool ergonomics belongs to its owner."
+      }
+    },
+    {
+      "path": "soltui/tests/test_council.py",
+      "sha256": "181773341e157f7e95fbf1e53ff064a70d34b1210ed5c3b39040c2ab36cd607e",
+      "blob_sha": "58a1647c731987ec79898bd991eb9009879a6ced",
+      "lines": 362,
+      "read_evidence": {
+        "method": "full displayed source plus reviewed authored two small test deltas",
+        "ranges": [
+          {
+            "sha256": "181773341e157f7e95fbf1e53ff064a70d34b1210ed5c3b39040c2ab36cd607e",
+            "start": 301,
+            "end": 362,
+            "lines": 362
+          },
+          {
+            "sha256": "181773341e157f7e95fbf1e53ff064a70d34b1210ed5c3b39040c2ab36cd607e",
+            "start": 1,
+            "end": 300,
+            "lines": 362
+          }
+        ]
+      },
+      "semantic_note": "Full362lines. Injected bars/quotes and temp database prove prior-outcome confidence, next-open timing, immutable observations, expiry/reversal/entry versus exit distinctions, fee/carry/leverage and liquidation math. Real detached paper child uses temp sitecustomize syntheticfeeds and finally stops its owned process. No actual venue orders.",
+      "passes": {
+        "C1": "ran: Full362lines. Injected bars/quotes and temp database prove prior-outcome confidence, next-open timing, immutable observations, expiry/reversal/entry versus exit distinctions, fee/carry/leverage and liquidation math. Real detached paper child uses temp sitecustomize syntheticfeeds and finally stops its owned process. No actual venue orders.",
+        "C2": "ran: caller/return and versioned envelope contracts, strict scalar/object shapes and unavailable-state semantics reviewed for this file.",
+        "C3": "ran: malformed/replayed/foreign/stale inputs, state fences, I/O failure and resource bounds considered. Proven defects bind regression checks below; no speculative live action was attempted.",
+        "S1": "ran: source treated as data; path/argv/SQL/HTTP authority, secret-safe errors, fixture isolation and signing/order boundary reviewed according to the contract above.",
+        "S2": "ran: subprocess/socket/SQLite/file/thread lifetimes, deadlines, final cleanup and refusal propagation inspected. Real OS fixture ownership remains scoped to temporary homes.",
+        "S3": "ran: strict booleans, finite clocks/numbers, bounded structured data and identity/config/generation bindings inspected where present.",
+        "S4": "ran: currentPython3.13/runtime, OS process semantics and Textualheadless APIs inspected. Actual macOS fixture acceptance does not certify Linuxinstalled behavior.",
+        "S5": "ran: structured command/error/receipt/health visibility and no raw dependency payload or credential reflection inspected. Existing bounded journals remain authoritative; no global log sink or owner service restart introduced.",
+        "P1": "ran: allocation/row/byte/work/candidate/tail bounds and repeated evaluation considered; account arithmetic and economic thresholds preserved.",
+        "P2": "ran: transactional snapshot/CAS/generation or fixture concurrency and cleanup boundaries inspected; no ambiguous write automatically retries.",
+        "M1": "ran: test names, local helpers, fixture ownership and assertion intent inspected. Two small authored test deltas are described in semantic_note; no formatter change is claimed for this cohort.",
+        "M2": "ran: existing shared test helpers, isolated temporary stores, synthetic loaders and explicit dependency injection inspected/reused. No duplicate production implementation added.",
+        "M3": "N/A per file: architecture/central-settings review is repository scope, owned by full_repo_health.",
+        "M4": "ran: fixture comments and evidence/source labels inspected; runtime/source coverage limits listed in note.",
+        "T1": "ran: full meaningful assertions/error paths inspected. Two test weaknesses proved and corrected; guarded191testbatch exits0 with0outbound attempts.",
+        "T2": "N/A per file: exact package pins and dependency/supply-chain review are repository scope.",
+        "T3": "N/A per file: lint/CI/tooling coverage is repository scope; full Bot Manager Ruff currently exits0.",
+        "T4": "ran: mutable fixture homes/databases remain per-test. CoinFit immutable demo already class-scoped. Simulation puremath remains fast; UI event waits and real detached-process lifetime cannot be replaced without losing observed behavior. UTXO retry pauses already injected.",
+        "M5": "N/A: test module. Actual CLI behavior exercised by test_coin_fit; production tool ergonomics belongs to its owner."
+      }
+    },
+    {
+      "path": "soltui/tests/test_eth_scan.py",
+      "sha256": "8f65f104a45c67de32cd3ae92b13bc680c2f3f34115bef27a34ed328397727f2",
+      "blob_sha": "0dd6cd8cb5fe45cf25e5c5dc3e081c494ef0b5fe",
+      "lines": 71,
+      "read_evidence": {
+        "method": "full displayed source plus reviewed authored two small test deltas",
+        "ranges": [
+          {
+            "sha256": "8f65f104a45c67de32cd3ae92b13bc680c2f3f34115bef27a34ed328397727f2",
+            "start": 1,
+            "end": 71,
+            "lines": 71
+          }
+        ]
+      },
+      "semantic_note": "Full71lines. Fake batchRPC and Coinbase responses prove native/token value, missing-price unknowns, partial completeness, outages and fixed token contract uniqueness. No RPC or market endpoint requested.",
+      "passes": {
+        "C1": "ran: Full71lines. Fake batchRPC and Coinbase responses prove native/token value, missing-price unknowns, partial completeness, outages and fixed token contract uniqueness. No RPC or market endpoint requested.",
+        "C2": "ran: caller/return and versioned envelope contracts, strict scalar/object shapes and unavailable-state semantics reviewed for this file.",
+        "C3": "ran: malformed/replayed/foreign/stale inputs, state fences, I/O failure and resource bounds considered. Proven defects bind regression checks below; no speculative live action was attempted.",
+        "S1": "ran: source treated as data; path/argv/SQL/HTTP authority, secret-safe errors, fixture isolation and signing/order boundary reviewed according to the contract above.",
+        "S2": "ran: subprocess/socket/SQLite/file/thread lifetimes, deadlines, final cleanup and refusal propagation inspected. Real OS fixture ownership remains scoped to temporary homes.",
+        "S3": "ran: strict booleans, finite clocks/numbers, bounded structured data and identity/config/generation bindings inspected where present.",
+        "S4": "ran: currentPython3.13/runtime, OS process semantics and Textualheadless APIs inspected. Actual macOS fixture acceptance does not certify Linuxinstalled behavior.",
+        "S5": "ran: structured command/error/receipt/health visibility and no raw dependency payload or credential reflection inspected. Existing bounded journals remain authoritative; no global log sink or owner service restart introduced.",
+        "P1": "ran: allocation/row/byte/work/candidate/tail bounds and repeated evaluation considered; account arithmetic and economic thresholds preserved.",
+        "P2": "ran: transactional snapshot/CAS/generation or fixture concurrency and cleanup boundaries inspected; no ambiguous write automatically retries.",
+        "M1": "ran: test names, local helpers, fixture ownership and assertion intent inspected. Two small authored test deltas are described in semantic_note; no formatter change is claimed for this cohort.",
+        "M2": "ran: existing shared test helpers, isolated temporary stores, synthetic loaders and explicit dependency injection inspected/reused. No duplicate production implementation added.",
+        "M3": "N/A per file: architecture/central-settings review is repository scope, owned by full_repo_health.",
+        "M4": "ran: fixture comments and evidence/source labels inspected; runtime/source coverage limits listed in note.",
+        "T1": "ran: full meaningful assertions/error paths inspected. Two test weaknesses proved and corrected; guarded191testbatch exits0 with0outbound attempts.",
+        "T2": "N/A per file: exact package pins and dependency/supply-chain review are repository scope.",
+        "T3": "N/A per file: lint/CI/tooling coverage is repository scope; full Bot Manager Ruff currently exits0.",
+        "T4": "ran: mutable fixture homes/databases remain per-test. CoinFit immutable demo already class-scoped. Simulation puremath remains fast; UI event waits and real detached-process lifetime cannot be replaced without losing observed behavior. UTXO retry pauses already injected.",
+        "M5": "N/A: test module. Actual CLI behavior exercised by test_coin_fit; production tool ergonomics belongs to its owner."
+      }
+    },
+    {
+      "path": "soltui/tests/test_live_score.py",
+      "sha256": "2dd394b36d2e441ef47361bcfd5d8dacd84e0c2f6923ae93fad8a7c0081f9589",
+      "blob_sha": "64d5c2db038214e830328878e8495f57df0e9e76",
+      "lines": 82,
+      "read_evidence": {
+        "method": "full displayed source plus reviewed authored two small test deltas",
+        "ranges": [
+          {
+            "sha256": "2dd394b36d2e441ef47361bcfd5d8dacd84e0c2f6923ae93fad8a7c0081f9589",
+            "start": 1,
+            "end": 82,
+            "lines": 82
+          }
+        ]
+      },
+      "semantic_note": "Full82lines. Cross-browser fixture vectors, strict evidence gates, latest trial-bound direction/expiry and sample counts cannot borrow historical winning revision. Temp database and causal score tape preserve unavailable versus zero. No source side effects.",
+      "passes": {
+        "C1": "ran: Full82lines. Cross-browser fixture vectors, strict evidence gates, latest trial-bound direction/expiry and sample counts cannot borrow historical winning revision. Temp database and causal score tape preserve unavailable versus zero. No source side effects.",
+        "C2": "ran: caller/return and versioned envelope contracts, strict scalar/object shapes and unavailable-state semantics reviewed for this file.",
+        "C3": "ran: malformed/replayed/foreign/stale inputs, state fences, I/O failure and resource bounds considered. Proven defects bind regression checks below; no speculative live action was attempted.",
+        "S1": "ran: source treated as data; path/argv/SQL/HTTP authority, secret-safe errors, fixture isolation and signing/order boundary reviewed according to the contract above.",
+        "S2": "ran: subprocess/socket/SQLite/file/thread lifetimes, deadlines, final cleanup and refusal propagation inspected. Real OS fixture ownership remains scoped to temporary homes.",
+        "S3": "ran: strict booleans, finite clocks/numbers, bounded structured data and identity/config/generation bindings inspected where present.",
+        "S4": "ran: currentPython3.13/runtime, OS process semantics and Textualheadless APIs inspected. Actual macOS fixture acceptance does not certify Linuxinstalled behavior.",
+        "S5": "ran: structured command/error/receipt/health visibility and no raw dependency payload or credential reflection inspected. Existing bounded journals remain authoritative; no global log sink or owner service restart introduced.",
+        "P1": "ran: allocation/row/byte/work/candidate/tail bounds and repeated evaluation considered; account arithmetic and economic thresholds preserved.",
+        "P2": "ran: transactional snapshot/CAS/generation or fixture concurrency and cleanup boundaries inspected; no ambiguous write automatically retries.",
+        "M1": "ran: test names, local helpers, fixture ownership and assertion intent inspected. Two small authored test deltas are described in semantic_note; no formatter change is claimed for this cohort.",
+        "M2": "ran: existing shared test helpers, isolated temporary stores, synthetic loaders and explicit dependency injection inspected/reused. No duplicate production implementation added.",
+        "M3": "N/A per file: architecture/central-settings review is repository scope, owned by full_repo_health.",
+        "M4": "ran: fixture comments and evidence/source labels inspected; runtime/source coverage limits listed in note.",
+        "T1": "ran: full meaningful assertions/error paths inspected. Two test weaknesses proved and corrected; guarded191testbatch exits0 with0outbound attempts.",
+        "T2": "N/A per file: exact package pins and dependency/supply-chain review are repository scope.",
+        "T3": "N/A per file: lint/CI/tooling coverage is repository scope; full Bot Manager Ruff currently exits0.",
+        "T4": "ran: mutable fixture homes/databases remain per-test. CoinFit immutable demo already class-scoped. Simulation puremath remains fast; UI event waits and real detached-process lifetime cannot be replaced without losing observed behavior. UTXO retry pauses already injected.",
+        "M5": "N/A: test module. Actual CLI behavior exercised by test_coin_fit; production tool ergonomics belongs to its owner."
+      }
+    },
+    {
+      "path": "soltui/tests/test_signals.py",
+      "sha256": "b954bf85c129811d89f9ab85deb1caf405758f8a9834719ae77226e9af252b51",
+      "blob_sha": "370bde52129b09cc4dc1dd7fc0486c46d0cc54ee",
+      "lines": 214,
+      "read_evidence": {
+        "method": "full displayed source plus reviewed authored two small test deltas",
+        "ranges": [
+          {
+            "sha256": "b954bf85c129811d89f9ab85deb1caf405758f8a9834719ae77226e9af252b51",
+            "start": 1,
+            "end": 214,
+            "lines": 214
+          }
+        ]
+      },
+      "semantic_note": "Full214lines. Explicit per-entry parameters beat defaults; registry mapping/UI grouping and real constructor parity checked. Typed defaults and crossfield validation, persistence and settings errors tested. Existing NaN/inf/fractional/bool coverage gap is separately repaired in parent domain regression module.",
+      "passes": {
+        "C1": "ran: Full214lines. Explicit per-entry parameters beat defaults; registry mapping/UI grouping and real constructor parity checked. Typed defaults and crossfield validation, persistence and settings errors tested. Existing NaN/inf/fractional/bool coverage gap is separately repaired in parent domain regression module.",
+        "C2": "ran: caller/return and versioned envelope contracts, strict scalar/object shapes and unavailable-state semantics reviewed for this file.",
+        "C3": "ran: malformed/replayed/foreign/stale inputs, state fences, I/O failure and resource bounds considered. Proven defects bind regression checks below; no speculative live action was attempted.",
+        "S1": "ran: source treated as data; path/argv/SQL/HTTP authority, secret-safe errors, fixture isolation and signing/order boundary reviewed according to the contract above.",
+        "S2": "ran: subprocess/socket/SQLite/file/thread lifetimes, deadlines, final cleanup and refusal propagation inspected. Real OS fixture ownership remains scoped to temporary homes.",
+        "S3": "ran: strict booleans, finite clocks/numbers, bounded structured data and identity/config/generation bindings inspected where present.",
+        "S4": "ran: currentPython3.13/runtime, OS process semantics and Textualheadless APIs inspected. Actual macOS fixture acceptance does not certify Linuxinstalled behavior.",
+        "S5": "ran: structured command/error/receipt/health visibility and no raw dependency payload or credential reflection inspected. Existing bounded journals remain authoritative; no global log sink or owner service restart introduced.",
+        "P1": "ran: allocation/row/byte/work/candidate/tail bounds and repeated evaluation considered; account arithmetic and economic thresholds preserved.",
+        "P2": "ran: transactional snapshot/CAS/generation or fixture concurrency and cleanup boundaries inspected; no ambiguous write automatically retries.",
+        "M1": "ran: test names, local helpers, fixture ownership and assertion intent inspected. Two small authored test deltas are described in semantic_note; no formatter change is claimed for this cohort.",
+        "M2": "ran: existing shared test helpers, isolated temporary stores, synthetic loaders and explicit dependency injection inspected/reused. No duplicate production implementation added.",
+        "M3": "N/A per file: architecture/central-settings review is repository scope, owned by full_repo_health.",
+        "M4": "ran: fixture comments and evidence/source labels inspected; runtime/source coverage limits listed in note.",
+        "T1": "ran: full meaningful assertions/error paths inspected. Two test weaknesses proved and corrected; guarded191testbatch exits0 with0outbound attempts.",
+        "T2": "N/A per file: exact package pins and dependency/supply-chain review are repository scope.",
+        "T3": "N/A per file: lint/CI/tooling coverage is repository scope; full Bot Manager Ruff currently exits0.",
+        "T4": "ran: mutable fixture homes/databases remain per-test. CoinFit immutable demo already class-scoped. Simulation puremath remains fast; UI event waits and real detached-process lifetime cannot be replaced without losing observed behavior. UTXO retry pauses already injected.",
+        "M5": "N/A: test module. Actual CLI behavior exercised by test_coin_fit; production tool ergonomics belongs to its owner."
+      }
+    },
+    {
+      "path": "soltui/tests/test_signal_live.py",
+      "sha256": "8acb60cf8b3dde65b45f1bd17a0ccc9afd22152fae352a5775025fe0a3558978",
+      "blob_sha": "974f0a19a3547c35c59a83eaed212ff0b05cba71",
+      "lines": 381,
+      "read_evidence": {
+        "method": "full displayed source plus reviewed authored two small test deltas",
+        "ranges": [
+          {
+            "sha256": "eb13b0f0a017c08ce5909679b8bc38b71b4eeda13d7044fe4a13005f4332474e",
+            "start": 251,
+            "end": 378,
+            "lines": 378
+          },
+          {
+            "sha256": "eb13b0f0a017c08ce5909679b8bc38b71b4eeda13d7044fe4a13005f4332474e",
+            "start": 1,
+            "end": 250,
+            "lines": 378
+          }
+        ]
+      },
+      "semantic_note": "Full378baseline lines plus3line test-fixture addition. Headless UI actual run_test verifies exact10s poll ownership, no catchup burst, responsive blocked read, old success/failure generation discard, teardown drain and source-time tape. Global test package isolates owner roots. Runtime networkguard caught9unmocked productcatalogue fetches despite191passingassertions. Scoped stream_products fixture now yields actual13module191pass0 with zero attemptedoutbound connects; no production behavior changed.",
+      "passes": {
+        "C1": "ran: Full378baseline lines plus3line test-fixture addition. Headless UI actual run_test verifies exact10s poll ownership, no catchup burst, responsive blocked read, old success/failure generation discard, teardown drain and source-time tape. Global test package isolates owner roots. Runtime networkguard caught9unmocked productcatalogue fetches despite191passingassertions. Scoped stream_products fixture now yields actual13module191pass0 with zero attemptedoutbound connects; no production behavior changed.",
+        "C2": "ran: caller/return and versioned envelope contracts, strict scalar/object shapes and unavailable-state semantics reviewed for this file.",
+        "C3": "ran: malformed/replayed/foreign/stale inputs, state fences, I/O failure and resource bounds considered. Proven defects bind regression checks below; no speculative live action was attempted.",
+        "S1": "ran: source treated as data; path/argv/SQL/HTTP authority, secret-safe errors, fixture isolation and signing/order boundary reviewed according to the contract above.",
+        "S2": "ran: subprocess/socket/SQLite/file/thread lifetimes, deadlines, final cleanup and refusal propagation inspected. Real OS fixture ownership remains scoped to temporary homes.",
+        "S3": "ran: strict booleans, finite clocks/numbers, bounded structured data and identity/config/generation bindings inspected where present.",
+        "S4": "ran: currentPython3.13/runtime, OS process semantics and Textualheadless APIs inspected. Actual macOS fixture acceptance does not certify Linuxinstalled behavior.",
+        "S5": "ran: structured command/error/receipt/health visibility and no raw dependency payload or credential reflection inspected. Existing bounded journals remain authoritative; no global log sink or owner service restart introduced.",
+        "P1": "ran: allocation/row/byte/work/candidate/tail bounds and repeated evaluation considered; account arithmetic and economic thresholds preserved.",
+        "P2": "ran: transactional snapshot/CAS/generation or fixture concurrency and cleanup boundaries inspected; no ambiguous write automatically retries.",
+        "M1": "ran: test names, local helpers, fixture ownership and assertion intent inspected. Two small authored test deltas are described in semantic_note; no formatter change is claimed for this cohort.",
+        "M2": "ran: existing shared test helpers, isolated temporary stores, synthetic loaders and explicit dependency injection inspected/reused. No duplicate production implementation added.",
+        "M3": "N/A per file: architecture/central-settings review is repository scope, owned by full_repo_health.",
+        "M4": "ran: fixture comments and evidence/source labels inspected; runtime/source coverage limits listed in note.",
+        "T1": "ran: full meaningful assertions/error paths inspected. Two test weaknesses proved and corrected; guarded191testbatch exits0 with0outbound attempts.",
+        "T2": "N/A per file: exact package pins and dependency/supply-chain review are repository scope.",
+        "T3": "N/A per file: lint/CI/tooling coverage is repository scope; full Bot Manager Ruff currently exits0.",
+        "T4": "ran: mutable fixture homes/databases remain per-test. CoinFit immutable demo already class-scoped. Simulation puremath remains fast; UI event waits and real detached-process lifetime cannot be replaced without losing observed behavior. UTXO retry pauses already injected.",
+        "M5": "N/A: test module. Actual CLI behavior exercised by test_coin_fit; production tool ergonomics belongs to its owner."
+      }
+    },
+    {
+      "path": "soltui/tests/test_top5.py",
+      "sha256": "e70400e7a9869442dc2c0e7eff944730645bf1a6bb6029314cc5fd0bf74022c5",
+      "blob_sha": "60ffb0ff3babedc8b159a0935c9a748e18f036eb",
+      "lines": 132,
+      "read_evidence": {
+        "method": "full displayed source plus reviewed authored two small test deltas",
+        "ranges": [
+          {
+            "sha256": "e70400e7a9869442dc2c0e7eff944730645bf1a6bb6029314cc5fd0bf74022c5",
+            "start": 1,
+            "end": 132,
+            "lines": 132
+          }
+        ]
+      },
+      "semantic_note": "Full132lines. Temp CSV validates rank/home/transfer grouping, unknown evidence versus zero and label-derived members; committed reference file checks transcription only. Parent domain module adds malformed infinity/integer field boundaries found during production review. No data regeneration.",
+      "passes": {
+        "C1": "ran: Full132lines. Temp CSV validates rank/home/transfer grouping, unknown evidence versus zero and label-derived members; committed reference file checks transcription only. Parent domain module adds malformed infinity/integer field boundaries found during production review. No data regeneration.",
+        "C2": "ran: caller/return and versioned envelope contracts, strict scalar/object shapes and unavailable-state semantics reviewed for this file.",
+        "C3": "ran: malformed/replayed/foreign/stale inputs, state fences, I/O failure and resource bounds considered. Proven defects bind regression checks below; no speculative live action was attempted.",
+        "S1": "ran: source treated as data; path/argv/SQL/HTTP authority, secret-safe errors, fixture isolation and signing/order boundary reviewed according to the contract above.",
+        "S2": "ran: subprocess/socket/SQLite/file/thread lifetimes, deadlines, final cleanup and refusal propagation inspected. Real OS fixture ownership remains scoped to temporary homes.",
+        "S3": "ran: strict booleans, finite clocks/numbers, bounded structured data and identity/config/generation bindings inspected where present.",
+        "S4": "ran: currentPython3.13/runtime, OS process semantics and Textualheadless APIs inspected. Actual macOS fixture acceptance does not certify Linuxinstalled behavior.",
+        "S5": "ran: structured command/error/receipt/health visibility and no raw dependency payload or credential reflection inspected. Existing bounded journals remain authoritative; no global log sink or owner service restart introduced.",
+        "P1": "ran: allocation/row/byte/work/candidate/tail bounds and repeated evaluation considered; account arithmetic and economic thresholds preserved.",
+        "P2": "ran: transactional snapshot/CAS/generation or fixture concurrency and cleanup boundaries inspected; no ambiguous write automatically retries.",
+        "M1": "ran: test names, local helpers, fixture ownership and assertion intent inspected. Two small authored test deltas are described in semantic_note; no formatter change is claimed for this cohort.",
+        "M2": "ran: existing shared test helpers, isolated temporary stores, synthetic loaders and explicit dependency injection inspected/reused. No duplicate production implementation added.",
+        "M3": "N/A per file: architecture/central-settings review is repository scope, owned by full_repo_health.",
+        "M4": "ran: fixture comments and evidence/source labels inspected; runtime/source coverage limits listed in note.",
+        "T1": "ran: full meaningful assertions/error paths inspected. Two test weaknesses proved and corrected; guarded191testbatch exits0 with0outbound attempts.",
+        "T2": "N/A per file: exact package pins and dependency/supply-chain review are repository scope.",
+        "T3": "N/A per file: lint/CI/tooling coverage is repository scope; full Bot Manager Ruff currently exits0.",
+        "T4": "ran: mutable fixture homes/databases remain per-test. CoinFit immutable demo already class-scoped. Simulation puremath remains fast; UI event waits and real detached-process lifetime cannot be replaced without losing observed behavior. UTXO retry pauses already injected.",
+        "M5": "N/A: test module. Actual CLI behavior exercised by test_coin_fit; production tool ergonomics belongs to its owner."
+      }
+    },
+    {
+      "path": "soltui/tests/test_trend.py",
+      "sha256": "69a7770b37d030c1bcdb27307e7dc5d05a50db66de21d52697107b02159a4ce9",
+      "blob_sha": "a76951436cfde5b5ad9bfcb04342e179cbab92b1",
+      "lines": 132,
+      "read_evidence": {
+        "method": "full displayed source plus reviewed authored two small test deltas",
+        "ranges": [
+          {
+            "sha256": "69a7770b37d030c1bcdb27307e7dc5d05a50db66de21d52697107b02159a4ce9",
+            "start": 1,
+            "end": 132,
+            "lines": 132
+          }
+        ]
+      },
+      "semantic_note": "Full132lines. Strict numeric config, causal prefix invariance, next-open fills, cost effect on both strategy/hold, warmup refusal and explicit opt-in buffered trend behavior. Isolated synthetic workbench keeps candidate evaluation from ungated adoption; recorded forward session remains source-labelled.",
+      "passes": {
+        "C1": "ran: Full132lines. Strict numeric config, causal prefix invariance, next-open fills, cost effect on both strategy/hold, warmup refusal and explicit opt-in buffered trend behavior. Isolated synthetic workbench keeps candidate evaluation from ungated adoption; recorded forward session remains source-labelled.",
+        "C2": "ran: caller/return and versioned envelope contracts, strict scalar/object shapes and unavailable-state semantics reviewed for this file.",
+        "C3": "ran: malformed/replayed/foreign/stale inputs, state fences, I/O failure and resource bounds considered. Proven defects bind regression checks below; no speculative live action was attempted.",
+        "S1": "ran: source treated as data; path/argv/SQL/HTTP authority, secret-safe errors, fixture isolation and signing/order boundary reviewed according to the contract above.",
+        "S2": "ran: subprocess/socket/SQLite/file/thread lifetimes, deadlines, final cleanup and refusal propagation inspected. Real OS fixture ownership remains scoped to temporary homes.",
+        "S3": "ran: strict booleans, finite clocks/numbers, bounded structured data and identity/config/generation bindings inspected where present.",
+        "S4": "ran: currentPython3.13/runtime, OS process semantics and Textualheadless APIs inspected. Actual macOS fixture acceptance does not certify Linuxinstalled behavior.",
+        "S5": "ran: structured command/error/receipt/health visibility and no raw dependency payload or credential reflection inspected. Existing bounded journals remain authoritative; no global log sink or owner service restart introduced.",
+        "P1": "ran: allocation/row/byte/work/candidate/tail bounds and repeated evaluation considered; account arithmetic and economic thresholds preserved.",
+        "P2": "ran: transactional snapshot/CAS/generation or fixture concurrency and cleanup boundaries inspected; no ambiguous write automatically retries.",
+        "M1": "ran: test names, local helpers, fixture ownership and assertion intent inspected. Two small authored test deltas are described in semantic_note; no formatter change is claimed for this cohort.",
+        "M2": "ran: existing shared test helpers, isolated temporary stores, synthetic loaders and explicit dependency injection inspected/reused. No duplicate production implementation added.",
+        "M3": "N/A per file: architecture/central-settings review is repository scope, owned by full_repo_health.",
+        "M4": "ran: fixture comments and evidence/source labels inspected; runtime/source coverage limits listed in note.",
+        "T1": "ran: full meaningful assertions/error paths inspected. Two test weaknesses proved and corrected; guarded191testbatch exits0 with0outbound attempts.",
+        "T2": "N/A per file: exact package pins and dependency/supply-chain review are repository scope.",
+        "T3": "N/A per file: lint/CI/tooling coverage is repository scope; full Bot Manager Ruff currently exits0.",
+        "T4": "ran: mutable fixture homes/databases remain per-test. CoinFit immutable demo already class-scoped. Simulation puremath remains fast; UI event waits and real detached-process lifetime cannot be replaced without losing observed behavior. UTXO retry pauses already injected.",
+        "M5": "N/A: test module. Actual CLI behavior exercised by test_coin_fit; production tool ergonomics belongs to its owner."
+      }
+    },
+    {
+      "path": "soltui/tests/test_utxo_scan.py",
+      "sha256": "612bb1e10064c73aa07a612178e1ed28d1005f86d66b37ec08ff4db66f63df6f",
+      "blob_sha": "6d19f243baff8363eca6f93589c6c4f501e0da3e",
+      "lines": 228,
+      "read_evidence": {
+        "method": "full displayed source plus reviewed authored two small test deltas",
+        "ranges": [
+          {
+            "sha256": "612bb1e10064c73aa07a612178e1ed28d1005f86d66b37ec08ff4db66f63df6f",
+            "start": 1,
+            "end": 228,
+            "lines": 228
+          },
+          {
+            "sha256": "612bb1e10064c73aa07a612178e1ed28d1005f86d66b37ec08ff4db66f63df6f",
+            "start": 85,
+            "end": 132,
+            "lines": 228
+          }
+        ]
+      },
+      "semantic_note": "Full228lines including supplemental85-132 reread after truncated first display. Public BIP test vectors/fake explorers prove script/gap windows, batchedDOGE, lower-bound outage/fallback, missing-price unknowns and no xpub/derived addresses in results or explorer requests. Retry sleeps injected, no actual network. Parent adds malformed provider/privacy regressions.",
+      "passes": {
+        "C1": "ran: Full228lines including supplemental85-132 reread after truncated first display. Public BIP test vectors/fake explorers prove script/gap windows, batchedDOGE, lower-bound outage/fallback, missing-price unknowns and no xpub/derived addresses in results or explorer requests. Retry sleeps injected, no actual network. Parent adds malformed provider/privacy regressions.",
+        "C2": "ran: caller/return and versioned envelope contracts, strict scalar/object shapes and unavailable-state semantics reviewed for this file.",
+        "C3": "ran: malformed/replayed/foreign/stale inputs, state fences, I/O failure and resource bounds considered. Proven defects bind regression checks below; no speculative live action was attempted.",
+        "S1": "ran: source treated as data; path/argv/SQL/HTTP authority, secret-safe errors, fixture isolation and signing/order boundary reviewed according to the contract above.",
+        "S2": "ran: subprocess/socket/SQLite/file/thread lifetimes, deadlines, final cleanup and refusal propagation inspected. Real OS fixture ownership remains scoped to temporary homes.",
+        "S3": "ran: strict booleans, finite clocks/numbers, bounded structured data and identity/config/generation bindings inspected where present.",
+        "S4": "ran: currentPython3.13/runtime, OS process semantics and Textualheadless APIs inspected. Actual macOS fixture acceptance does not certify Linuxinstalled behavior.",
+        "S5": "ran: structured command/error/receipt/health visibility and no raw dependency payload or credential reflection inspected. Existing bounded journals remain authoritative; no global log sink or owner service restart introduced.",
+        "P1": "ran: allocation/row/byte/work/candidate/tail bounds and repeated evaluation considered; account arithmetic and economic thresholds preserved.",
+        "P2": "ran: transactional snapshot/CAS/generation or fixture concurrency and cleanup boundaries inspected; no ambiguous write automatically retries.",
+        "M1": "ran: test names, local helpers, fixture ownership and assertion intent inspected. Two small authored test deltas are described in semantic_note; no formatter change is claimed for this cohort.",
+        "M2": "ran: existing shared test helpers, isolated temporary stores, synthetic loaders and explicit dependency injection inspected/reused. No duplicate production implementation added.",
+        "M3": "N/A per file: architecture/central-settings review is repository scope, owned by full_repo_health.",
+        "M4": "ran: fixture comments and evidence/source labels inspected; runtime/source coverage limits listed in note.",
+        "T1": "ran: full meaningful assertions/error paths inspected. Two test weaknesses proved and corrected; guarded191testbatch exits0 with0outbound attempts.",
+        "T2": "N/A per file: exact package pins and dependency/supply-chain review are repository scope.",
+        "T3": "N/A per file: lint/CI/tooling coverage is repository scope; full Bot Manager Ruff currently exits0.",
+        "T4": "ran: mutable fixture homes/databases remain per-test. CoinFit immutable demo already class-scoped. Simulation puremath remains fast; UI event waits and real detached-process lifetime cannot be replaced without losing observed behavior. UTXO retry pauses already injected.",
+        "M5": "N/A: test module. Actual CLI behavior exercised by test_coin_fit; production tool ergonomics belongs to its owner."
+      }
+    },
+    {
+      "path": "soltui/tests/test_vote_explanation.py",
+      "sha256": "5639c1d23ca891369095564265b0ee8b1696abd21fb5838e5128cf7642643183",
+      "blob_sha": "659cbc2c184ed6084cf325cddeb6ef27f2748315",
+      "lines": 125,
+      "read_evidence": {
+        "method": "full displayed source plus reviewed authored two small test deltas",
+        "ranges": [
+          {
+            "sha256": "5639c1d23ca891369095564265b0ee8b1696abd21fb5838e5128cf7642643183",
+            "start": 1,
+            "end": 125,
+            "lines": 125
+          }
+        ]
+      },
+      "semantic_note": "Full125lines. Temp trials and candles bind exact saved call/member spec and latest trial eligibility, prohibit future candle lookahead, retain expired inspectability and refuse invented feature basis when seed/gap contract missing. All mutations confined to fixture SQLite.",
+      "passes": {
+        "C1": "ran: Full125lines. Temp trials and candles bind exact saved call/member spec and latest trial eligibility, prohibit future candle lookahead, retain expired inspectability and refuse invented feature basis when seed/gap contract missing. All mutations confined to fixture SQLite.",
+        "C2": "ran: caller/return and versioned envelope contracts, strict scalar/object shapes and unavailable-state semantics reviewed for this file.",
+        "C3": "ran: malformed/replayed/foreign/stale inputs, state fences, I/O failure and resource bounds considered. Proven defects bind regression checks below; no speculative live action was attempted.",
+        "S1": "ran: source treated as data; path/argv/SQL/HTTP authority, secret-safe errors, fixture isolation and signing/order boundary reviewed according to the contract above.",
+        "S2": "ran: subprocess/socket/SQLite/file/thread lifetimes, deadlines, final cleanup and refusal propagation inspected. Real OS fixture ownership remains scoped to temporary homes.",
+        "S3": "ran: strict booleans, finite clocks/numbers, bounded structured data and identity/config/generation bindings inspected where present.",
+        "S4": "ran: currentPython3.13/runtime, OS process semantics and Textualheadless APIs inspected. Actual macOS fixture acceptance does not certify Linuxinstalled behavior.",
+        "S5": "ran: structured command/error/receipt/health visibility and no raw dependency payload or credential reflection inspected. Existing bounded journals remain authoritative; no global log sink or owner service restart introduced.",
+        "P1": "ran: allocation/row/byte/work/candidate/tail bounds and repeated evaluation considered; account arithmetic and economic thresholds preserved.",
+        "P2": "ran: transactional snapshot/CAS/generation or fixture concurrency and cleanup boundaries inspected; no ambiguous write automatically retries.",
+        "M1": "ran: test names, local helpers, fixture ownership and assertion intent inspected. Two small authored test deltas are described in semantic_note; no formatter change is claimed for this cohort.",
+        "M2": "ran: existing shared test helpers, isolated temporary stores, synthetic loaders and explicit dependency injection inspected/reused. No duplicate production implementation added.",
+        "M3": "N/A per file: architecture/central-settings review is repository scope, owned by full_repo_health.",
+        "M4": "ran: fixture comments and evidence/source labels inspected; runtime/source coverage limits listed in note.",
+        "T1": "ran: full meaningful assertions/error paths inspected. Two test weaknesses proved and corrected; guarded191testbatch exits0 with0outbound attempts.",
+        "T2": "N/A per file: exact package pins and dependency/supply-chain review are repository scope.",
+        "T3": "N/A per file: lint/CI/tooling coverage is repository scope; full Bot Manager Ruff currently exits0.",
+        "T4": "ran: mutable fixture homes/databases remain per-test. CoinFit immutable demo already class-scoped. Simulation puremath remains fast; UI event waits and real detached-process lifetime cannot be replaced without losing observed behavior. UTXO retry pauses already injected.",
+        "M5": "N/A: test module. Actual CLI behavior exercised by test_coin_fit; production tool ergonomics belongs to its owner."
+      }
+    },
+    {
+      "path": "soltui/tests/test_wallet_activity.py",
+      "sha256": "2b56f02f7c202704523dd2442cf8e478b781e38614b077d3d4d91bc4d2da1dc5",
+      "blob_sha": "7d9527489bf47adf03855dc558aaa121ee8b3be3",
+      "lines": 151,
+      "read_evidence": {
+        "method": "full displayed source plus reviewed authored two small test deltas",
+        "ranges": [
+          {
+            "sha256": "2b56f02f7c202704523dd2442cf8e478b781e38614b077d3d4d91bc4d2da1dc5",
+            "start": 1,
+            "end": 151,
+            "lines": 151
+          }
+        ]
+      },
+      "semantic_note": "Full151lines. Injected SQL/RPC sources, malicious/reorg/canary cases and cancelled reads preserve partial coverage and source isolation. Fixed argv childruntime test and ephemeralloopbackHTTP verify actual read-only transports. No live wallet history or provider call. Parent owns new commonS5transportdiagnostics separately.",
+      "passes": {
+        "C1": "ran: Full151lines. Injected SQL/RPC sources, malicious/reorg/canary cases and cancelled reads preserve partial coverage and source isolation. Fixed argv childruntime test and ephemeralloopbackHTTP verify actual read-only transports. No live wallet history or provider call. Parent owns new commonS5transportdiagnostics separately.",
+        "C2": "ran: caller/return and versioned envelope contracts, strict scalar/object shapes and unavailable-state semantics reviewed for this file.",
+        "C3": "ran: malformed/replayed/foreign/stale inputs, state fences, I/O failure and resource bounds considered. Proven defects bind regression checks below; no speculative live action was attempted.",
+        "S1": "ran: source treated as data; path/argv/SQL/HTTP authority, secret-safe errors, fixture isolation and signing/order boundary reviewed according to the contract above.",
+        "S2": "ran: subprocess/socket/SQLite/file/thread lifetimes, deadlines, final cleanup and refusal propagation inspected. Real OS fixture ownership remains scoped to temporary homes.",
+        "S3": "ran: strict booleans, finite clocks/numbers, bounded structured data and identity/config/generation bindings inspected where present.",
+        "S4": "ran: currentPython3.13/runtime, OS process semantics and Textualheadless APIs inspected. Actual macOS fixture acceptance does not certify Linuxinstalled behavior.",
+        "S5": "ran: structured command/error/receipt/health visibility and no raw dependency payload or credential reflection inspected. Existing bounded journals remain authoritative; no global log sink or owner service restart introduced.",
+        "P1": "ran: allocation/row/byte/work/candidate/tail bounds and repeated evaluation considered; account arithmetic and economic thresholds preserved.",
+        "P2": "ran: transactional snapshot/CAS/generation or fixture concurrency and cleanup boundaries inspected; no ambiguous write automatically retries.",
+        "M1": "ran: test names, local helpers, fixture ownership and assertion intent inspected. Two small authored test deltas are described in semantic_note; no formatter change is claimed for this cohort.",
+        "M2": "ran: existing shared test helpers, isolated temporary stores, synthetic loaders and explicit dependency injection inspected/reused. No duplicate production implementation added.",
+        "M3": "N/A per file: architecture/central-settings review is repository scope, owned by full_repo_health.",
+        "M4": "ran: fixture comments and evidence/source labels inspected; runtime/source coverage limits listed in note.",
+        "T1": "ran: full meaningful assertions/error paths inspected. Two test weaknesses proved and corrected; guarded191testbatch exits0 with0outbound attempts.",
+        "T2": "N/A per file: exact package pins and dependency/supply-chain review are repository scope.",
+        "T3": "N/A per file: lint/CI/tooling coverage is repository scope; full Bot Manager Ruff currently exits0.",
+        "T4": "ran: mutable fixture homes/databases remain per-test. CoinFit immutable demo already class-scoped. Simulation puremath remains fast; UI event waits and real detached-process lifetime cannot be replaced without losing observed behavior. UTXO retry pauses already injected.",
+        "M5": "N/A: test module. Actual CLI behavior exercised by test_coin_fit; production tool ergonomics belongs to its owner."
+      }
+    },
+    {
+      "path": "soltui/tests/test_presets_netpct.py",
+      "sha256": "adca2389dbf5ab9e7d0e810456f281d4a032f58d43bf0d1a3c70bfd5961ed9a2",
+      "blob_sha": "a8663fd55ef5d37c25b1f74a6ed78459c7447dd9",
+      "lines": 306,
+      "read_evidence": {
+        "method": "full displayed source plus reviewed authored two small test deltas",
+        "ranges": [
+          {
+            "sha256": "93d79725c66d53d2975c85f6323e96e2225b72af456fec110cd414699bad8f84",
+            "start": 1,
+            "end": 306,
+            "lines": 306
+          }
+        ]
+      },
+      "semantic_note": "Full306baseline lines plus1line assertion correction. TempTop5/SyntheticLoader/World isolate source-labelled PnL, paper, LP and journal views. Faultinjecting object withoutcompositemembers originallypassed due fallbackconstant2. Assertion now accesses realcombo.members; sameinjection isdetected. No sourceimplementation change inthisscope.",
+      "passes": {
+        "C1": "ran: Full306baseline lines plus1line assertion correction. TempTop5/SyntheticLoader/World isolate source-labelled PnL, paper, LP and journal views. Faultinjecting object withoutcompositemembers originallypassed due fallbackconstant2. Assertion now accesses realcombo.members; sameinjection isdetected. No sourceimplementation change inthisscope.",
+        "C2": "ran: caller/return and versioned envelope contracts, strict scalar/object shapes and unavailable-state semantics reviewed for this file.",
+        "C3": "ran: malformed/replayed/foreign/stale inputs, state fences, I/O failure and resource bounds considered. Proven defects bind regression checks below; no speculative live action was attempted.",
+        "S1": "ran: source treated as data; path/argv/SQL/HTTP authority, secret-safe errors, fixture isolation and signing/order boundary reviewed according to the contract above.",
+        "S2": "ran: subprocess/socket/SQLite/file/thread lifetimes, deadlines, final cleanup and refusal propagation inspected. Real OS fixture ownership remains scoped to temporary homes.",
+        "S3": "ran: strict booleans, finite clocks/numbers, bounded structured data and identity/config/generation bindings inspected where present.",
+        "S4": "ran: currentPython3.13/runtime, OS process semantics and Textualheadless APIs inspected. Actual macOS fixture acceptance does not certify Linuxinstalled behavior.",
+        "S5": "ran: structured command/error/receipt/health visibility and no raw dependency payload or credential reflection inspected. Existing bounded journals remain authoritative; no global log sink or owner service restart introduced.",
+        "P1": "ran: allocation/row/byte/work/candidate/tail bounds and repeated evaluation considered; account arithmetic and economic thresholds preserved.",
+        "P2": "ran: transactional snapshot/CAS/generation or fixture concurrency and cleanup boundaries inspected; no ambiguous write automatically retries.",
+        "M1": "ran: test names, local helpers, fixture ownership and assertion intent inspected. Two small authored test deltas are described in semantic_note; no formatter change is claimed for this cohort.",
+        "M2": "ran: existing shared test helpers, isolated temporary stores, synthetic loaders and explicit dependency injection inspected/reused. No duplicate production implementation added.",
+        "M3": "N/A per file: architecture/central-settings review is repository scope, owned by full_repo_health.",
+        "M4": "ran: fixture comments and evidence/source labels inspected; runtime/source coverage limits listed in note.",
+        "T1": "ran: full meaningful assertions/error paths inspected. Two test weaknesses proved and corrected; guarded191testbatch exits0 with0outbound attempts.",
+        "T2": "N/A per file: exact package pins and dependency/supply-chain review are repository scope.",
+        "T3": "N/A per file: lint/CI/tooling coverage is repository scope; full Bot Manager Ruff currently exits0.",
+        "T4": "ran: mutable fixture homes/databases remain per-test. CoinFit immutable demo already class-scoped. Simulation puremath remains fast; UI event waits and real detached-process lifetime cannot be replaced without losing observed behavior. UTXO retry pauses already injected.",
+        "M5": "N/A: test module. Actual CLI behavior exercised by test_coin_fit; production tool ergonomics belongs to its owner."
+      }
+    },
+    {
+      "path": "soltui/tests/test_simulation.py",
+      "sha256": "01ce8d91c40013a267ee6814972bb6f3f24fe40548f16c7da80ac203d5cce3bb",
+      "blob_sha": "f50d32e504279a80eb45d5e9d2bfdf8d2694552c",
+      "lines": 260,
+      "read_evidence": {
+        "method": "full displayed source plus reviewed authored two small test deltas",
+        "ranges": [
+          {
+            "sha256": "01ce8d91c40013a267ee6814972bb6f3f24fe40548f16c7da80ac203d5cce3bb",
+            "start": 1,
+            "end": 260,
+            "lines": 260
+          }
+        ]
+      },
+      "semantic_note": "Full260lines. Pure math and temp trials cover exact notional fee/carry, confidence sample timing, explicit shorts/leverage, immutable prospective economics, matched historical/forward settlement and legacy uncertainty. One actual headless form tests controls at100columns; no simulation result certifies a venue.",
+      "passes": {
+        "C1": "ran: Full260lines. Pure math and temp trials cover exact notional fee/carry, confidence sample timing, explicit shorts/leverage, immutable prospective economics, matched historical/forward settlement and legacy uncertainty. One actual headless form tests controls at100columns; no simulation result certifies a venue.",
+        "C2": "ran: caller/return and versioned envelope contracts, strict scalar/object shapes and unavailable-state semantics reviewed for this file.",
+        "C3": "ran: malformed/replayed/foreign/stale inputs, state fences, I/O failure and resource bounds considered. Proven defects bind regression checks below; no speculative live action was attempted.",
+        "S1": "ran: source treated as data; path/argv/SQL/HTTP authority, secret-safe errors, fixture isolation and signing/order boundary reviewed according to the contract above.",
+        "S2": "ran: subprocess/socket/SQLite/file/thread lifetimes, deadlines, final cleanup and refusal propagation inspected. Real OS fixture ownership remains scoped to temporary homes.",
+        "S3": "ran: strict booleans, finite clocks/numbers, bounded structured data and identity/config/generation bindings inspected where present.",
+        "S4": "ran: currentPython3.13/runtime, OS process semantics and Textualheadless APIs inspected. Actual macOS fixture acceptance does not certify Linuxinstalled behavior.",
+        "S5": "ran: structured command/error/receipt/health visibility and no raw dependency payload or credential reflection inspected. Existing bounded journals remain authoritative; no global log sink or owner service restart introduced.",
+        "P1": "ran: allocation/row/byte/work/candidate/tail bounds and repeated evaluation considered; account arithmetic and economic thresholds preserved.",
+        "P2": "ran: transactional snapshot/CAS/generation or fixture concurrency and cleanup boundaries inspected; no ambiguous write automatically retries.",
+        "M1": "ran: test names, local helpers, fixture ownership and assertion intent inspected. Two small authored test deltas are described in semantic_note; no formatter change is claimed for this cohort.",
+        "M2": "ran: existing shared test helpers, isolated temporary stores, synthetic loaders and explicit dependency injection inspected/reused. No duplicate production implementation added.",
+        "M3": "N/A per file: architecture/central-settings review is repository scope, owned by full_repo_health.",
+        "M4": "ran: fixture comments and evidence/source labels inspected; runtime/source coverage limits listed in note.",
+        "T1": "ran: full meaningful assertions/error paths inspected. Two test weaknesses proved and corrected; guarded191testbatch exits0 with0outbound attempts.",
+        "T2": "N/A per file: exact package pins and dependency/supply-chain review are repository scope.",
+        "T3": "N/A per file: lint/CI/tooling coverage is repository scope; full Bot Manager Ruff currently exits0.",
+        "T4": "ran: mutable fixture homes/databases remain per-test. CoinFit immutable demo already class-scoped. Simulation puremath remains fast; UI event waits and real detached-process lifetime cannot be replaced without losing observed behavior. UTXO retry pauses already injected.",
+        "M5": "N/A: test module. Actual CLI behavior exercised by test_coin_fit; production tool ergonomics belongs to its owner."
+      }
+    }
+  ],
+  "checks": [
+    {
+      "command": "13explicitmodules under outboundconnectguard; declaredsourceimports and tempownerroots",
+      "tests": 191,
+      "seconds": 44.838,
+      "exit_code": 0,
+      "outbound_attempts": 0,
+      "log": "/tmp/oraclebot-soltui-root13-tests-final.log"
+    },
+    {
+      "command": "missingcompositemembersfaultinjection RED then GREEN",
+      "red_exit_code": 1,
+      "green_exit_code": 0,
+      "logs": [
+        "/tmp/oraclebot-soltui-composite-assertion-red.log",
+        "/tmp/oraclebot-soltui-composite-assertion-green.log"
+      ]
+    },
+    {
+      "command": "oneUItestnetworktrace RED then GREEN",
+      "red_exit_code": 1,
+      "green_exit_code": 0,
+      "notes": "Oneproviderattemptblockedbeforefix; zeroafter. Initial13batch had191passingassertions but exited1 for9blockedoutbound attempts. It is not counted as a successful offlinegate."
+    }
+  ],
+  "limits": [
+    "No installed UI upgrade, owner service change, signing, live orders, research feed ingestion or existing owner home touched.",
+    "Networkguard applies currentprocess; explicit detachedCouncilchild has its own syntheticfeed sitecustomize fixture. LoopbackHTTP fixture remains allowed.",
+    "Parent production/domain changes require final integrated suite after sourcefreeze; this receipt only binds these13testfiles."
+  ]
+}

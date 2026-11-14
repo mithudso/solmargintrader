@@ -14,9 +14,12 @@ from botmanager.domain import BotSpec
 from botmanager.registry import COMMANDS, CommandContext, dispatch
 from botmanager.store import ManagerStore
 
+from tests import isolated_default_owner
+
 
 class StatusTests(unittest.TestCase):
     def setUp(self):
+        self.enterContext(isolated_default_owner())
         self.temp = tempfile.TemporaryDirectory()
         self.addCleanup(self.temp.cleanup)
         self.home = Path(self.temp.name) / "manager"

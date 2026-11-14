@@ -188,3 +188,23 @@ python3 scripts/check_docs.py
 If `soltui` is installed, rerun `soltui-service build` after a pull that touched it — the
 alias bundle picks up source changes automatically, but a changed dependency set or a moved
 file does need the rebuild.
+
+## Hosted website and read-only analysis service
+
+The website is installed and deployed independently of the managed paper suite.
+`npm --prefix website ci` restores pinned development tooling; it installs no
+trading service. `npm --prefix website run dev` starts a local Worker on port8799.
+`npm --prefix website run db:local` applies only the local D1 migrations.
+
+For Cloudflare production, `website/wrangler.jsonc` defines the account database,
+static asset binding, custom domains and expiry cleanup. The separate
+`db:remote` and `deploy` scripts mutate production; run them only as an explicit
+deployment step. Follow `website/README.md` for required server secrets and the
+independent acceptance gate.
+
+The optional analysis container uses repository-root build context with
+`website/engine/Dockerfile`. Provision dedicated public-market data and read-only
+Oracle archive inputs; never mount owner signing keys or the local control room.
+The container recipe does not mean that compute, a live feed or customer trading
+workers are deployed. Removing the frontend deployment does not cancel a Stripe
+subscription; cancellation and account-data retention need their own procedure.

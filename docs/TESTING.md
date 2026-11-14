@@ -32,9 +32,19 @@ python -m unittest discover -s botmanager/tests -t botmanager -p test_blind.py
 
 ## Current managed-suite candidate gates
 
-The coordinated candidate uses manager 0.7.2, research-runtime 0.4.0 and ecosystem
-0.4.4. [Current operations](bot-manager-0.6-operations.md) keeps the package matrix
+The coordinated source candidate uses manager 0.7.3, research-runtime 0.4.1 and
+ecosystem 0.4.6. [Current operations](bot-manager-0.6-operations.md) keeps the package matrix
 and remaining evidence gates separate from the historical M4 0.5.0 release.
+
+New continuation states use a `config-v2` binding over configuration values and
+intrabar observations. They reject older `repr`-bound checkpoints. Keep frozen
+owner archives with their original pinned runtime; an audit candidate does not
+migrate those records or authorize an owner restart.
+
+Prospective research workers also refuse new evidence after their captured
+production source changes. Run final checks in a fresh process after source
+writers finish. A refusal during a concurrent edit does not establish a failed
+strategy or grant permission to rewrite its saved provenance.
 
 Run the separate browser-owner paper gate from the repository root:
 
@@ -51,27 +61,27 @@ acceptance and final-head CI remain separate release gates.
 ## Existing component suites
 
 ```bash
-python3 -m unittest discover -s backtester/tests -t .   # 1005 tests
-python3 -m unittest discover -s soltui/tests -t .       # 1472 tests (~840s, optional)
-python3 -m unittest discover -s mongo/tests -t .        # 46 tests
-cd extension && npm test                                # 434 tests
+python3 -m unittest discover -s backtester/tests -t .   # 1120 tests
+python3 -m unittest discover -s soltui/tests -t .       # 1582 tests (TUI dependencies required)
+python3 -m unittest discover -s mongo/tests -t .        # 57 tests
+cd extension && npm test                                # 483 tests
 python3 scripts/check_docs.py                           # these counts, and the retrieval indexes
 ```
 
 The full SolTUI suite is optional and is skipped by normal PR/push CI. Run it
 locally with the command above, or manually dispatch CI with the boolean
 `run_soltui_suite` enabled. The other CI jobs and test-discovery count check stay
-enabled. This delivery skips the full suite at the owner's explicit request;
-focused UI, accounting and installed acceptance checks are recorded separately.
+enabled. The full local suite was run during the 2026-11-12 audit. Its source
+binding and skipped tests are recorded in the audit report.
 
-2957 tests total across the unittest and `node:test` suites. `liquidity/` additionally has its own pytest suite in its own virtualenv; see `liquidity/README.md`.
+3242 tests total in the four counted suites: backtester, soltui, mongo and extension. Additional component gates are listed below. `liquidity/` additionally has its own pytest suite in its own virtualenv; see `liquidity/README.md`.
 
 Every count on this page is checked by `scripts/check_docs.py`, which counts the suites by
 discovery and fails on a stale figure. That exists because these numbers were wrong for
 several commits — the docs claimed 250 backtester tests while the suite had grown to 454, and
 nothing caught it.
 
-## Extension — what the 434 tests cover
+## Extension — what the 483 tests cover
 
 | Area | Examples |
 | --- | --- |
@@ -158,7 +168,7 @@ find src tools test -name '*.js' -print0 | xargs -0 -n1 node --check
 The oscillating dry run is the meaningful one: it is the only check that closes a round trip and so
 the only one that can detect a zero-spread regression.
 
-## Backtester — 1005 tests
+## Backtester — 1120 tests
 
 Correctness of the simulation is the priority, so the suite concentrates on the things that silently
 inflate a result: **lookahead leaks**, cost application, and metric arithmetic. Any change touching
@@ -210,7 +220,7 @@ lie — a truncated-history test that fails if the replay is ever "optimised" in
 call on the last bar, and a constructed series where that shortcut gives the *opposite*
 answer, so the first test is known to be load-bearing rather than vacuously true.
 
-## soltui — 1472 tests
+## soltui — 1582 tests
 
 The suite includes real Textual render cycles, subprocess lifecycle checks and offline strategy integration.
 Run all tests with
@@ -233,7 +243,7 @@ spent/explored temporal reservations, legacy fences, historical mutation, cooper
 process termination/recovery, baseline comparison, adoption crash receipts and the headless UI.
 Fixtures isolate configuration/data; tests stub the live order path and do not submit real orders.
 
-## mongo — 46 tests
+## mongo — 57 tests
 
 Split between pure helpers that need nothing and integration tests that **skip cleanly
 when no mongod is listening**, so a checkout without a database runs the suite green
@@ -304,3 +314,70 @@ recovery, health reads, helper failure semantics and disarmed defaults. The
 ordinary `extension/tools/e2e.mjs` gate retains its stronger no-start restrictions.
 CI runs both. These checks do not prove physical reboot or everyday-profile
 installation; actual installed acceptance is a separate recorded gate.
+
+## JavaScript correctness and gradual type checking
+
+The root package defines a pinned development toolchain and a reproducible lockfile.
+Run its checks from the repository root:
+
+```bash
+npm ci --ignore-scripts
+npm run check:js
+```
+
+ESLint checks extension, website and ecosystem JavaScript for undefined bindings,
+unsafe execution, unreachable control flow and related correctness failures. Its
+configuration avoids a style rewrite. The atomic file-store cleanup has one
+documented local exception because it must reject when private temporary data
+cannot be removed.
+
+Strict `checkJs` currently covers the forecast-expiry helper and its public JSDoc
+contract. The compile-time callers include valid inputs and expected errors for
+invalid directions, expiry values and evaluation clocks. This is incremental
+checked-interface coverage; the rest of the JavaScript has behavioral and lint
+checks. Type checking emits no runtime files. The JavaScript quality workflow
+runs the same locked toolchain in CI.
+
+## Hosted website source and deployment gates
+
+The website uses Node’s `node:test` runner with SQLite-backed account fixtures.
+Its tests cover Ed25519 signatures, one-use challenge expiry/replay, secure
+sessions, tenant isolation, subscription gating, signed Stripe webhooks,
+Checkout/deletion races and the D1 cascade-deletion return contract. OAuth/MCP
+fixtures exercise actual synthetic Ed25519 login and policy signatures, PKCE,
+resource/redirect binding, replay, scopes, two-wallet status isolation, immediate
+revocation and missing-executor refusal. Atomic race tests cover plan invalidation,
+budget reservations, duplicate submissions and account deletion. Unknown outcomes
+retain budget. Active-grant history remains reachable for revocation. The pure
+browser evidence helper withholds expired directions.
+
+```bash
+npm --prefix website test
+npm --prefix website run check
+npm --prefix website run test:browser
+node --test website/test/mcp-integration.test.js
+python3 -m unittest website.engine.test_server website.engine.test_research
+python3 -m website.scripts.export_research --check
+ruff check website/engine website/scripts/export_research.py
+```
+
+The Python fixtures check canonical costed-engine parity, data gaps, bounds,
+read-only archive access and research-export provenance. They never acquire
+market history, run a trading worker or submit an order. Install the existing
+backtester/Oracle dependencies in an isolated Python environment first.
+`.github/workflows/website.yml` runs Node and Python source gates on relevant PRs.
+
+The browser command runs the original workspace suite and agent-consent suite
+in isolated Chrome with local account/wallet fixtures. Held callbacks verify
+sign-out invalidation, serialized transitions and frozen policy controls. Trading
+consent signs once per finite grant; no test adds a per-trade wallet prompt.
+Successful customer-adapter fixtures are mocks. They do not verify real wallet
+delegation, provider signing, venue reconciliation or an order.
+
+Deployed acceptance is separate: verify exact loaded asset bytes, desktop/mobile
+flows, actual hosted wallet signature/session/deletion, OAuth discovery/consent/
+PKCE/token/status/revocation, Stripe Checkout and cancellation
+when configured, and hosted analysis with its real inputs. Running
+`node website/scripts/smoke.mjs https://oraclebot.io` explicitly creates and
+deletes a throwaway account. The smoke verifies authentication and unpaid-access
+denial; it does not prove a successful subscription, backtest or live trade.

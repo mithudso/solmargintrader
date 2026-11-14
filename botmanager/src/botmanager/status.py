@@ -518,6 +518,8 @@ def runtime_snapshot(
     why: bool = False,
 ) -> dict[str, Any]:
     """Separate reference replay progress, process health and recorded data age."""
+    from .health import clock_age, health_snapshot
+
     snapshot = draft_snapshot(spec, why=why)
     _editing_status(snapshot, spec, row, worker_alive)
     if row is None:
@@ -526,9 +528,8 @@ def runtime_snapshot(
     snapshot["evidence_identity"] = draft_snapshot(active)["evidence_identity"]
     reason = row["reason"]
     observed = row["observed"]
-    heartbeat_age = (
-        None if row["heartbeat"] is None else max(0.0, now - row["heartbeat"])
-    )
+    runtime_health = health_snapshot(row, now=now)
+    heartbeat_age = runtime_health["process"]["heartbeat_age_seconds"]
     if observed in ("running", "waiting") and (
         not worker_alive or heartbeat_age is None or heartbeat_age >= 15
     ):
@@ -536,14 +537,14 @@ def runtime_snapshot(
         reason = "worker_not_observed" if not worker_alive else "heartbeat_stale"
     if (
         observed in ("running", "waiting")
-        and row["tick_started"] is not None
-        and now - row["tick_started"] >= 15
+        and runtime_health["evaluation"]["state"] == "stalled"
     ):
         observed = "degraded"
         reason = "tick_stalled"
     cp = row["checkpoint"]
     data = row["input"]
     reference = data["identity"]
+    total_bars = data.get("bar_offset", 0) + len(data["bars"])
     snapshot.update(
         runtime_id=row["runtime_id"],
         runtime_owner_id=row["owner"],
@@ -571,29 +572,29 @@ def runtime_snapshot(
             "max_source_quote_age_seconds": reference["quote_age_max_seconds"],
         },
         data_age_seconds={
-            "value": max(0.0, now - reference["end_ts"]),
+            "value": clock_age(reference["end_ts"], now=now),
             "reason": "age_of_pinned_recording_high_watermark",
         },
         last_completed_evaluation=unavailable("no_completed_evaluation")
-        if row["evaluated"] is None
+        if clock_age(row["evaluated"], now=now) is None
         else {"value": row["evaluated"], "reason": "transaction_committed"},
         latest_decision=unavailable("no_completed_evaluation")
         if cp is None
         else {
             "value": "reference_input_exhausted"
-            if cp["cursor"] == len(data["bars"])
+            if cp["cursor"] == total_bars
             else "reference_prefix_evaluated",
             "reason": "canonical_grid_replay",
         },
         next_trigger=unavailable("reference_input_exhausted")
-        if cp and cp["cursor"] == len(data["bars"])
+        if cp and cp["cursor"] == total_bars
         else {"value": "next_bounded_prefix", "reason": "reference_replay"},
         reference_run={
             "kind": "reference_paper",
             "identity": reference,
             "snapshot_hash": data["snapshot_hash"],
             "cursor": row["cursor"],
-            "total_bars": len(data["bars"]),
+            "total_bars": total_bars,
             "virtual_account": "independent_not_a_funded_wallet",
             "live_eligible": False,
         },
@@ -609,18 +610,10 @@ def runtime_snapshot(
     )
     if data.get("prospective") is not None:
         source = data["prospective"]
-        age = (
-            None
-            if source["latest_observed"] is None
-            else max(0.0, now - source["latest_observed"])
-        )
+        age = clock_age(source["latest_observed"], now=now)
         health = source["health"]
-        if (
-            age is not None
-            and age > data["descriptor"]["max_source_age_s"]
-            and health in ("available", "waiting_for_completed_bin")
-        ):
-            health = "source_stale"
+        if source["latest_observed"] is not None:
+            health = runtime_health["input"]["state"]
         snapshot["input_quality"] = {
             "state": health,
             "reason": "prospective_source_observation_separate_from_process_heartbeat",
@@ -733,9 +726,8 @@ def runtime_snapshot(
             next_trigger=snapshot["next_trigger"],
         )
     from .accounting import accounting_snapshot
-    from .health import health_snapshot
 
-    snapshot["health"] = health_snapshot(row, now=now)
+    snapshot["health"] = runtime_health
     snapshot["accounting"] = accounting_snapshot(row)
     for operation in ("pause_entries", "resume_entries"):
         supported = active.strategy_id in ("grid", "dca")

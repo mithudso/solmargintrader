@@ -21,7 +21,9 @@ class MachineHealthHttpTests(unittest.TestCase):
         self.home = Path(self.temp.name) / "ecosystem"
         self.manager = Path(self.temp.name) / "manager"
         self.server = make_server(self.home, self.manager, port=0)
-        self.thread = threading.Thread(target=self.server.serve_forever, daemon=True)
+        self.thread = threading.Thread(
+            target=lambda: self.server.serve_forever(poll_interval=0.01), daemon=True
+        )
         self.thread.start()
         self.addCleanup(self.close_server)
 
@@ -32,9 +34,9 @@ class MachineHealthHttpTests(unittest.TestCase):
         self.assertFalse(self.thread.is_alive())
 
     def request(self, path, *, method="GET", headers=None):
-        with closing(http.client.HTTPConnection(
-            "127.0.0.1", self.server.server_port, timeout=5
-        )) as connection:
+        with closing(
+            http.client.HTTPConnection("127.0.0.1", self.server.server_port, timeout=5)
+        ) as connection:
             connection.request(method, path, headers=headers or {})
             response = connection.getresponse()
             return response.status, dict(response.getheaders()), response.read()
@@ -69,10 +71,14 @@ class MachineHealthHttpTests(unittest.TestCase):
 
     def test_readiness_excludes_market_quality_and_unknown_owners_refuse(self):
         snapshot = {
-            "schema_version": 1, "observed_at": 1, "overall": "degraded",
+            "schema_version": 1,
+            "observed_at": 1,
+            "overall": "degraded",
             "components": {
-                **{name: {"state": "up", "ready": True} for name in
-                   ("suite", "manager", "control_room")},
+                **{
+                    name: {"state": "up", "ready": True}
+                    for name in ("suite", "manager", "control_room")
+                },
                 "market_data": {"state": "unknown", "ready": None},
             },
         }
@@ -86,7 +92,9 @@ class MachineHealthHttpTests(unittest.TestCase):
     def test_collector_routes_keep_origin_and_query_guards(self):
         for route in ("/api/health", "/metrics", "/readyz", "/healthz"):
             with self.subTest(route=route):
-                self.assertEqual(self.request(route, headers={"Origin": "null"})[0], 403)
+                self.assertEqual(
+                    self.request(route, headers={"Origin": "null"})[0], 403
+                )
                 self.assertEqual(self.request(route + "?path=/private")[0], 400)
                 self.assertEqual(self.request(route, method="POST")[0], 404)
 
@@ -95,7 +103,9 @@ class MachineHealthHttpTests(unittest.TestCase):
         self.assertEqual(status, 200)
         self.assertTrue(int(headers["Content-Length"]) > 0)
         self.assertEqual(raw, b"")
-        with patch("ecosystem.web._component_health", side_effect=RuntimeError("secret-canary")):
+        with patch(
+            "ecosystem.web._component_health", side_effect=RuntimeError("secret-canary")
+        ):
             status, _, raw = self.request("/api/health")
             self.assertEqual(status, 503)
             self.assertNotIn(b"secret-canary", raw)

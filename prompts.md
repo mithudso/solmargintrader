@@ -1,5 +1,68 @@
 # Prompt history
 
+Version: 248
+Delta: v247 to v248; preserve the screenshot showing the disabled Coinbase form on direct Settings entry.
+Delta: v246 to v247; record the owner request for two masked Coinbase credential fields.
+Delta: v245 to v246; preserve the full hosted goal, provider-confirmation replies and observed-price-shape visual-guide request verbatim.
+Delta: v244 to v245; preserve the complete hosted goal, provider-confirmation replies and interactive winning-ZEC TUI request verbatim.
+Delta: v243 to v244; preserve hosted provider-confirmation replies and the streaming winning-ZEC strategy request verbatim.
+Delta: v242 to v243; record owner confirmation of Sandbox credentials and Workers Paid activation.
+Delta: v241 to v242; preserve the complete hosted-ecosystem request and concurrent expanded ZEC strategy, shape and frequency request verbatim.
+Delta: v240 to v241; record explicit authorization to complete the hosted ecosystem.
+
+
+
+
+Delta: v243 to v244; add an understandable visual shape guide.
+Delta: v242 to v243; add editable winning-strategy TUI.
+Delta: v241 to v242; implement read-only streaming ZEC winning-strategy display.
+Delta: integration to v241; preserve concurrent local repair and expanded ZEC user requests.
+Delta: v239 to v240; record expanded ZEC strategies, shapes and frequency request.
+
+Delta: v239 to v240; preserve both concurrent local repairs and fee research requests.
+Delta: v238 to v239; preserve the live ecosystem status request and authorized local repairs.
+
+Delta: v238 to v239; preserve corrected percent units for the ZEC fee rerun.
+Delta: v237 to v238; preserve both concurrent Stripe and ZEC requests.
+Delta: v236 to v237; preserve the new dedicated live Stripe key provisioning request.
+
+Delta: v236 to v237; record the captured-event ZEC backtest request.
+Delta: v235 to v236; preserve both full user prompt histories while combining authenticated MCP and continuous forecast work.
+Delta: v234 to v235; preserve both complete owner prompt histories during forecast and audit integration.
+Delta: v233 to v234; preserve merged UI0.4.9 and verified trial evidence before final audit0.4.10 qualification.
+Delta: v232 to v233; preserve delivered upstream pipeline recovery and failed final audit gates.
+Delta: v234 to v235; preserve corrected MCP/preauthorization and parallel audit/dashboard prompts together.
+Delta: v233 to v234; add authenticated wallet-bound MCP and preserve corrected preauthorization preference.
+Delta: v232 to v233; preserve owner Stripe credential locations and three subscription tiers.
+Parallel audit delta: v233 to v234; preserve merged UI0.4.9 and verified trial evidence before final audit0.4.10 qualification.
+Parallel audit delta: v232 to v233; preserve delivered upstream pipeline recovery and failed final audit gates.
+Delta: v231 to v232; preserve the upstream persistent Oraclebot monitoring request.
+Delta: v230 to v231; preserve upstream owner choice to retain Google Workspace.
+Delta: v229 to v230; preserve accepted upstream news and email workflow history during audit integration.
+Delta: v228 to v229; capture fresh changed-plugin hook approval recurrence during final audit.
+Delta: v227 to v228; preserve newly reported repeated hook exit126 failures.
+Delta: v226 to v227; preserve owner status question during active full audit.
+Delta: v225 to v226; record explicit resume of the ordered full audit, hook repair and detailed setup explanation.
+Delta: v224 to v225; capture ordered full audit, hook repairs and billing explanation.
+Delta: v232 to v233; add editable forecast seconds beside the prediction.
+Delta: v231 to v232; preserve owner confirmation that the forecast target is the next ten seconds.
+Delta: v230 to v231; record continuous ten-second selected-strategy Oracle forecast request.
+Delta: v229 to v230; record unavailable-values screenshot and evidence-specific dashboard repair.
+Delta: v228 to v229; record screenshot correction showing failed pipeline and stopped forecasts.
+Delta: v227 to v228; capture persistent Oraclebot ecosystem and operational monitoring request.
+Delta: v226 to v227; preserve owner choice to retain Google Workspace.
+Delta: v225 to v226; capture all-domain Cloudflare email forwarding request.
+Delta: v224 to v225; capture historical coin-news and subsequent-price event-study request.
+Delta: v223 to v224; record owner IP access-list update and verify resumed ZEC uploads.
+Delta: v222 to v223; preserve one-day raw market capture, URI2 certificate and ZEC selection.
+Delta: v221 to v222; integrate Oraclebot website with concurrent shared research delivery.
+Delta: v220 to v221; capture owner graph database and shared llms source-of-truth requirement.
+Delta: v219 to v220; record owner authorization to restore eight accidental reference deletions.
+Delta: v218 to v219; record one-minute macro-conditioned full-suite request.
+Delta: v217 to v218; record all-component deep code optimizer request and immediate diagnostic repair.
+
+## Preserved PR 226 checkpoint history
+
 Version: 218
 Delta: v217 to v218; capture all-component deep code optimizer request.
 Delta: v216 to v217; record owner thirty percent drawdown planning tolerance.
@@ -44,6 +107,10 @@ Delta: v191 to v192; record Lead Quantitative Orchestrator prompt optimization a
 Delta: v190 to v191; capture the request to remove six assets from coin lists.
 Delta: v189 to v190; capture the additional friend-facing solbot diagnostics request.
 
+## 2026-11-11 — All-component deep code optimization
+
+Run the deep code optimizer on each component of this repo
+
 ## 2026-11-11 — Coinbase Chrome sign-in confirmation
 
 "/var/folders/hz/s7btlxx54c32yt375m03q0h40000gn/T/F6662994-9EC4-4270-8C2C-8F89F12D02C6-78252-00000123650DD30F/pasted-image-20261111-084040-F4F5883C-7DDA-49D5-9B23-66B51CB4651E.png"  I'm signed in.
@@ -62,7 +129,7 @@ Jupiter 2× leverage, 75% USDC collateral
 
 ## 2026-11-11 — ZEC/USDC Solana wallet and memory hook repair
 
-1. I was wrong I don't have leverage at Coinbase, and only simple trades are free. 2. Go with zec/usdc instead and the wallet is in ~/.ssh/solana.private  Also I keep getting this error for the memory-capture hook which I like the hook, but it needs to not error like that every time: 
+1. I was wrong I don't have leverage at Coinbase, and only simple trades are free. 2. Go with zec/usdc instead and the wallet is in ~/.ssh/solana.private  Also I keep getting this error for the memory-capture hook which I like the hook, but it needs to not error like that every time:
 • Saved a verified local checkpoint.
 
   Basic Memory capture was marked failed because session instructions restrict memory writes to new files in the local ad_hoc notes directory.
@@ -1928,6 +1995,307 @@ User answer to the drawdown question:
 
 The question specified a USD10,000 simulated account and venue-minimum live validation capped at USD10 total deployed.
 
+## 2026-11-11 — Ultra-short macro-conditioned forecasts (TASK-1462)
+
+> run the full-suite skill on ultra-short trades, micro-graph predictions based on macro trends, under what conditions can you be more certain the next 1 min will go up or down?
+
+## 2026-11-11 — Canonical reference restoration decision
+
+Question: Eight tracked reference files are deleted from /Users/mitch/.claude/skills/trading-and-investing/references/, blocking installation. Were these deletions accidental, so I should restore exactly those eight committed files, or should I preserve them?
+
+Answer:
+
+> Accidental — restore the eight files
+
+## 2026-11-11 — Shared research source of truth
+
+> This research should go directly into the graph db and as llms files, that should be the shared repo and source of truth.
+
+
+## v219 — oraclebot.io hosted subscription website — 2026-11-11
+
+This repo, create a website that allows a user to connect with their wallet and they can create a bot that trades against coinbase or they can create leveraged automated positions with Jupiter. They should have the same backtest and oracle capacity as on the local site, and the oracle should always have a strategy that is at the top for the chosen coin saying which direction that strategy thinks the coin is going to go. This is a subscription site with a 7 day free trial. So will need accounts, authentication, storage backend, I'd like to make all of the research done so far available via a blog section, though will certainly expand on each point more. the name of the site is oraclebot.io, can you host it on cloudflare? Does that have everything you'd need for the calls to work? Beyond that youy have complete creative freedom, use the ux/ui design skills to help make it better. Will use stripe for payments. Other than that just best practices
+
+## 2026-11-12 — One-day raw ZEC capture
+
+> For like one day can you record every single thing you hear from one coin and store it in a timeseries mongodb database? I mean if I read somewhere right over 24 per tic, is that conceivable?
+
+> There's a new cluster accessed by the MONGODB_URI connection string
+
+> Can also try  MONGODB_URI2
+
+> oh wait let me get the key
+
+> The x509 pem file is ~/.ssh/X509-cert-mdbtamcluster2496607525675013147.pem
+
+> Do ZEC that seemed to have good results.
+
+## 2026-11-12 — ZEC MongoDB connectivity follow-up
+
+```text
+I justnadded that Ip
+```
+
+Verify that the existing supervised uploader resumes and validate stored ZEC records without restarting the collector or extending the persisted deadline.
+
+
+## 2026-11-12 — Full repository audit, hook approvals and billing explanation
+
+Fix all of these hook failures:  Hook failed
+  └ plugin contents changed; hook approval required
+• Hook failed
+  └ plugin contents changed; hook approval required
+• Hook failed
+  └ plugin contents changed; hook approval required
+
+And then give me a more detailed explation of what you need. First though run a full repo-bootstrapper and code deep optimizer on this repo.
+
+
+## 2026-11-12 — Resume full audit, hook failures and setup explanation
+
+```text
+Resume and fix these hook failures
+
+And then give me a more detailed explation of what you need. First though run a full repo-bootstrapper and code deep optimizer on this repo.
+```
+
+
+## 2026-11-12 — Active audit status question
+
+```text
+What are you doing right now? r
+```
+
+
+## 2026-11-12 — Repeated hook exit126 failure repair
+
+```text
+Fix these hook failures
+• Hook failed
+  └ hook exited with code 126
+
+• Explored
+  └ Read hub_sqlite.py
+
+• Hook failed
+  └ hook exited with code 126
+
+• Explored
+  └ Read git_corpus.py
+
+• Hook failed
+```
+
+
+## 2026-11-12 — Fresh native plugin approval failures
+
+```text
+fix these hook failures: • Hook failed
+  └ plugin contents changed; hook approval required
+• Hook failed
+  └ plugin contents changed; hook approval required
+• Hook failed
+  └ plugin contents changed; hook approval required
+```
+
+
+## 2026-11-12 — Imported accepted upstream workflow history
+
+Source: remote master 4ab6cddf31143e4738c08588ddda945af726d8d5, including news-event delivery 61b36738639e0f692a2e83a502f32b609353cd41. Existing prompt bodies and continuation results below are preserved from that committed source.
+
+Imported source Delta: v225 to v226; capture all-domain Cloudflare email forwarding request.
+Imported source Delta: v224 to v225; capture historical coin-news and subsequent-price event-study request.
+
+## 2026-11-12 — Coin news publication and price lookback
+
+```text
+Can you do a lookback correlation of when major news articles came out about different coins and what happened to their prices afterwards?
+```
+
+## 2026-11-12 — Cloudflare inbound forwarding
+
+```text
+for all of my domains in cloudflare make them forward email to my mitchphudson@gmail.com address.
+```
+
+## 2026-11-12 — Preserve Google Workspace
+
+```text
+Keep Google Workspace
+```
+## 2026-11-12 — Oraclebot persistent operations
+
+```text
+For the oraclebot, it's saying the ecosystem isn't up and running, 1) set that as an always runhing service. 2) Setup monitoring, alerting, and reporting for it.
+```
+
+
+## Preserved parallel audit continuation
+
+
+## Imported upstream pipeline workflow from 93312fd7
+
+The following original-owner continuation/request is preserved verbatim. Its versions belong to that concurrent history; actual installed acceptance is in its private delivery receipt.
+
+## 2026-11-12 — Runtime recovery screenshot
+
+```text
+[Image #1]
+```
+
+The attached local control-room image shows control server running, paper pipeline failed, backtest/forward worker failed, and Oracle forecasts stopped. This continues the existing always-running ecosystem and monitoring request.
+
+
+## Imported UI workflow from merged349d660f
+
+This exact source-stage history is preserved from concurrent dashboard delivery. Its pending-install statements describe the earlier source stage; the following current continuation supersedes status where noted.
+
+## 2026-11-12 — Unavailable dashboard values
+
+```text
+Everything is still showing as unavailable: [Image #1]
+```
+
+Screenshot supplied in conversation: `/var/folders/hz/s7btlxx54c32yt375m03q0h40000gn/T/C857DC45-1D2C-4900-8910-93132590C618-742-0000022FDE03BBDA/pasted-image-20261112-193001-CA3C900E-3B33-45FA-A0C5-654CCB9D80E3.png`. It shows one SOL RSI registration, no selected bot, unavailable Oracle votes, manager paper capital and manager paper P&L.
+
+
+## 2026-11-12 — Continuous ten-second Oracle forecast
+
+```text
+The oracle in the oraclebot should never have nothing displayed. It should always have a price prediction from a top strategy showing no matter what. The interval that it uses cannot be an hour, I would like it to be every 10 seconds that it shows what the coin is going to do based on the strategy chosen.
+```
+
+
+## 2026-11-12 — Oracle horizon clarification
+
+```text
+Next 10 seconds
+```
+
+Owner answer to: Should each update predict the next10seconds, or refresh every10seconds while predicting the nextminute? The required default is a new next-ten-second forecast everytenseconds.
+
+
+## 2026-11-12 — Editable forecast seconds
+
+```text
+Have that numbert be variable, and can be changed on the site next to it.
+```
+
+The number is the seconds-ahead forecast target, default10. One adjacent editable control sets both the target horizon and evaluation cadence, remembers the per-coin setting, and retains the prior correctly labelled forecast while an update is applied.
+
+## 2026-11-12 — Oraclebot Stripe credential locations
+
+```text
+I stored the api keys and account num info in ~/.env as STRIPE_ORACLEBOT_ACCTNUM
+STRIPE_ORACLEBOT_PUB_KEY
+STRIPE_ORACLEBOT_SEC_KEY
+```
+
+## 2026-11-12 — Oraclebot three subscription tiers and portal
+
+```text
+I added the subscriptions to stripe, 9.99 for up to 3 bots and 10x backtests/day , 29.99 for unlimited backtests and 10x active bots, and 49.99 for unlimited everything. Also the portal ID for customers to be able to edit or stop their subscription is here: bpc_1Ub7dzQ3DZ8H91BKkxAaTqj9
+```
+
+
+## 2026-11-12 — Authenticated MCP with the user wallet
+
+```text
+Add authenticated mcp support so a user can ask their agent to either make a trade, or get the status, but it always uses their wallet.
+```
+
+The owner briefly selected the per-trade approval option, then explicitly corrected that selection. The correction below is authoritative; do not implement a per-trade approval requirement.
+
+```text
+No I didn't mean to press that button, I want preauthorization so I don't have to approve every time
+```
+
+## 2026-11-13 — Dedicated live Stripe key
+
+```text
+I stored the new live key as STRIPE_ORACLEBOT_SEC_KEY in ~/.env
+```
+
+## 2026-11-13 — ZEC granular backtests
+
+> Run all of the backtests for ZEC using 1m 5m 10m and 1hr times against the more granular records recorded.
+
+## 2026-11-13 — Live ecosystem readiness and repairs
+
+```text
+Is the entire ecosystem up, live, running, oracle producing predictions, forward tests running, backtests are capable?
+```
+
+```text
+Can you fix those issues?
+```
+
+## 2026-11-13 — ZEC maker-rate fee sensitivity
+
+> Rerun  the analysis with .25bps maker fee and a .15bps maker fee for trades.
+
+Owner clarification:
+
+> .25% and .15%
+
+
+## 2026-11-13 — Complete hosted ecosystem
+
+```text
+Complete the hosted ecosystem  as stated: The complete hosted ecosystem is still unfinished. ZEC needs native Oracle history; the public site needs its dedicated analysis runtime and customer-wallet executor. Stripe configuration is present, but subscription lifecycle verification remains, so public trials and live trading remain disabled. Resolve those issues
+```
+
+## 2026-11-13 — Expanded ZEC strategies, shapes and frequency
+
+> Backtest all of the other strategies against ZEC in the same timeframes. Then do it again with the trading shapes as was done looking for macro graph patterns. And again looking for the frequency
+
+
+## 2026-11-13 — Hosted provider prerequisites confirmed
+
+The owner replied to the request to save STRIPE_ORACLEBOT_TEST_SEC_KEY in /Users/mitch/.env:
+
+```text
+It is saved.
+```
+
+The owner replied to both pending Cloudflare Workers Paid activation requests:
+
+```text
+Done
+```
+
+```text
+Done
+```
+
+## 2026-11-13 — Streaming winning ZEC strategies
+
+Write a script that displays the oracle up/down/flat prediction for all of the winning short term strategies using streaming real time data, include the graph shape if it's available.
+
+## 2026-11-13 — Interactive winning-strategy Oracle TUI
+
+There are qute a lot of strategies displayed in that script, let me select the specific time window I'm looking for. Make this a TUI, with the ability to edit each configuration, select time windows, choose which ones to display manually, increase or decrease the refresh window, see where we are in the shape, also have a list of indicators like RSI, balance of power, and the other succesful ones showing their numbers on the right.
+
+## 2026-11-13 — Explain observed chart shapes
+
+For the shape analysis, make it explain and show what the shape is so I can understand what it's implying.
+
+## 2026-11-13 — Masked Coinbase credential entry
+
+My coinbase API keys are two strings, I don't have a file. Just make it an obfuscated text entry box with two fields for the key id and secret.
+
+## 2026-11-14 — Disabled Coinbase connection screenshot
+
+User message: `[Image #1]`
+
+Image supplied at /var/folders/hz/s7btlxx54c32yt375m03q0h40000gn/T/F26E3A26-F5A8-4729-9C1B-873A649B85AC-742-00000482BD4AAF1E/pasted-image-20261114-010418-54370D17-3C9C-4FF4-9C07-81D664F0776A.png. The screenshot shows disabled Key ID, Secret, optional portfolio and Verify and connect controls, with Customer account connections are not available yet. Durable private screenshot: /Users/mitch/.local/state/oraclebot-settings-startup-20261114/reported-disabled-form.png. No credentials are present. Treat this as a request to fix the blocked onboarding.
+
+## Preserved PR 226 checkpoint history
+
 ## 2026-11-11 — All-component deep code optimization
 
 Run the deep code optimizer on each component of this repo
+
+## 2026-11-14 — Update PR 226 against current master
+
+Resolve the conflicts and push  all the PRs for https://github.com/mithudso/solmargintrader/pull/235 224 and 226 as well.

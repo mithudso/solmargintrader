@@ -1,0 +1,133 @@
+{
+  "schema": "oraclebot-full-source-review/v1",
+  "status": "DEFERRED_DEPENDENCY_EVIDENCE_BOUND_SOURCE_UNCHANGED",
+  "files": [
+    {
+      "path": "soltui/eth_scan.py",
+      "blob_sha": "843245c6bd3396626b815bdd3436339d9c0502f6",
+      "sha256": "a2bcc98ed9d481deaddbf5dff271fa3347435f91a8aef0fe4fca8ad8651b6ecf",
+      "lines": 98,
+      "original_sha256": "a2bcc98ed9d481deaddbf5dff271fa3347435f91a8aef0fe4fca8ad8651b6ecf",
+      "original_lines": 98,
+      "original_read_ranges": [
+        [
+          1,
+          98
+        ]
+      ],
+      "read_evidence": {
+        "inherited": "Read-only fixed well-known-token ABI calls, failover/partial discovery, exact wrapper pricing and unknown-price treatment; shared wallet transport logging belongs to child final receipt. Complete original displayed reads plus complete authored/diff final change inspection; original hashes remain distinct.",
+        "resolution": "Final shared wallet transport receipt became available; no scanner source delta",
+        "dependency_source": "soltui/wallet.py",
+        "dependency_sha256": "44e9abf12ef5f97e61cb760060368e1ca6716fc7b9625f6a8b6282e01d2c27d5",
+        "dependency_receipt": "soltui-worker.json"
+      },
+      "final_read_basis": "full displayed current source",
+      "final_delta_ranges": [],
+      "passes": {
+        "C1": "ran: Read-only fixed well-known-token ABI calls, failover/partial discovery, exact wrapper pricing and unknown-price treatment; shared wallet transport logging belongs to child final receipt.",
+        "C2": "ran: inspected actual caller/data shapes and matching public/UI return conventions; preserved strategy/execution authority boundaries",
+        "C3": "ran: unavailable/malformed/nonfinite/duplicate/stale/partial input and failure branches reviewed against targeted negative and positive controls",
+        "S1": "ran: no target directives followed; source treated as data. Secret-safe fixed errors/CSV text and explicit wallet/signing separation checked",
+        "S2": "ran: SQLite/context managers, flock/file atomicity, sequential resource lifetime, timeout/cancellation and partial-result boundaries reviewed where applicable",
+        "S3": "ran: finite numbers/strict count and schema/owner/evidence-binding boundaries reviewed; grounded corrections tested",
+        "S4": "ran: Python3.13 qualified imports and actual declared runtime/NumPy/Textual contracts inspected; AST/syntax and affected suite verified",
+        "S5": "ran: prior scanner full source read traced its injected fetch transport into wallet.scan_wallet\u2192HttpFetcher; the formerly pending shared-wallet final source receipt now exists. Bound walletSHA44e9abf12ef5f97e61cb760060368e1ca6716fc7b9625f6a8b6282e01d2c27d5 and its S5/ST09/ST10 canary-tested request/outcome diagnostics in soltui-worker.json. Scanner source is unchanged; no invented fresh full read or fresh test run. Universal sink architecture remains M3partial.",
+        "P1": "ran: bounded windows/candidate/row inputs and loops reviewed; no speculative strategy or runtime optimization",
+        "P2": "ran: process/SQLite/frozen-identity and concurrent read/async UI boundaries reviewed where applicable; no owner process state changed",
+        "M1": "ran: existing naming/thresholds retained; unrelated historical Ruff findings explicitly distinguished from changed code",
+        "M2": "ran: shared engine/data validators reused; CSV literal policy extracted once without requiring Textual in headless reports",
+        "M3": "N/A: repository-scope architecture row separate",
+        "M4": "ran: comments/public labels match actual paper/simulated/unavailable scope and finite/count corrections; no profitability or live-operation certification",
+        "T1": "ran: targeted meaningful failure/positive/log assertions; full range and authored delta evidence below, completed exits separately recorded",
+        "T2": "N/A: repository dependency/supply-chain row separate",
+        "T3": "N/A: repository tooling row separate",
+        "T4": "N/A: non-test source",
+        "M5": "N/A: imported library or conventional test module"
+      },
+      "verdict": "REVIEWED",
+      "findings": []
+    },
+    {
+      "path": "soltui/utxo_scan.py",
+      "blob_sha": "fe1fe35e3a4601f2b8a43befc13d07cdd8ff4f7e",
+      "sha256": "46c59d05e09b4c87b88a7dd50e81ebf22bcaa2bd26ba15043ac523c12ac4d85d",
+      "lines": 233,
+      "original_sha256": "7c722228dc7ef5745fef05849d6536b02e7bb01f433118a2d489158b7ff88df6",
+      "original_lines": 226,
+      "original_read_ranges": [
+        [
+          1,
+          226
+        ]
+      ],
+      "read_evidence": {
+        "inherited": "Keyless BIP44 gap/branch scanning, explorer failover/rate waits, strict counters and fixed provider errors that cannot echo derived addresses, unknown-price/partial results. Complete original displayed reads plus complete authored/diff final change inspection; original hashes remain distinct.",
+        "resolution": "Final shared wallet transport receipt became available; no scanner source delta",
+        "dependency_source": "soltui/wallet.py",
+        "dependency_sha256": "44e9abf12ef5f97e61cb760060368e1ca6716fc7b9625f6a8b6282e01d2c27d5",
+        "dependency_receipt": "soltui-worker.json"
+      },
+      "final_read_basis": "full original ranges plus exact authored/diff delta; new files fully displayed after authorship",
+      "final_delta_ranges": [
+        {
+          "tag": "insert",
+          "original": [
+            33,
+            32
+          ],
+          "final": [
+            33,
+            33
+          ]
+        },
+        {
+          "tag": "insert",
+          "original": [
+            60,
+            59
+          ],
+          "final": [
+            61,
+            66
+          ]
+        },
+        {
+          "tag": "replace",
+          "original": [
+            121,
+            122
+          ],
+          "final": [
+            128,
+            129
+          ]
+        }
+      ],
+      "passes": {
+        "C1": "ran: Keyless BIP44 gap/branch scanning, explorer failover/rate waits, strict counters and fixed provider errors that cannot echo derived addresses, unknown-price/partial results.",
+        "C2": "ran: inspected actual caller/data shapes and matching public/UI return conventions; preserved strategy/execution authority boundaries",
+        "C3": "ran: unavailable/malformed/nonfinite/duplicate/stale/partial input and failure branches reviewed against targeted negative and positive controls",
+        "S1": "ran: no target directives followed; source treated as data. Secret-safe fixed errors/CSV text and explicit wallet/signing separation checked",
+        "S2": "ran: SQLite/context managers, flock/file atomicity, sequential resource lifetime, timeout/cancellation and partial-result boundaries reviewed where applicable",
+        "S3": "ran: finite numbers/strict count and schema/owner/evidence-binding boundaries reviewed; grounded corrections tested",
+        "S4": "ran: Python3.13 qualified imports and actual declared runtime/NumPy/Textual contracts inspected; AST/syntax and affected suite verified",
+        "S5": "ran: prior scanner full source read traced its injected fetch transport into wallet.scan_wallet\u2192HttpFetcher; the formerly pending shared-wallet final source receipt now exists. Bound walletSHA44e9abf12ef5f97e61cb760060368e1ca6716fc7b9625f6a8b6282e01d2c27d5 and its S5/ST09/ST10 canary-tested request/outcome diagnostics in soltui-worker.json. Scanner source is unchanged; no invented fresh full read or fresh test run. Universal sink architecture remains M3partial.",
+        "P1": "ran: bounded windows/candidate/row inputs and loops reviewed; no speculative strategy or runtime optimization",
+        "P2": "ran: process/SQLite/frozen-identity and concurrent read/async UI boundaries reviewed where applicable; no owner process state changed",
+        "M1": "ran: existing naming/thresholds retained; unrelated historical Ruff findings explicitly distinguished from changed code",
+        "M2": "ran: shared engine/data validators reused; CSV literal policy extracted once without requiring Textual in headless reports",
+        "M3": "N/A: repository-scope architecture row separate",
+        "M4": "ran: comments/public labels match actual paper/simulated/unavailable scope and finite/count corrections; no profitability or live-operation certification",
+        "T1": "ran: targeted meaningful failure/positive/log assertions; full range and authored delta evidence below, completed exits separately recorded",
+        "T2": "N/A: repository dependency/supply-chain row separate",
+        "T3": "N/A: repository tooling row separate",
+        "T4": "N/A: non-test source",
+        "M5": "N/A: imported library or conventional test module"
+      },
+      "verdict": "REVIEWED",
+      "findings": []
+    }
+  ],
+  "no_new_test_or_full_read_credit": true
+}

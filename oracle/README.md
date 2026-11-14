@@ -1,4 +1,4 @@
-# Oracle 0.2.3
+# Oracle 0.2.5
 
 Oracle is a local shadow signal service, defaulting to SOL/USDC. Explicit
 `--instrument BTC/USD` (or another supported symbol/quote) binds each archive,
@@ -17,10 +17,16 @@ Python 3.13 or newer is required. Install the canonical backtester and Oracle
 in their own environment. Bot Manager is an optional read-only integration.
 
 ```sh
-python3 -m venv /Users/mitch/.venvs/soloracle
-/Users/mitch/.venvs/soloracle/bin/python -m pip install /Users/mitch/dev/solmargintrader/backtester /Users/mitch/dev/solmargintrader/oracle /Users/mitch/dev/solmargintrader/botmanager
-/Users/mitch/.venvs/soloracle/bin/soloracle --help
+uv venv .venv --python 3.13                 # first setup only; reuse an existing .venv
+uv pip install --python .venv/bin/python -e ./backtester -e ./oracle
+.venv/bin/soloracle --help
 ```
+
+Run these commands from the source repository root. Known missing Python
+dependencies exit with code 3 and an isolated-environment repair command. Both
+CLIs show usage on invalid arguments without echoing their values. MCP help
+remains available before installing the optional protocol SDK. Install Bot
+Manager separately only when using its optional read-only integration.
 
 The package pins the official MCP Python SDK to 1.30.0. The backtester supplies
 NumPy, Pandas, strategy code and packaged cards. No extension or Bot Manager
@@ -204,7 +210,11 @@ views. Exact `home/oracle/ASSET/history.sqlite3` archives bind to their control
 home automatically; `--control-home /absolute/home` makes that binding explicit.
 Tools, resources, subscriptions and advisory veto use the same operator selection.
 Missing required selection adapters fail unavailable. Forecasts, resolutions and
-the four-file engine policy identity remain unchanged. See
+recorded policy identities remain bound to their original archive. Current
+evaluator source changes establish a new identity and require a new archive for
+writing. Existing pinned installations and archived evidence retain their original
+source identity. A writer refuses an incompatible policy before schema migration;
+an archive that lost its policy cannot acquire a new identity over existing data. See
 `docs/ECOSYSTEM-CONTROL-ROOM.md` for current operating commands and scope.
 
 ## TradingView → Jupiter ZEC perpetuals

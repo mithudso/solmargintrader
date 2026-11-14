@@ -1,6 +1,6 @@
 #!/bin/zsh
 # Run the liquidity daemon as a per-user launchd agent.
-#   aero-lp-service install [--dry-run]   write the plist and start it (live unless --dry-run)
+#   aero-lp-service install [--live]      write the plist and start it (dry-run unless --live)
 #   aero-lp-service uninstall             stop it and remove the plist
 #   aero-lp-service status | logs         launchctl state / tail the log
 #   aero-lp-service kill | resume         pause on-chain actions (KILL file) / resume them
@@ -18,10 +18,17 @@ DOMAIN="gui/$(id -u)"
 
 case "${1:-}" in
   install)
+    [[ $# -le 2 && ( -z "${2:-}" || "${2:-}" == "--dry-run" || "${2:-}" == "--live" ) ]] || {
+      echo "usage: $0 install [--dry-run|--live]" >&2; exit 2;
+    }
     [[ -x "$BIN" ]] || { echo "missing $BIN — run: cd $LIQ && uv sync --extra dev -p 3.13"; exit 1; }
     [[ -f "$CONFIG" ]] || { echo "missing $CONFIG — copy $LIQ/config.example.toml there and edit it"; exit 1; }
-    mode_args="<string>--live</string>"
-    [[ "${2:-}" == "--dry-run" ]] && mode_args=""
+    mode_args=""
+    mode_label="dry-run"
+    if [[ "${2:-}" == "--live" ]]; then
+      mode_args="<string>--live</string>"
+      mode_label="live"
+    fi
     mkdir -p "$LP_HOME" "${PLIST:h}"
     cat > "$PLIST" <<PL
 <?xml version="1.0" encoding="UTF-8"?>
@@ -44,7 +51,7 @@ case "${1:-}" in
 PL
     launchctl bootout "$DOMAIN/$LABEL" 2>/dev/null || true
     launchctl bootstrap "$DOMAIN" "$PLIST"
-    echo "started $LABEL (${mode_args:+live}${mode_args:-dry-run}); log: $LP_HOME/daemon.log"
+    echo "started $LABEL ($mode_label); log: $LP_HOME/daemon.log"
     ;;
   uninstall)
     launchctl bootout "$DOMAIN/$LABEL" 2>/dev/null || true

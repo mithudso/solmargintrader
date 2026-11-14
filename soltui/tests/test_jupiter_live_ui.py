@@ -10,12 +10,14 @@ from pathlib import Path
 from unittest import mock
 
 from textual.widgets import Select, Sparkline
+from soltui.tests.test_tui import offline_console_reads
 from soltui.tests.test_tui import TEST_SIZE, make_settings, text_of
 from soltui.tui import SolTuiApp
 
 
 class JupiterLiveUI(unittest.IsolatedAsyncioTestCase):
     def setUp(self):
+        self.enterContext(offline_console_reads())
         temporary = tempfile.TemporaryDirectory()
         self.addCleanup(temporary.cleanup)
         patch = mock.patch('soltui.config.CONFIG_DIR', Path(temporary.name))

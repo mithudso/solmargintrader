@@ -30,6 +30,7 @@ REPO = Path(__file__).resolve().parent.parent
 if str(REPO) not in sys.path:
     sys.path.insert(0, str(REPO))
 
+from backtester.core.data import validate_bars
 from backtester.core.types import INTERVAL_SECONDS  # noqa: E402
 
 # Prices are compared absolutely; volume relatively. A 0.01 difference in a
@@ -42,6 +43,17 @@ VOLUME_REL_TOL = 1e-9
 def compare(fine: pd.DataFrame, coarse: pd.DataFrame, coarse_seconds: int,
             fine_seconds: int) -> dict:
     """Aggregate `fine` up to `coarse`'s interval and diff the complete bars."""
+    intervals = {seconds: name for name, seconds in INTERVAL_SECONDS.items()}
+    if (fine_seconds not in intervals or coarse_seconds not in intervals
+            or coarse_seconds < fine_seconds or coarse_seconds % fine_seconds):
+        raise ValueError("coarse interval must be a whole multiple of a known fine interval")
+    if fine.empty or coarse.empty:
+        return {"compared": 0, "incomplete": 0, "fields": {}, "worst": []}
+    fine = validate_bars(fine, intervals[fine_seconds], strict_gaps=False)
+    coarse = validate_bars(coarse, intervals[coarse_seconds], strict_gaps=False)
+    if any((frame.timestamp % seconds != 0).any()
+           for frame, seconds in ((fine, fine_seconds), (coarse, coarse_seconds))):
+        raise ValueError("candle timestamp is not aligned to its declared interval")
     expected = coarse_seconds // fine_seconds
     f = fine.assign(b=(fine["timestamp"] // coarse_seconds).astype("int64") * coarse_seconds)
     agg = f.groupby("b").agg(

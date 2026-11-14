@@ -1,0 +1,310 @@
+{
+  "agent": "liquidity_blind_acceptance",
+  "definition_version": "2.0.0",
+  "status": "partial",
+  "acceptance_status": "pass",
+  "profile": "default",
+  "mode": "report",
+  "repo": "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112",
+  "observed_at": "2026-11-12T17:43:52.408871+00:00",
+  "baseline_HEAD": "9f78bd659b09d31d6e568e67da4cb2de3b966bb6",
+  "reviewed_current_diff_sha256": "8e65edb3ca90e1d8fc2978840d76e08144eaf89f47cbe58a2e9bc72a5b0aacd8",
+  "scope": "Final bounded independent acceptance of LB-1 cancellation and LB-2 conversion fixes plus original eight positive controls. Partial component coverage; not a new whole-component audit or live qualification.",
+  "independence": "Original counterexamples and positive-control helpers were written before author fixes. Final expected safety assertions and extra independent fake-provider/journal cases were written before reading author regression-test bodies. Author findings or review reports were not consulted. Author test bodies were then inspected read-only; no author tests were executed by this reviewer.",
+  "source_bindings": [
+    {
+      "path": "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/liquidity/src/aero_lp/executor.py",
+      "sha256": "9571a7c6937cb0c00ef9a8105197c9771e4fa19715807e952cdbbd83ae7eb8be",
+      "read_line_ranges": [
+        [
+          285,
+          405
+        ]
+      ],
+      "observed_at": "2026-11-12T17:43:52.408871+00:00"
+    },
+    {
+      "path": "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/liquidity/src/aero_lp/submissions.py",
+      "sha256": "4981411383ed118d075a3752843ecc548e2368f4524e54dfc197f59d5846a2e4",
+      "read_line_ranges": [
+        [
+          1,
+          260
+        ]
+      ],
+      "observed_at": "2026-11-12T17:43:52.408871+00:00"
+    },
+    {
+      "path": "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/liquidity/src/aero_lp/safe_exit.py",
+      "sha256": "a82edafff921cb7891ced68e767658c01343e98ad3056f27d79a7da6dd98f718",
+      "read_line_ranges": [
+        [
+          105,
+          220
+        ],
+        [
+          295,
+          357
+        ]
+      ],
+      "observed_at": "2026-11-12T17:43:52.408871+00:00"
+    },
+    {
+      "path": "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/liquidity/tests/test_full_audit_regressions.py",
+      "sha256": "bffb534ecec1394ad27831f919f345973c02668a7436ae23ae5c2b12f5850454",
+      "read_line_ranges": [
+        [
+          1,
+          440
+        ]
+      ],
+      "observed_at": "2026-11-12T17:43:52.408871+00:00"
+    },
+    {
+      "path": "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/liquidity/src/aero_lp/engine.py",
+      "sha256": "f06c9d4f8e960edaa90e04297e362aac4110ec5ec9adf299233ff529fa86a46e",
+      "read_line_ranges": [
+        [
+          481,
+          529
+        ]
+      ],
+      "observed_at": "2026-11-12T17:43:52.408871+00:00"
+    }
+  ],
+  "findings": [],
+  "resolved_findings": [
+    {
+      "id": "LB-1",
+      "previous_severity": "High",
+      "status": "resolved",
+      "supported_claim": "Only synchronous final-gate refusal before any send attempt records a known-unsent tombstone. Hash, nonce, intent and group remain. No broadcast or nonce advance occurs. Reconciliation does not replay cancelled effects and permits the real Engine.withdraw entry point to proceed through fake transaction builders while task KILL remains set."
+    },
+    {
+      "id": "LB-2",
+      "previous_severity": "Medium",
+      "status": "resolved",
+      "supported_claim": "Exact Fraction comparison refuses both original finite-price overflow directions, ordinary 100:1 depeg inputs and tiny finite ratios. Valid same-price controls pass. Overflowed display valuation returns unknown."
+    }
+  ],
+  "verification": {
+    "command": "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=src:. /tmp/oraclebot-liquidity-audit-venv-20261112/bin/python /tmp/oraclebot_liquidity_independent_final_probe_20261112.py",
+    "cwd": "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/liquidity",
+    "actual_exit_code": 0,
+    "completed": true,
+    "independent_acceptance_groups": 14,
+    "network_attempts": [],
+    "real_keys_loaded": 0,
+    "real_signatures": 0,
+    "actual_broadcasts": 0,
+    "probe": "/tmp/oraclebot_liquidity_independent_final_probe_20261112.py",
+    "probe_sha256": "281d24400c737a7f72531d1d86093bb72cd92970a4766dcdc32c54d51b0c3447",
+    "log": "/tmp/oraclebot-liquidity-independent-final-probes-20261112.log",
+    "observations": [
+      {
+        "name": "original_positive_kill_before_sign_and_allowed_send_control",
+        "pass": true,
+        "detail": {
+          "stopped_before_sign_at_checks": [
+            1,
+            2
+          ],
+          "positive_control_sends": 1
+        }
+      },
+      {
+        "name": "original_positive_ambiguous_send_no_retry",
+        "pass": true,
+        "detail": {
+          "sends": 1,
+          "journal_hash": "0xaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+        }
+      },
+      {
+        "name": "original_positive_emergency_engine_no_daemon_gate",
+        "pass": true,
+        "detail": {
+          "emergency_engine_callback_succeeds_with_task_KILL": true
+        }
+      },
+      {
+        "name": "original_positive_cli_KILL_precedes_engine_and_signer",
+        "pass": true,
+        "detail": {
+          "return_code": 3,
+          "engine_and_signer_accesses": 0
+        }
+      },
+      {
+        "name": "original_positive_observed_depeg_prices",
+        "pass": true,
+        "detail": {
+          "gecko_depeg": 0.81,
+          "llama_depeg": 0.73,
+          "invalid_quotes_omitted": true,
+          "missing_stable_is_unavailable": true
+        }
+      },
+      {
+        "name": "original_positive_strategy_refusals",
+        "pass": true,
+        "detail": {
+          "invalid_constructor_cases": 10,
+          "overflow_refused": true,
+          "positive_decision": "rebalance"
+        }
+      },
+      {
+        "name": "original_positive_v3_fallback",
+        "pass": true,
+        "detail": {
+          "fallback_call_count": 2,
+          "all_optional_functions_encodable": true,
+          "block_preserved": 9
+        }
+      },
+      {
+        "name": "original_positive_configured_report_bar",
+        "pass": true,
+        "detail": {
+          "reported_bar": "12.5%"
+        }
+      },
+      {
+        "name": "original_cancellation_counterexample_now_safely_tombstoned",
+        "pass": true,
+        "detail": {
+          "known_unsent_tombstone_retained": true,
+          "broadcast_attempts": 0,
+          "nonce_not_advanced": true,
+          "cancelled_effects_replayed": 0,
+          "repeated_reconcile_succeeds": true
+        }
+      },
+      {
+        "name": "failed_cancellation_persistence_remains_blocked",
+        "pass": true,
+        "detail": {
+          "uncertainty_retained": true,
+          "durable_block_retained": true,
+          "broadcast_attempts": 0
+        }
+      },
+      {
+        "name": "actual_ambiguous_send_and_crash_never_cancel",
+        "pass": true,
+        "detail": {
+          "ambiguous_broadcast_attempts": 1,
+          "ambiguous_cancellations": 0,
+          "postpersist_crash_not_cancelled": true
+        }
+      },
+      {
+        "name": "only_exact_intent_cancelled_and_no_cancelled_effect_replay",
+        "pass": true,
+        "detail": {
+          "wrong_group_rejected": true,
+          "wrong_hash_rejected": true,
+          "confirmed_receipt_cannot_cancel": true,
+          "cancelled_group_member_excluded": true,
+          "actual_receipt_applied_once": true
+        }
+      },
+      {
+        "name": "emergency_withdraw_after_known_cancel_with_KILL_set",
+        "pass": true,
+        "detail": {
+          "real_engine_withdraw_reconciles_cancel_then_sends_via_fake_runner": true,
+          "simulated_transaction_builder_only": true,
+          "fake_emergency_send_count": 1,
+          "task_KILL_remains_set": true
+        }
+      },
+      {
+        "name": "original_conversion_counterexample_both_directions_plus_depeg_controls",
+        "pass": true,
+        "detail": {
+          "directional_price_cases": [
+            {
+              "reverse": false,
+              "input_price": 100.0,
+              "output_price": 100.0,
+              "allowed": true
+            },
+            {
+              "reverse": false,
+              "input_price": 100.0,
+              "output_price": 1.0,
+              "allowed": false
+            },
+            {
+              "reverse": false,
+              "input_price": 1e+308,
+              "output_price": 1e+306,
+              "allowed": false
+            },
+            {
+              "reverse": false,
+              "input_price": 1e-300,
+              "output_price": 1e-302,
+              "allowed": false
+            },
+            {
+              "reverse": false,
+              "input_price": 1e+308,
+              "output_price": 1e+308,
+              "allowed": true
+            },
+            {
+              "reverse": true,
+              "input_price": 100.0,
+              "output_price": 100.0,
+              "allowed": true
+            },
+            {
+              "reverse": true,
+              "input_price": 100.0,
+              "output_price": 1.0,
+              "allowed": false
+            },
+            {
+              "reverse": true,
+              "input_price": 1e+308,
+              "output_price": 1e+306,
+              "allowed": false
+            },
+            {
+              "reverse": true,
+              "input_price": 1e-300,
+              "output_price": 1e-302,
+              "allowed": false
+            },
+            {
+              "reverse": true,
+              "input_price": 1e+308,
+              "output_price": 1e+308,
+              "allowed": true
+            }
+          ],
+          "invalid_quotes_refused": 6,
+          "overflow_display_is_unknown": true,
+          "normal_display_control": 2
+        }
+      }
+    ]
+  },
+  "limits": [
+    "All transaction signs and send methods are fake memory methods. No RPC/HTTP requests, real keys, owner config/state/PIDs, services, collectors, inference/indexing or real venue actions.",
+    "The emergency withdrawal case exercises actual Engine.withdraw and LiveRunner through fake chain methods and a substituted Rebalancer transaction builder, so it proves the journal/gate boundary rather than actual contract withdrawal.",
+    "No repository files edited; no staging, commits, pushes or merges.",
+    "Source hashes bind identity only; explicitly listed line ranges describe this final recheck. Earlier bounded review is preserved at /tmp/oraclebot-liquidity-independent-review-20261112.json.",
+    "Full suite and live venue qualification are outside this independent acceptance scope."
+  ],
+  "remaining": [],
+  "files_created": [
+    "/tmp/oraclebot_liquidity_independent_final_probe_20261112.py",
+    "/tmp/oraclebot-liquidity-independent-final-probes-20261112.json",
+    "/tmp/oraclebot-liquidity-independent-final-probes-20261112.log",
+    "/tmp/oraclebot-liquidity-independent-final-20261112.json"
+  ]
+}

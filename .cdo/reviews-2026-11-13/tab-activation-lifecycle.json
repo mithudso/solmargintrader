@@ -1,0 +1,358 @@
+{
+  "version": "1.0.0",
+  "observed_at": "2026-11-13T07:24:48.864524+00:00",
+  "status": "CURRENT_SOURCE_DELTA_REVIEW_AND_FOCUSED_GATES_COMPLETE_FINAL_CI_PENDING",
+  "source_delta": {
+    "version": "1.0.0",
+    "observed_at": "2026-11-13T07:19:36.787448+00:00",
+    "scope": "Narrow lifecycle admission in _populate_on_first_view plus one deterministic actual-shutdown regression. No other source behavior or inherited assertions change.",
+    "trigger": "Queued TabActivated during App._shutdown after _running becomesFalse and wallet control removal; exact NoMatchescoinbase-order-armed reproduced on originalsource.",
+    "source_files": [
+      {
+        "path": "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/soltui/tui.py",
+        "baseline_git_blob": "713c68567ed335f1fc0974957a27694f652e3a4a",
+        "baseline_sha256": "ac809f181bbcde2a07b434caf0fe6384ed6dc5ff996b7bbbce981a4584475e58",
+        "source_sha256": "379171d788d3375d8a141bb18820db6aa7401a057588981ae4f3462e196f94d0",
+        "source_git_blob": "08189ff6be744d8a032ba83dc6d0f9a6ae7f7e34",
+        "lines_before": 8295,
+        "lines_after": 8299,
+        "inverse_restores_entire_baseline_bytes": true,
+        "inverse_restores_entire_baseline_ast": true
+      },
+      {
+        "path": "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/soltui/tests/test_advanced_order_ui.py",
+        "baseline_git_blob": "9ba03ef9892554956fa4f8ddf8b14b2781153f6b",
+        "baseline_sha256": "d3c9abdb77a289f54e456bdc9256b2f403ce21eb46d1b245e85221b873362b6b",
+        "source_sha256": "d8a47c1da4ecaa2ec847a554cad6b61ac233a9ea8bafb3a0ec4a2d368a642e5a",
+        "source_git_blob": "2f8a8f2b28c9961bf274ccc57ebe13b55052c992",
+        "lines_before": 352,
+        "lines_after": 397,
+        "inverse_restores_entire_baseline_bytes": true,
+        "inverse_restores_entire_baseline_ast": true
+      }
+    ],
+    "added_tests": 1,
+    "test_targets": [
+      "soltui.tests.test_advanced_order_ui.AdvancedOrderUiTests.test_queued_tab_activation_during_shutdown_starts_no_work",
+      "soltui.tests.test_advanced_order_ui.AdvancedOrderUiTests.test_timestamped_context_uses_matching_prices_and_recorded_ranked_forecasts",
+      "soltui.tests.test_advanced_order_ui"
+    ],
+    "actual_parent_red_receipt": "/tmp/oraclebot-final-delivery-20261112/tab-lifecycle-red-receipt.json",
+    "actual_parent_red_receipt_sha256": "bfdcfc16a0e1b4f87bf9826f61e290a5865e05786af0b91ede05576ec9b5ed43",
+    "framework_source": {
+      "root": "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/.venv/lib/python3.13/site-packages/textual",
+      "app_shutdown": "_shutdown sets _running=False before _close_all; on_unmount followsallDOMclosure.",
+      "run_test": "run_test finally calls _shutdown; __aexit__ propagation is later than the failing handler.",
+      "is_running": "Public MessagePump.is_running returns _running; true during app event processing, false during widget teardown."
+    },
+    "review": "Complete smalldelta reviewed. Original fullTUI/test review can be inherited only after exact matched baseline plusinverse proofs; root owns freshGREEN/fullmodule and finalCDOrecording.",
+    "unverified": [
+      "Current-source behavioralGREEN",
+      "Fresh fullmodule result",
+      "Installed/deployed behavior and future finalCI"
+    ],
+    "static_checks": {
+      "ast_parse_exit": 0,
+      "git_diff_check_exit": 0,
+      "lint_baseline_comparison": "/tmp/oraclebot-textual-shutdown-20261113/lint-baseline-comparison.json",
+      "lint_baseline_comparison_sha256": "cfbf46e92da20e5fce3c9d7ff797a012c582c8fd25c2416f66144c5324b8665f",
+      "legacy_tui_lint_current_exit": 1,
+      "legacy_tui_lint_baseline_exit": 1,
+      "legacy_tui_diagnostics": 38,
+      "new_or_changed_lint_diagnostics": 0,
+      "test_file_lint_exit": 0
+    },
+    "inherited_review_bindings": {
+      "soltui/tui.py": {
+        "evidence": ".cdo/reviews-2026-11-12/soltui-worker.json",
+        "exact_recorded_baseline_blob": "713c68567ed335f1fc0974957a27694f652e3a4a"
+      },
+      "soltui/tests/test_advanced_order_ui.py": {
+        "evidence": ".cdo/reviews-2026-11-12/soltui-root-ui-tests.json",
+        "exact_recorded_baseline_blob": "9ba03ef9892554956fa4f8ddf8b14b2781153f6b"
+      }
+    },
+    "cause_qualification": "CI itself did not record is_running. Current source never removes or recomposes the ticket widgets; Textualrun_test shutdown removes them while appmessages mayremainqueued. The real-shutdown regression reproduces the exactCI NoMatches path and distinguishes runningeventadmission. No claim of unobserved liveinstallation is made."
+  },
+  "independent_review": {
+    "schema": "oraclebot-bounded-independent-review/v1",
+    "version": "1.0.0",
+    "reviewer": "/root/ci_tab_delta_review",
+    "observed_at": "2026-11-13T07:23:58.236173+00:00",
+    "status": "NO_FINDINGS_IN_REVIEWED_DELTA",
+    "scope": "Exactly four added production lifecycle lines and one complete45-line regression, compared independently to f7e8. No latest whole-file or whole-repository re-review claim.",
+    "source_files": [
+      {
+        "path": "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/soltui/tui.py",
+        "repo_relative": "soltui/tui.py",
+        "baseline_commit": "f7e8f79ef25b3babc2ae913e8f30bbeb51eb7031",
+        "baseline_git_blob": "713c68567ed335f1fc0974957a27694f652e3a4a",
+        "baseline_sha256": "ac809f181bbcde2a07b434caf0fe6384ed6dc5ff996b7bbbce981a4584475e58",
+        "current_sha256": "379171d788d3375d8a141bb18820db6aa7401a057588981ae4f3462e196f94d0",
+        "current_git_blob": "08189ff6be744d8a032ba83dc6d0f9a6ae7f7e34",
+        "baseline_lines": 8295,
+        "current_lines": 8299,
+        "added_lines": 4,
+        "current_added_range": [
+          5315,
+          5318
+        ],
+        "whole_byte_inverse_exact": true,
+        "whole_ast_inverse_exact": true,
+        "all_original_bytes_and_assertions_unchanged": true
+      },
+      {
+        "path": "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/soltui/tests/test_advanced_order_ui.py",
+        "repo_relative": "soltui/tests/test_advanced_order_ui.py",
+        "baseline_commit": "f7e8f79ef25b3babc2ae913e8f30bbeb51eb7031",
+        "baseline_git_blob": "9ba03ef9892554956fa4f8ddf8b14b2781153f6b",
+        "baseline_sha256": "d3c9abdb77a289f54e456bdc9256b2f403ce21eb46d1b245e85221b873362b6b",
+        "current_sha256": "d8a47c1da4ecaa2ec847a554cad6b61ac233a9ea8bafb3a0ec4a2d368a642e5a",
+        "current_git_blob": "2f8a8f2b28c9961bf274ccc57ebe13b55052c992",
+        "baseline_lines": 352,
+        "current_lines": 397,
+        "added_lines": 45,
+        "current_added_range": [
+          116,
+          160
+        ],
+        "whole_byte_inverse_exact": true,
+        "whole_ast_inverse_exact": true,
+        "all_original_bytes_and_assertions_unchanged": true
+      }
+    ],
+    "inheritance": [
+      {
+        "path": "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/.cdo/reviews-2026-11-12/soltui-worker.json",
+        "sha256": "06f3286bd637a1f06d60c28a7b93ee177145b31fa90d152670b5b8ab30b0b7db",
+        "baseline_matches": true,
+        "full_read_lineage": "Recorded original8282 lines plus final8295-line complete authored-delta review; exact final hash matches f7e8."
+      },
+      {
+        "path": "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/.cdo/reviews-2026-11-12/soltui-root-ui-tests.json",
+        "sha256": "e221084f21650b693a902ad3c4c1e7efe5e5cb258affcf32c32f7c1198ed0706",
+        "baseline_matches": true,
+        "full_read_lineage": "Recorded full349-line source plus exactly bound fixture delta to352; exact final hash matches f7e8."
+      }
+    ],
+    "framework_sources": [
+      {
+        "path": "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/.venv/lib/python3.13/site-packages/textual/app.py",
+        "sha256": "a1c04e978716b9e36a5e8c81876ac59e2038759c6cfaf92389c8a2a0917009dd"
+      },
+      {
+        "path": "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/.venv/lib/python3.13/site-packages/textual/message_pump.py",
+        "sha256": "b580554a43fdfd14e67cd2367f64d4c11e38f51c254894b1c5ef9aa0b95231a4"
+      }
+    ],
+    "lifecycle_proof": {
+      "startup": "App._process_messages sets _running=True before Load and run_process_messages Compose/Mount; normal mounted callback is admitted.",
+      "shutdown": "App._shutdown sets _running=False before awaiting _close_all and dispatches Unmount afterward.",
+      "public_property": "MessagePump.is_running returns _running.",
+      "conclusion": "The guard excludes shutdown/nonrunning activation without changing any running-path venue or economic logic."
+    },
+    "parent_red": {
+      "path": "/tmp/oraclebot-final-delivery-20261112/tab-lifecycle-red-receipt.json",
+      "sha256": "bfdcfc16a0e1b4f87bf9826f61e290a5865e05786af0b91ede05576ec9b5ed43",
+      "test_exit": 1,
+      "finalizer_exit": 1,
+      "tests": 1,
+      "error_count": 1,
+      "assertion_failures": 0,
+      "forbidden": 0,
+      "source_changed": [],
+      "exact_missing_widget_reproduced": true
+    },
+    "methods": {
+      "C1": {
+        "status": "ran-scoped",
+        "detail": "The early return precedes event DOM access, lazy-load flags and every pane read; running-path statements are byte-identical."
+      },
+      "C2": {
+        "status": "ran-scoped",
+        "detail": "Installed public MessagePump.is_running returns _running. App sets it true before Load/Compose/Mount and false before _close_all."
+      },
+      "C3": {
+        "status": "ran-scoped",
+        "detail": "Reviewed complete added regression: real shutdown boundary, removed checkbox, replayed real TabActivated objects, no state/work after stop, and both venue starts while running. Parent exact old-source RED is separately bound."
+      },
+      "S1": {
+        "status": "ran-scoped",
+        "detail": "No new credential, transport, owner, signing or registry authority. Nonrunning events can no longer start reads."
+      },
+      "S2": {
+        "status": "ran-scoped",
+        "detail": "Test awaits original_close_all in finally even if an assertion or old handler raises. The context patch restores the original instance attribute afterward."
+      },
+      "S3": {
+        "status": "ran-scoped",
+        "detail": "Admission uses the actual app lifecycle rather than guessed DOM completeness. No financial amount, price, signature or submit validation changes."
+      },
+      "S4": {
+        "status": "ran-scoped",
+        "detail": "Verified exact installed framework lifecycle source; public production property only. Test intentionally pins the private real _close_all shutdown boundary."
+      },
+      "S5": {
+        "status": "ran-scoped",
+        "detail": "No exception catch or suppression is added; failures while the app runs remain observable."
+      },
+      "P1": {
+        "status": "ran-scoped",
+        "detail": "Constant-time property/branch; no timer, polling, sleep or dependency added."
+      },
+      "P2": {
+        "status": "ran-scoped",
+        "detail": "Handler refuses all tab work after app stop before any mutable lazy state or worker admission."
+      },
+      "M1": {
+        "status": "ran-scoped",
+        "detail": "Four local lines explain lifecycle intent; no broad rewrite."
+      },
+      "M2": {
+        "status": "ran-scoped",
+        "detail": "Uses existing public lifecycle state; no parallel teardown flag or venue-specific duplicate guards."
+      },
+      "M3": {
+        "status": "not-applicable-to-this-delta",
+        "detail": "No repository-wide architecture conclusion; parent global qualifications remain."
+      },
+      "M4": {
+        "status": "ran-scoped",
+        "detail": "Comment matches exact shutdown order: _close_all runs before Unmount."
+      },
+      "M5": {
+        "status": "qualified",
+        "detail": "Exact local installed framework inspected; this review does not qualify another installation, future dependency version or final CI."
+      },
+      "T1": {
+        "status": "ran-scoped-source-review",
+        "detail": "Original test file AST/bytes are unchanged except one added async case. No runtime test executed by this reviewer; GREEN/module/CI belong to root."
+      },
+      "T2": {
+        "status": "not-applicable-to-this-delta",
+        "detail": "No dependency or lockfile change in the two reviewed paths."
+      },
+      "T3": {
+        "status": "not-applicable-to-this-delta",
+        "detail": "No tooling/CI change in scope. Root retains required final checks."
+      },
+      "T4": {
+        "status": "qualified",
+        "detail": "No global suite-performance/equivalence claim; one added test only."
+      }
+    },
+    "findings": [],
+    "added_test_cases": 1,
+    "limits": [
+      "No tests, app imports, services, owner actions, Git mutations or source edits performed by this reviewer.",
+      "Regression invokes the same callback directly with actual TabActivated objects at real shutdown; it does not depend on nondeterministic queue timing.",
+      "Runtime GREEN, complete affected module, final CI and installed behavior remain root-owned gates.",
+      "Existing global M3/M5/T4 qualifications are not cleared by this review."
+    ]
+  },
+  "lint_baseline_comparison": {
+    "version": "1.0.0",
+    "observed_at": "2026-11-13T07:20:31.132341+00:00",
+    "checks": [
+      {
+        "path": "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/soltui/tui.py",
+        "baseline_exit": 1,
+        "current_exit": 1,
+        "baseline_diagnostics": 38,
+        "current_diagnostics": 38,
+        "new_or_changed_diagnostics": 0
+      },
+      {
+        "path": "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/soltui/tests/test_advanced_order_ui.py",
+        "baseline_exit": 0,
+        "current_exit": 0,
+        "baseline_diagnostics": 0,
+        "current_diagnostics": 0,
+        "new_or_changed_diagnostics": 0
+      }
+    ],
+    "qualification": "Full legacyRuff lint remains failing. Exact newdelta adds no diagnostics; none were suppressed or repaired outside scope."
+  },
+  "actual_guarded_gates": {
+    "red": {
+      "phase": "red",
+      "run_id": "tab-lifecycle-red-074e30369b31429885a19e396e91ba47",
+      "base": "/tmp/oraclebot-ci-tab-lifecycle-ur_8voeq",
+      "command": [
+        "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/.venv/bin/python",
+        "/tmp/oraclebot-ci-tab-lifecycle-ur_8voeq/run_suite.py",
+        "soltui.tests.test_advanced_order_ui.AdvancedOrderUiTests.test_queued_tab_activation_during_shutdown_starts_no_work"
+      ],
+      "test_exit": 1,
+      "finalizer_exit": 1,
+      "seconds": 6.05575320799835,
+      "log": "/tmp/oraclebot-ci-tab-lifecycle-ur_8voeq/red.log",
+      "result": "/tmp/oraclebot-ci-tab-lifecycle-ur_8voeq/runs/tab-lifecycle-red-074e30369b31429885a19e396e91ba47/result.json",
+      "final_receipt": "/tmp/oraclebot-ci-tab-lifecycle-ur_8voeq/runs/tab-lifecycle-red-074e30369b31429885a19e396e91ba47/final-receipt.json",
+      "tests": 1,
+      "errors": [
+        {
+          "test": "soltui.tests.test_advanced_order_ui.AdvancedOrderUiTests.test_queued_tab_activation_during_shutdown_starts_no_work",
+          "traceback": "Traceback (most recent call last):\n  File \"/opt/homebrew/Cellar/python@3.13/3.13.18/Frameworks/Python.framework/Versions/3.13/lib/python3.13/asyncio/runners.py\", line 119, in run\n    return self._loop.run_until_complete(task)\n           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^\n  File \"/opt/homebrew/Cellar/python@3.13/3.13.18/Frameworks/Python.framework/Versions/3.13/lib/python3.13/asyncio/base_events.py\", line 726, in run_until_complete\n    return future.result()\n           ~~~~~~~~~~~~~^^\n  File \"/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/soltui/tests/test_advanced_order_ui.py\", line 149, in test_queued_tab_activation_during_shutdown_starts_no_work\n    async with app.run_test(size=TEST_SIZE):\n               ~~~~~~~~~~~~^^^^^^^^^^^^^^^^\n  File \"/opt/homebrew/Cellar/python@3.13/3.13.18/Frameworks/Python.framework/Versions/3.13/lib/python3.13/contextlib.py\", line 221, in __aexit__\n    await anext(self.gen)\n  File \"/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/.venv/lib/python3.13/site-packages/textual/app.py\", line 2214, in run_test\n    await app._shutdown()\n  File \"/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/.venv/lib/python3.13/site-packages/textual/app.py\", line 3744, in _shutdown\n    await self._close_all()\n  File \"/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/soltui/tests/test_advanced_order_ui.py\", line 136, in close_all\n    app._populate_on_first_view(activation)\n    ~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^\n  File \"/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/soltui/tui.py\", line 5338, in _populate_on_first_view\n    self._coinbase_order_state_start()\n    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^\n  File \"/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/soltui/tui.py\", line 6348, in _coinbase_order_state_start\n    self.query_one(\"#coinbase-order-armed\", Checkbox).value = False\n    ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/.venv/lib/python3.13/site-packages/textual/dom.py\", line 1505, in query_one\n    raise NoMatches(f\"No nodes match {query_selector!r} on {base_node!r}\")\ntextual.css.query.NoMatches: No nodes match '#coinbase-order-armed' on Screen(id='_default', classes='v2')\n"
+        }
+      ],
+      "failures": [],
+      "forbidden": 0,
+      "source_changed": [],
+      "tui_sha256": "ac809f181bbcde2a07b434caf0fe6384ed6dc5ff996b7bbbce981a4584475e58",
+      "test_sha256": "d8a47c1da4ecaa2ec847a554cad6b61ac233a9ea8bafb3a0ec4a2d368a642e5a"
+    },
+    "green": {
+      "phase": "green",
+      "run_id": "tab-lifecycle-green-49b2dea9b0934e57ae435164ed8909e8",
+      "base": "/tmp/oraclebot-ci-tab-lifecycle-ur_8voeq",
+      "command": [
+        "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/.venv/bin/python",
+        "/tmp/oraclebot-ci-tab-lifecycle-ur_8voeq/run_suite.py",
+        "soltui.tests.test_advanced_order_ui.AdvancedOrderUiTests.test_queued_tab_activation_during_shutdown_starts_no_work"
+      ],
+      "test_exit": 0,
+      "finalizer_exit": 0,
+      "seconds": 6.416558917000657,
+      "log": "/tmp/oraclebot-ci-tab-lifecycle-ur_8voeq/green.log",
+      "result": "/tmp/oraclebot-ci-tab-lifecycle-ur_8voeq/runs/tab-lifecycle-green-49b2dea9b0934e57ae435164ed8909e8/result.json",
+      "final_receipt": "/tmp/oraclebot-ci-tab-lifecycle-ur_8voeq/runs/tab-lifecycle-green-49b2dea9b0934e57ae435164ed8909e8/final-receipt.json",
+      "tests": 1,
+      "errors": [],
+      "failures": [],
+      "forbidden": 0,
+      "source_changed": [],
+      "tui_sha256": "379171d788d3375d8a141bb18820db6aa7401a057588981ae4f3462e196f94d0",
+      "test_sha256": "d8a47c1da4ecaa2ec847a554cad6b61ac233a9ea8bafb3a0ec4a2d368a642e5a"
+    },
+    "module": {
+      "phase": "module",
+      "run_id": "tab-lifecycle-module-1eabb97382f44b1a8c4d8e766e710913",
+      "base": "/tmp/oraclebot-ci-tab-lifecycle-ur_8voeq",
+      "command": [
+        "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/.venv/bin/python",
+        "/tmp/oraclebot-ci-tab-lifecycle-ur_8voeq/run_suite.py",
+        "soltui.tests.test_advanced_order_ui"
+      ],
+      "test_exit": 0,
+      "finalizer_exit": 0,
+      "seconds": 85.67918574999203,
+      "log": "/tmp/oraclebot-ci-tab-lifecycle-ur_8voeq/module.log",
+      "result": "/tmp/oraclebot-ci-tab-lifecycle-ur_8voeq/runs/tab-lifecycle-module-1eabb97382f44b1a8c4d8e766e710913/result.json",
+      "final_receipt": "/tmp/oraclebot-ci-tab-lifecycle-ur_8voeq/runs/tab-lifecycle-module-1eabb97382f44b1a8c4d8e766e710913/final-receipt.json",
+      "tests": 10,
+      "errors": [],
+      "failures": [],
+      "forbidden": 0,
+      "source_changed": [],
+      "tui_sha256": "379171d788d3375d8a141bb18820db6aa7401a057588981ae4f3462e196f94d0",
+      "test_sha256": "d8a47c1da4ecaa2ec847a554cad6b61ac233a9ea8bafb3a0ec4a2d368a642e5a"
+    }
+  },
+  "qualifications": [
+    "Original complete file reviews are inherited only through exact byte/AST inverse proofs. The complete unchanged rest of each file was not redisplayed here.",
+    "Installed framework source proves a matching shutdown boundary and deterministic regression. The failed GitHub job did not record its is_running flag; no direct observation of that flag is invented.",
+    "Legacy TUI Ruff exits1 with38unchanged diagnostics; no new diagnostics. Test-file Ruff0. Required CI gates remain mandatory.",
+    "Global M3/M5/T4 qualifications remain. Website/public source bytes unchanged. Current canonical1564is discovery, not a fresh1564full-suitepass."
+  ]
+}

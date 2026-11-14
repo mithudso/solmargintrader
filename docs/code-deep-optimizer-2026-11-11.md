@@ -80,3 +80,7 @@ Keep source fixes separate from the immutable numerical versions used by active
 paper cohorts. Do not reprice prior studies, mine protected outcomes, restart
 production owners, reset experiments, arm services, fund accounts or place
 orders. Existing worktrees and safety defaults remain preserved.
+
+## Conflict-only integration, 2026-11-14
+
+The branch now includes current master. Its original ledger is preserved exactly in `.cdo/checkpoints/pr226-20261114-ledger.json`. The canonical `.cdo/ledger.json` follows master’s later work. These historical read receipts retain their original source hashes and limits; this integration does not renew their validity or complete the audit.

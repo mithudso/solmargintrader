@@ -1,0 +1,1417 @@
+{
+  "schema": 1,
+  "reviewer": "/root/full_repo_health",
+  "observed_at": "2026-11-12T17:58:31.933844+00:00",
+  "status": "complete assigned semantic reads and bounded corrections; shared transport/final integrated suite/auto-environment dispositions explicit",
+  "files": [
+    {
+      "path": "soltui/analyze.py",
+      "blob_sha": "a0f9d2686d59b6ceee6cc64b15a8b7f3339a84b3",
+      "sha256": "bc43866865b04ea3f6b9d8875c4cc567fa3aa785ca47e5722c29f4ea7fc12c9c",
+      "lines": 273,
+      "original_sha256": "9686e247352178f5a26fda4303d216989c9d3b26ca434566c4921b880e9104af",
+      "original_lines": 273,
+      "original_read_ranges": [
+        [
+          1,
+          273
+        ]
+      ],
+      "read_evidence": "Causal slicing precedes stateful replay; headline first close now comes from exact replayed array, not a separate mutable CSV read. Complete original displayed reads plus complete authored/diff final change inspection; original hashes remain distinct.",
+      "final_read_basis": "full original ranges plus exact authored/diff delta; new files fully displayed after authorship",
+      "final_delta_ranges": [
+        {
+          "tag": "replace",
+          "original": [
+            248,
+            248
+          ],
+          "final": [
+            248,
+            248
+          ]
+        }
+      ],
+      "passes": {
+        "C1": "ran: Causal slicing precedes stateful replay; headline first close now comes from exact replayed array, not a separate mutable CSV read.",
+        "C2": "ran: inspected actual caller/data shapes and matching public/UI return conventions; preserved strategy/execution authority boundaries",
+        "C3": "ran: unavailable/malformed/nonfinite/duplicate/stale/partial input and failure branches reviewed against targeted negative and positive controls",
+        "S1": "ran: no target directives followed; source treated as data. Secret-safe fixed errors/CSV text and explicit wallet/signing separation checked",
+        "S2": "ran: SQLite/context managers, flock/file atomicity, sequential resource lifetime, timeout/cancellation and partial-result boundaries reviewed where applicable",
+        "S3": "ran: finite numbers/strict count and schema/owner/evidence-binding boundaries reviewed; grounded corrections tested",
+        "S4": "ran: Python3.13 qualified imports and actual declared runtime/NumPy/Textual contracts inspected; AST/syntax and affected suite verified",
+        "S5": "ran: structured returned unavailable/error/refusal and local state transitions inspected; pure computation has no external request logger",
+        "P1": "ran: bounded windows/candidate/row inputs and loops reviewed; no speculative strategy or runtime optimization",
+        "P2": "ran: process/SQLite/frozen-identity and concurrent read/async UI boundaries reviewed where applicable; no owner process state changed",
+        "M1": "ran: existing naming/thresholds retained; unrelated historical Ruff findings explicitly distinguished from changed code",
+        "M2": "ran: shared engine/data validators reused; CSV literal policy extracted once without requiring Textual in headless reports",
+        "M3": "N/A: repository-scope architecture row separate",
+        "M4": "ran: comments/public labels match actual paper/simulated/unavailable scope and finite/count corrections; no profitability or live-operation certification",
+        "T1": "ran: targeted meaningful failure/positive/log assertions; full range and authored delta evidence below, completed exits separately recorded",
+        "T2": "N/A: repository dependency/supply-chain row separate",
+        "T3": "N/A: repository tooling row separate",
+        "T4": "N/A: non-test source",
+        "M5": "N/A: imported library or conventional test module"
+      },
+      "verdict": "REVIEWED-FIXED",
+      "findings": []
+    },
+    {
+      "path": "soltui/coin_fit.py",
+      "blob_sha": "9685c9d82ce527bb3835be797ccdb486b1b8cd4f",
+      "sha256": "c24086d1b0889dc78b5e54a59a7b3884f582f4b5b04e89d6f0f49e5640fb4904",
+      "lines": 1388,
+      "original_sha256": "a6f0446f8ff9e5cb6c498c62623b0dde17b106c24f1970cafe699fbb3f49ebda",
+      "original_lines": 1384,
+      "original_read_ranges": [
+        [
+          1,
+          220
+        ],
+        [
+          221,
+          440
+        ],
+        [
+          441,
+          660
+        ],
+        [
+          661,
+          880
+        ],
+        [
+          881,
+          1100
+        ],
+        [
+          1101,
+          1320
+        ],
+        [
+          1321,
+          1384
+        ]
+      ],
+      "read_evidence": "Whole-hour cache aggregation/common windows, fixed-config quick/holdout separation and costs/reserve gates, deterministic identity/rows, cancellation and safe report/output boundaries; no empirical search performed. Complete original displayed reads plus complete authored/diff final change inspection; original hashes remain distinct.",
+      "final_read_basis": "full original ranges plus exact authored/diff delta; new files fully displayed after authorship",
+      "final_delta_ranges": [
+        {
+          "tag": "replace",
+          "original": [
+            28,
+            28
+          ],
+          "final": [
+            28,
+            28
+          ]
+        },
+        {
+          "tag": "insert",
+          "original": [
+            33,
+            32
+          ],
+          "final": [
+            33,
+            33
+          ]
+        },
+        {
+          "tag": "replace",
+          "original": [
+            81,
+            81
+          ],
+          "final": [
+            82,
+            82
+          ]
+        },
+        {
+          "tag": "replace",
+          "original": [
+            864,
+            864
+          ],
+          "final": [
+            865,
+            865
+          ]
+        },
+        {
+          "tag": "replace",
+          "original": [
+            913,
+            913
+          ],
+          "final": [
+            914,
+            914
+          ]
+        },
+        {
+          "tag": "replace",
+          "original": [
+            1096,
+            1096
+          ],
+          "final": [
+            1097,
+            1097
+          ]
+        },
+        {
+          "tag": "insert",
+          "original": [
+            1371,
+            1370
+          ],
+          "final": [
+            1372,
+            1374
+          ]
+        }
+      ],
+      "passes": {
+        "C1": "ran: Whole-hour cache aggregation/common windows, fixed-config quick/holdout separation and costs/reserve gates, deterministic identity/rows, cancellation and safe report/output boundaries; no empirical search performed.",
+        "C2": "ran: inspected actual caller/data shapes and matching public/UI return conventions; preserved strategy/execution authority boundaries",
+        "C3": "ran: unavailable/malformed/nonfinite/duplicate/stale/partial input and failure branches reviewed against targeted negative and positive controls",
+        "S1": "ran: no target directives followed; source treated as data. Secret-safe fixed errors/CSV text and explicit wallet/signing separation checked",
+        "S2": "ran: SQLite/context managers, flock/file atomicity, sequential resource lifetime, timeout/cancellation and partial-result boundaries reviewed where applicable",
+        "S3": "ran: finite numbers/strict count and schema/owner/evidence-binding boundaries reviewed; grounded corrections tested",
+        "S4": "ran: Python3.13 qualified imports and actual declared runtime/NumPy/Textual contracts inspected; AST/syntax and affected suite verified",
+        "S5": "ran: structured returned unavailable/error/refusal and local state transitions inspected; pure computation has no external request logger",
+        "P1": "ran: bounded windows/candidate/row inputs and loops reviewed; no speculative strategy or runtime optimization",
+        "P2": "ran: process/SQLite/frozen-identity and concurrent read/async UI boundaries reviewed where applicable; no owner process state changed",
+        "M1": "ran: existing naming/thresholds retained; unrelated historical Ruff findings explicitly distinguished from changed code",
+        "M2": "ran: shared engine/data validators reused; CSV literal policy extracted once without requiring Textual in headless reports",
+        "M3": "N/A: repository-scope architecture row separate",
+        "M4": "ran: comments/public labels match actual paper/simulated/unavailable scope and finite/count corrections; no profitability or live-operation certification",
+        "T1": "ran: targeted meaningful failure/positive/log assertions; full range and authored delta evidence below, completed exits separately recorded",
+        "T2": "N/A: repository dependency/supply-chain row separate",
+        "T3": "N/A: repository tooling row separate",
+        "T4": "N/A: non-test source",
+        "M5": "partial: runnable Python module requires installed SolTUI dependencies/own environment; shared canonical launcher contract reviewed separately"
+      },
+      "verdict": "PARTIAL-M5",
+      "findings": []
+    },
+    {
+      "path": "soltui/council.py",
+      "blob_sha": "00864753d21d1534109a4e9e7c71a66c8d24d7e7",
+      "sha256": "e3aac3388f0232a6ecc10477d62b453d19a500c8dfb498fa4332ad58b4b4f009",
+      "lines": 539,
+      "original_sha256": "e3aac3388f0232a6ecc10477d62b453d19a500c8dfb498fa4332ad58b4b4f009",
+      "original_lines": 539,
+      "original_read_ranges": [
+        [
+          1,
+          220
+        ],
+        [
+          221,
+          440
+        ],
+        [
+          441,
+          539
+        ]
+      ],
+      "read_evidence": "Durable paper-only flock owner, cooperative control and retained positions/pending decisions, current-vote/quote expiry, real future-open proxy fills and confidence/generation state. No worker launched or real Council state opened. Complete original displayed reads plus complete authored/diff final change inspection; original hashes remain distinct.",
+      "final_read_basis": "full displayed current source",
+      "final_delta_ranges": [],
+      "passes": {
+        "C1": "ran: Durable paper-only flock owner, cooperative control and retained positions/pending decisions, current-vote/quote expiry, real future-open proxy fills and confidence/generation state. No worker launched or real Council state opened.",
+        "C2": "ran: inspected actual caller/data shapes and matching public/UI return conventions; preserved strategy/execution authority boundaries",
+        "C3": "ran: unavailable/malformed/nonfinite/duplicate/stale/partial input and failure branches reviewed against targeted negative and positive controls",
+        "S1": "ran: no target directives followed; source treated as data. Secret-safe fixed errors/CSV text and explicit wallet/signing separation checked",
+        "S2": "ran: SQLite/context managers, flock/file atomicity, sequential resource lifetime, timeout/cancellation and partial-result boundaries reviewed where applicable",
+        "S3": "ran: finite numbers/strict count and schema/owner/evidence-binding boundaries reviewed; grounded corrections tested",
+        "S4": "ran: Python3.13 qualified imports and actual declared runtime/NumPy/Textual contracts inspected; AST/syntax and affected suite verified",
+        "S5": "partial: paper state/error transitions visible; dependency public-call logger changes belong to compound/live_price child receipt",
+        "P1": "ran: bounded windows/candidate/row inputs and loops reviewed; no speculative strategy or runtime optimization",
+        "P2": "ran: process/SQLite/frozen-identity and concurrent read/async UI boundaries reviewed where applicable; no owner process state changed",
+        "M1": "ran: existing naming/thresholds retained; unrelated historical Ruff findings explicitly distinguished from changed code",
+        "M2": "ran: shared engine/data validators reused; CSV literal policy extracted once without requiring Textual in headless reports",
+        "M3": "N/A: repository-scope architecture row separate",
+        "M4": "ran: comments/public labels match actual paper/simulated/unavailable scope and finite/count corrections; no profitability or live-operation certification",
+        "T1": "ran: targeted meaningful failure/positive/log assertions; full range and authored delta evidence below, completed exits separately recorded",
+        "T2": "N/A: repository dependency/supply-chain row separate",
+        "T3": "N/A: repository tooling row separate",
+        "T4": "N/A: non-test source",
+        "M5": "partial: runnable Python module requires installed SolTUI dependencies/own environment; shared canonical launcher contract reviewed separately"
+      },
+      "verdict": "PARTIAL-M5",
+      "findings": []
+    },
+    {
+      "path": "soltui/cumulative.py",
+      "blob_sha": "5f7bca7d0bd4b3c667686f75898602c39db91d6b",
+      "sha256": "76bae2ce591a953f6f26d441655305757be41344dd05ee5d969e4875632918e1",
+      "lines": 242,
+      "original_sha256": "aa004b9756a58f25232fa5fb270c40ba100b5541e4a5f78d182e87f8cf12946f",
+      "original_lines": 241,
+      "original_read_ranges": [
+        [
+          1,
+          241
+        ]
+      ],
+      "read_evidence": "Separate-file evidence summaries, ten-trade and path floors, finite statistics and whole counts; invalid rows remain visible and cannot win. Complete original displayed reads plus complete authored/diff final change inspection; original hashes remain distinct.",
+      "final_read_basis": "full original ranges plus exact authored/diff delta; new files fully displayed after authorship",
+      "final_delta_ranges": [
+        {
+          "tag": "insert",
+          "original": [
+            37,
+            36
+          ],
+          "final": [
+            37,
+            37
+          ]
+        },
+        {
+          "tag": "replace",
+          "original": [
+            76,
+            76
+          ],
+          "final": [
+            77,
+            77
+          ]
+        },
+        {
+          "tag": "replace",
+          "original": [
+            78,
+            78
+          ],
+          "final": [
+            79,
+            79
+          ]
+        },
+        {
+          "tag": "replace",
+          "original": [
+            83,
+            83
+          ],
+          "final": [
+            84,
+            84
+          ]
+        },
+        {
+          "tag": "replace",
+          "original": [
+            104,
+            107
+          ],
+          "final": [
+            105,
+            107
+          ]
+        },
+        {
+          "tag": "replace",
+          "original": [
+            109,
+            109
+          ],
+          "final": [
+            109,
+            110
+          ]
+        }
+      ],
+      "passes": {
+        "C1": "ran: Separate-file evidence summaries, ten-trade and path floors, finite statistics and whole counts; invalid rows remain visible and cannot win.",
+        "C2": "ran: inspected actual caller/data shapes and matching public/UI return conventions; preserved strategy/execution authority boundaries",
+        "C3": "ran: unavailable/malformed/nonfinite/duplicate/stale/partial input and failure branches reviewed against targeted negative and positive controls",
+        "S1": "ran: no target directives followed; source treated as data. Secret-safe fixed errors/CSV text and explicit wallet/signing separation checked",
+        "S2": "ran: SQLite/context managers, flock/file atomicity, sequential resource lifetime, timeout/cancellation and partial-result boundaries reviewed where applicable",
+        "S3": "ran: finite numbers/strict count and schema/owner/evidence-binding boundaries reviewed; grounded corrections tested",
+        "S4": "ran: Python3.13 qualified imports and actual declared runtime/NumPy/Textual contracts inspected; AST/syntax and affected suite verified",
+        "S5": "ran: structured returned unavailable/error/refusal and local state transitions inspected; pure computation has no external request logger",
+        "P1": "ran: bounded windows/candidate/row inputs and loops reviewed; no speculative strategy or runtime optimization",
+        "P2": "ran: process/SQLite/frozen-identity and concurrent read/async UI boundaries reviewed where applicable; no owner process state changed",
+        "M1": "ran: existing naming/thresholds retained; unrelated historical Ruff findings explicitly distinguished from changed code",
+        "M2": "ran: shared engine/data validators reused; CSV literal policy extracted once without requiring Textual in headless reports",
+        "M3": "N/A: repository-scope architecture row separate",
+        "M4": "ran: comments/public labels match actual paper/simulated/unavailable scope and finite/count corrections; no profitability or live-operation certification",
+        "T1": "ran: targeted meaningful failure/positive/log assertions; full range and authored delta evidence below, completed exits separately recorded",
+        "T2": "N/A: repository dependency/supply-chain row separate",
+        "T3": "N/A: repository tooling row separate",
+        "T4": "N/A: non-test source",
+        "M5": "N/A: imported library or conventional test module"
+      },
+      "verdict": "REVIEWED-FIXED",
+      "findings": []
+    },
+    {
+      "path": "soltui/eth_scan.py",
+      "blob_sha": "843245c6bd3396626b815bdd3436339d9c0502f6",
+      "sha256": "a2bcc98ed9d481deaddbf5dff271fa3347435f91a8aef0fe4fca8ad8651b6ecf",
+      "lines": 98,
+      "original_sha256": "a2bcc98ed9d481deaddbf5dff271fa3347435f91a8aef0fe4fca8ad8651b6ecf",
+      "original_lines": 98,
+      "original_read_ranges": [
+        [
+          1,
+          98
+        ]
+      ],
+      "read_evidence": "Read-only fixed well-known-token ABI calls, failover/partial discovery, exact wrapper pricing and unknown-price treatment; shared wallet transport logging belongs to child final receipt. Complete original displayed reads plus complete authored/diff final change inspection; original hashes remain distinct.",
+      "final_read_basis": "full displayed current source",
+      "final_delta_ranges": [],
+      "passes": {
+        "C1": "ran: Read-only fixed well-known-token ABI calls, failover/partial discovery, exact wrapper pricing and unknown-price treatment; shared wallet transport logging belongs to child final receipt.",
+        "C2": "ran: inspected actual caller/data shapes and matching public/UI return conventions; preserved strategy/execution authority boundaries",
+        "C3": "ran: unavailable/malformed/nonfinite/duplicate/stale/partial input and failure branches reviewed against targeted negative and positive controls",
+        "S1": "ran: no target directives followed; source treated as data. Secret-safe fixed errors/CSV text and explicit wallet/signing separation checked",
+        "S2": "ran: SQLite/context managers, flock/file atomicity, sequential resource lifetime, timeout/cancellation and partial-result boundaries reviewed where applicable",
+        "S3": "ran: finite numbers/strict count and schema/owner/evidence-binding boundaries reviewed; grounded corrections tested",
+        "S4": "ran: Python3.13 qualified imports and actual declared runtime/NumPy/Textual contracts inspected; AST/syntax and affected suite verified",
+        "S5": "partial: external reads use shared injected wallet HttpFetcher; common safe request/outcome changes are tested by child but final source receipt/hash not yet supplied",
+        "P1": "ran: bounded windows/candidate/row inputs and loops reviewed; no speculative strategy or runtime optimization",
+        "P2": "ran: process/SQLite/frozen-identity and concurrent read/async UI boundaries reviewed where applicable; no owner process state changed",
+        "M1": "ran: existing naming/thresholds retained; unrelated historical Ruff findings explicitly distinguished from changed code",
+        "M2": "ran: shared engine/data validators reused; CSV literal policy extracted once without requiring Textual in headless reports",
+        "M3": "N/A: repository-scope architecture row separate",
+        "M4": "ran: comments/public labels match actual paper/simulated/unavailable scope and finite/count corrections; no profitability or live-operation certification",
+        "T1": "ran: targeted meaningful failure/positive/log assertions; full range and authored delta evidence below, completed exits separately recorded",
+        "T2": "N/A: repository dependency/supply-chain row separate",
+        "T3": "N/A: repository tooling row separate",
+        "T4": "N/A: non-test source",
+        "M5": "N/A: imported library or conventional test module"
+      },
+      "verdict": "PARTIAL-S5",
+      "findings": []
+    },
+    {
+      "path": "soltui/live_score.py",
+      "blob_sha": "a4078d7e76df7f1a73d68ad8b523c8b74b75ffbc",
+      "sha256": "d5f8f9f3138e0f21f60171824adacf13b13dd185127a45c040a878e43deb90f8",
+      "lines": 131,
+      "original_sha256": "b750dca6c7e0453ccd4d643270e4ebfc77d4dd37ba82600eed001084e3b05991",
+      "original_lines": 128,
+      "original_read_ranges": [
+        [
+          1,
+          128
+        ]
+      ],
+      "read_evidence": "Latest-trial/horizon quality and issued/expiry binding, strict finite policy/clock and whole sample counts, equal-weight directional agreement distinct from profitability. Complete original displayed reads plus complete authored/diff final change inspection; original hashes remain distinct.",
+      "final_read_basis": "full original ranges plus exact authored/diff delta; new files fully displayed after authorship",
+      "final_delta_ranges": [
+        {
+          "tag": "replace",
+          "original": [
+            21,
+            21
+          ],
+          "final": [
+            21,
+            24
+          ]
+        },
+        {
+          "tag": "replace",
+          "original": [
+            27,
+            27
+          ],
+          "final": [
+            30,
+            30
+          ]
+        },
+        {
+          "tag": "replace",
+          "original": [
+            40,
+            40
+          ],
+          "final": [
+            43,
+            44
+          ]
+        },
+        {
+          "tag": "replace",
+          "original": [
+            51,
+            52
+          ],
+          "final": [
+            55,
+            55
+          ]
+        }
+      ],
+      "passes": {
+        "C1": "ran: Latest-trial/horizon quality and issued/expiry binding, strict finite policy/clock and whole sample counts, equal-weight directional agreement distinct from profitability.",
+        "C2": "ran: inspected actual caller/data shapes and matching public/UI return conventions; preserved strategy/execution authority boundaries",
+        "C3": "ran: unavailable/malformed/nonfinite/duplicate/stale/partial input and failure branches reviewed against targeted negative and positive controls",
+        "S1": "ran: no target directives followed; source treated as data. Secret-safe fixed errors/CSV text and explicit wallet/signing separation checked",
+        "S2": "ran: SQLite/context managers, flock/file atomicity, sequential resource lifetime, timeout/cancellation and partial-result boundaries reviewed where applicable",
+        "S3": "ran: finite numbers/strict count and schema/owner/evidence-binding boundaries reviewed; grounded corrections tested",
+        "S4": "ran: Python3.13 qualified imports and actual declared runtime/NumPy/Textual contracts inspected; AST/syntax and affected suite verified",
+        "S5": "ran: structured returned unavailable/error/refusal and local state transitions inspected; pure computation has no external request logger",
+        "P1": "ran: bounded windows/candidate/row inputs and loops reviewed; no speculative strategy or runtime optimization",
+        "P2": "ran: process/SQLite/frozen-identity and concurrent read/async UI boundaries reviewed where applicable; no owner process state changed",
+        "M1": "ran: existing naming/thresholds retained; unrelated historical Ruff findings explicitly distinguished from changed code",
+        "M2": "ran: shared engine/data validators reused; CSV literal policy extracted once without requiring Textual in headless reports",
+        "M3": "N/A: repository-scope architecture row separate",
+        "M4": "ran: comments/public labels match actual paper/simulated/unavailable scope and finite/count corrections; no profitability or live-operation certification",
+        "T1": "ran: targeted meaningful failure/positive/log assertions; full range and authored delta evidence below, completed exits separately recorded",
+        "T2": "N/A: repository dependency/supply-chain row separate",
+        "T3": "N/A: repository tooling row separate",
+        "T4": "N/A: non-test source",
+        "M5": "N/A: imported library or conventional test module"
+      },
+      "verdict": "REVIEWED-FIXED",
+      "findings": []
+    },
+    {
+      "path": "soltui/signals.py",
+      "blob_sha": "25a946c126b9974601558fa5d1558471a2731c09",
+      "sha256": "d1a7d4ef1a78b89241833e140fba05ba5143226b9b5f20e781186087a987020b",
+      "lines": 386,
+      "original_sha256": "3341ce36dcdcd328139dd6d1a4a9e9fb9a2ff90e832ccb5eb489fd987bd8aead",
+      "original_lines": 368,
+      "original_read_ranges": [
+        [
+          1,
+          220
+        ],
+        [
+          221,
+          368
+        ]
+      ],
+      "read_evidence": "Declared finite numeric and integral parameter types, constructor relationships, explicit-over-default merge and full registry/group mappings; no thresholds changed. Complete original displayed reads plus complete authored/diff final change inspection; original hashes remain distinct.",
+      "final_read_basis": "full original ranges plus exact authored/diff delta; new files fully displayed after authorship",
+      "final_delta_ranges": [
+        {
+          "tag": "insert",
+          "original": [
+            25,
+            24
+          ],
+          "final": [
+            25,
+            25
+          ]
+        },
+        {
+          "tag": "insert",
+          "original": [
+            26,
+            25
+          ],
+          "final": [
+            27,
+            27
+          ]
+        },
+        {
+          "tag": "insert",
+          "original": [
+            234,
+            233
+          ],
+          "final": [
+            236,
+            247
+          ]
+        },
+        {
+          "tag": "insert",
+          "original": [
+            362,
+            361
+          ],
+          "final": [
+            376,
+            379
+          ]
+        },
+        {
+          "tag": "replace",
+          "original": [
+            363,
+            363
+          ],
+          "final": [
+            381,
+            381
+          ]
+        }
+      ],
+      "passes": {
+        "C1": "ran: Declared finite numeric and integral parameter types, constructor relationships, explicit-over-default merge and full registry/group mappings; no thresholds changed.",
+        "C2": "ran: inspected actual caller/data shapes and matching public/UI return conventions; preserved strategy/execution authority boundaries",
+        "C3": "ran: unavailable/malformed/nonfinite/duplicate/stale/partial input and failure branches reviewed against targeted negative and positive controls",
+        "S1": "ran: no target directives followed; source treated as data. Secret-safe fixed errors/CSV text and explicit wallet/signing separation checked",
+        "S2": "ran: SQLite/context managers, flock/file atomicity, sequential resource lifetime, timeout/cancellation and partial-result boundaries reviewed where applicable",
+        "S3": "ran: finite numbers/strict count and schema/owner/evidence-binding boundaries reviewed; grounded corrections tested",
+        "S4": "ran: Python3.13 qualified imports and actual declared runtime/NumPy/Textual contracts inspected; AST/syntax and affected suite verified",
+        "S5": "ran: structured returned unavailable/error/refusal and local state transitions inspected; pure computation has no external request logger",
+        "P1": "ran: bounded windows/candidate/row inputs and loops reviewed; no speculative strategy or runtime optimization",
+        "P2": "ran: process/SQLite/frozen-identity and concurrent read/async UI boundaries reviewed where applicable; no owner process state changed",
+        "M1": "ran: existing naming/thresholds retained; unrelated historical Ruff findings explicitly distinguished from changed code",
+        "M2": "ran: shared engine/data validators reused; CSV literal policy extracted once without requiring Textual in headless reports",
+        "M3": "N/A: repository-scope architecture row separate",
+        "M4": "ran: comments/public labels match actual paper/simulated/unavailable scope and finite/count corrections; no profitability or live-operation certification",
+        "T1": "ran: targeted meaningful failure/positive/log assertions; full range and authored delta evidence below, completed exits separately recorded",
+        "T2": "N/A: repository dependency/supply-chain row separate",
+        "T3": "N/A: repository tooling row separate",
+        "T4": "N/A: non-test source",
+        "M5": "N/A: imported library or conventional test module"
+      },
+      "verdict": "REVIEWED-FIXED",
+      "findings": []
+    },
+    {
+      "path": "soltui/top5.py",
+      "blob_sha": "a4518355e74e5cdd16678486abaf9580edbcd2ec",
+      "sha256": "99afa3ae883cd33e3b31b3de3367b0f6eabf317cd5aa551843ade923f90704e0",
+      "lines": 223,
+      "original_sha256": "061ca4b0aa82bfdfb759df0acc4b8cb8ba8bc07ae4f7c97e5c1be2a2f1375024",
+      "original_lines": 218,
+      "original_read_ranges": [
+        [
+          1,
+          218
+        ]
+      ],
+      "read_evidence": "Committed recommendation grouping/label recovery, missing evidence semantics, finite metrics/whole counts and refusal to pool conflicting rank identities. Complete original displayed reads plus complete authored/diff final change inspection; original hashes remain distinct.",
+      "final_read_basis": "full original ranges plus exact authored/diff delta; new files fully displayed after authorship",
+      "final_delta_ranges": [
+        {
+          "tag": "insert",
+          "original": [
+            39,
+            38
+          ],
+          "final": [
+            39,
+            39
+          ]
+        },
+        {
+          "tag": "replace",
+          "original": [
+            138,
+            138
+          ],
+          "final": [
+            139,
+            139
+          ]
+        },
+        {
+          "tag": "replace",
+          "original": [
+            145,
+            145
+          ],
+          "final": [
+            146,
+            146
+          ]
+        },
+        {
+          "tag": "replace",
+          "original": [
+            147,
+            147
+          ],
+          "final": [
+            148,
+            148
+          ]
+        },
+        {
+          "tag": "replace",
+          "original": [
+            152,
+            152
+          ],
+          "final": [
+            153,
+            153
+          ]
+        },
+        {
+          "tag": "replace",
+          "original": [
+            173,
+            173
+          ],
+          "final": [
+            174,
+            176
+          ]
+        },
+        {
+          "tag": "insert",
+          "original": [
+            185,
+            184
+          ],
+          "final": [
+            188,
+            189
+          ]
+        }
+      ],
+      "passes": {
+        "C1": "ran: Committed recommendation grouping/label recovery, missing evidence semantics, finite metrics/whole counts and refusal to pool conflicting rank identities.",
+        "C2": "ran: inspected actual caller/data shapes and matching public/UI return conventions; preserved strategy/execution authority boundaries",
+        "C3": "ran: unavailable/malformed/nonfinite/duplicate/stale/partial input and failure branches reviewed against targeted negative and positive controls",
+        "S1": "ran: no target directives followed; source treated as data. Secret-safe fixed errors/CSV text and explicit wallet/signing separation checked",
+        "S2": "ran: SQLite/context managers, flock/file atomicity, sequential resource lifetime, timeout/cancellation and partial-result boundaries reviewed where applicable",
+        "S3": "ran: finite numbers/strict count and schema/owner/evidence-binding boundaries reviewed; grounded corrections tested",
+        "S4": "ran: Python3.13 qualified imports and actual declared runtime/NumPy/Textual contracts inspected; AST/syntax and affected suite verified",
+        "S5": "ran: structured returned unavailable/error/refusal and local state transitions inspected; pure computation has no external request logger",
+        "P1": "ran: bounded windows/candidate/row inputs and loops reviewed; no speculative strategy or runtime optimization",
+        "P2": "ran: process/SQLite/frozen-identity and concurrent read/async UI boundaries reviewed where applicable; no owner process state changed",
+        "M1": "ran: existing naming/thresholds retained; unrelated historical Ruff findings explicitly distinguished from changed code",
+        "M2": "ran: shared engine/data validators reused; CSV literal policy extracted once without requiring Textual in headless reports",
+        "M3": "N/A: repository-scope architecture row separate",
+        "M4": "ran: comments/public labels match actual paper/simulated/unavailable scope and finite/count corrections; no profitability or live-operation certification",
+        "T1": "ran: targeted meaningful failure/positive/log assertions; full range and authored delta evidence below, completed exits separately recorded",
+        "T2": "N/A: repository dependency/supply-chain row separate",
+        "T3": "N/A: repository tooling row separate",
+        "T4": "N/A: non-test source",
+        "M5": "N/A: imported library or conventional test module"
+      },
+      "verdict": "REVIEWED-FIXED",
+      "findings": []
+    },
+    {
+      "path": "soltui/trend.py",
+      "blob_sha": "b5dd55d6e75639de861372a65fe5aa36112b45a1",
+      "sha256": "a010f7f53bb23f25c593e8676954275c5a631ecd5a4898db6379db91d879f249",
+      "lines": 112,
+      "original_sha256": "a010f7f53bb23f25c593e8676954275c5a631ecd5a4898db6379db91d879f249",
+      "original_lines": 112,
+      "original_read_ranges": [
+        [
+          1,
+          112
+        ]
+      ],
+      "read_evidence": "Strict finite configuration, holding checkpoint, completed-close SMA/warmup and shared next-open/cost engine plus matched benchmark. Complete original displayed reads plus complete authored/diff final change inspection; original hashes remain distinct.",
+      "final_read_basis": "full displayed current source",
+      "final_delta_ranges": [],
+      "passes": {
+        "C1": "ran: Strict finite configuration, holding checkpoint, completed-close SMA/warmup and shared next-open/cost engine plus matched benchmark.",
+        "C2": "ran: inspected actual caller/data shapes and matching public/UI return conventions; preserved strategy/execution authority boundaries",
+        "C3": "ran: unavailable/malformed/nonfinite/duplicate/stale/partial input and failure branches reviewed against targeted negative and positive controls",
+        "S1": "ran: no target directives followed; source treated as data. Secret-safe fixed errors/CSV text and explicit wallet/signing separation checked",
+        "S2": "ran: SQLite/context managers, flock/file atomicity, sequential resource lifetime, timeout/cancellation and partial-result boundaries reviewed where applicable",
+        "S3": "ran: finite numbers/strict count and schema/owner/evidence-binding boundaries reviewed; grounded corrections tested",
+        "S4": "ran: Python3.13 qualified imports and actual declared runtime/NumPy/Textual contracts inspected; AST/syntax and affected suite verified",
+        "S5": "ran: structured returned unavailable/error/refusal and local state transitions inspected; pure computation has no external request logger",
+        "P1": "ran: bounded windows/candidate/row inputs and loops reviewed; no speculative strategy or runtime optimization",
+        "P2": "ran: process/SQLite/frozen-identity and concurrent read/async UI boundaries reviewed where applicable; no owner process state changed",
+        "M1": "ran: existing naming/thresholds retained; unrelated historical Ruff findings explicitly distinguished from changed code",
+        "M2": "ran: shared engine/data validators reused; CSV literal policy extracted once without requiring Textual in headless reports",
+        "M3": "N/A: repository-scope architecture row separate",
+        "M4": "ran: comments/public labels match actual paper/simulated/unavailable scope and finite/count corrections; no profitability or live-operation certification",
+        "T1": "ran: targeted meaningful failure/positive/log assertions; full range and authored delta evidence below, completed exits separately recorded",
+        "T2": "N/A: repository dependency/supply-chain row separate",
+        "T3": "N/A: repository tooling row separate",
+        "T4": "N/A: non-test source",
+        "M5": "N/A: imported library or conventional test module"
+      },
+      "verdict": "REVIEWED-FIXED",
+      "findings": []
+    },
+    {
+      "path": "soltui/utxo_scan.py",
+      "blob_sha": "fe1fe35e3a4601f2b8a43befc13d07cdd8ff4f7e",
+      "sha256": "46c59d05e09b4c87b88a7dd50e81ebf22bcaa2bd26ba15043ac523c12ac4d85d",
+      "lines": 233,
+      "original_sha256": "7c722228dc7ef5745fef05849d6536b02e7bb01f433118a2d489158b7ff88df6",
+      "original_lines": 226,
+      "original_read_ranges": [
+        [
+          1,
+          226
+        ]
+      ],
+      "read_evidence": "Keyless BIP44 gap/branch scanning, explorer failover/rate waits, strict counters and fixed provider errors that cannot echo derived addresses, unknown-price/partial results. Complete original displayed reads plus complete authored/diff final change inspection; original hashes remain distinct.",
+      "final_read_basis": "full original ranges plus exact authored/diff delta; new files fully displayed after authorship",
+      "final_delta_ranges": [
+        {
+          "tag": "insert",
+          "original": [
+            33,
+            32
+          ],
+          "final": [
+            33,
+            33
+          ]
+        },
+        {
+          "tag": "insert",
+          "original": [
+            60,
+            59
+          ],
+          "final": [
+            61,
+            66
+          ]
+        },
+        {
+          "tag": "replace",
+          "original": [
+            121,
+            122
+          ],
+          "final": [
+            128,
+            129
+          ]
+        }
+      ],
+      "passes": {
+        "C1": "ran: Keyless BIP44 gap/branch scanning, explorer failover/rate waits, strict counters and fixed provider errors that cannot echo derived addresses, unknown-price/partial results.",
+        "C2": "ran: inspected actual caller/data shapes and matching public/UI return conventions; preserved strategy/execution authority boundaries",
+        "C3": "ran: unavailable/malformed/nonfinite/duplicate/stale/partial input and failure branches reviewed against targeted negative and positive controls",
+        "S1": "ran: no target directives followed; source treated as data. Secret-safe fixed errors/CSV text and explicit wallet/signing separation checked",
+        "S2": "ran: SQLite/context managers, flock/file atomicity, sequential resource lifetime, timeout/cancellation and partial-result boundaries reviewed where applicable",
+        "S3": "ran: finite numbers/strict count and schema/owner/evidence-binding boundaries reviewed; grounded corrections tested",
+        "S4": "ran: Python3.13 qualified imports and actual declared runtime/NumPy/Textual contracts inspected; AST/syntax and affected suite verified",
+        "S5": "partial: external reads use shared injected wallet HttpFetcher; common safe request/outcome changes are tested by child but final source receipt/hash not yet supplied",
+        "P1": "ran: bounded windows/candidate/row inputs and loops reviewed; no speculative strategy or runtime optimization",
+        "P2": "ran: process/SQLite/frozen-identity and concurrent read/async UI boundaries reviewed where applicable; no owner process state changed",
+        "M1": "ran: existing naming/thresholds retained; unrelated historical Ruff findings explicitly distinguished from changed code",
+        "M2": "ran: shared engine/data validators reused; CSV literal policy extracted once without requiring Textual in headless reports",
+        "M3": "N/A: repository-scope architecture row separate",
+        "M4": "ran: comments/public labels match actual paper/simulated/unavailable scope and finite/count corrections; no profitability or live-operation certification",
+        "T1": "ran: targeted meaningful failure/positive/log assertions; full range and authored delta evidence below, completed exits separately recorded",
+        "T2": "N/A: repository dependency/supply-chain row separate",
+        "T3": "N/A: repository tooling row separate",
+        "T4": "N/A: non-test source",
+        "M5": "N/A: imported library or conventional test module"
+      },
+      "verdict": "PARTIAL-S5",
+      "findings": []
+    },
+    {
+      "path": "soltui/vote_explanation.py",
+      "blob_sha": "233ddd36c06e29f3e72fba49aec57ee89299eb60",
+      "sha256": "4cbc7734b32406e86b6ef683f564ee7937f14dba5d2cf8ff5c74b210eea58671",
+      "lines": 163,
+      "original_sha256": "4cbc7734b32406e86b6ef683f564ee7937f14dba5d2cf8ff5c74b210eea58671",
+      "original_lines": 163,
+      "original_read_ranges": [
+        [
+          1,
+          163
+        ]
+      ],
+      "read_evidence": "Read-only latest-call SQL and saved specification identity, conservative reproduced-feature proof, retained-candle chart windows, eligibility and absence labels; no future quotes substituted. Complete original displayed reads plus complete authored/diff final change inspection; original hashes remain distinct.",
+      "final_read_basis": "full displayed current source",
+      "final_delta_ranges": [],
+      "passes": {
+        "C1": "ran: Read-only latest-call SQL and saved specification identity, conservative reproduced-feature proof, retained-candle chart windows, eligibility and absence labels; no future quotes substituted.",
+        "C2": "ran: inspected actual caller/data shapes and matching public/UI return conventions; preserved strategy/execution authority boundaries",
+        "C3": "ran: unavailable/malformed/nonfinite/duplicate/stale/partial input and failure branches reviewed against targeted negative and positive controls",
+        "S1": "ran: no target directives followed; source treated as data. Secret-safe fixed errors/CSV text and explicit wallet/signing separation checked",
+        "S2": "ran: SQLite/context managers, flock/file atomicity, sequential resource lifetime, timeout/cancellation and partial-result boundaries reviewed where applicable",
+        "S3": "ran: finite numbers/strict count and schema/owner/evidence-binding boundaries reviewed; grounded corrections tested",
+        "S4": "ran: Python3.13 qualified imports and actual declared runtime/NumPy/Textual contracts inspected; AST/syntax and affected suite verified",
+        "S5": "ran: structured returned unavailable/error/refusal and local state transitions inspected; pure computation has no external request logger",
+        "P1": "ran: bounded windows/candidate/row inputs and loops reviewed; no speculative strategy or runtime optimization",
+        "P2": "ran: process/SQLite/frozen-identity and concurrent read/async UI boundaries reviewed where applicable; no owner process state changed",
+        "M1": "ran: existing naming/thresholds retained; unrelated historical Ruff findings explicitly distinguished from changed code",
+        "M2": "ran: shared engine/data validators reused; CSV literal policy extracted once without requiring Textual in headless reports",
+        "M3": "N/A: repository-scope architecture row separate",
+        "M4": "ran: comments/public labels match actual paper/simulated/unavailable scope and finite/count corrections; no profitability or live-operation certification",
+        "T1": "ran: targeted meaningful failure/positive/log assertions; full range and authored delta evidence below, completed exits separately recorded",
+        "T2": "N/A: repository dependency/supply-chain row separate",
+        "T3": "N/A: repository tooling row separate",
+        "T4": "N/A: non-test source",
+        "M5": "N/A: imported library or conventional test module"
+      },
+      "verdict": "REVIEWED-FIXED",
+      "findings": []
+    },
+    {
+      "path": "soltui/wallet_activity.py",
+      "blob_sha": "e7a10440bb41baf5d5db12254ca48dded83aa45e",
+      "sha256": "8a778a2bb91b48f2bd93d0eddc9d32c2c63be31202e59a232d498299f86e4e7c",
+      "lines": 239,
+      "original_sha256": "7c96eb534a789075362a75c9044fd43ab74a36ce5808fe69487fcc17bfe9d2ed",
+      "original_lines": 216,
+      "original_read_ranges": [
+        [
+          1,
+          216
+        ]
+      ],
+      "read_evidence": "Read-only SQL/address/signature boundaries, explicit history coverage, fixed failure gaps, cancellation/deadlines and capped Solana bodies; direct CDP/RPC emit tested request/outcome events without SQL, URL, wallet or raw errors. Complete original displayed reads plus complete authored/diff final change inspection; original hashes remain distinct.",
+      "final_read_basis": "full original ranges plus exact authored/diff delta; new files fully displayed after authorship",
+      "final_delta_ranges": [
+        {
+          "tag": "insert",
+          "original": [
+            11,
+            10
+          ],
+          "final": [
+            11,
+            11
+          ]
+        },
+        {
+          "tag": "insert",
+          "original": [
+            21,
+            20
+          ],
+          "final": [
+            22,
+            22
+          ]
+        },
+        {
+          "tag": "insert",
+          "original": [
+            29,
+            28
+          ],
+          "final": [
+            31,
+            49
+          ]
+        },
+        {
+          "tag": "insert",
+          "original": [
+            47,
+            46
+          ],
+          "final": [
+            68,
+            68
+          ]
+        },
+        {
+          "tag": "insert",
+          "original": [
+            69,
+            68
+          ],
+          "final": [
+            91,
+            91
+          ]
+        }
+      ],
+      "passes": {
+        "C1": "ran: Read-only SQL/address/signature boundaries, explicit history coverage, fixed failure gaps, cancellation/deadlines and capped Solana bodies; direct CDP/RPC emit tested request/outcome events without SQL, URL, wallet or raw errors.",
+        "C2": "ran: inspected actual caller/data shapes and matching public/UI return conventions; preserved strategy/execution authority boundaries",
+        "C3": "ran: unavailable/malformed/nonfinite/duplicate/stale/partial input and failure branches reviewed against targeted negative and positive controls",
+        "S1": "ran: no target directives followed; source treated as data. Secret-safe fixed errors/CSV text and explicit wallet/signing separation checked",
+        "S2": "ran: SQLite/context managers, flock/file atomicity, sequential resource lifetime, timeout/cancellation and partial-result boundaries reviewed where applicable",
+        "S3": "ran: finite numbers/strict count and schema/owner/evidence-binding boundaries reviewed; grounded corrections tested",
+        "S4": "ran: Python3.13 qualified imports and actual declared runtime/NumPy/Textual contracts inspected; AST/syntax and affected suite verified",
+        "S5": "ran: direct CDP/Solana requests and success/failure emit fixed operation/phase/error_kind events; log canary assertions cover success and failure",
+        "P1": "ran: bounded windows/candidate/row inputs and loops reviewed; no speculative strategy or runtime optimization",
+        "P2": "ran: process/SQLite/frozen-identity and concurrent read/async UI boundaries reviewed where applicable; no owner process state changed",
+        "M1": "ran: existing naming/thresholds retained; unrelated historical Ruff findings explicitly distinguished from changed code",
+        "M2": "ran: shared engine/data validators reused; CSV literal policy extracted once without requiring Textual in headless reports",
+        "M3": "N/A: repository-scope architecture row separate",
+        "M4": "ran: comments/public labels match actual paper/simulated/unavailable scope and finite/count corrections; no profitability or live-operation certification",
+        "T1": "ran: targeted meaningful failure/positive/log assertions; full range and authored delta evidence below, completed exits separately recorded",
+        "T2": "N/A: repository dependency/supply-chain row separate",
+        "T3": "N/A: repository tooling row separate",
+        "T4": "N/A: non-test source",
+        "M5": "N/A: imported library or conventional test module"
+      },
+      "verdict": "REVIEWED-FIXED",
+      "findings": []
+    },
+    {
+      "path": "soltui/csv_table.py",
+      "blob_sha": "1580a0c756bc9dc22f7d312baaec3fd932a7b725",
+      "sha256": "6e5d6f91c2e5bfdebcbf9cacc4643ac0ee0787ffa0c6fb74105909a05d888a9f",
+      "lines": 76,
+      "original_sha256": "20565ec97fd9ce474a0dad50f8c724c620847536f162dd1407621d0afe0656a8",
+      "original_lines": 80,
+      "original_read_ranges": [
+        [
+          1,
+          80
+        ]
+      ],
+      "read_evidence": "Rich-text conversion preserves public table export/wrapper behavior while pure helper escapes formula-like text; ordered/unique files and visible error notifications unchanged. Complete original displayed reads plus complete authored/diff final change inspection; original hashes remain distinct.",
+      "final_read_basis": "full original ranges plus exact authored/diff delta; new files fully displayed after authorship",
+      "final_delta_ranges": [
+        {
+          "tag": "delete",
+          "original": [
+            5,
+            5
+          ],
+          "final": [
+            5,
+            4
+          ]
+        },
+        {
+          "tag": "insert",
+          "original": [
+            15,
+            14
+          ],
+          "final": [
+            14,
+            15
+          ]
+        },
+        {
+          "tag": "replace",
+          "original": [
+            18,
+            23
+          ],
+          "final": [
+            19,
+            19
+          ]
+        }
+      ],
+      "passes": {
+        "C1": "ran: Rich-text conversion preserves public table export/wrapper behavior while pure helper escapes formula-like text; ordered/unique files and visible error notifications unchanged.",
+        "C2": "ran: inspected actual caller/data shapes and matching public/UI return conventions; preserved strategy/execution authority boundaries",
+        "C3": "ran: unavailable/malformed/nonfinite/duplicate/stale/partial input and failure branches reviewed against targeted negative and positive controls",
+        "S1": "ran: no target directives followed; source treated as data. Secret-safe fixed errors/CSV text and explicit wallet/signing separation checked",
+        "S2": "ran: SQLite/context managers, flock/file atomicity, sequential resource lifetime, timeout/cancellation and partial-result boundaries reviewed where applicable",
+        "S3": "ran: finite numbers/strict count and schema/owner/evidence-binding boundaries reviewed; grounded corrections tested",
+        "S4": "ran: Python3.13 qualified imports and actual declared runtime/NumPy/Textual contracts inspected; AST/syntax and affected suite verified",
+        "S5": "ran: structured returned unavailable/error/refusal and local state transitions inspected; pure computation has no external request logger",
+        "P1": "ran: bounded windows/candidate/row inputs and loops reviewed; no speculative strategy or runtime optimization",
+        "P2": "ran: process/SQLite/frozen-identity and concurrent read/async UI boundaries reviewed where applicable; no owner process state changed",
+        "M1": "ran: existing naming/thresholds retained; unrelated historical Ruff findings explicitly distinguished from changed code",
+        "M2": "ran: shared engine/data validators reused; CSV literal policy extracted once without requiring Textual in headless reports",
+        "M3": "N/A: repository-scope architecture row separate",
+        "M4": "ran: comments/public labels match actual paper/simulated/unavailable scope and finite/count corrections; no profitability or live-operation certification",
+        "T1": "ran: targeted meaningful failure/positive/log assertions; full range and authored delta evidence below, completed exits separately recorded",
+        "T2": "N/A: repository dependency/supply-chain row separate",
+        "T3": "N/A: repository tooling row separate",
+        "T4": "N/A: non-test source",
+        "M5": "N/A: imported library or conventional test module"
+      },
+      "verdict": "REVIEWED-FIXED",
+      "findings": []
+    },
+    {
+      "path": "soltui/csv_safety.py",
+      "blob_sha": "e081627c3e21923260069075c227417b19a357be",
+      "sha256": "72eabc79a558bb14e5bc26faaae4e18f59a0a7c93c5072673a434238433eff9a",
+      "lines": 20,
+      "original_sha256": null,
+      "original_lines": 0,
+      "original_read_ranges": [],
+      "read_evidence": "Pure UI-independent literal spreadsheet cell policy preserves signed/grouped/exponent/percentage numeric text; no dependency or side effects. Complete original displayed reads plus complete authored/diff final change inspection; original hashes remain distinct.",
+      "final_read_basis": "full original ranges plus exact authored/diff delta; new files fully displayed after authorship",
+      "final_delta_ranges": [
+        {
+          "tag": "insert",
+          "original": [
+            1,
+            0
+          ],
+          "final": [
+            1,
+            20
+          ]
+        }
+      ],
+      "passes": {
+        "C1": "ran: Pure UI-independent literal spreadsheet cell policy preserves signed/grouped/exponent/percentage numeric text; no dependency or side effects.",
+        "C2": "ran: inspected actual caller/data shapes and matching public/UI return conventions; preserved strategy/execution authority boundaries",
+        "C3": "ran: unavailable/malformed/nonfinite/duplicate/stale/partial input and failure branches reviewed against targeted negative and positive controls",
+        "S1": "ran: no target directives followed; source treated as data. Secret-safe fixed errors/CSV text and explicit wallet/signing separation checked",
+        "S2": "ran: SQLite/context managers, flock/file atomicity, sequential resource lifetime, timeout/cancellation and partial-result boundaries reviewed where applicable",
+        "S3": "ran: finite numbers/strict count and schema/owner/evidence-binding boundaries reviewed; grounded corrections tested",
+        "S4": "ran: Python3.13 qualified imports and actual declared runtime/NumPy/Textual contracts inspected; AST/syntax and affected suite verified",
+        "S5": "ran: structured returned unavailable/error/refusal and local state transitions inspected; pure computation has no external request logger",
+        "P1": "ran: bounded windows/candidate/row inputs and loops reviewed; no speculative strategy or runtime optimization",
+        "P2": "ran: process/SQLite/frozen-identity and concurrent read/async UI boundaries reviewed where applicable; no owner process state changed",
+        "M1": "ran: existing naming/thresholds retained; unrelated historical Ruff findings explicitly distinguished from changed code",
+        "M2": "ran: shared engine/data validators reused; CSV literal policy extracted once without requiring Textual in headless reports",
+        "M3": "N/A: repository-scope architecture row separate",
+        "M4": "ran: comments/public labels match actual paper/simulated/unavailable scope and finite/count corrections; no profitability or live-operation certification",
+        "T1": "ran: targeted meaningful failure/positive/log assertions; full range and authored delta evidence below, completed exits separately recorded",
+        "T2": "N/A: repository dependency/supply-chain row separate",
+        "T3": "N/A: repository tooling row separate",
+        "T4": "N/A: non-test source",
+        "M5": "N/A: imported library or conventional test module"
+      },
+      "verdict": "REVIEWED-FIXED",
+      "findings": []
+    },
+    {
+      "path": "soltui/tests/test_domain_audit_boundaries.py",
+      "blob_sha": "fb600dffe0c92aa69bd642448a45e0d67e828f7d",
+      "sha256": "e2ee22c30bd2a6e15d34965ccf68b47ba09bf29f4ca03b294b849dda83e2317d",
+      "lines": 181,
+      "original_sha256": null,
+      "original_lines": 0,
+      "original_read_ranges": [],
+      "read_evidence": "Temporary evidence/provider stubs prove invalid metrics/counts/config, identity, report confidentiality, input preservation, formula cells, exact source-array price change and safe transport diagnostics, with positive controls. Complete original displayed reads plus complete authored/diff final change inspection; original hashes remain distinct.",
+      "final_read_basis": "full original ranges plus exact authored/diff delta; new files fully displayed after authorship",
+      "final_delta_ranges": [
+        {
+          "tag": "insert",
+          "original": [
+            1,
+            0
+          ],
+          "final": [
+            1,
+            181
+          ]
+        }
+      ],
+      "passes": {
+        "C1": "ran: Temporary evidence/provider stubs prove invalid metrics/counts/config, identity, report confidentiality, input preservation, formula cells, exact source-array price change and safe transport diagnostics, with positive controls.",
+        "C2": "ran: inspected actual caller/data shapes and matching public/UI return conventions; preserved strategy/execution authority boundaries",
+        "C3": "ran: unavailable/malformed/nonfinite/duplicate/stale/partial input and failure branches reviewed against targeted negative and positive controls",
+        "S1": "ran: no target directives followed; source treated as data. Secret-safe fixed errors/CSV text and explicit wallet/signing separation checked",
+        "S2": "ran: SQLite/context managers, flock/file atomicity, sequential resource lifetime, timeout/cancellation and partial-result boundaries reviewed where applicable",
+        "S3": "ran: finite numbers/strict count and schema/owner/evidence-binding boundaries reviewed; grounded corrections tested",
+        "S4": "ran: Python3.13 qualified imports and actual declared runtime/NumPy/Textual contracts inspected; AST/syntax and affected suite verified",
+        "S5": "ran: structured returned unavailable/error/refusal and local state transitions inspected; pure computation has no external request logger",
+        "P1": "ran: bounded windows/candidate/row inputs and loops reviewed; no speculative strategy or runtime optimization",
+        "P2": "ran: process/SQLite/frozen-identity and concurrent read/async UI boundaries reviewed where applicable; no owner process state changed",
+        "M1": "ran: existing naming/thresholds retained; unrelated historical Ruff findings explicitly distinguished from changed code",
+        "M2": "ran: shared engine/data validators reused; CSV literal policy extracted once without requiring Textual in headless reports",
+        "M3": "N/A: repository-scope architecture row separate",
+        "M4": "ran: comments/public labels match actual paper/simulated/unavailable scope and finite/count corrections; no profitability or live-operation certification",
+        "T1": "ran: targeted meaningful failure/positive/log assertions; full range and authored delta evidence below, completed exits separately recorded",
+        "T2": "N/A: repository dependency/supply-chain row separate",
+        "T3": "N/A: repository tooling row separate",
+        "T4": "ran: fixture isolation/mutable data and shared class fixtures, waits and negative assertions reviewed; no coverage removal",
+        "M5": "N/A: imported library or conventional test module"
+      },
+      "verdict": "REVIEWED-FIXED",
+      "findings": []
+    },
+    {
+      "path": "soltui/tests/test_csv_table.py",
+      "blob_sha": "9cf3ac2683b662468acdebde4f6eaf7184a433dd",
+      "sha256": "bf88a16ca06e28b7cb15caa06f3accc7fca7784ff56096f1857bae699b41f2a8",
+      "lines": 84,
+      "original_sha256": "3a278f8d20374a8f3fe8327c6e711c909ca58ad935da949b1b28be3e803de753",
+      "original_lines": 81,
+      "original_read_ranges": [
+        [
+          1,
+          81
+        ]
+      ],
+      "read_evidence": "All81baseline lines read plus exact three-line catalogue fixture addition; formula/numeric/order/collision/layout assertions retained. Headless fullapp startup no longer reads live product catalogue. Complete original displayed reads plus complete authored/diff final change inspection; original hashes remain distinct.",
+      "final_read_basis": "full original ranges plus exact authored/diff delta; new files fully displayed after authorship",
+      "final_delta_ranges": [
+        {
+          "tag": "insert",
+          "original": [
+            72,
+            71
+          ],
+          "final": [
+            72,
+            72
+          ]
+        },
+        {
+          "tag": "insert",
+          "original": [
+            73,
+            72
+          ],
+          "final": [
+            74,
+            74
+          ]
+        },
+        {
+          "tag": "insert",
+          "original": [
+            76,
+            75
+          ],
+          "final": [
+            78,
+            78
+          ]
+        }
+      ],
+      "passes": {
+        "C1": "ran: All81baseline lines read plus exact three-line catalogue fixture addition; formula/numeric/order/collision/layout assertions retained. Headless fullapp startup no longer reads live product catalogue.",
+        "C2": "ran: inspected actual caller/data shapes and matching public/UI return conventions; preserved strategy/execution authority boundaries",
+        "C3": "ran: unavailable/malformed/nonfinite/duplicate/stale/partial input and failure branches reviewed against targeted negative and positive controls",
+        "S1": "ran: no target directives followed; source treated as data. Secret-safe fixed errors/CSV text and explicit wallet/signing separation checked",
+        "S2": "ran: SQLite/context managers, flock/file atomicity, sequential resource lifetime, timeout/cancellation and partial-result boundaries reviewed where applicable",
+        "S3": "ran: finite numbers/strict count and schema/owner/evidence-binding boundaries reviewed; grounded corrections tested",
+        "S4": "ran: Python3.13 qualified imports and actual declared runtime/NumPy/Textual contracts inspected; AST/syntax and affected suite verified",
+        "S5": "ran: structured returned unavailable/error/refusal and local state transitions inspected; pure computation has no external request logger",
+        "P1": "ran: bounded windows/candidate/row inputs and loops reviewed; no speculative strategy or runtime optimization",
+        "P2": "ran: process/SQLite/frozen-identity and concurrent read/async UI boundaries reviewed where applicable; no owner process state changed",
+        "M1": "ran: existing naming/thresholds retained; unrelated historical Ruff findings explicitly distinguished from changed code",
+        "M2": "ran: shared engine/data validators reused; CSV literal policy extracted once without requiring Textual in headless reports",
+        "M3": "N/A: repository-scope architecture row separate",
+        "M4": "ran: comments/public labels match actual paper/simulated/unavailable scope and finite/count corrections; no profitability or live-operation certification",
+        "T1": "ran: targeted meaningful failure/positive/log assertions; full range and authored delta evidence below, completed exits separately recorded",
+        "T2": "N/A: repository dependency/supply-chain row separate",
+        "T3": "N/A: repository tooling row separate",
+        "T4": "ran: fixture isolation/mutable data and shared class fixtures, waits and negative assertions reviewed; no coverage removal",
+        "M5": "N/A: imported library or conventional test module"
+      },
+      "verdict": "REVIEWED-FIXED",
+      "findings": []
+    }
+  ],
+  "checks": [
+    {
+      "command": "10 initial domain regressions",
+      "exit_code": 1,
+      "tests": 10,
+      "failures": 13,
+      "errors": 8,
+      "log": "/tmp/oraclebot-soltui-domain-red.log"
+    },
+    {
+      "command": "10 domain regressions after initial corrections",
+      "exit_code": 0,
+      "log": "/tmp/oraclebot-soltui-domain-green.log"
+    },
+    {
+      "command": "first affected suite with two incorrect module names",
+      "exit_code": 1,
+      "tests": 203,
+      "errors": 2,
+      "note": "201 actual assertions passed; names test_cumulative and test_analyze do not exist",
+      "log": "/tmp/oraclebot-soltui-domain-focused.log"
+    },
+    {
+      "command": "CSV-cell export/privacy regressions on original behavior",
+      "exit_code": 1,
+      "tests": 2,
+      "failures": 2,
+      "log": "/tmp/oraclebot-soltui-domain-export-red.log"
+    },
+    {
+      "command": "domain plus original CSV wrapper regressions",
+      "exit_code": 0,
+      "tests": 16,
+      "log": "/tmp/oraclebot-soltui-domain-export-green.log"
+    },
+    {
+      "command": "affected domain plus CSV suite",
+      "exit_code": 0,
+      "tests": 207,
+      "seconds": 47.656,
+      "log": "/tmp/oraclebot-soltui-domain-final.log",
+      "note": "Before final catalogue fixture; no external-call guard applied to this historical pass"
+    },
+    {
+      "command": "wallet history logging absent baseline",
+      "exit_code": 1,
+      "log": "/tmp/oraclebot-wallet-history-observability-red.log"
+    },
+    {
+      "command": "wallet history diagnostics and domain cases",
+      "exit_code": 0,
+      "log": "/tmp/oraclebot-wallet-history-observability-green.log"
+    },
+    {
+      "command": "first all-network-blocked qualified209",
+      "exit_code": 1,
+      "tests": 209,
+      "failures": 1,
+      "note": "Harness wrongly refused expected task-owned loopback fixture; inspected failure synthesized separately, raw filename subsequently reused",
+      "evidence": "/tmp/oraclebot-soltui-domain-overstrict-guard-note.json"
+    },
+    {
+      "command": "209 assertions with external-only refusal",
+      "exit_code": 1,
+      "tests": 209,
+      "assertions_passed": true,
+      "external_attempts": 1,
+      "note": "Existing CSV fullapp test tried product catalogue; exact isolated RED below; later fixture fixed",
+      "log": "/tmp/oraclebot-soltui-domain-final-network-guard.log"
+    },
+    {
+      "command": "isolated CSV fullapp catalogue guard",
+      "exit_code": 1,
+      "tests": 1,
+      "assertions_passed": true,
+      "external_attempts": 1,
+      "log": "/tmp/oraclebot-csv-ui-network-red.log"
+    },
+    {
+      "command": "Ruff selected eight corrected/new files",
+      "exit_code": 0
+    },
+    {
+      "command": "Ruff all7 changed domain files comparison",
+      "exit_code": 0,
+      "note": "Comparison passed:5 historical findings retained in analyze/utxo; full configured rule check still exits1 there",
+      "evidence": "/tmp/oraclebot-soltui-domain-ruff-delta.json"
+    },
+    {
+      "command": "isolated CSV fullapp catalogue guard after fixture",
+      "exit_code": 0,
+      "tests": 1,
+      "seconds": 4.033,
+      "external_attempts": 0,
+      "log": "/tmp/oraclebot-csv-ui-network-green.log"
+    }
+  ],
+  "findings": [
+    {
+      "id": "SD-01",
+      "severity": "Medium",
+      "files": [
+        "soltui/signals.py"
+      ],
+      "detail": "Nonfinite/bool/fractional defaults now refuse as SignalError",
+      "state": "fixed"
+    },
+    {
+      "id": "SD-02",
+      "severity": "Medium",
+      "files": [
+        "soltui/cumulative.py",
+        "soltui/top5.py"
+      ],
+      "detail": "Invalid metrics and integer counts no longer crash or rank",
+      "state": "fixed"
+    },
+    {
+      "id": "SD-03",
+      "severity": "Medium",
+      "files": [
+        "soltui/top5.py"
+      ],
+      "detail": "Conflicting identities at one rank refuse",
+      "state": "fixed"
+    },
+    {
+      "id": "SD-04",
+      "severity": "Medium",
+      "files": [
+        "soltui/utxo_scan.py"
+      ],
+      "detail": "Strict finite nonnegative integral provider counters",
+      "state": "fixed"
+    },
+    {
+      "id": "SD-05",
+      "severity": "High",
+      "files": [
+        "soltui/utxo_scan.py"
+      ],
+      "detail": "Derived addresses cannot leak via BlockCypher raw provider errors",
+      "state": "fixed"
+    },
+    {
+      "id": "SD-06",
+      "severity": "Medium",
+      "files": [
+        "soltui/live_score.py"
+      ],
+      "detail": "Whole sample counts and finite nonboolean clocks/policy",
+      "state": "fixed"
+    },
+    {
+      "id": "SD-07",
+      "severity": "Medium",
+      "files": [
+        "soltui/analyze.py"
+      ],
+      "detail": "Headline uses exact replayed source array",
+      "state": "fixed"
+    },
+    {
+      "id": "SD-08",
+      "severity": "Medium",
+      "files": [
+        "soltui/coin_fit.py"
+      ],
+      "detail": "Huge numeric input refuses with domain error",
+      "state": "fixed"
+    },
+    {
+      "id": "SD-09",
+      "severity": "High",
+      "files": [
+        "soltui/coin_fit.py"
+      ],
+      "detail": "Report output cannot overwrite loaded candle source",
+      "state": "fixed"
+    },
+    {
+      "id": "SD-10",
+      "severity": "Medium",
+      "files": [
+        "soltui/coin_fit.py",
+        "soltui/csv_table.py",
+        "soltui/csv_safety.py"
+      ],
+      "detail": "Shared pure formula-cell policy preserves signed numeric results",
+      "state": "fixed"
+    },
+    {
+      "id": "SD-11",
+      "severity": "High",
+      "files": [
+        "soltui/coin_fit.py"
+      ],
+      "detail": "Raw malformed CSV cell no longer enters report/returned errors",
+      "state": "fixed"
+    },
+    {
+      "id": "SD-12",
+      "severity": "Medium",
+      "files": [
+        "soltui/wallet_activity.py"
+      ],
+      "detail": "Tested safe request/outcome diagnostics for both transports",
+      "state": "fixed"
+    },
+    {
+      "id": "SD-13",
+      "severity": "Medium",
+      "files": [
+        "soltui/tests/test_csv_table.py"
+      ],
+      "detail": "Headless UI assertion no longer attempts live catalogue request",
+      "state": "fixed; isolated actual fullapp test4.033s exit0 and0external attempts"
+    }
+  ],
+  "limits": [
+    "No live financial/research/owner state qualification.",
+    "Historical whole-suite source gates remain distinct from current final integrated SolTUI gate.",
+    "External guarded probes explicitly permit the existing task-owned loopback HTTP fixture.",
+    "Common transport S5 final bindings and standalone tool auto-environment remain separate unresolved dispositions."
+  ]
+}

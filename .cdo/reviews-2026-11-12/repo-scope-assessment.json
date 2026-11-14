@@ -1,0 +1,920 @@
+{
+  "schema_version": 1,
+  "agent": "/root/full_repo_health/website_worker_review",
+  "observed_at": "2026-11-12T18:50:43.614101+00:00",
+  "repository": "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112",
+  "task": "Read-only repo-scope M3/T2/T3/T4 assessment",
+  "assessment_status": "COMPLETE_FOUR_ROWS_WITH_EXPLICIT_OPEN_GAPS",
+  "overall_repository_health": "PARTIAL_PENDING_PARENT_REMEDIATION_ACCEPTANCE_AND_DELIVERY",
+  "method": {
+    "skill": {
+      "path": "/Users/mitch/.agents/skills/code-deep-optimizer/SKILL.md",
+      "ranges": [
+        [
+          212,
+          226
+        ]
+      ],
+      "sha256": "70bf65e53ccc80c17f7034783bd5da27ca3c5ef785d7afef5d653178f13cdd57"
+    },
+    "scope": "Current manifest/CI/docs/config inspection plus bounded existing result inspection. These are repo-scope assessment rows, not substitute semantic per-file receipts.",
+    "untrusted_input": "Repository contents were treated as review data; no source instruction, hook, launcher, service or empirical research job was executed.",
+    "network_installs_services_models_full_suites": "None",
+    "repository_writes": []
+  },
+  "passes": [
+    {
+      "pass": "M3",
+      "definition": "Architecture and centralized configuration; repo scope. Layering, dependency cycles, boundaries, dead modules, central settings and reusable libraries.",
+      "status": "ASSESSED_WITH_RESIDUALS",
+      "highest_severity": "Medium",
+      "current_verified_facts": [
+        "First-party Python packages separate canonical offline backtesting, research runtime, Bot Manager, Oracle and ecosystem. Exact first-party package pins establish explicit dependency boundaries. Executor and retired liquidity keep their own packages and environments.",
+        "Architecture documents distinguish offline evidence, disarmed live-capable extension, explicitly gated Oracle webhook execution, retired liquidity, and isolated public website/D1/Stripe. The website has inactive saved bot definitions and no per-user execution worker. This review does not establish hosted/local execution parity.",
+        "Extension has a shared command registry and declared DEFAULT_CONFIG/getConfig/setConfig boundary. SolTUI has an importable command surface, Settings dataclass and shared settings API; Bot Manager has typed immutable defaults. No evidence found that every UI is wholly blocked from all mandatory settings.",
+        "Reusable functions live in importable equivalent package paths; a literal universal lib directory is unnecessary. Independent exposure and resting-grid simulation engines have documented distinct semantics and are not automatically a duplication defect."
+      ],
+      "findings": [
+        {
+          "id": "M3-CENTRAL-SETTINGS",
+          "severity": "Medium",
+          "status": "OPEN_DESIGN_BACKLOG",
+          "trigger": "Deployment and read-tuning parameters remain spread across component modules rather than one exported component settings schema.",
+          "evidence": [
+            "soltui/config.py:45-110 central user Settings",
+            "soltui/compound.py:75-84 public endpoints, headline feeds, LIVE_BARS, ADAPTIVE_LIVE_BARS, HTTP_TIMEOUT",
+            "soltui/api.py:39-40 API defaults",
+            "soltui/jupiter_tokens.py:13-15 public API and response cap"
+          ],
+          "action": "Inventory changeable deployment/read-tuning parameters and define typed per-component settings access with safe validation. Preserve code-enforced money/security caps; do not make them freely editable to satisfy centralization."
+        },
+        {
+          "id": "M3-OPERATIONS-STANDARDS",
+          "severity": "Medium",
+          "status": "OPEN_ARCHITECTURE_BACKLOG",
+          "trigger": "Bootstrap standards call for a common operations registry, safe error schema/remediation map and generated per-operation help; current component-specific implementations do not complete that repo-wide contract.",
+          "evidence": [
+            "docs/repo-bootstrap-audit-2026-11-10.md:55-90",
+            "docs/logging.md:112-137",
+            "docs/operations-registry.json absent",
+            "docs/tool-inventory.json absent"
+          ],
+          "action": "Design and populate the common operation/error metadata from existing component registries. Preserve fixed redacted public errors and no automatic retry of ambiguous financial writes. Generic retry infrastructure would violate venue reconciliation rules."
+        }
+      ],
+      "limits": [
+        "No fresh exhaustive import-graph/cycle/dead-module proof was run in this read-only row. Full semantic per-file coverage is recorded separately by component reviewers.",
+        "Documented architectural debt prevents a blanket M3 CLEAN. Repo-wide centralization and settings UI are not implemented by this assessment."
+      ]
+    },
+    {
+      "pass": "T2",
+      "definition": "Dependency and supply chain; repo scope. Outdated/known-vulnerable dependencies, unused dependencies and license flags.",
+      "status": "PARTIAL_VERIFICATION",
+      "highest_severity": "Medium",
+      "current_verified_facts": [
+        "Current isolated environment metadata compatibility check completed exit0 for85 packages. It does not query vulnerability advisories, establish latest versions, prove loaded source identity or identify unused packages.",
+        "Current Dependabot configuration covers GitHub Actions, six pip components, two uv components and website npm. Earlier missing-coverage findings are superseded. Extension declares no npm runtime/dev dependency tree.",
+        "Website has exact dev dependency versions and a v3 package lock. Executor/liquidity uv lockfiles exist. CI actions use commit SHAs. These facts reduce resolution ambiguity but do not prove complete transitive security/license acceptance.",
+        "Parent completed current pip-audit2.10.1 exit0; independently parsed result has85 distributions,79 publicly auditable and0 listed vulnerabilities. Six first-party packages were skipped with older installed distribution metadata. Their source review remains independent of PyPI advisory lookup.",
+        "Parent completed website npm audit --json exit0; independently parsed package-lock audit reports93 dependencies and0 vulnerabilities. Extension npm audit exited1 ENOLOCK; extension has no runtime/dev dependency graph to audit. ENOLOCK is retained as a nonzero attempted check, not counted as an audit pass."
+      ],
+      "findings": [
+        {
+          "id": "T2-MUTABLE-GIT",
+          "severity": "Medium",
+          "status": "OPEN",
+          "trigger": "SolTUI installation can resolve a different private supervisor implementation on a later installation because the Git requirement lacks a commit/ref.",
+          "evidence": [
+            "soltui/requirements.txt:38 macos-launchd-supervisor @ git+https://github.com/mithudso/macos-launchd-supervisor"
+          ],
+          "action": "Resolve a reviewed immutable commit and pin it in the supported installer/lock flow; qualify the relevant native lifecycle tests. No Git fetch/install was performed here."
+        },
+        {
+          "id": "T2-SCOPE-OF-ROOT-FREEZE",
+          "severity": "Medium",
+          "status": "NEEDS_INTENT_AND_DOCUMENTATION",
+          "trigger": "The broad root requirements freeze conflicts with current supported component constraints if treated as their installer: numpy2.5.3 vs>=2.5.4; mcp2.3.0 vs1.30.0; solders0.29.0 vs<0.28; cryptography50.0.1 vs50.0.2.",
+          "evidence": [
+            "requirements.txt:32,97,104,170",
+            "backtester/pyproject.toml",
+            "oracle/pyproject.toml",
+            "executor/pyproject.toml",
+            "soltui/requirements.txt"
+          ],
+          "action": "Mark the root file as a dated environment export or replace it with a deliberate supported aggregate lock. Existing README/installation examples read in this task use component-scoped files; no current installed incompatibility is claimed."
+        },
+        {
+          "id": "T2-ADVISORY-UNUSED-LICENSE-COVERAGE",
+          "severity": "Medium",
+          "status": "NOT_FULLY_VERIFIED",
+          "trigger": "Current public Python and website dependency advisory checks pass within their stated package scopes, but skipped private packages, separate native environment lock resolution, unused dependencies, outdated versions and transitive licenses remain outside those checks.",
+          "evidence": [
+            "/tmp/oraclebot-python-audit-current-20261112.json:85 distributions,79 publicly auditable,0 listed vulnerabilities,6 first-party skips",
+            "/tmp/oraclebot-website-npm-audit-current-20261112.json:93 dependencies,0 vulnerabilities",
+            "/tmp/oraclebot-extension-npm-audit-current-20261112.json:exit1 ENOLOCK; no manifest dependency graph"
+          ],
+          "action": "Retain completed current advisory results and actual exits. Separately assess unused dependencies, release freshness, license obligations and any additional native-environment resolutions. Do not create an empty extension dependency graph merely to hide ENOLOCK."
+        },
+        {
+          "id": "T2-LIQUIDITY-LOCK-ENFORCEMENT",
+          "severity": "Medium",
+          "status": "OPEN_REPRODUCIBILITY_GAP",
+          "trigger": "Liquidity CI runs uv sync without --frozen, while Executor CI enforces its lock. A changed manifest can silently re-resolve the liquidity dependency set during CI.",
+          "evidence": [
+            ".github/workflows/ci.yml:458",
+            ".github/workflows/ci.yml:475"
+          ],
+          "action": "Make supported lock consistency explicit after a qualified lock update. The existing lock was not re-resolved or claimed current by this review."
+        }
+      ],
+      "historical_result": {
+        "path": "/tmp/oraclebot-python-audit-20261112.json",
+        "dependencies": 56,
+        "listed_vulnerabilities": 0,
+        "skipped_first_party": 6,
+        "original_command_final_exit": "UNAVAILABLE_IN_READ_ARTIFACT",
+        "current_environment_security_clearance": false
+      },
+      "limits": [
+        "No claim that any named dependency is vulnerable or malicious was established.",
+        "Outdated/unused/transitive-license coverage remains incomplete. MIT metadata on two first-party packages is not an inventory of third-party obligations."
+      ],
+      "current_advisory_result": {
+        "actor": "Parent executed; this reviewer independently parsed artifacts without network",
+        "python": {
+          "tool": "pip-audit2.10.1",
+          "distributions": 85,
+          "publicly_auditable": 79,
+          "listed_vulnerabilities": 0,
+          "first_party_skips": 6,
+          "exit_code": 0
+        },
+        "website": {
+          "dependencies": 93,
+          "listed_vulnerabilities": 0,
+          "exit_code": 0
+        },
+        "extension": {
+          "exit_code": 1,
+          "error": "ENOLOCK",
+          "applicability": "No npm runtime/dev/optional dependency graph; not a passing audit."
+        },
+        "full_supply_chain_clearance": false
+      }
+    },
+    {
+      "pass": "T3",
+      "definition": "Tooling gaps; repo scope. Linter config, JS type checking, CI, test runner, formatter, pre-commit and pinning.",
+      "status": "ASSESSED_WITH_RESIDUALS",
+      "highest_severity": "Medium",
+      "current_verified_facts": [
+        "CI and test runners exist: Python unittest/pytest, node:test, extension browser dry runs, website Playwright, documentation/provenance checks, isolated installed package checks, and four optional timed SolTUI shards. It would be false to report absent CI or absent runners.",
+        "Executor/liquidity have committed Ruff configuration and formatting checks. Other Python jobs install/run Ruff but no root pyproject/ruff.toml/.ruff.toml was found; current direct SolTUI Ruff settings resolve to tool defaults.",
+        "A repository pre-commit script exists and rebuilds/stages offline indexes plus runs backtester tests. Current worktree core.hooksPath query returned exit1 with no configured value; actual hook activation is unproven. The hook was read as data and never executed in this task."
+      ],
+      "findings": [
+        {
+          "id": "T3-DETERMINISTIC-LINT-CONFIG",
+          "severity": "Medium",
+          "status": "OPEN",
+          "trigger": "Non-Executor/liquidity Python lint policy depends on tool defaults, and ecosystem/Oracle CI installs unpinned ruff. Changing the tool version can change required diagnostics.",
+          "evidence": [
+            ".github/workflows/ci.yml:35,54,65,69",
+            "No root Ruff config paths at current observation",
+            "/tmp/oraclebot-repo-scope-ruff-settings-origin-20261112.txt"
+          ],
+          "action": "Commit an explicit compatible shared Ruff configuration and pin the CI tool version; adopt only after baselining existing Low/style debt. This assessment does not authorize broad style-only churn."
+        },
+        {
+          "id": "T3-JS-TYPE-CHECKING",
+          "severity": "Medium",
+          "status": "OPEN_TOOLING_GAP",
+          "trigger": "The read npm scripts/CI provide syntax checks and behavioral tests, but no committed JavaScript type checker or JS linter configuration was identified.",
+          "evidence": [
+            "extension/package.json",
+            "website/package.json",
+            ".github/workflows/ci.yml",
+            ".github/workflows/website.yml"
+          ],
+          "action": "Choose a bounded checkJs/JSDoc or equivalent checked-interface adoption for risky shared APIs and configure a deterministic JS lint policy. Do not claim node --check establishes type safety."
+        },
+        {
+          "id": "T3-PINNING",
+          "severity": "Medium",
+          "status": "CROSS_REFERENCE_T2",
+          "trigger": "Mutable private Git HEAD, broad component version floors and nonfrozen liquidity resolution prevent a universal reproducible toolchain claim.",
+          "evidence": [
+            "T2-MUTABLE-GIT",
+            "T2-LIQUIDITY-LOCK-ENFORCEMENT",
+            ".github/workflows/ci.yml:315 mutable mongo:8 tag"
+          ],
+          "action": "Define supported reproducible development/CI dependency sets. Up-to-date floors are not an immutable lock."
+        },
+        {
+          "id": "T3-PRECOMMIT-ACTIVATION",
+          "severity": "Info",
+          "status": "UNPROVEN_CURRENT_WORKTREE",
+          "trigger": "The committed hook script exists but this worktree has no observed core.hooksPath setting.",
+          "evidence": [
+            ".githooks/pre-commit:1-38",
+            "git config --show-origin --get core.hooksPath exit1"
+          ],
+          "action": "Parent/root should use the documented setup or explicit gates when delivering. Do not activate/execute an index-writing hook inside this read-only assessment."
+        }
+      ],
+      "coverage_policy": {
+        "normal_pr": "Changed-path SolTUI mapping plus bridge smoke. Unknown paths can retain bridge smoke only.",
+        "full_soltui": "Explicit workflow_dispatch run_soltui_suite=true enables four macOS timed shards; this is an intentional documented cost policy, not full default-PR coverage.",
+        "evidence": [
+          "scripts/soltui_ci.py:1-140",
+          ".github/workflows/ci.yml:220-301",
+          "docs/TESTING.md:213-287"
+        ]
+      },
+      "limits": [
+        "No installed/deployed acceptance follows from local CI configuration inspection.",
+        "No full configured lint/type/security clearance was run or claimed. Existing component receipts preserve nonzero style inventory rather than reporting false PASS."
+      ]
+    },
+    {
+      "pass": "T4",
+      "definition": "Test-suite performance; applicable here to repo test execution. Faster same coverage/behavior, safe parallel eligibility, isolation of global mutable state, no removed tests/assertion merges/mutated-setup hoists.",
+      "status": "ASSESSED_EQUIVALENCE_LIMITED",
+      "highest_severity": "Medium",
+      "current_verified_facts": [
+        "scripts/soltui_ci.py rejects failed/empty discovery and duplicate IDs, sorts individual cases, partitions tests[shard::shards], and prints20 slowest durations. Existing full CI uses four independent runners, not unsafe shared-thread parallelism.",
+        "SolTUI test package replaces nine inherited owner directories before module imports. Per-case contexts remain necessary for module globals, settings, registries, environment patches and lifecycle state. This isolation protects owner files but does not automatically stub every HTTP/service boundary.",
+        "The shared offline_console_reads fixture supplies a fixed product catalogue and unloaded service status. Existing guarded root and independent cohorts established zero denied external/process attempts only within their stated process-local scope. No production permission was weakened to make tests pass."
+      ],
+      "findings": [
+        {
+          "id": "T4-UNIVERSAL-PARALLEL-EQUIVALENCE",
+          "severity": "Medium",
+          "status": "BLOCKED_AMBIGUOUS_INTENT_FOR_BLIND_RUNNER_CHANGE",
+          "trigger": "Many UI/lifecycle tests mutate module-level settings, environment, registry/client mocks, process leases and asynchronous state; full thread-parallel or setup-hoisting equivalence is not proven.",
+          "evidence": [
+            "soltui/tests/__init__.py:1-23",
+            "soltui/tests/test_tui.py offline_console_reads and per-case contexts",
+            "scripts/soltui_ci.py case-level interleaved sharding",
+            "Historical guard failures caught swallowed outbound/service attempts despite assertions passing."
+          ],
+          "action": "Retain process-separated shards; classify and prove independent cohorts before additional parallelism. Prefer isolated temporary roots/owned fixtures. Do not remove tests, merge distinct assertions or hoist setup any test mutates."
+        },
+        {
+          "id": "T4-LATENCY-OPTIMIZATION",
+          "severity": "Info",
+          "status": "PROFILED_CANDIDATES_ONLY",
+          "trigger": "Historical headless cohorts take minutes while synthetic unit cohorts take seconds to about one minute. These unequal scopes do not establish an equal-coverage speedup.",
+          "evidence": [
+            "soltui-root-ui-tests.json final161cases301.603seconds exit0",
+            "Owned470-unit historical gate approximately65seconds",
+            "Owned125-unit historical gate approximately59seconds",
+            "Historical full1477case baseline approximately26minutes"
+          ],
+          "action": "Use existing per-test duration output to target deterministic waits/fixture construction. Fake timers only where lifecycle/lease/event equivalence is statically proven; preserve actual process and cancellation acceptance boundaries."
+        }
+      ],
+      "historical_gates": [
+        {
+          "source": "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/.cdo/reviews-2026-11-12/soltui-root-ui-tests.json",
+          "scope": "12 root test modules",
+          "tests": 161,
+          "seconds": 301.603,
+          "exit_code": 0,
+          "outbound_attempts": 0,
+          "blocked_processes": 0,
+          "binding": "Existing completed receipt; not rerun by this assessment; read-only service status allowed in two explicit native absent-home cases."
+        },
+        {
+          "source": "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/.cdo/reviews-2026-11-12/soltui-independent.json",
+          "scope": "Synthetic pure cohort",
+          "tests": 241,
+          "exit_code": 0,
+          "forbidden_attempts": 0,
+          "exclusions": "Two actual detached-worker/parameter-search cases excluded; one missing catalogue fixture skip retained."
+        },
+        {
+          "source": "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/.cdo/reviews-2026-11-12/soltui-independent.json",
+          "scope": "Independent headless UI cohort",
+          "tests": 47,
+          "exit_code": 0,
+          "forbidden_attempts": 0
+        },
+        {
+          "source": "/tmp/oraclebot-soltui-review-receipt-20261112.json",
+          "scope": "Owned broad unit",
+          "tests": 470,
+          "skips": 1,
+          "exit_code": 0,
+          "binding": "Before final diagnostics/bundle changes; historical only."
+        },
+        {
+          "source": "/tmp/oraclebot-soltui-review-receipt-20261112.json",
+          "scope": "Owned source binding unit",
+          "tests": 125,
+          "exit_code": 0,
+          "binding": "Before final direct diagnostics/bundle changes; fresh final integration pending."
+        },
+        {
+          "source": "/tmp/oraclebot-soltui-review-receipt-20261112.json",
+          "scope": "Owned UI historical run",
+          "tests": 114,
+          "exit_code": 1,
+          "binding": "112 passed; two SourceEpochChanged refusals during concurrent production edits. Not credited as a passing suite."
+        }
+      ],
+      "limits": [
+        "No test was removed, merged or edited in this read-only task. No new performance benchmark or full suite was run.",
+        "Current parent reports production write-freeze and independent core remediation acceptance still settling; fresh integrated125-runtime and four-forward-UI final gates are parent/root responsibilities.",
+        "Existing1477-case baseline lacks a complete before/after owner-state snapshot and predates independently found fixture gaps. It is a historical functional result, not proof of no owner operation or final loaded revision.",
+        "No source full-file coverage percentage is derived from these repo-scope rows."
+      ]
+    }
+  ],
+  "checks_performed_this_task": [
+    {
+      "command": [
+        "git",
+        "config",
+        "--show-origin",
+        "--get",
+        "core.hooksPath"
+      ],
+      "exit_code": 1,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "/Users/mitch/.local/bin/uv",
+        "pip",
+        "check",
+        "--python",
+        "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/.venv/bin/python"
+      ],
+      "exit_code": 0,
+      "stdout": "",
+      "stderr": "Checked 85 packages in 8ms\nAll installed packages are compatible\n"
+    },
+    {
+      "command": [
+        "/opt/homebrew/bin/ruff",
+        "check",
+        "-v",
+        "--show-settings",
+        "soltui/api.py"
+      ],
+      "exit_code": 0,
+      "result": "Verbose resolution reports Using Ruff default settings. No committed root Ruff config identified. This inspects config only; it is not a lint pass.",
+      "artifact": "/tmp/oraclebot-repo-scope-ruff-settings-origin-20261112.txt"
+    },
+    {
+      "command": [
+        "git",
+        "rev-parse",
+        "HEAD"
+      ],
+      "exit_code": 0,
+      "stdout": "7875535db579080dd398b618b83558495748dcae",
+      "binding": "Observed during this assessment; concurrent parent commits can supersede HEAD without changing listed file bytes."
+    },
+    {
+      "command": [
+        "git",
+        "status",
+        "--short"
+      ],
+      "exit_code": 0,
+      "result": "238 status lines at observation; preserve concurrent work. Read-only task changes no repository file."
+    },
+    {
+      "command": "Python pathlib/json inspection of /tmp/oraclebot-python-audit-20261112.json",
+      "exit_code": 0,
+      "result": "56 dependency entries; zero listed vulnerabilities; six first-party packages skipped; older first-party versions. Original pip-audit final process exit is not established by this JSON."
+    },
+    {
+      "command": "Python pathlib existence checks for docs/operations-registry.json, docs/tool-inventory.json, .pre-commit-config.yaml, .ruff.toml, ruff.toml, pyproject.toml",
+      "exit_code": 0,
+      "result": "All six paths absent at observation. Equivalent component-specific registries/configs remain present."
+    },
+    {
+      "command": "Python json parse website/package-lock.json",
+      "exit_code": 0,
+      "result": "lockfileVersion=3;94 packages; root dev pins playwright1.65.0/wrangler4.160.1. No audit or lock re-resolution performed."
+    },
+    {
+      "command": "Bounded sed/cat reads and rg searches of listed manifests/CI/docs/source spans",
+      "exit_code": 0,
+      "result": "Relevant evidence captured in read_bindings; earlier speculative searches of nonexistent extension/src/core/config.js, oracle/config.py and docs/CONFIGURATION.md exited2 and were corrected to actual component paths. Search misses do not establish absence of equivalent config."
+    }
+  ],
+  "read_bindings": [
+    {
+      "path": "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/CLAUDE.md",
+      "sha256": "8e452da11b9deb0248532da06a66b156d7ab41b831f0137af1b32e25d96b780e",
+      "lines_at_binding": 240,
+      "actually_read_ranges": [
+        [
+          1,
+          240
+        ]
+      ],
+      "purpose": "Bounded repo-scope assessment evidence; not a new all-pass per-file certification."
+    },
+    {
+      "path": "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/docs/ARCHITECTURE.md",
+      "sha256": "365da7a91f363648dae56bdd8d25e3c4e971891580ce169017cd84801c6ac2a9",
+      "lines_at_binding": 257,
+      "actually_read_ranges": [
+        [
+          154,
+          257
+        ]
+      ],
+      "purpose": "Bounded repo-scope assessment evidence; not a new all-pass per-file certification."
+    },
+    {
+      "path": "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/docs/TESTING.md",
+      "sha256": "a26aa89b7d238fb1402015d903bd676e0fd1cf7c056444f1891585ad1d4fa0f9",
+      "lines_at_binding": 335,
+      "actually_read_ranges": [
+        [
+          213,
+          287
+        ],
+        [
+          308,
+          335
+        ]
+      ],
+      "purpose": "Bounded repo-scope assessment evidence; not a new all-pass per-file certification."
+    },
+    {
+      "path": "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/docs/audit-2026-11-12.md",
+      "sha256": "43885499b4a997c0587f99a7e3c5f6516123b563fb5ed4d0dc26b8bda57cb21e",
+      "lines_at_binding": 71,
+      "actually_read_ranges": [
+        [
+          44,
+          71
+        ]
+      ],
+      "purpose": "Bounded repo-scope assessment evidence; not a new all-pass per-file certification."
+    },
+    {
+      "path": "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/docs/repo-bootstrap-audit-2026-11-10.md",
+      "sha256": "8d583755e4c0c34853676dd3334c055c77ec6d0bc3b20eaaaa188a3e791dbb91",
+      "lines_at_binding": 92,
+      "actually_read_ranges": [
+        [
+          55,
+          90
+        ]
+      ],
+      "purpose": "Bounded repo-scope assessment evidence; not a new all-pass per-file certification."
+    },
+    {
+      "path": "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/docs/logging.md",
+      "sha256": "865f10427bf9cc991fb697fd41d84544a2b8876c9cf217c71f833d7592038ee9",
+      "lines_at_binding": 182,
+      "actually_read_ranges": [
+        [
+          112,
+          137
+        ]
+      ],
+      "purpose": "Bounded repo-scope assessment evidence; not a new all-pass per-file certification."
+    },
+    {
+      "path": "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/.github/workflows/ci.yml",
+      "sha256": "524670cc0b044d72e3e79e0b2cbb6ca9bebb1c7ddd3f5b79073a9c9111929388",
+      "lines_at_binding": 478,
+      "actually_read_ranges": [
+        [
+          1,
+          235
+        ],
+        [
+          236,
+          478
+        ]
+      ],
+      "purpose": "Bounded repo-scope assessment evidence; not a new all-pass per-file certification."
+    },
+    {
+      "path": "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/.github/workflows/website.yml",
+      "sha256": "fd742fbcf44f0e99e6c0246218eb97a3156e2ea2bc5a815b039758f598a632b5",
+      "lines_at_binding": 33,
+      "actually_read_ranges": [
+        [
+          1,
+          33
+        ]
+      ],
+      "purpose": "Bounded repo-scope assessment evidence; not a new all-pass per-file certification."
+    },
+    {
+      "path": "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/.github/dependabot.yml",
+      "sha256": "9adb5122b7a8a944864722e887480d4d8c14c985ac4a9777f7c558a9db717e77",
+      "lines_at_binding": 91,
+      "actually_read_ranges": [
+        [
+          1,
+          91
+        ]
+      ],
+      "purpose": "Bounded repo-scope assessment evidence; not a new all-pass per-file certification."
+    },
+    {
+      "path": "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/.githooks/pre-commit",
+      "sha256": "ca8fc3b8833638be79a84382baf49f6a74b44bef2ab59b02ac0e0d9d36274162",
+      "lines_at_binding": 38,
+      "actually_read_ranges": [
+        [
+          1,
+          38
+        ]
+      ],
+      "purpose": "Bounded repo-scope assessment evidence; not a new all-pass per-file certification."
+    },
+    {
+      "path": "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/scripts/soltui_ci.py",
+      "sha256": "51f68145efabfc0cbacb28a4e806ee4c0bbd67f0961aba0d4efd115da853dec0",
+      "lines_at_binding": 140,
+      "actually_read_ranges": [
+        [
+          1,
+          140
+        ]
+      ],
+      "purpose": "Bounded repo-scope assessment evidence; not a new all-pass per-file certification."
+    },
+    {
+      "path": "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/soltui/tests/__init__.py",
+      "sha256": "dafbc6259d90e84692decc4288ccd2681b79e5f37737d5bfa004136c37376fd6",
+      "lines_at_binding": 23,
+      "actually_read_ranges": [
+        [
+          1,
+          23
+        ]
+      ],
+      "purpose": "Bounded repo-scope assessment evidence; not a new all-pass per-file certification."
+    },
+    {
+      "path": "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/soltui/config.py",
+      "sha256": "c5097572999607c167126a9a820276d748c7da008b2ac4c2cf9701b834373090",
+      "lines_at_binding": 292,
+      "actually_read_ranges": [
+        [
+          45,
+          110
+        ]
+      ],
+      "purpose": "Bounded repo-scope assessment evidence; not a new all-pass per-file certification."
+    },
+    {
+      "path": "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/soltui/compound.py",
+      "sha256": "4bee47f8c7e4dd14fc99f6ae20b614d1fc8e94e3e730bbf9562a8d0a4f0506cf",
+      "lines_at_binding": 2097,
+      "actually_read_ranges": [
+        [
+          54,
+          84
+        ]
+      ],
+      "purpose": "Bounded repo-scope assessment evidence; not a new all-pass per-file certification."
+    },
+    {
+      "path": "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/extension/src/storage/store.js",
+      "sha256": "fd6351422859af43bd180932c5e6bbb463743db8044b684a308d5e55e19e84a8",
+      "lines_at_binding": 327,
+      "actually_read_ranges": [
+        [
+          175,
+          210
+        ],
+        [
+          240,
+          265
+        ]
+      ],
+      "purpose": "Bounded repo-scope assessment evidence; not a new all-pass per-file certification."
+    },
+    {
+      "path": "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/botmanager/src/botmanager/config.py",
+      "sha256": "4af8e3aeea0b9ae75b2bbdf475676f5d9239a097e15b3a077997263c586e29ad",
+      "lines_at_binding": 363,
+      "actually_read_ranges": [
+        [
+          1,
+          64
+        ]
+      ],
+      "purpose": "Bounded repo-scope assessment evidence; not a new all-pass per-file certification."
+    },
+    {
+      "path": "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/requirements.txt",
+      "sha256": "585af085a3dc0e550f503549d656fead2e363b09ff7758eb1dd4021158100d82",
+      "lines_at_binding": 214,
+      "actually_read_ranges": [
+        [
+          1,
+          214
+        ]
+      ],
+      "purpose": "Bounded repo-scope assessment evidence; not a new all-pass per-file certification."
+    },
+    {
+      "path": "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/backtester/requirements.txt",
+      "sha256": "001ea86b22a9f01ca29dcebad76fa6fabccf8fc4ae68ac66e1561e9f59459015",
+      "lines_at_binding": 13,
+      "actually_read_ranges": [
+        [
+          1,
+          13
+        ]
+      ],
+      "purpose": "Bounded repo-scope assessment evidence; not a new all-pass per-file certification."
+    },
+    {
+      "path": "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/soltui/requirements.txt",
+      "sha256": "3beae1365a0638d7be72ae94b53dcca0037456b97fc1be79ec087ba77358772a",
+      "lines_at_binding": 38,
+      "actually_read_ranges": [
+        [
+          1,
+          38
+        ]
+      ],
+      "purpose": "Bounded repo-scope assessment evidence; not a new all-pass per-file certification."
+    },
+    {
+      "path": "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/mongo/requirements.txt",
+      "sha256": "e74673f885994536dace29ff3d7dbd1a58156204eeed52eaf8d2c6a292ff9f5b",
+      "lines_at_binding": 5,
+      "actually_read_ranges": [
+        [
+          1,
+          5
+        ]
+      ],
+      "purpose": "Bounded repo-scope assessment evidence; not a new all-pass per-file certification."
+    },
+    {
+      "path": "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/scripts/requirements-market-capture.txt",
+      "sha256": "d6c502e6e5a2c49f0481de28cb9dc24f473668086822f64529ddc7299bf9e402",
+      "lines_at_binding": 3,
+      "actually_read_ranges": [
+        [
+          1,
+          3
+        ]
+      ],
+      "purpose": "Bounded repo-scope assessment evidence; not a new all-pass per-file certification."
+    },
+    {
+      "path": "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/oracle/mcp-requirements.txt",
+      "sha256": "88b88ee13c5c59aa11baaaa69a085c8c5e39bb4542d64dfb1aa9d5558a60c39f",
+      "lines_at_binding": 2,
+      "actually_read_ranges": [
+        [
+          1,
+          2
+        ]
+      ],
+      "purpose": "Bounded repo-scope assessment evidence; not a new all-pass per-file certification."
+    },
+    {
+      "path": "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/research/coinbase50-requirements.txt",
+      "sha256": "a90b4a78ebd53dab4a92cd5cd103db1aea3aceeaa31bc95f85d427eb465e23c1",
+      "lines_at_binding": 5,
+      "actually_read_ranges": [
+        [
+          1,
+          5
+        ]
+      ],
+      "purpose": "Bounded repo-scope assessment evidence; not a new all-pass per-file certification."
+    },
+    {
+      "path": "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/backtester/pyproject.toml",
+      "sha256": "d5f9d3b02e49ea4821a93c4b11a60eed0c646363ab18204e9af0ef215ee2a2b4",
+      "lines_at_binding": 20,
+      "actually_read_ranges": [
+        [
+          1,
+          20
+        ]
+      ],
+      "purpose": "Bounded repo-scope assessment evidence; not a new all-pass per-file certification."
+    },
+    {
+      "path": "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/soltui/pyproject.toml",
+      "sha256": "d279ca16788c58e113a15996827db5d78cfd94eed87005a0daa647f787de0d0e",
+      "lines_at_binding": 14,
+      "actually_read_ranges": [
+        [
+          1,
+          14
+        ]
+      ],
+      "purpose": "Bounded repo-scope assessment evidence; not a new all-pass per-file certification."
+    },
+    {
+      "path": "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/botmanager/pyproject.toml",
+      "sha256": "28295b3411159982e4f4b19dbd8369f1e70068ad9094fc5dae5ac674179ef2e6",
+      "lines_at_binding": 17,
+      "actually_read_ranges": [
+        [
+          1,
+          17
+        ]
+      ],
+      "purpose": "Bounded repo-scope assessment evidence; not a new all-pass per-file certification."
+    },
+    {
+      "path": "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/ecosystem/pyproject.toml",
+      "sha256": "9a39f94b3f53e9bc401e08b4cc737de12e505e89c174a3923ffa99b889a54af2",
+      "lines_at_binding": 22,
+      "actually_read_ranges": [
+        [
+          1,
+          22
+        ]
+      ],
+      "purpose": "Bounded repo-scope assessment evidence; not a new all-pass per-file certification."
+    },
+    {
+      "path": "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/oracle/pyproject.toml",
+      "sha256": "4e226e4cd773e9d47e0817d98197415ca58038de8a54809aa1cbf2a3b87a5dec",
+      "lines_at_binding": 19,
+      "actually_read_ranges": [
+        [
+          1,
+          19
+        ]
+      ],
+      "purpose": "Bounded repo-scope assessment evidence; not a new all-pass per-file certification."
+    },
+    {
+      "path": "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/executor/pyproject.toml",
+      "sha256": "18ca9761e7d2191d08412f431bdffb9471c18e79c4a1a63f38bc5383154c6e47",
+      "lines_at_binding": 37,
+      "actually_read_ranges": [
+        [
+          1,
+          37
+        ]
+      ],
+      "purpose": "Bounded repo-scope assessment evidence; not a new all-pass per-file certification."
+    },
+    {
+      "path": "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/liquidity/pyproject.toml",
+      "sha256": "41942bab72fca03d8837a2a109d9cf6db1c88140bf7fdbb0dffac4f7048377c5",
+      "lines_at_binding": 39,
+      "actually_read_ranges": [
+        [
+          1,
+          39
+        ]
+      ],
+      "purpose": "Bounded repo-scope assessment evidence; not a new all-pass per-file certification."
+    },
+    {
+      "path": "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/extension/package.json",
+      "sha256": "c55de8f707d8bd48a18a8c85d4904fde445c74cfab0ee87cce7472459e3933da",
+      "lines_at_binding": 21,
+      "actually_read_ranges": [
+        [
+          1,
+          21
+        ]
+      ],
+      "purpose": "Bounded repo-scope assessment evidence; not a new all-pass per-file certification."
+    },
+    {
+      "path": "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/website/package.json",
+      "sha256": "0fa01da513c87021074bb34b8eba2ca43d491abd4656ba6ba1546cb61e387cd9",
+      "lines_at_binding": 22,
+      "actually_read_ranges": [
+        [
+          1,
+          22
+        ]
+      ],
+      "purpose": "Bounded repo-scope assessment evidence; not a new all-pass per-file certification."
+    }
+  ],
+  "artifact_bindings": [
+    {
+      "path": "/tmp/oraclebot-python-audit-20261112.json",
+      "sha256": "4c74fbef33e8a21fb3f452a931352c2c15f1ef8c40435cf8a190f1ff05600c2f",
+      "use": "Existing result or current read-only check; individual scope and final-exit limits retained."
+    },
+    {
+      "path": "/tmp/oraclebot-repo-scope-readonly-checks-20261112.json",
+      "sha256": "6748f6136d9f69517b843ebd48b3a308aad2612b7d5e9f3b28c318c1407f5f88",
+      "use": "Existing result or current read-only check; individual scope and final-exit limits retained."
+    },
+    {
+      "path": "/tmp/oraclebot-repo-scope-ruff-settings-20261112.txt",
+      "sha256": "4073623add82cd1c512a6195bba3fb690efb364d2867cfdfeaf08a4bb5bd508d",
+      "use": "Existing result or current read-only check; individual scope and final-exit limits retained."
+    },
+    {
+      "path": "/tmp/oraclebot-repo-scope-ruff-settings-origin-20261112.txt",
+      "sha256": "dc37d216c5306f309cee156bcc061725fb047a71802a336fb03df3d973cbf0fc",
+      "use": "Existing result or current read-only check; individual scope and final-exit limits retained."
+    },
+    {
+      "path": "/tmp/oraclebot-soltui-review-receipt-20261112.json",
+      "sha256": "06f3286bd637a1f06d60c28a7b93ee177145b31fa90d152670b5b8ab30b0b7db",
+      "use": "Existing result or current read-only check; individual scope and final-exit limits retained."
+    },
+    {
+      "path": "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/.cdo/reviews-2026-11-12/soltui-root-ui-tests.json",
+      "sha256": "e221084f21650b693a902ad3c4c1e7efe5e5cb258affcf32c32f7c1198ed0706",
+      "use": "Existing result or current read-only check; individual scope and final-exit limits retained."
+    },
+    {
+      "path": "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/.cdo/reviews-2026-11-12/soltui-independent.json",
+      "sha256": "ddd89f1234dc412ae1433e83fd9daeb73b3c5a3ebc3a58d008a638d25f2a0a3c",
+      "use": "Existing result or current read-only check; individual scope and final-exit limits retained."
+    },
+    {
+      "path": "/tmp/oraclebot-python-audit-current-20261112.json",
+      "sha256": "d4aed3cc9bd3e56db22e4c90f3a4d622562e132271ae67b9a45f4159fdb9ebf9",
+      "use": "Fresh completed parent check; independently parsed/read in current assessment, no network rerun."
+    },
+    {
+      "path": "/tmp/oraclebot-python-audit-current-20261112.log",
+      "sha256": "15950a68a7ed99c59779717acefdceb3f69cfd31bde67d2c954f2a3cea4d7955",
+      "use": "Fresh completed parent check; independently parsed/read in current assessment, no network rerun."
+    },
+    {
+      "path": "/tmp/oraclebot-website-npm-audit-current-20261112.json",
+      "sha256": "70523a0d18ee47b8a8bfffea12d1c9e5279abe14d2dd2f95d2aaca59d02ee4fc",
+      "use": "Fresh completed parent check; independently parsed/read in current assessment, no network rerun."
+    },
+    {
+      "path": "/tmp/oraclebot-extension-npm-audit-current-20261112.json",
+      "sha256": "3a21859655e937d8642f3d3a5b6ea0085b7a4c35fd55adfda43556c325959f4f",
+      "use": "Fresh completed parent check; independently parsed/read in current assessment, no network rerun."
+    }
+  ],
+  "remaining": [
+    "Parent/root own architecture/pinning/tooling remediation decisions, full source/pass assembly, remaining outdated/unused/license/private-package qualifications and any final source freeze gates. Current public Python/website advisory checks are completed with explicit skipped-package scope.",
+    "Parent/root own125-runtime/four-forward-UI integrated guarded checks after final code stability, independent acceptance and delivery."
+  ],
+  "superseded_findings": [
+    "Historical missing Dependabot coverage no longer applies to the current configuration.",
+    "Initial missing isolated installed metadata is not the current compatibility state:85 packages pass current uv pip check.",
+    "Successful historical test assertions did not establish zero external attempts; later guard failure/fix receipts retain actual exits."
+  ],
+  "completed_parent_checks_independently_inspected": [
+    {
+      "command": [
+        "uvx",
+        "--offline",
+        "pip-audit",
+        "--path",
+        "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/.venv/lib/python3.13/site-packages",
+        "--format",
+        "json",
+        "--output",
+        "/tmp/oraclebot-python-audit-current-20261112.json",
+        "--progress-spinner",
+        "off",
+        "--timeout",
+        "10"
+      ],
+      "exit_code": 0,
+      "exit_evidence": "Parent direct completed-tool receipt; independent JSON/log read confirms counts/no-known-vulnerabilities text.",
+      "log": "/tmp/oraclebot-python-audit-current-20261112.log"
+    },
+    {
+      "command": [
+        "npm",
+        "audit",
+        "--json"
+      ],
+      "cwd": "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/website",
+      "exit_code": 0,
+      "artifact": "/tmp/oraclebot-website-npm-audit-current-20261112.json",
+      "exit_evidence": "Parent direct completed-tool receipt; independently parsed0 vulnerability metadata."
+    },
+    {
+      "command": [
+        "npm",
+        "audit",
+        "--json"
+      ],
+      "cwd": "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/extension",
+      "exit_code": 1,
+      "artifact": "/tmp/oraclebot-extension-npm-audit-current-20261112.json",
+      "exit_evidence": "Parent direct completed-tool receipt; independently parsed ENOLOCK."
+    }
+  ]
+}

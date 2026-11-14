@@ -11,6 +11,7 @@ from __future__ import annotations
 
 import argparse
 import hashlib
+import io
 import json
 import sys
 from pathlib import Path
@@ -31,7 +32,8 @@ ACCOUNT_USD = 144.0
 
 
 def run(csv_path: Path) -> dict:
-    raw = pd.read_csv(csv_path)
+    source_bytes = csv_path.read_bytes()
+    raw = pd.read_csv(io.BytesIO(source_bytes))
     frame = validate_bars(
         raw[(raw.timestamp >= HOLDOUT_START_TS) & (raw.timestamp < HOLDOUT_END_TS)].reset_index(drop=True), "1d"
     )
@@ -39,7 +41,7 @@ def run(csv_path: Path) -> dict:
     first = float(arrays["close"][0])
     out = {
         "schema": "grid-holdout/1",
-        "data_sha256": hashlib.sha256(csv_path.read_bytes()).hexdigest(),
+        "data_sha256": hashlib.sha256(source_bytes).hexdigest(),
         "bars": len(frame),
         "first_ts": int(arrays["ts"][0]),
         "last_ts": int(arrays["ts"][-1]),

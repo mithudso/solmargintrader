@@ -245,9 +245,15 @@ def _report(
         / instrument.split("/")[0]
         / "history.sqlite3"
     )
+    archive_missing = False
     try:
         if path.parent.is_symlink() or path.parent.parent.is_symlink():
             raise ValueError("oracle_archive_unavailable")
+        try:
+            path.lstat()
+        except FileNotFoundError:
+            archive_missing = True
+            raise ValueError("oracle_archive_missing") from None
         engine = ReadOnlyOracle(path, instrument=instrument, archived_versions=True)
         prediction = engine.predictions(now)
         base["native_interval"] = _interval_name(engine.bar_seconds)
@@ -270,16 +276,22 @@ def _report(
             for item in engine.strategies()
         ]
     except (OSError, ValueError, TypeError, sqlite3.Error):
+        reason = (
+            "oracle_archive_missing"
+            if archive_missing
+            else "oracle_archive_unavailable_or_incompatible"
+        )
         return {
             **base,
             "status": "unavailable",
-            "reason": "oracle_archive_unavailable_or_incompatible",
+            "reason": reason,
             "signal": None,
             "balance_percent": None,
             "strategies": [],
-            "market": {"status": "unavailable"},
+            "market": {"status": "unavailable", "reason": reason},
             "aggregate": {
                 "status": "unavailable",
+                "reason": reason,
                 "signal": None,
                 "balance_percent": None,
                 "included": [],
@@ -289,7 +301,7 @@ def _report(
             "graph": {
                 "schema_version": 1,
                 "status": "unavailable",
-                "reason": "oracle_archive_unavailable_or_incompatible",
+                "reason": reason,
                 "instrument": instrument,
                 "ticks": [],
             },
@@ -369,7 +381,7 @@ def _unavailable_display(view, reason):
             "graph": {"status": "unavailable", "reason": reason, "instrument": view["instrument"], "ticks": []}}
 
 
-def report(home, instrument: str, selected_ids=None, *, now=None, interval=None, strategy=None):
+def report(home, instrument: str, selected_ids=None, *, now=None, interval=None, strategy=None, forecast_home=None):
     """Display filters never change saved voters, worker policy, or native cadence."""
     if interval is not None and (not isinstance(interval, str) or not re.fullmatch(r"[1-9][0-9]{0,5}[smhd]", interval)):
         raise ValueError("invalid_oracle_display_interval")
@@ -396,7 +408,8 @@ def report(home, instrument: str, selected_ids=None, *, now=None, interval=None,
                "strategy": requested, "available_intervals": available, "strategies": strategies,
                "publication_instrument": study.get("instrument") if study else None,
                "published_strategy": study.get("accounts", [{}])[0].get("id") if selected_study else "published",
-               "scope": "read_only_display_native_forecasts_no_resampling"}
+               "scope": "read_only_ensemble_and_independent_live_projection",
+               "live_forecast_seconds_range": [5, 300]}
     if explicit and requested not in {row["id"] for row in strategies}:
         view = _unavailable_display(view, "requested_strategy_unavailable_for_instrument")
     elif interval is not None and native != interval:
@@ -412,4 +425,13 @@ def report(home, instrument: str, selected_ids=None, *, now=None, interval=None,
     view["display"] = display
     if "graph" in view:
         view["graph"]["view_key"] = view["instrument"] + ":" + str(display["interval"]) + ":" + requested
+    from .forecast import report as forecast_report
+    from .forecast_preferences import settings as forecast_settings
+
+    seconds = int(interval[:-1]) if interval and interval.endswith("s") else 60 if interval == "1m" else forecast_settings(forecast_home or home, instrument)["seconds"]
+    display["live_refresh_seconds"] = seconds
+    view["live_forecast"] = forecast_report(
+        forecast_home or home, instrument, horizon=seconds,
+        strategy=requested, now=now,
+    )
     return view

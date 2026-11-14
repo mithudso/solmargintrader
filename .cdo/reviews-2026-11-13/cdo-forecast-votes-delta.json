@@ -1,0 +1,892 @@
+{
+  "schema": "cdo-bound-source-delta-v1",
+  "observed_at": "2026-11-13T04:57:19.190661+00:00",
+  "status": "DELTA_REVIEW_COMPLETE_ONE_MEDIUM_FIXED_ROOT_GREEN_PENDING",
+  "scope": {
+    "root_task": "TASK-1540",
+    "baseline_commit": "a5053e9c859505a895935702a51180830b69b89f",
+    "review_mode": "Full file-level pass matrix over bound integration delta with exact inherited full semantic baseline; not a fresh whole-file audit",
+    "operations": "Read-only source/Git inspection, root-released test addition and exact one-line source fix, plus assigned receipt. No tests, network, service actions, installs, inference, agents or Git mutation by reviewer."
+  },
+  "injection_gate": "Completed for votes.py and test_votes.py, including comments/docstrings/strings/fixtures; no reviewer-directed or hostile content found.",
+  "activated_skills": [
+    {
+      "path": "/Users/mitch/.agents/skills/code-deep-optimizer/SKILL.md",
+      "reason": "Full bounded pass matrix and exact review binding"
+    },
+    {
+      "path": "/Users/mitch/.agents/skills/lang-python/SKILL.md",
+      "reason": "Python library/test stack"
+    },
+    {
+      "path": "/Users/mitch/.agents/skills/software-engineering-patterns/SKILL.md",
+      "reason": "Code review and standards with code-reviewer/coding-standards references"
+    }
+  ],
+  "file_receipts": [
+    {
+      "path": "ecosystem/votes.py",
+      "absolute_path": "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/ecosystem/votes.py",
+      "review_mode": "inherited_complete_semantic_baseline_plus_complete_current_delta",
+      "baseline_commit": "a5053e9c859505a895935702a51180830b69b89f",
+      "baseline_blob": "7e67161a4be832ac09d31171cbf9f2b87e9b9c61",
+      "baseline_sha256": "050ab77935498529504c81b326f6b235704a08db36098d39322beef8d3febeb3",
+      "baseline_lines": 415,
+      "coverage_row": {
+        "path": "ecosystem/votes.py",
+        "blob_sha": "7e67161a4be832ac09d31171cbf9f2b87e9b9c61",
+        "lines": 415,
+        "semantic_review": "complete",
+        "evidence": ".cdo/reviews-2026-11-12/ecosystem.json",
+        "baseline_python_ast_covered": true,
+        "unbound_js_syntax_check_observed": false
+      },
+      "coverage_row_matches_baseline": true,
+      "inherited_receipt_path": "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/.cdo/reviews-2026-11-12/ecosystem.json",
+      "inherited_receipt": {
+        "path": "ecosystem/votes.py",
+        "absolute_path": "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/ecosystem/votes.py",
+        "review_mode": "new_full_semantic",
+        "new_review_count": 1,
+        "original_blob": "7e67161a4be832ac09d31171cbf9f2b87e9b9c61",
+        "final_blob": "7e67161a4be832ac09d31171cbf9f2b87e9b9c61",
+        "sha256": "050ab77935498529504c81b326f6b235704a08db36098d39322beef8d3febeb3",
+        "original_lines": 415,
+        "final_lines": 415,
+        "read_ranges_original": [
+          [
+            1,
+            225
+          ],
+          [
+            226,
+            415
+          ]
+        ],
+        "semantic_focus": "Versioned instrument voter preferences, recorded policy semantics and per-strategy/native-frequency previews.",
+        "safety_focus": "No archive initialization, live readiness or profitability inference; explicit historical warmup stays nonprospective and never credits books.",
+        "passes": [
+          {
+            "id": "C1",
+            "state": "reviewed",
+            "reason": "Versioned instrument voter preferences, recorded policy semantics and per-strategy/native-frequency previews.",
+            "findings": []
+          },
+          {
+            "id": "C2",
+            "state": "reviewed",
+            "reason": "Versioned instrument voter preferences, recorded policy semantics and per-strategy/native-frequency previews.",
+            "findings": []
+          },
+          {
+            "id": "C3",
+            "state": "reviewed",
+            "reason": "Adverse cases and assertions inspected against component synthetic tests. No archive initialization, live readiness or profitability inference; explicit historical warmup stays nonprospective and never credits books.",
+            "findings": []
+          },
+          {
+            "id": "S1",
+            "state": "reviewed",
+            "reason": "No archive initialization, live readiness or profitability inference; explicit historical warmup stays nonprospective and never credits books.",
+            "findings": []
+          },
+          {
+            "id": "S2",
+            "state": "reviewed",
+            "reason": "No archive initialization, live readiness or profitability inference; explicit historical warmup stays nonprospective and never credits books.",
+            "findings": []
+          },
+          {
+            "id": "S3",
+            "state": "reviewed",
+            "reason": "No archive initialization, live readiness or profitability inference; explicit historical warmup stays nonprospective and never credits books.",
+            "findings": []
+          },
+          {
+            "id": "S4",
+            "state": "reviewed",
+            "reason": "Python 3.13/POSIX on supported macOS or existing browser/Node language features; no cross-platform acceptance claimed.",
+            "findings": []
+          },
+          {
+            "id": "S5",
+            "state": "reviewed",
+            "reason": "Structured abstention, stale/instrument mismatch and excluded voter reasons; configuration/version provenance preserved.",
+            "findings": []
+          },
+          {
+            "id": "P1",
+            "state": "reviewed",
+            "reason": "Bounded input/output, repeated work, page/array scans and fixture setup inspected. Versioned instrument voter preferences, recorded policy semantics and per-strategy/native-frequency previews.",
+            "findings": []
+          },
+          {
+            "id": "P2",
+            "state": "reviewed",
+            "reason": "No archive initialization, live readiness or profitability inference; explicit historical warmup stays nonprospective and never credits books.",
+            "findings": []
+          },
+          {
+            "id": "M1",
+            "state": "reviewed",
+            "reason": "Versioned instrument voter preferences, recorded policy semantics and per-strategy/native-frequency previews.",
+            "findings": []
+          },
+          {
+            "id": "M2",
+            "state": "reviewed",
+            "reason": "Versioned instrument voter preferences, recorded policy semantics and per-strategy/native-frequency previews.",
+            "findings": []
+          },
+          {
+            "id": "M3",
+            "state": "na",
+            "reason": "Repository-scope pass owned by parent; file-level audit does not claim repository architecture/dependency/tooling coverage.",
+            "findings": []
+          },
+          {
+            "id": "M4",
+            "state": "reviewed",
+            "reason": "Versioned instrument voter preferences, recorded policy semantics and per-strategy/native-frequency previews.",
+            "findings": []
+          },
+          {
+            "id": "T1",
+            "state": "reviewed",
+            "reason": "Adverse cases and assertions inspected against component synthetic tests. No archive initialization, live readiness or profitability inference; explicit historical warmup stays nonprospective and never credits books.",
+            "findings": []
+          },
+          {
+            "id": "T2",
+            "state": "na",
+            "reason": "Repository-scope pass owned by parent; file-level audit does not claim repository architecture/dependency/tooling coverage.",
+            "findings": []
+          },
+          {
+            "id": "T3",
+            "state": "na",
+            "reason": "Repository-scope pass owned by parent; file-level audit does not claim repository architecture/dependency/tooling coverage.",
+            "findings": []
+          },
+          {
+            "id": "T4",
+            "state": "na",
+            "reason": "Production source; suite timing and fixture isolation are reviewed on test-file rows.",
+            "findings": []
+          },
+          {
+            "id": "M5",
+            "state": "na",
+            "reason": "Library/browser module or test file has no owner-facing application entrypoint.",
+            "findings": []
+          }
+        ],
+        "changed": false,
+        "final_review": "Complete original bounded source read plus every changed hunk reread, followed by final code-focused self-review. Independent blind review remains parent-owned."
+      },
+      "current_blob": "d56e2d528a6aaa2d276cb43fca59d704c46b2a80",
+      "current_sha256": "9871ad3b02d3c983913a30152c58c58d3c39ea50e3d5acef4a2d843df7025241",
+      "current_lines": 425,
+      "read_evidence": {
+        "inherited_original_read_ranges": [
+          [
+            1,
+            225
+          ],
+          [
+            226,
+            415
+          ]
+        ],
+        "current_context_read_ranges": [
+          [
+            372,
+            425
+          ]
+        ],
+        "complete_delta_reviewed": true,
+        "claim": "Baseline semantic coverage is inherited from the exact matching archived blob. Current deltas and containing contexts were read directly. Hashes bind these reads; they do not establish fresh whole-file coverage.",
+        "prefixed_context_read_ranges": [
+          [
+            1,
+            180
+          ],
+          [
+            181,
+            350
+          ],
+          [
+            351,
+            425
+          ]
+        ],
+        "fresh_final_delta_read_complete": true
+      },
+      "delta": [
+        {
+          "operation": "replace",
+          "baseline_lines": [
+            372,
+            372
+          ],
+          "current_lines": [
+            372,
+            372
+          ],
+          "before": [
+            "def report(home, instrument: str, selected_ids=None, *, now=None, interval=None, strategy=None):"
+          ],
+          "after": [
+            "def report(home, instrument: str, selected_ids=None, *, now=None, interval=None, strategy=None, forecast_home=None):"
+          ]
+        },
+        {
+          "operation": "replace",
+          "baseline_lines": [
+            399,
+            399
+          ],
+          "current_lines": [
+            399,
+            400
+          ],
+          "before": [
+            "               \"scope\": \"read_only_display_native_forecasts_no_resampling\"}"
+          ],
+          "after": [
+            "               \"scope\": \"read_only_ensemble_and_independent_live_projection\",",
+            "               \"live_forecast_seconds_range\": [5, 300]}"
+          ]
+        },
+        {
+          "operation": "insert",
+          "baseline_lines": [
+            415,
+            414
+          ],
+          "current_lines": [
+            416,
+            424
+          ],
+          "before": [],
+          "after": [
+            "    from .forecast import report as forecast_report",
+            "    from .forecast_preferences import settings as forecast_settings",
+            "",
+            "    seconds = int(interval[:-1]) if interval and interval.endswith(\"s\") else 60 if interval == \"1m\" else forecast_settings(forecast_home or home, instrument)[\"seconds\"]",
+            "    display[\"live_refresh_seconds\"] = seconds",
+            "    view[\"live_forecast\"] = forecast_report(",
+            "        forecast_home or home, instrument, horizon=seconds,",
+            "        strategy=requested, now=now,",
+            "    )"
+          ]
+        }
+      ],
+      "unified_diff": [
+        "--- ecosystem/votes.py@a5053e9c859505a895935702a51180830b69b89f\n",
+        "+++ ecosystem/votes.py@final-reviewed-current\n",
+        "@@ -367,11 +367,11 @@\n",
+        "             \"aggregate\": {\"status\": \"unavailable\", \"reason\": reason, \"signal\": None,\n",
+        "                           \"balance_percent\": None, \"expires_at\": None, \"included\": [], \"excluded\": []},\n",
+        "             \"graph\": {\"status\": \"unavailable\", \"reason\": reason, \"instrument\": view[\"instrument\"], \"ticks\": []}}\n",
+        " \n",
+        " \n",
+        "-def report(home, instrument: str, selected_ids=None, *, now=None, interval=None, strategy=None):\n",
+        "+def report(home, instrument: str, selected_ids=None, *, now=None, interval=None, strategy=None, forecast_home=None):\n",
+        "     \"\"\"Display filters never change saved voters, worker policy, or native cadence.\"\"\"\n",
+        "     if interval is not None and (not isinstance(interval, str) or not re.fullmatch(r\"[1-9][0-9]{0,5}[smhd]\", interval)):\n",
+        "         raise ValueError(\"invalid_oracle_display_interval\")\n",
+        "     if strategy is not None and (not isinstance(strategy, str) or not re.fullmatch(r\"[A-Za-z0-9_-]{1,120}\", strategy)):\n",
+        "         raise ValueError(\"invalid_oracle_display_strategy\")\n",
+        "@@ -394,11 +394,12 @@\n",
+        "         available = [native] if native else []\n",
+        "     display = {\"instrument\": view[\"instrument\"], \"interval\": interval or native, \"requested_interval\": interval,\n",
+        "                \"strategy\": requested, \"available_intervals\": available, \"strategies\": strategies,\n",
+        "                \"publication_instrument\": study.get(\"instrument\") if study else None,\n",
+        "                \"published_strategy\": study.get(\"accounts\", [{}])[0].get(\"id\") if selected_study else \"published\",\n",
+        "-               \"scope\": \"read_only_display_native_forecasts_no_resampling\"}\n",
+        "+               \"scope\": \"read_only_ensemble_and_independent_live_projection\",\n",
+        "+               \"live_forecast_seconds_range\": [5, 300]}\n",
+        "     if explicit and requested not in {row[\"id\"] for row in strategies}:\n",
+        "         view = _unavailable_display(view, \"requested_strategy_unavailable_for_instrument\")\n",
+        "     elif interval is not None and native != interval:\n",
+        "         view = _unavailable_display(view, \"requested_interval_unavailable_no_native_forecasts\")\n",
+        "     elif explicit and not selected_study:\n",
+        "@@ -410,6 +411,15 @@\n",
+        "         view[\"graph\"] = graph\n",
+        "         view[\"preview\"] = True\n",
+        "     view[\"display\"] = display\n",
+        "     if \"graph\" in view:\n",
+        "         view[\"graph\"][\"view_key\"] = view[\"instrument\"] + \":\" + str(display[\"interval\"]) + \":\" + requested\n",
+        "+    from .forecast import report as forecast_report\n",
+        "+    from .forecast_preferences import settings as forecast_settings\n",
+        "+\n",
+        "+    seconds = int(interval[:-1]) if interval and interval.endswith(\"s\") else 60 if interval == \"1m\" else forecast_settings(forecast_home or home, instrument)[\"seconds\"]\n",
+        "+    display[\"live_refresh_seconds\"] = seconds\n",
+        "+    view[\"live_forecast\"] = forecast_report(\n",
+        "+        forecast_home or home, instrument, horizon=seconds,\n",
+        "+        strategy=requested, now=now,\n",
+        "+    )\n",
+        "     return view\n"
+      ],
+      "passes": {
+        "C1": {
+          "state": "reviewed",
+          "reason": "Reviewed complete integration delta plus exact one-line closure. Native interval mismatch now always calls _unavailable_display; independent live_forecast is appended afterward and does not inherit ensemble authority."
+        },
+        "C2": {
+          "state": "reviewed",
+          "reason": "Exact instrument/strategy/forecast owner binding preserved. Removing the ten-second bypass restores native ensemble interval identity without changing live horizon/cadence inputs."
+        },
+        "C3": {
+          "state": "reviewed",
+          "reason": "Root guarded RED actually reached the new status assertion and failed available != unavailable. Exact source one-line closure restores the previously accepted mismatch path; root GREEN remains pending."
+        },
+        "S1": {
+          "state": "reviewed",
+          "reason": "Injection gate ran before source review. No reviewer-directed directive, secret, code evaluation or order operation found in reviewed delta and context."
+        },
+        "S2": {
+          "state": "reviewed",
+          "reason": "Reviewed new preference/report read paths and existing error contracts. No write, provider call, resource creation or service lifecycle added by votes.report; downstream forecast readers use bounded read-only connections."
+        },
+        "S3": {
+          "state": "reviewed",
+          "reason": "String validation and downstream integer 5-300 validation preserved. Native mismatches now always clear qualification and graph, including ten seconds; no input normalization added."
+        },
+        "S4": {
+          "state": "reviewed",
+          "reason": "New local imports and integer conversion use repository-supported Python/stdlib features. No new runtime or platform compatibility assumption introduced."
+        },
+        "S5": {
+          "state": "reviewed",
+          "reason": "Inspected live_refresh_seconds, supported range, independent scope and existing explicit unavailable reasons. No new silent catch or secret output in votes delta."
+        },
+        "P1": {
+          "state": "reviewed",
+          "reason": "New work is a constant number of preference/report reads. No source scan, unbounded collection or algorithm duplication added in votes delta."
+        },
+        "P2": {
+          "state": "reviewed",
+          "reason": "votes.report remains a read path. It does not mutate saved voter selection, research policy, frame state or worker ownership; current preference and frame carry their own instrument/scope identity."
+        },
+        "M1": {
+          "state": "reviewed",
+          "reason": "New argument, local imports and metadata follow existing module conventions. No Medium readability defect beyond the behavioral interval condition."
+        },
+        "M2": {
+          "state": "reviewed",
+          "reason": "Separate forecast.report is reused; no forecast mathematics or preference storage logic copied into votes.py."
+        },
+        "M3": {
+          "state": "na",
+          "reason": "N/A: repository architecture and centralized-configuration pass is root-owned."
+        },
+        "M4": {
+          "state": "reviewed",
+          "reason": "Read-only/native cadence docstring and independent projection scope now agree with interval guard. Supported seconds metadata remains [5,300]."
+        },
+        "T1": {
+          "state": "reviewed",
+          "reason": "Counterexample authored and actual guarded RED inspected with bound source/test hashes. Original native proof assertions retained. Root GREEN/current combined gate pending."
+        },
+        "T2": {
+          "state": "na",
+          "reason": "N/A: repository dependency/supply-chain pass is root-owned."
+        },
+        "T3": {
+          "state": "na",
+          "reason": "N/A: repository tooling pass is root-owned."
+        },
+        "T4": {
+          "state": "na",
+          "reason": "N/A: votes.py is production source; test-file performance disposition appears in the extended test receipt."
+        },
+        "M5": {
+          "state": "na",
+          "reason": "N/A: votes.py is a library module with no standalone runnable entrypoint."
+        }
+      },
+      "authored_fix": {
+        "line": 403,
+        "before": "elif interval is not None and interval != \"10s\" and native != interval:",
+        "after": "elif interval is not None and native != interval:",
+        "pre_fix_sha256": "afb8854861fd291204f7672eee1c2cdb26b6be89eaefc4ebfe2377222eb864ed",
+        "final_sha256": "9871ad3b02d3c983913a30152c58c58d3c39ea50e3d5acef4a2d843df7025241",
+        "shape": "exact one-line removal only; complete surrounding report reread at 372-425"
+      }
+    },
+    {
+      "path": "ecosystem/tests/test_votes.py",
+      "absolute_path": "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/ecosystem/tests/test_votes.py",
+      "review_mode": "inherited_complete_semantic_baseline_plus_complete_current_delta",
+      "baseline_commit": "a5053e9c859505a895935702a51180830b69b89f",
+      "baseline_blob": "3eba128aef6f47398b579053a188eecb121575b7",
+      "baseline_sha256": "12a20d87d4b6352a940591612b3e27a3a0439069003f3f21a43eab9b83c8d198",
+      "baseline_lines": 217,
+      "coverage_row": {
+        "path": "ecosystem/tests/test_votes.py",
+        "blob_sha": "3eba128aef6f47398b579053a188eecb121575b7",
+        "lines": 217,
+        "semantic_review": "complete",
+        "evidence": ".cdo/reviews-2026-11-12/ecosystem.json",
+        "baseline_python_ast_covered": true,
+        "unbound_js_syntax_check_observed": false
+      },
+      "coverage_row_matches_baseline": true,
+      "inherited_receipt_path": "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/.cdo/reviews-2026-11-12/ecosystem.json",
+      "inherited_receipt": {
+        "path": "ecosystem/tests/test_votes.py",
+        "absolute_path": "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/ecosystem/tests/test_votes.py",
+        "review_mode": "new_full_semantic",
+        "new_review_count": 1,
+        "original_blob": "3eba128aef6f47398b579053a188eecb121575b7",
+        "final_blob": "3eba128aef6f47398b579053a188eecb121575b7",
+        "sha256": "12a20d87d4b6352a940591612b3e27a3a0439069003f3f21a43eab9b83c8d198",
+        "original_lines": 217,
+        "final_lines": 217,
+        "read_ranges_original": [
+          [
+            1,
+            150
+          ],
+          [
+            151,
+            217
+          ]
+        ],
+        "semantic_focus": "Read-only archive/policy/version evidence, stale/future/instrument refusal, explicit voter revisions and no native source mutation.",
+        "safety_focus": "All state is temporary fixture state; native service/provider/process operations mocked or loopback-only. Read-only archive/policy/version evidence, stale/future/instrument refusal, explicit voter revisions and no native source mutation.",
+        "passes": [
+          {
+            "id": "C1",
+            "state": "reviewed",
+            "reason": "Read-only archive/policy/version evidence, stale/future/instrument refusal, explicit voter revisions and no native source mutation.",
+            "findings": []
+          },
+          {
+            "id": "C2",
+            "state": "reviewed",
+            "reason": "Read-only archive/policy/version evidence, stale/future/instrument refusal, explicit voter revisions and no native source mutation.",
+            "findings": []
+          },
+          {
+            "id": "C3",
+            "state": "reviewed",
+            "reason": "Adverse cases and assertions inspected against component synthetic tests. All state is temporary fixture state; native service/provider/process operations mocked or loopback-only. Read-only archive/policy/version evidence, stale/future/instrument refusal, explicit voter revisions and no native source mutation.",
+            "findings": []
+          },
+          {
+            "id": "S1",
+            "state": "reviewed",
+            "reason": "All state is temporary fixture state; native service/provider/process operations mocked or loopback-only. Read-only archive/policy/version evidence, stale/future/instrument refusal, explicit voter revisions and no native source mutation.",
+            "findings": []
+          },
+          {
+            "id": "S2",
+            "state": "reviewed",
+            "reason": "All state is temporary fixture state; native service/provider/process operations mocked or loopback-only. Read-only archive/policy/version evidence, stale/future/instrument refusal, explicit voter revisions and no native source mutation.",
+            "findings": []
+          },
+          {
+            "id": "S3",
+            "state": "reviewed",
+            "reason": "All state is temporary fixture state; native service/provider/process operations mocked or loopback-only. Read-only archive/policy/version evidence, stale/future/instrument refusal, explicit voter revisions and no native source mutation.",
+            "findings": []
+          },
+          {
+            "id": "S4",
+            "state": "reviewed",
+            "reason": "Python 3.13/POSIX on supported macOS or existing browser/Node language features; no cross-platform acceptance claimed.",
+            "findings": []
+          },
+          {
+            "id": "S5",
+            "state": "reviewed",
+            "reason": "Assertions target observable state/results rather than coverage-only execution; private canaries validate redaction where applicable.",
+            "findings": []
+          },
+          {
+            "id": "P1",
+            "state": "reviewed",
+            "reason": "Bounded input/output, repeated work, page/array scans and fixture setup inspected. Read-only archive/policy/version evidence, stale/future/instrument refusal, explicit voter revisions and no native source mutation.",
+            "findings": []
+          },
+          {
+            "id": "P2",
+            "state": "reviewed",
+            "reason": "All state is temporary fixture state; native service/provider/process operations mocked or loopback-only. Read-only archive/policy/version evidence, stale/future/instrument refusal, explicit voter revisions and no native source mutation.",
+            "findings": []
+          },
+          {
+            "id": "M1",
+            "state": "reviewed",
+            "reason": "Read-only archive/policy/version evidence, stale/future/instrument refusal, explicit voter revisions and no native source mutation.",
+            "findings": []
+          },
+          {
+            "id": "M2",
+            "state": "reviewed",
+            "reason": "Read-only archive/policy/version evidence, stale/future/instrument refusal, explicit voter revisions and no native source mutation.",
+            "findings": []
+          },
+          {
+            "id": "M3",
+            "state": "na",
+            "reason": "Repository-scope pass owned by parent; file-level audit does not claim repository architecture/dependency/tooling coverage.",
+            "findings": []
+          },
+          {
+            "id": "M4",
+            "state": "reviewed",
+            "reason": "Read-only archive/policy/version evidence, stale/future/instrument refusal, explicit voter revisions and no native source mutation.",
+            "findings": []
+          },
+          {
+            "id": "T1",
+            "state": "reviewed",
+            "reason": "Adverse cases and assertions inspected against component synthetic tests. All state is temporary fixture state; native service/provider/process operations mocked or loopback-only. Read-only archive/policy/version evidence, stale/future/instrument refusal, explicit voter revisions and no native source mutation.",
+            "findings": []
+          },
+          {
+            "id": "T2",
+            "state": "na",
+            "reason": "Repository-scope pass owned by parent; file-level audit does not claim repository architecture/dependency/tooling coverage.",
+            "findings": []
+          },
+          {
+            "id": "T3",
+            "state": "na",
+            "reason": "Repository-scope pass owned by parent; file-level audit does not claim repository architecture/dependency/tooling coverage.",
+            "findings": []
+          },
+          {
+            "id": "T4",
+            "state": "reviewed",
+            "reason": "Mutable SQLite/Git fixtures remain per-test; bounded joins and teardown assertions retained. Four real loopback fixtures reduce only idle shutdown polling0.5\u21920.01s; complete suite249 passed8.089s versus246/24.256s; one-run comparison.",
+            "findings": []
+          },
+          {
+            "id": "M5",
+            "state": "na",
+            "reason": "Library/browser module or test file has no owner-facing application entrypoint.",
+            "findings": []
+          }
+        ],
+        "changed": false,
+        "final_review": "Complete original bounded source read plus every changed hunk reread, followed by final code-focused self-review. Independent blind review remains parent-owned."
+      },
+      "current_blob": "43c3cd77f330e474a5b9f578f0fb38fba0246b7b",
+      "current_sha256": "5064b875d48c9b473cee5a109716152aeaea66d62b26e40a817091b87824f70e",
+      "current_lines": 248,
+      "read_evidence": {
+        "inherited_original_read_ranges": [
+          [
+            1,
+            150
+          ],
+          [
+            151,
+            217
+          ]
+        ],
+        "complete_delta_reviewed": true,
+        "claim": "Baseline semantic coverage is inherited from the exact matching archived blob. Current deltas and containing contexts were read directly. Hashes bind these reads; they do not establish fresh whole-file coverage.",
+        "pre_author_context_read_ranges": [
+          [
+            1,
+            220
+          ]
+        ],
+        "current_context_read_ranges": [
+          [
+            81,
+            140
+          ]
+        ],
+        "fresh_final_delta_read_complete": true,
+        "unchanged_ranges": "Current lines 1-86,90-103,132-248 are unchanged original/incoming context mapped through the added test; no fresh whole-file coverage claim."
+      },
+      "delta": [
+        {
+          "operation": "insert",
+          "baseline_lines": [
+            87,
+            86
+          ],
+          "current_lines": [
+            87,
+            89
+          ],
+          "before": [],
+          "after": [
+            "        seconds = votes.report(self.home, \"SOL/USD\", now=1001, interval=\"17s\")",
+            "        self.assertEqual(seconds[\"display\"][\"live_refresh_seconds\"], 17)",
+            "        self.assertEqual(seconds[\"display\"][\"live_forecast_seconds_range\"], [5, 300])"
+          ]
+        },
+        {
+          "operation": "insert",
+          "baseline_lines": [
+            98,
+            97
+          ],
+          "current_lines": [
+            101,
+            128
+          ],
+          "before": [],
+          "after": [
+            "        self.assertEqual(saved, votes.settings(self.home, \"SOL/USD\"))",
+            "        self.assertEqual(before, hashlib.sha256(path.read_bytes()).hexdigest())",
+            "",
+            "    def test_ten_second_live_view_cannot_qualify_native_minute_ensemble(self):",
+            "        path, _ = self.archive()",
+            "        before = hashlib.sha256(path.read_bytes()).hexdigest()",
+            "        saved = votes.settings(self.home, \"SOL/USD\")",
+            "        native = votes.report(self.home, \"SOL/USD\", now=1001, interval=\"1m\")",
+            "        self.assertEqual(native[\"status\"], \"available\")",
+            "        self.assertEqual(native[\"signal\"], \"Strong Buy\")",
+            "        self.assertEqual(native[\"display\"][\"available_intervals\"], [\"1m\"])",
+            "        self.assertTrue(native[\"graph\"][\"ticks\"])",
+            "",
+            "        requested = votes.report(self.home, \"SOL/USD\", now=1001, interval=\"10s\")",
+            "        self.assertEqual(requested[\"display\"][\"interval\"], \"10s\")",
+            "        self.assertEqual(requested[\"status\"], \"unavailable\")",
+            "        self.assertEqual(requested[\"reason\"], \"requested_interval_unavailable_no_native_forecasts\")",
+            "        self.assertIsNone(requested[\"signal\"])",
+            "        self.assertIsNone(requested[\"balance_percent\"])",
+            "        self.assertEqual(requested[\"aggregate\"][\"status\"], \"unavailable\")",
+            "        self.assertIsNone(requested[\"aggregate\"][\"signal\"])",
+            "        self.assertIsNone(requested[\"aggregate\"][\"balance_percent\"])",
+            "        self.assertEqual(requested[\"aggregate\"][\"included\"], [])",
+            "        self.assertEqual(requested[\"graph\"][\"ticks\"], [])",
+            "        self.assertEqual(requested[\"live_forecast\"][\"status\"], \"waiting\")",
+            "        self.assertEqual(requested[\"live_forecast\"][\"instrument\"], \"SOL/USD\")",
+            "        self.assertEqual(requested[\"live_forecast\"][\"horizon_seconds\"], 10)",
+            "        self.assertEqual(requested[\"live_forecast\"][\"refresh_seconds\"], 10)"
+          ]
+        }
+      ],
+      "unified_diff": [
+        "--- ecosystem/tests/test_votes.py@a5053e9c859505a895935702a51180830b69b89f\n",
+        "+++ ecosystem/tests/test_votes.py@final-reviewed-current\n",
+        "@@ -82,10 +82,13 @@\n",
+        "         path, card = self.archive()\n",
+        "         before = hashlib.sha256(path.read_bytes()).hexdigest()\n",
+        "         saved = votes.settings(self.home, \"SOL/USD\")\n",
+        "         view = votes.report(self.home, \"SOL/USD\", now=1001, interval=\"1m\", strategy=card)\n",
+        "         self.assertEqual(view[\"display\"][\"available_intervals\"], [\"1m\"])\n",
+        "+        seconds = votes.report(self.home, \"SOL/USD\", now=1001, interval=\"17s\")\n",
+        "+        self.assertEqual(seconds[\"display\"][\"live_refresh_seconds\"], 17)\n",
+        "+        self.assertEqual(seconds[\"display\"][\"live_forecast_seconds_range\"], [5, 300])\n",
+        "         self.assertEqual(view[\"selected_ids\"], [card])\n",
+        "         self.assertTrue(view[\"preview\"])\n",
+        "         self.assertEqual(view[\"signal\"], \"Strong Buy\")\n",
+        "         self.assertTrue(view[\"graph\"][\"hide_aggregate\"])\n",
+        "         for tick in view[\"graph\"][\"ticks\"]:\n",
+        "@@ -93,10 +96,38 @@\n",
+        "             self.assertEqual([row[\"strategy_id\"] for row in tick[\"strategies\"]], [card])\n",
+        "         mismatch = votes.report(self.home, \"SOL/USD\", now=1001, interval=\"1h\", strategy=card)\n",
+        "         self.assertEqual(mismatch[\"status\"], \"unavailable\")\n",
+        "         self.assertIn(\"no_native_forecasts\", mismatch[\"reason\"])\n",
+        "         self.assertEqual(mismatch[\"graph\"][\"ticks\"], [])\n",
+        "+        self.assertEqual(saved, votes.settings(self.home, \"SOL/USD\"))\n",
+        "+        self.assertEqual(before, hashlib.sha256(path.read_bytes()).hexdigest())\n",
+        "+\n",
+        "+    def test_ten_second_live_view_cannot_qualify_native_minute_ensemble(self):\n",
+        "+        path, _ = self.archive()\n",
+        "+        before = hashlib.sha256(path.read_bytes()).hexdigest()\n",
+        "+        saved = votes.settings(self.home, \"SOL/USD\")\n",
+        "+        native = votes.report(self.home, \"SOL/USD\", now=1001, interval=\"1m\")\n",
+        "+        self.assertEqual(native[\"status\"], \"available\")\n",
+        "+        self.assertEqual(native[\"signal\"], \"Strong Buy\")\n",
+        "+        self.assertEqual(native[\"display\"][\"available_intervals\"], [\"1m\"])\n",
+        "+        self.assertTrue(native[\"graph\"][\"ticks\"])\n",
+        "+\n",
+        "+        requested = votes.report(self.home, \"SOL/USD\", now=1001, interval=\"10s\")\n",
+        "+        self.assertEqual(requested[\"display\"][\"interval\"], \"10s\")\n",
+        "+        self.assertEqual(requested[\"status\"], \"unavailable\")\n",
+        "+        self.assertEqual(requested[\"reason\"], \"requested_interval_unavailable_no_native_forecasts\")\n",
+        "+        self.assertIsNone(requested[\"signal\"])\n",
+        "+        self.assertIsNone(requested[\"balance_percent\"])\n",
+        "+        self.assertEqual(requested[\"aggregate\"][\"status\"], \"unavailable\")\n",
+        "+        self.assertIsNone(requested[\"aggregate\"][\"signal\"])\n",
+        "+        self.assertIsNone(requested[\"aggregate\"][\"balance_percent\"])\n",
+        "+        self.assertEqual(requested[\"aggregate\"][\"included\"], [])\n",
+        "+        self.assertEqual(requested[\"graph\"][\"ticks\"], [])\n",
+        "+        self.assertEqual(requested[\"live_forecast\"][\"status\"], \"waiting\")\n",
+        "+        self.assertEqual(requested[\"live_forecast\"][\"instrument\"], \"SOL/USD\")\n",
+        "+        self.assertEqual(requested[\"live_forecast\"][\"horizon_seconds\"], 10)\n",
+        "+        self.assertEqual(requested[\"live_forecast\"][\"refresh_seconds\"], 10)\n",
+        "         self.assertEqual(saved, votes.settings(self.home, \"SOL/USD\"))\n",
+        "         self.assertEqual(before, hashlib.sha256(path.read_bytes()).hexdigest())\n",
+        " \n",
+        "     def test_selection_is_versioned_and_cannot_overwrite_history(self):\n",
+        "         card = votes.catalog()[0][\"strategy_id\"]\n"
+      ],
+      "passes": {
+        "C1": {
+          "state": "reviewed",
+          "reason": "Real native archive establishes available one-minute ensemble, then ten-second request must clear ensemble signal/balance/qualified members and graph; independent ten-second response remains inspectable."
+        },
+        "C2": {
+          "state": "reviewed",
+          "reason": "Calls the public votes.report API and asserts both native and requested identities. Original native frequency, version provenance and immutability assertions remain."
+        },
+        "C3": {
+          "state": "reviewed",
+          "reason": "Root guarded RED passed the native available/Strong Buy/graph assertions before failing precisely at requested status available != unavailable; test bytes match the immutable source-before manifest."
+        },
+        "S1": {
+          "state": "reviewed",
+          "reason": "Entire existing test and added delta inspected as untrusted data. No reviewer-directed directive or hostile content found. All archive state is isolated under TemporaryDirectory."
+        },
+        "S2": {
+          "state": "reviewed",
+          "reason": "Uses existing per-test owned temporary archive and cleanup. No service, network, subprocess or external owner state in new test."
+        },
+        "S3": {
+          "state": "reviewed",
+          "reason": "Fixed SOL/USD, 1m and 10s fixtures exercise interval identity and separate live_forecast metadata without relaxing source validation."
+        },
+        "S4": {
+          "state": "reviewed",
+          "reason": "Uses existing unittest/stdlib/hashlib fixture conventions and no new dependencies."
+        },
+        "S5": {
+          "state": "reviewed",
+          "reason": "Assertions inspect explicit unavailable reason, empty qualification and graph, live projection metadata and archive/settings read-only effects."
+        },
+        "P1": {
+          "state": "reviewed",
+          "reason": "Adds one small archive fixture and two public report reads. No sleep, process or broad scan added."
+        },
+        "P2": {
+          "state": "reviewed",
+          "reason": "No asynchronous or shared mutable state added; each test keeps its own temporary archive."
+        },
+        "M1": {
+          "state": "reviewed",
+          "reason": "Behavior-focused test name and explicit externally visible assertions. Existing test body and incoming 17s metadata assertions preserved."
+        },
+        "M2": {
+          "state": "reviewed",
+          "reason": "Reuses archive and settings helpers; does not duplicate forecast implementation."
+        },
+        "M3": {
+          "state": "na",
+          "reason": "N/A: repository architecture and centralized-configuration pass is root-owned."
+        },
+        "M4": {
+          "state": "reviewed",
+          "reason": "Test name and native/mismatched/independent assertions describe actual requested contract."
+        },
+        "T1": {
+          "state": "reviewed",
+          "reason": "Meaningful regression added and root guarded RED confirmed against exact test/source hashes. Native control, cleared mismatch outputs and preserved independent ten-second response are asserted; root GREEN is pending."
+        },
+        "T2": {
+          "state": "na",
+          "reason": "N/A: repository dependency/supply-chain pass is root-owned."
+        },
+        "T3": {
+          "state": "na",
+          "reason": "N/A: repository tooling pass is root-owned."
+        },
+        "T4": {
+          "state": "reviewed",
+          "reason": "Per-test mutable SQLite fixture stays isolated. No timers or sleeps added; two bounded reads do not warrant fixture hoisting or parallelization changes."
+        },
+        "M5": {
+          "state": "na",
+          "reason": "Test module has no owner-facing standalone entrypoint."
+        }
+      }
+    }
+  ],
+  "findings": [
+    {
+      "id": "VOTES-FORECAST-1",
+      "pass": "C1",
+      "related_passes": [
+        "C2",
+        "S3",
+        "M4",
+        "T1"
+      ],
+      "path": "ecosystem/votes.py",
+      "line": 403,
+      "severity": "Medium",
+      "finding": "The explicit 10s bypass retains native one-minute ensemble qualification, signal, balance and graph while display.interval/view_key identify a ten-second request. A separate live_forecast already exists, so this bypass is not needed to expose the provisional ten-second projection.",
+      "impact": "A caller can receive available qualified native-minute evidence under a requested ten-second display identity. When the independent projection is absent, UI aggregate fallback can display that native signal beside next-ten-second controls. This is a read-only financial-evidence identity defect; no signing or order authority is added.",
+      "criterion": "Medium: concrete wrong externally visible result for a valid input; source branch and positive native fixture establish the trigger.",
+      "fix": "Remove only `interval != \"10s\" and` from the native-interval mismatch condition. Keep separate live_forecast generation after _unavailable_display.",
+      "status": "fixed_static_closure_root_GREEN_pending",
+      "counterexample": "ecosystem.tests.test_votes.VoteSelectionTests.test_ten_second_live_view_cannot_qualify_native_minute_ensemble",
+      "closure": "Removed only the ten-second bypass from line403 after actual guarded RED. Entire final report implementation at lines372-425 and complete final baseline-to-current delta reread.",
+      "guarded_red_evidence": "/tmp/oraclebot-forecast-combined-gate-yscuq1np/runs/combined-ecosystem-review_red-a2b59c69228b4e03b686df91a671099b/result.json"
+    }
+  ],
+  "severity_counts": {
+    "Critical": 0,
+    "High": 0,
+    "Medium": 0,
+    "Low": 0
+  },
+  "qualified_non_findings": [
+    {
+      "topic": "minute/hour/day synonyms",
+      "reason": "The current UI requests whole seconds and legacy exact1m; caller contract does not authorize interpreting other minute/hour/day intervals as live horizons. Native mismatches remain unavailable. No additional Medium asserted and no normalization added."
+    },
+    {
+      "topic": "coin_strategy_home_binding",
+      "reason": "web.py passes selected research home to ensemble and controls.home to forecast_home. votes.py consistently uses forecast_home for preference and live frame. forecast.report checks exact instrument/horizon/strategy/scope; no merge into native aggregate is added."
+    }
+  ],
+  "verification": {
+    "state": "root_guarded_GREEN_and_combined_gate_pending",
+    "commands_executed_by_reviewer": [],
+    "tests_executed_by_reviewer": false,
+    "source_fix_applied": true,
+    "red": {
+      "launch_path": "/tmp/oraclebot-pr241-review-20261112/forecast-review_red-launch.json",
+      "launch_sha256": "2442ad4dfcab8eaf339fef2d5916288b36f4d0bd7fc53133e51e2e29d15ed09a",
+      "result_path": "/tmp/oraclebot-forecast-combined-gate-yscuq1np/runs/combined-ecosystem-review_red-a2b59c69228b4e03b686df91a671099b/result.json",
+      "result_sha256": "0e829eec8edf3ca5006dee845fcbd13eeb5a5ad19428295b464b8f35522be5ac",
+      "source_manifest_path": "/tmp/oraclebot-forecast-combined-gate-yscuq1np/runs/combined-ecosystem-review_red-a2b59c69228b4e03b686df91a671099b/source-before.json",
+      "source_manifest_sha256": "2e9234d970a1fd43303fd71cface90e9fb6dd9511dc3e42bc4f38bb5b55e3c0f",
+      "actual_exit": 1,
+      "tests": 2,
+      "failures": 2,
+      "errors": 0,
+      "forbidden": 0,
+      "drift": [],
+      "harness_stable": true,
+      "own_failure": {
+        "test": "ecosystem.tests.test_votes.VoteSelectionTests.test_ten_second_live_view_cannot_qualify_native_minute_ensemble",
+        "traceback": "Traceback (most recent call last):\n  File \"/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/ecosystem/tests/test_votes.py\", line 116, in test_ten_second_live_view_cannot_qualify_native_minute_ensemble\n    self.assertEqual(requested[\"status\"], \"unavailable\")\n    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nAssertionError: 'available' != 'unavailable'\n- available\n+ unavailable\n? ++\n\n"
+      },
+      "qualification": "Actual failure is expected RED evidence, not a passing verify gate. Other UI failure is separately root/peer-owned."
+    },
+    "note": "Reviewer stopped after authorized one-line source closure and static final-byte binding. Root owns guarded GREEN, final combined/lint checks, global pass receipt, Git and convergence. No CLEAN or installed claim."
+  },
+  "remaining": [
+    "Root execute guarded GREEN/current combined gates and bind their actual final results.",
+    "Root integrate receipt into global review coverage and final delivery records."
+  ],
+  "memory_central": "No memory-central rows used; unrelated Codex memory registry hits did not inform this audit.",
+  "index": "skipped (read-only bounded audit; no indexing/inference authorized)",
+  "fixed_findings": {
+    "Critical": 0,
+    "High": 0,
+    "Medium": 1
+  },
+  "blind_reaudit": "N/A: per-file diagnostic/fix dispatch; root owns independent final acceptance.",
+  "empirical_mode": "N/A: root structural review; no strategy/economic inference or champion state touched.",
+  "summary": "1 bounded delta dispatch; source14 of18 fixed-track passes active, test15 of18; M5 N/A both. Final residual C/H/M/L 0/0/0/0 statically; one Medium fixed. Guarded RED observed; GREEN pending root.",
+  "rollback": {
+    "source_preimage_sha256": "afb8854861fd291204f7672eee1c2cdb26b6be89eaefc4ebfe2377222eb864ed",
+    "scope": "Only exact one-line condition removal and new28line counterexample are reviewer-owned. Root owns snapshot/rollback lifecycle; preserve incoming forecast and peer changes."
+  }
+}

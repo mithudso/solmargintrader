@@ -11,6 +11,7 @@ import json
 import os
 import re
 import sqlite3
+import stat
 from contextlib import ExitStack, closing, contextmanager
 from itertools import product
 from pathlib import Path
@@ -46,8 +47,10 @@ def _idle(path: Path):
     if not path.exists():
         yield
         return
-    fd = os.open(path, os.O_RDONLY | os.O_NOFOLLOW)
+    fd = os.open(path, os.O_RDONLY | os.O_NOFOLLOW | os.O_NONBLOCK)
     try:
+        if not stat.S_ISREG(os.fstat(fd).st_mode):
+            raise ValueError(ERROR)
         fcntl.flock(fd, fcntl.LOCK_EX | fcntl.LOCK_NB)
         yield
     finally:

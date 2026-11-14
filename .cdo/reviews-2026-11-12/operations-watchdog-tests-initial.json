@@ -1,0 +1,303 @@
+{
+  "agent": "backtester_blind_acceptance",
+  "definition_version": "2.0.0",
+  "version": 2,
+  "status": "partial",
+  "stage": "immutable_incoming_two_file_static_review",
+  "observed_at": "2026-11-12T22:36:58.805308+00:00",
+  "repo": "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112",
+  "commit": "d2706c337a24be1d92753f5fdb62cdc15e170882",
+  "scope": "Exactly watchdog149lines and tests291lines from incoming immutable master; parent owns ops/workflow/docs and future integration.",
+  "source_lines_read": 440,
+  "per_file": [
+    {
+      "path": "scripts/oraclebot_watchdog.py",
+      "commit": "d2706c337a24be1d92753f5fdb62cdc15e170882",
+      "git_blob": "22587a4bf30bc791e0da65f9a6178235d312c419",
+      "sha256": "4943cebda99732f921acf683de2eca432b9c46bcb9f1c191c1a8abd4c555e2fc",
+      "lines": 149,
+      "full_read": true,
+      "read_ranges": [
+        [
+          1,
+          80
+        ],
+        [
+          81,
+          149
+        ]
+      ],
+      "read_method": "Complete immutable git show output; bounded logical ranges cover every line. No target execution during initial review.",
+      "ast_function_class_spans": {
+        "assess": [
+          17,
+          35
+        ],
+        "api": [
+          38,
+          52
+        ],
+        "website_health": [
+          55,
+          71
+        ],
+        "reconcile": [
+          74,
+          115
+        ],
+        "main": [
+          118,
+          145
+        ]
+      },
+      "passes": {
+        "C1": "Full control/data-flow review. Static counterexamples WDG-1 nullable matching issue body and WDG-2 huge integer heartbeat may abort required outage reconciliation. No code executed during initial review.",
+        "C2": "assess returns healthy/reason/payload; website storage/liveness is intentionally separate from engine/billing/live readiness. CLI ignores argv/prerequisites (WDG-3). Existing test contracts retained as evidence of intended behavior, not proof.",
+        "C3": "Adversarial boundary reasoning completed for JSON shape/type, integer range, request caps, paging, issue ownership, acceptance isolation and CLI side effects. Runtime mock qualification authorized only after this original static receipt.",
+        "S1": "No reviewer-directed/exfiltration directives. GitHub writes/website GET and summary writes are explicit intended runtime operations; none invoked by the review. Source/docstrings treated as data.",
+        "S2": "urlopen context managers close responses; finite20/15-second calls and2MB/16KB reads. Nullable API body can abort (WDG-1); 100-page cap bounds total requests but does not attest complete enumeration beyond10,000issues. Tests close DB/server and stop handler thread via shutdown cleanup.",
+        "S3": "Repository owner/name regex bounds API paths; readiness type is strict bool; heartbeat finite/skew/age checks and website200/storage validation fail closed for common shapes. WDG-1/2 expose missing type/range exception handling. Issue ownership is title+body marker convention, not authenticated creator identity.",
+        "S4": "stdlib-only Python script; no optional install prerequisite. UNIX credential permission coverage in tests matches targetMac/Ubuntu; no cross-platform native proof. Required CI environment lacks friendly preflight (WDG-3).",
+        "S5": "main prints bounded result/summary; external API exceptions propagate and therefore fail the workflow. No local swallowing of mutation errors. GitHub response parse/shape failures have no safe named CLI boundary; root owns operational policy.",
+        "P1": "Finite per-request time/read/page bounds reviewed. Up to100issue pages implies up to2,000seconds sequential API wait in worst case; workflow job timeout is parent-reviewed scope. No representative runtime/performance measurement.",
+        "P2": "Workflow concurrency oraclebot-operations/cancel=false serializes schedules/manual runs per parent; no duplicate read-then-create race finding. Direct function callers are not internally serialized. Synthetic HTTP server uses fresh owned loopback only.",
+        "M1": "149-line production and291-line test modules read fully. Functions have narrow roles; no large-file split issue.",
+        "M2": "Tests load sibling source by explicit path, mock notification/subprocess/API surfaces and reuse fixture helpers. No duplicated financial engine or installer.",
+        "M3": "Production observer/workflow/settings layer belongs parent. No whole-repository architecture review credit or closure of existing Medium settings/error/remediation/sink residuals.",
+        "M4": "Availability caveats explicitly reject trading readiness/uptime/profitability/phone-delivery claims. Website engine:false liveness distinction is intentional and tested. Static inspection does not prove deployed observer/alerts.",
+        "T1": "12test methods statically counted fromAST, full tests read. Missing nullable body, huge integer, CLI no-I/O/preflight,202nonobject response,FIFO credential and output-stream bounds are recorded. No assertion/run count promoted to pass.",
+        "T2": "No third-party imports/dependency manifest/locks in assigned files. GitHub/HTTP infrastructure/auth scopes require parent workflow review; no advisory/license/install qualification.",
+        "T3": "Existing unittest conventions; no syntax/lint/test gate executed in initial static phase. ast.parse only. Parent owns repo tooling/CI; no broad lint claim.",
+        "T4": "Tests use temporary directories, SQLite, local owned threaded HTTP and mocks for actual notifications/most subprocesses. No owner/service/provider integration. Cases preserve real loopback delivery retries. General parallelization/equivalence remains parent BLOCKED disposition."
+      },
+      "M5": {
+        "active": true,
+        "E1": "One workflow-invoked stdlib Python command; exact workflow launch contract reviewed by parent.",
+        "E2": "No-argument environment-driven observer is the intended CI operation. Missing CI variables currently fail after earlier work instead of usage/preflight.",
+        "E3": "WDG-3: no argv parsing; --help/unknown arguments can enter network/issue/summary side effects, and missing env gives traceback. Static only at this receipt.",
+        "E4": "N/A missing-thirdparty environment hazard: assigned watchdog uses standard library only; no global pip/install needed.",
+        "E5": "WDG-3: GH_TOKEN/GITHUB_REPOSITORY/GITHUB_RUN_ID/GITHUB_STEP_SUMMARY presence and usable summary target assumed. Require named safe preflight before HTTP/mutations; workflow setup is parent-owned.",
+        "E6": "WDG-3: no --help/options/example branch. Add stdlib parse before all effects."
+      }
+    },
+    {
+      "path": "scripts/test_oraclebot_ops.py",
+      "commit": "d2706c337a24be1d92753f5fdb62cdc15e170882",
+      "git_blob": "f3d14682a1e19a56ba2b555e2aae0c4a684aa71d",
+      "sha256": "2e8a7e7a28aa1a95d86ceb111a4846c0ede7a5f9331ea80e85d11da600b94617",
+      "lines": 291,
+      "full_read": true,
+      "read_ranges": [
+        [
+          1,
+          150
+        ],
+        [
+          151,
+          291
+        ]
+      ],
+      "read_method": "Complete immutable git show output; bounded logical ranges cover every line. No target execution during initial review.",
+      "ast_function_class_spans": {
+        "load": [
+          14,
+          20
+        ],
+        "health": [
+          27,
+          39
+        ],
+        "OperationsTests": [
+          42,
+          193
+        ],
+        "IndependentWatchdogTests": [
+          196,
+          287
+        ],
+        "setUp": [
+          43,
+          48
+        ],
+        "test_debounce_and_recovery_are_durable": [
+          50,
+          75
+        ],
+        "test_authenticated_delivery_retries_same_id_after_http_failure": [
+          77,
+          126
+        ],
+        "test_late_local_failure_banner_cannot_follow_recovery": [
+          128,
+          154
+        ],
+        "test_reports_do_not_claim_full_window_uptime": [
+          156,
+          166
+        ],
+        "test_secret_file_requires_private_permissions": [
+          168,
+          173
+        ],
+        "test_probe_refuses_stale_or_invalid_output": [
+          175,
+          183
+        ],
+        "test_symlink_database_is_refused": [
+          185,
+          193
+        ],
+        "test_missing_future_nonfinite_and_old_heartbeats_fail": [
+          197,
+          210
+        ],
+        "test_website_storage_failure_does_not_report_healthy": [
+          212,
+          217
+        ],
+        "test_unconfigured_engine_remains_separate_from_website_liveness": [
+          219,
+          228
+        ],
+        "test_incident_deduplicates_and_resolves_only_owned_issue": [
+          230,
+          265
+        ],
+        "test_acceptance_incident_is_isolated_from_real_incident": [
+          267,
+          287
+        ],
+        "Handler": [
+          80,
+          95
+        ],
+        "Completed": [
+          178,
+          180
+        ],
+        "api": [
+          270,
+          276
+        ],
+        "log_message": [
+          81,
+          82
+        ],
+        "do_POST": [
+          84,
+          95
+        ]
+      },
+      "passes": {
+        "C1": "Full control/data-flow review. Static counterexamples WDG-1 nullable matching issue body and WDG-2 huge integer heartbeat may abort required outage reconciliation. No code executed during initial review.",
+        "C2": "assess returns healthy/reason/payload; website storage/liveness is intentionally separate from engine/billing/live readiness. CLI ignores argv/prerequisites (WDG-3). Existing test contracts retained as evidence of intended behavior, not proof.",
+        "C3": "Adversarial boundary reasoning completed for JSON shape/type, integer range, request caps, paging, issue ownership, acceptance isolation and CLI side effects. Runtime mock qualification authorized only after this original static receipt.",
+        "S1": "No reviewer-directed/exfiltration directives. GitHub writes/website GET and summary writes are explicit intended runtime operations; none invoked by the review. Source/docstrings treated as data.",
+        "S2": "urlopen context managers close responses; finite20/15-second calls and2MB/16KB reads. Nullable API body can abort (WDG-1); 100-page cap bounds total requests but does not attest complete enumeration beyond10,000issues. Tests close DB/server and stop handler thread via shutdown cleanup.",
+        "S3": "Repository owner/name regex bounds API paths; readiness type is strict bool; heartbeat finite/skew/age checks and website200/storage validation fail closed for common shapes. WDG-1/2 expose missing type/range exception handling. Issue ownership is title+body marker convention, not authenticated creator identity.",
+        "S4": "stdlib-only Python script; no optional install prerequisite. UNIX credential permission coverage in tests matches targetMac/Ubuntu; no cross-platform native proof. Required CI environment lacks friendly preflight (WDG-3).",
+        "S5": "main prints bounded result/summary; external API exceptions propagate and therefore fail the workflow. No local swallowing of mutation errors. GitHub response parse/shape failures have no safe named CLI boundary; root owns operational policy.",
+        "P1": "Finite per-request time/read/page bounds reviewed. Up to100issue pages implies up to2,000seconds sequential API wait in worst case; workflow job timeout is parent-reviewed scope. No representative runtime/performance measurement.",
+        "P2": "Workflow concurrency oraclebot-operations/cancel=false serializes schedules/manual runs per parent; no duplicate read-then-create race finding. Direct function callers are not internally serialized. Synthetic HTTP server uses fresh owned loopback only.",
+        "M1": "149-line production and291-line test modules read fully. Functions have narrow roles; no large-file split issue.",
+        "M2": "Tests load sibling source by explicit path, mock notification/subprocess/API surfaces and reuse fixture helpers. No duplicated financial engine or installer.",
+        "M3": "Production observer/workflow/settings layer belongs parent. No whole-repository architecture review credit or closure of existing Medium settings/error/remediation/sink residuals.",
+        "M4": "Availability caveats explicitly reject trading readiness/uptime/profitability/phone-delivery claims. Website engine:false liveness distinction is intentional and tested. Static inspection does not prove deployed observer/alerts.",
+        "T1": "12test methods statically counted fromAST, full tests read. Missing nullable body, huge integer, CLI no-I/O/preflight,202nonobject response,FIFO credential and output-stream bounds are recorded. No assertion/run count promoted to pass.",
+        "T2": "No third-party imports/dependency manifest/locks in assigned files. GitHub/HTTP infrastructure/auth scopes require parent workflow review; no advisory/license/install qualification.",
+        "T3": "Existing unittest conventions; no syntax/lint/test gate executed in initial static phase. ast.parse only. Parent owns repo tooling/CI; no broad lint claim.",
+        "T4": "Tests use temporary directories, SQLite, local owned threaded HTTP and mocks for actual notifications/most subprocesses. No owner/service/provider integration. Cases preserve real loopback delivery retries. General parallelization/equivalence remains parent BLOCKED disposition."
+      },
+      "M5": {
+        "active": false,
+        "disposition": "N/A test harness; unittest owns its CLI; imported application entrypoints reviewed separately."
+      }
+    }
+  ],
+  "all18pass_dispositions": true,
+  "conditionalM5_dispositioned": true,
+  "findings": [
+    {
+      "id": "WDG-1",
+      "severity": "Medium",
+      "file": "scripts/oraclebot_watchdog.py",
+      "symbol": "reconcile",
+      "anchors": [
+        85,
+        86,
+        87
+      ],
+      "counterexample": "request returns [{number:6,title:TITLE,body:null}]. Matching title reaches None.startswith(marker), raising AttributeError before unrelated issue can be ignored or an outage alert opened.",
+      "expected": "Treat null/nonstring bodies as unowned; retain original marked issue and acceptance isolation behavior.",
+      "confidence": "high_static",
+      "tests_missing": "test_incident_deduplicates_and_resolves_only_owned_issue only uses unrelated body string manual note.",
+      "smallest_postauthorization_probe": "Mock request rows with matching title/bodyNone; unhealthy path should POSTone new issue and never comment/patch issue6. Positive marked-owned healthy path must still resolve onlyowned5."
+    },
+    {
+      "id": "WDG-2",
+      "severity": "Medium",
+      "file": "scripts/oraclebot_watchdog.py",
+      "symbol": "assess",
+      "anchors": [
+        22,
+        24,
+        34
+      ],
+      "counterexample": "Valid JSON at=10**400, ready=true has typeint; math.isfinite(at) converts to float and can raise OverflowError, absent from except tuple. main aborts before unhealthy reconciliation.",
+      "expected": "Return(False,heartbeat_unavailable,{}) for out-of-range numeric input without traceback. Preserve finite true/stale/future/type checks.",
+      "confidence": "high_static_not_yet_executed",
+      "tests_missing": "NaN/future/stale/nonbool tests omit arbitrarily large JSON integers.",
+      "smallest_postauthorization_probe": "assess(json.dumps({at:10**400,ready:True}),now=1000) must safely returnfalse; ordinaryat999/now1000 remains healthy."
+    },
+    {
+      "id": "WDG-3",
+      "severity": "Medium",
+      "file": "scripts/oraclebot_watchdog.py",
+      "symbol": "main",
+      "anchors": [
+        118,
+        119,
+        120,
+        130,
+        131,
+        142
+      ],
+      "counterexample": "Entrypoint never parses argv. --help/unknown options enter website/API/issue/summary work when CIenv exists; missingenv can raise KeyError after websiteGET.",
+      "expected": "Stdlib help0/badargs2 before effects; named prerequisite exit3 before HTTP/issue/write when required CIenv is missing. Do not provision services or invent credentials.",
+      "confidence": "high_static",
+      "tests_missing": "No main/help/invalidargs/missing-env tests.",
+      "smallest_postauthorization_probe": "Patch sys.argv, allurlopen/request/open, env and stdout. --help0 and unknown2 must makezeroexternal/filewrite calls; missingrequiredCIenv must exit3 safely with namedconfigrepair guidance."
+    }
+  ],
+  "parent_boundary_coverage": {
+    "send_alert_202_array_or_null": "notcovered; HTTPtest only202objectacceptedtrue",
+    "credential_FIFO_device0600": "notcovered; only0644regularfile rejection",
+    "probe_unbounded_capture": "notcovered; onlymock Completed smallstalejson",
+    "install_validation_before_DBwrite": "notcovered",
+    "missingstatus_database": "notcovered"
+  },
+  "resolved_hypotheses": [
+    {
+      "hypothesis": "read-then-create issue race",
+      "disposition": "notreported: parent confirms globalworkflowconcurrency oraclebot-operations/cancel=false serializes manual/scheduled runs"
+    },
+    {
+      "hypothesis": "enginefalse means websitehealthmustfail",
+      "disposition": "notreported: liveness/capability distinction explicit/tested"
+    },
+    {
+      "hypothesis": "old403/User-Agent/Accept behavior",
+      "disposition": "outofscopeduplicate: originalowner PR240 corrects headers; preserve when integrating candidate fixes"
+    }
+  ],
+  "bounds_and_limits": [
+    "APIresponse read cap2,000,000bytes,20secondtimeout,100pages maximum; no universal complete-pagination claim beyond10,000openissues.",
+    "Websitehealth reads16385bytes and refuses>16384/status!=200/status!=ok/storageisnotTrue; malformednonobjects caught.",
+    "Issue ownership uses exact title/bodymarker and excludespull_request; it is a convention and not authenticatedcreator proof. No hostilecreator finding promoted without stronger contract.",
+    "No originalsource checkout/edit, services/notifications/provider/GitHubissue operations, tests/targetcode execution occurred during initial static phase.",
+    "No deployed availability/trading/profitability/phone delivery or whole-repo CLEAN claim.",
+    "Private mockqualification nowauthorized separately by parent; preserve this original static evidence before RED/GREEN."
+  ],
+  "next": "Prepare mocked private watchdog-only RED controls, then private candidate and GREEN; preserve PR240headerdelta later. No canonical edits until rootmergeCASsignal.",
+  "delta": "Correct pre-publication static anchors/test-method count; original complete reads and finding reasoning unchanged."
+}

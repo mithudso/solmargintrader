@@ -151,6 +151,21 @@ class TestDeflatedSharpe(unittest.TestCase):
 
 
 class TestUnitsAndHelpers(unittest.TestCase):
+    def test_numeric_boundary_inputs_refuse_through_the_public_error_type(self):
+        cases = [lambda: deannualise(1.0, float("inf")),
+                 lambda: probabilistic_sharpe_ratio(.1, float("nan")),
+                 lambda: probabilistic_sharpe_ratio(.1, 2.5),
+                 lambda: probabilistic_sharpe_ratio(1e308, 50),
+                 lambda: expected_max_sharpe(1e308, 1.0),
+                 lambda: effective_trials(10.5),
+                 lambda: effective_trials(10, [2.5]),
+                 lambda: effective_trials(10 ** 1000),
+                 lambda: effective_trials(np.iinfo(np.int64).max,
+                                          [np.int64(np.iinfo(np.int64).max)] * 2)]
+        for index, invoke in enumerate(cases):
+            with self.subTest(case=index), self.assertRaises(DeflatedSharpeError):
+                invoke()
+
     def test_deannualise_inverts_the_usual_annualisation(self) -> None:
         # An annual Sharpe of 1.5 on daily bars is a small per-bar Sharpe.
         self.assertAlmostEqual(deannualise(1.5, 365.0), 1.5 / math.sqrt(365.0), places=12)

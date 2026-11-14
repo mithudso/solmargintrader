@@ -1,0 +1,389 @@
+{
+  "file": "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/website/src/worker.js",
+  "lines_read": [
+    [
+      1,
+      180
+    ],
+    [
+      181,
+      344
+    ]
+  ],
+  "related_tests": {
+    "file": "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/website/test/api.test.js",
+    "baseline_lines_read": [
+      [
+        1,
+        180
+      ],
+      [
+        181,
+        222
+      ],
+      [
+        223,
+        347
+      ]
+    ],
+    "regression_lines_added": [
+      [
+        349,
+        453
+      ]
+    ],
+    "red_command": "node --test --test-name-pattern='concurrent bot creates|same-second webhook races|active bot remains visible|unexpected API failures emit' website/test/api.test.js",
+    "red_exit": 1,
+    "red_results": {
+      "tests": 4,
+      "passed": 0,
+      "failed": 4
+    },
+    "final_baseline_replay": {
+      "command": [
+        "node",
+        "--test",
+        "--test-name-pattern=concurrent bot creates|same-second webhook races|active bot remains visible|unexpected API failures emit",
+        "/tmp/oraclebot-worker-baseline-red/api.test.mjs"
+      ],
+      "mechanism": "Final test content replayed against original source snapshot with only absolute import/fixture paths changed",
+      "exit_code": 1,
+      "passed": 0,
+      "failed": 4,
+      "log": "/tmp/oraclebot-worker-regressions-red.log"
+    },
+    "terminal_price_edge_red": {
+      "command": "node --test --test-name-pattern='same-second webhook races' website/test/api.test.js",
+      "exit_code": 1,
+      "actual": "plan_mismatch",
+      "expected": "canceled",
+      "fixture": "Canceled canonical object with price_other before the terminal-first mapping correction"
+    }
+  },
+  "reviewer_skills": [
+    "/Users/mitch/.agents/skills/lang-js-ts/SKILL.md",
+    "/Users/mitch/.agents/skills/security-review/SKILL.md",
+    "/Users/mitch/.agents/skills/security-review/references/security-reviewer.md",
+    "/Users/mitch/.agents/skills/misc-catch-all/references/webcrypto-vault-reviewer.md",
+    "/Users/mitch/.agents/skills/lang-js-ts/references/nodejs-concurrency-internals.md",
+    "/Users/mitch/.agents/skills/software-engineering-patterns/references/code-reviewer.md"
+  ],
+  "findings": [
+    {
+      "id": "W1",
+      "severity": "Medium",
+      "passes": [
+        "C1",
+        "C3",
+        "P2",
+        "T1"
+      ],
+      "lines": [
+        300,
+        303
+      ],
+      "finding": "A count-then-insert race permits two authenticated requests both observing19 bots to store21, defeating the20 active-bot quota.",
+      "status": "fixed, regression guarded",
+      "final_lines": [
+        [
+          315,
+          323
+        ]
+      ],
+      "regression_lines": [
+        [
+          349,
+          375
+        ]
+      ]
+    },
+    {
+      "id": "W2",
+      "severity": "High",
+      "passes": [
+        "C3",
+        "S1",
+        "P2",
+        "M4",
+        "T1"
+      ],
+      "lines": [
+        203,
+        212
+      ],
+      "finding": "Two webhook events with the same created second can let an earlier in-flight active canonical response overwrite a committed canceled status and regrant entitlement.",
+      "status": "fixed, regression guarded",
+      "final_lines": [
+        [
+          218,
+          233
+        ]
+      ],
+      "regression_lines": [
+        [
+          377,
+          418
+        ]
+      ]
+    },
+    {
+      "id": "W3",
+      "severity": "Medium",
+      "passes": [
+        "C1",
+        "C3",
+        "T1"
+      ],
+      "lines": [
+        293,
+        295
+      ],
+      "finding": "LIMIT100 applied to all-status recency can hide an older active bot behind100 newer archived records; no pagination exposes it to the UI.",
+      "status": "fixed, regression guarded",
+      "final_lines": [
+        [
+          310,
+          313
+        ]
+      ],
+      "regression_lines": [
+        [
+          420,
+          429
+        ]
+      ]
+    },
+    {
+      "id": "W4",
+      "severity": "Medium",
+      "passes": [
+        "C3",
+        "S5",
+        "T1"
+      ],
+      "lines": [
+        323,
+        330
+      ],
+      "finding": "Unexpected API failures are swallowed into service_unavailable without structured operation/fixed-code diagnostics; original errors must remain redacted.",
+      "status": "fixed, regression guarded",
+      "final_lines": [
+        [
+          29,
+          42
+        ],
+        [
+          342,
+          352
+        ]
+      ],
+      "regression_lines": [
+        [
+          431,
+          453
+        ]
+      ]
+    }
+  ],
+  "passes": {
+    "C1": "ran:W1,W3",
+    "C2": "ran:no additional finding",
+    "C3": "ran:four reproducible counterexamples",
+    "S1": "ran:W2; bound SQL, origin checks, single-use signature, HMAC and tenant ownership reviewed",
+    "S2": "ran:no additional finding; bounded streams/timeouts and cleanup reviewed",
+    "S3": "ran:no additional finding; explicit field and body limits reviewed",
+    "S4": "ran:no additional finding; Worker WebCrypto APIs and ESM imports reviewed",
+    "S5": "ran:W4",
+    "P1": "ran:no additional finding; bounded responses and DB scans reviewed",
+    "P2": "ran:W1,W2",
+    "M1": "ran:no grounded additional finding",
+    "M2": "ran:no grounded additional finding; canonical wallet helpers reused",
+    "M3": "repo scope parent",
+    "M4": "ran:W2 comment overstates cancellation ordering guarantee",
+    "T1": "ran:four gaps now guarded by failing regressions",
+    "T2": "repo scope parent",
+    "T3": "repo scope parent",
+    "T4": "N/A:non-test source"
+  },
+  "source_writes": true,
+  "snapshot": "/Users/mitch/.claude/skill-consolidation/backups/oraclebot-worker-review-20261112/api.test.js.iter1",
+  "disposition": "All four confirmed findings fixed; final self-review completed, not an independent acceptance. Ready for parent/root independent review.",
+  "reviewed_at": "2026-11-12T08:36:54.840779+00:00",
+  "scope": "Two owned files only; whole-repository coverage and independent acceptance remain with parent",
+  "baseline_blob_sha": "4160bf7c777c735cd10651bd7ab95e9e7e2416cc",
+  "final_sources": {
+    "website/src/worker.js": {
+      "file": "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/website/src/worker.js",
+      "blob_sha": "599f252083c84c65f343b5d76b4874a1b2bb69d0",
+      "sha256": "95eea20e0d7316d0ae47a2375b7cfdef8c333dbb2de7dfce4496a897e22f032d",
+      "lines": 365,
+      "full_read_ranges": [
+        [
+          1,
+          185
+        ],
+        [
+          186,
+          365
+        ]
+      ]
+    },
+    "website/test/api.test.js": {
+      "file": "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/website/test/api.test.js",
+      "blob_sha": "b51f474e8d8d4b7bfd0f3e8e3c206676e402d7b6",
+      "sha256": "f3748ecc6c4afb74a5a6116b6ccddc45545a1172945222d198ba804819f4efc0",
+      "lines": 453,
+      "full_read_ranges": [
+        [
+          1,
+          150
+        ],
+        [
+          151,
+          300
+        ],
+        [
+          301,
+          376
+        ],
+        [
+          377,
+          453
+        ]
+      ]
+    }
+  },
+  "checks": [
+    {
+      "command": [
+        "node",
+        "--test",
+        "--test-name-pattern=concurrent bot creates|same-second webhook races|active bot remains visible|unexpected API failures emit",
+        "test/api.test.js"
+      ],
+      "cwd": "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/website",
+      "exit_code": 0,
+      "log": "/tmp/oraclebot-worker-regressions-green.log"
+    },
+    {
+      "command": [
+        "npm",
+        "test"
+      ],
+      "cwd": "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/website",
+      "exit_code": 0,
+      "log": "/tmp/oraclebot-website-tests-final.log"
+    },
+    {
+      "command": [
+        "npm",
+        "run",
+        "check"
+      ],
+      "cwd": "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/website",
+      "exit_code": 0,
+      "log": "/tmp/oraclebot-website-check-final.log"
+    },
+    {
+      "command": [
+        "node",
+        "--check",
+        "test/api.test.js"
+      ],
+      "cwd": "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/website",
+      "exit_code": 0,
+      "log": "/tmp/oraclebot-website-test-syntax-final.log"
+    },
+    {
+      "command": [
+        "git",
+        "diff",
+        "--check",
+        "--",
+        "src/worker.js",
+        "test/api.test.js"
+      ],
+      "cwd": "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/website",
+      "exit_code": 0,
+      "log": "/tmp/oraclebot-worker-diff-check-final.log"
+    }
+  ],
+  "results": {
+    "focused_tests": {
+      "pass": 4,
+      "fail": 0
+    },
+    "website_tests": {
+      "pass": 36,
+      "fail": 0
+    },
+    "runtime": "Node v26.13.0; npm 11.20.0"
+  },
+  "context7": {
+    "resolved_library": "/llmstxt/developers_cloudflare_d1_llms-full_txt",
+    "source": "https://developers.cloudflare.com/d1/worker-api/prepared-statements/index",
+    "claim": "PreparedStatement.run returns D1Result.meta.changes; single conditional insert uses zero or one direct writes with no INSERT triggers in this schema"
+  },
+  "final_source_passes": {
+    "C1": "ran: atomic conditional insertion enforces twenty-bot limit; active/paused-first stable bot ordering preserves discoverability",
+    "C2": "ran: public JSON shapes and HTTP errors retained; quota still returns409 bot_limit; ordering change documented by source comment",
+    "C3": "ran: four original failures reproduced; all four permanent tests green; terminal-price edge separately red-green corrected",
+    "S1": "ran: same-subscription terminal fence prevents stale entitlement restoration; terminal-first status mapping remains safe on price mismatch; tenant/auth/signature/origin and log redaction reviewed",
+    "S2": "ran: bounded reads, abort signals, errors and fail-closed responses reviewed; no additional grounded Medium+ finding",
+    "S3": "ran: field bounds, price ownership, account binding, URL validation and unsafe-request origin gates reviewed; no additional grounded Medium+ finding",
+    "S4": "ran: Worker ESM/WebCrypto/fetch/AbortSignal APIs reviewed; D1 metadata API verified against current Context7 docs; final Node syntax checks pass",
+    "S5": "ran: unexpected API error path now emits structured fixed operation/code/status at error level; expected failures warn; no raw exception, URL, query, wallet or cookie data",
+    "P1": "ran: result and stream bounds reviewed; no evidence-based additional optimization required",
+    "P2": "ran: deterministic quota and same-second webhook interleavings reproduced; fixes verified; distinct newer Stripe subscription still replaces terminal subscription",
+    "M1": "ran: existing compact ESM/local helper conventions followed; no grounded additional Medium+ finding",
+    "M2": "ran: existing canonical wallet and query helpers reused; fixed diagnostics helper shared by catch branches; no grounded additional Medium+ finding",
+    "M3": "repo scope parent",
+    "M4": "ran: cancellation comment now describes terminal preservation rather than overpromising fetch delivery ordering; bot ordering documented; no API shape change",
+    "T1": "ran: four meaningful permanent regressions assert stored state, entitlement, status409, account visibility, fixed diagnostic fields/levels and secret exclusion; full website36/36green",
+    "T2": "repo scope parent",
+    "T3": "repo scope parent",
+    "T4": "N/A(non-test source)",
+    "M5": "N/A(module exports consumed by Workers, no standalone command-line interface)"
+  },
+  "final_test_passes": {
+    "C1": "ran: fixture setup, assertions, helper operations and boundary cases reviewed",
+    "C2": "ran: tests exercise public Worker.fetch contracts and actual SQLite schema with D1 adapter",
+    "C3": "ran: deterministic barriers expose otherwise hidden races; baseline replay4/4fails confirms regressions are meaningful",
+    "S1": "ran: synthetic keys/canaries only, all external calls mocked, no secrets or provider writes",
+    "S2": "ran: awaited requests/promises and t.mock restoration reviewed; no additional grounded Medium+ finding",
+    "S3": "ran: fixtures use bounded public API inputs; malformed inputs cover refusal behavior",
+    "S4": "ran: Node builtin node:test/node:sqlite/WebCrypto; actual runtime and scripts pass",
+    "S5": "ran: diagnostic test asserts fixed operation/code/status and error level, with secret/URI exclusion",
+    "P1": "ran: complete suite173.422084ms in recorded final run; no measured performance issue",
+    "P2": "ran: top-level tests remain sequential because global fetch/console mocks share mutable state; isolated DB fixture per test",
+    "M1": "ran: behavioral test names and repository fixture/helper conventions retained",
+    "M2": "ran: existing login/call/environment/signedEvent fixtures reused",
+    "M3": "repo scope parent",
+    "M4": "ran: race and terminal-price comments explain fixture intent accurately",
+    "T1": "ran: all assertions verified against baseline failure and final observable behavior; four distinct regression tests retained",
+    "T2": "repo scope parent",
+    "T3": "repo scope parent",
+    "T4": "ran: no real sleeps; barrier-controlled interleavings; fixtures mutate per test and cannot safely be hoisted; no speculative speed change",
+    "M5": "N/A(test runner input, not standalone tool)"
+  },
+  "additional_reviewer_refs": [
+    "/Users/mitch/.agents/skills/software-engineering-patterns/references/coding-standards.md",
+    "/Users/mitch/.agents/skills/software-engineering-patterns/references/testing-and-vitest-expert.md",
+    "/Users/mitch/.agents/skills/devops-observability/SKILL.md"
+  ],
+  "snapshots": [
+    "/Users/mitch/.claude/skill-consolidation/backups/oraclebot-worker-review-20261112/worker.js.iter1",
+    "/Users/mitch/.claude/skill-consolidation/backups/oraclebot-worker-review-20261112/api.test.js.iter1",
+    "/Users/mitch/.claude/skill-consolidation/backups/oraclebot-worker-review-20261112/worker.js.iter2",
+    "/Users/mitch/.claude/skill-consolidation/backups/oraclebot-worker-review-20261112/api.test.js.iter2"
+  ],
+  "restore_commands": [
+    "cp /Users/mitch/.claude/skill-consolidation/backups/oraclebot-worker-review-20261112/worker.js.iter1 /Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/website/src/worker.js",
+    "cp /Users/mitch/.claude/skill-consolidation/backups/oraclebot-worker-review-20261112/api.test.js.iter1 /Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/website/test/api.test.js"
+  ],
+  "remaining": [
+    "Parent/root independent blind acceptance of source fixes",
+    "Parent/root owns website package version patch0.1.0->0.1.1 and full repo ledger/report/commit/delivery",
+    "Live Cloudflare/Stripe acceptance is outside this local two-file assignment; no deployment performed"
+  ]
+}

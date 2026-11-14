@@ -54,7 +54,7 @@ class IsolationTests(unittest.TestCase):
                     if m.split(".")[0] in {"build", "search", "make_files_doc",
                                            "make_concepts_doc", "index", "idle",
                                            "ollama_ensure"}:
-                        if py.name not in {"test_index.py", "test_index_search_tooling.py"}:
+                        if py.name not in {"test_index.py", "test_index_search_tooling.py", "test_index_runtime_guards.py"}:
                             offenders.append(f"{py.relative_to(REPO)} imports {m}")
         self.assertEqual(offenders, [], "engine code must not import index tooling")
 

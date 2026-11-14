@@ -25,7 +25,7 @@ class BacktestLog:
         try:
             stat = path.stat()
         except OSError:
-            pass
+            pass  # The detached worker may not have created its log yet.
         else:
             self._identity = (stat.st_dev, stat.st_ino)
             self._offset = stat.st_size
@@ -48,5 +48,6 @@ class BacktestLog:
                 data = stream.read(self.max_bytes)
                 self._offset = stream.tell()
         except OSError:
+            # Rotation and worker startup can race a poll; retry on the next UI tick.
             return ""
         return self._decoder.decode(data, final=False)

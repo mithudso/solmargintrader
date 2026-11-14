@@ -9,6 +9,7 @@ import math
 import os
 import re
 import sqlite3
+import stat
 import subprocess
 import sys
 import tempfile
@@ -175,6 +176,37 @@ def lock(home: Path, *, wait_seconds: float = 0):
         os.close(fd)
 
 
+@contextmanager
+def _generation_guard(home: Path, *, wait_seconds: float = 5):
+    """Serialize only generation/stop intent; never hold the supervisor lease."""
+    home.mkdir(parents=True, exist_ok=True, mode=0o700)
+    fd = os.open(
+        home / "generation-intent.lock",
+        os.O_CREAT | os.O_RDWR | os.O_NOFOLLOW | os.O_NONBLOCK,
+        0o600,
+    )
+    try:
+        info = os.fstat(fd)
+        if (
+            not stat.S_ISREG(info.st_mode)
+            or info.st_uid != os.getuid()
+            or info.st_mode & 0o077
+        ):
+            raise ValueError("invalid_generation_lock")
+        deadline = time.monotonic() + wait_seconds
+        while True:
+            try:
+                fcntl.flock(fd, fcntl.LOCK_EX | fcntl.LOCK_NB)
+                break
+            except BlockingIOError:
+                if time.monotonic() >= deadline:
+                    raise
+                time.sleep(0.01)
+        yield
+    finally:
+        os.close(fd)
+
+
 def running(home: Path) -> bool:
     if not (home / "supervisor.lock").is_file():
         return False
@@ -311,7 +343,7 @@ def status(home: Path) -> dict:
 
 
 def start(home: Path) -> dict:
-    with lock(home):
+    with _generation_guard(home), lock(home):
         state = load(home)
         if state["phase"] == "not_initialized":
             raise ValueError("bootstrap_not_planned")
@@ -369,20 +401,55 @@ def start(home: Path) -> dict:
     }
 
 
-def stop(home: Path) -> dict:
-    state = load(home)
-    token = state.get("supervisor_token")
-    if token:
-        (home / ("stop-" + token)).touch(mode=0o600, exist_ok=True)
-    if state.get("batch_id"):
-        from soltui import f5_batch
+def prepare_foreground(home: Path) -> str | None:
+    """Claim a new generation for an OS-supervised foreground process.
 
-        f5_batch.stop(state["batch_id"], root=home / "batches")
-    return {
-        "status": "stop_requested",
-        "retains_archives": True,
-        "stops_shared_recorder": False,
-    }
+    An explicit stop belongs to its generation and remains stopped across login.
+    A crash has no matching stop request and can be recovered. Historical batch
+    and Oracle policy guards remain unchanged.
+    """
+    try:
+        with _generation_guard(home, wait_seconds=0), lock(home):
+            state = load(home)
+            if state["phase"] == "not_initialized":
+                raise ValueError("bootstrap_not_planned")
+            previous = state.get("supervisor_token")
+            if previous and (home / ("stop-" + previous)).exists():
+                return None
+            if (
+                state["phase"] == "starting"
+                and 0 <= time.time() - state.get("supervisor_started_at", 0) < 10
+            ):
+                return None
+            token = uuid.uuid4().hex
+            state.update(
+                supervisor_token=token,
+                supervisor_pid=os.getpid(),
+                phase="starting",
+                supervisor_started_at=time.time(),
+            )
+            state.pop("error", None)
+            save(home / "state.json", state)
+            return token
+    except BlockingIOError:
+        return None
+
+
+def stop(home: Path) -> dict:
+    with _generation_guard(home):
+        state = load(home)
+        token = state.get("supervisor_token")
+        if token:
+            (home / ("stop-" + token)).touch(mode=0o600, exist_ok=True)
+        if state.get("batch_id"):
+            from soltui import f5_batch
+
+            f5_batch.stop(state["batch_id"], root=home / "batches")
+        return {
+            "status": "stop_requested",
+            "retains_archives": True,
+            "stops_shared_recorder": False,
+        }
 
 
 def publish(receipt: dict, home: Path, asset: str, interval: str) -> None:
@@ -436,7 +503,9 @@ def supervise(home: Path, token: str, *, max_cycles: int | None = None) -> int:
         from .ui_service import status as ui_status
 
         state["ui_url"] = (
-            ui_status(home, manager_home).get("url") if cfg.get("embedded_ui", True) else None
+            ui_status(home, manager_home).get("url")
+            if cfg.get("embedded_ui", True)
+            else None
         )
         save(home / "state.json", state)
         update_telemetry(state, home, manager_home)

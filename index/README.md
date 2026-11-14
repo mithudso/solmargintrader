@@ -28,7 +28,7 @@ this one:
 
 | | `docs/high_signal_file_index.json` | `index/` (here) |
 |---|---|---|
-| Coverage | **104** curated high-signal files | **every** tracked file |
+| Coverage | Curated high-signal files (count in its JSON) | **every** tracked file |
 | Purpose | a short list for an LLM to read first | lookup and search |
 | Retrieval | none — it is a list | BM25, embeddings, concepts |
 | Drift check | `scripts/check_docs.py` prunes dead paths | `build.py --check` re-hashes |
@@ -45,6 +45,10 @@ subsumes the other, and both are checked in CI.
 | `CONCEPT-INDEX.json` | which files bear on this idea | yes | `build.py concepts` |
 | `semantic-embeddings.npz` | which files *mean* something like this | **no** | `build.py semantic` |
 | `SEMANTIC-MANIFEST.json` | what the embedding index was | yes | `build.py semantic` |
+
+`TEXT-INDEX.json` uses compact JSON to keep the complete posting list below
+GitHub's file-size limit. Formatting does not remove terms, documents or scores;
+readers use the same JSON schema.
 
 ## Three retrieval modes, because they fail differently
 

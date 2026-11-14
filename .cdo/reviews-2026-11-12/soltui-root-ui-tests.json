@@ -1,0 +1,716 @@
+{
+  "schema": "oraclebot-full-source-review/v1",
+  "reviewer": "root",
+  "status": "FILE_PASSES_AND_LOCAL_VERIFICATION_COMPLETED_IN_SCOPE",
+  "created_at": "2026-11-12T18:18:00.244080+00:00",
+  "files": [
+    {
+      "path": "soltui/tests/test_advanced_order_ui.py",
+      "sha256": "d3c9abdb77a289f54e456bdc9256b2f403ce21eb46d1b245e85221b873362b6b",
+      "blob_sha": "9ba03ef9892554956fa4f8ddf8b14b2781153f6b",
+      "lines": 352,
+      "read_evidence": {
+        "method": "full displayed source baseline plus exact reviewed six fixture-only deltas",
+        "ranges": [
+          {
+            "sha256": "e2d3b842314b20f41fd79eef5399adf53ada096e1557ef471a2ef6c072913fce",
+            "start": 1,
+            "end": 349,
+            "lines": 349
+          }
+        ],
+        "authored_delta": {
+          "path": "soltui/tests/test_advanced_order_ui.py",
+          "before_sha256": "e2d3b842314b20f41fd79eef5399adf53ada096e1557ef471a2ef6c072913fce",
+          "after_sha256": "d3c9abdb77a289f54e456bdc9256b2f403ce21eb46d1b245e85221b873362b6b",
+          "inverse_matches_full_read_preimage": true,
+          "delta": [
+            "--- soltui/tests/test_advanced_order_ui.py",
+            "+++ soltui/tests/test_advanced_order_ui.py",
+            "@@ -5,7 +5,7 @@",
+            " ",
+            " from textual.widgets import Button, Checkbox, Input, Select, TabbedContent",
+            " ",
+            "-from soltui.tests.test_tui import TEST_SIZE, make_settings",
+            "+from soltui.tests.test_tui import TEST_SIZE, make_settings, offline_console_reads",
+            " from soltui.tui import SolTuiApp",
+            " ",
+            " ",
+            "@@ -14,6 +14,9 @@",
+            " ",
+            " ",
+            " class AdvancedOrderUiTests(unittest.IsolatedAsyncioTestCase):",
+            "+    def setUp(self):",
+            "+        self.enterContext(offline_console_reads())",
+            "+",
+            "     async def test_token_search_displays_full_mint_without_arming(self):",
+            "         from textual.widgets import Static",
+            "         app = SolTuiApp(make_settings())"
+          ]
+        }
+      },
+      "semantic_note": "Full349lines. Mounted actual ticket controls use injected command results for every exercised submit/preview. Unsupported venue/type/short/leverage and size-unit choices stay disabled, manual text persists, quote edits discard review, unknown/resting outcomes lock both tickets, repeated quick/submit calls consume once. Jupiter display/receipt fixtures certify UI routing only, never a real signature or order. Authored fixture-only delta enters shared offline_console_reads; inverse exactly recovers the full-read baseline. Initial qualified wrapper failed despite functional assertions; final fixture correction removes default external read attempts without changing assertions.",
+      "passes": {
+        "C1": "ran: Full349lines. Mounted actual ticket controls use injected command results for every exercised submit/preview. Unsupported venue/type/short/leverage and size-unit choices stay disabled, manual text persists, quote edits discard review, unknown/resting outcomes lock both tickets, repeated quick/submit calls consume once. Jupiter display/receipt fixtures certify UI routing only, never a real signature or order. Authored fixture-only delta enters shared offline_console_reads; inverse exactly recovers the full-read baseline. Initial qualified wrapper failed despite functional assertions; final fixture correction removes default external read attempts without changing assertions.",
+        "C2": "ran: meaningful assertions, exact command/receipt/store contracts, unavailable versus zero and fixture-to-production boundaries reviewed for this file.",
+        "C3": "ran: negative/failure/late-result/concurrency cases inspected. Six default-read fixture gaps were proved and corrected; remaining low test robustness/documentation opportunities are stated in the semantic notes.",
+        "S1": "ran: fixed argv and local fixture paths, temporary authority/manager ownership, SQL parameterization and no actual signing/orders/provider credentials considered where present.",
+        "S2": "ran: owned child/thread/socket/SQLite lifetimes and deadlines inspected. Guarded actual temporary detached F5 and synthetic prediction callers passed. A low missing cleanup-on-timeout opportunity in one F5 test remains explicit.",
+        "S3": "ran: input shape, nonfinite/bool checks, evidence/code/runtime identity and malformed-state assertions inspected where present; no new scalar validator implemented in tests.",
+        "S4": "ran: current macOS/Python3.13/Textual UI and native-host fixture APIs inspected. Real local fixture acceptance does not certify Linux or installed owner service behavior.",
+        "S5": "ran: explicit unknown/stale/refusal/source labels, sanitized canaries and guarded process diagnostics inspected. No provider credential or actual order is needed for these UI assertions.",
+        "P1": "ran: fixed fixture sizes, candidate/window work and explicit waits inspected. No unbounded production workload or new benchmark was introduced.",
+        "P2": "ran: existing race/replay/reservation/control assertions inspected. Where present, real temp-process locks remain actual OS fixtures rather than weaker mocks.",
+        "M1": "ran: source names/helpers/comments and assertion intent inspected. Six small authored fixture deltas are reviewed; no formatting change is claimed.",
+        "M2": "ran: shared offline_console_reads and existing World/ApiServer/research/UI helpers reused. Inner explicit mocks retain precedence. No duplicate production implementation or network stub added to product code.",
+        "M3": "N/A per file: whole-repository architecture/central-settings assessment belongs to full_repo_health.",
+        "M4": "ran: simulation/UI-fixture/source-label claims inspected. Opening no-socket comment in test_panes and standalone main placement in test_liquidity are recorded low opportunities rather than silently claimed repaired.",
+        "T1": "ran: full assertions and failure paths read. Final12module161tests301.603s exits0 with0skips,0outbound/DNS attempts and0unapprovedprocess attempts. Fatal Ruff and ASTparse pass0. Initial161functionalpass with36blockedHTTPattempts remains a failed qualified gate.",
+        "T2": "N/A per file: package pins and dependency/supply-chain review is whole-repository scope.",
+        "T3": "ran: current file passes fatal Ruff E9,F63,F7,F82 and ASTparse; general inherited style and repository CI are separate gates.",
+        "T4": "ran: reusable fixture helpers avoid actual external catalogues/platform-default status reads in headless UI setup. Actual mounted controls, transport parity and owned detached lifecycle assertions remain intact.491read-only git identity probes are observed; no artificial speed threshold or reduced command inventory was introduced.",
+        "M5": "N/A: test module. Actual stdio/headless CLI calls are test coverage; production CLI ergonomic assessment belongs to its source owner."
+      }
+    },
+    {
+      "path": "soltui/tests/test_batch_ui.py",
+      "sha256": "1d4c5b295c705d6cf97891c0874f8aead41745bc3a674be2004d4a2c6dc44549",
+      "blob_sha": "59bea3b4da876967e0124344c29a1b8bf6dfa055",
+      "lines": 150,
+      "read_evidence": {
+        "method": "full displayed source baseline plus exact reviewed six fixture-only deltas",
+        "ranges": [
+          {
+            "sha256": "a8818218f086ee5e5256399f79b791ec9c1f6e79d63203d2f90516ea08c056fc",
+            "start": 1,
+            "end": 147,
+            "lines": 147
+          }
+        ],
+        "authored_delta": {
+          "path": "soltui/tests/test_batch_ui.py",
+          "before_sha256": "a8818218f086ee5e5256399f79b791ec9c1f6e79d63203d2f90516ea08c056fc",
+          "after_sha256": "1d4c5b295c705d6cf97891c0874f8aead41745bc3a674be2004d4a2c6dc44549",
+          "inverse_matches_full_read_preimage": true,
+          "delta": [
+            "--- soltui/tests/test_batch_ui.py",
+            "+++ soltui/tests/test_batch_ui.py",
+            "@@ -4,7 +4,7 @@",
+            " ",
+            " from textual.widgets import Static, TabbedContent",
+            " ",
+            "-from soltui.tests.test_tui import TEST_SIZE, make_settings",
+            "+from soltui.tests.test_tui import TEST_SIZE, make_settings, offline_console_reads",
+            " from soltui.tui import SolTuiApp",
+            " ",
+            " ",
+            "@@ -13,6 +13,9 @@",
+            " ",
+            " ",
+            " class BatchUiTests(unittest.IsolatedAsyncioTestCase):",
+            "+    def setUp(self):",
+            "+        self.enterContext(offline_console_reads())",
+            "+",
+            "     async def test_start_status_stop_recover_and_fresh(self):",
+            "         app = SolTuiApp(make_settings())",
+            "         state = {\"runs\": [], \"running\": False}"
+          ]
+        }
+      },
+      "semantic_note": "Full147lines. Actual UI workers receive a mocked batch state machine, never a real sweep. Fresh/status/stop/resume/recovery and failure retention are asserted; a blocked create remains responsive and duplicate create is suppressed. Existing worker waits remain meaningful rather than replaced with implementation mirrors. Authored fixture-only delta enters shared offline_console_reads; inverse exactly recovers the full-read baseline. Initial qualified wrapper failed despite functional assertions; final fixture correction removes default external read attempts without changing assertions.",
+      "passes": {
+        "C1": "ran: Full147lines. Actual UI workers receive a mocked batch state machine, never a real sweep. Fresh/status/stop/resume/recovery and failure retention are asserted; a blocked create remains responsive and duplicate create is suppressed. Existing worker waits remain meaningful rather than replaced with implementation mirrors. Authored fixture-only delta enters shared offline_console_reads; inverse exactly recovers the full-read baseline. Initial qualified wrapper failed despite functional assertions; final fixture correction removes default external read attempts without changing assertions.",
+        "C2": "ran: meaningful assertions, exact command/receipt/store contracts, unavailable versus zero and fixture-to-production boundaries reviewed for this file.",
+        "C3": "ran: negative/failure/late-result/concurrency cases inspected. Six default-read fixture gaps were proved and corrected; remaining low test robustness/documentation opportunities are stated in the semantic notes.",
+        "S1": "ran: fixed argv and local fixture paths, temporary authority/manager ownership, SQL parameterization and no actual signing/orders/provider credentials considered where present.",
+        "S2": "ran: owned child/thread/socket/SQLite lifetimes and deadlines inspected. Guarded actual temporary detached F5 and synthetic prediction callers passed. A low missing cleanup-on-timeout opportunity in one F5 test remains explicit.",
+        "S3": "ran: input shape, nonfinite/bool checks, evidence/code/runtime identity and malformed-state assertions inspected where present; no new scalar validator implemented in tests.",
+        "S4": "ran: current macOS/Python3.13/Textual UI and native-host fixture APIs inspected. Real local fixture acceptance does not certify Linux or installed owner service behavior.",
+        "S5": "ran: explicit unknown/stale/refusal/source labels, sanitized canaries and guarded process diagnostics inspected. No provider credential or actual order is needed for these UI assertions.",
+        "P1": "ran: fixed fixture sizes, candidate/window work and explicit waits inspected. No unbounded production workload or new benchmark was introduced.",
+        "P2": "ran: existing race/replay/reservation/control assertions inspected. Where present, real temp-process locks remain actual OS fixtures rather than weaker mocks.",
+        "M1": "ran: source names/helpers/comments and assertion intent inspected. Six small authored fixture deltas are reviewed; no formatting change is claimed.",
+        "M2": "ran: shared offline_console_reads and existing World/ApiServer/research/UI helpers reused. Inner explicit mocks retain precedence. No duplicate production implementation or network stub added to product code.",
+        "M3": "N/A per file: whole-repository architecture/central-settings assessment belongs to full_repo_health.",
+        "M4": "ran: simulation/UI-fixture/source-label claims inspected. Opening no-socket comment in test_panes and standalone main placement in test_liquidity are recorded low opportunities rather than silently claimed repaired.",
+        "T1": "ran: full assertions and failure paths read. Final12module161tests301.603s exits0 with0skips,0outbound/DNS attempts and0unapprovedprocess attempts. Fatal Ruff and ASTparse pass0. Initial161functionalpass with36blockedHTTPattempts remains a failed qualified gate.",
+        "T2": "N/A per file: package pins and dependency/supply-chain review is whole-repository scope.",
+        "T3": "ran: current file passes fatal Ruff E9,F63,F7,F82 and ASTparse; general inherited style and repository CI are separate gates.",
+        "T4": "ran: reusable fixture helpers avoid actual external catalogues/platform-default status reads in headless UI setup. Actual mounted controls, transport parity and owned detached lifecycle assertions remain intact.491read-only git identity probes are observed; no artificial speed threshold or reduced command inventory was introduced.",
+        "M5": "N/A: test module. Actual stdio/headless CLI calls are test coverage; production CLI ergonomic assessment belongs to its source owner."
+      }
+    },
+    {
+      "path": "soltui/tests/test_bridge_parity.py",
+      "sha256": "a9a573aa499071b55b7fe2b57b40ab1a22d91ca3cceacfd30c5c19cf99b7c7fd",
+      "blob_sha": "f09833efcd92f887f0effe311204ab5fed1c5dcb",
+      "lines": 81,
+      "read_evidence": {
+        "method": "full displayed source baseline plus exact reviewed six fixture-only deltas",
+        "ranges": [
+          {
+            "sha256": "a9a573aa499071b55b7fe2b57b40ab1a22d91ca3cceacfd30c5c19cf99b7c7fd",
+            "start": 1,
+            "end": 81,
+            "lines": 81
+          }
+        ],
+        "authored_delta": null
+      },
+      "semantic_note": "Full81lines. Registry-derived command inventory executes temporary reset World through TUI/CLI/loopbackAPI/native-host surfaces and asserts equal envelope bytes plus required fixtures and failure parity. Confirmation metadata preserves liquidity resume and explicit financial submit requirements. Passing stubs establish transport consistency, not upstream provider acceptance.",
+      "passes": {
+        "C1": "ran: Full81lines. Registry-derived command inventory executes temporary reset World through TUI/CLI/loopbackAPI/native-host surfaces and asserts equal envelope bytes plus required fixtures and failure parity. Confirmation metadata preserves liquidity resume and explicit financial submit requirements. Passing stubs establish transport consistency, not upstream provider acceptance.",
+        "C2": "ran: meaningful assertions, exact command/receipt/store contracts, unavailable versus zero and fixture-to-production boundaries reviewed for this file.",
+        "C3": "ran: negative/failure/late-result/concurrency cases inspected. Six default-read fixture gaps were proved and corrected; remaining low test robustness/documentation opportunities are stated in the semantic notes.",
+        "S1": "ran: fixed argv and local fixture paths, temporary authority/manager ownership, SQL parameterization and no actual signing/orders/provider credentials considered where present.",
+        "S2": "ran: owned child/thread/socket/SQLite lifetimes and deadlines inspected. Guarded actual temporary detached F5 and synthetic prediction callers passed. A low missing cleanup-on-timeout opportunity in one F5 test remains explicit.",
+        "S3": "ran: input shape, nonfinite/bool checks, evidence/code/runtime identity and malformed-state assertions inspected where present; no new scalar validator implemented in tests.",
+        "S4": "ran: current macOS/Python3.13/Textual UI and native-host fixture APIs inspected. Real local fixture acceptance does not certify Linux or installed owner service behavior.",
+        "S5": "ran: explicit unknown/stale/refusal/source labels, sanitized canaries and guarded process diagnostics inspected. No provider credential or actual order is needed for these UI assertions.",
+        "P1": "ran: fixed fixture sizes, candidate/window work and explicit waits inspected. No unbounded production workload or new benchmark was introduced.",
+        "P2": "ran: existing race/replay/reservation/control assertions inspected. Where present, real temp-process locks remain actual OS fixtures rather than weaker mocks.",
+        "M1": "ran: source names/helpers/comments and assertion intent inspected. Six small authored fixture deltas are reviewed; no formatting change is claimed.",
+        "M2": "ran: shared offline_console_reads and existing World/ApiServer/research/UI helpers reused. Inner explicit mocks retain precedence. No duplicate production implementation or network stub added to product code.",
+        "M3": "N/A per file: whole-repository architecture/central-settings assessment belongs to full_repo_health.",
+        "M4": "ran: simulation/UI-fixture/source-label claims inspected. Opening no-socket comment in test_panes and standalone main placement in test_liquidity are recorded low opportunities rather than silently claimed repaired.",
+        "T1": "ran: full assertions and failure paths read. Final12module161tests301.603s exits0 with0skips,0outbound/DNS attempts and0unapprovedprocess attempts. Fatal Ruff and ASTparse pass0. Initial161functionalpass with36blockedHTTPattempts remains a failed qualified gate.",
+        "T2": "N/A per file: package pins and dependency/supply-chain review is whole-repository scope.",
+        "T3": "ran: current file passes fatal Ruff E9,F63,F7,F82 and ASTparse; general inherited style and repository CI are separate gates.",
+        "T4": "ran: reusable fixture helpers avoid actual external catalogues/platform-default status reads in headless UI setup. Actual mounted controls, transport parity and owned detached lifecycle assertions remain intact.491read-only git identity probes are observed; no artificial speed threshold or reduced command inventory was introduced.",
+        "M5": "N/A: test module. Actual stdio/headless CLI calls are test coverage; production CLI ergonomic assessment belongs to its source owner."
+      }
+    },
+    {
+      "path": "soltui/tests/test_coin_fit_ui.py",
+      "sha256": "27ac88c24239b7f6d496d227e7c3c986172b992e05323099a20d6e0d261c9be0",
+      "blob_sha": "26444b4b1f5db13f6544cc6251fdd115889577e0",
+      "lines": 402,
+      "read_evidence": {
+        "method": "full displayed source baseline plus exact reviewed six fixture-only deltas",
+        "ranges": [
+          {
+            "sha256": "1c53fe45eed864009727da551e133321c9ef85b4441e20e24cf87ea2fae61435",
+            "start": 1,
+            "end": 240,
+            "lines": 400
+          },
+          {
+            "sha256": "1c53fe45eed864009727da551e133321c9ef85b4441e20e24cf87ea2fae61435",
+            "start": 241,
+            "end": 400,
+            "lines": 400
+          }
+        ],
+        "authored_delta": {
+          "path": "soltui/tests/test_coin_fit_ui.py",
+          "before_sha256": "1c53fe45eed864009727da551e133321c9ef85b4441e20e24cf87ea2fae61435",
+          "after_sha256": "27ac88c24239b7f6d496d227e7c3c986172b992e05323099a20d6e0d261c9be0",
+          "inverse_matches_full_read_preimage": true,
+          "delta": [
+            "--- soltui/tests/test_coin_fit_ui.py",
+            "+++ soltui/tests/test_coin_fit_ui.py",
+            "@@ -17,6 +17,7 @@",
+            " from soltui import config as config_mod",
+            " from soltui.config import Settings",
+            " from soltui.tui import SolTuiApp",
+            "+from soltui.tests.test_tui import offline_console_reads",
+            " ",
+            " ",
+            " def row(coin=\"SOL\", *, fit=\"PROVISIONAL_FIT\", score=2.0):",
+            "@@ -147,6 +148,7 @@",
+            " ",
+            " class UITests(BackendFixture, unittest.IsolatedAsyncioTestCase):",
+            "     async def asyncSetUp(self):",
+            "+        self.enterContext(offline_console_reads())",
+            "         self.tmp = tempfile.TemporaryDirectory()",
+            "         self.addCleanup(self.tmp.cleanup)",
+            "         root = Path(self.tmp.name)"
+          ]
+        }
+      },
+      "semantic_note": "Full400lines. Temporary stores and injected backend cover exact frozen parameter routing, early cancel, busy/failure distinctions, thread drain, UI draft changes and late result discard. FitHarness mounts actual Bots pane; full v2/classic navigation is also exercised. Two bounded30day synthetic CSV cases run real local quick/audit math and retain quick ranking, window provenance and poor-fit failures without market fetching. Authored fixture-only delta enters shared offline_console_reads; inverse exactly recovers the full-read baseline. Initial qualified wrapper failed despite functional assertions; final fixture correction removes default external read attempts without changing assertions.",
+      "passes": {
+        "C1": "ran: Full400lines. Temporary stores and injected backend cover exact frozen parameter routing, early cancel, busy/failure distinctions, thread drain, UI draft changes and late result discard. FitHarness mounts actual Bots pane; full v2/classic navigation is also exercised. Two bounded30day synthetic CSV cases run real local quick/audit math and retain quick ranking, window provenance and poor-fit failures without market fetching. Authored fixture-only delta enters shared offline_console_reads; inverse exactly recovers the full-read baseline. Initial qualified wrapper failed despite functional assertions; final fixture correction removes default external read attempts without changing assertions.",
+        "C2": "ran: meaningful assertions, exact command/receipt/store contracts, unavailable versus zero and fixture-to-production boundaries reviewed for this file.",
+        "C3": "ran: negative/failure/late-result/concurrency cases inspected. Six default-read fixture gaps were proved and corrected; remaining low test robustness/documentation opportunities are stated in the semantic notes.",
+        "S1": "ran: fixed argv and local fixture paths, temporary authority/manager ownership, SQL parameterization and no actual signing/orders/provider credentials considered where present.",
+        "S2": "ran: owned child/thread/socket/SQLite lifetimes and deadlines inspected. Guarded actual temporary detached F5 and synthetic prediction callers passed. A low missing cleanup-on-timeout opportunity in one F5 test remains explicit.",
+        "S3": "ran: input shape, nonfinite/bool checks, evidence/code/runtime identity and malformed-state assertions inspected where present; no new scalar validator implemented in tests.",
+        "S4": "ran: current macOS/Python3.13/Textual UI and native-host fixture APIs inspected. Real local fixture acceptance does not certify Linux or installed owner service behavior.",
+        "S5": "ran: explicit unknown/stale/refusal/source labels, sanitized canaries and guarded process diagnostics inspected. No provider credential or actual order is needed for these UI assertions.",
+        "P1": "ran: fixed fixture sizes, candidate/window work and explicit waits inspected. No unbounded production workload or new benchmark was introduced.",
+        "P2": "ran: existing race/replay/reservation/control assertions inspected. Where present, real temp-process locks remain actual OS fixtures rather than weaker mocks.",
+        "M1": "ran: source names/helpers/comments and assertion intent inspected. Six small authored fixture deltas are reviewed; no formatting change is claimed.",
+        "M2": "ran: shared offline_console_reads and existing World/ApiServer/research/UI helpers reused. Inner explicit mocks retain precedence. No duplicate production implementation or network stub added to product code.",
+        "M3": "N/A per file: whole-repository architecture/central-settings assessment belongs to full_repo_health.",
+        "M4": "ran: simulation/UI-fixture/source-label claims inspected. Opening no-socket comment in test_panes and standalone main placement in test_liquidity are recorded low opportunities rather than silently claimed repaired.",
+        "T1": "ran: full assertions and failure paths read. Final12module161tests301.603s exits0 with0skips,0outbound/DNS attempts and0unapprovedprocess attempts. Fatal Ruff and ASTparse pass0. Initial161functionalpass with36blockedHTTPattempts remains a failed qualified gate.",
+        "T2": "N/A per file: package pins and dependency/supply-chain review is whole-repository scope.",
+        "T3": "ran: current file passes fatal Ruff E9,F63,F7,F82 and ASTparse; general inherited style and repository CI are separate gates.",
+        "T4": "ran: reusable fixture helpers avoid actual external catalogues/platform-default status reads in headless UI setup. Actual mounted controls, transport parity and owned detached lifecycle assertions remain intact.491read-only git identity probes are observed; no artificial speed threshold or reduced command inventory was introduced.",
+        "M5": "N/A: test module. Actual stdio/headless CLI calls are test coverage; production CLI ergonomic assessment belongs to its source owner."
+      }
+    },
+    {
+      "path": "soltui/tests/test_coinbase_manual_ui.py",
+      "sha256": "272eab8b212655427736a163768d54172c13dcd1454041c2ff2330c02cd08419",
+      "blob_sha": "b25217fdd4e1ac6ded20ee3fd95fc970440fd677",
+      "lines": 371,
+      "read_evidence": {
+        "method": "full displayed source baseline plus exact reviewed six fixture-only deltas",
+        "ranges": [
+          {
+            "sha256": "c160c59c05550a195b44b236f3e5ab09e05d71f253c7db9290d8f5333e5db91d",
+            "start": 1,
+            "end": 240,
+            "lines": 370
+          },
+          {
+            "sha256": "c160c59c05550a195b44b236f3e5ab09e05d71f253c7db9290d8f5333e5db91d",
+            "start": 79,
+            "end": 145,
+            "lines": 370
+          },
+          {
+            "sha256": "c160c59c05550a195b44b236f3e5ab09e05d71f253c7db9290d8f5333e5db91d",
+            "start": 241,
+            "end": 370,
+            "lines": 370
+          }
+        ],
+        "authored_delta": {
+          "path": "soltui/tests/test_coinbase_manual_ui.py",
+          "before_sha256": "c160c59c05550a195b44b236f3e5ab09e05d71f253c7db9290d8f5333e5db91d",
+          "after_sha256": "272eab8b212655427736a163768d54172c13dcd1454041c2ff2330c02cd08419",
+          "inverse_matches_full_read_preimage": true,
+          "delta": [
+            "--- soltui/tests/test_coinbase_manual_ui.py",
+            "+++ soltui/tests/test_coinbase_manual_ui.py",
+            "@@ -11,7 +11,7 @@",
+            " from textual.widgets import Button, Checkbox, DataTable, Input, Select, Static, TabbedContent",
+            " ",
+            " from soltui import config",
+            "-from soltui.tests.test_tui import TEST_SIZE, make_settings",
+            "+from soltui.tests.test_tui import TEST_SIZE, make_settings, offline_console_reads",
+            " from soltui.tui import SolTuiApp",
+            " ",
+            " ",
+            "@@ -27,6 +27,7 @@",
+            " ",
+            " class CoinbaseManualUiTests(unittest.IsolatedAsyncioTestCase):",
+            "     async def asyncSetUp(self):",
+            "+        self.enterContext(offline_console_reads())",
+            "         self.tmp = tempfile.TemporaryDirectory()",
+            "         self.addAsyncCleanup(self._clean)",
+            "         self.patch = mock.patch.object(config, \"CONFIG_DIR\", Path(self.tmp.name))"
+          ]
+        }
+      },
+      "semantic_note": "Full370lines, including supplemental79-145reread after combined output truncation. Mounted controls require explicit arm, handle unknown/resting outcomes without resubmit, retain optional quick-mode semantics, reject expired/changed reviews and stale pair searches, and fit narrow terminals. All exercised order commands are injected synthetic results; no actual credential/signing authority is used. Authored fixture-only delta enters shared offline_console_reads; inverse exactly recovers the full-read baseline. Initial qualified wrapper failed despite functional assertions; final fixture correction removes default external read attempts without changing assertions.",
+      "passes": {
+        "C1": "ran: Full370lines, including supplemental79-145reread after combined output truncation. Mounted controls require explicit arm, handle unknown/resting outcomes without resubmit, retain optional quick-mode semantics, reject expired/changed reviews and stale pair searches, and fit narrow terminals. All exercised order commands are injected synthetic results; no actual credential/signing authority is used. Authored fixture-only delta enters shared offline_console_reads; inverse exactly recovers the full-read baseline. Initial qualified wrapper failed despite functional assertions; final fixture correction removes default external read attempts without changing assertions.",
+        "C2": "ran: meaningful assertions, exact command/receipt/store contracts, unavailable versus zero and fixture-to-production boundaries reviewed for this file.",
+        "C3": "ran: negative/failure/late-result/concurrency cases inspected. Six default-read fixture gaps were proved and corrected; remaining low test robustness/documentation opportunities are stated in the semantic notes.",
+        "S1": "ran: fixed argv and local fixture paths, temporary authority/manager ownership, SQL parameterization and no actual signing/orders/provider credentials considered where present.",
+        "S2": "ran: owned child/thread/socket/SQLite lifetimes and deadlines inspected. Guarded actual temporary detached F5 and synthetic prediction callers passed. A low missing cleanup-on-timeout opportunity in one F5 test remains explicit.",
+        "S3": "ran: input shape, nonfinite/bool checks, evidence/code/runtime identity and malformed-state assertions inspected where present; no new scalar validator implemented in tests.",
+        "S4": "ran: current macOS/Python3.13/Textual UI and native-host fixture APIs inspected. Real local fixture acceptance does not certify Linux or installed owner service behavior.",
+        "S5": "ran: explicit unknown/stale/refusal/source labels, sanitized canaries and guarded process diagnostics inspected. No provider credential or actual order is needed for these UI assertions.",
+        "P1": "ran: fixed fixture sizes, candidate/window work and explicit waits inspected. No unbounded production workload or new benchmark was introduced.",
+        "P2": "ran: existing race/replay/reservation/control assertions inspected. Where present, real temp-process locks remain actual OS fixtures rather than weaker mocks.",
+        "M1": "ran: source names/helpers/comments and assertion intent inspected. Six small authored fixture deltas are reviewed; no formatting change is claimed.",
+        "M2": "ran: shared offline_console_reads and existing World/ApiServer/research/UI helpers reused. Inner explicit mocks retain precedence. No duplicate production implementation or network stub added to product code.",
+        "M3": "N/A per file: whole-repository architecture/central-settings assessment belongs to full_repo_health.",
+        "M4": "ran: simulation/UI-fixture/source-label claims inspected. Opening no-socket comment in test_panes and standalone main placement in test_liquidity are recorded low opportunities rather than silently claimed repaired.",
+        "T1": "ran: full assertions and failure paths read. Final12module161tests301.603s exits0 with0skips,0outbound/DNS attempts and0unapprovedprocess attempts. Fatal Ruff and ASTparse pass0. Initial161functionalpass with36blockedHTTPattempts remains a failed qualified gate.",
+        "T2": "N/A per file: package pins and dependency/supply-chain review is whole-repository scope.",
+        "T3": "ran: current file passes fatal Ruff E9,F63,F7,F82 and ASTparse; general inherited style and repository CI are separate gates.",
+        "T4": "ran: reusable fixture helpers avoid actual external catalogues/platform-default status reads in headless UI setup. Actual mounted controls, transport parity and owned detached lifecycle assertions remain intact.491read-only git identity probes are observed; no artificial speed threshold or reduced command inventory was introduced.",
+        "M5": "N/A: test module. Actual stdio/headless CLI calls are test coverage; production CLI ergonomic assessment belongs to its source owner."
+      }
+    },
+    {
+      "path": "soltui/tests/test_f5_batch.py",
+      "sha256": "46df695b58735ff7469510edcd20dfd590dc4f017a1377595db875f062e27150",
+      "blob_sha": "ea71b4474462154710142c1d5bdf90a684f01e85",
+      "lines": 325,
+      "read_evidence": {
+        "method": "full displayed source baseline plus exact reviewed six fixture-only deltas",
+        "ranges": [
+          {
+            "sha256": "46df695b58735ff7469510edcd20dfd590dc4f017a1377595db875f062e27150",
+            "start": 1,
+            "end": 325,
+            "lines": 325
+          }
+        ],
+        "authored_delta": null
+      },
+      "semantic_note": "Full325lines. Temporary frozen CSV/batch databases and injected evaluator/ticks cover resume, terminal handoff, byte/code mismatch, partial forward coverage, protected cadence and supported horizon provenance. Global F5 lock refuses duplicate start. One actual detached missing-data worker has no available market input and must fail without forward start. Its timeout assertion has a low cleanup robustness opportunity if the worker unexpectedly hangs.",
+      "passes": {
+        "C1": "ran: Full325lines. Temporary frozen CSV/batch databases and injected evaluator/ticks cover resume, terminal handoff, byte/code mismatch, partial forward coverage, protected cadence and supported horizon provenance. Global F5 lock refuses duplicate start. One actual detached missing-data worker has no available market input and must fail without forward start. Its timeout assertion has a low cleanup robustness opportunity if the worker unexpectedly hangs.",
+        "C2": "ran: meaningful assertions, exact command/receipt/store contracts, unavailable versus zero and fixture-to-production boundaries reviewed for this file.",
+        "C3": "ran: negative/failure/late-result/concurrency cases inspected. Six default-read fixture gaps were proved and corrected; remaining low test robustness/documentation opportunities are stated in the semantic notes.",
+        "S1": "ran: fixed argv and local fixture paths, temporary authority/manager ownership, SQL parameterization and no actual signing/orders/provider credentials considered where present.",
+        "S2": "ran: owned child/thread/socket/SQLite lifetimes and deadlines inspected. Guarded actual temporary detached F5 and synthetic prediction callers passed. A low missing cleanup-on-timeout opportunity in one F5 test remains explicit.",
+        "S3": "ran: input shape, nonfinite/bool checks, evidence/code/runtime identity and malformed-state assertions inspected where present; no new scalar validator implemented in tests.",
+        "S4": "ran: current macOS/Python3.13/Textual UI and native-host fixture APIs inspected. Real local fixture acceptance does not certify Linux or installed owner service behavior.",
+        "S5": "ran: explicit unknown/stale/refusal/source labels, sanitized canaries and guarded process diagnostics inspected. No provider credential or actual order is needed for these UI assertions.",
+        "P1": "ran: fixed fixture sizes, candidate/window work and explicit waits inspected. No unbounded production workload or new benchmark was introduced.",
+        "P2": "ran: existing race/replay/reservation/control assertions inspected. Where present, real temp-process locks remain actual OS fixtures rather than weaker mocks.",
+        "M1": "ran: source names/helpers/comments and assertion intent inspected. Six small authored fixture deltas are reviewed; no formatting change is claimed.",
+        "M2": "ran: shared offline_console_reads and existing World/ApiServer/research/UI helpers reused. Inner explicit mocks retain precedence. No duplicate production implementation or network stub added to product code.",
+        "M3": "N/A per file: whole-repository architecture/central-settings assessment belongs to full_repo_health.",
+        "M4": "ran: simulation/UI-fixture/source-label claims inspected. Opening no-socket comment in test_panes and standalone main placement in test_liquidity are recorded low opportunities rather than silently claimed repaired.",
+        "T1": "ran: full assertions and failure paths read. Final12module161tests301.603s exits0 with0skips,0outbound/DNS attempts and0unapprovedprocess attempts. Fatal Ruff and ASTparse pass0. Initial161functionalpass with36blockedHTTPattempts remains a failed qualified gate.",
+        "T2": "N/A per file: package pins and dependency/supply-chain review is whole-repository scope.",
+        "T3": "ran: current file passes fatal Ruff E9,F63,F7,F82 and ASTparse; general inherited style and repository CI are separate gates.",
+        "T4": "ran: reusable fixture helpers avoid actual external catalogues/platform-default status reads in headless UI setup. Actual mounted controls, transport parity and owned detached lifecycle assertions remain intact.491read-only git identity probes are observed; no artificial speed threshold or reduced command inventory was introduced.",
+        "M5": "N/A: test module. Actual stdio/headless CLI calls are test coverage; production CLI ergonomic assessment belongs to its source owner."
+      }
+    },
+    {
+      "path": "soltui/tests/test_f5_policy.py",
+      "sha256": "787273aa196a60b3b06e31725543ad528409a7fa7951611601fbe73aa9ddea0c",
+      "blob_sha": "d611d49bb6b0cb46a8877ab1b14d1d5a80eda202",
+      "lines": 154,
+      "read_evidence": {
+        "method": "full displayed source baseline plus exact reviewed six fixture-only deltas",
+        "ranges": [
+          {
+            "sha256": "787273aa196a60b3b06e31725543ad528409a7fa7951611601fbe73aa9ddea0c",
+            "start": 1,
+            "end": 154,
+            "lines": 154
+          }
+        ],
+        "authored_delta": null
+      },
+      "semantic_note": "Full154lines. Frozen simulation parameters survive create/restore; private arming/address fields are excluded and legacy80percent confidence policy stays disarmed. Bounded flat synthetic320day bars exercise actual local F5/raw versus gated trade/cost math with an injected forward tick. These fixture results do not establish live strategy profitability or elapsed market evidence.",
+      "passes": {
+        "C1": "ran: Full154lines. Frozen simulation parameters survive create/restore; private arming/address fields are excluded and legacy80percent confidence policy stays disarmed. Bounded flat synthetic320day bars exercise actual local F5/raw versus gated trade/cost math with an injected forward tick. These fixture results do not establish live strategy profitability or elapsed market evidence.",
+        "C2": "ran: meaningful assertions, exact command/receipt/store contracts, unavailable versus zero and fixture-to-production boundaries reviewed for this file.",
+        "C3": "ran: negative/failure/late-result/concurrency cases inspected. Six default-read fixture gaps were proved and corrected; remaining low test robustness/documentation opportunities are stated in the semantic notes.",
+        "S1": "ran: fixed argv and local fixture paths, temporary authority/manager ownership, SQL parameterization and no actual signing/orders/provider credentials considered where present.",
+        "S2": "ran: owned child/thread/socket/SQLite lifetimes and deadlines inspected. Guarded actual temporary detached F5 and synthetic prediction callers passed. A low missing cleanup-on-timeout opportunity in one F5 test remains explicit.",
+        "S3": "ran: input shape, nonfinite/bool checks, evidence/code/runtime identity and malformed-state assertions inspected where present; no new scalar validator implemented in tests.",
+        "S4": "ran: current macOS/Python3.13/Textual UI and native-host fixture APIs inspected. Real local fixture acceptance does not certify Linux or installed owner service behavior.",
+        "S5": "ran: explicit unknown/stale/refusal/source labels, sanitized canaries and guarded process diagnostics inspected. No provider credential or actual order is needed for these UI assertions.",
+        "P1": "ran: fixed fixture sizes, candidate/window work and explicit waits inspected. No unbounded production workload or new benchmark was introduced.",
+        "P2": "ran: existing race/replay/reservation/control assertions inspected. Where present, real temp-process locks remain actual OS fixtures rather than weaker mocks.",
+        "M1": "ran: source names/helpers/comments and assertion intent inspected. Six small authored fixture deltas are reviewed; no formatting change is claimed.",
+        "M2": "ran: shared offline_console_reads and existing World/ApiServer/research/UI helpers reused. Inner explicit mocks retain precedence. No duplicate production implementation or network stub added to product code.",
+        "M3": "N/A per file: whole-repository architecture/central-settings assessment belongs to full_repo_health.",
+        "M4": "ran: simulation/UI-fixture/source-label claims inspected. Opening no-socket comment in test_panes and standalone main placement in test_liquidity are recorded low opportunities rather than silently claimed repaired.",
+        "T1": "ran: full assertions and failure paths read. Final12module161tests301.603s exits0 with0skips,0outbound/DNS attempts and0unapprovedprocess attempts. Fatal Ruff and ASTparse pass0. Initial161functionalpass with36blockedHTTPattempts remains a failed qualified gate.",
+        "T2": "N/A per file: package pins and dependency/supply-chain review is whole-repository scope.",
+        "T3": "ran: current file passes fatal Ruff E9,F63,F7,F82 and ASTparse; general inherited style and repository CI are separate gates.",
+        "T4": "ran: reusable fixture helpers avoid actual external catalogues/platform-default status reads in headless UI setup. Actual mounted controls, transport parity and owned detached lifecycle assertions remain intact.491read-only git identity probes are observed; no artificial speed threshold or reduced command inventory was introduced.",
+        "M5": "N/A: test module. Actual stdio/headless CLI calls are test coverage; production CLI ergonomic assessment belongs to its source owner."
+      }
+    },
+    {
+      "path": "soltui/tests/test_liquidity.py",
+      "sha256": "0109c01c22977cb1787e3d6f8355c97dde8a3647bf4771b4f6fd5e582adee978",
+      "blob_sha": "b259d25dcbe62d6f09ed42c567a89935ebed91c3",
+      "lines": 581,
+      "read_evidence": {
+        "method": "full displayed source baseline plus exact reviewed six fixture-only deltas",
+        "ranges": [
+          {
+            "sha256": "d5a57cfc85deba83ee89ce8192b46427b38b1863953fc54e84616dc91fabee30",
+            "start": 1,
+            "end": 290,
+            "lines": 580
+          },
+          {
+            "sha256": "d5a57cfc85deba83ee89ce8192b46427b38b1863953fc54e84616dc91fabee30",
+            "start": 291,
+            "end": 580,
+            "lines": 580
+          }
+        ],
+        "authored_delta": {
+          "path": "soltui/tests/test_liquidity.py",
+          "before_sha256": "d5a57cfc85deba83ee89ce8192b46427b38b1863953fc54e84616dc91fabee30",
+          "after_sha256": "0109c01c22977cb1787e3d6f8355c97dde8a3647bf4771b4f6fd5e582adee978",
+          "inverse_matches_full_read_preimage": true,
+          "delta": [
+            "--- soltui/tests/test_liquidity.py",
+            "+++ soltui/tests/test_liquidity.py",
+            "@@ -22,7 +22,7 @@",
+            " from textual.widgets import DataTable, Static, TabbedContent",
+            " ",
+            " from soltui import liquidity as liq",
+            "-from soltui.tests.test_tui import TEST_SIZE, make_settings, text_of",
+            "+from soltui.tests.test_tui import TEST_SIZE, make_settings, offline_console_reads, text_of",
+            " from soltui.tui import SolTuiApp",
+            " ",
+            " NOW = 1762400100.0",
+            "@@ -417,6 +417,7 @@",
+            "     \"\"\"Mount the real app against a fixture state dir.\"\"\"",
+            " ",
+            "     def setUp(self) -> None:",
+            "+        self.enterContext(offline_console_reads())",
+            "         self._tmp = TemporaryDirectory()",
+            "         self.addCleanup(self._tmp.cleanup)",
+            "         self.home = Path(self._tmp.name)"
+          ]
+        }
+      },
+      "semantic_note": "Full580lines. Temporary state files cover schema/type/nonfinite tolerance, live/modelled/reported labels, no double counting, stale/unknown values, capped rows and no order/network import path. Actual mounted KILL/resume controls write only fixture KILL with two-press confirmation. Late4tests remain discoverable under normal unittest discovery; the direct-file __main__ placement before those classes is a low standalone-run completeness issue. Authored fixture-only delta enters shared offline_console_reads; inverse exactly recovers the full-read baseline. Initial qualified wrapper failed despite functional assertions; final fixture correction removes default external read attempts without changing assertions.",
+      "passes": {
+        "C1": "ran: Full580lines. Temporary state files cover schema/type/nonfinite tolerance, live/modelled/reported labels, no double counting, stale/unknown values, capped rows and no order/network import path. Actual mounted KILL/resume controls write only fixture KILL with two-press confirmation. Late4tests remain discoverable under normal unittest discovery; the direct-file __main__ placement before those classes is a low standalone-run completeness issue. Authored fixture-only delta enters shared offline_console_reads; inverse exactly recovers the full-read baseline. Initial qualified wrapper failed despite functional assertions; final fixture correction removes default external read attempts without changing assertions.",
+        "C2": "ran: meaningful assertions, exact command/receipt/store contracts, unavailable versus zero and fixture-to-production boundaries reviewed for this file.",
+        "C3": "ran: negative/failure/late-result/concurrency cases inspected. Six default-read fixture gaps were proved and corrected; remaining low test robustness/documentation opportunities are stated in the semantic notes.",
+        "S1": "ran: fixed argv and local fixture paths, temporary authority/manager ownership, SQL parameterization and no actual signing/orders/provider credentials considered where present.",
+        "S2": "ran: owned child/thread/socket/SQLite lifetimes and deadlines inspected. Guarded actual temporary detached F5 and synthetic prediction callers passed. A low missing cleanup-on-timeout opportunity in one F5 test remains explicit.",
+        "S3": "ran: input shape, nonfinite/bool checks, evidence/code/runtime identity and malformed-state assertions inspected where present; no new scalar validator implemented in tests.",
+        "S4": "ran: current macOS/Python3.13/Textual UI and native-host fixture APIs inspected. Real local fixture acceptance does not certify Linux or installed owner service behavior.",
+        "S5": "ran: explicit unknown/stale/refusal/source labels, sanitized canaries and guarded process diagnostics inspected. No provider credential or actual order is needed for these UI assertions.",
+        "P1": "ran: fixed fixture sizes, candidate/window work and explicit waits inspected. No unbounded production workload or new benchmark was introduced.",
+        "P2": "ran: existing race/replay/reservation/control assertions inspected. Where present, real temp-process locks remain actual OS fixtures rather than weaker mocks.",
+        "M1": "ran: source names/helpers/comments and assertion intent inspected. Six small authored fixture deltas are reviewed; no formatting change is claimed.",
+        "M2": "ran: shared offline_console_reads and existing World/ApiServer/research/UI helpers reused. Inner explicit mocks retain precedence. No duplicate production implementation or network stub added to product code.",
+        "M3": "N/A per file: whole-repository architecture/central-settings assessment belongs to full_repo_health.",
+        "M4": "ran: simulation/UI-fixture/source-label claims inspected. Opening no-socket comment in test_panes and standalone main placement in test_liquidity are recorded low opportunities rather than silently claimed repaired.",
+        "T1": "ran: full assertions and failure paths read. Final12module161tests301.603s exits0 with0skips,0outbound/DNS attempts and0unapprovedprocess attempts. Fatal Ruff and ASTparse pass0. Initial161functionalpass with36blockedHTTPattempts remains a failed qualified gate.",
+        "T2": "N/A per file: package pins and dependency/supply-chain review is whole-repository scope.",
+        "T3": "ran: current file passes fatal Ruff E9,F63,F7,F82 and ASTparse; general inherited style and repository CI are separate gates.",
+        "T4": "ran: reusable fixture helpers avoid actual external catalogues/platform-default status reads in headless UI setup. Actual mounted controls, transport parity and owned detached lifecycle assertions remain intact.491read-only git identity probes are observed; no artificial speed threshold or reduced command inventory was introduced.",
+        "M5": "N/A: test module. Actual stdio/headless CLI calls are test coverage; production CLI ergonomic assessment belongs to its source owner."
+      }
+    },
+    {
+      "path": "soltui/tests/test_native_suite.py",
+      "sha256": "4952586b2acafb49a48dc946099d5f6e02abf255c6a7e7ebe1db453efe8833bf",
+      "blob_sha": "dc437a44c661da90a417e8abf0a1bf8c2ed80ed3",
+      "lines": 142,
+      "read_evidence": {
+        "method": "full displayed source baseline plus exact reviewed six fixture-only deltas",
+        "ranges": [
+          {
+            "sha256": "4952586b2acafb49a48dc946099d5f6e02abf255c6a7e7ebe1db453efe8833bf",
+            "start": 1,
+            "end": 142,
+            "lines": 142
+          }
+        ],
+        "authored_delta": null
+      },
+      "semantic_note": "Full142lines. Fixed Chrome origin/actions, exact wire fields, deduplicated request IDs and bounded concurrent start all use mocked controllers. Real status/health against absent temporary homes stays inert; hostile checkpoint URLs are sanitized. Installer writes only explicitly supplied temporary wrapper/manifest paths, preserves origin/quoting, and unsupported Windows refuses before writing.",
+      "passes": {
+        "C1": "ran: Full142lines. Fixed Chrome origin/actions, exact wire fields, deduplicated request IDs and bounded concurrent start all use mocked controllers. Real status/health against absent temporary homes stays inert; hostile checkpoint URLs are sanitized. Installer writes only explicitly supplied temporary wrapper/manifest paths, preserves origin/quoting, and unsupported Windows refuses before writing.",
+        "C2": "ran: meaningful assertions, exact command/receipt/store contracts, unavailable versus zero and fixture-to-production boundaries reviewed for this file.",
+        "C3": "ran: negative/failure/late-result/concurrency cases inspected. Six default-read fixture gaps were proved and corrected; remaining low test robustness/documentation opportunities are stated in the semantic notes.",
+        "S1": "ran: fixed argv and local fixture paths, temporary authority/manager ownership, SQL parameterization and no actual signing/orders/provider credentials considered where present.",
+        "S2": "ran: owned child/thread/socket/SQLite lifetimes and deadlines inspected. Guarded actual temporary detached F5 and synthetic prediction callers passed. A low missing cleanup-on-timeout opportunity in one F5 test remains explicit.",
+        "S3": "ran: input shape, nonfinite/bool checks, evidence/code/runtime identity and malformed-state assertions inspected where present; no new scalar validator implemented in tests.",
+        "S4": "ran: current macOS/Python3.13/Textual UI and native-host fixture APIs inspected. Real local fixture acceptance does not certify Linux or installed owner service behavior.",
+        "S5": "ran: explicit unknown/stale/refusal/source labels, sanitized canaries and guarded process diagnostics inspected. No provider credential or actual order is needed for these UI assertions.",
+        "P1": "ran: fixed fixture sizes, candidate/window work and explicit waits inspected. No unbounded production workload or new benchmark was introduced.",
+        "P2": "ran: existing race/replay/reservation/control assertions inspected. Where present, real temp-process locks remain actual OS fixtures rather than weaker mocks.",
+        "M1": "ran: source names/helpers/comments and assertion intent inspected. Six small authored fixture deltas are reviewed; no formatting change is claimed.",
+        "M2": "ran: shared offline_console_reads and existing World/ApiServer/research/UI helpers reused. Inner explicit mocks retain precedence. No duplicate production implementation or network stub added to product code.",
+        "M3": "N/A per file: whole-repository architecture/central-settings assessment belongs to full_repo_health.",
+        "M4": "ran: simulation/UI-fixture/source-label claims inspected. Opening no-socket comment in test_panes and standalone main placement in test_liquidity are recorded low opportunities rather than silently claimed repaired.",
+        "T1": "ran: full assertions and failure paths read. Final12module161tests301.603s exits0 with0skips,0outbound/DNS attempts and0unapprovedprocess attempts. Fatal Ruff and ASTparse pass0. Initial161functionalpass with36blockedHTTPattempts remains a failed qualified gate.",
+        "T2": "N/A per file: package pins and dependency/supply-chain review is whole-repository scope.",
+        "T3": "ran: current file passes fatal Ruff E9,F63,F7,F82 and ASTparse; general inherited style and repository CI are separate gates.",
+        "T4": "ran: reusable fixture helpers avoid actual external catalogues/platform-default status reads in headless UI setup. Actual mounted controls, transport parity and owned detached lifecycle assertions remain intact.491read-only git identity probes are observed; no artificial speed threshold or reduced command inventory was introduced.",
+        "M5": "N/A: test module. Actual stdio/headless CLI calls are test coverage; production CLI ergonomic assessment belongs to its source owner."
+      }
+    },
+    {
+      "path": "soltui/tests/test_panes.py",
+      "sha256": "0607f37d0d727f7e4c7109c5123e5c4eeb019ad8d85c25eebdede7d4f7189204",
+      "blob_sha": "99239f5786d024ad38868717492ee5eaa044dc20",
+      "lines": 264,
+      "read_evidence": {
+        "method": "full displayed source baseline plus exact reviewed six fixture-only deltas",
+        "ranges": [
+          {
+            "sha256": "0607f37d0d727f7e4c7109c5123e5c4eeb019ad8d85c25eebdede7d4f7189204",
+            "start": 1,
+            "end": 264,
+            "lines": 264
+          }
+        ],
+        "authored_delta": null
+      },
+      "semantic_note": "Full264lines. Temporary document catalogue allowlists paths and protects research results; cumulative ranking excludes evidence-floor casualties and unknown/nonfinite scores. UTC slicing removes future bars before replay. Source cache discovery uses temp paths. Serve tests perform explicit loopback bind probes despite the broad opening no-socket comment; this is a low documentation accuracy issue, not an external network action.",
+      "passes": {
+        "C1": "ran: Full264lines. Temporary document catalogue allowlists paths and protects research results; cumulative ranking excludes evidence-floor casualties and unknown/nonfinite scores. UTC slicing removes future bars before replay. Source cache discovery uses temp paths. Serve tests perform explicit loopback bind probes despite the broad opening no-socket comment; this is a low documentation accuracy issue, not an external network action.",
+        "C2": "ran: meaningful assertions, exact command/receipt/store contracts, unavailable versus zero and fixture-to-production boundaries reviewed for this file.",
+        "C3": "ran: negative/failure/late-result/concurrency cases inspected. Six default-read fixture gaps were proved and corrected; remaining low test robustness/documentation opportunities are stated in the semantic notes.",
+        "S1": "ran: fixed argv and local fixture paths, temporary authority/manager ownership, SQL parameterization and no actual signing/orders/provider credentials considered where present.",
+        "S2": "ran: owned child/thread/socket/SQLite lifetimes and deadlines inspected. Guarded actual temporary detached F5 and synthetic prediction callers passed. A low missing cleanup-on-timeout opportunity in one F5 test remains explicit.",
+        "S3": "ran: input shape, nonfinite/bool checks, evidence/code/runtime identity and malformed-state assertions inspected where present; no new scalar validator implemented in tests.",
+        "S4": "ran: current macOS/Python3.13/Textual UI and native-host fixture APIs inspected. Real local fixture acceptance does not certify Linux or installed owner service behavior.",
+        "S5": "ran: explicit unknown/stale/refusal/source labels, sanitized canaries and guarded process diagnostics inspected. No provider credential or actual order is needed for these UI assertions.",
+        "P1": "ran: fixed fixture sizes, candidate/window work and explicit waits inspected. No unbounded production workload or new benchmark was introduced.",
+        "P2": "ran: existing race/replay/reservation/control assertions inspected. Where present, real temp-process locks remain actual OS fixtures rather than weaker mocks.",
+        "M1": "ran: source names/helpers/comments and assertion intent inspected. Six small authored fixture deltas are reviewed; no formatting change is claimed.",
+        "M2": "ran: shared offline_console_reads and existing World/ApiServer/research/UI helpers reused. Inner explicit mocks retain precedence. No duplicate production implementation or network stub added to product code.",
+        "M3": "N/A per file: whole-repository architecture/central-settings assessment belongs to full_repo_health.",
+        "M4": "ran: simulation/UI-fixture/source-label claims inspected. Opening no-socket comment in test_panes and standalone main placement in test_liquidity are recorded low opportunities rather than silently claimed repaired.",
+        "T1": "ran: full assertions and failure paths read. Final12module161tests301.603s exits0 with0skips,0outbound/DNS attempts and0unapprovedprocess attempts. Fatal Ruff and ASTparse pass0. Initial161functionalpass with36blockedHTTPattempts remains a failed qualified gate.",
+        "T2": "N/A per file: package pins and dependency/supply-chain review is whole-repository scope.",
+        "T3": "ran: current file passes fatal Ruff E9,F63,F7,F82 and ASTparse; general inherited style and repository CI are separate gates.",
+        "T4": "ran: reusable fixture helpers avoid actual external catalogues/platform-default status reads in headless UI setup. Actual mounted controls, transport parity and owned detached lifecycle assertions remain intact.491read-only git identity probes are observed; no artificial speed threshold or reduced command inventory was introduced.",
+        "M5": "N/A: test module. Actual stdio/headless CLI calls are test coverage; production CLI ergonomic assessment belongs to its source owner."
+      }
+    },
+    {
+      "path": "soltui/tests/test_prediction_controls.py",
+      "sha256": "742105c7f7c9742d739f9da753210af1087d8cac5bc6607d603e698721f37d45",
+      "blob_sha": "206c884bb2db337775c37a69e85bc92bb5695712",
+      "lines": 105,
+      "read_evidence": {
+        "method": "full displayed source baseline plus exact reviewed six fixture-only deltas",
+        "ranges": [
+          {
+            "sha256": "d7bf7c3883d8c20e67a17d60c5a8665676b4fc2ecb44ac9b99ab0a9fdb1c653b",
+            "start": 1,
+            "end": 104,
+            "lines": 104
+          }
+        ],
+        "authored_delta": {
+          "path": "soltui/tests/test_prediction_controls.py",
+          "before_sha256": "d7bf7c3883d8c20e67a17d60c5a8665676b4fc2ecb44ac9b99ab0a9fdb1c653b",
+          "after_sha256": "742105c7f7c9742d739f9da753210af1087d8cac5bc6607d603e698721f37d45",
+          "inverse_matches_full_read_preimage": true,
+          "delta": [
+            "--- soltui/tests/test_prediction_controls.py",
+            "+++ soltui/tests/test_prediction_controls.py",
+            "@@ -7,12 +7,13 @@",
+            " ",
+            " from textual.widgets import Button, Checkbox, Input, TabbedContent",
+            " from soltui import council",
+            "-from soltui.tests.test_tui import TEST_SIZE, make_settings, text_of",
+            "+from soltui.tests.test_tui import TEST_SIZE, make_settings, offline_console_reads, text_of",
+            " from soltui.tui import SolTuiApp",
+            " ",
+            " ",
+            " class PredictionControls(unittest.IsolatedAsyncioTestCase):",
+            "     def setUp(self):",
+            "+        self.enterContext(offline_console_reads())",
+            "         temporary = tempfile.TemporaryDirectory()",
+            "         self.addCleanup(temporary.cleanup)",
+            "         patch = mock.patch('soltui.config.CONFIG_DIR', Path(temporary.name))"
+          ]
+        }
+      },
+      "semantic_note": "Full104lines. Temporary settings and injected forward/council commands verify single automatic recovery, explicit manual restart when paused, no headless producer spawn, persisted UI drafts and council position/short/leverage controls. No assertion requires an unconfirmed forward stop to be shown as complete. Authored fixture-only delta enters shared offline_console_reads; inverse exactly recovers the full-read baseline. Initial qualified wrapper failed despite functional assertions; final fixture correction removes default external read attempts without changing assertions.",
+      "passes": {
+        "C1": "ran: Full104lines. Temporary settings and injected forward/council commands verify single automatic recovery, explicit manual restart when paused, no headless producer spawn, persisted UI drafts and council position/short/leverage controls. No assertion requires an unconfirmed forward stop to be shown as complete. Authored fixture-only delta enters shared offline_console_reads; inverse exactly recovers the full-read baseline. Initial qualified wrapper failed despite functional assertions; final fixture correction removes default external read attempts without changing assertions.",
+        "C2": "ran: meaningful assertions, exact command/receipt/store contracts, unavailable versus zero and fixture-to-production boundaries reviewed for this file.",
+        "C3": "ran: negative/failure/late-result/concurrency cases inspected. Six default-read fixture gaps were proved and corrected; remaining low test robustness/documentation opportunities are stated in the semantic notes.",
+        "S1": "ran: fixed argv and local fixture paths, temporary authority/manager ownership, SQL parameterization and no actual signing/orders/provider credentials considered where present.",
+        "S2": "ran: owned child/thread/socket/SQLite lifetimes and deadlines inspected. Guarded actual temporary detached F5 and synthetic prediction callers passed. A low missing cleanup-on-timeout opportunity in one F5 test remains explicit.",
+        "S3": "ran: input shape, nonfinite/bool checks, evidence/code/runtime identity and malformed-state assertions inspected where present; no new scalar validator implemented in tests.",
+        "S4": "ran: current macOS/Python3.13/Textual UI and native-host fixture APIs inspected. Real local fixture acceptance does not certify Linux or installed owner service behavior.",
+        "S5": "ran: explicit unknown/stale/refusal/source labels, sanitized canaries and guarded process diagnostics inspected. No provider credential or actual order is needed for these UI assertions.",
+        "P1": "ran: fixed fixture sizes, candidate/window work and explicit waits inspected. No unbounded production workload or new benchmark was introduced.",
+        "P2": "ran: existing race/replay/reservation/control assertions inspected. Where present, real temp-process locks remain actual OS fixtures rather than weaker mocks.",
+        "M1": "ran: source names/helpers/comments and assertion intent inspected. Six small authored fixture deltas are reviewed; no formatting change is claimed.",
+        "M2": "ran: shared offline_console_reads and existing World/ApiServer/research/UI helpers reused. Inner explicit mocks retain precedence. No duplicate production implementation or network stub added to product code.",
+        "M3": "N/A per file: whole-repository architecture/central-settings assessment belongs to full_repo_health.",
+        "M4": "ran: simulation/UI-fixture/source-label claims inspected. Opening no-socket comment in test_panes and standalone main placement in test_liquidity are recorded low opportunities rather than silently claimed repaired.",
+        "T1": "ran: full assertions and failure paths read. Final12module161tests301.603s exits0 with0skips,0outbound/DNS attempts and0unapprovedprocess attempts. Fatal Ruff and ASTparse pass0. Initial161functionalpass with36blockedHTTPattempts remains a failed qualified gate.",
+        "T2": "N/A per file: package pins and dependency/supply-chain review is whole-repository scope.",
+        "T3": "ran: current file passes fatal Ruff E9,F63,F7,F82 and ASTparse; general inherited style and repository CI are separate gates.",
+        "T4": "ran: reusable fixture helpers avoid actual external catalogues/platform-default status reads in headless UI setup. Actual mounted controls, transport parity and owned detached lifecycle assertions remain intact.491read-only git identity probes are observed; no artificial speed threshold or reduced command inventory was introduced.",
+        "M5": "N/A: test module. Actual stdio/headless CLI calls are test coverage; production CLI ergonomic assessment belongs to its source owner."
+      }
+    },
+    {
+      "path": "soltui/tests/test_prediction_recovery.py",
+      "sha256": "49a9a6e6a28d776f5fe65c0289b7d50b11832eaf3fd078cd7125f4eb1051fd94",
+      "blob_sha": "0256d926a22dce6523a14eee0684ef7395be51f1",
+      "lines": 379,
+      "read_evidence": {
+        "method": "full displayed source baseline plus exact reviewed six fixture-only deltas",
+        "ranges": [
+          {
+            "sha256": "49a9a6e6a28d776f5fe65c0289b7d50b11832eaf3fd078cd7125f4eb1051fd94",
+            "start": 1,
+            "end": 220,
+            "lines": 379
+          },
+          {
+            "sha256": "49a9a6e6a28d776f5fe65c0289b7d50b11832eaf3fd078cd7125f4eb1051fd94",
+            "start": 221,
+            "end": 379,
+            "lines": 379
+          }
+        ],
+        "authored_delta": null
+      },
+      "semantic_note": "Full379lines. Temporary lease/session files cover single writer races, manual/automatic pause and cooldown, stale PID/registration identity, hung held-owner refusal, priority queue without concurrent ticks and fixed-source plans. Real detached synthetic producer uses its own sitecustomize market fixture, survives short-lived callers and cooperatively stops in finally. This is a temporary process lifecycle acceptance, not real feed/owner activation.",
+      "passes": {
+        "C1": "ran: Full379lines. Temporary lease/session files cover single writer races, manual/automatic pause and cooldown, stale PID/registration identity, hung held-owner refusal, priority queue without concurrent ticks and fixed-source plans. Real detached synthetic producer uses its own sitecustomize market fixture, survives short-lived callers and cooperatively stops in finally. This is a temporary process lifecycle acceptance, not real feed/owner activation.",
+        "C2": "ran: meaningful assertions, exact command/receipt/store contracts, unavailable versus zero and fixture-to-production boundaries reviewed for this file.",
+        "C3": "ran: negative/failure/late-result/concurrency cases inspected. Six default-read fixture gaps were proved and corrected; remaining low test robustness/documentation opportunities are stated in the semantic notes.",
+        "S1": "ran: fixed argv and local fixture paths, temporary authority/manager ownership, SQL parameterization and no actual signing/orders/provider credentials considered where present.",
+        "S2": "ran: owned child/thread/socket/SQLite lifetimes and deadlines inspected. Guarded actual temporary detached F5 and synthetic prediction callers passed. A low missing cleanup-on-timeout opportunity in one F5 test remains explicit.",
+        "S3": "ran: input shape, nonfinite/bool checks, evidence/code/runtime identity and malformed-state assertions inspected where present; no new scalar validator implemented in tests.",
+        "S4": "ran: current macOS/Python3.13/Textual UI and native-host fixture APIs inspected. Real local fixture acceptance does not certify Linux or installed owner service behavior.",
+        "S5": "ran: explicit unknown/stale/refusal/source labels, sanitized canaries and guarded process diagnostics inspected. No provider credential or actual order is needed for these UI assertions.",
+        "P1": "ran: fixed fixture sizes, candidate/window work and explicit waits inspected. No unbounded production workload or new benchmark was introduced.",
+        "P2": "ran: existing race/replay/reservation/control assertions inspected. Where present, real temp-process locks remain actual OS fixtures rather than weaker mocks.",
+        "M1": "ran: source names/helpers/comments and assertion intent inspected. Six small authored fixture deltas are reviewed; no formatting change is claimed.",
+        "M2": "ran: shared offline_console_reads and existing World/ApiServer/research/UI helpers reused. Inner explicit mocks retain precedence. No duplicate production implementation or network stub added to product code.",
+        "M3": "N/A per file: whole-repository architecture/central-settings assessment belongs to full_repo_health.",
+        "M4": "ran: simulation/UI-fixture/source-label claims inspected. Opening no-socket comment in test_panes and standalone main placement in test_liquidity are recorded low opportunities rather than silently claimed repaired.",
+        "T1": "ran: full assertions and failure paths read. Final12module161tests301.603s exits0 with0skips,0outbound/DNS attempts and0unapprovedprocess attempts. Fatal Ruff and ASTparse pass0. Initial161functionalpass with36blockedHTTPattempts remains a failed qualified gate.",
+        "T2": "N/A per file: package pins and dependency/supply-chain review is whole-repository scope.",
+        "T3": "ran: current file passes fatal Ruff E9,F63,F7,F82 and ASTparse; general inherited style and repository CI are separate gates.",
+        "T4": "ran: reusable fixture helpers avoid actual external catalogues/platform-default status reads in headless UI setup. Actual mounted controls, transport parity and owned detached lifecycle assertions remain intact.491read-only git identity probes are observed; no artificial speed threshold or reduced command inventory was introduced.",
+        "M5": "N/A: test module. Actual stdio/headless CLI calls are test coverage; production CLI ergonomic assessment belongs to its source owner."
+      }
+    }
+  ],
+  "checks": [
+    {
+      "command": "12explicitmodules with qualified source PYTHONPATH and externalDNS/connect/default-deny childprocess guard",
+      "tests": 161,
+      "seconds": 301.603,
+      "exit_code": 0,
+      "skips": 0,
+      "outbound_attempts": 0,
+      "blocked_processes": 0,
+      "allowed_processes": {
+        "read_only_source_identity": 491,
+        "temporary_fixture_module:soltui.f5_batch": 1,
+        "read_only_service_status": 2,
+        "temporary_synthetic_forward_caller": 2
+      },
+      "log": "/tmp/oraclebot-soltui-root-batch3-final.log"
+    },
+    {
+      "command": "Ruff E9,F63,F7,F82 exact12files, ASTparse and six fixture-only inverse/preimage proofs",
+      "exit_code": 0
+    },
+    {
+      "command": "initial12module guarded batch before fixtures",
+      "tests": 161,
+      "seconds": 312.013,
+      "assertion_failures": 0,
+      "assertion_errors": 0,
+      "outbound_refused_attempts": 36,
+      "read_only_platform_status_calls": 73,
+      "exit_code": 1,
+      "counted_as_passing": false,
+      "log": "/tmp/oraclebot-soltui-root-batch3-initial.log"
+    }
+  ],
+  "limits": [
+    "Guard is process-local: no global OS isolation or unobserved grandchild network coverage is claimed. Reviewed temporary prediction children use their own synthetic-feed sitecustomize; missing-data F5 child has no available market input.",
+    "Two real read-only service-status queries remained allowed in explicit absent-home native suite checks. No mutating service command was allowed by this cohort guard.",
+    "Earlier unguarded1477-test baseline cannot prove no owner service command occurred: independent reviewer later found a portfolio bootout test gap. Its historical outcome lacks an initial state snapshot; that separate test has been fixed by its owner.",
+    "No real wallet order, signature, provider market-data ingestion, model inference, embedding or owner installation is established by these fixture checks.",
+    "Final source freeze and integrated repository verification remain separate pending gates."
+  ]
+}

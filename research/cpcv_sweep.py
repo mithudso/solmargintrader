@@ -208,7 +208,15 @@ def bind_experiment(
         row.update({key: json.dumps(value, sort_keys=True) if isinstance(value, (dict, list)) else value
                     for key, value in metadata.items() if key != "manifest"})
     pbo.update(metadata)
-    return pd.DataFrame(rows), pbo
+    frame = pd.DataFrame(rows)
+    if frame.empty:
+        # Zero admitted configurations is a valid denominator, not a malformed
+        # result. Keep downstream selection/reporting columns and boolean mask.
+        frame = pd.DataFrame({
+            "horizon": pd.Series(dtype="str"), "kind": pd.Series(dtype="str"),
+            "insufficient": pd.Series(dtype=bool), "median_sharpe": pd.Series(dtype=float),
+        })
+    return frame, pbo
 
 
 def run_horizon(horizon: str, n_groups: int, k_test: int) -> tuple[pd.DataFrame, dict]:

@@ -489,12 +489,12 @@
               <select name="mode">
                 <option value="dry-run">dry-run — simulate, place nothing</option>
                 <option value="semi-auto">semi-auto — real orders, approve each signature</option>
-                <option value="full-auto">full-auto — real orders, session key signs</option>
+                <option value="full-auto">full-auto — verified signing bridge required</option>
               </select>
             </label>
             <label>Venue
               <select name="venue">
-                <option value="trigger">Jupiter Trigger V2 (spot, live-capable)</option>
+                <option value="trigger">Jupiter Trigger V2 (spot; verified signing required)</option>
                 <option value="perps">Jupiter Perps (read-only — no write API)</option>
               </select>
             </label>
@@ -557,7 +557,8 @@
           <p class="note">
             Creates a dedicated signing key for <code>full-auto</code> mode, encrypted under your
             passphrase in <code>chrome.storage.local</code>. The passphrase is never stored: if you lose
-            it, the key cannot be reopened. Fund the address shown with grid working capital only.
+            it, the key cannot be reopened. The bundled key cannot place live orders because the
+            required transaction verification bridge is unavailable. Creating a key does not enable trading.
           </p>
           <form id="sessionKeyForm" class="form" autocomplete="off">
             <label>Passphrase (12+ characters)

@@ -1,0 +1,11 @@
+{
+  "strict_observed_trade_crosses_checked": 2334,
+  "lifecycle_singleflight_fills_checked": 16260,
+  "dca_fills_and_deal_basis_checked": 14560,
+  "grid_buy_sizing_checked": 910,
+  "full_null_fits_reproduced": 100,
+  "full_null_rows_reproduced": 200,
+  "replicates_per_model": 4999,
+  "all_saved_null_fields_exact": true,
+  "run_os_exit_code": null
+}

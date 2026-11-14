@@ -197,10 +197,9 @@ def load_funding(asset: str, ts: np.ndarray, interval: str, data_dir: Path) -> n
     step = 86400 if interval == "1d" else 3600
     if interval == "1d":
         # funding settled inside day t is known by its close
-        pos = np.searchsorted(ts + step, ft, side="right")  # first bar whose end >= ft
         out = np.zeros(len(ts)); hit = np.zeros(len(ts), bool)
-        for p, r in zip(np.searchsorted(ts, ft, side="right") - 1, fr):
-            if 0 <= p < len(ts) and ft[0] <= ts[p] + step:
+        for p, timestamp, r in zip(np.searchsorted(ts, ft, side="right") - 1, ft, fr):
+            if 0 <= p < len(ts) and ts[p] <= timestamp < ts[p] + step:
                 out[p] += r; hit[p] = True
         out[~hit] = np.nan
         out = pd.Series(out).ffill().to_numpy()
@@ -381,6 +380,8 @@ def mine(asset: str, interval: str, max_combos: int = DEFAULT_MAX_COMBOS, data_d
     others = {}
     if interval == "1d":
         for a in REPLICATION_ASSETS:
+            if a.upper() == asset.upper():
+                continue
             try:
                 others[a] = load_dataset(a, "1d", data_dir, with_funding=a in ("BTC", "ETH"))
             except FileNotFoundError:

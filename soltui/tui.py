@@ -1654,12 +1654,21 @@ class SolTuiApp(App):
 
     @on(Button.Pressed, "#forward-stop")
     def _forward_stop(self) -> None:
-        self._forward_running = False
-        self._call("forwardtest.stop")
+        env = self._call("forwardtest.stop")
+        status = self.query_one("#forward-status", Static)
+        if not env.get("ok"):
+            status.update(f"Stop not confirmed: {self._msg(env)}")
+            return
+        result = env.get("result") or {}
+        if type(result.get("stopping")) is not bool:
+            status.update("Stop not confirmed: the producer returned an invalid safety state.")
+            return
+        self._forward_running = result["stopping"]
         self._forward_controls()
-        self._forward_show_running([])
-        self.query_one("#forward-status", Static).update(
-            "Stopping after the current check…" if self._forward_busy else "Stopped; results saved.")
+        if not self._forward_running:
+            self._forward_show_running([])
+        status.update("Stopping after the current check…" if self._forward_running or self._forward_busy
+                      else "Stopped; results saved.")
 
     @on(Button.Pressed, "#forward-refresh")
     def _forward_refresh(self) -> None:
@@ -3242,7 +3251,7 @@ class SolTuiApp(App):
 
     def _backtest_pane(self) -> ComposeResult:
         """Run a CPCV sweep over the roster (or one roster strategy) and show the distribution."""
-        with Vertical():
+        with VerticalScroll():
             yield Static(
                 "Pick what Run backtest tests: the whole roster, or one strategy from it. The roster is "
                 "the right-hand list on the Strategies tab (Add selected / Remove selected change it). "
@@ -5303,6 +5312,10 @@ class SolTuiApp(App):
         Repeat activations are cheap — Docs filters in memory, and Cumulative has
         an explicit Reload button for when results change underneath it.
         """
+        # Shutdown removes widgets before on_unmount; queued tab activations
+        # must not query removed controls or start another background read.
+        if not self.is_running:
+            return
         pane = event.pane.id if event.pane else ""
         if pane == "tab-cumulative" and not self._cumulative_loaded:
             self._cumulative_loaded = True
@@ -7070,11 +7083,15 @@ class SolTuiApp(App):
                             f" · {sec['source']} win rate {t['win_rate']:.0%} of {t['closed_trades']} closed"
                             f" · expectancy {self._usd(t['expectancy_usd'])} per close"))
             if d.get("max_drawdown_usd"):
-                pct = d["max_drawdown_pct"]
+                pct = d.get("percent_at_max_drawdown_usd", d["max_drawdown_pct"])
                 rec = (f"recovered after {d['recovery_days']} d" if d["recovered"] else "not recovered")
                 lines.append(f"  max drawdown {self._usd(d['max_drawdown_usd'])}"
                              + ("" if pct is None else f" ({sec['source']} {pct * 100:+.1f}% from peak)")
                              + f" · peak {d['peak_date']} · trough {d['trough_date']} · {rec}")
+                if d.get("max_drawdown_pct") is not None and d["max_drawdown_pct"] != pct:
+                    lines.append(f"  max percentage drawdown {sec['source']} {d['max_drawdown_pct'] * 100:+.1f}%"
+                                 f" · peak {d.get('percentage_peak_date')}"
+                                 f" · trough {d.get('percentage_trough_date')}")
             lines.append("")
         self.query_one("#pnl-summary", Static).update("\n".join(lines))
 

@@ -2,6 +2,9 @@
 // Testing. What can be tested without a browser is the part that makes it safe.
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
+import fs from 'node:fs';
+import os from 'node:os';
+import path from 'node:path';
 import { COMMAND_NAMES } from '../src/core/commands.js';
 import {
   ALLOWED_MESSAGES,
@@ -10,7 +13,8 @@ import {
   assertDisarmed,
   assertSoltuiCallAllowed,
 } from '../e2e/lib/guard.mjs';
-import { parseFrames } from '../e2e/lib/cdp.mjs';
+import { launch, parseFrames } from '../e2e/lib/cdp.mjs';
+import { installHost } from '../e2e/lib/soltui-host.mjs';
 
 test('e2e allowlist and forbidden list name only real registry commands, with no overlap', () => {
   for (const name of [...ALLOWED_MESSAGES, ...FORBIDDEN_MESSAGES]) {
@@ -62,4 +66,69 @@ test('the harness may call a soltui command only if soltui lists it read-only an
   assert.throws(() => assertSoltuiCallAllowed('d.unlisted', {}, listing), /does not list/);
   assert.throws(() => assertSoltuiCallAllowed('a.read', { confirm: true }, listing), /never sends confirm/);
   assert.throws(() => assertSoltuiCallAllowed('a.read', {}, undefined), /does not list/);
+});
+
+test('a failed final CDP startup query closes its child and removes its temporary profile', async (t) => {
+  const directory = fs.mkdtempSync(path.join(os.tmpdir(), 'smt-cdp-startup-'));
+  const marker = path.join(directory, 'started.json');
+  const program = path.join(directory, 'chrome.mjs');
+  const chrome = path.join(directory, 'chrome.sh');
+  const quote = (value) => `'${String(value).replace(/'/g, `'\\''`)}'`;
+  const alive = (pid) => {
+    try { process.kill(pid, 0); return true; } catch (error) {
+      if (error.code === 'ESRCH') return false;
+      throw error;
+    }
+  };
+  t.after(() => {
+    if (fs.existsSync(marker)) {
+      const { pid, profile } = JSON.parse(fs.readFileSync(marker, 'utf8'));
+      if (alive(pid)) process.kill(pid, 'SIGKILL');
+      fs.rmSync(profile, { recursive: true, force: true });
+    }
+    fs.rmSync(directory, { recursive: true, force: true });
+  });
+  // This child implements only the startup pipe protocol. It never runs Chrome,
+  // reads accounts, opens sockets, or executes extension code.
+  fs.writeFileSync(program, `import fs from 'node:fs';
+    const profile = process.argv.find(arg => arg.startsWith('--user-data-dir=')).slice(16);
+    fs.writeFileSync(${JSON.stringify(marker)}, JSON.stringify({pid:process.pid,profile}));
+    let buffer = '', versionCalls = 0;
+    const input = fs.createReadStream(null, {fd:3,autoClose:false});
+    input.setEncoding('utf8');
+    input.on('data', chunk => {
+      buffer += chunk;
+      for (let end = buffer.indexOf('\\0'); end >= 0; end = buffer.indexOf('\\0')) {
+        const request = JSON.parse(buffer.slice(0,end)); buffer = buffer.slice(end+1);
+        const reply = request.method === 'Extensions.loadUnpacked'
+          ? {id:request.id,result:{id:'synthetic-extension'}}
+          : ++versionCalls === 1
+            ? {id:request.id,result:{product:'Synthetic/1'}}
+            : {id:request.id,error:{message:'synthetic final version failure'}};
+        fs.writeSync(4, JSON.stringify(reply)+'\\0');
+      }
+    });\n`);
+  fs.writeFileSync(chrome, `#!/bin/sh\nexec ${quote(process.execPath)} ${quote(program)} "$@"\n`, { mode: 0o700 });
+
+  await assert.rejects(launch({ chrome, extension: directory }), /synthetic final version failure/);
+  const { pid, profile } = JSON.parse(fs.readFileSync(marker, 'utf8'));
+  assert.equal(alive(pid), false, 'startup rejection must wait for the child to exit');
+  assert.equal(fs.existsSync(profile), false, 'startup rejection must remove its profile');
+});
+
+test('forcing a real host refuses before installation when the isolated repository has no host', async (t) => {
+  const directory = fs.mkdtempSync(path.join(os.tmpdir(), 'smt-real-host-missing-'));
+  const previous = process.env.SOLTUI_REPO;
+  process.env.SOLTUI_REPO = directory;
+  t.after(() => {
+    if (previous === undefined) delete process.env.SOLTUI_REPO;
+    else process.env.SOLTUI_REPO = previous;
+    fs.rmSync(directory, { recursive: true, force: true });
+  });
+  const profile = path.join(directory, 'profile');
+  await assert.rejects(
+    installHost({ profile, extensionId: 'synthetic-extension', mode: 'real' }),
+    /native host did not answer a ping/,
+  );
+  assert.equal(fs.existsSync(profile), false, 'failed preflight must not write a host installation');
 });

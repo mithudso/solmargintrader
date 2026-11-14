@@ -41,7 +41,14 @@ REPLAY_BARS = 2048
 
 class StrategySet:
     def __init__(self) -> None:
-        cards = {card.registry_key: card for card in load_all().values()}
+        snapshots: dict[Path, bytes] = {}
+
+        def read_card(path: Path) -> str:
+            raw = path.read_bytes()
+            snapshots[path] = raw
+            return raw.decode("utf-8")
+
+        cards = {card.registry_key: card for card in load_all(read_text=read_card).values()}
         self._catalog = []
         for key in STRATEGY_IDS:
             card = cards[key]
@@ -49,8 +56,9 @@ class StrategySet:
             parameters = {**card.defaults(), **overrides}
             strategy = REGISTRY[key](**parameters)
             module = Path(inspect.getfile(type(strategy)))
+            card_bytes = snapshots[card.path]
             material = (
-                card.path.read_bytes()
+                card_bytes
                 + module.read_bytes()
                 + Path(indicators.__file__).read_bytes()
                 + Path(types.__file__).read_bytes()
@@ -63,7 +71,7 @@ class StrategySet:
                     "strategy_id": key,
                     "version": version,
                     "card": str(card.path),
-                    "card_sha256": hashlib.sha256(card.path.read_bytes()).hexdigest(),
+                    "card_sha256": hashlib.sha256(card_bytes).hexdigest(),
                     "parameters": parameters,
                     "parameter_overrides": overrides,
                     "parameter_rationale": "directional_shadow_variant"

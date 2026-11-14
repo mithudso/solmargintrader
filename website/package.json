@@ -1,0 +1,22 @@
+{
+  "name": "oraclebot-website",
+  "private": true,
+  "version": "0.4.0",
+  "type": "module",
+  "engines": {
+    "node": "^22.16.0 || >=24.0.0"
+  },
+  "scripts": {
+    "dev": "wrangler dev --config wrangler.dev.jsonc --port 8799",
+    "test": "node --test test/*.test.js",
+    "check": "node --input-type=module -e \"import { readdirSync } from 'node:fs'; import { join } from 'node:path'; import { spawnSync } from 'node:child_process'; let checked = 0; function scan(directory) { for (const entry of readdirSync(directory, { withFileTypes: true })) { const path = join(directory, entry.name); if (entry.isDirectory()) scan(path); else if (entry.name.endsWith('.js')) { const result = spawnSync(process.execPath, ['--check', path], { stdio: 'inherit' }); if (result.error) throw result.error; if (result.status !== 0) process.exit(result.status || 1); checked++; } } } ['src', 'execution', 'public'].forEach(scan); console.log('Syntax checked ' + checked + ' JavaScript files.');\"",
+    "deploy": "wrangler deploy",
+    "db:local": "wrangler d1 migrations apply oraclebot-accounts --local",
+    "db:remote": "wrangler d1 migrations apply oraclebot-accounts --remote",
+    "test:browser": "node test/ui-browser.mjs && node test/agent-browser.mjs && node test/hosted-browser.mjs"
+  },
+  "devDependencies": {
+    "playwright": "1.65.0",
+    "wrangler": "4.160.1"
+  }
+}

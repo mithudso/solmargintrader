@@ -7,6 +7,7 @@ import json
 import os
 import shutil
 import tempfile
+import asyncio
 import unittest
 from pathlib import Path
 from unittest import mock
@@ -16,7 +17,7 @@ from textual.widgets import DataTable, Input, OptionList, Select, TabbedContent
 
 from soltui import analyze as analyze_mod
 from soltui import commands, presets
-from soltui.tests.test_tui import TEST_SIZE, make_settings, text_of
+from soltui.tests.test_tui import TEST_SIZE, make_settings, offline_console_reads, text_of
 from soltui.tui import SolTuiApp
 
 SOURCE_WORDS = ("backtest", "paper", "dry-run", "live", "modelled", "reported", "wallet")
@@ -26,6 +27,7 @@ class Isolated(unittest.IsolatedAsyncioTestCase):
     """Temp state for everything the app reads outside the repo, and a synthetic price series."""
 
     def setUp(self) -> None:
+        self.enterContext(offline_console_reads())
         self.tmp = Path(tempfile.mkdtemp(prefix="soltui-tui-"))
         self.addCleanup(shutil.rmtree, self.tmp, ignore_errors=True)
         df = SyntheticLoader(n_bars=300, seed=4).load("SOL", None, None, "1d")
@@ -122,9 +124,12 @@ class TestPresets(Isolated):
 class TestPnlTab(Isolated):
     async def _compute(self, app, pilot, window="all"):
         app.query_one(TabbedContent).active = "tab-pnl"
-        await pilot.pause(2.0)   # first open computes; the roster backtests run in a worker thread
+        async with asyncio.timeout(10):
+            await pilot.pause()  # Dispatch the first-open tab event before inspecting workers.
+            for worker in list(app.workers):
+                if worker.group == "pnl":
+                    await worker.wait()  # The worker returns after _render_pnl has filled the tables.
         return app
-
     async def test_first_open_computes_and_fills_every_table(self) -> None:
         app = SolTuiApp(make_settings())
         async with app.run_test(size=TEST_SIZE) as pilot:

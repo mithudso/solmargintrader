@@ -17,6 +17,7 @@ from soltui import bots, commands
 from soltui import config as config_mod
 from soltui.config import Settings
 from soltui.tui import SolTuiApp
+from soltui.tests.test_tui import offline_console_reads
 
 
 def row(coin="SOL", *, fit="PROVISIONAL_FIT", score=2.0):
@@ -147,6 +148,7 @@ def visible(app, selector):
 
 class UITests(BackendFixture, unittest.IsolatedAsyncioTestCase):
     async def asyncSetUp(self):
+        self.enterContext(offline_console_reads())
         self.tmp = tempfile.TemporaryDirectory()
         self.addCleanup(self.tmp.cleanup)
         root = Path(self.tmp.name)

@@ -249,11 +249,13 @@ class AgentTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as tmp, mock.patch.dict(os.environ, {"SOLTUI_LAUNCHAGENTS_DIR": tmp}):
             py = Path(tmp) / "python"
             py.write_text("")
-            with mock.patch.object(portfolio_agent, "_launchctl") as lc:
+            with mock.patch.object(portfolio_agent, "_launchctl") as lc, \
+                    mock.patch.object(portfolio_agent, "log_path", return_value=Path(tmp) / "logs" / "portfolio.log"):
                 out = portfolio_agent.install(py, Path("/repo"), start=False)
-            lc.assert_not_called()
-            self.assertEqual(plistlib.loads(Path(out["plist"]).read_bytes())["Label"], portfolio_agent.LABEL)
-            self.assertTrue(portfolio_agent.uninstall()["removed"])
+                lc.assert_not_called()
+                self.assertEqual(plistlib.loads(Path(out["plist"]).read_bytes())["Label"], portfolio_agent.LABEL)
+                self.assertTrue(portfolio_agent.uninstall()["removed"])
+                lc.assert_called_once_with("bootout", f"{portfolio_agent.domain()}/{portfolio_agent.LABEL}")
 
 
 if __name__ == "__main__":

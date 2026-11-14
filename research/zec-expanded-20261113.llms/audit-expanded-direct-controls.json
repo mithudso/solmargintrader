@@ -1,0 +1,17 @@
+{
+  "full_direct_math_cases": 68,
+  "strategies": [
+    "buy_and_hold",
+    "ma_crossover20_50"
+  ],
+  "modes": [
+    "baseline",
+    "shape",
+    "shape_control",
+    "frequency",
+    "frequency_control",
+    "linear_control"
+  ],
+  "checks": "Independent signals,gates,book fills,fees,cash and terminal equity;completed applicable rows only",
+  "audit_exit_code": 0
+}

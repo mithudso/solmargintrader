@@ -22,7 +22,7 @@ from unittest import mock
 from textual.widgets import DataTable, Static, TabbedContent
 
 from soltui import liquidity as liq
-from soltui.tests.test_tui import TEST_SIZE, make_settings, text_of
+from soltui.tests.test_tui import TEST_SIZE, make_settings, offline_console_reads, text_of
 from soltui.tui import SolTuiApp
 
 NOW = 1762400100.0
@@ -417,6 +417,7 @@ class TestLiquidityTab(unittest.IsolatedAsyncioTestCase):
     """Mount the real app against a fixture state dir."""
 
     def setUp(self) -> None:
+        self.enterContext(offline_console_reads())
         self._tmp = TemporaryDirectory()
         self.addCleanup(self._tmp.cleanup)
         self.home = Path(self._tmp.name)

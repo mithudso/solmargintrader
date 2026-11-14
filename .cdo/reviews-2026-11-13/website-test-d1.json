@@ -1,0 +1,190 @@
+{
+  "reviewer": "/root/cdo_test_d1",
+  "root_task": "TASK-2079",
+  "recorded_at_utc": "2026-11-13T04:27:43.714241+00:00",
+  "skill": {
+    "path": "/Users/mitch/.agents/skills/code-deep-optimizer/SKILL.md",
+    "version": "1.17.1",
+    "mode": "full per-file read-only static review"
+  },
+  "target": {
+    "path": "/Users/mitch/dev/worktrees/oraclebot-authenticated-mcp-20261113/website/test/helpers/d1.js",
+    "bytes": 3706,
+    "lines": 79,
+    "sha256": "19c49c95ce0d8dd0ab97daada8123a995d68d5df6633e38dee3f8c5e186aad6b",
+    "computed_git_blob_sha1": "653516dc8123fedd469ee92eb73002e427758cd2",
+    "covered_ranges": [
+      [
+        1,
+        79
+      ]
+    ],
+    "truncated_target_ranges": [],
+    "final_identity_recheck": "unchanged"
+  },
+  "stage_0": {
+    "stack": "Node ESM; SQLite-backed D1 mock; Web Crypto test fixtures",
+    "activated_skills": [
+      "lang-js-ts",
+      "lang-js-ts/references/nodejs-concurrency-internals.md",
+      "software-engineering-patterns/references/code-reviewer.md",
+      "software-engineering-patterns/references/coding-standards.md",
+      "security-review/references/security-reviewer.md"
+    ],
+    "memory_central": {
+      "lessons_consulted": 2,
+      "conventions_consulted": 10,
+      "regression_checks_fired": 0,
+      "note": "solmargintrader alias rows; none changed a finding; target current instructions verified directly"
+    },
+    "hub_and_external_docs": "Not queried: parent explicitly prohibited network, services and inference; named target read directly."
+  },
+  "injection_gate": {
+    "state": "reviewed",
+    "hostile_directives": [],
+    "scope": "entire target bytes, including comments/string literals"
+  },
+  "passes": [
+    {
+      "id": "C1",
+      "state": "reviewed",
+      "line_ranges": "8-38;40-79",
+      "reason": "Prepared statements execute once per helper call. Queries returning columns are fully consumed with all(); non-returning statements use run(). first() preserves null on no row. Fixture requests and session hashes have internally consistent shapes. No concrete incorrect outcome established in this helper."
+    },
+    {
+      "id": "C2",
+      "state": "reviewed",
+      "line_ranges": "8-38;40-79",
+      "reason": "Reviewed the implemented prepare/bind/first/all/run/batch subset and exported fixture shapes. _execute is a private synchronous mock hook. Full Cloudflare D1 surface parity, unsupported first(columnName), and result metadata completeness are not claimed or treated as defects without an in-scope caller requiring them."
+    },
+    {
+      "id": "C3",
+      "state": "reviewed",
+      "line_ranges": "13-34",
+      "reason": "Statically traced empty read, zero-row update, successful write with RETURNING, a failure after earlier writes, and concurrent Promise-producing batch calls. The transaction encloses all synchronous executions; failed batches do not append to batches. No counterexample established within the helper contract; no tests executed or written."
+    },
+    {
+      "id": "S1",
+      "state": "reviewed",
+      "line_ranges": "1-79",
+      "reason": "Injection gate found no reviewer-directed instruction or hostile directive. SQL strings are trusted test inputs; fixture values use bound parameters. Synthetic session token is CSPRNG-derived and only its SHA-256 digest is inserted. No secret logging or real credential access found."
+    },
+    {
+      "id": "S2",
+      "state": "reviewed",
+      "line_ranges": "8-49;65-79",
+      "reason": "Batch errors trigger rollback and rethrow; preparation/I/O/crypto failures propagate through rejected async calls or throws. SQLite is returned to callers, retaining explicit close ownership. Exotic SQL that itself ends a transaction and subsequent rollback-error masking were not established as supported mock inputs or a concrete Medium defect."
+    },
+    {
+      "id": "S3",
+      "state": "reviewed",
+      "line_ranges": "11-25;40-62;71-78",
+      "reason": "bind values remain SQL data. Migration names, request header overrides, cookies, wallet and IDs are caller-controlled test-fixture inputs, not exposed production trust boundaries. Arbitrary migration paths are not promoted to a vulnerability absent untrusted callers."
+    },
+    {
+      "id": "S4",
+      "state": "reviewed",
+      "line_ranges": "1-3;52-78",
+      "reason": "This is Node ESM test support using node:sqlite, Request, Web Crypto and Buffer. No browser/Workers portability claim is made. Node-version compatibility is not independently executed here; root reports the 129-test Node baseline passed."
+    },
+    {
+      "id": "S5",
+      "state": "reviewed",
+      "line_ranges": "27-37;40-49;71-78",
+      "reason": "Failures propagate to test failures, and batches retains successful committed results for assertions. This test-only helper has no external service calls or production observability obligation; adding token/key logs would be inappropriate. No silent runtime failure established."
+    },
+    {
+      "id": "P1",
+      "state": "reviewed",
+      "line_ranges": "8-49;65-79",
+      "reason": "Per-call statement preparation and migration reads are bounded fixture setup. Synchronous SQLite is intentional for transactional test determinism. No measured or statically evident hot-path bottleneck warrants a Medium optimization."
+    },
+    {
+      "id": "P2",
+      "state": "reviewed",
+      "line_ranges": "13-34;65-78",
+      "reason": "batch() contains no await between BEGIN and COMMIT/ROLLBACK. _execute() is synchronous, so a single JavaScript isolate finishes a whole batch before another Promise-producing call enters. total_changes before/after snapshots therefore cannot interleave within that execution. Shared prepared-statement rebinding is not claimed safe beyond this subset."
+    },
+    {
+      "id": "M1",
+      "state": "reviewed",
+      "line_ranges": "1-79",
+      "reason": "Small focused fixture utilities and exact test constants fit their local responsibilities. ORIGIN is centralized. Migration range and one-day session TTL are explicit fixture choices; no scattered configurable production setting or unsupported readability finding established."
+    },
+    {
+      "id": "M2",
+      "state": "reviewed",
+      "line_ranges": "8-25;40-79",
+      "reason": "execute centralizes the mutation/result accounting shared by run and batch; fixture creation is already extracted into a reusable test helper. No intra-file duplicate implementation or worthwhile new library dependency found."
+    },
+    {
+      "id": "M3",
+      "state": "na",
+      "line_ranges": null,
+      "reason": "Repository architecture and central configuration are root-owned repo-scope passes; this review covers one test helper only."
+    },
+    {
+      "id": "M4",
+      "state": "reviewed",
+      "line_ranges": "27-34;1-79",
+      "reason": "The batch comment matches its actual synchronous transaction boundaries. No contradictory documentation found. This is an internal test helper rather than an exported standalone library requiring its own public installation guide; full live D1 equivalence is not certified."
+    },
+    {
+      "id": "M5",
+      "state": "na",
+      "line_ranges": null,
+      "reason": "Library-only test helper: no runnable CLI, server entrypoint or end-user bootstrap surface in this file."
+    },
+    {
+      "id": "T1",
+      "state": "reviewed_static",
+      "line_ranges": "1-79",
+      "reason": "Reviewed risky helper behavior for assertion needs: rollback after partial writes, zero/nonzero changes, RETURNING and concurrent batch invocation. This file defines fixtures rather than test cases, so assertion coverage and the complete caller suite are root-owned; this receipt does not certify those tests. Root-reported 129 tests were not repeated."
+    },
+    {
+      "id": "T2",
+      "state": "na",
+      "line_ranges": null,
+      "reason": "Dependency and supply-chain census is root-owned repository scope."
+    },
+    {
+      "id": "T3",
+      "state": "na",
+      "line_ranges": null,
+      "reason": "Tooling/CI/configuration gap review is root-owned repository scope."
+    },
+    {
+      "id": "T4",
+      "state": "reviewed",
+      "line_ranges": "8-9;27-49;65-79",
+      "reason": "No sleeps, retry timers, network fixtures or mutable module-global databases. Each environment creates fresh SQLite state and its own batch journal. Hoisting that state would change mutable fixture isolation; no safe test-performance change established."
+    }
+  ],
+  "findings": [],
+  "severity_counts": {
+    "critical": 0,
+    "high": 0,
+    "medium": 0,
+    "low": 0,
+    "nit": 0
+  },
+  "sqlite_semantics": [
+    "BEGIN and all executions and COMMIT happen synchronously with no event-loop yield. Ordinary mid-batch exceptions roll back previous statements and do not append successful-batch observations.",
+    "meta.changes is the per-execution delta of SQLite total_changes(). A preceding rollback does not require resetting a cumulative counter, because each operation takes a fresh before value.",
+    "SQLite total_changes accounting includes trigger/foreign-key effects where SQLite defines them and is not universally interchangeable with direct rows affected. No live D1 metadata-equivalence guarantee or in-scope failure is established.",
+    "RETURNING statements are consumed by all(), avoiding an unconsumed result cursor in the batching path. The observed result is a narrow test mock, not a certification of Cloudflare D1 behavior."
+  ],
+  "verification": {
+    "executed_by_this_reviewer": [],
+    "parent_reported": "129 Node tests passed; not repeated or independently certified",
+    "limitations": [
+      "No tests, syntax checks, live D1 calls, network, services, installs or inference executed.",
+      "No caller files reviewed; full interface compatibility and assertion coverage remain root scope.",
+      "No source edits, Git commands/mutations, other agents or repository records changed."
+    ]
+  },
+  "diffs": [],
+  "blind_reaudit": "Not performed by this per-file review; root owns any final gate.",
+  "status": "FILE_REVIEW_COMPLETE",
+  "conclusion": "No corroborated Medium-or-higher finding in the sole reviewed file at the recorded hash. This is a bounded static per-file result, not a universal CLEAN verdict."
+}

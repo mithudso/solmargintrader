@@ -1,0 +1,200 @@
+{
+  "activated_skills": [
+    "code-deep-optimizer 1.17.1",
+    "lang-python (python-patterns and python-testing references)",
+    "security-review (security-reviewer reference)",
+    "software-engineering-patterns (code-reviewer and coding-standards references)"
+  ],
+  "active_fix_track_passes": 14,
+  "boundaries": {
+    "git_mutations": false,
+    "installs_or_inference": false,
+    "model_or_owner_policy_changes": false,
+    "network_or_service_actions": false,
+    "only_write": "/tmp/oraclebot-pr241-review-20261112/cdo-forecast-preferences.json",
+    "owner_home_access": false,
+    "source_edits": false,
+    "test_edits": false
+  },
+  "conditional_M5": "na: library only",
+  "created_at": "2026-11-13T04:40:00.093365+00:00",
+  "file": "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/ecosystem/forecast_preferences.py",
+  "findings": [
+    {
+      "calibration": "P2 race: behavior depends on read/write interleaving; the existing worker has an uncaught settings read in evaluate, so a valid first update can terminate the forecast owner. The deterministic rejected-first-CAS variant also blocks later default reads.",
+      "evidence_kind": "Static source counterexample; not executed by this read-only reviewer.",
+      "file": "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/ecosystem/forecast_preferences.py",
+      "id": "FP-1",
+      "lines": [
+        67,
+        69,
+        70,
+        74,
+        78,
+        90,
+        91
+      ],
+      "passes": [
+        "C1",
+        "C3",
+        "S2",
+        "P2",
+        "T1"
+      ],
+      "read_failure_lines": [
+        29,
+        34,
+        37,
+        38
+      ],
+      "recommendation": "For the deterministic absent-store conflict, reject expected_revision != 0 before mkdir/os.open when the store is absent, retaining the transaction-protected reread for competing creates. Also ensure first initialization is published atomically to readers, or use narrowly verified in-progress initialization handling that never turns an incompatible/corrupt existing database into defaults. Do not reset a database or weaken immutable history or CAS.",
+      "regression_sketches": [
+        "With a fresh TemporaryDirectory home, assert set_seconds(home,SOL/USD,17,1) raises revision_conflict; then assert no preferences file exists, settings equals default 10/revision 0 and a subsequent set(...,0) succeeds.",
+        "Pause a valid first writer between file creation and initialization commit; query settings concurrently and assert a complete default or complete committed setting, never incompatible; assert the worker remains running. Keep this deterministic with synchronization rather than real sleeps."
+      ],
+      "scenarios": [
+        {
+          "impact": "A subsequent settings(home,SOL/USD) sees an existing empty file and raises forecast_preferences_incompatible instead of returning the untouched default 10/revision 0. A rejected update changes future behavior until a valid revision-0 write repairs initialization.",
+          "trace": "os.open creates the file. BEGIN IMMEDIATE initializes settings, application_id and triggers. The revision comparison raises a conflict because no row exists. The connection context rolls initialization back, but the external file creation survives.",
+          "trigger": "Absent forecast-preferences.sqlite3; call set_seconds(home, SOL/USD, 17, expected_revision=1)."
+        },
+        {
+          "impact": "settings raises forecast_preferences_incompatible. forecast.py:298 calls it without a guard; forecast.py:641-643 has no loop catch, so this read can terminate the display owner. It can also fail a local report read.",
+          "trace": "Schedule the read after os.open/close and before schema/application_id commit. Readonly SQLite sees the empty/uncommitted store with application_id 0.",
+          "trigger": "Absent store; a valid first set_seconds(...,expected_revision=0) overlaps settings()."
+        }
+      ],
+      "severity": "High",
+      "status": "Unfixed; root owns all source changes and canonical regression execution.",
+      "title": "First preference database is published before initialization commits"
+    }
+  ],
+  "fixed_track_total": 18,
+  "identity": {
+    "bytes": 3619,
+    "git_blob_sha1": "848276bf6ee4117064167478d18fbc14e0f56abd",
+    "lines": 96,
+    "sha256": "4743ffd5a0992735ff0a53c7ef4e70cfb06aeffb26cd577cc58f0e02320cc3fc",
+    "unchanged_at_receipt": true
+  },
+  "injection_gate": {
+    "hostile_content_halt": false,
+    "reviewer_directives_found": 0,
+    "state": "ran",
+    "target_treated_as_untrusted_data": true
+  },
+  "mode": "full per-file read-only static audit; no nested agents",
+  "passes": {
+    "C1": {
+      "reason": "Traced default missing-store reads, strict cadence values, existing-store application ID checks, latest revision selection, append result, and failed first CAS. Finding FP-1: a conflict after first creation rolls schema initialization back while leaving an empty published file.",
+      "state": "ran"
+    },
+    "C2": {
+      "reason": "Checked consistent instrument/seconds/revision result dictionaries; strict integer and revision input checks; inspected the bounded control action caller with exact parameter keys and trusted configured home. No independent Medium finding; initialized-store CAS returns a new revision and never silently accepts a stale expected revision.",
+      "state": "ran"
+    },
+    "C3": {
+      "reason": "Constructed static counterexamples for expected_revision=1 against an absent store and a read scheduled between os.open and first initialization commit. Also traced bool, fractional/string/out-of-range cadence, negative revision, incompatible application ID and invalid stored row rejection. Counterexamples were not executed because parent reserves all tests. FP-1 captures both initialization counterexamples.",
+      "state": "ran"
+    },
+    "M1": {
+      "reason": "Reviewed names, constants, control-flow precedence, strict bounds and default/config semantics. Cadence defaults and range are centralized in this dedicated preference module and are consistent with bounded documentation. Missing annotations alone are below Medium; no speculative formatting or behavior change requested.",
+      "state": "ran"
+    },
+    "M2": {
+      "reason": "Checked intra-file duplication and simplification. The two latest-revision queries intentionally read different shapes for readonly display versus locked CAS; no repeated custom utility or unnecessary dependency established.",
+      "state": "ran"
+    },
+    "M3": {
+      "reason": "Repository architecture and centralized configuration cross-file pass is owned by the root orchestration; not repeated by this per-file reviewer.",
+      "state": "na"
+    },
+    "M4": {
+      "reason": "Compared module purpose and API semantics against bounded ORACLE-LIVE-FORECAST.md:69-88 and ORACLEBOT-OPERATIONS.md:174-181. Docs consistently state default 10, whole numbers 5..300, shared primary per-instrument scope and separation from account/research policy. Read API does not create files. No independent Medium documentation defect identified.",
+      "state": "ran"
+    },
+    "M5": {
+      "reason": "Library-only module; no runnable entrypoint, argument parser or tool bootstrap surface.",
+      "state": "na"
+    },
+    "P1": {
+      "reason": "Latest-row queries constrain instrument and order by revision against PRIMARY KEY(instrument,revision), so normal lookup can use the existing composite index. No N+1 loop, unbounded application-level scan, allocation issue or demonstrated hot-path bottleneck in this 96-line module.",
+      "state": "ran"
+    },
+    "P2": {
+      "reason": "BEGIN IMMEDIATE and the locked reread serialize competing initialized-store updates; insert and revision comparison share one transaction. FP-1: first initialization publishes an empty file before its transaction commits, so a concurrent readonly settings call observes application_id 0 rather than a valid old/default or new view.",
+      "state": "ran"
+    },
+    "S1": {
+      "reason": "Injection gate completed across every assigned line; no directive addressed to the reviewer found. Bound SQL values prevent input SQL injection; SQL f-strings contain only static APP_ID and UPDATE/DELETE tuple constants. No signing, orders, network calls or secrets. Final symlink/non-file write checks reviewed. Parent confirms home is owner configured and public preference input cannot supply it, so same-user ancestor permissions are not invented as a tenant trust boundary.",
+      "state": "ran"
+    },
+    "S2": {
+      "reason": "Checked descriptor closure, connection closure, bounded SQLite timeouts, transaction rollback/commit and explicit ValueError propagation. No swallowed error or connection leak identified. FP-1 records first-create rollback side effects and the read failure that propagates into the worker.",
+      "state": "ran"
+    },
+    "S3": {
+      "reason": "Strict type(value) is int rejects booleans, floats and strings; inclusive 5..300 range and nonnegative integer expected_revision checked before normal I/O. Read validates persisted seconds and positive integer revision. Instrument goes through existing validate_instrument. Parent confirms home is a trusted local configuration value, separate from web action parameters. No independent Medium finding.",
+      "state": "ran"
+    },
+    "S4": {
+      "reason": "Reviewed pathlib expansion/absolute URI construction, sqlite3 URI readonly mode, contextlib.closing and standard POSIX file creation against repository Python 3.13/macOS environment. No new third-party or version-specific runtime dependency and no independent Medium finding. Other operating systems were not executed.",
+      "state": "ran"
+    },
+    "S5": {
+      "reason": "Reviewed explicit conflict/incompatible/invalid/unavailable error signals, durable created timestamp/history, returned applied revision and source-level owner-action test evidence. This persistence helper does not swallow failures; caller owns action/error reporting. FP-1 already covers propagation of initialization failure. No independent Medium observability finding established from bounded scope.",
+      "state": "ran"
+    },
+    "T1": {
+      "reason": "Read bounded existing test_forecast.py:160-240 and test_control_http.py:158-189. Existing assertions cover absent readonly forecast creation behavior, persistent arbitrary cadence, initialized-store stale revision rejection, per-instrument defaults, maximum cadence, invalid cadence no-write behavior and authenticated durable action application. FP-1 identifies missing meaningful first-CAS-rejection and concurrent-first-publication regression cases. No tests were run or written by this reviewer; root owns canonical regression edits and verification.",
+      "state": "ran"
+    },
+    "T2": {
+      "reason": "Dependency and supply-chain repository pass is root-owned; this module imports only stdlib plus the existing oracle.feeds validator.",
+      "state": "na"
+    },
+    "T3": {
+      "reason": "Repository tooling-gap pass is root-owned; no new tooling or installation performed.",
+      "state": "na"
+    },
+    "T4": {
+      "reason": "Non-test source file. Test-suite performance is outside this per-file source pass.",
+      "state": "na"
+    }
+  },
+  "prior_cdo_credit_used": false,
+  "qualification": "Complete static source review at the bound content identity. Root must reproduce/fix/review final bytes and run its verify and installed-state gates before claiming convergence or delivery. No proof of public Worker/D1 or live venues is claimed.",
+  "read_coverage": {
+    "bounded_separate_slices": [
+      [
+        1,
+        50
+      ],
+      [
+        51,
+        96
+      ]
+    ],
+    "complete": true,
+    "truncated_target_output": false,
+    "unread_ranges": []
+  },
+  "reviewer_task": "/root/cdo_forecast_preferences",
+  "root_task": "TASK-1540",
+  "schema": "cdo-per-file-receipt-v1",
+  "severity_counts": {
+    "Critical": 0,
+    "High": 1,
+    "Low": 0,
+    "Medium": 0,
+    "Nit": 0
+  },
+  "status": "REVIEW_COMPLETE_FINDING_OPEN",
+  "verification": {
+    "root_reported_270_ecosystem_and_40_ops_fixtures": "context only; not independent reviewer execution and not installed D1 or venue proof",
+    "source_executed": false,
+    "status": "not run by delegation contract",
+    "test_source_review_only": true,
+    "tests_executed": []
+  }
+}

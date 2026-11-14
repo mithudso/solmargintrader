@@ -490,7 +490,9 @@ class Optimize(Isolated):
         self.assertEqual(bots.get_config("dca"), bots.DEFAULTS["dca"])
 
     def test_triangle_needs_recorded_quotes(self) -> None:
-        r = bots.optimize("triangle", self.settings)
+        with mock.patch.object(pricefeed, "stream_products", return_value=sorted(tri_quotes(0.0))) as catalogue:
+            r = bots.optimize("triangle", self.settings)
+        catalogue.assert_called_once_with()
         self.assertFalse(r["verdict"]["adopted"])
         self.assertIn("recorded", r["skipped"])
 
@@ -580,6 +582,8 @@ class BotsTab(unittest.IsolatedAsyncioTestCase):
     """The tab itself: every action goes through the registry and renders its result."""
 
     async def asyncSetUp(self) -> None:
+        from soltui.tests.test_tui import offline_console_reads
+        self.enterContext(offline_console_reads())
         self.tmp = tempfile.TemporaryDirectory()
         self.addCleanup(self.tmp.cleanup)
         root = Path(self.tmp.name)

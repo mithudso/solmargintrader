@@ -11,9 +11,16 @@
     "executor",
     "botmanager",
     "oracle",
-    "ecosystem"
+    "ecosystem",
+    "website"
   ],
   "files": [
+    {
+      "path": "website",
+      "component": "website",
+      "kind": "directory",
+      "summary": "JavaScript ESM/Python | Stripe billing can charge members when configured; saved trading definitions remain inactive"
+    },
     {
       "path": "ecosystem",
       "component": "ecosystem",
@@ -107,7 +114,7 @@
       "component": "ecosystem",
       "kind": "python",
       "summary": "Loopback control room and collector routes",
-      "lines": 555
+      "lines": 557
     },
     {
       "path": "ecosystem/ui_service.py",
@@ -191,14 +198,14 @@
       "component": "oracle",
       "kind": "python",
       "summary": "Bounded authenticated TradingView ingress and durable deduplication",
-      "lines": 213
+      "lines": 242
     },
     {
       "path": "oracle/webhook_orders.py",
       "component": "oracle",
       "kind": "python",
       "summary": "Journal, one-shot Coinbase submission and read-only reconciliation",
-      "lines": 237
+      "lines": 246
     },
     {
       "path": "oracle/coinbase_orders.py",
@@ -582,6 +589,27 @@
       "kind": "python",
       "summary": "Combines strategies under a COMBINE_MODES rule",
       "lines": 71
+    },
+    {
+      "path": "research/meta_analysis.py",
+      "component": "research",
+      "kind": "python",
+      "summary": "Source-bound trial consolidation preserving original units, exclusions and explicit extra receipts",
+      "lines": 164
+    },
+    {
+      "path": "research/meta_followups.py",
+      "component": "research",
+      "kind": "python",
+      "summary": "Actual-fee canonical spot replays and fixed-slot concentration attribution",
+      "lines": 266
+    },
+    {
+      "path": "research/META-ANALYSIS.md",
+      "component": "research",
+      "kind": "markdown",
+      "summary": "Evidence synthesis, independent comparison, implemented followups and investment decision",
+      "lines": 400
     },
     {
       "path": "research/decide.py",
@@ -1390,14 +1418,14 @@
       "component": "repo",
       "kind": "markdown",
       "summary": "Copilot CLI equivalent",
-      "lines": 94
+      "lines": 111
     },
     {
       "path": ".github/workflows/ci.yml",
       "component": "repo",
       "kind": "yaml",
       "summary": "Extension, backtester, soltui, mongo, liquidity, executor and doc/index drift jobs",
-      "lines": 470
+      "lines": 473
     },
     {
       "path": "CONTRIBUTING.md",
@@ -1901,6 +1929,108 @@
       "kind": "markdown",
       "summary": "UI workflows, persistence, provenance boundaries and use instructions.",
       "lines": 151
+    },
+    {
+      "path": "website/README.md",
+      "component": "website",
+      "kind": "markdown",
+      "summary": "Development, production setup and outstanding activation limits"
+    },
+    {
+      "path": "website/src/worker.js",
+      "component": "website",
+      "kind": "javascript",
+      "summary": "Account, billing, configuration and protected analysis API"
+    },
+    {
+      "path": "website/api/openapi.json",
+      "component": "website",
+      "kind": "json",
+      "summary": "Account and billing API contract"
+    },
+    {
+      "path": "website/public/index.html",
+      "component": "website",
+      "kind": "html",
+      "summary": "Accessible static application shell"
+    },
+    {
+      "path": "website/public/app.js",
+      "component": "website",
+      "kind": "javascript",
+      "summary": "Wallet, workspace, membership and research UI"
+    },
+    {
+      "path": "website/public/evidence.js",
+      "component": "website",
+      "kind": "javascript",
+      "summary": "Expiring-strategy display guard"
+    },
+    {
+      "path": "website/public/styles.css",
+      "component": "website",
+      "kind": "css",
+      "summary": "Responsive workspace design"
+    },
+    {
+      "path": "website/wrangler.jsonc",
+      "component": "website",
+      "kind": "other",
+      "summary": "Production Worker, D1 and custom-domain configuration"
+    },
+    {
+      "path": "website/wrangler.dev.jsonc",
+      "component": "website",
+      "kind": "other",
+      "summary": "Separate local origin and routing configuration"
+    },
+    {
+      "path": "website/engine/server.py",
+      "component": "website",
+      "kind": "python",
+      "summary": "Bounded read-only canonical analysis HTTP adapter"
+    },
+    {
+      "path": "website/engine/README.md",
+      "component": "website",
+      "kind": "markdown",
+      "summary": "Analysis input, transport and provisioning contract"
+    },
+    {
+      "path": "website/scripts/export_research.py",
+      "component": "website",
+      "kind": "python",
+      "summary": "Source-bound research/card publication exporter"
+    },
+    {
+      "path": "website/scripts/smoke.mjs",
+      "component": "website",
+      "kind": "other",
+      "summary": "Explicit deployed wallet account creation/deletion acceptance"
+    },
+    {
+      "path": "website/test/api.test.js",
+      "component": "website",
+      "kind": "javascript",
+      "summary": "SQLite-backed account and Stripe failure-mode tests"
+    },
+    {
+      "path": "website/test/evidence.test.js",
+      "component": "website",
+      "kind": "javascript",
+      "summary": "Expired forecast display regression test"
+    },
+    {
+      "path": "website/engine/test_server.py",
+      "component": "website",
+      "kind": "python",
+      "summary": "Canonical analysis parity and HTTP boundary tests"
+    },
+    {
+      "path": "website/engine/test_research.py",
+      "component": "website",
+      "kind": "python",
+      "summary": "Research export provenance and publication exclusions"
     }
   ]
 }

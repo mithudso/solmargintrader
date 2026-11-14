@@ -1,0 +1,442 @@
+{
+  "additional_preserved_contract_results": {
+    "amount_violations": 0,
+    "default_mode": "dry-run",
+    "fake_read_attempts": 3,
+    "fake_send_attempts": 1,
+    "original_amount_boundary_cases": 12,
+    "original_amount_property_cases": 20000,
+    "research_override_default": false,
+    "validation_default": false
+  },
+  "artifacts_created_this_recheck": [
+    "/tmp/oraclebot-executor-original-probes-recheck.json",
+    "/tmp/oraclebot_executor_independent_final_probes.py",
+    "/tmp/oraclebot-executor-independent-final-probe-results.json",
+    "/tmp/oraclebot-executor-independent-final.json"
+  ],
+  "conclusion": "No Medium+ finding remains in the final changed HTTP/Jupiter implementation and reviewed affected callers for the three prior independent findings. This is not a whole-repository clean verdict.",
+  "created_at": "2026-11-12T10:33:10.586411+00:00",
+  "earlier_assigned_sources_not_reread": [
+    {
+      "coverage_note": "Hash comparison only in this recheck; full read was in the earlier independent receipt.",
+      "current_sha256": "d6c02309a2a40943133ae119a02a49f06aa5dba8c4a7c6ed255d3e6fbe0389b3",
+      "path": "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/executor/src/executor/tokens.py",
+      "prior_sha256": "d6c02309a2a40943133ae119a02a49f06aa5dba8c4a7c6ed255d3e6fbe0389b3",
+      "unchanged": true
+    },
+    {
+      "coverage_note": "Hash comparison only in this recheck; full read was in the earlier independent receipt.",
+      "current_sha256": "b13a7ad5d160e615bb5b915b623582b876338c9721f206df9707b147c030cb03",
+      "path": "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/executor/src/executor/api.py",
+      "prior_sha256": "b13a7ad5d160e615bb5b915b623582b876338c9721f206df9707b147c030cb03",
+      "unchanged": true
+    },
+    {
+      "coverage_note": "Hash comparison only in this recheck; full read was in the earlier independent receipt.",
+      "current_sha256": "4e5a988486594698fa3fc787ad5be425764cc92ae016e5c13f36f97d000b2248",
+      "path": "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/executor/src/executor/rpc.py",
+      "prior_sha256": "4e5a988486594698fa3fc787ad5be425764cc92ae016e5c13f36f97d000b2248",
+      "unchanged": true
+    },
+    {
+      "coverage_note": "Hash comparison only in this recheck; full read was in the earlier independent receipt.",
+      "current_sha256": "7aa635641de4aa8320ad18a27c04c50f08d688ce2fdb2fc4531fee125f8ae1b5",
+      "path": "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/executor/src/executor/config.py",
+      "prior_sha256": "7aa635641de4aa8320ad18a27c04c50f08d688ce2fdb2fc4531fee125f8ae1b5",
+      "unchanged": true
+    },
+    {
+      "coverage_note": "Hash comparison only in this recheck; full read was in the earlier independent receipt.",
+      "current_sha256": "f3db36751aa2d97f20d1c37ef9354fc9eeeb78d4ce22fc3d44e8c2f6ab07982c",
+      "path": "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/executor/src/executor/cli.py",
+      "prior_sha256": "f3db36751aa2d97f20d1c37ef9354fc9eeeb78d4ce22fc3d44e8c2f6ab07982c",
+      "unchanged": true
+    }
+  ],
+  "fresh_source_bindings": [
+    {
+      "coverage": "complete",
+      "fresh_actual_read_ranges": [
+        [
+          1,
+          163
+        ]
+      ],
+      "git_blob": "77a374ab784a00b3291ffbc8dff4e2530b9a2eac",
+      "line_count": 163,
+      "path": "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/executor/src/executor/http.py",
+      "repo_relative_path": "executor/src/executor/http.py",
+      "sha256": "fce00645be86537ef3195b74d4fa41486b0664d0ac5ad9a3c291b74e4d59e189"
+    },
+    {
+      "coverage": "complete",
+      "fresh_actual_read_ranges": [
+        [
+          1,
+          198
+        ]
+      ],
+      "git_blob": "812a22adeced4c474c7af9f2d851209c528cd795",
+      "line_count": 198,
+      "path": "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/executor/src/executor/jupiter.py",
+      "repo_relative_path": "executor/src/executor/jupiter.py",
+      "sha256": "527351164165453084898ded17c241e6f719095291c3bb25e23f74f6b2d7169c"
+    },
+    {
+      "coverage": "affected_callers_complete_within_listed_ranges",
+      "fresh_actual_read_ranges": [
+        [
+          115,
+          150
+        ],
+        [
+          191,
+          344
+        ]
+      ],
+      "git_blob": "7e5705c64902cbe025147685744bf72af5ef6d38",
+      "line_count": 534,
+      "path": "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/executor/src/executor/registry.py",
+      "repo_relative_path": "executor/src/executor/registry.py",
+      "sha256": "c5c5506adcf712b6780d2676b81f078e93f13e278acef4257f22348450ca333c"
+    },
+    {
+      "coverage": "affected_callers_complete_within_listed_ranges",
+      "fresh_actual_read_ranges": [
+        [
+          79,
+          98
+        ]
+      ],
+      "git_blob": "7b6e44d57026dd469548e684fef2c78192e8be67",
+      "line_count": 785,
+      "path": "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/executor/src/executor/engine.py",
+      "repo_relative_path": "executor/src/executor/engine.py",
+      "sha256": "98dab8319b051be3bf48e120b564a54e9ca80402cb2a3266ed177239e55dd2b1"
+    },
+    {
+      "coverage": "affected_callers_complete_within_listed_ranges",
+      "fresh_actual_read_ranges": [
+        [
+          133,
+          150
+        ]
+      ],
+      "git_blob": "617ea0df539fc4f678ef49884de15d1cc5f84f0b",
+      "line_count": 150,
+      "path": "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/executor/src/executor/quote.py",
+      "repo_relative_path": "executor/src/executor/quote.py",
+      "sha256": "8faa4beec9cee0898d10b267da2ff7a5a771cf6f8d0d955a581ef543f62883f8"
+    }
+  ],
+  "head": "e78464e7d98f1d5c823755422635f27556d767ca",
+  "independence": {
+    "author_remediation_receipt_read": false,
+    "author_tests_used_as_evidence": false,
+    "delegation": false,
+    "owner_configuration_mutated": false,
+    "real_network_or_provider_calls": false,
+    "repo_source_edited": false,
+    "service_or_model_jobs": false,
+    "signing_or_orders": false
+  },
+  "limitations": [
+    "No real socket/provider, signing, order, service, model, owner configuration, or deployed/installed behavior was exercised.",
+    "The full author-reported 557-test result was not independently rerun or adopted as evidence.",
+    "This recheck freshly reads all of the changed http.py and jupiter.py plus the listed affected registry/engine/quote callers. Other component paths retain the exact coverage limits of the prior independent receipt.",
+    "An in-flight blocking operation can outlast the nominal overall deadline until its finite socket timeout or stream return.",
+    "Source identity is the working-tree hashes and blob bindings, not HEAD alone. Subsequent source edits invalidate this verdict until rechecked."
+  ],
+  "prior_findings": [
+    {
+      "id": "EXECUTOR-INDEP-1",
+      "independent_evidence": "Real HTTPX request logs and a synthetic httpcore.connection child exception record hide the URL/userinfo/query/header/body canary. A separate real HTTPX MockTransport client still emits its control URL canary after the guarded call.",
+      "prior_severity": "High",
+      "probe": "logging_canaries",
+      "result": {
+        "private_records": 4,
+        "secret_in_executor_or_dependency_messages": false,
+        "unrelated_client_logging_preserved": true
+      },
+      "source_locations": [
+        {
+          "lines": [
+            24,
+            50
+          ],
+          "path": "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/executor/src/executor/http.py"
+        },
+        {
+          "lines": [
+            129,
+            140
+          ],
+          "path": "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/executor/src/executor/http.py"
+        }
+      ],
+      "state": "closed_in_recheck_scope"
+    },
+    {
+      "id": "EXECUTOR-INDEP-2",
+      "independent_evidence": "Actual registry quote dispatch refuses six malformed provider fields without returning either synthetic credential or raw-provider canary. Direct fake-provider build_swap refuses simulationError without its nested credential.",
+      "prior_severity": "High",
+      "probe": "provider_fields",
+      "result": {
+        "cases": {
+          "inAmount": {
+            "code": "refused",
+            "message": "refused: quote field inAmount is missing or not an integer"
+          },
+          "otherAmountThreshold": {
+            "code": "refused",
+            "message": "refused: quote field otherAmountThreshold is missing or not an integer"
+          },
+          "outAmount": {
+            "code": "refused",
+            "message": "refused: quote field outAmount is missing or not an integer"
+          },
+          "priceImpactPct": {
+            "code": "refused",
+            "message": "refused: quote priceImpactPct is not a number"
+          },
+          "simulationError": {
+            "code": "refused",
+            "message": "refused: Jupiter's own simulation failed"
+          },
+          "slippageBps": {
+            "code": "refused",
+            "message": "refused: quote field slippageBps is missing or not an integer"
+          },
+          "swapMode": {
+            "code": "refused",
+            "message": "refused: quote swapMode must be ExactIn"
+          }
+        },
+        "provider_detail_leaks": 0
+      },
+      "source_locations": [
+        {
+          "lines": [
+            47,
+            84
+          ],
+          "path": "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/executor/src/executor/jupiter.py"
+        },
+        {
+          "lines": [
+            175,
+            179
+          ],
+          "path": "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/executor/src/executor/jupiter.py"
+        },
+        {
+          "lines": [
+            260,
+            279
+          ],
+          "path": "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/executor/src/executor/registry.py"
+        }
+      ],
+      "state": "closed_in_recheck_scope"
+    },
+    {
+      "deadline_limit": "The deadline is checked around blocking operations and between chunks. A blocking socket operation is governed by the finite HTTPX socket timeout supplied at stream creation. The code does not force-interrupt an already blocked operation at the exact overall deadline. The synthetic 5ms deadline probe returned after its 15ms delayed chunk. No strict hard wall-clock deadline is claimed.",
+      "id": "EXECUTOR-INDEP-3",
+      "independent_evidence": "An undeclared 4MiB response stops after 2,097,164 yielded bytes. A declared-oversize 200 and an HTTP 500 yield zero body bytes. Gzip/deflate expansion bombs and truncated gzip refuse. Valid small identity/gzip/deflate JSON succeeds. All tested response streams close; each operation attempts one request. A delayed synthetic stream triggers the deadline check.",
+      "prior_severity": "Medium",
+      "probes": [
+        "body_bounds",
+        "deadline"
+      ],
+      "results": {
+        "body_bounds": {
+          "200_deflate_bomb": {
+            "accepted": false,
+            "bytes_yielded": 4104,
+            "closed": true,
+            "error_type": "ExecutorError",
+            "iterations": 1,
+            "message": "remote response is too large",
+            "request_attempts": 1
+          },
+          "200_deflate_small": {
+            "accepted": true,
+            "bytes_yielded": 19,
+            "closed": true,
+            "iterations": 1,
+            "request_attempts": 1,
+            "value": {
+              "ok": true
+            }
+          },
+          "200_gzip_bomb": {
+            "accepted": false,
+            "bytes_yielded": 4116,
+            "closed": true,
+            "error_type": "ExecutorError",
+            "iterations": 1,
+            "message": "remote response is too large",
+            "request_attempts": 1
+          },
+          "200_gzip_small": {
+            "accepted": true,
+            "bytes_yielded": 31,
+            "closed": true,
+            "iterations": 1,
+            "request_attempts": 1,
+            "value": {
+              "ok": true
+            }
+          },
+          "200_no_content_length": {
+            "accepted": false,
+            "bytes_yielded": 2097164,
+            "closed": true,
+            "error_type": "ExecutorError",
+            "iterations": 1,
+            "message": "remote response is too large",
+            "request_attempts": 1
+          },
+          "200_oversized_content_length": {
+            "accepted": false,
+            "bytes_yielded": 0,
+            "closed": true,
+            "error_type": "ExecutorError",
+            "iterations": 0,
+            "message": "remote response is too large",
+            "request_attempts": 1
+          },
+          "200_small_json": {
+            "accepted": true,
+            "bytes_yielded": 11,
+            "closed": true,
+            "iterations": 1,
+            "request_attempts": 1,
+            "value": {
+              "ok": true
+            }
+          },
+          "200_truncated_gzip": {
+            "accepted": false,
+            "bytes_yielded": 27,
+            "closed": true,
+            "error_type": "ExecutorError",
+            "iterations": 1,
+            "message": "invalid compressed response from remote service",
+            "request_attempts": 1
+          },
+          "500_unbounded_body": {
+            "accepted": false,
+            "bytes_yielded": 0,
+            "closed": true,
+            "error_type": "HttpError",
+            "iterations": 0,
+            "message": "HTTP 500 from remote service",
+            "request_attempts": 1
+          }
+        },
+        "deadline": {
+          "accepted": false,
+          "bytes_yielded": 11,
+          "closed": true,
+          "elapsed_seconds": 0.01529166699765483,
+          "error_type": "ExecutorError",
+          "iterations": 1,
+          "message": "remote response deadline exceeded",
+          "request_attempts": 1
+        }
+      },
+      "source_locations": [
+        {
+          "lines": [
+            70,
+            127
+          ],
+          "path": "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/executor/src/executor/http.py"
+        },
+        {
+          "lines": [
+            129,
+            155
+          ],
+          "path": "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/executor/src/executor/http.py"
+        }
+      ],
+      "state": "closed_in_recheck_scope_with_documented_deadline_limit"
+    }
+  ],
+  "reviewer": "executor_blind_review",
+  "root": "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112",
+  "schema": "oraclebot-independent-final-review/v1",
+  "status": "NO_MEDIUM_PLUS_IN_RECHECK_SCOPE",
+  "unresolved_findings": [],
+  "verification": [
+    {
+      "command": "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/executor/src /Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/.venv/bin/python /tmp/oraclebot_executor_independent_probes.py",
+      "exit_code": 1,
+      "interpretation": "The unchanged original proof-of-vulnerability script stops at line 98, assert SECRET in captured. The old exposure is absent. This exit is recorded as expected counterexample non-reproduction, not called a passing test."
+    },
+    {
+      "command_description": "Execute each original probe function unchanged after parsing out top-level calls, catch and record its outcome; no probe assertion edits",
+      "exit_code": 0,
+      "result_artifact": "/tmp/oraclebot-executor-original-probes-recheck.json",
+      "result_sha256": "194b5fbf45706b29ad7bbcab092c769c8817016b80af0b1d04ef0a975f585ddc",
+      "results": {
+        "amounts": {
+          "completed": true,
+          "original_result": {
+            "accepted": 2206,
+            "boundary_cases": 12,
+            "property_cases": 20000,
+            "rejected": 17794,
+            "violations": 0
+          }
+        },
+        "defaults": {
+          "completed": true,
+          "original_result": {
+            "mode": "dry-run",
+            "research_override": false,
+            "validation_enabled": false
+          }
+        },
+        "httpx_logging": {
+          "exception_type": "AssertionError",
+          "expected_interpretation": "The original probe asserts that the old vulnerability is present; a failed presence assertion requires independent safe-behavior verification.",
+          "message": ""
+        },
+        "provider_size": {
+          "exception_type": "AssertionError",
+          "expected_interpretation": "The original probe asserts that the old vulnerability is present; a failed presence assertion requires independent safe-behavior verification.",
+          "message": ""
+        },
+        "public_provider_error": {
+          "exception_type": "AssertionError",
+          "expected_interpretation": "The original probe asserts that the old vulnerability is present; a failed presence assertion requires independent safe-behavior verification.",
+          "message": ""
+        },
+        "retry_safety": {
+          "completed": true,
+          "original_result": {
+            "read_attempts": 3,
+            "secret_in_public_read_error": false,
+            "send_attempts": 1
+          }
+        }
+      }
+    },
+    {
+      "command": "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/executor/src /Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/.venv/bin/python /tmp/oraclebot_executor_independent_final_probes.py",
+      "exit_code": 0,
+      "probe_sha256": "7cf1d69cedd39048ada6be8fc4b58f649017cd46adfdc0b73e1949ba45e9ed7e",
+      "result_artifact": "/tmp/oraclebot-executor-independent-final-probe-results.json",
+      "result_sha256": "3c8c32cd3bcd90316456e2d23b4d6e2c1fe7b48885aa5ebe8a542664a3cc740c"
+    },
+    {
+      "command": "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/executor/src /Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/.venv/bin/python -m pytest executor/tests/test_tokens_config.py -q -p no:cacheprovider",
+      "exit_code": 0,
+      "result": "33 passed in 0.18s"
+    }
+  ]
+}

@@ -41,8 +41,9 @@ INDEX_JSON = REPO / "index" / "INDEX.json"
 DEST = REPO / "docs" / "FILES.md"
 
 # Ordering of the top-level sections: what a newcomer should read in sequence.
-DIR_ORDER = ["(root)", "docs", "index", "backtester", "research", "extension",
-             "soltui", ".github", "tradingskilllist", ".remember"]
+DIR_ORDER = ["(root)", "docs", "index", "backtester", "research", "oracle", "extension",
+             "executor", "liquidity", "botmanager", "ecosystem", "soltui", "mongo",
+             "website", ".github", "tradingskilllist", ".remember"]
 
 DIR_INTROS: dict[str, str] = {
     "(root)": "Repository-level entry points and agent instructions. `AGENTS.md` and "
@@ -60,11 +61,18 @@ DIR_INTROS: dict[str, str] = {
     "research": "Drivers that produce the numbers, and the write-ups that quote them. "
                 "Everything here is reproducible from a committed script — the two "
                 "occasions that was not true both produced a wrong published figure.",
-    "extension": "The Chrome extension, and the only component that can place a real "
-                 "order. Dry-run is the default, risk rails live in code and fail "
+    "extension": "The Chrome extension has a separately armed trading surface. "
+                 "Dry-run is the default, risk rails live in code and fail "
                  "closed, and a fresh install must not be able to trade.",
-    "soltui": "The macOS menu-bar app that surfaces state locally. Packaged with "
-              "py2app and supervised by launchd.",
+    "soltui": "The local TUI, browser workspace and service interfaces. Coinbase order "
+              "execution requires separate explicit arming; Jupiter live submission remains blocked.",
+    "oracle": "Forecast evidence, strategy votes, archives and separately controlled webhook execution.",
+    "executor": "The separately armed Jupiter execution library and its fail-closed risk and reconciliation boundaries.",
+    "liquidity": "Pool research and separately controlled liquidity automation with owned ledgers.",
+    "botmanager": "Isolated bot-owner management, health journals and managed-suite supervision.",
+    "ecosystem": "The local control room, pipeline supervision, telemetry and embedded documentation.",
+    "mongo": "Derived research and public-market stores, loaders and analysis queries.",
+    "website": "The hosted wallet-account and subscription workspace. Stored bot definitions are paper-only; hosted engine and billing readiness remain separate capabilities.",
     ".github": "CI. Runs the test suite and the figure verifier.",
     "tradingskilllist": "An inventory of the trading, finance and crypto skills the "
                         "research drew on.",
@@ -89,7 +97,7 @@ CURATED: dict[str, dict[str, str]] = {
         "use": "Read before making changes with an agent.",
     },
     "README.md": {
-        "purpose": "Entry point: what the project is, the three components, and the "
+        "purpose": "Entry point: what the project is, its components, and the "
                    "honest summary of what the research established.",
         "use": "Start here.",
     },
@@ -333,8 +341,10 @@ def derived_use(e: dict[str, Any]) -> str:
     path, kind, ext = e["path"], e["kind"], e["ext"]
     syms = e.get("symbols") or []
     if kind == "test":
-        if ext == ".js":
-            return "`node --test extension/test/`"
+        if path == "website/test/ui-browser.mjs":
+            return "`npm --prefix website run test:browser`"
+        if ext in {".js", ".mjs"}:
+            return f"`node --test {path}`"
         return f"`python3 -m pytest {path} -q`"
     if kind == "strategy-card":
         fm = e.get("frontmatter") or {}
@@ -358,6 +368,8 @@ def derived_use(e: dict[str, Any]) -> str:
         mod = path.replace("/", ".").removesuffix(".py")
         return f"`import {mod}`"
     if kind == "code-js":
+        if path.startswith("website/"):
+            return "See `website/README.md`; run the workspace with `npm --prefix website run dev`."
         return "Loaded by the extension; see `extension/manifest.json` for entry points."
     if kind == "config":
         return "Configuration; nothing to run."
@@ -455,7 +467,7 @@ def render(meta: dict[str, Any]) -> str:
         "first — they are shorter and they explain *why* the pieces fit together:",
         "",
         "- `docs/codebase-overview.md` — the narrative tour.",
-        "- `docs/ARCHITECTURE.md` — how the three components relate.",
+        "- `docs/ARCHITECTURE.md` — how the components relate.",
         "- `docs/COMPONENTS.md` — component-level responsibilities.",
         "- `docs/CONCEPTS.md` — the conceptual index: which files bear on which idea.",
         "",

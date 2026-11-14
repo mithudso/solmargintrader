@@ -1,7 +1,7 @@
 """The four modules behind the new console tabs.
 
-No test here drives a terminal, opens a socket, or reads `data/`. That is the same
-split the rest of this package keeps: `tui.py` is presentation, and the logic lives
+No test here drives a terminal or reads `data/`. Port discovery uses an owned
+ephemeral loopback endpoint. The rest of this package keeps the same split: `tui.py` is presentation, and the logic lives
 in modules that can be tested without an event loop.
 
 The two worth reading first are `test_a_below_floor_row_is_never_rankable` and
@@ -12,6 +12,7 @@ would produce a confident wrong answer rather than an error.
 from __future__ import annotations
 
 import json
+import socket
 import unittest
 from datetime import datetime, timezone
 from pathlib import Path
@@ -255,8 +256,12 @@ class ServeTests(unittest.TestCase):
         self.assertIn("-m soltui.tui", serve.app_command())
 
     def test_find_port_returns_something_free(self):
-        port = serve.find_port()
+        with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as owned:
+            owned.bind((serve.HOST, 0))
+            preferred = owned.getsockname()[1]
+        port = serve.find_port(preferred=preferred, tries=1)
         self.assertIsNotNone(port)
+        self.assertEqual(port, preferred)
         self.assertTrue(serve.port_is_free(port))
 
 

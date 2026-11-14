@@ -1,0 +1,751 @@
+{
+  "schema": 1,
+  "reviewer": "/root/full_repo_health",
+  "observed_at": "2026-11-12T17:31:16.401944+00:00",
+  "status": "full prototype reads complete; dependency-free CLI parsing/preflight fixed; direct-Python automatic environment remains partial",
+  "files": [
+    {
+      "path": "design/bot-control-room/mockup.js",
+      "blob_sha": "4e349daf98ba708ff0d66705ea5ffc8845c4a2d7",
+      "sha256": "36026a581b603e3adbb885a5eabc7d70e476fbe651371f54c76d92af40b8810e",
+      "lines": 278,
+      "bytes": 21665,
+      "read_evidence": "Fixture bot roster, filtering and selection, five-step form/rule/review validation, local draft creation, pause state, dialogs and keyboard command palette. Dynamic user labels enter textContent, no network/persistence/trading adapters.",
+      "read_ranges": [
+        [
+          1,
+          160
+        ],
+        [
+          161,
+          278
+        ]
+      ],
+      "character_read_ranges": null,
+      "byte_ranges_derived_from_complete_character_slices": null,
+      "exact_duplicate_of": null,
+      "passes": {
+        "C1": "ran: Fixture bot roster, filtering and selection, five-step form/rule/review validation, local draft creation, pause state, dialogs and keyboard command palette. Dynamic user labels enter textContent, no network/persistence/trading adapters.",
+        "C2": "ran: paired producer/controller IDs, callbacks and static fixture/public prototype contract inspected",
+        "C3": "ran: empty/filter/unavailable/stale inputs and fixed fixture boundaries inspected; no production trading or profitability contract",
+        "S1": "ran: source reviewed as data; textContent/Rich Text used for dynamic strings, no execution/key/network authority",
+        "S2": "ran: owned local UI lifetimes and explicit screenshot write reviewed; no service/owner lifecycle",
+        "S3": "ran: controller validation/labeling and constant markup inputs inspected",
+        "S4": "ran: browser CSS/DOM modern feature or declared Textual API assumptions reviewed; syntax/AST checked for scripts",
+        "S5": "N/A: fixture presentation only; toasts/visible form errors/explicit unknown labels cover local state, no external calls or production logger",
+        "P1": "ran: bounded static fixture collections/rendering; no justified performance rewrite",
+        "P2": "ran: DOM event and modal/timeout replacement ownership checked; screenshot headless runs sequentially",
+        "M1": "ran: retained prototype structure/tokens; full long/minified lines read explicitly",
+        "M2": "ran: verified docs copies exactly equal; one semantic inspection bound to both copies, no assumed unverified parity",
+        "M3": "N/A: repo-scope architecture recorded separately",
+        "M4": "ran: prototype/illustrative/unavailable labels match actual no-service behavior; dependency/startup gap recorded",
+        "T1": "ran: inspected presentation/controller semantics and script syntax; no fresh visual/accessibility certification",
+        "T2": "N/A: repo-scope dependency pass separate",
+        "T3": "N/A: repo-scope tooling pass separate",
+        "T4": "N/A: non-test design source",
+        "M5": "N/A: static prototype document or browser-loaded controller; no standalone tool entrypoint"
+      },
+      "findings": [],
+      "verdict": "CLEAN",
+      "source_scope": "helper census"
+    },
+    {
+      "path": "docs/design/bot-control-room/mockup.js",
+      "blob_sha": "4e349daf98ba708ff0d66705ea5ffc8845c4a2d7",
+      "sha256": "36026a581b603e3adbb885a5eabc7d70e476fbe651371f54c76d92af40b8810e",
+      "lines": 278,
+      "bytes": 21665,
+      "read_evidence": "Fixture bot roster, filtering and selection, five-step form/rule/review validation, local draft creation, pause state, dialogs and keyboard command palette. Dynamic user labels enter textContent, no network/persistence/trading adapters.",
+      "read_ranges": [
+        [
+          1,
+          160
+        ],
+        [
+          161,
+          278
+        ]
+      ],
+      "character_read_ranges": null,
+      "byte_ranges_derived_from_complete_character_slices": null,
+      "exact_duplicate_of": "design/bot-control-room/mockup.js",
+      "passes": {
+        "C1": "ran: Fixture bot roster, filtering and selection, five-step form/rule/review validation, local draft creation, pause state, dialogs and keyboard command palette. Dynamic user labels enter textContent, no network/persistence/trading adapters.",
+        "C2": "ran: paired producer/controller IDs, callbacks and static fixture/public prototype contract inspected",
+        "C3": "ran: empty/filter/unavailable/stale inputs and fixed fixture boundaries inspected; no production trading or profitability contract",
+        "S1": "ran: source reviewed as data; textContent/Rich Text used for dynamic strings, no execution/key/network authority",
+        "S2": "ran: owned local UI lifetimes and explicit screenshot write reviewed; no service/owner lifecycle",
+        "S3": "ran: controller validation/labeling and constant markup inputs inspected",
+        "S4": "ran: browser CSS/DOM modern feature or declared Textual API assumptions reviewed; syntax/AST checked for scripts",
+        "S5": "N/A: fixture presentation only; toasts/visible form errors/explicit unknown labels cover local state, no external calls or production logger",
+        "P1": "ran: bounded static fixture collections/rendering; no justified performance rewrite",
+        "P2": "ran: DOM event and modal/timeout replacement ownership checked; screenshot headless runs sequentially",
+        "M1": "ran: retained prototype structure/tokens; full long/minified lines read explicitly",
+        "M2": "ran: verified docs copies exactly equal; one semantic inspection bound to both copies, no assumed unverified parity",
+        "M3": "N/A: repo-scope architecture recorded separately",
+        "M4": "ran: prototype/illustrative/unavailable labels match actual no-service behavior; dependency/startup gap recorded",
+        "T1": "ran: inspected presentation/controller semantics and script syntax; no fresh visual/accessibility certification",
+        "T2": "N/A: repo-scope dependency pass separate",
+        "T3": "N/A: repo-scope tooling pass separate",
+        "T4": "N/A: non-test design source",
+        "M5": "N/A: static prototype document or browser-loaded controller; no standalone tool entrypoint"
+      },
+      "findings": [],
+      "verdict": "CLEAN",
+      "source_scope": "helper census"
+    },
+    {
+      "path": "design/soltui-v2/mockup.py",
+      "blob_sha": "3d3ca7ad31f3f2b558a791d3e5edfa19848938e7",
+      "sha256": "263913d56dabd185a78eed32054f95e72e7862c7859e1af6622bda10fba596cb",
+      "lines": 1209,
+      "bytes": 57002,
+      "read_evidence": "Fixture-only Rich/Textual tokens and formatting helpers, seeded plots, table/view composition, command-provider closures, view switching and explain panel, explicit headless screenshots destination and argparse. No soltui imports or runtime/network/order adapter.",
+      "character_read_ranges": null,
+      "byte_ranges_derived_from_complete_character_slices": null,
+      "exact_duplicate_of": null,
+      "passes": {
+        "C1": "ran: Fixture-only Rich/Textual tokens and formatting helpers, seeded plots, table/view composition, command-provider closures, view switching and explain panel, explicit headless screenshots destination and argparse. No soltui imports or runtime/network/order adapter. Standard-library argument parser now runs before optional imports; dimensions validate before any UI or screenshot output.",
+        "C2": "ran: paired producer/controller IDs, callbacks and static fixture/public prototype contract inspected",
+        "C3": "ran: empty/filter/unavailable/stale inputs and fixed fixture boundaries inspected; no production trading or profitability contract",
+        "S1": "ran: source reviewed as data; textContent/Rich Text used for dynamic strings, no execution/key/network authority",
+        "S2": "ran: owned local UI lifetimes and explicit screenshot write reviewed; no service/owner lifecycle",
+        "S3": "ran: form/browser/argparse boundaries checked; Python dependency preflight gap recorded separately",
+        "S4": "ran: browser CSS/DOM modern feature or declared Textual API assumptions reviewed; syntax/AST checked for scripts",
+        "S5": "N/A: fixture presentation only; toasts/visible form errors/explicit unknown labels cover local state, no external calls or production logger",
+        "P1": "ran: bounded static fixture collections/rendering; no justified performance rewrite",
+        "P2": "ran: DOM event and modal/timeout replacement ownership checked; screenshot headless runs sequentially",
+        "M1": "ran: retained prototype structure/tokens; full long/minified lines read explicitly",
+        "M2": "ran: verified docs copies exactly equal; one semantic inspection bound to both copies, no assumed unverified parity",
+        "M3": "N/A: repo-scope architecture recorded separately",
+        "M4": "ran: prototype/illustrative/unavailable labels match actual no-service behavior; dependency/startup gap recorded Usage documents exact isolated uv dependencies; direct interpreter requires its selected environment.",
+        "T1": "ran:8 actual bare-stdlib subprocess cases (both copies help0, unknown/badsize2, missingmodule3) with no UI/outputs; final syntax/AST checked. See /tmp/oraclebot-design-cli-final-20261112.json.",
+        "T2": "N/A: repo-scope dependency pass separate",
+        "T3": "N/A: repo-scope tooling pass separate",
+        "T4": "N/A: non-test design source",
+        "M5": "partial: E3/E5/E6 corrected; --help and invalid args work without optional packages, missing module exits3 with exact isolated uv command. Direct Python does not auto-create dependencies; uv execution/install and rendered prototype not run."
+      },
+      "findings": [
+        "DESIGN-M5-01"
+      ],
+      "verdict": "PARTIAL-M5",
+      "source_scope": "helper census",
+      "original_sha256": "b62b68a89e354af8dce1a7461ba66c798136cc135d9d2048571ae5e5c3e601f2",
+      "original_blob_sha": "2b46387e79547447f6d8afc2095de504ab77661b",
+      "original_read_ranges": [
+        [
+          1,
+          240
+        ],
+        [
+          241,
+          480
+        ],
+        [
+          481,
+          720
+        ],
+        [
+          721,
+          960
+        ],
+        [
+          961,
+          1170
+        ]
+      ],
+      "original_lines": 1170,
+      "final_read_basis": "Full original1170lines plus exact authored/diff change review; final changed region1-105 and1185-end displayed after import sorting; exact paired copy confirmed.",
+      "final_delta_ranges": [
+        {
+          "tag": "replace",
+          "original": [
+            10,
+            10
+          ],
+          "final": [
+            10,
+            10
+          ]
+        },
+        {
+          "tag": "replace",
+          "original": [
+            12,
+            13
+          ],
+          "final": [
+            12,
+            17
+          ]
+        },
+        {
+          "tag": "insert",
+          "original": [
+            22,
+            21
+          ],
+          "final": [
+            26,
+            27
+          ]
+        },
+        {
+          "tag": "replace",
+          "original": [
+            26,
+            35
+          ],
+          "final": [
+            32,
+            78
+          ]
+        },
+        {
+          "tag": "replace",
+          "original": [
+            1158,
+            1161
+          ],
+          "final": [
+            1201,
+            1201
+          ]
+        },
+        {
+          "tag": "replace",
+          "original": [
+            1163,
+            1164
+          ],
+          "final": [
+            1203,
+            1203
+          ]
+        }
+      ]
+    },
+    {
+      "path": "docs/design/soltui-v2/mockup.py",
+      "blob_sha": "3d3ca7ad31f3f2b558a791d3e5edfa19848938e7",
+      "sha256": "263913d56dabd185a78eed32054f95e72e7862c7859e1af6622bda10fba596cb",
+      "lines": 1209,
+      "bytes": 57002,
+      "read_evidence": "Fixture-only Rich/Textual tokens and formatting helpers, seeded plots, table/view composition, command-provider closures, view switching and explain panel, explicit headless screenshots destination and argparse. No soltui imports or runtime/network/order adapter.",
+      "character_read_ranges": null,
+      "byte_ranges_derived_from_complete_character_slices": null,
+      "exact_duplicate_of": "design/soltui-v2/mockup.py",
+      "passes": {
+        "C1": "ran: Fixture-only Rich/Textual tokens and formatting helpers, seeded plots, table/view composition, command-provider closures, view switching and explain panel, explicit headless screenshots destination and argparse. No soltui imports or runtime/network/order adapter. Standard-library argument parser now runs before optional imports; dimensions validate before any UI or screenshot output.",
+        "C2": "ran: paired producer/controller IDs, callbacks and static fixture/public prototype contract inspected",
+        "C3": "ran: empty/filter/unavailable/stale inputs and fixed fixture boundaries inspected; no production trading or profitability contract",
+        "S1": "ran: source reviewed as data; textContent/Rich Text used for dynamic strings, no execution/key/network authority",
+        "S2": "ran: owned local UI lifetimes and explicit screenshot write reviewed; no service/owner lifecycle",
+        "S3": "ran: form/browser/argparse boundaries checked; Python dependency preflight gap recorded separately",
+        "S4": "ran: browser CSS/DOM modern feature or declared Textual API assumptions reviewed; syntax/AST checked for scripts",
+        "S5": "N/A: fixture presentation only; toasts/visible form errors/explicit unknown labels cover local state, no external calls or production logger",
+        "P1": "ran: bounded static fixture collections/rendering; no justified performance rewrite",
+        "P2": "ran: DOM event and modal/timeout replacement ownership checked; screenshot headless runs sequentially",
+        "M1": "ran: retained prototype structure/tokens; full long/minified lines read explicitly",
+        "M2": "ran: verified docs copies exactly equal; one semantic inspection bound to both copies, no assumed unverified parity",
+        "M3": "N/A: repo-scope architecture recorded separately",
+        "M4": "ran: prototype/illustrative/unavailable labels match actual no-service behavior; dependency/startup gap recorded Usage documents exact isolated uv dependencies; direct interpreter requires its selected environment.",
+        "T1": "ran:8 actual bare-stdlib subprocess cases (both copies help0, unknown/badsize2, missingmodule3) with no UI/outputs; final syntax/AST checked. See /tmp/oraclebot-design-cli-final-20261112.json.",
+        "T2": "N/A: repo-scope dependency pass separate",
+        "T3": "N/A: repo-scope tooling pass separate",
+        "T4": "N/A: non-test design source",
+        "M5": "partial: E3/E5/E6 corrected; --help and invalid args work without optional packages, missing module exits3 with exact isolated uv command. Direct Python does not auto-create dependencies; uv execution/install and rendered prototype not run."
+      },
+      "findings": [
+        "DESIGN-M5-01"
+      ],
+      "verdict": "PARTIAL-M5",
+      "source_scope": "helper census",
+      "original_sha256": "b62b68a89e354af8dce1a7461ba66c798136cc135d9d2048571ae5e5c3e601f2",
+      "original_blob_sha": "2b46387e79547447f6d8afc2095de504ab77661b",
+      "original_read_ranges": [
+        [
+          1,
+          240
+        ],
+        [
+          241,
+          480
+        ],
+        [
+          481,
+          720
+        ],
+        [
+          721,
+          960
+        ],
+        [
+          961,
+          1170
+        ]
+      ],
+      "original_lines": 1170,
+      "final_read_basis": "Full original1170lines plus exact authored/diff change review; final changed region1-105 and1185-end displayed after import sorting; exact paired copy confirmed.",
+      "final_delta_ranges": [
+        {
+          "tag": "replace",
+          "original": [
+            10,
+            10
+          ],
+          "final": [
+            10,
+            10
+          ]
+        },
+        {
+          "tag": "replace",
+          "original": [
+            12,
+            13
+          ],
+          "final": [
+            12,
+            17
+          ]
+        },
+        {
+          "tag": "insert",
+          "original": [
+            22,
+            21
+          ],
+          "final": [
+            26,
+            27
+          ]
+        },
+        {
+          "tag": "replace",
+          "original": [
+            26,
+            35
+          ],
+          "final": [
+            32,
+            78
+          ]
+        },
+        {
+          "tag": "replace",
+          "original": [
+            1158,
+            1161
+          ],
+          "final": [
+            1201,
+            1201
+          ]
+        },
+        {
+          "tag": "replace",
+          "original": [
+            1163,
+            1164
+          ],
+          "final": [
+            1203,
+            1203
+          ]
+        }
+      ]
+    },
+    {
+      "path": "design/bot-control-room/index.html",
+      "blob_sha": "f5ef621c222e2763a22563de1d1e86484aa23102",
+      "sha256": "03e0f2f4c35ab4175f572e18b83242634bb44ebb71301bd9dc613134b154ca63",
+      "lines": 75,
+      "bytes": 21018,
+      "read_evidence": "Labeled prototype-only paper balances/results, skip link/navigation, chart descriptions, roster/inspector IDs, five-stage named form/risk limits, readiness/capability messages and dialogs/live status.",
+      "read_ranges": null,
+      "character_read_ranges": [
+        [
+          0,
+          16000
+        ],
+        [
+          16000,
+          20921
+        ]
+      ],
+      "byte_ranges_derived_from_complete_character_slices": [
+        [
+          0,
+          16074
+        ],
+        [
+          16074,
+          21018
+        ]
+      ],
+      "exact_duplicate_of": null,
+      "passes": {
+        "C1": "ran: Labeled prototype-only paper balances/results, skip link/navigation, chart descriptions, roster/inspector IDs, five-stage named form/risk limits, readiness/capability messages and dialogs/live status.",
+        "C2": "ran: paired producer/controller IDs, callbacks and static fixture/public prototype contract inspected",
+        "C3": "ran: empty/filter/unavailable/stale inputs and fixed fixture boundaries inspected; no production trading or profitability contract",
+        "S1": "ran: source reviewed as data; textContent/Rich Text used for dynamic strings, no execution/key/network authority",
+        "S2": "ran: owned local UI lifetimes and explicit screenshot write reviewed; no service/owner lifecycle",
+        "S3": "ran: controller validation/labeling and constant markup inputs inspected",
+        "S4": "ran: browser CSS/DOM modern feature or declared Textual API assumptions reviewed; syntax/AST checked for scripts",
+        "S5": "N/A: fixture presentation only; toasts/visible form errors/explicit unknown labels cover local state, no external calls or production logger",
+        "P1": "ran: bounded static fixture collections/rendering; no justified performance rewrite",
+        "P2": "ran: DOM event and modal/timeout replacement ownership checked; screenshot headless runs sequentially",
+        "M1": "ran: retained prototype structure/tokens; full long/minified lines read explicitly",
+        "M2": "ran: verified docs copies exactly equal; one semantic inspection bound to both copies, no assumed unverified parity",
+        "M3": "N/A: repo-scope architecture recorded separately",
+        "M4": "ran: prototype/illustrative/unavailable labels match actual no-service behavior; dependency/startup gap recorded",
+        "T1": "ran: inspected presentation/controller semantics and script syntax; no fresh visual/accessibility certification",
+        "T2": "N/A: repo-scope dependency pass separate",
+        "T3": "N/A: repo-scope tooling pass separate",
+        "T4": "N/A: non-test design source",
+        "M5": "N/A: static prototype document or browser-loaded controller; no standalone tool entrypoint"
+      },
+      "findings": [],
+      "verdict": "CLEAN",
+      "source_scope": "supplement outside helper"
+    },
+    {
+      "path": "docs/design/bot-control-room/index.html",
+      "blob_sha": "f5ef621c222e2763a22563de1d1e86484aa23102",
+      "sha256": "03e0f2f4c35ab4175f572e18b83242634bb44ebb71301bd9dc613134b154ca63",
+      "lines": 75,
+      "bytes": 21018,
+      "read_evidence": "Labeled prototype-only paper balances/results, skip link/navigation, chart descriptions, roster/inspector IDs, five-stage named form/risk limits, readiness/capability messages and dialogs/live status.",
+      "read_ranges": null,
+      "character_read_ranges": [
+        [
+          0,
+          16000
+        ],
+        [
+          16000,
+          20921
+        ]
+      ],
+      "byte_ranges_derived_from_complete_character_slices": [
+        [
+          0,
+          16074
+        ],
+        [
+          16074,
+          21018
+        ]
+      ],
+      "exact_duplicate_of": "design/bot-control-room/index.html",
+      "passes": {
+        "C1": "ran: Labeled prototype-only paper balances/results, skip link/navigation, chart descriptions, roster/inspector IDs, five-stage named form/risk limits, readiness/capability messages and dialogs/live status.",
+        "C2": "ran: paired producer/controller IDs, callbacks and static fixture/public prototype contract inspected",
+        "C3": "ran: empty/filter/unavailable/stale inputs and fixed fixture boundaries inspected; no production trading or profitability contract",
+        "S1": "ran: source reviewed as data; textContent/Rich Text used for dynamic strings, no execution/key/network authority",
+        "S2": "ran: owned local UI lifetimes and explicit screenshot write reviewed; no service/owner lifecycle",
+        "S3": "ran: controller validation/labeling and constant markup inputs inspected",
+        "S4": "ran: browser CSS/DOM modern feature or declared Textual API assumptions reviewed; syntax/AST checked for scripts",
+        "S5": "N/A: fixture presentation only; toasts/visible form errors/explicit unknown labels cover local state, no external calls or production logger",
+        "P1": "ran: bounded static fixture collections/rendering; no justified performance rewrite",
+        "P2": "ran: DOM event and modal/timeout replacement ownership checked; screenshot headless runs sequentially",
+        "M1": "ran: retained prototype structure/tokens; full long/minified lines read explicitly",
+        "M2": "ran: verified docs copies exactly equal; one semantic inspection bound to both copies, no assumed unverified parity",
+        "M3": "N/A: repo-scope architecture recorded separately",
+        "M4": "ran: prototype/illustrative/unavailable labels match actual no-service behavior; dependency/startup gap recorded",
+        "T1": "ran: inspected presentation/controller semantics and script syntax; no fresh visual/accessibility certification",
+        "T2": "N/A: repo-scope dependency pass separate",
+        "T3": "N/A: repo-scope tooling pass separate",
+        "T4": "N/A: non-test design source",
+        "M5": "N/A: static prototype document or browser-loaded controller; no standalone tool entrypoint"
+      },
+      "findings": [],
+      "verdict": "CLEAN",
+      "source_scope": "supplement outside helper"
+    },
+    {
+      "path": "design/bot-control-room/mockup.css",
+      "blob_sha": "8d82e511e42776fab0b3cd361fffad397fd0c002",
+      "sha256": "fddb1efa7adb3a51f6feb7a679adba260f13bcd4b9a13e99560d36e0096f1cb1",
+      "lines": 15,
+      "bytes": 25711,
+      "read_evidence": "Full responsive stylesheet, focus indicators, hidden/sr-only controls, horizontal tables, narrow viewport reflow, dialog layering, reduced-motion/print behavior and colors accompanied by text.",
+      "read_ranges": null,
+      "character_read_ranges": [
+        [
+          0,
+          14500
+        ],
+        [
+          14500,
+          25711
+        ]
+      ],
+      "byte_ranges_derived_from_complete_character_slices": [
+        [
+          0,
+          14500
+        ],
+        [
+          14500,
+          25711
+        ]
+      ],
+      "exact_duplicate_of": null,
+      "passes": {
+        "C1": "ran: Full responsive stylesheet, focus indicators, hidden/sr-only controls, horizontal tables, narrow viewport reflow, dialog layering, reduced-motion/print behavior and colors accompanied by text.",
+        "C2": "ran: paired producer/controller IDs, callbacks and static fixture/public prototype contract inspected",
+        "C3": "ran: empty/filter/unavailable/stale inputs and fixed fixture boundaries inspected; no production trading or profitability contract",
+        "S1": "ran: source reviewed as data; textContent/Rich Text used for dynamic strings, no execution/key/network authority",
+        "S2": "ran: owned local UI lifetimes and explicit screenshot write reviewed; no service/owner lifecycle",
+        "S3": "ran: controller validation/labeling and constant markup inputs inspected",
+        "S4": "ran: browser CSS/DOM modern feature or declared Textual API assumptions reviewed; syntax/AST checked for scripts",
+        "S5": "N/A: fixture presentation only; toasts/visible form errors/explicit unknown labels cover local state, no external calls or production logger",
+        "P1": "ran: bounded static fixture collections/rendering; no justified performance rewrite",
+        "P2": "N/A: static stylesheet without async mutation",
+        "M1": "ran: retained prototype structure/tokens; full long/minified lines read explicitly",
+        "M2": "ran: verified docs copies exactly equal; one semantic inspection bound to both copies, no assumed unverified parity",
+        "M3": "N/A: repo-scope architecture recorded separately",
+        "M4": "ran: prototype/illustrative/unavailable labels match actual no-service behavior; dependency/startup gap recorded",
+        "T1": "ran: inspected presentation/controller semantics and script syntax; no fresh visual/accessibility certification",
+        "T2": "N/A: repo-scope dependency pass separate",
+        "T3": "N/A: repo-scope tooling pass separate",
+        "T4": "N/A: non-test design source",
+        "M5": "N/A: static prototype document or browser-loaded controller; no standalone tool entrypoint"
+      },
+      "findings": [],
+      "verdict": "CLEAN",
+      "source_scope": "supplement outside helper"
+    },
+    {
+      "path": "docs/design/bot-control-room/mockup.css",
+      "blob_sha": "8d82e511e42776fab0b3cd361fffad397fd0c002",
+      "sha256": "fddb1efa7adb3a51f6feb7a679adba260f13bcd4b9a13e99560d36e0096f1cb1",
+      "lines": 15,
+      "bytes": 25711,
+      "read_evidence": "Full responsive stylesheet, focus indicators, hidden/sr-only controls, horizontal tables, narrow viewport reflow, dialog layering, reduced-motion/print behavior and colors accompanied by text.",
+      "read_ranges": null,
+      "character_read_ranges": [
+        [
+          0,
+          14500
+        ],
+        [
+          14500,
+          25711
+        ]
+      ],
+      "byte_ranges_derived_from_complete_character_slices": [
+        [
+          0,
+          14500
+        ],
+        [
+          14500,
+          25711
+        ]
+      ],
+      "exact_duplicate_of": "design/bot-control-room/mockup.css",
+      "passes": {
+        "C1": "ran: Full responsive stylesheet, focus indicators, hidden/sr-only controls, horizontal tables, narrow viewport reflow, dialog layering, reduced-motion/print behavior and colors accompanied by text.",
+        "C2": "ran: paired producer/controller IDs, callbacks and static fixture/public prototype contract inspected",
+        "C3": "ran: empty/filter/unavailable/stale inputs and fixed fixture boundaries inspected; no production trading or profitability contract",
+        "S1": "ran: source reviewed as data; textContent/Rich Text used for dynamic strings, no execution/key/network authority",
+        "S2": "ran: owned local UI lifetimes and explicit screenshot write reviewed; no service/owner lifecycle",
+        "S3": "ran: controller validation/labeling and constant markup inputs inspected",
+        "S4": "ran: browser CSS/DOM modern feature or declared Textual API assumptions reviewed; syntax/AST checked for scripts",
+        "S5": "N/A: fixture presentation only; toasts/visible form errors/explicit unknown labels cover local state, no external calls or production logger",
+        "P1": "ran: bounded static fixture collections/rendering; no justified performance rewrite",
+        "P2": "N/A: static stylesheet without async mutation",
+        "M1": "ran: retained prototype structure/tokens; full long/minified lines read explicitly",
+        "M2": "ran: verified docs copies exactly equal; one semantic inspection bound to both copies, no assumed unverified parity",
+        "M3": "N/A: repo-scope architecture recorded separately",
+        "M4": "ran: prototype/illustrative/unavailable labels match actual no-service behavior; dependency/startup gap recorded",
+        "T1": "ran: inspected presentation/controller semantics and script syntax; no fresh visual/accessibility certification",
+        "T2": "N/A: repo-scope dependency pass separate",
+        "T3": "N/A: repo-scope tooling pass separate",
+        "T4": "N/A: non-test design source",
+        "M5": "N/A: static prototype document or browser-loaded controller; no standalone tool entrypoint"
+      },
+      "findings": [],
+      "verdict": "CLEAN",
+      "source_scope": "supplement outside helper"
+    },
+    {
+      "path": "design/chrome-workspace/prototype.html",
+      "blob_sha": "de224207a0e27a719d90396d80efd22417ac0a4e",
+      "sha256": "4cdcbc154e4a9c903174531e9c46bc8ba43bbda3a0d9234ba7c903653bed9855",
+      "lines": 66,
+      "bytes": 46017,
+      "read_evidence": "Inline CSP blocks connections/forms; fixture-only workspace navigation, unavailable/stale/missing signals, source/eligibility labeling, frozen-paper handoff text, dialogs/search/filter and keyboard focus. No external SDK or execution authority.",
+      "read_ranges": null,
+      "character_read_ranges": [
+        [
+          0,
+          14500
+        ],
+        [
+          14500,
+          29000
+        ],
+        [
+          29000,
+          43500
+        ],
+        [
+          43500,
+          45819
+        ]
+      ],
+      "byte_ranges_derived_from_complete_character_slices": [
+        [
+          0,
+          14532
+        ],
+        [
+          14532,
+          29111
+        ],
+        [
+          29111,
+          43689
+        ],
+        [
+          43689,
+          46017
+        ]
+      ],
+      "exact_duplicate_of": null,
+      "passes": {
+        "C1": "ran: Inline CSP blocks connections/forms; fixture-only workspace navigation, unavailable/stale/missing signals, source/eligibility labeling, frozen-paper handoff text, dialogs/search/filter and keyboard focus. No external SDK or execution authority.",
+        "C2": "ran: paired producer/controller IDs, callbacks and static fixture/public prototype contract inspected",
+        "C3": "ran: empty/filter/unavailable/stale inputs and fixed fixture boundaries inspected; no production trading or profitability contract",
+        "S1": "ran: source reviewed as data; textContent/Rich Text used for dynamic strings, no execution/key/network authority",
+        "S2": "ran: owned local UI lifetimes and explicit screenshot write reviewed; no service/owner lifecycle",
+        "S3": "ran: controller validation/labeling and constant markup inputs inspected",
+        "S4": "ran: browser CSS/DOM modern feature or declared Textual API assumptions reviewed; syntax/AST checked for scripts",
+        "S5": "N/A: fixture presentation only; toasts/visible form errors/explicit unknown labels cover local state, no external calls or production logger",
+        "P1": "ran: bounded static fixture collections/rendering; no justified performance rewrite",
+        "P2": "ran: DOM event and modal/timeout replacement ownership checked; screenshot headless runs sequentially",
+        "M1": "ran: retained prototype structure/tokens; full long/minified lines read explicitly",
+        "M2": "ran: verified docs copies exactly equal; one semantic inspection bound to both copies, no assumed unverified parity",
+        "M3": "N/A: repo-scope architecture recorded separately",
+        "M4": "ran: prototype/illustrative/unavailable labels match actual no-service behavior; dependency/startup gap recorded",
+        "T1": "ran: inspected presentation/controller semantics and script syntax; no fresh visual/accessibility certification",
+        "T2": "N/A: repo-scope dependency pass separate",
+        "T3": "N/A: repo-scope tooling pass separate",
+        "T4": "N/A: non-test design source",
+        "M5": "N/A: static prototype document or browser-loaded controller; no standalone tool entrypoint"
+      },
+      "findings": [],
+      "verdict": "CLEAN",
+      "source_scope": "supplement outside helper"
+    },
+    {
+      "path": "docs/design/chrome-workspace/prototype.html",
+      "blob_sha": "de224207a0e27a719d90396d80efd22417ac0a4e",
+      "sha256": "4cdcbc154e4a9c903174531e9c46bc8ba43bbda3a0d9234ba7c903653bed9855",
+      "lines": 66,
+      "bytes": 46017,
+      "read_evidence": "Inline CSP blocks connections/forms; fixture-only workspace navigation, unavailable/stale/missing signals, source/eligibility labeling, frozen-paper handoff text, dialogs/search/filter and keyboard focus. No external SDK or execution authority.",
+      "read_ranges": null,
+      "character_read_ranges": [
+        [
+          0,
+          14500
+        ],
+        [
+          14500,
+          29000
+        ],
+        [
+          29000,
+          43500
+        ],
+        [
+          43500,
+          45819
+        ]
+      ],
+      "byte_ranges_derived_from_complete_character_slices": [
+        [
+          0,
+          14532
+        ],
+        [
+          14532,
+          29111
+        ],
+        [
+          29111,
+          43689
+        ],
+        [
+          43689,
+          46017
+        ]
+      ],
+      "exact_duplicate_of": "design/chrome-workspace/prototype.html",
+      "passes": {
+        "C1": "ran: Inline CSP blocks connections/forms; fixture-only workspace navigation, unavailable/stale/missing signals, source/eligibility labeling, frozen-paper handoff text, dialogs/search/filter and keyboard focus. No external SDK or execution authority.",
+        "C2": "ran: paired producer/controller IDs, callbacks and static fixture/public prototype contract inspected",
+        "C3": "ran: empty/filter/unavailable/stale inputs and fixed fixture boundaries inspected; no production trading or profitability contract",
+        "S1": "ran: source reviewed as data; textContent/Rich Text used for dynamic strings, no execution/key/network authority",
+        "S2": "ran: owned local UI lifetimes and explicit screenshot write reviewed; no service/owner lifecycle",
+        "S3": "ran: controller validation/labeling and constant markup inputs inspected",
+        "S4": "ran: browser CSS/DOM modern feature or declared Textual API assumptions reviewed; syntax/AST checked for scripts",
+        "S5": "N/A: fixture presentation only; toasts/visible form errors/explicit unknown labels cover local state, no external calls or production logger",
+        "P1": "ran: bounded static fixture collections/rendering; no justified performance rewrite",
+        "P2": "ran: DOM event and modal/timeout replacement ownership checked; screenshot headless runs sequentially",
+        "M1": "ran: retained prototype structure/tokens; full long/minified lines read explicitly",
+        "M2": "ran: verified docs copies exactly equal; one semantic inspection bound to both copies, no assumed unverified parity",
+        "M3": "N/A: repo-scope architecture recorded separately",
+        "M4": "ran: prototype/illustrative/unavailable labels match actual no-service behavior; dependency/startup gap recorded",
+        "T1": "ran: inspected presentation/controller semantics and script syntax; no fresh visual/accessibility certification",
+        "T2": "N/A: repo-scope dependency pass separate",
+        "T3": "N/A: repo-scope tooling pass separate",
+        "T4": "N/A: non-test design source",
+        "M5": "N/A: static prototype document or browser-loaded controller; no standalone tool entrypoint"
+      },
+      "findings": [],
+      "verdict": "CLEAN",
+      "source_scope": "supplement outside helper"
+    }
+  ],
+  "findings": [
+    {
+      "id": "DESIGN-M5-01",
+      "severity": "Medium",
+      "path": "design/soltui-v2/mockup.py",
+      "trigger": "PYTHONDONTWRITEBYTECODE=1 .venv/bin/python design/soltui-v2/mockup.py --help",
+      "exit_code": 1,
+      "observed": "ModuleNotFoundError: No module named textual_plotext before argparse help",
+      "remaining": "Shared tool environment/preflight contract remains open; source unchanged, no model/service/dependency started for this prototype.",
+      "state": "E3/E5/E6 fixed, E4 direct-Python auto-environment remains partial"
+    }
+  ],
+  "checks": [
+    {
+      "command": "node --check design/bot-control-room/mockup.js",
+      "exit_code": 0
+    },
+    {
+      "command": "ast.parse both Python design/docs prototype copies",
+      "exit_code": 0
+    },
+    {
+      "command": "PYTHONDONTWRITEBYTECODE=1 .venv/bin/python design/soltui-v2/mockup.py --help",
+      "exit_code": 1
+    },
+    {
+      "command": "bothcopies8 bare-stdlib CLI cases",
+      "exit_code": 0,
+      "evidence": "/tmp/oraclebot-design-cli-final-20261112.json"
+    }
+  ],
+  "limits": [
+    "No fresh visual/accessibility certification or interactive prototype run.",
+    "Both paired copies credited only after exact SHA256 equality; full actual source/asset ranges explicitly recorded."
+  ]
+}

@@ -22,7 +22,7 @@ import ollama_ensure as oe  # noqa: E402
 
 from soltui.commands import dispatch  # noqa: E402
 from soltui.tests.bridge_support import World  # noqa: E402
-from soltui.tests.test_tui import TEST_SIZE, make_settings, text_of  # noqa: E402
+from soltui.tests.test_tui import TEST_SIZE, make_settings, offline_console_reads, text_of  # noqa: E402
 from soltui.tui import SolTuiApp  # noqa: E402
 
 
@@ -96,6 +96,7 @@ class DocsSearchCommands(unittest.TestCase):
 
 class DocsSearchTab(unittest.IsolatedAsyncioTestCase):
     def setUp(self) -> None:
+        self.enterContext(offline_console_reads())
         forget_search()
         self.addCleanup(forget_search)
         patcher = mock.patch.object(idle, "maybe_start", return_value="semantic index is fresh")

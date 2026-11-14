@@ -1,0 +1,30 @@
+{
+  "observed_at": "2026-11-13T01:30:30.443209+00:00",
+  "status": "TWO_EQUAL_UNCHANGED_INCREMENTAL_PLANS",
+  "command": [
+    "python3",
+    "/Users/mitch/.agents/skills/code-deep-optimizer/scripts/cdo_ledger.py",
+    "plan",
+    "--repo",
+    "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112",
+    "--json",
+    "--max-files",
+    "2000"
+  ],
+  "plans": [
+    {
+      "review": [],
+      "deferred": [],
+      "unchanged_skipped": 828,
+      "removed_from_disk": [],
+      "full": false
+    },
+    {
+      "review": [],
+      "deferred": [],
+      "unchanged_skipped": 828,
+      "removed_from_disk": [],
+      "full": false
+    }
+  ]
+}

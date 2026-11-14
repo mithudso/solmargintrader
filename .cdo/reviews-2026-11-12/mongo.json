@@ -1,0 +1,2641 @@
+{
+  "agent": "website_worker_review (mongo batch)",
+  "definition_version": "2.0.0",
+  "observed_at": "2026-11-12T09:15:35.516402+00:00",
+  "status": "local audit and remediation complete; parent independent acceptance/delivery pending",
+  "root": "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112",
+  "scope": {
+    "original_source_files": 16,
+    "original_lines": 3013,
+    "final_source_files": 18,
+    "final_lines": 3342,
+    "ancillary_docs": [
+      {
+        "path": "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/mongo/README.md",
+        "sha256": "69e971db71d71f888903230c1753d40ec2532923686c1e1adf4168ae9fbc1517",
+        "lines": 207,
+        "read": "Entire original README and all changed setup/inventory/file-guide sections reviewed"
+      }
+    ]
+  },
+  "coverage": "All original16 files plus both new source/test files; two empty package markers explicitly N/A. No sampling cap. Native backend not executed.",
+  "model": "Inherited model; requested installed skill model alias unavailable in this harness.",
+  "findings": [
+    {
+      "id": "MG1",
+      "severity": "High",
+      "files": [
+        "mongo/tests/test_load.py"
+      ],
+      "baseline_ranges": [
+        [
+          180,
+          195
+        ],
+        [
+          315,
+          342
+        ]
+      ],
+      "passes": [
+        "S1",
+        "S2",
+        "C3",
+        "T1"
+      ],
+      "trigger": "If a local server responds, the original integration tests select schema.DB_NAME and invoke destructive loader reloads against the ordinary solmargintrader store.",
+      "fix": "Each fixture now generates a private solmargintrader_test_<uuid> namespace; native loaders reuse the owned client and scoped database name; setup/error/cleanup tests verify only that namespace is selected and dropped.",
+      "status": "fixed"
+    },
+    {
+      "id": "MG2",
+      "severity": "Medium",
+      "files": [
+        "mongo/queries/02-strategies-and-cards.js"
+      ],
+      "baseline_ranges": [
+        [
+          88,
+          94
+        ]
+      ],
+      "passes": [
+        "C1",
+        "C3",
+        "S2",
+        "T1"
+      ],
+      "trigger": "A valid empty or partial store returns null for breakout; card._id dereference aborts the remaining query file.",
+      "fix": "Print an explicit missing-card message and continue; present-record output remains covered.",
+      "status": "fixed"
+    },
+    {
+      "id": "MG3",
+      "severity": "Medium",
+      "files": [
+        "mongo/queries/04-decisions.js"
+      ],
+      "baseline_ranges": [
+        [
+          36,
+          41
+        ]
+      ],
+      "passes": [
+        "C1",
+        "C3",
+        "S2",
+        "T1"
+      ],
+      "trigger": "A store without SOL daily readouts returns null; sol.decision_bar dereference aborts later sections.",
+      "fix": "Print an explicit missing-readout message and continue; present-record output remains covered.",
+      "status": "fixed"
+    },
+    {
+      "id": "MG4",
+      "severity": "Medium",
+      "files": [
+        "mongo/queries/05-backtests.js"
+      ],
+      "baseline_ranges": [
+        [
+          26,
+          43
+        ]
+      ],
+      "passes": [
+        "C1",
+        "C3",
+        "S2",
+        "T1"
+      ],
+      "trigger": "A normal checkout without a run manifest loads no backtest_runs; run._id dereference aborts the query file.",
+      "fix": "Print an explicit missing-run message and continue; present-record output remains covered.",
+      "status": "fixed"
+    },
+    {
+      "id": "MG5",
+      "severity": "Medium",
+      "files": [
+        "mongo/queries/08-provenance-and-health.js"
+      ],
+      "baseline_ranges": [
+        [
+          91,
+          112
+        ]
+      ],
+      "passes": [
+        "C1",
+        "C3",
+        "M4",
+        "T1"
+      ],
+      "trigger": "The original health predicate assumes NaN differs from itself, but MongoDB compares NaN equal to NaN; both infinities also compare equal to themselves. It reports no matching rows for every non-finite specimen.",
+      "fix": "Explicit numeric membership in [NaN, Infinity, -Infinity], retaining the double type guard; inert predicate regression covers finite/non-numeric controls.",
+      "status": "fixed"
+    },
+    {
+      "id": "MG6",
+      "severity": "Medium",
+      "files": [
+        "mongo/load.py"
+      ],
+      "baseline_ranges": [
+        [
+          674,
+          677
+        ]
+      ],
+      "passes": [
+        "C1",
+        "C3",
+        "S4",
+        "T1"
+      ],
+      "trigger": "Invoking the loader with the explicit worktree virtualenv does not activate PATH. Bare python3 resolved to Homebrew Python3.15, outside the worktree venv used to run the loader.",
+      "fix": "Python suite commands use sys.executable; mocked suite receipts verify both observed subprocess commands stay in the current environment.",
+      "status": "fixed"
+    },
+    {
+      "id": "MG7",
+      "severity": "Medium",
+      "files": [
+        "mongo/README.md"
+      ],
+      "baseline_ranges": [
+        [
+          18,
+          27
+        ]
+      ],
+      "passes": [
+        "M5"
+      ],
+      "trigger": "The setup instructions prescribe bare pip install with no isolated-environment recipe.",
+      "fix": "Document uv venv plus explicit .venv interpreter installation/invocation; no installation was performed by this audit.",
+      "status": "fixed"
+    },
+    {
+      "id": "MG8",
+      "severity": "Medium",
+      "files": [
+        "mongo/load.py",
+        "mongo/schema.py",
+        "mongo/cli.py"
+      ],
+      "passes": [
+        "S2",
+        "S5",
+        "M5",
+        "T1"
+      ],
+      "trigger": "Script invocations with missing pymongo or a missing indirect dependency exit with raw tracebacks. Unavailable server errors also expose raw driver text.",
+      "fix": "Shared CLI-only handler exits3 for known missing packages and server selection timeouts, names exact isolated repair commands, and emits fixed redacted server messages. Library imports and main() exception semantics remain unchanged.",
+      "status": "fixed"
+    },
+    {
+      "id": "MG9",
+      "severity": "Medium",
+      "files": [
+        "mongo/load.py",
+        "mongo/schema.py"
+      ],
+      "passes": [
+        "M5",
+        "T1"
+      ],
+      "trigger": "The CLI help omits a runnable example.",
+      "fix": "Both argparse epilogs contain an explicit .venv invocation; subprocess tests cover help0, unknown-argument usage2 and driver-free describe.",
+      "status": "fixed"
+    },
+    {
+      "id": "MG10",
+      "severity": "Medium",
+      "files": [
+        "mongo/README.md",
+        "mongo/load.py",
+        "mongo/schema.py",
+        "mongo/tests/test_load.py",
+        "mongo/queries/02-strategies-and-cards.js",
+        "mongo/queries/03-signals-and-indicators.js",
+        "mongo/queries/04-decisions.js"
+      ],
+      "passes": [
+        "M4"
+      ],
+      "trigger": "Operational prose/headings claim25/29 registered strategies and20 indicator documents, while the current card/registry inspection returns34/34 and the actual selected dry-run returns22 indicators.",
+      "fix": "Remove stale hand-maintained operational counts and point the README to the actual dry-run inventory. No frozen economic research result was edited.",
+      "status": "fixed"
+    }
+  ],
+  "files": [
+    {
+      "path": "mongo/load.py",
+      "absolute_path": "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/mongo/load.py",
+      "original_sha256": "908a700843a38243d94b01006feb610300796bb7b677bc9271a44e3e5b571b4c",
+      "original_lines": 859,
+      "final_sha256": "5f0b096b7bd75b345ba22b6aae8c6ce2a2664491f85ec217ed452f650208294c",
+      "final_git_blob": "053e9a52fdb2a9cb8e9edd0645efcdc7de908b38",
+      "final_lines": 863,
+      "inspection": "CSV coercion, protected provenance, exact byte snapshots, cache-contract admission, alternate venue identity, declared run artifacts and hashes, retained test receipts, selected-collection rebuilds, CLI arguments and suite subprocesses",
+      "injection_gate": "No reviewer-directed or hostile directive found; source treated as data",
+      "pass_rows": [
+        {
+          "pass": "C1",
+          "status": "ran",
+          "detail": "Fixed MG6; see concrete trigger, code and regression receipts."
+        },
+        {
+          "pass": "C2",
+          "status": "ran",
+          "detail": "Compared fields and signatures with loader/schema/report or caller contracts; public shapes retained."
+        },
+        {
+          "pass": "C3",
+          "status": "ran",
+          "detail": "Fixed MG6; see concrete trigger, code and regression receipts."
+        },
+        {
+          "pass": "S1",
+          "status": "ran",
+          "detail": "Checked write/read scope, trusted-vs-source metadata and code-vs-data boundaries. No orders, signing, credentials or external writes introduced."
+        },
+        {
+          "pass": "S2",
+          "status": "ran",
+          "detail": "Fixed MG8; see concrete trigger, code and regression receipts."
+        },
+        {
+          "pass": "S3",
+          "status": "ran",
+          "detail": "Checked source field types, collection identities, manifest paths or test/query inputs at their actual trust boundary."
+        },
+        {
+          "pass": "S4",
+          "status": "ran",
+          "detail": "Fixed MG6; see concrete trigger, code and regression receipts."
+        },
+        {
+          "pass": "S5",
+          "status": "ran",
+          "detail": "Fixed MG8; see concrete trigger, code and regression receipts."
+        },
+        {
+          "pass": "P1",
+          "status": "ran",
+          "detail": "Reviewed scans, loops, aggregation shape and data cardinality for CSV coercion, protected provenance, exact byte snapshots, cache-contract admission, alternate venue identity, declared run artifacts and hashes, retained test receipts, selected-collection rebuilds, CLI arguments and suite subprocesses. No measured performance defect asserted without native explain/benchmark data."
+        },
+        {
+          "pass": "P2",
+          "status": "ran",
+          "detail": "Reviewed synchronous sequencing, subprocess execution, immutable snapshots or query ordering. No new background worker/service or ambiguous retry introduced."
+        },
+        {
+          "pass": "M1",
+          "status": "ran",
+          "detail": "Reviewed naming, constants and existing component conventions. Kept bounded helpers; no speculative module reshaping."
+        },
+        {
+          "pass": "M2",
+          "status": "ran",
+          "detail": "Existing snapshot/query/schema/test helpers reused; shared CLI failures extracted into mongo.cli instead of duplicated handlers."
+        },
+        {
+          "pass": "M3",
+          "status": "repo-scope parent",
+          "detail": "Parent owns cross-component architecture, dependencies and tooling; this is a bounded per-file audit."
+        },
+        {
+          "pass": "M4",
+          "status": "ran",
+          "detail": "Fixed MG10; see concrete trigger, code and regression receipts."
+        },
+        {
+          "pass": "T1",
+          "status": "ran",
+          "detail": "Fixed MG6, MG8, MG9; see concrete trigger, code and regression receipts."
+        },
+        {
+          "pass": "T2",
+          "status": "repo-scope parent",
+          "detail": "Parent owns cross-component architecture, dependencies and tooling; this is a bounded per-file audit."
+        },
+        {
+          "pass": "T3",
+          "status": "repo-scope parent",
+          "detail": "Parent owns cross-component architecture, dependencies and tooling; this is a bounded per-file audit."
+        },
+        {
+          "pass": "T4",
+          "status": "N/A",
+          "detail": "Non-test source."
+        },
+        {
+          "pass": "M5",
+          "status": "ran",
+          "detail": "Fixed MG8, MG9; see concrete trigger, code and regression receipts."
+        }
+      ],
+      "original_full_read_ranges": [
+        [
+          1,
+          180
+        ],
+        [
+          181,
+          360
+        ],
+        [
+          361,
+          540
+        ],
+        [
+          541,
+          720
+        ],
+        [
+          721,
+          859
+        ]
+      ],
+      "coverage_method": "Entire original file read in bounded slices; all final changed hunks reviewed, with complete new-file reads and explicit empty-file inspection."
+    },
+    {
+      "path": "mongo/schema.py",
+      "absolute_path": "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/mongo/schema.py",
+      "original_sha256": "7125a8ae3abf8af1f0ac7a48924399b74de9290b9a2081a77d8769394db403ab",
+      "original_lines": 480,
+      "final_sha256": "cda27ff10fd3a701ebf26ce6f927497add4e7cfca3092b306fcb3dd0b5843791",
+      "final_git_blob": "6f2a9a2004dd2681b0eb7d2df38a2ec944d232dc",
+      "final_lines": 486,
+      "inspection": "time-series metadata fields and keep-mode compatibility, strict validators, partial/unique/text indexes, known collection selection, retained original test receipts, describe/create CLI",
+      "injection_gate": "No reviewer-directed or hostile directive found; source treated as data",
+      "pass_rows": [
+        {
+          "pass": "C1",
+          "status": "ran",
+          "detail": "Checked control flow and field/shape semantics for time-series metadata fields and keep-mode compatibility, strict validators, partial/unique/text indexes, known collection selection, retained original test receipts, describe/create CLI. No additional grounded Medium+ defect."
+        },
+        {
+          "pass": "C2",
+          "status": "ran",
+          "detail": "Compared fields and signatures with loader/schema/report or caller contracts; public shapes retained."
+        },
+        {
+          "pass": "C3",
+          "status": "ran",
+          "detail": "Checked absent/empty/malformed inputs, state/provenance boundaries and error paths for time-series metadata fields and keep-mode compatibility, strict validators, partial/unique/text indexes, known collection selection, retained original test receipts, describe/create CLI. Existing and new regressions complete successfully."
+        },
+        {
+          "pass": "S1",
+          "status": "ran",
+          "detail": "Checked write/read scope, trusted-vs-source metadata and code-vs-data boundaries. No orders, signing, credentials or external writes introduced."
+        },
+        {
+          "pass": "S2",
+          "status": "ran",
+          "detail": "Fixed MG8; see concrete trigger, code and regression receipts."
+        },
+        {
+          "pass": "S3",
+          "status": "ran",
+          "detail": "Checked source field types, collection identities, manifest paths or test/query inputs at their actual trust boundary."
+        },
+        {
+          "pass": "S4",
+          "status": "ran",
+          "detail": "Checked Python3.13+/Node/mongosh runtime syntax and platform assumptions; final compile/syntax/subprocess checks complete. Native server compatibility not claimed."
+        },
+        {
+          "pass": "S5",
+          "status": "ran",
+          "detail": "Fixed MG8; see concrete trigger, code and regression receipts."
+        },
+        {
+          "pass": "P1",
+          "status": "ran",
+          "detail": "Reviewed scans, loops, aggregation shape and data cardinality for time-series metadata fields and keep-mode compatibility, strict validators, partial/unique/text indexes, known collection selection, retained original test receipts, describe/create CLI. No measured performance defect asserted without native explain/benchmark data."
+        },
+        {
+          "pass": "P2",
+          "status": "ran",
+          "detail": "Reviewed synchronous sequencing, subprocess execution, immutable snapshots or query ordering. No new background worker/service or ambiguous retry introduced."
+        },
+        {
+          "pass": "M1",
+          "status": "ran",
+          "detail": "Reviewed naming, constants and existing component conventions. Kept bounded helpers; no speculative module reshaping."
+        },
+        {
+          "pass": "M2",
+          "status": "ran",
+          "detail": "Existing snapshot/query/schema/test helpers reused; shared CLI failures extracted into mongo.cli instead of duplicated handlers."
+        },
+        {
+          "pass": "M3",
+          "status": "repo-scope parent",
+          "detail": "Parent owns cross-component architecture, dependencies and tooling; this is a bounded per-file audit."
+        },
+        {
+          "pass": "M4",
+          "status": "ran",
+          "detail": "Fixed MG10; see concrete trigger, code and regression receipts."
+        },
+        {
+          "pass": "T1",
+          "status": "ran",
+          "detail": "Fixed MG8, MG9; see concrete trigger, code and regression receipts."
+        },
+        {
+          "pass": "T2",
+          "status": "repo-scope parent",
+          "detail": "Parent owns cross-component architecture, dependencies and tooling; this is a bounded per-file audit."
+        },
+        {
+          "pass": "T3",
+          "status": "repo-scope parent",
+          "detail": "Parent owns cross-component architecture, dependencies and tooling; this is a bounded per-file audit."
+        },
+        {
+          "pass": "T4",
+          "status": "N/A",
+          "detail": "Non-test source."
+        },
+        {
+          "pass": "M5",
+          "status": "ran",
+          "detail": "Fixed MG8, MG9; see concrete trigger, code and regression receipts."
+        }
+      ],
+      "original_full_read_ranges": [
+        [
+          1,
+          180
+        ],
+        [
+          181,
+          360
+        ],
+        [
+          361,
+          480
+        ]
+      ],
+      "coverage_method": "Entire original file read in bounded slices; all final changed hunks reviewed, with complete new-file reads and explicit empty-file inspection."
+    },
+    {
+      "path": "mongo/tests/test_load.py",
+      "absolute_path": "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/mongo/tests/test_load.py",
+      "original_sha256": "2029372af6d6b3f0dc87ec28d746b9df4a2880ee7ce3621000b46a5f8478560d",
+      "original_lines": 345,
+      "final_sha256": "2f68065852543eb25f28e58062699c6afee010eca42de0756391ab0124efabb8",
+      "final_git_blob": "120721d66d8ecb715f82aa6a756e74a458769a1f",
+      "final_lines": 360,
+      "inspection": "pure helpers, driver probe, schema enums/provenance, native fixture setup, idempotent loads, selected collection preservation and private database cleanup",
+      "injection_gate": "No reviewer-directed or hostile directive found; source treated as data",
+      "pass_rows": [
+        {
+          "pass": "C1",
+          "status": "ran",
+          "detail": "Checked control flow and field/shape semantics for pure helpers, driver probe, schema enums/provenance, native fixture setup, idempotent loads, selected collection preservation and private database cleanup. No additional grounded Medium+ defect."
+        },
+        {
+          "pass": "C2",
+          "status": "ran",
+          "detail": "Compared fields and signatures with loader/schema/report or caller contracts; public shapes retained."
+        },
+        {
+          "pass": "C3",
+          "status": "ran",
+          "detail": "Fixed MG1; see concrete trigger, code and regression receipts."
+        },
+        {
+          "pass": "S1",
+          "status": "ran",
+          "detail": "Fixed MG1; see concrete trigger, code and regression receipts."
+        },
+        {
+          "pass": "S2",
+          "status": "ran",
+          "detail": "Fixed MG1; see concrete trigger, code and regression receipts."
+        },
+        {
+          "pass": "S3",
+          "status": "ran",
+          "detail": "Checked source field types, collection identities, manifest paths or test/query inputs at their actual trust boundary."
+        },
+        {
+          "pass": "S4",
+          "status": "ran",
+          "detail": "Checked Python3.13+/Node/mongosh runtime syntax and platform assumptions; final compile/syntax/subprocess checks complete. Native server compatibility not claimed."
+        },
+        {
+          "pass": "S5",
+          "status": "ran",
+          "detail": "Reviewed observable CLI/test/query outcomes and refusal/error paths; fixed CLI diagnostics avoid raw driver error text. No secret logging introduced."
+        },
+        {
+          "pass": "P1",
+          "status": "ran",
+          "detail": "Reviewed scans, loops, aggregation shape and data cardinality for pure helpers, driver probe, schema enums/provenance, native fixture setup, idempotent loads, selected collection preservation and private database cleanup. No measured performance defect asserted without native explain/benchmark data."
+        },
+        {
+          "pass": "P2",
+          "status": "ran",
+          "detail": "Reviewed synchronous sequencing, subprocess execution, immutable snapshots or query ordering. No new background worker/service or ambiguous retry introduced."
+        },
+        {
+          "pass": "M1",
+          "status": "ran",
+          "detail": "Reviewed naming, constants and existing component conventions. Kept bounded helpers; no speculative module reshaping."
+        },
+        {
+          "pass": "M2",
+          "status": "ran",
+          "detail": "Existing snapshot/query/schema/test helpers reused; shared CLI failures extracted into mongo.cli instead of duplicated handlers."
+        },
+        {
+          "pass": "M3",
+          "status": "repo-scope parent",
+          "detail": "Parent owns cross-component architecture, dependencies and tooling; this is a bounded per-file audit."
+        },
+        {
+          "pass": "M4",
+          "status": "ran",
+          "detail": "Fixed MG10; see concrete trigger, code and regression receipts."
+        },
+        {
+          "pass": "T1",
+          "status": "ran",
+          "detail": "Fixed MG1; see concrete trigger, code and regression receipts."
+        },
+        {
+          "pass": "T2",
+          "status": "repo-scope parent",
+          "detail": "Parent owns cross-component architecture, dependencies and tooling; this is a bounded per-file audit."
+        },
+        {
+          "pass": "T3",
+          "status": "repo-scope parent",
+          "detail": "Parent owns cross-component architecture, dependencies and tooling; this is a bounded per-file audit."
+        },
+        {
+          "pass": "T4",
+          "status": "ran",
+          "detail": "No real sleeps or repeated immutable heavyweight fixtures to hoist safely; mocks, module globals, temporary REPO roots and native class setup require isolation. Kept test behavior/coverage."
+        },
+        {
+          "pass": "M5",
+          "status": "N/A",
+          "detail": "Imported helper, test input or package marker; no standalone entrypoint."
+        }
+      ],
+      "original_full_read_ranges": [
+        [
+          1,
+          180
+        ],
+        [
+          181,
+          345
+        ]
+      ],
+      "coverage_method": "Entire original file read in bounded slices; all final changed hunks reviewed, with complete new-file reads and explicit empty-file inspection."
+    },
+    {
+      "path": "mongo/tests/test_analysis_regressions.py",
+      "absolute_path": "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/mongo/tests/test_analysis_regressions.py",
+      "original_sha256": "28aa8bd894d030f069e4fc671e6a4657c928e282c61adecfe5ac30dc36c84157",
+      "original_lines": 198,
+      "final_sha256": "28aa8bd894d030f069e4fc671e6a4657c928e282c61adecfe5ac30dc36c84157",
+      "final_git_blob": "0608b196c80e9acd4d7c2d23d420e2b21663f234",
+      "final_lines": 198,
+      "inspection": "alternate-venue and snapshot races, immutable strategy-card snapshot, missing artifacts, run query fields, receipt upserts and test-results retention, keep-mode time-series compatibility",
+      "injection_gate": "No reviewer-directed or hostile directive found; source treated as data",
+      "pass_rows": [
+        {
+          "pass": "C1",
+          "status": "ran",
+          "detail": "Checked control flow and field/shape semantics for alternate-venue and snapshot races, immutable strategy-card snapshot, missing artifacts, run query fields, receipt upserts and test-results retention, keep-mode time-series compatibility. No additional grounded Medium+ defect."
+        },
+        {
+          "pass": "C2",
+          "status": "ran",
+          "detail": "Compared fields and signatures with loader/schema/report or caller contracts; public shapes retained."
+        },
+        {
+          "pass": "C3",
+          "status": "ran",
+          "detail": "Checked absent/empty/malformed inputs, state/provenance boundaries and error paths for alternate-venue and snapshot races, immutable strategy-card snapshot, missing artifacts, run query fields, receipt upserts and test-results retention, keep-mode time-series compatibility. Existing and new regressions complete successfully."
+        },
+        {
+          "pass": "S1",
+          "status": "ran",
+          "detail": "Checked write/read scope, trusted-vs-source metadata and code-vs-data boundaries. No orders, signing, credentials or external writes introduced."
+        },
+        {
+          "pass": "S2",
+          "status": "ran",
+          "detail": "Checked I/O failures, returned outcomes and resource/cleanup ownership in this file; no additional grounded Medium+ defect within its CLI/test/query contract."
+        },
+        {
+          "pass": "S3",
+          "status": "ran",
+          "detail": "Checked source field types, collection identities, manifest paths or test/query inputs at their actual trust boundary."
+        },
+        {
+          "pass": "S4",
+          "status": "ran",
+          "detail": "Checked Python3.13+/Node/mongosh runtime syntax and platform assumptions; final compile/syntax/subprocess checks complete. Native server compatibility not claimed."
+        },
+        {
+          "pass": "S5",
+          "status": "ran",
+          "detail": "Reviewed observable CLI/test/query outcomes and refusal/error paths; fixed CLI diagnostics avoid raw driver error text. No secret logging introduced."
+        },
+        {
+          "pass": "P1",
+          "status": "ran",
+          "detail": "Reviewed scans, loops, aggregation shape and data cardinality for alternate-venue and snapshot races, immutable strategy-card snapshot, missing artifacts, run query fields, receipt upserts and test-results retention, keep-mode time-series compatibility. No measured performance defect asserted without native explain/benchmark data."
+        },
+        {
+          "pass": "P2",
+          "status": "ran",
+          "detail": "Reviewed synchronous sequencing, subprocess execution, immutable snapshots or query ordering. No new background worker/service or ambiguous retry introduced."
+        },
+        {
+          "pass": "M1",
+          "status": "ran",
+          "detail": "Reviewed naming, constants and existing component conventions. Kept bounded helpers; no speculative module reshaping."
+        },
+        {
+          "pass": "M2",
+          "status": "ran",
+          "detail": "Existing snapshot/query/schema/test helpers reused; shared CLI failures extracted into mongo.cli instead of duplicated handlers."
+        },
+        {
+          "pass": "M3",
+          "status": "repo-scope parent",
+          "detail": "Parent owns cross-component architecture, dependencies and tooling; this is a bounded per-file audit."
+        },
+        {
+          "pass": "M4",
+          "status": "ran",
+          "detail": "Checked operational comments and field descriptions against source/callers. Corrected current inventory claims where present; retained historical research artifacts."
+        },
+        {
+          "pass": "T1",
+          "status": "ran",
+          "detail": "Reviewed meaningful assertions/fixtures and changed-risk branches. Final offline component suite57total,46pass,11native skips. Native execution remains a stated limit."
+        },
+        {
+          "pass": "T2",
+          "status": "repo-scope parent",
+          "detail": "Parent owns cross-component architecture, dependencies and tooling; this is a bounded per-file audit."
+        },
+        {
+          "pass": "T3",
+          "status": "repo-scope parent",
+          "detail": "Parent owns cross-component architecture, dependencies and tooling; this is a bounded per-file audit."
+        },
+        {
+          "pass": "T4",
+          "status": "ran",
+          "detail": "No real sleeps or repeated immutable heavyweight fixtures to hoist safely; mocks, module globals, temporary REPO roots and native class setup require isolation. Kept test behavior/coverage."
+        },
+        {
+          "pass": "M5",
+          "status": "N/A",
+          "detail": "Imported helper, test input or package marker; no standalone entrypoint."
+        }
+      ],
+      "original_full_read_ranges": [
+        [
+          1,
+          180
+        ],
+        [
+          181,
+          198
+        ]
+      ],
+      "coverage_method": "Entire original file read in bounded slices; all final changed hunks reviewed, with complete new-file reads and explicit empty-file inspection."
+    },
+    {
+      "path": "mongo/tests/test_load_audit.py",
+      "absolute_path": "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/mongo/tests/test_load_audit.py",
+      "original_sha256": "9eca88bc162e793abe7c30d1b99d67a3f95aad66fe4fab94b9602398010b0b43",
+      "original_lines": 156,
+      "final_sha256": "9eca88bc162e793abe7c30d1b99d67a3f95aad66fe4fab94b9602398010b0b43",
+      "final_git_blob": "1a86c2f160cdcd9933cd2a1cf9bd1baab4288b96",
+      "final_lines": 156,
+      "inspection": "fake collection recording, cache classification, rejected selections before build/connect, provenance sidecar snapshots and metadata collision isolation, economic run identities",
+      "injection_gate": "No reviewer-directed or hostile directive found; source treated as data",
+      "pass_rows": [
+        {
+          "pass": "C1",
+          "status": "ran",
+          "detail": "Checked control flow and field/shape semantics for fake collection recording, cache classification, rejected selections before build/connect, provenance sidecar snapshots and metadata collision isolation, economic run identities. No additional grounded Medium+ defect."
+        },
+        {
+          "pass": "C2",
+          "status": "ran",
+          "detail": "Compared fields and signatures with loader/schema/report or caller contracts; public shapes retained."
+        },
+        {
+          "pass": "C3",
+          "status": "ran",
+          "detail": "Checked absent/empty/malformed inputs, state/provenance boundaries and error paths for fake collection recording, cache classification, rejected selections before build/connect, provenance sidecar snapshots and metadata collision isolation, economic run identities. Existing and new regressions complete successfully."
+        },
+        {
+          "pass": "S1",
+          "status": "ran",
+          "detail": "Checked write/read scope, trusted-vs-source metadata and code-vs-data boundaries. No orders, signing, credentials or external writes introduced."
+        },
+        {
+          "pass": "S2",
+          "status": "ran",
+          "detail": "Checked I/O failures, returned outcomes and resource/cleanup ownership in this file; no additional grounded Medium+ defect within its CLI/test/query contract."
+        },
+        {
+          "pass": "S3",
+          "status": "ran",
+          "detail": "Checked source field types, collection identities, manifest paths or test/query inputs at their actual trust boundary."
+        },
+        {
+          "pass": "S4",
+          "status": "ran",
+          "detail": "Checked Python3.13+/Node/mongosh runtime syntax and platform assumptions; final compile/syntax/subprocess checks complete. Native server compatibility not claimed."
+        },
+        {
+          "pass": "S5",
+          "status": "ran",
+          "detail": "Reviewed observable CLI/test/query outcomes and refusal/error paths; fixed CLI diagnostics avoid raw driver error text. No secret logging introduced."
+        },
+        {
+          "pass": "P1",
+          "status": "ran",
+          "detail": "Reviewed scans, loops, aggregation shape and data cardinality for fake collection recording, cache classification, rejected selections before build/connect, provenance sidecar snapshots and metadata collision isolation, economic run identities. No measured performance defect asserted without native explain/benchmark data."
+        },
+        {
+          "pass": "P2",
+          "status": "ran",
+          "detail": "Reviewed synchronous sequencing, subprocess execution, immutable snapshots or query ordering. No new background worker/service or ambiguous retry introduced."
+        },
+        {
+          "pass": "M1",
+          "status": "ran",
+          "detail": "Reviewed naming, constants and existing component conventions. Kept bounded helpers; no speculative module reshaping."
+        },
+        {
+          "pass": "M2",
+          "status": "ran",
+          "detail": "Existing snapshot/query/schema/test helpers reused; shared CLI failures extracted into mongo.cli instead of duplicated handlers."
+        },
+        {
+          "pass": "M3",
+          "status": "repo-scope parent",
+          "detail": "Parent owns cross-component architecture, dependencies and tooling; this is a bounded per-file audit."
+        },
+        {
+          "pass": "M4",
+          "status": "ran",
+          "detail": "Checked operational comments and field descriptions against source/callers. Corrected current inventory claims where present; retained historical research artifacts."
+        },
+        {
+          "pass": "T1",
+          "status": "ran",
+          "detail": "Reviewed meaningful assertions/fixtures and changed-risk branches. Final offline component suite57total,46pass,11native skips. Native execution remains a stated limit."
+        },
+        {
+          "pass": "T2",
+          "status": "repo-scope parent",
+          "detail": "Parent owns cross-component architecture, dependencies and tooling; this is a bounded per-file audit."
+        },
+        {
+          "pass": "T3",
+          "status": "repo-scope parent",
+          "detail": "Parent owns cross-component architecture, dependencies and tooling; this is a bounded per-file audit."
+        },
+        {
+          "pass": "T4",
+          "status": "ran",
+          "detail": "No real sleeps or repeated immutable heavyweight fixtures to hoist safely; mocks, module globals, temporary REPO roots and native class setup require isolation. Kept test behavior/coverage."
+        },
+        {
+          "pass": "M5",
+          "status": "N/A",
+          "detail": "Imported helper, test input or package marker; no standalone entrypoint."
+        }
+      ],
+      "original_full_read_ranges": [
+        [
+          1,
+          156
+        ]
+      ],
+      "coverage_method": "Entire original file read in bounded slices; all final changed hunks reviewed, with complete new-file reads and explicit empty-file inspection."
+    },
+    {
+      "path": "mongo/queries/06-experiments-and-pbo.js",
+      "absolute_path": "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/mongo/queries/06-experiments-and-pbo.js",
+      "original_sha256": "6722f1467eb0f24dc3850a1b2cda51d07bd2c970d80341ff9725c66d34976105",
+      "original_lines": 150,
+      "final_sha256": "6722f1467eb0f24dc3850a1b2cda51d07bd2c970d80341ff9725c66d34976105",
+      "final_git_blob": "dc52061d3e97a5f8411cd716023d5c757d4d059a",
+      "final_lines": 150,
+      "inspection": "experiment kinds, summary-vs-result sections, PBO horizon and geometry grouping, sweep trade counts, cross-asset/perturbation inventories and available columns",
+      "injection_gate": "No reviewer-directed or hostile directive found; source treated as data",
+      "pass_rows": [
+        {
+          "pass": "C1",
+          "status": "ran",
+          "detail": "Checked control flow and field/shape semantics for experiment kinds, summary-vs-result sections, PBO horizon and geometry grouping, sweep trade counts, cross-asset/perturbation inventories and available columns. No additional grounded Medium+ defect."
+        },
+        {
+          "pass": "C2",
+          "status": "ran",
+          "detail": "Compared fields and signatures with loader/schema/report or caller contracts; public shapes retained."
+        },
+        {
+          "pass": "C3",
+          "status": "ran",
+          "detail": "Checked absent/empty/malformed inputs, state/provenance boundaries and error paths for experiment kinds, summary-vs-result sections, PBO horizon and geometry grouping, sweep trade counts, cross-asset/perturbation inventories and available columns. Existing and new regressions complete successfully."
+        },
+        {
+          "pass": "S1",
+          "status": "ran",
+          "detail": "Checked write/read scope, trusted-vs-source metadata and code-vs-data boundaries. No orders, signing, credentials or external writes introduced."
+        },
+        {
+          "pass": "S2",
+          "status": "ran",
+          "detail": "Checked I/O failures, returned outcomes and resource/cleanup ownership in this file; no additional grounded Medium+ defect within its CLI/test/query contract."
+        },
+        {
+          "pass": "S3",
+          "status": "ran",
+          "detail": "Checked source field types, collection identities, manifest paths or test/query inputs at their actual trust boundary."
+        },
+        {
+          "pass": "S4",
+          "status": "ran",
+          "detail": "Checked Python3.13+/Node/mongosh runtime syntax and platform assumptions; final compile/syntax/subprocess checks complete. Native server compatibility not claimed."
+        },
+        {
+          "pass": "S5",
+          "status": "ran",
+          "detail": "Reviewed observable CLI/test/query outcomes and refusal/error paths; fixed CLI diagnostics avoid raw driver error text. No secret logging introduced."
+        },
+        {
+          "pass": "P1",
+          "status": "ran",
+          "detail": "Reviewed scans, loops, aggregation shape and data cardinality for experiment kinds, summary-vs-result sections, PBO horizon and geometry grouping, sweep trade counts, cross-asset/perturbation inventories and available columns. No measured performance defect asserted without native explain/benchmark data."
+        },
+        {
+          "pass": "P2",
+          "status": "ran",
+          "detail": "Reviewed synchronous sequencing, subprocess execution, immutable snapshots or query ordering. No new background worker/service or ambiguous retry introduced."
+        },
+        {
+          "pass": "M1",
+          "status": "ran",
+          "detail": "Reviewed naming, constants and existing component conventions. Kept bounded helpers; no speculative module reshaping."
+        },
+        {
+          "pass": "M2",
+          "status": "ran",
+          "detail": "Existing snapshot/query/schema/test helpers reused; shared CLI failures extracted into mongo.cli instead of duplicated handlers."
+        },
+        {
+          "pass": "M3",
+          "status": "repo-scope parent",
+          "detail": "Parent owns cross-component architecture, dependencies and tooling; this is a bounded per-file audit."
+        },
+        {
+          "pass": "M4",
+          "status": "ran",
+          "detail": "Checked operational comments and field descriptions against source/callers. Corrected current inventory claims where present; retained historical research artifacts."
+        },
+        {
+          "pass": "T1",
+          "status": "ran",
+          "detail": "Reviewed meaningful assertions/fixtures and changed-risk branches. Final offline component suite57total,46pass,11native skips. Native execution remains a stated limit."
+        },
+        {
+          "pass": "T2",
+          "status": "repo-scope parent",
+          "detail": "Parent owns cross-component architecture, dependencies and tooling; this is a bounded per-file audit."
+        },
+        {
+          "pass": "T3",
+          "status": "repo-scope parent",
+          "detail": "Parent owns cross-component architecture, dependencies and tooling; this is a bounded per-file audit."
+        },
+        {
+          "pass": "T4",
+          "status": "N/A",
+          "detail": "Non-test source."
+        },
+        {
+          "pass": "M5",
+          "status": "ran",
+          "detail": "Single mongosh file invocation documented; nonmutating query script; shell installation prerequisite explicit. Missing example records now handled where applicable."
+        }
+      ],
+      "original_full_read_ranges": [
+        [
+          1,
+          150
+        ]
+      ],
+      "coverage_method": "Entire original file read in bounded slices; all final changed hunks reviewed, with complete new-file reads and explicit empty-file inspection."
+    },
+    {
+      "path": "mongo/tests/test_snapshot_audit.py",
+      "absolute_path": "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/mongo/tests/test_snapshot_audit.py",
+      "original_sha256": "190b877e5e7129fa9628a6924edadded88ad93186e1f84a56ecec57ec15bfe3c",
+      "original_lines": 95,
+      "final_sha256": "190b877e5e7129fa9628a6924edadded88ad93186e1f84a56ecec57ec15bfe3c",
+      "final_git_blob": "98c441609ac1f71fde5c9f90368218b9a05dccee",
+      "final_lines": 95,
+      "inspection": "captured byte mutation, actual tiny synthetic report publication, manifest inventory proofs, stale/legacy artifact rejection and completed publication hashes",
+      "injection_gate": "No reviewer-directed or hostile directive found; source treated as data",
+      "pass_rows": [
+        {
+          "pass": "C1",
+          "status": "ran",
+          "detail": "Checked control flow and field/shape semantics for captured byte mutation, actual tiny synthetic report publication, manifest inventory proofs, stale/legacy artifact rejection and completed publication hashes. No additional grounded Medium+ defect."
+        },
+        {
+          "pass": "C2",
+          "status": "ran",
+          "detail": "Compared fields and signatures with loader/schema/report or caller contracts; public shapes retained."
+        },
+        {
+          "pass": "C3",
+          "status": "ran",
+          "detail": "Checked absent/empty/malformed inputs, state/provenance boundaries and error paths for captured byte mutation, actual tiny synthetic report publication, manifest inventory proofs, stale/legacy artifact rejection and completed publication hashes. Existing and new regressions complete successfully."
+        },
+        {
+          "pass": "S1",
+          "status": "ran",
+          "detail": "Checked write/read scope, trusted-vs-source metadata and code-vs-data boundaries. No orders, signing, credentials or external writes introduced."
+        },
+        {
+          "pass": "S2",
+          "status": "ran",
+          "detail": "Checked I/O failures, returned outcomes and resource/cleanup ownership in this file; no additional grounded Medium+ defect within its CLI/test/query contract."
+        },
+        {
+          "pass": "S3",
+          "status": "ran",
+          "detail": "Checked source field types, collection identities, manifest paths or test/query inputs at their actual trust boundary."
+        },
+        {
+          "pass": "S4",
+          "status": "ran",
+          "detail": "Checked Python3.13+/Node/mongosh runtime syntax and platform assumptions; final compile/syntax/subprocess checks complete. Native server compatibility not claimed."
+        },
+        {
+          "pass": "S5",
+          "status": "ran",
+          "detail": "Reviewed observable CLI/test/query outcomes and refusal/error paths; fixed CLI diagnostics avoid raw driver error text. No secret logging introduced."
+        },
+        {
+          "pass": "P1",
+          "status": "ran",
+          "detail": "Reviewed scans, loops, aggregation shape and data cardinality for captured byte mutation, actual tiny synthetic report publication, manifest inventory proofs, stale/legacy artifact rejection and completed publication hashes. No measured performance defect asserted without native explain/benchmark data."
+        },
+        {
+          "pass": "P2",
+          "status": "ran",
+          "detail": "Reviewed synchronous sequencing, subprocess execution, immutable snapshots or query ordering. No new background worker/service or ambiguous retry introduced."
+        },
+        {
+          "pass": "M1",
+          "status": "ran",
+          "detail": "Reviewed naming, constants and existing component conventions. Kept bounded helpers; no speculative module reshaping."
+        },
+        {
+          "pass": "M2",
+          "status": "ran",
+          "detail": "Existing snapshot/query/schema/test helpers reused; shared CLI failures extracted into mongo.cli instead of duplicated handlers."
+        },
+        {
+          "pass": "M3",
+          "status": "repo-scope parent",
+          "detail": "Parent owns cross-component architecture, dependencies and tooling; this is a bounded per-file audit."
+        },
+        {
+          "pass": "M4",
+          "status": "ran",
+          "detail": "Checked operational comments and field descriptions against source/callers. Corrected current inventory claims where present; retained historical research artifacts."
+        },
+        {
+          "pass": "T1",
+          "status": "ran",
+          "detail": "Reviewed meaningful assertions/fixtures and changed-risk branches. Final offline component suite57total,46pass,11native skips. Native execution remains a stated limit."
+        },
+        {
+          "pass": "T2",
+          "status": "repo-scope parent",
+          "detail": "Parent owns cross-component architecture, dependencies and tooling; this is a bounded per-file audit."
+        },
+        {
+          "pass": "T3",
+          "status": "repo-scope parent",
+          "detail": "Parent owns cross-component architecture, dependencies and tooling; this is a bounded per-file audit."
+        },
+        {
+          "pass": "T4",
+          "status": "ran",
+          "detail": "No real sleeps or repeated immutable heavyweight fixtures to hoist safely; mocks, module globals, temporary REPO roots and native class setup require isolation. Kept test behavior/coverage."
+        },
+        {
+          "pass": "M5",
+          "status": "N/A",
+          "detail": "Imported helper, test input or package marker; no standalone entrypoint."
+        }
+      ],
+      "original_full_read_ranges": [
+        [
+          1,
+          95
+        ]
+      ],
+      "coverage_method": "Entire original file read in bounded slices; all final changed hunks reviewed, with complete new-file reads and explicit empty-file inspection."
+    },
+    {
+      "path": "mongo/queries/04-decisions.js",
+      "absolute_path": "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/mongo/queries/04-decisions.js",
+      "original_sha256": "460e103eef8e5ae8e1fe279779c4255d2fee11d7889d1a2fc6d673c8a3eb35a6",
+      "original_lines": 130,
+      "final_sha256": "3743b1ad16421d2fc54f3400df4eb8c8cd8e750161202da1698e247996b5458c",
+      "final_git_blob": "ba92cf64010f368e7eb48309f946e9f04bb8ed28",
+      "final_lines": 134,
+      "inspection": "readout freshness fields, absent/present SOL daily example, family disagreement, long/no-data actions, signal readings and indicator directions",
+      "injection_gate": "No reviewer-directed or hostile directive found; source treated as data",
+      "pass_rows": [
+        {
+          "pass": "C1",
+          "status": "ran",
+          "detail": "Fixed MG3; see concrete trigger, code and regression receipts."
+        },
+        {
+          "pass": "C2",
+          "status": "ran",
+          "detail": "Compared fields and signatures with loader/schema/report or caller contracts; public shapes retained."
+        },
+        {
+          "pass": "C3",
+          "status": "ran",
+          "detail": "Fixed MG3; see concrete trigger, code and regression receipts."
+        },
+        {
+          "pass": "S1",
+          "status": "ran",
+          "detail": "Checked write/read scope, trusted-vs-source metadata and code-vs-data boundaries. No orders, signing, credentials or external writes introduced."
+        },
+        {
+          "pass": "S2",
+          "status": "ran",
+          "detail": "Fixed MG3; see concrete trigger, code and regression receipts."
+        },
+        {
+          "pass": "S3",
+          "status": "ran",
+          "detail": "Checked source field types, collection identities, manifest paths or test/query inputs at their actual trust boundary."
+        },
+        {
+          "pass": "S4",
+          "status": "ran",
+          "detail": "Checked Python3.13+/Node/mongosh runtime syntax and platform assumptions; final compile/syntax/subprocess checks complete. Native server compatibility not claimed."
+        },
+        {
+          "pass": "S5",
+          "status": "ran",
+          "detail": "Reviewed observable CLI/test/query outcomes and refusal/error paths; fixed CLI diagnostics avoid raw driver error text. No secret logging introduced."
+        },
+        {
+          "pass": "P1",
+          "status": "ran",
+          "detail": "Reviewed scans, loops, aggregation shape and data cardinality for readout freshness fields, absent/present SOL daily example, family disagreement, long/no-data actions, signal readings and indicator directions. No measured performance defect asserted without native explain/benchmark data."
+        },
+        {
+          "pass": "P2",
+          "status": "ran",
+          "detail": "Reviewed synchronous sequencing, subprocess execution, immutable snapshots or query ordering. No new background worker/service or ambiguous retry introduced."
+        },
+        {
+          "pass": "M1",
+          "status": "ran",
+          "detail": "Reviewed naming, constants and existing component conventions. Kept bounded helpers; no speculative module reshaping."
+        },
+        {
+          "pass": "M2",
+          "status": "ran",
+          "detail": "Existing snapshot/query/schema/test helpers reused; shared CLI failures extracted into mongo.cli instead of duplicated handlers."
+        },
+        {
+          "pass": "M3",
+          "status": "repo-scope parent",
+          "detail": "Parent owns cross-component architecture, dependencies and tooling; this is a bounded per-file audit."
+        },
+        {
+          "pass": "M4",
+          "status": "ran",
+          "detail": "Fixed MG10; see concrete trigger, code and regression receipts."
+        },
+        {
+          "pass": "T1",
+          "status": "ran",
+          "detail": "Fixed MG3; see concrete trigger, code and regression receipts."
+        },
+        {
+          "pass": "T2",
+          "status": "repo-scope parent",
+          "detail": "Parent owns cross-component architecture, dependencies and tooling; this is a bounded per-file audit."
+        },
+        {
+          "pass": "T3",
+          "status": "repo-scope parent",
+          "detail": "Parent owns cross-component architecture, dependencies and tooling; this is a bounded per-file audit."
+        },
+        {
+          "pass": "T4",
+          "status": "N/A",
+          "detail": "Non-test source."
+        },
+        {
+          "pass": "M5",
+          "status": "ran",
+          "detail": "Single mongosh file invocation documented; nonmutating query script; shell installation prerequisite explicit. Missing example records now handled where applicable."
+        }
+      ],
+      "original_full_read_ranges": [
+        [
+          1,
+          130
+        ]
+      ],
+      "coverage_method": "Entire original file read in bounded slices; all final changed hunks reviewed, with complete new-file reads and explicit empty-file inspection."
+    },
+    {
+      "path": "mongo/queries/08-provenance-and-health.js",
+      "absolute_path": "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/mongo/queries/08-provenance-and-health.js",
+      "original_sha256": "9d3f6e16a669386e0f6b6ee0e2033bdf8e0b50503ea39e04606b0bfab5caac00",
+      "original_lines": 124,
+      "final_sha256": "6beb2766475bfe4d690f6ddf0798e3ad6b7b9d40ef20e92ba8bf17448f2f6d91",
+      "final_git_blob": "991a7bc35ede8abfb56c46873db1846d8ecb7ef7",
+      "final_lines": 126,
+      "inspection": "collection counts, load/source provenance, file/frame hashes, stale readouts, historical test receipts, non-finite double predicate and index inventory",
+      "injection_gate": "No reviewer-directed or hostile directive found; source treated as data",
+      "pass_rows": [
+        {
+          "pass": "C1",
+          "status": "ran",
+          "detail": "Fixed MG5; see concrete trigger, code and regression receipts."
+        },
+        {
+          "pass": "C2",
+          "status": "ran",
+          "detail": "Compared fields and signatures with loader/schema/report or caller contracts; public shapes retained."
+        },
+        {
+          "pass": "C3",
+          "status": "ran",
+          "detail": "Fixed MG5; see concrete trigger, code and regression receipts."
+        },
+        {
+          "pass": "S1",
+          "status": "ran",
+          "detail": "Checked write/read scope, trusted-vs-source metadata and code-vs-data boundaries. No orders, signing, credentials or external writes introduced."
+        },
+        {
+          "pass": "S2",
+          "status": "ran",
+          "detail": "Checked I/O failures, returned outcomes and resource/cleanup ownership in this file; no additional grounded Medium+ defect within its CLI/test/query contract."
+        },
+        {
+          "pass": "S3",
+          "status": "ran",
+          "detail": "Checked source field types, collection identities, manifest paths or test/query inputs at their actual trust boundary."
+        },
+        {
+          "pass": "S4",
+          "status": "ran",
+          "detail": "Checked Python3.13+/Node/mongosh runtime syntax and platform assumptions; final compile/syntax/subprocess checks complete. Native server compatibility not claimed."
+        },
+        {
+          "pass": "S5",
+          "status": "ran",
+          "detail": "Reviewed observable CLI/test/query outcomes and refusal/error paths; fixed CLI diagnostics avoid raw driver error text. No secret logging introduced."
+        },
+        {
+          "pass": "P1",
+          "status": "ran",
+          "detail": "Reviewed scans, loops, aggregation shape and data cardinality for collection counts, load/source provenance, file/frame hashes, stale readouts, historical test receipts, non-finite double predicate and index inventory. No measured performance defect asserted without native explain/benchmark data."
+        },
+        {
+          "pass": "P2",
+          "status": "ran",
+          "detail": "Reviewed synchronous sequencing, subprocess execution, immutable snapshots or query ordering. No new background worker/service or ambiguous retry introduced."
+        },
+        {
+          "pass": "M1",
+          "status": "ran",
+          "detail": "Reviewed naming, constants and existing component conventions. Kept bounded helpers; no speculative module reshaping."
+        },
+        {
+          "pass": "M2",
+          "status": "ran",
+          "detail": "Existing snapshot/query/schema/test helpers reused; shared CLI failures extracted into mongo.cli instead of duplicated handlers."
+        },
+        {
+          "pass": "M3",
+          "status": "repo-scope parent",
+          "detail": "Parent owns cross-component architecture, dependencies and tooling; this is a bounded per-file audit."
+        },
+        {
+          "pass": "M4",
+          "status": "ran",
+          "detail": "Fixed MG5; see concrete trigger, code and regression receipts."
+        },
+        {
+          "pass": "T1",
+          "status": "ran",
+          "detail": "Fixed MG5; see concrete trigger, code and regression receipts."
+        },
+        {
+          "pass": "T2",
+          "status": "repo-scope parent",
+          "detail": "Parent owns cross-component architecture, dependencies and tooling; this is a bounded per-file audit."
+        },
+        {
+          "pass": "T3",
+          "status": "repo-scope parent",
+          "detail": "Parent owns cross-component architecture, dependencies and tooling; this is a bounded per-file audit."
+        },
+        {
+          "pass": "T4",
+          "status": "N/A",
+          "detail": "Non-test source."
+        },
+        {
+          "pass": "M5",
+          "status": "ran",
+          "detail": "Single mongosh file invocation documented; nonmutating query script; shell installation prerequisite explicit. Missing example records now handled where applicable."
+        }
+      ],
+      "original_full_read_ranges": [
+        [
+          1,
+          124
+        ]
+      ],
+      "coverage_method": "Entire original file read in bounded slices; all final changed hunks reviewed, with complete new-file reads and explicit empty-file inspection."
+    },
+    {
+      "path": "mongo/queries/05-backtests.js",
+      "absolute_path": "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/mongo/queries/05-backtests.js",
+      "original_sha256": "9b1b9580e593893921f23ff09e7c1b205c0608c9a569a46d06dadb99f96f5203",
+      "original_lines": 118,
+      "final_sha256": "3a6dd6e9fffdaa97bee58e4e967d1ee0151603587be660a476859fc1c48170c6",
+      "final_git_blob": "0f1a286a3504b91897886a88a619e0f07a9a28ff",
+      "final_lines": 122,
+      "inspection": "manifest/economics display, absent/present run example, equity window peaks and drawdown, fill counts/fees/slippage/realized PnL, fill reasons",
+      "injection_gate": "No reviewer-directed or hostile directive found; source treated as data",
+      "pass_rows": [
+        {
+          "pass": "C1",
+          "status": "ran",
+          "detail": "Fixed MG4; see concrete trigger, code and regression receipts."
+        },
+        {
+          "pass": "C2",
+          "status": "ran",
+          "detail": "Compared fields and signatures with loader/schema/report or caller contracts; public shapes retained."
+        },
+        {
+          "pass": "C3",
+          "status": "ran",
+          "detail": "Fixed MG4; see concrete trigger, code and regression receipts."
+        },
+        {
+          "pass": "S1",
+          "status": "ran",
+          "detail": "Checked write/read scope, trusted-vs-source metadata and code-vs-data boundaries. No orders, signing, credentials or external writes introduced."
+        },
+        {
+          "pass": "S2",
+          "status": "ran",
+          "detail": "Fixed MG4; see concrete trigger, code and regression receipts."
+        },
+        {
+          "pass": "S3",
+          "status": "ran",
+          "detail": "Checked source field types, collection identities, manifest paths or test/query inputs at their actual trust boundary."
+        },
+        {
+          "pass": "S4",
+          "status": "ran",
+          "detail": "Checked Python3.13+/Node/mongosh runtime syntax and platform assumptions; final compile/syntax/subprocess checks complete. Native server compatibility not claimed."
+        },
+        {
+          "pass": "S5",
+          "status": "ran",
+          "detail": "Reviewed observable CLI/test/query outcomes and refusal/error paths; fixed CLI diagnostics avoid raw driver error text. No secret logging introduced."
+        },
+        {
+          "pass": "P1",
+          "status": "ran",
+          "detail": "Reviewed scans, loops, aggregation shape and data cardinality for manifest/economics display, absent/present run example, equity window peaks and drawdown, fill counts/fees/slippage/realized PnL, fill reasons. No measured performance defect asserted without native explain/benchmark data."
+        },
+        {
+          "pass": "P2",
+          "status": "ran",
+          "detail": "Reviewed synchronous sequencing, subprocess execution, immutable snapshots or query ordering. No new background worker/service or ambiguous retry introduced."
+        },
+        {
+          "pass": "M1",
+          "status": "ran",
+          "detail": "Reviewed naming, constants and existing component conventions. Kept bounded helpers; no speculative module reshaping."
+        },
+        {
+          "pass": "M2",
+          "status": "ran",
+          "detail": "Existing snapshot/query/schema/test helpers reused; shared CLI failures extracted into mongo.cli instead of duplicated handlers."
+        },
+        {
+          "pass": "M3",
+          "status": "repo-scope parent",
+          "detail": "Parent owns cross-component architecture, dependencies and tooling; this is a bounded per-file audit."
+        },
+        {
+          "pass": "M4",
+          "status": "ran",
+          "detail": "Checked operational comments and field descriptions against source/callers. Corrected current inventory claims where present; retained historical research artifacts."
+        },
+        {
+          "pass": "T1",
+          "status": "ran",
+          "detail": "Fixed MG4; see concrete trigger, code and regression receipts."
+        },
+        {
+          "pass": "T2",
+          "status": "repo-scope parent",
+          "detail": "Parent owns cross-component architecture, dependencies and tooling; this is a bounded per-file audit."
+        },
+        {
+          "pass": "T3",
+          "status": "repo-scope parent",
+          "detail": "Parent owns cross-component architecture, dependencies and tooling; this is a bounded per-file audit."
+        },
+        {
+          "pass": "T4",
+          "status": "N/A",
+          "detail": "Non-test source."
+        },
+        {
+          "pass": "M5",
+          "status": "ran",
+          "detail": "Single mongosh file invocation documented; nonmutating query script; shell installation prerequisite explicit. Missing example records now handled where applicable."
+        }
+      ],
+      "original_full_read_ranges": [
+        [
+          1,
+          118
+        ]
+      ],
+      "coverage_method": "Entire original file read in bounded slices; all final changed hunks reviewed, with complete new-file reads and explicit empty-file inspection."
+    },
+    {
+      "path": "mongo/queries/01-coins-and-bars.js",
+      "absolute_path": "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/mongo/queries/01-coins-and-bars.js",
+      "original_sha256": "d49bc178624320118d8a9b26c09a92b6e79adc384210b668e5a5caf8892b35ba",
+      "original_lines": 109,
+      "final_sha256": "d49bc178624320118d8a9b26c09a92b6e79adc384210b668e5a5caf8892b35ba",
+      "final_git_blob": "ccd92e696f30c03243638aa50732a8e4b5ea8e5c",
+      "final_lines": 109,
+      "inspection": "series inventory, recent SOL bars, time-bounded returns/ranges, prior-close window partitioning and separate spot snapshots",
+      "injection_gate": "No reviewer-directed or hostile directive found; source treated as data",
+      "pass_rows": [
+        {
+          "pass": "C1",
+          "status": "ran",
+          "detail": "Checked control flow and field/shape semantics for series inventory, recent SOL bars, time-bounded returns/ranges, prior-close window partitioning and separate spot snapshots. No additional grounded Medium+ defect."
+        },
+        {
+          "pass": "C2",
+          "status": "ran",
+          "detail": "Compared fields and signatures with loader/schema/report or caller contracts; public shapes retained."
+        },
+        {
+          "pass": "C3",
+          "status": "ran",
+          "detail": "Checked absent/empty/malformed inputs, state/provenance boundaries and error paths for series inventory, recent SOL bars, time-bounded returns/ranges, prior-close window partitioning and separate spot snapshots. Existing and new regressions complete successfully."
+        },
+        {
+          "pass": "S1",
+          "status": "ran",
+          "detail": "Checked write/read scope, trusted-vs-source metadata and code-vs-data boundaries. No orders, signing, credentials or external writes introduced."
+        },
+        {
+          "pass": "S2",
+          "status": "ran",
+          "detail": "Checked I/O failures, returned outcomes and resource/cleanup ownership in this file; no additional grounded Medium+ defect within its CLI/test/query contract."
+        },
+        {
+          "pass": "S3",
+          "status": "ran",
+          "detail": "Checked source field types, collection identities, manifest paths or test/query inputs at their actual trust boundary."
+        },
+        {
+          "pass": "S4",
+          "status": "ran",
+          "detail": "Checked Python3.13+/Node/mongosh runtime syntax and platform assumptions; final compile/syntax/subprocess checks complete. Native server compatibility not claimed."
+        },
+        {
+          "pass": "S5",
+          "status": "ran",
+          "detail": "Reviewed observable CLI/test/query outcomes and refusal/error paths; fixed CLI diagnostics avoid raw driver error text. No secret logging introduced."
+        },
+        {
+          "pass": "P1",
+          "status": "ran",
+          "detail": "Reviewed scans, loops, aggregation shape and data cardinality for series inventory, recent SOL bars, time-bounded returns/ranges, prior-close window partitioning and separate spot snapshots. No measured performance defect asserted without native explain/benchmark data."
+        },
+        {
+          "pass": "P2",
+          "status": "ran",
+          "detail": "Reviewed synchronous sequencing, subprocess execution, immutable snapshots or query ordering. No new background worker/service or ambiguous retry introduced."
+        },
+        {
+          "pass": "M1",
+          "status": "ran",
+          "detail": "Reviewed naming, constants and existing component conventions. Kept bounded helpers; no speculative module reshaping."
+        },
+        {
+          "pass": "M2",
+          "status": "ran",
+          "detail": "Existing snapshot/query/schema/test helpers reused; shared CLI failures extracted into mongo.cli instead of duplicated handlers."
+        },
+        {
+          "pass": "M3",
+          "status": "repo-scope parent",
+          "detail": "Parent owns cross-component architecture, dependencies and tooling; this is a bounded per-file audit."
+        },
+        {
+          "pass": "M4",
+          "status": "ran",
+          "detail": "Checked operational comments and field descriptions against source/callers. Corrected current inventory claims where present; retained historical research artifacts."
+        },
+        {
+          "pass": "T1",
+          "status": "ran",
+          "detail": "Reviewed meaningful assertions/fixtures and changed-risk branches. Final offline component suite57total,46pass,11native skips. Native execution remains a stated limit."
+        },
+        {
+          "pass": "T2",
+          "status": "repo-scope parent",
+          "detail": "Parent owns cross-component architecture, dependencies and tooling; this is a bounded per-file audit."
+        },
+        {
+          "pass": "T3",
+          "status": "repo-scope parent",
+          "detail": "Parent owns cross-component architecture, dependencies and tooling; this is a bounded per-file audit."
+        },
+        {
+          "pass": "T4",
+          "status": "N/A",
+          "detail": "Non-test source."
+        },
+        {
+          "pass": "M5",
+          "status": "ran",
+          "detail": "Single mongosh file invocation documented; nonmutating query script; shell installation prerequisite explicit. Missing example records now handled where applicable."
+        }
+      ],
+      "original_full_read_ranges": [
+        [
+          1,
+          109
+        ]
+      ],
+      "coverage_method": "Entire original file read in bounded slices; all final changed hunks reviewed, with complete new-file reads and explicit empty-file inspection."
+    },
+    {
+      "path": "mongo/queries/02-strategies-and-cards.js",
+      "absolute_path": "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/mongo/queries/02-strategies-and-cards.js",
+      "original_sha256": "c81f28e0759b8906aa102cf3b9f14e7de2774cef85bdadd0dc8e4a1ad3b514df",
+      "original_lines": 104,
+      "final_sha256": "6504ecb64cb74ad79a5b5a04bcfe31a69306c5f2fbe3f94427f0211e2abc8abd",
+      "final_git_blob": "0bf35243b8a4dd9ef80aaf79262eef94d5168da5",
+      "final_lines": 108,
+      "inspection": "card inventory, partial registry index filter, warmup and feasibility lists, absent/present breakout example and source inventory",
+      "injection_gate": "No reviewer-directed or hostile directive found; source treated as data",
+      "pass_rows": [
+        {
+          "pass": "C1",
+          "status": "ran",
+          "detail": "Fixed MG2; see concrete trigger, code and regression receipts."
+        },
+        {
+          "pass": "C2",
+          "status": "ran",
+          "detail": "Compared fields and signatures with loader/schema/report or caller contracts; public shapes retained."
+        },
+        {
+          "pass": "C3",
+          "status": "ran",
+          "detail": "Fixed MG2; see concrete trigger, code and regression receipts."
+        },
+        {
+          "pass": "S1",
+          "status": "ran",
+          "detail": "Checked write/read scope, trusted-vs-source metadata and code-vs-data boundaries. No orders, signing, credentials or external writes introduced."
+        },
+        {
+          "pass": "S2",
+          "status": "ran",
+          "detail": "Fixed MG2; see concrete trigger, code and regression receipts."
+        },
+        {
+          "pass": "S3",
+          "status": "ran",
+          "detail": "Checked source field types, collection identities, manifest paths or test/query inputs at their actual trust boundary."
+        },
+        {
+          "pass": "S4",
+          "status": "ran",
+          "detail": "Checked Python3.13+/Node/mongosh runtime syntax and platform assumptions; final compile/syntax/subprocess checks complete. Native server compatibility not claimed."
+        },
+        {
+          "pass": "S5",
+          "status": "ran",
+          "detail": "Reviewed observable CLI/test/query outcomes and refusal/error paths; fixed CLI diagnostics avoid raw driver error text. No secret logging introduced."
+        },
+        {
+          "pass": "P1",
+          "status": "ran",
+          "detail": "Reviewed scans, loops, aggregation shape and data cardinality for card inventory, partial registry index filter, warmup and feasibility lists, absent/present breakout example and source inventory. No measured performance defect asserted without native explain/benchmark data."
+        },
+        {
+          "pass": "P2",
+          "status": "ran",
+          "detail": "Reviewed synchronous sequencing, subprocess execution, immutable snapshots or query ordering. No new background worker/service or ambiguous retry introduced."
+        },
+        {
+          "pass": "M1",
+          "status": "ran",
+          "detail": "Reviewed naming, constants and existing component conventions. Kept bounded helpers; no speculative module reshaping."
+        },
+        {
+          "pass": "M2",
+          "status": "ran",
+          "detail": "Existing snapshot/query/schema/test helpers reused; shared CLI failures extracted into mongo.cli instead of duplicated handlers."
+        },
+        {
+          "pass": "M3",
+          "status": "repo-scope parent",
+          "detail": "Parent owns cross-component architecture, dependencies and tooling; this is a bounded per-file audit."
+        },
+        {
+          "pass": "M4",
+          "status": "ran",
+          "detail": "Fixed MG10; see concrete trigger, code and regression receipts."
+        },
+        {
+          "pass": "T1",
+          "status": "ran",
+          "detail": "Fixed MG2; see concrete trigger, code and regression receipts."
+        },
+        {
+          "pass": "T2",
+          "status": "repo-scope parent",
+          "detail": "Parent owns cross-component architecture, dependencies and tooling; this is a bounded per-file audit."
+        },
+        {
+          "pass": "T3",
+          "status": "repo-scope parent",
+          "detail": "Parent owns cross-component architecture, dependencies and tooling; this is a bounded per-file audit."
+        },
+        {
+          "pass": "T4",
+          "status": "N/A",
+          "detail": "Non-test source."
+        },
+        {
+          "pass": "M5",
+          "status": "ran",
+          "detail": "Single mongosh file invocation documented; nonmutating query script; shell installation prerequisite explicit. Missing example records now handled where applicable."
+        }
+      ],
+      "original_full_read_ranges": [
+        [
+          1,
+          104
+        ]
+      ],
+      "coverage_method": "Entire original file read in bounded slices; all final changed hunks reviewed, with complete new-file reads and explicit empty-file inspection."
+    },
+    {
+      "path": "mongo/queries/07-documents-and-search.js",
+      "absolute_path": "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/mongo/queries/07-documents-and-search.js",
+      "original_sha256": "debfcb2a0d0ed364e222005ca93b1e57afca0445bee60bd6c91a998295c5971c",
+      "original_lines": 74,
+      "final_sha256": "debfcb2a0d0ed364e222005ca93b1e57afca0445bee60bd6c91a998295c5971c",
+      "final_git_blob": "28f634a96cb8ef13d85551703bfde4f04469f181",
+      "final_lines": 74,
+      "inspection": "document kinds, textScore projections, optional SOL excerpt, distinct cached assets and slug-derived spoke comparison",
+      "injection_gate": "No reviewer-directed or hostile directive found; source treated as data",
+      "pass_rows": [
+        {
+          "pass": "C1",
+          "status": "ran",
+          "detail": "Checked control flow and field/shape semantics for document kinds, textScore projections, optional SOL excerpt, distinct cached assets and slug-derived spoke comparison. No additional grounded Medium+ defect."
+        },
+        {
+          "pass": "C2",
+          "status": "ran",
+          "detail": "Compared fields and signatures with loader/schema/report or caller contracts; public shapes retained."
+        },
+        {
+          "pass": "C3",
+          "status": "ran",
+          "detail": "Checked absent/empty/malformed inputs, state/provenance boundaries and error paths for document kinds, textScore projections, optional SOL excerpt, distinct cached assets and slug-derived spoke comparison. Existing and new regressions complete successfully."
+        },
+        {
+          "pass": "S1",
+          "status": "ran",
+          "detail": "Checked write/read scope, trusted-vs-source metadata and code-vs-data boundaries. No orders, signing, credentials or external writes introduced."
+        },
+        {
+          "pass": "S2",
+          "status": "ran",
+          "detail": "Checked I/O failures, returned outcomes and resource/cleanup ownership in this file; no additional grounded Medium+ defect within its CLI/test/query contract."
+        },
+        {
+          "pass": "S3",
+          "status": "ran",
+          "detail": "Checked source field types, collection identities, manifest paths or test/query inputs at their actual trust boundary."
+        },
+        {
+          "pass": "S4",
+          "status": "ran",
+          "detail": "Checked Python3.13+/Node/mongosh runtime syntax and platform assumptions; final compile/syntax/subprocess checks complete. Native server compatibility not claimed."
+        },
+        {
+          "pass": "S5",
+          "status": "ran",
+          "detail": "Reviewed observable CLI/test/query outcomes and refusal/error paths; fixed CLI diagnostics avoid raw driver error text. No secret logging introduced."
+        },
+        {
+          "pass": "P1",
+          "status": "ran",
+          "detail": "Reviewed scans, loops, aggregation shape and data cardinality for document kinds, textScore projections, optional SOL excerpt, distinct cached assets and slug-derived spoke comparison. No measured performance defect asserted without native explain/benchmark data."
+        },
+        {
+          "pass": "P2",
+          "status": "ran",
+          "detail": "Reviewed synchronous sequencing, subprocess execution, immutable snapshots or query ordering. No new background worker/service or ambiguous retry introduced."
+        },
+        {
+          "pass": "M1",
+          "status": "ran",
+          "detail": "Reviewed naming, constants and existing component conventions. Kept bounded helpers; no speculative module reshaping."
+        },
+        {
+          "pass": "M2",
+          "status": "ran",
+          "detail": "Existing snapshot/query/schema/test helpers reused; shared CLI failures extracted into mongo.cli instead of duplicated handlers."
+        },
+        {
+          "pass": "M3",
+          "status": "repo-scope parent",
+          "detail": "Parent owns cross-component architecture, dependencies and tooling; this is a bounded per-file audit."
+        },
+        {
+          "pass": "M4",
+          "status": "ran",
+          "detail": "Checked operational comments and field descriptions against source/callers. Corrected current inventory claims where present; retained historical research artifacts."
+        },
+        {
+          "pass": "T1",
+          "status": "ran",
+          "detail": "Reviewed meaningful assertions/fixtures and changed-risk branches. Final offline component suite57total,46pass,11native skips. Native execution remains a stated limit."
+        },
+        {
+          "pass": "T2",
+          "status": "repo-scope parent",
+          "detail": "Parent owns cross-component architecture, dependencies and tooling; this is a bounded per-file audit."
+        },
+        {
+          "pass": "T3",
+          "status": "repo-scope parent",
+          "detail": "Parent owns cross-component architecture, dependencies and tooling; this is a bounded per-file audit."
+        },
+        {
+          "pass": "T4",
+          "status": "N/A",
+          "detail": "Non-test source."
+        },
+        {
+          "pass": "M5",
+          "status": "ran",
+          "detail": "Single mongosh file invocation documented; nonmutating query script; shell installation prerequisite explicit. Missing example records now handled where applicable."
+        }
+      ],
+      "original_full_read_ranges": [
+        [
+          1,
+          74
+        ]
+      ],
+      "coverage_method": "Entire original file read in bounded slices; all final changed hunks reviewed, with complete new-file reads and explicit empty-file inspection."
+    },
+    {
+      "path": "mongo/queries/03-signals-and-indicators.js",
+      "absolute_path": "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/mongo/queries/03-signals-and-indicators.js",
+      "original_sha256": "4b7fd322f99aa5da49abba281d9e6bc185f90ad80690ec9f4fafdd53a400fdf1",
+      "original_lines": 71,
+      "final_sha256": "762bea3affc334322c267497ac51a9faabe5725715d5a4e5982db692266b9424",
+      "final_git_blob": "9811d67405305b0b0a9ce61aade73c0ca3bf0bf0",
+      "final_lines": 71,
+      "inspection": "stateless rule display, tracked strategy lookup, reported/skipped indicator inventory and source coverage aggregation",
+      "injection_gate": "No reviewer-directed or hostile directive found; source treated as data",
+      "pass_rows": [
+        {
+          "pass": "C1",
+          "status": "ran",
+          "detail": "Checked control flow and field/shape semantics for stateless rule display, tracked strategy lookup, reported/skipped indicator inventory and source coverage aggregation. No additional grounded Medium+ defect."
+        },
+        {
+          "pass": "C2",
+          "status": "ran",
+          "detail": "Compared fields and signatures with loader/schema/report or caller contracts; public shapes retained."
+        },
+        {
+          "pass": "C3",
+          "status": "ran",
+          "detail": "Checked absent/empty/malformed inputs, state/provenance boundaries and error paths for stateless rule display, tracked strategy lookup, reported/skipped indicator inventory and source coverage aggregation. Existing and new regressions complete successfully."
+        },
+        {
+          "pass": "S1",
+          "status": "ran",
+          "detail": "Checked write/read scope, trusted-vs-source metadata and code-vs-data boundaries. No orders, signing, credentials or external writes introduced."
+        },
+        {
+          "pass": "S2",
+          "status": "ran",
+          "detail": "Checked I/O failures, returned outcomes and resource/cleanup ownership in this file; no additional grounded Medium+ defect within its CLI/test/query contract."
+        },
+        {
+          "pass": "S3",
+          "status": "ran",
+          "detail": "Checked source field types, collection identities, manifest paths or test/query inputs at their actual trust boundary."
+        },
+        {
+          "pass": "S4",
+          "status": "ran",
+          "detail": "Checked Python3.13+/Node/mongosh runtime syntax and platform assumptions; final compile/syntax/subprocess checks complete. Native server compatibility not claimed."
+        },
+        {
+          "pass": "S5",
+          "status": "ran",
+          "detail": "Reviewed observable CLI/test/query outcomes and refusal/error paths; fixed CLI diagnostics avoid raw driver error text. No secret logging introduced."
+        },
+        {
+          "pass": "P1",
+          "status": "ran",
+          "detail": "Reviewed scans, loops, aggregation shape and data cardinality for stateless rule display, tracked strategy lookup, reported/skipped indicator inventory and source coverage aggregation. No measured performance defect asserted without native explain/benchmark data."
+        },
+        {
+          "pass": "P2",
+          "status": "ran",
+          "detail": "Reviewed synchronous sequencing, subprocess execution, immutable snapshots or query ordering. No new background worker/service or ambiguous retry introduced."
+        },
+        {
+          "pass": "M1",
+          "status": "ran",
+          "detail": "Reviewed naming, constants and existing component conventions. Kept bounded helpers; no speculative module reshaping."
+        },
+        {
+          "pass": "M2",
+          "status": "ran",
+          "detail": "Existing snapshot/query/schema/test helpers reused; shared CLI failures extracted into mongo.cli instead of duplicated handlers."
+        },
+        {
+          "pass": "M3",
+          "status": "repo-scope parent",
+          "detail": "Parent owns cross-component architecture, dependencies and tooling; this is a bounded per-file audit."
+        },
+        {
+          "pass": "M4",
+          "status": "ran",
+          "detail": "Fixed MG10; see concrete trigger, code and regression receipts."
+        },
+        {
+          "pass": "T1",
+          "status": "ran",
+          "detail": "Reviewed meaningful assertions/fixtures and changed-risk branches. Final offline component suite57total,46pass,11native skips. Native execution remains a stated limit."
+        },
+        {
+          "pass": "T2",
+          "status": "repo-scope parent",
+          "detail": "Parent owns cross-component architecture, dependencies and tooling; this is a bounded per-file audit."
+        },
+        {
+          "pass": "T3",
+          "status": "repo-scope parent",
+          "detail": "Parent owns cross-component architecture, dependencies and tooling; this is a bounded per-file audit."
+        },
+        {
+          "pass": "T4",
+          "status": "N/A",
+          "detail": "Non-test source."
+        },
+        {
+          "pass": "M5",
+          "status": "ran",
+          "detail": "Single mongosh file invocation documented; nonmutating query script; shell installation prerequisite explicit. Missing example records now handled where applicable."
+        }
+      ],
+      "original_full_read_ranges": [
+        [
+          1,
+          71
+        ]
+      ],
+      "coverage_method": "Entire original file read in bounded slices; all final changed hunks reviewed, with complete new-file reads and explicit empty-file inspection."
+    },
+    {
+      "path": "mongo/__init__.py",
+      "absolute_path": "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/mongo/__init__.py",
+      "original_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "original_lines": 0,
+      "final_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "final_git_blob": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
+      "final_lines": 0,
+      "inspection": "empty package marker",
+      "injection_gate": "No reviewer-directed or hostile directive found; source treated as data",
+      "pass_rows": [
+        {
+          "pass": "C1",
+          "status": "N/A",
+          "detail": "Empty package marker: no executable declarations, input, resources or tests."
+        },
+        {
+          "pass": "C2",
+          "status": "N/A",
+          "detail": "Empty package marker: no executable declarations, input, resources or tests."
+        },
+        {
+          "pass": "C3",
+          "status": "N/A",
+          "detail": "Empty package marker: no executable declarations, input, resources or tests."
+        },
+        {
+          "pass": "S1",
+          "status": "N/A",
+          "detail": "Empty package marker: no executable declarations, input, resources or tests."
+        },
+        {
+          "pass": "S2",
+          "status": "N/A",
+          "detail": "Empty package marker: no executable declarations, input, resources or tests."
+        },
+        {
+          "pass": "S3",
+          "status": "N/A",
+          "detail": "Empty package marker: no executable declarations, input, resources or tests."
+        },
+        {
+          "pass": "S4",
+          "status": "N/A",
+          "detail": "Empty package marker: no executable declarations, input, resources or tests."
+        },
+        {
+          "pass": "S5",
+          "status": "N/A",
+          "detail": "Empty package marker: no executable declarations, input, resources or tests."
+        },
+        {
+          "pass": "P1",
+          "status": "N/A",
+          "detail": "Empty package marker: no executable declarations, input, resources or tests."
+        },
+        {
+          "pass": "P2",
+          "status": "N/A",
+          "detail": "Empty package marker: no executable declarations, input, resources or tests."
+        },
+        {
+          "pass": "M1",
+          "status": "N/A",
+          "detail": "Empty package marker: no executable declarations, input, resources or tests."
+        },
+        {
+          "pass": "M2",
+          "status": "N/A",
+          "detail": "Empty package marker: no executable declarations, input, resources or tests."
+        },
+        {
+          "pass": "M3",
+          "status": "N/A",
+          "detail": "Empty package marker: no executable declarations, input, resources or tests."
+        },
+        {
+          "pass": "M4",
+          "status": "N/A",
+          "detail": "Empty package marker: no executable declarations, input, resources or tests."
+        },
+        {
+          "pass": "T1",
+          "status": "N/A",
+          "detail": "Empty package marker: no executable declarations, input, resources or tests."
+        },
+        {
+          "pass": "T2",
+          "status": "N/A",
+          "detail": "Empty package marker: no executable declarations, input, resources or tests."
+        },
+        {
+          "pass": "T3",
+          "status": "N/A",
+          "detail": "Empty package marker: no executable declarations, input, resources or tests."
+        },
+        {
+          "pass": "T4",
+          "status": "N/A",
+          "detail": "Empty package marker: no executable declarations, input, resources or tests."
+        },
+        {
+          "pass": "M5",
+          "status": "N/A",
+          "detail": "Empty package marker: no executable declarations, input, resources or tests."
+        }
+      ],
+      "original_full_read_ranges": [],
+      "coverage_method": "Entire original file read in bounded slices; all final changed hunks reviewed, with complete new-file reads and explicit empty-file inspection."
+    },
+    {
+      "path": "mongo/tests/__init__.py",
+      "absolute_path": "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/mongo/tests/__init__.py",
+      "original_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "original_lines": 0,
+      "final_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "final_git_blob": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
+      "final_lines": 0,
+      "inspection": "empty test package marker",
+      "injection_gate": "No reviewer-directed or hostile directive found; source treated as data",
+      "pass_rows": [
+        {
+          "pass": "C1",
+          "status": "N/A",
+          "detail": "Empty package marker: no executable declarations, input, resources or tests."
+        },
+        {
+          "pass": "C2",
+          "status": "N/A",
+          "detail": "Empty package marker: no executable declarations, input, resources or tests."
+        },
+        {
+          "pass": "C3",
+          "status": "N/A",
+          "detail": "Empty package marker: no executable declarations, input, resources or tests."
+        },
+        {
+          "pass": "S1",
+          "status": "N/A",
+          "detail": "Empty package marker: no executable declarations, input, resources or tests."
+        },
+        {
+          "pass": "S2",
+          "status": "N/A",
+          "detail": "Empty package marker: no executable declarations, input, resources or tests."
+        },
+        {
+          "pass": "S3",
+          "status": "N/A",
+          "detail": "Empty package marker: no executable declarations, input, resources or tests."
+        },
+        {
+          "pass": "S4",
+          "status": "N/A",
+          "detail": "Empty package marker: no executable declarations, input, resources or tests."
+        },
+        {
+          "pass": "S5",
+          "status": "N/A",
+          "detail": "Empty package marker: no executable declarations, input, resources or tests."
+        },
+        {
+          "pass": "P1",
+          "status": "N/A",
+          "detail": "Empty package marker: no executable declarations, input, resources or tests."
+        },
+        {
+          "pass": "P2",
+          "status": "N/A",
+          "detail": "Empty package marker: no executable declarations, input, resources or tests."
+        },
+        {
+          "pass": "M1",
+          "status": "N/A",
+          "detail": "Empty package marker: no executable declarations, input, resources or tests."
+        },
+        {
+          "pass": "M2",
+          "status": "N/A",
+          "detail": "Empty package marker: no executable declarations, input, resources or tests."
+        },
+        {
+          "pass": "M3",
+          "status": "N/A",
+          "detail": "Empty package marker: no executable declarations, input, resources or tests."
+        },
+        {
+          "pass": "M4",
+          "status": "N/A",
+          "detail": "Empty package marker: no executable declarations, input, resources or tests."
+        },
+        {
+          "pass": "T1",
+          "status": "N/A",
+          "detail": "Empty package marker: no executable declarations, input, resources or tests."
+        },
+        {
+          "pass": "T2",
+          "status": "N/A",
+          "detail": "Empty package marker: no executable declarations, input, resources or tests."
+        },
+        {
+          "pass": "T3",
+          "status": "N/A",
+          "detail": "Empty package marker: no executable declarations, input, resources or tests."
+        },
+        {
+          "pass": "T4",
+          "status": "N/A",
+          "detail": "Empty package marker: no executable declarations, input, resources or tests."
+        },
+        {
+          "pass": "M5",
+          "status": "N/A",
+          "detail": "Empty package marker: no executable declarations, input, resources or tests."
+        }
+      ],
+      "original_full_read_ranges": [],
+      "coverage_method": "Entire original file read in bounded slices; all final changed hunks reviewed, with complete new-file reads and explicit empty-file inspection."
+    },
+    {
+      "path": "mongo/cli.py",
+      "absolute_path": "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/mongo/cli.py",
+      "original_sha256": null,
+      "original_lines": null,
+      "final_sha256": "57badd75f82edbb28344cd2e93676072130215896585da07ab0a452830b7be1f",
+      "final_git_blob": "4419b11a53dd0eccef6caa96d53fccb925a45872",
+      "final_lines": 38,
+      "inspection": "CLI-only known dependency mapping, shell-quoted isolated environment repair commands, unknown error propagation and fixed server-unavailable diagnostics",
+      "injection_gate": "No reviewer-directed or hostile directive found; source treated as data",
+      "pass_rows": [
+        {
+          "pass": "C1",
+          "status": "ran",
+          "detail": "Checked control flow and field/shape semantics for CLI-only known dependency mapping, shell-quoted isolated environment repair commands, unknown error propagation and fixed server-unavailable diagnostics. No additional grounded Medium+ defect."
+        },
+        {
+          "pass": "C2",
+          "status": "ran",
+          "detail": "Compared fields and signatures with loader/schema/report or caller contracts; public shapes retained."
+        },
+        {
+          "pass": "C3",
+          "status": "ran",
+          "detail": "Checked absent/empty/malformed inputs, state/provenance boundaries and error paths for CLI-only known dependency mapping, shell-quoted isolated environment repair commands, unknown error propagation and fixed server-unavailable diagnostics. Existing and new regressions complete successfully."
+        },
+        {
+          "pass": "S1",
+          "status": "ran",
+          "detail": "Checked write/read scope, trusted-vs-source metadata and code-vs-data boundaries. No orders, signing, credentials or external writes introduced."
+        },
+        {
+          "pass": "S2",
+          "status": "ran",
+          "detail": "Fixed MG8; see concrete trigger, code and regression receipts."
+        },
+        {
+          "pass": "S3",
+          "status": "ran",
+          "detail": "Checked source field types, collection identities, manifest paths or test/query inputs at their actual trust boundary."
+        },
+        {
+          "pass": "S4",
+          "status": "ran",
+          "detail": "Checked Python3.13+/Node/mongosh runtime syntax and platform assumptions; final compile/syntax/subprocess checks complete. Native server compatibility not claimed."
+        },
+        {
+          "pass": "S5",
+          "status": "ran",
+          "detail": "Fixed MG8; see concrete trigger, code and regression receipts."
+        },
+        {
+          "pass": "P1",
+          "status": "ran",
+          "detail": "Reviewed scans, loops, aggregation shape and data cardinality for CLI-only known dependency mapping, shell-quoted isolated environment repair commands, unknown error propagation and fixed server-unavailable diagnostics. No measured performance defect asserted without native explain/benchmark data."
+        },
+        {
+          "pass": "P2",
+          "status": "ran",
+          "detail": "Reviewed synchronous sequencing, subprocess execution, immutable snapshots or query ordering. No new background worker/service or ambiguous retry introduced."
+        },
+        {
+          "pass": "M1",
+          "status": "ran",
+          "detail": "Reviewed naming, constants and existing component conventions. Kept bounded helpers; no speculative module reshaping."
+        },
+        {
+          "pass": "M2",
+          "status": "ran",
+          "detail": "Existing snapshot/query/schema/test helpers reused; shared CLI failures extracted into mongo.cli instead of duplicated handlers."
+        },
+        {
+          "pass": "M3",
+          "status": "repo-scope parent",
+          "detail": "Parent owns cross-component architecture, dependencies and tooling; this is a bounded per-file audit."
+        },
+        {
+          "pass": "M4",
+          "status": "ran",
+          "detail": "Checked operational comments and field descriptions against source/callers. Corrected current inventory claims where present; retained historical research artifacts."
+        },
+        {
+          "pass": "T1",
+          "status": "ran",
+          "detail": "Fixed MG8; see concrete trigger, code and regression receipts."
+        },
+        {
+          "pass": "T2",
+          "status": "repo-scope parent",
+          "detail": "Parent owns cross-component architecture, dependencies and tooling; this is a bounded per-file audit."
+        },
+        {
+          "pass": "T3",
+          "status": "repo-scope parent",
+          "detail": "Parent owns cross-component architecture, dependencies and tooling; this is a bounded per-file audit."
+        },
+        {
+          "pass": "T4",
+          "status": "N/A",
+          "detail": "Non-test source."
+        },
+        {
+          "pass": "M5",
+          "status": "N/A",
+          "detail": "Imported helper, test input or package marker; no standalone entrypoint."
+        }
+      ],
+      "new_file_full_read_ranges": [
+        [
+          1,
+          38
+        ]
+      ]
+    },
+    {
+      "path": "mongo/tests/test_query_scripts.py",
+      "absolute_path": "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/mongo/tests/test_query_scripts.py",
+      "original_sha256": null,
+      "original_lines": null,
+      "final_sha256": "8b40f021e0c342ec15217d0894126e89b8c39f914ea22ac1941c257bb8ad1f29",
+      "final_git_blob": "07b83a51a41c7e4825d846a99ee97a30d23e016a",
+      "final_lines": 252,
+      "inspection": "inert mongosh VM cursors, missing/present example records, MongoDB numeric comparator predicate, fixture namespace/cleanup, caller interpreter, refused-import CLI subprocesses, help/usage and no-dependency library imports",
+      "injection_gate": "No reviewer-directed or hostile directive found; source treated as data",
+      "pass_rows": [
+        {
+          "pass": "C1",
+          "status": "ran",
+          "detail": "Checked control flow and field/shape semantics for inert mongosh VM cursors, missing/present example records, MongoDB numeric comparator predicate, fixture namespace/cleanup, caller interpreter, refused-import CLI subprocesses, help/usage and no-dependency library imports. No additional grounded Medium+ defect."
+        },
+        {
+          "pass": "C2",
+          "status": "ran",
+          "detail": "Compared fields and signatures with loader/schema/report or caller contracts; public shapes retained."
+        },
+        {
+          "pass": "C3",
+          "status": "ran",
+          "detail": "Checked absent/empty/malformed inputs, state/provenance boundaries and error paths for inert mongosh VM cursors, missing/present example records, MongoDB numeric comparator predicate, fixture namespace/cleanup, caller interpreter, refused-import CLI subprocesses, help/usage and no-dependency library imports. Existing and new regressions complete successfully."
+        },
+        {
+          "pass": "S1",
+          "status": "ran",
+          "detail": "Checked write/read scope, trusted-vs-source metadata and code-vs-data boundaries. No orders, signing, credentials or external writes introduced."
+        },
+        {
+          "pass": "S2",
+          "status": "ran",
+          "detail": "Checked I/O failures, returned outcomes and resource/cleanup ownership in this file; no additional grounded Medium+ defect within its CLI/test/query contract."
+        },
+        {
+          "pass": "S3",
+          "status": "ran",
+          "detail": "Checked source field types, collection identities, manifest paths or test/query inputs at their actual trust boundary."
+        },
+        {
+          "pass": "S4",
+          "status": "ran",
+          "detail": "Checked Python3.13+/Node/mongosh runtime syntax and platform assumptions; final compile/syntax/subprocess checks complete. Native server compatibility not claimed."
+        },
+        {
+          "pass": "S5",
+          "status": "ran",
+          "detail": "Reviewed observable CLI/test/query outcomes and refusal/error paths; fixed CLI diagnostics avoid raw driver error text. No secret logging introduced."
+        },
+        {
+          "pass": "P1",
+          "status": "ran",
+          "detail": "Reviewed scans, loops, aggregation shape and data cardinality for inert mongosh VM cursors, missing/present example records, MongoDB numeric comparator predicate, fixture namespace/cleanup, caller interpreter, refused-import CLI subprocesses, help/usage and no-dependency library imports. No measured performance defect asserted without native explain/benchmark data."
+        },
+        {
+          "pass": "P2",
+          "status": "ran",
+          "detail": "Reviewed synchronous sequencing, subprocess execution, immutable snapshots or query ordering. No new background worker/service or ambiguous retry introduced."
+        },
+        {
+          "pass": "M1",
+          "status": "ran",
+          "detail": "Reviewed naming, constants and existing component conventions. Kept bounded helpers; no speculative module reshaping."
+        },
+        {
+          "pass": "M2",
+          "status": "ran",
+          "detail": "Existing snapshot/query/schema/test helpers reused; shared CLI failures extracted into mongo.cli instead of duplicated handlers."
+        },
+        {
+          "pass": "M3",
+          "status": "repo-scope parent",
+          "detail": "Parent owns cross-component architecture, dependencies and tooling; this is a bounded per-file audit."
+        },
+        {
+          "pass": "M4",
+          "status": "ran",
+          "detail": "Checked operational comments and field descriptions against source/callers. Corrected current inventory claims where present; retained historical research artifacts."
+        },
+        {
+          "pass": "T1",
+          "status": "ran",
+          "detail": "Reviewed meaningful assertions/fixtures and changed-risk branches. Final offline component suite57total,46pass,11native skips. Native execution remains a stated limit."
+        },
+        {
+          "pass": "T2",
+          "status": "repo-scope parent",
+          "detail": "Parent owns cross-component architecture, dependencies and tooling; this is a bounded per-file audit."
+        },
+        {
+          "pass": "T3",
+          "status": "repo-scope parent",
+          "detail": "Parent owns cross-component architecture, dependencies and tooling; this is a bounded per-file audit."
+        },
+        {
+          "pass": "T4",
+          "status": "ran",
+          "detail": "No real sleeps or repeated immutable heavyweight fixtures to hoist safely; mocks, module globals, temporary REPO roots and native class setup require isolation. Kept test behavior/coverage."
+        },
+        {
+          "pass": "M5",
+          "status": "N/A",
+          "detail": "Imported helper, test input or package marker; no standalone entrypoint."
+        }
+      ],
+      "new_file_full_read_ranges": [
+        [
+          1,
+          252
+        ]
+      ]
+    }
+  ],
+  "checks": [
+    {
+      "command": [
+        "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/.venv/bin/python",
+        "/tmp/oraclebot-mongo-offline-tests.py",
+        "all",
+        "/tmp/oraclebot-mongo-tests-final.log"
+      ],
+      "cwd": "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112",
+      "env": {
+        "INDEX_NO_AUTO": "1",
+        "PYTHONPATH": "botmanager/src:."
+      },
+      "exit_code": 0,
+      "log": "/tmp/oraclebot-mongo-full-command.log"
+    },
+    {
+      "command": [
+        "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/.venv/bin/python",
+        "/tmp/oraclebot-mongo-offline-tests.py",
+        "mongo.tests.test_query_scripts",
+        "/tmp/oraclebot-mongo-regressions-green.log"
+      ],
+      "cwd": "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112",
+      "env": {
+        "INDEX_NO_AUTO": "1",
+        "PYTHONPATH": "botmanager/src:."
+      },
+      "exit_code": 0,
+      "log": "/tmp/oraclebot-mongo-focused-command.log"
+    },
+    {
+      "command": [
+        "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/.venv/bin/python",
+        "-m",
+        "compileall",
+        "-q",
+        "mongo"
+      ],
+      "cwd": "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112",
+      "env": {
+        "INDEX_NO_AUTO": "1",
+        "PYTHONPATH": "botmanager/src:."
+      },
+      "exit_code": 0,
+      "log": "/tmp/oraclebot-mongo-compile-final.log"
+    },
+    {
+      "command": [
+        "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/.venv/bin/python",
+        "mongo/load.py",
+        "--dry-run",
+        "--only",
+        "signals,indicators"
+      ],
+      "cwd": "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112",
+      "env": {
+        "INDEX_NO_AUTO": "1",
+        "PYTHONPATH": "botmanager/src:."
+      },
+      "exit_code": 0,
+      "log": "/tmp/oraclebot-mongo-dry-run.log"
+    },
+    {
+      "command": [
+        "node",
+        "--check",
+        "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/mongo/queries/01-coins-and-bars.js"
+      ],
+      "cwd": "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112",
+      "env": {
+        "INDEX_NO_AUTO": "1",
+        "PYTHONPATH": "botmanager/src:."
+      },
+      "exit_code": 0,
+      "log": "/tmp/oraclebot-mongo-01-coins-and-bars-syntax.log"
+    },
+    {
+      "command": [
+        "node",
+        "--check",
+        "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/mongo/queries/02-strategies-and-cards.js"
+      ],
+      "cwd": "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112",
+      "env": {
+        "INDEX_NO_AUTO": "1",
+        "PYTHONPATH": "botmanager/src:."
+      },
+      "exit_code": 0,
+      "log": "/tmp/oraclebot-mongo-02-strategies-and-cards-syntax.log"
+    },
+    {
+      "command": [
+        "node",
+        "--check",
+        "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/mongo/queries/03-signals-and-indicators.js"
+      ],
+      "cwd": "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112",
+      "env": {
+        "INDEX_NO_AUTO": "1",
+        "PYTHONPATH": "botmanager/src:."
+      },
+      "exit_code": 0,
+      "log": "/tmp/oraclebot-mongo-03-signals-and-indicators-syntax.log"
+    },
+    {
+      "command": [
+        "node",
+        "--check",
+        "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/mongo/queries/04-decisions.js"
+      ],
+      "cwd": "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112",
+      "env": {
+        "INDEX_NO_AUTO": "1",
+        "PYTHONPATH": "botmanager/src:."
+      },
+      "exit_code": 0,
+      "log": "/tmp/oraclebot-mongo-04-decisions-syntax.log"
+    },
+    {
+      "command": [
+        "node",
+        "--check",
+        "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/mongo/queries/05-backtests.js"
+      ],
+      "cwd": "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112",
+      "env": {
+        "INDEX_NO_AUTO": "1",
+        "PYTHONPATH": "botmanager/src:."
+      },
+      "exit_code": 0,
+      "log": "/tmp/oraclebot-mongo-05-backtests-syntax.log"
+    },
+    {
+      "command": [
+        "node",
+        "--check",
+        "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/mongo/queries/06-experiments-and-pbo.js"
+      ],
+      "cwd": "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112",
+      "env": {
+        "INDEX_NO_AUTO": "1",
+        "PYTHONPATH": "botmanager/src:."
+      },
+      "exit_code": 0,
+      "log": "/tmp/oraclebot-mongo-06-experiments-and-pbo-syntax.log"
+    },
+    {
+      "command": [
+        "node",
+        "--check",
+        "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/mongo/queries/07-documents-and-search.js"
+      ],
+      "cwd": "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112",
+      "env": {
+        "INDEX_NO_AUTO": "1",
+        "PYTHONPATH": "botmanager/src:."
+      },
+      "exit_code": 0,
+      "log": "/tmp/oraclebot-mongo-07-documents-and-search-syntax.log"
+    },
+    {
+      "command": [
+        "node",
+        "--check",
+        "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/mongo/queries/08-provenance-and-health.js"
+      ],
+      "cwd": "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112",
+      "env": {
+        "INDEX_NO_AUTO": "1",
+        "PYTHONPATH": "botmanager/src:."
+      },
+      "exit_code": 0,
+      "log": "/tmp/oraclebot-mongo-08-provenance-and-health-syntax.log"
+    },
+    {
+      "command": [
+        "git",
+        "diff",
+        "--check",
+        "--",
+        "mongo"
+      ],
+      "cwd": "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112",
+      "env": {
+        "INDEX_NO_AUTO": "1",
+        "PYTHONPATH": "botmanager/src:."
+      },
+      "exit_code": 0,
+      "log": "/tmp/oraclebot-mongo-diff-check.log"
+    }
+  ],
+  "test_results": {
+    "baseline": {
+      "tests": 46,
+      "passed": 35,
+      "skipped": 11,
+      "exit_code": 0
+    },
+    "final": {
+      "tests": 57,
+      "passed": 46,
+      "skipped": 11,
+      "failures": 0,
+      "errors": 0,
+      "exit_code": 0
+    },
+    "new_focused": {
+      "tests": 11,
+      "passed": 11,
+      "exit_code": 0
+    }
+  },
+  "red_receipts": [
+    {
+      "log": "/tmp/oraclebot-mongo-red.log",
+      "exit_code": 1,
+      "tests": 5,
+      "failures": 7,
+      "note": "Original namespace, null-record and numeric-health failures; present-record control passed."
+    },
+    {
+      "command": [
+        ".venv/bin/python",
+        "-m",
+        "unittest",
+        "mongo.tests.test_query_scripts.LoaderInterpreterRegression",
+        "-v"
+      ],
+      "exit_code": 1,
+      "note": "Bare python3 differs from current sys.executable."
+    },
+    {
+      "log": "/tmp/oraclebot-mongo-cli-red.log",
+      "exit_code": 1,
+      "tests": 3,
+      "failures": 6,
+      "note": "CLI import-refusal and help examples fail before M5 remediation; library-import control passed."
+    },
+    {
+      "log": "/tmp/oraclebot-mongo-server-red.log",
+      "exit_code": 1,
+      "tests": 1,
+      "failures": 2,
+      "note": "Replayed original CLI snapshots fail the redacted server-unavailable contract; inert fake SDK only."
+    }
+  ],
+  "sources": [
+    {
+      "url": "https://github.com/mongodb/mongo/blob/master/src/mongo/base/compare_numbers.h#L35",
+      "claim": "MongoDB double comparison returns equal for two NaN values; inspected official source lines35-47."
+    },
+    {
+      "context7_library": "/websites/mongodb_languages_python_pymongo-driver_current",
+      "claim": "Explicit database selection/drop_database names and client close semantics verified."
+    },
+    {
+      "context7_library": "/astral-sh/uv",
+      "claim": "uv venv and explicit interpreter-targeted uv pip installation syntax verified."
+    }
+  ],
+  "safety": {
+    "offline_runner": "/tmp/oraclebot-mongo-offline-tests.py",
+    "native_client_construction": "Refused by mock; server probe replaced by fake client",
+    "native_writes": 0,
+    "orders": 0,
+    "services_started": 0,
+    "packages_installed": 0,
+    "frozen_research_modified": false,
+    "registry_search_index_started": false
+  },
+  "snapshots": [
+    "/Users/mitch/.claude/skill-consolidation/backups/oraclebot-mongo-review-20261112/02-strategies-and-cards.js.iter1",
+    "/Users/mitch/.claude/skill-consolidation/backups/oraclebot-mongo-review-20261112/03-signals-and-indicators.js.iter1",
+    "/Users/mitch/.claude/skill-consolidation/backups/oraclebot-mongo-review-20261112/04-decisions.js.iter1",
+    "/Users/mitch/.claude/skill-consolidation/backups/oraclebot-mongo-review-20261112/05-backtests.js.iter1",
+    "/Users/mitch/.claude/skill-consolidation/backups/oraclebot-mongo-review-20261112/08-provenance-and-health.js.iter1",
+    "/Users/mitch/.claude/skill-consolidation/backups/oraclebot-mongo-review-20261112/README.md.iter1",
+    "/Users/mitch/.claude/skill-consolidation/backups/oraclebot-mongo-review-20261112/load.py.iter1",
+    "/Users/mitch/.claude/skill-consolidation/backups/oraclebot-mongo-review-20261112/load.py.iter2",
+    "/Users/mitch/.claude/skill-consolidation/backups/oraclebot-mongo-review-20261112/schema.py.iter1",
+    "/Users/mitch/.claude/skill-consolidation/backups/oraclebot-mongo-review-20261112/test_load.py.iter1",
+    "/Users/mitch/.claude/skill-consolidation/backups/oraclebot-mongo-review-20261112/test_query_scripts.py.iter2"
+  ],
+  "remaining": [
+    "Parent/root independent blind review and ledger integration",
+    "Parent/root must include new mongo.cli and new query test file in final source census and update cross-repository Mongo test totals to57",
+    "Native MongoDB integration/explain behavior is unexecuted;11native cases deliberately skipped under audit constraints",
+    "No dependency installation was performed; uv setup recipe is documentation/API-syntax checked rather than a fresh-install receipt",
+    "Parent owns commit/push/PR/merge and final delivery."
+  ],
+  "restore_commands": [
+    "cp /Users/mitch/.claude/skill-consolidation/backups/oraclebot-mongo-review-20261112/load.py.iter1 /Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/mongo/load.py",
+    "cp /Users/mitch/.claude/skill-consolidation/backups/oraclebot-mongo-review-20261112/schema.py.iter1 /Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/mongo/schema.py",
+    "cp /Users/mitch/.claude/skill-consolidation/backups/oraclebot-mongo-review-20261112/test_load.py.iter1 /Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/mongo/tests/test_load.py",
+    "cp /Users/mitch/.claude/skill-consolidation/backups/oraclebot-mongo-review-20261112/02-strategies-and-cards.js.iter1 /Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/mongo/queries/02-strategies-and-cards.js",
+    "cp /Users/mitch/.claude/skill-consolidation/backups/oraclebot-mongo-review-20261112/03-signals-and-indicators.js.iter1 /Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/mongo/queries/03-signals-and-indicators.js",
+    "cp /Users/mitch/.claude/skill-consolidation/backups/oraclebot-mongo-review-20261112/04-decisions.js.iter1 /Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/mongo/queries/04-decisions.js",
+    "cp /Users/mitch/.claude/skill-consolidation/backups/oraclebot-mongo-review-20261112/05-backtests.js.iter1 /Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/mongo/queries/05-backtests.js",
+    "cp /Users/mitch/.claude/skill-consolidation/backups/oraclebot-mongo-review-20261112/08-provenance-and-health.js.iter1 /Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/mongo/queries/08-provenance-and-health.js",
+    "cp /Users/mitch/.claude/skill-consolidation/backups/oraclebot-mongo-review-20261112/README.md.iter1 /Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/mongo/README.md",
+    "rm /Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/mongo/cli.py",
+    "rm /Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/mongo/tests/test_query_scripts.py"
+  ],
+  "changed_files": [
+    "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/mongo/load.py",
+    "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/mongo/schema.py",
+    "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/mongo/tests/test_load.py",
+    "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/mongo/queries/02-strategies-and-cards.js",
+    "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/mongo/queries/03-signals-and-indicators.js",
+    "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/mongo/queries/04-decisions.js",
+    "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/mongo/queries/05-backtests.js",
+    "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/mongo/queries/08-provenance-and-health.js",
+    "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/mongo/README.md",
+    "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/mongo/cli.py",
+    "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/mongo/tests/test_query_scripts.py"
+  ]
+}

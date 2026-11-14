@@ -5,8 +5,6 @@ from __future__ import annotations
 import time
 from typing import Any
 
-BAR_NOTE = "5%"
-
 
 def _pct(x: float | None, signed: bool = False, digits: int = 1) -> str:
     if x is None:
@@ -217,6 +215,7 @@ def render_report(doc: dict[str, Any], top: int = 25) -> str:
     n_meas = sum(1 for p in pools if p["tier"] == "measured")
     n_quo = len(pools) - n_meas
     p = doc.get("params", {})
+    bar = f"{doc['min_net_apr']:g}%" if doc.get("min_net_apr") is not None else "n/a"
     out = [
         f"# Liquidity provider comparison, {doc.get('chain', 'base')}",
         "",
@@ -239,7 +238,7 @@ def render_report(doc: dict[str, Any], top: int = 25) -> str:
         "",
         "## 3. How to read this",
         "",
-        HOW_TO_READ + f"{BAR_NOTE} APR" + HOW_TO_READ_2,
+        HOW_TO_READ + f"{bar} APR" + HOW_TO_READ_2,
     ]
     inc = doc.get("incentive_only", [])
     out += [
@@ -251,7 +250,7 @@ def render_report(doc: dict[str, Any], top: int = 25) -> str:
         "acts on these rows.",
         "",
         "Side by side, best LP against best single-sided option per token. The LP figure is for a pair that contains "
-        "the token, so it also carries the other token's price risk. The 5% bar applies to both.",
+        f"the token, so it also carries the other token's price risk. The {bar} bar applies to both.",
         "",
         *comparison_table(doc),
         "",

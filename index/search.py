@@ -142,8 +142,8 @@ def _semantic_matrix(pair: tuple[Path, Path]):
     # No `allow_pickle`: the array holds only floats, and the chunk-to-file mapping comes
     # from the manifest. Unpickling an array is arbitrary code execution, which is not a
     # risk an index should carry.
-    z = np.load(pair[1])
-    emb = z["embeddings"].astype("float32")   # already L2-normalised at build time
+    with np.load(pair[1], allow_pickle=False) as archive:
+        emb = archive["embeddings"].astype("float32")   # L2-normalised at build time
     _CACHE[key] = (manifest, emb, manifest.get("chunkOwners") or [])
     return _CACHE[key]
 
@@ -165,9 +165,18 @@ def semantic(query: str, limit: int = 40, notes: list[str] | None = None,
         import urllib.request
     except ImportError:
         return None
-    man = json.loads(pair[0].read_text())
+    try:
+        man = json.loads(pair[0].read_text())
+        if not isinstance(man, dict):
+            raise TypeError("invalid manifest")
+    except (OSError, ValueError, TypeError):
+        _say(notes, "semantic manifest is unreadable; rebuild: python3 index/build.py semantic")
+        return None
     model = man.get("model", ollama_ensure.EMBED_MODEL)
     url = man.get("endpoint", f"{ollama_ensure.OLLAMA_BASE}/api/embed")
+    if not isinstance(model, str) or not isinstance(url, str) or not ollama_ensure.is_local(url):
+        _say(notes, "semantic manifest requires a model and a local HTTP(S) endpoint")
+        return None
     status = ollama_ensure.ensure(model, ollama_ensure.base_of(url), start=start_ollama)
     if status.started:
         _say(notes, "ollama was not running; started it")
@@ -183,19 +192,22 @@ def semantic(query: str, limit: int = 40, notes: list[str] | None = None,
             d = json.loads(r.read())
         q = np.asarray((d.get("embeddings") or [d["embedding"]])[0], dtype="float32")
     except Exception as exc:  # noqa: BLE001 - any transport failure degrades to text
-        _say(notes, f"semantic unavailable: {type(exc).__name__}: {exc}")
+        _say(notes, f"semantic unavailable: {type(exc).__name__}")
         return None
-    q /= (np.linalg.norm(q) or 1.0)
-
-    _, emb, owners = _semantic_matrix(pair)
-    if not owners:
-        _say(notes, "semantic manifest has no chunkOwners; rebuild: python3 index/build.py semantic")
+    try:
+        norm = np.linalg.norm(q)
+        if q.ndim != 1 or not q.size or not np.isfinite(q).all() or not np.isfinite(norm) or norm == 0:
+            raise ValueError("invalid query embedding")
+        q /= norm
+        _, emb, owners = _semantic_matrix(pair)
+        if not isinstance(owners, list) or not owners or not all(isinstance(owner, str) for owner in owners):
+            raise ValueError("invalid chunk owners")
+        if emb.ndim != 2 or emb.shape != (len(owners), q.size) or not np.isfinite(emb).all():
+            raise ValueError("invalid matrix dimensions or values")
+        sims = emb @ q
+    except Exception as exc:  # noqa: BLE001 - corrupt derived artifacts must allow keyword fallback
+        _say(notes, f"semantic index unavailable ({type(exc).__name__}); rebuild: python3 index/build.py semantic")
         return None
-    if len(owners) != emb.shape[0]:
-        _say(notes, f"semantic index is stale: {emb.shape[0]} vectors vs {len(owners)} owners; "
-                    "rebuild: python3 index/build.py semantic")
-        return None
-    sims = emb @ q
     best: dict[str, float] = {}
     for owner, s in zip(owners, sims):
         f = str(owner)
@@ -279,7 +291,8 @@ def run_query(query: str, mode: str = "hybrid", limit: int = 20, kind: str | Non
     """Search without printing. `mode` is keyword, semantic or hybrid.
 
     Nothing is read until this is called, so importing the module costs nothing. Keyword
-    never touches ollama. Semantic and hybrid make sure it is up (see `semantic`) and fall
+    scoring never touches ollama; disable auto_index too to suppress background rebuilds.
+    Semantic and hybrid make sure it is up (see `semantic`) and fall
     back to keyword with a note when it cannot be. `auto_index` runs the idle check.
     """
     if mode not in MODES:

@@ -1,5 +1,17 @@
 /** Local provider-contract stand-in. All quote values are documentation fixtures. */
 const http = require('http');
+const usage = 'Usage: PORT=4500 node postman/mocks/botmanager-jupiter-swap-v1/default.js\nLocal fixture only; binds to 127.0.0.1.';
+const args = process.argv.slice(2);
+if (args.length) {
+  const help = args.length === 1 && ['--help', '-h'].includes(args[0]);
+  (help ? console.log : console.error)(usage);
+  process.exit(help ? 0 : 2);
+}
+const port = Number(process.env.PORT || 4500);
+if (!Number.isInteger(port) || port < 0 || port > 65535) {
+  console.error('PORT must be an integer from 0 to 65535.');
+  process.exit(2);
+}
 const example = {
   "inputMint": "So11111111111111111111111111111111111111112",
   "inAmount": "100000000",
@@ -68,4 +80,4 @@ const server = http.createServer(async (req, res) => {
   if (mode === 'wrong_mints') response.outputMint = example.inputMint;
   return reply(res, 200, response);
 });
-server.listen(process.env.PORT || 4500);
+server.listen(port, '127.0.0.1');

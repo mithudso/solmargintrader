@@ -21,6 +21,8 @@ import urllib.parse
 import urllib.request
 from contextlib import closing
 
+from .market_diagnostics import market_request
+
 MINUTE = 60
 WINDOW = 1440 * MINUTE  # below KuCoin's documented 1500-candle maximum
 URL = "https://api.kucoin.com/api/v1/market/candles"
@@ -108,7 +110,7 @@ def _get_unlocked(url: str, *, timeout: float = 15) -> bytes:
     for attempt in range(5):
         try:
             request = urllib.request.Request(url, headers={"User-Agent": "solmargintrader-research/1.0"})
-            with urllib.request.urlopen(request, timeout=timeout) as response:
+            with market_request("kucoin_history"), urllib.request.urlopen(request, timeout=timeout) as response:
                 return response.read()
         except urllib.error.HTTPError as exc:
             if exc.code != 429 and exc.code < 500:
@@ -272,7 +274,10 @@ def audit_store(path: Path, symbol: str, start: int, end: int, gap_file: Path) -
 
 
 def main() -> None:
-    parser = argparse.ArgumentParser(description=__doc__)
+    parser = argparse.ArgumentParser(description=__doc__, epilog=(
+        "Example: python -m backtester.core.kucoin_history history.db "
+        "--symbol SOL-USDC --start 1672531200 --end 1672617600"
+    ))
     parser.add_argument("database", type=Path)
     parser.add_argument("--symbol", required=True)
     parser.add_argument("--start", required=True, type=int, help="inclusive UTC epoch seconds")

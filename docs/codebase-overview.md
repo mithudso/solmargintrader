@@ -3,10 +3,11 @@
 A file map for orientation, grouped by directory. Every path here is checked by
 `scripts/check_docs.py`, so a rename that is not reflected below fails the build.
 
-Ten components with separate execution boundaries:
+Eleven components with separate execution boundaries:
 
 | Component | Language | Can it move money? |
 | --- | --- | --- |
+| `website/` | JavaScript ESM/Python | Stripe billing can charge members when configured; saved trading definitions remain inactive |
 | `ecosystem/` | Python 3.13 | No — paper orchestration, owner controls and local control room |
 | `oracle/` | Python 3.13 | **Yes, separately enabled** — forecasts are read-only; TradingView worker can submit Coinbase spot or GUM ZEC perpetual orders |
 | `botmanager/` | Python 3.13 | No — manager 0.7, fenced paper workers and availability suite |
@@ -449,3 +450,29 @@ part of any component.
 | `extension/src/ui/signal-desk.css` | Accessible light/dark Signal Desk tokens, responsive layouts, dense mode and popup styling. |
 | `soltui/desk.py` | Loaded-array research provenance and exact paper handoff validation; no worker starts or network. |
 | `docs/SIGNAL-DESK.md` | UI workflows, persistence, provenance boundaries and use instructions. |
+
+## `website/` — public accounts, research and analysis gateway
+
+Wallet accounts and subscription state use Cloudflare D1. The separate Python
+adapter reuses canonical exposure strategies and the read-only Oracle archive.
+Saved bot definitions cannot submit orders. See `website/README.md`.
+
+| Path | What it is |
+| --- | --- |
+| `website/README.md` | Development, production setup and outstanding activation limits |
+| `website/src/worker.js` | Account, billing, configuration and protected analysis API |
+| `website/api/openapi.json` | Account and billing API contract |
+| `website/public/index.html` | Accessible static application shell |
+| `website/public/app.js` | Wallet, workspace, membership and research UI |
+| `website/public/evidence.js` | Expiring-strategy display guard |
+| `website/public/styles.css` | Responsive workspace design |
+| `website/wrangler.jsonc` | Production Worker, D1 and custom-domain configuration |
+| `website/wrangler.dev.jsonc` | Separate local origin and routing configuration |
+| `website/engine/server.py` | Bounded read-only canonical analysis HTTP adapter |
+| `website/engine/README.md` | Analysis input, transport and provisioning contract |
+| `website/scripts/export_research.py` | Source-bound research/card publication exporter |
+| `website/scripts/smoke.mjs` | Explicit deployed wallet account creation/deletion acceptance |
+| `website/test/api.test.js` | SQLite-backed account and Stripe failure-mode tests |
+| `website/test/evidence.test.js` | Expired forecast display regression test |
+| `website/engine/test_server.py` | Canonical analysis parity and HTTP boundary tests |
+| `website/engine/test_research.py` | Research export provenance and publication exclusions |

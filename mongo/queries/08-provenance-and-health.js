@@ -102,7 +102,9 @@ printjson(
                 in: {
                   $and: [
                     { $eq: [{ $type: "$$field.v" }, "double"] },
-                    { $ne: ["$$field.v", "$$field.v"] }, // NaN != NaN
+                    // MongoDB compares NaN equal to NaN. Explicit membership
+                    // also catches both infinities, which equal themselves.
+                    { $in: ["$$field.v", [NaN, Infinity, -Infinity]] },
                   ],
                 },
               },

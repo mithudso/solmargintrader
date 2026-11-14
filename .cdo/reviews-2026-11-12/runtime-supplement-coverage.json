@@ -1,0 +1,361 @@
+{
+  "status": "full current supplementary semantic coverage",
+  "original_inventory_candidates": 22,
+  "complete": 22,
+  "raw_helper_coverage_separate": true,
+  "note": "Hash equality binds existing full semantic source/asset receipts. This is aggregation, not new coverage from hashing. Exact mirrored design bytes use their recorded shared inspection.",
+  "files": [
+    {
+      "path": ".githooks/pre-commit",
+      "sha256": "ca8fc3b8833638be79a84382baf49f6a74b44bef2ab59b02ac0e0d9d36274162",
+      "lines": 38,
+      "receipt": "runtime-supplement-health.json",
+      "semantic_coverage": "complete source/asset inspection recorded in bound receipt",
+      "read_evidence": {
+        "read_evidence": "lines1-38; Git staged-change no-op, offline index rebuild/status propagation, task index staging and required backtester check output. all index build is explicitly metadata/text/concepts only; semantic remains opt-in. Git-hook interpreter assumes an activated/installed project environment."
+      },
+      "classification": "extensionless executable script"
+    },
+    {
+      "path": ".githooks/pre-merge-commit",
+      "sha256": "baddec10427505d27ef488fa7d844d8d19e35d028163937d4b52ca485129e601",
+      "lines": 26,
+      "receipt": "runtime-supplement-health.json",
+      "semantic_coverage": "complete source/asset inspection recorded in bound receipt",
+      "read_evidence": {
+        "read_evidence": "lines1-26; Checks executable gate and propagates nonzero quick gate; documented fast-forward gap uses separate land gate. No remote or actual hook install performed."
+      },
+      "classification": "extensionless executable script"
+    },
+    {
+      "path": "design/bot-control-room/index.html",
+      "sha256": "03e0f2f4c35ab4175f572e18b83242634bb44ebb71301bd9dc613134b154ca63",
+      "lines": 75,
+      "receipt": "design-prototypes.json",
+      "semantic_coverage": "complete source/asset inspection recorded in bound receipt",
+      "read_evidence": {
+        "read_evidence": "Labeled prototype-only paper balances/results, skip link/navigation, chart descriptions, roster/inspector IDs, five-stage named form/risk limits, readiness/capability messages and dialogs/live status.",
+        "read_ranges": null,
+        "character_read_ranges": [
+          [
+            0,
+            16000
+          ],
+          [
+            16000,
+            20921
+          ]
+        ]
+      },
+      "classification": "html"
+    },
+    {
+      "path": "design/bot-control-room/mockup.css",
+      "sha256": "fddb1efa7adb3a51f6feb7a679adba260f13bcd4b9a13e99560d36e0096f1cb1",
+      "lines": 15,
+      "receipt": "design-prototypes.json",
+      "semantic_coverage": "complete source/asset inspection recorded in bound receipt",
+      "read_evidence": {
+        "read_evidence": "Full responsive stylesheet, focus indicators, hidden/sr-only controls, horizontal tables, narrow viewport reflow, dialog layering, reduced-motion/print behavior and colors accompanied by text.",
+        "read_ranges": null,
+        "character_read_ranges": [
+          [
+            0,
+            14500
+          ],
+          [
+            14500,
+            25711
+          ]
+        ]
+      },
+      "classification": "css"
+    },
+    {
+      "path": "design/chrome-workspace/prototype.html",
+      "sha256": "4cdcbc154e4a9c903174531e9c46bc8ba43bbda3a0d9234ba7c903653bed9855",
+      "lines": 66,
+      "receipt": "design-prototypes.json",
+      "semantic_coverage": "complete source/asset inspection recorded in bound receipt",
+      "read_evidence": {
+        "read_evidence": "Inline CSP blocks connections/forms; fixture-only workspace navigation, unavailable/stale/missing signals, source/eligibility labeling, frozen-paper handoff text, dialogs/search/filter and keyboard focus. No external SDK or execution authority.",
+        "read_ranges": null,
+        "character_read_ranges": [
+          [
+            0,
+            14500
+          ],
+          [
+            14500,
+            29000
+          ],
+          [
+            29000,
+            43500
+          ],
+          [
+            43500,
+            45819
+          ]
+        ]
+      },
+      "classification": "html"
+    },
+    {
+      "path": "docs/design/bot-control-room/index.html",
+      "sha256": "03e0f2f4c35ab4175f572e18b83242634bb44ebb71301bd9dc613134b154ca63",
+      "lines": 75,
+      "receipt": "design-prototypes.json",
+      "semantic_coverage": "complete source/asset inspection recorded in bound receipt",
+      "read_evidence": {
+        "read_evidence": "Labeled prototype-only paper balances/results, skip link/navigation, chart descriptions, roster/inspector IDs, five-stage named form/risk limits, readiness/capability messages and dialogs/live status.",
+        "read_ranges": null,
+        "character_read_ranges": [
+          [
+            0,
+            16000
+          ],
+          [
+            16000,
+            20921
+          ]
+        ]
+      },
+      "classification": "html"
+    },
+    {
+      "path": "docs/design/bot-control-room/mockup.css",
+      "sha256": "fddb1efa7adb3a51f6feb7a679adba260f13bcd4b9a13e99560d36e0096f1cb1",
+      "lines": 15,
+      "receipt": "design-prototypes.json",
+      "semantic_coverage": "complete source/asset inspection recorded in bound receipt",
+      "read_evidence": {
+        "read_evidence": "Full responsive stylesheet, focus indicators, hidden/sr-only controls, horizontal tables, narrow viewport reflow, dialog layering, reduced-motion/print behavior and colors accompanied by text.",
+        "read_ranges": null,
+        "character_read_ranges": [
+          [
+            0,
+            14500
+          ],
+          [
+            14500,
+            25711
+          ]
+        ]
+      },
+      "classification": "css"
+    },
+    {
+      "path": "docs/design/chrome-workspace/prototype.html",
+      "sha256": "4cdcbc154e4a9c903174531e9c46bc8ba43bbda3a0d9234ba7c903653bed9855",
+      "lines": 66,
+      "receipt": "design-prototypes.json",
+      "semantic_coverage": "complete source/asset inspection recorded in bound receipt",
+      "read_evidence": {
+        "read_evidence": "Inline CSP blocks connections/forms; fixture-only workspace navigation, unavailable/stale/missing signals, source/eligibility labeling, frozen-paper handoff text, dialogs/search/filter and keyboard focus. No external SDK or execution authority.",
+        "read_ranges": null,
+        "character_read_ranges": [
+          [
+            0,
+            14500
+          ],
+          [
+            14500,
+            29000
+          ],
+          [
+            29000,
+            43500
+          ],
+          [
+            43500,
+            45819
+          ]
+        ]
+      },
+      "classification": "html"
+    },
+    {
+      "path": "ecosystem/web/index.html",
+      "sha256": "386ad81ea1ed334002abe076bbe4e4cda1b85985b416a58a9054e06e51077fdc",
+      "lines": 89,
+      "receipt": "forecast-supplement-delta.json",
+      "semantic_coverage": "complete source/asset inspection recorded in bound receipt",
+      "read_evidence": {
+        "prior_receipt": "pipeline-ui-supplement-delta.json",
+        "baseline_sha256": "cef2c76ae9d894cc5984255eaf25fb65fc09c1fa3129821fa95d083be99ccdc6",
+        "delta_receipt": "forecast-supplement-delta.json"
+      },
+      "classification": "html"
+    },
+    {
+      "path": "ecosystem/web/styles.css",
+      "sha256": "3e7266525162d6be5b032313628c6f4668245c2016788d425e9d91c936255b33",
+      "lines": 36,
+      "receipt": "forecast-supplement-delta.json",
+      "semantic_coverage": "complete source/asset inspection recorded in bound receipt",
+      "read_evidence": {
+        "prior_receipt": "runtime-supplement-health.json",
+        "baseline_sha256": "2f6670def5406e57b5b0503a9706a4c6b0ba802413646b5bae8b59c49de6dd63",
+        "delta_receipt": "forecast-supplement-delta.json"
+      },
+      "classification": "css"
+    },
+    {
+      "path": "ecosystem/web/swap.html",
+      "sha256": "e9aa8f934e53fdc90033d6efd6a550f0eab86ee284d17f8e31207faa176f6423",
+      "lines": 41,
+      "receipt": "runtime-supplement-health.json",
+      "semantic_coverage": "complete source/asset inspection recorded in bound receipt",
+      "read_evidence": {
+        "read_evidence": "lines1-41; Dedicated manual wallet origin markup, disabled until provider settings, explicit fee assumptions and unknown costs, named inputs/live status and no automatic external script activation."
+      },
+      "classification": "html"
+    },
+    {
+      "path": "extension/src/ui/control-room.css",
+      "sha256": "eb7992d0459b0a99ac53bcb23ddcf85af9d44333bbf34c6809ae934621eadf6b",
+      "lines": 22,
+      "receipt": "extension-root.json",
+      "semantic_coverage": "complete source/asset inspection recorded in bound receipt",
+      "read_evidence": {
+        "read_evidence": "Full displayed source in bounded slices1-22; authored changes and final displayed deltas reviewed. Current byte hash binds final combined source, not a claim of a fresh reread of unchanged text. Static UI: full markup/style cascade read, local script/style resources, labelled forms, hidden/keyboard/dialog routes, dark/reduced-motion/narrow breakpoints checked against actualChrome26/26. Funding/live labels now disclose bundled verifier unavailability."
+      },
+      "classification": "css"
+    },
+    {
+      "path": "extension/src/ui/dashboard.html",
+      "sha256": "da3e6684db2f7641bc9da57dd32058664b1028d407adf88c38f6874dd7dc7048",
+      "lines": 612,
+      "receipt": "extension-root.json",
+      "semantic_coverage": "complete source/asset inspection recorded in bound receipt",
+      "read_evidence": {
+        "read_evidence": "Full displayed source in bounded slices1-612; authored changes and final displayed deltas reviewed. Current byte hash binds final combined source, not a claim of a fresh reread of unchanged text. Static UI: full markup/style cascade read, local script/style resources, labelled forms, hidden/keyboard/dialog routes, dark/reduced-motion/narrow breakpoints checked against actualChrome26/26. Funding/live labels now disclose bundled verifier unavailability."
+      },
+      "classification": "html"
+    },
+    {
+      "path": "extension/src/ui/live-window.html",
+      "sha256": "899725f249daf2af016700b0f8b9cdbc61ce35753f0cc75130fa0e49cf84f849",
+      "lines": 6,
+      "receipt": "extension-root.json",
+      "semantic_coverage": "complete source/asset inspection recorded in bound receipt",
+      "read_evidence": {
+        "read_evidence": "Full displayed source in bounded slices1-6; authored changes and final displayed deltas reviewed. Current byte hash binds final combined source, not a claim of a fresh reread of unchanged text. Static UI: full markup/style cascade read, local script/style resources, labelled forms, hidden/keyboard/dialog routes, dark/reduced-motion/narrow breakpoints checked against actualChrome26/26. Funding/live labels now disclose bundled verifier unavailability."
+      },
+      "classification": "html"
+    },
+    {
+      "path": "extension/src/ui/popup.html",
+      "sha256": "9d91d5758dace8ebab5156ceec8f0fadbdf5744a82e9db8ac9c75cd891ca89c2",
+      "lines": 81,
+      "receipt": "extension-root.json",
+      "semantic_coverage": "complete source/asset inspection recorded in bound receipt",
+      "read_evidence": {
+        "read_evidence": "Full displayed source in bounded slices1-81; authored changes and final displayed deltas reviewed. Current byte hash binds final combined source, not a claim of a fresh reread of unchanged text. Static UI: full markup/style cascade read, local script/style resources, labelled forms, hidden/keyboard/dialog routes, dark/reduced-motion/narrow breakpoints checked against actualChrome26/26. Funding/live labels now disclose bundled verifier unavailability."
+      },
+      "classification": "html"
+    },
+    {
+      "path": "extension/src/ui/signal-desk.css",
+      "sha256": "0e916418e520a8bec5af57e9273beb88715ae72cf893b60e6da45921223f909e",
+      "lines": 193,
+      "receipt": "extension-root.json",
+      "semantic_coverage": "complete source/asset inspection recorded in bound receipt",
+      "read_evidence": {
+        "read_evidence": "Full displayed source in bounded slices1-193; authored changes and final displayed deltas reviewed. Current byte hash binds final combined source, not a claim of a fresh reread of unchanged text. Static UI: full markup/style cascade read, local script/style resources, labelled forms, hidden/keyboard/dialog routes, dark/reduced-motion/narrow breakpoints checked against actualChrome26/26. Funding/live labels now disclose bundled verifier unavailability."
+      },
+      "classification": "css"
+    },
+    {
+      "path": "extension/src/ui/ui.css",
+      "sha256": "fb876231ce69ec254e974161e308d4c711e8d29187e0c8850516777ada041de1",
+      "lines": 297,
+      "receipt": "extension-root.json",
+      "semantic_coverage": "complete source/asset inspection recorded in bound receipt",
+      "read_evidence": {
+        "read_evidence": "Full displayed source in bounded slices1-297; authored changes and final displayed deltas reviewed. Current byte hash binds final combined source, not a claim of a fresh reread of unchanged text. Static UI: full markup/style cascade read, local script/style resources, labelled forms, hidden/keyboard/dialog routes, dark/reduced-motion/narrow breakpoints checked against actualChrome26/26. Funding/live labels now disclose bundled verifier unavailability."
+      },
+      "classification": "css"
+    },
+    {
+      "path": "liquidity/scripts/aero-lp-service",
+      "sha256": "40143c8d9e1a541d7c2340e6f2fcf7bab27985c9033af2fbacef3610d0fab6f9",
+      "lines": 67,
+      "receipt": "liquidity.json",
+      "semantic_coverage": "complete source/asset inspection recorded in bound receipt",
+      "read_evidence": {
+        "original_read_ranges": [
+          [
+            1,
+            60
+          ]
+        ],
+        "read_note": "Full untruncated prior exec output in this child run; direct sed output.",
+        "final_read_ranges": [
+          [
+            1,
+            67
+          ]
+        ],
+        "final_read_basis": "Original complete bounded line reads plus every final unified diff hunk reviewed; unchanged lines mapped exactly via SequenceMatcher. No second whole-file final read claimed.",
+        "semantic_focus": "Install mode parsing, explicit live opt-in, quoted launchd paths and named-prerequisite messages; status/kill/resume dispatch read only."
+      },
+      "classification": "extensionless executable script"
+    },
+    {
+      "path": "soltui/bin/soltui",
+      "sha256": "2e8640844a056424ada5bbe7cc5d62160eb2e650bb2f0985002b29a3fc103ae8",
+      "lines": 51,
+      "receipt": "soltui-worker.json",
+      "semantic_coverage": "complete source/asset inspection recorded in bound receipt",
+      "read_evidence": {
+        "original_full_read_ranges": [
+          [
+            1,
+            51
+          ]
+        ],
+        "inspection": "Zsh symlink-aware launcher, quoted interpreter/repo paths, fixed module dispatch, dependency probe and isolated uv remedy."
+      },
+      "classification": "extensionless executable script"
+    },
+    {
+      "path": "soltui/soltui-service",
+      "sha256": "3ed51a530bfd2f7ad2efadc98f8924313a11be28d565cfde2e41071ec313f798",
+      "lines": 470,
+      "receipt": "soltui-worker.json",
+      "semantic_coverage": "complete source/asset inspection recorded in bound receipt",
+      "read_evidence": {
+        "original_full_read_ranges": [
+          [
+            1,
+            404
+          ]
+        ],
+        "inspection": "Mac bundle and launchd lifecycle, optional helper preflight, linked-worktree refusal, bounded process calls, confirmed stop/uninstall and staged bundle rollback."
+      },
+      "classification": "extensionless executable script"
+    },
+    {
+      "path": "website/public/index.html",
+      "sha256": "95f3cdb74a6be8e3755123fcf3a0270391855ca5d39573b557af9819b133a689",
+      "lines": 46,
+      "receipt": "website-ui.json",
+      "semantic_coverage": "complete source/asset inspection recorded in bound receipt",
+      "read_evidence": {},
+      "classification": "html"
+    },
+    {
+      "path": "website/public/styles.css",
+      "sha256": "b1576c1bc39e71ab94140df8814327eead44c4cca150fee21a9b0d06e3d37a55",
+      "lines": 6,
+      "receipt": "runtime-supplement-health.json",
+      "semantic_coverage": "complete source/asset inspection recorded in bound receipt",
+      "read_evidence": {
+        "read_evidence": "bytes0-12000 and12000-23400 (all6lines); Complete responsive navigation/forms/dialog/toast/blog styling, visible keyboard focus, hidden precedence, reduced motion and disabled trial cursor; no dynamic/external data URLs."
+      },
+      "classification": "css"
+    }
+  ]
+}

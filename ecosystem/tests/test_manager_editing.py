@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import gzip
 import json
+import os
 import sqlite3
 import tempfile
 import unittest
@@ -14,6 +15,7 @@ from botmanager.ledger import RuntimeLedger
 from botmanager.registry import CommandContext, dispatch
 
 from ecosystem.telemetry import report, sync
+from ecosystem.tests import isolated_default_owner
 
 
 def recording(root):
@@ -50,6 +52,7 @@ def recording(root):
 
 class ManagerEditingIntegrationTests(unittest.TestCase):
     def setUp(self):
+        self.enterContext(isolated_default_owner())
         self.temp = tempfile.TemporaryDirectory()
         self.addCleanup(self.temp.cleanup)
         self.root = Path(self.temp.name)
@@ -410,3 +413,20 @@ class ManagerEditingIntegrationTests(unittest.TestCase):
             events[1]["runtime_id"], self.ledger.get(self.bot)["runtime_id"]
         )
         self.assertEqual(events[1]["origin"], "native")
+
+
+class DefaultOwnerScopeTests(unittest.TestCase):
+    def test_default_endpoint_scope_restores_explicit_overrides(self):
+        setting = "SOLBOT_SOLTUI_ENDPOINT"
+        original = "http://127.0.0.1:1"
+        explicit = "http://127.0.0.1:2"
+        with patch.dict(os.environ, {setting: original}):
+            with isolated_default_owner() as endpoint:
+                self.assertTrue(endpoint.startswith("http://127.0.0.1:"))
+                self.assertNotEqual(endpoint, original)
+                self.assertNotEqual(endpoint, "http://127.0.0.1:8788")
+                self.assertEqual(os.environ[setting], endpoint)
+                with patch.dict(os.environ, {setting: explicit}):
+                    self.assertEqual(os.environ[setting], explicit)
+                self.assertEqual(os.environ[setting], endpoint)
+            self.assertEqual(os.environ[setting], original)

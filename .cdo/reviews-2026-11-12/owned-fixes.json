@@ -1,0 +1,400 @@
+{
+  "version": 1,
+  "reviewer": "full_repo_health",
+  "files": [
+    {
+      "path": "scripts/capture_market.py",
+      "lines": 467,
+      "blob_sha": "00efa1cfb4e5fff85610d000008f9c18f4ef3a64",
+      "sha256": "eaced7a170f5cbb2cb4c1ff069ff3b9521e2a4f26de6b9529292d6e596eef043",
+      "original_lines": 450,
+      "read_evidence": "Full450-line original read in1-180/181-360/361-450; final patch reviewed. Arbitrary type labels normalize safely while original raw content remains durable. Upload preflight reports missing dependencies before entering its retry loop and names the isolated uv invocation. Deadline, role locks, per-line fsync, inflight marker and single-send policy remain unchanged.",
+      "final_diff_review": true,
+      "semantic_review": "complete file scope",
+      "injection_gate": "no hostile reviewer instruction followed; fixtures treated as data",
+      "passes": {
+        "C1": "ran: Full450-line original read in1-180/181-360/361-450; final patch reviewed. Arbitrary type labels normalize safely while original raw content remains durable. Upload preflight reports missing dependencies before entering its retry loop and names the isolated uv invocation. Deadline, role locks, per-line fsync, inflight marker and single-send policy remain unchanged.",
+        "C2": "ran: Full450-line original read in1-180/181-360/361-450; final patch reviewed. Arbitrary type labels normalize safely while original raw content remains durable. Upload preflight reports missing dependencies before entering its retry loop and names the isolated uv invocation. Deadline, role locks, per-line fsync, inflight marker and single-send policy remain unchanged.",
+        "C3": "ran: Full450-line original read in1-180/181-360/361-450; final patch reviewed. Arbitrary type labels normalize safely while original raw content remains durable. Upload preflight reports missing dependencies before entering its retry loop and names the isolated uv invocation. Deadline, role locks, per-line fsync, inflight marker and single-send policy remain unchanged.",
+        "S1": "ran: Full450-line original read in1-180/181-360/361-450; final patch reviewed. Arbitrary type labels normalize safely while original raw content remains durable. Upload preflight reports missing dependencies before entering its retry loop and names the isolated uv invocation. Deadline, role locks, per-line fsync, inflight marker and single-send policy remain unchanged.",
+        "S2": "ran: Full450-line original read in1-180/181-360/361-450; final patch reviewed. Arbitrary type labels normalize safely while original raw content remains durable. Upload preflight reports missing dependencies before entering its retry loop and names the isolated uv invocation. Deadline, role locks, per-line fsync, inflight marker and single-send policy remain unchanged.",
+        "S3": "ran: Full450-line original read in1-180/181-360/361-450; final patch reviewed. Arbitrary type labels normalize safely while original raw content remains durable. Upload preflight reports missing dependencies before entering its retry loop and names the isolated uv invocation. Deadline, role locks, per-line fsync, inflight marker and single-send policy remain unchanged.",
+        "S4": "ran: Full450-line original read in1-180/181-360/361-450; final patch reviewed. Arbitrary type labels normalize safely while original raw content remains durable. Upload preflight reports missing dependencies before entering its retry loop and names the isolated uv invocation. Deadline, role locks, per-line fsync, inflight marker and single-send policy remain unchanged.",
+        "S5": "ran: durable connection/gap/status and class-only upload diagnostics reviewed; raw URI/certificate/key data excluded",
+        "P1": "ran: Full450-line original read in1-180/181-360/361-450; final patch reviewed. Arbitrary type labels normalize safely while original raw content remains durable. Upload preflight reports missing dependencies before entering its retry loop and names the isolated uv invocation. Deadline, role locks, per-line fsync, inflight marker and single-send policy remain unchanged.",
+        "P2": "ran: Full450-line original read in1-180/181-360/361-450; final patch reviewed. Arbitrary type labels normalize safely while original raw content remains durable. Upload preflight reports missing dependencies before entering its retry loop and names the isolated uv invocation. Deadline, role locks, per-line fsync, inflight marker and single-send policy remain unchanged.",
+        "M1": "ran: Full450-line original read in1-180/181-360/361-450; final patch reviewed. Arbitrary type labels normalize safely while original raw content remains durable. Upload preflight reports missing dependencies before entering its retry loop and names the isolated uv invocation. Deadline, role locks, per-line fsync, inflight marker and single-send policy remain unchanged.",
+        "M2": "ran: Full450-line original read in1-180/181-360/361-450; final patch reviewed. Arbitrary type labels normalize safely while original raw content remains durable. Upload preflight reports missing dependencies before entering its retry loop and names the isolated uv invocation. Deadline, role locks, per-line fsync, inflight marker and single-send policy remain unchanged.",
+        "M3": "N/A: repo-scope pass, separate aggregate row",
+        "M4": "ran: Full450-line original read in1-180/181-360/361-450; final patch reviewed. Arbitrary type labels normalize safely while original raw content remains durable. Upload preflight reports missing dependencies before entering its retry loop and names the isolated uv invocation. Deadline, role locks, per-line fsync, inflight marker and single-send policy remain unchanged.",
+        "T1": "ran: Full450-line original read in1-180/181-360/361-450; final patch reviewed. Arbitrary type labels normalize safely while original raw content remains durable. Upload preflight reports missing dependencies before entering its retry loop and names the isolated uv invocation. Deadline, role locks, per-line fsync, inflight marker and single-send policy remain unchanged.",
+        "T2": "N/A: repo-scope pass, separate aggregate row",
+        "T3": "N/A: repo-scope pass, separate aggregate row",
+        "T4": "N/A: non-test source",
+        "M5": "ran: CLI usage, explicit runtime/isolated environment, error exits and redacted prerequisite boundaries reviewed"
+      },
+      "findings": [
+        {
+          "id": "CAPTURE-TYPE",
+          "severity": "Medium",
+          "status": "fixed and verified"
+        }
+      ],
+      "verify": "Source snapshot /Users/mitch/.claude/skill-consolidation/backups/oraclebot-market-capture-20261112/capture_market.py.iter1;19tests exit0/nativeDB skipped; initial regression exit1/2errors4failures."
+    },
+    {
+      "path": "scripts/test_capture_market.py",
+      "lines": 258,
+      "blob_sha": "d93d0ab3fd81111108a0ce8cef369b5b5cfd25d4",
+      "sha256": "d75c0b064e5a9866d40bd745c345e14051fa1144343e4b46e5a3a8120aa41305",
+      "original_lines": 229,
+      "read_evidence": "Full229-line original read and added malformed-type cases reviewed. Fresh spool helper closes handles in finally. Synthetic messages, locks, gap detection and ambiguous-write checkpoints preserve exact sequence/content.",
+      "final_diff_review": true,
+      "semantic_review": "complete file scope",
+      "injection_gate": "no hostile reviewer instruction followed; fixtures treated as data",
+      "passes": {
+        "C1": "ran: Full229-line original read and added malformed-type cases reviewed. Fresh spool helper closes handles in finally. Synthetic messages, locks, gap detection and ambiguous-write checkpoints preserve exact sequence/content.",
+        "C2": "ran: Full229-line original read and added malformed-type cases reviewed. Fresh spool helper closes handles in finally. Synthetic messages, locks, gap detection and ambiguous-write checkpoints preserve exact sequence/content.",
+        "C3": "ran: Full229-line original read and added malformed-type cases reviewed. Fresh spool helper closes handles in finally. Synthetic messages, locks, gap detection and ambiguous-write checkpoints preserve exact sequence/content.",
+        "S1": "ran: Full229-line original read and added malformed-type cases reviewed. Fresh spool helper closes handles in finally. Synthetic messages, locks, gap detection and ambiguous-write checkpoints preserve exact sequence/content.",
+        "S2": "ran: Full229-line original read and added malformed-type cases reviewed. Fresh spool helper closes handles in finally. Synthetic messages, locks, gap detection and ambiguous-write checkpoints preserve exact sequence/content.",
+        "S3": "ran: Full229-line original read and added malformed-type cases reviewed. Fresh spool helper closes handles in finally. Synthetic messages, locks, gap detection and ambiguous-write checkpoints preserve exact sequence/content.",
+        "S4": "ran: Full229-line original read and added malformed-type cases reviewed. Fresh spool helper closes handles in finally. Synthetic messages, locks, gap detection and ambiguous-write checkpoints preserve exact sequence/content.",
+        "S5": "ran: actual CLI success/refusal/failure diagnostics reviewed; no raw credentials emitted",
+        "P1": "ran: Full229-line original read and added malformed-type cases reviewed. Fresh spool helper closes handles in finally. Synthetic messages, locks, gap detection and ambiguous-write checkpoints preserve exact sequence/content.",
+        "P2": "ran: Full229-line original read and added malformed-type cases reviewed. Fresh spool helper closes handles in finally. Synthetic messages, locks, gap detection and ambiguous-write checkpoints preserve exact sequence/content.",
+        "M1": "ran: Full229-line original read and added malformed-type cases reviewed. Fresh spool helper closes handles in finally. Synthetic messages, locks, gap detection and ambiguous-write checkpoints preserve exact sequence/content.",
+        "M2": "ran: Full229-line original read and added malformed-type cases reviewed. Fresh spool helper closes handles in finally. Synthetic messages, locks, gap detection and ambiguous-write checkpoints preserve exact sequence/content.",
+        "M3": "N/A: repo-scope pass, separate aggregate row",
+        "M4": "ran: Full229-line original read and added malformed-type cases reviewed. Fresh spool helper closes handles in finally. Synthetic messages, locks, gap detection and ambiguous-write checkpoints preserve exact sequence/content.",
+        "T1": "ran: Full229-line original read and added malformed-type cases reviewed. Fresh spool helper closes handles in finally. Synthetic messages, locks, gap detection and ambiguous-write checkpoints preserve exact sequence/content.",
+        "T2": "N/A: repo-scope pass, separate aggregate row",
+        "T3": "N/A: repo-scope pass, separate aggregate row",
+        "T4": "N/A: non-test source",
+        "M5": "N/A: library or test runner input"
+      },
+      "findings": [
+        {
+          "id": "CAPTURE-TYPE",
+          "severity": "Medium",
+          "status": "fixed and verified"
+        }
+      ],
+      "verify": "19tests exit0;1nativeDB skip; no live MongoDB; regression was red before source repair."
+    },
+    {
+      "path": "website/scripts/export_research.py",
+      "lines": 123,
+      "blob_sha": "619580793ce126f67832211619b338a60428372f",
+      "sha256": "2e65f2d29fa92f4978bc6445df2c4e4ac4b8d9551faa293e6e7d4398d1eceb21",
+      "original_lines": 117,
+      "read_evidence": "Full original file read, then final symlink-resolution guard reviewed. Reject redirects before content read. Existing tracked allowlist, source/published hashes, strict secret pattern refusal and publication caveats remain.",
+      "final_diff_review": true,
+      "semantic_review": "complete file scope",
+      "injection_gate": "no hostile reviewer instruction followed; fixtures treated as data",
+      "passes": {
+        "C1": "ran: Full original file read, then final symlink-resolution guard reviewed. Reject redirects before content read. Existing tracked allowlist, source/published hashes, strict secret pattern refusal and publication caveats remain.",
+        "C2": "ran: Full original file read, then final symlink-resolution guard reviewed. Reject redirects before content read. Existing tracked allowlist, source/published hashes, strict secret pattern refusal and publication caveats remain.",
+        "C3": "ran: Full original file read, then final symlink-resolution guard reviewed. Reject redirects before content read. Existing tracked allowlist, source/published hashes, strict secret pattern refusal and publication caveats remain.",
+        "S1": "ran: Full original file read, then final symlink-resolution guard reviewed. Reject redirects before content read. Existing tracked allowlist, source/published hashes, strict secret pattern refusal and publication caveats remain.",
+        "S2": "ran: Full original file read, then final symlink-resolution guard reviewed. Reject redirects before content read. Existing tracked allowlist, source/published hashes, strict secret pattern refusal and publication caveats remain.",
+        "S3": "ran: Full original file read, then final symlink-resolution guard reviewed. Reject redirects before content read. Existing tracked allowlist, source/published hashes, strict secret pattern refusal and publication caveats remain.",
+        "S4": "ran: Full original file read, then final symlink-resolution guard reviewed. Reject redirects before content read. Existing tracked allowlist, source/published hashes, strict secret pattern refusal and publication caveats remain.",
+        "S5": "ran: CLI reports deterministic export/check outcomes; credential-pattern refusal reports only source identity",
+        "P1": "ran: Full original file read, then final symlink-resolution guard reviewed. Reject redirects before content read. Existing tracked allowlist, source/published hashes, strict secret pattern refusal and publication caveats remain.",
+        "P2": "ran: Full original file read, then final symlink-resolution guard reviewed. Reject redirects before content read. Existing tracked allowlist, source/published hashes, strict secret pattern refusal and publication caveats remain.",
+        "M1": "ran: Full original file read, then final symlink-resolution guard reviewed. Reject redirects before content read. Existing tracked allowlist, source/published hashes, strict secret pattern refusal and publication caveats remain.",
+        "M2": "ran: Full original file read, then final symlink-resolution guard reviewed. Reject redirects before content read. Existing tracked allowlist, source/published hashes, strict secret pattern refusal and publication caveats remain.",
+        "M3": "N/A: repo-scope pass, separate aggregate row",
+        "M4": "ran: Full original file read, then final symlink-resolution guard reviewed. Reject redirects before content read. Existing tracked allowlist, source/published hashes, strict secret pattern refusal and publication caveats remain.",
+        "T1": "ran: Full original file read, then final symlink-resolution guard reviewed. Reject redirects before content read. Existing tracked allowlist, source/published hashes, strict secret pattern refusal and publication caveats remain.",
+        "T2": "N/A: repo-scope pass, separate aggregate row",
+        "T3": "N/A: repo-scope pass, separate aggregate row",
+        "T4": "N/A: non-test source",
+        "M5": "ran: CLI usage, explicit runtime/isolated environment, error exits and redacted prerequisite boundaries reviewed"
+      },
+      "findings": [
+        {
+          "id": "EXPORT-SYMLINK",
+          "severity": "High",
+          "status": "fixed and verified"
+        }
+      ],
+      "verify": "Baseline symlink regression exit1; final7researchtests exit0;py_compile0;diffcheck0; snapshot /Users/mitch/.claude/skill-consolidation/backups/oraclebot-research-export-20261112/export_research.py.iter1."
+    },
+    {
+      "path": "website/engine/test_research.py",
+      "lines": 88,
+      "blob_sha": "078d07adece75f633279e2f9142cbcfadebd5383",
+      "sha256": "5e9a84da31763e026be9fea6c1e764fd6186cb96ef0819fa5ebc68894f7caee1",
+      "original_lines": 67,
+      "read_evidence": "Full original tests plus final added file/parent-symlink regressions reviewed. All files and Git staging remain temporary. Public/source hashes, exclusion policy and incomplete-profile caveat are asserted.",
+      "final_diff_review": true,
+      "semantic_review": "complete file scope",
+      "injection_gate": "no hostile reviewer instruction followed; fixtures treated as data",
+      "passes": {
+        "C1": "ran: Full original tests plus final added file/parent-symlink regressions reviewed. All files and Git staging remain temporary. Public/source hashes, exclusion policy and incomplete-profile caveat are asserted.",
+        "C2": "ran: Full original tests plus final added file/parent-symlink regressions reviewed. All files and Git staging remain temporary. Public/source hashes, exclusion policy and incomplete-profile caveat are asserted.",
+        "C3": "ran: Full original tests plus final added file/parent-symlink regressions reviewed. All files and Git staging remain temporary. Public/source hashes, exclusion policy and incomplete-profile caveat are asserted.",
+        "S1": "ran: Full original tests plus final added file/parent-symlink regressions reviewed. All files and Git staging remain temporary. Public/source hashes, exclusion policy and incomplete-profile caveat are asserted.",
+        "S2": "ran: Full original tests plus final added file/parent-symlink regressions reviewed. All files and Git staging remain temporary. Public/source hashes, exclusion policy and incomplete-profile caveat are asserted.",
+        "S3": "ran: Full original tests plus final added file/parent-symlink regressions reviewed. All files and Git staging remain temporary. Public/source hashes, exclusion policy and incomplete-profile caveat are asserted.",
+        "S4": "ran: Full original tests plus final added file/parent-symlink regressions reviewed. All files and Git staging remain temporary. Public/source hashes, exclusion policy and incomplete-profile caveat are asserted.",
+        "S5": "ran: actual CLI success/refusal/failure diagnostics reviewed; no raw credentials emitted",
+        "P1": "ran: Full original tests plus final added file/parent-symlink regressions reviewed. All files and Git staging remain temporary. Public/source hashes, exclusion policy and incomplete-profile caveat are asserted.",
+        "P2": "ran: Full original tests plus final added file/parent-symlink regressions reviewed. All files and Git staging remain temporary. Public/source hashes, exclusion policy and incomplete-profile caveat are asserted.",
+        "M1": "ran: Full original tests plus final added file/parent-symlink regressions reviewed. All files and Git staging remain temporary. Public/source hashes, exclusion policy and incomplete-profile caveat are asserted.",
+        "M2": "ran: Full original tests plus final added file/parent-symlink regressions reviewed. All files and Git staging remain temporary. Public/source hashes, exclusion policy and incomplete-profile caveat are asserted.",
+        "M3": "N/A: repo-scope pass, separate aggregate row",
+        "M4": "ran: Full original tests plus final added file/parent-symlink regressions reviewed. All files and Git staging remain temporary. Public/source hashes, exclusion policy and incomplete-profile caveat are asserted.",
+        "T1": "ran: Full original tests plus final added file/parent-symlink regressions reviewed. All files and Git staging remain temporary. Public/source hashes, exclusion policy and incomplete-profile caveat are asserted.",
+        "T2": "N/A: repo-scope pass, separate aggregate row",
+        "T3": "N/A: repo-scope pass, separate aggregate row",
+        "T4": "N/A: non-test source",
+        "M5": "N/A: library or test runner input"
+      },
+      "findings": [
+        {
+          "id": "EXPORT-SYMLINK",
+          "severity": "High",
+          "status": "fixed and verified"
+        }
+      ],
+      "verify": "7tests exit0; no public export written by tests; source symlink red failure confirmed."
+    },
+    {
+      "path": "backtester/tests/test_index_search_tooling.py",
+      "lines": 383,
+      "blob_sha": "d9a01c5144603b4041ea48f1d3f57dcd54ce0f35",
+      "sha256": "5440405e46e01e48b322224a57ff600d6e1a2bc20fb33bb9d38b1d4be3196334",
+      "original_lines": 377,
+      "read_evidence": "Worker full original read1-210/211-377 and six-line final patch reviewed. Local env patch scopes the operator pause/schedule switch while explicit kill-switch tests remain intact.",
+      "final_diff_review": true,
+      "semantic_review": "complete file scope",
+      "injection_gate": "no hostile reviewer instruction followed; fixtures treated as data",
+      "passes": {
+        "C1": "ran: Worker full original read1-210/211-377 and six-line final patch reviewed. Local env patch scopes the operator pause/schedule switch while explicit kill-switch tests remain intact.",
+        "C2": "ran: Worker full original read1-210/211-377 and six-line final patch reviewed. Local env patch scopes the operator pause/schedule switch while explicit kill-switch tests remain intact.",
+        "C3": "ran: Worker full original read1-210/211-377 and six-line final patch reviewed. Local env patch scopes the operator pause/schedule switch while explicit kill-switch tests remain intact.",
+        "S1": "ran: Worker full original read1-210/211-377 and six-line final patch reviewed. Local env patch scopes the operator pause/schedule switch while explicit kill-switch tests remain intact.",
+        "S2": "ran: Worker full original read1-210/211-377 and six-line final patch reviewed. Local env patch scopes the operator pause/schedule switch while explicit kill-switch tests remain intact.",
+        "S3": "ran: Worker full original read1-210/211-377 and six-line final patch reviewed. Local env patch scopes the operator pause/schedule switch while explicit kill-switch tests remain intact.",
+        "S4": "ran: Worker full original read1-210/211-377 and six-line final patch reviewed. Local env patch scopes the operator pause/schedule switch while explicit kill-switch tests remain intact.",
+        "S5": "ran: existing/added observable diagnostics asserted where owned; test stdout remains protocol/output",
+        "P1": "ran: Worker full original read1-210/211-377 and six-line final patch reviewed. Local env patch scopes the operator pause/schedule switch while explicit kill-switch tests remain intact.",
+        "P2": "ran: Worker full original read1-210/211-377 and six-line final patch reviewed. Local env patch scopes the operator pause/schedule switch while explicit kill-switch tests remain intact.",
+        "M1": "ran: Worker full original read1-210/211-377 and six-line final patch reviewed. Local env patch scopes the operator pause/schedule switch while explicit kill-switch tests remain intact.",
+        "M2": "ran: Worker full original read1-210/211-377 and six-line final patch reviewed. Local env patch scopes the operator pause/schedule switch while explicit kill-switch tests remain intact.",
+        "M3": "N/A: repo-scope pass, separate aggregate row",
+        "M4": "ran: Worker full original read1-210/211-377 and six-line final patch reviewed. Local env patch scopes the operator pause/schedule switch while explicit kill-switch tests remain intact.",
+        "T1": "ran: Worker full original read1-210/211-377 and six-line final patch reviewed. Local env patch scopes the operator pause/schedule switch while explicit kill-switch tests remain intact.",
+        "T2": "N/A: repo-scope pass, separate aggregate row",
+        "T3": "N/A: repo-scope pass, separate aggregate row",
+        "T4": "ran: deterministic fixtures and scoped mocks retained; per-test state mutates and cannot be hoisted",
+        "M5": "N/A: library or test runner input"
+      },
+      "findings": [
+        {
+          "id": "IDLE-FIXTURE",
+          "severity": "Medium",
+          "status": "fixed and verified"
+        }
+      ],
+      "verify": "Original41tests exit1/8failures2errors; hostile outer INDEX_NO_AUTO=1 INDEX_FORCE_INTERVAL=0 final41pass0; py_compile0; diffcheck0; final blobd9a01c5144603b4041ea48f1d3f57dcd54ce0f35."
+    },
+    {
+      "path": "tools/install-hooks.sh",
+      "lines": 22,
+      "blob_sha": "2b3ab17203ebfe7e0861323ed0c94f4179a5b0f2",
+      "sha256": "e0fc7c9383e0a733ba2c7a48c7144a2a3268d69bb5ee1409560fffe93abe31cf",
+      "original_lines": 22,
+      "read_evidence": "Full22-line source and one-character fail-fast change reviewed. A failed Git/CD/config operation cannot print success and exit0. This modifies repository source, not host plugin trust.",
+      "final_diff_review": true,
+      "semantic_review": "complete file scope",
+      "injection_gate": "no hostile reviewer instruction followed; fixtures treated as data",
+      "passes": {
+        "C1": "ran: Full22-line source and one-character fail-fast change reviewed. A failed Git/CD/config operation cannot print success and exit0. This modifies repository source, not host plugin trust.",
+        "C2": "ran: Full22-line source and one-character fail-fast change reviewed. A failed Git/CD/config operation cannot print success and exit0. This modifies repository source, not host plugin trust.",
+        "C3": "ran: Full22-line source and one-character fail-fast change reviewed. A failed Git/CD/config operation cannot print success and exit0. This modifies repository source, not host plugin trust.",
+        "S1": "ran: Full22-line source and one-character fail-fast change reviewed. A failed Git/CD/config operation cannot print success and exit0. This modifies repository source, not host plugin trust.",
+        "S2": "ran: Full22-line source and one-character fail-fast change reviewed. A failed Git/CD/config operation cannot print success and exit0. This modifies repository source, not host plugin trust.",
+        "S3": "ran: Full22-line source and one-character fail-fast change reviewed. A failed Git/CD/config operation cannot print success and exit0. This modifies repository source, not host plugin trust.",
+        "S4": "ran: Full22-line source and one-character fail-fast change reviewed. A failed Git/CD/config operation cannot print success and exit0. This modifies repository source, not host plugin trust.",
+        "S5": "ran: actual CLI success/refusal/failure diagnostics reviewed; no raw credentials emitted",
+        "P1": "ran: Full22-line source and one-character fail-fast change reviewed. A failed Git/CD/config operation cannot print success and exit0. This modifies repository source, not host plugin trust.",
+        "P2": "ran: Full22-line source and one-character fail-fast change reviewed. A failed Git/CD/config operation cannot print success and exit0. This modifies repository source, not host plugin trust.",
+        "M1": "ran: Full22-line source and one-character fail-fast change reviewed. A failed Git/CD/config operation cannot print success and exit0. This modifies repository source, not host plugin trust.",
+        "M2": "ran: Full22-line source and one-character fail-fast change reviewed. A failed Git/CD/config operation cannot print success and exit0. This modifies repository source, not host plugin trust.",
+        "M3": "N/A: repo-scope pass, separate aggregate row",
+        "M4": "ran: Full22-line source and one-character fail-fast change reviewed. A failed Git/CD/config operation cannot print success and exit0. This modifies repository source, not host plugin trust.",
+        "T1": "ran: Full22-line source and one-character fail-fast change reviewed. A failed Git/CD/config operation cannot print success and exit0. This modifies repository source, not host plugin trust.",
+        "T2": "N/A: repo-scope pass, separate aggregate row",
+        "T3": "N/A: repo-scope pass, separate aggregate row",
+        "T4": "N/A: non-test source",
+        "M5": "ran: CLI usage, explicit runtime/isolated environment, error exits and redacted prerequisite boundaries reviewed"
+      },
+      "findings": [
+        {
+          "id": "HOOK-INSTALL-EXIT",
+          "severity": "Medium",
+          "status": "fixed and verified"
+        }
+      ],
+      "verify": "Original nonrepo fixture exit0 falsely claimed installed; final nonrepo exits1/no success; initialized temporary Git fixture exits0 with core.hooksPath=.githooks; bash-n0."
+    },
+    {
+      "path": "website/scripts/smoke.mjs",
+      "lines": 60,
+      "blob_sha": "617a8e2925cfaaf839443c87564a658e5ca3a91a",
+      "sha256": "a153ab6566d5a0a064b939804d17338ae144b9d78107ec1f1daaed53c355e5d3",
+      "original_lines": 40,
+      "read_evidence": "Full40-line original read and final argument/error/timeout patch reviewed. Help is discoverable; invalid schemes/credential URLs refuse before transport; every request has15s timeout and redacted failure. Synthetic wallet tests still assert inert capability, replay, entitlement and deletion.",
+      "final_diff_review": true,
+      "semantic_review": "complete file scope",
+      "injection_gate": "no hostile reviewer instruction followed; fixtures treated as data",
+      "passes": {
+        "C1": "ran: Full40-line original read and final argument/error/timeout patch reviewed. Help is discoverable; invalid schemes/credential URLs refuse before transport; every request has15s timeout and redacted failure. Synthetic wallet tests still assert inert capability, replay, entitlement and deletion.",
+        "C2": "ran: Full40-line original read and final argument/error/timeout patch reviewed. Help is discoverable; invalid schemes/credential URLs refuse before transport; every request has15s timeout and redacted failure. Synthetic wallet tests still assert inert capability, replay, entitlement and deletion.",
+        "C3": "ran: Full40-line original read and final argument/error/timeout patch reviewed. Help is discoverable; invalid schemes/credential URLs refuse before transport; every request has15s timeout and redacted failure. Synthetic wallet tests still assert inert capability, replay, entitlement and deletion.",
+        "S1": "ran: Full40-line original read and final argument/error/timeout patch reviewed. Help is discoverable; invalid schemes/credential URLs refuse before transport; every request has15s timeout and redacted failure. Synthetic wallet tests still assert inert capability, replay, entitlement and deletion.",
+        "S2": "ran: Full40-line original read and final argument/error/timeout patch reviewed. Help is discoverable; invalid schemes/credential URLs refuse before transport; every request has15s timeout and redacted failure. Synthetic wallet tests still assert inert capability, replay, entitlement and deletion.",
+        "S3": "ran: Full40-line original read and final argument/error/timeout patch reviewed. Help is discoverable; invalid schemes/credential URLs refuse before transport; every request has15s timeout and redacted failure. Synthetic wallet tests still assert inert capability, replay, entitlement and deletion.",
+        "S4": "ran: Full40-line original read and final argument/error/timeout patch reviewed. Help is discoverable; invalid schemes/credential URLs refuse before transport; every request has15s timeout and redacted failure. Synthetic wallet tests still assert inert capability, replay, entitlement and deletion.",
+        "S5": "ran: actual CLI success/refusal/failure diagnostics reviewed; no raw credentials emitted",
+        "P1": "ran: Full40-line original read and final argument/error/timeout patch reviewed. Help is discoverable; invalid schemes/credential URLs refuse before transport; every request has15s timeout and redacted failure. Synthetic wallet tests still assert inert capability, replay, entitlement and deletion.",
+        "P2": "ran: Full40-line original read and final argument/error/timeout patch reviewed. Help is discoverable; invalid schemes/credential URLs refuse before transport; every request has15s timeout and redacted failure. Synthetic wallet tests still assert inert capability, replay, entitlement and deletion.",
+        "M1": "ran: Full40-line original read and final argument/error/timeout patch reviewed. Help is discoverable; invalid schemes/credential URLs refuse before transport; every request has15s timeout and redacted failure. Synthetic wallet tests still assert inert capability, replay, entitlement and deletion.",
+        "M2": "ran: Full40-line original read and final argument/error/timeout patch reviewed. Help is discoverable; invalid schemes/credential URLs refuse before transport; every request has15s timeout and redacted failure. Synthetic wallet tests still assert inert capability, replay, entitlement and deletion.",
+        "M3": "N/A: repo-scope pass, separate aggregate row",
+        "M4": "ran: Full40-line original read and final argument/error/timeout patch reviewed. Help is discoverable; invalid schemes/credential URLs refuse before transport; every request has15s timeout and redacted failure. Synthetic wallet tests still assert inert capability, replay, entitlement and deletion.",
+        "T1": "ran: Full40-line original read and final argument/error/timeout patch reviewed. Help is discoverable; invalid schemes/credential URLs refuse before transport; every request has15s timeout and redacted failure. Synthetic wallet tests still assert inert capability, replay, entitlement and deletion.",
+        "T2": "N/A: repo-scope pass, separate aggregate row",
+        "T3": "N/A: repo-scope pass, separate aggregate row",
+        "T4": "N/A: non-test source",
+        "M5": "ran: CLI usage, explicit runtime/isolated environment, error exits and redacted prerequisite boundaries reviewed"
+      },
+      "findings": [
+        {
+          "id": "SMOKE-CLI",
+          "severity": "Medium",
+          "status": "fixed and verified"
+        }
+      ],
+      "verify": "Original --help exited1 with InvalidURL traceback; final help0, five invalid forms2; mocked unavailable fetch3 with safe diagnostic and AbortSignal; node syntax0. Full deployed smoke not run by this unit audit."
+    },
+    {
+      "path": "website/migrations/0001_accounts.sql",
+      "lines": 60,
+      "blob_sha": "966bb7395214fe916abc58f66e01c68a03e09ace",
+      "sha256": "c3fc76fddf81356e99643094784ee15c49a00854193563c3a220d21bd8a39be8",
+      "original_lines": 60,
+      "read_evidence": "Full60-line schema read. Tenant-owned bots/sessions/subscriptions cascade on user deletion, wallet/customer/subscription identities are unique, trial-history hash survives deletion and paper-only/venue/status constraints fail closed. API tests exercise actual schema through localSQLite.",
+      "final_diff_review": true,
+      "semantic_review": "complete file scope",
+      "injection_gate": "no hostile reviewer instruction followed; fixtures treated as data",
+      "passes": {
+        "C1": "ran: Full60-line schema read. Tenant-owned bots/sessions/subscriptions cascade on user deletion, wallet/customer/subscription identities are unique, trial-history hash survives deletion and paper-only/venue/status constraints fail closed. API tests exercise actual schema through localSQLite.",
+        "C2": "ran: Full60-line schema read. Tenant-owned bots/sessions/subscriptions cascade on user deletion, wallet/customer/subscription identities are unique, trial-history hash survives deletion and paper-only/venue/status constraints fail closed. API tests exercise actual schema through localSQLite.",
+        "C3": "ran: Full60-line schema read. Tenant-owned bots/sessions/subscriptions cascade on user deletion, wallet/customer/subscription identities are unique, trial-history hash survives deletion and paper-only/venue/status constraints fail closed. API tests exercise actual schema through localSQLite.",
+        "S1": "ran: Full60-line schema read. Tenant-owned bots/sessions/subscriptions cascade on user deletion, wallet/customer/subscription identities are unique, trial-history hash survives deletion and paper-only/venue/status constraints fail closed. API tests exercise actual schema through localSQLite.",
+        "S2": "ran: Full60-line schema read. Tenant-owned bots/sessions/subscriptions cascade on user deletion, wallet/customer/subscription identities are unique, trial-history hash survives deletion and paper-only/venue/status constraints fail closed. API tests exercise actual schema through localSQLite.",
+        "S3": "ran: Full60-line schema read. Tenant-owned bots/sessions/subscriptions cascade on user deletion, wallet/customer/subscription identities are unique, trial-history hash survives deletion and paper-only/venue/status constraints fail closed. API tests exercise actual schema through localSQLite.",
+        "S4": "ran: Full60-line schema read. Tenant-owned bots/sessions/subscriptions cascade on user deletion, wallet/customer/subscription identities are unique, trial-history hash survives deletion and paper-only/venue/status constraints fail closed. API tests exercise actual schema through localSQLite.",
+        "S5": "N/A: declarative schema; Worker owns operation diagnostics",
+        "P1": "ran: Full60-line schema read. Tenant-owned bots/sessions/subscriptions cascade on user deletion, wallet/customer/subscription identities are unique, trial-history hash survives deletion and paper-only/venue/status constraints fail closed. API tests exercise actual schema through localSQLite.",
+        "P2": "ran: Full60-line schema read. Tenant-owned bots/sessions/subscriptions cascade on user deletion, wallet/customer/subscription identities are unique, trial-history hash survives deletion and paper-only/venue/status constraints fail closed. API tests exercise actual schema through localSQLite.",
+        "M1": "ran: Full60-line schema read. Tenant-owned bots/sessions/subscriptions cascade on user deletion, wallet/customer/subscription identities are unique, trial-history hash survives deletion and paper-only/venue/status constraints fail closed. API tests exercise actual schema through localSQLite.",
+        "M2": "ran: Full60-line schema read. Tenant-owned bots/sessions/subscriptions cascade on user deletion, wallet/customer/subscription identities are unique, trial-history hash survives deletion and paper-only/venue/status constraints fail closed. API tests exercise actual schema through localSQLite.",
+        "M3": "N/A: repo-scope pass, separate aggregate row",
+        "M4": "ran: Full60-line schema read. Tenant-owned bots/sessions/subscriptions cascade on user deletion, wallet/customer/subscription identities are unique, trial-history hash survives deletion and paper-only/venue/status constraints fail closed. API tests exercise actual schema through localSQLite.",
+        "T1": "ran: Full60-line schema read. Tenant-owned bots/sessions/subscriptions cascade on user deletion, wallet/customer/subscription identities are unique, trial-history hash survives deletion and paper-only/venue/status constraints fail closed. API tests exercise actual schema through localSQLite.",
+        "T2": "N/A: repo-scope pass, separate aggregate row",
+        "T3": "N/A: repo-scope pass, separate aggregate row",
+        "T4": "N/A: non-test source",
+        "M5": "N/A: library or test runner input"
+      },
+      "findings": [],
+      "verify": "Website36node tests exit0; no production D1 mutation."
+    },
+    {
+      "path": "soltui/market_diagnostics.py",
+      "lines": 34,
+      "blob_sha": "be9df8a199a4808aa25ba39d73f3fd5fbb140fd9",
+      "sha256": "3d8a5185f60be39fb81601ad9ec5c70230c706a25abec193221125421dd7633d",
+      "original_lines": null,
+      "read_evidence": "New contextmanager/decorator read in full. Source-literal operation names, outcome and exception class are the only event fields.404 is normal unavailable; all original exceptions propagate. Handler/storage responsibility is explicit in docstring.",
+      "final_diff_review": true,
+      "semantic_review": "complete file scope",
+      "injection_gate": "no hostile reviewer instruction followed; fixtures treated as data",
+      "passes": {
+        "C1": "ran: New contextmanager/decorator read in full. Source-literal operation names, outcome and exception class are the only event fields.404 is normal unavailable; all original exceptions propagate. Handler/storage responsibility is explicit in docstring.",
+        "C2": "ran: New contextmanager/decorator read in full. Source-literal operation names, outcome and exception class are the only event fields.404 is normal unavailable; all original exceptions propagate. Handler/storage responsibility is explicit in docstring.",
+        "C3": "ran: New contextmanager/decorator read in full. Source-literal operation names, outcome and exception class are the only event fields.404 is normal unavailable; all original exceptions propagate. Handler/storage responsibility is explicit in docstring.",
+        "S1": "ran: New contextmanager/decorator read in full. Source-literal operation names, outcome and exception class are the only event fields.404 is normal unavailable; all original exceptions propagate. Handler/storage responsibility is explicit in docstring.",
+        "S2": "ran: New contextmanager/decorator read in full. Source-literal operation names, outcome and exception class are the only event fields.404 is normal unavailable; all original exceptions propagate. Handler/storage responsibility is explicit in docstring.",
+        "S3": "ran: New contextmanager/decorator read in full. Source-literal operation names, outcome and exception class are the only event fields.404 is normal unavailable; all original exceptions propagate. Handler/storage responsibility is explicit in docstring.",
+        "S4": "ran: New contextmanager/decorator read in full. Source-literal operation names, outcome and exception class are the only event fields.404 is normal unavailable; all original exceptions propagate. Handler/storage responsibility is explicit in docstring.",
+        "S5": "ran: fixed JSON attempt/outcome diagnostics and redaction asserted; standard handler owns persistence",
+        "P1": "ran: New contextmanager/decorator read in full. Source-literal operation names, outcome and exception class are the only event fields.404 is normal unavailable; all original exceptions propagate. Handler/storage responsibility is explicit in docstring.",
+        "P2": "ran: New contextmanager/decorator read in full. Source-literal operation names, outcome and exception class are the only event fields.404 is normal unavailable; all original exceptions propagate. Handler/storage responsibility is explicit in docstring.",
+        "M1": "ran: New contextmanager/decorator read in full. Source-literal operation names, outcome and exception class are the only event fields.404 is normal unavailable; all original exceptions propagate. Handler/storage responsibility is explicit in docstring.",
+        "M2": "ran: New contextmanager/decorator read in full. Source-literal operation names, outcome and exception class are the only event fields.404 is normal unavailable; all original exceptions propagate. Handler/storage responsibility is explicit in docstring.",
+        "M3": "N/A: repo-scope pass, separate aggregate row",
+        "M4": "ran: New contextmanager/decorator read in full. Source-literal operation names, outcome and exception class are the only event fields.404 is normal unavailable; all original exceptions propagate. Handler/storage responsibility is explicit in docstring.",
+        "T1": "ran: New contextmanager/decorator read in full. Source-literal operation names, outcome and exception class are the only event fields.404 is normal unavailable; all original exceptions propagate. Handler/storage responsibility is explicit in docstring.",
+        "T2": "N/A: repo-scope pass, separate aggregate row",
+        "T3": "N/A: repo-scope pass, separate aggregate row",
+        "T4": "N/A: non-test source",
+        "M5": "N/A: library or test runner input"
+      },
+      "findings": [
+        {
+          "id": "S5-MARKET-DIAGNOSTICS",
+          "severity": "Medium",
+          "status": "fixed and verified"
+        }
+      ],
+      "verify": "Three missing-log regressions failed before repair;60relatedtests exit0;compile0;diff0. No network, inference or live owner resets."
+    },
+    {
+      "path": "soltui/tests/test_market_diagnostics.py",
+      "lines": 52,
+      "blob_sha": "e3564d4c8fe875944a0d2494d2218a8c920e6310",
+      "sha256": "2b27d2a047c6f580c76d47608608d8bb0970e909b8bb7387d63ec6ff3eb05662",
+      "original_lines": null,
+      "read_evidence": "New tests read in full. Assert real log payloads/outcomes, both success/failure,404 unknown result, retained exception and exclusion of key/query/provider-text canaries. All HTTP calls are mocked.",
+      "final_diff_review": true,
+      "semantic_review": "complete file scope",
+      "injection_gate": "no hostile reviewer instruction followed; fixtures treated as data",
+      "passes": {
+        "C1": "ran: New tests read in full. Assert real log payloads/outcomes, both success/failure,404 unknown result, retained exception and exclusion of key/query/provider-text canaries. All HTTP calls are mocked.",
+        "C2": "ran: New tests read in full. Assert real log payloads/outcomes, both success/failure,404 unknown result, retained exception and exclusion of key/query/provider-text canaries. All HTTP calls are mocked.",
+        "C3": "ran: New tests read in full. Assert real log payloads/outcomes, both success/failure,404 unknown result, retained exception and exclusion of key/query/provider-text canaries. All HTTP calls are mocked.",
+        "S1": "ran: New tests read in full. Assert real log payloads/outcomes, both success/failure,404 unknown result, retained exception and exclusion of key/query/provider-text canaries. All HTTP calls are mocked.",
+        "S2": "ran: New tests read in full. Assert real log payloads/outcomes, both success/failure,404 unknown result, retained exception and exclusion of key/query/provider-text canaries. All HTTP calls are mocked.",
+        "S3": "ran: New tests read in full. Assert real log payloads/outcomes, both success/failure,404 unknown result, retained exception and exclusion of key/query/provider-text canaries. All HTTP calls are mocked.",
+        "S4": "ran: New tests read in full. Assert real log payloads/outcomes, both success/failure,404 unknown result, retained exception and exclusion of key/query/provider-text canaries. All HTTP calls are mocked.",
+        "S5": "ran: existing/added observable diagnostics asserted where owned; test stdout remains protocol/output",
+        "P1": "ran: New tests read in full. Assert real log payloads/outcomes, both success/failure,404 unknown result, retained exception and exclusion of key/query/provider-text canaries. All HTTP calls are mocked.",
+        "P2": "ran: New tests read in full. Assert real log payloads/outcomes, both success/failure,404 unknown result, retained exception and exclusion of key/query/provider-text canaries. All HTTP calls are mocked.",
+        "M1": "ran: New tests read in full. Assert real log payloads/outcomes, both success/failure,404 unknown result, retained exception and exclusion of key/query/provider-text canaries. All HTTP calls are mocked.",
+        "M2": "ran: New tests read in full. Assert real log payloads/outcomes, both success/failure,404 unknown result, retained exception and exclusion of key/query/provider-text canaries. All HTTP calls are mocked.",
+        "M3": "N/A: repo-scope pass, separate aggregate row",
+        "M4": "ran: New tests read in full. Assert real log payloads/outcomes, both success/failure,404 unknown result, retained exception and exclusion of key/query/provider-text canaries. All HTTP calls are mocked.",
+        "T1": "ran: New tests read in full. Assert real log payloads/outcomes, both success/failure,404 unknown result, retained exception and exclusion of key/query/provider-text canaries. All HTTP calls are mocked.",
+        "T2": "N/A: repo-scope pass, separate aggregate row",
+        "T3": "N/A: repo-scope pass, separate aggregate row",
+        "T4": "ran: deterministic fixtures and scoped mocks retained; per-test state mutates and cannot be hoisted",
+        "M5": "N/A: library or test runner input"
+      },
+      "findings": [
+        {
+          "id": "S5-MARKET-DIAGNOSTICS",
+          "severity": "Medium",
+          "status": "fixed and verified"
+        }
+      ],
+      "verify": "3red failures then60relatedtests pass; deterministic clocks, temporary streams and scoped mocks; no real sleeps."
+    }
+  ]
+}

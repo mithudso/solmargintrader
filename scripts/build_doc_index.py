@@ -20,6 +20,7 @@ shows up here rather than silently producing a dead index entry.
 
 from __future__ import annotations
 
+import argparse
 import json
 import re
 import subprocess
@@ -31,7 +32,7 @@ OVERVIEW = REPO / "docs" / "codebase-overview.md"
 INDEX = REPO / "docs" / "high_signal_file_index.json"
 
 COMPONENTS = ("backtester", "research", "extension", "soltui", "mongo", "liquidity",
-              "executor", "botmanager", "oracle", "ecosystem")
+              "executor", "botmanager", "oracle", "ecosystem", "website")
 
 # `| `some/path` | description |` -- the table shape used throughout the overview.
 ROW = re.compile(r"^\| `([\w./-]+)` \| (.+?) \|$", re.MULTILINE)
@@ -155,6 +156,7 @@ def build() -> tuple[list[dict[str, object]], list[str]]:
 
 def main() -> int:
     """Write the index; report any row that names a path which no longer exists."""
+    argparse.ArgumentParser(description=__doc__).parse_args()
     entries, missing = build()
     payload = {
         "$comment": (

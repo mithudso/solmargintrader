@@ -325,7 +325,7 @@ class BaseTests(unittest.TestCase):
         self.fake.nft_count[aero.lower()] = 1
         self.fake.nft_ids[aero.lower()] = [1609324]
         daemon = wallet.daemon_context(
-            {"mode": "live", "positions": [{"token_id": 1609324, "pair": "WETH/cbBTC", "value_usd": 43.1},
+            {"mode": "live", "owner": BASE_ADDR, "positions": [{"token_id": 1609324, "pair": "WETH/cbBTC", "value_usd": 43.1},
                                            {"token_id": 777, "pair": "A/B", "value_usd": 10.0}]}, [])
         scan = self.scan(daemon=daemon)
         by_id = {p["token_id"]: p for p in scan["positions"]}
@@ -649,7 +649,7 @@ class FetcherTests(unittest.TestCase):
 
     class Resp:
         def __init__(self, text): self.text = text
-        def read(self): return self.text.encode()
+        def read(self, limit=-1): return self.text.encode() if limit < 0 else self.text.encode()[:limit]
         def __enter__(self): return self
         def __exit__(self, *a): return False
 

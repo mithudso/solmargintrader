@@ -1,0 +1,63 @@
+{
+  "agent": "/root/guarded_soltui_final",
+  "role": "textual-job-lifecycle-specialist",
+  "definition_version": "1.0.0",
+  "materialized_at": "2026-11-12T22:57:16.918166+00:00",
+  "review_mode": "bounded static review; retrospectively materialized from this agent session",
+  "baseline_origin_master": "240e617a0faba0c32ed2b8873d36480b8552752a",
+  "subject_repository": "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112",
+  "subject_mutations_by_reviewer": false,
+  "reviewer_runtime_execution": false,
+  "limits": [
+    "Static source/diff/test review only; reviewer did not import or execute reviewed scripts, runtime probes, process queries/signals or owner operations.",
+    "Guarded runtime counts are caller-produced recorded evidence, not an independent reviewer rerun.",
+    "The recorded suite admitted zero subprocesses; probe kill/reap coverage is mocked and scoped to the direct child, not process-group or installed-runtime acceptance.",
+    "No provider, GitHub, Alertlane-owner endpoint, installed observer or service execution was performed by this reviewer; caller-reported installed observer 1.0.0 remains untouched."
+  ],
+  "review_id": "oraclebot-ops-remote-order-final",
+  "status": "complete",
+  "scope_status": "bounded static review complete; entire repository/SolTUI final acceptance is separate and pending",
+  "decision": "Accepted exact final three-file delta; no remaining Medium-or-higher finding within the bounded review.",
+  "source_sha256": {
+    "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/scripts/oraclebot_ops.py": "384b98a0917453ce6d1325c8c52008c54a0f2d8548ddff549388f549349fa984",
+    "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/scripts/oraclebot_watchdog.py": "555d3783e1c6ce455abdef2f62bfe6111bc3b9826f2464516efd67d4d635f168",
+    "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/scripts/test_oraclebot_ops.py": "9d8f3428afe316afa76b41cb76c3cd116b211368b780d96d4f72cc43434248c0"
+  },
+  "supersedes": "/tmp/oraclebot-final-soltui-20261112/review_receipts/ops-boundaries-initial.json",
+  "resolved_findings": [
+    {
+      "id": "OBS-REMOTE-ORDERING-1",
+      "severity": "medium",
+      "state": "resolved",
+      "anchor_file": "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/scripts/oraclebot_ops.py",
+      "anchor_symbol": "deliver",
+      "resolution": "Superseded generations skip remote retry, retain delivered=0, receive explicit remote_superseded metadata, leave pending/retry counts and can be pruned when old.",
+      "regression": "RemoteOrderTests.test_delayed_failure_cannot_reopen_after_remote_recovery requires final accepted resolve plus truthful stale delivered/superseded state; existing synthetic single-event 503-to-202 retry positive remains intact."
+    }
+  ],
+  "remaining_medium_or_higher_findings": [],
+  "evidence": [
+    {
+      "source": "/var/folders/hz/s7btlxx54c32yt375m03q0h40000gn/T/oraclebot-ops-guarded-state-7vdsuk9y/result.json",
+      "observed_at": "2026-11-12T22:57:16.918166+00:00",
+      "artifact_sha256": "b7dd6cb1b4791d6e0ebea55f37504b2f74f5901b83d9f456ef2cdfdcfb722cab",
+      "supported_claim": "Recorded 31-case source-stable guarded pass matches all three exact reviewed source hashes; zero failures/errors/skips/forbidden events and zero admitted subprocesses.",
+      "recorded_tests": 31,
+      "recorded_seconds": 0.5664681249909336,
+      "recorded_status": "pass",
+      "independently_rerun": false
+    },
+    {
+      "source": "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/scripts/oraclebot_ops.py",
+      "observed_at": "2026-11-12T22:57:16.918166+00:00",
+      "artifact_sha256": "384b98a0917453ce6d1325c8c52008c54a0f2d8548ddff549388f549349fa984",
+      "supported_claim": "Static narrow delta preserves separate superseded and delivered audit meaning."
+    },
+    {
+      "source": "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/scripts/test_oraclebot_ops.py",
+      "observed_at": "2026-11-12T22:57:16.918166+00:00",
+      "artifact_sha256": "9d8f3428afe316afa76b41cb76c3cd116b211368b780d96d4f72cc43434248c0",
+      "supported_claim": "Static regression asserts final resolve and delivered=0 with explicit superseded metadata; existing single-event retry test remains."
+    }
+  ]
+}

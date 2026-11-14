@@ -18,6 +18,7 @@ from pathlib import Path
 from typing import Any, Callable
 
 from . import config
+from .diagnostics import external_read
 
 PUBLIC_PRODUCTS = 'https://api.coinbase.com/api/v3/brokerage/market/products'
 CLI_PATH = Path.home() / '.local/share/soltui/coinbase-cli/node_modules/.bin/coinbase'
@@ -51,12 +52,14 @@ def _store(path: Path, value: Any) -> None:
         Path(name).unlink(missing_ok=True)
 
 
+@external_read("coinbase.market_catalog")
 def _get(url: str) -> dict[str, Any]:
     req = urllib.request.Request(url, headers={'User-Agent': 'solmargintrader-coinbase/1.0', 'Accept': 'application/json'})
     with urllib.request.urlopen(req, timeout=20) as response:
         return json.load(response)
 
 
+@external_read("coinbase.global_instruments")
 def _global_instruments() -> dict[str, Any]:
     body = json.dumps({'jsonrpc': '2.0', 'method': 'public/get_instruments', 'params': {}, 'id': 1}).encode()
     req = urllib.request.Request('https://drb.coinbase.com/api/v2', data=body,
@@ -186,6 +189,7 @@ def markets() -> dict[str, Any]:
         return {'complete': False, 'products': [], 'message': 'Market catalog has not been downloaded'}
 
 
+@external_read("coinbase.account_cli")
 def _cli(args: list[str]) -> dict[str, Any]:
     executable = str(CLI_PATH) if CLI_PATH.is_file() else shutil.which('coinbase')
     if not executable:
@@ -244,7 +248,7 @@ def sync_account(call: Callable[[list[str]], dict[str, Any]] = _cli) -> dict[str
             for row in rows:
                 if not isinstance(row, dict) or not isinstance(row.get('currency'), str):
                     raise ValueError('Coinbase returned an invalid balance row')
-                accounts.append({'portfolio_id': pid, 'portfolio_name': portfolio.get('name', ''), **row})
+                accounts.append({**row, 'portfolio_id': pid, 'portfolio_name': portfolio.get('name', '')})
             if not has_next:
                 break
             nxt = result.get('cursor')

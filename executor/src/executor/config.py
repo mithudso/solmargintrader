@@ -146,7 +146,10 @@ def _merge(cls: type, raw: Any, where: str):
         elif isinstance(default, int):
             ok = isinstance(value, int) and not isinstance(value, bool)
         elif isinstance(default, float):
-            ok = isinstance(value, int | float) and not isinstance(value, bool) and math.isfinite(value)
+            try:
+                ok = isinstance(value, int | float) and not isinstance(value, bool) and math.isfinite(value)
+            except OverflowError:
+                ok = False
             value = float(value) if ok else value
         elif isinstance(default, list):
             ok = isinstance(value, list) and all(isinstance(x, str) for x in value)

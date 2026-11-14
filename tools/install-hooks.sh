@@ -7,7 +7,7 @@
 # fresh clone has no hooks until this runs. It is set on the COMMON git dir, so
 # every worktree of this repository picks the hooks up too.
 
-set -uo pipefail
+set -euo pipefail
 cd "$(git rev-parse --show-toplevel)"
 
 chmod +x .githooks/* tools/*.sh 2>/dev/null || true

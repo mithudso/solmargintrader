@@ -5,8 +5,8 @@ therefore *idempotent*: loading twice must leave identical counts. Without that,
 the time series collections would silently double on a second run -- they accept no
 unique index, so nothing else would catch it.
 
-Tests needing a server skip cleanly when one is not listening, and they only ever
-touch the `solmargintrader` database.
+Tests needing a server skip cleanly when one is not listening. Each fixture owns
+a fresh `solmargintrader_test_<uuid>` database and removes only that database.
 """
 
 from __future__ import annotations
@@ -14,7 +14,11 @@ from __future__ import annotations
 import math
 import sys
 import unittest
+from contextlib import contextmanager
+from datetime import datetime, timezone
 from pathlib import Path
+from unittest import mock
+from uuid import uuid4
 
 REPO = Path(__file__).resolve().parents[2]
 if str(REPO) not in sys.path:
@@ -54,6 +58,20 @@ needs_server = unittest.skipUnless(
     SERVER, "no mongod on localhost:27017; start one or skip these"
 )
 needs_pymongo = unittest.skipUnless(HAVE_PYMONGO, "pymongo not installed")
+
+
+@contextmanager
+def isolated_store():
+    """Select and clean up only a fresh, private integration-test database."""
+    client = schema.connect()
+    name = f"{schema.DB_NAME}_test_{uuid4().hex}"
+    try:
+        yield client[name]
+    finally:
+        try:
+            client.drop_database(name)
+        finally:
+            client.close()
 
 
 class TestPureHelpers(unittest.TestCase):
@@ -180,18 +198,16 @@ class TestSchemaLayout(unittest.TestCase):
 
 @needs_server
 class TestLoadedStore(unittest.TestCase):
-    """Assertions against the store as loaded by `python3 mongo/load.py`."""
+    """Assertions against an isolated store built from tracked reference data."""
 
     @classmethod
     def setUpClass(cls) -> None:
-        cls.client = schema.connect()
-        cls.db = cls.client[schema.DB_NAME]
-        if cls.db.strategies.count_documents({}) == 0:
-            raise unittest.SkipTest("store is empty; run `python3 mongo/load.py` first")
-
-    @classmethod
-    def tearDownClass(cls) -> None:
-        cls.client.close()
+        cls.db = cls.enterClassContext(isolated_store())
+        schema.create(cls.db)
+        batches = load.build_all({"strategies", "signals", "indicators", "documents"}, run_suites=False)
+        for name, docs in batches.items():
+            if docs:
+                cls.db[name].insert_many(docs)
 
     def test_bars_is_a_native_time_series_collection(self) -> None:
         """Not a regular collection that merely holds timestamps."""
@@ -226,7 +242,7 @@ class TestLoadedStore(unittest.TestCase):
     def test_strategy_cards_keep_their_own_vocabulary(self) -> None:
         """One document per card, exactly one per registry key, every key real.
 
-        No invented `registered` flag: the 20 without a key are not simply
+        No invented `registered` flag: cards without a key are not simply
         unregistered -- the ladder grid is `implemented` and has no key because it is
         not a `Strategy` at all.
         """
@@ -315,30 +331,29 @@ class TestIdempotency(unittest.TestCase):
 
     def test_two_loads_leave_identical_counts(self) -> None:
         """The check that the module docstring's claim rests on."""
-        client = schema.connect()
-        self.addCleanup(client.close)
-        db = client[schema.DB_NAME]
         names = self.SUBSET.split(",")
-
-        self.assertEqual(load.main(["--only", self.SUBSET]), 0)
-        first = {name: db[name].count_documents({}) for name in names}
-
-        self.assertEqual(load.main(["--only", self.SUBSET]), 0)
-        second = {name: db[name].count_documents({}) for name in names}
-
-        self.assertEqual(first, second)
-        self.assertTrue(all(count > 0 for count in first.values()), first)
+        with isolated_store() as db, mock.patch.object(load, "DB_NAME", db.name), \
+                mock.patch.object(load, "connect", return_value=db.client):
+            self.assertEqual(load.main(["--only", self.SUBSET]), 0)
+            first = {name: db[name].count_documents({}) for name in names}
+            self.assertEqual(load.main(["--only", self.SUBSET]), 0)
+            second = {name: db[name].count_documents({}) for name in names}
+            self.assertEqual(first, second)
+            self.assertTrue(all(count > 0 for count in first.values()), first)
 
     def test_a_subset_load_leaves_other_collections_alone(self) -> None:
         """`--only` must not wipe the rest of the store."""
-        client = schema.connect()
-        self.addCleanup(client.close)
-        db = client[schema.DB_NAME]
-        before = db.bars.count_documents({})
-        if before == 0:
-            self.skipTest("bars not loaded; run a full load first")
-        self.assertEqual(load.main(["--only", "signals"]), 0)
-        self.assertEqual(db.bars.count_documents({}), before)
+        with isolated_store() as db, mock.patch.object(load, "DB_NAME", db.name), \
+                mock.patch.object(load, "connect", return_value=db.client):
+            schema.create(db, only={"bars"})
+            db.bars.insert_one({"ts": datetime.now(timezone.utc),
+                                "series": {"asset": "FIXTURE", "interval": "1d"},
+                                "open": 1.0, "high": 1.0, "low": 1.0,
+                                "close": 1.0, "volume": 1.0})
+            before = db.bars.count_documents({})
+            self.assertGreater(before, 0)
+            self.assertEqual(load.main(["--only", "signals"]), 0)
+            self.assertEqual(db.bars.count_documents({}), before)
 
 
 if __name__ == "__main__":

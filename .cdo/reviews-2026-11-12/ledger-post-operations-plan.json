@@ -1,0 +1,20 @@
+{
+  "observed_at": "2026-11-12T22:57:07.358243+00:00",
+  "status": "TWO_EQUAL_UNCHANGED_INCREMENTAL_PLANS",
+  "plans": [
+    {
+      "review": [],
+      "deferred": [],
+      "unchanged_skipped": 827,
+      "removed_from_disk": [],
+      "full": false
+    },
+    {
+      "review": [],
+      "deferred": [],
+      "unchanged_skipped": 827,
+      "removed_from_disk": [],
+      "full": false
+    }
+  ]
+}

@@ -139,8 +139,11 @@ def tracked_files() -> list[str]:
                        capture_output=True, text=True, check=True)
     # An unresolved merge reports one path per index stage. The catalog uses
     # paths as row keys, so repeated stages must never create repeated rows.
+    # The public research bundle duplicates canonical sources. Its own manifest
+    # binds every published shard and the exporter verifies all source hashes.
     return sorted({x for x in r.stdout.splitlines()
-                   if x.strip() and x not in SELF_EXCLUDED})
+                   if x.strip() and x not in SELF_EXCLUDED
+                   and not x.startswith("website/public/research/")})
 
 
 def sha1_of(p: Path) -> str:
@@ -156,7 +159,7 @@ def classify(rel: str) -> str:
     p = Path(rel)
     ext = p.suffix
     parts = p.parts
-    if "tests" in parts or p.name.startswith("test_"):
+    if "tests" in parts or "test" in parts or p.name.startswith("test_"):
         return "test"
     if "strategy_cards" in parts:
         return "strategy-card"
@@ -461,7 +464,7 @@ def build_text(meta: dict[str, Any]) -> dict[str, Any]:
             postings[term][e["id"]] = n
 
     # Terms in almost every file carry no discriminating power and inflate the
-    # artifact; terms in exactly one file are usually a typo or a hash.
+    # artifact. Rare terms stay searchable, including identifiers found once.
     n_docs = len(lengths)
     pruned = {t: d for t, d in postings.items() if len(d) <= n_docs * 0.6}
     return {
@@ -747,17 +750,26 @@ def build_semantic(meta: dict[str, Any], *, local: bool = False, pull: bool = Fa
         batch = texts[i:i + BATCH]
         try:
             vecs.extend(embed(batch))
-        except (urllib.error.URLError, OSError, KeyError) as exc:
-            print(f"SEMANTIC BUILD FAILED at chunk {i}: {exc}")
+        except (urllib.error.URLError, OSError, KeyError, ValueError, TypeError) as exc:
+            print(f"SEMANTIC BUILD FAILED at chunk {i}: {type(exc).__name__}")
             print(f"  Is ollama running, and is `{EMBED_MODEL}` pulled? "
                   f"`ollama pull {EMBED_MODEL}`")
             return 1
         print(f"  {min(i + BATCH, len(texts))}/{len(texts)}", end="\r", flush=True)
     print()
 
-    arr = np.asarray(vecs, dtype="float32")
+    try:
+        arr = np.asarray(vecs, dtype="float32")
+    except (ValueError, TypeError):
+        print("SEMANTIC BUILD FAILED: invalid embedding vectors; existing index unchanged.")
+        return 1
+    if arr.ndim != 2 or arr.shape[0] != len(owners) or arr.shape[1] == 0 or not np.isfinite(arr).all():
+        print("SEMANTIC BUILD FAILED: invalid embedding shape or values; existing index unchanged.")
+        return 1
     norms = np.linalg.norm(arr, axis=1, keepdims=True)
-    norms[norms == 0] = 1.0
+    if not np.isfinite(norms).all() or (norms == 0).any():
+        print("SEMANTIC BUILD FAILED: invalid embedding norms; existing index unchanged.")
+        return 1
     arr = (arr / norms).astype("float16")   # pre-normalised: cosine becomes a dot product
     npz_path = LOCAL_NPZ if local else SEMANTIC_NPZ
     manifest_path = LOCAL_MANIFEST if local else SEMANTIC_MANIFEST
@@ -880,7 +892,9 @@ def main(argv: list[str] | None = None) -> int:
     if args.command in {"all", "text", "concepts"}:
         text = build_text(meta)
         if args.command in {"all", "text"}:
-            TEXT_JSON.write_text(json.dumps(text, indent=2, sort_keys=True) + "\n")
+            # Whitespace alone pushed the complete research index over GitHub's
+            # 100 MiB file limit. Compact JSON preserves every posting and score.
+            TEXT_JSON.write_text(json.dumps(text, separators=(",", ":"), sort_keys=True) + "\n")
             s = text["stats"]
             print(f"{TEXT_JSON.relative_to(REPO)}: {s['terms']} terms "
                   f"(pruned from {s['termsBeforePrune']}), "

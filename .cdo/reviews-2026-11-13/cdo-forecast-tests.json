@@ -1,0 +1,258 @@
+{
+  "schema_version": 1,
+  "task": "TASK-1540",
+  "reviewer": "cdo_forecast_tests",
+  "created_at": "2026-11-13T04:59:35.346455+00:00",
+  "target": "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/ecosystem/tests/test_forecast.py",
+  "relative_path": "ecosystem/tests/test_forecast.py",
+  "scope": "Full static CDO per-file audit only; root owns convergence, runtime checks, ledger, workflow records and Git delivery.",
+  "file_sha256": "6eb725993fd67e5ec7022931edbeca02a954fcdf65758f3527f4a699cea51152",
+  "computed_blob_sha1": "831517160585dc706c8dee726ab41ddbf39af300",
+  "byte_count": 17796,
+  "line_count": 398,
+  "read_ranges": [
+    [
+      1,
+      140
+    ],
+    [
+      141,
+      219
+    ],
+    [
+      220,
+      248
+    ],
+    [
+      249,
+      398
+    ]
+  ],
+  "initial_read_ranges": [
+    [
+      1,
+      140
+    ],
+    [
+      141,
+      275
+    ],
+    [
+      276,
+      390
+    ]
+  ],
+  "delta_ranges": [
+    [
+      87,
+      98
+    ],
+    [
+      220,
+      248
+    ]
+  ],
+  "complete_bounded_read": true,
+  "inherited_audit": false,
+  "stage_0_5": {
+    "state": "done",
+    "reviewer_directives_found": false,
+    "hostile_halt": false
+  },
+  "skills_read": [
+    "/Users/mitch/.agents/skills/code-deep-optimizer/SKILL.md",
+    "/Users/mitch/.agents/skills/lang-python/SKILL.md",
+    "/Users/mitch/.agents/skills/software-engineering-patterns/references/code-reviewer.md",
+    "/Users/mitch/.agents/skills/software-engineering-patterns/references/coding-standards.md",
+    "/Users/mitch/.agents/skills/code-deep-optimizer/references/report-format.md",
+    "/Users/mitch/.agents/skills/code-deep-optimizer/references/flags-and-statuses.md"
+  ],
+  "passes": [
+    {
+      "pass": "C1",
+      "state": "done",
+      "mode": "static",
+      "result": "Static control flow and assertion logic checked across every test. No runtime result inferred."
+    },
+    {
+      "pass": "C2",
+      "state": "done",
+      "mode": "static",
+      "result": "Fixture call signatures, report keys, SQLite row use and mock return shapes checked within assigned file; implementation cross-file contract belongs to root."
+    },
+    {
+      "pass": "C3",
+      "state": "done",
+      "mode": "static",
+      "result": "Adversarial static cases checked: same-slot issue, source loss, empty/rejected preference stores, concurrent publication, subnormal midpoint, stale/future/nonfinite quotes, gzip truncation and timing. Identified positive-count-only late-outcome test weakness and fixed only its assertion."
+    },
+    {
+      "pass": "S1",
+      "state": "done",
+      "mode": "static",
+      "result": "Injection gate completed before audit: no reviewer directives or hostile content found. Fixtures contain public synthetic quotes and a local privacy canary. No secret material found."
+    },
+    {
+      "pass": "S2",
+      "state": "done",
+      "mode": "static",
+      "result": "TemporaryDirectory addCleanup, closing database contexts and ThreadPoolExecutor context cleanup inspected; barrier timeout bounds the injected collision rendezvous."
+    },
+    {
+      "pass": "S3",
+      "state": "done",
+      "mode": "static",
+      "result": "Stale/future/crossed/bool/nonfinite and invalid preference-value fixtures inspected. Test values remain data and JSON parsing is not code execution."
+    },
+    {
+      "pass": "S4",
+      "state": "done",
+      "mode": "static",
+      "result": "Python unittest/stdlib usage inspected. Arbitrary mocked PID collision risk fixed with deterministic distinct issuer and owner PIDs; no further Medium+ static finding."
+    },
+    {
+      "pass": "S5",
+      "state": "done",
+      "mode": "static",
+      "result": "Structured JSON event bodies, exact WARNING/INFO levels, duplicate-transition suppression, source/path privacy and logger-sink failure behavior are asserted. Deterministic RecursionError injection is read but not executed."
+    },
+    {
+      "pass": "P1",
+      "state": "done",
+      "mode": "static",
+      "result": "Fixture sizes are bounded (largest explicit seed loop 601 samples), no sleeps and no unbounded test loops found."
+    },
+    {
+      "pass": "P2",
+      "state": "done",
+      "mode": "static",
+      "result": "ThreadPoolExecutor lifetime, global mock restoration order and Barrier timeout inspected. Temporary fixture directory and mutable Worker are per-test."
+    },
+    {
+      "pass": "M1",
+      "state": "done",
+      "mode": "static",
+      "result": "Behavioral names and small test methods checked. Numeric fixture values express boundary scenarios rather than scattered product settings."
+    },
+    {
+      "pass": "M2",
+      "state": "done",
+      "mode": "static",
+      "result": "Shared quote/seed/variable_seed and synthetic strategy helpers cover repeated fixture work; no Medium duplication established."
+    },
+    {
+      "pass": "M4",
+      "state": "done",
+      "mode": "static",
+      "result": "Names/comments reviewed against assertions. Late-outcome comment now has positive NULL existence and zero non-NULL assertions."
+    },
+    {
+      "pass": "T1",
+      "state": "done",
+      "mode": "static",
+      "result": "All assertion quality and edge-case checks completed. Hardened late-outcome proof with zero non-NULL late hits and made issuer/owner provenance PIDs deterministic while preserving original assertions. No further Medium+ static finding; root owns execution."
+    },
+    {
+      "pass": "T4",
+      "state": "done",
+      "mode": "static",
+      "result": "No real sleeps or avoidable repeated immutable heavyweight setup found. Worker/storage state is mutated by tests, so setup is not safe to hoist. Collision barrier wait is deliberate and bounded."
+    },
+    {
+      "pass": "M3",
+      "state": "na",
+      "reason": "Repository-scope architecture and central configuration pass owned by root."
+    },
+    {
+      "pass": "T2",
+      "state": "na",
+      "reason": "Repository-scope dependency and supply-chain pass owned by root."
+    },
+    {
+      "pass": "T3",
+      "state": "na",
+      "reason": "Repository-scope tooling pass owned by root."
+    },
+    {
+      "pass": "M5",
+      "state": "na",
+      "reason": "Conventional unittest test module; unittest.main is a harness entrypoint, not a standalone user tool."
+    }
+  ],
+  "active_file_passes": 15,
+  "repo_passes_na": [
+    "M3",
+    "T2",
+    "T3"
+  ],
+  "conditional_pass": "M5 na",
+  "findings": [
+    {
+      "id": "forecast-tests-T1-1",
+      "pass": "T1",
+      "severity": "Medium",
+      "line": 88,
+      "finding": "A positive count of settled=1040 rows with NULL hit permits other late-settled rows to receive a hit without failing this test.",
+      "impact": "Weakens regression protection for prospective-only outcome credit; this is a test-quality finding, not proof of a product defect.",
+      "static_counterexample": "If at least one settled=1040 row has NULL hit and another has hit=1, the original assertTrue count succeeds.",
+      "status": "Applied; root runtime verification pending",
+      "change": "Preserved the positive NULL-count assertion and added count of settled=1040 rows with hit IS NOT NULL equals zero at lines 93-98."
+    },
+    {
+      "id": "forecast-tests-T1-2",
+      "pass": "T1",
+      "related_pass": "S4",
+      "severity": "Medium",
+      "line": 237,
+      "finding": "The test mocks current owner PID to the arbitrary constant 45678 and assumes the forecast issuer PID differs. A runner whose actual PID is 45678 fails despite correct behavior.",
+      "impact": "Rare environment-dependent false test failure reduces regression-suite robustness.",
+      "static_counterexample": "Run the test in a process with PID 45678: initial evaluate records issuer_pid=45678; later mocked sample sets owner_pid=45678; assertNotEqual fails.",
+      "prescribed_fix": "Mock os.getpid to a distinct deterministic issuer PID during initial evaluate, retain the later owner PID and existing inequality assertion.",
+      "status": "Applied; root runtime verification pending",
+      "change": "Mock initial evaluate issuer PID to 12345 at lines 224-225; preserve sample owner PID 45678 and original assertions; add exact issuer PID assertion at line 236."
+    }
+  ],
+  "remaining_medium_plus": 0,
+  "verify": {
+    "state": "not_run",
+    "reason": "Per-file agent forbidden to execute tests; root owns guard RED and final qualified full suite."
+  },
+  "runtime_claims": [],
+  "source_edits_stopped": true,
+  "mutations_performed": [
+    "Root-authorized T1 late-outcome assertion hardening in target file",
+    "Root-authorized deterministic issuer/owner PID fixture hardening in same test file",
+    "This JSON receipt only"
+  ],
+  "forbidden_actions_performed": [],
+  "summary": "Full assigned-file static audit complete with full-base plus delta read coverage; two test-quality weaknesses hardened. Zero remaining Medium+ static findings. Runtime verification and convergence remain root-owned; no test pass claimed.",
+  "updated_at": "2026-11-13T05:00:17.690557+00:00",
+  "previous_reviewed_sha256": "0a86a4e1fa84a376dc3eb634f4b8b8167a0d13f85eb8bc2833e55cef2199a138",
+  "last_full_read_ranges": [
+    [
+      1,
+      140
+    ],
+    [
+      141,
+      275
+    ],
+    [
+      276,
+      396
+    ]
+  ],
+  "last_full_read_sha256": "0a86a4e1fa84a376dc3eb634f4b8b8167a0d13f85eb8bc2833e55cef2199a138",
+  "delta_read_ranges": [
+    [
+      220,
+      248
+    ]
+  ],
+  "coverage_basis": "Complete 396-line bounded read at previous_reviewed_sha256; then complete 220-248 delta read for the only later edit. Lines after that edit are unchanged content shifted by two lines.",
+  "final_static_counts": {
+    "critical": 0,
+    "high": 0,
+    "medium": 0
+  }
+}

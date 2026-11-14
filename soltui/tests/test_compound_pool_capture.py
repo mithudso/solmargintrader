@@ -17,6 +17,7 @@ class CompoundPoolCapture(unittest.TestCase):
 import asyncio
 from concurrent.futures import ProcessPoolExecutor
 from pathlib import Path
+from soltui.tests.test_tui import offline_console_reads
 from soltui import config
 from soltui.config import Settings
 from soltui.tui import SolTuiApp
@@ -30,7 +31,8 @@ def run_pool():
 async def main():
     async with app.run_test(size=(180, 55)):
         assert await asyncio.to_thread(run_pool) == [5, 9]
-asyncio.run(main())
+with offline_console_reads():
+    asyncio.run(main())
 '''
         with tempfile.TemporaryDirectory() as tmp:
             result = subprocess.run([sys.executable, "-c", code, tmp], cwd=Path(__file__).resolve().parents[2],

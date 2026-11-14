@@ -36,6 +36,8 @@ function fixtureBoot() {
   const state = window.__deskFixture = { calls: [], writes: [], commands, execution, currentRun: run('run-one'), failReads: [],
     storage: { 'signalDesk.v1': { runs: [run('run-one'), run('run-two'), run('run-other', true)], selected: [], draft: null, asset: 'SOL', page: 'signal', density: 'comfortable' } },
     prediction: 'UP', expired: false, prepared: false, streamFresh: true };
+  // Legacy browser snapshots can omit fields added after their creation.
+  delete state.storage['signalDesk.v1'].runs[1].skipped;
   const envelope = (command, result) => ({ ok: true, command, result, error: null });
   chrome.storage.local.get = async (key) => typeof key === 'string' ? { [key]: structuredClone(state.storage[key]) } : structuredClone(state.storage);
   chrome.storage.local.set = async (value) => Object.assign(state.storage, structuredClone(value));
@@ -227,7 +229,8 @@ export async function verifySignalDesk(_page, browser) {
 
     await ev(`(()=>{const f=document.querySelector('#soltuiLivePredictions [aria-label="Filter strategy evidence"]');f.value='no-match-exact';f.dispatchEvent(new Event('input'));f.focus();window.__oldFilter=f;document.querySelector('#soltuiLiveRefresh').click()})()`);
     await wait(`document.querySelector('#soltuiLivePredictions [aria-label="Filter strategy evidence"]')!==__oldFilter`);
-    assert.deepEqual(await ev(`({value:document.querySelector('#soltuiLivePredictions input').value,focused:document.activeElement===document.querySelector('#soltuiLivePredictions input'),empty:document.querySelector('#soltuiLivePredictions').textContent.includes('No matching strategies')})`), { value: 'no-match-exact', focused: true, empty: true });
+    const filterState = await ev(`({value:document.querySelector('#soltuiLivePredictions input').value,focused:document.activeElement===document.querySelector('#soltuiLivePredictions input'),empty:document.querySelector('#soltuiLivePredictions').textContent.includes('No matching strategies')})`);
+    assert.deepEqual(filterState, { value: 'no-match-exact', focused: true, empty: true }, `filter refresh state ${JSON.stringify(filterState)}`);
     await click('Clear filter', 'document.querySelector("#soltuiLivePredictions")');
     assert.equal(await ev(`document.querySelectorAll('#soltuiLivePredictions tbody tr').length`), 1);
     await route('forward', 'Forward testing');

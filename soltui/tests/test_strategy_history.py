@@ -221,6 +221,18 @@ class TestCommands(unittest.TestCase):
         self.assertEqual(dispatch("queue.backtest", {"scope": "undertested", "min_runs": 0})["error"]["code"],
                          "bad_params")
 
+    def test_backtest_command_reports_exclusions_as_candidates_not_failed_jobs(self) -> None:
+        with mock.patch.object(bgcontrol, "start"), \
+                mock.patch.object(commands, "_testable_strategies", return_value={"hurst_switch"}):
+            env = dispatch("queue.backtest", {"scope": "undertested"})
+        self.assertTrue(env["ok"], env)
+        census = env["result"]["candidates"]
+        self.assertGreater(census["excluded"], 0)
+        self.assertEqual(census["requested"], census["eligible"] + census["excluded"])
+        self.assertEqual(env["result"]["jobs"], census["eligible"])
+        self.assertTrue(all(e["reason"] == "invalid_parameters" for e in census["exclusions"]))
+        self.assertIn("excluded before evaluation", env["result"]["message"])
+
     def test_bad_requests_are_refused(self) -> None:
         self.assertEqual(dispatch("queue.backtest", {"scope": "everything"})["error"]["code"], "bad_params")
         self.assertEqual(dispatch("queue.backtest", {"scope": "selected"})["error"]["code"], "bad_params")

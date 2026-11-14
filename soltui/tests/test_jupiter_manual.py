@@ -9,6 +9,7 @@ import time
 import unittest
 from decimal import Decimal
 from pathlib import Path
+from typing import Any
 from unittest import mock
 
 from solders.hash import Hash

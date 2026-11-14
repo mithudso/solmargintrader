@@ -49,6 +49,8 @@ accepts more is a parser nobody can predict.
 from __future__ import annotations
 
 import math
+import argparse
+import sys
 from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Any, Callable
@@ -141,6 +143,26 @@ TYPE_CHECKS = {
 
 class CardError(ValueError):
     """A card is malformed, or uses syntax outside the supported subset."""
+
+
+def _validate_param_value(name: str, value: Any, spec: dict[str, Any], where: str) -> None:
+    declared = spec.get("type")
+    if declared is not None and declared not in TYPE_CHECKS:
+        raise CardError(f"{where}: param {name!r} declares an unsupported type")
+    if declared is not None and not TYPE_CHECKS[declared](value):
+        raise CardError(f"{where}: param {name!r} declares type {declared} but its value has type {type(value).__name__}")
+    for key in ("min", "max"):
+        if key not in spec:
+            continue
+        bound = spec[key]
+        try:
+            numeric = all(isinstance(v, (int, float)) and not isinstance(v, bool) and math.isfinite(v) for v in (bound, value))
+        except OverflowError:
+            numeric = False
+        if not numeric:
+            raise CardError(f"{where}: param {name!r} bounds and value must be finite numbers")
+        if (key == "min" and value < bound) or (key == "max" and value > bound):
+            raise CardError(f"{where}: param {name!r} violates its declared {key}")
 
 
 def _parse_scalar(raw: str, *, where: str) -> Any:
@@ -456,6 +478,8 @@ def load_card(path: str | Path, *, text: str | None = None) -> StrategyCard:
                 "default; pick one"
             )
         declared_type = spec.get("type")
+        if declared_type is not None and declared_type not in TYPE_CHECKS:
+            raise CardError(f"{path.name}: param {name!r} declares an unsupported type")
         if "default" in spec and declared_type in TYPE_CHECKS:
             if not TYPE_CHECKS[declared_type](spec["default"]):
                 raise CardError(
@@ -463,6 +487,8 @@ def load_card(path: str | Path, *, text: str | None = None) -> StrategyCard:
                     f"its default {spec['default']!r} is "
                     f"{type(spec['default']).__name__}"
                 )
+        if "default" in spec:
+            _validate_param_value(name, spec["default"], spec, path.name)
 
     presets = data["presets"] if "presets" in data else {}
     if not isinstance(presets, dict):
@@ -480,6 +506,8 @@ def load_card(path: str | Path, *, text: str | None = None) -> StrategyCard:
                 f"{path.name}: preset {horizon!r} sets undeclared param(s): "
                 f"{', '.join(sorted(unknown))}"
             )
+        for name, value in values.items():
+            _validate_param_value(name, value, params[name], f"{path.name}: preset {horizon}")
 
     runner = data.get("runner")
     if runner is not None and runner not in RUNNERS:
@@ -663,5 +691,18 @@ def _format_inventory(cards: dict[str, StrategyCard]) -> str:
     return "\n".join(out)
 
 
+def main(argv: list[str] | None = None) -> int:
+    parser = argparse.ArgumentParser(description="Inspect the validated strategy-card inventory.",
+                                     epilog="Example: python -m backtester.core.strategy_cards --card-dir backtester/strategy_cards")
+    parser.add_argument("--card-dir", type=Path, default=None)
+    args = parser.parse_args(argv)
+    try:
+        print(_format_inventory(load_all(args.card_dir)))
+    except (CardError, OSError) as exc:
+        print(f"error: strategy-card inventory unavailable ({type(exc).__name__}); verify the requested card directory", file=sys.stderr)
+        return 1
+    return 0
+
+
 if __name__ == "__main__":
-    print(_format_inventory(load_all()))
+    raise SystemExit(main())

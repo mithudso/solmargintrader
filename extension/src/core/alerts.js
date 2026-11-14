@@ -92,6 +92,7 @@ export function viableScoutPools(scoutPools, { minNetAprPct }) {
     .filter((p) => p.confidence === 'high' || p.confidence === 'medium')
     .filter((p) => Array.isArray(p.flags) && p.flags.length === 0)
     .filter((p) => p.gauge_active === true)
+    .filter((p) => finite(p.break_even_deposit_usd) !== null && p.break_even_deposit_usd >= 0)
     .sort((a, b) => b.expected_net_apr - a.expected_net_apr);
 }
 
@@ -148,7 +149,7 @@ export function computeAlerts({ holdings, liquidity, leads = [], top5, previousL
   const idleUsd = Math.max(baseStableUsd, finite(liquidity?.wallet?.idle_usd) ?? 0);
   // Below its break-even deposit a position loses to its own rebalancing gas.
   const breakEven = finite(best?.break_even_deposit_usd);
-  if (best && idleUsd >= p.minIdleUsd && (breakEven === null || breakEven <= idleUsd)) {
+  if (best && idleUsd >= p.minIdleUsd && breakEven !== null && breakEven >= 0 && breakEven <= idleUsd) {
     const deposit = finite(liquidity?.scout?.deposit_usd);
     out.push({
       id: `idle:${best.pool}`,

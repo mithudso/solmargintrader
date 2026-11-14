@@ -30,6 +30,7 @@ import numpy as np
 import pandas as pd
 
 from .data import validate_bars
+from .market_diagnostics import market_request
 from .types import BAR_COLUMNS, INTERVAL_SECONDS
 
 COINBASE_BASE = "https://api.exchange.coinbase.com"
@@ -53,7 +54,7 @@ def _get_json(url: str, *, retries: int = 3, backoff: float = 1.5) -> list:
             req = urllib.request.Request(
                 url, headers={"User-Agent": "sol-backtester/0.1 (research)"}
             )
-            with urllib.request.urlopen(req, timeout=20) as resp:
+            with market_request("coinbase"), urllib.request.urlopen(req, timeout=20) as resp:
                 payload = json.loads(resp.read().decode())
             if isinstance(payload, dict) and payload.get("message"):
                 raise FetchError(f"API error: {payload['message']}")
@@ -173,7 +174,8 @@ def default_cache_path(asset: str, interval: str) -> Path:
 def main(argv: list[str] | None = None) -> int:
     """CLI entry point for the explicit fetch step."""
     ap = argparse.ArgumentParser(
-        description="Fetch OHLCV candles from Coinbase into a local CSV cache."
+        description="Fetch OHLCV candles from Coinbase into a local CSV cache.",
+        epilog="Example: python -m backtester.core.fetch --asset SOL --interval 1d --start 2021-01-01 --out data/SOL_1d.csv",
     )
     ap.add_argument("--asset", default="SOL", help="base asset, e.g. SOL")
     ap.add_argument("--quote", default="USD", help="quote currency, default USD")
@@ -208,7 +210,8 @@ def main(argv: list[str] | None = None) -> int:
                 "Re-run with --allow-gaps to accept an incomplete series.",
                 file=sys.stderr,
             )
-            return 1
+        # The flag relaxes cadence inside validate_bars, never prices or volume.
+        return 1
 
     df.to_csv(out, index=False)
     first = pd.Timestamp(int(df["timestamp"].iloc[0]), unit="s", tz="UTC").date()
