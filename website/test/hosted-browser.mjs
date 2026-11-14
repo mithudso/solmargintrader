@@ -67,6 +67,7 @@ async function fixture() {
   }, wallets.map(value => ({ wallet: value.user.wallet, pkcs8: value.pkcs8 })));
   await page.route('**/*', async route => {
     const request = route.request(); const url = new URL(request.url());
+    if (request.url() === 'https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1706083044457708' && request.method() === 'GET' && request.resourceType() === 'script') { await route.fulfill({ contentType: 'application/javascript', body: '', headers: { 'Access-Control-Allow-Origin': '*' } }); return; }
     if (url.origin !== origin) { f.blocked.push(url.origin); await route.abort(); return; }
     if (!url.pathname.startsWith('/api/')) { if (!await f.onResource?.(route, url.pathname)) await route.continue(); return; }
     const method = request.method(); const body = request.postData() ? request.postDataJSON() : null;

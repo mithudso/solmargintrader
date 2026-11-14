@@ -75,7 +75,12 @@ test('config and anonymous account work before external setup', async () => {
 test('all responses send restrictive security headers', async () => {
   const { response } = await call({}, '/api/health');
   assert.equal(response.headers.get('X-Content-Type-Options'), 'nosniff');
-  assert.match(response.headers.get('Content-Security-Policy'), /frame-ancestors 'none'/);
+  const csp = new Map(response.headers.get('Content-Security-Policy').split(';').map(value => {
+    const [directive, ...sources] = value.trim().split(/\s+/); return [directive, sources.join(' ')];
+  }));
+  assert.equal(csp.get('script-src'), "'self' https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js");
+  for (const [directive, sources] of Object.entries({ 'default-src': "'self'", 'style-src': "'self'", 'img-src': "'self' data:", 'font-src': "'self'", 'connect-src': "'self'", 'frame-ancestors': "'none'", 'base-uri': "'none'", 'form-action': "'self' https://checkout.stripe.com https://billing.stripe.com" })) assert.equal(csp.get(directive), sources);
+  assert.doesNotMatch(response.headers.get('Content-Security-Policy'), /unsafe-inline|unsafe-eval|\*/);
   assert.equal(response.headers.get('Cache-Control'), 'no-store');
 });
 test('cross-origin and unexpected hosts fail before database writes', async () => {
