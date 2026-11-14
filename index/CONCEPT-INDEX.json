@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-11-14T07:14:48+00:00",
+  "generatedAt": "2026-11-14T07:15:30+00:00",
   "schemaVersion": 1,
   "note": "Concepts are derived from the repo's own vocabulary \u2014 the FAMILY dict, strategy-card frontmatter, docs/trading-signals-concept-family.md, and terms verified to recur in the corpus. A concept matching no file is dropped, not kept.",
   "counts": {
@@ -170,7 +170,7 @@
         },
         {
           "path": "memory.md",
-          "hits": 316
+          "hits": 317
         },
         {
           "path": "llms-filemap.txt",
@@ -198,7 +198,7 @@
         },
         {
           "path": "prompts.md",
-          "hits": 106
+          "hits": 107
         },
         {
           "path": "research/results/shape_spot_20261111_manifest.json",
