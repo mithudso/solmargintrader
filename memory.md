@@ -1,6 +1,8 @@
 # Work continuation
 
-Version: 558
+Version: 559
+Delta: integrated to v559; retain parallel automated merge ancestry and all owner/research/AdSense records.
+Delta: v557 to v558; merge concurrent AdSense and ZEC working-paper continuation records.
 Delta: integrated to v558; preserve concurrent published ZEC reversal paper and qualified AdSense verification changes.
 Delta: v555 to v556; add the ZEC reversal working-paper publication record while preserving incoming Settings delivery.
 Delta: v556 to v557; qualify exact AdSense markup, scoped CSP and isolated Chrome fixtures before delivery.
@@ -2418,3 +2420,7 @@ Completed: independent20-combination arithmetic/privacy/economics review exit0; 
 ## AdSense integration checkpoint
 
 Incoming main18dae4cef65b51633f1f4bf2f96aba85f931f988/PR263 publishes a separate exploratory ZEC reversal working paper and publicPDF/catalog. Preserve all exact paper/results/export bytes; do not rerun its study or alter numerical claims. Mergeconflicts affect only workflowrecords and derivedindexes. Both record branches are append-only after the exact common body; savepreimages and combinealltails/Deltafields. AdSense8implementationfiles remainfrozen/qualified; rebuild deterministicindexes andcheckpublicexport/wiki/inventories before integrationcommit andfreshrequiredCI. A parallelGitHubAgentMerge mayupdate the remote taskbranch; fetchandpreserve its commits beforepushing, neverforce.
+
+## Parallel branch integration qualification
+
+Preserve remoteGitHubAgentMerge commitdaba39a62e4345c12c7421237bc77f4389ca5264 as a mergeparent alongside the localmain integration; noforcepush. Both variants containall nonblank recordbodylines; retainall Delta descriptions andthe complete localintegrationcheckpoint. All8AdSense implementationfiles andincomingpaper/results/PDF/catalog/export bytes remainexact. The first publicexportcheck useddefaultPython withoutpandas andexited1; theexisting qualifiedMCP2.3environment ran the same23filecheck successfully0 withnosource ordependency changes. Finalqualifiedexport/wiki/inventory/index/diff gates andnewtipCI are mandatory before delivery.

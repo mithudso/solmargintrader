@@ -1,6 +1,8 @@
 # Prompt history
 
-Version: 250
+Version: 251
+Delta: integrated to v251; retain parallel automated merge ancestry and all owner/research/AdSense records.
+Delta: v249 to v250; merge concurrent AdSense verification and ZEC working-paper request records.
 Delta: integrated to v250; preserve concurrent published ZEC reversal paper and qualified AdSense verification changes.
 Delta: v248 to v249; add the ZEC reversal working-paper publication record while preserving incoming Settings delivery.
 Delta: v248 to v249; preserve all three supplied AdSense verification methods and exact publisher.
