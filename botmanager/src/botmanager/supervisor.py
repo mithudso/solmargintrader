@@ -96,7 +96,7 @@ class Supervisor:
             heartbeat_deadline, tick_deadline,
         )
 
-    def _journal_blocked(self):
+    def _journal_blocked(self, *, raise_nontransient=False):
         try:
             # Probe commit availability without the normal one-second timeout.
             # A frozen reader permits BEGIN IMMEDIATE but blocks its commit.
@@ -110,7 +110,13 @@ class Supervisor:
                 db.rollback()
             finally:
                 db.close()
-        except sqlite3.Error:
+        except sqlite3.Error as exc:
+            if raise_nontransient and (
+                getattr(exc, "sqlite_errorcode", 0) & 0xFF
+            ) not in (sqlite3.SQLITE_BUSY, sqlite3.SQLITE_LOCKED):
+                raise ManagerError(
+                    "store_unavailable", "Runtime journal probe is unavailable.", 4
+                ) from exc
             return True
         return False
 
@@ -215,6 +221,11 @@ class Supervisor:
                 if child and self._terminate(child[0]):
                     self.children.pop(bot_id)
                 if not lock_held(self.home / "locks" / (bot_id + ".lock")):
+                    # A shared reader permits BEGIN IMMEDIATE but blocks commit.
+                    # Avoid spending that busy timeout on a known-blocked peer;
+                    # the next step must reach owned-process watchdogs first.
+                    if self._journal_blocked(raise_nontransient=True):
+                        return
                     try:
                         self.ledger.stopped(bot_id)
                     except ManagerError as exc:
