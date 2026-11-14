@@ -1,6 +1,8 @@
 # Work continuation
 
-Version: 562
+Version: 564
+Delta: v563 to v564; validate website AdSense integration and resolve current master conflicts.
+Delta: v562 to v563; integrate master f74eeed and preserve AdSense verification changes and records.
 Delta: v561 to v562; validate PR235 conflict integration with master18dae4c and record delivery state.
 Delta: v560 to v561; integrate current master and preserve incoming ZEC paper publication.
 Delta: v559 to v560; classify macOS launcher fixtures as platform-specific after Linux CI lacked /bin/zsh.
@@ -12,6 +14,10 @@ Delta: v553 to v554; diagnose and repair direct Settings capability initializati
 ## PR235 master integration validation
 
 Resolved the current master conflicts against verified master18dae4cef65b51633f1f4bf2f96aba85f931f988, preserving the PR work records and the incoming ZEC reversal paper/publication assets. Validation on the integrated tree: website Node tests and JS syntax checks passed; browser groups24/24 passed; website research tests8/8 and server tests24/24 passed; research export and generated-index checks passed; incoming analysis script compiled and results JSON parsed. Full hosted website Python CI and repository docs drift are not yet qualified in the available Python3.12 environment (repository requires3.13); the merge commit is created and publication remains pending.
+
+## PR235 AdSense integration
+
+Integrated current master f74eeed, preserving the existing PR work continuation and ZEC reversal paper while adding the separately verified AdSense implementation and owner request records. Conflicts were limited to `memory.md`, `prompts.md`, and generated keyword indexes. Website Node/syntax/browser suites pass; website browser acceptance includes24/24 hosted groups; targeted website research/server tests pass32/32; research export and generated-index checks pass. Preserve the existing site security policy except for the exact AdSense loader path; Google verification remains external and is not established by source integration. Full repository documentation check is unavailable because this runner has Python3.12 and lacks SolTUI dependencies.
 
 ## Retained PR 235 integration record
 

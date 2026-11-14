@@ -1,6 +1,7 @@
 # Prompt history
 
-Version: 249
+Version: 250
+Delta: v249 to v250; preserve the AdSense verification request while integrating master.
 Delta: v248 to v249; preserve the ZEC two-bar reversal paper request while integrating master.
 Delta: v247 to v248; preserve the screenshot showing the disabled Coinbase form on direct Settings entry.
 Delta: v246 to v247; record the owner request for two masked Coinbase credential fields.
@@ -4304,3 +4305,7 @@ Resolve the conflicts and push  all the PRs for https://github.com/mithudso/solm
 ```text
 Two things: 1)  If this is true, can I bet on a reversal after two ups or two down 10 mins?  10 minutes                        1.80 bars                        1.72 bars                20.8%                    41.4%     and 2) Can you write this up into a paper and post it on the oraclebot.io site?
 ```
+
+## 2026-11-14 — Google AdSense verification
+
+For this site I need to validate with google adsense: [Image #1] [Image #2] [Image #3] Please do all 3 for the site.
