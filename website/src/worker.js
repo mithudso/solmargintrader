@@ -26,7 +26,7 @@ const CHECKOUT_SECONDS = 2100;
 const MAX_BODY = 16384;
 const BLOCKED = 'Live execution requires a separately verified, per-user venue connection. This configuration does not run or place orders.';
 const securityHeaders = {
-  'Content-Security-Policy': "default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; font-src 'self'; connect-src 'self'; frame-ancestors 'none'; base-uri 'none'; form-action 'self' https://checkout.stripe.com https://billing.stripe.com",
+  'Content-Security-Policy': "default-src 'self'; script-src 'self' https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js; style-src 'self'; img-src 'self' data:; font-src 'self'; connect-src 'self'; frame-ancestors 'none'; base-uri 'none'; form-action 'self' https://checkout.stripe.com https://billing.stripe.com",
   'X-Content-Type-Options': 'nosniff',
   'Referrer-Policy': 'strict-origin-when-cross-origin',
   'Permissions-Policy': 'camera=(), microphone=(), geolocation=()',
