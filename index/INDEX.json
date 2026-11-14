@@ -1,16 +1,16 @@
 {
-  "generatedAt": "2026-11-14T00:08:18+00:00",
+  "generatedAt": "2026-11-14T00:48:10+00:00",
   "schemaVersion": 1,
   "repoRoot": "~/dev/solmargintrader",
-  "commit": "f9a7ccc",
+  "commit": "f1b8d4a",
   "counts": {
-    "files": 3671,
-    "bytes": 117210063,
+    "files": 3673,
+    "bytes": 117231780,
     "byKind": {
       "strategy-card": 1478,
       "doc": 792,
-      "test": 390,
-      "code-python": 366,
+      "test": 391,
+      "code-python": 367,
       "config": 272,
       "result": 133,
       "code-js": 101,
@@ -23,7 +23,7 @@
     },
     "byTopDir": {
       "backtester": 1956,
-      "research": 349,
+      "research": 351,
       "soltui": 192,
       ".cdo": 161,
       "docs": 156,
@@ -58,7 +58,7 @@
       "archive": 1,
       "tradingskilllist": 1
     },
-    "withSummary": 3365
+    "withSummary": 3367
   },
   "files": [
     {
@@ -3257,9 +3257,9 @@
       "title": "Read-only by default; nothing here needs write access to the repo.",
       "summary": "",
       "summarySource": "none",
-      "bytes": 21446,
+      "bytes": 21481,
       "lines": 483,
-      "sha1": "35f1fa0dff84553de386fb80aa47b1c9c34224d8",
+      "sha1": "412318b168a226c06ffb993bddaa9f11b38927f1",
       "symbols": [],
       "imports": [],
       "internalImports": [],
@@ -73591,9 +73591,9 @@
       "title": "Oracle winning-strategy TUI",
       "summary": "Start the interactive, read-only workbench: /Users/mitch/.venvs/soltui/bin/python /Users/mitch/dev/solmargintrader/scripts/oracle_winners.py It opens a focused **1m / baseline / six-strategy** watchlist, with a price and",
       "summarySource": "opening-prose",
-      "bytes": 11578,
-      "lines": 197,
-      "sha1": "2ec7f9421728da1356bb5a64b532ef73bd88ae0f",
+      "bytes": 13192,
+      "lines": 220,
+      "sha1": "079b0fedb33ca6101c4efbe1f4f0265f9e6133a6",
       "symbols": [],
       "imports": [],
       "internalImports": [],
@@ -86434,9 +86434,9 @@
       "title": "solmargintrader \u2014 family index",
       "summary": "Generated report. Opens: # solmargintrader \u2014 family index / > Source: /Users/mitch/dev/oraclebot.io \u00b7 https://github.com/mithudso/solmargintrader @ 1d49d5f7 + documentation delta",
       "summarySource": "derived",
-      "bytes": 2723,
+      "bytes": 2779,
       "lines": 36,
-      "sha1": "7ad8b27084e46142aee02bee77549ace9e924a26",
+      "sha1": "22fb94084eeb30b93017c47243879fe184e872a6",
       "symbols": [],
       "imports": [],
       "internalImports": [],
@@ -86576,11 +86576,11 @@
       "ext": ".md",
       "kind": "doc",
       "title": "Work continuation",
-      "summary": "Version: 545 Delta: v544 to v545; stop TUI callbacks before child teardown and verify the deterministic regression. Delta: v543 to v544; restore the supported Oracle SDK after final CI exposed an upstream major-version regression.",
+      "summary": "Version: 547 Delta: v546 to v547; verify causal shape teaching, actual traces and rendered controls. Delta: v545 to v546; add observed shape explanations and visual guide.",
       "summarySource": "opening-prose",
-      "bytes": 468820,
-      "lines": 2275,
-      "sha1": "7b622f7573eeee9f9022e2d02ac5ac66c6b6e457",
+      "bytes": 471806,
+      "lines": 2285,
+      "sha1": "366f001e993595dcf71582c2b6ffa9c96df62937",
       "symbols": [],
       "imports": [],
       "internalImports": [],
@@ -88855,11 +88855,11 @@
       "ext": ".md",
       "kind": "doc",
       "title": "Prompt history",
-      "summary": "Version: 243 Delta: v242 to v243; add editable winning-strategy TUI. Delta: v241 to v242; implement read-only streaming ZEC winning-strategy display.",
+      "summary": "Version: 244 Delta: v243 to v244; add an understandable visual shape guide. Delta: v242 to v243; add editable winning-strategy TUI.",
       "summarySource": "opening-prose",
-      "bytes": 130366,
-      "lines": 2234,
-      "sha1": "fa22e0ac23e12d1e9b582059bcc3586cd1eb35a5",
+      "bytes": 130586,
+      "lines": 2239,
+      "sha1": "a327e60f1c070108fa42972e3c5fa67230609858",
       "symbols": [],
       "imports": [],
       "internalImports": [],
@@ -95963,6 +95963,33 @@
       "frontmatter": {}
     },
     {
+      "id": "research/tests/test_zec_shape_view.py",
+      "path": "research/tests/test_zec_shape_view.py",
+      "dir": "research/tests",
+      "name": "test_zec_shape_view.py",
+      "ext": ".py",
+      "kind": "test",
+      "title": "test_zec_shape_view",
+      "summary": "Shape teaching must preserve provenance, gaps and conditional meaning.",
+      "summarySource": "docstring",
+      "bytes": 4112,
+      "lines": 87,
+      "sha1": "6ea6cd519576b0ba6b0f54ee53defe30ada0d085",
+      "symbols": [
+        "class ShapeTeaching"
+      ],
+      "imports": [
+        "__future__",
+        "copy",
+        "research",
+        "unittest"
+      ],
+      "internalImports": [
+        "research"
+      ],
+      "frontmatter": {}
+    },
+    {
       "id": "research/tests/test_zec_tui.py",
       "path": "research/tests/test_zec_tui.py",
       "dir": "research/tests",
@@ -95972,9 +95999,9 @@
       "title": "test_zec_tui",
       "summary": "Real Textual keyboard/mouse, background lifecycle and layout regressions.",
       "summarySource": "docstring",
-      "bytes": 12684,
-      "lines": 300,
-      "sha1": "b6f4a053525c3dff5307ffa7b226214fa18041c9",
+      "bytes": 15009,
+      "lines": 346,
+      "sha1": "03e7b20f20e8913fc8c32ae279f382a95206b43c",
       "symbols": [
         "class Client",
         "class Interface"
@@ -98064,6 +98091,37 @@
       "frontmatter": {}
     },
     {
+      "id": "research/zec_shape_view.py",
+      "path": "research/zec_shape_view.py",
+      "dir": "research",
+      "name": "zec_shape_view.py",
+      "ext": ".py",
+      "kind": "code-python",
+      "title": "These sketches illustrate each label. They are never fitted or projected prices.",
+      "summary": "Explain observed geometry without changing the detector or strategy calls.",
+      "summarySource": "docstring",
+      "bytes": 8431,
+      "lines": 216,
+      "sha1": "f7e60fcd99de7eac3728518e7bc4e5e166af8b95",
+      "symbols": [
+        "GUIDES",
+        "range_readout()",
+        "shape_summary()",
+        "price_trace()",
+        "shape_guide()"
+      ],
+      "imports": [
+        "__future__",
+        "itertools",
+        "math",
+        "research"
+      ],
+      "internalImports": [
+        "research"
+      ],
+      "frontmatter": {}
+    },
+    {
       "id": "research/zec_tui.py",
       "path": "research/zec_tui.py",
       "dir": "research",
@@ -98073,12 +98131,13 @@
       "title": "zec_tui",
       "summary": "Interactive read-only Oracle workbench for the frozen ZEC winner universe.",
       "summarySource": "docstring",
-      "bytes": 28091,
-      "lines": 716,
-      "sha1": "7c94ded3ed1711c1fcb66d2dbbac4738ba4a2cea",
+      "bytes": 29717,
+      "lines": 763,
+      "sha1": "a405ae709aa303fd749deafdd3218629bb7eed25",
       "symbols": [
         "class StrategyPicker",
         "class ConfigEditor",
+        "class ShapeGuide",
         "class OracleWinnersApp",
         "main()"
       ],
@@ -98108,9 +98167,9 @@
       "title": "zec_tui_model",
       "summary": "Editable display state and causal market details; no trading or UI imports.",
       "summarySource": "docstring",
-      "bytes": 15374,
-      "lines": 415,
-      "sha1": "d2f64bcf8caf7fe8c3b6f83f39ca98b437abd2e6",
+      "bytes": 15686,
+      "lines": 423,
+      "sha1": "797e1b33f359aeb2b95588a93339f51665e1aef7",
       "symbols": [
         "CONFIG_KEYS",
         "LOOKBACKS",
