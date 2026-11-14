@@ -178,10 +178,10 @@ class FetchTests(unittest.TestCase):
                 plan, "2021-01-01", "2021-02-01", "1d",
                 fetcher=flaky, out_dir=out, verbose=False,
             )
-        self.assertIn("FAILED", results["ETH"])
-        self.assertIn("wrote", results["BTC"])
-        self.assertIn("wrote", results["SOL"])
-        self.assertFalse((out / "ETH_1d.csv").exists())
+            self.assertIn("FAILED", results["ETH"])
+            self.assertIn("wrote", results["BTC"])
+            self.assertIn("wrote", results["SOL"])
+            self.assertFalse((out / "ETH_1d.csv").exists())
 
     def test_a_series_that_fails_validation_is_not_written(self):
         """A cache file is trusted by every later run, so a bad series must not reach
@@ -197,8 +197,8 @@ class FetchTests(unittest.TestCase):
                 plan, "2021-01-01", "2021-02-01", "1d",
                 fetcher=lambda *a, **k: gappy, out_dir=out, verbose=False,
             )
-        self.assertIn("FAILED validation", results["BTC"])
-        self.assertFalse((out / "BTC_1d.csv").exists())
+            self.assertIn("FAILED validation", results["BTC"])
+            self.assertFalse((out / "BTC_1d.csv").exists())
 
     def test_an_already_cached_asset_is_skipped_unless_asked(self):
         plan = uni.plan_universe_fetch(["BTC"], [p["id"] for p in LISTED])

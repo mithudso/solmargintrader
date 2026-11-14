@@ -512,6 +512,9 @@ def self_test() -> int:
         return 2
 
     ref = pd.read_csv(REFERENCE)
+    if ref.duplicated(["asset", "strategy"]).any():
+        print("SELF-TEST FAILED: duplicate reference asset/strategy rows")
+        return 1
     absent = [c for c in COLUMNS if c not in ref.columns]
     if absent:
         print(f"SELF-TEST FAILED: reference is missing columns {absent}")
@@ -701,9 +704,6 @@ def main(argv: list[str] | None = None) -> int:
             )
             print("  Nothing was written -- a CSV of NaNs is not a result.")
             return 1
-        dest.parent.mkdir(parents=True, exist_ok=True)
-        df.to_csv(dest, index=False)
-
         print("\nDate windows (block i is NOT the same period across assets):")
         for asset, window in windows.items():
             print(f"  {asset:5s} {window}")
@@ -761,6 +761,10 @@ def main(argv: list[str] | None = None) -> int:
                 print("  Composite wiring or horizon params differ from the published run.")
                 print("  Treat the other assets' rows as unverified until this is resolved.")
 
+        if diverged:
+            return 1
+        dest.parent.mkdir(parents=True, exist_ok=True)
+        df.to_csv(dest, index=False)
         print("\nTransfer summary (median Sharpe, SOL -> asset):")
         for asset, g in df.groupby("asset", sort=False):
             if asset == "SOL":

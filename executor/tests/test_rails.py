@@ -130,7 +130,8 @@ def test_daily_loss_stop_blocks_buys_but_not_sells_or_exits(tmp_path):
     check(cfg, tmp_path, report("buy", 1.0), j, strategy="s2")
     # A sell/exit reduces risk and is never stopped by it.
     (tmp_path / "x").mkdir()
-    j2 = journal_with(tmp_path / "x", [("s1", "buy", 1_000_000_000, 20, today, 0)])
+    j2 = journal_with(tmp_path / "x", [("s1", "buy", 1_000_000_000, 20, today, 10.5)])
+    refused(cfg, tmp_path, report("buy", 1.0), "daily_loss_stop_usd", journal=j2)
     check(cfg, tmp_path, report("sell", 1.0), j2, exit_only=True)
 
 

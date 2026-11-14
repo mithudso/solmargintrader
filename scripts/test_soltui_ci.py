@@ -8,6 +8,9 @@ class SelectionTests(unittest.TestCase):
         self.assertEqual(selected_modules(['soltui/tests/test_forwardtest.py', 'soltui/tests/test_bots.py']),
                          ['soltui.tests.test_bots', 'soltui.tests.test_forwardtest'])
 
+    def test_deleted_test_selects_the_full_suite(self):
+        self.assertIsNone(selected_modules(['soltui/tests/test_removed.py'], exists=lambda _: False))
+
     def test_unknown_shared_and_empty_inputs_run_full_suite(self):
         for paths in ([], ['soltui/tui.py'], ['soltui/tests/bridge_support.py'],
                       ['soltui/tests/test_bots.py', 'backtester/core/engine.py'],

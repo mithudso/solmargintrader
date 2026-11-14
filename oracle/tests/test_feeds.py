@@ -148,6 +148,20 @@ class JupiterFeedTests(unittest.TestCase):
         self.payload[SOL_MINT]["blockId"] += 50
         with self.assertRaisesRegex(FeedUnavailable, "upstream_block_stalled"):
             self.feed.poll()
+        self.now = 117
+        self.payload[SOL_MINT]["blockId"] = 1001
+        self.payload[USDC_MINT]["blockId"] = 1002
+        self.assertIsNotNone(self.feed.poll())
+
+    def test_receipt_clock_is_sampled_after_transport(self):
+        def transport(*_):
+            self.now += 5
+            return self.payload
+
+        self.feed.transport = transport
+        result = self.feed.poll()
+        self.assertEqual(result["received_at"], self.now)
+        self.assertEqual(result["observed_at"], self.now)
 
     def test_transport_exception_does_not_leak_secret(self):
         def unsafe(*args):

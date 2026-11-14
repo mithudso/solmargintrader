@@ -143,7 +143,11 @@ def make_server(
     from .control import ControlPlane
 
     controls = ControlPlane(home, manager_home)
-    controls.register_legacy()
+    try:
+        controls.register_legacy()
+    except BaseException:
+        controls.close()
+        raise
 
     class Handler(BaseHTTPRequestHandler):
         protocol_version = "HTTP/1.0"

@@ -420,9 +420,9 @@ def health_items(reads: Mapping[str, Mapping[str, Any] | None], *, forward_runni
         age = _num(pr.get("snapshot_age_s"))
         if not pr.get("running"):
             out.append(Health("idle", "Prices", "off", "tab-bots"))
-        elif age is None or age < 0:
-            out.append(Health("warn", "Prices", "freshness unknown", "tab-bots"))
-        elif age is not None and age > 60:
+        elif age is None or not math.isfinite(age) or age < 0:
+            out.append(Health("warn", "Prices", "no valid snapshot", "tab-bots"))
+        elif age > 60:
             out.append(Health("warn", "Prices", f"stale {fmt_age(age)}", "tab-bots"))
         else:
             out.append(Health("ok", "Prices", "live", "tab-bots"))
@@ -518,10 +518,10 @@ def needs(reads: Mapping[str, Mapping[str, Any] | None], *, autopilot: Mapping[s
         if not pr.get("running"):
             out.append(Need("warn", "Price recorder is not running",
                             "bot forward tests have no live prices", "tab-bots"))
-        elif age is None or age < 0:
-            out.append(Need("warn", "Price stream freshness is unavailable",
-                            "the recorder has not reported a valid snapshot age", "tab-bots"))
-        elif age is not None and age > 60:
+        elif age is None or not math.isfinite(age) or age < 0:
+            out.append(Need("warn", "Price recorder has no valid snapshot freshness evidence",
+                            "waiting for a recorded price; liveness is unverified", "tab-bots"))
+        elif age > 60:
             out.append(Need("warn", f"Price stream is {fmt_age(age)} old",
                             str(pr.get("last_error") or "no new snapshot")[:160], "tab-bots"))
 

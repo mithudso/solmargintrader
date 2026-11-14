@@ -115,6 +115,8 @@ research/TOP_UNTESTED_RECOMMENDATION.json
 
 # The idle job's private semantic pair and its state; never committed.
 index/semantic-local.npz
+index/semantic-local.npz.lock
+index/semantic-embeddings.npz.lock
 index/semantic-local.json
 index/.idle-state.json
 index/.idle.lock

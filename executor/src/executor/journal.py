@@ -20,6 +20,7 @@ import fcntl
 import json
 import math
 import os
+import stat
 import time
 from collections.abc import Iterator
 from decimal import Decimal, InvalidOperation
@@ -116,8 +117,12 @@ class Journal:
 
     def append(self, kind: str, intent_id: str, **fields: Any) -> dict[str, Any]:
         self.path.parent.mkdir(parents=True, exist_ok=True)
-        fd = os.open(self.path, os.O_WRONLY | os.O_APPEND | os.O_CREAT, 0o600)
+        fd = os.open(self.path, os.O_WRONLY | os.O_APPEND | os.O_CREAT | os.O_NONBLOCK, 0o600)
         try:
+            metadata = os.fstat(fd)
+            if metadata.st_uid != os.getuid() or not stat.S_ISREG(metadata.st_mode):
+                raise ExecutorError("journal must be a regular file owned by the current user", "refused")
+            os.fchmod(fd, 0o600)
             fcntl.flock(fd, fcntl.LOCK_EX)
             records = list(self.records())
             if any(rec["kind"] == "corrupt" for rec in records):

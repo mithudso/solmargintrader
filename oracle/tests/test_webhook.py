@@ -101,8 +101,15 @@ class WebhookTests(unittest.TestCase):
                 )
         finally:
             proc.terminate()
-            out, err = proc.communicate(timeout=5)
+            shutdown_timeout = False
+            try:
+                out, err = proc.communicate(timeout=5)
+            except subprocess.TimeoutExpired:
+                shutdown_timeout = True
+                proc.kill()
+                out, err = proc.communicate(timeout=5)
             self.assertNotIn(self.secret.encode(), out + err)
+            self.assertFalse(shutdown_timeout, "listener did not terminate within its grace period")
 
     @contextmanager
     def bounded_listener(self, *, gate=None):

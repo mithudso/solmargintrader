@@ -8,6 +8,7 @@ import { execFile } from 'node:child_process';
 import { fileURLToPath } from 'node:url';
 import { OWNER_SOURCE_SCHEMA, OWNER_SOURCE_FILES } from '../src/core/owner-source.js';
 import { launch, findChromeForTesting, sleep } from '../e2e/lib/cdp.mjs';
+import { assertPaperExecutionTick } from '../e2e/lib/guard.mjs';
 
 const EXT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const ROOT = path.dirname(EXT);
@@ -23,7 +24,10 @@ const python = (home, code, args = []) => new Promise((resolve, reject) => {
   if (INSTALLED) delete environment.PYTHONPATH;
   else environment.PYTHONPATH = `${path.join(ROOT, 'botmanager/src')}:${ROOT}`;
   execFile(PYTHON, [...(INSTALLED ? ['-I'] : []), '-c', code, home, ...args], { cwd: INSTALLED ? os.tmpdir() : ROOT, env: environment, timeout: 10000 },
-  (error, out, err) => error ? reject(new Error(`isolated manager call failed: ${err}`)) : resolve(JSON.parse(out)));
+  (error, out) => {
+    if (error) { reject(new Error('isolated manager call failed')); return; }
+    try { resolve(JSON.parse(out)); } catch { reject(new Error('isolated manager helper returned invalid JSON')); }
+  });
 });
 
 const report = { kind: 'isolated_real_chrome_paper_browser_owner', browser: null, profiles: [],
@@ -104,7 +108,7 @@ try {
     const running = (await call('browserManagerSnapshot')).snapshot;
     assert(running.running && !running.armed && running.runtime_id, 'Paper slot did not start independently of live arming');
     const tick = await call('tick');
-    assert(!tick.skipped?.some(s => s.reason === 'not-armed'), 'Canonical paper tick did not receive its paper grant');
+    assertPaperExecutionTick(tick);
     const stopped = await queue('stop');
     await call('browserManagerPoll');
     await call('browserManagerPoll');

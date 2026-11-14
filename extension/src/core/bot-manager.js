@@ -69,6 +69,19 @@ export async function applyManagerControl(deps, control) {
     if (old.binding !== binding) throw new Error('owner request binding conflict');
     return old.receipt;
   }
+  // Delivered historical receipts may be compacted only behind the durable
+  // sequence fence. Keep unresolved outcomes and the receipt binding the active
+  // grant, which a previously fetched stop may still need to match.
+  const retained = Object.entries(state.requests).filter(([, item]) => item.delivered && !item.prepared
+    && terminal.has(item.receipt.outcome) && item.request.sequence <= state.last_sequence
+    && !(state.running && item.request.operation === 'start' && item.receipt.outcome === 'acknowledged'
+      && item.receipt.generation === state.generation && item.receipt.runtime_id === state.runtime_id))
+    .sort((a, b) => b[1].request.sequence - a[1].request.sequence);
+  if (retained.length > 256) {
+    const requests = { ...state.requests };
+    for (const [id] of retained.slice(256)) delete requests[id];
+    state = { ...state, requests };
+  }
   if (Object.keys(state.requests).length >= 10000) throw new Error('browser owner receipt capacity exhausted');
   const snapshot = await managerSnapshot(deps);
   let outcome = 'acknowledged';

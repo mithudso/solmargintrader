@@ -412,10 +412,34 @@ def check_economics(
     post = sim.get("accounts") or []
     if len(post) != len(watch) or len(pre) != len(watch):
         return ["simulation did not return the watched accounts"], {}
+    # A token-program account whose layout cannot be inspected is missing
+    # economic evidence, not an unrelated non-token account to ignore.
+    for acc in [*pre, *post]:
+        if acc is not None and acc.get("owner") in (TOKEN_PROGRAM, TOKEN_2022):
+            data = acc.get("data")
+            if not isinstance(data, bytes) or len(data) < 165:
+                return ["watched token account has incomplete economic evidence"], {}
     pre_by = dict(zip(watch, pre, strict=True))
     post_by = dict(zip(watch, post, strict=True))
     owner, expected = exp.owner, exp.expected_token_accounts()
     in_ata, out_ata, wsol_ata = (ata_address(owner, m) for m in (exp.mint_in, exp.mint_out, WSOL_MINT))
+
+    def authorities(acc):
+        token = parse_token_account(acc)
+        if token is None or token[1] != owner:
+            return None
+        data = acc["data"]
+        delegate_tag = struct.unpack("<I", data[72:76])[0]
+        close_tag = struct.unpack("<I", data[129:133])[0]
+        if delegate_tag not in (0, 1) or close_tag not in (0, 1) or data[108] not in (1, 2):
+            problems.append("owner token account has invalid authority evidence")
+            return None
+        return (
+            data[76:108] if delegate_tag else None,
+            struct.unpack("<Q", data[121:129])[0] if delegate_tag else 0,
+            data[133:165] if close_tag else None,
+            data[108],
+        )
 
     for addr in watch:
         if addr == owner:
@@ -429,6 +453,13 @@ def check_economics(
             tok = parse_token_account(after)
             if tok is not None and tok[1] != owner:
                 problems.append(f"owner token account {addr} changes owner")
+        before_authority, after_authority = authorities(before), authorities(after)
+        if after_authority is not None:
+            if before_authority is None:
+                if after_authority != (None, 0, None, 1):
+                    problems.append(f"owner token account {addr} acquires a persistent authority or frozen state")
+            elif after_authority != before_authority:
+                problems.append(f"owner token account {addr} changes persistent authority or frozen state")
         for acc in (before, after):
             if acc is not None and acc["owner"] == SYSTEM_PROGRAM and addr in facts.writable:
                 b = before["lamports"] if before else 0

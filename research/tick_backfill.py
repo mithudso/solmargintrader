@@ -30,16 +30,20 @@ Phases, each skippable and each checkpointed:
 
 from __future__ import annotations
 
+import fcntl
+
 import argparse
 import hashlib
 import json
 import os
 import signal
+import stat
 import subprocess
 import sys
 import time
 from pathlib import Path
 
+import numpy as np
 import pandas as pd
 
 REPO = Path(__file__).resolve().parent.parent
@@ -138,6 +142,7 @@ def _checkpoint_binding(product: str, interval: str, start_ts: float, end_ts: fl
 def backfill(
     asset: str, quote: str, start: str, end: str, interval: str,
     ck_dir: Path, out_dir: Path, *, pause: float, verbose: bool = True,
+    stop_file: Path | None = None,
 ) -> Path | None:
     """Stream the whole window once, checkpointing, and write authoritative bars."""
     product = f"{asset}-{quote}"
@@ -147,7 +152,7 @@ def backfill(
     binding = _checkpoint_binding(product, interval, start_ts, end_ts)
 
     ck_dir.mkdir(parents=True, exist_ok=True)
-    ck = ck_dir / f"{asset}_{interval}_{start}_{end}.json"
+    ck = ck_dir / f"{asset}_{quote}_{interval}_{start}_{end}.json"
     agg = MinuteAggregator(seconds)
     cursor: int | None = None
     pages = trades_seen = 0
@@ -168,7 +173,7 @@ def backfill(
     else:
         if cursor is None:
             cursor = seek_trade_id(product, end_ts, pause=pause, verbose=verbose) + 1
-        while not _stop:
+        while not _stop and not (stop_file is not None and stop_file.exists()):
             try:
                 page = _page(product, cursor)
             except FetchError as exc:
@@ -209,7 +214,7 @@ def backfill(
         return None
     validate_bars(bars, interval, strict_gaps=False)
     out_dir.mkdir(parents=True, exist_ok=True)
-    out = out_dir / f"{asset}_{interval}_{start}_{end}_from_ticks.csv"
+    out = out_dir / f"{asset}_{quote}_{interval}_{start}_{end}_from_ticks.csv"
     bars.to_csv(out, index=False)
     print(f"  {asset}: wrote {len(bars)} authoritative bars to {out} "
           f"({trades_seen} trades)", file=sys.stderr)
@@ -237,7 +242,7 @@ def audit(asset: str, truth_path: Path, data_dir: Path, interval: str) -> list[s
         traded = [t for t in missing if float(truth.loc[truth["timestamp"] == t, "volume"].iloc[0]) > 0]
         present = c.merge(truth, on="timestamp", suffixes=("_c", "_t"))
         wrong = {
-            f: int((abs(present[f + "_c"] - present[f + "_t"]) > 1e-8).sum())
+            f: int((~np.isfinite(present[f + "_c"]) | ~np.isfinite(present[f + "_t"]) | (abs(present[f + "_c"] - present[f + "_t"]) > 1e-8)).sum())
             for f in ("open", "high", "low", "close", "volume")
         }
         out.append(
@@ -254,14 +259,17 @@ def audit(asset: str, truth_path: Path, data_dir: Path, interval: str) -> list[s
             continue
         c = pd.read_csv(cpath)
         b = (truth["timestamp"] // cseconds).astype("int64") * cseconds
-        rebuilt = truth.assign(b=b).groupby("b").agg(
+        # Edge buckets lacking the entire requested coarse window are not comparable.
+        full = [stamp for stamp in np.unique(b)
+                if stamp >= truth.timestamp.min() and stamp + cseconds <= truth.timestamp.max() + seconds]
+        rebuilt = truth.assign(b=b).loc[b.isin(full)].groupby("b").agg(
             open=("open", "first"), high=("high", "max"), low=("low", "min"),
             close=("close", "last"), volume=("volume", "sum"))
-        m = c.set_index("timestamp").join(rebuilt, rsuffix="_t", how="inner").dropna()
+        m = c.set_index("timestamp").join(rebuilt, rsuffix="_t", how="inner")
         if m.empty:
             continue
         wrong = {
-            f: int((abs(m[f] - m[f + "_t"]) > 1e-6).sum())
+            f: int((~np.isfinite(m[f]) | ~np.isfinite(m[f + "_t"]) | (abs(m[f] - m[f + "_t"]) > 1e-6)).sum())
             for f in ("open", "high", "low", "close", "volume")
         }
         worst = float(max((m[f] - m[f + "_t"]).abs().max() for f in ("high", "low")))
@@ -296,7 +304,12 @@ def rerun_decision(asset: str, original: Path, repaired: Path, interval: str) ->
     a, b = run(original), run(repaired)
     if a is None or b is None:
         return f"- {asset}: decision re-run unavailable (decide.py did not return JSON)\n"
-    same = a == b
+    fields = ("strategy", "name", "previous", "target", "action", "status", "reason")
+    def decisions(report):
+        return [{k: row[k] for k in fields if k in row} for row in report.get("strategies", [])]
+    if "strategies" not in a or "strategies" not in b:
+        return f"- {asset}: decision re-run unavailable (missing strategy decisions)\n"
+    same = decisions(a) == decisions(b)
     return (
         f"- {asset}: decision on repaired input is "
         f"{'**unchanged**' if same else '**DIFFERENT** — the data error moved the answer'}\n"
@@ -314,10 +327,21 @@ def main(argv: list[str] | None = None) -> int:
     ap.add_argument("--out-dir", default=str(REPO / "data" / "authoritative"))
     ap.add_argument("--checkpoint-dir", default=str(REPO / "data" / "checkpoints"))
     ap.add_argument("--report", default=str(REPO / "research" / "TICK-BACKFILL-AUDIT.md"))
+    ap.add_argument("--stop-file", type=Path, help="Explicit cooperative owner stop marker")
+    ap.add_argument("--owner-lock-fd", type=int, help=argparse.SUPPRESS)
     ap.add_argument("--pause", type=float, default=0.15,
                     help="seconds between requests; keep under the public rate limit")
     ap.add_argument("--phases", default="backfill,audit,rerun")
     args = ap.parse_args(argv)
+    if args.owner_lock_fd is not None:
+        if args.owner_lock_fd < 3 or args.stop_file is None:
+            raise ValueError("invalid_owner_lock")
+        info = os.fstat(args.owner_lock_fd)
+        expected = (args.stop_file.parent / "tick_backfill.lock").stat(follow_symlinks=False)
+        if (not stat.S_ISREG(info.st_mode) or info.st_uid != os.getuid()
+                or (info.st_dev, info.st_ino) != (expected.st_dev, expected.st_ino)):
+            raise ValueError("invalid_owner_lock")
+        fcntl.flock(args.owner_lock_fd, fcntl.LOCK_EX | fcntl.LOCK_NB)
 
     signal.signal(signal.SIGINT, _handle_stop)
     signal.signal(signal.SIGTERM, _handle_stop)
@@ -334,6 +358,8 @@ def main(argv: list[str] | None = None) -> int:
     started = time.time()
 
     for asset in assets:
+        if _stop or (args.stop_file is not None and args.stop_file.exists()):
+            break
         print(f"\n=== {asset}", file=sys.stderr)
         lines.append(f"\n## {asset}\n\n")
         truth = out_dir / f"{asset}_{args.interval}_{args.start}_{args.end}_from_ticks.csv"
@@ -341,7 +367,9 @@ def main(argv: list[str] | None = None) -> int:
         if "backfill" in phases and not _stop:
             got = backfill(asset, args.quote.upper(), args.start, args.end,
                            args.interval, Path(args.checkpoint_dir), out_dir,
-                           pause=args.pause)
+                           pause=args.pause, stop_file=args.stop_file)
+            if args.stop_file is not None and args.stop_file.exists():
+                break
             if got is None and not truth.exists():
                 lines.append("- backfill incomplete; rerun to continue\n")
                 continue
@@ -358,7 +386,7 @@ def main(argv: list[str] | None = None) -> int:
     lines.append(f"\n_Run took {(time.time() - started) / 60:.1f} min._\n")
     Path(args.report).write_text("".join(lines))
     print(f"\nreport: {args.report}", file=sys.stderr)
-    return 0 if not _stop else 130
+    return 130 if _stop or (args.stop_file is not None and args.stop_file.exists()) else 0
 
 
 if __name__ == "__main__":

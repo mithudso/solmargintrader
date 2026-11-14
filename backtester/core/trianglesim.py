@@ -155,20 +155,22 @@ def cycle_edges_bps(tri: Triangle, quotes: Mapping[str, Quote], fee_bps: float,
     return edges if all(math.isfinite(edge) for edge in edges) else None
 
 
-def _size_cap_usd(tri: Triangle, direction: str, quotes: Mapping[str, Quote]) -> float:
+def _size_cap_usd(tri: Triangle, direction: str, quotes: Mapping[str, Quote], fee_bps: float = 0.0) -> float:
     """USD the touch can absorb on every leg, or inf when sizes are not known."""
     p_a, p_b, p_ab = tri.products
     qa, qb, qab = quotes[p_a], quotes[p_b], quotes[p_ab]
-    caps = []
-    if direction == "forward":  # buy A at ask[A-USD], sell A at bid[A-B], sell B at bid[B-USD]
-        for size, px in ((qa[3], qa[1]), (qab[2], qa[1]), (qb[2], qb[0])):
-            if size is not None:
-                caps.append(size * px)
-    else:  # buy B at ask[B-USD], buy A at ask[A-B], sell A at bid[A-USD]
-        for size, px in ((qb[3], qb[1]), (qab[3], qa[0]), (qa[2], qa[0])):
-            if size is not None:
-                caps.append(size * px)
+    keep = 1.0 - fee_bps / 10_000.0
+    # Each size names BASE units consumed at that leg, before that leg's fee.
+    # Reverse every preceding conversion to express its cap in starting USD.
+    if direction == "forward":
+        factors = ((qa[3], qa[1]), (qab[2], qa[1] / keep),
+                   (qb[2], qa[1] / (qab[0] * keep**2)))
+    else:
+        factors = ((qb[3], qb[1]), (qab[3], qab[1] * qb[1] / keep),
+                   (qa[2], qb[1] * qab[1] / keep**2))
+    caps = [size * scale for size, scale in factors if size is not None]
     return min(caps) if caps else math.inf
+
 
 
 @dataclass
@@ -275,7 +277,9 @@ class TriangleReplay:
         realized = exec_edges[0] if direction == "forward" else exec_edges[1]
         notional = cfg.notional_usd
         if cfg.use_displayed_size:
-            notional = min(notional, _size_cap_usd(tri, direction, self.book))
+            notional = min(notional, _size_cap_usd(tri, direction, self.book, cfg.taker_fee_bps))
+        if not math.isfinite(notional) or notional <= 0:
+            return
         pnl = notional * realized / 10_000.0
         if notional <= 0 or not math.isfinite(pnl):
             return

@@ -5,6 +5,8 @@
 
 > Kind: repo · Entries: 3748
 
+## Scope
+3442 captured paths; each has a shallow structural card in llms-filemap.txt. No data or research body is copied into this list. [asserted]
 ## Files
 
 ### .cdo
@@ -171,17 +173,17 @@
 - .cdo/reviews-2026-11-13/website-test-ui-browser.json — config [src: git]
 
 ### .claude
-- .claude/agents/aero-pool-scout.md — docs [src: git]
-- .claude/agents/oracle.md — docs [src: git]
+- .claude/agents/aero-pool-scout.md — docs, shallow [src: git]
+- .claude/agents/oracle.md — docs, shallow [src: git]
 
 ### Repository root
-- .editorconfig — artifact [src: git]
-- .env.example — artifact [src: git]
-- .gitattributes — artifact [src: git]
+- .editorconfig — config, shallow [src: git]
+- .env.example — config, shallow [src: git]
+- .gitattributes — config, shallow [src: git]
 
 ### .githooks
-- .githooks/pre-commit — artifact [src: git]
-- .githooks/pre-merge-commit — artifact [src: git]
+- .githooks/pre-commit — infra, shallow [src: git]
+- .githooks/pre-merge-commit — infra, shallow [src: git]
 
 ### .github
 - .github/CODEOWNERS — artifact [src: git]
@@ -198,100 +200,100 @@
 - .github/workflows/website.yml — config [src: git]
 
 ### Repository root
-- .gitignore — artifact [src: git]
-- .nvmrc — artifact [src: git]
+- .gitignore — config, shallow [src: git]
+- .nvmrc — config, shallow [src: git]
 
 ### .postman
-- .postman/resources.yaml — config [src: git]
+- .postman/resources.yaml — config, shallow [src: git]
 
 ### .remember
-- .remember/remember.md — docs [src: git]
+- .remember/remember.md — docs, shallow [src: git]
 
 ### .superpowers
-- .superpowers/sdd/2026-11-09-bot-manager/m4-sandbox-final-proof.json — config [src: git]
-- .superpowers/sdd/2026-11-09-bot-manager/task-m4-report.md — docs [src: git]
-- .superpowers/sdd/remaining-2026-11-10/final-integration-review.md — docs [src: git]
-- .superpowers/sdd/remaining-2026-11-10/progress.md — docs [src: git]
-- .superpowers/sdd/remaining-2026-11-10/task-1-brief.md — docs [src: git]
-- .superpowers/sdd/remaining-2026-11-10/task-1-report.md — docs [src: git]
-- .superpowers/sdd/remaining-2026-11-10/task-1-review.md — docs [src: git]
-- .superpowers/sdd/remaining-2026-11-10/task-2-brief.md — docs [src: git]
-- .superpowers/sdd/remaining-2026-11-10/task-2-report.md — docs [src: git]
-- .superpowers/sdd/remaining-2026-11-10/task-2-review.md — docs [src: git]
-- .superpowers/sdd/remaining-2026-11-10/task-3-brief.md — docs [src: git]
-- .superpowers/sdd/remaining-2026-11-10/task-3-report.md — docs [src: git]
-- .superpowers/sdd/remaining-2026-11-10/task-3-review.md — docs [src: git]
-- .superpowers/sdd/remaining-2026-11-10/task-4-brief.md — docs [src: git]
-- .superpowers/sdd/remaining-2026-11-10/task-4-report.md — docs [src: git]
-- .superpowers/sdd/remaining-2026-11-10/task-4-review.md — docs [src: git]
-- .superpowers/sdd/remaining-2026-11-10/task-5-brief.md — docs [src: git]
-- .superpowers/sdd/remaining-2026-11-10/task-5-report.md — docs [src: git]
-- .superpowers/sdd/remaining-2026-11-10/task-5-review.md — docs [src: git]
-- .superpowers/sdd/remaining-2026-11-10/task-6-brief.md — docs [src: git]
-- .superpowers/sdd/remaining-2026-11-10/task-6-paper-chrome.json — config [src: git]
-- .superpowers/sdd/remaining-2026-11-10/task-6-report.md — docs [src: git]
-- .superpowers/sdd/remaining-2026-11-10/task-6-review.md — docs [src: git]
-- .superpowers/sdd/remaining-2026-11-10/task-7-brief.md — docs [src: git]
-- .superpowers/sdd/remaining-2026-11-10/task-7-report.md — docs [src: git]
-- .superpowers/sdd/remaining-2026-11-10/task-7-review.md — docs [src: git]
-- .superpowers/sdd/remaining-2026-11-10/task-8-brief.md — docs [src: git]
-- .superpowers/sdd/remaining-2026-11-10/textual-teardown-report.md — docs [src: git]
-- .superpowers/sdd/suite-2026-11-10/chrome-report.md — docs [src: git]
-- .superpowers/sdd/suite-2026-11-10/cli-report.md — docs [src: git]
-- .superpowers/sdd/suite-2026-11-10/core-report.md — docs [src: git]
-- .superpowers/sdd/suite-2026-11-10/progress.md — docs [src: git]
+- .superpowers/sdd/2026-11-09-bot-manager/m4-sandbox-final-proof.json — data, shallow [src: git]
+- .superpowers/sdd/2026-11-09-bot-manager/task-m4-report.md — docs, shallow [src: git]
+- .superpowers/sdd/remaining-2026-11-10/final-integration-review.md — docs, shallow [src: git]
+- .superpowers/sdd/remaining-2026-11-10/progress.md — docs, shallow [src: git]
+- .superpowers/sdd/remaining-2026-11-10/task-1-brief.md — docs, shallow [src: git]
+- .superpowers/sdd/remaining-2026-11-10/task-1-report.md — docs, shallow [src: git]
+- .superpowers/sdd/remaining-2026-11-10/task-1-review.md — docs, shallow [src: git]
+- .superpowers/sdd/remaining-2026-11-10/task-2-brief.md — docs, shallow [src: git]
+- .superpowers/sdd/remaining-2026-11-10/task-2-report.md — docs, shallow [src: git]
+- .superpowers/sdd/remaining-2026-11-10/task-2-review.md — docs, shallow [src: git]
+- .superpowers/sdd/remaining-2026-11-10/task-3-brief.md — docs, shallow [src: git]
+- .superpowers/sdd/remaining-2026-11-10/task-3-report.md — docs, shallow [src: git]
+- .superpowers/sdd/remaining-2026-11-10/task-3-review.md — docs, shallow [src: git]
+- .superpowers/sdd/remaining-2026-11-10/task-4-brief.md — docs, shallow [src: git]
+- .superpowers/sdd/remaining-2026-11-10/task-4-report.md — docs, shallow [src: git]
+- .superpowers/sdd/remaining-2026-11-10/task-4-review.md — docs, shallow [src: git]
+- .superpowers/sdd/remaining-2026-11-10/task-5-brief.md — docs, shallow [src: git]
+- .superpowers/sdd/remaining-2026-11-10/task-5-report.md — docs, shallow [src: git]
+- .superpowers/sdd/remaining-2026-11-10/task-5-review.md — docs, shallow [src: git]
+- .superpowers/sdd/remaining-2026-11-10/task-6-brief.md — docs, shallow [src: git]
+- .superpowers/sdd/remaining-2026-11-10/task-6-paper-chrome.json — data, shallow [src: git]
+- .superpowers/sdd/remaining-2026-11-10/task-6-report.md — docs, shallow [src: git]
+- .superpowers/sdd/remaining-2026-11-10/task-6-review.md — docs, shallow [src: git]
+- .superpowers/sdd/remaining-2026-11-10/task-7-brief.md — docs, shallow [src: git]
+- .superpowers/sdd/remaining-2026-11-10/task-7-report.md — docs, shallow [src: git]
+- .superpowers/sdd/remaining-2026-11-10/task-7-review.md — docs, shallow [src: git]
+- .superpowers/sdd/remaining-2026-11-10/task-8-brief.md — docs, shallow [src: git]
+- .superpowers/sdd/remaining-2026-11-10/textual-teardown-report.md — docs, shallow [src: git]
+- .superpowers/sdd/suite-2026-11-10/chrome-report.md — docs, shallow [src: git]
+- .superpowers/sdd/suite-2026-11-10/cli-report.md — docs, shallow [src: git]
+- .superpowers/sdd/suite-2026-11-10/core-report.md — docs, shallow [src: git]
+- .superpowers/sdd/suite-2026-11-10/progress.md — docs, shallow [src: git]
 
 ### .vscode
-- .vscode/extensions.json — config [src: git]
-- .vscode/launch.json — config [src: git]
-- .vscode/settings.json — config [src: git]
+- .vscode/extensions.json — data, shallow [src: git]
+- .vscode/launch.json — data, shallow [src: git]
+- .vscode/settings.json — data, shallow [src: git]
 
 ### Repository root
-- 2026-11-10-bot-manager-remaining.md — docs [src: git]
-- AGENTS.md — docs [src: git]
-- API.md — docs [src: git]
-- ARCHITECTURE.md — docs [src: git]
-- BASE-WALLET-QUERIES.md — docs [src: git]
-- CLAUDE.md — docs [src: git]
-- CODE_OF_CONDUCT.md — docs [src: git]
-- COMPONENTS.md — docs [src: git]
-- COMPOUND-5M-PAPER.md — docs [src: git]
-- COMPOUND-5M.md — docs [src: git]
-- CONCEPTS.md — docs [src: git]
-- CONTRIBUTING.md — docs [src: git]
-- COUNCIL.md — docs [src: git]
-- DEVELOPMENT.md — docs [src: git]
-- ECOSYSTEM-BOOTSTRAP.md — docs [src: git]
-- ECOSYSTEM-CONTROL-ROOM.md — docs [src: git]
-- ECOSYSTEM-SWAPS.md — docs [src: git]
-- ECOSYSTEM-WIKI.md — docs [src: git]
-- EXTENSION-TUI-PARITY.md — docs [src: git]
-- FILES.md — docs [src: git]
-- GEMINI.md — docs [src: git]
-- INSTALLATION.md — docs [src: git]
-- JUPITER-EXPERIMENT-COSTS.md — docs [src: git]
-- JUPITER_GEMINI_HANDOFF.md — docs [src: git]
-- LICENSE — artifact [src: git]
-- LIVE-PREDICTION-SCORE.md — docs [src: git]
-- MCP.md — docs [src: git]
-- OPERATIONS.md — docs [src: git]
-- README.md — docs [src: git]
-- SCRIPTS.md — docs [src: git]
-- SECURITY.md — docs [src: git]
-- SIGNAL-DESK.md — docs [src: git]
-- TESTING.md — docs [src: git]
-- TRADINGVIEW-CARD-COVERAGE.md — docs [src: git]
-- TRADINGVIEW-CARD-FILES.md — docs [src: git]
-- TRADINGVIEW-CARD-READINESS-FILES.md — docs [src: git]
-- TRADINGVIEW-CARD-READINESS.md — docs [src: git]
-- TRADINGVIEW-REFERENCE.md — docs [src: git]
-- TRADINGVIEW-SCRIPT-CARD-FILES.md — docs [src: git]
+- 2026-11-10-bot-manager-remaining.md — docs, shallow [src: git]
+- AGENTS.md — meta, shallow [src: git]
+- API.md — docs, shallow [src: git]
+- ARCHITECTURE.md — docs, shallow [src: git]
+- BASE-WALLET-QUERIES.md — docs, shallow [src: git]
+- CLAUDE.md — meta, shallow [src: git]
+- CODE_OF_CONDUCT.md — docs, shallow [src: git]
+- COMPONENTS.md — docs, shallow [src: git]
+- COMPOUND-5M-PAPER.md — docs, shallow [src: git]
+- COMPOUND-5M.md — docs, shallow [src: git]
+- CONCEPTS.md — docs, shallow [src: git]
+- CONTRIBUTING.md — meta, shallow [src: git]
+- COUNCIL.md — docs, shallow [src: git]
+- DEVELOPMENT.md — docs, shallow [src: git]
+- ECOSYSTEM-BOOTSTRAP.md — docs, shallow [src: git]
+- ECOSYSTEM-CONTROL-ROOM.md — docs, shallow [src: git]
+- ECOSYSTEM-SWAPS.md — docs, shallow [src: git]
+- ECOSYSTEM-WIKI.md — docs, shallow [src: git]
+- EXTENSION-TUI-PARITY.md — docs, shallow [src: git]
+- FILES.md — docs, shallow [src: git]
+- GEMINI.md — meta, shallow [src: git]
+- INSTALLATION.md — docs, shallow [src: git]
+- JUPITER-EXPERIMENT-COSTS.md — docs, shallow [src: git]
+- JUPITER_GEMINI_HANDOFF.md — docs, shallow [src: git]
+- LICENSE — data, shallow [src: git]
+- LIVE-PREDICTION-SCORE.md — docs, shallow [src: git]
+- MCP.md — docs, shallow [src: git]
+- OPERATIONS.md — docs, shallow [src: git]
+- README.md — meta, shallow [src: git]
+- SCRIPTS.md — docs, shallow [src: git]
+- SECURITY.md — docs, shallow [src: git]
+- SIGNAL-DESK.md — docs, shallow [src: git]
+- TESTING.md — docs, shallow [src: git]
+- TRADINGVIEW-CARD-COVERAGE.md — docs, shallow [src: git]
+- TRADINGVIEW-CARD-FILES.md — docs, shallow [src: git]
+- TRADINGVIEW-CARD-READINESS-FILES.md — docs, shallow [src: git]
+- TRADINGVIEW-CARD-READINESS.md — docs, shallow [src: git]
+- TRADINGVIEW-REFERENCE.md — docs, shallow [src: git]
+- TRADINGVIEW-SCRIPT-CARD-FILES.md — docs, shallow [src: git]
 
 ### archive
-- archive/memory-2026-11-08.md — docs [src: git]
+- archive/memory-2026-11-08.md — docs, shallow [src: git]
 
 ### Repository root
-- backtester-history-handoff.md — docs [src: git]
+- backtester-history-handoff.md — docs, shallow [src: git]
 
 ### backtester
 - backtester/.gitignore — artifact [src: git]
@@ -2252,11 +2254,11 @@
 - backtester/voltycli.py — code [src: git]
 
 ### Repository root
-- bot-manager-handoff.md — docs [src: git]
-- bot-manager-milestone-1.md — docs [src: git]
-- bot-manager-milestone-2.md — docs [src: git]
-- bot-manager-oracle-interface.md — docs [src: git]
-- bot-manager-quickstart.md — docs [src: git]
+- bot-manager-handoff.md — docs, shallow [src: git]
+- bot-manager-milestone-1.md — docs, shallow [src: git]
+- bot-manager-milestone-2.md — docs, shallow [src: git]
+- bot-manager-oracle-interface.md — docs, shallow [src: git]
+- bot-manager-quickstart.md — docs, shallow [src: git]
 
 ### botmanager
 - botmanager/.gitignore — artifact [src: git]
@@ -2352,24 +2354,24 @@
 - botmanager/tests/test_walkthrough.py — code [src: git]
 
 ### Repository root
-- caching-and-optimization.md — docs [src: git]
-- code-deep-optimizer-2026-11-06.md — docs [src: git]
-- code-deep-optimizer-2026-11-08.md — docs [src: git]
-- code-optimizer-scope-2026-11-06.json — config [src: git]
-- code-optimizer-scope-2026-11-08.json — config [src: git]
-- codebase-overview.md — docs [src: git]
+- caching-and-optimization.md — docs, shallow [src: git]
+- code-deep-optimizer-2026-11-06.md — docs, shallow [src: git]
+- code-deep-optimizer-2026-11-08.md — docs, shallow [src: git]
+- code-optimizer-scope-2026-11-06.json — data, shallow [src: git]
+- code-optimizer-scope-2026-11-08.json — data, shallow [src: git]
+- codebase-overview.md — docs, shallow [src: git]
 
 ### coin-fit
-- coin-fit/README.md — docs [src: git]
-- coin-fit/merge-89-receipt.json — config [src: git]
-- coin-fit/merge-93-receipt.json — config [src: git]
-- coin-fit/merge-98-receipt.json — config [src: git]
-- coin-fit/merge-99-receipt.json — config [src: git]
-- coin-fit/tasks.json — config [src: git]
+- coin-fit/README.md — meta, shallow [src: git]
+- coin-fit/merge-89-receipt.json — data, shallow [src: git]
+- coin-fit/merge-93-receipt.json — data, shallow [src: git]
+- coin-fit/merge-98-receipt.json — data, shallow [src: git]
+- coin-fit/merge-99-receipt.json — data, shallow [src: git]
+- coin-fit/tasks.json — data, shallow [src: git]
 
 ### Repository root
-- context-bundle.json — config [src: git]
-- crypto-bot-monitor-full-suite-20261109.md — docs [src: git]
+- context-bundle.json — data, shallow [src: git]
+- crypto-bot-monitor-full-suite-20261109.md — docs, shallow [src: git]
 
 ### design
 - design/bot-control-room/DESIGN.md — docs [src: git]
@@ -2565,9 +2567,9 @@
 - docs/worktree-consolidation-2026-11-10.md — docs [src: git]
 
 ### dso-skill
-- dso-skill/README.md — docs [src: git]
-- dso-skill/SKILL.md — docs [src: git]
-- dso-skill/references/passes.md — docs [src: git]
+- dso-skill/README.md — meta, shallow [src: git]
+- dso-skill/SKILL.md — docs, shallow [src: git]
+- dso-skill/references/passes.md — docs, shallow [src: git]
 
 ### ecosystem
 - ecosystem/README.md — docs [src: git]
@@ -2828,8 +2830,8 @@
 - extension/vendor/lightweight-charts/lightweight-charts.standalone.production.mjs — code [src: git]
 
 ### Repository root
-- external-calls.md — docs [src: git]
-- high_signal_file_index.json — config [src: git]
+- external-calls.md — docs, shallow [src: git]
+- high_signal_file_index.json — data, shallow [src: git]
 
 ### index
 - index/CONCEPT-INDEX.json — config [src: git]
@@ -2845,9 +2847,9 @@
 - index/search.py — code [src: git]
 
 ### Repository root
-- integrations-and-assumptions.md — docs [src: git]
-- jupiter-trigger-contract.md — docs [src: git]
-- known-issues.md — docs [src: git]
+- integrations-and-assumptions.md — docs, shallow [src: git]
+- jupiter-trigger-contract.md — docs, shallow [src: git]
+- known-issues.md — docs, shallow [src: git]
 
 ### liquidity
 - liquidity/.gitignore — artifact [src: git]
@@ -2927,9 +2929,9 @@
 - llms/jupsol-llms.txt — artifact [src: git]
 
 ### Repository root
-- logging.md — docs [src: git]
-- market-graph-geometry-prompt.md — docs [src: git]
-- memory.md — docs [src: git]
+- logging.md — docs, shallow [src: git]
+- market-graph-geometry-prompt.md — docs, shallow [src: git]
+- memory.md — data, shallow [src: git]
 
 ### mongo
 - mongo/README.md — docs [src: git]
@@ -2954,11 +2956,11 @@
 - mongo/tests/test_snapshot_audit.py — code [src: git]
 
 ### Repository root
-- onboarding.md — docs [src: git]
-- optimization-workbench-plan.md — docs [src: git]
-- optimization-workbench-run.md — docs [src: git]
-- optimization-workbench.md — docs [src: git]
-- oracle-optimized-prompt.md — docs [src: git]
+- onboarding.md — docs, shallow [src: git]
+- optimization-workbench-plan.md — docs, shallow [src: git]
+- optimization-workbench-run.md — docs, shallow [src: git]
+- optimization-workbench.md — docs, shallow [src: git]
+- oracle-optimized-prompt.md — docs, shallow [src: git]
 
 ### oracle
 - oracle/README.md — docs [src: git]
@@ -3388,12 +3390,12 @@
 - run-log.jsonl — artifact [src: git]
 
 ### runbooks
-- runbooks/handoff.md — docs [src: git]
-- runbooks/incident.md — docs [src: git]
-- runbooks/rollback.md — docs [src: git]
+- runbooks/handoff.md — docs, shallow [src: git]
+- runbooks/incident.md — docs, shallow [src: git]
+- runbooks/rollback.md — docs, shallow [src: git]
 
 ### Repository root
-- script-profile-orchestration.md — docs [src: git]
+- script-profile-orchestration.md — docs, shallow [src: git]
 
 ### scripts
 
@@ -3431,7 +3433,7 @@
 - scripts/test_tradingview_script_profiles.py — code [src: git]
 
 ### Repository root
-- short-horizon-leverage-concept-family.md — docs [src: git]
+- short-horizon-leverage-concept-family.md — docs, shallow [src: git]
 
 ### skills
 - skills/README.md — docs [src: git]
@@ -3697,7 +3699,7 @@
 - soltui/wallet_activity.py — code [src: git]
 
 ### Repository root
-- strategy-optimization-concept-family.md — docs [src: git]
+- strategy-optimization-concept-family.md — docs, shallow [src: git]
 
 ### superpowers
 - superpowers/plans/2026-11-09-backtester-integrity.md — docs [src: git]
@@ -3719,38 +3721,90 @@
 - tools/land.sh — code [src: git]
 
 ### Repository root
-- trading-signals-concept-family.md — docs [src: git]
+- trading-signals-concept-family.md — docs, shallow [src: git]
 
 ### tradingskilllist
-- tradingskilllist/trading-skills.md — docs [src: git]
+- tradingskilllist/trading-skills.md — docs, shallow [src: git]
 
 ### tradingview
-- tradingview/tradingviewinputoptimizer_v2-7/AGENTS.md — docs [src: git]
-- tradingview/tradingviewinputoptimizer_v2-7/CLAUDE.md — docs [src: git]
-- tradingview/tradingviewinputoptimizer_v2-7/CONTRIBUTING.md — docs [src: git]
-- tradingview/tradingviewinputoptimizer_v2-7/GEMINI.md — docs [src: git]
-- tradingview/tradingviewinputoptimizer_v2-7/README.md — docs [src: git]
-- tradingview/tradingviewinputoptimizer_v2-7/docs/ARCHITECTURE.md — docs [src: git]
-- tradingview/tradingviewinputoptimizer_v2-7/docs/COMPONENTS.md — docs [src: git]
-- tradingview/tradingviewinputoptimizer_v2-7/docs/DEVELOPMENT.md — docs [src: git]
-- tradingview/tradingviewinputoptimizer_v2-7/docs/INSTALLATION.md — docs [src: git]
-- tradingview/tradingviewinputoptimizer_v2-7/docs/MCP.md — docs [src: git]
-- tradingview/tradingviewinputoptimizer_v2-7/docs/RETRIEVAL.md — docs [src: git]
-- tradingview/tradingviewinputoptimizer_v2-7/docs/SECURITY.md — docs [src: git]
-- tradingview/tradingviewinputoptimizer_v2-7/docs/TESTING.md — docs [src: git]
-- tradingview/tradingviewinputoptimizer_v2-7/docs/caching-and-optimization.md — docs [src: git]
-- tradingview/tradingviewinputoptimizer_v2-7/docs/codebase-overview.md — docs [src: git]
-- tradingview/tradingviewinputoptimizer_v2-7/docs/external-calls.md — docs [src: git]
-- tradingview/tradingviewinputoptimizer_v2-7/docs/high_signal_file_index.json — config [src: git]
-- tradingview/tradingviewinputoptimizer_v2-7/docs/integrations-and-assumptions.md — docs [src: git]
-- tradingview/tradingviewinputoptimizer_v2-7/docs/known-issues.md — docs [src: git]
-- tradingview/tradingviewinputoptimizer_v2-7/docs/logging.md — docs [src: git]
-- tradingview/tradingviewinputoptimizer_v2-7/docs/onboarding.md — docs [src: git]
-- tradingview/tradingviewinputoptimizer_v2-7/docs/repo-bootstrap-audit-2026-11-08.md — docs [src: git]
-- tradingview/tradingviewinputoptimizer_v2-7/docs/requirements.md — docs [src: git]
-- tradingview/tradingviewinputoptimizer_v2-7/docs/runbooks/retrieval.md — docs [src: git]
-- tradingview/tradingviewinputoptimizer_v2-7/memory.md — docs [src: git]
-- tradingview/tradingviewinputoptimizer_v2-7/prompts.md — docs [src: git]
+- tradingview/tradingviewinputoptimizer_v2-7/AGENTS.md — meta, shallow [src: git]
+- tradingview/tradingviewinputoptimizer_v2-7/CLAUDE.md — meta, shallow [src: git]
+- tradingview/tradingviewinputoptimizer_v2-7/CONTRIBUTING.md — meta, shallow [src: git]
+- tradingview/tradingviewinputoptimizer_v2-7/GEMINI.md — meta, shallow [src: git]
+- tradingview/tradingviewinputoptimizer_v2-7/README.md — meta, shallow [src: git]
+- tradingview/tradingviewinputoptimizer_v2-7/docs/ARCHITECTURE.md — docs, shallow [src: git]
+- tradingview/tradingviewinputoptimizer_v2-7/docs/COMPONENTS.md — docs, shallow [src: git]
+- tradingview/tradingviewinputoptimizer_v2-7/docs/DEVELOPMENT.md — docs, shallow [src: git]
+- tradingview/tradingviewinputoptimizer_v2-7/docs/INSTALLATION.md — docs, shallow [src: git]
+- tradingview/tradingviewinputoptimizer_v2-7/docs/MCP.md — docs, shallow [src: git]
+- tradingview/tradingviewinputoptimizer_v2-7/docs/RETRIEVAL.md — docs, shallow [src: git]
+- tradingview/tradingviewinputoptimizer_v2-7/docs/SECURITY.md — docs, shallow [src: git]
+- tradingview/tradingviewinputoptimizer_v2-7/docs/TESTING.md — docs, shallow [src: git]
+- tradingview/tradingviewinputoptimizer_v2-7/docs/caching-and-optimization.md — docs, shallow [src: git]
+- tradingview/tradingviewinputoptimizer_v2-7/docs/codebase-overview.md — docs, shallow [src: git]
+- tradingview/tradingviewinputoptimizer_v2-7/docs/external-calls.md — docs, shallow [src: git]
+- tradingview/tradingviewinputoptimizer_v2-7/docs/high_signal_file_index.json — data, shallow [src: git]
+- tradingview/tradingviewinputoptimizer_v2-7/docs/integrations-and-assumptions.md — docs, shallow [src: git]
+- tradingview/tradingviewinputoptimizer_v2-7/docs/known-issues.md — docs, shallow [src: git]
+- tradingview/tradingviewinputoptimizer_v2-7/docs/logging.md — docs, shallow [src: git]
+- tradingview/tradingviewinputoptimizer_v2-7/docs/onboarding.md — docs, shallow [src: git]
+- tradingview/tradingviewinputoptimizer_v2-7/docs/repo-bootstrap-audit-2026-11-08.md — docs, shallow [src: git]
+- tradingview/tradingviewinputoptimizer_v2-7/docs/requirements.md — docs, shallow [src: git]
+- tradingview/tradingviewinputoptimizer_v2-7/docs/runbooks/retrieval.md — docs, shallow [src: git]
+- tradingview/tradingviewinputoptimizer_v2-7/memory.md — docs, shallow [src: git]
+- tradingview/tradingviewinputoptimizer_v2-7/prompts.md — docs, shallow [src: git]
+
+### website
+- website/.gitignore — config, shallow [src: git]
+- website/README.md — meta, shallow [src: git]
+- website/api/openapi.json — data, shallow [src: git]
+- website/engine/Dockerfile — infra, shallow [src: git]
+- website/engine/README.md — meta, shallow [src: git]
+- website/engine/__init__.py — library, shallow [src: git]
+- website/engine/server.py — entrypoint, shallow [src: git]
+- website/engine/test_research.py — test, shallow [src: git]
+- website/engine/test_server.py — test, shallow [src: git]
+- website/migrations/0001_accounts.sql — schema, shallow [src: git]
+- website/migrations/0002_challenge_wallet_index.sql — schema, shallow [src: git]
+- website/package-lock.json — data, shallow [src: git]
+- website/package.json — config, shallow [src: git]
+- website/postman/acceptance.collection.json — data, shallow [src: git]
+- website/public/app.js — library, shallow [src: git]
+- website/public/evidence.js — library, shallow [src: git]
+- website/public/favicon.svg — data, shallow [src: git]
+- website/public/index.html — data, shallow [src: git]
+- website/public/research/bodies-00.json — generated, shallow [src: git]
+- website/public/research/bodies-01.json — generated, shallow [src: git]
+- website/public/research/bodies-02.json — generated, shallow [src: git]
+- website/public/research/bodies-03.json — generated, shallow [src: git]
+- website/public/research/bodies-04.json — generated, shallow [src: git]
+- website/public/research/bodies-05.json — generated, shallow [src: git]
+- website/public/research/bodies-06.json — generated, shallow [src: git]
+- website/public/research/bodies-07.json — generated, shallow [src: git]
+- website/public/research/bodies-08.json — generated, shallow [src: git]
+- website/public/research/bodies-09.json — generated, shallow [src: git]
+- website/public/research/bodies-10.json — generated, shallow [src: git]
+- website/public/research/bodies-11.json — generated, shallow [src: git]
+- website/public/research/bodies-12.json — generated, shallow [src: git]
+- website/public/research/bodies-13.json — generated, shallow [src: git]
+- website/public/research/bodies-14.json — generated, shallow [src: git]
+- website/public/research/bodies-15.json — generated, shallow [src: git]
+- website/public/research/bodies-16.json — generated, shallow [src: git]
+- website/public/research/bodies-17.json — generated, shallow [src: git]
+- website/public/research/bodies-18.json — generated, shallow [src: git]
+- website/public/research/catalog.json — generated, shallow [src: git]
+- website/public/research/manifest.json — generated, shallow [src: git]
+- website/public/research/strategies.json — generated, shallow [src: git]
+- website/public/styles.css — data, shallow [src: git]
+- website/scripts/export_research.py — entrypoint, shallow [src: git]
+- website/scripts/smoke.mjs — entrypoint, shallow [src: git]
+- website/scripts/smoke_request.mjs — library, shallow [src: git]
+- website/src/worker.js — entrypoint, shallow [src: git]
+- website/test/api.test.js — test, shallow [src: git]
+- website/test/client-races.test.js — test, shallow [src: git]
+- website/test/evidence.test.js — test, shallow [src: git]
+- website/wrangler.dev.jsonc — config, shallow [src: git]
+- website/wrangler.jsonc — config, shallow [src: git]
 
 ### Repository root
 - tsconfig.checkjs.json — config [src: git]
@@ -3869,13 +3923,6 @@
 - website/wrangler.jsonc — config [src: git]
 
 ## Resources
-
-### Skills
-- /Users/mitch/.agents/skills/repo-bootstrapper/SKILL.md — repository metadata maintenance [src: local-file-existence]
-- /Users/mitch/.agents/skills/llms-txt-tooling/SKILL.md — structured source condensation [src: local-file-existence]
-
-### Related files
-- /Users/mitch/.local/state/solbot/bootstrap-1256/llms-before — preserved 2026-09-25 root context; historical only, not current runtime claims [src: local-file-existence]
-
-### Websites
-- https://github.com/mithudso/solmargintrader — upstream repository (unverified reachability) [src: git]
+- docs/ECOSYSTEM-WIKI.md is the existing navigation source. [src: docs/ECOSYSTEM-WIKI.md]
+- llms-executable.txt carries static command declarations; command presence does not authorize starting a service or running financial/research work. [src: CLAUDE.md] [asserted]
+- llms-infra.txt records unverified external links; this refresh fetched none. [asserted]

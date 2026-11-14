@@ -3,11 +3,14 @@
 from __future__ import annotations
 
 import hashlib
+import fcntl
 import inspect
 import json
 import math
+import os
 import sqlite3
 import time
+import tempfile
 from collections.abc import Callable
 from contextlib import closing
 from itertools import pairwise
@@ -63,7 +66,7 @@ _MIGRATIONS = {
 
 def _schema_current(db: sqlite3.Connection) -> bool:
     objects = {r[0] for r in db.execute("SELECT name FROM sqlite_master WHERE type IN ('table','index')")}
-    if not {"candle", "session", "trial", "call", "adoption", "call_pending", "call_training"} <= objects:
+    if not {"candle", "session", "trial", "call", "adoption", "default_export", "call_pending", "call_training"} <= objects:
         return False
     return all(set(columns) <= {r[1] for r in db.execute(f"PRAGMA table_info({table})")}
                for table, columns in _MIGRATIONS.items())
@@ -103,6 +106,8 @@ def _db(path: Path | None = None) -> sqlite3.Connection:
         """, """CREATE TABLE IF NOT EXISTS adoption (
             trial TEXT, at INTEGER, previous TEXT, next TEXT, confidence REAL,
             samples INTEGER, PRIMARY KEY(trial, at)
+        )""", """CREATE TABLE IF NOT EXISTS default_export (
+            trial TEXT, at INTEGER, document TEXT NOT NULL, PRIMARY KEY(trial, at)
         )"""):
             db.execute(statement)
         # Recheck under the migration lock: another writer may have migrated
@@ -173,15 +178,38 @@ def load_defaults() -> dict[str, dict[str, Any]]:
 
 def save_default(asset: str, label: str, minutes: int, spec: Spec, previous: Spec, *,
                  probability: float, samples: int, bar: int) -> None:
-    data = load_defaults()
-    data[_default_key(asset, label, minutes)] = {
-        "members": spec, "previous": previous, "probability": probability, "samples": samples,
-        "bar": bar, "saved_at": time.time()}
     path = defaults_path()
     path.parent.mkdir(mode=0o700, parents=True, exist_ok=True)
-    tmp = path.with_name(path.name + ".tmp")
-    tmp.write_text(json.dumps(data, indent=1, sort_keys=True, allow_nan=False), encoding="utf-8")
-    tmp.replace(path)
+    with path.with_name(path.name + ".lock").open("a+b") as lock:
+        fcntl.flock(lock, fcntl.LOCK_EX)
+        data = load_defaults()
+        data[_default_key(asset, label, minutes)] = {
+            "members": spec, "previous": previous, "probability": probability, "samples": samples,
+            "bar": bar, "saved_at": time.time()}
+        fd, name = tempfile.mkstemp(prefix=".defaults-", dir=path.parent)
+        tmp = Path(name)
+        try:
+            with os.fdopen(fd, "w", encoding="utf-8") as handle:
+                handle.write(json.dumps(data, indent=1, sort_keys=True, allow_nan=False))
+                handle.flush()
+                os.fsync(handle.fileno())
+            tmp.replace(path)
+            directory_fd = os.open(path.parent, os.O_RDONLY)
+            try:
+                os.fsync(directory_fd)
+            finally:
+                os.close(directory_fd)
+        finally:
+            tmp.unlink(missing_ok=True)
+
+
+def _export_committed_defaults(db_path: Path | None) -> None:
+    """Retry committed exports; a failed export remains durable for the next tick."""
+    with closing(_db(db_path)) as db, db:
+        db.execute("BEGIN IMMEDIATE")
+        for key, at, raw in db.execute("SELECT trial,at,document FROM default_export ORDER BY at,trial").fetchall():
+            save_default(**json.loads(raw))
+            db.execute("DELETE FROM default_export WHERE trial=? AND at=?", (key, at))
 
 
 def saved_default(asset: str, label: str, minutes: int, defaults: dict | None = None) -> Spec | None:
@@ -462,6 +490,7 @@ def tick(asset: str, trials: list[dict], horizons: tuple[int, ...], cost: float,
     pending_windows = 0
     due_trials = 0
     active_keys = {}
+    _export_committed_defaults(db_path)
     defaults = load_defaults()
     _SOURCE_EPOCH.verify(_SOURCE_ROOT)
     with closing(_db(db_path)) as db, db:
@@ -489,9 +518,11 @@ def tick(asset: str, trials: list[dict], horizons: tuple[int, ...], cost: float,
             check_stop()
 
             def adopt(spec: Spec, previous: Spec, probability: float, samples: int,
-                      label: str = label, h: int = h) -> None:
+                      label: str = label, h: int = h, key: str = key) -> None:
                 _SOURCE_EPOCH.verify(_SOURCE_ROOT)
-                save_default(asset, label, h, spec, previous, probability=probability, samples=samples, bar=bar)
+                document = dict(asset=asset, label=label, minutes=h, spec=spec, previous=previous,
+                                probability=probability, samples=samples, bar=bar)
+                db.execute("INSERT OR REPLACE INTO default_export VALUES (?,?,?)", (key, bar, _json(document)))
 
             active, gen = _resolve(db, key, gen, json.loads(raw_spec), moved, trial_cost, candles, bar,
                                    h, tune and key in active_keys, adopt, expire_missing=expire_missing,
@@ -545,6 +576,7 @@ def tick(asset: str, trials: list[dict], horizons: tuple[int, ...], cost: float,
             db.executemany("""INSERT OR IGNORE INTO call
                 (trial,bar,start,finish,generation,guesses,prediction,confidence,traded,issued) VALUES (?,?,?,?,?,?,?,?,?,?)""",
                 ((*r, issued) for r in staged))
+    _export_committed_defaults(db_path)
     return {"bar": bar if fresh else None, "recorded": len(staged) if fresh else 0,
             "message": ("Waiting for a fresh candle" if not bar + 60 <= observed < start
                         else "Forecast window elapsed during calculation" if not fresh

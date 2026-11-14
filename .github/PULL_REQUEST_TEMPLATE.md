@@ -13,7 +13,8 @@
 - [ ] `ecosystem/` — paper coordination and local control room.
 - [ ] `executor/` — guarded Solana spot execution, own pytest/Ruff gates.
 - [ ] `mongo/` — derived local datastore.
-- [ ] `liquidity/` — **moves real money on Base**, own pytest/Ruff gates.
+- [ ] `liquidity/` — retained Base signing code; archived daemon/scout stay disabled, own pytest/Ruff gates.
+- [ ] `website/` — hosted wallet accounts, billing, research and inactive paper definitions; separate Node/Python/export gates.
 - [ ] Repo-level (docs, CI, tooling).
 
 ## Why

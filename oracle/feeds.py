@@ -230,7 +230,7 @@ class JupiterPriceFeed:
             or any(ord(c) < 33 or ord(c) > 126 for c in key)
         ):
             raise FeedUnavailable("jupiter_credentials_missing_or_invalid")
-        now = _number(self.clock(), positive=False)
+        requested_at = _number(self.clock(), positive=False)
         try:
             payload = self.transport(
                 self.url,
@@ -242,6 +242,9 @@ class JupiterPriceFeed:
             raise
         except Exception:  # noqa: BLE001 - injected provider transports may include secrets in any exception.
             raise FeedUnavailable("provider_unavailable") from None
+        now = _number(self.clock(), positive=False)
+        if now < requested_at:
+            raise FeedUnavailable("clock_regressed")
         if not isinstance(payload, dict):
             raise FeedUnavailable("invalid_market_data")
         prices: dict[str, float] = {}

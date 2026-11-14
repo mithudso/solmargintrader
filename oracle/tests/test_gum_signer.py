@@ -66,5 +66,7 @@ class GumSignerTests(unittest.TestCase):
                 self.path.write_text(value)
                 with self.assertRaisesRegex(
                     ValueError, "gum_key_invalid_or_owner_mismatch"
-                ):
+                ) as caught:
                     load_signer(self.path, self.owner)
+                self.assertEqual(str(caught.exception), "gum_key_invalid_or_owner_mismatch")
+                self.assertNotIn(value, str(caught.exception))

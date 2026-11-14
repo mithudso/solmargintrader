@@ -122,6 +122,9 @@ def _unresolved_records() -> list[dict[str, Any]]:
                 continue
             try:
                 record = _read(path)
+                if (record.get("preview_id") != path.stem or record.get("state") not in
+                        {"preview", "submitting", "unknown", "pending", "failed", "complete"}):
+                    raise ValueError("Invalid Jupiter order record identity or state")
                 if record.get("state") in ("submitting", "unknown", "pending"):
                     pending.append({k: record.get(k) for k in (
                         "preview_id", "product_id", "side", "state", "signature", "submit_started_at"
@@ -497,7 +500,7 @@ def order_reconcile(preview_id_or_sig: str, *, rpc_url: str | None = None, http_
                 st = statuses[0]
                 conf = st.get("confirmationStatus")
                 err = st.get("err")
-                if err:
+                if err is not None and conf in ("confirmed", "finalized"):
                     target_rec["state"] = "failed"
                     target_rec["status"] = "FAILED"
                     target_rec["onchain_error"] = err

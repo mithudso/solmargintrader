@@ -160,10 +160,14 @@ class SubscriptionHub:
                         await asyncio.wait_for(
                             session.send_resource_updated(AnyUrl(uri)), self.timeout
                         )
-                    except Exception:  # noqa: BLE001 -- SDK transport failures must not echo request contents.
+                    except Exception as exc:  # noqa: BLE001 -- SDK transport failures must not echo request contents.
                         # A slow or dead client loses its subscriptions. It must reconnect,
                         # re-read the durable snapshot, and explicitly subscribe again.
                         self._sessions.pop(session, None)
+                        logging.getLogger(__name__).warning(
+                            "oracle_subscription_evicted reason=%s",
+                            "timeout" if isinstance(exc, TimeoutError) else "transport_failure",
+                        )
                         break
                     subscriptions[uri] = digest
 
@@ -214,7 +218,7 @@ def build_server(
             values = {}
             for uri in RESOURCE_NAMES:
                 try:
-                    values[uri] = encode(resource(uri))
+                    values[uri] = encode(await asyncio.to_thread(resource, uri))
                 except (ValueError, TypeError, OverflowError):
                     values[uri] = encode(envelope(error="snapshot_unavailable"))
             await hub.publish(values)

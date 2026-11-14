@@ -6,7 +6,7 @@ import hashlib
 import json
 import re
 import sqlite3
-from contextlib import contextmanager
+from contextlib import contextmanager, nullcontext
 from pathlib import Path
 
 from .engine import OracleEngine, number
@@ -207,6 +207,10 @@ class ReadOnlyStore(Store):
             db.execute("PRAGMA query_only=ON")
             db.execute("PRAGMA trusted_schema=OFF")
             with db:
+                db.execute("BEGIN")
+                verifier = getattr(self, "verifier", None)
+                if verifier is not None:
+                    verifier(db)
                 yield db
         finally:
             db.close()
@@ -311,10 +315,46 @@ class ReadOnlyOracle(OracleEngine):
             ]
             if policy.get("strategies") != expected:
                 raise ValueError("oracle_policy_implementation_unavailable")
+        self._verify_resolutions()
+        self.store.verifier = self._verify_snapshot
 
-    def _verify_recorded_policy(self) -> None:
+    def _verify_snapshot(self, db):
+        policy = db.execute("SELECT body FROM metadata WHERE key='policy'").fetchone()
+        if policy is None or policy[0] != canonical(self.policy):
+            raise ValueError("oracle_recorded_policy_binding_invalid")
+        self._verify_recorded_policy(db)
+        self._verify_resolutions(db)
+
+    def _verify_resolutions(self, connection=None) -> None:
+        # Votes must never credit an outcome before its forecast target. Check
+        # relational evidence even when the installed evaluator matches policy.
+        with (self.store.connection() if connection is None else nullcontext(connection)) as db:
+            if db.execute(
+                """SELECT 1 FROM resolutions r LEFT JOIN forecasts f ON f.id=r.forecast
+                WHERE f.id IS NULL
+                OR typeof(r.resolved_at) NOT IN ('integer','real')
+                OR r.resolved_at<f.target OR abs(r.resolved_at)>1.7976931348623157e308
+                OR (r.outcome IS NULL AND r.hit IS NOT NULL)
+                OR (r.outcome IS NOT NULL AND (
+                    typeof(r.outcome)!='integer' OR r.outcome NOT IN (-1,0,1)
+                    OR typeof(r.hit)!='integer' OR r.hit IS NOT (r.outcome=f.direction)))
+                OR length(r.body)>128000 OR NOT json_valid(r.body)
+                OR json_type(r.body)!='object'
+                OR (json_type(r.body,'$.forecast_id') IS NOT NULL
+                    AND json_extract(r.body,'$.forecast_id') IS NOT r.forecast)
+                OR (json_type(r.body,'$.resolved_at') IS NOT NULL
+                    AND json_extract(r.body,'$.resolved_at') IS NOT r.resolved_at)
+                OR (json_type(r.body,'$.outcome') IS NOT NULL
+                    AND json_extract(r.body,'$.outcome') IS NOT r.outcome)
+                OR (json_type(r.body,'$.hit') IS NOT NULL
+                    AND json_extract(r.body,'$.hit') IS NOT r.hit)
+                LIMIT 1"""
+            ).fetchone():
+                raise ValueError("oracle_recorded_resolution_invalid")
+
+    def _verify_recorded_policy(self, connection=None) -> None:
         """Bind stored forecasts to their policy SHA and relational identities."""
-        with self.store.connection() as db:
+        with (self.store.connection() if connection is None else nullcontext(connection)) as db:
             if db.execute(
                 "SELECT 1 FROM forecasts WHERE length(body)>128000 OR NOT json_valid(body) LIMIT 1"
             ).fetchone():

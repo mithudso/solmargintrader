@@ -16,6 +16,7 @@ import json
 import sys
 import tempfile
 import unittest
+from contextlib import contextmanager, nullcontext
 from pathlib import Path
 from unittest import mock
 
@@ -136,8 +137,15 @@ class IdleTests(unittest.TestCase):
             patcher.start()
             self.addCleanup(patcher.stop)
 
+    @contextmanager
     def popen(self):
-        return mock.patch.object(idle.subprocess, "Popen")
+        # Exercise automatic admission only while every launch/readiness seam
+        # is inert. The inherited production kill switch remains set elsewhere.
+        guard = (nullcontext() if isinstance(oe.ensure, mock.Mock) else
+                 mock.patch.object(oe, "ensure", side_effect=AssertionError("unexpected readiness probe")))
+        with (mock.patch.object(idle.subprocess, "Popen") as process,
+              guard, mock.patch.dict(idle.os.environ, {"INDEX_NO_AUTO": "0"})):
+            yield process
 
     def test_fresh_means_no_rebuild_and_no_ollama(self):
         with mock.patch.object(idle, "semantic_status", return_value=("fresh", "ok")), \
@@ -199,11 +207,11 @@ class IdleTests(unittest.TestCase):
         self.assertIn("not rebuilding", message)
 
     def test_a_second_check_inside_the_interval_is_throttled(self):
-        with mock.patch.object(idle, "semantic_status", return_value=("fresh", "ok")) as status:
+        with mock.patch.object(idle, "semantic_status", return_value=("fresh", "ok")) as status, self.popen():
             idle.maybe_start(now=1000.0)
             idle.maybe_start(now=1000.0 + idle.MIN_INTERVAL - 1)
         self.assertEqual(status.call_count, 1)
-        with mock.patch.object(idle, "semantic_status", return_value=("fresh", "ok")) as status:
+        with mock.patch.object(idle, "semantic_status", return_value=("fresh", "ok")) as status, self.popen():
             idle.maybe_start(now=1000.0 + idle.MIN_INTERVAL + 1)
         self.assertEqual(status.call_count, 1)
 
@@ -322,13 +330,47 @@ class QueryTests(unittest.TestCase):
         self.assertTrue(result.hits)
         self.assertLessEqual(len(result.hits), 5)
 
+    def test_keyword_mode_never_dispatches_an_automatic_semantic_rebuild(self):
+        with mock.patch.object(idle, "maybe_start", side_effect=AssertionError("semantic dispatch")) as start:
+            result = search.run_query("slippage", "keyword", 3)
+        start.assert_not_called()
+        self.assertEqual(result.mode_used, "keyword")
+        self.assertTrue(result.hits)
+
+    def test_hybrid_corrupt_dimension_and_nonfinite_artifacts_degrade_without_inference(self):
+        import numpy as np
+        with tempfile.TemporaryDirectory() as tmp:
+            manifest = Path(tmp) / "manifest.json"
+            vectors = Path(tmp) / "vectors.npz"
+            for defect in ("corrupt", "dimension", "nonfinite"):
+                with self.subTest(defect=defect):
+                    search.unload(model=False)
+                    manifest.write_text(json.dumps({"model": oe.EMBED_MODEL, "dims": 3 if defect == "dimension" else 2,
+                                                    "chunkOwners": ["README.md"]}))
+                    if defect == "corrupt":
+                        vectors.write_bytes(b"not an npz archive")
+                    else:
+                        np.savez(vectors, embeddings=np.array([[float("nan") if defect == "nonfinite" else 1., 0.]]))
+                    with mock.patch.object(search, "semantic_pair", return_value=(manifest, vectors)), mock.patch.object(oe, "ensure", side_effect=AssertionError("inference readiness")) as ensure:
+                        result = search.run_query("slippage", "hybrid", 3, auto_index=False)
+                    ensure.assert_not_called()
+                    self.assertEqual(result.mode_used, "keyword")
+                    self.assertTrue(result.hits)
+                    self.assertTrue(result.notes)
+
     def test_hybrid_falls_back_to_keyword_with_the_reason_when_ollama_is_down(self):
         down = oe.Status(False, False, False, None, "ollama is not reachable")
         with tempfile.TemporaryDirectory() as tmp:
+            import numpy as np
+
             manifest = Path(tmp) / "m.json"
-            manifest.write_text(json.dumps({"model": oe.EMBED_MODEL}))
+            vectors = Path(tmp) / "vectors.npz"
+            manifest.write_text(json.dumps({
+                "model": oe.EMBED_MODEL, "dims": 2, "chunkOwners": ["README.md"],
+            }))
+            np.savez(vectors, embeddings=np.array([[1.0, 0.0]], dtype="float32"))
             with mock.patch.object(oe, "ensure", return_value=down), \
-                    mock.patch.object(search, "semantic_pair", return_value=(manifest, manifest)), \
+                    mock.patch.object(search, "semantic_pair", return_value=(manifest, vectors)), \
                     mock.patch("builtins.print") as printed:
                 result = search.run_query("slippage", "hybrid", 3, auto_index=False)
         printed.assert_not_called()
@@ -352,8 +394,9 @@ class QueryTests(unittest.TestCase):
             search.run_query("x", "fuzzy", auto_index=False)
 
     def test_the_auto_index_note_is_included_when_enabled(self):
-        with mock.patch.object(idle, "maybe_start", return_value="semantic index is fresh"):
-            result = search.run_query("fee", "keyword", 1)
+        with mock.patch.object(idle, "maybe_start", return_value="semantic index is fresh"), \
+                mock.patch.object(search, "semantic", return_value=None):
+            result = search.run_query("fee", "hybrid", 1)
         self.assertIn("semantic index is fresh", result.notes)
 
     def test_nothing_is_cached_until_the_first_query_and_unload_empties_it(self):

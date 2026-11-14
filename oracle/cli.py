@@ -90,6 +90,18 @@ def snapshot(archive: Path, destination: Path) -> dict:
         Path(temp).unlink(missing_ok=True)
 
 
+def read_private_secret(path):
+    fd = os.open(path, os.O_RDONLY | os.O_NOFOLLOW | os.O_NONBLOCK)
+    with os.fdopen(fd) as handle:
+        info = os.fstat(handle.fileno())
+        if not stat.S_ISREG(info.st_mode) or info.st_uid != os.getuid() or info.st_mode & 0o077:
+            raise ValueError("secret_file_must_be_private")
+        secret = handle.read(4097).strip()
+        if len(secret) > 4096:
+            raise ValueError("secret_file_too_large")
+        return secret
+
+
 def run(args) -> int:
     from .engine import OracleEngine
     from .feeds import FeedUnavailable, JupiterPriceFeed, RecorderFeed
@@ -138,7 +150,7 @@ def run(args) -> int:
                         {"ok": False, "status": "feed_unavailable", "reason": exc.code}
                     )
                 # A failed archive write is fatal: predictions may not proceed unlogged.
-                delay = min(30, args.interval * (2 ** min(failures, 5)))
+                delay = max(args.interval, min(30, args.interval * (2 ** min(failures, 5))))
                 if args.max_ticks is None or attempts < args.max_ticks:
                     stop.wait(delay)
         return 3 if failures and args.max_ticks is not None else 0

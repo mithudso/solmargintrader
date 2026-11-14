@@ -528,6 +528,8 @@ def verify_batch_parity():
 
 def primary_data(path: Path, interval: str, days: int, output: Path):
     frame = validate_bars(pd.read_csv(path), interval, strict_gaps=False)
+    if frame.empty:
+        raise ValueError("no source bars")
     if days:
         frame = frame.loc[
             frame.timestamp >= frame.timestamp.iloc[-1] - days * 86400
@@ -714,10 +716,26 @@ def main(argv=None):
 
     lock = (args.output / "study.lock").open("a")
     fcntl.flock(lock, fcntl.LOCK_EX | fcntl.LOCK_NB)
-    verify_batch_parity()
     sources = {
         interval: args.data_dir / f"ZEC_{interval}.csv" for interval in ("1m", "1h")
     }
+    preflight = {}
+    for interval in ("1m", "1h"):
+        frame = validate_bars(pd.read_csv(sources[interval]), interval, strict_gaps=False)
+        days = args.minute_days if interval == "1m" else args.hour_days
+        if frame.empty:
+            raise ValueError("empty primary source")
+        if days:
+            frame = frame[frame.timestamp >= frame.timestamp.iloc[-1] - days * 86400]
+        cuts = np.flatnonzero(np.diff(frame.timestamp) != INTERVAL_SECONDS[interval]) + 1
+        frame = frame.iloc[int(cuts[-1]) if len(cuts) else 0:]
+        if len(frame) < 2000:
+            raise ValueError("insufficient primary source")
+        test_start = int(frame.timestamp.iloc[int(len(frame) * .8)])
+        preflight[interval] = (test_start, int(frame.timestamp.iloc[-1]) + INTERVAL_SECONDS[interval])
+    if max(v[0] for v in preflight.values()) >= min(v[1] for v in preflight.values()):
+        raise ValueError("primary source holdout calendars do not overlap")
+    verify_batch_parity()
     fingerprint = {
         "version": VERSION,
         "sources": {k: sha(v) for k, v in sources.items()},

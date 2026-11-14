@@ -192,7 +192,7 @@
       });
       const total = tick.aggregate?.signal;
       if (!graphData.hide_aggregate && selected.has("__aggregate__") && total) {
-        const direction = total.includes("Buy") ? 1 : total.includes("Sell") ? -1 : total === "Flat" ? 0 : null;
+        const direction = (total.includes("Buy") || total === "Long") ? 1 : total.includes("Sell") ? -1 : total === "Flat" ? 0 : null;
         if (direction !== null) points.push({
           time: tick.time,
           position: direction > 0 ? "aboveBar" : direction < 0 ? "belowBar" : "inBar",

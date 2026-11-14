@@ -36,7 +36,7 @@
     },
     {
       "path": "ecosystem/cli.py",
-      "sha256": "c3ba6af0b972ab64698f85a823f5c6b7041b33dd6163276c89f419e83947b867"
+      "sha256": "68b42fc4e520558820a5d73e428f3c5a3cfc3cd1f537bf7a724ce2f5697dfe9c"
     },
     {
       "path": "ecosystem/forecast.py",
@@ -56,7 +56,7 @@
     },
     {
       "path": "ecosystem/web.py",
-      "sha256": "c1621363aa582dbf89a8169582298f45d4bbdd756e6e1cb9ad7e10dae10e0882"
+      "sha256": "7fbe5202d106d505bebe32cef9e9def34aaf202a55cae83558c49c274e7dae44"
     },
     {
       "path": "executor/pyproject.toml",
@@ -68,15 +68,15 @@
     },
     {
       "path": "executor/src/executor/registry.py",
-      "sha256": "c5c5506adcf712b6780d2676b81f078e93f13e278acef4257f22348450ca333c"
+      "sha256": "53a41f1d416d893fa0328049f414fbab36a8517572e012c16929d51ed70d8993"
     },
     {
       "path": "extension/package.json",
-      "sha256": "c55de8f707d8bd48a18a8c85d4904fde445c74cfab0ee87cce7472459e3933da"
+      "sha256": "fa0c582d6efc41069a51694bdf8a42755620abb3ebfeda53ffe01810e2903b02"
     },
     {
       "path": "extension/src/core/commands.js",
-      "sha256": "2478c2930e280ef4b4bcb9b4632e2e38540c077bb587659ef0f551b7ef757107"
+      "sha256": "4974b050dcebbd6cbd59d4afee7d845a2f0142de04c5085af7b7b353695fce8e"
     },
     {
       "path": "liquidity/pyproject.toml",
@@ -84,15 +84,15 @@
     },
     {
       "path": "liquidity/scripts/aero-lp-service",
-      "sha256": "40143c8d9e1a541d7c2340e6f2fcf7bab27985c9033af2fbacef3610d0fab6f9"
+      "sha256": "f6647cef5a10525f5ca1aa16fde643da68b1935683c869a9221927f25314804a"
     },
     {
       "path": "liquidity/src/aero_lp/cli.py",
-      "sha256": "e6a4a366c579969f52de1262d140f4fd013dd2166a7f02a7a32f21eee3fb0176"
+      "sha256": "81b44980489379c6179ee7f6aedce971cba27c243d637b53f2c3a5cc751007e1"
     },
     {
       "path": "oracle/cli.py",
-      "sha256": "736e9d4d33f19f9ce58cd03689230dee489e10e9c1b762f0b1d6f97ec1187649"
+      "sha256": "30855ad53d29c7c35900d1e0a752bd4f30214e1337c425f5ff2b4fce6ea76764"
     },
     {
       "path": "oracle/pyproject.toml",
@@ -100,7 +100,7 @@
     },
     {
       "path": "oracle/server.py",
-      "sha256": "1714bf2fe88591d21541d3a624591f81675f8faabdcad47a3d1c248e3635f36a"
+      "sha256": "3dba2dfa041f5bd2ba542c7f54607f1e3098a00442c320d87ea7096be9bd3587"
     },
     {
       "path": "package.json",
@@ -120,11 +120,11 @@
     },
     {
       "path": "soltui/bin/soltui",
-      "sha256": "2e8640844a056424ada5bbe7cc5d62160eb2e650bb2f0985002b29a3fc103ae8"
+      "sha256": "17c4cd5582fd3a248e82e83cb7bd979794b6ed1365f75433ad0505325a5abaf1"
     },
     {
       "path": "soltui/commands.py",
-      "sha256": "056544535a1cd8180b0656bb4c0fc16e08771202f61f68be01c59c80f821783e"
+      "sha256": "b059886396392f634a92f51e6d4c3e2780ff32340e2bb1dbaf03827edb9e98a0"
     },
     {
       "path": "soltui/make_icon.py",
@@ -136,7 +136,7 @@
     },
     {
       "path": "soltui/soltui-service",
-      "sha256": "3ed51a530bfd2f7ad2efadc98f8924313a11be28d565cfde2e41071ec313f798"
+      "sha256": "f2ce931f6b9f1d7769d668357ef030c2942a5d4d7ac2e42d901aa28ec9ea27ec"
     },
     {
       "path": "website/package.json",

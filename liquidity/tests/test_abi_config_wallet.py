@@ -76,6 +76,7 @@ def test_example_config_parses():
 
 
 def test_wallet_rejects_mismatch_without_leaking_key(monkeypatch):
+    monkeypatch.delenv("AERO_LP_KEY_FILE", raising=False)
     acct = Account.create()
     key = acct.key.hex()
     monkeypatch.setattr(wallet, "_from_keychain", lambda owner: None)

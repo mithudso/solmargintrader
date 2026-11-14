@@ -22,6 +22,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import math
 import os
 import statistics
 import sys
@@ -61,7 +62,8 @@ def load_run(run_id: str) -> list[dict[str, Any]]:
 
 
 def is_sharpe(r: dict[str, Any]) -> float | None:
-    return ((r.get("is") or {}).get("pnl") or {}).get("sharpe")
+    value = ((r.get("is") or {}).get("pnl") or {}).get("sharpe")
+    return value if isinstance(value, (int, float)) and math.isfinite(value) else None
 
 
 def oos(r: dict[str, Any]) -> dict[str, Any]:
@@ -78,7 +80,14 @@ def candidates(rows: list[dict[str, Any]], min_coins: int) -> list[dict[str, Any
         by.setdefault((parts[0], int(parts[1][5:])), []).append(r)
     out = []
     for (cid, hold), rs in by.items():
-        s = [x for x in (is_sharpe(r) for r in rs) if x is not None]
+        by_asset = {}
+        for row in rs:
+            by_asset.setdefault(row["asset"], []).append(row)
+        # Repeated rows are not additional independent coins. Conflicting reruns
+        # cannot establish an unambiguous candidate for that coin.
+        s = [is_sharpe(group[0]) for group in by_asset.values()
+             if all(is_sharpe(row) == is_sharpe(group[0]) for row in group)
+             and is_sharpe(group[0]) is not None]
         if len(s) < min_coins:
             continue
         positive = sum(1 for x in s if x > 0)
@@ -133,8 +142,8 @@ def run_all(coins: list[str], configs: list[tuple[str, dict[str, Any]]], workers
 
 def summarise(rows: list[dict[str, Any]], label: str) -> dict[str, Any]:
     rs = [r for r in rows if r["label"] == label and "error" not in r]
-    is_s = [r["is_sharpe"] for r in rs if r["is_sharpe"] is not None]
-    oos_s = [r["oos"]["sharpe"] for r in rs if r["oos"]["sharpe"] is not None]
+    is_s = [r["is_sharpe"] for r in rs if r["is_sharpe"] is not None and math.isfinite(r["is_sharpe"])]
+    oos_s = [r["oos"]["sharpe"] for r in rs if r["oos"]["sharpe"] is not None and math.isfinite(r["oos"]["sharpe"])]
     beat = sum(1 for r in rs if r["oos"]["return"] is not None and r["oos"]["buy_hold"] is not None
                and r["oos"]["return"] > r["oos"]["buy_hold"])
     pos = sum(1 for r in rs if (r["oos"]["return"] or 0) > 0)
@@ -143,6 +152,10 @@ def summarise(rows: list[dict[str, Any]], label: str) -> dict[str, Any]:
             "oos_median_sharpe": None if not oos_s else round(statistics.median(oos_s), 3),
             "oos_positive_coins": pos, "oos_beat_buy_hold_coins": beat,
             "per_coin": {r["asset"]: r["oos"] for r in rs}}
+
+
+def score_or_missing(value):
+    return float("-inf") if value is None else value
 
 
 def main(argv: list[str] | None = None) -> int:
@@ -171,13 +184,15 @@ def main(argv: list[str] | None = None) -> int:
                 for f in FACTORS:
                     grid.append((f"tune:{c['metric']} hold={hold} q={q} x{f}", config_for(c["metric"], hold, q, f)))
     t0 = time.time()
+    baselines = [(f"baseline:{c['metric']} hold={c['hold']}", config_for(c["metric"], c["hold"], .98)) for c in top]
+    baseline_rows = run_all(coins, baselines, args.workers) if baselines else []
     grid_rows = run_all(coins, grid, args.workers)
     tried += len(grid)
     print(f"tuning grid: {len(grid)} configurations x {len(coins)} coins in {time.time() - t0:.0f} s")
     chosen = []
     for c in top:
         labels = [label for label, _ in grid if label.startswith(f"tune:{c['metric']} ")]
-        best = max(labels, key=lambda lb: summarise(grid_rows, lb)["is_median_sharpe"] or -1e9)
+        best = max(labels, key=lambda lb: score_or_missing(summarise(grid_rows, lb)["is_median_sharpe"]))
         parts = best.split()
         chosen.append({**c, "tuned_label": best, "hold_tuned": int(parts[1][5:]), "q_tuned": float(parts[2][2:]),
                        "factor": float(parts[3][1:])})
@@ -217,9 +232,9 @@ def main(argv: list[str] | None = None) -> int:
 
     # 4. out-of-sample, once
     related_summary = sorted((summarise(rel_rows, label) for label, _ in related),
-                             key=lambda s: -(s["is_median_sharpe"] or -1e9))
+                             key=lambda s: -(score_or_missing(s["is_median_sharpe"])))
     chosen_summary = [{**c, "tuned": summarise(grid_rows, c["tuned_label"]),
-                       "untuned": summarise(grid_rows, f"tune:{c['metric']} hold={c['hold']} q=0.98 x1.0")}
+                       "untuned": summarise(baseline_rows, f"baseline:{c['metric']} hold={c['hold']}")}
                       for c in chosen]
     report: dict[str, Any] = {
         "run_id": args.run_id, "coins": coins, "configurations_tried_per_coin": tried,
@@ -229,7 +244,7 @@ def main(argv: list[str] | None = None) -> int:
         "related": related_summary,
         "grid_oos_stability": {c["metric"]: sorted(
             (summarise(grid_rows, label) for label, _ in grid if label.startswith(f"tune:{c['metric']} ")),
-            key=lambda s: -(s["is_median_sharpe"] or -1e9))[:12] for c in chosen},
+            key=lambda s: -(score_or_missing(s["is_median_sharpe"])))[:12] for c in chosen},
     }
     out = Path(args.out or REPO / "research" / "results" / f"frontier-{time.strftime('%Y-%m-%d')}.json")
     out.write_text(json.dumps(report, indent=2, default=str) + "\n")

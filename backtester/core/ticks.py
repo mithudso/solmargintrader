@@ -31,6 +31,7 @@ import time
 import urllib.parse
 from pathlib import Path
 
+import numpy as np
 import pandas as pd
 
 from .data import validate_bars
@@ -233,6 +234,11 @@ def trades_to_bars(trades: pd.DataFrame, interval: str) -> pd.DataFrame:
     missing = [c for c in ("timestamp", "trade_id", "price", "size") if c not in trades]
     if missing:
         raise ValueError(f"tick frame missing required column(s): {missing}")
+
+    values = trades[["timestamp", "trade_id", "price", "size"]].to_numpy(dtype="float64")
+    if (not np.isfinite(values).all() or (values[:, 2] <= 0).any()
+            or (values[:, 3] < 0).any()):
+        raise ValueError("tick measurements must be finite, with positive prices and nonnegative sizes")
 
     # Sort here rather than trusting the caller. `open` and `close` are
     # first/last in row order, and the API hands back trades NEWEST first, so

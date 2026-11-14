@@ -218,10 +218,11 @@ def main() -> int:
     for interval, step in STEPS.items():
         frames = [read_archive(Path(r["path"]), interval) for r in receipts
                   if r["state"] == "verified" and r["interval"] == interval]
-        if not frames:
-            raise ValueError(f"no verified {interval} archives")
         end = int(now.timestamp()) // step * step
-        tail, tail_receipts = api_tail(interval, int(max(f.timestamp.max() for f in frames)) + step, end, root)
+        tail_start = int(max(f.timestamp.max() for f in frames)) + step if frames else int(start.timestamp())
+        tail, tail_receipts = api_tail(interval, tail_start, end, root)
+        if not frames and not tail:
+            raise ValueError(f"no observed {interval} bars in requested range")
         frame, removed = combine_frames(frames + tail, interval)
         frame = frame[(frame.timestamp >= int(start.timestamp())) & (frame.timestamp < end)].reset_index(drop=True)
         info, gaps = coverage(frame, interval)

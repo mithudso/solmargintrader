@@ -331,8 +331,11 @@ def step(*, now: float | None = None, snapshot: dict | None = None, quote: dict 
     if bars is None:
         try:
             previous = known["last_bar"]
-            count = max(600, min(10080, int((clock - previous) / 60) + 2)) if previous is not None else 600
-            bars = compound.fetch_closed_candles(cfg["asset"], now=clock, bars=count, seconds=60, sleep=stop.wait)
+            # Recover the oldest outstanding page, rather than repeatedly
+            # requesting a recent page that can never contain the missing start.
+            fetch_clock = min(clock, previous + 10081 * 60) if previous is not None else clock
+            count = max(600, min(10080, int((fetch_clock - previous) / 60) + 2)) if previous is not None else 600
+            bars = compound.fetch_closed_candles(cfg["asset"], now=fetch_clock, bars=count, seconds=60, sleep=stop.wait)
         except Exception as exc:
             bars, error = {}, f"Closed Coinbase proxy bars unavailable ({type(exc).__name__})"
     observed_at = time.time() if now is None else now
@@ -366,8 +369,9 @@ def step(*, now: float | None = None, snapshot: dict | None = None, quote: dict 
         state = _state(db, cfg)
         latest = minute - 60
         first = state["last_bar"] + 60 if state["last_bar"] is not None else latest
-        if closed and all(stamp in closed for stamp in range(first, latest + 1, 60)):
-            for stamp in range(first, latest + 1, 60):
+        page_last = min(latest, max(closed)) if closed else first - 60
+        if closed and first <= page_last and all(stamp in closed for stamp in range(first, page_last + 1, 60)):
+            for stamp in range(first, page_last + 1, 60):
                 if stop.is_set():
                     raise RuntimeError("Council stopped")
                 candle = closed[stamp]
@@ -376,6 +380,8 @@ def step(*, now: float | None = None, snapshot: dict | None = None, quote: dict 
                     raise ValueError("Recorded closed Council candle changed")
                 db.execute("INSERT OR IGNORE INTO candle VALUES(?,?,?,?,?,?)", (cfg["asset"], stamp, *candle))
                 _process_bar(db, state, cfg, stamp, candle)
+            if page_last < latest:
+                error = "Recovering missing closed Coinbase proxy minutes in bounded pages; new paper decisions wait"
         elif state["last_bar"] is not None or latest not in closed:
             error = "Waiting for every missing closed Coinbase proxy minute; position and pending decision retained"
         previous = db.execute("SELECT document FROM observation WHERE id=?", (observation_id,)).fetchone()

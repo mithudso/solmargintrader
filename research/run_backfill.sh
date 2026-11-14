@@ -1,28 +1,6 @@
 #!/usr/bin/env bash
-# Run research/tick_backfill.py as a polite, long-lived background job.
-#
-# "Polite" means three separate things, and only the first is obvious:
-#
-#   1. CPU. `nice -n 19` is the weakest scheduling priority, so the job yields
-#      to anything interactive.
-#   2. I/O and thermals. On macOS `taskpolicy -b` puts the process in the
-#      background QoS tier (throttled disk I/O, parked on efficiency cores on
-#      Apple silicon). nice alone does not do this, and a job that saturates
-#      the SSD is felt even at nice 19.
-#   3. The network. The job is rate-limited in Python (--pause), because the
-#      thing most likely to disrupt other work here is exhausting a shared
-#      public API quota, which no scheduler priority can mitigate.
-#
-# It detaches from the terminal, survives the shell closing, checkpoints as it
-# goes, and can be stopped with `--stop` without losing progress.
-#
-#   ./research/run_backfill.sh                 # start (or resume) in background
-#   ./research/run_backfill.sh --status        # progress
-#   ./research/run_backfill.sh --tail          # follow the log
-#   ./research/run_backfill.sh --stop          # checkpoint and stop
-
+# Explicit control only; paths never become executable Python source.
 set -euo pipefail
-
 REPO="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 usage() {
     echo "Usage: $0 [start|--status|--tail|--stop|--help]"

@@ -75,7 +75,7 @@ class HttpxHttp:
         return remaining
 
     def _json(self, resp: httpx.Response, deadline: float) -> Any:
-        if resp.status_code >= 400:
+        if not 200 <= resp.status_code < 300:
             # A status is enough for bounded caller retry policy; never parse its body.
             raise HttpError(f"HTTP {resp.status_code} from remote service", resp.status_code)
         length = resp.headers.get("content-length", "")

@@ -2,17 +2,18 @@ import { mountLivePanel } from './live-panel.js';
 
 /** Keep PiP owned by a persistent document, never the transient action popup. */
 export function mountFloatingOwner({ read, asset = () => 'SOL', runtime = chrome.runtime, owner = window, onState = () => {} }) {
-  let port = null, retry = null, disposed = false, floating = null, panel = null, opening = null;
+  let port = null, retry = null, disposed = false, floating = null, panel = null, opening = null, openingAsset = null;
   const status = () => {
     try { port?.postMessage({ kind: 'status', floating: !!floating && !floating.closed, visible: !owner.document.hidden }); } catch { /* Worker reconnect follows. */ }
   };
   function pin(coin = asset()) {
     if (disposed) return Promise.reject(new Error('This workspace has closed.'));
     if (floating && !floating.closed) { panel?.setAsset(coin); floating.focus(); return Promise.resolve({ mode: 'picture-in-picture', alwaysOnTop: true }); }
-    if (opening) return opening;
+    if (opening) return openingAsset === coin ? opening : Promise.reject(new Error('Another coin is opening. Retry after the live window opens.'));
     if (!owner.documentPictureInPicture?.requestWindow) return Promise.reject(new Error('Always-on-top needs Chrome Document Picture-in-Picture. Keep this live window open.'));
     // No await or native call before requestWindow: the Port event carries the
     // browser-action gesture, and this API must consume it synchronously.
+    openingAsset = coin;
     const requested = owner.documentPictureInPicture.requestWindow({ width: 430, height: 740 });
     opening = requested.then(pip => {
       if (disposed) { pip.close(); throw new Error('The workspace closed.'); }
@@ -33,7 +34,7 @@ export function mountFloatingOwner({ read, asset = () => 'SOL', runtime = chrome
       }, { once: true });
       status(); onState(true);
       return { mode: 'picture-in-picture', alwaysOnTop: true };
-    }).finally(() => { opening = null; });
+    }).finally(() => { opening = null; openingAsset = null; });
     return opening;
   }
   function connect() {

@@ -287,6 +287,9 @@ class JobResult:
         out the whole pane over one bad row, which is exactly the failure the
         line-skipping in `read_results` exists to prevent.
         """
+        for name in ("job_id", "strategy", "asset", "interval", "horizon", "family", "variation"):
+            if name in data and not isinstance(data[name], str):
+                raise ValueError(f"{name} must be a string")
         known = {f for f in cls.__dataclass_fields__}  # noqa: SLF001 - dataclass API
         clean = {k: v for k, v in data.items() if k in known}
         valid_metrics = all(_finite_number(data.get(name)) for name in (

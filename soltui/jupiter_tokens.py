@@ -51,7 +51,7 @@ def get(path: str, params: dict[str, str]) -> Any:
     return _authenticated_json(req)
 
 
-def search(query: str) -> list[dict[str, Any]]:
+def _search_all(query: str) -> list[dict[str, Any]]:
     query = query.strip()
     if not query or len(query) > 80:
         raise ValueError("Enter a token symbol or mint")
@@ -77,11 +77,15 @@ def search(query: str) -> list[dict[str, Any]]:
                 and math.isfinite(price) and price > 0):
             token["usdPrice"] = price
         results.append(token)
-    return results[:50]
+    return results
+
+
+def search(query: str) -> list[dict[str, Any]]:
+    return _search_all(query)[:50]
 
 
 def resolve(query: str) -> dict[str, Any]:
-    matches = search(query)
+    matches = _search_all(query)
     exact = [x for x in matches if x["mint"] == query or x["symbol"].casefold() == query.casefold()]
     if len(exact) != 1:
         raise ValueError("Token is unknown or ambiguous; choose an exact mint address")

@@ -136,10 +136,12 @@ class ExecutorAdapter:
                     "Executor refused or cannot certify this exact request; inspect executor evidence and reconciliation status.",
                     3,
                 )
+            if not isinstance(result["result"], dict) or result["error"] is not None:
+                raise ValueError
             return result["result"]
         except ManagerError:
             raise
-        except (OSError, ValueError, TypeError):
+        except (OSError, ValueError, TypeError, RecursionError):
             raise ManagerError(
                 "executor_outcome_unknown"
                 if command == "manager.swap"

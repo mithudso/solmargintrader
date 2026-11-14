@@ -121,6 +121,13 @@ class SourceReviewTests(unittest.TestCase):
         ]
         check_review(profile, self.source, audit)
 
+    def test_unknown_or_mixed_case_unresolved_severities_cannot_pass(self) -> None:
+        for severity in ("Medium", "medum", None):
+            with self.subTest(severity=severity):
+                audit = {**self.audit, "findings": [{"severity": severity, "status": "open"}]}
+                with self.assertRaises(ValueError):
+                    check_review(self.profile, self.source, audit)
+
     def test_full_read_coverage_refuses_gap_or_reversed_range(self) -> None:
         self.assertTrue(read_coverage([[0, 70], [50, 100]], 100))
         self.assertFalse(read_coverage([[0, 50], [51, 100]], 100))

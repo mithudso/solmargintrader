@@ -20,29 +20,58 @@ from soltui.tests.test_utxo_scan import Net, addr
 def chain(status="ok", balances=None, prices=None, usd=None, complete=True, **extra):
     balances = balances or {}
     prices = prices or {}
-    usd = sum(balances[s] * prices.get(s, 0.0) for s in balances) if usd is None else usd
-    return {"status": status, "balances": balances, "prices": prices, "usd": usd, "usd_complete": complete,
-            "unpriced": [] if complete else ["X"], "positions": 0, **extra}
+    usd = (
+        sum(balances[s] * prices.get(s, 0.0) for s in balances) if usd is None else usd
+    )
+    return {
+        "status": status,
+        "balances": balances,
+        "prices": prices,
+        "usd": usd,
+        "usd_complete": complete,
+        "unpriced": [] if complete else ["X"],
+        "positions": 0,
+        **extra,
+    }
 
 
 def snap(ts, chains, complete=True):
     total = sum(c["usd"] for c in chains.values())
-    return {"ts": ts, "at": f"2026-11-0{int(ts)}T00:00:00+00:00", "label": "wallet (live)", "partial": not complete,
-            "total_usd": total, "total_complete": complete and all(c["status"] == "ok" for c in chains.values()),
-            "chains": chains}
+    return {
+        "ts": ts,
+        "at": f"2026-11-0{int(ts)}T00:00:00+00:00",
+        "label": "wallet (live)",
+        "partial": not complete,
+        "total_usd": total,
+        "total_complete": complete
+        and all(c["status"] == "ok" for c in chains.values()),
+        "chains": chains,
+    }
 
 
 class DiffTests(unittest.TestCase):
     def test_balance_change_with_usd_effect(self) -> None:
-        old = snap(1, {"bitcoin": chain(balances={"BTC": 1.0}, prices={"BTC": 100.0}),
-                       "solana": chain(balances={"SOL": 5.0}, prices={"SOL": 10.0})})
-        new = snap(2, {"bitcoin": chain(balances={"BTC": 1.5}, prices={"BTC": 110.0}),
-                       "solana": chain(balances={"SOL": 5.0}, prices={"SOL": 10.0})})
+        old = snap(
+            1,
+            {
+                "bitcoin": chain(balances={"BTC": 1.0}, prices={"BTC": 100.0}),
+                "solana": chain(balances={"SOL": 5.0}, prices={"SOL": 10.0}),
+            },
+        )
+        new = snap(
+            2,
+            {
+                "bitcoin": chain(balances={"BTC": 1.5}, prices={"BTC": 110.0}),
+                "solana": chain(balances={"SOL": 5.0}, prices={"SOL": 10.0}),
+            },
+        )
         rep = portfolio.diff_snapshots(old, new)
         (c,) = rep["changes"]
         self.assertEqual((c["chain"], c["symbol"], c["delta"]), ("bitcoin", "BTC", 0.5))
         self.assertAlmostEqual(c["usd_delta"], 55.0)
-        self.assertAlmostEqual(rep["value"]["change_usd"], 215.0 - 150.0)   # the value change includes the price move
+        self.assertAlmostEqual(
+            rep["value"]["change_usd"], 215.0 - 150.0
+        )  # the value change includes the price move
         self.assertEqual(rep["skipped"], [])
 
     def test_a_failed_or_partial_read_is_skipped_not_reported_as_a_loss(self) -> None:
@@ -56,15 +85,24 @@ class DiffTests(unittest.TestCase):
 
     def test_a_newly_added_chain_is_not_a_change(self) -> None:
         old = snap(1, {"bitcoin": chain(balances={"BTC": 1.0}, prices={"BTC": 1.0})})
-        new = snap(2, {"bitcoin": chain(balances={"BTC": 1.0}, prices={"BTC": 1.0}),
-                       "litecoin": chain(balances={"LTC": 9.0}, prices={"LTC": 1.0})})
+        new = snap(
+            2,
+            {
+                "bitcoin": chain(balances={"BTC": 1.0}, prices={"BTC": 1.0}),
+                "litecoin": chain(balances={"LTC": 9.0}, prices={"LTC": 1.0}),
+            },
+        )
         rep = portfolio.diff_snapshots(old, new)
         self.assertEqual(rep["changes"], [])
         self.assertIn("no earlier snapshot", rep["skipped"][0]["reason"])
 
     def test_unpriced_change_has_unknown_usd(self) -> None:
-        old = snap(1, {"dogecoin": chain(balances={"DOGE": 1.0}, complete=False, usd=0.0)})
-        new = snap(2, {"dogecoin": chain(balances={"DOGE": 3.0}, complete=False, usd=0.0)})
+        old = snap(
+            1, {"dogecoin": chain(balances={"DOGE": 1.0}, complete=False, usd=0.0)}
+        )
+        new = snap(
+            2, {"dogecoin": chain(balances={"DOGE": 3.0}, complete=False, usd=0.0)}
+        )
         (c,) = portfolio.diff_snapshots(old, new)["changes"]
         self.assertIsNone(c["usd_delta"])
 
@@ -79,9 +117,15 @@ class DiffTests(unittest.TestCase):
         c = snap(1 + 3600 * 6, {"bitcoin": chain(balances={"BTC": 2.5})})
         self.assertEqual(portfolio.changes_report([a], None)["changes"], [])
         self.assertIn("need two", portfolio.changes_report([a])["message"])
-        self.assertEqual(portfolio.changes_report([a, b, c])["changes"][0]["delta"], 0.5)
-        self.assertEqual(portfolio.changes_report([a, b, c], hours=5.5)["changes"][0]["delta"], 1.5)
-        self.assertIn("no snapshot", portfolio.changes_report([a, b, c], hours=100)["message"])
+        self.assertEqual(
+            portfolio.changes_report([a, b, c])["changes"][0]["delta"], 0.5
+        )
+        self.assertEqual(
+            portfolio.changes_report([a, b, c], hours=5.5)["changes"][0]["delta"], 1.5
+        )
+        self.assertIn(
+            "no snapshot", portfolio.changes_report([a, b, c], hours=100)["message"]
+        )
 
 
 class ValueCurveTests(unittest.TestCase):
@@ -95,8 +139,12 @@ class ValueCurveTests(unittest.TestCase):
         self.assertEqual(left_out, 2)
 
     def test_the_value_curve_feeds_the_wallet_live_pnl_section_alone(self) -> None:
-        rows, _ = portfolio.value_rows([snap(1, {"bitcoin": chain(usd=100.0)}),
-                                        snap(2, {"bitcoin": chain(usd=110.0)})])
+        rows, _ = portfolio.value_rows(
+            [
+                snap(1, {"bitcoin": chain(usd=100.0)}),
+                snap(2, {"bitcoin": chain(usd=110.0)}),
+            ]
+        )
         curve = pnl.curve_from_wallet_history(rows)
         self.assertEqual(curve.source, "wallet (live)")
         self.assertTrue(curve.value_only)
@@ -111,42 +159,104 @@ class StorageAndNoticeTests(unittest.TestCase):
         self.addCleanup(p.stop)
 
     def test_files_are_mode_600_and_hold_no_address(self) -> None:
-        result = {"ts": 1.0, "scanned_at": "2026-11-01T00:00:00+00:00", "partial": False, "total_usd": 5.0,
-                  "chains": {"solana": {
-                      "status": "ok", "total_usd": 5.0, "total_complete": True, "unpriced": [],
-                      "address": "SomePublicAddressThatMustNotBeStored", "native": {
-                          "symbol": "SOL", "amount": 1.0, "price_usd": 5.0, "usd": 5.0, "kind": "native"},
-                      "holdings": [], "stakes": [], "positions": []}}}
+        result = {
+            "ts": 1.0,
+            "scanned_at": "2026-11-01T00:00:00+00:00",
+            "partial": False,
+            "total_usd": 5.0,
+            "chains": {
+                "solana": {
+                    "status": "ok",
+                    "total_usd": 5.0,
+                    "total_complete": True,
+                    "unpriced": [],
+                    "address": "SomePublicAddressThatMustNotBeStored",
+                    "native": {
+                        "symbol": "SOL",
+                        "amount": 1.0,
+                        "price_usd": 5.0,
+                        "usd": 5.0,
+                        "kind": "native",
+                    },
+                    "holdings": [],
+                    "stakes": [],
+                    "positions": [],
+                }
+            },
+        }
         s = portfolio.build_snapshot(result)
         path = portfolio.append_snapshot(s)
         self.assertEqual(stat.S_IMODE(os.stat(path).st_mode), 0o600)
         self.assertNotIn("SomePublicAddress", path.read_text())
-        self.assertEqual(portfolio.load_snapshots()[0]["chains"]["solana"]["balances"], {"SOL": 1.0})
+        self.assertEqual(
+            portfolio.load_snapshots()[0]["chains"]["solana"]["balances"], {"SOL": 1.0}
+        )
         portfolio.notice(mark_seen=True)
-        self.assertEqual(stat.S_IMODE(os.stat(Path(self.tmp.name) / "portfolio" / "last-view.json").st_mode), 0o600)
+        self.assertEqual(
+            stat.S_IMODE(
+                os.stat(Path(self.tmp.name) / "portfolio" / "last-view.json").st_mode
+            ),
+            0o600,
+        )
 
     def test_airdrop_flagged_holdings_do_not_count_toward_balances(self) -> None:
-        result = {"ts": 1.0, "scanned_at": "x", "partial": False, "total_usd": 0.0, "chains": {"base": {
-            "status": "ok", "total_usd": 0.0, "native": None, "stakes": [], "positions": [],
-            "holdings": [{"symbol": "SPAM", "amount": 9.0, "included": False, "airdrop": True, "kind": "erc20",
-                          "price_usd": None, "usd": None}]}}}
-        self.assertEqual(portfolio.build_snapshot(result)["chains"]["base"]["balances"], {})
+        result = {
+            "ts": 1.0,
+            "scanned_at": "x",
+            "partial": False,
+            "total_usd": 0.0,
+            "chains": {
+                "base": {
+                    "status": "ok",
+                    "total_usd": 0.0,
+                    "native": None,
+                    "stakes": [],
+                    "positions": [],
+                    "holdings": [
+                        {
+                            "symbol": "SPAM",
+                            "amount": 9.0,
+                            "included": False,
+                            "airdrop": True,
+                            "kind": "erc20",
+                            "price_usd": None,
+                            "usd": None,
+                        }
+                    ],
+                }
+            },
+        }
+        self.assertEqual(
+            portfolio.build_snapshot(result)["chains"]["base"]["balances"], {}
+        )
 
     def test_notice_flow(self) -> None:
-        self.assertFalse(portfolio.notice()["changed"])                       # no snapshots
-        portfolio.append_snapshot(snap(1, {"bitcoin": chain(balances={"BTC": 1.0}, prices={"BTC": 100.0})}))
-        self.assertFalse(portfolio.notice()["changed"])                       # one snapshot, nothing to compare
-        portfolio.append_snapshot(snap(2, {"bitcoin": chain(balances={"BTC": 1.25}, prices={"BTC": 100.0})}))
+        self.assertFalse(portfolio.notice()["changed"])  # no snapshots
+        portfolio.append_snapshot(
+            snap(1, {"bitcoin": chain(balances={"BTC": 1.0}, prices={"BTC": 100.0})})
+        )
+        self.assertFalse(
+            portfolio.notice()["changed"]
+        )  # one snapshot, nothing to compare
+        portfolio.append_snapshot(
+            snap(2, {"bitcoin": chain(balances={"BTC": 1.25}, prices={"BTC": 100.0})})
+        )
         n = portfolio.notice()
         self.assertTrue(n["changed"])
         self.assertIn("BTC +0.25", n["line"])
         self.assertIn("wallet (live)", n["line"])
-        self.assertTrue(portfolio.notice()["changed"])                        # not marked yet: still news
+        self.assertTrue(portfolio.notice()["changed"])  # not marked yet: still news
         portfolio.notice(mark_seen=True)
-        self.assertFalse(portfolio.notice()["changed"])                       # seen
-        portfolio.append_snapshot(snap(3, {"bitcoin": chain(balances={"BTC": 1.25}, prices={"BTC": 100.0})}))
-        self.assertFalse(portfolio.notice()["changed"])                       # a snapshot with no change is quiet
-        portfolio.append_snapshot(snap(4, {"bitcoin": chain(balances={"BTC": 1.0}, prices={"BTC": 100.0})}))
+        self.assertFalse(portfolio.notice()["changed"])  # seen
+        portfolio.append_snapshot(
+            snap(3, {"bitcoin": chain(balances={"BTC": 1.25}, prices={"BTC": 100.0})})
+        )
+        self.assertFalse(
+            portfolio.notice()["changed"]
+        )  # a snapshot with no change is quiet
+        portfolio.append_snapshot(
+            snap(4, {"bitcoin": chain(balances={"BTC": 1.0}, prices={"BTC": 100.0})})
+        )
         self.assertIn("BTC -0.25", portfolio.notice()["line"])
 
     def test_a_corrupt_line_is_skipped(self) -> None:
@@ -176,10 +286,18 @@ class LastScanTests(unittest.TestCase):
         self.assertIsNone(portfolio.load_last_scan())
 
     def test_a_scan_is_kept_and_portfolio_last_returns_it(self) -> None:
-        fake = {"scanned_at": "2026-11-07 12:00", "chains": {}, "partial": False, "total_usd": 1.0,
-                "skipped": [], "counts": {}}
+        fake = {
+            "scanned_at": "2026-11-07 12:00",
+            "chains": {},
+            "partial": False,
+            "total_usd": 1.0,
+            "skipped": [],
+            "counts": {},
+        }
         with mock.patch.object(commands, "_portfolio_scan", return_value=fake):
-            env = commands.dispatch("portfolio.scan", {"chain": "solana"}, surface="cli")
+            env = commands.dispatch(
+                "portfolio.scan", {"chain": "solana"}, surface="cli"
+            )
         self.assertTrue(env["ok"], env)
         last = commands.dispatch("portfolio.last", {}, surface="cli")["result"]
         self.assertEqual(last["chain"], "solana")
@@ -193,7 +311,9 @@ class SnapshotCommandTests(unittest.TestCase):
         with World() as world:
             hist = {addr("btc", V2_M, "p2wpkh", 0, 0): (100_000_000, 1)}
             net = Net(hist)
-            config.save_settings(config.Settings(btc_xpub=V2_M, solana_address="", base_address=""))
+            config.save_settings(
+                config.Settings(btc_xpub=V2_M, solana_address="", base_address="")
+            )
             with mock.patch("soltui.wallet.HttpFetcher", lambda *a, **k: net):
                 first = commands.dispatch("portfolio.snapshot", {}, surface="cli")
                 hist[addr("btc", V2_M, "p2wpkh", 0, 1)] = (50_000_000, 1)
@@ -210,7 +330,9 @@ class SnapshotCommandTests(unittest.TestCase):
             self.assertAlmostEqual(c["delta"], 0.5)
             notice = commands.dispatch("portfolio.notice", {}, surface="cli")["result"]
             self.assertTrue(notice["changed"])
-            pnl_rep = commands.dispatch("pnl.summary", {"window": "all", "source": "wallet"}, surface="cli")["result"]
+            pnl_rep = commands.dispatch(
+                "pnl.summary", {"window": "all", "source": "wallet"}, surface="cli"
+            )["result"]
             (sec,) = pnl_rep["sections"]
             self.assertEqual(sec["source"], "wallet (live)")
             self.assertEqual(sec["group"], "real")
@@ -229,7 +351,13 @@ class SnapshotCommandTests(unittest.TestCase):
         self.assertTrue(reg["wallet.addresses"].read_only)
         self.assertFalse(reg["portfolio.snapshot"].read_only)
         self.assertTrue(reg["portfolio.snapshot"].long_running)
-        self.assertFalse(any(reg[n].requires_confirm for n in reg if n.startswith(("portfolio.", "wallet."))))
+        self.assertFalse(
+            any(
+                reg[n].requires_confirm
+                for n in reg
+                if n.startswith(("portfolio.", "wallet."))
+            )
+        )
 
 
 class AgentTests(unittest.TestCase):
@@ -238,24 +366,40 @@ class AgentTests(unittest.TestCase):
         self.assertEqual(d["Label"], "com.mitchhudson.soltui.portfolio")
         self.assertEqual(d["StartInterval"], 3600)
         self.assertTrue(d["RunAtLoad"])
-        self.assertEqual(d["ProgramArguments"],
-                         ["/venv/bin/python", "-m", "soltui.cli", "call", "portfolio.snapshot"])
+        self.assertEqual(
+            d["ProgramArguments"],
+            ["/venv/bin/python", "-m", "soltui.cli", "call", "portfolio.snapshot"],
+        )
         self.assertEqual(d["WorkingDirectory"], "/repo")
         round_trip = plistlib.loads(plistlib.dumps(d))
         self.assertEqual(round_trip, d)
         self.assertNotIn("xpub", json.dumps(d))
 
     def test_install_writes_the_plist_without_starting_it(self) -> None:
-        with tempfile.TemporaryDirectory() as tmp, mock.patch.dict(os.environ, {"SOLTUI_LAUNCHAGENTS_DIR": tmp}):
+        with (
+            tempfile.TemporaryDirectory() as tmp,
+            mock.patch.dict(os.environ, {"SOLTUI_LAUNCHAGENTS_DIR": tmp}),
+        ):
             py = Path(tmp) / "python"
             py.write_text("")
-            with mock.patch.object(portfolio_agent, "_launchctl") as lc, \
-                    mock.patch.object(portfolio_agent, "log_path", return_value=Path(tmp) / "logs" / "portfolio.log"):
+            with (
+                mock.patch.object(portfolio_agent, "_launchctl") as lc,
+                mock.patch.object(
+                    portfolio_agent,
+                    "log_path",
+                    return_value=Path(tmp) / "logs" / "portfolio.log",
+                ),
+            ):
                 out = portfolio_agent.install(py, Path("/repo"), start=False)
                 lc.assert_not_called()
-                self.assertEqual(plistlib.loads(Path(out["plist"]).read_bytes())["Label"], portfolio_agent.LABEL)
+                self.assertEqual(
+                    plistlib.loads(Path(out["plist"]).read_bytes())["Label"],
+                    portfolio_agent.LABEL,
+                )
                 self.assertTrue(portfolio_agent.uninstall()["removed"])
-                lc.assert_called_once_with("bootout", f"{portfolio_agent.domain()}/{portfolio_agent.LABEL}")
+                lc.assert_called_once_with(
+                    "bootout", f"{portfolio_agent.domain()}/{portfolio_agent.LABEL}"
+                )
 
 
 if __name__ == "__main__":

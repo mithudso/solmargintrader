@@ -108,7 +108,7 @@ def sweep_steps(assets: list[str], data: Path, args: argparse.Namespace, *,
     Built AFTER the fetch, from what is on disk, so an asset the venue does not list becomes a
     printed skip instead of a failing worker.
     """
-    if args.fetch_only:
+    if args.fetch_only or not assets:
         return []
     py = sys.executable
     out: list[tuple[str, list[str]]] = []
@@ -201,6 +201,11 @@ def main(argv: list[str] | None = None) -> int:
         for i, (what, cmd) in enumerate(plan, 1):
             print(f"  {i:>2}. {what}\n      {' '.join(cmd)}")
         return 0
+    if not args.no_registry and not args.fetch_only:
+        from soltui import bgcontrol
+        if bgcontrol.is_running():
+            print("REFUSED: an existing background sweep owns the cache/results")
+            return 1
     env = {**os.environ, "PYTHONPATH": str(REPO) + os.pathsep + os.environ.get("PYTHONPATH", "")}
     failures: list[str] = []
 

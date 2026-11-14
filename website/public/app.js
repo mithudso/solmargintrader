@@ -4,7 +4,7 @@ const $ = (selector, root = document) => root.querySelector(selector);
 const $$ = (selector, root = document) => [...root.querySelectorAll(selector)];
 const main = $('#main');
 const TIMING = Object.freeze({ requestTimeoutMs: 25000, toastMs: 6500, oraclePollMs: 15000, evidenceCheckMs: 1000 });
-const state = { config: { coins: ['SOL', 'BTC', 'ETH', 'ZEC'], trialDays: 7 }, user: null, subscription: null, usage: null, portalAvailable: false, bots: [], botsNextPage: null, botsUnavailable: false, accountStatus: 'loading', accountEpoch: 0, accountRequest: 0, accountTransition: false, navigationEpoch: 0, articles: [], strategies: [], coin: 'SOL', oracle: null, view: 'overview', search: '', category: 'all', loadingOracle: false, oracleRequest: 0 };
+const state = { config: { coins: ['SOL', 'BTC', 'ETH', 'ZEC'], trialDays: 7 }, user: null, subscription: null, usage: null, portalAvailable: false, bots: [], botsNextPage: null, botsUnavailable: false, accountStatus: 'loading', accountEpoch: 0, accountRequest: 0, accountTransition: false, navigationEpoch: 0, backtestRequest: 0, articles: [], strategies: [], coin: 'SOL', oracle: null, view: 'overview', search: '', category: 'all', loadingOracle: false, oracleRequest: 0 };
 const agentAccess = createAgentAccess({ api, getUser: () => state.accountTransition ? null : state.user, isSettings: () => state.view === 'settings', openWallet, toast });
 const views = { overview: 'Overview', oracle: 'The oracle', bots: 'My bots', backtest: 'Backtest lab', research: 'Research journal', pricing: 'Membership', settings: 'Settings & account' };
 const coinNames = { SOL: 'Solana', BTC: 'Bitcoin', ETH: 'Ethereum', ZEC: 'Zcash' };
@@ -644,7 +644,7 @@ async function refreshAccount({ allowTransition = false } = {}) {
     let bots = []; let botsNextPage = null; let botsUnavailable = false;
     if (result.user) {
       try { const page = await api('/api/bots', {}, result.user.id); bots = page.bots || []; botsNextPage = page.nextPage ?? null; }
-      catch (error) { if (error?.code === 'account_changed') throw error; if (current()) { botsUnavailable = true; console.warn('Oraclebot bot list unavailable'); } }
+      catch (error) { if (error?.code === 'account_changed') throw error; if (current()) { bots = state.bots; botsNextPage = state.botsNextPage; botsUnavailable = true; console.warn('Oraclebot bot list unavailable'); } }
     }
     if (!current()) return false;
     const identityEnded = Boolean(context.userId && !result.user);
@@ -666,11 +666,14 @@ async function connectWallet(name, button) {
   setBusy(button, true); $('#wallet-message').textContent = 'Waiting for your wallet…';
   try {
     const connection = await provider.connect(); const wallet = (connection?.publicKey || provider.publicKey)?.toString();
+    if (state.accountEpoch !== context.epoch || !state.accountTransition) return;
     if (!wallet) throw new Error('Your wallet did not return a public address.');
     const challenge = await api('/api/auth/challenge', { method: 'POST', body: JSON.stringify({ wallet }) });
+    if (state.accountEpoch !== context.epoch || !state.accountTransition) return;
     $('#wallet-message').textContent = 'Sign the one-time message in your wallet. No funds will move.';
     const signed = await provider.signMessage(new TextEncoder().encode(challenge.message), 'utf8');
     const bytes = signed.signature || signed; const signature = btoa(String.fromCharCode(...new Uint8Array(bytes)));
+    if (state.accountEpoch !== context.epoch || !state.accountTransition) return;
     await api('/api/auth/verify', { method: 'POST', body: JSON.stringify({ id: challenge.id, signature }) });
     if (state.accountEpoch !== context.epoch || !state.accountTransition) return;
     const refreshed = await refreshAccount({ allowTransition: true });
@@ -769,6 +772,7 @@ document.addEventListener('submit', async event => {
   const current = () => currentAccount(context) && state.navigationEpoch === navigation && form.isConnected && (isBot || $('#backtest-form') === form);
   values.leverage = Number(values.leverage || 1); if (isBot) { values.budget = Number(values.budget); values.mode = 'paper'; } else values.capital = Number(values.capital);
   if (isBot && values.venue === 'coinbase' && values.leverage !== 1) { message.textContent = 'Coinbase spot configurations use 1× leverage. Choose Jupiter for a leveraged configuration.'; return; }
+  const requestId = isBot ? null : ++state.backtestRequest;
   setBusy(button, true);
   try {
     if (isBot) {
@@ -779,7 +783,7 @@ document.addEventListener('submit', async event => {
         ? await followBacktest(await api('/api/backtest-jobs', { method: 'POST', body: JSON.stringify({ idempotencyKey: crypto.randomUUID(), request: values }) }, context.userId), context, current, message)
         : await api('/api/backtests', { method: 'POST', body: JSON.stringify(values) }, context.userId);
       if (!currentAccount(context)) return;
-      if (current() && result) renderBacktest(result);
+      if (current() && requestId === state.backtestRequest && result) renderBacktest(result);
       const account = await api('/api/me', {}, context.userId).catch(() => null);
       if (currentAccount(context) && account?.user?.id === context.userId) state.usage = account.usage || null;
     }

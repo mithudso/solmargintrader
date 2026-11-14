@@ -82,7 +82,7 @@ sample do not establish a causal effect or a calibrated trading forecast.
 
 The current coordinated source candidate is manager 0.7.5, research-runtime 0.4.2
 and ecosystem 0.4.14, with backtester 0.2.1, Oracle 0.2.5, optional executor 0.2.1
-and extension source 0.6.7. Archived liquidity source is 0.1.1 and remains disabled. It retains paper/disarmed defaults and separates source
+and extension source 0.6.8. Archived liquidity source is 0.1.1 and remains disabled. It retains paper/disarmed defaults and separates source
 checks from installed acceptance and final delivery. Run `solbot --help` for the ordered
 walkthrough, `solbot ui open` for the verified control room, and `solbot health-check`
 for collector measurements. The [managed suite guide](docs/bot-manager-managed-suite.md)
@@ -107,7 +107,7 @@ python3 -m backtester.cli --asset SOL --strategy all --split 0.7 --out results/
 
 # Extension — no install step, no dependencies
 cd extension
-npm test                                               # 483 tests
+npm test                                               # 555 tests
 node tools/dryrun.js --ticks 8 --osc 6 --offline 100   # end-to-end tick loop
 node tools/cli.js                                      # every available command
 ```
@@ -118,10 +118,10 @@ Load the extension: `chrome://extensions` → Developer mode → **Load unpacked
 ## Tests
 
 ```bash
-python3 -m unittest discover -s backtester/tests -t .   # 1120 tests
-python3 -m unittest discover -s soltui/tests -t .       # 1582 tests (TUI dependencies required)
-python3 -m unittest discover -s mongo/tests -t .        # 57 tests
-cd extension && npm test                                # 483 tests
+python3 -m unittest discover -s backtester/tests -t .   # 1196 tests
+python3 -m unittest discover -s soltui/tests -t .       # 1694 tests (TUI dependencies required)
+python3 -m unittest discover -s mongo/tests -t .        # 73 tests
+cd extension && npm test                                # 555 tests
 ```
 
 Counts are asserted by CI, so a stale number here fails the build rather than
@@ -143,10 +143,18 @@ node tools/cli.js tick --count 3
 node tools/cli.js pnl --json
 ```
 
+For the HTTP surface, from `extension/`, generate a token in the invoking shell
+without printing it. The server requires `SMT_API_TOKEN` and never prints its value:
+
 ```bash
-node tools/api-server.js --port 8787     # prints a bearer token
-curl -s -H "Authorization: Bearer $SMT_API_TOKEN" http://127.0.0.1:8787/v1/commands
+export SMT_API_TOKEN="$(openssl rand -hex 24)"
+node tools/api-server.js --port 8787
 ```
+
+An authorized caller must supply that same token in the `Authorization: Bearer`
+header. Keep it in the caller's environment; do not echo it or paste its value into
+logs. The server prints a URL and an example with the literal `$SMT_API_TOKEN` name,
+not a generated credential. See [local API setup](docs/INSTALLATION.md#optional-the-local-http-surface).
 
 Full reference: [docs/API.md](docs/API.md).
 

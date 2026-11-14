@@ -14,6 +14,8 @@ import os
 import re
 import sys
 import tempfile
+import stat
+import uuid
 from html.parser import HTMLParser
 from pathlib import Path
 
@@ -293,21 +295,46 @@ def conversion_plan(source: Path, output: Path) -> list[tuple[Path, Path]]:
     return plan
 
 
-def write_markdown(target: Path, text: str, overwrite: bool) -> None:
-    target.parent.mkdir(parents=True, exist_ok=True)
-    if target.is_symlink():
-        raise ValueError(f"Refusing output symlink: {target}")
-    # Publish a complete file atomically, so an interrupted run can be resumed safely.
-    fd, temporary = tempfile.mkstemp(prefix=".html-md-", dir=target.parent)
+def write_markdown(target: Path, text: str, overwrite: bool, *, output_root: Path) -> None:
+    """Publish through no-follow directory descriptors inside the declared root."""
+    relative = target.relative_to(output_root)
+    if any(part in {".", ".."} for part in relative.parts):
+        raise ValueError("Output path escapes its root")
+    output_root.mkdir(parents=True, exist_ok=True)
+    parent = os.open(output_root, os.O_RDONLY | os.O_DIRECTORY | os.O_NOFOLLOW)
+    temporary = ".html-md-" + uuid.uuid4().hex
+    created = False
     try:
+        for part in relative.parts[:-1]:
+            try:
+                os.mkdir(part, dir_fd=parent)
+            except FileExistsError:
+                pass
+            child = os.open(part, os.O_RDONLY | os.O_DIRECTORY | os.O_NOFOLLOW, dir_fd=parent)
+            os.close(parent)
+            parent = child
+        try:
+            if stat.S_ISLNK(os.stat(relative.name, dir_fd=parent, follow_symlinks=False).st_mode):
+                raise ValueError("Refusing output symlink")
+        except FileNotFoundError:
+            pass
+        fd = os.open(temporary, os.O_CREAT | os.O_EXCL | os.O_WRONLY, 0o600, dir_fd=parent)
+        created = True
         with os.fdopen(fd, "w", encoding="utf-8", newline="\n") as stream:
             stream.write(text)
+            stream.flush()
+            os.fsync(stream.fileno())
         if overwrite:
-            os.replace(temporary, target)
+            os.replace(temporary, relative.name, src_dir_fd=parent, dst_dir_fd=parent)
         else:
-            os.link(temporary, target)
+            os.link(temporary, relative.name, src_dir_fd=parent, dst_dir_fd=parent, follow_symlinks=False)
     finally:
-        Path(temporary).unlink(missing_ok=True)
+        if created:
+            try:
+                os.unlink(temporary, dir_fd=parent)
+            except FileNotFoundError:
+                pass
+        os.close(parent)
 
 
 def main(argv: list[str] | None = None) -> int:
@@ -350,7 +377,7 @@ def main(argv: list[str] | None = None) -> int:
             else:
                 try:
                     text = html_to_markdown(read_html(path))
-                    write_markdown(target, text, args.overwrite)
+                    write_markdown(target, text, args.overwrite, output_root=output)
                     converted += 1
                     empty += not bool(text.strip())
                 except (OSError, ValueError, LookupError) as exc:

@@ -342,20 +342,21 @@ jobs:
       - name: Layout describes itself without a server
         run: python3 mongo/schema.py --describe
 
-      - name: Load what a fresh clone has
-        # `data/` and `results/` are gitignored, so most collections load empty
-        # here. Request the empty bars collection explicitly too: its native
-        # time-series layout is under test. --only now preserves unselected
-        # collections instead of accidentally creating the whole schema.
-        run: python3 mongo/load.py --only bars,strategies,signals,indicators,documents
-
       - name: Unit and integration tests
+        env:
+          SOLMARGINTRADER_MONGO_TEST_URI: mongodb://127.0.0.1:27017
         run: python3 -m unittest discover -s mongo/tests -t .
 
       - name: Raw event capture durability and upload boundaries
         env:
-          MARKET_CAPTURE_REQUIRE_MONGO: '1'
+          SOLMARGINTRADER_MONGO_TEST_URI: mongodb://127.0.0.1:27017
         run: python3 -m unittest discover -s scripts -p test_capture_market.py -v
+
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1
+        with:
+          node-version: "22"
+      - name: Read-only query regression fixtures
+        run: node mongo/tests/query_regressions.cjs
 
   # Documentation drift is a build failure, not a nit: the docs claimed 250
   # backtester tests for several commits while the suite had grown to 454, and
@@ -403,6 +404,11 @@ jobs:
 
       - name: Offline HTML converter behavior
         run: python3 -m unittest scripts.test_html_to_markdown
+
+      - name: Workflow publication and source-bound tool safety
+        run: |
+          python3 -m unittest scripts.test_workflow_safety scripts.test_maintenance_tools
+          node --test scripts/test_workflow_rotation.mjs
 
       - name: MCP credential and endpoint boundaries
         run: python3 -m unittest scripts.test_mcp_remote_client

@@ -3,6 +3,7 @@ from __future__ import annotations
 import tempfile
 import unittest
 from pathlib import Path
+from unittest.mock import patch
 
 from oracle.quotes import (
     QuoteError,
@@ -89,8 +90,13 @@ class QuoteTests(unittest.TestCase):
     def test_no_optin_no_state_no_network(self):
         with tempfile.TemporaryDirectory() as tmp:
             p = Path(tmp) / "absent.sqlite3"
-            with self.assertRaises(QuoteError):
-                collect_quote(p, {}, enabled=False)
+            request = {"inputMint": SOL, "outputMint": USDC, "amount": 100000000, "slippageBps": 50}
+            with (patch("oracle.quotes._connection") as archive,
+                  patch("oracle.quotes.urllib.request.build_opener") as transport,
+                  self.assertRaisesRegex(QuoteError, "^quote_collection_not_enabled$")):
+                collect_quote(p, request, api_key="fixture", enabled=False)
+            archive.assert_not_called()
+            transport.assert_not_called()
             self.assertFalse(p.exists())
 
     def test_import_is_append_only_and_amount_bound(self):

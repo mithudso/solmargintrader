@@ -81,6 +81,17 @@ export function assertDisarmed(runtime, where) {
   }
 }
 
+/** Positive completion evidence for the separately authorized paper gate. */
+export function assertPaperExecutionTick(tick) {
+  if (tick?.mode !== 'dry-run' || !(tick.price > 0) || !Number.isFinite(tick.price)
+      || !Array.isArray(tick.errors) || tick.errors.length || !tick.pnl
+      || !Array.isArray(tick.placed) || !tick.placed.length
+      || !Array.isArray(tick.skipped) || tick.skipped.some(item => item.reason === 'not-armed')) {
+    throw new Error('Paper tick did not complete a successful permitted plan and simulated placement');
+  }
+  return tick;
+}
+
 /**
  * soltuiCall can reach every soltui command, including ones that change state on
  * a real-money system. The harness may only call a command that soltui itself
@@ -93,7 +104,7 @@ export function assertDisarmed(runtime, where) {
 export function assertSoltuiCallAllowed(command, params, listing) {
   const entry = Array.isArray(listing) ? listing.find((c) => c?.name === command) : undefined;
   if (!entry) throw new Error(`e2e harness refuses soltuiCall "${command}": soltui does not list it`);
-  if (entry.read_only !== true || entry.requires_confirm === true) {
+  if (entry.read_only !== true || entry.requires_confirm !== false) {
     throw new Error(`e2e harness refuses soltuiCall "${command}": it is not a read-only command`);
   }
   if (params && Object.hasOwn(params, 'confirm')) {

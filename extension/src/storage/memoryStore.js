@@ -15,16 +15,16 @@ export class MemoryStore {
   }
 
   async putIntent(intent) {
-    this.intents.set(intent.intentKey, { ...intent });
+    this.intents.set(intent.intentKey, structuredClone(intent));
   }
 
   async getIntent(key) {
     const v = this.intents.get(key);
-    return v ? { ...v } : undefined;
+    return v ? structuredClone(v) : undefined;
   }
 
   async allIntents() {
-    return [...this.intents.values()].map((i) => ({ ...i }));
+    return [...this.intents.values()].map((i) => structuredClone(i));
   }
 
   async intentsByStatus(status) {
@@ -35,32 +35,33 @@ export class MemoryStore {
     const existing = this.intents.get(key);
     if (!existing) return null;
     const next = { ...existing, ...patch, updatedAtMs: Date.now() };
-    this.intents.set(key, next);
-    return { ...next };
+    this.intents.set(key, structuredClone(next));
+    return structuredClone(next);
   }
 
   async putFill(fill) {
-    this.fills.set(fill.id, { ...fill });
+    this.fills.set(fill.id, structuredClone(fill));
   }
 
   async allFills() {
-    return [...this.fills.values()].map((f) => ({ ...f }));
+    return [...this.fills.values()].map((f) => structuredClone(f));
   }
 
   async putCarry(entry) {
-    this.carry.set(entry.id, { ...entry });
+    this.carry.set(entry.id, structuredClone(entry));
   }
 
   async allCarry() {
-    return [...this.carry.values()].map((c) => ({ ...c }));
+    return [...this.carry.values()].map((c) => structuredClone(c));
   }
 
   async logEvent(event) {
-    this.events.push({ tsMs: Date.now(), ...event });
+    this.events.push(structuredClone({ tsMs: Date.now(), ...event }));
   }
 
   async recentEvents(limit = 100) {
-    return this.events.slice(-limit).reverse();
+    if (!Number.isSafeInteger(limit) || limit < 0) throw new RangeError('event limit must be a nonnegative integer');
+    return limit === 0 ? [] : structuredClone(this.events.slice(-limit).reverse());
   }
 
   async clearAll() {

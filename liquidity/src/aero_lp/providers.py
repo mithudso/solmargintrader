@@ -36,6 +36,7 @@ from web3 import Web3
 
 from . import abi, addresses
 from .chain import ZERO, AeroChain, Call, PoolState, Token
+from .diagnostics import safe_error
 from .market import MarketData, vol_from_closes
 from .metrics import KNOWN_TOKENS, NO_DATA, PoolMetrics, ScoreDetail, economics_from, evaluate_pool_detail, score_pool
 from .state import atomic_write_json, home
@@ -609,7 +610,7 @@ class Coins:
         per = max(1, CHART_MAX_POINTS // span)
         batches = [need[i : i + per] for i in range(0, len(need), per)]
 
-        def fetch(batch: list[str]) -> dict[str, Any]:
+        def fetch(batch: list[str]) -> dict[str, Any] | None:
             try:
                 r = self.http.get(
                     f"{LLAMA_COINS}/chart/{self._coin_ids(batch)}", params={"span": span, "period": "1h"}, timeout=40
@@ -617,11 +618,13 @@ class Coins:
                 r.raise_for_status()
                 return r.json().get("coins") or {}
             except (httpx.HTTPError, ValueError):
-                return {}
+                return None
 
         with ThreadPoolExecutor(max_workers=6) as pool:
             results = list(pool.map(fetch, batches))
         for batch, coins in zip(batches, results, strict=True):
+            if coins is None:
+                continue  # A failed request is not evidence that a token has no chart.
             for k, v in coins.items():
                 series = {}
                 for pt in v.get("prices") or []:
@@ -639,7 +642,13 @@ class Coins:
         if not sa or not sb:
             return []
         hours = sorted(set(sa) & set(sb))
-        return [sa[h] / sb[h] for h in hours]
+        longest: list[int] = []
+        current: list[int] = []
+        for hour in hours:
+            current = current + [hour] if current and hour == current[-1] + 1 else [hour]
+            if len(current) >= len(longest):
+                longest = current
+        return [sa[h] / sb[h] for h in longest]
 
 
 # ---------------------------------------------------------------------------- Tier 2: closed-form LVR
@@ -772,6 +781,7 @@ def row_from_metrics(
     cap: str | None = None,
 ) -> ProviderRow:
     flags = list(m.flags) + (extra_flags or [])
+    flags.append("break-even deposit: " + m.break_even_basis)
     conf = m.confidence
     if not d.income_measured:
         flags.append("income not measured (24h fee growth unavailable): volume x fee used")
@@ -924,7 +934,12 @@ def evaluate_quoted(
         clears_bar=False,
         quoted_apy_base=p.quoted_base_apy,
         flags=flags,
-        venue_info={"chain_id": addresses.BASE_CHAIN_ID, "kind": amm.value, "llama_pool": p.id},
+        venue_info={
+            "chain_id": addresses.BASE_CHAIN_ID if p.chain.lower() == "base" else None,
+            "chain": p.chain,
+            "kind": amm.value,
+            "llama_pool": p.id,
+        },
         actionable=False,
     )
 
@@ -1203,6 +1218,8 @@ def score_v3(
     m, d = score_onchain(env, rd.state, delta, tvl, vol, True)
     extra: list[str] = []
     registered = reg is not None
+    if registered and not rd.factory:
+        raise RuntimeError("registered pool factory verification unavailable")
     if registered and reg is not None and rd.factory and rd.factory.lower() != (reg.factory or "").lower():
         raise RuntimeError(f"pool.factory() {rd.factory} is not the registered {venue_id} factory {reg.factory}")
     if rd.has_gauge:
@@ -1338,7 +1355,7 @@ def run_providers(
             try:
                 found = find_v3_pools(chain, v, wanted) if wanted else {}
             except Exception as e:  # noqa: BLE001
-                errors.append({"pool": v.id, "error": f"getPool lookup failed: {type(e).__name__}: {e}"[:300]})
+                errors.append({"pool": v.id, "error": "getPool lookup failed: " + safe_error(e)})
                 continue
             for p, key in zip(cands, wanted, strict=True):
                 addr = found.get(key)
@@ -1410,8 +1427,8 @@ def run_providers(
             try:
                 row = job.run()
             except Exception as e:  # noqa: BLE001 - one bad pool must not end the run
-                errors.append({"pool": job.label, "error": f"{type(e).__name__}: {e}"[:300]})
-                say(f"[{done}/{total_jobs}] {job.label}: error {type(e).__name__}: {str(e)[:80]}")
+                errors.append({"pool": job.label, "error": safe_error(e)})
+                say(f"[{done}/{total_jobs}] {job.label}: error {safe_error(e)}")
                 continue
             rows.append(row)
             if k == "aerodrome-slipstream":
@@ -1448,7 +1465,7 @@ def run_providers(
                     rows.append(row)
                     say(f"probe {dex} {row.pair}: net {row.expected_net_apr or 0:+.1f}% ({row.confidence})")
                 except Exception as e:  # noqa: BLE001
-                    errors.append({"pool": f"probe:{dex} {x['address']}", "error": f"{type(e).__name__}: {e}"[:200]})
+                    errors.append({"pool": f"probe:{dex} {x['address']}", "error": safe_error(e)})
 
     # Tier 2: every remaining DefiLlama row, scored from quotes.
     measured_rows: dict[str, list[ProviderRow]] = {}
@@ -1474,9 +1491,14 @@ def run_providers(
         if sigma is None:
             unscored[f"{p.project}: no price history for the pair"] += 1
             continue
-        row = evaluate_quoted(
-            p, amm, sigma, f"defillama coins {len(closes)}h hourly", len(closes) / 24, min_net_apr, cfg
-        )
+        try:
+            row = evaluate_quoted(
+                p, amm, sigma, f"defillama coins {len(closes)}h hourly", len(closes) / 24, min_net_apr, cfg
+            )
+        except Exception as error:  # noqa: BLE001 -- retain independently scored pools
+            errors.append({"pool": p.id, "error": safe_error(error)})
+            say(f"quoted {p.id}: error {safe_error(error)}")
+            continue
         if row is None:
             unscored[f"{p.project}: no quoted base APY"] += 1
         else:

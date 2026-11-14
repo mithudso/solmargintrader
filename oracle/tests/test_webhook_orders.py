@@ -101,6 +101,47 @@ class WebhookOrderTests(unittest.TestCase):
     def first_record(self):
         return records(self.path)[0]
 
+    def test_crash_after_submitting_commit_blocks_fresh_worker(self):
+        class SimulatedCrash(BaseException):
+            pass
+
+        self.enqueue()
+        with patch.object(self.venue, "submit", side_effect=SimulatedCrash), self.assertRaises(SimulatedCrash):
+            self.process()
+        row = self.first_record()
+        self.assertEqual(row["status"], "submitting")
+        self.enqueue("later")
+        self.venue = Venue()
+        self.assertEqual(self.process(), "unknown")
+        self.assertFalse(self.venue.submissions)
+        self.assertEqual({r["event_id"]: r["status"] for r in records(self.path)}["later"], "queued")
+        self.venue.found = {"order_id": "recovered", "product_id": "SOL-USDC", "side": "BUY",
+                            "client_order_id": row["client_order_id"], "status": "FILLED"}
+        self.assertEqual(self.process(), "complete")
+        self.assertFalse(self.venue.submissions)
+
+    def test_failed_reconciliation_retains_identity_and_records_safe_reason(self):
+        self.enqueue()
+        self.venue.status = "OPEN"
+        self.assertEqual(self.process(), "pending")
+        before = self.first_record()
+        with patch.object(self.venue, "get", side_effect=TimeoutError("private-details")):
+            self.assertEqual(self.process(), "unknown")
+        after = self.first_record()
+        self.assertEqual(after["status"], "pending")
+        self.assertEqual(after["result"], before["result"])
+        self.assertEqual(after["order_id"], before["order_id"])
+        self.assertEqual(after["reconciliation_reason"], "reconciliation_unavailable")
+        self.assertIsInstance(after["reconciled_at"], float)
+        self.assertNotIn("private-details", json.dumps(after))
+
+    def test_active_work_uses_indexes_without_scanning_completed_history(self):
+        with database(self.path) as db:
+            for condition in ("status='queued'", "status IN ('planning','submitting','unknown','pending')"):
+                plan = " ".join(str(r[3]) for r in db.execute(
+                    "EXPLAIN QUERY PLAN SELECT * FROM signals WHERE " + condition + " ORDER BY rowid LIMIT 1"))
+                self.assertIn("USING INDEX", plan)
+
     def test_dry_run_plans_without_submitting_and_cannot_be_promoted(self):
         self.enqueue(mode="dry-run")
         self.assertEqual(self.process(), "dry-run")

@@ -24,7 +24,7 @@ class MaCrossover:
         slow: int = 50,
         short_when_below: bool = False,
     ) -> None:
-        if fast < 1 or slow < 1:
+        if type(fast) is not int or type(slow) is not int or fast < 1 or slow < 1:
             raise ValueError("SMA windows must be >= 1")
         if fast >= slow:
             raise ValueError(f"fast ({fast}) must be shorter than slow ({slow})")

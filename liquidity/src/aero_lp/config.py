@@ -174,6 +174,12 @@ class Config:
 
     def __post_init__(self) -> None:
         finite_number(self.gas_units_estimate, "gas_units_estimate", positive=True, integer=True)
+        if not isinstance(self.token_ids, list):
+            raise ValueError("token_ids must be a list of positive integer NFT IDs")
+        for token_id in self.token_ids:
+            finite_number(token_id, "token_id", positive=True, integer=True)
+            if token_id >= 2**256:
+                raise ValueError("token_id must fit uint256")
         finite_number(self.poll_seconds, "poll_seconds", positive=True)
         finite_number(self.l1_fee_usd_estimate, "l1_fee_usd_estimate")
         if self.reward_mode not in REWARD_MODES:

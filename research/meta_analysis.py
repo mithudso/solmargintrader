@@ -30,7 +30,7 @@ def clean(value):
     return value
 
 
-def load(path):
+def load(path, raw=None):
     path = Path(path)
     return _decode_bytes(path, path.read_bytes())
 

@@ -10,6 +10,8 @@
 | DefiLlama current/hourly prices | `LlamaPrices` in `providers.py` | In-memory instance cache and remembered missing hourly tokens | Missing data must remain visible in scoring/confidence |
 | Research MongoDB | `mongo/` | Explicit load drops/rebuilds selected derived collections | Files remain source of truth; never use as an execution dependency |
 | Retrieval indexes | `index/`, curated docs map | Offline generators plus CI hash/path checks | Optional semantic vectors may lag; verify manifest before semantic use |
+| Public website research export | `website/scripts/export_research.py` | Deterministic catalog/body shards with source and published hashes; `--check` detects drift | Generated copies retain original research limitations and are not independent evidence |
+| Website static assets | Cloudflare Worker asset binding | Changes deploy with the website; account/API replies use no-store responses | An asset deployment does not refresh an analysis cache or activate billing/execution |
 
 ## Performance changes
 
@@ -24,10 +26,10 @@ effect of reading this document. Run the owning regression suite after a change.
 ## Regenerating retrieval metadata
 
 ```bash
-python3 scripts/build_doc_index.py
-python3 index/build.py all
-python3 scripts/check_docs.py
-python3 index/build.py --check
+INDEX_NO_AUTO=1 python3 scripts/build_doc_index.py
+INDEX_NO_AUTO=1 python3 index/build.py all
+INDEX_NO_AUTO=1 python3 scripts/check_docs.py
+INDEX_NO_AUTO=1 python3 index/build.py --check
 ```
 
 The offline repository index uses tracked/indexed paths. Stage intended new source files

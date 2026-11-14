@@ -532,7 +532,7 @@ class BrowserStore:
             ):
                 outcome, reason = "failed", "browser_paper_slot_unavailable"
             receipt = self._receipt(snapshot, body, outcome, reason)
-            if operation == "stop":
+            if operation == "stop" and outcome == "pending":
                 for saved in db.execute(
                     "SELECT * FROM requests WHERE installation_id=? ORDER BY sequence",
                     (installation_id,),

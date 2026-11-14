@@ -80,7 +80,9 @@ export async function rpcBatch(deps, endpoints, calls, { source = 'rpc' } = {}) 
     try {
       const reply = await postJson(deps, url, body);
       if (!Array.isArray(reply)) { last = `${new URL(url).host} answered a batch with a non-list`; continue; }
-      const byId = new Map(reply.filter((r) => r && typeof r === 'object').map((r) => [r.id, r]));
+      const valid = r => r && typeof r === 'object' && !Array.isArray(r) && Number.isInteger(r.id) && r.id >= 0 && r.id < calls.length && (Object.hasOwn(r, 'result') !== Object.hasOwn(r, 'error'));
+      if (reply.length !== calls.length || !reply.every(valid) || new Set(reply.map(r => r.id)).size !== calls.length) { last = 'incomplete RPC batch'; continue; }
+      const byId = new Map(reply.map(r => [r.id, r]));
       return calls.map((_, i) => {
         const r = byId.get(i);
         return r && !r.error && 'result' in r ? r.result : null;
@@ -99,6 +101,7 @@ export async function rpcCall(deps, endpoints, method, params, { source = 'rpc' 
   for (const url of endpoints) {
     try {
       const reply = await postJson(deps, url, { jsonrpc: '2.0', id: 1, method, params });
+      if (!reply || typeof reply !== 'object' || Array.isArray(reply) || reply.id !== 1 || Object.hasOwn(reply, 'result') === Object.hasOwn(reply, 'error')) { last = 'invalid RPC response'; continue; }
       if (reply?.error) { last = `${safeHost(url)}: ${reply.error.message ?? 'rpc error'}`; continue; }
       if (!reply || !('result' in reply)) { last = `${safeHost(url)}: no result`; continue; }
       return reply.result;

@@ -8,6 +8,26 @@ executor retain separately gated live-capable paths. SolTUI has a separately arm
 manual Coinbase path. Liquidity contains live-capable code but is archived, disabled
 and killed. MongoDB is derived research storage, never an execution dependency.
 
+The separate hosted `website/` package serves wallet accounts, public research and
+inactive paper bot definitions. A Cloudflare Worker serves static assets and API
+routes; D1 owns account/session/subscription data. Stripe and a separately provisioned
+read-only Python analysis adapter are outbound integrations. The website cannot control
+the owner's local suite or submit orders. Billing, analysis and live execution remain
+independent capability gates. See [the website guide](../website/README.md).
+
+```
+browser ──HTTPS──▶ website Worker ──▶ D1 accounts and paper definitions
+                       ├──────────▶ Stripe subscription API
+                       └──HTTPS───▶ read-only Python analysis adapter
+                                          ├──▶ canonical backtester
+                                          └──▶ selected Oracle archive
+```
+
+The standalone raw-event capture support tool writes a durable event spool and uploads
+to a dedicated MongoDB time-series namespace. It does not use `mongo/load.py`'s
+drop/rebuild ownership or replace the existing sampled recorder. See
+[its command boundary](SCRIPTS.md#bounded-raw-event-capture).
+
 The standalone `botmanager/` application exposes the `solbot` command registry and owns
 its bot specifications and a fenced paper runtime. Each account
 keeps separate virtual capital, lots, cursor and generation. A versioned local
@@ -168,7 +188,7 @@ backtest and the live strategy agree on what a round trip earns. Keeping them se
 folding the ladder into the exposure engine would imply the two are comparable on the same axis.
 
 Its correctness priorities — no lookahead, costs always applied, honest reporting of a losing
-strategy — are documented in `backtester/README.md` and enforced by 1120 tests.
+strategy — are documented in `backtester/README.md` and enforced by 1196 tests.
 
 
 ## Companion components

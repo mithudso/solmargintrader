@@ -731,6 +731,8 @@ def _c_oi(b: Bars, p: Params, aux: Params) -> np.ndarray:
     if len(hist) < 2 or len(b) < 2:
         return _live_only(b, None)
     now_ts, now_oi = hist[-1]
+    if any(not math.isfinite(float(value)) for row in hist for value in row):
+        return _live_only(b, None)
     base = [h for h in hist if h[0] <= now_ts - p["minutes"] * 60]
     if not base or base[-1][1] <= 0:
         return _live_only(b, None)

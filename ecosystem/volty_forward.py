@@ -107,7 +107,12 @@ def fetch_closed(interval, after, now):
         if value[0] % 1000 or opened % native_step or int(value[6]) != (opened + native_step) * 1000 - 1:
             raise ValueError("invalid_feed_timestamp")
         if opened + native_step <= now:
-            rows.append((opened, *(float(value[i]) for i in range(1, 6))))
+            prices = tuple(float(value[i]) for i in range(1, 6))
+            o, high, low, close, volume = prices
+            if (not all(np.isfinite(prices)) or low <= 0 or high < max(o, close)
+                    or low > min(o, close) or volume < 0):
+                raise ValueError("invalid_feed_prices")
+            rows.append((opened, *prices))
     if interval == "10m":
         paired = []
         for i in range(len(rows) - 1):
@@ -135,7 +140,10 @@ def _levels(bars, config):
     # Using the simulator's own arithmetic also binds rounding at a touched stop.
     padded = {key: np.r_[value, value[-1]] for key, value in bars.items()}
     upper, lower = volty.stop_levels(padded, config)
-    return float(upper[-1]), float(lower[-1])
+    levels = float(upper[-1]), float(lower[-1])
+    if not all(np.isfinite(levels)):
+        raise ValueError("seed_history_insufficient")
+    return levels
 
 
 def _decision(db, row, arrays, now):
@@ -185,7 +193,10 @@ def initialize(home, specs, *, now=None, fetcher=fetch_closed, clock=time.time):
         arrays = fetcher(interval, None, now)
         if arrays is None:
             raise ValueError("seed_unavailable")
-        arrays = {key: values[-32:] for key, values in arrays.items()}
+        required = max(row["config"]["length"] for row in plans if row["interval"] == interval) + 1
+        arrays = {key: values[-max(32, required):] for key, values in arrays.items()}
+        if len(arrays["timestamp"]) < required:
+            raise ValueError("seed_history_insufficient")
         volty.validate(arrays, step)
         if int(arrays["timestamp"][-1]) + 2 * step <= now:
             raise ValueError("seed_stale")

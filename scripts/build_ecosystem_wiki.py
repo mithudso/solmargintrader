@@ -18,6 +18,9 @@ sys.path.insert(0, str(REPO))
 
 from ecosystem.wiki import (
     CANONICAL_REPO,
+    COMMIT,
+    MAX_BUNDLE_BYTES,
+    MAX_MANIFEST_BYTES,
     MAX_PAGE_BYTES,
     MAX_PAGES,
     SCHEMA_VERSION,
@@ -100,6 +103,8 @@ def compile_snapshot(
         ):
             raise ValueError("invalid_wiki_source")
         raw = path.read_bytes()
+        if len(raw) > MAX_PAGE_BYTES:
+            raise ValueError("invalid_wiki_source")
         body = raw.decode("utf-8")
         identity = page_id(source)
         digest = hashlib.sha256(raw).hexdigest()
@@ -126,10 +131,11 @@ def compile_snapshot(
             and prior.get("source_state") in {"committed", "working_tree_snapshot"}
             and (
                 prior.get("source_commit") is None
-                or isinstance(prior.get("source_commit"), str)
+                or (isinstance(prior.get("source_commit"), str) and COMMIT.fullmatch(prior["source_commit"]))
             )
+            and prior.get("source_state") == ("committed" if prior.get("source_commit") else "working_tree_snapshot")
         ):
-            provenance = {key: prior[key] for key in ("source_commit", "source_state")}
+            provenance = {key: prior.get(key) for key in ("source_commit", "source_state")}
         rows.append(
             {
                 "id": identity,
@@ -157,7 +163,10 @@ def compile_snapshot(
         "pages": rows,
     }
     manifest["snapshot_sha256"] = hashlib.sha256(canonical(manifest)).hexdigest()
-    return canonical(manifest), bundle_raw
+    manifest_raw = canonical(manifest)
+    if len(bundle_raw) > MAX_BUNDLE_BYTES or len(manifest_raw) > MAX_MANIFEST_BYTES:
+        raise ValueError("wiki_snapshot_exceeds_consumer_limit")
+    return manifest_raw, bundle_raw
 
 
 def main(argv=None) -> int:

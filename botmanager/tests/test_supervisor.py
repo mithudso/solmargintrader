@@ -24,6 +24,19 @@ from botmanager.worker import lifetime_lock, lock_held
 from tests.test_paper import grid, recording
 
 
+def _reap_crash_child(child):
+    try:
+        if child.is_alive():
+            child.terminate()
+            child.join(2)
+        if child.is_alive():
+            child.kill()
+            child.join(2)
+        child.close()
+    except ValueError:
+        pass  # Already closed after a confirmed exit.
+
+
 def stalled_worker(home, bot_id, generation, parent_pid):
     ledger = RuntimeLedger(Path(home))
     with lifetime_lock(Path(home) / "locks" / (bot_id + ".lock")):
@@ -308,6 +321,7 @@ class SupervisorTests(unittest.TestCase):
                 target=hard_crash,
                 args=(str(self.home), self.spec.bot_id, generation, state, after),
             )
+            self.addCleanup(_reap_crash_child, child)
             child.start()
             child.join(5)
             self.assertEqual(child.exitcode, 9)

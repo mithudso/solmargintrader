@@ -38,12 +38,16 @@ from __future__ import annotations
 
 import argparse
 import ast
+import fcntl
 import hashlib
 import json
 import os
 import re
+import stat
 import subprocess
 import sys
+import tempfile
+from contextlib import contextmanager
 import urllib.error
 import urllib.request
 from collections import Counter, defaultdict
@@ -135,19 +139,45 @@ def tracked_files() -> list[str]:
     precisely because they are derived, and an index that included them would
     index its own output and a price cache that differs per machine.
     """
-    r = subprocess.run(["git", "-C", str(REPO), "ls-files"],
+    r = subprocess.run(["git", "-C", str(REPO), "ls-files", "-z"],
                        capture_output=True, text=True, check=True)
     # An unresolved merge reports one path per index stage. The catalog uses
     # paths as row keys, so repeated stages must never create repeated rows.
     # The public research bundle duplicates canonical sources. Its own manifest
     # binds every published shard and the exporter verifies all source hashes.
-    return sorted({x for x in r.stdout.splitlines()
-                   if x.strip() and x not in SELF_EXCLUDED
+    return sorted({x for x in r.stdout.split("\0")
+                   if x and x not in SELF_EXCLUDED
                    and not x.startswith("website/public/research/")})
 
 
+def _tracked_bytes(p: Path) -> tuple[bytes, os.stat_result]:
+    """Read one regular file through no-follow descriptors rooted at the repository."""
+    rel = p.relative_to(REPO)
+    if not rel.parts or any(part in {".", ".."} for part in rel.parts):
+        raise ValueError("index input must be a repository file")
+    flags = os.O_RDONLY | os.O_NOFOLLOW
+    directory = os.open(REPO, flags | os.O_DIRECTORY)
+    fd = None
+    try:
+        for part in rel.parts[:-1]:
+            next_directory = os.open(part, flags | os.O_DIRECTORY, dir_fd=directory)
+            os.close(directory)
+            directory = next_directory
+        fd = os.open(rel.parts[-1], flags | os.O_NONBLOCK, dir_fd=directory)
+        info = os.fstat(fd)
+        if not stat.S_ISREG(info.st_mode):
+            raise ValueError("index input must be a regular file")
+        with os.fdopen(fd, "rb") as stream:
+            fd = None
+            return stream.read(), info
+    finally:
+        if fd is not None:
+            os.close(fd)
+        os.close(directory)
+
+
 def sha1_of(p: Path) -> str:
-    return hashlib.sha1(p.read_bytes()).hexdigest()
+    return hashlib.sha1(_tracked_bytes(p)[0]).hexdigest()
 
 
 def classify(rel: str) -> str:
@@ -189,10 +219,7 @@ def classify(rel: str) -> str:
 
 
 def read_text(p: Path) -> str:
-    try:
-        return p.read_text(encoding="utf-8", errors="replace")
-    except (OSError, UnicodeError):
-        return ""
+    return _tracked_bytes(p)[0].decode("utf-8", errors="replace")
 
 
 def parse_frontmatter(text: str) -> dict[str, Any]:
@@ -340,10 +367,12 @@ def build_meta() -> dict[str, Any]:
     entries = []
     for rel in tracked_files():
         p = REPO / rel
-        if not p.is_file():
+        try:
+            content, info = _tracked_bytes(p)
+        except FileNotFoundError:
             continue
         ext = p.suffix
-        raw = read_text(p) if ext in TEXT_EXT else ""
+        raw = content.decode("utf-8", errors="replace") if ext in TEXT_EXT else ""
         fm = parse_frontmatter(raw) if ext == ".md" else {}
         doc, syms, imports = python_facts(raw) if ext == ".py" else ("", [], [])
         if ext in {".js", ".mjs"}:
@@ -389,9 +418,9 @@ def build_meta() -> dict[str, Any]:
             "title": title,
             "summary": summary,
             "summarySource": "derived" if derived else summary_source(fm, doc, summary),
-            "bytes": p.stat().st_size,
+            "bytes": info.st_size,
             "lines": raw.count("\n") + 1 if raw else 0,
-            "sha1": sha1_of(p),
+            "sha1": hashlib.sha1(content).hexdigest(),
             "symbols": syms[:40],
             "imports": imports,
             "internalImports": internal,
@@ -687,9 +716,16 @@ def embed(inputs: list[str], keep_alive: str = "5m") -> list[list[float]]:
     body = json.dumps({"model": EMBED_MODEL, "input": inputs, "keep_alive": keep_alive}).encode()
     req = urllib.request.Request(EMBED_URL, data=body,
                                 headers={"Content-Type": "application/json"})
-    with urllib.request.urlopen(req, timeout=300) as r:
+    with ollama_ensure.local_urlopen(req, timeout=300) as r:
         d = json.loads(r.read())
-    return d.get("embeddings") or [d["embedding"]]
+    if not isinstance(d, dict):
+        raise ValueError("embedding response must be an object")
+    vectors = d.get("embeddings")
+    if vectors is None and len(inputs) == 1 and "embedding" in d:
+        vectors = [d["embedding"]]
+    if not isinstance(vectors, list) or len(vectors) != len(inputs):
+        raise ValueError("embedding response count does not match its inputs")
+    return vectors
 
 
 def semantic_corpus(meta: dict[str, Any]) -> tuple[list[str], list[str]]:
@@ -707,11 +743,25 @@ def semantic_corpus(meta: dict[str, Any]) -> tuple[list[str], list[str]]:
     return texts, owners
 
 
+@contextmanager
+def semantic_lock(array: Path, *, exclusive: bool = False):
+    """Readers and writers hold one stable sidecar across the complete pair."""
+    with array.with_name(array.name + ".lock").open("a+b") as stream:
+        fcntl.flock(stream, fcntl.LOCK_EX if exclusive else fcntl.LOCK_SH)
+        try:
+            yield
+        finally:
+            fcntl.flock(stream, fcntl.LOCK_UN)
+
+
 def _atomic_write(path: Path, data: bytes) -> None:
-    """tmp + rename, so a search running during a rebuild never reads a half-written file."""
-    tmp = path.with_name(path.name + f".tmp{os.getpid()}")
+    fd, name = tempfile.mkstemp(prefix=path.name + ".tmp", dir=path.parent)
+    tmp = Path(name)
     try:
-        tmp.write_bytes(data)
+        with os.fdopen(fd, "wb") as stream:
+            stream.write(data)
+            stream.flush()
+            os.fsync(stream.fileno())
         os.replace(tmp, path)
     finally:
         tmp.unlink(missing_ok=True)
@@ -749,9 +799,12 @@ def build_semantic(meta: dict[str, Any], *, local: bool = False, pull: bool = Fa
     for i in range(0, len(texts), BATCH):
         batch = texts[i:i + BATCH]
         try:
-            vecs.extend(embed(batch))
-        except (urllib.error.URLError, OSError, KeyError, ValueError, TypeError) as exc:
-            print(f"SEMANTIC BUILD FAILED at chunk {i}: {type(exc).__name__}")
+            vectors = embed(batch)
+            if len(vectors) != len(batch):
+                raise ValueError("embedding response count does not match its inputs")
+            vecs.extend(vectors)
+        except (urllib.error.URLError, OSError, KeyError, ValueError) as exc:
+            print(f"SEMANTIC BUILD FAILED at chunk {i}: {exc}")
             print(f"  Is ollama running, and is `{EMBED_MODEL}` pulled? "
                   f"`ollama pull {EMBED_MODEL}`")
             return 1
@@ -760,15 +813,15 @@ def build_semantic(meta: dict[str, Any], *, local: bool = False, pull: bool = Fa
 
     try:
         arr = np.asarray(vecs, dtype="float32")
-    except (ValueError, TypeError):
-        print("SEMANTIC BUILD FAILED: invalid embedding vectors; existing index unchanged.")
+    except (TypeError, ValueError):
+        print("SEMANTIC BUILD FAILED: malformed embedding vectors")
         return 1
     if arr.ndim != 2 or arr.shape[0] != len(owners) or arr.shape[1] == 0 or not np.isfinite(arr).all():
-        print("SEMANTIC BUILD FAILED: invalid embedding shape or values; existing index unchanged.")
+        print("SEMANTIC BUILD FAILED: invalid embedding shape or values")
         return 1
     norms = np.linalg.norm(arr, axis=1, keepdims=True)
     if not np.isfinite(norms).all() or (norms == 0).any():
-        print("SEMANTIC BUILD FAILED: invalid embedding norms; existing index unchanged.")
+        print("SEMANTIC BUILD FAILED: invalid embedding norms")
         return 1
     arr = (arr / norms).astype("float16")   # pre-normalised: cosine becomes a dot product
     npz_path = LOCAL_NPZ if local else SEMANTIC_NPZ
@@ -780,13 +833,14 @@ def build_semantic(meta: dict[str, Any], *, local: bool = False, pull: bool = Fa
     # the mapping inspectable without numpy.
     buffer = io.BytesIO()
     np.savez_compressed(buffer, embeddings=arr)
-    _atomic_write(npz_path, buffer.getvalue())
+    array_bytes = buffer.getvalue()
 
     note = ("Local, gitignored copy built by the idle job (`index/idle.py`)." if local else
             "The array is gitignored: derived, a few MB, and it re-diffs on every "
             "content change. This manifest records what the index was; rebuild with "
             "`python3 index/build.py semantic`.")
-    _atomic_write(manifest_path, (json.dumps({
+    manifest_bytes = (json.dumps({
+        "arraySha256": hashlib.sha256(array_bytes).hexdigest(),
         "generatedAt": datetime.now(timezone.utc).isoformat(timespec="seconds"),
         "schemaVersion": SCHEMA_VERSION,
         "model": EMBED_MODEL,
@@ -804,7 +858,17 @@ def build_semantic(meta: dict[str, Any], *, local: bool = False, pull: bool = Fa
         "note": note,
         "sourceSha1": {e["path"]: e["sha1"] for e in meta["files"]
                        if e["path"] in set(owners)},
-    }, indent=2) + "\n").encode())
+    }, indent=2) + "\n").encode()
+    with semantic_lock(npz_path, exclusive=True):
+        # Bind a legacy manifest before replacing its array. A crash or failed
+        # second rename then produces a detectable hash mismatch, never wrong owners.
+        if npz_path.exists() and manifest_path.exists():
+            previous = json.loads(manifest_path.read_text())
+            if "arraySha256" not in previous:
+                previous["arraySha256"] = hashlib.sha256(npz_path.read_bytes()).hexdigest()
+                _atomic_write(manifest_path, (json.dumps(previous, indent=2) + "\n").encode())
+        _atomic_write(npz_path, array_bytes)
+        _atomic_write(manifest_path, manifest_bytes)
     print(f"Wrote {npz_path.relative_to(REPO)} "
           f"({npz_path.stat().st_size / 1e6:.1f} MB, gitignored) "
           f"and {manifest_path.relative_to(REPO)}")

@@ -29,6 +29,7 @@ def setup_live(eng, monkeypatch, *, eth_usd=2000):
         }
     )
     eng.twap_deviation_bps = lambda p: 1
+    eng.pool_twap_deviation_bps = lambda p: 1
     monkeypatch.setattr(module, "SimRunner", lambda *a: "sim")
     monkeypatch.setattr(module, "LiveRunner", lambda *a, **kw: "live")
     return pos
@@ -81,6 +82,7 @@ def test_deferred_stop_persists_successful_withdraw(tmp_path, monkeypatch, sig):
     with pytest.raises((KeyboardInterrupt, SystemExit)):
         eng.withdraw(42, True, object())
     assert slot.history[-1]["tx"] == ["0xhash"]
+    assert module.State(eng.state.path).slot(42).history[-1]["tx"] == ["0xhash"]
 
 
 @pytest.mark.parametrize("sig", [signal.SIGINT, signal.SIGTERM])
@@ -100,3 +102,6 @@ def test_deferred_stop_persists_rebalance_history_and_cooldown(tmp_path, monkeyp
     slot = eng.state.slot(42)
     assert slot.history[-1]["tx"] == ["0xhash"]
     assert slot.current_token_id == 777 and slot.last_rebalance_ts is not None
+    restored = module.State(eng.state.path).slot(42)
+    assert restored.current_token_id == 777 and restored.last_rebalance_ts == slot.last_rebalance_ts
+    assert restored.history[-1]["tx"] == ["0xhash"]

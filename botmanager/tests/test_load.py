@@ -28,6 +28,21 @@ from tests import isolated_default_owner
 from tests.test_paper import grid, recording
 
 
+def _close_supervisor_and_optimizer(supervisor, stop, optimizer):
+    try:
+        if supervisor:
+            supervisor.close()
+    finally:
+        stop.set()
+        optimizer.join(5)
+        if optimizer.is_alive():
+            optimizer.kill()
+            optimizer.join(2)
+        exitcode = optimizer.exitcode
+        optimizer.close()
+    return exitcode
+
+
 def optimizer_recording(root, attempt, count=1024):
     """Generate explicit non-overlapping numerical-source fixture observations."""
     root.mkdir()
@@ -410,15 +425,7 @@ class LoadTests(unittest.TestCase):
                 )
                 print("LOAD_METRICS " + json.dumps(metrics, sort_keys=True), flush=True)
             finally:
-                if supervisor:
-                    supervisor.close()
-                stop.set()
-                optimizer.join(5)
-                if optimizer.is_alive():
-                    optimizer.kill()
-                    optimizer.join(2)
-                exitcode = optimizer.exitcode
-                optimizer.close()
+                exitcode = _close_supervisor_and_optimizer(supervisor, stop, optimizer)
                 self.assertEqual(exitcode, 0)
                 with closing(
                     sqlite3.connect(

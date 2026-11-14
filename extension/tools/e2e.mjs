@@ -31,6 +31,7 @@ import { fileURLToPath } from 'node:url';
 import { findChromeForTesting, launch } from '../e2e/lib/cdp.mjs';
 import { execFile } from 'node:child_process';
 import { assertAllowedMessage, assertDisarmed, assertSoltuiCallAllowed } from '../e2e/lib/guard.mjs';
+import { isolateTargets } from '../e2e/lib/isolation.mjs';
 import { installHost } from '../e2e/lib/soltui-host.mjs';
 import { verifyDashboardWorkflows } from '../e2e/lib/dashboard-workspace.mjs';
 import { verifySignalDesk } from '../e2e/lib/signal-desk.mjs';
@@ -61,49 +62,6 @@ function eq(actual, expected, msg) {
   assert(JSON.stringify(actual) === JSON.stringify(expected), `${msg}: expected ${JSON.stringify(expected)}, got ${JSON.stringify(actual)}`);
 }
 
-/* -------------------------------------------------------------------- launch -- */
-
-const chromePath = process.env.CHROME || findChromeForTesting();
-if (!chromePath || !fs.existsSync(chromePath)) {
-  console.error(
-    'e2e: no Chrome for Testing found. Install one with\n' +
-      '  npx @puppeteer/browsers install chrome@stable\n' +
-      'or set CHROME to a Chrome for Testing / Chromium 126+ binary. Branded Chrome cannot load\n' +
-      'an unpacked extension from the command line, so it cannot be used here.',
-  );
-  process.exit(2);
-}
-
-let browser;
-try {
-  browser = await launch({
-    chrome: chromePath,
-    extension: EXT,
-    noSandbox: process.env.E2E_NO_SANDBOX === '1',
-  });
-} catch (err) {
-  console.error(`e2e: could not launch ${chromePath}: ${err.message}`);
-  process.exit(2);
-}
-console.log(`browser   ${browser.version}\nextension ${browser.extensionId}`);
-
-let host;
-try {
-  host = await installHost({ profile: browser.profile, extensionId: browser.extensionId });
-} catch (err) {
-  console.error(`e2e: ${err.message}`);
-  await browser.close();
-  process.exit(2);
-}
-console.log(`soltui    ${host.kind} native host\n`);
-
-const watchdog = setTimeout(async () => {
-  console.error('e2e: global timeout');
-  await browser.close().catch(() => {});
-  process.exit(1);
-}, 120_000);
-watchdog.unref();
-
 /* ----------------------------------------------------- network: stub and audit -- */
 
 /** Every request any extension target made, so the checks can audit them. */
@@ -130,6 +88,9 @@ const MARKET_GETS = [
   (u) => /^https:\/\/lite-api\.jup\.ag\/ultra\/v1\/holdings\/[1-9A-HJ-NP-Za-km-z]{32,44}$/.test(u),
   (u) => u.startsWith('https://coins.llama.fi/prices/current/'),
   (u) => u === 'https://yields.llama.fi/pools',
+  // The shipped chart iframe attempts this keyless UI read. Interception still
+  // blocks it; recognizing the exact path does not grant network access.
+  (u) => u === 'https://www.tradingview-widget.com/embed-widget/advanced-chart/',
 ];
 const RPC_ORIGINS = ['https://base-rpc.publicnode.com', 'https://mainnet.base.org', 'https://api.mainnet-beta.solana.com'];
 const READ_RPC = /^(eth_(call|chainId|getBalance|blockNumber)|get[A-Z][A-Za-z]*)$/;
@@ -140,7 +101,7 @@ const priceBody = JSON.stringify({
   [USDC]: { usdPrice: 1, decimals: 6 },
 });
 
-browser.on((m) => {
+function handleBrowserEvent(m, browser) {
   if (m.method === 'Runtime.exceptionThrown') {
     const d = m.params.exceptionDetails;
     pageErrors.push(d.exception?.description || d.text);
@@ -153,7 +114,9 @@ browser.on((m) => {
   // leaves the machine, so no order endpoint is reachable even by mistake.
   const isPriceRead =
     request.method === 'GET' && url.origin === 'https://lite-api.jup.ag' && url.pathname === '/price/v3';
-  const reply = isPriceRead
+  const reply = ['chrome-extension:', 'data:', 'about:', 'blob:'].includes(url.protocol)
+    ? browser.call('Fetch.continueRequest', { requestId }, m.sessionId)
+    : isPriceRead
     ? browser.call('Fetch.fulfillRequest', {
         requestId,
         responseCode: 200,
@@ -165,7 +128,52 @@ browser.on((m) => {
       }, m.sessionId)
     : browser.call('Fetch.failRequest', { requestId, errorReason: 'BlockedByClient' }, m.sessionId);
   reply.catch(() => {});
-});
+}
+
+
+/* -------------------------------------------------------------------- launch -- */
+
+const chromePath = process.env.CHROME || findChromeForTesting();
+if (!chromePath || !fs.existsSync(chromePath)) {
+  console.error(
+    'e2e: no Chrome for Testing found. Install one with\n' +
+      '  npx @puppeteer/browsers install chrome@stable\n' +
+      'or set CHROME to a Chrome for Testing / Chromium 126+ binary. Branded Chrome cannot load\n' +
+      'an unpacked extension from the command line, so it cannot be used here.',
+  );
+  process.exit(2);
+}
+
+let browser, isolation;
+try {
+  browser = await launch({
+    chrome: chromePath,
+    extension: EXT,
+    noSandbox: process.env.E2E_NO_SANDBOX === '1',
+    beforeLoad: async client => { isolation = await isolateTargets(client, { onEvent: handleBrowserEvent }); },
+  });
+} catch (err) {
+  console.error(`e2e: could not launch ${chromePath}: ${err.message}`);
+  process.exit(2);
+}
+console.log(`browser   ${browser.version}\nextension ${browser.extensionId}`);
+
+let host;
+try {
+  host = await installHost({ profile: browser.profile, extensionId: browser.extensionId });
+} catch (err) {
+  console.error(`e2e: ${err.message}`);
+  await browser.close();
+  process.exit(2);
+}
+console.log(`soltui    ${host.kind} native host\n`);
+
+const watchdog = setTimeout(async () => {
+  console.error('e2e: global timeout');
+  await browser.close().catch(() => {});
+  process.exit(1);
+}, 120_000);
+watchdog.unref();
 
 /* --------------------------------------------------------------- target helpers -- */
 
@@ -187,6 +195,11 @@ async function openPage(file) {
 function sender(page) {
   return async (type, args = {}) => {
     assertAllowedMessage(type);
+    isolation.assertHealthy();
+    if (type === 'tick') {
+      const safety = await page.ev("chrome.storage.local.get(['config','runtime'])");
+      assert(safety.config?.mode === 'dry-run' && safety.runtime?.armed === false, 'tick safety prerequisite failed');
+    }
     return page.ev(`chrome.runtime.sendMessage(${JSON.stringify({ type, ...args })})`);
   };
 }
@@ -234,6 +247,7 @@ try {
   const popup = await openPage('src/ui/popup.html');
   const send = sender(popup);
 
+  let installSafe = false;
   await check('installs disarmed, kill switch clear, mode equals DEFAULT_CONFIG.mode (dry-run)', async () => {
     const stored = await sw.ev(`chrome.storage.local.get(['config','runtime'])`);
     const expected = await popup.ev(
@@ -243,7 +257,9 @@ try {
     eq(stored.config?.mode, expected, 'installed mode');
     eq(stored.runtime?.armed, false, 'runtime.armed');
     eq(stored.runtime?.killSwitch, false, 'runtime.killSwitch');
+    installSafe = true;
   });
+  if (!installSafe) throw new Error('installation safety prerequisite failed');
 
   await check('onInstalled logged an install event and scheduled the tick alarm', async () => {
     const alarms = await sw.ev(`chrome.alarms.getAll()`);
@@ -584,7 +600,7 @@ try {
 
   /* ------------------------------------------------------------ network audit -- */
 
-  await check('network: only keyless reads were attempted (prices, quotes, yields, read-only JSON-RPC); no order endpoint was touched', async () => {
+  await check('network: only keyless reads and blocked chart embeds were attempted; no order endpoint was touched', async () => {
     assert(requests.length > 0, 'no requests observed: the interception never ran');
     const bad = requests.filter((r) => {
       if (r.method === 'GET') return !MARKET_GETS.some((ok) => ok(r.url));

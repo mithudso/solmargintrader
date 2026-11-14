@@ -68,6 +68,10 @@ export function matchFifo(fills, { linkage = true } = {}) {
   let realizedGrossUsd = 0;
   let realizedFeeUsd = 0;
   let unmatchedSellQty = 0;
+  let unmatchedFeeUsd = 0;
+  const feeKnown = f => f.feeUnknown !== true && Number.isFinite(f.feeUsd) && f.feeUsd >= 0;
+  const knownFee = f => Number.isFinite(f.feeUsd) && f.feeUsd >= 0 ? f.feeUsd : 0;
+  const feesComplete = ordered.every(feeKnown);
 
   for (const fill of ordered) {
     if (fill.side === 'buy') {
@@ -76,14 +80,15 @@ export function matchFifo(fills, { linkage = true } = {}) {
         priceUsd: fill.priceUsd,
         // Carry the entry fee on the lot so a partial close only realizes its
         // proportional share of it.
-        feeUsd: fill.feeUsd || 0,
+        feeUsd: knownFee(fill),
+        feeUnknown: !feeKnown(fill),
         tsMs: fill.tsMs,
       });
       continue;
     }
 
     let remaining = fill.baseQty;
-    const sellFeeRate = fill.baseQty > 0 ? (fill.feeUsd || 0) / fill.baseQty : 0;
+    const sellFeeRate = fill.baseQty > 0 ? knownFee(fill) / fill.baseQty : 0;
 
     const closeLot = (idx, want) => {
       const lot = openLots[idx];
@@ -104,7 +109,7 @@ export function matchFifo(fills, { linkage = true } = {}) {
         exitUsd,
         feeUsd,
         grossUsd,
-        netUsd: grossUsd - feeUsd,
+        netUsd: lot.feeUnknown || !feeKnown(fill) ? null : grossUsd - feeUsd,
       });
 
       realizedGrossUsd += grossUsd;
@@ -137,7 +142,7 @@ export function matchFifo(fills, { linkage = true } = {}) {
 
     // A sell with no lot behind it means the grid went short, or the fill log
     // is missing a buy. Surfaced rather than silently dropped.
-    if (remaining > 1e-12) unmatchedSellQty += remaining;
+    if (remaining > 1e-12) { unmatchedSellQty += remaining; unmatchedFeeUsd += sellFeeRate * remaining; }
   }
 
   return {
@@ -145,7 +150,10 @@ export function matchFifo(fills, { linkage = true } = {}) {
     openLots,
     realizedGrossUsd,
     realizedFeeUsd,
-    realizedNetUsd: realizedGrossUsd - realizedFeeUsd,
+    realizedNetUsd: feesComplete && unmatchedSellQty === 0 ? realizedGrossUsd - realizedFeeUsd : null,
+    feesComplete,
+    unmatchedFeeUsd,
+    knownExecutionFeeUsd: ordered.reduce((sum, f) => sum + knownFee(f), 0),
     unmatchedSellQty,
   };
 }
@@ -161,7 +169,9 @@ export function matchFifo(fills, { linkage = true } = {}) {
  */
 export function snapshot({ fills, markPriceUsd, carryEntries = [], linkage = true }) {
   const m = matchFifo(fills, { linkage });
-  const carryUsd = totalCarryUsd(carryEntries);
+  const carryComplete = carryEntries.every(c => Number.isFinite(c.costUsd));
+  const carryUsd = carryEntries.reduce((sum, c) => sum + (Number.isFinite(c.costUsd) ? c.costUsd : 0), 0);
+  const accountingComplete = m.feesComplete && m.unmatchedSellQty === 0 && carryComplete && Number.isFinite(markPriceUsd) && markPriceUsd > 0;
 
   const openBaseQty = m.openLots.reduce((a, l) => a + l.baseQty, 0);
   const openCostUsd = m.openLots.reduce((a, l) => a + l.baseQty * l.priceUsd, 0);
@@ -169,10 +179,13 @@ export function snapshot({ fills, markPriceUsd, carryEntries = [], linkage = tru
   const openMarketUsd = openBaseQty * markPriceUsd;
 
   // Unrealized is net of the entry fees still sitting on those open lots.
-  const unrealizedNetUsd = openMarketUsd - openCostUsd - openFeeUsd;
-  const realizedNetUsd = m.realizedNetUsd - carryUsd;
+  const unrealizedNetUsd = accountingComplete ? openMarketUsd - openCostUsd - openFeeUsd : null;
+  const realizedNetUsd = accountingComplete ? m.realizedNetUsd - carryUsd : null;
 
   return {
+    accountingComplete,
+    feesComplete: m.feesComplete && carryComplete,
+    basisComplete: m.unmatchedSellQty === 0,
     realizedGrossUsd: m.realizedGrossUsd,
     realizedFeeUsd: m.realizedFeeUsd,
     carryUsd,
@@ -182,10 +195,10 @@ export function snapshot({ fills, markPriceUsd, carryEntries = [], linkage = tru
     openMarketUsd,
     avgEntryUsd: openBaseQty > 0 ? openCostUsd / openBaseQty : 0,
     unrealizedNetUsd,
-    totalNetUsd: realizedNetUsd + unrealizedNetUsd,
+    totalNetUsd: accountingComplete ? realizedNetUsd + unrealizedNetUsd : null,
     roundTripCount: m.roundTrips.length,
-    winRate: winRate(m.roundTrips),
-    feeTotalUsd: m.realizedFeeUsd + openFeeUsd + carryUsd,
+    winRate: accountingComplete ? winRate(m.roundTrips) : null,
+    feeTotalUsd: m.knownExecutionFeeUsd + carryUsd,
     unmatchedSellQty: m.unmatchedSellQty,
     roundTrips: m.roundTrips,
     openLots: m.openLots,
@@ -202,6 +215,7 @@ export function winRate(roundTrips) {
  * Carry entries are folded in at their own timestamps when supplied.
  */
 export function equityCurve({ roundTrips, carryEntries = [], startEquityUsd = 0 }) {
+  if (roundTrips.some(r => !Number.isFinite(r.netUsd)) || carryEntries.some(c => !Number.isFinite(c.costUsd))) return [];
   const events = [
     ...roundTrips.map((r) => ({ tsMs: r.closeTsMs, deltaUsd: r.netUsd })),
     ...carryEntries.map((c) => ({ tsMs: c.tsMs, deltaUsd: -(c.costUsd || 0) })),
@@ -244,7 +258,7 @@ export function fillsToCsv(fills) {
       f.baseQty,
       f.priceUsd,
       (f.baseQty * f.priceUsd).toFixed(6),
-      f.feeUsd ?? 0,
+      f.feeUnknown === true || !Number.isFinite(f.feeUsd) ? '' : f.feeUsd,
       f.level ?? '',
     ].map(csvCell).join(','),
   );

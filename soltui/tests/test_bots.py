@@ -492,7 +492,7 @@ class Optimize(Isolated):
     def test_triangle_needs_recorded_quotes(self) -> None:
         with mock.patch.object(pricefeed, "stream_products", return_value=sorted(tri_quotes(0.0))) as catalogue:
             r = bots.optimize("triangle", self.settings)
-        catalogue.assert_called_once_with()
+        catalogue.assert_not_called()
         self.assertFalse(r["verdict"]["adopted"])
         self.assertIn("recorded", r["skipped"])
 

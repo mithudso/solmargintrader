@@ -59,7 +59,7 @@ export function renderHoldings(state) {
 
 export async function refreshHoldings(state) {
   clear($('#holdingsChains'), empty('Reading Base and Solana…'));
-  await guard($('#holdingsChains'), async () => {
+  return guard($('#holdingsChains'), async () => {
     state.holdings = await call({ type: 'holdings' });
     renderHoldings(state);
   });
@@ -139,24 +139,34 @@ function pnlSection(s) {
     ...(s.notes ?? []).map((n) => el('p', { class: 'note', text: n })));
 }
 
+let pnlGeneration = 0;
+
 export async function refreshPnl() {
+  const generation = ++pnlGeneration;
   const window = $('#pnlWindow').value;
   const source = $('#pnlSource').value;
   clear($('#pnlSections'), empty('Loading…'));
-  await guard($('#pnlSections'), async () => {
+  try {
     const [summary, series] = await Promise.all([
       soltui('pnl.summary', { window, source }),
       soltui('pnl.series', { window, source }),
     ]);
-    $('#pnlNotice').textContent = summary.notice ?? '';
     const days = new Map((series.sections ?? []).map((s) => [s.source, s]));
     const sections = (summary.sections ?? []).map((s) => ({ ...s, days: days.get(s.source)?.days ?? [] }));
     const grid = await call({ type: 'pnl' }).catch(() => null);
+    if (generation !== pnlGeneration) return;
+    $('#pnlNotice').textContent = summary.notice ?? '';
     clear($('#pnlSections'), sections.map(pnlSection),
-      grid && grid.roundTripCount > 0 ? el('div', { class: 'card' },
+      el('div', { class: 'card' },
         el('div', { class: 'card-head' }, el('h2', { text: 'Grid (this extension)' }), chip('simulated unless armed live', 'backtest')),
-        el('p', {}, `Net ${usd(grid.totalNetUsd, { sign: true })} over ${grid.roundTripCount} round trips. Details on the Grid tab.`)) : null);
-  });
+        el('p', {}, !grid ? 'Grid accounting unavailable.' : grid.roundTripCount > 0
+          ? `Net ${usd(grid.totalNetUsd, { sign: true })} over ${grid.roundTripCount} round trips.${grid.accountingComplete === false ? ' Costs or basis are incomplete.' : ''} Details on the Grid tab.`
+          : 'No closed grid round trips. Details on the Grid tab.')));
+  } catch (err) {
+    if (generation !== pnlGeneration) return;
+    clear($('#pnlSections'), el('p', { class: 'err', text: `P&L unavailable: ${err.message}` }));
+    return null;
+  }
 }
 
 export function mountPnl() {
@@ -168,7 +178,7 @@ export function mountPnl() {
 /* ------------------------------------------------------------- Discover -- */
 
 export async function refreshScout() {
-  await guard($('#scoutTable'), async () => {
+  return guard($('#scoutTable'), async () => {
     const r = await soltui('liquidity.data', { top: 40 });
     $('#scoutMeta').textContent = r.scout_ok
       ? `${r.scout.pools.length} pools · ${r.scout.deposit_usd ? `$${r.scout.deposit_usd} deposit · ` : ''}${ago((r.scout.generated_at ?? 0) * 1000)}`
@@ -198,7 +208,7 @@ export async function refreshPools() {
   if (f.minTvlUsd.value.trim() !== '' && Number.isFinite(minTvl)) args.minTvlUsd = minTvl;
   if (f.search.value.trim()) args.search = f.search.value.trim();
   clear($('#poolsTable'), empty('Loading DefiLlama yields (about 11 MB, cached for 10 minutes)…'));
-  await guard($('#poolsTable'), async () => {
+  return guard($('#poolsTable'), async () => {
     const r = await call({ type: 'pools', ...args });
     $('#poolsMeta').textContent = `${r.pools.length} of ${r.total} · fetched ${ago(r.fetchedAtMs)}`;
     clear($('#poolsTable'), table([

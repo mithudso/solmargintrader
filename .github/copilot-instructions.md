@@ -31,6 +31,12 @@ repository; this file is a pointer plus the rules that get broken most often.
 | `executor/` | Python, own environment | Guarded Solana spot swaps; read `executor/CLAUDE.md` |
 | `liquidity/` | Python, own environment | Base LP code retained; daemon archived, disabled and killed |
 
+The separate `website/` package serves hosted wallet accounts, public research and
+inactive paper bot definitions through a Cloudflare Worker/D1 API. It has its own
+pinned Wrangler development tool and Node/Python/export gates. It never inherits
+local owner credentials or grants live execution. See [website/README.md](../website/README.md)
+for independent account, billing and analysis readiness.
+
 The webhook's venue worker is independent of Oracle's prediction and timeframe
 votes. Read `docs/JUPITER-ZEC-WEBHOOK.md` before changing its account, signing or
 funding boundary. Do not enable live mode during a code audit.
@@ -66,10 +72,10 @@ funding boundary. Do not enable live mode during a code audit.
 ## Build, Test, and Validation Commands
 
 ```bash
-python3 -m unittest discover -s backtester/tests -t .   # 1120 tests
-python3 -m unittest discover -s soltui/tests -t .       # 1582 tests (TUI dependencies required)
-python3 -m unittest discover -s mongo/tests -t .        # 57 tests
-cd extension && npm test                                # 483 tests
+python3 -m unittest discover -s backtester/tests -t .   # 1196 tests
+python3 -m unittest discover -s soltui/tests -t .       # 1694 tests (TUI dependencies required)
+python3 -m unittest discover -s mongo/tests -t .        # 73 tests
+cd extension && npm test                                # 555 tests
 node tools/dryrun.js --ticks 8 --osc 6 --offline 100    # a round trip must close positive
 python3 scripts/check_docs.py                           # doc counts and retrieval indexes
 python3 -m unittest discover -s oracle/tests -t . -v

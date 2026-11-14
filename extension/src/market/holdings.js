@@ -126,6 +126,12 @@ export async function readBase(deps, address, { rpcs = BASE.rpcs } = {}) {
  * The extension tries this first: api.mainnet-beta.solana.com answers 403 to a
  * request with a chrome-extension Origin, while this endpoint accepts it.
  */
+function balanceAmount(value) {
+  if (!(typeof value === 'number' || typeof value === 'string' && value.trim() !== '')) return null;
+  const amount = Number(value);
+  return Number.isFinite(amount) && amount >= 0 ? amount : null;
+}
+
 async function solanaFromJupiter(deps, address, result) {
   try {
     const body = await getJson(deps, ENDPOINTS.jupiterHoldings + address, { source: 'jupiter holdings' });
@@ -265,6 +271,8 @@ const STABLE_MINTS = new Set(['EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v', 'E
  * A chain with any error is `partial`; with no holdings and an error, `failed`.
  */
 export function finish(result) {
+  const measured = result.holdings;
+  result.stableUsd = measured.filter(h => h.included && h.stable && h.usd != null).reduce((sum, h) => sum + h.usd, 0);
   let dust = 0;
   result.holdings = result.holdings.filter((h) => {
     if (h.usd != null && (!Number.isFinite(h.usd) || h.usd < 0)) h.usd = null;
@@ -275,7 +283,7 @@ export function finish(result) {
   result.holdings.sort((a, b) => (b.usd ?? -1) - (a.usd ?? -1));
   let total = 0;
   let complete = true;
-  for (const h of result.holdings) {
+  for (const h of measured) {
     if (!h.included) continue;
     if (h.usd == null) complete = false;
     else total += h.usd;
@@ -292,8 +300,7 @@ export function finish(result) {
  */
 export function summarise(chains, { atMs = Date.now() } = {}) {
   const read = chains.filter((c) => c.status !== 'skipped');
-  const stableUsd = read.flatMap((c) => c.holdings).filter((h) => h.included && h.stable && h.usd != null)
-    .reduce((s, h) => s + h.usd, 0);
+  const stableUsd = read.reduce((sum, c) => sum + (c.stableUsd ?? c.holdings.filter(h => h.included && h.stable && h.usd != null).reduce((s, h) => s + h.usd, 0)), 0);
   return {
     atMs,
     chains,

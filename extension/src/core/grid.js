@@ -189,6 +189,7 @@ export function recentreDecision({
   }
 
   const bounds = recentredBounds({ price, spanPct: recentreSpanPct });
+  if (!Number.isFinite(bounds.lower) || !Number.isFinite(bounds.upper) || bounds.lower <= 0 || bounds.upper <= bounds.lower) return { allowed: false, reason: 'recenter-precision-unavailable' };
   if (bounds.lower === lower && bounds.upper === upper) {
     return { allowed: false, reason: 'already-centred' };
   }

@@ -19,6 +19,7 @@
 
 import fs from 'node:fs';
 import path from 'node:path';
+import { randomUUID } from 'node:crypto';
 import { fileURLToPath } from 'node:url';
 
 const SELF_ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
@@ -52,8 +53,16 @@ const VERSION_RE = /^## v(\d+)(?:\.(\d+))?(?:\.(\d+))?/;
 export function splitSections(text) {
   const lines = text.split('\n');
   const starts = [];
+  let fence = null;
   lines.forEach((line, i) => {
-    if (line.startsWith('## v')) starts.push(i);
+    const marker = /^ {0,3}(`{3,}|~{3,})/.exec(line);
+    if (marker) {
+      const token = marker[1];
+      if (!fence) fence = token;
+      else if (token[0] === fence[0] && token.length >= fence.length && /^ {0,3}(`+|~+)\s*$/.test(line)) fence = null;
+      return;
+    }
+    if (!fence && VERSION_RE.test(line)) starts.push(i);
   });
   if (!starts.length) return { header: text, sections: [] };
   const header = lines.slice(0, starts[0]).join('\n');
@@ -96,7 +105,7 @@ function today() {
   return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`;
 }
 
-export function rotateLog(logName, opts) {
+function rotateLogLocked(logName, opts) {
   const filePath = path.join(opts.root, logName);
   if (!fs.existsSync(filePath)) return { status: 'missing' };
   const stat = fs.statSync(filePath);
@@ -125,7 +134,7 @@ export function rotateLog(logName, opts) {
   const baseName = logName.replace(/\.md$/, '');
   const archiveFile = path.join(archiveDir, `${baseName}-${today()}.md`);
 
-  const archiveBodies = toArchiveIndices.map((i) => sections[i].body.trimEnd()).join('\n\n');
+
   const keptIndices = new Set(toArchiveIndices);
   const keptSections = sections.filter((_, i) => !keptIndices.has(i));
 
@@ -144,20 +153,75 @@ export function rotateLog(logName, opts) {
     fs.mkdirSync(archiveDir, { recursive: true });
   }
 
-  if (fs.existsSync(archiveFile)) {
-    fs.appendFileSync(archiveFile, '\n\n' + archiveBodies + '\n');
-  } else {
-    const archiveHeader = `# Archived ${logName} entries\n\nArchived on ${today()}.\n\n`;
-    fs.writeFileSync(archiveFile, archiveHeader + archiveBodies + '\n', 'utf8');
+  const previousArchive = fs.existsSync(archiveFile) ? fs.readFileSync(archiveFile, 'utf8') : '';
+  // An earlier attempt can publish the archive and fail before publishing the
+  // active log. Match exact bodies with multiplicity so retry preserves history.
+  const archivedCounts = new Map();
+  for (const section of splitSections(previousArchive).sections) {
+    const body = section.body.trimEnd();
+    archivedCounts.set(body, (archivedCounts.get(body) || 0) + 1);
   }
-
-  fs.writeFileSync(filePath, newLogContent, 'utf8');
+  const missing = [];
+  for (const index of toArchiveIndices) {
+    const body = sections[index].body.trimEnd();
+    const count = archivedCounts.get(body) || 0;
+    if (count) archivedCounts.set(body, count - 1);
+    else missing.push(body);
+  }
+  const archiveHeader = `# Archived ${logName} entries\n\nArchived on ${today()}.\n\n`;
+  const newArchiveContent = (previousArchive || archiveHeader).trimEnd()
+    + (missing.length ? '\n\n' + missing.join('\n\n') : '') + '\n';
+  let archiveTemp, logTemp;
+  try {
+    archiveTemp = prepareFile(archiveFile, newArchiveContent);
+    logTemp = prepareFile(filePath, newLogContent);
+    if (fs.readFileSync(filePath, 'utf8') !== content
+        || (fs.existsSync(archiveFile) ? fs.readFileSync(archiveFile, 'utf8') : '') !== previousArchive) {
+      throw new Error('workflow log changed during rotation; retry after the writer finishes');
+    }
+    // Commit the archive first. The active file remains intact until every
+    // archived byte is durable. A retry deduplicates an already committed archive.
+    fs.renameSync(archiveTemp, archiveFile);
+    syncDirectory(archiveDir);
+    fs.renameSync(logTemp, filePath);
+    syncDirectory(opts.root);
+  } finally {
+    for (const tmp of [archiveTemp, logTemp]) if (tmp && fs.existsSync(tmp)) fs.unlinkSync(tmp);
+  }
   return {
     status: 'rotated',
     archivedCount: toArchiveIndices.length,
     keptCount: keptSections.length,
     archiveFile,
   };
+}
+
+function prepareFile(target, content) {
+  const tmp = target + `.tmp-${process.pid}-${randomUUID()}`;
+  const mode = fs.existsSync(target) ? fs.statSync(target).mode & 0o777 : 0o600;
+  const fd = fs.openSync(tmp, 'wx', mode);
+  try {
+    fs.writeFileSync(fd, content, 'utf8');
+    fs.fsyncSync(fd);
+  } catch (error) {
+    fs.unlinkSync(tmp);
+    throw error;
+  } finally {
+    fs.closeSync(fd);
+  }
+  return tmp;
+}
+
+function syncDirectory(dir) {
+  const fd = fs.openSync(dir, 'r');
+  try { fs.fsyncSync(fd); } finally { fs.closeSync(fd); }
+}
+
+export function rotateLog(logName, opts) {
+  const lock = path.join(opts.root, `.${logName}.rotate.lock`);
+  const fd = fs.openSync(lock, 'wx', 0o600);
+  try { return rotateLogLocked(logName, opts); }
+  finally { fs.closeSync(fd); fs.unlinkSync(lock); }
 }
 
 function main() {

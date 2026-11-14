@@ -129,20 +129,27 @@ class NativeFixtureIsolation(unittest.TestCase):
 
     def test_loaded_store_class_owns_only_its_generated_database(self):
         from mongo.tests.test_load import TestLoadedStore
+        from mongo.tests.mongo_fixture import DisposableMongoFixture
         for setup_fails in [False, True]:
-            client = self.client()
-            with self.subTest(setup_fails=setup_fails), mock.patch.object(schema, "connect", return_value=client), \
-                    mock.patch.object(schema, "create", side_effect=RuntimeError("fixture setup failed") if setup_fails else None), \
-                    mock.patch.object(load, "build_all", return_value={}):
+            fixture = mock.MagicMock()
+            fixture.seed_store.side_effect = RuntimeError("fixture setup failed") if setup_fails else None
+            def acquire(owner, *, class_scope):
+                self.assertTrue(class_scope)
+                owner.addClassCleanup(fixture.close)
+                return fixture
+            with self.subTest(setup_fails=setup_fails), mock.patch.object(DisposableMongoFixture, "for_test", side_effect=acquire) as factory:
                 try:
                     if setup_fails:
                         with self.assertRaisesRegex(RuntimeError, "fixture setup failed"):
                             TestLoadedStore.setUpClass()
                     else:
                         TestLoadedStore.setUpClass()
+                        self.assertIs(TestLoadedStore.db, fixture.db)
+                    factory.assert_called_once_with(TestLoadedStore, class_scope=True)
+                    fixture.seed_store.assert_called_once()
                 finally:
                     TestLoadedStore.doClassCleanups()
-                self.assert_owned_namespace(client)
+                fixture.close.assert_called_once()
 
     def test_cleanup_closes_client_even_if_owned_database_deletion_fails(self):
         from mongo.tests.test_load import isolated_store
@@ -156,22 +163,17 @@ class NativeFixtureIsolation(unittest.TestCase):
     def test_idempotency_loaders_receive_only_the_owned_database(self):
         from mongo.tests.test_load import TestIdempotency
         for method in ["test_two_loads_leave_identical_counts", "test_a_subset_load_leaves_other_collections_alone"]:
-            client = self.client(); namespaces = []
-            def load_main(argv):
-                namespaces.append(load.DB_NAME)
-                self.assertIs(load.connect(), client)
-                return 0
             case = TestIdempotency(method)
-            with self.subTest(method=method), mock.patch.object(schema, "connect", return_value=client), \
-                    mock.patch.object(load, "connect"), \
-                    mock.patch.object(load, "main", side_effect=load_main):
-                try:
-                    getattr(case, method)()
-                finally:
-                    case.doCleanups()
-                name = self.assert_owned_namespace(client)
-                self.assertTrue(namespaces)
-                self.assertEqual(set(namespaces), {name})
+            db = mock.MagicMock()
+            db.__getitem__.return_value.count_documents.return_value = 1
+            db.bars.count_documents.return_value = 2
+            db.bars.find.return_value.sort.return_value = []
+            case.fixture = mock.MagicMock(db=db, uri="mongodb://127.0.0.1:27017")
+            with self.subTest(method=method), mock.patch.object(load, "main", return_value=0) as invoke:
+                getattr(case, method)()
+                self.assertTrue(invoke.call_args_list)
+                for call in invoke.call_args_list:
+                    self.assertEqual(call.args[0][:2], ["--uri", case.fixture.uri])
 
 
 class LoaderInterpreterRegression(unittest.TestCase):

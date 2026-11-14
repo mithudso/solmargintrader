@@ -205,3 +205,33 @@ and updates its validator and indexes in place. These test receipts are original
 the loader cannot regenerate them. Deleting them requires the explicit
 `python3 mongo/schema.py --create --reset-test-results` command. The reset flag refuses with
 `--keep` or without `--create`.
+
+
+## Disposable integration tests
+
+Native store and capture tests require an explicit `SOLMARGINTRADER_MONGO_TEST_URI`.
+With this variable unset, discovery skips native setup before importing the driver
+or probing a server. A supplied value must be a bare loopback URI without
+credentials, a database path, query options or a fragment. Invalid or unreachable
+explicit URIs fail the test; they do not turn into skips.
+
+Each fixture generates `solmargintrader_test_<uuid>` and rejects all other database
+names, including the production store and capture namespaces. Cleanup is registered
+before connecting or writing. Store integration uses two generated daily bars,
+maintained strategy-card sources, synthetic experiment rows and one observed
+synthetic unit-test receipt. It never preloads owner data or research results.
+The CI Mongo job opts in against its existing disposable service; it performs no
+fixed production-database preload.
+
+On a separately provisioned disposable local test service, the explicit commands are:
+
+```sh
+SOLMARGINTRADER_MONGO_TEST_URI=mongodb://127.0.0.1:27017 python3 -m unittest discover -s mongo/tests -t .
+SOLMARGINTRADER_MONGO_TEST_URI=mongodb://127.0.0.1:27017 python3 -m unittest discover -s scripts -p test_capture_market.py -v
+node mongo/tests/query_regressions.cjs
+```
+
+The query regression harness evaluates generated fixtures in an inert shell context;
+it does not establish live MongoDB pipeline compatibility. The loader preflights
+required fields, types and enums before any schema rebuild, rejects missing artifact
+timestamps with CSV row context, and normalizes declared trade prices to BSON doubles.

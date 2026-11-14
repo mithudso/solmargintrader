@@ -2,6 +2,8 @@
 from __future__ import annotations
 
 import csv
+import math
+import re
 from datetime import datetime
 from pathlib import Path
 
@@ -19,6 +21,24 @@ def _plain(value: object) -> str:
     return spreadsheet_safe_text(text)
 
 
+def _spreadsheet_cell(value: object) -> str:
+    """Neutralize spreadsheet formulas, including hidden leading controls.
+
+    Plain finite decimal numbers keep their numeric meaning. Formula-like text
+    gets a leading apostrophe in both headers and values.
+    """
+    text = _plain(value)
+    numeric = bool(re.fullmatch(r"[+-]?(?:\d+(?:\.\d*)?|\.\d+)(?:[eE][+-]?\d+)?", text))
+    if numeric:
+        try:
+            numeric = math.isfinite(float(text))
+        except ValueError:
+            numeric = False
+    if (text and ord(text[0]) < 32) or (not numeric and text.lstrip(" \t\r\n\v\f\x00\ufeff").startswith(("=", "+", "-", "@"))):
+        return "'" + text
+    return text
+
+
 def export_table(table: DataTable, directory: Path | None = None) -> Path:
     """Save ordered displayed rows, escaping formula-like text and preserving prior exports."""
     directory = directory or Path.home() / "Downloads"
@@ -34,9 +54,9 @@ def export_table(table: DataTable, directory: Path | None = None) -> Path:
         raise OSError("Could not choose a unique export filename")
     with handle:
         writer = csv.writer(handle)
-        writer.writerow([_plain(column.label) for column in table.ordered_columns])
+        writer.writerow([_spreadsheet_cell(column.label) for column in table.ordered_columns])
         for index in range(table.row_count):
-            writer.writerow([_plain(value) for value in table.get_row_at(index)])
+            writer.writerow([_spreadsheet_cell(value) for value in table.get_row_at(index)])
     return path
 
 

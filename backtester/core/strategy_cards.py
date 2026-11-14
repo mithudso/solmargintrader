@@ -50,6 +50,7 @@ from __future__ import annotations
 
 import math
 import argparse
+import re
 import sys
 from dataclasses import dataclass, field
 from pathlib import Path
@@ -172,6 +173,8 @@ def _parse_scalar(raw: str, *, where: str) -> Any:
         return ""
     if len(text) >= 2 and text[0] == text[-1] and text[0] in "\"'":
         return text[1:-1]
+    if re.search(r"(?:^|\s)#", text):
+        raise CardError(f"{where}: trailing comments are unsupported")
     lowered = text.lower()
     if lowered in ("null", "~", "none"):
         return None

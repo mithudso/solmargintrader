@@ -23,7 +23,8 @@ def passing(root, c):
 
 
 def soak(root, c, hours):
-    t = 1000.0
+    previous = gates.load_soak(root)
+    t = previous["last_tick_at"] if previous else 1000.0
     gates.record_dry_run_tick(root, c, t)
     for _ in range(int(hours * 2)):  # 30-minute ticks, the largest interval that counts
         t += 1800

@@ -78,19 +78,10 @@ export function verifyChallenge({ walletPubkey, signatureBs58, apiKey, budget, f
  * orders. Its address is derived from the JWT, so it is never passed explicitly.
  */
 export async function resolveVault({ apiKey, jwt, budget, fetchImpl }) {
-  const h = headers({ apiKey, jwt });
-  try {
-    return await request({ url: `${TRIGGER_BASE}/vault`, init: { headers: h }, budget, fetchImpl });
-  } catch (err) {
-    if (!(err instanceof JupiterHttpError)) throw err;
-    // No vault yet on this wallet: register once, then it persists.
-    return request({
-      url: `${TRIGGER_BASE}/vault/register`,
-      init: { headers: h },
-      budget,
-      fetchImpl,
-    });
-  }
+  // No HTTP status alone proves absence (a missing route may also be 404).
+  // Until an explicit absence contract is verified, lookup failures must not
+  // authorize a persistent registration or a replay after a lost response.
+  return request({ url: `${TRIGGER_BASE}/vault`, init: { headers: headers({ apiKey, jwt }) }, budget, fetchImpl });
 }
 
 /* --------------------------------------------------------------- deposit ---- */
@@ -217,6 +208,7 @@ export function validateOrderBody(body) {
   }
   const hasStatic = body.triggerPriceUsd != null;
   const hasTrailing = body.trailingBps != null;
+  if (hasStatic && (!Number.isFinite(body.triggerPriceUsd) || body.triggerPriceUsd <= 0)) problems.push('triggerPriceUsd must be a positive finite number');
   if (hasStatic === hasTrailing) {
     problems.push('set exactly one of triggerPriceUsd or trailingBps');
   }

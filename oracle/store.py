@@ -3,7 +3,9 @@
 from __future__ import annotations
 
 import json
+import os
 import sqlite3
+import stat
 from collections.abc import Iterator
 from contextlib import contextmanager
 from pathlib import Path
@@ -20,6 +22,14 @@ class Store:
         self.path.parent.mkdir(parents=True, exist_ok=True, mode=0o700)
         if self.path.is_symlink():
             raise ValueError("archive_symlink_refused")
+        fd = os.open(self.path, os.O_RDWR | os.O_CREAT | os.O_NOFOLLOW | os.O_NONBLOCK, 0o600)
+        try:
+            info = os.fstat(fd)
+            if not stat.S_ISREG(info.st_mode) or info.st_uid != os.getuid():
+                raise ValueError("archive_private_file_required")
+            os.fchmod(fd, 0o600)
+        finally:
+            os.close(fd)
         with self.connection() as db:
             db.execute("BEGIN IMMEDIATE")
             version = db.execute("PRAGMA user_version").fetchone()[0]
@@ -75,6 +85,8 @@ class Store:
                     CHECK(direction IS NULL OR direction IN (-1,0,1)));
                 CREATE INDEX IF NOT EXISTS observation_time ON observations(observed);
                 CREATE INDEX IF NOT EXISTS forecast_target ON forecasts(target);
+                CREATE INDEX IF NOT EXISTS forecast_strategy_time ON forecasts(strategy,version,issued DESC);
+                CREATE INDEX IF NOT EXISTS resolution_time ON resolutions(resolved_at);
                 CREATE INDEX IF NOT EXISTS graphdb_tick_time ON graphdb_ticks(instrument,bar_index);
             """
             for statement in schema.split(";"):

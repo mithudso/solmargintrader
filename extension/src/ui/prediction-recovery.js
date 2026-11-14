@@ -28,8 +28,14 @@ export function predictionRecovery({ ask, supports = () => true, changed = () =>
   function recover(manual) {
     if (disposed) return Promise.resolve(null);
     const requestedAsset = asset, requestedGeneration = generation;
-    if (pending.has(requestedAsset)) return pending.get(requestedAsset);
+    const key = `${requestedGeneration}:${requestedAsset}`;
     const current = () => !disposed && asset === requestedAsset && generation === requestedGeneration;
+    const existing = pending.get(key);
+    if (existing) {
+      if (!manual || existing.manual) return existing.operation;
+      existing.manualNext ??= existing.operation.then(() => current() ? recover(true) : null);
+      return existing.manualNext;
+    }
     const operation = (async () => {
       try {
         if (!supports('forwardtest.health') || !supports('forwardtest.ensure')) {
@@ -65,8 +71,9 @@ export function predictionRecovery({ ask, supports = () => true, changed = () =>
         return null;
       }
     })();
-    pending.set(requestedAsset, operation);
-    operation.finally(() => { if (pending.get(requestedAsset) === operation) pending.delete(requestedAsset); });
+    const entry = { operation, manual };
+    pending.set(key, entry);
+    operation.finally(() => { if (pending.get(key) === entry) pending.delete(key); });
     return operation;
   }
   return {

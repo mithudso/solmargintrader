@@ -33,11 +33,11 @@ includes the headless F5 owner without installing the native macOS app.
 git clone https://github.com/mithudso/solmargintrader.git
 cd solmargintrader
 
-# Python side: the backtester's deps cover research/ too.
+# Core backtester and research dependencies; study-specific extras are separate below.
 pip install -r backtester/requirements.txt
 
 # Extension: nothing to install. No npm runtime or dev dependencies, on purpose (one vendored charting library).
-cd extension && npm test && cd ..
+(cd extension && npm test)
 
 # soltui, only if you want the menu-bar app:
 pip install -r soltui/requirements.txt
@@ -46,6 +46,16 @@ pip install -r soltui/requirements.txt
 `backtester/requirements.txt` deliberately excludes `pyarrow`, `requests` and `pytest`.
 Tests use `unittest`; HTTP uses `urllib`. Do not add a dependency to solve something the
 stdlib already covers.
+
+The Coinbase top50 study has additional pinned research dependencies, including
+`ripser` for persistent homology and its plotting/numeric versions. Install
+`research/coinbase50-requirements.txt` in a separate research environment, not an
+existing trading runtime. Its CI correctness gate is:
+
+```bash
+python3 -m pip install -r research/coinbase50-requirements.txt
+OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1 python3 -m unittest research.tests.test_coinbase50_study -v
+```
 
 ## Commands
 
@@ -97,9 +107,13 @@ document that quotes a number.
 
 ### Extension
 
+From the repository root, each command below uses a subshell and leaves the parent
+shell at the root. The HTTP server requires an already exported `SMT_API_TOKEN`;
+see [local API setup](INSTALLATION.md#optional-the-local-http-surface).
+
 ```bash
 cd extension
-npm test                                              # 483 tests
+npm test                                              # 555 tests
 node tools/dryrun.js --ticks 8 --osc 6 --offline 100  # the integration gate
 node tools/cli.js                                     # lists every command in the registry
 node tools/api-server.js                              # local HTTP surface; requires SMT_API_TOKEN
@@ -136,15 +150,31 @@ python3 -m unittest discover -s mongo/tests -t .
 The integration cases require a running mongod. Loading with `mongo/load.py` drops and
 rebuilds selected collections; use the separate instructions in `mongo/README.md`.
 
+### Separate hosted website
+
+`website/` owns the public wallet-account workspace, its Cloudflare Worker/D1 API and
+its own pinned Wrangler development dependency. It has no runtime npm dependencies.
+From the repository root, its offline source gates are:
+
+```bash
+(cd website && npm ci && npm test && npm run check)
+python3 -m unittest website.engine.test_server website.engine.test_research
+python3 -m website.scripts.export_research --check
+```
+
+The Python checks require the canonical backtester/Oracle packages. See
+[website/README.md](../website/README.md) for optional local development, D1 migrations,
+Worker bindings and deployment. Use the repository's Wrangler configuration for this
+package. Tests do not deploy, configure billing or enable bot execution. The independent
+Python analysis bridge uses reviewed market caches and an inert Oracle archive.
+
 ### Liquidity
 
 ```bash
-cd liquidity
-uv sync --extra dev -p 3.13
-.venv/bin/ruff check src tests
-.venv/bin/ruff format --check src tests
-.venv/bin/pytest -q
-cd ..
+(cd liquidity && uv sync --extra dev -p 3.13)
+(cd liquidity && .venv/bin/ruff check src tests)
+(cd liquidity && .venv/bin/ruff format --check src tests)
+(cd liquidity && .venv/bin/pytest -q)
 ```
 
 This component has its own dependencies and lockfile. Offline pytest excludes the
@@ -155,10 +185,10 @@ This component has its own dependencies and lockfile. Offline pytest excludes th
 Run all of these before claiming a change works:
 
 ```bash
-python3 -m unittest discover -s backtester/tests -t .   # 1120 tests
-python3 -m unittest discover -s soltui/tests -t .       # 1582 tests (TUI dependencies required)
-python3 -m unittest discover -s mongo/tests -t .        # 57 tests
-cd extension && npm test                                # 483 tests
+python3 -m unittest discover -s backtester/tests -t .   # 1196 tests
+python3 -m unittest discover -s soltui/tests -t .       # 1694 tests (TUI dependencies required)
+python3 -m unittest discover -s mongo/tests -t .        # 73 tests
+cd extension && npm test                                # 555 tests
 node tools/dryrun.js --ticks 8 --osc 6 --offline 100    # a round trip must close POSITIVE
 cd extension && npm run e2e                             # real-browser load + dry-run (needs Chrome for Testing)
 python3 scripts/check_docs.py                           # doc counts and retrieval indexes
@@ -169,9 +199,10 @@ round trip, so it is the only one that can catch a zero-spread regression.
 
 ## Environment variables
 
-The extension tools read the variables below. Python tools also accept the research cache
-and liquidity settings listed here. Programs do not automatically load a `.env` file;
-export settings in the invoking shell or use the component's config file.
+The extension tools read the variables below. Python tools also accept component roots,
+research cache and liquidity settings. Ordinary component tools require exported settings
+or their component configuration. The separate raw-capture uploader can read its selected
+dotenv file; it does not export those values into the shell.
 
 | Variable | Read by | Purpose |
 | --- | --- | --- |
@@ -184,14 +215,30 @@ export settings in the invoking shell or use the component's config file.
 | `AERO_LP_KEY_FILE` | `liquidity/src/aero_lp/wallet.py` | Optional path to an owner-only mode-0600 signing-key file |
 | `AERO_LP_PRIVATE_KEY` | `liquidity/src/aero_lp/wallet.py` | Legacy signing-key fallback; prefer the key file or Keychain, never put a value in tracked files |
 | `SOLTUI_PYTHON` | `soltui/bin/soltui` | Interpreter override for the shell launcher |
+| `SOLBOT_HOME`, `SOLBOT_ECOSYSTEM_HOME` | Manager storage and machine-health adapters | Select the existing manager/ecosystem owners; reads must not create another owner |
+| `SOLTUI_CONFIG_DIR`, `SOLTUI_SUPPORT_DIR`, `SOLTUI_LOG_DIR` | SolTUI configuration, portfolio and command adapters | Override private component roots |
+| `SOLTUI_KEY_DIR` | `soltui/wallet.py` | Select the private key-source directory; never print its contents |
+| `SOLTUI_API_PORT` | `soltui/api.py` | Local API port, default 8788 |
+| `SOLANA_RPC_URL`, `SOLANA_KEYPAIR_PATH` | Manual Jupiter adapters/commands | Explicit RPC/key-path settings; neither enables blocked Jupiter V2 submission |
+| `EXECUTOR_HOME`, `EXECUTOR_LOG_DIR`, `EXECUTOR_API_PORT` | Executor configuration/API | Private state/log roots and local API port, default 8789 |
+| `ORACLE_WEBHOOK_SECRET` | `oracle/cli.py` | Optional TradingView body secret; prefer its private secret-file argument |
+| `MONGODB_URI`, `MONGODB_URI2` | `scripts/capture_market.py` | Selected private raw-capture upload connection; environment takes precedence over its selected dotenv file |
+| `ENGINE_DATA_DIR`, `ENGINE_ORACLE_DIR`, `ENGINE_ORACLE_QUOTE` | `website/engine/server.py` | Reviewed market cache, inert archive and instrument quote for read-only analysis |
+| `ENGINE_TOKEN` | Website Worker and Python adapter | Server-side bearer credential; never expose it to the browser |
+| `INDEX_NO_AUTO` | `index/search.py` | Set to 1 for lookup/testing without automatic semantic indexing |
 
 `SOLTUI_BG_LOCK_FD` is an internal worker handoff, not a user setting. The macOS launcher
 sets `PYTHONUTF8` and `LANG` if absent. Standard runtime variables such as `PATH` and `HOME`
 retain their normal meaning.
 
 A local `.env` may document shell settings: `.gitignore` covers `.env` and `.env.*` while
-un-ignoring `.env.example`. Load/export settings explicitly; the programs do not source it. Never commit one, and never log a value; see
-`docs/logging.md`.
+un-ignoring `.env.example`. Export settings for ordinary component tools. The raw-capture
+uploader reads only its configured URI name from the selected dotenv file when the
+environment lacks it. Keep that file and its explicit X509 certificate private. Hosted
+Worker bindings and Stripe secrets are listed in [the website guide](../website/README.md)
+and use Wrangler's secret store. Never commit a secret file or log a value; see
+`docs/logging.md`. Test-only browser/isolation variables are documented by their owning
+harness; this table does not make internal handoff variables user settings.
 
 ## Data
 

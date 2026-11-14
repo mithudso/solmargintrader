@@ -155,9 +155,9 @@ test('syntactically valid malformed journal shapes fail before an update can dis
 
 test('concurrent FileStore instances preserve every fill and leave no temporary file or lease', async t => {
   const f = await fixture(t);
-  const originalWrite = fs.promises.writeFile;
+  const originalWrite = fs.promises.open;
   const tempPaths = [];
-  fs.promises.writeFile = async (path, ...args) => {
+  fs.promises.open = async (path, ...args) => {
     if (String(path).endsWith('.tmp')) tempPaths.push(String(path));
     return originalWrite.call(fs.promises, path, ...args);
   };
@@ -165,7 +165,7 @@ test('concurrent FileStore instances preserve every fill and leave no temporary 
   try {
     await Promise.all(Array.from({ length: 20 }, (_, index) =>
       new FileStore(f.path).putFill({ id: `synthetic-${index}` })));
-  } finally { fs.promises.writeFile = originalWrite; syncBuiltinESMExports(); }
+  } finally { fs.promises.open = originalWrite; syncBuiltinESMExports(); }
   const durable = await readJson(f.path);
   assert.equal(Object.keys(durable.fills).length, 20);
   assert.equal(tempPaths.length, 20);

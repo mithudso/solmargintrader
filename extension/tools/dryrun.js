@@ -42,7 +42,7 @@ class ScriptedPriceVenue extends DryRunVenue {
 }
 
 async function main() {
-  const args = toolArgs(process.argv.slice(2), { ticks: 3, walk: 0, osc: 0, offline: undefined }, { usage: USAGE });
+  const args = parseArgs(process.argv.slice(2));
   if (args.help) { console.log(USAGE); return; }
   if (!Number.isSafeInteger(Number(args.ticks)) || Number(args.ticks) < 1
       || ![args.walk, args.osc].every(value => Number.isFinite(Number(value)))
@@ -118,12 +118,13 @@ async function main() {
   // its own base by filling bids first. That makes this an honest run.
   for (step = 0; step < ticks; step++) {
     const r = await tick({ venue, store, configStore, limits: DEFAULT_LIMITS });
+    if (r.errors?.length || !Number.isFinite(r.price) || r.price <= 0) throw new Error(`tick ${step + 1} failed; inspect the safe tick diagnostic`);
     lastPrice = r.price;
     const filled = (await store.allFills()).length
     console.log(
       `\ntick ${step + 1}  price $${r.price.toFixed(4)}  placed ${r.placed.length}  ` +
         `rejected ${r.rejected.length}  fills ${filled}  ` +
-        `net $${(r.pnl?.totalNetUsd ?? 0).toFixed(4)}`,
+        `net ${Number.isFinite(r.pnl?.totalNetUsd) ? '$' + r.pnl.totalNetUsd.toFixed(4) : 'unavailable'}`,
     );
     for (const p of r.placed) console.log(`    + ${p.intentKey}`);
     for (const rej of r.rejected) console.log(`    - ${rej.intent.intentKey}: ${rej.reasons[0]}`);
@@ -142,6 +143,8 @@ async function main() {
   // also marks open lots to the last price, so it can be negative while every
   // closed round trip is positive.
   const snap = snapshot({ fills, markPriceUsd: lastPrice });
+  if (!snap.accountingComplete) throw new Error('dry-run accounting evidence is incomplete');
+  if (args['assert-economics'] && (!(snap.roundTripCount > 0) || !(snap.realizedNetUsd > 0))) throw new Error('economics gate needs a positive closed round trip net of costs');
   console.log(
     `closed round trips: ${snap.roundTripCount}  gross $${snap.realizedGrossUsd.toFixed(4)}  ` +
       `fees $${snap.realizedFeeUsd.toFixed(4)}  net $${snap.realizedNetUsd.toFixed(4)}  ` +
@@ -153,4 +156,26 @@ function round(n) {
   return Number(n.toFixed(4));
 }
 
-main().catch(toolFailure);
+function parseArgs(argv) {
+  if (argv.length === 1 && ['--help', '-h'].includes(argv[0])) return {help: true};
+  const out = {ticks: 3, walk: 0, osc: 0};
+  for (let i = 0; i < argv.length; i++) {
+    const key = argv[i].startsWith('--') ? argv[i].slice(2) : '';
+    if (!['ticks', 'walk', 'osc', 'offline', 'assert-economics'].includes(key)) throw new Error('unknown dry-run flag');
+    if (key === 'assert-economics') { out[key] = true; continue; }
+    const raw = argv[++i];
+    if (typeof raw !== 'string' || !raw.trim() || raw.startsWith('--')) throw new Error(`--${key} needs a value`);
+    const value = Number(raw);
+    if (!Number.isFinite(value)) throw new Error(`--${key} must be finite`);
+    out[key] = value;
+  }
+  if (!Number.isSafeInteger(out.ticks ?? 3) || (out.ticks ?? 3) < 1 || (out.ticks ?? 3) > 100000) throw new Error('ticks must be a positive integer at most 100000');
+  if (out.offline !== undefined && out.offline <= 0) throw new Error('offline price must be positive');
+  return out;
+}
+
+main().catch((err) => {
+  if (!err.message.includes('Usage:')) err.message += `\n${USAGE}`;
+  toolFailure(err);
+  if (err.message.includes('flag') || err.message.includes('must') || err.message.includes('needs a value')) process.exitCode = 2;
+});

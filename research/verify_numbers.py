@@ -367,6 +367,14 @@ def candidates(df: pd.DataFrame, label: str) -> pd.DataFrame:
     return df[df.label == label]
 
 
+def check_row(df, label, observations):
+    rows = candidates(df, label)
+    matching = np.ones(len(rows), dtype=bool)
+    for field, value, tolerance in observations:
+        matching &= np.abs(rows[field].to_numpy() - value) <= tolerance
+    return bool(matching.any()), f"{label}: fields do not match one source horizon"
+
+
 def check(
     df: pd.DataFrame, label: str, field: str, value: float, tol: float
 ) -> tuple[bool, str]:
@@ -994,6 +1002,7 @@ def main() -> int:
 
         for m in ROW.finditer(text):
             label, oos_s, is_s, oos_r, is_r, oos_dd, trades = m.groups()
+            observations = []
             for field, raw, tol in (
                 ("oos_sharpe", oos_s, TOL_SHARPE),
                 ("is_sharpe", is_s, TOL_SHARPE),
@@ -1005,10 +1014,15 @@ def main() -> int:
                 if field.endswith(("return", "maxdd")):
                     v /= 100.0
                     tol /= 100.0
+                observations.append((field, v, tol))
                 ok, msg = check(df, label, field, v, tol)
                 tally.add("walk_forward")
                 if not ok:
                     failures.append(f"{doc.name}: {msg}")
+            observations.append(("oos_trades", float(trades), .5))
+            coherent, message = check_row(df, label, observations)
+            if not coherent:
+                failures.append(f"{doc.name}: {message}")
             ok, msg = check(df, label, "oos_trades", float(trades), 0.5)
             tally.add("walk_forward")
             if not ok:
@@ -1068,16 +1082,22 @@ def main() -> int:
 
         for m in PAIR_ROW.finditer(text):
             label, oos_s, is_s, oos_r, trades = m.groups()
+            observations = []
             for field, raw, tol in (
                 ("oos_sharpe", oos_s, TOL_SHARPE),
                 ("is_sharpe", is_s, TOL_SHARPE),
                 ("oos_return", str(float(oos_r) / 100.0), TOL_PCT / 100.0),
                 ("oos_trades", trades, 0.5),
             ):
+                observations.append((field, float(raw), tol))
                 ok, msg = check(df, label, field, float(raw), tol)
                 tally.add("pair")
                 if not ok:
                     failures.append(f"{doc.name}: {msg}")
+
+            coherent, message = check_row(df, label, observations)
+            if not coherent:
+                failures.append(f"{doc.name}: {message}")
 
         per_doc[doc.name] = tally.per
         checked += tally.total

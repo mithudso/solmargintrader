@@ -274,8 +274,11 @@ async function scheduleControlRoomAlarm() {
 }
 
 /** Read health only. The durable suite owns recovery; a browser alarm never starts it. */
+const monitorQueues = new WeakMap();
 export async function runControlRoomMonitor({ deps, notify = showNotification } = {}) {
   deps ??= await chromeDeps();
+  const owner = deps.configStore;
+  const task = (monitorQueues.get(owner) ?? Promise.resolve()).catch(() => {}).then(async () => {
   if ((await deps.configStore.get('prefs', {})).alertsEnabled === false) return { disabled: true, alerts: [] };
   const snapshot = await runCommand({ name: 'controlRoomStatus', args: {}, deps });
   const transition = controlRoomTransitions(snapshot, await deps.configStore.get('controlRoomMonitor', null), (deps.clock ?? Date.now)());
@@ -284,6 +287,10 @@ export async function runControlRoomMonitor({ deps, notify = showNotification } 
     try { await notify(alert); } catch { /* The daemon's durable alerts remain available in the control room. */ }
   }
   return { snapshot, alerts: transition.alerts };
+  });
+  monitorQueues.set(owner, task);
+  task.finally(() => { if (monitorQueues.get(owner) === task) monitorQueues.delete(owner); }).catch(() => {});
+  return task;
 }
 
 export async function runManagerPoll() {
@@ -292,8 +299,20 @@ export async function runManagerPoll() {
 
 // Listener registration stays synchronous. Re-create missing alarms after every
 // worker activation, because Chrome does not guarantee alarm persistence.
-scheduleManagerAlarm().catch(() => {});
-scheduleControlRoomAlarm().catch(() => {});
+async function reportBackgroundFailure(operation) {
+  const allowed = new Set(['alarm-restore', 'manager-poll', 'control-room-monitor']);
+  const code = allowed.has(operation) ? operation : 'background-operation';
+  console.error('[smt] background operation failed', code);
+  try { await (await Store.open()).logEvent({ type: 'background-failure', operation: code }); } catch { /* Persistence may be the failing component. */ }
+}
+async function restoreAlarms() {
+  await Promise.all([
+    scheduleManagerAlarm(), scheduleControlRoomAlarm(),
+    ...[[ALARM, rescheduleAlarm], [BUILD_ALARM, scheduleBuildAlarm], [ALERT_ALARM, scheduleAlertAlarm]]
+      .map(async ([name, create]) => { if (!(await chrome.alarms.get?.(name))) await create(); }),
+  ]);
+}
+restoreAlarms().catch(() => reportBackgroundFailure('alarm-restore'));
 
 /* ----------------------------------------------------------------- lifecycle -- */
 
@@ -356,17 +375,11 @@ export async function handleInstalled(details = {}, { store } = {}) {
   }
 }
 
-chrome.runtime.onInstalled.addListener((details) => {
-  handleInstalled(details).catch((err) => console.error('[smt] onInstalled threw', err));
-});
+chrome.runtime.onInstalled.addListener((details) => handleInstalled(details).catch(() => reportBackgroundFailure('alarm-restore')));
 
 chrome.runtime.onStartup.addListener(() => {
-  scheduleManagerAlarm().catch(() => {});
-  scheduleControlRoomAlarm().catch(() => {});
-  runManagerPoll().catch(() => {});
-  rescheduleAlarm().catch((err) => console.error('[smt] reschedule threw', err));
-  scheduleBuildAlarm().catch((err) => console.error('[smt] build alarm threw', err));
-  scheduleAlertAlarm({ soon: true }).catch((err) => console.error('[smt] alert alarm threw', err));
+  restoreAlarms().catch(() => reportBackgroundFailure('alarm-restore'));
+  runManagerPoll().catch(() => reportBackgroundFailure('manager-poll'));
 });
 
 // A notification opens the dashboard on the Alerts tab.
@@ -378,8 +391,8 @@ chrome.notifications?.onClicked?.addListener((id) => {
 });
 
 chrome.alarms.onAlarm.addListener((alarm) => {
-  if (alarm.name === CONTROL_ROOM_ALARM) { runControlRoomMonitor().catch(() => {}); return; }
-  if (alarm.name === MANAGER_ALARM) { runManagerPoll().catch(() => {}); return; }
+  if (alarm.name === CONTROL_ROOM_ALARM) return runControlRoomMonitor().catch(() => reportBackgroundFailure('control-room-monitor'));
+  if (alarm.name === MANAGER_ALARM) return runManagerPoll().catch(() => reportBackgroundFailure('manager-poll'));
   if (alarm.name === BUILD_ALARM) {
     runBuildCheck().catch((err) => console.error('[smt] build check threw', String(err?.message ?? err)));
     return;

@@ -19,6 +19,7 @@ import argparse
 import dataclasses
 import json
 import sys
+from pathlib import Path
 from typing import Sequence
 
 from .core.data import CsvLoader, SyntheticLoader, describe_data_error, frame_to_arrays, resolve_data_dir
@@ -136,6 +137,9 @@ def _triangle(args: argparse.Namespace) -> int:
     except ValueError as exc:
         print(f"error: {exc}", file=sys.stderr)
         return 2
+    if any(not Path(path).is_file() for path in args.snapshots):
+        print("error: every snapshot input must be an existing file", file=sys.stderr)
+        return 1
     snaps = read_snapshot_files(args.snapshots)
     if not snaps:
         print("error: no usable recorded snapshots; verify the requested recording files", file=sys.stderr)

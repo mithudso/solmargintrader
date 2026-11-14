@@ -587,6 +587,21 @@ class RuntimeLedger:
                     "runtime_id": archived["runtime_id"],
                 }
             pinned = BotSpec.from_dict(json.loads(run["spec"]))
+            if (pinned.config_hash != context["config_hash"] or pinned.config_revision != context["config_revision"]):
+                found = None
+                has_boundaries = db.execute("SELECT 1 FROM sqlite_master WHERE type='table' AND name='learning_boundaries'").fetchone()
+                boundaries = db.execute("SELECT predecessor,body FROM learning_boundaries WHERE runtime_id=?", (context["runtime_id"],)).fetchall() if has_boundaries else []
+                for boundary in boundaries:
+                    body = json.loads(boundary["body"])
+                    if fingerprint(body) != boundary["predecessor"]:
+                        raise ValueError
+                    candidate = BotSpec.from_dict(body["spec"])
+                    if (candidate.bot_id == spec.bot_id and candidate.config_hash == context["config_hash"]
+                            and candidate.config_revision == context["config_revision"]):
+                        found = candidate
+                if found is None:
+                    raise ValueError
+                pinned = found
             binding = self._control_binding(pinned, operation, request_id)
             immutable = {
                 "request_id": request_id,

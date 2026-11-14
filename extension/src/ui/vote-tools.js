@@ -51,7 +51,7 @@ export function voteHint({ row, asset, read, select = null }) {
 }
 
 export function mountVoteCharts({ host, controls, reference, follow, read, asset }) {
-  let epoch = 0, disposed = false;
+  let epoch = 0, disposed = false, drawing = 0;
   const selected = new Map(), hints = new Set();
   const message = el('p', { class: 'note', role: 'status' });
   const chips = el('div', { class: 'row' });
@@ -68,11 +68,12 @@ export function mountVoteCharts({ host, controls, reference, follow, read, asset
     for (const hint of hints) hint.button.setAttribute('aria-pressed', String(selected.has(hint.button.dataset.label)));
   }
   function draw() {
+    const token = ++drawing;
     const values = [...selected.values()].filter(s => s.value).map(s => s.value);
     if (!values.length) return;
     renderStrategyChart(host, values, { follow: follow(), asset: asset() }).then(result => {
-      if (!disposed && selected.size && result === 'unavailable') message.textContent = 'The original candles are unavailable; no indicator graphics were invented.';
-    }).catch(error => { if (!disposed) message.textContent = error.message; });
+      if (!disposed && token === drawing && selected.size && result === 'unavailable') message.textContent = 'The original candles are unavailable; no indicator graphics were invented.';
+    }).catch(error => { if (!disposed && token === drawing) message.textContent = error.message; });
   }
   function remove(label) { selected.delete(label); disposeChart(host); sync(); if (selected.size) draw(); }
   function clearSelection() { epoch++; selected.clear(); disposeChart(host); host.replaceChildren(); sync(); }
@@ -80,15 +81,15 @@ export function mountVoteCharts({ host, controls, reference, follow, read, asset
     const label = row.label;
     if (selected.has(label)) { remove(label); return; }
     if (selected.size >= 2) { message.textContent = 'Two strategies are selected. Remove one to add another.'; return; }
-    const slot = {}; selected.set(label, slot); const generation = epoch, coin = asset(); sync();
+    const slot = { request: 0 }; selected.set(label, slot); const generation = epoch, coin = asset(), request = ++slot.request; sync();
     message.textContent = 'Loading saved forecast graphics…';
     try {
       const value = await load();
-      if (disposed || epoch !== generation || coin !== asset() || selected.get(label) !== slot) return;
+      if (disposed || epoch !== generation || coin !== asset() || selected.get(label) !== slot || request !== slot.request) return;
       slot.value = value;
       message.textContent = 'Saved closed-candle forecast · at most two strategies · no TradingView account quota.';
       draw();
-    } catch (error) { if (selected.get(label) === slot) { selected.delete(label); sync(); message.textContent = error.message; } }
+    } catch (error) { if (!disposed && epoch === generation && coin === asset() && selected.get(label) === slot && request === slot.request) { selected.delete(label); sync(); message.textContent = error.message; } }
   }
   return {
     button(row, coin) {
@@ -98,7 +99,13 @@ export function mountVoteCharts({ host, controls, reference, follow, read, asset
     },
     rendered() { for (const hint of hints) if (!hint.button.isConnected) { hint.dispose(); hints.delete(hint); } },
     changed: clearSelection,
-    refresh() { for (const [label, slot] of selected) { const generation = epoch, coin = asset(); read('forwardtest.explain', { asset: coin, label }).then(value => { if (!disposed && epoch === generation && coin === asset() && selected.get(label) === slot) { slot.value = value; draw(); } }).catch(() => {}); } },
+    refresh() { for (const [label, slot] of selected) {
+      const generation = epoch, coin = asset(), request = ++slot.request;
+      const current = () => !disposed && epoch === generation && coin === asset() && selected.get(label) === slot && request === slot.request;
+      read('forwardtest.explain', { asset: coin, label }).then(value => {
+        if (current()) { slot.value = value; message.textContent = 'Saved forecast refreshed.'; draw(); }
+      }).catch(() => { if (current()) { ++drawing; message.textContent = 'Refresh failed; retained strategy graphics are stale.'; } });
+    } },
     dispose() { disposed = true; clearSelection(); for (const hint of hints) hint.dispose(); hints.clear(); },
   };
 }

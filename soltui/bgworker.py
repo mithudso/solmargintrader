@@ -37,6 +37,7 @@ from __future__ import annotations
 import argparse
 import hashlib
 import json
+import math
 import os
 import signal
 import sys
@@ -324,6 +325,8 @@ def evaluate(
         cfg,
         settings,
     )
+    valid = all(isinstance(value, (int, float)) and not isinstance(value, bool) and math.isfinite(value)
+                for value in (res.median_sharpe, res.spread, res.frac_positive, res.median_return, res.total_trades))
     return JobResult(
         job_id=job.job_id,
         strategy=job.strategy,
@@ -338,9 +341,9 @@ def evaluate(
         iqr=float(res.spread),
         frac_positive=float(res.frac_positive),
         median_return=float(res.median_return),
-        trades=int(res.total_trades),
-        evaluable=not res.insufficient,
-        reason=res.reason,
+        trades=int(res.total_trades) if valid else 0,
+        evaluable=not res.insufficient and valid,
+        reason=res.reason if valid else "invalid evaluation measurements",
         seconds=round(time.monotonic() - started, 3),
         finished_at=time.time(),
     )

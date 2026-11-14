@@ -13,7 +13,7 @@
  * POSIX, so a reader sees either the old file or the new one, never a partial.
  */
 
-import { readFile, writeFile, rename, mkdir, realpath, lstat, unlink, rmdir } from 'node:fs/promises';
+import { readFile, writeFile, open, rename, mkdir, realpath, lstat, unlink, rmdir } from 'node:fs/promises';
 import { constants } from 'node:fs';
 import { dirname, basename, join, resolve } from 'node:path';
 import { homedir } from 'node:os';
@@ -106,9 +106,13 @@ async function readJson(path, fallback, validate = validateRecord) {
 async function writeJsonAtomic(path, value, requestedPath = path) {
   const tmp = `${path}.${process.pid}.${randomUUID()}.tmp`;
   try {
-    await writeFile(tmp, `${JSON.stringify(value, null, 2)}\n`, { mode: 0o600, flag: 'wx' });
+    const file = await open(tmp, 'wx', 0o600);
+    try { await file.writeFile(`${JSON.stringify(value, null, 2)}\n`); await file.sync(); }
+    finally { await file.close(); }
     await assertPath(requestedPath, path);
     await rename(tmp, path);
+    const directory = await open(dirname(path), 'r');
+    try { await directory.sync(); } finally { await directory.close(); }
   } finally {
     // eslint-disable-next-line no-unsafe-finally -- Refuse when private temporary data cannot be removed.
     try { await unlink(tmp); } catch (error) { if (error.code !== 'ENOENT') throw error; }

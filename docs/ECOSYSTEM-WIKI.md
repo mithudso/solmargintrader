@@ -22,6 +22,7 @@ room; select **Wiki**. The source links below remain usable without a running UI
 | Scripts and maintenance | [Script inventory](SCRIPTS.md) | [Testing](TESTING.md), [incident runbook](runbooks/incident.md), [rollback](runbooks/rollback.md) |
 | Strategy and evidence | [Canonical strategy cards](../backtester/strategy_cards/README.md) | [Research survey](../research/STRATEGIES.md), [strategy optimization](strategy-optimization-concept-family.md), [Oracle consumer interface](bot-manager-oracle-interface.md) |
 | Execution and security boundaries | [Security](SECURITY.md) | [Known issues](known-issues.md), [external calls](external-calls.md), [executor rules](../executor/CLAUDE.md) |
+| Separate hosted website | [Website guide](../website/README.md) | [Read-only analysis bridge](../website/engine/README.md); wallet accounts and inactive paper definitions do not control the local owner suite |
 
 For the manager's complete recommended command order, read `solbot --help` or
 `solbot help`. The structured help and parser share the same command registry.

@@ -22,7 +22,17 @@ IDENTITY = re.compile(r"[A-Za-z0-9][A-Za-z0-9_.:/ -]{0,199}\Z")
 
 
 def number(value: Any) -> bool:
-    return type(value) in (int, float) and math.isfinite(value)
+    try:
+        return type(value) in (int, float) and math.isfinite(value)
+    except OverflowError:
+        return False
+
+
+def evidence_counts(db, now):
+    return {(row[0], row[1]): (row[2], row[3]) for row in db.execute(
+        "SELECT f.strategy,f.version,count(r.hit),coalesce(sum(r.hit),0) "
+        "FROM resolutions r JOIN forecasts f ON f.id=r.forecast "
+        "WHERE r.resolved_at<=? GROUP BY f.strategy,f.version", (now,))}
 
 
 class OracleEngine:
@@ -284,13 +294,10 @@ class OracleEngine:
         features = self._bars(db, bucket)
         signals = self.strategy_set.predict(features)
         candidates, votes = [], []
+        counts = evidence_counts(db, now)
         for signal in signals:
             strategy_id = signal["strategy_id"]
-            resolved_row = db.execute(
-                "SELECT count(r.hit),coalesce(sum(r.hit),0) FROM resolutions r JOIN forecasts f ON f.id=r.forecast WHERE f.strategy=? AND f.version=? AND r.resolved_at<=?",
-                (strategy_id, signal["version"], now),
-            ).fetchone()
-            resolved, hits = resolved_row
+            resolved, hits = counts.get((strategy_id, signal["version"]), (0, 0))
             forecast_id = None
             if signal["direction"] is not None:
                 identity = f"{self.policy_hash}:{strategy_id}:{bucket}"
@@ -414,7 +421,8 @@ class OracleEngine:
         now = self._clock(now)
         with self.store.connection() as db:
             row = db.execute(
-                "SELECT body FROM observations ORDER BY observed DESC LIMIT 1"
+                "SELECT body FROM observations WHERE observed<=? AND received<=? ORDER BY observed DESC LIMIT 1",
+                (now, now),
             ).fetchone()
         if row is None:
             return {
@@ -448,16 +456,13 @@ class OracleEngine:
         market = self.market(now)
         rows, votes = [], []
         with self.store.connection() as db:
+            evidence = evidence_counts(db, now)
             for entry in self.strategies():
                 forecast = db.execute(
                     "SELECT body FROM forecasts WHERE strategy=? AND version=? AND issued<=? ORDER BY issued DESC LIMIT 1",
                     (entry["strategy_id"], entry["version"], now),
                 ).fetchone()
-                counts = db.execute(
-                    "SELECT count(r.hit),coalesce(sum(r.hit),0) FROM resolutions r JOIN forecasts f ON f.id=r.forecast WHERE f.strategy=? AND f.version=? AND r.resolved_at<=?",
-                    (entry["strategy_id"], entry["version"], now),
-                ).fetchone()
-                resolved, hits = counts
+                resolved, hits = evidence.get((entry["strategy_id"], entry["version"]), (0, 0))
                 body = (
                     json.loads(forecast[0])
                     if forecast

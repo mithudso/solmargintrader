@@ -34,6 +34,20 @@ DEFAULT_RPCS = ["https://base-rpc.publicnode.com", "https://mainnet.base.org", "
 MAX_HEAD_LAG_S = 90
 
 
+def insufficient_history(error: Exception) -> bool:
+    """Only known historical-state/oracle absence permits a shorter-history fallback."""
+    text = str(error).lower()
+    return text.strip(" '\"") == "old" or any(
+        part in text
+        for part in (
+            "execution reverted: old",
+            "insufficient history",
+            "historical state unavailable",
+            "missing trie node",
+        )
+    )
+
+
 def _type_str(p: dict[str, Any]) -> str:
     t = p["type"]
     if t.startswith("tuple"):
@@ -321,8 +335,10 @@ class AeroChain:
             agos = [i * step_s for i in range(h * 3600 // step_s, -1, -1)]
             try:
                 cums, _ = p.functions.observe(agos).call()
-            except Exception:  # noqa: BLE001 - 'OLD' revert when oracle cardinality is too small
-                continue
+            except Exception as error:  # noqa: BLE001 -- transport failure is not missing history
+                if insufficient_history(error):
+                    continue
+                raise RuntimeError("oracle history provider unavailable") from None
             return [(cums[i + 1] - cums[i]) / step_s for i in range(len(cums) - 1)]
         return []
 
@@ -403,14 +419,17 @@ class AeroChain:
     def positions_of(self, owner: str, pools: list[str] | None = None) -> list[int]:
         """Token ids the owner holds directly plus those staked in the gauges of `pools`."""
         owner = Web3.to_checksum_address(owner)
-        n = int(self.npm.functions.balanceOf(owner).call())
+        block = self.head()[0]
+        n = int(self.npm.functions.balanceOf(owner).call(block_identifier=block))
         ids: list[int] = []
         if n:
-            ids = list(self.multicall([Call(self.npm, "tokenOfOwnerByIndex", (owner, i)) for i in range(n)]))
+            ids = list(
+                self.multicall([Call(self.npm, "tokenOfOwnerByIndex", (owner, i)) for i in range(n)], block=block)
+            )
         for pool_addr in pools or []:
-            ps = self.pool_state(pool_addr)
+            ps = self.pool_state(pool_addr, block=block)
             if ps.gauge != ZERO:
-                ids.extend(self.gauge_contract(ps.gauge).functions.stakedValues(owner).call())
+                ids.extend(self.gauge_contract(ps.gauge).functions.stakedValues(owner).call(block_identifier=block))
         return sorted({int(i) for i in ids})
 
     def erc20_balances(self, owner: str, tokens: list[str], block: int | str = "latest") -> list[int]:

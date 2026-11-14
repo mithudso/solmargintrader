@@ -75,13 +75,17 @@ class PaperSession:
     construction, which is what makes this safe to call from a UI thread.
     """
 
-    def __init__(self, result: BacktestResult, timestamps: Sequence[int] | None = None) -> None:
+    def __init__(self, result: BacktestResult, timestamps: Sequence[int] | None = None,
+                 *, initial_capital: float | None = None) -> None:
         self.result = result
         self._ts = np.asarray(
             timestamps if timestamps is not None else result.timestamps
         )
         self.cursor = 0
         self.mode_label = MODE_LABEL
+        # Legacy result-only callers retain their previous base. New sessions
+        # always supply the engine's pre-trade capital, including first-bar costs.
+        self._initial_capital = initial_capital
 
     # -- navigation ------------------------------------------------------
 
@@ -121,7 +125,9 @@ class PaperSession:
 
     @property
     def starting_equity(self) -> float:
-        """Equity at the first bar, used as the P&L base."""
+        """Pre-trade capital supplied by the engine caller."""
+        if self._initial_capital is not None:
+            return float(self._initial_capital)
         if not len(self):
             return 0.0
         return float(self.result.equity[0])
@@ -194,4 +200,4 @@ def start_session(
     session cannot disagree with a backtest of the same inputs.
     """
     result = run_backtest(strategy, arrays, config)
-    return PaperSession(result, timestamps=arrays["ts"])
+    return PaperSession(result, timestamps=arrays["ts"], initial_capital=config.initial_capital)

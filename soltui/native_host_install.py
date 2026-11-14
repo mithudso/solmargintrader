@@ -95,8 +95,10 @@ def install(repo: Path = REPO, python: Path = DEFAULT_PYTHON, extra_ids: list[st
             ecosystem_home: Path | None = None, isolated: bool = False) -> dict[str, Any]:
     if sys.platform != "darwin" and not sys.platform.startswith("linux"):
         raise ValueError("native helper installation supports macOS and Linux; Windows requires an explicit native port")
-    wrapper = wrapper or wrapper_path()
-    content = wrapper_text(repo.resolve(), python, manager_home=manager_home, ecosystem_home=ecosystem_home,
+    wrapper = Path(os.path.abspath((wrapper or wrapper_path()).expanduser()))
+    # Keep a venv's interpreter symlink: dereferencing it loses the venv prefix.
+    python = Path(os.path.abspath(python.expanduser()))
+    content = wrapper_text(repo.expanduser().resolve(), python, manager_home=manager_home, ecosystem_home=ecosystem_home,
                            extra_ids=extra_ids, isolated=isolated)
     wrapper.parent.mkdir(parents=True, exist_ok=True)
     wrapper.write_text(content)

@@ -3538,7 +3538,7 @@ class SolTuiApp(App):
             "leverage": float, "min_confidence": float,
             "borrow_long_bps_hour": float, "borrow_short_bps_hour": float,
             "cpcv_groups": int, "cpcv_k": int, "solana_address": str, "base_address": str,
-            "eth_address": str, "btc_xpub": str, "ltc_xpub": str, "doge_xpub": str,
+            "eth_address": str, "hyperliquid_address": str, "btc_xpub": str, "ltc_xpub": str, "doge_xpub": str,
         }
         out: dict[str, Any] = {}
         for name, cast in casts.items():
@@ -4178,9 +4178,11 @@ class SolTuiApp(App):
 
     @on(DataTable.RowHighlighted, "#compound-results")
     def _compound_result_highlighted(self, event: DataTable.RowHighlighted) -> None:
-        if not self._on_compound_tab() or not 0 <= event.cursor_row < len(self._compound_result_rows):
+        if not self._on_compound_tab():
             return
-        row = self._compound_result_rows[event.cursor_row]
+        row = next((r for r in self._compound_result_rows if r.get("label") == event.row_key.value), None)
+        if row is None:
+            return
         self._show_preview(f"{self._compound_coin} backtest {row.get('label')}", compound_mod.record_preview(
             f"{self._compound_coin} backtest: {row.get('label')}", row,
             "OOS = the last 30% of bars. Hit = next-bar direction; return = engine P&L after fees at the "
@@ -4188,9 +4190,11 @@ class SolTuiApp(App):
 
     @on(DataTable.RowHighlighted, "#compound-forward-table")
     def _compound_forward_highlighted(self, event: DataTable.RowHighlighted) -> None:
-        if not self._on_compound_tab() or not 0 <= event.cursor_row < len(self._compound_forward_rows):
+        if not self._on_compound_tab():
             return
-        row = self._compound_forward_rows[event.cursor_row]
+        row = next((r for r in self._compound_forward_rows if str(r["bar_ts"]) == event.row_key.value), None)
+        if row is None:
+            return
         when = time.strftime("%Y-%m-%d %H:%M UTC", time.gmtime(int(row["bar_ts"]) + 300))
         self._show_preview(f"{self._compound_coin} forward call {when}", compound_mod.record_preview(
             f"{self._compound_coin} forward call decided at {when}", row,
@@ -4207,8 +4211,9 @@ class SolTuiApp(App):
 
     @on(DataTable.RowHighlighted, "#signal-live-predictions-table")
     def _signal_live_row_highlighted(self, event: DataTable.RowHighlighted) -> None:
-        if 0 <= event.cursor_row < len(self._signal_live_prediction_rows):
-            self._signal_live_show_detail(event.cursor_row)
+        index = next((i for i, r in enumerate(self._signal_live_prediction_rows) if r.get("label") == event.row_key.value), None)
+        if index is not None:
+            self._signal_live_show_detail(index)
 
     def _signal_live_show_detail(self, row_idx: int) -> None:
         if not self.query("#signal-live-detail") or not (0 <= row_idx < len(self._signal_live_prediction_rows)):
@@ -4924,7 +4929,7 @@ class SolTuiApp(App):
                     _num(row["oos_fees_pct"]), _num((horizons.get(12) or {}).get("net_bps")),
                     _num((horizons.get(288) or {}).get("net_bps")), str(row["oos_calls"]), _pct(row["oos_hit"]),
                     _num(row["oos_z"]), _num(row["oos_gross_bps"]), _pct(row["oos_max_dd"]),
-                    "yes" if row["ranked"] else "no")
+                    "yes" if row["ranked"] else "no", key=row["label"])
                 if row["label"].startswith("only:"):
                     self._compound_bt[row["label"][5:]] = _pct(row["oos_hit"])
                 elif row["label"] == "compound":
@@ -4969,7 +4974,7 @@ class SolTuiApp(App):
                 fwd.add_row(time.strftime("%m-%d %H:%M", time.gmtime(row["bar_ts"] + 300)), row["call"],
                             _num(row["composite"]), str(row["regime"]), f"{row['price']:.4g}",
                             _num(row["ret_bps"]), {True: "yes", False: "no"}.get(row["hit"], "-"),
-                            ", ".join(row.get("blocked_by") or []) or "-")
+                            ", ".join(row.get("blocked_by") or []) or "-", key=str(row["bar_ts"]))
         else:
             summary.update(f"[red]{escape(self._msg(fenv))}[/]")
         self._compound_render_table()
@@ -5312,11 +5317,9 @@ class SolTuiApp(App):
         Repeat activations are cheap — Docs filters in memory, and Cumulative has
         an explicit Reload button for when results change underneath it.
         """
-        # Shutdown removes widgets before on_unmount; queued tab activations
-        # must not query removed controls or start another background read.
-        if not self.is_running:
-            return
-        pane = event.pane.id if event.pane else ""
+        if not self.is_running or event.pane is None or not event.pane.is_attached:
+            return  # Queued activations can outlive their widgets during shutdown.
+        pane = event.pane.id
         if pane == "tab-cumulative" and not self._cumulative_loaded:
             self._cumulative_loaded = True
             self._refresh_cumulative()
@@ -5822,7 +5825,9 @@ class SolTuiApp(App):
         venue = str(self.query_one("#advanced-venue", Select).value)
         kind = str(self.query_one("#advanced-type", Select).value)
         side = str(self.query_one("#advanced-side", Select).value)
-        product = self.query_one("#advanced-product", Input).value.strip().upper()
+        product = self.query_one("#advanced-product", Input).value.strip()
+        if venue == "coinbase":
+            product = product.upper()
         size = self.query_one("#advanced-size", Input).value.strip()
         unit = str(self.query_one("#advanced-unit", Select).value)
         if unit == "auto":
@@ -5912,8 +5917,7 @@ class SolTuiApp(App):
         if not self.query("#advanced-review"):
             return
         self.query_one("#advanced-review", Static).update("")
-        venue, kind, side, _, _, unit = self._advanced_values()
-        pair = self.query_one("#advanced-product", Input).value.strip().upper()
+        venue, kind, side, pair, _, unit = self._advanced_values()
         context_key = venue + ":" + pair
         if context_key != self._advanced_context_product:
             self._advanced_context_product = context_key
@@ -7778,7 +7782,7 @@ class SolTuiApp(App):
 
         Passive navigation (a click or arrow-key move, via `RowHighlighted`)
         calls this with `force=False`: if it would silently overwrite an
-        unsaved edit in a *different* file, it is refused instead. That
+        unsaved edit, including reopening the same file, it is refused instead. That
         silent overwrite -- `view.text = text` ran unconditionally on every
         cursor move -- was the actual bug behind "editing the file ...
         doesn't automatically save". Deliberate opens (Enter, the "o"
@@ -7791,8 +7795,7 @@ class SolTuiApp(App):
         view = self.query_one("#docs-view", TextArea)
         status = self.query_one("#docs-view-status", Static)
         dirty = self._docs_current_path is not None and view.text != self._docs_loaded_text
-        moving_away = dirty and path != self._docs_current_path
-        if moving_away and not force:
+        if dirty and not force:
             status.update(
                 f"unsaved changes in {self._docs_current_path} — save "
                 f"(ctrl+s) first, or press Enter/\"o\" on {path} to discard "
@@ -7826,7 +7829,7 @@ class SolTuiApp(App):
         self._docs_current_path = path
         self._docs_current_editable = editable
         self._preview_text = None
-        note = " (discarded unsaved edit)" if moving_away else ""
+        note = " (discarded unsaved edit)" if dirty else ""
         status.update(f"{path} — {'editable' if editable else 'read-only'}{note}")
         self.query_one("#docs-save", Button).disabled = not editable
 

@@ -21,7 +21,9 @@ def test_simrunner_requires_positive_measured_gas(gas):
     response = {"status": "0x1", "returnData": "0x"}
     if gas is not None:
         response["gasUsed"] = gas
-    w3.provider.make_request = lambda *a: {"result": [{"calls": [response, {"returnData": "0x01"}]}]}
+    w3.provider.make_request = lambda *a: {
+        "result": [{"calls": [response, {"status": "0x1", "returnData": "0x" + "00" * 32}]}]
+    }
     runner = SimRunner(SimpleNamespace(w3=w3, head=lambda: (100, 1800000000)), "0x" + "ab" * 20, [T0])
     with pytest.raises(RuntimeError, match="gas"):
         runner.execute([TX])

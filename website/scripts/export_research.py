@@ -10,6 +10,7 @@ import argparse
 import hashlib
 import json
 import re
+import stat
 import subprocess
 from pathlib import Path
 
@@ -63,7 +64,7 @@ def export(repo=ROOT):
         # Git tracks symlinks, and an untracked parent can also redirect a tracked
         # name. Refuse both before reading any content outside the publication tree.
         if candidate.resolve() != candidate:
-            raise ValueError(f"symlink refused in {source}")
+            raise ValueError("unsafe publication source: symlink refused")
         original = candidate.read_bytes()
         text = original.decode("utf-8")
         if SENSITIVE.search(text):

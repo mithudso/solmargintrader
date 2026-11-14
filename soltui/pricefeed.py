@@ -416,8 +416,17 @@ class Book:
         self.updated = 0.0
 
     def load(self, bids: Iterable[Sequence[Any]], asks: Iterable[Sequence[Any]], now: float) -> None:
-        self.bids = {float(p): float(q) for p, q, *_ in bids if float(q) > 0}
-        self.asks = {float(p): float(q) for p, q, *_ in asks if float(q) > 0}
+        def levels(rows):
+            result = {}
+            for price, size, *_ in rows:
+                px, qty = float(price), float(size)
+                if not math.isfinite(px) or not math.isfinite(qty) or px <= 0 or qty < 0:
+                    raise ValueError("invalid book price or size")
+                if qty > 0:
+                    result[px] = qty
+            return result
+        new_bids, new_asks = levels(bids), levels(asks)
+        self.bids, self.asks = new_bids, new_asks
         self.updated = now
 
     def change(self, side: str, price: Any, size: Any, now: float) -> None:
@@ -425,6 +434,8 @@ class Book:
         if book is None:
             return
         px, qty = float(price), float(size)
+        if not math.isfinite(px) or not math.isfinite(qty) or px <= 0 or qty < 0:
+            raise ValueError("invalid book price or size")
         if qty > 0:
             book[px] = qty
         else:
@@ -566,6 +577,7 @@ class Recorder:
         for product, book in self.books.items():
             top = book.top()
             if top is None:
+                self.state.pop(product, None)
                 continue
             bid, ask, bsz, asz = top
             last = self.last_trade.get(product)

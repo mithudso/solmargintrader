@@ -41,6 +41,7 @@ if [[ ! -f "$REPO/soltui/$module.py" ]]; then
   echo "soltui: no module soltui.$module (try: soltui, soltui app, soltui serve)" >&2
   exit 2
 fi
+cd "$REPO"
 if ! "$PY" -c "import textual" 2>/dev/null; then
   echo "soltui: $PY cannot import textual. Set up the environment once:" >&2
   echo "  uv venv ~/.venvs/soltui -p 3.13 && uv pip install -p ~/.venvs/soltui/bin/python \\" >&2

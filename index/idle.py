@@ -167,7 +167,7 @@ def lock_free() -> bool:
         os.close(fd)
 
 
-def maybe_start(*, force: bool = False, now: float | None = None) -> str:
+def maybe_start(*, force: bool = False, now: float | None = None, start_ollama: bool = True) -> str:
     """Start a background rebuild if one is warranted; return a one-line reason either way."""
     if os.environ.get("INDEX_NO_AUTO") == "1" and not force:
         return "auto-indexing disabled (INDEX_NO_AUTO=1)"
@@ -182,22 +182,30 @@ def maybe_start(*, force: bool = False, now: float | None = None) -> str:
     busy_sweep = False
     if not force and not is_idle():
         if not sweep_due(state, clock):
-            return f"semantic index is {status} ({why}); machine is busy, next sweep is not due yet"
+            message = f"semantic index is {status} ({why}); machine is busy, next sweep is not due yet"
+            _write_state({**state, "checked_at": clock, "last": message})
+            return message
         busy_sweep = True
     if not lock_free():
-        return f"semantic index is {status}; a rebuild is already running"
-    ready = ollama_ensure.ensure(ollama_ensure.EMBED_MODEL)
+        message = f"semantic index is {status}; a rebuild is already running"
+        _write_state({**state, "checked_at": clock, "last": message})
+        return message
+    ready = ollama_ensure.ensure(ollama_ensure.EMBED_MODEL, **({} if start_ollama else {"start": False}))
     if not ready.ok:
         _write_state({**state, "checked_at": clock,
                       "last": f"semantic index is {status}; {ready.message}"})
         return f"semantic index is {status}; not rebuilding: {ready.message}"
     OUT.mkdir(exist_ok=True)
-    log = LOG_FILE.open("ab")
-    subprocess.Popen(  # noqa: S603 - argv list, no shell
-        ["nice", "-n", "19", sys.executable, str(HERE / "idle.py"), "--run-build"],
-        stdout=log, stderr=subprocess.STDOUT, stdin=subprocess.DEVNULL, start_new_session=True,
-    )
-    log.close()
+    try:
+        with LOG_FILE.open("ab") as log:
+            subprocess.Popen(  # noqa: S603 - argv list, no shell
+                ["nice", "-n", "19", sys.executable, str(HERE / "idle.py"), "--run-build"],
+                stdout=log, stderr=subprocess.STDOUT, stdin=subprocess.DEVNULL, start_new_session=True,
+            )
+    except OSError as exc:
+        message = f"semantic index is {status}; rebuild could not start ({type(exc).__name__})"
+        _write_state({**state, "checked_at": clock, "last": message})
+        return message
     _write_state({**state, "checked_at": clock, "last_build_at": clock,
                   "last": "rebuild started in the background"})
     reason = "hourly sweep, machine busy" if busy_sweep else "machine idle"

@@ -79,6 +79,7 @@ class ExperimentScreen(ModalScreen[None]):
         self._timer = None
         self._polling = False
         self._workbench_closed = False
+        self._evidence_generation = 0
 
     def compose(self) -> ComposeResult:
         with Vertical(id="exp-dialog"):
@@ -231,7 +232,7 @@ class ExperimentScreen(ModalScreen[None]):
         self._timer = self.set_interval(1.0, self._poll)
 
     def _command(self, name: str, params: dict[str, Any], callback: Callable[[Any], None] | None = None,
-                 *, quiet: bool = False) -> None:
+                 *, quiet: bool = False, accept: Callable[[], bool] | None = None) -> None:
         if not quiet:
             self.query_one("#exp-status", Static).update(Text(f"{name}…"))
 
@@ -241,13 +242,14 @@ class ExperimentScreen(ModalScreen[None]):
             except Exception as exc:  # noqa: BLE001 - registry boundary keeps unexpected errors visible in the modal
                 env = {"ok": False, "error": {"message": f"{name} failed ({type(exc).__name__}); inspect local diagnostics"}}
             try:
-                self.app.call_from_thread(self._received, name, env, callback, quiet)
+                self.app.call_from_thread(self._received, name, env, callback, quiet, accept)
             except RuntimeError:
                 pass  # Application already shut down; no widget callbacks remain.
         self.run_worker(worker, thread=True, exit_on_error=False, group="experiment-commands")
 
-    def _received(self, name: str, env: dict[str, Any], callback: Callable | None, quiet: bool) -> None:
-        if self._workbench_closed or not self.is_attached:
+    def _received(self, name: str, env: dict[str, Any], callback: Callable | None, quiet: bool,
+                  accept: Callable[[], bool] | None = None) -> None:
+        if self._workbench_closed or not self.is_attached or (accept is not None and not accept()):
             return
         if not env.get("ok"):
             self._polling = False
@@ -530,6 +532,17 @@ class ExperimentScreen(ModalScreen[None]):
     def selected_run(self, event: DataTable.RowSelected) -> None:
         self.run_id = str(event.row_key.value)
         self.selected_candidate = ""
+        self.run = {}
+        self.candidate_rows = []
+        self._shown_cells = {}
+        self._evidence_generation += 1
+        self.query_one("#exp-adopt", Checkbox).value = False
+        for name in ("resume", "pause", "cancel", "final"):
+            self.query_one(f"#exp-{name}", Button).disabled = True
+        for name in ("candidate-table", "cell-table"):
+            self.query_one(f"#exp-{name}", DataTable).clear()
+        for name in ("run-detail", "candidate-detail", "cell-detail"):
+            self.query_one(f"#exp-{name}", Static).update("Loading selected run…")
         self._command("experiments.get", {"run_id": self.run_id}, self._loaded_run)
 
     def _loaded_run(self, run: dict[str, Any]) -> None:
@@ -565,7 +578,7 @@ class ExperimentScreen(ModalScreen[None]):
 
     @on(Checkbox.Changed, "#exp-adopt")
     def _final_control(self) -> None:
-        if not self.run:
+        if not self.run or self.run.get("id") != self.run_id:
             return
         completed = self.run["status"] == "completed"
         verdict = (self.run.get("summary") or {}).get("verdict") or {}
@@ -608,7 +621,10 @@ class ExperimentScreen(ModalScreen[None]):
     @on(DataTable.RowSelected, "#exp-candidate-table")
     def selected_candidate_row(self, event: DataTable.RowSelected) -> None:
         self.selected_candidate = str(event.row_key.value)
-        row = next(r for r in self.candidate_rows if r["candidate_id"] == self.selected_candidate)
+        row = next((r for r in self.candidate_rows if r["candidate_id"] == self.selected_candidate), None)
+        if row is None:
+            self.selected_candidate = ""
+            return
         self.query_one("#exp-candidate-detail", Static).update(Text(
             f"Candidate {self.selected_candidate}: {_config(row['config'])}\n"
             f"Observed coins: {', '.join(row.get('coins') or [])}; splits: {', '.join(row.get('splits') or [])}; "
@@ -627,8 +643,11 @@ class ExperimentScreen(ModalScreen[None]):
             if value:
                 params[name] = value
         expected_id = self.run_id
+        self._evidence_generation += 1
+        generation = self._evidence_generation
+        current = lambda: self.run_id == expected_id and self._evidence_generation == generation
         self._command("experiments.cells", params,
-                      lambda rows: self._cells_loaded(rows) if self.run_id == expected_id else None, quiet=True)
+                      lambda rows: self._cells_loaded(rows) if current() else None, quiet=True, accept=current)
 
     def _cells_loaded(self, cells: list[dict[str, Any]]) -> None:
         table = self.query_one("#exp-cell-table", DataTable)
@@ -648,12 +667,14 @@ class ExperimentScreen(ModalScreen[None]):
 
     @on(DataTable.RowSelected, "#exp-cell-table")
     def selected_cell(self, event: DataTable.RowSelected) -> None:
-        cell = self._shown_cells[str(event.row_key.value)]
+        cell = self._shown_cells.get(str(event.row_key.value))
+        if cell is None:
+            return
         self.query_one("#exp-cell-detail", Static).update(Text(
             "\n".join(f"{name}: {_number(value)}" for name, value in cell.items())))
 
     def _control(self, action: str) -> None:
-        if not self.run_id:
+        if not self.run_id or self.run.get("id") != self.run_id:
             return
         params: dict[str, Any] = {"run_id": self.run_id}
         if action == "finalize":

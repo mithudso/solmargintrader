@@ -67,8 +67,6 @@ export function swapWithinRange({ amountIn, sqrtPriceX96, liquidity, feePips, ze
   if (zeroForOne) {
     const num = liquidity << 96n;
     const denominator = num + net * sqrtPriceX96;
-    // SqrtPriceMath rounds token0's next price up. Rounding down can promise
-    // output for a price movement the actual pool cannot make with this input.
     next = (num * sqrtPriceX96 + denominator - 1n) / denominator;
     out = (liquidity * (sqrtPriceX96 - next)) / Q96;
   } else {
@@ -99,9 +97,12 @@ export async function quoteBase(deps, { from, to, amount, slippageBps = 50 }) {
   const amountIn = fromUnits(amount, tin.decimals);
   const zeroForOne = tin.address.toLowerCase() < tout.address.toLowerCase();
 
-  const [chainId, spacingsHex] = await rpcBatch(deps, BASE.rpcs, [
-    ['eth_chainId', []],
-    ['eth_call', [{ to: BASE.clFactory, data: SELECTOR.tickSpacings }, 'latest']],
+  const [chainId, block] = await rpcBatch(deps, BASE.rpcs, [
+    ['eth_chainId', []], ['eth_blockNumber', []],
+  ], { source: 'base rpc' });
+  if (typeof block !== 'string' || !/^0x[0-9a-fA-F]+$/.test(block)) throw new MarketError('base rpc', 'bound block unavailable');
+  const [spacingsHex] = await rpcBatch(deps, BASE.rpcs, [
+    ['eth_call', [{ to: BASE.clFactory, data: SELECTOR.tickSpacings }, block]],
   ], { source: 'base rpc' });
   if (chainId !== BASE.chainIdHex) throw new MarketError('base rpc', `endpoint reports chain ${chainId}, expected ${BASE.chainIdHex}`);
   const spacings = intArray(spacingsHex);
@@ -109,15 +110,15 @@ export async function quoteBase(deps, { from, to, amount, slippageBps = 50 }) {
 
   const poolsHex = await rpcBatch(deps, BASE.rpcs, spacings.map((ts) => ['eth_call', [{
     to: BASE.clFactory, data: SELECTOR.getPool + word(tin.address) + word(tout.address) + intWord(ts),
-  }, 'latest']]), { source: 'base rpc' });
+  }, block]]), { source: 'base rpc' });
   const pools = spacings.map((ts, i) => ({ tickSpacing: ts, address: addressOf(poolsHex[i]) }))
     .filter((p) => p.address && p.address !== ZERO_ADDRESS);
   if (!pools.length) throw new MarketError('quote', `no Slipstream pool for ${tin.symbol}/${tout.symbol}`);
 
   const state = await rpcBatch(deps, BASE.rpcs, pools.flatMap((p) => [
-    ['eth_call', [{ to: p.address, data: SELECTOR.slot0 }, 'latest']],
-    ['eth_call', [{ to: p.address, data: SELECTOR.liquidity }, 'latest']],
-    ['eth_call', [{ to: p.address, data: SELECTOR.fee }, 'latest']],
+    ['eth_call', [{ to: p.address, data: SELECTOR.slot0 }, block]],
+    ['eth_call', [{ to: p.address, data: SELECTOR.liquidity }, block]],
+    ['eth_call', [{ to: p.address, data: SELECTOR.fee }, block]],
   ]), { source: 'base rpc' });
 
   const tried = pools.map((p, i) => {
@@ -152,6 +153,7 @@ export async function quoteBase(deps, { from, to, amount, slippageBps = 50 }) {
     feePct: best.feePips / 10_000,
     priceImpactPct: best.spotOut > 0 ? Math.max(0, (1 - Number(best.amountOut) / best.spotOut) * 100 - best.feePips / 10_000) : null,
     route: [`Slipstream ${tin.symbol}/${tout.symbol} spacing ${best.tickSpacing} (${best.address})`],
+    block,
     poolsChecked: tried.map((t) => ({ tickSpacing: t.tickSpacing, pool: t.address, ok: t.ok, reason: t.reason ?? null,
       out: t.ok ? toUnits(t.amountOut, tout.decimals) : null })),
     caveats: [

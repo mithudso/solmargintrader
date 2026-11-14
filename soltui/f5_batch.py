@@ -17,16 +17,18 @@ import re
 import sqlite3
 import subprocess
 import sys
-import time
 import threading
+import time
 import uuid
-from pathlib import Path
 from contextlib import closing
+from itertools import pairwise
+from pathlib import Path
 from threading import Event
 from typing import Any, Callable, Sequence
 
-from backtester.core.strategy_cards import HORIZONS, load_all
 from backtester.core.strategies import REGISTRY
+from backtester.core.strategy_cards import HORIZONS, load_all
+
 from . import bgqueue, bgworker, config, forwardtest
 from .runner import engine_config
 from .research_admission import admit_read, participating
@@ -37,6 +39,31 @@ _SOURCE_EPOCH = SourceEpoch.capture(_REPO)
 
 INTERVAL_MINUTES = {"1m": 1, "5m": 5, "15m": 15, "1h": 60, "6h": 360, "1d": 1440}
 PHASES = {"planned", "backtesting", "stopped", "failed", "forward", "forward_partial"}
+
+
+def _signal_response(cache, symbol, interval, fetch, **kwargs):
+    seconds = int(kwargs["seconds"])
+    now = float(kwargs["now"])
+    closed = int(now // seconds)
+    key = (symbol, interval, closed)
+    if key not in cache:
+        for old_key in list(cache):
+            if old_key[0] != symbol or old_key[1] == interval:
+                del cache[old_key]
+        raw = fetch(symbol, cache=False, **kwargs)
+        mask = raw["ts"] + seconds <= now
+        bars = {name: values[mask] for name, values in raw.items()}
+        timestamps = bars["ts"]
+        if (not len(timestamps) or int(timestamps[-1]) != (closed - 1) * seconds
+                or any(b <= a for a, b in pairwise(timestamps))):
+            raise ValueError(f"No current closed {interval} signal candle")
+        tail = 0
+        for index in range(1, len(timestamps)):
+            if timestamps[index] - timestamps[index - 1] != seconds:
+                tail = index
+        forwardtest.validate_bar_arrays({name: values[tail:] for name, values in bars.items()}, interval)
+        cache[key] = raw
+    return cache[key]
 
 
 def _root(root: Path | None = None) -> Path:
@@ -721,17 +748,8 @@ def run(run_id: str, *, root: Path | None = None, max_cells: int | None = None,
                             cached.update(symbol=symbol, minute=minute_key, bars=int(kwargs.get("bars", 0)),
                                           data=compound.fetch_closed_candles(symbol, cache=False, **kwargs))
                         return cached["data"]
-                    def signal_fetch(symbol: str, **kwargs: Any) -> dict[str, Any]:
-                        seconds = int(kwargs["seconds"])
-                        closed = int(float(kwargs["now"]) // seconds)
-                        key = (symbol, interval, closed)
-                        if key not in signal_cache:
-                            # Retain only the current asset's intervals, bounding memory.
-                            for old_key in list(signal_cache):
-                                if old_key[0] != symbol or old_key[1] == interval:
-                                    del signal_cache[old_key]
-                            signal_cache[key] = compound.fetch_closed_candles(symbol, cache=False, **kwargs)
-                        return signal_cache[key]
+                    def signal_fetch(symbol: str, _interval=interval, **kwargs: Any) -> dict[str, Any]:
+                        return _signal_response(signal_cache, symbol, _interval, compound.fetch_closed_candles, **kwargs)
                     result = tick(asset, trials, (minutes,), 2 * (settings.fee_bps + settings.slippage_bps),
                                   tune=False, code=f"f5:{run_id}:{_meta(db, 'code_id')}",
                                   db_path=directory / "forward.sqlite3", history=history, fetch=fetch, stop=stop_event,

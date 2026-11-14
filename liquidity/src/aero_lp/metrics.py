@@ -17,7 +17,7 @@ Derived:
   * edge_ratio            - income / LVR. Both scale with concentration, so the ratio barely depends
                             on width; below 1 no width is profitable for a passive range.
   * expected_net_apr      - best width's income - LVR - rebalance cost, for the actual deposit size.
-  * break_even_deposit    - smallest deposit whose income covers the rebalance costs at that width.
+  * break_even_deposit    - local estimate using income/$ at the sampled deposit; dilution changes with size.
 """
 
 from __future__ import annotations
@@ -94,6 +94,7 @@ class PoolMetrics:
     # Replay at the half-width that would actually be deployed (best_half_width_pct): what the allocator gates on.
     # backtest_net_apr is the best of a width grid and can come from a different width.
     backtest_deploy_apr: float = 0.0
+    break_even_basis: str = "local estimate at sampled deposit; not a solved minimum (liquidity dilution varies)"
 
     def to_json(self) -> dict[str, Any]:
         d = asdict(self)
@@ -144,7 +145,11 @@ def pool_economics(chain: AeroChain, market: MarketData, pool: PoolState) -> tup
         info = {"volume_24h_usd": 0.0, "reserve_usd": 0.0}
     try:
         d0, d1, days = chain.fee_growth_delta(pool.address, pool.block)
-    except Exception:  # noqa: BLE001 - fall back to volume x current fee
+    except Exception as error:  # noqa: BLE001 -- never relabel an outage as missing fee history
+        from .chain import insufficient_history
+
+        if not insufficient_history(error):
+            raise RuntimeError("fee history provider unavailable") from None
         d0 = d1 = 0
         days = 0.0
     econ = economics_from(
@@ -189,6 +194,7 @@ def backtest_best(
     pool_fee: float,
     tick_spacing: int,
     cfg: StrategyConfig,
+    impact_bps: float = 5.0,
 ) -> tuple[float, float, float]:
     """Replay the pool's actual hourly price path at a grid of widths (snapped to the tick spacing).
 
@@ -206,7 +212,16 @@ def backtest_best(
     best = (-math.inf, 0.0)
     for pct in BACKTEST_WIDTHS_PCT:
         hw = max(math.log1p(pct / 100), min_w)
-        r = backtest.run(closes, hw, yield_fn, start_value=deposit_usd, gas_cost=gas_usd, pool_fee=pool_fee, cfg=cfg)
+        r = backtest.run(
+            closes,
+            hw,
+            yield_fn,
+            start_value=deposit_usd,
+            gas_cost=gas_usd,
+            pool_fee=pool_fee,
+            cfg=cfg,
+            impact_bps=impact_bps,
+        )
         apr = r.pnl_vs_hodl / deposit_usd * 365 / days * 100
         if math.isfinite(apr) and apr > best[0]:
             best = (apr, (math.exp(hw) - 1) * 100)
@@ -224,13 +239,23 @@ def backtest_at_width(
     tick_spacing: int,
     cfg: StrategyConfig,
     half_width: float,
+    impact_bps: float = 5.0,
 ) -> float:
     """Net APR % vs holding when the replay uses exactly `half_width` (log). 0 without a replay (no data),
     NO_DATA when the result is not a number."""
     if len(closes) < 24 or not deposit_usd > 0:
         return 0.0
     hw = max(half_width, tick_spacing * math.log(1.0001))
-    r = backtest.run(closes, hw, yield_fn, start_value=deposit_usd, gas_cost=gas_usd, pool_fee=pool_fee, cfg=cfg)
+    r = backtest.run(
+        closes,
+        hw,
+        yield_fn,
+        start_value=deposit_usd,
+        gas_cost=gas_usd,
+        pool_fee=pool_fee,
+        cfg=cfg,
+        impact_bps=impact_bps,
+    )
     apr = r.pnl_vs_hodl / deposit_usd * 365 / ((len(closes) - 1) / 24) * 100
     return apr if math.isfinite(apr) else NO_DATA
 
@@ -348,10 +373,18 @@ def score_pool(
     break_even = (rb_day * gas_usd / inc_day) if inc_day > 0 else math.inf
 
     bt_apr, bt_w, bt_days = backtest_best(
-        closes, yield_curve(mode == "aero"), deposit_usd, gas_usd, pool.fee, pool.tick_spacing, cfg
+        closes, yield_curve(mode == "aero"), deposit_usd, gas_usd, pool.fee, pool.tick_spacing, cfg, impact_bps
     )
     bt_deploy = backtest_at_width(
-        closes, yield_curve(mode == "aero"), deposit_usd, gas_usd, pool.fee, pool.tick_spacing, cfg, chosen.half_width
+        closes,
+        yield_curve(mode == "aero"),
+        deposit_usd,
+        gas_usd,
+        pool.fee,
+        pool.tick_spacing,
+        cfg,
+        chosen.half_width,
+        impact_bps,
     )
     tvl = ctx["tvl_usd"]
     vol = ctx["volume_24h_usd"]
@@ -431,7 +464,7 @@ def score_pool(
         rebalance_cost_apr=chosen.rebalance_cost_frac_day * 36500,
         net_fees_only_apr=best["fees"].net_frac_day * 36500,
         net_gauge_apr=best["aero"].net_frac_day * 36500 if pool.gauge_alive else None,
-        income_measured=econ.fee_usd_per_l_day > 0,
+        income_measured=econ.fee_usd_per_l_day is not None,
         fee_history_days=ctx["fee_history_days"],
     )
     return metrics, detail

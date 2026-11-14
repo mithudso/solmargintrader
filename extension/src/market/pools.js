@@ -21,7 +21,7 @@ const CHAIN_NAMES = { Base: 'base', Solana: 'solana' };
 export function normalisePool(raw) {
   const chain = Object.hasOwn(CHAIN_NAMES, raw?.chain) ? CHAIN_NAMES[raw.chain] : null;
   // Number(null) is 0: a missing APY would rank as a real 0%. Missing is missing.
-  const num = (v) => (v === null || v === undefined || v === '' ? null : Number.isFinite(Number(v)) ? Number(v) : null);
+  const num = (v) => ((typeof v === 'number' || typeof v === 'string' && v.trim() !== '') && Number.isFinite(Number(v)) ? Number(v) : null);
   const apy = num(raw?.apy);
   const tvlUsd = num(raw?.tvlUsd);
   if (!chain || typeof raw.pool !== 'string' || apy === null || tvlUsd === null) return null;
@@ -67,7 +67,7 @@ export function rankPools(pools, {
     .filter((p) => !singleOnly || p.exposure === 'single')
     .filter((p) => includeOutliers || !p.outlier)
     .filter((p) => !q || `${p.project} ${p.symbol} ${p.meta ?? ''}`.toLowerCase().includes(q))
-    .sort((a, b) => (b[key] ?? b.apy ?? -Infinity) - (a[key] ?? a.apy ?? -Infinity))
+    .sort((a, b) => (b[key] ?? -Infinity) - (a[key] ?? -Infinity))
     .slice(0, Math.max(1, Math.min(500, limit)));
 }
 

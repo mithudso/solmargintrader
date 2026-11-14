@@ -545,6 +545,10 @@ in Chrome (the gate is unit-tested with a fake `reload`, because a reload would 
 the owner's own browser, which needs the one-time extension reload for the new `nativeMessaging`
 permission.
 
+The current offline economics gate is `node tools/dryrun.js --ticks 8 --osc 6 --offline 100 --assert-economics`.
+The explicit assertion refuses tick errors, unknown fees, or a run without a positive closed round trip.
+Exploratory `--walk` reports remain available without that assertion.
+
 **Historical development receipts (the figures below are not the current gate):**
 
 - `npm test` → **110 passing, 0 failing** (unit, integration and three-surface parity)

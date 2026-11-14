@@ -20,7 +20,15 @@ Save requests in `prompts.md` and versioned continuation records in `memory.md`,
 | `soltui/` (Python) | Research console with separately armed manual Coinbase controls; Jupiter V2 submission remains blocked |
 | `mongo/` (Python) | Derived local datastore plus a query reference. Rebuildable; nothing else imports it |
 | `extension/` (JavaScript) | **Can place real orders and move real money.** Treat every change as production software |
-| `liquidity/` (Python, own venv) | **Can move real money on Base.** Read `liquidity/CLAUDE.md` first |
+| `liquidity/` (Python, own venv) | Retained Base signing code; daemon and scout archived, disabled and killed. Read `liquidity/CLAUDE.md` first |
+| `oracle/` (Python) | Read-only forecasts/MCP; separately enabled TradingView worker can submit Coinbase spot or GUM ZEC perpetual orders |
+| `botmanager/` (Python) | Paper accounts, evidence and owner-aware lifecycle; no signing |
+| `ecosystem/` (Python) | Paper coordination and authenticated local control room; no order submission |
+| `executor/` (Python, own venv) | **Guarded real Solana swaps.** Read `executor/CLAUDE.md` first |
+
+The separate `website/` package hosts wallet accounts, research and inactive paper bot
+definitions. It does not inherit local trading authority or execute those definitions.
+See [its guide](website/README.md) for independent billing, analysis and execution gates.
 
 ## The rules most often broken here
 
@@ -42,10 +50,10 @@ Save requests in `prompts.md` and versioned continuation records in `memory.md`,
 ## Before claiming a change works
 
 ```bash
-python3 -m unittest discover -s backtester/tests -t .   # 1120 tests
-python3 -m unittest discover -s soltui/tests -t .       # 1582 tests (TUI dependencies required)
-python3 -m unittest discover -s mongo/tests -t .        # 57 tests
-cd extension && npm test                                # 483 tests
+python3 -m unittest discover -s backtester/tests -t .   # 1196 tests
+python3 -m unittest discover -s soltui/tests -t .       # 1694 tests (TUI dependencies required)
+python3 -m unittest discover -s mongo/tests -t .        # 73 tests
+cd extension && npm test                                # 555 tests
 node tools/dryrun.js --ticks 8 --osc 6 --offline 100    # a round trip must close positive
 python3 scripts/check_docs.py                           # doc counts and retrieval indexes
 ```

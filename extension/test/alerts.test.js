@@ -18,6 +18,16 @@ const scout = (pools, extra = {}) => ({ generated_at: NOW / 1000 - 3600, deposit
 const baseHoldings = (usdc) => ({ chains: [{ chain: 'base', holdings: [{ symbol: 'USDC', usd: usdc, stable: true, included: true }] },
   { chain: 'solana', holdings: [{ symbol: 'USDC', usd: 999, stable: true, included: true }] }] });
 
+test('CDO-2377ccbbdc CDO-05eac51ba7 action capital covers a known positive break-even in both branches', () => {
+  for (const breakEven of [null, undefined, NaN, Infinity, -1, 0, 1000]) {
+    const liquidity = { scout: scout([scoutPool({ break_even_deposit_usd: breakEven })]),
+      positions: [{ pool: 'old', apr_realized: 0, value_usd: 20 }], wallet: { idle_usd: 30 } };
+    assert.equal(computeAlerts({ liquidity, prefs: {}, nowMs: NOW }).filter(a => a.severity === SEVERITY.ACTION).length, 0, String(breakEven));
+  }
+  const liquidity = { scout: scout([scoutPool({ break_even_deposit_usd: 10 })]), positions: [{ pool: 'old', apr_realized: 0, value_usd: 20 }], wallet: { idle_usd: 30 } };
+  assert.equal(computeAlerts({ liquidity, prefs: {}, nowMs: NOW }).filter(a => a.severity === SEVERITY.ACTION).length, 2);
+});
+
 /* ---------------------------------------------------------- pure rules -- */
 
 test('only modelled pools that pass every gate may justify moving money; a missing field fails the gate', () => {
@@ -57,7 +67,7 @@ test('a stale or undated scout can never raise an act alert', () => {
 
 test('a modelled pool beating an open position by the margin is an action alert with its evidence', () => {
   const liquidity = { scout: scout([scoutPool({ pool: '0xbest', expected_net_apr: 14 })]),
-    positions: [{ slot: '7', pool: '0xmine', pair: 'WETH/cbBTC', apr_realized: 3 }] };
+    positions: [{ slot: '7', pool: '0xmine', pair: 'WETH/cbBTC', apr_realized: 3, value_usd: 50 }] };
   const [a, ...rest] = computeAlerts({ liquidity, prefs: { minAprGainPct: 5 }, nowMs: NOW });
   assert.equal(rest.length, 0);
   assert.equal(a.severity, SEVERITY.ACTION);
@@ -271,25 +281,39 @@ test('after a scan that read an empty lead set, the next scan alerts on new lead
   assert.deepEqual(second.scan.alerts.map((a) => a.id), ['lead:p9']);
 });
 
-test('overlapping scans and acknowledgements run one at a time, so none loses the other\'s write', async () => {
-  let release;
-  const gate = new Promise((r) => { release = r; });
+test('CDO-ff1819fc04 overlapping scans and acknowledgements preserve the new alert and its acknowledgement', { timeout: 2000 }, async () => {
+  let release, entered;
+  const gate = new Promise(resolve => { release = resolve; });
+  const scanEntered = new Promise(resolve => { entered = resolve; });
   const order = [];
+  const liquidity = { scout: scout([scoutPool()]), positions: [], wallet: { idle_usd: 40 } };
   const soltui = {
     async request(req) {
-      if (req.command === 'liquidity.data') { order.push('scan-read'); await gate; }
-      return { ok: false, command: req.command ?? req.op, result: null, error: { code: 'failed', message: 'x' } };
+      if (req.op === 'list') return { ok: true, command: 'list', result: [], error: null };
+      if (req.command === 'liquidity.data') {
+        order.push('scan-read'); entered(); await gate;
+        return { ok: true, command: req.command, result: liquidity, error: null };
+      }
+      return { ok: false, command: req.command ?? req.op, result: null, error: { code: 'failed', message: 'fixture unavailable' } };
     },
   };
   const d = deps({ soltui, fetch: async () => ({ ok: false, status: 503, headers: { get: () => null }, text: async () => '' }) });
   const scan = runCommand({ name: 'scanAlerts', args: {}, deps: d });
-  await new Promise((r) => setTimeout(r, 20));
-  const ack = runCommand({ name: 'ackAlerts', args: { all: true }, deps: d }).then(() => order.push('ack'));
-  await new Promise((r) => setTimeout(r, 20));
-  assert.deepEqual(order, ['scan-read'], 'the ack waits for the running scan');
-  release();
-  await Promise.all([scan, ack]);
+  let ack;
+  try {
+    await scanEntered;
+    ack = runCommand({ name: 'ackAlerts', args: { all: true }, deps: d }).then(result => { order.push('ack'); return result; });
+    for (let i = 0; i < 16; i++) await Promise.resolve();
+    assert.deepEqual(order, ['scan-read'], 'the ack waits for the running scan');
+  } finally { release(); }
+  const [scanned, acknowledged] = await Promise.all([scan, ack]);
   assert.deepEqual(order, ['scan-read', 'ack']);
+  assert.equal(acknowledged.acked, 1);
+  assert.deepEqual(scanned.scan.alerts.map(alert => alert.id), ['idle:0xpool']);
+  const overview = await runCommand({ name: 'overview', deps: d });
+  assert.equal(overview.scan.scannedAtMs, scanned.scan.scannedAtMs);
+  assert.equal(overview.scan.alerts[0].id, 'idle:0xpool');
+  assert.equal(overview.scan.alerts[0].acked, true);
 });
 
 test('ackAlerts refuses an id longer than any alert id', async () => {
@@ -321,5 +345,5 @@ test('unknown or invalid break-even capital cannot justify an idle-capital actio
     assert.deepEqual(computeAlerts({ holdings: baseHoldings(100), liquidity, prefs: {}, nowMs: NOW }), []);
   }
   const liquidity = { scout: scout([scoutPool({ break_even_deposit_usd: 0 })]), positions: [] };
-  assert.equal(computeAlerts({ holdings: baseHoldings(100), liquidity, prefs: {}, nowMs: NOW })[0].severity, SEVERITY.ACTION);
+  assert.deepEqual(computeAlerts({ holdings: baseHoldings(100), liquidity, prefs: {}, nowMs: NOW }), []);
 });

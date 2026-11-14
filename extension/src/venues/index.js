@@ -73,11 +73,13 @@ export class DryRunVenue {
     return this.inner.getCarryCosts();
   }
 
-  async placeOrder({ intent, slippageBps }) {
+  async placeOrder({ intent, slippageBps, ttlMs }) {
+    if (ttlMs !== undefined && (!Number.isFinite(ttlMs) || ttlMs <= 0)) throw new RangeError('paper order TTL must be positive');
     const id = `sim-${intent.intentKey}-${this.clock()}`;
     this.simulated.push({
       venueOrderId: id,
       status: 'active',
+      expiresAtMs: ttlMs === undefined ? null : this.clock() + ttlMs,
       side: intent.side,
       triggerPriceUsd: intent.level,
       intentKey: intent.intentKey,
@@ -106,6 +108,7 @@ export class DryRunVenue {
     const fills = [];
     for (const o of this.simulated) {
       if (o.status !== 'active') continue;
+      if (o.expiresAtMs !== null && Number.isFinite(o.expiresAtMs) && this.clock() >= o.expiresAtMs) { o.status = 'expired'; o.updatedAtMs = this.clock(); continue; }
       const crossed =
         (o.side === 'buy' && price <= o.triggerPriceUsd) ||
         (o.side === 'sell' && price >= o.triggerPriceUsd);
