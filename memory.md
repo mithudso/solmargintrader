@@ -1,7 +1,9 @@
 # Work continuation
 
-Version: 564
+Version: 565
+Delta: v564 to v565; preserve concurrent remote merge f628184;
 Delta: v562 to v564; refresh PR226 with masterf74eeed and preserve all AdSense publication records.
+Version: 562
 Delta: v561 to v562; update PR226 after master18dae4c publication.
 Delta: v555 to v556; add the ZEC reversal working-paper publication record while preserving incoming Settings delivery.
 
@@ -2456,6 +2458,7 @@ Public active status doc `/Users/mitch/dev/solmargintrader/docs/code-deep-optimi
 This pass only resolves conflicts and pushes the unfinished audit checkpoint. Master25e1d60 owns the current .cdo/ledger.json. The exact incoming PR226 ledger is retained byte-for-byte at .cdo/checkpoints/pr226-20261114-ledger.json, SHA256 eaa0c8ee78fcfec1adf3b2293239a1c8ce718f6b6846bcacb74efcd17d8e41b3. Its old source receipts are historical and do not certify current source. Original diagnostics scope and unfinished findings remain unchanged. No optimization, inference, service action or default-branch merge. Remaining: deterministic docs/index and JSON checks, commit/push and remote-head conflict verification.
 
 PR226 follow-up: retain the incoming ZEC paper from master18dae4c and both histories. Original historical ledger archive remains byte-identical. Resolve only workflow/index overlaps, validate deterministic projections and push; no optimizer or service action.
+
 ## AdSense integration checkpoint
 
 Incoming main18dae4cef65b51633f1f4bf2f96aba85f931f988/PR263 publishes a separate exploratory ZEC reversal working paper and publicPDF/catalog. Preserve all exact paper/results/export bytes; do not rerun its study or alter numerical claims. Mergeconflicts affect only workflowrecords and derivedindexes. Both record branches are append-only after the exact common body; savepreimages and combinealltails/Deltafields. AdSense8implementationfiles remainfrozen/qualified; rebuild deterministicindexes andcheckpublicexport/wiki/inventories before integrationcommit andfreshrequiredCI. A parallelGitHubAgentMerge mayupdate the remote taskbranch; fetchandpreserve its commits beforepushing, neverforce.
