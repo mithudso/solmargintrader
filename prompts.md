@@ -1,6 +1,7 @@
 # Prompt history
 
-Version: 248
+Version: 249
+Delta: v248 to v249; preserve the ZEC two-bar reversal paper request while integrating master.
 Delta: v247 to v248; preserve the screenshot showing the disabled Coinbase form on direct Settings entry.
 Delta: v246 to v247; record the owner request for two masked Coinbase credential fields.
 Delta: v245 to v246; preserve the full hosted goal, provider-confirmation replies and observed-price-shape visual-guide request verbatim.
@@ -4297,3 +4298,9 @@ Can you do a lookback correlation of when major news articles came out about dif
 ## 2026-11-14 — PR conflict updates
 
 Resolve the conflicts and push  all the PRs for https://github.com/mithudso/solmargintrader/pull/235 224 and 226 as well.
+
+## 2026-11-14 — ZEC two-bar reversal paper
+
+```text
+Two things: 1)  If this is true, can I bet on a reversal after two ups or two down 10 mins?  10 minutes                        1.80 bars                        1.72 bars                20.8%                    41.4%     and 2) Can you write this up into a paper and post it on the oraclebot.io site?
+```

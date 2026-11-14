@@ -1,11 +1,17 @@
 # Work continuation
 
-Version: 560
+Version: 562
+Delta: v561 to v562; validate PR235 conflict integration with master18dae4c and record delivery state.
+Delta: v560 to v561; integrate current master and preserve incoming ZEC paper publication.
 Delta: v559 to v560; classify macOS launcher fixtures as platform-specific after Linux CI lacked /bin/zsh.
 Delta: v558 to v559; fix final Linux/native CI integration failures after c7f9ab9.
 Delta: v555 to v557; integrate master25e1d60 into PR235 and preserve the separate PR224 record reservation.
 Delta: v554 to v555; qualify direct-entry startup RED/GREEN, current-account capability updates and preserved browser drafts.
 Delta: v553 to v554; diagnose and repair direct Settings capability initialization missed by Overview-first fixtures.
+
+## PR235 master integration validation
+
+Resolved the current master conflicts against verified master18dae4cef65b51633f1f4bf2f96aba85f931f988, preserving the PR work records and the incoming ZEC reversal paper/publication assets. Validation on the integrated tree: website Node tests and JS syntax checks passed; browser groups24/24 passed; website research tests8/8 and server tests24/24 passed; research export and generated-index checks passed; incoming analysis script compiled and results JSON parsed. Full hosted website Python CI and repository docs drift are not yet qualified in the available Python3.12 environment (repository requires3.13); the merge commit is created and publication remains pending.
 
 ## Retained PR 235 integration record
 
