@@ -1,7 +1,10 @@
 # Work continuation
 
-Version: 555
-Delta: v553 to v555; reserve v554 for the separate PR235 integration and update PR224 under TASK-2185.
+Version: 556
+Delta: v555 to v556; integrate both current master updates into PR224 under TASK-2185.
+
+Delta: v554 to v555; qualify direct-entry startup RED/GREEN, current-account capability updates and preserved browser drafts.
+Delta: v553 to v554; diagnose and repair direct Settings capability initialization missed by Overview-first fixtures.
 Delta: v552 to v553; qualify masked Coinbase inputs, genuine synthetic ECDSA preservation and browser privacy/account fences before final delivery.
 Delta: v551 to v552; bind merged hosted core acceptance and begin the masked Coinbase connection follow-up.
 Delta: v550 to v551; qualify all48 incoming chart/TUI tests and the combined388-test watchdog repair without changing hosted image inputs or deadlines.
@@ -2374,4 +2377,14 @@ Both fields are password inputs with autocomplete, capitalization and spellcheck
 
 ## PR 224 integration continuation
 
-Current master 36678cc merges cleanly into the HTTPX dependency branch. Preserve the declared httpx>=0.28.1,<1 update and every current master source change. This pass only refreshes and pushes the branch. Source HTTPX consumer tests, offline indexes and docs checks will run before commit. No default-branch merge or service action is authorized by this update request.
+Master 36678cc merged cleanly; the later master 25e1d60 required only workflow/index reconciliation. Current master merges cleanly into the HTTPX dependency branch. Preserve the declared httpx>=0.28.1,<1 update and every current master source change. This pass only refreshes and pushes the branch. All 72 HTTPX consumer tests pass using HTTPX 0.28.1. Offline indexes are regenerated after both merge parents; final docs/index/whitespace checks precede the push. No default-branch merge or service action is authorized by this update request.
+
+## 2026-11-14 — Direct Settings connection startup regression
+
+PR260 is merged36678cc2 and deployed website-0.4.0-36678cc2. The new owner screenshot exposes a missed entry path: direct authenticated #settings renders through refreshAccount before initialize applies the /api/config result. initialize then only calls populateSelects for Settings, leaving the form disabled. Fresh production /api/config returns customerConnectionsConfigured:true, engineConfigured:true and billing/live:false; the private executor is configured. This is a frontend lifecycle bug, not a missing provider key or financial activation flag. Existing hosted f.go always loads Overview and awaits Oracle before navigating, so its previous4/4 masked-field acceptance did not cover direct Settings startup. TASK2188 is claimed and blocks TASK2139; KNOW2189 captures the exact trigger.
+
+Scope: website/public/app.js initialization and meaningful direct-entry browser regressions, including delayed configuration/metadata, navigation/current account and false/unavailable configuration. Apply capability results independently of unrelated metadata and rebuild only from current guarded state; preserve Backtest drafts and all account/signing fences. Do not enable billing/trading, change credentials, restart native analysis or touch other worktrees. Isolated task worktree /Users/mitch/dev/worktrees/oraclebot-settings-startup-20261114; private evidence /Users/mitch/.local/state/oraclebot-settings-startup-20261114/. Pending: demonstrate old-source regression, implement and pass suites, final CI/merge/deploy and independent direct-entry acceptance against actual downloaded public assets.
+
+## Direct Settings repair qualification
+
+The exact deployed baseline36678cc2 fails the new direct authenticated Settings assertion with actual exit1: disabledtrue when configured connections should be enabled before unrelated metadata finishes. The fix applies /api/config in its own guarded promise continuation, normalizes the connection flag to literaltrue and refreshes only current ready Settings or Backtest selects. Account hydration later uses the applied configuration; unrelated metadata completion keeps in-place select updates and retains drafts. Original account epochs/navigation/signing and backend permissions stay unchanged. All317 website Node tests,17JavaScript syntax files, full three-script Chrome browser suite including24hosted groups, wiki/inventory/diff checks passed with actual0. Ten startup cases cover directentry, both deterministic arrival orders, navigation into Settings, false/string/failed/malformed configuration, wallet replacement/logout and preserved Backtest drafts. Prior14hosted credential/consent/privacy tests remain passing. No real credentials, orders, payments, backend, native image or financial activation changes. Frozen appSHA724a19a63c045c9e8b46916e06ef9c48ad6488e2af06752f0fd5f48b1948d6cf and testSHA46dbc0b6e3611501c62a3b98cd917cd313f7ded3bd6ee089208f2408ecd37c51 bind private /Users/mitch/.local/state/oraclebot-settings-startup-20261114/worker-final-receipt.json. Remaining: deterministic index, final-head CI/merge/deploy and independent direct-entry browser acceptance using exact public assets plus actual production capability configuration. Final receipt will be /Users/mitch/.local/state/oraclebot-settings-startup-20261114/delivery.json and its source/artifact manifests. Earlier PR260 masking acceptance covered Overview-first entry; it did not qualify this startup path.
