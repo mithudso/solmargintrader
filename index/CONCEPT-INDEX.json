@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-11-14T06:56:48+00:00",
+  "generatedAt": "2026-11-14T07:11:54+00:00",
   "schemaVersion": 1,
   "note": "Concepts are derived from the repo's own vocabulary \u2014 the FAMILY dict, strategy-card frontmatter, docs/trading-signals-concept-family.md, and terms verified to recur in the corpus. A concept matching no file is dropped, not kept.",
   "counts": {
@@ -22,7 +22,7 @@
         "confirm",
         "fail-closed"
       ],
-      "matchingFiles": 1944,
+      "matchingFiles": 1947,
       "shown": 30,
       "files": [
         {
@@ -67,7 +67,7 @@
         },
         {
           "path": "memory.md",
-          "hits": 106
+          "hits": 107
         },
         {
           "path": "research/tradingview-script-profiles/shard-b.jsonl",
@@ -161,12 +161,12 @@
         "universe",
         "top_coins"
       ],
-      "matchingFiles": 1669,
+      "matchingFiles": 1670,
       "shown": 30,
       "files": [
         {
           "path": "memory.md",
-          "hits": 202
+          "hits": 203
         },
         {
           "path": "docs/FILES.md",
@@ -578,7 +578,7 @@
         "perps",
         "solana"
       ],
-      "matchingFiles": 959,
+      "matchingFiles": 962,
       "shown": 30,
       "files": [
         {
@@ -658,6 +658,10 @@
           "hits": 104
         },
         {
+          "path": ".cdo/scope-20261111-task1423.json",
+          "hits": 99
+        },
+        {
           "path": "pagesource",
           "hits": 98
         },
@@ -696,10 +700,6 @@
         {
           "path": "docs/trading-signals-concept-family.md",
           "hits": 79
-        },
-        {
-          "path": "trading-signals-concept-family.md",
-          "hits": 79
         }
       ],
       "source": "curated-from-repo-vocabulary"
@@ -714,7 +714,7 @@
         "macd",
         "ichimoku"
       ],
-      "matchingFiles": 887,
+      "matchingFiles": 888,
       "shown": 30,
       "files": [
         {
@@ -852,7 +852,7 @@
         "anchor_window",
         "levels"
       ],
-      "matchingFiles": 871,
+      "matchingFiles": 872,
       "shown": 30,
       "files": [
         {
@@ -990,7 +990,7 @@
         "monotone",
         "gap"
       ],
-      "matchingFiles": 781,
+      "matchingFiles": 782,
       "shown": 30,
       "files": [
         {
@@ -1125,7 +1125,7 @@
         "stochastic",
         "oscillator"
       ],
-      "matchingFiles": 571,
+      "matchingFiles": 572,
       "shown": 30,
       "files": [
         {
@@ -1260,7 +1260,7 @@
         "benchmark",
         "baseline"
       ],
-      "matchingFiles": 558,
+      "matchingFiles": 560,
       "shown": 30,
       "files": [
         {
@@ -1364,6 +1364,10 @@
           "hits": 29
         },
         {
+          "path": "memory.md",
+          "hits": 27
+        },
+        {
           "path": "research/RANKED_LISTS.md",
           "hits": 25
         },
@@ -1378,10 +1382,6 @@
         {
           "path": ".cdo/reviews-2026-11-12/mongo.json",
           "hits": 24
-        },
-        {
-          "path": ".cdo/reviews-2026-11-13/cdo-forecast-votes-delta.json",
-          "hits": 24
         }
       ],
       "source": "curated-from-repo-vocabulary"
@@ -1394,7 +1394,7 @@
         "buy_and_hold",
         "baseline"
       ],
-      "matchingFiles": 486,
+      "matchingFiles": 488,
       "shown": 30,
       "files": [
         {
@@ -1470,6 +1470,10 @@
           "hits": 29
         },
         {
+          "path": "memory.md",
+          "hits": 27
+        },
+        {
           "path": ".cdo/reviews-2026-11-12/soltui-root-ui-tests.json",
           "hits": 25
         },
@@ -1491,10 +1495,6 @@
         },
         {
           "path": ".cdo/reviews-2026-11-12/botmanager-root.json",
-          "hits": 23
-        },
-        {
-          "path": "memory.md",
           "hits": 23
         },
         {
@@ -1529,7 +1529,7 @@
         "ts_momentum",
         "dual_momentum"
       ],
-      "matchingFiles": 442,
+      "matchingFiles": 443,
       "shown": 30,
       "files": [
         {
@@ -1939,7 +1939,7 @@
         "bb_breakout",
         "keltner"
       ],
-      "matchingFiles": 298,
+      "matchingFiles": 299,
       "shown": 30,
       "files": [
         {
@@ -2077,7 +2077,7 @@
         "k_test",
         "path_sharpes"
       ],
-      "matchingFiles": 251,
+      "matchingFiles": 252,
       "shown": 30,
       "files": [
         {
@@ -2215,7 +2215,7 @@
         "anti-informative",
         "multiple-testing"
       ],
-      "matchingFiles": 191,
+      "matchingFiles": 192,
       "shown": 30,
       "files": [
         {
@@ -2352,7 +2352,7 @@
         "sign_flips",
         "stability"
       ],
-      "matchingFiles": 188,
+      "matchingFiles": 189,
       "shown": 30,
       "files": [
         {

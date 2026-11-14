@@ -65,6 +65,11 @@ Delta: v220 to v221; capture owner graph database and shared llms source-of-trut
 Delta: v219 to v220; record owner authorization to restore eight accidental reference deletions.
 Delta: v218 to v219; record one-minute macro-conditioned full-suite request.
 Delta: v217 to v218; record all-component deep code optimizer request and immediate diagnostic repair.
+
+## Preserved PR 226 checkpoint history
+
+Version: 218
+Delta: v217 to v218; capture all-component deep code optimizer request.
 Delta: v216 to v217; record owner thirty percent drawdown planning tolerance.
 Delta: v215 to v216; capture comprehensive meta-analysis and prospective/live validation request.
 Delta: v214 to v215; preserve owner Coinbase sign-in confirmation during active delivery.
@@ -129,7 +134,7 @@ Jupiter 2× leverage, 75% USDC collateral
 
 ## 2026-11-11 — ZEC/USDC Solana wallet and memory hook repair
 
-1. I was wrong I don't have leverage at Coinbase, and only simple trades are free. 2. Go with zec/usdc instead and the wallet is in ~/.ssh/solana.private  Also I keep getting this error for the memory-capture hook which I like the hook, but it needs to not error like that every time: 
+1. I was wrong I don't have leverage at Coinbase, and only simple trades are free. 2. Go with zec/usdc instead and the wallet is in ~/.ssh/solana.private  Also I keep getting this error for the memory-capture hook which I like the hook, but it needs to not error like that every time:
 • Saved a verified local checkpoint.
 
   Basic Memory capture was marked failed because session instructions restrict memory writes to new files in the local ad_hoc notes directory.
@@ -2302,3 +2307,15 @@ Supplied screenshots preserved privately under /Users/mitch/.local/state/oracleb
 ```text
 Two things: 1)  If this is true, can I bet on a reversal after two ups or two down 10 mins?  10 minutes                          1.80 bars                        1.72 bars                20.8%                    41.4%     and 2) Can you write this up into a paper and post it on the oraclebot.io site?
 ```
+
+## Retained PR226 update
+
+## Preserved PR 226 checkpoint history
+
+## 2026-11-11 — All-component deep code optimization
+
+Run the deep code optimizer on each component of this repo
+
+## 2026-11-14 — Update PR 226 against current master
+
+Resolve the conflicts and push  all the PRs for https://github.com/mithudso/solmargintrader/pull/235 224 and 226 as well.
