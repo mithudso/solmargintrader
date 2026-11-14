@@ -5,6 +5,7 @@ COPY backtester /app/backtester
 COPY oracle /app/oracle
 COPY website/engine /app/website/engine
 RUN python -m pip install --no-cache-dir --constraint website/engine/constraints.txt ./backtester ./oracle ./website/engine \
+    && python -I -c "import shutil; [shutil.rmtree(path) for path in ('/app/backtester', '/app/oracle', '/app/website')]" \
     && useradd --uid 10001 --create-home analysis \
     && mkdir /data && chown analysis:analysis /data
 USER 10001:10001
