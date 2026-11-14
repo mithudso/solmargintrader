@@ -1,5 +1,17 @@
 # Work continuation
 
+Version: 563
+Delta: v561 to v563; refresh PR224 with masterf74eeed and preserve all AdSense publication records.
+Delta: v560 to v561; refresh PR224 after master18dae4c publication. Other branch record versions remain reserved.
+Delta: v555 to v556; add the ZEC reversal working-paper publication record while preserving incoming Settings delivery.
+
+## Retained PR224 update
+
+Delta: v555 to v556; integrate both current master updates into PR224 under TASK-2185.
+
+
+## Incoming master continuation
+
 Version: 559
 Delta: integrated to v559; retain parallel automated merge ancestry and all owner/research/AdSense records.
 Delta: v557 to v558; merge concurrent AdSense and ZEC working-paper continuation records.
@@ -2379,6 +2391,10 @@ The owner now wants Key ID and Secret as two masked text inputs without a file. 
 
 Both fields are password inputs with autocomplete, capitalization and spellcheck disabled; the optional portfolio field remains. Recognized matching PEM wrappers preserve actual ECDSA key bytes after pasted whitespace folding or escaped newlines. Credentials clear before awaiting the server, at account/view render teardown and pagehide. Existing tenant identity and backend validations are unchanged. Independent source review found no material issue. All317 website Node tests, syntax17files and the full three-suite Chrome browser gate passed with exit0; hosted groups14/14 include real synthetic P256 signer roundtrip, held-response immediate clearing, account replacement, unsent navigation, malicious-provider privacy and unsupported-format refusal. The first specialist browser attempt failed a fixture assumption about Chrome folding newlines to spaces; corrected assertion verifies actual key preservation and final suite passes. No provider credentials, orders, payments, native image, runtime epoch or feature flags changed. Updated website/README.md describes the two masked fields; operation inventories and wiki are current. Remaining: regenerate deterministic indexes, final-head CI/merge, deploy matching public assets and independent loaded-UI acceptance. Private logs /Users/mitch/.local/state/oraclebot-hosted-completion-20261113/masked-coinbase-inputs/. The prior core worktree/branch was removed only after merged-tree and clean-worktree proof; other worktrees are preserved.
 
+## PR 224 integration continuation
+
+Master 36678cc merged cleanly; the later master 25e1d60 required only workflow/index reconciliation. Current master merges cleanly into the HTTPX dependency branch. Preserve the declared httpx>=0.28.1,<1 update and every current master source change. This pass only refreshes and pushes the branch. All 72 HTTPX consumer tests pass using HTTPX 0.28.1. Offline indexes are regenerated after both merge parents; final docs/index/whitespace checks precede the push. No default-branch merge or service action is authorized by this update request.
+
 ## 2026-11-14 — Direct Settings connection startup regression
 
 PR260 is merged36678cc2 and deployed website-0.4.0-36678cc2. The new owner screenshot exposes a missed entry path: direct authenticated #settings renders through refreshAccount before initialize applies the /api/config result. initialize then only calls populateSelects for Settings, leaving the form disabled. Fresh production /api/config returns customerConnectionsConfigured:true, engineConfigured:true and billing/live:false; the private executor is configured. This is a frontend lifecycle bug, not a missing provider key or financial activation flag. Existing hosted f.go always loads Overview and awaits Oracle before navigating, so its previous4/4 masked-field acceptance did not cover direct Settings startup. TASK2188 is claimed and blocks TASK2139; KNOW2189 captures the exact trigger.
@@ -2417,6 +2433,7 @@ Public paper: /Users/mitch/dev/solmargintrader/research/ZEC-TWO-BAR-REVERSAL.md.
 
 Completed: independent20-combination arithmetic/privacy/economics review exit0; fixed newline byte mismatch; final parameterized reproduction exit0;317website Node tests,17JavaScript syntax files,7research exporter tests, full three-script browser suite with24hosted groups, deterministic23-file public export and diff check exit0. Five-page tagged PDF hasSHA2564e82fbbfd428f9215646f8bc60a23beb3ebb0613e60d44cb5e0c1b2237b58d76; final paperSHA256d0b12ea26583aa19aa52b6a3ef05c3c6ea2e03c182a42cd98ae60372286545f4. Exact final paper, formatted code, llms index, reviewer receipt and PDF(base64) are in the native publication run and were read back. Remaining delivery: deterministic metadata/wiki gates, final source/CI checks, merge, unchanged edge Worker deployment with static assets and read-only live article acceptance. No launch flags, secrets, accounts, grants, existing services or historical forward cohorts are to be changed. The exact delivery receipt will supersede this in-progress wording. Stele knowledge write lost transport and is queued as bfb6a194; graph task creation/claim succeeded before disconnect.
 
+PR224 follow-up: master18dae4c moved during final CI waiting. Preserve its ZEC working paper and current source, retain the HTTPX requirement, resolve only workflow/index overlaps and push. The72 HTTP consumer checks remain valid for their unchanged source; final generated checks run for this new merge.
 ## AdSense integration checkpoint
 
 Incoming main18dae4cef65b51633f1f4bf2f96aba85f931f988/PR263 publishes a separate exploratory ZEC reversal working paper and publicPDF/catalog. Preserve all exact paper/results/export bytes; do not rerun its study or alter numerical claims. Mergeconflicts affect only workflowrecords and derivedindexes. Both record branches are append-only after the exact common body; savepreimages and combinealltails/Deltafields. AdSense8implementationfiles remainfrozen/qualified; rebuild deterministicindexes andcheckpublicexport/wiki/inventories before integrationcommit andfreshrequiredCI. A parallelGitHubAgentMerge mayupdate the remote taskbranch; fetchandpreserve its commits beforepushing, neverforce.

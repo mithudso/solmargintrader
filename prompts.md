@@ -2284,6 +2284,10 @@ For the shape analysis, make it explain and show what the shape is so I can unde
 
 My coinbase API keys are two strings, I don't have a file. Just make it an obfuscated text entry box with two fields for the key id and secret.
 
+## 2026-11-14 — Update PR 224 against current master
+
+Resolve the conflicts and push  all the PRs for https://github.com/mithudso/solmargintrader/pull/235 224 and 226 as well.
+
 ## 2026-11-14 — Disabled Coinbase connection screenshot
 
 User message: `[Image #1]`
