@@ -1,16 +1,16 @@
 {
-  "generatedAt": "2026-11-14T00:47:01+00:00",
+  "generatedAt": "2026-11-14T01:09:29+00:00",
   "schemaVersion": 1,
   "repoRoot": "~/dev/solmargintrader",
-  "commit": "d893828d",
+  "commit": "84c9a6b8",
   "counts": {
-    "files": 3710,
-    "bytes": 117963279,
+    "files": 3717,
+    "bytes": 118062206,
     "byKind": {
       "strategy-card": 1478,
       "doc": 794,
-      "test": 402,
-      "code-python": 367,
+      "test": 405,
+      "code-python": 371,
       "config": 274,
       "result": 133,
       "code-js": 114,
@@ -23,7 +23,7 @@
     },
     "byTopDir": {
       "backtester": 1956,
-      "research": 342,
+      "research": 349,
       "soltui": 192,
       ".cdo": 161,
       "docs": 156,
@@ -58,7 +58,7 @@
       "archive": 1,
       "tradingskilllist": 1
     },
-    "withSummary": 3379
+    "withSummary": 3386
   },
   "files": [
     {
@@ -3257,9 +3257,9 @@
       "title": "Read-only by default; nothing here needs write access to the repo.",
       "summary": "",
       "summarySource": "none",
-      "bytes": 21258,
-      "lines": 481,
-      "sha1": "04304b9d843ef9d54df1ac0cc8a06980b95e2f66",
+      "bytes": 21446,
+      "lines": 483,
+      "sha1": "35f1fa0dff84553de386fb80aa47b1c9c34224d8",
       "symbols": [],
       "imports": [],
       "internalImports": [],
@@ -73588,12 +73588,12 @@
       "name": "ORACLE-WINNING-STRATEGY-STREAM.md",
       "ext": ".md",
       "kind": "doc",
-      "title": "Streaming the profitable ZEC strategy configurations",
-      "summary": "Run from an existing Python environment with the repository's research, backtester and Oracle dependencies. This is a foreground, read-only observer: /Users/mitch/.venvs/soltui/bin/python /Users/mitch/dev/solmargintrader/scripts/oracle_winners.py",
+      "title": "Oracle winning-strategy TUI",
+      "summary": "Start the interactive, read-only workbench: /Users/mitch/.venvs/soltui/bin/python /Users/mitch/dev/solmargintrader/scripts/oracle_winners.py It opens a focused **1m / baseline / six-strategy** watchlist, with a price and",
       "summarySource": "opening-prose",
-      "bytes": 8423,
-      "lines": 147,
-      "sha1": "a49dfe207ad7ca0d0a3dfdaa35b5d8add2b841b6",
+      "bytes": 11578,
+      "lines": 197,
+      "sha1": "2ec7f9421728da1356bb5a64b532ef73bd88ae0f",
       "symbols": [],
       "imports": [],
       "internalImports": [],
@@ -86396,11 +86396,11 @@
       "ext": ".txt",
       "kind": "data",
       "title": "solmargintrader \u2014 source sitemap",
-      "summary": "Generated report. Opens: # solmargintrader \u2014 source sitemap / > Source: /Users/mitch/dev/oraclebot.io \u00b7 https://github.com/mithudso/solmargintrader @ 7c5f0dc8 + hosted ecosystem delta",
+      "summary": "Generated report. Opens: # solmargintrader \u2014 source sitemap / > Source: /Users/mitch/dev/oraclebot.io \u00b7 https://github.com/mithudso/solmargintrader @ f1b8d4ab + hosted ecosystem delta",
       "summarySource": "derived",
-      "bytes": 318476,
-      "lines": 3873,
-      "sha1": "4e845cce78bd6ad97b380546d138c3ca34bfe78c",
+      "bytes": 318838,
+      "lines": 3880,
+      "sha1": "8449ac3c039368063ac93cd40a94df69c1cc105a",
       "symbols": [],
       "imports": [],
       "internalImports": [],
@@ -86434,9 +86434,9 @@
       "title": "solmargintrader \u2014 family index",
       "summary": "Generated report. Opens: # solmargintrader \u2014 family index / > Source: /Users/mitch/dev/oraclebot.io \u00b7 https://github.com/mithudso/solmargintrader @ 722839798e22 + hosted ecosystem delta",
       "summarySource": "derived",
-      "bytes": 2739,
+      "bytes": 2782,
       "lines": 36,
-      "sha1": "27c016ce1b99eea5722ec248c89dd101cd231138",
+      "sha1": "b89ae8f487cb451d0ea8023501aa7777853f2328",
       "symbols": [],
       "imports": [],
       "internalImports": [],
@@ -86576,11 +86576,11 @@
       "ext": ".md",
       "kind": "doc",
       "title": "Work continuation",
-      "summary": "Version: 545 Delta: v544 to v545; verify actual production cold restore and one-charge subscriber backtest; qualify the unchanged-budget macOS watchdog repair before final CI/delivery. Delta: v543 to v544; bind actual production Container/native history and an entitled edge backtest; retain explicit cold-restore and macOS CI gates.",
+      "summary": "Version: 547 Delta: v546 to v547; qualify all39 incoming PR258 TUI tests under the actual MCP2.3 port and preserve the verified hosted image while completing integration. Delta: v545 to v546; preserve qualified hosted production/cold-restore/macOS records and PR258 interactive ZEC TUI records.",
       "summarySource": "opening-prose",
-      "bytes": 483798,
-      "lines": 2306,
-      "sha1": "0fe7ac2f5ee11240cbdc73cbdc1e8893e820885b",
+      "bytes": 491770,
+      "lines": 2336,
+      "sha1": "15b04b1db1417cbed406b008899967fbc95d6634",
       "symbols": [],
       "imports": [],
       "internalImports": [],
@@ -88857,11 +88857,11 @@
       "ext": ".md",
       "kind": "doc",
       "title": "Prompt history",
-      "summary": "Version: 244 Delta: v243 to v244; preserve hosted provider-confirmation replies and the streaming winning-ZEC strategy request verbatim. Delta: v242 to v243; record owner confirmation of Sandbox credentials and Workers Paid activation.",
+      "summary": "Version: 245 Delta: v244 to v245; preserve the complete hosted goal, provider-confirmation replies and interactive winning-ZEC TUI request verbatim. Delta: v243 to v244; preserve hosted provider-confirmation replies and the streaming winning-ZEC strategy request verbatim.",
       "summarySource": "opening-prose",
-      "bytes": 130987,
-      "lines": 2261,
-      "sha1": "6dda4361ac42daccbae29c2e394e3b7dc5389a2d",
+      "bytes": 131675,
+      "lines": 2268,
+      "sha1": "9665c658282ff97a860b6202b50b88a13e743c76",
       "symbols": [],
       "imports": [],
       "internalImports": [],
@@ -95965,6 +95965,101 @@
       "frontmatter": {}
     },
     {
+      "id": "research/tests/test_zec_tui.py",
+      "path": "research/tests/test_zec_tui.py",
+      "dir": "research/tests",
+      "name": "test_zec_tui.py",
+      "ext": ".py",
+      "kind": "test",
+      "title": "test_zec_tui",
+      "summary": "Real Textual keyboard/mouse, background lifecycle and layout regressions.",
+      "summarySource": "docstring",
+      "bytes": 12684,
+      "lines": 300,
+      "sha1": "b6f4a053525c3dff5307ffa7b226214fa18041c9",
+      "symbols": [
+        "class Client",
+        "class Interface"
+      ],
+      "imports": [
+        "__future__",
+        "json",
+        "pathlib",
+        "research",
+        "tempfile",
+        "textual",
+        "threading",
+        "time",
+        "unittest"
+      ],
+      "internalImports": [
+        "research"
+      ],
+      "frontmatter": {}
+    },
+    {
+      "id": "research/tests/test_zec_tui_model.py",
+      "path": "research/tests/test_zec_tui_model.py",
+      "dir": "research/tests",
+      "name": "test_zec_tui_model.py",
+      "ext": ".py",
+      "kind": "test",
+      "title": "test_zec_tui_model",
+      "summary": "Evidence isolation, indicator math, source windows and editable preferences.",
+      "summarySource": "docstring",
+      "bytes": 12134,
+      "lines": 309,
+      "sha1": "77f1746b3172bd662c2488d58e215fa4b3d53079",
+      "symbols": [
+        "original()",
+        "candles()",
+        "class Editing",
+        "class MarketDetails",
+        "class Source"
+      ],
+      "imports": [
+        "__future__",
+        "copy",
+        "json",
+        "pathlib",
+        "research",
+        "tempfile",
+        "unittest"
+      ],
+      "internalImports": [
+        "research"
+      ],
+      "frontmatter": {}
+    },
+    {
+      "id": "research/tests/test_zec_tui_workers.py",
+      "path": "research/tests/test_zec_tui_workers.py",
+      "dir": "research/tests",
+      "name": "test_zec_tui_workers.py",
+      "ext": ".py",
+      "kind": "test",
+      "title": "test_zec_tui_workers",
+      "summary": "Event-coordinated cancellation, coalescing and teardown without live I/O.",
+      "summarySource": "docstring",
+      "bytes": 7938,
+      "lines": 224,
+      "sha1": "322b114b8dc130aec6a56d5b61794e7cde684ba3",
+      "symbols": [
+        "class LatestWorkerTests"
+      ],
+      "imports": [
+        "__future__",
+        "research",
+        "threading",
+        "time",
+        "unittest"
+      ],
+      "internalImports": [
+        "research"
+      ],
+      "frontmatter": {}
+    },
+    {
       "id": "research/tick_backfill.py",
       "path": "research/tick_backfill.py",
       "dir": "research",
@@ -97971,6 +98066,145 @@
       "frontmatter": {}
     },
     {
+      "id": "research/zec_tui.py",
+      "path": "research/zec_tui.py",
+      "dir": "research",
+      "name": "zec_tui.py",
+      "ext": ".py",
+      "kind": "code-python",
+      "title": "zec_tui",
+      "summary": "Interactive read-only Oracle workbench for the frozen ZEC winner universe.",
+      "summarySource": "docstring",
+      "bytes": 28091,
+      "lines": 716,
+      "sha1": "7c94ded3ed1711c1fcb66d2dbbac4738ba4a2cea",
+      "symbols": [
+        "class StrategyPicker",
+        "class ConfigEditor",
+        "class OracleWinnersApp",
+        "main()"
+      ],
+      "imports": [
+        "__future__",
+        "argparse",
+        "json",
+        "pathlib",
+        "research",
+        "rich",
+        "textual",
+        "time",
+        "typing"
+      ],
+      "internalImports": [
+        "research"
+      ],
+      "frontmatter": {}
+    },
+    {
+      "id": "research/zec_tui_model.py",
+      "path": "research/zec_tui_model.py",
+      "dir": "research",
+      "name": "zec_tui_model.py",
+      "ext": ".py",
+      "kind": "code-python",
+      "title": "zec_tui_model",
+      "summary": "Editable display state and causal market details; no trading or UI imports.",
+      "summarySource": "docstring",
+      "bytes": 15374,
+      "lines": 415,
+      "sha1": "d2f64bcf8caf7fe8c3b6f83f39ca98b437abd2e6",
+      "symbols": [
+        "CONFIG_KEYS",
+        "LOOKBACKS",
+        "row_key()",
+        "label()",
+        "finite_tree()",
+        "validate_config()",
+        "default_path()",
+        "validate_reference()",
+        "class WorkingSet",
+        "market_details()"
+      ],
+      "imports": [
+        "__future__",
+        "backtester",
+        "copy",
+        "gzip",
+        "json",
+        "math",
+        "numpy",
+        "os",
+        "pandas",
+        "pathlib",
+        "research",
+        "tempfile"
+      ],
+      "internalImports": [
+        "backtester",
+        "research"
+      ],
+      "frontmatter": {}
+    },
+    {
+      "id": "research/zec_tui_source.py",
+      "path": "research/zec_tui_source.py",
+      "dir": "research",
+      "name": "zec_tui_source.py",
+      "ext": ".py",
+      "kind": "code-python",
+      "title": "zec_tui_source",
+      "summary": "Worker-owned market sessions for the editable read-only Oracle TUI.",
+      "summarySource": "docstring",
+      "bytes": 5233,
+      "lines": 144,
+      "sha1": "aa35237bd74befc98ac0532c02566b639b1494d4",
+      "symbols": [
+        "class Cancelled",
+        "class DataSession",
+        "class QuoteReader",
+        "live_view()"
+      ],
+      "imports": [
+        "__future__",
+        "copy",
+        "oracle",
+        "research",
+        "time"
+      ],
+      "internalImports": [
+        "research"
+      ],
+      "frontmatter": {}
+    },
+    {
+      "id": "research/zec_tui_workers.py",
+      "path": "research/zec_tui_workers.py",
+      "dir": "research",
+      "name": "zec_tui_workers.py",
+      "ext": ".py",
+      "kind": "code-python",
+      "title": "zec_tui_workers",
+      "summary": "Single-owner background reads with bounded, latest-request delivery. Loaders must bound their own blocking operations and check ``cancelled`` between them. Python threads cannot forcibly interrupt an arbitrary blocking call. This helper never calls UI objects; the UI polls immutable completion envelopes.",
+      "summarySource": "docstring",
+      "bytes": 4694,
+      "lines": 130,
+      "sha1": "5d3c09cc03ce8e6cd09c6999f0443072900243f0",
+      "symbols": [
+        "class WorkerResult",
+        "class LatestWorker"
+      ],
+      "imports": [
+        "__future__",
+        "collections",
+        "copy",
+        "dataclasses",
+        "threading",
+        "typing"
+      ],
+      "internalImports": [],
+      "frontmatter": {}
+    },
+    {
       "id": "ruff.toml",
       "path": "ruff.toml",
       "dir": "",
@@ -98575,10 +98809,12 @@
       "title": "oracle_winners",
       "summary": "Run the read-only ZEC winning-strategy display from this checkout.",
       "summarySource": "docstring",
-      "bytes": 288,
-      "lines": 13,
-      "sha1": "fb3a23fa9f09b4e13140106bbf05a0c0f8e629da",
-      "symbols": [],
+      "bytes": 659,
+      "lines": 27,
+      "sha1": "2d76b042e1471909013fb55f2d678e4b23f21ad0",
+      "symbols": [
+        "main()"
+      ],
       "imports": [
         "pathlib",
         "research",

@@ -1,50 +1,99 @@
-# Streaming the profitable ZEC strategy configurations
+# Oracle winning-strategy TUI
 
-Run from an existing Python environment with the repository's research,
-backtester and Oracle dependencies. This is a foreground, read-only observer:
+Start the interactive, read-only workbench:
 
 ```sh
 /Users/mitch/.venvs/soltui/bin/python /Users/mitch/dev/solmargintrader/scripts/oracle_winners.py
 ```
 
-The terminal refreshes every ten seconds until Ctrl-C. It shows all **908
-configuration/timeframe/mode combinations** selected by **1,566 positive fee
-rows** from the accepted expanded ZEC study. It includes 1m, 5m, 10m and 1h,
-and keeps the 0.25% and 0.15% **per-fill** scenarios in separate return columns.
-A configuration can be profitable at one fee and losing at the other; both
-completed returns remain visible. No rank or claim of prospective reliability
-is inferred from these one-day, in-sample winners.
+It opens a focused **1m / baseline / six-strategy** watchlist, with a price and
+shape chart on the left and numeric indicators on the right. The complete
+**908 configuration/timeframe/mode groups** from **1,566 positive fee rows**
+remain available through the strategy picker. The existing SolTUI environment
+already provides Textual; this entry point does not install or start a service.
 
-The table identifies each strategy, full configuration ID, study mode, UP/FLAT
-direction, current shape and range zone, historical returns and availability.
-The timeframe summary gives the actual completed-bar close, target time and
-contiguous history count. JSON output includes exact member parameters, ensemble
-configuration, fee evidence, source clocks, bar-input hash and implementation
-hashes. Every refresh preserves the signal's original bar close and expiry.
+## Controls
 
-Useful filters and machine-readable output:
+| Control | What changes |
+| --- | --- |
+| Bar window | Select 1m, 5m, 10m or 1h; calls concern the next bar of this actual timeframe. |
+| Study mode | Baseline, shape, frequency, named controls, or all modes in the chosen window. |
+| Chart | Display 48, 96, 192 or 300 completed bars; this does not reseed the strategy or change its warmup. |
+| Signal refresh | Enter 0.2–300 seconds and Apply, or use minus/plus. The quote heartbeat remains independent at one second. |
+| Choose strategies | Search names, parameters or IDs. Space/Enter toggles a row; Select/Clear visible affects only the current search. Apply preserves choices in other windows. |
+| Edit focused | Edit the focused row's JSON parameters/ensemble; Apply validates before changing the working variant. |
+| Reset focused | Restore the immutable original configuration and its original evidence. |
+| Save view | Persist windows, chart length, cadence, manual selections and edited variants privately. |
+
+Keys: **S** opens strategies, **E** edits the focused row, **R** requests a
+refresh, **Ctrl-S** saves the view, **Q** quits. Escape cancels a modal without
+changing its selection or configuration. Arrow/Page keys navigate the tables.
+On narrow terminals the indicator panel stacks below the watchlist; scroll or
+Tab to it. Wide terminals show it on the right. Tables can scroll horizontally.
+
+The historical columns retain **0.25% and 0.15% per-fill** scenarios. An edited
+row shows **UNTESTED**, has a pencil marker and inherits neither original P&L
+nor a winning label. Applying an edit changes only this display's working
+hypothesis. Save view makes it survive a restart. Original parameters, accepted
+CSV/plan, archived forecasts and running producer settings stay unchanged.
+
+The JSON editor validates supported members with the canonical strategy factory
+and ensemble contract. It also permits structurally valid reference-policy edits;
+these remain N/A without a directional adapter. Invalid JSON or parameters keep
+the previous working configuration. Longer windows can require additional
+warmup. Editing a strategy does not establish a new profitable backtest.
+
+Default preferences are stored in
+`/Users/mitch/.config/solmargintrader/oracle-winners-tui.json` (or under
+`XDG_CONFIG_HOME`). Use `--settings /absolute/private/view.json` for another
+profile. Saving is atomic with mode0600; corrupt/incompatible saved preferences
+are reported and preserved while the original defaults load. No save occurs
+until Save view is chosen.
+
+## Shape and indicator panels
+
+The chart uses the selected number of completed trade candles. The shape panel
+shows the detected range/trend/V/bowl/cap/compression, range zone, observed shape
+episode age and fitted-turn phase where available. Its marker locates the **live
+quote in the preceding48-bar observed range**; the last completed close is used
+when no fresh quote exists. A quote outside that range can show below0% or
+above100%. This is observed range position, **not future pattern completion**.
+
+The right panel shows RSI14, balance of power, MACD line/signal/histogram,
+Bollinger bands and%B, ADX/DI, stochastic, ATR, EMA20/50, z-score and ROC.
+Selected configurations add their actual RSI periods and custom Bollinger,
+MACD and stochastic parameter readings. Numbers use the active bar window,
+reset at gaps and retain their bar-close timestamp. Balance of power is
+`(close-open)/(high-low)` for the completed candle; a zero range is unavailable.
+ROC is displayed in percent. BOP is requested market context, not a newly
+backtested winning strategy. None of these numbers is a profit probability.
+
+Quote age and completed-bar expiry are checked against the current screen
+clock, even with a long signal refresh. Retained indicator values are explicitly
+marked stale; failed source/calculation windows clear dependent numbers and
+charts. Refreshes preserve cursor position so the right panel can be read while
+prices update. A configuration/window change cannot install an older worker's
+response. One coalescing calculation worker and one quote worker keep the event
+loop responsive; page fetches check cancellation between bounded requests.
+
+## Plain and machine-readable compatibility
+
+The former whole-universe table remains available with **--plain**. **--json**
+and bounded **--frames** requests retain the previous noninteractive contract:
 
 ```sh
-# Strategy passes without the research control modes; still includes every winner in those passes.
-/Users/mitch/.venvs/soltui/bin/python /Users/mitch/dev/solmargintrader/scripts/oracle_winners.py --intervals 1m 5m 10m --modes baseline shape frequency
-
-# Every selected row and exact parameter set, one complete JSON object per frame.
-/Users/mitch/.venvs/soltui/bin/python /Users/mitch/dev/solmargintrader/scripts/oracle_winners.py --json --refresh 10
-
-# Bounded read-only feed check; initial frames can still be loading candle history.
-/Users/mitch/.venvs/soltui/bin/python /Users/mitch/dev/solmargintrader/scripts/oracle_winners.py --frames 5 --refresh 10 --limit 20
+/Users/mitch/.venvs/soltui/bin/python /Users/mitch/dev/solmargintrader/scripts/oracle_winners.py --plain --intervals 1m --modes baseline --refresh 10
+/Users/mitch/.venvs/soltui/bin/python /Users/mitch/dev/solmargintrader/scripts/oracle_winners.py --json --frames 5 --refresh 10
 ```
 
-`--refresh` changes the display cadence from 0.2 through 300 seconds. It does
-not change a tested strategy's bar interval or predict an arbitrary ten-second
-move from minute evidence. Each directional hypothesis concerns the next bar
-of that strategy's actual timeframe. `--limit` explicitly limits terminal rows;
-the default and JSON output never truncate the selection. `--prices` selects
-an existing shared-recorder directory without starting or changing a recorder.
+`--intervals` and `--modes` in TUI mode choose the initial focused window/mode;
+use its controls to switch thereafter. Noninteractive mode retains its original
+multi-window filters. UI preferences and untested variants are never inserted
+into the original plain/JSON stream or backtest selection.
 
 ## Sources and timing
 
-The script polls the existing shared recorder's atomic `latest.json` for an
+The application polls the existing shared recorder's atomic `latest.json` for an
 exact **ZEC-USD** bid/ask midpoint. These are streaming quote snapshots, not a
 promise of every exchange tick or an executable fill. The upstream exchange
 event age is not certified by this snapshot source. It requires both fresh
@@ -68,8 +117,9 @@ shape unavailable until enough contiguous history exists. Volume is the actual
 reported base-asset trade volume. No interpolation, zero-volume gap filling or
 USD/USDT/USDC substitution occurs.
 
-The initial history includes each selected strategy's warmup plus a 128-bar
-seed, with at least 128 periods. Stateful strategies replay that full prefix
+The noninteractive stream seeds each selected strategy's warmup plus128 bars.
+The TUI uses a fixed512-bar seed per timeframe, preserving its starting point
+when chart lookback or manual selection changes. Stateful strategies replay that full prefix
 and retain its fixed starting point as new completed bars arrive. This seed
 window is not the original capture's starting history. The JSON reports
 `input_start_at`, `contiguous_bars` and `input_sha256`; two differently seeded
