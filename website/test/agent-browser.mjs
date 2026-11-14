@@ -67,7 +67,11 @@ try {
   browser = await chromium.launch({ headless: true, ...(process.env.CHROME ? { executablePath: process.env.CHROME } : {}) });
   const page = await browser.newPage(); const errors = [];
   page.on('pageerror', error => errors.push(error.message));
-  await page.route('**/*', route => new URL(route.request().url()).origin === origin ? route.continue() : route.abort());
+  await page.route('**/*', route => {
+    const request = route.request();
+    if (request.url() === 'https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1706083044457708' && request.method() === 'GET' && request.resourceType() === 'script') return route.fulfill({ contentType: 'application/javascript', body: '', headers: { 'Access-Control-Allow-Origin': '*' } });
+    return new URL(request.url()).origin === origin ? route.continue() : route.abort();
+  });
   await page.exposeFunction('recordFixtureWalletCall', kind => {
     assert.ok(kind === 'connect' || kind === 'sign'); fixture.walletCalls.push(kind);
   });
