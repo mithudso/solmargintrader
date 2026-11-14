@@ -1,6 +1,11 @@
 # Work continuation
 
-Version: 556
+Version: 561
+Delta: v560 to v561; refresh PR224 after master18dae4c publication. Other branch record versions remain reserved.
+Delta: v555 to v556; add the ZEC reversal working-paper publication record while preserving incoming Settings delivery.
+
+## Retained PR224 update
+
 Delta: v555 to v556; integrate both current master updates into PR224 under TASK-2185.
 
 Delta: v554 to v555; qualify direct-entry startup RED/GREEN, current-account capability updates and preserved browser drafts.
@@ -2388,3 +2393,21 @@ Scope: website/public/app.js initialization and meaningful direct-entry browser 
 ## Direct Settings repair qualification
 
 The exact deployed baseline36678cc2 fails the new direct authenticated Settings assertion with actual exit1: disabledtrue when configured connections should be enabled before unrelated metadata finishes. The fix applies /api/config in its own guarded promise continuation, normalizes the connection flag to literaltrue and refreshes only current ready Settings or Backtest selects. Account hydration later uses the applied configuration; unrelated metadata completion keeps in-place select updates and retains drafts. Original account epochs/navigation/signing and backend permissions stay unchanged. All317 website Node tests,17JavaScript syntax files, full three-script Chrome browser suite including24hosted groups, wiki/inventory/diff checks passed with actual0. Ten startup cases cover directentry, both deterministic arrival orders, navigation into Settings, false/string/failed/malformed configuration, wallet replacement/logout and preserved Backtest drafts. Prior14hosted credential/consent/privacy tests remain passing. No real credentials, orders, payments, backend, native image or financial activation changes. Frozen appSHA724a19a63c045c9e8b46916e06ef9c48ad6488e2af06752f0fd5f48b1948d6cf and testSHA46dbc0b6e3611501c62a3b98cd917cd313f7ded3bd6ee089208f2408ecd37c51 bind private /Users/mitch/.local/state/oraclebot-settings-startup-20261114/worker-final-receipt.json. Remaining: deterministic index, final-head CI/merge/deploy and independent direct-entry browser acceptance using exact public assets plus actual production capability configuration. Final receipt will be /Users/mitch/.local/state/oraclebot-settings-startup-20261114/delivery.json and its source/artifact manifests. Earlier PR260 masking acceptance covered Overview-first entry; it did not qualify this startup path.
+
+
+## ZEC reversal working paper — 2026-11-14
+
+Version: 1.1.0
+Delta: independently audit counts and exact public/Mongo bytes; qualify PDF, website source and browser gates.
+
+Owner request: explain whether the two-up/two-down 10-minute observations justify betting, then publish a paper on oraclebot.io. Task: TASK-2191; numerical verification TASK-2192, paper/audit TASK-2193, delivery/live acceptance TASK-2194.
+
+Evidence: native empirical run run:3768d71af70c8382f508829ab67f0f7b91b367174baa7c372c02d432439c1e3c finished revision 6; immutable source art:b7b9b518c0c9baf5243a63fb39db79e5c2f2afdae3324cda691456811468074f, results art:cdc43a1d1cc172598c31ea8e98595eb900f6c5a5076361e1d677e1c7f033034f. Publication run run:d8e77d4b36700570cffa6d3ea515c46722d997347296de304beda966a69f7ced owns the paper and publication receipts. Both original artifacts were read back exactly. Parameterized public analysis reproduced all 20 combinations and both input hashes, exit 0.
+
+Primary 10-minute rolling UU outcomes U5/D19/F0 of24; DD U16/D12/F1 of29. Newly formed exact-two DUU U5/D14 of19; UDD U6/D7 of13. Close-to-close gap-safe DD reversal is10/26, not a symmetric confirmation. The paper must never equate a color count with executable return, claim a qualified79% success probability, or call it peer reviewed. No new capture/orders/models/embeddings/concept edits.
+
+Public paper: /Users/mitch/dev/solmargintrader/research/ZEC-TWO-BAR-REVERSAL.md. Public reproducibility projection: /Users/mitch/dev/solmargintrader/research/zec-two-bar-reversal-20261114/. Use the existing tracked research exporter; Markdown paper and rendered public copies derive from the Mongo source. Private raw WAL and tape remain unchanged.
+
+Completed: independent20-combination arithmetic/privacy/economics review exit0; fixed newline byte mismatch; final parameterized reproduction exit0;317website Node tests,17JavaScript syntax files,7research exporter tests, full three-script browser suite with24hosted groups, deterministic23-file public export and diff check exit0. Five-page tagged PDF hasSHA2564e82fbbfd428f9215646f8bc60a23beb3ebb0613e60d44cb5e0c1b2237b58d76; final paperSHA256d0b12ea26583aa19aa52b6a3ef05c3c6ea2e03c182a42cd98ae60372286545f4. Exact final paper, formatted code, llms index, reviewer receipt and PDF(base64) are in the native publication run and were read back. Remaining delivery: deterministic metadata/wiki gates, final source/CI checks, merge, unchanged edge Worker deployment with static assets and read-only live article acceptance. No launch flags, secrets, accounts, grants, existing services or historical forward cohorts are to be changed. The exact delivery receipt will supersede this in-progress wording. Stele knowledge write lost transport and is queued as bfb6a194; graph task creation/claim succeeded before disconnect.
+
+PR224 follow-up: master18dae4c moved during final CI waiting. Preserve its ZEC working paper and current source, retain the HTTPX requirement, resolve only workflow/index overlaps and push. The72 HTTP consumer checks remain valid for their unchanged source; final generated checks run for this new merge.
