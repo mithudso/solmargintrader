@@ -1,6 +1,7 @@
 # Prompt history
 
-Version: 246
+Version: 247
+Delta: v246 to v247; record the owner request for two masked Coinbase credential fields.
 Delta: v245 to v246; preserve the full hosted goal, provider-confirmation replies and observed-price-shape visual-guide request verbatim.
 Delta: v244 to v245; preserve the complete hosted goal, provider-confirmation replies and interactive winning-ZEC TUI request verbatim.
 Delta: v243 to v244; preserve hosted provider-confirmation replies and the streaming winning-ZEC strategy request verbatim.
@@ -2272,3 +2273,7 @@ There are qute a lot of strategies displayed in that script, let me select the s
 ## 2026-11-13 — Explain observed chart shapes
 
 For the shape analysis, make it explain and show what the shape is so I can understand what it's implying.
+
+## 2026-11-13 — Masked Coinbase credential entry
+
+My coinbase API keys are two strings, I don't have a file. Just make it an obfuscated text entry box with two fields for the key id and secret.

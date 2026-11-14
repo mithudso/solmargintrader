@@ -103,7 +103,10 @@ lookahead, stale data and unusable inputs cannot trigger the initial managed
 Object per customer. The public edge passes only the authenticated principal.
 It cannot select an operator wallet or an arbitrary signer endpoint.
 
-Customers can import a dedicated Coinbase ECDSA API credential with View and Trade
+In Settings, customers enter a dedicated Coinbase ECDSA Key ID and Secret in two
+masked fields; no file is required. Use the complete organization-scoped Key ID
+and PEM Secret, including its BEGIN and END lines. Both fields clear on submit
+and when leaving the account or page. The key must have View and Trade
 permissions. Transfer-enabled credentials are refused. AES-GCM encryption and
 owner/wallet/connection binding protect the credential in private storage. The
 public registry stores metadata and fingerprints. Revocation removes unused
