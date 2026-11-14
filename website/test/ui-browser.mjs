@@ -6,6 +6,8 @@ import { fileURLToPath } from 'node:url';
 import { chromium } from 'playwright';
 
 const publicRoot = new URL('../public/', import.meta.url);
+const adsenseVerificationURL = 'https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1706083044457708';
+const isAdSenseVerification = request => request.url() === adsenseVerificationURL && request.method() === 'GET' && request.resourceType() === 'script';
 const types = { js: 'text/javascript', html: 'text/html', css: 'text/css', svg: 'image/svg+xml', json: 'application/json' };
 let billingConfigured = false;
 let botsUnavailable = false;
@@ -59,7 +61,11 @@ try {
   const page = await browser.newPage();
   const errors = [];
   page.on('pageerror', error => errors.push(error.message));
-  await page.route('**/*', route => new URL(route.request().url()).origin === origin ? route.continue() : route.abort());
+  await page.route('**/*', route => {
+    const request = route.request();
+    if (isAdSenseVerification(request)) return route.fulfill({ contentType: 'application/javascript', body: '', headers: { 'Access-Control-Allow-Origin': '*' } });
+    return new URL(request.url()).origin === origin ? route.continue() : route.abort();
+  });
   fixtureSubscription = false;
   for (const [index, value] of [false, undefined, 'true', true].entries()) {
     billingConfigured = value;
@@ -187,6 +193,7 @@ try {
     fixturePage.on('console', message => diagnostics.push({ type: message.type(), text: message.text() }));
     await fixturePage.route('**/*', route => {
       const request = route.request();
+      if (isAdSenseVerification(request)) return route.fulfill({ contentType: 'application/javascript', body: '', headers: { 'Access-Control-Allow-Origin': '*' } });
       if (new URL(request.url()).origin === origin) return route.continue();
       blockedRequests.push({ url: request.url(), method: request.method() });
       return route.abort();
