@@ -1,6 +1,7 @@
 # Work continuation
 
-Version: 559
+Version: 560
+Delta: v559 to v560; classify macOS launcher fixtures as platform-specific after Linux CI lacked /bin/zsh.
 Delta: v558 to v559; fix final Linux/native CI integration failures after c7f9ab9.
 Delta: v555 to v557; integrate master25e1d60 into PR235 and preserve the separate PR224 record reservation.
 Delta: v554 to v555; qualify direct-entry startup RED/GREEN, current-account capability updates and preserved browser drafts.
@@ -3365,3 +3366,5 @@ After c7bc7f2 pushed, master advanced to25e1d60. This follow-up resolves the wor
 CI exposed required extension version advancement (0.6.7 to0.6.8), three leftover Ruff import issues, changed safe diagnostic wording, and native Mongo tests whose old fixtures assumed pre-isolation APIs or included unsupported leverage/trigger families. Fix only those integration mismatches. Prior passing source suites remain bound to their recorded head. The branch remains unfinished optimizer work; no optimizer iterations, audit budgets or services are resumed. Re-run affected local and CI gates, refresh deterministic indexes and push the follow-up.
 
 Linux CI follow-up validation: all36 focused Mongo-isolation/CLI/export tests pass. Locked liquidity environment now runs739 offline tests successfully (six network tests deselected); its previously untested service-fixture and observed-price contract overlaps are reconciled. Executor/liquidity Ruff checks and executor formatting checks pass. Extension555 tests, website engine24 tests and the23-file research export freshness check pass. No daemon was installed, restarted or armed; service tests use copied launchers, synthetic configs and inert launchctl shims. Final offline generated checks precede the push, followed by actual final-head CI.
+
+Linux liquidity CI executes all portable cases but has no /bin/zsh. Match the existing launcher tests by skipping only the shared macOS launcher fixture when that exact binary is absent. All739 cases already passed on this Mac, including those launcher cases; no service behavior or test gate is bypassed.

@@ -577,6 +577,8 @@ def test_key_file_policy_binds_the_consumed_descriptor(tmp_path, monkeypatch):
 
 
 def _service_fixture(tmp_path, broken_python=False):
+    if not Path("/bin/zsh").is_file():
+        pytest.skip("macOS launcher fixture requires /bin/zsh")
     repository = tmp_path / "repo"
     scripts, binaries, stubs = repository / "scripts", repository / ".venv" / "bin", tmp_path / "stubs"
     for directory in (scripts, binaries, stubs):
