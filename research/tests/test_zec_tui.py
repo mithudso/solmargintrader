@@ -12,7 +12,7 @@ from pathlib import Path
 from textual.widgets import DataTable, Input, Select, Sparkline, Static, TextArea
 
 from research.tests.test_zec_tui_model import original
-from research.zec_tui import ConfigEditor, OracleWinnersApp, StrategyPicker
+from research.zec_tui import ConfigEditor, OracleWinnersApp, ShapeGuide, StrategyPicker
 from research.zec_tui_model import WorkingSet
 from research.zec_tui_source import DataSession
 
@@ -95,6 +95,52 @@ class Interface(unittest.IsolatedAsyncioTestCase):
             self.assertEqual(app.query_one("#watchlist", DataTable).row_count, 1)
             self.assertEqual(app.current_frame["rows"][0]["horizon_seconds"], 300)
             self.assertEqual(self.state.refresh, 10)
+
+    async def test_shape_guide_opens_by_button_updates_and_clears_on_failure(self):
+        app = self.app()
+        async with app.run_test(size=(140, 44)) as pilot:
+            await self.ready(app, pilot)
+            before = [dict(r) for r in app.current_frame["rows"]]
+            await pilot.click("#show-shape-guide")
+            await pilot.pause(0.1)
+            self.assertIsInstance(app.screen, ShapeGuide)
+            content = str(app.screen.query_one("#shape-guide-body", Static).content)
+            self.assertIn("ACTUAL OBSERVED CLOSES", content)
+            self.assertIn("WHAT TO WATCH NEXT", content)
+            app.current_frame["details"]["shape"]["shape"] = "compression"
+            app.paint()
+            self.assertIn(
+                "Narrowing range",
+                str(app.screen.query_one("#shape-guide-body", Static).content),
+            )
+            self.assertEqual(app.current_frame["rows"], before)
+            app.current_frame = {"interval": "1m", "rows": [], "error": "source_failed"}
+            app.paint()
+            content = str(app.screen.query_one("#shape-guide-body", Static).content)
+            self.assertIn("Shape unavailable", content)
+            self.assertNotIn("ACTUAL OBSERVED CLOSES", content)
+            await pilot.press("escape")
+            self.assertNotIsInstance(app.screen, ShapeGuide)
+
+    async def test_shape_help_keyboard_and_scroll_are_usable_in_small_terminal(self):
+        app = self.app()
+        async with app.run_test(size=(80, 28)) as pilot:
+            await self.ready(app, pilot)
+            await pilot.press("h")
+            await pilot.pause(0.1)
+            self.assertIsInstance(app.screen, ShapeGuide)
+            scroll = app.screen.query_one("#shape-guide-scroll")
+            self.assertTrue(scroll.has_focus)
+            self.assertGreater(scroll.max_scroll_y, 0)
+            await pilot.press("end")
+            await pilot.pause(0.1)
+            self.assertGreater(scroll.scroll_y, 0)
+            button = app.screen.query_one("#close-shape-guide")
+            self.assertGreater(button.region.width, 0)
+            self.assertLessEqual(button.region.bottom, 28)
+            await pilot.click("#close-shape-guide")
+            await pilot.pause(0.1)
+            self.assertNotIsInstance(app.screen, ShapeGuide)
 
     async def test_picker_search_clear_and_keyboard_toggle_preserve_other_windows(self):
         app = self.app()

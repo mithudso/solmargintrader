@@ -31,5 +31,5 @@
 - [Complete empirical archive](research/zec-expanded-20261113.llms/llms.txt): finite executable census, results, audit and Mongo bindings.
 
 ## Interactive winning-strategy workbench
-- [Read-only ZEC stream](docs/ORACLE-WINNING-STRATEGY-STREAM.md): focused timeframe/watchlist, validated untested configuration edits, shape position and numeric indicators, plus the original complete plain/JSON stream.
+- [Read-only ZEC stream](docs/ORACLE-WINNING-STRATEGY-STREAM.md): focused timeframe/watchlist, validated untested configuration edits, a visual shape guide with actual 48-bar trace and conditional explanations, numeric indicators, and the original complete plain/JSON stream.
 - [Foreground script](scripts/oracle_winners.py): Textual TUI by default; shared-recorder quotes and completed public trade candles, with no order or service changes.

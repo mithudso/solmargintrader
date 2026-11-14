@@ -410,5 +410,13 @@ def market_details(rows, interval, end, lookback=96, configs=()):
             turn_phase=str(tag.turn_phase),
             range_low=float(np.min(low[-48:])),
             range_high=float(np.max(high[-48:])),
+            trace=close[-48:].tolist(),
+            trace_start=int(clean["ts"][-48]),
+            trace_end=int(clean["ts"][-1]),
+            fitted_turn_bars_ago=(
+                float(tag.fitted_turn_bars_ago)
+                if np.isfinite(tag.fitted_turn_bars_ago)
+                else None
+            ),
         )
     return result

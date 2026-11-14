@@ -547,7 +547,11 @@ class LockedJournalWatchdogTests(unittest.TestCase):
                     with self.assertRaises(sqlite3.OperationalError):
                         probe.execute("BEGIN EXCLUSIVE")
                 started = time.monotonic()
-                supervisor.step()
+                with patch.object(
+                    supervisor.ledger, "stopped", wraps=supervisor.ledger.stopped
+                ) as stopped_write:
+                    supervisor.step()
+                    stopped_write.assert_not_called()
                 self.assertLess(time.monotonic() - started, 2)
                 self.assertEqual(ledger.get(peer), peer_before)
                 deadline = started + 17
@@ -632,6 +636,47 @@ class LockedJournalWatchdogTests(unittest.TestCase):
                     ):
                         supervisor.step()
                     self.assertIs(caught.exception, error)
+                    self.assertEqual(ledger.get(spec.bot_id), before)
+            finally:
+                supervisor.close()
+
+    def test_stopped_probe_preserves_nontransient_errors(self):
+        from botmanager.domain import ManagerError
+
+        with tempfile.TemporaryDirectory() as directory:
+            home = Path(directory)
+            spec = grid("stopped-probe-errors")
+            ledger = RuntimeLedger(home)
+            ManagerStore(home).create_spec(spec)
+            ledger.register(spec, load_recording(recording(home)))
+            supervisor = Supervisor(home).open()
+            connect = sqlite3.connect
+            try:
+                before = ledger.get(spec.bot_id)
+                for code in (
+                    sqlite3.SQLITE_READONLY,
+                    sqlite3.SQLITE_IOERR,
+                    sqlite3.SQLITE_CORRUPT,
+                ):
+                    error = sqlite3.OperationalError("probe failure fixture")
+                    error.sqlite_errorcode = code
+
+                    def fail_probe(*args, failure=error, **kwargs):
+                        if kwargs.get("timeout") == 0:
+                            raise failure
+                        return connect(*args, **kwargs)
+
+                    with (
+                        self.subTest(code=code),
+                        patch(
+                            "botmanager.supervisor.sqlite3.connect",
+                            side_effect=fail_probe,
+                        ),
+                        self.assertRaises(ManagerError) as caught,
+                    ):
+                        supervisor.step()
+                    self.assertEqual(caught.exception.code, "store_unavailable")
+                    self.assertIs(caught.exception.__cause__, error)
                     self.assertEqual(ledger.get(spec.bot_id), before)
             finally:
                 supervisor.close()

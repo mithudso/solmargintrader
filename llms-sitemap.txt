@@ -1,9 +1,9 @@
 # solmargintrader — source sitemap
-> Source: /Users/mitch/dev/oraclebot.io · https://github.com/mithudso/solmargintrader @ f1b8d4ab + hosted ecosystem delta
+> Source: /Users/mitch/dev/oraclebot.io · https://github.com/mithudso/solmargintrader @ aab67065 + hosted ecosystem delta
 > Refreshed: 2026-11-13; deterministic tracked-path census only
 > Coverage: current tracked paths and suffix labels; no body review, semantic indexing or inference
 
-> Kind: repo · Entries: 3746
+> Kind: repo · Entries: 3748
 
 ## Files
 
@@ -3290,6 +3290,7 @@
 - research/tests/test_zec_expanded.py — code [src: git]
 - research/tests/test_zec_granular.py — code [src: git]
 - research/tests/test_zec_live.py — code [src: git]
+- research/tests/test_zec_shape_view.py — code [src: git]
 - research/tests/test_zec_tui.py — code [src: git]
 - research/tests/test_zec_tui_model.py — code [src: git]
 - research/tests/test_zec_tui_workers.py — code [src: git]
@@ -3376,6 +3377,7 @@
 - research/zec_granular.py — code [src: git]
 - research/zec_lifecycle.py — code [src: git]
 - research/zec_live.py — code [src: git]
+- research/zec_shape_view.py — code [src: git]
 - research/zec_tui.py — code [src: git]
 - research/zec_tui_model.py — code [src: git]
 - research/zec_tui_source.py — code [src: git]

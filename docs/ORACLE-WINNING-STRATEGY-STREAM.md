@@ -24,9 +24,10 @@ already provides Textual; this entry point does not install or start a service.
 | Edit focused | Edit the focused row's JSON parameters/ensemble; Apply validates before changing the working variant. |
 | Reset focused | Restore the immutable original configuration and its original evidence. |
 | Save view | Persist windows, chart length, cadence, manual selections and edited variants privately. |
+| Shape guide [H] | Explain the detected shape, show its actual 48-bar price trace and an illustrative sketch, and describe what to watch or what would challenge the interpretation. |
 
 Keys: **S** opens strategies, **E** edits the focused row, **R** requests a
-refresh, **Ctrl-S** saves the view, **Q** quits. Escape cancels a modal without
+refresh, **H** opens the shape guide, **Ctrl-S** saves the view, **Q** quits. Escape cancels a modal without
 changing its selection or configuration. Arrow/Page keys navigate the tables.
 On narrow terminals the indicator panel stacks below the watchlist; scroll or
 Tab to it. Wide terminals show it on the right. Tables can scroll horizontally.
@@ -58,6 +59,28 @@ episode age and fitted-turn phase where available. Its marker locates the **live
 quote in the preceding48-bar observed range**; the last completed close is used
 when no fresh quote exists. A quote outside that range can show below0% or
 above100%. This is observed range position, **not future pattern completion**.
+
+The inline panel explains the label in plain language and shows a small teaching
+sketch. **Shape guide [H]** opens a scrollable explanation with the actual last
+48 contiguous completed closes, a dot at the last completed close, price scale
+and timestamps. The illustrative sketch is separate from that observed trace;
+neither extends into a predicted future path. Live quote range position and the
+last completed close have separate labels. Chart lookback does not change this
+48-bar shape window.
+
+Each label explains its geometric meaning, a conditional continuation or reversal
+to watch, and what would challenge that interpretation. A V describes a decline
+and recovery; it does not establish that the recovery will continue. Compression
+describes narrowing fitted high/low boundaries and leaves breakout direction
+open. Bowl/cap explanations label a fitted historical turn and describe R² as
+past fit quality. These observations do not become new strategy triggers or
+forecast probabilities. The guide includes a gallery for all detector labels.
+
+Label age counts consecutive rolling windows with the same label. It is not the
+age or completion percentage of the full pattern. Retained data is marked stale;
+source failures clear the open guide, and insufficient contiguous history shows
+an unavailable trace. Use Page/arrow keys to scroll and Escape or Close guide to
+return to the watchlist.
 
 The right panel shows RSI14, balance of power, MACD line/signal/histogram,
 Bollinger bands and%B, ADX/DI, stochastic, ATR, EMA20/50, z-score and ROC.

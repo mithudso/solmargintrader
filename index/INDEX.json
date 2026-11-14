@@ -1,16 +1,16 @@
 {
-  "generatedAt": "2026-11-14T01:09:29+00:00",
+  "generatedAt": "2026-11-14T01:37:57+00:00",
   "schemaVersion": 1,
   "repoRoot": "~/dev/solmargintrader",
-  "commit": "84c9a6b8",
+  "commit": "27e47354",
   "counts": {
-    "files": 3717,
-    "bytes": 118062206,
+    "files": 3719,
+    "bytes": 118091259,
     "byKind": {
       "strategy-card": 1478,
       "doc": 794,
-      "test": 405,
-      "code-python": 371,
+      "test": 406,
+      "code-python": 372,
       "config": 274,
       "result": 133,
       "code-js": 114,
@@ -23,7 +23,7 @@
     },
     "byTopDir": {
       "backtester": 1956,
-      "research": 349,
+      "research": 351,
       "soltui": 192,
       ".cdo": 161,
       "docs": 156,
@@ -58,7 +58,7 @@
       "archive": 1,
       "tradingskilllist": 1
     },
-    "withSummary": 3386
+    "withSummary": 3388
   },
   "files": [
     {
@@ -3257,9 +3257,9 @@
       "title": "Read-only by default; nothing here needs write access to the repo.",
       "summary": "",
       "summarySource": "none",
-      "bytes": 21446,
+      "bytes": 21481,
       "lines": 483,
-      "sha1": "35f1fa0dff84553de386fb80aa47b1c9c34224d8",
+      "sha1": "412318b168a226c06ffb993bddaa9f11b38927f1",
       "symbols": [],
       "imports": [],
       "internalImports": [],
@@ -70814,9 +70814,9 @@
       "title": "supervisor",
       "summary": "Explicit foreground daemon, four process slots, no unbounded tick queue.",
       "summarySource": "docstring",
-      "bytes": 15137,
-      "lines": 369,
-      "sha1": "33a446ebc8dd58703c84c170d97463ee920f4f2d",
+      "bytes": 15850,
+      "lines": 380,
+      "sha1": "250e0dd4d6c96a2a2f82f4636a357ec87726aa16",
       "symbols": [
         "class Supervisor"
       ],
@@ -71565,9 +71565,9 @@
       "title": "test_load",
       "summary": "Real paper workers and a canonical optimizer over isolated numerical inputs.",
       "summarySource": "docstring",
-      "bytes": 33617,
-      "lines": 754,
-      "sha1": "b0517398444ee6bd7312ec2ed370d5de9719837b",
+      "bytes": 35589,
+      "lines": 799,
+      "sha1": "bf6d7e9eb2868742f6add854cfeb0fafc68d4b34",
       "symbols": [
         "optimizer_recording()",
         "optimizer_judge()",
@@ -73591,9 +73591,9 @@
       "title": "Oracle winning-strategy TUI",
       "summary": "Start the interactive, read-only workbench: /Users/mitch/.venvs/soltui/bin/python /Users/mitch/dev/solmargintrader/scripts/oracle_winners.py It opens a focused **1m / baseline / six-strategy** watchlist, with a price and",
       "summarySource": "opening-prose",
-      "bytes": 11578,
-      "lines": 197,
-      "sha1": "2ec7f9421728da1356bb5a64b532ef73bd88ae0f",
+      "bytes": 13192,
+      "lines": 220,
+      "sha1": "079b0fedb33ca6101c4efbe1f4f0265f9e6133a6",
       "symbols": [],
       "imports": [],
       "internalImports": [],
@@ -86396,11 +86396,11 @@
       "ext": ".txt",
       "kind": "data",
       "title": "solmargintrader \u2014 source sitemap",
-      "summary": "Generated report. Opens: # solmargintrader \u2014 source sitemap / > Source: /Users/mitch/dev/oraclebot.io \u00b7 https://github.com/mithudso/solmargintrader @ f1b8d4ab + hosted ecosystem delta",
+      "summary": "Generated report. Opens: # solmargintrader \u2014 source sitemap / > Source: /Users/mitch/dev/oraclebot.io \u00b7 https://github.com/mithudso/solmargintrader @ aab67065 + hosted ecosystem delta",
       "summarySource": "derived",
-      "bytes": 318838,
-      "lines": 3880,
-      "sha1": "8449ac3c039368063ac93cd40a94df69c1cc105a",
+      "bytes": 318947,
+      "lines": 3882,
+      "sha1": "e4746d76618432c3a6c48140a1c9675bf55b3637",
       "symbols": [],
       "imports": [],
       "internalImports": [],
@@ -86434,9 +86434,9 @@
       "title": "solmargintrader \u2014 family index",
       "summary": "Generated report. Opens: # solmargintrader \u2014 family index / > Source: /Users/mitch/dev/oraclebot.io \u00b7 https://github.com/mithudso/solmargintrader @ 722839798e22 + hosted ecosystem delta",
       "summarySource": "derived",
-      "bytes": 2782,
+      "bytes": 2838,
       "lines": 36,
-      "sha1": "b89ae8f487cb451d0ea8023501aa7777853f2328",
+      "sha1": "c251b41f9994ea4fb6c531b9038453fc4ea93390",
       "symbols": [],
       "imports": [],
       "internalImports": [],
@@ -86576,11 +86576,11 @@
       "ext": ".md",
       "kind": "doc",
       "title": "Work continuation",
-      "summary": "Version: 547 Delta: v546 to v547; qualify all39 incoming PR258 TUI tests under the actual MCP2.3 port and preserve the verified hosted image while completing integration. Delta: v545 to v546; preserve qualified hosted production/cold-restore/macOS records and PR258 interactive ZEC TUI records.",
+      "summary": "Version: 551 Delta: v550 to v551; qualify all48 incoming chart/TUI tests and the combined388-test watchdog repair without changing hosted image inputs or deadlines. Delta: v549 to v550; preserve verified hosted/native Oracle, Stripe, edge/cold-restore, macOS and MCP2.3 TUI records alongside PR259 observed-price-shape TUI and journal/watchdog records. Exact MCP2.3 pins remain unchanged.",
       "summarySource": "opening-prose",
-      "bytes": 491770,
-      "lines": 2336,
-      "sha1": "15b04b1db1417cbed406b008899967fbc95d6634",
+      "bytes": 499159,
+      "lines": 2361,
+      "sha1": "0b80c5ea87e14d0fdc10f66f9682a28810a626e2",
       "symbols": [],
       "imports": [],
       "internalImports": [],
@@ -88857,11 +88857,11 @@
       "ext": ".md",
       "kind": "doc",
       "title": "Prompt history",
-      "summary": "Version: 245 Delta: v244 to v245; preserve the complete hosted goal, provider-confirmation replies and interactive winning-ZEC TUI request verbatim. Delta: v243 to v244; preserve hosted provider-confirmation replies and the streaming winning-ZEC strategy request verbatim.",
+      "summary": "Version: 246 Delta: v245 to v246; preserve the full hosted goal, provider-confirmation replies and observed-price-shape visual-guide request verbatim. Delta: v244 to v245; preserve the complete hosted goal, provider-confirmation replies and interactive winning-ZEC TUI request verbatim.",
       "summarySource": "opening-prose",
-      "bytes": 131675,
-      "lines": 2268,
-      "sha1": "9665c658282ff97a860b6202b50b88a13e743c76",
+      "bytes": 132034,
+      "lines": 2275,
+      "sha1": "328f414686221c38c853229ceb71666cb440fd9d",
       "symbols": [],
       "imports": [],
       "internalImports": [],
@@ -95965,6 +95965,33 @@
       "frontmatter": {}
     },
     {
+      "id": "research/tests/test_zec_shape_view.py",
+      "path": "research/tests/test_zec_shape_view.py",
+      "dir": "research/tests",
+      "name": "test_zec_shape_view.py",
+      "ext": ".py",
+      "kind": "test",
+      "title": "test_zec_shape_view",
+      "summary": "Shape teaching must preserve provenance, gaps and conditional meaning.",
+      "summarySource": "docstring",
+      "bytes": 4112,
+      "lines": 87,
+      "sha1": "6ea6cd519576b0ba6b0f54ee53defe30ada0d085",
+      "symbols": [
+        "class ShapeTeaching"
+      ],
+      "imports": [
+        "__future__",
+        "copy",
+        "research",
+        "unittest"
+      ],
+      "internalImports": [
+        "research"
+      ],
+      "frontmatter": {}
+    },
+    {
       "id": "research/tests/test_zec_tui.py",
       "path": "research/tests/test_zec_tui.py",
       "dir": "research/tests",
@@ -95974,9 +96001,9 @@
       "title": "test_zec_tui",
       "summary": "Real Textual keyboard/mouse, background lifecycle and layout regressions.",
       "summarySource": "docstring",
-      "bytes": 12684,
-      "lines": 300,
-      "sha1": "b6f4a053525c3dff5307ffa7b226214fa18041c9",
+      "bytes": 15009,
+      "lines": 346,
+      "sha1": "03e7b20f20e8913fc8c32ae279f382a95206b43c",
       "symbols": [
         "class Client",
         "class Interface"
@@ -98066,6 +98093,37 @@
       "frontmatter": {}
     },
     {
+      "id": "research/zec_shape_view.py",
+      "path": "research/zec_shape_view.py",
+      "dir": "research",
+      "name": "zec_shape_view.py",
+      "ext": ".py",
+      "kind": "code-python",
+      "title": "These sketches illustrate each label. They are never fitted or projected prices.",
+      "summary": "Explain observed geometry without changing the detector or strategy calls.",
+      "summarySource": "docstring",
+      "bytes": 8431,
+      "lines": 216,
+      "sha1": "f7e60fcd99de7eac3728518e7bc4e5e166af8b95",
+      "symbols": [
+        "GUIDES",
+        "range_readout()",
+        "shape_summary()",
+        "price_trace()",
+        "shape_guide()"
+      ],
+      "imports": [
+        "__future__",
+        "itertools",
+        "math",
+        "research"
+      ],
+      "internalImports": [
+        "research"
+      ],
+      "frontmatter": {}
+    },
+    {
       "id": "research/zec_tui.py",
       "path": "research/zec_tui.py",
       "dir": "research",
@@ -98075,12 +98133,13 @@
       "title": "zec_tui",
       "summary": "Interactive read-only Oracle workbench for the frozen ZEC winner universe.",
       "summarySource": "docstring",
-      "bytes": 28091,
-      "lines": 716,
-      "sha1": "7c94ded3ed1711c1fcb66d2dbbac4738ba4a2cea",
+      "bytes": 29717,
+      "lines": 763,
+      "sha1": "a405ae709aa303fd749deafdd3218629bb7eed25",
       "symbols": [
         "class StrategyPicker",
         "class ConfigEditor",
+        "class ShapeGuide",
         "class OracleWinnersApp",
         "main()"
       ],
@@ -98110,9 +98169,9 @@
       "title": "zec_tui_model",
       "summary": "Editable display state and causal market details; no trading or UI imports.",
       "summarySource": "docstring",
-      "bytes": 15374,
-      "lines": 415,
-      "sha1": "d2f64bcf8caf7fe8c3b6f83f39ca98b437abd2e6",
+      "bytes": 15686,
+      "lines": 423,
+      "sha1": "797e1b33f359aeb2b95588a93339f51665e1aef7",
       "symbols": [
         "CONFIG_KEYS",
         "LOOKBACKS",

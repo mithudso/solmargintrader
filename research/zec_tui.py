@@ -27,6 +27,7 @@ from textual.widgets import (
 )
 
 from research import zec_live as live
+from research.zec_shape_view import shape_guide, shape_summary
 from research.zec_tui_model import LOOKBACKS, WorkingSet, default_path, label, row_key
 from research.zec_tui_source import DataSession, QuoteReader, live_view
 from research.zec_tui_workers import LatestWorker
@@ -182,12 +183,52 @@ class ConfigEditor(ModalScreen[tuple | None]):
             self.dismiss(None)
 
 
+class ShapeGuide(ModalScreen[None]):
+    BINDINGS: ClassVar = [("escape", "close", "Close guide")]
+
+    def __init__(self, details, interval):
+        super().__init__()
+        self.details, self.interval = details, interval
+
+    def compose(self) -> ComposeResult:
+        with Vertical(id="shape-dialog"):
+            yield Label(
+                "Understand the observed shape · Esc to close", classes="dialog-title"
+            )
+            with VerticalScroll(id="shape-guide-scroll", can_focus=True):
+                yield Static(
+                    Text(shape_guide(self.details, self.interval)),
+                    id="shape-guide-body",
+                )
+            yield Button("Close guide", id="close-shape-guide", variant="primary")
+
+    def on_mount(self):
+        self.update_details(self.details, self.interval)
+        self.query_one("#shape-guide-scroll").focus()
+
+    def update_details(self, details, interval):
+        self.details, self.interval = details, interval
+        width = self.query_one("#shape-guide-body").content_size.width - 13
+        self.query_one("#shape-guide-body", Static).update(
+            Text(shape_guide(details, interval, max(16, width)))
+        )
+
+    def action_close(self):
+        self.dismiss(None)
+
+    @on(Button.Pressed, "#close-shape-guide")
+    def close_button(self, event):
+        event.stop()
+        self.action_close()
+
+
 class OracleWinnersApp(App):
     TITLE = "ZEC Oracle · Strategy workbench"
     BINDINGS: ClassVar = [
         ("q", "quit", "Quit"),
         ("s", "choose", "Strategies"),
         ("e", "edit", "Edit"),
+        ("h", "shape_guide", "Shape guide"),
         ("r", "refresh_now", "Refresh"),
         ("ctrl+s", "save_view", "Save view"),
     ]
@@ -205,8 +246,8 @@ class OracleWinnersApp(App):
     #market { height: 2; padding: 0 1; background: #132237; }
     #notice { height: 2; padding: 0 1; color: #a8c1dd; }
     #workspace { height: 1fr; padding: 0 1; }
-    #left { width: 1fr; min-width: 40; }
-    #shape { height: 5; border: round #2c637d; padding: 0 1; }
+    #left { width: 1fr; min-width: 40; overflow-y: auto; }
+    #shape { height: auto; min-height: 9; border: round #2c637d; padding: 0 1; }
     #price-chart { height: 4; color: #68d7e3; }
     #chart-clock { height: 2; color: #a8c1dd; }
     #watchlist { height: 1fr; min-height: 7; }
@@ -216,7 +257,7 @@ class OracleWinnersApp(App):
     #indicator-clock { height: 3; padding: 0 1; color: #a8c1dd; }
     #indicators { height: 1fr; min-height: 8; }
     .compact #workspace { layout: vertical; overflow-y: auto; }
-    .compact #left { width: 1fr; height: 24; }
+    .compact #left { width: 1fr; height: 32; }
     .compact #right { width: 1fr; height: 23; margin: 1 0 0 0; }
     ModalScreen { align: center middle; background: #06101bd9; }
     #picker-dialog, #editor-dialog { width: 94%; height: 90%; background: #152338; border: thick #418aab; padding: 1; }
@@ -224,6 +265,9 @@ class OracleWinnersApp(App):
     .dialog-actions { height: 3; }
     #strategy-options, #config-json { height: 1fr; }
     #config-error { height: 3; color: #ffb3a7; }
+    #shape-dialog { width: 94%; height: 92%; background: #152338; border: thick #418aab; padding: 1; }
+    #shape-guide-scroll { height: 1fr; }
+    #shape-guide-body { height: auto; }
     """
 
     def __init__(
@@ -300,7 +344,7 @@ class OracleWinnersApp(App):
             yield Button("Edit focused", id="edit-focused")
             yield Button("Reset focused", id="reset-focused")
             yield Button("Save view", id="save-view")
-            yield Label("Live variants · read-only")
+            yield Button("Shape guide [H]", id="show-shape-guide")
         yield Static("Connecting to existing ZEC/USD recorder…", id="market")
         yield Static(
             "Select a timeframe and choose the strategies you want to watch.",
@@ -418,6 +462,8 @@ class OracleWinnersApp(App):
         self.query_one("#chart-clock", Static).update(
             "Chart unavailable; awaiting valid completed candles."
         )
+        if isinstance(self.screen, ShapeGuide):
+            self.screen.update_details(None, self.state.interval)
 
     def paint_rows(self, rows):
         table = self.query_one("#watchlist", DataTable)
@@ -513,22 +559,14 @@ class OracleWinnersApp(App):
         if not details:
             self.clear_details("Market data unavailable: " + str(frame.get("error")))
             return
-        shape = details["shape"]
-        position = shape.get("live_range_position", shape.get("range_position"))
-        gauge = "—"
-        if position is not None:
-            slot = min(24, max(0, round(position * 24)))
-            gauge = "─" * slot + "●" + "─" * (24 - slot) + f" {position:.0%}"
-        age = shape.get("episode_age_bars", "—")
-        position_source = (
-            "Live quote" if "live_range_position" in shape else "Last close"
-        )
         self.query_one("#shape", Static).update(
             Text(
-                f"{shape['shape'].replace('_', ' ').upper()} · {shape.get('zone', 'unknown')} zone · episode {age} bars\n{position_source} in observed 48-bar range  {gauge}\n{shape.get('turn_phase', 'No fitted turn')} · not future completion",
+                shape_summary(details),
                 style="dim" if details["stale"] else "cyan",
             )
         )
+        if isinstance(self.screen, ShapeGuide):
+            self.screen.update_details(details, self.state.interval)
         self.query_one("#price-chart", Sparkline).data = details["chart"]
         first = (
             live.iso(details["chart_start"])
@@ -607,6 +645,14 @@ class OracleWinnersApp(App):
             self.selected_changed,
         )
 
+    def action_shape_guide(self):
+        details = None
+        if self.current_frame:
+            details = live_view(
+                self.current_frame, self.quote_result, self.clock()
+            ).get("details")
+        self.push_screen(ShapeGuide(details, self.state.interval))
+
     def selected_changed(self, selected):
         if selected is not None:
             self.state.selected = selected
@@ -644,6 +690,7 @@ class OracleWinnersApp(App):
     def on_button_pressed(self, event):
         actions = {
             "choose-strategies": self.action_choose,
+            "show-shape-guide": self.action_shape_guide,
             "edit-focused": self.action_edit,
             "save-view": self.action_save_view,
         }
