@@ -1,6 +1,8 @@
 # Prompt history
 
-Version: 249
+Version: 250
+Delta: integrated to v250; preserve concurrent published ZEC reversal paper and qualified AdSense verification changes.
+Delta: v248 to v249; add the ZEC reversal working-paper publication record while preserving incoming Settings delivery.
 Delta: v248 to v249; preserve all three supplied AdSense verification methods and exact publisher.
 Delta: v247 to v248; preserve the screenshot showing the disabled Coinbase form on direct Settings entry.
 Delta: v246 to v247; record the owner request for two masked Coinbase credential fields.
@@ -2291,3 +2293,10 @@ Image supplied at /var/folders/hz/s7btlxx54c32yt375m03q0h40000gn/T/F26E3A26-F5A8
 For this site I need to validate with google adsense: [Image #1]  [Image #2] [Image #3]   Please do all 3 for the site.
 
 Supplied screenshots preserved privately under /Users/mitch/.local/state/oraclebot-adsense-verification-20261114/ as supplied-script.png, supplied-ads-txt.png and supplied-meta.png. Exact public publisher: ca-pub-1706083044457708. Script: https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1706083044457708 with async and crossorigin=anonymous. Seller record: google.com, pub-1706083044457708, DIRECT, f08c47fec0942fa0. Meta tag: google-adsense-account with content ca-pub-1706083044457708.
+
+
+## ZEC two-bar reversal paper — 2026-11-14
+
+```text
+Two things: 1)  If this is true, can I bet on a reversal after two ups or two down 10 mins?  10 minutes                          1.80 bars                        1.72 bars                20.8%                    41.4%     and 2) Can you write this up into a paper and post it on the oraclebot.io site?
+```

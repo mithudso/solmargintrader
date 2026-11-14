@@ -1,0 +1,36 @@
+# ZEC two-bar reversal working paper
+
+Version: 1.0.0
+Date: 2026-11-14
+Status: exploratory one-day empirical description; not peer reviewed, prospectively validated or a costed trading strategy.
+
+## Canonical shared evidence
+
+Original run: run:3768d71af70c8382f508829ab67f0f7b91b367174baa7c372c02d432439c1e3c (finished revision 6).
+Publication run: run:d8e77d4b36700570cffa6d3ea515c46722d997347296de304beda966a69f7ced.
+Original results artifact: art:cdc43a1d1cc172598c31ea8e98595eb900f6c5a5076361e1d677e1c7f033034f.
+MongoDB stores canonical inputs, counts and paper artifacts. These repository files and the website are public publication projections. Native draft storage is not trusted literature or trading-edge qualification.
+
+## Findings and limits
+
+Capture: Coinbase ZEC-USD, 2026-11-12T04:56:27.224912Z through 2026-11-13T04:56:27.224912Z. Accepted receipt-time trade count:134746; raw multi-channel WAL records:1459542. No new capture or trading occurred.
+Primary gap-safe10-minute candles:135, U62/D72/F1. Rolling UU→D19/24=79.2%; DD→U16/29=55.2%, DD→F1/29. Exact new-streak DUU→D14/19=73.7%; UDD→U6/13=46.2%. Close-to-close sensitivity changes all labels and conditioning: UU→D20/25=80%; DD→U10/26=38.5%. Mean completed opposite-terminated up/down runs54/30=1.8 and50/29=1.7241. Do not infer an overdue reversal from a mean run length.
+Counts overlap and come from one previously examined day across multiple intervals. No stable forecast probability, profitable execution, fee-adjusted P&L, or formal significance is established. Candle body color differs from executable entry-to-exit return and may differ from a betting contract's settlement.
+
+## Reproducibility
+
+analysis.py requires Python3 and NumPy. Supply --capture-dir containing accepted tape.npz/capture.json and --wal pointing to the original events.jsonl. It reads inputs and prints JSON; it cannot submit an order or modify the capture. Input hashes are fixed and verified.
+results.json has exact native result bytes. All20 retained combinations reproduced with exit0; a separate independent implementation matched all counts, run distributions and censoring. Public analysis.py only parameterizes private input paths and applies import/format cleanup to the original source. Raw tick tape is not distributed publicly.
+
+## Published source inventory
+
+- research/ZEC-TWO-BAR-REVERSAL.md: SHA256 d0b12ea26583aa19aa52b6a3ef05c3c6ea2e03c182a42cd98ae60372286545f4
+- research/zec-two-bar-reversal-20261114/results.json: SHA256 83c4b4b15f990a8d7b7e4804f6c1d2ea15d3f784c2d500033cc4c94fc33734df
+- research/zec-two-bar-reversal-20261114/analysis.py: SHA256 cf54c763e2e6f0404c59b7546e53335ea02374ffc96e8c6b9dd8b7095f60d811
+- website/public/papers/zec-two-bar-reversal.pdf: SHA256 4e82fbbfd428f9215646f8bc60a23beb3ebb0613e60d44cb5e0c1b2237b58d76
+
+## Links
+
+https://oraclebot.io/papers/zec-two-bar-reversal.pdf
+https://github.com/mithudso/solmargintrader/blob/master/research/ZEC-TWO-BAR-REVERSAL.md
+https://github.com/mithudso/solmargintrader/tree/master/research/zec-two-bar-reversal-20261114

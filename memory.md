@@ -1,6 +1,8 @@
 # Work continuation
 
-Version: 557
+Version: 558
+Delta: integrated to v558; preserve concurrent published ZEC reversal paper and qualified AdSense verification changes.
+Delta: v555 to v556; add the ZEC reversal working-paper publication record while preserving incoming Settings delivery.
 Delta: v556 to v557; qualify exact AdSense markup, scoped CSP and isolated Chrome fixtures before delivery.
 Delta: v555 to v556; begin exact owner-supplied AdSense script, seller record and meta verification publication.
 Delta: v554 to v555; qualify direct-entry startup RED/GREEN, current-account capability updates and preserved browser drafts.
@@ -2396,3 +2398,23 @@ Isolated worktree /Users/mitch/dev/worktrees/oraclebot-adsense-verification-2026
 All317Node tests,17syntax files,threeChrome fixture suites including24hosted groups, diffcheck and offline markup/scope checks passed0. Thehead contains exactlyone supplied async anonymous script and oneexact publisher meta; ads.txt contains exactsellerrow+LF. The WorkerCSP diff onlyadds the suppliedloaderpath; noinline/eval,wildcard,extraGooglehost orotherdirectives changed. Existingaccountprivacycopy nowdiscloses GoogleAdSense/devicebrowsing/cookiedata. Fixtures locallyfulfill onlytheexactGET/script URL with emptyJavaScript andCORS; everyother externalrequest remainsblocked. No adunits, financialflagchanges, providerkeys, backendlogic,nativeimage orruntime changes. Full frozen8implementationfiles/hashes: /Users/mitch/.local/state/oraclebot-adsense-verification-20261114/worker-final-receipt.json. Markup/scopeproof: markup-and-scope-receipt.json.
 
 ChromeDevTools has the intended signed-in GoogleAdSense publisher session. Its exact oraclebot.io row currentlyshows Requiresreview andads.txt Notfound; avoidotherdomains/accountsettings. Afteractualdeployment, verifyownership throughthatdomain's existingGoogleUI ifavailable, and reportGoogle's actualresult without claimingapproval. A first snapshot-file save outsideconfiguredChrome roots wasdenied; readonlyinline snapshot succeeded, noaccessruleschanged. Pendingfinaldeterministicindex/CI/merge/deploy, independentall3publishedmethods/CSP/source acceptance andGoogle-side verification. Finaldelivery/continuation/artifactmanifests underthisprivate taskroot are authoritative.
+
+
+## ZEC reversal working paper — 2026-11-14
+
+Version: 1.1.0
+Delta: independently audit counts and exact public/Mongo bytes; qualify PDF, website source and browser gates.
+
+Owner request: explain whether the two-up/two-down 10-minute observations justify betting, then publish a paper on oraclebot.io. Task: TASK-2191; numerical verification TASK-2192, paper/audit TASK-2193, delivery/live acceptance TASK-2194.
+
+Evidence: native empirical run run:3768d71af70c8382f508829ab67f0f7b91b367174baa7c372c02d432439c1e3c finished revision 6; immutable source art:b7b9b518c0c9baf5243a63fb39db79e5c2f2afdae3324cda691456811468074f, results art:cdc43a1d1cc172598c31ea8e98595eb900f6c5a5076361e1d677e1c7f033034f. Publication run run:d8e77d4b36700570cffa6d3ea515c46722d997347296de304beda966a69f7ced owns the paper and publication receipts. Both original artifacts were read back exactly. Parameterized public analysis reproduced all 20 combinations and both input hashes, exit 0.
+
+Primary 10-minute rolling UU outcomes U5/D19/F0 of24; DD U16/D12/F1 of29. Newly formed exact-two DUU U5/D14 of19; UDD U6/D7 of13. Close-to-close gap-safe DD reversal is10/26, not a symmetric confirmation. The paper must never equate a color count with executable return, claim a qualified79% success probability, or call it peer reviewed. No new capture/orders/models/embeddings/concept edits.
+
+Public paper: /Users/mitch/dev/solmargintrader/research/ZEC-TWO-BAR-REVERSAL.md. Public reproducibility projection: /Users/mitch/dev/solmargintrader/research/zec-two-bar-reversal-20261114/. Use the existing tracked research exporter; Markdown paper and rendered public copies derive from the Mongo source. Private raw WAL and tape remain unchanged.
+
+Completed: independent20-combination arithmetic/privacy/economics review exit0; fixed newline byte mismatch; final parameterized reproduction exit0;317website Node tests,17JavaScript syntax files,7research exporter tests, full three-script browser suite with24hosted groups, deterministic23-file public export and diff check exit0. Five-page tagged PDF hasSHA2564e82fbbfd428f9215646f8bc60a23beb3ebb0613e60d44cb5e0c1b2237b58d76; final paperSHA256d0b12ea26583aa19aa52b6a3ef05c3c6ea2e03c182a42cd98ae60372286545f4. Exact final paper, formatted code, llms index, reviewer receipt and PDF(base64) are in the native publication run and were read back. Remaining delivery: deterministic metadata/wiki gates, final source/CI checks, merge, unchanged edge Worker deployment with static assets and read-only live article acceptance. No launch flags, secrets, accounts, grants, existing services or historical forward cohorts are to be changed. The exact delivery receipt will supersede this in-progress wording. Stele knowledge write lost transport and is queued as bfb6a194; graph task creation/claim succeeded before disconnect.
+
+## AdSense integration checkpoint
+
+Incoming main18dae4cef65b51633f1f4bf2f96aba85f931f988/PR263 publishes a separate exploratory ZEC reversal working paper and publicPDF/catalog. Preserve all exact paper/results/export bytes; do not rerun its study or alter numerical claims. Mergeconflicts affect only workflowrecords and derivedindexes. Both record branches are append-only after the exact common body; savepreimages and combinealltails/Deltafields. AdSense8implementationfiles remainfrozen/qualified; rebuild deterministicindexes andcheckpublicexport/wiki/inventories before integrationcommit andfreshrequiredCI. A parallelGitHubAgentMerge mayupdate the remote taskbranch; fetchandpreserve its commits beforepushing, neverforce.
