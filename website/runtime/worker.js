@@ -53,6 +53,44 @@ export function validateManifest(value) {
 export class RuntimeOwner {
   constructor(ctx, env) { this.ctx = ctx; this.env = env; this.starting = null; }
 
+  async restart(request) {
+    if (!await authorized(request, this.env.RUNTIME_STATE_TOKEN)) return response(401, { error: 'authentication_required' });
+    if (request.method !== 'POST') return response(405, { error: 'method_not_allowed' });
+    const rawEpoch = request.headers.get('X-Runtime-Epoch') || '';
+    const epoch = Number(rawEpoch);
+    if (!/^[1-9][0-9]*$/.test(rawEpoch) || !Number.isSafeInteger(epoch) || epoch >= Number.MAX_SAFE_INTEGER) return response(409, { error: 'owner_epoch_changed' });
+    if (request.headers.get('Content-Type')?.split(';')[0].trim() !== 'application/json') return response(415, { error: 'json_required' });
+    let body;
+    try { body = JSON.parse(new TextDecoder('utf-8', { fatal: true }).decode(await bounded(request, 128))); }
+    catch (error) { if (error?.message === 'body_too_large') throw error; return response(400, { error: 'invalid_restart_request' }); }
+    if (!exact(body, ['action']) || body.action !== 'restart') return response(400, { error: 'invalid_restart_request' });
+    return this.ctx.blockConcurrencyWhile(async () => {
+      if (epoch !== await this.ctx.storage.get('epoch')) return response(409, { error: 'owner_epoch_changed' });
+      const head = await this.ctx.storage.get('head');
+      if (!head || !this.env.STATE) return response(409, { error: 'committed_checkpoint_required' });
+      const object = await this.env.STATE.get(head.key);
+      if (!object || object.size > MANIFEST_BYTES) return response(503, { error: 'checkpoint_integrity' });
+      const raw = await object.arrayBuffer();
+      let manifest;
+      try { manifest = JSON.parse(new TextDecoder('utf-8', { fatal: true }).decode(raw)); }
+      catch { return response(503, { error: 'checkpoint_integrity' }); }
+      if (await hash(raw) !== head.sha256 || !validateManifest(manifest) || manifest.sequence !== head.sequence || manifest.epoch !== head.epoch) return response(503, { error: 'checkpoint_integrity' });
+      if (!this.ctx.container?.running) return response(409, { error: 'runtime_not_running' });
+      const fenced = await this.ctx.storage.transaction(async txn => {
+        const current = await txn.get('head');
+        if (await txn.get('epoch') !== epoch || current?.key !== head.key || current?.sha256 !== head.sha256) return false;
+        await txn.put('epoch', epoch + 1);
+        // A failed destroy must also force the normal start path to retry it.
+        await txn.put('image', null);
+        return true;
+      });
+      if (!fenced) return response(409, { error: 'owner_epoch_changed' });
+      try { await this.ctx.container.destroy('operator_checkpointed_restart'); }
+      finally { await this.ctx.storage.setAlarm(Date.now() + 1000); }
+      return response(202, { status: 'restart_scheduled', previousEpoch: epoch, epoch: epoch + 1, checkpointSequence: head.sequence });
+    });
+  }
+
   async state(request, path) {
     if (!await authorized(request, this.env.RUNTIME_STATE_TOKEN)) return response(401, { error: 'authentication_required' });
     const rawEpoch = request.headers.get('X-Runtime-Epoch') || '';
@@ -176,6 +214,7 @@ export class RuntimeOwner {
     try {
       if (request.headers.has('Origin')) return response(403, { error: 'browser_origin_forbidden' });
       const url = new URL(request.url);
+      if (url.pathname === '/internal/runtime/restart') return await this.restart(request);
       if (url.pathname.startsWith('/internal/state/')) return await this.state(request, url.pathname);
       if (!await authorized(request, this.env.ENGINE_TOKEN)) return response(401, { error: 'authentication_required' });
       if (!['/health', '/v1/strategies', '/v1/oracle', '/v1/backtests', '/v1/jobs', '/v1/signals'].includes(url.pathname) && !/^\/v1\/jobs\/[0-9a-f-]{36}$/.test(url.pathname)) return response(404, { error: 'not_found' });

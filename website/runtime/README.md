@@ -64,6 +64,17 @@ Checkpoint callbacks have a distinct bearer secret and may use only:
 - `GET/PUT /internal/state/manifest`
 - `GET/PUT /internal/state/chunks/{sha256}`
 
+The operator may replace the owned ephemeral container through
+`POST /internal/runtime/restart` with the exact JSON body
+`{"action":"restart"}`, the distinct `RUNTIME_STATE_TOKEN` bearer, and the
+current `X-Runtime-Epoch`. The request is capped at128bytes. Public
+`ENGINE_TOKEN` clients and browser origins cannot use this route. A verified
+committed R2 manifest is required before destruction. The DO fences the old
+epoch first, preserves the head, destroys only its own container, and schedules
+an alarm to restore it. A retry under the old epoch returns409 and cannot
+destroy the replacement. Readiness remains subject to the ordinary complete
+checkpoint restore; a successful restart request is not a recovery receipt.
+
 Browsers are refused. Filenames are allowlisted; no key, environment file, WAL,
 operator directory or executable is persisted. Corrupt, incomplete or
 incompatible restores withhold readiness and never create replacement history.

@@ -150,6 +150,12 @@ class Supervisor:
         if self.server is None:
             raise RuntimeError("Supervisor is not open")
         self._reap_blocked_owners()
+        if self.ledger.path.exists() and self._journal_blocked():
+            # Normal SQLite retries can consume the cached watchdog's margin
+            # before its next poll. Defer reconciliation and admission while
+            # commit is unavailable; socket requests retain their own deadline.
+            self.server.poll()
+            return
         self._flush_failures()
         self.server.poll()
         # Owner learning runs in one separately bounded process; controls keep polling.

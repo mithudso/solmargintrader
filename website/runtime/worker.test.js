@@ -52,6 +52,9 @@ function fixture() {
 function stateRequest(path, method = 'GET', body = null, epoch = 1) {
   return new Request('https://runtime.example/internal/state/' + path, { method, headers: { Authorization: 'Bearer ' + stateToken, 'X-Runtime-Epoch': String(epoch) }, body });
 }
+function restartRequest({ epoch = 1, authority = stateToken, method = 'POST', body = JSON.stringify({ action: 'restart' }), origin = false } = {}) {
+  return new Request('https://runtime.example/internal/runtime/restart', { method, headers: { Authorization: 'Bearer ' + authority, 'X-Runtime-Epoch': String(epoch), 'Content-Type': 'application/json', ...(origin ? { Origin: 'https://oraclebot.io' } : {}) }, body: method === 'POST' ? body : null });
+}
 async function stage(f, sequence = 1) {
   const raw = new TextEncoder().encode('explicit fixture public bytes'); const sha = await digest(raw);
   assert.equal((await f.owner.fetch(stateRequest('chunks/' + sha, 'PUT', raw))).status, 200);
@@ -162,4 +165,76 @@ test('trusted closed-bar signal requests use the same authenticated bounded cont
   assert.equal(forwarded.contentLength, String(Buffer.byteLength(body)));
   assert.equal(new TextDecoder().decode(forwarded.body), body);
   assert.equal((await f.owner.fetch(new Request('https://runtime.example/v1/signals', { method: 'POST', headers: { Authorization: 'Bearer ' + stateToken }, body }))).status, 401);
+});
+test('maintenance cannot use public analysis authority, browser requests, unsupported methods or a loose body', async () => {
+  const f = fixture(); let destroys = 0;
+  f.ctx.container.destroy = async () => { destroys++; };
+  assert.equal((await f.owner.fetch(restartRequest({ authority: token }))).status, 401);
+  assert.equal((await f.owner.fetch(new Request('https://runtime.example/internal/runtime/restart', { method: 'POST' }))).status, 401);
+  assert.equal((await f.owner.fetch(restartRequest({ origin: true }))).status, 403);
+  assert.equal((await f.owner.fetch(restartRequest({ method: 'GET' }))).status, 405);
+  for (const body of ['{}', '{', 'null', JSON.stringify({ action: 'restart', command: 'forbidden' }), JSON.stringify({ action: 'other' })]) {
+    assert.equal((await f.owner.fetch(restartRequest({ body }))).status, 400);
+  }
+  assert.equal((await f.owner.fetch(restartRequest({ body: 'x'.repeat(129) }))).status, 413);
+  const wrongType = restartRequest(); wrongType.headers.set('Content-Type', 'text/plain');
+  assert.equal((await f.owner.fetch(wrongType)).status, 415);
+  assert.equal(destroys, 0);
+  assert.equal(await f.storage.get('epoch'), 1);
+});
+test('maintenance requires an intact committed R2 checkpoint and matching current epoch', async () => {
+  const f = fixture(); let destroys = 0;
+  f.ctx.container.running = true;
+  f.ctx.container.destroy = async () => { destroys++; };
+  assert.equal((await f.owner.fetch(restartRequest())).status, 409);
+  const { manifest } = await stage(f);
+  await f.owner.fetch(stateRequest('manifest', 'PUT', JSON.stringify(manifest)));
+  assert.equal((await f.owner.fetch(restartRequest({ epoch: 2 }))).status, 409);
+  const head = await f.storage.get('head');
+  f.bucket.rows.set(head.key, new TextEncoder().encode('corrupt'));
+  assert.equal((await f.owner.fetch(restartRequest())).status, 503);
+  assert.deepEqual(await f.storage.get('head'), head);
+  assert.equal(destroys, 0);
+  assert.equal(await f.storage.get('epoch'), 1);
+});
+test('one authorized maintenance action fences before destroying and preserves the committed head', async () => {
+  const f = fixture(); const { manifest } = await stage(f);
+  await f.owner.fetch(stateRequest('manifest', 'PUT', JSON.stringify(manifest)));
+  const head = await f.storage.get('head'); let destroys = 0;
+  f.ctx.container.running = true;
+  f.ctx.container.destroy = async reason => {
+    destroys++;
+    assert.equal(reason, 'operator_checkpointed_restart');
+    assert.equal(await f.storage.get('epoch'), 2, 'old writer must be fenced before destruction');
+    assert.deepEqual(await f.storage.get('head'), head);
+    f.ctx.container.running = false;
+  };
+  const result = await f.owner.fetch(restartRequest());
+  assert.equal(result.status, 202);
+  assert.deepEqual(await result.json(), { status: 'restart_scheduled', previousEpoch: 1, epoch: 2, checkpointSequence: 1 });
+  assert.equal(destroys, 1);
+  assert.equal((await f.owner.fetch(restartRequest())).status, 409, 'retry under old epoch cannot destroy a replacement');
+  assert.equal(destroys, 1);
+  assert.equal((await f.owner.fetch(stateRequest('manifest'))).status, 409);
+  assert.deepEqual(await f.storage.get('head'), head);
+  assert.ok(f.storage.alarm > Date.now());
+  assert.equal(f.starts(), 0, 'maintenance does not start a second container');
+  const healthy = await f.owner.fetch(new Request('https://runtime.example/health', { headers: { Authorization: 'Bearer ' + token } }));
+  assert.equal(healthy.status, 200);
+  assert.equal((await healthy.json()).deployment.epoch, 3);
+  assert.equal(f.starts(), 1);
+  assert.deepEqual(await f.storage.get('head'), head);
+});
+test('failed destruction preserves the fence and checkpoint and schedules an owned retry', async () => {
+  const f = fixture(); const { manifest } = await stage(f);
+  await f.owner.fetch(stateRequest('manifest', 'PUT', JSON.stringify(manifest)));
+  const head = await f.storage.get('head');
+  f.ctx.container.running = true;
+  f.ctx.container.destroy = async () => { throw Error('controlled provider refusal'); };
+  assert.equal((await f.owner.fetch(restartRequest())).status, 503);
+  assert.equal(await f.storage.get('epoch'), 2);
+  assert.equal(await f.storage.get('image'), null);
+  assert.deepEqual(await f.storage.get('head'), head);
+  assert.ok(f.storage.alarm > Date.now());
+  assert.equal((await f.owner.fetch(restartRequest())).status, 409);
 });
