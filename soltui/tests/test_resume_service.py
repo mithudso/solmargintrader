@@ -48,6 +48,7 @@ class ServiceResumeTests(unittest.TestCase):
         self.agent = self.root / "agent.plist"
         self.agent.write_bytes(b"original-agent")
         for name, value in {
+            "REPO": self.root,
             "APPS_DIR": self.apps,
             "BUNDLE": self.bundle,
             "BUNDLE_EXE": self.bundle / "Contents/MacOS/SolTUI",
@@ -126,6 +127,20 @@ class ServiceResumeTests(unittest.TestCase):
             return_value=subprocess.CompletedProcess([], 3, "", "No such process"),
         ):
             self.assertEqual(self.svc.stop(), 0)
+
+    def test_absent_process_does_not_hide_a_loaded_job(self):
+        with (
+            patch.object(self.svc, "run", return_value=subprocess.CompletedProcess([], 3, "", "No such process")),
+            patch.object(self.svc, "is_loaded", return_value=True),
+        ):
+            self.assertNotEqual(self.svc.stop(), 0)
+
+    def test_alias_worktree_is_refused_before_replacing_application(self):
+        (self.root / ".git").write_text("gitdir: /inert/fixture")
+        with patch.object(self.svc, "reload_agent") as reload:
+            self.assertNotEqual(self.svc.install(), 0)
+        self.assert_original()
+        reload.assert_not_called()
 
     def test_uninstall_does_not_remove_application_after_failed_stop(self):
         with patch.object(self.svc, "stop", return_value=1):

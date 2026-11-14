@@ -136,7 +136,7 @@
     },
     {
       "path": "soltui/soltui-service",
-      "sha256": "6ff575c54861a17b7cbbe285ba618aec38b84864ace161333878b6ca2a45e7b4"
+      "sha256": "f2ce931f6b9f1d7769d668357ef030c2942a5d4d7ac2e42d901aa28ec9ea27ec"
     },
     {
       "path": "website/package.json",

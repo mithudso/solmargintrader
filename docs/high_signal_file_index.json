@@ -1446,7 +1446,7 @@
       "component": "mongo",
       "kind": "python",
       "summary": "20 tests: idempotency, provenance, strict validation, card semantics",
-      "lines": 327
+      "lines": 328
     },
     {
       "path": "mongo/queries/01-coins-and-bars.js",
@@ -1823,7 +1823,7 @@
       "component": "liquidity",
       "kind": "python",
       "summary": "Read-only provider comparison and source labels",
-      "lines": 1651
+      "lines": 1650
     },
     {
       "path": "liquidity/src/aero_lp/validation.py",
@@ -1914,7 +1914,7 @@
       "component": "liquidity",
       "kind": "other",
       "summary": "launchd install / status / kill / resume",
-      "lines": 52
+      "lines": 53
     },
     {
       "path": ".claude/agents/aero-pool-scout.md",

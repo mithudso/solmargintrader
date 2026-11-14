@@ -1,11 +1,20 @@
 # Work continuation
 
-Version: 562
+Delta: v562 to v566; preserve masterf74eeed AdSense publication and fix final macOS integration overlaps.
+
+Version: 566
 Delta: v561 to v562; validate PR235 conflict integration with master18dae4c and record delivery state.
 Delta: v560 to v561; integrate current master and preserve incoming ZEC paper publication.
 Delta: v559 to v560; classify macOS launcher fixtures as platform-specific after Linux CI lacked /bin/zsh.
 Delta: v558 to v559; fix final Linux/native CI integration failures after c7f9ab9.
 Delta: v555 to v557; integrate master25e1d60 into PR235 and preserve the separate PR224 record reservation.
+Version: 559
+Delta: integrated to v559; retain parallel automated merge ancestry and all owner/research/AdSense records.
+Delta: v557 to v558; merge concurrent AdSense and ZEC working-paper continuation records.
+Delta: integrated to v558; preserve concurrent published ZEC reversal paper and qualified AdSense verification changes.
+Delta: v555 to v556; add the ZEC reversal working-paper publication record while preserving incoming Settings delivery.
+Delta: v556 to v557; qualify exact AdSense markup, scoped CSP and isolated Chrome fixtures before delivery.
+Delta: v555 to v556; begin exact owner-supplied AdSense script, seller record and meta verification publication.
 Delta: v554 to v555; qualify direct-entry startup RED/GREEN, current-account capability updates and preserved browser drafts.
 Delta: v553 to v554; diagnose and repair direct Settings capability initialization missed by Overview-first fixtures.
 
@@ -2398,6 +2407,18 @@ Scope: website/public/app.js initialization and meaningful direct-entry browser 
 The exact deployed baseline36678cc2 fails the new direct authenticated Settings assertion with actual exit1: disabledtrue when configured connections should be enabled before unrelated metadata finishes. The fix applies /api/config in its own guarded promise continuation, normalizes the connection flag to literaltrue and refreshes only current ready Settings or Backtest selects. Account hydration later uses the applied configuration; unrelated metadata completion keeps in-place select updates and retains drafts. Original account epochs/navigation/signing and backend permissions stay unchanged. All317 website Node tests,17JavaScript syntax files, full three-script Chrome browser suite including24hosted groups, wiki/inventory/diff checks passed with actual0. Ten startup cases cover directentry, both deterministic arrival orders, navigation into Settings, false/string/failed/malformed configuration, wallet replacement/logout and preserved Backtest drafts. Prior14hosted credential/consent/privacy tests remain passing. No real credentials, orders, payments, backend, native image or financial activation changes. Frozen appSHA724a19a63c045c9e8b46916e06ef9c48ad6488e2af06752f0fd5f48b1948d6cf and testSHA46dbc0b6e3611501c62a3b98cd917cd313f7ded3bd6ee089208f2408ecd37c51 bind private /Users/mitch/.local/state/oraclebot-settings-startup-20261114/worker-final-receipt.json. Remaining: deterministic index, final-head CI/merge/deploy and independent direct-entry browser acceptance using exact public assets plus actual production capability configuration. Final receipt will be /Users/mitch/.local/state/oraclebot-settings-startup-20261114/delivery.json and its source/artifact manifests. Earlier PR260 masking acceptance covered Overview-first entry; it did not qualify this startup path.
 
 ## Retained PR 235 integration record
+## 2026-11-14 — AdSense ownership verification
+
+Previous direct Settings repair PR262 merged25e1d606 and is deployed/independently accepted14/14; canonical clean/synced. Actual final receipt /Users/mitch/.local/state/oraclebot-settings-startup-20261114/delivery.json. The owner now requests all3AdSense methods for ca-pub-1706083044457708. TASK2195claimed; KNOW2197preserves exactscope. Root /ads.txt currently returns SPA HTML200 rather than a real seller file. Add exact root text/plain seller record and one supplied async anonymous loader plus account meta in HTMLhead. Permit only the loader path in script-src while retaining all otherCSPrails. Update the existing no-advertising-trackers privacy statement because the authorized Googleloader executes in the shared hash-routed appdocument. No isolated-adrealm claim, adslots or Googleaccountsettings are included. Browserfixtures must locally stub only the exact requested GET/scriptURL and reject otherexternal requests. Googleownershipreview remains external; publishing snippets is not Googleapproval. Official current docs via Context7 https://support.google.com/adsense/answer/12169212 confirm all3methods.
+
+Isolated worktree /Users/mitch/dev/worktrees/oraclebot-adsense-verification-20261114; private evidence /Users/mitch/.local/state/oraclebot-adsense-verification-20261114/. Preserve financial flagsfalse, customer/operatorauthority boundaries, native runtime/image, credentials and unrelated worktrees. Pending: minimalmarkup/CSP/privacy/fixturechanges, relevantchecks, requiredCI/merge/deploy and independent all3publicverification/CSPacceptance.
+
+## AdSense local qualification
+
+All317Node tests,17syntax files,threeChrome fixture suites including24hosted groups, diffcheck and offline markup/scope checks passed0. Thehead contains exactlyone supplied async anonymous script and oneexact publisher meta; ads.txt contains exactsellerrow+LF. The WorkerCSP diff onlyadds the suppliedloaderpath; noinline/eval,wildcard,extraGooglehost orotherdirectives changed. Existingaccountprivacycopy nowdiscloses GoogleAdSense/devicebrowsing/cookiedata. Fixtures locallyfulfill onlytheexactGET/script URL with emptyJavaScript andCORS; everyother externalrequest remainsblocked. No adunits, financialflagchanges, providerkeys, backendlogic,nativeimage orruntime changes. Full frozen8implementationfiles/hashes: /Users/mitch/.local/state/oraclebot-adsense-verification-20261114/worker-final-receipt.json. Markup/scopeproof: markup-and-scope-receipt.json.
+
+ChromeDevTools has the intended signed-in GoogleAdSense publisher session. Its exact oraclebot.io row currentlyshows Requiresreview andads.txt Notfound; avoidotherdomains/accountsettings. Afteractualdeployment, verifyownership throughthatdomain's existingGoogleUI ifavailable, and reportGoogle's actualresult without claimingapproval. A first snapshot-file save outsideconfiguredChrome roots wasdenied; readonlyinline snapshot succeeded, noaccessruleschanged. Pendingfinaldeterministicindex/CI/merge/deploy, independentall3publishedmethods/CSP/source acceptance andGoogle-side verification. Finaldelivery/continuation/artifactmanifests underthisprivate taskroot are authoritative.
+
 
 ## Preserved PR 235 maintenance checkpoint (before master integration)
 
@@ -3374,3 +3395,16 @@ CI exposed required extension version advancement (0.6.7 to0.6.8), three leftove
 Linux CI follow-up validation: all36 focused Mongo-isolation/CLI/export tests pass. Locked liquidity environment now runs739 offline tests successfully (six network tests deselected); its previously untested service-fixture and observed-price contract overlaps are reconciled. Executor/liquidity Ruff checks and executor formatting checks pass. Extension555 tests, website engine24 tests and the23-file research export freshness check pass. No daemon was installed, restarted or armed; service tests use copied launchers, synthetic configs and inert launchctl shims. Final offline generated checks precede the push, followed by actual final-head CI.
 
 Linux liquidity CI executes all portable cases but has no /bin/zsh. Match the existing launcher tests by skipping only the shared macOS launcher fixture when that exact binary is absent. All739 cases already passed on this Mac, including those launcher cases; no service behavior or test gate is bypassed.
+Completed: independent20-combination arithmetic/privacy/economics review exit0; fixed newline byte mismatch; final parameterized reproduction exit0;317website Node tests,17JavaScript syntax files,7research exporter tests, full three-script browser suite with24hosted groups, deterministic23-file public export and diff check exit0. Five-page tagged PDF hasSHA2564e82fbbfd428f9215646f8bc60a23beb3ebb0613e60d44cb5e0c1b2237b58d76; final paperSHA256d0b12ea26583aa19aa52b6a3ef05c3c6ea2e03c182a42cd98ae60372286545f4. Exact final paper, formatted code, llms index, reviewer receipt and PDF(base64) are in the native publication run and were read back. Remaining delivery: deterministic metadata/wiki gates, final source/CI checks, merge, unchanged edge Worker deployment with static assets and read-only live article acceptance. No launch flags, secrets, accounts, grants, existing services or historical forward cohorts are to be changed. The exact delivery receipt will supersede this in-progress wording. Stele knowledge write lost transport and is queued as bfb6a194; graph task creation/claim succeeded before disconnect.
+
+## AdSense integration checkpoint
+
+Incoming main18dae4cef65b51633f1f4bf2f96aba85f931f988/PR263 publishes a separate exploratory ZEC reversal working paper and publicPDF/catalog. Preserve all exact paper/results/export bytes; do not rerun its study or alter numerical claims. Mergeconflicts affect only workflowrecords and derivedindexes. Both record branches are append-only after the exact common body; savepreimages and combinealltails/Deltafields. AdSense8implementationfiles remainfrozen/qualified; rebuild deterministicindexes andcheckpublicexport/wiki/inventories before integrationcommit andfreshrequiredCI. A parallelGitHubAgentMerge mayupdate the remote taskbranch; fetchandpreserve its commits beforepushing, neverforce.
+
+## Parallel branch integration qualification
+
+Preserve remoteGitHubAgentMerge commitdaba39a62e4345c12c7421237bc77f4389ca5264 as a mergeparent alongside the localmain integration; noforcepush. Both variants containall nonblank recordbodylines; retainall Delta descriptions andthe complete localintegrationcheckpoint. All8AdSense implementationfiles andincomingpaper/results/PDF/catalog/export bytes remainexact. The first publicexportcheck useddefaultPython withoutpandas andexited1; theexisting qualifiedMCP2.3environment ran the same23filecheck successfully0 withnosource ordependency changes. Finalqualifiedexport/wiki/inventory/index/diff gates andnewtipCI are mandatory before delivery.
+
+## PR235 final macOS integration fixes
+
+TASK-2184 retains the USER-PAUSED optimizer checkpoint. Restore the default_export migration required by transactional forward defaults; reject malformed JobResult identifiers; match strategy constructor minima; expose missing recorder freshness; remove duplicate application installation transaction and preserve denied-stop failures. Update inert fixtures for sanitized icon diagnostics, shutdown guards and recorded-only triangle evaluation. Lifecycle focused/adjacent50 tests passed with exit0. The99-test database/boundary/shell/bot run exposed two additional transactional-export defects; both were fixed and the database/boundary subset passed on rerun. The other97 cases passed unchanged. Website321 tests passed. Deterministic index/docs and undefined-name lint gates passed. Fresh final-head CI remains pending. No optimizer, trading or service installation was started. Preserve parallel remote merge baa4cd0 and all incoming public-paper/AdSense assets.

@@ -235,43 +235,6 @@ def install() -> int:
         )
 
     APPS_DIR.mkdir(parents=True, exist_ok=True)
-    stage = Path(tempfile.mkdtemp(prefix=".soltui-install-", dir=APPS_DIR))
-    candidate, previous = stage / "candidate.app", stage / "previous.app"
-    published = False
-    try:
-        shutil.copytree(DIST_BUNDLE, candidate, symlinks=True)
-        dereference_resources(candidate)
-        if BUNDLE.exists():
-            print(f"replacing existing {BUNDLE}")
-            BUNDLE.rename(previous)
-        try:
-            candidate.rename(BUNDLE)
-        except OSError:
-            if previous.exists():
-                previous.rename(BUNDLE)
-            raise
-        published = True
-    finally:
-        # Keep the only old copy if rollback itself failed; do not erase the
-        # recovery artifact while unwinding a failed installation.
-        if published or not previous.exists():
-            shutil.rmtree(stage, ignore_errors=True)
-    print(f"installed → {BUNDLE}")
-
-    SUPPORT.mkdir(parents=True, exist_ok=True)
-    LOG.parent.mkdir(parents=True, exist_ok=True)
-    AGENT.parent.mkdir(parents=True, exist_ok=True)
-    atomic_write(AGENT, render_plist(service_spec()))
-    print(f"wrote agent → {AGENT}")
-
-    if not reload_agent():
-        print(
-            "\nThe agent could not be loaded. Fix that before relying on login "
-            "startup:\n"
-            f"    launchctl bootstrap gui/{uid()} {AGENT}",
-            file=sys.stderr,
-        )
-        return 1
     staging = Path(tempfile.mkdtemp(prefix=".soltui-install-", dir=APPS_DIR))
     candidate, previous = staging / "candidate.app", staging / "previous.app"
     activated = False
@@ -443,9 +406,12 @@ def stop() -> int:
     else:
         print("flag was already absent")
     result = run(["launchctl", "kill", "SIGTERM", f"gui/{uid()}/{LABEL}"])
-    if result.returncode and is_loaded():
-        print("stop was not confirmed; supervision is disabled but the loaded job needs inspection", file=sys.stderr)
-        return 1
+    if result.returncode:
+        detail = (result.stderr or result.stdout).strip()
+        absent = "no such process" in detail.casefold() or "could not find service" in detail.casefold()
+        if not absent or is_loaded():
+            print(f"stop was not confirmed: {detail or 'launchctl failed'}; supervision is disabled but the job needs inspection", file=sys.stderr)
+            return 1
     print("stopped (will not start at login)")
     return 0
 

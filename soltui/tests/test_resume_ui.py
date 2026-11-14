@@ -287,7 +287,7 @@ class ResumeUI(unittest.TestCase):
             return NS(returncode=1,stderr='fixture failure')
         with mock.patch.object(make_icon.shutil,'which',return_value='/fixture/iconutil'), \
              mock.patch.object(make_icon,'render',return_value=image), \
-             mock.patch.object(make_icon.subprocess,'run',side_effect=iconutil), self.assertRaisesRegex(RuntimeError,'fixture failure'):
+             mock.patch.object(make_icon.subprocess,'run',side_effect=iconutil), self.assertRaisesRegex(RuntimeError,r'iconutil conversion failed \(exit 1\)'):
             make_icon.build_icns(target)
         self.assertEqual(sentinel.read_text(),'preserve')
         self.assertEqual(list(self.world.root.glob('soltui-*.iconset')),[])
@@ -405,9 +405,15 @@ class ResumeUI(unittest.TestCase):
 
 
     def test_verify_detached_tab_activation_cannot_touch_removed_widgets_or_dispatch(self):
-        fake=NS(_forward_refresh=mock.Mock())
-        SolTuiApp._populate_on_first_view(fake,NS(pane=NS(id='tab-forwardtest',is_attached=False)))
-        fake._forward_refresh.assert_not_called()
+        for running, pane in (
+            (True, NS(id='tab-forwardtest', is_attached=False)),
+            (False, NS(id='tab-forwardtest', is_attached=True)),
+            (True, None),
+        ):
+            with self.subTest(running=running, pane=pane):
+                fake=NS(is_running=running,_forward_refresh=mock.Mock())
+                SolTuiApp._populate_on_first_view(fake,NS(pane=pane))
+                fake._forward_refresh.assert_not_called()
 
 
 class MountedRecordIdentity(unittest.IsolatedAsyncioTestCase):

@@ -519,7 +519,7 @@ def needs(reads: Mapping[str, Mapping[str, Any] | None], *, autopilot: Mapping[s
             out.append(Need("warn", "Price recorder is not running",
                             "bot forward tests have no live prices", "tab-bots"))
         elif age is None or not math.isfinite(age) or age < 0:
-            out.append(Need("warn", "Price recorder has no valid snapshot",
+            out.append(Need("warn", "Price recorder has no valid snapshot freshness evidence",
                             "waiting for a recorded price; liveness is unverified", "tab-bots"))
         elif age > 60:
             out.append(Need("warn", f"Price stream is {fmt_age(age)} old",

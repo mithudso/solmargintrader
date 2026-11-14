@@ -106,6 +106,8 @@ def _db(path: Path | None = None) -> sqlite3.Connection:
         """, """CREATE TABLE IF NOT EXISTS adoption (
             trial TEXT, at INTEGER, previous TEXT, next TEXT, confidence REAL,
             samples INTEGER, PRIMARY KEY(trial, at)
+        )""", """CREATE TABLE IF NOT EXISTS default_export (
+            trial TEXT, at INTEGER, document TEXT NOT NULL, PRIMARY KEY(trial, at)
         )"""):
             db.execute(statement)
         # Recheck under the migration lock: another writer may have migrated
@@ -516,9 +518,11 @@ def tick(asset: str, trials: list[dict], horizons: tuple[int, ...], cost: float,
             check_stop()
 
             def adopt(spec: Spec, previous: Spec, probability: float, samples: int,
-                      label: str = label, h: int = h) -> None:
+                      label: str = label, h: int = h, key: str = key) -> None:
                 _SOURCE_EPOCH.verify(_SOURCE_ROOT)
-                save_default(asset, label, h, spec, previous, probability=probability, samples=samples, bar=bar)
+                document = dict(asset=asset, label=label, minutes=h, spec=spec, previous=previous,
+                                probability=probability, samples=samples, bar=bar)
+                db.execute("INSERT OR REPLACE INTO default_export VALUES (?,?,?)", (key, bar, _json(document)))
 
             active, gen = _resolve(db, key, gen, json.loads(raw_spec), moved, trial_cost, candles, bar,
                                    h, tune and key in active_keys, adopt, expire_missing=expire_missing,
