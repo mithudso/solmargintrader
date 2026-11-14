@@ -19,7 +19,7 @@ already provides Textual; this entry point does not install or start a service.
 
 | Control | What changes |
 | --- | --- |
-| Bar window | Select 1m, 5m, 10m or 1h; calls concern the next bar of this actual timeframe. |
+| Bar window | Select 1m, 5m, 10m or 1h; strategy calls concern the next bar of this timeframe. The top bearish alerts always use10m. |
 | Study mode | Baseline, shape, frequency, named controls, or all modes in the chosen window. |
 | Chart | Display up to48,96,192 or300 timestamp-aligned points, including the labelled developing point when available; this does not reseed strategies or change their warmup. |
 | Refresh now [R] | Request fresh completed-candle overlap, quote, trade snapshot and indicator calculation for the displayed window; provider error backoff stays enforced. |
@@ -129,7 +129,35 @@ oscillators use a separately labelled right scale; their apparent vertical
 position is not a dollar price or future target. Missing/warmup points do not
 produce invented lines. The drawing stops at the latest observed candle.
 
-### Completed two-bar reversal check
+### Fixed ten-minute bearish alerts
+
+The banner near the top always watches **ten-minute candles**, independently of
+the selected chart window. It has two bearish conditions:
+
+- **Mid-bar reversal:** the previous complete ten-minute candle closed above
+  its open. At least five minutes into the current ten-minute candle, a fresh
+  streamed trade is below the current candle's actual open. The banner reports
+  this observed reversal while the condition holds; it does not predict a
+  guaranteed lower close.
+- **UP/UP bearish watch:** the two preceding complete, adjacent ten-minute
+  candles both closed above their opens. The banner watches for a DOWN close
+  in the current ten-minute candle. The retained study saw DOWN in 19/24 rolling
+  pairs (79.2%), from one captured day. This is historical context, not a
+  validated live probability.
+
+There is no matching DOWN/DOWN-to-UP alert. These are screen alerts; they do not
+change strategy votes or submit trades. Their ten-minute target expires at the
+next UTC ten-minute boundary.
+
+The alert source uses completed five-minute constituents. The first completed
+five-minute candle establishes the current ten-minute open after its midpoint.
+A stream attached partway through a candle cannot establish that open. Missing
+constituents, stale trades and disconnected or gapped streams withhold the
+affected alert instead of inventing an opening price. A separate small candle
+worker keeps this context independent of a slow or unavailable selected chart.
+It retains provider retry backoff and stops with the display.
+
+### Completed two-bar historical panel
 
 The separate panel checks the last two contiguous **completed** candle bodies
 for UU or DD and distinguishes the first two candles of a new streak from a
@@ -149,16 +177,18 @@ https://oraclebot.io/#research/zec-two-bar-reversal-8b2f7af3
 
 ### Refresh, backoff and teardown
 
-Refresh now coalesces a request for fresh completed-candle overlap and a fresh
-recorder read, wakes a disconnected trade subscriber, and recalculates displayed
+Refresh now coalesces a request for fresh completed-candle overlap, ten-minute
+alert context and a fresh recorder read, wakes a disconnected trade subscriber,
+and recalculates displayed
 indicators. It preserves the fixed starting history, cycle fits, parameters,
 watchlist and user settings. Repeated clicks cannot bypass the15-second retry
 backoff after provider errors, rate limits or incomplete responses. Refresh
 means all data in the displayed window; it does not redownload the complete
 historical matrix or evaluate every hidden strategy.
 
-Completed evaluation, recorder reads, indicator calculations and the trade
-subscription each have an owned background lifecycle. Results carry view/source
+Completed evaluation, recorder reads, ten-minute alert candles, indicator
+calculations and the trade subscription each have an owned background lifecycle.
+Results carry view/source
 generations so late output cannot replace a new timeframe or edited configuration.
 Closed indicator history is cached; live ticks calculate only the newest point.
 The UI never does network I/O. Quit/exit/unmount stop timers and request bounded

@@ -29,10 +29,17 @@ from textual.widgets import (
 
 from research import zec_live as live
 from research.zec_shape_view import shape_guide, shape_summary
+from research.zec_tui_alerts import HALF, bearish_alert
 from research.zec_tui_chart import MarketChart
 from research.zec_tui_metrics import IndicatorSession
 from research.zec_tui_model import LOOKBACKS, WorkingSet, default_path, label, row_key
-from research.zec_tui_source import DataSession, QuoteReader, live_view
+from research.zec_tui_source import (
+    AlertSession,
+    DataSession,
+    QuoteReader,
+    disabled_alert_source,
+    live_view,
+)
 from research.zec_tui_stream import DisabledStream, TradeStream
 from research.zec_tui_workers import LatestWorker
 
@@ -261,6 +268,9 @@ class OracleWinnersApp(App):
     CSS = """
     Screen { background: #0c1420; color: #dce7f3; }
     Header { background: #17283d; }
+    #bearish-alert { height: 3; padding: 0 1; background: #172334; color: #a8c1dd; }
+    #bearish-alert.bearish-watch { background: #35271a; color: #ffdda6; }
+    #bearish-alert.bearish-observed { background: #481f2b; color: #ffd0da; text-style: bold; }
     .controls { height: 3; padding: 0 1; }
     .controls Label { width: auto; content-align: left middle; margin-right: 1; }
     Select { width: 17; margin-right: 1; }
@@ -307,6 +317,7 @@ class OracleWinnersApp(App):
         quote_loader=None,
         stream=None,
         indicator_loader=None,
+        alert_loader=None,
         clock=time.time,
     ):
         super().__init__()
@@ -322,6 +333,12 @@ class OracleWinnersApp(App):
         self.indicator_worker = LatestWorker(
             indicator_loader or IndicatorSession(clock=clock), name="oracle-indicators"
         )
+        alert_loader = alert_loader or (
+            disabled_alert_source
+            if data_loader is not None or quote_loader is not None
+            else AlertSession(clock=clock)
+        )
+        self.alert_worker = LatestWorker(alert_loader, name="oracle-ten-minute-alerts")
         # Dependency-injected loaders must never secretly create a real network
         # subscription in tests or an embedding application.
         self.trade_stream = (
@@ -333,11 +350,13 @@ class OracleWinnersApp(App):
         )
         self.current_frame, self.quote_result = None, None
         self.indicator_frame = None
+        self.alert_context = self.current_alert = None
         self.selected_indicator = None
         self._view_generation = self._source_version = 0
         self._market_token = None
         self._indicator_request_key = None
         self._pending_force = self._pending_quote = False
+        self._pending_alert_force = False
         self.row_order = []
         self.indicator_keys = []
         self.latest_rows = {}
@@ -345,9 +364,14 @@ class OracleWinnersApp(App):
         self.focused_key = None
         self._display_stopping = False
         self._next_data = self._next_quote = 0.0
+        self._next_alert = 0.0
 
     def compose(self) -> ComposeResult:
         yield Header()
+        yield Static(
+            "10m bearish check · loading completed five-minute history…\nBearish-only screen context · no trading action",
+            id="bearish-alert",
+        )
         with Horizontal(classes="controls"):
             yield Label("Bar window")
             yield Select(
@@ -430,6 +454,7 @@ class OracleWinnersApp(App):
         self.query_one("#indicators", DataTable).add_columns("Indicator", "Value")
         self.set_class(self.size.width < 110, "compact")
         self.request_data(clear=True)
+        self.request_alerts()
         self.quote_worker.submit(None)
         self._next_quote = time.monotonic() + 1
         self.trade_stream.start()
@@ -468,6 +493,20 @@ class OracleWinnersApp(App):
         next_boundary = (int((now - live.SETTLE_SECONDS) // step) + 1) * step
         until_boundary = next_boundary + live.SETTLE_SECONDS - now
         return min(self.state.refresh, max(0.2, until_boundary))
+
+    def request_alerts(self, *, force=False):
+        if self._display_stopping or not self.is_running:
+            return
+        if self.alert_worker.busy:
+            self._pending_alert_force = self._pending_alert_force or force
+            return
+        self.alert_worker.submit({"force": bool(force or self._pending_alert_force)})
+        self._pending_alert_force = False
+        now = self.clock()
+        boundary = (int((now - live.SETTLE_SECONDS) // HALF) + 1) * HALF
+        self._next_alert = time.monotonic() + max(
+            0.2, boundary + live.SETTLE_SECONDS - now
+        )
 
     def indicator_context(self):
         return (
@@ -572,6 +611,15 @@ class OracleWinnersApp(App):
                 self.indicator_frame = indicated.value
             elif indicated.error:
                 self.indicator_frame = None
+        alert_result = self.alert_worker.poll()
+        if alert_result is not None:
+            self.alert_context = (
+                {"error": "alert_worker_failed"}
+                if alert_result.error
+                else alert_result.value
+            )
+            if not self.alert_context or self.alert_context.get("error"):
+                self._next_alert = now + 15
         if (
             self._pending_quote or now >= self._next_quote
         ) and not self.quote_worker.busy:
@@ -594,6 +642,14 @@ class OracleWinnersApp(App):
             self._pending_force or now >= self._next_data
         ) and not self.data_worker.busy:
             self.request_data(force=self._pending_force)
+        if self.alert_context and not self.alert_context.get("error"):
+            settled_half = int((self.clock() - live.SETTLE_SECONDS) // HALF) * HALF
+            if settled_half > self.alert_context.get("end", -1):
+                self._next_alert = min(self._next_alert, now)
+        if (
+            self._pending_alert_force or now >= self._next_alert
+        ) and not self.alert_worker.busy:
+            self.request_alerts(force=self._pending_alert_force)
         self.request_indicators()
         self.paint()
 
@@ -691,6 +747,16 @@ class OracleWinnersApp(App):
     def paint(self):
         if self._display_stopping or not self.is_running:
             return
+        self.current_alert = bearish_alert(
+            self.alert_context, self.trade_stream.snapshot("10m"), self.clock()
+        )
+        banner = self.query_one("#bearish-alert", Static)
+        banner.update(Text(self.current_alert["text"]))
+        banner.tooltip = self.current_alert["tooltip"]
+        banner.set_class(self.current_alert["state"] == "uu_watch", "bearish-watch")
+        banner.set_class(
+            self.current_alert["state"] == "observed_reversal", "bearish-observed"
+        )
         quote = (self.quote_result or {}).get("quote")
         good = (
             quote
@@ -941,6 +1007,7 @@ class OracleWinnersApp(App):
         self._indicator_request_key = None
         self._pending_force = self._pending_quote = True
         self.trade_stream.refresh()
+        self.request_alerts(force=True)
         # Repeated manual clicks retain one successor. They do not cancel a
         # bootstrap repeatedly and prevent it from ever producing a frame.
         if not self.data_worker.busy:
@@ -1000,6 +1067,7 @@ class OracleWinnersApp(App):
         self.data_worker.close(0.1)
         self.quote_worker.close(0.1)
         self.indicator_worker.close(0.1)
+        self.alert_worker.close(0.1)
         self.trade_stream.close(0.3)
 
     def exit(self, result=None, return_code=0, message=None):
@@ -1037,6 +1105,7 @@ def main(argv=None):
         settings_path=args.settings,
         quote_loader=QuoteReader(args.prices),
         stream=TradeStream(),
+        alert_loader=AlertSession(),
     )
     app.startup_warning = warning
     app.run()

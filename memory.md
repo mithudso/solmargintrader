@@ -1,6 +1,8 @@
 # Work continuation
 
-Version: 562
+Version: 564
+Delta: v563 to v564; qualify135 focused regressions and freeze bearish-alert source for delivery.
+Delta: v562 to v563; begin fixed ten-minute bearish-only reversal alerts.
 Delta: v561 to v562; qualify final300s input rendering and complete independent candidate/fixture checks.
 Delta: v560 to v561; qualify combined80-case source gate and independent32-check live candidate before delivery.
 Delta: v559 to v560; record streaming indicators, click-to-chart overlays and two-bar TUI request.
@@ -2458,3 +2460,25 @@ Combined final focused suite passed80tests in27.188s, exit0; all actual model/UI
 
 
 Final source freeze: independent candidate32real-market and28controlled-case checks plus wide168x60/narrow90x40 visual review passed0. Existing owner recorder1673 and user TUI22015 remain untouched. The only final production change after that acceptance is CSS refresh-input width8→12: old source red1 visibly clipped300.0 to30; final real-render regression and entire23-case UI module passed27.206s/0, Ruff0/diff0. Independent final canonical probe will verify the CSS-only difference and full saved/applied300 values without repeating accepted source research. Final appSHA46a42a81034c1152577ede1bb8f846ba795c462b42f46de67753ed884f9e8120 and testSHAeeb750072d5439ca53a93c323e926645105a61482b5275410741658af27f3b54. All production source is frozen; only deterministic metadata/Git delivery/canonical acceptance remain.
+
+
+## Ten-minute bearish alerts in Oracle winners TUI — 2026-11-14
+
+Task: TASK-2216, with implementation TASK-2217 claimed and verification/delivery TASK-2218/TASK-2219 linked as blockers. Starting clean master4600de3a1a038539c1c08f58138a4d7ec8e776e1. Isolated worktree /Users/mitch/dev/worktrees/zec-ten-minute-bearish-alerts-20261114; evidence /Users/mitch/.local/state/zec-ten-minute-bearish-alerts-20261114. Root Stele task writes succeeded; decision write failed Transport closed and was queued as8d433df3. Do not guess another graph task identity.
+
+Scope: fixed10m top-of-screen bearish alerts independent of chart selection. Midway means elapsed>=300s, with current fresh trade below the actual current10m opening price after one full UP candle. Two adjacent completed UP/UP candles create a qualified next10m DOWN watch. Do not create a DD-to-UP counterpart. Reuse the immutable one-day counts only as labelled historical context; do not invent a calibrated live probability. KNOW-819 warns that missing/partial candles cannot establish the true open. Use completed constituent5m evidence, and withhold alerts on missing/stale/gapped input. Preserve closed-only strategies/shapes and existing recorder/user TUI, foreground stream, services and frozen research.
+
+Remaining: implement source/evaluator/banner with focused causal/freshness/layout tests; independently verify actual data and literal command; update maintained docs/metadata; commit/push/PR/requiredCI/merge; verify canonical loaded revision, clean up only owned branch/worktree, complete tracker. No source changes or checks claimed yet.
+
+
+### Verified source checkpoint and delivery lookup
+
+The fixed10m feature is implemented and production source is frozen. New /Users/mitch/dev/solmargintrader/research/zec_tui_alerts.py evaluates both bearish conditions against actual completed5m constituents and current fresh exchange-time trades. AlertSession reads six recent5m candles in its own worker, caches each settled boundary, retains15s failure backoff and coalesces manual refresh. The3-line banner sits immediately below the header. It runs independently of selected chart timeframe and refresh cadence, expires each UTC10m target, and never emits a DD-to-UP alert. Existing generic historical panel, indicator streaming and closed-only strategy/shape math remain unchanged.
+
+Completed checks: author51tests(17pure/source+11newTextual+23existingUI) passed0 in44.877s; root model/worker/metric/stream58passed0 in1.144s; legacy live/shape26passed0 in0.839s. Total135unique tests. PinnedRuff0.17.4 check0 and format0; CLIhelp0; operation inventories current0; public research export23files current0. The initial B023 test-lambda lint failure and first rapid-button-debounce fixture failure were corrected; final gates above passed. Source/test hashes are unchanged from /Users/mitch/.local/state/zec-ten-minute-bearish-alerts-20261114/source-freeze.json. Read-back verified author receipt: /Users/mitch/.local/state/zec-ten-minute-bearish-alerts-20261114/textual-worker-receipt.json.
+
+Baseline observed existing recorder1673, with no user oracle_winners TUI running. Preserve all actual user processes. Foreground HTTP cancellation remains cooperative around the existing8s transport bound; bounded UI joins do not imply forcibly interrupted HTTP. No services, orders, capture extensions, archived results or embedding jobs were started or changed.
+
+Delivery state is kept in /Users/mitch/.local/state/zec-ten-minute-bearish-alerts-20261114/delivery.json, independent runtime/visual/PTY evidence in /Users/mitch/.local/state/zec-ten-minute-bearish-alerts-20261114/acceptance/receipt.json, and the complete evidence inventory in /Users/mitch/.local/state/zec-ten-minute-bearish-alerts-20261114/file-manifest.json. These receipts contain the actual final PR/merge/source hashes and installed result after this source checkpoint. On resume, read delivery.json first: complete means no work remains; otherwise follow its remaining phase and /Users/mitch/.local/state/zec-ten-minute-bearish-alerts-20261114/tracking.json. Do not repeat accepted tests or frozen research without a changed source hash or new failure.
+
+Root Stele task transport closed after startup. Implementation completion queued6a6f4552 and verification claim queued1e9bf95a; decision queued8d433df3. TASK-2216 and children2217–2219 exist; final lifecycle receipts distinguish applied writes from outbox operations.

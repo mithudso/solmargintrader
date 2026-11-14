@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-11-14T08:28:25+00:00",
+  "generatedAt": "2026-11-14T19:02:53+00:00",
   "schemaVersion": 1,
   "note": "Concepts are derived from the repo's own vocabulary \u2014 the FAMILY dict, strategy-card frontmatter, docs/trading-signals-concept-family.md, and terms verified to recur in the corpus. A concept matching no file is dropped, not kept.",
   "counts": {
@@ -161,12 +161,12 @@
         "universe",
         "top_coins"
       ],
-      "matchingFiles": 1674,
+      "matchingFiles": 1677,
       "shown": 30,
       "files": [
         {
           "path": "memory.md",
-          "hits": 208
+          "hits": 217
         },
         {
           "path": "docs/FILES.md",
@@ -578,7 +578,7 @@
         "perps",
         "solana"
       ],
-      "matchingFiles": 961,
+      "matchingFiles": 962,
       "shown": 30,
       "files": [
         {
@@ -607,7 +607,7 @@
         },
         {
           "path": "memory.md",
-          "hits": 215
+          "hits": 217
         },
         {
           "path": ".cdo/reviews-2026-11-12/ecosystem-combined-full-final.json",
@@ -659,7 +659,7 @@
         },
         {
           "path": "prompts.md",
-          "hits": 99
+          "hits": 101
         },
         {
           "path": "pagesource",
@@ -852,7 +852,7 @@
         "anchor_window",
         "levels"
       ],
-      "matchingFiles": 872,
+      "matchingFiles": 873,
       "shown": 30,
       "files": [
         {
@@ -990,7 +990,7 @@
         "monotone",
         "gap"
       ],
-      "matchingFiles": 786,
+      "matchingFiles": 789,
       "shown": 30,
       "files": [
         {
@@ -1260,7 +1260,7 @@
         "benchmark",
         "baseline"
       ],
-      "matchingFiles": 558,
+      "matchingFiles": 559,
       "shown": 30,
       "files": [
         {
@@ -1394,7 +1394,7 @@
         "buy_and_hold",
         "baseline"
       ],
-      "matchingFiles": 486,
+      "matchingFiles": 487,
       "shown": 30,
       "files": [
         {
@@ -1486,15 +1486,15 @@
           "hits": 24
         },
         {
+          "path": "memory.md",
+          "hits": 24
+        },
+        {
           "path": "research/results/coinbase50_20261111_summary.json",
           "hits": 24
         },
         {
           "path": ".cdo/reviews-2026-11-12/botmanager-root.json",
-          "hits": 23
-        },
-        {
-          "path": "memory.md",
           "hits": 23
         },
         {

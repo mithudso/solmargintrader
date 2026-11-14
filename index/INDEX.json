@@ -1,16 +1,16 @@
 {
-  "generatedAt": "2026-11-14T08:28:25+00:00",
+  "generatedAt": "2026-11-14T19:02:53+00:00",
   "schemaVersion": 1,
   "repoRoot": "~/dev/solmargintrader",
-  "commit": "f74eeed",
+  "commit": "4600de3",
   "counts": {
-    "files": 3730,
-    "bytes": 118460937,
+    "files": 3733,
+    "bytes": 118514171,
     "byKind": {
       "strategy-card": 1478,
       "doc": 795,
-      "test": 408,
-      "code-python": 376,
+      "test": 410,
+      "code-python": 377,
       "config": 275,
       "result": 133,
       "code-js": 114,
@@ -23,7 +23,7 @@
     },
     "byTopDir": {
       "backtester": 1956,
-      "research": 360,
+      "research": 363,
       "soltui": 192,
       ".cdo": 161,
       "docs": 156,
@@ -58,7 +58,7 @@
       "archive": 1,
       "tradingskilllist": 1
     },
-    "withSummary": 3398
+    "withSummary": 3401
   },
   "files": [
     {
@@ -3257,9 +3257,9 @@
       "title": "Read-only by default; nothing here needs write access to the repo.",
       "summary": "",
       "summarySource": "none",
-      "bytes": 21552,
+      "bytes": 21624,
       "lines": 483,
-      "sha1": "727802daa289bfc94767e144de7ba5aca8aaf84b",
+      "sha1": "09cf095d86cc8d94c96a37149377631ca0124859",
       "symbols": [],
       "imports": [],
       "internalImports": [],
@@ -73591,9 +73591,9 @@
       "title": "Oracle winning-strategy TUI",
       "summary": "Version: 1.1.0 Delta: add a genuine foreground trade stream, provisional indicator overlays, full refresh and completed two-bar context. Start the interactive, read-only workbench:",
       "summarySource": "opening-prose",
-      "bytes": 18017,
-      "lines": 286,
-      "sha1": "8671267db79401be4ca163cc5988d5c47e0cbec0",
+      "bytes": 19681,
+      "lines": 316,
+      "sha1": "8642194fb4fdd16bffa9befe07a826e27f1018b9",
       "symbols": [],
       "imports": [],
       "internalImports": [],
@@ -86434,9 +86434,9 @@
       "title": "solmargintrader \u2014 family index",
       "summary": "Generated report. Opens: # solmargintrader \u2014 family index / > Source: /Users/mitch/dev/oraclebot.io \u00b7 https://github.com/mithudso/solmargintrader @ 722839798e22 + hosted ecosystem delta",
       "summarySource": "derived",
-      "bytes": 2838,
+      "bytes": 2978,
       "lines": 36,
-      "sha1": "c251b41f9994ea4fb6c531b9038453fc4ea93390",
+      "sha1": "edfab22eb4a720ce1eed5bb2869a3960a7a0fdeb",
       "symbols": [],
       "imports": [],
       "internalImports": [],
@@ -86576,11 +86576,11 @@
       "ext": ".md",
       "kind": "doc",
       "title": "Work continuation",
-      "summary": "Version: 562 Delta: v561 to v562; qualify final300s input rendering and complete independent candidate/fixture checks. Delta: v560 to v561; qualify combined80-case source gate and independent32-check live candidate before delivery.",
+      "summary": "Version: 564 Delta: v563 to v564; qualify135 focused regressions and freeze bearish-alert source for delivery. Delta: v562 to v563; begin fixed ten-minute bearish-only reversal alerts.",
       "summarySource": "opening-prose",
-      "bytes": 521495,
-      "lines": 2461,
-      "sha1": "af33f701d600a92f364264a544f5588d6afa1284",
+      "bytes": 526122,
+      "lines": 2485,
+      "sha1": "f77fcbb6541980bdc6f225c59d45aefe9f3d82a5",
       "symbols": [],
       "imports": [],
       "internalImports": [],
@@ -88857,11 +88857,11 @@
       "ext": ".md",
       "kind": "doc",
       "title": "Prompt history",
-      "summary": "Version: 252 Delta: v251 to v252; record streaming indicators, click-to-chart overlays and two-bar TUI request. Delta: integrated to v251; retain parallel automated merge ancestry and all owner/research/AdSense records.",
+      "summary": "Version: 253 Delta: v252 to v253; record fixed ten-minute bearish-only reversal alerts. Delta: v251 to v252; record streaming indicators, click-to-chart overlays and two-bar TUI request.",
       "summarySource": "opening-prose",
-      "bytes": 135211,
-      "lines": 2313,
-      "sha1": "69d529e0bfa715be87080a0b12a79c11a3fd9e94",
+      "bytes": 135788,
+      "lines": 2321,
+      "sha1": "434204d475742903bbd2985cc884c34953c3624f",
       "symbols": [],
       "imports": [],
       "internalImports": [],
@@ -96044,6 +96044,73 @@
       "frontmatter": {}
     },
     {
+      "id": "research/tests/test_zec_tui_alert_ui.py",
+      "path": "research/tests/test_zec_tui_alert_ui.py",
+      "dir": "research/tests",
+      "name": "test_zec_tui_alert_ui.py",
+      "ext": ".py",
+      "kind": "test",
+      "title": "test_zec_tui_alert_ui",
+      "summary": "Real Textual fixed-window alert delivery, freshness, refresh and teardown.",
+      "summarySource": "docstring",
+      "bytes": 17485,
+      "lines": 424,
+      "sha1": "c03de6972bd8f66b3f64fb94972265d05b922e8b",
+      "symbols": [
+        "class AlertStream",
+        "class TenMinuteAlertsUI"
+      ],
+      "imports": [
+        "__future__",
+        "pathlib",
+        "research",
+        "tempfile",
+        "textual",
+        "threading",
+        "time",
+        "unittest"
+      ],
+      "internalImports": [
+        "research"
+      ],
+      "frontmatter": {}
+    },
+    {
+      "id": "research/tests/test_zec_tui_alerts.py",
+      "path": "research/tests/test_zec_tui_alerts.py",
+      "dir": "research/tests",
+      "name": "test_zec_tui_alerts.py",
+      "ext": ".py",
+      "kind": "test",
+      "title": "test_zec_tui_alerts",
+      "summary": "Fixed-ten-minute bearish conditions, true opens, causality and source cache.",
+      "summarySource": "docstring",
+      "bytes": 14434,
+      "lines": 355,
+      "sha1": "26c54b7321504db7383714e216da4053f9df2f9d",
+      "symbols": [
+        "START",
+        "bar()",
+        "context()",
+        "snapshot()",
+        "class BearishChecks",
+        "class AlertClient",
+        "class AlertSources"
+      ],
+      "imports": [
+        "__future__",
+        "copy",
+        "math",
+        "oracle",
+        "research",
+        "unittest"
+      ],
+      "internalImports": [
+        "research"
+      ],
+      "frontmatter": {}
+    },
+    {
       "id": "research/tests/test_zec_tui_metrics.py",
       "path": "research/tests/test_zec_tui_metrics.py",
       "dir": "research/tests",
@@ -98291,9 +98358,9 @@
       "title": "zec_tui",
       "summary": "Interactive read-only Oracle workbench for the frozen ZEC winner universe.",
       "summarySource": "docstring",
-      "bytes": 41647,
-      "lines": 1048,
-      "sha1": "2e0058cea1c6a7e9e02fac64079be94a9c521c4d",
+      "bytes": 44741,
+      "lines": 1117,
+      "sha1": "4db5344559c2690da415bca6633c99d21a53629f",
       "symbols": [
         "class IndicatorTable",
         "class StrategyPicker",
@@ -98312,6 +98379,40 @@
         "textual",
         "time",
         "typing"
+      ],
+      "internalImports": [
+        "research"
+      ],
+      "frontmatter": {}
+    },
+    {
+      "id": "research/zec_tui_alerts.py",
+      "path": "research/zec_tui_alerts.py",
+      "dir": "research",
+      "name": "zec_tui_alerts.py",
+      "ext": ".py",
+      "kind": "code-python",
+      "title": "zec_tui_alerts",
+      "summary": "Pure fixed-ten-minute bearish checks; no I/O, orders or calibrated odds.",
+      "summarySource": "docstring",
+      "bytes": 8343,
+      "lines": 227,
+      "sha1": "175485fd03bd8e7eab242a947411c78508053827",
+      "symbols": [
+        "STEP",
+        "HALF",
+        "FRESH_SECONDS",
+        "_number()",
+        "_five()",
+        "_ten()",
+        "_price()",
+        "_historical()",
+        "bearish_alert()"
+      ],
+      "imports": [
+        "__future__",
+        "math",
+        "research"
       ],
       "internalImports": [
         "research"
@@ -98443,12 +98544,14 @@
       "title": "zec_tui_source",
       "summary": "Worker-owned market sessions for the editable read-only Oracle TUI.",
       "summarySource": "docstring",
-      "bytes": 6498,
-      "lines": 174,
-      "sha1": "f890e2e49d6baa181e76631d982e287414e4f663",
+      "bytes": 9296,
+      "lines": 244,
+      "sha1": "0b3fdc18db371cd379dc537a593711949217ef8e",
       "symbols": [
         "class Cancelled",
         "class DataSession",
+        "class AlertSession",
+        "disabled_alert_source()",
         "class QuoteReader",
         "live_view()"
       ],
