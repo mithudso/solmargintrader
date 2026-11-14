@@ -3,6 +3,7 @@
 Run behind an HTTPS private gateway. The edge website must never forward a
 browser-selected URL or expose the local control room through this service.
 """
+
 from __future__ import annotations
 
 import argparse
@@ -28,7 +29,14 @@ MAX_BARS = 6000
 MAX_CACHE_BYTES = 32 * 1024 * 1024
 MAX_BODY = 4096
 LOGGER = logging.getLogger(__name__)
-OPERATIONS = {"/v1/strategies": "strategies", "/v1/oracle": "oracle", "/v1/backtests": "backtests"}
+OPERATIONS = {
+    "/v1/strategies": "strategies",
+    "/v1/oracle": "oracle",
+    "/v1/backtests": "backtests",
+    "/health": "health",
+    "/v1/jobs": "jobs",
+    "/v1/signals": "signals",
+}
 
 
 class RequestError(ValueError):
@@ -63,40 +71,63 @@ def catalogue():
     rows = []
     for key in sorted(REGISTRY):
         card = cards.get(key)
-        rows.append({
-            "id": key, "name": card.name if card else key.replace("_", " ").title(),
-            "status": card.status if card else "implemented",
-            "summary": card.summary if card else "Registered canonical exposure strategy.",
-            "runner": "backtester.cli", "kind": "exposure-strategy",
-        })
-    return {"strategies": rows, "scope": "canonical exposure-strategy registry; ladder, pair and event-replay runners remain separate"}
+        rows.append(
+            {
+                "id": key,
+                "name": card.name if card else key.replace("_", " ").title(),
+                "status": card.status if card else "implemented",
+                "summary": card.summary
+                if card
+                else "Registered canonical exposure strategy.",
+                "runner": "backtester.cli",
+                "kind": "exposure-strategy",
+            }
+        )
+    return {
+        "strategies": rows,
+        "scope": "canonical exposure-strategy registry; ladder, pair and event-replay runners remain separate",
+    }
 
 
 def choose_top(snapshot, coin):
     """Rank only current strategies admitted by the canonical voting policy."""
-    included = {r["strategy_id"] for r in snapshot.get("aggregate", {}).get("included", [])}
+    included = {
+        r["strategy_id"] for r in snapshot.get("aggregate", {}).get("included", [])
+    }
     rows = []
     for row in snapshot.get("strategies", []):
         score = row.get("confidence_percent")
         direction = row.get("direction")
         if direction not in (-1, 0, 1) or type(direction) is not int:
             direction = None
-        rows.append({
-            "id": row["strategy_id"], "name": row["strategy_id"].replace("_", " ").title(),
-            "direction": {-1: "down", 0: "flat", 1: "up"}.get(direction),
-            "score": score, "sampleSize": row.get("resolved", 0),
-            "asOf": row.get("issued_at"), "expiresAt": row.get("expires_at"),
-            "eligible": row["strategy_id"] in included,
-        })
-    eligible = [r for r in rows if r["eligible"] and finite(r["score"]) and r["direction"]]
+        rows.append(
+            {
+                "id": row["strategy_id"],
+                "name": row["strategy_id"].replace("_", " ").title(),
+                "direction": {-1: "down", 0: "flat", 1: "up"}.get(direction),
+                "score": score,
+                "sampleSize": row.get("resolved", 0),
+                "asOf": row.get("issued_at"),
+                "expiresAt": row.get("expires_at"),
+                "eligible": row["strategy_id"] in included,
+            }
+        )
+    eligible = [
+        r for r in rows if r["eligible"] and finite(r["score"]) and r["direction"]
+    ]
     eligible.sort(key=lambda r: (-r["score"], -r["sampleSize"], r["id"]))
     available = snapshot.get("status") == "available" and bool(eligible)
     return {
-        "coin": coin, "instrument": snapshot.get("instrument"),
+        "coin": coin,
+        "instrument": snapshot.get("instrument"),
         "status": "available" if available else "unavailable",
-        "topStrategy": eligible[0] if available else None, "strategies": rows,
-        "reason": None if available else snapshot.get("aggregate", {}).get("reason", "no_eligible_strategy"),
-        "asOf": snapshot.get("as_of"), "horizonSeconds": snapshot.get("horizon_seconds"),
+        "topStrategy": eligible[0] if available else None,
+        "strategies": rows,
+        "reason": None
+        if available
+        else snapshot.get("aggregate", {}).get("reason", "no_eligible_strategy"),
+        "asOf": snapshot.get("as_of"),
+        "horizonSeconds": snapshot.get("horizon_seconds"),
         "policyHash": snapshot.get("policy_hash"),
         "scoreSemantics": "prospective directional accuracy percent, not profit probability",
         "ranking": "accuracy descending, resolved sample size descending, strategy id ascending",
@@ -118,26 +149,59 @@ class Analysis:
             raise RequestError("unsupported_coin")
         path = self.oracle_dir / coin / "history.sqlite3"
         if path.is_symlink() or not path.is_file():
-            return {"coin": coin, "status": "unavailable", "topStrategy": None, "strategies": [], "reason": "oracle_archive_unavailable"}
+            return {
+                "coin": coin,
+                "status": "unavailable",
+                "topStrategy": None,
+                "strategies": [],
+                "reason": "oracle_archive_unavailable",
+            }
         from oracle.reader import ReadOnlyOracle
+
         try:
             reader = ReadOnlyOracle(path, instrument=f"{coin}/{self.oracle_quote}")
             return choose_top(reader.predictions(now=now), coin)
         except (ValueError, OSError) as exc:
-            record_event("analysis_oracle_unavailable", level=logging.WARNING,
-                         coin=coin, error_type=type(exc).__name__)
-            return {"coin": coin, "status": "unavailable", "topStrategy": None, "strategies": [], "reason": "oracle_evidence_unavailable"}
+            record_event(
+                "analysis_oracle_unavailable",
+                level=logging.WARNING,
+                coin=coin,
+                error_type=type(exc).__name__,
+            )
+            return {
+                "coin": coin,
+                "status": "unavailable",
+                "topStrategy": None,
+                "strategies": [],
+                "reason": "oracle_evidence_unavailable",
+            }
 
     def backtest(self, body):
-        if not isinstance(body, dict) or set(body) - {"coin", "strategy", "interval", "capital", "leverage"}:
+        if not isinstance(body, dict) or set(body) - {
+            "coin",
+            "strategy",
+            "interval",
+            "capital",
+            "leverage",
+        }:
             raise RequestError("invalid_backtest_request")
         coin, strategy = body.get("coin"), body.get("strategy")
-        interval, capital, leverage = body.get("interval", "1h"), body.get("capital", 10000), body.get("leverage", 1)
+        interval, capital, leverage = (
+            body.get("interval", "1h"),
+            body.get("capital", 10000),
+            body.get("leverage", 1),
+        )
         if coin not in COINS or interval not in INTERVALS:
             raise RequestError("unsupported_market")
-        if not finite(capital) or not 1 <= capital <= 1_000_000 or not finite(leverage) or not 1 <= leverage <= 10:
+        if (
+            not finite(capital)
+            or not 1 <= capital <= 1_000_000
+            or not finite(leverage)
+            or not 1 <= leverage <= 10
+        ):
             raise RequestError("invalid_capital_or_leverage")
         from backtester.core.strategies import REGISTRY, build
+
         if not isinstance(strategy, str) or strategy not in REGISTRY:
             raise RequestError("unsupported_strategy")
         if not self.slot.acquire(blocking=False):
@@ -173,11 +237,19 @@ class Analysis:
             raise RequestError("insufficient_history")
         try:
             numeric = pd.DataFrame(rows).apply(pd.to_numeric)
-            numeric = numeric[numeric.timestamp + INTERVAL_SECONDS[interval] <= time.time()]
+            numeric = numeric[
+                numeric.timestamp + INTERVAL_SECONDS[interval] <= time.time()
+            ]
             frame = validate_bars(numeric, interval, strict_gaps=True)
-            config = EngineConfig(mode=Mode.PERP if leverage > 1 else Mode.SPOT, leverage=leverage,
-                                  initial_capital=capital, interval=interval, fill_delay=1,
-                                  allow_short=leverage > 1, costs=CostConfig())
+            config = EngineConfig(
+                mode=Mode.PERP if leverage > 1 else Mode.SPOT,
+                leverage=leverage,
+                initial_capital=capital,
+                interval=interval,
+                fill_delay=1,
+                allow_short=leverage > 1,
+                costs=CostConfig(),
+            )
             result = run_backtest(build(strategy), frame_to_arrays(frame), config)
         except (ValueError, TypeError, KeyError, OverflowError) as exc:
             raise RequestError("history_or_strategy_not_usable") from exc
@@ -186,20 +258,44 @@ class Analysis:
         indices = list(range(0, len(result.equity), step))
         if indices[-1] != len(result.equity) - 1:
             indices.append(len(result.equity) - 1)
-        return json_safe({
-            "status": "complete", "coin": coin, "strategy": strategy, "interval": interval,
-            "mode": result.mode, "leverage": leverage,
-            "metrics": result.metrics.to_dict(), "grossMetrics": result.gross_metrics.to_dict(),
-            "equity": [{"time": int(result.timestamps[i]), "value": float(result.equity[i])} for i in indices],
-            "costs": asdict(config.costs),
-            "provenance": {"engine": "backtester.core.engine.run_backtest", "source": "operator_supplied_cached_OHLCV",
-                           "sourceSha256": digest.hexdigest(), "barsSha256": checksum_frame(frame),
-                           "bars": len(frame), "window": f"latest_at_most_{MAX_BARS}_completed_bars",
-                           "start": int(frame.timestamp.iloc[0]), "end": int(frame.timestamp.iloc[-1]),
-                           "quote": "USD", "fillDelay": 1},
-            "limitations": ["historical_simulation_not_live_execution", "default_model_costs_not_verified_account_fee_tier",
-                            "cached_source_label_is_not_independent_market_provenance", "perp_model_does_not_certify_venue_or_coin_support"],
-        })
+        return json_safe(
+            {
+                "status": "complete",
+                "coin": coin,
+                "strategy": strategy,
+                "interval": interval,
+                "mode": result.mode,
+                "leverage": leverage,
+                "metrics": result.metrics.to_dict(),
+                "grossMetrics": result.gross_metrics.to_dict(),
+                "equity": [
+                    {
+                        "time": int(result.timestamps[i]),
+                        "value": float(result.equity[i]),
+                    }
+                    for i in indices
+                ],
+                "costs": asdict(config.costs),
+                "provenance": {
+                    "engine": "backtester.core.engine.run_backtest",
+                    "source": "operator_supplied_cached_OHLCV",
+                    "sourceSha256": digest.hexdigest(),
+                    "barsSha256": checksum_frame(frame),
+                    "bars": len(frame),
+                    "window": f"latest_at_most_{MAX_BARS}_completed_bars",
+                    "start": int(frame.timestamp.iloc[0]),
+                    "end": int(frame.timestamp.iloc[-1]),
+                    "quote": "USD",
+                    "fillDelay": 1,
+                },
+                "limitations": [
+                    "historical_simulation_not_live_execution",
+                    "default_model_costs_not_verified_account_fee_tier",
+                    "cached_source_label_is_not_independent_market_provenance",
+                    "perp_model_does_not_certify_venue_or_coin_support",
+                ],
+            }
+        )
 
 
 class Server(ThreadingHTTPServer):
@@ -228,9 +324,15 @@ def make_server(analysis, token, host="127.0.0.1", port=8790):
             pass
 
         def respond(self, status, body):
-            data = json.dumps(json_safe(body), allow_nan=False, separators=(",", ":")).encode()
-            record_event("analysis_http_response", level=logging.WARNING if status >= 400 else logging.INFO,
-                         operation=getattr(self, "operation", "unknown"), status=status)
+            data = json.dumps(
+                json_safe(body), allow_nan=False, separators=(",", ":")
+            ).encode()
+            record_event(
+                "analysis_http_response",
+                level=logging.WARNING if status >= 400 else logging.INFO,
+                operation=getattr(self, "operation", "unknown"),
+                status=status,
+            )
             self.send_response(status)
             self.send_header("Content-Type", "application/json; charset=utf-8")
             self.send_header("Content-Length", str(len(data)))
@@ -249,31 +351,94 @@ def make_server(analysis, token, host="127.0.0.1", port=8790):
             try:
                 url = urlsplit(self.path)
                 self.operation = OPERATIONS.get(url.path, "unknown")
-                if self.command == "GET" and url.path == "/v1/strategies" and not url.query:
-                    return self.respond(200, catalogue())
+                if (
+                    self.command == "GET"
+                    and url.path == "/health"
+                    and not url.query
+                    and hasattr(analysis, "health")
+                ):
+                    return self.respond(200, analysis.health())
+                if (
+                    self.command == "GET"
+                    and url.path == "/v1/strategies"
+                    and not url.query
+                ):
+                    return self.respond(
+                        200,
+                        analysis.strategies()
+                        if hasattr(analysis, "strategies")
+                        else catalogue(),
+                    )
                 if self.command == "GET" and url.path == "/v1/oracle":
                     params = parse_qs(url.query, strict_parsing=True)
                     if set(params) != {"coin"} or len(params["coin"]) != 1:
                         raise RequestError("invalid_oracle_query")
                     return self.respond(200, analysis.oracle(params["coin"][0]))
-                if self.command == "POST" and url.path == "/v1/backtests" and not url.query:
-                    if self.headers.get("Content-Type", "").split(";")[0] != "application/json":
+                if (
+                    self.command == "GET"
+                    and url.path.startswith("/v1/jobs/")
+                    and not url.query
+                    and hasattr(analysis, "job")
+                ):
+                    self.operation = "jobs"
+                    return self.respond(
+                        200, analysis.job(url.path.removeprefix("/v1/jobs/"))
+                    )
+                if (
+                    self.command == "POST"
+                    and url.path in ("/v1/backtests", "/v1/jobs", "/v1/signals")
+                    and not url.query
+                ):
+                    if (
+                        self.headers.get("Content-Type", "").split(";")[0]
+                        != "application/json"
+                    ):
                         return self.respond(415, {"error": "json_required"})
                     raw_length = self.headers.get("Content-Length", "")
                     if not raw_length.isdigit() or not 0 < int(raw_length) <= MAX_BODY:
                         return self.respond(413, {"error": "invalid_body_size"})
                     body = json.loads(self.rfile.read(int(raw_length)))
+                    if url.path == "/v1/signals":
+                        if not hasattr(analysis, "signal"):
+                            return self.respond(404, {"error": "not_found"})
+                        return self.respond(200, analysis.signal(body))
+                    if url.path == "/v1/jobs" and hasattr(analysis, "submit_job"):
+                        job = analysis.submit_job(body)
+                        return self.respond(
+                            200 if job["status"] in ("complete", "failed") else 202, job
+                        )
+                    if url.path == "/v1/jobs":
+                        return self.respond(404, {"error": "not_found"})
                     return self.respond(200, analysis.backtest(body))
                 return self.respond(404, {"error": "not_found"})
             except RequestError as exc:
                 code = str(exc)
-                status = 429 if code == "engine_busy" else 503 if code == "cached_history_unavailable" else 400
+                status = (
+                    429
+                    if code in ("engine_busy", "job_capacity_reached")
+                    else 503
+                    if code
+                    in (
+                        "cached_history_unavailable",
+                        "runtime_not_ready",
+                        "public_provenance_unavailable",
+                    )
+                    else 409
+                    if code == "job_idempotency_conflict"
+                    else 404
+                    if code == "job_not_found"
+                    else 400
+                )
                 return self.respond(status, {"error": code})
             except (ValueError, json.JSONDecodeError):
                 return self.respond(400, {"error": "invalid_request"})
             except Exception as exc:  # noqa: BLE001 - public HTTP boundary must not disclose internal exceptions
-                record_event("analysis_request_failed", level=logging.ERROR,
-                             operation=self.operation, error_type=type(exc).__name__)
+                record_event(
+                    "analysis_request_failed",
+                    level=logging.ERROR,
+                    operation=self.operation,
+                    error_type=type(exc).__name__,
+                )
                 return self.respond(503, {"error": "analysis_unavailable"})
 
         do_GET = handle_request
@@ -286,7 +451,7 @@ def main():
     parser = argparse.ArgumentParser(
         description=__doc__,
         epilog="Set ENGINE_DATA_DIR, ENGINE_ORACLE_DIR and ENGINE_TOKEN first. "
-               "Example: python -m website.engine.server --host 127.0.0.1 --port 8790",
+        "Example: python -m website.engine.server --host 127.0.0.1 --port 8790",
     )
     parser.add_argument("--host", default="127.0.0.1")
     parser.add_argument("--port", default=8790, type=int)
@@ -296,11 +461,17 @@ def main():
     data = os.environ.get("ENGINE_DATA_DIR")
     archive = os.environ.get("ENGINE_ORACLE_DIR")
     if not data or not archive:
-        parser.error("ENGINE_DATA_DIR and ENGINE_ORACLE_DIR must name dedicated public-analysis inputs")
+        parser.error(
+            "ENGINE_DATA_DIR and ENGINE_ORACLE_DIR must name dedicated public-analysis inputs"
+        )
     token = os.environ.get("ENGINE_TOKEN", "")
     try:
         _validate_token(token)
-        analysis = Analysis(Path(data), Path(archive), oracle_quote=os.environ.get("ENGINE_ORACLE_QUOTE", "USD"))
+        analysis = Analysis(
+            Path(data),
+            Path(archive),
+            oracle_quote=os.environ.get("ENGINE_ORACLE_QUOTE", "USD"),
+        )
     except ValueError as exc:
         parser.error(str(exc))
     logging.basicConfig(level=logging.INFO, format="%(message)s")

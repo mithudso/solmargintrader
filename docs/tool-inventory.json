@@ -60,7 +60,7 @@
     },
     {
       "path": "executor/pyproject.toml",
-      "sha256": "18ca9761e7d2191d08412f431bdffb9471c18e79c4a1a63f38bc5383154c6e47"
+      "sha256": "48191cf8b3b77ba6189c011d41cfe76243c93312556fbcc6d90a3da3c2a2fdf1"
     },
     {
       "path": "executor/src/executor/cli.py",
@@ -96,11 +96,11 @@
     },
     {
       "path": "oracle/pyproject.toml",
-      "sha256": "d2cd97ab94a0a0cd6e75d222a9083edc31ecd5f85e17c9eae5c5d58c9f715518"
+      "sha256": "4c21549fe2081d6ff9f7ee399bd0b70d1c4ce76d5f4a53d564d3c7364571cb6e"
     },
     {
       "path": "oracle/server.py",
-      "sha256": "cec5149803e0175a0f3165a779f3de305ca3c16ee6f67773c549eb32bb800452"
+      "sha256": "1714bf2fe88591d21541d3a624591f81675f8faabdcad47a3d1c248e3635f36a"
     },
     {
       "path": "package.json",
@@ -140,7 +140,7 @@
     },
     {
       "path": "website/package.json",
-      "sha256": "6a2a8006fcc46fd18ff28fb75a0c211da3f249f2c47a4459d7ff7d44e6a0bb55"
+      "sha256": "bc3e9f738fdc1391409177a1b11b8f6d52d106fcb7ec7de82cf69495c6263b95"
     }
   ],
   "tools": [
@@ -542,7 +542,7 @@
       "kind": "npm-script",
       "source": "website/package.json",
       "symbol": "scripts.check",
-      "declared_command": "node --check src/worker.js && node --check src/oauth.js && node --check src/mcp.js && node --check src/trades.js && node --check public/app.js && node --check public/evidence.js && node --check public/agent-access.js",
+      "declared_command": "node --input-type=module -e \"import { readdirSync } from 'node:fs'; import { join } from 'node:path'; import { spawnSync } from 'node:child_process'; let checked = 0; function scan(directory) { for (const entry of readdirSync(directory, { withFileTypes: true })) { const path = join(directory, entry.name); if (entry.isDirectory()) scan(path); else if (entry.name.endsWith('.js')) { const result = spawnSync(process.execPath, ['--check', path], { stdio: 'inherit' }); if (result.error) throw result.error; if (result.status !== 0) process.exit(result.status || 1); checked++; } } } ['src', 'execution', 'public'].forEach(scan); console.log('Syntax checked ' + checked + ' JavaScript files.');\"",
       "help_command": null,
       "side_effects": "script-specific; inspect declared command before invoking",
       "signing": "not inferred from npm metadata",
@@ -626,7 +626,7 @@
       "kind": "npm-script",
       "source": "website/package.json",
       "symbol": "scripts.test:browser",
-      "declared_command": "node test/ui-browser.mjs && node test/agent-browser.mjs",
+      "declared_command": "node test/ui-browser.mjs && node test/agent-browser.mjs && node test/hosted-browser.mjs",
       "help_command": null,
       "side_effects": "script-specific; inspect declared command before invoking",
       "signing": "not inferred from npm metadata",

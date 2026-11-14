@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { DatabaseSync } from 'node:sqlite';
-import { readFileSync } from 'node:fs';
+import { readFileSync, readdirSync } from 'node:fs';
 import worker, { hasEntitlement, validateBot, verifyStripeSignature } from '../src/worker.js';
 import { base58Encode } from '../../extension/src/wallet/solana.js';
 
@@ -10,7 +10,7 @@ const ORIGIN = 'https://oraclebot.example';
 const at = () => Math.floor(Date.now() / 1000);
 function environment() {
   const sqlite = new DatabaseSync(':memory:');
-  for (const migration of ['0001_accounts.sql', '0002_challenge_wallet_index.sql', '0003_subscription_tiers.sql', '0004_agent_access.sql', '0005_agent_trades.sql']) sqlite.exec(readFileSync(new URL(`../migrations/${migration}`, import.meta.url), 'utf8'));
+  for (const migration of readdirSync(new URL('../migrations/', import.meta.url)).filter(name => /^\d{4}_.*\.sql$/.test(name)).sort()) sqlite.exec(readFileSync(new URL(`../migrations/${migration}`, import.meta.url), 'utf8'));
   const batches = [];
   const DB = {
     prepare(sql) {
@@ -594,7 +594,7 @@ test('the final daily credit is reserved atomically and unused stale reservation
   assert.deepEqual(results.map(result => result.response.status).sort(), [200, 429]);
   assert.equal(env.sqlite.prepare("SELECT COUNT(*) AS n FROM backtest_usage WHERE state='complete'").get().n, 10);
   const other = await login(env); grant(env, other.user);
-  env.sqlite.prepare("INSERT INTO backtest_usage VALUES (?, ?, ?, 'reserved', ?, ?)").run(crypto.randomUUID(), other.user.id, new Date().toISOString().slice(0, 10), at() - 400, at() - 1);
+  env.sqlite.prepare("INSERT INTO backtest_usage(id,user_id,day,state,created_at,expires_at) VALUES (?, ?, ?, 'reserved', ?, ?)").run(crypto.randomUUID(), other.user.id, new Date().toISOString().slice(0, 10), at() - 400, at() - 1);
   assert.equal((await call(env, '/api/backtests', { method: 'POST', cookie: other.cookie, body: backtest })).response.status, 200);
 });
 test('Advanced and Unlimited have unlimited backtest counts with bounded concurrent capacity', async t => {
@@ -870,12 +870,14 @@ test('deletion refuses a newly active subscription and retains newly observed tr
   env.sqlite.prepare('UPDATE users SET trial_used=1 WHERE id=?').run(original.user.id);
   release(); const result = await pending;
   assert.equal(result.response.status, 409); assert.equal(result.data.error, 'cancel_subscription_first');
-  assert.deepEqual({ ...env.sqlite.prepare('SELECT * FROM users').get() }, { ...before, trial_used: 1 });
+  const after = env.sqlite.prepare('SELECT * FROM users').get();
+  assert.match(after.deletion_token, /^[a-f0-9-]{36}$/); assert.ok(after.deletion_requested_at >= before.created_at);
+  assert.deepEqual({ ...after, deletion_token: null, deletion_requested_at: null }, { ...before, trial_used: 1 });
   assert.equal(env.sqlite.prepare('SELECT status FROM subscriptions').get().status, 'active');
   assert.equal(env.sqlite.prepare('SELECT COUNT(*) AS n FROM sessions').get().n, 1);
   const history = env.sqlite.prepare('SELECT * FROM trial_history').get(); assert.ok(history);
   assert.equal(emitted.some(row => row.event === 'oraclebot.account_deleted'), false);
-  assert.equal((await call(env, '/api/billing/checkout', { method: 'POST', cookie: original.cookie, body: { plan: 'starter' } })).data.error, 'already_subscribed');
+  assert.equal((await call(env, '/api/billing/checkout', { method: 'POST', cookie: original.cookie, body: { plan: 'starter' } })).data.error, 'account_deleting');
   assert.deepEqual(env.sqlite.prepare('SELECT * FROM trial_history').get(), history); assert.equal(upstream, 0);
 });
 

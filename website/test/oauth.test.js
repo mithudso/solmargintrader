@@ -2,12 +2,14 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { authenticateAgent, cleanupAgentAccess, handleOAuth, OAuthError, validateAgentPolicy } from '../src/oauth.js';
 import { environment, ORIGIN, request, seedUser, at } from './helpers/d1.js';
+import { tradeWithinPolicyScope } from '../src/policy-scope.js';
 
 const encoder = new TextEncoder();
 const sha = async value => Buffer.from(await crypto.subtle.digest('SHA-256', encoder.encode(value))).toString('hex');
 const s256 = async value => Buffer.from(await crypto.subtle.digest('SHA-256', encoder.encode(value))).toString('base64url');
 const verifier = () => Buffer.from(crypto.getRandomValues(new Uint8Array(32))).toString('base64url');
 const basePolicy = () => ({ venues: ['jupiter', 'coinbase'], assets: ['SOL', 'BTC'], maxTradeUsd: 20, maxTotalUsd: 100, expiresAt: at() + 3600 });
+const policyV2 = changes => ({ version: 2, ...basePolicy(), products: ['spot', 'perpetual'], maxLeverage: 3, ...changes });
 
 function securityEvents(t) {
   const events = [];
@@ -183,6 +185,109 @@ test('trade consent needs explicit finite signed preauthorization separate from 
   assert.throws(() => env.sqlite.prepare('UPDATE agent_grants SET policy_json=? WHERE id=?').run(JSON.stringify({ ...policy, maxTotalUsd: 100000 }), principal.grant.id), /immutable/);
   assert.deepEqual(events, [securityRecord('grant_issued', 'owner_consent')]);
   assertRedacted(events, [user.id, user.wallet, user.cookie, registered.client_id, registered.client_name, auth.requestId, auth.verifier, approved.code, approved.proof.signature, token.data.access_token, token.data.refresh_token, principal.grant.id, principal.grant.policy_hash, principal.grant.policy_json, challenge.data.message, await sha(approved.code)]);
+});
+
+test('legacy JSON and signed message retain their original exact byte format', async () => {
+  const env = environment(); const user = await seedUser(env); const registered = await register(env);
+  const auth = await authorization(env, registered, 'status:read trade:prepare trade:submit');
+  const input = basePolicy();
+  const challenge = await call(env, '/api/agent/authorization/challenge', { method: 'POST', cookie: user.cookie, body: { requestId: auth.requestId, policy: input } });
+  assert.equal(challenge.response.status, 200);
+  const proof = env.sqlite.prepare('SELECT * FROM agent_consent_challenges WHERE id=?').get(challenge.data.challengeId);
+  const canonical = { venues: ['coinbase', 'jupiter'], assets: ['BTC', 'SOL'], maxTradeUsd: 20, maxTotalUsd: 100, expiresAt: input.expiresAt };
+  const expectedJSON = JSON.stringify(canonical); assert.equal(proof.policy_json, expectedJSON); assert.equal(proof.policy_hash, await sha(expectedJSON));
+  const expectedMessage = [
+    'Oraclebot agent trading preauthorization',
+    'Purpose: authorize this agent to trade within the limits below without asking for each trade.',
+    'This is a trading authorization, separate from signing in to Oraclebot.',
+    `Wallet: ${user.wallet}`, 'Agent: Example agent', `Client ID: ${registered.client_id}`,
+    'Agent redirect origin: https://agent.example', `Resource: ${ORIGIN}/mcp`, 'Scopes: status:read trade:prepare trade:submit',
+    'Venues: coinbase, jupiter', 'Assets: BTC, SOL',
+    'Maximum per trade: USD 20.00', 'Maximum total: USD 100.00',
+    `Trading authorization expires: ${new Date(input.expiresAt * 1000).toISOString()}`,
+    `Policy SHA-256: ${proof.policy_hash}`, `Nonce: ${proof.id}`,
+    `Issued: ${new Date(proof.created_at * 1000).toISOString()}`, `Sign before: ${new Date(proof.expires_at * 1000).toISOString()}`,
+    'Revoke this authorization at any time in Oraclebot Settings.',
+  ].join('\n');
+  assert.deepEqual(Buffer.from(challenge.data.message), Buffer.from(expectedMessage));
+  assert.equal(tradeWithinPolicyScope(canonical, { venue: 'jupiter', asset: 'SOL', product: 'perpetual', leverage: 1 }), false);
+});
+
+test('version two signs canonical products, leverage and fee-inclusive notional limits once', async () => {
+  const env = environment(); const user = await seedUser(env); const registered = await register(env);
+  const auth = await authorization(env, registered, 'status:read trade:prepare trade:submit');
+  const input = policyV2();
+  const challenge = await call(env, '/api/agent/authorization/challenge', { method: 'POST', cookie: user.cookie, body: { requestId: auth.requestId, policy: input } });
+  assert.equal(challenge.response.status, 200);
+  assert.deepEqual(Object.keys(challenge.data.policy), ['version', 'venues', 'assets', 'products', 'maxLeverage', 'maxTradeUsd', 'maxTotalUsd', 'expiresAt']);
+  assert.deepEqual(challenge.data.policy.products, ['perpetual', 'spot']);
+  const proof = env.sqlite.prepare('SELECT * FROM agent_consent_challenges WHERE id=?').get(challenge.data.challengeId);
+  assert.equal(proof.policy_json, JSON.stringify(challenge.data.policy)); assert.equal(proof.policy_hash, await sha(proof.policy_json));
+  assert.match(challenge.data.message, /Policy version: 2/); assert.match(challenge.data.message, /Allowed products: perpetual, spot/);
+  assert.match(challenge.data.message, /Maximum leverage: 3x/); assert.match(challenge.data.message, /not collateral limits/);
+  assert.match(challenge.data.message, /Maximum per trade \(fee-inclusive notional\): USD 20\.00/);
+  const approved = await call(env, '/api/agent/authorization', { method: 'POST', cookie: user.cookie,
+    body: { requestId: auth.requestId, approve: true, challengeId: proof.id, signature: await sign(user, proof.message) } });
+  assert.equal(approved.response.status, 200);
+  const code = new URL(approved.data.redirectTo).searchParams.get('code');
+  const token = await exchange(env, registered, auth, code); assert.equal(token.response.status, 200);
+  const principal = await authenticateAgent(bearer(token.data.access_token), env);
+  const stored = JSON.parse(principal.grant.policy_json);
+  assert.deepEqual(stored, challenge.data.policy);
+  assert.equal(tradeWithinPolicyScope(stored, { venue: 'jupiter', asset: 'SOL', product: 'perpetual', leverage: 3 }), true);
+  assert.equal(tradeWithinPolicyScope(stored, { venue: 'jupiter', asset: 'SOL', product: 'perpetual', leverage: 4 }), false);
+});
+
+test('version two rejects malformed scope and keeps existing money and expiry checks', async () => {
+  for (const change of [
+    { version: '2' }, { version: 3 }, { products: [] }, { products: ['spot', 'spot'] }, { products: ['futures'] },
+    { maxLeverage: 0 }, { maxLeverage: 6 }, { maxLeverage: 2.5 }, { maxLeverage: '3' }, { maxLeverage: null },
+    { collateralUsd: 100 }, { maxTradeUsd: 0.001 }, { maxTradeUsd: 0 }, { maxTotalUsd: 1 }, { expiresAt: at() + 30 },
+  ]) assert.throws(() => validateAgentPolicy(policyV2(change)), error => error.code === 'invalid_policy', JSON.stringify(change));
+  const canonical = validateAgentPolicy(policyV2());
+  assert.deepEqual(canonical.venues, ['coinbase', 'jupiter']); assert.deepEqual(canonical.products, ['perpetual', 'spot']);
+});
+
+test('an earlier signature cannot be reinterpreted with changed products, leverage or policy version', async () => {
+  for (const scenario of ['legacy_to_v2', 'products', 'leverage', 'v2_to_legacy']) {
+    const env = environment(); const user = await seedUser(env); const registered = await register(env);
+    const auth = await authorization(env, registered, 'trade:prepare trade:submit');
+    const input = scenario === 'legacy_to_v2' ? basePolicy() : policyV2({ products: ['spot'] });
+    const challenge = await call(env, '/api/agent/authorization/challenge', { method: 'POST', cookie: user.cookie, body: { requestId: auth.requestId, policy: input } });
+    const originalSignature = await sign(user, challenge.data.message);
+    let changed = { ...challenge.data.policy };
+    if (scenario === 'legacy_to_v2') changed = { version: 2, ...changed, products: ['perpetual', 'spot'], maxLeverage: 5 };
+    if (scenario === 'products') changed.products = ['perpetual', 'spot'];
+    if (scenario === 'leverage') changed.maxLeverage = 5;
+    if (scenario === 'v2_to_legacy') { delete changed.version; delete changed.products; delete changed.maxLeverage; }
+    changed = validateAgentPolicy(changed);
+    const raw = JSON.stringify(changed);
+    env.sqlite.prepare('UPDATE agent_consent_challenges SET policy_json=?,policy_hash=? WHERE id=?').run(raw, await sha(raw), challenge.data.challengeId);
+    const refused = await call(env, '/api/agent/authorization', { method: 'POST', cookie: user.cookie,
+      body: { requestId: auth.requestId, approve: true, challengeId: challenge.data.challengeId, signature: originalSignature } });
+    assert.equal(refused.response.status, 400, scenario); assert.equal(refused.data.error, 'invalid_wallet_authorization', scenario);
+    assert.equal(env.sqlite.prepare('SELECT COUNT(*) AS n FROM agent_grants').get().n, 0);
+  }
+});
+
+test('a trading token cannot authorize a malformed or future-version stored policy', async () => {
+  const env = environment();
+  const current = await session(env, { scopes: 'status:read trade:prepare trade:submit', policy: policyV2() });
+  const principal = await authenticateAgent(bearer(current.tokens.access_token), env);
+  const stored = JSON.parse(principal.grant.policy_json);
+  assert.throws(() => env.sqlite.prepare('UPDATE agent_grants SET policy_json=? WHERE id=?').run('{}', principal.grant.id), /agent grant is immutable/);
+  for (const changed of [{ ...stored, version: 3 }, { ...stored, maxLeverage: 6 }, { ...stored, products: ['spot', 'spot'] }, { ...stored, signer: 'another-wallet' }]) {
+    const raw = JSON.stringify(changed);
+    // An imported/future grant must fail its authority boundary even when its
+    // credential and JSON hash are internally consistent. Existing rows remain
+    // protected by the immutable-grant trigger above.
+    const id = crypto.randomUUID(); const token = verifier();
+    env.sqlite.prepare('INSERT INTO agent_grants(id,user_id,client_id,resource,scope,policy_json,policy_hash,created_at,expires_at) VALUES (?,?,?,?,?,?,?,?,?)')
+      .run(id, current.user.id, current.registered.client_id, principal.grant.resource, principal.grant.scope, raw, await sha(raw), principal.grant.created_at, principal.grant.expires_at);
+    env.sqlite.prepare('INSERT INTO agent_access_tokens(token_hash,grant_id,user_id,scope,created_at,expires_at) VALUES (?,?,?,?,?,?)')
+      .run(await sha(token), id, current.user.id, principal.grant.scope, at(), at() + 600);
+    await assert.rejects(authenticateAgent(bearer(token), env), error => error.status === 401 && error.code === 'invalid_token');
+  }
 });
 
 test('wrong wallet cannot sign policy and challenge/request/policy substitution fails', async () => {

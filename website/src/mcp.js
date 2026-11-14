@@ -20,12 +20,14 @@ const emptySchema = { type: 'object', properties: {}, additionalProperties: fals
 const intentSchema = { type: 'object', properties: { intentId: { type: 'string', minLength: 1, maxLength: 128, pattern: '^[A-Za-z0-9_.:-]+$' } }, required: ['intentId'], additionalProperties: false };
 const tools = [
   { name: 'oraclebot_get_status', title: 'Oraclebot account status', description: 'Read your wallet, account, bot status, preauthorization and owned trade intents. Availability does not establish a live venue connection.', inputSchema: emptySchema, annotations: { readOnlyHint: true, destructiveHint: false, idempotentHint: true, openWorldHint: false } },
-  { name: 'oraclebot_request_trade', title: 'Prepare a preauthorized trade', description: 'Prepare an expiring trade within your wallet-approved policy. budgetUsd is the maximum USD notional plus all fees. Preparation does not place an order. Refuses if a verified customer execution adapter is unavailable.',
+  { name: 'oraclebot_request_trade', title: 'Prepare a preauthorized trade', description: 'Prepare an expiring trade within your wallet-approved policy. budgetUsd is the maximum USD notional plus all fees, not leveraged collateral. Preparation does not place an order. reduceOnly permits only a verified Coinbase spot sale of owned inventory, with current signed policy limits; it cannot borrow or open exposure. Refuses if a verified customer execution adapter is unavailable.',
     inputSchema: { type: 'object', properties: {
       idempotencyKey: { type: 'string', minLength: 1, maxLength: 128, pattern: '^[A-Za-z0-9_.:-]+$' },
       venue: { type: 'string', enum: ['coinbase', 'jupiter'] }, asset: { type: 'string', enum: ['SOL', 'BTC', 'ETH', 'ZEC'] },
       side: { type: 'string', enum: ['buy', 'sell', 'long', 'short'] }, budgetUsd: { type: 'number', exclusiveMinimum: 0, maximum: 1000000, multipleOf: 0.01 },
       product: { type: 'string', enum: ['spot', 'perpetual'], default: 'spot' }, leverage: { type: 'integer', minimum: 1, maximum: 5, default: 1 },
+      maxBaseQuantity: { type: 'string', maxLength: 40, description: 'Optional positive base quantity cap for a reduce-only Coinbase spot sell. The executor also verifies owned available inventory.' },
+        reduceOnly: { type: 'boolean', default: false },
     }, required: ['idempotencyKey', 'venue', 'asset', 'side', 'budgetUsd'], additionalProperties: false },
     annotations: { readOnlyHint: false, destructiveHint: false, idempotentHint: true, openWorldHint: true } },
   { name: 'oraclebot_get_trade_status', title: 'Read an owned trade intent', description: 'Read one of your wallet-bound intents. Unknown submission outcomes require venue reconciliation and are never automatically resubmitted.', inputSchema: intentSchema, annotations: { readOnlyHint: true, destructiveHint: false, idempotentHint: true, openWorldHint: false } },
@@ -72,6 +74,7 @@ function validate(schema, value) {
     return Object.entries(value).every(([key, item]) => schema.properties[key] && validate(schema.properties[key], item));
   }
   if (schema.type === 'string' && (typeof value !== 'string' || value.length < (schema.minLength || 0) || value.length > (schema.maxLength || Infinity) || (schema.pattern && !new RegExp(schema.pattern).test(value)))) return false;
+  if (schema.type === 'boolean' && typeof value !== 'boolean') return false;
   if (['number', 'integer'].includes(schema.type)) {
     if (typeof value !== 'number' || !Number.isFinite(value) || (schema.type === 'integer' && !Number.isInteger(value)) ||
         (schema.exclusiveMinimum !== undefined && value <= schema.exclusiveMinimum) || (schema.minimum !== undefined && value < schema.minimum) ||

@@ -1,0 +1,19 @@
+{
+  "name": "oraclebot-analysis-runtime",
+  "main": "worker.js",
+  "account_id": "b41ba4dc457dce7653c93af955ecc462",
+  "compatibility_date": "2026-11-13",
+  "workers_dev": true,
+  "containers": [
+    {
+      "class_name": "RuntimeOwner",
+      "scheduling_policy": "durable_object",
+      "images": { "base": { "dockerfile": "../engine/Dockerfile", "build_context": "../.." } }
+    }
+  ],
+  "durable_objects": { "bindings": [{ "name": "RUNTIME", "class_name": "RuntimeOwner" }] },
+  "exports": { "RuntimeOwner": { "type": "durable-object", "storage": "sqlite" } },
+  "r2_buckets": [{ "binding": "STATE", "bucket_name": "oraclebot-analysis-state" }],
+  "observability": { "enabled": true },
+  "vars": { "APP_VERSION": "analysis-1.0.0" }
+}

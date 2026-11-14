@@ -176,15 +176,15 @@ raise SystemExit(server.main(sys.argv[1:]))
                 await client.initialize()
                 self.assertEqual(len((await client.list_tools()).tools), 8)
                 self.assertEqual(len((await client.list_resources()).resources), 3)
-                initial = (
-                    await client.call_tool("oracle_predictions", {})
-                ).structuredContent
+                initial = (await client.call_tool("oracle_predictions", {})).model_dump(
+                    by_alias=True
+                )["structuredContent"]
                 self.assertTrue(initial["ok"])
                 self.assertEqual(initial["data"]["selected_ids"], [])
                 self.assertEqual(initial["data"]["reason"], "no_selected_voters")
                 self.assertIsNone(initial["data"]["signal"])
                 uri = AnyUrl("oracle://predictions")
-                await client.subscribe_resource(uri)
+                await client.subscribe_resource(str(uri))
                 await asyncio.wait_for(changed.wait(), 3)
                 changed.clear()
                 stable_count = len(notices)
@@ -196,19 +196,19 @@ raise SystemExit(server.main(sys.argv[1:]))
                 await asyncio.wait_for(changed.wait(), 3)
                 selected = (
                     await client.call_tool("oracle_predictions", {})
-                ).structuredContent["data"]
+                ).model_dump(by_alias=True)["structuredContent"]["data"]
                 self.assertEqual(selected["signal"], "Strong Buy")
                 self.assertEqual(selected["selection"]["revision"], 2)
                 resource = json.loads(
-                    (await client.read_resource(uri)).contents[0].text
+                    (await client.read_resource(str(uri))).contents[0].text
                 )["data"]
                 self.assertEqual(resource["selected_ids"], [card["strategy_id"]])
                 self.assertEqual(resource["balance_percent"], 100)
                 self.assertEqual(selected["aggregate"], resource["aggregate"])
-                vetoed = (await client.call_tool("oracle_veto", {})).structuredContent[
-                    "data"
-                ]
+                vetoed = (await client.call_tool("oracle_veto", {})).model_dump(
+                    by_alias=True
+                )["structuredContent"]["data"]
                 self.assertEqual(vetoed["signal"], "Strong Buy")
                 self.assertFalse(vetoed["enforcement"])
-                await client.unsubscribe_resource(uri)
+                await client.unsubscribe_resource(str(uri))
             self.assertEqual(hashlib.sha256(archive.read_bytes()).hexdigest(), before)

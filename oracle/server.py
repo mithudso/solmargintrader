@@ -17,11 +17,12 @@ from .feeds import validate_instrument
 from .guidance import guidance, readiness, veto
 
 _SDK_LOADED = False
+_SDK_V2 = False
 
 
 def _load_sdk() -> None:
     """Defer optional protocol imports so CLI help works before environment setup."""
-    global _SDK_LOADED, jsonschema, mcp, types, NotificationOptions, Server
+    global _SDK_LOADED, _SDK_V2, jsonschema, mcp, types, NotificationOptions, Server
     global ReadResourceContents, InitializationOptions, AnyUrl
     if _SDK_LOADED:
         return
@@ -33,7 +34,27 @@ def _load_sdk() -> None:
     from mcp.server.models import InitializationOptions
     from pydantic import AnyUrl
 
+    _SDK_V2 = not hasattr(Server, "list_tools")
     _SDK_LOADED = True
+
+
+def _sdk_model(model: Any, **fields: Any) -> Any:
+    """Keep Python SDK field spelling separate from the unchanged wire schema."""
+    aliases = {
+        "input_schema": "inputSchema",
+        "output_schema": "outputSchema",
+        "read_only_hint": "readOnlyHint",
+        "destructive_hint": "destructiveHint",
+        "idempotent_hint": "idempotentHint",
+        "open_world_hint": "openWorldHint",
+        "structured_content": "structuredContent",
+        "is_error": "isError",
+        "mime_type": "mimeType",
+    }
+    if not _SDK_V2:
+        fields = {aliases.get(key, key): value for key, value in fields.items()}
+    return model(**fields)
+
 
 VERSION = "0.2.5"
 RESOURCE_NAMES = {
@@ -212,27 +233,25 @@ def build_server(
                 pass
             await hub.clear()
 
-    server = Server("solmargintrader-oracle", version=VERSION, lifespan=lifespan)
-
-    @server.list_tools()
     async def list_tools() -> list[types.Tool]:
         return [
-            types.Tool(
+            _sdk_model(
+                types.Tool,
                 name=name,
                 description=DESCRIPTIONS[name],
-                inputSchema=schema,
-                outputSchema=ENVELOPE_SCHEMA,
-                annotations=types.ToolAnnotations(
-                    readOnlyHint=True,
-                    destructiveHint=False,
-                    idempotentHint=True,
-                    openWorldHint=False,
+                input_schema=schema,
+                output_schema=ENVELOPE_SCHEMA,
+                annotations=_sdk_model(
+                    types.ToolAnnotations,
+                    read_only_hint=True,
+                    destructive_hint=False,
+                    idempotent_hint=True,
+                    open_world_hint=False,
                 ),
             )
             for name, schema in TOOL_SCHEMAS.items()
         ]
 
-    @server.call_tool(validate_input=False)
     async def call_tool(name: str, arguments: dict[str, Any]) -> types.CallToolResult:
         try:
             if name not in TOOL_SCHEMAS:
@@ -256,40 +275,102 @@ def build_server(
                 encode(result)
             except Exception:  # noqa: BLE001 -- Public response boundary never serializes dependency exception text.
                 result = envelope(error="archive_unavailable")
-        return types.CallToolResult(
+        return _sdk_model(
+            types.CallToolResult,
             content=[types.TextContent(type="text", text=encode(result))],
-            structuredContent=result,
-            isError=not result["ok"],
+            structured_content=result,
+            is_error=not result["ok"],
         )
 
-    @server.list_resources()
     async def list_resources() -> list[types.Resource]:
         return [
-            types.Resource(
-                uri=AnyUrl(uri),
+            _sdk_model(
+                types.Resource,
+                uri=uri,
                 name=name,
-                mimeType="application/json",
+                mime_type="application/json",
                 description="Read a snapshot; subscribe for invalidation notices, then read again.",
             )
             for uri, name in RESOURCE_NAMES.items()
         ]
 
-    @server.read_resource()
-    async def read_resource(uri: AnyUrl) -> list[ReadResourceContents]:
+    def resource_text(uri: AnyUrl) -> str:
         value = resource(str(uri))
         try:
             text = encode(value)
         except (ValueError, TypeError, OverflowError):
             text = encode(envelope(error="snapshot_unavailable"))
-        return [ReadResourceContents(text, "application/json")]
+        return text
 
-    @server.subscribe_resource()
-    async def subscribe(uri: AnyUrl) -> None:
-        await hub.subscribe(server.request_context.session, str(uri))
+    if _SDK_V2:
 
-    @server.unsubscribe_resource()
-    async def unsubscribe(uri: AnyUrl) -> None:
-        await hub.unsubscribe(server.request_context.session, str(uri))
+        async def on_list_tools(ctx: Any, params: Any) -> types.ListToolsResult:
+            return types.ListToolsResult(tools=await list_tools())
+
+        async def on_call_tool(ctx: Any, params: Any) -> types.CallToolResult:
+            return await call_tool(params.name, params.arguments or {})
+
+        async def on_list_resources(ctx: Any, params: Any) -> types.ListResourcesResult:
+            return types.ListResourcesResult(resources=await list_resources())
+
+        async def on_read_resource(ctx: Any, params: Any) -> types.ReadResourceResult:
+            return types.ReadResourceResult(
+                contents=[
+                    _sdk_model(
+                        types.TextResourceContents,
+                        uri=str(params.uri),
+                        text=resource_text(params.uri),
+                        mime_type="application/json",
+                    )
+                ]
+            )
+
+        async def on_subscribe(ctx: Any, params: Any) -> types.EmptyResult:
+            # SDK2 creates a fresh session proxy for each request. Retain one
+            # notification proxy per connection lifespan so unsubscribe finds
+            # the same subscription owner without sharing another client's state.
+            session = ctx.lifespan_context.setdefault(
+                "subscription_session", ctx.session
+            )
+            await hub.subscribe(session, str(params.uri))
+            return types.EmptyResult()
+
+        async def on_unsubscribe(ctx: Any, params: Any) -> types.EmptyResult:
+            session = ctx.lifespan_context.setdefault(
+                "subscription_session", ctx.session
+            )
+            await hub.unsubscribe(session, str(params.uri))
+            return types.EmptyResult()
+
+        server = Server(
+            "solmargintrader-oracle",
+            version=VERSION,
+            lifespan=lifespan,
+            on_list_tools=on_list_tools,
+            on_call_tool=on_call_tool,
+            on_list_resources=on_list_resources,
+            on_read_resource=on_read_resource,
+            on_subscribe_resource=on_subscribe,
+            on_unsubscribe_resource=on_unsubscribe,
+        )
+    else:
+        server = Server("solmargintrader-oracle", version=VERSION, lifespan=lifespan)
+
+        async def read_resource(uri: AnyUrl) -> list[ReadResourceContents]:
+            return [ReadResourceContents(resource_text(uri), "application/json")]
+
+        async def subscribe(uri: AnyUrl) -> None:
+            await hub.subscribe(server.request_context.session, str(uri))
+
+        async def unsubscribe(uri: AnyUrl) -> None:
+            await hub.unsubscribe(server.request_context.session, str(uri))
+
+        server.list_tools()(list_tools)
+        server.call_tool(validate_input=False)(call_tool)
+        server.list_resources()(list_resources)
+        server.read_resource()(read_resource)
+        server.subscribe_resource()(subscribe)
+        server.unsubscribe_resource()(unsubscribe)
 
     return server, hub
 
