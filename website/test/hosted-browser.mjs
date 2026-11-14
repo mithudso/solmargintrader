@@ -43,7 +43,7 @@ const groups = [];
 async function fixture() {
   const context = await browser.newContext({ serviceWorkers: 'block' }); const page = await context.newPage();
   page.setDefaultTimeout(6000);
-  const f = { context, page, owner: 0, requests: [], diagnostics: [], errors: [], blocked: [], onApi: null, jobs: [], releases: [], oracle: deferred(), configured: false };
+  const f = { context, page, owner: 0, requests: [], diagnostics: [], errors: [], blocked: [], onApi: null, onResource: null, jobs: [], releases: [], oracle: deferred(), configured: false };
   f.bot = { id: crypto.randomUUID(), name: 'Synthetic SOL strategy', coin: 'SOL', strategy: 'rsi', venue: 'coinbase', leverage: 1, budget: 10, mode: 'paper', status: 'configured' };
   f.connection = { id: crypto.randomUUID(), venue: 'coinbase', portfolioId: crypto.randomUUID(), status: 'verified' };
   f.challenges = new Map(); f.operations = [];
@@ -68,7 +68,7 @@ async function fixture() {
   await page.route('**/*', async route => {
     const request = route.request(); const url = new URL(request.url());
     if (url.origin !== origin) { f.blocked.push(url.origin); await route.abort(); return; }
-    if (!url.pathname.startsWith('/api/')) { await route.continue(); return; }
+    if (!url.pathname.startsWith('/api/')) { if (!await f.onResource?.(route, url.pathname)) await route.continue(); return; }
     const method = request.method(); const body = request.postData() ? request.postDataJSON() : null;
     const entry = { path: url.pathname, method, account: request.headers()['x-oraclebot-account'] || null, body };
     f.requests.push(entry);
@@ -103,6 +103,10 @@ async function fixture() {
     await page.evaluate(view => { location.hash = view; }, view);
     await page.waitForFunction(view => document.querySelector(`.sidebar [data-view="${view}"]`)?.classList.contains('active'), view);
   };
+  f.start = async view => {
+    await page.goto(`${origin}/#${view}`);
+    await page.waitForFunction(label => document.querySelector('[data-wallet-label]')?.textContent === label, short(wallets[0].user.wallet));
+  };
   f.drain = () => page.evaluate(() => new Promise(resolve => requestAnimationFrame(() => requestAnimationFrame(resolve))));
   f.switchAccount = async () => {
     await page.evaluate(() => { for (const dialog of document.querySelectorAll('dialog[open]')) dialog.close(); location.hash = 'settings'; });
@@ -123,6 +127,15 @@ async function group(name, run) {
   finally { await f.close(); }
 }
 const writes = (f, suffix) => f.requests.filter(entry => entry.method === 'POST' && entry.path.endsWith(suffix));
+const configuredServices = { coins: ['SOL', 'BTC', 'ETH', 'ZEC'], plans, trialDays: 7, billingConfigured: true, billingPlanChanges: true, durableBacktests: true, customerConnectionsConfigured: true, managedAutomationConfigured: true };
+function holdStartupMetadata(f) {
+  const gate = deferred(); f.releases.push(gate.resolve);
+  f.onResource = async (route, path) => {
+    if (path !== '/research/catalog.json') return false;
+    await gate.promise; await f.json(route, { articles: [] }); return true;
+  };
+  return gate;
+}
 async function assertCoinbaseKey(pem) {
   assert.equal(pem, normalizedCoinbasePem);
   const key = await importSigningKey(pem); const challenge = new TextEncoder().encode('Synthetic browser credential normalization');
@@ -162,6 +175,124 @@ function automationApi(f, { tamper = false } = {}) {
 
 try {
   browser = await chromium.launch({ headless: true, ...(process.env.CHROME ? { executablePath: process.env.CHROME } : {}) });
+  await group('direct authenticated Settings enables Coinbase as soon as delayed configuration arrives', async f => {
+    const config = deferred(); const metadata = holdStartupMetadata(f); f.releases.push(config.resolve);
+    f.onApi = async (route, entry) => {
+      if (entry.path === '/api/config') { await config.promise; await f.json(route, configuredServices); return true; }
+      if (entry.path === '/api/strategies') { await metadata.promise; await f.json(route, { strategies: [] }); return true; }
+      return false;
+    };
+    await f.start('settings');
+    assert.equal(await f.page.getByLabel('Key ID', { exact: true }).isDisabled(), true);
+    const response = f.page.waitForResponse(value => new URL(value.url()).pathname === '/api/config');
+    config.resolve(); await (await response).finished(); await f.drain();
+    assert.equal(await f.page.getByLabel('Key ID', { exact: true }).isDisabled(), false, 'Direct Settings must apply configured connections before unrelated metadata finishes.');
+    assert.equal(await f.page.getByLabel('Secret', { exact: true }).isDisabled(), false);
+    assert.equal(await f.page.locator('.connection-form button[type="submit"]').isDisabled(), false);
+    assert.equal(f.requests.some(entry => entry.path === '/api/connections' && entry.account === wallets[0].user.id), true);
+    // Metadata completion must retain the current form and any private draft.
+    const keyInput = await f.page.getByLabel('Key ID', { exact: true }).elementHandle(); await keyInput.fill(coinbaseKeyName);
+    const oracle = f.oracle.promise; metadata.resolve(); await oracle; await f.drain();
+    assert.equal(await keyInput.evaluate(input => input.isConnected), true);
+    assert.equal(await f.page.getByLabel('Key ID', { exact: true }).inputValue(), coinbaseKeyName);
+    assert.equal(await f.page.evaluate(() => window.syntheticSignatures.length), 0);
+  });
+  await group('direct Settings uses configuration delivered before account hydration without waiting for research', async f => {
+    const metadata = holdStartupMetadata(f); const account = deferred(); f.releases.push(account.resolve);
+    f.onApi = async (route, entry) => {
+      if (entry.path === '/api/me') { await account.promise; await f.json(route, { user: wallets[0].user, subscription: null, usage: null }); return true; }
+      if (entry.path === '/api/strategies') { await metadata.promise; await f.json(route, { strategies: [] }); return true; }
+      return false;
+    };
+    const response = f.page.waitForResponse(value => new URL(value.url()).pathname === '/api/config');
+    await f.page.goto(`${origin}/#settings`); await (await response).finished(); await f.drain();
+    assert.equal(await f.page.locator('.connection-form').count(), 0);
+    account.resolve();
+    await f.page.waitForFunction(label => document.querySelector('[data-wallet-label]')?.textContent === label, short(wallets[0].user.wallet)); await f.drain();
+    assert.equal(await f.page.getByLabel('Key ID', { exact: true }).isDisabled(), false);
+    assert.equal(await f.page.getByLabel('Secret', { exact: true }).isDisabled(), false);
+    assert.equal(await f.page.locator('.connection-form button[type="submit"]').isDisabled(), false);
+    assert.doesNotMatch(await f.page.locator('.connection-form .form-message').innerText(), /not available/);
+  });
+  await group('late configuration updates the current Settings after startup navigation', async f => {
+    const config = deferred(); const metadata = holdStartupMetadata(f); f.releases.push(config.resolve);
+    f.onApi = async (route, entry) => {
+      if (entry.path === '/api/config') { await config.promise; await f.json(route, configuredServices); return true; }
+      if (entry.path === '/api/strategies') { await metadata.promise; await f.json(route, { strategies: [] }); return true; }
+      return false;
+    };
+    await f.start('overview'); await f.page.evaluate(() => { location.hash = 'settings'; }); await f.page.waitForSelector('.connection-form');
+    assert.equal(await f.page.getByLabel('Key ID', { exact: true }).isDisabled(), true);
+    const response = f.page.waitForResponse(value => new URL(value.url()).pathname === '/api/config');
+    config.resolve(); await (await response).finished(); await f.drain();
+    assert.equal(await f.page.getByLabel('Key ID', { exact: true }).isDisabled(), false);
+    assert.equal(await f.page.locator('.connection-form button[type="submit"]').isDisabled(), false);
+  });
+  for (const mode of ['disabled', 'malformed flag', 'failed', 'malformed response']) await group(`direct Settings keeps connections disabled when configuration is ${mode}`, async f => {
+    f.onApi = async (route, entry) => {
+      if (entry.path !== '/api/config') return false;
+      const value = mode === 'failed' ? { error: 'service_unavailable' } : mode === 'malformed response' ? null : { ...configuredServices, customerConnectionsConfigured: mode === 'malformed flag' ? 'true' : false };
+      await f.json(route, value, mode === 'failed' ? 503 : 200); return true;
+    };
+    await f.start('settings'); await f.oracle.promise; await f.drain();
+    assert.equal(await f.page.getByLabel('Key ID', { exact: true }).isDisabled(), true);
+    assert.equal(await f.page.getByLabel('Secret', { exact: true }).isDisabled(), true);
+    assert.equal(await f.page.locator('.connection-form button[type="submit"]').isDisabled(), true);
+    assert.match(await f.page.locator('.connection-form .form-message').innerText(), /not available/);
+    assert.equal(f.requests.filter(entry => entry.path === '/api/connections').length, 0);
+  });
+  await group('late configuration after account replacement loads only the current wallet connections', async f => {
+    const config = deferred(); const metadata = holdStartupMetadata(f); f.releases.push(config.resolve);
+    f.onApi = async (route, entry) => {
+      if (entry.path === '/api/config') { await config.promise; await f.json(route, configuredServices); return true; }
+      if (entry.path === '/api/strategies') { await metadata.promise; await f.json(route, { strategies: [] }); return true; }
+      return false;
+    };
+    await f.start('settings'); await f.switchAccount();
+    const response = f.page.waitForResponse(value => new URL(value.url()).pathname === '/api/config');
+    config.resolve(); await (await response).finished(); await f.drain();
+    assert.equal(await f.page.getByLabel('Key ID', { exact: true }).isDisabled(), false);
+    const reads = f.requests.filter(entry => entry.path === '/api/connections');
+    assert.equal(reads.length, 1); assert.equal(reads[0].account, wallets[1].user.id);
+    assert.equal(writes(f, '/connections').length, 0);
+  });
+  await group('late configuration after logout cannot restore the former wallet connection form', async f => {
+    const config = deferred(); const metadata = holdStartupMetadata(f); f.releases.push(config.resolve);
+    f.onApi = async (route, entry) => {
+      if (entry.path === '/api/config') { await config.promise; await f.json(route, configuredServices); return true; }
+      if (entry.path === '/api/strategies') { await metadata.promise; await f.json(route, { strategies: [] }); return true; }
+      return false;
+    };
+    await f.start('settings'); await f.page.locator('main [data-action="logout"]').click(); await f.page.waitForSelector('main [data-action="wallet"]');
+    const response = f.page.waitForResponse(value => new URL(value.url()).pathname === '/api/config');
+    config.resolve(); await (await response).finished(); metadata.resolve(); await f.oracle.promise; await f.drain();
+    assert.equal(await f.page.locator('.connection-form').count(), 0);
+    assert.equal(await f.page.locator('.settings-value').count(), 0);
+    assert.equal(f.requests.filter(entry => entry.path === '/api/connections').length, 0);
+    assert.equal(await f.page.evaluate(() => window.syntheticSignatures.length), 0);
+  });
+  await group('late configuration and metadata preserve the current Backtest form and typed values', async f => {
+    const config = deferred(); const metadata = holdStartupMetadata(f); f.releases.push(config.resolve);
+    f.onApi = async (route, entry) => {
+      if (entry.path === '/api/config') { await config.promise; await f.json(route, { ...configuredServices, coins: ['SOL', 'BTC'] }); return true; }
+      if (entry.path === '/api/strategies') { await metadata.promise; await f.json(route, { strategies: [{ id: 'rsi', name: 'RSI' }] }); return true; }
+      return false;
+    };
+    await f.start('backtest');
+    const form = await f.page.locator('#backtest-form').elementHandle();
+    await f.page.locator('#backtest-form [name="capital"]').fill('2345');
+    await f.page.locator('#backtest-form [name="coin"]').selectOption('BTC');
+    await f.page.locator('#backtest-form [name="strategy"]').selectOption('rsi');
+    const response = f.page.waitForResponse(value => new URL(value.url()).pathname === '/api/config');
+    config.resolve(); await (await response).finished(); await f.drain();
+    assert.equal(await form.evaluate(value => value.isConnected), true);
+    assert.deepEqual(await f.page.locator('#backtest-form [name="coin"] option').evaluateAll(values => values.map(value => value.value)), ['SOL', 'BTC']);
+    metadata.resolve(); await f.oracle.promise; await f.drain();
+    assert.equal(await form.evaluate(value => value.isConnected), true);
+    assert.equal(await f.page.locator('#backtest-form [name="capital"]').inputValue(), '2345');
+    assert.equal(await f.page.locator('#backtest-form [name="coin"]').inputValue(), 'BTC');
+    assert.equal(await f.page.locator('#backtest-form [name="strategy"]').inputValue(), 'rsi');
+  });
   await group('durable backtest queues, polls and renders saved result', async f => {
     const id = crypto.randomUUID(); let polls = 0;
     f.onApi = async (route, entry) => {
