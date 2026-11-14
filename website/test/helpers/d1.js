@@ -41,7 +41,7 @@ export function environment({ migrations } = {}) {
   const result = createD1();
   result.sqlite.exec('PRAGMA foreign_keys=ON');
   const directory = new URL('../../migrations/', import.meta.url);
-  const names = migrations || readdirSync(directory).filter(name => /^000[1-5]_.*\.sql$/.test(name)).sort();
+  const names = migrations || readdirSync(directory).filter(name => /^\d{4}_.*\.sql$/.test(name)).sort();
   for (const name of names) {
     const file = new URL(name, directory);
     if (existsSync(file)) result.sqlite.exec(readFileSync(file, 'utf8'));

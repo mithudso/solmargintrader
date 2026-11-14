@@ -15,7 +15,7 @@ if HAS_MCP:
     from mcp.client.stdio import stdio_client
     from pydantic import AnyUrl
 
-    from oracle.server import SubscriptionHub
+    from oracle.server import ENVELOPE_SCHEMA, TOOL_SCHEMAS, SubscriptionHub
 
 REPO = Path(__file__).resolve().parents[2]
 
@@ -88,34 +88,49 @@ class ProtocolTests(unittest.IsolatedAsyncioTestCase):
                 self.assertFalse(
                     any("submit" in name or "sign" in name for name in names)
                 )
+                for tool in tools.tools:
+                    wire = tool.model_dump(by_alias=True)
+                    self.assertEqual(wire["inputSchema"], TOOL_SCHEMAS[tool.name])
+                    self.assertEqual(wire["outputSchema"], ENVELOPE_SCHEMA)
+                    self.assertTrue(wire["annotations"]["readOnlyHint"])
+                    self.assertFalse(wire["annotations"]["destructiveHint"])
                 market = await session.call_tool("oracle_market", {})
-                self.assertTrue(market.structuredContent["ok"])
+                self.assertTrue(
+                    market.model_dump(by_alias=True)["structuredContent"]["ok"]
+                )
                 self.assertEqual(
-                    market.structuredContent["data"]["status"], "unavailable"
+                    market.model_dump(by_alias=True)["structuredContent"]["data"][
+                        "status"
+                    ],
+                    "unavailable",
                 )
                 invalid = await session.call_tool(
                     "oracle_history", {"limit": "secret-input"}
                 )
-                self.assertTrue(invalid.isError)
+                self.assertTrue(invalid.model_dump(by_alias=True)["isError"])
                 self.assertNotIn("secret-input", str(invalid))
                 invalid = await session.call_tool(
                     "oracle_market", {"key": "secret-input"}
                 )
-                self.assertTrue(invalid.isError)
+                self.assertTrue(invalid.model_dump(by_alias=True)["isError"])
                 self.assertNotIn("secret-input", str(invalid))
                 ready = await session.call_tool("oracle_readiness", {})
-                self.assertFalse(ready.structuredContent["data"]["live_ready"])
+                self.assertFalse(
+                    ready.model_dump(by_alias=True)["structuredContent"]["data"][
+                        "live_ready"
+                    ]
+                )
                 self.assertNotIn("secret-test-key", str(ready))
                 resources = await session.list_resources()
                 self.assertEqual(len(resources.resources), 3)
                 uri = AnyUrl("oracle://market")
-                await session.subscribe_resource(uri)
+                await session.subscribe_resource(str(uri))
                 for _ in range(30):
                     if notices:
                         break
                     await asyncio.sleep(0.05)
                 self.assertTrue(notices)
-                snapshot = await session.read_resource(uri)
+                snapshot = await session.read_resource(str(uri))
                 self.assertEqual(
                     json.loads(snapshot.contents[0].text)["data"]["status"],
                     "unavailable",
@@ -143,14 +158,17 @@ class ProtocolTests(unittest.IsolatedAsyncioTestCase):
                     if len(notices) > before:
                         break
                 self.assertGreater(len(notices), before)
-                snapshot = await session.read_resource(uri)
+                snapshot = await session.read_resource(str(uri))
                 self.assertEqual(
                     json.loads(snapshot.contents[0].text)["data"]["observation"][
                         "price"
                     ],
                     100,
                 )
-                await session.unsubscribe_resource(uri)
+                # A second request must reuse this connection's subscription
+                # owner even when the SDK creates a fresh request-scoped proxy.
+                await session.subscribe_resource(str(uri))
+                await session.unsubscribe_resource(str(uri))
                 count = len(notices)
                 now = time.time()
                 engine.ingest(

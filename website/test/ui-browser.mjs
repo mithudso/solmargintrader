@@ -14,6 +14,7 @@ let paginatedBots = false;
 const firstUser = { id: 'fixture', wallet: 'fixture-wallet' };
 const secondUser = { id: 'second', wallet: 'second-wallet' };
 let fixtureUser = firstUser;
+let fixtureSubscription = true;
 let challengeWallet;
 const observedRequests = [];
 const plans = [
@@ -22,7 +23,7 @@ const plans = [
   { id: 'unlimited', name: 'Unlimited', monthlyUsd: 49.99, botLimit: null, backtestsPerDay: null },
 ];
 function accountSnapshot(user = fixtureUser) {
-  return { user, subscription: user ? { status: 'trialing', entitled: true, plan: plans[0] } : null, portalAvailable: Boolean(user), usage: user ? { policy: plans[0], bots: 2, backtests: user.id === 'second' ? 3 : 7, reservedBacktests: 0 } : null };
+  return { user, subscription: user && fixtureSubscription ? { status: 'trialing', entitled: true, plan: plans[0] } : null, portalAvailable: Boolean(user), usage: user ? { policy: plans[0], bots: 2, backtests: user.id === 'second' ? 3 : 7, reservedBacktests: 0 } : null };
 }
 const server = createServer(async (request, response) => {
   const pathname = new URL(request.url, 'http://localhost').pathname;
@@ -59,6 +60,7 @@ try {
   const errors = [];
   page.on('pageerror', error => errors.push(error.message));
   await page.route('**/*', route => new URL(route.request().url()).origin === origin ? route.continue() : route.abort());
+  fixtureSubscription = false;
   for (const [index, value] of [false, undefined, 'true', true].entries()) {
     billingConfigured = value;
     await page.goto(`${origin}/?fixture=${index}#pricing`);
@@ -67,6 +69,12 @@ try {
     assert.equal(await trial.isDisabled(), value !== true);
     assert.match(await trial.innerText(), value === true ? /Start your free trial/ : /unavailable/i);
   }
+  fixtureSubscription = true;
+  await page.goto(`${origin}/?fixture=existing-member#pricing`);
+  await page.waitForSelector('main section[data-plan="starter"] button:disabled');
+  assert.equal(await page.locator('main section[data-plan="starter"] button').innerText(), 'Current plan');
+  assert.equal(await page.locator('main section[data-plan="advanced"] button').getAttribute('data-action'), 'portal');
+  assert.equal(await page.locator('main section[data-plan="advanced"] button').isDisabled(), false);
   assert.equal(await page.locator('.tier-grid section[data-plan]').count(), 3);
   for (const [id, amount, limit] of [['starter', '$9.99', '3 configured bot slots'], ['advanced', '$29.99', '10 configured bot slots'], ['unlimited', '$49.99', 'Unlimited bot slots']]) {
     const card = page.locator(`section[data-plan="${id}"]`);
@@ -75,6 +83,9 @@ try {
     assert.ok(await card.getAttribute('aria-labelledby'));
   }
   assert.match(await page.locator('.usage-panel').innerText(), /7 of 10 backtests/);
+  fixtureSubscription = false;
+  await page.goto(`${origin}/?fixture=trial-selection#pricing`);
+  await page.waitForSelector('main [data-action="trial"]');
   let chosenPlan;
   await page.route('**/api/billing/checkout', async route => { chosenPlan = route.request().postDataJSON(); await route.fulfill({ status: 503, json: { error: 'billing_unavailable' } }); });
   await page.locator('button[data-plan="advanced"]').click();
@@ -86,13 +97,14 @@ try {
   console.log('PASS three accessible, responsive plans use server policies and selected plan IDs');
   console.log('PASS trial signup requires an explicitly configured billing service');
   billingConfigured = false;
+  fixtureSubscription = true;
   await page.goto(`${origin}/#overview`);
   await page.locator('.sidebar [data-action="pricing"]').click();
   await page.waitForFunction(() => document.querySelector('#page-label').textContent === 'Membership');
-  assert.equal(await page.locator('main [data-action="trial"]').first().isDisabled(), true);
+  assert.equal(await page.locator('main section[data-plan="starter"] button').isDisabled(), true);
   let portalRequests = 0;
   await page.route('**/api/billing/portal', async route => { portalRequests++; await route.fulfill({ status: 503, json: { error: 'billing_unavailable' } }); });
-  await page.locator('main [data-action="portal"]').click();
+  await page.locator('main [data-action="portal"]').last().click();
   await page.waitForFunction(() => document.querySelector('#toast').textContent.includes('not available'));
   assert.equal(portalRequests, 1);
   console.log('PASS membership navigation and portal cancellation stay available without checkout');
@@ -283,7 +295,7 @@ try {
   {
     const { page: fixturePage, blockedRequests } = await freshPage(); await ready(fixturePage, 'pricing');
     const old = await heldResponse(fixturePage, '/api/billing/portal', { url: 'https://billing.stripe.com/p/session/synthetic-old-account' }, 'POST');
-    await fixturePage.locator('main [data-action="portal"]').click(); await old.started;
+    await fixturePage.locator('main [data-action="portal"]').last().click(); await old.started;
     assert.equal(old.request().headers()['x-oraclebot-account'], firstUser.id);
     await switchAccount(fixturePage); await old.release();
     assert.deepEqual(blockedRequests, []);

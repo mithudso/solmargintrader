@@ -143,5 +143,10 @@ test('deletion transaction rejects a submit that wins after its initial check', 
   const deleted = await call(env, '/api/me', { method: 'DELETE', cookie: owner.cookie, body: {} });
   assert.equal(deleted.response.status, 409); assert.equal(deleted.data.error, 'trade_reconciliation_required');
   assert.equal(env.sqlite.prepare('SELECT state FROM agent_trade_intents WHERE id=?').get(intent).state, 'submitting');
-  assert.deepEqual(accountAuthorizationRows(env, owner.user.id), authorizationBeforeDeletion);
+  const authorizationAfterDeletion = accountAuthorizationRows(env, owner.user.id);
+  const user = authorizationAfterDeletion.users[0];
+  assert.match(user.deletion_token, /^[a-f0-9-]{36}$/); assert.ok(user.deletion_requested_at >= user.created_at);
+  assert.deepEqual({ ...authorizationAfterDeletion, users: [{ ...user, deletion_token: null, deletion_requested_at: null }] }, {
+    ...authorizationBeforeDeletion, users: authorizationBeforeDeletion.users.map(row => ({ ...row })),
+  });
 });

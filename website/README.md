@@ -1,269 +1,239 @@
 # oraclebot.io
 
-Cloudflare-hosted wallet account and research workspace. This is a separate web
-surface over the existing research tools. It never exposes the owner's control
-room, trading accounts, wallet keys or signing services.
+Version: 0.4.0
 
-## What is implemented
+Oraclebot separates the public account service, analysis runtime and customer
+execution service. The local owner control room remains independent. This source
+release adds hosted infrastructure and financial controls; production launch
+still requires the provider acceptance gates below.
 
-- Responsive workspace, per-coin Oracle view, bot configuration, backtest form,
-  research library, account and billing controls.
-- Solana wallet authentication with a domain-bound, expiring, single-use signed
-  message. Accounts and hashed server sessions live in Cloudflare D1. Connecting
-  a wallet does not grant transaction or trading permission.
-- Tenant-owned paper bot definitions. Stored definitions do not execute. The API
-  rejects live mode. Pausing and archiving only affect the account's definitions.
-- Stripe subscription Checkout with a seven-day trial on the first eligible
-  subscription, signed webhooks, verified subscription entitlement and customer
-  portal access. No checkout redirect grants access. The server controls prices.
-- Public research archive with source provenance and original limitations.
-- Authenticated MCP at `https://oraclebot.io/mcp`, using OAuth public-client
-  authorization-code PKCE S256 and the explicit MCP2025-11-25 JSON HTTP profile.
-  Status always uses the bearer owner's wallet. Trading consent is a separate
-  signed, finite preauthorization; it does not prompt for every trade.
-- A separate read-only Python engine adapter reusing the canonical strategy,
-  backtest and Oracle packages. Missing cached inputs or eligible Oracle evidence
-  produce an unavailable state. There is no synthetic market-data fallback.
+```mermaid
+flowchart LR
+  Wallet[Customer wallet] -->|Sign in and finite consent| Edge[Public Worker]
+  Edge --> D1[Account and intent D1]
+  Edge --> Stripe[Stripe subscriptions]
+  Stripe -->|Verified webhooks| Edge
+  Edge --> Analysis[Analysis Durable Object]
+  Analysis --> Python[Dedicated Python Container]
+  Python <-->|Verified checkpoints| R2[R2 public analysis state]
+  Edge --> Execution[Private customer executor]
+  Execution --> Vault[Encrypted customer API credential]
+  Execution --> Coinbase[Customer Coinbase portfolio]
+  Execution -. Qualification pending .-> Jupiter[Customer Jupiter delegation]
+```
 
-## Current deployment limits
+## Accounts and subscriptions
 
-The website can be deployed independently. Checkout stays disabled by default, including when test Prices are configured.
-Opening it needs verified promised capabilities and the bindings below,
-including a configured cancellation portal. Analysis needs a provisioned Python
-engine with a public-market cache and a read-only Oracle archive. Live automated
-Coinbase and Jupiter accounts need a separate implementation of per-user venue
-authorization, isolated workers, risk enforcement, reconciliation and verified
-signing. The website does not inherit the owner's existing trading authority.
+Solana wallet sign-in uses a domain-bound, expiring, single-use message. D1
+stores account records and hashes of session credentials. Signing in grants
+account access. Trading requires its own finite wallet-signed authorization.
 
-Do not describe this release as a working paid live-trading service. The UI and
-health API report these capabilities independently.
-
-## Membership policies (website 0.3.0)
-
-The Worker owns the policies and exposes them through `/api/config`. The browser
-sends only `plan: starter`, `advanced` or `unlimited` to Checkout. It cannot choose
-a Price, renewal amount, entitlement or quota. The seven-day trial applies only
-to the first eligible subscription, across all three plans.
-
-| Plan | Monthly renewal (USD) | Bot slots | Backtests/day (UTC) |
+| Plan | Monthly base rate, USD before applicable tax | Configured bot slots | Backtests per UTC day |
 | --- | ---: | ---: | ---: |
-| Starter | $9.99 | 3 | 10 |
-| Advanced | $29.99 | 10 | Unlimited |
-| Unlimited | $49.99 | Unlimited | Unlimited |
+| Starter | 9.99 | 3 | 10 |
+| Advanced | 29.99 | 10 | Unlimited |
+| Unlimited | 49.99 | Unlimited | Unlimited |
 
-A `configured` paper definition reserves a bot slot. It does not execute or
-represent a live/active venue bot. Paused and archived definitions free a slot.
-The conditional D1 insert counts every status except `paused` and `archived`, so
-an unknown stored status cannot bypass capacity. The existing pause/archive
-allowlist stays unchanged; there is no activation or resume route. Any future
-activation or resume must enforce the same atomic slot gate before changing a
-record to a slot-reserving status. The bot list uses bounded 100-record pages with a load-more control, so Unlimited
-accounts can reach configurations beyond the first page. A downgrade does not
-delete existing records.
-Over-limit accounts can read, pause and archive; new creation stays refused
-until capacity is available. Account deletion retains its cancellation checks.
+The first eligible subscription receives seven days free. Server-selected
+Stripe Prices determine payment and entitlement. Canonical signed webhook
+reconciliation grants access; a Checkout redirect cannot grant access. Trial
+history survives account deletion as a wallet hash.
 
-Daily quotas count completed backtests, using the reservation's UTC day and a
-00:00 UTC reset. A conditional D1 insert atomically reserves the daily credit and
-one in-flight request per user. Entitlement/validation/configuration refusals do
-not reserve a credit. Provider errors, invalid responses and timeouts release
-the reservation. Successful canonical `complete` responses consume one credit.
-Abandoned reservations expire after five minutes; the Worker upstream timeout
-is twenty seconds. Cleanup retains at most the current and previous UTC day.
-Unlimited counts never remove authentication, risk rules, request bounds,
-leverage/capital limits, engine cache bounds or the one-request concurrency cap.
+Plan changes require a server-priced preview and an explicit commit. Upgrades
+use pending payment confirmation; downgrades take effect at renewal. Trial
+changes preserve the original trial end. Undoing an owned downgrade releases its
+subscription schedule. Cancellation and undo-cancellation never resurrect a
+terminated subscription. Durable operations retain unknown outcomes for
+reconciliation, including when the browser loses the response. The dedicated
+portal supports payment methods, invoices and cancellation; portal plan changes
+must remain disabled while the application owns those lifecycle semantics.
 
-Migration `0003_subscription_tiers.sql` adds plan identity and the per-user usage
-ledger, plus a short webhook-reconciliation lease table. Existing subscriptions have no inferred plan and fail closed for paid
-features until a signed webhook reconciles their canonical Stripe Price. This
-migration never starts trials or changes records into live bots. A canonical
-subscription must contain one supported Price with quantity one. Price metadata and browser/event plan labels
-never grant entitlement. Unknown/multiple Prices produce `plan_mismatch`.
+Plan quotes distinguish the monthly base price from the gross amount due now.
+Automatic tax and Stripe Managed Payments settings remain bound to the quote
+and survive scheduled changes. A changed tax calculation requires a new quote.
+Cancellation supports Stripe's period-end flag and explicit cancellation date;
+undo verifies that both representations have cleared before reporting success.
 
-Nonterminal webhook reconciliation acquires a per-subscription lease before
-fetching canonical Stripe state. The lease lasts thirty seconds; D1 evaluates
-expiry with SQLite `unixepoch()`, including at each write. Contending events
-receive HTTP 503 without a handled-event receipt, so Stripe can retry them.
-The current owner and unexpired lease fence the subscription, trial-use and
-receipt writes. Late owners cannot overwrite a replacement or release its
-lease. Successful and failed processing release only their owned lease.
-Cancellation events bypass this lease and retain the terminal-state guard, so
-an in-flight plan update cannot delay cancellation or restore canceled access.
-Lease rows contain only a SHA-256 subscription key, a random owner token and an
-expiry. They have no wallet, customer or user fields. Release and expiry cleanup
-manage their lifecycle independently of account deletion.
+Configured definitions reserve slots. Pausing and archiving free slots. Creation
+and activation enforce slot capacity atomically. After a downgrade below current
+usage, managed bots hold new buys until the customer frees enough slots. A
+verified reduce-only sale can still reduce owned exposure under a current grant.
+Unlimited counts retain per-request resource, financial and concurrency limits.
 
-The three Price bindings must be distinct. Configure all Prices, portal, secret
-key and webhook secret in the same Stripe mode. Test-mode Products/Prices and a
-portal configuration do not establish live billing readiness. No real Price IDs
-or bearer credentials are committed. Both Wrangler configurations set
-`BILLING_LAUNCH_ENABLED` to `false`; do not open Checkout before the public engine,
-customer execution boundaries and billing acceptance are verified. Cancellation
-and signed webhook processing remain independent of that launch gate.
+## Dedicated analysis
 
-## Agent access and preauthorized trading
+`runtime/wrangler.jsonc` defines one fixed Durable Object owning a Cloudflare
+Container. `engine/Dockerfile` installs the canonical backtester and Oracle
+packages in a nonroot Linux image. The service acquires public Coinbase USD
+candles and genuine market observations for SOL, BTC, ETH and ZEC. It accepts
+named analysis operations with a private service credential. It has no customer
+signer, account credential or owner cache fallback.
 
-Add `https://oraclebot.io/mcp` as a remote MCP server in a client that supports
-OAuth authorization-code PKCE and MCP2025-11-25. Discovery points the agent to
-public client registration and wallet sign-in. Settings shows the agent's name,
-registered callback, requested scopes and the account wallet before approval.
-Read access needs explicit consent. Trading also needs one separately signed
-policy message with allowed venues/assets, maximum USD per trade, maximum
-committed USD for the grant, and an expiry within thirty days. Login signatures
-cannot approve that policy. There is no wallet prompt for each subsequent trade.
-The agent cannot supply an alternative wallet, account, signer or endpoint.
+Each coin has its own native Oracle history. Closed historical candles can warm
+strategy features; they cannot create retrospective forecasts or outcomes.
+Leaders require eligible, fresh evidence. The public Oracle may abstain while
+history warms, observations are stale, or no strategy qualifies. The site does
+not manufacture a direction to fill that state. Genuine future observations
+resolve prospective forecasts and forward paper outcomes.
 
-Settings lists grants and can revoke one immediately. Access credentials expire
-after fifteen minutes; rotating refresh credentials cannot extend the signed
-grant. Replaying a used refresh credential revokes its grant. Only credential
-hashes are stored. Cookie sign-in never substitutes for an MCP bearer token.
+R2 content-addressed chunks and an epoch-fenced Durable Object head commit the
+runtime's public history, frozen calculation inputs and job database. The image
+restores and verifies the committed snapshot before accepting work. Unavailable
+or corrupt storage withholds readiness. Ephemeral container disk is insufficient
+for durability. Current state has an eight-GiB bound; long-term R2 retention and
+capacity still require operations monitoring.
 
-The tools are `oraclebot_get_status`, `oraclebot_request_trade`,
-`oraclebot_get_trade_status` and `oraclebot_submit_trade`. Preparation and
-submission are separate calls so the agent can inspect the exact costed intent;
-both run within the original preauthorization. Neither call needs a new wallet
-approval. Limits reserve atomically and include explicit fees. Every financial
-write rechecks current grant and known-plan entitlement. Concurrent duplicate
-submissions cannot call the adapter twice. An ambiguous submission remains
-`unknown`, keeps its budget commitment and cannot automatically resubmit.
-Status never interprets a provider submission acknowledgement as a fill.
+`POST /api/backtest-jobs` creates an owned durable calculation with an idempotency
+key. A lost HTTP reply preserves its job ID and credit reservation. The same key
+recovers the same request; another request cannot replace it. A verified complete
+receipt consumes one daily credit. A durable failed receipt releases it. Polling
+and the minute cron reconcile pending work. Legacy synchronous backtests remain
+available with their existing timeout semantics. Status and results are bound to
+the owner and the exact request hash.
 
-The customer execution adapter is not implemented or bound in this release.
-`LIVE_EXECUTION_ENABLED` defaults to the string `false`; even `true` alone cannot
-enable orders. A future `USER_TRADE_EXECUTOR` service binding must implement the
-wallet-bound connection, delegated signer, fresh quote, venue reconciliation
-and exact intent/receipt contract in `website/src/trades.js`. It must enforce
-the same policy before signing. MCP consent grants platform access; it cannot
-create on-chain spending authority. Missing execution refuses before reserving
-a trade. Successful adapter tests use explicit fixtures, never real orders.
-Accounts with submitting, submitted or unknown intents cannot delete the
-records before reconciliation. Cleanup expires only unsubmitted preparations.
+The runtime's authenticated `/v1/signals` endpoint computes the canonical spot
+strategy on fully closed contiguous bars with fill delay one. It returns exact
+strategy/source/input revisions, observation times and a short expiry. Fractions,
+lookahead, stale data and unusable inputs cannot trigger the initial managed
+0-or-1 exposure driver. A strategy signal does not serve as an execution quote.
 
-The transport uses stateless JSON POST. GET, DELETE and browser MCP CORS
-preflights are unsupported. OAuth discovery/token endpoints have their own
-public CORS contract. The distinct MCP2026 discovery profile is not advertised.
+## Customer execution and managed bots
 
-## Cloudflare layout
+`execution/wrangler.jsonc` defines a private Worker and one serialized Durable
+Object per customer. The public edge passes only the authenticated principal.
+It cannot select an operator wallet or an arbitrary signer endpoint.
 
-`website/wrangler.jsonc` defines one Worker, static assets, the account D1 binding,
-an expiry-cleanup cron and custom domains for oraclebot.io and www.oraclebot.io.
-The Worker handles API requests and applies security headers to assets. The
-www host redirects to the canonical origin. D1 stores accounts, challenges,
-sessions, subscriptions, webhook receipts and paper bot definitions.
+Customers can import a dedicated Coinbase ECDSA API credential with View and Trade
+permissions. Transfer-enabled credentials are refused. AES-GCM encryption and
+owner/wallet/connection binding protect the credential in private storage. The
+public registry stores metadata and fingerprints. Revocation removes unused
+authority; unresolved orders retain reconciliation capability. Rotation retains
+idempotency and public audit history without retaining every old encrypted key.
 
-Cloudflare Workers can call Coinbase, Jupiter, Stripe and other HTTPS APIs.
-External providers still require their own authentication, permissions, limits
-and availability. A connected wallet is not a Coinbase API authorization and a
-Jupiter Swap quote is not a leveraged perpetual position.
+The executor reconciles the venue before preparing an order. It verifies fresh
+prices, decimal increments, fees, explicit previews, signed policy, subscription,
+connection ownership, expiry and cumulative reservations again before signing.
+It submits an explicit limit IOC using a stable client order ID. An ambiguous
+submit remains unknown and is never automatically sent again. Only authoritative
+venue fills update bot-owned inventory. Partial fills remain visible.
 
-The Python engines use normal CPython and NumPy/pandas. Run them in a separate
-container service or Cloudflare Containers, behind HTTPS and a secret bearer
-credential. Ordinary edge Worker requests are not a persistent trading daemon.
-No tunnel to the owner's existing loopback UI is configured. The adapter only
-accepts named public-market analysis operations. Provisioning it does not by
-itself provision live trading.
+Paper definitions remain the default. Activation requires a separate Ed25519
+wallet signature over the exact bot, immutable strategy revision, customer
+connection, closed-bar interval, per-trade/cumulative notional limits and expiry.
+External MCP grants cannot activate a managed bot. The minute scheduler dedupes
+signals, durably records preparations before submission and reconciles pending
+orders before taking another action. Pausing revokes its managed grant. It does
+not close the position. Expiry, revocation and exhausted authority can prevent an
+automated exit; the consent message states these limits.
 
-## Development and checks
+A managed sale is reduce-only and capped by that bot's verified fill ledger. The
+private signer also verifies fresh aggregate inventory covering all bots in the
+same portfolio/asset, including paused allocations, and refuses while another
+bot's unapplied order makes coverage uncertain. Manual depletion cannot silently
+move another bot's backing into a managed sell.
 
-From `website/`, use Node 22.13 or newer:
+Account deletion first installs a durable financial-write fence, calls the
+private executor even if the registry is empty, and verifies encrypted credential
+erasure. A lost cleanup response retains the same fence for safe retry. Pending
+trades, Checkouts and unresolved subscription changes prevent deletion.
+
+## Authenticated MCP
+
+Connect an OAuth-capable client to https://oraclebot.io/mcp . The service exposes
+MCP2025-11-25 stateless Streamable HTTP with public-client PKCE S256, exact resource
+and redirect binding, short-lived hashed access tokens, rotating refresh tokens
+and immediate revocation. Cookies cannot replace bearer authority.
+
+Tools: `oraclebot_get_status`, `oraclebot_request_trade`,
+`oraclebot_get_trade_status`, and `oraclebot_submit_trade`. The principal always
+comes from the authenticated grant. Tool arguments cannot override wallet,
+customer, signer or endpoint. Preparation and submission use the initial finite
+preauthorization without a wallet prompt for every trade.
+
+Legacy five-field trading policies authorize spot at 1x. Version2 explicitly adds
+products and maximum leverage. USD limits count fee-inclusive notional exposure,
+including leveraged position notional. Broadening a policy requires fresh consent.
+
+## Jupiter qualification
+
+Jupiter native perpetual delegation remains disabled. Qualification uses the
+actual deployed Smart Account and Perps binaries in an isolated signature-checked
+SVM with public protocol accounts. Constrained SOL-short and ETH-long request
+creation, negative policy controls, and owner recovery of an expired unfilled
+request have passed. These results do not establish keeper settlement, closure of
+a filled leveraged position, a non-bypassable cumulative funding bound or complete
+customer onboarding. See `execution/jupiter-qualification.json` for exact scope.
+The service must not substitute an operator key or a broader GUM session.
+
+## Launch gates and Cloudflare layout
+
+The public Worker owns static assets, account APIs, OAuth/MCP, D1, subscription
+webhooks and bounded cron reconciliation. Service bindings target the dedicated
+analysis Worker and private customer executor. Ordinary edge requests can call
+provider HTTPS APIs. Persistent Python analysis runs in the Container.
+
+`BILLING_LAUNCH_ENABLED` and `LIVE_EXECUTION_ENABLED` default to `false`.
+A configured binding alone cannot qualify either capability. Launch requires:
+
+1. Workers Paid entitlement and successful actual Cloudflare Container startup,
+   genuine market/Oracle activity, durable backtest completion and cold restore.
+2. Intended-merchant Stripe sandbox lifecycle acceptance: eligible/ineligible
+   seven-day trials, renewal, failed payment, webhook ordering, proration,
+   period-end downgrade, cancellation and undo. A live key is already configured;
+   a sandbox key is separately required for no-charge acceptance.
+3. Per-venue customer authority and execution acceptance. Coinbase fixtures and
+   source tests do not establish a live customer's connection. Jupiter needs the
+   remaining native delegated-execution qualification above.
+4. Public wallet/session acceptance and loaded revision verification after deploy.
+
+`node website/scripts/verify-stripe-lifecycle.mjs --plan` prints the prepared
+no-charge sandbox lifecycle plan. Explicit execution requires the intended test
+merchant/key and a private source-bound resumable run directory. The runner
+refuses live credentials before HTTP and cannot self-certify genuine webhook
+delivery or the Checkout browser path.
+
+The owner enabled Workers Paid on2026-11-13 after the operational token's billing
+upgrade request returned403/code10000. A fresh subscription read confirms the
+entitlement. The base Workers plan is USD5/month plus usage; Containers and
+storage have their own usage charges. The intended merchant sandbox key is
+`STRIPE_ORACLEBOT_TEST_SEC_KEY` in the owner's private environment file; a
+separate `STRIPE_ORACLEBOT_TEST_ACCTNUM` binds the verified Sandbox account.
+Actual source-bound test clocks passed20lifecycle checks, including explicit
+cancellation-date undo. Genuine Checkout, signed delivery and Managed Payments
+acceptance are separate gates. Never commit a key or copy a live key into a test
+variable.
+
+An account-level Cloudflare Access rule can also protect all Workers. A narrowly
+scoped Worker-level exception is needed for the public site and authenticated
+runtime checkpoint callbacks. Preserve other applications and policies. Wallet
+authentication, private service credentials and Stripe signature checks remain
+enforced by each application.
+
+Deploy in this order: back up D1, apply numbered migrations, deploy the private
+executor with distinct execution/vault secrets, deploy the analysis Container
+with distinct engine/state credentials and R2, verify those loaded services, bind
+the public Worker, then enable only independently accepted launch capabilities.
+The test-clock override is allowed only on a nonproduction acceptance origin with
+an explicit test secret and server-configured clock ID. Browsers cannot choose it.
+
+## Development and verification
+
+From `website/`, install pinned development dependencies with `npm ci`. Use
+`npm run db:local`, then `npm run dev` for local development. Production custom
+routes are omitted by `wrangler.dev.jsonc`. Wallet sign-in requires a secure
+browser context and a domain matching `APP_ORIGIN`.
 
 ```sh
-npm ci
-npm run db:local
-npm run dev
-npm test
-npm run check
-```
-
-Open the local URL printed by Wrangler. The development configuration binds `APP_ORIGIN` to `http://localhost:8799`
-and omits production custom-domain routes. Override it in the development
-configuration if you change the local port.
-Use HTTPS in a normal browser for wallet authentication and the secure session
-cookie. The automated tests exercise authentication without a wallet extension.
-There are no runtime npm dependencies. Wrangler and Playwright are pinned
-development tools. The browser regression suite serves local fixtures and never
-contacts wallets, Stripe or trading venues:
-
-```sh
-npx playwright install chromium
-npm run test:browser
-```
-
-Set `CHROME` to an existing Chromium executable to use that browser instead.
-CI installs the matching Playwright Chromium and runs this suite.
-The browser command also tests agent consent, policy signatures, wallet
-mismatch, revocation and held-response session boundaries with synthetic
-fixtures. Run `node --test test/mcp-integration.test.js` for the complete Worker
-login/signature/PKCE/status path without external accounts.
-
-From the repository root, run the Python engine tests and exporter verification
-using an environment with the canonical packages installed:
-
-```sh
-python3 -m unittest website.engine.test_server website.engine.test_research
+npm --prefix website test
+npm --prefix website run check
+npm --prefix website run test:browser
+node --test website/runtime/worker.test.js
+python3 -m unittest website.engine.test_server website.engine.test_research website.engine.test_state website.engine.test_jobs website.engine.test_runtime website.engine.test_signals
 python3 -m website.scripts.export_research --check
 ```
 
-The existing component suites remain the gates for changes to their own engines.
-The website adapter does not change signal generation, fills or order execution.
-
-## Production configuration
-
-Nonsecret bindings:
-
-| Binding | Purpose |
-| --- | --- |
-| `DB` | Account D1 database |
-| `ASSETS` | Static asset collection |
-| `APP_ORIGIN` | Exact canonical HTTPS origin, domain-bound wallet challenges |
-| `APP_VERSION` | Deployed application version |
-| `BILLING_LAUNCH_ENABLED` | Exact string `true` opens new Checkout; omitted or any other value keeps it closed |
-| `STRIPE_STARTER_PRICE_ID` | Server-only allowlisted Starter recurring USD monthly Price |
-| `STRIPE_ADVANCED_PRICE_ID` | Server-only allowlisted Advanced recurring USD monthly Price |
-| `STRIPE_UNLIMITED_PRICE_ID` | Server-only allowlisted Unlimited recurring USD monthly Price |
-| `STRIPE_PORTAL_CONFIGURATION_ID` | Explicit cancellation/payment-management portal configuration (`bpc_…`) |
-| `ENGINE_URL` | HTTPS base URL of the read-only analysis adapter |
-| `LIVE_EXECUTION_ENABLED` | Exact string `true` is required with a qualified customer executor; defaults to `false` |
-| `USER_TRADE_EXECUTOR` | Optional private Worker service binding; no customer signer is currently provisioned |
-
-The production Worker now has the three live Price IDs, explicit live portal,
-`STRIPE_SECRET_KEY` and `STRIPE_WEBHOOK_SECRET` bound through Wrangler. The IDs
-use encrypted bindings too, although the identifiers themselves are not secrets.
-Both launch flags remain `false`; the hosted engine and customer executor are
-still missing. See `docs/ORACLEBOT-LAUNCH-READINESS.md` for the current boundaries.
-
-Set private credentials and `ENGINE_TOKEN` as Worker secrets through Wrangler. Never put values in the repository, browser, D1 bot
-configuration, logs or chat. Use test mode until signed Checkout, subscription,
-cancellation and entitlement behavior have been verified end to end.
-
-Configure Stripe to send `checkout.session.completed` and
-`customer.subscription.created`, `.updated` and `.deleted` to
-`https://oraclebot.io/api/billing/webhook`. Configure the Stripe customer portal
-for cancellation and payment-method management. Portal sessions always include the
-configured portal ID. Existing customers can open the portal while new Checkout
-is disabled; portal availability requires only the customer, secret key and portal
-configuration. The handler verifies raw-body
-HMAC signatures and fetches the canonical subscription before updating access.
-
-For an authenticated Cloudflare deployment from `website/`:
-
-```sh
-npm run db:remote
-npm run deploy
-```
-
-Verify `https://oraclebot.io/api/health`, then exercise the actual deployed
-website. A true `storage` binding flag does not replace the wallet round-trip
-and database verification. Successful source checks do not establish successful
-external payments, fresh Oracle inputs or live orders.
-
-## Rollback
-
-Deploy the previous Worker version using Cloudflare version rollback. Preserve
-D1 data; this initial schema is additive. Bot definitions cannot place orders,
-and no live executor is configured. Preserve the agent intent ledger during
-rollback; a future active executor can leave unresolved venue submissions.
-
-## Account response isolation
-
-Account transitions invalidate pending reads, consent and mutations before the request starts. Private browser requests carry the captured X-Oraclebot-Account identity. The Worker rejects mismatches with409 account_changed; this optional header never selects an account and cannot replace the verified cookie principal. Initial discovery omits it. Failed identity checks show an unknown state with retry rather than an empty signed-out workspace. Fixed-vocabulary diagnostics exclude customer identity and credentials; logging failure does not change service behavior.
+Set `CHROME` to an installed Chromium executable or install the pinned Playwright
+browser. Browser fixtures block external calls and use synthetic wallet keys.
+Source/fixture checks, installed-image inspection, real storage acceptance and
+production-provider behavior are separate verification gates. The versioned
+continuation record is in `memory.md`; the API contract is `api/openapi.json`.

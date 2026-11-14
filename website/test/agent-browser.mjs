@@ -33,7 +33,12 @@ const server = createServer(async (request, response) => {
       if (path === '/api/agent/authorization/challenge') {
         const input = await body(request); active.challengeBodies.push(input);
         const policy = { ...input.policy, venues: [...input.policy.venues].sort(), assets: [...input.policy.assets].sort() };
+        if (policy.products) policy.products = [...policy.products].sort();
         if (active.tamperPolicy) policy.maxTotalUsd += 1;
+        if (active.tamperProduct) policy.products = ['perpetual', 'spot'];
+        if (active.tamperLeverage) policy.maxLeverage = 5;
+        if (active.unknownPolicyField) policy.wallet = 'another-wallet';
+        if (active.legacyPolicyResponse) { delete policy.version; delete policy.products; delete policy.maxLeverage; }
         return json(response, { challengeId: grantId, message: `Oraclebot agent trading preauthorization\nWallet: ${wallet}\nPolicy: ${JSON.stringify(policy)}`, expiresAt: Math.floor(Date.now() / 1000) + 180, policy });
       }
       if (path === '/api/agent/authorization' && request.method === 'POST') {
@@ -101,8 +106,14 @@ try {
   assert.equal(await page.evaluate(() => Boolean(window.hostileAgentRan)), false);
   assert.match(await page.locator('[data-agent-access]').innerText(), /do not require repeated wallet approval/);
   assert.match(await page.locator('[data-agent-access]').innerText(), /does not enable execution/);
+  assert.equal(await page.getByLabel('Spot (1x)', { exact: true }).isChecked(), true);
+  assert.equal(await page.getByLabel('Perpetuals', { exact: true }).isChecked(), false);
+  assert.equal(await page.locator('[name="maxLeverage"]').inputValue(), '1');
+  assert.equal(await page.locator('[name="maxLeverage"]').isDisabled(), true);
+  assert.match(await page.locator('[data-agent-consent]').innerText(), /not collateral/);
   await page.locator('[name="maxTradeUsd"]').fill('0.29'); await page.locator('[name="maxTotalUsd"]').fill('0.57');
-  await page.getByLabel('Jupiter leveraged positions', { exact: true }).check(); await page.getByLabel('BTC', { exact: true }).check();
+  await page.getByLabel('Jupiter', { exact: true }).check(); await page.getByLabel('BTC', { exact: true }).check();
+  await page.getByLabel('Perpetuals', { exact: true }).check(); await page.locator('[name="maxLeverage"]').selectOption('3');
   await page.setViewportSize({ width: 390, height: 844 });
   assert.equal(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth), true);
   await page.setViewportSize({ width: 1280, height: 800 });
@@ -111,6 +122,9 @@ try {
   assert.deepEqual(fixture.walletCalls, ['connect', 'sign']);
   assert.deepEqual(fixture.challengeBodies[0].policy.venues, ['coinbase', 'jupiter']);
   assert.deepEqual(fixture.challengeBodies[0].policy.assets, ['SOL', 'BTC']);
+  assert.equal(fixture.challengeBodies[0].policy.version, 2);
+  assert.deepEqual(fixture.challengeBodies[0].policy.products, ['spot', 'perpetual']);
+  assert.equal(fixture.challengeBodies[0].policy.maxLeverage, 3);
   assert.equal(fixture.challengeBodies[0].policy.maxTradeUsd, 0.29); assert.equal(fixture.challengeBodies[0].policy.maxTotalUsd, 0.57);
   assert.match(fixture.approvals[0].signature, /^[A-Za-z0-9+/]{86}==$/);
   console.log('PASS bounded trading consent signs once, preserves decimal limits, escapes client text and fits mobile');
@@ -133,7 +147,9 @@ try {
       const failure = page.locator('.agent-consent .form-message');
       assert.equal(await failure.isVisible(), true);
       assert.match(await failure.innerText(), /^Authorization could not be completed\./);
-      assert.equal(await page.locator('#agent-consent-form').locator('button,input,select,textarea').evaluateAll(controls => controls.every(control => !control.disabled)), true);
+      assert.equal(await page.locator('#agent-consent-form').locator('button,input,select,textarea').evaluateAll(controls => controls.filter(control => control.name !== 'maxLeverage').every(control => !control.disabled)), true);
+      assert.equal(await page.locator('[name="maxLeverage"]').isDisabled(), true, 'Spot-only consent keeps its new leverage control at 1x');
+      assert.equal(await page.locator('[name="maxLeverage"]').inputValue(), '1');
       assert.equal(fixture.challengeBodies.length, stage === 'connect' ? 0 : 1);
       assert.equal(fixture.approvals.length, 0);
       assert.deepEqual(await page.evaluate(() => window.fixtureUnhandledRejections), []);
@@ -157,6 +173,40 @@ try {
   await page.waitForFunction(() => document.querySelector('.agent-consent .form-message').textContent.includes('could not be completed'));
   assert.equal(new URL(page.url()).pathname, '/');
   console.log('PASS changed challenge limits and unregistered redirect paths are refused');
+
+  for (const option of ['tamperProduct', 'tamperLeverage', 'unknownPolicyField', 'legacyPolicyResponse']) {
+    await go({ [option]: true }); await submit();
+    await page.waitForFunction(() => document.querySelector('.agent-consent .form-message').textContent.includes('limits changed'));
+    assert.equal(await page.evaluate(() => window.fixtureSignatures.length), 0); assert.equal(fixture.approvals.length, 0);
+  }
+  console.log('PASS changed products, leverage, unknown fields and downgraded policy versions are refused before signing');
+
+  for (const field of ['products', 'maxLeverage', 'walletProvider']) {
+    await go();
+    await page.getByLabel('Perpetuals', { exact: true }).check(); await page.locator('[name="maxLeverage"]').selectOption('3');
+    await page.evaluate(() => { window.fixtureSignGate = new Promise(resolve => { window.releaseFixtureSign = resolve; }); });
+    await submit(); await page.waitForFunction(() => window.fixtureSignatures.length === 1);
+    assert.equal(await page.locator('#agent-consent-form input:enabled,#agent-consent-form select:enabled').count(), 0);
+    await page.evaluate(changed => {
+      if (changed === 'products') document.querySelector('input[name="products"][value="perpetual"]').checked = false;
+      if (changed === 'maxLeverage') document.querySelector('[name="maxLeverage"]').value = '5';
+      if (changed === 'walletProvider') document.querySelector('[name="walletProvider"]').value = 'solflare';
+      window.releaseFixtureSign();
+    }, field);
+    await page.waitForFunction(() => document.querySelector('.agent-consent .form-message').textContent.includes('limits changed'));
+    assert.equal(fixture.approvals.length, 0); assert.deepEqual(fixture.walletCalls, ['connect', 'sign']);
+  }
+  console.log('PASS product, leverage and provider changes during a held wallet signature cannot issue authorization');
+
+  await go();
+  await page.evaluate(() => {
+    const original = window.phantom.solana.signMessage;
+    window.phantom.solana.signMessage = async function(bytes) { const result = await original.call(this, bytes); bytes[0] ^= 1; return result; };
+  });
+  await submit();
+  await page.waitForFunction(() => document.querySelector('.agent-consent .form-message').textContent.includes('message changed'));
+  assert.equal(fixture.approvals.length, 0); assert.deepEqual(fixture.walletCalls, ['connect', 'sign']);
+  console.log('PASS the exact message bytes passed to the wallet retain their signed-message hash');
 
   await go(); await page.evaluate(() => { window.fixtureConnectGate = new Promise(resolve => { window.releaseFixtureConnect = resolve; }); });
   await submit(); await page.waitForFunction(() => window.fixtureConnects === 1);

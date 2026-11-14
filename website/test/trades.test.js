@@ -8,7 +8,8 @@ const input = (key = 'trade-1', budgetUsd = 10) => ({ idempotencyKey: key, venue
 const digest = async value => Buffer.from(await crypto.subtle.digest('SHA-256', new TextEncoder().encode(value))).toString('hex');
 async function fixture(options = {}) {
   const env = environment(); const owner = await seedUser(env); const id = crypto.randomUUID(); const clientId = crypto.randomUUID();
-  const policy = { venues: ['coinbase', 'jupiter'], assets: ['BTC', 'ETH', 'SOL', 'ZEC'], maxTradeUsd: options.maxTradeUsd || 20, maxTotalUsd: options.maxTotalUsd || 30, expiresAt: at() + 3600 };
+  const policy = { venues: ['coinbase', 'jupiter'], assets: ['BTC', 'ETH', 'SOL', 'ZEC'], maxTradeUsd: options.maxTradeUsd || 20, maxTotalUsd: options.maxTotalUsd || 30, expiresAt: at() + 3600,
+    ...(options.v2 ? { version: 2, products: ['spot', 'perpetual'], maxLeverage: 3 } : {}) };
   const json = JSON.stringify(policy); const policyHash = await digest(json); const scope = 'status:read trade:prepare trade:submit';
   env.sqlite.prepare('INSERT INTO agent_clients(id,name,redirect_uris,created_at) VALUES (?,?,?,?)').run(clientId, 'Test agent', '[]', at());
   env.sqlite.prepare('INSERT INTO agent_grants(id,user_id,client_id,resource,scope,policy_json,policy_hash,created_at,expires_at) VALUES (?,?,?,?,?,?,?,?,?)').run(id, owner.id, clientId, `${ORIGIN}/mcp`, scope, json, policyHash, at(), policy.expiresAt);
@@ -64,6 +65,21 @@ test('positive sub-cent and overprecision budgets refuse before reservation or c
     assert.equal(env.sqlite.prepare('SELECT COUNT(*) AS n FROM agent_trade_intents').get().n, 0);
     assert.equal(calls.length, 0);
   }
+});
+test('legacy grants stay spot-only and perpetuals require explicit versioned product and leverage consent', async () => {
+  const args = { ...input('perpetual'), side: 'long', product: 'perpetual', leverage: 2 };
+  const legacy = await fixture(); const legacyCalls = executor(legacy.env);
+  await assert.rejects(requestTrade(legacy.env, legacy.principal, args, services), { code: 'policy_limit' });
+  assert.equal(legacyCalls.length, 0);
+  const current = await fixture({ v2: true }); const calls = executor(current.env);
+  const prepared = await requestTrade(current.env, current.principal, args, services); assert.equal(prepared.state, 'prepared'); assert.equal(calls.length, 1);
+  await assert.rejects(requestTrade(current.env, current.principal, { ...args, idempotencyKey: 'higher-leverage', leverage: 4 }, services), { code: 'policy_limit' });
+});
+test('absent and false reduce-only keep existing canonical payload and idempotency hashes', async () => {
+  const { env, principal } = await fixture(); executor(env);
+  const original = await requestTrade(env, principal, input('stable-payload'), services);
+  const unchanged = await requestTrade(env, principal, { ...input('stable-payload'), reduceOnly: false }, services);
+  assert.equal(unchanged.id, original.id); assert.equal(Object.hasOwn(unchanged.trade, 'reduceOnly'), false);
 });
 test('decimal cent budgets and policies preserve exact reservations and explicit zero fees', async () => {
   for (const [budgetUsd, expectedCents] of [[0.29, 29], [0.57, 57]]) {

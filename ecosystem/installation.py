@@ -74,7 +74,7 @@ async def check_mcp():
             market = await client.call_tool("oracle_market", {})
             if len(tools.tools) != 8 or len(resources.resources) != 3 or not initialized.capabilities.resources.subscribe:
                 raise RuntimeError("mcp_contract_mismatch")
-            if not market.structuredContent["ok"] or market.structuredContent["data"]["status"] != "unavailable":
+            if not market.model_dump(by_alias=True)["structuredContent"]["ok"] or market.model_dump(by_alias=True)["structuredContent"]["data"]["status"] != "unavailable":
                 raise RuntimeError("mcp_abstention_failed")
             return {"tools": len(tools.tools), "resources": len(resources.resources), "subscriptions": True, "no_data_abstention": True, "stdio_closed": True}
 

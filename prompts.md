@@ -1,6 +1,16 @@
 # Prompt history
 
-Version: 244
+Version: 246
+Delta: v245 to v246; preserve the full hosted goal, provider-confirmation replies and observed-price-shape visual-guide request verbatim.
+Delta: v244 to v245; preserve the complete hosted goal, provider-confirmation replies and interactive winning-ZEC TUI request verbatim.
+Delta: v243 to v244; preserve hosted provider-confirmation replies and the streaming winning-ZEC strategy request verbatim.
+Delta: v242 to v243; record owner confirmation of Sandbox credentials and Workers Paid activation.
+Delta: v241 to v242; preserve the complete hosted-ecosystem request and concurrent expanded ZEC strategy, shape and frequency request verbatim.
+Delta: v240 to v241; record explicit authorization to complete the hosted ecosystem.
+
+
+
+
 Delta: v243 to v244; add an understandable visual shape guide.
 Delta: v242 to v243; add editable winning-strategy TUI.
 Delta: v241 to v242; implement read-only streaming ZEC winning-strategy display.
@@ -2221,9 +2231,35 @@ Owner clarification:
 
 > .25% and .15%
 
+
+## 2026-11-13 — Complete hosted ecosystem
+
+```text
+Complete the hosted ecosystem  as stated: The complete hosted ecosystem is still unfinished. ZEC needs native Oracle history; the public site needs its dedicated analysis runtime and customer-wallet executor. Stripe configuration is present, but subscription lifecycle verification remains, so public trials and live trading remain disabled. Resolve those issues
+```
+
 ## 2026-11-13 — Expanded ZEC strategies, shapes and frequency
 
 > Backtest all of the other strategies against ZEC in the same timeframes. Then do it again with the trading shapes as was done looking for macro graph patterns. And again looking for the frequency
+
+
+## 2026-11-13 — Hosted provider prerequisites confirmed
+
+The owner replied to the request to save STRIPE_ORACLEBOT_TEST_SEC_KEY in /Users/mitch/.env:
+
+```text
+It is saved.
+```
+
+The owner replied to both pending Cloudflare Workers Paid activation requests:
+
+```text
+Done
+```
+
+```text
+Done
+```
 
 ## 2026-11-13 — Streaming winning ZEC strategies
 

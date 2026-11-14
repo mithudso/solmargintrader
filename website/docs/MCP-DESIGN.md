@@ -1,7 +1,7 @@
 # Authenticated Oraclebot MCP design
 
-Version: 0.1.2
-Delta: v0.1.1 to v0.1.2; bind browser account generations, exact cents and private diagnostics.
+Version: 0.2.0
+Delta: v0.1.2 to v0.2.0; add explicit product/leverage policy scope, customer executor and managed-bot isolation.
 
 The owner explicitly chose preauthorized sessions. There is no per-trade wallet prompt requirement. Login proves wallet ownership; a separate, explicit consent grants an agent read access or a finite trading policy. OAuth authorization never supplies a blockchain signature or replaces a customer venue connection.
 
@@ -9,7 +9,7 @@ The owner explicitly chose preauthorized sessions. There is no per-trade wallet 
 
 Use `/mcp` as the canonical protected resource, with RFC9728 protected-resource discovery and OAuth authorization-server metadata. Start with the explicitly tested MCP2025-11-25 stateless Streamable HTTP profile. Support public-client authorization-code PKCE S256, exact registered redirects, single-use codes, exact client/resource/scope binding, short-lived hashed bearer credentials, rotating refresh credentials and immediate grant revocation. Do not forward MCP credentials to another service.
 
-Scopes are `status:read`, `trade:prepare`, and `trade:submit`. Default consent is read access. Trading scopes require a separate wallet-backed consent binding the client, wallet, policy digest, nonce and expiry. Policies contain `venues`, `assets`, `maxTradeUsd`, `maxTotalUsd`, and `expiresAt`; all are finite and validated. No trading policy is silently inferred from login or subscription.
+Scopes are `status:read`, `trade:prepare`, and `trade:submit`. Default consent is read access. Trading scopes require a separate wallet-backed consent binding the client, wallet, policy digest, nonce and expiry. Legacy policies contain `venues`, `assets`, `maxTradeUsd`, `maxTotalUsd`, and `expiresAt`; they permit spot trades at 1x only. Version2 additionally binds `version:2`, `products`, and `maxLeverage` explicitly. USD limits are fee-inclusive notional, not collateral; all are finite and validated. No trading policy is silently inferred from login or subscription.
 
 ## Tools and execution boundary
 
@@ -17,7 +17,7 @@ Scopes are `status:read`, `trade:prepare`, and `trade:submit`. Default consent i
 
 Every execution call derives the principal from a valid resource-bound bearer token. It checks current entitlement, grant revocation, expiry, per-trade/cumulative reservations, selected venue/asset, fresh quote and the customer-owned signing/venue authority. Reserve limits atomically before a venue call. Ambiguous submits remain unknown and are never automatically retried. A missing supported executor or signer refuses before a claimed order success. Nothing loads an owner-machine key. The same principal and economic gates apply regardless of which agent calls.
 
-The current hosted site has inert paper definitions and analysis only. Customer Coinbase/Jupiter connection and signing adapters remain separate implementation requirements. Do not mislabel an intent as an executed trade. Preauthorized sessions can execute without repeated prompts only when the connected wallet/venue supports the actual delegated authority.
+Paper definitions remain inert until a dedicated managed-bot signature binds their exact configuration and customer connection. The private Coinbase executor implements isolated encrypted credentials, fresh previews, final policy admission, stable-order-id reconciliation and verified fills. Jupiter native delegation remains gated pending complete filled-position and cumulative-authority qualification. Do not mislabel an intent as an executed trade. Preauthorized sessions can execute without repeated prompts only when the connected wallet/venue supports the actual delegated authority.
 
 ## Required checks
 
@@ -39,9 +39,9 @@ The2026profile changes headers, metadata and discovery. It is not interchangeabl
 
 Website0.3.0 routes protocol requests before its single-page asset fallback. OAuth code/token credentials are hash-only. Separate wallet consent binds agent, principal, audience, scopes, policy digest, nonce and expiry. D1 immutable grant identity and atomic writes enforce revocation, cumulative reservations and known-plan entitlement. A meaningful NULL-plan webhook race failed before the canonical-plan SQL fences and passes afterward. The complete Worker fixture exercises actual synthetic Ed25519 login and policy signatures, PKCE exchange, two-wallet isolation, immediate revocation, missing-executor refusal, selective expiry and account-deletion races. These fixtures do not establish deployed or real-provider acceptance.
 
-The user requested preauthorization. Browser consent signs once per finite grant; trade request/submit calls do not ask for individual approval. Settings revocation is immediate. Successful execution module fixtures use an explicitly mocked private service binding. No customer Coinbase credential store, Solana delegated signing authority, venue reconciliation worker or live order was created. The default deployment keeps LIVE_EXECUTION_ENABLED=false and has no USER_TRADE_EXECUTOR binding.
+The user requested preauthorization. Browser consent signs once per finite grant; trade request/submit calls do not ask for individual approval. Settings revocation is immediate. The private Worker is service-bound and has no public routes. It rejects transfer-enabled Coinbase keys, enforces exact decimal fees/quotes and never loads an operator account. Its actual HTTP/SQLite provider fixtures establish tested contracts, not real customer order acceptance. `LIVE_EXECUTION_ENABLED=false` remains the deployment default.
 
-A future adapter must enforce customer authority and the signed policy itself. It must reconcile the venue before preparing an order and never retry an ambiguous submit. Its prepare response binds intentId, wallet, payloadHash, policyHash, verified customer connection and delegation, and an explicit fee-inclusive quote with quotedAt and expiresAt. Its submit acknowledgement binds the same intent, quote and delegation. submitted does not mean filled. The public output reports filled:null until authoritative reconciliation exists. Unknown/submitting/submitted reservations never age out in generic cleanup. Account deletion cannot erase those records.
+Managed bots use dedicated internal clients and distinct signed grants. Consent includes bot/configuration/strategy revision, connection, policy and expiry. An external MCP grant cannot be reused. Atomic per-bot leases, durable pending intents and exactly-once fill settlement protect the ledger. Reduce-only sales carry a bot allocation cap; final private admission also protects aggregate allocations, pending fills, paused bots and plan capacity. Unknown submissions retain their commitments indefinitely until venue reconciliation. Account deletion must fence writers and verify private credential erasure before cascading records.
 
 ## Account transitions and diagnostics
 

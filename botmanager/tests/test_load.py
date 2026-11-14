@@ -575,6 +575,45 @@ class LockedJournalWatchdogTests(unittest.TestCase):
             finally:
                 supervisor.close()
 
+    def test_poll_defers_normal_journal_waits_while_commit_is_blocked(self):
+        for mode in ("READ", "EXCLUSIVE"):
+            with self.subTest(mode=mode), tempfile.TemporaryDirectory() as directory:
+                supervisor, ledger, spec, process, before = self.frozen_owner(
+                    Path(directory), mode, stopped_peer=True
+                )
+                normal_connection = supervisor.ledger.connection
+                attempts = []
+
+                def guarded_connection(
+                    *args,
+                    _attempts=attempts,
+                    _supervisor=supervisor,
+                    _connection=normal_connection,
+                    **kwargs,
+                ):
+                    _attempts.append(True)
+                    if _supervisor._journal_blocked():
+                        # A normal connection can spend its full busy timeout
+                        # before the next owner watchdog poll. The nonblocking
+                        # availability probe must defer this work altogether.
+                        raise AssertionError("poll entered a blocked journal wait")
+                    return _connection(*args, **kwargs)
+
+                try:
+                    started = time.monotonic()
+                    with patch.object(
+                        supervisor.ledger, "connection", guarded_connection
+                    ):
+                        supervisor.step()
+                    self.assertLess(time.monotonic() - started, 2)
+                    self.assertEqual(attempts, [])
+                    self.assertIs(supervisor.children[spec.bot_id][0], process)
+                finally:
+                    supervisor.close()
+                after = ledger.get(spec.bot_id)
+                for field in ("cursor", "checkpoint", "input", "runtime_id"):
+                    self.assertEqual(after[field], before[field])
+
     def test_stopped_reconciliation_preserves_nontransient_errors(self):
         from botmanager.domain import ManagerError
 
