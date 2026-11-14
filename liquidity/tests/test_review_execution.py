@@ -392,8 +392,7 @@ def test_invalid_observed_market_prices_are_refused(raw):
         lambda req: httpx.Response(200, json={"data": {"attributes": {"token_prices": {T1.lower(): raw}}}})
     )
     m = market.MarketData(client=httpx.Client(transport=transport))
-    with pytest.raises(ValueError):
-        m.token_prices_usd([T1])
+    assert T1.lower() not in m.token_prices_usd([T1])
 
 
 def test_transient_chart_failure_is_not_cached_as_missing():

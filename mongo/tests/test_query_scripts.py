@@ -129,20 +129,27 @@ class NativeFixtureIsolation(unittest.TestCase):
 
     def test_loaded_store_class_owns_only_its_generated_database(self):
         from mongo.tests.test_load import TestLoadedStore
+        from mongo.tests.mongo_fixture import DisposableMongoFixture
         for setup_fails in [False, True]:
-            client = self.client()
-            with self.subTest(setup_fails=setup_fails), mock.patch.object(schema, "connect", return_value=client), \
-                    mock.patch.object(schema, "create", side_effect=RuntimeError("fixture setup failed") if setup_fails else None), \
-                    mock.patch.object(load, "build_all", return_value={}):
+            fixture = mock.MagicMock()
+            fixture.seed_store.side_effect = RuntimeError("fixture setup failed") if setup_fails else None
+            def acquire(owner, *, class_scope):
+                self.assertTrue(class_scope)
+                owner.addClassCleanup(fixture.close)
+                return fixture
+            with self.subTest(setup_fails=setup_fails), mock.patch.object(DisposableMongoFixture, "for_test", side_effect=acquire) as factory:
                 try:
                     if setup_fails:
                         with self.assertRaisesRegex(RuntimeError, "fixture setup failed"):
                             TestLoadedStore.setUpClass()
                     else:
                         TestLoadedStore.setUpClass()
+                        self.assertIs(TestLoadedStore.db, fixture.db)
+                    factory.assert_called_once_with(TestLoadedStore, class_scope=True)
+                    fixture.seed_store.assert_called_once()
                 finally:
                     TestLoadedStore.doClassCleanups()
-                self.assert_owned_namespace(client)
+                fixture.close.assert_called_once()
 
     def test_cleanup_closes_client_even_if_owned_database_deletion_fails(self):
         from mongo.tests.test_load import isolated_store

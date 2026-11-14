@@ -250,9 +250,10 @@ class TestLoadedStore(unittest.TestCase):
         for key in ("asset", "interval", "bars", "decision_bar", "execution", "disclaimer"):
             self.assertIn(key, doc)
         self.assertIn("stale", doc["decision_bar"])
-        from backtester.core.strategies import REGISTRY
+        from backtester.core.strategies import FAMILY, REGISTRY
 
-        self.assertEqual(len(doc["strategies"]), len(REGISTRY))
+        eligible = [key for key in REGISTRY if FAMILY.get(key) not in ("leverage-tier", "trigger")]
+        self.assertEqual(len(doc["strategies"]), len(eligible))
 
     def test_no_non_finite_numbers_reached_the_store(self) -> None:
         """NaN in, None out -- checked on the collection most likely to carry it."""

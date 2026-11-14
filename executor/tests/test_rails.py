@@ -1,6 +1,5 @@
 """Every rail, one test each, plus the property that dry-run applies the same trade rails as live."""
 
-import calendar
 import time
 from decimal import Decimal
 

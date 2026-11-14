@@ -23,6 +23,7 @@ case "${1:-}" in
     }
     [[ -x "$BIN" ]] || { echo "missing $BIN — run: cd $LIQ && uv sync --extra dev -p 3.13"; exit 1; }
     [[ -f "$CONFIG" ]] || { echo "missing $CONFIG — copy $LIQ/config.example.toml there and edit it"; exit 1; }
+    mode="${2:---dry-run}"
     mode_args=""
     mode_label="dry-run"
     if [[ "${2:-}" == "--live" ]]; then

@@ -72,7 +72,7 @@
     },
     {
       "path": "extension/package.json",
-      "sha256": "c55de8f707d8bd48a18a8c85d4904fde445c74cfab0ee87cce7472459e3933da"
+      "sha256": "fa0c582d6efc41069a51694bdf8a42755620abb3ebfeda53ffe01810e2903b02"
     },
     {
       "path": "extension/src/core/commands.js",
@@ -84,7 +84,7 @@
     },
     {
       "path": "liquidity/scripts/aero-lp-service",
-      "sha256": "d7046b659f7d4ca593a17fd2cc059469cbd9bf30bf46c94b288d19a31c0619e3"
+      "sha256": "f6647cef5a10525f5ca1aa16fde643da68b1935683c869a9221927f25314804a"
     },
     {
       "path": "liquidity/src/aero_lp/cli.py",

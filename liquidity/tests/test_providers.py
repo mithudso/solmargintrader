@@ -227,7 +227,9 @@ def coins_transport(missing: set[str] | None = None, requests_seen: list[str] | 
         if "/prices/current/" in path:
             return httpx.Response(
                 200,
-                json={"coins": {i: {"price": 2000.0 if WETH.lower() in i else 1.0 if USDC in i else 3.0} for i in ids}},
+                json={
+                    "coins": {i: {"price": 2000.0 if WETH.lower() in i else 0.97 if USDC in i else 3.0} for i in ids}
+                },
             )
         return httpx.Response(404)
 

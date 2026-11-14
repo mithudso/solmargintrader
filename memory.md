@@ -1,6 +1,7 @@
 # Work continuation
 
-Version: 557
+Version: 559
+Delta: v558 to v559; fix final Linux/native CI integration failures after c7f9ab9.
 Delta: v555 to v557; integrate master25e1d60 into PR235 and preserve the separate PR224 record reservation.
 Delta: v554 to v555; qualify direct-entry startup RED/GREEN, current-account capability updates and preserved browser drafts.
 Delta: v553 to v554; diagnose and repair direct Settings capability initialization missed by Overview-first fixtures.
@@ -3358,3 +3359,9 @@ Only conflict resolution and branch push are authorized for this pass. Preserve 
 ## Latest master and CI continuation
 
 After c7bc7f2 pushed, master advanced to25e1d60. This follow-up resolves the workflow/index conflicts and retains the auto-merged direct Settings refresh. GitHub lint caught a missing savedRun draft parser and dynamic Function constructors in two inert test fixtures. Restore the parser and use Node’s compileFunction seam for those test fixtures. JavaScript ESLint and TypeScript checks pass. The affected extension555 and website321 suites pass again after master25e1d60. Remaining: regenerate offline indexes, commit/push and verify the final remote head is conflict-free. The initial full component results above remain bound to c7bc7f2; only affected checks are repeated here.
+
+## Linux CI follow-up
+
+CI exposed required extension version advancement (0.6.7 to0.6.8), three leftover Ruff import issues, changed safe diagnostic wording, and native Mongo tests whose old fixtures assumed pre-isolation APIs or included unsupported leverage/trigger families. Fix only those integration mismatches. Prior passing source suites remain bound to their recorded head. The branch remains unfinished optimizer work; no optimizer iterations, audit budgets or services are resumed. Re-run affected local and CI gates, refresh deterministic indexes and push the follow-up.
+
+Linux CI follow-up validation: all36 focused Mongo-isolation/CLI/export tests pass. Locked liquidity environment now runs739 offline tests successfully (six network tests deselected); its previously untested service-fixture and observed-price contract overlaps are reconciled. Executor/liquidity Ruff checks and executor formatting checks pass. Extension555 tests, website engine24 tests and the23-file research export freshness check pass. No daemon was installed, restarted or armed; service tests use copied launchers, synthetic configs and inert launchctl shims. Final offline generated checks precede the push, followed by actual final-head CI.

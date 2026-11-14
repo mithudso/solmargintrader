@@ -18,8 +18,6 @@ The module is read-only: it signs nothing and sends nothing.
 
 from __future__ import annotations
 
-from .diagnostics import safe_error
-
 import json
 import math
 import re
@@ -38,6 +36,7 @@ from web3 import Web3
 
 from . import abi, addresses
 from .chain import ZERO, AeroChain, Call, PoolState, Token
+from .diagnostics import safe_error
 from .market import MarketData, vol_from_closes
 from .metrics import KNOWN_TOKENS, NO_DATA, PoolMetrics, ScoreDetail, economics_from, evaluate_pool_detail, score_pool
 from .state import atomic_write_json, home

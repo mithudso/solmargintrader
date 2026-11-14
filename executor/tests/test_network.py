@@ -3,7 +3,6 @@ or sends anything, and none needs the key. They use the owner's public address o
 
 import pytest
 
-from executor.authority import WalletAuthority
 from executor.config import home, load_config
 from executor.engine import Engine
 from executor.http import HttpxHttp
