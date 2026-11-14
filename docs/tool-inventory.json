@@ -60,7 +60,7 @@
     },
     {
       "path": "executor/pyproject.toml",
-      "sha256": "18ca9761e7d2191d08412f431bdffb9471c18e79c4a1a63f38bc5383154c6e47"
+      "sha256": "48191cf8b3b77ba6189c011d41cfe76243c93312556fbcc6d90a3da3c2a2fdf1"
     },
     {
       "path": "executor/src/executor/cli.py",
