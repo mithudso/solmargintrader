@@ -104,6 +104,8 @@ class Exit50PaperTests(unittest.TestCase):
             public=self.public,
             clock=lambda: self.now,
         )
+        self.worker.start()
+        self.addCleanup(lambda: self.worker._lock and self.worker._lock.close())
         self.patcher = patch(
             "oracle_leverage.exit50_forward.shape_tilts", return_value={}
         )
@@ -146,6 +148,8 @@ class Exit50PaperTests(unittest.TestCase):
             public=self.public,
             clock=lambda: self.now,
         )
+        worker.start()
+        self.addCleanup(lambda: worker._lock and worker._lock.close())
         worker.rows["ZEC"] = [[NOW - 60, 1, 2, 1, 2, 0]]
         with patch("oracle_leverage.exit50_forward.signal_snapshot") as calculate:
             worker.observe_signal("ZEC", NOW)
@@ -334,12 +338,14 @@ class Exit50PaperTests(unittest.TestCase):
         self.assertEqual(
             self.public.history_calls[-1][2] - self.public.history_calls[-1][1], 0
         )
+        self.worker._lock.close()
         restarted = Exit50Forward(
             self.worker.parent.home,
             self.model_path,
             public=self.public,
             clock=lambda: self.now,
         )
+        self.addCleanup(restarted._lock.close)
         self.assertEqual(restarted.rows["ZEC"], self.worker.rows["ZEC"])
         restarted.refresh_history("ZEC", NOW + 121)
         self.assertEqual(restarted.rows["ZEC"][0][0], first)
@@ -390,6 +396,7 @@ class Exit50PaperTests(unittest.TestCase):
             public=self.public,
             clock=lambda: self.now,
         )
+        self.addCleanup(worker._lock.close)
         self.assertEqual(worker.selected["assets"]["BTC"]["family"], "near_end")
         self.assertEqual(worker.selected["assets"]["ZEC"]["filter"], "shape_bop")
         self.assertEqual(
@@ -434,8 +441,10 @@ class Exit50PaperTests(unittest.TestCase):
             self.model_path,
             policies=policy_path,
             public=self.public,
-            clock=lambda: NOW - 40,
+            clock=lambda: NOW - 60,
         )
+        worker.start()
+        self.addCleanup(worker._lock.close)
         worker.rows["ZEC"] = [[NOW - 120, 100, 101, 99, 100, 0]]
         snap = {**self.snap, "family": "near_end", "bop_filter": False}
         with (
@@ -474,12 +483,15 @@ class Exit50PaperTests(unittest.TestCase):
 
     def test_restart_after_stale_entry_never_backfills(self):
         row = self.commit()
+        self.worker._lock.close()
         restarted = Exit50Forward(
             self.worker.parent.home,
             self.model_path,
             public=self.public,
             clock=lambda: NOW + 20,
         )
+        restarted.start()
+        self.addCleanup(restarted._lock.close)
         restarted.advance(restarted.ledger.active()[0], NOW + 20)
         self.assertEqual(restarted.ledger.performance()["unscored"], 1)
         self.assertFalse(self.public.calls)
@@ -498,6 +510,7 @@ class Exit50PaperTests(unittest.TestCase):
                 "INSERT INTO decisions(id,asset,decision_s,committed_us,cap_us,status,signal_json) VALUES(?,?,?,?,?,'committing',?)",
                 ("ZEC:crash", "ZEC", NOW, 0, (NOW + 600) * 1_000_000, "{}"),
             )
+        self.worker._lock.close()
         restarted = Exit50Forward(
             self.worker.parent.home,
             self.model_path,
@@ -522,6 +535,7 @@ class Exit50PaperTests(unittest.TestCase):
         other = family_bundle()
         other["models"]["BTC"]["confirmed_uu"]["selected"]["id"] = "different"
         self.model_path.write_text(json.dumps(other))
+        self.worker._lock.close()
         with self.assertRaisesRegex(ValueError, "paper_binding_changed"):
             Exit50Forward(
                 self.worker.parent.home,
@@ -529,6 +543,73 @@ class Exit50PaperTests(unittest.TestCase):
                 public=self.public,
                 clock=lambda: self.now,
             )
+
+    def test_lock_precedes_any_journal_mutation_and_binding_refusal_is_read_only(self):
+        path = self.worker.ledger.path
+        with self.worker.ledger.connect() as db:
+            db.execute("DROP INDEX one_active_asset")
+        before = path.read_bytes()
+        with self.assertRaisesRegex(ValueError, "exit50_observer_already_running"):
+            Exit50Forward(self.worker.parent.home, self.model_path)
+        self.assertEqual(path.read_bytes(), before)
+        self.worker._lock.close()
+        other = family_bundle()
+        other["models"]["BTC"]["confirmed_uu"]["selected"]["id"] = "changed"
+        self.model_path.write_text(json.dumps(other))
+        with self.assertRaisesRegex(ValueError, "paper_binding_changed"):
+            Exit50Forward(self.worker.parent.home, self.model_path)
+        self.assertEqual(path.read_bytes(), before)
+
+    def test_restart_rejects_old_decisions_but_keeps_existing_position(self):
+        row = self.commit()
+        with patch("oracle_leverage.exit50_forward.minute_features", return_value={}):
+            self.worker.advance(row, NOW + 2)
+        prior_state = json.loads(self.worker.ledger.active()[0]["state_json"])
+        with self.worker.ledger.connect() as db:
+            first = db.execute(
+                "SELECT value FROM meta WHERE key='trial_first_start_s'"
+            ).fetchone()[0]
+        self.worker._lock.close()
+        restarted = Exit50Forward(
+            self.worker.parent.home,
+            self.model_path,
+            public=self.public,
+            clock=lambda: NOW + 10.2,
+        )
+        restarted.start()
+        self.addCleanup(restarted._lock.close)
+        self.assertEqual(restarted.process_start_s, NOW + 11)
+        restarted.rows["BTC"] = [[NOW - 60, 100, 101, 99, 100, 0]]
+        with patch("oracle_leverage.exit50_forward.signal_snapshot") as calculate:
+            restarted.observe_signal("BTC", NOW + 12)
+        calculate.assert_not_called()
+        self.assertEqual(len(restarted.ledger.active()), 1)
+        with patch("oracle_leverage.exit50_forward.minute_features", return_value={}):
+            restarted.advance(restarted.ledger.active()[0], NOW + 20)
+        after_state = json.loads(restarted.ledger.active()[0]["state_json"])
+        self.assertGreater(after_state["last_us"], prior_state["last_us"])
+        with restarted.ledger.connect() as db:
+            self.assertEqual(
+                db.execute(
+                    "SELECT value FROM meta WHERE key='trial_first_start_s'"
+                ).fetchone()[0],
+                first,
+            )
+
+    def test_first_start_in_signal_window_rejects_prior_decision(self):
+        worker = Exit50Forward(
+            Path(self.directory.name) / "late",
+            self.model_path,
+            public=self.public,
+            clock=lambda: NOW + 0.1,
+        )
+        worker.start()
+        self.addCleanup(worker._lock.close)
+        worker.rows["BTC"] = [[NOW - 60, 100, 101, 99, 100, 0]]
+        with patch("oracle_leverage.exit50_forward.signal_snapshot") as calculate:
+            worker.observe_signal("BTC", NOW + 1)
+        calculate.assert_not_called()
+        self.assertFalse(worker.ledger.active())
 
 
 if __name__ == "__main__":

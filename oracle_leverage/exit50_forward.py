@@ -11,6 +11,7 @@ import fcntl
 import hashlib
 import itertools
 import json
+import math
 import os
 import signal
 import sqlite3
@@ -216,6 +217,23 @@ class PaperLedger:
             raise ValueError("unsafe_paper_directory")
         self.clock = clock
         self.path = self.home / "ledger.sqlite3"
+        if self.path.exists():
+            info = self.path.lstat()
+            if (
+                self.path.is_symlink()
+                or info.st_uid != os.getuid()
+                or info.st_mode & 0o077
+            ):
+                raise ValueError("unsafe_paper_ledger")
+            db = sqlite3.connect(f"file:{self.path}?mode=ro", uri=True)
+            try:
+                current = db.execute(
+                    "SELECT value FROM meta WHERE key='binding'"
+                ).fetchone()
+                if current is None or current[0] != canonical(binding):
+                    raise ValueError("paper_binding_changed")
+            finally:
+                db.close()
         fd = os.open(self.path, os.O_CREAT | os.O_RDWR | os.O_NOFOLLOW, 0o600)
         info = os.fstat(fd)
         os.close(fd)
@@ -423,7 +441,6 @@ class Exit50Forward:
         clock=time.time,
         stop_event=None,
     ):
-        self.parent = Store(home)
         self.bundle, self.model_sha = load_family_models(models)
         self.selected, self.policy_sha = load_selected_policy(policies, self.model_sha)
         self.clock = clock
@@ -460,7 +477,37 @@ class Exit50Forward:
             self.not_before_s = spec["not_before_s"]
             self.binding["profile_sha256"] = hashlib.sha256(raw).hexdigest()
             self.binding["not_before_s"] = self.not_before_s
-        self.ledger = PaperLedger(self.parent.home, self.binding, clock=clock)
+        root = Path(home)
+        root.mkdir(parents=True, exist_ok=True, mode=0o700)
+        paper_home = root / "exit50"
+        paper_home.mkdir(mode=0o700, exist_ok=True)
+        info = paper_home.lstat()
+        if (
+            paper_home.is_symlink()
+            or info.st_uid != os.getuid()
+            or info.st_mode & 0o077
+        ):
+            raise ValueError("unsafe_paper_directory")
+        fd = os.open(
+            paper_home / "observer.lock", os.O_CREAT | os.O_RDWR | os.O_NOFOLLOW, 0o600
+        )
+        info = os.fstat(fd)
+        if info.st_uid != os.getuid() or info.st_mode & 0o077:
+            os.close(fd)
+            raise ValueError("unsafe_observer_lock")
+        self._lock = os.fdopen(fd, "a+")
+        try:
+            fcntl.flock(self._lock, fcntl.LOCK_EX | fcntl.LOCK_NB)
+        except BlockingIOError:
+            self._lock.close()
+            raise ValueError("exit50_observer_already_running") from None
+        try:
+            self.ledger = PaperLedger(root, self.binding, clock=clock)
+            self.parent = Store(home)
+        except BaseException:
+            self._lock.close()
+            self._lock = None
+            raise
         self.rows = {asset: self.ledger.history(asset) for asset in FEEDS}
         self.history_due = dict.fromkeys(FEEDS, 0.0)
         self.assets = {
@@ -472,27 +519,19 @@ class Exit50Forward:
             }
             for asset in FEEDS
         }
-        self._lock = None
+        self.process_start_s = None
         self._bar_open = {}
         self._signal_cache = {}
 
     def start(self):
-        fd = os.open(
-            self.ledger.home / "observer.lock",
-            os.O_CREAT | os.O_RDWR | os.O_NOFOLLOW,
-            0o600,
-        )
-        info = os.fstat(fd)
-        if info.st_uid != os.getuid() or info.st_mode & 0o077:
-            os.close(fd)
-            raise ValueError("unsafe_observer_lock")
-        lock = os.fdopen(fd, "a+")
-        try:
-            fcntl.flock(lock, fcntl.LOCK_EX | fcntl.LOCK_NB)
-        except BlockingIOError:
-            lock.close()
-            raise ValueError("exit50_observer_already_running") from None
-        self._lock = lock
+        if self._lock is None or self._lock.closed or self.process_start_s is not None:
+            raise ValueError("observer_not_owned_or_already_started")
+        self.process_start_s = math.ceil(self.clock())
+        with self.ledger.connect() as db:
+            db.execute(
+                "INSERT OR IGNORE INTO meta VALUES('trial_first_start_s',?)",
+                (str(self.process_start_s),),
+            )
         self.ledger.recover_interrupted_commits()
 
     def quote(self, asset, now):
@@ -600,7 +639,9 @@ class Exit50Forward:
             self.assets[asset]["signal"] = "waiting-next-10m-setup"
             return
         decision = boundary if family == "confirmed_uu" else boundary + 540
-        if decision < self.not_before_s:
+        if self.process_start_s is None or decision < max(
+            self.not_before_s, self.process_start_s
+        ):
             return
         if (
             rows[-1][0] + 60 != decision
