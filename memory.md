@@ -1,6 +1,8 @@
 # Work continuation
 
-Version: 579
+Version: 581
+Delta: v580 to v581; preserve paired proxy output and verified project-venv docs check.
+Delta: v579 to v580; record shared Pine order model and retrospective oracle proxy.
 Delta: v578 to v579; add research-only ZigZag paths, card and tests.
 Delta: v577 to v578; begin the owner-superseding RS ZigZag investigation.
 Delta: v576 to v577; record the Preview inspection fix and pending acceptance.
@@ -2684,3 +2686,7 @@ The current screenshot shows COINBASE ZEC/USDC perpetual at 15 minutes, March 31
 A separate private reference copy and its exact hash are recorded under `/Users/mitch/.local/state/zigzag-2333/`. The native research run is `run:ba37f1d11d0e8c021761b63f1b3e082290b832edfddd611920e8124e95f637a4`. Full dedup, independent research, trusted evidence gate, causal implementation and paired historical comparison remain. Protect active recording and existing holdouts.
 
 Research-only `/Users/mitch/dev/worktrees/rs-zigzag-2333/research/rs_zigzag.py` now contains a deliberately biased historical path, a confirmed-hour path and an explicitly approximate next-open cost/margin sensitivity. `/Users/mitch/dev/worktrees/rs-zigzag-2333/research/tests/test_rs_zigzag.py` passes nine focused tests including 10/15-minute prefix invariance and intentional legacy leakage. The source card is spec-only, not a registry entry. `uvx --offline ruff==0.17.4 check research/rs_zigzag.py research/tests/test_rs_zigzag.py` and `python3 scripts/check_tradingview_cards.py` pass. `python3 scripts/check_docs.py` failed because the Python environment lacks pandas; the isolated temporary package install was subject to an unavailable dependency-review advisory and was not used as proof. Independent audit, source-to-screenshot identity, exact venue history, full research gates and real-data comparisons remain.
+
+Shared research-only Pine order engine and its tests are present; the model explicitly omits exchange margin, funding and spread. A frozen paired 10/15-minute ZEC Jupiter oracle proxy run has been saved to Mongo and `/Users/mitch/dev/worktrees/rs-zigzag-2333/research/RS-ZIGZAG-PROXY-2333.md`. Its legacy lookahead path reported large uncollateralized gains; its confirmed-hour path produced negative-equity stress outputs. The 1x one-unit-multiplier sensitivity rejected every fixed 10,000-unit entry. These are not Coinbase or TradingView parity and require independent audit; raw data and output stay private.
+
+The documentation checker passed after using `/Users/mitch/.venvs/soltui/bin/python` with this worktree’s `botmanager/src` on PYTHONPATH; the earlier system-Python and missing-source-path failures are historical. Sixteen focused tests, pinned Ruff and TradingView card coverage passed. The actual chart scanner returned null pointvalue/unit_id, so the proxy 1x scenario remains a one-unit-multiplier assumption. Proxy output Mongo `art:1ad06f6ccde823942128d9a8c707cc74a060450fd115b5bb5547a490abcf5983` was fully read back and its hash matched. Numeric independence, source/fill parity and matching Coinbase data remain pending.
