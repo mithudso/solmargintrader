@@ -130,3 +130,5 @@ Official CLI reference: https://github.com/jup-ag/cli/blob/main/docs/perps.md
 Product execution rules: https://docs.jup.ag/user-docs/trade/1000x/trading
 
 Community SDK: https://github.com/ChiefWoods/jupiter-sdk
+
+The leverage panel reconstructs sampled Jupiter oracle 10-minute bars from the existing local normalized quote capture. It reads incrementally and starts no collector. A bar is displayed only when its boundary observations and internal gaps meet the five-second continuity rule; it is a sampled quote bar, not an exchange candle. Colors compare the body with the mean range of up to 20 prior qualified closed bars. The 5/10/15/20-minute annotations use the published MTF model's 10-minute posterior shape components relative to its training baseline and report observer age and sample counts. They are conditional model statistics, not guaranteed outcomes. The separate 50% exit observer remains pending until its integration is delivered.

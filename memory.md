@@ -1,6 +1,7 @@
 # Work continuation
 
-Version: 590
+Version: 591
+Delta: v590 to v591; integrate UI delivery with the concurrent Jupiter overlay.
 Delta: v589 to v590; complete full developer-corpus review and final repaired-source browser checks.
 Delta: v588 to v589; qualify temporal history/stream merge ordering.
 Delta: v587 to v588; qualify reviewed warmup capacity and replacement-stream freshness.
@@ -10,6 +11,7 @@ Delta: v580 to v581; preserve the qualified candidate and final delivery-receipt
 Delta: v579 to v580; qualify current-source browser, public feed and numerical gates before delivery.
 Delta: v578 to v579; record optimized prompt acceptance, live SOL discovery, selected architecture and implementation.
 Delta: v577 to v578; begin isolated Jupiter 1000x overlay prompt optimization and implementation.
+Delta: v586 to v587; extract leverage panel UI into an isolated delivery stage.
 Delta: v585 to v586; integrate nine provisional source adapters and common sensitivity report.
 Delta: v584 to v585; record measured depth cap and draft-only evidence status.
 Delta: v583 to v584; add common oracle window and equal-notional comparison.
@@ -2770,3 +2772,6 @@ A further received review comment reproduced a cached stream close71 overwriting
 Three separate reviewers read all 27,452 lines of the requested developer snapshot, raw SHA256 28db4e6df245eea4ef85336a6740fef9db4c5420c11a462238917312f116e873. Their contiguous ranges 1–9151, 9152–18302 and 18303–27452 have no remaining gaps or unrepaired truncation. Combined coverage and findings are under /Users/mitch/.local/state/jup1000x-overlay-2348/docs-full-review. This supersedes the earlier relevant-pages-only limitation. External OpenAPI links are not part of that full-file claim. The SDK report distinguishes separate product contracts and general Interface terms; neither establishes a supported 1000x write API or user eligibility.
 
 The exact repaired source passed 534 extension tests, JavaScript lint/types, docs/index freshness, 18 browser fixture checks and 7 public-live checks. The first final public attempt returned 5/7 because a minute-boundary history request did not certify the newly closed candle within 25 seconds and a native-control text comparison included volatile ticker prices. The unchanged repeat passed 7/7; both receipts are preserved under /Users/mitch/.local/state/jup1000x-overlay-2348/acceptance/history-order-final. No harness threshold or product code was changed to obtain the repeat. Final-tip CI, merge and canonical loaded-state acceptance remain tracked by TASK-2351 and /Users/mitch/.local/state/jup1000x-overlay-2348/delivery.json.
+## UI delivery stage, 2026-11-16
+
+Worktree: /Users/mitch/dev/worktrees/oracle-tui-2312. Extracted the leverage panel UI from the committed draft while preserving current master and Preview. Reconstructed sampled bars read-only from the existing normalized quote capture, and displayed the published MTF model components. The exit50 policy and forward observer remain separate and pending. Do not alter the running user TUI or wallet state. Final checks and delivery are in progress.

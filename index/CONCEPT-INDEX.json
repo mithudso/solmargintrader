@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-11-16T13:23:24+00:00",
+  "generatedAt": "2026-11-16T13:42:16+00:00",
   "schemaVersion": 1,
   "note": "Concepts are derived from the repo's own vocabulary \u2014 the FAMILY dict, strategy-card frontmatter, docs/trading-signals-concept-family.md, and terms verified to recur in the corpus. A concept matching no file is dropped, not kept.",
   "counts": {
@@ -161,7 +161,7 @@
         "universe",
         "top_coins"
       ],
-      "matchingFiles": 1747,
+      "matchingFiles": 1748,
       "shown": 30,
       "files": [
         {
@@ -245,11 +245,11 @@
           "hits": 43
         },
         {
-          "path": "research/REVERSAL-SHAPES.md",
-          "hits": 42
+          "path": "research/tests/test_zec_leverage_panel.py",
+          "hits": 43
         },
         {
-          "path": "research/tests/test_zec_leverage_panel.py",
+          "path": "research/REVERSAL-SHAPES.md",
           "hits": 42
         },
         {
@@ -578,7 +578,7 @@
         "perps",
         "solana"
       ],
-      "matchingFiles": 1056,
+      "matchingFiles": 1058,
       "shown": 30,
       "files": [
         {
@@ -607,7 +607,7 @@
         },
         {
           "path": "memory.md",
-          "hits": 261
+          "hits": 264
         },
         {
           "path": ".cdo/reviews-2026-11-12/ecosystem-combined-full-final.json",
@@ -643,7 +643,7 @@
         },
         {
           "path": "prompts.md",
-          "hits": 117
+          "hits": 118
         },
         {
           "path": "oracle_leverage/sdk/package-lock.json",
@@ -714,7 +714,7 @@
         "macd",
         "ichimoku"
       ],
-      "matchingFiles": 907,
+      "matchingFiles": 908,
       "shown": 30,
       "files": [
         {
@@ -990,7 +990,7 @@
         "monotone",
         "gap"
       ],
-      "matchingFiles": 825,
+      "matchingFiles": 828,
       "shown": 30,
       "files": [
         {
@@ -1260,7 +1260,7 @@
         "benchmark",
         "baseline"
       ],
-      "matchingFiles": 571,
+      "matchingFiles": 576,
       "shown": 30,
       "files": [
         {
@@ -1394,7 +1394,7 @@
         "buy_and_hold",
         "baseline"
       ],
-      "matchingFiles": 499,
+      "matchingFiles": 504,
       "shown": 30,
       "files": [
         {
