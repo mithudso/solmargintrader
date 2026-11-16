@@ -1,6 +1,6 @@
 # Every file in this repository
 
-**Generated** from `index/INDEX.json` at commit `4ec8796` (2026-11-16T12:39:59+00:00). 3839 tracked files, 138.4 MB.
+**Generated** from `index/INDEX.json` at commit `11ddd71` (2026-11-16T12:45:28+00:00). 3886 tracked files, 138.6 MB.
 
 Regenerate with:
 
@@ -15,7 +15,7 @@ python3 index/build.py --check      # fail if the index is stale
 Every entry marks where its description came from, because a generated one-liner and a considered one should not look alike:
 
 - **curated** (42 files) — hand-written purpose and usage, in the `CURATED` table of `index/make_files_doc.py`. Used where extraction cannot give a reader what they need: the engine, the research drivers, the order-placing path, and the files with no prose of their own.
-- **extracted** (2993 files) — the file's own module docstring, JSDoc header, or frontmatter `summary`. Trustworthy here because 658/757 Python modules and 81/164 JS files carry a substantial one. (These counts are computed at generation time, not hardcoded — an earlier revision asserted a frozen ratio and it was wrong within a day as the repo grew.)
+- **extracted** (3031 files) — the file's own module docstring, JSDoc header, or frontmatter `summary`. Trustworthy here because 680/788 Python modules and 81/164 JS files carry a substantial one. (These counts are computed at generation time, not hardcoded — an earlier revision asserted a frozen ratio and it was wrong within a day as the repo grew.)
 - **derived** (450 files) — shape only, for generated artifacts: a CSV's header and row count, a JSON's keys. Prose for a result file would be invented.
 
 *How to use* is curated where it matters and otherwise inferred from the file's kind — a test gets its runner, a CLI gets `--help`, a module gets its import path.
@@ -36,8 +36,8 @@ To *search* rather than browse: `python3 index/search.py "your question"`.
 - [`(root)`](#root) — 94 files
 - [`docs`](#docs) — 161 files
 - [`index`](#index) — 7 files
-- [`backtester`](#backtester) — 1956 files
-- [`research`](#research) — 428 files
+- [`backtester`](#backtester) — 1965 files
+- [`research`](#research) — 466 files
 - [`oracle`](#oracle) — 43 files
 - [`extension`](#extension) — 143 files
 - [`executor`](#executor) — 48 files
@@ -648,9 +648,9 @@ Repository-level entry points and agent instructions. `AGENTS.md` and `CLAUDE.md
 
 #### `memory.md`
 
-`doc` · 2712 lines · 557,508 B · description: **extracted**
+`doc` · 2752 lines · 565,397 B · description: **extracted**
 
-**Purpose.** Version: 582 Delta: v581 to v582; repair generated operation inventories found by final-head CI. Delta: v580 to v581; preserve the qualified candidate and final delivery-receipt location.
+**Purpose.** Version: 587 Delta: integrated to v587; preserve both Jupiter overlay and incoming nine-strategy research records. Delta: v581 to v582; repair generated operation inventories found by final-head CI.
 
 **Use.** Read it.
 
@@ -728,9 +728,9 @@ Repository-level entry points and agent instructions. `AGENTS.md` and `CLAUDE.md
 
 #### `prompts.md`
 
-`doc` · 2414 lines · 143,348 B · description: **extracted**
+`doc` · 2446 lines · 145,599 B · description: **extracted**
 
-**Purpose.** Version: 263 Delta: v262 to v263; record the Jupiter Wallet installation follow-up messages. Delta: v261 to v262; record the Jupiter 1000x overlay optimization, fan-out, implementation and SDK request.
+**Purpose.** Version: 265 Delta: integrated to v265; preserve both Jupiter overlay and incoming nine-strategy research records. Delta: v262 to v263; record the Jupiter Wallet installation follow-up messages.
 
 **Use.** Read it.
 
@@ -960,7 +960,7 @@ Curated prose. `ARCHITECTURE.md` explains how the pieces fit, `TESTING.md` is th
 
 #### `docs/FILES.md`
 
-`doc` · 36844 lines · 1,786,524 B · description: **extracted**
+`doc` · 36844 lines · 1,786,506 B · description: **extracted**
 
 **Purpose.** Regenerate with: python3 index/build.py all # refresh the index python3 index/make_files_doc.py # rewrite this file
 
@@ -2240,7 +2240,7 @@ The search layer over the repo itself. Generators plus three committed indexes; 
 
 The simulation engine and everything that supports it. Never gains live-trading capability, never touches the network, and costs are never optional. `core/` is the engine; `strategy_cards/` are the specs; `tests/` is the acceptance suite.
 
-1956 files.
+1965 files.
 
 #### `backtester/.gitignore`
 
@@ -18206,6 +18206,16 @@ The simulation engine and everything that supports it. Never gains live-trading 
 
 **Use.** Read it.
 
+#### `backtester/strategy_research/pivot_reversal_v33_source_research.md`
+
+`doc` · 42 lines · 1,799 B · description: **extracted**
+
+**Purpose.** Confirmed high/low pivot stop-order adapter with unresolved tie semantics.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
+
+**Use.** Read it.
+
 #### `backtester/strategy_research/prediction_markets.md`
 
 `doc` · 71 lines · 4,814 B · description: **extracted**
@@ -18216,6 +18226,26 @@ The simulation engine and everything that supports it. Never gains live-trading 
 
 **Use.** Read it.
 
+#### `backtester/strategy_research/rs_zigzag_pa_v1.md`
+
+`doc` · 71 lines · 3,640 B · description: **extracted**
+
+**Purpose.** Legacy harmonic ZigZag strategy with higher-timeframe lookahead; research only.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
+
+**Use.** Read it.
+
+#### `backtester/strategy_research/sar_v33_source_research.md`
+
+`doc` · 39 lines · 1,616 B · description: **extracted**
+
+**Purpose.** Source-bound SAR stop-order research adapter, not a validated TradingView replica.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
+
+**Use.** Read it.
+
 #### `backtester/strategy_research/scalping.md`
 
 `doc` · 61 lines · 2,290 B · description: **extracted**
@@ -18223,6 +18253,16 @@ The simulation engine and everything that supports it. Never gains live-trading 
 **Purpose.** Many very small gains from tiny price moves on a tick or order-book edge. Spec-only: needs tick and book data the repo does not have.
 
 **Contents.** Frontmatter: `status`=spec-only, `family`=microstructure, `evaluation`=None, `success_likelihood`=very-low, `data_available`=false, `registry_key`=null.
+
+**Use.** Read it.
+
+#### `backtester/strategy_research/single_ma_v31_source_research.md`
+
+`doc` · 28 lines · 1,350 B · description: **extracted**
+
+**Purpose.** Source-bound moving-average research adapter; TradingView parity remains unverified.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
 
 **Use.** Read it.
 
@@ -21076,6 +21116,16 @@ The simulation engine and everything that supports it. Never gains live-trading 
 
 **Use.** Read it.
 
+#### `backtester/strategy_research/two_ma_v31_source_research.md`
+
+`doc` · 28 lines · 1,317 B · description: **extracted**
+
+**Purpose.** Source-bound moving-average research adapter; TradingView parity remains unverified.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
+
+**Use.** Read it.
+
 #### `backtester/strategy_research/vol_of_vol_term_structure.md`
 
 `doc` · 57 lines · 1,885 B · description: **extracted**
@@ -21776,6 +21826,46 @@ The simulation engine and everything that supports it. Never gains live-trading 
 
 **Use.** `python3 -m pytest backtester/tests/test_triggers.py -q`
 
+#### `backtester/tests/test_tv_channel_breakout_intents.py`
+
+`test` · 38 lines · 1,733 B · description: **extracted**
+
+**Purpose.** Channel Breakout has a deliberate asymmetrical source guard.
+
+**Contents.** Defines `class ChannelBreakoutTests`. Depends on `research`.
+
+**Use.** `python3 -m pytest backtester/tests/test_tv_channel_breakout_intents.py -q`
+
+#### `backtester/tests/test_tv_momentum_intents.py`
+
+`test` · 56 lines · 2,845 B · description: **extracted**
+
+**Purpose.** Source-trace tests for the isolated TradingView Momentum intent adapter.
+
+**Contents.** Defines `class MomentumIntentTests`. Depends on `research`.
+
+**Use.** `python3 -m pytest backtester/tests/test_tv_momentum_intents.py -q`
+
+#### `backtester/tests/test_tv_price_channel_intents.py`
+
+`test` · 38 lines · 1,712 B · description: **extracted**
+
+**Purpose.** Price Channel source intent traces; this does not establish TV parity.
+
+**Contents.** Defines `class PriceChannelTests`. Depends on `research`.
+
+**Use.** `python3 -m pytest backtester/tests/test_tv_price_channel_intents.py -q`
+
+#### `backtester/tests/test_tv_volty_close_intents.py`
+
+`test` · 48 lines · 2,264 B · description: **extracted**
+
+**Purpose.** Source traces for the simple-mean true-range Volty close strategy.
+
+**Contents.** Defines `class VoltyCloseTests`. Depends on `backtester`, `research`.
+
+**Use.** `python3 -m pytest backtester/tests/test_tv_volty_close_intents.py -q`
+
 #### `backtester/tests/test_universe.py`
 
 `test` · 265 lines · 12,010 B · description: **extracted**
@@ -21802,7 +21892,7 @@ The simulation engine and everything that supports it. Never gains live-trading 
 
 Drivers that produce the numbers, and the write-ups that quote them. Everything here is reproducible from a committed script — the two occasions that was not true both produced a wrong published figure.
 
-428 files.
+466 files.
 
 #### `research/5minleveragestrategies.json`
 
@@ -21972,6 +22062,30 @@ Drivers that produce the numbers, and the write-ups that quote them. Everything 
 
 **Use.** Read it.
 
+#### `research/RS-ZIGZAG-PA-SOURCE-CONTRACT-2333.md`
+
+`doc` · 98 lines · 6,119 B · description: **extracted**
+
+**Purpose.** Version: 1.1.0. Delta: record measured six-pass draft and publication limits. The owner supplied a Pine file and screenshots for this investigation. This is an audit and proposed comparison, not an executable card, completed research,
+
+**Use.** Read it.
+
+#### `research/RS-ZIGZAG-PROXY-2333.md`
+
+`doc` · 89 lines · 6,277 B · description: **extracted**
+
+**Purpose.** Version: 1.2.0. Delta: add separately fenced equal-notional sensitivity. These results are **not TradingView replication or evidence of live profit**. They use previously observed Jupiter ZEC/USD oracle OHLC, not Coinbase's
+
+**Use.** Read it.
+
+#### `research/SAR-PIVOT-SOURCE-REVIEW-2324.md`
+
+`doc` · 37 lines · 5,784 B · description: **extracted**
+
+**Purpose.** Status: provisional source review, not a completed rabbithole or trusted publication. Each built-in has one primary software source organization, TradingView. Neither has met an independent-source floor, a measured two-pass novelty convergence test, completed deduplication, or trusted claim review. Six-pass budgets remain ceilings, not completed passes. No saturation is claimed.
+
+**Use.** Read it.
+
 #### `research/SHAPE-AWARE-SPOT.md`
 
 `doc` · 215 lines · 13,570 B · description: **extracted**
@@ -22012,11 +22126,27 @@ Drivers that produce the numbers, and the write-ups that quote them. Everything 
 
 **Use.** Read it.
 
+#### `research/TRADINGVIEW-NINE-COMMON-PROXY-2329.md`
+
+`doc` · 32 lines · 4,640 B · description: **extracted**
+
+**Purpose.** Version: 0.1.0. This is a provisional code and model comparison, not trusted research publication, TradingView parity, a strategy recommendation, or evidence of live profitability. The shared input is 41,640 previously observed one-minute Jupiter ZEC/USD oracle rows from 2026-10-10 21:00 UTC through 2026-11-08 19:00 UTC, end exclusive.
+
+**Use.** Read it.
+
 #### `research/TRADINGVIEW-SCRIPT-CARDS.md`
 
 `doc` · 772 lines · 405,954 B · description: **extracted**
 
 **Purpose.** Version: 1.0.0. Delta: expand the accepted strategy subset to all trading-related saved scripts. Source-review state: **accepted**. 742 of 742 publications accounted for; 691 trading-related cards and 51 source-grounded non-trading exclusions. Each card explains the idea, mechanism, intended use, settings, limitations and data needs.
+
+**Use.** Read it.
+
+#### `research/TRADINGVIEW-SEVEN-SOURCE-CONTRACT-2324.md`
+
+`doc` · 127 lines · 9,925 B · description: **extracted**
+
+**Purpose.** Version: 1.3.0. Delta: record bounded Coinbase public data and funding discovery. This is a working research record, not a completed rabbithole, executable card, TradingView parity proof, or backtest. The owner identified the chart as
 
 **Use.** Read it.
 
@@ -22376,6 +22506,26 @@ Drivers that produce the numbers, and the write-ups that quote them. Everything 
 
 **Use.** `python3 research/news_event_study.py --help`
 
+#### `research/oracle_common_window.py`
+
+`code-python` · 78 lines · 3,990 B · description: **extracted**
+
+**Purpose.** Shared, read-only Jupiter ZEC oracle comparison window; not TV market data.
+
+**Contents.** Defines `SOURCE_SHA256`, `SOURCE_ARTIFACT`, `START`, `STOP`, `ALIASES`, `load_window()`, `aggregate()`, `equal_notional_qty()`. Depends on `research`.
+
+**Use.** `import research.oracle_common_window`
+
+#### `research/oracle_compare.py`
+
+`code-python` · 64 lines · 3,198 B · description: **extracted**
+
+**Purpose.** Common-window equal-notional order sensitivity; no live execution.
+
+**Contents.** Defines `size_at_close()`, `compare()`. Depends on `research`.
+
+**Use.** `import research.oracle_compare`
+
 #### `research/oracle_reversal_inputs.py`
 
 `code-python` · 103 lines · 3,406 B · description: **extracted**
@@ -22395,6 +22545,16 @@ Drivers that produce the numbers, and the write-ups that quote them. Everything 
 **Contents.** Defines `REPO`, `OUT`, `BOUNDED_UNIT`, `REFERENCE`, `REFERENCE_HIGH`, `class Trial`, `class Report`, `perturbed_values()`, `evaluate()`, `run()` and 4 more. Depends on `backtester`, `research`.
 
 **Use.** `python3 research/perturb.py --help`.
+
+#### `research/pine_bar_emulator.py`
+
+`code-python` · 160 lines · 8,175 B · description: **extracted**
+
+**Purpose.** Offline Pine-style order sensitivity; not a TradingView parity claim. Callers emit ordered close-time intent lists. Orders become eligible on the next bar. Historical OHLC order is assumed rather than observed. Quantity is explicit and has a one-price-unit contract multiplier. Funding, spread, margin and liquidation are not modelled.
+
+**Contents.** Defines `class Intent`, `class Bar`, `simulate()`.
+
+**Use.** `import research.pine_bar_emulator`
 
 #### `research/profitable-crypto-strategies-analysis.md`
 
@@ -22453,6 +22613,36 @@ Drivers that produce the numbers, and the write-ups that quote them. Everything 
 **Contents.** Defines `START`, `STOP`, `INTERVALS`, `WINDOW`, `FEE_BPS`, `GROUPS`, `sha()`, `group_for()`, `boundaries()`, `wilson()` and 12 more. Depends on `research`.
 
 **Use.** `python3 research/reversal_shapes.py --help`
+
+#### `research/rs_zigzag.py`
+
+`code-python` · 260 lines · 12,874 B · description: **extracted**
+
+**Purpose.** Research-only RS ZigZag signal model; no networking or trading. The user-supplied legacy Pine source is not distributed here. The `legacy` mode intentionally projects a completed hourly bar into its first child bar and is unsuitable for live use. `confirmed` delays the hourly expression by one complete hourly bar. Neither mode is certified TradingView parity.
+
+**Contents.** Defines `class Bar`, `_validate()`, `_hourly()`, `_zigzags()`, `pivot_events()`, `_patterns()`, `signals()`, `class ExecutionAssumptions`, `simulate_decisions()`.
+
+**Use.** `import research.rs_zigzag`
+
+#### `research/rs_zigzag_equal_proxy.py`
+
+`code-python` · 67 lines · 2,984 B · description: **extracted**
+
+**Purpose.** Common-window RS ZigZag sizing comparison; never TV or venue parity.
+
+**Contents.** Defines `run()`, `main()`. Depends on `research`.
+
+**Use.** `python3 research/rs_zigzag_equal_proxy.py --help`
+
+#### `research/rs_zigzag_proxy.py`
+
+`code-python` · 106 lines · 5,449 B · description: **extracted**
+
+**Purpose.** Frozen retrospective Jupiter-oracle sensitivity; never TV parity.
+
+**Contents.** Defines `SOURCE_SHA256`, `SOURCE_ID`, `START`, `STOP`, `ALIASES`, `aggregate()`, `run()`, `main()`. Depends on `research`.
+
+**Use.** `python3 research/rs_zigzag_proxy.py --help`
 
 #### `research/run_backfill.sh`
 
@@ -22678,6 +22868,36 @@ Drivers that produce the numbers, and the write-ups that quote them. Everything 
 
 **Use.** Configuration; nothing to run.
 
+#### `research/tradingview_pivot_reversal.py`
+
+`code-python` · 68 lines · 3,449 B · description: **extracted**
+
+**Purpose.** TradingView Pivot Reversal v33.0 adapter with explicit tie sensitivity. The built-in Pine snapshot is src:f1cf879aa1a71c9a, SHA-256 cd6def72548fb84e02312f302dd2799f897638d0a2c688aef04ca861b5a5628f. Pine pivot tie semantics remain unverified; no mode is certified parity.
+
+**Contents.** Defines `pivot_intents()`. Depends on `research`.
+
+**Use.** `import research.tradingview_pivot_reversal`
+
+#### `research/tradingview_sar.py`
+
+`code-python` · 69 lines · 3,079 B · description: **extracted**
+
+**Purpose.** Research adapter for TradingView Parabolic SAR strategy v33.0. Derived independently from the owner-requested built-in source; unregistered, offline and not certified TradingView fill parity. The source snapshot is src:260da27279d3c3e8, SHA-256 800f3fe7f02df408f9f144951e6e44744240a67dec2825d0953d5309b0a4bef1.
+
+**Contents.** Defines `sar_intents()`. Depends on `research`.
+
+**Use.** `import research.tradingview_sar`
+
+#### `research/tradingview_sar_pivot_proxy.py`
+
+`code-python` · 59 lines · 2,913 B · description: **extracted**
+
+**Purpose.** Retrospective SAR and Pivot equal-notional oracle sensitivities.
+
+**Contents.** Defines `run()`, `main()`. Depends on `research`.
+
+**Use.** `python3 research/tradingview_sar_pivot_proxy.py --help`
+
 #### `research/trigger_backtest.py`
 
 `code-python` · 105 lines · 5,781 B · description: **extracted**
@@ -22707,6 +22927,134 @@ Drivers that produce the numbers, and the write-ups that quote them. Everything 
 **Contents.** Defines `REPO`, `SOURCE`, `AS_OF`, `SPOKE_DIRS`, `SPOKES`, `turnover_table()`, `render()`, `find_spoke()`, `check()`, `main()`.
 
 **Use.** `python3 research/turnover_table.py` or `--check`.
+
+#### `research/tv_channel_breakout_intents.py`
+
+`code-python` · 30 lines · 1,398 B · description: **extracted**
+
+**Purpose.** Close-time intents for TradingView Channel Breakout v29, not Price Channel.
+
+**Contents.** Defines `channel_breakout_intents()`. Depends on `research`.
+
+**Use.** `import research.tv_channel_breakout_intents`
+
+#### `research/tv_channel_breakout_rabbithole.md`
+
+`doc` · 26 lines · 1,561 B · description: **extracted**
+
+**Purpose.** Version: 0.1.0. Delta: record v29 source intent semantics and limitations. The user's screenshot names Channel Breakout, a distinct built-in from Price Channel. This is a draft research contract, not a TradingView parity proof or
+
+**Use.** Read it.
+
+#### `research/tv_ma_proxy.py`
+
+`code-python` · 65 lines · 2,938 B · description: **extracted**
+
+**Purpose.** Retrospective equal-notional MA comparison on the validated oracle window. The common loader and order engine are independently owned. This wrapper never claims Coinbase perpetual parity, an out-of-sample test, or live-net returns.
+
+**Contents.** Defines `run()`, `main()`. Depends on `research`.
+
+**Use.** `python3 research/tv_ma_proxy.py --help`
+
+#### `research/tv_momentum_intents.py`
+
+`code-python` · 34 lines · 1,657 B · description: **extracted**
+
+**Purpose.** TradingView Momentum v29 close-of-bar order intents; no execution or fills.
+
+**Contents.** Defines `momentum_intents()`. Depends on `research`.
+
+**Use.** `import research.tv_momentum_intents`
+
+#### `research/tv_momentum_rabbithole.md`
+
+`doc` · 73 lines · 4,184 B · description: **extracted**
+
+**Purpose.** Version: 0.1.0. Delta: record the pinned built-in and a draft intent adapter. Status: research and parity are incomplete. This is an execution-contract extension for the existing research-only `tv_43000599883_momentum_strategy`
+
+**Use.** Read it.
+
+#### `research/tv_moving_average_rabbithole.md`
+
+`doc` · 106 lines · 6,030 B · description: **extracted**
+
+**Purpose.** Version: 0.1.0. Delta: record source contract and preliminary evidence. This is not a qualified rabbithole, registered strategy card, or performance result. The TradingView built-in `STD;MovingAvg%1Cross%1Strategy`, Pine v6 source
+
+**Use.** Read it.
+
+#### `research/tv_nine_common_proxy.py`
+
+`code-python` · 84 lines · 3,174 B · description: **extracted**
+
+**Purpose.** Reproduce nine source-strategy sensitivities on the frozen oracle window. This is retrospective research, not TradingView or executable venue parity.
+
+**Contents.** Defines `run()`, `main()`. Depends on `research`.
+
+**Use.** `python3 research/tv_nine_common_proxy.py --help`
+
+#### `research/tv_price_channel_intents.py`
+
+`code-python` · 24 lines · 1,114 B · description: **extracted**
+
+**Purpose.** Close-time intents for the TradingView Price Channel v29 built-in.
+
+**Contents.** Defines `price_channel_intents()`. Depends on `research`.
+
+**Use.** `import research.tv_price_channel_intents`
+
+#### `research/tv_price_channel_rabbithole.md`
+
+`doc` · 30 lines · 1,759 B · description: **extracted**
+
+**Purpose.** Version: 0.1.0. Delta: record v29 intent semantics and limitations. This is a research contract extension, not a replacement for the existing checksum-bound research-only Price Channel card and not a completed rabbithole.
+
+**Use.** Read it.
+
+#### `research/tv_single_ma.py`
+
+`code-python` · 57 lines · 2,652 B · description: **extracted**
+
+**Purpose.** Source-level TradingView single-SMA order intents, not a fill simulator. Pinned built-in source: src:d009b1e195649778, Pine 31.0. The shared emulator supplies the order factory; this module does not size or fill orders.
+
+**Contents.** Defines `class SingleMovingAverage`. Depends on `research`.
+
+**Use.** `import research.tv_single_ma`
+
+#### `research/tv_two_ma.py`
+
+`code-python` · 50 lines · 2,295 B · description: **extracted**
+
+**Purpose.** Source-level TradingView two-SMA crossover intents; not an order simulator.
+
+**Contents.** Defines `class TwoMovingAverages`. Depends on `research`.
+
+**Use.** `import research.tv_two_ma`
+
+#### `research/tv_two_ma_rabbithole.md`
+
+`doc` · 60 lines · 3,250 B · description: **extracted**
+
+**Purpose.** Version: 0.1.0. Delta: record source, adapter and proxy sensitivity. This is not a qualified rabbithole or registered strategy card. Official built-in `STD;MovingAvg%1Cross2%1Strategy`, version 31.0, is pinned
+
+**Use.** Read it.
+
+#### `research/tv_volty_close_intents.py`
+
+`code-python` · 29 lines · 1,412 B · description: **extracted**
+
+**Purpose.** Close-time intents for TradingView Volatility Expansion Close v30.
+
+**Contents.** Defines `volty_close_intents()`. Depends on `research`.
+
+**Use.** `import research.tv_volty_close_intents`
+
+#### `research/tv_volty_close_rabbithole.md`
+
+`doc` · 27 lines · 1,623 B · description: **extracted**
+
+**Purpose.** Version: 0.1.0. Delta: document the v30 intent adapter and existing runner check. This draft extends the existing research-only source card without modifying its checksum or the existing Volty runner. TradingView Pine v6 v30 source
+
+**Use.** Read it.
 
 #### `research/verify_numbers.py`
 
@@ -24826,6 +25174,26 @@ Drivers that produce the numbers, and the write-ups that quote them. Everything 
 
 **Use.** `python3 -m pytest research/tests/test_news_event_study.py -q`
 
+#### `research/tests/test_oracle_common_window.py`
+
+`test` · 36 lines · 1,251 B · description: **none**
+
+**Purpose.** _No description available._
+
+**Contents.** Defines `class CommonWindowTests`. Depends on `research`.
+
+**Use.** `python3 -m pytest research/tests/test_oracle_common_window.py -q`
+
+#### `research/tests/test_oracle_compare.py`
+
+`test` · 36 lines · 1,439 B · description: **none**
+
+**Purpose.** _No description available._
+
+**Contents.** Defines `class CommonComparisonTests`. Depends on `research`.
+
+**Use.** `python3 -m pytest research/tests/test_oracle_compare.py -q`
+
 #### `research/tests/test_oracle_winners_entrypoint.py`
 
 `test` · 44 lines · 1,516 B · description: **extracted**
@@ -24835,6 +25203,16 @@ Drivers that produce the numbers, and the write-ups that quote them. Everything 
 **Contents.** Defines `class EntryPoint`.
 
 **Use.** `python3 -m pytest research/tests/test_oracle_winners_entrypoint.py -q`
+
+#### `research/tests/test_pine_bar_emulator.py`
+
+`test` · 58 lines · 2,980 B · description: **none**
+
+**Purpose.** _No description available._
+
+**Contents.** Defines `class PineBarEmulatorTests`. Depends on `research`.
+
+**Use.** `python3 -m pytest research/tests/test_pine_bar_emulator.py -q`
 
 #### `research/tests/test_reversal_second_turn.py`
 
@@ -24856,6 +25234,26 @@ Drivers that produce the numbers, and the write-ups that quote them. Everything 
 
 **Use.** `python3 -m pytest research/tests/test_reversal_shapes.py -q`
 
+#### `research/tests/test_rs_zigzag.py`
+
+`test` · 114 lines · 5,904 B · description: **none**
+
+**Purpose.** _No description available._
+
+**Contents.** Defines `bars_for_hours()`, `class ZigZagResearchTests`, `class ExecutionSensitivityTests`. Depends on `research`.
+
+**Use.** `python3 -m pytest research/tests/test_rs_zigzag.py -q`
+
+#### `research/tests/test_rs_zigzag_proxy.py`
+
+`test` · 29 lines · 962 B · description: **none**
+
+**Purpose.** _No description available._
+
+**Contents.** Defines `class ProxyAggregationTests`. Depends on `research`.
+
+**Use.** `python3 -m pytest research/tests/test_rs_zigzag_proxy.py -q`
+
 #### `research/tests/test_shape_study.py`
 
 `test` · 159 lines · 6,402 B · description: **extracted**
@@ -24875,6 +25273,56 @@ Drivers that produce the numbers, and the write-ups that quote them. Everything 
 **Contents.** Defines `class StrategyConfigSweepTests`. Depends on `research`.
 
 **Use.** `python3 -m pytest research/tests/test_strategy_config_sweep.py -q`
+
+#### `research/tests/test_tradingview_pivot_reversal.py`
+
+`test` · 42 lines · 1,673 B · description: **none**
+
+**Purpose.** _No description available._
+
+**Contents.** Defines `candles()`, `class TradingViewPivotTests`. Depends on `research`.
+
+**Use.** `python3 -m pytest research/tests/test_tradingview_pivot_reversal.py -q`
+
+#### `research/tests/test_tradingview_sar.py`
+
+`test` · 35 lines · 1,362 B · description: **none**
+
+**Purpose.** _No description available._
+
+**Contents.** Defines `class TradingViewSARTests`. Depends on `research`.
+
+**Use.** `python3 -m pytest research/tests/test_tradingview_sar.py -q`
+
+#### `research/tests/test_tv_nine_common_proxy.py`
+
+`test` · 32 lines · 905 B · description: **extracted**
+
+**Purpose.** The combined entry point must not create output when input guards fail.
+
+**Contents.** Defines `class CombinedRunnerTests`. Depends on `research`.
+
+**Use.** `python3 -m pytest research/tests/test_tv_nine_common_proxy.py -q`
+
+#### `research/tests/test_tv_single_ma.py`
+
+`test` · 86 lines · 4,048 B · description: **none**
+
+**Purpose.** _No description available._
+
+**Contents.** Defines `intent()`, `class SingleMovingAverageTests`. Depends on `research`.
+
+**Use.** `python3 -m pytest research/tests/test_tv_single_ma.py -q`
+
+#### `research/tests/test_tv_two_ma.py`
+
+`test` · 71 lines · 3,195 B · description: **none**
+
+**Purpose.** _No description available._
+
+**Contents.** Defines `intent()`, `class TwoMovingAveragesTests`. Depends on `research`.
+
+**Use.** `python3 -m pytest research/tests/test_tv_two_ma.py -q`
 
 #### `research/tests/test_volty_predictive_checks.py`
 

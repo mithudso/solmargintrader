@@ -1,6 +1,6 @@
 # Conceptual index
 
-**Generated** from `index/CONCEPT-INDEX.json` (2026-11-16T12:39:59+00:00). 21 concepts.
+**Generated** from `index/CONCEPT-INDEX.json` (2026-11-16T12:45:28+00:00). 21 concepts.
 
 ```bash
 python3 index/build.py all              # refresh
@@ -21,7 +21,7 @@ The ideas that decide whether a number in this repo means anything. Ordered by h
 
 ### Risk rails and dry-run safety
 
-`risk-rails` · **1954 files** · matched on `dry_run`, `dryrun`, `risk`, `rails`, `kill`, `guard`, `confirm`, `fail-closed`
+`risk-rails` · **1970 files** · matched on `dry_run`, `dryrun`, `risk`, `rails`, `kill`, `guard`, `confirm`, `fail-closed`
 
 The extension can place real orders. Dry-run is the default, rails live in code and fail closed, and a fresh install must never be able to trade.
 
@@ -36,18 +36,18 @@ Strongest files:
 - `research/tradingview-script-profiles/shard-a.jsonl` (126 hits)
 - `.cdo/reviews-2026-11-12/ecosystem-full-final.json` (124 hits)
 
-Full list: `python3 index/search.py --concept risk-rails -n 1954`
+Full list: `python3 index/search.py --concept risk-rails -n 1970`
 
 ### Cross-asset and cross-timeframe transfer
 
-`transfer` · **1734 files** · matched on `cross_asset`, `cross-asset`, `transfer`, `doge`, `zec`, `universe`, `top_coins`
+`transfer` · **1747 files** · matched on `cross_asset`, `cross-asset`, `transfer`, `doge`, `zec`, `universe`, `top_coins`
 
 The same 25 strategies score 25/25 on BTC daily and 0/25 on SOL hourly. The dataset has repeatedly explained more than the strategy.
 
 Strongest files:
 
 - `docs/FILES.md` (312 hits)
-- `memory.md` (240 hits)
+- `memory.md` (242 hits)
 - `research/coin-intelligence/zec-zcash.md` (196 hits)
 - `research/results/coinbase50_20261111_summary.json` (183 hits)
 - `research/coin-intelligence/doge-dogecoin.md` (147 hits)
@@ -55,11 +55,11 @@ Strongest files:
 - `research/results/shape_spot_20261111_manifest.json` (97 hits)
 - `research/tradingview-card-coverage.json` (90 hits)
 
-Full list: `python3 index/search.py --concept transfer -n 1734`
+Full list: `python3 index/search.py --concept transfer -n 1747`
 
 ### Cost model
 
-`costs` · **1583 files** · matched on `fee_bps`, `slippage`, `slippage_bps`, `costconfig`, `break-even`, `borrow`, `financing`
+`costs` · **1602 files** · matched on `fee_bps`, `slippage`, `slippage_bps`, `costconfig`, `break-even`, `borrow`, `financing`
 
 Fees and slippage are never optional and must be applied exactly once. The engine runs fee_bps=6.0, slippage_bps=2.0, fill_delay=1.
 
@@ -74,11 +74,11 @@ Strongest files:
 - `soltui/simulation.py` (68 hits)
 - `backtester/core/engine.py` (67 hits)
 
-Full list: `python3 index/search.py --concept costs -n 1583`
+Full list: `python3 index/search.py --concept costs -n 1602`
 
 ### Lookahead and fill timing
 
-`lookahead` · **1512 files** · matched on `lookahead`, `fill_delay`, `warmup`, `warmup_bars`, `displacement`, `centred`, `shift`
+`lookahead` · **1525 files** · matched on `lookahead`, `fill_delay`, `warmup`, `warmup_bars`, `displacement`, `centred`, `shift`
 
 A signal at bar t may use data only through t. Centred indicators, same-bar fills and displaced clouds are the recurring hazards.
 
@@ -93,11 +93,11 @@ Strongest files:
 - `research/tradingview-script-profiles/shard-a.jsonl` (36 hits)
 - `backtester/core/strategies/advanced.py` (32 hits)
 
-Full list: `python3 index/search.py --concept lookahead -n 1512`
+Full list: `python3 index/search.py --concept lookahead -n 1525`
 
 ### On-chain execution reality
 
-`execution-onchain` · **1027 files** · matched on `jupiter`, `jlp`, `oracle`, `priority`, `slippage`, `perps`, `solana`
+`execution-onchain` · **1056 files** · matched on `jupiter`, `jlp`, `oracle`, `priority`, `slippage`, `perps`, `solana`
 
 Oracle-priced perps, priority fees as a product, per-account fee markets, dropped-versus-reverted. Decides whether a strategy is executable at all.
 
@@ -109,14 +109,14 @@ Strongest files:
 - `research/strategy_experiment/results/initial-gapped-run/results.json` (408 hits)
 - `FILES.md` (283 hits)
 - `.cdo/reviews-2026-11-12/oracle.json` (271 hits)
-- `memory.md` (249 hits)
+- `memory.md` (259 hits)
 - `.cdo/reviews-2026-11-12/ecosystem-combined-full-final.json` (187 hits)
 
-Full list: `python3 index/search.py --concept execution-onchain -n 1027`
+Full list: `python3 index/search.py --concept execution-onchain -n 1056`
 
 ### Grid trading
 
-`grid` · **881 files** · matched on `grid`, `gridsim`, `ladder`, `recenter`, `anchor_window`, `levels`
+`grid` · **885 files** · matched on `grid`, `gridsim`, `ladder`, `recenter`, `anchor_window`, `levels`
 
 A resting grid converts a sustained trend into a maximum-size losing position; the re-centring gate fired once in 1,875 bars.
 
@@ -131,11 +131,11 @@ Strongest files:
 - `backtester/tests/test_gridsim.py` (167 hits)
 - `research/zec-expanded-20261113.llms/special-runner-summary.json` (156 hits)
 
-Full list: `python3 index/search.py --concept grid -n 881`
+Full list: `python3 index/search.py --concept grid -n 885`
 
 ### Data integrity
 
-`data-integrity` · **820 files** · matched on `validate_bars`, `strict_gaps`, `allow_gaps`, `datavalidationerror`, `monotone`, `gap`
+`data-integrity` · **825 files** · matched on `validate_bars`, `strict_gaps`, `allow_gaps`, `datavalidationerror`, `monotone`, `gap`
 
 Gaps refused rather than filled, columns resolved by name, timestamps monotone. A concatenated XRP series hides a 2.5-year join.
 
@@ -150,11 +150,11 @@ Strongest files:
 - `docs/FILES.md` (81 hits)
 - `TRADINGVIEW-CARD-READINESS.md` (77 hits)
 
-Full list: `python3 index/search.py --concept data-integrity -n 820`
+Full list: `python3 index/search.py --concept data-integrity -n 825`
 
 ### Buy-and-hold benchmark
 
-`benchmark` · **568 files** · matched on `buy_and_hold`, `benchmark`, `baseline`
+`benchmark` · **570 files** · matched on `buy_and_hold`, `benchmark`, `baseline`
 
 Zero parameters, and it out-ranked all but one or two strategies on SOL and all five recommended configurations on ZEC.
 
@@ -169,11 +169,11 @@ Strongest files:
 - `docs/FILES.md` (89 hits)
 - `.cdo/reviews-2026-11-12/research-scripts.json` (81 hits)
 
-Full list: `python3 index/search.py --concept benchmark -n 568`
+Full list: `python3 index/search.py --concept benchmark -n 570`
 
 ### Evidence floor
 
-`evidence-floor` · **391 files** · matched on `min_total_trades`, `min_rankable_trades`, `insufficient`, `dropped`, `evidence floor`, `rankable`
+`evidence-floor` · **392 files** · matched on `min_total_trades`, `min_rankable_trades`, `insufficient`, `dropped`, `evidence floor`, `rankable`
 
 Below a minimum trade count a result is not eligible to be reported as an improvement. cpcv_evaluate prints DROPPED but still returns paths, which is how a 6-trade Sharpe reached a headline.
 
@@ -188,7 +188,7 @@ Strongest files:
 - `research/strategy_experiment/audit_integrity.md` (54 hits)
 - `soltui/cumulative.py` (39 hits)
 
-Full list: `python3 index/search.py --concept evidence-floor -n 391`
+Full list: `python3 index/search.py --concept evidence-floor -n 392`
 
 ### Combinatorial purged cross-validation
 
@@ -257,12 +257,12 @@ The families also carry a historical measured finding. Of the study's 25 strateg
 
 | Family | Files | Matched on |
 |---|---|---|
-| `trend` | 903 | `trend`, `ma_crossover`, `macd`, `ichimoku` |
+| `trend` | 907 | `trend`, `ma_crossover`, `macd`, `ichimoku` |
 | `oscillator-reversion` | 592 | `rsi`, `stochastic`, `oscillator` |
-| `baseline` | 496 | `buy_and_hold`, `baseline` |
-| `momentum` | 445 | `momentum`, `ts_momentum`, `dual_momentum` |
+| `baseline` | 498 | `buy_and_hold`, `baseline` |
+| `momentum` | 452 | `momentum`, `ts_momentum`, `dual_momentum` |
 | `regime-filter` | 389 | `regime`, `sma_regime`, `adx_trend`, `hurst`, `vol_regime` |
-| `breakout` | 299 | `breakout`, `bb_breakout`, `keltner` |
+| `breakout` | 306 | `breakout`, `bb_breakout`, `keltner` |
 | `volume-flow` | 167 | `obv`, `volume-flow` |
 | `mean-reversion` | 154 | `mean-reversion`, `zscore`, `bb_reversion`, `vwap_reversion`, `ou_reversion` |
 | `risk-overlay` | 71 | `voltarget`, `atr_sized`, `garch`, `risk-overlay` |
@@ -275,7 +275,7 @@ Facts already written in indexed frontmatter, inverted so a value points back at
 
 ### `evaluation`
 
-- **null** (1764) — `dca_bot`, `jlp_vs_sol_relative_value`, `triangular_arbitrage`, `tv_0n0xkpl7_bitcoin_and_correlation_alternative_trading_strategies_cc`, `tv_43000474007_understanding_range_charts`, `tv_43000502272_learn_to_use_kagi_charts`, `tv_43000502273_introduction_to_line_break_charts`, `tv_43000502276_learn_using_point_and_figure_charts`, `tv_43000724995_understanding_volume_candle_charts`, `tv_43000725590_time_price_opportunity_charts_explained`, `tv_43000745275_session_volume_profile_charts_explained`, `tv_43000762388_understanding_crypto_open_interest` and 1752 more
+- **null** (1769) — `dca_bot`, `jlp_vs_sol_relative_value`, `triangular_arbitrage`, `tv_0n0xkpl7_bitcoin_and_correlation_alternative_trading_strategies_cc`, `tv_43000474007_understanding_range_charts`, `tv_43000502272_learn_to_use_kagi_charts`, `tv_43000502273_introduction_to_line_break_charts`, `tv_43000502276_learn_using_point_and_figure_charts`, `tv_43000724995_understanding_volume_candle_charts`, `tv_43000725590_time_price_opportunity_charts_explained`, `tv_43000745275_session_volume_profile_charts_explained`, `tv_43000762388_understanding_crypto_open_interest` and 1757 more
 - **None** (20) — `avellaneda_stoikov_mm`, `day_trading`, `dex_cex_dislocation`, `discount_to_anchor`, `event_driven`, `exchange_net_flow`, `funding_utilization_extremes`, `implied_vs_realised_vol`, `kalman_hedge_ratio`, `liquidation_cascade_proximity`, `mvrv_nupl_valuation`, `open_interest_divergence` and 8 more
 - **single-split-70-30** (18) — `pairs_cointegration`, `atr_position_sizing`, `bb_reversion`, `breakout`, `buy_and_hold`, `garch_vol_forecast`, `grid`, `ichimoku_cloud`, `keltner`, `ma_crossover`, `ma_ribbon`, `macd` and 6 more
 - **cpcv-8-groups-k2** (6) — `adx_filtered_trend`, `bb_breakout`, `dual_momentum_12_1`, `obv_trend`, `vol_regime_hmm`, `zscore`
@@ -285,7 +285,7 @@ Facts already written in indexed frontmatter, inverted so a value points back at
 
 ### `family`
 
-- **source-defined** (934) — `tv_0n0xkpl7_bitcoin_and_correlation_alternative_trading_strategies_cc`, `tv_43000474007_understanding_range_charts`, `tv_43000502272_learn_to_use_kagi_charts`, `tv_43000502273_introduction_to_line_break_charts`, `tv_43000502276_learn_using_point_and_figure_charts`, `tv_43000724995_understanding_volume_candle_charts`, `tv_43000725590_time_price_opportunity_charts_explained`, `tv_43000745275_session_volume_profile_charts_explained`, `tv_43000762388_understanding_crypto_open_interest`, `tv_43000762390_funding_rate_a_guide_to_market_sentiment`, `tv_4psxdoyc_a_technique_from_1202_really`, `tv_7biqbrfz_how_to_utilize_multi_time_frame_analysis_in_your_trading` and 922 more
+- **source-defined** (939) — `tv_0n0xkpl7_bitcoin_and_correlation_alternative_trading_strategies_cc`, `tv_43000474007_understanding_range_charts`, `tv_43000502272_learn_to_use_kagi_charts`, `tv_43000502273_introduction_to_line_break_charts`, `tv_43000502276_learn_using_point_and_figure_charts`, `tv_43000724995_understanding_volume_candle_charts`, `tv_43000725590_time_price_opportunity_charts_explained`, `tv_43000745275_session_volume_profile_charts_explained`, `tv_43000762388_understanding_crypto_open_interest`, `tv_43000762390_funding_rate_a_guide_to_market_sentiment`, `tv_4psxdoyc_a_technique_from_1202_really`, `tv_7biqbrfz_how_to_utilize_multi_time_frame_analysis_in_your_trading` and 927 more
 - **research-method** (65) — `tv_method_bump_run`, `tv_method_candlestick_patterns`, `tv_method_cup_handle`, `tv_method_double_top_bottom`, `tv_method_elliott_wave`, `tv_method_flag_pennant`, `tv_method_fourier_cycle`, `tv_method_gann`, `tv_method_gap_fill`, `tv_method_hammer`, `tv_method_harami`, `tv_method_harmonic_xabcd` and 53 more
 - **trend** (32) — `ema_crossover`, `ichimoku_cloud`, `tv_builtin_accumulative_swing_index`, `tv_builtin_chop_zone`, `tv_builtin_moving_average_adaptive`, `tv_builtin_moving_average_channel`, `tv_builtin_parabolic_sar`, `tv_builtin_supertrend`, `tv_builtin_williams_alligator`, `ma_crossover`, `ma_ribbon`, `macd` and 20 more
 - **momentum** (20) — `dual_momentum_12_1`, `tv_builtin_fisher_transform`, `ts_momentum`, `tv_builtin_accelerator_oscillator`, `tv_builtin_awesome_oscillator`, `tv_builtin_chande_momentum_oscillator`, `tv_builtin_connors_rsi`, `tv_builtin_coppock_curve`, `tv_builtin_detrended_price_oscillator`, `tv_builtin_know_sure_thing`, `tv_builtin_momentum`, `tv_builtin_rank_correlation_index` and 8 more
@@ -311,12 +311,12 @@ Facts already written in indexed frontmatter, inverted so a value points back at
 
 ### `status`
 
-- **spec-only** (1103) — `tv_0n0xkpl7_bitcoin_and_correlation_alternative_trading_strategies_cc`, `tv_43000474007_understanding_range_charts`, `tv_43000502272_learn_to_use_kagi_charts`, `tv_43000502273_introduction_to_line_break_charts`, `tv_43000502276_learn_using_point_and_figure_charts`, `tv_43000724995_understanding_volume_candle_charts`, `tv_43000725590_time_price_opportunity_charts_explained`, `tv_43000745275_session_volume_profile_charts_explained`, `tv_43000762388_understanding_crypto_open_interest`, `tv_43000762390_funding_rate_a_guide_to_market_sentiment`, `tv_4psxdoyc_a_technique_from_1202_really`, `tv_7biqbrfz_how_to_utilize_multi_time_frame_analysis_in_your_trading` and 1091 more
+- **spec-only** (1108) — `tv_0n0xkpl7_bitcoin_and_correlation_alternative_trading_strategies_cc`, `tv_43000474007_understanding_range_charts`, `tv_43000502272_learn_to_use_kagi_charts`, `tv_43000502273_introduction_to_line_break_charts`, `tv_43000502276_learn_using_point_and_figure_charts`, `tv_43000724995_understanding_volume_candle_charts`, `tv_43000725590_time_price_opportunity_charts_explained`, `tv_43000745275_session_volume_profile_charts_explained`, `tv_43000762388_understanding_crypto_open_interest`, `tv_43000762390_funding_rate_a_guide_to_market_sentiment`, `tv_4psxdoyc_a_technique_from_1202_really`, `tv_7biqbrfz_how_to_utilize_multi_time_frame_analysis_in_your_trading` and 1096 more
 - **documentation-only** (678) — `tv_2lgyzykc_ultimate_strategy_template`, `tv_9iwinz7i_how_to_use_leverage_and_margin_in_pinescript`, `tv_ihvpg6ts_stop_loss_and_take_profit_in_example`, `tv_kzp8e4x3_monthly_returns_in_pinescript_strategies`, `tv_m9taaikp_oscillator_evaluator_analysis_tool`, `tv_n8bgynwl_template_trailing_strategy_backtester`, `tv_otfw8b2a_trading_report_generator_from_csv`, `tv_xaeg4zjg_how_to_set_backtest_time_ranges`, `tv_00jfil5w_security_revisited_pinecoders`, `tv_06gcx5ql_innovation_adaptive_kalman_filter_oscillator`, `tv_0enoetmo_smartphase_analyzer`, `tv_0ghsw1kr_moving_regression` and 666 more
 - **measured** (28) — `ladder_grid`, `pairs_cointegration`, `volty_expan_close`, `adx_filtered_trend`, `atr_position_sizing`, `bb_breakout`, `bb_reversion`, `breakout`, `buy_and_hold`, `dual_momentum_12_1`, `garch_vol_forecast`, `grid` and 16 more
 - **implemented** (12) — `dca_bot`, `jlp_vs_sol_relative_value`, `triangular_arbitrage`, `dca`, `ema_crossover`, `fib_retracement`, `lev_high`, `lev_low`, `lev_medium`, `ppo`, `swing_confluence`, `trigger_trade`
 
 ### `success_likelihood`
 
-- **low** (1108) — `dca_bot`, `jlp_vs_sol_relative_value`, `ladder_grid`, `pairs_cointegration`, `tv_0n0xkpl7_bitcoin_and_correlation_alternative_trading_strategies_cc`, `tv_43000474007_understanding_range_charts`, `tv_43000502272_learn_to_use_kagi_charts`, `tv_43000502273_introduction_to_line_break_charts`, `tv_43000502276_learn_using_point_and_figure_charts`, `tv_43000724995_understanding_volume_candle_charts`, `tv_43000725590_time_price_opportunity_charts_explained`, `tv_43000745275_session_volume_profile_charts_explained` and 1096 more
+- **low** (1113) — `dca_bot`, `jlp_vs_sol_relative_value`, `ladder_grid`, `pairs_cointegration`, `tv_0n0xkpl7_bitcoin_and_correlation_alternative_trading_strategies_cc`, `tv_43000474007_understanding_range_charts`, `tv_43000502272_learn_to_use_kagi_charts`, `tv_43000502273_introduction_to_line_break_charts`, `tv_43000502276_learn_using_point_and_figure_charts`, `tv_43000724995_understanding_volume_candle_charts`, `tv_43000725590_time_price_opportunity_charts_explained`, `tv_43000745275_session_volume_profile_charts_explained` and 1101 more
 - **very-low** (35) — `triangular_arbitrage`, `volty_expan_close`, `dca`, `dual_momentum_12_1`, `ema_crossover`, `fib_retracement`, `garch_vol_forecast`, `grid`, `keltner`, `lev_high`, `lev_low`, `lev_medium` and 23 more
