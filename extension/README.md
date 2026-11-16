@@ -7,19 +7,34 @@ hard risk rails, on its own tab, **dry-run by default** — it will not place an
 change the mode and type a confirmation. The grid lost to buy-and-hold walk-forward on 9 of 9 coins,
 which is why 0.3.0 moved it off the front page.
 
-## Jupiter 1000x indicator window (0.7.0)
+## Jupiter 1000x indicator window (0.8.0)
 
 On `https://jup.ag/1000x`, the extension adds a draggable, resizable floating
 window with oracle candles, configurable ZigZag, Wilder RSI, Balance of Power,
-Volty Expan Close and Parabolic SAR. The same public Jupiter Pyth source supplies
-history and streaming updates. The default interval is1m;15m and1h are available.
+Volty Expan Close, Parabolic SAR, EMA9/21 and MACD12/26/9. The same public Jupiter
+Pyth source supplies history and one streaming subscription. The default chart
+interval is10m;1m,5m,15m,20m and1h are also available.
 Developing values and provisional ZigZag endpoints stay separate from completed
 candle explanations. Stale quotes, gaps and partial history withhold signals.
 Collapse or hide the window to stop its feed. Market navigation creates a fresh
 session. Settings stay in local browser storage. No wallet connection is needed.
 
+The reversal section always uses the previous two completed10m candle bodies:
+DD watches UP (long context); UU watches DOWN (short context). The developing
+target stays separate and can change color. Flat or mixed pairs have no setup.
+Four shape cards use48 completed5m/10m/15m/20m bars and restart after a gap.
+The separate closed1m momentum row matches the research EMA9/21, MACD12/26/9
+and BOP SMA3 formulas, with78 contiguous bars before a reading. The chart's
+indicator table uses its selected interval and labels that distinction.
+
+Heuristic alignment counts how many of EMA trend, MACD histogram and BOP agree
+with the watched direction. It is not a probability. No compatible model or
+typed position source is bundled: empirical probability, model score, ROE and
+exit intent remain unavailable. The window does not borrow UU probabilities
+for DD or simulate a position from candle colors.
+
 The window is read-only and does not change trading defaults. Load or reload the
-unpacked extension, then reload the portal tab. Its header identifies version0.7.0.
+unpacked extension, then reload the portal tab. Its header identifies version0.8.0.
 See [design, formulas and verification](../docs/JUPITER-1000X-OVERLAY.md),
 [optimized execution prompt](../docs/JUPITER-1000X-OVERLAY-PROMPT.md), and
 [SDK create/close capabilities and remaining gates](../docs/JUPITER-1000X-SDK.md).
@@ -149,7 +164,7 @@ Chrome 137+ is recommended: full-auto signing uses WebCrypto Ed25519, which land
 Everything else works from Chrome 120.
 
 **Did a reload pick up the new code?** The popup header and the dashboard title show the
-manifest version (`v0.6.3`). Every change to `src/` or `manifest.json` bumps it, in
+manifest version (`v0.8.0`). Every change to `src/` or `manifest.json` bumps it, in
 `manifest.json` and `package.json` together; CI fails a pull request that changes either
 without a bump, and `test/version.test.js` keeps the two fields equal. The SolTUI console
 is the primary dashboard workspace (popup → **Full workspace**).

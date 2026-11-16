@@ -61,10 +61,10 @@ acceptance and final-head CI remain separate release gates.
 ## Existing component suites
 
 ```bash
-python3 -m unittest discover -s backtester/tests -t .   # 1143 tests
+python3 -m unittest discover -s backtester/tests -t .   # 1146 tests
 python3 -m unittest discover -s soltui/tests -t .       # 1582 tests (TUI dependencies required)
 python3 -m unittest discover -s mongo/tests -t .        # 57 tests
-cd extension && npm test                                # 534 tests
+cd extension && npm test                                # 552 tests
 python3 scripts/check_docs.py                           # these counts, and the retrieval indexes
 ```
 
@@ -74,19 +74,20 @@ locally with the command above, or manually dispatch CI with the boolean
 enabled. The full local suite was run during the 2026-11-12 audit. Its source
 binding and skipped tests are recorded in the audit report.
 
-3316 tests total in the four counted suites: backtester, soltui, mongo and extension. Additional component gates are listed below. `liquidity/` additionally has its own pytest suite in its own virtualenv; see `liquidity/README.md`.
+3337 tests total in the four counted suites: backtester, soltui, mongo and extension. Additional component gates are listed below. `liquidity/` additionally has its own pytest suite in its own virtualenv; see `liquidity/README.md`.
 
 Every count on this page is checked by `scripts/check_docs.py`, which counts the suites by
 discovery and fails on a stale figure. That exists because these numbers were wrong for
 several commits — the docs claimed 250 backtester tests while the suite had grown to 454, and
 nothing caught it.
 
-## Extension — what the 534 tests cover
+## Extension — what the 552 tests cover
 
 | Area | Examples |
 | --- | --- |
 | Live prediction score | Shared Python/browser vectors bind all five grades, accuracy/sample floors, freshness and equal strategy weighting. Headless TUI and Chrome checks prove aligned immutable tick scores, leftward motion, automatic ten-second prediction refresh, error recovery, non-overlapping reads, coin-switch reset and obsolete-response/error suppression |
 | Charts | the vendored Lightweight Charts file is the pinned 5.2.1 build (sha256), ships LICENSE and NOTICE; equity points map to ascending second-resolution line data (`test/charts.test.js`); `npm run e2e` draws it under the real extension CSP with the attribution link |
+| Jupiter1000x reversal window | Independent Python EMA/MACD/BOP and shape vectors; DD/UU closed-body context; prefix/future invariance; gaps, partial openings, stale data, history ordering, shared-stream minute context and aborts. The separate `npm run e2e:1000x` fixture exercises seven chart toggles and actual DOM/canvas/lifecycle behavior; `--live` separately checks public portal reads. No model probability, position or ROE is inferred |
 | Grid math | Arithmetic and geometric ladders against hand-computed values; endpoint pinning; degenerate configs rejected |
 | **Round-trip economics** | An exit rests one rung above its lot, never at the same level; `gross === notional × rungWidth` |
 | Planning | Lot aggregation (two lots on one rung produce **one** order, not a duplicate key); venue minimum; deadband; already-resting suppression |
@@ -168,7 +169,7 @@ find src tools test -name '*.js' -print0 | xargs -0 -n1 node --check
 The oscillating dry run is the meaningful one: it is the only check that closes a round trip and so
 the only one that can detect a zero-spread regression.
 
-## Backtester — 1143 tests
+## Backtester — 1146 tests
 
 Correctness of the simulation is the priority, so the suite concentrates on the things that silently
 inflate a result: **lookahead leaks**, cost application, and metric arithmetic. Any change touching

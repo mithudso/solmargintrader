@@ -1,6 +1,6 @@
 # Jupiter 1000x indicator window
 
-Version: 1.3.0. Delta: preserve temporal ordering between historical and streaming closes, 2026-11-16.
+Version: 1.4.0. Delta: add causal10m reversal context, completed MTF shapes and research-aligned EMA/MACD/BOP, 2026-11-16.
 
 ## Decision and scope
 
@@ -54,7 +54,7 @@ contract. The separate SDK report records the order lifecycle and exact limits.
    stream. Seed history, distinguish developing candles, ignore duplicate/older
    ticks, refresh overlapping history, detect gaps and invalidate stale signals.
    Bound reconnects and abort owned work on stop or navigation.
-3. Implement five configurable causal indicators in a pure module. Use null for
+3. Implement causal indicators and reversal context in pure modules. Use null for
    unavailable warm-up values, an explicit zero-range BOP rule, confirmed versus
    provisional ZigZag points, and closed-only explanatory signal readouts.
 4. Mount a draggable, collapsible window in a shadow root. Put chart/network code
@@ -80,11 +80,18 @@ strategy research, wallets and other worktrees remain under their current owners
 | Balance of Power | `(close-open)/(high-low)`, optional SMA smoothing, default length 1 | Zero-range candle=0; a candle measure, not order-book pressure |
 | Volty Expan Close | Active bar-t stops are prior close ± `SMA(true range,5)*0.75`, computed through t-1 | Uses the repository's stop-entry definition, not Wilder ATR; displayed levels do not simulate fills |
 | Parabolic SAR | Prior SAR + acceleration × (extreme−prior SAR), prior-two-bar clamps, reversal reset; start/step .02, cap .2 | Initial direction follows the first two closes; initialization can differ from vendor implementations |
+| EMA9 / EMA21 | First-close seed; `EMA[t] = alpha*close[t] + (1-alpha)*EMA[t-1]`, `alpha=2/(span+1)` | Same `adjust=False` recurrence as `oracle_leverage/exit50.py`; wait for78 observations |
+| MACD12 / 26 / 9 | EMA12−EMA26; EMA9 of that line is the signal; histogram=line−signal | Same first-close seeds and78-observation warmup as the research context |
 
 The chart may show the developing candle and its developing indicator values.
-History requests seed 502 completed candles and retention allows 503 including
-the developing candle. This covers the largest accepted period of 500, including
-Volty active levels that need 502 completed observations. A disconnect clears the
+Chart history requests seed502 completed candles and retain503 including the
+developing candle. This covers the largest accepted period of500, including
+Volty active levels that need502 completed observations. With reversal context
+enabled, a1m chart instead seeds979 completed candles and retains980; other
+chart intervals also fetch bounded1m history. The extra1m history supplies48
+complete20m shape bars at every minute alignment. Both histories share the same
+catalog binding, public stream, request limits, abort controllers and lifecycle.
+A disconnect clears the
 prior quote; history alone cannot restore live status before the replacement
 stream provides a valid observation.
 A cached stream close overrides a developing history close only when its exchange
@@ -94,6 +101,60 @@ closed history is authoritative. The cached quote keeps its own source timestamp
 Explanatory signal labels use completed, contiguous candles only and require a
 fresh live feed. Indicator agreement is not a calibrated probability or a tested
 trading strategy. No backtest return or execution performance is claimed.
+
+## Two-bar reversal, shape and momentum context
+
+Version0.8.0 defaults the chart to10m and adds5m/20m choices alongside1m/15m/1h.
+Jupiter's public history service accepts5m but rejects native10m/20m resolution
+with HTTP400. Those two chart intervals therefore aggregate complete adjacent5m
+oracle candles. They retain502 completed chart bars and their full accepted
+indicator warmup. Missing constituent candles omit the complete bucket; no
+substitute close or opening is invented. Developing buckets remain provisional.
+The reversal section is fixed at10m, independently of that chart setting. At a
+10m boundary it reads the two preceding adjacent complete candles. Candle color
+compares each candle's own close and open, never the preceding candle's close.
+DD watches UP as long context; UU watches DOWN as short context. A flat/mixed
+pair or missing minute abstains. An opposite preceding candle marks a new pair;
+otherwise the pair is rolling. The current target's color is developing context
+only. A partially observed opening has no developing direction.
+
+The5m/10m/15m/20m cards use epoch-aligned buckets with every minute present and
+closed. Oracle candles have no qualified executed-volume requirement. This
+matches `research/reversal_second_turn.py` with `require_volume=False` and the
+causal frame lookup in `research/mtf_reversal.py`. Each label uses the last48
+contiguous completed bars, with no centered window or future pivot. A gap resets
+warmup. Labels describe currently observed geometry; they do not measure how
+much of a future pattern has completed.
+
+The port follows `research/shape_study.py`: fit a quadratic to log closes and
+linear envelopes to log highs/lows; measure trailing range position, path
+efficiency, return deviation, curvature and envelope contraction. Priority is
+range/trend, V/inverted V, bowl/cap, then compression. The shape and range position
+match frozen independent NumPy/pandas examples. Constant paths have no displayed
+fit-quality statistic; centered sums avoid exposing the Python uncentered
+sum's cancellation residue as quality.
+
+The closed1m momentum row follows `oracle_leverage/exit50.py:minute_features`,
+including the78-bar warmup, first-close seeds and BOP SMA3. This row is separate
+from the selected chart interval's EMA/MACD/BOP series. Its visible heuristic
+counts EMA9−EMA21, MACD histogram and BOP SMA3 signs that agree with the watched
+direction. This0–3 count is not empirical support or probability. Stale quotes,
+unavailable minute history or missing warmup withhold it.
+
+No compatible model is bundled for the market/source/pattern binding. Empirical
+probability and model score remain unavailable. UU-only research must not be
+reflected into a DD probability. The public window also has no typed position
+input. ROE and exit intent remain unavailable; the research +50% ROE target,
+minimum15s age and10s close delay are inactive explanatory context. No position,
+fees, fill, profit or execution claim is inferred from prices.
+
+Independent numerical vectors are generated without network access by
+`extension/tools/1000x-reference.py` using the actual Python research functions.
+`extension/test/1000x-reversal.test.js` checks their exact source hashes and
+compares EMA/MACD/BOP values and all eight observable shape labels plus a flat
+path. It also checks prefix/future invariance, incomplete minutes, gaps,
+developing reversals and unsupported score/position behavior. The feed tests
+cover bounded shared-stream context, history ordering, reconnect and aborts.
 
 ## Public bundle archive
 
@@ -134,7 +195,7 @@ Source tests, browser fixtures and actual public-live acceptance are separate
 gates. A fixture proves the behavior under that fixture, not live venue support.
 The final delivery receipt records the completed checks and remaining limits.
 
-The independent candidate browser gate passed 18 fixture checks and seven
+For version0.7.0, the independent candidate browser gate passed18 fixture checks and seven
 actual-public-portal checks. Both verified the loaded version and exact executed
 module hashes. The live check bound history HTTP 200, SOL feed-6 subscription and
 received price frames to the extension iframe's own CDP session. Fixture results
@@ -152,6 +213,18 @@ npm run e2e:1000x -- --live --evidence /tmp/smt-1000x-public-live
 
 The second command reads the real public site and may fail when that service is
 unavailable. Neither command connects a wallet or permits an order request.
+Version0.8.0 candidate acceptance passed552 extension tests, JavaScript
+lint/types,20 native-browser fixture checks and7 actual-public-portal checks.
+The public gate observed502 complete10m chart candles, all four completed shape
+windows and a separate closed1m EMA/MACD/BOP readout. Both browser receipts bind
+the loaded version and exact executed module hashes. They are stored under
+`/Users/mitch/.local/state/extension-reversal-2398/fixture-resampled/` and
+`/Users/mitch/.local/state/extension-reversal-2398/public-live-resampled/`.
+The preceding19/20 fixture and6/7 public receipts remain preserved. The fixture
+repair seeds a stable minute before testing a developing turn; production still
+withholds a partially observed opening. The public repair aggregates supported5m
+history instead of requesting unsupported10m/20m resolution. Candidate checks
+do not establish that the user's existing unpacked extension has been reloaded.
 Candidate receipts are under
 `/Users/mitch/.local/state/jup1000x-overlay-2348/acceptance/`. The prompt optimizer's
 full audit and executed 8/8 self-check are under

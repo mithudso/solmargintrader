@@ -9,7 +9,7 @@ Four indexes, three of them committed:
 | Artifact | What it answers | Committed |
 |---|---|---|
 | `index/INDEX.json` | "what files exist, and what is each one" | yes |
-| `index/TEXT-INDEX.json` | "which files contain this word" (BM25) | yes |
+| `index/TEXT-INDEX.json.gz` | "which files contain this word" (BM25) | yes |
 | `index/CONCEPT-INDEX.json` | "which files bear on this idea" | yes |
 | `index/semantic-embeddings.npz` | "which files mean something like this" | **no** |
 
@@ -57,10 +57,11 @@ if str(OUT) not in sys.path:  # sibling modules when imported rather than run as
     sys.path.insert(0, str(OUT))
 
 import ollama_ensure  # noqa: E402 - needs the path line above
+import text_index  # noqa: E402
 SCHEMA_VERSION = 1
 
 INDEX_JSON = OUT / "INDEX.json"
-TEXT_JSON = OUT / "TEXT-INDEX.json"
+TEXT_JSON = OUT / "TEXT-INDEX.json.gz"
 CONCEPT_JSON = OUT / "CONCEPT-INDEX.json"
 SEMANTIC_NPZ = OUT / "semantic-embeddings.npz"
 SEMANTIC_MANIFEST = OUT / "SEMANTIC-MANIFEST.json"
@@ -87,6 +88,8 @@ BODY_EXCLUDED_EXT = {".csv"}
 SELF_EXCLUDED = {
     "index/INDEX.json",
     "index/TEXT-INDEX.json",
+    "index/TEXT-INDEX.json.gz",
+    "index/TEXT-INDEX.json.gz.sha256",
     "index/CONCEPT-INDEX.json",
     "index/SEMANTIC-MANIFEST.json",
     # Packaged copies of already indexed documentation. The wiki verifies its
@@ -835,6 +838,14 @@ def check() -> int:
             print(f"    {path}")
         print("  Rebuild: python3 index/build.py all")
         return 1
+    try:
+        digest = old.get("textSha256")
+        if not isinstance(digest, str) or len(digest) != 64:
+            raise ValueError("catalog lacks text index binding")
+        text_index.read(TEXT_JSON, expected_sha256=digest)
+    except ValueError as exc:
+        print(f"INDEX CHECK FAILED: {exc}")
+        return 1
     was = {e["path"]: e["sha1"] for e in old["files"]
            if e["path"] not in DERIVED_TRACKED}
     now = {rel: sha1_of(REPO / rel) for rel in tracked_files()
@@ -863,7 +874,11 @@ def check() -> int:
 
 
 def main(argv: list[str] | None = None) -> int:
-    ap = argparse.ArgumentParser(description=__doc__.splitlines()[0])
+    ap = argparse.ArgumentParser(
+        description=__doc__.splitlines()[0],
+        epilog="The meta command invalidates text search and --check until "
+               "the offline rebuild: python3 index/build.py all.",
+    )
     ap.add_argument("command", nargs="?", default="all",
                     choices=["all", "meta", "text", "concepts", "semantic"])
     ap.add_argument("--local", action="store_true",
@@ -883,7 +898,7 @@ def main(argv: list[str] | None = None) -> int:
     if args.command == "semantic":
         return build_semantic(meta, local=args.local, pull=args.pull)
 
-    if args.command in {"all", "meta"}:
+    if args.command == "meta":
         INDEX_JSON.write_text(json.dumps(meta, indent=2) + "\n")
         c = meta["counts"]
         print(f"{INDEX_JSON.relative_to(REPO)}: {c['files']} files, "
@@ -892,9 +907,8 @@ def main(argv: list[str] | None = None) -> int:
     if args.command in {"all", "text", "concepts"}:
         text = build_text(meta)
         if args.command in {"all", "text"}:
-            # Whitespace alone pushed the complete research index over GitHub's
-            # 100 MiB file limit. Compact JSON preserves every posting and score.
-            TEXT_JSON.write_text(json.dumps(text, separators=(",", ":"), sort_keys=True) + "\n")
+            meta["textSha256"] = text_index.write(TEXT_JSON, text)
+            INDEX_JSON.write_text(json.dumps(meta, indent=2) + "\n")
             s = text["stats"]
             print(f"{TEXT_JSON.relative_to(REPO)}: {s['terms']} terms "
                   f"(pruned from {s['termsBeforePrune']}), "

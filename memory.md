@@ -1,10 +1,17 @@
 # Work continuation
 
-Version: 604
+Version: 607
+Delta: v606 to v607; integrate the UI checkpoint with compressed offline indexes.
 Delta: v603 to v604; save final UI ledger, 85 checks and seven repaired findings pending independent delivery.
 Delta: v602 to v603; preserve both UI optimizer continuation and current-format market-order verifier evidence.
 Delta: v596 to v597; qualify first UI sweep and six repaired defects before upstream integration.
 Delta: v595 to v596; begin isolated feed controls and frozen UI optimizer matrix.
+Delta: v605 to v606; document intentional metadata-only invalidation and offline recovery.
+Delta: v604 to v605; bind compressed index to current catalog and repair documentation after independent review.
+Delta: v603 to v604; begin current-source bootstrap, code review, and lossless index-size repair.
+Delta: v602 to v603; integrate extension reversal delivery with current YOLO continuation.
+Delta: v596 to v597; complete and browser-qualify extension reversal candidate, preserve delivery continuation.
+Delta: v595 to v596; start extension reversal/shape/EMA/MACD implementation in an isolated worktree.
 Delta: v601 to v602; qualify market-open route and explicit close limitation.
 Delta: v600 to v601; qualify market-order account exposure and replay evidence.
 Delta: v599 to v600; preserve independent paper live acceptance and research continuation.
@@ -2826,6 +2833,25 @@ All P01–P48 were individually inspected and checkpointed in /Users/mitch/.loca
 The first sweep contains explicit partial/unavailable evidence for P08/P40 pending SDK disclosure integration, P18/P19 full native contrast, P29 accessibility tree, P30 native zoom/spacing, P33 reduced motion, P39 native installed platform and P41 actual assistive technology. ResearchP49–P70 remains unrequested and out of scope. Never report CLEAN with these gaps.
 
 Next: preserve this checkpoint, merge origin/master including SDK PR303 (4e2dac8b5b73ceafdd63ec01f01078a82bef439b), retain its market-price/nonbinding-entry and unavailable-close disclosures, finish the final48-cell capture plus a complete no-edit sweep, independent review and ledger validation. Parent owns final merge and loaded monitor acceptance. Protected/historical PIDs must be re-inventoried; do not infer runtime identity from an old PID.
+
+
+## Extension two-bar reversal and indicator continuation — 2026-11-16
+
+TASK-2398 owns the extension feature in /Users/mitch/dev/worktrees/extension-reversal-2398, branch feat/extension-reversal-2398 from origin/master 6f69efc. Preserve canonical untracked Pine, SDK PR303, TUI/feed UI work and all existing live configuration. The feature extends the existing public-read floating window. Default reversal interval is10m. Detect DD→UP and UU→DOWN only from the previous two completed contiguous candle bodies; developing target context stays separate. Use completed5/10/15/20m shape windows with the exact trailing48-bar research/shape_study.py geometry, and oracle_leverage/exit50.py first-close-seeded EMA9/21, MACD12/26/9 and BOP SMA3 on completed1m candles (78-bar warmup). No shipped compatible model or typed position source has been established; probability, model score, ROE and exit status stay unavailable. Do not mirror UU empirical evidence to DD. Reuse the existing JupiterFeed and one public stream. Extra bounded1m history may supply shape/momentum context without another recorder.
+
+Before implementation the exact user prompt is saved in prompts.md. Required remaining work: implement pure analytics and lifecycle-safe minute context; extend accessible panel/series; add independent Python parity and prefix/future/gap/stale regressions; run owning tests, lint/types and fixture/public browser gates with exact loaded hashes; coordinate deterministic docs/index/wiki changes with parent; commit and push a reviewable draft PR. Parent owns independent review and merge. Hub semantic lookup did not return before a bounded wait; existing INDEX_NO_AUTO=1 keyword lookup and targeted source reads supplied the contracts.
+
+
+## Extension reversal candidate verification and delivery continuation — 2026-11-16
+
+Version0.8.0 now extends the existing floating public-read window with previous-two-completed10m DD→UP / UU→DOWN context, separate developing target, completed48-bar5/10/15/20m shapes, selected-chart EMA9/21 and MACD12/26/9, separate research-aligned closed1m momentum with BOP SMA3 and78-bar warmup, and an explicitly heuristic0–3 alignment count. Empirical probability/model score and position/ROE/exit remain unavailable. Existing saved view settings, trading config, disarmed installation defaults, host permissions, command registry and wallet boundaries are preserved. Updated owner-source module census for the new pure reversal module. Frozen numerical vectors bind actual Python source hashes; every observable shape label and EMA/MACD/BOP value passed parity, with prefix/future mutation, gap, partial-opening, history ordering, reconnect and abort coverage.
+
+The actual public history endpoint returned HTTP400 Unsupported resolution:10 and20;5m succeeded. Chart10m/20m now aggregate complete5m constituents and omit incomplete completed buckets, while retaining502 completed chart bars. The same existing public stream feeds bounded979-minute context; no recorder or extra stream was created. Durable provider lesson is KNOW-2409, linked to TASK-2398 and the existing window architecture.
+
+Completed candidate checks:552/552 extension tests and root JavaScript lint/types, both exit0 (routine Terra logs /Users/mitch/.local/state/extension-reversal-2398/checks/extension-test-repaired.log and check-js-repaired.log); native browser fixture20/20 exit0 at /Users/mitch/.local/state/extension-reversal-2398/fixture-resampled/receipt.json; actual public portal7/7 exit0 at /Users/mitch/.local/state/extension-reversal-2398/public-live-resampled/receipt.json. Receipts verify loaded0.8.0 module hashes, single stream and read-only network/storage behavior. Public SOL showed mixed-pair abstention, a developing UP target, four completed shape windows and closed1m momentum. Visual inspection passed. Earlier19/20 fixture and6/7 public failures are retained; they exposed the partial-opening fixture boundary and unsupported native interval, respectively. The repaired fixture reseeds away from a minute boundary; runtime refusal was not weakened. Offline dry-run closed one round trip at net+$0.3492 after fees, exit0.
+
+Deterministic documentation, operation/tool inventories, packaged wiki and metadata/text/concept indexes were regenerated without embeddings/inference. Docs check exit0 counts1143 backtester +1582 SolTUI +57 Mongo +552 extension =3334. The qualified command uses PYTHONPATH=/Users/mitch/dev/worktrees/extension-reversal-2398/botmanager/src with /Users/mitch/.venvs/soltui/bin/python; unqualified environments lacked either botmanager.blind/config or executor/solders imports. No installed environment was modified. Remaining: commit/push this owned candidate, open a draft PR, let parent independently review, wait for final-head CI, merge and perform canonical loaded acceptance. Parent owns the merge and final task completion. Preserve all unrelated SDK/TUI work and canonical Pine.
+
 ## Current-format YOLO verifier implementation
 
 Worktree: /Users/mitch/dev/worktrees/yolo-execution-v2; branch depends on inspection PR 301. Implement the observed open subset with current YOLO/Pyth deployment pins, live Pyth ECDSA trust state, exact canonical price feed, exact owner intent, transaction/account binding and read-only post-state simulation. Preserve the legacy verifier. Current-format close remains blocked until payout and debt account semantics are independently demonstrated. No signing, sending, funding or arming during investigation. Independent code and economic review is required before merge or funded use. Program upgradeability and simulation drift remain explicit limitations.
@@ -2851,3 +2877,11 @@ The final actual Console.preview message, produced with fake adapters in a tempo
 UI optimizer exit is NEEDS_EVIDENCE: 37 PASS, 4 N_A, 5 PARTIAL, 2 UNAVAILABLE; 22 unrequested research methods remain OUT_OF_SCOPE. There were two complete method sweeps, with a partial integration repair between them. The final complete sweep made no source edits. All seven confirmed Medium+ findings are fixed, and uio_check validate returned valid=true with no errors. Independent final review and real installed acceptance are still pending with the parent; do not claim CLEAN or complete TASK-2399 yet. Durable lessons are KNOW-2415 (null nested snapshot crash) and KNOW-2416 (long real preview layout).
 
 Raw evidence, driver, commands and complete pass history: /Users/mitch/.local/state/oracle-ui-2399. The candidate worktree is /Users/mitch/dev/worktrees/oracle-ui-2399. The current protected replacement user TUI is PID35320; historical PIDs 28953 and 87752 are not current ownership proof. Re-inventory before any lifecycle action. Parent owns fresh independent review, final-head CI/merge and launching an owned monitor only after verified installation. Preserve all shared collectors, paper observers, SDK source disclosures, private Pine and private armed configuration. No task-owned index regeneration ran; parent TASK-2410 owns the near-limit TEXT-INDEX delivery boundary.
+
+## Current-source repo health — 2026-11-16
+
+TASK-2410 audits the current source without resuming paused TASK-1541 or PR 235. Ledger baseline at 4e2dac8 planned 50 changed and 176 new files, with 796 unchanged skipped. PR 304 was independently reviewed and merged at c250f307; this worktree now starts from that commit. The tracked keyword index was within 181104 bytes of GitHub’s 100 MiB limit before that merge. Preserve all postings and source bodies; implement and verify deterministic gzip and artifact integrity before delivery. Current readers reject a missing gzip even if an old raw file exists, so stale legacy data cannot silently win. The old-format code remains able to read old checkouts. Baseline test commands require isolation from owner configuration, processes, wallets and paused services. Full CDO per-file fan-out and final feature-source review remain pending capacity; no strategy benchmark or empirical champion is authorized.
+
+Independent review proved an old valid gzip plus its own matching checksum passed the initial freshness gate. The index catalog now binds the decoded SHA-256, and both search and freshness validation reject a mismatch. A regression test failed before the correction and passed afterward. The previous reader remains in old checkouts; current readers do not fall back to an untrusted raw artifact.
+
+The metadata-only index command deliberately clears the catalog text binding. Search and freshness checks fail until the offline all rebuild restores a matching catalog and gzip index. Independent review accepted this fail-closed behavior when documented.
