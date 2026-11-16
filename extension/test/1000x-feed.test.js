@@ -355,6 +355,38 @@ test('developing-history overlap preserves WS extrema and the newest close obser
   h.feed.stop();
 });
 
+test('newer developing history wins over a cached quote when no post-request stream data arrives', async () => {
+  let reads = 0;
+  let release;
+  let requestedAt;
+  const h = harness({ readHistory: (now) => {
+    reads += 1;
+    if (reads === 1) return history(now);
+    requestedAt = now;
+    return new Promise((resolve) => { release = resolve; });
+  } });
+  await h.feed.start(); h.sockets[0].open(); h.sockets[0].emit(message(h.state.now));
+  for (let i = 0; i < 5; i += 1) {
+    await h.advance(5000); h.sockets[0].emit(message(h.state.now, '7100000000'));
+  }
+  const cachedQuote = h.feed.getSnapshot().quote;
+  await h.advance(5000); // Periodic refresh starts; the last stream tick is five seconds older.
+  assert.equal(typeof release, 'function');
+  assert.ok(cachedQuote.exchangeMs < requestedAt);
+  const payload = history(requestedAt);
+  payload.t.push(BASE / 1000); payload.o.push(70); payload.h.push(85); payload.l.push(65); payload.c.push(80);
+  release(payload); await flush();
+  const snapshot = h.feed.getSnapshot();
+  const developing = snapshot.candles.at(-1);
+  assert.equal(developing.close, 80, 'An older cached quote must not overwrite the newer history close');
+  assert.equal(developing.high, 85);
+  assert.equal(developing.low, 65);
+  assert.equal(developing.closed, false);
+  assert.deepEqual(snapshot.quote, cachedQuote, 'History must not pretend that a new stream quote arrived');
+  assert.equal(snapshot.lastHistoryMs, h.state.now);
+  h.feed.stop();
+});
+
 test('a request spanning a candle boundary cannot certify its formerly developing bar', async () => {
   let reads = 0;
   let release;

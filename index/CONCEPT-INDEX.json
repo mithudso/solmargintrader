@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-11-16T13:00:30+00:00",
+  "generatedAt": "2026-11-16T13:23:24+00:00",
   "schemaVersion": 1,
   "note": "Concepts are derived from the repo's own vocabulary \u2014 the FAMILY dict, strategy-card frontmatter, docs/trading-signals-concept-family.md, and terms verified to recur in the corpus. A concept matching no file is dropped, not kept.",
   "counts": {
@@ -439,7 +439,7 @@
         "centred",
         "shift"
       ],
-      "matchingFiles": 1527,
+      "matchingFiles": 1526,
       "shown": 30,
       "files": [
         {
@@ -503,10 +503,6 @@
           "hits": 21
         },
         {
-          "path": "docs/FILES.md",
-          "hits": 19
-        },
-        {
           "path": "research/signal_redundancy.py",
           "hits": 19
         },
@@ -515,8 +511,12 @@
           "hits": 19
         },
         {
-          "path": "memory.md",
+          "path": "docs/FILES.md",
           "hits": 18
+        },
+        {
+          "path": "memory.md",
+          "hits": 17
         },
         {
           "path": "backtester/tests/test_engine_audit.py",
@@ -587,7 +587,7 @@
         },
         {
           "path": "docs/FILES.md",
-          "hits": 507
+          "hits": 506
         },
         {
           "path": "llms/jupsol-llms.txt",
@@ -607,7 +607,7 @@
         },
         {
           "path": "memory.md",
-          "hits": 260
+          "hits": 261
         },
         {
           "path": ".cdo/reviews-2026-11-12/ecosystem-combined-full-final.json",

@@ -1,6 +1,8 @@
 # Work continuation
 
-Version: 588
+Version: 590
+Delta: v589 to v590; complete full developer-corpus review and final repaired-source browser checks.
+Delta: v588 to v589; qualify temporal history/stream merge ordering.
 Delta: v587 to v588; qualify reviewed warmup capacity and replacement-stream freshness.
 Delta: integrated to v587; preserve both Jupiter overlay and incoming nine-strategy research records.
 Delta: v581 to v582; repair generated operation inventories found by final-head CI.
@@ -2757,3 +2759,14 @@ Merged incoming master 6286bfc into the overlay branch after PR296 delivered the
 Automated review of the original PR identified two valid P2 issues. Added three regressions and saved red exit1, cap-only green and final25-case green receipts under /Users/mitch/.local/state/jup1000x-overlay-2348/review-regressions. The shared MAX_INDICATOR_LENGTH remains500. The feed now requests502 completed bars and retains503 including developing. It supports maximum RSI/BOP/Volty periods at startup and rollover. Disconnect clears the prior quote, preventing history from reviving it before a replacement frame and preserving the new socket's20-second idle grace. Final feed hash f7c9616578f1b75ff633440e26f4384adf3277a8087ba562efb70b33cd9d926b.
 
 Independent review-fix acceptance passed18 native-browser fixture checks and7 actual-public checks. The old quote was643ms old during immediate reconnect history; all signals stayed unavailable until a new frame. The actual public gate saw502 completed candles. Receipts and exact hashes are under /Users/mitch/.local/state/jup1000x-overlay-2348/acceptance/review-fix. Adopted the one-check harness update. Combined test counts are1143 backtester,533 extension,1582 SolTUI and57 Mongo, total3315. PR297 is temporarily draft while final checks run. The accepted earlier CI head10d3b97 passed all jobs; the final repaired head requires its own CI before merge. Use the external delivery receipt for final status.
+
+
+## Jupiter overlay temporal merge regression
+
+A further received review comment reproduced a cached stream close71 overwriting a newer developing history close80. The26th feed regression failed before the repair and passed afterward. Preserve a cached close or replay its quote only when exchangeMs follows requestedAtMs. Keep authentic observed extrema and the quote's own timestamp. All prior post-request streaming, closed-history, maximum-period and replacement-connection regressions remain green. Red/green evidence is under /Users/mitch/.local/state/jup1000x-overlay-2348/review-regressions/history-order. Final feed hash a23946e418c90223c11fa64a6b486c2f8f0c9366b73c7b2b90789953f26dd5a0. Combined source counts are534 extension and3316 total. Final same-scope browser/CI checks and delivery continue under TASK-2351 and the external delivery receipt.
+
+## Jupiter overlay final source and documentation gate
+
+Three separate reviewers read all 27,452 lines of the requested developer snapshot, raw SHA256 28db4e6df245eea4ef85336a6740fef9db4c5420c11a462238917312f116e873. Their contiguous ranges 1–9151, 9152–18302 and 18303–27452 have no remaining gaps or unrepaired truncation. Combined coverage and findings are under /Users/mitch/.local/state/jup1000x-overlay-2348/docs-full-review. This supersedes the earlier relevant-pages-only limitation. External OpenAPI links are not part of that full-file claim. The SDK report distinguishes separate product contracts and general Interface terms; neither establishes a supported 1000x write API or user eligibility.
+
+The exact repaired source passed 534 extension tests, JavaScript lint/types, docs/index freshness, 18 browser fixture checks and 7 public-live checks. The first final public attempt returned 5/7 because a minute-boundary history request did not certify the newly closed candle within 25 seconds and a native-control text comparison included volatile ticker prices. The unchanged repeat passed 7/7; both receipts are preserved under /Users/mitch/.local/state/jup1000x-overlay-2348/acceptance/history-order-final. No harness threshold or product code was changed to obtain the repeat. Final-tip CI, merge and canonical loaded-state acceptance remain tracked by TASK-2351 and /Users/mitch/.local/state/jup1000x-overlay-2348/delivery.json.

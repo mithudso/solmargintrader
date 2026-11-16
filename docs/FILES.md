@@ -1,6 +1,6 @@
 # Every file in this repository
 
-**Generated** from `index/INDEX.json` at commit `10d3b97` (2026-11-16T13:00:24+00:00). 3886 tracked files, 138.6 MB.
+**Generated** from `index/INDEX.json` at commit `a108310` (2026-11-16T13:07:53+00:00). 3886 tracked files, 138.6 MB.
 
 Regenerate with:
 
@@ -648,9 +648,9 @@ Repository-level entry points and agent instructions. `AGENTS.md` and `CLAUDE.md
 
 #### `memory.md`
 
-`doc` · 2760 lines · 566,899 B · description: **extracted**
+`doc` · 2766 lines · 567,828 B · description: **extracted**
 
-**Purpose.** Version: 588 Delta: v587 to v588; qualify reviewed warmup capacity and replacement-stream freshness. Delta: integrated to v587; preserve both Jupiter overlay and incoming nine-strategy research records.
+**Purpose.** Version: 589 Delta: v588 to v589; qualify temporal history/stream merge ordering. Delta: v587 to v588; qualify reviewed warmup capacity and replacement-stream freshness.
 
 **Use.** Read it.
 
@@ -992,9 +992,9 @@ Curated prose. `ARCHITECTURE.md` explains how the pieces fit, `TESTING.md` is th
 
 #### `docs/JUPITER-1000X-OVERLAY.md`
 
-`doc` · 172 lines · 10,896 B · description: **extracted**
+`doc` · 175 lines · 11,146 B · description: **extracted**
 
-**Purpose.** Version: 1.2.0. Delta: qualify maximum-period warmup and replacement-stream freshness, 2026-11-16. Extend the existing Chrome MV3 extension with a floating, extension-owned chart on https://jup.ag/1000x?market=SOL&mode=classic . Use the locally vendored
+**Purpose.** Version: 1.3.0. Delta: preserve temporal ordering between historical and streaming closes, 2026-11-16. Extend the existing Chrome MV3 extension with a floating, extension-owned chart on https://jup.ag/1000x?market=SOL&mode=classic . Use the locally vendored
 
 **Use.** Read it.
 
@@ -26628,7 +26628,7 @@ The Chrome extension has a separately armed trading surface. Dry-run is the defa
 
 #### `extension/src/1000x/feed.js`
 
-`code-js` · 474 lines · 19,473 B · description: **extracted**
+`code-js` · 477 lines · 19,739 B · description: **extracted**
 
 **Purpose.** Observed public Jupiter oracle contracts, bound in docs/JUPITER-1000X-OVERLAY.md. This module only reads markets/history and subscribes to public oracle prices. Prices are oracle observations, not venue fills or trade-volume observations.
 
@@ -27318,7 +27318,7 @@ The Chrome extension has a separately armed trading surface. Dry-run is the defa
 
 #### `extension/test/1000x-feed.test.js`
 
-`test` · 502 lines · 22,237 B · description: **none**
+`test` · 534 lines · 23,724 B · description: **none**
 
 **Purpose.** _No description available._
 

@@ -1,6 +1,6 @@
 # Jupiter 1000x indicator window
 
-Version: 1.2.0. Delta: qualify maximum-period warmup and replacement-stream freshness, 2026-11-16.
+Version: 1.3.0. Delta: preserve temporal ordering between historical and streaming closes, 2026-11-16.
 
 ## Decision and scope
 
@@ -87,6 +87,9 @@ the developing candle. This covers the largest accepted period of 500, including
 Volty active levels that need 502 completed observations. A disconnect clears the
 prior quote; history alone cannot restore live status before the replacement
 stream provides a valid observation.
+A cached stream close overrides a developing history close only when its exchange
+timestamp follows that history request. Earlier observed extrema remain included;
+closed history is authoritative. The cached quote keeps its own source timestamp.
 
 Explanatory signal labels use completed, contiguous candles only and require a
 fresh live feed. Indicator agreement is not a calibrated probability or a tested

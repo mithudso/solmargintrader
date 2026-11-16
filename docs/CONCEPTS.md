@@ -1,6 +1,6 @@
 # Conceptual index
 
-**Generated** from `index/CONCEPT-INDEX.json` (2026-11-16T13:00:24+00:00). 21 concepts.
+**Generated** from `index/CONCEPT-INDEX.json` (2026-11-16T13:07:53+00:00). 21 concepts.
 
 ```bash
 python3 index/build.py all              # refresh
@@ -78,7 +78,7 @@ Full list: `python3 index/search.py --concept costs -n 1602`
 
 ### Lookahead and fill timing
 
-`lookahead` · **1527 files** · matched on `lookahead`, `fill_delay`, `warmup`, `warmup_bars`, `displacement`, `centred`, `shift`
+`lookahead` · **1526 files** · matched on `lookahead`, `fill_delay`, `warmup`, `warmup_bars`, `displacement`, `centred`, `shift`
 
 A signal at bar t may use data only through t. Centred indicators, same-bar fills and displaced clouds are the recurring hazards.
 
@@ -93,7 +93,7 @@ Strongest files:
 - `research/tradingview-script-profiles/shard-a.jsonl` (36 hits)
 - `backtester/core/strategies/advanced.py` (32 hits)
 
-Full list: `python3 index/search.py --concept lookahead -n 1527`
+Full list: `python3 index/search.py --concept lookahead -n 1526`
 
 ### On-chain execution reality
 

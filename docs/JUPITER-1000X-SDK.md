@@ -1,6 +1,6 @@
 # Jupiter 1000x SDK and order groundwork
 
-Version: 1.0.0. Delta: initial source-bound capability review, 2026-11-16.
+Version: 1.1.0. Delta: distinguish interface terms and full-corpus review from the initial SDK slice, 2026-11-16.
 
 The indicator overlay is read-only. This document prepares a later execution
 design; it does not enable signing, submission, arming, or autonomous trading.
@@ -14,10 +14,19 @@ The official developer snapshot at
 1,182,340 bytes, 27,452 lines and 243 `Source:` sections. All sections were
 inventoried. This SDK slice reviewed Development Basics, Environment Setup,
 the complete SDK & API License Agreement, all five Perps overview/account
-pages, and Jupiter Tool Kits. It did not semantically review every unrelated
-developer page. The inventory and exact reviewed ranges are in
+pages, and Jupiter Tool Kits. That initial pass did not review every unrelated
+developer page. Its inventory and exact reviewed ranges are in
 /Users/mitch/.local/state/jup1000x-overlay-2348/sdk-notes/developer-sections.json
 and /Users/mitch/.local/state/jup1000x-overlay-2348/sdk-notes/docs-review.json.
+
+Three separate reviewers then read all 27,452 lines in bounded sections, with
+no remaining gaps or unrepaired truncation. The combined receipt is
+/Users/mitch/.local/state/jup1000x-overlay-2348/docs-full-review/coverage.json.
+The snapshot SHA-256 is `28db4e6df245eea4ef85336a6740fef9db4c5420c11a462238917312f116e873`.
+This is complete review of the supplied snapshot; unexpanded OpenAPI references
+and linked repositories are not automatically included. The broader review
+found no 1000x feed or position create/close contract. RFQ streaming, Trigger
+authentication, Lend units and Plugin `close()` belong to separate products.
 
 The developer Perps overview calls its API a work in progress and describes
 the JLP program, `PERPHjGBqRHArX4DySjwM6UJHiR3sWAatqfdBS2qQJu`.
@@ -48,6 +57,15 @@ for the portal service. Applicability to a future distributed 1000x integration
 remains unresolved by this engineering review:
 
 https://developers.jup.ag/docs/legal/sdk-api-license-agreement
+
+The separate Interface terms define the Interface as `https://jup.ag`, restrict
+copying and reverse engineering, list prohibited wallet localities, and forbid
+network or VPN circumvention. This engineering review does not establish user
+eligibility or resolve how those clauses apply to a distributed 1000x adapter.
+It provides no permission to bypass access controls. Exact source spans are in
+the local full-corpus review, including lines 4088–4197 of the archived snapshot:
+
+https://developers.jup.ag/docs/legal/terms-of-use
 
 Current public frontend text identifies the separate 1000x program
 `yoLovHV5eT4DNPMG2Bu1NLmq8nVygEAPrNT1Rx6vWFA` and service

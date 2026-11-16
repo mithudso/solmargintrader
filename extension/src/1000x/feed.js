@@ -301,14 +301,17 @@ export class JupiterFeed {
         if (!candle.closed && observed && this.#liveTimes.has(candle.time)) {
           merged.set(candle.time, {
             ...candle, high: Math.max(candle.high, observed.high), low: Math.min(candle.low, observed.low),
-            close: observed.close, partial: observed.partial || this.#lastGapMs > requestedAtMs,
+            close: this.#liveTimes.get(candle.time) > requestedAtMs ? observed.close : candle.close,
+            partial: observed.partial || this.#lastGapMs > requestedAtMs,
           });
         } else {
           merged.set(candle.time, candle);
         }
       }
       this.#candles = continuity([...merged.values()].sort((a, b) => a.time - b.time).slice(-MAX_BARS), this.intervalSec);
-      if (this.#quote) this.#applyQuote(this.#quote, false);
+      // Only observations newer than this request may advance its close. Keep
+      // older quote timestamps truthful rather than replaying them as new data.
+      if (this.#quote?.exchangeMs > requestedAtMs) this.#applyQuote(this.#quote, false);
       this.#lastHistoryMs = this.#clock();
       const required = Math.floor(this.#clock() / 1000 / this.intervalSec) * this.intervalSec - this.intervalSec;
       this.#historyReady = history.some((candle) => candle.time === required && candle.closed);
