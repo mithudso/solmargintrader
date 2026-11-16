@@ -1,16 +1,16 @@
 {
-  "generatedAt": "2026-11-16T10:00:40+00:00",
+  "generatedAt": "2026-11-16T12:25:03+00:00",
   "schemaVersion": 1,
   "repoRoot": "~/dev/solmargintrader",
-  "commit": "8bec075",
+  "commit": "cdda382",
   "counts": {
-    "files": 3824,
-    "bytes": 138173942,
+    "files": 3871,
+    "bytes": 138337893,
     "byKind": {
       "strategy-card": 1478,
-      "doc": 803,
-      "test": 428,
-      "code-python": 397,
+      "doc": 819,
+      "test": 442,
+      "code-python": 414,
       "config": 286,
       "result": 133,
       "code-js": 116,
@@ -22,8 +22,8 @@
       "code-shell": 4
     },
     "byTopDir": {
-      "backtester": 1956,
-      "research": 428,
+      "backtester": 1965,
+      "research": 466,
       "soltui": 192,
       ".cdo": 161,
       "docs": 158,
@@ -59,7 +59,7 @@
       "archive": 1,
       "tradingskilllist": 1
     },
-    "withSummary": 3458
+    "withSummary": 3496
   },
   "files": [
     {
@@ -3224,7 +3224,7 @@
       "summarySource": "opening-prose",
       "bytes": 7268,
       "lines": 125,
-      "sha1": "3c9c3ab5ad99932a54b6ca393c5233e24f25fc7d",
+      "sha1": "8531e5c6a1d87332a5badd5837a010fea925b89a",
       "symbols": [],
       "imports": [],
       "internalImports": [],
@@ -4124,7 +4124,7 @@
       "summarySource": "opening-prose",
       "bytes": 17575,
       "lines": 241,
-      "sha1": "be166527f3c799421890c35e864e20521783b719",
+      "sha1": "3277af98eaceb278d8594f5b040fd52f1938f52f",
       "symbols": [],
       "imports": [],
       "internalImports": [],
@@ -4394,7 +4394,7 @@
       "summarySource": "opening-prose",
       "bytes": 4281,
       "lines": 69,
-      "sha1": "4ec68b2fa8b861c0ae824cee66a6ba7ae33b4823",
+      "sha1": "7315fe319c09da6cb5227243bc6aa83bc2f80ee7",
       "symbols": [],
       "imports": [],
       "internalImports": [],
@@ -4538,7 +4538,7 @@
       "summarySource": "opening-prose",
       "bytes": 15533,
       "lines": 234,
-      "sha1": "06e1e3144e37d60538fe9744a83b26b261b7bfe5",
+      "sha1": "18e842edad772201b841899a26b507ee10c2c9bb",
       "symbols": [],
       "imports": [],
       "internalImports": [],
@@ -56404,6 +56404,41 @@
       }
     },
     {
+      "id": "backtester/strategy_research/pivot_reversal_v33_source_research.md",
+      "path": "backtester/strategy_research/pivot_reversal_v33_source_research.md",
+      "dir": "backtester/strategy_research",
+      "name": "pivot_reversal_v33_source_research.md",
+      "ext": ".md",
+      "kind": "doc",
+      "title": "TradingView Pivot Reversal Strategy v33 research",
+      "summary": "Confirmed high/low pivot stop-order adapter with unresolved tie semantics.",
+      "summarySource": "frontmatter",
+      "bytes": 1799,
+      "lines": 42,
+      "sha1": "bd82e0d64b44eac3245322b7382954ec4964fda8",
+      "symbols": [],
+      "imports": [],
+      "internalImports": [],
+      "frontmatter": {
+        "id": "pivot_reversal_v33_source_research",
+        "name": "TradingView Pivot Reversal Strategy v33 research",
+        "kind": "exposure-strategy",
+        "status": "spec-only",
+        "family": "source-defined",
+        "summary": "Confirmed high/low pivot stop-order adapter with unresolved tie semantics.",
+        "registry_key": "null",
+        "runner": "null",
+        "warmup_bars": "null",
+        "evaluation": "null",
+        "data_required": "[ohlcv]",
+        "data_available": "false",
+        "success_likelihood": "low",
+        "success_basis": "a-priori",
+        "params": "{}",
+        "presets": "{}"
+      }
+    },
+    {
       "id": "backtester/strategy_research/prediction_markets.md",
       "path": "backtester/strategy_research/prediction_markets.md",
       "dir": "backtester/strategy_research",
@@ -56438,6 +56473,76 @@
       }
     },
     {
+      "id": "backtester/strategy_research/rs_zigzag_pa_v1.md",
+      "path": "backtester/strategy_research/rs_zigzag_pa_v1.md",
+      "dir": "backtester/strategy_research",
+      "name": "rs_zigzag_pa_v1.md",
+      "ext": ".md",
+      "kind": "doc",
+      "title": "RS ZigZag PA Strategy V4.1",
+      "summary": "Legacy harmonic ZigZag strategy with higher-timeframe lookahead; research only.",
+      "summarySource": "frontmatter",
+      "bytes": 3640,
+      "lines": 71,
+      "sha1": "8c014216ee1f0796e8284871b519dbb5af2fab81",
+      "symbols": [],
+      "imports": [],
+      "internalImports": [],
+      "frontmatter": {
+        "id": "rs_zigzag_pa_v1",
+        "name": "RS ZigZag PA Strategy V4.1",
+        "kind": "exposure-strategy",
+        "status": "spec-only",
+        "family": "source-defined",
+        "summary": "Legacy harmonic ZigZag strategy with higher-timeframe lookahead; research only.",
+        "registry_key": "null",
+        "runner": "null",
+        "warmup_bars": "null",
+        "evaluation": "null",
+        "data_required": "[ohlcv]",
+        "data_available": "false",
+        "success_likelihood": "low",
+        "success_basis": "a-priori",
+        "params": "{}",
+        "presets": "{}"
+      }
+    },
+    {
+      "id": "backtester/strategy_research/sar_v33_source_research.md",
+      "path": "backtester/strategy_research/sar_v33_source_research.md",
+      "dir": "backtester/strategy_research",
+      "name": "sar_v33_source_research.md",
+      "ext": ".md",
+      "kind": "doc",
+      "title": "TradingView Parabolic SAR Strategy v33 research",
+      "summary": "Source-bound SAR stop-order research adapter, not a validated TradingView replica.",
+      "summarySource": "frontmatter",
+      "bytes": 1616,
+      "lines": 39,
+      "sha1": "c3650ce53242f73c70c61546155d7e8e6212a74e",
+      "symbols": [],
+      "imports": [],
+      "internalImports": [],
+      "frontmatter": {
+        "id": "sar_v33_source_research",
+        "name": "TradingView Parabolic SAR Strategy v33 research",
+        "kind": "exposure-strategy",
+        "status": "spec-only",
+        "family": "source-defined",
+        "summary": "Source-bound SAR stop-order research adapter, not a validated TradingView replica.",
+        "registry_key": "null",
+        "runner": "null",
+        "warmup_bars": "null",
+        "evaluation": "null",
+        "data_required": "[ohlcv]",
+        "data_available": "false",
+        "success_likelihood": "low",
+        "success_basis": "a-priori",
+        "params": "{}",
+        "presets": "{}"
+      }
+    },
+    {
       "id": "backtester/strategy_research/scalping.md",
       "path": "backtester/strategy_research/scalping.md",
       "dir": "backtester/strategy_research",
@@ -56468,6 +56573,41 @@
         "data_available": "false",
         "success_likelihood": "very-low",
         "success_basis": "a-priori",
+        "presets": "{}"
+      }
+    },
+    {
+      "id": "backtester/strategy_research/single_ma_v31_source_research.md",
+      "path": "backtester/strategy_research/single_ma_v31_source_research.md",
+      "dir": "backtester/strategy_research",
+      "name": "single_ma_v31_source_research.md",
+      "ext": ".md",
+      "kind": "doc",
+      "title": "TradingView Single moving average v31 research",
+      "summary": "Source-bound moving-average research adapter; TradingView parity remains unverified.",
+      "summarySource": "frontmatter",
+      "bytes": 1350,
+      "lines": 28,
+      "sha1": "50bd0671e00080e4db199b8198d388347b1ee692",
+      "symbols": [],
+      "imports": [],
+      "internalImports": [],
+      "frontmatter": {
+        "id": "single_ma_v31_source_research",
+        "name": "TradingView Single moving average v31 research",
+        "kind": "exposure-strategy",
+        "status": "spec-only",
+        "family": "source-defined",
+        "summary": "Source-bound moving-average research adapter; TradingView parity remains unverified.",
+        "registry_key": "null",
+        "runner": "null",
+        "warmup_bars": "null",
+        "evaluation": "null",
+        "data_required": "[ohlcv]",
+        "data_available": "false",
+        "success_likelihood": "low",
+        "success_basis": "a-priori",
+        "params": "{}",
         "presets": "{}"
       }
     },
@@ -66386,6 +66526,41 @@
       }
     },
     {
+      "id": "backtester/strategy_research/two_ma_v31_source_research.md",
+      "path": "backtester/strategy_research/two_ma_v31_source_research.md",
+      "dir": "backtester/strategy_research",
+      "name": "two_ma_v31_source_research.md",
+      "ext": ".md",
+      "kind": "doc",
+      "title": "TradingView Two moving averages v31 research",
+      "summary": "Source-bound moving-average research adapter; TradingView parity remains unverified.",
+      "summarySource": "frontmatter",
+      "bytes": 1317,
+      "lines": 28,
+      "sha1": "9e3eaff7ed069e2c39c8edd7a5b0fe1eabe4259f",
+      "symbols": [],
+      "imports": [],
+      "internalImports": [],
+      "frontmatter": {
+        "id": "two_ma_v31_source_research",
+        "name": "TradingView Two moving averages v31 research",
+        "kind": "exposure-strategy",
+        "status": "spec-only",
+        "family": "source-defined",
+        "summary": "Source-bound moving-average research adapter; TradingView parity remains unverified.",
+        "registry_key": "null",
+        "runner": "null",
+        "warmup_bars": "null",
+        "evaluation": "null",
+        "data_required": "[ohlcv]",
+        "data_available": "false",
+        "success_likelihood": "low",
+        "success_basis": "a-priori",
+        "params": "{}",
+        "presets": "{}"
+      }
+    },
+    {
       "id": "backtester/strategy_research/vol_of_vol_term_structure.md",
       "path": "backtester/strategy_research/vol_of_vol_term_structure.md",
       "dir": "backtester/strategy_research",
@@ -68752,6 +68927,109 @@
       ],
       "internalImports": [
         "backtester"
+      ],
+      "frontmatter": {}
+    },
+    {
+      "id": "backtester/tests/test_tv_channel_breakout_intents.py",
+      "path": "backtester/tests/test_tv_channel_breakout_intents.py",
+      "dir": "backtester/tests",
+      "name": "test_tv_channel_breakout_intents.py",
+      "ext": ".py",
+      "kind": "test",
+      "title": "test_tv_channel_breakout_intents",
+      "summary": "Channel Breakout has a deliberate asymmetrical source guard.",
+      "summarySource": "docstring",
+      "bytes": 1733,
+      "lines": 38,
+      "sha1": "6c15e90c3b6a0a92379495f74c75cfd4a79915ad",
+      "symbols": [
+        "class ChannelBreakoutTests"
+      ],
+      "imports": [
+        "research",
+        "unittest"
+      ],
+      "internalImports": [
+        "research"
+      ],
+      "frontmatter": {}
+    },
+    {
+      "id": "backtester/tests/test_tv_momentum_intents.py",
+      "path": "backtester/tests/test_tv_momentum_intents.py",
+      "dir": "backtester/tests",
+      "name": "test_tv_momentum_intents.py",
+      "ext": ".py",
+      "kind": "test",
+      "title": "test_tv_momentum_intents",
+      "summary": "Source-trace tests for the isolated TradingView Momentum intent adapter.",
+      "summarySource": "docstring",
+      "bytes": 2845,
+      "lines": 56,
+      "sha1": "2115cc5a66b1936e27fd3a2c3a762449e9fb0257",
+      "symbols": [
+        "class MomentumIntentTests"
+      ],
+      "imports": [
+        "research",
+        "unittest"
+      ],
+      "internalImports": [
+        "research"
+      ],
+      "frontmatter": {}
+    },
+    {
+      "id": "backtester/tests/test_tv_price_channel_intents.py",
+      "path": "backtester/tests/test_tv_price_channel_intents.py",
+      "dir": "backtester/tests",
+      "name": "test_tv_price_channel_intents.py",
+      "ext": ".py",
+      "kind": "test",
+      "title": "test_tv_price_channel_intents",
+      "summary": "Price Channel source intent traces; this does not establish TV parity.",
+      "summarySource": "docstring",
+      "bytes": 1712,
+      "lines": 38,
+      "sha1": "c61c3b267adba394eb692cedf979f55bd66891a2",
+      "symbols": [
+        "class PriceChannelTests"
+      ],
+      "imports": [
+        "research",
+        "unittest"
+      ],
+      "internalImports": [
+        "research"
+      ],
+      "frontmatter": {}
+    },
+    {
+      "id": "backtester/tests/test_tv_volty_close_intents.py",
+      "path": "backtester/tests/test_tv_volty_close_intents.py",
+      "dir": "backtester/tests",
+      "name": "test_tv_volty_close_intents.py",
+      "ext": ".py",
+      "kind": "test",
+      "title": "test_tv_volty_close_intents",
+      "summary": "Source traces for the simple-mean true-range Volty close strategy.",
+      "summarySource": "docstring",
+      "bytes": 2264,
+      "lines": 48,
+      "sha1": "052fa084b80d175411b667aa4c43b59dc4301931",
+      "symbols": [
+        "class VoltyCloseTests"
+      ],
+      "imports": [
+        "backtester",
+        "numpy",
+        "research",
+        "unittest"
+      ],
+      "internalImports": [
+        "backtester",
+        "research"
       ],
       "frontmatter": {}
     },
@@ -73090,7 +73368,7 @@
       "summarySource": "opening-prose",
       "bytes": 18016,
       "lines": 280,
-      "sha1": "0ea91c673819239a48811440d52d07475c14eb96",
+      "sha1": "ca0ef1febc785ef53ad51199635e3b0be6280054",
       "symbols": [],
       "imports": [],
       "internalImports": [],
@@ -73234,7 +73512,7 @@
       "summarySource": "opening-prose",
       "bytes": 12206,
       "lines": 246,
-      "sha1": "94a20317c12b7326b1d8c34d73bbdde0030a44fc",
+      "sha1": "f9832e0ae04c445fe708c6f22aed911e3e19092c",
       "symbols": [],
       "imports": [],
       "internalImports": [],
@@ -73774,7 +74052,7 @@
       "summarySource": "opening-prose",
       "bytes": 26926,
       "lines": 384,
-      "sha1": "c17b43a94a9ff0a0d5f248d08dff8d03214df54a",
+      "sha1": "90f9c3cf8a4af1d958d972297c5d495998757b43",
       "symbols": [],
       "imports": [],
       "internalImports": [],
@@ -86613,11 +86891,11 @@
       "ext": ".md",
       "kind": "doc",
       "title": "Work continuation",
-      "summary": "Version: 577 Delta: v576 to v577; record the Preview inspection fix and pending acceptance. Delta: v575 to v576; record the macOS shape-guide lifecycle failure and recovery.",
+      "summary": "Version: 586 Delta: v585 to v586; integrate nine provisional source adapters and common sensitivity report. Delta: v584 to v585; record measured depth cap and draft-only evidence status.",
       "summarySource": "opening-prose",
-      "bytes": 550470,
-      "lines": 2673,
-      "sha1": "5e89acd7c237648fb73362bf92cb490f57c4de0f",
+      "bytes": 557872,
+      "lines": 2708,
+      "sha1": "50a43d73e06f668ff04e1ea432bf2ba5206547c6",
       "symbols": [],
       "imports": [],
       "internalImports": [],
@@ -89704,11 +89982,11 @@
       "ext": ".md",
       "kind": "doc",
       "title": "Prompt history",
-      "summary": "Version: 261 Delta: v260 to v261; record the Preview error request. Delta: v259 to v260; record the status flicker, arm control and forward results request.",
+      "summary": "Version: 264 Delta: v263 to v264; record the complete strategy research commission and scope restoration verbatim. Delta: v262 to v263; record the restored strategy research and ZigZag priority.",
       "summarySource": "opening-prose",
-      "bytes": 141575,
-      "lines": 2398,
-      "sha1": "942547d124f1653927045df78dd0712ded706fc0",
+      "bytes": 143766,
+      "lines": 2430,
+      "sha1": "dbff8fc15ce1c5450a8b9c6f5ffd45d1aa6db428",
       "symbols": [],
       "imports": [],
       "internalImports": [],
@@ -90183,6 +90461,60 @@
       "frontmatter": {}
     },
     {
+      "id": "research/RS-ZIGZAG-PA-SOURCE-CONTRACT-2333.md",
+      "path": "research/RS-ZIGZAG-PA-SOURCE-CONTRACT-2333.md",
+      "dir": "research",
+      "name": "RS-ZIGZAG-PA-SOURCE-CONTRACT-2333.md",
+      "ext": ".md",
+      "kind": "doc",
+      "title": "RS ZigZag PA source contract",
+      "summary": "Version: 1.1.0. Delta: record measured six-pass draft and publication limits. The owner supplied a Pine file and screenshots for this investigation. This is an audit and proposed comparison, not an executable card, completed research,",
+      "summarySource": "opening-prose",
+      "bytes": 6119,
+      "lines": 98,
+      "sha1": "99ede840822ed6ec0828556686bf0aa24574bb91",
+      "symbols": [],
+      "imports": [],
+      "internalImports": [],
+      "frontmatter": {}
+    },
+    {
+      "id": "research/RS-ZIGZAG-PROXY-2333.md",
+      "path": "research/RS-ZIGZAG-PROXY-2333.md",
+      "dir": "research",
+      "name": "RS-ZIGZAG-PROXY-2333.md",
+      "ext": ".md",
+      "kind": "doc",
+      "title": "RS ZigZag retrospective oracle proxy",
+      "summary": "Version: 1.2.0. Delta: add separately fenced equal-notional sensitivity. These results are **not TradingView replication or evidence of live profit**. They use previously observed Jupiter ZEC/USD oracle OHLC, not Coinbase's",
+      "summarySource": "opening-prose",
+      "bytes": 6277,
+      "lines": 89,
+      "sha1": "0ab6ab09275ffd207f84dffa178aab0d1f8eeb5b",
+      "symbols": [],
+      "imports": [],
+      "internalImports": [],
+      "frontmatter": {}
+    },
+    {
+      "id": "research/SAR-PIVOT-SOURCE-REVIEW-2324.md",
+      "path": "research/SAR-PIVOT-SOURCE-REVIEW-2324.md",
+      "dir": "research",
+      "name": "SAR-PIVOT-SOURCE-REVIEW-2324.md",
+      "ext": ".md",
+      "kind": "doc",
+      "title": "SAR and Pivot Reversal source review checkpoint",
+      "summary": "Status: provisional source review, not a completed rabbithole or trusted publication. Each built-in has one primary software source organization, TradingView. Neither has met an independent-source floor, a measured two-pass novelty convergence test, completed deduplication, or trusted claim review. Six-pass budgets remain ceilings, not completed passes. No saturation is claimed.",
+      "summarySource": "opening-prose",
+      "bytes": 4244,
+      "lines": 29,
+      "sha1": "40b273563bf87388b95f7f947bb78bd94f6ab070",
+      "symbols": [],
+      "imports": [],
+      "internalImports": [],
+      "frontmatter": {}
+    },
+    {
       "id": "research/SHAPE-AWARE-SPOT.md",
       "path": "research/SHAPE-AWARE-SPOT.md",
       "dir": "research",
@@ -90273,6 +90605,24 @@
       "frontmatter": {}
     },
     {
+      "id": "research/TRADINGVIEW-NINE-COMMON-PROXY-2329.md",
+      "path": "research/TRADINGVIEW-NINE-COMMON-PROXY-2329.md",
+      "dir": "research",
+      "name": "TRADINGVIEW-NINE-COMMON-PROXY-2329.md",
+      "ext": ".md",
+      "kind": "doc",
+      "title": "Nine TradingView source strategies: common oracle sensitivity",
+      "summary": "Version: 0.1.0. This is a provisional code and model comparison, not trusted research publication, TradingView parity, a strategy recommendation, or evidence of live profitability. The shared input is 41,640 previously observed one-minute Jupiter ZEC/USD oracle rows from 2026-10-10 21:00 UTC through 2026-11-08 19:00 UTC, end exclusive.",
+      "summarySource": "opening-prose",
+      "bytes": 4640,
+      "lines": 32,
+      "sha1": "1a47cd7a20af132726ba0a494a09de0d511693c9",
+      "symbols": [],
+      "imports": [],
+      "internalImports": [],
+      "frontmatter": {}
+    },
+    {
       "id": "research/TRADINGVIEW-SCRIPT-CARDS.md",
       "path": "research/TRADINGVIEW-SCRIPT-CARDS.md",
       "dir": "research",
@@ -90285,6 +90635,24 @@
       "bytes": 405954,
       "lines": 772,
       "sha1": "f919e1a4fa05986fdbc811924e38cbbc9e7992f6",
+      "symbols": [],
+      "imports": [],
+      "internalImports": [],
+      "frontmatter": {}
+    },
+    {
+      "id": "research/TRADINGVIEW-SEVEN-SOURCE-CONTRACT-2324.md",
+      "path": "research/TRADINGVIEW-SEVEN-SOURCE-CONTRACT-2324.md",
+      "dir": "research",
+      "name": "TRADINGVIEW-SEVEN-SOURCE-CONTRACT-2324.md",
+      "ext": ".md",
+      "kind": "doc",
+      "title": "TradingView seven-strategy source contract",
+      "summary": "Version: 1.3.0. Delta: record bounded Coinbase public data and funding discovery. This is a working research record, not a completed rabbithole, executable card, TradingView parity proof, or backtest. The owner identified the chart as",
+      "summarySource": "opening-prose",
+      "bytes": 9925,
+      "lines": 127,
+      "sha1": "4e6c49418e515700343f578cd84580beb2e6d12a",
       "symbols": [],
       "imports": [],
       "internalImports": [],
@@ -92660,6 +93028,71 @@
       "frontmatter": {}
     },
     {
+      "id": "research/oracle_common_window.py",
+      "path": "research/oracle_common_window.py",
+      "dir": "research",
+      "name": "oracle_common_window.py",
+      "ext": ".py",
+      "kind": "code-python",
+      "title": "oracle_common_window",
+      "summary": "Shared, read-only Jupiter ZEC oracle comparison window; not TV market data.",
+      "summarySource": "docstring",
+      "bytes": 3990,
+      "lines": 78,
+      "sha1": "c4d7086e1932485effc558f19309318a284ca236",
+      "symbols": [
+        "SOURCE_SHA256",
+        "SOURCE_ARTIFACT",
+        "START",
+        "STOP",
+        "ALIASES",
+        "load_window()",
+        "aggregate()",
+        "equal_notional_qty()"
+      ],
+      "imports": [
+        "__future__",
+        "hashlib",
+        "json",
+        "math",
+        "pandas",
+        "pathlib",
+        "research"
+      ],
+      "internalImports": [
+        "research"
+      ],
+      "frontmatter": {}
+    },
+    {
+      "id": "research/oracle_compare.py",
+      "path": "research/oracle_compare.py",
+      "dir": "research",
+      "name": "oracle_compare.py",
+      "ext": ".py",
+      "kind": "code-python",
+      "title": "oracle_compare",
+      "summary": "Common-window equal-notional order sensitivity; no live execution.",
+      "summarySource": "docstring",
+      "bytes": 3198,
+      "lines": 64,
+      "sha1": "a81aef3e91ce5e7f1c510c7a87d058bca0855de2",
+      "symbols": [
+        "size_at_close()",
+        "compare()"
+      ],
+      "imports": [
+        "__future__",
+        "collections",
+        "dataclasses",
+        "research"
+      ],
+      "internalImports": [
+        "research"
+      ],
+      "frontmatter": {}
+    },
+    {
       "id": "research/oracle_reversal_inputs.py",
       "path": "research/oracle_reversal_inputs.py",
       "dir": "research",
@@ -92741,6 +93174,33 @@
         "backtester",
         "research"
       ],
+      "frontmatter": {}
+    },
+    {
+      "id": "research/pine_bar_emulator.py",
+      "path": "research/pine_bar_emulator.py",
+      "dir": "research",
+      "name": "pine_bar_emulator.py",
+      "ext": ".py",
+      "kind": "code-python",
+      "title": "pine_bar_emulator",
+      "summary": "Offline Pine-style order sensitivity; not a TradingView parity claim. Callers emit ordered close-time intent lists. Orders become eligible on the next bar. Historical OHLC order is assumed rather than observed. Quantity is explicit and has a one-price-unit contract multiplier. Funding, spread, margin and liquidation are not modelled.",
+      "summarySource": "docstring",
+      "bytes": 8175,
+      "lines": 160,
+      "sha1": "5ab9e6694258ff6bcd16e3dc050c5bdacf098298",
+      "symbols": [
+        "class Intent",
+        "class Bar",
+        "simulate()"
+      ],
+      "imports": [
+        "__future__",
+        "collections",
+        "dataclasses",
+        "math"
+      ],
+      "internalImports": [],
       "frontmatter": {}
     },
     {
@@ -96168,6 +96628,107 @@
       "frontmatter": {}
     },
     {
+      "id": "research/rs_zigzag.py",
+      "path": "research/rs_zigzag.py",
+      "dir": "research",
+      "name": "rs_zigzag.py",
+      "ext": ".py",
+      "kind": "code-python",
+      "title": "rs_zigzag",
+      "summary": "Research-only RS ZigZag signal model; no networking or trading. The user-supplied legacy Pine source is not distributed here. The `legacy` mode intentionally projects a completed hourly bar into its first child bar and is unsuitable for live use. `confirmed` delays the hourly expression by one complete hourly bar. Neither mode is certified TradingView parity.",
+      "summarySource": "docstring",
+      "bytes": 12874,
+      "lines": 260,
+      "sha1": "8c284fc839fbf9377c1113fb618503f6cecb912c",
+      "symbols": [
+        "class Bar",
+        "_validate()",
+        "_hourly()",
+        "_zigzags()",
+        "pivot_events()",
+        "_patterns()",
+        "signals()",
+        "class ExecutionAssumptions",
+        "simulate_decisions()"
+      ],
+      "imports": [
+        "__future__",
+        "collections",
+        "dataclasses",
+        "math"
+      ],
+      "internalImports": [],
+      "frontmatter": {}
+    },
+    {
+      "id": "research/rs_zigzag_equal_proxy.py",
+      "path": "research/rs_zigzag_equal_proxy.py",
+      "dir": "research",
+      "name": "rs_zigzag_equal_proxy.py",
+      "ext": ".py",
+      "kind": "code-python",
+      "title": "rs_zigzag_equal_proxy",
+      "summary": "Common-window RS ZigZag sizing comparison; never TV or venue parity.",
+      "summarySource": "docstring",
+      "bytes": 2984,
+      "lines": 67,
+      "sha1": "aeac9b5ab2f1e9b4b5f2638b31051286c69dabaf",
+      "symbols": [
+        "run()",
+        "main()"
+      ],
+      "imports": [
+        "__future__",
+        "argparse",
+        "hashlib",
+        "json",
+        "pathlib",
+        "research"
+      ],
+      "internalImports": [
+        "research"
+      ],
+      "frontmatter": {}
+    },
+    {
+      "id": "research/rs_zigzag_proxy.py",
+      "path": "research/rs_zigzag_proxy.py",
+      "dir": "research",
+      "name": "rs_zigzag_proxy.py",
+      "ext": ".py",
+      "kind": "code-python",
+      "title": "rs_zigzag_proxy",
+      "summary": "Frozen retrospective Jupiter-oracle sensitivity; never TV parity.",
+      "summarySource": "docstring",
+      "bytes": 5449,
+      "lines": 106,
+      "sha1": "3624ebeeb461b9eb74f3dec36c0ab9ca7acf4cdb",
+      "symbols": [
+        "SOURCE_SHA256",
+        "SOURCE_ID",
+        "START",
+        "STOP",
+        "ALIASES",
+        "aggregate()",
+        "run()",
+        "main()"
+      ],
+      "imports": [
+        "__future__",
+        "argparse",
+        "datetime",
+        "hashlib",
+        "json",
+        "pandas",
+        "pathlib",
+        "research"
+      ],
+      "internalImports": [
+        "research"
+      ],
+      "frontmatter": {}
+    },
+    {
       "id": "research/run_backfill.sh",
       "path": "research/run_backfill.sh",
       "dir": "research",
@@ -97693,6 +98254,58 @@
       "frontmatter": {}
     },
     {
+      "id": "research/tests/test_oracle_common_window.py",
+      "path": "research/tests/test_oracle_common_window.py",
+      "dir": "research/tests",
+      "name": "test_oracle_common_window.py",
+      "ext": ".py",
+      "kind": "test",
+      "title": "test_oracle_common_window",
+      "summary": "",
+      "summarySource": "none",
+      "bytes": 1251,
+      "lines": 36,
+      "sha1": "f56b2d32cb1c3083cf29b6444a408a5370c323d0",
+      "symbols": [
+        "class CommonWindowTests"
+      ],
+      "imports": [
+        "__future__",
+        "research",
+        "unittest"
+      ],
+      "internalImports": [
+        "research"
+      ],
+      "frontmatter": {}
+    },
+    {
+      "id": "research/tests/test_oracle_compare.py",
+      "path": "research/tests/test_oracle_compare.py",
+      "dir": "research/tests",
+      "name": "test_oracle_compare.py",
+      "ext": ".py",
+      "kind": "test",
+      "title": "test_oracle_compare",
+      "summary": "",
+      "summarySource": "none",
+      "bytes": 1439,
+      "lines": 36,
+      "sha1": "fdf953ff0d5d426af1566e21d61b2249f08f5337",
+      "symbols": [
+        "class CommonComparisonTests"
+      ],
+      "imports": [
+        "__future__",
+        "research",
+        "unittest"
+      ],
+      "internalImports": [
+        "research"
+      ],
+      "frontmatter": {}
+    },
+    {
       "id": "research/tests/test_oracle_winners_entrypoint.py",
       "path": "research/tests/test_oracle_winners_entrypoint.py",
       "dir": "research/tests",
@@ -97714,6 +98327,32 @@
         "unittest"
       ],
       "internalImports": [],
+      "frontmatter": {}
+    },
+    {
+      "id": "research/tests/test_pine_bar_emulator.py",
+      "path": "research/tests/test_pine_bar_emulator.py",
+      "dir": "research/tests",
+      "name": "test_pine_bar_emulator.py",
+      "ext": ".py",
+      "kind": "test",
+      "title": "test_pine_bar_emulator",
+      "summary": "",
+      "summarySource": "none",
+      "bytes": 2980,
+      "lines": 58,
+      "sha1": "a12a55110c89f1d003687496040dc2246cc1cc71",
+      "symbols": [
+        "class PineBarEmulatorTests"
+      ],
+      "imports": [
+        "__future__",
+        "research",
+        "unittest"
+      ],
+      "internalImports": [
+        "research"
+      ],
       "frontmatter": {}
     },
     {
@@ -97764,6 +98403,60 @@
         "__future__",
         "copy",
         "math",
+        "research",
+        "unittest"
+      ],
+      "internalImports": [
+        "research"
+      ],
+      "frontmatter": {}
+    },
+    {
+      "id": "research/tests/test_rs_zigzag.py",
+      "path": "research/tests/test_rs_zigzag.py",
+      "dir": "research/tests",
+      "name": "test_rs_zigzag.py",
+      "ext": ".py",
+      "kind": "test",
+      "title": "test_rs_zigzag",
+      "summary": "",
+      "summarySource": "none",
+      "bytes": 5904,
+      "lines": 114,
+      "sha1": "23e6cf373834f73298113e28355711c6b20188f3",
+      "symbols": [
+        "bars_for_hours()",
+        "class ZigZagResearchTests",
+        "class ExecutionSensitivityTests"
+      ],
+      "imports": [
+        "__future__",
+        "research",
+        "unittest"
+      ],
+      "internalImports": [
+        "research"
+      ],
+      "frontmatter": {}
+    },
+    {
+      "id": "research/tests/test_rs_zigzag_proxy.py",
+      "path": "research/tests/test_rs_zigzag_proxy.py",
+      "dir": "research/tests",
+      "name": "test_rs_zigzag_proxy.py",
+      "ext": ".py",
+      "kind": "test",
+      "title": "test_rs_zigzag_proxy",
+      "summary": "",
+      "summarySource": "none",
+      "bytes": 962,
+      "lines": 29,
+      "sha1": "fd0cc3c7a95a0d3191d1e057f7d68efbb9b13916",
+      "symbols": [
+        "class ProxyAggregationTests"
+      ],
+      "imports": [
+        "__future__",
         "research",
         "unittest"
       ],
@@ -97828,6 +98521,140 @@
         "pathlib",
         "research",
         "tempfile",
+        "unittest"
+      ],
+      "internalImports": [
+        "research"
+      ],
+      "frontmatter": {}
+    },
+    {
+      "id": "research/tests/test_tradingview_pivot_reversal.py",
+      "path": "research/tests/test_tradingview_pivot_reversal.py",
+      "dir": "research/tests",
+      "name": "test_tradingview_pivot_reversal.py",
+      "ext": ".py",
+      "kind": "test",
+      "title": "test_tradingview_pivot_reversal",
+      "summary": "",
+      "summarySource": "none",
+      "bytes": 1673,
+      "lines": 42,
+      "sha1": "390f86c87bc6cb036ff36a9847fd36136078a221",
+      "symbols": [
+        "candles()",
+        "class TradingViewPivotTests"
+      ],
+      "imports": [
+        "__future__",
+        "research",
+        "unittest"
+      ],
+      "internalImports": [
+        "research"
+      ],
+      "frontmatter": {}
+    },
+    {
+      "id": "research/tests/test_tradingview_sar.py",
+      "path": "research/tests/test_tradingview_sar.py",
+      "dir": "research/tests",
+      "name": "test_tradingview_sar.py",
+      "ext": ".py",
+      "kind": "test",
+      "title": "test_tradingview_sar",
+      "summary": "",
+      "summarySource": "none",
+      "bytes": 1362,
+      "lines": 35,
+      "sha1": "ec3280be1e91bf5578947b2178f390e24945b16b",
+      "symbols": [
+        "class TradingViewSARTests"
+      ],
+      "imports": [
+        "__future__",
+        "research",
+        "unittest"
+      ],
+      "internalImports": [
+        "research"
+      ],
+      "frontmatter": {}
+    },
+    {
+      "id": "research/tests/test_tv_nine_common_proxy.py",
+      "path": "research/tests/test_tv_nine_common_proxy.py",
+      "dir": "research/tests",
+      "name": "test_tv_nine_common_proxy.py",
+      "ext": ".py",
+      "kind": "test",
+      "title": "test_tv_nine_common_proxy",
+      "summary": "The combined entry point must not create output when input guards fail.",
+      "summarySource": "docstring",
+      "bytes": 905,
+      "lines": 32,
+      "sha1": "946302616afed9a3109b56200e500081fdd247c2",
+      "symbols": [
+        "class CombinedRunnerTests"
+      ],
+      "imports": [
+        "pathlib",
+        "research",
+        "tempfile",
+        "unittest"
+      ],
+      "internalImports": [
+        "research"
+      ],
+      "frontmatter": {}
+    },
+    {
+      "id": "research/tests/test_tv_single_ma.py",
+      "path": "research/tests/test_tv_single_ma.py",
+      "dir": "research/tests",
+      "name": "test_tv_single_ma.py",
+      "ext": ".py",
+      "kind": "test",
+      "title": "test_tv_single_ma",
+      "summary": "",
+      "summarySource": "none",
+      "bytes": 4048,
+      "lines": 86,
+      "sha1": "a88677ed050adb234f5504fe2cf0df0bb3c38d07",
+      "symbols": [
+        "intent()",
+        "class SingleMovingAverageTests"
+      ],
+      "imports": [
+        "__future__",
+        "research",
+        "unittest"
+      ],
+      "internalImports": [
+        "research"
+      ],
+      "frontmatter": {}
+    },
+    {
+      "id": "research/tests/test_tv_two_ma.py",
+      "path": "research/tests/test_tv_two_ma.py",
+      "dir": "research/tests",
+      "name": "test_tv_two_ma.py",
+      "ext": ".py",
+      "kind": "test",
+      "title": "test_tv_two_ma",
+      "summary": "",
+      "summarySource": "none",
+      "bytes": 3195,
+      "lines": 71,
+      "sha1": "4e3624cc0dbf77569ae0ea87864bce1f46325ceb",
+      "symbols": [
+        "intent()",
+        "class TwoMovingAveragesTests"
+      ],
+      "imports": [
+        "__future__",
+        "research",
         "unittest"
       ],
       "internalImports": [
@@ -98828,6 +99655,90 @@
       "frontmatter": {}
     },
     {
+      "id": "research/tradingview_pivot_reversal.py",
+      "path": "research/tradingview_pivot_reversal.py",
+      "dir": "research",
+      "name": "tradingview_pivot_reversal.py",
+      "ext": ".py",
+      "kind": "code-python",
+      "title": "tradingview_pivot_reversal",
+      "summary": "TradingView Pivot Reversal v33.0 adapter with explicit tie sensitivity. The built-in Pine snapshot is src:f1cf879aa1a71c9a, SHA-256 cd6def72548fb84e02312f302dd2799f897638d0a2c688aef04ca861b5a5628f. Pine pivot tie semantics remain unverified; no mode is certified parity.",
+      "summarySource": "docstring",
+      "bytes": 3449,
+      "lines": 68,
+      "sha1": "81c28764dd886d1742286ecf64f0286ff94ba307",
+      "symbols": [
+        "pivot_intents()"
+      ],
+      "imports": [
+        "__future__",
+        "collections",
+        "math",
+        "research"
+      ],
+      "internalImports": [
+        "research"
+      ],
+      "frontmatter": {}
+    },
+    {
+      "id": "research/tradingview_sar.py",
+      "path": "research/tradingview_sar.py",
+      "dir": "research",
+      "name": "tradingview_sar.py",
+      "ext": ".py",
+      "kind": "code-python",
+      "title": "tradingview_sar",
+      "summary": "Research adapter for TradingView Parabolic SAR strategy v33.0. Derived independently from the owner-requested built-in source; unregistered, offline and not certified TradingView fill parity. The source snapshot is src:260da27279d3c3e8, SHA-256 800f3fe7f02df408f9f144951e6e44744240a67dec2825d0953d5309b0a4bef1.",
+      "summarySource": "docstring",
+      "bytes": 3079,
+      "lines": 69,
+      "sha1": "e9bac424b3c9cd3f002bf3eab8141c49ca955082",
+      "symbols": [
+        "sar_intents()"
+      ],
+      "imports": [
+        "__future__",
+        "collections",
+        "math",
+        "research"
+      ],
+      "internalImports": [
+        "research"
+      ],
+      "frontmatter": {}
+    },
+    {
+      "id": "research/tradingview_sar_pivot_proxy.py",
+      "path": "research/tradingview_sar_pivot_proxy.py",
+      "dir": "research",
+      "name": "tradingview_sar_pivot_proxy.py",
+      "ext": ".py",
+      "kind": "code-python",
+      "title": "tradingview_sar_pivot_proxy",
+      "summary": "Retrospective SAR and Pivot equal-notional oracle sensitivities.",
+      "summarySource": "docstring",
+      "bytes": 2913,
+      "lines": 59,
+      "sha1": "01934e6a8219de4f5344aeeee6e4bcdabffccf57",
+      "symbols": [
+        "run()",
+        "main()"
+      ],
+      "imports": [
+        "__future__",
+        "argparse",
+        "hashlib",
+        "json",
+        "pathlib",
+        "research"
+      ],
+      "internalImports": [
+        "research"
+      ],
+      "frontmatter": {}
+    },
+    {
       "id": "research/trigger_backtest.py",
       "path": "research/trigger_backtest.py",
       "dir": "research",
@@ -98972,6 +99883,337 @@
         "re",
         "sys"
       ],
+      "internalImports": [],
+      "frontmatter": {}
+    },
+    {
+      "id": "research/tv_channel_breakout_intents.py",
+      "path": "research/tv_channel_breakout_intents.py",
+      "dir": "research",
+      "name": "tv_channel_breakout_intents.py",
+      "ext": ".py",
+      "kind": "code-python",
+      "title": "tv_channel_breakout_intents",
+      "summary": "Close-time intents for TradingView Channel Breakout v29, not Price Channel.",
+      "summarySource": "docstring",
+      "bytes": 1398,
+      "lines": 30,
+      "sha1": "37b7d86b21b79b7bb0da6e2162845bfd7b5ea340",
+      "symbols": [
+        "channel_breakout_intents()"
+      ],
+      "imports": [
+        "__future__",
+        "collections",
+        "math",
+        "research"
+      ],
+      "internalImports": [
+        "research"
+      ],
+      "frontmatter": {}
+    },
+    {
+      "id": "research/tv_channel_breakout_rabbithole.md",
+      "path": "research/tv_channel_breakout_rabbithole.md",
+      "dir": "research",
+      "name": "tv_channel_breakout_rabbithole.md",
+      "ext": ".md",
+      "kind": "doc",
+      "title": "TradingView Channel Breakout: source contract and open research",
+      "summary": "Version: 0.1.0. Delta: record v29 source intent semantics and limitations. The user's screenshot names Channel Breakout, a distinct built-in from Price Channel. This is a draft research contract, not a TradingView parity proof or",
+      "summarySource": "opening-prose",
+      "bytes": 1561,
+      "lines": 26,
+      "sha1": "380defa04b8d3712c4ca1437652031f8869101a1",
+      "symbols": [],
+      "imports": [],
+      "internalImports": [],
+      "frontmatter": {}
+    },
+    {
+      "id": "research/tv_ma_proxy.py",
+      "path": "research/tv_ma_proxy.py",
+      "dir": "research",
+      "name": "tv_ma_proxy.py",
+      "ext": ".py",
+      "kind": "code-python",
+      "title": "tv_ma_proxy",
+      "summary": "Retrospective equal-notional MA comparison on the validated oracle window. The common loader and order engine are independently owned. This wrapper never claims Coinbase perpetual parity, an out-of-sample test, or live-net returns.",
+      "summarySource": "docstring",
+      "bytes": 2938,
+      "lines": 65,
+      "sha1": "e1fa0a11cc8d038223e2bb14c657c0418b28ece9",
+      "symbols": [
+        "run()",
+        "main()"
+      ],
+      "imports": [
+        "__future__",
+        "argparse",
+        "json",
+        "pandas",
+        "pathlib",
+        "research"
+      ],
+      "internalImports": [
+        "research"
+      ],
+      "frontmatter": {}
+    },
+    {
+      "id": "research/tv_momentum_intents.py",
+      "path": "research/tv_momentum_intents.py",
+      "dir": "research",
+      "name": "tv_momentum_intents.py",
+      "ext": ".py",
+      "kind": "code-python",
+      "title": "tv_momentum_intents",
+      "summary": "TradingView Momentum v29 close-of-bar order intents; no execution or fills.",
+      "summarySource": "docstring",
+      "bytes": 1657,
+      "lines": 34,
+      "sha1": "4c6dc050aa1d93839d0564bccdd11d002ded9ad6",
+      "symbols": [
+        "momentum_intents()"
+      ],
+      "imports": [
+        "__future__",
+        "collections",
+        "math",
+        "research"
+      ],
+      "internalImports": [
+        "research"
+      ],
+      "frontmatter": {}
+    },
+    {
+      "id": "research/tv_momentum_rabbithole.md",
+      "path": "research/tv_momentum_rabbithole.md",
+      "dir": "research",
+      "name": "tv_momentum_rabbithole.md",
+      "ext": ".md",
+      "kind": "doc",
+      "title": "TradingView Momentum: source contract and open research",
+      "summary": "Version: 0.1.0. Delta: record the pinned built-in and a draft intent adapter. Status: research and parity are incomplete. This is an execution-contract extension for the existing research-only `tv_43000599883_momentum_strategy`",
+      "summarySource": "opening-prose",
+      "bytes": 4184,
+      "lines": 73,
+      "sha1": "9bc6f698cbf24e81db4ec3002a65fa61ac39d4b2",
+      "symbols": [],
+      "imports": [],
+      "internalImports": [],
+      "frontmatter": {}
+    },
+    {
+      "id": "research/tv_moving_average_rabbithole.md",
+      "path": "research/tv_moving_average_rabbithole.md",
+      "dir": "research",
+      "name": "tv_moving_average_rabbithole.md",
+      "ext": ".md",
+      "kind": "doc",
+      "title": "TradingView single moving average: research draft",
+      "summary": "Version: 0.1.0. Delta: record source contract and preliminary evidence. This is not a qualified rabbithole, registered strategy card, or performance result. The TradingView built-in `STD;MovingAvg%1Cross%1Strategy`, Pine v6 source",
+      "summarySource": "opening-prose",
+      "bytes": 6030,
+      "lines": 106,
+      "sha1": "9b5662e3e0c9d2c3978b74d1cebbc4ad4dbbaee2",
+      "symbols": [],
+      "imports": [],
+      "internalImports": [],
+      "frontmatter": {}
+    },
+    {
+      "id": "research/tv_nine_common_proxy.py",
+      "path": "research/tv_nine_common_proxy.py",
+      "dir": "research",
+      "name": "tv_nine_common_proxy.py",
+      "ext": ".py",
+      "kind": "code-python",
+      "title": "tv_nine_common_proxy",
+      "summary": "Reproduce nine source-strategy sensitivities on the frozen oracle window. This is retrospective research, not TradingView or executable venue parity.",
+      "summarySource": "docstring",
+      "bytes": 3174,
+      "lines": 84,
+      "sha1": "53bfedbd99e81ebde07d5af22bf5c4c195d3ad97",
+      "symbols": [
+        "run()",
+        "main()"
+      ],
+      "imports": [
+        "__future__",
+        "argparse",
+        "json",
+        "pathlib",
+        "research"
+      ],
+      "internalImports": [
+        "research"
+      ],
+      "frontmatter": {}
+    },
+    {
+      "id": "research/tv_price_channel_intents.py",
+      "path": "research/tv_price_channel_intents.py",
+      "dir": "research",
+      "name": "tv_price_channel_intents.py",
+      "ext": ".py",
+      "kind": "code-python",
+      "title": "tv_price_channel_intents",
+      "summary": "Close-time intents for the TradingView Price Channel v29 built-in.",
+      "summarySource": "docstring",
+      "bytes": 1114,
+      "lines": 24,
+      "sha1": "6c791dfb76c48fbccbb437c6586f46963e312669",
+      "symbols": [
+        "price_channel_intents()"
+      ],
+      "imports": [
+        "__future__",
+        "collections",
+        "math",
+        "research"
+      ],
+      "internalImports": [
+        "research"
+      ],
+      "frontmatter": {}
+    },
+    {
+      "id": "research/tv_price_channel_rabbithole.md",
+      "path": "research/tv_price_channel_rabbithole.md",
+      "dir": "research",
+      "name": "tv_price_channel_rabbithole.md",
+      "ext": ".md",
+      "kind": "doc",
+      "title": "TradingView Price Channel: source contract and open research",
+      "summary": "Version: 0.1.0. Delta: record v29 intent semantics and limitations. This is a research contract extension, not a replacement for the existing checksum-bound research-only Price Channel card and not a completed rabbithole.",
+      "summarySource": "opening-prose",
+      "bytes": 1759,
+      "lines": 30,
+      "sha1": "79531ffdf3dd1817d4b8e30d1a8746f266efe07f",
+      "symbols": [],
+      "imports": [],
+      "internalImports": [],
+      "frontmatter": {}
+    },
+    {
+      "id": "research/tv_single_ma.py",
+      "path": "research/tv_single_ma.py",
+      "dir": "research",
+      "name": "tv_single_ma.py",
+      "ext": ".py",
+      "kind": "code-python",
+      "title": "tv_single_ma",
+      "summary": "Source-level TradingView single-SMA order intents, not a fill simulator. Pinned built-in source: src:d009b1e195649778, Pine 31.0. The shared emulator supplies the order factory; this module does not size or fill orders.",
+      "summarySource": "docstring",
+      "bytes": 2652,
+      "lines": 57,
+      "sha1": "efcf7252dfa34b7ebeea2199776350184f81161b",
+      "symbols": [
+        "class SingleMovingAverage"
+      ],
+      "imports": [
+        "__future__",
+        "collections",
+        "math",
+        "research",
+        "typing"
+      ],
+      "internalImports": [
+        "research"
+      ],
+      "frontmatter": {}
+    },
+    {
+      "id": "research/tv_two_ma.py",
+      "path": "research/tv_two_ma.py",
+      "dir": "research",
+      "name": "tv_two_ma.py",
+      "ext": ".py",
+      "kind": "code-python",
+      "title": "tv_two_ma",
+      "summary": "Source-level TradingView two-SMA crossover intents; not an order simulator.",
+      "summarySource": "docstring",
+      "bytes": 2295,
+      "lines": 50,
+      "sha1": "1e32bc4683e99a4e0af4bb0d37a6c173fd57d58b",
+      "symbols": [
+        "class TwoMovingAverages"
+      ],
+      "imports": [
+        "__future__",
+        "collections",
+        "math",
+        "research",
+        "typing"
+      ],
+      "internalImports": [
+        "research"
+      ],
+      "frontmatter": {}
+    },
+    {
+      "id": "research/tv_two_ma_rabbithole.md",
+      "path": "research/tv_two_ma_rabbithole.md",
+      "dir": "research",
+      "name": "tv_two_ma_rabbithole.md",
+      "ext": ".md",
+      "kind": "doc",
+      "title": "TradingView two moving averages: research draft",
+      "summary": "Version: 0.1.0. Delta: record source, adapter and proxy sensitivity. This is not a qualified rabbithole or registered strategy card. Official built-in `STD;MovingAvg%1Cross2%1Strategy`, version 31.0, is pinned",
+      "summarySource": "opening-prose",
+      "bytes": 3250,
+      "lines": 60,
+      "sha1": "374dc58de60c9c001ce808777ed7113f53d3dc51",
+      "symbols": [],
+      "imports": [],
+      "internalImports": [],
+      "frontmatter": {}
+    },
+    {
+      "id": "research/tv_volty_close_intents.py",
+      "path": "research/tv_volty_close_intents.py",
+      "dir": "research",
+      "name": "tv_volty_close_intents.py",
+      "ext": ".py",
+      "kind": "code-python",
+      "title": "tv_volty_close_intents",
+      "summary": "Close-time intents for TradingView Volatility Expansion Close v30.",
+      "summarySource": "docstring",
+      "bytes": 1412,
+      "lines": 29,
+      "sha1": "d31ce9939650d57bf002bdd9add815d6ec78e1ab",
+      "symbols": [
+        "volty_close_intents()"
+      ],
+      "imports": [
+        "__future__",
+        "collections",
+        "math",
+        "research"
+      ],
+      "internalImports": [
+        "research"
+      ],
+      "frontmatter": {}
+    },
+    {
+      "id": "research/tv_volty_close_rabbithole.md",
+      "path": "research/tv_volty_close_rabbithole.md",
+      "dir": "research",
+      "name": "tv_volty_close_rabbithole.md",
+      "ext": ".md",
+      "kind": "doc",
+      "title": "TradingView Volatility Expansion Close: source contract and open research",
+      "summary": "Version: 0.1.0. Delta: document the v30 intent adapter and existing runner check. This draft extends the existing research-only source card without modifying its checksum or the existing Volty runner. TradingView Pine v6 v30 source",
+      "summarySource": "opening-prose",
+      "bytes": 1623,
+      "lines": 27,
+      "sha1": "34c1d91b539f484d589ebcfa9d19da68fce892f7",
+      "symbols": [],
+      "imports": [],
       "internalImports": [],
       "frontmatter": {}
     },
