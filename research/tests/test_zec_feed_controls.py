@@ -216,3 +216,54 @@ class KeyboardFeeds(unittest.IsolatedAsyncioTestCase):
                 "waiting",
                 str(panel.query_one("#leverage-performance", Static).render()),
             )
+
+    async def test_long_preview_keeps_live_comparison_and_controls_reachable(self):
+        for size in ((80, 24), (120, 42)):
+            with self.subTest(size=size):
+                console = ConsoleFixture()
+                preview = console.preview
+
+                def long_preview(*args, preview=preview):
+                    result = preview(*args)
+                    result["message"] = (
+                        "Market order; indicative entry. Current-format close is unavailable. "
+                        * 12
+                    )
+                    result["preview"] = {
+                        "checked": {"verification": "current_observed_subset"}
+                    }
+                    return result
+
+                console.preview = long_preview
+                panel = LeveragePanel(console=console)
+                async with PanelHost(panel).run_test(size=size) as pilot:
+                    await pilot.pause(0.15)
+                    button = panel.query_one("#leverage-preview")
+                    button.focus()
+                    await pilot.press("enter")
+                    for _ in range(100):
+                        if panel.preview_id is not None:
+                            break
+                        await pilot.pause(0.02)
+                    result = panel.query_one("#leverage-result")
+                    self.assertLessEqual(
+                        panel.query_one("#leverage-result-region").region.height, 6
+                    )
+                    self.assertGreaterEqual(
+                        panel.query_one("#leverage-workspace").region.height, 5
+                    )
+                    panel.query_one("#leverage-preview").focus()
+                    for _ in range(50):
+                        if button.region.bottom <= size[1]:
+                            break
+                        await pilot.pause(0.02)
+                    self.assertLessEqual(button.region.bottom, size[1])
+                    self.assertIn(
+                        "Current-format close is unavailable", str(result.render())
+                    )
+                    self.assertTrue(
+                        str(result.render()).startswith(
+                            "1000x MARKET · entry indicative · close unavailable"
+                        )
+                    )
+                    self.assertEqual(console.executes, 0)

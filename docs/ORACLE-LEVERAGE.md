@@ -35,6 +35,10 @@ fresh candle. Shared quote collectors and paper observers keep their existing
 ownership and lifecycle. On short terminals, the page scrolls while the feed
 switches and Return remain visible. Freshness has explicit LIVE, DELAYED and
 STALE text as well as color; a failed snapshot shows a Refresh recovery notice.
+Long operation results scroll within a bounded details area. A verified
+current-format 1000x preview puts its market-order, indicative-entry and
+unavailable-close warning first, while the full backend message remains in the
+details area.
 
 ## Persistent paper collector
 

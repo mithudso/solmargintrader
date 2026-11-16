@@ -453,6 +453,7 @@ class LeveragePanel(ModalScreen[None]):
     #leverage-events { height: auto; min-height: 3; }
     .leverage-section { height: 1; text-style: bold; color: #50dfe8; }
     #leverage-result { color: #ffdda6; border: round #2c637d; padding: 0 1; }
+    #leverage-result-region { height: auto; min-height: 3; max-height: 6; }
     #leverage-preview, #leverage-submit, #leverage-close-position { min-width: 12; }
     #leverage-preview { background: #005ea8; color: #ffffff; }
     #leverage-return { min-width: 14; }
@@ -649,11 +650,12 @@ class LeveragePanel(ModalScreen[None]):
                         )
                         yield Label("Collateral $")
                         yield Input("10", type="number", id="leverage-collateral")
-                    yield Static(
-                        "Preview checks a fresh unsigned build. Submit signs and sends that preview after backend arming and revalidation.\n10× collateral: USDC · 1000× collateral: JupUSD · Close uses the selected position's venue.",
-                        id="leverage-result",
-                        markup=False,
-                    )
+                    with VerticalScroll(id="leverage-result-region"):
+                        yield Static(
+                            "Preview checks a fresh unsigned build. Submit signs and sends that preview after backend arming and revalidation.\n10× collateral: USDC · 1000× collateral: JupUSD · Close uses the selected position's venue.",
+                            id="leverage-result",
+                            markup=False,
+                        )
                     with Horizontal(classes="leverage-controls"):
                         yield Button(
                             "Arm state unknown",
@@ -766,6 +768,9 @@ class LeveragePanel(ModalScreen[None]):
     def _set_result(self, message):
         if not self._stopping and self.is_mounted:
             self.query_one("#leverage-result", Static).update(emphasized(message))
+            self.query_one("#leverage-result-region", VerticalScroll).scroll_home(
+                animate=False
+            )
 
     def _controls(self):
         busy = self._operation is not None
@@ -876,6 +881,19 @@ class LeveragePanel(ModalScreen[None]):
                 details = [
                     f"{_text(value.get('status'))}: {_text(value.get('message'), limit=600)}"
                 ]
+                preview = value.get("preview", {})
+                checked = (
+                    preview.get("checked", {}) if isinstance(preview, dict) else {}
+                )
+                if (
+                    action == "preview"
+                    and isinstance(checked, dict)
+                    and checked.get("verification") == "current_observed_subset"
+                ):
+                    details.insert(
+                        0,
+                        "1000x MARKET · entry indicative · close unavailable in this client.",
+                    )
                 for key in (
                     "asset",
                     "venue",
