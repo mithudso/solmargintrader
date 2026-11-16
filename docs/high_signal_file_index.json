@@ -107,7 +107,7 @@
       "component": "ecosystem",
       "kind": "python",
       "summary": "Scoped paper actions and durable action receipts",
-      "lines": 939
+      "lines": 1051
     },
     {
       "path": "ecosystem/web.py",
@@ -170,14 +170,14 @@
       "component": "oracle",
       "kind": "python",
       "summary": "Bounded read-only archive access",
-      "lines": 365
+      "lines": 373
     },
     {
       "path": "oracle/server.py",
       "component": "oracle",
       "kind": "python",
       "summary": "Read-only MCP tools and subscriptions",
-      "lines": 451
+      "lines": 532
     },
     {
       "path": "oracle/guidance.py",
@@ -254,7 +254,7 @@
       "component": "botmanager",
       "kind": "python",
       "summary": "Fenced worker lifecycle and desired intent",
-      "lines": 347
+      "lines": 379
     },
     {
       "path": "botmanager/src/botmanager/ledger.py",
@@ -1104,7 +1104,7 @@
       "component": "soltui",
       "kind": "python",
       "summary": "Terminal UI",
-      "lines": 8295
+      "lines": 8299
     },
     {
       "path": "soltui/shell.py",
@@ -1160,7 +1160,7 @@
       "component": "soltui",
       "kind": "python",
       "summary": "Detached offline sweep worker and per-process array cache",
-      "lines": 643
+      "lines": 664
     },
     {
       "path": "soltui/compound.py",
@@ -1425,7 +1425,7 @@
       "component": "repo",
       "kind": "yaml",
       "summary": "Extension, backtester, soltui, mongo, liquidity, executor and doc/index drift jobs",
-      "lines": 480
+      "lines": 482
     },
     {
       "path": "CONTRIBUTING.md",
@@ -1529,7 +1529,7 @@
       "component": "executor",
       "kind": "other",
       "summary": "Locked dependencies",
-      "lines": 219
+      "lines": 217
     },
     {
       "path": "executor/src/executor/config.py",
@@ -1896,6 +1896,91 @@
       "lines": 72
     },
     {
+      "path": "scripts/oracle_winners.py",
+      "component": "repo",
+      "kind": "python",
+      "summary": "Canonical Oracle TUI entrypoint, plain-mode compatibility and optional leverage-panel startup.",
+      "lines": 28
+    },
+    {
+      "path": "research/zec_leverage_panel.py",
+      "component": "research",
+      "kind": "python",
+      "summary": "Responsive ZEC/BTC paper monitor and explicit Preview/Submit/Close controls."
+    },
+    {
+      "path": "oracle_leverage/console.py",
+      "component": "repo",
+      "kind": "python",
+      "summary": "Disarmed-default execution boundary, wallet binding, intent journal and reconciliation."
+    },
+    {
+      "path": "oracle_leverage/cli.py",
+      "component": "repo",
+      "kind": "python",
+      "summary": "Pinned official10x CLI, bounded child processes, dry runs and frozen named keys."
+    },
+    {
+      "path": "oracle_leverage/sdk/service.mjs",
+      "component": "repo",
+      "kind": "other",
+      "summary": "Official1000x API, SDK intent checks and owner-signature verification."
+    },
+    {
+      "path": "oracle_leverage/sdk/bridge.mjs",
+      "component": "repo",
+      "kind": "other",
+      "summary": "Real1000x SDK builders, unsigned simulation and official keeper service dispatch."
+    },
+    {
+      "path": "oracle_leverage/forward.py",
+      "component": "repo",
+      "kind": "python",
+      "summary": "Future-only paper decisions, immutable selection, collector lock and settlement."
+    },
+    {
+      "path": "oracle_leverage/market.py",
+      "component": "repo",
+      "kind": "python",
+      "summary": "Bounded public Coinbase USD minute candles, quotes, freshness and recovery reads."
+    },
+    {
+      "path": "oracle_leverage/store.py",
+      "component": "repo",
+      "kind": "python",
+      "summary": "Persistent paper predictions, explicit trading intents and all-history performance."
+    },
+    {
+      "path": "oracle_leverage/README.md",
+      "component": "repo",
+      "kind": "markdown",
+      "summary": "Operator workflow, current capabilities, limitations and verification."
+    },
+    {
+      "path": "docs/ORACLE-LEVERAGE.md",
+      "component": "repo",
+      "kind": "markdown",
+      "summary": "Public packaged-wiki copy of the leveraged Oracle operator guide."
+    },
+    {
+      "path": "research/reversal_shapes.py",
+      "component": "research",
+      "kind": "python",
+      "summary": "Causal48bar shape conditioning, four bar intervals and fixed64-candidate selection."
+    },
+    {
+      "path": "research/reversal_inputs.py",
+      "component": "research",
+      "kind": "python",
+      "summary": "Bounded liquidBTC minute acquisition with exact raw-response hashes."
+    },
+    {
+      "path": "research/REVERSAL-SHAPES.md",
+      "component": "research",
+      "kind": "markdown",
+      "summary": "Independently reproduced ZEC/BTC rates, final-split results and cost scenarios."
+    },
+    {
       "path": "extension/src/ui/signal-desk.js",
       "component": "extension",
       "kind": "javascript",
@@ -1935,35 +2020,35 @@
       "component": "website",
       "kind": "markdown",
       "summary": "Development, production setup and outstanding activation limits",
-      "lines": 264
+      "lines": 242
     },
     {
       "path": "website/src/worker.js",
       "component": "website",
       "kind": "javascript",
       "summary": "Account, billing, configuration and protected analysis API",
-      "lines": 527
+      "lines": 661
     },
     {
       "path": "website/api/openapi.json",
       "component": "website",
       "kind": "json",
       "summary": "Account and billing API contract",
-      "lines": 3102
+      "lines": 5962
     },
     {
       "path": "website/public/index.html",
       "component": "website",
       "kind": "html",
       "summary": "Accessible static application shell",
-      "lines": 46
+      "lines": 48
     },
     {
       "path": "website/public/app.js",
       "component": "website",
       "kind": "javascript",
       "summary": "Wallet, workspace, membership and research UI",
-      "lines": 576
+      "lines": 834
     },
     {
       "path": "website/public/evidence.js",
@@ -1984,28 +2069,28 @@
       "component": "website",
       "kind": "other",
       "summary": "Production Worker, D1 and custom-domain configuration",
-      "lines": 46
+      "lines": 53
     },
     {
       "path": "website/wrangler.dev.jsonc",
       "component": "website",
       "kind": "other",
       "summary": "Separate local origin and routing configuration",
-      "lines": 35
+      "lines": 36
     },
     {
       "path": "website/engine/server.py",
       "component": "website",
       "kind": "python",
       "summary": "Bounded read-only canonical analysis HTTP adapter",
-      "lines": 317
+      "lines": 488
     },
     {
       "path": "website/engine/README.md",
       "component": "website",
       "kind": "markdown",
       "summary": "Analysis input, transport and provisioning contract",
-      "lines": 57
+      "lines": 134
     },
     {
       "path": "website/scripts/export_research.py",
@@ -2026,7 +2111,7 @@
       "component": "website",
       "kind": "javascript",
       "summary": "SQLite-backed account and Stripe failure-mode tests",
-      "lines": 967
+      "lines": 974
     },
     {
       "path": "website/test/evidence.test.js",

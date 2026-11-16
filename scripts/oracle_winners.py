@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Run the read-only ZEC winning-strategy display from this checkout."""
+"""Run the Oracle display, explicit leverage controls and paper-forward monitor."""
 
 import sys
 from pathlib import Path

@@ -1,4 +1,4 @@
-"""Interactive read-only Oracle workbench for the frozen ZEC winner universe."""
+"""Oracle workbench with explicit leveraged trading and paper trial controls."""
 
 from __future__ import annotations
 
@@ -329,6 +329,7 @@ class OracleWinnersApp(App):
         ("h", "shape_guide", "Shape guide"),
         ("r", "refresh_now", "Refresh"),
         ("a", "sounds", "Sounds"),
+        ("l", "leverage", "Leverage / forward"),
         ("ctrl+s", "save_view", "Save view"),
     ]
     CSS = """
@@ -388,12 +389,21 @@ class OracleWinnersApp(App):
         indicator_loader=None,
         alert_loader=None,
         sound_player=None,
+        leverage_home=None,
+        leverage_console=None,
+        leverage_console_factory=None,
+        show_leverage=False,
         clock=time.time,
     ):
         super().__init__()
         self.state = state or WorkingSet()
         self.settings_path = Path(settings_path) if settings_path else default_path()
         self.clock = clock
+        self.leverage_home = leverage_home
+        self.leverage_console = leverage_console
+        self.leverage_console_factory = leverage_console_factory
+        self.show_leverage = show_leverage
+        self._leverage_panel = None
         self.notification_events = NotificationEvents()
         self.sound_player = sound_player if sound_player is not None else SoundPlayer()
         self.data_worker = LatestWorker(
@@ -484,6 +494,7 @@ class OracleWinnersApp(App):
             yield Button("+", id="slower")
             yield Button("Apply", id="apply-refresh")
             yield Button("Choose strategies", id="choose-strategies")
+            yield Button("Leverage [L]", id="show-leverage")
         with Horizontal(classes="controls"):
             yield Button("Refresh now [R]", id="refresh-now", variant="primary")
             yield Button("Edit", id="edit-focused")
@@ -535,6 +546,8 @@ class OracleWinnersApp(App):
         self.query_one("#watchlist", DataTable).focus()
         if self.startup_warning:
             self.notice(self.startup_warning)
+        if self.show_leverage:
+            self.call_after_refresh(self.action_leverage)
 
     def on_resize(self, event):
         self.set_class(event.size.width < 110, "compact")
@@ -1071,6 +1084,24 @@ class OracleWinnersApp(App):
             return
         self.push_screen(SoundsDialog(self.state.sounds), self.sounds_changed)
 
+    def action_leverage(self):
+        if self._display_stopping or not self.is_running:
+            return
+        if (
+            self._leverage_panel is not None
+            and self._leverage_panel in self.screen_stack
+        ):
+            return
+        from research.zec_leverage_panel import LeveragePanel
+
+        self._leverage_panel = LeveragePanel(
+            self.leverage_home,
+            console=self.leverage_console,
+            console_factory=self.leverage_console_factory,
+            clock=self.clock,
+        )
+        self.push_screen(self._leverage_panel)
+
     def sounds_changed(self, settings):
         if self._display_stopping or not self.is_running or settings is None:
             return
@@ -1171,6 +1202,7 @@ class OracleWinnersApp(App):
             "edit-focused": self.action_edit,
             "save-view": self.action_save_view,
             "show-sounds": self.action_sounds,
+            "show-leverage": self.action_leverage,
         }
         if event.button.id in actions:
             actions[event.button.id]()
@@ -1193,6 +1225,8 @@ class OracleWinnersApp(App):
         if self._display_stopping:
             return
         self._display_stopping = True
+        if self._leverage_panel is not None:
+            self._leverage_panel.stop_owned()
         self.sound_player.close()
         if hasattr(self, "_poll_timer"):
             self._poll_timer.stop()
@@ -1217,6 +1251,16 @@ def main(argv=None):
     parser.add_argument("--intervals", nargs="+", choices=live.STEPS)
     parser.add_argument("--modes", nargs="+", choices=(*live.MODES, "all"))
     parser.add_argument("--refresh", type=float)
+    parser.add_argument(
+        "--leverage-panel",
+        action="store_true",
+        help="Open leveraged trading and the live paper forward view",
+    )
+    parser.add_argument(
+        "--leverage-home",
+        type=Path,
+        help="Use this durable leveraged-trading / paper-trial state directory",
+    )
     args = parser.parse_args(argv)
     state = WorkingSet()
     warning = None
@@ -1238,6 +1282,8 @@ def main(argv=None):
         quote_loader=QuoteReader(args.prices),
         stream=TradeStream(),
         alert_loader=AlertSession(),
+        leverage_home=args.leverage_home,
+        show_leverage=args.leverage_panel,
     )
     app.startup_warning = warning
     app.run()
