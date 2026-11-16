@@ -285,6 +285,7 @@ class Console:
                 ],
             ),
             "mtf_forward": self.store.meta("mtf_forward", {}),
+            "exit50_forward": self.store.meta("exit50_forward", {}),
             "wallet": wallet,
             "price_comparison": self.price_comparison(),
             "assets": capabilities,
