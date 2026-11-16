@@ -5,7 +5,7 @@ import { Keypair, PublicKey, SystemProgram, TransactionInstruction, TransactionM
 import { secp256k1 } from '@noble/curves/secp256k1';
 import { keccak_256 } from '@noble/hashes/sha3';
 import * as sdk from 'jupiter-sdk/yolo/web3js';
-import { inspectOpenBuild, MARKETS, PROGRAM, USD_MINT } from '../service.mjs';
+import { inspectOpenBuild, MARKETS, PROGRAM, USD_MINT, serviceHandle } from '../service.mjs';
 import { verifyCurrentOpen } from '../current-open.mjs';
 
 const key = n => new PublicKey(Buffer.alloc(32, n));
@@ -53,6 +53,10 @@ test('current open checks complete exact-message HTTP simulation including newer
   try {
     const run=()=>verifyCurrentOpen(f.build,f.intent,{connection:f.connection,readAccount:f.readAccount,now},inspectOpenBuild,async()=>{pins++});
     const result=await run(); assert.equal(result.simulatedEntryPrice,'65100000000000000');assert.equal(result.signedFeedPrice,'65000000000000000');assert.equal(result.verification,'current_observed_subset');assert.equal(pins,2);assert.deepEqual(calls,['getMultipleAccounts','simulateTransaction']);
+    const markets={paused:false,minMargin:'5000000',fees:{closeFeePpm:20,winFeePpm:30000},markets:Object.entries(MARKETS).map(([symbol,address])=>({symbol,address,closed:false,closeOnly:false}))};
+    const api=async path=>path==='markets'?markets:f.build;
+    const ready=await serviceHandle({...f.intent,action:'service-build-open'},{connection:f.connection,readAccount:f.readAccount,now,api,checkPins:async()=>{}});
+    assert.equal(ready.status,'ready');assert.equal(ready.checked.simulatedEntryPrice,'65100000000000000');assert.equal(ready.checked.verification,'current_observed_subset');
     f.after[2].data=[Buffer.from(f.after[2].data[0],'base64').fill(1,72,76).toString('base64'),'base64'];
     await assert.rejects(run(),/current_(token_authority_changed|unsafe_token_authority)/);
     globalThis.fetch=async()=>new Response('rate limited', { status: 429 });

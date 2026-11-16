@@ -273,10 +273,7 @@ export async function verifyBuild(build, intent, options = {}) {
   if (trade[0]?.data.subarray(0, 8).equals(UPDATE_PRICE_DISCRIMINATOR)) {
     if (intent.operation !== 'open') fail('current_close_unverified');
     try {
-      await verifyCurrentOpen(build, intent, { ...options, readAccount: options.readAccount || owned }, inspectOpenBuild);
-      // The shared oracle can advance after simulation, and this instruction has no
-      // price bound. A matching simulation cannot bind the eventual entry price.
-      fail('current_execution_price_not_bound');
+      return await verifyCurrentOpen(build, intent, { ...options, readAccount: options.readAccount || owned }, inspectOpenBuild, options.checkPins);
     }
     catch (error) { if (error.message.startsWith('current_')) throw error; if (/^[a-z_0-9]+$/.test(error.message)) fail('current_' + error.message); fail('current_rpc_unavailable'); }
   }
@@ -296,7 +293,7 @@ export function verifySigned(build, signed, ownerAddress) {
 export async function serviceHandle(payload, dependencies = {}) {
   const api = dependencies.api || apiRequest, connection = rpc(payload, dependencies.connection);
   const now = dependencies.now ?? Math.floor(Date.now() / 1000);
-  const options = { connection, now, readAccount: dependencies.readAccount || owned };
+  const options = { connection, now, readAccount: dependencies.readAccount || owned, checkPins: dependencies.checkPins };
   if (payload.action === 'service-markets') return { status: 'ready', service: SERVICE, program: PROGRAM, ...marketList(await api('markets')) };
   const owner = address(payload.owner);
   if (payload.action === 'service-positions') {
