@@ -1,6 +1,7 @@
 # Prompt history
 
-Version: 263
+Version: 264
+Delta: v263 to v264; record Jupiter documentation links.
 Delta: v262 to v263; record Preview error and explicit resume steering.
 Delta: v261 to v262; record two-column layout and causal bar/shape display request.
 Delta: v260 to v261; record 50 percent collateral exit, delayed close and order-flow research request.
@@ -2417,4 +2418,10 @@ Screenshot supplied at /var/folders/hz/s7btlxx54c32yt375m03q0h40000gn/T/codex-cl
 
 ```text
 resume
+```
+
+## Jupiter documentation links — 2026-11-16
+
+```text
+https://developers.jup.ag/docs/get-started https://developers.jup.ag/docs/guides
 ```

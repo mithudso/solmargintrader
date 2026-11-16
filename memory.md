@@ -1,6 +1,7 @@
 # Work continuation
 
-Version: 580
+Version: 581
+Delta: v580 to v581; record Jupiter documentation links and Preview continuation.
 Delta: v579 to v580; preserve Preview-error recovery scope and execution boundary.
 Delta: v578 to v579; record resumed source archival and preserved forward state.
 Delta: v577 to v578; record owner two-column and causal candle/shape display request.
@@ -2683,3 +2684,5 @@ The owner also requests positions and Oracle calls in a right-hand column, two l
 Recovered isolated worktree /Users/mitch/dev/worktrees/oracle-exit50-2309 from master 877d3069f1f505bb4b2afb5c231168ef77edc9ed with concurrent task-owned changes preserved. Native main run run:e85763700341ee675c8032fa91277ca76bca06d655031389033219c1e83470d4 held by codex-exit50-task2309; own lease renewed. Accepted 3250 initial windows and BTC/ZEC first two adaptive batches remain archived/readback. BTC003 recovery has 800 independently validated response grids, but its original subprocess exit status is unknown; archive exact bodies and retry metadata without claiming successful process exit. ZEC003 recovered plan is independently validated but original plan-process exit is unknown. No completed performance result is inferred from source acquisition. Current working changes belong to parallel workers; preserve all. Existing paper services and live config are owned elsewhere and remain untouched.
 
 Preview error TASK-2321: the supplied screenshot shows process_nonzero_exit. Author is testing simulation-only inspection fallback with Submit disabled; executable guards remain intact. Authoritative current UpdatePrice/keeper oracle schema is not established by the checked SDK, IDL, frontend and Jupiter MCP. Do not claim executable funded support from inspection or simulate-only evidence. No funded trade was performed. Resume native source archival under owned fenced lease; preserve existing armed runtime configuration.
+
+The user provided Jupiter documentation links. Their related product documentation is a lead, not evidence of the actual YOLO program instruction schema. An independent agent is checking the official links and on-chain Anchor IDL. PR 290 provides inspection-only Preview; canonical acceptance is pending.
