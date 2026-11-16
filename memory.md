@@ -1,6 +1,9 @@
 # Work continuation
 
-Version: 582
+Version: 585
+Delta: v584 to v585; record measured depth cap and draft-only evidence status.
+Delta: v583 to v584; add common oracle window and equal-notional comparison.
+Delta: v582 to v583; record independent proxy audit and remaining publication limitations.
 Delta: v581 to v582; record restoration of the earlier research scope.
 Delta: v580 to v581; preserve paired proxy output and verified project-venv docs check.
 Delta: v579 to v580; record shared Pine order model and retrospective oracle proxy.
@@ -2691,3 +2694,9 @@ Research-only `/Users/mitch/dev/worktrees/rs-zigzag-2333/research/rs_zigzag.py` 
 Shared research-only Pine order engine and its tests are present; the model explicitly omits exchange margin, funding and spread. A frozen paired 10/15-minute ZEC Jupiter oracle proxy run has been saved to Mongo and `/Users/mitch/dev/worktrees/rs-zigzag-2333/research/RS-ZIGZAG-PROXY-2333.md`. Its legacy lookahead path reported large uncollateralized gains; its confirmed-hour path produced negative-equity stress outputs. The 1x one-unit-multiplier sensitivity rejected every fixed 10,000-unit entry. These are not Coinbase or TradingView parity and require independent audit; raw data and output stay private.
 
 The documentation checker passed after using `/Users/mitch/.venvs/soltui/bin/python` with this worktree’s `botmanager/src` on PYTHONPATH; the earlier system-Python and missing-source-path failures are historical. Sixteen focused tests, pinned Ruff and TradingView card coverage passed. The actual chart scanner returned null pointvalue/unit_id, so the proxy 1x scenario remains a one-unit-multiplier assumption. Proxy output Mongo `art:1ad06f6ccde823942128d9a8c707cc74a060450fd115b5bb5547a490abcf5983` was fully read back and its hash matched. Numeric independence, source/fill parity and matching Coinbase data remain pending.
+
+An independent reviewer reproduced all 16 proxy scenarios, verified 340,000 pattern-branch comparisons and sampled causal prefixes, and marked the review partial because TradingView compilation, screenshot identity, contract point value and venue/order parity remain unknown. The reviewer receipt is archived as `art:2e6826af7b679961a62866e412040ce25f5e561851c801c2d54b857621022e20`; no trusted publication is claimed.
+
+The independent RS audit reproduced the original 16 source-quantity proxy cases but did not establish TradingView/venue parity. A later equal-notional comparison was separately frozen and computed using 1,000 USD divided by each completed signal close; its four reported zero-cost and costed comparisons are in the proxy report and remain independently unaudited. Shared common-window and intent comparator helpers validate the archived tape and permit reservation checks around every scenario.
+
+The ZigZag run now records a nine-claim draft baseline and six bounded source-review passes with rates 0.1, 3/13, 3/16, 3/19, 2/21 and 2/23. The cap yielded BUDGET_EXHAUSTED, not saturation. The 23 source spans passed deterministic Unicode binding checks, but no trusted semantic gate or research publication ran. Five documentation URLs all originate with TradingView. The dossier is native `art:f55504e4149f4a78691125fc777d6a091aa0476d08fba63c25b189a1c7574c33`.

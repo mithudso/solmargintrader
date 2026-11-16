@@ -1,6 +1,6 @@
 # RS ZigZag PA source contract
 
-Version: 1.0.0. Delta: initial source audit and test boundaries.
+Version: 1.1.0. Delta: record measured six-pass draft and publication limits.
 
 The owner supplied a Pine file and screenshots for this investigation. This is
 an audit and proposed comparison, not an executable card, completed research,
@@ -73,6 +73,25 @@ actual source and input tape reconcile. Do not use or reset protected holdouts.
 
 The native depth run is
 `run:ba37f1d11d0e8c021761b63f1b3e082290b832edfddd611920e8124e95f637a4`.
-The initial four search modes ran, but full topic, queue, frontier and alias
-dedup remain incomplete. Independent depth passes, trusted evidence gates,
-source-to-runner tests and historical comparisons remain outstanding.
+The initial four search modes ran. A later six-pass depth packet and paired
+proxy were created, as described below; source-to-runner parity, complete
+queue/hold reconciliation and trusted evidence gates remain outstanding.
+
+## Depth and publication status
+
+The Mongo-native research run records nine draft baseline assertions and six
+source-review passes. Their new-claim rates were 1/10, 3/13, 3/16, 3/19,
+2/21 and 2/23. The sixth pass reached the configured cap while still producing
+new information, so the depth verdict is `BUDGET_EXHAUSTED`, not saturation.
+The source packet covers five readable TradingView documentation URLs from one
+organization. Each of the 23 draft claims has an exact pinned Unicode quote
+whose offsets were checked, but the assertions have not passed an independent
+semantic evidence gate. The private Pine source, screenshot identity, matching
+Coinbase history, venue economics and whole-question coverage remain incomplete.
+
+The unqualified draft dossier is Mongo artifact
+`art:f55504e4149f4a78691125fc777d6a091aa0476d08fba63c25b189a1c7574c33`,
+SHA-256 `3895c67bf922bdf50b6335b1146a627b3652f681a783c365f8233c4dde1ffd6c`.
+The available trusted finalization service did not expose a way to enforce the
+owner's requested Terra model for the gate. No alternate-model paid gate was
+launched, and no trusted research publication is claimed.

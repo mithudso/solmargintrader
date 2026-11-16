@@ -59,7 +59,7 @@ future-revealing path and a one-hour-confirmed path. It requires contiguous
 aligned OHLC bars and rejects gaps. Its next-open execution sensitivity is a
 simplification with a one-unit contract multiplier: explicit fees, slippage and
 optional conservative margin stress are scenarios, not exchange or TradingView parity; funding and spread are absent.
-The model has not yet been independently audited or compared to source fills.
+An independent reviewer reproduced its 17 pattern branches and 16 proxy scenarios, but the model has not been compared to TradingView source fills or an exact matching market.
 
 Before evaluating a strategy result, use the same verified market, interval and
 window for both paths; preserve reserved holdouts and publish costs, rejected

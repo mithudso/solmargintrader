@@ -1,11 +1,10 @@
 # RS ZigZag retrospective oracle proxy
 
-Version: 1.0.1. Delta: record the chart symbol metadata limitation.
+Version: 1.2.0. Delta: add separately fenced equal-notional sensitivity.
 
 These results are **not TradingView replication or evidence of live profit**.
 They use previously observed Jupiter ZEC/USD oracle OHLC, not Coinbase's
-ZEC/USDC perpetual market, and the signal/fill implementations have not yet
-received an independent audit. The owner-provided source has two stray tokens
+ZEC/USDC perpetual market, and TradingView source execution and fill parity have not been independently verified. The owner-provided source has two stray tokens
 and its identity with the screenshot's executed script is not established.
 
 The paired comparison fixes the same October 10 21:00 UTC–November 8 19:00
@@ -57,3 +56,33 @@ before calculation. Full source-to-runner, Pine order semantics, matching
 Coinbase history and independent numeric review remain required.
 
 The TradingView public scanner identified the chart as a ZEC/USDC swap, with `minmov=1` and `pricescale=100`, but returned `pointvalue=null` and `unit_id=null`. It therefore did not establish contract multiplier or notional. The captured metadata source is `src:d7230b6d54733c31`, SHA-256 `336f1fc5925292877b551b0775e1e47fd19570194117d48522854a6479474eb1`.
+
+## Independent review
+
+A separate reviewer independently checked all 17 harmonic pattern branches on 20,000 tuples each, reconstructed the pivots and cash model for all 16 scenarios without a numerical mismatch, and checked 31 sampled 10-minute and 21 sampled 15-minute prefix cuts. The reviewer also verified all 14 raw page hashes and their 41,680 reconstructed minute rows. This verifies the internal proxy calculations and sampled causality checks, not TradingView compilation, screenshot-to-source identity, matching Coinbase chart data, contract point value or live profitability.
+
+The reviewer marked the audit `partial`. Its native archived receipt is `art:2e6826af7b679961a62866e412040ce25f5e561851c801c2d54b857621022e20`; the private original receipt has SHA-256 `125465e356bc328db359a86fe594d68f34aa753d806810b89d3d0fb17bc16bf1`. Trusted research publication and source-specific order, margin and negative-equity parity remain unverified.
+
+## Equal-notional counterfactual
+
+A second, separately frozen comparison sizes each entry at 1,000 USD divided
+by the completed signal bar's close, assuming one price unit per contract. It
+starts with 100,000 USD and uses the same 10/15-minute oracle window. The
+actual next-open fill can differ from the signal close, so filled notional is
+not guaranteed to equal 1,000 USD. This is a counterfactual research sizing,
+not the supplied script's explicit 10,000-unit size. It has not yet received
+independent numerical review.
+
+| Chart bars | Signal path | Zero costs | Hypothetical 10 bps fee + 1 bp slippage per side | Closed trades |
+| --- | --- | ---: | ---: | ---: |
+| 10 min | Legacy, biased | +0.385% | +0.288% | 44 |
+| 10 min | Confirmed hour | -0.121% | -0.202% | 37 |
+| 15 min | Legacy, biased | +0.386% | +0.298% | 40 |
+| 15 min | Confirmed hour | -0.047% | -0.121% | 34 |
+
+This uncollateralized common engine does not model margin, liquidation,
+funding, or spread beyond the declared slippage. It cannot establish real
+account returns or TradingView fill parity. A fresh reservation and source
+integrity check ran before and after every individual simulation. Its private
+result file has SHA-256
+`458c3a854f61aeac6b3564ef90ab22a6837283486ec777dc0f1bd5799774f8a6`.
