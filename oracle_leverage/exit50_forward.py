@@ -15,6 +15,7 @@ import math
 import os
 import signal
 import sqlite3
+import sys
 import threading
 import time
 import zlib
@@ -914,16 +915,30 @@ class Exit50Forward:
         }
 
     def run(self):
-        self.start()
         try:
+            self.start()
             while not self.stop_event.is_set():
                 self.tick()
                 self.stop_event.wait(0.2)
         finally:
-            self.parent.put_meta("exit50_forward", self.snapshot("stopped"))
-            if self._lock:
-                self._lock.close()
-                self._lock = None
+            failed = sys.exc_info()[0] is not None
+            try:
+                if self.process_start_s is not None:
+                    try:
+                        self.parent.put_meta("exit50_forward", self.snapshot("stopped"))
+                    except Exception:
+                        if not failed:
+                            raise
+            finally:
+                if self._lock:
+                    unwinding = sys.exc_info()[0] is not None
+                    try:
+                        self._lock.close()
+                    except Exception:
+                        if not unwinding:
+                            raise
+                    finally:
+                        self._lock = None
 
 
 def main(argv=None):

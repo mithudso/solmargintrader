@@ -611,6 +611,41 @@ class Exit50PaperTests(unittest.TestCase):
         calculate.assert_not_called()
         self.assertFalse(worker.ledger.active())
 
+    def test_start_failure_releases_ownership_without_masking_exception(self):
+        home = Path(self.directory.name) / "start-failure"
+        worker = Exit50Forward(home, self.model_path, clock=lambda: NOW)
+
+        def failed_start():
+            worker.process_start_s = NOW
+            raise RuntimeError("start failed")
+
+        with (
+            patch.object(worker, "start", side_effect=failed_start),
+            patch.object(
+                worker.parent, "put_meta", side_effect=RuntimeError("projection failed")
+            ),
+            self.assertRaisesRegex(RuntimeError, "start failed"),
+        ):
+            worker.run()
+        self.assertIsNone(worker._lock)
+        next_worker = Exit50Forward(home, self.model_path, clock=lambda: NOW)
+        next_worker._lock.close()
+
+    def test_shutdown_projection_failure_releases_ownership(self):
+        home = Path(self.directory.name) / "shutdown-failure"
+        worker = Exit50Forward(home, self.model_path, clock=lambda: NOW)
+        worker.stop_event.set()
+        with (
+            patch.object(
+                worker.parent, "put_meta", side_effect=RuntimeError("projection failed")
+            ),
+            self.assertRaisesRegex(RuntimeError, "projection failed"),
+        ):
+            worker.run()
+        self.assertIsNone(worker._lock)
+        next_worker = Exit50Forward(home, self.model_path, clock=lambda: NOW)
+        next_worker._lock.close()
+
 
 if __name__ == "__main__":
     unittest.main()
