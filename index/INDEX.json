@@ -1,11 +1,11 @@
 {
-  "generatedAt": "2026-11-16T23:24:33+00:00",
+  "generatedAt": "2026-11-16T23:48:38+00:00",
   "schemaVersion": 1,
   "repoRoot": "~/dev/solmargintrader",
-  "commit": "ed37a86",
+  "commit": "550f500",
   "counts": {
     "files": 3966,
-    "bytes": 140570782,
+    "bytes": 140573382,
     "byKind": {
       "strategy-card": 1478,
       "doc": 838,
@@ -111106,13 +111106,15 @@
       "title": "Commands that run for minutes, spawn processes, hit the network or write repo files. The parity suite",
       "summary": "Shared fixtures for the command-bridge tests: an isolated world and the four surface runners.",
       "summarySource": "docstring",
-      "bytes": 19812,
-      "lines": 346,
-      "sha1": "84b598d8756fda22ba66b59e868c37374993f076",
+      "bytes": 22001,
+      "lines": 383,
+      "sha1": "9de8d3942be2da278bb180c76022d1ab6579bbd8",
       "symbols": [
         "TOKEN",
         "MANAGER_REQUEST_ID",
         "MANAGER_CONFIG_HASH",
+        "AUTO_REQUEST_ID",
+        "AUTO_CONFIG",
         "HEAVY",
         "default_params()",
         "class World",
@@ -111131,6 +111133,7 @@
         "importlib",
         "io",
         "json",
+        "oracle_leverage",
         "os",
         "pathlib",
         "shutil",
@@ -111138,6 +111141,7 @@
         "struct",
         "tempfile",
         "threading",
+        "typing",
         "unittest",
         "urllib"
       ],
@@ -111809,9 +111813,9 @@
       "title": "test_bridge_parity",
       "summary": "One registry, four surfaces: the same call returns the same envelope bytes everywhere. Driven by the registry itself, so a command added tomorrow is covered the day it is registered (the way extension/test/surfaces.test.js covers the extension's registry).",
       "summarySource": "docstring",
-      "bytes": 3676,
-      "lines": 82,
-      "sha1": "c6d63d37ddc9f1099fdf2a22d0e2ff5179eb2cbb",
+      "bytes": 4087,
+      "lines": 97,
+      "sha1": "d4f52e78ab5aa341691c7e81fedebc21bbaeda07",
       "symbols": [
         "class ParityTests"
       ],
@@ -118243,5 +118247,5 @@
       "frontmatter": {}
     }
   ],
-  "textSha256": "13de1cea8bfc63b2b62cf1481be748049b41ea6f8df1a1c97380bb7b84b9c0e8"
+  "textSha256": "024c50bed019bfcda306d6cc3eb5da0bee7af28585e8296302ee370c7d214cc8"
 }
