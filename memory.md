@@ -1,6 +1,15 @@
 # Work continuation
 
-Version: 577
+Version: 586
+Delta: v585 to v586; integrate nine provisional source adapters and common sensitivity report.
+Delta: v584 to v585; record measured depth cap and draft-only evidence status.
+Delta: v583 to v584; add common oracle window and equal-notional comparison.
+Delta: v582 to v583; record independent proxy audit and remaining publication limitations.
+Delta: v581 to v582; record restoration of the earlier research scope.
+Delta: v580 to v581; preserve paired proxy output and verified project-venv docs check.
+Delta: v579 to v580; record shared Pine order model and retrospective oracle proxy.
+Delta: v578 to v579; add research-only ZigZag paths, card and tests.
+Delta: v577 to v578; begin the owner-superseding RS ZigZag investigation.
 Delta: v576 to v577; record the Preview inspection fix and pending acceptance.
 Delta: v575 to v576; record the macOS shape-guide lifecycle failure and recovery.
 Delta: v574 to v575; record PR 286 delivery and active MTF/status controls continuation.
@@ -2670,3 +2679,29 @@ PR 288 macOS CI caught a ShapeGuide mount transition race: textual.css.query.NoM
 ## Preview inspection fix — 2026-11-16
 
 The 1000x Preview fallback reports a verified unsigned simulation as inspection only when current keeper or transaction layout cannot be verified for execution. It does not create a preview ID or enable Submit. The current executable guards remain in place. Focused Python, Node and lint checks passed in the isolated hotfix worktree; canonical installed acceptance remains pending. The separate exit50 study and UI integration continue in /Users/mitch/dev/worktrees/oracle-exit50-2309.
+
+## RS ZigZag PA strategy, 2026-11-16
+
+The owner initially superseded the seven-strategy and Channel Breakout investigation with this strategy, then explicitly restored the earlier rabbitholes and made ZigZag the top priority. TASK-2333 tracks ZigZag; the eight earlier Mongo runs were paused and their owned leases released at the prior boundary. The coordinator is reassigning the restored strategy runs using fresh fences. Draft PR 292 preserves the earlier checkpoint and must not be represented as completed research.
+
+The owner-supplied source remains untracked at `rs_zig_zag_pa_strategy.pine`, SHA-256 `a708103541426c6746c1cb33b0ad5016094ce29b4342c2f92375bcadbb01e5a9`. It contains stray trailing `Z` and `ZZ` on lines 227–228. A private syntax-only reference removes exactly those tokens and retains the missing version annotation; it is uncompiled and not verified as the screenshot source. Never stage or overwrite the original.
+
+The current screenshot shows COINBASE ZEC/USDC perpetual at 15 minutes, March 31–November 16, 2026; it reports 20,889.85% total P&L under zero commission and slippage. A prior report shows June 21–November 16 and 17,203.27%. Results, chart source history, input provenance and screenshot-to-code identity require independent validation. The source defaults to Pine v1 because its version annotation is omitted. Official TradingView documentation says legacy unoffset higher-timeframe `security` behaves like lookahead on; its line 20 uses a 60-minute request. This leaks future hourly information on historical 15-minute bars, conditional on executing that exact source.
+
+A separate private reference copy and its exact hash are recorded under `the private research state`. The native research run is `run:ba37f1d11d0e8c021761b63f1b3e082290b832edfddd611920e8124e95f637a4`. Full dedup, independent research, trusted evidence gate, causal implementation and paired historical comparison remain. Protect active recording and existing holdouts.
+
+Research-only `research/rs_zigzag.py` now contains a deliberately biased historical path, a confirmed-hour path and an explicitly approximate next-open cost/margin sensitivity. `research/tests/test_rs_zigzag.py` passes nine focused tests including 10/15-minute prefix invariance and intentional legacy leakage. The source card is spec-only, not a registry entry. `uvx --offline ruff==0.17.4 check research/rs_zigzag.py research/tests/test_rs_zigzag.py` and `python3 scripts/check_tradingview_cards.py` pass. `python3 scripts/check_docs.py` failed because the Python environment lacks pandas; the isolated temporary package install was subject to an unavailable dependency-review advisory and was not used as proof. Independent audit, source-to-screenshot identity, exact venue history, full research gates and real-data comparisons remain.
+
+Shared research-only Pine order engine and its tests are present; the model explicitly omits exchange margin, funding and spread. A frozen paired 10/15-minute ZEC Jupiter oracle proxy run has been saved to Mongo and `research/RS-ZIGZAG-PROXY-2333.md`. Its legacy lookahead path reported large uncollateralized gains; its confirmed-hour path produced negative-equity stress outputs. The 1x one-unit-multiplier sensitivity rejected every fixed 10,000-unit entry. These are not Coinbase or TradingView parity and require independent audit; raw data and output stay private.
+
+The documentation checker passed after using `the project Python environment` with this worktree’s `botmanager/src` on PYTHONPATH; the earlier system-Python and missing-source-path failures are historical. Sixteen focused tests, pinned Ruff and TradingView card coverage passed. The actual chart scanner returned null pointvalue/unit_id, so the proxy 1x scenario remains a one-unit-multiplier assumption. Proxy output Mongo `art:1ad06f6ccde823942128d9a8c707cc74a060450fd115b5bb5547a490abcf5983` was fully read back and its hash matched. Numeric independence, source/fill parity and matching Coinbase data remain pending.
+
+An independent reviewer reproduced all 16 proxy scenarios, verified 340,000 pattern-branch comparisons and sampled causal prefixes, and marked the review partial because TradingView compilation, screenshot identity, contract point value and venue/order parity remain unknown. The reviewer receipt is archived as `art:2e6826af7b679961a62866e412040ce25f5e561851c801c2d54b857621022e20`; no trusted publication is claimed.
+
+The independent RS audit reproduced the original 16 source-quantity proxy cases but did not establish TradingView/venue parity. A later equal-notional comparison was separately frozen and computed using 1,000 USD divided by each completed signal close; its four reported zero-cost and costed comparisons are in the proxy report and remain independently unaudited. Shared common-window and intent comparator helpers validate the archived tape and permit reservation checks around every scenario.
+
+The ZigZag run now records a nine-claim draft baseline and six bounded source-review passes with rates 0.1, 3/13, 3/16, 3/19, 2/21 and 2/23. The cap yielded BUDGET_EXHAUSTED, not saturation. The 23 source spans passed deterministic Unicode binding checks, but no trusted semantic gate or research publication ran. Five documentation URLs all originate with TradingView. The dossier is native `art:f55504e4149f4a78691125fc777d6a091aa0476d08fba63c25b189a1c7574c33`.
+
+## Nine-source provisional integration — 2026-11-16
+
+The integration worktree combines RS/SAR/Pivot commits through 1308e7a, source-specific moving average paths from b4e415a, Momentum/Price Channel/Channel Breakout/Volty paths from 4e12206, and source-contract text from 9450cd8. The frozen readiness and original strategy cards were not overwritten. The new combined runner and nine-row report reproduce all 36 equal-notional table cells on the exact archived Jupiter window; its private output SHA-256 is f30545666700422fb15814594de550ab107348d70442aa3503ac8f4d8d24617c. Independent final audit SHA-256 793e4806f036619326d14fba06df8173b7224887360c54c89eab3995748f7ac6 covers 56 cases, 55,520 intent comparisons and 297 causal prefix samples under stated conventions. Sixty-six focused tests and 43 card tests pass. The 10-minute Channel Breakout and Volty outcomes change under alternative OHLC paths. Pine semantics, venue fills, costs, funding, true margin and execution parity are not established. Mongo research gating/publication and the separate exit50 draft remain unfinished.
