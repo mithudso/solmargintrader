@@ -1,7 +1,7 @@
 """Common-window equal-notional order sensitivity; no live execution."""
 from __future__ import annotations
 
-from collections.abc import Sequence
+from collections.abc import Callable, Sequence
 from dataclasses import replace
 
 from research.oracle_common_window import equal_notional_qty
@@ -19,7 +19,9 @@ def size_at_close(bars: Sequence[Bar], orders: Sequence[Sequence[Intent]], *,
 
 
 def compare(bars: Sequence[Bar], orders: Sequence[Sequence[Intent]], *,
-            step_seconds: int, default_qty: float, target_usd: float = 1000.) -> list[dict]:
+            step_seconds: int, default_qty: float, target_usd: float = 1000.,
+            before_run: Callable[[], None] | None = None,
+            after_run: Callable[[], None] | None = None) -> list[dict]:
     """Replay equal-notional and source-sized intents under explicit costs.
 
     This uncollateralized OHLC model has no funding, spread beyond slippage,
@@ -32,8 +34,14 @@ def compare(bars: Sequence[Bar], orders: Sequence[Sequence[Intent]], *,
     result = []
     for size_name, sized_orders in sizing:
         for scenario, fee, slip in (("zero_cost", 0., 0.), ("fee10_slippage1", 10., 1.)):
-            run = simulate(bars, sized_orders, default_qty=default_qty, step_seconds=step_seconds,
-                           initial_capital=100000, fee_bps=fee, slippage_bps=slip)
+            if before_run is not None:
+                before_run()
+            try:
+                run = simulate(bars, sized_orders, default_qty=default_qty, step_seconds=step_seconds,
+                               initial_capital=100000, fee_bps=fee, slippage_bps=slip)
+            finally:
+                if after_run is not None:
+                    after_run()
             equity = run.pop("equity_curve")
             fills = run.pop("fills")
             peak, drawdown, open_fill, closed, wins = 100000., 0., None, 0, 0

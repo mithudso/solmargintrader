@@ -19,6 +19,13 @@ class CommonComparisonTests(unittest.TestCase):
         self.assertEqual(source['final_equity'], 100006)
         self.assertLess(result[1]['final_equity'], equal['final_equity'])
 
+    def test_hooks_guard_each_individual_scenario(self):
+        bars = [Bar(0, 10, 11, 9, 10), Bar(900, 10, 11, 9, 10)]
+        calls = []
+        compare(bars, [[], []], step_seconds=900, default_qty=1,
+                before_run=lambda: calls.append('before'), after_run=lambda: calls.append('after'))
+        self.assertEqual(calls, ['before', 'after'] * 4)
+
     def test_mismatched_rows_rejected(self):
         with self.assertRaises(ValueError):
             size_at_close([Bar(0, 10, 11, 9, 10)], [])
