@@ -19,7 +19,7 @@ on validation data before examining the final split. Both lost under the
 historical16bps roundtrip scenario; they are exploratory forward candidates.
 The complete study is in `research/REVERSAL-SHAPES.md`.
 
-The panel compares independently timestamped Jupiter Oracle and Coinbase book streams. It labels the 1000× primary price, reports each source’s freshness and errors, and shows the basis only when both observations are usable. These display quotes do not change the frozen Coinbase paper collector or its selection. The [second-turn study](../research/REVERSAL-SECOND-TURN.md) is retrospective and does not qualify a funded strategy.
+The panel compares independently timestamped Jupiter Oracle and Coinbase book streams. A silent green/yellow/red dot reports each source’s freshness while the last displayed price remains visible; the basis appears only when both observations meet strict freshness and synchronization checks. Jupiter is the primary display for 1000×. These display quotes do not change the frozen Coinbase paper collector or its selection. The [second-turn study](../research/REVERSAL-SECOND-TURN.md) is retrospective and does not qualify a funded strategy.
 
 ## Persistent paper collector
 
@@ -50,10 +50,13 @@ a16bps roundtrip scenario. They do not include observed Jupiter borrow/funding,
 liquidation or venue fills. Historical Binance USDT and prospective Coinbase
 USD data have separate identities.
 
+## Multi-timeframe paper observer
+
+The separate MTF observer uses frozen training-only shape models on completed 5, 10, 15 and 20 minute bars. Its own ledger and model live under `/Users/mitch/.local/state/oracle-leverage/mtf`; it does not change the original collector or its selection. Its results use observed Oracle proxy prices, not venue fills. A complete 200ms price path is required for final survival scoring; missing evidence stays unscored. The [retrospective report](../research/MTF-REVERSAL.md) explains the model, selection and limitations.
+
 ## Explicit trading controls
 
-**Preview** builds a dry-run request. **Submit preview** is a separate operator
-action. Fresh installations are disarmed. The paper worker does not call either
+The **Arm** control explicitly enables only the selected venue, binds the active public wallet, and sets that venue’s collateral cap from the displayed amount. **Disarm** disables that venue. These actions do not submit an order. **Preview** builds a dry-run request. **Submit preview** is a separate operator action. Fresh installations are disarmed. The paper worker does not call either
 operation. A submitted or ambiguous intent remains quarantined until chain and
 venue reconciliation establishes its state; a timeout never causes a retry.
 
@@ -97,7 +100,7 @@ To permit manual1000x execution, the private configuration must also contain
 {"armed": true, "wallet_address": "YOUR_EXISTING_PUBLIC_WALLET", "max_collateral_usd": 10, "sdk": {"enabled": true}}
 ```
 
-The task does not create this armed configuration. Submit refreshes and verifies
+The Arm control creates or updates this private configuration only after an explicit operator action. Submit refreshes and verifies
 the reviewed economic intent because the service's execution window starts at
 build time. Close verifies the current owned position, its trigger/timer state
 and the minimum15second hold. SDK positions have a1000x prefix to preserve venue

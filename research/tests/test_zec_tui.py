@@ -436,6 +436,27 @@ class Interface(unittest.IsolatedAsyncioTestCase):
             await pilot.press("escape")
             self.assertNotIsInstance(app.screen, ShapeGuide)
 
+    async def test_shape_guide_accepts_updates_during_mount_and_after_unmount(self):
+        app = self.app()
+        async with app.run_test(size=(140, 44)) as pilot:
+            await self.ready(app, pilot)
+            guide = ShapeGuide(None, "1m")
+            guide.update_details(app.current_frame["details"], "5m")
+            self.assertEqual(guide.interval, "5m")
+            app.push_screen(guide)
+            await pilot.pause(0.1)
+            self.assertIs(app.screen, guide)
+            self.assertIn(
+                "ACTUAL OBSERVED CLOSES",
+                str(guide.query_one("#shape-guide-body", Static).content),
+            )
+            await pilot.press("escape")
+            await pilot.pause(0.1)
+            self.assertIsNot(app.screen, guide)
+            self.assertIsNone(guide._body)
+            guide.update_details(None, "10m")
+            self.assertEqual(guide.interval, "10m")
+
     async def test_shape_help_keyboard_and_scroll_are_usable_in_small_terminal(self):
         app = self.app()
         async with app.run_test(size=(80, 28)) as pilot:

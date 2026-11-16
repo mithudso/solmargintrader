@@ -6,6 +6,7 @@ so closing this screen never stops a trial or starts a second collector.
 
 from __future__ import annotations
 
+import copy
 import math
 import re
 import time
@@ -59,7 +60,7 @@ def emphasized(value):
     return text
 
 
-def comparison_text(data, asset, venue, now):
+def comparison_text(data, asset, venue, now, basis_cache=None):
     state = data.get("price_comparison", {})
     state = state if isinstance(state, dict) else {}
     feeds = state.get("feeds", {})
@@ -78,6 +79,7 @@ def comparison_text(data, asset, venue, now):
     ]
     valid = {}
     exchange_times = {}
+    colors = []
     for source, title, maximum in (
         ("jupiter", "Jupiter oracle", 1),
         ("coinbase", "Coinbase synced book midpoint", 3),
@@ -115,15 +117,19 @@ def comparison_text(data, asset, venue, now):
             if numeric
             else "unavailable"
         )
-        timing = "/".join(
-            f"{age:.2f}s" if age is not None and age >= 0 else "unavailable/future"
-            for age in ages
+        oldest = max(
+            (age for age in ages if age is not None and age >= 0), default=float("inf")
         )
-        lines.append(
-            f"{title}{' · PRIMARY' if source == primary else ''}: {display} · {'LIVE' if fresh else 'STALE/unavailable'}"
+        color = (
+            "green"
+            if fresh
+            else "yellow"
+            if numeric and oldest <= 5 and state.get("status") != "stopped"
+            else "red"
         )
+        colors.append(color)
         lines.append(
-            f"Exchange/received age {timing} · limit {maximum}s · error: {_text(errors.get(source))}"
+            f"{title}{' · PRIMARY' if source == primary else ''}: {display} · {color.upper()}●"
         )
     comparable = all(valid[source] is not None for source in ("jupiter", "coinbase"))
     skew = (
@@ -156,14 +162,25 @@ def comparison_text(data, asset, venue, now):
                 for value in (backend_difference, backend_basis)
             ):
                 difference, basis = backend_difference, backend_basis
-        lines.append(
-            f"Basis Jupiter − Coinbase: {difference:+.8f} USD ({basis:+.3f} bps) · skew {skew:.2f}s"
-        )
+        line = f"Basis Jupiter − Coinbase: {difference:+.8f} USD ({basis:+.3f} bps) · skew {skew:.2f}s"
+        if basis_cache is not None:
+            basis_cache["line"] = line
+        lines.append(line + " · GREEN●")
+    elif basis_cache is not None and basis_cache.get("line"):
+        color = "RED" if "red" in colors else "YELLOW"
+        lines.append(basis_cache["line"] + f" · {color}●")
     else:
-        lines.append(
-            "Basis unavailable: fresh sources/heartbeat and ≤1s timestamp skew required; no source fallback."
-        )
-    return emphasized("\n".join(lines))
+        lines.append("Basis: —")
+    result = emphasized("\n".join(lines))
+    for color in ("GREEN", "YELLOW", "RED"):
+        for match in list(re.finditer(color + "●", result.plain))[::-1]:
+            result.stylize(
+                {"GREEN": "green", "YELLOW": "yellow", "RED": "red"}[color],
+                match.end() - 1,
+                match.end(),
+            )
+            result = result[: match.start()] + result[match.end() - 1 :]
+    return result
 
 
 def wallet_text(data):
@@ -274,7 +291,7 @@ class LeveragePanel(ModalScreen[None]):
     LeveragePanel DataTable > .datatable--cursor { background: #186878; color: #ffffff; text-style: bold; }
     #leverage-dialog { width: 98%; height: 96%; background: #152338; border: thick #418aab; padding: 0 1; }
     #leverage-title { height: 2; text-style: bold; color: #58e9f0; }
-    #leverage-status { height: 3; color: #a8c1dd; }
+    #leverage-status { height: auto; min-height: 3; color: #a8c1dd; }
     #leverage-wallet { height: auto; min-height: 2; color: #74f6e0; background: #123440; text-style: bold; border-left: tall #27d9c2; padding: 0 1; }
     .leverage-controls { height: 3; }
     .leverage-controls Label { width: auto; content-align: left middle; margin-right: 1; }
@@ -315,6 +332,11 @@ class LeveragePanel(ModalScreen[None]):
         self._next_read = 0.0
         self._next_market_paint = 0.0
         self._read_worker = self._action_worker = None
+        self._basis_cache = {}
+        self._basis_key = None
+        self._last_feeds = {}
+        self._table_rows = {}
+        self._read_failed = False
 
     def _console(self):
         # Import and disk-backed setup happen in a worker, never on the event loop.
@@ -432,6 +454,7 @@ class LeveragePanel(ModalScreen[None]):
                 markup=False,
             )
             with Horizontal(classes="leverage-controls"):
+                yield Button("Arm 10x", id="leverage-arm", variant="warning")
                 yield Button("Preview", id="leverage-preview", variant="primary")
                 yield Button(
                     "Submit preview",
@@ -468,6 +491,13 @@ class LeveragePanel(ModalScreen[None]):
 
     def _controls(self):
         busy = self._operation is not None
+        arm = self.query_one("#leverage-arm", Button)
+        venue = self.query_one("#leverage-venue", Select).value
+        active = venue in (self.snapshot_data or {}).get("enabled_venues", [])
+        arm.label = ("Disarm " if active else "Arm ") + (
+            "10x" if venue == "jupiter-cli-10x" else "1000x"
+        )
+        arm.disabled = busy
         self.query_one("#leverage-preview", Button).disabled = busy
         self.query_one("#leverage-submit", Button).disabled = (
             busy or self.preview_id is None
@@ -501,11 +531,42 @@ class LeveragePanel(ModalScreen[None]):
         result = self._read_worker.poll()
         if result is not None:
             if result.error or not isinstance(result.value, dict):
-                self.query_one("#leverage-status", Static).update(
-                    "Status unavailable · last displayed values may be stale. Backend read failed."
+                self._read_failed = True
+                self.query_one(
+                    "#leverage-price-comparison", Static
+                ).tooltip = (
+                    "Backend read failed; last displayed observations are retained."
                 )
             else:
+                self._read_failed = False
                 self.snapshot_data = result.value
+                comparison = self.snapshot_data.get("price_comparison", {})
+                feeds = (
+                    comparison.setdefault("feeds", {})
+                    if isinstance(comparison, dict)
+                    else {}
+                )
+                for source in ("jupiter", "coinbase"):
+                    rows = (
+                        feeds.setdefault(source, {}) if isinstance(feeds, dict) else {}
+                    )
+                    if not isinstance(rows, dict):
+                        continue
+                    for asset in ("BTC", "ZEC"):
+                        row = rows.get(asset)
+                        if (
+                            isinstance(row, dict)
+                            and row.get("asset") == asset
+                            and type(row.get("price")) in (int, float)
+                            and math.isfinite(row["price"])
+                            and row["price"] > 0
+                        ):
+                            self._last_feeds[(source, asset)] = copy.deepcopy(row)
+                        elif (source, asset) in self._last_feeds:
+                            rows[asset] = {
+                                **self._last_feeds[(source, asset)],
+                                "fresh": False,
+                            }
                 self.paint_snapshot()
         result = self._action_worker.poll()
         if result is not None:
@@ -563,14 +624,60 @@ class LeveragePanel(ModalScreen[None]):
 
     def paint_live_market(self):
         asset = self.query_one("#leverage-asset", Select).value
-        self.query_one("#leverage-price-comparison", Static).update(
-            comparison_text(
-                self.snapshot_data or {},
-                asset,
-                self.query_one("#leverage-venue", Select).value,
-                self.clock(),
-            )
+        venue = self.query_one("#leverage-venue", Select).value
+        key = (asset, venue)
+        if key != self._basis_key:
+            self._basis_cache.clear()
+            self._basis_key = key
+        comparison = comparison_text(
+            self.snapshot_data or {}, asset, venue, self.clock(), self._basis_cache
         )
+        widget = self.query_one("#leverage-price-comparison", Static)
+        signature = (comparison.plain, str(comparison.spans))
+        if getattr(self, "_comparison_signature", None) != signature:
+            widget.update(comparison)
+            self._comparison_signature = signature
+        state = (self.snapshot_data or {}).get("price_comparison", {})
+        state = state if isinstance(state, dict) else {}
+        feeds = state.get("feeds", {}) if isinstance(state.get("feeds"), dict) else {}
+        connected = (
+            state.get("connected", {})
+            if isinstance(state.get("connected"), dict)
+            else {}
+        )
+        details = []
+        for source in ("jupiter", "coinbase"):
+            rows = feeds.get(source, {})
+            row = rows.get(asset, {}) if isinstance(rows, dict) else {}
+            row = row if isinstance(row, dict) else {}
+            ages = []
+            for label, field in (
+                ("exchange", "exchange_at"),
+                ("received", "received_at"),
+            ):
+                stamp = row.get(field)
+                age = (
+                    self.clock() - stamp
+                    if type(stamp) in (int, float) and math.isfinite(stamp)
+                    else None
+                )
+                ages.append(
+                    f"{label} {age:.2f}s" if age is not None else f"{label} unknown"
+                )
+            details.append(
+                f"{source}: {'connected' if connected.get(source) is True else 'disconnected or unknown'}, "
+                + ", ".join(ages)
+            )
+        widget.tooltip = (
+            (
+                "Backend read failed; last displayed observations are retained. "
+                if self._read_failed
+                else ""
+            )
+            + "Green: fresh; yellow: delayed up to 5s; red: longer delay or stopped. Basis retains its last valid pair. "
+            + "; ".join(details)
+        )
+
         self.query_one("#leverage-live-market", Static).update(
             Text(live_market_text(self.snapshot_data or {}, asset, self.clock()))
         )
@@ -589,11 +696,40 @@ class LeveragePanel(ModalScreen[None]):
             else f"updated {max(0, age):.0f}s ago"
             + (" · STALE" if age > 90 or age < -5 else "")
         )
-        self.query_one("#leverage-status", Static).update(
-            Text(
-                f"Paper forward: {_text(data.get('status'))} · {freshness}\nPaper results are simulated; venue execution status is separate. Closing this panel leaves the forward service running."
+        asset = self.query_one("#leverage-asset", Select).value
+        perf = data.get("performance", {})
+        per_asset = perf.get("by_asset", {}) if isinstance(perf, dict) else {}
+        perf = per_asset.get(asset, perf) if isinstance(per_asset, dict) else perf
+        mtf = data.get("mtf_forward", {})
+        mtf = mtf if isinstance(mtf, dict) else {}
+        mtf_perf = mtf.get("performance", {})
+        mtf_perf = mtf_perf if isinstance(mtf_perf, dict) else {}
+
+        def number(value):
+            return (
+                "—"
+                if value is None
+                else f"{value:.3f}"
+                if isinstance(value, float)
+                else str(value)
             )
+
+        status = Text(
+            f"Coinbase {asset} paper {_text(data.get('status'))}: settled {number(perf.get('settled'))} · open {number(perf.get('open'))} · correct {number(perf.get('correct'))} · hit {number(perf.get('hit_rate'))} · net bps {number(perf.get('mean_net_bps'))} "
         )
+        status.append(
+            "●", style="green" if age is not None and 0 <= age <= 45 else "red"
+        )
+        status.append(
+            f"\nMTF Jupiter ALL-ASSETS {_text(mtf.get('status', 'waiting'))}: settled {number(mtf_perf.get('settled'))} · open {number(mtf_perf.get('open'))} · pending {number(mtf_perf.get('pending_unscored'))} · correct {number(mtf_perf.get('direction_correct'))} · wins {number(mtf_perf.get('paper_wins'))} · hit {number(mtf_perf.get('hit_rate'))} · liquidated {number(mtf_perf.get('verified_liquidations'))} · gross underlying bps {number(mtf_perf.get('mean_unlevered_gross_bps'))}"
+        )
+        widget = self.query_one("#leverage-status", Static)
+        widget.update(status)
+        widget.tooltip = (
+            freshness
+            + "; paper results are simulated. MTF gross underlying return excludes fees and is not leveraged PnL."
+        )
+
         self.query_one("#leverage-wallet", Static).update(emphasized(wallet_text(data)))
         asset = self.query_one("#leverage-asset", Select).value
         interval = self.query_one("#leverage-interval", Select).value
@@ -631,17 +767,55 @@ class LeveragePanel(ModalScreen[None]):
         ):
             selected = performance["by_asset"].get(asset)
             performance = selected if selected is not None else performance
+        mtf_asset = (
+            mtf.get("assets", {}).get(asset, {})
+            if isinstance(mtf.get("assets"), dict)
+            else {}
+        )
+        frames = mtf_asset.get("frames", {}) if isinstance(mtf_asset, dict) else {}
+        scores = mtf_asset.get("scores", {}) if isinstance(mtf_asset, dict) else {}
+        contexts = []
+        for minutes in (5, 10, 15, 20):
+            frame = frames.get(str(minutes), {}) if isinstance(frames, dict) else {}
+            score = scores.get(str(minutes), {}) if isinstance(scores, dict) else {}
+            components = score.get("components", []) if isinstance(score, dict) else []
+            support = (
+                ", ".join(
+                    f"{c.get('minutes')}m n={c.get('n')}"
+                    for c in components
+                    if isinstance(c, dict)
+                )
+                or "waiting"
+            )
+            contexts.append(
+                f"{minutes}m: shape {_text(frame.get('shape'))} · down score {_text(score.get('score_down'))} · support {support}"
+            )
         self.query_one("#leverage-performance", Static).update(
-            Text(f"Paper forward · {asset}\n{_summary(performance)}")
+            Text(
+                f"MTF completed shapes / model · {asset} · selected {_summary(mtf_asset.get('selected', {}))}\n"
+                + "\n".join(contexts)
+            )
         )
         table = self.query_one("#leverage-strategies", DataTable)
-        table.clear()
+        strategy_rows = [
+            row
+            for row in data.get("strategies", [])
+            if isinstance(row, dict)
+            and row.get("asset") == asset
+            and (interval == 0 or row.get("interval_minutes") == interval)
+        ]
+        strategies_changed = self._table_rows.get("strategies") != strategy_rows
+        if strategies_changed:
+            table.clear()
+            self._table_rows["strategies"] = copy.deepcopy(strategy_rows)
         for index, row in enumerate(data.get("strategies", [])):
             if (
                 not isinstance(row, dict)
                 or row.get("asset") != asset
                 or (interval != 0 and row.get("interval_minutes") != interval)
             ):
+                continue
+            if not strategies_changed:
                 continue
             table.add_row(
                 *[
@@ -657,7 +831,15 @@ class LeveragePanel(ModalScreen[None]):
                 key=f"strategy-{index}",
             )
         positions = self.query_one("#leverage-positions", DataTable)
-        positions.clear()
+        position_rows = [
+            row
+            for row in data.get("positions", [])
+            if isinstance(row, dict) and row.get("asset") == asset
+        ]
+        positions_changed = self._table_rows.get("positions") != position_rows
+        if positions_changed:
+            positions.clear()
+            self._table_rows["positions"] = copy.deepcopy(position_rows)
         current = set()
         for index, row in enumerate(data.get("positions", [])):
             if not isinstance(row, dict) or row.get("asset") != asset:
@@ -666,6 +848,8 @@ class LeveragePanel(ModalScreen[None]):
             if not isinstance(identity, str) or not identity or identity in current:
                 continue
             current.add(identity)
+            if not positions_changed:
+                continue
             positions.add_row(
                 *[
                     Text(_text(row.get(key)))
@@ -729,6 +913,18 @@ class LeveragePanel(ModalScreen[None]):
             self.action_return_to_oracle()
         elif name == "leverage-refresh":
             self.action_refresh()
+        elif name == "leverage-arm":
+            venue = self.query_one("#leverage-venue", Select).value
+            active = venue in (self.snapshot_data or {}).get("enabled_venues", [])
+            self.preview_id = None
+            self._dispatch(
+                "set_venue_armed",
+                (
+                    venue,
+                    not active,
+                    self.query_one("#leverage-collateral", Input).value,
+                ),
+            )
         elif name == "leverage-preview":
             try:
                 amount = float(self.query_one("#leverage-collateral", Input).value)

@@ -1907,14 +1907,14 @@
       "component": "research",
       "kind": "python",
       "summary": "Responsive ZEC/BTC paper monitor and explicit Preview/Submit/Close controls.",
-      "lines": 639
+      "lines": 779
     },
     {
       "path": "oracle_leverage/console.py",
       "component": "repo",
       "kind": "python",
       "summary": "Disarmed-default execution boundary, wallet binding, intent journal and reconciliation.",
-      "lines": 756
+      "lines": 830
     },
     {
       "path": "oracle_leverage/cli.py",
@@ -1970,7 +1970,7 @@
       "component": "repo",
       "kind": "markdown",
       "summary": "Public packaged-wiki copy of the leveraged Oracle operator guide.",
-      "lines": 127
+      "lines": 129
     },
     {
       "path": "research/reversal_shapes.py",

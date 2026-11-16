@@ -228,6 +228,7 @@ class ShapeGuide(ModalScreen[None]):
     def __init__(self, details, interval):
         super().__init__()
         self.details, self.interval = details, interval
+        self._body = None
 
     def compose(self) -> ComposeResult:
         with Vertical(id="shape-dialog"):
@@ -242,15 +243,19 @@ class ShapeGuide(ModalScreen[None]):
             yield Button("Close guide", id="close-shape-guide", variant="primary")
 
     def on_mount(self):
+        self._body = self.query_one("#shape-guide-body", Static)
         self.update_details(self.details, self.interval)
         self.query_one("#shape-guide-scroll").focus()
 
+    def on_unmount(self):
+        self._body = None
+
     def update_details(self, details, interval):
         self.details, self.interval = details, interval
-        width = self.query_one("#shape-guide-body").content_size.width - 13
-        self.query_one("#shape-guide-body", Static).update(
-            Text(shape_guide(details, interval, max(16, width)))
-        )
+        if self._body is None or not self._body.is_mounted:
+            return
+        width = self._body.content_size.width - 13
+        self._body.update(Text(shape_guide(details, interval, max(16, width))))
 
     def action_close(self):
         self.dismiss(None)

@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-11-16T07:33:47+00:00",
+  "generatedAt": "2026-11-16T08:11:58+00:00",
   "schemaVersion": 1,
   "note": "Concepts are derived from the repo's own vocabulary \u2014 the FAMILY dict, strategy-card frontmatter, docs/trading-signals-concept-family.md, and terms verified to recur in the corpus. A concept matching no file is dropped, not kept.",
   "counts": {
@@ -161,12 +161,12 @@
         "universe",
         "top_coins"
       ],
-      "matchingFiles": 1726,
+      "matchingFiles": 1732,
       "shown": 30,
       "files": [
         {
           "path": "memory.md",
-          "hits": 238
+          "hits": 239
         },
         {
           "path": "docs/FILES.md",
@@ -249,6 +249,10 @@
           "hits": 42
         },
         {
+          "path": "research/tests/test_zec_leverage_panel.py",
+          "hits": 42
+        },
+        {
           "path": "backtester/core/universe.py",
           "hits": 40
         },
@@ -274,10 +278,6 @@
         },
         {
           "path": "docs/TRADINGVIEW-CARD-READINESS.md",
-          "hits": 32
-        },
-        {
-          "path": "research/tests/test_zec_leverage_panel.py",
           "hits": 32
         },
         {
@@ -578,7 +578,7 @@
         "perps",
         "solana"
       ],
-      "matchingFiles": 1012,
+      "matchingFiles": 1016,
       "shown": 30,
       "files": [
         {
@@ -607,7 +607,7 @@
         },
         {
           "path": "memory.md",
-          "hits": 235
+          "hits": 236
         },
         {
           "path": ".cdo/reviews-2026-11-12/ecosystem-combined-full-final.json",
@@ -714,7 +714,7 @@
         "macd",
         "ichimoku"
       ],
-      "matchingFiles": 899,
+      "matchingFiles": 901,
       "shown": 30,
       "files": [
         {
@@ -852,7 +852,7 @@
         "anchor_window",
         "levels"
       ],
-      "matchingFiles": 875,
+      "matchingFiles": 877,
       "shown": 30,
       "files": [
         {
@@ -990,7 +990,7 @@
         "monotone",
         "gap"
       ],
-      "matchingFiles": 809,
+      "matchingFiles": 810,
       "shown": 30,
       "files": [
         {
@@ -1656,6 +1656,144 @@
       "source": "backtester/core/strategies/__init__.py FAMILY"
     },
     {
+      "id": "evidence-floor",
+      "label": "Evidence floor",
+      "why": "Below a minimum trade count a result is not eligible to be reported as an improvement. cpcv_evaluate prints DROPPED but still returns paths, which is how a 6-trade Sharpe reached a headline.",
+      "terms": [
+        "min_total_trades",
+        "min_rankable_trades",
+        "insufficient",
+        "dropped",
+        "evidence floor",
+        "rankable"
+      ],
+      "matchingFiles": 390,
+      "shown": 30,
+      "files": [
+        {
+          "path": "research/strategy_experiment/results/results.json",
+          "hits": 334
+        },
+        {
+          "path": "research/strategy_experiment/results/initial-gapped-run/results.json",
+          "hits": 284
+        },
+        {
+          "path": "research/strategy_experiment/audit_realism.json",
+          "hits": 112
+        },
+        {
+          "path": "research/strategy_experiment/audit_realism.md",
+          "hits": 112
+        },
+        {
+          "path": "research/cross_asset_cpcv.py",
+          "hits": 67
+        },
+        {
+          "path": "research/strategy_experiment/audit_integrity.json",
+          "hits": 55
+        },
+        {
+          "path": "research/strategy_experiment/audit_integrity.md",
+          "hits": 54
+        },
+        {
+          "path": "soltui/cumulative.py",
+          "hits": 39
+        },
+        {
+          "path": "research/CANDLE-GAP-AUDIT.md",
+          "hits": 36
+        },
+        {
+          "path": "research/results/coinbase50_20261111_summary.json",
+          "hits": 34
+        },
+        {
+          "path": "backtester/tests/test_cross_asset_cpcv.py",
+          "hits": 33
+        },
+        {
+          "path": "research/tradingview-card-coverage.json",
+          "hits": 33
+        },
+        {
+          "path": "research/ratio_rotation.py",
+          "hits": 22
+        },
+        {
+          "path": "FILES.md",
+          "hits": 21
+        },
+        {
+          "path": "docs/FILES.md",
+          "hits": 21
+        },
+        {
+          "path": "index/build.py",
+          "hits": 19
+        },
+        {
+          "path": "research/cpcv_sweep.py",
+          "hits": 19
+        },
+        {
+          "path": "soltui/tui.py",
+          "hits": 17
+        },
+        {
+          "path": "memory.md",
+          "hits": 17
+        },
+        {
+          "path": "research/RANKED_LISTS.md",
+          "hits": 17
+        },
+        {
+          "path": "CONCEPTS.md",
+          "hits": 14
+        },
+        {
+          "path": "docs/CONCEPTS.md",
+          "hits": 14
+        },
+        {
+          "path": "index/make_concepts_doc.py",
+          "hits": 14
+        },
+        {
+          "path": ".cdo/reviews-2026-11-12/medium-files.json",
+          "hits": 14
+        },
+        {
+          "path": "soltui/help.py",
+          "hits": 14
+        },
+        {
+          "path": "research/decide.py",
+          "hits": 13
+        },
+        {
+          "path": ".cdo/reviews-2026-11-12/pipeline-pr241-ui-current.json",
+          "hits": 11
+        },
+        {
+          "path": ".cdo/reviews-2026-11-13/cdo-forecast-app-delta.json",
+          "hits": 11
+        },
+        {
+          "path": "SCRIPTS.md",
+          "hits": 10
+        },
+        {
+          "path": "docs/SCRIPTS.md",
+          "hits": 10
+        }
+      ],
+      "source": "curated-from-repo-vocabulary"
+    },
+    {
       "id": "family:regime-filter",
       "label": "Strategy family: regime-filter",
       "why": "A value of the FAMILY dict in backtester/core/strategies/__init__.py, which is the repo's own taxonomy rather than one imposed here.",
@@ -1791,144 +1929,6 @@
         }
       ],
       "source": "backtester/core/strategies/__init__.py FAMILY"
-    },
-    {
-      "id": "evidence-floor",
-      "label": "Evidence floor",
-      "why": "Below a minimum trade count a result is not eligible to be reported as an improvement. cpcv_evaluate prints DROPPED but still returns paths, which is how a 6-trade Sharpe reached a headline.",
-      "terms": [
-        "min_total_trades",
-        "min_rankable_trades",
-        "insufficient",
-        "dropped",
-        "evidence floor",
-        "rankable"
-      ],
-      "matchingFiles": 388,
-      "shown": 30,
-      "files": [
-        {
-          "path": "research/strategy_experiment/results/results.json",
-          "hits": 334
-        },
-        {
-          "path": "research/strategy_experiment/results/initial-gapped-run/results.json",
-          "hits": 284
-        },
-        {
-          "path": "research/strategy_experiment/audit_realism.json",
-          "hits": 112
-        },
-        {
-          "path": "research/strategy_experiment/audit_realism.md",
-          "hits": 112
-        },
-        {
-          "path": "research/cross_asset_cpcv.py",
-          "hits": 67
-        },
-        {
-          "path": "research/strategy_experiment/audit_integrity.json",
-          "hits": 55
-        },
-        {
-          "path": "research/strategy_experiment/audit_integrity.md",
-          "hits": 54
-        },
-        {
-          "path": "soltui/cumulative.py",
-          "hits": 39
-        },
-        {
-          "path": "research/CANDLE-GAP-AUDIT.md",
-          "hits": 36
-        },
-        {
-          "path": "research/results/coinbase50_20261111_summary.json",
-          "hits": 34
-        },
-        {
-          "path": "backtester/tests/test_cross_asset_cpcv.py",
-          "hits": 33
-        },
-        {
-          "path": "research/tradingview-card-coverage.json",
-          "hits": 33
-        },
-        {
-          "path": "research/ratio_rotation.py",
-          "hits": 22
-        },
-        {
-          "path": "FILES.md",
-          "hits": 21
-        },
-        {
-          "path": "docs/FILES.md",
-          "hits": 21
-        },
-        {
-          "path": "index/build.py",
-          "hits": 19
-        },
-        {
-          "path": "research/cpcv_sweep.py",
-          "hits": 19
-        },
-        {
-          "path": "soltui/tui.py",
-          "hits": 17
-        },
-        {
-          "path": "memory.md",
-          "hits": 17
-        },
-        {
-          "path": "research/RANKED_LISTS.md",
-          "hits": 17
-        },
-        {
-          "path": "CONCEPTS.md",
-          "hits": 14
-        },
-        {
-          "path": "docs/CONCEPTS.md",
-          "hits": 14
-        },
-        {
-          "path": "index/make_concepts_doc.py",
-          "hits": 14
-        },
-        {
-          "path": ".cdo/reviews-2026-11-12/medium-files.json",
-          "hits": 14
-        },
-        {
-          "path": "soltui/help.py",
-          "hits": 14
-        },
-        {
-          "path": "research/decide.py",
-          "hits": 13
-        },
-        {
-          "path": ".cdo/reviews-2026-11-12/pipeline-pr241-ui-current.json",
-          "hits": 11
-        },
-        {
-          "path": ".cdo/reviews-2026-11-13/cdo-forecast-app-delta.json",
-          "hits": 11
-        },
-        {
-          "path": "SCRIPTS.md",
-          "hits": 10
-        },
-        {
-          "path": "docs/SCRIPTS.md",
-          "hits": 10
-        }
-      ],
-      "source": "curated-from-repo-vocabulary"
     },
     {
       "id": "family:breakout",

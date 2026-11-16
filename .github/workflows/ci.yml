@@ -207,7 +207,7 @@ jobs:
         run: python3 -m unittest research.tests.test_shape_study research.tests.test_zec_cycles research.tests.test_volty_zec research.tests.test_volty_predictive_checks research.tests.test_news_event_study research.tests.test_zec_granular research.tests.test_zec_expanded research.tests.test_zec_live research.tests.test_zec_tui_model research.tests.test_zec_tui_workers research.tests.test_zec_shape_view research.tests.test_zec_reversal_excursions research.tests.test_crosscoin_reversals -v
 
       - name: Reversal selection and paper-only leveraged observer
-        run: python3 -W error::ResourceWarning -m unittest research.tests.test_reversal_shapes research.tests.test_reversal_second_turn oracle_leverage.tests.test_quotes oracle_leverage.tests.test_console oracle_leverage.tests.test_forward oracle_leverage.tests.test_market oracle_leverage.tests.test_process_adapters -v
+        run: python3 -W error::ResourceWarning -m unittest research.tests.test_reversal_shapes research.tests.test_reversal_second_turn research.tests.test_mtf_reversal oracle_leverage.tests.test_mtf_forward oracle_leverage.tests.test_quotes oracle_leverage.tests.test_console oracle_leverage.tests.test_forward oracle_leverage.tests.test_market oracle_leverage.tests.test_process_adapters -v
 
       - name: Meta evidence consolidation and actual-cost replay contracts
         run: python3 -m unittest research.tests.test_meta_analysis research.tests.test_meta_followups -v

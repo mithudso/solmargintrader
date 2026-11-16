@@ -1,6 +1,8 @@
 # Work continuation
 
-Version: 574
+Version: 576
+Delta: v575 to v576; record the macOS shape-guide lifecycle failure and recovery.
+Delta: v574 to v575; record PR 286 delivery and active MTF/status controls continuation.
 Delta: v573 to v574; record delivered first scope and second-turn study, dual-feed monitor, and pending MTF work.
 Delta: v572 to v573; show full transaction wallet and verify its actual collateral balances.
 Delta: v571 to v572; correct the implicit compute-budget fee ceiling found by independent review; qualify15 SDK/service cases.
@@ -2652,3 +2654,14 @@ Current stage: freeze input contract and Mongo run. Source implementation and ba
 PR 285 merged to master at 56e4a7e97fc27de7b7525891ae6af6ebb69e4f5a. The independent second-turn study covers 24,480 events and uses Oracle outcomes, with Binance signal diagnostics separately labelled. Its native bindings and compressed outputs are in research/second-turn-20261116/manifest.json. The independent numerical audit passed at maximum difference 2.31e-12. Results are retrospective and do not prove funded fills. The original paper selection and collector remain unchanged.
 
 The leveraged panel displays separately timestamped Jupiter Oracle and Coinbase midpoint streams, with explicit primary source, freshness and basis. Live terminal color requires removing inherited NO_COLOR for the monitor only. The paper collector remains active; all trading paths are disarmed. Delivery of this scope and canonical runtime acceptance are pending at this checkpoint. The separate MTF observer remains in progress and must not be included in this scope.
+
+
+## MTF observer and status controls — 2026-11-16
+
+PR 286 merged as 1c1b7467f80b169395359c0fbdf77a5b9aada68b after all required CI passed. The canonical monitor and quote sidecar run from /Users/mitch/dev/solmargintrader; original paper collector PID 35217 continues unchanged. The MTF observer and retrospective analysis are separate work on codex/mtf-observer-2307; they are not yet delivered. Native model and result drafts passed complete byte-for-byte readback; independent numerical audit passed. Keep the model retrospective and do not claim a profitable edge. Preserve disarmed defaults and require explicit arming. The recording shows a 1.07–1.09 second Jupiter exchange age crossing the one-second limit while Coinbase remains live. Keep source freshness truthful while making status display stable. Remaining: finish controls, independent audit and acceptance, persist the audit, run checks and deliver PR, then verify canonical runtime.
+
+The Stele task-create write for the status and arming controls is queued as outbox a2e35dd2. On replay, link the created task as blocking TASK-2289. Delivered-scope completion writes are queued as 3066547d and 89726979.
+
+MTF native model, two result artifacts and both independent audit receipts passed exact readback. Independent audit covered 742128 comparisons and 15 adversarial checks. The retrospective final split does not establish a profitable edge: BTC selected 30/48 direction and 24 joint, identical to DOWN on those 48; ZEC selected 202/427 direction and 122 joint versus DOWN 202/427 and 121 joint. Candidate observer PID 38413 uses a separate private ledger and frozen bundle; it displays four completed frames and ready scores for both assets. Thirteen observer tests and 51 console/panel tests passed with ResourceWarning as error; exact raw-unit 9.8bps touch regression passed. Original collector PID 35217 remains running. Candidate monitor PID 45304 loads the worktree; independent live acceptance and final CI/merge/canonical retarget remain. No real arm action or funded trade occurred.
+
+PR 288 macOS CI caught a ShapeGuide mount transition race: textual.css.query.NoMatches for #shape-guide-body during timer-driven paint. Correct the guide lifecycle narrowly and rerun the failed gate; prior financial and model gates remain accepted.

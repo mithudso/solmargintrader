@@ -7,6 +7,8 @@ import json
 import math
 import os
 import re
+import stat
+import tempfile
 import time
 import uuid
 from decimal import Decimal, InvalidOperation
@@ -75,15 +77,100 @@ class Console:
 
     def config(self):
         path = self.home / "config.json"
-        if not path.exists():
+        if not path.exists() and not path.is_symlink():
             return {"armed": False, "max_collateral_usd": 10, "sdk": {}}
-        stat = path.stat()
-        if stat.st_uid != os.getuid() or stat.st_mode & 0o077 or path.is_symlink():
+        info = path.lstat()
+        if (
+            info.st_uid != os.getuid()
+            or info.st_mode & 0o077
+            or not stat.S_ISREG(info.st_mode)
+        ):
             raise ValueError("Trading config must be an owner-only regular file")
         cfg = json.loads(path.read_text())
         if not isinstance(cfg, dict) or type(cfg.get("armed", False)) is not bool:
             raise ValueError("Invalid private trading config")
         return cfg
+
+    def set_venue_armed(self, venue, enabled, collateral_usd):
+        """Explicit operator action; no order, signing, or intent mutation."""
+        lock = None
+        try:
+            if venue not in VENUES or type(enabled) is not bool:
+                raise ValueError("Invalid venue or arm state")
+            amount = (
+                self.request("BTC", venue, "long", collateral_usd)["collateral_usd"]
+                if enabled
+                else None
+            )
+            lock = self._lock()
+            cfg = self.config()
+            if "enabled_venues" in cfg:
+                enabled_venues = cfg["enabled_venues"]
+                if not isinstance(enabled_venues, list) or any(
+                    v not in VENUES for v in enabled_venues
+                ):
+                    raise ValueError("Invalid enabled venues")
+                enabled_venues = list(dict.fromkeys(enabled_venues))
+            else:
+                enabled_venues = list(VENUES) if cfg.get("armed") is True else []
+                if (
+                    cfg.get("sdk", {}).get("enabled") is not True
+                    and VENUES[1] in enabled_venues
+                ):
+                    enabled_venues.remove(VENUES[1])
+            if enabled:
+                wallet = self.cli.wallet()
+                address, name = wallet.get("address"), wallet.get("name")
+                if (
+                    not isinstance(address, str)
+                    or not address
+                    or not isinstance(name, str)
+                    or not name
+                ):
+                    raise ValueError("Active CLI public wallet is unavailable")
+                if enabled_venues and cfg.get("wallet_address") != address:
+                    raise ValueError("Active CLI wallet differs from configured wallet")
+                cfg["wallet_address"] = address
+                cfg["wallet_name"] = name
+                if venue not in enabled_venues:
+                    enabled_venues.append(venue)
+                caps = cfg.get("venue_collateral_caps", {})
+                if not isinstance(caps, dict):
+                    raise TypeError("Invalid venue collateral caps")
+                cfg["venue_collateral_caps"] = {**caps, venue: amount}
+                if venue == VENUES[1]:
+                    sdk = cfg.get("sdk", {})
+                    if not isinstance(sdk, dict):
+                        raise ValueError("Invalid SDK configuration")
+                    cfg["sdk"] = {**sdk, "enabled": True}
+            elif venue in enabled_venues:
+                enabled_venues.remove(venue)
+            cfg["enabled_venues"] = enabled_venues
+            cfg["armed"] = bool(enabled_venues)
+            fd, temporary = tempfile.mkstemp(prefix=".config-", dir=self.home)
+            try:
+                with os.fdopen(fd, "w") as stream:
+                    json.dump(cfg, stream)
+                    stream.flush()
+                    os.fsync(stream.fileno())
+                os.replace(temporary, self.home / "config.json")
+            finally:
+                if os.path.exists(temporary):
+                    os.unlink(temporary)
+            return {
+                "status": "armed" if enabled else "disarmed",
+                "venue": venue,
+                "message": (
+                    f"Wallet {cfg.get('wallet_address')} ({cfg.get('wallet_name')}); cap {amount} USD. No order sent."
+                    if enabled
+                    else "New submissions blocked for this venue; submitted transactions remain in progress."
+                ),
+            }
+        except CONSOLE_ERRORS as exc:
+            return {"status": "blocked", "message": str(exc)[:400]}
+        finally:
+            if lock:
+                lock.close()
 
     @staticmethod
     def request(asset, venue, side, collateral_usd):
@@ -134,6 +221,22 @@ class Console:
             "by_asset": totals["by_asset"],
             "mode": "paper only;16bps cost scenario, no venue fills",
         }
+        open_counts = {asset: 0 for asset in ("ZEC", "BTC")}
+        for prediction in self.store.predictions("open"):
+            if prediction.get("asset") in open_counts:
+                open_counts[prediction["asset"]] += 1
+        performance["by_asset"] = {}
+        for asset in ("ZEC", "BTC"):
+            row = totals["by_asset"].get(asset, {})
+            n = row.get("n", 0)
+            correct = row.get("correct", 0)
+            performance["by_asset"][asset] = {
+                "settled": n,
+                "open": open_counts[asset],
+                "correct": correct,
+                "hit_rate": correct / n if n else None,
+                "mean_net_bps": row.get("mean_net_bps"),
+            }
         stale = now - heartbeat.get("at", 0) > 45
         service_status = heartbeat.get("status", "not-started")
         if service_status == "running" and stale:
@@ -172,6 +275,16 @@ class Console:
             "status": "paper-forward-" + service_status,
             "updated_at": heartbeat.get("at"),
             "armed": cfg.get("armed", False),
+            "enabled_venues": cfg.get(
+                "enabled_venues",
+                [
+                    v
+                    for v in VENUES
+                    if cfg.get("armed") is True
+                    and (v != VENUES[1] or cfg.get("sdk", {}).get("enabled") is True)
+                ],
+            ),
+            "mtf_forward": self.store.meta("mtf_forward", {}),
             "wallet": wallet,
             "price_comparison": self.price_comparison(),
             "assets": capabilities,
@@ -661,6 +774,11 @@ class Console:
                 raise ValueError(
                     "Trading is disarmed; the live-data forward test is paper only"
                 )
+            if "enabled_venues" in cfg and (
+                not isinstance(cfg["enabled_venues"], list)
+                or request["venue"] not in cfg["enabled_venues"]
+            ):
+                raise ValueError("Trading is disarmed for the selected venue")
             wallet = self.cli.wallet()
             if (
                 not cfg.get("wallet_address")
@@ -671,7 +789,12 @@ class Console:
                 raise ValueError(
                     "Active CLI wallet differs from the explicit configured/preview wallet"
                 )
-            cap = Decimal(str(cfg.get("max_collateral_usd", "0")))
+            caps = cfg.get("venue_collateral_caps", {})
+            if not isinstance(caps, dict):
+                raise TypeError("Invalid venue collateral caps")
+            cap = Decimal(
+                str(caps.get(request["venue"], cfg.get("max_collateral_usd", "0")))
+            )
             if (
                 not cap.is_finite()
                 or cap <= 0
