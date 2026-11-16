@@ -1,6 +1,7 @@
 # Work continuation
 
-Version: 583
+Version: 584
+Delta: v583 to v584; record new separate strategy research and data scope.
 Delta: v582 to v583; preserve owner observations without changing the frozen study.
 Delta: v581 to v582; record bounded on-chain IDL check.
 Delta: v580 to v581; record Jupiter documentation links and Preview continuation.
@@ -2692,3 +2693,5 @@ The user provided Jupiter documentation links. Their related product documentati
 Read-only Anchor 0.31.1 Program.fetchIdl returned null for YOLO program yoLovHV5eT4DNPMG2Bu1NLmq8nVygEAPrNT1Rx6vWFA. Its derived IDL account DZT94u5ZnWTy8pSXWvZnDj1H23cmdE9vo9tT9WLzHJPU was absent on mainnet at about 10:04 UTC. This rules out the standard published Anchor IDL account only; it does not rule out an off-chain schema.
 
 The user described TradingView strategy results as possible research leads. They are unverified owner observations; interval, settings, costs and baselines were not supplied. Do not add them to the frozen exit50 selection or claim a verified return. Continue the existing study and Preview delivery.
+
+The user authorized rabbithole research for seven named strategy families, missing strategy cards, backtests and additional fine-grained BTC/ZEC data. Interpret SEC as ZEC from context. This is separate from the frozen exit50 cohort and policy selection. Deduplicate existing research and cards first, preserve all 21 protected holds, and reserve prospective data before outcomes. The TradingView returns remain unverified observations with missing settings and costs.

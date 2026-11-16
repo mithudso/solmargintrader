@@ -1,6 +1,7 @@
 # Prompt history
 
-Version: 266
+Version: 267
+Delta: v266 to v267; record strategy research, cards, backtests and additional data request.
 Delta: v265 to v266; record TradingView observations and resume request.
 Delta: v264 to v265; record Jupiter developer organization.
 Delta: v263 to v264; record Jupiter documentation links.
@@ -2442,4 +2443,11 @@ I was on TradingView trying out various strategies to play with, and for ZEC, du
 
 ```text
 resume what you were doing
+```
+
+## Strategy research and additional data — 2026-11-16
+
+```text
+I was on TradingView trying out various strategies to play with, and for ZEC, during a 5 mo lookbak these are the strategies that
+  brought in over 100% return: momentum, moving averaage, parabolic SAR, Pivot Reversal, Price channel, two moving averages crossover, volatility expansion-close strategies. Fully investigate each of these strategies with a rabbithole skill, then build strategy cards for each if they don't already exist, and backtest using each of them. Also keep pulling more BTC and SEC fine grained data for another chance at testing
 ```
