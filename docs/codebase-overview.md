@@ -209,6 +209,7 @@ command registry. No npm runtime dependencies by design; one vendored charting l
 | `extension/src/1000x/reversal.js` | Completed10m DD/UU context, trailing48-bar5/10/15/20m shapes and separate closed1m momentum; no model or position inference |
 | `extension/src/1000x/panel-model.js` | Independent quote/history freshness and closed/developing eligibility checks |
 | `extension/src/1000x/panel.js` | Floating read-only chart, labeled reversal/shape/momentum cards and local view settings |
+| `extension/src/1000x/timeframes.js` | Shared supported-horizon catalog for chart selection and all six learners |
 | `extension/src/1000x/oracle-model.js` | Pure bounded logistic learner, immutable prospective forecasts, genuine delayed labels and paired probability metrics |
 | `extension/src/1000x/oracle-store.js` | Separate native IndexedDB atomic partition transitions across windows and reloads |
 | `extension/src/1000x/oracle-controller.js` | Existing-feed coalescing, source/version isolation, stale/obsolete-session refusal and owned teardown |

@@ -3,6 +3,7 @@ import assert from 'node:assert/strict';
 import { decodeHistory, decodeQuote, JupiterFeed, JUPITER_ENDPOINTS, TIMEFRAMES, CONTEXT_HISTORY_BARS } from '../src/1000x/feed.js';
 import { computeIndicators, MAX_INDICATOR_LENGTH } from '../src/1000x/indicators.js';
 import { panelModel } from '../src/1000x/panel-model.js';
+import { oracleInput } from '../src/1000x/oracle-model.js';
 
 const BASE = 1_794_830_400_000; // Explicit synthetic clock; divisible by one minute.
 const MARKET = { symbol: 'SOL', feedId: 6, closed: false,
@@ -575,6 +576,50 @@ test('1m chart reuses its own expanded minute seed without duplicate history rea
   assert.equal(h.calls.length, 2);
   assert.equal(h.feed.getSnapshot().candles.length, CONTEXT_HISTORY_BARS + 1);
   assert.deepEqual(h.feed.getSnapshot().minuteCandles, h.feed.getSnapshot().candles);
+  h.feed.stop();
+});
+
+test('chart switching keeps the one socket and healthy minute learning even when selected history fails', async () => {
+  const h = contextHarness({ read: (url, options, now) => new URL(url).searchParams.get('resolution') === '60'
+    ? response({}, 503) : response(requestedHistory(url, now)) });
+  await h.feed.start(); h.sockets[0].open(); h.sockets[0].emit(message(h.state.now));
+  const before = h.feed.getSnapshot();
+  await h.feed.setInterval(3600);
+  const failed = h.feed.getSnapshot();
+  assert.equal(failed.status, 'error'); assert.equal(failed.streamStatus, 'live'); assert.equal(failed.minuteStatus, 'ready');
+  assert.equal(oracleInput(failed, h.state.now).eligible, true);
+  assert.deepEqual(failed.sourceIdentity, before.sourceIdentity); assert.equal(h.sockets.length, 1); assert.equal(h.sockets[0].closed, false);
+  const minuteReads = h.calls.filter(c => new URL(c.url).searchParams.get('resolution') === '1').length;
+  await h.feed.setInterval(60);
+  const selectedMinute = h.feed.getSnapshot();
+  assert.equal(selectedMinute.status, 'live'); assert.deepEqual(selectedMinute.minuteCandles, selectedMinute.candles);
+  assert.equal(h.calls.filter(c => new URL(c.url).searchParams.get('resolution') === '1').length, minuteReads + 1);
+  assert.equal(h.calls.filter(c => c.url === JUPITER_ENDPOINTS.markets).length, 1); assert.equal(h.sockets.length, 1);
+  h.feed.stop();
+});
+
+test('chart loading preserves shared eligibility and an aborted obsolete chart response cannot replace the new selection', async () => {
+  let delayed;
+  const h = contextHarness({ read: (url, options, now) => new URL(url).searchParams.get('resolution') === '60'
+    ? new Promise(resolve => { delayed = { url, options, now, resolve }; }) : response(requestedHistory(url, now)) });
+  await h.feed.start(); h.sockets[0].open(); h.sockets[0].emit(message(h.state.now));
+  const old = h.feed.setInterval(3600); await flush(); assert.ok(delayed);
+  assert.equal(h.feed.getSnapshot().status, 'backfilling'); assert.equal(oracleInput(h.feed.getSnapshot(), h.state.now).eligible, true);
+  await h.feed.setInterval(300); assert.equal(delayed.options.signal.aborted, true);
+  const selected = h.feed.getSnapshot();
+  delayed.resolve(response(requestedHistory(delayed.url, delayed.now))); await old; await flush();
+  assert.deepEqual(h.feed.getSnapshot(), selected); assert.equal(selected.intervalSec, 300);
+  assert.equal(h.sockets.length, 1); assert.throws(() => h.feed.setInterval(7), /unsupported_timeframe/); h.feed.stop();
+});
+
+test('invalid shared minute history withholds all horizons while an independent selected chart remains readable', async () => {
+  let failMinutes = false;
+  const h = contextHarness({ read: (url, options, now) => failMinutes && new URL(url).searchParams.get('resolution') === '1'
+    ? response({}, 503) : response(requestedHistory(url, now)) });
+  await h.feed.start(); h.sockets[0].open(); h.sockets[0].emit(message(h.state.now)); failMinutes = true;
+  await h.feed.setInterval(3600); const snapshot = h.feed.getSnapshot();
+  assert.equal(snapshot.status, 'live'); assert.equal(snapshot.minuteStatus, 'unavailable');
+  for (const t of TIMEFRAMES) assert.equal(oracleInput(snapshot, h.state.now, t.seconds).eligible, false);
   h.feed.stop();
 });
 

@@ -123,7 +123,8 @@ function draw() {
   if (disposed || !latest) return;
   try { model = panelModel(latest, config); }
   catch {
-    oracle.suspend('invalid_analytics');
+    // Chart arithmetic is independent of the shared minute learner. Its own
+    // causal input/feature validation withholds every model on invalid minutes.
     model = null; clearChart(); resetContext();
     $('status').textContent = 'Invalid candle or indicator data — signals unavailable';
     $('status').dataset.state = 'error';
@@ -132,7 +133,6 @@ function draw() {
     return;
   }
   const metrics = model.developing;
-  if (!document.hidden) oracle.observe(latest);
   candles.setData(model.candles.map(({ time, open, high, low, close }) => ({ time, open, high, low, close })));
   const pivots = model.confirmedPivots.map(({ time, value }) => ({ time, value }));
   lines.zigzag.setData(pivots);
@@ -229,7 +229,11 @@ async function restart() {
   $('status').textContent = 'Connecting to Jupiter…'; $('status').dataset.state = 'connecting';
   document.querySelectorAll('[data-value]').forEach(el => { el.textContent = 'Warming up'; });
   document.querySelectorAll('[data-signal]').forEach(el => { el.textContent = 'Waiting for live data'; });
-  feed = new JupiterFeed({ symbol: SYMBOL, intervalSec, withReversalContext: true, onUpdate: snapshot => { latest = snapshot; queueDraw(); } });
+  feed = new JupiterFeed({ symbol: SYMBOL, intervalSec, withReversalContext: true, onUpdate: snapshot => {
+    latest = snapshot;
+    if (!document.hidden) oracle.observe(snapshot);
+    queueDraw();
+  } });
   try { await feed.start(); } catch { $('status').textContent = 'Jupiter data unavailable — no signal'; $('status').dataset.state = 'error'; }
 }
 for (const entry of TIMEFRAMES) {
@@ -240,13 +244,18 @@ try {
   if (saved) { config = validateIndicatorConfig(saved.config); if (TIMEFRAMES.some(t => t.seconds === saved.intervalSec)) intervalSec = saved.intervalSec; }
 } catch { settingsError = 'Saved settings invalid or unavailable; using defaults'; }
 $('timeframe').value = intervalSec;
-$('timeframe').addEventListener('change', () => { intervalSec = Number($('timeframe').value); save(); restart(); });
+oracle.selectHorizon(intervalSec);
+$('timeframe').addEventListener('change', () => {
+  intervalSec = Number($('timeframe').value); oracle.selectHorizon(intervalSec); save();
+  model = null; viewIdentity = null; clearChart(); resetContext();
+  void feed.setInterval(intervalSec);
+});
 $('refresh').addEventListener('click', () => restart());
 readoutRows(); parameterForm(); visibility();
-const staleClock = setInterval(queueDraw, 1000);
+const staleClock = setInterval(() => { if (!document.hidden && latest) oracle.observe(latest); queueDraw(); }, 1000);
 document.addEventListener('visibilitychange', () => {
   if (document.hidden) oracle.suspend();
-  else queueDraw();
+  else { if (latest) oracle.observe(latest); queueDraw(); }
 });
 window.addEventListener('pagehide', () => { disposed = true; clearInterval(staleClock); feed?.stop(); oracle.stop(); chart.remove(); }, { once: true });
 await restart();

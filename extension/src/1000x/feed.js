@@ -4,15 +4,8 @@
  */
 
 import { MAX_INDICATOR_LENGTH } from './indicators.js';
-
-export const TIMEFRAMES = Object.freeze([
-  Object.freeze({ label: '1m', seconds: 60 }),
-  Object.freeze({ label: '5m', seconds: 300 }),
-  Object.freeze({ label: '10m', seconds: 600 }),
-  Object.freeze({ label: '15m', seconds: 900 }),
-  Object.freeze({ label: '20m', seconds: 1200 }),
-  Object.freeze({ label: '1h', seconds: 3600 }),
-]);
+import { TIMEFRAMES } from './timeframes.js';
+export { TIMEFRAMES } from './timeframes.js';
 
 export const JUPITER_ENDPOINTS = Object.freeze({
   markets: 'https://yolo-api.jup.ag/markets',
@@ -197,6 +190,11 @@ export class JupiterFeed {
   #historyReady = false;
   #historyRequest = null;
   #historyGeneration = 0;
+  #chartGeneration = 0;
+  #chartController = null;
+  #intervalSec;
+  #contextRequest = null;
+  #contextGeneration = 0;
   #lastHistoryAttempt = 0;
   #lastHistoryMs = null;
   #status = 'connecting';
@@ -213,9 +211,10 @@ export class JupiterFeed {
     withReversalContext = false } = {}) {
     if (typeof withReversalContext !== 'boolean') throw new TypeError('withReversalContext must be boolean');
     this.#withContext = withReversalContext;
+    this.#intervalSec = intervalSec;
     Object.defineProperties(this, {
       symbol: { value: typeof symbol === 'string' ? symbol.toUpperCase() : '', enumerable: true },
-      intervalSec: { value: intervalSec, enumerable: true },
+      intervalSec: { get: () => this.#intervalSec, enumerable: true },
     });
     this.#onUpdate = typeof onUpdate === 'function' ? onUpdate : () => {};
     // Window fetch/timers validate their receiver. A private-field call would
@@ -228,17 +227,18 @@ export class JupiterFeed {
   }
 
   getSnapshot() {
-    const minuteRows = this.intervalSec === 60 ? this.#candles : this.#context.candles;
     return Object.freeze({
       symbol: this.symbol, intervalSec: this.intervalSec, status: this.#status,
+      // Chart backfills/errors cannot change the shared stream's eligibility.
+      streamStatus: !this.#running || this.#terminal ? 'unavailable' : !this.#socket || !this.#quote ? 'connecting' : this.#fresh() ? 'live' : 'stale',
       candles: Object.freeze(this.#candles.map((candle) => Object.freeze({ ...candle }))),
       quote: this.#quote ? Object.freeze({ ...this.#quote }) : null,
       error: this.#error, source: SOURCE, lastHistoryMs: this.#lastHistoryMs,
       sourceIdentity: this.#market ? Object.freeze({ symbol: this.symbol, feedId: this.#market.feedId,
         marketAddress: this.#market.address, stream: 'fixed_rate@200ms', kind: 'oracle-ohlc' }) : null,
       historyIntervalSec: this.#historyInterval,
-      minuteCandles: this.#withContext ? Object.freeze(minuteRows.map(candle => Object.freeze({ ...candle }))) : null,
-      minuteStatus: !this.#withContext ? 'disabled' : (this.intervalSec === 60 ? this.#historyReady : this.#context.ready) ? 'ready' : 'unavailable',
+      minuteCandles: this.#withContext ? Object.freeze(this.#context.candles.map(candle => Object.freeze({ ...candle }))) : null,
+      minuteStatus: !this.#withContext ? 'disabled' : this.#context.ready ? 'ready' : 'unavailable',
       minuteError: this.#context.error,
     });
   }
@@ -267,8 +267,9 @@ export class JupiterFeed {
     return this.#running && !this.#terminal && generation === this.#generation;
   }
 
-  async #json(url) {
+  async #json(url, chart = false) {
     const controller = new AbortController();
+    if (chart) this.#chartController = controller;
     this.#controllers.add(controller);
     const timeout = this.#after(() => controller.abort(), 8000);
     try {
@@ -304,6 +305,7 @@ export class JupiterFeed {
     } finally {
       this.#cancel(timeout);
       this.#controllers.delete(controller);
+      if (this.#chartController === controller) this.#chartController = null;
     }
   }
 
@@ -369,34 +371,49 @@ export class JupiterFeed {
     finally { if (this.#historyRequest === operation) this.#historyRequest = null; }
   }
 
+  /** Replace only selected chart history. The market subscription and shared
+   * minute context remain the same source; old chart replies cannot win a race. */
+  setInterval(intervalSec) {
+    if (!TIMEFRAMES.some(t => t.seconds === intervalSec)) throw new RangeError('unsupported_timeframe');
+    if (intervalSec === this.intervalSec) return this.#historyRequest || Promise.resolve(this.#historyReady);
+    this.#intervalSec = intervalSec; this.#chartGeneration++;
+    this.#chartController?.abort(); this.#historyRequest = null;
+    this.#candles = []; this.#liveTimes.clear(); this.#historyReady = false; this.#lastHistoryMs = null;
+    this.#publish('backfilling', null);
+    return this.#running && this.#market && !this.#terminal ? this.#backfill(this.#generation) : Promise.resolve(false);
+  }
+
   async #loadHistory(generation) {
     if (!this.#active(generation)) return false;
     const requestedAtMs = this.#clock();
+    const chartGeneration = this.#chartGeneration, intervalSec = this.intervalSec;
+    const historyInterval = this.#historyInterval, retention = this.#retention;
     this.#lastHistoryAttempt = requestedAtMs;
     this.#publish('backfilling', null);
     const seconds = Math.floor(this.#clock() / 1000);
-    const currentStart = Math.floor(seconds / this.intervalSec) * this.intervalSec;
+    const currentStart = Math.floor(seconds / intervalSec) * intervalSec;
     const query = new URLSearchParams({
-      symbol: `${this.symbol}USD`, resolution: String(this.#historyInterval / 60),
-      from: String(Math.max(this.intervalSec, currentStart - (this.#retention - 1) * this.intervalSec)),
+      symbol: `${this.symbol}USD`, resolution: String(historyInterval / 60),
+      from: String(Math.max(intervalSec, currentStart - (retention - 1) * intervalSec)),
       to: String(seconds + 1),
     });
     try {
-      const [payload] = await Promise.all([
-        this.#json(`${JUPITER_ENDPOINTS.history}?${query}`),
-        this.#withContext && this.intervalSec !== 60 ? this.#loadMinuteContext(generation, requestedAtMs) : null,
-      ]);
-      if (!this.#active(generation)) return false;
+      const minuteRead = this.#withContext ? this.#minuteContext(generation, requestedAtMs) : null;
+      // A1m chart reuses that exact validated minute request instead of adding a
+      // second history reader. Larger charts retain their own native history.
+      const nativeHistory = this.#withContext && intervalSec === 60 ? await minuteRead
+        : decodeHistory((await Promise.all([this.#json(`${JUPITER_ENDPOINTS.history}?${query}`, true), minuteRead]))[0],
+          { intervalSec: historyInterval, nowMs: requestedAtMs });
+      if (!this.#active(generation) || chartGeneration !== this.#chartGeneration) return false;
       // A response started before a boundary cannot certify that boundary's close,
       // even when its HTTP request finishes after the clock crosses the boundary.
-      const nativeHistory = decodeHistory(payload, { intervalSec: this.#historyInterval, nowMs: requestedAtMs });
-      const history = resampleHistory(nativeHistory, this.#historyInterval, this.intervalSec, requestedAtMs);
-      this.#candles = mergeCandles(this.#candles, history, this.#liveTimes, this.#lastGapMs, requestedAtMs, this.intervalSec, this.#retention);
+      const history = resampleHistory(nativeHistory || [], historyInterval, intervalSec, requestedAtMs);
+      this.#candles = mergeCandles(this.#candles, history, this.#liveTimes, this.#lastGapMs, requestedAtMs, intervalSec, retention);
       // Only observations newer than this request may advance its close. Keep
       // older quote timestamps truthful rather than replaying them as new data.
       if (this.#quote?.exchangeMs > requestedAtMs) this.#applyQuote(this.#quote, false);
       this.#lastHistoryMs = this.#clock();
-      const required = Math.floor(this.#clock() / 1000 / this.intervalSec) * this.intervalSec - this.intervalSec;
+      const required = Math.floor(this.#clock() / 1000 / intervalSec) * intervalSec - intervalSec;
       this.#historyReady = history.some((candle) => candle.time === required && candle.closed);
       if (!this.#historyReady) {
         this.#publish('error', history.length ? 'history_lagging' : 'history_unavailable');
@@ -407,12 +424,20 @@ export class JupiterFeed {
       }
       return this.#historyReady;
     } catch (error) {
-      if (!this.#active(generation)) return false;
+      if (!this.#active(generation) || chartGeneration !== this.#chartGeneration) return false;
       this.#historyReady = false;
       this.#publish('error', ['invalid_history', 'conflicting_history_duplicate'].includes(error?.code)
         ? error.code : 'history_unavailable');
       return false;
     }
+  }
+
+  async #minuteContext(generation, requestedAtMs) {
+    if (this.#contextRequest && this.#contextGeneration === generation) return this.#contextRequest;
+    const operation = this.#loadMinuteContext(generation, requestedAtMs);
+    this.#contextRequest = operation; this.#contextGeneration = generation;
+    try { return await operation; }
+    finally { if (this.#contextRequest === operation) this.#contextRequest = null; }
   }
 
   async #loadMinuteContext(generation, requestedAtMs) {
@@ -430,10 +455,14 @@ export class JupiterFeed {
       const required = Math.floor(this.#clock() / 60_000) * 60 - 60;
       this.#context.ready = history.some(candle => candle.time === required && candle.closed);
       this.#context.error = this.#context.ready ? null : 'minute_history_lagging';
+      this.#publish();
+      return history;
     } catch {
       if (!this.#active(generation)) return;
       this.#context.ready = false;
       this.#context.error = 'minute_history_unavailable';
+      this.#publish();
+      return [];
     }
   }
 
@@ -445,7 +474,7 @@ export class JupiterFeed {
 
   #applyQuote(quote, gap) {
     this.#candles = applyQuote(this.#candles, this.#liveTimes, quote, this.#quote, gap, this.intervalSec, this.#retention);
-    if (this.#withContext && this.intervalSec !== 60) this.#context.candles = applyQuote(this.#context.candles,
+    if (this.#withContext) this.#context.candles = applyQuote(this.#context.candles,
       this.#context.liveTimes, quote, this.#quote, gap, 60, CONTEXT_HISTORY_BARS + 1);
   }
 

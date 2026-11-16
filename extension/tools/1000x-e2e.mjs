@@ -21,6 +21,7 @@ const option = (name, fallback) => args.includes(name) ? args[args.indexOf(name)
 const EXT = path.resolve(option('--extension', process.env.EXTENSION_DIR || path.resolve(here, '..')));
 const LIVE = args.includes('--live');
 const ONLY_ORACLE = args.includes('--oracle-only');
+const ONLY_NATIVE = args.includes('--oracle-native-only');
 const OUT = path.resolve(option('--evidence', path.join(process.cwd(), 'artifacts', LIVE ? '1000x-live' : '1000x-fixture')));
 fs.mkdirSync(OUT, { recursive: true });
 const { launch, findChromeForTesting, sleep } = await import(pathToFileURL(path.join(EXT, 'e2e/lib/cdp.mjs')));
@@ -29,13 +30,15 @@ const HISTORY = 'https://perps-api.jup.ag/v1/pyth/fixed_rate%40200ms/history';
 const STREAM = 'wss://perps-api.jup.ag/v1/pyth/stream';
 const PORTAL = 'https://jup.ag/1000x?market=SOL&mode=classic';
 const SHA = data => createHash('sha256').update(data).digest('hex');
-const reviewedFiles = ['manifest.json', 'src/1000x/content.js', 'src/1000x/feed.js', 'src/1000x/indicators.js', 'src/1000x/panel-model.js', 'src/1000x/reversal.js', 'src/1000x/oracle-model.js', 'src/1000x/oracle-store.js', 'src/1000x/oracle-controller.js', 'src/1000x/oracle-view.js', 'src/1000x/panel.js', 'src/1000x/panel.html', 'src/1000x/panel.css', 'src/jupiter/attribution.js', 'vendor/lightweight-charts/lightweight-charts.standalone.production.mjs'];
+const reviewedFiles = ['manifest.json', 'src/1000x/content.js', 'src/1000x/feed.js', 'src/1000x/timeframes.js', 'src/1000x/indicators.js', 'src/1000x/panel-model.js', 'src/1000x/reversal.js', 'src/1000x/oracle-model.js', 'src/1000x/oracle-store.js', 'src/1000x/oracle-controller.js', 'src/1000x/oracle-view.js', 'src/1000x/panel.js', 'src/1000x/panel.html', 'src/1000x/panel.css', 'src/jupiter/attribution.js', 'vendor/lightweight-charts/lightweight-charts.standalone.production.mjs'];
 const source = Object.fromEntries(reviewedFiles.map(file => [file, SHA(fs.readFileSync(path.join(EXT, file)))]));
 const manifest = JSON.parse(fs.readFileSync(path.join(EXT, 'manifest.json'), 'utf8'));
+const { TIMEFRAMES } = await import(pathToFileURL(path.join(EXT, 'src/1000x/timeframes.js')));
 const receipt = { runner: '1000x-browser-gate', schema_version: 1, status: 'partial', observed_at: new Date().toISOString(), mode: LIVE ? 'public-live' : 'native-browser-fixture', evidence: [], changes: [], remaining: [], checks: [], source, details: { surface: PORTAL, acceptance_condition: 'Version/source identity; seven causal indicator readouts/series; 10m DD/UU context; completed MTF shapes and closed1m momentum; settings; fresh completed-candle signals; lifecycle; responsive layout; public reads only; no trading state changes', source_revision: { git: execFileSync('git', ['rev-parse', 'HEAD'], { cwd: EXT, encoding: 'utf8' }).trim(), file_sha256: source }, loaded_revision: null, process_or_origin: null, configuration_identity: null, observations: [], mismatches: [], unverified_checks: [] } };
 const assert = (value, message) => { if (!value) throw new Error(message); };
 const same = (actual, expected, message) => assert(isDeepStrictEqual(actual, expected), `${message}: ${JSON.stringify(actual)} != ${JSON.stringify(expected)}`);
 async function check(name, fn) {
+  if (ONLY_NATIVE && !/native legacy10m|native IndexedDB96|executed overlay|new extension|all seven|network guard|only local/.test(name)) return null;
   if (ONLY_ORACLE && !/streaming Oracle|two actual extension windows|native IndexedDB|executed overlay|new extension|all seven|network guard|only local/.test(name)) return null;
   try { const detail = await fn(); receipt.checks.push({ name, ok: true, detail }); console.log(`ok - ${name}`); return detail; }
   catch (error) { receipt.checks.push({ name, ok: false, error: error.message }); receipt.details.mismatches.push({ name, error: error.message }); console.log(`FAIL - ${name}: ${error.message}`); return null; }
@@ -44,7 +47,7 @@ async function check(name, fn) {
 // Minimal RFC6455 fixture. Browser transport, frame parsing and lifecycle remain
 // native; no fake WebSocket, fetch implementation or extension source is loaded.
 async function websocketFixture() {
-  const sockets = new Set(), subscriptions = [], historyRequests = [], state = { quotes: true, priceOverride: null, history: 'full', pattern: 'DD', clockOffsetMs: 0, oracleMode: false, hold: false, pending: [], sent: 0, upgrades: 0, closes: 0 };
+  const sockets = new Set(), subscriptions = [], historyRequests = [], state = { quotes: true, priceOverride: null, history: 'full', chartFailure: false, pattern: 'DD', clockOffsetMs: 0, oracleMode: false, hold: false, pending: [], sent: 0, upgrades: 0, closes: 0 };
   const frame = text => { const data = Buffer.from(text); if (data.length < 126) return Buffer.concat([Buffer.from([0x81, data.length]), data]); const head = Buffer.alloc(4); head[0] = 0x81; head[1] = 126; head.writeUInt16BE(data.length, 2); return Buffer.concat([head, data]); };
   const server = http.createServer((request, response) => { response.writeHead(404); response.end(); });
   server.on('upgrade', (request, socket) => {
@@ -82,6 +85,7 @@ async function websocketFixture() {
   await new Promise(resolve => server.listen(0, '127.0.0.1', resolve));
   function history(url) {
     historyRequests.push(url);
+    if (state.chartFailure && new URL(url).searchParams.get('resolution') === '60') return { s: 'ok', t: [Date.now()], o: [], h: [], l: [], c: [] };
     if (state.history === 'invalid') return { s: 'ok', t: [Date.now()], o: [], h: [], l: [], c: [] };
     if (state.history === 'none') return { s: 'no_data' };
     const interval = Number(new URL(url).searchParams.get('resolution')) * 60;
@@ -111,6 +115,11 @@ const shell = `<!doctype html><html><head><title>Public 1000x portal fixture</ti
 const forbidden = /(?:^|\/)(?:users?|requests?|accounts?|auth|login|wallets?|transactions?|tx|orders?|execute|submit|sign|send|positions?|deposit|withdraw)(?:\/|$)/i;
 const writeMethods = new Set(['GET', 'HEAD', 'OPTIONS']);
 function allowedPublic(url, method) { const u = new URL(url); return writeMethods.has(method) && !forbidden.test(u.pathname); }
+function fixtureBootstrapCode() {
+  // Auto-attach can evaluate the current document before the new-document hook
+  // runs. Reapplying must not wrap Date.now twice and double the synthetic offset.
+  return `(() => {globalThis.__smtFixtureClockOffsetMs=${JSON.stringify(fixture.state.clockOffsetMs)};if(globalThis.__smtFixtureNativeTransport)return;const Native=globalThis.WebSocket;globalThis.WebSocket=class extends Native{constructor(url,...rest){super(String(url)===${JSON.stringify(STREAM)}?${JSON.stringify(fixture.url)}:url,...rest)}};const originalNow=Date.now.bind(Date);globalThis.__smtFixtureNativeNow=originalNow;Date.now=()=>originalNow()+globalThis.__smtFixtureClockOffsetMs;globalThis.__smtFixtureNativeTransport=true;})()`;
+}
 async function setupTarget(sessionId, info) {
   targets.set(info.targetId, { ...info, sessionId }); owned.add(sessionId);
   await browser.call('Runtime.enable', {}, sessionId);
@@ -120,7 +129,7 @@ async function setupTarget(sessionId, info) {
   if (info.type === 'page' || info.type === 'iframe') {
     await browser.call('Page.enable', {}, sessionId);
     if (fixture) {
-      const code = `(() => {const Native = globalThis.WebSocket; globalThis.WebSocket = class extends Native {constructor(url,...rest){super(String(url) === ${JSON.stringify(STREAM)} ? ${JSON.stringify(fixture.url)} : url,...rest)}}; globalThis.__smtFixtureNativeTransport = true; const originalNow = Date.now.bind(Date);globalThis.__smtFixtureClockOffsetMs=${JSON.stringify(fixture.state.clockOffsetMs)};Date.now=()=>originalNow()+globalThis.__smtFixtureClockOffsetMs;})()`;
+      const code = fixtureBootstrapCode();
       await browser.call('Page.addScriptToEvaluateOnNewDocument', { source: code }, sessionId);
       await browser.evaluate(sessionId, code).catch(() => {});
     }
@@ -152,7 +161,7 @@ async function intercept(m) {
 const ev = (page, expr) => browser.evaluate(page.sessionId, expr);
 async function until(fn, what, ms = 10000) { let last; const result = await browser.waitFor(async () => { try { return await fn(); } catch (error) { last = error; return null; } }, ms, 100); assert(result, `timed out: ${what}${last ? ` (${last.message})` : ''}`); return result; }
 async function findPanel(symbol = 'SOL') { return until(async () => { const t = (await browser.targets()).find(t => t.type === 'iframe' && t.url === `chrome-extension://${browser.extensionId}/src/1000x/panel.html#market=${symbol}`); if (!t) return null; const data = targets.get(t.targetId); if (!data) return null; await sessionReady.get(data.sessionId); if (!await ev(data, `document.querySelectorAll('#readouts tr').length === 7`).catch(() => false)) return null; return data; }, `${symbol} extension iframe`); }
-const panelSnapshot = page => ev(page, `({url:location.href,market:document.querySelector('#market')?.textContent,status:document.querySelector('#status')?.textContent,state:document.querySelector('#status')?.dataset.state,timing:document.querySelector('#timing')?.textContent,note:document.querySelector('#candle-note')?.textContent,interval:document.querySelector('#timeframe')?.value,pattern:document.querySelector('#pattern')?.textContent,patternState:document.querySelector('#pattern')?.dataset.state,developing:document.querySelector('#developing-context')?.textContent,momentum:document.querySelector('#momentum-context')?.textContent,heuristic:document.querySelector('#heuristic')?.textContent,empirical:document.querySelector('#empirical')?.textContent,exit:document.querySelector('#exit-context')?.textContent,shapes:[...document.querySelectorAll('.shape-card')].map(card=>({minutes:card.dataset.minutes,text:card.textContent})),rows:[...document.querySelectorAll('#readouts tr')].map(row=>({key:row.dataset.indicator,value:row.querySelector('[data-value]').textContent,signal:row.querySelector('[data-signal]').textContent,enabled:row.querySelector('input').checked})),oracle:{state:document.querySelector('#streaming-oracle')?.dataset.state,status:document.querySelector('#oracle-status')?.textContent,prediction:document.querySelector('#oracle-prediction')?.textContent,counts:document.querySelector('#oracle-counts')?.textContent,trained:Number(document.querySelector('#oracle-counts')?.dataset.trained||0),resolved:Number(document.querySelector('#oracle-counts')?.dataset.resolved||0),feedback:document.querySelector('#oracle-feedback')?.textContent,metrics:document.querySelector('#oracle-metrics')?.textContent},canvas:document.querySelectorAll('canvas').length,width:innerWidth,scrollWidth:document.documentElement.scrollWidth})`);
+const panelSnapshot = page => ev(page, `({url:location.href,market:document.querySelector('#market')?.textContent,status:document.querySelector('#status')?.textContent,state:document.querySelector('#status')?.dataset.state,timing:document.querySelector('#timing')?.textContent,note:document.querySelector('#candle-note')?.textContent,interval:document.querySelector('#timeframe')?.value,pattern:document.querySelector('#pattern')?.textContent,patternState:document.querySelector('#pattern')?.dataset.state,developing:document.querySelector('#developing-context')?.textContent,momentum:document.querySelector('#momentum-context')?.textContent,heuristic:document.querySelector('#heuristic')?.textContent,empirical:document.querySelector('#empirical')?.textContent,exit:document.querySelector('#exit-context')?.textContent,shapes:[...document.querySelectorAll('.shape-card')].map(card=>({minutes:card.dataset.minutes,text:card.textContent})),rows:[...document.querySelectorAll('#readouts tr')].map(row=>({key:row.dataset.indicator,value:row.querySelector('[data-value]').textContent,signal:row.querySelector('[data-signal]').textContent,enabled:row.querySelector('input').checked})),oracle:{horizon:Number(document.querySelector('#streaming-oracle')?.dataset.horizon),overview:[...document.querySelectorAll('#oracle-horizons tbody tr')].map(row=>({horizon:Number(row.dataset.horizon),state:row.dataset.state,trained:row.hasAttribute('data-trained')?Number(row.dataset.trained):null,resolved:row.hasAttribute('data-resolved')?Number(row.dataset.resolved):null,pending:row.hasAttribute('data-pending')?Number(row.dataset.pending):null,prediction:row.children[2]?.textContent,metrics:row.children[4]?.textContent})),state:document.querySelector('#streaming-oracle')?.dataset.state,status:document.querySelector('#oracle-status')?.textContent,prediction:document.querySelector('#oracle-prediction')?.textContent,counts:document.querySelector('#oracle-counts')?.textContent,trained:Number(document.querySelector('#oracle-counts')?.dataset.trained||0),resolved:Number(document.querySelector('#oracle-counts')?.dataset.resolved||0),feedback:document.querySelector('#oracle-feedback')?.textContent,metrics:document.querySelector('#oracle-metrics')?.textContent},canvas:document.querySelectorAll('canvas').length,width:innerWidth,scrollWidth:document.documentElement.scrollWidth})`);
 async function screenshot(name, page = portal, clip) {
   if (page !== portal) {
     const origin = await ev(portal, `(()=>{const r=document.querySelector('#smt-1000x-indicators').shadowRoot.querySelector('iframe').getBoundingClientRect();return{x:r.x,y:r.y}})()`);
@@ -294,14 +303,16 @@ try {
         return { labels, observation_method: 'native canvas fillText arguments recorded and forwarded without alteration' };
       } finally { await ev(panel, `CanvasRenderingContext2D.prototype.fillText=globalThis.__smtNativeFillText;delete globalThis.__smtNativeFillText;delete globalThis.__smtRenderedLabels;document.querySelector('#config-form button[type=button]').click()`); }
     });
-    await check('1m/5m/10m/15m/20m/1h selection restarts history/stream with matching source interval', async () => {
-      const intervals = [];
+    await check('1m/5m/10m/15m/20m/1h selection changes chart history while the same stream and learners survive', async () => {
+      const intervals = [], upgrades = fixture.state.upgrades;
       for (const seconds of [300, 600, 900, 1200, 3600, 60]) {
         const before = fixture.historyRequests.length;
         await ev(panel, `(()=>{const s=document.querySelector('#timeframe');s.value=${JSON.stringify(String(seconds))};s.dispatchEvent(new Event('change'))})()`);
         const current = await fresh(); same(current.interval, String(seconds), 'selected interval'); const sourceSeconds = [600, 1200].includes(seconds) ? 300 : seconds;
+        same(current.oracle.horizon, seconds, 'selected learner detail'); same(current.oracle.overview.length, 6, 'all horizon rows');
         const url = fixture.historyRequests.slice(before).map(url => new URL(url)).find(url => url.searchParams.get('resolution') === String(sourceSeconds / 60)); assert(url, 'selected history resolution absent'); await until(() => fixture.sockets.size === 1, 'one current stream'); intervals.push({ seconds, source_seconds: sourceSeconds, history_url: url.href, ui: current.interval });
       }
+      same(fixture.state.upgrades, upgrades, 'chart selection replaced the shared stream');
       return intervals;
     });
     await check('intrabar reversal updates developing price while completed-candle readouts stay fixed', async () => {
@@ -415,7 +426,8 @@ try {
   }
   if (fixture) {
     let twin;
-    const oracleSnapshot = page => ev(page, `(async()=>{const {OracleStore}=await import(chrome.runtime.getURL('src/1000x/oracle-store.js'));const store=new OracleStore();try{const read=await new Promise((resolve,reject)=>{const r=indexedDB.open('solmargintrader-streaming-oracle',1);r.onsuccess=()=>{const db=r.result;const q=db.transaction('partitions').objectStore('partitions').getAll();q.onsuccess=()=>{db.close();resolve(q.result)};q.onerror=()=>{db.close();reject(new Error('oracle read'))}};r.onerror=()=>reject(new Error('oracle open'))});return read.find(row=>row.state.market==='ORCL')?.state||null}finally{store.close()}})()`);
+    const oracleStates = page => ev(page, `(async()=>{const read=await new Promise((resolve,reject)=>{const r=indexedDB.open('solmargintrader-streaming-oracle',1);r.onsuccess=()=>{const db=r.result;const q=db.transaction('partitions').objectStore('partitions').getAll();q.onsuccess=()=>{db.close();resolve(q.result)};q.onerror=()=>{db.close();reject(new Error('oracle read'))}};r.onerror=()=>reject(new Error('oracle open'))});return read.filter(row=>row.state.market==='ORCL').map(row=>row.state)})()`);
+    const oracleSnapshot = async (page, horizon = 600) => (await oracleStates(page)).find(state => JSON.parse(state.key)[4] === horizon) || null;
     const setClock = async (offset, pages) => {
       fixture.state.clockOffsetMs = offset;
       for (const page of pages.filter(Boolean)) { await ev(page, `globalThis.__smtFixtureClockOffsetMs=${offset}`); await browser.call('Page.addScriptToEvaluateOnNewDocument',{source:`globalThis.__smtFixtureClockOffsetMs=${offset}`},page.sessionId); }
@@ -426,12 +438,15 @@ try {
       const offset = Math.ceil(Date.now() / 60000) * 60000 + 2500 - Date.now();
       await setClock(offset, [portal]);
       await ev(portal, `history.pushState({},'', '/1000x?market=ORCL&mode=classic')`); panel = await findPanel('ORCL'); await fresh();
+      await ev(panel, `(()=>{const s=document.querySelector('#timeframe');s.value='600';s.dispatchEvent(new Event('change'))})()`); await fresh();
       await until(() => ev(panel, `document.querySelector('#oracle-counts')?.dataset.trained==='0'`), 'cold native learner initialized');
       const state = await until(async () => { const s = await oracleSnapshot(panel); return s?.issued === 1 ? s : null; }, 'first prospective stored Oracle forecast');
       same(state.model.n, 0, 'cold start trained on historical labels');
       same(state.pending[0].p, 0.5, 'untrained candidate'); same(state.pending[0].servedP, 0.5, 'cold served baseline');
       same(state.pending[0].mode, 'baseline-warmup', 'cold mode');
-      const ui = await panelSnapshot(panel); assert(/rolling 10m/.test(await ev(panel, `document.querySelector('#streaming-oracle h2').textContent`)), 'rolling target label absent');
+      const all = await oracleStates(panel); same(all.length, 6, 'six initialized horizon partitions');
+      for (const s of all) { same(s.model.n, 0, 'new horizon trained on historical labels'); same(s.issued, 1, 'new horizon first prospective forecast'); }
+      const ui = await panelSnapshot(panel); assert(/rolling 10m/.test(await ev(panel, `document.querySelector('#oracle-selected').textContent`)), 'rolling target label absent');
       assert(/candidate|baseline/.test(ui.oracle.prediction) && /NON-UP/.test(ui.oracle.prediction), 'binary probability labels absent');
       receipt.details.observations.push({ oracle_fixture_clock: 'accelerated synthetic public-contract candles only; not public-market performance', first: state });
       return { issued: state.pending[0], ui: ui.oracle };
@@ -439,29 +454,130 @@ try {
     await check('two actual extension windows share immutable issued forecasts and native atomic learning', async () => {
       const { targetId } = await browser.call('Target.createTarget', { url: `chrome-extension://${browser.extensionId}/src/1000x/panel.html#market=ORCL` });
       twin = await until(() => targets.get(targetId), 'second extension window'); await sessionReady.get(twin.sessionId);
+      await browser.call('Page.bringToFront', {}, twin.sessionId);
+      await until(() => ev(twin, `document.visibilityState==='visible'`), 'owned second window foreground');
+      await ev(twin, `globalThis.__smtBootstrapRefs={socket:WebSocket,now:Date.now}`);
+      await ev(twin, fixtureBootstrapCode()); await ev(twin, fixtureBootstrapCode());
+      assert(await ev(twin, `WebSocket===globalThis.__smtBootstrapRefs.socket&&Date.now===globalThis.__smtBootstrapRefs.now`), 'fixture initialization wrapped clock or transport twice');
+      await ev(twin, `delete globalThis.__smtBootstrapRefs`);
+      await until(async () => { const s = await panelSnapshot(twin); return s.state === 'live' && ['active', 'baseline-warmup', 'baseline-performance'].includes(s.oracle.state) ? s : null; }, 'second window fresh source before learning');
       await until(() => ev(twin, `document.querySelector('#oracle-counts')?.textContent.includes('pending 1')`), 'second window restored pending forecast');
+      // Bounded, test-only observation forwards the original snapshot to the
+      // actual method unchanged. Retain one sample for cross-platform failures.
+      for (const page of [panel, twin]) await ev(page, `(async()=>{const {OracleController}=await import(chrome.runtime.getURL('src/1000x/oracle-controller.js'));globalThis.__smtObserveOriginal=OracleController.prototype.observe;OracleController.prototype.observe=function(snapshot){globalThis.__smtLastOracleInput={snapshot,seenAt:Date.now()};return Reflect.apply(globalThis.__smtObserveOriginal,this,[snapshot])}})()`);
+      try {
       const before = await oracleSnapshot(panel), restored = await oracleSnapshot(twin);
       same(restored.pending, before.pending, 'second window changed issued forecast'); same(restored.issued, 1, 'duplicate initial issuance');
       const fixedCutoff = before.pending[0].cutoff;
-      for (let step = 1; step <= 31; step++) {
+      for (let step = 1; step <= 81; step++) {
         const desired = (fixedCutoff + step * 60) * 1000 + 2500;
         await setClock(desired - Date.now(), [portal, panel, twin]);
-        await until(async () => { const s = await oracleSnapshot(panel); return s?.lastIssuedCutoff === fixedCutoff + step * 60 ? s : null; }, `Oracle minute${step} issuance`);
+        // Creating a target does not consistently activate it in Linux headless
+        // Chrome. Production correctly pauses hidden pages; activate our owner.
+        await browser.call('Page.bringToFront', {}, twin.sessionId);
+        await until(async () => { const all = await oracleStates(panel); return all.length === 6 && all.every(s => s.lastIssuedCutoff === fixedCutoff + step * 60) ? all : null; }, `all six Oracle minute${step} issuance`).catch(async error => {
+          const pages = [];
+          for (const page of [panel, twin]) pages.push(await ev(page, `(async()=>{const trace=globalThis.__smtLastOracleInput;let input;try{const {oracleInput}=await import(chrome.runtime.getURL('src/1000x/oracle-model.js'));const i=oracleInput(trace?.snapshot,Date.now());input={eligible:i.eligible,reason:i.reason,cutoff:i.cutoff,rows:i.rows.length}}catch(error){input={error:error.message}}return{visibility:document.visibilityState,now:Date.now(),native_now:globalThis.__smtFixtureNativeNow?.(),clock_offset:globalThis.__smtFixtureClockOffsetMs,last_seen:trace?.seenAt,feed_status:trace?.snapshot.status,stream_status:trace?.snapshot.streamStatus,minute_status:trace?.snapshot.minuteStatus,quote:trace?.snapshot.quote,input,status:document.querySelector('#oracle-status')?.textContent}})()`));
+          const diagnostic = { step, expected_cutoff: fixedCutoff + step * 60, pages, stored: (await oracleStates(panel)).map(s => ({ horizon: JSON.parse(s.key)[4], issued: s.issued, last_cutoff: s.lastIssuedCutoff, trained: s.model.n })), history_requests: fixture.historyRequests.slice(-6) };
+          receipt.details.observations.push({ oracle_issuance_failure: diagnostic }); console.error('Oracle issuance diagnostic', JSON.stringify(diagnostic)); throw error;
+        });
+        if (step === 33) { const hour = await oracleSnapshot(panel, 3600); same(hour.pending.length, 34, '1h lost pending beyond32'); same(hour.model.n, 0, '1h learned before target'); }
       }
-      const state = await until(async () => { const s = await oracleSnapshot(panel); return s?.model.n === 22 ? s : null; }, '22 genuine delayed outcomes');
-      same(state.issued, 32, 'multiwindow duplicated forecast'); same(state.totals.n, 22, 'multiwindow duplicated scoring');
-      same(state.model.n, 22, 'multiwindow duplicated learning'); assert(state.model.weights.some(w => w !== 0) || state.model.bias !== 0, 'learner did not update');
+      const all = await until(async () => { const states = await oracleStates(panel); return states.length === 6 && states.every(s => s.model.n === 82 - JSON.parse(s.key)[4] / 60) ? states : null; }, 'all six genuine delayed outcome cohorts');
+      const state = all.find(s => JSON.parse(s.key)[4] === 600);
+      for (const s of all) {
+        const horizon = JSON.parse(s.key)[4]; same(s.issued, 82, 'multiwindow duplicated forecast');
+        same(s.totals.n, 82 - horizon / 60, 'multiwindow duplicated scoring'); same(s.pending.length, horizon / 60, 'own target window');
+        assert(s.model.weights.some(w => w !== 0) || s.model.bias !== 0, 'deselected learner did not update');
+      }
       const shadow = state.recent.find(f => f.p !== f.servedP && f.mode === 'baseline-warmup'); assert(shadow, 'actual served baseline was not preserved independently');
       assert(state.pending.at(-1).mode === 'active', 'model never left cold start');
       // Creating a second top-level page backgrounds the portal. Native Chrome
       // pauses its requestAnimationFrame callbacks; resume that UI before reading it.
       await browser.call('Page.bringToFront', {}, portal.sessionId);
-      const ui = await until(async () => { const s = await panelSnapshot(panel); return s.oracle.trained === 22 ? s : null; }, 'rendered learning count');
+      const ui = await until(async () => { const s = await panelSnapshot(panel); return s.oracle.trained === 72 && s.oracle.overview.every(row => row.trained === 82 - row.horizon / 60) ? s : null; }, 'rendered all-horizon native counts');
       assert(/candidate shadow|actually served|fixed 0.5/.test(ui.oracle.metrics), 'paired metrics labels absent');
       await ev(panel, `document.querySelector('#streaming-oracle details').open=true;window.scrollTo(0,0)`);
       await screenshot('07-streaming-oracle-learned-fixture');
-      return { issued: state.issued, resolved: state.model.n, model: state.model, shadow_served_example: shadow, ui: ui.oracle,
-        interpretation: 'Synthetic accelerated fixture checks implementation and accounting, not future accuracy or profit' };
+      return { issued_per_horizon: state.issued, resolved_per_horizon: all.map(s => ({ horizon: JSON.parse(s.key)[4], n: s.model.n, pending: s.pending.length })), selected_model: state.model, shadow_served_example: shadow, ui: ui.oracle,
+        interpretation: 'Synthetic accelerated fixture checks implementation and accounting, not future accuracy or profit', observation_method: 'One bounded snapshot observation forwards the unchanged input to the original controller; explicit owned-page activation preserves the real visibility policy' };
+      } finally {
+        for (const page of [panel, twin]) if (page) await ev(page, `(async()=>{const {OracleController}=await import(chrome.runtime.getURL('src/1000x/oracle-controller.js'));if(globalThis.__smtObserveOriginal)OracleController.prototype.observe=globalThis.__smtObserveOriginal;delete globalThis.__smtObserveOriginal;delete globalThis.__smtLastOracleInput})()`).catch(() => {});
+      }
+    });
+    await check('streaming Oracle all six deselected models keep learning through selected-chart failure without a new socket', async () => {
+      const before = await oracleStates(panel), upgrades = fixture.state.upgrades;
+      try {
+        fixture.state.chartFailure = true;
+        await ev(panel, `(()=>{const s=document.querySelector('#timeframe');s.value='3600';s.dispatchEvent(new Event('change'))})()`);
+        await until(async () => { const s = await panelSnapshot(panel); return s.state !== 'live' && s.rows.every(row => /Unavailable|Waiting for live/.test(row.signal)) ? s : null; }, 'selected chart history refusal');
+        await setClock(fixture.state.clockOffsetMs + 60000, [portal, panel, twin]);
+        const after = await until(async () => { const states = await oracleStates(panel); return states.length === 6 && states.every(s => s.model.n === before.find(old => old.key === s.key).model.n + 1) ? states : null; }, 'all models learned despite chart failure');
+        const ui = await until(async () => { const s = await panelSnapshot(panel); return s.oracle.horizon === 3600 && s.oracle.overview.every(row => row.state === 'active') ? s : null; }, 'healthy all-horizon overview during chart error');
+        assert(ui.state !== 'live' && ui.rows.every(row => /Unavailable|Waiting for live/.test(row.signal)), 'chart unexpectedly bypassed refusal'); same(fixture.state.upgrades, upgrades, 'chart error replaced shared socket');
+        return { before: before.map(s => ({ horizon: JSON.parse(s.key)[4], n: s.model.n })), after: after.map(s => ({ horizon: JSON.parse(s.key)[4], n: s.model.n })), ui: ui.oracle };
+      } finally {
+        fixture.state.chartFailure = false;
+        await ev(panel, `(()=>{const s=document.querySelector('#timeframe');s.value='600';s.dispatchEvent(new Event('change'))})()`); await fresh();
+      }
+    });
+    await check('streaming Oracle native legacy10m persistence and actual-view delayed stale completion preserve honest history', async () => {
+      const legacy = JSON.parse(fs.readFileSync(path.join(EXT, 'test/fixtures/oracle-0.9-10m-state.json'), 'utf8'));
+      const reference = JSON.parse(fs.readFileSync(path.join(EXT, 'test/fixtures/oracle-model-0.9-provenance.json'), 'utf8'));
+      same(SHA(fs.readFileSync(path.join(EXT, 'e2e/fixtures/oracle-model-0.9.mjs'))), reference.fixture_sha256, 'frozen0.9 reference source');
+      receipt.details.observations.push({ legacy_browser_reference: reference });
+      return ev(panel, `(async()=>{
+        const {OracleStore}=await import(chrome.runtime.getURL('src/1000x/oracle-store.js'));
+        const {OracleController}=await import(chrome.runtime.getURL('src/1000x/oracle-controller.js'));
+        const {oracleView}=await import(chrome.runtime.getURL('src/1000x/oracle-view.js'));
+        const old=await import(chrome.runtime.getURL('e2e/fixtures/oracle-model-0.9.mjs'));
+        const current=await import(chrome.runtime.getURL('src/1000x/oracle-model.js'));
+        const fixture=${JSON.stringify(legacy)};let original;
+        const factory={open:(name,version)=>indexedDB.open(name+'-legacy-fixture',version)};
+        const store=new OracleStore(factory), mount=document.createElement('section');document.body.append(mount);
+        let clock, view, defer=false;const releases=[];
+        const wait=async fn=>{for(let i=0;i<1000;i++){if(fn())return;await new Promise(r=>setTimeout(r,5))}throw new Error('legacy native wait '+JSON.stringify({error:view?.error,rows:Object.values(view?.horizons||{}).map(v=>({horizon:v.horizon,error:v.error,n:v.state?.model.n})),release_count:releases.length}))};
+        const rows=Array.from({length:1400},(_,i)=>({time:fixture.base+i*60,open:100+i/100,high:100.02+i/100,low:99.99+i/100,close:100.01+i/100,closed:true}));
+        const snapshot=()=>({symbol:'SOL',sourceIdentity:{symbol:'SOL',feedId:6,marketAddress:'Ew8sRjpuBttpmhSUeaAn4dLAegWnz55AuafVcGuojCPS',stream:'fixed_rate@200ms',kind:'oracle-ohlc'},status:'live',minuteStatus:'ready',minuteCandles:rows,quote:{price:110,exchangeMs:clock,receivedMs:clock}});
+        // Run the frozen0.9 source in the actual browser. A Node-authored golden
+        // JSON is not a browser checkpoint: engine libm can differ by one ULP.
+        for(let minute=1000;minute<=1030;minute++){clock=(fixture.base+minute*60)*1000+2000;original=old.transitionOracle(original,old.oracleInput(snapshot(),clock)).state}
+        if(original.key!==fixture.state.key||original.model.n!==21||original.issued!==31)throw new Error('browser0.9 reference identity/count mismatch');
+        let crossEngineDifferences=0;
+        for(const f of fixture.state.recent)for(const [name,p] of [['candidate',f.p],['served',f.servedP],['baseline',f.baselineP]]){
+          const expected=current.score(p,f.y);for(const metric of ['hit','brier','logLoss'])if(f.scores[name][metric]!==expected[metric])crossEngineDifferences++;
+        }
+        const render=oracleView(mount), c=new OracleController({clock:()=>clock,onChange:v=>{view=v;render(v)},store:{
+          update:async(key,reduce)=>{const result=await store.update(key,reduce);return defer?new Promise(resolve=>releases.push(()=>resolve(result))):result},
+          cancelPending:()=>store.cancelPending(),close:()=>store.close()}});
+        try{
+          await store.update(original.key,()=>({state:original,changed:true}));c.observe(snapshot());
+          await wait(()=>view?.state?.model.n===21&&Object.values(view.horizons).every(v=>v.state));
+          const restored=(await store.update(original.key,state=>({state,changed:false}))).state;
+          if(JSON.stringify(restored)!==JSON.stringify(original))throw new Error('legacy weights/pending/metrics changed');
+          for(const v of Object.values(view.horizons))if(v.horizon!==600&&(v.state.model.n!==0||v.state.historicalTrainingSamples!==0))throw new Error('new horizon retrospective training');
+          defer=true;clock+=60000;c.observe(snapshot());await wait(()=>releases.length===6);
+          c.observe({...snapshot(),status:'stale'});
+          const immediate={state:mount.dataset.state,trained:mount.querySelector('#oracle-counts').dataset.trained,prediction:mount.querySelector('#oracle-prediction').textContent};
+          if(immediate.state!=='waiting'||immediate.trained!=='21'||!immediate.prediction.includes('Historical stored'))throw new Error('stale input cleared or activated known evidence');
+          releases.splice(0).forEach(release=>release());await wait(()=>view?.state?.model.n===22);
+          if(view.inputReady||mount.dataset.state!=='waiting'||![...mount.querySelectorAll('#oracle-horizons tbody tr')].every(r=>r.dataset.state==='waiting'))throw new Error('late completion reactivated a stale horizon');
+          const result={legacy_key:original.key,legacy_trained:21,resumed_trained:22,immediate,late_input_ready:view.inputReady,all_six_historical:true,native_indexeddb:true,node_browser_score_differences:crossEngineDifferences,reference_source:'frozen0.9 executed inside the real browser; no validation or score was relaxed'};
+          c.stop();const reopen=new OracleStore(factory);
+          try{const saved=await reopen.update(original.key,state=>({state,changed:false}));if(saved.state.model.n!==22)throw new Error('native restart lost learned state')}finally{reopen.close()}
+          return result;
+        }finally{c.stop();mount.remove()}
+      })()`);
+    });
+    await check('native IndexedDB96-partition capacity refuses new evidence without evicting or blocking existing updates', async () => {
+      return ev(panel, `(async()=>{const {OracleStore}=await import(chrome.runtime.getURL('src/1000x/oracle-store.js'));const {ORACLE}=await import(chrome.runtime.getURL('src/1000x/oracle-model.js'));
+        const store=new OracleStore({open:(name,version)=>indexedDB.open(name+'-capacity-fixture',version)});
+        try{for(let i=0;i<ORACLE.maxPartitions;i++)await store.update('capacity-fixture-'+i,()=>({state:{count:1},changed:true}));
+          let refusal;try{await store.update('capacity-fixture-extra',()=>({state:{count:1},changed:true}))}catch(error){refusal=error.message}
+          if(refusal!=='oracle_partition_capacity')throw new Error('native capacity did not refuse');
+          const existing=await store.update('capacity-fixture-0',state=>({state:{count:state.count+1},changed:true}));
+          if(existing.state.count!==2)throw new Error('capacity blocked or reset existing evidence');return {capacity:ORACLE.maxPartitions,refusal,existing_count:existing.state.count,native_indexeddb:true};
+        }finally{store.close()}})()`);
     });
     await check('streaming Oracle invalid analytics clears an active trained display and fresh history restores its evidence', async () => {
       const before = await oracleSnapshot(panel);
@@ -471,8 +587,8 @@ try {
         await setClock(fixture.state.clockOffsetMs + 60000, [portal, panel, twin]);
         const invalid = await until(async () => { const s = await panelSnapshot(panel); return s.state === 'error' && /Invalid candle or indicator/.test(s.status) ? s : null; }, 'actual invalid derived analytics');
         assert(invalid.oracle.state !== 'active', 'invalid chart retained an active Oracle prediction');
-        assert(/unavailable/.test(invalid.oracle.prediction), 'invalid analytics retained the old issued prediction');
-        same(await ev(panel, `document.querySelector('#oracle-counts').hasAttribute('data-trained')`), false, 'invalid analytics retained live trained counters');
+        assert(/Historical stored/.test(invalid.oracle.prediction), 'invalid shared analytics did not label retained evidence historical');
+        assert(invalid.oracle.overview.every(row => row.state === 'error' || row.state === 'waiting'), 'invalid shared minutes kept a horizon live');
       } finally {
         fixture.state.history = 'full'; await refresh(); await fresh();
       }
@@ -484,7 +600,7 @@ try {
     await check('native IndexedDB abort/reload preserves counters and unknown outcomes stay outside learning', async () => {
       await browser.call('Page.bringToFront', {}, portal.sessionId);
       console.log('Oracle recovery fixture: reading checkpoint');
-      const before = await oracleSnapshot(panel);
+      const before = await oracleSnapshot(panel), beforeAll = await oracleStates(panel);
       console.log('Oracle recovery fixture: aborting a native transaction');
       const abort = await ev(panel, `(async()=>{const {OracleStore}=await import(chrome.runtime.getURL('src/1000x/oracle-store.js'));const store=new OracleStore();try{await store.update(${JSON.stringify('PLACEHOLDER')},()=>{throw new Error('fixture abort')});return false}catch{return true}finally{store.close()}})()` .replace(JSON.stringify('PLACEHOLDER'), JSON.stringify(before.key)));
       assert(abort, 'native transaction did not reject'); same(await oracleSnapshot(panel), before, 'aborted transition changed model');
@@ -495,6 +611,7 @@ try {
       panel = await findPanel('ORCL'); await fresh();
       const restored = await until(async () => { const s = await oracleSnapshot(panel); return s?.model.n === before.model.n ? s : null; }, 'reloaded native learner');
       same(restored.pending, before.pending, 'reload changed pending features/probabilities'); same(restored.totals, before.totals, 'reload changed metrics');
+      same(await oracleStates(panel), beforeAll, 'reopening changed a nonselected model ledger');
       console.log('Oracle recovery fixture: advancing past unknown outcomes');
       fixture.state.history = 'none';
       await setClock(fixture.state.clockOffsetMs + 15 * 60000, [portal, panel, twin]);
@@ -505,6 +622,7 @@ try {
         throw error;
       });
       same(expired.model.n, before.model.n, 'unknown outcomes trained'); same(expired.totals.n, before.totals.n, 'unknown outcomes scored');
+      for (const s of await oracleStates(panel)) { const old = beforeAll.find(row => row.key === s.key); same(s.model.n, old.model.n, 'unknown nonselected outcome trained'); same(s.totals.n, old.totals.n, 'unknown nonselected outcome scored'); }
       await until(() => ev(panel, `document.querySelector('#oracle-prediction').textContent.includes('resolved UP')`), 'resolved forecast retains its known label after pending expiry');
       await browser.call('Target.closeTarget', { targetId: twin.targetId }); twin = null;
       fixture.state.history = 'full'; fixture.state.oracleMode = false; await setClock(0, [portal, panel]);
@@ -520,6 +638,8 @@ try {
       assert(observed?.oracle, 'public Oracle UI snapshot absent');
       same(observed.oracle.trained, 0, 'new public profile fabricated training samples');
       same(observed.oracle.resolved, 0, 'new public profile fabricated resolved accuracy');
+      same(observed.oracle.overview.length, 6, 'actual public all-horizon overview');
+      assert(observed.oracle.overview.every(row => row.trained === 0 && row.resolved === 0), 'new public horizon fabricated trained/resolved evidence');
       assert(/NON-UP|No issued forecast|unavailable/.test(observed.oracle.prediction), 'public target availability label missing');
       return observed.oracle;
     });
