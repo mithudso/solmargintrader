@@ -1,6 +1,7 @@
 # Work continuation
 
-Version: 592
+Version: 593
+Delta: v592 to v593; record the exit50 source integration and pending lifecycle fixes.
 Delta: v591 to v592; begin source-age and unsupported-shape follow-up.
 Delta: v590 to v591; integrate UI delivery with the concurrent Jupiter overlay.
 Delta: v589 to v590; complete full developer-corpus review and final repaired-source browser checks.
@@ -2780,3 +2781,7 @@ Worktree: /Users/mitch/dev/worktrees/oracle-tui-2312. Extracted the leverage pan
 ## Source-age follow-up — 2026-11-16
 
 Use isolated worktree /Users/mitch/dev/worktrees/oracle-source-ages-2312. The live ZEC 5m cap cell has 15 training examples against the frozen model minimum of 20, so it has no supported component. The 5m range cell has 300. Preserve the frozen model, observer and wallet. Numeric source ages and an explicit unsupported shape label are in progress.
+
+## Exit50 study integration — 2026-11-16
+
+The full-cohort retrospective result, selected policy and independent numerical audit are stored in native research artifacts. BTC selected validation return was -8.6858% on 44 trades; ZEC was -6.4275% on 126 trades under modeled trade fees. These are not prospective or funded results. The copied core and observer bytes initially matched the frozen paper profile. Independent lifecycle review found two high-severity issues: restart entry cutoff must exclude process downtime, and existing ledger binding must be checked read-only under exclusive writer ownership before schema changes. The source author corrected both in commit 58f7f09; independent lifecycle review passed five isolated tests. The V3 paper profile matches the corrected observer and core. Canonical merge, prospective startup and loaded acceptance remain pending. Preserve the current UI, paper collector and all existing holdouts.
