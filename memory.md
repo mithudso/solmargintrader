@@ -1,6 +1,9 @@
 # Work continuation
 
-Version: 566
+Version: 569
+Delta: v568 to v569; qualify153 focused units,62 independent UI assertions, exact native containers and final report review.
+Delta: v567 to v568; archive nine native cross-coin inputs/results, qualify648 rows and84 focused UI regressions.
+Delta: v566 to v567; begin titlebar, opt-in event sounds and cross-coin pattern comparison.
 Delta: v565 to v566; qualify stage clarity, native excursion archive and independent reproduction.
 Delta: v564 to v565; begin stage clarification and frozen minute-data excursion study.
 Delta: v563 to v564; qualify135 focused regressions and freeze bearish-alert source for delivery.
@@ -2510,3 +2513,18 @@ Verification: author51tests passed0/40.608s; root99model/stream/source/legacy/ne
 Tool lesson: research_run_lease uses token, not lease_token. Passing lease_token produced literal Error executing tool research_run_lease without changingrevision; renewing with token succeeded. Discover the full execdeclaration in ALL_TOOLS.description before writes. Checkpoint/artifact mutations separately require lease_token and currentrevision. Do not print private tokens.
 
 Final delivery state is /Users/mitch/.local/state/zec-reversal-stages-excursions-20261115/delivery.json; final runtime receipt /Users/mitch/.local/state/zec-reversal-stages-excursions-20261115/acceptance/receipt.json; complete task evidence inventory /Users/mitch/.local/state/zec-reversal-stages-excursions-20261115/file-manifest.json. These receipts supply finalPR/merge/native-run closure and loadedproof after thissource checkpoint. Onresume read delivery.json: complete meansstop; otherwisefollowits remainingphase and tracking.json. Do not rerun accepted data orresearch without changedhash/newfailure. Remaining atthischeckpoint: metadata/driftchecks, finalCI, remote merge/canonicalaliasPTY andownedcleanup/nativefinish.
+
+
+## Oracle titlebar, optional sounds and cross-coin comparison — 2026-11-15
+
+TASK-2276created/claimed beforeprojectedits. Cleanbase69f811afb087e12349118ff9780ef85d9a44112f. Worktree /Users/mitch/dev/worktrees/oracle-title-sounds-crosscoin-20261115; evidence /Users/mitch/.local/state/oracle-title-sounds-crosscoin-20261115. Userwants current10m setup/detection firstline in actualtopheader and optional bell/audiblealerts at reversal orcompletedtwoUPpair. Soundsopt-in, per-event, onceperqualifying10mwindow withsafeownedplayback/exit and backwardcompatibleSaveview. Do not change existing>=5min trigger, trueopen/freshness/gapguards, historicalstrategyP&L or sourceownership.
+
+Secondrequestadds HYPE ETH BTC SOL analysis withsame frozenZEC10msetup/1mobservation, firstclosebelowopen, separateintrabar/midpoint/closeconfirmation,5/10/20min meanmaxdownside/endpointcontinuation. Inspectavailablecoin/venue/datecoverage beforechoosingcommonwindow. Persistcommission/methods/datahashes/results/auditsdirectMongo thenprojectreport/llms. No retuning, newpersistentrecorder, orders orpausedindexing. Different sourceclock/venue andone-day/small-sample limits mustremainvisible. Data scope frozen before outcomes: verified KuCoin USDC30-day HYPE/ETH/BTC/SOL archive plus common Coinbase USD Nov12 05:00Z to Nov13 05:00Z includingZEC, with20minsetup/outcomebuffers. Keep present and all-required-minutes-positive-volume masks separate.
+
+Header/sounds implemented and84author tests passed0. Independent candidate31notification/backend assertions and31visibleUI assertions passed0. Actual90-columnHeader,modal,persistence,notificationdedup and controlledchildteardown passed. LiteralcandidateCLI helper/child0 with12runtimehashes and17executedfingerprints bound. Physicalaudibility nottested; userTUI32881 andrecorder1673 preserved. Finalcanonical run stillpending. Allnine sources andnine resultarchives persisted directly in Mongo with full byte-for-byte readback before shared projections. Run run:81ab918bd3e5d5aa8ad4ef4f4a691f32a289c9ad27ffccfeb3deff540dc3e10d;648summaryrows and16820taggedvariants. Independent raw-page/numerical reconstruction matched all9sources/648rows×2refs/all event outcomes within1e-11, exit0; report62rows/203numericcells and14targetedcausalchecks passed0. Native source/results are projected through byte-identical .json.zlib containers after initialtextindex grew to130.18MiB; all18 inner/native hashes verified. Thirteen new crosscoin tests plus12original excursion regressions passed0. Larger sample does not supportgeneral70% odds; HYPEzero-volume34008/43200, ETH8441, BTC8802,SOL12670. CommonCoinbaseHYPE69missingminutes,ZEC1missing, preserved. Globalqueue100/4950retained and explicitlypartial; noqueue/conceptscoring/dispatch/edits, no noveltyclaim, embeddingpausepreserved. Native empirical archives remain unverified research material. Stele writes unavailable: knowledge outboxe56930ce, researchclaimoutboxef6c1210.
+
+Combined153focusedunits passed0(47.565s); pinnedRuff0.17.4 check/format0, docs0, operationinventory0. Initialtextindex130.18MiB fixed withlosslessbinarycontainers; offlineindex95.47MiB, noembeddings. Nativefencedrunstate running/revision41 beforefinalaudit/deliverywrites.
+
+Finalauditorreceipt a3b6d32f5f5ba1836e67457ad4fee465bf62cb9fc48ee03b1ee3bdbf8ac90eca:648rows/16820events/203reportcells/14causalchecks/18containerbindings allpass0. Publicaudit andnativefinalreport/method/bindings/llms pointers arepresent.
+
+Remaining: final derivedchecks, commit/push/PR/CI/merge, canonicalacceptance andownedcleanup. Use taskprivatetracking.json forphases andfinaldelivery.json forauthoritativecompletion afterthischeckpoint.

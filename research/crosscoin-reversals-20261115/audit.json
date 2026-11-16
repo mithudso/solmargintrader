@@ -1,0 +1,218 @@
+{
+  "agent": "research-contract-auditor",
+  "definition_version": "1.0.0",
+  "status": "complete",
+  "observed_at": "2026-11-16T02:29:02.167244+00:00",
+  "evidence": [
+    {
+      "source": "/Users/mitch/.local/state/oracle-title-sounds-crosscoin-20261115/numerical-audit/numerical-receipt.json",
+      "observed_at": "2026-11-16T02:01:03.851469+00:00",
+      "supported_claim": "All9source-page replays,648rows withtwoentryrefs,16820tagged events,18colorbaseline objects and54endpointbaseline objects match archivedresults within1e-11; independentcalculation and comparisonexits0."
+    },
+    {
+      "source": "/Users/mitch/.local/state/oracle-title-sounds-crosscoin-20261115/numerical-audit/causality-receipt.json",
+      "observed_at": "2026-11-16T02:06:17.024640+00:00",
+      "supported_claim": "14controlledactive-volume/prefix/future/flat/Wilson/archivechecks passed0."
+    },
+    {
+      "source": "/Users/mitch/.local/state/oracle-title-sounds-crosscoin-20261115/numerical-audit/container-bindings.json",
+      "observed_at": "2026-11-16T02:29:02.167244+00:00",
+      "supported_claim": "18binarycontainers preserve same nativeUTF8 anddecodedhashes;18native artifact metadata hashes match; subjectreader roundtrips18; sixnumericfunctionASTs unchangedfrom frozenmethodarchive."
+    },
+    {
+      "source": "/Users/mitch/.local/state/oracle-title-sounds-crosscoin-20261115/numerical-audit/prose-review-receipt.json",
+      "observed_at": "2026-11-16T02:29:02.167244+00:00",
+      "supported_claim": "62rendered rows/203numericcells andscientificqualificationspass; complete nativepaper/llms reads match exactlocalbytes afterterminalLFfix."
+    }
+  ],
+  "changes": [
+    "Task-private audit scripts, dependency copy and receipts only. No product, workflow, service, Git or native mutations."
+  ],
+  "remaining": [],
+  "details": {
+    "contract": {
+      "run_id": "run:81ab918bd3e5d5aa8ad4ef4f4a691f32a289c9ad27ffccfeb3deff540dc3e10d",
+      "frozen_run_revision_read": 5,
+      "datasets": 9,
+      "primary": "4KuCoinUSDC30dayarchives",
+      "replication": "5CoinbaseUSDdayarchives with20mininputbuffers",
+      "source_rows": 180130,
+      "raw_provider_pages": 145,
+      "policies": [
+        "intrabar1-9",
+        "midpoint5-9",
+        "close_confirmation10"
+      ],
+      "cohorts": [
+        "after_one_up",
+        "after_two_up"
+      ],
+      "horizons_minutes": [
+        5,
+        10,
+        20
+      ],
+      "masks": [
+        "present",
+        "active"
+      ],
+      "refs": [
+        "signal_close",
+        "next_minute_open"
+      ],
+      "overlap": [
+        "all",
+        "nonoverlap"
+      ]
+    },
+    "gate_matrix": [
+      {
+        "gate": "Native frozen methods before outcomes",
+        "verdict": "pass",
+        "evidence": "frozen-run-revision-5.json"
+      },
+      {
+        "gate": "Rawprovider pages and fullnormalized sourceOHLCV",
+        "verdict": "pass",
+        "evidence": "numerical-receipt.json sources;145rawpages,180130rows"
+      },
+      {
+        "gate": "Zero-volume provenance and noforwardfill",
+        "verdict": "pass",
+        "evidence": "AllKuCoinzero-volume rows exist inprovider payloads; HYPE34008/ETH8441/BTC8802/SOL12670"
+      },
+      {
+        "gate": "Independent results/events/conditionalandunconditionalbaselines/Wilson",
+        "verdict": "pass",
+        "evidence": "648rows/1296refgroups/16820tagged events;0differences"
+      },
+      {
+        "gate": "Causalsetup/prefix and post-signal outcome timing",
+        "verdict": "pass",
+        "evidence": "14targetedcontrolledchecks; importedfrozenenginebyte/ASTbinding"
+      },
+      {
+        "gate": "Binarycontainer conversion",
+        "verdict": "pass",
+        "evidence": "18nativeUTF8anddecodedhashbindings; no numericrecompute afterconversion"
+      },
+      {
+        "gate": "Numericreport andqualifications",
+        "verdict": "pass",
+        "evidence": "62data rows/203cells; venue/quotes/periods separated; activefuturevolumeexplicitlyretrospective"
+      },
+      {
+        "gate": "Nativepaper/llms projection parity",
+        "verdict": "pass_after_terminal_LF_fix",
+        "evidence": "complete nativebody reads, exactfinalbytes"
+      },
+      {
+        "gate": "Later finalmanifest/auditpointer indexing andGitdelivery",
+        "verdict": "parent_owned_outside_numerical_audit"
+      },
+      {
+        "gate": "Trustedliterature/prospective/tradingqualification",
+        "verdict": "not_claimed"
+      }
+    ],
+    "claim_verdicts": [
+      {
+        "claim": "A general70%twoUPnextDOWN rule is established acrosscoins",
+        "verdict": "not_supported",
+        "basis": "Full30daycountsHYPE148/420,ETH538/1032,BTC548/1028,SOL524/972. Positive-volume and1daycohorts differ."
+      },
+      {
+        "claim": "Same-dayBTCandZEC19/24nextDOWN provesindependentliveaccuracy",
+        "verdict": "not_supported",
+        "basis": "Onecommon bearishday, correlatedassets, differentfromoriginalreceipt-clockcapture; no prospectiveproof."
+      },
+      {
+        "claim": "Providerzero-volumerows wereclientforwardfilled",
+        "verdict": "contradicted_by_rawsource_replay",
+        "basis": "Exactrawresponse43200rows eachcoin includeall declaredzeros."
+      },
+      {
+        "claim": "Positive-volume outcomeeligibility is anexecutableentryfilter",
+        "verdict": "not_supported",
+        "basis": "Futurevolume cannot beknownatentry; filterisretrospective robustness sensitivity."
+      }
+    ],
+    "read_bindings": {
+      "source_and_result_records": "/Users/mitch/.local/state/oracle-title-sounds-crosscoin-20261115/numerical-audit/numerical-receipt.json",
+      "container_records": "/Users/mitch/.local/state/oracle-title-sounds-crosscoin-20261115/numerical-audit/container-bindings.json",
+      "final_prose": [
+        {
+          "kind": "paper",
+          "path": "/Users/mitch/dev/worktrees/oracle-title-sounds-crosscoin-20261115/research/CROSSCOIN-REVERSAL-PATTERNS.md",
+          "artifact_id": "art:cd37ecfbd2dc9e4f80828c68366727eaca68ec5b3e08764f1a8c14af98acaa7d",
+          "sha256": "9593d20e26afabf731d160569d12c3c26f7bf678810c6d7b3ce3a5b4340740d1",
+          "complete_native_read": true,
+          "exact_projection_bytes": true
+        },
+        {
+          "kind": "llms",
+          "path": "/Users/mitch/dev/worktrees/oracle-title-sounds-crosscoin-20261115/research/crosscoin-reversals-20261115/llms.txt",
+          "artifact_id": "art:fc2653f6b53b6a3dcc853134980bf879c1fa3348ddff88f7f9a078d72c8f4f31",
+          "sha256": "99c3cd0c59cd1f407c8088e53b1017f684c935626bfd6933386b72f2a3331f9a",
+          "complete_native_read": true,
+          "exact_projection_bytes": true
+        }
+      ],
+      "frozen_numeric_method_archive": "art:7186da6e781f412e53218411ff5e506e83b3ad79c6e3f4d4b76469235a8a490d",
+      "final_methods_archive_reported_by_parent": "art:9032187fccde7be8a1ce724548da87302c2a130a08283beb6108099becbcefd5",
+      "executed_independent_engine": "/Users/mitch/.local/state/zec-reversal-stages-excursions-20261115/numerical-audit/independent_audit.py",
+      "executed_independent_engine_sha256": "fd834877e7fda9675e49f9cd7244aa8f587e6a763b5dc9121266205acbb44105",
+      "identical_dependency_copy": "/Users/mitch/.local/state/oracle-title-sounds-crosscoin-20261115/numerical-audit/independent_minute_engine.py"
+    },
+    "origin_groups": [
+      {
+        "origin": "KuCoinUSDCnativecandles",
+        "datasets": 4,
+        "period": "2026-10-10T20:20Z to2026-11-09T20:20Z",
+        "no_pooling": true
+      },
+      {
+        "origin": "CoinbaseExchangeUSDnativecandles",
+        "datasets": 5,
+        "period": "2026-11-12T05:00Z to2026-11-13T05:00Z",
+        "no_pooling": true
+      },
+      {
+        "origin": "OriginalZECreceipt-clockstudy",
+        "included_in_this_computation": false
+      }
+    ],
+    "negation_evidence": {
+      "provider_flats_kept_in_denominators": true,
+      "zero_volume_robustness_prespecified": true,
+      "unconditional_baseline_is_all_eligible_not_matched_causal_control": true,
+      "no_signal_minute_low_in_futureMFE": true,
+      "MFE_vs_endpoint_distinct": true,
+      "active_outcome_coverage_retrospective": true,
+      "native_candles_have_no_original_tick_gap_telemetry": true,
+      "one_day_highfraction_not_general70percent_rule": true
+    },
+    "telemetry": {
+      "independent_calculation_exit": 0,
+      "independent_comparison_exit": 0,
+      "causality_exit": 0,
+      "container_reader_exit": 0,
+      "report_numeric_review_exit": 0,
+      "native_parity_exit": 0,
+      "targeted_causal_checks": 14,
+      "container_roundtrips": 18,
+      "rendered_rows": 62,
+      "rendered_numeric_cells": 203,
+      "absolute_and_relative_float_tolerance": 1e-11,
+      "additional_full_numerical_runs_after_container_conversion": 0,
+      "model_cost_and_token_counts": "not_reported"
+    },
+    "publication_receipt": {
+      "native_artifact_status": "unverified empiricalarchives, nottrustedliteraturequalification",
+      "paper_artifact": "art:cd37ecfbd2dc9e4f80828c68366727eaca68ec5b3e08764f1a8c14af98acaa7d",
+      "llms_artifact_at_audit": "art:fc2653f6b53b6a3dcc853134980bf879c1fa3348ddff88f7f9a078d72c8f4f31",
+      "final_metadata_pointer_updates": "Parent-owned afterthisauditreceipt; do notclaimthey wereauditedinadvance."
+    },
+    "qualification_verdict": "PASS for scoped computational, source-provenance, causality and report audit. Doesnotqualify futureaccuracy, executableprofit, literaturepublication or installedTUIbehavior."
+  }
+}

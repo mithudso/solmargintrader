@@ -1,6 +1,7 @@
 # Prompt history
 
-Version: 254
+Version: 255
+Delta: v254 to v255; record titlebar/sound options and HYPE ETH BTC SOL comparisons.
 Delta: v253 to v254; record explicit reversal stages and one-minute excursion analysis.
 Delta: v252 to v253; record fixed ten-minute bearish-only reversal alerts.
 Delta: v251 to v252; record streaming indicators, click-to-chart overlays and two-bar TUI request.
@@ -2325,4 +2326,15 @@ FOr the  /Users/mitch/.venvs/soltui/bin/python /Users/mitch/dev/solmargintrader/
 
 ```text
 The 3-line alert banner is ambiguous as to whether it has detected 2 bars in a row, is watching for a second bar, and if it's in the reversal stage. Can you make it clarify? : If a bar is up, and while inside the 2nd bar a reversal starts, then it is likely to keep going. Can you look back at the 1min data and see when there as a reversal either inside or aftert the 2nd bar, what is the average breakout distance? What is the maximum breakout distance for reference?
+```
+
+
+## Oracle titlebar, optional sounds and cross-coin comparison — 2026-11-15
+
+```text
+Make the  "10m · 0 prior UP → bar ? (no UP setup) · WATCHING"  appear on the top title bar, along with if a reversal is detected, and then add a bell or audible alert option when it is detected, or after the 2nd bar.
+```
+
+```text
+Also check these coins for the same pattern in Hype coin, ETH, BTC, and SOL
 ```

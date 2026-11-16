@@ -17,6 +17,7 @@ from textual.message import Message
 from textual.screen import ModalScreen
 from textual.widgets import (
     Button,
+    Checkbox,
     DataTable,
     Footer,
     Header,
@@ -33,6 +34,11 @@ from research.zec_tui_alerts import HALF, bearish_alert
 from research.zec_tui_chart import MarketChart
 from research.zec_tui_metrics import IndicatorSession
 from research.zec_tui_model import LOOKBACKS, WorkingSet, default_path, label, row_key
+from research.zec_tui_notifications import (
+    NotificationEvents,
+    SoundPlayer,
+    sound_settings,
+)
 from research.zec_tui_source import (
     AlertSession,
     DataSession,
@@ -255,14 +261,74 @@ class ShapeGuide(ModalScreen[None]):
         self.action_close()
 
 
+class SoundsDialog(ModalScreen[dict | None]):
+    BINDINGS: ClassVar = [("escape", "cancel", "Cancel")]
+
+    def __init__(self, settings):
+        super().__init__()
+        self.settings = sound_settings(settings)
+
+    def compose(self) -> ComposeResult:
+        with Vertical(id="sounds-dialog"):
+            yield Label("Optional sounds · quiet by default", classes="dialog-title")
+            yield Checkbox(
+                "Reversal detected",
+                value=self.settings["reversal"],
+                id="sound-reversal",
+            )
+            yield Checkbox(
+                "After two UP closes (bar 3 watch)",
+                value=self.settings["two_up"],
+                id="sound-two-up",
+            )
+            yield Select(
+                [("Terminal bell", "bell"), ("macOS system sound", "macos")],
+                value=self.settings["backend"],
+                allow_blank=False,
+                id="sound-backend",
+            )
+            yield Static(
+                "Apply changes this session. Save view keeps them.\nTest plays the chosen backend without changing alert history.",
+                id="sound-status",
+            )
+            with Horizontal(classes="dialog-actions"):
+                yield Button("Test sound", id="test-sound")
+                yield Button("Apply", id="apply-sounds", variant="primary")
+                yield Button("Cancel", id="cancel-sounds")
+
+    def values(self):
+        return sound_settings(
+            {
+                "reversal": self.query_one("#sound-reversal", Checkbox).value,
+                "two_up": self.query_one("#sound-two-up", Checkbox).value,
+                "backend": self.query_one("#sound-backend", Select).value,
+            }
+        )
+
+    def action_cancel(self):
+        self.dismiss(None)
+
+    @on(Button.Pressed)
+    def sound_button(self, event):
+        event.stop()
+        if event.button.id == "apply-sounds":
+            self.dismiss(self.values())
+        elif event.button.id == "cancel-sounds":
+            self.action_cancel()
+        elif event.button.id == "test-sound":
+            self.app.play_sound(self.values()["backend"], preview=True)
+
+
 class OracleWinnersApp(App):
-    TITLE = "ZEC Oracle · Strategy workbench"
+    TITLE = "10m · setup pending · DATA UNAVAILABLE"
+    SUB_TITLE = ""
     BINDINGS: ClassVar = [
         ("q", "quit", "Quit"),
         ("s", "choose", "Strategies"),
         ("e", "edit", "Edit"),
         ("h", "shape_guide", "Shape guide"),
         ("r", "refresh_now", "Refresh"),
+        ("a", "sounds", "Sounds"),
         ("ctrl+s", "save_view", "Save view"),
     ]
     CSS = """
@@ -306,6 +372,9 @@ class OracleWinnersApp(App):
     #shape-dialog { width: 94%; height: 92%; background: #152338; border: thick #418aab; padding: 1; }
     #shape-guide-scroll { height: 1fr; }
     #shape-guide-body { height: auto; }
+    #sounds-dialog { width: 74; max-width: 94%; height: 24; max-height: 94%; background: #152338; border: thick #418aab; padding: 1; }
+    #sound-backend { width: 1fr; }
+    #sound-status { height: 4; color: #a8c1dd; }
     """
 
     def __init__(
@@ -318,12 +387,15 @@ class OracleWinnersApp(App):
         stream=None,
         indicator_loader=None,
         alert_loader=None,
+        sound_player=None,
         clock=time.time,
     ):
         super().__init__()
         self.state = state or WorkingSet()
         self.settings_path = Path(settings_path) if settings_path else default_path()
         self.clock = clock
+        self.notification_events = NotificationEvents()
+        self.sound_player = sound_player if sound_player is not None else SoundPlayer()
         self.data_worker = LatestWorker(
             data_loader or DataSession(clock=clock), name="oracle-candles"
         )
@@ -367,7 +439,7 @@ class OracleWinnersApp(App):
         self._next_alert = 0.0
 
     def compose(self) -> ComposeResult:
-        yield Header()
+        yield Header(id="oracle-header")
         yield Static(
             "10m bearish check · loading completed five-minute history…\nBearish-only screen context · no trading action",
             id="bearish-alert",
@@ -418,6 +490,7 @@ class OracleWinnersApp(App):
             yield Button("Reset", id="reset-focused")
             yield Button("Save", id="save-view")
             yield Button("Shape guide [H]", id="show-shape-guide")
+            yield Button("Sounds", id="show-sounds")
         yield Static("Connecting to existing ZEC/USD recorder…", id="market")
         yield Static(
             "Select a timeframe and choose the strategies you want to watch.",
@@ -757,6 +830,19 @@ class OracleWinnersApp(App):
         banner.set_class(
             self.current_alert["state"] == "observed_reversal", "bearish-observed"
         )
+        self.title = self.current_alert["text"].splitlines()[0]
+        self.sub_title = ""
+        self.query_one("#oracle-header", Header).tooltip = (
+            self.current_alert["text"] + "\n" + self.current_alert["tooltip"]
+        )
+        events = self.notification_events.observe(
+            self.current_alert, self.state.sounds, self.clock()
+        )
+        if events:
+            self.play_sound(self.state.sounds["backend"])
+        sound_result = self.sound_player.poll()
+        if sound_result and sound_result.get("error"):
+            self.sound_notice(sound_result["error"] + ". Use Test sound to retry.")
         quote = (self.quote_result or {}).get("quote")
         good = (
             quote
@@ -980,6 +1066,50 @@ class OracleWinnersApp(App):
             ).get("details")
         self.push_screen(ShapeGuide(details, self.state.interval))
 
+    def action_sounds(self):
+        if self._display_stopping or not self.is_running:
+            return
+        self.push_screen(SoundsDialog(self.state.sounds), self.sounds_changed)
+
+    def sounds_changed(self, settings):
+        if self._display_stopping or not self.is_running or settings is None:
+            return
+        self.state.sounds = sound_settings(settings)
+        self.notification_events.observe(
+            self.current_alert, self.state.sounds, self.clock(), quiet=True
+        )
+        self.notice("Sound preferences applied for this session. Save view keeps them.")
+
+    def sound_notice(self, message):
+        if self._display_stopping or not self.is_running:
+            return
+        if isinstance(self.screen, SoundsDialog):
+            self.screen.query_one("#sound-status", Static).update(Text(message))
+        else:
+            self.notice(message)
+
+    def play_sound(self, backend, *, preview=False):
+        if self._display_stopping or not self.is_running:
+            return
+        if backend == "bell":
+            try:
+                self.bell()
+            except (OSError, RuntimeError):
+                self.sound_notice("Terminal bell unavailable. Use Test sound to retry.")
+                return
+            if preview:
+                self.sound_notice(
+                    "Terminal bell requested; terminal settings may mute it."
+                )
+        elif backend == "macos":
+            started = self.sound_player.play()
+            if preview:
+                self.sound_notice(
+                    "System sound requested; hearing depends on audio settings."
+                    if started
+                    else "Sound already playing; no second sound queued."
+                )
+
     def selected_changed(self, selected):
         if selected is not None:
             self.state.selected = selected
@@ -1030,7 +1160,7 @@ class OracleWinnersApp(App):
             )
         else:
             self.notice(
-                "Saved timeframe, watchlist, refresh, chart window and edited variants."
+                "Saved timeframe, watchlist, refresh, chart window, edited variants and sounds."
             )
 
     def on_button_pressed(self, event):
@@ -1040,6 +1170,7 @@ class OracleWinnersApp(App):
             "show-shape-guide": self.action_shape_guide,
             "edit-focused": self.action_edit,
             "save-view": self.action_save_view,
+            "show-sounds": self.action_sounds,
         }
         if event.button.id in actions:
             actions[event.button.id]()
@@ -1062,6 +1193,7 @@ class OracleWinnersApp(App):
         if self._display_stopping:
             return
         self._display_stopping = True
+        self.sound_player.close()
         if hasattr(self, "_poll_timer"):
             self._poll_timer.stop()
         self.data_worker.close(0.1)
