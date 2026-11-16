@@ -1,6 +1,7 @@
 # Work continuation
 
-Version: 581
+Version: 582
+Delta: v581 to v582; checkpoint both moving-average proxy contracts.
 Delta: v580 to v581; add explicit proxy sizing and historical source evidence.
 Delta: v579 to v580; reconcile the selected TradingView research family.
 Delta: v578 to v579; record the incorrect existing coverage mapping.
@@ -2686,3 +2687,5 @@ MovingAvg Cross support publication 43000599885 is marked `existing` and mapped 
 Trading-root census: the complete 1,286-row incomplete endpoint exactly matches the 1,286 rooted parent/pending-parent witness IDs. Its census hash is `090d627bdd38494ab17a4ac56394030a94c2301a927bc13291eed078ca377f8e`. The complete frontier has 1,157 selected rows and census hash `13375f86529ec430af30234b965787c2c3ca6c04a213bb9b04e01842dd826218`. Mongo run revision 40 stores all cursor-bearing pages and detailed continuation; queue joining remains delegated to Momentum. These censuses do not establish qualification.
 
 The adapter accepts an explicit per-intent quantity override while retaining no quantity by default. All nine unit/integration tests pass with shared emulator 600926e and pinned Ruff 0.17.4 passes. Official version 29 and 30 source bytes match and differ from version 31 only in strategy title. Independent Terra negation and source-bound draft claims are in the Mongo run; no trusted gate was run because the exposed finalizer offers no Terra selection and checked-in service hardcodes gpt-6.1-sol. Common proxy sizing is decision KNOW-2353. Matched Coinbase perpetual data and actual tester economics remain unverified.
+
+TASK-2335 and TASK-2345 remain in progress. Source-specific single and two-SMA adapters, draft cards and common oracle proxy wrapper are in this branch. Both provisional depth runs reached six-pass BUDGET_EXHAUSTED with candidate rates 4/14, 2/16, 2/18, 2/20, 2/22, 0/22; these are draft counts, not canonical or gated and do not establish saturation. Single-MA proxy result art:023f73b84f69c17606635974140b7cb8003dfcfb36590e0b6ca81017ce3113a5; Two-MA proxy result art:2225ec8c5c1d8e66f04a862acdac83d73ca315fff991f356a380f90066d165fc. They use validated retrospective Jupiter oracle data and equal-notional override, not matching Coinbase perps, OOS or actual account settings. The current source modules have 16 tests passed and pinned Ruff passed with shared engine 600926e and comparator 0136787 loaded read-only. Independent adapter and comparator review, global queue join, concept fencing, trusted gate, matched venue data and delivery remain.

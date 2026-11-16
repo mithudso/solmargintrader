@@ -52,6 +52,14 @@ absolute outperformance and greater sensitivity to unexpected costs at higher
 frequencies. These findings cannot establish a return for this strategy, venue,
 or period. The papers differ in sample and method.
 
+## Reconciliation proposal
+
+Use a distinct source-specific single-SMA identity and card after independent
+contract review. Correct the existing coverage mapping through its owning
+helper, with its checksum and version gates. Preserve the generic 20/50
+strategy and its historical results. Do not register the draft adapter until
+the shared order engine, card defaults, schema, and trace tests agree.
+
 ## Backtest contract and outstanding gates
 
 The owner confirmed 10-minute bars and default strategy inputs for
@@ -67,6 +75,29 @@ rejects nonfinite close values. It is not registered, and warmup, comparison
 precision, missing-data semantics and complete emulator parity need further
 verification against TradingView. The shared offline engine omits funding,
 spread, margin and liquidation. Do not equate its traces with venue fills.
+
+## Retrospective proxy sensitivity
+
+The shared prior Jupiter ZEC/USD oracle window contains 41,640 contiguous
+minutes from 2026-10-10 21:00 UTC through 2026-11-08 19:00 UTC exclusive.
+The comparator uses $100,000 initial cash and $1,000 target notional based on
+the signal close. The next-open fill notional can differ. A $1,000 unlevered
+buy-and-hold position gained $33.31 before costs over the same window. Fresh
+ZEC and BTC reservation checks surrounded each simulation. Open positions
+are marked at the last close, not forcibly liquidated.
+
+| Bars | Assumed cost per side | P&L | Closed trades | Max drawdown |
+| --- | --- | ---: | ---: | ---: |
+| 10 minutes | zero | +$570.81 | 731 | 0.208% |
+| 10 minutes | 10 bp fee + 1 bp slippage | -$1,038.57 | 731 | 1.177% |
+| 15 minutes | zero | +$530.94 | 487 | 0.183% |
+| 15 minutes | 10 bp fee + 1 bp slippage | -$541.65 | 487 | 0.721% |
+
+These are in-sample retrospective proxy results, not Coinbase perpetual or
+TradingView replication, an out-of-sample evaluation, or live-net results.
+Funding, spread beyond the slippage scenario, margin, liquidation, and actual
+account settings are unknown. The native result is
+`art:023f73b84f69c17606635974140b7cb8003dfcfb36590e0b6ca81017ce3113a5`.
 
 Mongo run `run:2ceb379c607a2a79120f4d92639b671d5a6f9670129529994e098f847a0a7ed0`
 remains unqualified. Complete authoritative family reconciliation, independent
