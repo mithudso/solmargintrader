@@ -54,6 +54,8 @@ class Console:
         self.clock = clock
         self._cli = cli
         self._sdk = sdk
+        self._wallet_checked_at = float("-inf")
+        self._wallet_identity = {}
 
     @property
     def cli(self):
@@ -120,6 +122,7 @@ class Console:
         heartbeat = self.store.meta("heartbeat", {})
         now = self.clock()
         selection = self.store.meta("selection", {})
+        wallet = self.public_wallet(cfg)
         predictions = self.store.predictions()
         totals = self.store.performance()
         performance = {
@@ -169,6 +172,7 @@ class Console:
             "status": "paper-forward-" + service_status,
             "updated_at": heartbeat.get("at"),
             "armed": cfg.get("armed", False),
+            "wallet": wallet,
             "assets": capabilities,
             "strategies": [
                 {**r, "shape": r.get("shape_group", "all")}
@@ -201,6 +205,47 @@ class Console:
                 if isinstance(value, dict) and value.get("error")
             },
         }
+
+    def public_wallet(self, cfg=None):
+        """Display the same full public CLI identity used by both trading paths."""
+        cfg = self.config() if cfg is None else cfg
+        now = self.clock()
+        if now - self._wallet_checked_at >= 15:
+            try:
+                identity = self.cli.wallet()
+                self._wallet_identity = {
+                    "address": identity["address"],
+                    "name": identity["name"],
+                    "status": "ready",
+                }
+            except CONSOLE_ERRORS:
+                self._wallet_identity = {
+                    "address": None,
+                    "name": None,
+                    "status": "unavailable",
+                }
+            self._wallet_checked_at = now
+        wallet = {
+            **self._wallet_identity,
+            "checked_at": self._wallet_checked_at,
+            "configured_address": cfg.get("wallet_address"),
+            "armed": cfg.get("armed", False),
+        }
+        wallet["message"] = (
+            "CLI public identity unavailable; no transaction wallet is inferred"
+            if wallet["status"] != "ready"
+            else "Active named Jupiter CLI wallet; both trading paths bind this identity again before submission"
+        )
+        if (
+            wallet["address"]
+            and wallet["configured_address"]
+            and wallet["address"] != wallet["configured_address"]
+        ):
+            wallet["status"] = "mismatch"
+            wallet["message"] = (
+                "Active CLI and configured wallet differ; submission is blocked"
+            )
+        return wallet
 
     def _signature_statuses(self, signatures, cfg):
         url = cfg.get("rpc_url", "https://api.mainnet-beta.solana.com")
@@ -260,6 +305,16 @@ class Console:
                         not isinstance(state, dict)
                         or "err" not in state
                         or "confirmationStatus" not in state
+                        or (
+                            state["err"] is not None
+                            and not (
+                                (isinstance(state["err"], str) and bool(state["err"]))
+                                or (
+                                    isinstance(state["err"], dict)
+                                    and bool(state["err"])
+                                )
+                            )
+                        )
                     ):
                         raise ValueError("RPC signature state is incomplete")
                     if state and state.get("confirmationStatus") in (

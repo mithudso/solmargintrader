@@ -1,6 +1,8 @@
 # Prompt history
 
-Version: 256
+Version: 258
+Delta: v257 to v258; record second reversal heuristics and any-time1000x liquidation requirement.
+Delta: v256 to v257; record full transaction wallet display and documentation reply.
 Delta: v255 to v256; record ZEC/BTC reversal-shape study, leveraged adapters and persistent paper forward test.
 Delta: v254 to v255; record titlebar/sound options and HYPE ETH BTC SOL comparisons.
 Delta: v253 to v254; record explicit reversal stages and one-minute excursion analysis.
@@ -111,6 +113,18 @@ Delta: v191 to v192; capture ZEC ensemble backtest, data extension, top ten pape
 Delta: v191 to v192; record Lead Quantitative Orchestrator prompt optimization and market graph geometry research runbook.
 Delta: v190 to v191; capture the request to remove six assets from coin lists.
 Delta: v189 to v190; capture the additional friend-facing solbot diagnostics request.
+
+## 2026-11-16 — Second reversal and liquidation path analysis
+
+> After the initial trade is executed, there is no stop-loss/take-profit, so look at the past detail instances where this pattern succeeded, and 1) identify if there are any correlations that would improve your odds of guessing this pattern occuring. 2) identify which factors, strategies, or indicators pointed to a the 2nd reversal, by which I mean you have 2bars up, then first reversal down, what would give you a heuristic of the second reversal where it goes from down to up? Also keep in mind that when puttin gin a 1000x trade the price can't go past the liquidation price at any point.
+
+
+## 2026-11-16 — Full transaction wallet identity
+
+> Display the full wallet address that's being used for the transactions in the margin trader app.. That wallet should have money in it.
+
+Owner also replied to the integration-documentation question: “Yes, I can share integration documentation”. The official public contract was independently located before this reply; no new document blocker is inferred.
+
 
 ## 2026-11-11 — All-component deep code optimization
 

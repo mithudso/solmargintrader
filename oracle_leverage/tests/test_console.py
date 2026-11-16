@@ -285,6 +285,22 @@ class ConsoleTests(unittest.TestCase):
         )
         self.assertEqual(self.console.snapshot()["status"], "paper-forward-degraded")
 
+    def test_full_transaction_wallet_and_configured_mismatch_are_visible(self):
+        self.assertEqual(self.console.snapshot()["wallet"]["address"], ADDRESS)
+        self.arm(wallet_address="2" * 32)
+        wallet = self.console.snapshot()["wallet"]
+        self.assertEqual(wallet["address"], ADDRESS)
+        self.assertEqual(wallet["configured_address"], "2" * 32)
+        self.assertEqual(wallet["status"], "mismatch")
+
+    def test_wallet_read_error_is_unavailable_not_an_empty_confirmed_wallet(self):
+        self.cli.wallet = lambda: (_ for _ in ()).throw(
+            RuntimeError("fixture unavailable")
+        )
+        wallet = self.console.snapshot()["wallet"]
+        self.assertEqual(wallet["status"], "unavailable")
+        self.assertIsNone(wallet["address"])
+
     def test_zero_signature_and_unsafe_config_are_rejected(self):
         self.assertFalse(valid_signature("1" * 64))
         self.arm()
@@ -314,6 +330,21 @@ class ConsoleTests(unittest.TestCase):
         ]
         self.console.reconcile()
         self.assertEqual(self.console.store.intent(identity)["status"], "confirmed")
+
+    def test_invalid_rpc_error_type_preserves_unknown_quarantine(self):
+        self.arm()
+        self.console.store.put_intent(
+            "uncertain", "open", "unknown", {}, {"signature": SIGNATURE}
+        )
+        for error in (False, 0, [], "", {}):
+            self.now += 20
+            self.console._signature_statuses = lambda signatures, cfg, error=error: [
+                {"confirmationStatus": "confirmed", "err": error}
+            ]
+            self.console.reconcile()
+            self.assertEqual(
+                self.console.store.intent("uncertain")["status"], "unknown"
+            )
 
 
 if __name__ == "__main__":

@@ -44,6 +44,33 @@ def _summary(value) -> str:
     return " · ".join(cells) or "No settled paper predictions yet"
 
 
+def wallet_text(data):
+    wallet = data.get("wallet", {})
+    wallet = wallet if isinstance(wallet, dict) else {}
+    alphabet = "123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz"
+
+    def address(value):
+        return (
+            value
+            if isinstance(value, str)
+            and 32 <= len(value) <= 44
+            and all(char in alphabet for char in value)
+            else "unavailable"
+        )
+
+    current = address(wallet.get("address"))
+    lines = [
+        f"Transaction wallet: {current}",
+        f"Key: {_text(wallet.get('name'), limit=128)} · {'ARMED' if wallet.get('armed') is True else 'DISARMED'} · {_text(wallet.get('status'))}",
+    ]
+    configured = address(wallet.get("configured_address"))
+    if configured != "unavailable" and configured != current:
+        lines.append(f"Configured wallet mismatch: {configured}")
+    if wallet.get("message"):
+        lines.append(_text(wallet["message"]))
+    return "\n".join(lines)
+
+
 def live_market_text(data, asset, now):
     """Keep the current source observation distinct from a recorded prediction."""
     heartbeat = data.get("heartbeat", {})
@@ -122,6 +149,7 @@ class LeveragePanel(ModalScreen[None]):
     #leverage-dialog { width: 98%; height: 96%; background: #152338; border: thick #418aab; padding: 0 1; }
     #leverage-title { height: 2; text-style: bold; }
     #leverage-status { height: 3; color: #a8c1dd; }
+    #leverage-wallet { height: auto; min-height: 2; color: #d5f0ff; text-style: bold; border-left: tall #418aab; padding: 0 1; }
     .leverage-controls { height: 3; }
     .leverage-controls Label { width: auto; content-align: left middle; margin-right: 1; }
     #leverage-asset { width: 12; }
@@ -202,6 +230,11 @@ class LeveragePanel(ModalScreen[None]):
             yield Label("Leverage & live paper forward test", id="leverage-title")
             yield Static(
                 "Loading durable trial status…", id="leverage-status", markup=False
+            )
+            yield Static(
+                "Transaction wallet: loading public identity…",
+                id="leverage-wallet",
+                markup=False,
             )
             with Horizontal(classes="leverage-controls"):
                 yield Label("Asset")
@@ -421,6 +454,7 @@ class LeveragePanel(ModalScreen[None]):
                 f"Paper forward: {_text(data.get('status'))} · {freshness}\nPaper results are simulated; venue execution status is separate. Closing this panel leaves the forward service running."
             )
         )
+        self.query_one("#leverage-wallet", Static).update(Text(wallet_text(data)))
         asset = self.query_one("#leverage-asset", Select).value
         interval = self.query_one("#leverage-interval", Select).value
         capabilities = []

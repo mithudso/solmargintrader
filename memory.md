@@ -1,6 +1,7 @@
 # Work continuation
 
-Version: 572
+Version: 573
+Delta: v572 to v573; show full transaction wallet and verify its actual collateral balances.
 Delta: v571 to v572; correct the implicit compute-budget fee ceiling found by independent review; qualify15 SDK/service cases.
 Delta: v570 to v571; qualify native empirical audit, SDK keeper contract and guarded manual controls; paper collector active, delivery acceptance pending.
 Delta: v569 to v570; begin TASK-2289 study, CLI/SDK adapters and monitored paper forward test.
@@ -334,6 +335,17 @@ passed, verifying current SDK/account compatibility without funds or signing.
 The work is pushed in draft PR285; the fee correction and final CI are pending.
 User replied that integration documentation can be shared; the official public
 contract was already independently found, so no new documentation blocker exists.
+
+Owner requested the full transaction wallet address in the margin trader app.
+The panel now shows the complete public identity, named key, arming state and
+configured mismatch without abbreviation. CLI key mv and actual SolTUI config
+both resolve to EMTK62aecgScjEuZqbqeGquk8cBoQF9Z4DnxQZxn8myV.
+Public mainnet RPC at2026-11-16T06:22:54Z showed0.203943505SOL,
+0USDC,0JupUSD and39.931191JUICED (mint metadata verified through Jupiter).
+The wallet has funds, but no collateral accepted by the current direct-USDC/
+direct-JupUSD adapters. No swap or transfer was made. Console20 and panel19
+focused tests pass, including full-address actual wide/narrow renders. The
+previous130-case source result plus these changed-path checks remain bound.
 
 Remaining at this checkpoint: changed-path independent acceptance;
 commit/push/CI/merge and canonical monitor/collector acceptance. New docs were

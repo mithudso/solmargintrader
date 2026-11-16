@@ -2,7 +2,8 @@
 
 The existing Oracle winner display now opens a separate panel with **L** or the
 Leverage button. The panel shows ZEC/BTC venue capabilities, frozen strategy
-rules, live Coinbase quotes and the durable paper ledger. Returning to the
+rules, live Coinbase quotes and the durable paper ledger. It displays the full
+public transaction wallet, named CLI key and any configured identity mismatch. Returning to the
 original display does not stop the collector.
 
 From the canonical checkout, the monitored view is:
@@ -77,7 +78,10 @@ public contract. The implementation accepts direct JupUSD collateral only;
 fund the existing wallet with JupUSD and enough SOL for network fees.
 
 The SDK verifies the requested margin,1000x leverage, direction, market, owner,
-keeper, funding account, program PDAs and execution window before signing. It
+keeper, funding account, known config/pool/vault/position PDAs and execution
+window before signing. The service supplies a close claim address; the on-chain
+program validates its allocation, rather than this client deriving an unverified
+claim sequence. It
 rejects unknown extra instructions and priority fees above0.01SOL. The existing
 pinned CLI signs with the explicit named wallet; private keys never enter this
 module. A second check verifies the owner signature cryptographically and keeps

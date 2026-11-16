@@ -144,6 +144,58 @@ def static_text(panel, identity):
 
 
 class Interface(unittest.IsolatedAsyncioTestCase):
+    async def test_full_public_wallet_and_configured_mismatch_appear_in_actual_render(
+        self,
+    ):
+        public = "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v"
+        configured = "So11111111111111111111111111111111111111112"
+        for size in ((168, 58), (90, 42)):
+            with self.subTest(size=size):
+                console = ConsoleFixture()
+                console.data["wallet"] = {
+                    "address": public,
+                    "name": "owner",
+                    "configured_address": configured,
+                    "armed": False,
+                    "status": "mismatch",
+                    "message": "Public identity only; [red]literal[/red]",
+                    "privateKey": "fake-secret-never-display",
+                }
+                panel = self.panel(console)
+                app = PanelHost(panel)
+                async with app.run_test(size=size) as pilot:
+                    await self.wait_for(
+                        pilot, lambda panel=panel: panel.snapshot_data is not None
+                    )
+                    widget = panel.query_one("#leverage-wallet", Static)
+                    value = static_text(panel, "#leverage-wallet")
+                    self.assertIn(f"Transaction wallet: {public}", value)
+                    self.assertIn(f"Configured wallet mismatch: {configured}", value)
+                    self.assertIn("DISARMED", value)
+                    self.assertIn("[red]literal[/red]", value)
+                    self.assertNotIn("fake-secret", value)
+                    self.assertNotIn("…", value)
+                    self.assertGreater(widget.region.width, len(public))
+                    self.assertGreaterEqual(
+                        widget.region.height, widget.content_size.height
+                    )
+                    self.assertLessEqual(
+                        widget.region.bottom,
+                        panel.query_one("#leverage-asset", Select).region.y,
+                    )
+                    svg = app.export_screenshot()
+                    self.assertIn(public, svg)
+                    self.assertIn(configured, svg)
+                    for identity in (
+                        "#leverage-preview",
+                        "#leverage-submit",
+                        "#leverage-close-position",
+                        "#leverage-return",
+                    ):
+                        self.assertLessEqual(
+                            panel.query_one(identity).region.bottom, size[1]
+                        )
+
     async def test_current_select_labels_fit_on_one_line_at_wide_and_narrow_sizes(self):
         for size in ((168, 60), (90, 40)):
             with self.subTest(size=size):
