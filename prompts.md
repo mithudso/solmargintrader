@@ -1,6 +1,7 @@
 # Prompt history
 
-Version: 253
+Version: 254
+Delta: v253 to v254; record explicit reversal stages and one-minute excursion analysis.
 Delta: v252 to v253; record fixed ten-minute bearish-only reversal alerts.
 Delta: v251 to v252; record streaming indicators, click-to-chart overlays and two-bar TUI request.
 Delta: integrated to v251; retain parallel automated merge ancestry and all owner/research/AdSense records.
@@ -2317,4 +2318,11 @@ Two things: 1)  If this is true, can I bet on a reversal after two ups or two do
 
 ```text
 FOr the  /Users/mitch/.venvs/soltui/bin/python /Users/mitch/dev/solmargintrader/scripts/oracle_winners.py tui add a check that if a full 10 min bar passes up, and midway through the 2nd 10min bar it starts to go down, consider that a reversal. And alert that on the screen near the top. If two full 10 min bars pass up/up, also alert that that the next one is very likely to be down. Don't do the same with down down up/
+```
+
+
+## Explicit reversal stages and excursion distances — 2026-11-15
+
+```text
+The 3-line alert banner is ambiguous as to whether it has detected 2 bars in a row, is watching for a second bar, and if it's in the reversal stage. Can you make it clarify? : If a bar is up, and while inside the 2nd bar a reversal starts, then it is likely to keep going. Can you look back at the 1min data and see when there as a reversal either inside or aftert the 2nd bar, what is the average breakout distance? What is the maximum breakout distance for reference?
 ```

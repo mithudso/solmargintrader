@@ -132,7 +132,21 @@ produce invented lines. The drawing stops at the latest observed candle.
 ### Fixed ten-minute bearish alerts
 
 The banner near the top always watches **ten-minute candles**, independently of
-the selected chart window. It has two bearish conditions:
+the selected chart window. It now names the confirmed count, current bar and
+live detection stage separately:
+
+| Banner wording | Meaning |
+| --- | --- |
+| One closed UP → bar 2 · WATCHING | One UP is confirmed; the current second candle is still developing. A second completed UP or a reversal has not been asserted. |
+| Two closed UP (UU) → bar 3 · WATCHING | Both previous candles finished UP; the current candle follows that pair. A live reversal has not been detected. |
+| REVERSAL DETECTED | The fresh price is below this candle's actual open after the five-minute gate. The one-UP/bar-2 or two-UP/bar-3 label stays visible. |
+| DATA UNAVAILABLE | Closed-bar context remains visible when known, but a live reversal cannot be confirmed. Missing historical context is labelled unknown. |
+
+The count checks the last two closed candles. A rolling UU pair can occur in a
+longer UP run. If the older candle is missing, the banner says one UP is
+**confirmed** and does not claim an exact one-bar run. The other lines show
+price versus true open, elapsed time and the current UTC start/end window.
+Further decline after detection remains unproven. The two bearish conditions are:
 
 - **Mid-bar reversal:** the previous complete ten-minute candle closed above
   its open. At least five minutes into the current ten-minute candle, a fresh
@@ -156,6 +170,11 @@ constituents, stale trades and disconnected or gapped streams withhold the
 affected alert instead of inventing an opening price. A separate small candle
 worker keeps this context independent of a slow or unavailable selected chart.
 It retains provider retry backoff and stops with the display.
+
+The [one-minute excursion follow-up](../research/ZEC-REVERSAL-EXCURSIONS.md)
+measures subsequent downward distances and endpoint continuation separately.
+Its early intrabar timing and the current five-minute gate have different
+results. The old19/24 next-candle-color count is not either continuation rate.
 
 ### Completed two-bar historical panel
 

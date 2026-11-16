@@ -1,0 +1,26 @@
+# ZEC second-bar reversal excursion study
+
+Version: 1.0.0
+Date: 2026-11-15
+Status: descriptive, one previously examined day; independently numerically reproduced; no prospective trading qualification.
+
+## Canonical Mongo evidence
+
+Run: run:125d5e7f32471c641a1400376b8e69c500cece918dee2fab8e639f576909c03c
+Results archive: art:b928dd19d998d969230eb66128698eeb4c08b1d2eb891867ff6251b9c31e12bf
+Decoded JSON SHA256: e3b28398ecfcde1b633f7db241b8ba44812b30173d378965a2ef375fdc6f8f9c
+Source: accepted134746receipt-time ZEC-USD trades,2026-11-12 through2026-11-13;1439 complete1m buckets,1430 gap-safe. No new capture, model, embedding or order.
+
+## Practical distinction
+
+Setup10m, observation1m. OneUP/bar2 differs from lasttwoUP/bar3. Firstminute-close belowtruecurrentopen selects a causal signal; futurecurrentbarcolor neverselects it. Distances use future-only lows5/10/20min after signal; mean favorable excursion differs from endpoint continuation. Gap-safe primary minute1–9 ten-minute follow-up: oneUP9/26lower, meanfall$2.76/0.288%, max$9.33/0.969%; twoUP16/22lower, mean$5.14/0.532%, max$17.57/1.789%. Gap-safe existingbanner>=5min proxy: oneUP7/17lower, mean$3.14/0.326%, max$12.32/1.278%; twoUP12/20lower, mean$4.70/0.488%, max$20.36/2.100%. Do not substitute early-trigger rates for currentbanner timing. The sample maximum is no future bound; price can recover despite a favorable low. Old19/24nextcandlecolor is a different question.
+
+## Inventory
+
+- ../ZEC-REVERSAL-EXCURSIONS.md: complete definitions, primary/midpoint tables, close-confirmation sensitivity, maxima and limits.
+- results.json: exact decoded native result bytes;269 tagged variant events,72summaryrows withtwoentryreferences, censoring and nonoverlap.
+- ../zec_reversal_excursions.py: input-hash-verifying, stdout-only reproduction.
+- ../tests/test_zec_reversal_excursions.py: causal/gap/censoring/unit regressions.
+- mongo-artifacts.json: returned native artifact IDs, hashes, readbacks and independent receipts.
+
+Banner names confirmedUP count/currentbar/stage, preserves count during price failures, and retains existing midpoint/freshness/trueopen guards. No DD-UP alert. Sourceclockdiffersfromlive exchange-time feed; one-dayselected frequencies and extrema are not calibrated live probabilities, executable fills or after-fee profit.

@@ -73,16 +73,31 @@ class BearishChecks(unittest.TestCase):
                 self.assertEqual(result["state"], expected)
                 self.assertEqual(result["target_at"], START + 600)
                 self.assertEqual(result["direction"], None if offset < 300 else "DOWN")
+                self.assertEqual(result["stage"], "one_up_bar2")
+                self.assertEqual(result["closed_up_count"], 1)
+                self.assertEqual(result["current_bar_number"], 2)
+                self.assertEqual(result["reversal_detected"], offset >= 300)
+                self.assertIn("1 closed UP confirmed → bar 2", result["text"])
+                self.assertIn("UTC 03:20:00–03:30:00", result["text"])
                 if offset >= 300:
                     self.assertEqual(result["true_open"], 100)
-                    self.assertIn("NOT calibrated live odds", result["text"])
+                    self.assertEqual(result["price_relation"], "<")
+                    self.assertIn("NOT calibrated live odds", result["tooltip"])
+                    self.assertIn("Further decline unproven", result["text"])
+                    self.assertIn("REVERSAL DETECTED", result["text"])
                     self.assertFalse(result["qualified"])
+                else:
+                    self.assertEqual(result["data_status"], "midpoint_wait")
+                    self.assertIn("WATCHING", result["text"])
         now = START + 303
         # A stream attached at $200 must not turn $101 into a reversal below
         # the true $100 opening of this ten-minute candle.
         result = bearish_alert(context(now), snapshot(now, 101), now)
         self.assertEqual(result["state"], "none")
         self.assertEqual(result["true_open"], 100)
+        self.assertEqual(result["price_relation"], ">")
+        self.assertFalse(result["reversal_detected"])
+        self.assertIn("Price $101.00000 > TRUE open $100.00000", result["text"])
         self.assertEqual(
             bearish_alert(context(now), snapshot(now, 100), now)["state"], "none"
         )
@@ -93,6 +108,11 @@ class BearishChecks(unittest.TestCase):
         saved["end"] = START
         result = bearish_alert(saved, snapshot(now), now)
         self.assertEqual(result["reason"], "true_open_unavailable")
+        self.assertEqual(result["data_status"], "true_open_unavailable")
+        self.assertEqual(result["current_bar_number"], 2)
+        self.assertIn(
+            "1 closed UP confirmed → bar 2 · DATA UNAVAILABLE", result["text"]
+        )
         saved = context(now)
         saved["rows"].pop(START)
         result = bearish_alert(saved, snapshot(now), now)
@@ -110,6 +130,10 @@ class BearishChecks(unittest.TestCase):
                 result = bearish_alert(saved, snapshot(now), now)
                 self.assertEqual(result["reason"], "previous_constituent_missing")
                 self.assertIsNone(result["direction"])
+                self.assertIsNone(result["closed_up_count"])
+                self.assertIsNone(result["current_bar_number"])
+                self.assertEqual(result["stage"], "unknown")
+                self.assertIn("closed UP ? → bar ? · DATA UNAVAILABLE", result["text"])
 
     def test_uu_watch_uses_two_whole_adjacent_ten_minute_bars(self):
         now = START + 10
@@ -117,8 +141,14 @@ class BearishChecks(unittest.TestCase):
         result = bearish_alert(saved, snapshot(now), now)
         self.assertEqual((result["state"], result["direction"]), ("uu_watch", "DOWN"))
         self.assertEqual(result["target_at"], START + 600)
-        self.assertIn("19/24 = 79.2%", result["text"])
-        self.assertIn("one captured day", result["text"])
+        self.assertIn("19/24 = 79.2%", result["tooltip"])
+        self.assertIn("one captured day", result["tooltip"])
+        self.assertEqual(result["historical"]["source_sha256"], STREAK_HASH)
+        self.assertEqual(result["closed_up_count"], 2)
+        self.assertEqual(result["current_bar_number"], 3)
+        self.assertEqual(result["stage"], "two_up_bar3")
+        self.assertFalse(result["reversal_detected"])
+        self.assertIn("2 closed UP (UU) → bar 3 · WATCHING", result["text"])
         self.assertIn("NOT LIVE ODDS", result["text"])
         self.assertFalse(result["qualified"])
         for missing in (START - 1200, START - 900):
@@ -128,6 +158,12 @@ class BearishChecks(unittest.TestCase):
                 result = bearish_alert(incomplete, snapshot(now), now)
                 self.assertEqual(result["state"], "waiting")
                 self.assertIsNone(result["direction"])
+                self.assertEqual(result["closed_up_count"], 1)
+                self.assertEqual(result["current_bar_number"], 2)
+                self.assertEqual(result["older_bar_status"], "unknown")
+                self.assertEqual(result["count_scope"], "last_two_closed_bars_checked")
+                self.assertIn("1 closed UP confirmed", result["text"])
+                self.assertIn("does not prove an exact one-bar run", result["tooltip"])
 
     def test_observed_reversal_takes_priority_over_historical_uu_watch(self):
         now = START + 303
@@ -135,7 +171,13 @@ class BearishChecks(unittest.TestCase):
         self.assertEqual(result["state"], "observed_reversal")
         self.assertIsNone(result["historical"])
         self.assertNotIn("79.2", result["text"])
-        self.assertIn("Midpoint condition untested", result["text"])
+        self.assertIn("Midpoint condition untested", result["tooltip"])
+        self.assertEqual(result["closed_up_count"], 2)
+        self.assertEqual(result["current_bar_number"], 3)
+        self.assertEqual(result["stage"], "two_up_bar3")
+        self.assertTrue(result["reversal_detected"])
+        self.assertIn("2 closed UP (UU) → bar 3 · REVERSAL DETECTED", result["text"])
+        self.assertIn("Further decline unproven", result["text"])
 
     def test_no_symmetric_dd_or_flat_alert(self):
         now = START + 303
@@ -146,6 +188,10 @@ class BearishChecks(unittest.TestCase):
                 result = bearish_alert(saved, snapshot(now, 99), now)
                 self.assertEqual(result["state"], "none")
                 self.assertIsNone(result["direction"])
+                self.assertEqual(result["closed_up_count"], 0)
+                self.assertIsNone(result["current_bar_number"])
+                self.assertEqual(result["stage"], "no_up_setup")
+                self.assertFalse(result["reversal_detected"])
                 self.assertIn("no DD → UP alert", result["text"])
 
     def test_receipt_and_event_must_be_fresh_real_current_bucket_trades(self):
@@ -167,6 +213,17 @@ class BearishChecks(unittest.TestCase):
                     result = bearish_alert(context(now, uu=uu), stream, now)
                     self.assertEqual(result["state"], "unavailable")
                     self.assertIsNone(result["direction"])
+                    self.assertEqual(result["closed_up_count"], 2 if uu else 1)
+                    self.assertEqual(result["current_bar_number"], 3 if uu else 2)
+                    self.assertEqual(result["data_status"], "trade_unavailable")
+                    self.assertEqual(result["true_open"], 100)
+                    self.assertFalse(result["reversal_detected"])
+                    self.assertIsNone(result["price"])
+                    self.assertIsNone(result["price_relation"])
+                    self.assertIn("DATA UNAVAILABLE", result["text"])
+                    self.assertIn(
+                        "Price unavailable · TRUE open $100.00000", result["text"]
+                    )
         for key, value in (("ts", START - 600), ("close", 0), ("close", math.inf)):
             with self.subTest(key=key, value=value):
                 stream = snapshot(now)
@@ -197,6 +254,10 @@ class BearishChecks(unittest.TestCase):
                 result = bearish_alert(saved, snapshot(now), now)
                 self.assertEqual(result["state"], "unavailable")
                 self.assertIsNone(result["direction"])
+                self.assertIsNone(result["closed_up_count"])
+                self.assertIsNone(result["current_bar_number"])
+                self.assertEqual(result["stage"], "unknown")
+                self.assertFalse(result["reversal_detected"])
         for bad_now in (0, math.nan, math.inf, True):
             self.assertIsNone(
                 bearish_alert(context(now), snapshot(now), bad_now)["target_at"]
@@ -212,6 +273,9 @@ class BearishChecks(unittest.TestCase):
         self.assertIsNone(rolled["direction"])
         self.assertEqual(rolled["target_at"], START + 1200)
         self.assertNotEqual(rolled["state"], "observed_reversal")
+        self.assertFalse(rolled["reversal_detected"])
+        self.assertIsNone(rolled["closed_up_count"])
+        self.assertIn("UTC 03:30:00–03:40:00", rolled["text"])
 
     def test_future_rows_and_bad_ohlcv_cannot_supply_true_open_or_full_bar(self):
         now = START + 303

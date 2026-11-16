@@ -33,3 +33,7 @@
 ## Interactive winning-strategy workbench
 - [Read-only ZEC stream](docs/ORACLE-WINNING-STRATEGY-STREAM.md): focused timeframe/watchlist, validated untested configuration edits, a visual shape guide with actual 48-bar trace, streaming indicators and chart overlays, fixed ten-minute bearish reversal/UP-UP watch alerts, and the original complete plain/JSON stream. The alerts use actual candle opens and qualified historical counts; no DOWN-DOWN-to-UP alert.
 - [Foreground script](scripts/oracle_winners.py): Textual TUI by default; shared-recorder quotes and completed public trade candles, with no order or service changes.
+
+## Reversal stages and excursion distances
+- [One-minute observations of ten-minute reversals](research/ZEC-REVERSAL-EXCURSIONS.md): distinct one-UP/bar-2 and two-UP/bar-3 stages; mean/max future downside versus endpoint continuation; early-trigger, midpoint and close-confirmation timings kept separate.
+- [Native empirical evidence and exact results](research/zec-reversal-excursions-20261115/llms.txt): frozen captured day,72summaryrows,269 tagged variant events, independent reproduction and Mongo artifact bindings. The banner retains confirmed counts when live prices fail and labels observed reversals explicitly.
