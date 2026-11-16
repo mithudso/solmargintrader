@@ -26,6 +26,12 @@ class PineBarEmulatorTests(unittest.TestCase):
         self.assertEqual(result['fills'][0]['timestamp'], 1800)
         self.assertEqual(result['pending_stops'], [])
 
+    def test_already_better_stop_activates_before_adverse_gap(self):
+        bars = [Bar(0, 10, 11, 9, 10), Bar(900, 8, 8.5, 7, 8)]
+        orders = [[Intent('L', 'entry', 1, 'stop', 9)], []]
+        result = simulate(bars, orders, default_qty=1, step_seconds=900)
+        self.assertEqual(result['fills'][0]['price'], 8)
+
     def test_two_sided_stop_follows_path_and_equal_tie_policy(self):
         bars = [Bar(0, 10, 11, 9, 10), Bar(900, 10, 12, 8, 10)]
         orders = [[Intent('L', 'entry', 1, 'stop', 11), Intent('S', 'entry', -1, 'stop', 9)], []]
