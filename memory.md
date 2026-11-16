@@ -1,6 +1,7 @@
 # Work continuation
 
-Version: 582
+Version: 583
+Delta: v582 to v583; preserve owner observations without changing the frozen study.
 Delta: v581 to v582; record bounded on-chain IDL check.
 Delta: v580 to v581; record Jupiter documentation links and Preview continuation.
 Delta: v579 to v580; preserve Preview-error recovery scope and execution boundary.
@@ -2689,3 +2690,5 @@ Preview error TASK-2321: the supplied screenshot shows process_nonzero_exit. Aut
 The user provided Jupiter documentation links. Their related product documentation is a lead, not evidence of the actual YOLO program instruction schema. An independent agent is checking the official links and on-chain Anchor IDL. PR 290 provides inspection-only Preview; canonical acceptance is pending.
 
 Read-only Anchor 0.31.1 Program.fetchIdl returned null for YOLO program yoLovHV5eT4DNPMG2Bu1NLmq8nVygEAPrNT1Rx6vWFA. Its derived IDL account DZT94u5ZnWTy8pSXWvZnDj1H23cmdE9vo9tT9WLzHJPU was absent on mainnet at about 10:04 UTC. This rules out the standard published Anchor IDL account only; it does not rule out an off-chain schema.
+
+The user described TradingView strategy results as possible research leads. They are unverified owner observations; interval, settings, costs and baselines were not supplied. Do not add them to the frozen exit50 selection or claim a verified return. Continue the existing study and Preview delivery.

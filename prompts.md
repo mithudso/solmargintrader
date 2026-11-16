@@ -1,6 +1,7 @@
 # Prompt history
 
-Version: 265
+Version: 266
+Delta: v265 to v266; record TradingView observations and resume request.
 Delta: v264 to v265; record Jupiter developer organization.
 Delta: v263 to v264; record Jupiter documentation links.
 Delta: v262 to v263; record Preview error and explicit resume steering.
@@ -2431,4 +2432,14 @@ https://developers.jup.ag/docs/get-started https://developers.jup.ag/docs/guides
 
 ```text
 https://github.com/Jupiter-DevRel
+```
+
+## TradingView observations and resume — 2026-11-16
+
+```text
+I was on TradingView trying out various strategies to play with, and for ZEC, during a 5 mo lookbak these are the strategies that brought in over 100% return: momentum, moving averaage, parabolic SAR, Pivot Reversal, Price channel, two moving averages crossover, volatility expansion-close strategies.
+```
+
+```text
+resume what you were doing
 ```
