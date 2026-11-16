@@ -29,6 +29,7 @@ from textual.widgets import (
 )
 
 from research import zec_live as live
+from research.zec_feed_settings import load_feeds
 from research.zec_shape_view import shape_guide, shape_summary
 from research.zec_tui_alerts import HALF, bearish_alert
 from research.zec_tui_chart import MarketChart
@@ -440,6 +441,13 @@ class OracleWinnersApp(App):
             if data_loader is not None or quote_loader is not None
             else TradeStream(clock=clock)
         )
+        if isinstance(self.trade_stream, TradeStream):
+            home = (
+                Path(leverage_home)
+                if leverage_home
+                else Path.home() / ".local/state/oracle-leverage"
+            )
+            self.trade_stream.set_enabled(load_feeds(home / "view.json")["coinbase"])
         self.current_frame, self.quote_result = None, None
         self.indicator_frame = None
         self.alert_context = self.current_alert = None
@@ -1109,8 +1117,14 @@ class OracleWinnersApp(App):
             console=self.leverage_console,
             console_factory=self.leverage_console_factory,
             clock=self.clock,
+            feed_changed=self.leverage_feeds_changed,
         )
         self.push_screen(self._leverage_panel)
+
+    def leverage_feeds_changed(self, feeds):
+        toggle = getattr(self.trade_stream, "set_enabled", None)
+        if toggle is not None:
+            toggle(feeds["coinbase"])
 
     def sounds_changed(self, settings):
         if self._display_stopping or not self.is_running or settings is None:

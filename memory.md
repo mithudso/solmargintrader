@@ -1,6 +1,12 @@
 # Work continuation
 
-Version: 609
+Version: 610
+Delta: v609 to v610; integrate delivered feed/UI source7bfeb02 while preserving frozen reviewed Oracle runtime.
+Delta: v606 to v607; integrate the UI checkpoint with compressed offline indexes.
+Delta: v603 to v604; save final UI ledger, 85 checks and seven repaired findings pending independent delivery.
+Delta: v602 to v603; preserve both UI optimizer continuation and current-format market-order verifier evidence.
+Delta: v596 to v597; qualify first UI sweep and six repaired defects before upstream integration.
+Delta: v595 to v596; begin isolated feed controls and frozen UI optimizer matrix.
 Delta: v608 to v609; reproduce and repair trained Oracle display invalidation; qualify 574 source / 24 fixture / 8 public checks and push draft PR308.
 Delta: v607 to v608; integrate delivered reversal/index migration with unchanged Oracle runtime and current research receipt.
 Delta: concurrent integration to v607; preserve streaming Oracle and merged compressed-index records.
@@ -2564,8 +2570,6 @@ ChromeDevTools has the intended signed-in GoogleAdSense publisher session. Its e
 
 
 ## ZEC reversal working paper — 2026-11-14
-
-Version: 1.1.0
 Delta: independently audit counts and exact public/Mongo bytes; qualify PDF, website source and browser gates.
 
 Owner request: explain whether the two-up/two-down 10-minute observations justify betting, then publish a paper on oraclebot.io. Task: TASK-2191; numerical verification TASK-2192, paper/audit TASK-2193, delivery/live acceptance TASK-2194.
@@ -2588,8 +2592,6 @@ Preserve remoteGitHubAgentMerge commitdaba39a62e4345c12c7421237bc77f4389ca5264 a
 
 
 ## Oracle winner live indicators and two-bar check — 2026-11-14
-
-Version: 1.1.0
 Delta: implement and peer-review source/stream/UI; qualify80unique focused tests and preliminary real trade feed.
 
 Owner requests genuine streaming indicator numbers, a full Refresh now button, clickable aligned indicator overlays and the two-consecutive-bar reversal check in the existing oracle_winners.py TUI. Starting clean master f74eeed573a92f6a7d6331ea38c7bab4d4ea9874. Isolated task worktree /Users/mitch/dev/worktrees/zec-tui-live-indicators-20261114; evidence /Users/mitch/.local/state/zec-tui-live-indicators-20261114. Stele create queued as3acd3f35 after Transport closed; no task ID guessed/claimed.
@@ -2820,6 +2822,25 @@ In two isolated unsigned simulated opens, owner collateral ATA fell and vault ro
 The full-cohort retrospective result, selected policy and independent numerical audit are stored in native research artifacts. BTC selected validation return was -8.6858% on 44 trades; ZEC was -6.4275% on 126 trades under modeled trade fees. These are not prospective or funded results. The copied core and observer bytes initially matched the frozen paper profile. Independent lifecycle review found two high-severity issues: restart entry cutoff must exclude process downtime, and existing ledger binding must be checked read-only under exclusive writer ownership before schema changes. The source author corrected both in commit 58f7f09; independent lifecycle review passed five isolated tests. The V3 paper profile matches the corrected observer and core. Canonical merge, prospective startup and loaded acceptance remain pending. Preserve the current UI, paper collector and all existing holdouts.
 
 
+## 2026-11-16 — TASK-2399 feed controls and UI optimizer
+
+Target: canonical Oracle wrapper, leverage screen and its foreground Coinbase TradeStream. Candidate worktree: /Users/mitch/dev/worktrees/oracle-ui-2399, branch feat/oracle-feed-controls-2399, base 6f69efc2f01741380f3f8d7838d3fb75762859a5. Preserve all other worktrees, private Pine, protected TUI PID28953 and shared services. Never arm, sign, submit, or change private execution configuration during this audit.
+
+Both independent view toggles default on. Persist only view preferences in a separate file. Hide every deselected provider surface and mixed-provider basis. Stop only the foreground Coinbase subscription. The leverage panel itself reads shared snapshots; it does not own the shared dual-quote collector. KNOW-2401 and KNOW-2404 record this boundary. Source/runtime truth remains authoritative. SDK preview disclosure is owned by the concurrent SDK worker and must be retained on integration.
+
+UI optimizer: editable, max five complete sweeps. Frozen matrix and source inventory are in docs/design/oracle-ui-2399/scope.json. Research methods are unrequested and out of scope. AT/terminal capability limits must remain explicit, and missing selected evidence prevents CLEAN. Context7 failed with monthly quota reached. Semantic MCP search stalled and was terminated; targeted offline retrieval supplied relevant paths. An offline search without INDEX_NO_AUTO emitted a rebuild notice; no rebuild process remained on immediate inspection. All subsequent searches use INDEX_NO_AUTO=1.
+
+Next: snapshot sources, run method P01, reproduce missing controls and responsive-state failures, apply confirmed Medium+ repairs immediately, then complete all selected methods and a fresh no-edit sweep. Independent final review, ledger validation, focused tests, draft PR, parent merge, and independent loaded acceptance remain. Evidence captures and command logs: /Users/mitch/.local/state/oracle-ui-2399.
+
+### TASK-2399 checkpoint — first sweep complete
+
+All P01–P48 were individually inspected and checkpointed in /Users/mitch/.local/state/oracle-ui-2399/pass-history.jsonl. Six distinct issues were repaired: missing provider controls, unreachable content at80x24, invisible snapshot failure, bright-bar contrast, dot-only freshness, and null nested provider snapshots crashing the UI. The focused panel/feed/stream/entrypoint suite completed54tests successfully with ResourceWarning treated as an error. The exact pinned Ruff tool is /Users/mitch/.venvs/solmargintrader-cdo-20261111/bin/ruff (0.17.4); the global0.17.5 cannot satisfy the repository pin.
+
+The first sweep contains explicit partial/unavailable evidence for P08/P40 pending SDK disclosure integration, P18/P19 full native contrast, P29 accessibility tree, P30 native zoom/spacing, P33 reduced motion, P39 native installed platform and P41 actual assistive technology. ResearchP49–P70 remains unrequested and out of scope. Never report CLEAN with these gaps.
+
+Next: preserve this checkpoint, merge origin/master including SDK PR303 (4e2dac8b5b73ceafdd63ec01f01078a82bef439b), retain its market-price/nonbinding-entry and unavailable-close disclosures, finish the final48-cell capture plus a complete no-edit sweep, independent review and ledger validation. Parent owns final merge and loaded monitor acceptance. Protected/historical PIDs must be re-inventoried; do not infer runtime identity from an old PID.
+
+
 ## Extension two-bar reversal and indicator continuation — 2026-11-16
 
 TASK-2398 owns the extension feature in /Users/mitch/dev/worktrees/extension-reversal-2398, branch feat/extension-reversal-2398 from origin/master 6f69efc. Preserve canonical untracked Pine, SDK PR303, TUI/feed UI work and all existing live configuration. The feature extends the existing public-read floating window. Default reversal interval is10m. Detect DD→UP and UU→DOWN only from the previous two completed contiguous candle bodies; developing target context stays separate. Use completed5/10/15/20m shape windows with the exact trailing48-bar research/shape_study.py geometry, and oracle_leverage/exit50.py first-close-seeded EMA9/21, MACD12/26/9 and BOP SMA3 on completed1m candles (78-bar warmup). No shipped compatible model or typed position source has been established; probability, model score, ROE and exit status stay unavailable. Do not mirror UU empirical evidence to DD. Reuse the existing JupiterFeed and one public stream. Extra bounded1m history may supply shape/momentum context without another recorder.
@@ -2852,6 +2873,16 @@ On 2026-11-16 at 15:14:56 UTC independent live acceptance observed canonical PR 
 Independent review treats current opens as market orders: the price observed in simulation is nonbinding. Token account delegate, allowance, native state and close authority now fail closed; all token metadata and data except the exact expected amount must match. Owner and keeper system metadata must remain unchanged. The bounded raw RPC reader preserves exact u64 rentEpoch lexemes and rejects unsafe lamport numbers. A deterministic exact-message HTTP simulation fixture covers a newer fresh oracle and post-state, with a separately injected test-only program-pin check. SDK tests pass 30/30. Current-open execution remains gated pending independent review. Private live unsigned ZEC long replay: /Users/mitch/.local/state/yolo-current-verifier-replays/zec-long-unsigned-20261116.json, SHA-256 bfcb649a69fc5798cb857e32e23acdeb048a8dc5f39ddc7933c13ec3cbd3afa3; ZEC short replay: /Users/mitch/.local/state/yolo-current-verifier-replays/zec-short-unsigned-20261116.json, SHA-256 5aac7bebc96ca95d93bcb7344b2241f4e5328eddd1dce0d0111eea3809e69f6c. Balance and positions must be refreshed at use time. Current-close claim/payout verification remains open.
 
 Independent reviewer cleared the revised wallet authority, exact rentEpoch and end-to-end fixture checks. The current observed open route now returns a verified market-order preview; the simulated entry is indicative and not a limit. The owner-facing preview states that current-format close is unavailable in this client and a failed transaction can incur up to 0.01 SOL network fee. A fresh BTC long unsigned build returned ready without signing or sending. Current-format close remains blocked: 3000 recent public trade rows had no queued close, and the observed immediate close does not prove claim PDA or queued payout recipient. Final integrated-head independent review and CI remain pending; program upgrades and changing market state remain explicit limitations.
+
+### TASK-2399 final source/render checkpoint
+
+Implementation is frozen at 347420978a439c169dc628a7ffbe8d4313c02e9a after integrating PR303. Final rendering-source fingerprint: 1bbcbb1b28b6daf2d926c3875effb6bc97d8b141698a9360681be82d8a31d24e. The complete ledger and human report are in docs/design/oracle-ui-2399/report.json and README.md. The initial frozen scope is retained; the same 48 cells and 48 selected methods remain.
+
+The final actual Console.preview message, produced with fake adapters in a temporary home, exposed a seventh Medium defect: long market-order warnings collapsed the monitor and clipped actions. The repaired result region scrolls independently and puts the MARKET/indicative-entry/close-unavailable summary first. The same long-preview regression passes at 80x24 and 120x42. The integrated 85-test suite, pinned Ruff 0.17.4 and format checks completed successfully. All 48 final captures passed provider-leak, persistent-toggle, no-execute and owned-worker cleanup invariants. Native figures are synthetic, not market/execution evidence.
+
+UI optimizer exit is NEEDS_EVIDENCE: 37 PASS, 4 N_A, 5 PARTIAL, 2 UNAVAILABLE; 22 unrequested research methods remain OUT_OF_SCOPE. There were two complete method sweeps, with a partial integration repair between them. The final complete sweep made no source edits. All seven confirmed Medium+ findings are fixed, and uio_check validate returned valid=true with no errors. Independent final review and real installed acceptance are still pending with the parent; do not claim CLEAN or complete TASK-2399 yet. Durable lessons are KNOW-2415 (null nested snapshot crash) and KNOW-2416 (long real preview layout).
+
+Raw evidence, driver, commands and complete pass history: /Users/mitch/.local/state/oracle-ui-2399. The candidate worktree is /Users/mitch/dev/worktrees/oracle-ui-2399. The current protected replacement user TUI is PID35320; historical PIDs 28953 and 87752 are not current ownership proof. Re-inventory before any lifecycle action. Parent owns fresh independent review, final-head CI/merge and launching an owned monitor only after verified installation. Preserve all shared collectors, paper observers, SDK source disclosures, private Pine and private armed configuration. No task-owned index regeneration ran; parent TASK-2410 owns the near-limit TEXT-INDEX delivery boundary.
 
 ## Current-source repo health — 2026-11-16
 
@@ -2901,3 +2932,8 @@ The correction changes only oracle-controller.js, oracle-view.js and panel.js ru
 Current affected checks completed with INDEX_NO_AUTO=1:574/574 source tests, root lint/checked-JavaScript exit0, full native fixture24/24 at browser-fixture-reviewfix/receipt.json and actual public8/8 at browser-public-controls-fixed/receipt.json. The initial public7/8 receipt remains preserved: a live ETH ticker changed during collapse, so the harness now verifies retained native button DOM identities/presence instead of exact changing price text. No runtime freshness/unknown-label gate was loosened. Generated wiki customer-term scan found zero new customer-bearing values beyond existing source histories; a minified whole-file diff caused the generic guard notice. No customer material was authored.
 
 Remaining: finish merge of delivered compressed index15bbfa87, integrate delivered UI7bfeb02, regenerate/check deterministic gzip/static artifacts, commit and push the final draft candidate, independent parent re-review, final CI, merge and canonical visible persistent-profile public acceptance. Existing e2e profiles are deliberately disposable; the parent owns the final persistent visible launch. Do not touch personal browser profiles, owner configuration, Pine or live trading defaults. Do not start semantic/index inference workers. Source tests and synthetic learning are not public-market accuracy, calibration or profit evidence.
+
+
+### TASK-2414 final independent re-review and delivered-base integration
+
+Parent independent re-review closed both display-trust Medium findings, found no new corroborated Medium in the three corrected runtime files, passed22 focused tests and matched all eleven manifest hashes before/after inspection. Source/model/store remain frozen. Local merge commit7d9e7bb integrates the compressed-index base; the final integration now preserves delivered UI7bfeb02 source and all distinct prompt/memory sections. Final source counters remain574 extension /3359 counted suites. All final commands use INDEX_NO_AUTO=1. Remaining delivery is final deterministic metadata verification/push, final-head CI/parent merge and canonical visible persistent-profile public acceptance; the author must not merge independently.

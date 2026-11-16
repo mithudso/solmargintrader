@@ -866,7 +866,7 @@
       "component": "extension",
       "kind": "javascript",
       "summary": "Floating read-only chart, labeled reversal/shape/momentum cards and local view settings",
-      "lines": 251
+      "lines": 252
     },
     {
       "path": "extension/src/1000x/oracle-model.js",
@@ -887,14 +887,14 @@
       "component": "extension",
       "kind": "javascript",
       "summary": "Existing-feed coalescing, source/version isolation, stale/obsolete-session refusal and owned teardown",
-      "lines": 58
+      "lines": 69
     },
     {
       "path": "extension/src/1000x/oracle-view.js",
       "component": "extension",
       "kind": "javascript",
       "summary": "Rolling10m UP/NON-UP forecasts, candidate/served/baseline metrics and explicit fallback/unknown states",
-      "lines": 59
+      "lines": 62
     },
     {
       "path": "extension/test/1000x-oracle-model.test.js",
@@ -908,14 +908,14 @@
       "component": "extension",
       "kind": "javascript",
       "summary": "Concurrent/reloaded controllers, stored forecast reuse, quote coalescing and obsolete-session fences",
-      "lines": 88
+      "lines": 123
     },
     {
       "path": "docs/EXTENSION-STREAMING-ORACLE.md",
       "component": "repo",
       "kind": "markdown",
       "summary": "Streaming learner target, equations, atomic persistence, bounds, research status and verification limits",
-      "lines": 184
+      "lines": 220
     },
     {
       "path": "docs/EXTENSION-STREAMING-ORACLE-PROMPT.md",
@@ -929,7 +929,7 @@
       "component": "extension",
       "kind": "other",
       "summary": "Native Chrome fixture and actual-public-portal gates with exact executed module hashes",
-      "lines": 535
+      "lines": 558
     },
     {
       "path": "extension/tools/1000x-reference.py",

@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-11-16T17:56:58+00:00",
+  "generatedAt": "2026-11-16T18:01:00+00:00",
   "schemaVersion": 1,
   "note": "Concepts are derived from the repo's own vocabulary \u2014 the FAMILY dict, strategy-card frontmatter, docs/trading-signals-concept-family.md, and terms verified to recur in the corpus. A concept matching no file is dropped, not kept.",
   "counts": {
@@ -22,7 +22,7 @@
         "confirm",
         "fail-closed"
       ],
-      "matchingFiles": 1973,
+      "matchingFiles": 1974,
       "shown": 30,
       "files": [
         {
@@ -161,7 +161,7 @@
         "universe",
         "top_coins"
       ],
-      "matchingFiles": 1763,
+      "matchingFiles": 1769,
       "shown": 30,
       "files": [
         {
@@ -281,8 +281,8 @@
           "hits": 32
         },
         {
-          "path": "oracle_leverage/tests/test_exit50_forward.py",
-          "hits": 31
+          "path": "docs/design/oracle-ui-2399/report.json",
+          "hits": 32
         }
       ],
       "source": "curated-from-repo-vocabulary"
@@ -439,7 +439,7 @@
         "centred",
         "shift"
       ],
-      "matchingFiles": 1535,
+      "matchingFiles": 1537,
       "shown": 30,
       "files": [
         {
@@ -578,9 +578,13 @@
         "perps",
         "solana"
       ],
-      "matchingFiles": 1092,
+      "matchingFiles": 1105,
       "shown": 30,
       "files": [
+        {
+          "path": "docs/design/oracle-ui-2399/report.json",
+          "hits": 668
+        },
         {
           "path": "research/strategy_experiment/results/results.json",
           "hits": 544
@@ -599,7 +603,7 @@
         },
         {
           "path": "memory.md",
-          "hits": 311
+          "hits": 320
         },
         {
           "path": "FILES.md",
@@ -627,7 +631,7 @@
         },
         {
           "path": "prompts.md",
-          "hits": 133
+          "hits": 136
         },
         {
           "path": ".cdo/reviews-2026-11-13/cdo-forecast-app-delta.json",
@@ -696,10 +700,6 @@
         {
           "path": "skills/trading-and-investing/references/solana-oracles-pyth-switchboard.md",
           "hits": 80
-        },
-        {
-          "path": "docs/trading-signals-concept-family.md",
-          "hits": 79
         }
       ],
       "source": "curated-from-repo-vocabulary"
@@ -852,7 +852,7 @@
         "anchor_window",
         "levels"
       ],
-      "matchingFiles": 898,
+      "matchingFiles": 899,
       "shown": 30,
       "files": [
         {
@@ -1260,7 +1260,7 @@
         "benchmark",
         "baseline"
       ],
-      "matchingFiles": 589,
+      "matchingFiles": 590,
       "shown": 30,
       "files": [
         {
@@ -1394,7 +1394,7 @@
         "buy_and_hold",
         "baseline"
       ],
-      "matchingFiles": 518,
+      "matchingFiles": 519,
       "shown": 30,
       "files": [
         {

@@ -216,5 +216,6 @@ shows an initialized untrained learner without fabricated resolved performance.
 A public test initially compared changing market-ticker text; its correction
 checks native control DOM identities and continued presence across collapse.
 It does not freeze legitimate market prices or relax a runtime label gate.
-Independent re-review, final-head CI, merge and canonical loaded acceptance
-remain separate delivery gates.
+Independent re-review closed both display findings without new corroborated
+Medium issues in the corrected runtime files. Final-head CI, merge and canonical
+loaded acceptance remain separate delivery gates.

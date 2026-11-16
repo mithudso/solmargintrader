@@ -1,6 +1,10 @@
 # Prompt history
 
-Version: 275
+Version: 276
+Delta: v275 to v276; preserve the delivered feed controls/UI prompt alongside the streaming Oracle history.
+Delta: v273 to v274; integrate the feed controls and UI audit request.
+Delta: v271 to v272; integrate independent feed controls/UI audit with current-format SDK and host reply.
+Delta: v269 to v270; preserve feed controls and complete UI optimizer request.
 Delta: v274 to v275; preserve the delegated independent-review correction scope for the streaming Oracle.
 Delta: concurrent integration to v274; preserve streaming Oracle and merged compressed-index records.
 Delta: v272 to v273; record and execute the approved adaptive streaming Oracle prompt.
@@ -2483,6 +2487,15 @@ Redo the tests again but this time, instead of letting it ride until there's a s
 ```text
 Put the positions and oracle calls on the right side of the /Users/mitch/.venvs/soltui/bin/python /Users/mitch/dev/solmargintrader/scripts/oracle_winners.py instead of having to scroll down, just add a 2nd column. Also At thte top have two large buttons that as the bars come in they highlight the bars red if they're downm, green if they're up, grey if flat, and it moves from right to left, so the right block moves to the left block and then the right one refreshes with the new bar. Make the make the price range distance from mean increase the color of the block, so a large dip would be very bright red, while a very small one would be very grey-red. And above them should be the 4 shape-times with a + or - next to it indicating whether or not the next block is more or less likely to come out higher or lower based on the shape, according to the backtest data.
 ```
+
+
+## 2026-11-16 — Oracle feed controls and UI audit (TASK-2399)
+
+> In the /Users/mitch/.venvs/soltui/bin/python /Users/mitch/dev/solmargintrader/scripts/oracle_winners.py tui let me turn off either of the feeds, to cut down on noise. If I de-select coinbase remove all coinbase related items from the page until I re-enable coinbase.
+
+> Run the deep UI optimizer on the /Users/mitch/.venvs/soltui/bin/python /Users/mitch/dev/solmargintrader/scripts/oracle_winners.py tui. And run the deep code optimizer, and the repo-bootstrapper.
+
+This implementation owns feed controls and the UI optimizer; the parent task owns the separate deep-code and bootstrap workflows.
 
 
 ## Extension two-bar reversal and indicators — 2026-11-16
