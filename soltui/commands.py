@@ -510,6 +510,64 @@ def dispatch(name: str, params: dict[str, Any] | None = None, surface: str = "ap
 
 # -- settings ------------------------------------------------------------------------------------
 
+# The owner is shared across surfaces; the registry only validates and forwards.
+def _autotrade_public(value):
+    """Do not export the owner's learner parameters or per-decision features."""
+    if isinstance(value, dict):
+        return {key: _autotrade_public(item) for key, item in value.items()
+                if key not in ("weights", "features")}
+    if isinstance(value, list):
+        return [_autotrade_public(item) for item in value]
+    return value
+
+
+def _autotrade_call(action, *args):
+    from oracle_leverage import autotrade
+
+    try:
+        return _autotrade_public(getattr(autotrade, action)(*args))
+    except ValueError as exc:
+        raise CommandError("bad_params", str(exc)) from exc
+
+
+@command("autotrade.status", "Read the shared auto-trade owner status.")
+def autotrade_status(ctx, p):
+    return _autotrade_call("status")
+
+
+_AUTO_ID = P("request_id", "string", "Stable unique request identity.", True)
+_AUTO_CONFIG = P("config", "json", "Explicit session policy.", True)
+
+
+@command("autotrade.start_paper", "Start the shared paper session.", (_AUTO_ID, _AUTO_CONFIG), read_only=False)
+def autotrade_start_paper(ctx, p):
+    if not isinstance(p["config"], dict) or p["config"].get("mode") != "paper":
+        raise CommandError("bad_params", "Paper start requires mode=paper")
+    return _autotrade_call("start", p["request_id"], p["config"])
+
+
+@command("autotrade.start_live", "Request live start with explicit confirmation and limits.", (_AUTO_ID, _AUTO_CONFIG), read_only=False, requires_confirm=True)
+def autotrade_start_live(ctx, p):
+    if not isinstance(p["config"], dict) or p["config"].get("mode") != "live":
+        raise CommandError("bad_params", "Live start requires mode=live")
+    return _autotrade_call("start", p["request_id"], p["config"])
+
+
+@command("autotrade.stop", "Stop entries and manage open positions; unknown paper outcomes require explicit acknowledgement.",
+         (_AUTO_ID, P("acknowledge_unknown", "bool", "Explicitly acknowledge an unknown paper outcome.")), read_only=False)
+def autotrade_stop(ctx, p):
+    return _autotrade_call("stop", p["request_id"], p.get("acknowledge_unknown", False))
+
+
+@command("autotrade.configure", "Configure the next session; active policy remains immutable.", (_AUTO_ID, _AUTO_CONFIG), read_only=False)
+def autotrade_configure(ctx, p):
+    return _autotrade_call("configure", p["request_id"], p["config"])
+
+
+@command("autotrade.ingest_forecast", "Submit a fresh immutable Oracle advisory forecast.", (_AUTO_ID, P("forecast", "json", "Forecast provenance and advisory probability.", True)), read_only=False)
+def autotrade_ingest_forecast(ctx, p):
+    return _autotrade_call("ingest_forecast", p["request_id"], p["forecast"])
+
 _SETTING_CASTS = {
     "asset": str, "start": str, "end": str, "interval": str, "capital": float,
     "fee_bps": float, "slippage_bps": float, "fill_delay": int, "cpcv_groups": int, "cpcv_k": int,

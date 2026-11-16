@@ -5,6 +5,7 @@ from __future__ import annotations
 import tempfile
 import unittest
 from pathlib import Path
+from unittest.mock import patch
 
 from textual.widgets import Checkbox, Select, Static
 
@@ -12,7 +13,16 @@ from research.tests.test_zec_leverage_panel import ConsoleFixture, PanelHost
 from research.zec_leverage_panel import LeveragePanel
 
 
-class FeedControls(unittest.IsolatedAsyncioTestCase):
+class FakeAutoOwner:
+    def setUp(self):
+        bridge = patch.object(LeveragePanel, "_auto_call", staticmethod(
+            lambda request, cancelled: {"ok": True, "result": {"state": "stopped", "mode": "paper"}}
+        ))
+        bridge.start()
+        self.addCleanup(bridge.stop)
+
+
+class FeedControls(FakeAutoOwner, unittest.IsolatedAsyncioTestCase):
     async def test_coinbase_toggle_hides_all_of_its_surfaces_and_basis(self):
         console = ConsoleFixture()
         panel = LeveragePanel(console=console)
@@ -160,7 +170,7 @@ class BarReadability(unittest.TestCase):
             )
 
 
-class KeyboardFeeds(unittest.IsolatedAsyncioTestCase):
+class KeyboardFeeds(FakeAutoOwner, unittest.IsolatedAsyncioTestCase):
     async def test_tab_space_and_shift_tab_keep_controls_reachable(self):
         panel = LeveragePanel(console=ConsoleFixture())
         async with PanelHost(panel).run_test(size=(80, 24)) as pilot:

@@ -344,6 +344,15 @@ class SetupTests(unittest.TestCase):
         card.write_text("new card")
         self.assertNotEqual(setup.source_fingerprint(self.repo), before)
 
+    def test_source_fingerprint_binds_out_of_tree_runtime(self):
+        runtime = self.repo / "oracle_leverage"
+        runtime.mkdir()
+        worker = runtime / "autotrade_worker.py"
+        worker.write_text("original")
+        before = setup.source_fingerprint(self.repo)
+        worker.write_text("changed")
+        self.assertNotEqual(setup.source_fingerprint(self.repo), before)
+
     def test_source_fingerprint_binds_each_shipped_web_asset_type(self):
         web = self.repo / "ecosystem" / "web"
         web.mkdir()

@@ -153,6 +153,41 @@ def static_text(panel, identity):
 
 
 class Interface(unittest.IsolatedAsyncioTestCase):
+    def setUp(self):
+        # Never connect to or spawn the owner's real session in UI tests.
+        bridge = patch.object(LeveragePanel, "_auto_call", staticmethod(
+            lambda request, cancelled: {"ok": True, "result": {"state": "stopped", "mode": "paper"}}
+        ))
+        bridge.start()
+        self.addCleanup(bridge.stop)
+
+    async def test_auto_paper_product_and_unknown_stop_are_explicit(self):
+        from types import SimpleNamespace
+
+        panel = LeveragePanel(console=ConsoleFixture())
+        async with PanelHost(panel).run_test(size=(120, 42)) as pilot:
+            await pilot.pause(0.2)
+            panel.query_one("#leverage-venue", Select).value = "jupiter-sdk-1000x"
+            for field, value in (("base", "10"), ("max", "15"), ("loss", "50")):
+                panel.query_one(f"#auto-{field}", Input).value = value
+            await pilot.pause(0.1)
+            def press(identity):
+                button = panel.query_one(f"#{identity}", Button)
+                panel.button_pressed(SimpleNamespace(button=button, stop=lambda: None))
+
+            with patch.object(panel, "_auto_submit") as submit:
+                press("auto-paper")
+                command, params = submit.call_args.args
+                self.assertEqual(command, "autotrade.start_paper")
+                self.assertEqual(params["config"]["venue"], "jupiter-sdk-1000x")
+                self.assertFalse(params["config"]["advice_enabled"])
+                submit.reset_mock()
+                panel._auto_unknown = True
+                press("auto-stop")
+                submit.assert_not_called()
+                press("auto-stop")
+                submit.assert_called_once_with("autotrade.stop", {"acknowledge_unknown": True})
+
     async def test_both_real_quote_sources_basis_primary_and_staleness_render_at_narrow_size(
         self,
     ):
