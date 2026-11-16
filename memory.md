@@ -1,6 +1,9 @@
 # Work continuation
 
-Version: 603
+Version: 606
+Delta: v605 to v606; document intentional metadata-only invalidation and offline recovery.
+Delta: v604 to v605; bind compressed index to current catalog and repair documentation after independent review.
+Delta: v603 to v604; begin current-source bootstrap, code review, and lossless index-size repair.
 Delta: v602 to v603; integrate extension reversal delivery with current YOLO continuation.
 Delta: v596 to v597; complete and browser-qualify extension reversal candidate, preserve delivery continuation.
 Delta: v595 to v596; start extension reversal/shape/EMA/MACD implementation in an isolated worktree.
@@ -2843,3 +2846,11 @@ On 2026-11-16 at 15:14:56 UTC independent live acceptance observed canonical PR 
 Independent review treats current opens as market orders: the price observed in simulation is nonbinding. Token account delegate, allowance, native state and close authority now fail closed; all token metadata and data except the exact expected amount must match. Owner and keeper system metadata must remain unchanged. The bounded raw RPC reader preserves exact u64 rentEpoch lexemes and rejects unsafe lamport numbers. A deterministic exact-message HTTP simulation fixture covers a newer fresh oracle and post-state, with a separately injected test-only program-pin check. SDK tests pass 30/30. Current-open execution remains gated pending independent review. Private live unsigned ZEC long replay: /Users/mitch/.local/state/yolo-current-verifier-replays/zec-long-unsigned-20261116.json, SHA-256 bfcb649a69fc5798cb857e32e23acdeb048a8dc5f39ddc7933c13ec3cbd3afa3; ZEC short replay: /Users/mitch/.local/state/yolo-current-verifier-replays/zec-short-unsigned-20261116.json, SHA-256 5aac7bebc96ca95d93bcb7344b2241f4e5328eddd1dce0d0111eea3809e69f6c. Balance and positions must be refreshed at use time. Current-close claim/payout verification remains open.
 
 Independent reviewer cleared the revised wallet authority, exact rentEpoch and end-to-end fixture checks. The current observed open route now returns a verified market-order preview; the simulated entry is indicative and not a limit. The owner-facing preview states that current-format close is unavailable in this client and a failed transaction can incur up to 0.01 SOL network fee. A fresh BTC long unsigned build returned ready without signing or sending. Current-format close remains blocked: 3000 recent public trade rows had no queued close, and the observed immediate close does not prove claim PDA or queued payout recipient. Final integrated-head independent review and CI remain pending; program upgrades and changing market state remain explicit limitations.
+
+## Current-source repo health — 2026-11-16
+
+TASK-2410 audits the current source without resuming paused TASK-1541 or PR 235. Ledger baseline at 4e2dac8 planned 50 changed and 176 new files, with 796 unchanged skipped. PR 304 was independently reviewed and merged at c250f307; this worktree now starts from that commit. The tracked keyword index was within 181104 bytes of GitHub’s 100 MiB limit before that merge. Preserve all postings and source bodies; implement and verify deterministic gzip and artifact integrity before delivery. Current readers reject a missing gzip even if an old raw file exists, so stale legacy data cannot silently win. The old-format code remains able to read old checkouts. Baseline test commands require isolation from owner configuration, processes, wallets and paused services. Full CDO per-file fan-out and final feature-source review remain pending capacity; no strategy benchmark or empirical champion is authorized.
+
+Independent review proved an old valid gzip plus its own matching checksum passed the initial freshness gate. The index catalog now binds the decoded SHA-256, and both search and freshness validation reject a mismatch. A regression test failed before the correction and passed afterward. The previous reader remains in old checkouts; current readers do not fall back to an untrusted raw artifact.
+
+The metadata-only index command deliberately clears the catalog text binding. Search and freshness checks fail until the offline all rebuild restores a matching catalog and gzip index. Independent review accepted this fail-closed behavior when documented.

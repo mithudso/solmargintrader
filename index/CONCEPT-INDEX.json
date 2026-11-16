@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-11-16T16:24:13+00:00",
+  "generatedAt": "2026-11-16T17:19:31+00:00",
   "schemaVersion": 1,
   "note": "Concepts are derived from the repo's own vocabulary \u2014 the FAMILY dict, strategy-card frontmatter, docs/trading-signals-concept-family.md, and terms verified to recur in the corpus. A concept matching no file is dropped, not kept.",
   "counts": {
@@ -300,7 +300,7 @@
         "borrow",
         "financing"
       ],
-      "matchingFiles": 1602,
+      "matchingFiles": 1603,
       "shown": 30,
       "files": [
         {
@@ -643,7 +643,7 @@
         },
         {
           "path": "prompts.md",
-          "hits": 120
+          "hits": 121
         },
         {
           "path": "oracle_leverage/sdk/package-lock.json",
@@ -1360,12 +1360,12 @@
           "hits": 30
         },
         {
-          "path": "backtester/core/gridsim.py",
+          "path": "memory.md",
           "hits": 29
         },
         {
-          "path": "memory.md",
-          "hits": 26
+          "path": "backtester/core/gridsim.py",
+          "hits": 29
         },
         {
           "path": "research/RANKED_LISTS.md",
@@ -1471,7 +1471,7 @@
         },
         {
           "path": "memory.md",
-          "hits": 26
+          "hits": 28
         },
         {
           "path": ".cdo/reviews-2026-11-12/soltui-root-ui-tests.json",
