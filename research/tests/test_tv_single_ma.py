@@ -49,6 +49,14 @@ class SingleMovingAverageTests(unittest.TestCase):
         all_outputs = [extended.on_close(x, intent) for x in prefix + [100, 0]]
         self.assertEqual(first, all_outputs[:len(prefix)])
 
+    def test_explicit_research_quantity_does_not_change_source_default(self):
+        strategy = SingleMovingAverage(length=2)
+        strategy.on_close(1, intent)
+        self.assertEqual(strategy.on_close(2, intent, qty=500),
+                         [{"id": "MACrossLE", "action": "entry", "side": 1, "qty": 500}])
+        with self.assertRaises(ValueError):
+            strategy.on_close(3, intent, qty=0)
+
     def test_invalid_parameters_are_rejected(self):
         for kwargs in ({"length": 0}, {"confirm_bars": 0}, {"length": True}):
             with self.subTest(kwargs=kwargs), self.assertRaises(ValueError):

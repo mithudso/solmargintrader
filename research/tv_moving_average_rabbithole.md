@@ -15,6 +15,12 @@ both counters. A sequence that touches the average and resumes above it can
 therefore issue a new same-side entry intent. The existing `ma_crossover`
 strategy instead compares fast and slow averages and is not equivalent.
 
+Official historical source versions 29.0 and 30.0 have identical source bytes
+(`22405722377b28e8400ed1c1fdb25dd976aa213b7a9d449af8fbbdd0c19f67d9`).
+Replacing only the strategy title with the version 31 title reproduces the
+complete pinned version 31 source byte for byte. This comparison does not
+identify which version was active on the user's chart.
+
 The existing `research/tradingview-card-coverage.json` maps official help
 publication 43000599885, MovingAvg Cross, to `ma_crossover` and calls it
 `existing`. That mapping does not establish implementation parity: the
@@ -41,8 +47,10 @@ Their study does not test this ZEC perpetual strategy. Deprez and Frömmel,
 https://backoffice.biblio.ugent.be/download/01HY3C3S169G1N6QNYR55NZMFB/01HY60XZGZYHNQ6188MSVJT0SG ,
 report risk-adjusted out-of-sample Bitcoin results for portfolios of selected
 rules with modeled transaction costs; their long-or-out Bitstamp design is not
-the TradingView long/short perpetual. These findings cannot establish a return
-for this strategy, venue, or period. The papers differ in sample and method.
+the TradingView long/short perpetual. The latter study reports no significant
+absolute outperformance and greater sensitivity to unexpected costs at higher
+frequencies. These findings cannot establish a return for this strategy, venue,
+or period. The papers differ in sample and method.
 
 ## Backtest contract and outstanding gates
 

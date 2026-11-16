@@ -25,7 +25,8 @@ class SingleMovingAverage:
         self._above = 0
         self._below = 0
 
-    def on_close(self, close: float, intent_factory: Callable[..., Any] | None = None) -> list[Any]:
+    def on_close(self, close: float, intent_factory: Callable[..., Any] | None = None,
+                 *, qty: float | None = None) -> list[Any]:
         """Emit at most one market entry intent. Never fill on this bar.
 
         Missing/nonfinite closes are rejected pending a proven Pine `na` policy.
@@ -34,6 +35,8 @@ class SingleMovingAverage:
         """
         if not isfinite(close):
             raise ValueError("close must be finite; missing data is not simulated")
+        if qty is not None and (not isfinite(qty) or qty <= 0):
+            raise ValueError("quantity override must be positive and finite")
         self._closes.append(float(close))
         if len(self._closes) < self.length:
             self._above = self._below = 0
@@ -46,6 +49,8 @@ class SingleMovingAverage:
         if intent_factory is None:
             from research.pine_bar_emulator import Intent
             intent_factory = Intent
-        if self._above == self.confirm_bars:
-            return [intent_factory(id="MACrossLE", action="entry", side=1)]
-        return [intent_factory(id="MACrossSE", action="entry", side=-1)]
+        arguments = {"id": "MACrossLE" if self._above == self.confirm_bars else "MACrossSE",
+                     "action": "entry", "side": 1 if self._above == self.confirm_bars else -1}
+        if qty is not None:
+            arguments["qty"] = qty
+        return [intent_factory(**arguments)]
