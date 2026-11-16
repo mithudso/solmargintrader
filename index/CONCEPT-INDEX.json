@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-11-16T18:00:18+00:00",
+  "generatedAt": "2026-11-16T20:46:12+00:00",
   "schemaVersion": 1,
   "note": "Concepts are derived from the repo's own vocabulary \u2014 the FAMILY dict, strategy-card frontmatter, docs/trading-signals-concept-family.md, and terms verified to recur in the corpus. A concept matching no file is dropped, not kept.",
   "counts": {
@@ -22,7 +22,7 @@
         "confirm",
         "fail-closed"
       ],
-      "matchingFiles": 1973,
+      "matchingFiles": 1974,
       "shown": 30,
       "files": [
         {
@@ -170,7 +170,7 @@
         },
         {
           "path": "memory.md",
-          "hits": 254
+          "hits": 255
         },
         {
           "path": "research/coin-intelligence/zec-zcash.md",
@@ -439,7 +439,7 @@
         "centred",
         "shift"
       ],
-      "matchingFiles": 1533,
+      "matchingFiles": 1540,
       "shown": 30,
       "files": [
         {
@@ -485,6 +485,10 @@
         {
           "path": "backtester/core/engine.py",
           "hits": 30
+        },
+        {
+          "path": "extension/test/fixtures/oracle-0.9-10m-state.json",
+          "hits": 29
         },
         {
           "path": "research/tradingview-script-understanding.json",
@@ -557,10 +561,6 @@
         {
           "path": "soltui/simulation.py",
           "hits": 15
-        },
-        {
-          "path": "botmanager/src/botmanager/research.py",
-          "hits": 15
         }
       ],
       "source": "curated-from-repo-vocabulary"
@@ -578,7 +578,7 @@
         "perps",
         "solana"
       ],
-      "matchingFiles": 1096,
+      "matchingFiles": 1111,
       "shown": 30,
       "files": [
         {
@@ -602,11 +602,11 @@
           "hits": 408
         },
         {
-          "path": "FILES.md",
-          "hits": 283
+          "path": "memory.md",
+          "hits": 326
         },
         {
-          "path": "memory.md",
+          "path": "FILES.md",
           "hits": 283
         },
         {
@@ -630,6 +630,10 @@
           "hits": 141
         },
         {
+          "path": "prompts.md",
+          "hits": 137
+        },
+        {
           "path": ".cdo/reviews-2026-11-13/cdo-forecast-app-delta.json",
           "hits": 130
         },
@@ -640,10 +644,6 @@
         {
           "path": "skills/trading-and-investing/references/jupiter-perps-trading.md",
           "hits": 125
-        },
-        {
-          "path": "prompts.md",
-          "hits": 124
         },
         {
           "path": "skills/trading-and-investing/references/jlp-risk-profile-and-anti-patterns.md",
@@ -660,6 +660,10 @@
         {
           "path": "skills/trading-and-investing/SKILL.md",
           "hits": 109
+        },
+        {
+          "path": "extension/tools/1000x-e2e.mjs",
+          "hits": 108
         },
         {
           "path": "soltui/JUPITER_ORDER_WIDGET_IMPLEMENTATION_GUIDE.md",
@@ -696,10 +700,6 @@
         {
           "path": "ecosystem/web/app.js",
           "hits": 80
-        },
-        {
-          "path": "skills/trading-and-investing/references/solana-oracles-pyth-switchboard.md",
-          "hits": 80
         }
       ],
       "source": "curated-from-repo-vocabulary"
@@ -714,7 +714,7 @@
         "macd",
         "ichimoku"
       ],
-      "matchingFiles": 921,
+      "matchingFiles": 924,
       "shown": 30,
       "files": [
         {
@@ -990,7 +990,7 @@
         "monotone",
         "gap"
       ],
-      "matchingFiles": 842,
+      "matchingFiles": 846,
       "shown": 30,
       "files": [
         {
@@ -1125,7 +1125,7 @@
         "stochastic",
         "oscillator"
       ],
-      "matchingFiles": 593,
+      "matchingFiles": 596,
       "shown": 30,
       "files": [
         {
@@ -1260,7 +1260,7 @@
         "benchmark",
         "baseline"
       ],
-      "matchingFiles": 585,
+      "matchingFiles": 593,
       "shown": 30,
       "files": [
         {
@@ -1312,6 +1312,10 @@
           "hits": 56
         },
         {
+          "path": "extension/test/fixtures/oracle-0.9-10m-state.json",
+          "hits": 51
+        },
+        {
           "path": ".cdo/reviews-2026-11-12/final-owned-integration.json",
           "hits": 50
         },
@@ -1344,6 +1348,10 @@
           "hits": 37
         },
         {
+          "path": "memory.md",
+          "hits": 33
+        },
+        {
           "path": ".cdo/reviews-2026-11-12/soltui-fullsuite-fixture-deltas.json",
           "hits": 32
         },
@@ -1360,10 +1368,6 @@
           "hits": 30
         },
         {
-          "path": "memory.md",
-          "hits": 29
-        },
-        {
           "path": "backtester/core/gridsim.py",
           "hits": 29
         },
@@ -1378,10 +1382,6 @@
         {
           "path": "soltui/learning_owner.py",
           "hits": 25
-        },
-        {
-          "path": ".cdo/reviews-2026-11-12/mongo.json",
-          "hits": 24
         }
       ],
       "source": "curated-from-repo-vocabulary"
@@ -1394,7 +1394,7 @@
         "buy_and_hold",
         "baseline"
       ],
-      "matchingFiles": 513,
+      "matchingFiles": 522,
       "shown": 30,
       "files": [
         {
@@ -1420,6 +1420,10 @@
         {
           "path": "docs/FILES.md",
           "hits": 64
+        },
+        {
+          "path": "extension/test/fixtures/oracle-0.9-10m-state.json",
+          "hits": 51
         },
         {
           "path": ".cdo/reviews-2026-11-12/final-owned-integration.json",
@@ -1450,6 +1454,10 @@
           "hits": 32
         },
         {
+          "path": "memory.md",
+          "hits": 32
+        },
+        {
           "path": "research/tradingview-card-coverage.json",
           "hits": 31
         },
@@ -1468,10 +1476,6 @@
         {
           "path": "backtester/core/gridsim.py",
           "hits": 29
-        },
-        {
-          "path": "memory.md",
-          "hits": 28
         },
         {
           "path": ".cdo/reviews-2026-11-12/soltui-root-ui-tests.json",
@@ -1512,10 +1516,6 @@
         {
           "path": "soltui/experiment_screens.py",
           "hits": 21
-        },
-        {
-          "path": "archive/memory-2026-11-08.md",
-          "hits": 20
         }
       ],
       "source": "backtester/core/strategies/__init__.py FAMILY"
@@ -1667,7 +1667,7 @@
         "evidence floor",
         "rankable"
       ],
-      "matchingFiles": 392,
+      "matchingFiles": 393,
       "shown": 30,
       "files": [
         {

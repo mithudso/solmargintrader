@@ -1,8 +1,11 @@
 # Work continuation
 
-Version: 612
-Delta: v611 to v612; preserve the terminal working-directory repair and audit continuation.
-Delta: v610 to v611; integrate guarded-search audit continuation with reviewed ML candidate.
+Version: 615
+Delta: v614 to v615; preserve audit and screenshot continuation across merged 0.10 source.
+Delta: v613 to v614; diagnose exact-head CI index discovery and Linux fixture foreground assumptions without runtime changes.
+Delta: v612 to v613; qualify all-horizon source, independent replay and full native/public gates with unchanged reviewed runtime.
+Delta: v611 to v612; implement six independent horizon models, shared-minute/chart separation and stale-completion regression coverage.
+Delta: v610 to v611; begin isolated all-horizon learning and same-source stale-completion repair.
 Delta: v609 to v610; integrate delivered feed/UI source7bfeb02 while preserving frozen reviewed Oracle runtime.
 Delta: v606 to v607; integrate the UI checkpoint with compressed offline indexes.
 Delta: v603 to v604; save final UI ledger, 85 checks and seven repaired findings pending independent delivery.
@@ -2939,6 +2942,45 @@ Remaining: finish merge of delivered compressed index15bbfa87, integrate deliver
 ### TASK-2414 final independent re-review and delivered-base integration
 
 Parent independent re-review closed both display-trust Medium findings, found no new corroborated Medium in the three corrected runtime files, passed22 focused tests and matched all eleven manifest hashes before/after inspection. Source/model/store remain frozen. Local merge commit7d9e7bb integrates the compressed-index base; the final integration now preserves delivered UI7bfeb02 source and all distinct prompt/memory sections. Final source counters remain574 extension /3359 counted suites. All final commands use INDEX_NO_AUTO=1. Remaining delivery is final deterministic metadata verification/push, final-head CI/parent merge and canonical visible persistent-profile public acceptance; the author must not merge independently.
+
+
+## 2026-11-16 — TASK-2414 all-horizon streaming Oracle delta
+
+Owner request: Make the feed train all of the timeframes, not just the one chosen. Decision KNOW-2433 requires independent1m/5m/10m/15m/20m/1h rolling close-to-close horizon models from the one existing validated minute stream. New isolated worktree /Users/mitch/dev/worktrees/extension-oracle-all-timeframes-2414 and branch feat/extension-oracle-all-timeframes-2414 start from canonical0.9 ed7f4bd. Preserve accepted0.9 worktree/profile, the health-audit worktree, current TUI/Terminal/Chrome/paper observers/collectors, private Pine, owner configuration and all frozen research cohorts.
+
+The candidate keeps existing schema/model/feature/target versions and exact600-second partition keys so genuine10m weights, forecasts and metrics survive unchanged. New horizons begin prospectively with historicalTrainingSamples=0. Use64 pending records per model (60 one-minute targets plus90s outcome grace/issuance margin),96 total logical partitions (room for16 six-model source groups),128 recent outcomes and constant-size cumulative scores. These are explicit engineering bounds, not empirical optimal choices. Never evict/reset evidence for capacity; per-horizon failures must leave healthy existing partitions operational.
+
+The current feed ties minute data to the selected1m chart and restarts its socket/context when chart intervals change. The candidate will separate authoritative minute context and source readiness from chart loading/derived arithmetic, switch chart history on the same socket, and show six compact model rows plus selected detail. Invalid shared minute/source/quote input withholds all models. A same-source stale observation must immediately mark saved evidence historical; a delayed older completion must consult the latest eligibility and never repaint active. The external real-model/actual-view repro is /Users/mitch/.local/share/solmargintrader/audits/index-2410/repro-03-oracle-controller.mjs; do not edit the audit source or apply unrelated findings.
+
+Plan: preserve the verbatim request and reproduce the race; generalize causal horizons and finite state validation; implement six-model lifecycle and feed/chart independence; add actual overview/detail UI; verify all six target windows, deselected learning, legacy10m,1h pending past32, independent fallback/capacity, restart/two-context exact-once and latest-eligibility races; run source and actual browser/public gates; regenerate deterministic metadata and push a draft immutable candidate for independent parent review. Parent owns final installed migration and actual live-profile acceptance. All offline commands use INDEX_NO_AUTO=1. No inference, embeddings, extra recorder/stream, signing/orders/arming/config changes or protected-worker restarts.
+
+
+### TASK-2414 all-horizon source checkpoint
+
+Candidate0.10 source uses the one shared TIMEFRAMES catalog, six independent rolling targets and legacy-compatible600 keys. Model equations and22 fixed feature coordinates remain unchanged.64 pending slots sustain60-minute targets,96 logical partitions leave existing records intact. The controller processes each horizon independently and consults the latest shared snapshot inside delayed reducers and at display time. It preserves verified same-source historical evidence through stale transitions; no older completion can repaint live. The feed now retains authoritative minute context across chart changes, aborts only obsolete chart history and exposes stream readiness separately. Panel learning runs independently of selected chart calculations. All six overview rows and selected detail are connected.
+
+Initial597/597 source tests passed before the final shared-feature-health regression was added. The focused race/horizon/core/feed checks passed78/78, including real-model/actual-view race red→green. Source now also checks invalid shared minute arithmetic even after a cutoff was issued; this must withhold labels/forecasts across all six. Candidate full598/598 and root lint/checked-JavaScript checks completed successfully. Browser fixture changes and final deterministic metadata are next; source tests alone do not establish loaded0.10 behavior. No real profile or protected service was modified. The historical exact prompt SHA remains unchanged.
+
+
+### TASK-2414 all-horizon final candidate qualification
+
+Recoverable source c3847d07580f608086cc6aedb2ed1efb826f1f5e is pushed in draft https://github.com/mithudso/solmargintrader/pull/311. All598/598 extension tests, root lint/checked-JavaScript and source-count docs checks passed (3383 counted suite tests). Independent read-only review found no corroborated Medium+, passed65 focused tests and exactly replayed121 complete0.9/new600-second states (121 issued/111 trained/10 pending). All ten runtime files remain frozen and match /Users/mitch/.local/state/oracle-all-timeframes-2414/runtime-checkpoint-hashes.json; no runtime edits followed that review.
+
+Actual full Chrome fixture27/27 and actual public8/8 passed at browser-fixture-final/receipt.json and browser-public-first/receipt.json under /Users/mitch/.local/state/oracle-all-timeframes-2414. Native two-context proof:82 issued per horizon and learned1m81/5m77/10m72/15m67/20m62/1h22;1h preserves60 pending. All six keep learning through selected-chart refusal without replacing sockets. Native96-partition capacity refuses a97th key without eviction or blocking existing writes. Abort/reopen and unknown-label expiry preserve all six metrics/learning denominators. Fresh public rows correctly show0 trained/resolved and unavailable accuracy. These are implementation and public-read proofs, not market quality or profitability.
+
+The first native receipt25/27 and native diagnostic6/7 remain preserved. Chart refusal can alternate error/backfilling while all chart signals stay withheld; the corrected test asserts non-live/unavailable rather than a frozen status word. The Node-generated0.9 golden JSON had one score-field difference under Chrome and was correctly refused by strict validation. A tracked frozen original0.9 source reference (original SHA82c042098fc695d6ff24c5eda9349afb64f094e9663b7036092e8a1b717258ac, only relative import paths adjusted) now generates actual old-browser state in a quarantined native store. That21-sample state survives exactly and resumes to22; actual view counts stay historical immediately after stale and after six earlier commits complete. No validator, score or runtime model was changed to accommodate the fixture. JavaScript checks and18 focused horizon/actual-view cases passed after the test-only reference addition.
+
+Remaining: finalize/check deterministic metadata, commit/push final proof/harness/docs delta, bind exact final head and remote tip, leave draft PR311 for parent final-headCI/merge and canonical12-state BTC/ZEC migration/visible acceptance. Preserve the running canonical0.9 profile, all protected workers, original config and old approved prompt SHA06d3ffc424af00824dd0ea27f0b1fff09e80b4b1dd15ac4bcafa00367623a0d6. No new streams/recorders, inference, embeddings, secrets, signing/orders/Arm or unrelated CDO batch fixes were introduced. Parent rebinds affected source diagnostics; do not repeat accepted research gates.
+
+
+### TASK-2414 final-head CI integration correction
+
+Candidate d75e70febe8a78c342a88ed82c1371996607e4c8 was pushed and PR311 readied. Exact-head CI43949665539 failed its backtester/docs index gate because three newly committed test-reference files were absent from the pre-stage catalog. The deterministic builder selects tracked files, so a local pre-stage freshness check did not include those untracked paths. Rebuild/check only after the new sources are tracked. The1146-test backtester failure was solely test_the_committed_index_matches_the_tree with those three paths; preserve the failed run.
+
+The generic browser gate passed25/25, while Linux1000x stopped at all-six minute1 issuance and its dependent trained cases failed. The Mac full27 and public8 remain accepted source proofs; Linux fixture setup must explicitly activate its owned second page because target creation does not establish visible state on every platform. The fixture now activates the owned page before restored-state checks and each accelerated minute. It retains one observation of the unchanged snapshot passed to the actual controller and logs visibility, timestamps, source/minute readiness and oracleInput eligibility if issuance fails. No production clock, freshness, label, visibility or model rule changes. Chart refusal checks unavailable signals/non-live status rather than an error word that valid quote callbacks can replace with backfilling. All ten runtime hashes remain c3847d0; no source re-review is needed unless a genuine runtime defect is found. Parent authorized waiting for final-head checks, merging only PR311 after green, and safe canonical fast-forward while preserving Pine; root owns subsequent independent profile migration acceptance. Do not touch PR309/310.
+
+
+The fixture bootstrap had a second reproducible setup defect: both Page.addScriptToEvaluateOnNewDocument and immediate evaluation could wrap Date.now again. A controlled repeat of the exact old bootstrap with a22,000ms offset produced144,000 instead of122,000 after two applications. The fixed idempotent bootstrap produces122,000 and preserves the wrapper identities. The actual browser learning case now reapplies it twice and verifies no clock/transport rewrapping, explicitly waits for a visible/fresh second context, and keeps bounded diagnostics. This is synthetic fixture code only; production source, quote freshness and label completion rules remain frozen. Red/green evidence: /Users/mitch/.local/state/oracle-all-timeframes-2414/checks/fixture-clock-red-green.json.
 
 ## Current-source health audit continuation — 2026-11-16
 

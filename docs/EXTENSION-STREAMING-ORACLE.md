@@ -1,6 +1,6 @@
 # Streaming Oracle in the Jupiter indicator window
 
-Version: 1.0.1. Delta: invalidate unverified/invalid feed displays and verify trained recovery after independent review.
+Version: 2.0.0. Delta: train all six horizons independently, preserve0.9 evidence and fence latest shared-input eligibility.
 
 The extension's existing public-read window now contains a streaming Oracle. It
 reuses the validated Pyth stream and bounded one-minute history already owned by
@@ -11,12 +11,16 @@ open; collapsing, hiding or leaving the route stops its feed and controller.
 
 ## Target and timing
 
-The new target is **rolling ten-minute close-to-close UP versus NON-UP**, issued
-at most once per completed one-minute cutoff. It is separate from the DD/UU
-section's next-candle pattern context. Overlapping ten-minute targets are not
-independent trials.
+Six independent models predict **rolling1m/5m/10m/15m/20m/1h close-to-close UP
+versus NON-UP**. Each may issue once per fresh completed one-minute cutoff.
+Each horizon owns its weights, immutable forecasts, outcomes, serving policy and
+paired metrics. Chart selection changes the displayed detail; it does not choose
+which models train. These targets remain separate from the DD/UU next-candle
+pattern context. Overlapping targets within and across models are not independent
+trials. A compact overview shows every horizon; selected detail shows all three
+predictors' recent/cumulative metrics.
 
-If cutoff is 10:00 UTC, the known reference is the closed 09:59–10:00 one-minute
+For the10m horizon, if cutoff is 10:00 UTC, the known reference is the closed 09:59–10:00 one-minute
 candle's close. The target is the close of 10:09–10:10. The forecast must be
 stored within 15 seconds after10:00, before that target exists. A mid-minute
 startup waits for the next cutoff; it never backfills supposedly forward calls.
@@ -27,15 +31,17 @@ separate outcome counts. The complement of P(UP) is P(NON-UP), **not P(DOWN)**.
 Binary accuracy includes both DOWN and FLAT as negative events. A probability
 exactly 0.5 selects NON-UP for accuracy bookkeeping. Unknown labels are excluded.
 
-A label needs all ten actually completed, contiguous one-minute candles between
-cutoff and target. A clock timeout, later quote or developing candle cannot
+Each label needs every actually completed, contiguous one-minute candle between
+cutoff and its own target:1/5/10/15/20/60 rows respectively. A clock timeout,
+later quote or developing candle cannot
 prove a close. Missing or partial minutes leave the forecast pending. The
 label may arrive at most 90 seconds after its target; otherwise it expires
 without scoring or training. A late older pending forecast remains eligible
 within that grace even if a newer forecast has already resolved. No maximum
 resolution watermark discards a legitimate older pending ID.
 
-Forecast creation requires the existing feed's fresh public quote and complete
+Forecast creation and genuine label learning require the shared stream's fresh
+public quote, healthy fixed minute arithmetic and complete
 minute-history state. Both exchange and receipt ages must be within 3 seconds.
 Seventy-eight contiguous completed minutes warm the fixed indicator features.
 History warms features only. No historical labels, protected research holdouts,
@@ -52,8 +58,8 @@ b = clip(b - 0.05 * (p - y), -8, 8)
 ```
 
 The intercept is unregularized. The projection and fixed step bound the update;
-they are engineering settings, not empirically optimized choices. The model
-starts with zero coefficients and p=0.5. The stable sigmoid avoids overflow.
+they are engineering settings, not empirically optimized choices. Each new horizon model
+starts with zero coefficients and p=0.5. Existing10m weights retain their values. The stable sigmoid avoids overflow.
 
 Twenty-two fixed, versioned features include 1/5/10-minute log returns, EMA9/21
 gap, MACD histogram, BOP SMA3, normalized RSI, the latest completed candle body,
@@ -78,8 +84,10 @@ probabilities and serving mode are never rewritten.
 
 Every candidate forecast has a paired, fixed 0.5 no-learning baseline for the
 same event. The existing0–3 indicator alignment is not a probability baseline.
-The first 20 resolved samples serve a labeled0.5 baseline while candidate
-shadow forecasts continue to collect labels and learn. Cold start therefore
+While fewer than20 genuine outcomes have trained a horizon, each newly issued
+forecast serves a labeled0.5 baseline while the candidate continues collecting
+labels and learning. This can span many more than20 issued forecasts for long
+horizons because their feedback is delayed. Cold start therefore
 has a path to a trained model.
 
 After at least 30 recent outcomes, a declared heuristic serves the baseline if
@@ -118,26 +126,47 @@ transaction's completed result. There is no network request or asynchronous
 control gap inside the transaction. Concurrent windows read the first window's
 stored same-cutoff forecast instead of recomputing it under newer weights.
 
-The pending ledger is capped at 32 and the recent resolved ledger at 128. The
+Each pending ledger is capped at64 and each recent resolved ledger at128. The
 model and cumulative paired totals remain bounded-size records. Persistent
 last-issued watermarks prevent replay after recent-history pruning. Resolution
 watermarks describe completed work but do not reject older existing pending
-forecasts. The database allows at most 16 partitions and refuses excess capacity
-rather than evicting duplicate-prevention history. Browser data clearing or
+forecasts. Sixty one-minute-spaced1h targets plus90s outcome lateness and an
+issuance margin fit64 pending records. The database allows96 logical partitions,
+room for16 complete six-horizon source groups. Capacity is a global bound, not
+a reservation per market; partial old groups can occupy slots. New-partition
+capacity failures do not stop updates to existing healthy partitions. No evidence
+is evicted to make room. These limits are engineering bounds, not measured
+optimal settings. Browser data clearing or
 storage eviction ends that local history; local browser storage is not an
 external audit archive or a guarantee against every device failure.
 
-The controller coalesces existing feed snapshots and processes at most once per
-second. It creates no extra stream or timer owner. Session-generation fences
+The schema/model/feature/target version strings and exact600-second key remain
+unchanged. Genuine0.9 ten-minute weights, pending IDs, probabilities and scores
+remain usable without a schema migration or retrospective rewrite. New horizons
+start prospectively with historicalTrainingSamples=0.
+
+The controller coalesces existing feed snapshots and processes all six independent
+transactions at most once per second. It creates no extra stream or timer owner. Session-generation fences
 reject callbacks from replaced feeds. Collapse/route teardown closes the
 controller and its store connection. Storage failures use bounded retry delay
 and visible unavailable status. A source identity change immediately clears the
 previous display while its new partition loads. Unknown identities, failed loads,
-analytics failures and suspension cannot retain a prior active prediction or
-metrics. Historical evidence appears only after the exact current partition has
+invalid shared-minute input and suspension cannot retain a prior active
+prediction. Same-source historical metrics remain visible with explicit labels. Historical evidence appears only after the exact current partition has
 loaded, and stale same-source predictions are explicitly labeled historical.
 Fresh valid input reloads persisted learning; display invalidation does not
-reset the learner. Trading remains read only on this surface.
+reset the learner. Reducers and delayed completions consult the latest shared
+snapshot, so an older live completion cannot reactivate a same-source stale
+view. A stale observation marks every row unavailable immediately, without
+clearing verified same-source history.
+
+The feed keeps one authoritative minute ledger across chart intervals. A1m chart
+reuses that exact history request. Larger selected charts have their own history;
+changing them aborts obsolete chart reads without replacing the socket or shared
+minute ledger. Chart loading/failure/indicator arithmetic cannot poison healthy
+shared-minute learning. Invalid shared source/quote/minute arithmetic still
+withholds all six. Per-horizon storage failures and fallback stay independent.
+Trading remains read only on this surface.
 
 ## Research provenance
 
@@ -197,25 +226,40 @@ Candidate counts, completed checks, exact loaded module hashes and final
 delivery limitations belong in the delivery receipt. A pushed draft or passing
 source tests alone is not canonical installation or a merged release.
 
-The independently reviewed checkpoint passed 572/572 source tests and 23/23
-native fixture checks. Review then found two display-trust defects. Regressions
-from an already trained learner reproduced retained predictions after unknown
-source/rebind/load failure and analytics invalidation. Both corrections passed
-574/574 extension tests, root JavaScript quality checks, 24/24 complete native
-fixture checks and 8/8 actual public-portal checks. The learner equations,
-label/scoring contracts and atomic store remain byte-identical to the reviewed
-checkpoint. Earlier failing receipts remain preserved.
+The0.10 candidate passed598/598 extension tests and root JavaScript checks.
+Its direct tests cover all six exact target windows, causal-prefix/future
+mutation, gaps/partials/expiry, trained0.9 key/weights/pending/score compatibility,
+1h pending beyond32, all-six deselected learning, independent fallback/capacity
+and both sides of the same-source completion race. Independent read-only review
+found no corroborated Medium-or-higher issue across all ten runtime files,
+passed65 focused cases and exactly matched121 complete old/new ten-minute
+state transitions (121 issued,111 trained,10 pending).
 
-Final affected receipts are under
-`/Users/mitch/.local/state/oracle-streaming-2405/browser-fixture-reviewfix/`
-and
-`/Users/mitch/.local/state/oracle-streaming-2405/browser-public-controls-fixed/`.
-Both bind exact loaded 0.9.0 module hashes. The native fixture demonstrates
-controlled learning, invalid-input abstention and recovery. The public profile
-shows an initialized untrained learner without fabricated resolved performance.
-A public test initially compared changing market-ticker text; its correction
-checks native control DOM identities and continued presence across collapse.
-It does not freeze legitimate market prices or relax a runtime label gate.
-Independent re-review closed both display findings without new corroborated
-Medium issues in the corrected runtime files. Final-head CI, merge and canonical
-loaded acceptance remain separate delivery gates.
+The complete native Chrome fixture passed27/27 and actual public gate passed8/8
+with exact loaded0.10.0 asset hashes. Two actual contexts produced82 immutable
+forecasts per horizon; observed trained counts were81/77/72/67/62/22 for
+1m/5m/10m/15m/20m/1h, with60 genuine pending1h forecasts. Selected-chart
+failure left all six learning on the same sockets. Native abort/reopen and
+unknown outcomes preserve each model's separate evidence. A quarantined native
+store refused partition97 without evicting records or blocking existing updates.
+
+A separate quarantined native test executes the frozen0.9 model source inside
+Chrome, preserves its21-sample ten-minute weights/pending/scores exactly, and
+resumes to22 samples. Its actual DOM retains historical counts immediately on
+stale input and after all six earlier commits complete. The original Node-made
+golden JSON had one score-field difference under Chrome's math and was correctly
+refused. The browser reference therefore uses the original model in its own
+engine; no validation threshold, stored score or production equation was relaxed.
+Earlier25/27 and6/7 harness receipts remain preserved. The first chart-refusal
+assertion incorrectly required a fixed error label while fresh quotes can change
+that withheld chart status to backfilling; the final assertion checks non-live
+chart status and unavailable signals while all six models remain independent.
+
+Receipts are under
+`/Users/mitch/.local/state/oracle-all-timeframes-2414/browser-fixture-final/` and
+`/Users/mitch/.local/state/oracle-all-timeframes-2414/browser-public-first/`.
+The real public fresh profile shows six initialized models with zero trained/
+resolved outcomes, without fabricated accuracy. Synthetic counts and scores
+prove implementation/accounting, not market accuracy, calibration or profit.
+Parent final-head CI, merge and canonical installed-profile migration remain
+separate gates. The historical approved prompt remains byte-identical.

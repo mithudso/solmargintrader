@@ -1,7 +1,8 @@
 # Prompt history
 
-Version: 277
-Delta: v276 to v277; record the owner screenshot of the stale working directory.
+Version: 278
+Delta: v277 to v278; preserve audit and screenshot continuation across merged 0.10 source.
+Delta: v276 to v277; record the all-supported-timeframes streaming learner request.
 Delta: v275 to v276; preserve the delivered feed controls/UI prompt alongside the streaming Oracle history.
 Delta: v273 to v274; integrate the feed controls and UI audit request.
 Delta: v271 to v272; integrate independent feed controls/UI audit with current-format SDK and host reply.
@@ -2527,6 +2528,15 @@ Execute the final approved optimized prompt byte-for-byte in docs/EXTENSION-STRE
 The parent requested these corrections after independent review. This is implementation-review continuation, not a new user model/target request:
 
 > Independent03978a9MLreviewfoundTWO MEDIUMdisplay/trust defects, fixred→greenbeforefinalreview/delivery: 1)panel.js:121-134 catches panelModelinvalidsnapshot andreturnswithout suspending/invalidationOracle. PreviousactivepredictioncanstayLIVEindefinitelywhilechart sayssignals unavailable. In catchsuspend/invalidateOracleview (historicalsame-sourceonlyifexplicitstale) andtestbadfeedthenfreshrecovery. 2)oracle-controller.js:29-30,46-48,52-55 spreads#lastduringconnecting/errorswithoutbindingincomingkey; oracle-view.js:39-55 rendersoldpartitionprediction+metricswhilefeedId/marketAddresscatalogrebindunverifiedorstoragefails. Clear/unavailableoldstateuntilcurrentidentityverifiedandloaded (orstrictlybindhistoricaldisplaytosamecurrentkeyexplicitly); add testsfromanALREADYTRAINEDoldcontroller, thensourceidentityswitchwithloaddelay/failure. Existingtestsfromemptydidn'tcoverthis. Sourcecorrectlearnercurrentgradient/score-before-learn/flatNONUPconfirmedbyreviewer, noempiricalqualityclaims. Role/root/streaming_oracle_code_reviewcompletedifneedfindingscontext. Fixonlyactualdefectswithoutrelaxingstagegates; exactsourcehashesnewreceipts+574-ishactualcountsdocscorrect. 307master15bbavailablegZip. Pushrecoverabledraftsourceaftergates/staticregen, keepunmergeduntilre-review+CI. Tests23/public8oldpassreceiptsretainbutnewaffectedgatesmustrerun. AllcmdINDEX_NO_AUTO=1. No extrauserpermissionneeded.
+
+
+## 2026-11-16 — streaming Oracle trains every supported timeframe
+
+```text
+Make the feed train all of the timeframes, not just the one chosen.
+```
+
+Train independent rolling close-to-close models for1m/5m/10m/15m/20m/1h from the existing validated minute stream. The selected chart controls displayed detail. Preserve genuine0.9 ten-minute state and its exact historical approved prompt. This delta also fences the corroborated same-source pending-completion display race from KNOW-2430; it does not authorize unrelated CDO repairs or trading changes.
 
 ## Owner screenshot — 2026-11-16
 
