@@ -1,6 +1,7 @@
 # Work continuation
 
-Version: 577
+Version: 578
+Delta: v577 to v578; begin the owner-superseding RS ZigZag investigation.
 Delta: v576 to v577; record the Preview inspection fix and pending acceptance.
 Delta: v575 to v576; record the macOS shape-guide lifecycle failure and recovery.
 Delta: v574 to v575; record PR 286 delivery and active MTF/status controls continuation.
@@ -2670,3 +2671,13 @@ PR 288 macOS CI caught a ShapeGuide mount transition race: textual.css.query.NoM
 ## Preview inspection fix — 2026-11-16
 
 The 1000x Preview fallback reports a verified unsigned simulation as inspection only when current keeper or transaction layout cannot be verified for execution. It does not create a preview ID or enable Submit. The current executable guards remain in place. Focused Python, Node and lint checks passed in the isolated hotfix worktree; canonical installed acceptance remains pending. The separate exit50 study and UI integration continue in /Users/mitch/dev/worktrees/oracle-exit50-2309.
+
+## RS ZigZag PA strategy, 2026-11-16
+
+The owner superseded the seven-strategy and Channel Breakout investigation with this one strategy. TASK-2333 tracks the work; the eight previous Mongo runs are paused and their owned leases released. Draft PR 292 preserves the previous checkpoint and must not be represented as completed research.
+
+The owner-supplied source remains untracked at `/Users/mitch/dev/solmargintrader/rs_zig_zag_pa_strategy.pine`, SHA-256 `a708103541426c6746c1cb33b0ad5016094ce29b4342c2f92375bcadbb01e5a9`. It contains stray trailing `Z` and `ZZ` on lines 227–228. A private syntax-only reference removes exactly those tokens and retains the missing version annotation; it is uncompiled and not verified as the screenshot source. Never stage or overwrite the original.
+
+The current screenshot shows COINBASE ZEC/USDC perpetual at 15 minutes, March 31–November 16, 2026; it reports 20,889.85% total P&L under zero commission and slippage. A prior report shows June 21–November 16 and 17,203.27%. Results, chart source history, input provenance and screenshot-to-code identity require independent validation. The source defaults to Pine v1 because its version annotation is omitted. Official TradingView documentation says legacy unoffset higher-timeframe `security` behaves like lookahead on; its line 20 uses a 60-minute request. This leaks future hourly information on historical 15-minute bars, conditional on executing that exact source.
+
+A separate private reference copy and its exact hash are recorded under `/Users/mitch/.local/state/zigzag-2333/`. The native research run is `run:ba37f1d11d0e8c021761b63f1b3e082290b832edfddd611920e8124e95f637a4`. Full dedup, independent research, trusted evidence gate, causal implementation and paired historical comparison remain. Protect active recording and existing holdouts.

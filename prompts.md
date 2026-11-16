@@ -1,6 +1,7 @@
 # Prompt history
 
-Version: 261
+Version: 262
+Delta: v261 to v262; record the superseding RS ZigZag strategy request.
 Delta: v260 to v261; record the Preview error request.
 Delta: v259 to v260; record the status flicker, arm control and forward results request.
 Delta: v258 to v259; record dual-price streams, visual accessibility, MTF study, and model-use requests.
@@ -2395,3 +2396,9 @@ Make the center status update stop flashing "unavailable" and redrawing the data
 ```text
 I get an error when clicking on Preview, [Image #1]
 ```
+
+## RS ZigZag strategy, 2026-11-16
+
+> Add a new one to the list, forget the others, this one is showing17,000%returns in3mo with86%winrates. Iputthecodein ~/dev/solmargintrader/rs_zig_zag_pa_strategy.pine
+
+The owner supplied screenshots of the reported simulator performance, inputs and properties, including a subsequent 15-minute chart. Reported results are reproduction targets, not independently verified performance.
