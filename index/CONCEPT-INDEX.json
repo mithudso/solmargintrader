@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-11-16T14:35:05+00:00",
+  "generatedAt": "2026-11-16T14:51:24+00:00",
   "schemaVersion": 1,
   "note": "Concepts are derived from the repo's own vocabulary \u2014 the FAMILY dict, strategy-card frontmatter, docs/trading-signals-concept-family.md, and terms verified to recur in the corpus. A concept matching no file is dropped, not kept.",
   "counts": {
@@ -170,7 +170,7 @@
         },
         {
           "path": "memory.md",
-          "hits": 244
+          "hits": 247
         },
         {
           "path": "research/coin-intelligence/zec-zcash.md",
@@ -202,7 +202,7 @@
         },
         {
           "path": "prompts.md",
-          "hits": 66
+          "hits": 67
         },
         {
           "path": "research/results/frontier-2026-11-07.json",
@@ -607,7 +607,7 @@
         },
         {
           "path": "memory.md",
-          "hits": 264
+          "hits": 266
         },
         {
           "path": ".cdo/reviews-2026-11-12/ecosystem-combined-full-final.json",
@@ -643,7 +643,7 @@
         },
         {
           "path": "prompts.md",
-          "hits": 119
+          "hits": 120
         },
         {
           "path": "oracle_leverage/sdk/package-lock.json",

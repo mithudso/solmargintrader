@@ -1,7 +1,10 @@
 # Work continuation
 
-Version: 593
-Delta: v592 to v593; record the exit50 source integration and pending lifecycle fixes.
+Version: 595
+Delta: v594 to v595; integrate YOLO contract evidence and concurrent exit50 continuation.
+Delta: v593 to v594; record authenticated Lazer payload and post-state evidence.
+Delta: v592 to v593; preserve current YOLO contract evidence and pending verifier proof.
+Delta: concurrent v592 to v593; record the exit50 source integration and pending lifecycle fixes.
 Delta: v591 to v592; begin source-age and unsupported-shape follow-up.
 Delta: v590 to v591; integrate UI delivery with the concurrent Jupiter overlay.
 Delta: v589 to v590; complete full developer-corpus review and final repaired-source browser checks.
@@ -2782,6 +2785,17 @@ Worktree: /Users/mitch/dev/worktrees/oracle-tui-2312. Extracted the leverage pan
 
 Use isolated worktree /Users/mitch/dev/worktrees/oracle-source-ages-2312. The live ZEC 5m cap cell has 15 training examples against the frozen model minimum of 20, so it has no supported component. The 5m range cell has 300. Preserve the frozen model, observer and wallet. Numeric source ages and an explicit unsupported shape label are in progress.
 
+## Current YOLO contract investigation (2026-11-16)
+
+Draft PR 301 binds inspection to the market-mint-derived OraclePrice PDA, its discriminator, mint and bump. It is inspection only; legacy execution verification is unchanged. SDK tests passed 17/17 and fresh unsigned BTC and ZEC simulations passed. Deterministic indexes were refreshed and their check passed; final PR CI remains pending.
+
+The upgradeable program data account is 86FJSZxQwcyUdWBzVknsfwm3qCVwK3Z7ocBXLVoSxA7z; observed upgrade slot 468172111 and account SHA-256 ee5fca1c7a4380b06fd5c89b5234b401868da67b53f675a33465560c3b7cbda7. The observed service signer 2BcxBiR3KiUwnSwM8eViGj9hp7s9JRi4QqiWuVU8Eve7 and Config.keeper both pass unsigned current UpdatePrice and OpenPosition simulations; admin and fee receiver substitutions fail keeper ConstraintAddress 2012. The logs contain no expected Left/Right values, and the two accepted public key byte strings do not occur verbatim in the program data. A confirmed successful public close transaction at slot 470169170 contains a valid Ed25519 signature by 2Bcx: 67YXGWPwFhbnVW1rjR5AuFekteS8W1saUEQBCFYyGZZLTx7pmk15xjDVYkM62kGALt1XCuQy1yGfG4XJcHay1BEC. These observations do not establish signer governance.
+
+Single-bit UpdatePrice mutations at offsets 8, 16, 32, 64, 96 and 132 failed in Pyth Lazer VerifyEcdsaMessage. Remaining: prove payload feed and economic binding and transaction post-state effects; construct and independently review a strict two-instruction verifier before enabling current-format execution. Do not sign, submit, fund, arm or change the wallet in this investigation.
+
+Pyth Lazer source at commit f8c8a9565c77953124369c73b9195a10449a2075 defines the LE-ECDSA envelope and standard payload. Fresh BTC and ZEC payloads decoded as channel 3, one feed (1 or 66), price, exponent -8, confidence and feed timestamp. Signature recovery with the installed noble libraries matched current unexpired on-chain Pyth Storage trusted ECDSA signer 26fb61a864c758ae9fba027a96010480658385b9; the Storage account is Pyth-owned and quotes one lamport. In each unsigned simulation the post-update oracle price equaled signed mantissa times 10000 and position entry price, and the oracle time equaled the feed timestamp. Swapping the complete valid BTC/ZEC Pyth payloads caused successful Pyth signature verification followed by YOLO InvalidOracle 6013.
+
+In two isolated unsigned simulated opens, owner collateral ATA fell and vault rose by exactly 5000000 raw units. The decoded positions had the requested market, owner, long side, margin 5000000 and notional 5000000000. The owner lost 1269840 lamports including 1259840 position rent and 10000 network fee; the service keeper lost the one-lamport Pyth fee. These are observed simulations only. The program remains upgradeable, so an off-chain hash check alone cannot bind the deployed bytes atomically through later submission. Determine whether this remaining trust assumption is acceptable before any execution enablement; do not substitute simulation success for guaranteed future state.
 ## Exit50 study integration — 2026-11-16
 
 The full-cohort retrospective result, selected policy and independent numerical audit are stored in native research artifacts. BTC selected validation return was -8.6858% on 44 trades; ZEC was -6.4275% on 126 trades under modeled trade fees. These are not prospective or funded results. The copied core and observer bytes initially matched the frozen paper profile. Independent lifecycle review found two high-severity issues: restart entry cutoff must exclude process downtime, and existing ledger binding must be checked read-only under exclusive writer ownership before schema changes. The source author corrected both in commit 58f7f09; independent lifecycle review passed five isolated tests. The V3 paper profile matches the corrected observer and core. Canonical merge, prospective startup and loaded acceptance remain pending. Preserve the current UI, paper collector and all existing holdouts.
