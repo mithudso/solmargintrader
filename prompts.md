@@ -1,6 +1,7 @@
 # Prompt history
 
-Version: 267
+Version: 268
+Delta: v267 to v268; record the current YOLO contract investigation excerpt.
 Delta: v266 to v267; record source-age and supported-shape follow-up.
 Delta: v265 to v266; integrate the UI delivery stage with concurrent Jupiter overlay records.
 Delta: integrated to v265; preserve both Jupiter overlay and incoming nine-strategy research records.
@@ -2454,3 +2455,9 @@ The owner requests are preserved verbatim in the earlier v257–v260 entries. Th
 ## Source-age follow-up — 2026-11-16
 
 The earlier owner requests for source-aware prices and 5/10/15/20-minute conditional shapes remain recorded above. This follow-up interprets those requests as adding numeric per-source quote ages and explaining unsupported model components without altering the frozen model.
+
+## YOLO contract investigation — original user request excerpt
+
+On both ZEC and BTW, do a similar backtest looking at 5/10/15/20 min bars for the 2 bar reversal pattern. And then cross reference the 2bar reversal patterns with the graph shape during that time, For example if the graph shape is rising, then maybe the 3rd bar isn't as often a down. And then create and implement the standard 10x leverage through the CLI and integrate it into the /Users/mitch/.venvs/soltui/bin/python /Users/mitch/dev/solmargintrader/scripts/oracle_winners.py script. And then write and implement through the SDK the 1000x trading. I understand the risks, I know about the queue, betting against the house, and not being able to close within 15s. Please do it anyway and integrate it intyo the same tui. And then, start a forward test using the TUI and the best predictive strategy you can develop and let it keep running in the TUI so I can monitor how well it does against live data.
+
+The user clarified that BTW means BTC.
