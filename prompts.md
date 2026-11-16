@@ -1,6 +1,7 @@
 # Prompt history
 
-Version: 262
+Version: 263
+Delta: v262 to v263; record the ten-minute interval and supplied strategy-report images.
 Delta: v261 to v262; record seven TradingView strategies and their chart context.
 Delta: v260 to v261; record the Preview error request.
 Delta: v259 to v260; record the status flicker, arm control and forward results request.
@@ -2404,3 +2405,5 @@ I get an error when clicking on Preview, [Image #1]
 Chart supplied: https://www.tradingview.com/chart/qV1poosp/?symbol=COINBASE%3AZECUSDC.P
 
 > Strategy inputs were left at defaults, yes.
+
+Owner follow-up: `10min`. The owner supplied TradingView Volatility expansion-close and Channel break strategy report screenshots.

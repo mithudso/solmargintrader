@@ -1,12 +1,11 @@
 # TradingView seven-strategy source contract
 
-Version: 1.1.0. Delta: pin seven official Pine sources and source-level defaults.
+Version: 1.2.0. Delta: distinguish screenshot Channel Breakout from Price Channel and record the observed interval.
 
 This is a working research record, not a completed rabbithole, executable card,
 TradingView parity proof, or backtest. The owner identified the chart as
-`COINBASE:ZECUSDC.P` and said that strategy inputs were defaults. The chart bar
-interval, tester properties, exact test endpoints and script revision remain
-unconfirmed. The connected browser listed no existing TradingView tab; a fresh
+`COINBASE:ZECUSDC.P` and said that strategy inputs were defaults. The owner confirmed a 10-minute chart interval. Tester properties, exact endpoint
+time, timezone and the historical script revision remain unconfirmed. The connected browser listed no existing TradingView tab; a fresh
 visit to the supplied saved-chart URL returned “Chart Not Found”.
 
 | Strategy | Existing record | Official Pine defaults and orders |
@@ -71,3 +70,32 @@ Next: finish full inventory and four-mode scoped dedup, read and check each pinn
 atomic claims and source spans under owned concept leases, then complete the
 six-question depth passes and trusted gate. The seven Mongo runs remain
 unqualified until that process and actual publication receipts succeed.
+
+## User-supplied reports and a distinct channel strategy
+
+The owner supplied two TradingView report screenshots and identified the chart
+interval as ten minutes. Each report displays Coinbase Advanced, 100,000 USDC
+initial capital and June 21 through November 16, 2026. The visible report
+figures are user-supplied simulator observations; the tester properties, exact
+time cutoff, intrabar assumptions and independent reproduction remain unknown.
+
+- Volatility expansion-close: total P&L +619,225.79 USDC (+619.23%), maximum
+  drawdown 74,520.91 USDC (13.87%), 988 profitable of 2,396 trades, profit
+  factor 1.313 and three margin calls.
+- The second screenshot says `Channel break str`, the short title of **Channel
+  breakout strategy**, not **Price channel strategy**. It displays +413,226.04
+  USDC (+413.23%), maximum drawdown 120,257.81 USDC (20.05%), 410 profitable
+  of 1,101 trades, profit factor 1.34 and four margin calls. The chart legend
+  values at its visible crosshair are hovered intermediate values, not final
+  performance or final buy-and-hold.
+
+The public TradingView catalog identifies `STD;Channel%1BreakOut%1Strategy`
+version 29.0 separately from `STD;Price%1Channel%1Strategy` version 29.0.
+Its pinned source is `src:76a6738dbe0a2319`, SHA-256
+`f438bd98aefb5ed835939a63678dd707740f2265459bd19923ce12c9b056cf30`.
+It defaults to length 5 and places stops one tick beyond the trailing extrema.
+The source guards only the long order with `not na(close[length])`; the short
+order lies outside that guard. Price Channel defaults to length 20, places
+stops at the trailing extrema, and guards both orders. The screenshot does not
+prove which historical source version or settings generated its report. Test
+both separately and do not ascribe Channel Breakout's results to Price Channel.

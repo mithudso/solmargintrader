@@ -1,6 +1,7 @@
 # Work continuation
 
-Version: 578
+Version: 579
+Delta: v578 to v579; record ten-minute interval and distinguish the screenshot channel strategy.
 Delta: v577 to v578; start seven TradingView strategy source and fidelity research.
 Delta: v576 to v577; record the Preview inspection fix and pending acceptance.
 Delta: v575 to v576; record the macOS shape-guide lifecycle failure and recovery.
@@ -2681,3 +2682,5 @@ Seven Mongo rabbithole runs preserve the prompt, scope, six-pass limit and conti
 Existing readiness documents Momentum, Price Channel and Volty as research-only; SAR and Pivot Reversal are incomplete. No exact source-backed Moving Average or Two Moving Averages card has yet been established. Keep all checksum-bound readiness records immutable. Source verification and scoped four-mode dedup must precede semantic implementation. A source-prose description is not proof of the Pine program or TradingView fills.
 
 The anonymous Pine Editor built-in flow exposed all seven current official Pine v6 sources. Version, defaults, orders and Mongo immutable snapshot hashes are in `research/TRADINGVIEW-SEVEN-SOURCE-CONTRACT-2324.md`. The sources resolve a material help-page mismatch for Pivot Reversal. Research depth, independent evidence, trusted gates, implementation and backtests remain unfinished. Tester properties and the owner chart interval remain unknown.
+
+The owner confirmed ten-minute bars and supplied two TradingView reports, covering June 21–November 16, 2026 with 100,000 USDC initial capital. The screenshot short title `Channel break str` is a distinct built-in Channel Breakout (source src:76a6738dbe0a2319), not the requested Price Channel. See the source contract for reported metrics and evidence constraints. Other tester settings and exact end time remain unknown.
