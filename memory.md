@@ -1,6 +1,7 @@
 # Work continuation
 
-Version: 576
+Version: 577
+Delta: v576 to v577; record the Preview inspection fix and pending acceptance.
 Delta: v575 to v576; record the macOS shape-guide lifecycle failure and recovery.
 Delta: v574 to v575; record PR 286 delivery and active MTF/status controls continuation.
 Delta: v573 to v574; record delivered first scope and second-turn study, dual-feed monitor, and pending MTF work.
@@ -2665,3 +2666,7 @@ The Stele task-create write for the status and arming controls is queued as outb
 MTF native model, two result artifacts and both independent audit receipts passed exact readback. Independent audit covered 742128 comparisons and 15 adversarial checks. The retrospective final split does not establish a profitable edge: BTC selected 30/48 direction and 24 joint, identical to DOWN on those 48; ZEC selected 202/427 direction and 122 joint versus DOWN 202/427 and 121 joint. Candidate observer PID 38413 uses a separate private ledger and frozen bundle; it displays four completed frames and ready scores for both assets. Thirteen observer tests and 51 console/panel tests passed with ResourceWarning as error; exact raw-unit 9.8bps touch regression passed. Original collector PID 35217 remains running. Candidate monitor PID 45304 loads the worktree; independent live acceptance and final CI/merge/canonical retarget remain. No real arm action or funded trade occurred.
 
 PR 288 macOS CI caught a ShapeGuide mount transition race: textual.css.query.NoMatches for #shape-guide-body during timer-driven paint. Correct the guide lifecycle narrowly and rerun the failed gate; prior financial and model gates remain accepted.
+
+## Preview inspection fix — 2026-11-16
+
+The 1000x Preview fallback reports a verified unsigned simulation as inspection only when current keeper or transaction layout cannot be verified for execution. It does not create a preview ID or enable Submit. The current executable guards remain in place. Focused Python, Node and lint checks passed in the isolated hotfix worktree; canonical installed acceptance remains pending. The separate exit50 study and UI integration continue in /Users/mitch/dev/worktrees/oracle-exit50-2309.

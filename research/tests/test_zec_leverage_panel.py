@@ -509,6 +509,29 @@ class Interface(unittest.IsolatedAsyncioTestCase):
             console.read_gate.set()
             await self.wait_for(pilot, lambda: panel.snapshot_data is not None)
 
+    async def test_simulation_only_preview_does_not_enable_submit(self):
+        console = ConsoleFixture()
+
+        def inspect(*args):
+            console.previews += 1
+            return {
+                "status": "inspection",
+                "message": "Unsigned simulation passed. Inspection only; Submit is unavailable.",
+            }
+
+        console.preview = inspect
+        panel = self.panel(console)
+        async with PanelHost(panel).run_test(size=(100, 40)) as pilot:
+            await self.wait_for(pilot, lambda: panel.snapshot_data is not None)
+            await pilot.click("#leverage-preview")
+            await self.wait_for(
+                pilot, lambda: console.previews == 1 and panel._operation is None
+            )
+            self.assertIn("Inspection only", static_text(panel, "#leverage-result"))
+            self.assertIsNone(panel.preview_id)
+            self.assertTrue(panel.query_one("#leverage-submit", Button).disabled)
+            self.assertEqual(console.executes, 0)
+
     async def test_preview_is_unsigned_and_submit_is_explicit_single_flight(self):
         console = ConsoleFixture()
         panel = self.panel(console)

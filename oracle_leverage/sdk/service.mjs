@@ -98,6 +98,75 @@ function closePosition(rows, intent, now) {
   return p;
 }
 
+// Observed public service layout; inspection never authorizes signing or submission.
+const UPDATE_PRICE_DISCRIMINATOR = Buffer.from('3d22759b4b227bd0', 'hex');
+const PYTH_CONFIG = new PublicKey('3rdJbqfnagQ4yx9HXJViD4zc4xpiSqmFsKpPuSCQVyQL');
+const PYTH_TREASURY = new PublicKey('Gx4MBPb1vqZLJajZmsKLg8fGw9ErhoKsR8LeKcCKFyak');
+const PYTH_PROGRAM = new PublicKey('pytd2yyk641x7ak7mkaasSJVXh6YYZnC7wTmtgAyxPt');
+
+/** Inspect and simulate only. This result is never accepted by the execution verifier. */
+export async function inspectOpenBuild(build, intent, { connection, now = Math.floor(Date.now() / 1000), readAccount = owned } = {}) {
+  if (sdk.WINNING_PROGRAM_ID.toBase58() !== PROGRAM || !MARKETS[intent.asset]) fail('invalid_service_intent');
+  const owner = new PublicKey(intent.owner), market = new PublicKey(MARKETS[intent.asset]);
+  const tx = VersionedTransaction.deserialize(base64(build.serializedTxBase64));
+  if (tx.version !== 0 || tx.message.header.numRequiredSignatures !== 2 || !tx.message.staticAccountKeys[0].equals(owner)) fail('invalid_service_signers_or_version');
+  const keeper = tx.message.staticAccountKeys[1];
+  if (keeper.equals(owner) || tx.signatures.some(s => s.some(b => b !== 0))) fail('unexpected_preexisting_signature');
+  if (!build.txMetadata || tx.message.recentBlockhash !== address(build.txMetadata.blockhash)) fail('service_blockhash_mismatch');
+  if (BigInt(await connection.getBlockHeight('confirmed')) > u64(build.txMetadata.lastValidBlockHeight)) fail('service_blockhash_expired');
+  const [config] = await sdk.findConfigPda(program), [pool] = await sdk.findPoolPda(program), [vault] = await sdk.findVaultPda(program);
+  const settings = await readAccount(connection, config, sdk.deserializeConfigAccount);
+  if (settings.paused) fail('service_program_paused');
+  const lookups = [];
+  for (const item of tx.message.addressTableLookups) {
+    const result = await connection.getAddressLookupTable(item.accountKey);
+    if (!result.value) fail('unavailable_address_lookup_table');
+    lookups.push(result.value);
+  }
+  const message = TransactionMessage.decompile(tx.message, { addressLookupTableAccounts: lookups });
+  const trades = message.instructions.filter(ix => ix.programId.equals(program));
+  if (trades.length !== 2 || message.instructions.indexOf(trades[0]) > message.instructions.indexOf(trades[1])) fail('unexpected_service_instruction');
+  const [update, open] = trades;
+  if (update.data.length !== 133 || !update.data.subarray(0, 8).equals(UPDATE_PRICE_DISCRIMINATOR) || sdk.identifyWinningInstruction(open) !== sdk.WinningInstruction.OpenPosition) fail('unexpected_service_instruction');
+  const parsed = sdk.parseOpenPositionInstruction(open), margin = u64(intent.margin, 5000000n);
+  if (intent.operation !== 'open' || intent.leverage !== 1000 || !['long', 'short'].includes(intent.side) || BigInt(parsed.data.margin) !== margin || parsed.data.leverage !== 1000 || parsed.data.long !== (intent.side === 'long')) fail('sdk_trade_intent_mismatch');
+  const [position] = await sdk.findPositionPda({ owner, id: parsed.data.id }, program);
+  if (build.positionId !== undefined && BigInt(build.positionId) !== BigInt(parsed.data.id)) fail('service_position_id_mismatch');
+  const [funding] = PublicKey.findProgramAddressSync([owner.toBuffer(), token.toBuffer(), new PublicKey(USD_MINT).toBuffer()], associated);
+  const [eventAuthority] = PublicKey.findProgramAddressSync([Buffer.from('__event_authority')], program);
+  const oracle = parsed.accounts.oracle.pubkey;
+  const oracleAccount = await connection.getAccountInfo(oracle, 'confirmed');
+  if (!oracleAccount || oracleAccount.executable || !oracleAccount.owner.equals(program)) fail('unverified_program_account');
+  const expectedOpen = await sdk.createOpenPositionInstruction({ owner, keeper, config, market, pool, vault, usdMint: new PublicKey(USD_MINT), oracle, tokenProgram: token, systemProgram: system, eventAuthority, program, position, fundingAccount: funding }, parsed.data, program);
+  // v0 message privileges are global: UpdatePrice legitimately upgrades its shared keeper and oracle to writable.
+  if (!open.data.equals(expectedOpen.data) || open.keys.length !== expectedOpen.keys.length || open.keys.some((k, i) => !k.pubkey.equals(expectedOpen.keys[i].pubkey) || k.isSigner !== expectedOpen.keys[i].isSigner || k.isWritable !== (expectedOpen.keys[i].isWritable || i === 1 || i === 9))) fail('sdk_account_or_instruction_mismatch');
+  const expectedUpdate = [keeper, config, PYTH_CONFIG, PYTH_TREASURY, PYTH_PROGRAM, system, oracle];
+  const flags = [[true,true],[false,false],[false,false],[false,true],[false,false],[false,false],[false,true]];
+  if (update.keys.length !== expectedUpdate.length || update.keys.some((k,i) => !k.pubkey.equals(expectedUpdate[i]) || k.isSigner !== flags[i][0] || k.isWritable !== flags[i][1])) fail('unexpected_price_update_accounts');
+  const requestTime = Number(parsed.data.requestTime), maxAge = Math.min(30, settings.settings.maxRequestExecutionSec);
+  if (!Number.isSafeInteger(requestTime) || requestTime > now + 2 || now - requestTime > maxAge) fail('service_execution_window_elapsed');
+  let price = 0n, units = 1400000n; const computeKinds = new Set();
+  for (const ix of message.instructions) {
+    if (ix === update || ix === open) continue;
+    if (ix.programId.toBase58() !== compute || ix.keys.length || ![2,3].includes(ix.data[0]) || computeKinds.has(ix.data[0])) fail('unexpected_service_instruction');
+    computeKinds.add(ix.data[0]);
+    if (ix.data[0] === 2 && ix.data.length === 5) { units = BigInt(ix.data.readUInt32LE(1)); if (units > 1400000n) fail('compute_unit_limit'); }
+    else if (ix.data[0] === 3 && ix.data.length === 9) price = ix.data.readBigUInt64LE(1);
+    else fail('unsupported_compute_instruction');
+  }
+  if (price * units > 10000000n * 1000000n) fail('priority_fee_over_001_sol');
+  const simulated = await connection.simulateTransaction(tx, { sigVerify: false, replaceRecentBlockhash: true, commitment: 'confirmed' });
+  if (!simulated?.value || simulated.value.err) {
+    const failure = simulated?.value?.err?.InstructionError;
+    const instruction = Array.isArray(failure) && Number.isSafeInteger(failure[0]) && failure[0] >= 0 ? failure[0] : null;
+    const custom = failure?.[1]?.Custom;
+    const programCode = Number.isSafeInteger(custom) && custom >= 0 ? custom : null;
+    const detail = instruction === null ? '' : ` at instruction ${instruction}${programCode === null ? '' : ` (program code ${programCode})`}`;
+    return { status: 'blocked', code: 'unsigned_simulation_failed', simulation: { instruction, programCode }, message: `The unsigned 1000x simulation failed${detail}. No signature or order was sent.` };
+  }
+  return { status: 'inspection', checked: { owner: owner.toBase58(), asset: intent.asset, side: intent.side, margin: margin.toString(), leverage: 1000, position: position.toBase58(), program: PROGRAM, messageSha256: hash(tx.message.serialize()) }, simulation: { status: 'passed', unitsConsumed: simulated.value.unitsConsumed ?? null }, message: 'Unsigned simulation passed. Inspection only: the current verifier cannot establish the service keeper authorization; Submit is disabled. No signature or order was sent.' };
+}
+
 /** No secret or signing operation. Validate the exact bytes the wallet would sign. */
 export async function verifyBuild(build, intent, { connection, now = Math.floor(Date.now() / 1000), readAccount = owned } = {}) {
   if (sdk.WINNING_PROGRAM_ID.toBase58() !== PROGRAM) fail('sdk_program_pin_mismatch');
@@ -112,7 +181,9 @@ export async function verifyBuild(build, intent, { connection, now = Math.floor(
   if (tx.signatures.some(s => s.some(b => b !== 0))) fail('unexpected_preexisting_signature');
   const [config] = await sdk.findConfigPda(program), [pool] = await sdk.findPoolPda(program), [vault] = await sdk.findVaultPda(program);
   const settings = await readAccount(connection, config, sdk.deserializeConfigAccount);
-  if (settings.paused || settings.keeper.equals(owner) || !tx.message.staticAccountKeys[1].equals(settings.keeper)) fail('service_keeper_or_pause_mismatch');
+  if (settings.paused) fail('service_program_paused');
+  if (settings.keeper.equals(owner)) fail('service_owner_is_keeper');
+  if (!tx.message.staticAccountKeys[1].equals(settings.keeper)) fail('service_keeper_mismatch');
   const marketData = await readAccount(connection, market, sdk.deserializeMarketAccount);
   const lookupAccounts = [];
   for (const lookup of tx.message.addressTableLookups) {
@@ -201,11 +272,11 @@ export async function serviceHandle(payload, dependencies = {}) {
     if (typeof payload.signature !== 'string' || !/^[1-9A-HJ-NP-Za-km-z]{64,100}$/.test(payload.signature)) fail('invalid_request_signature');
     return { status: 'ready', request: await api('requests/' + payload.signature) };
   }
-  if (['service-build-open', 'service-build-close'].includes(payload.action)) {
+  if (['service-build-open', 'service-build-close', 'service-inspect-open'].includes(payload.action)) {
     const markets = marketList(await api('markets'));
     const row = markets.markets.find(m => m.symbol === payload.asset);
-    if (!row || markets.paused || row.closed || (payload.action === 'service-build-open' && row.closeOnly)) fail('service_market_unavailable');
-    const intent = { owner, asset: payload.asset, operation: payload.action === 'service-build-open' ? 'open' : 'close' };
+    if (!row || markets.paused || row.closed || (payload.action !== 'service-build-close' && row.closeOnly)) fail('service_market_unavailable');
+    const intent = { owner, asset: payload.asset, operation: payload.action !== 'service-build-close' ? 'open' : 'close' };
     let request;
     if (intent.operation === 'open') {
       if (payload.leverage !== 1000 || !['long', 'short'].includes(payload.side)) fail('invalid_1000x_direction_or_leverage');
@@ -224,7 +295,12 @@ export async function serviceHandle(payload, dependencies = {}) {
         message: 'The 1000x service build requires enough JupUSD collateral and SOL network balance in the existing wallet. No transaction was signed or submitted.' };
       throw error;
     }
-    const checked = await verifyBuild(build, intent, options);
+    const verificationOptions = { ...options, now: dependencies.now ?? Math.floor(Date.now() / 1000) };
+    if (payload.action === 'service-inspect-open') {
+      const inspection = await inspectOpenBuild(build, intent, verificationOptions);
+      return { ...inspection, fees: markets.fees, collateralMint: USD_MINT };
+    }
+    const checked = await verifyBuild(build, intent, verificationOptions);
     return { status: 'ready', build, intent, checked, fees: markets.fees, collateralMint: USD_MINT,
       message: 'Official service transaction checked with the pinned SDK. No owner signature or execution yet.' };
   }
