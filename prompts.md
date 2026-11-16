@@ -1,6 +1,7 @@
 # Prompt history
 
-Version: 264
+Version: 265
+Delta: v264 to v265; record Jupiter developer organization.
 Delta: v263 to v264; record Jupiter documentation links.
 Delta: v262 to v263; record Preview error and explicit resume steering.
 Delta: v261 to v262; record two-column layout and causal bar/shape display request.
@@ -2424,4 +2425,10 @@ resume
 
 ```text
 https://developers.jup.ag/docs/get-started https://developers.jup.ag/docs/guides
+```
+
+## Jupiter developer organization — 2026-11-16
+
+```text
+https://github.com/Jupiter-DevRel
 ```

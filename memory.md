@@ -1,6 +1,7 @@
 # Work continuation
 
-Version: 581
+Version: 582
+Delta: v581 to v582; record bounded on-chain IDL check.
 Delta: v580 to v581; record Jupiter documentation links and Preview continuation.
 Delta: v579 to v580; preserve Preview-error recovery scope and execution boundary.
 Delta: v578 to v579; record resumed source archival and preserved forward state.
@@ -2686,3 +2687,5 @@ Recovered isolated worktree /Users/mitch/dev/worktrees/oracle-exit50-2309 from m
 Preview error TASK-2321: the supplied screenshot shows process_nonzero_exit. Author is testing simulation-only inspection fallback with Submit disabled; executable guards remain intact. Authoritative current UpdatePrice/keeper oracle schema is not established by the checked SDK, IDL, frontend and Jupiter MCP. Do not claim executable funded support from inspection or simulate-only evidence. No funded trade was performed. Resume native source archival under owned fenced lease; preserve existing armed runtime configuration.
 
 The user provided Jupiter documentation links. Their related product documentation is a lead, not evidence of the actual YOLO program instruction schema. An independent agent is checking the official links and on-chain Anchor IDL. PR 290 provides inspection-only Preview; canonical acceptance is pending.
+
+Read-only Anchor 0.31.1 Program.fetchIdl returned null for YOLO program yoLovHV5eT4DNPMG2Bu1NLmq8nVygEAPrNT1Rx6vWFA. Its derived IDL account DZT94u5ZnWTy8pSXWvZnDj1H23cmdE9vo9tT9WLzHJPU was absent on mainnet at about 10:04 UTC. This rules out the standard published Anchor IDL account only; it does not rule out an off-chain schema.
