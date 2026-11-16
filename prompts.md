@@ -1,6 +1,7 @@
 # Prompt history
 
-Version: 269
+Version: 270
+Delta: v269 to v270; begin reviewed current-format YOLO verifier implementation for the recorded owner request.
 Delta: v268 to v269; integrate current YOLO contract and concurrent exit50 requests.
 Delta: v267 to v268; record the current YOLO contract investigation excerpt.
 Delta: v267 to v268; preserve the exit50 and two-column requests verbatim.

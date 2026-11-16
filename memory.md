@@ -1,6 +1,8 @@
 # Work continuation
 
-Version: 595
+Version: 597
+Delta: v596 to v597; implement current YOLO open checks with pending independent review.
+Delta: v595 to v596; begin isolated current-format YOLO verifier implementation and independent review.
 Delta: v594 to v595; integrate YOLO contract evidence and concurrent exit50 continuation.
 Delta: v593 to v594; record authenticated Lazer payload and post-state evidence.
 Delta: v592 to v593; preserve current YOLO contract evidence and pending verifier proof.
@@ -2799,3 +2801,9 @@ In two isolated unsigned simulated opens, owner collateral ATA fell and vault ro
 ## Exit50 study integration — 2026-11-16
 
 The full-cohort retrospective result, selected policy and independent numerical audit are stored in native research artifacts. BTC selected validation return was -8.6858% on 44 trades; ZEC was -6.4275% on 126 trades under modeled trade fees. These are not prospective or funded results. The copied core and observer bytes initially matched the frozen paper profile. Independent lifecycle review found two high-severity issues: restart entry cutoff must exclude process downtime, and existing ledger binding must be checked read-only under exclusive writer ownership before schema changes. The source author corrected both in commit 58f7f09; independent lifecycle review passed five isolated tests. The V3 paper profile matches the corrected observer and core. Canonical merge, prospective startup and loaded acceptance remain pending. Preserve the current UI, paper collector and all existing holdouts.
+
+## Current-format YOLO verifier implementation
+
+Worktree: /Users/mitch/dev/worktrees/yolo-execution-v2; branch depends on inspection PR 301. Implement the observed open subset with current YOLO/Pyth deployment pins, live Pyth ECDSA trust state, exact canonical price feed, exact owner intent, transaction/account binding and read-only post-state simulation. Preserve the legacy verifier. Current-format close remains blocked until payout and debt account semantics are independently demonstrated. No signing, sending, funding or arming during investigation. Independent code and economic review is required before merge or funded use. Program upgradeability and simulation drift remain explicit limitations.
+
+Current open prototype adds exact program pins, signed Pyth feed parsing and current trusted signer verification, exact-message unsigned simulation, and position/collateral/fee delta checks. SDK tests pass 27/27. BTC long/short and ZEC long/short each passed at least once across the evolving prototype; current-oracle post-state mismatch and provider 429 correctly block other attempts. Repeat all live unsigned cases on the final reviewed tip. Current close remains blocked because the claim and payout contract is not established. Both programs remain upgradeable; simulation cannot guarantee future state. Independent security, dependency and economic review and final CI are outstanding. No signatures, funded transactions, wallet changes or arming occurred.

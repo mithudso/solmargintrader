@@ -2,6 +2,7 @@
 import { createHash, createPublicKey, verify } from 'node:crypto';
 import { Connection, PublicKey, TransactionMessage, VersionedTransaction } from '@solana/web3.js';
 import * as sdk from 'jupiter-sdk/yolo/web3js';
+import { verifyCurrentOpen } from './current-open.mjs';
 
 export const SERVICE = 'https://yolo-api.jup.ag';
 export const PROGRAM = 'yoLovHV5eT4DNPMG2Bu1NLmq8nVygEAPrNT1Rx6vWFA';
@@ -106,7 +107,7 @@ const PYTH_TREASURY = new PublicKey('Gx4MBPb1vqZLJajZmsKLg8fGw9ErhoKsR8LeKcCKFya
 const PYTH_PROGRAM = new PublicKey('pytd2yyk641x7ak7mkaasSJVXh6YYZnC7wTmtgAyxPt');
 
 /** Inspect and simulate only. This result is never accepted by the execution verifier. */
-export async function inspectOpenBuild(build, intent, { connection, now = Math.floor(Date.now() / 1000), readAccount = owned } = {}) {
+export async function inspectOpenBuild(build, intent, { connection, now = Math.floor(Date.now() / 1000), readAccount = owned, skipSimulation = false } = {}) {
   if (sdk.WINNING_PROGRAM_ID.toBase58() !== PROGRAM || !MARKETS[intent.asset]) fail('invalid_service_intent');
   const owner = new PublicKey(intent.owner), market = new PublicKey(MARKETS[intent.asset]);
   const tx = VersionedTransaction.deserialize(base64(build.serializedTxBase64));
@@ -163,6 +164,8 @@ export async function inspectOpenBuild(build, intent, { connection, now = Math.f
     else fail('unsupported_compute_instruction');
   }
   if (price * units > 10000000n * 1000000n) fail('priority_fee_over_001_sol');
+  const checked = { owner: owner.toBase58(), asset: intent.asset, side: intent.side, margin: margin.toString(), leverage: 1000, position: position.toBase58(), program: PROGRAM, messageSha256: hash(tx.message.serialize()) };
+  if (skipSimulation) return { status: 'structural', checked };
   const simulated = await connection.simulateTransaction(tx, { sigVerify: false, replaceRecentBlockhash: true, commitment: 'confirmed' });
   if (!simulated?.value || simulated.value.err) {
     const failure = simulated?.value?.err?.InstructionError;
@@ -172,11 +175,11 @@ export async function inspectOpenBuild(build, intent, { connection, now = Math.f
     const detail = instruction === null ? '' : ` at instruction ${instruction}${programCode === null ? '' : ` (program code ${programCode})`}`;
     return { status: 'blocked', code: 'unsigned_simulation_failed', simulation: { instruction, programCode }, message: `The unsigned 1000x simulation failed${detail}. No signature or order was sent.` };
   }
-  return { status: 'inspection', checked: { owner: owner.toBase58(), asset: intent.asset, side: intent.side, margin: margin.toString(), leverage: 1000, position: position.toBase58(), program: PROGRAM, messageSha256: hash(tx.message.serialize()) }, simulation: { status: 'passed', unitsConsumed: simulated.value.unitsConsumed ?? null }, message: 'Unsigned simulation passed. Inspection only: the current verifier cannot establish the service keeper authorization; Submit is disabled. No signature or order was sent.' };
+  return { status: 'inspection', checked, simulation: { status: 'passed', unitsConsumed: simulated.value.unitsConsumed ?? null }, message: 'Unsigned simulation passed. Inspection only: the current verifier cannot establish the service keeper authorization; Submit is disabled. No signature or order was sent.' };
 }
 
 /** No secret or signing operation. Validate the exact bytes the wallet would sign. */
-export async function verifyBuild(build, intent, { connection, now = Math.floor(Date.now() / 1000), readAccount = owned } = {}) {
+async function verifyLegacyBuild(build, intent, { connection, now = Math.floor(Date.now() / 1000), readAccount = owned } = {}) {
   if (sdk.WINNING_PROGRAM_ID.toBase58() !== PROGRAM) fail('sdk_program_pin_mismatch');
   if (!MARKETS[intent.asset] || !['open', 'close'].includes(intent.operation)) fail('invalid_service_intent');
   const owner = new PublicKey(intent.owner), market = new PublicKey(MARKETS[intent.asset]);
@@ -255,6 +258,25 @@ export async function verifyBuild(build, intent, { connection, now = Math.floor(
   return { ...checked, owner: owner.toBase58(), asset: intent.asset, operation: intent.operation, program: PROGRAM,
     keeper: settings.keeper.toBase58(), messageSha256: hash(tx.message.serialize()) };
 }
+/** Select the observed current format only by its update instruction; legacy remains unchanged. */
+export async function verifyBuild(build, intent, options = {}) {
+  const tx = VersionedTransaction.deserialize(base64(build.serializedTxBase64));
+  const lookups = [];
+  for (const item of tx.message.addressTableLookups) {
+    let value;
+    try { value = (await options.connection.getAddressLookupTable(item.accountKey)).value; } catch { fail('current_rpc_unavailable'); }
+    if (!value) fail('unavailable_address_lookup_table');
+    lookups.push(value);
+  }
+  const msg = TransactionMessage.decompile(tx.message, { addressLookupTableAccounts: lookups });
+  const trade = msg.instructions.filter(ix => ix.programId.equals(program));
+  if (trade[0]?.data.subarray(0, 8).equals(UPDATE_PRICE_DISCRIMINATOR)) {
+    if (intent.operation !== 'open') fail('current_close_unverified');
+    try { return await verifyCurrentOpen(build, intent, { ...options, readAccount: options.readAccount || owned }, inspectOpenBuild); }
+    catch (error) { if (error.message.startsWith('current_')) throw error; if (/^[a-z_0-9]+$/.test(error.message)) fail('current_' + error.message); fail('current_rpc_unavailable'); }
+  }
+  return verifyLegacyBuild(build, intent, options);
+}
 export function verifySigned(build, signed, ownerAddress) {
   const original = VersionedTransaction.deserialize(base64(build.serializedTxBase64));
   const tx = VersionedTransaction.deserialize(base64(signed));
@@ -301,21 +323,26 @@ export async function serviceHandle(payload, dependencies = {}) {
     catch (error) {
       if (error.message === 'service_400_insufficient_balance') return { status: 'blocked', code: error.message,
         message: 'The 1000x service build requires enough JupUSD collateral and SOL network balance in the existing wallet. No transaction was signed or submitted.' };
-      throw error;
+      const code = /^service_[0-9]{3}_[a-z_]{1,80}$/.test(error.message) ? error.message : 'current_service_unavailable';
+      return { status: 'blocked', code, message: 'The 1000x service build is unavailable. No signature or order was sent.' };
     }
     const verificationOptions = { ...options, now: dependencies.now ?? Math.floor(Date.now() / 1000) };
     if (payload.action === 'service-inspect-open') {
       const inspection = await inspectOpenBuild(build, intent, verificationOptions);
       return { ...inspection, fees: markets.fees, collateralMint: USD_MINT };
     }
-    const checked = await verifyBuild(build, intent, verificationOptions);
+    let checked;
+    try { checked = await verifyBuild(build, intent, verificationOptions); }
+    catch (error) { if (!error.message.startsWith('current_')) throw error; return { status: 'blocked', code: error.message, message: 'The current 1000x build could not pass transaction verification. No signature or order was sent.' }; }
     return { status: 'ready', build, intent, checked, fees: markets.fees, collateralMint: USD_MINT,
       message: 'Official service transaction checked with the pinned SDK. No owner signature or execution yet.' };
   }
   if (['service-signed', 'service-execute'].includes(payload.action)) {
     const preview = payload.preview;
     if (!preview || preview.intent?.owner !== owner) fail('preview_owner_mismatch');
-    const checked = await verifyBuild(preview.build, preview.intent, options);
+    let checked;
+    try { checked = await verifyBuild(preview.build, preview.intent, options); }
+    catch (error) { if (!error.message.startsWith('current_')) throw error; return { status: 'blocked', code: error.message, message: 'The current 1000x build could not pass transaction verification. No order was sent.' }; }
     if (checked.messageSha256 !== preview.checked?.messageSha256) fail('preview_message_binding_mismatch');
     const signature = verifySigned(preview.build, payload.serializedTxBase64, owner);
     if (payload.action === 'service-signed') return { status: 'ready', signature };
