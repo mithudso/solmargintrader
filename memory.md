@@ -1,6 +1,7 @@
 # Work continuation
 
-Version: 584
+Version: 585
+Delta: v584 to v585; record perpetual instrument and default strategy inputs.
 Delta: v583 to v584; record new separate strategy research and data scope.
 Delta: v582 to v583; preserve owner observations without changing the frozen study.
 Delta: v581 to v582; record bounded on-chain IDL check.
@@ -2695,3 +2696,5 @@ Read-only Anchor 0.31.1 Program.fetchIdl returned null for YOLO program yoLovHV5
 The user described TradingView strategy results as possible research leads. They are unverified owner observations; interval, settings, costs and baselines were not supplied. Do not add them to the frozen exit50 selection or claim a verified return. Continue the existing study and Preview delivery.
 
 The user authorized rabbithole research for seven named strategy families, missing strategy cards, backtests and additional fine-grained BTC/ZEC data. Interpret SEC as ZEC from context. This is separate from the frozen exit50 cohort and policy selection. Deduplicate existing research and cards first, preserve all 21 protected holds, and reserve prospective data before outcomes. The TradingView returns remain unverified observations with missing settings and costs.
+
+The user identified the TradingView chart as Coinbase ZEC/USDC perpetual and stated strategy inputs were defaults. Chart interval and tester properties including sizing, leverage, commission, slippage and funding remain unconfirmed. Research must not treat earlier ZEC-USD spot data as equivalent.

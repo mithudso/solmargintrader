@@ -1,6 +1,7 @@
 # Prompt history
 
-Version: 267
+Version: 268
+Delta: v267 to v268; record chart and default-input clarification.
 Delta: v266 to v267; record strategy research, cards, backtests and additional data request.
 Delta: v265 to v266; record TradingView observations and resume request.
 Delta: v264 to v265; record Jupiter developer organization.
@@ -2450,4 +2451,14 @@ resume what you were doing
 ```text
 I was on TradingView trying out various strategies to play with, and for ZEC, during a 5 mo lookbak these are the strategies that
   brought in over 100% return: momentum, moving averaage, parabolic SAR, Pivot Reversal, Price channel, two moving averages crossover, volatility expansion-close strategies. Fully investigate each of these strategies with a rabbithole skill, then build strategy cards for each if they don't already exist, and backtest using each of them. Also keep pulling more BTC and SEC fine grained data for another chance at testing
+```
+
+## TradingView chart and settings — 2026-11-16
+
+```text
+https://www.tradingview.com/chart/qV1poosp/?symbol=COINBASE%3AZECUSDC.P
+```
+
+```text
+Strategy inputs were left at defaults, yes.
 ```
