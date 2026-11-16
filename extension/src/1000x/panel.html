@@ -1,0 +1,34 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Jupiter 1000x indicators</title>
+  <link rel="stylesheet" href="panel.css">
+</head>
+<body>
+  <header>
+    <div><strong id="market">Jupiter indicators</strong><span class="tag">Read only</span></div>
+    <p>Jupiter Pyth oracle USD · public data · no wallet required</p>
+  </header>
+  <nav aria-label="Chart settings">
+    <label>Interval <select id="timeframe" aria-label="Indicator candle interval"></select></label>
+    <button id="refresh" type="button">Refresh history</button>
+    <details id="parameters"><summary>Parameters</summary><form id="config-form"></form></details>
+  </nav>
+  <p id="status" role="status" aria-live="polite">Connecting to Jupiter…</p>
+  <p id="timing" class="muted">Waiting for source timestamps</p>
+  <div id="chart" aria-label="Oracle candles with price, RSI and Balance of Power panes"></div>
+  <p class="legend">Price: ZigZag <i class="zig">━</i> · provisional <i class="provisional">┄</i> · SAR <i class="sar">●</i> · Volty <i class="volty">━</i> · lower panes: RSI / BOP</p>
+  <table>
+    <caption>Completed-candle readings and explanatory signals</caption>
+    <thead><tr><th>Show</th><th>Indicator</th><th>Value</th><th>Explanation</th></tr></thead>
+    <tbody id="readouts"></tbody>
+  </table>
+  <p id="candle-note" class="muted">The latest candle develops until its UTC boundary.</p>
+  <footer><span id="api-attribution"></span> Provisional ZigZag points can move. Confirmed pivots were known only at their later confirmation time. These indicators do not establish a profitable strategy.
+    <a href="https://www.tradingview.com/" target="_blank" rel="noopener noreferrer">Charts by TradingView</a>
+  </footer>
+  <script type="module" src="panel.js"></script>
+</body>
+</html>
