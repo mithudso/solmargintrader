@@ -1,4 +1,5 @@
 import { computeIndicators, validateIndicatorConfig } from './indicators.js';
+import { reversalContext } from './reversal.js';
 
 /** A second eligibility check keeps a delayed UI callback from showing a live signal. */
 export function panelModel(snapshot, config, nowMs = Date.now()) {
@@ -31,10 +32,15 @@ export function panelModel(snapshot, config, nowMs = Date.now()) {
   const currentHistory = closed.at(-1)?.time + interval === currentOpen;
   const eligible = snapshot?.status === 'live' && fresh && currentHistory;
   const completed = computeIndicators(closed, normalized);
+  const minutes = snapshot?.minuteCandles ?? (interval === 60 ? candles : []);
+  const minuteReady = (snapshot?.minuteStatus === 'ready' || (snapshot?.minuteStatus === undefined && interval === 60))
+    && minutes.some(candle => candle.closed === true && candle.partial !== true
+      && candle.time + 60 === Math.floor(nowMs / 60_000) * 60);
   return {
     candles,
     developing: computeIndicators(candles.slice(metricFrom), normalized),
     completed,
+    reversal: reversalContext(minutes, nowMs, eligible && minuteReady),
     confirmedPivots: completed.zigzag.confirmed,
     closedThrough: closed.at(-1)?.time ?? null,
     closedCount: closed.length,

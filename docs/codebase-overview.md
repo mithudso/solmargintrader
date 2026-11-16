@@ -204,6 +204,15 @@ command registry. No npm runtime dependencies by design; one vendored charting l
 | `extension/manifest.json` | MV3 manifest; validated in CI |
 | `extension/package.json` | Scripts only — no runtime and no dev dependencies |
 | `extension/README.md` | Includes the **Verification status** section; read it before extending |
+| `extension/src/1000x/feed.js` | Catalog-bound public oracle history and one stream, with bounded1m reversal context and owned teardown |
+| `extension/src/1000x/indicators.js` | Pure causal ZigZag/RSI/BOP/Volty/SAR and research-aligned EMA/MACD recurrences |
+| `extension/src/1000x/reversal.js` | Completed10m DD/UU context, trailing48-bar5/10/15/20m shapes and separate closed1m momentum; no model or position inference |
+| `extension/src/1000x/panel-model.js` | Independent quote/history freshness and closed/developing eligibility checks |
+| `extension/src/1000x/panel.js` | Floating read-only chart, labeled reversal/shape/momentum cards and local view settings |
+| `extension/tools/1000x-e2e.mjs` | Native Chrome fixture and actual-public-portal gates with exact executed module hashes |
+| `extension/tools/1000x-reference.py` | Offline independent Python numerical-vector generator for extension analytics |
+| `extension/test/1000x-reversal.test.js` | Bound Python parity, prefix/future invariance, gap/partial resets and unsupported model/position regressions |
+| `docs/JUPITER-1000X-OVERLAY.md` | Public feed contracts, causal indicator/reversal formulas, browser evidence and installation |
 | `extension/src/core/commands.js` | The single registry. Every action lives here or the parity test fails |
 | `extension/src/core/risk.js` | Every risk rail, as a gate an order must pass. Rails fail closed |
 | `extension/src/core/grid.js` | Ladder geometry. `backtester/core/gridsim.py` is its port |

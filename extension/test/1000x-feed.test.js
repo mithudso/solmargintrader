@@ -1,7 +1,8 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { decodeHistory, decodeQuote, JupiterFeed, JUPITER_ENDPOINTS, TIMEFRAMES } from '../src/1000x/feed.js';
+import { decodeHistory, decodeQuote, JupiterFeed, JUPITER_ENDPOINTS, TIMEFRAMES, CONTEXT_HISTORY_BARS } from '../src/1000x/feed.js';
 import { computeIndicators, MAX_INDICATOR_LENGTH } from '../src/1000x/indicators.js';
+import { panelModel } from '../src/1000x/panel-model.js';
 
 const BASE = 1_794_830_400_000; // Explicit synthetic clock; divisible by one minute.
 const MARKET = { symbol: 'SOL', feedId: 6, closed: false,
@@ -82,7 +83,7 @@ test('observed SOL Pyth shape scales integer price and microsecond timestamp', (
   assert.equal(parsed.price, 71.37601654);
   assert.equal(parsed.exchangeMs, BASE);
   assert.equal(parsed.receivedMs, BASE + 20);
-  assert.deepEqual(TIMEFRAMES.map((entry) => entry.seconds), [60, 900, 3600]);
+  assert.deepEqual(TIMEFRAMES.map((entry) => entry.seconds), [60, 300, 600, 900, 1200, 3600]);
 });
 
 test('quote decoding refuses wrong feed/subscription, duplicate feed IDs, unsafe values and stale/future time', () => {
@@ -530,4 +531,134 @@ test('stop aborts an in-flight read; a resolved response cannot publish or open 
   assert.equal(h.snapshots.length, events);
   assert.equal(h.sockets.length, 0);
   assert.equal(h.timers.size, 0);
+});
+
+function requestedHistory(url, now) {
+  const query = new URL(url).searchParams, step = Number(query.get('resolution')) * 60;
+  const first = Number(query.get('from')), current = Math.floor(now / 1000 / step) * step;
+  const t = Array.from({ length: Math.floor((current - first) / step) + 1 }, (_, i) => first + i * step);
+  return { s: 'ok', t, o: t.map(() => 70), h: t.map(() => 72), l: t.map(() => 69), c: t.map(() => 71) };
+}
+
+function contextHarness({ intervalSec = 600, minuteFailure = false, read } = {}) {
+  const calls = [];
+  let h;
+  h = harness({ fetchImpl: async (url, options) => {
+    calls.push({ url, options });
+    if (url === JUPITER_ENDPOINTS.markets) return response({ markets: [MARKET] });
+    if (read) return read(url, options, h.state.now);
+    if (minuteFailure && new URL(url).searchParams.get('resolution') === '1') return response({}, 503);
+    return response(requestedHistory(url, h.state.now));
+  } });
+  const feed = new JupiterFeed({ symbol: 'SOL', intervalSec, withReversalContext: true, ...h.dependencies });
+  return { ...h, feed, calls };
+}
+
+test('10m chart plus bounded minute context shares one catalog and one public stream', async () => {
+  const h = contextHarness(); await h.feed.start(); h.sockets[0].open(); h.sockets[0].emit(message(h.state.now));
+  const snapshot = h.feed.getSnapshot();
+  assert.equal(h.sockets.length, 1);
+  assert.equal(h.calls.filter(call => call.url === JUPITER_ENDPOINTS.markets).length, 1);
+  assert.deepEqual(h.calls.filter(call => call.url !== JUPITER_ENDPOINTS.markets).map(call => new URL(call.url).searchParams.get('resolution')).sort(), ['1', '5']);
+  assert.equal(snapshot.candles.length, MAX_INDICATOR_LENGTH + 3);
+  assert.equal(snapshot.minuteCandles.length, CONTEXT_HISTORY_BARS + 1);
+  assert.equal(snapshot.minuteStatus, 'ready');
+  assert.ok(Object.isFrozen(snapshot.minuteCandles));
+  const model = panelModel(snapshot, {}, h.state.now);
+  assert.equal(model.reversal.ready, true);
+  for (const frame of Object.values(model.reversal.frames)) assert.notEqual(frame.shape, 'unknown', `${frame.minutes}m context did not warm`);
+  h.feed.stop(); assert.equal(h.sockets[0].closed, true); assert.equal(h.timers.size, 0);
+});
+
+test('1m chart reuses its own expanded minute seed without duplicate history reads', async () => {
+  const h = contextHarness({ intervalSec: 60 }); await h.feed.start(); h.sockets[0].open(); h.sockets[0].emit(message(h.state.now));
+  assert.equal(h.calls.length, 2);
+  assert.equal(h.feed.getSnapshot().candles.length, CONTEXT_HISTORY_BARS + 1);
+  assert.deepEqual(h.feed.getSnapshot().minuteCandles, h.feed.getSnapshot().candles);
+  h.feed.stop();
+});
+
+test('a failed minute history read leaves chart readings independent and reversal support unavailable', async () => {
+  const h = contextHarness({ minuteFailure: true }); await h.feed.start(); h.sockets[0].open(); h.sockets[0].emit(message(h.state.now));
+  const snapshot = h.feed.getSnapshot(), model = panelModel(snapshot, {}, h.state.now);
+  assert.equal(snapshot.status, 'live'); assert.equal(model.signalEligible, true);
+  assert.equal(snapshot.minuteStatus, 'unavailable');
+  assert.equal(model.reversal.ready, false); assert.equal(model.reversal.heuristic, null); assert.equal(model.reversal.momentum.ready, false);
+  h.feed.stop();
+});
+
+test('reconnect invalidates minute context and fresh history cannot restore it without a replacement quote', async () => {
+  const h = contextHarness(); await h.feed.start(); h.sockets[0].open(); h.sockets[0].emit(message(h.state.now));
+  assert.equal(panelModel(h.feed.getSnapshot(), {}, h.state.now).reversal.ready, true);
+  h.sockets[0].disconnect();
+  assert.equal(h.feed.getSnapshot().minuteStatus, 'unavailable');
+  await h.advance(500);
+  assert.equal(h.sockets.length, 2); h.sockets[1].open();
+  const waiting = panelModel(h.feed.getSnapshot(), {}, h.state.now);
+  assert.equal(waiting.reversal.ready, false); assert.equal(waiting.reversal.heuristic, null);
+  h.sockets[1].emit(message(h.state.now));
+  assert.equal(panelModel(h.feed.getSnapshot(), {}, h.state.now).reversal.ready, true);
+  h.feed.stop();
+});
+
+test('stop aborts both history reads and ignores both late responses without opening a stream', async () => {
+  const pending = [];
+  const h = contextHarness({ read: (url, options, now) => new Promise(resolve => pending.push({ url, options, now, resolve })) });
+  const start = h.feed.start(); await flush(); assert.equal(pending.length, 2);
+  h.feed.stop();
+  assert.ok(pending.every(read => read.options.signal.aborted));
+  for (const read of pending) read.resolve(response(requestedHistory(read.url, read.now)));
+  await start;
+  assert.equal(h.sockets.length, 0); assert.equal(h.feed.getSnapshot().error, 'feed_stopped');
+  assert.equal(h.feed.getSnapshot().minuteCandles.length, 0);
+});
+
+test('minute overlap retains post-request ticks but never replays an older cached close over newer history', async () => {
+  for (const postRequestTick of [false, true]) {
+    let minuteReads = 0, pending;
+    const h = contextHarness({ read: (url, options, now) => {
+      if (new URL(url).searchParams.get('resolution') !== '1' || ++minuteReads === 1) return response(requestedHistory(url, now));
+      return new Promise(resolve => { pending = { url, now, resolve }; });
+    } });
+    await h.feed.start(); h.sockets[0].open(); h.sockets[0].emit(message(h.state.now));
+    for (let i = 0; i < 5; i++) { await h.advance(5000); h.sockets[0].emit(message(h.state.now, '7100000000')); }
+    await h.advance(5000); assert.ok(pending);
+    if (postRequestTick) { h.state.now += 1; h.sockets[0].emit(message(h.state.now, '9000000000')); }
+    const payload = requestedHistory(pending.url, pending.now);
+    payload.h[payload.h.length - 1] = 85; payload.c[payload.c.length - 1] = 80;
+    pending.resolve(response(payload)); await flush();
+    const snapshot = h.feed.getSnapshot(), last = snapshot.minuteCandles.at(-1);
+    assert.equal(last.close, postRequestTick ? 90 : 80);
+    assert.equal(last.high, postRequestTick ? 90 : 85);
+    assert.equal(snapshot.quote.price, postRequestTick ? 90 : 71);
+    h.feed.stop();
+  }
+});
+
+test('10m/20m charts resample supported5m history and refuse a missing constituent close', async () => {
+  for (const intervalSec of [600, 1200]) {
+    const h = contextHarness({ intervalSec }); await h.feed.start(); h.sockets[0].open(); h.sockets[0].emit(message(h.state.now));
+    const snapshot = h.feed.getSnapshot();
+    assert.equal(snapshot.historyIntervalSec, 300);
+    assert.equal(snapshot.candles.filter(candle => candle.closed).length, MAX_INDICATOR_LENGTH + 2);
+    assert.ok(snapshot.candles.every(candle => candle.time % intervalSec === 0));
+    assert.ok(h.calls.filter(call => call.url !== JUPITER_ENDPOINTS.markets).every(call => ['1', '5'].includes(new URL(call.url).searchParams.get('resolution'))));
+    assert.equal(panelModel(snapshot, {}, h.state.now).signalEligible, true);
+    h.feed.stop();
+    const missing = contextHarness({ intervalSec, read: (url, options, now) => {
+      const payload = requestedHistory(url, now);
+      if (new URL(url).searchParams.get('resolution') === '5') {
+        const required = Math.floor(now / 1000 / intervalSec) * intervalSec - 300;
+        const index = payload.t.indexOf(required);
+        for (const field of ['t', 'o', 'h', 'l', 'c']) payload[field].splice(index, 1);
+      }
+      return response(payload);
+    } });
+    await missing.feed.start(); missing.sockets[0].open(); missing.sockets[0].emit(message(missing.state.now));
+    const incomplete = missing.feed.getSnapshot();
+    assert.notEqual(incomplete.status, 'live');
+    assert.equal(panelModel(incomplete, {}, missing.state.now).signalEligible, false);
+    assert.equal(incomplete.candles.some(candle => candle.time === Math.floor(missing.state.now / 1000 / intervalSec) * intervalSec - intervalSec), false);
+    missing.feed.stop();
+  }
 });
