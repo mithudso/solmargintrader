@@ -142,7 +142,16 @@ def simulate(bars: Sequence[Bar], intents: Sequence[Sequence[Intent]], *,
             elif intent.kind == "market":
                 pending_market.append(intent)
             else:
-                pending_stops[intent.id] = intent
+                assert intent.stop is not None
+                # A stop already favorable relative to the creation close
+                # activates immediately; its market order fills next tick.
+                better = ((intent.side == 1 and intent.stop <= bar.close) or
+                          (intent.side == -1 and intent.stop >= bar.close))
+                if better:
+                    pending_stops.pop(intent.id, None)
+                    pending_market.append(Intent(intent.id, "entry", intent.side, qty=intent.qty))
+                else:
+                    pending_stops[intent.id] = intent
     final = equity[-1] if equity else initial_capital
     return {"final_equity": final, "return_fraction": final/initial_capital - 1,
             "open_quantity": position, "equity_curve": equity, "fills": fills,
