@@ -22,6 +22,7 @@ room; select **Wiki**. The source links below remain usable without a running UI
 | Scripts and maintenance | [Script inventory](SCRIPTS.md) | [Testing](TESTING.md), [incident runbook](runbooks/incident.md), [rollback](runbooks/rollback.md) |
 | Strategy and evidence | [Canonical strategy cards](../backtester/strategy_cards/README.md) | [Research survey](../research/STRATEGIES.md), [strategy optimization](strategy-optimization-concept-family.md), [Oracle consumer interface](bot-manager-oracle-interface.md) |
 | Execution and security boundaries | [Security](SECURITY.md) | [Known issues](known-issues.md), [external calls](external-calls.md), [executor rules](../executor/CLAUDE.md) |
+| Jupiter 1000x indicators | [Overlay plan and formulas](JUPITER-1000X-OVERLAY.md) | [SDK create/close boundaries](JUPITER-1000X-SDK.md), [optimized implementation prompt](JUPITER-1000X-OVERLAY-PROMPT.md) |
 
 For the manager's complete recommended command order, read `solbot --help` or
 `solbot help`. The structured help and parser share the same command registry.

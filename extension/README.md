@@ -7,6 +7,23 @@ hard risk rails, on its own tab, **dry-run by default** — it will not place an
 change the mode and type a confirmation. The grid lost to buy-and-hold walk-forward on 9 of 9 coins,
 which is why 0.3.0 moved it off the front page.
 
+## Jupiter 1000x indicator window (0.7.0)
+
+On `https://jup.ag/1000x`, the extension adds a draggable, resizable floating
+window with oracle candles, configurable ZigZag, Wilder RSI, Balance of Power,
+Volty Expan Close and Parabolic SAR. The same public Jupiter Pyth source supplies
+history and streaming updates. The default interval is1m;15m and1h are available.
+Developing values and provisional ZigZag endpoints stay separate from completed
+candle explanations. Stale quotes, gaps and partial history withhold signals.
+Collapse or hide the window to stop its feed. Market navigation creates a fresh
+session. Settings stay in local browser storage. No wallet connection is needed.
+
+The window is read-only and does not change trading defaults. Load or reload the
+unpacked extension, then reload the portal tab. Its header identifies version0.7.0.
+See [design, formulas and verification](../docs/JUPITER-1000X-OVERLAY.md),
+[optimized execution prompt](../docs/JUPITER-1000X-OVERLAY-PROMPT.md), and
+[SDK create/close capabilities and remaining gates](../docs/JUPITER-1000X-SDK.md).
+
 ## Signal Desk workspace (0.6.3)
 
 The full dashboard opens a focused **Live signals**, **Backtesting**, **Forward testing**, or

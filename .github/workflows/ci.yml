@@ -169,6 +169,9 @@ jobs:
         # No user namespaces on hosted runners, so Chrome's sandbox cannot start.
         run: E2E_NO_SANDBOX=1 node tools/e2e.mjs
 
+      - name: 1000x overlay browser contract (fixture, read only)
+        run: E2E_NO_SANDBOX=1 npm run e2e:1000x -- --evidence "$RUNNER_TEMP/1000x-overlay"
+
       - uses: actions/setup-python@6d4fd22b20465ccc0f7354476588e8df7c9ca0e0 # v7
         with:
           python-version: '3.13'

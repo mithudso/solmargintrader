@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-11-16T12:32:53+00:00",
+  "generatedAt": "2026-11-16T13:23:24+00:00",
   "schemaVersion": 1,
   "note": "Concepts are derived from the repo's own vocabulary \u2014 the FAMILY dict, strategy-card frontmatter, docs/trading-signals-concept-family.md, and terms verified to recur in the corpus. A concept matching no file is dropped, not kept.",
   "counts": {
@@ -22,7 +22,7 @@
         "confirm",
         "fail-closed"
       ],
-      "matchingFiles": 1966,
+      "matchingFiles": 1970,
       "shown": 30,
       "files": [
         {
@@ -43,7 +43,7 @@
         },
         {
           "path": "docs/FILES.md",
-          "hits": 174
+          "hits": 175
         },
         {
           "path": "FILES.md",
@@ -67,7 +67,7 @@
         },
         {
           "path": "memory.md",
-          "hits": 108
+          "hits": 109
         },
         {
           "path": "research/tradingview-script-profiles/shard-b.jsonl",
@@ -161,16 +161,16 @@
         "universe",
         "top_coins"
       ],
-      "matchingFiles": 1745,
+      "matchingFiles": 1747,
       "shown": 30,
       "files": [
         {
-          "path": "memory.md",
-          "hits": 241
+          "path": "docs/FILES.md",
+          "hits": 315
         },
         {
-          "path": "docs/FILES.md",
-          "hits": 196
+          "path": "memory.md",
+          "hits": 242
         },
         {
           "path": "research/coin-intelligence/zec-zcash.md",
@@ -300,7 +300,7 @@
         "borrow",
         "financing"
       ],
-      "matchingFiles": 1601,
+      "matchingFiles": 1602,
       "shown": 30,
       "files": [
         {
@@ -340,12 +340,12 @@
           "hits": 61
         },
         {
-          "path": "backtester/tests/test_engine.py",
-          "hits": 58
+          "path": "docs/FILES.md",
+          "hits": 60
         },
         {
-          "path": "docs/FILES.md",
-          "hits": 55
+          "path": "backtester/tests/test_engine.py",
+          "hits": 58
         },
         {
           "path": "research/tradingview-card-coverage.json",
@@ -439,7 +439,7 @@
         "centred",
         "shift"
       ],
-      "matchingFiles": 1524,
+      "matchingFiles": 1526,
       "shown": 30,
       "files": [
         {
@@ -511,20 +511,20 @@
           "hits": 19
         },
         {
+          "path": "docs/FILES.md",
+          "hits": 18
+        },
+        {
+          "path": "memory.md",
+          "hits": 17
+        },
+        {
           "path": "backtester/tests/test_engine_audit.py",
           "hits": 17
         },
         {
           "path": "skills/trading-and-investing/references/indicator-signal-implementation-and-backtesting.md",
           "hits": 17
-        },
-        {
-          "path": "docs/FILES.md",
-          "hits": 16
-        },
-        {
-          "path": "memory.md",
-          "hits": 16
         },
         {
           "path": "backtester/tests/test_decide.py",
@@ -578,12 +578,16 @@
         "perps",
         "solana"
       ],
-      "matchingFiles": 1045,
+      "matchingFiles": 1056,
       "shown": 30,
       "files": [
         {
           "path": "research/strategy_experiment/results/results.json",
           "hits": 544
+        },
+        {
+          "path": "docs/FILES.md",
+          "hits": 506
         },
         {
           "path": "llms/jupsol-llms.txt",
@@ -592,10 +596,6 @@
         {
           "path": "research/strategy_experiment/results/initial-gapped-run/results.json",
           "hits": 408
-        },
-        {
-          "path": "docs/FILES.md",
-          "hits": 390
         },
         {
           "path": "FILES.md",
@@ -607,7 +607,7 @@
         },
         {
           "path": "memory.md",
-          "hits": 244
+          "hits": 261
         },
         {
           "path": ".cdo/reviews-2026-11-12/ecosystem-combined-full-final.json",
@@ -642,16 +642,16 @@
           "hits": 124
         },
         {
+          "path": "prompts.md",
+          "hits": 117
+        },
+        {
           "path": "oracle_leverage/sdk/package-lock.json",
           "hits": 115
         },
         {
           "path": "llms-sitemap.txt",
           "hits": 114
-        },
-        {
-          "path": "prompts.md",
-          "hits": 109
         },
         {
           "path": "skills/trading-and-investing/SKILL.md",
@@ -714,7 +714,7 @@
         "macd",
         "ichimoku"
       ],
-      "matchingFiles": 905,
+      "matchingFiles": 907,
       "shown": 30,
       "files": [
         {
@@ -852,7 +852,7 @@
         "anchor_window",
         "levels"
       ],
-      "matchingFiles": 881,
+      "matchingFiles": 885,
       "shown": 30,
       "files": [
         {
@@ -869,7 +869,7 @@
         },
         {
           "path": "docs/FILES.md",
-          "hits": 193
+          "hits": 198
         },
         {
           "path": "research/strategy_experiment/audit_realism.json",
@@ -990,7 +990,7 @@
         "monotone",
         "gap"
       ],
-      "matchingFiles": 815,
+      "matchingFiles": 825,
       "shown": 30,
       "files": [
         {
@@ -1019,7 +1019,7 @@
         },
         {
           "path": "docs/FILES.md",
-          "hits": 79
+          "hits": 81
         },
         {
           "path": "TRADINGVIEW-CARD-READINESS.md",
@@ -1125,7 +1125,7 @@
         "stochastic",
         "oscillator"
       ],
-      "matchingFiles": 583,
+      "matchingFiles": 593,
       "shown": 30,
       "files": [
         {
@@ -1141,11 +1141,11 @@
           "hits": 348
         },
         {
-          "path": "FILES.md",
-          "hits": 328
+          "path": "docs/FILES.md",
+          "hits": 330
         },
         {
-          "path": "docs/FILES.md",
+          "path": "FILES.md",
           "hits": 328
         },
         {
@@ -1260,7 +1260,7 @@
         "benchmark",
         "baseline"
       ],
-      "matchingFiles": 570,
+      "matchingFiles": 571,
       "shown": 30,
       "files": [
         {
@@ -1289,7 +1289,7 @@
         },
         {
           "path": "docs/FILES.md",
-          "hits": 87
+          "hits": 89
         },
         {
           "path": ".cdo/reviews-2026-11-12/research-scripts.json",
@@ -1364,15 +1364,15 @@
           "hits": 29
         },
         {
+          "path": "memory.md",
+          "hits": 26
+        },
+        {
           "path": "research/RANKED_LISTS.md",
           "hits": 25
         },
         {
           "path": ".cdo/reviews-2026-11-12/botmanager-root.json",
-          "hits": 25
-        },
-        {
-          "path": "memory.md",
           "hits": 25
         },
         {
@@ -1394,7 +1394,7 @@
         "buy_and_hold",
         "baseline"
       ],
-      "matchingFiles": 498,
+      "matchingFiles": 499,
       "shown": 30,
       "files": [
         {
@@ -1419,7 +1419,7 @@
         },
         {
           "path": "docs/FILES.md",
-          "hits": 62
+          "hits": 64
         },
         {
           "path": ".cdo/reviews-2026-11-12/final-owned-integration.json",
@@ -1470,11 +1470,11 @@
           "hits": 29
         },
         {
-          "path": ".cdo/reviews-2026-11-12/soltui-root-ui-tests.json",
-          "hits": 25
+          "path": "memory.md",
+          "hits": 26
         },
         {
-          "path": "memory.md",
+          "path": ".cdo/reviews-2026-11-12/soltui-root-ui-tests.json",
           "hits": 25
         },
         {
@@ -1529,7 +1529,7 @@
         "ts_momentum",
         "dual_momentum"
       ],
-      "matchingFiles": 451,
+      "matchingFiles": 452,
       "shown": 30,
       "files": [
         {
@@ -1545,12 +1545,12 @@
           "hits": 166
         },
         {
-          "path": "FILES.md",
-          "hits": 135
+          "path": "docs/FILES.md",
+          "hits": 143
         },
         {
-          "path": "docs/FILES.md",
-          "hits": 134
+          "path": "FILES.md",
+          "hits": 135
         },
         {
           "path": "research/tradingview-script-profiles/shard-c.jsonl",
@@ -1667,7 +1667,7 @@
         "evidence floor",
         "rankable"
       ],
-      "matchingFiles": 391,
+      "matchingFiles": 392,
       "shown": 30,
       "files": [
         {
@@ -1955,16 +1955,16 @@
           "hits": 89
         },
         {
+          "path": "docs/FILES.md",
+          "hits": 83
+        },
+        {
           "path": "research/strategy_experiment/results/results.json",
           "hits": 80
         },
         {
           "path": "research/strategy_experiment/results/initial-gapped-run/results.json",
           "hits": 76
-        },
-        {
-          "path": "docs/FILES.md",
-          "hits": 74
         },
         {
           "path": "FILES.md",
@@ -2352,7 +2352,7 @@
         "sign_flips",
         "stability"
       ],
-      "matchingFiles": 188,
+      "matchingFiles": 189,
       "shown": 30,
       "files": [
         {

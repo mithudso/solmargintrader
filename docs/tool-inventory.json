@@ -72,7 +72,7 @@
     },
     {
       "path": "extension/package.json",
-      "sha256": "c55de8f707d8bd48a18a8c85d4904fde445c74cfab0ee87cce7472459e3933da"
+      "sha256": "40644b9d586c9b6119bbddc7cfc3c8691438a06e20de366fde9fb24e251ceca0"
     },
     {
       "path": "extension/src/core/commands.js",
@@ -178,6 +178,20 @@
       "source": "extension/package.json",
       "symbol": "scripts.e2e",
       "declared_command": "node tools/e2e.mjs",
+      "help_command": null,
+      "side_effects": "script-specific; inspect declared command before invoking",
+      "signing": "not inferred from npm metadata",
+      "ambiguity": "no financial retry inferred",
+      "gate_refs": [
+        "extension/package.json"
+      ]
+    },
+    {
+      "id": "extension/package.json:e2e:1000x",
+      "kind": "npm-script",
+      "source": "extension/package.json",
+      "symbol": "scripts.e2e:1000x",
+      "declared_command": "node tools/1000x-e2e.mjs",
       "help_command": null,
       "side_effects": "script-specific; inspect declared command before invoking",
       "signing": "not inferred from npm metadata",
