@@ -1,6 +1,7 @@
 # Prompt history
 
-Version: 260
+Version: 261
+Delta: v260 to v261; record the Preview error request.
 Delta: v259 to v260; record the status flicker, arm control and forward results request.
 Delta: v258 to v259; record dual-price streams, visual accessibility, MTF study, and model-use requests.
 Delta: v257 to v258; record second reversal heuristics and any-time1000x liquidation requirement.
@@ -2387,4 +2388,10 @@ You only have 3%left of my weekly budget of tokens, when you’re running routin
 
 ```text
 Make the center status update stop flashing "unavailable" and redrawing the data if it misses one second. '/Users/mitch/Desktop/Screen Recording 2026-11-16 at 2.35.08 AM.mov' if you’re going to insist on saying it then display it in a silent, green/yellow/red indicator dot. Also it says that trades are disarmed but I don’t have an "arm" button. Also the current results of the forward test, please display them next to the forward test status lines.
+```
+
+## Preview error — 2026-11-16
+
+```text
+I get an error when clicking on Preview, [Image #1]
 ```

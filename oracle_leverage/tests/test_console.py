@@ -7,6 +7,7 @@ import tempfile
 import time
 import unittest
 from pathlib import Path
+from unittest.mock import patch
 
 from oracle_leverage.console import VENUES, Console, valid_signature
 
@@ -259,6 +260,93 @@ class ConsoleTests(unittest.TestCase):
         self.assertIn("100 USD position", result["message"])
         self.assertIn("opening fee $0.06", result["message"])
 
+    def test_keeper_mismatch_falls_back_to_non_executable_unsigned_inspection(self):
+        from oracle_leverage.cli import AdapterError
+
+        calls = []
+
+        def inspect(payload):
+            calls.append(payload["action"])
+            if payload["action"] == "service-build-open":
+                raise AdapterError("service_keeper_mismatch")
+            return {
+                "status": "inspection",
+                "simulation": {"status": "passed"},
+                "checked": {
+                    "program": "yoLovHV5eT4DNPMG2Bu1NLmq8nVygEAPrNT1Rx6vWFA",
+                    "owner": ADDRESS,
+                    "asset": "ZEC",
+                    "side": "short",
+                    "margin": "10000000",
+                    "leverage": 1000,
+                },
+                "fees": {"closeFeePpm": 20, "winFeePpm": 30000},
+            }
+
+        with patch.object(self.sdk, "call", side_effect=inspect):
+            result = self.console.preview("ZEC", VENUES[1], "short", "10")
+        self.assertEqual(calls, ["service-build-open", "service-inspect-open"])
+        self.assertEqual(result["status"], "inspection")
+        self.assertNotIn("preview_id", result)
+        self.assertIn("Submit is unavailable", result["message"])
+        self.assertIn("JupUSD", result["message"])
+        self.assertEqual(self.cli.signed + self.cli.executed, 0)
+        self.assertEqual(self.console.store.intents(), [])
+
+    def test_mismatched_inspection_is_rejected(self):
+        from oracle_leverage.cli import AdapterError
+
+        results = [
+            AdapterError("service_keeper_mismatch"),
+            {
+                "status": "inspection",
+                "simulation": {"status": "passed"},
+                "checked": {"owner": "wrong"},
+            },
+        ]
+        with patch.object(self.sdk, "call", side_effect=results):
+            result = self.console.preview("ZEC", VENUES[1], "short", "10")
+        self.assertEqual(result["status"], "error")
+        self.assertNotIn("preview_id", result)
+        self.assertEqual(self.cli.signed + self.cli.executed, 0)
+
+    def test_malformed_inspection_simulation_is_handled_safely(self):
+        from oracle_leverage.cli import AdapterError
+
+        response = {
+            "status": "inspection",
+            "simulation": None,
+            "checked": {
+                "program": "yoLovHV5eT4DNPMG2Bu1NLmq8nVygEAPrNT1Rx6vWFA",
+                "owner": ADDRESS,
+                "asset": "ZEC",
+                "side": "short",
+                "margin": "10000000",
+                "leverage": 1000,
+            },
+        }
+        with patch.object(
+            self.sdk,
+            "call",
+            side_effect=[AdapterError("service_keeper_mismatch"), response],
+        ):
+            result = self.console.preview("ZEC", VENUES[1], "short", "10")
+        self.assertEqual(result["status"], "error")
+        self.assertNotIn("preview_id", result)
+        self.assertEqual(self.cli.signed + self.cli.executed, 0)
+
+    def test_sdk_keeper_mismatch_explains_safe_preview_block(self):
+        from oracle_leverage.cli import AdapterError
+
+        with patch.object(
+            self.sdk, "call", side_effect=AdapterError("service_keeper_mismatch")
+        ):
+            result = self.console.preview("ZEC", VENUES[1], "short", "10")
+        self.assertEqual(result["status"], "error")
+        self.assertIn("keeper signer", result["message"])
+        self.assertIn("no order was signed or submitted", result["message"].lower())
+        self.assertEqual(self.cli.signed + self.cli.executed, 0)
+
     def test_known_insufficient_funds_error_is_actionable_without_raw_output(self):
         from oracle_leverage.cli import AdapterError
 
@@ -267,7 +355,8 @@ class ConsoleTests(unittest.TestCase):
 
         self.cli.preview = fail
         result = self.console.preview("BTC", VENUES[0], "long", 10)
-        self.assertIn("current SOL or USDC balance", result["message"])
+        self.assertIn("USDC collateral", result["message"])
+        self.assertIn("SOL network balance", result["message"])
         self.assertEqual(self.cli.executed, 0)
 
     def test_wallet_change_or_cap_prevents_funded_call(self):

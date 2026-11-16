@@ -46,11 +46,15 @@ SECRET_FIELDS = frozenset(
 class AdapterError(RuntimeError):
     """A safe diagnostic; ambiguous means an effect requires reconciliation."""
 
-    def __init__(self, code, *, ambiguous=False, returncode=None, stderr=b""):
+    def __init__(
+        self, code, *, ambiguous=False, returncode=None, stdout=b"", stderr=b""
+    ):
         super().__init__(code)
         self.code = code
         self.ambiguous = ambiguous
         self.returncode = returncode
+        self.stdout_bytes = len(stdout)
+        self.stdout_sha256 = hashlib.sha256(stdout).hexdigest() if stdout else None
         self.stderr_bytes = len(stderr)
         self.stderr_sha256 = hashlib.sha256(stderr).hexdigest() if stderr else None
 
@@ -174,6 +178,7 @@ def _bounded_process(
                 error.code,
                 ambiguous=error.ambiguous,
                 returncode=process.returncode,
+                stdout=bytes(streams[process.stdout]),
                 stderr=stderr,
             ) from None
         return process.returncode, bytes(streams[process.stdout]), stderr
@@ -219,31 +224,165 @@ def _clean_json(value, *, refuse_secrets=False, depth=0):
     return value
 
 
+SDK_ERROR_CODES = frozenset(
+    {
+        "service_keeper_or_pause_mismatch",
+        "service_keeper_mismatch",
+        "service_program_paused",
+        "service_owner_is_keeper",
+        "service_market_unavailable",
+        "service_400_insufficient_balance",
+        "unverified_program_account",
+        "sdk_account_or_instruction_mismatch",
+        "unexpected_service_instruction",
+        "invalid_service_response",
+        "invalid_service_json",
+        "service_blockhash_expired",
+        "service_execution_window_elapsed",
+        "sdk_request_failed",
+    }
+)
+
+
+def _record_process_error(argv, timeout, error, *, structured=None, payload=b""):
+    """Private receipt contains only allowlisted facts and hashes of untrusted output."""
+    try:
+        root = Path(os.environ["HOME"]) / ".local/state/oracle-leverage"
+        info = root.lstat()
+        if (
+            not root.is_dir()
+            or root.is_symlink()
+            or info.st_uid != os.getuid()
+            or info.st_mode & 0o077
+        ):
+            return
+        directory = root / "diagnostics"
+        directory.mkdir(mode=0o700, exist_ok=True)
+        info = directory.lstat()
+        if (
+            not directory.is_dir()
+            or directory.is_symlink()
+            or info.st_uid != os.getuid()
+            or info.st_mode & 0o077
+        ):
+            return
+        action = None
+        try:
+            parsed = json.loads(payload) if payload else {}
+            candidate = parsed.get("action") if isinstance(parsed, dict) else None
+            if candidate in {
+                "service-build-open",
+                "service-inspect-open",
+                "service-build-close",
+                "simulate",
+                "build-open",
+                "build-close",
+                "service-execute",
+            }:
+                action = candidate
+        except (ValueError, TypeError, UnicodeError):
+            pass
+        executable = (
+            "jup"
+            if argv and argv[0] == str(APPROVED_BINARY)
+            else "node"
+            if argv and argv[0] == "/opt/homebrew/bin/node"
+            else "other"
+        )
+        record = {
+            "at": time.time(),
+            "executable": executable,
+            "action": action,
+            "code": error.code,
+            "exit_status": error.returncode,
+            "timeout_seconds": timeout
+            if type(timeout) in (int, float)
+            and math.isfinite(timeout)
+            and 0 < timeout <= 60
+            else None,
+            "timed_out": error.code == "process_timeout",
+            "ambiguous": error.ambiguous,
+            "stdout": {
+                "structured_code": structured,
+                "bytes": error.stdout_bytes,
+                "sha256": error.stdout_sha256,
+                "content": "redacted",
+            },
+            "stderr": {
+                "bytes": error.stderr_bytes,
+                "sha256": error.stderr_sha256,
+                "content": "redacted",
+            },
+        }
+        fd = os.open(
+            directory / "process-errors.jsonl",
+            os.O_WRONLY | os.O_CREAT | os.O_APPEND | os.O_NOFOLLOW,
+            0o600,
+        )
+        try:
+            info = os.fstat(fd)
+            if info.st_uid != os.getuid() or info.st_mode & 0o077 or info.st_nlink != 1:
+                return
+            os.write(
+                fd,
+                (
+                    json.dumps(record, allow_nan=False, separators=(",", ":")) + "\n"
+                ).encode(),
+            )
+        finally:
+            os.close(fd)
+    except (OSError, KeyError, ValueError, TypeError, OverflowError):
+        return
+
+
 def run_json(argv, *, timeout, payload=b"", ambiguous=False):
-    status, stdout, stderr = _bounded_process(
-        argv, timeout=timeout, payload=payload, ambiguous=ambiguous
-    )
+    try:
+        status, stdout, stderr = _bounded_process(
+            argv, timeout=timeout, payload=payload, ambiguous=ambiguous
+        )
+    except AdapterError as error:
+        _record_process_error(argv, timeout, error, payload=payload)
+        raise
     if status != 0:
         code = "process_nonzero_exit"
-        if argv and argv[0] == str(APPROVED_BINARY):
-            try:
-                error = json.loads(
-                    stdout.decode("utf-8"),
-                    parse_constant=_invalid_constant,
-                    object_pairs_hook=_unique_object,
-                )
-                if error == {
+        try:
+            error_body = json.loads(
+                stdout.decode("utf-8"),
+                parse_constant=_invalid_constant,
+                object_pairs_hook=_unique_object,
+            )
+            if (
+                argv
+                and argv[0] == str(APPROVED_BINARY)
+                and error_body
+                == {
                     "error": "Insufficient funds to execute the request. Please check your SOL or token balance."
-                }:
-                    code = "jupiter_insufficient_funds"
-            except (UnicodeError, ValueError, TypeError, RecursionError):
-                pass
-        raise AdapterError(
-            code,
-            ambiguous=ambiguous,
-            returncode=status,
-            stderr=stderr,
+                }
+            ):
+                code = "jupiter_insufficient_funds"
+            elif (
+                len(argv) == 2
+                and argv[0] == "/opt/homebrew/bin/node"
+                and Path(argv[1]).resolve()
+                == Path(__file__).resolve().parent / "sdk/bridge.mjs"
+                and isinstance(error_body, dict)
+                and error_body.get("status") == "error"
+                and error_body.get("message") in SDK_ERROR_CODES
+            ):
+                code = error_body["message"]
+        except (UnicodeError, ValueError, TypeError, RecursionError, OSError):
+            pass
+        error = AdapterError(
+            code, ambiguous=ambiguous, returncode=status, stdout=stdout, stderr=stderr
         )
+        _record_process_error(
+            argv,
+            timeout,
+            error,
+            structured=code if code != "process_nonzero_exit" else None,
+            payload=payload,
+        )
+        raise error
     try:
         result = json.loads(
             stdout.decode("utf-8"),
@@ -254,12 +393,15 @@ def run_json(argv, *, timeout, payload=b"", ambiguous=False):
             raise TypeError("json_object_or_array_required")
         return _clean_json(result)
     except (UnicodeError, ValueError, TypeError, RecursionError):
-        raise AdapterError(
+        error = AdapterError(
             "invalid_process_json",
             ambiguous=ambiguous,
             returncode=status,
+            stdout=stdout,
             stderr=stderr,
-        ) from None
+        )
+        _record_process_error(argv, timeout, error, payload=payload)
+        raise error from None
 
 
 def collateral_amount(value):

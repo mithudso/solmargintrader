@@ -58,6 +58,10 @@ class ProcessFixtures(unittest.TestCase):
         self.directory = tempfile.TemporaryDirectory()
         self.addCleanup(self.directory.cleanup)
         self.root = Path(self.directory.name)
+        patcher = patch.dict(os.environ, {"HOME": str(self.root)})
+        patcher.start()
+        self.addCleanup(patcher.stop)
+        (self.root / ".local/state/oracle-leverage").mkdir(parents=True, mode=0o700)
 
     def argv(self, source, *args):
         return [sys.executable, "-I", "-S", "-c", source, *map(str, args)]
@@ -106,6 +110,54 @@ class ProcessFixtures(unittest.TestCase):
         )
         self.assertNotIn(message, str(error))
         self.assertNotIn(message, repr(error))
+
+    def test_sdk_nonzero_known_error_is_safe_and_private_receipt_is_redacted(self):
+        argv = [
+            "/opt/homebrew/bin/node",
+            str(Path(cli.__file__).resolve().parent / "sdk/bridge.mjs"),
+        ]
+        stdout = b'{"status":"error","message":"service_keeper_mismatch"}'
+        stderr = (
+            b"authorization=private-token https://rpc.invalid/?api_key=secret-value"
+        )
+        with (
+            patch.object(cli, "_bounded_process", return_value=(1, stdout, stderr)),
+            self.assertRaises(cli.AdapterError) as caught,
+        ):
+            cli.run_json(argv, timeout=2, payload=b'{"action":"service-build-open"}')
+        self.assertEqual(caught.exception.code, "service_keeper_mismatch")
+        receipt = (
+            self.root / ".local/state/oracle-leverage/diagnostics/process-errors.jsonl"
+        )
+        text = receipt.read_text()
+        self.assertNotIn("private-token", text)
+        self.assertNotIn("secret-value", text)
+        entry = json.loads(text)
+        self.assertEqual(entry["action"], "service-build-open")
+        self.assertEqual(entry["stdout"]["structured_code"], "service_keeper_mismatch")
+        self.assertEqual(entry["stderr"]["sha256"], hashlib.sha256(stderr).hexdigest())
+        self.assertEqual(receipt.stat().st_mode & 0o777, 0o600)
+
+    def test_unrecognized_sdk_error_does_not_expose_untrusted_output(self):
+        argv = [
+            "/opt/homebrew/bin/node",
+            str(Path(cli.__file__).resolve().parent / "sdk/bridge.mjs"),
+        ]
+        with (
+            patch.object(
+                cli,
+                "_bounded_process",
+                return_value=(
+                    1,
+                    b'{"status":"error","message":"secret_token_leak"}',
+                    b"",
+                ),
+            ),
+            self.assertRaises(cli.AdapterError) as caught,
+        ):
+            cli.run_json(argv, timeout=2)
+        self.assertEqual(caught.exception.code, "process_nonzero_exit")
+        self.assertNotIn("secret_token_leak", str(caught.exception))
 
     def test_stdout_and_stderr_limits_reap_the_child(self):
         for output in (1, 2):
