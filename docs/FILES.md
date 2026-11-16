@@ -1,6 +1,6 @@
 # Every file in this repository
 
-**Generated** from `index/INDEX.json` at commit `2b5e973` (2026-11-16T12:31:20+00:00). 3839 tracked files, 138.4 MB.
+**Generated** from `index/INDEX.json` at commit `4ec8796` (2026-11-16T12:39:59+00:00). 3839 tracked files, 138.4 MB.
 
 Regenerate with:
 
@@ -648,9 +648,9 @@ Repository-level entry points and agent instructions. `AGENTS.md` and `CLAUDE.md
 
 #### `memory.md`
 
-`doc` · 2706 lines · 556,826 B · description: **extracted**
+`doc` · 2712 lines · 557,508 B · description: **extracted**
 
-**Purpose.** Version: 581 Delta: v580 to v581; preserve the qualified candidate and final delivery-receipt location. Delta: v579 to v580; qualify current-source browser, public feed and numerical gates before delivery.
+**Purpose.** Version: 582 Delta: v581 to v582; repair generated operation inventories found by final-head CI. Delta: v580 to v581; preserve the qualified candidate and final delivery-receipt location.
 
 **Use.** Read it.
 
@@ -1616,7 +1616,7 @@ Curated prose. `ARCHITECTURE.md` explains how the pieces fit, `TESTING.md` is th
 
 #### `docs/tool-inventory.json`
 
-`doc` · 640 lines · 24,752 B · description: **derived**
+`doc` · 654 lines · 25,248 B · description: **derived**
 
 **Purpose.** Generated JSON object, 8 keys (schema_version, version, delta, generator, scope, limits...).
 

@@ -1,6 +1,6 @@
 # Conceptual index
 
-**Generated** from `index/CONCEPT-INDEX.json` (2026-11-16T12:31:20+00:00). 21 concepts.
+**Generated** from `index/CONCEPT-INDEX.json` (2026-11-16T12:39:59+00:00). 21 concepts.
 
 ```bash
 python3 index/build.py all              # refresh
@@ -109,7 +109,7 @@ Strongest files:
 - `research/strategy_experiment/results/initial-gapped-run/results.json` (408 hits)
 - `FILES.md` (283 hits)
 - `.cdo/reviews-2026-11-12/oracle.json` (271 hits)
-- `memory.md` (248 hits)
+- `memory.md` (249 hits)
 - `.cdo/reviews-2026-11-12/ecosystem-combined-full-final.json` (187 hits)
 
 Full list: `python3 index/search.py --concept execution-onchain -n 1027`

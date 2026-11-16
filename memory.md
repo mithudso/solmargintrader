@@ -1,6 +1,7 @@
 # Work continuation
 
-Version: 581
+Version: 582
+Delta: v581 to v582; repair generated operation inventories found by final-head CI.
 Delta: v580 to v581; preserve the qualified candidate and final delivery-receipt location.
 Delta: v579 to v580; qualify current-source browser, public feed and numerical gates before delivery.
 Delta: v578 to v579; record optimized prompt acceptance, live SOL discovery, selected architecture and implementation.
@@ -2703,3 +2704,8 @@ The public archive manifest is /Users/mitch/.local/state/jup1000x-overlay-2348/p
 JavaScript lint/type checks passed after installing the locked development tools inside this worktree. The initial backtester failure was the expected stale index. Regenerate only the offline metadata/text/concept indexes after final source and docs are fixed. Initial Mongo failures came from missing PyMongo in the TUI environment. Isolated Python 3.13 dependencies under /Users/mitch/.local/state/jup1000x-overlay-2348/verification-deps restored all 57 tests, with 11 native-database skips, exit 0. Endor risk evidence is unavailable; no production dependency changed. Documentation discovery uses the current botmanager/src on PYTHONPATH. Documentation counts are 530 extension tests and 3,289 total.
 
 At this checkpoint, generated documentation/index checks and final CI/merge remain in progress. The final delivery state is recorded at /Users/mitch/.local/state/jup1000x-overlay-2348/delivery.json. That receipt is authoritative for the PR, merged revision, completed checks and final canonical browser acceptance. The original untracked Pine file and other worktrees are preserved. No existing recorder or trading service was restarted.
+
+
+## Jupiter 1000x final-head inventory correction
+
+PR https://github.com/mithudso/solmargintrader/pull/297 contains the implementation. Its first final-head CI found `Inventory drift: docs/operations-registry.json, docs/tool-inventory.json`. The installed paper tests passed; the deterministic source inventory check failed. Regenerated both inventories with scripts/build_operation_inventories.py. No product or trading code changed. Refresh the offline index after this generated update, wait for final-tip CI and use the external delivery receipt for the merged and canonical acceptance state.
