@@ -1,6 +1,7 @@
 # Prompt history
 
-Version: 255
+Version: 256
+Delta: v255 to v256; record ZEC/BTC reversal-shape study, leveraged adapters and persistent paper forward test.
 Delta: v254 to v255; record titlebar/sound options and HYPE ETH BTC SOL comparisons.
 Delta: v253 to v254; record explicit reversal stages and one-minute excursion analysis.
 Delta: v252 to v253; record fixed ten-minute bearish-only reversal alerts.
@@ -2338,3 +2339,10 @@ Make the  "10m · 0 prior UP → bar ? (no UP setup) · WATCHING"  appear on the
 ```text
 Also check these coins for the same pattern in Hype coin, ETH, BTC, and SOL
 ```
+
+
+## Shape-conditioned reversals and leveraged Oracle forward test — 2026-11-15
+
+On both ZEC and BTW, do a similar backtest looking at 5/10/15/20 min bars for the 2 bar reversal pattern. And then cross reference the 2bar reversal patterns with the graph shape during that time, For example if the graph shape is rising, then maybe the 3rd bar isn't as often a down. And then create and implement the standard 10x leverage through the CLI and integrate it into the /Users/mitch/.venvs/soltui/bin/python /Users/mitch/dev/solmargintrader/scripts/oracle_winners.py script. And then write and implement through the SDK the 1000x trading. I understand the risks, I know about the queue, betting against the house, and not being able to close within 15s. Please do it anyway and integrate it intyo the same tui. And then, start a forward test using the TUI and the best predictive strategy you can develop and let it keep running in the TUI so I can monitor how well it does against live data.
+
+Asset clarification: Yes, BTC (Bitcoin).

@@ -441,6 +441,25 @@ part of any component.
 | `extension/src/ui/live-score.js` | Browser score adapter and aligned immutable price/score tick chart. |
 | `docs/LIVE-PREDICTION-SCORE.md` | Scoring, eligibility, freshness and observation-history contract. |
 
+### Oracle leverage and paper reversal observer
+
+| Path | Purpose |
+| --- | --- |
+| `scripts/oracle_winners.py` | Canonical Oracle TUI entrypoint, plain-mode compatibility and optional leverage-panel startup. |
+| `research/zec_leverage_panel.py` | Responsive ZEC/BTC paper monitor and explicit Preview/Submit/Close controls. |
+| `oracle_leverage/console.py` | Disarmed-default execution boundary, wallet binding, intent journal and reconciliation. |
+| `oracle_leverage/cli.py` | Pinned official10x CLI, bounded child processes, dry runs and frozen named keys. |
+| `oracle_leverage/sdk/service.mjs` | Official1000x API, SDK intent checks and owner-signature verification. |
+| `oracle_leverage/sdk/bridge.mjs` | Real1000x SDK builders, unsigned simulation and official keeper service dispatch. |
+| `oracle_leverage/forward.py` | Future-only paper decisions, immutable selection, collector lock and settlement. |
+| `oracle_leverage/market.py` | Bounded public Coinbase USD minute candles, quotes, freshness and recovery reads. |
+| `oracle_leverage/store.py` | Persistent paper predictions, explicit trading intents and all-history performance. |
+| `oracle_leverage/README.md` | Operator workflow, current capabilities, limitations and verification. |
+| `docs/ORACLE-LEVERAGE.md` | Public packaged-wiki copy of the leveraged Oracle operator guide. |
+| `research/reversal_shapes.py` | Causal48bar shape conditioning, four bar intervals and fixed64-candidate selection. |
+| `research/reversal_inputs.py` | Bounded liquidBTC minute acquisition with exact raw-response hashes. |
+| `research/REVERSAL-SHAPES.md` | Independently reproduced ZEC/BTC rates, final-split results and cost scenarios. |
+
 ### Signal Desk interface
 
 | Path | Purpose |

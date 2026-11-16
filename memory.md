@@ -1,6 +1,8 @@
 # Work continuation
 
-Version: 569
+Version: 571
+Delta: v570 to v571; qualify native empirical audit, SDK keeper contract and guarded manual controls; paper collector active, delivery acceptance pending.
+Delta: v569 to v570; begin TASK-2289 study, CLI/SDK adapters and monitored paper forward test.
 Delta: v568 to v569; qualify153 focused units,62 independent UI assertions, exact native containers and final report review.
 Delta: v567 to v568; archive nine native cross-coin inputs/results, qualify648 rows and84 focused UI regressions.
 Delta: v566 to v567; begin titlebar, opt-in event sounds and cross-coin pattern comparison.
@@ -250,6 +252,82 @@ Delta: v402 to v403; initialize Stele TASK-1276 for Market Graph Geometry resear
 Delta: v401 to v402; record merged delivery and final CI for excluded coin removal.
 
 Merge note: retained initial planning entries are historical. The section titled "Hosted ecosystem completion — 2026-11-13 active checkpoint" records the later hosted implementation state; this merge does not mark the complete ecosystem live.
+
+
+## 2026-11-16 — TASK-2289 reversal study and leveraged Oracle controls
+
+This checkpoint supersedes the initial implementation-not-started record below.
+User confirmed BTW means BTC. The scope remains ZEC/BTC5/10/15/20m,
+causal two-same-color-bar patterns,10x CLI,1000x SDK and a persistent paper
+forward test. No funded trade or wallet funding was requested for the forward test.
+
+The fixed41680-minute window per asset ends before all21 unsealed holdout
+reservations. Sparse KuCoin BTC-USDC was rejected on data quality before outcomes;
+liquid Binance BTCUSDT was acquired in42 raw pages. ZEC uses existing Binance
+ZECUSDT. The frozen64-candidate-per-asset grid uses60/20/20 chronological splits,
+training/validation eligibility and validation Wilson-lower-bound ranking only.
+Older studies used these histories, so the final split is retrospective within
+this run, not an independent prospective holdout. Both selected candidates lose
+under the16bps roundtrip scenario: ZEC15m DD/range reversal UP39/73, mean net
+-24.255984854bps; BTC20m DD continuation DOWN52/107, mean net-13.733123842bps.
+There is no qualified profitable strategy. The requested forward test preserves
+these validation-selected candidates without final-split retuning.
+
+Mongo run run:80a9e65c7d86db88538308b8f313c8db344f3ed476410fccb16872b707f9600a
+contains complete native inputs, outputs, plan, frozen selection and audit.
+The tracked manifest binds exact IDs/hashes; result zlib files decode to exact
+native UTF8 bodies. Independent audit verified16506 events,163416 numeric cells,
+128 rules,24 prefix checks,42 raw BTC pages and288 MCP source-read spans.
+Final source SHA fc4b07f9437f3980c9da2600fdd315845a94ac61ba9ac5fe065a2319d27578ce
+is bound to audit v2 art:cfa1b46e03323cb7fd5609bcdaab591f0674597cff9ec17151203f1655f2be67.
+The topic/frontier/incomplete census is complete, but the global queue census
+is explicitly partial. No queue/concept edits, paid research, embeddings or
+trusted literature publication were performed or claimed.
+
+The10x CLI0.10.1 adapter pins the installed source hash, uses explicit named
+wallet identity and separates Preview/Submit. Standard Perps has BTC/SOL/ETH,
+not ZEC. The actual BTC unsigned simulation failed for insufficient balance.
+The1000x SDK0.6.0 program was matched to the official jup.ag public application.
+The public yolo-api.jup.ag contract supports both BTC and ZEC. This supersedes
+the earlier missing-keeper-contract blocker. service.mjs verifies generated-SDK
+intent/accounts, owner/keeper signature slots and unchanged v0 message bytes;
+the pinned CLI signs locally and the official keeper co-signs execution.
+The ledger stores the owner signature before transmission; ambiguous outcomes
+remain quarantined and can reconcile by chain signature. Close preserves the
+venue prefix and checks owned positions and15second minimum. An actual unsigned
+ZEC service build reached HTTP400 insufficient_balance. No owner signature,
+keeper execution or funded fill occurred. Manual1000x execution additionally
+requires sdk.enabled:true in the owner-only armed configuration.
+
+The new oracle-forward-2289 tmux collector uses Coinbase BTC-USD/ZEC-USD public
+candles/quotes. It persists observations and only future newly matching setups,
+uses an immutable selection hash and cannot import execution modules. Home is
+/Users/mitch/.local/state/oracle-leverage; its selection canonical hash is
+c0ed494b893933e3ee38306e0986188016a5156591ca10269a500d94a1a96c51.
+No armed configuration was created. The collector initially runs from the owned
+worktree; final delivery must retarget it to the canonical checkout, preserve
+its ledger, open the owner-visible TUI and verify loaded source before cleanup.
+Preserve all preexisting recorders, paper jobs and webhook services.
+
+Verification includes independent candidate UI/PTY/visual acceptance and real
+loopback/process fixtures. The final new official-service path is undergoing
+independent acceptance; Node14 SDK/service tests and the final130-case Python
+focused suite passed with final exit0. Source checks use
+Ruff0.17.4. check_docs.py passes with the existing SolTUI environment and
+PYTHONPATH=/Users/mitch/dev/worktrees/reversal-leverage-2289/botmanager/src;
+the alternate repair environment lacks Textual, and the primary environment's
+old installed BotManager caused three discovery import failures until that
+source path was supplied. One final-suite command used a nonexistent entrypoint
+test name; it was corrected to research.tests.test_oracle_winners_entrypoint.
+Dependency-review tooling is unavailable; SDK security review status remains
+UNKNOWN. Dependencies are exact-pinned and installed with lifecycle scripts off.
+
+Remaining at this checkpoint: changed-path independent acceptance;
+commit/push/CI/merge and canonical monitor/collector acceptance. New docs were
+staged and the packaged1877-page wiki and307-entry index were regenerated;
+metadata, Ruff, compile and diff checks passed. Funded execution
+cannot be live-qualified with the current balance; no funds are moved automatically.
+
 
 ## Hosted ecosystem completion — 2026-11-13 active checkpoint
 
@@ -2528,3 +2606,16 @@ Combined153focusedunits passed0(47.565s); pinnedRuff0.17.4 check/format0, docs0,
 Finalauditorreceipt a3b6d32f5f5ba1836e67457ad4fee465bf62cb9fc48ee03b1ee3bdbf8ac90eca:648rows/16820events/203reportcells/14causalchecks/18containerbindings allpass0. Publicaudit andnativefinalreport/method/bindings/llms pointers arepresent.
 
 Remaining: final derivedchecks, commit/push/PR/CI/merge, canonicalacceptance andownedcleanup. Use taskprivatetracking.json forphases andfinaldelivery.json forauthoritativecompletion afterthischeckpoint.
+
+
+## Shape-conditioned reversals and leveraged Oracle forward test — 2026-11-15
+
+TASK-2289, with steps TASK-2290 through TASK-2294. BTC clarification is confirmed. Clean base a0128f92251b34873802737230fa82a1200cff92. Owned worktree /Users/mitch/dev/worktrees/reversal-leverage-2289; branch codex/reversal-leverage-2289. Preserve existing accepted reversal archives, current TUI controls/sounds and active services. Do not claim or restart older overlapping tasks.
+
+Study: two completed same-color candles, next-bar direction at 5/10/15/20 minutes, causal trailing shapes, chronological training/validation/final holdout. Freeze definitions in a Mongo empirical run before computation. No paid research, concept edits, indexing or embeddings. Existing BTC archive has 30 days; current retained Coinbase ZEC archive has one day. Inspect longer ZEC history or acquire public historical candles rather than select from a tiny slice.
+
+Execution: official Jupiter CLI supports BTC/SOL/ETH JLP perps, configurable leverage, noninteractive JSON and dry run; ZEC is unsupported in this CLI. Community 1000x SDK builds instructions but owner and keeper signatures are required. Investigate actual co-signing access; never invent success. Implement both paths with explicit capabilities and dry-run defaults. Forward test means paper on live data; user has not requested funded automatic strategy activation in this message. Reconcile ambiguous submissions and protect private signing material.
+
+Root owns study/backend/dependencies/workflow/Git. textual-job-lifecycle-specialist owns research/zec_tui.py, research/zec_leverage_panel.py and focused UI tests. live-acceptance-verifier investigates installed CLI/keeper availability and later verifies canonical runtime and persistent monitored TUI. Both work in the same owned worktree and must preserve each other's edits.
+
+Current stage: freeze input contract and Mongo run. Source implementation and backtest computation have not started. Postman CLI1.87.0 has initialized resources but no signed-in account; resource search/context graph are unavailable. Free Orbit discovery returned HTTP403; use current official Jupiter docs and public source instead. No wallet operations, orders or new services have run.

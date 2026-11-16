@@ -1,0 +1,320 @@
+"""Guards for the trading UI boundary; venues remain fixtures."""
+
+from __future__ import annotations
+
+import json
+import tempfile
+import time
+import unittest
+from pathlib import Path
+
+from oracle_leverage.console import VENUES, Console, valid_signature
+
+ADDRESS = "1" * 32
+SIGNATURE = "3" * 87
+
+
+class FakeCLI:
+    def __init__(self):
+        self.executed = 0
+        self.closed = 0
+        self.address = ADDRESS
+        self.fail = False
+        self.missing_fee = False
+        self.signed = 0
+
+    def wallet(self):
+        return {
+            "address": self.address,
+            "name": "owner",
+            "type": "solana",
+            "active": True,
+        }
+
+    def preview(self, asset, side, amount, *, key_name=None):
+        result = {
+            "sizeUsd": 100,
+            "entryPriceUsd": 100,
+            "liquidationPriceUsd": 91,
+            "openFeeUsd": 0.06,
+        }
+        if self.missing_fee:
+            result.pop("openFeeUsd")
+        return result
+
+    def positions(self, *, key_name=None):
+        return {
+            "positions": [{"positionPubkey": "2" * 32, "asset": "BTC", "side": "long"}]
+        }
+
+    def execute(self, asset, side, amount, *, key_name=None):
+        self.executed += 1
+        if self.fail:
+            raise RuntimeError("ambiguous fixture after send")
+        return {"signature": SIGNATURE}
+
+    def close(self, identity, *, key_name=None):
+        self.closed += 1
+        return {"signature": SIGNATURE}
+
+    def sign_transaction(self, transaction, *, key_name):
+        self.signed += 1
+        return {"signer": self.address, "signedTransaction": "fixture-signed"}
+
+
+class FakeSDK:
+    def __init__(self):
+        self.calls = []
+        self.fail_execute = False
+
+    def call(self, payload):
+        self.calls.append(payload["action"])
+        action = payload["action"]
+        if action == "service-positions":
+            return {
+                "status": "ready",
+                "queued": "0",
+                "claims": [],
+                "positions": [
+                    {
+                        "address": "2" * 32,
+                        "owner": ADDRESS,
+                        "asset": "ZEC",
+                        "isLong": True,
+                        "notional": "5000000000",
+                    }
+                ],
+            }
+        if action in ("service-build-open", "service-build-close"):
+            return {
+                "status": "ready",
+                "build": {"serializedTxBase64": "fixture-unsigned"},
+                "checked": {
+                    "program": "yoLovHV5eT4DNPMG2Bu1NLmq8nVygEAPrNT1Rx6vWFA",
+                    "owner": payload["owner"],
+                    "asset": payload["asset"],
+                    "side": payload.get("side"),
+                    "margin": payload.get("margin"),
+                    "leverage": 1000,
+                    "position": "2" * 32,
+                },
+                "fees": {"closeFeePpm": 20, "winFeePpm": 30000},
+            }
+        if action == "service-signed":
+            return {"status": "ready", "signature": SIGNATURE}
+        if action == "service-execute":
+            if self.fail_execute:
+                raise RuntimeError("ambiguous fixture after transmission")
+            return {
+                "status": "submitted",
+                "signature": SIGNATURE,
+                "service_status": "Processing",
+                "queue_position": 2,
+            }
+        raise AssertionError(action)
+
+
+class ConsoleTests(unittest.TestCase):
+    def setUp(self):
+        self.tmp = tempfile.TemporaryDirectory()
+        self.home = Path(self.tmp.name) / "home"
+        self.cli = FakeCLI()
+        self.sdk = FakeSDK()
+        self.now = time.time()
+        self.console = Console(
+            self.home, cli=self.cli, sdk=self.sdk, clock=lambda: self.now
+        )
+        self.console.store.put_meta("venue_reconciled_at", self.now)
+
+    def tearDown(self):
+        self.tmp.cleanup()
+
+    def arm(self, **updates):
+        path = self.home / "config.json"
+        path.write_text(
+            json.dumps(
+                {
+                    "armed": True,
+                    "wallet_address": ADDRESS,
+                    "max_collateral_usd": 10,
+                    **updates,
+                }
+            )
+        )
+        path.chmod(0o600)
+
+    def preview(self):
+        result = self.console.preview("BTC", VENUES[0], "long", "10")
+        self.assertEqual(result["status"], "ready")
+        return result["preview_id"]
+
+    def test_disarmed_submit_does_not_call_execute(self):
+        self.assertEqual(self.console.execute(self.preview())["status"], "blocked")
+        self.assertEqual(self.cli.executed, 0)
+
+    def test_standard_zec_is_blocked_and_sdk_build_is_unsigned(self):
+        self.assertEqual(
+            self.console.preview("ZEC", VENUES[0], "short", 10)["status"], "blocked"
+        )
+        self.assertEqual(
+            self.console.preview("ZEC", VENUES[1], "short", 5)["status"], "ready"
+        )
+        self.assertEqual(self.cli.signed, 0)
+
+    def test_sdk_requires_both_arming_and_explicit_venue_enable(self):
+        identity = self.console.preview("ZEC", VENUES[1], "short", 5)["preview_id"]
+        self.assertEqual(self.console.execute(identity)["status"], "blocked")
+        self.arm()
+        self.assertEqual(self.console.execute(identity)["status"], "blocked")
+        self.assertEqual(self.cli.signed, 0)
+
+    def test_sdk_submit_uses_checked_signed_bytes_and_persists_processing(self):
+        self.arm(sdk={"enabled": True})
+        identity = self.console.preview("ZEC", VENUES[1], "short", 5)["preview_id"]
+        result = self.console.execute(identity)
+        self.assertEqual(result["status"], "submitted")
+        self.assertEqual(self.cli.signed, 1)
+        self.assertEqual(self.sdk.calls[-2:], ["service-signed", "service-execute"])
+        self.assertEqual(self.console.store.intent(identity)["status"], "submitted")
+        self.assertEqual(self.console.execute(identity)["status"], "blocked")
+
+    def test_sdk_unknown_outcome_preserves_signature_and_can_reconcile(self):
+        self.arm(sdk={"enabled": True})
+        self.sdk.fail_execute = True
+        identity = self.console.preview("BTC", VENUES[1], "long", 5)["preview_id"]
+        self.assertEqual(self.console.execute(identity)["status"], "unknown")
+        intent = self.console.store.intent(identity)
+        self.assertEqual(json.loads(intent["response_json"])["signature"], SIGNATURE)
+        self.assertEqual(self.console.execute(identity)["status"], "blocked")
+        self.now += 20
+        self.console._signature_statuses = lambda signatures, cfg: [
+            {"confirmationStatus": "confirmed", "err": None}
+        ]
+        self.console.reconcile()
+        self.assertEqual(self.console.store.intent(identity)["status"], "confirmed")
+
+    def test_sdk_close_routes_by_tagged_owned_position(self):
+        self.arm(sdk={"enabled": True})
+        result = self.console.close("1000x:" + "2" * 32)
+        self.assertEqual(result["status"], "submitted")
+        self.assertEqual(self.cli.closed, 0)
+        self.assertEqual(
+            self.sdk.calls[-3:],
+            ["service-build-close", "service-signed", "service-execute"],
+        )
+
+    def test_missing_fee_is_not_replaced_with_zero(self):
+        self.cli.missing_fee = True
+        self.assertEqual(
+            self.console.preview("BTC", VENUES[0], "long", 10)["status"], "error"
+        )
+
+    def test_preview_exposes_reviewable_order_amount_price_and_fee(self):
+        result = self.console.preview("BTC", VENUES[0], "long", 10)
+        self.assertEqual(result["leverage"], 10)
+        self.assertEqual(result["collateral_usd"], "10")
+        self.assertIn("100 USD position", result["message"])
+        self.assertIn("opening fee $0.06", result["message"])
+
+    def test_known_insufficient_funds_error_is_actionable_without_raw_output(self):
+        from oracle_leverage.cli import AdapterError
+
+        def fail(*args, **kwargs):
+            raise AdapterError("jupiter_insufficient_funds")
+
+        self.cli.preview = fail
+        result = self.console.preview("BTC", VENUES[0], "long", 10)
+        self.assertIn("current SOL or USDC balance", result["message"])
+        self.assertEqual(self.cli.executed, 0)
+
+    def test_wallet_change_or_cap_prevents_funded_call(self):
+        identity = self.preview()
+        self.arm()
+        self.cli.address = "2" * 32
+        self.assertEqual(self.console.execute(identity)["status"], "blocked")
+        self.assertEqual(self.cli.executed, 0)
+        self.cli.address = ADDRESS
+        self.arm(max_collateral_usd=5)
+        self.assertEqual(self.console.execute(identity)["status"], "blocked")
+
+    def test_success_is_journalled_and_replay_is_never_automatic(self):
+        self.assertTrue(valid_signature(SIGNATURE))
+        identity = self.preview()
+        self.arm()
+        self.assertEqual(self.console.execute(identity)["status"], "submitted")
+        self.assertEqual(self.console.store.intent(identity)["status"], "submitted")
+        self.assertEqual(self.console.execute(identity)["status"], "blocked")
+        self.assertEqual(self.cli.executed, 1)
+
+    def test_exception_after_dispatch_is_durable_unknown(self):
+        identity = self.preview()
+        self.arm()
+        self.cli.fail = True
+        self.assertEqual(self.console.execute(identity)["status"], "unknown")
+        self.assertEqual(self.console.store.intent(identity)["status"], "unknown")
+        self.assertEqual(self.console.execute(self.preview())["status"], "blocked")
+        self.assertEqual(self.cli.executed, 1)
+
+    def test_unresolved_intent_older_than_ui_history_still_blocks(self):
+        self.arm()
+        self.console.store.put_intent("old", "open", "unknown", {}, {})
+        for n in range(105):
+            self.console.store.put_intent(str(n), "preview", "ready", {}, {})
+        self.assertEqual(self.console.execute(self.preview())["status"], "blocked")
+        self.assertEqual(self.cli.executed, 0)
+
+    def test_expired_preview_and_unknown_position_refuse(self):
+        identity = self.preview()
+        self.arm()
+        self.now += 31
+        self.assertEqual(self.console.execute(identity)["status"], "blocked")
+        self.console.store.put_meta("venue_reconciled_at", self.now)
+        self.assertEqual(self.console.close("9" * 32)["status"], "blocked")
+        self.assertEqual(self.cli.closed, 0)
+
+    def test_stopped_heartbeat_never_claims_running(self):
+        self.console.store.put_meta("heartbeat", {"at": self.now, "status": "stopped"})
+        self.assertEqual(self.console.snapshot()["status"], "paper-forward-stopped")
+        self.console.store.put_meta(
+            "heartbeat",
+            {
+                "at": self.now,
+                "status": "running",
+                "assets": {"BTC": {"error": "stale_quote"}},
+            },
+        )
+        self.assertEqual(self.console.snapshot()["status"], "paper-forward-degraded")
+
+    def test_zero_signature_and_unsafe_config_are_rejected(self):
+        self.assertFalse(valid_signature("1" * 64))
+        self.arm()
+        (self.home / "config.json").chmod(0o644)
+        with self.assertRaisesRegex(ValueError, "owner-only"):
+            self.console.config()
+
+    def test_missing_position_envelope_cannot_become_an_empty_wallet(self):
+        self.arm()
+        self.cli.positions = lambda **kwargs: {"error": "fixture"}
+        self.assertEqual(self.console.execute(self.preview())["status"], "blocked")
+        self.assertEqual(self.cli.executed, 0)
+
+    def test_incomplete_rpc_state_never_resolves_a_submission(self):
+        self.arm()
+        identity = self.preview()
+        self.assertEqual(self.console.execute(identity)["status"], "submitted")
+        self.now += 20
+        self.console._signature_statuses = lambda signatures, cfg: [
+            {"confirmationStatus": "confirmed"}
+        ]
+        self.console.reconcile()
+        self.assertEqual(self.console.store.intent(identity)["status"], "submitted")
+        self.now += 20
+        self.console._signature_statuses = lambda signatures, cfg: [
+            {"confirmationStatus": "confirmed", "err": None}
+        ]
+        self.console.reconcile()
+        self.assertEqual(self.console.store.intent(identity)["status"], "confirmed")
+
+
+if __name__ == "__main__":
+    unittest.main()

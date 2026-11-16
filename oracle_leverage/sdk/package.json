@@ -1,0 +1,9 @@
+{
+  "name": "oracle-jupiter-yolo-bridge",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "engines": {"node": ">=22"},
+  "scripts": {"test": "node --test test/*.test.mjs"},
+  "dependencies": {"@solana/codecs": "8.6.0", "@solana/web3.js": "1.98.4", "jupiter-sdk": "0.6.0"}
+}
