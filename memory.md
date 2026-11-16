@@ -1,6 +1,8 @@
 # Work continuation
 
-Version: 595
+Version: 597
+Delta: v596 to v597; qualify first UI sweep and six repaired defects before upstream integration.
+Delta: v595 to v596; begin isolated feed controls and frozen UI optimizer matrix.
 Delta: v594 to v595; integrate YOLO contract evidence and concurrent exit50 continuation.
 Delta: v593 to v594; record authenticated Lazer payload and post-state evidence.
 Delta: v592 to v593; preserve current YOLO contract evidence and pending verifier proof.
@@ -2799,3 +2801,21 @@ In two isolated unsigned simulated opens, owner collateral ATA fell and vault ro
 ## Exit50 study integration — 2026-11-16
 
 The full-cohort retrospective result, selected policy and independent numerical audit are stored in native research artifacts. BTC selected validation return was -8.6858% on 44 trades; ZEC was -6.4275% on 126 trades under modeled trade fees. These are not prospective or funded results. The copied core and observer bytes initially matched the frozen paper profile. Independent lifecycle review found two high-severity issues: restart entry cutoff must exclude process downtime, and existing ledger binding must be checked read-only under exclusive writer ownership before schema changes. The source author corrected both in commit 58f7f09; independent lifecycle review passed five isolated tests. The V3 paper profile matches the corrected observer and core. Canonical merge, prospective startup and loaded acceptance remain pending. Preserve the current UI, paper collector and all existing holdouts.
+
+## 2026-11-16 — TASK-2399 feed controls and UI optimizer
+
+Target: canonical Oracle wrapper, leverage screen and its foreground Coinbase TradeStream. Candidate worktree: /Users/mitch/dev/worktrees/oracle-ui-2399, branch feat/oracle-feed-controls-2399, base 6f69efc2f01741380f3f8d7838d3fb75762859a5. Preserve all other worktrees, private Pine, protected TUI PID28953 and shared services. Never arm, sign, submit, or change private execution configuration during this audit.
+
+Both independent view toggles default on. Persist only view preferences in a separate file. Hide every deselected provider surface and mixed-provider basis. Stop only the foreground Coinbase subscription. The leverage panel itself reads shared snapshots; it does not own the shared dual-quote collector. KNOW-2401 and KNOW-2404 record this boundary. Source/runtime truth remains authoritative. SDK preview disclosure is owned by the concurrent SDK worker and must be retained on integration.
+
+UI optimizer: editable, max five complete sweeps. Frozen matrix and source inventory are in docs/design/oracle-ui-2399/scope.json. Research methods are unrequested and out of scope. AT/terminal capability limits must remain explicit, and missing selected evidence prevents CLEAN. Context7 failed with monthly quota reached. Semantic MCP search stalled and was terminated; targeted offline retrieval supplied relevant paths. An offline search without INDEX_NO_AUTO emitted a rebuild notice; no rebuild process remained on immediate inspection. All subsequent searches use INDEX_NO_AUTO=1.
+
+Next: snapshot sources, run method P01, reproduce missing controls and responsive-state failures, apply confirmed Medium+ repairs immediately, then complete all selected methods and a fresh no-edit sweep. Independent final review, ledger validation, focused tests, draft PR, parent merge, and independent loaded acceptance remain. Evidence captures and command logs: /Users/mitch/.local/state/oracle-ui-2399.
+
+### TASK-2399 checkpoint — first sweep complete
+
+All P01–P48 were individually inspected and checkpointed in /Users/mitch/.local/state/oracle-ui-2399/pass-history.jsonl. Six distinct issues were repaired: missing provider controls, unreachable content at80x24, invisible snapshot failure, bright-bar contrast, dot-only freshness, and null nested provider snapshots crashing the UI. The focused panel/feed/stream/entrypoint suite completed54tests successfully with ResourceWarning treated as an error. The exact pinned Ruff tool is /Users/mitch/.venvs/solmargintrader-cdo-20261111/bin/ruff (0.17.4); the global0.17.5 cannot satisfy the repository pin.
+
+The first sweep contains explicit partial/unavailable evidence for P08/P40 pending SDK disclosure integration, P18/P19 full native contrast, P29 accessibility tree, P30 native zoom/spacing, P33 reduced motion, P39 native installed platform and P41 actual assistive technology. ResearchP49–P70 remains unrequested and out of scope. Never report CLEAN with these gaps.
+
+Next: preserve this checkpoint, merge origin/master including SDK PR303 (4e2dac8b5b73ceafdd63ec01f01078a82bef439b), retain its market-price/nonbinding-entry and unavailable-close disclosures, finish the final48-cell capture plus a complete no-edit sweep, independent review and ledger validation. Parent owns final merge and loaded monitor acceptance. Protected/historical PIDs must be re-inventoried; do not infer runtime identity from an old PID.

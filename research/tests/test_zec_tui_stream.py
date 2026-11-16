@@ -249,6 +249,38 @@ class StreamLifecycle(unittest.TestCase):
         self.assertTrue(first.closed.is_set() and second.closed.is_set())
         stream.close(1)
 
+    def test_feed_pause_closes_only_owned_socket_and_resume_starts_fresh(self):
+        first = FakeConnection([event(10, kind="last_match"), event(11)])
+        second = FakeConnection([event(20, kind="last_match"), event(21, price=200)])
+        opened = []
+
+        def factory(*args, **kwargs):
+            connection = first if not opened else second
+            opened.append(connection)
+            return connection
+
+        stream = TradeStream(
+            clock=lambda: 121.5, ws_factory=factory, retry_seconds=0.01
+        )
+        self.addCleanup(stream.close, 1)
+        stream.set_enabled(False)
+        stream.start()
+        time.sleep(0.05)
+        self.assertFalse(opened)
+        stream.set_enabled(True)
+        self.wait_for(lambda: stream.snapshot("1m")["bar"] is not None)
+        stream.set_enabled(False)
+        self.assertTrue(first.closed.is_set())
+        self.assertIsNone(stream.snapshot("1m")["bar"])
+        time.sleep(0.05)
+        self.assertEqual(len(opened), 1)
+        stream.set_enabled(True)
+        self.wait_for(lambda: stream.snapshot("1m")["bar"] is not None)
+        self.assertEqual(stream.snapshot("1m")["bar"]["close"], 200)
+        self.assertEqual(len(opened), 2)
+        stream.close(1)
+        self.assertFalse(stream.alive)
+
     def test_disabled_stream_never_starts_a_thread_or_socket(self):
         stream = DisabledStream()
         stream.start()

@@ -21,6 +21,21 @@ The complete study is in `research/REVERSAL-SHAPES.md`.
 
 The panel compares independently timestamped Jupiter Oracle and Coinbase book streams. A silent green/yellow/red dot and numeric exchange and receipt ages report each source’s freshness while the last displayed price remains visible; the basis appears only when both observations meet strict freshness and synchronization checks. Jupiter is the primary display for 1000×. These display quotes do not change the frozen Coinbase paper collector or its selection. The [second-turn study](../research/REVERSAL-SECOND-TURN.md) is retrospective and does not qualify a funded strategy.
 
+The **Show feeds** checkboxes independently hide Jupiter or Coinbase. Hiding
+Coinbase removes its price, paper rows, book sizes, indicators, bar filter and
+frozen Oracle calls. Hiding Jupiter removes its bars, model/paper sections,
+positions and manual trading controls. The mixed-source basis appears only when
+both feeds are selected. Both switches remain available when the page is empty;
+re-enabling a feed restores its view without changing the selected asset.
+
+The view remembers these choices in `view.json` under the leverage home. It never
+writes the private `config.json` or changes trading arming. The foreground
+Coinbase trade subscription pauses while Coinbase is hidden and resumes with a
+fresh candle. Shared quote collectors and paper observers keep their existing
+ownership and lifecycle. On short terminals, the page scrolls while the feed
+switches and Return remain visible. Freshness has explicit LIVE, DELAYED and
+STALE text as well as color; a failed snapshot shows a Refresh recovery notice.
+
 ## Persistent paper collector
 
 The root-owned tmux session is `oracle-forward-2289`. Its collector window runs:
