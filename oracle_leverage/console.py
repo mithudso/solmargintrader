@@ -646,13 +646,33 @@ class Console:
                     wallet["name"],
                 )
                 fees = response.get("fees", {})
+                if checked.get("verification") == "current_observed_subset":
+                    simulated_price = checked.get("simulatedEntryPrice")
+                    if (
+                        not isinstance(simulated_price, str)
+                        or not simulated_price.isascii()
+                        or not simulated_price.isdecimal()
+                        or int(simulated_price) <= 0
+                        or checked.get("priceScale") != "1000000000000"
+                    ):
+                        return {"status": "blocked", "message": "SDK simulation price is unavailable; no order was signed or submitted."}
+                    price_message = (
+                        f"Market order; simulated entry ${Decimal(simulated_price) / Decimal(1000000000000):f} "
+                        "is indicative and may change before execution. "
+                        "Current-format 1000x close is unavailable in this client; "
+                        "this client cannot automatically close the position. "
+                        "A failed transaction can incur up to 0.01 SOL in network fees. "
+                    )
+                else:
+                    price_message = "Entry price is set by the oracle at execution. "
                 message = (
                     f"Unsigned official 1000x build: {asset} {side}, {request['collateral_usd']} JupUSD margin, "
                     f"{Decimal(request['collateral_usd']) * 1000} USD notional. "
                     f"Close fee {fees.get('closeFeePpm', 'unavailable')} ppm of notional; "
                     f"win fee {fees.get('winFeePpm', 'unavailable')} ppm of profit. "
                     f"Owner {wallet['address']}; position {checked.get('position')}. "
-                    "Entry price is set by the oracle at execution. SDK verified direction, margin, accounts and signers. Submit builds a fresh matching transaction, checks it, then signs and sends it to Jupiter's keeper."
+                    f"{price_message}"
+                    "SDK verified direction, margin, accounts and signers. Submit builds a fresh matching transaction, checks it, then signs and sends it to Jupiter's keeper."
                 )
             identity = uuid.uuid4().hex
             self.store.put_intent(identity, "preview", "ready", request, response)
