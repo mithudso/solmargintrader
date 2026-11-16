@@ -148,6 +148,49 @@ class ConsoleTests(unittest.TestCase):
         self.assertEqual(result["status"], "ready")
         return result["preview_id"]
 
+    def test_explicit_venue_arming_is_atomic_public_and_independent(self):
+        result = self.console.set_venue_armed(VENUES[0], True, "12")
+        self.assertEqual(result["status"], "armed")
+        self.assertEqual(self.console.config()["enabled_venues"], [VENUES[0]])
+        self.assertEqual(
+            self.console.config()["venue_collateral_caps"][VENUES[0]], "12"
+        )
+        self.assertEqual((self.home / "config.json").stat().st_mode & 0o777, 0o600)
+        self.assertEqual(self.cli.signed + self.cli.executed, 0)
+        self.assertEqual(
+            self.console.set_venue_armed(VENUES[1], True, "5")["status"], "armed"
+        )
+        self.assertTrue(self.console.config()["sdk"]["enabled"])
+        self.assertEqual(
+            self.console.set_venue_armed(VENUES[0], False, "")["status"], "disarmed"
+        )
+        self.assertEqual(self.console.config()["enabled_venues"], [VENUES[1]])
+        self.assertTrue(self.console.config()["armed"])
+        preview = self.preview()
+        self.assertEqual(self.console.execute(preview)["status"], "blocked")
+        self.assertEqual(self.cli.executed, 0)
+
+    def test_arming_never_clears_unknown_intent(self):
+        self.console.store.put_intent("unknown-1", "submit", "unknown", {}, {})
+        self.assertEqual(
+            self.console.set_venue_armed(VENUES[0], True, "10")["status"], "armed"
+        )
+        self.assertEqual(self.console.store.intent("unknown-1")["status"], "unknown")
+        self.assertEqual(self.cli.signed + self.cli.executed, 0)
+
+    def test_arming_rejects_invalid_caps_and_wallet_change(self):
+        self.assertEqual(
+            self.console.set_venue_armed(VENUES[0], True, "NaN")["status"], "blocked"
+        )
+        self.assertEqual(
+            self.console.set_venue_armed(VENUES[0], True, "10")["status"], "armed"
+        )
+        self.cli.address = "2" * 32
+        self.assertEqual(
+            self.console.set_venue_armed(VENUES[1], True, "5")["status"], "blocked"
+        )
+        self.assertEqual(self.console.config()["enabled_venues"], [VENUES[0]])
+
     def test_disarmed_submit_does_not_call_execute(self):
         self.assertEqual(self.console.execute(self.preview())["status"], "blocked")
         self.assertEqual(self.cli.executed, 0)

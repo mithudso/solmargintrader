@@ -7,6 +7,7 @@ import copy
 import threading
 import time
 import unittest
+from unittest.mock import patch
 from xml.etree import ElementTree
 
 from textual.app import App, ComposeResult
@@ -182,8 +183,8 @@ class Interface(unittest.IsolatedAsyncioTestCase):
             await pilot.pause(0.05)
             rendered = static_text(panel, "#leverage-price-comparison")
             self.assertIn("primary display: Jupiter oracle", rendered)
-            self.assertIn("Jupiter oracle · PRIMARY: 101 USD · LIVE", rendered)
-            self.assertIn("Coinbase synced book midpoint: 100 USD · LIVE", rendered)
+            self.assertIn("Jupiter oracle · PRIMARY: 101 USD · ●", rendered)
+            self.assertIn("Coinbase synced book midpoint: 100 USD · ●", rendered)
             self.assertIn("+100.000 bps", rendered)
             svg = app.export_screenshot()
             self.assertIn("Jupiter", svg)
@@ -194,15 +195,17 @@ class Interface(unittest.IsolatedAsyncioTestCase):
             now[0] = 1001.8
             await self.wait_for(
                 pilot,
-                lambda: (
-                    "+100.000 bps"
-                    not in static_text(panel, "#leverage-price-comparison")
+                lambda: any(
+                    getattr(getattr(span.style, "foreground", None), "ansi", None) == 3
+                    for span in panel.query_one("#leverage-price-comparison", Static)
+                    .render()
+                    .spans
                 ),
             )
             rendered = static_text(panel, "#leverage-price-comparison")
-            self.assertIn("Jupiter oracle · PRIMARY: 101 USD · STALE", rendered)
-            self.assertIn("Coinbase synced book midpoint: 100 USD · LIVE", rendered)
-            self.assertIn("no source fallback", rendered)
+            self.assertIn("Jupiter oracle · PRIMARY: 101 USD · ●", rendered)
+            self.assertIn("Coinbase synced book midpoint: 100 USD · ●", rendered)
+            self.assertIn("+100.000 bps", rendered)
             self.assertEqual(console.executes + console.closes, 0)
 
     def test_links_are_underlined_and_untrusted_markup_stays_literal(self):
@@ -263,7 +266,7 @@ class Interface(unittest.IsolatedAsyncioTestCase):
                 }
             with self.subTest(condition=condition):
                 text = comparison_text(data, "BTC", "jupiter-sdk-1000x", 1000.0).plain
-                self.assertIn("Basis unavailable", text)
+                self.assertIn("Basis: —", text)
                 self.assertNotIn("+100.000 bps", text)
                 self.assertIn("Jupiter oracle · PRIMARY", text)
 
@@ -469,16 +472,14 @@ class Interface(unittest.IsolatedAsyncioTestCase):
         async with PanelHost(panel).run_test(size=(110, 42)) as pilot:
             await self.wait_for(pilot, lambda: panel.snapshot_data is not None)
             self.assertIn(
-                "Paper forward: running", static_text(panel, "#leverage-status")
+                "Coinbase ZEC paper running", static_text(panel, "#leverage-status")
             )
             self.assertIn("unsupported", static_text(panel, "#leverage-capabilities"))
             self.assertIn(
                 "official service ready; manual arming required",
                 static_text(panel, "#leverage-capabilities"),
             )
-            self.assertIn(
-                "paper pnl usd: -1.2", static_text(panel, "#leverage-performance")
-            )
+            self.assertIn("settled 3", static_text(panel, "#leverage-status"))
             table = panel.query_one("#leverage-strategies", DataTable)
             self.assertEqual(table.row_count, 1)
             self.assertIn("rising", str(table.get_row_at(0)))
@@ -593,6 +594,113 @@ class Interface(unittest.IsolatedAsyncioTestCase):
             self.assertEqual(console.previews, 1)
             self.assertIsNone(panel.preview_id)
 
+    async def test_forward_results_are_next_to_their_status_and_contexts_show_support(
+        self,
+    ):
+        console = ConsoleFixture()
+        console.data["performance"] = {
+            "by_asset": {
+                "ZEC": {
+                    "settled": 2,
+                    "open": 1,
+                    "correct": 1,
+                    "hit_rate": 0.5,
+                    "mean_net_bps": -2.0,
+                }
+            }
+        }
+        console.data["mtf_forward"] = {
+            "status": "observing",
+            "performance": {
+                "settled": 4,
+                "open": 1,
+                "pending_unscored": 2,
+                "direction_correct": 3,
+                "paper_wins": 2,
+                "hit_rate": 0.5,
+                "verified_liquidations": 1,
+                "mean_unlevered_gross_bps": 2.0,
+            },
+            "assets": {
+                "ZEC": {
+                    "frames": {"5": {"shape": "up"}},
+                    "scores": {
+                        "5": {
+                            "score_down": 0.7,
+                            "components": [{"minutes": 5, "n": 42}],
+                        }
+                    },
+                }
+            },
+        }
+        panel = self.panel(console)
+        async with PanelHost(panel).run_test(size=(110, 42)) as pilot:
+            await self.wait_for(pilot, lambda: panel.snapshot_data is not None)
+            status = static_text(panel, "#leverage-status")
+            self.assertIn("Coinbase ZEC paper running: settled 2", status)
+            self.assertIn("net bps -2.000", status)
+            self.assertIn("MTF Jupiter ALL-ASSETS observing: settled 4", status)
+            self.assertIn("correct 3 · wins 2", status)
+            self.assertIn("gross underlying bps 2.000", status)
+            self.assertIn("5m n=42", static_text(panel, "#leverage-performance"))
+
+    async def test_missing_quote_retains_price_and_identical_tables_keep_selection(
+        self,
+    ):
+        console = ConsoleFixture()
+        console.data["price_comparison"] = {
+            "at": 1000,
+            "status": "running",
+            "connected": {"jupiter": True, "coinbase": True},
+            "feeds": {
+                "jupiter": {
+                    "ZEC": {
+                        "asset": "ZEC",
+                        "price": 101,
+                        "exchange_at": 1000,
+                        "received_at": 1000,
+                    }
+                },
+                "coinbase": {
+                    "ZEC": {
+                        "asset": "ZEC",
+                        "price": 100,
+                        "exchange_at": 1000,
+                        "received_at": 1000,
+                    }
+                },
+            },
+        }
+        panel = self.panel(console)
+        async with PanelHost(panel).run_test(size=(110, 42)) as pilot:
+            await self.wait_for(pilot, lambda: panel.snapshot_data is not None)
+            table = panel.query_one("#leverage-positions", DataTable)
+            table.focus()
+            panel.selected_position = "position-1"
+            console.data["price_comparison"]["feeds"]["jupiter"] = {}
+            before = console.reads
+            with patch.object(table, "clear", wraps=table.clear) as clear:
+                panel.action_refresh()
+                await self.wait_for(
+                    pilot,
+                    lambda: (
+                        console.reads > before
+                        and panel.snapshot_data["price_comparison"]["feeds"]["jupiter"]
+                        .get("ZEC", {})
+                        .get("fresh")
+                        is False
+                    ),
+                )
+                self.assertIn(
+                    "101 USD", static_text(panel, "#leverage-price-comparison")
+                )
+                self.assertIn(
+                    "+100.000 bps", static_text(panel, "#leverage-price-comparison")
+                )
+                self.assertEqual(clear.call_count, 0)
+                self.assertEqual(panel.selected_position, "position-1")
+                self.assertTrue(table.has_focus)
+
     async def test_malformed_refresh_keeps_previous_data_and_surfaces_failure(self):
         console = ConsoleFixture()
         panel = self.panel(console)
@@ -605,7 +713,10 @@ class Interface(unittest.IsolatedAsyncioTestCase):
                 pilot,
                 lambda: (
                     console.reads > before
-                    and "Status unavailable" in static_text(panel, "#leverage-status")
+                    and "Backend read failed"
+                    in str(
+                        panel.query_one("#leverage-price-comparison", Static).tooltip
+                    )
                 ),
             )
             self.assertIsNotNone(panel.snapshot_data)
@@ -724,7 +835,10 @@ class Interface(unittest.IsolatedAsyncioTestCase):
         panel = self.panel(console)
         async with PanelHost(panel).run_test(size=(90, 40)) as pilot:
             await self.wait_for(pilot, lambda: panel.snapshot_data is not None)
-            self.assertIn("STALE", static_text(panel, "#leverage-status"))
+            self.assertIn("●", static_text(panel, "#leverage-status"))
+            self.assertIn(
+                "STALE", str(panel.query_one("#leverage-status", Static).tooltip)
+            )
             for identity in (
                 "#leverage-preview",
                 "#leverage-submit",
@@ -824,6 +938,7 @@ class Interface(unittest.IsolatedAsyncioTestCase):
                         },
                     },
                 }
+                now = [100005.0]
                 app = OracleWinnersApp(
                     WorkingSet([original()]),
                     data_loader=DataSession(Client(), clock=lambda: 100005.0),
@@ -833,7 +948,7 @@ class Interface(unittest.IsolatedAsyncioTestCase):
                     },
                     leverage_console=console,
                     show_leverage=True,
-                    clock=lambda: 100005.0,
+                    clock=lambda now=now: now[0],
                 )
                 async with app.run_test(size=size) as pilot:
                     await self.wait_for(
@@ -844,6 +959,68 @@ class Interface(unittest.IsolatedAsyncioTestCase):
                         ),
                     )
                     panel = app._leverage_panel
+                    table = panel.query_one("#leverage-positions", DataTable)
+                    table.focus()
+                    await pilot.pause(0.05)
+                    self.assertTrue(table.has_focus)
+                    panel.selected_position = "position-1"
+                    original_basis = static_text(panel, "#leverage-price-comparison")
+                    self.assertIn("+100.000 bps", original_basis)
+                    now[0] = 100006.0
+                    panel.paint_live_market()
+                    comparison = panel.query_one(
+                        "#leverage-price-comparison", Static
+                    ).render()
+                    self.assertIn("+100.000 bps", comparison.plain)
+                    self.assertTrue(
+                        any(
+                            getattr(
+                                getattr(span.style, "foreground", None), "ansi", None
+                            )
+                            == 3
+                            for span in comparison.spans
+                        )
+                    )
+                    self.assertIn(
+                        "jupiter: connected, exchange",
+                        str(
+                            panel.query_one(
+                                "#leverage-price-comparison", Static
+                            ).tooltip
+                        ),
+                    )
+                    self.assertEqual(panel.selected_position, "position-1")
+                    self.assertTrue(table.has_focus)
+                    panel.query_one(
+                        "#leverage-venue", Select
+                    ).value = "jupiter-sdk-1000x"
+                    panel.paint_live_market()
+                    self.assertNotIn(
+                        "+100.000 bps", static_text(panel, "#leverage-price-comparison")
+                    )
+                    panel.query_one("#leverage-venue", Select).value = "jupiter-cli-10x"
+                    now[0] = 100005.0
+                    panel.paint_live_market()
+                    comparison = panel.query_one(
+                        "#leverage-price-comparison", Static
+                    ).render()
+                    self.assertIn("+100.000 bps", comparison.plain)
+                    self.assertFalse(
+                        any(
+                            getattr(
+                                getattr(span.style, "foreground", None), "ansi", None
+                            )
+                            == 3
+                            for span in comparison.spans
+                        )
+                    )
+                    panel.query_one("#leverage-asset", Select).value = "BTC"
+                    await pilot.pause(0.05)
+                    self.assertNotIn(
+                        "+100.000 bps", static_text(panel, "#leverage-price-comparison")
+                    )
+                    panel.query_one("#leverage-asset", Select).value = "ZEC"
+                    await pilot.pause(0.05)
                     for venue, label in (
                         ("jupiter-cli-10x", "Jupiter CLI · 10×"),
                         ("jupiter-sdk-1000x", "Jupiter SDK · 1000×"),
@@ -857,6 +1034,8 @@ class Interface(unittest.IsolatedAsyncioTestCase):
                         self.assertEqual(current.content_size.height, 1)
                         self.assertEqual(current.region.height, 1)
                         self.assertGreaterEqual(control.region.width, 31)
+                    panel.query_one("#leverage-contents").scroll_home(animate=False)
+                    await pilot.pause(0.05)
                     svg = app.export_screenshot()
                     rendered_text = "".join(
                         ElementTree.fromstring(svg).itertext()

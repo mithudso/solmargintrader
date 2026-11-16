@@ -1,6 +1,7 @@
 # Prompt history
 
-Version: 259
+Version: 260
+Delta: v259 to v260; record the status flicker, arm control and forward results request.
 Delta: v258 to v259; record dual-price streams, visual accessibility, MTF study, and model-use requests.
 Delta: v257 to v258; record second reversal heuristics and any-time1000x liquidation requirement.
 Delta: v256 to v257; record full transaction wallet display and documentation reply.
@@ -2379,4 +2380,11 @@ Using the data in /Users/mitch/dev/solmargintrader/research/REVERSAL-SHAPES.md, 
 
 ```text
 You only have 3%left of my weekly budget of tokens, when you’re running routine commands, checks, verification, anything that doesn’t require a lot of complex reasoning, context, or memory - call that using the Terra model using an appropriate reasoning level. Also use this model to do any front running work you need like pulling basic data and research, finding files or configs, updating indexes, or running any required audit tasks.
+```
+
+
+## Status flicker, arm control and forward results — 2026-11-16
+
+```text
+Make the center status update stop flashing "unavailable" and redrawing the data if it misses one second. '/Users/mitch/Desktop/Screen Recording 2026-11-16 at 2.35.08 AM.mov' if you’re going to insist on saying it then display it in a silent, green/yellow/red indicator dot. Also it says that trades are disarmed but I don’t have an "arm" button. Also the current results of the forward test, please display them next to the forward test status lines.
 ```
