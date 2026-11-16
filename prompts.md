@@ -1,6 +1,7 @@
 # Prompt history
 
-Version: 270
+Version: 271
+Delta: v270 to v271; preserve the owner host-identification reply.
 Delta: v269 to v270; begin reviewed current-format YOLO verifier implementation for the recorded owner request.
 Delta: v268 to v269; integrate current YOLO contract and concurrent exit50 requests.
 Delta: v267 to v268; record the current YOLO contract investigation excerpt.
@@ -2476,3 +2477,7 @@ Redo the tests again but this time, instead of letting it ride until there's a s
 ```text
 Put the positions and oracle calls on the right side of the /Users/mitch/.venvs/soltui/bin/python /Users/mitch/dev/solmargintrader/scripts/oracle_winners.py instead of having to scroll down, just add a 2nd column. Also At thte top have two large buttons that as the bars come in they highlight the bars red if they're downm, green if they're up, grey if flat, and it moves from right to left, so the right block moves to the left block and then the right one refreshes with the new bar. Make the make the price range distance from mean increase the color of the block, so a large dip would be very bright red, while a very small one would be very grey-red. And above them should be the 4 shape-times with a + or - next to it indicating whether or not the next block is more or less likely to come out higher or lower based on the shape, according to the backtest data.
 ```
+
+## Owner host-identification reply
+
+The name of the box is M-GN90147X97, or m3, or work.

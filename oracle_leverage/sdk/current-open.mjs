@@ -13,6 +13,7 @@ const LOADER = new PublicKey('BPFLoaderUpgradeab1e11111111111111111111111');
 const STORAGE = new PublicKey('3rdJbqfnagQ4yx9HXJViD4zc4xpiSqmFsKpPuSCQVyQL');
 const TREASURY = new PublicKey('Gx4MBPb1vqZLJajZmsKLg8fGw9ErhoKsR8LeKcCKFyak');
 const TOKEN = new PublicKey('TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA');
+const SYSTEM = new PublicKey('11111111111111111111111111111111');
 const USD = new PublicKey('JuprjznTrTSp2UFa3ZBUFgwdAmtZCq4MQCwysN55USD');
 const SERVICE_SIGNER = new PublicKey('2BcxBiR3KiUwnSwM8eViGj9hp7s9JRi4QqiWuVU8Eve7');
 const PINNED = [
@@ -68,31 +69,82 @@ export async function verifyProgramPins(connection) {
   }
 }
 function tokenBalance(account, expectedOwner) {
-  if (!account || !account.owner.equals(TOKEN) || account.executable || account.data.length !== 165 || !account.data.subarray(0, 32).equals(USD.toBuffer()) || !account.data.subarray(32, 64).equals(expectedOwner.toBuffer()) || account.data[108] !== 1) fail('invalid_token_account');
+  if (!account || !account.owner.equals(TOKEN) || account.executable !== false || account.data.length !== 165 || !account.data.subarray(0, 32).equals(USD.toBuffer()) || !account.data.subarray(32, 64).equals(expectedOwner.toBuffer()) || account.data[108] !== 1) fail('invalid_token_account');
+  if (account.data.readUInt32LE(72) !== 0 || account.data.readUInt32LE(109) !== 0 || account.data.readBigUInt64LE(121) !== 0n || account.data.readUInt32LE(129) !== 0) fail('unsafe_token_authority');
   return account.data.readBigUInt64LE(64);
+}
+function sameMetadata(before, after, lamportsUnchanged = true) {
+  if (!before || !after || !Number.isSafeInteger(before.lamports) || before.lamports < 0 || !Number.isSafeInteger(after.lamports) || after.lamports < 0 || !Buffer.isBuffer(before.data) || !Buffer.isBuffer(after.data) || !before.owner.equals(after.owner) || before.executable !== after.executable || typeof before.rentEpoch !== 'string' || !/^[0-9]+$/.test(before.rentEpoch) || before.rentEpoch !== after.rentEpoch || (lamportsUnchanged && before.lamports !== after.lamports)) fail('account_metadata_changed');
+}
+function tokenUnchangedExceptAmount(before, after) {
+  sameMetadata(before, after);
+  if (!before.data.subarray(0, 64).equals(after.data.subarray(0, 64)) || !before.data.subarray(72).equals(after.data.subarray(72))) fail('token_authority_changed');
+}
+// web3.js parses u64 rentEpoch as Number and rounds the common u64-max value.
+// Preserve its original JSON lexeme so pre/post metadata comparison is exact.
+export function parseLosslessRpc(text) {
+  let result;
+  try {
+    result = JSON.parse(text, (key, value, context) => {
+      if (key !== 'rentEpoch') return value;
+      if (typeof value !== 'number' || !context || !/^[0-9]+$/.test(context.source)) fail('invalid_rent_epoch');
+      return context.source;
+    });
+  } catch { fail('invalid_rpc_response'); }
+  if (!result || result.jsonrpc !== '2.0' || result.error || !result.result) fail('invalid_rpc_response');
+  return result.result;
+}
+async function exactRpc(connection, method, params) {
+  const url = new URL(connection.rpcEndpoint);
+  if (url.protocol !== 'https:' || url.username || url.password) fail('invalid_rpc_url');
+  const response = await fetch(url.toString(), { method: 'POST', redirect: 'error', signal: AbortSignal.timeout(8000), headers: { 'content-type': 'application/json' }, body: JSON.stringify({ jsonrpc: '2.0', id: 1, method, params }) });
+  if (!response.ok || !response.body) fail('rpc_unavailable');
+  const chunks = []; let size = 0;
+  for await (const chunk of response.body) { size += chunk.length; if (size > 262144) fail('rpc_response_too_large'); chunks.push(chunk); }
+  return parseLosslessRpc(Buffer.concat(chunks).toString('utf8'));
 }
 function simAccount(raw) {
   if (!raw) return null;
-  if (!Array.isArray(raw.data) || raw.data[1] !== 'base64') fail('invalid_simulation_account');
-  return { ...raw, owner: new PublicKey(raw.owner), data: Buffer.from(raw.data[0], 'base64') };
+  if (!Array.isArray(raw.data) || raw.data[1] !== 'base64' || typeof raw.data[0] !== 'string') fail('invalid_simulation_account');
+  const data = Buffer.from(raw.data[0], 'base64');
+  if (data.toString('base64') !== raw.data[0] || (raw.space !== undefined && raw.space !== data.length)) fail('invalid_simulation_account');
+  return { ...raw, owner: new PublicKey(raw.owner), data };
+}
+
+export function verifyOraclePost({ before, after, mint, feedPrice, settings, chainTime }) {
+  const [, bump] = PublicKey.findProgramAddressSync([Buffer.from('price'), mint.toBuffer()], YOLO);
+  function decode(account) {
+    if (!account || account.executable !== false || !account.owner.equals(YOLO) || !Buffer.isBuffer(account.data) || account.data.length !== 61 || !account.data.subarray(0, 8).equals(discriminator('OraclePrice')) || !account.data.subarray(8, 40).equals(mint.toBuffer()) || account.data[60] !== bump || account.data.readUInt32LE(40) !== feedPrice.feed) fail('oracle_poststate_mismatch');
+    return { value: account.data.readBigUInt64LE(44), time: account.data.readBigUInt64LE(52) };
+  }
+  const old = decode(before), next = decode(after);
+  if (next.value === 0n || next.time < feedPrice.time || next.time < old.time || (next.time === old.time && next.value !== old.value) || (next.time === feedPrice.time && next.value !== feedPrice.oraclePrice)) fail('oracle_poststate_mismatch');
+  checkCurrentTime(next, settings, chainTime);
+  return next;
 }
 
 export function verifyEconomicDeltas({ before, after, owner, pool, margin, networkFee, rent, pythFee }) {
   const [ownerBefore, keeperBefore, fundingBefore, vaultBefore, positionBefore] = before;
   const [ownerAfter, keeperAfter, fundingAfter, vaultAfter, positionAfter] = after;
   if (!ownerBefore || !keeperBefore || positionBefore || !ownerAfter || !keeperAfter || !positionAfter || !positionAfter.owner.equals(YOLO) || [ownerBefore, keeperBefore, ownerAfter, keeperAfter, positionAfter].some(a => !Number.isSafeInteger(a.lamports) || a.lamports < 0)) fail('invalid_poststate');
+  for (const [a, b] of [[ownerBefore, ownerAfter], [keeperBefore, keeperAfter]]) {
+    sameMetadata(a, b, false);
+    if (!a.owner.equals(SYSTEM) || a.executable || a.data.length !== 0 || !a.data.equals(b.data)) fail('invalid_system_account');
+  }
   const funding = tokenBalance(fundingBefore, owner), vault = tokenBalance(vaultBefore, pool);
+  tokenUnchangedExceptAmount(fundingBefore, fundingAfter);
+  tokenUnchangedExceptAmount(vaultBefore, vaultAfter);
   if (funding < margin || tokenBalance(fundingAfter, owner) !== funding - margin || tokenBalance(vaultAfter, pool) !== vault + margin) fail('token_delta_mismatch');
   if (!Number.isSafeInteger(networkFee) || networkFee < 0 || BigInt(networkFee) > 10000000n || !Number.isSafeInteger(rent) || rent < 0 || positionAfter.lamports !== rent || BigInt(networkFee) + BigInt(rent) > MAX_OWNER_LAMPORTS || BigInt(ownerBefore.lamports) - BigInt(ownerAfter.lamports) !== BigInt(networkFee) + BigInt(rent) || BigInt(keeperBefore.lamports) - BigInt(keeperAfter.lamports) !== pythFee) fail('lamport_delta_mismatch');
 }
 
 /** This repeats all checks when preparing a build and after signing; it never signs or sends. */
-export async function verifyCurrentOpen(build, intent, options, inspectOpenBuild) {
+export async function verifyCurrentOpen(build, intent, options, inspectOpenBuild, checkPins = verifyProgramPins) {
   const { connection } = options;
   if (typeof build.buildToken !== 'string' || build.buildToken.length < 1 || build.buildToken.length > 88) fail('invalid_build_token');
   const inspection = await inspectOpenBuild(build, intent, { ...options, skipSimulation: true });
   if (inspection.status !== 'structural') fail('simulation_failed');
-  await verifyProgramPins(connection);
+  await checkPins(connection);
   const slot = await connection.getSlot('confirmed'), chainTime = await connection.getBlockTime(slot);
   if (!Number.isSafeInteger(chainTime) || Math.abs(Math.floor(Date.now() / 1000) - chainTime) > 30) fail('rpc_clock_unavailable');
   const tx = VersionedTransaction.deserialize(Buffer.from(build.serializedTxBase64, 'base64'));
@@ -120,24 +172,26 @@ export async function verifyCurrentOpen(build, intent, options, inspectOpenBuild
   if (fee > 10000n) fail('pyth_fee_excessive');
   const names = ['owner', 'keeper', 'fundingAccount', 'vault', 'position', 'oracle'];
   const keys = names.map(name => parsed.accounts[name].pubkey);
-  const before = await connection.getMultipleAccountsInfoAndContext(keys, { commitment: 'confirmed' });
-  const [ownerBefore, keeperBefore, fundingBefore, vaultBefore, positionBefore] = before.value;
+  const rawBefore = await exactRpc(connection, 'getMultipleAccounts', [keys.map(k => k.toBase58()), { encoding: 'base64', commitment: 'confirmed' }]);
+  if (!rawBefore.context || !Number.isSafeInteger(rawBefore.context.slot) || !Array.isArray(rawBefore.value) || rawBefore.value.length !== keys.length) fail('invalid_prestate');
+  const before = { context: rawBefore.context, value: rawBefore.value.map(simAccount) };
+  const [ownerBefore, keeperBefore, , , positionBefore, oracleBefore] = before.value;
   if (!ownerBefore || !keeperBefore || positionBefore) fail('invalid_prestate');
   const networkFee = (await connection.getFeeForMessage(tx.message, 'confirmed')).value;
   if (!Number.isSafeInteger(networkFee) || networkFee < 0 || BigInt(networkFee) > 10000000n) fail('network_fee_excessive');
-  const result = await connection.simulateTransaction(tx, { sigVerify: false, replaceRecentBlockhash: false, commitment: 'confirmed', minContextSlot: before.context.slot, accounts: { encoding: 'base64', addresses: keys.map(k => k.toBase58()) } });
+  const result = await exactRpc(connection, 'simulateTransaction', [Buffer.from(tx.serialize()).toString('base64'), { encoding: 'base64', sigVerify: false, replaceRecentBlockhash: false, commitment: 'confirmed', minContextSlot: before.context.slot, accounts: { encoding: 'base64', addresses: keys.map(k => k.toBase58()) } }]);
   if (!result.value || result.value.err || !Array.isArray(result.value.accounts) || result.value.accounts.length !== keys.length) fail('simulation_failed');
   const [ownerAfter, keeperAfter, fundingAfter, vaultAfter, positionAfter, oracleAfter] = result.value.accounts.map(simAccount);
   if (!ownerAfter || !keeperAfter || !positionAfter || !oracleAfter || !positionAfter.owner.equals(YOLO) || !oracleAfter.owner.equals(YOLO)) fail('invalid_poststate');
   const margin = BigInt(intent.margin);
-  const oracle = oracleAfter.data;
   const marketMint = (await options.readAccount(connection, parsed.accounts.market.pubkey, sdk.deserializeMarketAccount)).mint;
-  const [, oracleBump] = PublicKey.findProgramAddressSync([Buffer.from('price'), marketMint.toBuffer()], YOLO);
-  if (oracle.length !== 61 || !oracle.subarray(0, 8).equals(discriminator('OraclePrice')) || !oracle.subarray(8, 40).equals(marketMint.toBuffer()) || oracle[60] !== oracleBump || oracle.readUInt32LE(40) !== price.feed || oracle.readBigUInt64LE(44) !== price.oraclePrice || oracle.readBigUInt64LE(52) !== price.time) fail('oracle_poststate_mismatch');
+  const simulatedOracle = verifyOraclePost({ before: oracleBefore, after: oracleAfter, mint: marketMint, feedPrice: price, settings: settings.settings, chainTime });
+  const [, positionBump] = await sdk.findPositionPda({ owner: keys[0], id: parsed.data.id }, YOLO);
+  if (positionAfter.executable !== false || positionAfter.data.length !== 120) fail('position_poststate_mismatch');
   const position = sdk.deserializePositionAccount(positionAfter.data);
-  if (!position.owner.equals(keys[0]) || !position.market.equals(parsed.accounts.market.pubkey) || position.id !== parsed.data.id || !position.isOpen || position.isLong !== (intent.side === 'long') || position.margin !== margin || position.notional !== margin * 1000n || position.entryPrice !== price.oraclePrice || BigInt(position.updateTime) < price.time / 1000000n - 1n || BigInt(position.updateTime) > BigInt(chainTime) + 3n) fail('position_poststate_mismatch');
+  if (position.bump !== positionBump || !position.owner.equals(keys[0]) || !position.market.equals(parsed.accounts.market.pubkey) || position.id !== parsed.data.id || !position.isOpen || position.isLong !== (intent.side === 'long') || position.margin !== margin || position.notional !== margin * 1000n || position.entryPrice !== simulatedOracle.value || BigInt(position.updateTime) < simulatedOracle.time / 1000000n - 1n || BigInt(position.updateTime) > BigInt(chainTime) + 3n) fail('position_poststate_mismatch');
   const rent = await connection.getMinimumBalanceForRentExemption(positionAfter.data.length, 'confirmed');
   verifyEconomicDeltas({ before: before.value, after: [ownerAfter, keeperAfter, fundingAfter, vaultAfter, positionAfter], owner: keys[0], pool: parsed.accounts.pool.pubkey, margin, networkFee, rent, pythFee: fee });
-  await verifyProgramPins(connection);
-  return { ...inspection.checked, operation: 'open', keeper: keeper.toBase58(), requestTime: request, entryPrice: price.oraclePrice.toString(), oracleTimestampUs: price.time.toString(), networkFeeLamports: String(networkFee), positionRentLamports: String(rent), verification: 'current_observed_subset' };
+  await checkPins(connection);
+  return { ...inspection.checked, operation: 'open', keeper: keeper.toBase58(), requestTime: request, simulatedEntryPrice: simulatedOracle.value.toString(), simulatedOracleTimestampUs: simulatedOracle.time.toString(), signedFeedPrice: price.oraclePrice.toString(), priceScale: '1000000000000', networkFeeLamports: String(networkFee), positionRentLamports: String(rent), verification: 'current_observed_subset' };
 }

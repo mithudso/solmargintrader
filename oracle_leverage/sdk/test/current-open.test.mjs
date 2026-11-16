@@ -4,7 +4,7 @@ import { createHash } from 'node:crypto';
 import { PublicKey } from '@solana/web3.js';
 import { secp256k1 } from '@noble/curves/secp256k1';
 import { keccak_256 } from '@noble/hashes/sha3';
-import { parseCurrentPrice, verifyPythSignature, checkCurrentTime, verifyEconomicDeltas, verifyProgramPins } from '../current-open.mjs';
+import { parseCurrentPrice, verifyPythSignature, checkCurrentTime, verifyEconomicDeltas, verifyProgramPins, parseLosslessRpc, verifyOraclePost } from '../current-open.mjs';
 
 const PYTH = new PublicKey('pytd2yyk641x7ak7mkaasSJVXh6YYZnC7wTmtgAyxPt');
 const TREASURY = new PublicKey('Gx4MBPb1vqZLJajZmsKLg8fGw9ErhoKsR8LeKcCKFyak');
@@ -82,9 +82,11 @@ function economicFixture() {
   const token = new PublicKey('TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA');
   const mint = new PublicKey('JuprjznTrTSp2UFa3ZBUFgwdAmtZCq4MQCwysN55USD');
   const yolo = new PublicKey('yoLovHV5eT4DNPMG2Bu1NLmq8nVygEAPrNT1Rx6vWFA');
-  function account(authority, amount) { const data = Buffer.alloc(165); mint.toBuffer().copy(data); authority.toBuffer().copy(data, 32); data.writeBigUInt64LE(amount, 64); data[108] = 1; return { owner: token, data, executable: false, lamports: 1488440 }; }
-  const before = [{ lamports: 10000000 }, { lamports: 1000 }, account(owner, 6000000n), account(pool, 9000000n), null];
-  const after = [{ lamports: 8730160 }, { lamports: 999 }, account(owner, 1000000n), account(pool, 14000000n), { owner: yolo, lamports: 1259840 }];
+  function account(authority, amount) { const data = Buffer.alloc(165); mint.toBuffer().copy(data); authority.toBuffer().copy(data, 32); data.writeBigUInt64LE(amount, 64); data[108] = 1; return { owner: token, data, executable: false, lamports: 1488440, rentEpoch: '99' }; }
+  const system = new PublicKey('11111111111111111111111111111111');
+  const systemAccount = lamports => ({ owner: system, data: Buffer.alloc(0), executable: false, rentEpoch: '99', lamports });
+  const before = [systemAccount(10000000), systemAccount(1000), account(owner, 6000000n), account(pool, 9000000n), null];
+  const after = [systemAccount(8730160), systemAccount(999), account(owner, 1000000n), account(pool, 14000000n), { owner: yolo, lamports: 1259840 }];
   return { before, after, owner, pool, margin: 5000000n, networkFee: 10000, rent: 1259840, pythFee: 1n };
 }
 
@@ -102,8 +104,24 @@ test('requires exact collateral, rent, network fee and keeper fee deltas', () =>
     x => { x.after[2].data[0] ^= 1; },
     x => { x.after[2].data[32] ^= 1; },
     x => { x.after[3].data[108] = 2; },
+    x => { x.after[2].data.writeUInt32LE(1, 72); },
+    x => { x.after[2].data.writeBigUInt64LE(1n, 121); },
+    x => { x.after[2].data.writeUInt32LE(1, 129); },
+    x => { x.before[2].data.writeUInt32LE(1, 72); },
+    x => { x.before[2].data.writeBigUInt64LE(1n, 121); },
+    x => { x.before[2].data.writeUInt32LE(1, 109); },
+    x => { x.before[2].data.writeUInt32LE(1, 129); },
+    x => { x.after[2].data[76] ^= 1; },
+    x => { x.after[3].data[133] ^= 1; },
+    x => { x.after[2].lamports++; },
+    x => { x.before[2].lamports = 9007199254740992; x.after[2].lamports = 9007199254740992; },
+    x => { x.after[3].rentEpoch = '100'; },
+    x => { x.after[0].owner = x.pool; },
+    x => { x.after[1].executable = true; },
+    x => { x.after[0].rentEpoch = '100'; },
+    x => { x.after[1].data = Buffer.from([1]); },
   ];
-  for (const change of cases) { const x = economicFixture(); change(x); assert.throws(() => verifyEconomicDeltas(x), /current_(invalid|token|lamport)/); }
+  for (const change of cases) { const x = economicFixture(); change(x); assert.throws(() => verifyEconomicDeltas(x), /current_(invalid|token|lamport|account|unsafe)/); }
 });
 
 
@@ -112,4 +130,36 @@ test('rejects changed or unavailable upgradeable program data', async () => {
   const loader = new PublicKey('BPFLoaderUpgradeab1e11111111111111111111111');
   const bad = { executable: true, owner: loader, data: Buffer.alloc(36) };
   await assert.rejects(verifyProgramPins({ async getMultipleAccountsInfo() { return [bad, bad, bad, bad]; } }), /current_program_changed/);
+});
+
+
+test('preserves exact u64 rent epochs from raw RPC JSON', () => {
+  const parsed = parseLosslessRpc('{"jsonrpc":"2.0","result":{"value":[{"rentEpoch":18446744073709551615},{"rentEpoch":18446744073709551614}]}}');
+  assert.equal(parsed.value[0].rentEpoch, '18446744073709551615');
+  assert.equal(parsed.value[1].rentEpoch, '18446744073709551614');
+  const x = economicFixture(); x.after[2].rentEpoch = '18446744073709551615'; x.before[2].rentEpoch = '18446744073709551614';
+  assert.throws(() => verifyEconomicDeltas(x), /account_metadata_changed/);
+  assert.throws(() => parseLosslessRpc('{"jsonrpc":"2.0","result":{"rentEpoch":-1}}'), /invalid_rpc_response/);
+});
+
+
+test('accepts a fresh newer market oracle only with matching state and monotonic time', () => {
+  const yolo = new PublicKey('yoLovHV5eT4DNPMG2Bu1NLmq8nVygEAPrNT1Rx6vWFA'), mint = new PublicKey(Buffer.alloc(32, 3));
+  const [, bump] = PublicKey.findProgramAddressSync([Buffer.from('price'), mint.toBuffer()], yolo);
+  const base = BigInt(now) * 1000000n, price = parseCurrentPrice(fixture().data, 'BTC', now);
+  function oracle(time, value) { const data = Buffer.alloc(61); createHash('sha256').update('account:OraclePrice').digest().subarray(0, 8).copy(data); mint.toBuffer().copy(data, 8); data.writeUInt32LE(1, 40); data.writeBigUInt64LE(value, 44); data.writeBigUInt64LE(time, 52); data[60] = bump; return { owner: yolo, executable: false, data }; }
+  const mk = () => ({ before: oracle(base - 1000000n, 64900000000000000n), after: oracle(base + 1000000n, 65100000000000000n), mint, feedPrice: price, settings: { maxOracleAgeSecs: 10, maxOracleFutureSecs: 3 }, chainTime: now });
+  assert.equal(verifyOraclePost(mk()).value, 65100000000000000n);
+  const cases = [
+    x => x.after.data.writeUInt32LE(66, 40),
+    x => { x.after.data[8] ^= 1; },
+    x => { x.after.data[60] ^= 1; },
+    x => x.after.data.writeBigUInt64LE(base - 1n, 52),
+    x => x.after.data.writeBigUInt64LE(base + 4000000n, 52),
+    x => x.after.data.writeBigUInt64LE(0n, 44),
+    x => { x.after.data.writeBigUInt64LE(base, 52); x.after.data.writeBigUInt64LE(9n, 44); },
+    x => { x.before.data.writeBigUInt64LE(base + 2000000n, 52); },
+    x => { x.before.data.writeBigUInt64LE(base + 1000000n, 52); x.before.data.writeBigUInt64LE(9n, 44); },
+  ];
+  for (const mutate of cases) { const x = mk(); mutate(x); assert.throws(() => verifyOraclePost(x), /current_(oracle_poststate_mismatch|price_stale_or_future)/); }
 });
