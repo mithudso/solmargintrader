@@ -190,8 +190,8 @@ class Interface(unittest.IsolatedAsyncioTestCase):
             await pilot.pause(0.05)
             rendered = static_text(panel, "#leverage-price-comparison")
             self.assertIn("primary display: Jupiter oracle", rendered)
-            self.assertIn("Jupiter oracle · PRIMARY: 101 USD · ●", rendered)
-            self.assertIn("Coinbase synced book midpoint: 100 USD · ●", rendered)
+            self.assertIn("Jupiter oracle · PRIMARY: 101 USD · ● · exchange 0.30s · received 0.20s", rendered)
+            self.assertIn("Coinbase synced book midpoint: 100 USD · ● · exchange 0.40s · received 0.10s", rendered)
             self.assertIn("+100.000 bps", rendered)
             svg = app.export_screenshot()
             self.assertIn("Jupiter", svg)
@@ -210,8 +210,8 @@ class Interface(unittest.IsolatedAsyncioTestCase):
                 ),
             )
             rendered = static_text(panel, "#leverage-price-comparison")
-            self.assertIn("Jupiter oracle · PRIMARY: 101 USD · ●", rendered)
-            self.assertIn("Coinbase synced book midpoint: 100 USD · ●", rendered)
+            self.assertIn("Jupiter oracle · PRIMARY: 101 USD · ● · exchange 1.10s · received 1.00s", rendered)
+            self.assertIn("Coinbase synced book midpoint: 100 USD · ● · exchange 1.20s · received 0.90s", rendered)
             self.assertIn("+100.000 bps", rendered)
             self.assertEqual(console.executes + console.closes, 0)
 
@@ -223,6 +223,12 @@ class Interface(unittest.IsolatedAsyncioTestCase):
         self.assertIn("5m +10.0pp n=50", value)
         self.assertIn("10m -10.0pp n=40", value)
         self.assertIn("15m ?", value)
+
+    def test_unsupported_component_displays_its_actual_shape(self):
+        model = {"10": {"status": "ready", "base_down_rate": 0.5, "components": []}}
+        value = mtf_tilt_text(model, {"5": {"shape": "cap"}})
+        self.assertIn("5m cap unsupported", value)
+        self.assertIn("10m ?", value)
 
     def test_bar_intensity_and_empirical_tilts_have_neutral_missing_states(self):
         small = {"open": 100, "close": 100.01, "baseline_range": 2, "progress": 0.5}

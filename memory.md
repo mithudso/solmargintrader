@@ -1,6 +1,7 @@
 # Work continuation
 
-Version: 591
+Version: 592
+Delta: v591 to v592; begin source-age and unsupported-shape follow-up.
 Delta: v590 to v591; integrate UI delivery with the concurrent Jupiter overlay.
 Delta: v589 to v590; complete full developer-corpus review and final repaired-source browser checks.
 Delta: v588 to v589; qualify temporal history/stream merge ordering.
@@ -2775,3 +2776,7 @@ The exact repaired source passed 534 extension tests, JavaScript lint/types, doc
 ## UI delivery stage, 2026-11-16
 
 Worktree: /Users/mitch/dev/worktrees/oracle-tui-2312. Extracted the leverage panel UI from the committed draft while preserving current master and Preview. Reconstructed sampled bars read-only from the existing normalized quote capture, and displayed the published MTF model components. The exit50 policy and forward observer remain separate and pending. Do not alter the running user TUI or wallet state. Final checks and delivery are in progress.
+
+## Source-age follow-up — 2026-11-16
+
+Use isolated worktree /Users/mitch/dev/worktrees/oracle-source-ages-2312. The live ZEC 5m cap cell has 15 training examples against the frozen model minimum of 20, so it has no supported component. The 5m range cell has 300. Preserve the frozen model, observer and wallet. Numeric source ages and an explicit unsupported shape label are in progress.
