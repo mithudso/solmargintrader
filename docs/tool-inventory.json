@@ -20,7 +20,7 @@
     },
     {
       "path": "botmanager/pyproject.toml",
-      "sha256": "116f3d094b8ff32383a67cf0402ca9c5fe318d8c7a8f90b1e32a9b1458a5cefd"
+      "sha256": "ea9a164ce86df1fdf8a42af9e7ecb34a127e73e37ad894fbe6553aaefd5c61c5"
     },
     {
       "path": "botmanager/src/botmanager/cli.py",
@@ -52,7 +52,7 @@
     },
     {
       "path": "ecosystem/pyproject.toml",
-      "sha256": "9a601e7566a102414bcf6b26033a09ccbcbfc43ab675c5a55435a2f93e362b7e"
+      "sha256": "414fb9cb1a6680c2e5b787e165224e482ef5ec4df1ddf419a063a2b257121e7b"
     },
     {
       "path": "ecosystem/web.py",
@@ -72,7 +72,7 @@
     },
     {
       "path": "extension/package.json",
-      "sha256": "f2c7702eeccf9d4d7b2faccac010c0ab7ddd9a0052a86e49f4dfb6f99cf8bafa"
+      "sha256": "e9581767ffb183e89e5f22f2d340cb81921d512a3a2ca021acf6294c20aff99b"
     },
     {
       "path": "extension/src/core/commands.js",
@@ -124,7 +124,7 @@
     },
     {
       "path": "soltui/commands.py",
-      "sha256": "056544535a1cd8180b0656bb4c0fc16e08771202f61f68be01c59c80f821783e"
+      "sha256": "f8ce1ca4f47353eb2c87339015daa43a62d82d02c6c82a07850fb99a83ebfbfc"
     },
     {
       "path": "soltui/make_icon.py",
@@ -132,7 +132,7 @@
     },
     {
       "path": "soltui/pyproject.toml",
-      "sha256": "5bd9ffabe35746979845e87d6b28eaff1412b422fd3a99a2fb095ccb992831fd"
+      "sha256": "a1f1bacff9928cd88e42e6cd9d1cb5eed3218635894bc65a2aa231cc890b93df"
     },
     {
       "path": "soltui/soltui-service",

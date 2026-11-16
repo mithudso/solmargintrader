@@ -1,11 +1,11 @@
 {
-  "generatedAt": "2026-11-16T23:13:06+00:00",
+  "generatedAt": "2026-11-16T23:24:33+00:00",
   "schemaVersion": 1,
   "repoRoot": "~/dev/solmargintrader",
-  "commit": "b242cbd",
+  "commit": "ed37a86",
   "counts": {
     "files": 3966,
-    "bytes": 140563705,
+    "bytes": 140570782,
     "byKind": {
       "strategy-card": 1478,
       "doc": 838,
@@ -75983,9 +75983,9 @@
       "title": "operations-registry",
       "summary": "Generated JSON object, 8 keys (schema_version, version, delta, generator, scope, limits...).",
       "summarySource": "derived",
-      "bytes": 223170,
-      "lines": 4528,
-      "sha1": "ebd1cf4bfde46334a94c94cb3e1cf3e08f5fcdc1",
+      "bytes": 228969,
+      "lines": 4648,
+      "sha1": "fc21b371f661c98a7a488b678c93cc34e3aee5db",
       "symbols": [],
       "imports": [],
       "internalImports": [],
@@ -76561,7 +76561,7 @@
       "summarySource": "derived",
       "bytes": 25248,
       "lines": 654,
-      "sha1": "46b91eb53f2e492b8e26fc55d12c07a83a0db7a7",
+      "sha1": "456bccb7a5d5ecb98cf05d7950e41203a97a8697",
       "symbols": [],
       "imports": [],
       "internalImports": [],
@@ -77050,9 +77050,9 @@
       "title": "installation",
       "summary": "Isolated local installation and bounded installed-runtime health checks. The bootstrap owns its dedicated virtual environment. No shell profile, global package environment, remote installer, recorder or wallet is modified here.",
       "summarySource": "docstring",
-      "bytes": 19247,
+      "bytes": 19263,
       "lines": 496,
-      "sha1": "875155b30bee4500704ce3879dc341f16b4d3984",
+      "sha1": "ff8dfb96caeedcab234f8ab998d01bbe0750bf21",
       "symbols": [
         "PROJECTS",
         "MODULES",
@@ -78137,9 +78137,9 @@
       "title": "test_setup",
       "summary": "",
       "summarySource": "none",
-      "bytes": 18977,
-      "lines": 407,
-      "sha1": "cc585eac623e734d6f8957b75c9dd51920fbc70a",
+      "bytes": 20239,
+      "lines": 431,
+      "sha1": "675114ff8d00eda590c456ac8d19c2f8dcf152bc",
       "symbols": [
         "class SetupTests"
       ],
@@ -118243,5 +118243,5 @@
       "frontmatter": {}
     }
   ],
-  "textSha256": "2d911803dca3dbd6cb74961e77c65a101e7e122b8f0d6617de6520ecf8c3e3cc"
+  "textSha256": "13de1cea8bfc63b2b62cf1481be748049b41ea6f8df1a1c97380bb7b84b9c0e8"
 }

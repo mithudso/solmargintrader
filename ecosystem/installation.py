@@ -108,7 +108,7 @@ def source_fingerprint(repo: Path) -> str:
             relative = path.relative_to(root)
             if any(
                 part.startswith(".")
-                or part in ("tests", "__pycache__", "build", "dist")
+                or part in ("tests", "__pycache__", "build", "dist", "node_modules")
                 or part.endswith(".egg-info")
                 for part in relative.parts
             ):
