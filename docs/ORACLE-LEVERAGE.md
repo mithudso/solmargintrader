@@ -130,3 +130,7 @@ Official CLI reference: https://github.com/jup-ag/cli/blob/main/docs/perps.md
 Product execution rules: https://docs.jup.ag/user-docs/trade/1000x/trading
 
 Community SDK: https://github.com/ChiefWoods/jupiter-sdk
+
+### Bounded quote retention
+
+`/Users/mitch/dev/solmargintrader/scripts/preserve_dual_quotes.py` preserves closed UTC-hour gzip files from the existing dual quote collector. It verifies gzip integrity and SHA-256, writes immutable copies and per-file source receipts, and stops on a conflict, a 2 GiB retained-data cap, or less than 20 GiB of free disk. Its 24-hour deadline persists across restarts; `preserver-status.json` records the heartbeat and stop reason. The retained feed contains normalized Jupiter Oracle and Coinbase quotes, not a complete wire capture, order book, or TradingView perpetual-market feed. Capture alone does not reserve or qualify a prospective holdout.
