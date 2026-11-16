@@ -176,7 +176,9 @@ def simulate_decisions(bars: Sequence[Bar], step: int, decisions: Sequence[dict[
     """Run a transparent next-open fixed-quantity sensitivity, not TV parity.
 
     Entries/close commands are processed in source order on the next open.
-    Explicit quantity overrides any default. An opposite entry closes then
+    Quantity assumes one price unit per contract; instrument multiplier and
+    settlement currency are not modelled. Explicit quantity overrides any
+    default. An opposite entry closes then
     reverses; repeated same-side entries are ignored. Fees apply to both legs.
     With a margin fraction, reject an entry if its required initial collateral
     exceeds cash after its entry fee. If worst-bar equity subsequently falls
@@ -254,4 +256,4 @@ def simulate_decisions(bars: Sequence[Bar], step: int, decisions: Sequence[dict[
             "closed_trades": closed, "winning_trades": wins, "rejected_entries": rejected,
             "liquidations": liquidations, "fees": fees, "open_quantity": signed_qty,
             "equity_curve": equity_curve,
-            "model_limits": "next-open sensitivity; no funding/spread; margin stress is not venue parity"}
+            "model_limits": "next-open sensitivity; unit multiplier assumed 1; no funding/spread; margin stress is not venue parity"}

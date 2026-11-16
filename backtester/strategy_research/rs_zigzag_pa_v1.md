@@ -57,8 +57,8 @@ version/hashes and observed screenshot limits.
 `research/rs_zigzag.py` is an offline, unregistered prototype with a legacy
 future-revealing path and a one-hour-confirmed path. It requires contiguous
 aligned OHLC bars and rejects gaps. Its next-open execution sensitivity is a
-simplification: explicit fees, slippage and optional conservative margin stress
-are scenarios, not exchange or TradingView parity; funding and spread are absent.
+simplification with a one-unit contract multiplier: explicit fees, slippage and
+optional conservative margin stress are scenarios, not exchange or TradingView parity; funding and spread are absent.
 The model has not yet been independently audited or compared to source fills.
 
 Before evaluating a strategy result, use the same verified market, interval and
