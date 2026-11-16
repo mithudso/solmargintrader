@@ -1425,7 +1425,7 @@
       "component": "repo",
       "kind": "yaml",
       "summary": "Extension, backtester, soltui, mongo, liquidity, executor and doc/index drift jobs",
-      "lines": 482
+      "lines": 503
     },
     {
       "path": "CONTRIBUTING.md",
@@ -1906,79 +1906,92 @@
       "path": "research/zec_leverage_panel.py",
       "component": "research",
       "kind": "python",
-      "summary": "Responsive ZEC/BTC paper monitor and explicit Preview/Submit/Close controls."
+      "summary": "Responsive ZEC/BTC paper monitor and explicit Preview/Submit/Close controls.",
+      "lines": 639
     },
     {
       "path": "oracle_leverage/console.py",
       "component": "repo",
       "kind": "python",
-      "summary": "Disarmed-default execution boundary, wallet binding, intent journal and reconciliation."
+      "summary": "Disarmed-default execution boundary, wallet binding, intent journal and reconciliation.",
+      "lines": 756
     },
     {
       "path": "oracle_leverage/cli.py",
       "component": "repo",
       "kind": "python",
-      "summary": "Pinned official10x CLI, bounded child processes, dry runs and frozen named keys."
+      "summary": "Pinned official10x CLI, bounded child processes, dry runs and frozen named keys.",
+      "lines": 622
     },
     {
       "path": "oracle_leverage/sdk/service.mjs",
       "component": "repo",
       "kind": "other",
-      "summary": "Official1000x API, SDK intent checks and owner-signature verification."
+      "summary": "Official1000x API, SDK intent checks and owner-signature verification.",
+      "lines": 245
     },
     {
       "path": "oracle_leverage/sdk/bridge.mjs",
       "component": "repo",
       "kind": "other",
-      "summary": "Real1000x SDK builders, unsigned simulation and official keeper service dispatch."
+      "summary": "Real1000x SDK builders, unsigned simulation and official keeper service dispatch.",
+      "lines": 137
     },
     {
       "path": "oracle_leverage/forward.py",
       "component": "repo",
       "kind": "python",
-      "summary": "Future-only paper decisions, immutable selection, collector lock and settlement."
+      "summary": "Future-only paper decisions, immutable selection, collector lock and settlement.",
+      "lines": 466
     },
     {
       "path": "oracle_leverage/market.py",
       "component": "repo",
       "kind": "python",
-      "summary": "Bounded public Coinbase USD minute candles, quotes, freshness and recovery reads."
+      "summary": "Bounded public Coinbase USD minute candles, quotes, freshness and recovery reads.",
+      "lines": 294
     },
     {
       "path": "oracle_leverage/store.py",
       "component": "repo",
       "kind": "python",
-      "summary": "Persistent paper predictions, explicit trading intents and all-history performance."
+      "summary": "Persistent paper predictions, explicit trading intents and all-history performance.",
+      "lines": 166
     },
     {
       "path": "oracle_leverage/README.md",
       "component": "repo",
       "kind": "markdown",
-      "summary": "Operator workflow, current capabilities, limitations and verification."
+      "summary": "Operator workflow, current capabilities, limitations and verification.",
+      "lines": 127
     },
     {
       "path": "docs/ORACLE-LEVERAGE.md",
       "component": "repo",
       "kind": "markdown",
-      "summary": "Public packaged-wiki copy of the leveraged Oracle operator guide."
+      "summary": "Public packaged-wiki copy of the leveraged Oracle operator guide.",
+      "lines": 127
     },
     {
       "path": "research/reversal_shapes.py",
       "component": "research",
       "kind": "python",
-      "summary": "Causal48bar shape conditioning, four bar intervals and fixed64-candidate selection."
+      "summary": "Causal48bar shape conditioning, four bar intervals and fixed64-candidate selection.",
+      "lines": 470
     },
     {
       "path": "research/reversal_inputs.py",
       "component": "research",
       "kind": "python",
-      "summary": "Bounded liquidBTC minute acquisition with exact raw-response hashes."
+      "summary": "Bounded liquidBTC minute acquisition with exact raw-response hashes.",
+      "lines": 126
     },
     {
       "path": "research/REVERSAL-SHAPES.md",
       "component": "research",
       "kind": "markdown",
-      "summary": "Independently reproduced ZEC/BTC rates, final-split results and cost scenarios."
+      "summary": "Independently reproduced ZEC/BTC rates, final-split results and cost scenarios.",
+      "lines": 101
     },
     {
       "path": "extension/src/ui/signal-desk.js",

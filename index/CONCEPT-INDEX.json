@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-11-16T06:38:15+00:00",
+  "generatedAt": "2026-11-16T07:33:47+00:00",
   "schemaVersion": 1,
   "note": "Concepts are derived from the repo's own vocabulary \u2014 the FAMILY dict, strategy-card frontmatter, docs/trading-signals-concept-family.md, and terms verified to recur in the corpus. A concept matching no file is dropped, not kept.",
   "counts": {
@@ -161,7 +161,7 @@
         "universe",
         "top_coins"
       ],
-      "matchingFiles": 1717,
+      "matchingFiles": 1726,
       "shown": 30,
       "files": [
         {
@@ -277,12 +277,12 @@
           "hits": 32
         },
         {
-          "path": "research/tradingview-script-profiles/shard-a.jsonl",
-          "hits": 30
+          "path": "research/tests/test_zec_leverage_panel.py",
+          "hits": 32
         },
         {
-          "path": "archive/memory-2026-11-08.md",
-          "hits": 29
+          "path": "research/REVERSAL-SECOND-TURN.md",
+          "hits": 31
         }
       ],
       "source": "curated-from-repo-vocabulary"
@@ -439,7 +439,7 @@
         "centred",
         "shift"
       ],
-      "matchingFiles": 1510,
+      "matchingFiles": 1511,
       "shown": 30,
       "files": [
         {
@@ -578,7 +578,7 @@
         "perps",
         "solana"
       ],
-      "matchingFiles": 999,
+      "matchingFiles": 1012,
       "shown": 30,
       "files": [
         {
@@ -607,7 +607,7 @@
         },
         {
           "path": "memory.md",
-          "hits": 232
+          "hits": 235
         },
         {
           "path": ".cdo/reviews-2026-11-12/ecosystem-combined-full-final.json",
@@ -654,12 +654,12 @@
           "hits": 109
         },
         {
-          "path": "soltui/JUPITER_ORDER_WIDGET_IMPLEMENTATION_GUIDE.md",
+          "path": "prompts.md",
           "hits": 105
         },
         {
-          "path": "prompts.md",
-          "hits": 104
+          "path": "soltui/JUPITER_ORDER_WIDGET_IMPLEMENTATION_GUIDE.md",
+          "hits": 105
         },
         {
           "path": "research/zec-expanded-20261113.llms/special-runner-summary.json",
@@ -714,7 +714,7 @@
         "macd",
         "ichimoku"
       ],
-      "matchingFiles": 891,
+      "matchingFiles": 899,
       "shown": 30,
       "files": [
         {
@@ -852,7 +852,7 @@
         "anchor_window",
         "levels"
       ],
-      "matchingFiles": 873,
+      "matchingFiles": 875,
       "shown": 30,
       "files": [
         {
@@ -990,7 +990,7 @@
         "monotone",
         "gap"
       ],
-      "matchingFiles": 806,
+      "matchingFiles": 809,
       "shown": 30,
       "files": [
         {
@@ -1125,7 +1125,7 @@
         "stochastic",
         "oscillator"
       ],
-      "matchingFiles": 577,
+      "matchingFiles": 583,
       "shown": 30,
       "files": [
         {
@@ -1260,7 +1260,7 @@
         "benchmark",
         "baseline"
       ],
-      "matchingFiles": 566,
+      "matchingFiles": 568,
       "shown": 30,
       "files": [
         {
@@ -1394,7 +1394,7 @@
         "buy_and_hold",
         "baseline"
       ],
-      "matchingFiles": 494,
+      "matchingFiles": 496,
       "shown": 30,
       "files": [
         {
@@ -1529,7 +1529,7 @@
         "ts_momentum",
         "dual_momentum"
       ],
-      "matchingFiles": 442,
+      "matchingFiles": 444,
       "shown": 30,
       "files": [
         {
@@ -1651,6 +1651,143 @@
         {
           "path": "docs/TRADINGVIEW-CARD-COVERAGE.md",
           "hits": 32
+        }
+      ],
+      "source": "backtester/core/strategies/__init__.py FAMILY"
+    },
+    {
+      "id": "family:regime-filter",
+      "label": "Strategy family: regime-filter",
+      "why": "A value of the FAMILY dict in backtester/core/strategies/__init__.py, which is the repo's own taxonomy rather than one imposed here.",
+      "terms": [
+        "regime",
+        "sma_regime",
+        "adx_trend",
+        "hurst",
+        "vol_regime"
+      ],
+      "matchingFiles": 389,
+      "shown": 30,
+      "files": [
+        {
+          "path": "research/strategy_experiment/audit_realism.json",
+          "hits": 1049
+        },
+        {
+          "path": "research/RANKED_LISTS.md",
+          "hits": 202
+        },
+        {
+          "path": "research/results/tables.md",
+          "hits": 175
+        },
+        {
+          "path": "docs/FILES.md",
+          "hits": 100
+        },
+        {
+          "path": "FILES.md",
+          "hits": 98
+        },
+        {
+          "path": "research/results/cpcv_combos_tables.md",
+          "hits": 97
+        },
+        {
+          "path": "research/strategy_experiment/results/initial-gapped-run/results.json",
+          "hits": 96
+        },
+        {
+          "path": "research/strategy_experiment/results/results.json",
+          "hits": 96
+        },
+        {
+          "path": "research/tradingview-script-understanding.json",
+          "hits": 84
+        },
+        {
+          "path": "skills/trading-and-investing/references/signal-backtest-protocol-and-regime-evidence.md",
+          "hits": 78
+        },
+        {
+          "path": "research/tradingview-card-coverage.json",
+          "hits": 66
+        },
+        {
+          "path": "research/tradingview-script-profiles/shard-a.jsonl",
+          "hits": 63
+        },
+        {
+          "path": "skills/trading-and-investing/references/regime-detection-and-classification.md",
+          "hits": 63
+        },
+        {
+          "path": "research/tradingview-script-profiles/shard-b.jsonl",
+          "hits": 49
+        },
+        {
+          "path": "research/results/minute_sweep_x1_common.txt",
+          "hits": 48
+        },
+        {
+          "path": "research/tradingview-script-profiles/shard-c.jsonl",
+          "hits": 47
+        },
+        {
+          "path": "backtester/core/scorecard.py",
+          "hits": 43
+        },
+        {
+          "path": "backtester/tests/test_signal_redundancy.py",
+          "hits": 42
+        },
+        {
+          "path": "skills/trading-and-investing/references/strategy-failure-modes-and-synergy.md",
+          "hits": 40
+        },
+        {
+          "path": "research/TRADINGVIEW-SCRIPT-CARDS.md",
+          "hits": 37
+        },
+        {
+          "path": "skills/trading-and-investing/references/indicator-signal-implementation-and-backtesting.md",
+          "hits": 34
+        },
+        {
+          "path": "COMPOUND-5M-PAPER.md",
+          "hits": 32
+        },
+        {
+          "path": "docs/COMPOUND-5M-PAPER.md",
+          "hits": 32
+        },
+        {
+          "path": "soltui/signals.py",
+          "hits": 32
+        },
+        {
+          "path": "research/coin-intelligence/btc-bitcoin.md",
+          "hits": 31
+        },
+        {
+          "path": "backtester/strategy_cards/vol_regime_hmm.md",
+          "hits": 30
+        },
+        {
+          "path": "research/STRATEGIES.md",
+          "hits": 28
+        },
+        {
+          "path": "research/strategy_experiment/results/initial-gapped-run/manifest.json",
+          "hits": 28
+        },
+        {
+          "path": "research/strategy_experiment/results/manifest.json",
+          "hits": 28
+        },
+        {
+          "path": "skills/trading-and-investing/references/signal-pairing-volume-and-pattern-signal-sets.md",
+          "hits": 28
         }
       ],
       "source": "backtester/core/strategies/__init__.py FAMILY"
@@ -1792,143 +1929,6 @@
         }
       ],
       "source": "curated-from-repo-vocabulary"
-    },
-    {
-      "id": "family:regime-filter",
-      "label": "Strategy family: regime-filter",
-      "why": "A value of the FAMILY dict in backtester/core/strategies/__init__.py, which is the repo's own taxonomy rather than one imposed here.",
-      "terms": [
-        "regime",
-        "sma_regime",
-        "adx_trend",
-        "hurst",
-        "vol_regime"
-      ],
-      "matchingFiles": 387,
-      "shown": 30,
-      "files": [
-        {
-          "path": "research/strategy_experiment/audit_realism.json",
-          "hits": 1049
-        },
-        {
-          "path": "research/RANKED_LISTS.md",
-          "hits": 202
-        },
-        {
-          "path": "research/results/tables.md",
-          "hits": 175
-        },
-        {
-          "path": "docs/FILES.md",
-          "hits": 100
-        },
-        {
-          "path": "FILES.md",
-          "hits": 98
-        },
-        {
-          "path": "research/results/cpcv_combos_tables.md",
-          "hits": 97
-        },
-        {
-          "path": "research/strategy_experiment/results/initial-gapped-run/results.json",
-          "hits": 96
-        },
-        {
-          "path": "research/strategy_experiment/results/results.json",
-          "hits": 96
-        },
-        {
-          "path": "research/tradingview-script-understanding.json",
-          "hits": 84
-        },
-        {
-          "path": "skills/trading-and-investing/references/signal-backtest-protocol-and-regime-evidence.md",
-          "hits": 78
-        },
-        {
-          "path": "research/tradingview-card-coverage.json",
-          "hits": 66
-        },
-        {
-          "path": "research/tradingview-script-profiles/shard-a.jsonl",
-          "hits": 63
-        },
-        {
-          "path": "skills/trading-and-investing/references/regime-detection-and-classification.md",
-          "hits": 63
-        },
-        {
-          "path": "research/tradingview-script-profiles/shard-b.jsonl",
-          "hits": 49
-        },
-        {
-          "path": "research/results/minute_sweep_x1_common.txt",
-          "hits": 48
-        },
-        {
-          "path": "research/tradingview-script-profiles/shard-c.jsonl",
-          "hits": 47
-        },
-        {
-          "path": "backtester/core/scorecard.py",
-          "hits": 43
-        },
-        {
-          "path": "backtester/tests/test_signal_redundancy.py",
-          "hits": 42
-        },
-        {
-          "path": "skills/trading-and-investing/references/strategy-failure-modes-and-synergy.md",
-          "hits": 40
-        },
-        {
-          "path": "research/TRADINGVIEW-SCRIPT-CARDS.md",
-          "hits": 37
-        },
-        {
-          "path": "skills/trading-and-investing/references/indicator-signal-implementation-and-backtesting.md",
-          "hits": 34
-        },
-        {
-          "path": "COMPOUND-5M-PAPER.md",
-          "hits": 32
-        },
-        {
-          "path": "docs/COMPOUND-5M-PAPER.md",
-          "hits": 32
-        },
-        {
-          "path": "soltui/signals.py",
-          "hits": 32
-        },
-        {
-          "path": "research/coin-intelligence/btc-bitcoin.md",
-          "hits": 31
-        },
-        {
-          "path": "backtester/strategy_cards/vol_regime_hmm.md",
-          "hits": 30
-        },
-        {
-          "path": "research/STRATEGIES.md",
-          "hits": 28
-        },
-        {
-          "path": "research/strategy_experiment/results/initial-gapped-run/manifest.json",
-          "hits": 28
-        },
-        {
-          "path": "research/strategy_experiment/results/manifest.json",
-          "hits": 28
-        },
-        {
-          "path": "skills/trading-and-investing/references/signal-pairing-volume-and-pattern-signal-sets.md",
-          "hits": 28
-        }
-      ],
-      "source": "backtester/core/strategies/__init__.py FAMILY"
     },
     {
       "id": "family:breakout",
@@ -2623,7 +2623,7 @@
         "vwap_reversion",
         "ou_reversion"
       ],
-      "matchingFiles": 153,
+      "matchingFiles": 154,
       "shown": 30,
       "files": [
         {

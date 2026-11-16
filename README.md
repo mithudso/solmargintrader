@@ -13,7 +13,7 @@ Trading research, execution tooling and the hosted workspace, in eleven parts:
 The Oracle winner TUI now has an explicit leveraged-controls panel and a
 persistent ZEC/BTC paper forward test. See
 [the leveraged Oracle guide](docs/ORACLE-LEVERAGE.md) and the
-[5/10/15/20-minute reversal/shape study](research/REVERSAL-SHAPES.md).
+[5/10/15/20-minute reversal/shape study](research/REVERSAL-SHAPES.md). The [second-turn study](research/REVERSAL-SECOND-TURN.md) evaluates the first downward and subsequent upward moves as retrospective observations.
 The standard10x CLI adapter supports BTC. The1000x integration checks BTC/ZEC
 service transactions with the pinned SDK and submits explicit owner-signed
 requests through the official keeper service. Trading starts disarmed.
