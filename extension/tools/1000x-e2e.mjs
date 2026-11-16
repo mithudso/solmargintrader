@@ -115,6 +115,11 @@ const shell = `<!doctype html><html><head><title>Public 1000x portal fixture</ti
 const forbidden = /(?:^|\/)(?:users?|requests?|accounts?|auth|login|wallets?|transactions?|tx|orders?|execute|submit|sign|send|positions?|deposit|withdraw)(?:\/|$)/i;
 const writeMethods = new Set(['GET', 'HEAD', 'OPTIONS']);
 function allowedPublic(url, method) { const u = new URL(url); return writeMethods.has(method) && !forbidden.test(u.pathname); }
+function fixtureBootstrapCode() {
+  // Auto-attach can evaluate the current document before the new-document hook
+  // runs. Reapplying must not wrap Date.now twice and double the synthetic offset.
+  return `(() => {globalThis.__smtFixtureClockOffsetMs=${JSON.stringify(fixture.state.clockOffsetMs)};if(globalThis.__smtFixtureNativeTransport)return;const Native=globalThis.WebSocket;globalThis.WebSocket=class extends Native{constructor(url,...rest){super(String(url)===${JSON.stringify(STREAM)}?${JSON.stringify(fixture.url)}:url,...rest)}};const originalNow=Date.now.bind(Date);globalThis.__smtFixtureNativeNow=originalNow;Date.now=()=>originalNow()+globalThis.__smtFixtureClockOffsetMs;globalThis.__smtFixtureNativeTransport=true;})()`;
+}
 async function setupTarget(sessionId, info) {
   targets.set(info.targetId, { ...info, sessionId }); owned.add(sessionId);
   await browser.call('Runtime.enable', {}, sessionId);
@@ -124,7 +129,7 @@ async function setupTarget(sessionId, info) {
   if (info.type === 'page' || info.type === 'iframe') {
     await browser.call('Page.enable', {}, sessionId);
     if (fixture) {
-      const code = `(() => {const Native = globalThis.WebSocket; globalThis.WebSocket = class extends Native {constructor(url,...rest){super(String(url) === ${JSON.stringify(STREAM)} ? ${JSON.stringify(fixture.url)} : url,...rest)}}; globalThis.__smtFixtureNativeTransport = true; const originalNow = Date.now.bind(Date);globalThis.__smtFixtureClockOffsetMs=${JSON.stringify(fixture.state.clockOffsetMs)};Date.now=()=>originalNow()+globalThis.__smtFixtureClockOffsetMs;})()`;
+      const code = fixtureBootstrapCode();
       await browser.call('Page.addScriptToEvaluateOnNewDocument', { source: code }, sessionId);
       await browser.evaluate(sessionId, code).catch(() => {});
     }
@@ -449,14 +454,33 @@ try {
     await check('two actual extension windows share immutable issued forecasts and native atomic learning', async () => {
       const { targetId } = await browser.call('Target.createTarget', { url: `chrome-extension://${browser.extensionId}/src/1000x/panel.html#market=ORCL` });
       twin = await until(() => targets.get(targetId), 'second extension window'); await sessionReady.get(twin.sessionId);
+      await browser.call('Page.bringToFront', {}, twin.sessionId);
+      await until(() => ev(twin, `document.visibilityState==='visible'`), 'owned second window foreground');
+      await ev(twin, `globalThis.__smtBootstrapRefs={socket:WebSocket,now:Date.now}`);
+      await ev(twin, fixtureBootstrapCode()); await ev(twin, fixtureBootstrapCode());
+      assert(await ev(twin, `WebSocket===globalThis.__smtBootstrapRefs.socket&&Date.now===globalThis.__smtBootstrapRefs.now`), 'fixture initialization wrapped clock or transport twice');
+      await ev(twin, `delete globalThis.__smtBootstrapRefs`);
+      await until(async () => { const s = await panelSnapshot(twin); return s.state === 'live' && ['active', 'baseline-warmup', 'baseline-performance'].includes(s.oracle.state) ? s : null; }, 'second window fresh source before learning');
       await until(() => ev(twin, `document.querySelector('#oracle-counts')?.textContent.includes('pending 1')`), 'second window restored pending forecast');
+      // Bounded, test-only observation forwards the original snapshot to the
+      // actual method unchanged. Retain one sample for cross-platform failures.
+      for (const page of [panel, twin]) await ev(page, `(async()=>{const {OracleController}=await import(chrome.runtime.getURL('src/1000x/oracle-controller.js'));globalThis.__smtObserveOriginal=OracleController.prototype.observe;OracleController.prototype.observe=function(snapshot){globalThis.__smtLastOracleInput={snapshot,seenAt:Date.now()};return Reflect.apply(globalThis.__smtObserveOriginal,this,[snapshot])}})()`);
+      try {
       const before = await oracleSnapshot(panel), restored = await oracleSnapshot(twin);
       same(restored.pending, before.pending, 'second window changed issued forecast'); same(restored.issued, 1, 'duplicate initial issuance');
       const fixedCutoff = before.pending[0].cutoff;
       for (let step = 1; step <= 81; step++) {
         const desired = (fixedCutoff + step * 60) * 1000 + 2500;
         await setClock(desired - Date.now(), [portal, panel, twin]);
-        await until(async () => { const all = await oracleStates(panel); return all.length === 6 && all.every(s => s.lastIssuedCutoff === fixedCutoff + step * 60) ? all : null; }, `all six Oracle minute${step} issuance`);
+        // Creating a target does not consistently activate it in Linux headless
+        // Chrome. Production correctly pauses hidden pages; activate our owner.
+        await browser.call('Page.bringToFront', {}, twin.sessionId);
+        await until(async () => { const all = await oracleStates(panel); return all.length === 6 && all.every(s => s.lastIssuedCutoff === fixedCutoff + step * 60) ? all : null; }, `all six Oracle minute${step} issuance`).catch(async error => {
+          const pages = [];
+          for (const page of [panel, twin]) pages.push(await ev(page, `(async()=>{const trace=globalThis.__smtLastOracleInput;let input;try{const {oracleInput}=await import(chrome.runtime.getURL('src/1000x/oracle-model.js'));const i=oracleInput(trace?.snapshot,Date.now());input={eligible:i.eligible,reason:i.reason,cutoff:i.cutoff,rows:i.rows.length}}catch(error){input={error:error.message}}return{visibility:document.visibilityState,now:Date.now(),native_now:globalThis.__smtFixtureNativeNow?.(),clock_offset:globalThis.__smtFixtureClockOffsetMs,last_seen:trace?.seenAt,feed_status:trace?.snapshot.status,stream_status:trace?.snapshot.streamStatus,minute_status:trace?.snapshot.minuteStatus,quote:trace?.snapshot.quote,input,status:document.querySelector('#oracle-status')?.textContent}})()`));
+          const diagnostic = { step, expected_cutoff: fixedCutoff + step * 60, pages, stored: (await oracleStates(panel)).map(s => ({ horizon: JSON.parse(s.key)[4], issued: s.issued, last_cutoff: s.lastIssuedCutoff, trained: s.model.n })), history_requests: fixture.historyRequests.slice(-6) };
+          receipt.details.observations.push({ oracle_issuance_failure: diagnostic }); console.error('Oracle issuance diagnostic', JSON.stringify(diagnostic)); throw error;
+        });
         if (step === 33) { const hour = await oracleSnapshot(panel, 3600); same(hour.pending.length, 34, '1h lost pending beyond32'); same(hour.model.n, 0, '1h learned before target'); }
       }
       const all = await until(async () => { const states = await oracleStates(panel); return states.length === 6 && states.every(s => s.model.n === 82 - JSON.parse(s.key)[4] / 60) ? states : null; }, 'all six genuine delayed outcome cohorts');
@@ -476,14 +500,17 @@ try {
       await ev(panel, `document.querySelector('#streaming-oracle details').open=true;window.scrollTo(0,0)`);
       await screenshot('07-streaming-oracle-learned-fixture');
       return { issued_per_horizon: state.issued, resolved_per_horizon: all.map(s => ({ horizon: JSON.parse(s.key)[4], n: s.model.n, pending: s.pending.length })), selected_model: state.model, shadow_served_example: shadow, ui: ui.oracle,
-        interpretation: 'Synthetic accelerated fixture checks implementation and accounting, not future accuracy or profit' };
+        interpretation: 'Synthetic accelerated fixture checks implementation and accounting, not future accuracy or profit', observation_method: 'One bounded snapshot observation forwards the unchanged input to the original controller; explicit owned-page activation preserves the real visibility policy' };
+      } finally {
+        for (const page of [panel, twin]) if (page) await ev(page, `(async()=>{const {OracleController}=await import(chrome.runtime.getURL('src/1000x/oracle-controller.js'));if(globalThis.__smtObserveOriginal)OracleController.prototype.observe=globalThis.__smtObserveOriginal;delete globalThis.__smtObserveOriginal;delete globalThis.__smtLastOracleInput})()`).catch(() => {});
+      }
     });
     await check('streaming Oracle all six deselected models keep learning through selected-chart failure without a new socket', async () => {
       const before = await oracleStates(panel), upgrades = fixture.state.upgrades;
       try {
         fixture.state.chartFailure = true;
         await ev(panel, `(()=>{const s=document.querySelector('#timeframe');s.value='3600';s.dispatchEvent(new Event('change'))})()`);
-        await until(async () => { const s = await panelSnapshot(panel); return s.state === 'error' ? s : null; }, 'selected chart history refusal');
+        await until(async () => { const s = await panelSnapshot(panel); return s.state !== 'live' && s.rows.every(row => /Unavailable|Waiting for live/.test(row.signal)) ? s : null; }, 'selected chart history refusal');
         await setClock(fixture.state.clockOffsetMs + 60000, [portal, panel, twin]);
         const after = await until(async () => { const states = await oracleStates(panel); return states.length === 6 && states.every(s => s.model.n === before.find(old => old.key === s.key).model.n + 1) ? states : null; }, 'all models learned despite chart failure');
         const ui = await until(async () => { const s = await panelSnapshot(panel); return s.oracle.horizon === 3600 && s.oracle.overview.every(row => row.state === 'active') ? s : null; }, 'healthy all-horizon overview during chart error');

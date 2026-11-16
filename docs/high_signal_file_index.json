@@ -922,7 +922,7 @@
       "component": "repo",
       "kind": "markdown",
       "summary": "Streaming learner target, equations, atomic persistence, bounds, research status and verification limits",
-      "lines": 236
+      "lines": 265
     },
     {
       "path": "docs/EXTENSION-STREAMING-ORACLE-PROMPT.md",
@@ -936,7 +936,7 @@
       "component": "extension",
       "kind": "other",
       "summary": "Native Chrome fixture and actual-public-portal gates with exact executed module hashes",
-      "lines": 587
+      "lines": 651
     },
     {
       "path": "extension/tools/1000x-reference.py",

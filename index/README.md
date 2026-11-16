@@ -4,6 +4,13 @@ A searchable index over every tracked file in this repo: what exists, which file
 contain a word, which files mean something like a question, and which bear on an
 idea. Built to answer "where is the thing that does X" without reading every file.
 
+Stage new task-owned source paths before rebuilding. Both the builder and its
+freshness check use `git ls-files`, so a pre-stage check cannot detect untracked
+files that will be added by the next commit. Preserve unrelated untracked work.
+After staging, rebuild with `INDEX_NO_AUTO=1 python3 index/build.py all`, check
+with `INDEX_NO_AUTO=1 python3 index/build.py --check`, and verify the committed
+tree before pushing. These offline commands do not regenerate semantic vectors.
+
 ```bash
 python3 index/build.py all                       # metadata + text + concepts (offline)
 python3 index/build.py semantic                  # embeddings (needs local ollama)

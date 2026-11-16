@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-11-16T20:23:59+00:00",
+  "generatedAt": "2026-11-16T20:46:12+00:00",
   "schemaVersion": 1,
   "note": "Concepts are derived from the repo's own vocabulary \u2014 the FAMILY dict, strategy-card frontmatter, docs/trading-signals-concept-family.md, and terms verified to recur in the corpus. A concept matching no file is dropped, not kept.",
   "counts": {
@@ -439,7 +439,7 @@
         "centred",
         "shift"
       ],
-      "matchingFiles": 1539,
+      "matchingFiles": 1540,
       "shown": 30,
       "files": [
         {
@@ -578,7 +578,7 @@
         "perps",
         "solana"
       ],
-      "matchingFiles": 1108,
+      "matchingFiles": 1111,
       "shown": 30,
       "files": [
         {
@@ -603,7 +603,7 @@
         },
         {
           "path": "memory.md",
-          "hits": 325
+          "hits": 326
         },
         {
           "path": "FILES.md",
@@ -662,16 +662,16 @@
           "hits": 109
         },
         {
+          "path": "extension/tools/1000x-e2e.mjs",
+          "hits": 108
+        },
+        {
           "path": "soltui/JUPITER_ORDER_WIDGET_IMPLEMENTATION_GUIDE.md",
           "hits": 105
         },
         {
           "path": "research/zec-expanded-20261113.llms/special-runner-summary.json",
           "hits": 104
-        },
-        {
-          "path": "extension/tools/1000x-e2e.mjs",
-          "hits": 101
         },
         {
           "path": "pagesource",
@@ -714,7 +714,7 @@
         "macd",
         "ichimoku"
       ],
-      "matchingFiles": 923,
+      "matchingFiles": 924,
       "shown": 30,
       "files": [
         {
@@ -990,7 +990,7 @@
         "monotone",
         "gap"
       ],
-      "matchingFiles": 845,
+      "matchingFiles": 846,
       "shown": 30,
       "files": [
         {
@@ -1125,7 +1125,7 @@
         "stochastic",
         "oscillator"
       ],
-      "matchingFiles": 595,
+      "matchingFiles": 596,
       "shown": 30,
       "files": [
         {
@@ -1260,7 +1260,7 @@
         "benchmark",
         "baseline"
       ],
-      "matchingFiles": 592,
+      "matchingFiles": 593,
       "shown": 30,
       "files": [
         {
@@ -1394,7 +1394,7 @@
         "buy_and_hold",
         "baseline"
       ],
-      "matchingFiles": 521,
+      "matchingFiles": 522,
       "shown": 30,
       "files": [
         {
