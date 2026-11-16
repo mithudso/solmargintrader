@@ -1,6 +1,7 @@
 # Work continuation
 
-Version: 579
+Version: 580
+Delta: v579 to v580; reconcile the selected TradingView research family.
 Delta: v578 to v579; record the incorrect existing coverage mapping.
 Delta: v577 to v578; start single moving-average research under TASK-2335.
 Delta: v576 to v577; record the Preview inspection fix and pending acceptance.
@@ -2680,3 +2681,5 @@ Resume Mongo run `run:2ceb379c607a2a79120f4d92639b671d5a6f9670129529994e098f847a
 Adapter and eight focused tests pass against shared engine commit `600926e` loaded read-only. Pinned Ruff 0.17.4 passed. The adapter rejects nonfinite close values rather than claiming Pine `na` parity. The Mongo run has unqualified question and evidence ledgers and eight full depth-three graph-neighborhood pages; those 1,407 records do not establish the server's 1,286-member descendant census. Source-bound independent negation, canonical claim creation, novelty passes, trusted finalization, exact market data and backtest remain.
 
 MovingAvg Cross support publication 43000599885 is marked `existing` and mapped to the two-average `ma_crossover` in `research/tradingview-card-coverage.json`. That implementation does not match the pinned single-SMA Pine source. The separate MovingAvg2Line Cross maps to the same code. Anchored risk `KNOW-2341` records the mismatch; preserve checksum-bound readiness records.
+
+Trading-root census: the complete 1,286-row incomplete endpoint exactly matches the 1,286 rooted parent/pending-parent witness IDs. Its census hash is `090d627bdd38494ab17a4ac56394030a94c2301a927bc13291eed078ca377f8e`. The complete frontier has 1,157 selected rows and census hash `13375f86529ec430af30234b965787c2c3ca6c04a213bb9b04e01842dd826218`. Mongo run revision 40 stores all cursor-bearing pages and detailed continuation; queue joining remains delegated to Momentum. These censuses do not establish qualification.
