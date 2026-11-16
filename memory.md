@@ -1,6 +1,7 @@
 # Work continuation
 
-Version: 581
+Version: 582
+Delta: v581 to v582; record restoration of the earlier research scope.
 Delta: v580 to v581; preserve paired proxy output and verified project-venv docs check.
 Delta: v579 to v580; record shared Pine order model and retrospective oracle proxy.
 Delta: v578 to v579; add research-only ZigZag paths, card and tests.
@@ -2677,7 +2678,7 @@ The 1000x Preview fallback reports a verified unsigned simulation as inspection 
 
 ## RS ZigZag PA strategy, 2026-11-16
 
-The owner superseded the seven-strategy and Channel Breakout investigation with this one strategy. TASK-2333 tracks the work; the eight previous Mongo runs are paused and their owned leases released. Draft PR 292 preserves the previous checkpoint and must not be represented as completed research.
+The owner initially superseded the seven-strategy and Channel Breakout investigation with this strategy, then explicitly restored the earlier rabbitholes and made ZigZag the top priority. TASK-2333 tracks ZigZag; the eight earlier Mongo runs were paused and their owned leases released at the prior boundary. The coordinator is reassigning the restored strategy runs using fresh fences. Draft PR 292 preserves the earlier checkpoint and must not be represented as completed research.
 
 The owner-supplied source remains untracked at `/Users/mitch/dev/solmargintrader/rs_zig_zag_pa_strategy.pine`, SHA-256 `a708103541426c6746c1cb33b0ad5016094ce29b4342c2f92375bcadbb01e5a9`. It contains stray trailing `Z` and `ZZ` on lines 227–228. A private syntax-only reference removes exactly those tokens and retains the missing version annotation; it is uncompiled and not verified as the screenshot source. Never stage or overwrite the original.
 
