@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-11-14T19:02:53+00:00",
+  "generatedAt": "2026-11-16T00:05:02+00:00",
   "schemaVersion": 1,
   "note": "Concepts are derived from the repo's own vocabulary \u2014 the FAMILY dict, strategy-card frontmatter, docs/trading-signals-concept-family.md, and terms verified to recur in the corpus. A concept matching no file is dropped, not kept.",
   "counts": {
@@ -161,12 +161,12 @@
         "universe",
         "top_coins"
       ],
-      "matchingFiles": 1677,
+      "matchingFiles": 1684,
       "shown": 30,
       "files": [
         {
           "path": "memory.md",
-          "hits": 217
+          "hits": 225
         },
         {
           "path": "docs/FILES.md",
@@ -300,7 +300,7 @@
         "borrow",
         "financing"
       ],
-      "matchingFiles": 1574,
+      "matchingFiles": 1575,
       "shown": 30,
       "files": [
         {
@@ -578,7 +578,7 @@
         "perps",
         "solana"
       ],
-      "matchingFiles": 962,
+      "matchingFiles": 964,
       "shown": 30,
       "files": [
         {
@@ -990,9 +990,13 @@
         "monotone",
         "gap"
       ],
-      "matchingFiles": 789,
+      "matchingFiles": 795,
       "shown": 30,
       "files": [
+        {
+          "path": "research/zec-reversal-excursions-20261115/results.json",
+          "hits": 528
+        },
         {
           "path": "research/strategy_experiment/results/initial-gapped-run/results.json",
           "hits": 272
@@ -1107,10 +1111,6 @@
         },
         {
           "path": ".cdo/reviews-2026-11-12/backtester-data-boundaries.json",
-          "hits": 34
-        },
-        {
-          "path": "research/tradingview-strategy-card-locations.json",
           "hits": 34
         }
       ],
@@ -1939,7 +1939,7 @@
         "bb_breakout",
         "keltner"
       ],
-      "matchingFiles": 298,
+      "matchingFiles": 299,
       "shown": 30,
       "files": [
         {

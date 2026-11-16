@@ -79,32 +79,97 @@ def bearish_alert(context, snapshot, now):
     """
     result = {
         "state": "unavailable",
+        "stage": "unknown",
+        "closed_up_count": None,
+        "current_bar_number": None,
+        "older_bar_status": "unknown",
+        "count_scope": "last_two_closed_bars_checked",
+        "reversal_detected": False,
+        "data_status": "invalid_clock",
         "direction": None,
         "qualified": False,
         "current_start": None,
         "target_at": None,
         "price": None,
         "true_open": None,
+        "price_relation": None,
+        "elapsed_seconds": None,
         "historical": None,
         "reason": "invalid_clock",
-        "text": "10m bearish check · no alert\nClock unavailable\nScreen context only · no trading action",
+        "text": "10m · closed UP ? → bar ? · DATA UNAVAILABLE\nPrice / TRUE open unavailable · clock unavailable\nUTC window unavailable · NOT LIVE ODDS",
         "tooltip": "No valid current ten-minute target is available.",
     }
     if not _number(now) or now <= 0:
         return result
     start = int(now // STEP) * STEP
-    result.update(current_start=start, target_at=start + STEP)
+    elapsed = now - start
+    result.update(current_start=start, target_at=start + STEP, elapsed_seconds=elapsed)
+    beginning = live.iso(start)[11:19]
     target = live.iso(start + STEP)[11:19]
 
-    def state(kind, title, detail, qualification, reason):
+    def state(kind, data_status, detail, note, reason):
+        count = result["closed_up_count"]
+        setup = (
+            "2 closed UP (UU) → bar 3"
+            if count == 2
+            else "1 closed UP confirmed → bar 2"
+            if count == 1
+            else "0 prior UP → bar ? (no UP setup)"
+            if count == 0
+            else "closed UP ? → bar ?"
+        )
+        unavailable = data_status not in ("ready", "midpoint_wait")
+        status = (
+            "REVERSAL DETECTED"
+            if result["reversal_detected"]
+            else "DATA UNAVAILABLE"
+            if unavailable
+            else "WATCHING"
+        )
+        price, opening = result["price"], result["true_open"]
+        if price is not None and opening is not None:
+            comparison = f"Price ${price:,.5f} {result['price_relation']} TRUE open ${opening:,.5f}"
+        else:
+            current = (
+                f"Price ${price:,.5f}" if price is not None else "Price unavailable"
+            )
+            actual_open = (
+                f"TRUE open ${opening:,.5f}"
+                if opening is not None
+                else "TRUE open pending (5m settle)"
+                if data_status == "midpoint_wait"
+                else "TRUE open unavailable"
+            )
+            comparison = f"{current} · {actual_open}"
+        historical = result["historical"]
+        history_note = ""
+        if historical:
+            count, total = historical["reversals"], historical["total"]
+            history_note = (
+                f" Historical UU reference: {count}/{total} = {100 * count / total:.1f}% "
+                "next bar DOWN in one captured day. NOT LIVE ODDS; this does not measure "
+                "the midpoint trigger or continued decline after detection."
+            )
         result.update(
             state=kind,
+            data_status=data_status,
             reason=reason,
-            text=f"10m {title}\n{detail}\n{qualification}",
+            text=(
+                f"10m · {setup} · {status}\n"
+                f"{comparison} · elapsed {int(elapsed // 60)}m{int(elapsed % 60):02}s\n"
+                f"UTC {beginning}–{target} · {note}"
+            ),
             tooltip=(
                 f"Current UTC ten-minute window: {live.iso(start)} → {live.iso(start + STEP)}. "
-                "Only bearish checks are enabled. Observed midpoint reversal is not a forecast probability. "
-                "The historical UU fraction is one exploratory captured day with a different receipt clock."
+                f"{detail}. The count checks only the last two closed ten-minute bars; "
+                "one confirmed UP does not prove an exact one-bar run when the older bar is missing. "
+                f"Older bar status: {result['older_bar_status']}. "
+                "Only bearish checks are enabled. The midpoint trigger still requires at least "
+                "five minutes in the current bar, a completed first five-minute candle for its true "
+                "open, and a fresh current trade below that open. Midpoint condition untested. "
+                "Further decline after detection is unproven. NOT calibrated live odds. "
+                "Screen context only; no trading action."
+                f"{history_note}"
             ),
         )
         return result
@@ -112,9 +177,9 @@ def bearish_alert(context, snapshot, now):
     if not isinstance(context, dict) or context.get("error"):
         return state(
             "unavailable",
-            "bearish check · no alert",
+            "history_unavailable",
             "Completed five-minute history unavailable",
-            "Screen context only · no trading action",
+            "History unavailable · NOT LIVE ODDS",
             "history_unavailable",
         )
     end, calculated = context.get("end"), context.get("calculated_at")
@@ -130,97 +195,120 @@ def bearish_alert(context, snapshot, now):
     ):
         return state(
             "unavailable",
-            "bearish check · no alert",
+            "history_stale_or_future",
             "History stale / future clock; awaiting refresh",
-            "Screen context only · no trading action",
+            "History stale / future · NOT LIVE ODDS",
             "history_stale_or_future",
         )
     rows = context.get("rows")
     if not isinstance(rows, dict):
         return state(
             "unavailable",
-            "bearish check · no alert",
+            "history_unavailable",
             "Completed history unavailable",
-            "Screen context only · no trading action",
+            "History unavailable · NOT LIVE ODDS",
             "history_unavailable",
         )
     previous = _ten(rows, start - STEP, end)
     if previous is None:
         return state(
             "waiting",
-            "bearish check · no alert",
+            "previous_constituent_missing",
             "Waiting for both halves of the previous full ten-minute candle",
-            "Missing candles are never filled",
+            "Previous full candle missing · NOT LIVE ODDS",
             "previous_constituent_missing",
         )
+    older = _ten(rows, start - 2 * STEP, end)
+    older_up = bool(older is not None and older["close"] > older["open"])
+    result["older_bar_status"] = (
+        "unknown" if older is None else "up" if older_up else "not_up"
+    )
+    previous_up = previous["close"] > previous["open"]
+    result["closed_up_count"] = 2 if previous_up and older_up else int(previous_up)
+    result["current_bar_number"] = (
+        result["closed_up_count"] + 1 if previous_up else None
+    )
+    result["stage"] = (
+        "two_up_bar3"
+        if previous_up and older_up
+        else "one_up_bar2"
+        if previous_up
+        else "no_up_setup"
+    )
+    first_half = _five(rows, start, end) if elapsed >= HALF else None
+    if first_half is not None:
+        result["true_open"] = first_half["open"]
     price, error = _price(snapshot, start, now)
     if error:
         return state(
             "unavailable",
-            "bearish check · no alert",
+            "trade_unavailable",
             error,
-            "Fresh actual trade required · no trading action",
+            "Fresh trade unavailable · NOT LIVE ODDS",
             "trade_unavailable",
         )
     result["price"] = price
-    if previous["close"] <= previous["open"]:
+    if result["true_open"] is not None:
+        result["price_relation"] = (
+            "<"
+            if price < result["true_open"]
+            else ">"
+            if price > result["true_open"]
+            else "="
+        )
+    if not previous_up:
         return state(
             "none",
-            "bearish check · no alert",
+            "ready",
             "Previous full ten-minute candle is not UP",
-            "Bearish-only · no DD → UP alert",
+            "No bearish setup; no DD → UP alert",
             "previous_not_up",
         )
-    older = _ten(rows, start - 2 * STEP, end)
-    uu = bool(older is not None and older["close"] > older["open"])
-    elapsed = now - start
-    first_half = _five(rows, start, end) if elapsed >= HALF else None
     if first_half is not None:
         opening = first_half["open"]
-        result["true_open"] = opening
         if price < opening:
-            result["direction"] = "DOWN"
+            result.update(direction="DOWN", reversal_detected=True)
             return state(
                 "observed_reversal",
-                "REVERSAL OBSERVED · prior full UP + current below TRUE open",
-                f"${price:,.5f} < ${opening:,.5f} · {int(elapsed // 60)}m {int(elapsed % 60):02}s elapsed · ends {target} UTC",
-                "Midpoint condition untested · NOT calibrated live odds",
+                "ready",
+                "Reversal detected: current trade is below this bar's TRUE open after at least five minutes",
+                "Further decline unproven · NOT LIVE ODDS",
                 None,
             )
-    if uu:
+    if older_up:
         reference = _historical(context.get("reference"))
         result.update(direction="DOWN", historical=reference)
-        note = "Historical reference unavailable · NOT LIVE ODDS"
-        if reference:
-            count, total = reference["reversals"], reference["total"]
-            note = f"History {count}/{total} = {100 * count / total:.1f}% · one captured day · NOT LIVE ODDS"
         return state(
             "uu_watch",
-            "DOWN WATCH · two full UP candles (UU)",
-            f"Current ten-minute window ends {target} UTC · next DOWN watch",
-            note,
+            "ready"
+            if first_half
+            else "midpoint_wait"
+            if elapsed < HALF
+            else "true_open_unavailable",
+            "Two closed UP candles establish the current bar 3 watch; no midpoint reversal is detected",
+            "Further decline unproven · NOT LIVE ODDS",
             None,
         )
     if elapsed < HALF:
         return state(
             "waiting",
-            "bearish check · one full UP candle",
+            "midpoint_wait",
             "Waiting until ≥5 minutes into the next ten-minute candle",
-            "Then compare fresh price with its TRUE open",
+            "Trigger waits ≥5m · NOT LIVE ODDS",
             "before_midpoint",
         )
     if first_half is None:
         return state(
             "waiting",
-            "bearish check · one full UP candle",
+            "true_open_unavailable",
             "Waiting for the completed first five-minute candle / true open",
-            "Partial stream open is never substituted",
+            "TRUE open unavailable · NOT LIVE ODDS",
             "true_open_unavailable",
         )
     return state(
         "none",
-        "bearish check · no midpoint reversal",
+        "ready",
         f"Fresh price ${price:,.5f} is not below TRUE open ${first_half['open']:,.5f}",
-        "No bearish alert · no trading action",
+        "No reversal detected · NOT LIVE ODDS",
         "price_not_below_open",
     )

@@ -1,0 +1,233 @@
+{
+  "version": 1,
+  "run_id": "run:125d5e7f32471c641a1400376b8e69c500cece918dee2fab8e639f576909c03c",
+  "native_revision_at_projection": 13,
+  "qualification": "unverified descriptive empirical archive; independently numerically reproduced; no trusted literature or prospective proof",
+  "source_artifacts": {
+    "census": {
+      "run_id": "run:125d5e7f32471c641a1400376b8e69c500cece918dee2fab8e639f576909c03c",
+      "name": "discovery-census.json",
+      "kind": "empirical-census",
+      "body_utf8_sha256": "eb311d381024180b1a65478d196c56f64871c3eab8b1cfa77b1dd6ec9f413e2a",
+      "metadata": {
+        "selected_topic_id": "c:short-window-microstructure-and-statistics",
+        "global_queue_complete": false,
+        "concept_edits": false,
+        "queue_dispatches": 0
+      },
+      "trusted_provenance": false,
+      "_id": "art:d444f03f56d1abe82d1f73b23df319baf01d2c9a474ef08fa4108958486575df",
+      "managed_by": "research-library/v1",
+      "encoding": "utf-8",
+      "byte_count": 594791,
+      "chunks": [
+        "chunk:91162d6ca3ecafe9f9588beb17abdbb45c29c7c7dcf0c45d0eceb7e2add02d4e",
+        "chunk:2bdce021e17da5f71f30fef899f498974bd08d5f6df3e1e17cbd931fb622671d"
+      ],
+      "created_at": "2026-11-15T23:42:08.433347+00:00",
+      "qualification": {
+        "status": "unverified",
+        "authority": "client",
+        "reason": "Orchestration records do not establish research qualification"
+      }
+    },
+    "code": {
+      "run_id": "run:125d5e7f32471c641a1400376b8e69c500cece918dee2fab8e639f576909c03c",
+      "name": "analysis.py",
+      "kind": "empirical-code",
+      "body_utf8_sha256": "ba0cd2c3483c979000bab5cd44283b9216864bc2efdddde433fcbc833456a0da",
+      "metadata": {
+        "source_sha256": "ba0cd2c3483c979000bab5cd44283b9216864bc2efdddde433fcbc833456a0da",
+        "role": "unverified empirical source, independent audit required"
+      },
+      "trusted_provenance": false,
+      "_id": "art:d2b87230660d3ff4325ec0a4c2973cf2d753ab6652d53727d87d4677a531b0d4",
+      "managed_by": "research-library/v1",
+      "encoding": "utf-8",
+      "byte_count": 13319,
+      "chunks": [
+        "chunk:ba0cd2c3483c979000bab5cd44283b9216864bc2efdddde433fcbc833456a0da"
+      ],
+      "created_at": "2026-11-15T23:42:41.946365+00:00",
+      "qualification": {
+        "status": "unverified",
+        "authority": "client",
+        "reason": "Orchestration records do not establish research qualification"
+      }
+    },
+    "tests": {
+      "run_id": "run:125d5e7f32471c641a1400376b8e69c500cece918dee2fab8e639f576909c03c",
+      "name": "causal-tests.py",
+      "kind": "empirical-tests",
+      "body_utf8_sha256": "3bbe61af602de22ee1325285fcad8e4b70c4903f130486dce61770ed95300d48",
+      "metadata": {
+        "source_sha256": "3bbe61af602de22ee1325285fcad8e4b70c4903f130486dce61770ed95300d48",
+        "role": "unverified empirical source, independent audit required"
+      },
+      "trusted_provenance": false,
+      "_id": "art:ff12e2de536082207f0f07b09bb3827047eeb23426e068aeab9dc69f93568647",
+      "managed_by": "research-library/v1",
+      "encoding": "utf-8",
+      "byte_count": 8325,
+      "chunks": [
+        "chunk:3bbe61af602de22ee1325285fcad8e4b70c4903f130486dce61770ed95300d48"
+      ],
+      "created_at": "2026-11-15T23:42:45.911648+00:00",
+      "qualification": {
+        "status": "unverified",
+        "authority": "client",
+        "reason": "Orchestration records do not establish research qualification"
+      }
+    },
+    "packed_results": {
+      "run_id": "run:125d5e7f32471c641a1400376b8e69c500cece918dee2fab8e639f576909c03c",
+      "name": "results-packed.json",
+      "kind": "empirical-results",
+      "body_utf8_sha256": "800d54e9cc11733e70b4bdddbb05b084e1e29bff56bf9511f3ef572e8b5a89cd",
+      "metadata": {
+        "encoding": "JSON wrapper: readable primary rows plus lossless zlib+base64 complete result",
+        "decoded_utf8_sha256": "e3b28398ecfcde1b633f7db241b8ba44812b30173d378965a2ef375fdc6f8f9c",
+        "decoded_utf8_bytes": 784401,
+        "calculation_exit_code": 0,
+        "independent_audit": "pending",
+        "prospective_qualification": false
+      },
+      "trusted_provenance": false,
+      "_id": "art:b928dd19d998d969230eb66128698eeb4c08b1d2eb891867ff6251b9c31e12bf",
+      "managed_by": "research-library/v1",
+      "encoding": "utf-8",
+      "byte_count": 147789,
+      "chunks": [
+        "chunk:800d54e9cc11733e70b4bdddbb05b084e1e29bff56bf9511f3ef572e8b5a89cd"
+      ],
+      "created_at": "2026-11-15T23:43:57.559945+00:00",
+      "qualification": {
+        "status": "unverified",
+        "authority": "client",
+        "reason": "Orchestration records do not establish research qualification"
+      }
+    },
+    "report": {
+      "run_id": "run:125d5e7f32471c641a1400376b8e69c500cece918dee2fab8e639f576909c03c",
+      "name": "report.md",
+      "kind": "empirical-report",
+      "body_utf8_sha256": "8213e7f09f68e9ec537cd733795cbf730f507a4e20a7e6602aaf39f1274fb21c",
+      "metadata": {
+        "results_artifact_id": "art:b928dd19d998d969230eb66128698eeb4c08b1d2eb891867ff6251b9c31e12bf",
+        "independent_review": "Numerical cells verified; make gap-safe scope explicit after independent wording review.",
+        "supersedes_artifact_id": "art:03ca646cf9e7efd5fdb32666d86e7b6eb42c00729e189a7cdabad027423b1f6c"
+      },
+      "trusted_provenance": false,
+      "_id": "art:737241dfd345b9e426cc8371b975b8a15d0996cef63a272a968f135ca9b38baa",
+      "managed_by": "research-library/v1",
+      "encoding": "utf-8",
+      "byte_count": 11015,
+      "chunks": [
+        "chunk:8213e7f09f68e9ec537cd733795cbf730f507a4e20a7e6602aaf39f1274fb21c"
+      ],
+      "created_at": "2026-11-15T23:56:35.572238+00:00",
+      "qualification": {
+        "status": "unverified",
+        "authority": "client",
+        "reason": "Orchestration records do not establish research qualification"
+      }
+    },
+    "llms": {
+      "run_id": "run:125d5e7f32471c641a1400376b8e69c500cece918dee2fab8e639f576909c03c",
+      "name": "llms.txt",
+      "kind": "empirical-llms",
+      "body_utf8_sha256": "f1439031725d6c6bea1ae1be08ad492b189641829b9a7232996641fc17f76b15",
+      "metadata": {
+        "results_artifact_id": "art:b928dd19d998d969230eb66128698eeb4c08b1d2eb891867ff6251b9c31e12bf",
+        "independent_review": "Numerical cells verified; make gap-safe scope explicit after independent wording review.",
+        "supersedes_artifact_id": "art:ca02d5e459be2728a0f13ca2ce5bffba6d4dccbef01e291cb3b8770c448026f1"
+      },
+      "trusted_provenance": false,
+      "_id": "art:3bb8cea037cefd42345cc67ccf2f883aec8f52079a0e169b1bffc711062b02af",
+      "managed_by": "research-library/v1",
+      "encoding": "utf-8",
+      "byte_count": 2319,
+      "chunks": [
+        "chunk:f1439031725d6c6bea1ae1be08ad492b189641829b9a7232996641fc17f76b15"
+      ],
+      "created_at": "2026-11-15T23:56:39.162355+00:00",
+      "qualification": {
+        "status": "unverified",
+        "authority": "client",
+        "reason": "Orchestration records do not establish research qualification"
+      }
+    },
+    "audit": {
+      "run_id": "run:125d5e7f32471c641a1400376b8e69c500cece918dee2fab8e639f576909c03c",
+      "name": "independent-audit.json",
+      "kind": "empirical-audit",
+      "body_utf8_sha256": "947021c87965bc295308fafaeb70156b86cb2cdb9da1df482274cdfbc2924054",
+      "metadata": {
+        "source_revision": "working-tree source frozen before delivery",
+        "scope": "independent computational/source/report audit, not trusted literature gate"
+      },
+      "trusted_provenance": false,
+      "_id": "art:4bcac9e74d218f7dd545cc3f4ace1321895cf20df9489259814f67ed6f075750",
+      "managed_by": "research-library/v1",
+      "encoding": "utf-8",
+      "byte_count": 35183,
+      "chunks": [
+        "chunk:947021c87965bc295308fafaeb70156b86cb2cdb9da1df482274cdfbc2924054"
+      ],
+      "created_at": "2026-11-16T00:01:19.711931+00:00",
+      "qualification": {
+        "status": "unverified",
+        "authority": "client",
+        "reason": "Orchestration records do not establish research qualification"
+      }
+    },
+    "banner": {
+      "run_id": "run:125d5e7f32471c641a1400376b8e69c500cece918dee2fab8e639f576909c03c",
+      "name": "banner-source.json",
+      "kind": "implementation-source",
+      "body_utf8_sha256": "09d45a943f470e9e96ffabe84e89f5916ab9cb8c650eccd27b3eaa113d1fb0d9",
+      "metadata": {
+        "source_revision": "working-tree source frozen before delivery",
+        "scope": "UI stage clarification and literal tui alias"
+      },
+      "trusted_provenance": false,
+      "_id": "art:a60f65bce6bc0161739a60b9c603d7d6a4c218ce6fdb6da7100abb5a18d4e198",
+      "managed_by": "research-library/v1",
+      "encoding": "utf-8",
+      "byte_count": 13467,
+      "chunks": [
+        "chunk:09d45a943f470e9e96ffabe84e89f5916ab9cb8c650eccd27b3eaa113d1fb0d9"
+      ],
+      "created_at": "2026-11-16T00:01:23.127083+00:00",
+      "qualification": {
+        "status": "unverified",
+        "authority": "client",
+        "reason": "Orchestration records do not establish research qualification"
+      }
+    }
+  },
+  "decoded_results_sha256": "e3b28398ecfcde1b633f7db241b8ba44812b30173d378965a2ef375fdc6f8f9c",
+  "decoded_results_bytes": 784401,
+  "exact_full_body_readbacks": {
+    "code": true,
+    "tests": true,
+    "packed_results": true,
+    "report": true,
+    "llms": true,
+    "audit": true,
+    "banner": true
+  },
+  "audit": {
+    "source_hashes": 4,
+    "minute_buckets": 1439,
+    "tagged_events": 269,
+    "summary_rows": 72,
+    "entry_references_per_row": 2,
+    "causality_checks": 11,
+    "table_rows": 12,
+    "numeric_table_cells": 60,
+    "all_exit_codes": 0
+  },
+  "discovery_limit": "No concept/queue work selected.200globalqueue rows inspected, globalqueue census incomplete; selected topic74frontier/75incomplete pages and21priorruns complete.",
+  "semantic_indexing": "Not run; standing embedding pause preserved."
+}

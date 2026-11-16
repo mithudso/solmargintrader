@@ -104,6 +104,8 @@ class TenMinuteAlertsUI(unittest.IsolatedAsyncioTestCase):
                 self.assertEqual(app.current_alert["state"], "observed_reversal")
                 self.assertEqual(app.current_alert["target_at"], START + 600)
                 self.assertEqual(app.current_alert["true_open"], 100)
+                self.assertEqual(app.current_alert["closed_up_count"], 2)
+                self.assertEqual(app.current_alert["current_bar_number"], 3)
                 self.assertTrue(
                     app.query_one("#bearish-alert", Static).has_class(
                         "bearish-observed"
@@ -176,7 +178,7 @@ class TenMinuteAlertsUI(unittest.IsolatedAsyncioTestCase):
             )
             self.assertIsNone(app.current_frame)
             self.assertIn(
-                "REVERSAL OBSERVED",
+                "REVERSAL DETECTED",
                 str(app.query_one("#bearish-alert", Static).content),
             )
             await pilot.click("#choose-strategies")
@@ -212,10 +214,56 @@ class TenMinuteAlertsUI(unittest.IsolatedAsyncioTestCase):
                         banner.render_line(i).crop(0, banner.content_region.width).text
                         for i in range(3)
                     ]
-                    self.assertIn("REVERSAL OBSERVED", lines[0])
-                    self.assertIn("TRUE open", lines[0])
-                    self.assertIn("ends 03:30:00 UTC", lines[1])
-                    self.assertIn("NOT calibrated live odds", lines[2])
+                    self.assertIn(
+                        "2 closed UP (UU) → bar 3 · REVERSAL DETECTED", lines[0]
+                    )
+                    self.assertIn("Price $99.00000 < TRUE open $100.00000", lines[1])
+                    self.assertIn("elapsed 5m03s", lines[1])
+                    self.assertIn("UTC 03:20:00–03:30:00", lines[2])
+                    self.assertIn("Further decline unproven · NOT LIVE ODDS", lines[2])
+                    self.stream.update(101)
+                    app.paint()
+                    await pilot.pause(0.03)
+                    self.assertIn(
+                        "2 closed UP (UU) → bar 3 · WATCHING",
+                        banner.render_line(0).text,
+                    )
+                    self.assertIn(
+                        "Price $101.00000 > TRUE open $100.00000",
+                        banner.render_line(1).text,
+                    )
+                    self.stream.update(99)
+                    # Missing older history only confirms a lower count. Its
+                    # stage remains explicit, including during quote failure.
+                    app.alert_context["rows"].pop(START - 1200)
+                    app.paint()
+                    await pilot.pause(0.03)
+                    self.assertIn(
+                        "1 closed UP confirmed → bar 2 · REVERSAL DETECTED",
+                        banner.render_line(0).text,
+                    )
+                    self.assertEqual(app.current_alert["older_bar_status"], "unknown")
+                    self.stream.connected = False
+                    app.paint()
+                    await pilot.pause(0.03)
+                    self.assertIn(
+                        "1 closed UP confirmed → bar 2 · DATA UNAVAILABLE",
+                        banner.render_line(0).text,
+                    )
+                    self.assertIn(
+                        "Price unavailable · TRUE open $100.00000",
+                        banner.render_line(1).text,
+                    )
+                    self.assertIn("UTC 03:20:00–03:30:00", banner.render_line(2).text)
+                    self.stream.connected = True
+                    app.alert_context = {"error": "candle_provider_unavailable"}
+                    app.paint()
+                    await pilot.pause(0.03)
+                    self.assertIn(
+                        "closed UP ? → bar ? · DATA UNAVAILABLE",
+                        banner.render_line(0).text,
+                    )
+                    self.assertIn("UTC 03:20:00–03:30:00", banner.render_line(2).text)
                 self.assert_stopped(app)
 
     async def test_trade_changes_stale_disconnect_gap_and_rollover_clear_banner_immediately(
@@ -249,7 +297,14 @@ class TenMinuteAlertsUI(unittest.IsolatedAsyncioTestCase):
                     app.paint()
                     self.assertEqual(app.current_alert["state"], "unavailable")
                     self.assertIsNone(app.current_alert["direction"])
+                    self.assertEqual(app.current_alert["closed_up_count"], 2)
+                    self.assertEqual(app.current_alert["current_bar_number"], 3)
+                    self.assertFalse(app.current_alert["reversal_detected"])
                     banner = app.query_one("#bearish-alert", Static)
+                    self.assertIn(
+                        "2 closed UP (UU) → bar 3 · DATA UNAVAILABLE",
+                        str(banner.content),
+                    )
                     self.assertFalse(banner.has_class("bearish-observed"))
                     self.assertFalse(banner.has_class("bearish-watch"))
                     setattr(self.stream, field, restored)
@@ -374,7 +429,11 @@ class TenMinuteAlertsUI(unittest.IsolatedAsyncioTestCase):
             self.assertFalse(banner.has_class("bearish-observed"))
             self.assertFalse(banner.has_class("bearish-watch"))
             self.assertIn(
-                "Previous full ten-minute candle is not UP", str(banner.content)
+                "0 prior UP → bar ? (no UP setup) · WATCHING", str(banner.content)
+            )
+            self.assertIn("no DD → UP alert", str(banner.content))
+            self.assertIn(
+                "Previous full ten-minute candle is not UP", str(banner.tooltip)
             )
         self.assert_stopped(app)
 
