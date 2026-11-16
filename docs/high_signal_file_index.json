@@ -817,7 +817,7 @@
       "component": "extension",
       "kind": "json",
       "summary": "MV3 manifest; validated in CI",
-      "lines": 75
+      "lines": 80
     },
     {
       "path": "extension/package.json",
@@ -831,67 +831,126 @@
       "component": "extension",
       "kind": "markdown",
       "summary": "Includes the Verification status section; read it before extending",
-      "lines": 715
+      "lines": 751
     },
     {
       "path": "extension/src/1000x/feed.js",
       "component": "extension",
       "kind": "javascript",
       "summary": "Catalog-bound public oracle history and one stream, with bounded1m reversal context and owned teardown",
-      "lines": 476
+      "lines": 557
     },
     {
       "path": "extension/src/1000x/indicators.js",
       "component": "extension",
       "kind": "javascript",
       "summary": "Pure causal ZigZag/RSI/BOP/Volty/SAR and research-aligned EMA/MACD recurrences",
-      "lines": 323
+      "lines": 356
     },
     {
       "path": "extension/src/1000x/reversal.js",
       "component": "extension",
       "kind": "javascript",
-      "summary": "Completed10m DD/UU context, trailing48-bar5/10/15/20m shapes and separate closed1m momentum; no model or position inference"
+      "summary": "Completed10m DD/UU context, trailing48-bar5/10/15/20m shapes and separate closed1m momentum; no model or position inference",
+      "lines": 129
     },
     {
       "path": "extension/src/1000x/panel-model.js",
       "component": "extension",
       "kind": "javascript",
       "summary": "Independent quote/history freshness and closed/developing eligibility checks",
-      "lines": 47
+      "lines": 53
     },
     {
       "path": "extension/src/1000x/panel.js",
       "component": "extension",
       "kind": "javascript",
       "summary": "Floating read-only chart, labeled reversal/shape/momentum cards and local view settings",
-      "lines": 176
+      "lines": 252
+    },
+    {
+      "path": "extension/src/1000x/oracle-model.js",
+      "component": "extension",
+      "kind": "javascript",
+      "summary": "Pure bounded logistic learner, immutable prospective forecasts, genuine delayed labels and paired probability metrics",
+      "lines": 196
+    },
+    {
+      "path": "extension/src/1000x/oracle-store.js",
+      "component": "extension",
+      "kind": "javascript",
+      "summary": "Separate native IndexedDB atomic partition transitions across windows and reloads",
+      "lines": 68
+    },
+    {
+      "path": "extension/src/1000x/oracle-controller.js",
+      "component": "extension",
+      "kind": "javascript",
+      "summary": "Existing-feed coalescing, source/version isolation, stale/obsolete-session refusal and owned teardown",
+      "lines": 69
+    },
+    {
+      "path": "extension/src/1000x/oracle-view.js",
+      "component": "extension",
+      "kind": "javascript",
+      "summary": "Rolling10m UP/NON-UP forecasts, candidate/served/baseline metrics and explicit fallback/unknown states",
+      "lines": 62
+    },
+    {
+      "path": "extension/test/1000x-oracle-model.test.js",
+      "component": "extension",
+      "kind": "javascript",
+      "summary": "Analytical gradient/scoring, delayed current-weight learning, flat/unknown labels, prefix invariance and bounded recovery",
+      "lines": 177
+    },
+    {
+      "path": "extension/test/1000x-oracle-controller.test.js",
+      "component": "extension",
+      "kind": "javascript",
+      "summary": "Concurrent/reloaded controllers, stored forecast reuse, quote coalescing and obsolete-session fences",
+      "lines": 123
+    },
+    {
+      "path": "docs/EXTENSION-STREAMING-ORACLE.md",
+      "component": "repo",
+      "kind": "markdown",
+      "summary": "Streaming learner target, equations, atomic persistence, bounds, research status and verification limits",
+      "lines": 220
+    },
+    {
+      "path": "docs/EXTENSION-STREAMING-ORACLE-PROMPT.md",
+      "component": "repo",
+      "kind": "markdown",
+      "summary": "Exact byte-preserved approved adaptive streaming Oracle execution prompt",
+      "lines": 16
     },
     {
       "path": "extension/tools/1000x-e2e.mjs",
       "component": "extension",
       "kind": "other",
       "summary": "Native Chrome fixture and actual-public-portal gates with exact executed module hashes",
-      "lines": 394
+      "lines": 558
     },
     {
       "path": "extension/tools/1000x-reference.py",
       "component": "extension",
       "kind": "python",
-      "summary": "Offline independent Python numerical-vector generator for extension analytics"
+      "summary": "Offline independent Python numerical-vector generator for extension analytics",
+      "lines": 82
     },
     {
       "path": "extension/test/1000x-reversal.test.js",
       "component": "extension",
       "kind": "javascript",
-      "summary": "Bound Python parity, prefix/future invariance, gap/partial resets and unsupported model/position regressions"
+      "summary": "Bound Python parity, prefix/future invariance, gap/partial resets and unsupported model/position regressions",
+      "lines": 138
     },
     {
       "path": "docs/JUPITER-1000X-OVERLAY.md",
       "component": "repo",
       "kind": "markdown",
       "summary": "Public feed contracts, causal indicator/reversal formulas, browser evidence and installation",
-      "lines": 174
+      "lines": 247
     },
     {
       "path": "extension/src/core/commands.js",
@@ -1974,7 +2033,7 @@
       "component": "repo",
       "kind": "python",
       "summary": "Disarmed-default execution boundary, wallet binding, intent journal and reconciliation.",
-      "lines": 1004
+      "lines": 1024
     },
     {
       "path": "oracle_leverage/cli.py",
@@ -1988,7 +2047,7 @@
       "component": "repo",
       "kind": "other",
       "summary": "Official1000x API, SDK intent checks and owner-signature verification.",
-      "lines": 329
+      "lines": 358
     },
     {
       "path": "oracle_leverage/sdk/bridge.mjs",

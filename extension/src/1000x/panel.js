@@ -1,10 +1,14 @@
 import { JupiterFeed, TIMEFRAMES } from './feed.js';
 import { DEFAULT_INDICATORS, validateIndicatorConfig } from './indicators.js';
 import { panelModel } from './panel-model.js';
+import { OracleController } from './oracle-controller.js';
+import { oracleView } from './oracle-view.js';
 import { POWERED_BY } from '../jupiter/attribution.js';
 import { createChart, CandlestickSeries, LineSeries, HistogramSeries, LineStyle } from '../../vendor/lightweight-charts/lightweight-charts.standalone.production.mjs';
 
 const $ = id => document.getElementById(id);
+const renderOracle = oracleView($('streaming-oracle'));
+const oracle = new OracleController({ onChange: renderOracle });
 $('api-attribution').textContent = `${POWERED_BY} — 1000x public catalog; Pyth oracle history and stream.`;
 const SYMBOL = new URLSearchParams(location.hash.slice(1)).get('market') || '';
 const STORAGE = 'jupiter1000xIndicatorView';
@@ -119,6 +123,7 @@ function draw() {
   if (disposed || !latest) return;
   try { model = panelModel(latest, config); }
   catch {
+    oracle.suspend('invalid_analytics');
     model = null; clearChart(); resetContext();
     $('status').textContent = 'Invalid candle or indicator data — signals unavailable';
     $('status').dataset.state = 'error';
@@ -127,6 +132,7 @@ function draw() {
     return;
   }
   const metrics = model.developing;
+  if (!document.hidden) oracle.observe(latest);
   candles.setData(model.candles.map(({ time, open, high, low, close }) => ({ time, open, high, low, close })));
   const pivots = model.confirmedPivots.map(({ time, value }) => ({ time, value }));
   lines.zigzag.setData(pivots);
@@ -218,6 +224,7 @@ $('config-form').addEventListener('submit', event => {
   settingsError = ''; save(); queueDraw(); $('parameters').open = false;
 });
 async function restart() {
+  oracle.suspend();
   feed?.stop(); latest = null; model = null; viewIdentity = null; clearChart(); resetContext();
   $('status').textContent = 'Connecting to Jupiter…'; $('status').dataset.state = 'connecting';
   document.querySelectorAll('[data-value]').forEach(el => { el.textContent = 'Warming up'; });
@@ -237,5 +244,9 @@ $('timeframe').addEventListener('change', () => { intervalSec = Number($('timefr
 $('refresh').addEventListener('click', () => restart());
 readoutRows(); parameterForm(); visibility();
 const staleClock = setInterval(queueDraw, 1000);
-window.addEventListener('pagehide', () => { disposed = true; clearInterval(staleClock); feed?.stop(); chart.remove(); }, { once: true });
+document.addEventListener('visibilitychange', () => {
+  if (document.hidden) oracle.suspend();
+  else queueDraw();
+});
+window.addEventListener('pagehide', () => { disposed = true; clearInterval(staleClock); feed?.stop(); oracle.stop(); chart.remove(); }, { once: true });
 await restart();

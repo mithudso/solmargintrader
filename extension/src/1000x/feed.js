@@ -234,6 +234,8 @@ export class JupiterFeed {
       candles: Object.freeze(this.#candles.map((candle) => Object.freeze({ ...candle }))),
       quote: this.#quote ? Object.freeze({ ...this.#quote }) : null,
       error: this.#error, source: SOURCE, lastHistoryMs: this.#lastHistoryMs,
+      sourceIdentity: this.#market ? Object.freeze({ symbol: this.symbol, feedId: this.#market.feedId,
+        marketAddress: this.#market.address, stream: 'fixed_rate@200ms', kind: 'oracle-ohlc' }) : null,
       historyIntervalSec: this.#historyInterval,
       minuteCandles: this.#withContext ? Object.freeze(minuteRows.map(candle => Object.freeze({ ...candle }))) : null,
       minuteStatus: !this.#withContext ? 'disabled' : (this.intervalSec === 60 ? this.#historyReady : this.#context.ready) ? 'ready' : 'unavailable',

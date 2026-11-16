@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-11-16T17:27:11+00:00",
+  "generatedAt": "2026-11-16T18:01:00+00:00",
   "schemaVersion": 1,
   "note": "Concepts are derived from the repo's own vocabulary \u2014 the FAMILY dict, strategy-card frontmatter, docs/trading-signals-concept-family.md, and terms verified to recur in the corpus. A concept matching no file is dropped, not kept.",
   "counts": {
@@ -22,7 +22,7 @@
         "confirm",
         "fail-closed"
       ],
-      "matchingFiles": 1973,
+      "matchingFiles": 1974,
       "shown": 30,
       "files": [
         {
@@ -67,7 +67,7 @@
         },
         {
           "path": "memory.md",
-          "hits": 109
+          "hits": 111
         },
         {
           "path": "research/tradingview-script-profiles/shard-b.jsonl",
@@ -439,7 +439,7 @@
         "centred",
         "shift"
       ],
-      "matchingFiles": 1533,
+      "matchingFiles": 1537,
       "shown": 30,
       "files": [
         {
@@ -578,7 +578,7 @@
         "perps",
         "solana"
       ],
-      "matchingFiles": 1096,
+      "matchingFiles": 1105,
       "shown": 30,
       "files": [
         {
@@ -602,11 +602,11 @@
           "hits": 408
         },
         {
-          "path": "FILES.md",
-          "hits": 283
+          "path": "memory.md",
+          "hits": 320
         },
         {
-          "path": "memory.md",
+          "path": "FILES.md",
           "hits": 283
         },
         {
@@ -630,6 +630,10 @@
           "hits": 141
         },
         {
+          "path": "prompts.md",
+          "hits": 136
+        },
+        {
           "path": ".cdo/reviews-2026-11-13/cdo-forecast-app-delta.json",
           "hits": 130
         },
@@ -640,10 +644,6 @@
         {
           "path": "skills/trading-and-investing/references/jupiter-perps-trading.md",
           "hits": 125
-        },
-        {
-          "path": "prompts.md",
-          "hits": 124
         },
         {
           "path": "skills/trading-and-investing/references/jlp-risk-profile-and-anti-patterns.md",
@@ -714,7 +714,7 @@
         "macd",
         "ichimoku"
       ],
-      "matchingFiles": 921,
+      "matchingFiles": 923,
       "shown": 30,
       "files": [
         {
@@ -990,7 +990,7 @@
         "monotone",
         "gap"
       ],
-      "matchingFiles": 842,
+      "matchingFiles": 845,
       "shown": 30,
       "files": [
         {
@@ -1125,7 +1125,7 @@
         "stochastic",
         "oscillator"
       ],
-      "matchingFiles": 593,
+      "matchingFiles": 595,
       "shown": 30,
       "files": [
         {
@@ -1260,7 +1260,7 @@
         "benchmark",
         "baseline"
       ],
-      "matchingFiles": 585,
+      "matchingFiles": 590,
       "shown": 30,
       "files": [
         {
@@ -1344,6 +1344,10 @@
           "hits": 37
         },
         {
+          "path": "memory.md",
+          "hits": 33
+        },
+        {
           "path": ".cdo/reviews-2026-11-12/soltui-fullsuite-fixture-deltas.json",
           "hits": 32
         },
@@ -1358,10 +1362,6 @@
         {
           "path": "backtester/core/dcasim.py",
           "hits": 30
-        },
-        {
-          "path": "memory.md",
-          "hits": 29
         },
         {
           "path": "backtester/core/gridsim.py",
@@ -1394,7 +1394,7 @@
         "buy_and_hold",
         "baseline"
       ],
-      "matchingFiles": 513,
+      "matchingFiles": 519,
       "shown": 30,
       "files": [
         {
@@ -1450,6 +1450,10 @@
           "hits": 32
         },
         {
+          "path": "memory.md",
+          "hits": 32
+        },
+        {
           "path": "research/tradingview-card-coverage.json",
           "hits": 31
         },
@@ -1468,10 +1472,6 @@
         {
           "path": "backtester/core/gridsim.py",
           "hits": 29
-        },
-        {
-          "path": "memory.md",
-          "hits": 28
         },
         {
           "path": ".cdo/reviews-2026-11-12/soltui-root-ui-tests.json",
@@ -1667,7 +1667,7 @@
         "evidence floor",
         "rankable"
       ],
-      "matchingFiles": 392,
+      "matchingFiles": 393,
       "shown": 30,
       "files": [
         {

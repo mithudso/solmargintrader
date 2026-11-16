@@ -7,6 +7,27 @@ hard risk rails, on its own tab, **dry-run by default** — it will not place an
 change the mode and type a confirmation. The grid lost to buy-and-hold walk-forward on 9 of 9 coins,
 which is why 0.3.0 moved it off the front page.
 
+## Streaming Oracle (0.9.0)
+
+The existing1000x window now learns a prospective rolling10m price-direction
+model from its validated public stream. Each fresh completed1m cutoff may issue
+one immutable forecast. UP means the close10m later exceeds the reference;
+NON-UP includes both DOWN and exact FLAT. This target is separate from the
+DD/UU candle-pattern context below. Overlapping targets are not independent.
+
+A bounded L2 logistic candidate learns only after genuine completed outcomes.
+Cold start serves a labeled fixed0.5 baseline while shadow learning continues.
+The compact panel distinguishes candidate, actually served and fixed-baseline
+accuracy/Brier/log-loss metrics, recent and cumulative, plus trained/resolved,
+pending, expired and flat counts. Probabilities are uncalibrated shadow estimates;
+no improvement or profit is promised. Unknown outcomes never train the model.
+
+Native IndexedDB commits pending forecasts, weights and metrics atomically across
+windows and reloads. State is isolated by market/source/horizon/feature version.
+The same feed and collapse/route teardown apply; no wallet or trading permission
+is added. See [target, update equations, bounds and research status](../docs/EXTENSION-STREAMING-ORACLE.md)
+and the [exact approved execution prompt](../docs/EXTENSION-STREAMING-ORACLE-PROMPT.md).
+
 ## Jupiter 1000x indicator window (0.8.0)
 
 On `https://jup.ag/1000x`, the extension adds a draggable, resizable floating
@@ -164,7 +185,7 @@ Chrome 137+ is recommended: full-auto signing uses WebCrypto Ed25519, which land
 Everything else works from Chrome 120.
 
 **Did a reload pick up the new code?** The popup header and the dashboard title show the
-manifest version (`v0.8.0`). Every change to `src/` or `manifest.json` bumps it, in
+manifest version (`v0.9.0`). Every change to `src/` or `manifest.json` bumps it, in
 `manifest.json` and `package.json` together; CI fails a pull request that changes either
 without a bump, and `test/version.test.js` keeps the two fields equal. The SolTUI console
 is the primary dashboard workspace (popup → **Full workspace**).
