@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-11-16T15:04:51+00:00",
+  "generatedAt": "2026-11-16T15:08:49+00:00",
   "schemaVersion": 1,
   "note": "Concepts are derived from the repo's own vocabulary \u2014 the FAMILY dict, strategy-card frontmatter, docs/trading-signals-concept-family.md, and terms verified to recur in the corpus. A concept matching no file is dropped, not kept.",
   "counts": {
@@ -170,7 +170,7 @@
         },
         {
           "path": "memory.md",
-          "hits": 248
+          "hits": 249
         },
         {
           "path": "research/coin-intelligence/zec-zcash.md",
@@ -607,7 +607,7 @@
         },
         {
           "path": "memory.md",
-          "hits": 267
+          "hits": 271
         },
         {
           "path": ".cdo/reviews-2026-11-12/ecosystem-combined-full-final.json",
