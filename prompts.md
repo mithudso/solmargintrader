@@ -1,6 +1,9 @@
 # Prompt history
 
-Version: 261
+Version: 264
+Delta: v263 to v264; record the complete strategy research commission and scope restoration verbatim.
+Delta: v262 to v263; record the restored strategy research and ZigZag priority.
+Delta: v261 to v262; record the superseding RS ZigZag strategy request.
 Delta: v260 to v261; record the Preview error request.
 Delta: v259 to v260; record the status flicker, arm control and forward results request.
 Delta: v258 to v259; record dual-price streams, visual accessibility, MTF study, and model-use requests.
@@ -2395,3 +2398,32 @@ Make the center status update stop flashing "unavailable" and redrawing the data
 ```text
 I get an error when clicking on Preview, [Image #1]
 ```
+
+## RS ZigZag strategy, 2026-11-16
+
+> Add a new one to the list, forget the others, this one is showing17,000%returns in3mo with86%winrates. Iputthecodein ~/dev/solmargintrader/rs_zig_zag_pa_strategy.pine
+
+The owner supplied screenshots of the reported simulator performance, inputs and properties, including a subsequent 15-minute chart. Reported results are reproduction targets, not independently verified performance.
+
+Owner follow-up: "fan out agents to complete the rabbitholes you were told to do, and add this zig zag rs pa strategy as the top contender." The earlier seven strategies and distinct Channel Breakout reference are restored; the ZigZag investigation is the first priority.
+
+## Strategy research commission and restoration — 2026-11-16
+
+```text
+I was on TradingView trying out various strategies to play with, and for ZEC, during a 5 mo lookbak these are the strategies that
+  brought in over 100% return: momentum, moving averaage, parabolic SAR, Pivot Reversal, Price channel, two moving averages crossover, volatility expansion-close strategies. Fully investigate each of these strategies with a rabbithole skill, then build strategy cards for each if they don't already exist, and backtest using each of them. Also keep pulling more BTC and SEC fine grained data for another chance at testing
+```
+
+```text
+fan out agents to complete the rabbitholes you were told to do, and add this zig zag rs pa strategy as the top contender.
+```
+
+```text
+Strategy inputs were left at defaults, yes.
+```
+
+```text
+10min
+```
+
+SEC is interpreted as ZEC from context. Channel Breakout came from a separate screenshot and is distinct from Price Channel. ZigZag is first research priority; this is not a live-profit qualification. The later 15-minute ZigZag screenshot has a different date window from the prior 10-minute reports. The owner-supplied source remains private and uncommitted.

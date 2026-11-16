@@ -66,7 +66,7 @@ funding boundary. Do not enable live mode during a code audit.
 ## Build, Test, and Validation Commands
 
 ```bash
-python3 -m unittest discover -s backtester/tests -t .   # 1120 tests
+python3 -m unittest discover -s backtester/tests -t .   # 1143 tests
 python3 -m unittest discover -s soltui/tests -t .       # 1582 tests (TUI dependencies required)
 python3 -m unittest discover -s mongo/tests -t .        # 57 tests
 cd extension && npm test                                # 483 tests
