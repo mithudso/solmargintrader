@@ -1,6 +1,7 @@
 # Prompt history
 
-Version: 268
+Version: 269
+Delta: v268 to v269; record chart interval and owner screenshots.
 Delta: v267 to v268; record chart and default-input clarification.
 Delta: v266 to v267; record strategy research, cards, backtests and additional data request.
 Delta: v265 to v266; record TradingView observations and resume request.
@@ -2462,3 +2463,13 @@ https://www.tradingview.com/chart/qV1poosp/?symbol=COINBASE%3AZECUSDC.P
 ```text
 Strategy inputs were left at defaults, yes.
 ```
+
+## TradingView interval — 2026-11-16
+
+```text
+10min
+```
+
+Owner-provided Volty report image: /var/folders/hz/s7btlxx54c32yt375m03q0h40000gn/T/A958C090-E168-4DF1-A4C0-21056A357BE1-742-00000899567ACA0B/pasted-image-20261116-053827-F3235074-E0B0-4F3B-9434-09F3D56E8633.png (SHA-256 98a14bb203cdf242f401b5663a9d3ea3ae8c08cde47f85f08bc5c68773697759).
+
+Owner-provided Channel report image: /var/folders/hz/s7btlxx54c32yt375m03q0h40000gn/T/codex-clipboard-mluclG.png (SHA-256 ec4f3a08bcbcaaed56855eb4e6b482ad7552b2c993dbc415e8d0eae5e3a18882).

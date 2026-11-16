@@ -1,6 +1,7 @@
 # Work continuation
 
-Version: 585
+Version: 586
+Delta: v585 to v586; record chart interval and unverified owner-provided reports.
 Delta: v584 to v585; record perpetual instrument and default strategy inputs.
 Delta: v583 to v584; record new separate strategy research and data scope.
 Delta: v582 to v583; preserve owner observations without changing the frozen study.
@@ -2698,3 +2699,5 @@ The user described TradingView strategy results as possible research leads. They
 The user authorized rabbithole research for seven named strategy families, missing strategy cards, backtests and additional fine-grained BTC/ZEC data. Interpret SEC as ZEC from context. This is separate from the frozen exit50 cohort and policy selection. Deduplicate existing research and cards first, preserve all 21 protected holds, and reserve prospective data before outcomes. The TradingView returns remain unverified observations with missing settings and costs.
 
 The user identified the TradingView chart as Coinbase ZEC/USDC perpetual and stated strategy inputs were defaults. Chart interval and tester properties including sizing, leverage, commission, slippage and funding remain unconfirmed. Research must not treat earlier ZEC-USD spot data as equivalent.
+
+The user confirmed a 10-minute chart and supplied Volty and Channel report screenshots. These are owner-provided report evidence, not independently qualified profit or fill proof. Strategy inputs were default; tester properties, funding and costs are still unconfirmed. The Channel legend values 42946.42 and 14866.70 are a hover-point reading, not final baseline P&L.
