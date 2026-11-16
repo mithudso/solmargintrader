@@ -47,10 +47,21 @@ def main():
     ):
         raise ValueError("cohort_census_mismatch")
     flow = None
+    if args.asset == "BTC" and not args.flow:
+        raise ValueError("btc_taker_flow_input_required")
     if args.flow:
         if args.asset != "BTC":
             raise ValueError("flow_only_qualified_for_btc")
-        flow = btc_taker_filter(json.loads(Path(args.flow).read_text()))
+        flow_bytes = Path(args.flow).read_bytes()
+        if (
+            hashlib.sha256(flow_bytes).hexdigest()
+            != "f72189e3cc1d6c807f97280578bc014197cdde49d53aa87bfdd6be8351ffb2b0"
+        ):
+            raise ValueError("btc_taker_flow_hash_mismatch")
+        flow = btc_taker_filter(json.loads(flow_bytes))
+        for c in candidates:
+            c["taker_flow_available"] = c["decision_s"] in flow
+            c["taker_flow_negative"] = flow.get(c["decision_s"])
     variants = run_scenarios(
         args.asset, prepared, candidates, args.entry_root, args.cache_root, flow
     )
@@ -75,7 +86,7 @@ def main():
     value = {
         "schema": "exit50-study-result/v1",
         "asset": args.asset,
-        "qualification": "exploratory retrospective; historical fees/fills/keeper path/network costs unqualified; sampled oracle-price counterfactual, no profitable-edge claim",
+        "qualification": "exploratory retrospective; observed 200ms grid plus qualified 1m no-touch envelopes; intragrid path and keeper-consumed updates censored; historical fees/fills/keeper path/entry and network costs unqualified; oracle-price counterfactual, no profitable-edge claim",
         "model_sha256": hashlib.sha256(model_bytes).hexdigest(),
         "complete_plan_sha256": hashlib.sha256(plan_bytes).hexdigest(),
         "candidates": candidates,

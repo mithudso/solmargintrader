@@ -1,7 +1,11 @@
 import unittest
 from unittest.mock import patch
 
-from research.exit50_diagnostic import diagnostic_candidates
+from research.exit50_diagnostic import (
+    diagnostic_candidates,
+    evaluate_diagnostic,
+    full_grid_position,
+)
 
 
 class BookAlignmentTests(unittest.TestCase):
@@ -36,6 +40,31 @@ class BookAlignmentTests(unittest.TestCase):
         self.assertTrue(result[0]["book_negative"])
         self.assertEqual(result[1]["book_status"], "invalid_book")
         self.assertIsNone(result[1]["book_negative"])
+
+    def test_incomplete_proof_blocks_diagnostic_evaluation(self):
+        plan = {
+            "schema": "exit50-zec-l2-lazy-plan/v1",
+            "candidate_count": 1,
+            "all_needed_count": 1,
+            "selected_slots": [600],
+            "cases": [],
+        }
+        with self.assertRaisesRegex(ValueError, "diagnostic_source_proof_incomplete"):
+            evaluate_diagnostic({}, [{}], "/tmp", "/tmp", plan)
+
+    def test_diagnostic_requires_full_grid_only_through_terminal(self):
+        entry = 100_000_000_000_000
+        c = {"decision_s": 0, "cap_s": 20, "entry_price": entry}
+        points = [
+            (i * 200_000, entry if i < 5 else entry + 98_000_000_000) for i in range(6)
+        ]
+        terminal = full_grid_position(c, {}, lambda _: points, "fixed", 10)
+        self.assertEqual(terminal["status"], "liquidated")
+        self.assertEqual(terminal["exit_us"], 1_000_000)
+        missing = points[:2] + points[3:]
+        result = full_grid_position(c, {}, lambda _: missing, "fixed", 10)
+        self.assertEqual(result["status"], "unscored")
+        self.assertEqual(result["at_us"], 400_000)
 
     def test_stale_truncated_and_zero_never_become_negative(self):
         rows = [

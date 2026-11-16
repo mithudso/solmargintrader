@@ -26,6 +26,7 @@ def main():
     fetch = sub.add_parser("fetch")
     fetch.add_argument("--plan", required=True)
     fetch.add_argument("--output", required=True)
+    fetch.add_argument("--workers", type=int, choices=(1, 2, 3, 4), default=4)
     args = parser.parse_args()
     if args.action == "plan":
         model_bytes = Path(args.models).read_bytes()
@@ -112,7 +113,7 @@ def main():
             tmp.replace(root / "manifest.json")
             return raw
 
-        with ThreadPoolExecutor(max_workers=4) as pool:
+        with ThreadPoolExecutor(max_workers=args.workers) as pool:
             for i, record in enumerate(pool.map(fetch_one, jobs), 1):
                 records.append(record)
                 if i % 50 == 0:
