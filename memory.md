@@ -1,6 +1,7 @@
 # Work continuation
 
-Version: 597
+Version: 598
+Delta: v597 to v598; block current execution on observed unbounded oracle advance.
 Delta: v596 to v597; implement current YOLO open checks with pending independent review.
 Delta: v595 to v596; begin isolated current-format YOLO verifier implementation and independent review.
 Delta: v594 to v595; integrate YOLO contract evidence and concurrent exit50 continuation.
@@ -2807,3 +2808,5 @@ The full-cohort retrospective result, selected policy and independent numerical 
 Worktree: /Users/mitch/dev/worktrees/yolo-execution-v2; branch depends on inspection PR 301. Implement the observed open subset with current YOLO/Pyth deployment pins, live Pyth ECDSA trust state, exact canonical price feed, exact owner intent, transaction/account binding and read-only post-state simulation. Preserve the legacy verifier. Current-format close remains blocked until payout and debt account semantics are independently demonstrated. No signing, sending, funding or arming during investigation. Independent code and economic review is required before merge or funded use. Program upgradeability and simulation drift remain explicit limitations.
 
 Current open prototype adds exact program pins, signed Pyth feed parsing and current trusted signer verification, exact-message unsigned simulation, and position/collateral/fee delta checks. SDK tests pass 27/27. BTC long/short and ZEC long/short each passed at least once across the evolving prototype; current-oracle post-state mismatch and provider 429 correctly block other attempts. Repeat all live unsigned cases on the final reviewed tip. Current close remains blocked because the claim and payout contract is not established. Both programs remain upgradeable; simulation cannot guarantee future state. Independent security, dependency and economic review and final CI are outstanding. No signatures, funded transactions, wallet changes or arming occurred.
+
+A fresh ZEC simulation demonstrated a newer shared oracle than the still-valid signed payload: feed timestamp 1794841599000000 and price 857443686750000, post-oracle timestamp 1794841599200000 and price 857507202020000. The SDK OpenPosition data has no known entry-price bound. A matching simulation cannot enforce its checked price at later execution. Current-format open therefore fails closed with current_execution_price_not_bound after verification; current close is blocked for missing claim and payout proof. Preserve legacy behavior. Determine an on-chain enforceable price bound before enabling current execution.

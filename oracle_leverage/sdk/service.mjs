@@ -272,7 +272,12 @@ export async function verifyBuild(build, intent, options = {}) {
   const trade = msg.instructions.filter(ix => ix.programId.equals(program));
   if (trade[0]?.data.subarray(0, 8).equals(UPDATE_PRICE_DISCRIMINATOR)) {
     if (intent.operation !== 'open') fail('current_close_unverified');
-    try { return await verifyCurrentOpen(build, intent, { ...options, readAccount: options.readAccount || owned }, inspectOpenBuild); }
+    try {
+      await verifyCurrentOpen(build, intent, { ...options, readAccount: options.readAccount || owned }, inspectOpenBuild);
+      // The shared oracle can advance after simulation, and this instruction has no
+      // price bound. A matching simulation cannot bind the eventual entry price.
+      fail('current_execution_price_not_bound');
+    }
     catch (error) { if (error.message.startsWith('current_')) throw error; if (/^[a-z_0-9]+$/.test(error.message)) fail('current_' + error.message); fail('current_rpc_unavailable'); }
   }
   return verifyLegacyBuild(build, intent, options);
