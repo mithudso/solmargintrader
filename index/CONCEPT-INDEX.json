@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-11-16T16:05:53+00:00",
+  "generatedAt": "2026-11-16T16:24:13+00:00",
   "schemaVersion": 1,
   "note": "Concepts are derived from the repo's own vocabulary \u2014 the FAMILY dict, strategy-card frontmatter, docs/trading-signals-concept-family.md, and terms verified to recur in the corpus. A concept matching no file is dropped, not kept.",
   "counts": {
@@ -161,7 +161,7 @@
         "universe",
         "top_coins"
       ],
-      "matchingFiles": 1760,
+      "matchingFiles": 1763,
       "shown": 30,
       "files": [
         {
@@ -170,7 +170,7 @@
         },
         {
           "path": "memory.md",
-          "hits": 247
+          "hits": 254
         },
         {
           "path": "research/coin-intelligence/zec-zcash.md",
@@ -578,7 +578,7 @@
         "perps",
         "solana"
       ],
-      "matchingFiles": 1077,
+      "matchingFiles": 1083,
       "shown": 30,
       "files": [
         {
@@ -602,12 +602,12 @@
           "hits": 283
         },
         {
-          "path": ".cdo/reviews-2026-11-12/oracle.json",
-          "hits": 271
+          "path": "memory.md",
+          "hits": 274
         },
         {
-          "path": "memory.md",
-          "hits": 267
+          "path": ".cdo/reviews-2026-11-12/oracle.json",
+          "hits": 271
         },
         {
           "path": ".cdo/reviews-2026-11-12/ecosystem-combined-full-final.json",
@@ -990,7 +990,7 @@
         "monotone",
         "gap"
       ],
-      "matchingFiles": 841,
+      "matchingFiles": 842,
       "shown": 30,
       "files": [
         {

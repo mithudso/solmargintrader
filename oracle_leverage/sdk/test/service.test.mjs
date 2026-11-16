@@ -199,3 +199,31 @@ test('known live insufficient balance is actionable and stops before signing', a
   const result = await serviceHandle({ ...intent(), action: 'service-build-open' }, { ...options, api });
   assert.equal(result.status, 'blocked'); assert.match(result.message, /JupUSD/);
 });
+
+test('current-format RPC failure is structured and never exposes transaction bytes', async () => {
+  const { build, oracle } = await inspectionFixture();
+  const [, bump] = PublicKey.findProgramAddressSync([Buffer.from('price'), key(5).toBuffer()], new PublicKey(PROGRAM));
+  const data = Buffer.concat([Buffer.from('47a6e51536f70822', 'hex'), key(5).toBuffer(), Buffer.alloc(20), Buffer.from([bump])]);
+  const connection = { async getBlockHeight() { return 100; }, async getAccountInfo(address) { assert.ok(address.equals(oracle)); return { owner: new PublicKey(PROGRAM), executable: false, data }; },
+    async getMultipleAccountsInfo() { throw new Error('429 private provider response'); } };
+  const api = async path => path === 'markets' ? markets() : build;
+  const result = await serviceHandle({ ...intent(), action: 'service-build-open' }, { connection, readAccount, now, api });
+  assert.equal(result.status, 'blocked'); assert.equal(result.code, 'current_rpc_unavailable');
+  assert.equal(result.build, undefined); assert.doesNotMatch(result.message, /429|private provider/);
+});
+
+test('current update plus close refuses before the legacy close verifier', async () => {
+  const { update, oracle } = await inspectionFixture();
+  const { build, position } = await fixture({ operation: 'close', extra: [update], oracle });
+  await assert.rejects(verifyBuild(build, { ...intent(), operation: 'close', position: position.toBase58() }, options), /current_close_unverified/);
+});
+
+
+test('service build HTTP and transport failures return structured blocked responses', async () => {
+  for (const [error, code] of [['service_503_request_rejected', 'service_503_request_rejected'], ['fetch failed with private detail', 'current_service_unavailable']]) {
+    const api = async path => { if (path === 'markets') return markets(); throw new Error(error); };
+    const result = await serviceHandle({ ...intent(), action: 'service-build-open' }, { ...options, api });
+    assert.equal(result.status, 'blocked'); assert.equal(result.code, code); assert.equal(result.build, undefined);
+    assert.doesNotMatch(result.message, /private detail/);
+  }
+});
