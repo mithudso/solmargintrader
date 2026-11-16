@@ -20,6 +20,7 @@ const args = process.argv.slice(2);
 const option = (name, fallback) => args.includes(name) ? args[args.indexOf(name) + 1] : fallback;
 const EXT = path.resolve(option('--extension', process.env.EXTENSION_DIR || path.resolve(here, '..')));
 const LIVE = args.includes('--live');
+const ONLY_ORACLE = args.includes('--oracle-only');
 const OUT = path.resolve(option('--evidence', path.join(process.cwd(), 'artifacts', LIVE ? '1000x-live' : '1000x-fixture')));
 fs.mkdirSync(OUT, { recursive: true });
 const { launch, findChromeForTesting, sleep } = await import(pathToFileURL(path.join(EXT, 'e2e/lib/cdp.mjs')));
@@ -28,13 +29,14 @@ const HISTORY = 'https://perps-api.jup.ag/v1/pyth/fixed_rate%40200ms/history';
 const STREAM = 'wss://perps-api.jup.ag/v1/pyth/stream';
 const PORTAL = 'https://jup.ag/1000x?market=SOL&mode=classic';
 const SHA = data => createHash('sha256').update(data).digest('hex');
-const reviewedFiles = ['manifest.json', 'src/1000x/content.js', 'src/1000x/feed.js', 'src/1000x/indicators.js', 'src/1000x/panel-model.js', 'src/1000x/reversal.js', 'src/1000x/panel.js', 'src/1000x/panel.html', 'src/1000x/panel.css', 'src/jupiter/attribution.js', 'vendor/lightweight-charts/lightweight-charts.standalone.production.mjs'];
+const reviewedFiles = ['manifest.json', 'src/1000x/content.js', 'src/1000x/feed.js', 'src/1000x/indicators.js', 'src/1000x/panel-model.js', 'src/1000x/reversal.js', 'src/1000x/oracle-model.js', 'src/1000x/oracle-store.js', 'src/1000x/oracle-controller.js', 'src/1000x/oracle-view.js', 'src/1000x/panel.js', 'src/1000x/panel.html', 'src/1000x/panel.css', 'src/jupiter/attribution.js', 'vendor/lightweight-charts/lightweight-charts.standalone.production.mjs'];
 const source = Object.fromEntries(reviewedFiles.map(file => [file, SHA(fs.readFileSync(path.join(EXT, file)))]));
 const manifest = JSON.parse(fs.readFileSync(path.join(EXT, 'manifest.json'), 'utf8'));
 const receipt = { runner: '1000x-browser-gate', schema_version: 1, status: 'partial', observed_at: new Date().toISOString(), mode: LIVE ? 'public-live' : 'native-browser-fixture', evidence: [], changes: [], remaining: [], checks: [], source, details: { surface: PORTAL, acceptance_condition: 'Version/source identity; seven causal indicator readouts/series; 10m DD/UU context; completed MTF shapes and closed1m momentum; settings; fresh completed-candle signals; lifecycle; responsive layout; public reads only; no trading state changes', source_revision: { git: execFileSync('git', ['rev-parse', 'HEAD'], { cwd: EXT, encoding: 'utf8' }).trim(), file_sha256: source }, loaded_revision: null, process_or_origin: null, configuration_identity: null, observations: [], mismatches: [], unverified_checks: [] } };
 const assert = (value, message) => { if (!value) throw new Error(message); };
 const same = (actual, expected, message) => assert(isDeepStrictEqual(actual, expected), `${message}: ${JSON.stringify(actual)} != ${JSON.stringify(expected)}`);
 async function check(name, fn) {
+  if (ONLY_ORACLE && !/streaming Oracle|two actual extension windows|native IndexedDB|executed overlay|new extension|all seven|network guard|only local/.test(name)) return null;
   try { const detail = await fn(); receipt.checks.push({ name, ok: true, detail }); console.log(`ok - ${name}`); return detail; }
   catch (error) { receipt.checks.push({ name, ok: false, error: error.message }); receipt.details.mismatches.push({ name, error: error.message }); console.log(`FAIL - ${name}: ${error.message}`); return null; }
 }
@@ -42,7 +44,7 @@ async function check(name, fn) {
 // Minimal RFC6455 fixture. Browser transport, frame parsing and lifecycle remain
 // native; no fake WebSocket, fetch implementation or extension source is loaded.
 async function websocketFixture() {
-  const sockets = new Set(), subscriptions = [], historyRequests = [], state = { quotes: true, priceOverride: null, history: 'full', pattern: 'DD', hold: false, pending: [], sent: 0, upgrades: 0, closes: 0 };
+  const sockets = new Set(), subscriptions = [], historyRequests = [], state = { quotes: true, priceOverride: null, history: 'full', pattern: 'DD', clockOffsetMs: 0, oracleMode: false, hold: false, pending: [], sent: 0, upgrades: 0, closes: 0 };
   const frame = text => { const data = Buffer.from(text); if (data.length < 126) return Buffer.concat([Buffer.from([0x81, data.length]), data]); const head = Buffer.alloc(4); head[0] = 0x81; head[1] = 126; head.writeUInt16BE(data.length, 2); return Buffer.concat([head, data]); };
   const server = http.createServer((request, response) => { response.writeHead(404); response.end(); });
   server.on('upgrade', (request, socket) => {
@@ -53,8 +55,8 @@ async function websocketFixture() {
     let buffer = Buffer.alloc(0), feedId;
     const timer = setInterval(() => {
       if (!state.quotes || !feedId || socket.destroyed) return;
-      const now = Date.now() - 25;
-      const payload = { type: 'streamUpdated', subscriptionId: 1, parsed: { timestampUs: String(now * 1000), priceFeeds: [{ priceFeedId: feedId, price: String(Math.round((state.priceOverride ?? (100 + Math.sin(now / 5000))) * 1e8)), exponent: -8, feedUpdateTimestamp: now * 1000 }] } };
+      const now = Date.now() + state.clockOffsetMs - 25;
+      const payload = { type: 'streamUpdated', subscriptionId: 1, parsed: { timestampUs: String(now * 1000), priceFeeds: [{ priceFeedId: feedId, price: String(Math.round((state.priceOverride ?? (state.oracleMode ? 100 + (now / 1000 - 1700000000) / 6000 : 100 + Math.sin(now / 5000))) * 1e8)), exponent: -8, feedUpdateTimestamp: now * 1000 }] } };
       socket.write(frame(JSON.stringify(payload))); state.sent++;
     }, 200);
     socket.on('data', chunk => {
@@ -83,15 +85,15 @@ async function websocketFixture() {
     if (state.history === 'invalid') return { s: 'ok', t: [Date.now()], o: [], h: [], l: [], c: [] };
     if (state.history === 'none') return { s: 'no_data' };
     const interval = Number(new URL(url).searchParams.get('resolution')) * 60;
-    const current = Math.floor(Date.now() / 1000 / interval) * interval;
+    const current = Math.floor((Date.now() + state.clockOffsetMs) / 1000 / interval) * interval;
     const first = Number(new URL(url).searchParams.get('from'));
     const t = Array.from({ length: Math.floor((current - first) / interval) + 1 }, (_, i) => first + i * interval)
       .filter(time => state.history !== 'lagging' || time < current - interval)
       .filter(time => state.history !== 'gap' || time !== current - 2 * interval);
-    const target = Math.floor(Date.now() / 600000) * 600;
+    const target = Math.floor((Date.now() + state.clockOffsetMs) / 600000) * 600;
     const inPair = time => time >= target - 1200 && time < target;
-    const o = t.map((time, i) => inPair(time) ? 100 : 100 + Math.sin(i / 3) * 7);
-    const c = o.map((v, i) => inPair(t[i]) ? fixtureColor(t[i]) : v + Math.sin(i) * 2);
+    const o = t.map((time, i) => state.oracleMode ? 100 + (time - 1700000000) / 6000 : inPair(time) ? 100 : 100 + Math.sin(i / 3) * 7);
+    const c = o.map((v, i) => state.oracleMode ? v + interval / 6000 * 0.8 : inPair(t[i]) ? fixtureColor(t[i]) : v + Math.sin(i) * 2);
     function fixtureColor(time) { return state.pattern === 'UU' ? 101 : state.pattern === 'mixed' && time >= target - 600 ? 101 : 99; }
     return { s: 'ok', t, o, h: o.map((v, i) => Math.max(v, c[i]) + 2), l: o.map((v, i) => Math.min(v, c[i]) - 2), c };
   }
@@ -115,7 +117,7 @@ async function setupTarget(sessionId, info) {
   if (info.type === 'page' || info.type === 'iframe') {
     await browser.call('Page.enable', {}, sessionId);
     if (fixture) {
-      const code = `(() => {const Native = globalThis.WebSocket; globalThis.WebSocket = class extends Native {constructor(url,...rest){super(String(url) === ${JSON.stringify(STREAM)} ? ${JSON.stringify(fixture.url)} : url,...rest)}}; globalThis.__smtFixtureNativeTransport = true;})()`;
+      const code = `(() => {const Native = globalThis.WebSocket; globalThis.WebSocket = class extends Native {constructor(url,...rest){super(String(url) === ${JSON.stringify(STREAM)} ? ${JSON.stringify(fixture.url)} : url,...rest)}}; globalThis.__smtFixtureNativeTransport = true; const originalNow = Date.now.bind(Date);globalThis.__smtFixtureClockOffsetMs=${JSON.stringify(fixture.state.clockOffsetMs)};Date.now=()=>originalNow()+globalThis.__smtFixtureClockOffsetMs;})()`;
       await browser.call('Page.addScriptToEvaluateOnNewDocument', { source: code }, sessionId);
       await browser.evaluate(sessionId, code).catch(() => {});
     }
@@ -146,8 +148,8 @@ async function intercept(m) {
 }
 const ev = (page, expr) => browser.evaluate(page.sessionId, expr);
 async function until(fn, what, ms = 10000) { let last; const result = await browser.waitFor(async () => { try { return await fn(); } catch (error) { last = error; return null; } }, ms, 100); assert(result, `timed out: ${what}${last ? ` (${last.message})` : ''}`); return result; }
-async function findPanel(symbol = 'SOL') { return until(async () => { const t = (await browser.targets()).find(t => t.url === `chrome-extension://${browser.extensionId}/src/1000x/panel.html#market=${symbol}`); if (!t) return null; const data = targets.get(t.targetId); if (!data) return null; await sessionReady.get(data.sessionId); if (!await ev(data, `document.querySelectorAll('#readouts tr').length === 7`).catch(() => false)) return null; return data; }, `${symbol} extension iframe`); }
-const panelSnapshot = page => ev(page, `({url:location.href,market:document.querySelector('#market')?.textContent,status:document.querySelector('#status')?.textContent,state:document.querySelector('#status')?.dataset.state,timing:document.querySelector('#timing')?.textContent,note:document.querySelector('#candle-note')?.textContent,interval:document.querySelector('#timeframe')?.value,pattern:document.querySelector('#pattern')?.textContent,patternState:document.querySelector('#pattern')?.dataset.state,developing:document.querySelector('#developing-context')?.textContent,momentum:document.querySelector('#momentum-context')?.textContent,heuristic:document.querySelector('#heuristic')?.textContent,empirical:document.querySelector('#empirical')?.textContent,exit:document.querySelector('#exit-context')?.textContent,shapes:[...document.querySelectorAll('.shape-card')].map(card=>({minutes:card.dataset.minutes,text:card.textContent})),rows:[...document.querySelectorAll('#readouts tr')].map(row=>({key:row.dataset.indicator,value:row.querySelector('[data-value]').textContent,signal:row.querySelector('[data-signal]').textContent,enabled:row.querySelector('input').checked})),canvas:document.querySelectorAll('canvas').length,width:innerWidth,scrollWidth:document.documentElement.scrollWidth})`);
+async function findPanel(symbol = 'SOL') { return until(async () => { const t = (await browser.targets()).find(t => t.type === 'iframe' && t.url === `chrome-extension://${browser.extensionId}/src/1000x/panel.html#market=${symbol}`); if (!t) return null; const data = targets.get(t.targetId); if (!data) return null; await sessionReady.get(data.sessionId); if (!await ev(data, `document.querySelectorAll('#readouts tr').length === 7`).catch(() => false)) return null; return data; }, `${symbol} extension iframe`); }
+const panelSnapshot = page => ev(page, `({url:location.href,market:document.querySelector('#market')?.textContent,status:document.querySelector('#status')?.textContent,state:document.querySelector('#status')?.dataset.state,timing:document.querySelector('#timing')?.textContent,note:document.querySelector('#candle-note')?.textContent,interval:document.querySelector('#timeframe')?.value,pattern:document.querySelector('#pattern')?.textContent,patternState:document.querySelector('#pattern')?.dataset.state,developing:document.querySelector('#developing-context')?.textContent,momentum:document.querySelector('#momentum-context')?.textContent,heuristic:document.querySelector('#heuristic')?.textContent,empirical:document.querySelector('#empirical')?.textContent,exit:document.querySelector('#exit-context')?.textContent,shapes:[...document.querySelectorAll('.shape-card')].map(card=>({minutes:card.dataset.minutes,text:card.textContent})),rows:[...document.querySelectorAll('#readouts tr')].map(row=>({key:row.dataset.indicator,value:row.querySelector('[data-value]').textContent,signal:row.querySelector('[data-signal]').textContent,enabled:row.querySelector('input').checked})),oracle:{state:document.querySelector('#streaming-oracle')?.dataset.state,status:document.querySelector('#oracle-status')?.textContent,prediction:document.querySelector('#oracle-prediction')?.textContent,counts:document.querySelector('#oracle-counts')?.textContent,trained:Number(document.querySelector('#oracle-counts')?.dataset.trained||0),resolved:Number(document.querySelector('#oracle-counts')?.dataset.resolved||0),feedback:document.querySelector('#oracle-feedback')?.textContent,metrics:document.querySelector('#oracle-metrics')?.textContent},canvas:document.querySelectorAll('canvas').length,width:innerWidth,scrollWidth:document.documentElement.scrollWidth})`);
 async function screenshot(name, page = portal, clip) {
   if (page !== portal) {
     const origin = await ev(portal, `(()=>{const r=document.querySelector('#smt-1000x-indicators').shadowRoot.querySelector('iframe').getBoundingClientRect();return{x:r.x,y:r.y}})()`);
@@ -205,7 +207,9 @@ try {
     receipt.details.loaded_revision = { version: manifest.version, executed_sha256: loaded, served_sha256: source }; return loaded;
   });
   await check('all seven chart/readout series show fresh completed-candle values and source clocks', async () => {
-    const s = await fresh(); same(s.rows.map(r => r.key), ['zigzag', 'rsi', 'bop', 'volty', 'psar', 'ema', 'macd'], 'indicator set');
+    await fresh();
+    const s = await until(async () => { const value = await panelSnapshot(panel); return ['active', 'baseline-warmup', 'baseline-performance'].includes(value.oracle.state) ? value : null; }, 'initialized Oracle with fresh source identity');
+    same(s.rows.map(r => r.key), ['zigzag', 'rsi', 'bop', 'volty', 'psar', 'ema', 'macd'], 'indicator set');
     assert(s.rows.every(r => r.enabled && !/Warming up|NaN|Infinity/.test(r.value)), 'missing/invalid indicator values');
     assert(s.canvas >= 8, 'four chart panes did not render canvases'); assert(s.timing.includes('Exchange ') && s.timing.includes('received ') && /age [\d.]+s/.test(s.timing), 'clock distinction missing');
     assert(s.note.includes('contiguous completed candles') && s.note.includes('latest chart candle may be developing'), 'candle semantics missing');
@@ -340,7 +344,10 @@ try {
     await check('stale data removes all explanatory signals before feed ten-second timeout', async () => {
       fixture.state.quotes = false;
       const stale = await until(async () => { const s = await panelSnapshot(panel); return s.state === 'stale' && s.patternState === 'unavailable' && /alignment unavailable/.test(s.heuristic) && s.rows.every(r => r.signal === 'Unavailable until feed is fresh') ? s : null; }, 'UI three-second freshness gate', 6500);
-      await screenshot('02-stale-no-signals'); fixture.state.quotes = true; await fresh(); return stale;
+      await screenshot('02-stale-no-signals'); fixture.state.quotes = true;
+      // A pause may straddle a minute and leave an observed opening partial.
+      // Fresh ticks alone cannot certify that missing close; request real history.
+      await refresh(); await fresh(); return stale;
     });
     await check('lagging and malformed history fail closed; fresh ticks cannot revive stale readings', async () => {
       const observed = [];
@@ -399,6 +406,99 @@ try {
       same(await ev(portal, `document.querySelector('#smt-1000x-indicators').shadowRoot.querySelectorAll('iframe').length`), 0, 'collapsed public iframe');
       const after = await ev(portal, `({buttons:[...document.querySelectorAll('button')].map(e=>e.textContent?.trim()).filter(Boolean),nativeChart:!!document.querySelector('[aria-label="Live market price chart"]')})`);
       same(after.buttons, before.buttons, 'native control texts'); assert(after.nativeChart, 'native canvas lost'); await screenshot('04-public-portal-collapsed'); return { before, after };
+    });
+  }
+  if (fixture) {
+    let twin;
+    const oracleSnapshot = page => ev(page, `(async()=>{const {OracleStore}=await import(chrome.runtime.getURL('src/1000x/oracle-store.js'));const store=new OracleStore();try{const read=await new Promise((resolve,reject)=>{const r=indexedDB.open('solmargintrader-streaming-oracle',1);r.onsuccess=()=>{const db=r.result;const q=db.transaction('partitions').objectStore('partitions').getAll();q.onsuccess=()=>{db.close();resolve(q.result)};q.onerror=()=>{db.close();reject(new Error('oracle read'))}};r.onerror=()=>reject(new Error('oracle open'))});return read.find(row=>row.state.market==='ORCL')?.state||null}finally{store.close()}})()`);
+    const setClock = async (offset, pages) => {
+      fixture.state.clockOffsetMs = offset;
+      for (const page of pages.filter(Boolean)) { await ev(page, `globalThis.__smtFixtureClockOffsetMs=${offset}`); await browser.call('Page.addScriptToEvaluateOnNewDocument',{source:`globalThis.__smtFixtureClockOffsetMs=${offset}`},page.sessionId); }
+    };
+    await check('streaming Oracle cold start stores one prospective baseline/shadow forecast in native IndexedDB', async () => {
+      fixture.state.oracleMode = true;
+      fixture.catalog.markets.push({ ...fixture.catalog.markets[0], symbol: 'ORCL', feedId: 77 });
+      const offset = Math.ceil(Date.now() / 60000) * 60000 + 2500 - Date.now();
+      await setClock(offset, [portal]);
+      await ev(portal, `history.pushState({},'', '/1000x?market=ORCL&mode=classic')`); panel = await findPanel('ORCL'); await fresh();
+      await until(() => ev(panel, `document.querySelector('#oracle-counts')?.dataset.trained==='0'`), 'cold native learner initialized');
+      const state = await until(async () => { const s = await oracleSnapshot(panel); return s?.issued === 1 ? s : null; }, 'first prospective stored Oracle forecast');
+      same(state.model.n, 0, 'cold start trained on historical labels');
+      same(state.pending[0].p, 0.5, 'untrained candidate'); same(state.pending[0].servedP, 0.5, 'cold served baseline');
+      same(state.pending[0].mode, 'baseline-warmup', 'cold mode');
+      const ui = await panelSnapshot(panel); assert(/rolling 10m/.test(await ev(panel, `document.querySelector('#streaming-oracle h2').textContent`)), 'rolling target label absent');
+      assert(/candidate|baseline/.test(ui.oracle.prediction) && /NON-UP/.test(ui.oracle.prediction), 'binary probability labels absent');
+      receipt.details.observations.push({ oracle_fixture_clock: 'accelerated synthetic public-contract candles only; not public-market performance', first: state });
+      return { issued: state.pending[0], ui: ui.oracle };
+    });
+    await check('two actual extension windows share immutable issued forecasts and native atomic learning', async () => {
+      const { targetId } = await browser.call('Target.createTarget', { url: `chrome-extension://${browser.extensionId}/src/1000x/panel.html#market=ORCL` });
+      twin = await until(() => targets.get(targetId), 'second extension window'); await sessionReady.get(twin.sessionId);
+      await until(() => ev(twin, `document.querySelector('#oracle-counts')?.textContent.includes('pending 1')`), 'second window restored pending forecast');
+      const before = await oracleSnapshot(panel), restored = await oracleSnapshot(twin);
+      same(restored.pending, before.pending, 'second window changed issued forecast'); same(restored.issued, 1, 'duplicate initial issuance');
+      const fixedCutoff = before.pending[0].cutoff;
+      for (let step = 1; step <= 31; step++) {
+        const desired = (fixedCutoff + step * 60) * 1000 + 2500;
+        await setClock(desired - Date.now(), [portal, panel, twin]);
+        await until(async () => { const s = await oracleSnapshot(panel); return s?.lastIssuedCutoff === fixedCutoff + step * 60 ? s : null; }, `Oracle minute${step} issuance`);
+      }
+      const state = await until(async () => { const s = await oracleSnapshot(panel); return s?.model.n === 22 ? s : null; }, '22 genuine delayed outcomes');
+      same(state.issued, 32, 'multiwindow duplicated forecast'); same(state.totals.n, 22, 'multiwindow duplicated scoring');
+      same(state.model.n, 22, 'multiwindow duplicated learning'); assert(state.model.weights.some(w => w !== 0) || state.model.bias !== 0, 'learner did not update');
+      const shadow = state.recent.find(f => f.p !== f.servedP && f.mode === 'baseline-warmup'); assert(shadow, 'actual served baseline was not preserved independently');
+      assert(state.pending.at(-1).mode === 'active', 'model never left cold start');
+      // Creating a second top-level page backgrounds the portal. Native Chrome
+      // pauses its requestAnimationFrame callbacks; resume that UI before reading it.
+      await browser.call('Page.bringToFront', {}, portal.sessionId);
+      const ui = await until(async () => { const s = await panelSnapshot(panel); return s.oracle.trained === 22 ? s : null; }, 'rendered learning count');
+      assert(/candidate shadow|actually served|fixed 0.5/.test(ui.oracle.metrics), 'paired metrics labels absent');
+      await ev(panel, `document.querySelector('#streaming-oracle details').open=true;window.scrollTo(0,0)`);
+      await screenshot('07-streaming-oracle-learned-fixture');
+      return { issued: state.issued, resolved: state.model.n, model: state.model, shadow_served_example: shadow, ui: ui.oracle,
+        interpretation: 'Synthetic accelerated fixture checks implementation and accounting, not future accuracy or profit' };
+    });
+    await check('native IndexedDB abort/reload preserves counters and unknown outcomes stay outside learning', async () => {
+      await browser.call('Page.bringToFront', {}, portal.sessionId);
+      console.log('Oracle recovery fixture: reading checkpoint');
+      const before = await oracleSnapshot(panel);
+      console.log('Oracle recovery fixture: aborting a native transaction');
+      const abort = await ev(panel, `(async()=>{const {OracleStore}=await import(chrome.runtime.getURL('src/1000x/oracle-store.js'));const store=new OracleStore();try{await store.update(${JSON.stringify('PLACEHOLDER')},()=>{throw new Error('fixture abort')});return false}catch{return true}finally{store.close()}})()` .replace(JSON.stringify('PLACEHOLDER'), JSON.stringify(before.key)));
+      assert(abort, 'native transaction did not reject'); same(await oracleSnapshot(panel), before, 'aborted transition changed model');
+      console.log('Oracle recovery fixture: reopening the original window');
+      await ev(portal, `document.querySelector('#smt-1000x-indicators').shadowRoot.querySelector('button').click()`);
+      await until(() => fixture.sockets.size === 1, 'collapsed original stream with twin preserved');
+      await ev(portal, `document.querySelector('#smt-1000x-indicators').shadowRoot.querySelector('button').click()`);
+      panel = await findPanel('ORCL'); await fresh();
+      const restored = await until(async () => { const s = await oracleSnapshot(panel); return s?.model.n === before.model.n ? s : null; }, 'reloaded native learner');
+      same(restored.pending, before.pending, 'reload changed pending features/probabilities'); same(restored.totals, before.totals, 'reload changed metrics');
+      console.log('Oracle recovery fixture: advancing past unknown outcomes');
+      fixture.state.history = 'none';
+      await setClock(fixture.state.clockOffsetMs + 15 * 60000, [portal, panel, twin]);
+      await refresh();
+      console.log('Oracle recovery fixture: checking expiry without labels');
+      const expired = await until(async () => { const s = await oracleSnapshot(panel); return s?.expired > before.expired ? s : null; }, 'unknown labels expire').catch(async error => {
+        console.error('Oracle expiry diagnostic', JSON.stringify({ ui: await panelSnapshot(panel), clock: await ev(panel, `({now:Date.now(),offset:globalThis.__smtFixtureClockOffsetMs,visibility:document.visibilityState})`) }));
+        throw error;
+      });
+      same(expired.model.n, before.model.n, 'unknown outcomes trained'); same(expired.totals.n, before.totals.n, 'unknown outcomes scored');
+      await until(() => ev(panel, `document.querySelector('#oracle-prediction').textContent.includes('resolved UP')`), 'resolved forecast retains its known label after pending expiry');
+      await browser.call('Target.closeTarget', { targetId: twin.targetId }); twin = null;
+      fixture.state.history = 'full'; fixture.state.oracleMode = false; await setClock(0, [portal, panel]);
+      await ev(portal, `history.pushState({},'', '/1000x?market=SOL&mode=classic')`); panel = await findPanel(); await fresh();
+      return { before: { n: before.model.n, issued: before.issued }, after: { n: expired.model.n, expired: expired.expired }, native_abort: true };
+    });
+    if (twin) await browser.call('Target.closeTarget', { targetId: twin.targetId }).catch(() => {});
+  } else {
+    await check('public streaming Oracle shows honest initial prospective state without fabricated performance', async () => {
+      // The earlier public UI snapshot was taken before collapse; a new profile
+      // cannot have resolved a10m target during this bounded acceptance run.
+      const observed = receipt.checks.find(c => c.name.startsWith('all seven'))?.detail;
+      assert(observed?.oracle, 'public Oracle UI snapshot absent');
+      same(observed.oracle.trained, 0, 'new public profile fabricated training samples');
+      same(observed.oracle.resolved, 0, 'new public profile fabricated resolved accuracy');
+      assert(/NON-UP|No issued forecast|unavailable/.test(observed.oracle.prediction), 'public target availability label missing');
+      return observed.oracle;
     });
   }
   await check('only local view preferences persist; sync/secrets/arming stay untouched', async () => {

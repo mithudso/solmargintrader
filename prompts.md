@@ -1,6 +1,7 @@
 # Prompt history
 
-Version: 272
+Version: 273
+Delta: v272 to v273; record and execute the approved adaptive streaming Oracle prompt.
 Delta: v271 to v272; integrate extension reversal and owner host reply.
 Delta: v269 to v270; record the extension two-bar reversal and indicator request.
 Delta: v270 to v271; preserve the owner host-identification reply.
@@ -2490,3 +2491,12 @@ Add the same down down up logic and indicators to the /Users/mitch/dev/solmargin
 ## Owner host-identification reply
 
 The name of the box is M-GN90147X97, or m3, or work.
+
+
+## Adaptive streaming Oracle extension — 2026-11-16
+
+```text
+Also add to the extension a streaming version of the oracle with predictions based on the data, but use the streaming data to train and inform the predictions. Make it a self correcting feedback loop. spin off an agent to do a full-suite skill research on real time machine learning streamning market data.
+```
+
+Execute the final approved optimized prompt byte-for-byte in docs/EXTENSION-STREAMING-ORACLE-PROMPT.md (SHA25606d3ffc424af00824dd0ea27f0b1fff09e80b4b1dd15ac4bcafa00367623a0d6). Structural optimization and native full-suite research are parent-owned; do not repeat optimization or claim unqualified research as published.
