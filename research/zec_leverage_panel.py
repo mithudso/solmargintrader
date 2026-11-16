@@ -128,8 +128,9 @@ def comparison_text(data, asset, venue, now, basis_cache=None):
             else "red"
         )
         colors.append(color)
+        age_labels = [f"{age:.2f}s" if age is not None else "unknown" for age in ages]
         lines.append(
-            f"{title}{' · PRIMARY' if source == primary else ''}: {display} · {color.upper()}●"
+            f"{title}{' · PRIMARY' if source == primary else ''}: {display} · {color.upper()}● · exchange {age_labels[0]} · received {age_labels[1]}"
         )
     comparable = all(valid[source] is not None for source in ("jupiter", "coinbase"))
     skew = (
@@ -250,7 +251,7 @@ def tilt_text(tilts, tentative=False):
     )
 
 
-def mtf_tilt_text(scores):
+def mtf_tilt_text(scores, frames=None):
     """Display published 10m model components against their training baseline."""
     model = scores.get("10", {}) if isinstance(scores, dict) else {}
     baseline = model.get("base_down_rate") if isinstance(model, dict) else None
@@ -264,7 +265,12 @@ def mtf_tilt_text(scores):
         if (type(baseline) not in (int, float) or not math.isfinite(baseline)
             or type(posterior) not in (int, float) or not math.isfinite(posterior)
             or type(n) is not int or n <= 0):
-            items.append(f"{minutes}m ?")
+            frame = frames.get(str(minutes), {}) if isinstance(frames, dict) else {}
+            shape = frame.get("shape") if isinstance(frame, dict) else None
+            if isinstance(shape, str) and shape != "unknown" and isinstance(model, dict) and model.get("status") == "ready":
+                items.append(f"{minutes}m {_text(shape, limit=24)} unsupported")
+            else:
+                items.append(f"{minutes}m ?")
         else:
             uplift = (baseline - posterior) * 100
             items.append(f"{minutes}m {uplift:+.1f}pp n={n}")
@@ -937,7 +943,7 @@ class LeveragePanel(ModalScreen[None]):
         mtf_at = mtf.get("at")
         mtf_age = self.clock() - mtf_at if type(mtf_at) in (int, float) and math.isfinite(mtf_at) else None
         mtf_age_label = f" · observer age {max(0, mtf_age):.0f}s" if mtf_age is not None else " · observer age unknown"
-        tilts.update(Text(mtf_tilt_text(mtf_asset.get("scores", {})) + mtf_age_label))
+        tilts.update(Text(mtf_tilt_text(mtf_asset.get("scores", {}), frames) + mtf_age_label))
         tilts.tooltip = "Published 10m model component posterior P(up) minus its training baseline; n is the historical shape count. Not a forecast guarantee."
         shapes = " · ".join(
             f"{m}m {_text(frames.get(str(m), {}).get('shape')) if isinstance(frames.get(str(m)), dict) else '—'}"

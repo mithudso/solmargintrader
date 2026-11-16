@@ -1,6 +1,7 @@
 # Prompt history
 
-Version: 266
+Version: 267
+Delta: v266 to v267; record source-age and supported-shape follow-up.
 Delta: v265 to v266; integrate the UI delivery stage with concurrent Jupiter overlay records.
 Delta: integrated to v265; preserve both Jupiter overlay and incoming nine-strategy research records.
 Delta: v262 to v263; record the Jupiter Wallet installation follow-up messages.
@@ -2449,3 +2450,7 @@ SEC is interpreted as ZEC from context. Channel Breakout came from a separate sc
 ## UI delivery stage, 2026-11-16
 
 The owner requests are preserved verbatim in the earlier v257–v260 entries. This stage implements the leverage panel changes separately from the ongoing exit50 and MTF research. This paragraph is an implementation interpretation, not a verbatim prompt.
+
+## Source-age follow-up — 2026-11-16
+
+The earlier owner requests for source-aware prices and 5/10/15/20-minute conditional shapes remain recorded above. This follow-up interprets those requests as adding numeric per-source quote ages and explaining unsupported model components without altering the frozen model.
