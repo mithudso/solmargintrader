@@ -1,11 +1,11 @@
 {
-  "generatedAt": "2026-11-16T12:29:13+00:00",
+  "generatedAt": "2026-11-16T12:32:53+00:00",
   "schemaVersion": 1,
   "repoRoot": "~/dev/solmargintrader",
   "commit": "5526b6f",
   "counts": {
     "files": 3871,
-    "bytes": 138337691,
+    "bytes": 138339214,
     "byKind": {
       "strategy-card": 1478,
       "doc": 819,
@@ -90506,9 +90506,9 @@
       "title": "SAR and Pivot Reversal source review checkpoint",
       "summary": "Status: provisional source review, not a completed rabbithole or trusted publication. Each built-in has one primary software source organization, TradingView. Neither has met an independent-source floor, a measured two-pass novelty convergence test, completed deduplication, or trusted claim review. Six-pass budgets remain ceilings, not completed passes. No saturation is claimed.",
       "summarySource": "opening-prose",
-      "bytes": 4261,
-      "lines": 29,
-      "sha1": "de2b5a810e3b5f8559979884f020704613230c97",
+      "bytes": 5784,
+      "lines": 37,
+      "sha1": "afa448bfc90328249b92931104c9b298aa9b4490",
       "symbols": [],
       "imports": [],
       "internalImports": [],
