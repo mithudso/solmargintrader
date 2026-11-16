@@ -15,6 +15,14 @@ both counters. A sequence that touches the average and resumes above it can
 therefore issue a new same-side entry intent. The existing `ma_crossover`
 strategy instead compares fast and slow averages and is not equivalent.
 
+The existing `research/tradingview-card-coverage.json` maps official help
+publication 43000599885, MovingAvg Cross, to `ma_crossover` and calls it
+`existing`. That mapping does not establish implementation parity: the
+referenced code is the two-average 20/50 strategy. The coverage file also maps
+the distinct MovingAvg2Line Cross publication to that code. Preserve the
+checksum-bound readiness records while reconciling these mismatches through
+their owning workflow.
+
 The source submits market `strategy.entry` orders, long `MACrossLE` and short
 `MACrossSE`, without specifying quantity. TradingView's strategy documentation
 `src:6e1dd8adf7931dc7`, SHA-256

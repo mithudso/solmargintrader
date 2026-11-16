@@ -1,6 +1,7 @@
 # Work continuation
 
-Version: 578
+Version: 579
+Delta: v578 to v579; record the incorrect existing coverage mapping.
 Delta: v577 to v578; start single moving-average research under TASK-2335.
 Delta: v576 to v577; record the Preview inspection fix and pending acceptance.
 Delta: v575 to v576; record the macOS shape-guide lifecycle failure and recovery.
@@ -2677,3 +2678,5 @@ The 1000x Preview fallback reports a verified unsigned simulation as inspection 
 Resume Mongo run `run:2ceb379c607a2a79120f4d92639b671d5a6f9670129529994e098f847a0a7ed0` using separately fenced ownership. TradingView Pine 31.0 snapshot `src:d009b1e195649778` is one SMA of close, length 9, confirmation 1; it is not the existing 20/50 two-SMA implementation. User confirmed a 10-minute chart. Exact tester properties and matching perpetual data remain unknown. Preserve holdouts; do not claim TradingView return replication. Complete family census, independent negation, six-question passes and trusted research gate before qualification. Shared broker engine belongs to another worker.
 
 Adapter and eight focused tests pass against shared engine commit `600926e` loaded read-only. Pinned Ruff 0.17.4 passed. The adapter rejects nonfinite close values rather than claiming Pine `na` parity. The Mongo run has unqualified question and evidence ledgers and eight full depth-three graph-neighborhood pages; those 1,407 records do not establish the server's 1,286-member descendant census. Source-bound independent negation, canonical claim creation, novelty passes, trusted finalization, exact market data and backtest remain.
+
+MovingAvg Cross support publication 43000599885 is marked `existing` and mapped to the two-average `ma_crossover` in `research/tradingview-card-coverage.json`. That implementation does not match the pinned single-SMA Pine source. The separate MovingAvg2Line Cross maps to the same code. Anchored risk `KNOW-2341` records the mismatch; preserve checksum-bound readiness records.
