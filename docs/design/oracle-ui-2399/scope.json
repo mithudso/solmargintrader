@@ -1,6 +1,6 @@
 {
-  "version": "1.0.0",
-  "delta": "Frozen before source edits",
+  "version": "1.1.0",
+  "delta": "Preserve original frozen matrix; expand source fingerprint with the accepted concurrent Console preview dependency after PR303 integration.",
   "frozen_at": "2026-11-16T15:37:02.241654+00:00",
   "base_sha": "6f69efc2f01741380f3f8d7838d3fb75762859a5",
   "editable": true,
@@ -12,7 +12,8 @@
     "research/tests/test_zec_feed_controls.py",
     "research/tests/test_zec_leverage_panel.py",
     "research/tests/test_zec_tui_stream.py",
-    "docs/ORACLE-LEVERAGE.md"
+    "docs/ORACLE-LEVERAGE.md",
+    "oracle_leverage/console.py"
   ],
   "selected": [
     "P01",
@@ -458,5 +459,6 @@
     "Terminal accessibility bridge and assistive-technology task evidence may be unavailable. Do not label unavailable selected evidence clean.",
     "Source tests, rendered fixture acceptance and actual installed acceptance remain separate gates."
   ],
-  "max_sweeps": 5
+  "max_sweeps": 5,
+  "source_dependency_note": "Console is a read-only rendering dependency owned by SDK PR303; this UI task does not edit its execution implementation."
 }

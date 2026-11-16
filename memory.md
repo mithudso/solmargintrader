@@ -1,8 +1,16 @@
 # Work continuation
 
-Version: 597
+Version: 603
+Delta: v602 to v603; preserve both UI optimizer continuation and current-format market-order verifier evidence.
 Delta: v596 to v597; qualify first UI sweep and six repaired defects before upstream integration.
 Delta: v595 to v596; begin isolated feed controls and frozen UI optimizer matrix.
+Delta: v601 to v602; qualify market-open route and explicit close limitation.
+Delta: v600 to v601; qualify market-order account exposure and replay evidence.
+Delta: v599 to v600; preserve independent paper live acceptance and research continuation.
+Delta: v598 to v599; harden market-order wallet exposure and investigate close.
+Delta: v597 to v598; block current execution on observed unbounded oracle advance.
+Delta: v596 to v597; implement current YOLO open checks with pending independent review.
+Delta: v595 to v596; begin isolated current-format YOLO verifier implementation and independent review.
 Delta: v594 to v595; integrate YOLO contract evidence and concurrent exit50 continuation.
 Delta: v593 to v594; record authenticated Lazer payload and post-state evidence.
 Delta: v592 to v593; preserve current YOLO contract evidence and pending verifier proof.
@@ -2548,7 +2556,6 @@ ChromeDevTools has the intended signed-in GoogleAdSense publisher session. Its e
 
 ## ZEC reversal working paper — 2026-11-14
 
-Version: 1.1.0
 Delta: independently audit counts and exact public/Mongo bytes; qualify PDF, website source and browser gates.
 
 Owner request: explain whether the two-up/two-down 10-minute observations justify betting, then publish a paper on oraclebot.io. Task: TASK-2191; numerical verification TASK-2192, paper/audit TASK-2193, delivery/live acceptance TASK-2194.
@@ -2572,7 +2579,6 @@ Preserve remoteGitHubAgentMerge commitdaba39a62e4345c12c7421237bc77f4389ca5264 a
 
 ## Oracle winner live indicators and two-bar check — 2026-11-14
 
-Version: 1.1.0
 Delta: implement and peer-review source/stream/UI; qualify80unique focused tests and preliminary real trade feed.
 
 Owner requests genuine streaming indicator numbers, a full Refresh now button, clickable aligned indicator overlays and the two-consecutive-bar reversal check in the existing oracle_winners.py TUI. Starting clean master f74eeed573a92f6a7d6331ea38c7bab4d4ea9874. Isolated task worktree /Users/mitch/dev/worktrees/zec-tui-live-indicators-20261114; evidence /Users/mitch/.local/state/zec-tui-live-indicators-20261114. Stele create queued as3acd3f35 after Transport closed; no task ID guessed/claimed.
@@ -2819,3 +2825,18 @@ All P01–P48 were individually inspected and checkpointed in /Users/mitch/.loca
 The first sweep contains explicit partial/unavailable evidence for P08/P40 pending SDK disclosure integration, P18/P19 full native contrast, P29 accessibility tree, P30 native zoom/spacing, P33 reduced motion, P39 native installed platform and P41 actual assistive technology. ResearchP49–P70 remains unrequested and out of scope. Never report CLEAN with these gaps.
 
 Next: preserve this checkpoint, merge origin/master including SDK PR303 (4e2dac8b5b73ceafdd63ec01f01078a82bef439b), retain its market-price/nonbinding-entry and unavailable-close disclosures, finish the final48-cell capture plus a complete no-edit sweep, independent review and ledger validation. Parent owns final merge and loaded monitor acceptance. Protected/historical PIDs must be re-inventoried; do not infer runtime identity from an old PID.
+## Current-format YOLO verifier implementation
+
+Worktree: /Users/mitch/dev/worktrees/yolo-execution-v2; branch depends on inspection PR 301. Implement the observed open subset with current YOLO/Pyth deployment pins, live Pyth ECDSA trust state, exact canonical price feed, exact owner intent, transaction/account binding and read-only post-state simulation. Preserve the legacy verifier. Current-format close remains blocked until payout and debt account semantics are independently demonstrated. No signing, sending, funding or arming during investigation. Independent code and economic review is required before merge or funded use. Program upgradeability and simulation drift remain explicit limitations.
+
+Current open prototype adds exact program pins, signed Pyth feed parsing and current trusted signer verification, exact-message unsigned simulation, and position/collateral/fee delta checks. SDK tests pass 27/27. BTC long/short and ZEC long/short each passed at least once across the evolving prototype; current-oracle post-state mismatch and provider 429 correctly block other attempts. Repeat all live unsigned cases on the final reviewed tip. Current close remains blocked because the claim and payout contract is not established. Both programs remain upgradeable; simulation cannot guarantee future state. Independent security, dependency and economic review and final CI are outstanding. No signatures, funded transactions, wallet changes or arming occurred.
+
+A fresh ZEC simulation demonstrated a newer shared oracle than the still-valid signed payload: feed timestamp 1794841599000000 and price 857443686750000, post-oracle timestamp 1794841599200000 and price 857507202020000. The SDK OpenPosition data has no known entry-price bound. A matching simulation cannot enforce its checked price at later execution. Current-format open therefore fails closed with current_execution_price_not_bound after verification; current close is blocked for missing claim and payout proof. Preserve legacy behavior. Determine an on-chain enforceable price bound before enabling current execution.
+
+Independent review identified missing SPL token delegate, allowance and close-authority checks. Preserve the temporary current-open gate until complete account metadata and exact amount-only mutation checks pass and reviewers accept them. Current opens are market orders; any simulated price is nonbinding, and a newer verified program-owned oracle may be used if its feed, PDA, timestamp, freshness and actual position entry match. Continue investigating current-format close claim and payout behavior with unsigned reads/simulations only.
+
+On 2026-11-16 at 15:14:56 UTC independent live acceptance observed canonical PR 302 paper observer PID 85148 and owned monitor PID 87752; the first paper decision followed the process cutoff. One ZEC paper observation had settled liquidated with modeled payout zero. The UI showed wallet, arm, inline results and dual source ages. Paper outcomes are not live fills. Running-process heap bytes were not independently attested. Private receipt: /Users/mitch/.local/state/oracle-exit50-2309/tui-acceptance/paper-final-receipt.json. The nine-strategy first research finalization remains unresolved; current missing record does not prove historical non-dispatch or zero cost. Operator receipt: /Users/mitch/.local/state/tv-nine-audit-2329/operator-reconciliation.json.
+
+Independent review treats current opens as market orders: the price observed in simulation is nonbinding. Token account delegate, allowance, native state and close authority now fail closed; all token metadata and data except the exact expected amount must match. Owner and keeper system metadata must remain unchanged. The bounded raw RPC reader preserves exact u64 rentEpoch lexemes and rejects unsafe lamport numbers. A deterministic exact-message HTTP simulation fixture covers a newer fresh oracle and post-state, with a separately injected test-only program-pin check. SDK tests pass 30/30. Current-open execution remains gated pending independent review. Private live unsigned ZEC long replay: /Users/mitch/.local/state/yolo-current-verifier-replays/zec-long-unsigned-20261116.json, SHA-256 bfcb649a69fc5798cb857e32e23acdeb048a8dc5f39ddc7933c13ec3cbd3afa3; ZEC short replay: /Users/mitch/.local/state/yolo-current-verifier-replays/zec-short-unsigned-20261116.json, SHA-256 5aac7bebc96ca95d93bcb7344b2241f4e5328eddd1dce0d0111eea3809e69f6c. Balance and positions must be refreshed at use time. Current-close claim/payout verification remains open.
+
+Independent reviewer cleared the revised wallet authority, exact rentEpoch and end-to-end fixture checks. The current observed open route now returns a verified market-order preview; the simulated entry is indicative and not a limit. The owner-facing preview states that current-format close is unavailable in this client and a failed transaction can incur up to 0.01 SOL network fee. A fresh BTC long unsigned build returned ready without signing or sending. Current-format close remains blocked: 3000 recent public trade rows had no queued close, and the observed immediate close does not prove claim PDA or queued payout recipient. Final integrated-head independent review and CI remain pending; program upgrades and changing market state remain explicit limitations.

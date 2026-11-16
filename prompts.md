@@ -1,7 +1,10 @@
 # Prompt history
 
-Version: 270
+Version: 272
+Delta: v271 to v272; integrate independent feed controls/UI audit with current-format SDK and host reply.
 Delta: v269 to v270; preserve feed controls and complete UI optimizer request.
+Delta: v270 to v271; preserve the owner host-identification reply.
+Delta: v269 to v270; begin reviewed current-format YOLO verifier implementation for the recorded owner request.
 Delta: v268 to v269; integrate current YOLO contract and concurrent exit50 requests.
 Delta: v267 to v268; record the current YOLO contract investigation excerpt.
 Delta: v267 to v268; preserve the exit50 and two-column requests verbatim.
@@ -2484,3 +2487,6 @@ Put the positions and oracle calls on the right side of the /Users/mitch/.venvs/
 > Run the deep UI optimizer on the /Users/mitch/.venvs/soltui/bin/python /Users/mitch/dev/solmargintrader/scripts/oracle_winners.py tui. And run the deep code optimizer, and the repo-bootstrapper.
 
 This implementation owns feed controls and the UI optimizer; the parent task owns the separate deep-code and bootstrap workflows.
+## Owner host-identification reply
+
+The name of the box is M-GN90147X97, or m3, or work.

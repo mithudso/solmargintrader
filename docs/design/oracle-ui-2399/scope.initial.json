@@ -1,0 +1,462 @@
+{
+  "version": "1.0.0",
+  "delta": "Frozen before source edits",
+  "frozen_at": "2026-11-16T15:37:02.241654+00:00",
+  "base_sha": "6f69efc2f01741380f3f8d7838d3fb75762859a5",
+  "editable": true,
+  "source_files": [
+    "research/zec_leverage_panel.py",
+    "research/zec_tui.py",
+    "research/zec_tui_stream.py",
+    "research/zec_feed_settings.py",
+    "research/tests/test_zec_feed_controls.py",
+    "research/tests/test_zec_leverage_panel.py",
+    "research/tests/test_zec_tui_stream.py",
+    "docs/ORACLE-LEVERAGE.md"
+  ],
+  "selected": [
+    "P01",
+    "P02",
+    "P03",
+    "P04",
+    "P05",
+    "P06",
+    "P07",
+    "P08",
+    "P09",
+    "P10",
+    "P11",
+    "P12",
+    "P13",
+    "P14",
+    "P15",
+    "P16",
+    "P17",
+    "P18",
+    "P19",
+    "P20",
+    "P21",
+    "P22",
+    "P23",
+    "P24",
+    "P25",
+    "P26",
+    "P27",
+    "P28",
+    "P29",
+    "P30",
+    "P31",
+    "P32",
+    "P33",
+    "P34",
+    "P35",
+    "P36",
+    "P37",
+    "P38",
+    "P39",
+    "P40",
+    "P41",
+    "P42",
+    "P43",
+    "P44",
+    "P45",
+    "P46",
+    "P47",
+    "P48"
+  ],
+  "matrix": [
+    {
+      "id": "live-both-small",
+      "route": "Oracle wrapper > Leverage panel",
+      "state": "live-both",
+      "viewport": "80x24",
+      "role": "owner (synthetic disarmed/armed fixture; no signing)",
+      "input": "keyboard + mouse"
+    },
+    {
+      "id": "live-both-current",
+      "route": "Oracle wrapper > Leverage panel",
+      "state": "live-both",
+      "viewport": "120x42",
+      "role": "owner (synthetic disarmed/armed fixture; no signing)",
+      "input": "keyboard + mouse"
+    },
+    {
+      "id": "live-both-wide",
+      "route": "Oracle wrapper > Leverage panel",
+      "state": "live-both",
+      "viewport": "180x60",
+      "role": "owner (synthetic disarmed/armed fixture; no signing)",
+      "input": "keyboard + mouse"
+    },
+    {
+      "id": "jupiter-only-small",
+      "route": "Oracle wrapper > Leverage panel",
+      "state": "jupiter-only",
+      "viewport": "80x24",
+      "role": "owner (synthetic disarmed/armed fixture; no signing)",
+      "input": "keyboard + mouse"
+    },
+    {
+      "id": "jupiter-only-current",
+      "route": "Oracle wrapper > Leverage panel",
+      "state": "jupiter-only",
+      "viewport": "120x42",
+      "role": "owner (synthetic disarmed/armed fixture; no signing)",
+      "input": "keyboard + mouse"
+    },
+    {
+      "id": "jupiter-only-wide",
+      "route": "Oracle wrapper > Leverage panel",
+      "state": "jupiter-only",
+      "viewport": "180x60",
+      "role": "owner (synthetic disarmed/armed fixture; no signing)",
+      "input": "keyboard + mouse"
+    },
+    {
+      "id": "coinbase-only-small",
+      "route": "Oracle wrapper > Leverage panel",
+      "state": "coinbase-only",
+      "viewport": "80x24",
+      "role": "owner (synthetic disarmed/armed fixture; no signing)",
+      "input": "keyboard + mouse"
+    },
+    {
+      "id": "coinbase-only-current",
+      "route": "Oracle wrapper > Leverage panel",
+      "state": "coinbase-only",
+      "viewport": "120x42",
+      "role": "owner (synthetic disarmed/armed fixture; no signing)",
+      "input": "keyboard + mouse"
+    },
+    {
+      "id": "coinbase-only-wide",
+      "route": "Oracle wrapper > Leverage panel",
+      "state": "coinbase-only",
+      "viewport": "180x60",
+      "role": "owner (synthetic disarmed/armed fixture; no signing)",
+      "input": "keyboard + mouse"
+    },
+    {
+      "id": "both-hidden-small",
+      "route": "Oracle wrapper > Leverage panel",
+      "state": "both-hidden",
+      "viewport": "80x24",
+      "role": "owner (synthetic disarmed/armed fixture; no signing)",
+      "input": "keyboard + mouse"
+    },
+    {
+      "id": "both-hidden-current",
+      "route": "Oracle wrapper > Leverage panel",
+      "state": "both-hidden",
+      "viewport": "120x42",
+      "role": "owner (synthetic disarmed/armed fixture; no signing)",
+      "input": "keyboard + mouse"
+    },
+    {
+      "id": "both-hidden-wide",
+      "route": "Oracle wrapper > Leverage panel",
+      "state": "both-hidden",
+      "viewport": "180x60",
+      "role": "owner (synthetic disarmed/armed fixture; no signing)",
+      "input": "keyboard + mouse"
+    },
+    {
+      "id": "reenabled-small",
+      "route": "Oracle wrapper > Leverage panel",
+      "state": "reenabled",
+      "viewport": "80x24",
+      "role": "owner (synthetic disarmed/armed fixture; no signing)",
+      "input": "keyboard + mouse"
+    },
+    {
+      "id": "reenabled-current",
+      "route": "Oracle wrapper > Leverage panel",
+      "state": "reenabled",
+      "viewport": "120x42",
+      "role": "owner (synthetic disarmed/armed fixture; no signing)",
+      "input": "keyboard + mouse"
+    },
+    {
+      "id": "reenabled-wide",
+      "route": "Oracle wrapper > Leverage panel",
+      "state": "reenabled",
+      "viewport": "180x60",
+      "role": "owner (synthetic disarmed/armed fixture; no signing)",
+      "input": "keyboard + mouse"
+    },
+    {
+      "id": "loading-small",
+      "route": "Oracle wrapper > Leverage panel",
+      "state": "loading",
+      "viewport": "80x24",
+      "role": "owner (synthetic disarmed/armed fixture; no signing)",
+      "input": "keyboard + mouse"
+    },
+    {
+      "id": "loading-current",
+      "route": "Oracle wrapper > Leverage panel",
+      "state": "loading",
+      "viewport": "120x42",
+      "role": "owner (synthetic disarmed/armed fixture; no signing)",
+      "input": "keyboard + mouse"
+    },
+    {
+      "id": "loading-wide",
+      "route": "Oracle wrapper > Leverage panel",
+      "state": "loading",
+      "viewport": "180x60",
+      "role": "owner (synthetic disarmed/armed fixture; no signing)",
+      "input": "keyboard + mouse"
+    },
+    {
+      "id": "stale-small",
+      "route": "Oracle wrapper > Leverage panel",
+      "state": "stale",
+      "viewport": "80x24",
+      "role": "owner (synthetic disarmed/armed fixture; no signing)",
+      "input": "keyboard + mouse"
+    },
+    {
+      "id": "stale-current",
+      "route": "Oracle wrapper > Leverage panel",
+      "state": "stale",
+      "viewport": "120x42",
+      "role": "owner (synthetic disarmed/armed fixture; no signing)",
+      "input": "keyboard + mouse"
+    },
+    {
+      "id": "stale-wide",
+      "route": "Oracle wrapper > Leverage panel",
+      "state": "stale",
+      "viewport": "180x60",
+      "role": "owner (synthetic disarmed/armed fixture; no signing)",
+      "input": "keyboard + mouse"
+    },
+    {
+      "id": "empty-small",
+      "route": "Oracle wrapper > Leverage panel",
+      "state": "empty",
+      "viewport": "80x24",
+      "role": "owner (synthetic disarmed/armed fixture; no signing)",
+      "input": "keyboard + mouse"
+    },
+    {
+      "id": "empty-current",
+      "route": "Oracle wrapper > Leverage panel",
+      "state": "empty",
+      "viewport": "120x42",
+      "role": "owner (synthetic disarmed/armed fixture; no signing)",
+      "input": "keyboard + mouse"
+    },
+    {
+      "id": "empty-wide",
+      "route": "Oracle wrapper > Leverage panel",
+      "state": "empty",
+      "viewport": "180x60",
+      "role": "owner (synthetic disarmed/armed fixture; no signing)",
+      "input": "keyboard + mouse"
+    },
+    {
+      "id": "missing-data-small",
+      "route": "Oracle wrapper > Leverage panel",
+      "state": "missing-data",
+      "viewport": "80x24",
+      "role": "owner (synthetic disarmed/armed fixture; no signing)",
+      "input": "keyboard + mouse"
+    },
+    {
+      "id": "missing-data-current",
+      "route": "Oracle wrapper > Leverage panel",
+      "state": "missing-data",
+      "viewport": "120x42",
+      "role": "owner (synthetic disarmed/armed fixture; no signing)",
+      "input": "keyboard + mouse"
+    },
+    {
+      "id": "missing-data-wide",
+      "route": "Oracle wrapper > Leverage panel",
+      "state": "missing-data",
+      "viewport": "180x60",
+      "role": "owner (synthetic disarmed/armed fixture; no signing)",
+      "input": "keyboard + mouse"
+    },
+    {
+      "id": "unsupported-shape-small",
+      "route": "Oracle wrapper > Leverage panel",
+      "state": "unsupported-shape",
+      "viewport": "80x24",
+      "role": "owner (synthetic disarmed/armed fixture; no signing)",
+      "input": "keyboard + mouse"
+    },
+    {
+      "id": "unsupported-shape-current",
+      "route": "Oracle wrapper > Leverage panel",
+      "state": "unsupported-shape",
+      "viewport": "120x42",
+      "role": "owner (synthetic disarmed/armed fixture; no signing)",
+      "input": "keyboard + mouse"
+    },
+    {
+      "id": "unsupported-shape-wide",
+      "route": "Oracle wrapper > Leverage panel",
+      "state": "unsupported-shape",
+      "viewport": "180x60",
+      "role": "owner (synthetic disarmed/armed fixture; no signing)",
+      "input": "keyboard + mouse"
+    },
+    {
+      "id": "backend-error-small",
+      "route": "Oracle wrapper > Leverage panel",
+      "state": "backend-error",
+      "viewport": "80x24",
+      "role": "owner (synthetic disarmed/armed fixture; no signing)",
+      "input": "keyboard + mouse"
+    },
+    {
+      "id": "backend-error-current",
+      "route": "Oracle wrapper > Leverage panel",
+      "state": "backend-error",
+      "viewport": "120x42",
+      "role": "owner (synthetic disarmed/armed fixture; no signing)",
+      "input": "keyboard + mouse"
+    },
+    {
+      "id": "backend-error-wide",
+      "route": "Oracle wrapper > Leverage panel",
+      "state": "backend-error",
+      "viewport": "180x60",
+      "role": "owner (synthetic disarmed/armed fixture; no signing)",
+      "input": "keyboard + mouse"
+    },
+    {
+      "id": "manual-preview-small",
+      "route": "Oracle wrapper > Leverage panel",
+      "state": "manual-preview",
+      "viewport": "80x24",
+      "role": "owner (synthetic disarmed/armed fixture; no signing)",
+      "input": "keyboard + mouse"
+    },
+    {
+      "id": "manual-preview-current",
+      "route": "Oracle wrapper > Leverage panel",
+      "state": "manual-preview",
+      "viewport": "120x42",
+      "role": "owner (synthetic disarmed/armed fixture; no signing)",
+      "input": "keyboard + mouse"
+    },
+    {
+      "id": "manual-preview-wide",
+      "route": "Oracle wrapper > Leverage panel",
+      "state": "manual-preview",
+      "viewport": "180x60",
+      "role": "owner (synthetic disarmed/armed fixture; no signing)",
+      "input": "keyboard + mouse"
+    },
+    {
+      "id": "armed-preview-close-blocked-small",
+      "route": "Oracle wrapper > Leverage panel",
+      "state": "armed-preview-close-blocked",
+      "viewport": "80x24",
+      "role": "owner (synthetic disarmed/armed fixture; no signing)",
+      "input": "keyboard + mouse"
+    },
+    {
+      "id": "armed-preview-close-blocked-current",
+      "route": "Oracle wrapper > Leverage panel",
+      "state": "armed-preview-close-blocked",
+      "viewport": "120x42",
+      "role": "owner (synthetic disarmed/armed fixture; no signing)",
+      "input": "keyboard + mouse"
+    },
+    {
+      "id": "armed-preview-close-blocked-wide",
+      "route": "Oracle wrapper > Leverage panel",
+      "state": "armed-preview-close-blocked",
+      "viewport": "180x60",
+      "role": "owner (synthetic disarmed/armed fixture; no signing)",
+      "input": "keyboard + mouse"
+    },
+    {
+      "id": "keyboard-small",
+      "route": "Oracle wrapper > Leverage panel",
+      "state": "keyboard",
+      "viewport": "80x24",
+      "role": "owner (synthetic disarmed/armed fixture; no signing)",
+      "input": "keyboard + mouse"
+    },
+    {
+      "id": "keyboard-current",
+      "route": "Oracle wrapper > Leverage panel",
+      "state": "keyboard",
+      "viewport": "120x42",
+      "role": "owner (synthetic disarmed/armed fixture; no signing)",
+      "input": "keyboard + mouse"
+    },
+    {
+      "id": "keyboard-wide",
+      "route": "Oracle wrapper > Leverage panel",
+      "state": "keyboard",
+      "viewport": "180x60",
+      "role": "owner (synthetic disarmed/armed fixture; no signing)",
+      "input": "keyboard + mouse"
+    },
+    {
+      "id": "mouse-small",
+      "route": "Oracle wrapper > Leverage panel",
+      "state": "mouse",
+      "viewport": "80x24",
+      "role": "owner (synthetic disarmed/armed fixture; no signing)",
+      "input": "keyboard + mouse"
+    },
+    {
+      "id": "mouse-current",
+      "route": "Oracle wrapper > Leverage panel",
+      "state": "mouse",
+      "viewport": "120x42",
+      "role": "owner (synthetic disarmed/armed fixture; no signing)",
+      "input": "keyboard + mouse"
+    },
+    {
+      "id": "mouse-wide",
+      "route": "Oracle wrapper > Leverage panel",
+      "state": "mouse",
+      "viewport": "180x60",
+      "role": "owner (synthetic disarmed/armed fixture; no signing)",
+      "input": "keyboard + mouse"
+    },
+    {
+      "id": "asset-switch-small",
+      "route": "Oracle wrapper > Leverage panel",
+      "state": "asset-switch",
+      "viewport": "80x24",
+      "role": "owner (synthetic disarmed/armed fixture; no signing)",
+      "input": "keyboard + mouse"
+    },
+    {
+      "id": "asset-switch-current",
+      "route": "Oracle wrapper > Leverage panel",
+      "state": "asset-switch",
+      "viewport": "120x42",
+      "role": "owner (synthetic disarmed/armed fixture; no signing)",
+      "input": "keyboard + mouse"
+    },
+    {
+      "id": "asset-switch-wide",
+      "route": "Oracle wrapper > Leverage panel",
+      "state": "asset-switch",
+      "viewport": "180x60",
+      "role": "owner (synthetic disarmed/armed fixture; no signing)",
+      "input": "keyboard + mouse"
+    }
+  ],
+  "platforms": [
+    "macOS terminal; Textual headless renderer"
+  ],
+  "research_reason": "P49-P70 unrequested; no participant study, analytics collection, messages or experiments authorized",
+  "limits": [
+    "Terminal accessibility bridge and assistive-technology task evidence may be unavailable. Do not label unavailable selected evidence clean.",
+    "Source tests, rendered fixture acceptance and actual installed acceptance remain separate gates."
+  ],
+  "max_sweeps": 5
+}
