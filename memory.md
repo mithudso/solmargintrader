@@ -1,6 +1,10 @@
 # Work continuation
 
-Version: 576
+Version: 580
+Delta: v579 to v580; preserve Preview-error recovery scope and execution boundary.
+Delta: v578 to v579; record resumed source archival and preserved forward state.
+Delta: v577 to v578; record owner two-column and causal candle/shape display request.
+Delta: v576 to v577; begin isolated 50 percent collateral exit and order-flow evidence study.
 Delta: v575 to v576; record the macOS shape-guide lifecycle failure and recovery.
 Delta: v574 to v575; record PR 286 delivery and active MTF/status controls continuation.
 Delta: v573 to v574; record delivered first scope and second-turn study, dual-feed monitor, and pending MTF work.
@@ -2665,3 +2669,17 @@ The Stele task-create write for the status and arming controls is queued as outb
 MTF native model, two result artifacts and both independent audit receipts passed exact readback. Independent audit covered 742128 comparisons and 15 adversarial checks. The retrospective final split does not establish a profitable edge: BTC selected 30/48 direction and 24 joint, identical to DOWN on those 48; ZEC selected 202/427 direction and 122 joint versus DOWN 202/427 and 121 joint. Candidate observer PID 38413 uses a separate private ledger and frozen bundle; it displays four completed frames and ready scores for both assets. Thirteen observer tests and 51 console/panel tests passed with ResourceWarning as error; exact raw-unit 9.8bps touch regression passed. Original collector PID 35217 remains running. Candidate monitor PID 45304 loads the worktree; independent live acceptance and final CI/merge/canonical retarget remain. No real arm action or funded trade occurred.
 
 PR 288 macOS CI caught a ShapeGuide mount transition race: textual.css.query.NoMatches for #shape-guide-body during timer-driven paint. Correct the guide lifecycle narrowly and rerun the failed gate; prior financial and model gates remain accepted.
+
+
+## 50 percent collateral exit and unified reversal research — 2026-11-16
+
+TASK-2309 claimed; research TASK-2311, integration TASK-2312 and audit/delivery TASK-2313. Worktree /Users/mitch/dev/worktrees/oracle-exit50-2309 starts from clean master 877d3069f1f505bb4b2afb5c231168ef77edc9ed. Preserve original Coinbase paper collector and separate MTF observer, their models, ledgers, live services and disarmed state. No funded trade authorized by this request. Research and method must be frozen natively before outcomes. Current frontend-derived nonlinear P&L and margin-protective boundary are documented in /Users/mitch/.local/state/reversal-leverage-2289/acceptance/capability-audit/liquidation-formulas.json; live keeper and on-chain parity and historical fee schedule remain unverified. +50 percent means total close payout relative to original margin, not mark return or displayed uPnL; test the minimum 15-second position age and explicitly separate trigger from delayed close and observed or simulated path. Evaluate OHLC balance-of-power as an indicator, separately from genuinely recorded L2 order imbalance. Remaining: inspect qualified L2/source overlap; freeze contract and scopes in Mongo; derive outcomes; audit independently; integrate paper-only controls and deliver.
+
+The owner also requests positions and Oracle calls in a right-hand column, two large completed-candle blocks that shift left as new bars arrive, red/green/gray direction with range-from-mean color intensity, and four shape-time plus/minus context indicators grounded in backtest evidence. TASK-2312 owns integration. Preserve width/accessibility, completed-bar causality and uncertainty; do not fabricate probabilities.
+
+
+### Resumed acquisition checkpoint — 2026-11-16
+
+Recovered isolated worktree /Users/mitch/dev/worktrees/oracle-exit50-2309 from master 877d3069f1f505bb4b2afb5c231168ef77edc9ed with concurrent task-owned changes preserved. Native main run run:e85763700341ee675c8032fa91277ca76bca06d655031389033219c1e83470d4 held by codex-exit50-task2309; own lease renewed. Accepted 3250 initial windows and BTC/ZEC first two adaptive batches remain archived/readback. BTC003 recovery has 800 independently validated response grids, but its original subprocess exit status is unknown; archive exact bodies and retry metadata without claiming successful process exit. ZEC003 recovered plan is independently validated but original plan-process exit is unknown. No completed performance result is inferred from source acquisition. Current working changes belong to parallel workers; preserve all. Existing paper services and live config are owned elsewhere and remain untouched.
+
+Preview error TASK-2321: the supplied screenshot shows process_nonzero_exit. Author is testing simulation-only inspection fallback with Submit disabled; executable guards remain intact. Authoritative current UpdatePrice/keeper oracle schema is not established by the checked SDK, IDL, frontend and Jupiter MCP. Do not claim executable funded support from inspection or simulate-only evidence. No funded trade was performed. Resume native source archival under owned fenced lease; preserve existing armed runtime configuration.

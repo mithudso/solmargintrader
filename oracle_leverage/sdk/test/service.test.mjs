@@ -2,7 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { ComputeBudgetProgram, Keypair, PublicKey, SystemProgram, TransactionInstruction, TransactionMessage, VersionedTransaction } from '@solana/web3.js';
 import * as sdk from 'jupiter-sdk/yolo/web3js';
-import { apiRequest, MARKETS, PROGRAM, USD_MINT, serviceHandle, verifyBuild, verifySigned } from '../service.mjs';
+import { apiRequest, inspectOpenBuild, MARKETS, PROGRAM, USD_MINT, serviceHandle, verifyBuild, verifySigned } from '../service.mjs';
 
 const key = n => new PublicKey(Buffer.alloc(32, n));
 const owner = Keypair.fromSeed(Buffer.alloc(32, 1)); // Deterministic test-only signer.
@@ -35,6 +35,46 @@ async function fixture({ operation = 'open', margin = 5000000n, extra = [], side
     positionId: '17', txMetadata: { blockhash: key(7).toBase58(), lastValidBlockHeight: '200' } }, tx, position };
 }
 
+async function inspectionFixture() {
+  const program = new PublicKey(PROGRAM), [config] = await sdk.findConfigPda(program);
+  const update = new TransactionInstruction({ programId: program, data: Buffer.concat([Buffer.from('3d22759b4b227bd0', 'hex'), Buffer.alloc(125)]), keys: [
+    { pubkey: keeper, isSigner: true, isWritable: true },
+    { pubkey: config, isSigner: false, isWritable: false },
+    { pubkey: new PublicKey('3rdJbqfnagQ4yx9HXJViD4zc4xpiSqmFsKpPuSCQVyQL'), isSigner: false, isWritable: false },
+    { pubkey: new PublicKey('Gx4MBPb1vqZLJajZmsKLg8fGw9ErhoKsR8LeKcCKFyak'), isSigner: false, isWritable: true },
+    { pubkey: new PublicKey('pytd2yyk641x7ak7mkaasSJVXh6YYZnC7wTmtgAyxPt'), isSigner: false, isWritable: false },
+    { pubkey: SystemProgram.programId, isSigner: false, isWritable: false },
+    { pubkey: key(4), isSigner: false, isWritable: true },
+  ] });
+  return { ...(await fixture({ extra: [update] })), update };
+}
+
+test('inspection validates intent and simulates unsigned without producing executable preview', async () => {
+  const { build } = await inspectionFixture(); let simulations = 0;
+  const connection = { async getBlockHeight() { return 100; }, async getAccountInfo() { return { owner: new PublicKey(PROGRAM), executable: false }; },
+    async simulateTransaction(tx, opts) { simulations++; assert.equal(opts.sigVerify, false); assert.equal(opts.replaceRecentBlockhash, true); assert.ok(tx.signatures.every(s => s.every(b => b === 0))); return { value: { err: null, unitsConsumed: 1234 } }; } };
+  const deps = { connection, now, readAccount };
+  const result = await inspectOpenBuild(build, intent(), deps);
+  assert.equal(result.status, 'inspection'); assert.equal(result.simulation.status, 'passed'); assert.equal(simulations, 1);
+  assert.equal(result.checked.margin, '5000000'); assert.equal(result.checked.owner, owner.publicKey.toBase58());
+  assert.equal(result.build, undefined); assert.equal(result.preview_id, undefined);
+  await assert.rejects(inspectOpenBuild(build, { ...intent(), margin: '6000000' }, deps), /intent_mismatch/);
+  await assert.rejects(inspectOpenBuild(build, { ...intent(), asset: 'BTC' }, deps), /account_or_instruction/);
+  await assert.rejects(inspectOpenBuild(build, { ...intent(), owner: key(8).toBase58() }, deps), /signers/);
+  const { update } = await inspectionFixture();
+  update.keys[2].pubkey = key(9);
+  await assert.rejects(inspectOpenBuild((await fixture({ extra: [update] })).build, intent(), deps), /unexpected_price_update_accounts/);
+  const { update: validUpdate } = await inspectionFixture();
+  const unknown = new TransactionInstruction({ programId: key(11), keys: [], data: Buffer.alloc(0) });
+  await assert.rejects(inspectOpenBuild((await fixture({ extra: [validUpdate, unknown] })).build, intent(), deps), /unexpected_service_instruction/);
+  const expensive = ComputeBudgetProgram.setComputeUnitPrice({ microLamports: 10000001 });
+  await assert.rejects(inspectOpenBuild((await fixture({ extra: [validUpdate, expensive] })).build, intent(), deps), /priority_fee/);
+  assert.equal(simulations, 1);
+  connection.simulateTransaction = async () => ({ value: { err: { InstructionError: [1, { Custom: 17 }] } } });
+  const failed = await inspectOpenBuild(build, intent(), deps);
+  assert.equal(failed.status, 'blocked'); assert.equal(failed.code, 'unsigned_simulation_failed'); assert.equal(failed.simulation.programCode, 17);
+});
+
 test('actual SDK validates exact public-service margin, side, owner, keeper and v0 bytes', async () => {
   const { build } = await fixture();
   const result = await verifyBuild(build, intent(), options);
@@ -56,6 +96,16 @@ test('rejects altered intent, fee payer, market, keeper, expiry and preexisting 
   await assert.rejects(verifyBuild(build, intent(), { ...options, connection: { async getBlockHeight() { return 201; } } }), /blockhash_expired/);
   tx.sign([owner]);
   await assert.rejects(verifyBuild({ ...build, serializedTxBase64: Buffer.from(tx.serialize()).toString('base64') }, intent(), options), /preexisting_signature/);
+});
+
+test('rejects paused program and owner keeper as separate diagnostics', async () => {
+  const { build } = await fixture();
+  await assert.rejects(verifyBuild(build, intent(), { ...options, readAccount: async (...args) => {
+    const result = await readAccount(...args); return result.keeper ? { ...result, paused: true } : result;
+  } }), /service_program_paused/);
+  await assert.rejects(verifyBuild(build, intent(), { ...options, readAccount: async (...args) => {
+    const result = await readAccount(...args); return result.keeper ? { ...result, keeper: owner.publicKey } : result;
+  } }), /service_owner_is_keeper/);
 });
 
 test('unknown instructions and priority fees above0.01SOL fail before owner signing', async () => {

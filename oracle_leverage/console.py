@@ -285,6 +285,7 @@ class Console:
                 ],
             ),
             "mtf_forward": self.store.meta("mtf_forward", {}),
+            "exit50_forward": self.store.meta("exit50_forward", {}),
             "wallet": wallet,
             "price_comparison": self.price_comparison(),
             "assets": capabilities,
@@ -567,18 +568,59 @@ class Console:
                 )
             else:
                 wallet = self.cli.wallet()
-                response = self.sdk.call(
-                    {
-                        "action": "service-build-open",
-                        "owner": wallet["address"],
-                        "asset": asset,
-                        "side": side,
-                        "margin": str(
-                            int(Decimal(request["collateral_usd"]) * 1000000)
-                        ),
-                        "leverage": 1000,
-                    }
-                )
+                service_request = {
+                    "action": "service-build-open",
+                    "owner": wallet["address"],
+                    "asset": asset,
+                    "side": side,
+                    "margin": str(int(Decimal(request["collateral_usd"]) * 1000000)),
+                    "leverage": 1000,
+                }
+                try:
+                    response = self.sdk.call(service_request)
+                except CONSOLE_ERRORS as error:
+                    if getattr(error, "code", None) not in (
+                        "service_keeper_mismatch",
+                        "service_keeper_or_pause_mismatch",
+                        "unexpected_service_instruction",
+                    ):
+                        raise
+                    response = self.sdk.call(
+                        {**service_request, "action": "service-inspect-open"}
+                    )
+                if response.get("status") == "inspection":
+                    checked = response.get("checked", {})
+                    simulation = response.get("simulation", {})
+                    if (
+                        not isinstance(checked, dict)
+                        or not isinstance(simulation, dict)
+                        or any(
+                            checked.get(key) != value
+                            for key, value in {
+                                "program": "yoLovHV5eT4DNPMG2Bu1NLmq8nVygEAPrNT1Rx6vWFA",
+                                "owner": wallet["address"],
+                                "asset": asset,
+                                "side": side,
+                                "margin": service_request["margin"],
+                                "leverage": 1000,
+                            }.items()
+                        )
+                        or simulation.get("status") != "passed"
+                    ):
+                        raise ValueError(
+                            "SDK inspection does not match the requested trade"
+                        )
+                    if self.cli.wallet() != wallet:
+                        raise ValueError(
+                            "CLI wallet changed while inspecting the preview"
+                        )
+                    fees = response.get("fees", {})
+                    message = (
+                        f"Unsigned simulation passed: {asset} {side}, {request['collateral_usd']} JupUSD margin, {Decimal(request['collateral_usd']) * 1000} USD notional. "
+                        f"Close fee {fees.get('closeFeePpm', 'unavailable')} ppm; win fee {fees.get('winFeePpm', 'unavailable')} ppm. "
+                        "Inspection only: Submit is unavailable until the service keeper and current transaction layout can be verified for execution. No order was signed or submitted."
+                    )
+                    return {"status": "inspection", **request, "message": message}
                 if response.get("status") in ("blocked", "error"):
                     return response
                 checked = response.get("checked", {})
@@ -623,11 +665,20 @@ class Console:
                 "message": message,
             }
         except CONSOLE_ERRORS as exc:
-            message = (
-                "The CLI simulation cannot run with the current SOL or USDC balance. No order was signed or submitted."
-                if getattr(exc, "code", None) == "jupiter_insufficient_funds"
-                else str(exc)[:400]
-            )
+            messages = {
+                "jupiter_insufficient_funds": "The 10x CLI simulation requires sufficient USDC collateral and SOL network balance. No order was signed or submitted.",
+                "service_400_insufficient_balance": "The 1000x build requires sufficient JupUSD collateral and SOL network balance. No order was signed or submitted.",
+                "service_keeper_mismatch": "The unsigned 1000x build names a keeper signer that differs from the live on-chain configuration. Preview is blocked while the service transaction is verified; no order was signed or submitted.",
+                "service_keeper_or_pause_mismatch": "The unsigned 1000x build failed the on-chain keeper or pause check. Preview is blocked; no order was signed or submitted.",
+                "service_program_paused": "The 1000x on-chain program reports that trading is paused. Preview is blocked; no order was signed or submitted.",
+                "service_owner_is_keeper": "The wallet matches the on-chain keeper, which is not allowed for this build. Preview is blocked; no order was signed or submitted.",
+                "service_market_unavailable": "The 1000x market is paused, closed or close-only. Preview is blocked; no order was signed or submitted.",
+                "unexpected_service_instruction": "The unsigned 1000x transaction contains an instruction the current verifier does not recognize. Preview is blocked; no order was signed or submitted.",
+                "process_timeout": "The preview service timed out. No order was signed or submitted; retry after checking the connection.",
+                "process_nonzero_exit": "The preview process failed without a recognized safe diagnostic. Check the private process receipt; no order was signed or submitted.",
+                "invalid_process_json": "The preview service returned an invalid response. No order was signed or submitted.",
+            }
+            message = messages.get(getattr(exc, "code", None), str(exc)[:400])
             return {"status": "error", "message": message}
 
     def _lock(self):

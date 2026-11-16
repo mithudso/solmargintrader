@@ -18,6 +18,7 @@ ACTIONS = frozenset(
         "service-markets",
         "service-positions",
         "service-build-open",
+        "service-inspect-open",
         "service-build-close",
         "service-signed",
         "service-execute",

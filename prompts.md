@@ -1,6 +1,9 @@
 # Prompt history
 
-Version: 260
+Version: 263
+Delta: v262 to v263; record Preview error and explicit resume steering.
+Delta: v261 to v262; record two-column layout and causal bar/shape display request.
+Delta: v260 to v261; record 50 percent collateral exit, delayed close and order-flow research request.
 Delta: v259 to v260; record the status flicker, arm control and forward results request.
 Delta: v258 to v259; record dual-price streams, visual accessibility, MTF study, and model-use requests.
 Delta: v257 to v258; record second reversal heuristics and any-time1000x liquidation requirement.
@@ -2387,4 +2390,31 @@ You only have 3%left of my weekly budget of tokens, when you’re running routin
 
 ```text
 Make the center status update stop flashing "unavailable" and redrawing the data if it misses one second. '/Users/mitch/Desktop/Screen Recording 2026-11-16 at 2.35.08 AM.mov' if you’re going to insist on saying it then display it in a silent, green/yellow/red indicator dot. Also it says that trades are disarmed but I don’t have an "arm" button. Also the current results of the forward test, please display them next to the forward test status lines.
+```
+
+
+## 50 percent collateral exit and unified reversal research — 2026-11-16
+
+```text
+Redo the tests again but this time, instead of letting it ride until there's a signal of a 2nd reversal, for for the 1000x margin make it close its position after reaching 50% profitability, and include that it generally takes up to 10s for a position to close after submission. So let's put this all together into a single framework. It will look for 10min up bars, if there's a reversal near the end of the 2nd bar or if the 2nd bar is also up it will make that known, it will be graph shape aware so that if certain graph shapes occur it is more likely to downward reversal will be true. And then it'll watch the ema, and macd, along with profitability tracking to identify when to exit. Is it possible to incorporate the "balance of power" indicator or some other reliable orderbook volume measure to show which side has more orders? Can you see if that affects the results from the backtests?
+```
+
+
+## Two-column Oracle display and candle blocks — 2026-11-16
+
+```text
+Put the positions and oracle calls on the right side of the /Users/mitch/.venvs/soltui/bin/python /Users/mitch/dev/solmargintrader/scripts/oracle_winners.py instead of having to scroll down, just add a 2nd column. Also At thte top have two large buttons that as the bars come in they highlight the bars red if they're downm, green if they're up, grey if flat, and it moves from right to left, so the right block moves to the left block and then the right one refreshes with the new bar. Make the make the price range distance from mean increase the color of the block, so a large dip would be very bright red, while a very small one would be very grey-red. And above them should be the 4 shape-times with a + or - next to it indicating whether or not the next block is more or less likely to come out higher or lower based on the shape, according to the backtest data.
+```
+
+
+## Preview error and resume — 2026-11-16
+
+```text
+I get an error when clicking on Preview, [Image #1]
+```
+
+Screenshot supplied at /var/folders/hz/s7btlxx54c32yt375m03q0h40000gn/T/codex-clipboard-n1I9KT.png; visible text: `error: process_nonzero_exit`.
+
+```text
+resume
 ```
