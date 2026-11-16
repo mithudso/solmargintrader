@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-11-16T17:19:31+00:00",
+  "generatedAt": "2026-11-16T17:27:11+00:00",
   "schemaVersion": 1,
   "note": "Concepts are derived from the repo's own vocabulary \u2014 the FAMILY dict, strategy-card frontmatter, docs/trading-signals-concept-family.md, and terms verified to recur in the corpus. A concept matching no file is dropped, not kept.",
   "counts": {
@@ -22,7 +22,7 @@
         "confirm",
         "fail-closed"
       ],
-      "matchingFiles": 1972,
+      "matchingFiles": 1973,
       "shown": 30,
       "files": [
         {
@@ -161,7 +161,7 @@
         "universe",
         "top_coins"
       ],
-      "matchingFiles": 1763,
+      "matchingFiles": 1769,
       "shown": 30,
       "files": [
         {
@@ -281,8 +281,8 @@
           "hits": 32
         },
         {
-          "path": "oracle_leverage/tests/test_exit50_forward.py",
-          "hits": 31
+          "path": "docs/design/oracle-ui-2399/report.json",
+          "hits": 32
         }
       ],
       "source": "curated-from-repo-vocabulary"
@@ -439,7 +439,7 @@
         "centred",
         "shift"
       ],
-      "matchingFiles": 1531,
+      "matchingFiles": 1533,
       "shown": 30,
       "files": [
         {
@@ -578,9 +578,13 @@
         "perps",
         "solana"
       ],
-      "matchingFiles": 1083,
+      "matchingFiles": 1096,
       "shown": 30,
       "files": [
+        {
+          "path": "docs/design/oracle-ui-2399/report.json",
+          "hits": 668
+        },
         {
           "path": "research/strategy_experiment/results/results.json",
           "hits": 544
@@ -603,7 +607,7 @@
         },
         {
           "path": "memory.md",
-          "hits": 274
+          "hits": 283
         },
         {
           "path": ".cdo/reviews-2026-11-12/oracle.json",
@@ -638,12 +642,12 @@
           "hits": 125
         },
         {
-          "path": "skills/trading-and-investing/references/jlp-risk-profile-and-anti-patterns.md",
+          "path": "prompts.md",
           "hits": 124
         },
         {
-          "path": "prompts.md",
-          "hits": 121
+          "path": "skills/trading-and-investing/references/jlp-risk-profile-and-anti-patterns.md",
+          "hits": 124
         },
         {
           "path": "oracle_leverage/sdk/package-lock.json",
@@ -696,10 +700,6 @@
         {
           "path": "skills/trading-and-investing/references/solana-oracles-pyth-switchboard.md",
           "hits": 80
-        },
-        {
-          "path": "docs/trading-signals-concept-family.md",
-          "hits": 79
         }
       ],
       "source": "curated-from-repo-vocabulary"
@@ -852,7 +852,7 @@
         "anchor_window",
         "levels"
       ],
-      "matchingFiles": 898,
+      "matchingFiles": 899,
       "shown": 30,
       "files": [
         {
@@ -1260,7 +1260,7 @@
         "benchmark",
         "baseline"
       ],
-      "matchingFiles": 584,
+      "matchingFiles": 585,
       "shown": 30,
       "files": [
         {
@@ -1394,7 +1394,7 @@
         "buy_and_hold",
         "baseline"
       ],
-      "matchingFiles": 512,
+      "matchingFiles": 513,
       "shown": 30,
       "files": [
         {
