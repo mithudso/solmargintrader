@@ -1,7 +1,9 @@
 # Prompt history
 
-Version: 268
+Version: 269
+Delta: v268 to v269; integrate current YOLO contract and concurrent exit50 requests.
 Delta: v267 to v268; record the current YOLO contract investigation excerpt.
+Delta: v267 to v268; preserve the exit50 and two-column requests verbatim.
 Delta: v266 to v267; record source-age and supported-shape follow-up.
 Delta: v265 to v266; integrate the UI delivery stage with concurrent Jupiter overlay records.
 Delta: integrated to v265; preserve both Jupiter overlay and incoming nine-strategy research records.
@@ -2461,3 +2463,15 @@ The earlier owner requests for source-aware prices and 5/10/15/20-minute conditi
 On both ZEC and BTW, do a similar backtest looking at 5/10/15/20 min bars for the 2 bar reversal pattern. And then cross reference the 2bar reversal patterns with the graph shape during that time, For example if the graph shape is rising, then maybe the 3rd bar isn't as often a down. And then create and implement the standard 10x leverage through the CLI and integrate it into the /Users/mitch/.venvs/soltui/bin/python /Users/mitch/dev/solmargintrader/scripts/oracle_winners.py script. And then write and implement through the SDK the 1000x trading. I understand the risks, I know about the queue, betting against the house, and not being able to close within 15s. Please do it anyway and integrate it intyo the same tui. And then, start a forward test using the TUI and the best predictive strategy you can develop and let it keep running in the TUI so I can monitor how well it does against live data.
 
 The user clarified that BTW means BTC.
+## 50 percent collateral exit and unified reversal research — 2026-11-16
+
+```text
+Redo the tests again but this time, instead of letting it ride until there's a signal of a 2nd reversal, for for the 1000x margin make it close its position after reaching 50% profitability, and include that it generally takes up to 10s for a position to close after submission. So let's put this all together into a single framework. It will look for 10min up bars, if there's a reversal near the end of the 2nd bar or if the 2nd bar is also up it will make that known, it will be graph shape aware so that if certain graph shapes occur it is more likely to downward reversal will be true. And then it'll watch the ema, and macd, along with profitability tracking to identify when to exit. Is it possible to incorporate the "balance of power" indicator or some other reliable orderbook volume measure to show which side has more orders? Can you see if that affects the results from the backtests?
+```
+
+
+## Two-column Oracle display and candle blocks — 2026-11-16
+
+```text
+Put the positions and oracle calls on the right side of the /Users/mitch/.venvs/soltui/bin/python /Users/mitch/dev/solmargintrader/scripts/oracle_winners.py instead of having to scroll down, just add a 2nd column. Also At thte top have two large buttons that as the bars come in they highlight the bars red if they're downm, green if they're up, grey if flat, and it moves from right to left, so the right block moves to the left block and then the right one refreshes with the new bar. Make the make the price range distance from mean increase the color of the block, so a large dip would be very bright red, while a very small one would be very grey-red. And above them should be the 4 shape-times with a + or - next to it indicating whether or not the next block is more or less likely to come out higher or lower based on the shape, according to the backtest data.
+```

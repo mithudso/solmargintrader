@@ -1,17 +1,17 @@
 {
-  "generatedAt": "2026-11-16T14:48:04+00:00",
+  "generatedAt": "2026-11-16T14:51:01+00:00",
   "schemaVersion": 1,
   "repoRoot": "~/dev/solmargintrader",
-  "commit": "3568fcae",
+  "commit": "d42d6d80",
   "counts": {
-    "files": 3888,
-    "bytes": 138669616,
+    "files": 3913,
+    "bytes": 138909803,
     "byKind": {
       "strategy-card": 1478,
-      "doc": 822,
-      "test": 446,
-      "code-python": 416,
-      "config": 286,
+      "doc": 823,
+      "test": 457,
+      "code-python": 427,
+      "config": 288,
       "result": 133,
       "code-js": 122,
       "other": 107,
@@ -23,7 +23,7 @@
     },
     "byTopDir": {
       "backtester": 1965,
-      "research": 468,
+      "research": 487,
       "soltui": 192,
       ".cdo": 161,
       "docs": 161,
@@ -36,11 +36,11 @@
       "liquidity": 61,
       "executor": 48,
       "oracle": 43,
+      "scripts": 34,
       ".superpowers": 32,
       "design": 32,
-      "scripts": 32,
+      "oracle_leverage": 28,
       "tradingview": 26,
-      "oracle_leverage": 24,
       "mongo": 20,
       ".github": 12,
       "superpowers": 12,
@@ -59,7 +59,7 @@
       "archive": 1,
       "tradingskilllist": 1
     },
-    "withSummary": 3505
+    "withSummary": 3520
   },
   "files": [
     {
@@ -3258,9 +3258,9 @@
       "title": "Read-only by default; nothing here needs write access to the repo.",
       "summary": "",
       "summarySource": "none",
-      "bytes": 23097,
-      "lines": 507,
-      "sha1": "63aab29d7858e99e995c0420ac4dbbd5934a6a49",
+      "bytes": 23624,
+      "lines": 510,
+      "sha1": "f51e3b0d2067ff7fa32f156a701d9eedf345a632",
       "symbols": [],
       "imports": [],
       "internalImports": [],
@@ -73924,9 +73924,9 @@
       "title": "Oracle leveraged controls and paper forward test",
       "summary": "The existing Oracle winner display now opens a separate panel with **L** or the Leverage button. The panel shows ZEC/BTC venue capabilities, frozen strategy rules, live Coinbase quotes and the durable paper ledger. It displays the full",
       "summarySource": "opening-prose",
-      "bytes": 9237,
-      "lines": 135,
-      "sha1": "d2fcf8d72836eea6c66d78175101fc655240cda8",
+      "bytes": 10174,
+      "lines": 141,
+      "sha1": "175dfbf22bae1e17ea9e53d7dd08abce25b4e9ab",
       "symbols": [],
       "imports": [],
       "internalImports": [],
@@ -87265,11 +87265,11 @@
       "ext": ".md",
       "kind": "doc",
       "title": "Work continuation",
-      "summary": "Version: 594 Delta: v593 to v594; record authenticated Lazer payload and post-state evidence. Delta: v592 to v593; preserve current YOLO contract evidence and pending verifier proof.",
+      "summary": "Version: 595 Delta: v594 to v595; integrate YOLO contract evidence and concurrent exit50 continuation. Delta: v593 to v594; record authenticated Lazer payload and post-state evidence.",
       "summarySource": "opening-prose",
-      "bytes": 573718,
-      "lines": 2797,
-      "sha1": "ed68c2862929dfcdf174229958b7692ce3e026fb",
+      "bytes": 574853,
+      "lines": 2802,
+      "sha1": "86675f22948a8c91a9960a2db546420c2c004878",
       "symbols": [],
       "imports": [],
       "internalImports": [],
@@ -89429,9 +89429,9 @@
       "title": "console",
       "summary": "Backend for explicit TUI actions; the forward worker never calls this executor.",
       "summarySource": "docstring",
-      "bytes": 44466,
-      "lines": 1004,
-      "sha1": "862865e41afcfe265788b115e632b1cd78b19002",
+      "bytes": 44535,
+      "lines": 1005,
+      "sha1": "418dc027213461df833154410fdf22aa837be4ad",
       "symbols": [
         "VENUES",
         "CONSOLE_ERRORS",
@@ -89455,6 +89455,101 @@
         "uuid"
       ],
       "internalImports": [],
+      "frontmatter": {}
+    },
+    {
+      "id": "oracle_leverage/exit50.py",
+      "path": "oracle_leverage/exit50.py",
+      "dir": "oracle_leverage",
+      "name": "exit50.py",
+      "ext": ".py",
+      "kind": "code-python",
+      "title": "exit50",
+      "summary": "Pure official-client arithmetic for paper exit analysis. This reproduces the saved frontend formula, not on-chain settlement or fills. All money is integer micro-USD; entry and mark use the same integer price scale.",
+      "summarySource": "docstring",
+      "bytes": 15154,
+      "lines": 420,
+      "sha1": "2eccfa6e71ae54f17b9d88b628e365544de3431c",
+      "symbols": [
+        "D",
+        "A",
+        "B",
+        "K",
+        "quote_position()",
+        "GRID_US",
+        "HOLD_US",
+        "PAPER_MARGIN",
+        "PAPER_NOTIONAL",
+        "POLICIES",
+        "start_position()",
+        "step_position()",
+        "minute_features()",
+        "prepare_signals()",
+        "signal_at()",
+        "signal_snapshot()",
+        "advance_proven()",
+        "shape_tilts()",
+        "graph_snapshot()"
+      ],
+      "imports": [
+        "__future__",
+        "bisect",
+        "itertools",
+        "pandas",
+        "research"
+      ],
+      "internalImports": [
+        "research"
+      ],
+      "frontmatter": {}
+    },
+    {
+      "id": "oracle_leverage/exit50_forward.py",
+      "path": "oracle_leverage/exit50_forward.py",
+      "dir": "oracle_leverage",
+      "name": "exit50_forward.py",
+      "ext": ".py",
+      "kind": "code-python",
+      "title": "exit50_forward",
+      "summary": "Separate, prospective 10m reversal paper observer; no signing or venue calls. Outcomes use the shared replay kernel and exact archived 200ms oracle samples. A quote is an observed price proxy, not a transaction or keeper fill.",
+      "summarySource": "docstring",
+      "bytes": 38991,
+      "lines": 967,
+      "sha1": "973eeb496f9f1ad2d213cbf36ae53f548f92895c",
+      "symbols": [
+        "load_family_models()",
+        "load_selected_policy()",
+        "price_int()",
+        "bar_display()",
+        "shape_tilts()",
+        "class PaperLedger",
+        "class Exit50Forward",
+        "main()"
+      ],
+      "imports": [
+        "__future__",
+        "argparse",
+        "contextlib",
+        "decimal",
+        "fcntl",
+        "hashlib",
+        "itertools",
+        "json",
+        "math",
+        "oracle_leverage",
+        "os",
+        "pathlib",
+        "research",
+        "signal",
+        "sqlite3",
+        "sys",
+        "threading",
+        "time",
+        "zlib"
+      ],
+      "internalImports": [
+        "research"
+      ],
       "frontmatter": {}
     },
     {
@@ -89942,6 +90037,60 @@
       "frontmatter": {}
     },
     {
+      "id": "oracle_leverage/tests/test_exit50.py",
+      "path": "oracle_leverage/tests/test_exit50.py",
+      "dir": "oracle_leverage/tests",
+      "name": "test_exit50.py",
+      "ext": ".py",
+      "kind": "test",
+      "title": "test_exit50",
+      "summary": "",
+      "summarySource": "none",
+      "bytes": 5621,
+      "lines": 151,
+      "sha1": "eaff1c458b12dc9bcb1e5b6071fd1a174050e81d",
+      "symbols": [
+        "class ExitEconomicsTests"
+      ],
+      "imports": [
+        "oracle_leverage",
+        "unittest"
+      ],
+      "internalImports": [],
+      "frontmatter": {}
+    },
+    {
+      "id": "oracle_leverage/tests/test_exit50_forward.py",
+      "path": "oracle_leverage/tests/test_exit50_forward.py",
+      "dir": "oracle_leverage/tests",
+      "name": "test_exit50_forward.py",
+      "ext": ".py",
+      "kind": "test",
+      "title": "test_exit50_forward",
+      "summary": "Prospective paper lifecycle with deterministic public-oracle fixtures.",
+      "summarySource": "docstring",
+      "bytes": 26584,
+      "lines": 652,
+      "sha1": "3f8deb48c4f94fc2bde2d6733f5f0e57879c6f1d",
+      "symbols": [
+        "family_bundle()",
+        "class Public",
+        "class Exit50PaperTests"
+      ],
+      "imports": [
+        "__future__",
+        "copy",
+        "hashlib",
+        "json",
+        "oracle_leverage",
+        "pathlib",
+        "tempfile",
+        "unittest"
+      ],
+      "internalImports": [],
+      "frontmatter": {}
+    },
+    {
       "id": "oracle_leverage/tests/test_forward.py",
       "path": "oracle_leverage/tests/test_forward.py",
       "dir": "oracle_leverage/tests",
@@ -90357,11 +90506,11 @@
       "ext": ".md",
       "kind": "doc",
       "title": "Prompt history",
-      "summary": "Version: 268 Delta: v267 to v268; record the current YOLO contract investigation excerpt. Delta: v266 to v267; record source-age and supported-shape follow-up.",
+      "summary": "Version: 269 Delta: v268 to v269; integrate current YOLO contract and concurrent exit50 requests. Delta: v267 to v268; record the current YOLO contract investigation excerpt.",
       "summarySource": "opening-prose",
-      "bytes": 147559,
-      "lines": 2464,
-      "sha1": "5874cbe7d8bf195aedcf0a06187cb5c27720e180",
+      "bytes": 149651,
+      "lines": 2478,
+      "sha1": "c60e6b3ae129e708fb25cafd30d0583fd1d12d98",
       "symbols": [],
       "imports": [],
       "internalImports": [],
@@ -90560,6 +90709,24 @@
       "bytes": 10418,
       "lines": 115,
       "sha1": "6e3cf1868b72aa8e5cf7dd54d29f0728b6a649f6",
+      "symbols": [],
+      "imports": [],
+      "internalImports": [],
+      "frontmatter": {}
+    },
+    {
+      "id": "research/EXIT50-REVERSAL.md",
+      "path": "research/EXIT50-REVERSAL.md",
+      "dir": "research",
+      "name": "EXIT50-REVERSAL.md",
+      "ext": ".md",
+      "kind": "doc",
+      "title": "BTC and ZEC 10-minute exit50 retrospective",
+      "summary": "This is an exploratory retrospective: the historical period and earlier shape tables were already seen. The splits do not create an independent holdout. The 200 ms observations and 1-minute no-touch envelopes do not prove a continuous keeper path. Current fee configuration is a scenario, not verified historical fees. Entry, network and keeper costs and actual fills are not qualified.",
+      "summarySource": "opening-prose",
+      "bytes": 13843,
+      "lines": 156,
+      "sha1": "49c6cdd2f7285c1ec56d6cb324e8030893d158b6",
       "symbols": [],
       "imports": [],
       "internalImports": [],
@@ -92429,6 +92596,319 @@
       "symbols": [],
       "imports": [],
       "internalImports": [],
+      "frontmatter": {}
+    },
+    {
+      "id": "research/exit50-reversal-20261116/manifest.json",
+      "path": "research/exit50-reversal-20261116/manifest.json",
+      "dir": "research/exit50-reversal-20261116",
+      "name": "manifest.json",
+      "ext": ".json",
+      "kind": "config",
+      "title": "manifest",
+      "summary": "Generated JSON object, 7 keys (schema, qualification, source_results, report, policy, paper_profile...).",
+      "summarySource": "derived",
+      "bytes": 1694,
+      "lines": 35,
+      "sha1": "7c4e34763b250b296d9249c0f3985aee61ebef04",
+      "symbols": [],
+      "imports": [],
+      "internalImports": [],
+      "frontmatter": {}
+    },
+    {
+      "id": "research/exit50-reversal-20261116/selected-policy.json",
+      "path": "research/exit50-reversal-20261116/selected-policy.json",
+      "dir": "research/exit50-reversal-20261116",
+      "name": "selected-policy.json",
+      "ext": ".json",
+      "kind": "config",
+      "title": "selected-policy",
+      "summary": "Generated JSON object, 3 keys (assets, model_bundle_sha256, schema).",
+      "summarySource": "derived",
+      "bytes": 624,
+      "lines": 2,
+      "sha1": "d96983a8e2f8111ac6b7220e1cda7cd703f853b1",
+      "symbols": [],
+      "imports": [],
+      "internalImports": [],
+      "frontmatter": {}
+    },
+    {
+      "id": "research/exit50_acquire.py",
+      "path": "research/exit50_acquire.py",
+      "dir": "research",
+      "name": "exit50_acquire.py",
+      "ext": ".py",
+      "kind": "code-python",
+      "title": "exit50_acquire",
+      "summary": "Bounded public oracle acquisition for the frozen exit50 study. Writes only private local transport, to be archived natively before scoring.",
+      "summarySource": "docstring",
+      "bytes": 9122,
+      "lines": 247,
+      "sha1": "a179d950c1ec9861abd4c3bca835dd490dde8e91",
+      "symbols": [
+        "census()",
+        "fetch_one()",
+        "main()"
+      ],
+      "imports": [
+        "__future__",
+        "argparse",
+        "concurrent",
+        "decimal",
+        "hashlib",
+        "json",
+        "oracle_leverage",
+        "pathlib",
+        "research",
+        "time",
+        "urllib",
+        "zlib"
+      ],
+      "internalImports": [
+        "research"
+      ],
+      "frontmatter": {}
+    },
+    {
+      "id": "research/exit50_backtest.py",
+      "path": "research/exit50_backtest.py",
+      "dir": "research",
+      "name": "exit50_backtest.py",
+      "ext": ".py",
+      "kind": "code-python",
+      "title": "exit50_backtest",
+      "summary": "Causal fixed-grid paper exit replay; inputs must be natively archived. 200 ms is observed sampling, not a guarantee of keeper-path completeness. No OHLC price interpolation, signing, order placement, or fill assertion occurs.",
+      "summarySource": "docstring",
+      "bytes": 8230,
+      "lines": 227,
+      "sha1": "a0d93414573f839beb3a19f4061b7c59e4d825de",
+      "symbols": [
+        "GRID_US",
+        "MARGIN",
+        "NOTIONAL",
+        "HOLD_US",
+        "POLICIES",
+        "replay()",
+        "sparse_replay()",
+        "fit_family_model()",
+        "select_policy()"
+      ],
+      "imports": [
+        "__future__",
+        "decimal",
+        "fractions",
+        "math",
+        "oracle_leverage",
+        "research"
+      ],
+      "internalImports": [
+        "research"
+      ],
+      "frontmatter": {}
+    },
+    {
+      "id": "research/exit50_diagnostic.py",
+      "path": "research/exit50_diagnostic.py",
+      "dir": "research",
+      "name": "exit50_diagnostic.py",
+      "ext": ".py",
+      "kind": "code-python",
+      "title": "exit50_diagnostic",
+      "summary": "Causal Coinbase visible-depth alignment for a separate ZEC diagnostic. This does not equate Coinbase orderbook imbalance with Jupiter orders or fills.",
+      "summarySource": "docstring",
+      "bytes": 16769,
+      "lines": 415,
+      "sha1": "6e795a639476b32fd38989633f33dd0a4e60ec97",
+      "symbols": [
+        "diagnostic_candidates()",
+        "fetch_plan()",
+        "load_archived_inputs()",
+        "full_grid_position()",
+        "load_diagnostic_candidates()",
+        "diagnostic_lazy_plan()",
+        "evaluate_diagnostic()"
+      ],
+      "imports": [
+        "__future__",
+        "concurrent",
+        "hashlib",
+        "json",
+        "math",
+        "oracle_leverage",
+        "pathlib",
+        "research"
+      ],
+      "internalImports": [
+        "research"
+      ],
+      "frontmatter": {}
+    },
+    {
+      "id": "research/exit50_evaluate.py",
+      "path": "research/exit50_evaluate.py",
+      "dir": "research",
+      "name": "exit50_evaluate.py",
+      "ext": ".py",
+      "kind": "code-python",
+      "title": "exit50_evaluate",
+      "summary": "Evaluate the completed frozen cohort from native-archived local transport.",
+      "summarySource": "docstring",
+      "bytes": 4202,
+      "lines": 116,
+      "sha1": "acafb14961646dd612a0a09b3df7cc6a587e7b51",
+      "symbols": [
+        "main()"
+      ],
+      "imports": [
+        "__future__",
+        "argparse",
+        "hashlib",
+        "json",
+        "pathlib",
+        "research"
+      ],
+      "internalImports": [
+        "research"
+      ],
+      "frontmatter": {}
+    },
+    {
+      "id": "research/exit50_lazy.py",
+      "path": "research/exit50_lazy.py",
+      "dir": "research",
+      "name": "exit50_lazy.py",
+      "ext": ".py",
+      "kind": "code-python",
+      "title": "exit50_lazy",
+      "summary": "Resume bounded native-first paper replay acquisition, without funded actions.",
+      "summarySource": "docstring",
+      "bytes": 5275,
+      "lines": 138,
+      "sha1": "a06f759e117b703c97718850fbc5ddee8180772c",
+      "symbols": [
+        "main()"
+      ],
+      "imports": [
+        "__future__",
+        "argparse",
+        "concurrent",
+        "hashlib",
+        "json",
+        "pathlib",
+        "research"
+      ],
+      "internalImports": [
+        "research"
+      ],
+      "frontmatter": {}
+    },
+    {
+      "id": "research/exit50_orderflow.py",
+      "path": "research/exit50_orderflow.py",
+      "dir": "research",
+      "name": "exit50_orderflow.py",
+      "ext": ".py",
+      "kind": "code-python",
+      "title": "exit50_orderflow",
+      "summary": "Past-only visible Coinbase L2 imbalance for the frozen exit50 diagnostic. Inputs are retained receipt-time snapshots, not order counts or an exchange-wide book.",
+      "summarySource": "docstring",
+      "bytes": 4278,
+      "lines": 118,
+      "sha1": "275caedfb0580ab24cbd2341cc088f64ab474d72",
+      "symbols": [
+        "NS",
+        "MAX_AGE_NS",
+        "BAND_BPS",
+        "book_feature()",
+        "taker_quote_imbalance()"
+      ],
+      "imports": [
+        "__future__",
+        "math",
+        "numpy"
+      ],
+      "internalImports": [],
+      "frontmatter": {}
+    },
+    {
+      "id": "research/exit50_report.py",
+      "path": "research/exit50_report.py",
+      "dir": "research",
+      "name": "exit50_report.py",
+      "ext": ".py",
+      "kind": "code-python",
+      "title": "exit50_report",
+      "summary": "Render an auditable report from completed, archived exit50 result packs.",
+      "summarySource": "docstring",
+      "bytes": 13758,
+      "lines": 270,
+      "sha1": "e5320cda718364999ee19d510f4a41bed72ec1cd",
+      "symbols": [
+        "pct()",
+        "line()",
+        "eligible_count()",
+        "render_report()",
+        "main()"
+      ],
+      "imports": [
+        "__future__",
+        "argparse",
+        "hashlib",
+        "pathlib",
+        "research"
+      ],
+      "internalImports": [
+        "research"
+      ],
+      "frontmatter": {}
+    },
+    {
+      "id": "research/exit50_run.py",
+      "path": "research/exit50_run.py",
+      "dir": "research",
+      "name": "exit50_run.py",
+      "ext": ".py",
+      "kind": "code-python",
+      "title": "exit50_run",
+      "summary": "Build frozen-cohort oracle minute acquisition plan and paper replay. All input transports must be archived and hash-verified before results publish.",
+      "summarySource": "docstring",
+      "bytes": 31274,
+      "lines": 818,
+      "sha1": "56c959fb4e17b7db5162cc5e05d831584802c133",
+      "symbols": [
+        "price_int()",
+        "slot_data()",
+        "study_candidates()",
+        "acquisition_slots()",
+        "minute_reader()",
+        "summarize()",
+        "run_scenarios()",
+        "check_envelopes()",
+        "paired_baseline()",
+        "summarize_paired()",
+        "compare_reference()",
+        "policy_bundle()",
+        "first_missing_windows()",
+        "verify_wave_joins()",
+        "btc_taker_filter()"
+      ],
+      "imports": [
+        "__future__",
+        "decimal",
+        "functools",
+        "hashlib",
+        "json",
+        "math",
+        "oracle_leverage",
+        "pathlib",
+        "research",
+        "zlib"
+      ],
+      "internalImports": [
+        "research"
+      ],
       "frontmatter": {}
     },
     {
@@ -98501,6 +98981,235 @@
       "frontmatter": {}
     },
     {
+      "id": "research/tests/test_exit50_acquire.py",
+      "path": "research/tests/test_exit50_acquire.py",
+      "dir": "research/tests",
+      "name": "test_exit50_acquire.py",
+      "ext": ".py",
+      "kind": "test",
+      "title": "test_exit50_acquire",
+      "summary": "",
+      "summarySource": "none",
+      "bytes": 2811,
+      "lines": 90,
+      "sha1": "4f404ef17da5e27f60ca24bbd4299118a0ad2482",
+      "symbols": [
+        "payload()",
+        "class Response",
+        "class AcquisitionTests"
+      ],
+      "imports": [
+        "json",
+        "pathlib",
+        "research",
+        "tempfile",
+        "unittest",
+        "urllib"
+      ],
+      "internalImports": [
+        "research"
+      ],
+      "frontmatter": {}
+    },
+    {
+      "id": "research/tests/test_exit50_backtest.py",
+      "path": "research/tests/test_exit50_backtest.py",
+      "dir": "research/tests",
+      "name": "test_exit50_backtest.py",
+      "ext": ".py",
+      "kind": "test",
+      "title": "test_exit50_backtest",
+      "summary": "",
+      "summarySource": "none",
+      "bytes": 7169,
+      "lines": 202,
+      "sha1": "965aa03c0e72a15d3b22487cfd98a945d6388887",
+      "symbols": [
+        "samples()",
+        "class ReplayTests"
+      ],
+      "imports": [
+        "research",
+        "unittest"
+      ],
+      "internalImports": [
+        "research"
+      ],
+      "frontmatter": {}
+    },
+    {
+      "id": "research/tests/test_exit50_diagnostic.py",
+      "path": "research/tests/test_exit50_diagnostic.py",
+      "dir": "research/tests",
+      "name": "test_exit50_diagnostic.py",
+      "ext": ".py",
+      "kind": "test",
+      "title": "test_exit50_diagnostic",
+      "summary": "",
+      "summarySource": "none",
+      "bytes": 3631,
+      "lines": 101,
+      "sha1": "b7aa55a5eb77f50651d111fc3a0adf8a460bb8ec",
+      "symbols": [
+        "class BookAlignmentTests"
+      ],
+      "imports": [
+        "research",
+        "unittest"
+      ],
+      "internalImports": [
+        "research"
+      ],
+      "frontmatter": {}
+    },
+    {
+      "id": "research/tests/test_exit50_evaluate.py",
+      "path": "research/tests/test_exit50_evaluate.py",
+      "dir": "research/tests",
+      "name": "test_exit50_evaluate.py",
+      "ext": ".py",
+      "kind": "test",
+      "title": "test_exit50_evaluate",
+      "summary": "",
+      "summarySource": "none",
+      "bytes": 1645,
+      "lines": 55,
+      "sha1": "61c66f866ffa2049ebc512f6656650b28a71a407",
+      "symbols": [
+        "class EvaluationGateTests"
+      ],
+      "imports": [
+        "json",
+        "pathlib",
+        "subprocess",
+        "sys",
+        "tempfile",
+        "unittest"
+      ],
+      "internalImports": [],
+      "frontmatter": {}
+    },
+    {
+      "id": "research/tests/test_exit50_lazy.py",
+      "path": "research/tests/test_exit50_lazy.py",
+      "dir": "research/tests",
+      "name": "test_exit50_lazy.py",
+      "ext": ".py",
+      "kind": "test",
+      "title": "test_exit50_lazy",
+      "summary": "",
+      "summarySource": "none",
+      "bytes": 2702,
+      "lines": 82,
+      "sha1": "24331d7ec8b6f340fbd0df65100dfaa3dbf1c2f2",
+      "symbols": [
+        "class FetchConcurrencyTests"
+      ],
+      "imports": [
+        "hashlib",
+        "json",
+        "pathlib",
+        "research",
+        "sys",
+        "tempfile",
+        "threading",
+        "time",
+        "unittest"
+      ],
+      "internalImports": [
+        "research"
+      ],
+      "frontmatter": {}
+    },
+    {
+      "id": "research/tests/test_exit50_orderflow.py",
+      "path": "research/tests/test_exit50_orderflow.py",
+      "dir": "research/tests",
+      "name": "test_exit50_orderflow.py",
+      "ext": ".py",
+      "kind": "test",
+      "title": "test_exit50_orderflow",
+      "summary": "",
+      "summarySource": "none",
+      "bytes": 3390,
+      "lines": 100,
+      "sha1": "53355f017f76571afff1f747aac0c0c4a402f542",
+      "symbols": [
+        "book()",
+        "class OrderFlowTests",
+        "class TakerQuoteTests"
+      ],
+      "imports": [
+        "numpy",
+        "research",
+        "unittest"
+      ],
+      "internalImports": [
+        "research"
+      ],
+      "frontmatter": {}
+    },
+    {
+      "id": "research/tests/test_exit50_report.py",
+      "path": "research/tests/test_exit50_report.py",
+      "dir": "research/tests",
+      "name": "test_exit50_report.py",
+      "ext": ".py",
+      "kind": "test",
+      "title": "test_exit50_report",
+      "summary": "",
+      "summarySource": "none",
+      "bytes": 3359,
+      "lines": 110,
+      "sha1": "45fc5bdb7a2d45eba484299cfd05e6c9baba3913",
+      "symbols": [
+        "summary()",
+        "result()",
+        "class ReportTests"
+      ],
+      "imports": [
+        "hashlib",
+        "json",
+        "pathlib",
+        "research",
+        "unittest"
+      ],
+      "internalImports": [
+        "research"
+      ],
+      "frontmatter": {}
+    },
+    {
+      "id": "research/tests/test_exit50_run.py",
+      "path": "research/tests/test_exit50_run.py",
+      "dir": "research/tests",
+      "name": "test_exit50_run.py",
+      "ext": ".py",
+      "kind": "test",
+      "title": "test_exit50_run",
+      "summary": "",
+      "summarySource": "none",
+      "bytes": 6863,
+      "lines": 186,
+      "sha1": "aabf2fca5cae84227da5db1fb4b8a44acb1aa196",
+      "symbols": [
+        "class RawEvidenceTests"
+      ],
+      "imports": [
+        "hashlib",
+        "json",
+        "pathlib",
+        "research",
+        "tempfile",
+        "unittest",
+        "zlib"
+      ],
+      "internalImports": [
+        "research"
+      ],
+      "frontmatter": {}
+    },
+    {
       "id": "research/tests/test_fetch_zec_history.py",
       "path": "research/tests/test_fetch_zec_history.py",
       "dir": "research/tests",
@@ -103427,6 +104136,48 @@
       "frontmatter": {}
     },
     {
+      "id": "scripts/preserve_dual_quotes.py",
+      "path": "scripts/preserve_dual_quotes.py",
+      "dir": "scripts",
+      "name": "preserve_dual_quotes.py",
+      "ext": ".py",
+      "kind": "code-python",
+      "title": "preserve_dual_quotes",
+      "summary": "Retain closed-hour normalized quotes without touching the live collector.",
+      "summarySource": "docstring",
+      "bytes": 6318,
+      "lines": 175,
+      "sha1": "63375e13a1e1d52c3e1bbe8a336c9737931f3780",
+      "symbols": [
+        "SOURCE",
+        "DEST",
+        "PATTERN",
+        "CAP",
+        "MIN_FREE",
+        "sha()",
+        "atomic_json()",
+        "retain()",
+        "main()"
+      ],
+      "imports": [
+        "argparse",
+        "datetime",
+        "gzip",
+        "hashlib",
+        "json",
+        "os",
+        "pathlib",
+        "re",
+        "shutil",
+        "signal",
+        "tempfile",
+        "threading",
+        "time"
+      ],
+      "internalImports": [],
+      "frontmatter": {}
+    },
+    {
       "id": "scripts/referral_scripts/claim-all-fees.ts",
       "path": "scripts/referral_scripts/claim-all-fees.ts",
       "dir": "scripts/referral_scripts",
@@ -103905,6 +104656,33 @@
       "imports": [
         "__future__",
         "copy",
+        "pathlib",
+        "scripts",
+        "tempfile",
+        "unittest"
+      ],
+      "internalImports": [],
+      "frontmatter": {}
+    },
+    {
+      "id": "scripts/tests/test_preserve_dual_quotes.py",
+      "path": "scripts/tests/test_preserve_dual_quotes.py",
+      "dir": "scripts/tests",
+      "name": "test_preserve_dual_quotes.py",
+      "ext": ".py",
+      "kind": "test",
+      "title": "test_preserve_dual_quotes",
+      "summary": "",
+      "summarySource": "none",
+      "bytes": 2120,
+      "lines": 61,
+      "sha1": "9cdc5388e8d79ca5c2e54cffff88175c2faff67d",
+      "symbols": [
+        "class RetentionTests"
+      ],
+      "imports": [
+        "datetime",
+        "gzip",
         "pathlib",
         "scripts",
         "tempfile",

@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-11-16T14:48:27+00:00",
+  "generatedAt": "2026-11-16T14:51:24+00:00",
   "schemaVersion": 1,
   "note": "Concepts are derived from the repo's own vocabulary \u2014 the FAMILY dict, strategy-card frontmatter, docs/trading-signals-concept-family.md, and terms verified to recur in the corpus. A concept matching no file is dropped, not kept.",
   "counts": {
@@ -22,7 +22,7 @@
         "confirm",
         "fail-closed"
       ],
-      "matchingFiles": 1970,
+      "matchingFiles": 1972,
       "shown": 30,
       "files": [
         {
@@ -161,7 +161,7 @@
         "universe",
         "top_coins"
       ],
-      "matchingFiles": 1748,
+      "matchingFiles": 1760,
       "shown": 30,
       "files": [
         {
@@ -170,7 +170,7 @@
         },
         {
           "path": "memory.md",
-          "hits": 246
+          "hits": 247
         },
         {
           "path": "research/coin-intelligence/zec-zcash.md",
@@ -281,7 +281,7 @@
           "hits": 32
         },
         {
-          "path": "research/REVERSAL-SECOND-TURN.md",
+          "path": "oracle_leverage/tests/test_exit50_forward.py",
           "hits": 31
         }
       ],
@@ -439,7 +439,7 @@
         "centred",
         "shift"
       ],
-      "matchingFiles": 1526,
+      "matchingFiles": 1528,
       "shown": 30,
       "files": [
         {
@@ -578,7 +578,7 @@
         "perps",
         "solana"
       ],
-      "matchingFiles": 1058,
+      "matchingFiles": 1072,
       "shown": 30,
       "files": [
         {
@@ -643,7 +643,7 @@
         },
         {
           "path": "prompts.md",
-          "hits": 117
+          "hits": 120
         },
         {
           "path": "oracle_leverage/sdk/package-lock.json",
@@ -714,7 +714,7 @@
         "macd",
         "ichimoku"
       ],
-      "matchingFiles": 908,
+      "matchingFiles": 913,
       "shown": 30,
       "files": [
         {
@@ -852,7 +852,7 @@
         "anchor_window",
         "levels"
       ],
-      "matchingFiles": 885,
+      "matchingFiles": 897,
       "shown": 30,
       "files": [
         {
@@ -990,7 +990,7 @@
         "monotone",
         "gap"
       ],
-      "matchingFiles": 828,
+      "matchingFiles": 837,
       "shown": 30,
       "files": [
         {
@@ -1260,7 +1260,7 @@
         "benchmark",
         "baseline"
       ],
-      "matchingFiles": 576,
+      "matchingFiles": 584,
       "shown": 30,
       "files": [
         {
@@ -1394,7 +1394,7 @@
         "buy_and_hold",
         "baseline"
       ],
-      "matchingFiles": 504,
+      "matchingFiles": 512,
       "shown": 30,
       "files": [
         {
@@ -1529,7 +1529,7 @@
         "ts_momentum",
         "dual_momentum"
       ],
-      "matchingFiles": 452,
+      "matchingFiles": 463,
       "shown": 30,
       "files": [
         {
