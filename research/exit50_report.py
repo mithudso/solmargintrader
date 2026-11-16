@@ -17,7 +17,12 @@ def pct(value):
 def line(name, m, eligible=None):
     denominator = str(eligible) if eligible is not None else "n/a"
     attempted = m.get("attempted", m["n"] + m["unscored"])
-    return f"| {name} | {denominator} | {attempted} | {m['n']} | {m['unscored']} | {m['target_touched']} | {m['target_filled']} | {m['liquidated']} | {pct(m['mean_roe'])} |"
+    direction = (
+        f"{m['direction_down']}/{m['direction_known']}"
+        if "direction_down" in m and "direction_known" in m
+        else "n/a"
+    )
+    return f"| {name} | {denominator} | {attempted} | {m['n']} | {m['unscored']} | {direction} | {m['target_touched']} | {m['target_filled']} | {m['liquidated']} | {pct(m['mean_roe'])} |"
 
 
 def eligible_count(candidates, family, filter_name, split):
@@ -70,8 +75,8 @@ def render_report(results, model_sha, source_ids, l2=None, l2_id=None):
             "",
             f"Frozen policy: `{selected['id']}` ({policy['selection_status']}). Result artifact: `{source_ids[asset]}`.",
             "",
-            "| Split and cohort | Eligible | Attempted | Scored | Unscored | Target touched | Closed at >=50% | Liquidations | Mean modeled fee-only ROE |",
-            "| --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: |",
+            "| Split and cohort | Eligible | Attempted | Scored | Unscored | Bar3 down / known | Target touched | Closed at >=50% | Liquidations | Mean modeled fee-only ROE |",
+            "| --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: |",
         ]
         for split in ("train", "validation", "test"):
             lines.append(
@@ -108,8 +113,8 @@ def render_report(results, model_sha, source_ids, l2=None, l2_id=None):
             "",
             "For context, the following fixed ablations use the selected entry family, the 10-second delay and target+momentum. They are not retuned on the final split.",
             "",
-            "| Test filter | Eligible | Attempted | Scored | Unscored | Target touched | Closed at >=50% | Liquidations | Mean modeled fee-only ROE |",
-            "| --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: |",
+            "| Test filter | Eligible | Attempted | Scored | Unscored | Bar3 down / known | Target touched | Closed at >=50% | Liquidations | Mean modeled fee-only ROE |",
+            "| --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: |",
         ]
         for filt in ("none", "shape", "shape_bop", "shape_flow"):
             variant = next(
@@ -150,8 +155,8 @@ def render_report(results, model_sha, source_ids, l2=None, l2_id=None):
             "",
             f"Result artifact: `{l2_id}`. This is one previously seen 24-hour Coinbase capture, not Jupiter house orders or a measure of Jupiter fills. It is not eligible for policy selection. All 55 eligible decisions had qualified visible book data; report the negative/complement subsets and one-position overlap separately.",
             "",
-            "| Family, 10s target+momentum | Eligible | Attempted | Scored | Unscored | Target touched | Closed at >=50% | Liquidations | Mean modeled fee-only ROE |",
-            "| --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: |",
+            "| Family, 10s target+momentum | Eligible | Attempted | Scored | Unscored | Bar3 down / known | Target touched | Closed at >=50% | Liquidations | Mean modeled fee-only ROE |",
+            "| --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: |",
         ]
         for family in ("confirmed_uu", "near_end"):
             v = next(
