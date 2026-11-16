@@ -1,11 +1,11 @@
 {
-  "generatedAt": "2026-11-16T13:59:56+00:00",
+  "generatedAt": "2026-11-16T14:37:26+00:00",
   "schemaVersion": 1,
   "repoRoot": "~/dev/solmargintrader",
-  "commit": "b37231d",
+  "commit": "8c0f9f4e",
   "counts": {
     "files": 3888,
-    "bytes": 138663490,
+    "bytes": 138665293,
     "byKind": {
       "strategy-card": 1478,
       "doc": 822,
@@ -89764,11 +89764,12 @@
       "title": "service",
       "summary": "Official public 1000x service, with generated-SDK checks before owner signing.",
       "summarySource": "docstring",
-      "bytes": 25250,
-      "lines": 322,
-      "sha1": "a228ea13744fcbac79d16d12b037d1a03f530540",
+      "bytes": 26198,
+      "lines": 330,
+      "sha1": "594c3d05bef897d1005c410b9386671d879750fc",
       "symbols": [
         "MARKETS",
+        "ORACLE_PRICE_DISCRIMINATOR",
         "PROGRAM",
         "PYTH_CONFIG",
         "PYTH_PROGRAM",
@@ -89822,9 +89823,9 @@
       "title": "service.test",
       "summary": "",
       "summarySource": "none",
-      "bytes": 14304,
-      "lines": 192,
-      "sha1": "2aa2127844d3caef3624561cdd20050a2d4e0dfd",
+      "bytes": 15159,
+      "lines": 202,
+      "sha1": "5b1c20e525c5409df33433ac067b97b3daaff494",
       "symbols": [
         "fixture",
         "inspectionFixture"
