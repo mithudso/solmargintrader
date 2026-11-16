@@ -869,6 +869,12 @@
       "lines": 252
     },
     {
+      "path": "extension/src/1000x/timeframes.js",
+      "component": "extension",
+      "kind": "javascript",
+      "summary": "Shared supported-horizon catalog for chart selection and all six learners"
+    },
+    {
       "path": "extension/src/1000x/oracle-model.js",
       "component": "extension",
       "kind": "javascript",
@@ -915,7 +921,7 @@
       "component": "repo",
       "kind": "markdown",
       "summary": "Streaming learner target, equations, atomic persistence, bounds, research status and verification limits",
-      "lines": 220
+      "lines": 221
     },
     {
       "path": "docs/EXTENSION-STREAMING-ORACLE-PROMPT.md",
@@ -2026,7 +2032,7 @@
       "component": "research",
       "kind": "python",
       "summary": "Responsive ZEC/BTC paper monitor and explicit Preview/Submit/Close controls.",
-      "lines": 1257
+      "lines": 1488
     },
     {
       "path": "oracle_leverage/console.py",
@@ -2089,7 +2095,7 @@
       "component": "repo",
       "kind": "markdown",
       "summary": "Public packaged-wiki copy of the leveraged Oracle operator guide.",
-      "lines": 140
+      "lines": 159
     },
     {
       "path": "research/reversal_shapes.py",

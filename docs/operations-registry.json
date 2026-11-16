@@ -72,7 +72,7 @@
     },
     {
       "path": "extension/package.json",
-      "sha256": "3db4cc2288c768c1f79b6ed0e29688f160681d9510d92b059fe2a5550744b68b"
+      "sha256": "f2c7702eeccf9d4d7b2faccac010c0ab7ddd9a0052a86e49f4dfb6f99cf8bafa"
     },
     {
       "path": "extension/src/core/commands.js",

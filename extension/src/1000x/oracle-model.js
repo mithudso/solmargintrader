@@ -2,10 +2,13 @@
  * historical label warm-start. Everything here is pure and clock-explicit. */
 import { aggregateMinutes, reversalContext } from './reversal.js';
 import { computeIndicators } from './indicators.js';
+import { TIMEFRAMES } from './timeframes.js';
 
 export const ORACLE = Object.freeze({ schema: 1, model: 'projected-logit-l2-v1', features: 'fixed-price-context-v1',
   target: 'closed-price-up-vs-nonup-v1', horizon: 600, cadence: 60, issueGraceMs: 15_000,
-  labelGraceMs: 90_000, minTrained: 20, recent: 128, maxPending: 32, maxPartitions: 16,
+  // 60 minute-spaced targets plus bounded late-label/issuance margin. Capacity
+  // accommodates16 complete six-horizon source groups without evicting evidence.
+  labelGraceMs: 90_000, minTrained: 20, recent: 128, maxPending: 64, maxPartitions: 96,
   eta: 0.05, l2: 0.001, coefficientBound: 8, scoreEpsilon: 1e-9, driftMin: 30 });
 export const FEATURE_NAMES = Object.freeze(['return1', 'return5', 'return10', 'emaGap', 'macdHistogram', 'bopSma3',
   'rsi', 'body', 'volatility10', 'reversalPair', ...[5, 10, 15, 20].flatMap(m => [`shape${m}`, `known${m}`, `position${m}`])]);
@@ -36,23 +39,38 @@ export function score(p, y) {
     logLoss: -(y * Math.log(bounded) + (1 - y) * Math.log(1 - bounded)) };
 }
 
-export function oracleInput(snapshot, nowMs) {
-  if (!Number.isSafeInteger(nowMs) || nowMs < 0) throw new Error('invalid_oracle_clock');
+export function oracleIdentity(snapshot, horizon = ORACLE.horizon) {
+  if (!TIMEFRAMES.some(t => t.seconds === horizon)) throw new Error('invalid_oracle_horizon');
   const identity = snapshot?.sourceIdentity;
   if (!identity || snapshot.symbol !== identity.symbol || !/^[A-Z][A-Z0-9]{0,11}$/.test(identity.symbol)
     || !Number.isSafeInteger(identity.feedId) || identity.feedId <= 0
     || !/^[1-9A-HJ-NP-Za-km-z]{32,44}$/.test(identity.marketAddress)
     || identity.stream !== 'fixed_rate@200ms' || identity.kind !== 'oracle-ohlc') throw new Error('oracle_source_unavailable');
   const source = `${identity.stream}:${identity.feedId}:${identity.marketAddress}:${identity.kind}`;
-  const key = JSON.stringify([ORACLE.schema, ORACLE.model, ORACLE.features, ORACLE.target, ORACLE.horizon, identity.symbol, source]);
+  const key = JSON.stringify([ORACLE.schema, ORACLE.model, ORACLE.features, ORACLE.target, horizon, identity.symbol, source]);
+  return { key, source, market: identity.symbol, horizon };
+}
+
+export function oracleInput(snapshot, nowMs, horizon = ORACLE.horizon) {
+  if (!Number.isSafeInteger(nowMs) || nowMs < 0) throw new Error('invalid_oracle_clock');
+  const identity = oracleIdentity(snapshot, horizon);
   const cutoff = Math.floor(nowMs / 60_000) * 60;
   const rows = aggregateMinutes(snapshot.minuteCandles ?? [], 1, cutoff);
   const quote = snapshot.quote;
   const fresh = finite(quote?.price) && quote.price > 0 && [quote.exchangeMs, quote.receivedMs].every(stamp =>
     finite(stamp) && nowMs - stamp >= -250 && nowMs - stamp <= 3000);
-  const eligible = snapshot.status === 'live' && snapshot.minuteStatus === 'ready' && fresh && rows.at(-1)?.time + 60 === cutoff;
-  return { key, source, market: identity.symbol, cutoff, rows, nowMs, eligible,
-    reason: !fresh ? 'stale_oracle_quote' : snapshot.status !== 'live' ? 'feed_unavailable' : 'complete_minute_history_unavailable' };
+  const streamStatus = snapshot.streamStatus ?? snapshot.status;
+  let eligible = streamStatus === 'live' && snapshot.minuteStatus === 'ready' && fresh && rows.at(-1)?.time + 60 === cutoff;
+  let features, featureError = false;
+  // Shared minute arithmetic must be healthy even if this cutoff was already
+  // issued. A selected-chart failure is irrelevant; invalid shared features are not.
+  if (eligible) {
+    try { features = makeFeatures(rows, cutoff); }
+    catch { eligible = false; featureError = true; }
+  }
+  return { ...identity, cutoff, rows, nowMs, eligible, features,
+    reason: featureError ? 'oracle_features_unavailable' : !fresh ? 'stale_oracle_quote'
+      : streamStatus !== 'live' ? 'feed_unavailable' : 'complete_minute_history_unavailable' };
 }
 
 /** Fixed, bounded transforms are frozen with each forecast; no scaler is fitted
@@ -88,9 +106,9 @@ export function newOracleState(input) {
     issued: 0, expired: 0, lastIssuedCutoff: 0, lastClosedTarget: 0, updatedAtMs: null, historicalTrainingSamples: 0 };
 }
 
-function validForecast(f, key) {
+function validForecast(f, key, horizon) {
   return f && f.id === `${key}:${f.cutoff}` && Number.isSafeInteger(f.cutoff) && f.cutoff % 60 === 0
-    && f.target === f.cutoff + ORACLE.horizon && finite(f.reference) && f.reference > 0
+    && f.target === f.cutoff + horizon && finite(f.reference) && f.reference > 0
     && Number.isSafeInteger(f.issuedAtMs) && f.issuedAtMs >= f.cutoff * 1000 && f.issuedAtMs <= f.cutoff * 1000 + ORACLE.issueGraceMs
     && Array.isArray(f.x) && f.x.length === FEATURE_NAMES.length && f.x.every(v => finite(v) && Math.abs(v) <= 1)
     && [f.p, f.servedP].every(p => finite(p) && p >= 0 && p <= 1) && f.baselineP === 0.5
@@ -107,7 +125,7 @@ export function validateOracleState(state, key) {
   let binding;
   try { binding = JSON.parse(key); } catch { fail(); }
   if (!Array.isArray(binding) || binding.length !== 7 || binding[0] !== ORACLE.schema || binding[1] !== ORACLE.model
-    || binding[2] !== ORACLE.features || binding[3] !== ORACLE.target || binding[4] !== ORACLE.horizon
+    || binding[2] !== ORACLE.features || binding[3] !== ORACLE.target || !TIMEFRAMES.some(t => t.seconds === binding[4])
     || binding[5] !== state.market || binding[6] !== state.source) fail();
   probability(state.model, FEATURE_NAMES.map(() => 0));
   for (const name of ['candidate', 'baseline', 'served']) {
@@ -118,7 +136,7 @@ export function validateOracleState(state, key) {
   }
   const ids = new Set();
   for (const f of [...state.pending, ...state.recent]) {
-    if (!validForecast(f, key) || ids.has(f.id) || f.cutoff > state.lastIssuedCutoff || f.modelSamples > state.model.n) fail();
+    if (!validForecast(f, key, binding[4]) || ids.has(f.id) || f.cutoff > state.lastIssuedCutoff || f.modelSamples > state.model.n) fail();
     ids.add(f.id);
   }
   for (const f of state.recent) {
@@ -146,6 +164,8 @@ export function oracleMode(state) {
 /** Atomic-store reducer. Stored forecasts are scored first; current-weight SGD
  * then learns from exactly their frozen features and a genuine observed label. */
 export function transitionOracle(previous, input) {
+  const horizon = input.horizon ?? ORACLE.horizon;
+  if (!TIMEFRAMES.some(t => t.seconds === horizon) || JSON.parse(input.key)[4] !== horizon) fail();
   const state = structuredClone(previous ? validateOracleState(previous, input.key) : newOracleState(input));
   let changed = !previous, resolved = 0, expired = 0, issued = false;
   const byTime = new Map(input.rows.map(row => [row.time, row]));
@@ -155,7 +175,7 @@ export function transitionOracle(previous, input) {
     if (input.nowMs > f.target * 1000 + ORACLE.labelGraceMs) {
       state.expired++; expired++; state.lastClosedTarget = Math.max(state.lastClosedTarget, f.target); changed = true; continue;
     }
-    const observed = Array.from({ length: 10 }, (_, i) => byTime.get(f.cutoff + i * 60));
+    const observed = Array.from({ length: horizon / 60 }, (_, i) => byTime.get(f.cutoff + i * 60));
     if (!input.eligible || observed.some(row => !row)) { pending.push(f); continue; }
     const close = observed.at(-1).close, outcome = close > f.reference ? 'UP' : close < f.reference ? 'DOWN' : 'FLAT', y = outcome === 'UP' ? 1 : 0;
     const scores = { candidate: score(f.p, y), baseline: score(f.baselineP, y), served: score(f.servedP, y) };
@@ -172,10 +192,10 @@ export function transitionOracle(previous, input) {
   let status = input.eligible ? 'waiting-next-minute' : 'waiting-input';
   if (input.eligible && input.cutoff > state.lastIssuedCutoff && input.nowMs - input.cutoff * 1000 <= ORACLE.issueGraceMs
     && state.pending.length < ORACLE.maxPending) {
-    const x = makeFeatures(input.rows, input.cutoff);
+    const x = input.features === undefined ? makeFeatures(input.rows, input.cutoff) : input.features;
     if (x) {
       const p = probability(state.model, x), mode = oracleMode(state);
-      state.pending.push({ id: `${input.key}:${input.cutoff}`, cutoff: input.cutoff, target: input.cutoff + ORACLE.horizon,
+      state.pending.push({ id: `${input.key}:${input.cutoff}`, cutoff: input.cutoff, target: input.cutoff + horizon,
         issuedAtMs: input.nowMs, reference: byTime.get(input.cutoff - 60).close, x, p, baselineP: 0.5,
         servedP: mode === 'active' ? p : 0.5, mode, modelSamples: state.model.n });
       state.lastIssuedCutoff = input.cutoff; state.issued++; changed = true; issued = true;

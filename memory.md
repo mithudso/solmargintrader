@@ -1,6 +1,8 @@
 # Work continuation
 
-Version: 610
+Version: 612
+Delta: v611 to v612; implement six independent horizon models, shared-minute/chart separation and stale-completion regression coverage.
+Delta: v610 to v611; begin isolated all-horizon learning and same-source stale-completion repair.
 Delta: v609 to v610; integrate delivered feed/UI source7bfeb02 while preserving frozen reviewed Oracle runtime.
 Delta: v606 to v607; integrate the UI checkpoint with compressed offline indexes.
 Delta: v603 to v604; save final UI ledger, 85 checks and seven repaired findings pending independent delivery.
@@ -2937,3 +2939,21 @@ Remaining: finish merge of delivered compressed index15bbfa87, integrate deliver
 ### TASK-2414 final independent re-review and delivered-base integration
 
 Parent independent re-review closed both display-trust Medium findings, found no new corroborated Medium in the three corrected runtime files, passed22 focused tests and matched all eleven manifest hashes before/after inspection. Source/model/store remain frozen. Local merge commit7d9e7bb integrates the compressed-index base; the final integration now preserves delivered UI7bfeb02 source and all distinct prompt/memory sections. Final source counters remain574 extension /3359 counted suites. All final commands use INDEX_NO_AUTO=1. Remaining delivery is final deterministic metadata verification/push, final-head CI/parent merge and canonical visible persistent-profile public acceptance; the author must not merge independently.
+
+
+## 2026-11-16 — TASK-2414 all-horizon streaming Oracle delta
+
+Owner request: Make the feed train all of the timeframes, not just the one chosen. Decision KNOW-2433 requires independent1m/5m/10m/15m/20m/1h rolling close-to-close horizon models from the one existing validated minute stream. New isolated worktree /Users/mitch/dev/worktrees/extension-oracle-all-timeframes-2414 and branch feat/extension-oracle-all-timeframes-2414 start from canonical0.9 ed7f4bd. Preserve accepted0.9 worktree/profile, the health-audit worktree, current TUI/Terminal/Chrome/paper observers/collectors, private Pine, owner configuration and all frozen research cohorts.
+
+The candidate keeps existing schema/model/feature/target versions and exact600-second partition keys so genuine10m weights, forecasts and metrics survive unchanged. New horizons begin prospectively with historicalTrainingSamples=0. Use64 pending records per model (60 one-minute targets plus90s outcome grace/issuance margin),96 total logical partitions (room for16 six-model source groups),128 recent outcomes and constant-size cumulative scores. These are explicit engineering bounds, not empirical optimal choices. Never evict/reset evidence for capacity; per-horizon failures must leave healthy existing partitions operational.
+
+The current feed ties minute data to the selected1m chart and restarts its socket/context when chart intervals change. The candidate will separate authoritative minute context and source readiness from chart loading/derived arithmetic, switch chart history on the same socket, and show six compact model rows plus selected detail. Invalid shared minute/source/quote input withholds all models. A same-source stale observation must immediately mark saved evidence historical; a delayed older completion must consult the latest eligibility and never repaint active. The external real-model/actual-view repro is /Users/mitch/.local/share/solmargintrader/audits/index-2410/repro-03-oracle-controller.mjs; do not edit the audit source or apply unrelated findings.
+
+Plan: preserve the verbatim request and reproduce the race; generalize causal horizons and finite state validation; implement six-model lifecycle and feed/chart independence; add actual overview/detail UI; verify all six target windows, deselected learning, legacy10m,1h pending past32, independent fallback/capacity, restart/two-context exact-once and latest-eligibility races; run source and actual browser/public gates; regenerate deterministic metadata and push a draft immutable candidate for independent parent review. Parent owns final installed migration and actual live-profile acceptance. All offline commands use INDEX_NO_AUTO=1. No inference, embeddings, extra recorder/stream, signing/orders/arming/config changes or protected-worker restarts.
+
+
+### TASK-2414 all-horizon source checkpoint
+
+Candidate0.10 source uses the one shared TIMEFRAMES catalog, six independent rolling targets and legacy-compatible600 keys. Model equations and22 fixed feature coordinates remain unchanged.64 pending slots sustain60-minute targets,96 logical partitions leave existing records intact. The controller processes each horizon independently and consults the latest shared snapshot inside delayed reducers and at display time. It preserves verified same-source historical evidence through stale transitions; no older completion can repaint live. The feed now retains authoritative minute context across chart changes, aborts only obsolete chart history and exposes stream readiness separately. Panel learning runs independently of selected chart calculations. All six overview rows and selected detail are connected.
+
+Initial597/597 source tests passed before the final shared-feature-health regression was added. The focused race/horizon/core/feed checks passed78/78, including real-model/actual-view race red→green. Source now also checks invalid shared minute arithmetic even after a cutoff was issued; this must withhold labels/forecasts across all six. Candidate full598/598 and root lint/checked-JavaScript checks completed successfully. Browser fixture changes and final deterministic metadata are next; source tests alone do not establish loaded0.10 behavior. No real profile or protected service was modified. The historical exact prompt SHA remains unchanged.

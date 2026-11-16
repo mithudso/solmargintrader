@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-11-16T18:01:00+00:00",
+  "generatedAt": "2026-11-16T19:56:24+00:00",
   "schemaVersion": 1,
   "note": "Concepts are derived from the repo's own vocabulary \u2014 the FAMILY dict, strategy-card frontmatter, docs/trading-signals-concept-family.md, and terms verified to recur in the corpus. A concept matching no file is dropped, not kept.",
   "counts": {
@@ -439,7 +439,7 @@
         "centred",
         "shift"
       ],
-      "matchingFiles": 1537,
+      "matchingFiles": 1538,
       "shown": 30,
       "files": [
         {
@@ -603,7 +603,7 @@
         },
         {
           "path": "memory.md",
-          "hits": 320
+          "hits": 323
         },
         {
           "path": "FILES.md",
@@ -631,7 +631,7 @@
         },
         {
           "path": "prompts.md",
-          "hits": 136
+          "hits": 137
         },
         {
           "path": ".cdo/reviews-2026-11-13/cdo-forecast-app-delta.json",
@@ -1260,7 +1260,7 @@
         "benchmark",
         "baseline"
       ],
-      "matchingFiles": 590,
+      "matchingFiles": 591,
       "shown": 30,
       "files": [
         {
@@ -1394,7 +1394,7 @@
         "buy_and_hold",
         "baseline"
       ],
-      "matchingFiles": 519,
+      "matchingFiles": 520,
       "shown": 30,
       "files": [
         {

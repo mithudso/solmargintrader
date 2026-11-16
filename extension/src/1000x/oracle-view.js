@@ -1,4 +1,5 @@
 import { ORACLE } from './oracle-model.js';
+import { TIMEFRAMES } from './timeframes.js';
 
 const percent = value => typeof value === 'number' && Number.isFinite(value) ? `${(value * 100).toFixed(1)}%` : '—';
 const number = value => typeof value === 'number' && Number.isFinite(value) ? value.toFixed(4) : '—';
@@ -9,7 +10,15 @@ export function oracleView(root) {
     const el = document.createElement(tag); if (text !== undefined) el.textContent = text;
     if (className) el.className = className; return el;
   };
-  const heading = node('h2', 'Streaming Oracle · rolling 10m');
+  const heading = node('h2', 'Streaming Oracle · all six horizons');
+  const overview = node('div', undefined, 'oracle-overview');
+  const horizonTable = node('table'); horizonTable.id = 'oracle-horizons';
+  const horizonCaption = node('caption', 'One shared minute feed · every horizon learns · counts: trained / resolved / pending · recent Brier: candidate / served / fixed0.5');
+  const horizonHead = node('thead'), horizonHeadRow = node('tr');
+  for (const text of ['Horizon', 'State', 'Served P(UP)', 'Evidence', 'Recent Brier ↓']) horizonHeadRow.append(node('th', text));
+  horizonHead.append(horizonHeadRow); const horizonBody = node('tbody');
+  horizonTable.append(horizonCaption, horizonHead, horizonBody); overview.append(horizonTable);
+  const selected = node('h3', 'Selected rolling 10m detail'); selected.id = 'oracle-selected';
   const status = node('p', 'Waiting for a fresh completed one-minute cutoff'); status.id = 'oracle-status'; status.setAttribute('role', 'status');
   const prediction = node('p', 'P(UP) unavailable until a prospective forecast is stored'); prediction.id = 'oracle-prediction';
   const counts = node('p', 'Learner sample counts unavailable until local state loads'); counts.id = 'oracle-counts';
@@ -21,11 +30,30 @@ export function oracleView(root) {
   const head = node('thead'), headRow = node('tr');
   for (const text of ['Cohort / predictor', 'n', 'Accuracy', 'Brier ↓', 'Log loss ↓']) headRow.append(node('th', text));
   head.append(headRow); const body = node('tbody'); table.append(caption, head, body);
-  const target = node('p', 'UP means the completed close 10 minutes after the forecast cutoff is above its reference close. NON-UP includes DOWN and exact FLAT. Forecasts issue per minute; overlapping targets are not independent trials. This is separate from the DD/UU candle-pattern context.', 'muted');
-  const limits = node('p', 'Candidate P(UP) is an uncalibrated shadow estimate. Warm-up or recent underperformance serves fixed P(UP)=50% while candidate learning continues. Labels need all ten completed contiguous minutes; unknown/expired labels are excluded. Learning pauses when this window is hidden. No position, profit or trading instruction is produced.', 'muted');
+  const target = node('p', undefined, 'muted');
+  const limits = node('p', 'Candidate P(UP) is an uncalibrated shadow estimate. Warm-up or recent underperformance serves fixed P(UP)=50% while candidate learning continues. Labels need every completed contiguous minute in their own horizon; unknown/expired labels are excluded. Chart selection changes detail only. Learning pauses when this window is hidden. No position, profit or trading instruction is produced.', 'muted');
   details.append(summary, table, target, limits);
-  root.append(heading, status, prediction, counts, feedback, details);
+  root.append(heading, overview, selected, status, prediction, counts, feedback, details);
   return view => {
+    const horizon = view?.selectedHorizon || ORACLE.horizon, label = TIMEFRAMES.find(t => t.seconds === horizon)?.label || '10m';
+    selected.textContent = `Selected rolling ${label} detail`; root.dataset.horizon = String(horizon);
+    target.textContent = `UP means the completed close ${label} after the forecast cutoff is above its reference close. NON-UP includes DOWN and exact FLAT. Every horizon issues per minute; overlapping targets within and across models are not independent trials. This is separate from the DD/UU candle-pattern context.`;
+    horizonBody.replaceChildren();
+    for (const t of TIMEFRAMES) {
+      const v = view?.horizons?.[t.seconds], saved = v?.sourceKey === v?.state?.key ? v?.state : undefined;
+      const row = node('tr'); row.dataset.horizon = String(t.seconds); row.setAttribute('aria-current', String(t.seconds === horizon));
+      row.dataset.state = v?.error ? 'error' : !v?.inputReady ? 'waiting' : v.mode;
+      const last = saved?.pending.at(-1) ?? saved?.recent.at(-1), metric = v?.metrics?.recent;
+      const stateLabel = v?.error ? `Unavailable · ${v.error.replaceAll('_', ' ')}` : view?.suspended ? 'Paused'
+        : !saved ? 'Loading' : !v.inputReady ? 'Historical · feed unavailable' : !saved.issued ? 'Waiting for minute'
+          : v.mode === 'active' ? 'Live candidate' : v.mode === 'baseline-performance' ? 'Fallback · shadow learns' : `Warm-up ${saved.model.n}/${ORACLE.minTrained}`;
+      const probabilityLabel = last ? `${v.inputReady ? '' : 'Historical '}${percent(last.servedP)}` : '—';
+      const evidence = saved ? `${saved.model.n} / ${saved.totals.n} / ${saved.pending.length}` : 'unavailable';
+      const metricsLabel = metric ? ['candidate', 'served', 'baseline'].map(name => number(metric[name].brier)).join(' / ') : '—';
+      if (saved) { row.dataset.trained = String(saved.model.n); row.dataset.resolved = String(saved.totals.n); row.dataset.pending = String(saved.pending.length); }
+      for (const text of [t.label, stateLabel, probabilityLabel, evidence, metricsLabel]) row.append(node('td', text));
+      horizonBody.append(row);
+    }
     // Historical evidence is visible only after this session has loaded and
     // verified the exact source partition. Unbound or invalid sessions clear it.
     const state = view?.sourceKey === view?.state?.key ? view?.state : undefined;
