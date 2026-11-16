@@ -10,7 +10,7 @@
 
 Three retrieval modes, because they fail differently:
 
-- **text** (BM25 over `TEXT-INDEX.json`) is exact and explainable. It finds
+- **text** (BM25 over `TEXT-INDEX.json.gz`) is exact and explainable. It finds
   `fee_bps` and cannot find "how much does trading cost".
 - **semantic** (cosine over `semantic-embeddings.npz`) finds paraphrase and cannot
   be trusted on an identifier — an embedding will happily rank `slippage_bps` near
@@ -49,8 +49,9 @@ if str(OUT) not in sys.path:  # sibling modules, whether run as a script or impo
 
 import idle  # noqa: E402
 import ollama_ensure  # noqa: E402
+import text_index  # noqa: E402
 INDEX_JSON = OUT / "INDEX.json"
-TEXT_JSON = OUT / "TEXT-INDEX.json"
+TEXT_JSON = OUT / "TEXT-INDEX.json.gz"
 CONCEPT_JSON = OUT / "CONCEPT-INDEX.json"
 SEMANTIC_NPZ = OUT / "semantic-embeddings.npz"
 SEMANTIC_MANIFEST = OUT / "SEMANTIC-MANIFEST.json"
@@ -69,6 +70,8 @@ RRF_K = 60  # Reciprocal-rank-fusion constant; 60 is the value from the original
 
 
 def load(path: Path, what: str) -> dict:
+    if path == TEXT_JSON:
+        return text_index.read(path)
     if not path.exists():
         sys.exit(f"{path.relative_to(REPO)} is missing. Build it: python3 index/build.py all\n"
                  f"  ({what})")
@@ -277,7 +280,10 @@ def unload(model: bool = True) -> str:
 
 
 def _cached_json(path: Path, what: str) -> dict:
-    key = f"json:{path}:{path.stat().st_mtime_ns if path.exists() else 0}"
+    paths = [path]
+    if path == TEXT_JSON:
+        paths.append(path.with_suffix(path.suffix + ".sha256"))
+    key = f"json:{path}:" + ":".join(str(p.stat().st_mtime_ns if p.exists() else 0) for p in paths)
     hit = _CACHE.get(key)
     if hit is None:
         for stale in [k for k in _CACHE if k.startswith(f"json:{path}:")]:

@@ -9,7 +9,7 @@ Four indexes, three of them committed:
 | Artifact | What it answers | Committed |
 |---|---|---|
 | `index/INDEX.json` | "what files exist, and what is each one" | yes |
-| `index/TEXT-INDEX.json` | "which files contain this word" (BM25) | yes |
+| `index/TEXT-INDEX.json.gz` | "which files contain this word" (BM25) | yes |
 | `index/CONCEPT-INDEX.json` | "which files bear on this idea" | yes |
 | `index/semantic-embeddings.npz` | "which files mean something like this" | **no** |
 
@@ -57,10 +57,11 @@ if str(OUT) not in sys.path:  # sibling modules when imported rather than run as
     sys.path.insert(0, str(OUT))
 
 import ollama_ensure  # noqa: E402 - needs the path line above
+import text_index  # noqa: E402
 SCHEMA_VERSION = 1
 
 INDEX_JSON = OUT / "INDEX.json"
-TEXT_JSON = OUT / "TEXT-INDEX.json"
+TEXT_JSON = OUT / "TEXT-INDEX.json.gz"
 CONCEPT_JSON = OUT / "CONCEPT-INDEX.json"
 SEMANTIC_NPZ = OUT / "semantic-embeddings.npz"
 SEMANTIC_MANIFEST = OUT / "SEMANTIC-MANIFEST.json"
@@ -87,6 +88,8 @@ BODY_EXCLUDED_EXT = {".csv"}
 SELF_EXCLUDED = {
     "index/INDEX.json",
     "index/TEXT-INDEX.json",
+    "index/TEXT-INDEX.json.gz",
+    "index/TEXT-INDEX.json.gz.sha256",
     "index/CONCEPT-INDEX.json",
     "index/SEMANTIC-MANIFEST.json",
     # Packaged copies of already indexed documentation. The wiki verifies its
@@ -835,6 +838,11 @@ def check() -> int:
             print(f"    {path}")
         print("  Rebuild: python3 index/build.py all")
         return 1
+    try:
+        text_index.read(TEXT_JSON)
+    except ValueError as exc:
+        print(f"INDEX CHECK FAILED: {exc}")
+        return 1
     was = {e["path"]: e["sha1"] for e in old["files"]
            if e["path"] not in DERIVED_TRACKED}
     now = {rel: sha1_of(REPO / rel) for rel in tracked_files()
@@ -892,9 +900,7 @@ def main(argv: list[str] | None = None) -> int:
     if args.command in {"all", "text", "concepts"}:
         text = build_text(meta)
         if args.command in {"all", "text"}:
-            # Whitespace alone pushed the complete research index over GitHub's
-            # 100 MiB file limit. Compact JSON preserves every posting and score.
-            TEXT_JSON.write_text(json.dumps(text, separators=(",", ":"), sort_keys=True) + "\n")
+            text_index.write(TEXT_JSON, text)
             s = text["stats"]
             print(f"{TEXT_JSON.relative_to(REPO)}: {s['terms']} terms "
                   f"(pruned from {s['termsBeforePrune']}), "
