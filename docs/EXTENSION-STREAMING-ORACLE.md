@@ -1,6 +1,6 @@
 # Streaming Oracle in the Jupiter indicator window
 
-Version: 1.0.0. Delta: implement a causal, bounded online learner and prospective feedback UI.
+Version: 1.0.1. Delta: invalidate unverified/invalid feed displays and verify trained recovery after independent review.
 
 The extension's existing public-read window now contains a streaming Oracle. It
 reuses the validated Pyth stream and bounded one-minute history already owned by
@@ -131,7 +131,13 @@ The controller coalesces existing feed snapshots and processes at most once per
 second. It creates no extra stream or timer owner. Session-generation fences
 reject callbacks from replaced feeds. Collapse/route teardown closes the
 controller and its store connection. Storage failures use bounded retry delay
-and visible unavailable status. Trading remains read only on this surface.
+and visible unavailable status. A source identity change immediately clears the
+previous display while its new partition loads. Unknown identities, failed loads,
+analytics failures and suspension cannot retain a prior active prediction or
+metrics. Historical evidence appears only after the exact current partition has
+loaded, and stale same-source predictions are explicitly labeled historical.
+Fresh valid input reloads persisted learning; display invalidation does not
+reset the learner. Trading remains read only on this surface.
 
 ## Research provenance
 
@@ -142,11 +148,19 @@ Prompt optimization was structural-only; it established no benchmark gain.
 
 The parent commissioned a distinct Mongo SK full-suite research run:
 `a6585948d2fce4f576ddd5decff3a70908d912580dec95b766f2906dc7948bb4`.
-At this implementation checkpoint it is partial: three leaf concepts have
-23 draft claims and zero trusted accepted claims. Its failed early gate attempt
-and uncertain dispatch/cost state remain parent/research-owned. These are draft
-engineering leads, not qualified research or publication proof. Implementation
-mathematics and observable browser behavior require their own tests.
+The probability/scoring leaf now has16/16 SUPPORTED source-method claims under
+trusted completed job`pub:1062e08eeed03535f5fa9af230e37e23`. The concept
+`c:ten-minute-market-probability-scoring-calibration-and-baselines`, revision50,
+records verified completion SHA-256
+`def78224c361cd7de96ab44da2fe5df40e9f8c7c78027d62edf53c5924de5520`.
+Its gate-v4 receipt is
+`art:4103e5f516ac34787bb21e96a5743c35aeb13b69dd8015ba0abc423f8f06e4a0`.
+The actual gate used gpt-6.1-sol at medium effort. The full suite remains partial;
+pack compilation returned HTTP524 and its outcome requires reconciliation.
+Accepted source-method claims support scoring/calibration methodology and its
+limits. They do not validate this application's accuracy, calibration,
+profitability or full-suite completion. Application mathematics and observable
+browser behavior have separate engineering tests.
 
 Primary references consulted for the design:
 
@@ -182,3 +196,25 @@ loaded acceptance are distinct gates.
 Candidate counts, completed checks, exact loaded module hashes and final
 delivery limitations belong in the delivery receipt. A pushed draft or passing
 source tests alone is not canonical installation or a merged release.
+
+The independently reviewed checkpoint passed 572/572 source tests and 23/23
+native fixture checks. Review then found two display-trust defects. Regressions
+from an already trained learner reproduced retained predictions after unknown
+source/rebind/load failure and analytics invalidation. Both corrections passed
+574/574 extension tests, root JavaScript quality checks, 24/24 complete native
+fixture checks and 8/8 actual public-portal checks. The learner equations,
+label/scoring contracts and atomic store remain byte-identical to the reviewed
+checkpoint. Earlier failing receipts remain preserved.
+
+Final affected receipts are under
+`/Users/mitch/.local/state/oracle-streaming-2405/browser-fixture-reviewfix/`
+and
+`/Users/mitch/.local/state/oracle-streaming-2405/browser-public-controls-fixed/`.
+Both bind exact loaded 0.9.0 module hashes. The native fixture demonstrates
+controlled learning, invalid-input abstention and recovery. The public profile
+shows an initialized untrained learner without fabricated resolved performance.
+A public test initially compared changing market-ticker text; its correction
+checks native control DOM identities and continued presence across collapse.
+It does not freeze legitimate market prices or relax a runtime label gate.
+Independent re-review, final-head CI, merge and canonical loaded acceptance
+remain separate delivery gates.

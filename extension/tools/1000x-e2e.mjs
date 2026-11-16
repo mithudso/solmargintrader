@@ -90,6 +90,9 @@ async function websocketFixture() {
     const t = Array.from({ length: Math.floor((current - first) / interval) + 1 }, (_, i) => first + i * interval)
       .filter(time => state.history !== 'lagging' || time < current - interval)
       .filter(time => state.history !== 'gap' || time !== current - 2 * interval);
+    // Finite valid OHLC can still overflow derived indicator arithmetic. Let
+    // the real analytics model reject it, rather than the history decoder.
+    if (state.history === 'overflow') return { s: 'ok', t, o: t.map(() => 1e308), h: t.map(() => 1.79e308), l: t.map(() => 1), c: t.map(() => 1.79e308) };
     const target = Math.floor((Date.now() + state.clockOffsetMs) / 600000) * 600;
     const inPair = time => time >= target - 1200 && time < target;
     const o = t.map((time, i) => state.oracleMode ? 100 + (time - 1700000000) / 6000 : inPair(time) ? 100 : 100 + Math.sin(i / 3) * 7);
@@ -400,12 +403,14 @@ try {
       assert(websocket.some(e => e.sessionId === panel.sessionId && e.method === 'Network.webSocketFrameReceived' && /streamUpdated/.test(e.response?.payloadData || '')), 'actual extension-origin stream frame absent'); return { markets: actualCatalog.body.markets.length, sol: sol[0], subscription: outgoing.filter(p => p?.type === 'subscribe'), snapshot: await panelSnapshot(panel) };
     });
     await check('public portal native chart/controls remain present and overlay can be collapsed', async () => {
-      const before = await ev(portal, `({title:document.title,buttons:[...document.querySelectorAll('button')].map(e=>e.textContent?.trim()).filter(Boolean),nativeChart:!!document.querySelector('[aria-label="Live market price chart"]')})`);
+      const before = await ev(portal, `(()=>{globalThis.__smtNativeControls=[...document.querySelectorAll('button')];return {title:document.title,buttons:globalThis.__smtNativeControls.map(e=>e.textContent?.trim()).filter(Boolean),nativeChart:!!document.querySelector('[aria-label="Live market price chart"]')}})()`);
       assert(before.nativeChart, 'actual native price canvas not found'); assert(before.buttons.length > 0, 'actual native portal controls absent');
       await ev(portal, `document.querySelector('#smt-1000x-indicators').shadowRoot.querySelector('button').click()`);
       same(await ev(portal, `document.querySelector('#smt-1000x-indicators').shadowRoot.querySelectorAll('iframe').length`), 0, 'collapsed public iframe');
-      const after = await ev(portal, `({buttons:[...document.querySelectorAll('button')].map(e=>e.textContent?.trim()).filter(Boolean),nativeChart:!!document.querySelector('[aria-label="Live market price chart"]')})`);
-      same(after.buttons, before.buttons, 'native control texts'); assert(after.nativeChart, 'native canvas lost'); await screenshot('04-public-portal-collapsed'); return { before, after };
+      // Public market buttons contain live prices. Preserve their actual DOM
+      // identity instead of demanding unchanged tick text across a native feed.
+      const after = await ev(portal, `(()=>{const controls=[...document.querySelectorAll('button')];return {buttons:controls.map(e=>e.textContent?.trim()).filter(Boolean),controlsSame:controls.length===globalThis.__smtNativeControls.length&&controls.every((e,i)=>e===globalThis.__smtNativeControls[i]&&e.isConnected),nativeChart:!!document.querySelector('[aria-label="Live market price chart"]')}})()`);
+      assert(after.controlsSame, 'native controls changed or disappeared during collapse'); assert(after.nativeChart, 'native canvas lost'); await screenshot('04-public-portal-collapsed'); return { before, after };
     });
   }
   if (fixture) {
@@ -457,6 +462,24 @@ try {
       await screenshot('07-streaming-oracle-learned-fixture');
       return { issued: state.issued, resolved: state.model.n, model: state.model, shadow_served_example: shadow, ui: ui.oracle,
         interpretation: 'Synthetic accelerated fixture checks implementation and accounting, not future accuracy or profit' };
+    });
+    await check('streaming Oracle invalid analytics clears an active trained display and fresh history restores its evidence', async () => {
+      const before = await oracleSnapshot(panel);
+      assert(before.model.n >= 20, 'invalid-input case did not start from a trained learner');
+      try {
+        fixture.state.history = 'overflow';
+        await setClock(fixture.state.clockOffsetMs + 60000, [portal, panel, twin]);
+        const invalid = await until(async () => { const s = await panelSnapshot(panel); return s.state === 'error' && /Invalid candle or indicator/.test(s.status) ? s : null; }, 'actual invalid derived analytics');
+        assert(invalid.oracle.state !== 'active', 'invalid chart retained an active Oracle prediction');
+        assert(/unavailable/.test(invalid.oracle.prediction), 'invalid analytics retained the old issued prediction');
+        same(await ev(panel, `document.querySelector('#oracle-counts').hasAttribute('data-trained')`), false, 'invalid analytics retained live trained counters');
+      } finally {
+        fixture.state.history = 'full'; await refresh(); await fresh();
+      }
+      const recovered = await until(async () => { const s = await panelSnapshot(panel); return s.oracle.state === 'active' && s.oracle.trained >= before.model.n ? s : null; }, 'fresh analytics restores trained learner');
+      const stored = await oracleSnapshot(panel);
+      assert(stored.model.n >= before.model.n, 'analytics invalidation reset persisted learning');
+      return { before_samples: before.model.n, recovered_samples: stored.model.n, ui: recovered.oracle };
     });
     await check('native IndexedDB abort/reload preserves counters and unknown outcomes stay outside learning', async () => {
       await browser.call('Page.bringToFront', {}, portal.sessionId);

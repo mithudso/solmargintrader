@@ -12,12 +12,19 @@ export class OracleController {
   #disposed = false;
   #generation = 0;
   #nextAt = 0;
-  #last;
+  #key = null;
   constructor({ store = new OracleStore(), clock = Date.now, onChange = () => {} } = {}) {
     this.#store = store; this.#clock = clock; this.#change = onChange;
   }
   observe(snapshot) {
     if (this.#disposed) return;
+    let key = null;
+    try { key = oracleInput(snapshot, this.#clock()).key; } catch { /* Unverified identity cannot retain a prior partition's display. */ }
+    if (key !== this.#key) {
+      this.#generation++; this.#key = key; this.#nextAt = 0;
+      this.#store.cancelPending?.();
+      this.#change({ inputReady: false, reason: key ? 'source_state_loading' : 'awaiting_catalog_identity' });
+    }
     this.#queued = snapshot;
     if (!this.#running && this.#clock() >= this.#nextAt) void this.#drain();
   }
@@ -27,32 +34,36 @@ export class OracleController {
     this.#queued = null; this.#nextAt = this.#clock() + 1000;
     try {
       if (!snapshot?.sourceIdentity && snapshot?.status === 'connecting') {
-        this.#change({ ...this.#last, inputReady: false, reason: 'awaiting_catalog_identity' });
+        this.#change({ inputReady: false, reason: 'awaiting_catalog_identity' });
         return;
       }
       const initial = oracleInput(snapshot, this.#clock());
       const result = await this.#store.update(initial.key, state => {
-        if (this.#disposed || generation !== this.#generation) throw new Error('oracle_obsolete_session');
+        if (this.#disposed || generation !== this.#generation || initial.key !== this.#key) throw new Error('oracle_obsolete_session');
         const current = oracleInput(snapshot, this.#clock());
         if (current.key !== initial.key) throw new Error('oracle_obsolete_session');
         return transitionOracle(state, current);
       });
       if (!this.#disposed && generation === this.#generation) {
         const current = oracleInput(snapshot, this.#clock());
-        this.#last = { state: result.state, metrics: oracleMetrics(result.state), mode: oracleMode(result.state),
-          feedback: result.feedback, inputReady: current.eligible, reason: current.reason };
-        this.#change(this.#last);
+        this.#change({ state: result.state, sourceKey: current.key, metrics: oracleMetrics(result.state), mode: oracleMode(result.state),
+          feedback: result.feedback, inputReady: current.eligible, reason: current.reason });
       }
     } catch (error) {
-      if (!this.#disposed && generation === this.#generation) this.#change({ ...this.#last, inputReady: false,
-        error: ['oracle_partition_capacity', 'invalid_oracle_state', 'oracle_source_unavailable'].includes(error?.message) ? error.message : 'oracle_storage_unavailable' });
-      this.#nextAt = this.#clock() + 5000;
-    } finally { this.#running = false; }
+      if (!this.#disposed && generation === this.#generation) {
+        this.#change({ inputReady: false,
+          error: ['oracle_partition_capacity', 'invalid_oracle_state', 'oracle_source_unavailable'].includes(error?.message) ? error.message : 'oracle_storage_unavailable' });
+        this.#nextAt = this.#clock() + 5000;
+      }
+    } finally {
+      this.#running = false;
+      if (!this.#disposed && this.#queued && this.#clock() >= this.#nextAt) void this.#drain();
+    }
   }
-  suspend() {
-    this.#generation++; this.#queued = null; this.#nextAt = 0;
+  suspend(reason = 'feed_paused') {
+    this.#generation++; this.#key = null; this.#queued = null; this.#nextAt = 0;
     this.#store.cancelPending?.();
-    this.#change({ ...this.#last, inputReady: false, suspended: true });
+    this.#change({ inputReady: false, suspended: true, reason });
   }
   stop() { this.#disposed = true; this.#generation++; this.#queued = null; this.#store.close(); }
 }

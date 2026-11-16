@@ -86,3 +86,38 @@ test('missing source and a failed storage transaction visibly abstain without fa
   broken.observe(snapshot(now)); await settle(); assert.equal(views.at(-1).error, 'invalid_oracle_state');
   assert.equal(views.at(-1).state, undefined); broken.stop();
 });
+
+test('a trained source never leaks predictions through unknown identity or a delayed failing catalog rebind', async () => {
+  const db = atomicFixture(), views = [], client = db.client();
+  let now = (base + 1000 * 60) * 1000 + 2000, oldKey, rejectLoad;
+  const store = { update: (key, reduce) => oldKey && key !== oldKey ? new Promise((resolve, reject) => { rejectLoad = reject; }) : client.update(key, reduce), close() {} };
+  const c = new OracleController({ store, clock: () => now, onChange: view => views.push(view) });
+  for (let minute = 1000; minute <= 1030; minute++) { now = (base + minute * 60) * 1000 + 2000; c.observe(snapshot(now)); await settle(); }
+  assert.equal(views.at(-1).state.model.n, 21); oldKey = views.at(-1).state.key;
+  now += 1000; c.observe({ ...snapshot(now), status: 'connecting', sourceIdentity: null }); await settle();
+  assert.equal(views.at(-1).state, undefined, 'unknown catalog identity must clear a trained old state');
+  assert.equal(views.at(-1).metrics, undefined);
+  now += 1000; c.observe(snapshot(now)); await settle(); assert.equal(views.at(-1).state.model.n, 21);
+  now += 1000;
+  c.observe({ ...snapshot(now), sourceIdentity: { ...snapshot(now).sourceIdentity, feedId: 66 } }); await settle();
+  assert.equal(typeof rejectLoad, 'function');
+  assert.equal(views.at(-1).state, undefined, 'pending rebind must not render the previous source');
+  assert.equal(views.at(-1).metrics, undefined);
+  rejectLoad(new Error('fixture storage failure')); await settle();
+  assert.equal(views.at(-1).state, undefined, 'failed rebind must not restore the previous source');
+  assert.equal(views.at(-1).metrics, undefined); assert.equal(views.at(-1).inputReady, false);
+  assert.equal(db.states.get(oldKey).model.n, 21, 'display invalidation must preserve persisted evidence'); c.stop();
+});
+
+test('suspending an already trained invalid session clears its visible state and fresh recovery reloads evidence', async () => {
+  const db = atomicFixture(), views = []; let now;
+  const c = new OracleController({ store: db.client(), clock: () => now, onChange: view => views.push(view) });
+  for (let minute = 1000; minute <= 1030; minute++) { now = (base + minute * 60) * 1000 + 2000; c.observe(snapshot(now)); await settle(); }
+  const trained = structuredClone(views.at(-1).state); assert.equal(trained.model.n, 21);
+  c.suspend();
+  assert.equal(views.at(-1).state, undefined, 'invalidated analytics cannot retain an active prediction');
+  assert.equal(views.at(-1).metrics, undefined); assert.equal(views.at(-1).inputReady, false);
+  now += 1000; c.observe(snapshot(now)); await settle();
+  assert.equal(views.at(-1).state.model.n, 21); assert.deepEqual(views.at(-1).state.pending, trained.pending);
+  c.stop();
+});

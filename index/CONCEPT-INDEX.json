@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-11-16T16:24:13+00:00",
+  "generatedAt": "2026-11-16T17:56:58+00:00",
   "schemaVersion": 1,
   "note": "Concepts are derived from the repo's own vocabulary \u2014 the FAMILY dict, strategy-card frontmatter, docs/trading-signals-concept-family.md, and terms verified to recur in the corpus. A concept matching no file is dropped, not kept.",
   "counts": {
@@ -22,7 +22,7 @@
         "confirm",
         "fail-closed"
       ],
-      "matchingFiles": 1972,
+      "matchingFiles": 1973,
       "shown": 30,
       "files": [
         {
@@ -67,7 +67,7 @@
         },
         {
           "path": "memory.md",
-          "hits": 109
+          "hits": 111
         },
         {
           "path": "research/tradingview-script-profiles/shard-b.jsonl",
@@ -300,7 +300,7 @@
         "borrow",
         "financing"
       ],
-      "matchingFiles": 1602,
+      "matchingFiles": 1603,
       "shown": 30,
       "files": [
         {
@@ -439,7 +439,7 @@
         "centred",
         "shift"
       ],
-      "matchingFiles": 1531,
+      "matchingFiles": 1535,
       "shown": 30,
       "files": [
         {
@@ -578,7 +578,7 @@
         "perps",
         "solana"
       ],
-      "matchingFiles": 1083,
+      "matchingFiles": 1092,
       "shown": 30,
       "files": [
         {
@@ -598,12 +598,12 @@
           "hits": 408
         },
         {
-          "path": "FILES.md",
-          "hits": 283
+          "path": "memory.md",
+          "hits": 311
         },
         {
-          "path": "memory.md",
-          "hits": 274
+          "path": "FILES.md",
+          "hits": 283
         },
         {
           "path": ".cdo/reviews-2026-11-12/oracle.json",
@@ -626,6 +626,10 @@
           "hits": 141
         },
         {
+          "path": "prompts.md",
+          "hits": 133
+        },
+        {
           "path": ".cdo/reviews-2026-11-13/cdo-forecast-app-delta.json",
           "hits": 130
         },
@@ -640,10 +644,6 @@
         {
           "path": "skills/trading-and-investing/references/jlp-risk-profile-and-anti-patterns.md",
           "hits": 124
-        },
-        {
-          "path": "prompts.md",
-          "hits": 120
         },
         {
           "path": "oracle_leverage/sdk/package-lock.json",
@@ -714,7 +714,7 @@
         "macd",
         "ichimoku"
       ],
-      "matchingFiles": 921,
+      "matchingFiles": 923,
       "shown": 30,
       "files": [
         {
@@ -990,7 +990,7 @@
         "monotone",
         "gap"
       ],
-      "matchingFiles": 842,
+      "matchingFiles": 845,
       "shown": 30,
       "files": [
         {
@@ -1125,7 +1125,7 @@
         "stochastic",
         "oscillator"
       ],
-      "matchingFiles": 593,
+      "matchingFiles": 595,
       "shown": 30,
       "files": [
         {
@@ -1260,7 +1260,7 @@
         "benchmark",
         "baseline"
       ],
-      "matchingFiles": 584,
+      "matchingFiles": 589,
       "shown": 30,
       "files": [
         {
@@ -1344,6 +1344,10 @@
           "hits": 37
         },
         {
+          "path": "memory.md",
+          "hits": 33
+        },
+        {
           "path": ".cdo/reviews-2026-11-12/soltui-fullsuite-fixture-deltas.json",
           "hits": 32
         },
@@ -1362,10 +1366,6 @@
         {
           "path": "backtester/core/gridsim.py",
           "hits": 29
-        },
-        {
-          "path": "memory.md",
-          "hits": 26
         },
         {
           "path": "research/RANKED_LISTS.md",
@@ -1394,7 +1394,7 @@
         "buy_and_hold",
         "baseline"
       ],
-      "matchingFiles": 512,
+      "matchingFiles": 518,
       "shown": 30,
       "files": [
         {
@@ -1450,6 +1450,10 @@
           "hits": 32
         },
         {
+          "path": "memory.md",
+          "hits": 32
+        },
+        {
           "path": "research/tradingview-card-coverage.json",
           "hits": 31
         },
@@ -1468,10 +1472,6 @@
         {
           "path": "backtester/core/gridsim.py",
           "hits": 29
-        },
-        {
-          "path": "memory.md",
-          "hits": 26
         },
         {
           "path": ".cdo/reviews-2026-11-12/soltui-root-ui-tests.json",
@@ -1667,7 +1667,7 @@
         "evidence floor",
         "rankable"
       ],
-      "matchingFiles": 392,
+      "matchingFiles": 393,
       "shown": 30,
       "files": [
         {

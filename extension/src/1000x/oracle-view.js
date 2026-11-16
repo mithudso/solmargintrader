@@ -26,12 +26,14 @@ export function oracleView(root) {
   details.append(summary, table, target, limits);
   root.append(heading, status, prediction, counts, feedback, details);
   return view => {
-    const state = view?.state;
+    // Historical evidence is visible only after this session has loaded and
+    // verified the exact source partition. Unbound or invalid sessions clear it.
+    const state = view?.sourceKey === view?.state?.key ? view?.state : undefined;
     root.dataset.state = view?.error ? 'error' : !view?.inputReady ? 'waiting' : view?.mode || 'waiting';
     const messages = { active: 'Online candidate active · shadow price-direction forecast', 'baseline-warmup': `Fixed baseline served · model warm-up (<${ORACLE.minTrained} resolved)`,
       'baseline-performance': 'Fixed baseline served · heuristic recent underperformance; shadow learning continues' };
     status.textContent = view?.error ? `Learning unavailable · ${view.error.replaceAll('_', ' ')}; chart remains read only`
-      : view?.suspended ? 'Learning paused · feed restarting or window hidden'
+      : view?.suspended ? view.reason === 'invalid_analytics' ? 'Learning paused · invalid candle or indicator data' : 'Learning paused · feed restarting or window hidden'
       : !view?.inputReady ? 'Learning waits for fresh public data and complete one-minute history'
       : view.feedback?.status === 'waiting-features' ? 'Feature warm-up · need 78 contiguous completed one-minute candles'
       : state?.issued === 0 ? 'Waiting for next fresh completed minute · untrained model; no issued forecast yet'
@@ -40,10 +42,11 @@ export function oracleView(root) {
       counts.textContent = 'Learner sample counts unavailable until local state loads';
       counts.removeAttribute('data-trained'); counts.removeAttribute('data-resolved');
       prediction.textContent = 'P(UP) unavailable until a prospective forecast is stored';
+      feedback.textContent = 'Stored feedback is unavailable for this feed session. Learning waits for verified fresh input.';
       body.replaceChildren(); return;
     }
     const last = state.pending.at(-1) ?? state.recent.at(-1);
-    prediction.textContent = last ? `Stored ${last.mode === 'active' ? 'candidate' : 'baseline'} P(UP) ${percent(last.servedP)} · shadow candidate ${percent(last.p)} · NON-UP ${percent(1 - last.servedP)} · cutoff ${utc(last.cutoff)} → ${utc(last.target)} · ${last.outcome ? `resolved ${last.outcome}` : last.target * 1000 > Date.now() ? 'pending outcome' : 'matured / waiting for validated label'}`
+    prediction.textContent = last ? `${view.inputReady ? 'Stored' : 'Historical stored · current feed unavailable ·'} ${last.mode === 'active' ? 'candidate' : 'baseline'} P(UP) ${percent(last.servedP)} · shadow candidate ${percent(last.p)} · NON-UP ${percent(1 - last.servedP)} · cutoff ${utc(last.cutoff)} → ${utc(last.target)} · ${last.outcome ? `resolved ${last.outcome}` : last.target * 1000 > Date.now() ? 'pending outcome' : 'matured / waiting for validated label'}`
       : 'No issued forecast yet · waiting for a fresh minute boundary; no backfilled predictions';
     counts.textContent = `Trained ${state.model.n} · resolved ${state.totals.n} · pending ${state.pending.length} · expired ${state.expired} · UP ${state.totals.up} / DOWN ${state.totals.down} / FLAT ${state.totals.flat}`;
     counts.dataset.trained = String(state.model.n); counts.dataset.resolved = String(state.totals.n);

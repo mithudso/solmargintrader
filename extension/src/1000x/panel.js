@@ -123,6 +123,7 @@ function draw() {
   if (disposed || !latest) return;
   try { model = panelModel(latest, config); }
   catch {
+    oracle.suspend('invalid_analytics');
     model = null; clearChart(); resetContext();
     $('status').textContent = 'Invalid candle or indicator data — signals unavailable';
     $('status').dataset.state = 'error';

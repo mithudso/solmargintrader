@@ -1,7 +1,10 @@
 # Prompt history
 
-Version: 273
+Version: 275
+Delta: v274 to v275; preserve the delegated independent-review correction scope for the streaming Oracle.
+Delta: concurrent integration to v274; preserve streaming Oracle and merged compressed-index records.
 Delta: v272 to v273; record and execute the approved adaptive streaming Oracle prompt.
+Delta: v272 to v273; record the current optimizer and bootstrap request.
 Delta: v271 to v272; integrate extension reversal and owner host reply.
 Delta: v269 to v270; record the extension two-bar reversal and indicator request.
 Delta: v270 to v271; preserve the owner host-identification reply.
@@ -2492,6 +2495,9 @@ Add the same down down up logic and indicators to the /Users/mitch/dev/solmargin
 
 The name of the box is M-GN90147X97, or m3, or work.
 
+## Current-source optimizer request — 2026-11-16
+
+Run the deep UI optimizer on the /Users/mitch/.venvs/soltui/bin/python /Users/mitch/dev/solmargintrader/scripts/oracle_winners.py tui. And run the deep code optimizer, and the repo-bootstrapper.
 
 ## Adaptive streaming Oracle extension — 2026-11-16
 
@@ -2500,3 +2506,10 @@ Also add to the extension a streaming version of the oracle with predictions bas
 ```
 
 Execute the final approved optimized prompt byte-for-byte in docs/EXTENSION-STREAMING-ORACLE-PROMPT.md (SHA25606d3ffc424af00824dd0ea27f0b1fff09e80b4b1dd15ac4bcafa00367623a0d6). Structural optimization and native full-suite research are parent-owned; do not repeat optimization or claim unqualified research as published.
+
+
+## 2026-11-16 — delegated streaming Oracle review correction
+
+The parent requested these corrections after independent review. This is implementation-review continuation, not a new user model/target request:
+
+> Independent03978a9MLreviewfoundTWO MEDIUMdisplay/trust defects, fixred→greenbeforefinalreview/delivery: 1)panel.js:121-134 catches panelModelinvalidsnapshot andreturnswithout suspending/invalidationOracle. PreviousactivepredictioncanstayLIVEindefinitelywhilechart sayssignals unavailable. In catchsuspend/invalidateOracleview (historicalsame-sourceonlyifexplicitstale) andtestbadfeedthenfreshrecovery. 2)oracle-controller.js:29-30,46-48,52-55 spreads#lastduringconnecting/errorswithoutbindingincomingkey; oracle-view.js:39-55 rendersoldpartitionprediction+metricswhilefeedId/marketAddresscatalogrebindunverifiedorstoragefails. Clear/unavailableoldstateuntilcurrentidentityverifiedandloaded (orstrictlybindhistoricaldisplaytosamecurrentkeyexplicitly); add testsfromanALREADYTRAINEDoldcontroller, thensourceidentityswitchwithloaddelay/failure. Existingtestsfromemptydidn'tcoverthis. Sourcecorrectlearnercurrentgradient/score-before-learn/flatNONUPconfirmedbyreviewer, noempiricalqualityclaims. Role/root/streaming_oracle_code_reviewcompletedifneedfindingscontext. Fixonlyactualdefectswithoutrelaxingstagegates; exactsourcehashesnewreceipts+574-ishactualcountsdocscorrect. 307master15bbavailablegZip. Pushrecoverabledraftsourceaftergates/staticregen, keepunmergeduntilre-review+CI. Tests23/public8oldpassreceiptsretainbutnewaffectedgatesmustrerun. AllcmdINDEX_NO_AUTO=1. No extrauserpermissionneeded.

@@ -1,9 +1,15 @@
 # Work continuation
 
-Version: 606
+Version: 609
+Delta: v608 to v609; reproduce and repair trained Oracle display invalidation; qualify 574 source / 24 fixture / 8 public checks and push draft PR308.
+Delta: v607 to v608; integrate delivered reversal/index migration with unchanged Oracle runtime and current research receipt.
+Delta: concurrent integration to v607; preserve streaming Oracle and merged compressed-index records.
 Delta: v605 to v606; confirm final resolved-label browser gate and preserve the source-qualified commit.
 Delta: v604 to v605; implement and qualify streaming Oracle source/browser behavior; await index migration and delivery.
 Delta: v603 to v604; start the approved streaming Oracle implementation child with a recoverable design.
+Delta: v605 to v606; document intentional metadata-only invalidation and offline recovery.
+Delta: v604 to v605; bind compressed index to current catalog and repair documentation after independent review.
+Delta: v603 to v604; begin current-source bootstrap, code review, and lossless index-size repair.
 Delta: v602 to v603; integrate extension reversal delivery with current YOLO continuation.
 Delta: v596 to v597; complete and browser-qualify extension reversal candidate, preserve delivery continuation.
 Delta: v595 to v596; start extension reversal/shape/EMA/MACD implementation in an isolated worktree.
@@ -2847,6 +2853,13 @@ Independent review treats current opens as market orders: the price observed in 
 
 Independent reviewer cleared the revised wallet authority, exact rentEpoch and end-to-end fixture checks. The current observed open route now returns a verified market-order preview; the simulated entry is indicative and not a limit. The owner-facing preview states that current-format close is unavailable in this client and a failed transaction can incur up to 0.01 SOL network fee. A fresh BTC long unsigned build returned ready without signing or sending. Current-format close remains blocked: 3000 recent public trade rows had no queued close, and the observed immediate close does not prove claim PDA or queued payout recipient. Final integrated-head independent review and CI remain pending; program upgrades and changing market state remain explicit limitations.
 
+## Current-source repo health — 2026-11-16
+
+TASK-2410 audits the current source without resuming paused TASK-1541 or PR 235. Ledger baseline at 4e2dac8 planned 50 changed and 176 new files, with 796 unchanged skipped. PR 304 was independently reviewed and merged at c250f307; this worktree now starts from that commit. The tracked keyword index was within 181104 bytes of GitHub’s 100 MiB limit before that merge. Preserve all postings and source bodies; implement and verify deterministic gzip and artifact integrity before delivery. Current readers reject a missing gzip even if an old raw file exists, so stale legacy data cannot silently win. The old-format code remains able to read old checkouts. Baseline test commands require isolation from owner configuration, processes, wallets and paused services. Full CDO per-file fan-out and final feature-source review remain pending capacity; no strategy benchmark or empirical champion is authorized.
+
+Independent review proved an old valid gzip plus its own matching checksum passed the initial freshness gate. The index catalog now binds the decoded SHA-256, and both search and freshness validation reject a mismatch. A regression test failed before the correction and passed afterward. The previous reader remains in old checkouts; current readers do not fall back to an untrusted raw artifact.
+
+The metadata-only index command deliberately clears the catalog text binding. Search and freshness checks fail until the offline all rebuild restores a matching catalog and gzip index. Independent review accepted this fail-closed behavior when documented.
 
 ## Adaptive streaming Oracle implementation continuation — 2026-11-16
 
@@ -2868,3 +2881,23 @@ Earlier browser failures are preserved. A same-URL top-level twin confused the i
 Exact approved prompt is byte-preserved at docs/EXTENSION-STREAMING-ORACLE-PROMPT.md (SHA25606d3ffc424af00824dd0ea27f0b1fff09e80b4b1dd15ac4bcafa00367623a0d6). Design/equations/limits and provisional research provenance are in docs/EXTENSION-STREAMING-ORACLE.md. Research run a6585948d2fce4f576ddd5decff3a70908d912580dec95b766f2906dc7948bb4 remains parent/research-owned and unqualified at the last checkpoint (23 draft claims,0 trusted accepted). The execution self-check and active continuation are private under /Users/mitch/.local/state/oracle-streaming-2405/.
 
 Remaining: merge current master containing delivered PR304/c250f307; acquire the parent-owned lossless text-index migration PR307 before any index growth/push, regenerate deterministic docs/wiki/inventories/indexes under INDEX_NO_AUTO=1, update combined counts after integration, push a reviewable draft PR, independent parent review, final-head CI, merge and canonical loaded acceptance. Do not publish the nearly100MiB old raw text-index artifact or start any semantic/inference worker. All new source files are owned by this task; preserve current TUI/SDK and canonical Pine work.
+
+
+## Streaming Oracle integration checkpoint — 2026-11-16
+
+Source-qualified commit03978a92ca3c2c27dc7972e13889d5f755613930 is locally committed and its runtime is unchanged while merging current master15bbfa87bac6a8acb6409edc7ecaae4b91f229c1 (PR304/c250f307 plus PR307 lossless gzip index). All conflicted incoming extension files exactly matched the6a59a3e base; retained our reviewed source. /Users/mitch/.local/state/oracle-streaming-2405/runtime-hashes.json binds all eleven changed runtime/manifest/package files. Preserved incoming index migration code/test sources, deleted the old raw artifact, and retained both complete prompt/memory tails and all deltas. Combined source counts are1146 backtester +1582 SolTUI +57 Mongo +572 extension =3357. New gzip/static metadata will be generated with INDEX_NO_AUTO=1; no semantic vectors/workers may run.
+
+All exact final runtime source gates passed:572/572, JavaScript quality0, full native browser23/23 and actual public8/8. Authoritative final receipts are /Users/mitch/.local/state/oracle-streaming-2405/browser-fixture-reviewed/receipt.json and /Users/mitch/.local/state/oracle-streaming-2405/browser-public-reviewed/receipt.json. The public initialization assertion now requires a ready actual learner, and the native expiry assertion checks the retained resolved label. The last metadata merge does not change runtime bytes.
+
+Research status advanced: trusted job pub:1062e08eeed03535f5fa9af230e37e23 completed, probability/scoring concept revision50 has verified completion hash def78224c361cd7de96ab44da2fe5df40e9f8c7c78027d62edf53c5924de5520, and gate receipt art:4103e5f516ac34787bb21e96a5743c35aeb13b69dd8015ba0abc423f8f06e4a0 supported16/16 source-method claims. This does not validate app accuracy/calibration/profitability or full-suite completion. Pack compilation returned HTTP524 and remains under parent/research reconciliation. Do not repeat accepted gates. Remaining: deterministic integration checks, merged checkpoint commit, draft push/PR and independent parent review/finalCI/merge/canonical loaded acceptance.
+
+
+## 2026-11-16 — streaming Oracle independent-review corrections
+
+Draft https://github.com/mithudso/solmargintrader/pull/308 preserves source checkpoint03978a92ca3c2c27dc7972e13889d5f755613930 on origin/feat/extension-oracle-2405. Independent review found two Medium display-trust defects: panelModel failure did not suspend Oracle; OracleController reused a trained prior partition during unknown identity, delayed rebind or load failure. Two trained-state controller regressions failed first. A native Chrome finite-OHLC/indicator-overflow case also failed first because the old issued prediction remained visible. Red evidence is retained under /Users/mitch/.local/state/oracle-streaming-2405/checks/trained-view-regressions-red.log and browser-trained-invalid-red/receipt.json.
+
+The correction changes only oracle-controller.js, oracle-view.js and panel.js runtime bytes from the reviewed checkpoint. The controller immediately invalidates source changes, unknown identities, storage errors and suspension. It binds loaded state to the exact current source key and cancels obsolete transactions. The view displays same-source stale evidence only with an explicit historical label. Invalid chart/indicator data suspends Oracle and clears predictions/counters/feedback until valid analytics reload stored evidence. Learner/model/store bytes and target/scoring contracts are unchanged. Exact hashes are /Users/mitch/.local/state/oracle-streaming-2405/runtime-reviewfix-hashes.json.
+
+Current affected checks completed with INDEX_NO_AUTO=1:574/574 source tests, root lint/checked-JavaScript exit0, full native fixture24/24 at browser-fixture-reviewfix/receipt.json and actual public8/8 at browser-public-controls-fixed/receipt.json. The initial public7/8 receipt remains preserved: a live ETH ticker changed during collapse, so the harness now verifies retained native button DOM identities/presence instead of exact changing price text. No runtime freshness/unknown-label gate was loosened. Generated wiki customer-term scan found zero new customer-bearing values beyond existing source histories; a minified whole-file diff caused the generic guard notice. No customer material was authored.
+
+Remaining: finish merge of delivered compressed index15bbfa87, integrate delivered UI7bfeb02, regenerate/check deterministic gzip/static artifacts, commit and push the final draft candidate, independent parent re-review, final CI, merge and canonical visible persistent-profile public acceptance. Existing e2e profiles are deliberately disposable; the parent owns the final persistent visible launch. Do not touch personal browser profiles, owner configuration, Pine or live trading defaults. Do not start semantic/index inference workers. Source tests and synthetic learning are not public-market accuracy, calibration or profit evidence.

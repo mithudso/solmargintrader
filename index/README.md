@@ -41,14 +41,23 @@ subsumes the other, and both are checked in CI.
 | Artifact | Answers | Committed | Built by |
 |---|---|---|---|
 | `INDEX.json` | what files exist, and what each one is | yes | `build.py meta` |
-| `TEXT-INDEX.json` | which files contain this word | yes | `build.py text` |
+| `TEXT-INDEX.json.gz` | which files contain this word | yes | `build.py text` |
 | `CONCEPT-INDEX.json` | which files bear on this idea | yes | `build.py concepts` |
 | `semantic-embeddings.npz` | which files *mean* something like this | **no** | `build.py semantic` |
 | `SEMANTIC-MANIFEST.json` | what the embedding index was | yes | `build.py semantic` |
 
-`TEXT-INDEX.json` uses compact JSON to keep the complete posting list below
-GitHub's file-size limit. Formatting does not remove terms, documents or scores;
-readers use the same JSON schema.
+`TEXT-INDEX.json.gz` stores the same compact JSON schema and complete posting list
+in gzip. `TEXT-INDEX.json.gz.sha256` binds the decoded bytes; search and the
+freshness check reject missing, corrupt or mismatched artifacts. The catalog also binds
+the decoded SHA-256, so a valid older index and its matching sidecar cannot pass
+against a newer catalog. Current readers require the compressed format; old
+checkouts continue to use their own legacy reader. The builder uses
+an empty gzip filename and timestamp zero. Compressed bytes can vary with the
+compression runtime; the decoded-content SHA-256 is the portable identity.
+Rebuild both files with `python3 index/build.py all` after source changes.
+The `meta` command writes a catalog without a text binding: keyword search and
+`--check` intentionally fail until `python3 index/build.py all` rebuilds the
+catalog, text and concepts together. Use `all` for the normal offline refresh.
 
 ## Three retrieval modes, because they fail differently
 
