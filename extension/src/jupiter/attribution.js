@@ -28,6 +28,7 @@
 import { TRIGGER_BASE } from './trigger.js';
 import { PRICE_HOSTS } from './price.js';
 import { JUPITER_MARKET_BASES } from '../market/tokens.js';
+import { JUPITER_ENDPOINTS } from '../1000x/feed.js';
 
 /** The exact string §8.4 requires. Do not paraphrase it. */
 export const POWERED_BY = 'Powered by Jupiter';
@@ -54,6 +55,16 @@ export const SURFACES = Object.freeze([
     purpose: 'Solana wallet holdings, read only',
     bases: Object.freeze([JUPITER_MARKET_BASES.ultraHoldings]),
   }),
+  Object.freeze({
+    name: '1000x public catalog',
+    purpose: 'market identity, read only',
+    bases: Object.freeze([new URL(JUPITER_ENDPOINTS.markets).origin]),
+  }),
+  Object.freeze({
+    name: 'Pyth oracle history and stream',
+    purpose: '1000x indicator candles and observations, read only',
+    bases: Object.freeze([new URL(JUPITER_ENDPOINTS.history).origin]),
+  }),
 ]);
 
 /** The swap API whose quotes are shown. It routes nothing from here: §2.3 is about naming it accurately. */
@@ -62,8 +73,8 @@ export const ROUTING_NOTE = 'Metis for swap quotes only (swaps are signed on jup
 
 /** One line for a footer: satisfies §8.4 and §2.3 together. */
 export function attributionLine() {
-  const surfaces = SURFACES.filter((s) => !['Metis Swap API', 'Ultra API'].includes(s.name)).map((s) => s.name).join(' + ');
-  return `${POWERED_BY} — ${surfaces} for the grid; ${ROUTING_NOTE}`;
+  const surfaces = SURFACES.filter((s) => ['Trigger V2', 'Price v3'].includes(s.name)).map((s) => s.name).join(' + ');
+  return `${POWERED_BY} — ${surfaces} for the grid; ${ROUTING_NOTE}; 1000x public catalog and Pyth oracle data for indicators`;
 }
 
 /** Longer form for the dashboard, where there is room to be explicit. */

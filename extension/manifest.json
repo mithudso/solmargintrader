@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "SolMarginTrader",
-  "version": "0.6.7",
+  "version": "0.7.0",
   "description": "Signal Desk: live signals, backtests, paper forward tests and bot monitoring. Experimental grid installs disarmed in dry-run.",
   "minimum_chrome_version": "120",
   "background": {
@@ -32,7 +32,9 @@
     "https://base-rpc.publicnode.com/*",
     "https://api.mainnet-beta.solana.com/*",
     "https://coins.llama.fi/*",
-    "https://yields.llama.fi/*"
+    "https://yields.llama.fi/*",
+    "https://yolo-api.jup.ag/*",
+    "https://perps-api.jup.ag/*"
   ],
   "content_security_policy": {
     "extension_pages": "script-src 'self'; object-src 'self'; base-uri 'none'; frame-src https://www.tradingview-widget.com"
@@ -42,5 +44,32 @@
     "32": "icons/icon-32.png",
     "48": "icons/icon-48.png",
     "128": "icons/icon-128.png"
-  }
+  },
+  "content_scripts": [
+    {
+      "matches": [
+        "https://jup.ag/*"
+      ],
+      "js": [
+        "src/1000x/content.js"
+      ],
+      "run_at": "document_idle"
+    }
+  ],
+  "web_accessible_resources": [
+    {
+      "resources": [
+        "src/1000x/panel.html",
+        "src/1000x/panel.css",
+        "src/1000x/panel.js",
+        "src/1000x/feed.js",
+        "src/1000x/indicators.js",
+        "src/1000x/panel-model.js",
+        "vendor/lightweight-charts/lightweight-charts.standalone.production.mjs"
+      ],
+      "matches": [
+        "https://jup.ag/*"
+      ]
+    }
+  ]
 }

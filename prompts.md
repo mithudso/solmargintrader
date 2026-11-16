@@ -1,6 +1,8 @@
 # Prompt history
 
-Version: 261
+Version: 263
+Delta: v262 to v263; record the Jupiter Wallet installation follow-up messages.
+Delta: v261 to v262; record the Jupiter 1000x overlay optimization, fan-out, implementation and SDK request.
 Delta: v260 to v261; record the Preview error request.
 Delta: v259 to v260; record the status flicker, arm control and forward results request.
 Delta: v258 to v259; record dual-price streams, visual accessibility, MTF study, and model-use requests.
@@ -2395,3 +2397,17 @@ Make the center status update stop flashing "unavailable" and redrawing the data
 ```text
 I get an error when clicking on Preview, [Image #1]
 ```
+
+
+## 2026-11-16 — Jupiter 1000x indicator overlay
+
+Run the deep prompt optimizer skill on this prompt and then run it: I have been using this margin trading system via online portal: https://jup.ag/1000x?market=SOL&mode=classic go to that site and download all of the javascript and learn how to stream the data with the site, such that with a plugin or userscript technical data, signals, strategies, etc can be overlaid on the chart itself or as a floating indicators window. I want some indicators like zig zag, rsi, balance of power, volty expans, and parabolic SAR. Read all of the rules, as well as https://developers.jup.ag/docs/llms-full.txt  Use the other code in this repo to help understand how to calculate the stratgy and indicator numbers, but don't be stuck by them. Do this as a fan out of agents each investigating their part and aggregate the information into a cohereent writing plan, choose between a userscript and a chrome plugin, and then implement it. Also use the SDK to learn how to create and close orders such that eventually you can be fully automated in watching and trading.
+
+
+## 2026-11-16 — Jupiter Wallet browser installation follow-up
+
+User: it won't lety me install the jupiter wallet for you so I can sign in and do all the signing and stuff.
+
+User: https://chromewebstore.google.com/detail/jupiter-wallet/iledlaeogohbilgbfhmbgkgmpplbfboh?utm_source=jup.ag&utm_medium=wallet&utm_campaign=wallet-extension__hero-install-chrome
+
+User: I click approved and then it gives me an error: Download error: Installation is not enabled and spins forever

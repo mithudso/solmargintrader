@@ -1,6 +1,10 @@
 # Work continuation
 
-Version: 577
+Version: 581
+Delta: v580 to v581; preserve the qualified candidate and final delivery-receipt location.
+Delta: v579 to v580; qualify current-source browser, public feed and numerical gates before delivery.
+Delta: v578 to v579; record optimized prompt acceptance, live SOL discovery, selected architecture and implementation.
+Delta: v577 to v578; begin isolated Jupiter 1000x overlay prompt optimization and implementation.
 Delta: v576 to v577; record the Preview inspection fix and pending acceptance.
 Delta: v575 to v576; record the macOS shape-guide lifecycle failure and recovery.
 Delta: v574 to v575; record PR 286 delivery and active MTF/status controls continuation.
@@ -2670,3 +2674,32 @@ PR 288 macOS CI caught a ShapeGuide mount transition race: textual.css.query.NoM
 ## Preview inspection fix — 2026-11-16
 
 The 1000x Preview fallback reports a verified unsigned simulation as inspection only when current keeper or transaction layout cannot be verified for execution. It does not create a preview ID or enable Submit. The current executable guards remain in place. Focused Python, Node and lint checks passed in the isolated hotfix worktree; canonical installed acceptance remains pending. The separate exit50 study and UI integration continue in /Users/mitch/dev/worktrees/oracle-exit50-2309.
+
+
+## 2026-11-16 — Jupiter 1000x overlay in progress
+
+TASK-2348/2349/2350/2351 track optimization, discovery/plan, implementation and delivery. Worktree /Users/mitch/dev/worktrees/jup1000x-overlay-2348; source baseline 2b5e973. Preserve the untracked Pine file and every other worktree. User requested fan-out investigation and implementation after deep prompt optimization. The optimizer owns /Users/mitch/.local/state/jup1000x-overlay-2348/prompt-optimizer. Public JavaScript downloads are requested outputs; keep third-party bundles out of Git and archive URL/hash/status manifest. Preserve disarmed defaults, local chart licence/attribution, registry-only actions and stale/missing-data refusal. Verify actual SOL market support and distinguish GUM/1000x from JLP perps and Trigger. Existing order and feed work remains owned separately.
+
+Readiness: hub semantic request did not complete; existing offline index used without indexing/inference. Context7 reached monthly quota; use current official docs and exact source. Postman status reports no account; skip signed-in resource search/context graph. No services, wallet keys or orders touched. Pending optimized-prompt audit, parallel engineering discovery, coherent plan, implementation, source/browser checks and full delivery.
+
+
+## Jupiter 1000x overlay source implementation
+
+Prompt v1.1 passed a second fresh isolated A-P review after an enforceable20min/2000asset/250MiB discovery cutoff. Raw/optimized/full audit and helper evidence are under /Users/mitch/.local/state/jup1000x-overlay-2348/prompt-optimizer; repo copy docs/JUPITER-1000X-OVERLAY-PROMPT.md. The written plan docs/JUPITER-1000X-OVERLAY.md selects existing MV3 plus an extension-origin floating chart: native custom React canvas exposes no verified chart handle. Seven current markets include SOL feed6/marketEw8sRjpuBttpmhSUeaAn4dLAegWnz55AuafVcGuojCPS; Stele KNOW-2296 updated to distinguish earlier BTC/ZEC-only snapshot. Current public data contract is yolo-api markets plus perps-api Pyth200ms history/stream.
+
+Workers own feed/capture, pure indicators and docs/JUPITER-1000X-SDK.md. Root owns host/panel/model/manifest0.7.0/tests. First24 math/panel-model tests passed0; independent numerical Volty Python/JS comparison passed. Indicator defaults: ZigZag0.5%, WilderRSI14, BOP1, VoltySMA(TR)5x0.75 with prior-bar active stops, SAR0.02/0.02/0.2. Closed-only signal labels require contiguous current closed history and fresh3s quote/receipt; partial old bars reset math. All runtime defaults remain disarmed.
+
+Wallet follow-up: user approved official Web Store install but browser reports Installation is not enabled. Normal Chrome Profile2 already has Jupiter Wallet1.20.2 installed. Do not bypass browser restrictions or copy wallet data. The portal/data and overlay proceed without authentication. SDK review is unsigned only and preserves current keeper-verification/submission refusal. Pending worker finalization, frozen-source review, browser fixture/live acceptance, complete required checks/docs-index refresh and final PR/CI/merge/canonical acceptance.
+
+
+## Jupiter 1000x overlay qualified candidate
+
+The implementation, discovery and prompt tasks are complete. TASK-2351 tracks delivery. Extension 0.7.0 adds the read-only floating window. The final unit set includes 22 feed, 15 indicator and 10 panel-model tests. The existing full extension suite passed before the last two regressions were added; the final 530-case repeat follows this checkpoint.
+
+Independent review fixed closed-only solid ZigZag pivots, editable RSI guide lines and back/forward-cache restoration. The source review is now clean. Independent browser acceptance passed 17 fixture checks and seven actual public-portal checks. The public gate binds SOL feed 6, history HTTP 200, stream frames and executed source hashes to the extension iframe. The adopted fixture also passed 17 checks with stricter user/request path denial and an explicit dry-run assertion. The existing browser gate passed 26 checks. SDK constructor/refusal fixtures passed without signing. Keeper verification and funded execution remain unverified.
+
+The public archive manifest is /Users/mitch/.local/state/jup1000x-overlay-2348/public-site/snapshot/manifest.json. It records 1,176 URLs: 1,172 JavaScript HTTP 200 responses and four literal-path 404s. All 1,169 source-map probes returned 404. Bodies total 113,604,207 bytes. One throttled retry cleared initial rate limiting. Computed imports, authenticated branches and future builds remain outside this finite census. The actual browser exposed an Illegal invocation bug in saved Window functions. Binding fetch and timer receivers fixed it and has a regression test. The verified feed hash is 65ca7989602054ce2162f6569b21d8324dce448185ee3ae96c57402c273187d1.
+
+JavaScript lint/type checks passed after installing the locked development tools inside this worktree. The initial backtester failure was the expected stale index. Regenerate only the offline metadata/text/concept indexes after final source and docs are fixed. Initial Mongo failures came from missing PyMongo in the TUI environment. Isolated Python 3.13 dependencies under /Users/mitch/.local/state/jup1000x-overlay-2348/verification-deps restored all 57 tests, with 11 native-database skips, exit 0. Endor risk evidence is unavailable; no production dependency changed. Documentation discovery uses the current botmanager/src on PYTHONPATH. Documentation counts are 530 extension tests and 3,289 total.
+
+At this checkpoint, generated documentation/index checks and final CI/merge remain in progress. The final delivery state is recorded at /Users/mitch/.local/state/jup1000x-overlay-2348/delivery.json. That receipt is authoritative for the PR, merged revision, completed checks and final canonical browser acceptance. The original untracked Pine file and other worktrees are preserved. No existing recorder or trading service was restarted.
