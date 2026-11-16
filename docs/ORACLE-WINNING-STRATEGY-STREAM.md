@@ -1,7 +1,7 @@
 # Oracle winning-strategy TUI
 
-Version: 1.1.0
-Delta: add a genuine foreground trade stream, provisional indicator overlays, full refresh and completed two-bar context.
+Version: 1.2.0
+Delta: show the current ten-minute setup in the top title bar and add optional deduplicated sounds.
 
 Start the interactive, read-only workbench:
 
@@ -28,7 +28,8 @@ already provides Textual; this entry point does not install or start a service.
 | Choose strategies | Search names, parameters or IDs. Space/Enter toggles a row; Select/Clear visible affects only the current search. Apply preserves choices in other windows. |
 | Edit focused | Edit the focused row's JSON parameters/ensemble; Apply validates before changing the working variant. |
 | Reset focused | Restore the immutable original configuration and its original evidence. |
-| Save view | Persist windows, chart length, cadence, manual selections and edited variants privately. |
+| Save view | Persist windows, chart length, cadence, manual selections, edited variants and sound preferences privately. |
+| Sounds | Choose separate reversal and two-UP notifications, terminal bell or macOS system sound, and an explicit Test sound. Apply changes this session; Save view persists it. |
 | Shape guide [H] | Explain the detected shape, show its actual 48-bar price trace and an illustrative sketch, and describe what to watch or what would challenge the interpretation. |
 
 Keys: **S** opens strategies, **E** edits the focused row, **R** requests the same full displayed-data refresh as the button, **H** opens the shape guide, **Ctrl-S** saves the view, **Q** quits. Escape cancels a modal without
@@ -131,7 +132,7 @@ produce invented lines. The drawing stops at the latest observed candle.
 
 ### Fixed ten-minute bearish alerts
 
-The banner near the top always watches **ten-minute candles**, independently of
+The top title bar shows the first alert line, including the confirmed UP count, current bar and WATCHING, REVERSAL DETECTED or DATA UNAVAILABLE state. The full three-line banner remains below it. Both always watch **ten-minute candles**, independently of
 the selected chart window. It now names the confirmed count, current bar and
 live detection stage separately:
 
@@ -175,6 +176,14 @@ The [one-minute excursion follow-up](../research/ZEC-REVERSAL-EXCURSIONS.md)
 measures subsequent downward distances and endpoint continuation separately.
 Its early intrabar timing and the current five-minute gate have different
 results. The old19/24 next-candle-color count is not either continuation rate.
+
+### Optional audible alerts
+
+Sounds are off by default. Open **Sounds** and enable **Reversal detected**, **Two UP bars completed**, or both. Choose **Terminal bell** or **macOS system sound**. **Test sound** previews the chosen backend without saving preferences or changing event tracking. Terminal bell audibility depends on terminal settings. The macOS backend plays the fixed built-in Glass sound through `/usr/bin/afplay`; playback runs off the UI thread and stops on exit.
+
+The display rings once for each newly observed event in the current UTC ten-minute window. It starts with a silent baseline. Enabling sounds does not replay a known event, and quote refreshes, temporary disconnects, repeated below-open trades and chart changes do not ring it again. Two completed UP bars can be known while the live price is unavailable; a reversal sound requires a fresh validated below-open detection after the five-minute gate. If both events arrive together, one sound represents both. Applying preferences changes this session only; **Save view** explicitly persists them. Old preference files load with sounds off.
+
+The [cross-coin replication](../research/CROSSCOIN-REVERSAL-PATTERNS.md) checks the same definitions on HYPE, ETH, BTC and SOL. Its larger sample does not establish a general70% reversal probability. It does not alter ZEC signals or qualify those coins for live trading.
 
 ### Completed two-bar historical panel
 

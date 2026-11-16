@@ -1,0 +1,209 @@
+{
+  "schema": "crosscoin-reversal-bindings/v1",
+  "run_id": "run:81ab918bd3e5d5aa8ad4ef4f4a691f32a289c9ad27ffccfeb3deff540dc3e10d",
+  "qualification": "exploratory-empirical-not-qualified",
+  "datasets": [
+    {
+      "coin": "HYPE",
+      "venue": "kucoin",
+      "source": {
+        "file": "sources/kucoin-HYPE.json.zlib",
+        "artifact_id": "art:074708758537d027a1914994d681e413b1d6b2a590d862f7491b62ac8c5ebdf6",
+        "native_text_sha256": "f7ffee284331fa9f9e8ce51361f708c26a59be33f6c2b5288cff74199255f8ed",
+        "decoded_sha256": "2a1049d7747b2c33d07359f51c4221bce92ce43d75b2eef0bd063a6f5a86002a",
+        "repository_container_sha256": "ac43d3ad7a524e4e1ecfef49dc25f3ea89d7fc732d1aaa24ced2b50485777098",
+        "repository_encoding": "zlib of exact native artifact UTF-8 JSON"
+      },
+      "results": {
+        "file": "results-kucoin-HYPE.json.zlib",
+        "artifact_id": "art:b7e0f5e9c3cd36f6e638343129ff719c676edf493b6820bcc9f4d9c2e38a1f55",
+        "native_text_sha256": "d84d429fab7e2b5554387098b98a8df83fac57bf8d8a2c4303518f1daf0074ef",
+        "decoded_sha256": "8137a3d37fa89a345132a9f0a9d62c92659ca351158c47cf5e414d7cec5b0abc",
+        "repository_container_sha256": "d24794d13d09708e3243e63d4fbf7a3f39121928558c0a62d8b264b8846b59d1",
+        "repository_encoding": "zlib of exact native artifact UTF-8 JSON"
+      }
+    },
+    {
+      "coin": "ETH",
+      "venue": "kucoin",
+      "source": {
+        "file": "sources/kucoin-ETH.json.zlib",
+        "artifact_id": "art:1bf80aea5213f0b328f5e7d27a29e5b7179d7a0d74bf65c7a0fbef015704648d",
+        "native_text_sha256": "10112110bcf1072015bbe4f2295f0bd61c3eabbdfecd3ea9d7f5d7d135a6b240",
+        "decoded_sha256": "2e4c51ffa2ff221403bf85682016e85648224ad05914dcdea601d752adbc8808",
+        "repository_container_sha256": "74174525aaadd5e1677c397b5ebdb6d8fb0d069e8f389ab4b3d013f14cb5fc2e",
+        "repository_encoding": "zlib of exact native artifact UTF-8 JSON"
+      },
+      "results": {
+        "file": "results-kucoin-ETH.json.zlib",
+        "artifact_id": "art:8465ac615e4f16eb6d3994f1f363b5eb860c1ec1168da1e6d489b281786c5daf",
+        "native_text_sha256": "5c6bbafc4087c8cb9c8ff1c92ac988d04a9284bd455e0912b885d7c89dc44f0c",
+        "decoded_sha256": "bb0bc33687dae13eee682dd4dbfddb28832dd33168a65f0c9d6d25deef807bc3",
+        "repository_container_sha256": "29d512c524ee23ec8b84b4e259b1a0fbe43b5f99397d854e69e3698044f6c55c",
+        "repository_encoding": "zlib of exact native artifact UTF-8 JSON"
+      }
+    },
+    {
+      "coin": "BTC",
+      "venue": "kucoin",
+      "source": {
+        "file": "sources/kucoin-BTC.json.zlib",
+        "artifact_id": "art:77b1f7190e350648060a315e49265fe4c1a7065728fa24ef5741f6ebaf4ce32e",
+        "native_text_sha256": "5574a21b7d307e39fffa6bc6d3de4a7ddd08bdde417328f78baab7b5992575cc",
+        "decoded_sha256": "c6bbf87d72cb2c985717da9ca32a467dc757894ad8b83f61e263deb76801725e",
+        "repository_container_sha256": "a7dc097d80aafc85196100940d44aa2062280d96514e2721140f34ebb381c850",
+        "repository_encoding": "zlib of exact native artifact UTF-8 JSON"
+      },
+      "results": {
+        "file": "results-kucoin-BTC.json.zlib",
+        "artifact_id": "art:926ccc8b4b5fad2471151b2ec99a947826fa31ebf7e667a7282ae14265135f72",
+        "native_text_sha256": "f99903fd483208846f45db36fb993c9f6921d6620d3a93bbbfd4cae51c1b08c0",
+        "decoded_sha256": "453ee7bec1c3d5aa8b8a06ab27d7786102ad42bc452b7ec7d261ca47cb78a5fa",
+        "repository_container_sha256": "2d4a82d4da28f9956c3adec3b21b234d0b178f8d8e4df0858467e194d78d3574",
+        "repository_encoding": "zlib of exact native artifact UTF-8 JSON"
+      }
+    },
+    {
+      "coin": "SOL",
+      "venue": "kucoin",
+      "source": {
+        "file": "sources/kucoin-SOL.json.zlib",
+        "artifact_id": "art:375cd96b4f0fcda250e4a7cd605ef578621886f1f7db4cc96f6c621cd0312a93",
+        "native_text_sha256": "ed8f344336b2045b8d4ca5b4163e4735f3ea71b30559fbd246bdcda580994955",
+        "decoded_sha256": "41ee0d329eb37755952ca6f618120c516a832c6a4aa4e2e2ddc963b546476bde",
+        "repository_container_sha256": "999e22fe0f12a15c06eb55af93f201d125bb617093abebc0d077cf7ff5eaab99",
+        "repository_encoding": "zlib of exact native artifact UTF-8 JSON"
+      },
+      "results": {
+        "file": "results-kucoin-SOL.json.zlib",
+        "artifact_id": "art:2575ad426862e32eb83bf074c659d50e15c2dd141ff046c6ca7cb13b3d7efb13",
+        "native_text_sha256": "47cf4c21f9546c2349b6c00e4d19df6735b76c5531e3f134570a6b0221471cf2",
+        "decoded_sha256": "8bf66bdf7f3a8c62343f5150fb5ac465939ac04be0afd2236a314b0656ec606f",
+        "repository_container_sha256": "c2212201e692e29cab858724f719ad12b7e726dfc6920e26ef65f06b9658bd04",
+        "repository_encoding": "zlib of exact native artifact UTF-8 JSON"
+      }
+    },
+    {
+      "coin": "HYPE",
+      "venue": "coinbase",
+      "source": {
+        "file": "sources/coinbase-HYPE.json.zlib",
+        "artifact_id": "art:a2669f8e49f644e2a03974d1d315b6851a071123db03bf1c0aca89c675945a47",
+        "native_text_sha256": "e96ac6b420806290d7b37c3fbf8ecaeb12860f4dab6ffe594a015934227570cb",
+        "decoded_sha256": "96599d5e14c540aeb95f0355715102b835290a89e7f7ef1d9e1ccbb8bc79258c",
+        "repository_container_sha256": "a469bf3128787560866fdd4ca130ac4ca5b606425c3e78f5fd8c7b4663a398d8",
+        "repository_encoding": "zlib of exact native artifact UTF-8 JSON"
+      },
+      "results": {
+        "file": "results-coinbase-HYPE.json.zlib",
+        "artifact_id": "art:b1fafb10972123ed3ec9f1e334711304230a70b6f92dc38f2ccccb83a14a849c",
+        "native_text_sha256": "62ab4b4b5c9c6a69d17d4b1f201a54e51870d6dc00e51583332ed77e108e0e24",
+        "decoded_sha256": "8dc0631175df4c44b6833f465db99caa247b8c011b2af62a37719badae93d0a2",
+        "repository_container_sha256": "612d17d5eddad2d4023a554ae7fba88da54d84d355ad0f3a627e303271fc9c1d",
+        "repository_encoding": "zlib of exact native artifact UTF-8 JSON"
+      }
+    },
+    {
+      "coin": "ETH",
+      "venue": "coinbase",
+      "source": {
+        "file": "sources/coinbase-ETH.json.zlib",
+        "artifact_id": "art:84b9ff17213edd999a4086f968ff573b2698b98bf82b57ef83827396d206dc59",
+        "native_text_sha256": "3047ea5f01ba195bbe6f8906b59bbafaf62623efb520be9f1a977ae3599d4ccc",
+        "decoded_sha256": "ad3a4cfdca1d929784cf54cc6c7a7c0fefd0ec5ae5fa473cf9d27dcf3c38fdb7",
+        "repository_container_sha256": "eccc2163c51b689be32b7e5cbf2f20aef988ec93d6582cdd3ecb54432475c3ce",
+        "repository_encoding": "zlib of exact native artifact UTF-8 JSON"
+      },
+      "results": {
+        "file": "results-coinbase-ETH.json.zlib",
+        "artifact_id": "art:37d87122b89802ea9ae92a4bee9c85d327f8c862572b12818e8c0898d51cb89d",
+        "native_text_sha256": "3c24cbe160a9f2dc3e52ec722ce986d08dcb2c3e9aa7a2389beb5ce25127c127",
+        "decoded_sha256": "92ccee9915a43e8e08ce20d60bcabe9640c1154354d8d6279d08a01d0aac1a6e",
+        "repository_container_sha256": "29410a52529ffd292a840687ce02be880c3cae6465b286ed3b403317a3336a84",
+        "repository_encoding": "zlib of exact native artifact UTF-8 JSON"
+      }
+    },
+    {
+      "coin": "BTC",
+      "venue": "coinbase",
+      "source": {
+        "file": "sources/coinbase-BTC.json.zlib",
+        "artifact_id": "art:2e2beb1ab15e21851e7784410b93e22d53183f8ced9fc169495cd7eab4095ec5",
+        "native_text_sha256": "1087b319260038e4fd5ea2fad67cd1c5799696526f02f568eedd8ad6869d77f8",
+        "decoded_sha256": "b8ac96f085a76dfdedbf3332e137a78dbfeffb27c9c4001ce5323e370cc1af06",
+        "repository_container_sha256": "20394e46543e8642d4ec40309cc7a357308da74c31c76c0bb1e199f96a84a15a",
+        "repository_encoding": "zlib of exact native artifact UTF-8 JSON"
+      },
+      "results": {
+        "file": "results-coinbase-BTC.json.zlib",
+        "artifact_id": "art:d9f4b2d9ff82a6b3c92c46b355af23eda6a61491d7fdf96e3290f096f93bf741",
+        "native_text_sha256": "c493b2fa9362467c886a583359ae498fa800a15f5ab1d567f6b49dab13066a86",
+        "decoded_sha256": "7fe437d28ecbd3c653ac3207692e1cff7b44807647125912ecd6329eb13fc92d",
+        "repository_container_sha256": "91c87dfb45b85265ccba0402ca42d30c909899ad35547b1fcb23f5b5a005e228",
+        "repository_encoding": "zlib of exact native artifact UTF-8 JSON"
+      }
+    },
+    {
+      "coin": "SOL",
+      "venue": "coinbase",
+      "source": {
+        "file": "sources/coinbase-SOL.json.zlib",
+        "artifact_id": "art:8cd0ab3cf792ab48b61a6c9167fdd16fc13dd123956c7416fc1e30887a99bd3e",
+        "native_text_sha256": "ef18e72f2b13df113eba545e087eaef75190c5063647c1289e247c32b5060e98",
+        "decoded_sha256": "b17c88b93f50a0d82913b327b60c373fed52f0062cbf8d0714ef208aca5f379c",
+        "repository_container_sha256": "051395a16ca5519f8a798ebbeab87612a71fcb51522277e188c743cd05444fb6",
+        "repository_encoding": "zlib of exact native artifact UTF-8 JSON"
+      },
+      "results": {
+        "file": "results-coinbase-SOL.json.zlib",
+        "artifact_id": "art:fdbaaad1df90caea476112b4f8efceda6b27c22ff6ab371881f83913ec41c5ab",
+        "native_text_sha256": "a0863b200e6b826a1a5af856641d57fad8d6576a069b944be03cd3bc2edf8cab",
+        "decoded_sha256": "692962b2311e2c87a3ddde35b63395d69505e8d64d753f67658057f4327518b2",
+        "repository_container_sha256": "160bc8c22d1ea409280bc9164171b07b6bb4ec2b224861e2395ad0abc810f98e",
+        "repository_encoding": "zlib of exact native artifact UTF-8 JSON"
+      }
+    },
+    {
+      "coin": "ZEC",
+      "venue": "coinbase",
+      "source": {
+        "file": "sources/coinbase-ZEC.json.zlib",
+        "artifact_id": "art:5abe2f1aed0f2244e4fac66c163821f3b9e5abb2b189e712202cce5c9188c726",
+        "native_text_sha256": "c00a9883ce0cd45e3b87b613373556e8ee0880d8f8f81af113c91c151922c9a9",
+        "decoded_sha256": "ba870d6886b59aeef7af28d7e34f2f4dd8039ae663e07268456c7f3e717a936c",
+        "repository_container_sha256": "47844398dfe92b092209a5d6c74b40ecf1e9b6ec58c7bcc9edf9298dd840e416",
+        "repository_encoding": "zlib of exact native artifact UTF-8 JSON"
+      },
+      "results": {
+        "file": "results-coinbase-ZEC.json.zlib",
+        "artifact_id": "art:cb1ed9a7b6876e3340862650804e3a9edc373fa5daea2b9ec0ff04a3b88e4c94",
+        "native_text_sha256": "b59f21f72d2bdfd055b317b21692b1f4a0a2cd6b71f67d3ca97efc2ce2fa141d",
+        "decoded_sha256": "bdbea169f737ae479283e113ff9739aa329d77c34eccaa4ea52614ec29c9642b",
+        "repository_container_sha256": "521ef422cd74cf123a7205d581937f9eb51241f057a57d1472317db63d196847",
+        "repository_encoding": "zlib of exact native artifact UTF-8 JSON"
+      }
+    }
+  ],
+  "repository_container_note": "Binary containers preserve exact native text and decoded SHA256 while excluding base64 payloads from prose keyword indexing.",
+  "audit": {
+    "file": "audit.json",
+    "artifact_id": "art:b5717be8c5216d8a92ce13cc254d20bf72671fa0d6e05905f6f7e5141e02c137",
+    "native_text_sha256": "a3b6d32f5f5ba1836e67457ad4fee465bf62cb9fc48ee03b1ee3bdbf8ac90eca",
+    "qualification": "independent-source-numerical-causality-and-prose-audit; no prospective qualification"
+  },
+  "report": {
+    "file": "../CROSSCOIN-REVERSAL-PATTERNS.md",
+    "artifact_id": "art:cd37ecfbd2dc9e4f80828c68366727eaca68ec5b3e08764f1a8c14af98acaa7d",
+    "native_text_sha256": "9593d20e26afabf731d160569d12c3c26f7bf678810c6d7b3ce3a5b4340740d1"
+  },
+  "method": {
+    "artifact_id": "art:9032187fccde7be8a1ce724548da87302c2a130a08283beb6108099becbcefd5",
+    "native_text_sha256": "c5c18f7900a76a3a657b763bc303ce117faf85018bb8d8c00f1da8e6c16d00c6",
+    "numerical_rules": "unchanged from preregistered scope"
+  },
+  "runtime_acceptance": {
+    "artifact_id": "art:7bea6700d34605eb955fd4dfe09f5c2c4a610fcd567ab9a2ab3bcea6245c8aab",
+    "native_text_sha256": "fec01db865cc0caf53ac9213b3bd7915e8197bae3432930d41d67325a0384427",
+    "physical_audibility_checked": false
+  }
+}

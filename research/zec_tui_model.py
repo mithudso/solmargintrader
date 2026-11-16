@@ -19,6 +19,7 @@ from backtester.core.zec_ensemble import canonical_config
 from research import zec_live as live
 from research.shape_study import detect_shapes
 from research.zec_expanded import key as config_key
+from research.zec_tui_notifications import sound_settings
 
 CONFIG_KEYS = {
     "members",
@@ -138,6 +139,7 @@ class WorkingSet:
             96,
         )
         self.overrides = {}
+        self.sounds = sound_settings()
         self.selected = set()
         for interval in live.STEPS:
             choices = [
@@ -247,6 +249,7 @@ class WorkingSet:
                 "lookback": self.lookback,
                 "selected": sorted(self.selected),
                 "overrides": self.overrides,
+                "sounds": sound_settings(self.sounds),
             }
         )
         if len(body.encode()) > 1_048_576:
@@ -288,6 +291,9 @@ class WorkingSet:
         ):
             raise ValueError("Unknown saved strategy")
         candidate = WorkingSet(list(self.originals.values()))
+        if "sounds" in data and not isinstance(data["sounds"], dict):
+            raise ValueError("Invalid saved sound settings")
+        candidate.sounds = sound_settings(data.get("sounds"))
         for identity, config in data["overrides"].items():
             if identity not in self.originals:
                 raise ValueError("Unknown saved configuration")
@@ -299,6 +305,7 @@ class WorkingSet:
             data["lookback"],
         )
         self.selected, self.overrides = selected, candidate.overrides
+        self.sounds = candidate.sounds
 
 
 def market_details(rows, interval, end, lookback=96, configs=()):
