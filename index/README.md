@@ -48,7 +48,10 @@ subsumes the other, and both are checked in CI.
 
 `TEXT-INDEX.json.gz` stores the same compact JSON schema and complete posting list
 in gzip. `TEXT-INDEX.json.gz.sha256` binds the decoded bytes; search and the
-freshness check reject missing, corrupt or mismatched artifacts. The builder uses
+freshness check reject missing, corrupt or mismatched artifacts. The catalog also binds
+the decoded SHA-256, so a valid older index and its matching sidecar cannot pass
+against a newer catalog. Current readers require the compressed format; old
+checkouts continue to use their own legacy reader. The builder uses
 an empty gzip filename and timestamp zero. Compressed bytes can vary with the
 compression runtime; the decoded-content SHA-256 is the portable identity.
 Rebuild both files with `python3 index/build.py all` after source changes.

@@ -59,10 +59,15 @@ class CompressedIndexTests(unittest.TestCase):
                                            "generatedAt": "test"}))
             artifact = root / "TEXT-INDEX.json.gz"
             text_index.write(artifact, {"postings": {"key": {"a": 1}}})
+            meta = json.loads(catalog.read_text())
+            meta["textSha256"] = artifact.with_suffix('.gz.sha256').read_text().strip()
+            catalog.write_text(json.dumps(meta))
             with mock.patch.object(build, "REPO", root), mock.patch.object(build, "INDEX_JSON", catalog), \
                  mock.patch.object(build, "TEXT_JSON", artifact), \
                  mock.patch.object(build, "tracked_files", return_value=["source.txt"]):
                 self.assertEqual(build.check(), 0)
+                text_index.write(artifact, {"postings": {"old": {"a": 1}}})
+                self.assertEqual(build.check(), 1, "a valid old artifact must not match current metadata")
                 artifact.write_bytes(b"corrupt")
                 self.assertEqual(build.check(), 1)
 

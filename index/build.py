@@ -839,7 +839,10 @@ def check() -> int:
         print("  Rebuild: python3 index/build.py all")
         return 1
     try:
-        text_index.read(TEXT_JSON)
+        digest = old.get("textSha256")
+        if not isinstance(digest, str) or len(digest) != 64:
+            raise ValueError("catalog lacks text index binding")
+        text_index.read(TEXT_JSON, expected_sha256=digest)
     except ValueError as exc:
         print(f"INDEX CHECK FAILED: {exc}")
         return 1
@@ -891,7 +894,7 @@ def main(argv: list[str] | None = None) -> int:
     if args.command == "semantic":
         return build_semantic(meta, local=args.local, pull=args.pull)
 
-    if args.command in {"all", "meta"}:
+    if args.command == "meta":
         INDEX_JSON.write_text(json.dumps(meta, indent=2) + "\n")
         c = meta["counts"]
         print(f"{INDEX_JSON.relative_to(REPO)}: {c['files']} files, "
@@ -900,7 +903,8 @@ def main(argv: list[str] | None = None) -> int:
     if args.command in {"all", "text", "concepts"}:
         text = build_text(meta)
         if args.command in {"all", "text"}:
-            text_index.write(TEXT_JSON, text)
+            meta["textSha256"] = text_index.write(TEXT_JSON, text)
+            INDEX_JSON.write_text(json.dumps(meta, indent=2) + "\n")
             s = text["stats"]
             print(f"{TEXT_JSON.relative_to(REPO)}: {s['terms']} terms "
                   f"(pruned from {s['termsBeforePrune']}), "

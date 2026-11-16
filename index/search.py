@@ -71,7 +71,11 @@ RRF_K = 60  # Reciprocal-rank-fusion constant; 60 is the value from the original
 
 def load(path: Path, what: str) -> dict:
     if path == TEXT_JSON:
-        return text_index.read(path)
+        catalog = load(INDEX_JSON, "the file catalog")
+        digest = catalog.get("textSha256")
+        if not isinstance(digest, str) or len(digest) != 64:
+            raise ValueError("file catalog lacks text index binding; rebuild the index")
+        return text_index.read(path, expected_sha256=digest)
     if not path.exists():
         sys.exit(f"{path.relative_to(REPO)} is missing. Build it: python3 index/build.py all\n"
                  f"  ({what})")
@@ -283,6 +287,7 @@ def _cached_json(path: Path, what: str) -> dict:
     paths = [path]
     if path == TEXT_JSON:
         paths.append(path.with_suffix(path.suffix + ".sha256"))
+        paths.append(INDEX_JSON)
     key = f"json:{path}:" + ":".join(str(p.stat().st_mtime_ns if p.exists() else 0) for p in paths)
     hit = _CACHE.get(key)
     if hit is None:
