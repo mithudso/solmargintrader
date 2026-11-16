@@ -7,6 +7,7 @@ so closing this screen never stops a trial or starts a second collector.
 from __future__ import annotations
 
 import math
+import re
 import time
 from pathlib import Path
 from typing import ClassVar
@@ -42,6 +43,127 @@ def _summary(value) -> str:
         if isinstance(item, (str, int, float, bool)) or item is None:
             cells.append(f"{key.replace('_', ' ')}: {_text(item, limit=70)}")
     return " · ".join(cells) or "No settled paper predictions yet"
+
+
+def emphasized(value):
+    """Color literal text; provider strings never become Rich markup or commands."""
+    text = Text(value)
+    for pattern, style in (
+        (r"https?://[^\s<>]+", "underline bright_cyan"),
+        (r"\b(?:LIVE|PRIMARY|ARMED)\b", "bold bright_green"),
+        (r"\b(?:STALE|DISARMED|waiting|degraded)\b", "bold yellow"),
+        (r"\b(?:MISMATCH|mismatch|unavailable|failed|error)\b", "bold bright_red"),
+    ):
+        for match in re.finditer(pattern, value):
+            text.stylize(style, *match.span())
+    return text
+
+
+def comparison_text(data, asset, venue, now):
+    state = data.get("price_comparison", {})
+    state = state if isinstance(state, dict) else {}
+    feeds = state.get("feeds", {})
+    feeds = feeds if isinstance(feeds, dict) else {}
+    errors = state.get("errors", {})
+    errors = errors if isinstance(errors, dict) else {}
+    connected = state.get("connected", {})
+    connected = connected if isinstance(connected, dict) else {}
+    stamp = state.get("at")
+    heartbeat_fresh = (
+        type(stamp) in (int, float) and math.isfinite(stamp) and 0 <= now - stamp <= 2
+    )
+    primary = "jupiter" if venue == "jupiter-sdk-1000x" else "coinbase"
+    lines = [
+        f"{asset}/USD · both live streams · primary display: {'Jupiter oracle' if primary == 'jupiter' else 'Coinbase book midpoint'}"
+    ]
+    valid = {}
+    exchange_times = {}
+    for source, title, maximum in (
+        ("jupiter", "Jupiter oracle", 1),
+        ("coinbase", "Coinbase synced book midpoint", 3),
+    ):
+        rows = feeds.get(source, {})
+        row = rows.get(asset, {}) if isinstance(rows, dict) else {}
+        row = row if isinstance(row, dict) else {}
+        price = row.get("price")
+        numeric = (
+            row.get("asset") == asset
+            and type(price) in (int, float)
+            and math.isfinite(price)
+            and price > 0
+        )
+        ages = []
+        for key in ("exchange_at", "received_at"):
+            stamp = row.get(key)
+            ages.append(
+                now - stamp
+                if type(stamp) in (int, float) and math.isfinite(stamp)
+                else None
+            )
+        fresh = (
+            numeric
+            and heartbeat_fresh
+            and connected.get(source) is True
+            and row.get("fresh", True) is True
+            and state.get("status") != "stopped"
+            and all(age is not None and 0 <= age <= maximum for age in ages)
+        )
+        valid[source] = price if fresh else None
+        exchange_times[source] = row.get("exchange_at") if fresh else None
+        display = (
+            f"{price:,.8f}".rstrip("0").rstrip(".") + " USD"
+            if numeric
+            else "unavailable"
+        )
+        timing = "/".join(
+            f"{age:.2f}s" if age is not None and age >= 0 else "unavailable/future"
+            for age in ages
+        )
+        lines.append(
+            f"{title}{' · PRIMARY' if source == primary else ''}: {display} · {'LIVE' if fresh else 'STALE/unavailable'}"
+        )
+        lines.append(
+            f"Exchange/received age {timing} · limit {maximum}s · error: {_text(errors.get(source))}"
+        )
+    comparable = all(valid[source] is not None for source in ("jupiter", "coinbase"))
+    skew = (
+        abs(exchange_times["jupiter"] - exchange_times["coinbase"])
+        if comparable
+        else None
+    )
+    pairs = state.get("pairs", {})
+    pair = pairs.get(asset) if isinstance(pairs, dict) else None
+    if isinstance(pair, dict):
+        backend_skew = pair.get("timestamp_skew_seconds")
+        comparable = (
+            comparable
+            and pair.get("comparable") is True
+            and type(backend_skew) in (int, float)
+            and math.isfinite(backend_skew)
+            and 0 <= backend_skew <= 1
+        )
+    comparable = comparable and skew is not None and skew <= 1
+    if comparable:
+        difference = valid["jupiter"] - valid["coinbase"]
+        basis = difference / valid["coinbase"] * 10000
+        if isinstance(pair, dict):
+            backend_difference, backend_basis = (
+                pair.get("difference_usd"),
+                pair.get("basis_bps"),
+            )
+            if all(
+                type(value) in (int, float) and math.isfinite(value)
+                for value in (backend_difference, backend_basis)
+            ):
+                difference, basis = backend_difference, backend_basis
+        lines.append(
+            f"Basis Jupiter − Coinbase: {difference:+.8f} USD ({basis:+.3f} bps) · skew {skew:.2f}s"
+        )
+    else:
+        lines.append(
+            "Basis unavailable: fresh sources/heartbeat and ≤1s timestamp skew required; no source fallback."
+        )
+    return emphasized("\n".join(lines))
 
 
 def wallet_text(data):
@@ -146,10 +268,14 @@ class LeveragePanel(ModalScreen[None]):
     ]
     DEFAULT_CSS = """
     LeveragePanel { align: center middle; background: #06101be8; }
+    LeveragePanel Button { text-style: bold; }
+    LeveragePanel Link { text-style: underline; color: #4ce5ff; }
+    LeveragePanel DataTable > .datatable--header { background: #18475c; color: #8df5ff; text-style: bold; }
+    LeveragePanel DataTable > .datatable--cursor { background: #186878; color: #ffffff; text-style: bold; }
     #leverage-dialog { width: 98%; height: 96%; background: #152338; border: thick #418aab; padding: 0 1; }
-    #leverage-title { height: 2; text-style: bold; }
+    #leverage-title { height: 2; text-style: bold; color: #58e9f0; }
     #leverage-status { height: 3; color: #a8c1dd; }
-    #leverage-wallet { height: auto; min-height: 2; color: #d5f0ff; text-style: bold; border-left: tall #418aab; padding: 0 1; }
+    #leverage-wallet { height: auto; min-height: 2; color: #74f6e0; background: #123440; text-style: bold; border-left: tall #27d9c2; padding: 0 1; }
     .leverage-controls { height: 3; }
     .leverage-controls Label { width: auto; content-align: left middle; margin-right: 1; }
     #leverage-asset { width: 12; }
@@ -158,12 +284,13 @@ class LeveragePanel(ModalScreen[None]):
     #leverage-side { width: 15; }
     #leverage-collateral { width: 13; }
     #leverage-contents { height: 1fr; }
+    #leverage-price-comparison { height: auto; min-height: 7; color: #d9fbff; border: round #28b8b8; padding: 0 1; }
     #leverage-capabilities, #leverage-performance, #leverage-result { height: auto; min-height: 3; }
     #leverage-live-market { height: auto; min-height: 4; color: #c3d8ed; }
     #leverage-strategies { height: 8; min-height: 5; }
     #leverage-positions { height: 7; min-height: 4; }
     #leverage-events { height: auto; min-height: 3; }
-    .leverage-section { height: 1; text-style: bold; color: #a8c1dd; }
+    .leverage-section { height: 1; text-style: bold; color: #50dfe8; }
     #leverage-result { color: #ffdda6; border: round #2c637d; padding: 0 1; }
     #leverage-preview, #leverage-submit, #leverage-close-position { min-width: 12; }
     #leverage-return { min-width: 14; }
@@ -255,6 +382,11 @@ class LeveragePanel(ModalScreen[None]):
                 yield Button("Return [Esc]", id="leverage-return")
             with VerticalScroll(id="leverage-contents"):
                 yield Static(
+                    "Both price streams: waiting for source observations…",
+                    id="leverage-price-comparison",
+                    markup=False,
+                )
+                yield Static(
                     "Venue capabilities pending",
                     id="leverage-capabilities",
                     markup=False,
@@ -328,11 +460,11 @@ class LeveragePanel(ModalScreen[None]):
             return
         if not self._read_worker.busy:
             self._read_worker.submit(None)
-            self._next_read = time.monotonic() + 2
+            self._next_read = time.monotonic() + 0.5
 
     def _set_result(self, message):
         if not self._stopping and self.is_mounted:
-            self.query_one("#leverage-result", Static).update(Text(message))
+            self.query_one("#leverage-result", Static).update(emphasized(message))
 
     def _controls(self):
         busy = self._operation is not None
@@ -426,11 +558,19 @@ class LeveragePanel(ModalScreen[None]):
             self.snapshot_data is not None
             and time.monotonic() >= self._next_market_paint
         ):
-            self._next_market_paint = time.monotonic() + 1
+            self._next_market_paint = time.monotonic() + 0.2
             self.paint_live_market()
 
     def paint_live_market(self):
         asset = self.query_one("#leverage-asset", Select).value
+        self.query_one("#leverage-price-comparison", Static).update(
+            comparison_text(
+                self.snapshot_data or {},
+                asset,
+                self.query_one("#leverage-venue", Select).value,
+                self.clock(),
+            )
+        )
         self.query_one("#leverage-live-market", Static).update(
             Text(live_market_text(self.snapshot_data or {}, asset, self.clock()))
         )
@@ -454,7 +594,7 @@ class LeveragePanel(ModalScreen[None]):
                 f"Paper forward: {_text(data.get('status'))} · {freshness}\nPaper results are simulated; venue execution status is separate. Closing this panel leaves the forward service running."
             )
         )
-        self.query_one("#leverage-wallet", Static).update(Text(wallet_text(data)))
+        self.query_one("#leverage-wallet", Static).update(emphasized(wallet_text(data)))
         asset = self.query_one("#leverage-asset", Select).value
         interval = self.query_one("#leverage-interval", Select).value
         capabilities = []

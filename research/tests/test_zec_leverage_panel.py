@@ -7,11 +7,12 @@ import copy
 import threading
 import time
 import unittest
+from xml.etree import ElementTree
 
 from textual.app import App, ComposeResult
 from textual.widgets import Button, DataTable, Input, Select, Static
 
-from research.zec_leverage_panel import LeveragePanel
+from research.zec_leverage_panel import LeveragePanel, comparison_text, emphasized
 
 
 class ConsoleFixture:
@@ -144,6 +145,128 @@ def static_text(panel, identity):
 
 
 class Interface(unittest.IsolatedAsyncioTestCase):
+    async def test_both_real_quote_sources_basis_primary_and_staleness_render_at_narrow_size(
+        self,
+    ):
+        console = ConsoleFixture()
+        console.data["price_comparison"] = {
+            "at": 1000.9,
+            "status": "streaming",
+            "connected": {"jupiter": True, "coinbase": True},
+            "errors": {"jupiter": None, "coinbase": None},
+            "feeds": {
+                "jupiter": {
+                    "ZEC": {
+                        "asset": "ZEC",
+                        "price": 101.0,
+                        "exchange_at": 1000.7,
+                        "received_at": 1000.8,
+                    }
+                },
+                "coinbase": {
+                    "ZEC": {
+                        "asset": "ZEC",
+                        "price": 100.0,
+                        "exchange_at": 1000.6,
+                        "received_at": 1000.9,
+                    }
+                },
+            },
+        }
+        now = [1001.0]
+        panel = LeveragePanel(console=console, clock=lambda: now[0])
+        app = PanelHost(panel)
+        async with app.run_test(size=(90, 42)) as pilot:
+            await self.wait_for(pilot, lambda: panel.snapshot_data is not None)
+            panel.query_one("#leverage-venue", Select).value = "jupiter-sdk-1000x"
+            await pilot.pause(0.05)
+            rendered = static_text(panel, "#leverage-price-comparison")
+            self.assertIn("primary display: Jupiter oracle", rendered)
+            self.assertIn("Jupiter oracle · PRIMARY: 101 USD · LIVE", rendered)
+            self.assertIn("Coinbase synced book midpoint: 100 USD · LIVE", rendered)
+            self.assertIn("+100.000 bps", rendered)
+            svg = app.export_screenshot()
+            self.assertIn("Jupiter", svg)
+            self.assertIn("Coinbase", svg)
+            for button in panel.query(Button):
+                self.assertTrue(button.styles.text_style.bold)
+                self.assertLessEqual(button.region.bottom, 42)
+            now[0] = 1001.8
+            await self.wait_for(
+                pilot,
+                lambda: (
+                    "+100.000 bps"
+                    not in static_text(panel, "#leverage-price-comparison")
+                ),
+            )
+            rendered = static_text(panel, "#leverage-price-comparison")
+            self.assertIn("Jupiter oracle · PRIMARY: 101 USD · STALE", rendered)
+            self.assertIn("Coinbase synced book midpoint: 100 USD · LIVE", rendered)
+            self.assertIn("no source fallback", rendered)
+            self.assertEqual(console.executes + console.closes, 0)
+
+    def test_links_are_underlined_and_untrusted_markup_stays_literal(self):
+        value = "https://jup.ag/perps/1000x [red]literal[/red] STALE LIVE"
+        rendered = emphasized(value)
+        self.assertEqual(rendered.plain, value)
+        self.assertTrue(any("underline" in str(span.style) for span in rendered.spans))
+        self.assertTrue(
+            any("bright_green" in str(span.style) for span in rendered.spans)
+        )
+
+    def test_basis_requires_heartbeat_readtime_fresh_and_synchronized_exchange_times(
+        self,
+    ):
+        base = {
+            "price_comparison": {
+                "at": 1000.0,
+                "status": "streaming",
+                "connected": {"jupiter": True, "coinbase": True},
+                "feeds": {
+                    "jupiter": {
+                        "BTC": {
+                            "asset": "BTC",
+                            "price": 101.0,
+                            "exchange_at": 999.8,
+                            "received_at": 999.9,
+                            "fresh": True,
+                        }
+                    },
+                    "coinbase": {
+                        "BTC": {
+                            "asset": "BTC",
+                            "price": 100.0,
+                            "exchange_at": 999.5,
+                            "received_at": 999.9,
+                            "fresh": True,
+                        }
+                    },
+                },
+            }
+        }
+        self.assertIn(
+            "+100.000 bps",
+            comparison_text(base, "BTC", "jupiter-sdk-1000x", 1000.0).plain,
+        )
+        for condition in ("heartbeat", "fresh", "skew", "backend"):
+            data = copy.deepcopy(base)
+            state = data["price_comparison"]
+            if condition == "heartbeat":
+                state["at"] = 997.9
+            elif condition == "fresh":
+                state["feeds"]["jupiter"]["BTC"]["fresh"] = False
+            elif condition == "skew":
+                state["feeds"]["coinbase"]["BTC"]["exchange_at"] = 998.0
+            else:
+                state["pairs"] = {
+                    "BTC": {"comparable": False, "timestamp_skew_seconds": 0.3}
+                }
+            with self.subTest(condition=condition):
+                text = comparison_text(data, "BTC", "jupiter-sdk-1000x", 1000.0).plain
+                self.assertIn("Basis unavailable", text)
+                self.assertNotIn("+100.000 bps", text)
+                self.assertIn("Jupiter oracle · PRIMARY", text)
+
     async def test_full_public_wallet_and_configured_mismatch_appear_in_actual_render(
         self,
     ):
@@ -655,6 +778,107 @@ class Interface(unittest.IsolatedAsyncioTestCase):
         self.assertFalse(second._read_worker.alive)
         self.assertFalse(second._action_worker.alive)
         self.assertFalse(app.data_worker.alive)
+
+    async def test_actual_app_screen_stack_preserves_full_venue_labels_and_quote_view(
+        self,
+    ):
+        from research.tests.test_zec_tui import Client
+        from research.tests.test_zec_tui_model import original
+        from research.zec_tui import OracleWinnersApp
+        from research.zec_tui_model import WorkingSet
+        from research.zec_tui_source import DataSession
+
+        public = "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v"
+        for size in ((168, 58), (90, 42)):
+            with self.subTest(size=size):
+                console = ConsoleFixture()
+                console.data["wallet"] = {
+                    "address": public,
+                    "name": "owner",
+                    "armed": False,
+                    "status": "ready",
+                }
+                console.data["price_comparison"] = {
+                    "at": 100005.0,
+                    "status": "streaming",
+                    "connected": {"jupiter": True, "coinbase": True},
+                    "errors": {"jupiter": None, "coinbase": None},
+                    "feeds": {
+                        "jupiter": {
+                            "ZEC": {
+                                "asset": "ZEC",
+                                "price": 101.0,
+                                "exchange_at": 100004.9,
+                                "received_at": 100004.9,
+                                "fresh": True,
+                            }
+                        },
+                        "coinbase": {
+                            "ZEC": {
+                                "asset": "ZEC",
+                                "price": 100.0,
+                                "exchange_at": 100004.8,
+                                "received_at": 100004.9,
+                                "fresh": True,
+                            }
+                        },
+                    },
+                }
+                app = OracleWinnersApp(
+                    WorkingSet([original()]),
+                    data_loader=DataSession(Client(), clock=lambda: 100005.0),
+                    quote_loader=lambda request, cancelled: {
+                        "quote": None,
+                        "error": "fixture",
+                    },
+                    leverage_console=console,
+                    show_leverage=True,
+                    clock=lambda: 100005.0,
+                )
+                async with app.run_test(size=size) as pilot:
+                    await self.wait_for(
+                        pilot,
+                        lambda app=app: (
+                            app._leverage_panel is not None
+                            and app._leverage_panel.snapshot_data is not None
+                        ),
+                    )
+                    panel = app._leverage_panel
+                    for venue, label in (
+                        ("jupiter-cli-10x", "Jupiter CLI · 10×"),
+                        ("jupiter-sdk-1000x", "Jupiter SDK · 1000×"),
+                    ):
+                        panel.query_one("#leverage-venue", Select).value = venue
+                        await pilot.pause(0.05)
+                        control = panel.query_one("#leverage-venue", Select)
+                        current = control.query_one("#label", Static)
+                        self.assertEqual(str(current.render()), label)
+                        self.assertGreaterEqual(current.region.width, len(label))
+                        self.assertEqual(current.content_size.height, 1)
+                        self.assertEqual(current.region.height, 1)
+                        self.assertGreaterEqual(control.region.width, 31)
+                    svg = app.export_screenshot()
+                    rendered_text = "".join(
+                        ElementTree.fromstring(svg).itertext()
+                    ).replace("\u00a0", " ")
+                    self.assertIn(public, rendered_text)
+                    self.assertIn("Jupiter SDK", rendered_text)
+                    self.assertIn("1000×", rendered_text)
+                    self.assertIn("Jupiter oracle", rendered_text)
+                    self.assertIn("Coinbase", rendered_text)
+                    for button in panel.query(Button):
+                        self.assertTrue(button.styles.text_style.bold)
+                        self.assertLessEqual(button.region.right, size[0])
+                        self.assertLessEqual(button.region.bottom, size[1])
+                    wallet = panel.query_one("#leverage-wallet", Static)
+                    comparison = panel.query_one("#leverage-price-comparison", Static)
+                    self.assertGreater(wallet.region.height, 0)
+                    self.assertGreater(comparison.region.height, 0)
+                    self.assertLess(
+                        comparison.region.y,
+                        panel.query_one("#leverage-contents").region.bottom,
+                    )
+                self.assertFalse(app.data_worker.alive)
 
 
 if __name__ == "__main__":

@@ -173,6 +173,7 @@ class Console:
             "updated_at": heartbeat.get("at"),
             "armed": cfg.get("armed", False),
             "wallet": wallet,
+            "price_comparison": self.price_comparison(),
             "assets": capabilities,
             "strategies": [
                 {**r, "shape": r.get("shape_group", "all")}
@@ -246,6 +247,79 @@ class Console:
                 "Active CLI and configured wallet differ; submission is blocked"
             )
         return wallet
+
+    def price_comparison(self):
+        """Recheck stream freshness at read time and compare synchronous USD prices."""
+        data = self.store.meta("dual_quotes", {})
+        if not isinstance(data, dict):
+            data = {}
+        now = self.clock()
+        at = data.get("at")
+        heartbeat_fresh = (
+            type(at) in (int, float)
+            and math.isfinite(at)
+            and 0 <= now - at <= 2
+            and data.get("status") != "stopped"
+        )
+        feeds = {}
+        for source, limit in (("jupiter", 1), ("coinbase", 3)):
+            feeds[source] = {}
+            original = data.get("feeds", {}).get(source, {})
+            for asset in ("BTC", "ZEC"):
+                quote = original.get(asset, {}) if isinstance(original, dict) else {}
+                if not isinstance(quote, dict):
+                    quote = {}
+                valid = all(
+                    type(quote.get(k)) in (int, float)
+                    and math.isfinite(quote[k])
+                    and quote[k] > 0
+                    for k in ("price", "exchange_at", "received_at")
+                )
+                fresh = (
+                    valid
+                    and heartbeat_fresh
+                    and data.get("connected", {}).get(source) is True
+                    and all(
+                        0 <= now - quote[k] <= limit
+                        for k in ("exchange_at", "received_at")
+                    )
+                )
+                feeds[source][asset] = {**quote, "fresh": fresh}
+        pairs = {}
+        for asset in ("BTC", "ZEC"):
+            jupiter, coinbase = feeds["jupiter"][asset], feeds["coinbase"][asset]
+            skew = (
+                abs(jupiter["exchange_at"] - coinbase["exchange_at"])
+                if jupiter.get("fresh") and coinbase.get("fresh")
+                else None
+            )
+            comparable = skew is not None and skew <= 1
+            pairs[asset] = {
+                "comparable": comparable,
+                "timestamp_skew_seconds": skew,
+                "basis_bps": (jupiter["price"] / coinbase["price"] - 1) * 10000
+                if comparable
+                else None,
+                "difference_usd": jupiter["price"] - coinbase["price"]
+                if comparable
+                else None,
+                "primary_1000x_source": "jupiter",
+                "primary_1000x_price": jupiter.get("price")
+                if jupiter.get("fresh")
+                else None,
+            }
+        return {
+            **data,
+            "feeds": feeds,
+            "pairs": pairs,
+            "checked_at": now,
+            "status": data.get("status", "not-started")
+            if heartbeat_fresh
+            else "stale"
+            if data
+            else "not-started",
+            "message": "Jupiter oracle is the1000x display source; Coinbase synced-book midpoint is a comparison. Positive basis means Jupiter is higher. No feed substitution.",
+        }
 
     def _signature_statuses(self, signatures, cfg):
         url = cfg.get("rpc_url", "https://api.mainnet-beta.solana.com")

@@ -1,6 +1,7 @@
 # Work continuation
 
-Version: 573
+Version: 574
+Delta: v573 to v574; record delivered first scope and second-turn study, dual-feed monitor, and pending MTF work.
 Delta: v572 to v573; show full transaction wallet and verify its actual collateral balances.
 Delta: v571 to v572; correct the implicit compute-budget fee ceiling found by independent review; qualify15 SDK/service cases.
 Delta: v570 to v571; qualify native empirical audit, SDK keeper contract and guarded manual controls; paper collector active, delivery acceptance pending.
@@ -2644,3 +2645,10 @@ Execution: official Jupiter CLI supports BTC/SOL/ETH JLP perps, configurable lev
 Root owns study/backend/dependencies/workflow/Git. textual-job-lifecycle-specialist owns research/zec_tui.py, research/zec_leverage_panel.py and focused UI tests. live-acceptance-verifier investigates installed CLI/keeper availability and later verifies canonical runtime and persistent monitored TUI. Both work in the same owned worktree and must preserve each other's edits.
 
 Current stage: freeze input contract and Mongo run. Source implementation and backtest computation have not started. Postman CLI1.87.0 has initialized resources but no signed-in account; resource search/context graph are unavailable. Free Orbit discovery returned HTTP403; use current official Jupiter docs and public source instead. No wallet operations, orders or new services have run.
+
+
+## Second-turn study and dual-feed monitor — 2026-11-16
+
+PR 285 merged to master at 56e4a7e97fc27de7b7525891ae6af6ebb69e4f5a. The independent second-turn study covers 24,480 events and uses Oracle outcomes, with Binance signal diagnostics separately labelled. Its native bindings and compressed outputs are in research/second-turn-20261116/manifest.json. The independent numerical audit passed at maximum difference 2.31e-12. Results are retrospective and do not prove funded fills. The original paper selection and collector remain unchanged.
+
+The leveraged panel displays separately timestamped Jupiter Oracle and Coinbase midpoint streams, with explicit primary source, freshness and basis. Live terminal color requires removing inherited NO_COLOR for the monitor only. The paper collector remains active; all trading paths are disarmed. Delivery of this scope and canonical runtime acceptance are pending at this checkpoint. The separate MTF observer remains in progress and must not be included in this scope.

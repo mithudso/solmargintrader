@@ -1,6 +1,7 @@
 # Prompt history
 
-Version: 258
+Version: 259
+Delta: v258 to v259; record dual-price streams, visual accessibility, MTF study, and model-use requests.
 Delta: v257 to v258; record second reversal heuristics and any-time1000x liquidation requirement.
 Delta: v256 to v257; record full transaction wallet display and documentation reply.
 Delta: v255 to v256; record ZEC/BTC reversal-shape study, leveraged adapters and persistent paper forward test.
@@ -2360,3 +2361,22 @@ Also check these coins for the same pattern in Hype coin, ETH, BTC, and SOL
 On both ZEC and BTW, do a similar backtest looking at 5/10/15/20 min bars for the 2 bar reversal pattern. And then cross reference the 2bar reversal patterns with the graph shape during that time, For example if the graph shape is rising, then maybe the 3rd bar isn't as often a down. And then create and implement the standard 10x leverage through the CLI and integrate it into the /Users/mitch/.venvs/soltui/bin/python /Users/mitch/dev/solmargintrader/scripts/oracle_winners.py script. And then write and implement through the SDK the 1000x trading. I understand the risks, I know about the queue, betting against the house, and not being able to close within 15s. Please do it anyway and integrate it intyo the same tui. And then, start a forward test using the TUI and the best predictive strategy you can develop and let it keep running in the TUI so I can monitor how well it does against live data.
 
 Asset clarification: Yes, BTC (Bitcoin).
+
+
+## Dual streams, color, MTF study and routine model use — 2026-11-16
+
+```text
+When you’re doing the 1000x trade, can you stream the prices from Jupiter instead of coinbase? Can you make it always stream from both? to compare prices etc?
+```
+
+```text
+Colorize the TUI so it’s easier to visually scan. Bolding any text on buttons, underlining any links, making the most important features slightly larger, and using a more vibrant color for the important words.
+```
+
+```text
+Using the data in /Users/mitch/dev/solmargintrader/research/REVERSAL-SHAPES.md, make the system aware of 5, 10, 15, and 20 min graph shapes, and apply the logic based on the scores, so for example, it’s in a 20 min bowl or downward trend and you get an up-up, the next is almost certainly a down, but if it’s in a 15 min cap or 5 min cap then it’s almost certainluy NOT going to be a down. Rerun the tets with this strategy.
+```
+
+```text
+You only have 3%left of my weekly budget of tokens, when you’re running routine commands, checks, verification, anything that doesn’t require a lot of complex reasoning, context, or memory - call that using the Terra model using an appropriate reasoning level. Also use this model to do any front running work you need like pulling basic data and research, finding files or configs, updating indexes, or running any required audit tasks.
+```

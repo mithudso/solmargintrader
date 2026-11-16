@@ -19,6 +19,8 @@ on validation data before examining the final split. Both lost under the
 historical16bps roundtrip scenario; they are exploratory forward candidates.
 The complete study is in `research/REVERSAL-SHAPES.md`.
 
+The panel compares independently timestamped Jupiter Oracle and Coinbase book streams. It labels the 1000× primary price, reports each source’s freshness and errors, and shows the basis only when both observations are usable. These display quotes do not change the frozen Coinbase paper collector or its selection. The [second-turn study](../research/REVERSAL-SECOND-TURN.md) is retrospective and does not qualify a funded strategy.
+
 ## Persistent paper collector
 
 The root-owned tmux session is `oracle-forward-2289`. Its collector window runs:

@@ -301,6 +301,54 @@ class ConsoleTests(unittest.TestCase):
         self.assertEqual(wallet["status"], "unavailable")
         self.assertIsNone(wallet["address"])
 
+    def test_dual_prices_compare_only_fresh_aligned_quotes_and_never_substitute_coinbase(
+        self,
+    ):
+        def quote(price, age=0):
+            return {
+                "price": price,
+                "exchange_at": self.now - age,
+                "received_at": self.now - age,
+            }
+
+        data = {
+            "at": self.now,
+            "status": "streaming",
+            "connected": {"jupiter": True, "coinbase": True},
+            "feeds": {
+                "jupiter": {"BTC": quote(100.1)},
+                "coinbase": {"BTC": quote(100)},
+            },
+        }
+        self.console.store.put_meta("dual_quotes", data)
+        pair = self.console.price_comparison()["pairs"]["BTC"]
+        self.assertAlmostEqual(pair["basis_bps"], 10)
+        self.assertEqual(pair["primary_1000x_price"], 100.1)
+        data["feeds"]["jupiter"]["BTC"] = quote(100.1, 2)
+        self.console.store.put_meta("dual_quotes", data)
+        pair = self.console.price_comparison()["pairs"]["BTC"]
+        self.assertIsNone(pair["basis_bps"])
+        self.assertIsNone(pair["primary_1000x_price"])
+        data["feeds"]["jupiter"]["BTC"] = quote(100.1)
+        data["feeds"]["coinbase"]["BTC"] = quote(100, 1.5)
+        self.console.store.put_meta("dual_quotes", data)
+        self.assertIsNone(self.console.price_comparison()["pairs"]["BTC"]["basis_bps"])
+
+    def test_dead_dual_collector_cannot_leave_fresh_quotes_in_snapshot(self):
+        quote = {"price": 100, "exchange_at": self.now, "received_at": self.now}
+        self.console.store.put_meta(
+            "dual_quotes",
+            {
+                "at": self.now - 3,
+                "status": "streaming",
+                "connected": {"jupiter": True, "coinbase": True},
+                "feeds": {"jupiter": {"BTC": quote}, "coinbase": {"BTC": quote}},
+            },
+        )
+        comparison = self.console.price_comparison()
+        self.assertEqual(comparison["status"], "stale")
+        self.assertFalse(comparison["pairs"]["BTC"]["comparable"])
+
     def test_zero_signature_and_unsafe_config_are_rejected(self):
         self.assertFalse(valid_signature("1" * 64))
         self.arm()

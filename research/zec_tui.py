@@ -334,19 +334,24 @@ class OracleWinnersApp(App):
     ]
     CSS = """
     Screen { background: #0c1420; color: #dce7f3; }
-    Header { background: #17283d; }
+    Header { background: #123448; color: #67eef1; text-style: bold; }
     #bearish-alert { height: 3; padding: 0 1; background: #172334; color: #a8c1dd; }
     #bearish-alert.bearish-watch { background: #35271a; color: #ffdda6; }
     #bearish-alert.bearish-observed { background: #481f2b; color: #ffd0da; text-style: bold; }
     .controls { height: 3; padding: 0 1; }
     .controls Label { width: auto; content-align: left middle; margin-right: 1; }
-    Select { width: 17; margin-right: 1; }
+    .controls Select { width: 17; margin-right: 1; }
     #timeframe { width: 11; }
     #lookback { width: 13; }
     #refresh-seconds { width: 12; margin-right: 1; }
-    Button { min-width: 7; margin-right: 1; }
+    .controls Button { min-width: 7; margin-right: 1; }
+    Button { text-style: bold; }
+    Button.-primary { background: #087e8b; color: #ffffff; }
+    Link { text-style: underline; color: #4ce5ff; }
+    DataTable > .datatable--header { background: #18475c; color: #8df5ff; text-style: bold; }
+    DataTable > .datatable--cursor { background: #186878; color: #ffffff; text-style: bold; }
     #faster, #slower { min-width: 4; width: 4; }
-    #market { height: 2; padding: 0 1; background: #132237; }
+    #market { height: 2; padding: 0 1; background: #123440; color: #74f6e0; text-style: bold; }
     #notice { height: 2; padding: 0 1; color: #a8c1dd; }
     #workspace { height: 1fr; padding: 0 1; }
     #left { width: 1fr; min-width: 40; overflow-y: auto; }
@@ -356,7 +361,7 @@ class OracleWinnersApp(App):
     #watchlist { height: 1fr; min-height: 7; }
     #focus-detail { height: 4; color: #a8c1dd; }
     #right { width: 39; margin-left: 1; border: round #2c637d; }
-    #indicator-title { height: 2; text-style: bold; padding: 0 1; }
+    #indicator-title { height: 2; text-style: bold; padding: 0 1; color: #58e9f0; }
     #indicator-clock { height: 4; padding: 0 1; color: #a8c1dd; }
     #indicator-hint { height: 2; padding: 0 1; color: #d5a8ed; }
     #two-bar { height: auto; min-height: 5; padding: 0 1; border-top: solid #2c637d; color: #c3d8ed; }
@@ -366,7 +371,7 @@ class OracleWinnersApp(App):
     .compact #right { width: 1fr; height: 33; margin: 1 0 0 0; }
     ModalScreen { align: center middle; background: #06101bd9; }
     #picker-dialog, #editor-dialog { width: 94%; height: 90%; background: #152338; border: thick #418aab; padding: 1; }
-    .dialog-title { height: 2; text-style: bold; }
+    .dialog-title { height: 2; text-style: bold; color: #58e9f0; }
     .dialog-actions { height: 3; }
     #strategy-options, #config-json { height: 1fr; }
     #config-error { height: 3; color: #ffb3a7; }
