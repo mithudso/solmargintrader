@@ -1,6 +1,7 @@
 # Work continuation
 
-Version: 577
+Version: 578
+Delta: v577 to v578; start seven TradingView strategy source and fidelity research.
 Delta: v576 to v577; record the Preview inspection fix and pending acceptance.
 Delta: v575 to v576; record the macOS shape-guide lifecycle failure and recovery.
 Delta: v574 to v575; record PR 286 delivery and active MTF/status controls continuation.
@@ -2670,3 +2671,13 @@ PR 288 macOS CI caught a ShapeGuide mount transition race: textual.css.query.NoM
 ## Preview inspection fix — 2026-11-16
 
 The 1000x Preview fallback reports a verified unsigned simulation as inspection only when current keeper or transaction layout cannot be verified for execution. It does not create a preview ID or enable Submit. The current executable guards remain in place. Focused Python, Node and lint checks passed in the isolated hotfix worktree; canonical installed acceptance remains pending. The separate exit50 study and UI integration continue in /Users/mitch/dev/worktrees/oracle-exit50-2309.
+
+## Seven TradingView strategy investigation, 2026-11-16
+
+Task 2326 is the research and card stage under task 2324. The supplied chart symbol is COINBASE:ZECUSDC.P, a perpetual; do not substitute spot data or claim TradingView parity from generic strategies. The user says strategy inputs were defaults. Interval, tester properties, script version and exact endpoints remain unverified. The connected browser initially contained no TradingView tab and a fresh visit returned Chart Not Found.
+
+Seven Mongo rabbithole runs preserve the prompt, scope, six-pass limit and continuation, one per requested strategy. Research, dedup, qualification, card implementation and backtests are unfinished. No paid external research provider was dispatched. A single diagnostic semantic search used the research service Voyage-4 automatic query embedding; cost unknown. Preserve the standing indexing pause and protected holdouts.
+
+Existing readiness documents Momentum, Price Channel and Volty as research-only; SAR and Pivot Reversal are incomplete. No exact source-backed Moving Average or Two Moving Averages card has yet been established. Keep all checksum-bound readiness records immutable. Source verification and scoped four-mode dedup must precede semantic implementation. A source-prose description is not proof of the Pine program or TradingView fills.
+
+The anonymous Pine Editor built-in flow exposed all seven current official Pine v6 sources. Version, defaults, orders and Mongo immutable snapshot hashes are in `research/TRADINGVIEW-SEVEN-SOURCE-CONTRACT-2324.md`. The sources resolve a material help-page mismatch for Pivot Reversal. Research depth, independent evidence, trusted gates, implementation and backtests remain unfinished. Tester properties and the owner chart interval remain unknown.

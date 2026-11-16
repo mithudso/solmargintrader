@@ -1,6 +1,7 @@
 # Prompt history
 
-Version: 261
+Version: 262
+Delta: v261 to v262; record seven TradingView strategies and their chart context.
 Delta: v260 to v261; record the Preview error request.
 Delta: v259 to v260; record the status flicker, arm control and forward results request.
 Delta: v258 to v259; record dual-price streams, visual accessibility, MTF study, and model-use requests.
@@ -2395,3 +2396,11 @@ Make the center status update stop flashing "unavailable" and redrawing the data
 ```text
 I get an error when clicking on Preview, [Image #1]
 ```
+
+## Seven TradingView strategies, 2026-11-16
+
+> I was on TradingView trying out various strategies to play with, and for ZEC, during a 5 mo lookbak these are the strategies that brought in over 100% return: momentum, moving averaage, parabolic SAR, Pivot Reversal, Price channel, two moving averages crossover, volatility expansion-close strategies. Fully investigate each of these strategies with a rabbithole skill, then build strategy cards for each if they don't already exist, and backtest using each of them. Also keep pulling more BTC and SEC fine grained data for another chance at testing
+
+Chart supplied: https://www.tradingview.com/chart/qV1poosp/?symbol=COINBASE%3AZECUSDC.P
+
+> Strategy inputs were left at defaults, yes.
