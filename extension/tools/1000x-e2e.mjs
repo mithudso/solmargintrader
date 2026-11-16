@@ -28,10 +28,10 @@ const HISTORY = 'https://perps-api.jup.ag/v1/pyth/fixed_rate%40200ms/history';
 const STREAM = 'wss://perps-api.jup.ag/v1/pyth/stream';
 const PORTAL = 'https://jup.ag/1000x?market=SOL&mode=classic';
 const SHA = data => createHash('sha256').update(data).digest('hex');
-const reviewedFiles = ['manifest.json', 'src/1000x/content.js', 'src/1000x/feed.js', 'src/1000x/indicators.js', 'src/1000x/panel-model.js', 'src/1000x/panel.js', 'src/1000x/panel.html', 'src/1000x/panel.css', 'src/jupiter/attribution.js', 'vendor/lightweight-charts/lightweight-charts.standalone.production.mjs'];
+const reviewedFiles = ['manifest.json', 'src/1000x/content.js', 'src/1000x/feed.js', 'src/1000x/indicators.js', 'src/1000x/panel-model.js', 'src/1000x/reversal.js', 'src/1000x/panel.js', 'src/1000x/panel.html', 'src/1000x/panel.css', 'src/jupiter/attribution.js', 'vendor/lightweight-charts/lightweight-charts.standalone.production.mjs'];
 const source = Object.fromEntries(reviewedFiles.map(file => [file, SHA(fs.readFileSync(path.join(EXT, file)))]));
 const manifest = JSON.parse(fs.readFileSync(path.join(EXT, 'manifest.json'), 'utf8'));
-const receipt = { runner: '1000x-browser-gate', schema_version: 1, status: 'partial', observed_at: new Date().toISOString(), mode: LIVE ? 'public-live' : 'native-browser-fixture', evidence: [], changes: [], remaining: [], checks: [], source, details: { surface: PORTAL, acceptance_condition: 'Version/source identity; five causal indicator readouts/series; settings; fresh completed-candle signals; lifecycle; responsive layout; public reads only; no trading state changes', source_revision: { git: execFileSync('git', ['rev-parse', 'HEAD'], { cwd: EXT, encoding: 'utf8' }).trim(), file_sha256: source }, loaded_revision: null, process_or_origin: null, configuration_identity: null, observations: [], mismatches: [], unverified_checks: [] } };
+const receipt = { runner: '1000x-browser-gate', schema_version: 1, status: 'partial', observed_at: new Date().toISOString(), mode: LIVE ? 'public-live' : 'native-browser-fixture', evidence: [], changes: [], remaining: [], checks: [], source, details: { surface: PORTAL, acceptance_condition: 'Version/source identity; seven causal indicator readouts/series; 10m DD/UU context; completed MTF shapes and closed1m momentum; settings; fresh completed-candle signals; lifecycle; responsive layout; public reads only; no trading state changes', source_revision: { git: execFileSync('git', ['rev-parse', 'HEAD'], { cwd: EXT, encoding: 'utf8' }).trim(), file_sha256: source }, loaded_revision: null, process_or_origin: null, configuration_identity: null, observations: [], mismatches: [], unverified_checks: [] } };
 const assert = (value, message) => { if (!value) throw new Error(message); };
 const same = (actual, expected, message) => assert(isDeepStrictEqual(actual, expected), `${message}: ${JSON.stringify(actual)} != ${JSON.stringify(expected)}`);
 async function check(name, fn) {
@@ -42,7 +42,7 @@ async function check(name, fn) {
 // Minimal RFC6455 fixture. Browser transport, frame parsing and lifecycle remain
 // native; no fake WebSocket, fetch implementation or extension source is loaded.
 async function websocketFixture() {
-  const sockets = new Set(), subscriptions = [], historyRequests = [], state = { quotes: true, priceOverride: null, history: 'full', hold: false, pending: [], sent: 0, upgrades: 0, closes: 0 };
+  const sockets = new Set(), subscriptions = [], historyRequests = [], state = { quotes: true, priceOverride: null, history: 'full', pattern: 'DD', hold: false, pending: [], sent: 0, upgrades: 0, closes: 0 };
   const frame = text => { const data = Buffer.from(text); if (data.length < 126) return Buffer.concat([Buffer.from([0x81, data.length]), data]); const head = Buffer.alloc(4); head[0] = 0x81; head[1] = 126; head.writeUInt16BE(data.length, 2); return Buffer.concat([head, data]); };
   const server = http.createServer((request, response) => { response.writeHead(404); response.end(); });
   server.on('upgrade', (request, socket) => {
@@ -84,10 +84,15 @@ async function websocketFixture() {
     if (state.history === 'none') return { s: 'no_data' };
     const interval = Number(new URL(url).searchParams.get('resolution')) * 60;
     const current = Math.floor(Date.now() / 1000 / interval) * interval;
-    const t = Array.from({ length: 181 }, (_, i) => current - (180 - i) * interval)
+    const first = Number(new URL(url).searchParams.get('from'));
+    const t = Array.from({ length: Math.floor((current - first) / interval) + 1 }, (_, i) => first + i * interval)
       .filter(time => state.history !== 'lagging' || time < current - interval)
       .filter(time => state.history !== 'gap' || time !== current - 2 * interval);
-    const o = t.map((_, i) => 100 + Math.sin(i / 3) * 7), c = o.map((v, i) => v + Math.sin(i) * 2);
+    const target = Math.floor(Date.now() / 600000) * 600;
+    const inPair = time => time >= target - 1200 && time < target;
+    const o = t.map((time, i) => inPair(time) ? 100 : 100 + Math.sin(i / 3) * 7);
+    const c = o.map((v, i) => inPair(t[i]) ? fixtureColor(t[i]) : v + Math.sin(i) * 2);
+    function fixtureColor(time) { return state.pattern === 'UU' ? 101 : state.pattern === 'mixed' && time >= target - 600 ? 101 : 99; }
     return { s: 'ok', t, o, h: o.map((v, i) => Math.max(v, c[i]) + 2), l: o.map((v, i) => Math.min(v, c[i]) - 2), c };
   }
   const address = 'Ew8sRjpuBttpmhSUeaAn4dLAegWnz55AuafVcGuojCPS';
@@ -141,8 +146,8 @@ async function intercept(m) {
 }
 const ev = (page, expr) => browser.evaluate(page.sessionId, expr);
 async function until(fn, what, ms = 10000) { let last; const result = await browser.waitFor(async () => { try { return await fn(); } catch (error) { last = error; return null; } }, ms, 100); assert(result, `timed out: ${what}${last ? ` (${last.message})` : ''}`); return result; }
-async function findPanel(symbol = 'SOL') { return until(async () => { const t = (await browser.targets()).find(t => t.url === `chrome-extension://${browser.extensionId}/src/1000x/panel.html#market=${symbol}`); if (!t) return null; const data = targets.get(t.targetId); if (!data) return null; await sessionReady.get(data.sessionId); if (!await ev(data, `document.querySelectorAll('#readouts tr').length === 5`).catch(() => false)) return null; return data; }, `${symbol} extension iframe`); }
-const panelSnapshot = page => ev(page, `({url:location.href,market:document.querySelector('#market')?.textContent,status:document.querySelector('#status')?.textContent,state:document.querySelector('#status')?.dataset.state,timing:document.querySelector('#timing')?.textContent,note:document.querySelector('#candle-note')?.textContent,interval:document.querySelector('#timeframe')?.value,rows:[...document.querySelectorAll('#readouts tr')].map(row=>({key:row.dataset.indicator,value:row.querySelector('[data-value]').textContent,signal:row.querySelector('[data-signal]').textContent,enabled:row.querySelector('input').checked})),canvas:document.querySelectorAll('canvas').length,width:innerWidth,scrollWidth:document.documentElement.scrollWidth})`);
+async function findPanel(symbol = 'SOL') { return until(async () => { const t = (await browser.targets()).find(t => t.url === `chrome-extension://${browser.extensionId}/src/1000x/panel.html#market=${symbol}`); if (!t) return null; const data = targets.get(t.targetId); if (!data) return null; await sessionReady.get(data.sessionId); if (!await ev(data, `document.querySelectorAll('#readouts tr').length === 7`).catch(() => false)) return null; return data; }, `${symbol} extension iframe`); }
+const panelSnapshot = page => ev(page, `({url:location.href,market:document.querySelector('#market')?.textContent,status:document.querySelector('#status')?.textContent,state:document.querySelector('#status')?.dataset.state,timing:document.querySelector('#timing')?.textContent,note:document.querySelector('#candle-note')?.textContent,interval:document.querySelector('#timeframe')?.value,pattern:document.querySelector('#pattern')?.textContent,patternState:document.querySelector('#pattern')?.dataset.state,developing:document.querySelector('#developing-context')?.textContent,momentum:document.querySelector('#momentum-context')?.textContent,heuristic:document.querySelector('#heuristic')?.textContent,empirical:document.querySelector('#empirical')?.textContent,exit:document.querySelector('#exit-context')?.textContent,shapes:[...document.querySelectorAll('.shape-card')].map(card=>({minutes:card.dataset.minutes,text:card.textContent})),rows:[...document.querySelectorAll('#readouts tr')].map(row=>({key:row.dataset.indicator,value:row.querySelector('[data-value]').textContent,signal:row.querySelector('[data-signal]').textContent,enabled:row.querySelector('input').checked})),canvas:document.querySelectorAll('canvas').length,width:innerWidth,scrollWidth:document.documentElement.scrollWidth})`);
 async function screenshot(name, page = portal, clip) {
   if (page !== portal) {
     const origin = await ev(portal, `(()=>{const r=document.querySelector('#smt-1000x-indicators').shadowRoot.querySelector('iframe').getBoundingClientRect();return{x:r.x,y:r.y}})()`);
@@ -199,25 +204,59 @@ try {
     }
     receipt.details.loaded_revision = { version: manifest.version, executed_sha256: loaded, served_sha256: source }; return loaded;
   });
-  await check('all five chart/readout series show fresh completed-candle values and source clocks', async () => {
-    const s = await fresh(); same(s.rows.map(r => r.key), ['zigzag', 'rsi', 'bop', 'volty', 'psar'], 'indicator set');
+  await check('all seven chart/readout series show fresh completed-candle values and source clocks', async () => {
+    const s = await fresh(); same(s.rows.map(r => r.key), ['zigzag', 'rsi', 'bop', 'volty', 'psar', 'ema', 'macd'], 'indicator set');
     assert(s.rows.every(r => r.enabled && !/Warming up|NaN|Infinity/.test(r.value)), 'missing/invalid indicator values');
-    assert(s.canvas >= 6, 'three chart panes did not render canvases'); assert(s.timing.includes('Exchange ') && s.timing.includes('received ') && /age [\d.]+s/.test(s.timing), 'clock distinction missing');
+    assert(s.canvas >= 8, 'four chart panes did not render canvases'); assert(s.timing.includes('Exchange ') && s.timing.includes('received ') && /age [\d.]+s/.test(s.timing), 'clock distinction missing');
     assert(s.note.includes('contiguous completed candles') && s.note.includes('latest chart candle may be developing'), 'candle semantics missing');
     assert(await ev(panel, `document.body.textContent.includes('Jupiter Pyth oracle USD') && document.body.textContent.includes('TradingView') && document.body.textContent.includes('Powered by Jupiter')`), 'source/licence attribution missing');
     await screenshot('01-fresh-overlay'); receipt.details.observations.push(s); return s;
   });
   if (fixture) {
+    await check('default 10m context shows DD then UU from closed bars and withholds unsupported probabilities', async () => {
+      const first = await fresh(); same(first.interval, '600', 'new-install chart default');
+      assert(/DD → watch UP/.test(first.pattern), `DD context absent: ${first.pattern}`);
+      same(first.shapes.map(frame => frame.minutes), ['5', '10', '15', '20'], 'completed shape intervals');
+      assert(first.shapes.every(frame => !/Warming up|Unavailable/.test(frame.text)), 'complete shape history did not warm all frames');
+      assert(/Closed 1m momentum.*EMA9.*EMA21.*MACD.*BOP SMA3/.test(first.momentum), 'separate closed1m momentum absent');
+      assert(/Heuristic alignment: [0-3]\/3/.test(first.heuristic) && /Not a probability/.test(first.heuristic), 'heuristic support label absent');
+      assert(/probability \/ model score unavailable/.test(first.empirical), 'unsupported probability was not withheld');
+      assert(/Position \/ ROE \/ exit context unavailable.*No typed position input/.test(first.exit), 'position was inferred');
+      fixture.state.pattern = 'UU'; await refresh();
+      const second = await until(async () => { const s = await fresh(); return /UU → watch DOWN/.test(s.pattern) ? s : null; }, 'UU short context');
+      fixture.state.pattern = 'mixed'; await refresh();
+      const mixed = await until(async () => { const s = await fresh(); return /No reversal setup/.test(s.pattern) ? s : null; }, 'mixed pair abstention');
+      assert(/alignment unavailable/.test(mixed.heuristic), 'mixed pair retained directional alignment');
+      fixture.state.pattern = 'DD'; await refresh(); await fresh();
+      await screenshot('06-reversal-shape-momentum-context'); return { dd: first, uu: second, mixed };
+    });
+    await check('a developing target turns while its closed pair and supported context stay fixed', async () => {
+      // Keep this observation away from a real minute close: the fixture uses
+      // the real browser clock and a minute close legitimately changes context.
+      await until(() => Date.now() % 60000 > 1500 && Date.now() % 60000 < 58000, 'stable minute observation');
+      // Restart seeds the new minute if a first stream observation crossed that
+      // boundary. A partial observed opening must stay unavailable in production.
+      await refresh(); await fresh();
+      try {
+        fixture.state.priceOverride = 90;
+        const down = await until(async () => { const s = await panelSnapshot(panel); return /Developing target.*DOWN/.test(s.developing) ? s : null; }, 'developing target down');
+        fixture.state.priceOverride = 110;
+        const up = await until(async () => { const s = await panelSnapshot(panel); return /Developing target.*UP/.test(s.developing) ? s : null; }, 'developing target up');
+        for (const key of ['pattern', 'momentum', 'heuristic', 'shapes', 'empirical']) same(up[key], down[key], `developing bar changed ${key}`);
+        return { down, up };
+      } finally { fixture.state.priceOverride = null; await fresh(); }
+    });
     await check('native browser WebSocket subscribes only to the selected public feed', async () => {
-      assert(fixture.subscriptions.length === 1, 'expected one native socket subscription');
+      assert(fixture.sockets.size === 1, 'expected one active native socket subscription');
       same(fixture.subscriptions[0], { type: 'subscribe', subscriptionId: 1, channel: 'fixed_rate@200ms', priceFeedIds: [6], properties: ['price', 'exponent', 'feedUpdateTimestamp'], formats: [], ignoreInvalidFeeds: false }, 'public subscription');
       assert(websocket.some(e => e.method === 'Network.webSocketFrameReceived'), 'native websocket frames absent'); return { subscriptions: fixture.subscriptions, sent_frames: fixture.state.sent };
     });
     await check('each indicator toggle changes chart pixels and persists only its local preference', async () => {
       fixture.state.quotes = false;
+      await ev(panel, `document.querySelector('#chart').scrollIntoView({block:'start'})`);
       const box = await ev(panel, `(()=>{const r=document.querySelector('#chart').getBoundingClientRect();return {x:r.x,y:r.y,width:r.width,height:r.height}})()`);
       const result = [];
-      for (const key of ['zigzag', 'rsi', 'bop', 'volty', 'psar']) {
+      for (const key of ['zigzag', 'rsi', 'bop', 'volty', 'psar', 'ema', 'macd']) {
         const before = await screenshot(`toggle-${key}-on`, panel, box);
         await ev(panel, `document.querySelector('[data-indicator="${key}"] input').click()`);
         await until(async () => (await panelSnapshot(panel)).rows.find(r => r.key === key)?.signal === 'Hidden', `${key} hidden`);
@@ -248,11 +287,13 @@ try {
         return { labels, observation_method: 'native canvas fillText arguments recorded and forwarded without alteration' };
       } finally { await ev(panel, `CanvasRenderingContext2D.prototype.fillText=globalThis.__smtNativeFillText;delete globalThis.__smtNativeFillText;delete globalThis.__smtRenderedLabels;document.querySelector('#config-form button[type=button]').click()`); }
     });
-    await check('1m/15m/1h selection restarts history/stream with matching source interval', async () => {
+    await check('1m/5m/10m/15m/20m/1h selection restarts history/stream with matching source interval', async () => {
       const intervals = [];
-      for (const seconds of [900, 3600, 60]) {
+      for (const seconds of [300, 600, 900, 1200, 3600, 60]) {
+        const before = fixture.historyRequests.length;
         await ev(panel, `(()=>{const s=document.querySelector('#timeframe');s.value=${JSON.stringify(String(seconds))};s.dispatchEvent(new Event('change'))})()`);
-        const current = await fresh(); same(current.interval, String(seconds), 'selected interval'); const url = new URL(fixture.historyRequests.at(-1)); same(url.searchParams.get('resolution'), String(seconds / 60), 'history resolution'); intervals.push({ seconds, history_url: url.href, ui: current.interval });
+        const current = await fresh(); same(current.interval, String(seconds), 'selected interval'); const sourceSeconds = [600, 1200].includes(seconds) ? 300 : seconds;
+        const url = fixture.historyRequests.slice(before).map(url => new URL(url)).find(url => url.searchParams.get('resolution') === String(sourceSeconds / 60)); assert(url, 'selected history resolution absent'); await until(() => fixture.sockets.size === 1, 'one current stream'); intervals.push({ seconds, source_seconds: sourceSeconds, history_url: url.href, ui: current.interval });
       }
       return intervals;
     });
@@ -298,7 +339,7 @@ try {
     });
     await check('stale data removes all explanatory signals before feed ten-second timeout', async () => {
       fixture.state.quotes = false;
-      const stale = await until(async () => { const s = await panelSnapshot(panel); return s.state === 'stale' && s.rows.every(r => r.signal === 'Unavailable until feed is fresh') ? s : null; }, 'UI three-second freshness gate', 6500);
+      const stale = await until(async () => { const s = await panelSnapshot(panel); return s.state === 'stale' && s.patternState === 'unavailable' && /alignment unavailable/.test(s.heuristic) && s.rows.every(r => r.signal === 'Unavailable until feed is fresh') ? s : null; }, 'UI three-second freshness gate', 6500);
       await screenshot('02-stale-no-signals'); fixture.state.quotes = true; await fresh(); return stale;
     });
     await check('lagging and malformed history fail closed; fresh ticks cannot revive stale readings', async () => {

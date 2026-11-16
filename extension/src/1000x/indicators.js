@@ -13,6 +13,8 @@ export const DEFAULT_INDICATORS = Object.freeze({
   bop: Object.freeze({ enabled: true, smoothing: 1 }),
   volty: Object.freeze({ enabled: true, length: 5, multiplier: 0.75 }),
   psar: Object.freeze({ enabled: true, start: 0.02, step: 0.02, max: 0.2 }),
+  ema: Object.freeze({ enabled: true }),
+  macd: Object.freeze({ enabled: true }),
 });
 
 function record(value, label) {
@@ -64,7 +66,7 @@ export function validateIndicatorConfig(input = {}) {
   return config;
 }
 
-function validateCandles(candles) {
+export function validateCandles(candles) {
   if (!Array.isArray(candles)) throw new TypeError('candles must be an array');
   let previous = -1;
   for (const candle of candles) {
@@ -82,6 +84,24 @@ function validateCandles(candles) {
     }
     if (Object.hasOwn(candle, 'volume')) number(candle.volume, 'candle.volume', 0, Number.MAX_VALUE);
   }
+}
+
+/** Same adjust=False, first-close seed as oracle_leverage.exit50.minute_features.
+ * The research context waits for 78 observations before exposing a reading.
+ */
+export function momentum(candles) {
+  const ema = length => {
+    const alpha = 2 / (length + 1);
+    let previous = null;
+    return candles.map(({ close }) => (previous = previous === null ? close : finite(alpha * close + (1 - alpha) * previous)));
+  };
+  const fast = ema(9), slow = ema(21), e12 = ema(12), e26 = ema(26);
+  const line = e12.map((value, i) => finite(value - e26[i]));
+  let seed = null;
+  const signal = line.map(value => (seed = seed === null ? value : finite(0.2 * value + 0.8 * seed)));
+  const histogram = line.map((value, i) => finite(value - signal[i]));
+  const warm = values => values.map((value, i) => i < 77 ? null : value);
+  return { fast: warm(fast), slow: warm(slow), line: warm(line), signal: warm(signal), histogram: warm(histogram) };
 }
 
 function finite(value) {
@@ -312,6 +332,14 @@ function psar(candles, options) {
 export function computeIndicators(candles, input = {}) {
   const config = validateIndicatorConfig(input);
   validateCandles(candles);
+  const m = momentum(candles);
+  const emaFast = config.ema.enabled ? m.fast : blank(candles);
+  const emaSlow = config.ema.enabled ? m.slow : blank(candles);
+  const macdLine = config.macd.enabled ? m.line : blank(candles);
+  const macdSignal = config.macd.enabled ? m.signal : blank(candles);
+  const macdHistogram = config.macd.enabled ? m.histogram : blank(candles);
+  const emaReady = last(emaFast) !== null && last(emaSlow) !== null;
+  const macdReady = last(macdLine) !== null && last(macdSignal) !== null;
   return {
     config,
     zigzag: zigzag(candles, config.zigzag),
@@ -319,5 +347,10 @@ export function computeIndicators(candles, input = {}) {
     bop: bop(candles, config.bop),
     volty: volty(candles, config.volty),
     psar: psar(candles, config.psar),
+    ema: { fast: aligned(candles, emaFast), slow: aligned(candles, emaSlow), latest: last(emaFast), slowLatest: last(emaSlow),
+      signal: !config.ema.enabled ? 'Disabled.' : !emaReady ? 'Warming up: 78 contiguous candles required.' : `EMA9 ${last(emaFast) > last(emaSlow) ? 'above' : last(emaFast) < last(emaSlow) ? 'below' : 'equals'} EMA21; trend context.` },
+    macd: { series: aligned(candles, macdLine), signalSeries: aligned(candles, macdSignal), histogram: aligned(candles, macdHistogram),
+      latest: last(macdLine), signalLatest: last(macdSignal), histogramLatest: last(macdHistogram),
+      signal: !config.macd.enabled ? 'Disabled.' : !macdReady ? 'Warming up: 78 contiguous candles required.' : `MACD ${last(macdHistogram) > 0 ? 'above' : last(macdHistogram) < 0 ? 'below' : 'equals'} its signal; momentum context.` },
   };
 }

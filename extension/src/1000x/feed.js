@@ -7,7 +7,10 @@ import { MAX_INDICATOR_LENGTH } from './indicators.js';
 
 export const TIMEFRAMES = Object.freeze([
   Object.freeze({ label: '1m', seconds: 60 }),
+  Object.freeze({ label: '5m', seconds: 300 }),
+  Object.freeze({ label: '10m', seconds: 600 }),
   Object.freeze({ label: '15m', seconds: 900 }),
+  Object.freeze({ label: '20m', seconds: 1200 }),
   Object.freeze({ label: '1h', seconds: 3600 }),
 ]);
 
@@ -25,6 +28,9 @@ const HISTORY_EVERY_MS = 30_000;
 // additional developing candle without evicting that full warmup segment.
 const HISTORY_BARS = MAX_INDICATOR_LENGTH + 2;
 const MAX_BARS = HISTORY_BARS + 1;
+// 48 complete 20m windows plus at most 19 minutes in the open 20m bucket.
+// This is bounded history on the existing feed, not another stream/recorder.
+export const CONTEXT_HISTORY_BARS = 48 * 20 + 19;
 const MAX_JSON_BYTES = 2_000_000;
 const validPrice = (value) => typeof value === 'number' && Number.isFinite(value) && value > 0;
 const validTime = (value) => Number.isSafeInteger(value) && value > 0;
@@ -93,6 +99,76 @@ function continuity(candles, intervalSec) {
   }));
 }
 
+/** The observed API supports5m, but rejects native10m/20m resolutions. Aggregate
+ * complete5m buckets rather than changing clocks or accepting sparse candles.
+ */
+function resampleHistory(rows, sourceStep, targetStep, nowMs) {
+  if (sourceStep === targetStep) return rows;
+  const ratio = targetStep / sourceStep, buckets = new Map();
+  for (const row of rows) {
+    const time = Math.floor(row.time / targetStep) * targetStep;
+    if (!buckets.has(time)) buckets.set(time, []);
+    buckets.get(time).push(row);
+  }
+  return continuity([...buckets].map(([time, chunk]) => {
+    const full = chunk.length === ratio && chunk.every((row, i) => row.time === time + i * sourceStep && row.closed && !row.partial);
+    if ((time + targetStep) * 1000 <= nowMs && !full) return null;
+    const expected = Math.min(ratio, Math.floor((nowMs / 1000 - time) / sourceStep) + 1);
+    const partial = chunk.length !== expected || chunk.some((row, i) => row.time !== time + i * sourceStep || row.partial || (i && row.gapBefore));
+    const result = { time, open: chunk[0].open, high: Math.max(...chunk.map(row => row.high)),
+      low: Math.min(...chunk.map(row => row.low)), close: chunk.at(-1).close,
+      closed: (time + targetStep) * 1000 <= nowMs && full,
+      partial: partial || ((time + targetStep) * 1000 <= nowMs && !full) };
+    if (chunk.every(row => Object.hasOwn(row, 'volume'))) {
+      const volume = chunk.reduce((sum, row) => sum + row.volume, 0);
+      if (!Number.isFinite(volume)) throw refusal('invalid_history');
+      result.volume = volume;
+    }
+    return result;
+  }).filter(Boolean), targetStep);
+}
+
+function mergeCandles(candles, history, liveTimes, lastGapMs, requestedAtMs, intervalSec, retention) {
+  const merged = new Map(candles.map(candle => [candle.time, candle]));
+  for (const candle of history) {
+    const observed = merged.get(candle.time);
+    if (!candle.closed && observed && liveTimes.has(candle.time)) {
+      merged.set(candle.time, {
+        ...candle, high: Math.max(candle.high, observed.high), low: Math.min(candle.low, observed.low),
+        close: liveTimes.get(candle.time) > requestedAtMs ? observed.close : candle.close,
+        partial: observed.partial || lastGapMs > requestedAtMs,
+      });
+    } else merged.set(candle.time, candle);
+  }
+  return continuity([...merged.values()].sort((a, b) => a.time - b.time).slice(-retention), intervalSec);
+}
+
+function applyQuote(candles, liveTimes, quote, previous, gap, intervalSec, retention) {
+  const time = Math.floor(quote.exchangeMs / 1000 / intervalSec) * intervalSec;
+  const byTime = new Map(candles.map(candle => [candle.time, { ...candle }]));
+  if (gap) for (const candle of byTime.values()) {
+    if (!candle.closed) Object.assign(candle, { partial: true, closed: false });
+  }
+  const found = byTime.get(time);
+  if (found?.closed) return candles;
+  const candle = found ?? {
+    time, open: quote.price, high: quote.price, low: quote.price, close: quote.price,
+    closed: false, partial: !previous || gap,
+  };
+  // History alone can certify the part of a candle before subscription.
+  candle.high = Math.max(candle.high, quote.price);
+  candle.low = Math.min(candle.low, quote.price);
+  candle.close = quote.price;
+  if (gap) candle.partial = true;
+  byTime.set(time, candle);
+  for (const row of byTime.values()) if (row.time < time && !row.partial) row.closed = true;
+  const result = continuity([...byTime.values()].sort((a, b) => a.time - b.time).slice(-retention), intervalSec);
+  liveTimes.set(time, quote.exchangeMs);
+  const firstTime = result[0]?.time ?? time;
+  for (const observedTime of liveTimes.keys()) if (observedTime < firstTime) liveTimes.delete(observedTime);
+  return result;
+}
+
 /**
  * Timers and network constructors can be replaced for deterministic lifecycle tests.
  * stop() aborts reads and detaches socket callbacks before invalidating the snapshot.
@@ -125,10 +201,18 @@ export class JupiterFeed {
   #lastHistoryMs = null;
   #status = 'connecting';
   #error = null;
+  #withContext;
+  #context = { candles: [], liveTimes: new Map(), ready: false, error: null };
+
+  get #retention() { return this.#withContext && this.intervalSec === 60 ? CONTEXT_HISTORY_BARS + 1 : MAX_BARS; }
+  get #historyInterval() { return [600, 1200].includes(this.intervalSec) ? 300 : this.intervalSec; }
 
   constructor({ symbol, intervalSec, onUpdate, fetchImpl = globalThis.fetch,
     WebSocketImpl = globalThis.WebSocket, clock = Date.now,
-    setTimeoutImpl = globalThis.setTimeout, clearTimeoutImpl = globalThis.clearTimeout } = {}) {
+    setTimeoutImpl = globalThis.setTimeout, clearTimeoutImpl = globalThis.clearTimeout,
+    withReversalContext = false } = {}) {
+    if (typeof withReversalContext !== 'boolean') throw new TypeError('withReversalContext must be boolean');
+    this.#withContext = withReversalContext;
     Object.defineProperties(this, {
       symbol: { value: typeof symbol === 'string' ? symbol.toUpperCase() : '', enumerable: true },
       intervalSec: { value: intervalSec, enumerable: true },
@@ -144,11 +228,16 @@ export class JupiterFeed {
   }
 
   getSnapshot() {
+    const minuteRows = this.intervalSec === 60 ? this.#candles : this.#context.candles;
     return Object.freeze({
       symbol: this.symbol, intervalSec: this.intervalSec, status: this.#status,
       candles: Object.freeze(this.#candles.map((candle) => Object.freeze({ ...candle }))),
       quote: this.#quote ? Object.freeze({ ...this.#quote }) : null,
       error: this.#error, source: SOURCE, lastHistoryMs: this.#lastHistoryMs,
+      historyIntervalSec: this.#historyInterval,
+      minuteCandles: this.#withContext ? Object.freeze(minuteRows.map(candle => Object.freeze({ ...candle }))) : null,
+      minuteStatus: !this.#withContext ? 'disabled' : (this.intervalSec === 60 ? this.#historyReady : this.#context.ready) ? 'ready' : 'unavailable',
+      minuteError: this.#context.error,
     });
   }
 
@@ -225,6 +314,7 @@ export class JupiterFeed {
     this.#quote = null;
     this.#candles = [];
     this.#liveTimes.clear();
+    this.#context = { candles: [], liveTimes: new Map(), ready: false, error: null };
     this.#lastGapMs = 0;
     this.#market = null;
     this.#historyReady = false;
@@ -285,30 +375,21 @@ export class JupiterFeed {
     const seconds = Math.floor(this.#clock() / 1000);
     const currentStart = Math.floor(seconds / this.intervalSec) * this.intervalSec;
     const query = new URLSearchParams({
-      symbol: `${this.symbol}USD`, resolution: String(this.intervalSec / 60),
-      from: String(Math.max(this.intervalSec, currentStart - HISTORY_BARS * this.intervalSec)),
+      symbol: `${this.symbol}USD`, resolution: String(this.#historyInterval / 60),
+      from: String(Math.max(this.intervalSec, currentStart - (this.#retention - 1) * this.intervalSec)),
       to: String(seconds + 1),
     });
     try {
-      const payload = await this.#json(`${JUPITER_ENDPOINTS.history}?${query}`);
+      const [payload] = await Promise.all([
+        this.#json(`${JUPITER_ENDPOINTS.history}?${query}`),
+        this.#withContext && this.intervalSec !== 60 ? this.#loadMinuteContext(generation, requestedAtMs) : null,
+      ]);
       if (!this.#active(generation)) return false;
       // A response started before a boundary cannot certify that boundary's close,
       // even when its HTTP request finishes after the clock crosses the boundary.
-      const history = decodeHistory(payload, { intervalSec: this.intervalSec, nowMs: requestedAtMs });
-      const merged = new Map(this.#candles.map((candle) => [candle.time, candle]));
-      for (const candle of history) {
-        const observed = merged.get(candle.time);
-        if (!candle.closed && observed && this.#liveTimes.has(candle.time)) {
-          merged.set(candle.time, {
-            ...candle, high: Math.max(candle.high, observed.high), low: Math.min(candle.low, observed.low),
-            close: this.#liveTimes.get(candle.time) > requestedAtMs ? observed.close : candle.close,
-            partial: observed.partial || this.#lastGapMs > requestedAtMs,
-          });
-        } else {
-          merged.set(candle.time, candle);
-        }
-      }
-      this.#candles = continuity([...merged.values()].sort((a, b) => a.time - b.time).slice(-MAX_BARS), this.intervalSec);
+      const nativeHistory = decodeHistory(payload, { intervalSec: this.#historyInterval, nowMs: requestedAtMs });
+      const history = resampleHistory(nativeHistory, this.#historyInterval, this.intervalSec, requestedAtMs);
+      this.#candles = mergeCandles(this.#candles, history, this.#liveTimes, this.#lastGapMs, requestedAtMs, this.intervalSec, this.#retention);
       // Only observations newer than this request may advance its close. Keep
       // older quote timestamps truthful rather than replaying them as new data.
       if (this.#quote?.exchangeMs > requestedAtMs) this.#applyQuote(this.#quote, false);
@@ -332,6 +413,28 @@ export class JupiterFeed {
     }
   }
 
+  async #loadMinuteContext(generation, requestedAtMs) {
+    const current = Math.floor(requestedAtMs / 60_000) * 60;
+    const query = new URLSearchParams({ symbol: `${this.symbol}USD`, resolution: '1',
+      from: String(Math.max(60, current - CONTEXT_HISTORY_BARS * 60)), to: String(Math.floor(requestedAtMs / 1000) + 1) });
+    try {
+      const payload = await this.#json(`${JUPITER_ENDPOINTS.history}?${query}`);
+      if (!this.#active(generation)) return;
+      const history = decodeHistory(payload, { intervalSec: 60, nowMs: requestedAtMs });
+      this.#context.candles = mergeCandles(this.#context.candles, history, this.#context.liveTimes,
+        this.#lastGapMs, requestedAtMs, 60, CONTEXT_HISTORY_BARS + 1);
+      if (this.#quote?.exchangeMs > requestedAtMs) this.#context.candles = applyQuote(this.#context.candles,
+        this.#context.liveTimes, this.#quote, this.#quote, false, 60, CONTEXT_HISTORY_BARS + 1);
+      const required = Math.floor(this.#clock() / 60_000) * 60 - 60;
+      this.#context.ready = history.some(candle => candle.time === required && candle.closed);
+      this.#context.error = this.#context.ready ? null : 'minute_history_lagging';
+    } catch {
+      if (!this.#active(generation)) return;
+      this.#context.ready = false;
+      this.#context.error = 'minute_history_unavailable';
+    }
+  }
+
   #fresh() {
     const now = this.#clock();
     return this.#quote && now >= this.#quote.exchangeMs && now >= this.#quote.receivedMs
@@ -339,36 +442,9 @@ export class JupiterFeed {
   }
 
   #applyQuote(quote, gap) {
-    const time = Math.floor(quote.exchangeMs / 1000 / this.intervalSec) * this.intervalSec;
-    const previous = this.#quote;
-    const byTime = new Map(this.#candles.map((candle) => [candle.time, { ...candle }]));
-    if (gap) {
-      for (const candle of byTime.values()) {
-        if (!candle.closed) Object.assign(candle, { partial: true, closed: false });
-      }
-    }
-    const found = byTime.get(time);
-    if (found?.closed) return;
-    const candle = found ?? {
-      time, open: quote.price, high: quote.price, low: quote.price, close: quote.price,
-      closed: false, partial: !previous || gap,
-    };
-    // The first observed candle lacks prices from before subscription. Only a
-    // later authoritative history response can certify that candle as complete.
-    candle.high = Math.max(candle.high, quote.price);
-    candle.low = Math.min(candle.low, quote.price);
-    candle.close = quote.price;
-    if (gap) candle.partial = true;
-    byTime.set(time, candle);
-    for (const row of byTime.values()) {
-      if (row.time < time && !row.partial) row.closed = true;
-    }
-    this.#candles = continuity([...byTime.values()].sort((a, b) => a.time - b.time).slice(-MAX_BARS), this.intervalSec);
-    this.#liveTimes.set(time, quote.exchangeMs);
-    const firstTime = this.#candles[0]?.time ?? time;
-    for (const observedTime of this.#liveTimes.keys()) {
-      if (observedTime < firstTime) this.#liveTimes.delete(observedTime);
-    }
+    this.#candles = applyQuote(this.#candles, this.#liveTimes, quote, this.#quote, gap, this.intervalSec, this.#retention);
+    if (this.#withContext && this.intervalSec !== 60) this.#context.candles = applyQuote(this.#context.candles,
+      this.#context.liveTimes, quote, this.#quote, gap, 60, CONTEXT_HISTORY_BARS + 1);
   }
 
   #connect(generation) {
@@ -409,6 +485,7 @@ export class JupiterFeed {
         if (gap) {
           this.#lastGapMs = quote.receivedMs;
           this.#historyReady = false;
+          this.#context.ready = false;
           void this.#backfill(generation);
         }
         this.#publish(this.#historyReady ? 'live' : 'backfilling', this.#historyReady ? null : 'awaiting_history');
@@ -433,8 +510,10 @@ export class JupiterFeed {
     // can restore live status. The old receipt must not time out the new socket.
     this.#quote = null;
     this.#historyReady = false;
+    this.#context.ready = false;
     this.#lastGapMs = this.#clock();
     this.#candles = this.#candles.map((candle) => candle.closed ? candle : { ...candle, partial: true });
+    this.#context.candles = this.#context.candles.map(candle => candle.closed ? candle : { ...candle, partial: true });
     this.#reconnectAttempts += 1;
     if (this.#reconnectAttempts > 5) {
       this.#terminal = true;

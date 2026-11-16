@@ -6,6 +6,7 @@ export const OWNER_SOURCE_FILES = [
   "src/1000x/feed.js",
   "src/1000x/indicators.js",
   "src/1000x/panel-model.js",
+  "src/1000x/reversal.js",
   "src/1000x/panel.js",
   "src/bg/live-windows.js",
   "src/bg/paper-venue.js",

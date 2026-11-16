@@ -18,10 +18,24 @@
   </nav>
   <p id="status" role="status" aria-live="polite">Connecting to Jupiter…</p>
   <p id="timing" class="muted">Waiting for source timestamps</p>
-  <div id="chart" aria-label="Oracle candles with price, RSI and Balance of Power panes"></div>
-  <p class="legend">Price: ZigZag <i class="zig">━</i> · provisional <i class="provisional">┄</i> · SAR <i class="sar">●</i> · Volty <i class="volty">━</i> · lower panes: RSI / BOP</p>
+  <section id="reversal" aria-labelledby="reversal-title">
+    <h2 id="reversal-title">10m two-bar reversal context</h2>
+    <p id="pattern" role="status">Waiting for two completed candles</p>
+    <div class="bar-context" aria-label="Previous two completed ten-minute candles">
+      <div class="bar-card" id="previous-first"><strong>Previous 2 · unavailable</strong><span>Completed 10m candle</span></div>
+      <div class="bar-card" id="previous-second"><strong>Previous 1 · unavailable</strong><span>Completed 10m candle</span></div>
+    </div>
+    <p id="developing-context" class="developing">Developing target: waiting for public observations</p>
+    <div id="shapes" aria-label="Completed multi-timeframe graph shapes"></div>
+    <p id="momentum-context">Closed 1m momentum: waiting for history</p>
+    <p id="heuristic" class="muted">Heuristic alignment unavailable</p>
+    <p id="empirical" class="muted">Empirical probability / model score unavailable: no compatible model is bundled.</p>
+    <p id="exit-context" class="muted">Position / ROE / exit context unavailable: no typed position input.</p>
+  </section>
+  <div id="chart" aria-label="Oracle candles with EMA9/21, price overlays, RSI, Balance of Power and MACD panes"></div>
+  <p class="legend">Price: ZigZag <i class="zig">━</i> · provisional <i class="provisional">┄</i> · SAR <i class="sar">●</i> · Volty <i class="volty">━</i> · EMA9 / 21 · lower panes: RSI / BOP / MACD</p>
   <table>
-    <caption>Completed-candle readings and explanatory signals</caption>
+    <caption id="readout-caption">Completed chart-candle readings and explanatory signals</caption>
     <thead><tr><th>Show</th><th>Indicator</th><th>Value</th><th>Explanation</th></tr></thead>
     <tbody id="readouts"></tbody>
   </table>
