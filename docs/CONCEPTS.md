@@ -1,6 +1,6 @@
 # Conceptual index
 
-**Generated** from `index/CONCEPT-INDEX.json` (2026-11-16T12:45:28+00:00). 21 concepts.
+**Generated** from `index/CONCEPT-INDEX.json` (2026-11-16T13:00:24+00:00). 21 concepts.
 
 ```bash
 python3 index/build.py all              # refresh
@@ -31,7 +31,7 @@ Strongest files:
 - `research/tradingview-script-understanding.json` (317 hits)
 - `research/zec-expanded-20261113.llms/special-runner-summary.json` (228 hits)
 - `docs/operations-registry.json` (210 hits)
-- `docs/FILES.md` (174 hits)
+- `docs/FILES.md` (175 hits)
 - `FILES.md` (157 hits)
 - `research/tradingview-script-profiles/shard-a.jsonl` (126 hits)
 - `.cdo/reviews-2026-11-12/ecosystem-full-final.json` (124 hits)
@@ -46,7 +46,7 @@ The same 25 strategies score 25/25 on BTC daily and 0/25 on SOL hourly. The data
 
 Strongest files:
 
-- `docs/FILES.md` (312 hits)
+- `docs/FILES.md` (315 hits)
 - `memory.md` (242 hits)
 - `research/coin-intelligence/zec-zcash.md` (196 hits)
 - `research/results/coinbase50_20261111_summary.json` (183 hits)
@@ -78,7 +78,7 @@ Full list: `python3 index/search.py --concept costs -n 1602`
 
 ### Lookahead and fill timing
 
-`lookahead` · **1525 files** · matched on `lookahead`, `fill_delay`, `warmup`, `warmup_bars`, `displacement`, `centred`, `shift`
+`lookahead` · **1527 files** · matched on `lookahead`, `fill_delay`, `warmup`, `warmup_bars`, `displacement`, `centred`, `shift`
 
 A signal at bar t may use data only through t. Centred indicators, same-bar fills and displaced clouds are the recurring hazards.
 
@@ -93,7 +93,7 @@ Strongest files:
 - `research/tradingview-script-profiles/shard-a.jsonl` (36 hits)
 - `backtester/core/strategies/advanced.py` (32 hits)
 
-Full list: `python3 index/search.py --concept lookahead -n 1525`
+Full list: `python3 index/search.py --concept lookahead -n 1527`
 
 ### On-chain execution reality
 
@@ -104,12 +104,12 @@ Oracle-priced perps, priority fees as a product, per-account fee markets, droppe
 Strongest files:
 
 - `research/strategy_experiment/results/results.json` (544 hits)
-- `docs/FILES.md` (487 hits)
+- `docs/FILES.md` (507 hits)
 - `llms/jupsol-llms.txt` (427 hits)
 - `research/strategy_experiment/results/initial-gapped-run/results.json` (408 hits)
 - `FILES.md` (283 hits)
 - `.cdo/reviews-2026-11-12/oracle.json` (271 hits)
-- `memory.md` (259 hits)
+- `memory.md` (260 hits)
 - `.cdo/reviews-2026-11-12/ecosystem-combined-full-final.json` (187 hits)
 
 Full list: `python3 index/search.py --concept execution-onchain -n 1056`
@@ -154,7 +154,7 @@ Full list: `python3 index/search.py --concept data-integrity -n 825`
 
 ### Buy-and-hold benchmark
 
-`benchmark` · **570 files** · matched on `buy_and_hold`, `benchmark`, `baseline`
+`benchmark` · **571 files** · matched on `buy_and_hold`, `benchmark`, `baseline`
 
 Zero parameters, and it out-ranked all but one or two strategies on SOL and all five recommended configurations on ZEC.
 
@@ -169,7 +169,7 @@ Strongest files:
 - `docs/FILES.md` (89 hits)
 - `.cdo/reviews-2026-11-12/research-scripts.json` (81 hits)
 
-Full list: `python3 index/search.py --concept benchmark -n 570`
+Full list: `python3 index/search.py --concept benchmark -n 571`
 
 ### Evidence floor
 
@@ -258,8 +258,8 @@ The families also carry a historical measured finding. Of the study's 25 strateg
 | Family | Files | Matched on |
 |---|---|---|
 | `trend` | 907 | `trend`, `ma_crossover`, `macd`, `ichimoku` |
-| `oscillator-reversion` | 592 | `rsi`, `stochastic`, `oscillator` |
-| `baseline` | 498 | `buy_and_hold`, `baseline` |
+| `oscillator-reversion` | 593 | `rsi`, `stochastic`, `oscillator` |
+| `baseline` | 499 | `buy_and_hold`, `baseline` |
 | `momentum` | 452 | `momentum`, `ts_momentum`, `dual_momentum` |
 | `regime-filter` | 389 | `regime`, `sma_regime`, `adx_trend`, `hurst`, `vol_regime` |
 | `breakout` | 306 | `breakout`, `bb_breakout`, `keltner` |

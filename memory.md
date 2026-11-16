@@ -1,6 +1,7 @@
 # Work continuation
 
-Version: 587
+Version: 588
+Delta: v587 to v588; qualify reviewed warmup capacity and replacement-stream freshness.
 Delta: integrated to v587; preserve both Jupiter overlay and incoming nine-strategy research records.
 Delta: v581 to v582; repair generated operation inventories found by final-head CI.
 Delta: v580 to v581; preserve the qualified candidate and final delivery-receipt location.
@@ -2749,3 +2750,10 @@ The integration worktree combines RS/SAR/Pivot commits through 1308e7a, source-s
 ## Jupiter overlay integration with concurrent delivery
 
 Merged incoming master 6286bfc into the overlay branch after PR296 delivered the nine-source research. Preserve all incoming source, cards, original prompts and continuation records. The overlay implementation and its disarmed behavior are unchanged. Combined counts are1143 backtester,530 extension,1582 SolTUI and57 Mongo; regenerate derived inventories/wiki/indexes and repeat integration checks before delivery. The final receipt remains /Users/mitch/.local/state/jup1000x-overlay-2348/delivery.json.
+
+
+## Jupiter overlay automated-review repairs
+
+Automated review of the original PR identified two valid P2 issues. Added three regressions and saved red exit1, cap-only green and final25-case green receipts under /Users/mitch/.local/state/jup1000x-overlay-2348/review-regressions. The shared MAX_INDICATOR_LENGTH remains500. The feed now requests502 completed bars and retains503 including developing. It supports maximum RSI/BOP/Volty periods at startup and rollover. Disconnect clears the prior quote, preventing history from reviving it before a replacement frame and preserving the new socket's20-second idle grace. Final feed hash f7c9616578f1b75ff633440e26f4384adf3277a8087ba562efb70b33cd9d926b.
+
+Independent review-fix acceptance passed18 native-browser fixture checks and7 actual-public checks. The old quote was643ms old during immediate reconnect history; all signals stayed unavailable until a new frame. The actual public gate saw502 completed candles. Receipts and exact hashes are under /Users/mitch/.local/state/jup1000x-overlay-2348/acceptance/review-fix. Adopted the one-check harness update. Combined test counts are1143 backtester,533 extension,1582 SolTUI and57 Mongo, total3315. PR297 is temporarily draft while final checks run. The accepted earlier CI head10d3b97 passed all jobs; the final repaired head requires its own CI before merge. Use the external delivery receipt for final status.

@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-11-16T12:45:41+00:00",
+  "generatedAt": "2026-11-16T13:00:30+00:00",
   "schemaVersion": 1,
   "note": "Concepts are derived from the repo's own vocabulary \u2014 the FAMILY dict, strategy-card frontmatter, docs/trading-signals-concept-family.md, and terms verified to recur in the corpus. A concept matching no file is dropped, not kept.",
   "counts": {
@@ -439,7 +439,7 @@
         "centred",
         "shift"
       ],
-      "matchingFiles": 1525,
+      "matchingFiles": 1527,
       "shown": 30,
       "files": [
         {
@@ -503,6 +503,10 @@
           "hits": 21
         },
         {
+          "path": "docs/FILES.md",
+          "hits": 19
+        },
+        {
           "path": "research/signal_redundancy.py",
           "hits": 19
         },
@@ -511,8 +515,8 @@
           "hits": 19
         },
         {
-          "path": "docs/FILES.md",
-          "hits": 17
+          "path": "memory.md",
+          "hits": 18
         },
         {
           "path": "backtester/tests/test_engine_audit.py",
@@ -521,10 +525,6 @@
         {
           "path": "skills/trading-and-investing/references/indicator-signal-implementation-and-backtesting.md",
           "hits": 17
-        },
-        {
-          "path": "memory.md",
-          "hits": 16
         },
         {
           "path": "backtester/tests/test_decide.py",
@@ -607,7 +607,7 @@
         },
         {
           "path": "memory.md",
-          "hits": 259
+          "hits": 260
         },
         {
           "path": ".cdo/reviews-2026-11-12/ecosystem-combined-full-final.json",
@@ -1125,7 +1125,7 @@
         "stochastic",
         "oscillator"
       ],
-      "matchingFiles": 592,
+      "matchingFiles": 593,
       "shown": 30,
       "files": [
         {
@@ -1260,7 +1260,7 @@
         "benchmark",
         "baseline"
       ],
-      "matchingFiles": 570,
+      "matchingFiles": 571,
       "shown": 30,
       "files": [
         {
@@ -1394,7 +1394,7 @@
         "buy_and_hold",
         "baseline"
       ],
-      "matchingFiles": 498,
+      "matchingFiles": 499,
       "shown": 30,
       "files": [
         {

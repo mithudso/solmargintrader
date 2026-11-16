@@ -1,6 +1,6 @@
 # Jupiter 1000x indicator window
 
-Version: 1.1.0. Delta: qualify the implementation, finite source census and real-browser gates, 2026-11-16.
+Version: 1.2.0. Delta: qualify maximum-period warmup and replacement-stream freshness, 2026-11-16.
 
 ## Decision and scope
 
@@ -82,6 +82,12 @@ strategy research, wallets and other worktrees remain under their current owners
 | Parabolic SAR | Prior SAR + acceleration × (extreme−prior SAR), prior-two-bar clamps, reversal reset; start/step .02, cap .2 | Initial direction follows the first two closes; initialization can differ from vendor implementations |
 
 The chart may show the developing candle and its developing indicator values.
+History requests seed 502 completed candles and retention allows 503 including
+the developing candle. This covers the largest accepted period of 500, including
+Volty active levels that need 502 completed observations. A disconnect clears the
+prior quote; history alone cannot restore live status before the replacement
+stream provides a valid observation.
+
 Explanatory signal labels use completed, contiguous candles only and require a
 fresh live feed. Indicator agreement is not a calibrated probability or a tested
 trading strategy. No backtest return or execution performance is claimed.
@@ -125,13 +131,15 @@ Source tests, browser fixtures and actual public-live acceptance are separate
 gates. A fixture proves the behavior under that fixture, not live venue support.
 The final delivery receipt records the completed checks and remaining limits.
 
-The independent candidate browser gate passed 17 fixture checks and seven
+The independent candidate browser gate passed 18 fixture checks and seven
 actual-public-portal checks. Both verified the loaded version and exact executed
 module hashes. The live check bound history HTTP 200, SOL feed-6 subscription and
 received price frames to the extension iframe's own CDP session. Fixture results
 cover all five chart toggles, accepted/invalid settings, rendered RSI thresholds,
 closed-only explanations, stale/lagging/malformed/gapped data, narrow layout,
-market navigation and teardown. The adopted deterministic gate is also in CI:
+market navigation and teardown. The reconnect regression kept all signals
+unavailable with a 643 ms old quote, immediate history and a connected replacement
+socket until a new frame arrived. The adopted deterministic gate is also in CI:
 
 ```sh
 cd /Users/mitch/dev/solmargintrader/extension

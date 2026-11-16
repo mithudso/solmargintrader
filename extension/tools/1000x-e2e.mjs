@@ -263,6 +263,39 @@ try {
       const reversal = await panelSnapshot(panel); same(reversal.rows, high.rows, 'intrabar quote changed completed-candle explanations');
       fixture.state.priceOverride = null; await ev(panel, `(()=>{const s=document.querySelector('#timeframe');s.value='60';s.dispatchEvent(new Event('change'))})()`); await fresh(); return { high, reversal };
     });
+    await check('immediate reconnect backfill cannot reuse an old fresh quote before the replacement stream sends', async () => {
+      const before = await fresh(), beforeAt = Date.now();
+      const oldAgeMs = Number(/age ([\d.]+)s/.exec(before.timing)?.[1]) * 1000;
+      assert(Number.isFinite(oldAgeMs) && oldAgeMs < 1000, 'pre-disconnect quote was not recently received');
+      const baseline = { upgrades: fixture.state.upgrades, subscriptions: fixture.subscriptions.length,
+        history: fixture.historyRequests.length, frames: fixture.state.sent };
+      fixture.state.quotes = false;
+      let awaiting, recovered, oldQuoteAgeMs;
+      try {
+        for (const socket of fixture.sockets) socket.destroy();
+        await until(() => fixture.state.upgrades > baseline.upgrades
+          && fixture.subscriptions.length > baseline.subscriptions
+          && fixture.historyRequests.length > baseline.history,
+        'replacement native socket subscription after immediate history backfill', 2250);
+        // The browser has completed backfill and opened/subscribed the replacement
+        // native socket. Observe after rendering, while the prior quote is <3s old.
+        await ev(panel, 'new Promise(resolve => requestAnimationFrame(() => requestAnimationFrame(resolve)))');
+        oldQuoteAgeMs = oldAgeMs + Date.now() - beforeAt;
+        assert(oldQuoteAgeMs < 3000, `prior quote aged out before reconnect assertion (${oldQuoteAgeMs}ms)`);
+        same(fixture.state.sent, baseline.frames, 'replacement stream sent a frame while suspended');
+        awaiting = await panelSnapshot(panel);
+        assert(awaiting.state !== 'live', 'immediate reconnect history revived live status from an old quote');
+        assert(awaiting.rows.every(row => row.signal === 'Unavailable until feed is fresh'), 'old quote restored an explanatory signal before a replacement-stream frame');
+        await screenshot('05-reconnect-awaiting-new-quote');
+      } finally {
+        fixture.state.quotes = true;
+        recovered = await fresh();
+      }
+      assert(fixture.state.sent > baseline.frames, 'recovery did not receive a new native stream frame');
+      return { before, awaiting, recovered, old_quote_age_ms_at_assertion: oldQuoteAgeMs,
+        baseline, replacement_subscriptions: fixture.subscriptions.length,
+        replacement_history_reads: fixture.historyRequests.length };
+    });
     await check('stale data removes all explanatory signals before feed ten-second timeout', async () => {
       fixture.state.quotes = false;
       const stale = await until(async () => { const s = await panelSnapshot(panel); return s.state === 'stale' && s.rows.every(r => r.signal === 'Unavailable until feed is fresh') ? s : null; }, 'UI three-second freshness gate', 6500);

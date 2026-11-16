@@ -4,6 +4,9 @@
  * segments separately. No indicator here reads a clock, network, storage or venue.
  */
 
+// The feed derives its seed/retention floor from this accepted period limit.
+export const MAX_INDICATOR_LENGTH = 500;
+
 export const DEFAULT_INDICATORS = Object.freeze({
   zigzag: Object.freeze({ enabled: true, reversalPercent: 0.5 }),
   rsi: Object.freeze({ enabled: true, length: 14, oversold: 30, overbought: 70 }),
@@ -45,14 +48,14 @@ export function validateIndicatorConfig(input = {}) {
     if (typeof config[name].enabled !== 'boolean') throw new TypeError(`${name}.enabled must be boolean`);
   }
   number(config.zigzag.reversalPercent, 'zigzag.reversalPercent', 0.01, 50);
-  number(config.rsi.length, 'rsi.length', 2, 500, true);
+  number(config.rsi.length, 'rsi.length', 2, MAX_INDICATOR_LENGTH, true);
   number(config.rsi.oversold, 'rsi.oversold', 0, 100);
   number(config.rsi.overbought, 'rsi.overbought', 0, 100);
   if (config.rsi.oversold >= config.rsi.overbought) {
     throw new RangeError('rsi.oversold must be below rsi.overbought');
   }
-  number(config.bop.smoothing, 'bop.smoothing', 1, 500, true);
-  number(config.volty.length, 'volty.length', 1, 500, true);
+  number(config.bop.smoothing, 'bop.smoothing', 1, MAX_INDICATOR_LENGTH, true);
+  number(config.volty.length, 'volty.length', 1, MAX_INDICATOR_LENGTH, true);
   number(config.volty.multiplier, 'volty.multiplier', 0.01, 100);
   for (const field of ['start', 'step', 'max']) number(config.psar[field], `psar.${field}`, 0.0001, 1);
   if (config.psar.start > config.psar.max || config.psar.step > config.psar.max) {

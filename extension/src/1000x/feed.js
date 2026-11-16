@@ -3,6 +3,8 @@
  * Prices are oracle observations, not venue fills or trade-volume observations.
  */
 
+import { MAX_INDICATOR_LENGTH } from './indicators.js';
+
 export const TIMEFRAMES = Object.freeze([
   Object.freeze({ label: '1m', seconds: 60 }),
   Object.freeze({ label: '15m', seconds: 900 }),
@@ -19,8 +21,10 @@ const SOURCE = 'Jupiter Pyth oracle USD';
 const STALE_MS = 10_000;
 const GAP_MS = 5_000;
 const HISTORY_EVERY_MS = 30_000;
-const HISTORY_BARS = 300;
-const MAX_BARS = 500;
+// Volty's previous-bar envelope needs length + 2 completed bars; keep one
+// additional developing candle without evicting that full warmup segment.
+const HISTORY_BARS = MAX_INDICATOR_LENGTH + 2;
+const MAX_BARS = HISTORY_BARS + 1;
 const MAX_JSON_BYTES = 2_000_000;
 const validPrice = (value) => typeof value === 'number' && Number.isFinite(value) && value > 0;
 const validTime = (value) => Number.isSafeInteger(value) && value > 0;
@@ -422,6 +426,9 @@ export class JupiterFeed {
   #disconnect(generation) {
     if (!this.#active(generation) || this.#reconnectPending) return;
     this.#detach();
+    // History can repair candles, but only this connection's next observation
+    // can restore live status. The old receipt must not time out the new socket.
+    this.#quote = null;
     this.#historyReady = false;
     this.#lastGapMs = this.#clock();
     this.#candles = this.#candles.map((candle) => candle.closed ? candle : { ...candle, partial: true });

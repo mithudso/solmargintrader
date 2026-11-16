@@ -1,6 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { decodeHistory, decodeQuote, JupiterFeed, JUPITER_ENDPOINTS, TIMEFRAMES } from '../src/1000x/feed.js';
+import { computeIndicators, MAX_INDICATOR_LENGTH } from '../src/1000x/indicators.js';
 
 const BASE = 1_794_830_400_000; // Explicit synthetic clock; divisible by one minute.
 const MARKET = { symbol: 'SOL', feedId: 6, closed: false,
@@ -189,6 +190,46 @@ test('browser platform functions receive globalThis rather than the JupiterFeed 
   feed.stop();
 });
 
+test('seeded and retained feed history warms the longest accepted indicator periods', async () => {
+  const reads = [];
+  let h;
+  h = harness({ now: BASE + 59_900, fetchImpl: async (url) => {
+    reads.push(url);
+    if (url === JUPITER_ENDPOINTS.markets) return response({ markets: [MARKET] });
+    const current = Math.floor(h.state.now / 60_000) * 60;
+    const from = Number(new URL(url).searchParams.get('from'));
+    const payload = history(h.state.now, (current - from) / 60);
+    payload.t.push(current); payload.o.push(70); payload.h.push(72); payload.l.push(69); payload.c.push(71);
+    return response(payload);
+  } });
+  const maximum = {
+    rsi: { length: MAX_INDICATOR_LENGTH }, bop: { smoothing: MAX_INDICATOR_LENGTH },
+    volty: { length: MAX_INDICATOR_LENGTH },
+  };
+  const assertWarm = (snapshot, phase) => {
+    const closed = snapshot.candles.filter((candle) => candle.closed && !candle.partial);
+    const result = computeIndicators(closed, maximum);
+    const required = {
+      rsi: result.rsi.latest, bop: result.bop.latest,
+      voltyActiveUpper: result.volty.latest?.upper, voltyActiveLower: result.volty.latest?.lower,
+      voltyNextUpper: result.volty.next?.upper, voltyNextLower: result.volty.next?.lower,
+    };
+    const unavailable = Object.entries(required).filter(([, value]) => !Number.isFinite(value)).map(([name]) => name);
+    assert.deepEqual(unavailable, [], `${phase}: ${closed.length} closed feed bars cannot warm ${MAX_INDICATOR_LENGTH}-period indicators`);
+    assert.equal(closed.length, MAX_INDICATOR_LENGTH + 2);
+    assert.equal(snapshot.candles.length, MAX_INDICATOR_LENGTH + 3);
+    assert.equal(snapshot.candles.at(-1).closed, false);
+  };
+  await h.feed.start(); h.sockets[0].open(); h.sockets[0].emit(message(h.state.now));
+  assertWarm(h.feed.getSnapshot(), 'seed');
+  const query = new URL(reads[1]).searchParams;
+  assert.equal(Number(query.get('from')), BASE / 1000 - (MAX_INDICATOR_LENGTH + 2) * 60);
+  await h.advance(200);
+  h.sockets[0].emit(message(h.state.now));
+  assertWarm(h.feed.getSnapshot(), 'retained after rollover');
+  h.feed.stop();
+});
+
 test('missing, duplicate, malformed and closed markets never substitute a feed', async () => {
   for (const [markets, code] of [
     [[], 'market_unavailable'], [[MARKET, MARKET], 'ambiguous_market'],
@@ -375,6 +416,52 @@ test('reconnect overlaps history before resubscribing and stop prevents later re
   assert.equal(h.sockets.length, 2);
   assert.equal(h.sockets[1].closed, true);
   assert.equal(h.timers.size, 0);
+});
+
+test('instant reconnect history cannot restore live before a replacement socket supplies a valid quote', async () => {
+  const h = harness(); await h.feed.start(); h.sockets[0].open(); h.sockets[0].emit(message(h.state.now));
+  const first = h.sockets[0];
+  const oldMessage = first.onmessage;
+  const oldOpen = first.onopen;
+  const oldClose = first.onclose;
+  const beforeDisconnect = h.snapshots.length;
+  first.disconnect();
+  await h.advance(500); // The history stub resolves instantly at the first retry.
+  assert.equal(h.sockets.length, 2);
+  assert.equal(h.snapshots.slice(beforeDisconnect).some((snapshot) => snapshot.status === 'live'), false,
+    'Fresh history must not reuse the disconnected socket quote');
+  assert.equal(h.feed.getSnapshot().quote, null);
+  const beforeOldCallbacks = h.snapshots.length;
+  oldMessage({ data: JSON.stringify(message(h.state.now, '7200000000')) });
+  oldOpen(); oldClose();
+  assert.equal(h.snapshots.length, beforeOldCallbacks);
+  const replacement = h.sockets[1];
+  replacement.open();
+  assert.notEqual(h.feed.getSnapshot().status, 'live');
+  replacement.emit(message(h.state.now, '7200000000', 1));
+  replacement.emit(message(h.state.now + 1, '7200000000'));
+  assert.notEqual(h.feed.getSnapshot().status, 'live');
+  replacement.emit(message(h.state.now, '7200000000'));
+  assert.equal(h.feed.getSnapshot().status, 'live');
+  assert.equal(h.feed.getSnapshot().quote.price, 72);
+  oldMessage({ data: JSON.stringify(message(h.state.now, '7300000000')) });
+  oldClose();
+  assert.equal(h.feed.getSnapshot().quote.price, 72);
+  assert.equal(replacement.closed, false);
+  h.feed.stop();
+});
+
+test('replacement socket gets a full idle grace period after the old quote times out', async () => {
+  const h = harness(); await h.feed.start(); h.sockets[0].open(); h.sockets[0].emit(message(h.state.now));
+  await h.advance(20_500);
+  assert.equal(h.sockets.length, 2);
+  const replacement = h.sockets[1];
+  replacement.open();
+  await h.advance(19_000);
+  assert.equal(h.sockets.length, 2, 'The prior quote receipt must not time out a newly created socket');
+  assert.equal(replacement.closed, false);
+  assert.notEqual(h.feed.getSnapshot().status, 'live');
+  h.feed.stop();
 });
 
 test('consecutive failed connections exhaust a bounded retry budget', async () => {

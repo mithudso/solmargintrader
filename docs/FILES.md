@@ -1,6 +1,6 @@
 # Every file in this repository
 
-**Generated** from `index/INDEX.json` at commit `11ddd71` (2026-11-16T12:45:28+00:00). 3886 tracked files, 138.6 MB.
+**Generated** from `index/INDEX.json` at commit `10d3b97` (2026-11-16T13:00:24+00:00). 3886 tracked files, 138.6 MB.
 
 Regenerate with:
 
@@ -648,9 +648,9 @@ Repository-level entry points and agent instructions. `AGENTS.md` and `CLAUDE.md
 
 #### `memory.md`
 
-`doc` · 2752 lines · 565,397 B · description: **extracted**
+`doc` · 2760 lines · 566,899 B · description: **extracted**
 
-**Purpose.** Version: 587 Delta: integrated to v587; preserve both Jupiter overlay and incoming nine-strategy research records. Delta: v581 to v582; repair generated operation inventories found by final-head CI.
+**Purpose.** Version: 588 Delta: v587 to v588; qualify reviewed warmup capacity and replacement-stream freshness. Delta: integrated to v587; preserve both Jupiter overlay and incoming nine-strategy research records.
 
 **Use.** Read it.
 
@@ -960,7 +960,7 @@ Curated prose. `ARCHITECTURE.md` explains how the pieces fit, `TESTING.md` is th
 
 #### `docs/FILES.md`
 
-`doc` · 36844 lines · 1,786,506 B · description: **extracted**
+`doc` · 37292 lines · 1,804,336 B · description: **extracted**
 
 **Purpose.** Regenerate with: python3 index/build.py all # refresh the index python3 index/make_files_doc.py # rewrite this file
 
@@ -992,9 +992,9 @@ Curated prose. `ARCHITECTURE.md` explains how the pieces fit, `TESTING.md` is th
 
 #### `docs/JUPITER-1000X-OVERLAY.md`
 
-`doc` · 164 lines · 10,389 B · description: **extracted**
+`doc` · 172 lines · 10,896 B · description: **extracted**
 
-**Purpose.** Version: 1.1.0. Delta: qualify the implementation, finite source census and real-browser gates, 2026-11-16. Extend the existing Chrome MV3 extension with a floating, extension-owned chart on https://jup.ag/1000x?market=SOL&mode=classic . Use the locally vendored
+**Purpose.** Version: 1.2.0. Delta: qualify maximum-period warmup and replacement-stream freshness, 2026-11-16. Extend the existing Chrome MV3 extension with a floating, extension-owned chart on https://jup.ag/1000x?market=SOL&mode=classic . Use the locally vendored
 
 **Use.** Read it.
 
@@ -26628,7 +26628,7 @@ The Chrome extension has a separately armed trading surface. Dry-run is the defa
 
 #### `extension/src/1000x/feed.js`
 
-`code-js` · 467 lines · 19,047 B · description: **extracted**
+`code-js` · 474 lines · 19,473 B · description: **extracted**
 
 **Purpose.** Observed public Jupiter oracle contracts, bound in docs/JUPITER-1000X-OVERLAY.md. This module only reads markets/history and subscribes to public oracle prices. Prices are oracle observations, not venue fills or trade-volume observations.
 
@@ -26638,11 +26638,11 @@ The Chrome extension has a separately armed trading surface. Dry-run is the defa
 
 #### `extension/src/1000x/indicators.js`
 
-`code-js` · 321 lines · 13,762 B · description: **extracted**
+`code-js` · 324 lines · 13,933 B · description: **extracted**
 
 **Purpose.** Pure, causal chart indicators. Inputs are one ordered, continuous candle segment. The feed owns gap detection and closed/developing status; callers compute those segments separately. No indicator here reads a clock, network, storage or venue.
 
-**Contents.** Defines `DEFAULT_INDICATORS`, `bop`, `computeIndicators`, `finite`, `number`, `psar`, `record`, `rsi`, `sma`, `validateCandles` and 3 more.
+**Contents.** Defines `DEFAULT_INDICATORS`, `MAX_INDICATOR_LENGTH`, `bop`, `computeIndicators`, `finite`, `number`, `psar`, `record`, `rsi`, `sma` and 4 more.
 
 **Use.** Loaded by the extension; see `extension/manifest.json` for entry points.
 
@@ -27318,7 +27318,7 @@ The Chrome extension has a separately armed trading surface. Dry-run is the defa
 
 #### `extension/test/1000x-feed.test.js`
 
-`test` · 415 lines · 17,812 B · description: **none**
+`test` · 502 lines · 22,237 B · description: **none**
 
 **Purpose.** _No description available._
 
@@ -27706,7 +27706,7 @@ The Chrome extension has a separately armed trading surface. Dry-run is the defa
 
 #### `extension/tools/1000x-e2e.mjs`
 
-`code-js` · 362 lines · 39,118 B · description: **extracted**
+`code-js` · 395 lines · 41,517 B · description: **extracted**
 
 **Purpose.** Read-only 1000x overlay browser gate. No dependencies; uses real CfT and the repository CDP transport. Default is a deterministic public-contract fixture. --live separately visits the actual public portal; it never connects a wallet. Fixture: real browser fetch + native WebSocket to an ephemeral loopback server. Only the exact public stream URL is mapped; source modules are never replaced.
 
