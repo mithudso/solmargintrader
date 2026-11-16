@@ -1,6 +1,7 @@
 # Work continuation
 
-Version: 605
+Version: 606
+Delta: v605 to v606; document intentional metadata-only invalidation and offline recovery.
 Delta: v604 to v605; bind compressed index to current catalog and repair documentation after independent review.
 Delta: v603 to v604; begin current-source bootstrap, code review, and lossless index-size repair.
 Delta: v602 to v603; integrate extension reversal delivery with current YOLO continuation.
@@ -2851,3 +2852,5 @@ Independent reviewer cleared the revised wallet authority, exact rentEpoch and e
 TASK-2410 audits the current source without resuming paused TASK-1541 or PR 235. Ledger baseline at 4e2dac8 planned 50 changed and 176 new files, with 796 unchanged skipped. PR 304 was independently reviewed and merged at c250f307; this worktree now starts from that commit. The tracked keyword index was within 181104 bytes of GitHub’s 100 MiB limit before that merge. Preserve all postings and source bodies; implement and verify deterministic gzip and artifact integrity before delivery. Current readers reject a missing gzip even if an old raw file exists, so stale legacy data cannot silently win. The old-format code remains able to read old checkouts. Baseline test commands require isolation from owner configuration, processes, wallets and paused services. Full CDO per-file fan-out and final feature-source review remain pending capacity; no strategy benchmark or empirical champion is authorized.
 
 Independent review proved an old valid gzip plus its own matching checksum passed the initial freshness gate. The index catalog now binds the decoded SHA-256, and both search and freshness validation reject a mismatch. A regression test failed before the correction and passed afterward. The previous reader remains in old checkouts; current readers do not fall back to an untrusted raw artifact.
+
+The metadata-only index command deliberately clears the catalog text binding. Search and freshness checks fail until the offline all rebuild restores a matching catalog and gzip index. Independent review accepted this fail-closed behavior when documented.

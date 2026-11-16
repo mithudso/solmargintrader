@@ -1,11 +1,11 @@
 {
-  "generatedAt": "2026-11-16T17:12:54+00:00",
+  "generatedAt": "2026-11-16T17:19:31+00:00",
   "schemaVersion": 1,
   "repoRoot": "~/dev/solmargintrader",
-  "commit": "deb2b47",
+  "commit": "7e71d3c",
   "counts": {
     "files": 3925,
-    "bytes": 139131711,
+    "bytes": 139132453,
     "byKind": {
       "strategy-card": 1478,
       "doc": 824,
@@ -84442,9 +84442,9 @@
       "title": "The repository index",
       "summary": "A searchable index over every tracked file in this repo: what exists, which files contain a word, which files mean something like a question, and which bear on an idea. Built to answer \"where is the thing that does X\" without reading every file.",
       "summarySource": "opening-prose",
-      "bytes": 10572,
-      "lines": 177,
-      "sha1": "4ce732ccdfed7fad4d7b9fd986b0c754a0cf1ea3",
+      "bytes": 10807,
+      "lines": 180,
+      "sha1": "83b535b62577ec81aac5666a831f2c76f4f71fe3",
       "symbols": [],
       "imports": [],
       "internalImports": [],
@@ -84460,9 +84460,9 @@
       "title": "The idle job's output. Gitignored pair, so a background rebuild never dirties a tracked file.",
       "summary": "Build the searchable indexes over every tracked file in this repository. python3 index/build.py all # metadata + text + concepts (no network) python3 index/build.py semantic # embeddings; needs a local ollama (opt-in) python3 index/build.py --check # exit 1 if the index is stale vs the tree Four indexes, three of them committed: | Artifact | What it answers | Committed | |---|---|---| | `index/IND",
       "summarySource": "docstring",
-      "bytes": 39954,
-      "lines": 927,
-      "sha1": "21125a8ee28f0e7399b2cc26333a2bb8ef1539dd",
+      "bytes": 40113,
+      "lines": 931,
+      "sha1": "3f453c80d42b50879963d1fc0b6c85ef475d384c",
       "symbols": [
         "REPO",
         "OUT",
@@ -87432,11 +87432,11 @@
       "ext": ".md",
       "kind": "doc",
       "title": "Work continuation",
-      "summary": "Version: 605 Delta: v604 to v605; bind compressed index to current catalog and repair documentation after independent review. Delta: v603 to v604; begin current-source bootstrap, code review, and lossless index-size repair.",
+      "summary": "Version: 606 Delta: v605 to v606; document intentional metadata-only invalidation and offline recovery. Delta: v604 to v605; bind compressed index to current catalog and repair documentation after independent review.",
       "summarySource": "opening-prose",
-      "bytes": 587609,
-      "lines": 2854,
-      "sha1": "acce7a9b4aaf0d641a4c353292594c0d976ec4d9",
+      "bytes": 587957,
+      "lines": 2857,
+      "sha1": "22983c321a613b37577c16bdc9957b4483a1572d",
       "symbols": [],
       "imports": [],
       "internalImports": [],
@@ -117288,5 +117288,5 @@
       "frontmatter": {}
     }
   ],
-  "textSha256": "adbe00ff0791d3010a0a5196fb1f4d47f435dfbdccd432ad3118b4ded483fecc"
+  "textSha256": "c6afc96aa5aee3196ccc14587a4b3e91b7ce9a4f130b34d29a28be1b2e9a8c01"
 }

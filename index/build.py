@@ -874,7 +874,11 @@ def check() -> int:
 
 
 def main(argv: list[str] | None = None) -> int:
-    ap = argparse.ArgumentParser(description=__doc__.splitlines()[0])
+    ap = argparse.ArgumentParser(
+        description=__doc__.splitlines()[0],
+        epilog="The meta command invalidates text search and --check until "
+               "the offline rebuild: python3 index/build.py all.",
+    )
     ap.add_argument("command", nargs="?", default="all",
                     choices=["all", "meta", "text", "concepts", "semantic"])
     ap.add_argument("--local", action="store_true",

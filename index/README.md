@@ -55,6 +55,9 @@ checkouts continue to use their own legacy reader. The builder uses
 an empty gzip filename and timestamp zero. Compressed bytes can vary with the
 compression runtime; the decoded-content SHA-256 is the portable identity.
 Rebuild both files with `python3 index/build.py all` after source changes.
+The `meta` command writes a catalog without a text binding: keyword search and
+`--check` intentionally fail until `python3 index/build.py all` rebuilds the
+catalog, text and concepts together. Use `all` for the normal offline refresh.
 
 ## Three retrieval modes, because they fail differently
 
