@@ -1,6 +1,7 @@
 # Work continuation
 
-Version: 585
+Version: 586
+Delta: v585 to v586; integrate nine provisional source adapters and common sensitivity report.
 Delta: v584 to v585; record measured depth cap and draft-only evidence status.
 Delta: v583 to v584; add common oracle window and equal-notional comparison.
 Delta: v582 to v583; record independent proxy audit and remaining publication limitations.
@@ -2700,3 +2701,7 @@ An independent reviewer reproduced all 16 proxy scenarios, verified 340,000 patt
 The independent RS audit reproduced the original 16 source-quantity proxy cases but did not establish TradingView/venue parity. A later equal-notional comparison was separately frozen and computed using 1,000 USD divided by each completed signal close; its four reported zero-cost and costed comparisons are in the proxy report and remain independently unaudited. Shared common-window and intent comparator helpers validate the archived tape and permit reservation checks around every scenario.
 
 The ZigZag run now records a nine-claim draft baseline and six bounded source-review passes with rates 0.1, 3/13, 3/16, 3/19, 2/21 and 2/23. The cap yielded BUDGET_EXHAUSTED, not saturation. The 23 source spans passed deterministic Unicode binding checks, but no trusted semantic gate or research publication ran. Five documentation URLs all originate with TradingView. The dossier is native `art:f55504e4149f4a78691125fc777d6a091aa0476d08fba63c25b189a1c7574c33`.
+
+## Nine-source provisional integration — 2026-11-16
+
+The integration worktree combines RS/SAR/Pivot commits through 1308e7a, source-specific moving average paths from b4e415a, Momentum/Price Channel/Channel Breakout/Volty paths from 4e12206, and source-contract text from 9450cd8. The frozen readiness and original strategy cards were not overwritten. The new combined runner and nine-row report reproduce all 36 equal-notional table cells on the exact archived Jupiter window; its private output SHA-256 is f30545666700422fb15814594de550ab107348d70442aa3503ac8f4d8d24617c. Independent final audit SHA-256 793e4806f036619326d14fba06df8173b7224887360c54c89eab3995748f7ac6 covers 56 cases, 55,520 intent comparisons and 297 causal prefix samples under stated conventions. Sixty-six focused tests and 43 card tests pass. The 10-minute Channel Breakout and Volty outcomes change under alternative OHLC paths. Pine semantics, venue fills, costs, funding, true margin and execution parity are not established. Mongo research gating/publication and the separate exit50 draft remain unfinished.
