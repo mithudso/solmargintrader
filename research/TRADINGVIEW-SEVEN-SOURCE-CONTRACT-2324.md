@@ -1,6 +1,6 @@
 # TradingView seven-strategy source contract
 
-Version: 1.2.0. Delta: distinguish screenshot Channel Breakout from Price Channel and record the observed interval.
+Version: 1.3.0. Delta: record bounded Coinbase public data and funding discovery.
 
 This is a working research record, not a completed rabbithole, executable card,
 TradingView parity proof, or backtest. The owner identified the chart as
@@ -99,3 +99,28 @@ order lies outside that guard. Price Channel defaults to length 20, places
 stops at the trailing extrema, and guards both orders. The screenshot does not
 prove which historical source version or settings generated its report. Test
 both separately and do not ascribe Channel Breakout's results to Price Channel.
+
+## Public Coinbase data leads
+
+Coinbase's [public product-candle reference](https://docs.cdp.coinbase.com/api-reference/advanced-trade-api/rest-api/public/get-public-product-candles.md)
+lists five-minute candles and a maximum of 350 buckets per request, but no
+native ten-minute interval. A ten-minute series would need causal aggregation
+of complete, aligned lower-timeframe bars. Source snapshot
+`src:a83cdd94df5f8cc9` SHA-256
+`94dc5416ab2d09eb579948e19c07629e1496a0e7d4b2c826de070a49153b76e6`.
+
+The public Advanced product list returned a ZEC future `ZEC-20DEC30-CDE`;
+its public details call it Zcash Perpetual and show USD quote currency. A
+one-day five-minute candle probe returned 183 unique candles on June 21 UTC
+and 271 on November 15 UTC, with both requested endpoints included; an
+inclusive day grid would have 289 boundaries. The source does not establish
+that missing intervals represent zero volume. Nor does it establish that this
+USD-labelled product is identical to the TradingView USDC-labelled chart.
+Preserve the missing intervals rather than filling them to create a backtest.
+
+The Coinbase Derivatives [historical funding reference](https://docs.cdp.coinbase.com/api-reference/derivatives-api/rest-api/funding-rate/get-historical-funding-rates.md)
+requires an instrument symbol and allows a session date. Its related public
+instrument-details endpoint returned HTTP 401 when probed for the observed
+ZEC product code. Actual instrument identity, authorization and historical
+funding availability remain unverified. The Coinbase fee-help page also
+returned HTTP 403; the owner's applicable fees are unknown.

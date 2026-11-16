@@ -1,6 +1,7 @@
 # Work continuation
 
-Version: 579
+Version: 580
+Delta: v579 to v580; record Coinbase public data and funding feasibility limits.
 Delta: v578 to v579; record ten-minute interval and distinguish the screenshot channel strategy.
 Delta: v577 to v578; start seven TradingView strategy source and fidelity research.
 Delta: v576 to v577; record the Preview inspection fix and pending acceptance.
@@ -2684,3 +2685,5 @@ Existing readiness documents Momentum, Price Channel and Volty as research-only;
 The anonymous Pine Editor built-in flow exposed all seven current official Pine v6 sources. Version, defaults, orders and Mongo immutable snapshot hashes are in `research/TRADINGVIEW-SEVEN-SOURCE-CONTRACT-2324.md`. The sources resolve a material help-page mismatch for Pivot Reversal. Research depth, independent evidence, trusted gates, implementation and backtests remain unfinished. Tester properties and the owner chart interval remain unknown.
 
 The owner confirmed ten-minute bars and supplied two TradingView reports, covering June 21–November 16, 2026 with 100,000 USDC initial capital. The screenshot short title `Channel break str` is a distinct built-in Channel Breakout (source src:76a6738dbe0a2319), not the requested Price Channel. See the source contract for reported metrics and evidence constraints. Other tester settings and exact end time remain unknown.
+
+Coinbase public five-minute candle discovery found a plausible ZEC perpetual product, but two one-day probes were sparse and the USD versus TradingView USDC series identity is unproven. Coinbase historical funding documentation exists, but the public instrument lookup returned HTTP 401; see the source contract for exact evidence. Do not invent fees, missing bars or zero funding.
