@@ -65,6 +65,13 @@ test('unknown instructions and priority fees above0.01SOL fail before owner sign
   await assert.rejects(verifyBuild((await fixture({ extra })).build, intent(), options), /priority_fee/);
 });
 
+test('implicit compute limit uses the runtime ceiling and duplicate budgets are rejected', async () => {
+  const extra = [ComputeBudgetProgram.setComputeUnitPrice({ microLamports: 8000000 })];
+  await assert.rejects(verifyBuild((await fixture({ extra })).build, intent(), options), /priority_fee/);
+  const duplicate = [ComputeBudgetProgram.setComputeUnitLimit({ units: 100000 }), ComputeBudgetProgram.setComputeUnitLimit({ units: 100000 })];
+  await assert.rejects(verifyBuild((await fixture({ extra: duplicate })).build, intent(), options), /duplicate_compute/);
+});
+
 test('cryptographically verifies owner signature and preserves message and keeper slot', async () => {
   const { build, tx } = await fixture();
   tx.sign([owner]);

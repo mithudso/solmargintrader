@@ -125,12 +125,17 @@ export async function verifyBuild(build, intent, { connection, now = Math.floor(
   const [eventAuthority] = PublicKey.findProgramAddressSync([Buffer.from('__event_authority')], program);
   const common = { owner, keeper: settings.keeper, config, market, pool, vault, usdMint: new PublicKey(USD_MINT),
     oracle: marketData.oracle, tokenProgram: token, systemProgram: system, eventAuthority, program };
-  let checked, count = 0, price = 0n, units = 200000n;
+  // Without an explicit limit, the runtime default depends on instructions.
+  // Price against the transaction ceiling rather than assuming one200k budget.
+  let checked, count = 0, price = 0n, units = 1400000n;
+  const computeKinds = new Set();
   for (const instruction of message.instructions) {
     const pid = instruction.programId.toBase58();
     if (pid === compute) {
       const data = instruction.data;
       if (instruction.keys.length || ![2, 3].includes(data[0])) fail('unsupported_compute_instruction');
+      if (computeKinds.has(data[0])) fail('duplicate_compute_instruction');
+      computeKinds.add(data[0]);
       if (data[0] === 2 && data.length === 5) { units = BigInt(data.readUInt32LE(1)); if (units > 1400000n) fail('compute_unit_limit'); }
       else if (data[0] === 3 && data.length === 9) price = data.readBigUInt64LE(1);
       else fail('unsupported_compute_instruction');

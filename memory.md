@@ -1,6 +1,7 @@
 # Work continuation
 
-Version: 571
+Version: 572
+Delta: v571 to v572; correct the implicit compute-budget fee ceiling found by independent review; qualify15 SDK/service cases.
 Delta: v570 to v571; qualify native empirical audit, SDK keeper contract and guarded manual controls; paper collector active, delivery acceptance pending.
 Delta: v569 to v570; begin TASK-2289 study, CLI/SDK adapters and monitored paper forward test.
 Delta: v568 to v569; qualify153 focused units,62 independent UI assertions, exact native containers and final report review.
@@ -311,7 +312,7 @@ Preserve all preexisting recorders, paper jobs and webhook services.
 
 Verification includes independent candidate UI/PTY/visual acceptance and real
 loopback/process fixtures. The final new official-service path is undergoing
-independent acceptance; Node14 SDK/service tests and the final130-case Python
+independent acceptance; Node15 SDK/service tests and the final130-case Python
 focused suite passed with final exit0. Source checks use
 Ruff0.17.4. check_docs.py passes with the existing SolTUI environment and
 PYTHONPATH=/Users/mitch/dev/worktrees/reversal-leverage-2289/botmanager/src;
@@ -321,6 +322,18 @@ source path was supplied. One final-suite command used a nonexistent entrypoint
 test name; it was corrected to research.tests.test_oracle_winners_entrypoint.
 Dependency-review tooling is unavailable; SDK security review status remains
 UNKNOWN. Dependencies are exact-pinned and installed with lifecycle scripts off.
+
+Independent review found a concrete priority-fee calculation error: without an
+explicit CU limit, an unsigned ATA+Winning transaction accepted under a200k
+assumption was quoted20160000lamports by getFeeForMessage. The adapter now uses
+the1400000CU ceiling by default and rejects duplicate limit/price instructions.
+A new adversarial fixture and all15 SDK/service tests pass. The130 Python
+checks remain valid because this correction changes only the Node fee guard.
+A raw unsigned SDK build against the actual owned config and ZEC market also
+passed, verifying current SDK/account compatibility without funds or signing.
+The work is pushed in draft PR285; the fee correction and final CI are pending.
+User replied that integration documentation can be shared; the official public
+contract was already independently found, so no new documentation blocker exists.
 
 Remaining at this checkpoint: changed-path independent acceptance;
 commit/push/CI/merge and canonical monitor/collector acceptance. New docs were
