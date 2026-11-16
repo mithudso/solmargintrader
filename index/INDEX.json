@@ -1,11 +1,11 @@
 {
-  "generatedAt": "2026-11-16T17:27:11+00:00",
+  "generatedAt": "2026-11-16T18:00:18+00:00",
   "schemaVersion": 1,
   "repoRoot": "~/dev/solmargintrader",
-  "commit": "6557d6a",
+  "commit": "7bfeb02",
   "counts": {
     "files": 3938,
-    "bytes": 140185072,
+    "bytes": 140186042,
     "byKind": {
       "strategy-card": 1478,
       "doc": 835,
@@ -4120,11 +4120,11 @@
       "ext": ".md",
       "kind": "doc",
       "title": "Retrieval before exploration",
-      "summary": "Use the configured global AI hub semantic search first when it is available. If the connector is unreachable or returns no relevant hit, use the existing local keyword index (`python3 index/search.py --text \"<query>\"`) and targeted source reads. See",
+      "summary": "Use the configured global AI hub semantic search first when it is available. If the connector is unreachable or returns no relevant hit, use the existing local keyword index (`INDEX_NO_AUTO=1 python3 index/search.py --text \"<query>\"`) and targeted source reads. See",
       "summarySource": "opening-prose",
-      "bytes": 17575,
+      "bytes": 17591,
       "lines": 241,
-      "sha1": "55496707fdcd5efb94a11b5e0ea9bc91f55dbc75",
+      "sha1": "ddc2dd052930cf7ef78fae8e7e37b04716b37ef9",
       "symbols": [],
       "imports": [],
       "internalImports": [],
@@ -84640,9 +84640,9 @@
       "title": "The repository index",
       "summary": "A searchable index over every tracked file in this repo: what exists, which files contain a word, which files mean something like a question, and which bear on an idea. Built to answer \"where is the thing that does X\" without reading every file.",
       "summarySource": "opening-prose",
-      "bytes": 10807,
-      "lines": 180,
-      "sha1": "83b535b62577ec81aac5666a831f2c76f4f71fe3",
+      "bytes": 11101,
+      "lines": 184,
+      "sha1": "968b9c1843d7906c24afa7dea77b7cf946da8f0c",
       "symbols": [],
       "imports": [],
       "internalImports": [],
@@ -87630,11 +87630,11 @@
       "ext": ".md",
       "kind": "doc",
       "title": "Work continuation",
-      "summary": "Version: 607 Delta: v606 to v607; integrate the UI checkpoint with compressed offline indexes. Delta: v603 to v604; save final UI ledger, 85 checks and seven repaired findings pending independent delivery.",
+      "summary": "Version: 608 Delta: v607 to v608; guard documented offline retrieval and continue the existing audit. Delta: v606 to v607; integrate the UI checkpoint with compressed offline indexes.",
       "summarySource": "opening-prose",
-      "bytes": 594213,
-      "lines": 2888,
-      "sha1": "d3e484ceb4d18fa448b7fae89320b10ce49261ce",
+      "bytes": 594873,
+      "lines": 2893,
+      "sha1": "5ad6be8f43321b09b30a550151f16572355ea361",
       "symbols": [],
       "imports": [],
       "internalImports": [],
@@ -117547,5 +117547,5 @@
       "frontmatter": {}
     }
   ],
-  "textSha256": "fab25b6fea03d3cef9dfc577a45f9dd4cb6241f3b2f6f52abeb9b7f7262bfdf0"
+  "textSha256": "bd405f2ce56fff36b4242ddde666d714898c6d63c87e94b06da6e92231457d2d"
 }

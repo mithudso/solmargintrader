@@ -10,16 +10,20 @@ python3 index/build.py semantic                  # embeddings (needs local ollam
 python3 index/build.py --check                   # exit 1 if stale — run this first
 
 python3 index/search.py "how are costs applied"  # hybrid: BM25 + semantic
-python3 index/search.py --text "fee_bps"         # exact terms
+INDEX_NO_AUTO=1 python3 index/search.py --text "fee_bps"         # exact terms
 python3 index/search.py --semantic "why did this stop working"
-python3 index/search.py --concepts               # list concepts
-python3 index/search.py --concept evidence-floor
-python3 index/search.py --file backtester/core/cpcv.py
-python3 index/search.py --kind code-python "grid"
+INDEX_NO_AUTO=1 python3 index/search.py --concepts               # list concepts
+INDEX_NO_AUTO=1 python3 index/search.py --concept evidence-floor
+INDEX_NO_AUTO=1 python3 index/search.py --file backtester/core/cpcv.py
+INDEX_NO_AUTO=1 python3 index/search.py --text --kind code-python "grid"
 
 python3 index/make_files_doc.py                  # -> docs/FILES.md
 python3 index/make_concepts_doc.py               # -> docs/CONCEPTS.md
 ```
+
+Keyword and catalog searches above disable automatic indexing. Even a text-only
+search can otherwise start a background semantic rebuild. Hybrid and semantic
+examples explicitly request semantic retrieval.
 
 ## Relationship to `docs/high_signal_file_index.json`
 

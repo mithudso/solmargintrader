@@ -2,7 +2,7 @@
 
 Use the configured global AI hub semantic search first when it is available. If the
 connector is unreachable or returns no relevant hit, use the existing local keyword
-index (`python3 index/search.py --text "<query>"`) and targeted source reads. See
+index (`INDEX_NO_AUTO=1 python3 index/search.py --text "<query>"`) and targeted source reads. See
 `index/README.md`. Do not start an indexer, watcher, inference runtime or embeddings
 merely to begin a repository task. Semantic regeneration is a separate explicit action.
 

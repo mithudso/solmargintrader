@@ -1,6 +1,7 @@
 # Work continuation
 
-Version: 607
+Version: 608
+Delta: v607 to v608; guard documented offline retrieval and continue the existing audit.
 Delta: v606 to v607; integrate the UI checkpoint with compressed offline indexes.
 Delta: v603 to v604; save final UI ledger, 85 checks and seven repaired findings pending independent delivery.
 Delta: v602 to v603; preserve both UI optimizer continuation and current-format market-order verifier evidence.
@@ -2885,3 +2886,7 @@ TASK-2410 audits the current source without resuming paused TASK-1541 or PR 235.
 Independent review proved an old valid gzip plus its own matching checksum passed the initial freshness gate. The index catalog now binds the decoded SHA-256, and both search and freshness validation reject a mismatch. A regression test failed before the correction and passed afterward. The previous reader remains in old checkouts; current readers do not fall back to an untrusted raw artifact.
 
 The metadata-only index command deliberately clears the catalog text binding. Search and freshness checks fail until the offline all rebuild restores a matching catalog and gzip index. Independent review accepted this fail-closed behavior when documented.
+
+## Current-source health audit continuation — 2026-11-16
+
+The existing TASK-2410 CDO run 2026-11-16T17:00:08Z has reviewed zero files. Preliminary master 7bfeb02 planned 52 changed, 183 new and 794 unchanged-skipped files before the 50-file cap. Replan the same run after the active ML work merges. The offline text-search examples now set INDEX_NO_AUTO=1 because keyword search can otherwise launch a background semantic rebuild; the separately authorized semantic commands remain explicit. Preserve the paused TASK-1541 and PR 235 and the private incident evidence.
