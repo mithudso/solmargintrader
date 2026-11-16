@@ -100,6 +100,7 @@ function closePosition(rows, intent, now) {
 
 // Observed public service layout; inspection never authorizes signing or submission.
 const UPDATE_PRICE_DISCRIMINATOR = Buffer.from('3d22759b4b227bd0', 'hex');
+const ORACLE_PRICE_DISCRIMINATOR = createHash('sha256').update('account:OraclePrice').digest().subarray(0, 8);
 const PYTH_CONFIG = new PublicKey('3rdJbqfnagQ4yx9HXJViD4zc4xpiSqmFsKpPuSCQVyQL');
 const PYTH_TREASURY = new PublicKey('Gx4MBPb1vqZLJajZmsKLg8fGw9ErhoKsR8LeKcCKFyak');
 const PYTH_PROGRAM = new PublicKey('pytd2yyk641x7ak7mkaasSJVXh6YYZnC7wTmtgAyxPt');
@@ -134,9 +135,16 @@ export async function inspectOpenBuild(build, intent, { connection, now = Math.f
   if (build.positionId !== undefined && BigInt(build.positionId) !== BigInt(parsed.data.id)) fail('service_position_id_mismatch');
   const [funding] = PublicKey.findProgramAddressSync([owner.toBuffer(), token.toBuffer(), new PublicKey(USD_MINT).toBuffer()], associated);
   const [eventAuthority] = PublicKey.findProgramAddressSync([Buffer.from('__event_authority')], program);
-  const oracle = parsed.accounts.oracle.pubkey;
+  // Current on-chain price accounts derive from the selected market mint. The old
+  // SDK's market.oracle field is not reliable for all current markets (BTC differs).
+  // This relationship constrains inspection; it does not establish update authority.
+  const marketData = await readAccount(connection, market, sdk.deserializeMarketAccount);
+  const [oracle, oracleBump] = PublicKey.findProgramAddressSync([Buffer.from('price'), marketData.mint.toBuffer()], program);
+  if (!parsed.accounts.oracle.pubkey.equals(oracle)) fail('inspection_oracle_market_mismatch');
   const oracleAccount = await connection.getAccountInfo(oracle, 'confirmed');
   if (!oracleAccount || oracleAccount.executable || !oracleAccount.owner.equals(program)) fail('unverified_program_account');
+  const oracleBytes = oracleAccount.data;
+  if (!Buffer.isBuffer(oracleBytes) || oracleBytes.length !== 61 || !oracleBytes.subarray(0, 8).equals(ORACLE_PRICE_DISCRIMINATOR) || !oracleBytes.subarray(8, 40).equals(marketData.mint.toBuffer()) || oracleBytes[60] !== oracleBump) fail('inspection_invalid_oracle_account');
   const expectedOpen = await sdk.createOpenPositionInstruction({ owner, keeper, config, market, pool, vault, usdMint: new PublicKey(USD_MINT), oracle, tokenProgram: token, systemProgram: system, eventAuthority, program, position, fundingAccount: funding }, parsed.data, program);
   // v0 message privileges are global: UpdatePrice legitimately upgrades its shared keeper and oracle to writable.
   if (!open.data.equals(expectedOpen.data) || open.keys.length !== expectedOpen.keys.length || open.keys.some((k, i) => !k.pubkey.equals(expectedOpen.keys[i].pubkey) || k.isSigner !== expectedOpen.keys[i].isSigner || k.isWritable !== (expectedOpen.keys[i].isWritable || i === 1 || i === 9))) fail('sdk_account_or_instruction_mismatch');
