@@ -1,6 +1,7 @@
 # Work continuation
 
-Version: 577
+Version: 578
+Delta: v577 to v578; start single moving-average research under TASK-2335.
 Delta: v576 to v577; record the Preview inspection fix and pending acceptance.
 Delta: v575 to v576; record the macOS shape-guide lifecycle failure and recovery.
 Delta: v574 to v575; record PR 286 delivery and active MTF/status controls continuation.
@@ -2670,3 +2671,9 @@ PR 288 macOS CI caught a ShapeGuide mount transition race: textual.css.query.NoM
 ## Preview inspection fix — 2026-11-16
 
 The 1000x Preview fallback reports a verified unsigned simulation as inspection only when current keeper or transaction layout cannot be verified for execution. It does not create a preview ID or enable Submit. The current executable guards remain in place. Focused Python, Node and lint checks passed in the isolated hotfix worktree; canonical installed acceptance remains pending. The separate exit50 study and UI integration continue in /Users/mitch/dev/worktrees/oracle-exit50-2309.
+
+## TASK-2335: single TradingView moving average
+
+Resume Mongo run `run:2ceb379c607a2a79120f4d92639b671d5a6f9670129529994e098f847a0a7ed0` using separately fenced ownership. TradingView Pine 31.0 snapshot `src:d009b1e195649778` is one SMA of close, length 9, confirmation 1; it is not the existing 20/50 two-SMA implementation. User confirmed a 10-minute chart. Exact tester properties and matching perpetual data remain unknown. Preserve holdouts; do not claim TradingView return replication. Complete family census, independent negation, six-question passes and trusted research gate before qualification. Shared broker engine belongs to another worker.
+
+Adapter and eight focused tests pass against shared engine commit `600926e` loaded read-only. Pinned Ruff 0.17.4 passed. The adapter rejects nonfinite close values rather than claiming Pine `na` parity. The Mongo run has unqualified question and evidence ledgers and eight full depth-three graph-neighborhood pages; those 1,407 records do not establish the server's 1,286-member descendant census. Source-bound independent negation, canonical claim creation, novelty passes, trusted finalization, exact market data and backtest remain.
