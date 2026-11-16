@@ -13,7 +13,14 @@ from xml.etree import ElementTree
 from textual.app import App, ComposeResult
 from textual.widgets import Button, DataTable, Input, Select, Static
 
-from research.zec_leverage_panel import LeveragePanel, comparison_text, emphasized
+from research.zec_leverage_panel import (
+    LeveragePanel,
+    bar_view,
+    comparison_text,
+    emphasized,
+    mtf_tilt_text,
+    tilt_text,
+)
 
 
 class ConsoleFixture:
@@ -90,7 +97,7 @@ class ConsoleFixture:
         self.previews += 1
         self.preview_args = args
         if self.action_gate is not None:
-            self.action_gate.wait(2)
+            self.action_gate.wait(10)
         if self.action_error:
             raise RuntimeError("private material must never appear")
         return {
@@ -106,7 +113,7 @@ class ConsoleFixture:
     def execute(self, identity):
         self.executes += 1
         if self.action_gate is not None:
-            self.action_gate.wait(2)
+            self.action_gate.wait(10)
         if self.action_error:
             raise RuntimeError("private material must never appear")
         return {
@@ -207,6 +214,35 @@ class Interface(unittest.IsolatedAsyncioTestCase):
             self.assertIn("Coinbase synced book midpoint: 100 USD · ●", rendered)
             self.assertIn("+100.000 bps", rendered)
             self.assertEqual(console.executes + console.closes, 0)
+
+    def test_published_model_components_report_signed_uplift(self):
+        value = mtf_tilt_text({"10": {"base_down_rate": 0.5, "components": [
+            {"minutes": 5, "posterior_down": 0.4, "n": 50},
+            {"minutes": 10, "posterior_down": 0.6, "n": 40},
+        ]}})
+        self.assertIn("5m +10.0pp n=50", value)
+        self.assertIn("10m -10.0pp n=40", value)
+        self.assertIn("15m ?", value)
+
+    def test_bar_intensity_and_empirical_tilts_have_neutral_missing_states(self):
+        small = {"open": 100, "close": 100.01, "baseline_range": 2, "progress": 0.5}
+        large = {**small, "close": 102}
+        self.assertNotEqual(bar_view(small, True)[1], bar_view(large, True)[1])
+        self.assertIn("↑", bar_view(large)[0])
+        self.assertIn("↓", bar_view({**large, "close": 98})[0])
+        self.assertEqual(bar_view({**large, "close": 100})[1], "#555b60")
+        rendered = tilt_text(
+            {
+                "5": {"uplift_pp": 3.2, "n": 30},
+                "10": {"uplift_pp": -2, "n": 21},
+                "15": {"uplift_pp": 9, "n": 3},
+            },
+            True,
+        )
+        self.assertIn("tentative", rendered)
+        self.assertIn("5m ↑ +3.2pp n=30", rendered)
+        self.assertIn("10m ↓ -2.0pp n=21", rendered)
+        self.assertIn("15m ?", rendered)
 
     def test_links_are_underlined_and_untrusted_markup_stays_literal(self):
         value = "https://jup.ag/perps/1000x [red]literal[/red] STALE LIVE"
@@ -464,7 +500,7 @@ class Interface(unittest.IsolatedAsyncioTestCase):
 
     def panel(self, console=None, **kwargs):
         return LeveragePanel(
-            console=console or ConsoleFixture(), clock=lambda: 1001.0, **kwargs
+            console=console or ConsoleFixture(), clock=lambda: 1001.0, home="/nonexistent", **kwargs
         )
 
     async def test_capabilities_strategy_filters_and_paper_metrics(self):
@@ -747,6 +783,43 @@ class Interface(unittest.IsolatedAsyncioTestCase):
                 panel.query_one("#leverage-positions", DataTable).row_count, 1
             )
 
+    async def test_paper_row_is_visible_but_never_closes_live_position(self):
+        console = ConsoleFixture()
+        console.data["exit50_forward"] = {
+            "positions": [
+                {
+                    "id": "position-1",
+                    "asset": "ZEC",
+                    "side": "short",
+                    "status": "close_pending",
+                    "roe": 0.52,
+                }
+            ],
+            "assets": {},
+            "performance": {},
+        }
+        panel = self.panel(console)
+        async with PanelHost(panel).run_test(size=(110, 42)) as pilot:
+            await self.wait_for(pilot, lambda: panel.snapshot_data is not None)
+            table = panel.query_one("#leverage-positions", DataTable)
+            self.assertIn("PAPER", str(table.get_row("paper:position-1")))
+            self.assertIn("+52.00% / +50%", str(table.get_row("paper:position-1")))
+            self.assertIn("paper", str(table.get_row("venue:position-1")))
+            table.focus()
+            table.move_cursor(row=table.get_row_index("paper:position-1"))
+            await pilot.press("enter")
+            self.assertIsNone(panel.selected_position)
+            self.assertTrue(
+                panel.query_one("#leverage-close-position", Button).disabled
+            )
+            self.assertEqual(console.closes, 0)
+            table.move_cursor(row=table.get_row_index("venue:position-1"))
+            await pilot.press("enter")
+            self.assertEqual(panel.selected_position, "position-1")
+            self.assertFalse(
+                panel.query_one("#leverage-close-position", Button).disabled
+            )
+
     async def test_close_uses_explicitly_selected_position(self):
         console = ConsoleFixture()
         panel = self.panel(console)
@@ -787,8 +860,8 @@ class Interface(unittest.IsolatedAsyncioTestCase):
             self.assertIn("arming and revalidation", explanation)
             self.assertIn("1000× collateral: JupUSD", explanation)
             table = panel.query_one("#leverage-positions", DataTable)
-            self.assertIn("jupiter-sdk-1000x", str(table.get_row(identity)))
-            self.assertIn(identity, str(table.get_row(identity)))
+            self.assertIn("jupiter-sdk-1000x", str(table.get_row(f"venue:{identity}")))
+            self.assertIn(identity, str(table.get_row(f"venue:{identity}")))
             table.focus()
             table.move_cursor(row=1)
             await pilot.press("enter")
@@ -851,6 +924,25 @@ class Interface(unittest.IsolatedAsyncioTestCase):
             self.assertFalse(panel._action_worker.alive)
             self.assertIsNone(panel.snapshot_data)
             self.assertFalse(hasattr(console, "stop"))
+
+    async def test_arm_control_requires_known_state_and_failed_read_disables_it(self):
+        console = ConsoleFixture()
+        panel = self.panel(console)
+        async with PanelHost(panel).run_test(size=(110, 42)) as pilot:
+            await self.wait_for(pilot, lambda: panel.snapshot_data is not None)
+            arm = panel.query_one("#leverage-arm", Button)
+            self.assertTrue(arm.disabled)
+            self.assertIn("unknown", str(arm.label))
+            console.data["enabled_venues"] = ["jupiter-cli-10x"]
+            console.data["armed"] = False
+            panel.action_refresh()
+            await self.wait_for(pilot, lambda: not arm.disabled)
+            self.assertIn("Arm", str(arm.label))
+            self.assertNotIn("Disarm", str(arm.label))
+            console.read_error = True
+            panel.action_refresh()
+            await self.wait_for(pilot, lambda: panel._read_failed)
+            self.assertTrue(arm.disabled)
 
     async def test_stale_timestamp_is_visible_in_narrow_layout(self):
         console = ConsoleFixture()
@@ -982,7 +1074,22 @@ class Interface(unittest.IsolatedAsyncioTestCase):
                         ),
                     )
                     panel = app._leverage_panel
-                    table = panel.query_one("#leverage-positions", DataTable)
+                    positions = panel.query_one("#leverage-positions", DataTable)
+                    calls = panel.query_one("#leverage-strategies", DataTable)
+                    left = panel.query_one("#leverage-contents")
+                    self.assertGreaterEqual(positions.region.x, left.region.right)
+                    self.assertGreaterEqual(calls.region.x, left.region.right)
+                    self.assertLessEqual(positions.region.bottom, size[1])
+                    self.assertLessEqual(calls.region.bottom, size[1])
+                    for identity in (
+                        "#leverage-previous-bar",
+                        "#leverage-current-bar",
+                        "#leverage-arm",
+                    ):
+                        button = panel.query_one(identity, Button)
+                        self.assertGreater(button.region.width, 0)
+                        self.assertLessEqual(button.region.bottom, size[1])
+                    table = positions
                     table.focus()
                     await pilot.pause(0.05)
                     self.assertTrue(table.has_focus)

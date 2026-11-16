@@ -1,6 +1,7 @@
 # Prompt history
 
-Version: 264
+Version: 265
+Delta: v264 to v265; identify the UI-only delivery stage of the previously recorded owner requests.
 Delta: v263 to v264; record the complete strategy research commission and scope restoration verbatim.
 Delta: v262 to v263; record the restored strategy research and ZigZag priority.
 Delta: v261 to v262; record the superseding RS ZigZag strategy request.
@@ -2427,3 +2428,7 @@ Strategy inputs were left at defaults, yes.
 ```
 
 SEC is interpreted as ZEC from context. Channel Breakout came from a separate screenshot and is distinct from Price Channel. ZigZag is first research priority; this is not a live-profit qualification. The later 15-minute ZigZag screenshot has a different date window from the prior 10-minute reports. The owner-supplied source remains private and uncommitted.
+
+## UI delivery stage, 2026-11-16
+
+The owner requests are preserved verbatim in the earlier v257–v260 entries. This stage implements the leverage panel changes separately from the ongoing exit50 and MTF research. This paragraph is an implementation interpretation, not a verbatim prompt.

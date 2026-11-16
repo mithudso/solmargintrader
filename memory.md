@@ -1,6 +1,7 @@
 # Work continuation
 
-Version: 586
+Version: 587
+Delta: v586 to v587; extract leverage panel UI into an isolated delivery stage.
 Delta: v585 to v586; integrate nine provisional source adapters and common sensitivity report.
 Delta: v584 to v585; record measured depth cap and draft-only evidence status.
 Delta: v583 to v584; add common oracle window and equal-notional comparison.
@@ -2705,3 +2706,7 @@ The ZigZag run now records a nine-claim draft baseline and six bounded source-re
 ## Nine-source provisional integration — 2026-11-16
 
 The integration worktree combines RS/SAR/Pivot commits through 1308e7a, source-specific moving average paths from b4e415a, Momentum/Price Channel/Channel Breakout/Volty paths from 4e12206, and source-contract text from 9450cd8. The frozen readiness and original strategy cards were not overwritten. The new combined runner and nine-row report reproduce all 36 equal-notional table cells on the exact archived Jupiter window; its private output SHA-256 is f30545666700422fb15814594de550ab107348d70442aa3503ac8f4d8d24617c. Independent final audit SHA-256 793e4806f036619326d14fba06df8173b7224887360c54c89eab3995748f7ac6 covers 56 cases, 55,520 intent comparisons and 297 causal prefix samples under stated conventions. Sixty-six focused tests and 43 card tests pass. The 10-minute Channel Breakout and Volty outcomes change under alternative OHLC paths. Pine semantics, venue fills, costs, funding, true margin and execution parity are not established. Mongo research gating/publication and the separate exit50 draft remain unfinished.
+
+## UI delivery stage, 2026-11-16
+
+Worktree: /Users/mitch/dev/worktrees/oracle-tui-2312. Extracted the leverage panel UI from the committed draft while preserving current master and Preview. Reconstructed sampled bars read-only from the existing normalized quote capture, and displayed the published MTF model components. The exit50 policy and forward observer remain separate and pending. Do not alter the running user TUI or wallet state. Final checks and delivery are in progress.

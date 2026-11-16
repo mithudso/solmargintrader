@@ -183,6 +183,94 @@ def comparison_text(data, asset, venue, now, basis_cache=None):
     return result
 
 
+def bar_view(bar, current=False):
+    """Color body movement by its magnitude over trailing completed ranges."""
+    label = "Developing 10m" if current else "Previous closed 10m"
+    if not isinstance(bar, dict):
+        return f"{label} · waiting", "#555b60"
+    opening, close, baseline = (
+        bar.get("open"),
+        bar.get("close"),
+        bar.get("baseline_range"),
+    )
+    if (
+        any(
+            type(x) not in (int, float) or not math.isfinite(x)
+            for x in (opening, close)
+        )
+        or opening <= 0
+    ):
+        return f"{label} · waiting", "#555b60"
+    change = (close - opening) / opening * 100
+    intensity = (
+        min(1.0, abs(close - opening) / baseline)
+        if type(baseline) in (int, float) and math.isfinite(baseline) and baseline > 0
+        else 0
+    )
+    level = int(80 + 150 * intensity)
+    muted = int(74 - 44 * intensity)
+    if close > opening:
+        color, arrow = f"#{muted:02x}{level:02x}{muted:02x}", "↑"
+    elif close < opening:
+        color, arrow = f"#{level:02x}{muted:02x}{muted:02x}", "↓"
+    else:
+        color, arrow = "#555b60", "→"
+    progress = bar.get("progress")
+    suffix = (
+        f" · {progress * 100:.0f}%"
+        if current and type(progress) in (int, float) and math.isfinite(progress)
+        else ""
+    )
+    return f"{label} {arrow} {change:+.3f}%{suffix}", color
+
+
+def tilt_text(tilts, tentative=False):
+    items = []
+    for minutes in (5, 10, 15, 20):
+        item = tilts.get(str(minutes), {}) if isinstance(tilts, dict) else {}
+        uplift = item.get("uplift_pp") if isinstance(item, dict) else None
+        n = item.get("n") if isinstance(item, dict) else None
+        if (
+            type(uplift) not in (int, float)
+            or not math.isfinite(uplift)
+            or type(n) is not int
+            or n < 20
+            or abs(uplift) < 1e-12
+        ):
+            items.append(f"{minutes}m ?")
+        else:
+            items.append(
+                f"{minutes}m {'↑' if uplift > 0 else '↓'} {uplift:+.1f}pp n={n}"
+            )
+    return (
+        "Next 10m IF UU"
+        + (" (developing, tentative)" if tentative else "")
+        + " · ΔP(up) vs baseline: "
+        + " · ".join(items)
+    )
+
+
+def mtf_tilt_text(scores):
+    """Display published 10m model components against their training baseline."""
+    model = scores.get("10", {}) if isinstance(scores, dict) else {}
+    baseline = model.get("base_down_rate") if isinstance(model, dict) else None
+    components = model.get("components", []) if isinstance(model, dict) else []
+    by_frame = {c.get("minutes"): c for c in components if isinstance(c, dict)} if isinstance(components, list) else {}
+    items = []
+    for minutes in (5, 10, 15, 20):
+        row = by_frame.get(minutes, {})
+        posterior = row.get("posterior_down")
+        n = row.get("n")
+        if (type(baseline) not in (int, float) or not math.isfinite(baseline)
+            or type(posterior) not in (int, float) or not math.isfinite(posterior)
+            or type(n) is not int or n <= 0):
+            items.append(f"{minutes}m ?")
+        else:
+            uplift = (baseline - posterior) * 100
+            items.append(f"{minutes}m {uplift:+.1f}pp n={n}")
+    return "10m model shape component ΔP(up) vs baseline · " + " · ".join(items)
+
+
 def wallet_text(data):
     wallet = data.get("wallet", {})
     wallet = wallet if isinstance(wallet, dict) else {}
@@ -300,7 +388,13 @@ class LeveragePanel(ModalScreen[None]):
     #leverage-venue { width: 31; }
     #leverage-side { width: 15; }
     #leverage-collateral { width: 13; }
-    #leverage-contents { height: 1fr; }
+    #leverage-workspace { height: 1fr; }
+    #leverage-contents { width: 3fr; height: 1fr; }
+    #leverage-right { width: 2fr; height: 1fr; margin-left: 1; }
+    #leverage-bar-tilts { height: auto; min-height: 1; }
+    #leverage-bars { height: 3; }
+    #leverage-bars Button { width: 1fr; min-width: 1; height: 3; }
+    #leverage-right #leverage-strategies, #leverage-right #leverage-positions { height: 1fr; min-height: 3; }
     #leverage-price-comparison { height: auto; min-height: 7; color: #d9fbff; border: round #28b8b8; padding: 0 1; }
     #leverage-capabilities, #leverage-performance, #leverage-result { height: auto; min-height: 3; }
     #leverage-live-market { height: auto; min-height: 4; color: #c3d8ed; }
@@ -337,6 +431,8 @@ class LeveragePanel(ModalScreen[None]):
         self._last_feeds = {}
         self._table_rows = {}
         self._read_failed = False
+        from research.quote_bars import QuoteBars
+        self._quote_bars = QuoteBars(self.home / "dual-quotes")
 
     def _console(self):
         # Import and disk-backed setup happen in a worker, never on the event loop.
@@ -359,6 +455,7 @@ class LeveragePanel(ModalScreen[None]):
                 raise TypeError("malformed_console_snapshot_section")
         if "performance" in value and not isinstance(value["performance"], dict):
             raise TypeError("malformed_console_performance")
+        value["quote_bars"] = self._quote_bars.read(self.clock())
         return value
 
     def _act(self, request, cancelled):
@@ -377,6 +474,16 @@ class LeveragePanel(ModalScreen[None]):
     def compose(self) -> ComposeResult:
         with Vertical(id="leverage-dialog"):
             yield Label("Leverage & live paper forward test", id="leverage-title")
+            yield Static(
+                "Next 10m IF UU · ΔP(up) vs baseline: waiting",
+                id="leverage-bar-tilts",
+                markup=False,
+            )
+            with Horizontal(id="leverage-bars"):
+                yield Button(
+                    "Previous closed 10m · waiting", id="leverage-previous-bar"
+                )
+                yield Button("Developing 10m · waiting", id="leverage-current-bar")
             yield Static(
                 "Loading durable trial status…", id="leverage-status", markup=False
             )
@@ -402,34 +509,45 @@ class LeveragePanel(ModalScreen[None]):
                 )
                 yield Button("Refresh [R]", id="leverage-refresh")
                 yield Button("Return [Esc]", id="leverage-return")
-            with VerticalScroll(id="leverage-contents"):
-                yield Static(
-                    "Both price streams: waiting for source observations…",
-                    id="leverage-price-comparison",
-                    markup=False,
-                )
-                yield Static(
-                    "Venue capabilities pending",
-                    id="leverage-capabilities",
-                    markup=False,
-                )
-                yield Static(
-                    "Live source observation pending…",
-                    id="leverage-live-market",
-                    markup=False,
-                )
-                yield Static(
-                    "Paper performance pending", id="leverage-performance", markup=False
-                )
-                yield Label(
-                    "Frozen strategy / backtest evidence", classes="leverage-section"
-                )
-                yield DataTable(id="leverage-strategies", cursor_type="row")
-                yield Label(
-                    "Positions · select a row before Close", classes="leverage-section"
-                )
-                yield PositionTable(id="leverage-positions", cursor_type="row")
-                yield Static("No trial events yet", id="leverage-events", markup=False)
+            with Horizontal(id="leverage-workspace"):
+                with VerticalScroll(id="leverage-contents"):
+                    yield Static(
+                        "Both price streams: waiting for source observations…",
+                        id="leverage-price-comparison",
+                        markup=False,
+                    )
+                    yield Static(
+                        "10m reversal: waiting for paper observer",
+                        id="leverage-exit50",
+                        markup=False,
+                    )
+                    yield Static(
+                        "Venue capabilities pending",
+                        id="leverage-capabilities",
+                        markup=False,
+                    )
+                    yield Static(
+                        "Live source observation pending…",
+                        id="leverage-live-market",
+                        markup=False,
+                    )
+                    yield Static(
+                        "Paper performance pending",
+                        id="leverage-performance",
+                        markup=False,
+                    )
+                    yield Static(
+                        "No trial events yet", id="leverage-events", markup=False
+                    )
+                with Vertical(id="leverage-right"):
+                    yield Label(
+                        "Positions · select before Close", classes="leverage-section"
+                    )
+                    yield PositionTable(id="leverage-positions", cursor_type="row")
+                    yield Label(
+                        "Oracle calls · frozen evidence", classes="leverage-section"
+                    )
+                    yield DataTable(id="leverage-strategies", cursor_type="row")
             with Horizontal(classes="leverage-controls"):
                 yield Select(
                     [
@@ -454,7 +572,7 @@ class LeveragePanel(ModalScreen[None]):
                 markup=False,
             )
             with Horizontal(classes="leverage-controls"):
-                yield Button("Arm 10x", id="leverage-arm", variant="warning")
+                yield Button("Arm state unknown", id="leverage-arm", variant="warning", disabled=True)
                 yield Button("Preview", id="leverage-preview", variant="primary")
                 yield Button(
                     "Submit preview",
@@ -471,7 +589,7 @@ class LeveragePanel(ModalScreen[None]):
             "Asset", "Bar", "Shape", "Call", "Evidence"
         )
         self.query_one("#leverage-positions", DataTable).add_columns(
-            "Asset", "Venue", "Side", "State", "PnL $", "Position"
+            "Asset", "Source", "Side", "State", "PnL / ROE", "Position"
         )
         self._read_worker = LatestWorker(self._read, name="oracle-leverage-read")
         self._action_worker = LatestWorker(self._act, name="oracle-leverage-action")
@@ -493,11 +611,14 @@ class LeveragePanel(ModalScreen[None]):
         busy = self._operation is not None
         arm = self.query_one("#leverage-arm", Button)
         venue = self.query_one("#leverage-venue", Select).value
-        active = venue in (self.snapshot_data or {}).get("enabled_venues", [])
-        arm.label = ("Disarm " if active else "Arm ") + (
+        enabled = (self.snapshot_data or {}).get("enabled_venues")
+        armed = (self.snapshot_data or {}).get("armed")
+        known = isinstance(enabled, list) and type(armed) is bool
+        active = known and armed and venue in enabled
+        arm.label = ("Disarm " if active else "Arm " if known else "Arm state unknown ") + (
             "10x" if venue == "jupiter-cli-10x" else "1000x"
         )
-        arm.disabled = busy
+        arm.disabled = busy or not known or self._read_failed
         self.query_one("#leverage-preview", Button).disabled = busy
         self.query_one("#leverage-submit", Button).disabled = (
             busy or self.preview_id is None
@@ -532,6 +653,7 @@ class LeveragePanel(ModalScreen[None]):
         if result is not None:
             if result.error or not isinstance(result.value, dict):
                 self._read_failed = True
+                self._controls()
                 self.query_one(
                     "#leverage-price-comparison", Static
                 ).tooltip = (
@@ -718,10 +840,21 @@ class LeveragePanel(ModalScreen[None]):
             f"Coinbase {asset} paper {_text(data.get('status'))}: settled {number(perf.get('settled'))} · open {number(perf.get('open'))} · correct {number(perf.get('correct'))} · hit {number(perf.get('hit_rate'))} · net bps {number(perf.get('mean_net_bps'))} "
         )
         status.append(
-            "●", style="green" if age is not None and 0 <= age <= 45 else "red"
+            "●", style=("green" if age is not None and 0 <= age <= 45 else "yellow" if age is not None and 45 < age <= 90 else "red")
         )
+        status.append(f" {freshness}")
         status.append(
             f"\nMTF Jupiter ALL-ASSETS {_text(mtf.get('status', 'waiting'))}: settled {number(mtf_perf.get('settled'))} · open {number(mtf_perf.get('open'))} · pending {number(mtf_perf.get('pending_unscored'))} · correct {number(mtf_perf.get('direction_correct'))} · wins {number(mtf_perf.get('paper_wins'))} · hit {number(mtf_perf.get('hit_rate'))} · liquidated {number(mtf_perf.get('verified_liquidations'))} · gross underlying bps {number(mtf_perf.get('mean_unlevered_gross_bps'))}"
+        )
+        new = data.get("exit50_forward", {})
+        new = new if isinstance(new, dict) else {}
+        new_perf = (
+            new.get("performance", {})
+            if isinstance(new.get("performance"), dict)
+            else {}
+        )
+        status.append(
+            f"\n10m +50% paper {_text(new.get('status', 'waiting'))}: open {number(new_perf.get('open'))} · close pending {number(new_perf.get('close_pending'))} · unscored {number(new_perf.get('unscored'))} · settled {number(new_perf.get('settled'))} · profitable {number(new_perf.get('profitable'))}"
         )
         widget = self.query_one("#leverage-status", Static)
         widget.update(status)
@@ -761,6 +894,98 @@ class LeveragePanel(ModalScreen[None]):
             )
         )
         self.paint_live_market()
+        new_assets = (
+            new.get("assets", {}) if isinstance(new.get("assets"), dict) else {}
+        )
+        new_asset = (
+            new_assets.get(asset, {}) if isinstance(new_assets.get(asset), dict) else {}
+        )
+        selected_policy = (
+            new_asset.get("selected_policy", {})
+            if isinstance(new_asset.get("selected_policy"), dict)
+            else {}
+        )
+        indicators = (
+            new_asset.get("indicators", {})
+            if isinstance(new_asset.get("indicators"), dict)
+            else {}
+        )
+        mtf_assets = mtf.get("assets", {}) if isinstance(mtf.get("assets"), dict) else {}
+        mtf_asset = mtf_assets.get(asset, {}) if isinstance(mtf_assets.get(asset), dict) else {}
+        frames = mtf_asset.get("frames", {}) if isinstance(mtf_asset.get("frames"), dict) else {}
+        quote_bars = data.get("quote_bars", {})
+        bars = quote_bars.get(asset, {}) if isinstance(quote_bars, dict) else {}
+        bars = bars if isinstance(bars, dict) else {}
+        for kind in ("previous", "current"):
+            button = self.query_one(f"#leverage-{kind}-bar", Button)
+            label, color = bar_view(bars.get(kind), current=kind == "current")
+            button.label = f"{asset} {label}"
+            button.styles.background = color
+            button.tooltip = "Sampled Jupiter oracle quotes; bar requires observations at each boundary and no gap over 5s. Body magnitude / trailing mean range of up to 20 completed 10m bars. Click for prices."
+        previous_bar, current_bar = bars.get("previous"), bars.get("current")
+        _tentative = (
+            isinstance(previous_bar, dict)
+            and isinstance(current_bar, dict)
+            and type(previous_bar.get("open")) in (int, float)
+            and type(previous_bar.get("close")) in (int, float)
+            and type(current_bar.get("open")) in (int, float)
+            and type(current_bar.get("close")) in (int, float)
+            and previous_bar["close"] > previous_bar["open"]
+            and current_bar["close"] > current_bar["open"]
+        )
+        tilts = self.query_one("#leverage-bar-tilts", Static)
+        mtf_at = mtf.get("at")
+        mtf_age = self.clock() - mtf_at if type(mtf_at) in (int, float) and math.isfinite(mtf_at) else None
+        mtf_age_label = f" · observer age {max(0, mtf_age):.0f}s" if mtf_age is not None else " · observer age unknown"
+        tilts.update(Text(mtf_tilt_text(mtf_asset.get("scores", {})) + mtf_age_label))
+        tilts.tooltip = "Published 10m model component posterior P(up) minus its training baseline; n is the historical shape count. Not a forecast guarantee."
+        shapes = " · ".join(
+            f"{m}m {_text(frames.get(str(m), {}).get('shape')) if isinstance(frames.get(str(m)), dict) else '—'}"
+            for m in (5, 10, 15, 20)
+        )
+        comparison = data.get("price_comparison", {})
+        feeds = comparison.get("feeds", {}) if isinstance(comparison, dict) else {}
+        coinbase = feeds.get("coinbase", {}) if isinstance(feeds, dict) else {}
+        book = coinbase.get(asset, {}) if isinstance(coinbase, dict) else {}
+        connected = (
+            comparison.get("connected", {}) if isinstance(comparison, dict) else {}
+        )
+        book_fresh = (
+            isinstance(book, dict)
+            and isinstance(connected, dict)
+            and connected.get("coinbase") is True
+            and comparison.get("status") != "stopped"
+            and type(comparison.get("at")) in (int, float)
+            and math.isfinite(comparison["at"])
+            and 0 <= self.clock() - comparison["at"] <= 2
+            and book.get("asset") == asset
+            and book.get("fresh", True) is True
+            and all(
+                type(book.get(key)) in (int, float)
+                and math.isfinite(book[key])
+                and 0 <= self.clock() - book[key] <= 3
+                for key in ("exchange_at", "received_at")
+            )
+        )
+        visible_book = (
+            f"best bid size {_text(book.get('bid_size'))} / ask size {_text(book.get('ask_size'))}"
+            if book_fresh
+            else "waiting for fresh synced book"
+        )
+        roe = new_asset.get("roe")
+        roe_text = (
+            f"{roe * 100:.2f}%"
+            if type(roe) in (int, float) and math.isfinite(roe)
+            else "—"
+        )
+        self.query_one("#leverage-exit50", Static).update(
+            Text(
+                f"10m reversal {asset}: {_text(new_asset.get('signal', 'waiting'))} · policy {_text(selected_policy.get('family'))}/{_text(selected_policy.get('filter'))} ({_text(selected_policy.get('selection_status'))}) · model {_text(new_asset.get('model_sha256'), limit=64)} · score {_text(new_asset.get('score'))} (context score; not a probability)\n"
+                f"Completed shapes: {shapes}\n"
+                f"Closed 1m EMA9 {_text(indicators.get('ema9'))} / EMA21 {_text(indicators.get('ema21'))} · MACD {_text(indicators.get('macd'))} / signal {_text(indicators.get('macd_signal'))} · BOP SMA3 price proxy {_text(indicators.get('bop_sma3'))}\n"
+                f"Paper 1000x: {_text(new_asset.get('position_status', 'waiting'))} · modeled collateral ROE {roe_text} · target +50% · intent {_text(new_asset.get('intent'))} · min age 15s / close delay 10s\nAfter modeled trade fees; chain/keeper fees excluded. Oracle proxy; no verified fill.\nEMA/MACD {_text(new_asset.get('indicator_note', 'waiting for bootstrap'))}; seed {_text(new_asset.get('indicator_seed_s'))}.\nCoinbase {visible_book} · visible liquidity, not order counts."
+            )
+        )
         performance = data.get("performance", {})
         if isinstance(performance, dict) and isinstance(
             performance.get("by_asset"), dict
@@ -831,37 +1056,69 @@ class LeveragePanel(ModalScreen[None]):
                 key=f"strategy-{index}",
             )
         positions = self.query_one("#leverage-positions", DataTable)
-        position_rows = [
+        real_rows = [
             row
             for row in data.get("positions", [])
             if isinstance(row, dict) and row.get("asset") == asset
         ]
+        paper_source = new.get("positions", [])
+        paper_rows = (
+            [
+                row
+                for row in paper_source
+                if isinstance(row, dict) and row.get("asset") == asset
+            ]
+            if isinstance(paper_source, list)
+            else []
+        )
+        position_rows = {"venue": real_rows, "paper": paper_rows}
         positions_changed = self._table_rows.get("positions") != position_rows
         if positions_changed:
             positions.clear()
             self._table_rows["positions"] = copy.deepcopy(position_rows)
         current = set()
-        for index, row in enumerate(data.get("positions", [])):
-            if not isinstance(row, dict) or row.get("asset") != asset:
-                continue
+        for row in real_rows:
             identity = row.get("id", row.get("position_id"))
             if not isinstance(identity, str) or not identity or identity in current:
                 continue
             current.add(identity)
-            if not positions_changed:
+            if positions_changed:
+                positions.add_row(
+                    *[
+                        Text(_text(row.get(key)))
+                        for key in ("asset", "venue", "side", "status", "pnl_usd")
+                    ],
+                    Text(identity),
+                    key=f"venue:{identity}",
+                )
+        seen_paper = set()
+        for row in paper_rows:
+            identity = row.get("id")
+            if not isinstance(identity, str) or not identity or identity in seen_paper:
                 continue
-            positions.add_row(
-                *[
-                    Text(_text(row.get(key)))
-                    for key in ("asset", "venue", "side", "status", "pnl_usd")
-                ],
-                Text(identity),
-                key=identity,
+            seen_paper.add(identity)
+            roe = row.get("roe")
+            value = (
+                f"{roe * 100:+.2f}% / +50%"
+                if type(roe) in (int, float) and math.isfinite(roe)
+                else "— / +50%"
             )
+            if positions_changed:
+                positions.add_row(
+                    Text(asset),
+                    Text("PAPER"),
+                    Text(_text(row.get("side"))),
+                    Text(_text(row.get("status"))),
+                    Text(value),
+                    Text(identity),
+                    key=f"paper:{identity}",
+                )
         if self.selected_position not in current:
             self.selected_position = None
-        elif self.selected_position in current:
-            positions.move_cursor(row=positions.get_row_index(self.selected_position))
+        elif positions_changed:
+            positions.move_cursor(
+                row=positions.get_row_index(f"venue:{self.selected_position}")
+            )
         events = []
         for event in data.get("events", [])[-6:]:
             if isinstance(event, dict):
@@ -902,20 +1159,39 @@ class LeveragePanel(ModalScreen[None]):
     @on(DataTable.RowSelected, "#leverage-positions")
     def position_selected(self, event):
         event.stop()
-        self.selected_position = str(event.row_key.value)
+        key = str(event.row_key.value)
+        self.selected_position = (
+            key.removeprefix("venue:") if key.startswith("venue:") else None
+        )
+        if key.startswith("paper:"):
+            self._set_result(
+                "Paper observation only; no live position is selected for Close."
+            )
         self._controls()
 
     @on(Button.Pressed)
     def button_pressed(self, event):
         event.stop()
         name = event.button.id
-        if name == "leverage-return":
+        if name in ("leverage-previous-bar", "leverage-current-bar"):
+            asset = self.query_one("#leverage-asset", Select).value
+            source = (self.snapshot_data or {}).get("quote_bars", {})
+            bars = source.get(asset, {}) if isinstance(source, dict) else {}
+            kind = "previous" if name == "leverage-previous-bar" else "current"
+            bar = bars.get(kind) if isinstance(bars, dict) else None
+            self._set_result(
+                f"{asset} {kind} 10m bar: {_summary(bar) if isinstance(bar, dict) else 'waiting for causal observations'}"
+            )
+        elif name == "leverage-return":
             self.action_return_to_oracle()
         elif name == "leverage-refresh":
             self.action_refresh()
         elif name == "leverage-arm":
+            if self._read_failed or not isinstance((self.snapshot_data or {}).get("enabled_venues"), list) or type((self.snapshot_data or {}).get("armed")) is not bool:
+                self._set_result("Arm state unavailable; refresh before changing it.")
+                return
             venue = self.query_one("#leverage-venue", Select).value
-            active = venue in (self.snapshot_data or {}).get("enabled_venues", [])
+            active = self.snapshot_data["armed"] and venue in self.snapshot_data["enabled_venues"]
             self.preview_id = None
             self._dispatch(
                 "set_venue_armed",

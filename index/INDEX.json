@@ -1,16 +1,16 @@
 {
-  "generatedAt": "2026-11-16T12:32:53+00:00",
+  "generatedAt": "2026-11-16T13:38:44+00:00",
   "schemaVersion": 1,
   "repoRoot": "~/dev/solmargintrader",
-  "commit": "5526b6f",
+  "commit": "6286bfc",
   "counts": {
-    "files": 3871,
-    "bytes": 138339214,
+    "files": 3873,
+    "bytes": 138366816,
     "byKind": {
       "strategy-card": 1478,
       "doc": 819,
-      "test": 442,
-      "code-python": 414,
+      "test": 443,
+      "code-python": 415,
       "config": 286,
       "result": 133,
       "code-js": 116,
@@ -23,7 +23,7 @@
     },
     "byTopDir": {
       "backtester": 1965,
-      "research": 466,
+      "research": 468,
       "soltui": 192,
       ".cdo": 161,
       "docs": 158,
@@ -59,7 +59,7 @@
       "archive": 1,
       "tradingskilllist": 1
     },
-    "withSummary": 3496
+    "withSummary": 3498
   },
   "files": [
     {
@@ -73870,9 +73870,9 @@
       "title": "Oracle leveraged controls and paper forward test",
       "summary": "The existing Oracle winner display now opens a separate panel with **L** or the Leverage button. The panel shows ZEC/BTC venue capabilities, frozen strategy rules, live Coinbase quotes and the durable paper ledger. It displays the full",
       "summarySource": "opening-prose",
-      "bytes": 8357,
-      "lines": 133,
-      "sha1": "a38f50c1f36e80060acf1fc5a6b7b421a6fd8138",
+      "bytes": 9098,
+      "lines": 135,
+      "sha1": "7d5ad4649d9d76d4f0f99e53a20b5a1d90cfa226",
       "symbols": [],
       "imports": [],
       "internalImports": [],
@@ -86891,11 +86891,11 @@
       "ext": ".md",
       "kind": "doc",
       "title": "Work continuation",
-      "summary": "Version: 586 Delta: v585 to v586; integrate nine provisional source adapters and common sensitivity report. Delta: v584 to v585; record measured depth cap and draft-only evidence status.",
+      "summary": "Version: 587 Delta: v586 to v587; extract leverage panel UI into an isolated delivery stage. Delta: v585 to v586; integrate nine provisional source adapters and common sensitivity report.",
       "summarySource": "opening-prose",
-      "bytes": 557694,
-      "lines": 2708,
-      "sha1": "6099723a570bc0adef802e7b3b6738c33cfa3f10",
+      "bytes": 558258,
+      "lines": 2713,
+      "sha1": "9409346d7708c59bff0d4122d5f39a6bc9d77f00",
       "symbols": [],
       "imports": [],
       "internalImports": [],
@@ -89982,11 +89982,11 @@
       "ext": ".md",
       "kind": "doc",
       "title": "Prompt history",
-      "summary": "Version: 264 Delta: v263 to v264; record the complete strategy research commission and scope restoration verbatim. Delta: v262 to v263; record the restored strategy research and ZigZag priority.",
+      "summary": "Version: 265 Delta: v264 to v265; identify the UI-only delivery stage of the previously recorded owner requests. Delta: v263 to v264; record the complete strategy research commission and scope restoration verbatim.",
       "summarySource": "opening-prose",
-      "bytes": 143725,
-      "lines": 2430,
-      "sha1": "5f54bffb2b598385c20fff73bbe978ff3522c210",
+      "bytes": 144115,
+      "lines": 2435,
+      "sha1": "f3a838bcf037efcb6396d52eadbfd7385fe90210",
       "symbols": [],
       "imports": [],
       "internalImports": [],
@@ -93218,6 +93218,33 @@
       "sha1": "d30a33ce0e1f45cdea2a1b7892f805665b573b13",
       "symbols": [],
       "imports": [],
+      "internalImports": [],
+      "frontmatter": {}
+    },
+    {
+      "id": "research/quote_bars.py",
+      "path": "research/quote_bars.py",
+      "dir": "research",
+      "name": "quote_bars.py",
+      "ext": ".py",
+      "kind": "code-python",
+      "title": "quote_bars",
+      "summary": "Read existing normalized quote captures without starting a recorder.",
+      "summarySource": "docstring",
+      "bytes": 4608,
+      "lines": 135,
+      "sha1": "724f54177db6bb8955e536d7e171556785b703eb",
+      "symbols": [
+        "class QuoteBars"
+      ],
+      "imports": [
+        "__future__",
+        "json",
+        "math",
+        "pathlib",
+        "re",
+        "zlib"
+      ],
       "internalImports": [],
       "frontmatter": {}
     },
@@ -98356,6 +98383,35 @@
       "frontmatter": {}
     },
     {
+      "id": "research/tests/test_quote_bars.py",
+      "path": "research/tests/test_quote_bars.py",
+      "dir": "research/tests",
+      "name": "test_quote_bars.py",
+      "ext": ".py",
+      "kind": "test",
+      "title": "test_quote_bars",
+      "summary": "Closed and developing bars reconstructed from recorded public quotes.",
+      "summarySource": "docstring",
+      "bytes": 2620,
+      "lines": 69,
+      "sha1": "767a2d2b64690519bd5aac6186df7a859d994fbd",
+      "symbols": [
+        "class QuoteBarTests"
+      ],
+      "imports": [
+        "gzip",
+        "json",
+        "pathlib",
+        "research",
+        "tempfile",
+        "unittest"
+      ],
+      "internalImports": [
+        "research"
+      ],
+      "frontmatter": {}
+    },
+    {
       "id": "research/tests/test_reversal_second_turn.py",
       "path": "research/tests/test_reversal_second_turn.py",
       "dir": "research/tests",
@@ -98861,9 +98917,9 @@
       "title": "test_zec_leverage_panel",
       "summary": "Real Textual controls, single-flight actions and owned worker teardown.",
       "summarySource": "docstring",
-      "bytes": 47421,
-      "lines": 1088,
-      "sha1": "dc382bdd0aa5ee4445d48bf4ea48ea25b1d0de93",
+      "bytes": 52367,
+      "lines": 1195,
+      "sha1": "248bcc0a8f3f6919fa9dbb268ad48d407a46ed00",
       "symbols": [
         "class ConsoleFixture",
         "class PanelHost",
@@ -101734,15 +101790,18 @@
       "title": "zec_leverage_panel",
       "summary": "Explicit trading controls and a read-only view of the durable paper trial. The panel owns only its UI workers. The forward collector belongs to its service, so closing this screen never stops a trial or starts a second collector.",
       "summarySource": "docstring",
-      "bytes": 40499,
-      "lines": 976,
-      "sha1": "87234bc07c86aae70f88510ba920e7b9b089dcc9",
+      "bytes": 54232,
+      "lines": 1252,
+      "sha1": "60bfa38659b9c9ce73aff5c8563dde4a3855486b",
       "symbols": [
         "default_home()",
         "_text()",
         "_summary()",
         "emphasized()",
         "comparison_text()",
+        "bar_view()",
+        "tilt_text()",
+        "mtf_tilt_text()",
         "wallet_text()",
         "live_market_text()",
         "class PositionTable",

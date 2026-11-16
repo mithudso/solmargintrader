@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-11-16T12:32:53+00:00",
+  "generatedAt": "2026-11-16T13:38:44+00:00",
   "schemaVersion": 1,
   "note": "Concepts are derived from the repo's own vocabulary \u2014 the FAMILY dict, strategy-card frontmatter, docs/trading-signals-concept-family.md, and terms verified to recur in the corpus. A concept matching no file is dropped, not kept.",
   "counts": {
@@ -161,7 +161,7 @@
         "universe",
         "top_coins"
       ],
-      "matchingFiles": 1745,
+      "matchingFiles": 1746,
       "shown": 30,
       "files": [
         {
@@ -245,11 +245,11 @@
           "hits": 43
         },
         {
-          "path": "research/REVERSAL-SHAPES.md",
-          "hits": 42
+          "path": "research/tests/test_zec_leverage_panel.py",
+          "hits": 43
         },
         {
-          "path": "research/tests/test_zec_leverage_panel.py",
+          "path": "research/REVERSAL-SHAPES.md",
           "hits": 42
         },
         {
@@ -578,7 +578,7 @@
         "perps",
         "solana"
       ],
-      "matchingFiles": 1045,
+      "matchingFiles": 1047,
       "shown": 30,
       "files": [
         {
@@ -607,7 +607,7 @@
         },
         {
           "path": "memory.md",
-          "hits": 244
+          "hits": 245
         },
         {
           "path": ".cdo/reviews-2026-11-12/ecosystem-combined-full-final.json",
@@ -650,12 +650,12 @@
           "hits": 114
         },
         {
-          "path": "prompts.md",
+          "path": "skills/trading-and-investing/SKILL.md",
           "hits": 109
         },
         {
-          "path": "skills/trading-and-investing/SKILL.md",
-          "hits": 109
+          "path": "prompts.md",
+          "hits": 108
         },
         {
           "path": "soltui/JUPITER_ORDER_WIDGET_IMPLEMENTATION_GUIDE.md",
@@ -714,7 +714,7 @@
         "macd",
         "ichimoku"
       ],
-      "matchingFiles": 905,
+      "matchingFiles": 906,
       "shown": 30,
       "files": [
         {
@@ -990,7 +990,7 @@
         "monotone",
         "gap"
       ],
-      "matchingFiles": 815,
+      "matchingFiles": 818,
       "shown": 30,
       "files": [
         {
@@ -1260,7 +1260,7 @@
         "benchmark",
         "baseline"
       ],
-      "matchingFiles": 570,
+      "matchingFiles": 575,
       "shown": 30,
       "files": [
         {
@@ -1394,7 +1394,7 @@
         "buy_and_hold",
         "baseline"
       ],
-      "matchingFiles": 498,
+      "matchingFiles": 503,
       "shown": 30,
       "files": [
         {
