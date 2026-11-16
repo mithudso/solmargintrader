@@ -1,9 +1,14 @@
 # Prompt history
 
-Version: 274
+Version: 277
+Delta: v276 to v277; record the owner screenshot of the stale working directory.
+Delta: v275 to v276; preserve the delivered feed controls/UI prompt alongside the streaming Oracle history.
 Delta: v273 to v274; integrate the feed controls and UI audit request.
 Delta: v271 to v272; integrate independent feed controls/UI audit with current-format SDK and host reply.
 Delta: v269 to v270; preserve feed controls and complete UI optimizer request.
+Delta: v274 to v275; preserve the delegated independent-review correction scope for the streaming Oracle.
+Delta: concurrent integration to v274; preserve streaming Oracle and merged compressed-index records.
+Delta: v272 to v273; record and execute the approved adaptive streaming Oracle prompt.
 Delta: v272 to v273; record the current optimizer and bootstrap request.
 Delta: v271 to v272; integrate extension reversal and owner host reply.
 Delta: v269 to v270; record the extension two-bar reversal and indicator request.
@@ -2484,6 +2489,7 @@ Redo the tests again but this time, instead of letting it ride until there's a s
 Put the positions and oracle calls on the right side of the /Users/mitch/.venvs/soltui/bin/python /Users/mitch/dev/solmargintrader/scripts/oracle_winners.py instead of having to scroll down, just add a 2nd column. Also At thte top have two large buttons that as the bars come in they highlight the bars red if they're downm, green if they're up, grey if flat, and it moves from right to left, so the right block moves to the left block and then the right one refreshes with the new bar. Make the make the price range distance from mean increase the color of the block, so a large dip would be very bright red, while a very small one would be very grey-red. And above them should be the 4 shape-times with a + or - next to it indicating whether or not the next block is more or less likely to come out higher or lower based on the shape, according to the backtest data.
 ```
 
+
 ## 2026-11-16 — Oracle feed controls and UI audit (TASK-2399)
 
 > In the /Users/mitch/.venvs/soltui/bin/python /Users/mitch/dev/solmargintrader/scripts/oracle_winners.py tui let me turn off either of the feeds, to cut down on noise. If I de-select coinbase remove all coinbase related items from the page until I re-enable coinbase.
@@ -2506,3 +2512,24 @@ The name of the box is M-GN90147X97, or m3, or work.
 ## Current-source optimizer request — 2026-11-16
 
 Run the deep UI optimizer on the /Users/mitch/.venvs/soltui/bin/python /Users/mitch/dev/solmargintrader/scripts/oracle_winners.py tui. And run the deep code optimizer, and the repo-bootstrapper.
+
+## Adaptive streaming Oracle extension — 2026-11-16
+
+```text
+Also add to the extension a streaming version of the oracle with predictions based on the data, but use the streaming data to train and inform the predictions. Make it a self correcting feedback loop. spin off an agent to do a full-suite skill research on real time machine learning streamning market data.
+```
+
+Execute the final approved optimized prompt byte-for-byte in docs/EXTENSION-STREAMING-ORACLE-PROMPT.md (SHA25606d3ffc424af00824dd0ea27f0b1fff09e80b4b1dd15ac4bcafa00367623a0d6). Structural optimization and native full-suite research are parent-owned; do not repeat optimization or claim unqualified research as published.
+
+
+## 2026-11-16 — delegated streaming Oracle review correction
+
+The parent requested these corrections after independent review. This is implementation-review continuation, not a new user model/target request:
+
+> Independent03978a9MLreviewfoundTWO MEDIUMdisplay/trust defects, fixred→greenbeforefinalreview/delivery: 1)panel.js:121-134 catches panelModelinvalidsnapshot andreturnswithout suspending/invalidationOracle. PreviousactivepredictioncanstayLIVEindefinitelywhilechart sayssignals unavailable. In catchsuspend/invalidateOracleview (historicalsame-sourceonlyifexplicitstale) andtestbadfeedthenfreshrecovery. 2)oracle-controller.js:29-30,46-48,52-55 spreads#lastduringconnecting/errorswithoutbindingincomingkey; oracle-view.js:39-55 rendersoldpartitionprediction+metricswhilefeedId/marketAddresscatalogrebindunverifiedorstoragefails. Clear/unavailableoldstateuntilcurrentidentityverifiedandloaded (orstrictlybindhistoricaldisplaytosamecurrentkeyexplicitly); add testsfromanALREADYTRAINEDoldcontroller, thensourceidentityswitchwithloaddelay/failure. Existingtestsfromemptydidn'tcoverthis. Sourcecorrectlearnercurrentgradient/score-before-learn/flatNONUPconfirmedbyreviewer, noempiricalqualityclaims. Role/root/streaming_oracle_code_reviewcompletedifneedfindingscontext. Fixonlyactualdefectswithoutrelaxingstagegates; exactsourcehashesnewreceipts+574-ishactualcountsdocscorrect. 307master15bbavailablegZip. Pushrecoverabledraftsourceaftergates/staticregen, keepunmergeduntilre-review+CI. Tests23/public8oldpassreceiptsretainbutnewaffectedgatesmustrerun. AllcmdINDEX_NO_AUTO=1. No extrauserpermissionneeded.
+
+## Owner screenshot — 2026-11-16
+
+[Image #1]
+
+The image shows a terminal reporting that getcwd cannot access a deleted parent directory.

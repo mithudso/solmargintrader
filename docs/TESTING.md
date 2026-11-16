@@ -64,7 +64,7 @@ acceptance and final-head CI remain separate release gates.
 python3 -m unittest discover -s backtester/tests -t .   # 1146 tests
 python3 -m unittest discover -s soltui/tests -t .       # 1582 tests (TUI dependencies required)
 python3 -m unittest discover -s mongo/tests -t .        # 57 tests
-cd extension && npm test                                # 552 tests
+cd extension && npm test                                # 574 tests
 python3 scripts/check_docs.py                           # these counts, and the retrieval indexes
 ```
 
@@ -74,20 +74,21 @@ locally with the command above, or manually dispatch CI with the boolean
 enabled. The full local suite was run during the 2026-11-12 audit. Its source
 binding and skipped tests are recorded in the audit report.
 
-3337 tests total in the four counted suites: backtester, soltui, mongo and extension. Additional component gates are listed below. `liquidity/` additionally has its own pytest suite in its own virtualenv; see `liquidity/README.md`.
+3359 tests total in the four counted suites: backtester, soltui, mongo and extension. Additional component gates are listed below. `liquidity/` additionally has its own pytest suite in its own virtualenv; see `liquidity/README.md`.
 
 Every count on this page is checked by `scripts/check_docs.py`, which counts the suites by
 discovery and fails on a stale figure. That exists because these numbers were wrong for
 several commits — the docs claimed 250 backtester tests while the suite had grown to 454, and
 nothing caught it.
 
-## Extension — what the 552 tests cover
+## Extension — what the 574 tests cover
 
 | Area | Examples |
 | --- | --- |
 | Live prediction score | Shared Python/browser vectors bind all five grades, accuracy/sample floors, freshness and equal strategy weighting. Headless TUI and Chrome checks prove aligned immutable tick scores, leftward motion, automatic ten-second prediction refresh, error recovery, non-overlapping reads, coin-switch reset and obsolete-response/error suppression |
 | Charts | the vendored Lightweight Charts file is the pinned 5.2.1 build (sha256), ships LICENSE and NOTICE; equity points map to ascending second-resolution line data (`test/charts.test.js`); `npm run e2e` draws it under the real extension CSP with the attribution link |
 | Jupiter1000x reversal window | Independent Python EMA/MACD/BOP and shape vectors; DD/UU closed-body context; prefix/future invariance; gaps, partial openings, stale data, history ordering, shared-stream minute context and aborts. The separate `npm run e2e:1000x` fixture exercises seven chart toggles and actual DOM/canvas/lifecycle behavior; `--live` separately checks public portal reads. No model probability, position or ROE is inferred |
+| Streaming Oracle | Analytical sigmoid/L2 gradients and proper-score arithmetic; stored-probability scoring with current-weight delayed gradients; flat-inclusive binary denominators; candidate/served/baseline separation; source isolation, unknown-label expiry, late older pending outcomes, bounded ledgers and controller/reload fencing. Already-trained invalid-input and source-rebind regressions verify unavailable displays, atomic saved evidence and fresh recovery. Native browser fixtures separately exercise real IndexedDB and actual extension contexts; synthetic fixture learning is not public-market performance |
 | Grid math | Arithmetic and geometric ladders against hand-computed values; endpoint pinning; degenerate configs rejected |
 | **Round-trip economics** | An exit rests one rung above its lot, never at the same level; `gross === notional × rungWidth` |
 | Planning | Lot aggregation (two lots on one rung produce **one** order, not a duplicate key); venue minimum; deadband; already-resting suppression |
