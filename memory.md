@@ -1,6 +1,7 @@
 # Work continuation
 
-Version: 578
+Version: 579
+Delta: v578 to v579; add research-only ZigZag paths, card and tests.
 Delta: v577 to v578; begin the owner-superseding RS ZigZag investigation.
 Delta: v576 to v577; record the Preview inspection fix and pending acceptance.
 Delta: v575 to v576; record the macOS shape-guide lifecycle failure and recovery.
@@ -2681,3 +2682,5 @@ The owner-supplied source remains untracked at `/Users/mitch/dev/solmargintrader
 The current screenshot shows COINBASE ZEC/USDC perpetual at 15 minutes, March 31–November 16, 2026; it reports 20,889.85% total P&L under zero commission and slippage. A prior report shows June 21–November 16 and 17,203.27%. Results, chart source history, input provenance and screenshot-to-code identity require independent validation. The source defaults to Pine v1 because its version annotation is omitted. Official TradingView documentation says legacy unoffset higher-timeframe `security` behaves like lookahead on; its line 20 uses a 60-minute request. This leaks future hourly information on historical 15-minute bars, conditional on executing that exact source.
 
 A separate private reference copy and its exact hash are recorded under `/Users/mitch/.local/state/zigzag-2333/`. The native research run is `run:ba37f1d11d0e8c021761b63f1b3e082290b832edfddd611920e8124e95f637a4`. Full dedup, independent research, trusted evidence gate, causal implementation and paired historical comparison remain. Protect active recording and existing holdouts.
+
+Research-only `/Users/mitch/dev/worktrees/rs-zigzag-2333/research/rs_zigzag.py` now contains a deliberately biased historical path, a confirmed-hour path and an explicitly approximate next-open cost/margin sensitivity. `/Users/mitch/dev/worktrees/rs-zigzag-2333/research/tests/test_rs_zigzag.py` passes nine focused tests including 10/15-minute prefix invariance and intentional legacy leakage. The source card is spec-only, not a registry entry. `uvx --offline ruff==0.17.4 check research/rs_zigzag.py research/tests/test_rs_zigzag.py` and `python3 scripts/check_tradingview_cards.py` pass. `python3 scripts/check_docs.py` failed because the Python environment lacks pandas; the isolated temporary package install was subject to an unavailable dependency-review advisory and was not used as proof. Independent audit, source-to-screenshot identity, exact venue history, full research gates and real-data comparisons remain.
