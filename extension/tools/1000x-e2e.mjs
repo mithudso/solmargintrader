@@ -21,6 +21,7 @@ const option = (name, fallback) => args.includes(name) ? args[args.indexOf(name)
 const EXT = path.resolve(option('--extension', process.env.EXTENSION_DIR || path.resolve(here, '..')));
 const LIVE = args.includes('--live');
 const ONLY_ORACLE = args.includes('--oracle-only');
+const ONLY_NATIVE = args.includes('--oracle-native-only');
 const OUT = path.resolve(option('--evidence', path.join(process.cwd(), 'artifacts', LIVE ? '1000x-live' : '1000x-fixture')));
 fs.mkdirSync(OUT, { recursive: true });
 const { launch, findChromeForTesting, sleep } = await import(pathToFileURL(path.join(EXT, 'e2e/lib/cdp.mjs')));
@@ -37,6 +38,7 @@ const receipt = { runner: '1000x-browser-gate', schema_version: 1, status: 'part
 const assert = (value, message) => { if (!value) throw new Error(message); };
 const same = (actual, expected, message) => assert(isDeepStrictEqual(actual, expected), `${message}: ${JSON.stringify(actual)} != ${JSON.stringify(expected)}`);
 async function check(name, fn) {
+  if (ONLY_NATIVE && !/native legacy10m|native IndexedDB96|executed overlay|new extension|all seven|network guard|only local/.test(name)) return null;
   if (ONLY_ORACLE && !/streaming Oracle|two actual extension windows|native IndexedDB|executed overlay|new extension|all seven|network guard|only local/.test(name)) return null;
   try { const detail = await fn(); receipt.checks.push({ name, ok: true, detail }); console.log(`ok - ${name}`); return detail; }
   catch (error) { receipt.checks.push({ name, ok: false, error: error.message }); receipt.details.mismatches.push({ name, error: error.message }); console.log(`FAIL - ${name}: ${error.message}`); return null; }
@@ -485,12 +487,70 @@ try {
         await setClock(fixture.state.clockOffsetMs + 60000, [portal, panel, twin]);
         const after = await until(async () => { const states = await oracleStates(panel); return states.length === 6 && states.every(s => s.model.n === before.find(old => old.key === s.key).model.n + 1) ? states : null; }, 'all models learned despite chart failure');
         const ui = await until(async () => { const s = await panelSnapshot(panel); return s.oracle.horizon === 3600 && s.oracle.overview.every(row => row.state === 'active') ? s : null; }, 'healthy all-horizon overview during chart error');
-        same(ui.state, 'error', 'chart unexpectedly bypassed refusal'); same(fixture.state.upgrades, upgrades, 'chart error replaced shared socket');
+        assert(ui.state !== 'live' && ui.rows.every(row => /Unavailable|Waiting for live/.test(row.signal)), 'chart unexpectedly bypassed refusal'); same(fixture.state.upgrades, upgrades, 'chart error replaced shared socket');
         return { before: before.map(s => ({ horizon: JSON.parse(s.key)[4], n: s.model.n })), after: after.map(s => ({ horizon: JSON.parse(s.key)[4], n: s.model.n })), ui: ui.oracle };
       } finally {
         fixture.state.chartFailure = false;
         await ev(panel, `(()=>{const s=document.querySelector('#timeframe');s.value='600';s.dispatchEvent(new Event('change'))})()`); await fresh();
       }
+    });
+    await check('streaming Oracle native legacy10m persistence and actual-view delayed stale completion preserve honest history', async () => {
+      const legacy = JSON.parse(fs.readFileSync(path.join(EXT, 'test/fixtures/oracle-0.9-10m-state.json'), 'utf8'));
+      const reference = JSON.parse(fs.readFileSync(path.join(EXT, 'test/fixtures/oracle-model-0.9-provenance.json'), 'utf8'));
+      same(SHA(fs.readFileSync(path.join(EXT, 'e2e/fixtures/oracle-model-0.9.mjs'))), reference.fixture_sha256, 'frozen0.9 reference source');
+      receipt.details.observations.push({ legacy_browser_reference: reference });
+      return ev(panel, `(async()=>{
+        const {OracleStore}=await import(chrome.runtime.getURL('src/1000x/oracle-store.js'));
+        const {OracleController}=await import(chrome.runtime.getURL('src/1000x/oracle-controller.js'));
+        const {oracleView}=await import(chrome.runtime.getURL('src/1000x/oracle-view.js'));
+        const old=await import(chrome.runtime.getURL('e2e/fixtures/oracle-model-0.9.mjs'));
+        const current=await import(chrome.runtime.getURL('src/1000x/oracle-model.js'));
+        const fixture=${JSON.stringify(legacy)};let original;
+        const factory={open:(name,version)=>indexedDB.open(name+'-legacy-fixture',version)};
+        const store=new OracleStore(factory), mount=document.createElement('section');document.body.append(mount);
+        let clock, view, defer=false;const releases=[];
+        const wait=async fn=>{for(let i=0;i<1000;i++){if(fn())return;await new Promise(r=>setTimeout(r,5))}throw new Error('legacy native wait '+JSON.stringify({error:view?.error,rows:Object.values(view?.horizons||{}).map(v=>({horizon:v.horizon,error:v.error,n:v.state?.model.n})),release_count:releases.length}))};
+        const rows=Array.from({length:1400},(_,i)=>({time:fixture.base+i*60,open:100+i/100,high:100.02+i/100,low:99.99+i/100,close:100.01+i/100,closed:true}));
+        const snapshot=()=>({symbol:'SOL',sourceIdentity:{symbol:'SOL',feedId:6,marketAddress:'Ew8sRjpuBttpmhSUeaAn4dLAegWnz55AuafVcGuojCPS',stream:'fixed_rate@200ms',kind:'oracle-ohlc'},status:'live',minuteStatus:'ready',minuteCandles:rows,quote:{price:110,exchangeMs:clock,receivedMs:clock}});
+        // Run the frozen0.9 source in the actual browser. A Node-authored golden
+        // JSON is not a browser checkpoint: engine libm can differ by one ULP.
+        for(let minute=1000;minute<=1030;minute++){clock=(fixture.base+minute*60)*1000+2000;original=old.transitionOracle(original,old.oracleInput(snapshot(),clock)).state}
+        if(original.key!==fixture.state.key||original.model.n!==21||original.issued!==31)throw new Error('browser0.9 reference identity/count mismatch');
+        let crossEngineDifferences=0;
+        for(const f of fixture.state.recent)for(const [name,p] of [['candidate',f.p],['served',f.servedP],['baseline',f.baselineP]]){
+          const expected=current.score(p,f.y);for(const metric of ['hit','brier','logLoss'])if(f.scores[name][metric]!==expected[metric])crossEngineDifferences++;
+        }
+        const render=oracleView(mount), c=new OracleController({clock:()=>clock,onChange:v=>{view=v;render(v)},store:{
+          update:async(key,reduce)=>{const result=await store.update(key,reduce);return defer?new Promise(resolve=>releases.push(()=>resolve(result))):result},
+          cancelPending:()=>store.cancelPending(),close:()=>store.close()}});
+        try{
+          await store.update(original.key,()=>({state:original,changed:true}));c.observe(snapshot());
+          await wait(()=>view?.state?.model.n===21&&Object.values(view.horizons).every(v=>v.state));
+          const restored=(await store.update(original.key,state=>({state,changed:false}))).state;
+          if(JSON.stringify(restored)!==JSON.stringify(original))throw new Error('legacy weights/pending/metrics changed');
+          for(const v of Object.values(view.horizons))if(v.horizon!==600&&(v.state.model.n!==0||v.state.historicalTrainingSamples!==0))throw new Error('new horizon retrospective training');
+          defer=true;clock+=60000;c.observe(snapshot());await wait(()=>releases.length===6);
+          c.observe({...snapshot(),status:'stale'});
+          const immediate={state:mount.dataset.state,trained:mount.querySelector('#oracle-counts').dataset.trained,prediction:mount.querySelector('#oracle-prediction').textContent};
+          if(immediate.state!=='waiting'||immediate.trained!=='21'||!immediate.prediction.includes('Historical stored'))throw new Error('stale input cleared or activated known evidence');
+          releases.splice(0).forEach(release=>release());await wait(()=>view?.state?.model.n===22);
+          if(view.inputReady||mount.dataset.state!=='waiting'||![...mount.querySelectorAll('#oracle-horizons tbody tr')].every(r=>r.dataset.state==='waiting'))throw new Error('late completion reactivated a stale horizon');
+          const result={legacy_key:original.key,legacy_trained:21,resumed_trained:22,immediate,late_input_ready:view.inputReady,all_six_historical:true,native_indexeddb:true,node_browser_score_differences:crossEngineDifferences,reference_source:'frozen0.9 executed inside the real browser; no validation or score was relaxed'};
+          c.stop();const reopen=new OracleStore(factory);
+          try{const saved=await reopen.update(original.key,state=>({state,changed:false}));if(saved.state.model.n!==22)throw new Error('native restart lost learned state')}finally{reopen.close()}
+          return result;
+        }finally{c.stop();mount.remove()}
+      })()`);
+    });
+    await check('native IndexedDB96-partition capacity refuses new evidence without evicting or blocking existing updates', async () => {
+      return ev(panel, `(async()=>{const {OracleStore}=await import(chrome.runtime.getURL('src/1000x/oracle-store.js'));const {ORACLE}=await import(chrome.runtime.getURL('src/1000x/oracle-model.js'));
+        const store=new OracleStore({open:(name,version)=>indexedDB.open(name+'-capacity-fixture',version)});
+        try{for(let i=0;i<ORACLE.maxPartitions;i++)await store.update('capacity-fixture-'+i,()=>({state:{count:1},changed:true}));
+          let refusal;try{await store.update('capacity-fixture-extra',()=>({state:{count:1},changed:true}))}catch(error){refusal=error.message}
+          if(refusal!=='oracle_partition_capacity')throw new Error('native capacity did not refuse');
+          const existing=await store.update('capacity-fixture-0',state=>({state:{count:state.count+1},changed:true}));
+          if(existing.state.count!==2)throw new Error('capacity blocked or reset existing evidence');return {capacity:ORACLE.maxPartitions,refusal,existing_count:existing.state.count,native_indexeddb:true};
+        }finally{store.close()}})()`);
     });
     await check('streaming Oracle invalid analytics clears an active trained display and fresh history restores its evidence', async () => {
       const before = await oracleSnapshot(panel);
@@ -513,7 +573,7 @@ try {
     await check('native IndexedDB abort/reload preserves counters and unknown outcomes stay outside learning', async () => {
       await browser.call('Page.bringToFront', {}, portal.sessionId);
       console.log('Oracle recovery fixture: reading checkpoint');
-      const before = await oracleSnapshot(panel);
+      const before = await oracleSnapshot(panel), beforeAll = await oracleStates(panel);
       console.log('Oracle recovery fixture: aborting a native transaction');
       const abort = await ev(panel, `(async()=>{const {OracleStore}=await import(chrome.runtime.getURL('src/1000x/oracle-store.js'));const store=new OracleStore();try{await store.update(${JSON.stringify('PLACEHOLDER')},()=>{throw new Error('fixture abort')});return false}catch{return true}finally{store.close()}})()` .replace(JSON.stringify('PLACEHOLDER'), JSON.stringify(before.key)));
       assert(abort, 'native transaction did not reject'); same(await oracleSnapshot(panel), before, 'aborted transition changed model');
@@ -524,6 +584,7 @@ try {
       panel = await findPanel('ORCL'); await fresh();
       const restored = await until(async () => { const s = await oracleSnapshot(panel); return s?.model.n === before.model.n ? s : null; }, 'reloaded native learner');
       same(restored.pending, before.pending, 'reload changed pending features/probabilities'); same(restored.totals, before.totals, 'reload changed metrics');
+      same(await oracleStates(panel), beforeAll, 'reopening changed a nonselected model ledger');
       console.log('Oracle recovery fixture: advancing past unknown outcomes');
       fixture.state.history = 'none';
       await setClock(fixture.state.clockOffsetMs + 15 * 60000, [portal, panel, twin]);
@@ -534,6 +595,7 @@ try {
         throw error;
       });
       same(expired.model.n, before.model.n, 'unknown outcomes trained'); same(expired.totals.n, before.totals.n, 'unknown outcomes scored');
+      for (const s of await oracleStates(panel)) { const old = beforeAll.find(row => row.key === s.key); same(s.model.n, old.model.n, 'unknown nonselected outcome trained'); same(s.totals.n, old.totals.n, 'unknown nonselected outcome scored'); }
       await until(() => ev(panel, `document.querySelector('#oracle-prediction').textContent.includes('resolved UP')`), 'resolved forecast retains its known label after pending expiry');
       await browser.call('Target.closeTarget', { targetId: twin.targetId }); twin = null;
       fixture.state.history = 'full'; fixture.state.oracleMode = false; await setClock(0, [portal, panel]);
@@ -549,6 +611,8 @@ try {
       assert(observed?.oracle, 'public Oracle UI snapshot absent');
       same(observed.oracle.trained, 0, 'new public profile fabricated training samples');
       same(observed.oracle.resolved, 0, 'new public profile fabricated resolved accuracy');
+      same(observed.oracle.overview.length, 6, 'actual public all-horizon overview');
+      assert(observed.oracle.overview.every(row => row.trained === 0 && row.resolved === 0), 'new public horizon fabricated trained/resolved evidence');
       assert(/NON-UP|No issued forecast|unavailable/.test(observed.oracle.prediction), 'public target availability label missing');
       return observed.oracle;
     });

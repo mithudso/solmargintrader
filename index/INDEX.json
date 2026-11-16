@@ -1,19 +1,19 @@
 {
-  "generatedAt": "2026-11-16T19:56:24+00:00",
+  "generatedAt": "2026-11-16T20:23:59+00:00",
   "schemaVersion": 1,
   "repoRoot": "~/dev/solmargintrader",
-  "commit": "ed7f4bd",
+  "commit": "c3847d0",
   "counts": {
-    "files": 3946,
-    "bytes": 140312231,
+    "files": 3950,
+    "bytes": 140362824,
     "byKind": {
       "strategy-card": 1478,
       "doc": 837,
-      "test": 467,
+      "test": 470,
       "code-python": 430,
       "config": 288,
       "result": 133,
-      "code-js": 128,
+      "code-js": 129,
       "other": 107,
       "data": 35,
       "code-web": 16,
@@ -27,7 +27,7 @@
       "soltui": 192,
       "docs": 174,
       ".cdo": 161,
-      "extension": 153,
+      "extension": 157,
       "(root)": 94,
       "botmanager": 91,
       "website": 90,
@@ -59,7 +59,7 @@
       "archive": 1,
       "tradingskilllist": 1
     },
-    "withSummary": 3539
+    "withSummary": 3541
   },
   "files": [
     {
@@ -73649,9 +73649,9 @@
       "title": "Streaming Oracle in the Jupiter indicator window",
       "summary": "Version: 2.0.0. Delta: train all six horizons independently, preserve0.9 evidence and fence latest shared-input eligibility. The extension's existing public-read window now contains a streaming Oracle. It reuses the validated Pyth stream and bounded one-minute history already owned by",
       "summarySource": "opening-prose",
-      "bytes": 14329,
-      "lines": 237,
-      "sha1": "c444c0cb6f828b4047aa097314adcd2957d9f0ad",
+      "bytes": 16245,
+      "lines": 266,
+      "sha1": "95efa446597d07c821a1611e6e65d2f6abab45c1",
       "symbols": [],
       "imports": [],
       "internalImports": [],
@@ -75857,9 +75857,9 @@
       "title": "high_signal_file_index",
       "summary": "Generated JSON object, 4 keys ($comment, repo, components, files).",
       "summarySource": "derived",
-      "bytes": 69866,
-      "lines": 2277,
-      "sha1": "4a65faf4bd20b96611ff0fbd57db28fea827f5f2",
+      "bytes": 69885,
+      "lines": 2278,
+      "sha1": "236f434a9bd6672c05323a0323511963bbaeac8c",
       "symbols": [],
       "imports": [],
       "internalImports": [],
@@ -81597,6 +81597,26 @@
       "frontmatter": {}
     },
     {
+      "id": "extension/src/1000x/timeframes.js",
+      "path": "extension/src/1000x/timeframes.js",
+      "dir": "extension/src/1000x",
+      "name": "timeframes.js",
+      "ext": ".js",
+      "kind": "code-js",
+      "title": "timeframes",
+      "summary": "One supported-horizon catalog for chart selection and independent learners.",
+      "summarySource": "docstring",
+      "bytes": 421,
+      "lines": 10,
+      "sha1": "91203353b1afda6e107bd792caf647c288ec1524",
+      "symbols": [
+        "TIMEFRAMES"
+      ],
+      "imports": [],
+      "internalImports": [],
+      "frontmatter": {}
+    },
+    {
       "id": "extension/src/bg/live-windows.js",
       "path": "extension/src/bg/live-windows.js",
       "dir": "extension/src/bg",
@@ -83426,6 +83446,24 @@
       "frontmatter": {}
     },
     {
+      "id": "extension/test/1000x-oracle-horizons.test.js",
+      "path": "extension/test/1000x-oracle-horizons.test.js",
+      "dir": "extension/test",
+      "name": "1000x-oracle-horizons.test.js",
+      "ext": ".js",
+      "kind": "test",
+      "title": "1000x-oracle-horizons.test",
+      "summary": "",
+      "summarySource": "none",
+      "bytes": 6820,
+      "lines": 108,
+      "sha1": "b9fa258e9fafc340d6ce213f40923dec77576bea",
+      "symbols": [],
+      "imports": [],
+      "internalImports": [],
+      "frontmatter": {}
+    },
+    {
       "id": "extension/test/1000x-oracle-model.test.js",
       "path": "extension/test/1000x-oracle-model.test.js",
       "dir": "extension/test",
@@ -83440,6 +83478,26 @@
       "sha1": "0f0b06964e5ee33305e567bbdf472492d0e81ef1",
       "symbols": [
         "input"
+      ],
+      "imports": [],
+      "internalImports": [],
+      "frontmatter": {}
+    },
+    {
+      "id": "extension/test/1000x-oracle-view.test.js",
+      "path": "extension/test/1000x-oracle-view.test.js",
+      "dir": "extension/test",
+      "name": "1000x-oracle-view.test.js",
+      "ext": ".js",
+      "kind": "test",
+      "title": "1000x-oracle-view.test",
+      "summary": "",
+      "summarySource": "none",
+      "bytes": 3400,
+      "lines": 58,
+      "sha1": "5de5338d9e55c5357380c94ba8f5bb59cd736cf7",
+      "symbols": [
+        "class Element"
       ],
       "imports": [],
       "internalImports": [],
@@ -83784,6 +83842,24 @@
       "bytes": 90642,
       "lines": 2,
       "sha1": "d9b06d0c740f9707410d412d114881fc44df6161",
+      "symbols": [],
+      "imports": [],
+      "internalImports": [],
+      "frontmatter": {}
+    },
+    {
+      "id": "extension/test/fixtures/oracle-0.9-10m-state.json",
+      "path": "extension/test/fixtures/oracle-0.9-10m-state.json",
+      "dir": "extension/test/fixtures",
+      "name": "oracle-0.9-10m-state.json",
+      "ext": ".json",
+      "kind": "test",
+      "title": "oracle-0.9-10m-state",
+      "summary": "Generated JSON object, 3 keys (provenance, base, state).",
+      "summarySource": "derived",
+      "bytes": 27283,
+      "lines": 2,
+      "sha1": "56ee059a98c658ebfa9872644f9590f0b0325e7b",
       "symbols": [],
       "imports": [],
       "internalImports": [],
@@ -84304,14 +84380,15 @@
       "title": "1000x-e2e",
       "summary": "Read-only 1000x overlay browser gate. No dependencies; uses real CfT and the repository CDP transport. Default is a deterministic public-contract fixture. --live separately visits the actual public portal; it never connects a wallet. Fixture: real browser fetch + native WebSocket to an ephemeral loopback server. Only the exact public stream URL is mapped; source modules are never replaced.",
       "summarySource": "docstring",
-      "bytes": 63955,
-      "lines": 588,
-      "sha1": "2d3ac14d1aaac635a037ed41c857450d00f3f52e",
+      "bytes": 71609,
+      "lines": 652,
+      "sha1": "fa0b6adcf2fe4fb824d5671142573ef0097ab563",
       "symbols": [
         "CATALOG",
         "EXT",
         "HISTORY",
         "LIVE",
+        "ONLY_NATIVE",
         "ONLY_ORACLE",
         "OUT",
         "PORTAL",
@@ -87801,11 +87878,11 @@
       "ext": ".md",
       "kind": "doc",
       "title": "Work continuation",
-      "summary": "Version: 612 Delta: v611 to v612; implement six independent horizon models, shared-minute/chart separation and stale-completion regression coverage. Delta: v610 to v611; begin isolated all-horizon learning and same-source stale-completion repair.",
+      "summary": "Version: 613 Delta: v612 to v613; qualify all-horizon source, independent replay and full native/public gates with unchanged reviewed runtime. Delta: v611 to v612; implement six independent horizon models, shared-minute/chart separation and stale-completion regression coverage.",
       "summarySource": "opening-prose",
-      "bytes": 611656,
-      "lines": 2960,
-      "sha1": "2ff89f7bdd55156e040adc8c7131d6025ebd77e2",
+      "bytes": 614736,
+      "lines": 2972,
+      "sha1": "1c2c04315f94a78fdd98ab0f37c2a917c84e5457",
       "symbols": [],
       "imports": [],
       "internalImports": [],
@@ -117718,5 +117795,5 @@
       "frontmatter": {}
     }
   ],
-  "textSha256": "0fb41480bd7a416ba17bbdcbf6dbd558ab5da74ee792848ff6f64170a5afa221"
+  "textSha256": "745708e8c61b542cbff42316e703d78af3084d62c63b2bc85f8d46e1c8f0d612"
 }

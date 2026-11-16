@@ -84,8 +84,10 @@ probabilities and serving mode are never rewritten.
 
 Every candidate forecast has a paired, fixed 0.5 no-learning baseline for the
 same event. The existing0–3 indicator alignment is not a probability baseline.
-The first 20 resolved samples serve a labeled0.5 baseline while candidate
-shadow forecasts continue to collect labels and learn. Cold start therefore
+While fewer than20 genuine outcomes have trained a horizon, each newly issued
+forecast serves a labeled0.5 baseline while the candidate continues collecting
+labels and learning. This can span many more than20 issued forecasts for long
+horizons because their feedback is delayed. Cold start therefore
 has a path to a trained model.
 
 After at least 30 recent outcomes, a declared heuristic serves the baseline if
@@ -224,13 +226,40 @@ Candidate counts, completed checks, exact loaded module hashes and final
 delivery limitations belong in the delivery receipt. A pushed draft or passing
 source tests alone is not canonical installation or a merged release.
 
-The accepted0.9 checkpoint's source/native/public receipts remain historical
-evidence for that version. The0.10 candidate has598 source tests, including all
-six exact target windows, causal-prefix/future mutation, gaps/partials/expiry,
-legacy trained10m persistence,1h pending beyond32, all-six deselected learning,
-independent fallback/capacity and both sides of the same-source completion race.
-Native browser and public gates for the new bytes are pending at this checkpoint;
-no prior0.9 receipt is claimed to cover0.10. Final receipts and source hashes will
-be recorded under`/Users/mitch/.local/state/oracle-all-timeframes-2414/`. Parent
-independent review, final-head CI, merge and canonical loaded migration remain
-separate gates. No actual-market performance is inferred from synthetic clocks.
+The0.10 candidate passed598/598 extension tests and root JavaScript checks.
+Its direct tests cover all six exact target windows, causal-prefix/future
+mutation, gaps/partials/expiry, trained0.9 key/weights/pending/score compatibility,
+1h pending beyond32, all-six deselected learning, independent fallback/capacity
+and both sides of the same-source completion race. Independent read-only review
+found no corroborated Medium-or-higher issue across all ten runtime files,
+passed65 focused cases and exactly matched121 complete old/new ten-minute
+state transitions (121 issued,111 trained,10 pending).
+
+The complete native Chrome fixture passed27/27 and actual public gate passed8/8
+with exact loaded0.10.0 asset hashes. Two actual contexts produced82 immutable
+forecasts per horizon; observed trained counts were81/77/72/67/62/22 for
+1m/5m/10m/15m/20m/1h, with60 genuine pending1h forecasts. Selected-chart
+failure left all six learning on the same sockets. Native abort/reopen and
+unknown outcomes preserve each model's separate evidence. A quarantined native
+store refused partition97 without evicting records or blocking existing updates.
+
+A separate quarantined native test executes the frozen0.9 model source inside
+Chrome, preserves its21-sample ten-minute weights/pending/scores exactly, and
+resumes to22 samples. Its actual DOM retains historical counts immediately on
+stale input and after all six earlier commits complete. The original Node-made
+golden JSON had one score-field difference under Chrome's math and was correctly
+refused. The browser reference therefore uses the original model in its own
+engine; no validation threshold, stored score or production equation was relaxed.
+Earlier25/27 and6/7 harness receipts remain preserved. The first chart-refusal
+assertion incorrectly required a fixed error label while fresh quotes can change
+that withheld chart status to backfilling; the final assertion checks non-live
+chart status and unavailable signals while all six models remain independent.
+
+Receipts are under
+`/Users/mitch/.local/state/oracle-all-timeframes-2414/browser-fixture-final/` and
+`/Users/mitch/.local/state/oracle-all-timeframes-2414/browser-public-first/`.
+The real public fresh profile shows six initialized models with zero trained/
+resolved outcomes, without fabricated accuracy. Synthetic counts and scores
+prove implementation/accounting, not market accuracy, calibration or profit.
+Parent final-head CI, merge and canonical installed-profile migration remain
+separate gates. The historical approved prompt remains byte-identical.
