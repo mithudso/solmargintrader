@@ -387,6 +387,9 @@ class PaperLedger:
             "unscored": 0,
             "settled": 0,
             "profitable": 0,
+            "target_touched": 0,
+            "target_filled": 0,
+            "modeled_realized_pnl_usd": 0.0,
         }
         for row in rows:
             status = row["status"]
@@ -398,6 +401,13 @@ class PaperLedger:
                 result["settled"] += 1
                 state = json.loads(row["state_json"])
                 result["profitable"] += int(state.get("payout", 0) > PAPER_MARGIN)
+                result["target_touched"] += int(
+                    state.get("target_first_us") is not None
+                )
+                result["target_filled"] += int(bool(state.get("target_filled")))
+                result["modeled_realized_pnl_usd"] += (
+                    state.get("payout", 0) - PAPER_MARGIN
+                ) / 1_000_000
         return result
 
 
@@ -408,6 +418,7 @@ class Exit50Forward:
         models,
         *,
         policies=None,
+        profile=None,
         public=None,
         clock=time.time,
         stop_event=None,
@@ -429,6 +440,26 @@ class Exit50Forward:
             "leverage": 1000,
             "delay_s": 10,
         }
+        self.not_before_s = 0
+        if profile is not None:
+            raw = Path(profile).read_bytes()
+            spec = _json(raw)
+            if (
+                not isinstance(spec, dict)
+                or spec.get("schema") != "exit50-paper-profile/v1"
+                or spec.get("model_sha256") != self.model_sha
+                or spec.get("policy_sha256") != self.policy_sha
+                or spec.get("core_sha256") != self.binding["core_sha256"]
+                or spec.get("observer_sha256")
+                != hashlib.sha256(Path(__file__).read_bytes()).hexdigest()
+                or not isinstance(spec.get("not_before_s"), int)
+                or isinstance(spec.get("not_before_s"), bool)
+                or spec["not_before_s"] <= 0
+            ):
+                raise ValueError("invalid_paper_profile")
+            self.not_before_s = spec["not_before_s"]
+            self.binding["profile_sha256"] = hashlib.sha256(raw).hexdigest()
+            self.binding["not_before_s"] = self.not_before_s
         self.ledger = PaperLedger(self.parent.home, self.binding, clock=clock)
         self.rows = {asset: self.ledger.history(asset) for asset in FEEDS}
         self.history_due = dict.fromkeys(FEEDS, 0.0)
@@ -569,6 +600,8 @@ class Exit50Forward:
             self.assets[asset]["signal"] = "waiting-next-10m-setup"
             return
         decision = boundary if family == "confirmed_uu" else boundary + 540
+        if decision < self.not_before_s:
+            return
         if (
             rows[-1][0] + 60 != decision
             or _epoch(self.bundle["models"][asset][family]["trained_through"])
@@ -775,7 +808,9 @@ class Exit50Forward:
                 mark / 10**12 if mark is not None else None,
                 opening[1] if opening else None,
             )
-            self.assets[asset].update(position_status="waiting", intent=None, roe=None)
+            self.assets[asset].update(
+                position_status="waiting", intent=None, roe=None, pnl_usd=None
+            )
         for row in self.ledger.active():
             state = json.loads(row["state_json"]) if row["state_json"] else None
             data = self.assets[row["asset"]]
@@ -803,6 +838,7 @@ class Exit50Forward:
                     "SHORT",
                 )
                 data["roe"] = (q["payout"] - PAPER_MARGIN) / PAPER_MARGIN
+                data["pnl_usd"] = (q["payout"] - PAPER_MARGIN) / 1_000_000
         self.parent.put_meta("exit50_forward", self.snapshot())
 
     def snapshot(self, status="observing"):
@@ -817,8 +853,11 @@ class Exit50Forward:
                     "side": "short",
                     "status": asset_data.get("position_status", row["status"]),
                     "roe": asset_data.get("roe"),
+                    "pnl_usd": asset_data.get("pnl_usd"),
                     "target_roe": 0.5,
                     "intent": state.get("intent"),
+                    "target_touched": state.get("target_first_us") is not None,
+                    "target_filled": bool(state.get("target_filled")),
                     "source": "PAPER",
                 }
             )
@@ -830,7 +869,7 @@ class Exit50Forward:
             "binding": self.binding,
             "assets": self.assets,
             "performance": self.ledger.performance(),
-            "semantics": "Archive-verified oracle proxy; simulated 10s exit delay is not measured submission or fill latency. Modeled trade fees only; chain and keeper fees excluded; no fills verified.",
+            "semantics": "Sampled oracle proxy; prices between 200ms samples and keeper behavior are unknown. Simulated 10s delay is not measured fill latency. Modeled trade fees only; chain and keeper fees excluded; no fills verified.",
         }
 
     def run(self):
@@ -851,12 +890,17 @@ def main(argv=None):
     parser.add_argument("--home", default=default_home())
     parser.add_argument("--models", required=True, type=Path)
     parser.add_argument(
+        "--profile", required=True, type=Path, help="Frozen prospective paper profile"
+    )
+    parser.add_argument(
         "--policies",
         type=Path,
         help="Frozen validation-selected per-asset policy; omission uses explicit experimental fallback",
     )
     args = parser.parse_args(argv)
-    worker = Exit50Forward(args.home, args.models, policies=args.policies)
+    worker = Exit50Forward(
+        args.home, args.models, policies=args.policies, profile=args.profile
+    )
     for number in (signal.SIGINT, signal.SIGTERM):
         signal.signal(number, lambda *_: worker.stop_event.set())
     worker.run()

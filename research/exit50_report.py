@@ -43,6 +43,14 @@ def eligible_count(candidates, family, filter_name, split):
 def render_report(results, model_sha, source_ids, l2=None, l2_id=None):
     variants_by_asset = {asset: results[asset]["variants"] for asset in ("BTC", "ZEC")}
     policies = policy_bundle(model_sha, variants_by_asset)
+    selected_validation = {
+        asset: next(
+            v
+            for v in results[asset]["variants"]
+            if v["id"] == results[asset]["selected"]["id"]
+        )["validation"]
+        for asset in ("BTC", "ZEC")
+    }
     lines = [
         "# BTC and ZEC 10-minute exit50 retrospective",
         "",
@@ -51,6 +59,10 @@ def render_report(results, model_sha, source_ids, l2=None, l2_id=None):
         "The paper model uses 10 JupUSD collateral, 1000x notional, fee-aware exact integer liquidation and the frontend payout formula. The first target or completed-minute EMA/MACD exit intent latches; close submission waits at least 15 seconds since entry, then the main scenario assumes 10 seconds to close. Liquidation has priority through the simulated close. A filled 50% target means the modeled payout is at least 1.5 times collateral; it is not a real venue fill.",
         "",
         "The selector ranks each asset independently by validation modeled trade-fee-only mean ROE, requires at least 30 scored validation entries, and uses count then stable ID for ties. Only target+momentum, 10-second delay, and live-available shape or shape+BOP filters qualify; fallback is explicitly experimental. Final-test outcomes do not select. All returns exclude unverified entry/network/keeper costs.",
+        "",
+        f"Selected validation mean modeled ROE: BTC {pct(selected_validation['BTC']['mean_roe'])} over {selected_validation['BTC']['n']} scored entries; ZEC {pct(selected_validation['ZEC']['mean_roe'])} over {selected_validation['ZEC']['n']}. These are relative paper-monitoring hypotheses, not evidence of a profitable or reliable edge. Selection among variants and the reused history limit interpretation.",
+        "",
+        f"Frozen family-model SHA-256: `{model_sha}`. The independent numerical review covered 48,468 terminal times, 46,101 retained outcomes, 168 variants and 504 summaries, overlap/paired IDs, source bindings and EMA flags. Independent rederivation of training cell counts, shape labels, BTC taker-input transcription and native-pack readback was outside that review. Review receipt SHA-256: `50310f2e0dd6a4d312bd1c63ed7316bfd037093652836c6b8d8b74bc77e0b03c`.",
         "",
     ]
     for asset in ("BTC", "ZEC"):
@@ -138,6 +150,38 @@ def render_report(results, model_sha, source_ids, l2=None, l2_id=None):
                         ),
                     )
                 )
+        lines += [
+            "",
+            "### Exit and close-delay sensitivity",
+            "",
+            "These are fixed predeclared alternatives on the selected family and filter; each is a separate one-position run and can take a different set of entries. The final split is descriptive and never reranks the policy.",
+            "",
+            "| Split, exit, delay seconds | Eligible | Attempted | Scored | Unscored | Bar3 down / known | Target touched | Closed at >=50% | Liquidations | Mean modeled fee-only ROE |",
+            "| --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: |",
+        ]
+        for split in ("validation", "test"):
+            for exit_name in ("fixed", "second_turn", "target", "target_momentum"):
+                for delay in (0, 5, 10):
+                    v = next(
+                        v
+                        for v in result["variants"]
+                        if v["family"] == selected["family"]
+                        and v["filter"] == selected["filter"]
+                        and v["exit"] == exit_name
+                        and v["delay_seconds"] == delay
+                    )
+                    lines.append(
+                        line(
+                            f"{split} {exit_name} {delay}s",
+                            v[split],
+                            eligible_count(
+                                result["candidates"],
+                                selected["family"],
+                                selected["filter"],
+                                split,
+                            ),
+                        )
+                    )
         lines += [
             "",
             "The 10-minute down-then-up second-turn baseline is capped at the next 10-minute close; a second completed bar cannot occur within that cap. It is therefore cap-equivalent, not a test of an extended second reversal.",

@@ -38,6 +38,17 @@ def result(asset):
         "validation": summary(),
         "test": summary(),
     }
+    sensitivity = [
+        {
+            **strategy,
+            "id": f"confirmed_uu/shape/{exit_name}/{delay}",
+            "exit": exit_name,
+            "delay_seconds": delay,
+        }
+        for exit_name in ("fixed", "second_turn", "target", "target_momentum")
+        for delay in (0, 5, 10)
+        if (exit_name, delay) != ("target_momentum", 10)
+    ]
     pairs = {
         s: {"strategy": summary(), "baseline": summary()}
         for s in ("train", "validation", "test")
@@ -54,7 +65,7 @@ def result(asset):
             }
             for split in ("train", "validation", "test")
         ],
-        "variants": [strategy, baseline],
+        "variants": [strategy, baseline, *sensitivity],
         "selected_paired_comparisons": pairs,
     }
 

@@ -124,6 +124,43 @@ class Exit50PaperTests(unittest.TestCase):
         )
         return self.worker.ledger.active()[0]
 
+    def test_frozen_profile_binds_source_and_excludes_prior_decision(self):
+        import oracle_leverage.exit50_forward as forward
+
+        profile = {
+            "schema": "exit50-paper-profile/v1",
+            "model_sha256": self.worker.model_sha,
+            "policy_sha256": self.worker.policy_sha,
+            "core_sha256": self.worker.binding["core_sha256"],
+            "observer_sha256": hashlib.sha256(
+                Path(forward.__file__).read_bytes()
+            ).hexdigest(),
+            "not_before_s": NOW + 1,
+        }
+        path = Path(self.directory.name) / "profile.json"
+        path.write_text(json.dumps(profile))
+        worker = Exit50Forward(
+            Path(self.directory.name) / "other",
+            self.model_path,
+            profile=path,
+            public=self.public,
+            clock=lambda: self.now,
+        )
+        worker.rows["ZEC"] = [[NOW - 60, 1, 2, 1, 2, 0]]
+        with patch("oracle_leverage.exit50_forward.signal_snapshot") as calculate:
+            worker.observe_signal("ZEC", NOW)
+        calculate.assert_not_called()
+        self.assertEqual(
+            worker.binding["profile_sha256"],
+            hashlib.sha256(path.read_bytes()).hexdigest(),
+        )
+        profile["observer_sha256"] = "wrong"
+        path.write_text(json.dumps(profile))
+        with self.assertRaisesRegex(ValueError, "invalid_paper_profile"):
+            Exit50Forward(
+                Path(self.directory.name) / "third", self.model_path, profile=path
+            )
+
     def test_target_latches_until_guard_and_delayed_close(self):
         row = self.commit()
         with patch("oracle_leverage.exit50_forward.minute_features", return_value={}):
