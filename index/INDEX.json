@@ -1,11 +1,11 @@
 {
-  "generatedAt": "2026-11-17T21:33:22+00:00",
+  "generatedAt": "2026-11-17T21:46:39+00:00",
   "schemaVersion": 1,
   "repoRoot": "~/dev/solmargintrader",
-  "commit": "8494c91",
+  "commit": "bb2fcb9",
   "counts": {
     "files": 4117,
-    "bytes": 208530216,
+    "bytes": 208531376,
     "byKind": {
       "strategy-card": 1478,
       "doc": 850,
@@ -85340,7 +85340,7 @@
       "summarySource": "derived",
       "bytes": 90642,
       "lines": 2,
-      "sha1": "d9b06d0c740f9707410d412d114881fc44df6161",
+      "sha1": "e7ffddb31efcd364707d1a1c2234a4aea7c95013",
       "symbols": [],
       "imports": [],
       "internalImports": [],
@@ -89808,11 +89808,11 @@
       "ext": ".md",
       "kind": "doc",
       "title": "Work continuation",
-      "summary": "Version: 650 Delta: preserve delivered PR289 workflow/index checkpoint and the combined Oracle/research repairs before final source8. Delta: v648 to v649; repair three confirmed inherited research contracts, preserve refused-state fixtures and add their declared-dependency CI gate.",
+      "summary": "Version: 651 Delta: v650 to v651; retain incomplete source8 verification failure and canonically refresh independent-vector provenance with unchanged numerical payloads. Delta: preserve delivered PR289 workflow/index checkpoint and the combined Oracle/research repairs before final source8.",
       "summarySource": "opening-prose",
-      "bytes": 874969,
-      "lines": 4479,
-      "sha1": "3361b2f56faa1f72a219e223682a9b4b0b5d4313",
+      "bytes": 876129,
+      "lines": 4485,
+      "sha1": "728d24a096d53b2be149fe91d22dfc431c368668",
       "symbols": [],
       "imports": [],
       "internalImports": [],
@@ -122525,5 +122525,5 @@
       "frontmatter": {}
     }
   ],
-  "textSha256": "2faf415350889561cb88c328bb897b6df0f6ad4262aad4db18306c81e8b7d663"
+  "textSha256": "329a03e75d3dadd1aa93e2e47274dfb495de1eabbcd7294516acb2dadd6897a9"
 }

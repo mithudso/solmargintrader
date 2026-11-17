@@ -1,6 +1,7 @@
 # Work continuation
 
-Version: 650
+Version: 651
+Delta: v650 to v651; retain incomplete source8 verification failure and canonically refresh independent-vector provenance with unchanged numerical payloads.
 Delta: preserve delivered PR289 workflow/index checkpoint and the combined Oracle/research repairs before final source8.
 Delta: v648 to v649; repair three confirmed inherited research contracts, preserve refused-state fixtures and add their declared-dependency CI gate.
 Delta: integrate delivered PR235 maintenance with Oracle persistence; preserve both histories, current review3 partial provenance and last whole-sweep allowance.
@@ -130,6 +131,11 @@ Source files froze before the full numerical run; the run's exact file/runtime h
 
 
 
+
+
+## Numerical fixture provenance refresh — TASK-2574
+
+Source8 is an incomplete fifth-sweep attempt, not another completed sweep. Its required724-test extension run found exactly one stale whole-file source hash in 1000x-python-parity.json after protected_intervals gained its missing-ledger refusal. The canonical extension/tools/1000x-reference.py regenerates only nine synthetic shape and two momentum cases. Every numerical payload is identical, and the whole shape module AST is identical except protected_intervals. Preserve the old fixture, failing source8 receipt, regeneration command and equality proof. No historical study or holdout is rerun. Refresh source bindings, keep all formulas and strict reference assertions, then freeze source9 and finish the fifth/last whole sweep and the same pending third review. Earlier source8 installed behavior passed and all packaged/runtime input bytes are unchanged by this test-only correction. Global activation remains pending actual final gates.
 
 ## Combined research contract verification — TASK-2574
 
