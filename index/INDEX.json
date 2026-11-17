@@ -1,11 +1,11 @@
 {
-  "generatedAt": "2026-11-17T01:32:38+00:00",
+  "generatedAt": "2026-11-17T01:35:02+00:00",
   "schemaVersion": 1,
   "repoRoot": "~/dev/solmargintrader",
-  "commit": "d9c24f2",
+  "commit": "cc6cf11",
   "counts": {
     "files": 3987,
-    "bytes": 140701969,
+    "bytes": 140702611,
     "byKind": {
       "strategy-card": 1478,
       "doc": 839,
@@ -73768,9 +73768,9 @@
       "title": "Every file in this repository",
       "summary": "Regenerate with: python3 index/build.py all # refresh the index python3 index/make_files_doc.py # rewrite this file",
       "summarySource": "opening-prose",
-      "bytes": 1838029,
-      "lines": 38244,
-      "sha1": "e1ee115dc6c9639d85c076c7360d717c3eeb7923",
+      "bytes": 1838465,
+      "lines": 38252,
+      "sha1": "77501813b96a3600fca75c465ec07398184df9a5",
       "symbols": [],
       "imports": [],
       "internalImports": [],
@@ -74578,9 +74578,9 @@
       "title": "Repository health audit \u2014 2026-11-17",
       "summary": "The repo-bootstrapper and code-deep-optimizer work used the existing incremental run started at 2026-11-16T17:00:08Z. The result is **partial**. This report does not assert a clean repository. The run collected 54 file diagnostics: the original 50 risk-prioritized files and four disclosed extension runtime supplements.",
       "summarySource": "opening-prose",
-      "bytes": 2991,
+      "bytes": 3197,
       "lines": 20,
-      "sha1": "bf6db2f881ee0650603d8aea062cc0bf242a4be6",
+      "sha1": "b36f118907329b7b3aa859b7dcd1af46db7a02ab",
       "symbols": [],
       "imports": [],
       "internalImports": [],
@@ -118791,5 +118791,5 @@
       "frontmatter": {}
     }
   ],
-  "textSha256": "ca132230d1504b57e3da701d020e0049d39fc5b7b74ef0fc95d68f4b0d18888d"
+  "textSha256": "36c9871d5bfd7fa549634ac41505f575aa82630c62439e37ce21ef2296fdee02"
 }
