@@ -1,0 +1,264 @@
+{
+  "agent": "research-contract-auditor",
+  "changes": [
+    "/Users/mitch/.local/share/solmargintrader/research/native-pairs-2599/final-audit.json"
+  ],
+  "definition_version": "1.0.0",
+  "details": {
+    "canonical_replay_method": "Recompute only selected policies' member signals from raw native candles, apply bound causal contexts, and run fresh test accounts through backtester.core.engine.run_backtest. Return, drawdown and exit counts agree. Ten-minute accounting check uses an artificial one-minute clock because the canonical engine lacks a ten-minute enum; prices, exposures and costs are unchanged, and no annualized metric from that check is a claim.",
+    "canonical_replays": [
+      {
+        "absolute_return_difference": 1.2212453270876722e-15,
+        "candidate_id": "3f022f47b5ffe197135461dc",
+        "fee_bps_per_fill": 10,
+        "filter": "shape",
+        "interval": "1m",
+        "test_exits": 19,
+        "test_return": -0.030868014065680516
+      },
+      {
+        "absolute_return_difference": 4.440892098500626e-16,
+        "candidate_id": "8b800359b3ecf7907deec0a9",
+        "fee_bps_per_fill": 15,
+        "filter": "linear_control",
+        "interval": "1m",
+        "test_exits": 85,
+        "test_return": -0.009504524896026822
+      },
+      {
+        "absolute_return_difference": 4.440892098500626e-16,
+        "candidate_id": "1f3f55af212891c52bda4bc4",
+        "fee_bps_per_fill": 10,
+        "filter": "linear_control",
+        "interval": "5m",
+        "test_exits": 5,
+        "test_return": -0.0016807645667012983
+      },
+      {
+        "absolute_return_difference": 5.551115123125783e-16,
+        "candidate_id": "3440ccda392e28465604a354",
+        "fee_bps_per_fill": 60,
+        "filter": "shape",
+        "interval": "10m",
+        "test_exits": 30,
+        "test_return": -0.006406892203892123
+      }
+    ],
+    "closed_findings": [
+      "Sparse-reference complete-case masking fixed by feature-specific finite-mask groups and full-clock target permutations before masking.",
+      "Report coverage now separates computed, insufficient and constant correlation tests.",
+      "Child study locks exclude competing standalone CLI writers.",
+      "Parent verification rederives census, status/window, result-count and correlation-coverage bindings."
+    ],
+    "contract": "Native ETH/USD plus coin-list native combinations; exact market/quote identity; timestamp-based contiguous windows; explicit policy/filter definitions; chronological selection; costs; broad-search correlation corrections; immutable reproducible outputs. This audit does not qualify trading profitability.",
+    "correlation_reproduction": "Recompute every complete market correlation artifact with1999 replicates and the six-combination multiplier. Exact JSON-normalized results match bound artifacts. Earlier independent per-feature np.corrcoef oracle matched138 held-out grouped-mask results, own permutation p-values, shared maxT p-values and family correction.",
+    "gate_matrix": {
+      "all_correlation_artifacts_and_coverage": "pass",
+      "all_strategy_row_censuses": "pass",
+      "all_validation_only_selections": "pass",
+      "explicit_incomplete_cross_pair_smoke": "pass",
+      "four_fresh_indicator_canonical_accounts": "pass",
+      "legacy_v1_verification": "pass",
+      "native_catalogue_and_all_combination_census": "pass",
+      "parent_and_child_integrity": "pass",
+      "raw_page_normalization_and_quote_identity": "pass",
+      "requested_versus_actual_windows_and_no_imputation": "pass",
+      "within_market_cycle_holm_and_resolution_floors": "pass"
+    },
+    "limits": [
+      "Coinbase acquisition requests the full seven days, but actual backtests use only explicitly reported longest contiguous observed segments: ETH/USD and BTC/USD4350 minutes, ZEC/USD2610.",
+      "Coinbase ETH/BTC is not backtested: longest native segment382 minutes is below the frozen1440-minute minimum. ETH/ZEC is absent and ZEC/BTC is delisted in the current listing snapshot.",
+      "Current listing metadata does not reconstruct historical listings. No alternate-venue candles or synthetic cross-pair OHLC are spliced into a market.",
+      "The Binance ETH/BTC run is a separate one-day eight-template smoke test, not a full-week/full-catalogue result.",
+      "Short-window strategy returns remain exploratory. Same-minute co-movement is descriptive. Zero corrected associations does not characterize unavailable tests. No causal, executable-edge or profitability qualification is made."
+    ],
+    "markets": [
+      {
+        "analysis_window": {
+          "analysis_end_exclusive": 1794928860,
+          "analysis_start": 1794905940,
+          "analyzed_minutes": 382,
+          "complete_requested_window": false,
+          "excluded_observed_minutes": 7586,
+          "observed_minutes": 7968,
+          "policy": "longest",
+          "requested_end_exclusive": 1794944760,
+          "requested_minutes": 10080,
+          "requested_start": 1794339960
+        },
+        "base": "ETH",
+        "product": "ETH-BTC",
+        "quote": "BTC",
+        "requested_pair": "ETH/BTC",
+        "status": "insufficient_history"
+      },
+      {
+        "base": "ETH",
+        "product": null,
+        "quote": "ZEC",
+        "requested_pair": "ETH/ZEC",
+        "status": "not_listed"
+      },
+      {
+        "analysis_window": {
+          "analysis_end_exclusive": 1794600960,
+          "analysis_start": 1794339960,
+          "analyzed_minutes": 4350,
+          "complete_requested_window": false,
+          "excluded_observed_minutes": 5728,
+          "observed_minutes": 10078,
+          "policy": "longest",
+          "requested_end_exclusive": 1794944760,
+          "requested_minutes": 10080,
+          "requested_start": 1794339960
+        },
+        "base": "ETH",
+        "corrected_test_findings": 0,
+        "cycle_resolution_floor": 0.348,
+        "cycle_tests": 696,
+        "directory": "/Users/mitch/.local/share/solmargintrader/research/native-pairs-2599/eth-btc-zec-usd/markets/ETH-USD",
+        "product": "ETH-USD",
+        "quote": "USD",
+        "requested_pair": "ETH/USD",
+        "selected_accounts": 12,
+        "special_rows": 7920,
+        "status": "completed",
+        "strategy_completed": 408216,
+        "strategy_rows": 491712,
+        "test_correlation_coverage": {
+          "computed": 72,
+          "constant": 0,
+          "insufficient": 36
+        }
+      },
+      {
+        "base": "ZEC",
+        "product": "ZEC-BTC",
+        "quote": "BTC",
+        "requested_pair": "BTC/ZEC",
+        "status": "inactive"
+      },
+      {
+        "analysis_window": {
+          "analysis_end_exclusive": 1794600960,
+          "analysis_start": 1794339960,
+          "analyzed_minutes": 4350,
+          "complete_requested_window": false,
+          "excluded_observed_minutes": 5728,
+          "observed_minutes": 10078,
+          "policy": "longest",
+          "requested_end_exclusive": 1794944760,
+          "requested_minutes": 10080,
+          "requested_start": 1794339960
+        },
+        "base": "BTC",
+        "corrected_test_findings": 0,
+        "cycle_resolution_floor": 0.348,
+        "cycle_tests": 696,
+        "directory": "/Users/mitch/.local/share/solmargintrader/research/native-pairs-2599/eth-btc-zec-usd/markets/BTC-USD",
+        "product": "BTC-USD",
+        "quote": "USD",
+        "requested_pair": "BTC/USD",
+        "selected_accounts": 12,
+        "special_rows": 7920,
+        "status": "completed",
+        "strategy_completed": 408216,
+        "strategy_rows": 491712,
+        "test_correlation_coverage": {
+          "computed": 72,
+          "constant": 0,
+          "insufficient": 36
+        }
+      },
+      {
+        "analysis_window": {
+          "analysis_end_exclusive": 1794512760,
+          "analysis_start": 1794356160,
+          "analyzed_minutes": 2610,
+          "complete_requested_window": false,
+          "excluded_observed_minutes": 7455,
+          "observed_minutes": 10065,
+          "policy": "longest",
+          "requested_end_exclusive": 1794944760,
+          "requested_minutes": 10080,
+          "requested_start": 1794339960
+        },
+        "base": "ZEC",
+        "corrected_test_findings": 0,
+        "cycle_resolution_floor": 0.205,
+        "cycle_tests": 410,
+        "directory": "/Users/mitch/.local/share/solmargintrader/research/native-pairs-2599/eth-btc-zec-usd/markets/ZEC-USD",
+        "product": "ZEC-USD",
+        "quote": "USD",
+        "requested_pair": "ZEC/USD",
+        "selected_accounts": 12,
+        "special_rows": 7824,
+        "status": "completed",
+        "strategy_completed": 356548,
+        "strategy_rows": 491712,
+        "test_correlation_coverage": {
+          "computed": 72,
+          "constant": 0,
+          "insufficient": 36
+        }
+      }
+    ],
+    "publication_receipt": "Local audited immutable artifacts only. Repository CI, merged delivery and canonical CLI acceptance remain the parent task's separate gates.",
+    "qualification_verdict": "PASS: source and numerical reproduction contract; no remaining medium/high findings.",
+    "source_hashes": {
+      "research/coin_week.py": "ff5c0a078a554e62c4af8104a874a5ec750162a10df50ec2c7fa57810f274424",
+      "research/coin_week_batch.py": "fc2cef91e2f0a80c988f5cc47e1ddafff9ebbd298fa7780d3bd13f44aa065d62",
+      "research/coin_week_correlations.py": "e28fb293cd567d6ccab080730c12dc270827b89d92e8e2b3db459f372595f94b",
+      "research/coin_week_data.py": "ed4c9edf83f0c521861f7c6f39935e8db5e60f0b01afafb1af8f24385181b8d8",
+      "research/coin_week_reports.py": "0d7372c231d8a8447a3aa204c62b4a20d936c304dab706f815928f6fc8394ff3"
+    },
+    "totals": {
+      "bound_artifacts": 246,
+      "completed_markets": 3,
+      "completed_strategy_rows": 1172980,
+      "computed_final_test_correlations": 216,
+      "corrected_final_test_associations": 0,
+      "correlation_rows_recomputed": 972,
+      "explicit_exclusions": 3,
+      "failed_markets": 0,
+      "insufficient_final_test_correlations": 108,
+      "planned_combinations": 6,
+      "special_model_rows": 23664,
+      "strategy_rows": 1475136,
+      "validation_selected_accounts": 36
+    }
+  },
+  "evidence": [
+    {
+      "observed_at": "2026-11-17T20:05:09.647586+00:00",
+      "sha256": "9ecec69dc5bff99cd75c21c54573f3a07adfcca75384fe5afe954c84831fc156",
+      "source": "/Users/mitch/.local/share/solmargintrader/research/native-pairs-2599/eth-btc-zec-usd/batch-manifest.json",
+      "supported_claim": "246 parent/child artifacts verify; six combinations, three completed native USD markets and three explicit exclusions."
+    },
+    {
+      "observed_at": "2026-11-17T20:05:09.647586+00:00",
+      "source": "/Users/mitch/.local/share/solmargintrader/research/native-pairs-2599/eth-btc-zec-usd/markets/ETH-USD",
+      "supported_claim": "491712 strategy rows,408216 completed rows,7920 special rows,12 validation-only selections and four independent canonical-account replays reproduce."
+    },
+    {
+      "observed_at": "2026-11-17T20:05:09.647586+00:00",
+      "source": "/Users/mitch/.local/share/solmargintrader/research/native-pairs-2599/eth-btc-zec-usd/markets",
+      "supported_claim": "All three completed market CSV censuses and36 validation winners reproduce; all972 correlation rows and each market cycle Holm correction reproduce."
+    },
+    {
+      "observed_at": "2026-11-17T20:05:09.647586+00:00",
+      "sha256": "401489826c5b4adaf9d9b6a83f7a0dc11ce21d4982ddaa7061848b04d1488587",
+      "source": "/Users/mitch/.local/share/solmargintrader/research/native-pairs-2599/eth-btc-native-smoke/manifest.json",
+      "supported_claim": "Separate Binance ETH/BTC one-day eight-template smoke verifies76 artifacts and2400 strategy rows; report explicitly labels incomplete scope."
+    },
+    {
+      "observed_at": "2026-11-17T20:05:09.647586+00:00",
+      "source": "/Users/mitch/.local/share/solmargintrader/research/weekly-coin/ETH-20261117T1713Z-2571",
+      "supported_claim": "Finalized v1 verification passes78 artifacts and491712 strategy rows with the retained legacy renderer."
+    }
+  ],
+  "observed_at": "2026-11-17T20:05:09.647586+00:00",
+  "receipt_version": "1.0.0",
+  "remaining": [],
+  "status": "complete"
+}
