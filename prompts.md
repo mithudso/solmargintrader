@@ -1,6 +1,16 @@
 # Prompt history
 
-Version: 280
+Version: 281
+Delta: v280 to v281; preserve the TUI-opening request and streaming storage / multiple-window question.
+
+## Current session follow-ups
+
+open the  tui
+
+How is the streaming data being saved? Can I have two sessions open at the same time in separate windows?
+
+## Prior version history
+
 Delta: v279 to v280; preserve confidence-window, extension UI and directional-color requests verbatim.
 Delta: v278 to v279; preserve both auto-trade and audit screenshot requests.
 Delta: v277 to v278; preserve audit and screenshot continuation across merged 0.10 source.

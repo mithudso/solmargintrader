@@ -1,10 +1,29 @@
 # Work continuation
 
+## Current confidence-window candidate — TASK-2497 / TASK-2498
+
+The user requests useful graded directional estimates, visible80%-score windows and their ends, whole-indicator green/up, red/down and grey/neutral colors, then the actual extension UI deep optimizer and full document optimizer. The three implementation requests are preserved verbatim in prompts.md. The follow-up TUI-opening request was executed: the canonical TUI is visible in Terminal, PID81937 in oracle-forward-2289:%1.
+
+Canonical master is7c17fd1dfd73fd9a53ac7632cf317fc9c9db18f1 after merged PR309 and PR315. Runtime0.4.17 and the private connection route are active. The route points to /Users/mitch/.local/state/oracle-autotrade-2458/live-acceptance/registry-paper10x; this is now user-owned data. Preserve owner25300, all existing requests/events/cohorts, the twelve old browser learner partitions, private Pine, concurrent canonical package files, paused PR235 and existing workers. Do not treat the former test-home name as permission to delete or migrate it.
+
+The new candidate is in /Users/mitch/dev/worktrees/oracle-confidence-2497 on codex/oracle-confidence-2497. It adds a separately versioned three-class UP/DOWN/FLAT live model, a separate four-store IndexedDB database, one-second committed scores, immutable five-second probes for six horizons, and incremental bounded persistence. The old minute learners stay unchanged. The pending cap is1500 per partition; the simulated peak was1332. A simulated peak write fell from528518 bytes for a complete state to20064 bytes of changed-operation JSON; native disk and CPU performance remain unmeasured.
+
+The new private signals.sqlite3 relay shares one publisher per asset with Chrome and the TUI. It stores bounded window history and validates market/source, both timestamps, model target, class scores, sequence and producer lease. Status reads do not create a database or trading owner. A sequenced invalidation fences a delayed publish, including invalidation before the first publish. Lower-strength valid model estimates remain visible. Scores are uncalibrated and are not measured trade-win probabilities.
+
+Root integrated oracle-live-controller.js and panel.js. The controller does not wait for complete minute history, continues on feed callbacks while the chart is hidden, and never blocks model updates behind native transport. Publish and status requests have bounded waits and late-result guards. Local view expiry uses the earlier of source and receipt timestamps plus two seconds. Independent cross-reviews corroborated and then closed four Medium findings: stuck relay requests, delayed publication after suspension, receipt-only local expiry, and regressing source timestamps at the relay boundary. Offline invalidation remains best effort, bounded by source expiry.
+
+Latest scoped verification:24 live JavaScript tests and13 Python relay/registry/TUI tests passed; repository JavaScript lint and its configured typecheck passed. That typecheck covers two website evidence files and does not typecheck the new live modules. Pinned Ruff0.17.4 reported only the twenty established soltui/commands.py baseline findings, with no new-file or changed-TUI findings. Receipts are in /Users/mitch/.local/state/oracle-confidence-2497/integration-checks/result-v2.json; separate source handoffs are model-handoff.json and relay-handoff.json in the same private parent directory. These results do not replace native-browser concurrency/storage or actual shared-display acceptance.
+
+Remaining: commit a recoverable source checkpoint; coordinate package versions and every deterministic generator; prove the new native IndexedDB store and shared transport in isolated real Chrome; run the actual extension UI optimizer from its frozen23-surface plan, then full DDO on UI prose and linked operating guides; obtain independent final reviews and honest coverage exits; deliver final-tip CI/merge and verify loaded behavior. The70-method UI workflow and DDO have NOT run yet. Their current private plan is /Users/mitch/.local/state/extension-ui-2498/scope-plan-v2.json. Do not call the implementation complete or calibrated. No funded trades or new user paper sessions were used for this candidate.
+
+## Historical routing checkpoint before activation
+
 Browser CI fixture: the native IndexedDB abort assertion raced an independent next-minute model commit. The fixture now pauses both producers and drains tracked operations and an IndexedDB barrier before the unchanged equality check. The full local browser fixture passed 27/27 with exit 0.
 
 Routing follow-up: source adds owner-only optional connection routing for ordinary clients; explicit environment homes remain first. The isolated 1000x paper acceptance passed one start and stop with recorded modeled outcome. The user-owned registry and shared wrapper remain unchanged. Verify focused checks, review and deliver the routing PR before a separately controlled activation. Routing alone does not fence concurrent starts or migrate journal history.
 
-Version: 624
+Version: 625
+Delta: v624 to v625; preserve the tested live-signal candidate, independent fixes, active routing and pending native/UI/prose gates.
 Delta: v623 to v624; integrate merged routing and fixture history with pending Oracle confidence and extension UI continuation.
 Delta: v622 to v623; preserve the browser fixture race diagnosis, quiescence repair and full local receipt.
 Delta: v621 to v622; add private shared-owner routing and preserve isolated acceptance and activation boundary.

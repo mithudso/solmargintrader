@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-11-17T02:06:15+00:00",
+  "generatedAt": "2026-11-17T04:17:53+00:00",
   "schemaVersion": 1,
   "note": "Concepts are derived from the repo's own vocabulary \u2014 the FAMILY dict, strategy-card frontmatter, docs/trading-signals-concept-family.md, and terms verified to recur in the corpus. A concept matching no file is dropped, not kept.",
   "counts": {
@@ -22,7 +22,7 @@
         "confirm",
         "fail-closed"
       ],
-      "matchingFiles": 1986,
+      "matchingFiles": 1987,
       "shown": 30,
       "files": [
         {
@@ -39,7 +39,7 @@
         },
         {
           "path": "docs/operations-registry.json",
-          "hits": 216
+          "hits": 219
         },
         {
           "path": "docs/FILES.md",
@@ -161,7 +161,7 @@
         "universe",
         "top_coins"
       ],
-      "matchingFiles": 1779,
+      "matchingFiles": 1784,
       "shown": 30,
       "files": [
         {
@@ -439,7 +439,7 @@
         "centred",
         "shift"
       ],
-      "matchingFiles": 1545,
+      "matchingFiles": 1547,
       "shown": 30,
       "files": [
         {
@@ -578,7 +578,7 @@
         "perps",
         "solana"
       ],
-      "matchingFiles": 1130,
+      "matchingFiles": 1141,
       "shown": 30,
       "files": [
         {
@@ -587,7 +587,7 @@
         },
         {
           "path": "docs/FILES.md",
-          "hits": 592
+          "hits": 610
         },
         {
           "path": "research/strategy_experiment/results/results.json",
@@ -603,7 +603,7 @@
         },
         {
           "path": "memory.md",
-          "hits": 332
+          "hits": 342
         },
         {
           "path": "FILES.md",
@@ -622,11 +622,11 @@
           "hits": 163
         },
         {
-          "path": "docs/archive/memory-2026-11-10.md",
-          "hits": 141
+          "path": "prompts.md",
+          "hits": 145
         },
         {
-          "path": "prompts.md",
+          "path": "docs/archive/memory-2026-11-10.md",
           "hits": 141
         },
         {
@@ -990,7 +990,7 @@
         "monotone",
         "gap"
       ],
-      "matchingFiles": 850,
+      "matchingFiles": 851,
       "shown": 30,
       "files": [
         {
@@ -1125,7 +1125,7 @@
         "benchmark",
         "baseline"
       ],
-      "matchingFiles": 596,
+      "matchingFiles": 598,
       "shown": 30,
       "files": [
         {
@@ -1214,7 +1214,7 @@
         },
         {
           "path": "memory.md",
-          "hits": 33
+          "hits": 34
         },
         {
           "path": ".cdo/reviews-2026-11-12/soltui-fullsuite-fixture-deltas.json",
@@ -1394,7 +1394,7 @@
         "buy_and_hold",
         "baseline"
       ],
-      "matchingFiles": 525,
+      "matchingFiles": 527,
       "shown": 30,
       "files": [
         {
@@ -1450,11 +1450,11 @@
           "hits": 34
         },
         {
-          "path": ".cdo/reviews-2026-11-12/soltui-fullsuite-fixture-deltas.json",
-          "hits": 32
+          "path": "memory.md",
+          "hits": 33
         },
         {
-          "path": "memory.md",
+          "path": ".cdo/reviews-2026-11-12/soltui-fullsuite-fixture-deltas.json",
           "hits": 32
         },
         {

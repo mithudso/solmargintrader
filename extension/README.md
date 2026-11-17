@@ -65,7 +65,7 @@ for DD or simulate a position from candle colors.
 
 The chart and its forecasts remain analysis views. The separate **Auto Long / Short**
 section controls the shared owner described below. Load or reload the unpacked
-extension, then reload the portal tab. Its header identifies extension version0.11.1.
+extension, then reload the portal tab. Its header identifies extension version0.12.0.
 See [design, formulas and verification](../docs/JUPITER-1000X-OVERLAY.md),
 [optimized execution prompt](../docs/JUPITER-1000X-OVERLAY-PROMPT.md), and
 [SDK create/close capabilities and remaining gates](../docs/JUPITER-1000X-SDK.md).
@@ -213,7 +213,7 @@ Chrome 137+ is recommended: full-auto signing uses WebCrypto Ed25519, which land
 Everything else works from Chrome 120.
 
 **Did a reload pick up the new code?** The popup header and the dashboard title show the
-manifest version (`v0.11.1`). Every change to `src/` or `manifest.json` bumps it, in
+manifest version (`v0.12.0`). Every change to `src/` or `manifest.json` bumps it, in
 `manifest.json` and `package.json` together; CI fails a pull request that changes either
 without a bump, and `test/version.test.js` keeps the two fields equal. The SolTUI console
 is the primary dashboard workspace (popup → **Full workspace**).

@@ -89,9 +89,9 @@ sample do not establish a causal effect or a calibrated trading forecast.
 
 ## Managed bot suite
 
-The current coordinated source candidate is manager 0.7.8, research-runtime 0.4.5
-and ecosystem 0.4.17, with backtester 0.2.1, Oracle 0.2.6, optional executor 0.2.1
-and extension source 0.11.1. Archived liquidity source is 0.1.1 and remains disabled. It retains paper/disarmed defaults and separates source
+The current coordinated source candidate is manager 0.7.9, research-runtime 0.4.6
+and ecosystem 0.4.18, with backtester 0.2.1, Oracle 0.2.6, optional executor 0.2.1
+and extension source 0.12.0. Archived liquidity source is 0.1.1 and remains disabled. It retains paper/disarmed defaults and separates source
 checks from installed acceptance and final delivery. Run `solbot --help` for the ordered
 walkthrough, `solbot ui open` for the verified control room, and `solbot health-check`
 for collector measurements. The [managed suite guide](docs/bot-manager-managed-suite.md)
@@ -116,7 +116,7 @@ python3 -m backtester.cli --asset SOL --strategy all --split 0.7 --out results/
 
 # Extension — no install step, no dependencies
 cd extension
-npm test                                               # 604 tests
+npm test                                               # 628 tests
 node tools/dryrun.js --ticks 8 --osc 6 --offline 100   # end-to-end tick loop
 node tools/cli.js                                      # every available command
 ```
@@ -128,9 +128,9 @@ Load the extension: `chrome://extensions` → Developer mode → **Load unpacked
 
 ```bash
 python3 -m unittest discover -s backtester/tests -t .   # 1151 tests
-python3 -m unittest discover -s soltui/tests -t .       # 1604 tests (TUI dependencies required)
+python3 -m unittest discover -s soltui/tests -t .       # 1628 tests (TUI dependencies required)
 python3 -m unittest discover -s mongo/tests -t .        # 57 tests
-cd extension && npm test                                # 604 tests
+cd extension && npm test                                # 628 tests
 ```
 
 Counts are asserted by CI, so a stale number here fails the build rather than

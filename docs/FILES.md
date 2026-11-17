@@ -1,6 +1,6 @@
 # Every file in this repository
 
-**Generated** from `index/INDEX.json` at commit `a8091ab` (2026-11-17T02:06:04+00:00). 3988 tracked files, 140.7 MB.
+**Generated** from `index/INDEX.json` at commit `6b9c5f3` (2026-11-17T04:17:40+00:00). 3999 tracked files, 140.8 MB.
 
 Regenerate with:
 
@@ -15,7 +15,7 @@ python3 index/build.py --check      # fail if the index is stale
 Every entry marks where its description came from, because a generated one-liner and a considered one should not look alike:
 
 - **curated** (43 files) — hand-written purpose and usage, in the `CURATED` table of `index/make_files_doc.py`. Used where extraction cannot give a reader what they need: the engine, the research drivers, the order-placing path, and the files with no prose of their own.
-- **extracted** (3090 files) — the file's own module docstring, JSDoc header, or frontmatter `summary`. Trustworthy here because 724/843 Python modules and 85/181 JS files carry a substantial one. (These counts are computed at generation time, not hardcoded — an earlier revision asserted a frozen ratio and it was wrong within a day as the repo grew.)
+- **extracted** (3094 files) — the file's own module docstring, JSDoc header, or frontmatter `summary`. Trustworthy here because 725/846 Python modules and 88/189 JS files carry a substantial one. (These counts are computed at generation time, not hardcoded — an earlier revision asserted a frozen ratio and it was wrong within a day as the repo grew.)
 - **derived** (458 files) — shape only, for generated artifacts: a CSV's header and row count, a JSON's keys. Prose for a result file would be invented.
 
 *How to use* is curated where it matters and otherwise inferred from the file's kind — a test gets its runner, a CLI gets `--help`, a module gets its import path.
@@ -39,12 +39,12 @@ To *search* rather than browse: `python3 index/search.py "your question"`.
 - [`backtester`](#backtester) — 1967 files
 - [`research`](#research) — 493 files
 - [`oracle`](#oracle) — 44 files
-- [`extension`](#extension) — 162 files
+- [`extension`](#extension) — 170 files
 - [`executor`](#executor) — 48 files
 - [`liquidity`](#liquidity) — 61 files
 - [`botmanager`](#botmanager) — 93 files
 - [`ecosystem`](#ecosystem) — 71 files
-- [`soltui`](#soltui) — 200 files
+- [`soltui`](#soltui) — 201 files
 - [`mongo`](#mongo) — 20 files
 - [`website`](#website) — 95 files
 - [`.github`](#github) — 12 files
@@ -61,7 +61,7 @@ To *search* rather than browse: `python3 index/search.py "your question"`.
 - [`design`](#design) — 32 files
 - [`dso-skill`](#dso-skill) — 3 files
 - [`llms`](#llms) — 5 files
-- [`oracle_leverage`](#oracle_leverage) — 41 files
+- [`oracle_leverage`](#oracle_leverage) — 43 files
 - [`postman`](#postman) — 8 files
 - [`runbooks`](#runbooks) — 3 files
 - [`scripts`](#scripts) — 34 files
@@ -648,9 +648,9 @@ Repository-level entry points and agent instructions. `AGENTS.md` and `CLAUDE.md
 
 #### `memory.md`
 
-`doc` · 3056 lines · 630,624 B · description: **extracted**
+`doc` · 3081 lines · 636,625 B · description: **extracted**
 
-**Purpose.** Browser CI fixture: the native IndexedDB abort assertion raced an independent next-minute model commit. The fixture now pauses both producers and drains tracked operations and an IndexedDB barrier before the unchanged equality check. The full local browser fixture passed 27/27 with exit 0.
+**Purpose.** The user requests useful graded directional estimates, visible80%-score windows and their ends, whole-indicator green/up, red/down and grey/neutral colors, then the actual extension UI deep optimizer and full document optimizer. The three implementation requests are preserved verbatim in prompts.md.
 
 **Use.** Read it.
 
@@ -728,9 +728,9 @@ Repository-level entry points and agent instructions. `AGENTS.md` and `CLAUDE.md
 
 #### `prompts.md`
 
-`doc` · 2555 lines · 156,257 B · description: **extracted**
+`doc` · 2574 lines · 157,767 B · description: **extracted**
 
-**Purpose.** Version: 279 Delta: v278 to v279; preserve both auto-trade and audit screenshot requests. Delta: v277 to v278; preserve audit and screenshot continuation across merged 0.10 source.
+**Purpose.** Version: 281 Delta: v280 to v281; preserve the TUI-opening request and streaming storage / multiple-window question. open the tui
 
 **Use.** Read it.
 
@@ -976,7 +976,7 @@ Curated prose. `ARCHITECTURE.md` explains how the pieces fit, `TESTING.md` is th
 
 #### `docs/FILES.md`
 
-`doc` · 38262 lines · 1,838,999 B · description: **extracted**
+`doc` · 38262 lines · 1,838,903 B · description: **extracted**
 
 **Purpose.** Regenerate with: python3 index/build.py all # refresh the index python3 index/make_files_doc.py # rewrite this file
 
@@ -1536,7 +1536,7 @@ Curated prose. `ARCHITECTURE.md` explains how the pieces fit, `TESTING.md` is th
 
 #### `docs/operations-registry.json`
 
-`doc` · 4648 lines · 228,969 B · description: **derived**
+`doc` · 4708 lines · 231,881 B · description: **derived**
 
 **Purpose.** Generated JSON object, 8 keys (schema_version, version, delta, generator, scope, limits...).
 
@@ -23440,7 +23440,7 @@ Drivers that produce the numbers, and the write-ups that quote them. Everything 
 
 #### `research/zec_tui.py`
 
-`code-python` · 1319 lines · 52,904 B · description: **curated**
+`code-python` · 1383 lines · 56,758 B · description: **curated**
 
 **Purpose.** Oracle workbench with explicit leveraged trading and paper trial controls.
 
@@ -26912,7 +26912,7 @@ Forecast evidence, strategy votes, archives and separately controlled webhook ex
 
 The Chrome extension has a separately armed trading surface. Dry-run is the default, risk rails live in code and fail closed, and a fresh install must not be able to trade.
 
-162 files.
+170 files.
 
 #### `extension/README.md`
 
@@ -27106,6 +27106,46 @@ The Chrome extension has a separately armed trading surface. Dry-run is the defa
 
 **Use.** Loaded by the extension; see `extension/manifest.json` for entry points.
 
+#### `extension/src/1000x/oracle-live-controller.js`
+
+`code-js` · 185 lines · 9,312 B · description: **none**
+
+**Purpose.** _No description available._
+
+**Contents.** Defines `class LiveOracleController`, `liveInput`.
+
+**Use.** Loaded by the extension; see `extension/manifest.json` for entry points.
+
+#### `extension/src/1000x/oracle-live-model.js`
+
+`code-js` · 152 lines · 12,282 B · description: **extracted**
+
+**Purpose.** Causal, prospective advisory only. No execution or historical warm start.
+
+**Contents.** Defines `CLASSES`, `LIVE_ORACLE`, `admitLiveProbe`, `direction`, `features`, `learn`, `liveIdentity`, `liveProbabilities`, `liveSnapshot`, `newLiveState` and 4 more.
+
+**Use.** Loaded by the extension; see `extension/manifest.json` for entry points.
+
+#### `extension/src/1000x/oracle-live-store.js`
+
+`code-js` · 91 lines · 6,051 B · description: **extracted**
+
+**Purpose.** Separate database. Every synchronous reducer runs in one multi-store transaction. Per-probe and per-score records avoid rewriting the full pending queue each second.
+
+**Contents.** Defines `LIVE_ORACLE_DB`, `STORES`, `class LiveOracleStore`, `join`, `records`.
+
+**Use.** Loaded by the extension; see `extension/manifest.json` for entry points.
+
+#### `extension/src/1000x/oracle-live-view.js`
+
+`code-js` · 103 lines · 7,795 B · description: **extracted**
+
+**Purpose.** Present supplied committed advisory data only; this view performs no I/O.
+
+**Contents.** Defines `HORIZONS`, `direction`, `liveOracleView`, `paint`, `resultText`, `validScores`.
+
+**Use.** Loaded by the extension; see `extension/manifest.json` for entry points.
+
 #### `extension/src/1000x/oracle-model.js`
 
 `code-js` · 217 lines · 14,842 B · description: **extracted**
@@ -27164,7 +27204,7 @@ The Chrome extension has a separately armed trading surface. Dry-run is the defa
 
 #### `extension/src/1000x/panel.js`
 
-`code-js` · 265 lines · 19,899 B · description: **none**
+`code-js` · 272 lines · 20,376 B · description: **none**
 
 **Purpose.** _No description available._
 
@@ -27863,6 +27903,46 @@ The Chrome extension has a separately armed trading surface. Dry-run is the defa
 **Purpose.** _No description available._
 
 **Use.** `node --test extension/test/1000x-oracle-horizons.test.js`
+
+#### `extension/test/1000x-oracle-live-controller.test.js`
+
+`test` · 145 lines · 9,154 B · description: **none**
+
+**Purpose.** _No description available._
+
+**Contents.** Defines `fixture`, `input`.
+
+**Use.** `node --test extension/test/1000x-oracle-live-controller.test.js`
+
+#### `extension/test/1000x-oracle-live-model.test.js`
+
+`test` · 97 lines · 6,309 B · description: **none**
+
+**Purpose.** _No description available._
+
+**Contents.** Defines `warm`.
+
+**Use.** `node --test extension/test/1000x-oracle-live-model.test.js`
+
+#### `extension/test/1000x-oracle-live-store.test.js`
+
+`test` · 66 lines · 5,062 B · description: **none**
+
+**Purpose.** _No description available._
+
+**Contents.** Defines `fakeIndexedDB`.
+
+**Use.** `node --test extension/test/1000x-oracle-live-store.test.js`
+
+#### `extension/test/1000x-oracle-live-view.test.js`
+
+`test` · 86 lines · 6,246 B · description: **none**
+
+**Purpose.** _No description available._
+
+**Contents.** Defines `class Element`.
+
+**Use.** `node --test extension/test/1000x-oracle-live-view.test.js`
 
 #### `extension/test/1000x-oracle-model.test.js`
 
@@ -30496,7 +30576,7 @@ The local control room, pipeline supervision, telemetry and embedded documentati
 
 `doc` · 119 lines · 7,542 B · description: **extracted**
 
-**Purpose.** This source version restores read-only access to the known legacy SOL Oracle archive and explains pending forward windows without changing the producer. It pins Bot Manager0.7.8, Oracle0.2.6 and research-runtime0.4.5.
+**Purpose.** This source version restores read-only access to the known legacy SOL Oracle archive and explains pending forward windows without changing the producer. It pins Bot Manager0.7.9, Oracle0.2.6 and research-runtime0.4.6.
 
 **Use.** Read it.
 
@@ -31194,7 +31274,7 @@ The local control room, pipeline supervision, telemetry and embedded documentati
 
 The local TUI, browser workspace and service interfaces. Coinbase order execution requires separate explicit arming; Jupiter live submission remains blocked.
 
-200 files.
+201 files.
 
 #### `soltui/JUPITER_ORDER_WIDGET_IMPLEMENTATION_GUIDE.md`
 
@@ -31378,7 +31458,7 @@ The local TUI, browser workspace and service interfaces. Coinbase order executio
 
 #### `soltui/commands.py`
 
-`code-python` · 3513 lines · 175,131 B · description: **extracted**
+`code-python` · 3542 lines · 176,258 B · description: **extracted**
 
 **Purpose.** The soltui command registry: one set of calls for the TUI, CLI, HTTP API and native host. Every action the console can take is a registered `Command`. Every surface goes through `dispatch(name, params, surface)`, which validates parameters, applies the confirm gate, runs the handler, wraps the outcome in the response envelope and appends one line to the call log.
 
@@ -32144,7 +32224,7 @@ The local TUI, browser workspace and service interfaces. Coinbase order executio
 
 #### `soltui/tests/test_autotrade_packaging.py`
 
-`test` · 41 lines · 1,535 B · description: **extracted**
+`test` · 42 lines · 1,558 B · description: **extracted**
 
 **Purpose.** The monorepo runtime wheel must own the same auto-session package as its bridge.
 
@@ -32961,6 +33041,16 @@ The local TUI, browser workspace and service interfaces. Coinbase order executio
 **Contents.** Defines `class SignalLiveLogicTests`, `class SignalLiveUITests`. Depends on `soltui`.
 
 **Use.** `python3 -m pytest soltui/tests/test_signal_live.py -q`
+
+#### `soltui/tests/test_signal_registry.py`
+
+`test` · 46 lines · 2,252 B · description: **none**
+
+**Purpose.** _No description available._
+
+**Contents.** Defines `class SignalRegistryTest`, `class SignalTuiTest`. Depends on `research`, `soltui`.
+
+**Use.** `python3 -m pytest soltui/tests/test_signal_registry.py -q`
 
 #### `soltui/tests/test_signals.py`
 
@@ -36490,7 +36580,7 @@ Session handoff notes, newest first. Prose, not machine-read.
 
 ## oracle_leverage
 
-41 files.
+43 files.
 
 #### `oracle_leverage/README.md`
 
@@ -36647,6 +36737,16 @@ Session handoff notes, newest first. Prose, not machine-read.
 **Contents.** Defines `APPROVED_NODE`, `BRIDGE_SCRIPT`, `ACTIONS`, `class SDKBridge`.
 
 **Use.** `import oracle_leverage.sdkbridge`
+
+#### `oracle_leverage/signals.py`
+
+`code-python` · 288 lines · 13,889 B · description: **extracted**
+
+**Purpose.** Private, bounded advisory relay. It has no trading or model-training authority.
+
+**Contents.** Defines `HORIZONS`, `MODEL`, `TARGET`, `SOURCES`, `TTL`, `LEASE`, `LIMIT`, `_number()`, `_integer()`, `_keys()` and 9 more.
+
+**Use.** `import oracle_leverage.signals`
 
 #### `oracle_leverage/store.py`
 
@@ -36891,6 +36991,16 @@ Session handoff notes, newest first. Prose, not machine-read.
 **Contents.** Defines `NOW`, `JUPITER_FRAME`, `iso()`, `book()`, `class Decoders`, `class Durability`, `class Loopback`. Depends on `soltui`.
 
 **Use.** `python3 -m pytest oracle_leverage/tests/test_quotes.py -q`
+
+#### `oracle_leverage/tests/test_signals.py`
+
+`test` · 180 lines · 8,870 B · description: **none**
+
+**Purpose.** _No description available._
+
+**Contents.** Defines `packet()`, `class RelayTest`.
+
+**Use.** `python3 -m pytest oracle_leverage/tests/test_signals.py -q`
 
 ---
 

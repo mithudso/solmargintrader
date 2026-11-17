@@ -4,12 +4,16 @@ import { panelModel } from './panel-model.js';
 import { OracleController } from './oracle-controller.js';
 import { oracleView } from './oracle-view.js';
 import { autotradeView } from './autotrade-view.js';
+import { LiveOracleController } from './oracle-live-controller.js';
+import { liveOracleView } from './oracle-live-view.js';
 import { POWERED_BY } from '../jupiter/attribution.js';
 import { createChart, CandlestickSeries, LineSeries, HistogramSeries, LineStyle } from '../../vendor/lightweight-charts/lightweight-charts.standalone.production.mjs';
 
 const $ = id => document.getElementById(id);
 const renderOracle = oracleView($('streaming-oracle'));
 const auto = autotradeView($('streaming-oracle'));
+const liveView = liveOracleView($('streaming-oracle'));
+const liveOracle = new LiveOracleController({ onChange: view => liveView.render(view) });
 const oracle = new OracleController({ onChange: view => { renderOracle(view); void auto.observe(view, latest?.sourceIdentity).catch(() => {}); } });
 document.querySelector('header .tag').textContent = 'Paper default';
 $('api-attribution').textContent = `${POWERED_BY} — 1000x public catalog; Pyth oracle history and stream.`;
@@ -228,12 +232,14 @@ $('config-form').addEventListener('submit', event => {
 });
 async function restart() {
   oracle.suspend();
+  liveOracle.suspend();
   feed?.stop(); latest = null; model = null; viewIdentity = null; clearChart(); resetContext();
   $('status').textContent = 'Connecting to Jupiter…'; $('status').dataset.state = 'connecting';
   document.querySelectorAll('[data-value]').forEach(el => { el.textContent = 'Warming up'; });
   document.querySelectorAll('[data-signal]').forEach(el => { el.textContent = 'Waiting for live data'; });
   feed = new JupiterFeed({ symbol: SYMBOL, intervalSec, withReversalContext: true, onUpdate: snapshot => {
     latest = snapshot;
+    liveOracle.observe(snapshot);
     if (!document.hidden) oracle.observe(snapshot);
     queueDraw();
   } });
@@ -248,17 +254,18 @@ try {
 } catch { settingsError = 'Saved settings invalid or unavailable; using defaults'; }
 $('timeframe').value = intervalSec;
 oracle.selectHorizon(intervalSec);
+liveOracle.selectHorizon(intervalSec);
 $('timeframe').addEventListener('change', () => {
-  intervalSec = Number($('timeframe').value); oracle.selectHorizon(intervalSec); save();
+  intervalSec = Number($('timeframe').value); oracle.selectHorizon(intervalSec); liveOracle.selectHorizon(intervalSec); save();
   model = null; viewIdentity = null; clearChart(); resetContext();
   void feed.setInterval(intervalSec);
 });
 $('refresh').addEventListener('click', () => restart());
 readoutRows(); parameterForm(); visibility();
-const staleClock = setInterval(() => { if (!document.hidden && latest) oracle.observe(latest); queueDraw(); }, 1000);
+const staleClock = setInterval(() => { if (latest) { liveOracle.observe(latest); if (!document.hidden) oracle.observe(latest); } queueDraw(); }, 1000);
 document.addEventListener('visibilitychange', () => {
   if (document.hidden) oracle.suspend();
   else { if (latest) oracle.observe(latest); queueDraw(); }
 });
-window.addEventListener('pagehide', () => { disposed = true; auto.close(); clearInterval(staleClock); feed?.stop(); oracle.stop(); chart.remove(); }, { once: true });
+window.addEventListener('pagehide', () => { disposed = true; auto.close(); liveView.close(); liveOracle.stop(); clearInterval(staleClock); feed?.stop(); oracle.stop(); chart.remove(); }, { once: true });
 await restart();
