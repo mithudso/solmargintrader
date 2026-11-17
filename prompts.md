@@ -1,5 +1,12 @@
 # Prompt history
 
+Version: 299
+Delta: v298 to v299. Preserve the exact request for the ZEC/USD five-minute strategy analysis, card and repository launch guide.
+
+## ZEC/USD five-minute mean reversion and repository usage
+
+> Write up a more detailed analysis of the ZEC/USD 5-min mean-reversion strategy, and create a strategy card for it specifically. As well how do I open the various TUI interfaces and run the scripts created in this repo?
+
 Version: 298
 Delta: v297 to v298. Bind the preserved cap-three invocation and both learner requests to the completed application assessment and verified default-branch delivery.
 

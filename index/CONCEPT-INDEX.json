@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-11-17T22:56:28+00:00",
+  "generatedAt": "2026-11-17T23:14:14+00:00",
   "schemaVersion": 1,
   "note": "Concepts are derived from the repo's own vocabulary \u2014 the FAMILY dict, strategy-card frontmatter, docs/trading-signals-concept-family.md, and terms verified to recur in the corpus. A concept matching no file is dropped, not kept.",
   "counts": {
@@ -22,7 +22,7 @@
         "confirm",
         "fail-closed"
       ],
-      "matchingFiles": 2011,
+      "matchingFiles": 2012,
       "shown": 30,
       "files": [
         {
@@ -161,7 +161,7 @@
         "universe",
         "top_coins"
       ],
-      "matchingFiles": 1828,
+      "matchingFiles": 1831,
       "shown": 30,
       "files": [
         {
@@ -170,7 +170,7 @@
         },
         {
           "path": "memory.md",
-          "hits": 394
+          "hits": 396
         },
         {
           "path": "docs/FILES.md",
@@ -198,7 +198,7 @@
         },
         {
           "path": "prompts.md",
-          "hits": 117
+          "hits": 121
         },
         {
           "path": "research/results/shape_spot_20261111_manifest.json",
@@ -578,7 +578,7 @@
         "perps",
         "solana"
       ],
-      "matchingFiles": 1196,
+      "matchingFiles": 1197,
       "shown": 30,
       "files": [
         {
@@ -603,7 +603,7 @@
         },
         {
           "path": "memory.md",
-          "hits": 493
+          "hits": 492
         },
         {
           "path": "llms/jupsol-llms.txt",
@@ -714,7 +714,7 @@
         "macd",
         "ichimoku"
       ],
-      "matchingFiles": 942,
+      "matchingFiles": 943,
       "shown": 30,
       "files": [
         {
@@ -990,7 +990,7 @@
         "monotone",
         "gap"
       ],
-      "matchingFiles": 869,
+      "matchingFiles": 870,
       "shown": 30,
       "files": [
         {
@@ -1125,7 +1125,7 @@
         "benchmark",
         "baseline"
       ],
-      "matchingFiles": 632,
+      "matchingFiles": 635,
       "shown": 30,
       "files": [
         {
@@ -1260,7 +1260,7 @@
         "stochastic",
         "oscillator"
       ],
-      "matchingFiles": 613,
+      "matchingFiles": 616,
       "shown": 30,
       "files": [
         {
@@ -1394,7 +1394,7 @@
         "buy_and_hold",
         "baseline"
       ],
-      "matchingFiles": 559,
+      "matchingFiles": 562,
       "shown": 30,
       "files": [
         {
@@ -2623,7 +2623,7 @@
         "vwap_reversion",
         "ou_reversion"
       ],
-      "matchingFiles": 158,
+      "matchingFiles": 159,
       "shown": 30,
       "files": [
         {

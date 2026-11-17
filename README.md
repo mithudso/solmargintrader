@@ -59,6 +59,8 @@ The [weekly coin runner](research/WEEKLY-COIN-STUDY.md) repeats the candle-suppo
 ZEC analyses for a named coin using a fresh seven-day minute snapshot. Its first
 [ETH report](research/eth-week-20261117/report.md) includes matched BTC/ZEC
 correlations, chronological strategy comparisons and explicit input exclusions.
+The [ZEC/USD five-minute mean-reversion analysis](research/ZEC-5M-MEAN-REVERSION.md)
+covers the frozen RSI, z-score and Bollinger Band ensemble, with a linked strategy card.
 
 ## Shape-aware spot study
 
@@ -105,6 +107,9 @@ Research operations and evidence limits are in [the 0.6 guide](docs/bot-manager-
 [handoff](docs/bot-manager-handoff.md) preserves the earlier M4 0.5.0 release history.
 
 ## Quick start
+
+See [how to open the TUIs and run repository scripts](docs/RUNNING-TOOLS.md)
+for the SolTUI and Oracle launch commands, the local control room and study verification.
 
 The dated research tables preserve earlier experiments. The 2026-11-06 audit changes
 simulation accounting and metrics; rerun experiments before treating stored rankings as
