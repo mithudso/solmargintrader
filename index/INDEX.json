@@ -1,11 +1,11 @@
 {
-  "generatedAt": "2026-11-17T08:13:25+00:00",
+  "generatedAt": "2026-11-17T08:16:18+00:00",
   "schemaVersion": 1,
   "repoRoot": "~/dev/solmargintrader",
-  "commit": "4cf80513",
+  "commit": "517a222f",
   "counts": {
     "files": 4003,
-    "bytes": 140860499,
+    "bytes": 140860943,
     "byKind": {
       "strategy-card": 1478,
       "doc": 839,
@@ -76086,7 +76086,7 @@
       "summarySource": "derived",
       "bytes": 231881,
       "lines": 4708,
-      "sha1": "1c4c92ff842d56a64e5c5ac0ec41ae253b44461c",
+      "sha1": "1f2b26780c311f50635a8f3d1d265095085c0d19",
       "symbols": [],
       "imports": [],
       "internalImports": [],
@@ -76662,7 +76662,7 @@
       "summarySource": "derived",
       "bytes": 25248,
       "lines": 654,
-      "sha1": "c339c4e5471e24c02fa8daed6bf946a334d5947f",
+      "sha1": "3f1993264d58c24ca026935472c7420a92a8b2ed",
       "symbols": [],
       "imports": [],
       "internalImports": [],
@@ -88434,9 +88434,9 @@
       "title": "Work continuation",
       "summary": "Chrome Profile 1 loads extension id gjhpfdnfmjeoheoimbldikhilmimbain from /Users/mitch.hudson/dev/solmargintrader/extension. The missing com.mitchhudson.soltui native registration, wrapper and default runtime caused the screenshot. Installed the four documented headless local packages into /Users/mitch.hudson/.venvs/soltui with Python 3.13.18.",
       "summarySource": "opening-prose",
-      "bytes": 643992,
-      "lines": 3114,
-      "sha1": "33b7c8dd83b475c03cab48ab9e09db208a41135d",
+      "bytes": 644436,
+      "lines": 3116,
+      "sha1": "14bec42176234af5a15e0e40703d656424c02e27",
       "symbols": [],
       "imports": [],
       "internalImports": [],
@@ -119212,5 +119212,5 @@
       "frontmatter": {}
     }
   ],
-  "textSha256": "516df9b8dd67c4fee1ecf130996f8ccd3f2b9e9dfa76c35df9bccfca8a0b670c"
+  "textSha256": "c35c19a5d6f99a0b1857c3210ffd4d87bc618b3248cb65b33c46948292e9896d"
 }
