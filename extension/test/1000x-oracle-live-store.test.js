@@ -20,7 +20,7 @@ function fakeIndexedDB() {
     tail = tail.then(run); return tx;
   } };
   return { failNext() { fail = true; }, get writes() { return writes; }, get opened() { return opened; }, open(name) { opened = name; const r = {};
-    queueMicrotask(() => { r.result = db; if (!maps.size) r.onupgradeneeded?.(); r.onsuccess?.(); }); return r; } };
+    queueMicrotask(() => { r.result = db; if (!maps.size) r.onupgradeneeded?.({ oldVersion: 0 }); r.onsuccess?.(); }); return r; } };
 }
 const identity = { market: 'BTC', source: 'test' };
 test('separate database serializes concurrent reducers and reloads committed revisions', async () => {

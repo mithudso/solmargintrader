@@ -42,8 +42,10 @@ function localStore(initial = null) {
   const run = operation => { const p = tail.then(() => { if (closed) throw new Error('closed'); return operation(); }); tail = p.catch(() => {}); return p; };
   return { get record() { return structuredClone(record); },
     loadCheckpoint: () => run(() => structuredClone(record)), load: () => run(() => structuredClone(record?.state ?? null)),
-    update: (_key, reduce) => run(() => { const result = reduce(structuredClone(record?.state ?? null));
-      const metadata = result.changed || !record?.lineage ? nextCheckpoint(record) : { lineage: record.lineage, revision: record.revision };
+    update: (_key, reduce, { backupBase, deferLegacy } = {}) => run(() => { const result = reduce(structuredClone(record?.state ?? null));
+      const legacy = record && !record.lineage;
+      const metadata = legacy && deferLegacy ? null : result.changed || !record?.lineage
+        ? nextCheckpoint(legacy && backupBase ? backupBase : record) : { lineage: record.lineage, revision: record.revision };
       if (result.changed || !record?.lineage) record = { state: structuredClone(result.state), ...metadata };
       return { ...result, checkpoint: metadata }; }),
     restoreIfAbsent: (_key, saved) => run(() => { if (!record) record = structuredClone(saved); return structuredClone(record); }),
@@ -184,13 +186,42 @@ test('valid legacy browser data gets checkpoint metadata and a disk copy without
   store.close(); disk.close();
 });
 
+test('a Live learner with missing browser metadata keeps learning offline and rejoins its verified disk checkpoint', async () => {
+  const rpc = await remote(), local = localStore({ state }), clock = timers(), events = [];
+  let now = origin + 101000, available = false, rejectedReads = 0;
+  const disk = new OracleDiskBackup({ call: async (...args) => {
+    if (!available) { rejectedReads++; throw new Error('helper unavailable'); }
+    return rpc.call(...args);
+  }, profile: async () => namespace, clock: () => now, onChange: event => events.push(event), ...clock });
+  const store = new MirroredOracleStore(local, disk, 'live', { clock: () => now });
+  const observe = previous => transitionLive(previous, { identity, quote: input(now).quote, nowMs: now });
+  await store.update(key, observe);
+  now += 1000;
+  const advanced = await store.update(key, observe);
+  assert.equal(rejectedReads, 1, 'unavailable disk is retried on a bounded schedule');
+  assert.equal(local.record.lineage, undefined);
+  assert(advanced.state.revision > state.revision);
+  assert.equal(rpc.saved.revision, 101);
+  available = true;
+  now += 5000;
+  assert.deepEqual(await store.load(key), advanced.state, 'the newer local model stays authoritative');
+  await waitFor(() => events.at(-1)?.status === 'saved');
+  assert.equal(local.record.lineage, lineage);
+  assert.equal(local.record.revision, 102);
+  assert.equal(rpc.saved.lineage, lineage);
+  assert.equal(rpc.saved.revision, 102);
+  assert.deepEqual(rpc.saved.state, advanced.state);
+  store.close(); disk.close();
+});
+
 test('quota failure during optional legacy metadata capture preserves readable historical counts', async () => {
   const rpc = await remote(null), local = localStore({ state }), clock = timers(), events = [];
   local.update = async () => { throw new DOMException('fixture quota', 'QuotaExceededError'); };
   const disk = new OracleDiskBackup({ call: rpc.call, profile: async () => namespace, onChange: e => events.push(e), ...clock });
   const store = new MirroredOracleStore(local, disk, 'live');
   assert.deepEqual(await store.load(key), state); assert.equal(local.record.state.models[60].n, 3);
-  assert.equal(events.at(-1).status, 'unavailable'); assert.equal(rpc.calls.length, 0); store.close(); disk.close();
+  assert.equal(events.at(-1).status, 'unavailable');
+  assert.deepEqual(rpc.calls.map(x => x.command), ['oracle.learning.load']); store.close(); disk.close();
 });
 
 test('logical timeout keeps the physical save fenced across different queued partitions', async () => {

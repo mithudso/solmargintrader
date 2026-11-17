@@ -1,6 +1,6 @@
 # Every file in this repository
 
-**Generated** from `index/INDEX.json` at commit `675c484` (2026-11-17T22:38:06+00:00). 4117 tracked files, 208.5 MB.
+**Generated** from `index/INDEX.json` at commit `0cec76d` (2026-11-17T22:56:22+00:00). 4117 tracked files, 208.5 MB.
 
 Regenerate with:
 
@@ -688,9 +688,9 @@ Repository-level entry points and agent instructions. `AGENTS.md` and `CLAUDE.md
 
 #### `memory.md`
 
-`doc` · 4566 lines · 885,695 B · description: **extracted**
+`doc` · 4575 lines · 887,008 B · description: **extracted**
 
-**Purpose.** Version: 652 Delta: v651 to v652. Record the completed application assessment, independent final review and verified default-branch source. Application Deep Optimizer 1.0.1 raises the independent review cap to three and retains the five-sweep limit. The last complete sweep covers 240 methods, 222 selected, across 50 application states. It retains 33 verified fixes.
+**Purpose.** Version: 653 Delta: v652 to v653. Preserve Live Oracle learning and its disk identity through an upgrade with older tabs open. The original Chrome Beta profile saved seven SOL partitions. After reloading the panel, all six Minute-close horizons advanced. Live Oracle retained local history but its native saves returned bad_params.
 
 **Use.** Read it.
 
@@ -1016,7 +1016,7 @@ Curated prose. `ARCHITECTURE.md` explains how the pieces fit, `TESTING.md` is th
 
 #### `docs/FILES.md`
 
-`doc` · 39484 lines · 1,885,822 B · description: **extracted**
+`doc` · 39484 lines · 1,885,759 B · description: **extracted**
 
 **Purpose.** Regenerate with: python3 index/build.py all # refresh the index python3 index/make_files_doc.py # rewrite this file
 
@@ -1160,9 +1160,9 @@ Curated prose. `ARCHITECTURE.md` explains how the pieces fit, `TESTING.md` is th
 
 #### `docs/ORACLE-LEARNING-STORAGE.md`
 
-`doc` · 90 lines · 5,161 B · description: **extracted**
+`doc` · 97 lines · 5,607 B · description: **extracted**
 
-**Purpose.** Version: 1.0.0 Delta: preserve both browser learners and add complete local disk checkpoints. The Live Oracle and minute-close Oracle remember their own results for each
+**Purpose.** Version: 1.0.1 Delta: preserve the existing Live Oracle checkpoint identity when upgrading old tabs. The Live Oracle and minute-close Oracle remember their own results for each
 
 **Use.** Read it.
 
@@ -27614,7 +27614,7 @@ The Chrome extension has a separately armed trading surface. Dry-run is the defa
 
 #### `extension/src/1000x/oracle-disk.js`
 
-`code-js` · 207 lines · 12,031 B · description: **extracted**
+`code-js` · 222 lines · 12,963 B · description: **extracted**
 
 **Purpose.** IndexedDB remains primary. Disk I/O happens after commit, never in a reducer.
 
@@ -27644,11 +27644,11 @@ The Chrome extension has a separately armed trading surface. Dry-run is the defa
 
 #### `extension/src/1000x/oracle-live-store.js`
 
-`code-js` · 105 lines · 7,192 B · description: **extracted**
+`code-js` · 119 lines · 7,934 B · description: **extracted**
 
 **Purpose.** Separate database. Every synchronous reducer runs in one multi-store transaction. Per-probe and per-score records avoid rewriting the full pending queue each second.
 
-**Contents.** Defines `LIVE_ORACLE_DB`, `STORES`, `class LiveOracleStore`, `join`, `records`.
+**Contents.** Defines `LIVE_ORACLE_DB`, `LIVE_ORACLE_DB_VERSION`, `STORES`, `class LiveOracleStore`, `join`, `records`.
 
 **Use.** Loaded by the extension; see `extension/manifest.json` for entry points.
 
@@ -28414,7 +28414,7 @@ The Chrome extension has a separately armed trading surface. Dry-run is the defa
 
 #### `extension/test/1000x-oracle-disk.test.js`
 
-`test` · 238 lines · 16,935 B · description: **none**
+`test` · 269 lines · 18,692 B · description: **none**
 
 **Purpose.** _No description available._
 
@@ -28452,7 +28452,7 @@ The Chrome extension has a separately armed trading surface. Dry-run is the defa
 
 #### `extension/test/1000x-oracle-live-store.test.js`
 
-`test` · 67 lines · 5,183 B · description: **none**
+`test` · 67 lines · 5,200 B · description: **none**
 
 **Purpose.** _No description available._
 

@@ -1,6 +1,6 @@
 # Conceptual index
 
-**Generated** from `index/CONCEPT-INDEX.json` (2026-11-17T22:38:06+00:00). 21 concepts.
+**Generated** from `index/CONCEPT-INDEX.json` (2026-11-17T22:56:22+00:00). 21 concepts.
 
 ```bash
 python3 index/build.py all              # refresh
@@ -106,9 +106,9 @@ Strongest files:
 - `llms-executable.txt` (937 hits)
 - `llms-filemap.txt` (752 hits)
 - `docs/design/oracle-ui-2399/report.json` (668 hits)
-- `docs/FILES.md` (637 hits)
+- `docs/FILES.md` (638 hits)
 - `research/strategy_experiment/results/results.json` (544 hits)
-- `memory.md` (488 hits)
+- `memory.md` (493 hits)
 - `llms/jupsol-llms.txt` (427 hits)
 - `research/strategy_experiment/results/initial-gapped-run/results.json` (408 hits)
 

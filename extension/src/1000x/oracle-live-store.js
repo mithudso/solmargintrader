@@ -4,6 +4,9 @@ import { validateLiveState } from './oracle-live-model.js';
 import { checkpointMeta, nextCheckpoint, restoreCheckpoint } from './oracle-checkpoint.js';
 
 export const LIVE_ORACLE_DB = 'solmargintrader-live-advisory-v1';
+// Version 1 documents can still replace partition rows without backup metadata.
+// Upgrading closes their connections through onversionchange and keeps every row.
+const LIVE_ORACLE_DB_VERSION = 2;
 const STORES = ['partitions', 'metrics', 'pending', 'recent'];
 const id = (...parts) => JSON.stringify(parts);
 const same = (a, b) => JSON.stringify(a) === JSON.stringify(b);
@@ -39,8 +42,9 @@ export class LiveOracleStore {
     if (this.#closed) return Promise.reject(new Error('live_oracle_store_closed'));
     if (!this.#opening) this.#opening = new Promise((resolve, reject) => {
       if (!this.#indexedDb) { reject(new Error('live_oracle_storage_unavailable')); return; }
-      const request = this.#indexedDb.open(LIVE_ORACLE_DB, 1); let failed = false;
-      request.onupgradeneeded = () => {
+      const request = this.#indexedDb.open(LIVE_ORACLE_DB, LIVE_ORACLE_DB_VERSION); let failed = false;
+      request.onupgradeneeded = event => {
+        if (event.oldVersion !== 0) return;
         request.result.createObjectStore('partitions', { keyPath: 'key' });
         for (const name of STORES.slice(1)) request.result.createObjectStore(name, { keyPath: 'id' }).createIndex('key', 'key');
       };
@@ -51,7 +55,7 @@ export class LiveOracleStore {
     }).catch(e => { this.#opening = null; throw e; });
     return this.#opening;
   }
-  async #transaction(key, reduce, restore = null) {
+  async #transaction(key, reduce, restore = null, { backupBase = null, deferLegacy = false } = {}) {
     const db = await this.#open(); if (this.#closed) throw new Error('live_oracle_store_closed');
     return new Promise((resolve, reject) => {
       const tx = db.transaction(STORES, reduce || restore ? 'readwrite' : 'readonly'), found = {}, requests = [];
@@ -66,10 +70,20 @@ export class LiveOracleStore {
           const before = old ? records(key, structuredClone(old)) : { partitions: [], metrics: [], pending: [], recent: [] };
           result = restore ? { state: restore.state, changed: true } : reduce(old);
           if (!result || typeof result.then === 'function') throw new Error('live_oracle_async_transaction');
-          const metadata = restore ? checkpointMeta(restore) : result.changed || !found.partitions?.lineage ? nextCheckpoint(found.partitions) : checkpointMeta(found.partitions);
+          const record = found.partitions;
+          const legacy = record && !record.lineage;
+          let metadata = null;
+          if (restore) metadata = checkpointMeta(restore);
+          else if (!legacy || !deferLegacy) {
+            // Use a verified disk revision only when there is no local lineage.
+            // The native save still checks that the local model advances that disk state.
+            metadata = result.changed || !record?.lineage
+              ? nextCheckpoint(legacy && backupBase ? backupBase : record)
+              : checkpointMeta(record);
+          }
           result.checkpoint = metadata;
           if (!result.changed) {
-            if (!found.partitions?.lineage) tx.objectStore('partitions').put({ key, state: found.partitions.state, ...metadata });
+            if (legacy && metadata) tx.objectStore('partitions').put({ key, state: record.state, ...metadata });
             return;
           }
           if (result.state?.key !== key) throw new Error('live_oracle_key_mismatch');
@@ -77,7 +91,7 @@ export class LiveOracleStore {
           for (const name of STORES) {
             const store = tx.objectStore(name), ident = row => name === 'partitions' ? row.key : row.id;
             const oldMap = new Map(before[name].map(row => [ident(row), row]));
-            for (const row of after[name]) { if (name === 'partitions') Object.assign(row, metadata); const k = ident(row); if (!same(row, oldMap.get(k))) store.put(row); oldMap.delete(k); }
+            for (const row of after[name]) { if (name === 'partitions' && metadata) Object.assign(row, metadata); const k = ident(row); if (!same(row, oldMap.get(k))) store.put(row); oldMap.delete(k); }
             for (const k of oldMap.keys()) store.delete(k);
           }
         };
@@ -91,7 +105,7 @@ export class LiveOracleStore {
       }
     });
   }
-  update(key, reduce) { if (typeof reduce !== 'function') return Promise.reject(new Error('live_oracle_reducer_required')); return this.#transaction(key, reduce); }
+  update(key, reduce, options) { if (typeof reduce !== 'function') return Promise.reject(new Error('live_oracle_reducer_required')); return this.#transaction(key, reduce, null, options); }
   loadCheckpoint(key) { return this.#transaction(key, null); }
   async load(key) { return (await this.loadCheckpoint(key))?.state ?? null; }
   async restoreIfAbsent(key, checkpoint) {

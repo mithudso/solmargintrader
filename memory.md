@@ -1,5 +1,14 @@
 # Work continuation
 
+Version: 653
+Delta: v652 to v653. Preserve Live Oracle learning and its disk identity through an upgrade with older tabs open.
+
+## Live Oracle checkpoint continuity follow-up — TASK-2574
+
+The original Chrome Beta profile saved seven SOL partitions. After reloading the panel, all six Minute-close horizons advanced. Live Oracle retained local history but its native saves returned bad_params. A read-only browser capture found an unversioned Live row with no lineage or revision. The actual newer model passed native validation and advancement against the first disk checkpoint. Version 2 of the same IndexedDB database fences version 1 connections without replacing records. An unversioned browser row keeps its newer model and reuses the verified exact-profile disk lineage. If backup storage is unavailable, the model continues learning locally until lookup can retry. Existing native admission guards still apply. KNOW-2614 anchors the failure and fix.
+
+This is a targeted persistence follow-up to the five-sweep, three-review optimizer result. The earlier assessment remains bound to source9 and the new compatibility fault is recorded separately. Continue with required source/CI and actual Chrome Beta reload verification under /Users/mitch/.local/share/solmargintrader/audits/application-2556-oracles.
+
 Version: 652
 Delta: v651 to v652. Record the completed application assessment, independent final review and verified default-branch source.
 

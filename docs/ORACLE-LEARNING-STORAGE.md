@@ -1,7 +1,7 @@
 # Saved Oracle learning
 
-Version: 1.0.0
-Delta: preserve both browser learners and add complete local disk checkpoints.
+Version: 1.0.1
+Delta: preserve the existing Live Oracle checkpoint identity when upgrading old tabs.
 
 The Live Oracle and minute-close Oracle remember their own results for each
 coin and source across chart changes, coin changes, hiding the window and browser
@@ -49,6 +49,13 @@ It is not a complete raw quote or tick recorder. Existing quote-collector
 retention and the separate Auto Long / Short journal remain independent.
 
 ## Recovery and conflicts
+
+The Live Oracle database upgrade closes older connections without deleting any
+rows. If an older tab left a browser model without checkpoint metadata, the
+updated panel keeps that model and reads the matching disk checkpoint before
+assigning backup metadata. When the helper is unavailable, local learning
+continues and the panel retries the lookup. The native helper still checks
+that a newer backup advances the existing saved history.
 
 When an exact browser partition is absent, the panel may restore its matching
 disk checkpoint. It verifies the complete model, identity and SHA-256 digest
