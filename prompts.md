@@ -1,7 +1,13 @@
 # Prompt history
 
-Version: 282
-Delta: v281 to v282; preserve the current status question.
+Version: 283
+Delta: v282 to v283; preserve the paper-config connection error request.
+
+## Paper-config connection error — 2026-11-17
+
+I'm getting this error whe lading a paper config [Image #1]
+
+The supplied screenshot shows “Auto-trade owner unavailable” and blank paper collateral fields.
 
 ## Current status question
 
