@@ -1,14 +1,14 @@
 {
-  "generatedAt": "2026-11-17T01:15:13+00:00",
+  "generatedAt": "2026-11-17T01:32:38+00:00",
   "schemaVersion": 1,
   "repoRoot": "~/dev/solmargintrader",
-  "commit": "51e9f26",
+  "commit": "d9c24f2",
   "counts": {
-    "files": 3986,
-    "bytes": 140691003,
+    "files": 3987,
+    "bytes": 140701969,
     "byKind": {
       "strategy-card": 1478,
-      "doc": 838,
+      "doc": 839,
       "test": 496,
       "code-python": 436,
       "config": 288,
@@ -25,7 +25,7 @@
       "backtester": 1967,
       "research": 493,
       "soltui": 200,
-      "docs": 175,
+      "docs": 176,
       "extension": 162,
       ".cdo": 161,
       "website": 95,
@@ -59,7 +59,7 @@
       "archive": 1,
       "tradingskilllist": 1
     },
-    "withSummary": 3569
+    "withSummary": 3570
   },
   "files": [
     {
@@ -72,9 +72,9 @@
       "title": "ledger",
       "summary": "Generated JSON object, 3 keys (files, runs, version).",
       "summarySource": "derived",
-      "bytes": 317736,
-      "lines": 20540,
-      "sha1": "0c66ea2f049fc3d03e700ba6c4594d262cf3746f",
+      "bytes": 324342,
+      "lines": 20373,
+      "sha1": "17478a9bf83b7a403002bfe8e188fcb8f0f9610e",
       "symbols": [],
       "imports": [],
       "internalImports": [],
@@ -74569,6 +74569,24 @@
       "frontmatter": {}
     },
     {
+      "id": "docs/audit-2026-11-17.md",
+      "path": "docs/audit-2026-11-17.md",
+      "dir": "docs",
+      "name": "audit-2026-11-17.md",
+      "ext": ".md",
+      "kind": "doc",
+      "title": "Repository health audit \u2014 2026-11-17",
+      "summary": "The repo-bootstrapper and code-deep-optimizer work used the existing incremental run started at 2026-11-16T17:00:08Z. The result is **partial**. This report does not assert a clean repository. The run collected 54 file diagnostics: the original 50 risk-prioritized files and four disclosed extension runtime supplements.",
+      "summarySource": "opening-prose",
+      "bytes": 2991,
+      "lines": 20,
+      "sha1": "bf6db2f881ee0650603d8aea062cc0bf242a4be6",
+      "symbols": [],
+      "imports": [],
+      "internalImports": [],
+      "frontmatter": {}
+    },
+    {
       "id": "docs/audit-checkpoint-2026-11-12.md",
       "path": "docs/audit-checkpoint-2026-11-12.md",
       "dir": "docs",
@@ -88169,11 +88187,11 @@
       "ext": ".md",
       "kind": "doc",
       "title": "Work continuation",
-      "summary": "Version: 620 Delta: v619 to v620; preserve accepted auto-action teardown and review scope. Delta: v618 to v619; record integrated audit, paper-session identity display and pending acceptance.",
+      "summary": "Version: 621 Delta: v620 to v621; record the qualified optimizer receipt and remaining delivery gates. Delta: v619 to v620; preserve accepted auto-action teardown and review scope.",
       "summarySource": "opening-prose",
-      "bytes": 628280,
-      "lines": 3043,
-      "sha1": "323276326006a58c48b7ef2498a079e941775555",
+      "bytes": 629649,
+      "lines": 3050,
+      "sha1": "546d2ef69c83ff21f73ff4cf4d4ea0b49098aa48",
       "symbols": [],
       "imports": [],
       "internalImports": [],
@@ -118773,5 +118791,5 @@
       "frontmatter": {}
     }
   ],
-  "textSha256": "165c866084a3d3213bfb8976fd2e72aa3e3e4e6750a40104f3096ac67fca7797"
+  "textSha256": "ca132230d1504b57e3da701d020e0049d39fc5b7b74ef0fc95d68f4b0d18888d"
 }

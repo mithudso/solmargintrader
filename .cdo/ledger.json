@@ -3063,27 +3063,21 @@
    "verdict": "REVIEWED-FIXED"
   },
   "botmanager/src/botmanager/blind.py": {
-   "date": "2026-11-12",
+   "date": "2026-11-17",
    "findings": 0,
    "mode": "full",
    "passes": [
     "C1",
     "C2",
-    "C3",
     "M1",
     "M2",
     "M4",
     "P1",
-    "P2",
-    "S1",
-    "S2",
     "S3",
-    "S4",
-    "S5",
-    "T1"
+    "S5"
    ],
-   "sha": "cacba43ad9069647b6d0be44992e0a6738358c2c",
-   "verdict": "REVIEWED-FIXED"
+   "sha": "18123c3ae93f34032095b5c55a53ba50e97e7f30",
+   "verdict": "PARTIAL: see same-run evidence manifest; inherited passes may not be current-run proof"
   },
   "botmanager/src/botmanager/blind_judge.py": {
    "date": "2026-11-12",
@@ -3926,27 +3920,12 @@
    "verdict": "REVIEWED-FIXED"
   },
   "botmanager/src/botmanager/supervisor.py": {
-   "date": "2026-11-12",
-   "findings": 0,
+   "date": "2026-11-17",
+   "findings": 1,
    "mode": "full",
-   "passes": [
-    "C1",
-    "C2",
-    "C3",
-    "M1",
-    "M2",
-    "M4",
-    "P1",
-    "P2",
-    "S1",
-    "S2",
-    "S3",
-    "S4",
-    "S5",
-    "T1"
-   ],
-   "sha": "9fad3c0ecc3ffe8d8ab60c946bbdd4256519ac16",
-   "verdict": "REVIEWED-FIXED"
+   "passes": [],
+   "sha": "231bf8e58f1ad502f0891a5c0fa15b62e0aec991",
+   "verdict": "PARTIAL: see same-run evidence manifest; inherited passes may not be current-run proof"
   },
   "botmanager/src/botmanager/transport.py": {
    "date": "2026-11-12",
@@ -4091,28 +4070,23 @@
    "verdict": "REVIEWED-FIXED"
   },
   "botmanager/tests/test_blind.py": {
-   "date": "2026-11-12",
+   "date": "2026-11-17",
    "findings": 0,
    "mode": "full",
    "passes": [
     "C1",
     "C2",
-    "C3",
     "M1",
     "M2",
     "M4",
     "P1",
-    "P2",
     "S1",
-    "S2",
     "S3",
-    "S4",
     "S5",
-    "T1",
     "T4"
    ],
-   "sha": "ff906076db4cbf2c1be911fc4945d028e8d1fc43",
-   "verdict": "REVIEWED-FIXED"
+   "sha": "1ae750e8fa6821c73e71655c377f4ef25736c900",
+   "verdict": "PARTIAL: see same-run evidence manifest; inherited passes may not be current-run proof"
   },
   "botmanager/tests/test_browser_surfaces.py": {
    "date": "2026-11-12",
@@ -4475,28 +4449,12 @@
    "verdict": "REVIEWED-FIXED"
   },
   "botmanager/tests/test_load.py": {
-   "date": "2026-11-12",
-   "findings": 0,
+   "date": "2026-11-17",
+   "findings": 1,
    "mode": "full",
-   "passes": [
-    "C1",
-    "C2",
-    "C3",
-    "M1",
-    "M2",
-    "M4",
-    "P1",
-    "P2",
-    "S1",
-    "S2",
-    "S3",
-    "S4",
-    "S5",
-    "T1",
-    "T4"
-   ],
-   "sha": "95d1b8e6e538664347eeae0c160746fd340a5ae9",
-   "verdict": "REVIEWED-FIXED"
+   "passes": [],
+   "sha": "3dcee545b28a22702a4d2bf9c16a1a28a142ed3d",
+   "verdict": "PARTIAL: see same-run evidence manifest; inherited passes may not be current-run proof"
   },
   "botmanager/tests/test_machine_health.py": {
    "date": "2026-11-12",
@@ -5062,26 +5020,12 @@
    "verdict": "REVIEWED-FIXED"
   },
   "ecosystem/control.py": {
-   "date": "2026-11-13",
-   "findings": 0,
+   "date": "2026-11-17",
+   "findings": 1,
    "mode": "full",
-   "passes": [
-    "C1",
-    "C2",
-    "C3",
-    "M1",
-    "M2",
-    "M4",
-    "P1",
-    "P2",
-    "S1",
-    "S2",
-    "S3",
-    "S4",
-    "S5"
-   ],
-   "sha": "532cc6e90fd340814ac75779c9cd6d80e3f51ca6",
-   "verdict": "REVIEWED_SCOPED_GLOBAL_CONVERGENCE_PARTIAL"
+   "passes": [],
+   "sha": "e7dfc1ca87f31121d1b76073c89546bb7c92b478",
+   "verdict": "PARTIAL: see same-run evidence manifest; inherited passes may not be current-run proof"
   },
   "ecosystem/data.py": {
    "date": "2026-11-12",
@@ -5178,27 +5122,12 @@
    "verdict": "REVIEWED_SCOPED_GLOBAL_CONVERGENCE_PARTIAL"
   },
   "ecosystem/installation.py": {
-   "date": "2026-11-12",
-   "findings": 0,
+   "date": "2026-11-17",
+   "findings": 1,
    "mode": "full",
-   "passes": [
-    "C1",
-    "C2",
-    "C3",
-    "M1",
-    "M2",
-    "M4",
-    "P1",
-    "P2",
-    "S1",
-    "S2",
-    "S3",
-    "S4",
-    "S5",
-    "T1"
-   ],
-   "sha": "3009dc8945e5568462b9b401a0abf8cdce9d8759",
-   "verdict": "CLEAN"
+   "passes": [],
+   "sha": "5f0dea1966dfc450b73c2ace5b884e71cccbd330",
+   "verdict": "PARTIAL: see same-run evidence manifest; inherited passes may not be current-run proof"
   },
   "ecosystem/meta_forward.py": {
    "date": "2026-11-12",
@@ -5817,28 +5746,12 @@
    "verdict": "REVIEWED-FIXED"
   },
   "ecosystem/tests/test_setup.py": {
-   "date": "2026-11-12",
+   "date": "2026-11-17",
    "findings": 0,
    "mode": "full",
-   "passes": [
-    "C1",
-    "C2",
-    "C3",
-    "M1",
-    "M2",
-    "M4",
-    "P1",
-    "P2",
-    "S1",
-    "S2",
-    "S3",
-    "S4",
-    "S5",
-    "T1",
-    "T4"
-   ],
-   "sha": "762e23724245dd0cd2ca4fcb202387dad72738c5",
-   "verdict": "CLEAN"
+   "passes": [],
+   "sha": "bdc156304030bec551ced6d7ce59bab0ab571549",
+   "verdict": "PARTIAL: see same-run evidence manifest; inherited passes may not be current-run proof"
   },
   "ecosystem/tests/test_swap_web.py": {
    "date": "2026-11-12",
@@ -6009,7 +5922,7 @@
    "verdict": "CLEAN"
   },
   "ecosystem/tests/test_votes.py": {
-   "date": "2026-11-13",
+   "date": "2026-11-17",
    "findings": 0,
    "mode": "full",
    "passes": [
@@ -6020,41 +5933,34 @@
     "M2",
     "M4",
     "P1",
-    "P2",
     "S1",
     "S2",
     "S3",
-    "S4",
     "S5",
-    "T1",
     "T4"
    ],
-   "sha": "43c3cd77f330e474a5b9f578f0fb38fba0246b7b",
-   "verdict": "REVIEWED_SCOPED_GLOBAL_CONVERGENCE_PARTIAL"
+   "sha": "5d2c9f8802f5f2b7237f180c6bbce68fd69e0c17",
+   "verdict": "PARTIAL: see same-run evidence manifest; inherited passes may not be current-run proof"
   },
   "ecosystem/tests/test_web.py": {
-   "date": "2026-11-13",
+   "date": "2026-11-17",
    "findings": 0,
    "mode": "full",
    "passes": [
     "C1",
     "C2",
-    "C3",
     "M1",
     "M2",
     "M4",
     "P1",
-    "P2",
     "S1",
     "S2",
     "S3",
-    "S4",
     "S5",
-    "T1",
     "T4"
    ],
-   "sha": "3e74a07aea9f5c23ed8ed92ebfc705e14c309ba7",
-   "verdict": "REVIEWED_SCOPED_GLOBAL_CONVERGENCE_PARTIAL"
+   "sha": "963a392a927769af0020445afed5afafb537cb74",
+   "verdict": "PARTIAL: see same-run evidence manifest; inherited passes may not be current-run proof"
   },
   "ecosystem/tests/test_wiki.py": {
    "date": "2026-11-12",
@@ -6176,7 +6082,7 @@
    "verdict": "CLEAN"
   },
   "ecosystem/votes.py": {
-   "date": "2026-11-13",
+   "date": "2026-11-17",
    "findings": 0,
    "mode": "full",
    "passes": [
@@ -6187,40 +6093,22 @@
     "M2",
     "M4",
     "P1",
-    "P2",
     "S1",
     "S2",
     "S3",
-    "S4",
     "S5",
     "T1"
    ],
-   "sha": "d56e2d528a6aaa2d276cb43fca59d704c46b2a80",
-   "verdict": "REVIEWED_SCOPED_GLOBAL_CONVERGENCE_PARTIAL"
+   "sha": "16acecf87f2db0e7c2c669970821144c73cb992f",
+   "verdict": "PARTIAL: see same-run evidence manifest; inherited passes may not be current-run proof"
   },
   "ecosystem/web.py": {
-   "date": "2026-11-13",
-   "findings": 0,
+   "date": "2026-11-17",
+   "findings": 1,
    "mode": "full",
-   "passes": [
-    "C1",
-    "C2",
-    "C3",
-    "M1",
-    "M2",
-    "M4",
-    "M5",
-    "P1",
-    "P2",
-    "S1",
-    "S2",
-    "S3",
-    "S4",
-    "S5",
-    "T1"
-   ],
-   "sha": "d7ffd21f3b453337313590d5b4ff369f6955901b",
-   "verdict": "REVIEWED_SCOPED_GLOBAL_CONVERGENCE_PARTIAL"
+   "passes": [],
+   "sha": "c5e3db89a6eee16a41a70fde21e01226d6cd6af9",
+   "verdict": "PARTIAL: see same-run evidence manifest; inherited passes may not be current-run proof"
   },
   "ecosystem/web/app.js": {
    "date": "2026-11-13",
@@ -7427,6 +7315,79 @@
    "sha": "aa19c7b24a6293ba335df8b97edbbe829dc4019c",
    "verdict": "REVIEWED-FIXED"
   },
+  "extension/src/1000x/feed.js": {
+   "date": "2026-11-17",
+   "findings": 1,
+   "mode": "full",
+   "passes": [],
+   "sha": "00ae8914338e5e248f6a590272a03505e9511c5f",
+   "verdict": "PARTIAL: see same-run evidence manifest; inherited passes may not be current-run proof"
+  },
+  "extension/src/1000x/oracle-controller.js": {
+   "date": "2026-11-17",
+   "findings": 1,
+   "mode": "full",
+   "passes": [],
+   "sha": "8d0bf22c6a0da29296f9e2bdbf3d2fd3a6c38ce3",
+   "verdict": "PARTIAL: see same-run evidence manifest; inherited passes may not be current-run proof"
+  },
+  "extension/src/1000x/oracle-model.js": {
+   "date": "2026-11-17",
+   "findings": 0,
+   "mode": "full",
+   "passes": [],
+   "sha": "69cd109caeffe46ba424a4ba398e003a703344cf",
+   "verdict": "PARTIAL: see same-run evidence manifest; inherited passes may not be current-run proof"
+  },
+  "extension/src/1000x/oracle-store.js": {
+   "date": "2026-11-17",
+   "findings": 1,
+   "mode": "full",
+   "passes": [],
+   "sha": "b3d8b13ad2a9dba42c227f73a6bd9b4801d43c47",
+   "verdict": "PARTIAL: see same-run evidence manifest; inherited passes may not be current-run proof"
+  },
+  "extension/src/1000x/oracle-view.js": {
+   "date": "2026-11-17",
+   "findings": 1,
+   "mode": "full",
+   "passes": [],
+   "sha": "8d11affd34f0d71c601ee9d7d5b1be2ea93fc175",
+   "verdict": "PARTIAL: see same-run evidence manifest; inherited passes may not be current-run proof"
+  },
+  "extension/src/1000x/panel.css": {
+   "date": "2026-11-17",
+   "findings": 0,
+   "mode": "full",
+   "passes": [],
+   "sha": "de9edfcb95a0d740ec0bc678625d7a348b1d4969",
+   "verdict": "PARTIAL: see same-run evidence manifest; inherited passes may not be current-run proof"
+  },
+  "extension/src/1000x/panel.js": {
+   "date": "2026-11-17",
+   "findings": 0,
+   "mode": "full",
+   "passes": [],
+   "sha": "ae66ae1c397016b948c05643a91a89c7152c7e71",
+   "verdict": "PARTIAL: see same-run evidence manifest; inherited passes may not be current-run proof"
+  },
+  "extension/src/1000x/timeframes.js": {
+   "date": "2026-11-17",
+   "findings": 0,
+   "mode": "full",
+   "passes": [
+    "C1",
+    "C2",
+    "C3",
+    "M1",
+    "M2",
+    "M4",
+    "P1",
+    "S1"
+   ],
+   "sha": "d3eabe2b1aeac9ec1034531512577cc6bcfe25ab",
+   "verdict": "PARTIAL: see same-run evidence manifest; inherited passes may not be current-run proof"
+  },
   "extension/src/bg/live-windows.js": {
    "date": "2026-11-12",
    "findings": 0,
@@ -7700,27 +7661,12 @@
    "verdict": "REVIEWED-FIXED"
   },
   "extension/src/core/owner-source.js": {
-   "date": "2026-11-12",
+   "date": "2026-11-17",
    "findings": 0,
    "mode": "full",
-   "passes": [
-    "C1",
-    "C2",
-    "C3",
-    "M1",
-    "M2",
-    "M4",
-    "P1",
-    "P2",
-    "S1",
-    "S2",
-    "S3",
-    "S4",
-    "S5",
-    "T1"
-   ],
-   "sha": "60d30065cb736d3a0a14e7c4c5703bd0ecb0ccae",
-   "verdict": "REVIEWED-FIXED"
+   "passes": [],
+   "sha": "434b1a390800ad88d2caf7b7ca3047635c88a20d",
+   "verdict": "PARTIAL: see same-run evidence manifest; inherited passes may not be current-run proof"
   },
   "extension/src/core/pnl.js": {
    "date": "2026-11-12",
@@ -7792,8 +7738,8 @@
    "verdict": "REVIEWED-FIXED"
   },
   "extension/src/jupiter/attribution.js": {
-   "date": "2026-11-12",
-   "findings": 0,
+   "date": "2026-11-17",
+   "findings": 1,
    "mode": "full",
    "passes": [
     "C1",
@@ -7801,18 +7747,15 @@
     "C3",
     "M1",
     "M2",
-    "M4",
     "P1",
-    "P2",
     "S1",
     "S2",
     "S3",
     "S4",
-    "S5",
     "T1"
    ],
-   "sha": "419880fc4e4d594a8ae31e4b80a385f7e2dadc39",
-   "verdict": "REVIEWED-FIXED"
+   "sha": "b88c98c33b735131c119c114f223430ee7544002",
+   "verdict": "PARTIAL: see same-run evidence manifest; inherited passes may not be current-run proof"
   },
   "extension/src/jupiter/http.js": {
    "date": "2026-11-12",
@@ -8725,6 +8668,22 @@
    "sha": "35e8be6f150d2d630c5f0e120f5b10ff0ccfad47",
    "verdict": "REVIEWED-FIXED"
   },
+  "extension/test/1000x-oracle-controller.test.js": {
+   "date": "2026-11-17",
+   "findings": 1,
+   "mode": "full",
+   "passes": [],
+   "sha": "da87937b14c5da167fcfbdff5692f282d21fabf1",
+   "verdict": "PARTIAL: see same-run evidence manifest; inherited passes may not be current-run proof"
+  },
+  "extension/test/1000x-oracle-model.test.js": {
+   "date": "2026-11-17",
+   "findings": 3,
+   "mode": "full",
+   "passes": [],
+   "sha": "6e2e651bcc78641c85cc5baa45278f94b06ca41a",
+   "verdict": "PARTIAL: see same-run evidence manifest; inherited passes may not be current-run proof"
+  },
   "extension/test/accounting-audit.test.js": {
    "date": "2026-11-12",
    "findings": 0,
@@ -8942,28 +8901,12 @@
    "verdict": "REVIEWED-FIXED"
   },
   "extension/test/core.test.js": {
-   "date": "2026-11-12",
-   "findings": 0,
+   "date": "2026-11-17",
+   "findings": 1,
    "mode": "full",
-   "passes": [
-    "C1",
-    "C2",
-    "C3",
-    "M1",
-    "M2",
-    "M4",
-    "P1",
-    "P2",
-    "S1",
-    "S2",
-    "S3",
-    "S4",
-    "S5",
-    "T1",
-    "T4"
-   ],
-   "sha": "65ff2e2a3d77ef426f8539daf2fa5a4c867ffa97",
-   "verdict": "REVIEWED-FIXED"
+   "passes": [],
+   "sha": "9ad4646bfd2466ec667b6c187e06ee98d78d5c67",
+   "verdict": "PARTIAL: see same-run evidence manifest; inherited passes may not be current-run proof"
   },
   "extension/test/e2e-harness.test.js": {
    "date": "2026-11-12",
@@ -9917,28 +9860,12 @@
    "verdict": "REVIEWED-FIXED"
   },
   "index/build.py": {
-   "date": "2026-11-12",
-   "findings": 0,
+   "date": "2026-11-17",
+   "findings": 2,
    "mode": "full",
-   "passes": [
-    "C1",
-    "C2",
-    "C3",
-    "M1",
-    "M2",
-    "M4",
-    "M5",
-    "P1",
-    "P2",
-    "S1",
-    "S2",
-    "S3",
-    "S4",
-    "S5",
-    "T1"
-   ],
-   "sha": "1a6ceb885fda7e831f105917c73a2fe45769212a",
-   "verdict": "CLEAN"
+   "passes": [],
+   "sha": "d1dc208f850a90bde228310f95520a232eb5d289",
+   "verdict": "PARTIAL: see same-run evidence manifest; inherited passes may not be current-run proof"
   },
   "index/idle.py": {
    "date": "2026-11-12",
@@ -10037,28 +9964,12 @@
    "verdict": "CLEAN"
   },
   "index/search.py": {
-   "date": "2026-11-12",
-   "findings": 0,
+   "date": "2026-11-17",
+   "findings": 2,
    "mode": "full",
-   "passes": [
-    "C1",
-    "C2",
-    "C3",
-    "M1",
-    "M2",
-    "M4",
-    "M5",
-    "P1",
-    "P2",
-    "S1",
-    "S2",
-    "S3",
-    "S4",
-    "S5",
-    "T1"
-   ],
-   "sha": "5c11c203d80d2e12bc6bad026cfdd432319bcadc",
-   "verdict": "CLEAN"
+   "passes": [],
+   "sha": "15e379a18d39053eae1429b838178657aee5cec1",
+   "verdict": "PARTIAL: see same-run evidence manifest; inherited passes may not be current-run proof"
   },
   "liquidity/src/aero_lp/__init__.py": {
    "date": "2026-11-12",
@@ -11941,51 +11852,20 @@
    "verdict": "CLEAN"
   },
   "oracle/reader.py": {
-   "date": "2026-11-12",
-   "findings": 0,
+   "date": "2026-11-17",
+   "findings": 1,
    "mode": "full",
-   "passes": [
-    "C1",
-    "C2",
-    "C3",
-    "M1",
-    "M2",
-    "M4",
-    "P1",
-    "P2",
-    "S1",
-    "S2",
-    "S3",
-    "S4",
-    "S5",
-    "T1"
-   ],
-   "sha": "cd4d0313dc48834f3eaf69077e739fa8e2d0714a",
-   "verdict": "CLEAN"
+   "passes": [],
+   "sha": "e2985cad2530890376dc0d2a511a05614c197ea2",
+   "verdict": "PARTIAL: see same-run evidence manifest; inherited passes may not be current-run proof"
   },
   "oracle/server.py": {
-   "date": "2026-11-12",
+   "date": "2026-11-17",
    "findings": 0,
    "mode": "full",
-   "passes": [
-    "C1",
-    "C2",
-    "C3",
-    "M1",
-    "M2",
-    "M4",
-    "M5",
-    "P1",
-    "P2",
-    "S1",
-    "S2",
-    "S3",
-    "S4",
-    "S5",
-    "T1"
-   ],
-   "sha": "4abd57e1dfa18f4e64798a61b341e9f65c647473",
-   "verdict": "CLEAN"
+   "passes": [],
+   "sha": "532608c8c6ba39abd2ee202238cf14ea3020731e",
+   "verdict": "PARTIAL: see same-run evidence manifest; inherited passes may not be current-run proof"
   },
   "oracle/store.py": {
    "date": "2026-11-12",
@@ -12045,7 +11925,7 @@
    "verdict": "CLEAN"
   },
   "oracle/tests/test_archived_reader.py": {
-   "date": "2026-11-12",
+   "date": "2026-11-17",
    "findings": 0,
    "mode": "full",
    "passes": [
@@ -12056,17 +11936,14 @@
     "M2",
     "M4",
     "P1",
-    "P2",
     "S1",
     "S2",
     "S3",
-    "S4",
     "S5",
-    "T1",
     "T4"
    ],
-   "sha": "1a367a99ac923affdba0fdc7d32deb417634cadd",
-   "verdict": "CLEAN"
+   "sha": "1f9729fff9ce487d6eb3d890b77ddfc9978b3672",
+   "verdict": "PARTIAL: see same-run evidence manifest; inherited passes may not be current-run proof"
   },
   "oracle/tests/test_cli.py": {
    "date": "2026-11-12",
@@ -14006,9 +13883,25 @@
    "sha": "528deb2e6ecf55edbac7bf000e8b4d924694bd19",
    "verdict": "PARTIAL-M5"
   },
-  "scripts/bootstrap_ecosystem.py": {
-   "date": "2026-11-12",
-   "findings": 0,
+  "research/zec_feed_settings.py": {
+   "date": "2026-11-17",
+   "findings": 1,
+   "mode": "full",
+   "passes": [],
+   "sha": "0531fa3982ed00a5561dbd084ed6bb9e097d0ec9",
+   "verdict": "PARTIAL: see same-run evidence manifest; inherited passes may not be current-run proof"
+  },
+  "research/zec_leverage_panel.py": {
+   "date": "2026-11-17",
+   "findings": 1,
+   "mode": "full",
+   "passes": [],
+   "sha": "b378972871aff7d0c906d521c6a16ed6de8b2aa3",
+   "verdict": "PARTIAL: see same-run evidence manifest; inherited passes may not be current-run proof"
+  },
+  "research/zec_tui.py": {
+   "date": "2026-11-17",
+   "findings": 1,
    "mode": "full",
    "passes": [
     "C1",
@@ -14027,8 +13920,34 @@
     "S5",
     "T1"
    ],
-   "sha": "1c99b238b3854c4d0d21987dad188a6fb49249d7",
-   "verdict": "CLEAN"
+   "sha": "91b47b4a3ee91251de5a213a069f74c1a250ddf7",
+   "verdict": "PARTIAL: see same-run evidence manifest; inherited passes may not be current-run proof"
+  },
+  "research/zec_tui_stream.py": {
+   "date": "2026-11-17",
+   "findings": 1,
+   "mode": "full",
+   "passes": [],
+   "sha": "df7492a6fb61e444f392af9db82e0e09b399f03e",
+   "verdict": "PARTIAL: see same-run evidence manifest; inherited passes may not be current-run proof"
+  },
+  "scripts/bootstrap_ecosystem.py": {
+   "date": "2026-11-17",
+   "findings": 1,
+   "mode": "full",
+   "passes": [
+    "C1",
+    "C2",
+    "C3",
+    "M1",
+    "M2",
+    "M4",
+    "P1",
+    "S1",
+    "S3"
+   ],
+   "sha": "7f281233110362629ee195029a7460322a677a25",
+   "verdict": "PARTIAL: see same-run evidence manifest; inherited passes may not be current-run proof"
   },
   "scripts/build_doc_index.py": {
    "date": "2026-11-12",
@@ -14802,31 +14721,16 @@
    "verdict": "REVIEWED"
   },
   "soltui/bgqueue.py": {
-   "date": "2026-11-12",
-   "findings": 0,
+   "date": "2026-11-17",
+   "findings": 3,
    "mode": "full",
-   "passes": [
-    "C1",
-    "C2",
-    "C3",
-    "M1",
-    "M2",
-    "M4",
-    "P1",
-    "P2",
-    "S1",
-    "S2",
-    "S3",
-    "S4",
-    "S5",
-    "T1"
-   ],
-   "sha": "dff56aaf82885f7a93702496e90e7d5743e3f33f",
-   "verdict": "REVIEWED-FIXED"
+   "passes": [],
+   "sha": "396e8d19defc4b14a4687fcac541021062d583e1",
+   "verdict": "PARTIAL: see same-run evidence manifest; inherited passes may not be current-run proof"
   },
   "soltui/bgworker.py": {
-   "date": "2026-11-12",
-   "findings": 0,
+   "date": "2026-11-17",
+   "findings": 1,
    "mode": "full",
    "passes": [
     "C1",
@@ -14835,18 +14739,14 @@
     "M1",
     "M2",
     "M4",
-    "M5",
     "P1",
-    "P2",
     "S1",
     "S2",
     "S3",
-    "S4",
-    "S5",
-    "T1"
+    "S5"
    ],
-   "sha": "23a4b19d27008bc3422f1d23decdec8ac5300f6e",
-   "verdict": "REVIEWED-FIXED"
+   "sha": "921f19c57f5951205fb3d598a78ebff559bd1e81",
+   "verdict": "PARTIAL: see same-run evidence manifest; inherited passes may not be current-run proof"
   },
   "soltui/bot_scheduler.py": {
    "date": "2026-11-12",
@@ -15013,27 +14913,12 @@
    "verdict": "REVIEWED-FIXED"
   },
   "soltui/commands.py": {
-   "date": "2026-11-12",
-   "findings": 0,
+   "date": "2026-11-17",
+   "findings": 3,
    "mode": "full",
-   "passes": [
-    "C1",
-    "C2",
-    "C3",
-    "M1",
-    "M2",
-    "M4",
-    "P1",
-    "P2",
-    "S1",
-    "S2",
-    "S3",
-    "S4",
-    "S5",
-    "T1"
-   ],
-   "sha": "4a8992d6838ffcd281bd3f8b8101624d0e6ad883",
-   "verdict": "REVIEWED-FIXED"
+   "passes": [],
+   "sha": "6afcafcfc389087a908339e68419bcf6f73e7867",
+   "verdict": "PARTIAL: see same-run evidence manifest; inherited passes may not be current-run proof"
   },
   "soltui/compound.py": {
    "date": "2026-11-12",
@@ -15427,50 +15312,20 @@
    "verdict": "REVIEWED"
   },
   "soltui/f5_batch.py": {
-   "date": "2026-11-12",
-   "findings": 0,
+   "date": "2026-11-17",
+   "findings": 1,
    "mode": "full",
-   "passes": [
-    "C1",
-    "C2",
-    "C3",
-    "M1",
-    "M2",
-    "M4",
-    "P1",
-    "P2",
-    "S1",
-    "S2",
-    "S3",
-    "S4",
-    "S5",
-    "T1"
-   ],
-   "sha": "d984dcb21aee205e1d0691dca9105c3e98ecf2a3",
-   "verdict": "REVIEWED-FIXED"
+   "passes": [],
+   "sha": "1eb976bc145b589125649902488aca58c6386d4c",
+   "verdict": "PARTIAL: see same-run evidence manifest; inherited passes may not be current-run proof"
   },
   "soltui/forwardtest.py": {
-   "date": "2026-11-12",
-   "findings": 0,
+   "date": "2026-11-17",
+   "findings": 1,
    "mode": "full",
-   "passes": [
-    "C1",
-    "C2",
-    "C3",
-    "M1",
-    "M2",
-    "M4",
-    "P1",
-    "P2",
-    "S1",
-    "S2",
-    "S3",
-    "S4",
-    "S5",
-    "T1"
-   ],
-   "sha": "3ad876328982cb9a693228dd178b0a0d66abb69c",
-   "verdict": "REVIEWED-FIXED"
+   "passes": [],
+   "sha": "17cd89593d0bf39aa7583f44c24c3806e6afa293",
+   "verdict": "PARTIAL: see same-run evidence manifest; inherited passes may not be current-run proof"
   },
   "soltui/hdwallet.py": {
    "date": "2026-11-12",
@@ -16670,8 +16525,8 @@
    "verdict": "REVIEWED"
   },
   "soltui/tests/test_bgqueue.py": {
-   "date": "2026-11-12",
-   "findings": 0,
+   "date": "2026-11-17",
+   "findings": 1,
    "mode": "full",
    "passes": [
     "C1",
@@ -16690,8 +16545,8 @@
     "T1",
     "T4"
    ],
-   "sha": "b445a124ca611dda5dc11248b3205f344ca4607e",
-   "verdict": "REVIEWED"
+   "sha": "a620cbf6fa87118573fe6e8a378d0c03f54fb36f",
+   "verdict": "PARTIAL: see same-run evidence manifest; inherited passes may not be current-run proof"
   },
   "soltui/tests/test_bgworker.py": {
    "date": "2026-11-12",
@@ -17438,7 +17293,7 @@
    "verdict": "REVIEWED"
   },
   "soltui/tests/test_f5_batch.py": {
-   "date": "2026-11-12",
+   "date": "2026-11-17",
    "findings": 0,
    "mode": "full",
    "passes": [
@@ -17455,11 +17310,10 @@
     "S3",
     "S4",
     "S5",
-    "T1",
-    "T4"
+    "T1"
    ],
-   "sha": "ea71b4474462154710142c1d5bdf90a684f01e85",
-   "verdict": "REVIEWED-FIXED"
+   "sha": "ffa69f59bd1853528ee9865792971bea26aa260b",
+   "verdict": "PARTIAL: see same-run evidence manifest; inherited passes may not be current-run proof"
   },
   "soltui/tests/test_f5_policy.py": {
    "date": "2026-11-12",
@@ -18446,28 +18300,21 @@
    "verdict": "REVIEWED-FIXED"
   },
   "soltui/tests/test_strategy_history.py": {
-   "date": "2026-11-12",
+   "date": "2026-11-17",
    "findings": 0,
    "mode": "full",
    "passes": [
     "C1",
-    "C2",
-    "C3",
     "M1",
     "M2",
     "M4",
     "P1",
-    "P2",
     "S1",
-    "S2",
-    "S3",
-    "S4",
     "S5",
-    "T1",
     "T4"
    ],
-   "sha": "dd1aa1cd002dfa93521a9d7770ba921c52226b6e",
-   "verdict": "REVIEWED-FIXED"
+   "sha": "dc56bbed45ad189982a1182fcd2044625f7886fb",
+   "verdict": "PARTIAL: see same-run evidence manifest; inherited passes may not be current-run proof"
   },
   "soltui/tests/test_top5.py": {
    "date": "2026-11-12",
@@ -19002,7 +18849,7 @@
    "verdict": "CLEAN"
   },
   "website/engine/server.py": {
-   "date": "2026-11-12",
+   "date": "2026-11-17",
    "findings": 0,
    "mode": "full",
    "passes": [
@@ -19011,19 +18858,16 @@
     "C3",
     "M1",
     "M2",
-    "M4",
-    "M5",
     "P1",
     "P2",
     "S1",
     "S2",
     "S3",
-    "S4",
     "S5",
     "T1"
    ],
-   "sha": "05b993b468cc15741a2a22267f300ed77c15adf0",
-   "verdict": "CLEAN"
+   "sha": "5758eb88fc8ecdd5b0b6c7d5782c3e73aca93302",
+   "verdict": "PARTIAL: see same-run evidence manifest; inherited passes may not be current-run proof"
   },
   "website/engine/test_research.py": {
    "date": "2026-11-12",
@@ -19177,50 +19021,25 @@
    "verdict": "REVIEWED_SCOPED_WITH_QUALIFICATIONS"
   },
   "website/public/agent-access.js": {
-   "date": "2026-11-13",
+   "date": "2026-11-17",
    "findings": 0,
    "mode": "full",
    "passes": [
     "C1",
-    "C2",
-    "C3",
     "M1",
-    "M2",
-    "M4",
     "P1",
-    "P2",
-    "S1",
-    "S2",
-    "S3",
-    "S4",
-    "S5",
-    "T1"
+    "S3"
    ],
-   "sha": "51acef30b2a1dfb60aa127b3a3f3f022c70b0a32",
-   "verdict": "REVIEWED_SCOPED_WITH_QUALIFICATIONS"
+   "sha": "d1042cd186951433fd3e6e901b16b189d4176ae5",
+   "verdict": "PARTIAL: see same-run evidence manifest; inherited passes may not be current-run proof"
   },
   "website/public/app.js": {
-   "date": "2026-11-13",
-   "findings": 0,
+   "date": "2026-11-17",
+   "findings": 1,
    "mode": "full",
-   "passes": [
-    "C1",
-    "C2",
-    "C3",
-    "M1",
-    "M2",
-    "M4",
-    "P1",
-    "P2",
-    "S1",
-    "S2",
-    "S3",
-    "S4",
-    "S5",
-    "T1"
-   ],
-   "sha": "22e279384d7d40169259c90fdf59a22750338061",
-   "verdict": "REVIEWED_SCOPED_WITH_QUALIFICATIONS"
+   "passes": [],
+   "sha": "9ac22712c89b504a6a61aaa34204cfe025ee860d",
+   "verdict": "PARTIAL: see same-run evidence manifest; inherited passes may not be current-run proof"
   },
   "website/public/evidence.js": {
    "date": "2026-11-12",
@@ -19295,144 +19114,80 @@
    "verdict": "CLEAN"
   },
   "website/src/mcp.js": {
-   "date": "2026-11-13",
-   "findings": 0,
+   "date": "2026-11-17",
+   "findings": 1,
    "mode": "full",
-   "passes": [
-    "C1",
-    "C2",
-    "C3",
-    "M1",
-    "M2",
-    "M4",
-    "P1",
-    "P2",
-    "S1",
-    "S2",
-    "S3",
-    "S4",
-    "S5",
-    "T1"
-   ],
-   "sha": "85f6cf39dd3d8dc89d4e8183cd79f86e83852d8e",
-   "verdict": "REVIEWED_SCOPED_WITH_QUALIFICATIONS"
+   "passes": [],
+   "sha": "be3069ed0ed332405adecefe338267a05c246458",
+   "verdict": "PARTIAL: see same-run evidence manifest; inherited passes may not be current-run proof"
   },
   "website/src/oauth.js": {
-   "date": "2026-11-13",
+   "date": "2026-11-17",
    "findings": 0,
    "mode": "full",
    "passes": [
     "C1",
     "C2",
-    "C3",
     "M1",
     "M2",
-    "M4",
-    "P1",
-    "P2",
     "S1",
     "S2",
     "S3",
-    "S4",
-    "S5",
     "T1"
    ],
-   "sha": "e1c264d4ff961f01c541ca575876f3ae75920af5",
-   "verdict": "REVIEWED_SCOPED_WITH_QUALIFICATIONS"
+   "sha": "9a203c66675a650e035c5f0068f677bdb51bb827",
+   "verdict": "PARTIAL: see same-run evidence manifest; inherited passes may not be current-run proof"
   },
   "website/src/trades.js": {
-   "date": "2026-11-13",
+   "date": "2026-11-17",
    "findings": 0,
    "mode": "full",
    "passes": [
     "C1",
     "C2",
-    "C3",
     "M1",
     "M2",
-    "M4",
     "P1",
-    "P2",
     "S1",
     "S2",
     "S3",
-    "S4",
-    "S5",
-    "T1"
+    "S5"
    ],
-   "sha": "abe59873176ca6f463a45c2c195df80c8aa14e48",
-   "verdict": "REVIEWED_SCOPED_WITH_QUALIFICATIONS"
+   "sha": "b8935e4a19ef4f6a363ed851d0d910898c848865",
+   "verdict": "PARTIAL: see same-run evidence manifest; inherited passes may not be current-run proof"
   },
   "website/src/worker.js": {
-   "date": "2026-11-13",
-   "findings": 0,
+   "date": "2026-11-17",
+   "findings": 1,
    "mode": "full",
-   "passes": [
-    "C1",
-    "C2",
-    "C3",
-    "M1",
-    "M2",
-    "M4",
-    "P1",
-    "P2",
-    "S1",
-    "S2",
-    "S3",
-    "S4",
-    "S5",
-    "T1"
-   ],
-   "sha": "d039abb5784a51ca5936c450cbe7c28817d6de62",
-   "verdict": "REVIEWED_SCOPED_WITH_QUALIFICATIONS"
+   "passes": [],
+   "sha": "55729f395da1076beb477f2c149e80f13bd18f0e",
+   "verdict": "PARTIAL: see same-run evidence manifest; inherited passes may not be current-run proof"
   },
   "website/test/agent-browser.mjs": {
-   "date": "2026-11-13",
-   "findings": 0,
+   "date": "2026-11-17",
+   "findings": 1,
    "mode": "full",
-   "passes": [
-    "C1",
-    "C2",
-    "C3",
-    "M1",
-    "M2",
-    "M4",
-    "P1",
-    "P2",
-    "S1",
-    "S2",
-    "S3",
-    "S4",
-    "S5",
-    "T1",
-    "T4"
-   ],
-   "sha": "69d7643c6d30a7ebbc8685258110688d5a08c20a",
-   "verdict": "REVIEWED_SCOPED_WITH_QUALIFICATIONS"
+   "passes": [],
+   "sha": "71cfed5c257e65a516e7f480f25bb21bd1dfded5",
+   "verdict": "PARTIAL: see same-run evidence manifest; inherited passes may not be current-run proof"
   },
   "website/test/api.test.js": {
-   "date": "2026-11-13",
+   "date": "2026-11-17",
    "findings": 0,
    "mode": "full",
    "passes": [
-    "C1",
-    "C2",
-    "C3",
     "M1",
     "M2",
     "M4",
     "P1",
     "P2",
     "S1",
-    "S2",
     "S3",
-    "S4",
-    "S5",
-    "T1",
-    "T4"
+    "S5"
    ],
-   "sha": "351c5daebe9dbd7659b7710b15ce4cc007ea45cc",
-   "verdict": "REVIEWED_SCOPED_WITH_QUALIFICATIONS"
+   "sha": "bca4267d7a70daa668a20d38647c4e3b7b087279",
+   "verdict": "PARTIAL: see same-run evidence manifest; inherited passes may not be current-run proof"
   },
   "website/test/evidence.test.js": {
    "date": "2026-11-12",
@@ -19531,31 +19286,27 @@
    "verdict": "REVIEWED_SCOPED_WITH_QUALIFICATIONS"
   },
   "website/test/oauth.test.js": {
-   "date": "2026-11-13",
-   "findings": 0,
+   "date": "2026-11-17",
+   "findings": 1,
    "mode": "full",
    "passes": [
     "C1",
     "C2",
-    "C3",
     "M1",
     "M2",
     "M4",
     "P1",
-    "P2",
     "S1",
     "S2",
     "S3",
-    "S4",
     "S5",
-    "T1",
-    "T4"
+    "T1"
    ],
-   "sha": "821302e55abbe4938710e20f76ee425ffc01d216",
-   "verdict": "REVIEWED_SCOPED_WITH_QUALIFICATIONS"
+   "sha": "7e482f212ea542d6b770a58119af91f14e443f49",
+   "verdict": "PARTIAL: see same-run evidence manifest; inherited passes may not be current-run proof"
   },
   "website/test/trades.test.js": {
-   "date": "2026-11-13",
+   "date": "2026-11-17",
    "findings": 0,
    "mode": "full",
    "passes": [
@@ -19575,32 +19326,16 @@
     "T1",
     "T4"
    ],
-   "sha": "2699140c7f899be8237f42f8a9d3c264779400e1",
-   "verdict": "REVIEWED_SCOPED_WITH_QUALIFICATIONS"
+   "sha": "87f8058caa7c9143c9be8c10faa8e5fba0aeb116",
+   "verdict": "PARTIAL: see same-run evidence manifest; inherited passes may not be current-run proof"
   },
   "website/test/ui-browser.mjs": {
-   "date": "2026-11-13",
-   "findings": 0,
+   "date": "2026-11-17",
+   "findings": 1,
    "mode": "full",
-   "passes": [
-    "C1",
-    "C2",
-    "C3",
-    "M1",
-    "M2",
-    "M4",
-    "P1",
-    "P2",
-    "S1",
-    "S2",
-    "S3",
-    "S4",
-    "S5",
-    "T1",
-    "T4"
-   ],
-   "sha": "bcb8e9d23197e8d66091ef84fc46e6cb21ebb95d",
-   "verdict": "REVIEWED_SCOPED_WITH_QUALIFICATIONS"
+   "passes": [],
+   "sha": "905eb66873882ef405db8acf1a91fb8d1abf9f81",
+   "verdict": "PARTIAL: see same-run evidence manifest; inherited passes may not be current-run proof"
   },
   "website/typecheck/evidence-contract.ts": {
    "date": "2026-11-12",
@@ -20526,13 +20261,111 @@
   },
   {
    "deferred": 0,
-   "finished": null,
+   "finished": "2026-11-17T01:31:35Z",
    "id": "2026-11-16T17:00:08Z",
    "mode": "incremental",
-   "passes": {},
-   "reviewed": 0,
+   "passes": {
+    "C1": {
+     "files": 20,
+     "reason": "Partial or not established across selected scope; see final-source-method-bindings.json and diagnostic receipts.",
+     "state": "blocked"
+    },
+    "C2": {
+     "files": 18,
+     "reason": "Partial or not established across selected scope; see final-source-method-bindings.json and diagnostic receipts.",
+     "state": "blocked"
+    },
+    "C3": {
+     "files": 12,
+     "reason": "Partial or not established across selected scope; see final-source-method-bindings.json and diagnostic receipts.",
+     "state": "blocked"
+    },
+    "M1": {
+     "files": 21,
+     "reason": "Partial or not established across selected scope; see final-source-method-bindings.json and diagnostic receipts.",
+     "state": "blocked"
+    },
+    "M2": {
+     "files": 20,
+     "reason": "Partial or not established across selected scope; see final-source-method-bindings.json and diagnostic receipts.",
+     "state": "blocked"
+    },
+    "M3": {
+     "files": 0,
+     "reason": "Partial or not established across selected scope; see final-source-method-bindings.json and diagnostic receipts.",
+     "state": "blocked"
+    },
+    "M4": {
+     "files": 16,
+     "reason": "Partial or not established across selected scope; see final-source-method-bindings.json and diagnostic receipts.",
+     "state": "blocked"
+    },
+    "M5": {
+     "files": 1,
+     "reason": "Partial or not established across selected scope; see final-source-method-bindings.json and diagnostic receipts.",
+     "state": "blocked"
+    },
+    "P1": {
+     "files": 20,
+     "reason": "Partial or not established across selected scope; see final-source-method-bindings.json and diagnostic receipts.",
+     "state": "blocked"
+    },
+    "P2": {
+     "files": 6,
+     "reason": "Partial or not established across selected scope; see final-source-method-bindings.json and diagnostic receipts.",
+     "state": "blocked"
+    },
+    "S1": {
+     "files": 19,
+     "reason": "Partial or not established across selected scope; see final-source-method-bindings.json and diagnostic receipts.",
+     "state": "blocked"
+    },
+    "S2": {
+     "files": 14,
+     "reason": "Partial or not established across selected scope; see final-source-method-bindings.json and diagnostic receipts.",
+     "state": "blocked"
+    },
+    "S3": {
+     "files": 19,
+     "reason": "Partial or not established across selected scope; see final-source-method-bindings.json and diagnostic receipts.",
+     "state": "blocked"
+    },
+    "S4": {
+     "files": 5,
+     "reason": "Partial or not established across selected scope; see final-source-method-bindings.json and diagnostic receipts.",
+     "state": "blocked"
+    },
+    "S5": {
+     "files": 16,
+     "reason": "Partial or not established across selected scope; see final-source-method-bindings.json and diagnostic receipts.",
+     "state": "blocked"
+    },
+    "T1": {
+     "files": 9,
+     "reason": "Partial or not established across selected scope; see final-source-method-bindings.json and diagnostic receipts.",
+     "state": "blocked"
+    },
+    "T2": {
+     "files": 0,
+     "reason": "Partial or not established across selected scope; see final-source-method-bindings.json and diagnostic receipts.",
+     "state": "blocked"
+    },
+    "T3": {
+     "files": 0,
+     "reason": "Partial or not established across selected scope; see final-source-method-bindings.json and diagnostic receipts.",
+     "state": "blocked"
+    },
+    "T4": {
+     "files": 7,
+     "reason": "Partial or not established across selected scope; see final-source-method-bindings.json and diagnostic receipts.",
+     "state": "blocked"
+    }
+   },
+   "reviewed": 54,
+   "silent_drops": [],
    "skipped_unchanged": 0,
-   "started": "2026-11-16T17:00:08Z"
+   "started": "2026-11-16T17:00:08Z",
+   "status": "PARTIAL"
   }
  ],
  "version": 1

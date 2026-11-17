@@ -1,6 +1,7 @@
 # Work continuation
 
-Version: 620
+Version: 621
+Delta: v620 to v621; record the qualified optimizer receipt and remaining delivery gates.
 Delta: v619 to v620; preserve accepted auto-action teardown and review scope.
 Delta: v618 to v619; record integrated audit, paper-session identity display and pending acceptance.
 Delta: v617 to v618; reconcile auto-trade delivery and current-source audit continuation.
@@ -3040,3 +3041,9 @@ Remaining: independent review of these final UI changes, exact-head CI, the user
 ## Accepted auto actions on panel close — 2026-11-17
 
 A source-bound synthetic review reproduced a queued Stop being lost when the panel closed during a status request. Status reads and auto actions now use separate workers. An accepted action retains its request ID and drains on close; stale pre-action status cannot acknowledge it. The action worker is non-daemon so orderly process exit waits for its bounded RPC; read workers retain their prior cancellation defaults. Hard process termination is not a delivery guarantee. Stubbed tests cover queued and in-flight Start/Stop, duplicate suppression, late status, responsive close and orderly process exit. Independent review and final CI are required before delivery. No active owner was contacted by these tests.
+
+## Qualified optimizer receipt — 2026-11-17
+
+The single existing optimizer run 2026-11-16T17:00:08Z recorded all 54 selected diagnostics and issued its only final receipt with PARTIAL status. Twenty-one diagnostics retain exact unchanged source and contract bindings; 33 have changed or unproven bindings and require fresh method review. The integrated commands file has 13 applicable methods explicitly partial. The helper's hash-based coverage total does not establish complete reviews. See docs/audit-2026-11-17.md for the scope and limits.
+
+The prior ten run bodies and 806 nonselected file rows were verified unchanged. A private complete pre-record ledger backup retains all 846 original rows, including the 40 selected rows replaced by current records. Fourteen selected rows were new. Do not issue another helper mutation: an older unfinished run could become current. Source checkpoint d9c24f25 passed its source CI and independent mocked worker lifecycle review. The user confirmed the observed BTC and ZEC paper sessions were theirs. Remaining: deterministic metadata and documentation verification, final draft PR CI, separately coordinated isolated installed acceptance, and parent-controlled delivery. Do not activate or alter existing owners or frozen cohorts.

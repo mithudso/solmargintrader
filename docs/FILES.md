@@ -1,6 +1,6 @@
 # Every file in this repository
 
-**Generated** from `index/INDEX.json` at commit `51e9f26` (2026-11-17T01:14:43+00:00). 3986 tracked files, 140.7 MB.
+**Generated** from `index/INDEX.json` at commit `d9c24f2` (2026-11-17T01:32:38+00:00). 3987 tracked files, 140.7 MB.
 
 Regenerate with:
 
@@ -15,7 +15,7 @@ python3 index/build.py --check      # fail if the index is stale
 Every entry marks where its description came from, because a generated one-liner and a considered one should not look alike:
 
 - **curated** (43 files) — hand-written purpose and usage, in the `CURATED` table of `index/make_files_doc.py`. Used where extraction cannot give a reader what they need: the engine, the research drivers, the order-placing path, and the files with no prose of their own.
-- **extracted** (3088 files) — the file's own module docstring, JSDoc header, or frontmatter `summary`. Trustworthy here because 723/842 Python modules and 85/181 JS files carry a substantial one. (These counts are computed at generation time, not hardcoded — an earlier revision asserted a frozen ratio and it was wrong within a day as the repo grew.)
+- **extracted** (3089 files) — the file's own module docstring, JSDoc header, or frontmatter `summary`. Trustworthy here because 723/842 Python modules and 85/181 JS files carry a substantial one. (These counts are computed at generation time, not hardcoded — an earlier revision asserted a frozen ratio and it was wrong within a day as the repo grew.)
 - **derived** (458 files) — shape only, for generated artifacts: a CSV's header and row count, a JSON's keys. Prose for a result file would be invented.
 
 *How to use* is curated where it matters and otherwise inferred from the file's kind — a test gets its runner, a CLI gets `--help`, a module gets its import path.
@@ -34,7 +34,7 @@ To *search* rather than browse: `python3 index/search.py "your question"`.
 ## Contents
 
 - [`(root)`](#root) — 94 files
-- [`docs`](#docs) — 175 files
+- [`docs`](#docs) — 176 files
 - [`index`](#index) — 8 files
 - [`backtester`](#backtester) — 1967 files
 - [`research`](#research) — 493 files
@@ -648,9 +648,9 @@ Repository-level entry points and agent instructions. `AGENTS.md` and `CLAUDE.md
 
 #### `memory.md`
 
-`doc` · 3043 lines · 628,280 B · description: **extracted**
+`doc` · 3050 lines · 629,649 B · description: **extracted**
 
-**Purpose.** Version: 620 Delta: v619 to v620; preserve accepted auto-action teardown and review scope. Delta: v618 to v619; record integrated audit, paper-session identity display and pending acceptance.
+**Purpose.** Version: 621 Delta: v620 to v621; record the qualified optimizer receipt and remaining delivery gates. Delta: v619 to v620; preserve accepted auto-action teardown and review scope.
 
 **Use.** Read it.
 
@@ -836,7 +836,7 @@ Repository-level entry points and agent instructions. `AGENTS.md` and `CLAUDE.md
 
 Curated prose. `ARCHITECTURE.md` explains how the pieces fit, `TESTING.md` is the coverage contract, `SECURITY.md` covers the order-placing surface, and this file indexes everything.
 
-175 files.
+176 files.
 
 #### `docs/API.md`
 
@@ -1315,6 +1315,14 @@ Curated prose. `ARCHITECTURE.md` explains how the pieces fit, `TESTING.md` is th
 `doc` · 72 lines · 5,577 B · description: **extracted**
 
 **Purpose.** Version: 1.1.0 Delta: retain completed baseline failures, qualify isolated dependencies, and disclose supply-chain checks. Profile: default. Mode: full. Full review: true.
+
+**Use.** Read it.
+
+#### `docs/audit-2026-11-17.md`
+
+`doc` · 20 lines · 2,991 B · description: **extracted**
+
+**Purpose.** The repo-bootstrapper and code-deep-optimizer work used the existing incremental run started at 2026-11-16T17:00:08Z. The result is **partial**. This report does not assert a clean repository. The run collected 54 file diagnostics: the original 50 risk-prioritized files and four disclosed extension runtime supplements.
 
 **Use.** Read it.
 
@@ -34408,7 +34416,7 @@ Session handoff notes, newest first. Prose, not machine-read.
 
 #### `.cdo/ledger.json`
 
-`config` · 20540 lines · 317,736 B · description: **derived**
+`config` · 20373 lines · 324,342 B · description: **derived**
 
 **Purpose.** Generated JSON object, 3 keys (files, runs, version).
 
