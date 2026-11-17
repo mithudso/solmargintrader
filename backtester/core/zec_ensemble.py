@@ -132,6 +132,12 @@ class _Member:
 
     def step(self, history: BarWindow) -> float:
         strategy = self.strategy
+        # TriggerTrade stores an absolute entry-bar index. Truncating its
+        # prefix shifts that index into another candle and eventually raises
+        # IndexError on histories longer than the ordinary indicator limit.
+        limit = self.limit
+        if self.spec["strategy"] == "trigger_trade":
+            limit = max(limit, history.i + 1)
         history = _TrustedWindow(
             history._ts,
             history._open,
@@ -140,7 +146,7 @@ class _Member:
             history._close,
             history._volume,
             history.i,
-            self.limit,
+            limit,
         )
         kind = self.spec["strategy"]
         i = history.i

@@ -55,6 +55,11 @@ independent paper forward accounts. The selected top configuration is published
 on the Oracle page. See [measured results and reproduction](docs/ZEC-ENSEMBLE-STUDY.md)
 and [forward owner and recovery](docs/ZEC-ENSEMBLES-FORWARD.md).
 
+The [weekly coin runner](research/WEEKLY-COIN-STUDY.md) repeats the candle-supported
+ZEC analyses for a named coin using a fresh seven-day minute snapshot. Its first
+[ETH report](research/eth-week-20261117/report.md) includes matched BTC/ZEC
+correlations, chronological strategy comparisons and explicit input exclusions.
+
 ## Shape-aware spot study
 
 The [Coinbase spot shape study](research/SHAPE-AWARE-SPOT.md) tags completed hourly,

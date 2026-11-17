@@ -1,0 +1,289 @@
+{
+  "agent": "research-contract-auditor",
+  "definition_version": "1.0.0",
+  "status": "complete",
+  "observed_at": "2026-11-17T17:38:20.444893+00:00",
+  "evidence": [
+    {
+      "source": "/Users/mitch/dev/worktrees/weekly-coin-2571/research/eth-week-20261117",
+      "observed_at": "2026-11-17T17:38:20.445165+00:00",
+      "supported_claim": "Independent all-artifact hashes, all input-page normalization, full matrix census/status/selection, all 16 selected scalar P&L/cost accounts, corrected cycle arithmetic and sampled correlations matched."
+    }
+  ],
+  "changes": [],
+  "remaining": [],
+  "details": {
+    "contract": "Empirical weekly candle transfer; no literature publication or live-profit qualification.",
+    "gate_matrix": {
+      "source_identity": "pass",
+      "all_raw_pages_and_complete_histories": "pass",
+      "input_load_checkpoint_race": "fixed",
+      "all_artifact_hashes": "pass",
+      "full_result_census": "pass",
+      "validation_only_selection": "pass",
+      "selected_test_scalar_accounting": "pass_16_of_16",
+      "correlation_report_arithmetic": "pass",
+      "cycle_holm_and_resolution": "pass_inconclusive_resolution_limited",
+      "coverage_exclusions": "pass_explicit"
+    },
+    "claim_verdicts": {
+      "same_minute_correlation": {
+        "BTC": 0.9018700188145131,
+        "ZEC": 0.7046914250853041
+      },
+      "corrected_leading_associations": "zero_under_stated_approximate_null",
+      "stable_cycle": "inconclusive_resolution_limited",
+      "executable_edge": "not_established"
+    },
+    "read_bindings": {
+      "provider": "Binance spot",
+      "quote": "USDT",
+      "pages": 33,
+      "bars_per_coin": 10080,
+      "artifact_count": 78,
+      "plan_revision": 3
+    },
+    "origin_groups": [
+      "Binance public spot market data"
+    ],
+    "negation_evidence": "Training-selected associations do not survive stated correction; lead signs unstable.",
+    "telemetry": {
+      "strategy_rows": 491712,
+      "completed": 441888,
+      "special_rows": 7920,
+      "selected_accounts_replayed": 16,
+      "cycle_tests": 1638,
+      "cycle_resolution_floor": 0.819
+    },
+    "publication_receipt": "not_applicable",
+    "qualification_verdict": "ACCEPT_EMPIRICAL_REPORT_WITH_STATED_LIMITS",
+    "selections": [
+      {
+        "interval": "1m",
+        "fee_bps": 10,
+        "candidate_id": "627d7f8af016802981ea3b55",
+        "mode": "baseline"
+      },
+      {
+        "interval": "1m",
+        "fee_bps": 15,
+        "candidate_id": "627d7f8af016802981ea3b55",
+        "mode": "baseline"
+      },
+      {
+        "interval": "1m",
+        "fee_bps": 25,
+        "candidate_id": "3440ccda392e28465604a354",
+        "mode": "linear_control"
+      },
+      {
+        "interval": "1m",
+        "fee_bps": 60,
+        "candidate_id": "3440ccda392e28465604a354",
+        "mode": "linear_control"
+      },
+      {
+        "interval": "5m",
+        "fee_bps": 10,
+        "candidate_id": "56e04783ea4af1fec7bb825d",
+        "mode": "baseline"
+      },
+      {
+        "interval": "5m",
+        "fee_bps": 15,
+        "candidate_id": "56e04783ea4af1fec7bb825d",
+        "mode": "baseline"
+      },
+      {
+        "interval": "5m",
+        "fee_bps": 25,
+        "candidate_id": "56e04783ea4af1fec7bb825d",
+        "mode": "baseline"
+      },
+      {
+        "interval": "5m",
+        "fee_bps": 60,
+        "candidate_id": "175e22ba554a075641d55455",
+        "mode": "shape"
+      },
+      {
+        "interval": "10m",
+        "fee_bps": 10,
+        "candidate_id": "4190b910edd3ca4426494fa1",
+        "mode": "baseline"
+      },
+      {
+        "interval": "10m",
+        "fee_bps": 15,
+        "candidate_id": "4190b910edd3ca4426494fa1",
+        "mode": "baseline"
+      },
+      {
+        "interval": "10m",
+        "fee_bps": 25,
+        "candidate_id": "4190b910edd3ca4426494fa1",
+        "mode": "baseline"
+      },
+      {
+        "interval": "10m",
+        "fee_bps": 60,
+        "candidate_id": "4190b910edd3ca4426494fa1",
+        "mode": "baseline"
+      },
+      {
+        "interval": "1h",
+        "fee_bps": 10,
+        "candidate_id": "a894838beff8b3be57f90040",
+        "mode": "baseline"
+      },
+      {
+        "interval": "1h",
+        "fee_bps": 15,
+        "candidate_id": "a894838beff8b3be57f90040",
+        "mode": "baseline"
+      },
+      {
+        "interval": "1h",
+        "fee_bps": 25,
+        "candidate_id": "a894838beff8b3be57f90040",
+        "mode": "baseline"
+      },
+      {
+        "interval": "1h",
+        "fee_bps": 60,
+        "candidate_id": "a894838beff8b3be57f90040",
+        "mode": "baseline"
+      }
+    ],
+    "scalar_checks": [
+      {
+        "interval": "1m",
+        "fee_bps": 10,
+        "test_return": -0.029665256314648447,
+        "cost_quote": 355.0936732024057,
+        "exits": 15,
+        "fills": 30
+      },
+      {
+        "interval": "1m",
+        "fee_bps": 15,
+        "test_return": -0.04411168902899354,
+        "cost_quote": 499.3172754332432,
+        "exits": 15,
+        "fills": 30
+      },
+      {
+        "interval": "1m",
+        "fee_bps": 25,
+        "test_return": -0.024129888399102906,
+        "cost_quote": 253.92683165133644,
+        "exits": 134,
+        "fills": 262
+      },
+      {
+        "interval": "1m",
+        "fee_bps": 60,
+        "test_return": -0.05612460240244488,
+        "cost_quote": 573.7266540053093,
+        "exits": 142,
+        "fills": 262
+      },
+      {
+        "interval": "5m",
+        "fee_bps": 10,
+        "test_return": -0.0293950817608003,
+        "cost_quote": 259.62564942147117,
+        "exits": 11,
+        "fills": 22
+      },
+      {
+        "interval": "5m",
+        "fee_bps": 15,
+        "test_return": -0.04001325140773404,
+        "cost_quote": 365.8005443276473,
+        "exits": 11,
+        "fills": 22
+      },
+      {
+        "interval": "5m",
+        "fee_bps": 25,
+        "test_return": -0.06090243912838034,
+        "cost_quote": 574.6861268339928,
+        "exits": 11,
+        "fills": 22
+      },
+      {
+        "interval": "5m",
+        "fee_bps": 60,
+        "test_return": -0.13079172805674621,
+        "cost_quote": 1036.4681053665543,
+        "exits": 34,
+        "fills": 56
+      },
+      {
+        "interval": "10m",
+        "fee_bps": 10,
+        "test_return": -0.02250805239094733,
+        "cost_quote": 23.72961342599753,
+        "exits": 1,
+        "fills": 2
+      },
+      {
+        "interval": "10m",
+        "fee_bps": 15,
+        "test_return": -0.023485057828928624,
+        "cost_quote": 33.6001724032352,
+        "exits": 1,
+        "fills": 2
+      },
+      {
+        "interval": "10m",
+        "fee_bps": 25,
+        "test_return": -0.025436145581011482,
+        "cost_quote": 53.311758417018694,
+        "exits": 1,
+        "fills": 2
+      },
+      {
+        "interval": "10m",
+        "fee_bps": 60,
+        "test_return": -0.03223441243095637,
+        "cost_quote": 121.99376496146736,
+        "exits": 1,
+        "fills": 2
+      },
+      {
+        "interval": "1h",
+        "fee_bps": 10,
+        "test_return": 0.002032673750896663,
+        "cost_quote": 24.3402638119006,
+        "exits": 6,
+        "fills": 15
+      },
+      {
+        "interval": "1h",
+        "fee_bps": 15,
+        "test_return": 0.0010213078287339972,
+        "cost_quote": 34.46575086136785,
+        "exits": 6,
+        "fills": 15
+      },
+      {
+        "interval": "1h",
+        "fee_bps": 25,
+        "test_return": -0.0009985585868776958,
+        "cost_quote": 54.68802297551888,
+        "exits": 6,
+        "fills": 15
+      },
+      {
+        "interval": "1h",
+        "fee_bps": 60,
+        "test_return": -0.008038089769869639,
+        "cost_quote": 125.16546321558513,
+        "exits": 6,
+        "fills": 15
+      }
+    ]
+  }
+}
