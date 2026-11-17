@@ -1,11 +1,11 @@
 {
-  "generatedAt": "2026-11-17T20:41:08+00:00",
+  "generatedAt": "2026-11-17T20:59:27+00:00",
   "schemaVersion": 1,
   "repoRoot": "~/dev/solmargintrader",
-  "commit": "31ca5d3",
+  "commit": "cc5741b",
   "counts": {
     "files": 4109,
-    "bytes": 208302465,
+    "bytes": 208303467,
     "byKind": {
       "strategy-card": 1478,
       "doc": 849,
@@ -89719,11 +89719,11 @@
       "ext": ".md",
       "kind": "doc",
       "title": "Work continuation",
-      "summary": "Version: 646 Delta: v645 to v646; prepare PR289 with current-default pair source while PR235 CI runs. Version: 645",
+      "summary": "Version: 647 Delta: v646 to v647; bind PR289 to delivered PR235 squash and preserve exact source. PR224 merged as77bf655, PR226 as00d5673 and PR235 as3cacfea after all final-head checks passed. PR235\u2019s exact merged tree matches reviewed629d9d2; its macOS gate passed after34minutes. The current PR289 integration has zero runtime delta from that actual remote default source.",
       "summarySource": "opening-prose",
-      "bytes": 852426,
-      "lines": 4378,
-      "sha1": "d2ae58f704e5a10a88912e7b2d5463bdb4cac48a",
+      "bytes": 853190,
+      "lines": 4388,
+      "sha1": "4c6a80d5ef91f5191f32da7afa01e7e478539805",
       "symbols": [],
       "imports": [],
       "internalImports": [],
@@ -93745,11 +93745,11 @@
       "ext": ".md",
       "kind": "doc",
       "title": "Prompt history",
-      "summary": "Version: 293 Delta: v292 to v293; prepare PR289 with current-default pair source while PR235 CI runs. Version: 292",
+      "summary": "Version: 294 Delta: v293 to v294; bind PR289 to delivered PR235 squash and preserve exact source. Version: 293",
       "summarySource": "opening-prose",
-      "bytes": 287021,
-      "lines": 4772,
-      "sha1": "8b11f838520ceae50a0dcd39c6a880faa4105cf8",
+      "bytes": 287259,
+      "lines": 4780,
+      "sha1": "121b4c4013d049adb8dd0d22f1f381d3be54eaeb",
       "symbols": [],
       "imports": [],
       "internalImports": [],
@@ -122255,5 +122255,5 @@
       "frontmatter": {}
     }
   ],
-  "textSha256": "05eeba76ee7bb91a9dc68180226aef7c20c97b55a53fcaeb0a739b8571187f22"
+  "textSha256": "a92af88d45e4a269de5e4bf3045dd84e1e019aa67238e24acea300fc2c67e82b"
 }
