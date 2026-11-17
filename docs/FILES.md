@@ -1,6 +1,6 @@
 # Every file in this repository
 
-**Generated** from `index/INDEX.json` at commit `4196d47` (2026-11-17T06:44:51+00:00). 4003 tracked files, 140.9 MB.
+**Generated** from `index/INDEX.json` at commit `ad63b86` (2026-11-17T17:52:53+00:00). 4010 tracked files, 141.0 MB.
 
 Regenerate with:
 
@@ -15,7 +15,7 @@ python3 index/build.py --check      # fail if the index is stale
 Every entry marks where its description came from, because a generated one-liner and a considered one should not look alike:
 
 - **curated** (43 files) — hand-written purpose and usage, in the `CURATED` table of `index/make_files_doc.py`. Used where extraction cannot give a reader what they need: the engine, the research drivers, the order-placing path, and the files with no prose of their own.
-- **extracted** (3095 files) — the file's own module docstring, JSDoc header, or frontmatter `summary`. Trustworthy here because 726/847 Python modules and 88/192 JS files carry a substantial one. (These counts are computed at generation time, not hardcoded — an earlier revision asserted a frozen ratio and it was wrong within a day as the repo grew.)
+- **extracted** (3101 files) — the file's own module docstring, JSDoc header, or frontmatter `summary`. Trustworthy here because 729/850 Python modules and 89/194 JS files carry a substantial one. (These counts are computed at generation time, not hardcoded — an earlier revision asserted a frozen ratio and it was wrong within a day as the repo grew.)
 - **derived** (458 files) — shape only, for generated artifacts: a CSV's header and row count, a JSON's keys. Prose for a result file would be invented.
 
 *How to use* is curated where it matters and otherwise inferred from the file's kind — a test gets its runner, a CLI gets `--help`, a module gets its import path.
@@ -34,19 +34,19 @@ To *search* rather than browse: `python3 index/search.py "your question"`.
 ## Contents
 
 - [`(root)`](#root) — 94 files
-- [`docs`](#docs) — 176 files
+- [`docs`](#docs) — 177 files
 - [`index`](#index) — 8 files
 - [`backtester`](#backtester) — 1967 files
 - [`research`](#research) — 494 files
 - [`oracle`](#oracle) — 44 files
-- [`extension`](#extension) — 173 files
+- [`extension`](#extension) — 174 files
 - [`executor`](#executor) — 48 files
 - [`liquidity`](#liquidity) — 61 files
 - [`botmanager`](#botmanager) — 93 files
 - [`ecosystem`](#ecosystem) — 71 files
 - [`soltui`](#soltui) — 201 files
 - [`mongo`](#mongo) — 20 files
-- [`website`](#website) — 95 files
+- [`website`](#website) — 97 files
 - [`.github`](#github) — 12 files
 - [`tradingskilllist`](#tradingskilllist) — 1 files
 - [`.remember`](#remember) — 1 files
@@ -61,7 +61,7 @@ To *search* rather than browse: `python3 index/search.py "your question"`.
 - [`design`](#design) — 32 files
 - [`dso-skill`](#dso-skill) — 3 files
 - [`llms`](#llms) — 5 files
-- [`oracle_leverage`](#oracle_leverage) — 43 files
+- [`oracle_leverage`](#oracle_leverage) — 46 files
 - [`postman`](#postman) — 8 files
 - [`runbooks`](#runbooks) — 3 files
 - [`scripts`](#scripts) — 34 files
@@ -344,7 +344,7 @@ Repository-level entry points and agent instructions. `AGENTS.md` and `CLAUDE.md
 
 #### `README.md`
 
-`doc` · 234 lines · 15,534 B · description: **curated**
+`doc` · 234 lines · 15,535 B · description: **curated**
 
 **Purpose.** Entry point: what the project is, its components, and the honest summary of what the research established.
 
@@ -592,7 +592,7 @@ Repository-level entry points and agent instructions. `AGENTS.md` and `CLAUDE.md
 
 #### `llms-facts.txt`
 
-`data` · 40 lines · 7,370 B · description: **derived**
+`data` · 40 lines · 7,371 B · description: **derived**
 
 **Purpose.** Generated report. Opens: # solmargintrader — atomic current facts / > Source: /Users/mitch/dev/oraclebot.io · https://github.com/mithudso/solmargintrader @ 722839798e22 + hosted ecosystem delta
 
@@ -600,7 +600,7 @@ Repository-level entry points and agent instructions. `AGENTS.md` and `CLAUDE.md
 
 #### `llms-full.txt`
 
-`data` · 62 lines · 9,855 B · description: **derived**
+`data` · 62 lines · 9,856 B · description: **derived**
 
 **Purpose.** Generated report. Opens: # solmargintrader — current operator and architecture reference / > Source: /Users/mitch/dev/oraclebot.io · https://github.com/mithudso/solmargintrader @ 722839798e22 + hosted ecosystem delta
 
@@ -616,7 +616,7 @@ Repository-level entry points and agent instructions. `AGENTS.md` and `CLAUDE.md
 
 #### `llms-small.txt`
 
-`data` · 38 lines · 6,568 B · description: **derived**
+`data` · 38 lines · 6,569 B · description: **derived**
 
 **Purpose.** Generated report. Opens: # solmargintrader — budgeted navigation digest / > Source: /Users/mitch/dev/oraclebot.io · https://github.com/mithudso/solmargintrader @ 722839798e22 + hosted ecosystem delta
 
@@ -648,9 +648,9 @@ Repository-level entry points and agent instructions. `AGENTS.md` and `CLAUDE.md
 
 #### `memory.md`
 
-`doc` · 3104 lines · 640,722 B · description: **extracted**
+`doc` · 3186 lines · 658,224 B · description: **extracted**
 
-**Purpose.** After PR 318 merged as 4196d47, actual loaded acceptance found that the TUI displayed no shared signal while the private relay held fresh six-horizon BTC and ZEC data. Production `main()` passes `QuoteReader(args.prices)`, and the constructor incorrectly treated any injected quote loader as a request for an empty signal loader.
+**Purpose.** PR 323 reached remote master as 0ead38c while the application branch completed CI. Preserve its connecting/error/recovery UI and test alongside the optimizer reason display. Extension 0.12.3 includes both changes; no native owner, shared route or active session changes. Prior final-head 411cdb4 CI passed, but merge delivery is withheld until the integrated source passes current checks.
 
 **Use.** Read it.
 
@@ -704,7 +704,7 @@ Repository-level entry points and agent instructions. `AGENTS.md` and `CLAUDE.md
 
 #### `package.json`
 
-`config` · 19 lines · 539 B · description: **derived**
+`config` · 19 lines · 575 B · description: **derived**
 
 **Purpose.** Generated JSON object, 6 keys (name, private, version, engines, scripts, devDependencies).
 
@@ -728,9 +728,9 @@ Repository-level entry points and agent instructions. `AGENTS.md` and `CLAUDE.md
 
 #### `prompts.md`
 
-`doc` · 2582 lines · 157,899 B · description: **extracted**
+`doc` · 2618 lines · 160,030 B · description: **extracted**
 
-**Purpose.** Version: 282 Delta: v281 to v282; preserve the current status question. What are you doing?
+**Purpose.** Version: 286 Delta: v285 to v286; add the explicit per-coin ML retention and durable disk requirement. Delta: v282 to v283; commission the whole-application optimizer with frozen coverage.
 
 **Use.** Read it.
 
@@ -836,7 +836,7 @@ Repository-level entry points and agent instructions. `AGENTS.md` and `CLAUDE.md
 
 Curated prose. `ARCHITECTURE.md` explains how the pieces fit, `TESTING.md` is the coverage contract, `SECURITY.md` covers the order-placing surface, and this file indexes everything.
 
-176 files.
+177 files.
 
 #### `docs/API.md`
 
@@ -976,7 +976,7 @@ Curated prose. `ARCHITECTURE.md` explains how the pieces fit, `TESTING.md` is th
 
 #### `docs/FILES.md`
 
-`doc` · 38412 lines · 1,843,620 B · description: **extracted**
+`doc` · 38412 lines · 1,843,714 B · description: **extracted**
 
 **Purpose.** Regenerate with: python3 index/build.py all # refresh the index python3 index/make_files_doc.py # rewrite this file
 
@@ -1096,17 +1096,17 @@ Curated prose. `ARCHITECTURE.md` explains how the pieces fit, `TESTING.md` is th
 
 #### `docs/OPERATIONS.md`
 
-`doc` · 122 lines · 4,883 B · description: **extracted**
+`doc` · 128 lines · 5,770 B · description: **extracted**
 
-**Purpose.** cd extension && node tools/cli.js kill cannot resume trading. In the extension, the popup's red KILL SWITCH button does the same thing. node tools/cli.js data --json # find venueOrderId values
+**Purpose.** These commands control the extension's experimental grid. Other sessions retain their own owners and stop controls; see [ORACLE-AUTO-TRADING.md](ORACLE-AUTO-TRADING.md) for the shared auto-trade session. Closing a display does not stop its session.
 
 **Use.** Read it.
 
 #### `docs/ORACLE-AUTO-TRADING.md`
 
-`doc` · 180 lines · 10,155 B · description: **extracted**
+`doc` · 220 lines · 12,766 B · description: **extracted**
 
-**Purpose.** Version: 1.1.0 Delta: document optional private shared-owner routing and its activation boundary. Extension 0.11.0 adds **Auto Long / Short** to the Jupiter chart panel. The Oracle
+**Purpose.** Version: 1.2.0 Delta: retain compatible per-coin paper learning and replayable samples on local disk. Extension 0.11.0 adds **Auto Long / Short** to the Jupiter chart panel. The Oracle
 
 **Use.** Read it.
 
@@ -1307,6 +1307,14 @@ Curated prose. `ARCHITECTURE.md` explains how the pieces fit, `TESTING.md` is th
 `doc` · 88 lines · 4,970 B · description: **extracted**
 
 **Purpose.** long-or-flat virtual spot accounts. The backtester supplies the exact policy builder and next-observed-open engine. The source is Binance public spot Each account begins with 10,000 USDT virtual capital and its selected explicit
+
+**Use.** Read it.
+
+#### `docs/application-optimizer-2026-11-17.md`
+
+`doc` · 72 lines · 5,495 B · description: **extracted**
+
+**Purpose.** Version: 1.2.0. Delta: preserve both concurrent helper diagnostics and the seven optimizer repairs; qualify the independent review source binding. paper-operation, hosted-account and guarded-execution application. It does not certify the application as globally clean, profitable or ready for live trading.
 
 **Use.** Read it.
 
@@ -1648,7 +1656,7 @@ Curated prose. `ARCHITECTURE.md` explains how the pieces fit, `TESTING.md` is th
 
 #### `docs/tool-inventory.json`
 
-`doc` · 654 lines · 25,248 B · description: **derived**
+`doc` · 654 lines · 25,327 B · description: **derived**
 
 **Purpose.** Generated JSON object, 8 keys (schema_version, version, delta, generator, scope, limits...).
 
@@ -2394,7 +2402,7 @@ The simulation engine and everything that supports it. Never gains live-trading 
 
 #### `backtester/README.md`
 
-`doc` · 556 lines · 29,516 B · description: **extracted**
+`doc` · 562 lines · 29,952 B · description: **extracted**
 
 **Purpose.** An offline, event-driven backtesting harness for crypto trading strategies, built around SOL. Supports unlevered **spot** and **Jupiter-Perps-style leveraged perpetuals** with a correctly-modelled borrow fee.
 
@@ -2420,7 +2428,7 @@ The simulation engine and everything that supports it. Never gains live-trading 
 
 #### `backtester/cli.py`
 
-`code-python` · 358 lines · 13,701 B · description: **extracted**
+`code-python` · 372 lines · 13,862 B · description: **extracted**
 
 **Purpose.** Command-line entry point. python -m backtester.cli --asset SOL --strategy all --out results/ Running with no arguments prints usage rather than starting a long fetch.
 
@@ -21392,7 +21400,7 @@ The simulation engine and everything that supports it. Never gains live-trading 
 
 #### `backtester/tests/test_cli_boundaries_audit.py`
 
-`test` · 94 lines · 4,891 B · description: **extracted**
+`test` · 116 lines · 6,566 B · description: **extracted**
 
 **Purpose.** CLI failures preserve safe errors, source selection and explicit seed values.
 
@@ -26922,11 +26930,11 @@ Forecast evidence, strategy votes, archives and separately controlled webhook ex
 
 The Chrome extension has a separately armed trading surface. Dry-run is the default, risk rails live in code and fail closed, and a fresh install must not be able to trade.
 
-173 files.
+174 files.
 
 #### `extension/README.md`
 
-`doc` · 808 lines · 55,081 B · description: **extracted**
+`doc` · 820 lines · 55,886 B · description: **extracted**
 
 **Purpose.** A Chrome MV3 extension for the owner's Base and Solana money: **holdings, profit and loss, pool discovery, backtests and strategy changes, swap quotes, and alerts** when a more profitable pool or strategy appears. It also keeps an **experimental grid trading strategy on Jupiter (Solana)** with
 
@@ -27068,7 +27076,7 @@ The Chrome extension has a separately armed trading surface. Dry-run is the defa
 
 #### `extension/src/1000x/autotrade-view.js`
 
-`code-js` · 100 lines · 10,719 B · description: **none**
+`code-js` · 131 lines · 13,002 B · description: **none**
 
 **Purpose.** _No description available._
 
@@ -27564,11 +27572,11 @@ The Chrome extension has a separately armed trading surface. Dry-run is the defa
 
 #### `extension/src/ui/control-room.js`
 
-`code-js` · 93 lines · 6,542 B · description: **extracted**
+`code-js` · 100 lines · 6,884 B · description: **extracted**
 
 **Purpose.** The extension is a launcher and availability view for the same local control room.
 
-**Contents.** Defines `LABELS`, `controlRoomPresentation`, `mountControlRoom`, `paint`, `run`.
+**Contents.** Defines `HEALTH_REFRESH_MS`, `LABELS`, `close`, `controlRoomPresentation`, `mountControlRoom`, `paint`, `run`.
 
 **Use.** Loaded by the extension; see `extension/manifest.json` for entry points.
 
@@ -28028,7 +28036,7 @@ The Chrome extension has a separately armed trading surface. Dry-run is the defa
 
 #### `extension/test/autotrade-view.test.js`
 
-`test` · 103 lines · 6,607 B · description: **none**
+`test` · 237 lines · 14,459 B · description: **none**
 
 **Purpose.** _No description available._
 
@@ -28075,6 +28083,16 @@ The Chrome extension has a separately armed trading surface. Dry-run is the defa
 **Contents.** Defines `POINTS`, `VENDOR`, `fakeElement`, `fakeLib`.
 
 **Use.** `node --test extension/test/charts.test.js`
+
+#### `extension/test/control-room-refresh.test.js`
+
+`test` · 52 lines · 2,549 B · description: **none**
+
+**Purpose.** _No description available._
+
+**Contents.** Defines `class Element`, `fixture`.
+
+**Use.** `node --test extension/test/control-room-refresh.test.js`
 
 #### `extension/test/control-room.test.js`
 
@@ -29692,7 +29710,7 @@ Isolated bot-owner management, health journals and managed-suite supervision.
 
 #### `botmanager/README.md`
 
-`doc` · 824 lines · 52,744 B · description: **extracted**
+`doc` · 824 lines · 52,746 B · description: **extracted**
 
 **Purpose.** The supervisor detects a frozen SQLite reader as well as a frozen writer. It defers only transient stopped-peer journal contention so its owned-process watchdog can recover without admitting another worker or losing checkpoint state.
 
@@ -29700,7 +29718,7 @@ Isolated bot-owner management, health journals and managed-suite supervision.
 
 #### `botmanager/pyproject.toml`
 
-`config` · 18 lines · 492 B · description: **none**
+`config` · 18 lines · 493 B · description: **none**
 
 **Purpose.** _No description available._
 
@@ -29710,7 +29728,7 @@ Isolated bot-owner management, health journals and managed-suite supervision.
 
 #### `botmanager/src/botmanager/__init__.py`
 
-`code-python` · 6 lines · 136 B · description: **extracted**
+`code-python` · 6 lines · 137 B · description: **extracted**
 
 **Purpose.** Standalone Solana bot manager. Importing this package performs no I/O.
 
@@ -30614,9 +30632,9 @@ The local control room, pipeline supervision, telemetry and embedded documentati
 
 #### `ecosystem/README.md`
 
-`doc` · 119 lines · 7,542 B · description: **extracted**
+`doc` · 119 lines · 7,547 B · description: **extracted**
 
-**Purpose.** This source version restores read-only access to the known legacy SOL Oracle archive and explains pending forward windows without changing the producer. It pins Bot Manager0.7.9, Oracle0.2.6 and research-runtime0.4.6.
+**Purpose.** This source version includes compatible per-coin automatic paper-learning memory on local disk, while keeping each policy's exposure qualification separate. It pins Bot Manager0.7.11, Oracle0.2.7 and research-runtime0.4.8.
 
 **Use.** Read it.
 
@@ -30750,7 +30768,7 @@ The local control room, pipeline supervision, telemetry and embedded documentati
 
 #### `ecosystem/pyproject.toml`
 
-`config` · 23 lines · 729 B · description: **none**
+`config` · 23 lines · 730 B · description: **none**
 
 **Purpose.** _No description available._
 
@@ -32264,7 +32282,7 @@ The local TUI, browser workspace and service interfaces. Coinbase order executio
 
 #### `soltui/tests/test_autotrade_packaging.py`
 
-`test` · 42 lines · 1,558 B · description: **extracted**
+`test` · 43 lines · 1,590 B · description: **extracted**
 
 **Purpose.** The monorepo runtime wheel must own the same auto-session package as its bridge.
 
@@ -33502,7 +33520,7 @@ Derived research and public-market stores, loaders and analysis queries.
 
 The hosted wallet-account and subscription workspace. Stored bot definitions are paper-only; hosted engine and billing readiness remain separate capabilities.
 
-95 files.
+97 files.
 
 #### `website/.gitignore`
 
@@ -33514,9 +33532,9 @@ The hosted wallet-account and subscription workspace. Stored bot definitions are
 
 #### `website/README.md`
 
-`doc` · 243 lines · 14,010 B · description: **extracted**
+`doc` · 254 lines · 14,726 B · description: **extracted**
 
-**Purpose.** Version: 0.4.0 Oraclebot separates the public account service, analysis runtime and customer execution service. The local owner control room remains independent. This source
+**Purpose.** Version: 0.4.1 Oraclebot separates the public account service, analysis runtime and customer execution service. The local owner control room remains independent. This source
 
 **Use.** Read it.
 
@@ -33530,7 +33548,7 @@ The hosted wallet-account and subscription workspace. Stored bot definitions are
 
 #### `website/package.json`
 
-`config` · 23 lines · 1,368 B · description: **derived**
+`config` · 23 lines · 1,411 B · description: **derived**
 
 **Purpose.** Generated JSON object, 7 keys (name, private, version, type, engines, scripts...).
 
@@ -33644,7 +33662,7 @@ The hosted wallet-account and subscription workspace. Stored bot definitions are
 
 #### `website/engine/runtime.py`
 
-`code-python` · 565 lines · 21,863 B · description: **extracted**
+`code-python` · 578 lines · 22,329 B · description: **extracted**
 
 **Purpose.** Dedicated public-data/Oracle/job owner for the hosted analysis container.
 
@@ -33704,7 +33722,7 @@ The hosted wallet-account and subscription workspace. Stored bot definitions are
 
 #### `website/engine/test_runtime.py`
 
-`test` · 414 lines · 18,097 B · description: **none**
+`test` · 454 lines · 19,686 B · description: **none**
 
 **Purpose.** _No description available._
 
@@ -33932,11 +33950,21 @@ The hosted wallet-account and subscription workspace. Stored bot definitions are
 
 #### `website/public/app.js`
 
-`code-js` · 838 lines · 82,722 B · description: **none**
+`code-js` · 881 lines · 84,911 B · description: **none**
 
 **Purpose.** _No description available._
 
 **Contents.** Defines `TIMING`, `accountActionReady`, `accountContext`, `accountNotice`, `api`, `appendText`, `articleView`, `backtestView`, `beginAccountTransition`, `billingAction` and 30 more.
+
+**Use.** See `website/README.md`; run the workspace with `npm --prefix website run dev`.
+
+#### `website/public/backtest-recovery.js`
+
+`code-js` · 50 lines · 2,647 B · description: **extracted**
+
+**Purpose.** Keep one unresolved calculation per account in this tab. No credentials are stored.
+
+**Contents.** Defines `clear`, `createBacktestRecovery`, `pending`, `save`.
 
 **Use.** See `website/README.md`; run the workspace with `npm --prefix website run dev`.
 
@@ -34187,6 +34215,14 @@ The hosted wallet-account and subscription workspace. Stored bot definitions are
 **Contents.** Defines `fixture`, `hash`.
 
 **Use.** `node --test website/test/backtest-jobs.test.js`
+
+#### `website/test/backtest-recovery-browser.mjs`
+
+`test` · 124 lines · 8,942 B · description: **extracted**
+
+**Purpose.** Real browser + Worker/D1 contracts. All accounts, engine data and network are isolated fixtures.
+
+**Use.** `node --test website/test/backtest-recovery-browser.mjs`
 
 #### `website/test/billing-lifecycle.test.js`
 
@@ -36620,7 +36656,7 @@ Session handoff notes, newest first. Prose, not machine-read.
 
 ## oracle_leverage
 
-43 files.
+46 files.
 
 #### `oracle_leverage/README.md`
 
@@ -36640,11 +36676,11 @@ Session handoff notes, newest first. Prose, not machine-read.
 
 #### `oracle_leverage/autotrade.py`
 
-`code-python` · 246 lines · 8,058 B · description: **extracted**
+`code-python` · 338 lines · 11,317 B · description: **extracted**
 
 **Purpose.** Control boundary for one private, exclusive auto-trading session owner.
 
-**Contents.** Defines `_DEFAULT`, `_BLOCK`, `_home()`, `_connect()`, `_startup_receipt()`, `_call()`, `status()`, `start()`, `stop()`, `configure()` and 1 more.
+**Contents.** Defines `_DEFAULT`, `_BLOCK`, `_home()`, `_private_home_exists()`, `_connect()`, `_startup_receipt()`, `_saved_status()`, `_unavailable_status()`, `_call()`, `status()` and 4 more.
 
 **Use.** `import oracle_leverage.autotrade`
 
@@ -36678,9 +36714,19 @@ Session handoff notes, newest first. Prose, not machine-read.
 
 **Use.** `import oracle_leverage.autotrade_feed`
 
+#### `oracle_leverage/autotrade_memory.py`
+
+`code-python` · 373 lines · 14,618 B · description: **extracted**
+
+**Purpose.** Durable coin experience, separate from policy-qualified paper evidence. The session owns the SQLite transaction. Checkpoints, resolved samples and the policy learner therefore commit or roll back together. No status read creates this store, and no existing cohort is deleted or rewritten by migration.
+
+**Contents.** Defines `MODEL_VERSION`, `FEATURE_VERSION`, `TARGET_VERSION`, `ASSETS`, `VENUES`, `encode()`, `score()`, `identity()`, `_number()`, `_checked_learner()` and 1 more.
+
+**Use.** `import oracle_leverage.autotrade_memory`
+
 #### `oracle_leverage/autotrade_worker.py`
 
-`code-python` · 1285 lines · 49,709 B · description: **extracted**
+`code-python` · 1368 lines · 54,134 B · description: **extracted**
 
 **Purpose.** Exclusive local paper session owner and observed-tick state machine.
 
@@ -36924,7 +36970,7 @@ Session handoff notes, newest first. Prose, not machine-read.
 
 #### `oracle_leverage/tests/test_autotrade_engine.py`
 
-`test` · 1175 lines · 48,067 B · description: **extracted**
+`test` · 1180 lines · 48,380 B · description: **extracted**
 
 **Purpose.** Offline paper accounting and fail-closed control boundary tests.
 
@@ -36932,9 +36978,29 @@ Session handoff notes, newest first. Prose, not machine-read.
 
 **Use.** `python3 -m pytest oracle_leverage/tests/test_autotrade_engine.py -q`
 
+#### `oracle_leverage/tests/test_autotrade_inspection.py`
+
+`test` · 167 lines · 6,183 B · description: **extracted**
+
+**Purpose.** Opening inspection surfaces must not create or recover a trading owner.
+
+**Contents.** Defines `class Inspection`.
+
+**Use.** `python3 -m pytest oracle_leverage/tests/test_autotrade_inspection.py -q`
+
+#### `oracle_leverage/tests/test_autotrade_memory.py`
+
+`test` · 391 lines · 16,375 B · description: **extracted**
+
+**Purpose.** Remember per-coin paper learning across settings and real disk reopen.
+
+**Contents.** Defines `class DurableCoinLearningTests`.
+
+**Use.** `python3 -m pytest oracle_leverage/tests/test_autotrade_memory.py -q`
+
 #### `oracle_leverage/tests/test_autotrade_routing.py`
 
-`test` · 169 lines · 6,644 B · description: **extracted**
+`test` · 169 lines · 6,678 B · description: **extracted**
 
 **Purpose.** The shared owner route must not silently create a second session.
 

@@ -19,6 +19,9 @@ from decimal import ROUND_DOWN, Decimal, InvalidOperation
 from oracle_leverage import autotrade_engine as engine
 from oracle_leverage.autotrade_advice import Advice, AsyncAdvice
 from oracle_leverage.autotrade_feed import ExecutionFeed
+from oracle_leverage.autotrade_memory import MODEL_VERSION as MEMORY_MODEL_VERSION
+from oracle_leverage.autotrade_memory import LearningMemory
+from oracle_leverage.autotrade_memory import score as memory_score
 
 
 def pack(value):
@@ -110,6 +113,7 @@ def policy(config):
         boost_min_samples=100,
         boost_max_brier=0.20,
         boost_min_wilson=0.55,
+        learning_model=MEMORY_MODEL_VERSION,
     )
     return p
 
@@ -204,6 +208,7 @@ def public_state(state):
         "original_session_id",
         "history",
         "cleanup",
+        "learning_memory",
     )
     out = {key: copy.deepcopy(state[key]) for key in keys if key in state}
 
@@ -298,9 +303,9 @@ def public_state(state):
         "intent_id",
     )
     out["training"] = (
-        "prospective position outcomes; no new outcome labels while entries are paused"
+        "saved per-coin paper model; no new outcome labels while entries are paused"
         if out.get("state") != "running"
-        else "prospective paper outcomes; uncalibrated"
+        else "saved per-coin paper model with observed outcomes; uncalibrated"
     )
     if "learner" in out:
         out["learner"] = project(out["learner"], learner_keys)
@@ -324,6 +329,35 @@ def public_state(state):
             }
     if "forecast" in out:
         out["forecast"] = project(out["forecast"], forecast_keys)
+    if "learning_memory" in out:
+        memory = out["learning_memory"]
+        if not isinstance(memory, dict):
+            out["learning_memory"] = None
+        else:
+            memory = project(memory, ("version", "asset", "profile", "coins", "storage", "scope"))
+            profile_keys = ("asset", "venue", "model_version", "samples", "updated_at")
+            memory["profile"] = project(memory.get("profile", {}), profile_keys)
+            memory["storage"] = project(memory.get("storage", {}), (
+                "kind", "durable", "name", "last_saved_at", "legacy_index_complete",
+                "unattributed_cohorts",
+            ))
+            coins = memory.get("coins", {})
+            memory["coins"] = {}
+            if isinstance(coins, dict):
+                for asset in ("BTC", "ZEC"):
+                    if not isinstance(coins.get(asset), dict):
+                        continue
+                    coin = project(coins[asset], (
+                        "samples", "wins", "losses", "net_pnl_usd", "cohorts", "profiles",
+                    ))
+                    profiles = coin.get("profiles", {})
+                    coin["profiles"] = {
+                        venue: project(profiles[venue], profile_keys)
+                        for venue in ("jupiter-cli-10x", "jupiter-sdk-1000x")
+                        if isinstance(profiles, dict) and isinstance(profiles.get(venue), dict)
+                    }
+                    memory["coins"][asset] = coin
+            out["learning_memory"] = memory
     if isinstance(out.get("position"), dict):
         out["position"] = project(out["position"], position_keys)
         if "plan" in out["position"]:
@@ -358,6 +392,8 @@ def guard_state(fn):
             "last_exchange",
             "previous_price",
             "momentum",
+            "memory_profile",
+            "memory_policy",
         )
         before = {
             name: copy.deepcopy(getattr(self, name))
@@ -385,6 +421,8 @@ class Session:
         CREATE TABLE IF NOT EXISTS learner_assets (asset TEXT PRIMARY KEY, value TEXT NOT NULL);
         CREATE TABLE IF NOT EXISTS learner_cohorts (cohort TEXT PRIMARY KEY, value TEXT NOT NULL);
         CREATE TABLE IF NOT EXISTS forecasts (id TEXT PRIMARY KEY, payload TEXT NOT NULL);""")
+        self.memory_store = LearningMemory(db)
+        self.last_memory_import_at = None
         existing_session = db.execute(
             "SELECT value FROM session WHERE singleton=1"
         ).fetchone()
@@ -456,6 +494,16 @@ class Session:
                 },
             }
         )
+        previous_policy = self.s.get("policy")
+        if isinstance(previous_policy, dict) and self.s.get("cohort_id"):
+            previous_at = (self.s.get("last_event") or {}).get("at", self.clock())
+            self.memory_store.register(self.s["cohort_id"], previous_policy, previous_at)
+        self.memory_store.import_legacy()
+        self.memory_policy = previous_policy if isinstance(previous_policy, dict) else policy(
+            self.s.get("configuration", {})
+        )
+        self.memory_profile = self.memory_store.profile(self.memory_policy, self.clock())
+        self._refresh_memory()
         if self.s["state"] in ("running", "stopping"):
             self.s["state"] = "blocked"
             self.s["reason"] = (
@@ -590,7 +638,7 @@ class Session:
                         "Existing session requires resolution before start"
                     )
                 cohort = hashlib.sha256(pack(p).encode()).hexdigest()
-                self._select_learner(cohort)
+                self._select_learner(cohort, p)
                 now = self.clock()
                 sid = uuid.uuid4().hex
                 pending_forecast = self.s.get("advisory_forecast")
@@ -633,6 +681,7 @@ class Session:
                 self.previous_price = None
                 self.momentum = 0.0
                 self.s["learner"] = dict(self.learner)
+                self._refresh_memory()
                 self._save("start_accepted", {"request_id": request_id})
             elif action == "stop":
                 if self.s["state"] == "running":
@@ -698,6 +747,9 @@ class Session:
                     if p["advice_enabled"]
                     else "off"
                 )
+                self.memory_policy = p
+                self.memory_profile = self.memory_store.profile(p, self.clock())
+                self._refresh_memory()
                 self._save("configuration_updated", {"policy": p})
             else:
                 raise ValueError("Invalid command")
@@ -785,6 +837,13 @@ class Session:
                     self.s["history"] = self._history_summary()
                     self.s.update(state="blocked", reason=p["reason"])
                 elif p["state"] in ("closed", "liquidated"):
+                    if not self._learn(p):
+                        self.s.update(
+                            state="blocked",
+                            reason="This outcome is already saved; reconciliation is required",
+                        )
+                        self._save("duplicate_saved_outcome", {})
+                        return
                     self.s["net_pnl_usd"] += p["net_pnl_usd"]
                     self.s["peak_net_usd"] = max(
                         self.s["peak_net_usd"], self.s["net_pnl_usd"]
@@ -792,7 +851,6 @@ class Session:
                     self.s["loss_streak"] = (
                         0 if p["outcome"] == "win" else self.s["loss_streak"] + 1
                     )
-                    self._learn(p)
                     self._save("position_outcome", p)
                     if self.s["state"] == "stopping":
                         self.s["state"] = "stopped"
@@ -836,11 +894,11 @@ class Session:
                 )
                 direction = "long" if signal >= 0 else "short"
                 scores = {
-                    side: self._score([1.0, sign, sign * signal])
+                    side: self._memory_score([1.0, sign, sign * signal])
                     for side, sign in (("long", 1.0), ("short", -1.0))
                 }
                 if (
-                    self.learner["samples"] >= 20
+                    self._memory_samples() >= 20
                     and abs(scores["long"] - scores["short"]) > 0.01
                 ):
                     direction = max(scores, key=scores.get)
@@ -870,7 +928,7 @@ class Session:
                 sign = 1.0 if direction == "long" else -1.0
                 features = [1.0, sign, sign * signal]
                 forecast = {
-                    "version": "paper-net-outcome-v1",
+                    "version": MEMORY_MODEL_VERSION,
                     "source": "Chrome Oracle advisory"
                     if valid_advisory
                     else "Anthropic advisory"
@@ -883,7 +941,7 @@ class Session:
                     "direction": direction,
                     "features": features,
                     "score": scores[direction],
-                    "samples": self.learner["samples"],
+                    "samples": self._memory_samples(),
                     "calibrated": False,
                     "forced": signal == 0 and not valid_advisory and not valid_advice,
                     "at": at,
@@ -970,6 +1028,18 @@ class Session:
         z = sum(w * x for w, x in zip(self.learner["weights"], features))
         return 1 / (1 + math.exp(-max(-20.0, min(20.0, z))))
 
+    def _memory_samples(self):
+        return self.memory_profile["samples"] or self.learner["samples"]
+
+    def _memory_score(self, features):
+        if self.memory_profile["samples"]:
+            return memory_score(self.memory_profile["weights"], features)
+        return self._score(features)
+
+    def _refresh_memory(self):
+        self.memory_profile = self.memory_store.profile(self.memory_policy, self.clock())
+        self.s["learning_memory"] = self.memory_store.summary(self.memory_policy, self.clock())
+
     def _history_summary(self):
         rows = [
             json.loads(row[0])
@@ -985,17 +1055,13 @@ class Session:
             "scope": "modeled paper outcomes across policy cohorts; no live proof",
         }
 
-    def _select_learner(self, asset):
-        if asset == self.learner_asset:
-            return
-        self.learner_asset = asset
-        row = self.db.execute(
-            "SELECT value FROM learner_cohorts WHERE cohort=?", (asset,)
-        ).fetchone()
-        self.learner = (
-            json.loads(row[0])
-            if row
-            else {
+    def _select_learner(self, asset, selected_policy):
+        if asset != self.learner_asset:
+            self.learner_asset = asset
+            row = self.db.execute(
+                "SELECT value FROM learner_cohorts WHERE cohort=?", (asset,)
+            ).fetchone()
+            self.learner = json.loads(row[0]) if row else {
                 "version": "paper-net-outcome-v1",
                 "samples": 0,
                 "wins": 0,
@@ -1010,7 +1076,8 @@ class Session:
                 "weights": [0.0, 0.0, 0.0],
                 "sides": {},
             }
-        )
+        self.memory_policy = selected_policy
+        self.memory_profile = self.memory_store.select(selected_policy, asset, self.clock())
 
     def _save_learner(self):
         self.db.execute(
@@ -1019,6 +1086,8 @@ class Session:
         )
 
     def _learn(self, position):
+        if not self.memory_store.record(self.s["policy"], position, self.clock()):
+            return False
         forecast = position["forecast"]
         features = forecast["features"]
         won = position["outcome"] == "win"
@@ -1061,6 +1130,8 @@ class Session:
         self._save_learner()
         self.s["learner"] = dict(self.learner)
         self.s["history"] = self._history_summary()
+        self._refresh_memory()
+        return True
 
     def handle_tick(self, tick):
         try:
@@ -1070,8 +1141,20 @@ class Session:
                 "Internal paper model or feed processing failure; no further entries"
             )
 
+    @guard_state
+    def _import_memory(self, now):
+        with self.db:
+            if self.memory_store.import_legacy():
+                self._refresh_memory()
+                self._save("learning_memory_checkpoint", {})
+        self.last_memory_import_at = now
+
     def timer(self):
         now = self.clock()
+        if self.last_memory_import_at is None or now - self.last_memory_import_at >= 1:
+            # Each guarded operation restores only its own transaction. A
+            # subsequent feed-error write must not undo committed import RAM.
+            self._import_memory(now)
         if (
             self.s["state"] == "running"
             and self.s["first_entry_at"] is None

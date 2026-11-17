@@ -97,7 +97,7 @@ for DD or simulate a position from candle colors.
 
 The chart and its forecasts remain analysis views. The separate **Auto Long / Short**
 section controls the shared owner described below. Load or reload the unpacked
-extension, then reload the portal tab. Its header identifies extension version 0.12.2.
+extension, then reload the portal tab. Its header identifies extension version 0.12.4.
 See [design, formulas and verification](../docs/JUPITER-1000X-OVERLAY.md),
 [optimized execution prompt](../docs/JUPITER-1000X-OVERLAY-PROMPT.md), and
 [SDK create/close capabilities and remaining gates](../docs/JUPITER-1000X-SDK.md).
@@ -112,6 +112,14 @@ invalid observations cause a visible failure. Stop prevents new entries and
 continues managing an open position. Closing the panel leaves the owner running.
 Paper results include observed liquidation touches as failures and retain unknown
 outcomes when continuity is lost. They do not establish actual venue fills.
+
+Version 0.12.4 displays saved per-coin learning and disk status. The compatible
+BTC/ZEC models and resolved samples persist in the private shared owner's local
+SQLite journal across settings changes, coin switches and helper restarts. The
+10x and 1000x models remain separate. Remembered model samples do not qualify a
+new policy for increased exposure. An older or unavailable helper reports that
+limitation instead of showing a new empty model as a successful save. See
+[storage and migration](../docs/ORACLE-AUTO-TRADING.md#learning-confidence-and-bounded-exposure).
 
 **Start Live** checks explicit collateral/session-loss limits and backend
 readiness. Automatic live opening remains unavailable: the 10x path lacks verified

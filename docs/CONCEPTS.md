@@ -1,6 +1,6 @@
 # Conceptual index
 
-**Generated** from `index/CONCEPT-INDEX.json` (2026-11-17T06:44:51+00:00). 21 concepts.
+**Generated** from `index/CONCEPT-INDEX.json` (2026-11-17T17:52:53+00:00). 21 concepts.
 
 ```bash
 python3 index/build.py all              # refresh
@@ -40,14 +40,14 @@ Full list: `python3 index/search.py --concept risk-rails -n 1987`
 
 ### Cross-asset and cross-timeframe transfer
 
-`transfer` · **1787 files** · matched on `cross_asset`, `cross-asset`, `transfer`, `doge`, `zec`, `universe`, `top_coins`
+`transfer` · **1790 files** · matched on `cross_asset`, `cross-asset`, `transfer`, `doge`, `zec`, `universe`, `top_coins`
 
 The same 25 strategies score 25/25 on BTC daily and 0/25 on SOL hourly. The dataset has repeatedly explained more than the strategy.
 
 Strongest files:
 
-- `docs/FILES.md` (321 hits)
-- `memory.md` (258 hits)
+- `docs/FILES.md` (322 hits)
+- `memory.md` (257 hits)
 - `research/coin-intelligence/zec-zcash.md` (196 hits)
 - `research/results/coinbase50_20261111_summary.json` (183 hits)
 - `research/coin-intelligence/doge-dogecoin.md` (147 hits)
@@ -55,7 +55,7 @@ Strongest files:
 - `research/results/shape_spot_20261111_manifest.json` (97 hits)
 - `research/tradingview-card-coverage.json` (90 hits)
 
-Full list: `python3 index/search.py --concept transfer -n 1787`
+Full list: `python3 index/search.py --concept transfer -n 1790`
 
 ### Cost model
 
@@ -97,7 +97,7 @@ Full list: `python3 index/search.py --concept lookahead -n 1547`
 
 ### On-chain execution reality
 
-`execution-onchain` · **1142 files** · matched on `jupiter`, `jlp`, `oracle`, `priority`, `slippage`, `perps`, `solana`
+`execution-onchain` · **1146 files** · matched on `jupiter`, `jlp`, `oracle`, `priority`, `slippage`, `perps`, `solana`
 
 Oracle-priced perps, priority fees as a product, per-account fee markets, dropped-versus-reverted. Decides whether a strategy is executable at all.
 
@@ -108,11 +108,11 @@ Strongest files:
 - `research/strategy_experiment/results/results.json` (544 hits)
 - `llms/jupsol-llms.txt` (427 hits)
 - `research/strategy_experiment/results/initial-gapped-run/results.json` (408 hits)
-- `memory.md` (342 hits)
+- `memory.md` (344 hits)
 - `FILES.md` (283 hits)
 - `.cdo/reviews-2026-11-12/oracle.json` (271 hits)
 
-Full list: `python3 index/search.py --concept execution-onchain -n 1142`
+Full list: `python3 index/search.py --concept execution-onchain -n 1146`
 
 ### Grid trading
 
@@ -135,7 +135,7 @@ Full list: `python3 index/search.py --concept grid -n 900`
 
 ### Data integrity
 
-`data-integrity` · **850 files** · matched on `validate_bars`, `strict_gaps`, `allow_gaps`, `datavalidationerror`, `monotone`, `gap`
+`data-integrity` · **852 files** · matched on `validate_bars`, `strict_gaps`, `allow_gaps`, `datavalidationerror`, `monotone`, `gap`
 
 Gaps refused rather than filled, columns resolved by name, timestamps monotone. A concatenated XRP series hides a 2.5-year join.
 
@@ -150,11 +150,11 @@ Strongest files:
 - `docs/FILES.md` (81 hits)
 - `TRADINGVIEW-CARD-READINESS.md` (77 hits)
 
-Full list: `python3 index/search.py --concept data-integrity -n 850`
+Full list: `python3 index/search.py --concept data-integrity -n 852`
 
 ### Buy-and-hold benchmark
 
-`benchmark` · **598 files** · matched on `buy_and_hold`, `benchmark`, `baseline`
+`benchmark` · **600 files** · matched on `buy_and_hold`, `benchmark`, `baseline`
 
 Zero parameters, and it out-ranked all but one or two strategies on SOL and all five recommended configurations on ZEC.
 
@@ -169,7 +169,7 @@ Strongest files:
 - `docs/FILES.md` (90 hits)
 - `.cdo/reviews-2026-11-12/research-scripts.json` (81 hits)
 
-Full list: `python3 index/search.py --concept benchmark -n 598`
+Full list: `python3 index/search.py --concept benchmark -n 600`
 
 ### Evidence floor
 
@@ -258,9 +258,9 @@ The families also carry a historical measured finding. Of the study's 25 strateg
 | Family | Files | Matched on |
 |---|---|---|
 | `trend` | 924 | `trend`, `ma_crossover`, `macd`, `ichimoku` |
-| `oscillator-reversion` | 596 | `rsi`, `stochastic`, `oscillator` |
-| `baseline` | 527 | `buy_and_hold`, `baseline` |
-| `momentum` | 479 | `momentum`, `ts_momentum`, `dual_momentum` |
+| `oscillator-reversion` | 597 | `rsi`, `stochastic`, `oscillator` |
+| `baseline` | 529 | `buy_and_hold`, `baseline` |
+| `momentum` | 480 | `momentum`, `ts_momentum`, `dual_momentum` |
 | `regime-filter` | 389 | `regime`, `sma_regime`, `adx_trend`, `hurst`, `vol_regime` |
 | `breakout` | 306 | `breakout`, `bb_breakout`, `keltner` |
 | `volume-flow` | 167 | `obv`, `volume-flow` |

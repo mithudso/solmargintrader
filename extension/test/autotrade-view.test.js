@@ -164,3 +164,80 @@ test('connection failures keep the helper error visible and recover paper defaul
     assert.deepEqual(calls, Array(3).fill('autotrade.status'));
   } finally { ui.close(); globalThis.document = previous; }
 });
+
+test('saved coin memory follows settings without erasing history or requalifying risk', async t => {
+  const { autotradeView } = await import('../src/1000x/autotrade-view.js');
+  class Node {
+    constructor() { this.children = []; this.dataset = {}; this.textContent = ''; this.events = {}; this.value = ''; }
+    set value(value) { this._value = String(value); }
+    get value() { return this._value; }
+    append(...nodes) { this.children.push(...nodes); }
+    before(node) { this.sibling = node; }
+    setAttribute() {}
+    addEventListener(name, fn) { (this.events[name] ||= []).push(fn); }
+  }
+  const previous = globalThis.document;
+  globalThis.document = { createElement: () => new Node() };
+  let refresh, unavailable = false;
+  t.mock.method(globalThis, 'setInterval', callback => { refresh = callback; return 1; });
+  t.mock.method(globalThis, 'clearInterval', () => {});
+  const calls = [], root = new Node();
+  const snapshot = { state: 'stopped', mode: 'paper', configuration: { asset: 'BTC', venue: 'jupiter-cli-10x' },
+    learner: { samples: 0 }, learning_memory: { version: 1, storage: { durable: true, legacy_index_complete: true, unattributed_cohorts: 0 },
+      coins: { BTC: { samples: 12, profiles: { 'jupiter-cli-10x': { samples: 9 } } },
+        ZEC: { samples: 3, profiles: { 'jupiter-cli-10x': { samples: 3 } } } } } };
+  const ui = autotradeView(root, { call: async command => {
+    calls.push(command); if (unavailable) throw new Error('offline'); return snapshot;
+  } });
+  try {
+    await new Promise(resolve => setImmediate(resolve));
+    const section = root.sibling, memory = section.children.find(node => node.className === 'autotrade-memory');
+    assert.match(memory.textContent, /Saved to local disk · BTC · 12 remembered results · 9 compatible model samples/);
+    assert.match(memory.textContent, /Current-policy risk qualification stays separate/);
+    const asset = section.children[2].children[1].children[0].children[0];
+    asset.value = 'ZEC'; for (const fn of asset.events.change) fn();
+    assert.match(memory.textContent, /ZEC · 3 remembered results · 3 compatible model samples/);
+    asset.value = 'BTC'; for (const fn of asset.events.change) fn();
+    assert.match(memory.textContent, /BTC · 12 remembered results/);
+    unavailable = true; await refresh();
+    assert.match(memory.textContent, /Last reported disk state · BTC · 12 remembered results/);
+    asset.value = 'ZEC'; for (const fn of asset.events.change) fn();
+    assert.match(memory.textContent, /Last reported disk state · ZEC · 3 remembered results/);
+    unavailable = false; snapshot.state = 'unavailable'; await refresh();
+    asset.value = 'BTC'; for (const fn of asset.events.change) fn();
+    assert.match(memory.textContent, /Last reported disk state · BTC · 12 remembered results/);
+    snapshot.state = 'stopped'; await refresh();
+    assert.match(memory.textContent, /Saved to local disk · BTC · 12 remembered results/);
+    assert.deepEqual(calls, Array(4).fill('autotrade.status'));
+    assert.equal(snapshot.learner.samples, 0);
+  } finally { ui.close(); globalThis.document = previous; }
+});
+
+test('older helpers and memory-only fixtures never claim durable disk persistence', async t => {
+  const { autotradeView } = await import('../src/1000x/autotrade-view.js');
+  class Node {
+    constructor() { this.children = []; this.dataset = {}; this.textContent = ''; this.value = ''; }
+    append(...nodes) { this.children.push(...nodes); }
+    before(node) { this.sibling = node; }
+    setAttribute() {}
+    addEventListener() {}
+  }
+  const previous = globalThis.document;
+  globalThis.document = { createElement: () => new Node() };
+  let refresh;
+  t.mock.method(globalThis, 'setInterval', callback => { refresh = callback; return 1; });
+  t.mock.method(globalThis, 'clearInterval', () => {});
+  let snapshot = { state: 'stopped', configuration: { asset: 'BTC', venue: 'jupiter-cli-10x' } };
+  const root = new Node(), ui = autotradeView(root, { call: async () => snapshot });
+  try {
+    await new Promise(resolve => setImmediate(resolve));
+    const memory = root.sibling.children.find(node => node.className === 'autotrade-memory');
+    assert.match(memory.textContent, /unavailable from this helper/);
+    assert.doesNotMatch(memory.textContent, /Saved to local disk/);
+    snapshot = { ...snapshot, learning_memory: { version: 1, storage: { durable: false, legacy_index_complete: false, unattributed_cohorts: 2 }, coins: { BTC: { samples: 0, profiles: {} } } } };
+    await refresh();
+    assert.match(memory.textContent, /Disk persistence unavailable/);
+    assert.match(memory.textContent, /2 older policy histories retained and being indexed/);
+    assert.doesNotMatch(memory.textContent, /Saved to local disk/);
+  } finally { ui.close(); globalThis.document = previous; }
+});

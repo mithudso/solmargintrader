@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-11-17T08:34:38+00:00",
+  "generatedAt": "2026-11-17T17:59:54+00:00",
   "schemaVersion": 1,
   "note": "Concepts are derived from the repo's own vocabulary \u2014 the FAMILY dict, strategy-card frontmatter, docs/trading-signals-concept-family.md, and terms verified to recur in the corpus. A concept matching no file is dropped, not kept.",
   "counts": {
@@ -43,7 +43,7 @@
         },
         {
           "path": "docs/FILES.md",
-          "hits": 178
+          "hits": 176
         },
         {
           "path": "FILES.md",
@@ -67,7 +67,7 @@
         },
         {
           "path": "memory.md",
-          "hits": 111
+          "hits": 112
         },
         {
           "path": "research/tradingview-script-profiles/shard-b.jsonl",
@@ -161,12 +161,12 @@
         "universe",
         "top_coins"
       ],
-      "matchingFiles": 1788,
+      "matchingFiles": 1790,
       "shown": 30,
       "files": [
         {
           "path": "docs/FILES.md",
-          "hits": 322
+          "hits": 321
         },
         {
           "path": "memory.md",
@@ -578,7 +578,7 @@
         "perps",
         "solana"
       ],
-      "matchingFiles": 1144,
+      "matchingFiles": 1146,
       "shown": 30,
       "files": [
         {
@@ -587,7 +587,7 @@
         },
         {
           "path": "docs/FILES.md",
-          "hits": 610
+          "hits": 617
         },
         {
           "path": "research/strategy_experiment/results/results.json",
@@ -691,7 +691,7 @@
         },
         {
           "path": "extension/README.md",
-          "hits": 83
+          "hits": 84
         },
         {
           "path": "archive/memory-2026-11-08.md",
@@ -869,7 +869,7 @@
         },
         {
           "path": "docs/FILES.md",
-          "hits": 202
+          "hits": 203
         },
         {
           "path": "research/strategy_experiment/audit_realism.json",
@@ -1529,7 +1529,7 @@
         "ts_momentum",
         "dual_momentum"
       ],
-      "matchingFiles": 479,
+      "matchingFiles": 480,
       "shown": 30,
       "files": [
         {

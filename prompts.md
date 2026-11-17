@@ -1,7 +1,7 @@
 # Prompt history
 
-Version: 284
-Delta: v283 to v284; retain both commissioned requests during concurrent delivery integration.
+Version: 286
+Delta: v285 to v286; add the explicit per-coin ML retention and durable disk requirement.
 Delta: v282 to v283; commission the whole-application optimizer with frozen coverage.
 Delta: v281 to v282; preserve the current status question.
 Delta: v282 to v283; preserve the paper-config connection error request.
@@ -2599,3 +2599,19 @@ $application-deep-optimizer  /Users/mitch/dev/solmargintrader
 ```
 
 The user explicitly supplied application-deep-optimizer1.0.0. Preserve its complete commission and exact skill hash in /Users/mitch/.local/share/solmargintrader/audits/application-2527/commission.json. This invocation commissions whole-product evaluation and authorized Medium+ repair, separate from skill creation and older code/UI audits.
+
+## Cap-three application optimizer rerun — 2026-11-17
+
+```text
+Raise the two-review cap on the application deep optimizer to three and run it again on this repo.
+```
+
+Executed invocation: `$application-deep-optimizer  /Users/mitch/dev/solmargintrader`. Skill1.0.1 is delivered via https://github.com/mithudso/skills/pull/115 and verified source-exact through the native .agents alias. New application run TASK-2556, independent review/delivery TASK-2557; prior TASK-2529 and its immutable qualified evidence remain lineage.
+
+## Per-coin ML persistence and disk state — 2026-11-17
+
+```text
+Also the machine learning auto trader in the extension doesn't save its data anywhere, it resets when I change or reset it. 1) have it save the state for next time so it remembers the results for each coin, 2) have it save the data to disk, we may use a mongodb timeseries db.
+```
+
+Root implementation TASK-2574 blocks optimizer TASK-2556 and final review/delivery TASK-2557. User may clarify Auto Long/Short, live prediction indicator or both; native Auto Long/Short is the source-supported default.

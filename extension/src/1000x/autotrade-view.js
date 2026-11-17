@@ -25,6 +25,8 @@ export function autotradeView(container, { call = soltui, clock = Date.now, id =
   const title = document.createElement('h2'); title.textContent = 'Auto Long / Short';
   const status = document.createElement('p'); status.setAttribute('role', 'status'); status.textContent = 'Connecting to the auto-trade helper…';
   const detail = document.createElement('pre'); detail.className = 'autotrade-detail';
+  const memoryStatus = document.createElement('p'); memoryStatus.className = 'autotrade-memory';
+  memoryStatus.setAttribute('role', 'status'); memoryStatus.textContent = 'Saved per-coin learning is loading…';
   const fields = document.createElement('div'); fields.className = 'autotrade-fields';
   const inputs = {};
   for (const [key, label] of [['asset', 'Asset BTC/ZEC'], ['venue', 'Venue'], ['base_collateral_usd', 'Base collateral $'], ['max_collateral_usd', 'Maximum collateral $'], ['max_session_loss_usd', 'Session loss cap $']]) {
@@ -59,8 +61,24 @@ export function autotradeView(container, { call = soltui, clock = Date.now, id =
   advanced.append(advancedSummary, detail);
   const paperHelp = document.createElement('p'); paperHelp.textContent = 'Paper results model observed prices and omit network, keeper, conversion and unverified venue costs; observation gaps can leave outcomes unknown.';
   const stopHelp = document.createElement('p'); stopHelp.textContent = 'Stop prevents new entries and manages open positions. An unknown paper outcome needs acknowledgement. The session continues when this panel closes; automatic live opening is unavailable.';
-  buttons.append(paper, live, stop); section.append(title, status, settings, buttons, paperHelp, stopHelp, advanced); container.before(section);
+  buttons.append(paper, live, stop); section.append(title, status, settings, buttons, memoryStatus, paperHelp, stopHelp, advanced); container.before(section);
   let disposed = false, initialized = false, busy = false, retry = null, current = null, sent = new Set(), pending = new Set();
+  const showMemory = (s, historical = false) => {
+    const memory = s?.learning_memory;
+    if (!memory || memory.version !== 1 || !memory.coins || !memory.storage) {
+      memoryStatus.textContent = 'Saved per-coin learning is unavailable from this helper. Its existing session results may use separate policy histories.';
+      return;
+    }
+    const asset = inputs.asset.value || s.configuration?.asset || s.policy?.asset;
+    const venue = inputs.venue.value || s.configuration?.venue || s.policy?.venue;
+    const coin = memory.coins[asset], profile = coin?.profiles?.[venue];
+    const prefix = historical ? memory.storage.durable === true ? 'Last reported disk state' : 'Last reported memory state'
+      : memory.storage.durable === true ? 'Saved to local disk' : 'Disk persistence unavailable';
+    const legacy = numeric(memory.storage.unattributed_cohorts) && memory.storage.unattributed_cohorts > 0
+      ? ` · ${memory.storage.unattributed_cohorts} older policy histories retained${memory.storage.legacy_index_complete === false ? ' and being indexed' : ' without a verified coin assignment'}` : '';
+    memoryStatus.textContent = `${prefix} · ${asset || 'coin unknown'} · ${val(coin?.samples)} remembered results · ${val(profile?.samples)} compatible model samples. Changing settings or starting a new session keeps this memory. Current-policy risk qualification stays separate.${legacy}`;
+  };
+  for (const input of [inputs.asset, inputs.venue]) input.addEventListener('change', () => showMemory(current, status.dataset.state === 'unavailable'));
   const render = s => {
     if (disposed) return;
     current = s;
@@ -74,6 +92,7 @@ export function autotradeView(container, { call = soltui, clock = Date.now, id =
       ['Session reason', s.reason], ['Position reason', p.reason], ['Cleanup', s.cleanup?.reason],
     ].filter(([, reason]) => typeof reason === 'string' && reason.trim())
       .map(([label, reason]) => `${label}: ${reason}`).join('\n');
+    showMemory(s, s.state === 'unavailable');
     detail.textContent = `Live readiness: ${val(s.readiness?.live)}\n1000× readiness: ${val(s.readiness?.['1000x'])} · advice ${val(s.readiness?.advice)}${reasons ? `\n${reasons}` : ''}\nFirst entry deadline: ${remaining} · session ${val(s.session_id)}\nPosition: ${val(p.state)} ${val(plan.direction)} · entry ${val(plan.target_entry)} · target ${val(plan.target_price)} · stop ${val(plan.stop_price)} · liquidation ${val(plan.liquidation_price)}\nModeled fills: entry ${val(plan.entry_fill)} · exit ${val(p.exit_price)} · modeled net PnL ${val(s.net_pnl_usd)}\nModel ${val(plan.model_version)} · ${val(plan.assumptions)} · ${val(plan.cost_scope)}\nOutcomes: wins ${val(l.wins)} · losses ${val(l.losses)} · liquidations ${val(l.liquidations)} · data/continuity failures ${val(l.availability_failures)}\nAll-cohort modeled results: ${val(s.history?.samples)} samples · net ${val(s.history?.net_pnl_usd)} · ${val(s.history?.scope)}\nTraining ${val(s.training)} · samples ${val(l.samples)} · confidence ${val(f.score)} (uncalibrated) · boost ${val(f.boost_eligible)} ${val(f.boost_reason)}\nCaps: base ${val(policy.base_collateral_usd)} · max ${val(policy.max_collateral_usd)} · loss ${val(policy.max_session_loss_usd)}\nForecast provenance: ${val(f.source || f.advisory_forecast_id)}\nStop prevents new entries and manages open positions; ending an unknown paper outcome requires acknowledgement. Session continues when this panel closes.`;
   };
   const refresh = async () => {
@@ -82,6 +101,7 @@ export function autotradeView(container, { call = soltui, clock = Date.now, id =
       if (disposed) return;
       status.dataset.state = 'unavailable';
       status.textContent = `Auto-trade connection unavailable: ${error?.message || 'the local helper did not answer'}`;
+      showMemory(current, true);
     }
   };
   async function act(command, params) {

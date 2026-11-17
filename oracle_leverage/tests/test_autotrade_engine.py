@@ -261,6 +261,7 @@ class ControlTests(unittest.TestCase):
         self.session.learner.update(
             samples=100,
             wins=90,
+            losses=10,
             net_pnl_usd=100,
             brier_sum=10,
             high_n=40,
