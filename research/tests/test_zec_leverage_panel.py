@@ -155,11 +155,60 @@ def static_text(panel, identity):
 class Interface(unittest.IsolatedAsyncioTestCase):
     def setUp(self):
         # Never connect to or spawn the owner's real session in UI tests.
-        bridge = patch.object(LeveragePanel, "_auto_call", staticmethod(
-            lambda request, cancelled: {"ok": True, "result": {"state": "stopped", "mode": "paper"}}
-        ))
+        bridge = patch.object(
+            LeveragePanel,
+            "_auto_call",
+            staticmethod(
+                lambda request, cancelled: {
+                    "ok": True,
+                    "result": {"state": "stopped", "mode": "paper"},
+                }
+            ),
+        )
         bridge.start()
         self.addCleanup(bridge.stop)
+
+    async def test_auto_summary_uses_active_policy_not_local_selection(self):
+        panel = LeveragePanel(console=ConsoleFixture())
+        async with PanelHost(panel).run_test(size=(160, 42)) as pilot:
+            await pilot.pause(0.1)
+            panel.query_one("#leverage-asset", Select).value = "ZEC"
+            panel.query_one("#leverage-venue", Select).value = "jupiter-cli-10x"
+            panel._paint_auto(
+                {
+                    "state": "running",
+                    "mode": "paper",
+                    "policy": {"asset": "BTC", "venue": "jupiter-sdk-1000x"},
+                    "position": {
+                        "state": "open",
+                        "plan": {
+                            "direction": "long",
+                            "leverage": 1000,
+                            "entry_fill": 100,
+                            "target_price": 110,
+                            "stop_price": 95,
+                            "liquidation_price": 90,
+                        },
+                    },
+                    "net_pnl_usd": 2.5,
+                    "learner": {
+                        "wins": 1,
+                        "losses": 2,
+                        "liquidations": 0,
+                        "samples": 3,
+                        "availability_failures": 4,
+                    },
+                }
+            )
+            lines = static_text(panel, "#auto-status").splitlines()
+            for item in ("BTC", "1000x", "long", "open", "2.5"):
+                self.assertIn(item, lines[0])
+            for item in ("100", "110", "95", "90"):
+                self.assertIn(item, lines[1])
+            for item in ("1", "2", "3", "4"):
+                self.assertIn(item, lines[2])
+            panel._paint_auto({"state": "stopped", "mode": "paper"})
+            self.assertNotIn("ZEC", static_text(panel, "#auto-status").splitlines()[0])
 
     async def test_auto_paper_product_and_unknown_stop_are_explicit(self):
         from types import SimpleNamespace
@@ -171,6 +220,7 @@ class Interface(unittest.IsolatedAsyncioTestCase):
             for field, value in (("base", "10"), ("max", "15"), ("loss", "50")):
                 panel.query_one(f"#auto-{field}", Input).value = value
             await pilot.pause(0.1)
+
             def press(identity):
                 button = panel.query_one(f"#{identity}", Button)
                 panel.button_pressed(SimpleNamespace(button=button, stop=lambda: None))
@@ -186,7 +236,9 @@ class Interface(unittest.IsolatedAsyncioTestCase):
                 press("auto-stop")
                 submit.assert_not_called()
                 press("auto-stop")
-                submit.assert_called_once_with("autotrade.stop", {"acknowledge_unknown": True})
+                submit.assert_called_once_with(
+                    "autotrade.stop", {"acknowledge_unknown": True}
+                )
 
     async def test_both_real_quote_sources_basis_primary_and_staleness_render_at_narrow_size(
         self,
@@ -225,8 +277,14 @@ class Interface(unittest.IsolatedAsyncioTestCase):
             await pilot.pause(0.05)
             rendered = static_text(panel, "#leverage-price-comparison")
             self.assertIn("primary display: Jupiter oracle", rendered)
-            self.assertIn("Jupiter oracle · PRIMARY: 101 USD · ● · exchange 0.30s · received 0.20s", rendered)
-            self.assertIn("Coinbase synced book midpoint: 100 USD · ● · exchange 0.40s · received 0.10s", rendered)
+            self.assertIn(
+                "Jupiter oracle · PRIMARY: 101 USD · ● · exchange 0.30s · received 0.20s",
+                rendered,
+            )
+            self.assertIn(
+                "Coinbase synced book midpoint: 100 USD · ● · exchange 0.40s · received 0.10s",
+                rendered,
+            )
             self.assertIn("+100.000 bps", rendered)
             svg = app.export_screenshot()
             self.assertIn("Jupiter", svg)
@@ -245,16 +303,29 @@ class Interface(unittest.IsolatedAsyncioTestCase):
                 ),
             )
             rendered = static_text(panel, "#leverage-price-comparison")
-            self.assertIn("Jupiter oracle · PRIMARY: 101 USD · ● · exchange 1.10s · received 1.00s", rendered)
-            self.assertIn("Coinbase synced book midpoint: 100 USD · ● · exchange 1.20s · received 0.90s", rendered)
+            self.assertIn(
+                "Jupiter oracle · PRIMARY: 101 USD · ● · exchange 1.10s · received 1.00s",
+                rendered,
+            )
+            self.assertIn(
+                "Coinbase synced book midpoint: 100 USD · ● · exchange 1.20s · received 0.90s",
+                rendered,
+            )
             self.assertIn("+100.000 bps", rendered)
             self.assertEqual(console.executes + console.closes, 0)
 
     def test_published_model_components_report_signed_uplift(self):
-        value = mtf_tilt_text({"10": {"base_down_rate": 0.5, "components": [
-            {"minutes": 5, "posterior_down": 0.4, "n": 50},
-            {"minutes": 10, "posterior_down": 0.6, "n": 40},
-        ]}})
+        value = mtf_tilt_text(
+            {
+                "10": {
+                    "base_down_rate": 0.5,
+                    "components": [
+                        {"minutes": 5, "posterior_down": 0.4, "n": 50},
+                        {"minutes": 10, "posterior_down": 0.6, "n": 40},
+                    ],
+                }
+            }
+        )
         self.assertIn("5m +10.0pp n=50", value)
         self.assertIn("10m -10.0pp n=40", value)
         self.assertIn("15m ?", value)
@@ -541,7 +612,10 @@ class Interface(unittest.IsolatedAsyncioTestCase):
 
     def panel(self, console=None, **kwargs):
         return LeveragePanel(
-            console=console or ConsoleFixture(), clock=lambda: 1001.0, home="/nonexistent", **kwargs
+            console=console or ConsoleFixture(),
+            clock=lambda: 1001.0,
+            home="/nonexistent",
+            **kwargs,
         )
 
     async def test_capabilities_strategy_filters_and_paper_metrics(self):

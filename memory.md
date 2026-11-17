@@ -1,6 +1,7 @@
 # Work continuation
 
-Version: 618
+Version: 619
+Delta: v618 to v619; record integrated audit, paper-session identity display and pending acceptance.
 Delta: v617 to v618; reconcile auto-trade delivery and current-source audit continuation.
 Delta: v615 to v616; record bounded current-source audit diagnostics, fixes and open integrity work.
 Delta: v614 to v615; preserve audit and screenshot continuation across merged 0.10 source.
@@ -3024,3 +3025,12 @@ Live10x remains blocked on validated position/request/fill/fee/settlement bindin
 ### TASK-2458 delivery integration
 
 Manager 0.7.6 and ecosystem 0.4.15 pin research-runtime 0.4.3. Installer source fingerprint includes the packaged oracle_leverage tree without treating it as a sixth project; installed health checks import its worker. A temporary-repository regression checks fingerprint changes. Existing immutable 0.4.14 environment remains untouched. Remaining: finish source and generated documentation gates, push draft for parent final-head CI and merge, and independently verify installed paper behavior after authorized installation.
+
+
+## Integrated audit and paper-session display — 2026-11-17
+
+The current-source health branch integrates auto-trade source from d0b26a4 without changing its backend trading logic. The draft repairs include lossless index and owner-state safeguards. The audit has 54 scoped diagnostic receipts with partial methods; it has no final receipt or whole-repository clean verdict. Earlier run bodies and file records remain preserved. The first integrated commands.py clarification remains partial despite a complete source read.
+
+The paper-session summary now identifies the actual shared policy asset and product, position direction/state and realized modeled session net, rather than relying on editable next-session selections. The TUI puts session, plan and outcomes in its first three summary lines; the Chrome status header names the same active identity. Focused tests use stub owners only. The public research export is regenerated from tracked allowed sources; no private Pine is included.
+
+Remaining: independent review of these final UI changes, exact-head CI, the user's live-owner attribution and paper acceptance, qualified audit ledger records and the single final receipt, final static freshness checks and parent-coordinated delivery. No running owner was installed, restarted or stopped by these edits.

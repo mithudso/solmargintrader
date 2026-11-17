@@ -1,6 +1,6 @@
 # Every file in this repository
 
-**Generated** from `index/INDEX.json` at commit `c898372` (2026-11-17T00:39:56+00:00). 3985 tracked files, 140.7 MB.
+**Generated** from `index/INDEX.json` at commit `578c0d8` (2026-11-17T00:53:57+00:00). 3985 tracked files, 140.7 MB.
 
 Regenerate with:
 
@@ -648,9 +648,9 @@ Repository-level entry points and agent instructions. `AGENTS.md` and `CLAUDE.md
 
 #### `memory.md`
 
-`doc` · 3027 lines · 626,012 B · description: **extracted**
+`doc` · 3037 lines · 627,431 B · description: **extracted**
 
-**Purpose.** Version: 618 Delta: v617 to v618; reconcile auto-trade delivery and current-source audit continuation. Delta: v615 to v616; record bounded current-source audit diagnostics, fixes and open integrity work.
+**Purpose.** Version: 619 Delta: v618 to v619; record integrated audit, paper-session identity display and pending acceptance. Delta: v617 to v618; reconcile auto-trade delivery and current-source audit continuation.
 
 **Use.** Read it.
 
@@ -23382,7 +23382,7 @@ Drivers that produce the numbers, and the write-ups that quote them. Everything 
 
 #### `research/zec_leverage_panel.py`
 
-`code-python` · 1701 lines · 74,017 B · description: **extracted**
+`code-python` · 1706 lines · 74,367 B · description: **extracted**
 
 **Purpose.** Explicit trading controls and a read-only view of the durable paper trial. The panel owns only its UI workers. The forward collector belongs to its service, so closing this screen never stops a trial or starts a second collector.
 
@@ -25788,7 +25788,7 @@ Drivers that produce the numbers, and the write-ups that quote them. Everything 
 
 #### `research/tests/test_zec_leverage_panel.py`
 
-`test` · 1236 lines · 54,556 B · description: **extracted**
+`test` · 1310 lines · 56,984 B · description: **extracted**
 
 **Purpose.** Real Textual controls, single-flight actions and owned worker teardown.
 
@@ -27040,7 +27040,7 @@ The Chrome extension has a separately armed trading surface. Dry-run is the defa
 
 #### `extension/src/1000x/autotrade-view.js`
 
-`code-js` · 84 lines · 8,680 B · description: **none**
+`code-js` · 85 lines · 8,975 B · description: **none**
 
 **Purpose.** _No description available._
 
@@ -27920,7 +27920,7 @@ The Chrome extension has a separately armed trading surface. Dry-run is the defa
 
 #### `extension/test/autotrade-view.test.js`
 
-`test` · 77 lines · 5,110 B · description: **none**
+`test` · 102 lines · 6,423 B · description: **none**
 
 **Purpose.** _No description available._
 

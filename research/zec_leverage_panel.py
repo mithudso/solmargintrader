@@ -909,6 +909,12 @@ class LeveragePanel(ModalScreen[None]):
         learner = data.get("learner") or {}
         forecast = data.get("forecast") or {}
         policy = data.get("policy") or {}
+        leverage = plan.get("leverage")
+        if leverage not in (10, 1000):
+            leverage = {"jupiter-cli-10x": 10, "jupiter-sdk-1000x": 1000}.get(
+                policy.get("venue")
+            )
+        product = f"{leverage}x" if leverage in (10, 1000) else "unknown product"
         deadline = data.get("first_entry_deadline")
         remaining = (
             f"{max(0, int(deadline - self.clock()))}s"
@@ -916,12 +922,11 @@ class LeveragePanel(ModalScreen[None]):
             else "unknown"
         )
         self.query_one("#auto-status", Static).update(
-            f"AUTO {_text(data.get('state'))} · {_text(data.get('mode'))} · {_text(data.get('reason'))}\n"
+            f"AUTO {_text(data.get('state'))} {_text(data.get('mode'))} {_text(policy.get('asset'))} {product} {_text(plan.get('direction'))}/{_text(pos.get('state'))} · realized session net (modeled) {_text(data.get('net_pnl_usd'))}\n"
+            f"Entry fill {_text(plan.get('entry_fill'))} · target {_text(plan.get('target_price'))} · stop {_text(plan.get('stop_price'))} · liq {_text(plan.get('liquidation_price'))}\n"
+            f"Wins {_text(learner.get('wins'))} · losses {_text(learner.get('losses'))} · liq {_text(learner.get('liquidations'))} · samples {_text(learner.get('samples'))} · data failures {_text(learner.get('availability_failures'))}\n"
             f"Live: {_text((data.get('readiness') or {}).get('live'))}; 1000x: {_text((data.get('readiness') or {}).get('1000x'))}; advice: {_text((data.get('readiness') or {}).get('advice'))}\n"
-            f"First entry {remaining} · {_text(plan.get('direction'))} · {_text(pos.get('state'))}\n"
-            f"Plan entry {_text(plan.get('target_entry'))} target {_text(plan.get('target_price'))} stop {_text(plan.get('stop_price'))} liq {_text(plan.get('liquidation_price'))}\n"
-            f"Modeled fills {_text(plan.get('entry_fill'))} / {_text(pos.get('exit_price'))}; net {_text(data.get('net_pnl_usd'))}; {_text(plan.get('assumptions'))}\n"
-            f"Wins {_text(learner.get('wins'))} losses {_text(learner.get('losses'))} liq {_text(learner.get('liquidations'))} data/continuity failures {_text(learner.get('availability_failures'))}\n"
+            f"First entry {remaining} · reason {_text(data.get('reason'))}; exit fill {_text(pos.get('exit_price'))}; {_text(plan.get('assumptions'))}\n"
             f"All-cohort modeled results {_text((data.get('history') or {}).get('samples'))} samples / net {_text((data.get('history') or {}).get('net_pnl_usd'))}\n"
             f"Training {_text(data.get('training'))}; samples {_text(learner.get('samples'))}; uncalibrated {_text(forecast.get('score'))}; boost {_text(forecast.get('boost_eligible'))} {_text(forecast.get('boost_reason'))}\n"
             f"Caps {_text(policy.get('base_collateral_usd'))} / {_text(policy.get('max_collateral_usd'))} / loss {_text(policy.get('max_session_loss_usd'))}; forecast {_text(forecast.get('source') or forecast.get('advisory_forecast_id'))}\n"
