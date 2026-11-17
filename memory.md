@@ -1,5 +1,12 @@
 # Work continuation
 
+Version: 644
+Delta: v643 to v644; preserve concurrent readonly Oracle history repair and current combined test counts.
+
+## PR328 concurrent follow-up — TASK-2579
+
+Preserve owner commit4e1d15e on top of the browser learning checkpoint work. A failed Oracle write keeps saved history visible; source identities, checkpoint boundaries and dry-run/disarmed defaults remain unchanged. All724 extension tests and20 supervisor tests pass after integration. The native checkpoint service passed independent framed API probes across fresh processes. Its real browser checkpoint acceptance is in progress against this committed source. Component version remains0.12.7. The four counted suites total3,743 cases. Next: merge delivered predecessors, regenerate committed-source projections, verify final loaded hashes, push the current PR328 branch, wait all final-head CI and merge. Underlying application assessment remains incomplete.
+
 Version: 642
 Delta: v641 to v642; preserve concurrent PR328 browser checkpoint delivery f26b310 before final merge.
 
@@ -32,6 +39,10 @@ Delta: v560 to v561; integrate current master and preserve incoming ZEC paper pu
 Delta: v559 to v560; classify macOS launcher fixtures as platform-specific after Linux CI lacked /bin/zsh.
 Delta: v558 to v559; fix final Linux/native CI integration failures after c7f9ab9.
 Delta: v555 to v557; integrate master25e1d60 into PR235 and preserve the separate PR224 record reservation.
+
+Version: 643
+Delta: v642 to v643; preserve CI failure receipts and correct asynchronous test milestones before the final source freeze.
+Delta: v641 to v642; preserve the confirmed cold-reload quota failure and guarded readonly-history repair.
 Delta: v640 to v641; preserve PR224/PR226 and both browser learner changes before final combined reassessment.
 Delta: v639 to v640; bind PR226 to merged master77bf655 and preserve its exact audit files.
 
@@ -4315,3 +4326,9 @@ Both browser stores now add checkpoint lineage/revision in their existing atomic
 Implementation feedback reproduced native admission, cumulative/pending regression, decompression and first-creation race failures. The native writer repaired them and passed25 backend tests with no added command-module lint findings against its existing20-finding baseline. A separate frontend review reproduced six orchestration defects; root repaired canonical serialization, UUID grammar, physical-save fencing after logical timeout, obsolete disk revisions, offline legacy backup metadata and transient restore retries. Optional metadata quota failures retain readable historical results. The fresh real-Chromium follow-up is still running. Current combined native252, extension651, focused13 backup and25 controller tests and checked JavaScript pass. All failures and original source bindings are retained privately.
 
 Remaining: deterministic docs/inventories/index artifacts, complete immutable current-source freeze, all selected methods/cells, fresh blind final review, installed wheels/native/Chrome acceptance, final-tip CI and merge, safe promotion to the existing native wrapper and original Chrome Beta extension origin. Preserve the primary checkout's concurrent owner, package manifests/private Pine, user IndexedDB, native journal, frozen cohorts and paused services. The actual user extension is pnokcppamfghgaimmmghoegjllhonhbh in Chrome Beta Default, loaded from /Users/mitch/dev/solmargintrader/extension; changing that path or origin can strand its history.
+
+### Final browser candidate boundary
+
+Delivered PR224 and PR226 are integrated as f26b310; preserve their httpx requirement, exact frozen .cdo checkpoint and both prompt/continuation histories. The real-Chromium V2 review confirmed the six first-round client fixes. It also reproduced a cold minute-controller quota path that hid21 valid saved samples despite a successful readonly store load. Root added a generation/source-fenced readonly fallback after write failure. It retains the original error and historical inactive state; no learner progress is written. The added controller regression passes; independent V3 actual-browser verification is pending. Final whole-source freeze, all-method reassessment, native/Chrome installed acceptance and final independent review remain outstanding. No complete expanded sweep or final review is claimed by this checkpoint.
+
+The V3 actual Chromium follow-up now verifies all seven client fix groups, including21 saved minute/3 live samples under injected quota and stale-helper recovery. Its fixed-loop unit timing failures are retained. Condition-based bounded acknowledgements now pass26 disk/controller cases. CI on f26b310 reproduced the same premature disk-test assertions and an existing manager stop test expecting a terminal process/lock state after one supervisor step. The manager test now uses its existing bounded spin until stopped; production lifecycle logic is unchanged. Its focused regression passes. Source-v3 full extension attempt had a separate sandbox setup failure because the archive removed executable mode from the fake native host; new snapshots preserve tracked executable flags and record them. All4049 tracked source hashes remain protected; generated .remember hook logs are recorded as non-product extras. Final source-v4 retains every scope cell and earlier failed attempt. Current combined sweep and final independent review are still pending; no lower review cap or narrowed scope is introduced.

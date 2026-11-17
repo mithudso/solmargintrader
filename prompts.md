@@ -1,5 +1,8 @@
 # Prompt history
 
+Version: 291
+Delta: v290 to v291; preserve concurrent readonly Oracle history repair and current combined test counts.
+
 Version: 290
 Delta: v289 to v290; preserve concurrent PR328 browser checkpoint delivery f26b310 before final merge.
 

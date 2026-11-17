@@ -24,6 +24,13 @@ function trained() {
 const state = trained(), key = state.key;
 const sha = async text => [...new Uint8Array(await crypto.subtle.digest('SHA-256', new TextEncoder().encode(text)))].map(v => v.toString(16).padStart(2, '0')).join('');
 const settle = async () => { for (let i = 0; i < 8; i++) await new Promise(resolve => setImmediate(resolve)); };
+const waitFor = async ready => {
+  const deadline = Date.now() + 3000;
+  while (!ready()) {
+    assert(Date.now() < deadline, 'expected asynchronous checkpoint milestone before deadline');
+    await new Promise(resolve => setTimeout(resolve, 5));
+  }
+};
 function timers() {
   const pending = new Map(); let sequence = 0;
   return { pending, schedule: (fn, ms) => { const id = ++sequence; pending.set(id, { fn, ms }); return id; }, cancel: id => pending.delete(id) };
@@ -82,7 +89,7 @@ test('existing browser data is authoritative and never overwritten by a disk res
   const rpc = await remote(), local = localStore({ state, lineage, revision: 102 }), clock = timers();
   const disk = new OracleDiskBackup({ call: rpc.call, profile: async () => namespace, ...clock });
   const store = new MirroredOracleStore(local, disk, 'live');
-  assert.deepEqual(await store.load(key), state); await settle();
+  assert.deepEqual(await store.load(key), state); await waitFor(() => rpc.saved?.revision === 102);
   assert(!rpc.calls.some(c => c.command === 'oracle.learning.load'));
   assert.equal(local.record.revision, 102); assert.equal(rpc.saved.revision, 102);
   store.close(); disk.close();
@@ -119,7 +126,8 @@ test('concurrent local restoration wins atomically; a different lineage never ov
   local.restoreIfAbsent = (...args) => { local.seed(other); return restore(...args); };
   const disk = new OracleDiskBackup({ call: rpc.call, profile: async () => namespace, onChange: e => events.push(e), ...clock });
   const store = new MirroredOracleStore(local, disk, 'live');
-  await store.load(key); await store.update(key, old => ({ state: old, changed: false })); await settle();
+  await store.load(key); await store.update(key, old => ({ state: old, changed: false }));
+  await waitFor(() => events.at(-1)?.status === 'conflict');
   assert.equal(local.record.lineage, other.lineage); assert.equal(rpc.saved.lineage, lineage);
   assert.equal(events.at(-1).status, 'conflict'); store.close(); disk.close();
 });
@@ -142,10 +150,10 @@ test('stalled native writes do not block learning, queue only the newest state, 
 });
 
 test('an acknowledged unchanged checkpoint does not cause repeated disk writes', async () => {
-  const rpc = await remote(null), clock = timers();
-  const disk = new OracleDiskBackup({ call: rpc.call, profile: async () => namespace, ...clock });
+  const rpc = await remote(null), clock = timers(), events = [];
+  const disk = new OracleDiskBackup({ call: rpc.call, profile: async () => namespace, onChange: event => events.push(event), ...clock });
   const checkpoint = { state, lineage, revision: 101 };
-  disk.queue('live', key, checkpoint); await settle();
+  disk.queue('live', key, checkpoint); await waitFor(() => events.at(-1)?.status === 'saved');
   disk.queue('live', key, checkpoint); await settle();
   assert.equal(rpc.calls.length, 1); disk.close(); assert.equal(clock.pending.size, 0);
 });
@@ -155,10 +163,13 @@ test('a recovered helper restores saved SOL during an ongoing stale feed without
   const disk = new OracleDiskBackup({ call: (...args) => { if (!available) throw new Error('helper absent'); return rpc.call(...args); },
     profile: async () => namespace, ...clock });
   const store = new MirroredOracleStore(local, disk, 'live');
+  const load = store.load.bind(store); let loadsCompleted = 0;
+  store.load = async (...args) => { try { return await load(...args); } finally { loadsCompleted++; } };
   const controller = new LiveOracleController({ store, clock: () => now, onChange: view => views.push(view), call: async () => { throw new Error('stale data cannot publish'); } });
   const stale = { ...input(origin + 100000), streamStatus: 'live', minuteStatus: 'loading', minuteCandles: [] };
-  controller.observe(stale); await settle(); assert.equal(local.record, null); assert.equal(views.at(-1).local, null);
-  available = true; now += 5000; controller.observe(stale); await settle();
+  controller.observe(stale); await waitFor(() => loadsCompleted === 1); await settle();
+  assert.equal(local.record, null); assert.equal(views.at(-1).local, null);
+  available = true; now += 5000; controller.observe(stale); await waitFor(() => views.at(-1)?.local !== null);
   assert.equal(views.at(-1).status, 'stale'); assert.equal(views.at(-1).local.horizons[60].samples, 3);
   assert.equal(views.at(-1).local.horizons[60].scores, null); controller.stop(); disk.close();
 });
@@ -167,7 +178,7 @@ test('valid legacy browser data gets checkpoint metadata and a disk copy without
   const rpc = await remote(null), local = localStore({ state }), clock = timers();
   const disk = new OracleDiskBackup({ call: rpc.call, profile: async () => namespace, ...clock });
   const store = new MirroredOracleStore(local, disk, 'live');
-  assert.deepEqual(await store.load(key), state); await settle();
+  assert.deepEqual(await store.load(key), state); await waitFor(() => rpc.saved?.revision === 1);
   assert.equal(local.record.revision, 1); assert(local.record.lineage);
   assert.deepEqual(rpc.saved.state, state); assert.equal(rpc.saved.revision, 1);
   store.close(); disk.close();
@@ -186,16 +197,16 @@ test('logical timeout keeps the physical save fenced across different queued par
   const clock = timers(), calls = [], replies = [];
   const disk = new OracleDiskBackup({ profile: async () => namespace, ...clock,
     call: (_command, params) => { calls.push(params); return new Promise(resolve => replies.push(resolve)); } });
-  disk.queue('live', key, { state, lineage, revision: 101 }); await settle(); assert.equal(calls.length, 1);
+  disk.queue('live', key, { state, lineage, revision: 101 }); await waitFor(() => calls.length === 1);
   for (const timer of [...clock.pending.values()]) if (timer.ms === 2000) timer.fn(); await settle();
   const other = transitionLive(null, { identity: { market: 'BTC', source: identity.source }, quote: input(origin).quote, nowMs: origin }).state;
   disk.queue('live', other.key, { state: other, lineage, revision: 1 }, true); disk.flush(); await settle();
   assert.equal(calls.length, 1, 'a logical deadline cannot retire an unresolved physical native write');
-  replies[0]({ saved: true, revision: 101, digest: await sha(calls[0].checkpoint.text) }); await settle();
+  replies[0]({ saved: true, revision: 101, digest: await sha(calls[0].checkpoint.text) }); await waitFor(() => calls.length >= 2);
   assert.equal(calls.length, 2);
   replies[1]({ saved: true, revision: calls[1].checkpoint.revision, digest: await sha(calls[1].checkpoint.text) }); await settle();
   if (calls[1].key !== other.key) {
-    assert.equal(calls.length, 3); assert.equal(calls[2].key, other.key);
+    await waitFor(() => calls.length >= 3); assert.equal(calls.length, 3); assert.equal(calls[2].key, other.key);
     replies[2]({ saved: true, revision: 1, digest: await sha(calls[2].checkpoint.text) }); await settle();
   }
   disk.close(); assert.equal(clock.pending.size, 0);
@@ -205,7 +216,7 @@ test('another tab newer disk revision retires obsolete queued states without ret
   const clock = timers(), events = []; let calls = 0, now = 0;
   const disk = new OracleDiskBackup({ profile: async () => namespace, clock: () => now, ...clock,
     onChange: e => events.push(e), call: async () => { calls++; return { saved: false, revision: 102, digest: 'a'.repeat(64), status: 'disk_newer' }; } });
-  disk.queue('live', key, { state, lineage, revision: 101 }); await settle();
+  disk.queue('live', key, { state, lineage, revision: 101 }); await waitFor(() => events.at(-1)?.status === 'disk-newer');
   now += 31000; disk.queue('live', key, { state, lineage, revision: 101 }); disk.flush(); await settle();
   assert.equal(calls, 1); assert.equal(events.at(-1).status, 'disk-newer'); assert.equal(clock.pending.size, 0); disk.close();
 });
@@ -216,8 +227,10 @@ test('reconstructed property order produces identical protocol bytes and no same
   assert.notEqual(JSON.stringify(rebuilt), JSON.stringify(state)); assert.equal(checkpointText(rebuilt), checkpointText(state));
   const rpc = await remote(null), events = [];
   for (const saved of [state, rebuilt]) {
+    const acknowledged = events.filter(event => event.status === 'saved').length;
     const clock = timers(), disk = new OracleDiskBackup({ call: rpc.call, profile: async () => namespace, onChange: e => events.push(e), ...clock });
-    disk.queue('live', key, { state: saved, lineage, revision: 101 }); await settle(); disk.close();
+    disk.queue('live', key, { state: saved, lineage, revision: 101 });
+    await waitFor(() => events.filter(event => event.status === 'saved').length === acknowledged + 1); disk.close();
   }
   assert.equal(rpc.calls.length, 2); assert.equal(events.filter(e => e.status === 'saved').length, 2);
   assert(!events.some(e => e.status === 'conflict'));
