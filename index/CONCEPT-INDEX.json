@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-11-17T19:10:18+00:00",
+  "generatedAt": "2026-11-17T19:16:15+00:00",
   "schemaVersion": 1,
   "note": "Concepts are derived from the repo's own vocabulary \u2014 the FAMILY dict, strategy-card frontmatter, docs/trading-signals-concept-family.md, and terms verified to recur in the corpus. A concept matching no file is dropped, not kept.",
   "counts": {
@@ -22,7 +22,7 @@
         "confirm",
         "fail-closed"
       ],
-      "matchingFiles": 1984,
+      "matchingFiles": 1987,
       "shown": 30,
       "files": [
         {
@@ -62,12 +62,12 @@
           "hits": 115
         },
         {
-          "path": "research/TRADINGVIEW-SCRIPT-CARDS.md",
+          "path": "memory.md",
           "hits": 113
         },
         {
-          "path": "memory.md",
-          "hits": 112
+          "path": "research/TRADINGVIEW-SCRIPT-CARDS.md",
+          "hits": 113
         },
         {
           "path": "research/tradingview-script-profiles/shard-b.jsonl",
@@ -161,7 +161,7 @@
         "universe",
         "top_coins"
       ],
-      "matchingFiles": 1795,
+      "matchingFiles": 1796,
       "shown": 30,
       "files": [
         {
@@ -170,7 +170,7 @@
         },
         {
           "path": "memory.md",
-          "hits": 262
+          "hits": 266
         },
         {
           "path": "research/coin-intelligence/zec-zcash.md",
@@ -578,7 +578,7 @@
         "perps",
         "solana"
       ],
-      "matchingFiles": 1154,
+      "matchingFiles": 1157,
       "shown": 30,
       "files": [
         {
@@ -623,7 +623,7 @@
         },
         {
           "path": "prompts.md",
-          "hits": 149
+          "hits": 151
         },
         {
           "path": "docs/archive/memory-2026-11-10.md",
@@ -674,6 +674,10 @@
           "hits": 104
         },
         {
+          "path": ".cdo/scope-20261111-task1423.json",
+          "hits": 99
+        },
+        {
           "path": "pagesource",
           "hits": 98
         },
@@ -696,10 +700,6 @@
         {
           "path": "archive/memory-2026-11-08.md",
           "hits": 81
-        },
-        {
-          "path": "docs/archive/memory-2026-11-08.md",
-          "hits": 81
         }
       ],
       "source": "curated-from-repo-vocabulary"
@@ -714,7 +714,7 @@
         "macd",
         "ichimoku"
       ],
-      "matchingFiles": 922,
+      "matchingFiles": 923,
       "shown": 30,
       "files": [
         {
@@ -852,7 +852,7 @@
         "anchor_window",
         "levels"
       ],
-      "matchingFiles": 902,
+      "matchingFiles": 903,
       "shown": 30,
       "files": [
         {
@@ -990,7 +990,7 @@
         "monotone",
         "gap"
       ],
-      "matchingFiles": 850,
+      "matchingFiles": 851,
       "shown": 30,
       "files": [
         {
@@ -1125,7 +1125,7 @@
         "benchmark",
         "baseline"
       ],
-      "matchingFiles": 605,
+      "matchingFiles": 607,
       "shown": 30,
       "files": [
         {
@@ -1205,6 +1205,10 @@
           "hits": 42
         },
         {
+          "path": "memory.md",
+          "hits": 41
+        },
+        {
           "path": "research/tradingview-script-profiles/shard-c.jsonl",
           "hits": 41
         },
@@ -1214,10 +1218,6 @@
         },
         {
           "path": ".cdo/reviews-2026-11-12/soltui-root-ui-tests.json",
-          "hits": 37
-        },
-        {
-          "path": "memory.md",
           "hits": 37
         },
         {
@@ -1260,7 +1260,7 @@
         "stochastic",
         "oscillator"
       ],
-      "matchingFiles": 594,
+      "matchingFiles": 595,
       "shown": 30,
       "files": [
         {
@@ -1394,7 +1394,7 @@
         "buy_and_hold",
         "baseline"
       ],
-      "matchingFiles": 533,
+      "matchingFiles": 535,
       "shown": 30,
       "files": [
         {
@@ -1451,7 +1451,7 @@
         },
         {
           "path": "memory.md",
-          "hits": 36
+          "hits": 40
         },
         {
           "path": "research/tradingview-script-profiles/shard-a.jsonl",
@@ -1529,7 +1529,7 @@
         "ts_momentum",
         "dual_momentum"
       ],
-      "matchingFiles": 477,
+      "matchingFiles": 478,
       "shown": 30,
       "files": [
         {
@@ -1939,7 +1939,7 @@
         "bb_breakout",
         "keltner"
       ],
-      "matchingFiles": 303,
+      "matchingFiles": 304,
       "shown": 30,
       "files": [
         {
@@ -2077,7 +2077,7 @@
         "k_test",
         "path_sharpes"
       ],
-      "matchingFiles": 254,
+      "matchingFiles": 255,
       "shown": 30,
       "files": [
         {
@@ -2215,7 +2215,7 @@
         "anti-informative",
         "multiple-testing"
       ],
-      "matchingFiles": 190,
+      "matchingFiles": 191,
       "shown": 30,
       "files": [
         {
@@ -2352,7 +2352,7 @@
         "sign_flips",
         "stability"
       ],
-      "matchingFiles": 190,
+      "matchingFiles": 191,
       "shown": 30,
       "files": [
         {

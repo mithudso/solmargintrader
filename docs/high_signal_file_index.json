@@ -107,14 +107,14 @@
       "component": "ecosystem",
       "kind": "python",
       "summary": "Scoped paper actions and durable action receipts",
-      "lines": 1051
+      "lines": 1060
     },
     {
       "path": "ecosystem/web.py",
       "component": "ecosystem",
       "kind": "python",
       "summary": "Loopback control room and collector routes",
-      "lines": 586
+      "lines": 590
     },
     {
       "path": "ecosystem/ui_service.py",
@@ -170,7 +170,7 @@
       "component": "oracle",
       "kind": "python",
       "summary": "Bounded read-only archive access",
-      "lines": 373
+      "lines": 399
     },
     {
       "path": "oracle/server.py",
@@ -254,7 +254,7 @@
       "component": "botmanager",
       "kind": "python",
       "summary": "Fenced worker lifecycle and desired intent",
-      "lines": 379
+      "lines": 385
     },
     {
       "path": "botmanager/src/botmanager/ledger.py",
@@ -303,7 +303,7 @@
       "component": "backtester",
       "kind": "python",
       "summary": "Entry point: python3 -m backtester.cli",
-      "lines": 357
+      "lines": 371
     },
     {
       "path": "backtester/gridcli.py",
@@ -338,7 +338,7 @@
       "component": "backtester",
       "kind": "markdown",
       "summary": "Scope, correctness priorities, usage",
-      "lines": 555
+      "lines": 561
     },
     {
       "path": "backtester/PROMPT.md",
@@ -831,14 +831,14 @@
       "component": "extension",
       "kind": "markdown",
       "summary": "Includes the Verification status section; read it before extending",
-      "lines": 760
+      "lines": 811
     },
     {
       "path": "extension/src/1000x/feed.js",
       "component": "extension",
       "kind": "javascript",
       "summary": "Catalog-bound public oracle history and one stream, with bounded1m reversal context and owned teardown",
-      "lines": 586
+      "lines": 594
     },
     {
       "path": "extension/src/1000x/indicators.js",
@@ -866,7 +866,7 @@
       "component": "extension",
       "kind": "javascript",
       "summary": "Floating read-only chart, labeled reversal/shape/momentum cards and local view settings",
-      "lines": 261
+      "lines": 292
     },
     {
       "path": "extension/src/1000x/timeframes.js",
@@ -901,7 +901,7 @@
       "component": "extension",
       "kind": "javascript",
       "summary": "Rolling10m UP/NON-UP forecasts, candidate/served/baseline metrics and explicit fallback/unknown states",
-      "lines": 90
+      "lines": 93
     },
     {
       "path": "extension/test/1000x-oracle-model.test.js",
@@ -915,7 +915,7 @@
       "component": "extension",
       "kind": "javascript",
       "summary": "Concurrent/reloaded controllers, stored forecast reuse, quote coalescing and obsolete-session fences",
-      "lines": 181
+      "lines": 197
     },
     {
       "path": "docs/EXTENSION-STREAMING-ORACLE.md",
@@ -936,7 +936,7 @@
       "component": "extension",
       "kind": "other",
       "summary": "Native Chrome fixture and actual-public-portal gates with exact executed module hashes",
-      "lines": 651
+      "lines": 708
     },
     {
       "path": "extension/tools/1000x-reference.py",
@@ -957,7 +957,7 @@
       "component": "repo",
       "kind": "markdown",
       "summary": "Public feed contracts, causal indicator/reversal formulas, browser evidence and installation",
-      "lines": 247
+      "lines": 240
     },
     {
       "path": "extension/src/core/commands.js",
@@ -1132,14 +1132,14 @@
       "component": "extension",
       "kind": "javascript",
       "summary": "Holdings, Profit & loss and Discover views",
-      "lines": 221
+      "lines": 222
     },
     {
       "path": "extension/src/ui/view-trade.js",
       "component": "extension",
       "kind": "javascript",
       "summary": "Backtest & strategies and Swap views",
-      "lines": 286
+      "lines": 290
     },
     {
       "path": "extension/src/ui/view-grid.js",
@@ -1153,7 +1153,7 @@
       "component": "extension",
       "kind": "javascript",
       "summary": "Popup: signal/process glance, four workflow shortcuts and collapsed wallet/grid controls",
-      "lines": 290
+      "lines": 296
     },
     {
       "path": "extension/tools/cli.js",
@@ -1195,7 +1195,7 @@
       "component": "extension",
       "kind": "javascript",
       "summary": "Grid, risk, P&L, reconciliation, tick guards",
-      "lines": 1557
+      "lines": 1558
     },
     {
       "path": "extension/test/surfaces.test.js",
@@ -1398,7 +1398,7 @@
       "component": "soltui",
       "kind": "markdown",
       "summary": "Packaging traps already paid for \u2014 read before rebuilding",
-      "lines": 693
+      "lines": 709
     },
     {
       "path": "soltui/tests",
@@ -1551,7 +1551,7 @@
       "component": "repo",
       "kind": "yaml",
       "summary": "Extension, backtester, soltui, mongo, liquidity, executor and doc/index drift jobs",
-      "lines": 509
+      "lines": 512
     },
     {
       "path": "CONTRIBUTING.md",
@@ -1998,7 +1998,7 @@
       "component": "repo",
       "kind": "markdown",
       "summary": "Browser workflows, native-session lifetime, execution boundaries and verification.",
-      "lines": 109
+      "lines": 110
     },
     {
       "path": "soltui/live_score.py",
@@ -2033,7 +2033,7 @@
       "component": "research",
       "kind": "python",
       "summary": "Responsive ZEC/BTC paper monitor and explicit Preview/Submit/Close controls.",
-      "lines": 1488
+      "lines": 1745
     },
     {
       "path": "oracle_leverage/console.py",
@@ -2096,7 +2096,7 @@
       "component": "repo",
       "kind": "markdown",
       "summary": "Public packaged-wiki copy of the leveraged Oracle operator guide.",
-      "lines": 159
+      "lines": 149
     },
     {
       "path": "research/reversal_shapes.py",
@@ -2159,14 +2159,14 @@
       "component": "website",
       "kind": "markdown",
       "summary": "Development, production setup and outstanding activation limits",
-      "lines": 242
+      "lines": 253
     },
     {
       "path": "website/src/worker.js",
       "component": "website",
       "kind": "javascript",
       "summary": "Account, billing, configuration and protected analysis API",
-      "lines": 661
+      "lines": 667
     },
     {
       "path": "website/api/openapi.json",
@@ -2187,7 +2187,7 @@
       "component": "website",
       "kind": "javascript",
       "summary": "Wallet, workspace, membership and research UI",
-      "lines": 834
+      "lines": 880
     },
     {
       "path": "website/public/evidence.js",

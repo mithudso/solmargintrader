@@ -1,5 +1,54 @@
 # Work continuation
 
+Version: 641
+Delta: v640 to v641; preserve PR224/PR226 and both browser learner changes before final combined reassessment.
+Delta: v639 to v640; bind PR226 to merged master77bf655 and preserve its exact audit files.
+
+Version: 639
+Delta: v638 to v639; preserve PR226 audit checkpoint during requested merge sweep.
+
+## PR226 integration — TASK-2579
+
+Preserve the unfinished optimizer audit, exact historical ledger and scope. Integrate the reviewed PR224 source while its CI runs, then bind to merged remote master before final checks and push. No optimization, live service, source repair or semantic rebuild is performed by this documentation checkpoint.
+
+
+Version: 565
+Delta: v564 to v565; preserve concurrent remote merge f628184;
+Delta: v562 to v564; refresh PR226 with masterf74eeed and preserve all AdSense publication records.
+Version: 562
+Delta: v561 to v562; update PR226 after master18dae4c publication.
+Delta: v555 to v556; add the ZEC reversal working-paper publication record while preserving incoming Settings delivery.
+
+## Retained PR226 update
+
+Version: 558
+Delta: v555 to v558; retain v556/v557 for concurrent PR updates and reconcile PR226 under TASK-2186.
+Version: 638
+Delta: v637 to v638; qualify PR224 integration before final-head CI.
+Delta: integrated v636 to v637; retain both histories and the PR224 merge sweep.
+
+Version: 564
+Delta: v563 to v564; record the PR integration and merge request.
+
+## PR merge sweep — TASK-2579 — 2026-11-17
+
+Target: inventory every open PR and resolve conflicts, commit, push and merge after final checks. Frozen inventory: PR224, PR226, PR235, PR289 and draft PR328. Preserve 16 original worktrees, primary package manifests and private Pine file. Use only /Users/mitch/dev/solmargintrader-wt-01a1eaac. Original PR235 optimizer remains USER-PAUSED; PR226 and PR328 audit work remains incomplete. The current request authorizes merging reviewed checkpoints without restarting their audits. Source changes must preserve current master behavior. Stage all conflicts before regenerating deterministic documentation/index projections; no embeddings, inference, live orders or service changes. Recovery inventory and private diffs: /Users/mitch/.local/share/solmargintrader/pr-merge-20261117-2579. PR224 local qualification: dependency stays HTTPX>=0.28.1,<1; installed test environment uses0.28.1. Consumer tests and documentation discovery passed. The historical customer-name index postings match remote master exactly; no customer material was added. Regenerated deterministic projections after conflict staging. Next: final-head CI and merge PR224, then integrate PR226, PR235, PR289, PR328; wait for every final-head check before each merge; verify remote content and clean only task-owned branches/worktree.
+
+## Retained workflow history
+
+Version: 563
+Delta: v561 to v563; refresh PR224 with masterf74eeed and preserve all AdSense publication records.
+Delta: v560 to v561; refresh PR224 after master18dae4c publication. Other branch record versions remain reserved.
+Delta: v555 to v556; add the ZEC reversal working-paper publication record while preserving incoming Settings delivery.
+
+## Retained PR224 update
+
+Delta: v555 to v556; integrate both current master updates into PR224 under TASK-2185.
+
+
+## Incoming master continuation
+
+Version: 559
 ## Weekly coin study — TASK-2571 — 2026-11-17
 
 The requested output is a reusable seven-day, one-minute coin study, first run on ETH. Work is isolated in /Users/mitch/dev/worktrees/weekly-coin-2571 on research/weekly-coin-2571. Preserve the canonical package edits, private Pine file, active cross-coin studies and all running owners.
@@ -330,6 +379,12 @@ Delta: v459 to v460; start one-minute full-suite with isolated research ownershi
 Delta: v458 to v459; record independent source and loaded-browser acceptance before delivery.
 Delta: v457 to v458; record Critical diagnostic red-to-green and component verification.
 Delta: v456 to v457; isolate Critical diagnostic exposure repair from the ongoing full audit.
+
+## Preserved PR 226 checkpoint history
+
+Version: 458
+Delta: v457 to v458; preserve active full-audit coverage and baseline corrections in a draft checkpoint.
+Delta: v456 to v457; begin full source-bound component optimizer without changing installed owners.
 Delta: v455 to v456; save the successful documentation environment and immutable final review target.
 Delta: v454 to v455; record accepted paper restart and final bound analysis before delivery.
 Delta: v453 to v454; record reviewed meta followups, actual canary, activated cohort and owner risk tolerance.
@@ -2654,6 +2709,10 @@ The owner now wants Key ID and Secret as two masked text inputs without a file. 
 
 Both fields are password inputs with autocomplete, capitalization and spellcheck disabled; the optional portfolio field remains. Recognized matching PEM wrappers preserve actual ECDSA key bytes after pasted whitespace folding or escaped newlines. Credentials clear before awaiting the server, at account/view render teardown and pagehide. Existing tenant identity and backend validations are unchanged. Independent source review found no material issue. All317 website Node tests, syntax17files and the full three-suite Chrome browser gate passed with exit0; hosted groups14/14 include real synthetic P256 signer roundtrip, held-response immediate clearing, account replacement, unsent navigation, malicious-provider privacy and unsupported-format refusal. The first specialist browser attempt failed a fixture assumption about Chrome folding newlines to spaces; corrected assertion verifies actual key preservation and final suite passes. No provider credentials, orders, payments, native image, runtime epoch or feature flags changed. Updated website/README.md describes the two masked fields; operation inventories and wiki are current. Remaining: regenerate deterministic indexes, final-head CI/merge, deploy matching public assets and independent loaded-UI acceptance. Private logs /Users/mitch/.local/state/oraclebot-hosted-completion-20261113/masked-coinbase-inputs/. The prior core worktree/branch was removed only after merged-tree and clean-worktree proof; other worktrees are preserved.
 
+## PR 224 integration continuation
+
+Master 36678cc merged cleanly; the later master 25e1d60 required only workflow/index reconciliation. Current master merges cleanly into the HTTPX dependency branch. Preserve the declared httpx>=0.28.1,<1 update and every current master source change. This pass only refreshes and pushes the branch. All 72 HTTPX consumer tests pass using HTTPX 0.28.1. Offline indexes are regenerated after both merge parents; final docs/index/whitespace checks precede the push. No default-branch merge or service action is authorized by this update request.
+
 ## 2026-11-14 — Direct Settings connection startup regression
 
 PR260 is merged36678cc2 and deployed website-0.4.0-36678cc2. The new owner screenshot exposes a missed entry path: direct authenticated #settings renders through refreshAccount before initialize applies the /api/config result. initialize then only calls populateSelects for Settings, leaving the form disabled. Fresh production /api/config returns customerConnectionsConfigured:true, engineConfigured:true and billing/live:false; the private executor is configured. This is a frontend lifecycle bug, not a missing provider key or financial activation flag. Existing hosted f.go always loads Overview and awaits Oracle before navigating, so its previous4/4 masked-field acceptance did not cover direct Settings startup. TASK2188 is claimed and blocks TASK2139; KNOW2189 captures the exact trigger.
@@ -2690,6 +2749,29 @@ Public paper: /Users/mitch/dev/solmargintrader/research/ZEC-TWO-BAR-REVERSAL.md.
 
 Completed: independent20-combination arithmetic/privacy/economics review exit0; fixed newline byte mismatch; final parameterized reproduction exit0;317website Node tests,17JavaScript syntax files,7research exporter tests, full three-script browser suite with24hosted groups, deterministic23-file public export and diff check exit0. Five-page tagged PDF hasSHA2564e82fbbfd428f9215646f8bc60a23beb3ebb0613e60d44cb5e0c1b2237b58d76; final paperSHA256d0b12ea26583aa19aa52b6a3ef05c3c6ea2e03c182a42cd98ae60372286545f4. Exact final paper, formatted code, llms index, reviewer receipt and PDF(base64) are in the native publication run and were read back. Remaining delivery: deterministic metadata/wiki gates, final source/CI checks, merge, unchanged edge Worker deployment with static assets and read-only live article acceptance. No launch flags, secrets, accounts, grants, existing services or historical forward cohorts are to be changed. The exact delivery receipt will supersede this in-progress wording. Stele knowledge write lost transport and is queued as bfb6a194; graph task creation/claim succeeded before disconnect.
 
+## Retained PR226 update
+
+## Preserved PR 226 checkpoint history
+
+## 2026-11-11 — All-component optimizer started
+
+Task TASK-1423, phases TASK-1425/TASK-1426/TASK-1427/TASK-1428. Base7c743ab5bb1ebcb6b11607f61b8d11a967db834b; private worktree /Users/mitch/dev/solmargintrader-wt-01a1ca3c-cdo; branchagent-01a1ca3c-cdo. Use code-deep-optimizer1.17.1 and explicit file coverage. PriorTASK-723 and November10 six-fileCAPPEDledger do not establish whole-code coverage. Fullscope includes ten current components and supporting first-party executable/UI code, excluding archivedthirdpartyGitHubHTML misnamed.ts and vendors. Snapshot, baseline, audit all18passes, implement corroboratedMedium+fixes with counterexamples, independentreview, finalchecks and verifiedmerge. Keep frozenpaperowners/installednumericversions, protectedholdouts, armed/disarmedstate and otherworktrees unchanged; no orders or funding authorized. External artifacts /Users/mitch/.local/share/solmargintrader/audits/cdo-20261111-task1423. Detailed component command/coverage manifest and streaming receipts govern continuation. No completed audit or empirical improvement claimed yet.
+
+## 2026-11-11 — Active full-code audit checkpoint
+
+TASK-1423 remains active. Optimizer controller cdo_all_components owns the single repo-level loop and source/ledger work. Root owns workflow records, audit environments, generated documentation/indexes and delivery. Scope767files/230275lines, no truncation. Snapshot central `/Users/mitch/.claude/skill-consolidation/backups/code-deep-optimizer-20261111-192256`. Current checkpoint9fullyreviewedfiles/4818lines,4High6Medium corroborated, no source repairs yet; unread758files remain. This is not completed optimization or whole-repoCLEAN. Live progress at `/Users/mitch/.local/share/solmargintrader/audits/cdo-20261111-task1423/coverage-progress.json`, per-file receipts and streaming state.
+
+Corrected executor491cases0, research75tests0, Mongo46tests0/11skips, backtester1005tests0/1skip. Backtester harness keeps INDEX_NO_AUTO=1 except inside already-mocked IdleTests fixtures. Initial dependency/discovery/guard errors preserved. Manager363test baseline had timing-sensitive reaping failure; fullSolTUI1472 baseline still running. No productionenv changed. Dedicateddevdeps installed in `/Users/mitch/.venvs/solmargintrader-cdo-20261111`; Endor unavailable => UNKNOWNrisk, no security approval.
+
+Public active status doc `/Users/mitch/dev/solmargintrader/docs/code-deep-optimizer-2026-11-11.md` and `.cdo/scope-20261111-task1423.json` preserve the exact incomplete scope. Source changes must wait for the optimizer's collected iteration and verification gates. Keep all paper/production owners, numerical versions, protected holdouts, live defaults and unrelated worktrees unchanged. Draftcheckpoint will preserve work remotely while native per-file reviews continue; it must not be merged or labeled complete until the remaining requested work and gates are done.
+
+## PR 226 integration continuation
+
+This pass only resolves conflicts and pushes the unfinished audit checkpoint. Master25e1d60 owns the current .cdo/ledger.json. The exact incoming PR226 ledger is retained byte-for-byte at .cdo/checkpoints/pr226-20261114-ledger.json, SHA256 eaa0c8ee78fcfec1adf3b2293239a1c8ce718f6b6846bcacb74efcd17d8e41b3. Its old source receipts are historical and do not certify current source. Original diagnostics scope and unfinished findings remain unchanged. No optimization, inference, service action or default-branch merge. Remaining: deterministic docs/index and JSON checks, commit/push and remote-head conflict verification.
+
+PR226 follow-up: retain the incoming ZEC paper from master18dae4c and both histories. Original historical ledger archive remains byte-identical. Resolve only workflow/index overlaps, validate deterministic projections and push; no optimizer or service action.
+
+PR224 follow-up: master18dae4c moved during final CI waiting. Preserve its ZEC working paper and current source, retain the HTTPX requirement, resolve only workflow/index overlaps and push. The72 HTTP consumer checks remain valid for their unchanged source; final generated checks run for this new merge.
 ## AdSense integration checkpoint
 
 Incoming main18dae4cef65b51633f1f4bf2f96aba85f931f988/PR263 publishes a separate exploratory ZEC reversal working paper and publicPDF/catalog. Preserve all exact paper/results/export bytes; do not rerun its study or alter numerical claims. Mergeconflicts affect only workflowrecords and derivedindexes. Both record branches are append-only after the exact common body; savepreimages and combinealltails/Deltafields. AdSense8implementationfiles remainfrozen/qualified; rebuild deterministicindexes andcheckpublicexport/wiki/inventories before integrationcommit andfreshrequiredCI. A parallelGitHubAgentMerge mayupdate the remote taskbranch; fetchandpreserve its commits beforepushing, neverforce.
