@@ -1,5 +1,16 @@
 # Work continuation
 
+Version: 648
+Delta: v647 to v648; bind the final learner checkpoint to all four delivered predecessors.
+
+## Final PR328 delivery state — TASK-2579
+
+Four initial PRs are merged and all final-head checks are now successful: PR22477bf655485b1e281dfc5c7277a4c178c47d8d7a9; PR22600d56735f0e9a2576e252284c4da29c8ae3f4adf; PR2353cacfea2f8062967ecc829ba4588f972a81717f3; PR289371c96e6a941410a1a3263aeed19afcb4da61caf. Each actual merged tree equals its reviewed head. PR289 was merged by concurrent activity before its macOS job completed; qualification remained open until that job passed. Preserve that timing exception in the external receipt.
+
+This is the final source checkpoint for the five-PR frozen inventory. Preserve coordinated manager0.7.11, runtime0.4.8, ecosystem0.4.20 and extension0.12.7 source,724 extension tests and the3,743 total counted cases. Independent acceptance passed25 canonical browser checks,12 checkpoint browser gates and eight real native processes. All29 accepted runtime hashes and both original paper-memory hashes remain unchanged after the actual default binding. Production user installation and live trading remain unverified. The new active PR329 draft belongs to TASK-2574 and is preserved outside this original inventory.
+
+Remaining delivery: regenerate all deterministic artifacts from committed source, push this final original PR328 branch, wait every final-head check, require the latest-default merge tree to equal the reviewed head, squash merge and verify the actual remote tree. Complete the tracker and external versioned delivery-memory/receipt, and remove only this task’s seven worktrees and five private integrate branches. Shared primary dirty bytes, active owner work and original paused audit tasks remain preserved. No optimizer restart, inference, embeddings, service restart or live order is authorized by this integration.
+
 Version: 647
 Delta: v646 to v647; preserve concurrent pair-source integration in PR328 without changing accepted learner runtime.
 
@@ -21,6 +32,21 @@ Preserve the final PR235 source/fixture repairs and PR289 source qualification. 
 
 Delta: v644 to v645; retain final public exports while preparing PR289 exact-head checks.
 
+
+Delta: v646 to v647; bind PR289 to delivered PR235 squash and preserve exact source.
+
+## PR289 delivery binding — TASK-2579
+
+PR224 merged as77bf655, PR226 as00d5673 and PR235 as3cacfea after all final-head checks passed. PR235’s exact merged tree matches reviewed629d9d2; its macOS gate passed after34minutes. The current PR289 integration has zero runtime delta from that actual remote default source. Preserve both historical workflow records and regenerate all deterministic projections from the committed source. Next: nine local gates, push original PR289 branch, all final-head CI, squash merge and exact tree receipt; then complete PR328’s independent learner checkpoint integration. Original paused audits remain paused.
+
+Version: 646
+Delta: v645 to v646; prepare PR289 with current-default pair source while PR235 CI runs.
+
+Version: 645
+Delta: v644 to v645; retain final public exports while preparing PR289 exact-head checks.
+
+
+Version: 645
 Delta: v644 to v645; retain concurrently delivered native pair batch source and all prior integration repairs.
 
 ## PR235 current-default refresh — TASK-2579
@@ -43,6 +69,7 @@ Delta: v640 to v641; preserve committed PR328 paper-memory checkpoint and concur
 ## PR328 integration — TASK-2579
 
 Integrate original committed head27aaf968 with current maintenance safeguards. Compatible per-coin/product checkpoints and idempotent resolved samples remain in the private SQLite journal. Current-policy exposure qualification stays separate from historical retained memory. Preserve the active original optimizer worktree and every staged/uncommitted follow-up; do not copy them into this integration. Whole-application assessment and newly expanded browser-persistence work remain unfinished under their original owners. This merge request does not claim audit convergence or installed production acceptance. Next: native memory/worker tests, extension tests and lint, current-source deterministic projections, predecessor binding, final-head CI and merge.
+
 
 
 
@@ -71,6 +98,8 @@ Delta: v579 to v580; preserve Preview-error recovery scope and execution boundar
 Delta: v578 to v579; record resumed source archival and preserved forward state.
 Delta: v577 to v578; record owner two-column and causal candle/shape display request.
 Delta: v576 to v577; begin isolated 50 percent collateral exit and order-flow evidence study.
+
+
 
 Delta: v643 to v644; regenerate public research projections after merged tracked-source changes.
 
@@ -121,6 +150,7 @@ Version: 643
 Delta: v642 to v643; preserve CI failure receipts and correct asynchronous test milestones before the final source freeze.
 Delta: v641 to v642; preserve the confirmed cold-reload quota failure and guarded readonly-history repair.
 Delta: v640 to v641; preserve PR224/PR226 and both browser learner changes before final combined reassessment.
+
 
 Version: 640
 

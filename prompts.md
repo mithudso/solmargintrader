@@ -1,5 +1,8 @@
 # Prompt history
 
+Version: 295
+Delta: v294 to v295; bind the final learner checkpoint to all four delivered predecessors.
+
 Version: 294
 Delta: v293 to v294; preserve concurrent pair-source integration in PR328 without changing accepted learner runtime.
 
@@ -11,6 +14,13 @@ Delta: v292 to v293; prepare PR289 with current-default pair source while PR235 
 Version: 292
 Delta: v291 to v292; carry final maintenance and exit-study integration into the browser persistence checkpoint.
 
+
+Delta: v293 to v294; bind PR289 to delivered PR235 squash and preserve exact source.
+
+Version: 293
+Delta: v292 to v293; prepare PR289 with current-default pair source while PR235 CI runs.
+
+Version: 292
 Delta: v291 to v292; retain final public exports while preparing PR289 exact-head checks.
 
 Delta: v291 to v292; retain concurrently delivered native pair batch source and all prior integration repairs.
@@ -29,6 +39,7 @@ Version: 287
 Delta: v286 to v287; preserve PR327 and expand persistence to both browser Oracle learners from user screenshots.
 Delta: v285 to v286; add the explicit per-coin ML retention and durable disk requirement.
 
+
 Delta: v290 to v291; preserve final PR235 source and hosted fixture repairs in PR289.
 
 Version: 289
@@ -46,6 +57,12 @@ Delta: v262 to v263; record Preview error and explicit resume steering.
 Delta: v261 to v262; record two-column layout and causal bar/shape display request.
 Delta: v260 to v261; record 50 percent collateral exit, delayed close and order-flow research request.
 
+
+
+Version: 292
+Delta: v291 to v292; retain concurrently delivered native pair batch source and all prior integration repairs.
+
+Version: 291
 Delta: v290 to v291; regenerate public research projections after merged tracked-source changes.
 
 Version: 290
@@ -67,6 +84,7 @@ Delta: v285 to v286; add the explicit per-coin ML retention and durable disk req
 ## Integrated PR224/PR226 workflow history
 
 Version: 288
+
 
 
 
