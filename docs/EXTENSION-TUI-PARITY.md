@@ -45,13 +45,14 @@ interpolation. Underlying observations remain available as tables. CSV exports q
 fields and neutralize spreadsheet formulas in strings. Downloads follow Chrome's download settings.
 
 **Inspect / use row** shows the full row and copies matching declared fields into the current form.
-Document rows open the shared editor. Preview results offer a button to open the appropriate
-Coinbase/Jupiter submit form with its preview ID. Opening that form never submits the order.
+Document rows open the shared editor. Eligible preview results offer a button to open the
+corresponding submit form with its preview ID. Opening that form never submits the order.
+Unsigned Jupiter V2 previews do not offer submission until independent economic verification exists.
 
-The editor saves through `docs.write`, with the same catalog restrictions as the TUI. It checks the
-latest text before saving and refuses a detected concurrent change. It leaves a refused draft in
-the editor for export. Research/results files remain read only. The backend does not provide an
-atomic compare-and-swap write, so the pre-save read cannot eliminate the small concurrent-write race.
+The editor saves through `docs.write` under the same catalog restrictions as the TUI. Native, API
+and TUI writers use a per-document lock and compare the expected revision before atomic replacement.
+A conflict keeps the draft available for export. Research/results files remain read only. External
+editors do not honor the lock; reload before saving after an external edit.
 
 Recent results and running calls remain accessible while switching tools. A running command cannot
 be submitted again from that dashboard until it returns. Long native calls run independently so
@@ -60,10 +61,10 @@ This runtime is separate from an independently launched terminal TUI process; di
 and settings are shared, while process-local replay and sweep state belong to their owning process.
 
 The Signal/Now live card reads the existing recorder every five seconds when **Follow stream** is
-selected. It refreshes saved strategy predictions every minute. Each price retains its source time
-and quote age; stale/offline records are labeled. This view never starts a recorder or trainer.
-Selected status tools also offer a ten-second refresh. These controls only repeat explicitly
-allowlisted read commands. Mutating commands never run automatically.
+selected. Saved SolTUI strategy predictions refresh every ten seconds while the view is active. Prices retain
+their source time and quote age; stale or offline records are labeled. If usable predictions are
+unavailable, recovery can request the shared paper prediction producer, subject to its pause and
+cooldown state. Opening a screen does not arm orders.
 
 ## Native host and safety
 

@@ -47,10 +47,10 @@ async function refresh() {
 
   const banner = $('banner');
   if (runtime.killSwitch) {
-    banner.textContent = 'Kill switch engaged — no orders will be placed.';
+    banner.textContent = 'Grid kill switch engaged — no grid orders will be placed.';
     banner.className = 'banner danger';
   } else if (config.mode !== 'dry-run') {
-    banner.textContent = `LIVE (${config.mode}) — real orders, real funds.`;
+    banner.textContent = `Configured ${config.mode} — bundled live Trigger orders are blocked. Other enabled live actions can spend real funds.`;
     banner.className = 'banner warn';
   } else if (!runtime.armed) {
     banner.textContent = 'Disarmed. The grid is in dry run; nothing is being placed.';
@@ -100,9 +100,15 @@ function showError(text) {
 }
 
 async function act(msg) {
-  const res = await send(msg);
-  if (!res?.ok) showError(res?.error ?? 'action failed');
-  await refresh();
+  let failure = null;
+  try {
+    const res = await send(msg);
+    if (!res?.ok) failure = res?.error ?? 'action failed';
+    await refresh();
+  } catch (error) {
+    failure ??= error?.message ?? 'action failed';
+  }
+  if (failure) showError(failure);
 }
 
 // Arming a live mode spends real money, so it takes a typed confirmation.

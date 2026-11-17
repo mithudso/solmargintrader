@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Run the read-only ZEC winning-strategy display from this checkout."""
+"""Run the Oracle display, explicit leverage controls and paper-forward monitor."""
 
 import sys
 from pathlib import Path
@@ -9,6 +9,8 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
 def main():
     arguments = sys.argv[1:]
+    if arguments[:1] == ["tui"]:
+        arguments = arguments[1:]
     if any(
         value in ("--plain", "--json", "--frames", "--limit")
         or value.startswith(("--frames=", "--limit="))

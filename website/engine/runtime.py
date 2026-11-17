@@ -225,6 +225,19 @@ class Runtime:
                 self.prime(coin)
             self.save()
 
+    def _refresh_market(self, coin, interval):
+        try:
+            self.refresh_cache(coin, interval)
+        except (RequestError, DataError) as error:
+            self.market_errors[coin] = type(error).__name__
+            record_event(
+                "runtime_market_refresh_deferred",
+                level=logging.WARNING,
+                coin=coin,
+                interval=interval,
+                error_type=type(error).__name__,
+            )
+
     def tick(self):
         observations = []
         for coin in COINS:
@@ -423,7 +436,7 @@ class Runtime:
             if self.stop.is_set():
                 return
             try:
-                self.refresh_cache(coin, "1m")
+                self._refresh_market(coin, "1m")
             except (DataError, StateError) as error:
                 self.market_errors[coin] = type(error).__name__
         markets = [
@@ -445,14 +458,14 @@ class Runtime:
                 self.tick()
                 if began - last_cache >= 10:
                     coin, interval = markets[cursor % len(markets)]
-                    self.refresh_cache(coin, interval)
                     cursor += 1
                     last_cache = began
+                    self._refresh_market(coin, interval)
                 # Update minute bars between bounded historical expansion pages.
                 if began - last_minute_cache >= 60:
-                    for coin in COINS:
-                        self.refresh_cache(coin, "1m")
                     last_minute_cache = began
+                    for coin in COINS:
+                        self._refresh_market(coin, "1m")
             except (RequestError, DataError, StateError) as error:
                 record_event(
                     "runtime_cycle_deferred",

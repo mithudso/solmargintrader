@@ -137,19 +137,23 @@ export function mountStrategies(state) {
     $('#backtestStatus').textContent = 'Starting the CPCV sweep over the roster…';
     clear($('#backtestResults'));
     polling = setInterval(pollStatus, 2000);
-    await guard($('#backtestResults'), async () => {
+    const completed = await guard($('#backtestResults'), async () => {
       const r = await soltui('backtest.run');
       $('#backtestStatus').textContent = r.message;
       clear($('#backtestResults'), backtestRows(r),
         r.skipped?.length ? el('p', { class: 'note', text: `Skipped: ${r.skipped.map((x) => `${x.label} (${x.reason})`).join(', ')}` }) : null);
+      return true;
     });
     clearInterval(polling);
-    $('#backtestBar').style.width = '100%';
+    if (completed) $('#backtestBar').style.width = '100%';
+    else { $('#backtestBar').style.width = '0%'; $('#backtestStatus').textContent = 'Backtest failed. See the error below.'; }
     $('#backtestRun').disabled = false;
     $('#backtestCancel').disabled = true;
     loadHistory();
   });
-  $('#backtestCancel').addEventListener('click', () => soltui('backtest.cancel').catch(() => {}));
+  $('#backtestCancel').addEventListener('click', () => soltui('backtest.cancel').catch((err) => {
+    $('#backtestStatus').textContent = `Cancel request failed: ${err.message}`;
+  }));
   $('#rosterReset').addEventListener('click', () => rosterAction(state, () => soltui('roster.reset')));
   $('#rosterAdd').addEventListener('submit', (e) => {
     e.preventDefault();

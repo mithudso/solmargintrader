@@ -67,7 +67,7 @@ every flag.
 | `--borrow-bps-long/short` | Max hourly borrow rate, bps (`1.6` = 0.016%/hr) |
 | `--utilization U` | Pool utilization in `[0,1]`, drives the borrow rate |
 | `--min-borrow-bps` | Hourly rate floor — models the *proposed* dual-slope minimum |
-| `--seed N` | Recorded in the manifest; runs are deterministic |
+| `--seed N` | Effective seed recorded in the manifest; omitted synthetic seed defaults to 42, other sources to 0 |
 
 ## Output
 
@@ -84,6 +84,12 @@ every flag.
 
 Machine-readable files carry no caveat prose, so a downstream consumer never
 has to parse around it. The caveats live in stdout and `report.md`.
+
+Starting with 0.2.2, synthetic generation, engine configuration, manifest and report
+use the same resolved seed. Earlier runs made with an omitted synthetic seed can
+record 0 while their `data_source` says `synthetic:seed=42`. Preserve those original
+records. Inspect `data_source` and verify the input checksum when replaying them;
+do not silently rewrite an existing result archive.
 
 ## Verified local history and result archives (experimental)
 

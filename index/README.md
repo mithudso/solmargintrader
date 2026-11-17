@@ -4,22 +4,33 @@ A searchable index over every tracked file in this repo: what exists, which file
 contain a word, which files mean something like a question, and which bear on an
 idea. Built to answer "where is the thing that does X" without reading every file.
 
+Stage new task-owned source paths before rebuilding. Both the builder and its
+freshness check use `git ls-files`, so a pre-stage check cannot detect untracked
+files that will be added by the next commit. Preserve unrelated untracked work.
+After staging, rebuild with `INDEX_NO_AUTO=1 python3 index/build.py all`, check
+with `INDEX_NO_AUTO=1 python3 index/build.py --check`, and verify the committed
+tree before pushing. These offline commands do not regenerate semantic vectors.
+
 ```bash
 python3 index/build.py all                       # metadata + text + concepts (offline)
 python3 index/build.py semantic                  # embeddings (needs local ollama)
 python3 index/build.py --check                   # exit 1 if stale — run this first
 
 python3 index/search.py "how are costs applied"  # hybrid: BM25 + semantic
-python3 index/search.py --text "fee_bps"         # exact terms
+INDEX_NO_AUTO=1 python3 index/search.py --text "fee_bps"         # exact terms
 python3 index/search.py --semantic "why did this stop working"
-python3 index/search.py --concepts               # list concepts
-python3 index/search.py --concept evidence-floor
-python3 index/search.py --file backtester/core/cpcv.py
-python3 index/search.py --kind code-python "grid"
+INDEX_NO_AUTO=1 python3 index/search.py --concepts               # list concepts
+INDEX_NO_AUTO=1 python3 index/search.py --concept evidence-floor
+INDEX_NO_AUTO=1 python3 index/search.py --file backtester/core/cpcv.py
+INDEX_NO_AUTO=1 python3 index/search.py --text --kind code-python "grid"
 
 python3 index/make_files_doc.py                  # -> docs/FILES.md
 python3 index/make_concepts_doc.py               # -> docs/CONCEPTS.md
 ```
+
+Keyword and catalog searches above disable automatic indexing. Even a text-only
+search can otherwise start a background semantic rebuild. Hybrid and semantic
+examples explicitly request semantic retrieval.
 
 ## Relationship to `docs/high_signal_file_index.json`
 
@@ -41,14 +52,23 @@ subsumes the other, and both are checked in CI.
 | Artifact | Answers | Committed | Built by |
 |---|---|---|---|
 | `INDEX.json` | what files exist, and what each one is | yes | `build.py meta` |
-| `TEXT-INDEX.json` | which files contain this word | yes | `build.py text` |
+| `TEXT-INDEX.json.gz` | which files contain this word | yes | `build.py text` |
 | `CONCEPT-INDEX.json` | which files bear on this idea | yes | `build.py concepts` |
 | `semantic-embeddings.npz` | which files *mean* something like this | **no** | `build.py semantic` |
 | `SEMANTIC-MANIFEST.json` | what the embedding index was | yes | `build.py semantic` |
 
-`TEXT-INDEX.json` uses compact JSON to keep the complete posting list below
-GitHub's file-size limit. Formatting does not remove terms, documents or scores;
-readers use the same JSON schema.
+`TEXT-INDEX.json.gz` stores the same compact JSON schema and complete posting list
+in gzip. `TEXT-INDEX.json.gz.sha256` binds the decoded bytes; search and the
+freshness check reject missing, corrupt or mismatched artifacts. The catalog also binds
+the decoded SHA-256, so a valid older index and its matching sidecar cannot pass
+against a newer catalog. Current readers require the compressed format; old
+checkouts continue to use their own legacy reader. The builder uses
+an empty gzip filename and timestamp zero. Compressed bytes can vary with the
+compression runtime; the decoded-content SHA-256 is the portable identity.
+Rebuild both files with `python3 index/build.py all` after source changes.
+The `meta` command writes a catalog without a text binding: keyword search and
+`--check` intentionally fail until `python3 index/build.py all` rebuilds the
+catalog, text and concepts together. Use `all` for the normal offline refresh.
 
 ## Three retrieval modes, because they fail differently
 
@@ -63,6 +83,11 @@ readers use the same JSON schema.
 - **hybrid** (the default) fuses the two by rank, not score. A BM25 score and a
   cosine similarity are on different scales, so averaging them would let whichever
   is numerically larger win; reciprocal rank fusion only uses position.
+
+Semantic manifests bind the exact array bytes with SHA-256. Missing or mismatched
+bindings are rejected before starting a model; hybrid search falls back to text.
+Older unbound arrays remain on disk but cannot be searched until an explicitly
+authorized semantic rebuild creates a bound pair.
 
 ## Four decisions worth knowing
 

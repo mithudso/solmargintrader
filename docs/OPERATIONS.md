@@ -1,6 +1,10 @@
-# Operations runbook
+# Experimental grid operations
 
-## Stop everything
+These commands control the extension's experimental grid. Other sessions retain
+their own owners and stop controls; see [ORACLE-AUTO-TRADING.md](ORACLE-AUTO-TRADING.md)
+for the shared auto-trade session. Closing a display does not stop its session.
+
+## Latch the grid kill switch
 
 ```bash
 cd extension && node tools/cli.js kill
@@ -9,16 +13,27 @@ cd extension && node tools/cli.js kill
 `kill` is latching: it disarms **and** blocks every rail until you run `clearKill`. A stray `arm`
 cannot resume trading. In the extension, the popup's red KILL SWITCH button does the same thing.
 
-`kill` does **not** cancel resting venue orders. To remove those:
+`kill` does **not** cancel resting venue orders. Inspect the journal for their IDs:
 
 ```bash
 node tools/cli.js data --json          # find venueOrderId values
-node tools/cli.js cancelOrder --venueOrderId <id>
 ```
 
-## Dry run to live, in order
+The bundled `cancelOrder` command also refuses live cancellation without an
+independent withdrawal-intent verifier. Cancel existing orders in Jupiter's own
+order-management interface using the owning wallet. Verify their terminal status
+at the venue and reconcile the local record before resuming or resetting. An
+ambiguous cancellation is not permission to retry a write automatically. The
+local kill switch alone does not establish that venue orders are gone.
 
-Do not skip steps. Each one can fail cheaply; the next one cannot.
+## Supported grid dry run, in order
+
+The bundled Trigger signer refuses live writes because it does not independently
+verify the economic intent of remote-crafted transactions. A session key, funding,
+`full-auto` mode or live confirmation does not satisfy that gate. Do not fund a new
+session key to follow this runbook. Keep the extension in its default dry-run mode.
+See [jupiter-trigger-contract.md](jupiter-trigger-contract.md) for the verifier and
+live-fixture requirements. These steps exercise simulated fills only.
 
 1. **Shape the grid and read the economics.**
    ```bash
@@ -47,29 +62,16 @@ Do not skip steps. Each one can fail cheaply; the next one cannot.
    node tools/cli.js setLimits --maxTotalNotionalUsd 250 --dailyLossLimitUsd 25 --maxOrdersPerTick 2
    ```
 
-5. **Add credentials.**
+5. **Finish the simulation and disarm.** Inspect the journal and P&L, then stop the dry run.
    ```bash
-   node tools/cli.js setApiKey --apiKey <key-from-developers.jup.ag/portal>
-   ```
-
-6. **Choose a signing mode.** `semi-auto` approves each signature by hand and cannot run unattended.
-   `full-auto` needs a dedicated key funded with grid capital only:
-   ```bash
-   node tools/cli.js createSessionKey --passphrase '<12+ chars>'
-   # fund the printed address with working capital ONLY, then:
-   node tools/cli.js setConfig --mode full-auto
-   ```
-
-7. **Go live at the smallest possible size.** One rung at the $10 venue minimum, and watch it.
-   ```bash
-   node tools/cli.js setConfig --rungs 2 --notionalPerRungUsd 10
-   node tools/cli.js arm --confirmLive
-   node tools/cli.js tick
    node tools/cli.js data --json
+   node tools/cli.js pnl
+   node tools/cli.js disarm
    ```
-   Confirm the order exists on the venue and that `reconcile` matches it on the next tick before
-   scaling up. This is the step that validates everything listed as unverified in
-   [TESTING.md](TESTING.md).
+   Simulation results do not validate venue execution, funding, reconciliation or
+   profitability. The outstanding live checks in [TESTING.md](TESTING.md) remain
+   unverified. A separately implemented and qualified intent verifier is required
+   before a future live activation procedure can be supported.
 
 ## Daily checks
 
@@ -98,8 +100,10 @@ than writing a NaN into P&L. Check Jupiter's status and `node tools/cli.js price
 engine refuses to tick rather than trading unleveraged while the config claims otherwise. Set
 `--leverage 1`, or wait for the Perps write API.
 
-**Every order fails with 401/403.** The JWT was rejected. The venue adapter clears and re-authenticates
-once automatically; if it persists, the API key is wrong or revoked.
+**A venue read fails with 401/403.** Inspect authentication and API-key availability.
+Supported reads can clear the cached JWT and re-authenticate once. Order and
+cancellation writes do not retry authentication automatically; reconcile an
+ambiguous outcome at the venue before considering another write.
 
 **Rate limited (429).** The client backs off and honours `Retry-After`, and a per-tick budget caps
 requests. If it recurs, raise `tickSeconds` or lower `maxOrdersPerTick`.
@@ -117,5 +121,7 @@ node tools/cli.js exportCsv > fills-$(date +%F).csv   # back up before anything 
 node tools/cli.js reset --confirm                     # erases LOCAL history only
 ```
 
-`reset` does not cancel venue-side orders. Cancel them first, or you will have live orders with no
-local record — the reconciler will adopt them on the next tick, which is recoverable but noisy.
+`reset` does not cancel venue-side orders. Do not reset while any order or intent
+is unresolved. Use the venue-side cancellation and confirmation steps above
+first. The CSV preserves fills; it is not a complete journal backup. Preserve the
+private journal before clearing local history.

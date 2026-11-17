@@ -1,0 +1,8 @@
+{
+  "source_commit": "ed7f4bd636f4027e4e5250ed47c3094bcdcbb3e1",
+  "original_path": "extension/src/1000x/oracle-model.js",
+  "original_sha256": "82c042098fc695d6ff24c5eda9349afb64f094e9663b7036092e8a1b717258ac",
+  "fixture_sha256": "be72fa2ba5794beea35454cc564e826469637fd4debc0c5dabfe861d52cb621a",
+  "only_changes": "Relative imports point to unchanged production reversal/indicator primitives; model source otherwise byte-equivalent.",
+  "browser_reference_path": "extension/e2e/fixtures/oracle-model-0.9.mjs"
+}

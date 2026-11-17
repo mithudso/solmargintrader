@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Jupiter 1000x indicators</title>
+  <link rel="stylesheet" href="panel.css">
+</head>
+<body>
+  <header>
+    <div><strong id="market">Jupiter indicators</strong><span class="tag">Read only</span></div>
+    <p>Jupiter Pyth oracle USD · public data · no wallet required</p>
+  </header>
+  <nav aria-label="Chart settings">
+    <label>Interval <select id="timeframe" aria-label="Indicator candle interval"></select></label>
+    <button id="refresh" type="button">Refresh history</button>
+    <details id="parameters"><summary>Parameters</summary><form id="config-form"></form></details>
+  </nav>
+  <p id="status" role="status" aria-live="polite">Connecting to Jupiter…</p>
+  <p id="timing" class="muted">Waiting for source timestamps</p>
+  <section id="live-oracle" aria-label="Live Oracle estimates"></section>
+  <section id="streaming-oracle" aria-label="Prospective streaming Oracle predictions and feedback"></section>
+  <section id="reversal" aria-labelledby="reversal-title">
+    <h2 id="reversal-title">10m two-bar reversal context</h2>
+    <p id="pattern" role="status">Waiting for two completed candles</p>
+    <div class="bar-context" aria-label="Previous two completed ten-minute candles">
+      <div class="bar-card" id="previous-first"><strong>Previous 2 · unavailable</strong><span>Completed 10m candle</span></div>
+      <div class="bar-card" id="previous-second"><strong>Previous 1 · unavailable</strong><span>Completed 10m candle</span></div>
+    </div>
+    <p id="developing-context" class="developing">Developing target: waiting for public observations</p>
+    <div id="shapes" aria-label="Completed multi-timeframe graph shapes"></div>
+    <p id="momentum-context">Closed 1m momentum: waiting for history</p>
+    <p id="heuristic" class="muted">Heuristic alignment unavailable</p>
+    <p id="empirical" class="muted">Empirical probability / model score unavailable: no compatible model is bundled.</p>
+    <p id="exit-context" class="muted">Position / ROE / exit context unavailable: no typed position input.</p>
+  </section>
+  <div id="chart" aria-label="Oracle candles with EMA9/21, price overlays, RSI, Balance of Power and MACD panes"></div>
+  <p class="legend">Price: ZigZag <i class="zig">━</i> · provisional <i class="provisional">┄</i> · SAR <i class="sar">●</i> · Volty <i class="volty">━</i> · EMA9 / 21 · lower panes: RSI / BOP / MACD</p>
+  <table>
+    <caption id="readout-caption">Completed chart-candle readings and explanatory signals</caption>
+    <thead><tr><th>Show</th><th>Indicator</th><th>Value</th><th>Explanation</th></tr></thead>
+    <tbody id="readouts"></tbody>
+  </table>
+  <p id="candle-note" class="muted">The latest candle develops until its UTC boundary.</p>
+  <footer><span id="api-attribution"></span> Provisional ZigZag points can move. Confirmed pivots were known only at their later confirmation time. These indicators do not establish a profitable strategy.
+    <a href="https://www.tradingview.com/" target="_blank" rel="noopener noreferrer">Charts by TradingView</a>
+  </footer>
+  <script type="module" src="panel.js"></script>
+</body>
+</html>

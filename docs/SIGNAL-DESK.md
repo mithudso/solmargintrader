@@ -40,7 +40,7 @@ deposits, withdrawals and cost basis have not been reconciled. Paper actions can
 
 Choose a view asset. Read the existing recorder's price, source age, saved predictions and
 aggregate directional agreement. **Follow stream starts checked** and controls recorder/chart
-following. Every ten seconds, visible prediction evidence refreshes even
+following. Every ten seconds, visible SolTUI strategy prediction evidence refreshes even
 when Follow stream is off; Follow stream separately refreshes recorder reads every five seconds.
 Expired/future calls cannot vote. Missing evidence is Unavailable, not a valid neutral zero.
 

@@ -1,0 +1,34 @@
+{
+  "schema": "exit50-research-bindings/v1",
+  "qualification": "Retrospective sampled-price, modeled-fee research and paper-only prospective profile; not funded execution or a trusted research publication.",
+  "source_results": {
+    "BTC": {
+      "artifact": "art:705ae82e36393d95d49b700b634ae83b76a07a7a0efd25a2c7dff3242472f79f",
+      "sha256": "0b6015d7d71d2e7fb2d834a3b8eb8b4224d109ee8143fbafcb1dad798b420377"
+    },
+    "ZEC": {
+      "artifact": "art:d7d271e436cbfccd11499813d6d85fbef8eecb322e5906fd56cf27374a2383ce",
+      "sha256": "13cb6ab235ecd6f2dcfd5c4c0069a5f2d1793f4affbeb41437d9321974ec488c"
+    }
+  },
+  "report": {
+    "artifact": "art:6e38fe20cf840288b12a350d85f5c3b33a82f0a5c8d16a26ce64129cdc8b8387",
+    "sha256": "a9f95fbee2d89cd855eda9fd6ba61774c8292886301832c1d33e6d5ea3b07e5a",
+    "source_artifact": "art:21e7c097bb826fbf779b131151b7b15bc4aad34126416444fa772576751b1076",
+    "difference": "one trailing blank line removed"
+  },
+  "policy": {
+    "artifact": "art:540da19a84ddb0af2488cd133d922c7bc07caef4d72deb23fc8bb25f51d34398",
+    "sha256": "efa75ef6abed2bbb15f8887ba3fd2b70ea50a0457edcb85d27fd88dc45c96122"
+  },
+  "paper_profile": {
+    "artifact": "art:5ebad5b75a84759910550a364af2320c06c522b6197f7f3418fb56f5c31af222",
+    "sha256": "6bd8976d60fc86fb5e2c6b78fe162e49722db97ddb14e09b30bf98e59e746884",
+    "not_before_s": 1794839376
+  },
+  "numerical_audit": {
+    "artifact": "art:dc8d0509ae325bb9b7ebe3366ba6dfde9816811c73e1567e30e33711e9e27720",
+    "sha256": "50310f2e0dd6a4d312bd1c63ed7316bfd037093652836c6b8d8b74bc77e0b03c",
+    "scope": "terminal timestamps, retained case outcomes, aggregate summaries and ranks; receipt records excluded claims"
+  }
+}
