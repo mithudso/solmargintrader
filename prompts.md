@@ -1,5 +1,14 @@
 # Prompt history
 
+Version: 252
+Delta: v251 to v252; record the PR integration and merge request.
+
+## PR conflict resolution and merge sweep — 2026-11-17
+
+Resolve all the conflicts in the pull requests for https://github.com/mithudso/solmargintrader/pull/ and merge, commit, push , pr.
+
+## Retained workflow history
+
 Version: 251
 Delta: integrated to v251; retain parallel automated merge ancestry and all owner/research/AdSense records.
 Delta: v249 to v250; merge concurrent AdSense verification and ZEC working-paper request records.

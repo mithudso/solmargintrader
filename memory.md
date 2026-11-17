@@ -1,5 +1,14 @@
 # Work continuation
 
+Version: 564
+Delta: v563 to v564; record the PR integration and merge request.
+
+## PR merge sweep — TASK-2579 — 2026-11-17
+
+Target: inventory every open PR and resolve conflicts, commit, push and merge after final checks. Frozen inventory: PR224, PR226, PR235, PR289 and draft PR328. Preserve 16 original worktrees, primary package manifests and private Pine file. Use only /Users/mitch/dev/solmargintrader-wt-01a1eaac. Original PR235 optimizer remains USER-PAUSED; PR226 and PR328 audit work remains incomplete. The current request authorizes merging reviewed checkpoints without restarting their audits. Source changes must preserve current master behavior. Stage all conflicts before regenerating deterministic documentation/index projections; no embeddings, inference, live orders or service changes. Recovery inventory and private diffs: /Users/mitch/.local/share/solmargintrader/pr-merge-20261117-2579. Next: integrate and verify PR224, then PR226, PR235, PR289, PR328; wait for every final-head check before each merge; verify remote content and clean only task-owned branches/worktree.
+
+## Retained workflow history
+
 Version: 563
 Delta: v561 to v563; refresh PR224 with masterf74eeed and preserve all AdSense publication records.
 Delta: v560 to v561; refresh PR224 after master18dae4c publication. Other branch record versions remain reserved.
