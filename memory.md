@@ -1,11 +1,20 @@
 # Work continuation
 
+Version: 647
+Delta: v646 to v647; bind PR289 to delivered PR235 squash and preserve exact source.
+
+## PR289 delivery binding — TASK-2579
+
+PR224 merged as77bf655, PR226 as00d5673 and PR235 as3cacfea after all final-head checks passed. PR235’s exact merged tree matches reviewed629d9d2; its macOS gate passed after34minutes. The current PR289 integration has zero runtime delta from that actual remote default source. Preserve both historical workflow records and regenerate all deterministic projections from the committed source. Next: nine local gates, push original PR289 branch, all final-head CI, squash merge and exact tree receipt; then complete PR328’s independent learner checkpoint integration. Original paused audits remain paused.
+
 Version: 646
 Delta: v645 to v646; prepare PR289 with current-default pair source while PR235 CI runs.
 
 Version: 645
 Delta: v644 to v645; retain final public exports while preparing PR289 exact-head checks.
 
+
+Version: 645
 Delta: v644 to v645; retain concurrently delivered native pair batch source and all prior integration repairs.
 
 ## PR235 current-default refresh — TASK-2579
@@ -38,6 +47,7 @@ Delta: v579 to v580; preserve Preview-error recovery scope and execution boundar
 Delta: v578 to v579; record resumed source archival and preserved forward state.
 Delta: v577 to v578; record owner two-column and causal candle/shape display request.
 Delta: v576 to v577; begin isolated 50 percent collateral exit and order-flow evidence study.
+
 
 Delta: v643 to v644; regenerate public research projections after merged tracked-source changes.
 
