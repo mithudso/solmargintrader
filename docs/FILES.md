@@ -1,6 +1,6 @@
 # Every file in this repository
 
-**Generated** from `index/INDEX.json` at commit `f8b6291` (2026-11-17T21:27:18+00:00). 4117 tracked files, 208.5 MB.
+**Generated** from `index/INDEX.json` at commit `675c484` (2026-11-17T22:38:06+00:00). 4117 tracked files, 208.5 MB.
 
 Regenerate with:
 
@@ -688,9 +688,9 @@ Repository-level entry points and agent instructions. `AGENTS.md` and `CLAUDE.md
 
 #### `memory.md`
 
-`doc` · 4412 lines · 866,304 B · description: **extracted**
+`doc` · 4566 lines · 885,695 B · description: **extracted**
 
-**Purpose.** Version: 649 Delta: v648 to v649; repair three confirmed inherited research contracts, preserve refused-state fixtures and add their declared-dependency CI gate. Delta: integrate delivered PR235 maintenance with Oracle persistence; preserve both histories, current review3 partial provenance and last whole-sweep allowance.
+**Purpose.** Version: 652 Delta: v651 to v652. Record the completed application assessment, independent final review and verified default-branch source. Application Deep Optimizer 1.0.1 raises the independent review cap to three and retains the five-sweep limit. The last complete sweep covers 240 methods, 222 selected, across 50 application states. It retains 33 verified fixes.
 
 **Use.** Read it.
 
@@ -768,9 +768,9 @@ Repository-level entry points and agent instructions. `AGENTS.md` and `CLAUDE.md
 
 #### `prompts.md`
 
-`doc` · 4727 lines · 286,307 B · description: **extracted**
+`doc` · 4867 lines · 291,955 B · description: **extracted**
 
-**Purpose.** Version: 293 Delta: integrate delivered PR235 maintenance with Oracle persistence; preserve both histories, current review3 partial provenance and last whole-sweep allowance. Delta: v289 to v290; preserve PR330 request and both Oracle persistence requirements during final delivery integration.
+**Purpose.** Version: 298 Delta: v297 to v298. Bind the preserved cap-three invocation and both learner requests to the completed application assessment and verified default-branch delivery. Version: 297
 
 **Use.** Read it.
 
@@ -936,7 +936,7 @@ Curated prose. `ARCHITECTURE.md` explains how the pieces fit, `TESTING.md` is th
 
 #### `docs/CONCEPTS.md`
 
-`doc` · 323 lines · 20,737 B · description: **extracted**
+`doc` · 323 lines · 20,453 B · description: **extracted**
 
 **Purpose.** python3 index/build.py all # refresh python3 index/make_concepts_doc.py # rewrite this file python3 index/search.py --concepts # list them
 
@@ -1016,7 +1016,7 @@ Curated prose. `ARCHITECTURE.md` explains how the pieces fit, `TESTING.md` is th
 
 #### `docs/FILES.md`
 
-`doc` · 38810 lines · 1,859,817 B · description: **extracted**
+`doc` · 39484 lines · 1,885,822 B · description: **extracted**
 
 **Purpose.** Regenerate with: python3 index/build.py all # refresh the index python3 index/make_files_doc.py # rewrite this file
 
@@ -1552,7 +1552,7 @@ Curated prose. `ARCHITECTURE.md` explains how the pieces fit, `TESTING.md` is th
 
 #### `docs/high_signal_file_index.json`
 
-`doc` · 2313 lines · 71,110 B · description: **derived**
+`doc` · 2313 lines · 71,112 B · description: **derived**
 
 **Purpose.** Generated JSON object, 4 keys ($comment, repo, components, files).
 

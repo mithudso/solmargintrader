@@ -1,6 +1,6 @@
 # Conceptual index
 
-**Generated** from `index/CONCEPT-INDEX.json` (2026-11-17T21:27:18+00:00). 21 concepts.
+**Generated** from `index/CONCEPT-INDEX.json` (2026-11-17T22:38:06+00:00). 21 concepts.
 
 ```bash
 python3 index/build.py all              # refresh
@@ -32,7 +32,7 @@ Strongest files:
 - `llms-executable.txt` (251 hits)
 - `research/zec-expanded-20261113.llms/special-runner-summary.json` (228 hits)
 - `docs/operations-registry.json` (222 hits)
-- `docs/FILES.md` (176 hits)
+- `docs/FILES.md` (178 hits)
 - `llms-filemap.txt` (164 hits)
 - `FILES.md` (157 hits)
 
@@ -47,7 +47,7 @@ The same 25 strategies score 25/25 on BTC daily and 0/25 on SOL hourly. The data
 Strongest files:
 
 - `llms-executable.txt` (504 hits)
-- `memory.md` (388 hits)
+- `memory.md` (394 hits)
 - `docs/FILES.md` (327 hits)
 - `llms-filemap.txt` (276 hits)
 - `research/coin-intelligence/zec-zcash.md` (196 hits)
@@ -106,9 +106,9 @@ Strongest files:
 - `llms-executable.txt` (937 hits)
 - `llms-filemap.txt` (752 hits)
 - `docs/design/oracle-ui-2399/report.json` (668 hits)
-- `docs/FILES.md` (630 hits)
+- `docs/FILES.md` (637 hits)
 - `research/strategy_experiment/results/results.json` (544 hits)
-- `memory.md` (475 hits)
+- `memory.md` (488 hits)
 - `llms/jupsol-llms.txt` (427 hits)
 - `research/strategy_experiment/results/initial-gapped-run/results.json` (408 hits)
 
@@ -221,8 +221,8 @@ Strongest files:
 - `backtester/tests/test_cpcv.py` (62 hits)
 - `research/RANKED_LISTS.md` (42 hits)
 - `research/verify_numbers.py` (39 hits)
+- `docs/FILES.md` (35 hits)
 - `FILES.md` (34 hits)
-- `docs/FILES.md` (34 hits)
 - `research/results/coinbase50_20261111_summary.json` (33 hits)
 - `research/geometry.py` (30 hits)
 

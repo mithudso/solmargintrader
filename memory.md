@@ -1,7 +1,44 @@
 # Work continuation
 
+Version: 652
+Delta: v651 to v652. Record the completed application assessment, independent final review and verified default-branch source.
+
+## Final application assessment and delivery — TASK-2556 / TASK-2557 / TASK-2574
+
+Application Deep Optimizer 1.0.1 raises the independent review cap to three and retains the five-sweep limit. The last complete sweep covers 240 methods, 222 selected, across 50 application states. It retains 33 verified fixes. The third reviewer found no confirmed Medium-or-higher defect and identified two Low stale research fixture issues. Keep NEEDS_EVIDENCE because participant, production, provider and prospective evidence remains incomplete.
+
+PR329 delivered per-coin learner persistence. PR328 delivered the matching fixture correction at 007b44101f62f502e1afee0b9b4e044b817056a1. All 4,136 reviewed application inputs match the merged source bytes and executable flags. Both reviewed candidate and delivered branch CI passed. The earlier required provenance failure and independent exploratory failures are preserved in the private receipts.
+
+Installed Chromium, framed native messaging and SQLite verified recovery of 21 SOL, BTC and ZEC partitions, including complete models and results across both learners and all six horizons. IndexedDB remains primary. The native helper mirrors checkpoints and available outcomes to private local SQLite. The native paper owner's journal separately retains compatible learning across settings changes. MongoDB time series remains an optional future destination.
+
+The authoritative activation and handoff records are under /Users/mitch/.local/share/solmargintrader/audits/application-2556-oracles. Start with ledger-v9-reviewed-pre-activation.json and delivery-merge-gate-v2.json, then look for the final activation receipt before touching the live profile or worker. Preserve the existing Chrome Beta origin, browser history, journals and owner policy. The unresolved Low fixtures are follow-up maintenance and do not warrant another sweep of this invocation.
+
 Version: 651
-Delta: v650 to v651; retain incomplete source8 verification failure and canonically refresh independent-vector provenance with unchanged numerical payloads.
+Delta: v650 to v651; preserve concurrent0.12.8 delivery and repair its numerical source fixture.
+
+## Latest default source preservation — TASK-2579
+
+PR329 was delivered concurrently asd95a892 frombb2fcb9. Retain its newer extension0.12.8, forward-test fixes, complete bridge fixtures and fail-closed missing holdout ledger behavior. PR328 now preserves the integration history with no added runtime changes against that actual default. Its earlier0.12.7 browser/native acceptance remains historical; do not label the old manifest hash as current. The independent numerical source-binding test on the new default failed because protected_intervals now refuses an absent ledger; detect_shapes and minute_features are unchanged. The canonical offline generator ran successfully: all9shape and2momentum payloads are exactly unchanged, and only the reviewed Python source binding changed. All724 extension tests pass. Regenerate committed-source metadata and await fresh final-head CI before merging. Preserve the active owner’s remaining assessment/installed-promotion work.
+
+Version: 649
+Delta: v648 to v649; repair required learning-command parity fixtures and private SQLite isolation.
+
+## PR328 final parity fixture repair — TASK-2579
+
+Final head e8a7a6c passed all checks except macOS:106 changed-area cases had one failure because oracle.learning.save lacked a valid bridge fixture. The standalone test-only fix from peer commit04ad835 supplies complete canonical save/load/profiles inputs, isolates ORACLE_LEARNING_HOME inside the temporary World, resets it between all four surfaces and requires actual successful learning responses. Preserve the strict fixture-coverage assertion. Only the two test files are ported; active PR329 and its unrelated forward-test changes remain with their owner. Production runtime and both accepted hash sets remain unchanged. All35 parity/button/storage cases and pinned lint pass independently after the test-only patch. All31 accepted runtime hashes remain unchanged. Next: regenerate committed-source metadata, push a fresh final head, and wait all CI before marking ready and merging. Earlier JavaScript checkout timeout was retried successfully on the same e8a7a6c head; retain both attempt receipts.
+
+Version: 648
+Delta: v647 to v648; bind the final learner checkpoint to all four delivered predecessors.
+
+## Final PR328 delivery state — TASK-2579
+
+Four initial PRs are merged and all final-head checks are now successful: PR22477bf655485b1e281dfc5c7277a4c178c47d8d7a9; PR22600d56735f0e9a2576e252284c4da29c8ae3f4adf; PR2353cacfea2f8062967ecc829ba4588f972a81717f3; PR289371c96e6a941410a1a3263aeed19afcb4da61caf. Each actual merged tree equals its reviewed head. PR289 was merged by concurrent activity before its macOS job completed; qualification remained open until that job passed. Preserve that timing exception in the external receipt.
+
+This is the final source checkpoint for the five-PR frozen inventory. Preserve coordinated manager0.7.11, runtime0.4.8, ecosystem0.4.20 and extension0.12.7 source,724 extension tests and the3,743 total counted cases. Independent acceptance passed25 canonical browser checks,12 checkpoint browser gates and eight real native processes. All29 accepted runtime hashes and both original paper-memory hashes remain unchanged after the actual default binding. Production user installation and live trading remain unverified. The new active PR329 draft belongs to TASK-2574 and is preserved outside this original inventory.
+
+Remaining delivery: regenerate all deterministic artifacts from committed source, push this final original PR328 branch, wait every final-head check, require the latest-default merge tree to equal the reviewed head, squash merge and verify the actual remote tree. Complete the tracker and external versioned delivery-memory/receipt, and remove only this task’s seven worktrees and five private integrate branches. Shared primary dirty bytes, active owner work and original paused audit tasks remain preserved. No optimizer restart, inference, embeddings, service restart or live order is authorized by this integration.
+
+Version: 650
 Delta: preserve delivered PR289 workflow/index checkpoint and the combined Oracle/research repairs before final source8.
 Delta: v648 to v649; repair three confirmed inherited research contracts, preserve refused-state fixtures and add their declared-dependency CI gate.
 Delta: integrate delivered PR235 maintenance with Oracle persistence; preserve both histories, current review3 partial provenance and last whole-sweep allowance.
@@ -14,6 +51,27 @@ Delta: v641 to v642; preserve the confirmed cold-reload quota failure and guarde
 Delta: v640 to v641; preserve PR224/PR226 and both browser learner changes before final combined reassessment.
 
 Version: 647
+Delta: v646 to v647; preserve concurrent pair-source integration in PR328 without changing accepted learner runtime.
+
+Version: 646
+Delta: v645 to v646; qualify complete browser/native persistence checkpoint and retain final public exports.
+
+## PR328 final isolated acceptance — TASK-2579
+
+Preserve owner4e1d15e/f26b310 and all qualified maintenance/exit-study source. Extension0.12.7 passes724 tests; native persistence passes252; supervisor20, packaging and JavaScript quality pass. Canonical isolated Chrome checks pass25/25. The updated checkpoint probe passes12 gates with17 loaded runtime hashes: actual IndexedDB/profile retention, multi-chunk digest restore, local precedence, corrupt digest refusal, learner DB recovery, panel save/status, and retained six-horizon history after quota failure. Production framed native checkpoint APIs pass eight fresh processes, including separate multi-chunk reopen. Browser helper responses are fixtures; native disk probes use the real API. These tests do not establish user-installed production integration or live trading. All defaults remain dry-run/disarmed. Next: regenerate committed-source projections, push current branch, finish final-head CI, verify exact merge tree against current remote master, merge and record final receipts. The original application assessment remains incomplete.
+
+Delta: v645 to v646; prepare PR289 with current-default pair source while PR235 CI runs.
+
+Version: 645
+Delta: v644 to v645; carry final maintenance and exit-study integration into the browser persistence checkpoint.
+
+## PR328 qualified predecessor checkpoint — TASK-2579
+
+Preserve the final PR235 source/fixture repairs and PR289 source qualification. Browser/native learning checkpoint source matches4fad6e2; no runtime change in those paths. All724 extension,252 native,20 supervisor and JavaScript gates pass. Independent loaded browser/native acceptance remains bound to exact source hashes. Next: await predecessor delivery, bind remote master, regenerate committed-source projections, preserve any new remote descendant, push/check/merge PR328. Audit status remains incomplete.
+
+Delta: v644 to v645; retain final public exports while preparing PR289 exact-head checks.
+
+
 Delta: v646 to v647; bind PR289 to delivered PR235 squash and preserve exact source.
 
 ## PR289 delivery binding — TASK-2579
@@ -35,6 +93,25 @@ Delta: v644 to v645; retain concurrently delivered native pair batch source and 
 Concurrent PR330 landed as284c695 with native pair batch studies and reports. Preserve its exact source, artifact archive, documentation and added CI command. Merge conflicts are limited to workflow history and generated whole-file indexes; no source implementation conflict occurred. The42 pair-study integration cases pass. The23-file public export is current. Regenerate committed-source deterministic projections before pushing. This supersedes the earlier unmerged PR235 head; old CI is historical evidence, not a final-head gate. PR329 is a newly created active TASK-2574 draft with its own unfinished current review. Preserve that draft and original owner checkout while finishing the five PRs frozen at this request. Next: final-head CI235 and squash merge, then refresh/check/merge289 and328 against actual remote master. Original optimizer audit remains USER-PAUSED.
 
 Version: 644
+Delta: v643 to v644; preserve concurrent readonly Oracle history repair and current combined test counts.
+
+## PR328 concurrent follow-up — TASK-2579
+
+Preserve owner commit4e1d15e on top of the browser learning checkpoint work. A failed Oracle write keeps saved history visible; source identities, checkpoint boundaries and dry-run/disarmed defaults remain unchanged. All724 extension tests and20 supervisor tests pass after integration. The native checkpoint service passed independent framed API probes across fresh processes. Its real browser checkpoint acceptance is in progress against this committed source. Component version remains0.12.7. The four counted suites total3,743 cases. Next: merge delivered predecessors, regenerate committed-source projections, verify final loaded hashes, push the current PR328 branch, wait all final-head CI and merge. Underlying application assessment remains incomplete.
+
+Version: 642
+Delta: v641 to v642; preserve concurrent PR328 browser checkpoint delivery f26b310 before final merge.
+
+Version: 641
+Delta: v640 to v641; preserve committed PR328 paper-memory checkpoint and concurrent unfinished application work.
+
+## PR328 integration — TASK-2579
+
+Integrate original committed head27aaf968 with current maintenance safeguards. Compatible per-coin/product checkpoints and idempotent resolved samples remain in the private SQLite journal. Current-policy exposure qualification stays separate from historical retained memory. Preserve the active original optimizer worktree and every staged/uncommitted follow-up; do not copy them into this integration. Whole-application assessment and newly expanded browser-persistence work remain unfinished under their original owners. This merge request does not claim audit convergence or installed production acceptance. Next: native memory/worker tests, extension tests and lint, current-source deterministic projections, predecessor binding, final-head CI and merge.
+
+
+
+
 Delta: v643 to v644; preserve final PR235 source and hosted fixture repairs in PR289.
 
 ## PR289 source qualification checkpoint — TASK-2579
@@ -60,6 +137,7 @@ Delta: v579 to v580; preserve Preview-error recovery scope and execution boundar
 Delta: v578 to v579; record resumed source archival and preserved forward state.
 Delta: v577 to v578; record owner two-column and causal candle/shape display request.
 Delta: v576 to v577; begin isolated 50 percent collateral exit and order-flow evidence study.
+
 
 
 Delta: v643 to v644; regenerate public research projections after merged tracked-source changes.
@@ -106,6 +184,13 @@ Delta: v560 to v561; integrate current master and preserve incoming ZEC paper pu
 Delta: v559 to v560; classify macOS launcher fixtures as platform-specific after Linux CI lacked /bin/zsh.
 Delta: v558 to v559; fix final Linux/native CI integration failures after c7f9ab9.
 Delta: v555 to v557; integrate master25e1d60 into PR235 and preserve the separate PR224 record reservation.
+
+Version: 643
+Delta: v642 to v643; preserve CI failure receipts and correct asynchronous test milestones before the final source freeze.
+Delta: v641 to v642; preserve the confirmed cold-reload quota failure and guarded readonly-history repair.
+Delta: v640 to v641; preserve PR224/PR226 and both browser learner changes before final combined reassessment.
+
+
 Version: 640
 
 Version: 643
@@ -131,11 +216,6 @@ Source files froze before the full numerical run; the run's exact file/runtime h
 
 
 
-
-
-## Numerical fixture provenance refresh — TASK-2574
-
-Source8 is an incomplete fifth-sweep attempt, not another completed sweep. Its required724-test extension run found exactly one stale whole-file source hash in 1000x-python-parity.json after protected_intervals gained its missing-ledger refusal. The canonical extension/tools/1000x-reference.py regenerates only nine synthetic shape and two momentum cases. Every numerical payload is identical, and the whole shape module AST is identical except protected_intervals. Preserve the old fixture, failing source8 receipt, regeneration command and equality proof. No historical study or holdout is rerun. Refresh source bindings, keep all formulas and strict reference assertions, then freeze source9 and finish the fifth/last whole sweep and the same pending third review. Earlier source8 installed behavior passed and all packaged/runtime input bytes are unchanged by this test-only correction. Global activation remains pending actual final gates.
 
 ## Combined research contract verification — TASK-2574
 
@@ -4470,6 +4550,7 @@ Remaining: deterministic docs/inventories/index artifacts, complete immutable cu
 Delivered PR224 and PR226 are integrated as f26b310; preserve their httpx requirement, exact frozen .cdo checkpoint and both prompt/continuation histories. The real-Chromium V2 review confirmed the six first-round client fixes. It also reproduced a cold minute-controller quota path that hid21 valid saved samples despite a successful readonly store load. Root added a generation/source-fenced readonly fallback after write failure. It retains the original error and historical inactive state; no learner progress is written. The added controller regression passes; independent V3 actual-browser verification is pending. Final whole-source freeze, all-method reassessment, native/Chrome installed acceptance and final independent review remain outstanding. No complete expanded sweep or final review is claimed by this checkpoint.
 
 The V3 actual Chromium follow-up now verifies all seven client fix groups, including21 saved minute/3 live samples under injected quota and stale-helper recovery. Its fixed-loop unit timing failures are retained. Condition-based bounded acknowledgements now pass26 disk/controller cases. CI on f26b310 reproduced the same premature disk-test assertions and an existing manager stop test expecting a terminal process/lock state after one supervisor step. The manager test now uses its existing bounded spin until stopped; production lifecycle logic is unchanged. Its focused regression passes. Source-v3 full extension attempt had a separate sandbox setup failure because the archive removed executable mode from the fake native host; new snapshots preserve tracked executable flags and record them. All4049 tracked source hashes remain protected; generated .remember hook logs are recorded as non-product extras. Final source-v4 retains every scope cell and earlier failed attempt. Current combined sweep and final independent review are still pending; no lower review cap or narrowed scope is introduced.
+
 
 ## Current complete application assessment and delivery boundary — TASK-2574 / TASK-2556 / TASK-2557
 
