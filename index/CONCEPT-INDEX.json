@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-11-17T19:43:48+00:00",
+  "generatedAt": "2026-11-17T19:50:01+00:00",
   "schemaVersion": 1,
   "note": "Concepts are derived from the repo's own vocabulary \u2014 the FAMILY dict, strategy-card frontmatter, docs/trading-signals-concept-family.md, and terms verified to recur in the corpus. A concept matching no file is dropped, not kept.",
   "counts": {
@@ -2153,6 +2153,10 @@
           "hits": 21
         },
         {
+          "path": "memory.md",
+          "hits": 21
+        },
+        {
           "path": "research/coin-intelligence/eth-ethereum.md",
           "hits": 21
         },
@@ -2167,10 +2171,6 @@
         {
           "path": "docs/design/soltui-v2/mockup.py",
           "hits": 20
-        },
-        {
-          "path": "memory.md",
-          "hits": 19
         },
         {
           "path": "backtester/tests/test_research_regressions.py",

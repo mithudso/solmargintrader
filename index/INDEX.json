@@ -1,11 +1,11 @@
 {
-  "generatedAt": "2026-11-17T19:43:48+00:00",
+  "generatedAt": "2026-11-17T19:50:01+00:00",
   "schemaVersion": 1,
   "repoRoot": "~/dev/solmargintrader",
-  "commit": "ad6ff72",
+  "commit": "edbb58d",
   "counts": {
     "files": 4092,
-    "bytes": 166757652,
+    "bytes": 166758538,
     "byKind": {
       "strategy-card": 1478,
       "doc": 845,
@@ -89719,11 +89719,11 @@
       "ext": ".md",
       "kind": "doc",
       "title": "Work continuation",
-      "summary": "Version: 643 Delta: v642 to v643; reconcile hosted integration test fixtures without weakening current source contracts. Hosted CI exposed a client VM missing the real createBacktestRecovery import and an older cleanup test that expected an inline finally block. The VM now receives the real factory. All326 website tests,18-file syntax check and70 Python engine tests pass.",
+      "summary": "Version: 644 Delta: v643 to v644; regenerate public research projections after merged tracked-source changes. The repaired hosted website passed unit, browser, Worker and Python engine gates before its export freshness check found five stale public JSON files. The established exporter adds the already tracked weekly ETH study and its guide, and refreshes the existing CPCV source binding.",
       "summarySource": "opening-prose",
-      "bytes": 837972,
-      "lines": 4287,
-      "sha1": "cde9bae876c0bbfdd16f1c8672ad819f2dce5e95",
+      "bytes": 838747,
+      "lines": 4294,
+      "sha1": "a9abde7dc175cbdf8c7fc7c45b44a60afaeb7726",
       "symbols": [],
       "imports": [],
       "internalImports": [],
@@ -93745,11 +93745,11 @@
       "ext": ".md",
       "kind": "doc",
       "title": "Prompt history",
-      "summary": "Version: 290 Delta: v289 to v290; reconcile hosted integration test fixtures without weakening current source contracts. Version: 289",
+      "summary": "Version: 291 Delta: v290 to v291; regenerate public research projections after merged tracked-source changes. Version: 290",
       "summarySource": "opening-prose",
-      "bytes": 282866,
-      "lines": 4676,
-      "sha1": "67f330949ba4efb4385c836fff51846c417d3d0e",
+      "bytes": 282977,
+      "lines": 4679,
+      "sha1": "20acab11149948da6ea24a4ef037bcf2365d01c3",
       "symbols": [],
       "imports": [],
       "internalImports": [],
@@ -121880,5 +121880,5 @@
       "frontmatter": {}
     }
   ],
-  "textSha256": "d6da2b375898159bcf0e1f2101ac1cb880dd2a5e10a5ea06c985f81f7b95f925"
+  "textSha256": "e1962574671bc77b97f51709fba90c5fbed693d4bdbe1f717a591ba7ac39ff11"
 }
