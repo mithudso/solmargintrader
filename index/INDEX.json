@@ -1,11 +1,11 @@
 {
-  "generatedAt": "2026-11-17T01:48:51+00:00",
+  "generatedAt": "2026-11-17T01:50:50+00:00",
   "schemaVersion": 1,
   "repoRoot": "~/dev/solmargintrader",
-  "commit": "d537c87",
+  "commit": "e06f9d7",
   "counts": {
     "files": 3988,
-    "bytes": 140713156,
+    "bytes": 140714237,
     "byKind": {
       "strategy-card": 1478,
       "doc": 839,
@@ -73770,7 +73770,7 @@
       "summarySource": "opening-prose",
       "bytes": 1838999,
       "lines": 38262,
-      "sha1": "e443420bcef1aa75422ed1d367b90ab464877f90",
+      "sha1": "df269883b157fb381f3240e2bb6d20f745dd0a3e",
       "symbols": [],
       "imports": [],
       "internalImports": [],
@@ -90451,9 +90451,9 @@
       "title": "autotrade_worker",
       "summary": "Exclusive local paper session owner and observed-tick state machine.",
       "summarySource": "docstring",
-      "bytes": 49705,
+      "bytes": 49709,
       "lines": 1285,
-      "sha1": "a937a4335ed4285f755383113babd1617ae0206e",
+      "sha1": "3e73d9c46bd093491d2a8eeaa3d0596baca5a226",
       "symbols": [
         "pack()",
         "_positive()",
@@ -91316,9 +91316,9 @@
       "title": "test_autotrade_routing",
       "summary": "The shared owner route must not silently create a second session.",
       "summarySource": "docstring",
-      "bytes": 5567,
-      "lines": 143,
-      "sha1": "748125992f6a7872bfdbc40dd3e676ada7378b54",
+      "bytes": 6644,
+      "lines": 169,
+      "sha1": "1a4a176f568ebbf3b2d70a4a03bab578d1e86318",
       "symbols": [
         "class Routing"
       ],
@@ -118824,5 +118824,5 @@
       "frontmatter": {}
     }
   ],
-  "textSha256": "88248c7834616961e2e669a08cacbbd5859707fa2cdeb22853f1821d8f935a62"
+  "textSha256": "f2eb61cddef6e35fe4ed5882048a66753bb7adf0df28979ae04c4a5098ee4773"
 }

@@ -1118,7 +1118,7 @@ def serve():
     from oracle_leverage.autotrade import _connect, _home
 
     home = _home()
-    db = _connect()
+    db = _connect(home)
     lockfd = os.open(home / "owner.lock", os.O_CREAT | os.O_RDWR | os.O_NOFOLLOW, 0o600)
     lockinfo = os.fstat(lockfd)
     if lockinfo.st_uid != os.getuid() or lockinfo.st_mode & 0o077:

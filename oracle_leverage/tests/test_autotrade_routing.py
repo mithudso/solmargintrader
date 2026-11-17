@@ -107,13 +107,37 @@ class Routing(unittest.TestCase):
         self.assertFalse(second.exists())
         self.assertFalse(self.default.exists())
 
+    def test_direct_owner_binds_home_before_route_changes(self):
+        from oracle_leverage import autotrade_worker
+
+        first = self.home / "first"
+        second = self.home / "second"
+        self.write_route(json.dumps({"version": 1, "state_home": str(first)}))
+        real_connect = autotrade._connect
+
+        def connect(home=None):
+            self.write_route(json.dumps({"version": 1, "state_home": str(second)}))
+            return real_connect(home)
+
+        with (
+            patch.object(autotrade, "_connect", side_effect=connect),
+            patch.object(autotrade_worker.fcntl, "flock", side_effect=BlockingIOError),
+        ):
+            autotrade_worker.serve()
+        self.assertTrue((first / "journal.sqlite3").exists())
+        self.assertTrue((first / "owner.lock").exists())
+        self.assertFalse(second.exists())
+        self.assertFalse(self.default.exists())
+
     def test_invalid_and_unsafe_routes_refuse_before_creating_or_spawning(self):
+        forbidden = self.home / "forbidden"
+        path = str(forbidden)
         cases = [
             "{",
             json.dumps({"version": 1, "state_home": "relative"}),
-            json.dumps({"version": True, "state_home": "/tmp/x"}),
-            json.dumps({"version": 1, "state_home": "/tmp/x", "extra": 1}),
-            '{"version":1,"version":1,"state_home":"/tmp/x"}',
+            json.dumps({"version": True, "state_home": path}),
+            json.dumps({"version": 1, "state_home": path, "extra": 1}),
+            '{"version":1,"version":1,"state_home":' + json.dumps(path) + "}",
             " " * 4097,
         ]
         for value in cases:
@@ -127,7 +151,8 @@ class Routing(unittest.TestCase):
                 ):
                     autotrade.status()
                 self.assertFalse(self.default.exists())
-        self.write_route(json.dumps({"version": 1, "state_home": "/tmp/x"}))
+                self.assertFalse(forbidden.exists())
+        self.write_route(json.dumps({"version": 1, "state_home": path}))
         self.route.chmod(0o644)
         with self.assertRaises(ValueError):
             autotrade.status()
@@ -136,6 +161,7 @@ class Routing(unittest.TestCase):
         with self.assertRaises(ValueError):
             autotrade.status()
         self.assertFalse(self.default.exists())
+        self.assertFalse(forbidden.exists())
 
 
 if __name__ == "__main__":

@@ -1,6 +1,6 @@
 # Every file in this repository
 
-**Generated** from `index/INDEX.json` at commit `d537c87` (2026-11-17T01:48:17+00:00). 3988 tracked files, 140.7 MB.
+**Generated** from `index/INDEX.json` at commit `e06f9d7` (2026-11-17T01:50:40+00:00). 3988 tracked files, 140.7 MB.
 
 Regenerate with:
 
@@ -896,7 +896,7 @@ Curated prose. `ARCHITECTURE.md` explains how the pieces fit, `TESTING.md` is th
 
 #### `docs/CONCEPTS.md`
 
-`doc` · 323 lines · 20,717 B · description: **extracted**
+`doc` · 323 lines · 20,697 B · description: **extracted**
 
 **Purpose.** python3 index/build.py all # refresh python3 index/make_concepts_doc.py # rewrite this file python3 index/search.py --concepts # list them
 
@@ -976,7 +976,7 @@ Curated prose. `ARCHITECTURE.md` explains how the pieces fit, `TESTING.md` is th
 
 #### `docs/FILES.md`
 
-`doc` · 38252 lines · 1,838,465 B · description: **extracted**
+`doc` · 38262 lines · 1,838,999 B · description: **extracted**
 
 **Purpose.** Regenerate with: python3 index/build.py all # refresh the index python3 index/make_files_doc.py # rewrite this file
 
@@ -36550,7 +36550,7 @@ Session handoff notes, newest first. Prose, not machine-read.
 
 #### `oracle_leverage/autotrade_worker.py`
 
-`code-python` · 1285 lines · 49,705 B · description: **extracted**
+`code-python` · 1285 lines · 49,709 B · description: **extracted**
 
 **Purpose.** Exclusive local paper session owner and observed-tick state machine.
 
@@ -36794,7 +36794,7 @@ Session handoff notes, newest first. Prose, not machine-read.
 
 #### `oracle_leverage/tests/test_autotrade_routing.py`
 
-`test` · 143 lines · 5,567 B · description: **extracted**
+`test` · 169 lines · 6,644 B · description: **extracted**
 
 **Purpose.** The shared owner route must not silently create a second session.
 
