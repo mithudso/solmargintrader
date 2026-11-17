@@ -398,7 +398,11 @@ class VolTargetTrend:
         ma = ind.sma(closes, self.trend_window)
         if not np.isfinite(ma) or float(closes[-1]) <= ma:
             return 0.0
-        vol = ind.realised_vol(closes, self.vol_window)
+        timestamps = history.ts
+        steps = np.diff(timestamps)
+        if not len(steps) or not np.all(steps == steps[0]) or steps[0] <= 0:
+            raise ValueError("volatility targeting requires a regular positive cadence")
+        vol = ind.realised_vol(closes, self.vol_window, periods_per_year=365.0 * 86400 / steps[0])
         if not np.isfinite(vol) or vol <= 1e-9:
             return 1.0
         return float(min(1.0, self.target_vol / vol))

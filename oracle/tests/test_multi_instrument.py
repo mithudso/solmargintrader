@@ -244,7 +244,7 @@ class MultiInstrumentProtocolTests(unittest.IsolatedAsyncioTestCase):
                 stdio_client(parameters) as (reader, writer),
                 ClientSession(reader, writer) as client,
             ):
-                await client.initialize()
+                await asyncio.wait_for(client.initialize(), 10)
                 status = await asyncio.wait_for(
                     client.call_tool("oracle_status", {}), 5
                 )
@@ -257,7 +257,7 @@ class MultiInstrumentProtocolTests(unittest.IsolatedAsyncioTestCase):
                     ],
                     "ETH/USD",
                 )
-                market = await client.call_tool("oracle_market", {})
+                market = await asyncio.wait_for(client.call_tool("oracle_market", {}), 10)
                 self.assertEqual(
                     market.model_dump(by_alias=True)["structuredContent"]["data"][
                         "instrument"

@@ -9,6 +9,7 @@ from __future__ import annotations
 import base64
 import json
 import struct
+import threading
 from pathlib import Path
 from typing import Any
 
@@ -235,6 +236,7 @@ class FakeRpc(Rpc):
         self.txs: dict[str, Any] = {}
         self.height = 1000
         self.simulations = 0
+        self.simulation_calls = []
         self.tx_available = True
 
     def balance(self, address):
@@ -249,6 +251,16 @@ class FakeRpc(Rpc):
 
     def simulate(self, tx_b64_, watch, sig_verify, replace_blockhash):
         self.simulations += 1
+        self.simulation_calls.append(
+            {"tx_b64": tx_b64_, "watch": list(watch), "sig_verify": sig_verify, "replace_blockhash": replace_blockhash}
+        )
+        if sig_verify:
+            try:
+                valid = all(txverify.decode_b64(tx_b64_).verify_with_results())
+            except Exception:
+                valid = False
+            if not valid:
+                return {"err": "SignatureFailure", "accounts": [], "logs": []}
         post = []
         for addr in watch:
             acc = self.state.get(addr)
@@ -418,3 +430,26 @@ def ctx_factory(monkeypatch):
         monkeypatch.setattr(registry, "CONTEXT_FACTORY", lambda: registry.Context(cfg, engine))
 
     return install
+
+
+@pytest.fixture
+def gate_lock_barrier(monkeypatch):
+    """Observe real contention before releasing the first gate writer."""
+    from executor import gates
+
+    blocked = threading.Event()
+    flock = gates.fcntl.flock
+
+    def observe(fd, operation):
+        if operation == gates.fcntl.LOCK_EX and threading.current_thread().name.endswith("_1"):
+            try:
+                flock(fd, operation | gates.fcntl.LOCK_NB)
+            except BlockingIOError:
+                blocked.set()
+            else:
+                flock(fd, gates.fcntl.LOCK_UN)
+                raise AssertionError("second writer did not contend on the held evidence lock")
+        return flock(fd, operation)
+
+    monkeypatch.setattr(gates.fcntl, "flock", observe)
+    return blocked

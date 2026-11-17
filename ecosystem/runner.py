@@ -102,8 +102,13 @@ def validate_config(config: dict) -> None:
         or not set(config["intervals"]) <= set(INTERVALS)
     ):
         raise ValueError("invalid_bootstrap_selection")
-    if any(not re.fullmatch(r"[A-Z][A-Z0-9]{0,19}", coin) for coin in config["coins"]):
-        raise ValueError("invalid_bootstrap_selection")
+    from oracle.feeds import validate_instrument
+
+    for coin in config["coins"]:
+        try:
+            validate_instrument(f"{coin}/USD")
+        except (TypeError, ValueError):
+            raise ValueError("invalid_bootstrap_selection") from None
     if config.get("manager_home") is not None and (
         not isinstance(config["manager_home"], str)
         or not Path(config["manager_home"]).is_absolute()

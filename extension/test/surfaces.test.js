@@ -21,16 +21,30 @@ const TOKEN = 'test-token-parity';
  * plus this file does not.
  */
 
-function run(args, opts = {}) {
+function run(args, opts = {}, execute = execFile) {
   return new Promise((resolve) => {
-    execFile(
+    execute(
       process.execPath,
       [CLI, ...args],
       { cwd: ROOT, timeout: 20_000, ...opts },
-      (err, stdout, stderr) => resolve({ code: err?.code ?? 0, stdout, stderr }),
+      (err, stdout, stderr) => resolve({
+        code: err ? (typeof err.code === 'number' && err.code !== 0 ? err.code : 1) : 0,
+        signal: err?.signal ?? null, killed: err?.killed === true, stdout, stderr,
+      }),
     );
   });
 }
+
+test('CDO-691edd4333 only normal child completion is a successful CLI result', async () => {
+  for (const [error, expected] of [[null, 0], [{ code: 2 }, 2], [{ code: 'ENOENT' }, 1], [{ code: null, signal: 'SIGTERM', killed: true }, 1]]) {
+    const execute = (_file, _args, _options, callback) => callback(error, 'synthetic expected help output', '');
+    const result = await run(['help'], {}, execute);
+    assert.equal(result.code, expected);
+    assert.equal(result.signal, error?.signal ?? null);
+    assert.equal(result.killed, error?.killed === true);
+    assert.equal(result.stdout, 'synthetic expected help output');
+  }
+});
 
 /** Deps with a stubbed venue: no network, no disk, no side effects. */
 function testDeps() {

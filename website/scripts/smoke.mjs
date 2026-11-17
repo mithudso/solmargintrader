@@ -1,5 +1,6 @@
 import assert from 'node:assert/strict';
 import { base58Encode, bytesToBase64 } from '../../extension/src/wallet/solana.js';
+import { requester } from './smoke_request.mjs';
 
 const usage = 'Usage: node website/scripts/smoke.mjs [http(s)://host]\nRequires a running Oraclebot worker. Local: npm --prefix website run dev';
 const args = process.argv.slice(2);

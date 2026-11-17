@@ -80,8 +80,10 @@ export const ZERO_ADDRESS = '0x0000000000000000000000000000000000000000';
 export function intArray(hex) {
   const w = words(hex);
   if (w.length < 2) return [];
+  if (hex.length !== 2 + w.length * 64 || w[0] % 32n !== 0n || w[0] < 32n || w[0] / 32n >= BigInt(w.length)) return [];
   const offset = Number(w[0] / 32n);
-  const length = Number(w[offset] ?? 0n);
+  if (w[offset] > BigInt(w.length - offset - 1)) return [];
+  const length = Number(w[offset]);
   return w.slice(offset + 1, offset + 1 + length).map((x) => Number(signed(x, 24)));
 }
 

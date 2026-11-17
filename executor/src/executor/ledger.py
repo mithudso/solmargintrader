@@ -37,7 +37,26 @@ def _confirmed_trades(states: dict[str, dict[str, Any]]):
     return rows
 
 
-def positions(states: dict[str, dict[str, Any]], strategy: str) -> dict[str, Position]:
+def _nonnegative_usd(value: Any, label: str) -> Decimal:
+    try:
+        if isinstance(value, bool) or not isinstance(value, str | int | float | Decimal):
+            raise ValueError
+        amount = Decimal(str(value))
+        if not amount.is_finite() or amount < 0:
+            raise ValueError
+    except (InvalidOperation, ValueError):
+        raise Refused(f"{label} evidence is missing or invalid; inspect the journal before new trades") from None
+    return amount
+
+
+def _confirmed_amounts(outcome: dict[str, Any]) -> tuple[int, Decimal]:
+    quantity = outcome.get("base_raw")
+    if type(quantity) is not int or not 0 <= quantity < 2**64:
+        raise Refused("confirmed quantity evidence is missing or invalid")
+    return quantity, _nonnegative_usd(outcome.get("quote_usd"), "confirmed quote")
+
+
+def positions(states: dict[str, dict[str, Any]], strategy: str | None) -> dict[str, Position]:
     """Open position by base mint for one strategy."""
     book: dict[str, Position] = {}
     for _ts, intent, out in _confirmed_trades(states):
@@ -47,7 +66,7 @@ def positions(states: dict[str, dict[str, Any]], strategy: str) -> dict[str, Pos
         if not base or side not in ("buy", "sell"):
             continue
         pos = book.setdefault(base, Position())
-        qty, usdc = int(out["base_raw"]), Decimal(out["quote_usd"])
+        qty, usdc = _confirmed_amounts(out)
         if side == "buy":
             pos.qty_raw += qty
             pos.cost_usd += usdc
@@ -67,18 +86,7 @@ def utc_day(ts: float) -> str:
 
 def _failed_fee_usd(outcome: dict[str, Any]) -> Decimal:
     """A failed attempt still spends a fee; missing evidence cannot mean a free attempt."""
-    value = outcome.get("fee_usd")
-    try:
-        if isinstance(value, bool) or not isinstance(value, str | int | float | Decimal):
-            raise ValueError
-        fee = Decimal(str(value))
-        if not fee.is_finite() or fee < 0:
-            raise ValueError
-    except (InvalidOperation, ValueError):
-        raise Refused(
-            "failed on-chain fee evidence is missing or invalid; inspect the journal before new trades"
-        ) from None
-    return fee
+    return _nonnegative_usd(outcome.get("fee_usd"), "failed on-chain fee")
 
 
 def realized_pnl_usd(states: dict[str, dict[str, Any]], day: str, strategy: str | None = None) -> Decimal:
@@ -97,7 +105,7 @@ def realized_pnl_usd(states: dict[str, dict[str, Any]], day: str, strategy: str 
         if not base or side not in ("buy", "sell"):
             continue
         pos = books.setdefault((s, base), Position())
-        qty, usdc = int(out["base_raw"]), Decimal(out["quote_usd"])
+        qty, usdc = _confirmed_amounts(out)
         realized = Decimal(0)
         if side == "buy":
             pos.qty_raw += qty
@@ -112,7 +120,7 @@ def realized_pnl_usd(states: dict[str, dict[str, Any]], day: str, strategy: str 
             if pos.qty_raw == 0:
                 pos.cost_usd = Decimal(0)
         if utc_day(ts) == day and (strategy is None or s == strategy):
-            total += realized - Decimal(out.get("fee_usd", "0"))
+            total += realized - _nonnegative_usd(out.get("fee_usd"), "confirmed on-chain fee")
     return total
 
 

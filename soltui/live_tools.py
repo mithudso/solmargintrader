@@ -195,7 +195,7 @@ def _local_actions(limit):
     for venue, directory in (("coinbase", coinbase_manual._dir()), ("jupiter", jupiter_manual._storage_dir())):
         if not directory.exists():
             continue
-        paths = sorted(directory.glob("*.json"), key=lambda p: p.stat().st_mtime, reverse=True)[:limit]
+        paths = directory.glob("*.json")
         for path in paths:
             value = read(path, {}) or {}
             stamp = value.get("submit_started_at")
@@ -205,7 +205,7 @@ def _local_actions(limit):
                         "kind": "local order submission", "status": value.get("state"),
                         "summary": f"{venue} {value.get('side') or ''} {value.get('product_id') or ''}".strip(),
                         "source": str(path), "note": "Local submitted intent; confirmation is not assumed."})
-    return out
+    return sorted(out, key=lambda row: row["at"], reverse=True)[:limit]
 
 
 def update(asset, settings=None, *, now=None, stop=None):
@@ -371,10 +371,17 @@ def main(argv=None):
     watcher.start()
     try:
         while not stopped.is_set():
-            requests = read(root() / "requests.json", {}) or {}
-            active = [asset for asset, stamp in requests.items() if time.time() - stamp < 180]
-            if not active:
-                break
+            # Admission and idle release share the control lock. A request can
+            # either keep this owner alive or acquire its released lease; it
+            # cannot be acknowledged by an owner already committed to exit.
+            with control(root()):
+                requests = read(root() / "requests.json", {}) or {}
+                active = [asset for asset, stamp in requests.items() if time.time() - stamp < 180]
+                if not active:
+                    write(root() / "worker.json", {**owner, "state": "stopped", "pid": os.getpid()})
+                    handle.close()
+                    handle = None
+                    break
             for asset in active:
                 if stopped.is_set():
                     break
@@ -387,10 +394,13 @@ def main(argv=None):
     finally:
         done.set()
         watcher.join(2)
-        try:
-            write(root() / "worker.json", {**owner, "state": "stopped", "pid": os.getpid()})
-        finally:
-            handle.close()
+        if handle is not None:
+            with control(root()):
+                try:
+                    if (read(root() / "worker.json", {}) or {}).get("token") == args.token:
+                        write(root() / "worker.json", {**owner, "state": "stopped", "pid": os.getpid()})
+                finally:
+                    handle.close()
     return 0
 
 

@@ -134,6 +134,7 @@ class FibRetracement:
         self.lookback = lookback
         self.entry_ratio, self.invalid_ratio = entry_ratio, invalid_ratio
         self._holding = False
+        self._target = self._invalid = None
         self.name = f"fib_{lookback}_{entry_ratio:g}_{invalid_ratio:g}"
         self.params: dict[str, Any] = {
             "lookback": lookback,
@@ -148,6 +149,10 @@ class FibRetracement:
     def on_bar(self, history: BarWindow) -> float:
         """Long inside the retracement zone of an up-swing after a turn up."""
         highs, lows, closes = history.highs, history.lows, history.closes
+        if self._holding:
+            if closes[-1] >= self._target or closes[-1] < self._invalid:
+                self._holding = False
+            return 1.0 if self._holding else 0.0
         if len(closes) < self.lookback + 1:
             return 0.0
         h = highs[-self.lookback :]
@@ -160,11 +165,9 @@ class FibRetracement:
             return 0.0
         entry = ind.fib_level(swing_hi, swing_lo, self.entry_ratio)
         invalid = ind.fib_level(swing_hi, swing_lo, self.invalid_ratio)
-        if self._holding:
-            if close >= swing_hi or close < invalid:
-                self._holding = False
-        elif invalid <= close <= entry and close > prev:
+        if invalid <= close <= entry and close > prev:
             self._holding = True
+            self._target, self._invalid = swing_hi, invalid
         return 1.0 if self._holding else 0.0
 
 

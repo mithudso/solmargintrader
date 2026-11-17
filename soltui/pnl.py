@@ -651,7 +651,12 @@ def curve_from_lp_status(status: dict[str, Any]) -> Curve | None:
     positions = [p for p in (status.get("positions") or []) if isinstance(p, dict)]
     if not positions:
         return None
-    pnl = sum(_num(p.get("pnl_usd")) or 0.0 for p in positions)
+    if any(_num(position.get(field)) is None for position in positions
+           for field in ("pnl_usd", "deposited_usd", "gas_usd", "rewards_usd")):
+        raise ValueError("LP status financial measurements unavailable")
+    if _num(status.get("generated_at")) is None:
+        raise ValueError("LP status observation time unavailable")
+    pnl = sum(_num(p.get("pnl_usd")) for p in positions)
     deposited = sum(_num(p.get("deposited_usd")) or 0.0 for p in positions)
     gas = sum(_num(p.get("gas_usd")) or 0.0 for p in positions)
     rewards = sum(_num(p.get("rewards_usd")) or 0.0 for p in positions)

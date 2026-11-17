@@ -55,7 +55,7 @@ class RecoveryTests(unittest.TestCase):
             ensure_batch(self.settings, self.cfg, self.root)
         self.assertEqual(
             set(self.root.iterdir()) - before,
-            {self.root / "bootstrap-create.lock"} - before,
+            {self.root / "bootstrap-create.lock", self.root / "f5-worker.lock"} - before,
         )
 
     def test_create_then_uncheckpointed_restart_adopts_same_identity(self):

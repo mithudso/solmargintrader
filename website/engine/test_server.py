@@ -16,11 +16,14 @@ import pandas as pd
 from backtester.core.data import frame_to_arrays
 from backtester.core.engine import EngineConfig, run_backtest
 from backtester.core.strategies import build
+from backtester.core.types import Mode
 from oracle.engine import OracleEngine
 from oracle.tests.test_core import observation
 from website.engine.server import (
     Analysis,
+    DeadlineReader,
     RequestError,
+    Server,
     catalogue,
     choose_top,
     main,
@@ -47,12 +50,25 @@ class AnalysisTests(unittest.TestCase):
 
     def test_backtest_exactly_matches_canonical_costed_engine(self):
         frame = self.bars()
-        response = self.analysis.backtest({"coin": "SOL", "strategy": "buy_and_hold", "interval": "1d", "capital": 10000, "leverage": 1})
-        expected = run_backtest(build("buy_and_hold"), frame_to_arrays(frame), EngineConfig(interval="1d"))
+        response = self.analysis.backtest({"coin": "SOL", "strategy": "buy_and_hold", "interval": "1d", "capital": 25000, "leverage": 2})
+        expected = run_backtest(build("buy_and_hold"), frame_to_arrays(frame), EngineConfig(interval="1d", initial_capital=25000, leverage=2, mode=Mode.PERP, allow_short=True))
         self.assertEqual(response["metrics"]["final_equity"], expected.metrics.final_equity)
         self.assertGreater(response["metrics"]["total_fees"], 0)
         self.assertEqual(response["provenance"]["bars"], 100)
         self.assertEqual(response["provenance"]["fillDelay"], 1)
+        self.assertNotEqual(response["metrics"]["final_equity"], run_backtest(build("buy_and_hold"), frame_to_arrays(frame), EngineConfig(interval="1d")).metrics.final_equity)
+
+    def test_future_csv_tail_does_not_displace_completed_bars(self):
+        frame = self.bars()
+        cutoff = int(frame.timestamp.iloc[-1]) + 86400
+        with mock.patch("website.engine.server.time.time", return_value=cutoff), mock.patch("website.engine.server.MAX_BARS", 100):
+            before = self.analysis.backtest({"coin": "SOL", "strategy": "buy_and_hold", "interval": "1d"})
+            future = frame.copy()
+            future.timestamp += 100 * 86400
+            pd.concat([frame, future]).to_csv(self.analysis.data_dir / "SOL_1d.csv", index=False)
+            after = self.analysis.backtest({"coin": "SOL", "strategy": "buy_and_hold", "interval": "1d"})
+        self.assertEqual(before["metrics"], after["metrics"])
+        self.assertEqual(before["provenance"]["barsSha256"], after["provenance"]["barsSha256"])
 
     def test_missing_cache_does_not_invent_data(self):
         with self.assertRaisesRegex(RequestError, "cached_history_unavailable"):
@@ -199,6 +215,11 @@ class HttpTests(unittest.TestCase):
         self.assertEqual((status, response), (413, {"error": "invalid_body_size"}))
         backtest.assert_not_called()
 
+        with mock.patch("website.engine.server.catalogue") as dispatch:
+            for credentials in ("Bearer wrong", "Basic " + self.token, "Bearer", self.token):
+                self.assertEqual(self.request("/v1/strategies", headers={"Authorization": credentials})[0], 401)
+            dispatch.assert_not_called()
+
     def test_no_execution_endpoint(self):
         self.assertEqual(self.request("/v1/orders", method="POST", body="{}")[0], 404)
 
@@ -242,6 +263,46 @@ class HttpTests(unittest.TestCase):
         self.assertEqual(exited.exception.code, 0)
         for text in ("Example:", "ENGINE_DATA_DIR", "ENGINE_ORACLE_DIR", "ENGINE_TOKEN"):
             self.assertIn(text, stdout.getvalue())
+
+
+class OfflineBoundaryTests(unittest.TestCase):
+    def test_drip_header_and_body_share_an_absolute_deadline(self):
+        clock = iter(range(20))
+        connection = mock.Mock()
+        reader = DeadlineReader(io.BytesIO(b"x" * 100), connection, clock=lambda: next(clock))
+        with self.assertRaises(TimeoutError):
+            reader.readline(100)
+        self.assertEqual(connection.settimeout.call_args_list[0].args, (9,))
+        self.assertEqual(connection.settimeout.call_args_list[-1].args, (1,))
+
+    def test_handler_slots_are_acquired_before_thread_creation_and_released(self):
+        server = Server.__new__(Server)
+        server.handler_slots = threading.BoundedSemaphore(1)
+        server.shutdown_request = mock.Mock()
+        with mock.patch("http.server.ThreadingHTTPServer.process_request") as spawn:
+            server.process_request("first", ("synthetic", 1))
+            server.process_request("second", ("synthetic", 2))
+            spawn.assert_called_once_with("first", ("synthetic", 1))
+            server.shutdown_request.assert_called_once_with("second")
+        with (mock.patch("http.server.ThreadingHTTPServer.process_request_thread", side_effect=RuntimeError),
+              self.assertRaises(RuntimeError)):
+            server.process_request_thread("first", ("synthetic", 1))
+        self.assertTrue(server.handler_slots.acquire(blocking=False))
+
+    def test_present_but_wrong_credentials_never_dispatch(self):
+        # Capture the actual Handler without constructing a socket/listener.
+        with mock.patch("website.engine.server.Server") as constructor:
+            make_server(mock.Mock(), "x" * 32)
+        handler_type = constructor.call_args.args[1]
+        handler = handler_type.__new__(handler_type)
+        handler.command, handler.path = "GET", "/v1/strategies"
+        handler.respond = mock.Mock()
+        with mock.patch("website.engine.server.catalogue") as dispatch:
+            for credentials in ("Bearer wrong", "Basic " + "x" * 32, "Bearer", "x" * 32, ""):
+                handler.headers = {"Authorization": credentials}
+                handler.handle_request()
+                self.assertEqual(handler.respond.call_args.args[0], 401)
+            dispatch.assert_not_called()
 
 
 if __name__ == "__main__":

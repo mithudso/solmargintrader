@@ -103,8 +103,15 @@ def backtest(
         if path.is_symlink() or file_sha256(path) != expected:
             return {**base, "status": "blocked", "reason": "data_digest_mismatch"}
         frame = validate_bars(pd.read_csv(path), interval, strict_gaps=True)
+        card_bytes = {}
+
+        def read_card(path):
+            raw = path.read_bytes()
+            card_bytes[path] = raw
+            return raw.decode("utf-8")
+
         card = next(
-            (c for c in load_all().values() if c.registry_key == strategy), None
+            (c for c in load_all(read_text=read_card).values() if c.registry_key == strategy), None
         )
         if card is None or not card.buildable or not card.data_available:
             return {**base, "status": "blocked", "reason": "strategy_card_unavailable"}
@@ -114,6 +121,7 @@ def backtest(
                 "status": "blocked",
                 "reason": "strategy_feature_unavailable",
             }
+        card_hash = hashlib.sha256(card_bytes[card.path]).hexdigest()
         instance = REGISTRY[strategy](**card.defaults())
         if len(frame) <= instance.warmup_bars() + 2:
             return {**base, "status": "blocked", "reason": "insufficient_history"}
@@ -136,6 +144,8 @@ def backtest(
                 "status": "blocked",
                 "reason": "data_changed_during_backtest",
             }
+        if file_sha256(card.path) != card_hash:
+            return {**base, "status": "blocked", "reason": "strategy_card_changed"}
         undefined: list[str] = []
         evidence = _safe(
             {
@@ -146,7 +156,7 @@ def backtest(
                 "venue": data_receipt["venue"],
                 "source": data_receipt["source"],
                 "data_sha256": expected,
-                "card_sha256": file_sha256(card.path),
+                "card_sha256": card_hash,
                 "code_sha256": code_hash,
                 "parameters": dict(instance.params),
                 "costs": dataclasses.asdict(config.costs),

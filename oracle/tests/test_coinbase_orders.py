@@ -287,6 +287,19 @@ class CoinbaseOrdersTests(unittest.TestCase):
                 CoinbaseOrders("/absolute/coinbase").get(ORDER_ID)["order_id"], ORDER_ID
             )
 
+    def test_oversized_cli_output_is_refused_before_json_parse(self):
+        from oracle.coinbase_orders import MAX_OUTPUT
+
+        def fake_run(args, **kwargs):
+            kwargs["stdout"].write(b"x" * (MAX_OUTPUT + 1))
+            return subprocess.CompletedProcess(args, 0)
+
+        with (patch("oracle.coinbase_orders.subprocess.run", side_effect=fake_run),
+              patch("oracle.coinbase_orders.json.load") as parse,
+              self.assertRaises(CoinbaseError)):
+            CoinbaseOrders("/absolute/coinbase").get(ORDER_ID)
+        parse.assert_not_called()
+
 
 if __name__ == "__main__":
     unittest.main()

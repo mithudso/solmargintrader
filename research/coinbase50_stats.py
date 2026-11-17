@@ -131,6 +131,8 @@ def clock_test(profiles, metric, replicates=9999):
     assets. Local-day rotations change hour labels; permuting days would not.
     """
     y = np.asarray(profiles, dtype=float)
+    if y.ndim != 2 or y.shape[1] != 24 or not np.isfinite(y).all():
+        raise ValueError("clock profiles must contain finite complete 24-hour days")
     if len(y) < 120:
         return {"status": "insufficient complete days", "p": 1.0, "days": len(y)}
     y = y - y.mean(axis=1, keepdims=True)

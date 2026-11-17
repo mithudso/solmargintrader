@@ -82,6 +82,118 @@
       "summary": "Python 3.13 + solders (own venv) | Yes \u2014 guarded Jupiter swaps (dry-run by default)"
     },
     {
+      "path": "website/README.md",
+      "component": "website",
+      "kind": "markdown",
+      "summary": "Implemented website scope, independent readiness gates, setup and deployment",
+      "lines": 253
+    },
+    {
+      "path": "website/package.json",
+      "component": "website",
+      "kind": "json",
+      "summary": "Node test/syntax commands and pinned Wrangler development tool",
+      "lines": 22
+    },
+    {
+      "path": "website/package-lock.json",
+      "component": "website",
+      "kind": "json",
+      "summary": "Locked website development dependencies",
+      "lines": 1634
+    },
+    {
+      "path": "website/wrangler.jsonc",
+      "component": "website",
+      "kind": "other",
+      "summary": "Production Worker, assets, D1 and cron bindings",
+      "lines": 53
+    },
+    {
+      "path": "website/wrangler.dev.jsonc",
+      "component": "website",
+      "kind": "other",
+      "summary": "Separate local development configuration without production routes",
+      "lines": 36
+    },
+    {
+      "path": "website/src/worker.js",
+      "component": "website",
+      "kind": "javascript",
+      "summary": "Wallet authentication, tenant API, Stripe entitlement and read-only analysis proxy",
+      "lines": 667
+    },
+    {
+      "path": "website/public/app.js",
+      "component": "website",
+      "kind": "javascript",
+      "summary": "Browser account, research and inactive-paper-definition interface",
+      "lines": 880
+    },
+    {
+      "path": "website/public/evidence.js",
+      "component": "website",
+      "kind": "javascript",
+      "summary": "Research/Oracle evidence presentation and expiry checks",
+      "lines": 16
+    },
+    {
+      "path": "website/engine/server.py",
+      "component": "website",
+      "kind": "python",
+      "summary": "Bounded canonical backtests and inert Oracle archive HTTP adapter",
+      "lines": 488
+    },
+    {
+      "path": "website/engine/README.md",
+      "component": "website",
+      "kind": "markdown",
+      "summary": "Analysis request, token, input and provenance contract",
+      "lines": 134
+    },
+    {
+      "path": "website/scripts/export_research.py",
+      "component": "website",
+      "kind": "python",
+      "summary": "Deterministic public research catalog/body export and hash checks",
+      "lines": 123
+    },
+    {
+      "path": "website/test/api.test.js",
+      "component": "website",
+      "kind": "javascript",
+      "summary": "Worker account, tenant, billing and refusal fixtures",
+      "lines": 974
+    },
+    {
+      "path": "website/test/evidence.test.js",
+      "component": "website",
+      "kind": "javascript",
+      "summary": "Evidence units, freshness and eligibility regressions",
+      "lines": 11
+    },
+    {
+      "path": "website/engine/test_server.py",
+      "component": "website",
+      "kind": "python",
+      "summary": "Synthetic analysis requests, limits and authentication tests",
+      "lines": 248
+    },
+    {
+      "path": "website/engine/test_research.py",
+      "component": "website",
+      "kind": "python",
+      "summary": "Public-export source selection and content regression tests",
+      "lines": 88
+    },
+    {
+      "path": ".github/workflows/website.yml",
+      "component": "repo",
+      "kind": "yaml",
+      "summary": "Website Node/Python/export CI gates",
+      "lines": 34
+    },
+    {
       "path": "ecosystem/cli.py",
       "component": "ecosystem",
       "kind": "python",
@@ -831,7 +943,7 @@
       "component": "extension",
       "kind": "markdown",
       "summary": "Includes the Verification status section; read it before extending",
-      "lines": 811
+      "lines": 828
     },
     {
       "path": "extension/src/1000x/feed.js",
@@ -866,7 +978,7 @@
       "component": "extension",
       "kind": "javascript",
       "summary": "Floating read-only chart, labeled reversal/shape/momentum cards and local view settings",
-      "lines": 292
+      "lines": 317
     },
     {
       "path": "extension/src/1000x/timeframes.js",
@@ -887,14 +999,14 @@
       "component": "extension",
       "kind": "javascript",
       "summary": "Separate native IndexedDB atomic partition transitions across windows and reloads",
-      "lines": 68
+      "lines": 82
     },
     {
       "path": "extension/src/1000x/oracle-controller.js",
       "component": "extension",
       "kind": "javascript",
       "summary": "Existing-feed coalescing, source/version isolation, stale/obsolete-session refusal and owned teardown",
-      "lines": 103
+      "lines": 123
     },
     {
       "path": "extension/src/1000x/oracle-view.js",
@@ -915,7 +1027,7 @@
       "component": "extension",
       "kind": "javascript",
       "summary": "Concurrent/reloaded controllers, stored forecast reuse, quote coalescing and obsolete-session fences",
-      "lines": 197
+      "lines": 221
     },
     {
       "path": "docs/EXTENSION-STREAMING-ORACLE.md",
@@ -1230,7 +1342,7 @@
       "component": "soltui",
       "kind": "python",
       "summary": "Terminal UI",
-      "lines": 8299
+      "lines": 8313
     },
     {
       "path": "soltui/shell.py",
@@ -1578,7 +1690,7 @@
       "path": "docs/MCP.md",
       "component": "repo",
       "kind": "markdown",
-      "summary": "No repo MCP server; global connectors and offline fallback",
+      "summary": "Oracle's read-only stdio MCP contract, host-specific registration and offline retrieval fallback",
       "lines": 81
     },
     {
@@ -1601,6 +1713,20 @@
       "kind": "markdown",
       "summary": "Revert code without discarding execution state",
       "lines": 33
+    },
+    {
+      "path": "scripts/capture_market.py",
+      "component": "repo",
+      "kind": "python",
+      "summary": "Bounded public raw-event spool and independent dedicated MongoDB uploader",
+      "lines": 467
+    },
+    {
+      "path": "scripts/test_capture_market.py",
+      "component": "repo",
+      "kind": "python",
+      "summary": "Disposable spool, deadline, upload ambiguity and native MongoDB boundary tests",
+      "lines": 258
     },
     {
       "path": "docs/runbooks/handoff.md",
@@ -2155,20 +2281,6 @@
       "lines": 151
     },
     {
-      "path": "website/README.md",
-      "component": "website",
-      "kind": "markdown",
-      "summary": "Development, production setup and outstanding activation limits",
-      "lines": 253
-    },
-    {
-      "path": "website/src/worker.js",
-      "component": "website",
-      "kind": "javascript",
-      "summary": "Account, billing, configuration and protected analysis API",
-      "lines": 667
-    },
-    {
       "path": "website/api/openapi.json",
       "component": "website",
       "kind": "json",
@@ -2183,20 +2295,6 @@
       "lines": 48
     },
     {
-      "path": "website/public/app.js",
-      "component": "website",
-      "kind": "javascript",
-      "summary": "Wallet, workspace, membership and research UI",
-      "lines": 880
-    },
-    {
-      "path": "website/public/evidence.js",
-      "component": "website",
-      "kind": "javascript",
-      "summary": "Expiring-strategy display guard",
-      "lines": 16
-    },
-    {
       "path": "website/public/styles.css",
       "component": "website",
       "kind": "css",
@@ -2204,74 +2302,11 @@
       "lines": 9
     },
     {
-      "path": "website/wrangler.jsonc",
-      "component": "website",
-      "kind": "other",
-      "summary": "Production Worker, D1 and custom-domain configuration",
-      "lines": 53
-    },
-    {
-      "path": "website/wrangler.dev.jsonc",
-      "component": "website",
-      "kind": "other",
-      "summary": "Separate local origin and routing configuration",
-      "lines": 36
-    },
-    {
-      "path": "website/engine/server.py",
-      "component": "website",
-      "kind": "python",
-      "summary": "Bounded read-only canonical analysis HTTP adapter",
-      "lines": 488
-    },
-    {
-      "path": "website/engine/README.md",
-      "component": "website",
-      "kind": "markdown",
-      "summary": "Analysis input, transport and provisioning contract",
-      "lines": 134
-    },
-    {
-      "path": "website/scripts/export_research.py",
-      "component": "website",
-      "kind": "python",
-      "summary": "Source-bound research/card publication exporter",
-      "lines": 123
-    },
-    {
       "path": "website/scripts/smoke.mjs",
       "component": "website",
       "kind": "other",
       "summary": "Explicit deployed wallet account creation/deletion acceptance",
       "lines": 60
-    },
-    {
-      "path": "website/test/api.test.js",
-      "component": "website",
-      "kind": "javascript",
-      "summary": "SQLite-backed account and Stripe failure-mode tests",
-      "lines": 974
-    },
-    {
-      "path": "website/test/evidence.test.js",
-      "component": "website",
-      "kind": "javascript",
-      "summary": "Expired forecast display regression test",
-      "lines": 11
-    },
-    {
-      "path": "website/engine/test_server.py",
-      "component": "website",
-      "kind": "python",
-      "summary": "Canonical analysis parity and HTTP boundary tests",
-      "lines": 248
-    },
-    {
-      "path": "website/engine/test_research.py",
-      "component": "website",
-      "kind": "python",
-      "summary": "Research export provenance and publication exclusions",
-      "lines": 88
     }
   ]
 }

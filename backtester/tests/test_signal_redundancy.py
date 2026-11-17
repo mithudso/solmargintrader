@@ -171,8 +171,11 @@ class TestTwinVerdict(unittest.TestCase):
     def test_high_agreement_alone_is_enough(self) -> None:
         """Either test can flag redundancy; they measure different things."""
         a = pd.Series(np.tile([1.0, 0.0], 50))
-        b = a * 0.02  # same state, tiny size -> agreement 1.0, corr 1.0
-        self.assertTrue(sr.twin_verdict(a, b)["redundant"])
+        b = pd.Series(np.where(a > 0, np.tile([.001, 100, 1, .01], 25), 0))
+        verdict = sr.twin_verdict(a, b)
+        self.assertLess(verdict["corr"], sr.REDUNDANT_CORR)
+        self.assertEqual(verdict["agree_active"], 1.0)
+        self.assertTrue(verdict["redundant"])
 
 
 class TestPairTable(unittest.TestCase):

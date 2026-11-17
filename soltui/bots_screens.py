@@ -8,6 +8,7 @@ close or confirm the window; no button here is an action, so none needs a regist
 
 from __future__ import annotations
 
+import copy
 from typing import Any, Callable, ClassVar
 
 from rich.text import Text
@@ -108,7 +109,7 @@ class OptimizeScreen(ModalScreen[None]):
         self.poll = poll
         self.table_cls = table_cls
         self.result: dict[str, Any] | None = None
-        self._shown_candidates = 0
+        self._shown_candidates = None
 
     def compose(self) -> ComposeResult:
         with Vertical(id="opt-dialog"):
@@ -154,12 +155,13 @@ class OptimizeScreen(ModalScreen[None]):
             "every cached coin. Older windows pick a candidate; newer windows decide whether it is adopted."))
         self.query_one("#opt-progress", Static).update(Text(
             f"{100 * float(prog.get('fraction') or 0):.0f}% · {prog.get('message', '')}"))
-        if len(cands) != self._shown_candidates:
+        identity = (prog.get("run"), prog.get("coin"), cands)
+        if identity != self._shown_candidates:
             table = self.query_one("#opt-candidates", DataTable)
             table.clear()
             for row in cands:
                 table.add_row(str(row["index"]), _changes_text(row["changes"]))
-            self._shown_candidates = len(cands)
+            self._shown_candidates = copy.deepcopy(identity)
 
     def show_result(self, r: dict[str, Any] | None, error: str = "") -> None:
         """The popup part: what was decided, which settings changed, and whether they were saved."""

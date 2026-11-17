@@ -95,6 +95,10 @@ def validate_bar_arrays(
             raise ValueError(
                 f"timestamp cadence must equal {interval}; gapped or mismatched bars are unsupported"
             )
+    observed = np.asarray(arrays.get("observed", np.ones(n, dtype=bool)))
+    if observed.shape != (n,) or observed.dtype != np.dtype(bool):
+        raise ValueError("observed must be a boolean vector matching bars")
+    checked["observed"] = observed
     checked["ts"] = ts
     for name in ("open", "high", "low", "close"):
         if name in checked and np.any(checked[name] <= 0):

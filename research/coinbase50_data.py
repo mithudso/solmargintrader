@@ -92,6 +92,7 @@ def collect_cell(root, asset, interval, limiter):
         path = cell / f"{left}_{right}.json"
         query = urlencode({"granularity": seconds, "start": pd.Timestamp(left, unit="s", tz="UTC").isoformat(), "end": pd.Timestamp(right, unit="s", tz="UTC").isoformat()})
         url = f"{COINBASE_BASE}/products/{asset['product']['product_id']}/candles?{query}"
+        validated = False
         try:
             if path.exists():
                 evidence = json.loads(path.read_text())
@@ -101,12 +102,24 @@ def collect_cell(root, asset, interval, limiter):
                 limiter.wait()
                 rows = _get_json(url)
                 evidence = {"url": url, "retrieved_at": pd.Timestamp.now(tz="UTC").isoformat(), "rows": rows}
-                save(path, evidence)
             rows = evidence["rows"]
-            if not isinstance(rows, list) or any(len(x) != 6 for x in rows):
+            if not isinstance(rows, list) or any(not isinstance(x, list) or len(x) != 6 for x in rows):
                 raise ValueError("invalid Coinbase candle response")
+            values = np.asarray(rows, dtype=float).reshape((-1, 6))
+            if (not np.isfinite(values).all() or (values[:, 0] % seconds != 0).any()
+                    or (values[:, 1:5] <= 0).any() or (values[:, 5] < 0).any()
+                    or (values[:, 2] < np.maximum(values[:, 3], values[:, 4])).any()
+                    or (values[:, 1] > np.minimum(values[:, 3], values[:, 4])).any()):
+                raise ValueError("invalid finite candle measurements or timestamp grid")
+            validated = True
+            if not path.exists():
+                save(path, evidence)
             chunks.extend(rows)
         except Exception as exc:  # noqa: BLE001 -- preserve per-request failure evidence
+            if not validated and path.exists():
+                # Retain rejected evidence while allowing a fresh request on resume.
+                quarantine = path.with_suffix(".invalid-" + sha(path)[:12])
+                path.replace(quarantine)
             errors.append({"url": url, "error": str(exc)})
     frame = pd.DataFrame(chunks, columns=["timestamp", "low", "high", "open", "close", "volume"])
     if len(frame) and (frame.groupby("timestamp")[["open", "high", "low", "close", "volume"]].nunique() > 1).any().any():

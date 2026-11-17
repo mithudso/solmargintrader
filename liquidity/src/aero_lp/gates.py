@@ -126,7 +126,8 @@ def record_dry_run_tick(root: Path, cfg: Config, now: float | None = None) -> di
     else:
         gap = max(0.0, now - float(doc.get("last_tick_at", now)))
         doc["accumulated_s"] = float(doc.get("accumulated_s", 0.0)) + min(gap, MAX_TICK_GAP_S)
-        doc["last_tick_at"] = now
+        # A backward wall clock must not make an already credited interval available again.
+        doc["last_tick_at"] = max(now, float(doc["last_tick_at"]))
     atomic_write_json(_soak_path(root), doc)
     return doc
 

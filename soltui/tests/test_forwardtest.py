@@ -22,6 +22,16 @@ from soltui.tui import SolTuiApp
 BASE = 1_800_000_000
 
 
+def stop_fixture_runner(ctx):
+    """Stop only the fixture's thread even when an earlier assertion raises."""
+    ctx.runtime.forward_stop.set()
+    thread = ctx.runtime.forward_thread
+    if thread is not None:
+        thread.join(5)
+        if thread.is_alive():
+            raise AssertionError("fixture forward runner did not stop")
+
+
 def candles(minute: int, *, gap: int | None = None) -> dict:
     offsets = np.arange(-200, minute + 1)
     offsets = offsets[offsets != gap]
@@ -181,6 +191,7 @@ class ForwardPlan(unittest.TestCase):
 
     def test_running_plan_restores_and_stop_clears_it(self) -> None:
         ctx = commands.Context.from_settings(config.Settings(), commands.Runtime())
+        self.addCleanup(stop_fixture_runner, ctx)
         commands.dispatch("forwardtest.start", {"scope": "roster", "coins": ["ETH"], "use_leverage": True,
                    "leverage": 5., "allow_short": True, "min_confidence": .9}, ctx=ctx, quiet=True)
         with patch.object(commands, "_forward_runner", lambda rt: rt.forward_stop.wait(5)):
@@ -188,6 +199,7 @@ class ForwardPlan(unittest.TestCase):
             ctx.runtime.forward_stop.set()
             ctx.runtime.forward_thread.join(5)
             restored = commands.Context.from_settings(config.Settings(), commands.Runtime())
+            self.addCleanup(stop_fixture_runner, restored)
             result = commands.dispatch("forwardtest.restore", {}, ctx=restored, quiet=True)
             self.assertEqual(result["result"]["assets"], ["ETH"])
             profile = restored.runtime.forward_plan["execution"]
@@ -215,6 +227,7 @@ class ForwardPlan(unittest.TestCase):
 
     def test_the_runner_checks_every_coin_on_its_own_thread_until_stopped(self) -> None:
         ctx = commands.Context.from_settings(config.Settings(), commands.Runtime())
+        self.addCleanup(stop_fixture_runner, ctx)
         seen: list[str] = []
 
         def fake_tick(asset, trials, horizons, cost, **kw):

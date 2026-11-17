@@ -352,14 +352,15 @@ class SnapshotLoader:
             first = ((requested + step - 1) // step) * step
         if end:
             timestamp = pd.Timestamp(end, tz="UTC")
-            if re.fullmatch(r"\d{4}-\d{2}-\d{2}", end):
+            bare_date = re.fullmatch(r"\d{4}-\d{2}-\d{2}", end) is not None
+            if bare_date:
                 timestamp += pd.Timedelta(days=1) - pd.Timedelta(seconds=1)
             requested = int(timestamp.timestamp())
             if requested > last + step:
                 raise DataValidationError("snapshot ends before the requested date")
             # A timestamp names a bar OPEN; an intraday cutoff cannot include
             # a bar until its entire interval has completed.
-            last = ((requested + 1 - step) // step) * step
+            last = ((requested + int(bare_date) - step) // step) * step
         _, rows = read_history(self.archive, self.snapshot_id, first, last)
         return validate_bars(pd.DataFrame(rows, columns=BAR_COLUMNS), interval)
 

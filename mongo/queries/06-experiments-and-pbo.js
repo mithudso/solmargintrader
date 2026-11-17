@@ -85,19 +85,20 @@ printjson(
     .toArray(),
 );
 
-print("\n=== the sweep: best median Sharpe per strategy, with trade counts ===");
+print("\n=== the sweep: best out-of-sample Sharpe per label, with trade counts ===");
 // `trades` matters as much as the Sharpe: a high Sharpe on 3 trades is noise, and
-// the sweep's own filters exist for that reason.
+// the sweep's own filters exist for that reason. CSV preserves Python's "True"
+// spelling; JSON-sidecar rows preserve the boolean value.
 printjson(
   db.experiment_rows
     .aggregate([
-      { $match: { kind: "sweep", section: "result", median_sharpe: { $ne: null } } },
+      { $match: { kind: "sweep", section: "result", rankable: { $in: [true, "True"] }, oos_sharpe: { $type: "number" } } },
       {
         $group: {
-          _id: "$strategy",
-          bestSharpe: { $max: "$median_sharpe" },
+          _id: "$label",
+          bestSharpe: { $max: "$oos_sharpe" },
           configs: { $sum: 1 },
-          maxTrades: { $max: "$trades" },
+          maxTrades: { $max: "$oos_trades" },
         },
       },
       { $sort: { bestSharpe: -1 } },

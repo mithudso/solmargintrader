@@ -135,9 +135,16 @@ export function mountLivePanel(host, { read, asset = 'SOL', clock = window, onSn
     if (disposed || busy || (!force && clock.document?.hidden)) return;
     busy = true; const generation = epoch, selected = coin;
     try {
-      if (force || Date.now() - lastWarm >= 20_000) { await read('live.rail_refresh', { asset: selected }); lastWarm = Date.now(); }
+      let warmingFailed = false;
+      if (force || Date.now() - lastWarm >= 20_000) {
+        lastWarm = Date.now();
+        try { await read('live.rail_refresh', { asset: selected }); } catch { warmingFailed = true; }
+      }
       const value = await read('live.rail', { asset: selected, limit: 8 });
-      if (!disposed && generation === epoch) paint(value);
+      if (!disposed && generation === epoch) {
+        paint(value);
+        if (warmingFailed) { status.textContent += ' · Refresh preparation failed; showing saved evidence.'; status.classList.add('err'); }
+      }
     } catch (error) {
       if (!disposed && generation === epoch) { if (last) paint({ ...last, stale: true }); status.textContent = `Monitor unavailable · ${error.message}`; status.classList.add('err'); }
     } finally { busy = false; if (queued && !disposed) { queued = false; tick(true); } }

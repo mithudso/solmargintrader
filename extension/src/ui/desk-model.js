@@ -15,6 +15,7 @@ export const finite = (n) => typeof n === 'number' && Number.isFinite(n);
 export const numberText = (n, digits = 2) => finite(n) ? n.toLocaleString(undefined, { maximumFractionDigits: digits }) : 'Unavailable';
 export const percentText = (fraction) => finite(fraction) ? `${numberText(100 * fraction)}%` : 'Unavailable';
 export function comparisonKey(context) {
+  if (!context || !['asset', 'interval', 'start', 'end'].every(k => typeof context[k] === 'string' && context[k].trim()) || !finite(context.capital) || context.capital <= 0 || !Number.isInteger(context.fill_delay) || context.fill_delay < 0 || !context.execution || typeof context.execution !== 'object' || !Object.keys(context.execution).length || !context.cpcv || !Number.isInteger(context.cpcv.cpcv_groups) || !Number.isInteger(context.cpcv.cpcv_k) || context.cpcv.cpcv_groups < 2 || context.cpcv.cpcv_k < 1 || context.cpcv.cpcv_k >= context.cpcv.cpcv_groups) return null;
   if (!context?.data_sha256 || !context?.strategy_revision || !context?.execution || !context?.cpcv) return null;
   // Strategy membership may differ: data, costs and the evaluation contract may not.
   const canonical = (v) => Array.isArray(v) ? v.map(canonical) : v && typeof v === 'object'
@@ -33,6 +34,8 @@ export function runFromEnvelope(env) {
   if (!env?.ok || !['backtest.run', 'backtest.results'].includes(env.command)) return null;
   const val = env.result;
   if (val?.context?.schema !== 1 || typeof val.context.id !== 'string' || !Array.isArray(val.rows)) return null;
+  const record = v => v && typeof v === 'object' && !Array.isArray(v);
+  if (!val.rows.every(record) || (val.skipped !== undefined && (!Array.isArray(val.skipped) || !val.skipped.every(record)))) return null;
   const rowKeys = ['label', 'family', 'median_sharpe', 'iqr', 'frac_positive', 'median_return', 'trades', 'evaluable', 'reason'];
   return { id: val.context.id, context: structuredClone(val.context), cancelled: val.cancelled === true, error: val.error ?? null,
     rows: val.rows.slice(0, 1000).map((r) => Object.fromEntries(rowKeys.filter((k) => Object.hasOwn(r, k)).map((k) => [k, r[k]]))),

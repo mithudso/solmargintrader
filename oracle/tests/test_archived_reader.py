@@ -255,18 +255,22 @@ class ArchivedReaderTests(unittest.TestCase):
             variants.append((change, policy))
         for change, policy in variants:
             with self.subTest(change=change):
-                with self.writer.store.connection() as db:
+                # Isolate policy validation from recorded forecast hash checks.
+                # An unrelated binding rejection must not mask a missing gate.
+                path = self.path.with_name("policy-" + change + ".sqlite3")
+                writer = OracleEngine(path, instrument="SOL/USD", minimum_resolved=1)
+                with writer.store.connection() as db:
                     db.execute(
                         "UPDATE metadata SET body=? WHERE key='policy'",
                         (canonical(policy),),
                     )
-                before = hashlib.sha256(self.path.read_bytes()).hexdigest()
+                before = hashlib.sha256(path.read_bytes()).hexdigest()
                 with self.assertRaises(ValueError):
                     ReadOnlyOracle(
-                        self.path, instrument="SOL/USD", archived_versions=True
+                        path, instrument="SOL/USD", archived_versions=True
                     )
                 self.assertEqual(
-                    hashlib.sha256(self.path.read_bytes()).hexdigest(), before
+                    hashlib.sha256(path.read_bytes()).hexdigest(), before
                 )
 
     def test_policy_sha_change_cannot_rebind_existing_forecasts(self):

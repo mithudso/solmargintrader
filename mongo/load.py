@@ -32,17 +32,18 @@ import math
 import re
 import subprocess
 import sys
-from datetime import datetime, timezone
+from collections.abc import Iterable
+from datetime import UTC, datetime
 from pathlib import Path
-from typing import Any, Iterable
+from typing import Any
 
 REPO = Path(__file__).resolve().parents[1]
 if str(REPO) not in sys.path:
     sys.path.insert(0, str(REPO))
 
-from mongo.schema import DB_NAME, connect, create  # noqa: E402
+from mongo.schema import DB_NAME, connect, create
 
-LOADED_AT = datetime.now(timezone.utc)
+LOADED_AT = datetime.now(UTC)
 
 
 # --------------------------------------------------------------------------
@@ -129,6 +130,7 @@ def read_csv_rows(path: Path) -> list[dict[str, Any]]:
 
 def read_bar_snapshot(path: Path, interval: str):
     import pandas as pd
+
     from backtester.core.data import validate_bars
     raw, prov = source_snapshot(path)
     return validate_bars(pd.read_csv(io.BytesIO(raw)), interval, strict_gaps=False), prov
@@ -137,14 +139,26 @@ def read_bar_snapshot(path: Path, interval: str):
 def git_sha() -> str:
     """Short HEAD sha, or 'unknown' outside a repo."""
     done = subprocess.run(
-        ["git", "rev-parse", "--short", "HEAD"], cwd=REPO, capture_output=True, text=True
+        ["git", "rev-parse", "--short", "HEAD"], cwd=REPO, capture_output=True, text=True, check=False
     )
     return done.stdout.strip() if done.returncode == 0 else "unknown"
 
 
 def utc(epoch_seconds: float) -> datetime:
     """A UTC datetime from epoch seconds, which is how the CSVs store time."""
-    return datetime.fromtimestamp(int(epoch_seconds), tz=timezone.utc)
+    return datetime.fromtimestamp(int(epoch_seconds), tz=UTC)
+
+
+def observation_time(row: dict[str, Any], path: Path, index: int, *fields: str) -> datetime:
+    """A declared financial observation cannot disappear because its time is absent."""
+    value = next((row[name] for name in fields if row.get(name) is not None), None)
+    try:
+        if isinstance(value, bool) or not isinstance(value, (int, float)) or not math.isfinite(value):
+            raise ValueError("missing or invalid timestamp")
+        return utc(value)
+    except (ValueError, TypeError, OverflowError, OSError) as error:
+        label = path.relative_to(REPO) if path.is_relative_to(REPO) else path.name
+        raise ValueError(f"{label}: CSV row {index}: missing or invalid timestamp") from error
 
 
 # --------------------------------------------------------------------------
@@ -220,7 +234,7 @@ def load_bars() -> list[dict[str, Any]]:
             # backtest or a readout reports, so a bar here can be tied to the run
             # that saw it.
             "frame_checksum": checksum_frame(frame),
-            "bars": int(len(frame)),
+            "bars": len(frame),
         }
         for row in frame.itertuples(index=False):
             docs.append(
@@ -452,10 +466,12 @@ def load_equity_points(*, run_snapshot=None) -> list[dict[str, Any]]:
         path = REPO / "results" / f"equity_{strategy}.csv"
         table, prov = artifact_rows(path, context)
         meta = {"run_id": run_id, "strategy": strategy, "manifest_provenance": manifest_prov, **prov}
-        for row in table:
-            ts = row.get("timestamp") if row.get("timestamp") is not None else row.get("ts")
-            if ts is not None:
-                docs.append({"ts": utc(ts), "curve": meta, "equity": clean(row.get("equity")), "loaded_at": LOADED_AT})
+        for index, row in enumerate(table, 2):
+            ts = observation_time(row, path, index, "timestamp", "ts")
+            equity = row.get("equity")
+            if isinstance(equity, bool) or not isinstance(equity, (int, float)) or not math.isfinite(equity) or equity < 0:
+                raise ValueError(f"{path.name}: CSV row {index}: invalid equity")
+            docs.append({"ts": ts, "curve": meta, "equity": float(equity), "loaded_at": LOADED_AT})
     return docs
 
 
@@ -478,12 +494,16 @@ def load_trades(*, run_snapshot=None) -> list[dict[str, Any]]:
     for strategy in sorted(manifest["strategies"]):
         path = REPO / "results" / f"trades_{strategy}.csv"
         table, prov = artifact_rows(path, context)
-        for row in table:
-            ts = row.get("ts") if row.get("ts") is not None else row.get("timestamp")
-            if ts is not None:
-                data = {k: v for k, v in row.items() if k not in ("ts", "timestamp")}
-                docs.append(protected_row(data, {"run_id": run_id, "strategy": strategy, "ts": utc(ts),
-                                                "manifest_provenance": manifest_prov, **prov}))
+        for index, row in enumerate(table, 2):
+            ts = observation_time(row, path, index, "ts", "timestamp")
+            data = {k: v for k, v in row.items() if k not in ("ts", "timestamp")}
+            if "price" in data:
+                price = data["price"]
+                if isinstance(price, bool) or not isinstance(price, (int, float)) or not math.isfinite(price) or price <= 0:
+                    raise ValueError(f"{path.name}: CSV row {index}: invalid trade price")
+                data["price"] = float(price)
+            docs.append(protected_row(data, {"run_id": run_id, "strategy": strategy, "ts": ts,
+                                            "manifest_provenance": manifest_prov, **prov}))
     return docs
 
 
@@ -694,14 +714,14 @@ def load_test_results(*, run_suites: bool, skip: Iterable[str] = ()) -> list[dic
     for suite, command in SUITE_COMMANDS.items():
         if suite in skip:
             continue
-        done = subprocess.run(command, cwd=REPO, capture_output=True, text=True)
+        done = subprocess.run(command, cwd=REPO, capture_output=True, text=True, check=False)
         match = re.search(r"^Ran (\d+) tests?", done.stderr, re.MULTILINE)
         docs.append(
             {
                 "suite": suite,
                 "count": int(match.group(1)) if match else 0,
                 "ok": done.returncode == 0,
-                "recorded_at": datetime.now(timezone.utc),
+                "recorded_at": datetime.now(UTC),
                 "git_sha": sha,
                 "command": " ".join(command),
                 "source_path": SUITE_PATHS[suite],
@@ -712,7 +732,7 @@ def load_test_results(*, run_suites: bool, skip: Iterable[str] = ()) -> list[dic
 
     if "extension" not in skip:
         done = subprocess.run(
-            ["npm", "test"], cwd=REPO / "extension", capture_output=True, text=True
+            ["npm", "test"], cwd=REPO / "extension", capture_output=True, text=True, check=False
         )
         match = re.search(r"^# tests (\d+)$", done.stdout, re.MULTILINE) or re.search(
             r"tests (\d+)", done.stdout
@@ -722,7 +742,7 @@ def load_test_results(*, run_suites: bool, skip: Iterable[str] = ()) -> list[dic
                 "suite": "extension",
                 "count": int(match.group(1)) if match else 0,
                 "ok": done.returncode == 0,
-                "recorded_at": datetime.now(timezone.utc),
+                "recorded_at": datetime.now(UTC),
                 "git_sha": sha,
                 "command": "npm test",
                 "source_path": SUITE_PATHS["extension"],
@@ -829,6 +849,8 @@ def main(argv: list[str] | None = None) -> int:
             return 2
 
     batches = build_all(only, run_suites=args.run_tests, skip_suites=args.skip_suite)
+    from mongo.schema import validate_batches
+    validate_batches(batches)
 
     if args.dry_run:
         for name, docs in sorted(batches.items()):

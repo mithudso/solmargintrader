@@ -116,6 +116,8 @@ def interpret(evaluable: int, total: int, positive: int, pbo: float) -> list[str
     if evaluable == 0:
         return ["      -> nothing evaluable; check warm-up lengths and trade floors"]
 
+    if total <= 0:
+        raise ValueError("no configurations were requested")
     share = positive / evaluable
     dropped = total - evaluable
     if dropped:
@@ -307,7 +309,7 @@ def run_combos(
     rows: list[dict] = []
     per_config_blocks: dict[str, dict[int, np.ndarray]] = {}
 
-    admitted = independent_combos(usable, size, horizon, gate, arrays)
+    admitted = list(independent_combos(usable, size, horizon, gate, arrays))
     for combo in admitted:
         specs = [(n, params[n]) for n in combo]
         for mode in modes:

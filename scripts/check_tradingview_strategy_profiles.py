@@ -99,7 +99,8 @@ def card_location(repo: Path, profile: dict) -> Path:
         )
     readiness = entry["readiness"]
     if (
-        readiness["status"] not in {"usable-specification", "incomplete"}
+        type(entry.get("coin_test_ready")) is not bool
+        or readiness["status"] not in {"usable-specification", "incomplete"}
         or not readiness.get("reason")
         or not entry.get("evidence")
         or not isinstance(readiness.get("gaps"), list)

@@ -67,7 +67,7 @@ const EXIT_GRACE_MS = 2_000;
  * Launch Chrome, load one unpacked extension, and return a session handle.
  * @param {{chrome: string, extension: string, noSandbox?: boolean, headless?: boolean}} opts
  */
-export async function launch({ chrome, extension, noSandbox = false, headless = true }) {
+export async function launch({ chrome, extension, noSandbox = false, headless = true, beforeLoad, environment }) {
   if (!chrome || !fs.existsSync(chrome)) throw new Error('no Chrome for Testing binary (set CHROME)');
   const profile = fs.mkdtempSync(path.join(os.tmpdir(), 'smt-e2e-'));
   const proc = spawn(
@@ -84,7 +84,8 @@ export async function launch({ chrome, extension, noSandbox = false, headless = 
       '--disable-component-update',
       'about:blank',
     ],
-    { stdio: ['ignore', 'ignore', 'ignore', 'pipe', 'pipe'] },
+    { stdio: ['ignore', 'ignore', 'ignore', 'pipe', 'pipe'],
+      ...(environment ? { env: typeof environment === 'function' ? environment(profile) : environment } : {}) },
   );
   const [toChrome, fromChrome] = [proc.stdio[3], proc.stdio[4]];
 
@@ -94,6 +95,7 @@ export async function launch({ chrome, extension, noSandbox = false, headless = 
   let dead = null;
   const pending = new Map();
   const listeners = new Set();
+  const targetSessions = new Map();
 
   const failAll = (why) => {
     dead ??= why;
@@ -110,6 +112,11 @@ export async function launch({ chrome, extension, noSandbox = false, headless = 
     const parsed = parseFrames(buf + chunk);
     buf = parsed.rest;
     for (const m of parsed.frames) {
+      if (!m || typeof m !== 'object' || Array.isArray(m)) continue;
+      if (m.method === 'Target.attachedToTarget') targetSessions.set(m.params.targetInfo.targetId, m.params.sessionId);
+      if (m.method === 'Target.detachedFromTarget') {
+        for (const [target, session] of targetSessions) if (session === m.params.sessionId) targetSessions.delete(target);
+      }
       if (m.id !== undefined && pending.has(m.id)) {
         const p = pending.get(m.id);
         pending.delete(m.id);
@@ -163,9 +170,12 @@ export async function launch({ chrome, extension, noSandbox = false, headless = 
     }
   };
 
-  let extensionId, version;
+  let extensionId;
+  let version;
+  const on = (fn) => (listeners.add(fn), () => listeners.delete(fn));
   try {
-    await call('Browser.getVersion');
+    version = (await call('Browser.getVersion')).product;
+    if (beforeLoad) await beforeLoad({ call, on, close });
     ({ id: extensionId } = await call('Extensions.loadUnpacked', { path: path.resolve(extension) }));
     version = (await call('Browser.getVersion')).product;
   } catch (e) {
@@ -173,11 +183,11 @@ export async function launch({ chrome, extension, noSandbox = false, headless = 
     throw e;
   }
 
-  const on = (fn) => (listeners.add(fn), () => listeners.delete(fn));
   const targets = async () => (await call('Target.getTargets')).targetInfos;
 
   /** Attach to a target and return its flat session id. */
   const attach = async (targetId) => {
+    if (targetSessions.has(targetId)) return targetSessions.get(targetId);
     const { sessionId } = await call('Target.attachToTarget', { targetId, flatten: true });
     return sessionId;
   };

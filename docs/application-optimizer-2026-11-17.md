@@ -1,6 +1,6 @@
 # Whole-application assessment, 2026-11-17
 
-Version: 2.0.2. Delta: retain late-callback stop acknowledgment while a fresh shared-producer restart can supersede it; preserve PR330 and all prior audit evidence.
+Version: 2.1.0. Delta: integrate delivered maintenance and research checkpoints; preserve unknown daily funding, reservation admission and prepared-slice binding, while retaining both learners and all audit lineage.
 
 **Outcome: NEEDS_EVIDENCE.** The current assessment covers the eleven-component
 research, paper-operation, hosted-account and guarded-execution application.
@@ -52,7 +52,7 @@ bounded health polling, account-bound calculation recovery, fair candle refresh,
 reproducible synthetic seeds and the supported dry-run/verifier operating guide.
 They were delivered previously; this run does not claim them as new discoveries.
 
-The current ledger retains 29 resolved product, implementation and verification
+The current ledger retains 33 resolved product, implementation and verification
 findings. Failure attempts exposed canonical JSON/revision conflicts, malformed
 profile IDs, overlapping physical saves after logical timeout, obsolete revision
 retries, missing legacy backup metadata, stale recovery and cold quota display.
@@ -66,12 +66,12 @@ paint Running after Stop. The UI retains the acknowledgment until fresh idle or
 a confirmed unpaused running producer, including a restart from another console.
 Its test releases and joins the held worker explicitly.
 
-Current local checks pass 652 extension tests, 252 native tests, 20 supervisor
+The preserved source7 local checks passed 652 extension tests, 252 native tests, 20 supervisor
 lifecycle tests, checked JavaScript, pinned Python lint, documentation counts and
 deterministic registry/wiki/index checks. Independent bounded sections and the
 final review retain their own exact execution scope and limitations.
 
-Installed acceptance verifies 1,751 package files, including 266 Python modules.
+The preserved source7 installed acceptance verified 1,751 package files, including 266 Python modules.
 Actual disposable Chrome, shipped bridge, installed framed native registry and
 SQLite saved/restored all 21 tested SOL/BTC/ZEC partitions without double learning.
 All seven panel partitions received real Save Now acknowledgements after helper
@@ -79,11 +79,20 @@ recovery. Corruption, isolation, concurrent local restoration, historical counts
 and chart reset passed. All test processes and profiles were cleaned up.
 
 The candidate versions are runtime 0.4.8, manager 0.7.11, ecosystem 0.4.20 and
-extension 0.12.4. The source includes delivered PR327/224/226/330 and their preserved
+extension 0.12.8. The source includes delivered PR327/224/226/330/235/289 and their preserved
 research/audit histories. No active cohort, paused study, archived liquidity
 service, credentials or trading authority was changed for evaluation. Actual
 user-profile/global activation is a separate delivery receipt; private-profile
 acceptance does not prove it.
+
+The combined source additionally retains maintenance repairs and their paused-audit
+limits. Synthetic research contracts preserve missing daily funding as unknown,
+refuse absent holdout reservation storage, and load the already bound minute slice
+path. Corrected refusal fixtures and the existing research-dependency CI step cover
+all 67 cases. Historical numerical studies remain exact source-bound evidence.
+Current combined counts are 1,228 backtester, 1,718 SolTUI, 73 Mongo and 724
+extension cases. Current installed and final review receipts live in the versioned
+private ledger; earlier installed counts above retain their actual source7 scope.
 
 ## Evidence limits and continuation
 

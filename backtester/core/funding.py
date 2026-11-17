@@ -81,7 +81,7 @@ from typing import Any, Sequence
 import pandas as pd
 import numpy as np
 
-from .fetch import FetchError
+from .fetch import FetchError, atomic_csv
 from .market_diagnostics import market_request
 
 HYPERLIQUID_URL = "https://api.hyperliquid.xyz/info"
@@ -257,6 +257,15 @@ def fetch_hyperliquid_funding(
             raise FundingFetchError("funding history response must be a list")
         if not page:
             break
+        try:
+            for item in page:
+                if not isinstance(item, dict):
+                    raise TypeError("funding row must be an object")
+                int(item["time"])
+                float(item["fundingRate"])
+                float(item.get("premium", "nan"))
+        except (ValueError, TypeError, KeyError, OverflowError) as exc:
+            raise FundingFetchError("malformed funding response row") from exc
 
         try:
             timestamps = [int(row["time"]) for row in page]
@@ -298,7 +307,11 @@ def fetch_hyperliquid_funding(
         raise FundingFetchError("funding history has invalid numeric fields") from exc
     # Pagination boundaries can repeat a row; drop exact duplicates before the
     # validator, which treats a duplicate timestamp as fatal.
-    frame = frame.drop_duplicates().sort_values("timestamp")
+    duplicates = frame[frame.duplicated("timestamp", keep=False)]
+    if any(group["funding_rate"].nunique(dropna=False) > 1 or group["premium"].nunique(dropna=False) > 1
+           for _, group in duplicates.groupby("timestamp")):
+        raise FundingFetchError("conflicting funding payments at the same timestamp")
+    frame = frame.drop_duplicates(subset="timestamp").sort_values("timestamp")
     return validate_funding(frame)
 
 
@@ -376,12 +389,15 @@ def fetch_funding_universe(
 
         try:
             frame = fetch_hyperliquid_funding(asset, start, end, verbose=verbose)
-        except FundingFetchError as exc:
+        except (FundingFetchError, ValueError, TypeError, KeyError, OverflowError) as exc:
             results[asset] = FundingOutcome(asset, 0, None, "", str(exc))
             continue
 
-        out.parent.mkdir(parents=True, exist_ok=True)
-        frame.to_csv(out, index=False)
+        try:
+            atomic_csv(frame, out)
+        except OSError as exc:
+            results[asset] = FundingOutcome(asset, 0, None, "", f"cache publication failed: {type(exc).__name__}")
+            continue
         results[asset] = FundingOutcome(asset, len(frame), out, _span(frame))
 
     return results
