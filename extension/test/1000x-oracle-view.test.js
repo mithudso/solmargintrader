@@ -50,8 +50,15 @@ test('same-source stale input cannot be reactivated by any older committed compl
     assert.equal(root.dataset.state, 'waiting');
     assert.match(find('oracle-prediction').textContent, /Historical stored/);
     assert.doesNotMatch(find('oracle-status').textContent, /candidate active/);
+    assert.match(find('oracle-counts').textContent, /^Historical/);
+    assert.match(find('oracle-metrics').children.find(x => x.tag === 'caption').textContent, /^Historical/);
     assert.ok(Number(find('oracle-counts').dataset.trained) >= 20);
     assert.equal(find('oracle-metrics').children.find(x => x.tag === 'tbody').children.length, 6);
     for (const view of Object.values(views.at(-1).horizons || {})) assert.equal(view.inputReady, false);
+    now += 1000; c.observe(snapshot(now)); await settle();
+    releases.splice(0).forEach(release => release()); await settle();
+    assert.equal(views.at(-1).inputReady, true);
+    assert.doesNotMatch(find('oracle-counts').textContent, /^Historical/);
+    assert.doesNotMatch(find('oracle-metrics').children.find(x => x.tag === 'caption').textContent, /^Historical/);
   } finally { c.stop(); globalThis.document = savedDocument; }
 });

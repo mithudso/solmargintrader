@@ -280,7 +280,11 @@ def mtf_tilt_text(scores, frames=None):
     baseline = model.get("base_down_rate") if isinstance(model, dict) else None
     components = model.get("components", []) if isinstance(model, dict) else []
     by_frame = (
-        {c.get("minutes"): c for c in components if isinstance(c, dict)}
+        {
+            c["minutes"]: c
+            for c in components
+            if isinstance(c, dict) and type(c.get("minutes")) is int
+        }
         if isinstance(components, list)
         else {}
     )
@@ -497,7 +501,10 @@ class LeveragePanel(ModalScreen[None]):
         self._next_read = 0.0
         self._next_market_paint = 0.0
         self._read_worker = self._action_worker = self._auto_worker = None
+        self._auto_action_worker = None
         self._auto_busy = False
+        self._auto_epoch = 0
+        self._auto_read_epoch = 0
         self._auto_next = 0.0
         self._auto_retry = None
         self._auto_live_confirm = False
@@ -733,11 +740,18 @@ class LeveragePanel(ModalScreen[None]):
         self._read_worker = LatestWorker(self._read, name="oracle-leverage-read")
         self._action_worker = LatestWorker(self._act, name="oracle-leverage-action")
         self._auto_worker = LatestWorker(self._auto_call, name="oracle-auto-bridge")
-        self._poll_timer = self.set_interval(0.1, self.poll_workers)
-        self._apply_feed_visibility()
-        if self._feed_changed is not None:
-            self._feed_changed(dict(self.feed_enabled))
-        self.action_refresh()
+        self._auto_action_worker = LatestWorker(
+            self._auto_call, name="oracle-auto-action", daemon=False
+        )
+        try:
+            self._poll_timer = self.set_interval(0.1, self.poll_workers)
+            self._apply_feed_visibility()
+            if self._feed_changed is not None:
+                self._feed_changed(dict(self.feed_enabled))
+            self.action_refresh()
+        except BaseException:
+            self.stop_owned()
+            raise
 
     def _apply_feed_visibility(self):
         jupiter, coinbase = (self.feed_enabled[k] for k in ("jupiter", "coinbase"))
@@ -871,15 +885,20 @@ class LeveragePanel(ModalScreen[None]):
         )
 
     def _auto_submit(self, command, params):
-        if self._auto_busy:
+        if self._auto_busy or self._stopping:
             return
         signature = (command, repr(params))
         if self._auto_retry is None or self._auto_retry[0] != signature:
             self._auto_retry = (signature, str(uuid.uuid4()))
-        self._auto_busy = True
-        self._auto_worker.submit(
+        self._auto_action_worker.submit(
             (command, {**params, "request_id": self._auto_retry[1]})
         )
+        self._auto_busy = True
+        self._auto_epoch += 1
+        if self.is_mounted:
+            self.query_one("#auto-status", Static).update(
+                "Auto-trade action pending; awaiting owner acknowledgement."
+            )
 
     def _paint_auto(self, data):
         defaults = data.get("configuration") or data.get("defaults") or {}
@@ -905,6 +924,12 @@ class LeveragePanel(ModalScreen[None]):
         learner = data.get("learner") or {}
         forecast = data.get("forecast") or {}
         policy = data.get("policy") or {}
+        leverage = plan.get("leverage")
+        if leverage not in (10, 1000):
+            leverage = {"jupiter-cli-10x": 10, "jupiter-sdk-1000x": 1000}.get(
+                policy.get("venue")
+            )
+        product = f"{leverage}x" if leverage in (10, 1000) else "unknown product"
         deadline = data.get("first_entry_deadline")
         remaining = (
             f"{max(0, int(deadline - self.clock()))}s"
@@ -912,12 +937,11 @@ class LeveragePanel(ModalScreen[None]):
             else "unknown"
         )
         self.query_one("#auto-status", Static).update(
-            f"AUTO {_text(data.get('state'))} · {_text(data.get('mode'))} · {_text(data.get('reason'))}\n"
+            f"AUTO {_text(data.get('state'))} {_text(data.get('mode'))} {_text(policy.get('asset'))} {product} {_text(plan.get('direction'))}/{_text(pos.get('state'))} · realized session net (modeled) {_text(data.get('net_pnl_usd'))}\n"
+            f"Entry fill {_text(plan.get('entry_fill'))} · target {_text(plan.get('target_price'))} · stop {_text(plan.get('stop_price'))} · liq {_text(plan.get('liquidation_price'))}\n"
+            f"Wins {_text(learner.get('wins'))} · losses {_text(learner.get('losses'))} · liq {_text(learner.get('liquidations'))} · samples {_text(learner.get('samples'))} · data failures {_text(learner.get('availability_failures'))}\n"
             f"Live: {_text((data.get('readiness') or {}).get('live'))}; 1000x: {_text((data.get('readiness') or {}).get('1000x'))}; advice: {_text((data.get('readiness') or {}).get('advice'))}\n"
-            f"First entry {remaining} · {_text(plan.get('direction'))} · {_text(pos.get('state'))}\n"
-            f"Plan entry {_text(plan.get('target_entry'))} target {_text(plan.get('target_price'))} stop {_text(plan.get('stop_price'))} liq {_text(plan.get('liquidation_price'))}\n"
-            f"Modeled fills {_text(plan.get('entry_fill'))} / {_text(pos.get('exit_price'))}; net {_text(data.get('net_pnl_usd'))}; {_text(plan.get('assumptions'))}\n"
-            f"Wins {_text(learner.get('wins'))} losses {_text(learner.get('losses'))} liq {_text(learner.get('liquidations'))} data/continuity failures {_text(learner.get('availability_failures'))}\n"
+            f"First entry {remaining} · reason {_text(data.get('reason'))}; exit fill {_text(pos.get('exit_price'))}; {_text(plan.get('assumptions'))}\n"
             f"All-cohort modeled results {_text((data.get('history') or {}).get('samples'))} samples / net {_text((data.get('history') or {}).get('net_pnl_usd'))}\n"
             f"Training {_text(data.get('training'))}; samples {_text(learner.get('samples'))}; uncalibrated {_text(forecast.get('score'))}; boost {_text(forecast.get('boost_eligible'))} {_text(forecast.get('boost_reason'))}\n"
             f"Caps {_text(policy.get('base_collateral_usd'))} / {_text(policy.get('max_collateral_usd'))} / loss {_text(policy.get('max_session_loss_usd'))}; forecast {_text(forecast.get('source') or forecast.get('advisory_forecast_id'))}\n"
@@ -927,9 +951,9 @@ class LeveragePanel(ModalScreen[None]):
     def poll_workers(self):
         if self._stopping or not self.is_mounted:
             return
-        auto_result = self._auto_worker.poll()
+        auto_result = self._auto_action_worker.poll()
         if auto_result is not None:
-            was_action, self._auto_busy = self._auto_busy, False
+            self._auto_busy = False
             envelope = auto_result.value
             if (
                 auto_result.error
@@ -945,8 +969,30 @@ class LeveragePanel(ModalScreen[None]):
                 )
                 self.query_one("#auto-status", Static).update(f"Auto-trade: {error}")
             else:
-                if was_action:
-                    self._auto_retry = None
+                self._auto_retry = None
+                self._paint_auto(envelope["result"])
+            self._auto_next = time.monotonic() + 5
+        status_result = self._auto_worker.poll()
+        if (
+            status_result is not None
+            and not self._auto_busy
+            and self._auto_read_epoch == self._auto_epoch
+        ):
+            envelope = status_result.value
+            if (
+                status_result.error
+                or not isinstance(envelope, dict)
+                or not envelope.get("ok")
+            ):
+                error = (
+                    (envelope or {})
+                    .get("error", {})
+                    .get("message", "Owner unavailable")
+                    if isinstance(envelope, dict)
+                    else "Owner unavailable"
+                )
+                self.query_one("#auto-status", Static).update(f"Auto-trade: {error}")
+            else:
                 self._paint_auto(envelope["result"])
             self._auto_next = time.monotonic() + 5
         if (
@@ -955,6 +1001,7 @@ class LeveragePanel(ModalScreen[None]):
             and time.monotonic() >= self._auto_next
         ):
             self._auto_next = time.monotonic() + 5
+            self._auto_read_epoch = self._auto_epoch
             self._auto_worker.submit(("autotrade.status", {}))
         result = self._read_worker.poll()
         if result is not None:
@@ -1691,6 +1738,8 @@ class LeveragePanel(ModalScreen[None]):
         for worker in (self._read_worker, self._action_worker, self._auto_worker):
             if worker is not None:
                 worker.close(0.15)
+        if self._auto_action_worker is not None:
+            self._auto_action_worker.close(0.15, drain=True)
 
     def on_unmount(self):
         self.stop_owned()

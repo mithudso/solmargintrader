@@ -440,6 +440,28 @@ def install_environment(repo: Path, venv_dir: Path, *, constraints_file: Path | 
             _installation_lock(venv_dir),
             tempfile.TemporaryDirectory(prefix="ecosystem-install-") as temporary,
         ):
+            # Another owner may have finished after our precheck but before this lock.
+            # A completed environment is immutable; verify and reuse it instead.
+            if receipt_path.exists():
+                saved = _read_receipt(receipt_path)
+                if saved != receipt:
+                    return _intent_mismatch(saved, receipt)
+                health = verify_environment(python, repo)
+                if health.get("status") != "complete":
+                    return health
+                if source_fingerprint(repo) != fingerprint:
+                    return _failure("source_changed_during_install")
+                if not _constraints_unchanged(constraints, constraints_sha256):
+                    return _failure("constraints_changed_during_install")
+                return {
+                    "schema_version": 1,
+                    "status": "complete",
+                    "python": str(python),
+                    "source_fingerprint": fingerprint,
+                    "reused": True,
+                    "health": health,
+                    **constraint_result,
+                }
             cwd = Path(temporary)
             if not (venv_dir / "pyvenv.cfg").is_file():
                 code, _ = _run(

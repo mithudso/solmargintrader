@@ -13,7 +13,7 @@ class Packaging(unittest.TestCase):
             return tomllib.loads((ROOT / component / "pyproject.toml").read_text())
 
         runtime = read("soltui")
-        self.assertEqual(runtime["project"]["version"], "0.4.3")
+        self.assertEqual(runtime["project"]["version"], "0.4.4")
         self.assertEqual(runtime["build-system"]["build-backend"], "soltui_build")
         self.assertEqual(runtime["build-system"]["backend-path"], ["."])
         self.assertIn("include soltui_build.py", (ROOT / "soltui/MANIFEST.in").read_text())
@@ -24,7 +24,7 @@ class Packaging(unittest.TestCase):
         )
         for package in ("botmanager", "ecosystem"):
             self.assertIn(
-                "solmargintrader-research-runtime==0.4.3",
+                "solmargintrader-research-runtime==0.4.4",
                 read(package)["project"]["dependencies"],
             )
         for module in (

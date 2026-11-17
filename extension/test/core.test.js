@@ -1238,10 +1238,11 @@ test('an unusable history record is rejected and blocks further admission', asyn
       return normaliseOrders([{ id: 'ord-broken', status: 'filled' }], { strict: false });
     },
   };
-  const { added, rejected } = await ingestFills({ venue, store, config: RECON_CONFIG });
+  const { added, rejected, blocked } = await ingestFills({ venue, store, config: RECON_CONFIG });
   assert.equal(added.length, 0);
   assert.equal(rejected.length, 1);
   assert.match(rejected[0].reason, /unusable/);
+  assert.equal(blocked, true);
 });
 
 test('an ambiguous envelope holding two candidate lists is refused', () => {

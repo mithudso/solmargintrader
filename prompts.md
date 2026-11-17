@@ -1,6 +1,8 @@
 # Prompt history
 
-Version: 278
+Version: 279
+Delta: v278 to v279; preserve both auto-trade and audit screenshot requests.
+Delta: v277 to v278; preserve audit and screenshot continuation across merged 0.10 source.
 Delta: v277 to v278; preserve the autonomous paper and live trading request.
 Delta: v276 to v277; record the all-supported-timeframes streaming learner request.
 Delta: v275 to v276; preserve the delivered feed controls/UI prompt alongside the streaming Oracle history.
@@ -2537,6 +2539,12 @@ Make the feed train all of the timeframes, not just the one chosen.
 ```
 
 Train independent rolling close-to-close models for1m/5m/10m/15m/20m/1h from the existing validated minute stream. The selected chart controls displayed detail. Preserve genuine0.9 ten-minute state and its exact historical approved prompt. This delta also fences the corroborated same-source pending-completion display race from KNOW-2430; it does not authorize unrelated CDO repairs or trading changes.
+
+## Owner screenshot — 2026-11-16
+
+[Image #1]
+
+The image shows a terminal reporting that getcwd cannot access a deleted parent directory.
 
 
 ## Oracle auto-trading and dry run — 2026-11-16

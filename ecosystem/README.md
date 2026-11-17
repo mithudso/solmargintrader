@@ -1,8 +1,8 @@
-# Paper ecosystem control room 0.4.15
+# Paper ecosystem control room 0.4.16
 
 This source version restores read-only access to the known legacy SOL Oracle
 archive and explains pending forward windows without changing the producer.
-It pins Bot Manager0.7.6, Oracle0.2.5 and research-runtime0.4.3.
+It pins Bot Manager0.7.7, Oracle0.2.6 and research-runtime0.4.4.
 The metadata update does not promote or restart an existing owner environment.
 
 The Oracle also runs an independent selected-strategy price projection. It

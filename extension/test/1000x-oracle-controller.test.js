@@ -93,6 +93,22 @@ test('missing source and a failed storage transaction visibly abstain without fa
   assert.equal(views.at(-1).state, undefined); broken.stop();
 });
 
+test('generic storage errors on a valid source visibly abstain for every horizon', async () => {
+  const now = (base + 1000 * 60) * 1000 + 2000, views = [];
+  let reads = 0;
+  const c = new OracleController({ clock: () => now,
+    store: { update: async () => { reads++; throw new Error('disk'); }, close() {} },
+    onChange: view => views.push(view) });
+  c.observe(snapshot(now)); await settle();
+  assert.equal(reads, 6);
+  for (const view of Object.values(views.at(-1).horizons)) {
+    assert.equal(view.error, 'oracle_storage_unavailable');
+    assert.equal(view.state, undefined);
+    assert.equal(view.inputReady, false);
+  }
+  c.stop();
+});
+
 test('a trained source never leaks predictions through unknown identity or a delayed failing catalog rebind', async () => {
   const db = atomicFixture(), views = [], client = db.client();
   let now = (base + 1000 * 60) * 1000 + 2000, oldKey; const rejectLoads = [];

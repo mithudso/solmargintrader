@@ -1,6 +1,12 @@
 # Work continuation
 
-Version: 617
+Version: 621
+Delta: v620 to v621; record the qualified optimizer receipt and remaining delivery gates.
+Delta: v619 to v620; preserve accepted auto-action teardown and review scope.
+Delta: v618 to v619; record integrated audit, paper-session identity display and pending acceptance.
+Delta: v617 to v618; reconcile auto-trade delivery and current-source audit continuation.
+Delta: v615 to v616; record bounded current-source audit diagnostics, fixes and open integrity work.
+Delta: v614 to v615; preserve audit and screenshot continuation across merged 0.10 source.
 Delta: v616 to v617; bind the out-of-tree runtime to installer freshness and advance coordinated candidate versions.
 Delta: v615 to v616; qualify reviewed auto-trade core, packaged runtime, controls and exact remaining installed/delivery gates.
 Delta: v614 to v615; begin isolated auto-trading implementation and preserve safety and continuation boundaries.
@@ -2984,6 +2990,23 @@ The generic browser gate passed25/25, while Linux1000x stopped at all-six minute
 
 The fixture bootstrap had a second reproducible setup defect: both Page.addScriptToEvaluateOnNewDocument and immediate evaluation could wrap Date.now again. A controlled repeat of the exact old bootstrap with a22,000ms offset produced144,000 instead of122,000 after two applications. The fixed idempotent bootstrap produces122,000 and preserves the wrapper identities. The actual browser learning case now reapplies it twice and verifies no clock/transport rewrapping, explicitly waits for a visible/fresh second context, and keeps bounded diagnostics. This is synthetic fixture code only; production source, quote freshness and label completion rules remain frozen. Red/green evidence: /Users/mitch/.local/state/oracle-all-timeframes-2414/checks/fixture-clock-red-green.json.
 
+## Current-source health audit continuation — 2026-11-16
+
+The existing TASK-2410 CDO run 2026-11-16T17:00:08Z has reviewed zero files. Preliminary master 7bfeb02 planned 52 changed, 183 new and 794 unchanged-skipped files before the 50-file cap. Replan the same run after the active ML work merges. The offline text-search examples now set INDEX_NO_AUTO=1 because keyword search can otherwise launch a background semantic rebuild; the separately authorized semantic commands remain explicit. Preserve the paused TASK-1541 and PR 235 and the private incident evidence.
+
+## Terminal working-directory repair — 2026-11-16
+
+The owner supplied a screenshot showing getcwd failing because the terminal working directory was deleted. The live verifier changed the idle owned shell to the canonical repository and restarted only the proven-dead monitor from that directory. The actual leverage/wallet/paper UI rendered, four protected workers remained alive and their configuration was unchanged. The prior retention worker was already absent and was not restarted or reset. Evidence: /Users/mitch/.local/state/reversal-leverage-2289/acceptance/urgent-cwd-repair-receipt.json. TASK-2294 remains the owner of live acceptance.
+
+
+## Current-source audit triage continuation — 2026-11-16
+
+The existing code optimizer run 2026-11-16T17:00:08Z has 54 scoped diagnostic receipts. Their pass qualifications and partial methods remain in force; no official final receipt was issued. Review source-hash and changed-contract rebindings for the six all-horizon files before recording coverage. The historic ledger, including the earlier unfinished run, must remain intact. The private helper copy preserves historical runs; assert the current run identity before every helper mutation and issue the final receipt only once.
+
+Focused regressions in the isolated audit worktree cover archive replacement and premature resolution, disabled-stream and corrupt-preference handling, public catalog recovery, semantic artifact generation pairing, queue byte cursors, startup cleanup and installation rechecks, scheduler isolation, and stale historical labels. These changes still require independent review and integration with the concurrently delivered auto-trade work before delivery. Static index and inventory regeneration is pending. No live process, owner database, model, embedding job or trading action was used for the isolated fixtures.
+
+The forward-test default file can diverge from rolled-back adoption evidence. A draft uses a transactional per-database outbox, shared durable discovery markers, a shared lock, idempotent recovery and expected-value conflict checks. Independent review found a replaced-database gap, and the draft now binds device, inode and database generation; re-review and final checks remain. Legacy writers that do not honor the lock require an activation boundary; no active worker was restarted. Other candidate findings, partial passes and test limitations remain open. The authoritative private checkpoint is /Users/mitch/.local/share/solmargintrader/audits/index-2410/TRIAGE-CHECKPOINT.json and the complete diagnostics are in ROOT-CDO-DISPATCH-STATE.json in the same directory. Keep PR 309 draft until integration, independent review and final checks are complete.
+
 
 ## Oracle auto-trading continuation — 2026-11-16
 
@@ -3004,3 +3027,23 @@ Live10x remains blocked on validated position/request/fill/fee/settlement bindin
 ### TASK-2458 delivery integration
 
 Manager 0.7.6 and ecosystem 0.4.15 pin research-runtime 0.4.3. Installer source fingerprint includes the packaged oracle_leverage tree without treating it as a sixth project; installed health checks import its worker. A temporary-repository regression checks fingerprint changes. Existing immutable 0.4.14 environment remains untouched. Remaining: finish source and generated documentation gates, push draft for parent final-head CI and merge, and independently verify installed paper behavior after authorized installation.
+
+
+## Integrated audit and paper-session display — 2026-11-17
+
+The current-source health branch integrates auto-trade source from d0b26a4 without changing its backend trading logic. The draft repairs include lossless index and owner-state safeguards. The audit has 54 scoped diagnostic receipts with partial methods; it has no final receipt or whole-repository clean verdict. Earlier run bodies and file records remain preserved. The first integrated commands.py clarification remains partial despite a complete source read.
+
+The paper-session summary now identifies the actual shared policy asset and product, position direction/state and realized modeled session net, rather than relying on editable next-session selections. The TUI puts session, plan and outcomes in its first three summary lines; the Chrome status header names the same active identity. Focused tests use stub owners only. The public research export is regenerated from tracked allowed sources; no private Pine is included.
+
+Remaining: independent review of these final UI changes, exact-head CI, the user's live-owner attribution and paper acceptance, qualified audit ledger records and the single final receipt, final static freshness checks and parent-coordinated delivery. No running owner was installed, restarted or stopped by these edits.
+
+
+## Accepted auto actions on panel close — 2026-11-17
+
+A source-bound synthetic review reproduced a queued Stop being lost when the panel closed during a status request. Status reads and auto actions now use separate workers. An accepted action retains its request ID and drains on close; stale pre-action status cannot acknowledge it. The action worker is non-daemon so orderly process exit waits for its bounded RPC; read workers retain their prior cancellation defaults. Hard process termination is not a delivery guarantee. Stubbed tests cover queued and in-flight Start/Stop, duplicate suppression, late status, responsive close and orderly process exit. Independent review and final CI are required before delivery. No active owner was contacted by these tests.
+
+## Qualified optimizer receipt — 2026-11-17
+
+The single existing optimizer run 2026-11-16T17:00:08Z recorded all 54 selected diagnostics and issued its only final receipt with PARTIAL status. Twenty-one diagnostics retain exact unchanged source and contract bindings; 33 have changed or unproven bindings and require fresh method review. The integrated commands file has 13 applicable methods explicitly partial. The helper's hash-based coverage total does not establish complete reviews. See docs/audit-2026-11-17.md for the scope and limits.
+
+The prior ten run bodies and 806 nonselected file rows were verified unchanged. A private complete pre-record ledger backup retains all 846 original rows, including the 40 selected rows replaced by current records. Fourteen selected rows were new. Do not issue another helper mutation: an older unfinished run could become current. Source checkpoint d9c24f25 passed its source CI and independent mocked worker lifecycle review. The user confirmed the observed BTC and ZEC paper sessions were theirs. Remaining: deterministic metadata and documentation verification, final draft PR CI, separately coordinated isolated installed acceptance, and parent-controlled delivery. Do not activate or alter existing owners or frozen cohorts.

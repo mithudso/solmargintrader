@@ -20,7 +20,7 @@
     },
     {
       "path": "botmanager/pyproject.toml",
-      "sha256": "ea9a164ce86df1fdf8a42af9e7ecb34a127e73e37ad894fbe6553aaefd5c61c5"
+      "sha256": "f76c16c76b295710677fa13111f9e80f726ec794b9f31ac97a2ad8ec920da3d9"
     },
     {
       "path": "botmanager/src/botmanager/cli.py",
@@ -52,11 +52,11 @@
     },
     {
       "path": "ecosystem/pyproject.toml",
-      "sha256": "414fb9cb1a6680c2e5b787e165224e482ef5ec4df1ddf419a063a2b257121e7b"
+      "sha256": "2eec1214daa588525c951312f370f598af81ffb6a595d1058140caa576152299"
     },
     {
       "path": "ecosystem/web.py",
-      "sha256": "c1621363aa582dbf89a8169582298f45d4bbdd756e6e1cb9ad7e10dae10e0882"
+      "sha256": "7fbe5202d106d505bebe32cef9e9def34aaf202a55cae83558c49c274e7dae44"
     },
     {
       "path": "executor/pyproject.toml",
@@ -72,7 +72,7 @@
     },
     {
       "path": "extension/package.json",
-      "sha256": "e9581767ffb183e89e5f22f2d340cb81921d512a3a2ca021acf6294c20aff99b"
+      "sha256": "ef94f1206e49136c887f99f51f1c208310f335fc92b5363a27112d64ef9b3b48"
     },
     {
       "path": "extension/src/core/commands.js",
@@ -96,11 +96,11 @@
     },
     {
       "path": "oracle/pyproject.toml",
-      "sha256": "4c21549fe2081d6ff9f7ee399bd0b70d1c4ce76d5f4a53d564d3c7364571cb6e"
+      "sha256": "4ffcb5f123596080722dea87bc23ee33ffeb4249dfaa1ab7b0c4025a6fa80cb0"
     },
     {
       "path": "oracle/server.py",
-      "sha256": "1714bf2fe88591d21541d3a624591f81675f8faabdcad47a3d1c248e3635f36a"
+      "sha256": "58d094b68e0cace19ef2a16c4512600215cefbafaa07d49f19f96b7d660f0721"
     },
     {
       "path": "package.json",
@@ -124,7 +124,7 @@
     },
     {
       "path": "soltui/commands.py",
-      "sha256": "f8ce1ca4f47353eb2c87339015daa43a62d82d02c6c82a07850fb99a83ebfbfc"
+      "sha256": "e9868890c0569d09e7d7c215edbaf7b15c58444670dc5e8b23549e913d1258ea"
     },
     {
       "path": "soltui/make_icon.py",
@@ -132,7 +132,7 @@
     },
     {
       "path": "soltui/pyproject.toml",
-      "sha256": "a1f1bacff9928cd88e42e6cd9d1cb5eed3218635894bc65a2aa231cc890b93df"
+      "sha256": "40b704fbc8331ffa67b2f89f841a6b744a227354bfa7d3784d6004b7e34b973d"
     },
     {
       "path": "soltui/soltui-service",

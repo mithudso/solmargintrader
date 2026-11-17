@@ -311,6 +311,12 @@ class TradeStream:
                     continue
                 connection.send_text(json.dumps(SUBSCRIPTION))
                 with self._lock:
+                    if (
+                        self._stop.is_set()
+                        or not self._enabled.is_set()
+                        or generation != self._feed_generation
+                    ):
+                        continue
                     self._state.connect(self.clock())
                 while (
                     not self._stop.is_set()
@@ -340,7 +346,11 @@ class TradeStream:
             except Exception:  # noqa: BLE001 - provider payloads must never leak through the UI.
                 if not self._stop.is_set():
                     with self._lock:
-                        self._state.disconnect("stream_disconnected")
+                        if (
+                            self._enabled.is_set()
+                            and generation == self._feed_generation
+                        ):
+                            self._state.disconnect("stream_disconnected")
             finally:
                 if connection is not None:
                     self._close_socket(connection)

@@ -22,6 +22,31 @@ test('withholds stale, baseline, untrained, wrong source and unavailable predict
   assert.equal(await forecastPayload(view(), { ...identity, feedId: 66 }, now, webcrypto.subtle), null);
 });
 
+test('active status names the owner session, not editable next-session fields', async () => {
+  const { autotradeView } = await import('../src/1000x/autotrade-view.js');
+  class Node {
+    constructor() { this.children = []; this.dataset = {}; this.value = ''; this.textContent = ''; }
+    append(...nodes) { this.children.push(...nodes); }
+    before(node) { this.sibling = node; }
+    setAttribute() {}
+    addEventListener() {}
+  }
+  const previous = globalThis.document; globalThis.document = { createElement: () => new Node() };
+  const root = new Node();
+  const call = async () => ({ state: 'running', mode: 'paper', policy: { asset: 'BTC', venue: 'jupiter-sdk-1000x' },
+    position: { state: 'open', plan: { direction: 'long', leverage: 1000 } }, net_pnl_usd: 2.5 });
+  const ui = autotradeView(root, { call });
+  try {
+    await new Promise(resolve => setImmediate(resolve));
+    const section = root.sibling;
+    section.children[2].children[0].children[0].value = 'ZEC';
+    section.children[2].children[1].children[0].value = 'jupiter-cli-10x';
+    const text = section.children[1].textContent;
+    for (const item of ['BTC', '1000x', 'long', 'open', '2.5']) assert.ok(text.includes(item), text);
+    assert.ok(!text.includes('ZEC'));
+  } finally { ui.close(); globalThis.document = previous; }
+});
+
 test('controls reuse request ID after a refusal and closing does not stop the owner', async () => {
   const { autotradeView } = await import('../src/1000x/autotrade-view.js');
   class Node {

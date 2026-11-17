@@ -410,15 +410,17 @@ class LoadTests(unittest.TestCase):
                 )
                 print("LOAD_METRICS " + json.dumps(metrics, sort_keys=True), flush=True)
             finally:
-                if supervisor:
-                    supervisor.close()
-                stop.set()
-                optimizer.join(5)
-                if optimizer.is_alive():
-                    optimizer.kill()
-                    optimizer.join(2)
-                exitcode = optimizer.exitcode
-                optimizer.close()
+                try:
+                    if supervisor:
+                        supervisor.close()
+                finally:
+                    stop.set()
+                    optimizer.join(5)
+                    if optimizer.is_alive():
+                        optimizer.kill()
+                        optimizer.join(2)
+                    exitcode = optimizer.exitcode
+                    optimizer.close()
                 self.assertEqual(exitcode, 0)
                 with closing(
                     sqlite3.connect(
