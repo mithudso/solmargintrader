@@ -1,5 +1,17 @@
 # Work continuation
 
+## Weekly coin study — TASK-2571 — 2026-11-17
+
+The requested output is a reusable seven-day, one-minute coin study, first run on ETH. Work is isolated in /Users/mitch/dev/worktrees/weekly-coin-2571 on research/weekly-coin-2571. Preserve the canonical package edits, private Pine file, active cross-coin studies and all running owners.
+
+Inventory covers ZEC ensemble sweeps, expanded causal shape/frequency controls, cost sensitivity, Volty, grid/DCA, cycle nulls, and reversal/shape studies. Candle-based transfer must retain next-bar decisions, explicit costs, chronological selection and broad-search corrections. Historical receive-time book fills, Oracle barriers and long-history daily CPCV cannot be reconstructed from seven days of spot candles. Record these exclusions rather than fabricate inputs. No live execution, paper promotion, indexing or service changes are authorized by this study.
+
+Completed: reusable CLI and explicit download/offline/verify/resume phases; sixteen-family coverage map; complete 1,707-template catalogue and six causal/control modes; whole seven-day Binance ETH/BTC/ZEC USDT snapshots (10,080 bars each); 491,712 strategy rows (441,888 completed), 7,920 Volty/grid/DCA rows, cycle and reversal studies. Same-minute ETH/BTC correlation is 0.901870 and ETH/ZEC is 0.704691. None of eighteen features across six future-return horizons passes the corrected 5% test threshold (best adjusted p=0.0785). Cycle significance is inconclusive because 1,638 tests and 1,999 replicates imply a minimum attainable Holm p of0.819. No executable edge was established.
+
+The complete immutable run is /Users/mitch/.local/share/solmargintrader/research/weekly-coin/ETH-20261117T1713Z-2571. The public report/chart/summary/audit and complete artifacts.zip are under /Users/mitch/dev/solmargintrader/research/eth-week-20261117. A separate incomplete Coinbase attempt preserves the two confirmed ETH/BTC missing minutes; no venues were spliced. The first long component attempt exposed TriggerTrade's absolute-index crash beyond6,512 bars; the adapter now preserves its full causal prefix. An independent audit closed stale-cache input binding and the load/write race before the numerical run. Exact snapshots freeze before load and must match at every checkpoint and finalization. All16 selected test accounts matched independent scalar accounting.
+
+Verification:26 focused tests,101 affected research tests,1,152 backtester tests,1,084 legacy figure checks, pinned Ruff, existing operation/wiki inventories and repository documentation counts passed. The complete run verified78 artifact hashes and result counts. The final independent audit passed with no remaining blockers. Final-head index refresh, CI, merge and canonical CLI acceptance are the remaining delivery steps at this checkpoint; no product or numerical work remains. Stele writes are queued because its MCP transport closed:6fc88b90,e67e2987,af2507fc,fc81b4aa,de3e1ca2,9c6568f2,76ee71f7. TASK-2571 tracks delivery; preserve all unrelated canonical edits and existing owners.
+
 ## Application delivery integration — TASK-2529 — 2026-11-17
 
 PR 323 reached remote master as 0ead38c while the application branch completed CI. Preserve its connecting/error/recovery UI and test alongside the optimizer reason display. Extension 0.12.3 includes both changes; no native owner, shared route or active session changes. Prior final-head 411cdb4 CI passed, but merge delivery is withheld until the integrated source passes current checks. The final application status remains NEEDS_EVIDENCE. The independent review cap is two; preserve both original review outputs and state their exact source scope. A fourth complete selected-method reassessment and current extension installation evidence cover the integration.
@@ -58,7 +70,9 @@ Browser CI fixture: the native IndexedDB abort assertion raced an independent ne
 
 Routing follow-up: source adds owner-only optional connection routing for ordinary clients; explicit environment homes remain first. The isolated 1000x paper acceptance passed one start and stop with recorded modeled outcome. The user-owned registry and shared wrapper remain unchanged. Verify focused checks, review and deliver the routing PR before a separately controlled activation. Routing alone does not fence concurrent starts or migrate journal history.
 
-Version: 633
+Version: 635
+Delta: v634 to v635; record completed ETH findings, independent numerical audit, exact artifacts, checks and remaining delivery gates.
+Delta: v633 to v634; preserve the weekly ETH study scope, isolation, provenance constraints and remaining work.
 Delta: v632 to v633; integrate delivered paper-helper connection diagnostics, retain all optimizer repairs, and rerun affected delivery gates.
 Delta: v629 to v630; record the current verified application result, seven repaired findings and evidence-qualified delivery.
 Delta: v628 to v629; preserve delivered shared-signal loading while integrating whole-application repairs.

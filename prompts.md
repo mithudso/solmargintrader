@@ -1,6 +1,11 @@
 # Prompt history
 
-Version: 284
+Version: 285
+Delta: v284 to v285; preserve the reusable ZEC-analysis transfer and seven-day ETH request.
+
+## Weekly coin study — 2026-11-17
+
+Look at all of the backtests done for ZEC and write a script to do that whole same analysis for another coin, have it download the last week's worth of 1min bars and then run it through and see if we can find any correlations. The next coin to operate on is ETH.
 Delta: v283 to v284; retain both commissioned requests during concurrent delivery integration.
 Delta: v282 to v283; commission the whole-application optimizer with frozen coverage.
 Delta: v281 to v282; preserve the current status question.
