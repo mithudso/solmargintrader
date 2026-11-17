@@ -7,6 +7,15 @@ hard risk rails, on its own tab, **dry-run by default** — it will not place an
 change the mode and type a confirmation. A historical report says the grid lagged buy-and-hold walk-forward on 9 of 9 coins;
 that result has not been reverified. Version 0.3.0 moved it off the front page.
 
+## Saved learning and disk backup (0.12.4)
+
+Both browser Oracle learners retain per-coin, per-source and six-horizon models,
+pending forecasts and results across chart changes and reloads. Saved counts stay
+visible as historical when the feed is paused or stale. The native helper mirrors
+complete checkpoints to private SQLite storage; the panel shows acknowledged disk
+status and provides **Save now**. Browser learning continues if backup is unavailable.
+See [storage, exact-identity recovery and limits](../docs/ORACLE-LEARNING-STORAGE.md).
+
 ## Live Oracle (0.12.2)
 
 The Live Oracle estimates whether the price at each selected horizon will be

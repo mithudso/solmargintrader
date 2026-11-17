@@ -20,6 +20,8 @@ export class OracleController {
   #nextAt = 0;
   #key = null;
   #eligible = false;
+  #suspended = false;
+  #pauseReason = null;
   #selected = ORACLE.horizon;
   #models = new Map();
   #errors = new Map();
@@ -36,6 +38,7 @@ export class OracleController {
     let key = null, eligible = false;
     try { key = oracleIdentity(snapshot).key; eligible = oracleInput(snapshot, this.#clock()).eligible; } catch { /* Invalid input cannot reactivate a saved forecast. */ }
     const identityChanged = key !== this.#key, readinessChanged = eligible !== this.#eligible;
+    this.#suspended = false; this.#pauseReason = null;
     this.#latest = snapshot; this.#eligible = eligible;
     if (identityChanged) {
       this.#generation++; this.#key = key; this.#nextAt = 0;
@@ -51,16 +54,16 @@ export class OracleController {
     let input, error;
     try { input = oracleInput(this.#latest, this.#clock()); }
     catch { if (this.#latest?.status !== 'connecting' && this.#latest) error = 'oracle_source_unavailable'; }
-    const bound = input?.key === this.#key, horizons = {};
+    const bound = input?.key === this.#key || (this.#suspended && this.#key !== null), horizons = {};
     for (const { label, seconds } of TIMEFRAMES) {
       const saved = bound ? this.#models.get(seconds) : undefined;
       const failure = this.#errors.get(seconds)?.error || error
         || (input?.reason === 'oracle_features_unavailable' ? input.reason : undefined);
       horizons[seconds] = { ...saved, horizon: seconds, label,
         sourceKey: saved?.state.key, inputReady: Boolean(saved && input?.eligible && !failure),
-        reason: input?.reason || 'awaiting_catalog_identity', ...(failure ? { error: failure } : {}) };
+        reason: this.#pauseReason || input?.reason || 'awaiting_catalog_identity', ...(failure ? { error: failure } : {}) };
     }
-    this.#change({ ...horizons[this.#selected], selectedHorizon: this.#selected, horizons });
+    this.#change({ ...horizons[this.#selected], selectedHorizon: this.#selected, horizons, suspended: this.#suspended, reason: this.#pauseReason || input?.reason || 'awaiting_catalog_identity' });
   }
   async #drain() {
     this.#running = true; this.#queued = false;
@@ -95,9 +98,11 @@ export class OracleController {
     }
   }
   suspend(reason = 'feed_paused') {
-    this.#generation++; this.#key = null; this.#latest = null; this.#queued = false; this.#nextAt = 0; this.#eligible = false;
-    this.#models.clear(); this.#errors.clear(); this.#store.cancelPending?.();
-    this.#change({ inputReady: false, suspended: true, reason, selectedHorizon: this.#selected, horizons: {} });
+    this.#generation++; this.#latest = null; this.#queued = false; this.#nextAt = 0; this.#eligible = false;
+    this.#suspended = true; this.#pauseReason = reason; this.#store.cancelPending?.();
+    // Keep the already verified source's history, while every forecast remains
+    // inactive. A genuinely different/unknown source still clears it in observe.
+    this.#publish();
   }
   stop() { this.#disposed = true; this.#generation++; this.#queued = false; this.#store.close(); }
 }

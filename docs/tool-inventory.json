@@ -124,7 +124,7 @@
     },
     {
       "path": "soltui/commands.py",
-      "sha256": "ccc751193de508d3efdf7c3ebbc50776c0c3ed708e1621247cb547d067259611"
+      "sha256": "7eb94fcbf330e5abae009dbde99dc4d5c6084511c66684651fb0618ac90d18b3"
     },
     {
       "path": "soltui/make_icon.py",

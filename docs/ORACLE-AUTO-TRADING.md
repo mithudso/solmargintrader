@@ -1,7 +1,7 @@
 # Oracle automatic trading and paper mode
 
-Version: 1.2.0
-Delta: retain compatible per-coin paper learning and replayable samples on local disk.
+Version: 1.2.1
+Delta: link both browser learners' independent disk checkpoint and recovery path.
 
 ## Controls
 
@@ -138,8 +138,9 @@ session control deletes this data. Status inspection remains read-only.
 
 This storage requires no database service. MongoDB can be added later as a
 separate history destination; the derived `mongo/load.py` rebuild process must
-not own or overwrite this primary learning store. The chart learners continue
-to use their existing independent atomic IndexedDB stores.
+not own or overwrite this primary learning store. Both browser learners keep
+their independent atomic IndexedDB stores and now mirror complete checkpoints
+to a separate private SQLite database. See [saved Oracle learning and recovery](ORACLE-LEARNING-STORAGE.md).
 
 A score of 75% alone cannot raise exposure. The bounded paper boost also requires
 at least 100 prospective outcomes for the selected side, 30 high-score outcomes,

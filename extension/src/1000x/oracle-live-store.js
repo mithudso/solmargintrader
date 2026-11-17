@@ -1,5 +1,8 @@
 /** Separate database. Every synchronous reducer runs in one multi-store transaction.
  * Per-probe and per-score records avoid rewriting the full pending queue each second. */
+import { validateLiveState } from './oracle-live-model.js';
+import { checkpointMeta, nextCheckpoint, restoreCheckpoint } from './oracle-checkpoint.js';
+
 export const LIVE_ORACLE_DB = 'solmargintrader-live-advisory-v1';
 const STORES = ['partitions', 'metrics', 'pending', 'recent'];
 const id = (...parts) => JSON.stringify(parts);
@@ -48,28 +51,33 @@ export class LiveOracleStore {
     }).catch(e => { this.#opening = null; throw e; });
     return this.#opening;
   }
-  async #transaction(key, reduce) {
+  async #transaction(key, reduce, restore = null) {
     const db = await this.#open(); if (this.#closed) throw new Error('live_oracle_store_closed');
     return new Promise((resolve, reject) => {
-      const tx = db.transaction(STORES, reduce ? 'readwrite' : 'readonly'), found = {}, requests = [];
+      const tx = db.transaction(STORES, reduce || restore ? 'readwrite' : 'readonly'), found = {}, requests = [];
       this.#transactions.add(tx); let result, error, waiting = STORES.length;
       tx.oncomplete = () => { this.#transactions.delete(tx); resolve(structuredClone(result)); };
       tx.onabort = () => { this.#transactions.delete(tx); reject(error || new Error('live_oracle_storage_transaction_failed')); };
       tx.onerror = () => { error ||= new Error('live_oracle_storage_transaction_failed'); };
       const finish = () => { if (--waiting) return; try {
         const old = join(key, found.partitions, found.metrics, found.pending, found.recent);
-        if (!reduce) { result = old; return; }
+        if (!reduce && (!restore || old)) { if (old) validateLiveState(old, key); result = old ? { state: old, ...checkpointMeta(found.partitions) } : null; return; }
         const apply = () => {
           const before = old ? records(key, structuredClone(old)) : { partitions: [], metrics: [], pending: [], recent: [] };
-          result = reduce(old);
+          result = restore ? { state: restore.state, changed: true } : reduce(old);
           if (!result || typeof result.then === 'function') throw new Error('live_oracle_async_transaction');
-          if (!result.changed) return;
+          const metadata = restore ? checkpointMeta(restore) : result.changed || !found.partitions?.lineage ? nextCheckpoint(found.partitions) : checkpointMeta(found.partitions);
+          result.checkpoint = metadata;
+          if (!result.changed) {
+            if (!found.partitions?.lineage) tx.objectStore('partitions').put({ key, state: found.partitions.state, ...metadata });
+            return;
+          }
           if (result.state?.key !== key) throw new Error('live_oracle_key_mismatch');
           const after = records(key, result.state);
           for (const name of STORES) {
             const store = tx.objectStore(name), ident = row => name === 'partitions' ? row.key : row.id;
             const oldMap = new Map(before[name].map(row => [ident(row), row]));
-            for (const row of after[name]) { const k = ident(row); if (!same(row, oldMap.get(k))) store.put(row); oldMap.delete(k); }
+            for (const row of after[name]) { if (name === 'partitions') Object.assign(row, metadata); const k = ident(row); if (!same(row, oldMap.get(k))) store.put(row); oldMap.delete(k); }
             for (const k of oldMap.keys()) store.delete(k);
           }
         };
@@ -84,7 +92,13 @@ export class LiveOracleStore {
     });
   }
   update(key, reduce) { if (typeof reduce !== 'function') return Promise.reject(new Error('live_oracle_reducer_required')); return this.#transaction(key, reduce); }
-  load(key) { return this.#transaction(key, null); }
+  loadCheckpoint(key) { return this.#transaction(key, null); }
+  async load(key) { return (await this.loadCheckpoint(key))?.state ?? null; }
+  async restoreIfAbsent(key, checkpoint) {
+    const saved = restoreCheckpoint(key, checkpoint, validateLiveState);
+    const result = await this.#transaction(key, null, saved);
+    return { state: result.state, ...(result.checkpoint || checkpointMeta(result)) };
+  }
   cancelPending() { for (const tx of this.#transactions) { try { tx.abort(); } catch { /* Already complete. */ } } }
   close() { this.#closed = true; this.cancelPending(); this.#opening?.then(db => db.close()).catch(() => {}); }
 }

@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-11-17T18:13:17+00:00",
+  "generatedAt": "2026-11-17T19:10:18+00:00",
   "schemaVersion": 1,
   "note": "Concepts are derived from the repo's own vocabulary \u2014 the FAMILY dict, strategy-card frontmatter, docs/trading-signals-concept-family.md, and terms verified to recur in the corpus. A concept matching no file is dropped, not kept.",
   "counts": {
@@ -39,7 +39,7 @@
         },
         {
           "path": "docs/operations-registry.json",
-          "hits": 219
+          "hits": 222
         },
         {
           "path": "docs/FILES.md",
@@ -161,7 +161,7 @@
         "universe",
         "top_coins"
       ],
-      "matchingFiles": 1794,
+      "matchingFiles": 1795,
       "shown": 30,
       "files": [
         {
@@ -439,7 +439,7 @@
         "centred",
         "shift"
       ],
-      "matchingFiles": 1550,
+      "matchingFiles": 1551,
       "shown": 30,
       "files": [
         {
@@ -578,7 +578,7 @@
         "perps",
         "solana"
       ],
-      "matchingFiles": 1148,
+      "matchingFiles": 1154,
       "shown": 30,
       "files": [
         {
@@ -603,7 +603,7 @@
         },
         {
           "path": "memory.md",
-          "hits": 346
+          "hits": 347
         },
         {
           "path": "FILES.md",
@@ -691,7 +691,7 @@
         },
         {
           "path": "extension/README.md",
-          "hits": 84
+          "hits": 86
         },
         {
           "path": "archive/memory-2026-11-08.md",
@@ -1125,7 +1125,7 @@
         "benchmark",
         "baseline"
       ],
-      "matchingFiles": 603,
+      "matchingFiles": 605,
       "shown": 30,
       "files": [
         {
@@ -1218,7 +1218,7 @@
         },
         {
           "path": "memory.md",
-          "hits": 36
+          "hits": 37
         },
         {
           "path": ".cdo/reviews-2026-11-12/soltui-fullsuite-fixture-deltas.json",
@@ -1394,7 +1394,7 @@
         "buy_and_hold",
         "baseline"
       ],
-      "matchingFiles": 531,
+      "matchingFiles": 533,
       "shown": 30,
       "files": [
         {
@@ -1451,7 +1451,7 @@
         },
         {
           "path": "memory.md",
-          "hits": 35
+          "hits": 36
         },
         {
           "path": "research/tradingview-script-profiles/shard-a.jsonl",

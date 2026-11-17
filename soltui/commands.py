@@ -559,6 +559,42 @@ def oracle_signals_invalidate(ctx, p):
         raise CommandError("bad_params", str(exc)) from exc
 
 
+_LEARNING_ADDRESS = (
+    P("namespace", "string", "Private browser profile identity.", True),
+    P("kind", "string", "minute or live advisory learner.", True),
+    P("key", "string", "Exact versioned coin/source/horizon identity.", True),
+)
+
+
+def _learning_call(action, *args):
+    from oracle_leverage import learning_checkpoints
+    try:
+        return getattr(learning_checkpoints, action)(*args)
+    except (ValueError, TypeError, KeyError) as exc:
+        message = str(exc) if isinstance(exc, ValueError) else "Invalid learning checkpoint"
+        raise CommandError("bad_params", message) from exc
+    except Exception as exc:  # Storage failures never expose private paths or state.
+        raise CommandError("unavailable", "Local learning disk storage is unavailable; browser data was retained") from exc
+
+
+@command("oracle.learning.save", "Save a complete private advisory learner checkpoint to local disk.",
+         _LEARNING_ADDRESS + (P("checkpoint", "json", "Lineage, monotonic revision and complete serialized state; native upload supports up to 2 MiB.", True),), read_only=False)
+def oracle_learning_save(ctx, p):
+    return _learning_call("save", p["namespace"], p["kind"], p["key"], p["checkpoint"])
+
+
+@command("oracle.learning.load", "Read a digest-pinned bounded chunk of a private learner checkpoint.",
+         _LEARNING_ADDRESS + (P("offset", "number", "Character offset; defaults to zero."), P("digest", "string", "Expected SHA256 for subsequent chunks.")))
+def oracle_learning_load(ctx, p):
+    return _learning_call("load", p["namespace"], p["kind"], p["key"], p.get("offset", 0), p.get("digest"))
+
+
+@command("oracle.learning.profiles", "List up to 32 local learner profiles for explicit manual recovery.",
+         (P("limit", "number", "Maximum profile count, 1 to 32; defaults to 32."),))
+def oracle_learning_profiles(ctx, p):
+    return _learning_call("profiles", p.get("limit", 32))
+
+
 @command("autotrade.status", "Read the shared auto-trade owner status.")
 def autotrade_status(ctx, p):
     return _autotrade_call("status")
