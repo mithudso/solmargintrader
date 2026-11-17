@@ -1,5 +1,21 @@
 # Work continuation
 
+Version: 655
+Delta: v654 to v655. Record the completed strategy documents and verification.
+
+## ZEC/USD five-minute mean reversion and repository usage (TASK-2615)
+
+The report and companion research card document Coinbase spot candidate `697f3b1dd4526147f43ca3d4`, the equal mean of RSI, z-score and Bollinger Band positions. The report preserves the four cost scenarios, three matched singleton and three filter comparisons, and short holdout limits. The terminal and script guide covers the SolTUI, Oracle Winners, paper control room, weekly study and offline demos. The original batch stays in the active checkout.
+
+Verified all 337 batch artifacts, the card configuration and three source hashes, the P&L and comparator tables, links and shell syntax, launcher help, the 43 registry-card tests, suite counts and two offline smoke commands. The remaining delivery step is to verify the pushed checks and remote default. Stele outbox item IDs are 83d72143, 7b53b53a, 7afa63a4, a7859116 and 321e727e.
+
+Version: 654
+Delta: v653 to v654. Start TASK-2615 and preserve the exact frozen run and deliverables.
+
+## ZEC/USD five-minute mean reversion and repository usage (TASK-2615)
+
+Document Coinbase spot candidate `697f3b1dd4526147f43ca3d4` from the local `research/my-coins-study` batch. Preserve source artifacts in the shared checkout. Deliver a detailed analysis, linked research strategy card and guide to the terminal interfaces and runnable scripts. Verify the cost sweep, same-clock controls and launch syntax before delivery.
+
 Version: 653
 Delta: v652 to v653. Preserve Live Oracle learning and its disk identity through an upgrade with older tabs open.
 
