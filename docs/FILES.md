@@ -1,6 +1,6 @@
 # Every file in this repository
 
-**Generated** from `index/INDEX.json` at commit `578c0d8` (2026-11-17T00:53:57+00:00). 3985 tracked files, 140.7 MB.
+**Generated** from `index/INDEX.json` at commit `51e9f26` (2026-11-17T01:14:43+00:00). 3986 tracked files, 140.7 MB.
 
 Regenerate with:
 
@@ -15,7 +15,7 @@ python3 index/build.py --check      # fail if the index is stale
 Every entry marks where its description came from, because a generated one-liner and a considered one should not look alike:
 
 - **curated** (43 files) — hand-written purpose and usage, in the `CURATED` table of `index/make_files_doc.py`. Used where extraction cannot give a reader what they need: the engine, the research drivers, the order-placing path, and the files with no prose of their own.
-- **extracted** (3087 files) — the file's own module docstring, JSDoc header, or frontmatter `summary`. Trustworthy here because 722/841 Python modules and 85/181 JS files carry a substantial one. (These counts are computed at generation time, not hardcoded — an earlier revision asserted a frozen ratio and it was wrong within a day as the repo grew.)
+- **extracted** (3088 files) — the file's own module docstring, JSDoc header, or frontmatter `summary`. Trustworthy here because 723/842 Python modules and 85/181 JS files carry a substantial one. (These counts are computed at generation time, not hardcoded — an earlier revision asserted a frozen ratio and it was wrong within a day as the repo grew.)
 - **derived** (458 files) — shape only, for generated artifacts: a CSV's header and row count, a JSON's keys. Prose for a result file would be invented.
 
 *How to use* is curated where it matters and otherwise inferred from the file's kind — a test gets its runner, a CLI gets `--help`, a module gets its import path.
@@ -37,7 +37,7 @@ To *search* rather than browse: `python3 index/search.py "your question"`.
 - [`docs`](#docs) — 175 files
 - [`index`](#index) — 8 files
 - [`backtester`](#backtester) — 1967 files
-- [`research`](#research) — 492 files
+- [`research`](#research) — 493 files
 - [`oracle`](#oracle) — 44 files
 - [`extension`](#extension) — 162 files
 - [`executor`](#executor) — 48 files
@@ -648,9 +648,9 @@ Repository-level entry points and agent instructions. `AGENTS.md` and `CLAUDE.md
 
 #### `memory.md`
 
-`doc` · 3037 lines · 627,431 B · description: **extracted**
+`doc` · 3043 lines · 628,280 B · description: **extracted**
 
-**Purpose.** Version: 619 Delta: v618 to v619; record integrated audit, paper-session identity display and pending acceptance. Delta: v617 to v618; reconcile auto-trade delivery and current-source audit continuation.
+**Purpose.** Version: 620 Delta: v619 to v620; preserve accepted auto-action teardown and review scope. Delta: v618 to v619; record integrated audit, paper-session identity display and pending acceptance.
 
 **Use.** Read it.
 
@@ -976,7 +976,7 @@ Curated prose. `ARCHITECTURE.md` explains how the pieces fit, `TESTING.md` is th
 
 #### `docs/FILES.md`
 
-`doc` · 38234 lines · 1,837,638 B · description: **extracted**
+`doc` · 38244 lines · 1,838,029 B · description: **extracted**
 
 **Purpose.** Regenerate with: python3 index/build.py all # refresh the index python3 index/make_files_doc.py # rewrite this file
 
@@ -22038,7 +22038,7 @@ The simulation engine and everything that supports it. Never gains live-trading 
 
 Drivers that produce the numbers, and the write-ups that quote them. Everything here is reproducible from a committed script — the two occasions that was not true both produced a wrong published figure.
 
-492 files.
+493 files.
 
 #### `research/5minleveragestrategies.json`
 
@@ -23382,7 +23382,7 @@ Drivers that produce the numbers, and the write-ups that quote them. Everything 
 
 #### `research/zec_leverage_panel.py`
 
-`code-python` · 1706 lines · 74,367 B · description: **extracted**
+`code-python` · 1746 lines · 75,935 B · description: **extracted**
 
 **Purpose.** Explicit trading controls and a read-only view of the durable paper trial. The panel owns only its UI workers. The forward collector belongs to its service, so closing this screen never stops a trial or starts a second collector.
 
@@ -23512,7 +23512,7 @@ Drivers that produce the numbers, and the write-ups that quote them. Everything 
 
 #### `research/zec_tui_workers.py`
 
-`code-python` · 130 lines · 4,694 B · description: **extracted**
+`code-python` · 145 lines · 5,385 B · description: **extracted**
 
 **Purpose.** Single-owner background reads with bounded, latest-request delivery. Loaders must bound their own blocking operations and check ``cancelled`` between them. Python threads cannot forcibly interrupt an arbitrary blocking call. This helper never calls UI objects; the UI polls immutable completion envelopes.
 
@@ -25375,6 +25375,16 @@ Drivers that produce the numbers, and the write-ups that quote them. Everything 
 **Contents.** Defines `candles()`, `class AuditBoundaryTests`, `class RemainingAuditBoundaries`. Depends on `research`.
 
 **Use.** `python3 -m pytest research/tests/test_audit_boundaries.py -q`
+
+#### `research/tests/test_cdo_auto_action_lifecycle.py`
+
+`test` · 195 lines · 8,633 B · description: **extracted**
+
+**Purpose.** Accepted auto actions survive a panel close; all bridges are test doubles.
+
+**Contents.** Defines `class AutoActionLifecycleTests`, `class AutoActionDisplayTests`. Depends on `research`.
+
+**Use.** `python3 -m pytest research/tests/test_cdo_auto_action_lifecycle.py -q`
 
 #### `research/tests/test_cdo_feed_settings.py`
 

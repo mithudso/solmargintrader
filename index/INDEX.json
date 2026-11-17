@@ -1,15 +1,15 @@
 {
-  "generatedAt": "2026-11-17T00:54:37+00:00",
+  "generatedAt": "2026-11-17T01:15:13+00:00",
   "schemaVersion": 1,
   "repoRoot": "~/dev/solmargintrader",
-  "commit": "578c0d8",
+  "commit": "51e9f26",
   "counts": {
-    "files": 3985,
-    "bytes": 140678872,
+    "files": 3986,
+    "bytes": 140691003,
     "byKind": {
       "strategy-card": 1478,
       "doc": 838,
-      "test": 495,
+      "test": 496,
       "code-python": 436,
       "config": 288,
       "result": 133,
@@ -23,7 +23,7 @@
     },
     "byTopDir": {
       "backtester": 1967,
-      "research": 492,
+      "research": 493,
       "soltui": 200,
       "docs": 175,
       "extension": 162,
@@ -59,7 +59,7 @@
       "archive": 1,
       "tradingskilllist": 1
     },
-    "withSummary": 3568
+    "withSummary": 3569
   },
   "files": [
     {
@@ -73768,9 +73768,9 @@
       "title": "Every file in this repository",
       "summary": "Regenerate with: python3 index/build.py all # refresh the index python3 index/make_files_doc.py # rewrite this file",
       "summarySource": "opening-prose",
-      "bytes": 1837639,
-      "lines": 38234,
-      "sha1": "e5d9e4344ccbfc1ffc93c8f617ff050d326afe39",
+      "bytes": 1838029,
+      "lines": 38244,
+      "sha1": "e1ee115dc6c9639d85c076c7360d717c3eeb7923",
       "symbols": [],
       "imports": [],
       "internalImports": [],
@@ -88169,11 +88169,11 @@
       "ext": ".md",
       "kind": "doc",
       "title": "Work continuation",
-      "summary": "Version: 619 Delta: v618 to v619; record integrated audit, paper-session identity display and pending acceptance. Delta: v617 to v618; reconcile auto-trade delivery and current-source audit continuation.",
+      "summary": "Version: 620 Delta: v619 to v620; preserve accepted auto-action teardown and review scope. Delta: v618 to v619; record integrated audit, paper-session identity display and pending acceptance.",
       "summarySource": "opening-prose",
-      "bytes": 627431,
-      "lines": 3037,
-      "sha1": "ec0b2b0eb3c1594161ad223ba590b9edde180561",
+      "bytes": 628280,
+      "lines": 3043,
+      "sha1": "323276326006a58c48b7ef2498a079e941775555",
       "symbols": [],
       "imports": [],
       "internalImports": [],
@@ -100220,6 +100220,39 @@
       "frontmatter": {}
     },
     {
+      "id": "research/tests/test_cdo_auto_action_lifecycle.py",
+      "path": "research/tests/test_cdo_auto_action_lifecycle.py",
+      "dir": "research/tests",
+      "name": "test_cdo_auto_action_lifecycle.py",
+      "ext": ".py",
+      "kind": "test",
+      "title": "test_cdo_auto_action_lifecycle",
+      "summary": "Accepted auto actions survive a panel close; all bridges are test doubles.",
+      "summarySource": "docstring",
+      "bytes": 8633,
+      "lines": 195,
+      "sha1": "37cfc18ca487bc33e37449345290bfff88d81324",
+      "symbols": [
+        "class AutoActionLifecycleTests",
+        "class AutoActionDisplayTests"
+      ],
+      "imports": [
+        "asyncio",
+        "pathlib",
+        "research",
+        "subprocess",
+        "sys",
+        "tempfile",
+        "threading",
+        "time",
+        "unittest"
+      ],
+      "internalImports": [
+        "research"
+      ],
+      "frontmatter": {}
+    },
+    {
       "id": "research/tests/test_cdo_feed_settings.py",
       "path": "research/tests/test_cdo_feed_settings.py",
       "dir": "research/tests",
@@ -104325,9 +104358,9 @@
       "title": "zec_leverage_panel",
       "summary": "Explicit trading controls and a read-only view of the durable paper trial. The panel owns only its UI workers. The forward collector belongs to its service, so closing this screen never stops a trial or starts a second collector.",
       "summarySource": "docstring",
-      "bytes": 74367,
-      "lines": 1706,
-      "sha1": "ed919052d8c98fc9310a7b4ce21c9328e6f61a96",
+      "bytes": 75935,
+      "lines": 1746,
+      "sha1": "a3b0abe31c325fb837b699f52b8b0c857f871db9",
       "symbols": [
         "default_home()",
         "_text()",
@@ -104847,9 +104880,9 @@
       "title": "zec_tui_workers",
       "summary": "Single-owner background reads with bounded, latest-request delivery. Loaders must bound their own blocking operations and check ``cancelled`` between them. Python threads cannot forcibly interrupt an arbitrary blocking call. This helper never calls UI objects; the UI polls immutable completion envelopes.",
       "summarySource": "docstring",
-      "bytes": 4694,
-      "lines": 130,
-      "sha1": "5d3c09cc03ce8e6cd09c6999f0443072900243f0",
+      "bytes": 5385,
+      "lines": 145,
+      "sha1": "0ab6c3261e61226f7b60cba1ad570c09eff13ef8",
       "symbols": [
         "class WorkerResult",
         "class LatestWorker"
@@ -118740,5 +118773,5 @@
       "frontmatter": {}
     }
   ],
-  "textSha256": "71ff18e020fd2e96e6592dfd2ebc6b027fab8708f68eed8c59234b3b79b40d09"
+  "textSha256": "165c866084a3d3213bfb8976fd2e72aa3e3e4e6750a40104f3096ac67fca7797"
 }

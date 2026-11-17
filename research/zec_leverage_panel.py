@@ -501,7 +501,10 @@ class LeveragePanel(ModalScreen[None]):
         self._next_read = 0.0
         self._next_market_paint = 0.0
         self._read_worker = self._action_worker = self._auto_worker = None
+        self._auto_action_worker = None
         self._auto_busy = False
+        self._auto_epoch = 0
+        self._auto_read_epoch = 0
         self._auto_next = 0.0
         self._auto_retry = None
         self._auto_live_confirm = False
@@ -737,11 +740,18 @@ class LeveragePanel(ModalScreen[None]):
         self._read_worker = LatestWorker(self._read, name="oracle-leverage-read")
         self._action_worker = LatestWorker(self._act, name="oracle-leverage-action")
         self._auto_worker = LatestWorker(self._auto_call, name="oracle-auto-bridge")
-        self._poll_timer = self.set_interval(0.1, self.poll_workers)
-        self._apply_feed_visibility()
-        if self._feed_changed is not None:
-            self._feed_changed(dict(self.feed_enabled))
-        self.action_refresh()
+        self._auto_action_worker = LatestWorker(
+            self._auto_call, name="oracle-auto-action", daemon=False
+        )
+        try:
+            self._poll_timer = self.set_interval(0.1, self.poll_workers)
+            self._apply_feed_visibility()
+            if self._feed_changed is not None:
+                self._feed_changed(dict(self.feed_enabled))
+            self.action_refresh()
+        except BaseException:
+            self.stop_owned()
+            raise
 
     def _apply_feed_visibility(self):
         jupiter, coinbase = (self.feed_enabled[k] for k in ("jupiter", "coinbase"))
@@ -875,15 +885,20 @@ class LeveragePanel(ModalScreen[None]):
         )
 
     def _auto_submit(self, command, params):
-        if self._auto_busy:
+        if self._auto_busy or self._stopping:
             return
         signature = (command, repr(params))
         if self._auto_retry is None or self._auto_retry[0] != signature:
             self._auto_retry = (signature, str(uuid.uuid4()))
-        self._auto_busy = True
-        self._auto_worker.submit(
+        self._auto_action_worker.submit(
             (command, {**params, "request_id": self._auto_retry[1]})
         )
+        self._auto_busy = True
+        self._auto_epoch += 1
+        if self.is_mounted:
+            self.query_one("#auto-status", Static).update(
+                "Auto-trade action pending; awaiting owner acknowledgement."
+            )
 
     def _paint_auto(self, data):
         defaults = data.get("configuration") or data.get("defaults") or {}
@@ -936,9 +951,9 @@ class LeveragePanel(ModalScreen[None]):
     def poll_workers(self):
         if self._stopping or not self.is_mounted:
             return
-        auto_result = self._auto_worker.poll()
+        auto_result = self._auto_action_worker.poll()
         if auto_result is not None:
-            was_action, self._auto_busy = self._auto_busy, False
+            self._auto_busy = False
             envelope = auto_result.value
             if (
                 auto_result.error
@@ -954,8 +969,30 @@ class LeveragePanel(ModalScreen[None]):
                 )
                 self.query_one("#auto-status", Static).update(f"Auto-trade: {error}")
             else:
-                if was_action:
-                    self._auto_retry = None
+                self._auto_retry = None
+                self._paint_auto(envelope["result"])
+            self._auto_next = time.monotonic() + 5
+        status_result = self._auto_worker.poll()
+        if (
+            status_result is not None
+            and not self._auto_busy
+            and self._auto_read_epoch == self._auto_epoch
+        ):
+            envelope = status_result.value
+            if (
+                status_result.error
+                or not isinstance(envelope, dict)
+                or not envelope.get("ok")
+            ):
+                error = (
+                    (envelope or {})
+                    .get("error", {})
+                    .get("message", "Owner unavailable")
+                    if isinstance(envelope, dict)
+                    else "Owner unavailable"
+                )
+                self.query_one("#auto-status", Static).update(f"Auto-trade: {error}")
+            else:
                 self._paint_auto(envelope["result"])
             self._auto_next = time.monotonic() + 5
         if (
@@ -964,6 +1001,7 @@ class LeveragePanel(ModalScreen[None]):
             and time.monotonic() >= self._auto_next
         ):
             self._auto_next = time.monotonic() + 5
+            self._auto_read_epoch = self._auto_epoch
             self._auto_worker.submit(("autotrade.status", {}))
         result = self._read_worker.poll()
         if result is not None:
@@ -1700,6 +1738,8 @@ class LeveragePanel(ModalScreen[None]):
         for worker in (self._read_worker, self._action_worker, self._auto_worker):
             if worker is not None:
                 worker.close(0.15)
+        if self._auto_action_worker is not None:
+            self._auto_action_worker.close(0.15, drain=True)
 
     def on_unmount(self):
         self.stop_owned()

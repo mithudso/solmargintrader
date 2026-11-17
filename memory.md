@@ -1,6 +1,7 @@
 # Work continuation
 
-Version: 619
+Version: 620
+Delta: v619 to v620; preserve accepted auto-action teardown and review scope.
 Delta: v618 to v619; record integrated audit, paper-session identity display and pending acceptance.
 Delta: v617 to v618; reconcile auto-trade delivery and current-source audit continuation.
 Delta: v615 to v616; record bounded current-source audit diagnostics, fixes and open integrity work.
@@ -3034,3 +3035,8 @@ The current-source health branch integrates auto-trade source from d0b26a4 witho
 The paper-session summary now identifies the actual shared policy asset and product, position direction/state and realized modeled session net, rather than relying on editable next-session selections. The TUI puts session, plan and outcomes in its first three summary lines; the Chrome status header names the same active identity. Focused tests use stub owners only. The public research export is regenerated from tracked allowed sources; no private Pine is included.
 
 Remaining: independent review of these final UI changes, exact-head CI, the user's live-owner attribution and paper acceptance, qualified audit ledger records and the single final receipt, final static freshness checks and parent-coordinated delivery. No running owner was installed, restarted or stopped by these edits.
+
+
+## Accepted auto actions on panel close — 2026-11-17
+
+A source-bound synthetic review reproduced a queued Stop being lost when the panel closed during a status request. Status reads and auto actions now use separate workers. An accepted action retains its request ID and drains on close; stale pre-action status cannot acknowledge it. The action worker is non-daemon so orderly process exit waits for its bounded RPC; read workers retain their prior cancellation defaults. Hard process termination is not a delivery guarantee. Stubbed tests cover queued and in-flight Start/Stop, duplicate suppression, late status, responsive close and orderly process exit. Independent review and final CI are required before delivery. No active owner was contacted by these tests.
