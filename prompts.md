@@ -1,5 +1,8 @@
 # Prompt history
 
+Version: 288
+Delta: v287 to v288; bind PR226 to merged master77bf655 and preserve its exact audit files.
+
 Version: 287
 Delta: v286 to v287; preserve PR226 audit checkpoint during requested merge sweep.
 

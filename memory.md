@@ -1,5 +1,8 @@
 # Work continuation
 
+Version: 640
+Delta: v639 to v640; bind PR226 to merged master77bf655 and preserve its exact audit files.
+
 Version: 639
 Delta: v638 to v639; preserve PR226 audit checkpoint during requested merge sweep.
 
