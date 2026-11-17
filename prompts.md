@@ -1,7 +1,12 @@
 # Prompt history
 
+Version: 293
+Delta: v292 to v293; qualify complete browser/native persistence checkpoint and retain final public exports.
+
 Version: 292
 Delta: v291 to v292; carry final maintenance and exit-study integration into the browser persistence checkpoint.
+
+Delta: v291 to v292; retain final public exports while preparing PR289 exact-head checks.
 
 Version: 291
 Delta: v290 to v291; preserve concurrent readonly Oracle history repair and current combined test counts.
@@ -33,6 +38,8 @@ Delta: v263 to v264; record Jupiter documentation links.
 Delta: v262 to v263; record Preview error and explicit resume steering.
 Delta: v261 to v262; record two-column layout and causal bar/shape display request.
 Delta: v260 to v261; record 50 percent collateral exit, delayed close and order-flow research request.
+
+Delta: v290 to v291; regenerate public research projections after merged tracked-source changes.
 
 Version: 290
 Delta: v289 to v290; reconcile hosted integration test fixtures without weakening current source contracts.

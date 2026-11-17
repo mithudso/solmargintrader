@@ -1,11 +1,20 @@
 # Work continuation
 
+Version: 646
+Delta: v645 to v646; qualify complete browser/native persistence checkpoint and retain final public exports.
+
+## PR328 final isolated acceptance — TASK-2579
+
+Preserve owner4e1d15e/f26b310 and all qualified maintenance/exit-study source. Extension0.12.7 passes724 tests; native persistence passes252; supervisor20, packaging and JavaScript quality pass. Canonical isolated Chrome checks pass25/25. The updated checkpoint probe passes12 gates with17 loaded runtime hashes: actual IndexedDB/profile retention, multi-chunk digest restore, local precedence, corrupt digest refusal, learner DB recovery, panel save/status, and retained six-horizon history after quota failure. Production framed native checkpoint APIs pass eight fresh processes, including separate multi-chunk reopen. Browser helper responses are fixtures; native disk probes use the real API. These tests do not establish user-installed production integration or live trading. All defaults remain dry-run/disarmed. Next: regenerate committed-source projections, push current branch, finish final-head CI, verify exact merge tree against current remote master, merge and record final receipts. The original application assessment remains incomplete.
+
 Version: 645
 Delta: v644 to v645; carry final maintenance and exit-study integration into the browser persistence checkpoint.
 
 ## PR328 qualified predecessor checkpoint — TASK-2579
 
 Preserve the final PR235 source/fixture repairs and PR289 source qualification. Browser/native learning checkpoint source matches4fad6e2; no runtime change in those paths. All724 extension,252 native,20 supervisor and JavaScript gates pass. Independent loaded browser/native acceptance remains bound to exact source hashes. Next: await predecessor delivery, bind remote master, regenerate committed-source projections, preserve any new remote descendant, push/check/merge PR328. Audit status remains incomplete.
+
+Delta: v644 to v645; retain final public exports while preparing PR289 exact-head checks.
 
 Version: 644
 Delta: v643 to v644; preserve concurrent readonly Oracle history repair and current combined test counts.
@@ -51,6 +60,12 @@ Delta: v579 to v580; preserve Preview-error recovery scope and execution boundar
 Delta: v578 to v579; record resumed source archival and preserved forward state.
 Delta: v577 to v578; record owner two-column and causal candle/shape display request.
 Delta: v576 to v577; begin isolated 50 percent collateral exit and order-flow evidence study.
+
+Delta: v643 to v644; regenerate public research projections after merged tracked-source changes.
+
+## PR235 public export freshness — TASK-2579
+
+The repaired hosted website passed unit, browser, Worker and Python engine gates before its export freshness check found five stale public JSON files. The established exporter adds the already tracked weekly ETH study and its guide, and refreshes the existing CPCV source binding. No article was removed, private store read or research rerun. The unchanged transform retains original source hashes, published hashes, source caveats and workstation-path redaction. Export generation and the23-file export check pass. Next: regenerate deterministic indexes from committed source, push and wait all final-head checks.
 
 Version: 643
 Delta: v642 to v643; reconcile hosted integration test fixtures without weakening current source contracts.
