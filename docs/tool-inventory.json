@@ -20,7 +20,7 @@
     },
     {
       "path": "botmanager/pyproject.toml",
-      "sha256": "fc696e1be5339edc8b40f599aabd036e00eb4ae825da42da2c47b2e1c188a1db"
+      "sha256": "be16943f01c960ad77647886b1284b70cc5456e42ec47c618ae8f0dfbc0cd65f"
     },
     {
       "path": "botmanager/src/botmanager/cli.py",
@@ -52,7 +52,7 @@
     },
     {
       "path": "ecosystem/pyproject.toml",
-      "sha256": "9fd7fd25446dfe3ed8516d80da0a42d59318225096e017bad37bd9c19df1fa6c"
+      "sha256": "bca0f1647611a8ecbc1705cac242ae901837c4c2f527d5b4847a9d0bd0a74b00"
     },
     {
       "path": "ecosystem/web.py",
@@ -72,7 +72,7 @@
     },
     {
       "path": "extension/package.json",
-      "sha256": "cac067413b2a1ac6e85981b064766634989b1d07f390cf9a34aacad6256c747e"
+      "sha256": "295ad77bfecbe91518f45fe26cde9afeaa7c740e394516fe4142f992d86b5c04"
     },
     {
       "path": "extension/src/core/commands.js",
@@ -132,7 +132,7 @@
     },
     {
       "path": "soltui/pyproject.toml",
-      "sha256": "853a8887d48b76d97fa0b5956183411fc7c986d81a309361023517fc7ee218d7"
+      "sha256": "640544812d4ca41fa788cbbce8bdcafab452e6e0719e6e5874ac00f902842d9c"
     },
     {
       "path": "soltui/soltui-service",
@@ -140,7 +140,7 @@
     },
     {
       "path": "website/package.json",
-      "sha256": "bc3e9f738fdc1391409177a1b11b8f6d52d106fcb7ec7de82cf69495c6263b95"
+      "sha256": "823a956de79e8f1b51c354045e5945a55c98ee2fb8965d488ca12f55f19182cd"
     }
   ],
   "tools": [
@@ -640,7 +640,7 @@
       "kind": "npm-script",
       "source": "website/package.json",
       "symbol": "scripts.test:browser",
-      "declared_command": "node test/ui-browser.mjs && node test/agent-browser.mjs && node test/hosted-browser.mjs",
+      "declared_command": "node test/ui-browser.mjs && node test/agent-browser.mjs && node test/hosted-browser.mjs && node test/backtest-recovery-browser.mjs",
       "help_command": null,
       "side_effects": "script-specific; inspect declared command before invoking",
       "signing": "not inferred from npm metadata",

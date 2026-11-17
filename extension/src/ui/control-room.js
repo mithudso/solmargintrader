@@ -2,6 +2,7 @@
 import { el } from './ui-kit.js';
 
 const LABELS = { suite: 'Managed suite', manager: 'Bot Manager', control_room: 'Control room', market_data: 'Market data' };
+const HEALTH_REFRESH_MS = 30000;
 export function controlRoomPresentation(snapshot) {
   if (snapshot?.helper === 'incompatible') return { title: 'Native helper update required', tone: 'unknown',
     detail: 'The installed helper does not support the managed suite. Update its local registration, then refresh.' };
@@ -22,6 +23,8 @@ export function controlRoomPresentation(snapshot) {
 
 export function mountControlRoom(root = document.getElementById('controlRoom'), {
   send = message => chrome.runtime.sendMessage(message),
+  schedule = (callback, delay) => setTimeout(callback, delay),
+  cancel = timer => clearTimeout(timer),
 } = {}) {
   if (!root) return;
   const heading = el('h2', { text: 'Sol · Bot control room' });
@@ -55,14 +58,16 @@ export function mountControlRoom(root = document.getElementById('controlRoom'), 
     open.disabled = busy || snapshot.helper !== 'available';
     start.disabled = busy || snapshot.helper !== 'available' || snapshot.state === 'starting';
     refresh.disabled = busy;
-    if (snapshot.state === 'starting' && attempts < 5 && !closed) {
-      const delay = Math.min(1000 * 2 ** attempts++, 10000);
-      timer = setTimeout(() => run('controlRoomStatus'), delay);
+    if (!closed) {
+      const delay = snapshot.state === 'starting' && attempts < 5
+        ? Math.min(1000 * 2 ** attempts++, 10000) : HEALTH_REFRESH_MS;
+      if (snapshot.state !== 'starting') attempts = 0;
+      timer = schedule(() => run('controlRoomStatus'), delay);
     }
   }
   async function run(command) {
     if (busy || closed) return;
-    clearTimeout(timer);
+    cancel(timer);
     busy = true;
     open.disabled = start.disabled = refresh.disabled = true;
     feedback.textContent = command === 'controlRoomStart' || command === 'controlRoomOpen' ? 'Contacting the local managed suite…' : '';
@@ -78,7 +83,7 @@ export function mountControlRoom(root = document.getElementById('controlRoom'), 
       else if (command === 'controlRoomStart') feedback.textContent = snapshot.ui_url ? 'Servers answered. Open the control room to inspect bot stages.' : 'Startup requested. Check component health for the result.';
     } catch {
       snapshot = { helper: 'unavailable', state: 'unknown', ready: null, components: [], ui_url: null };
-      feedback.textContent = failure;
+      feedback.textContent = `${failure} Health checks also retry automatically.`;
     } finally {
       busy = false;
       if (!closed) paint(snapshot);
@@ -87,6 +92,8 @@ export function mountControlRoom(root = document.getElementById('controlRoom'), 
   open.addEventListener('click', () => { attempts = 0; run('controlRoomOpen'); });
   start.addEventListener('click', () => { attempts = 0; run('controlRoomStart'); });
   refresh.addEventListener('click', () => { attempts = 0; run('controlRoomStatus'); });
-  globalThis.addEventListener?.('pagehide', () => { closed = true; clearTimeout(timer); }, { once: true });
+  function close() { closed = true; cancel(timer); globalThis.removeEventListener?.('pagehide', close); }
+  globalThis.addEventListener?.('pagehide', close, { once: true });
   run('controlRoomStatus');
+  return { close };
 }

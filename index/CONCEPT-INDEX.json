@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-11-17T06:14:01+00:00",
+  "generatedAt": "2026-11-17T07:02:23+00:00",
   "schemaVersion": 1,
   "note": "Concepts are derived from the repo's own vocabulary \u2014 the FAMILY dict, strategy-card frontmatter, docs/trading-signals-concept-family.md, and terms verified to recur in the corpus. A concept matching no file is dropped, not kept.",
   "counts": {
@@ -161,7 +161,7 @@
         "universe",
         "top_coins"
       ],
-      "matchingFiles": 1787,
+      "matchingFiles": 1788,
       "shown": 30,
       "files": [
         {
@@ -578,7 +578,7 @@
         "perps",
         "solana"
       ],
-      "matchingFiles": 1141,
+      "matchingFiles": 1142,
       "shown": 30,
       "files": [
         {
@@ -603,7 +603,7 @@
         },
         {
           "path": "memory.md",
-          "hits": 342
+          "hits": 343
         },
         {
           "path": "FILES.md",
@@ -990,7 +990,7 @@
         "monotone",
         "gap"
       ],
-      "matchingFiles": 850,
+      "matchingFiles": 852,
       "shown": 30,
       "files": [
         {
@@ -1125,7 +1125,7 @@
         "benchmark",
         "baseline"
       ],
-      "matchingFiles": 598,
+      "matchingFiles": 600,
       "shown": 30,
       "files": [
         {
@@ -1214,7 +1214,7 @@
         },
         {
           "path": "memory.md",
-          "hits": 35
+          "hits": 36
         },
         {
           "path": ".cdo/reviews-2026-11-12/soltui-fullsuite-fixture-deltas.json",
@@ -1260,7 +1260,7 @@
         "stochastic",
         "oscillator"
       ],
-      "matchingFiles": 596,
+      "matchingFiles": 597,
       "shown": 30,
       "files": [
         {
@@ -1394,7 +1394,7 @@
         "buy_and_hold",
         "baseline"
       ],
-      "matchingFiles": 527,
+      "matchingFiles": 529,
       "shown": 30,
       "files": [
         {
@@ -1447,7 +1447,7 @@
         },
         {
           "path": "memory.md",
-          "hits": 34
+          "hits": 35
         },
         {
           "path": "research/tradingview-script-profiles/shard-a.jsonl",

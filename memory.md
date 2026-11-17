@@ -36,7 +36,8 @@ Browser CI fixture: the native IndexedDB abort assertion raced an independent ne
 
 Routing follow-up: source adds owner-only optional connection routing for ordinary clients; explicit environment homes remain first. The isolated 1000x paper acceptance passed one start and stop with recorded modeled outcome. The user-owned registry and shared wrapper remain unchanged. Verify focused checks, review and deliver the routing PR before a separately controlled activation. Routing alone does not fence concurrent starts or migrate journal history.
 
-Version: 627
+Version: 628
+Delta: v627 to v628; integrate the application optimizer and six verified source repairs.
 Delta: v626 to v627; record the browser CI fixture race and scoped correction pending final verification.
 Delta: v625 to v626; record scoped UI and prose review, bounded native evidence and final integration gates.
 Delta: v624 to v625; preserve the tested live-signal candidate, independent fixes, active routing and pending native/UI/prose gates.
@@ -3094,3 +3095,28 @@ A source-bound synthetic review reproduced a queued Stop being lost when the pan
 The single existing optimizer run 2026-11-16T17:00:08Z recorded all 54 selected diagnostics and issued its only final receipt with PARTIAL status. Twenty-one diagnostics retain exact unchanged source and contract bindings; 33 have changed or unproven bindings and require fresh method review. The integrated commands file has 13 applicable methods explicitly partial. The helper's hash-based coverage total does not establish complete reviews. See docs/audit-2026-11-17.md for the scope and limits.
 
 The prior ten run bodies and 806 nonselected file rows were verified unchanged. A private complete pre-record ledger backup retains all 846 original rows, including the 40 selected rows replaced by current records. Fourteen selected rows were new. Do not issue another helper mutation: an older unfinished run could become current. Source checkpoint d9c24f25 passed its source CI and independent mocked worker lifecycle review. The user confirmed the observed BTC and ZEC paper sessions were theirs. Remaining: deterministic metadata and documentation verification, final draft PR CI, separately coordinated isolated installed acceptance, and parent-controlled delivery. Do not activate or alter existing owners or frozen cohorts.
+
+
+## 2026-11-17 — Whole-application optimizer TASK-2527
+
+Workflow version: application-2527/1. Delta: initial application contract and continuation.
+
+Target: whole solmargintrader product, all eleven current components and their supported user/operating journeys. Use the240-method application-deep-optimizer catalog, REPAIR mode and default five-sweep ceiling. Baseline source is7c17fd1dfd73fd9a53ac7632cf317fc9c9db18f1 in isolated /Users/mitch/dev/worktrees/application-optimizer-2527; original checkout retains its two modified package manifests and private untracked Pine file.
+
+Preserve paused TASK-1541/TASK-1529/PR235/PR226, finalized PARTIAL TASK-2410 ledger, active Oracle confidence/UI work, frozen paper cohorts, shared-session ownership, disarmed defaults and archived liquidity. No service/model/indexer restart is a setup step. Canonical source outranks dated summaries.
+
+Completed: skill/standing instructions read; exact-run dedup and prior decisions; new tasks2527/2528/2529; isolated checkout; original request and skill pinned. Semantic lookup did not return within five seconds; bounded offline keyword retrieval succeeded with INDEX_NO_AUTO=1.
+
+Next: map current journeys and read-only runtime, freeze all240method selections and matrix, evaluate one method per pass, implement confirmed authorized Medium+ repairs, recheck complete selected coverage on final source, obtain independent acceptance, validate ledger and deliver owned changes. Keep evidence, attempts and versioned continuation in /Users/mitch/.local/share/solmargintrader/audits/application-2527/. Missing real research or runtime evidence stays explicit and cannot certify CLEAN.
+
+## 2026-11-17 — Application repairs TASK-2528
+
+Workflow version: application-2527/2. Delta: all240baseline method rows evaluated; six confirmed Medium findings under repair. Frozen plan selects222methods and18OUT_OF_SCOPE methods across34cells. Source/fixture checks do not satisfy missing participant, cost, provider, device and prospective evidence. The eventual stop is expected NEEDS_EVIDENCE, not a whole-application CLEAN certificate.
+
+Implemented: inert status/passive-forecast inspection, historical saved-configuration display with current exposure unknown when the owner is absent, Chrome session/position/cleanup reasons, automatic read-only control-room health refresh and teardown, account-bound tab-persistent backtest recovery with original job identity, fair cache scheduling with per-market public-feed failure isolation, and a dry-run operations guide matching the live-signing refusal. Browser tests exercise actual Worker/D1 fixture quota across lost acceptance and polling replies, reload and account switching; no real accounts or venue writes. Before/after inspection and scheduler failures are retained in the audit directory.
+
+Source candidate: runtime0.4.6, manager0.7.9, ecosystem0.4.18, extension0.11.2, website0.4.1. Package versions are source declarations; installation is not yet verified.
+
+Next: complete required checks and source review; regenerate deterministic documentation/wiki indexes without semantic indexing; freeze current hashes; rerun all222selected methods in a no-edit sweep, preserving evidence gaps; independent final review; installed/isolated acceptance without altering protected running owners; validate ledger and deliver the owned branch through passing CI and merged PR. Do not resume older audits or merge another task.
+
+Version note: workflow application-2527/3 reserves runtime0.4.7, manager0.7.10 and ecosystem0.4.19 because concurrent TASK2497 installed the previous0.4.6/0.7.9/0.4.18 candidate and moved the shared native wrapper. Preserve its environment and clients. Our acceptance environment is /Users/mitch/.venvs/application-optimizer-2527, and no task-owned installation may replace that shared route or stop its owner. Historical version declarations above describe the earlier local candidate.

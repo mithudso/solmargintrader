@@ -16,9 +16,14 @@ node tools/cli.js data --json          # find venueOrderId values
 node tools/cli.js cancelOrder --venueOrderId <id>
 ```
 
-## Dry run to live, in order
+## Supported grid dry run, in order
 
-Do not skip steps. Each one can fail cheaply; the next one cannot.
+The bundled Trigger signer refuses live writes because it does not independently
+verify the economic intent of remote-crafted transactions. A session key, funding,
+`full-auto` mode or live confirmation does not satisfy that gate. Do not fund a new
+session key to follow this runbook. Keep the extension in its default dry-run mode.
+See [jupiter-trigger-contract.md](jupiter-trigger-contract.md) for the verifier and
+live-fixture requirements. These steps exercise simulated fills only.
 
 1. **Shape the grid and read the economics.**
    ```bash
@@ -47,29 +52,16 @@ Do not skip steps. Each one can fail cheaply; the next one cannot.
    node tools/cli.js setLimits --maxTotalNotionalUsd 250 --dailyLossLimitUsd 25 --maxOrdersPerTick 2
    ```
 
-5. **Add credentials.**
+5. **Finish the simulation and disarm.** Inspect the journal and P&L, then stop the dry run.
    ```bash
-   node tools/cli.js setApiKey --apiKey <key-from-developers.jup.ag/portal>
-   ```
-
-6. **Choose a signing mode.** `semi-auto` approves each signature by hand and cannot run unattended.
-   `full-auto` needs a dedicated key funded with grid capital only:
-   ```bash
-   node tools/cli.js createSessionKey --passphrase '<12+ chars>'
-   # fund the printed address with working capital ONLY, then:
-   node tools/cli.js setConfig --mode full-auto
-   ```
-
-7. **Go live at the smallest possible size.** One rung at the $10 venue minimum, and watch it.
-   ```bash
-   node tools/cli.js setConfig --rungs 2 --notionalPerRungUsd 10
-   node tools/cli.js arm --confirmLive
-   node tools/cli.js tick
    node tools/cli.js data --json
+   node tools/cli.js pnl
+   node tools/cli.js disarm
    ```
-   Confirm the order exists on the venue and that `reconcile` matches it on the next tick before
-   scaling up. This is the step that validates everything listed as unverified in
-   [TESTING.md](TESTING.md).
+   Simulation results do not validate venue execution, funding, reconciliation or
+   profitability. The outstanding live checks in [TESTING.md](TESTING.md) remain
+   unverified. A separately implemented and qualified intent verifier is required
+   before a future live activation procedure can be supported.
 
 ## Daily checks
 

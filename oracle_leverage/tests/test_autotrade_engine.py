@@ -219,7 +219,7 @@ class ControlTests(unittest.TestCase):
             ),
             self.assertRaisesRegex(RuntimeError, "private receipt"),
         ):
-            autotrade.status()
+            autotrade.configure("explicit-startup-failure", {})
         path = os.path.join(self.tmp.name, "owner-start-error.json")
         with open(path) as stream:
             receipt = stream.read()
@@ -1053,7 +1053,11 @@ worker.serve()
                     patch.dict(os.environ, {"ORACLE_AUTOTRADE_HOME": tmp}),
                     patch("subprocess.Popen", side_effect=track),
                 ):
+                    self.assertEqual(autotrade.status()["state"], "unavailable")
+                    self.assertEqual(spawned, [])
+                    autotrade.configure("explicit-owner-bootstrap", {})
                     self.assertEqual(autotrade.status()["state"], "stopped")
+                    self.assertEqual(len(spawned), 1)
             finally:
                 for process in spawned:
                     process.terminate()

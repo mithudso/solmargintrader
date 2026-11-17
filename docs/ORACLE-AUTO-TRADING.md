@@ -152,13 +152,20 @@ their own capabilities and restrictions.
 
 ## Runtime and verification
 
-Research-runtime 0.4.3 includes `oracle_leverage` with the native host. Its wheel
+Research-runtime 0.4.7 includes `oracle_leverage` with the native host. Its wheel
 and self-contained source distribution are tested outside the repository.
 The owner uses private local SQLite state and a Unix socket under
 `/Users/mitch/.local/state/oracle-autotrade` by default. Request IDs are durable;
 retrying an ambiguous UI response uses the same identity. Only one owner can
 hold the process lock. Native origin checks and the existing HTTP Origin refusal
 remain in force. Model weights and feature vectors stay private to the owner.
+
+Status inspection and passive forecast delivery never start or recover an owner.
+If the socket is unavailable, inspection reads saved public configuration without
+changing the journal, reports `unavailable`, and treats current exposure as unknown.
+Saved values describe the last known session, not a live venue reconciliation.
+An explicit start, stop or configuration command can start the owner and invoke
+its existing recovery checks. Opening Chrome or the TUI cannot do so.
 
 The existing monitor entry point remains:
 
