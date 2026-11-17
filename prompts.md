@@ -1,7 +1,15 @@
 # Prompt history
 
-Version: 286
+Version: 287
+Delta: v286 to v287; preserve PR327 and expand persistence to both browser Oracle learners from user screenshots.
 Delta: v285 to v286; add the explicit per-coin ML retention and durable disk requirement.
+
+Delta: v284 to v285; preserve the reusable ZEC-analysis transfer and seven-day ETH request.
+
+## Weekly coin study — 2026-11-17
+
+Look at all of the backtests done for ZEC and write a script to do that whole same analysis for another coin, have it download the last week's worth of 1min bars and then run it through and see if we can find any correlations. The next coin to operate on is ETH.
+Delta: v283 to v284; retain both commissioned requests during concurrent delivery integration.
 Delta: v282 to v283; commission the whole-application optimizer with frozen coverage.
 Delta: v281 to v282; preserve the current status question.
 Delta: v282 to v283; preserve the paper-config connection error request.
@@ -2615,3 +2623,13 @@ Also the machine learning auto trader in the extension doesn't save its data any
 ```
 
 Root implementation TASK-2574 blocks optimizer TASK-2556 and final review/delivery TASK-2557. User may clarify Auto Long/Short, live prediction indicator or both; native Auto Long/Short is the source-supported default.
+
+## Learner-display clarification — 2026-11-17
+
+Answer to “Which display loses its learning/results when you change or reset it?”:
+
+```text
+"/var/folders/hz/s7btlxx54c32yt375m03q0h40000gn/T/3CE638E5-6FFE-409D-A7F8-A3CF9826BF07-814-0000002029DC9042/pasted-image-20261117-130405-6FAE2836-4FBE-4DF5-9D8D-C90FB90A4CCA.png" "/var/folders/hz/s7btlxx54c32yt375m03q0h40000gn/T/8A0495A0-6132-4870-A5E3-E712E721094B-814-00000020485612B3/pasted-image-20261117-130427-34880B75-938F-4C66-BBA8-854BEEF28EDD.png"
+```
+
+The supplied screenshots identify Minute-close Oracle — six horizons, and Live Oracle — direction estimates. Both show untrained counts. The latter includes SOL and the separate blocked Auto Long / Short session. Extend durable per-coin/horizon continuity and disk backup to both browser learners. Do not claim their IndexedDB data is absent from these screenshots alone.

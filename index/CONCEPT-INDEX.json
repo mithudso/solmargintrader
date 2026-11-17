@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-11-17T17:59:54+00:00",
+  "generatedAt": "2026-11-17T18:13:17+00:00",
   "schemaVersion": 1,
   "note": "Concepts are derived from the repo's own vocabulary \u2014 the FAMILY dict, strategy-card frontmatter, docs/trading-signals-concept-family.md, and terms verified to recur in the corpus. A concept matching no file is dropped, not kept.",
   "counts": {
@@ -22,7 +22,7 @@
         "confirm",
         "fail-closed"
       ],
-      "matchingFiles": 1987,
+      "matchingFiles": 1984,
       "shown": 30,
       "files": [
         {
@@ -161,7 +161,7 @@
         "universe",
         "top_coins"
       ],
-      "matchingFiles": 1790,
+      "matchingFiles": 1794,
       "shown": 30,
       "files": [
         {
@@ -170,7 +170,7 @@
         },
         {
           "path": "memory.md",
-          "hits": 257
+          "hits": 262
         },
         {
           "path": "research/coin-intelligence/zec-zcash.md",
@@ -202,7 +202,7 @@
         },
         {
           "path": "prompts.md",
-          "hits": 67
+          "hits": 70
         },
         {
           "path": "research/results/frontier-2026-11-07.json",
@@ -368,6 +368,10 @@
           "hits": 48
         },
         {
+          "path": "research/eth-week-20261117/summary.json",
+          "hits": 48
+        },
+        {
           "path": "FILES.md",
           "hits": 42
         },
@@ -400,6 +404,10 @@
           "hits": 32
         },
         {
+          "path": "research/eth-week-20261117/audit.json",
+          "hits": 32
+        },
+        {
           "path": "research/minute_sweep.py",
           "hits": 31
         },
@@ -414,14 +422,6 @@
         {
           "path": ".cdo/reviews-2026-11-12/backtester-final-production.json",
           "hits": 31
-        },
-        {
-          "path": "soltui/commands.py",
-          "hits": 29
-        },
-        {
-          "path": "backtester/tests/test_gridsim.py",
-          "hits": 28
         }
       ],
       "source": "curated-from-repo-vocabulary"
@@ -439,7 +439,7 @@
         "centred",
         "shift"
       ],
-      "matchingFiles": 1547,
+      "matchingFiles": 1550,
       "shown": 30,
       "files": [
         {
@@ -578,7 +578,7 @@
         "perps",
         "solana"
       ],
-      "matchingFiles": 1146,
+      "matchingFiles": 1148,
       "shown": 30,
       "files": [
         {
@@ -603,7 +603,7 @@
         },
         {
           "path": "memory.md",
-          "hits": 344
+          "hits": 346
         },
         {
           "path": "FILES.md",
@@ -623,7 +623,7 @@
         },
         {
           "path": "prompts.md",
-          "hits": 145
+          "hits": 149
         },
         {
           "path": "docs/archive/memory-2026-11-10.md",
@@ -714,7 +714,7 @@
         "macd",
         "ichimoku"
       ],
-      "matchingFiles": 924,
+      "matchingFiles": 922,
       "shown": 30,
       "files": [
         {
@@ -794,18 +794,6 @@
           "hits": 158
         },
         {
-          "path": "research/strategy_experiment/candidate.zip",
-          "hits": 158
-        },
-        {
-          "path": "research/strategy_experiment/original.zip",
-          "hits": 158
-        },
-        {
-          "path": "research/zec-expanded-20261113.llms/simulation-source.zip",
-          "hits": 146
-        },
-        {
           "path": "research/RANKED_LISTS.md",
           "hits": 132
         },
@@ -836,6 +824,18 @@
         {
           "path": "llms-sitemap.txt",
           "hits": 100
+        },
+        {
+          "path": "research/tradingview-strategy-understanding.json",
+          "hits": 100
+        },
+        {
+          "path": "TRADINGVIEW-CARD-FILES.md",
+          "hits": 92
+        },
+        {
+          "path": "docs/TRADINGVIEW-CARD-FILES.md",
+          "hits": 92
         }
       ],
       "source": "backtester/core/strategies/__init__.py FAMILY"
@@ -852,7 +852,7 @@
         "anchor_window",
         "levels"
       ],
-      "matchingFiles": 900,
+      "matchingFiles": 902,
       "shown": 30,
       "files": [
         {
@@ -990,7 +990,7 @@
         "monotone",
         "gap"
       ],
-      "matchingFiles": 852,
+      "matchingFiles": 850,
       "shown": 30,
       "files": [
         {
@@ -1086,14 +1086,6 @@
           "hits": 38
         },
         {
-          "path": "research/strategy_experiment/candidate.zip",
-          "hits": 38
-        },
-        {
-          "path": "research/strategy_experiment/original.zip",
-          "hits": 38
-        },
-        {
           "path": "research/strategy_experiment/results/manifest.json",
           "hits": 38
         },
@@ -1112,6 +1104,14 @@
         {
           "path": ".cdo/reviews-2026-11-12/backtester-data-boundaries.json",
           "hits": 34
+        },
+        {
+          "path": "research/tradingview-strategy-card-locations.json",
+          "hits": 34
+        },
+        {
+          "path": "research/zec-two-bar-reversal-20261114/results.json",
+          "hits": 34
         }
       ],
       "source": "curated-from-repo-vocabulary"
@@ -1125,7 +1125,7 @@
         "benchmark",
         "baseline"
       ],
-      "matchingFiles": 600,
+      "matchingFiles": 603,
       "shown": 30,
       "files": [
         {
@@ -1175,6 +1175,10 @@
         {
           "path": "research/tradingview-script-profiles/shard-b.jsonl",
           "hits": 56
+        },
+        {
+          "path": "research/eth-week-20261117/summary.json",
+          "hits": 52
         },
         {
           "path": "extension/test/fixtures/oracle-0.9-10m-state.json",
@@ -1243,10 +1247,6 @@
         {
           "path": ".cdo/reviews-2026-11-12/botmanager-root.json",
           "hits": 25
-        },
-        {
-          "path": "soltui/learning_owner.py",
-          "hits": 25
         }
       ],
       "source": "curated-from-repo-vocabulary"
@@ -1260,7 +1260,7 @@
         "stochastic",
         "oscillator"
       ],
-      "matchingFiles": 597,
+      "matchingFiles": 594,
       "shown": 30,
       "files": [
         {
@@ -1308,14 +1308,6 @@
           "hits": 248
         },
         {
-          "path": "research/strategy_experiment/candidate.zip",
-          "hits": 248
-        },
-        {
-          "path": "research/strategy_experiment/original.zip",
-          "hits": 248
-        },
-        {
           "path": "research/tradingview-script-profiles/shard-b.jsonl",
           "hits": 238
         },
@@ -1334,10 +1326,6 @@
         {
           "path": "research/tradingview-script-profiles/shard-c.jsonl",
           "hits": 232
-        },
-        {
-          "path": "research/zec-expanded-20261113.llms/simulation-source.zip",
-          "hits": 220
         },
         {
           "path": "TRADINGVIEW-CARD-COVERAGE.md",
@@ -1382,6 +1370,18 @@
         {
           "path": "research/zec-expanded-20261113.llms/identity.json",
           "hits": 110
+        },
+        {
+          "path": "research/zec-expanded-20261113.llms/manifest.json",
+          "hits": 110
+        },
+        {
+          "path": "TRADINGVIEW-SCRIPT-CARD-FILES.md",
+          "hits": 104
+        },
+        {
+          "path": "docs/TRADINGVIEW-SCRIPT-CARD-FILES.md",
+          "hits": 104
         }
       ],
       "source": "backtester/core/strategies/__init__.py FAMILY"
@@ -1394,7 +1394,7 @@
         "buy_and_hold",
         "baseline"
       ],
-      "matchingFiles": 529,
+      "matchingFiles": 531,
       "shown": 30,
       "files": [
         {
@@ -1420,6 +1420,10 @@
         {
           "path": "docs/FILES.md",
           "hits": 65
+        },
+        {
+          "path": "research/eth-week-20261117/summary.json",
+          "hits": 52
         },
         {
           "path": "extension/test/fixtures/oracle-0.9-10m-state.json",
@@ -1512,10 +1516,6 @@
         {
           "path": "research/tradingview-script-profiles/shard-b.jsonl",
           "hits": 21
-        },
-        {
-          "path": "soltui/experiment_screens.py",
-          "hits": 21
         }
       ],
       "source": "backtester/core/strategies/__init__.py FAMILY"
@@ -1529,7 +1529,7 @@
         "ts_momentum",
         "dual_momentum"
       ],
-      "matchingFiles": 480,
+      "matchingFiles": 477,
       "shown": 30,
       "files": [
         {
@@ -1601,14 +1601,6 @@
           "hits": 44
         },
         {
-          "path": "research/strategy_experiment/candidate.zip",
-          "hits": 44
-        },
-        {
-          "path": "research/strategy_experiment/original.zip",
-          "hits": 44
-        },
-        {
           "path": "research/strategy_experiment/results/auxiliary.json",
           "hits": 44
         },
@@ -1641,16 +1633,24 @@
           "hits": 34
         },
         {
-          "path": "research/zec-expanded-20261113.llms/simulation-source.zip",
-          "hits": 34
-        },
-        {
           "path": "TRADINGVIEW-CARD-COVERAGE.md",
           "hits": 32
         },
         {
           "path": "docs/TRADINGVIEW-CARD-COVERAGE.md",
           "hits": 32
+        },
+        {
+          "path": "research/results/minute_sweep_x1_common.txt",
+          "hits": 32
+        },
+        {
+          "path": "llms-sitemap.txt",
+          "hits": 27
+        },
+        {
+          "path": "TRADINGVIEW-CARD-FILES.md",
+          "hits": 26
         }
       ],
       "source": "backtester/core/strategies/__init__.py FAMILY"
@@ -1667,7 +1667,7 @@
         "evidence floor",
         "rankable"
       ],
-      "matchingFiles": 394,
+      "matchingFiles": 398,
       "shown": 30,
       "files": [
         {
@@ -1739,11 +1739,11 @@
           "hits": 19
         },
         {
-          "path": "soltui/tui.py",
-          "hits": 17
+          "path": "memory.md",
+          "hits": 18
         },
         {
-          "path": "memory.md",
+          "path": "soltui/tui.py",
           "hits": 17
         },
         {
@@ -1804,7 +1804,7 @@
         "hurst",
         "vol_regime"
       ],
-      "matchingFiles": 389,
+      "matchingFiles": 386,
       "shown": 30,
       "files": [
         {
@@ -1939,7 +1939,7 @@
         "bb_breakout",
         "keltner"
       ],
-      "matchingFiles": 306,
+      "matchingFiles": 303,
       "shown": 30,
       "files": [
         {
@@ -2019,20 +2019,8 @@
           "hits": 40
         },
         {
-          "path": "research/strategy_experiment/candidate.zip",
-          "hits": 40
-        },
-        {
-          "path": "research/strategy_experiment/original.zip",
-          "hits": 40
-        },
-        {
           "path": "research/tradingview-script-profiles/shard-a.jsonl",
           "hits": 40
-        },
-        {
-          "path": "research/zec-expanded-20261113.llms/simulation-source.zip",
-          "hits": 36
         },
         {
           "path": "research/results/minute_sweep_x1_common.txt",
@@ -2061,6 +2049,18 @@
         {
           "path": "research/STRATEGIES.md",
           "hits": 23
+        },
+        {
+          "path": "TRADINGVIEW-CARD-FILES.md",
+          "hits": 20
+        },
+        {
+          "path": "docs/CONCEPTS.md",
+          "hits": 20
+        },
+        {
+          "path": "docs/TRADINGVIEW-CARD-FILES.md",
+          "hits": 20
         }
       ],
       "source": "backtester/core/strategies/__init__.py FAMILY"
@@ -2077,7 +2077,7 @@
         "k_test",
         "path_sharpes"
       ],
-      "matchingFiles": 251,
+      "matchingFiles": 254,
       "shown": 30,
       "files": [
         {
@@ -2173,12 +2173,12 @@
           "hits": 17
         },
         {
-          "path": "research/CROSS-ASSET-TRANSFER.md",
+          "path": "memory.md",
           "hits": 17
         },
         {
-          "path": "memory.md",
-          "hits": 16
+          "path": "research/CROSS-ASSET-TRANSFER.md",
+          "hits": 17
         },
         {
           "path": "code-deep-optimizer-2026-11-08.md",
@@ -2215,7 +2215,7 @@
         "anti-informative",
         "multiple-testing"
       ],
-      "matchingFiles": 193,
+      "matchingFiles": 190,
       "shown": 30,
       "files": [
         {
@@ -2352,7 +2352,7 @@
         "sign_flips",
         "stability"
       ],
-      "matchingFiles": 189,
+      "matchingFiles": 190,
       "shown": 30,
       "files": [
         {
@@ -2378,6 +2378,10 @@
         {
           "path": "research/verify_numbers.py",
           "hits": 31
+        },
+        {
+          "path": "research/eth-week-20261117/summary.json",
+          "hits": 30
         },
         {
           "path": "research/RANKED_LISTS.md",
@@ -2470,10 +2474,6 @@
         {
           "path": "research/results/perturb_all_singles_short.csv",
           "hits": 6
-        },
-        {
-          "path": "research/results/perturb_long_all_dual_momentum_vol_regime.txt",
-          "hits": 6
         }
       ],
       "source": "curated-from-repo-vocabulary"
@@ -2486,7 +2486,7 @@
         "obv",
         "volume-flow"
       ],
-      "matchingFiles": 167,
+      "matchingFiles": 164,
       "shown": 30,
       "files": [
         {
@@ -2623,7 +2623,7 @@
         "vwap_reversion",
         "ou_reversion"
       ],
-      "matchingFiles": 154,
+      "matchingFiles": 151,
       "shown": 30,
       "files": [
         {
@@ -2759,7 +2759,7 @@
         "garch",
         "risk-overlay"
       ],
-      "matchingFiles": 71,
+      "matchingFiles": 68,
       "shown": 30,
       "files": [
         {

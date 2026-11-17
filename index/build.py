@@ -78,8 +78,9 @@ TEXT_EXT = {".py", ".md", ".js", ".mjs", ".json", ".txt", ".csv", ".yml", ".yaml
 
 # CSV bodies are excluded from the text and semantic indexes on purpose. A
 # 2,000-row price file would dominate every token count with numerals and teach
-# the index nothing; its *header* and shape are the searchable facts.
-BODY_EXCLUDED_EXT = {".csv"}
+# the index nothing; its *header* and shape are the searchable facts. ZIP
+# archives retain metadata; decoding compressed bytes only adds binary noise.
+BODY_EXCLUDED_EXT = {".csv", ".zip"}
 
 # The index's own output, excluded from the index entirely. Including it tripled
 # the token count and made `--check` unsatisfiable: every build rewrote a file the
