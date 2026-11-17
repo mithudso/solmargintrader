@@ -652,7 +652,7 @@ def _parse_lines(text: str) -> list[JobResult]:
             continue
         try:
             out.append(JobResult.from_dict(data))
-        except TypeError:
+        except (TypeError, ValueError):
             continue
     return out
 

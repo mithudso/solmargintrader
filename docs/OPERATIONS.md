@@ -28,7 +28,7 @@ separately authorized cancellation. The CLI data view is:
 Keep unknown intents and transaction/order identities until venue evidence resolves
 them. Do not delete state or retry a write because the local process stopped.
 
-## Current Trigger live gate
+## Supported grid dry run, in order
 
 The bundled Trigger adapter refuses live placement without a signer that implements
 `signVerifiedTriggerDeposit`. Its `capabilities.canPlaceLive` is false when that
@@ -37,29 +37,51 @@ not supply it. Creating or funding a key, choosing `full-auto`, or confirming an
 does not satisfy this gate. Keep fresh installs dry-run and disarmed; do not attempt
 to bypass the refusal.
 
-The deterministic offline economics gate can be run without credentials, funding
-or arming the installed owner:
+1. **Shape the grid and read the economics.**
+   ```bash
+   (cd extension && node tools/cli.js setConfig --lower 60 --upper 90 --rungs 7 --notionalPerRungUsd 12)
+   (cd extension && node tools/cli.js levels     # rung width and gross per round trip)
+   (cd extension && node tools/cli.js capital    # what it needs funded)
+   ```
+   If gross per round trip is not comfortably larger than two fills' fees plus slippage, the grid
+   cannot win. Widen the rungs or stop here.
 
-```bash
-(cd extension && npm test)
-(cd extension && node tools/dryrun.js --ticks 8 --osc 6 --offline 100)
-```
+2. **Confirm the plan matches your intent.**
+   ```bash
+   (cd extension && node tools/cli.js plan --price <current>)
+   ```
+   Every sell must sit one rung above a lot you hold. No sell should share a price with its entry.
+
+3. **Run it in dry-run for a while.** Real prices, simulated fills, zero writes.
+   ```bash
+   (cd extension && node tools/cli.js arm)
+   (cd extension && node tools/cli.js tick --count 5)
+   (cd extension && node tools/cli.js pnl)
+   ```
 
 4. **Set the rails deliberately.** The defaults are conservative, not correct for you.
    ```bash
-   node tools/cli.js setLimits --maxTotalNotionalUsd 250 --dailyLossLimitUsd 25 --maxOrdersPerTick 2
+   (cd extension && node tools/cli.js setLimits --maxTotalNotionalUsd 250 --dailyLossLimitUsd 25 --maxOrdersPerTick 2)
    ```
 
 5. **Finish the simulation and disarm.** Inspect the journal and P&L, then stop the dry run.
    ```bash
-   node tools/cli.js data --json
-   node tools/cli.js pnl
-   node tools/cli.js disarm
+   (cd extension && node tools/cli.js data --json)
+   (cd extension && node tools/cli.js pnl)
+   (cd extension && node tools/cli.js disarm)
    ```
    Simulation results do not validate venue execution, funding, reconciliation or
    profitability. The outstanding live checks in [TESTING.md](TESTING.md) remain
    unverified. A separately implemented and qualified intent verifier is required
    before a future live activation procedure can be supported.
+
+The deterministic offline integration gate requires no credentials or funding:
+
+```bash
+(cd extension && node tools/dryrun.js --ticks 8 --osc 6 --offline 100)
+```
+
+Its closed round trip must be positive. This does not validate venue execution or live signing.
 
 ## Daily checks
 
@@ -111,8 +133,8 @@ The journal is a plain JSON file (`~/.solmargintrader/journal.json`, or IndexedD
 the two are separate).
 
 ```bash
-node tools/cli.js exportCsv > fills-$(date +%F).csv   # back up before anything destructive
-node tools/cli.js reset --confirm                     # erases LOCAL history only
+(cd extension && node tools/cli.js exportCsv > fills-$(date +%F).csv   # back up before anything destructive)
+(cd extension && node tools/cli.js reset --confirm                     # erases LOCAL history only)
 ```
 
 `reset` does not cancel venue-side orders. Do not reset while any order or intent

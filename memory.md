@@ -1,5 +1,12 @@
 # Work continuation
 
+Version: 644
+Delta: v643 to v644; preserve final PR235 source and hosted fixture repairs in PR289.
+
+## PR289 source qualification checkpoint — TASK-2579
+
+All PR289 runtime and report changes are already included in the newer PR235 source. The panel specialist verified the newer60-case implementation preserves all older functions and tests. Report/policy digest bindings and31 SDK tests pass. This merge carries the final CSV, result parser, HTTP fixture, cleanup fixture and picker repairs without additional runtime changes. Next: bind delivered PR235 master, regenerate deterministic projections from the committed source, push the original PR289 branch and await all exact-head checks before merge. No paid research, owner activity or source audit restart.
+
 Version: 641
 Delta: v640 to v641; preserve current leveraged preview and paper-study contracts during PR289 integration.
 
@@ -19,6 +26,24 @@ Delta: v579 to v580; preserve Preview-error recovery scope and execution boundar
 Delta: v578 to v579; record resumed source archival and preserved forward state.
 Delta: v577 to v578; record owner two-column and causal candle/shape display request.
 Delta: v576 to v577; begin isolated 50 percent collateral exit and order-flow evidence study.
+
+Version: 643
+Delta: v642 to v643; reconcile hosted integration test fixtures without weakening current source contracts.
+
+## PR235 hosted-fixture reconciliation — TASK-2579
+
+Hosted CI exposed a client VM missing the real createBacktestRecovery import and an older cleanup test that expected an inline finally block. The VM now receives the real factory. All326 website tests,18-file syntax check and70 Python engine tests pass. The cleanup test now calls the actual helper with inert doubles. It proves stop, bounded join, kill, second join and process close still occur after supervisor close fails. The exact supervisor exception propagates. The focused regression and pinned lint pass; production lifecycle code is unchanged. Existing source safety stays unchanged. Next: finish cleanup checks, commit the fixture repair, regenerate committed-source projections, push and await every new-head hosted gate before merging.
+
+Version: 642
+Delta: v641 to v642; bind qualified PR235 to merged PR224/PR226 default source.
+
+Version: 641
+Delta: v640 to v641; qualify all full-suite shards and current boundary/CSV/parser repairs before delivery.
+
+## PR235 final local qualification — TASK-2579
+
+The full1,718-case SolTUI suite completed in four supported shards. Three corrected shards passed; the final shard passed after preserving strict result validation and teaching its JSONL reader to discard ValueError rows. Full background-queue regressions also passed. Focused125 boundary tests,1,228 backtester tests,707 extension tests,227 Oracle tests,359 ecosystem tests,54 conflict targets,12 workflow checks, picker scheduling reproduction, JavaScript quality, undefined-name lint and the positive offline round trip passed. Initial failures and the intentionally stopped serial attempt remain recorded externally. Full-scope test fixtures now use actual HTTP headers, the current default outbox, verified NFT ownership, private rollback destinations, immutable evidence refusal, canonical macOS paths and observed picker dispatch. One shared CSV escape policy preserves signed numeric text and refuses formulas/hidden controls. The test-only local package overlay supplies declared distribution metadata; shared runtimes were unchanged. Next: bind merged master00d5673, regenerate projections from committed source, push current PR235, await every exact-head check and merge. Underlying optimizer remains USER-PAUSED.
+
 Version: 640
 Delta: v639 to v640; integrate PR235 checkpoint while retaining current execution and persistence behavior.
 
@@ -40,6 +65,9 @@ Delta: v560 to v561; integrate current master and preserve incoming ZEC paper pu
 Delta: v559 to v560; classify macOS launcher fixtures as platform-specific after Linux CI lacked /bin/zsh.
 Delta: v558 to v559; fix final Linux/native CI integration failures after c7f9ab9.
 Delta: v555 to v557; integrate master25e1d60 into PR235 and preserve the separate PR224 record reservation.
+Version: 640
+Delta: v639 to v640; bind PR226 to merged master77bf655 and preserve its exact audit files.
+
 Version: 639
 Delta: v638 to v639; preserve PR226 audit checkpoint during requested merge sweep.
 

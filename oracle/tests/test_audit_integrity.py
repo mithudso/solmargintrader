@@ -140,7 +140,7 @@ class TemporalIntegrityTests(unittest.TestCase):
         with fixture.writer.store.connection() as db:
             db.execute("DROP TRIGGER immutable_resolutions_UPDATE")
             db.execute("UPDATE resolutions SET resolved_at=901 WHERE forecast='prior'")
-        with self.assertRaisesRegex(ValueError, "oracle_recorded_resolution_invalid"):
+        with self.assertRaisesRegex(ValueError, "oracle_resolution_before_target"):
             ReadOnlyOracle(fixture.path, instrument="SOL/USD", archived_versions=True)
 
     def test_contradictory_resolution_refuses(self):

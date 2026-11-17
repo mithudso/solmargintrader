@@ -1,5 +1,8 @@
 # Prompt history
 
+Version: 291
+Delta: v290 to v291; preserve final PR235 source and hosted fixture repairs in PR289.
+
 Version: 289
 Delta: v288 to v289; preserve current leveraged preview and paper-study contracts during PR289 integration.
 
@@ -14,12 +17,21 @@ Delta: v263 to v264; record Jupiter documentation links.
 Delta: v262 to v263; record Preview error and explicit resume steering.
 Delta: v261 to v262; record two-column layout and causal bar/shape display request.
 Delta: v260 to v261; record 50 percent collateral exit, delayed close and order-flow research request.
+
+Version: 290
+Delta: v289 to v290; reconcile hosted integration test fixtures without weakening current source contracts.
+
+Version: 289
+Delta: v288 to v289; bind qualified PR235 to merged PR224/PR226 default source.
+
 Version: 288
 Delta: v287 to v288; integrate PR235 checkpoint while retaining current execution and persistence behavior.
 
 
 Version: 249
 Delta: v248 to v249; preserve the ZEC two-bar reversal paper request while integrating master.
+Delta: v287 to v288; bind PR226 to merged master77bf655 and preserve its exact audit files.
+
 Version: 287
 Delta: v286 to v287; preserve PR226 audit checkpoint during requested merge sweep.
 

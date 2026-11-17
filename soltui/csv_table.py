@@ -2,8 +2,6 @@
 from __future__ import annotations
 
 import csv
-import math
-import re
 from datetime import datetime
 from pathlib import Path
 
@@ -18,7 +16,7 @@ from .csv_safety import spreadsheet_safe_text
 
 def _plain(value: object) -> str:
     text = value.plain if isinstance(value, Text) else str(value) if value is not None else ""
-    return spreadsheet_safe_text(text)
+    return text
 
 
 def _spreadsheet_cell(value: object) -> str:
@@ -27,16 +25,7 @@ def _spreadsheet_cell(value: object) -> str:
     Plain finite decimal numbers keep their numeric meaning. Formula-like text
     gets a leading apostrophe in both headers and values.
     """
-    text = _plain(value)
-    numeric = bool(re.fullmatch(r"[+-]?(?:\d+(?:\.\d*)?|\.\d+)(?:[eE][+-]?\d+)?", text))
-    if numeric:
-        try:
-            numeric = math.isfinite(float(text))
-        except ValueError:
-            numeric = False
-    if (text and ord(text[0]) < 32) or (not numeric and text.lstrip(" \t\r\n\v\f\x00\ufeff").startswith(("=", "+", "-", "@"))):
-        return "'" + text
-    return text
+    return spreadsheet_safe_text(_plain(value))
 
 
 def export_table(table: DataTable, directory: Path | None = None) -> Path:
