@@ -163,22 +163,37 @@ export class OracleDiskBackup {
 /** Restore only a missing partition. A simultaneous tab always wins its own
  * native transaction; no disk reply can replace that tab's committed learning. */
 export class MirroredOracleStore {
-  #local; #disk; #kind; #ready = new Map();
-  constructor(local, disk, kind) { this.#local = local; this.#disk = disk; this.#kind = kind; }
+  #local; #disk; #kind; #clock; #ready = new Map(); #legacyRetryAt = new Map();
+  constructor(local, disk, kind, { clock = Date.now } = {}) {
+    this.#local = local; this.#disk = disk; this.#kind = kind; this.#clock = clock;
+  }
   async #ensure(key) {
     this.#disk.activate(this.#kind, key);
+    if (this.#clock() < (this.#legacyRetryAt.get(key) ?? 0)) return false;
     if (!this.#ready.has(key)) this.#ready.set(key, (async () => {
       const local = await this.#local.loadCheckpoint(key);
       if (local) {
         let saved = local;
         if (!saved.lineage) {
           try {
+            // An old Live Oracle window can leave newer model state without
+            // its backup metadata. Reuse the exact verified disk identity,
+            // without replacing the browser model with the older disk copy.
+            const backupBase = this.#kind === 'live' ? await this.#disk.restore(this.#kind, key) : null;
             const result = await this.#local.update(key, current => {
               validate(this.#kind, current, key); return { state: current, changed: false };
-            });
+            }, { backupBase });
             saved = { state: result.state, ...result.checkpoint };
+            this.#legacyRetryAt.delete(key);
           } catch {
-            this.#ready.delete(key); this.#disk.markUnavailable(this.#kind, key); return;
+            this.#ready.delete(key); this.#disk.markUnavailable(this.#kind, key);
+            if (this.#kind === 'live') {
+              // Leave the row unversioned until the helper can tell us whether
+              // a prior lineage exists. Local learning does not need the helper.
+              this.#legacyRetryAt.set(key, this.#clock() + 5000);
+              return false;
+            }
+            return;
           }
         }
         this.#disk.queue(this.#kind, key, saved); return;
@@ -195,8 +210,8 @@ export class MirroredOracleStore {
     return this.#ready.get(key);
   }
   async update(key, reduce) {
-    await this.#ensure(key);
-    const result = await this.#local.update(key, reduce);
+    const ready = await this.#ensure(key);
+    const result = await this.#local.update(key, reduce, { deferLegacy: ready === false });
     if (result.checkpoint?.lineage) this.#disk.queue(this.#kind, key, { state: result.state, ...result.checkpoint });
     return result;
   }
