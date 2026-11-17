@@ -56,6 +56,7 @@ class HeaderAndSounds(unittest.IsolatedAsyncioTestCase):
             settings_path=self.path,
             data_loader=DataSession(Client(), clock=self.clock),
             quote_loader=lambda r, c: {"quote": None, "error": "fixture"},
+            signal_loader=lambda request, cancelled: {"assets": {}},
             stream=self.stream,
             alert_loader=lambda r, c: raw_context(self.now[0], uu=self.uu),
             sound_player=self.player,

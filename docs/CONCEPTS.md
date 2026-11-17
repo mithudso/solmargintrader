@@ -1,6 +1,6 @@
 # Conceptual index
 
-**Generated** from `index/CONCEPT-INDEX.json` (2026-11-17T06:13:51+00:00). 21 concepts.
+**Generated** from `index/CONCEPT-INDEX.json` (2026-11-17T06:44:51+00:00). 21 concepts.
 
 ```bash
 python3 index/build.py all              # refresh
@@ -47,7 +47,7 @@ The same 25 strategies score 25/25 on BTC daily and 0/25 on SOL hourly. The data
 Strongest files:
 
 - `docs/FILES.md` (321 hits)
-- `memory.md` (256 hits)
+- `memory.md` (258 hits)
 - `research/coin-intelligence/zec-zcash.md` (196 hits)
 - `research/results/coinbase50_20261111_summary.json` (183 hits)
 - `research/coin-intelligence/doge-dogecoin.md` (147 hits)
@@ -97,7 +97,7 @@ Full list: `python3 index/search.py --concept lookahead -n 1547`
 
 ### On-chain execution reality
 
-`execution-onchain` · **1141 files** · matched on `jupiter`, `jlp`, `oracle`, `priority`, `slippage`, `perps`, `solana`
+`execution-onchain` · **1142 files** · matched on `jupiter`, `jlp`, `oracle`, `priority`, `slippage`, `perps`, `solana`
 
 Oracle-priced perps, priority fees as a product, per-account fee markets, dropped-versus-reverted. Decides whether a strategy is executable at all.
 
@@ -112,7 +112,7 @@ Strongest files:
 - `FILES.md` (283 hits)
 - `.cdo/reviews-2026-11-12/oracle.json` (271 hits)
 
-Full list: `python3 index/search.py --concept execution-onchain -n 1141`
+Full list: `python3 index/search.py --concept execution-onchain -n 1142`
 
 ### Grid trading
 

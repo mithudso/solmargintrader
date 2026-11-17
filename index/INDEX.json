@@ -1,11 +1,11 @@
 {
-  "generatedAt": "2026-11-17T06:14:01+00:00",
+  "generatedAt": "2026-11-17T06:45:01+00:00",
   "schemaVersion": 1,
   "repoRoot": "~/dev/solmargintrader",
-  "commit": "8a66c41",
+  "commit": "4196d47",
   "counts": {
     "files": 4003,
-    "bytes": 140850287,
+    "bytes": 140854606,
     "byKind": {
       "strategy-card": 1478,
       "doc": 839,
@@ -73590,7 +73590,7 @@
       "summarySource": "opening-prose",
       "bytes": 20697,
       "lines": 323,
-      "sha1": "a9b6b083a14c92afbc590dc1cc425a435fe4c94a",
+      "sha1": "37b48817fb560f57662340a22b07592dcb9ce3d7",
       "symbols": [],
       "imports": [],
       "internalImports": [],
@@ -73768,9 +73768,9 @@
       "title": "Every file in this repository",
       "summary": "Regenerate with: python3 index/build.py all # refresh the index python3 index/make_files_doc.py # rewrite this file",
       "summarySource": "opening-prose",
-      "bytes": 1843620,
+      "bytes": 1843714,
       "lines": 38412,
-      "sha1": "c502d4774abee6ca192f5fceacc78e8564a805d2",
+      "sha1": "5796f14fcfb2fb90aa3aff8acc110581569e688c",
       "symbols": [],
       "imports": [],
       "internalImports": [],
@@ -88432,11 +88432,11 @@
       "ext": ".md",
       "kind": "doc",
       "title": "Work continuation",
-      "summary": "Draft PR 318 checkpoint 8a66c41 failed the real-browser CI abort/reload check. The fixture restored its `OracleController.prototype.observe` wrapper before the later pause flag was set. A genuine next-minute transaction advanced the stored ledger during the comparison.",
+      "summary": "After PR 318 merged as 4196d47, actual loaded acceptance found that the TUI displayed no shared signal while the private relay held fresh six-horizon BTC and ZEC data. Production `main()` passes `QuoteReader(args.prices)`, and the constructor incorrectly treated any injected quote loader as a request for an empty signal loader.",
       "summarySource": "opening-prose",
-      "bytes": 639600,
-      "lines": 3097,
-      "sha1": "d48b69ab51f72f8b666d11839ebaabc33557b4f3",
+      "bytes": 640722,
+      "lines": 3104,
+      "sha1": "49fe004cebd816197d95da292603b4d4a538c6fb",
       "symbols": [],
       "imports": [],
       "internalImports": [],
@@ -101829,9 +101829,9 @@
       "title": "test_zec_leverage_panel",
       "summary": "Real Textual controls, single-flight actions and owned worker teardown.",
       "summarySource": "docstring",
-      "bytes": 56984,
-      "lines": 1310,
-      "sha1": "b7aebd02b976350dbfdd5c62ad5ed09aff7223ca",
+      "bytes": 57130,
+      "lines": 1312,
+      "sha1": "edab93eb0dca1a192e7267ef7e050f8539aa9fa2",
       "symbols": [
         "class ConsoleFixture",
         "class PanelHost",
@@ -101958,14 +101958,19 @@
       "title": "test_zec_signal_window_display",
       "summary": "Ended signal windows distinguish elapsed and observed time.",
       "summarySource": "docstring",
-      "bytes": 875,
-      "lines": 21,
-      "sha1": "7bca53d37f2d5266212f6c48b3ce673d67df058e",
+      "bytes": 3794,
+      "lines": 84,
+      "sha1": "051a8330327233703e40cb7373fb52f37bf27643",
       "symbols": [
-        "class EndedSignalWindowDisplayTest"
+        "class EndedSignalWindowDisplayTest",
+        "class SignalLoaderWiringTest"
       ],
       "imports": [
+        "pathlib",
         "research",
+        "tempfile",
+        "textual",
+        "time",
         "unittest"
       ],
       "internalImports": [
@@ -101983,9 +101988,9 @@
       "title": "test_zec_tui",
       "summary": "Real Textual keyboard/mouse, background lifecycle and layout regressions.",
       "summarySource": "docstring",
-      "bytes": 30359,
-      "lines": 705,
-      "sha1": "70a907a5625c6f3cd6fdbd1ec9a6ce320f2e6b4d",
+      "bytes": 30428,
+      "lines": 706,
+      "sha1": "311eb28f14d7b6f08d61a240e9144634e35c11ce",
       "symbols": [
         "class Client",
         "class FixtureStream",
@@ -102017,9 +102022,9 @@
       "title": "test_zec_tui_alert_ui",
       "summary": "Real Textual fixed-window alert delivery, freshness, refresh and teardown.",
       "summarySource": "docstring",
-      "bytes": 20572,
-      "lines": 483,
-      "sha1": "87bd84a31bc54dc09ea496296192b34b93ffeced",
+      "bytes": 20644,
+      "lines": 484,
+      "sha1": "2abafee8a81eaecc4aecb46b61a111666b6deed2",
       "symbols": [
         "class AlertStream",
         "class TenMinuteAlertsUI"
@@ -102188,9 +102193,9 @@
       "title": "test_zec_tui_notifications_ui",
       "summary": "Actual Header, sound modal, main-thread bell and quiet view persistence.",
       "summarySource": "docstring",
-      "bytes": 8454,
-      "lines": 209,
-      "sha1": "1ec1f9627c0c1226097b5ff1b35279266f25dbe2",
+      "bytes": 8523,
+      "lines": 210,
+      "sha1": "5d11633ac93824c572b8e17704ea92b6ebf0e29d",
       "symbols": [
         "class Player",
         "class HeaderAndSounds"
@@ -104984,9 +104989,9 @@
       "title": "zec_tui",
       "summary": "Oracle workbench with explicit leveraged trading and paper trial controls.",
       "summarySource": "docstring",
-      "bytes": 57571,
-      "lines": 1406,
-      "sha1": "06c6e531c0abbb4772d518b743c2bcf5b60b9456",
+      "bytes": 57399,
+      "lines": 1402,
+      "sha1": "e0fde6b473ea8ad232e7b6b476bea23cbe02ea8f",
       "symbols": [
         "ended_signal_window_text()",
         "class IndicatorTable",
@@ -119207,5 +119212,5 @@
       "frontmatter": {}
     }
   ],
-  "textSha256": "ec2a9bb9e2f977cb63baeb14b79be5f38b8cd41238fd500e09bb76da5ad6d210"
+  "textSha256": "0dbbfe82527480030805a027084d6d0283249ddb7c4fb4b8db1a93643d7d86cb"
 }
