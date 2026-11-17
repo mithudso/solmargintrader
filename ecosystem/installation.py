@@ -52,7 +52,7 @@ for item in expected:
     if version != item["version"]:
         raise RuntimeError("package_version_mismatch")
     packages[item["name"]] = {"version": version, "module_path": str(path)}
-for name in ("soltui.f5_batch", "soltui.forwardtest"):
+for name in ("soltui.f5_batch", "soltui.forwardtest", "oracle_leverage.autotrade_worker"):
     path = Path(inspect.getfile(importlib.import_module(name))).resolve()
     if not path.is_relative_to(prefix):
         raise RuntimeError("installed_import_required")
@@ -102,13 +102,13 @@ def _manifests(repo: Path) -> list[dict[str, str]]:
 def source_fingerprint(repo: Path) -> str:
     """Hash local package code, strategy cards, and shipped web assets."""
     digest = hashlib.sha256()
-    for name in PROJECTS:
+    for name in (*PROJECTS, "oracle_leverage"):
         root = repo / name
         for path in sorted(root.rglob("*")):
             relative = path.relative_to(root)
             if any(
                 part.startswith(".")
-                or part in ("tests", "__pycache__", "build", "dist")
+                or part in ("tests", "__pycache__", "build", "dist", "node_modules")
                 or part.endswith(".egg-info")
                 for part in relative.parts
             ):

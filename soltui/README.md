@@ -509,6 +509,22 @@ that reason. The measured PBO for this strategy set is 0.43–0.46 against a 0.5
 pure-noise control — so treat *ordering* as weakly informative at best, and read
 the distribution.
 
+## Shared Oracle auto-trading
+
+The Oracle monitor's **Margin / trading** panel includes **Start Paper**,
+**Start Live** and **Stop entries**. It uses the same durable session as the Chrome
+extension. The selected BTC/ZEC asset and10x/1000x venue select the paper model;
+base collateral, maximum collateral and session-loss fields bound each session.
+The status area scrolls through the immutable entry/exit plan, results, model
+samples and live-readiness reasons. The existing feed display toggles do not
+stop the separate at-risk execution monitor.
+
+The new `autotrade.*` commands live in the existing registry. Paper is the default;
+verified live close and settlement support is still unavailable. Research-runtime
+0.4.3 packages the session owner with the native host, so an installed host does
+not depend on a repository working directory to import it. See
+[the auto-trading guide](../docs/ORACLE-AUTO-TRADING.md) for assumptions and limits.
+
 ## The command bridge: one registry, four surfaces
 
 Every action in the console is a command in `soltui/commands.py` (`soltui list` prints them all).

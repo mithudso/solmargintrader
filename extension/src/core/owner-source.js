@@ -2,6 +2,7 @@
 export const OWNER_SOURCE_SCHEMA = 2;
 export const OWNER_SOURCE_FILES = [
   "manifest.json",
+  "src/1000x/autotrade-view.js",
   "src/1000x/content.js",
   "src/1000x/feed.js",
   "src/1000x/timeframes.js",

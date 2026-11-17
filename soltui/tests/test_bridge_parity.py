@@ -9,17 +9,28 @@ from __future__ import annotations
 import json
 import unittest
 from contextlib import ExitStack
+from unittest.mock import patch
 
 from soltui import commands
 
-from .bridge_support import (ApiServer, World, default_params, stub_heavy, via_api, via_cli,
-                             via_host, via_tui)
+from .bridge_support import (
+    ApiServer,
+    World,
+    default_params,
+    stub_heavy,
+    via_api,
+    via_cli,
+    via_host,
+    via_tui,
+)
 
 
 class ParityTests(unittest.TestCase):
     def test_every_command_returns_identical_bytes_on_all_four_surfaces(self) -> None:
         params_for = default_params()
-        with World() as world, ExitStack() as stack, ApiServer() as server:
+        with (World() as world, ExitStack() as stack, ApiServer() as server,
+              patch("oracle_leverage.autotrade._call",
+                    side_effect=AssertionError("real auto-trade owner must not run")) as owner):
             stub_heavy(stack)
             surfaces = {"tui": via_tui, "cli": via_cli, "api": via_api(server), "host": via_host}
             names = ["list"] + sorted(commands.COMMANDS)
@@ -33,8 +44,11 @@ class ParityTests(unittest.TestCase):
                 with self.subTest(command=name):
                     baseline = seen["tui"]
                     json.loads(baseline)
+                    if name.startswith("autotrade."):
+                        self.assertTrue(json.loads(baseline)["ok"], baseline)
                     for surface, text in seen.items():
                         self.assertEqual(text, baseline, f"{name}: {surface} differs from tui")
+            owner.assert_not_called()
 
     def test_every_required_param_command_has_a_fixture(self) -> None:
         fixtures = default_params()
@@ -74,7 +88,8 @@ class ParityTests(unittest.TestCase):
         self.assertTrue(resume.requires_confirm)
         self.assertFalse(kill.requires_confirm)
         self.assertEqual({n for n, c in commands.COMMANDS.items() if c.requires_confirm},
-                         {"liquidity.resume", "coinbase.order_submit", "jupiter.order_submit"})
+                         {"liquidity.resume", "coinbase.order_submit", "jupiter.order_submit",
+                          "autotrade.start_live"})
 
 
 if __name__ == "__main__":

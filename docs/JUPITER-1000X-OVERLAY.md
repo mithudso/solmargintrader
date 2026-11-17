@@ -1,6 +1,6 @@
 # Jupiter 1000x indicator window
 
-Version: 1.4.0. Delta: add causal10m reversal context, completed MTF shapes and research-aligned EMA/MACD/BOP, 2026-11-16.
+Version: 1.5.0. Delta: distinguish chart analysis from separate auto-trading controls, 2026-11-16.
 
 ## Decision and scope
 
@@ -17,11 +17,7 @@ would depend on unverified coordinates and lifecycle details.
 | Userscript | Easy single-file distribution | A second packaging/runtime path; page CSP, isolated-world imports and cross-origin reads need manager-specific treatment |
 | Direct native-chart injection | Not selected | No verified supported chart handle; canvas pixel coordinates do not establish price/time alignment |
 
-The window is read-only. It does not connect a wallet, access account endpoints,
-sign, submit, arm trading, or change the existing grid engine. It adds no remote
-runtime code or package dependencies. The existing command registry remains the
-only route for operational extension actions; internal public data reads do not
-add an alternative command handler.
+Chart analysis uses public market data. Separate auto-trading controls use the shared native owner, with paper mode by default and live execution subject to explicit readiness gates. See [Oracle auto-trading](ORACLE-AUTO-TRADING.md) for the controls and current execution limitations. The chart adds no remote runtime code or package dependencies. The existing command registry remains the route for operational extension actions.
 
 ## Engineering evidence and freshness
 

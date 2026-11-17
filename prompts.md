@@ -1,7 +1,9 @@
 # Prompt history
 
-Version: 278
+Version: 279
+Delta: v278 to v279; preserve both auto-trade and audit screenshot requests.
 Delta: v277 to v278; preserve audit and screenshot continuation across merged 0.10 source.
+Delta: v277 to v278; preserve the autonomous paper and live trading request.
 Delta: v276 to v277; record the all-supported-timeframes streaming learner request.
 Delta: v275 to v276; preserve the delivered feed controls/UI prompt alongside the streaming Oracle history.
 Delta: v273 to v274; integrate the feed controls and UI audit request.
@@ -2543,3 +2545,10 @@ Train independent rolling close-to-close models for1m/5m/10m/15m/20m/1h from the
 [Image #1]
 
 The image shows a terminal reporting that getcwd cannot access a deleted parent directory.
+
+
+## Oracle auto-trading and dry run — 2026-11-16
+
+```text
+Add the the chrome extension an auto-trading feature, and a dry run feature, the dry run is auto trading but with paper, the oracle makes a specific entry point and exit point and if it liquidates then that's a failure. Because I know the oracle would happily simply never making a trade waiting on a perfect set of circumstances that will never happen when I click start on the auto-trading it is required to make an up or down prediction by starting a Long or a Short position within the next 15 min, and seeing it through till the end. It is allowed to use my anthropic api key to ask for advice or lookup something. The auto-trading should also be available via the TUI. When the oracle feels strongly about a price movement (75+%) then it can bet more of my funds and do it more frequently. As long as the oracle is overall surviving and staying profitable then keep learning, training, betting. Is there anything in this that I am missing?
+```

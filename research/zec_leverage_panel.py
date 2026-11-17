@@ -10,6 +10,7 @@ import copy
 import math
 import re
 import time
+import uuid
 from pathlib import Path
 from typing import ClassVar
 
@@ -448,6 +449,12 @@ class LeveragePanel(ModalScreen[None]):
     #leverage-bar-tilts { height: auto; min-height: 1; }
     #leverage-bars { height: 3; }
     #leverage-bars Button { width: 1fr; min-width: 1; height: 3; }
+    #auto-status { height: auto; max-height: 3; overflow-y: auto; color: #8ffff0; }
+    #auto-controls { height: 3; }
+    #auto-controls Button { min-width: 1; width: 1fr; }
+    #auto-caps { height: 3; }
+    #auto-caps Input { width: 1fr; min-width: 5; }
+    #auto-caps Checkbox { width: auto; }
     #leverage-right #leverage-strategies, #leverage-right #leverage-positions { height: 1fr; min-height: 3; }
     #leverage-price-comparison { height: auto; min-height: 7; color: #d9fbff; border: round #28b8b8; padding: 0 1; }
     #leverage-capabilities, #leverage-performance, #leverage-result { height: auto; min-height: 3; }
@@ -493,7 +500,15 @@ class LeveragePanel(ModalScreen[None]):
         self._operation_selection = None
         self._next_read = 0.0
         self._next_market_paint = 0.0
-        self._read_worker = self._action_worker = None
+        self._read_worker = self._action_worker = self._auto_worker = None
+        self._auto_busy = False
+        self._auto_next = 0.0
+        self._auto_retry = None
+        self._auto_live_confirm = False
+        self._auto_live_caps = set()
+        self._auto_unknown = False
+        self._auto_stop_confirm = False
+        self._auto_initialized = False
         self._basis_cache = {}
         self._basis_key = None
         self._last_feeds = {}
@@ -623,6 +638,32 @@ class LeveragePanel(ModalScreen[None]):
                             "No trial events yet", id="leverage-events", markup=False
                         )
                     with Vertical(id="leverage-right"):
+                        yield Static(
+                            "Auto Long / Short · owner unavailable",
+                            id="auto-status",
+                            markup=False,
+                        )
+                        with Horizontal(id="auto-caps"):
+                            yield Input(
+                                placeholder="Base $", type="number", id="auto-base"
+                            )
+                            yield Input(
+                                placeholder="Max $", type="number", id="auto-max"
+                            )
+                            yield Input(
+                                placeholder="Loss cap $", type="number", id="auto-loss"
+                            )
+                            yield Checkbox("Advice", value=False, id="auto-advice")
+                        with Horizontal(id="auto-controls"):
+                            yield Button(
+                                "Start Paper", id="auto-paper", variant="primary"
+                            )
+                            yield Button(
+                                "Start Live", id="auto-live", variant="warning"
+                            )
+                            yield Button(
+                                "Stop entries", id="auto-stop", variant="error"
+                            )
                         yield Label(
                             "Positions · select before Close",
                             classes="leverage-section",
@@ -695,6 +736,7 @@ class LeveragePanel(ModalScreen[None]):
         )
         self._read_worker = LatestWorker(self._read, name="oracle-leverage-read")
         self._action_worker = LatestWorker(self._act, name="oracle-leverage-action")
+        self._auto_worker = LatestWorker(self._auto_call, name="oracle-auto-bridge")
         self._poll_timer = self.set_interval(0.1, self.poll_workers)
         self._apply_feed_visibility()
         if self._feed_changed is not None:
@@ -736,6 +778,12 @@ class LeveragePanel(ModalScreen[None]):
         if not jupiter and not coinbase:
             notice = "Both feeds hidden. Re-enable a feed above to resume its view. Shared paper recording continues."
         self.query_one("#leverage-feed-notice", Static).update(Text(notice))
+
+    @on(Checkbox.Changed, "#auto-advice")
+    def auto_advice_changed(self, event):
+        if self.is_mounted and self._auto_live_confirm:
+            self._auto_live_confirm = False
+            self.query_one("#auto-live", Button).label = "Start Live"
 
     @on(Checkbox.Changed, "#leverage-feed-controls Checkbox")
     def feed_changed(self, event):
@@ -815,9 +863,103 @@ class LeveragePanel(ModalScreen[None]):
         )
         self._controls()
 
+    @staticmethod
+    def _auto_call(request, cancelled):
+        if cancelled():
+            return None
+        from soltui.commands import dispatch
+
+        command, params = request
+        return dispatch(
+            command, params, surface="tui", quiet=command == "autotrade.status"
+        )
+
+    def _auto_submit(self, command, params):
+        if self._auto_busy:
+            return
+        signature = (command, repr(params))
+        if self._auto_retry is None or self._auto_retry[0] != signature:
+            self._auto_retry = (signature, str(uuid.uuid4()))
+        self._auto_busy = True
+        self._auto_worker.submit(
+            (command, {**params, "request_id": self._auto_retry[1]})
+        )
+
+    def _paint_auto(self, data):
+        defaults = data.get("configuration") or data.get("defaults") or {}
+        if not self._auto_initialized and defaults:
+            for field, key in (
+                ("base", "base_collateral_usd"),
+                ("max", "max_collateral_usd"),
+                ("loss", "max_session_loss_usd"),
+            ):
+                self.query_one(f"#auto-{field}", Input).value = str(
+                    defaults.get(key, "")
+                )
+            self.query_one("#auto-advice", Checkbox).value = (
+                defaults.get("advice_enabled") is True
+            )
+            self._auto_initialized = True
+        pos = data.get("position") or {}
+        self._auto_unknown = pos.get("state") == "unknown"
+        if not self._auto_unknown:
+            self._auto_stop_confirm = False
+            self.query_one("#auto-stop", Button).label = "Stop entries"
+        plan = pos.get("plan") or {}
+        learner = data.get("learner") or {}
+        forecast = data.get("forecast") or {}
+        policy = data.get("policy") or {}
+        deadline = data.get("first_entry_deadline")
+        remaining = (
+            f"{max(0, int(deadline - self.clock()))}s"
+            if isinstance(deadline, (int, float))
+            else "unknown"
+        )
+        self.query_one("#auto-status", Static).update(
+            f"AUTO {_text(data.get('state'))} · {_text(data.get('mode'))} · {_text(data.get('reason'))}\n"
+            f"Live: {_text((data.get('readiness') or {}).get('live'))}; 1000x: {_text((data.get('readiness') or {}).get('1000x'))}; advice: {_text((data.get('readiness') or {}).get('advice'))}\n"
+            f"First entry {remaining} · {_text(plan.get('direction'))} · {_text(pos.get('state'))}\n"
+            f"Plan entry {_text(plan.get('target_entry'))} target {_text(plan.get('target_price'))} stop {_text(plan.get('stop_price'))} liq {_text(plan.get('liquidation_price'))}\n"
+            f"Modeled fills {_text(plan.get('entry_fill'))} / {_text(pos.get('exit_price'))}; net {_text(data.get('net_pnl_usd'))}; {_text(plan.get('assumptions'))}\n"
+            f"Wins {_text(learner.get('wins'))} losses {_text(learner.get('losses'))} liq {_text(learner.get('liquidations'))} data/continuity failures {_text(learner.get('availability_failures'))}\n"
+            f"All-cohort modeled results {_text((data.get('history') or {}).get('samples'))} samples / net {_text((data.get('history') or {}).get('net_pnl_usd'))}\n"
+            f"Training {_text(data.get('training'))}; samples {_text(learner.get('samples'))}; uncalibrated {_text(forecast.get('score'))}; boost {_text(forecast.get('boost_eligible'))} {_text(forecast.get('boost_reason'))}\n"
+            f"Caps {_text(policy.get('base_collateral_usd'))} / {_text(policy.get('max_collateral_usd'))} / loss {_text(policy.get('max_session_loss_usd'))}; forecast {_text(forecast.get('source') or forecast.get('advisory_forecast_id'))}\n"
+            "Stop prevents entries and manages open positions. Unknown outcomes require acknowledgement; session persists after closing."
+        )
+
     def poll_workers(self):
         if self._stopping or not self.is_mounted:
             return
+        auto_result = self._auto_worker.poll()
+        if auto_result is not None:
+            was_action, self._auto_busy = self._auto_busy, False
+            envelope = auto_result.value
+            if (
+                auto_result.error
+                or not isinstance(envelope, dict)
+                or not envelope.get("ok")
+            ):
+                error = (
+                    (envelope or {})
+                    .get("error", {})
+                    .get("message", "Owner unavailable")
+                    if isinstance(envelope, dict)
+                    else "Owner unavailable"
+                )
+                self.query_one("#auto-status", Static).update(f"Auto-trade: {error}")
+            else:
+                if was_action:
+                    self._auto_retry = None
+                self._paint_auto(envelope["result"])
+            self._auto_next = time.monotonic() + 5
+        if (
+            not self._auto_busy
+            and not self._auto_worker.busy
+            and time.monotonic() >= self._auto_next
+        ):
+            self._auto_next = time.monotonic() + 5
+            self._auto_worker.submit(("autotrade.status", {}))
         result = self._read_worker.poll()
         if result is not None:
             if result.error or not isinstance(result.value, dict):
@@ -1373,10 +1515,21 @@ class LeveragePanel(ModalScreen[None]):
 
     @on(Select.Changed)
     @on(Input.Changed, "#leverage-collateral")
+    @on(Input.Changed, "#auto-base")
+    @on(Input.Changed, "#auto-max")
+    @on(Input.Changed, "#auto-loss")
     def selection_changed(self, event):
         event.stop()
         if not self.is_mounted or self._stopping:
             return
+        if (
+            isinstance(event, Input.Changed)
+            and event.input.id in ("auto-base", "auto-max", "auto-loss")
+            and self.focused is event.input
+        ):
+            self._auto_live_caps.add(event.input.id)
+        self._auto_live_confirm = False
+        self.query_one("#auto-live", Button).label = "Start Live"
         self.preview_id = None
         self._selection_generation += 1
         if (
@@ -1405,7 +1558,62 @@ class LeveragePanel(ModalScreen[None]):
     def button_pressed(self, event):
         event.stop()
         name = event.button.id
-        if name in ("leverage-previous-bar", "leverage-current-bar"):
+        if name in ("auto-paper", "auto-live", "auto-stop"):
+            if name == "auto-stop":
+                if self._auto_unknown and not self._auto_stop_confirm:
+                    self._auto_stop_confirm = True
+                    event.button.label = "Acknowledge unknown"
+                    self.query_one("#auto-status", Static).update(
+                        "Unknown paper outcome: press Acknowledge unknown to end the session."
+                    )
+                    return
+                params = {"acknowledge_unknown": True} if self._auto_unknown else {}
+                self._auto_stop_confirm = False
+                self._auto_submit("autotrade.stop", params)
+                return
+            if name == "auto-live" and len(self._auto_live_caps) != 3:
+                self.query_one("#auto-status", Static).update(
+                    "Explicitly enter all three live caps before confirming."
+                )
+                return
+            if name == "auto-live" and not self._auto_live_confirm:
+                self._auto_live_confirm = True
+                event.button.label = "Confirm Live"
+                self.query_one("#auto-status", Static).update(
+                    "Confirm Live again with the displayed explicit caps. Backend readiness still applies."
+                )
+                return
+            self._auto_live_confirm = False
+            self.query_one("#auto-live", Button).label = "Start Live"
+            try:
+                caps = {
+                    key: float(self.query_one(f"#auto-{field}", Input).value)
+                    for field, key in (
+                        ("base", "base_collateral_usd"),
+                        ("max", "max_collateral_usd"),
+                        ("loss", "max_session_loss_usd"),
+                    )
+                }
+                if not all(math.isfinite(v) and v > 0 for v in caps.values()):
+                    raise ValueError
+            except ValueError:
+                self.query_one("#auto-status", Static).update(
+                    "Enter positive finite base, maximum and loss caps."
+                )
+                return
+            mode = "live" if name == "auto-live" else "paper"
+            config = {
+                "mode": mode,
+                "asset": self.query_one("#leverage-asset", Select).value,
+                "venue": self.query_one("#leverage-venue", Select).value,
+                "advice_enabled": self.query_one("#auto-advice", Checkbox).value,
+                **caps,
+            }
+            params = {"config": config}
+            if mode == "live":
+                params["confirm"] = True
+            self._auto_submit(f"autotrade.start_{mode}", params)
+        elif name in ("leverage-previous-bar", "leverage-current-bar"):
             asset = self.query_one("#leverage-asset", Select).value
             source = (self.snapshot_data or {}).get("quote_bars", {})
             bars = source.get(asset, {}) if isinstance(source, dict) else {}
@@ -1484,7 +1692,7 @@ class LeveragePanel(ModalScreen[None]):
         self._stopping = True
         if hasattr(self, "_poll_timer"):
             self._poll_timer.stop()
-        for worker in (self._read_worker, self._action_worker):
+        for worker in (self._read_worker, self._action_worker, self._auto_worker):
             if worker is not None:
                 worker.close(0.15)
 

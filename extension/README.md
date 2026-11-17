@@ -63,11 +63,30 @@ source: its empirical probability, model score, ROE and exit intent remain
 unavailable. The separate streaming Oracle is not a DD/UU pattern probability. The window does not borrow UU probabilities
 for DD or simulate a position from candle colors.
 
-The window is read-only and does not change trading defaults. Load or reload the
-unpacked extension, then reload the portal tab. Its header identifies the current extension version0.10.0.
+The chart and its forecasts remain analysis views. The separate **Auto Long / Short**
+section controls the shared owner described below. Load or reload the unpacked
+extension, then reload the portal tab. Its header identifies extension version0.11.1.
 See [design, formulas and verification](../docs/JUPITER-1000X-OVERLAY.md),
 [optimized execution prompt](../docs/JUPITER-1000X-OVERLAY-PROMPT.md), and
 [SDK create/close capabilities and remaining gates](../docs/JUPITER-1000X-SDK.md).
+
+## Shared automatic paper trading (0.11.0)
+
+**Start Paper** runs the selected BTC/ZEC 10x or1000x observed-price model through
+one durable owner shared with the Oracle TUI. It freezes an entry, target, stop,
+liquidation boundary and modeled execution costs. Start chooses Long or Short
+within15minutes when fresh execution observations are available. Missing or
+invalid observations cause a visible failure. Stop prevents new entries and
+continues managing an open position. Closing the panel leaves the owner running.
+Paper results include observed liquidation touches as failures and retain unknown
+outcomes when continuity is lost. They do not establish actual venue fills.
+
+**Start Live** checks explicit collateral/session-loss limits and backend
+readiness. Automatic live opening remains unavailable: the10x path lacks verified
+position/fill/net-settlement binding; the1000x path lacks verified close, queue and
+payout handling. A high directional score does not override these requirements.
+The optional private advice setting defaults off. No key goes into browser storage.
+See [controls, execution assumptions and live blockers](../docs/ORACLE-AUTO-TRADING.md).
 
 ## Signal Desk workspace (0.6.3)
 
@@ -194,7 +213,7 @@ Chrome 137+ is recommended: full-auto signing uses WebCrypto Ed25519, which land
 Everything else works from Chrome 120.
 
 **Did a reload pick up the new code?** The popup header and the dashboard title show the
-manifest version (`v0.10.0`). Every change to `src/` or `manifest.json` bumps it, in
+manifest version (`v0.11.1`). Every change to `src/` or `manifest.json` bumps it, in
 `manifest.json` and `package.json` together; CI fails a pull request that changes either
 without a bump, and `test/version.test.js` keeps the two fields equal. The SolTUI console
 is the primary dashboard workspace (popup → **Full workspace**).
