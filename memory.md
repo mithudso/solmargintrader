@@ -1,5 +1,12 @@
 # Work continuation
 
+Version: 644
+Delta: v643 to v644; regenerate public research projections after merged tracked-source changes.
+
+## PR235 public export freshness — TASK-2579
+
+The repaired hosted website passed unit, browser, Worker and Python engine gates before its export freshness check found five stale public JSON files. The established exporter adds the already tracked weekly ETH study and its guide, and refreshes the existing CPCV source binding. No article was removed, private store read or research rerun. The unchanged transform retains original source hashes, published hashes, source caveats and workstation-path redaction. Export generation and the23-file export check pass. Next: regenerate deterministic indexes from committed source, push and wait all final-head checks.
+
 Version: 643
 Delta: v642 to v643; reconcile hosted integration test fixtures without weakening current source contracts.
 

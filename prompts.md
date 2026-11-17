@@ -1,5 +1,8 @@
 # Prompt history
 
+Version: 291
+Delta: v290 to v291; regenerate public research projections after merged tracked-source changes.
+
 Version: 290
 Delta: v289 to v290; reconcile hosted integration test fixtures without weakening current source contracts.
 
