@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-11-17T18:48:29+00:00",
+  "generatedAt": "2026-11-17T19:54:22+00:00",
   "schemaVersion": 1,
   "note": "Concepts are derived from the repo's own vocabulary \u2014 the FAMILY dict, strategy-card frontmatter, docs/trading-signals-concept-family.md, and terms verified to recur in the corpus. A concept matching no file is dropped, not kept.",
   "counts": {
@@ -43,7 +43,7 @@
         },
         {
           "path": "docs/operations-registry.json",
-          "hits": 219
+          "hits": 222
         },
         {
           "path": "docs/FILES.md",
@@ -59,7 +59,7 @@
         },
         {
           "path": "memory.md",
-          "hits": 141
+          "hits": 142
         },
         {
           "path": "research/tradingview-script-profiles/shard-a.jsonl",
@@ -161,7 +161,7 @@
         "universe",
         "top_coins"
       ],
-      "matchingFiles": 1812,
+      "matchingFiles": 1813,
       "shown": 30,
       "files": [
         {
@@ -170,7 +170,7 @@
         },
         {
           "path": "memory.md",
-          "hits": 383
+          "hits": 388
         },
         {
           "path": "docs/FILES.md",
@@ -198,7 +198,7 @@
         },
         {
           "path": "prompts.md",
-          "hits": 114
+          "hits": 116
         },
         {
           "path": "research/results/shape_spot_20261111_manifest.json",
@@ -300,7 +300,7 @@
         "borrow",
         "financing"
       ],
-      "matchingFiles": 1616,
+      "matchingFiles": 1617,
       "shown": 30,
       "files": [
         {
@@ -439,7 +439,7 @@
         "centred",
         "shift"
       ],
-      "matchingFiles": 1561,
+      "matchingFiles": 1562,
       "shown": 30,
       "files": [
         {
@@ -496,7 +496,7 @@
         },
         {
           "path": "memory.md",
-          "hits": 27
+          "hits": 28
         },
         {
           "path": "research/tradingview-script-understanding.json",
@@ -578,7 +578,7 @@
         "perps",
         "solana"
       ],
-      "matchingFiles": 1181,
+      "matchingFiles": 1187,
       "shown": 30,
       "files": [
         {
@@ -603,7 +603,7 @@
         },
         {
           "path": "memory.md",
-          "hits": 466
+          "hits": 479
         },
         {
           "path": "llms/jupsol-llms.txt",
@@ -623,7 +623,7 @@
         },
         {
           "path": "prompts.md",
-          "hits": 235
+          "hits": 243
         },
         {
           "path": "llms-infra.txt",
@@ -1125,7 +1125,7 @@
         "benchmark",
         "baseline"
       ],
-      "matchingFiles": 625,
+      "matchingFiles": 627,
       "shown": 30,
       "files": [
         {
@@ -1181,16 +1181,16 @@
           "hits": 52
         },
         {
+          "path": "memory.md",
+          "hits": 51
+        },
+        {
           "path": "extension/test/fixtures/oracle-0.9-10m-state.json",
           "hits": 51
         },
         {
           "path": ".cdo/reviews-2026-11-12/final-owned-integration.json",
           "hits": 50
-        },
-        {
-          "path": "memory.md",
-          "hits": 49
         },
         {
           "path": "research/tradingview-script-understanding.json",
@@ -1394,7 +1394,7 @@
         "buy_and_hold",
         "baseline"
       ],
-      "matchingFiles": 552,
+      "matchingFiles": 554,
       "shown": 30,
       "files": [
         {
@@ -1435,7 +1435,7 @@
         },
         {
           "path": "memory.md",
-          "hits": 48
+          "hits": 50
         },
         {
           "path": "FILES.md",
@@ -2170,7 +2170,7 @@
         },
         {
           "path": "memory.md",
-          "hits": 19
+          "hits": 20
         },
         {
           "path": "backtester/tests/test_research_regressions.py",

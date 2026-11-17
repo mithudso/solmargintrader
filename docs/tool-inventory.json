@@ -72,7 +72,7 @@
     },
     {
       "path": "extension/package.json",
-      "sha256": "a20540cecc2ee8e7828cb7200fe970329d2c4a930b663bf113fe1994848f66bf"
+      "sha256": "31572d5b0ebd1ef84c0c68dbdd73926faf0b211ccc5b1c163d798e6fbede4ec1"
     },
     {
       "path": "extension/src/core/commands.js",
@@ -124,7 +124,7 @@
     },
     {
       "path": "soltui/commands.py",
-      "sha256": "4b5894938075eb57f0ef9648fe6122f829931ab8e3cf47bc60561d25d857f76e"
+      "sha256": "659a888750e56fb8b3be15f1048430cf7b19ebb58131d512c15220dccc6952d4"
     },
     {
       "path": "soltui/make_icon.py",

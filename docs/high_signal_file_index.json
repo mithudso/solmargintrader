@@ -943,7 +943,7 @@
       "component": "extension",
       "kind": "markdown",
       "summary": "Includes the Verification status section; read it before extending",
-      "lines": 823
+      "lines": 832
     },
     {
       "path": "extension/src/1000x/feed.js",
@@ -978,7 +978,7 @@
       "component": "extension",
       "kind": "javascript",
       "summary": "Floating read-only chart, labeled reversal/shape/momentum cards and local view settings",
-      "lines": 292
+      "lines": 317
     },
     {
       "path": "extension/src/1000x/timeframes.js",
@@ -999,14 +999,14 @@
       "component": "extension",
       "kind": "javascript",
       "summary": "Separate native IndexedDB atomic partition transitions across windows and reloads",
-      "lines": 68
+      "lines": 82
     },
     {
       "path": "extension/src/1000x/oracle-controller.js",
       "component": "extension",
       "kind": "javascript",
       "summary": "Existing-feed coalescing, source/version isolation, stale/obsolete-session refusal and owned teardown",
-      "lines": 103
+      "lines": 123
     },
     {
       "path": "extension/src/1000x/oracle-view.js",
@@ -1027,7 +1027,7 @@
       "component": "extension",
       "kind": "javascript",
       "summary": "Concurrent/reloaded controllers, stored forecast reuse, quote coalescing and obsolete-session fences",
-      "lines": 197
+      "lines": 221
     },
     {
       "path": "docs/EXTENSION-STREAMING-ORACLE.md",
