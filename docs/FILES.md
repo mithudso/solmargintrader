@@ -1,6 +1,6 @@
 # Every file in this repository
 
-**Generated** from `index/INDEX.json` at commit `d9c24f2` (2026-11-17T01:32:38+00:00). 3987 tracked files, 140.7 MB.
+**Generated** from `index/INDEX.json` at commit `a8091ab` (2026-11-17T02:06:04+00:00). 3988 tracked files, 140.7 MB.
 
 Regenerate with:
 
@@ -15,7 +15,7 @@ python3 index/build.py --check      # fail if the index is stale
 Every entry marks where its description came from, because a generated one-liner and a considered one should not look alike:
 
 - **curated** (43 files) — hand-written purpose and usage, in the `CURATED` table of `index/make_files_doc.py`. Used where extraction cannot give a reader what they need: the engine, the research drivers, the order-placing path, and the files with no prose of their own.
-- **extracted** (3089 files) — the file's own module docstring, JSDoc header, or frontmatter `summary`. Trustworthy here because 723/842 Python modules and 85/181 JS files carry a substantial one. (These counts are computed at generation time, not hardcoded — an earlier revision asserted a frozen ratio and it was wrong within a day as the repo grew.)
+- **extracted** (3090 files) — the file's own module docstring, JSDoc header, or frontmatter `summary`. Trustworthy here because 724/843 Python modules and 85/181 JS files carry a substantial one. (These counts are computed at generation time, not hardcoded — an earlier revision asserted a frozen ratio and it was wrong within a day as the repo grew.)
 - **derived** (458 files) — shape only, for generated artifacts: a CSV's header and row count, a JSON's keys. Prose for a result file would be invented.
 
 *How to use* is curated where it matters and otherwise inferred from the file's kind — a test gets its runner, a CLI gets `--help`, a module gets its import path.
@@ -61,7 +61,7 @@ To *search* rather than browse: `python3 index/search.py "your question"`.
 - [`design`](#design) — 32 files
 - [`dso-skill`](#dso-skill) — 3 files
 - [`llms`](#llms) — 5 files
-- [`oracle_leverage`](#oracle_leverage) — 40 files
+- [`oracle_leverage`](#oracle_leverage) — 41 files
 - [`postman`](#postman) — 8 files
 - [`runbooks`](#runbooks) — 3 files
 - [`scripts`](#scripts) — 34 files
@@ -648,9 +648,9 @@ Repository-level entry points and agent instructions. `AGENTS.md` and `CLAUDE.md
 
 #### `memory.md`
 
-`doc` · 3050 lines · 629,649 B · description: **extracted**
+`doc` · 3056 lines · 630,624 B · description: **extracted**
 
-**Purpose.** Version: 621 Delta: v620 to v621; record the qualified optimizer receipt and remaining delivery gates. Delta: v619 to v620; preserve accepted auto-action teardown and review scope.
+**Purpose.** Browser CI fixture: the native IndexedDB abort assertion raced an independent next-minute model commit. The fixture now pauses both producers and drains tracked operations and an IndexedDB barrier before the unchanged equality check. The full local browser fixture passed 27/27 with exit 0.
 
 **Use.** Read it.
 
@@ -896,7 +896,7 @@ Curated prose. `ARCHITECTURE.md` explains how the pieces fit, `TESTING.md` is th
 
 #### `docs/CONCEPTS.md`
 
-`doc` · 323 lines · 20,717 B · description: **extracted**
+`doc` · 323 lines · 20,697 B · description: **extracted**
 
 **Purpose.** python3 index/build.py all # refresh python3 index/make_concepts_doc.py # rewrite this file python3 index/search.py --concepts # list them
 
@@ -976,7 +976,7 @@ Curated prose. `ARCHITECTURE.md` explains how the pieces fit, `TESTING.md` is th
 
 #### `docs/FILES.md`
 
-`doc` · 38244 lines · 1,838,029 B · description: **extracted**
+`doc` · 38262 lines · 1,838,999 B · description: **extracted**
 
 **Purpose.** Regenerate with: python3 index/build.py all # refresh the index python3 index/make_files_doc.py # rewrite this file
 
@@ -1104,9 +1104,9 @@ Curated prose. `ARCHITECTURE.md` explains how the pieces fit, `TESTING.md` is th
 
 #### `docs/ORACLE-AUTO-TRADING.md`
 
-`doc` · 156 lines · 8,880 B · description: **extracted**
+`doc` · 180 lines · 10,113 B · description: **extracted**
 
-**Purpose.** Version: 1.0.0 Delta: initial shared-owner implementation; paper capability and live blockers remain explicit. Extension0.11.0 adds **Auto Long / Short** to the Jupiter chart panel. The Oracle
+**Purpose.** Version: 1.1.0 Delta: document optional private shared-owner routing and its activation boundary. Extension0.11.0 adds **Auto Long / Short** to the Jupiter chart panel. The Oracle
 
 **Use.** Read it.
 
@@ -1320,7 +1320,7 @@ Curated prose. `ARCHITECTURE.md` explains how the pieces fit, `TESTING.md` is th
 
 #### `docs/audit-2026-11-17.md`
 
-`doc` · 20 lines · 2,991 B · description: **extracted**
+`doc` · 20 lines · 3,197 B · description: **extracted**
 
 **Purpose.** The repo-bootstrapper and code-deep-optimizer work used the existing incremental run started at 2026-11-16T17:00:08Z. The result is **partial**. This report does not assert a clean repository. The run collected 54 file diagnostics: the original 50 risk-prioritized files and four disclosed extension runtime supplements.
 
@@ -28306,7 +28306,7 @@ The Chrome extension has a separately armed trading surface. Dry-run is the defa
 
 #### `extension/tools/1000x-e2e.mjs`
 
-`code-js` · 679 lines · 75,592 B · description: **extracted**
+`code-js` · 689 lines · 77,235 B · description: **extracted**
 
 **Purpose.** Read-only 1000x overlay browser gate. No dependencies; uses real CfT and the repository CDP transport. Default is a deterministic public-contract fixture. --live separately visits the actual public portal; it never connects a wallet. Fixture: real browser fetch + native WebSocket to an ephemeral loopback server. Only the exact public stream URL is mapped; source modules are never replaced.
 
@@ -30496,7 +30496,7 @@ The local control room, pipeline supervision, telemetry and embedded documentati
 
 `doc` · 119 lines · 7,542 B · description: **extracted**
 
-**Purpose.** This source version restores read-only access to the known legacy SOL Oracle archive and explains pending forward windows without changing the producer. It pins Bot Manager0.7.7, Oracle0.2.6 and research-runtime0.4.4.
+**Purpose.** This source version restores read-only access to the known legacy SOL Oracle archive and explains pending forward windows without changing the producer. It pins Bot Manager0.7.8, Oracle0.2.6 and research-runtime0.4.5.
 
 **Use.** Read it.
 
@@ -36490,7 +36490,7 @@ Session handoff notes, newest first. Prose, not machine-read.
 
 ## oracle_leverage
 
-40 files.
+41 files.
 
 #### `oracle_leverage/README.md`
 
@@ -36510,7 +36510,7 @@ Session handoff notes, newest first. Prose, not machine-read.
 
 #### `oracle_leverage/autotrade.py`
 
-`code-python` · 176 lines · 5,402 B · description: **extracted**
+`code-python` · 246 lines · 8,058 B · description: **extracted**
 
 **Purpose.** Control boundary for one private, exclusive auto-trading session owner.
 
@@ -36550,7 +36550,7 @@ Session handoff notes, newest first. Prose, not machine-read.
 
 #### `oracle_leverage/autotrade_worker.py`
 
-`code-python` · 1285 lines · 49,705 B · description: **extracted**
+`code-python` · 1285 lines · 49,709 B · description: **extracted**
 
 **Purpose.** Exclusive local paper session owner and observed-tick state machine.
 
@@ -36791,6 +36791,16 @@ Session handoff notes, newest first. Prose, not machine-read.
 **Contents.** Defines `class EngineTests`, `class ControlTests`, `class AdviceTests`, `class OwnerProcessTests`.
 
 **Use.** `python3 -m pytest oracle_leverage/tests/test_autotrade_engine.py -q`
+
+#### `oracle_leverage/tests/test_autotrade_routing.py`
+
+`test` · 169 lines · 6,644 B · description: **extracted**
+
+**Purpose.** The shared owner route must not silently create a second session.
+
+**Contents.** Defines `class Routing`. Depends on `soltui`.
+
+**Use.** `python3 -m pytest oracle_leverage/tests/test_autotrade_routing.py -q`
 
 #### `oracle_leverage/tests/test_console.py`
 

@@ -1,6 +1,12 @@
 # Work continuation
 
-Version: 621
+Browser CI fixture: the native IndexedDB abort assertion raced an independent next-minute model commit. The fixture now pauses both producers and drains tracked operations and an IndexedDB barrier before the unchanged equality check. The full local browser fixture passed 27/27 with exit 0.
+
+Routing follow-up: source adds owner-only optional connection routing for ordinary clients; explicit environment homes remain first. The isolated 1000x paper acceptance passed one start and stop with recorded modeled outcome. The user-owned registry and shared wrapper remain unchanged. Verify focused checks, review and deliver the routing PR before a separately controlled activation. Routing alone does not fence concurrent starts or migrate journal history.
+
+Version: 623
+Delta: v622 to v623; preserve the browser fixture race diagnosis, quiescence repair and full local receipt.
+Delta: v621 to v622; add private shared-owner routing and preserve isolated acceptance and activation boundary.
 Delta: v620 to v621; record the qualified optimizer receipt and remaining delivery gates.
 Delta: v619 to v620; preserve accepted auto-action teardown and review scope.
 Delta: v618 to v619; record integrated audit, paper-session identity display and pending acceptance.

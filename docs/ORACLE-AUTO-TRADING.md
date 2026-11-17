@@ -1,7 +1,7 @@
 # Oracle automatic trading and paper mode
 
-Version: 1.0.0
-Delta: initial shared-owner implementation; paper capability and live blockers remain explicit.
+Version: 1.1.0
+Delta: document optional private shared-owner routing and its activation boundary.
 
 ## Controls
 
@@ -32,6 +32,30 @@ a visible operational failure. The deadline never authorizes an invented price.
 
 The existing display feed switches control the older comparison interface.
 They do not disable the separate execution monitor while this session is at risk.
+
+## Shared owner routing
+
+Every client uses `ORACLE_AUTOTRADE_HOME` when it is explicitly set. Otherwise it
+reads `~/.config/oracle-autotrade/connection.json` if present, and falls back to
+`~/.local/state/oracle-autotrade` if the route is absent. The route has exactly
+these fields, with an absolute `state_home`:
+
+```json
+{"version": 1, "state_home": "/absolute/path/to/existing/owner-state"}
+```
+
+The route directory must be owner-only, and the route must be a private,
+owner-owned regular file with one link. Symbolic links, oversized files, invalid
+JSON and invalid schema fail closed before the client creates state or starts an
+owner. An explicit environment override takes precedence even when the route is
+invalid. All ordinary clients and the owner they start must run the routing-aware
+version; an older client or a client with an override can use another namespace.
+
+Creating or changing a route is a separate operator action. Routing does not move
+or merge journals, stop an existing owner, fence concurrent starts, or update a
+native-host wrapper. Do not change it while clients or an owner may act without
+a maintenance fence. Preserve and verify all journal, request and cohort history
+before any separately authorized transition.
 
 ## Entry, exit and accounting
 

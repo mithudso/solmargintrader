@@ -20,7 +20,7 @@
     },
     {
       "path": "botmanager/pyproject.toml",
-      "sha256": "f76c16c76b295710677fa13111f9e80f726ec794b9f31ac97a2ad8ec920da3d9"
+      "sha256": "08a85a940823ad303965de2161ba8abc1c8bc2c619826ca4f51531b60a391141"
     },
     {
       "path": "botmanager/src/botmanager/cli.py",
@@ -52,7 +52,7 @@
     },
     {
       "path": "ecosystem/pyproject.toml",
-      "sha256": "2eec1214daa588525c951312f370f598af81ffb6a595d1058140caa576152299"
+      "sha256": "dc438eb85ec3fa2be3475ab2c9caa355ca36369bae1d23f48350a00336b58847"
     },
     {
       "path": "ecosystem/web.py",
@@ -132,7 +132,7 @@
     },
     {
       "path": "soltui/pyproject.toml",
-      "sha256": "40b704fbc8331ffa67b2f89f841a6b744a227354bfa7d3784d6004b7e34b973d"
+      "sha256": "e45b42adcf133f9070bc7418d943e4949ed831aa8756545367e4d7e635397833"
     },
     {
       "path": "soltui/soltui-service",

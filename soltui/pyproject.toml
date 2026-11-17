@@ -5,7 +5,7 @@ backend-path = ["."]
 
 [project]
 name = "solmargintrader-research-runtime"
-version = "0.4.4"
+version = "0.4.5"
 description = "Headless SolTUI backtest and prospective paper trial runtime"
 requires-python = ">=3.13"
 dependencies = ["solmargintrader-backtester==0.2.1"]

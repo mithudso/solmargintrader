@@ -464,7 +464,7 @@ try {
       await until(() => ev(twin, `document.querySelector('#oracle-counts')?.textContent.includes('pending 1')`), 'second window restored pending forecast');
       // Bounded, test-only observation forwards the original snapshot to the
       // actual method unchanged. Retain one sample for cross-platform failures.
-      for (const page of [panel, twin]) await ev(page, `(async()=>{const {OracleController}=await import(chrome.runtime.getURL('src/1000x/oracle-controller.js'));globalThis.__smtObserveOriginal=OracleController.prototype.observe;OracleController.prototype.observe=function(snapshot){globalThis.__smtLastOracleInput={snapshot,seenAt:Date.now()};return Reflect.apply(globalThis.__smtObserveOriginal,this,[snapshot])}})()`);
+      for (const page of [panel, twin]) await ev(page, `(async()=>{const {OracleController}=await import(chrome.runtime.getURL('src/1000x/oracle-controller.js'));const {OracleStore}=await import(chrome.runtime.getURL('src/1000x/oracle-store.js'));globalThis.__smtObserveOriginal=OracleController.prototype.observe;globalThis.__smtOraclePending=new Set();globalThis.__smtOraclePaused=false;const update=OracleStore.prototype.update;OracleStore.prototype.update=function(...args){const p=Reflect.apply(update,this,args);globalThis.__smtOraclePending.add(p);p.then(()=>globalThis.__smtOraclePending.delete(p),()=>globalThis.__smtOraclePending.delete(p));return p};OracleController.prototype.observe=function(snapshot){globalThis.__smtLastOracleInput={snapshot,seenAt:Date.now()};if(globalThis.__smtOraclePaused)return;return Reflect.apply(globalThis.__smtObserveOriginal,this,[snapshot])}})()`);
       try {
       const before = await oracleSnapshot(panel), restored = await oracleSnapshot(twin);
       same(restored.pending, before.pending, 'second window changed issued forecast'); same(restored.issued, 1, 'duplicate initial issuance');
@@ -599,11 +599,21 @@ try {
     });
     await check('native IndexedDB abort/reload preserves counters and unknown outcomes stay outside learning', async () => {
       await browser.call('Page.bringToFront', {}, portal.sessionId);
+      // Prevent the two fixture producers from committing a later minute between
+      // the baseline and the aborted transaction. Drain their real pending store
+      // promises, then serialize behind IndexedDB's existing readwrite queue.
+      let before, beforeAll;
+      try {
+      for (const page of [panel, twin]) await ev(page, `globalThis.__smtOraclePaused=true`);
+      for (const page of [panel, twin]) await ev(page, `(async()=>{const end=globalThis.__smtFixtureNativeNow()+10000;do{if(globalThis.__smtFixtureNativeNow()>end)throw Error('oracle fixture drain timeout');await Promise.allSettled([...globalThis.__smtOraclePending]);await new Promise((resolve,reject)=>{const r=indexedDB.open('solmargintrader-streaming-oracle',1);r.onerror=()=>reject(r.error);r.onsuccess=()=>{const db=r.result,tx=db.transaction('partitions','readwrite');tx.objectStore('partitions').get('__fixture_drain__');tx.oncomplete=()=>{db.close();resolve()};tx.onabort=()=>{db.close();reject(tx.error)}}})}while(globalThis.__smtOraclePending.size);return true})()`);
       console.log('Oracle recovery fixture: reading checkpoint');
-      const before = await oracleSnapshot(panel), beforeAll = await oracleStates(panel);
+      before = await oracleSnapshot(panel); beforeAll = await oracleStates(panel);
       console.log('Oracle recovery fixture: aborting a native transaction');
       const abort = await ev(panel, `(async()=>{const {OracleStore}=await import(chrome.runtime.getURL('src/1000x/oracle-store.js'));const store=new OracleStore();try{await store.update(${JSON.stringify('PLACEHOLDER')},()=>{throw new Error('fixture abort')});return false}catch{return true}finally{store.close()}})()` .replace(JSON.stringify('PLACEHOLDER'), JSON.stringify(before.key)));
       assert(abort, 'native transaction did not reject'); same(await oracleSnapshot(panel), before, 'aborted transition changed model');
+      } finally {
+        for (const page of [panel, twin]) await ev(page, `globalThis.__smtOraclePaused=false`);
+      }
       console.log('Oracle recovery fixture: reopening the original window');
       await ev(portal, `document.querySelector('#smt-1000x-indicators').shadowRoot.querySelector('button').click()`);
       await until(() => fixture.sockets.size === 1, 'collapsed original stream with twin preserved');
