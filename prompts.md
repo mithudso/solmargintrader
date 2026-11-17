@@ -1,6 +1,14 @@
 # Prompt history
 
-Version: 281
+Version: 282
+Delta: v281 to v282; preserve the current status question.
+
+## Current status question
+
+What are you doing?
+
+## Earlier follow-ups
+
 Delta: v280 to v281; preserve the TUI-opening request and streaming storage / multiple-window question.
 
 ## Current session follow-ups

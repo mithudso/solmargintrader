@@ -47,7 +47,7 @@ async function check(name, fn) {
 // Minimal RFC6455 fixture. Browser transport, frame parsing and lifecycle remain
 // native; no fake WebSocket, fetch implementation or extension source is loaded.
 async function websocketFixture() {
-  const sockets = new Set(), subscriptions = [], historyRequests = [], state = { quotes: true, priceOverride: null, history: 'full', chartFailure: false, pattern: 'DD', clockOffsetMs: 0, oracleMode: false, hold: false, pending: [], sent: 0, upgrades: 0, closes: 0 };
+  const sockets = new Set(), subscriptions = [], historyRequests = [], state = { quotes: true, priceOverride: null, history: 'full', chartFailure: false, pattern: 'DD', clockOffsetMs: 0, frozenMs: null, oracleMode: false, hold: false, pending: [], sent: 0, upgrades: 0, closes: 0 };
   const frame = text => { const data = Buffer.from(text); if (data.length < 126) return Buffer.concat([Buffer.from([0x81, data.length]), data]); const head = Buffer.alloc(4); head[0] = 0x81; head[1] = 126; head.writeUInt16BE(data.length, 2); return Buffer.concat([head, data]); };
   const server = http.createServer((request, response) => { response.writeHead(404); response.end(); });
   server.on('upgrade', (request, socket) => {
@@ -58,7 +58,7 @@ async function websocketFixture() {
     let buffer = Buffer.alloc(0), feedId;
     const timer = setInterval(() => {
       if (!state.quotes || !feedId || socket.destroyed) return;
-      const now = Date.now() + state.clockOffsetMs - 25;
+      const now = (state.frozenMs ?? Date.now() + state.clockOffsetMs) - 25;
       const payload = { type: 'streamUpdated', subscriptionId: 1, parsed: { timestampUs: String(now * 1000), priceFeeds: [{ priceFeedId: feedId, price: String(Math.round((state.priceOverride ?? (state.oracleMode ? 100 + (now / 1000 - 1700000000) / 6000 : 100 + Math.sin(now / 5000))) * 1e8)), exponent: -8, feedUpdateTimestamp: now * 1000 }] } };
       socket.write(frame(JSON.stringify(payload))); state.sent++;
     }, 200);
@@ -89,7 +89,7 @@ async function websocketFixture() {
     if (state.history === 'invalid') return { s: 'ok', t: [Date.now()], o: [], h: [], l: [], c: [] };
     if (state.history === 'none') return { s: 'no_data' };
     const interval = Number(new URL(url).searchParams.get('resolution')) * 60;
-    const current = Math.floor((Date.now() + state.clockOffsetMs) / 1000 / interval) * interval;
+    const current = Math.floor((state.frozenMs ?? Date.now() + state.clockOffsetMs) / 1000 / interval) * interval;
     const first = Number(new URL(url).searchParams.get('from'));
     const t = Array.from({ length: Math.floor((current - first) / interval) + 1 }, (_, i) => first + i * interval)
       .filter(time => state.history !== 'lagging' || time < current - interval)
@@ -97,7 +97,7 @@ async function websocketFixture() {
     // Finite valid OHLC can still overflow derived indicator arithmetic. Let
     // the real analytics model reject it, rather than the history decoder.
     if (state.history === 'overflow') return { s: 'ok', t, o: t.map(() => 1e308), h: t.map(() => 1.79e308), l: t.map(() => 1), c: t.map(() => 1.79e308) };
-    const target = Math.floor((Date.now() + state.clockOffsetMs) / 600000) * 600;
+    const target = Math.floor((state.frozenMs ?? Date.now() + state.clockOffsetMs) / 600000) * 600;
     const inPair = time => time >= target - 1200 && time < target;
     const o = t.map((time, i) => state.oracleMode ? 100 + (time - 1700000000) / 6000 : inPair(time) ? 100 : 100 + Math.sin(i / 3) * 7);
     const c = o.map((v, i) => state.oracleMode ? v + interval / 6000 * 0.8 : inPair(t[i]) ? fixtureColor(t[i]) : v + Math.sin(i) * 2);
@@ -118,7 +118,7 @@ function allowedPublic(url, method) { const u = new URL(url); return writeMethod
 function fixtureBootstrapCode() {
   // Auto-attach can evaluate the current document before the new-document hook
   // runs. Reapplying must not wrap Date.now twice and double the synthetic offset.
-  return `(() => {globalThis.__smtFixtureClockOffsetMs=${JSON.stringify(fixture.state.clockOffsetMs)};if(globalThis.__smtFixtureNativeTransport)return;const Native=globalThis.WebSocket;globalThis.WebSocket=class extends Native{constructor(url,...rest){super(String(url)===${JSON.stringify(STREAM)}?${JSON.stringify(fixture.url)}:url,...rest)}};const originalNow=Date.now.bind(Date);globalThis.__smtFixtureNativeNow=originalNow;Date.now=()=>originalNow()+globalThis.__smtFixtureClockOffsetMs;globalThis.__smtFixtureNativeTransport=true;})()`;
+  return `(() => {globalThis.__smtFixtureClockOffsetMs=${JSON.stringify(fixture.state.clockOffsetMs)};globalThis.__smtFixtureFrozenMs=${JSON.stringify(fixture.state.frozenMs)};if(globalThis.__smtFixtureNativeTransport)return;const Native=globalThis.WebSocket;globalThis.WebSocket=class extends Native{constructor(url,...rest){super(String(url)===${JSON.stringify(STREAM)}?${JSON.stringify(fixture.url)}:url,...rest)}};const originalNow=Date.now.bind(Date);globalThis.__smtFixtureNativeNow=originalNow;Date.now=()=>globalThis.__smtFixtureFrozenMs??originalNow()+globalThis.__smtFixtureClockOffsetMs;globalThis.__smtFixtureNativeTransport=true;})()`;
 }
 async function setupTarget(sessionId, info) {
   targets.set(info.targetId, { ...info, sessionId }); owned.add(sessionId);
@@ -602,26 +602,46 @@ try {
       // Prevent the two fixture producers from committing a later minute between
       // the baseline and the aborted transaction. Drain their real pending store
       // promises, then serialize behind IndexedDB's existing readwrite queue.
-      let before, beforeAll;
+      let before, beforeAll, clockFrozen = false;
+      const pausedPages = [];
+      const cleanupErrors = [];
+      const pauseToken = crypto.randomUUID();
       try {
-      for (const page of [panel, twin]) await ev(page, `globalThis.__smtOraclePaused=true`);
-      for (const page of [panel, twin]) await ev(page, `(async()=>{const end=globalThis.__smtFixtureNativeNow()+10000;do{if(globalThis.__smtFixtureNativeNow()>end)throw Error('oracle fixture drain timeout');await Promise.allSettled([...globalThis.__smtOraclePending]);await new Promise((resolve,reject)=>{const r=indexedDB.open('solmargintrader-streaming-oracle',1);r.onerror=()=>reject(r.error);r.onsuccess=()=>{const db=r.result,tx=db.transaction('partitions','readwrite');tx.objectStore('partitions').get('__fixture_drain__');tx.oncomplete=()=>{db.close();resolve()};tx.onabort=()=>{db.close();reject(tx.error)}}})}while(globalThis.__smtOraclePending.size);return true})()`);
+      for (const page of [panel, twin]) {
+        pausedPages.push(page);
+        await ev(page, `(async()=>{const {OracleController}=await import(chrome.runtime.getURL('src/1000x/oracle-controller.js'));const previous=OracleController.prototype.observe;const descriptor=Object.getOwnPropertyDescriptor(globalThis,'__smtAbortPause');if(descriptor)throw Error('abort pause already installed');const state={owner:${JSON.stringify(pauseToken)},previous,intercepted:0};globalThis.__smtAbortPause=state;OracleController.prototype.observe=function(...args){state.intercepted++;return undefined};OracleController.prototype.observe.call({},{});if(state.intercepted!==1)throw Error('abort pause failed')})()`);
+      }
+      for (const page of [panel, twin]) await ev(page, `(async()=>{const end=globalThis.__smtFixtureNativeNow()+10000;const bounded=async promise=>{const remaining=end-globalThis.__smtFixtureNativeNow();if(remaining<=0)throw Error('oracle fixture drain timeout');let timer;try{return await Promise.race([promise,new Promise((_,reject)=>{timer=setTimeout(()=>reject(Error('oracle fixture drain timeout')),remaining)})])}finally{clearTimeout(timer)}};do{await bounded(Promise.allSettled([...globalThis.__smtOraclePending]));await bounded(new Promise((resolve,reject)=>{const r=indexedDB.open('solmargintrader-streaming-oracle',1);r.onerror=()=>reject(r.error);r.onsuccess=()=>{const db=r.result,tx=db.transaction('partitions','readwrite');tx.objectStore('partitions').get('__fixture_drain__');tx.oncomplete=()=>{db.close();resolve()};tx.onabort=()=>{db.close();reject(tx.error)}}}));await Promise.resolve()}while(globalThis.__smtOraclePending.size);return true})()`);
       console.log('Oracle recovery fixture: reading checkpoint');
       before = await oracleSnapshot(panel); beforeAll = await oracleStates(panel);
       console.log('Oracle recovery fixture: aborting a native transaction');
-      const abort = await ev(panel, `(async()=>{const {OracleStore}=await import(chrome.runtime.getURL('src/1000x/oracle-store.js'));const store=new OracleStore();try{await store.update(${JSON.stringify('PLACEHOLDER')},()=>{throw new Error('fixture abort')});return false}catch{return true}finally{store.close()}})()` .replace(JSON.stringify('PLACEHOLDER'), JSON.stringify(before.key)));
+      const abort = await ev(panel, `(async()=>{const {OracleStore}=await import(chrome.runtime.getURL('src/1000x/oracle-store.js'));const store=new OracleStore();try{await store.update(${JSON.stringify('PLACEHOLDER')},()=>{throw new Error('fixture abort')});return false}catch(error){return error.message==='fixture abort'}finally{store.close()}})()` .replace(JSON.stringify('PLACEHOLDER'), JSON.stringify(before.key)));
       assert(abort, 'native transaction did not reject'); same(await oracleSnapshot(panel), before, 'aborted transition changed model');
-      } finally {
-        for (const page of [panel, twin]) await ev(page, `globalThis.__smtOraclePaused=false`);
-      }
+      // Freeze the fixture server and each browser clock at the already-issued
+      // cutoff. The new frame inherits the same frozen clock from bootstrap.
+      if (fixture.state.frozenMs !== null) throw Error('fixture clock already frozen');
+      fixture.state.frozenMs = before.lastIssuedCutoff * 1000 + 10000;
+      clockFrozen = true;
+      for (const page of [portal, panel, twin]) await ev(page, `globalThis.__smtFixtureFrozenMs=${fixture.state.frozenMs}`);
       console.log('Oracle recovery fixture: reopening the original window');
       await ev(portal, `document.querySelector('#smt-1000x-indicators').shadowRoot.querySelector('button').click()`);
       await until(() => fixture.sockets.size === 1, 'collapsed original stream with twin preserved');
       await ev(portal, `document.querySelector('#smt-1000x-indicators').shadowRoot.querySelector('button').click()`);
       panel = await findPanel('ORCL'); await fresh();
+      assert(await ev(panel, `Date.now()===${fixture.state.frozenMs}`), 'reload did not inherit the frozen fixture clock');
       const restored = await until(async () => { const s = await oracleSnapshot(panel); return s?.model.n === before.model.n ? s : null; }, 'reloaded native learner');
       same(restored.pending, before.pending, 'reload changed pending features/probabilities'); same(restored.totals, before.totals, 'reload changed metrics');
       same(await oracleStates(panel), beforeAll, 'reopening changed a nonselected model ledger');
+      assert(await ev(panel, `Date.now()===${fixture.state.frozenMs}`), 'fixture clock changed during ledger comparison');
+      } finally {
+        if (clockFrozen) {
+          fixture.state.frozenMs = null;
+          for (const page of [portal, panel, twin]) if (page) await ev(page, 'globalThis.__smtFixtureFrozenMs=null').catch(error => cleanupErrors.push(error.message));
+        }
+        for (const page of pausedPages) await ev(page, `(async()=>{const {OracleController}=await import(chrome.runtime.getURL('src/1000x/oracle-controller.js'));const state=globalThis.__smtAbortPause;if(state?.owner===${JSON.stringify(pauseToken)}){OracleController.prototype.observe=state.previous;delete globalThis.__smtAbortPause}})()`).catch(error => { if (page === twin || page === panel) cleanupErrors.push(error.message); });
+        if (cleanupErrors.length) console.error('Oracle fixture cleanup failed:', cleanupErrors.join('; '));
+      }
+      if (cleanupErrors.length) throw Error(`Oracle fixture cleanup failed: ${cleanupErrors.join('; ')}`);
       console.log('Oracle recovery fixture: advancing past unknown outcomes');
       fixture.state.history = 'none';
       await setClock(fixture.state.clockOffsetMs + 15 * 60000, [portal, panel, twin]);

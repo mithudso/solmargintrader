@@ -1,6 +1,6 @@
 # Conceptual index
 
-**Generated** from `index/CONCEPT-INDEX.json` (2026-11-17T05:47:10+00:00). 21 concepts.
+**Generated** from `index/CONCEPT-INDEX.json` (2026-11-17T06:13:51+00:00). 21 concepts.
 
 ```bash
 python3 index/build.py all              # refresh
@@ -166,7 +166,7 @@ Strongest files:
 - `research/results/news_events_20261112_manifest.json` (280 hits)
 - `research/strategy_experiment/audit_realism.json` (178 hits)
 - `research/tradingview-card-coverage.json` (112 hits)
-- `docs/FILES.md` (91 hits)
+- `docs/FILES.md` (90 hits)
 - `.cdo/reviews-2026-11-12/research-scripts.json` (81 hits)
 
 Full list: `python3 index/search.py --concept benchmark -n 598`

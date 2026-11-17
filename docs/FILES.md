@@ -1,6 +1,6 @@
 # Every file in this repository
 
-**Generated** from `index/INDEX.json` at commit `6e2cc6d` (2026-11-17T05:47:10+00:00). 4003 tracked files, 140.8 MB.
+**Generated** from `index/INDEX.json` at commit `8a66c41` (2026-11-17T06:13:51+00:00). 4003 tracked files, 140.9 MB.
 
 Regenerate with:
 
@@ -648,9 +648,9 @@ Repository-level entry points and agent instructions. `AGENTS.md` and `CLAUDE.md
 
 #### `memory.md`
 
-`doc` · 3090 lines · 638,219 B · description: **extracted**
+`doc` · 3097 lines · 639,600 B · description: **extracted**
 
-**Purpose.** The extension UI and descriptive-prose work is integrated in the isolated extension-ui-2498 worktree. Its frozen UI source and guides were reviewed against the private census; the JavaScript baseline contains 4,745 individually classified fragments. Review remains NEEDS_EVIDENCE until the final current-source delta, independent UI/DDO sweep and blind review are complete.
+**Purpose.** Draft PR 318 checkpoint 8a66c41 failed the real-browser CI abort/reload check. The fixture restored its `OracleController.prototype.observe` wrapper before the later pause flag was set. A genuine next-minute transaction advanced the stored ledger during the comparison.
 
 **Use.** Read it.
 
@@ -728,9 +728,9 @@ Repository-level entry points and agent instructions. `AGENTS.md` and `CLAUDE.md
 
 #### `prompts.md`
 
-`doc` · 2574 lines · 157,767 B · description: **extracted**
+`doc` · 2582 lines · 157,899 B · description: **extracted**
 
-**Purpose.** Version: 281 Delta: v280 to v281; preserve the TUI-opening request and streaming storage / multiple-window question. open the tui
+**Purpose.** Version: 282 Delta: v281 to v282; preserve the current status question. What are you doing?
 
 **Use.** Read it.
 
@@ -976,7 +976,7 @@ Curated prose. `ARCHITECTURE.md` explains how the pieces fit, `TESTING.md` is th
 
 #### `docs/FILES.md`
 
-`doc` · 38412 lines · 1,843,762 B · description: **extracted**
+`doc` · 38412 lines · 1,843,658 B · description: **extracted**
 
 **Purpose.** Regenerate with: python3 index/build.py all # refresh the index python3 index/make_files_doc.py # rewrite this file
 
@@ -28426,7 +28426,7 @@ The Chrome extension has a separately armed trading surface. Dry-run is the defa
 
 #### `extension/tools/1000x-e2e.mjs`
 
-`code-js` · 689 lines · 77,235 B · description: **extracted**
+`code-js` · 709 lines · 79,996 B · description: **extracted**
 
 **Purpose.** Read-only 1000x overlay browser gate. No dependencies; uses real CfT and the repository CDP transport. Default is a deterministic public-contract fixture. --live separately visits the actual public portal; it never connects a wallet. Fixture: real browser fetch + native WebSocket to an ephemeral loopback server. Only the exact public stream URL is mapped; source modules are never replaced.
 

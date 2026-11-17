@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-11-17T05:47:22+00:00",
+  "generatedAt": "2026-11-17T06:14:01+00:00",
   "schemaVersion": 1,
   "note": "Concepts are derived from the repo's own vocabulary \u2014 the FAMILY dict, strategy-card frontmatter, docs/trading-signals-concept-family.md, and terms verified to recur in the corpus. A concept matching no file is dropped, not kept.",
   "counts": {
@@ -650,16 +650,16 @@
           "hits": 124
         },
         {
+          "path": "extension/tools/1000x-e2e.mjs",
+          "hits": 116
+        },
+        {
           "path": "oracle_leverage/sdk/package-lock.json",
           "hits": 115
         },
         {
           "path": "llms-sitemap.txt",
           "hits": 114
-        },
-        {
-          "path": "extension/tools/1000x-e2e.mjs",
-          "hits": 111
         },
         {
           "path": "skills/trading-and-investing/SKILL.md",
@@ -1154,7 +1154,7 @@
         },
         {
           "path": "docs/FILES.md",
-          "hits": 91
+          "hits": 90
         },
         {
           "path": ".cdo/reviews-2026-11-12/research-scripts.json",
@@ -1214,7 +1214,7 @@
         },
         {
           "path": "memory.md",
-          "hits": 36
+          "hits": 35
         },
         {
           "path": ".cdo/reviews-2026-11-12/soltui-fullsuite-fixture-deltas.json",
@@ -1419,7 +1419,7 @@
         },
         {
           "path": "docs/FILES.md",
-          "hits": 66
+          "hits": 65
         },
         {
           "path": "extension/test/fixtures/oracle-0.9-10m-state.json",
@@ -1447,7 +1447,7 @@
         },
         {
           "path": "memory.md",
-          "hits": 35
+          "hits": 34
         },
         {
           "path": "research/tradingview-script-profiles/shard-a.jsonl",

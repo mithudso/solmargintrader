@@ -1,5 +1,11 @@
 # Work continuation
 
+## Browser CI fixture correction
+
+Draft PR 318 checkpoint 8a66c41 failed the real-browser CI abort/reload check. The fixture restored its `OracleController.prototype.observe` wrapper before the later pause flag was set. A genuine next-minute transaction advanced the stored ledger during the comparison. The scoped fixture repair reinstalls and restores a per-context pause, drains existing transactions, checks the expected abort error, and keeps the twin paused during reload comparison. It does not change the production model, controller or store. The aborted reducer throws before a write is queued; this check does not prove rollback of a queued write.
+
+The final fixture passed 27/27 real-browser checks with the server and browser clocks frozen during the full-ledger reload comparison. The drain uses bounded waits and each live realm is restored independently. The independent UI/DDO review found no remaining corroborated Medium-or-higher product finding, with NEEDS_EVIDENCE coverage limits. Deterministic metadata and final-head CI remain required before merge. The immutable environment built from the earlier 80d997 tree remains unactivated; rebind its inputs to the eventual final commit before use. Preserve the user route, owner, browser data and workers.
+
 ## Current UI and confidence handoff
 
 The extension UI and descriptive-prose work is integrated in the isolated extension-ui-2498 worktree. Its frozen UI source and guides were reviewed against the private census; the JavaScript baseline contains 4,745 individually classified fragments. Review remains NEEDS_EVIDENCE until the final current-source delta, independent UI/DDO sweep and blind review are complete. Preserve the frozen source and the sole UI writer's edits.
@@ -30,7 +36,8 @@ Browser CI fixture: the native IndexedDB abort assertion raced an independent ne
 
 Routing follow-up: source adds owner-only optional connection routing for ordinary clients; explicit environment homes remain first. The isolated 1000x paper acceptance passed one start and stop with recorded modeled outcome. The user-owned registry and shared wrapper remain unchanged. Verify focused checks, review and deliver the routing PR before a separately controlled activation. Routing alone does not fence concurrent starts or migrate journal history.
 
-Version: 626
+Version: 627
+Delta: v626 to v627; record the browser CI fixture race and scoped correction pending final verification.
 Delta: v625 to v626; record scoped UI and prose review, bounded native evidence and final integration gates.
 Delta: v624 to v625; preserve the tested live-signal candidate, independent fixes, active routing and pending native/UI/prose gates.
 Delta: v623 to v624; integrate merged routing and fixture history with pending Oracle confidence and extension UI continuation.
