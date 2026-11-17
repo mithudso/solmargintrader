@@ -42,7 +42,8 @@ Browser CI fixture: the native IndexedDB abort assertion raced an independent ne
 
 Routing follow-up: source adds owner-only optional connection routing for ordinary clients; explicit environment homes remain first. The isolated 1000x paper acceptance passed one start and stop with recorded modeled outcome. The user-owned registry and shared wrapper remain unchanged. Verify focused checks, review and deliver the routing PR before a separately controlled activation. Routing alone does not fence concurrent starts or migrate journal history.
 
-Version: 629
+Version: 630
+Delta: v629 to v630; record the current verified application result, seven repaired findings and evidence-qualified delivery.
 Delta: v628 to v629; preserve delivered shared-signal loading while integrating whole-application repairs.
 Delta: v627 to v628; integrate the application optimizer and six verified source repairs.
 Delta: v627 to v628; record the loaded-TUI relay wiring failure and bounded correction.
@@ -3134,3 +3135,15 @@ Version note: workflow application-2527/3 reserves runtime0.4.7, manager0.7.10 a
 Workflow version: application-2527/4. Delta: current source integrates delivered PR320 shared-signal loading and fixes the full JavaScript CI check. Independent review1 corroborated a seventh Medium issue: default synthetic generation used42 but recorded seed0, so replay changed the data and return. The CLI now resolves one effective seed, and an actual manifest/result replay regression preserves omitted42 and explicit0 behavior. Source candidate advances canonical backtester0.2.2 and Oracle0.2.7 with coherent consumer pins; protected installed owners retain their old versions and cohorts. Native installed subset evidence for the earlier candidate is historical until final delivery wheels are verified.
 
 PR322 is draft at https://github.com/mithudso/solmargintrader/pull/322. Its initial JS check failed no-ex-assign; the handler now uses displayError and local full check:js passes. The new recovery module is included in the existing lint command. Required final checks, complete current-method sweep, fresh review2, coherent installed acceptance, final CI/merge and deployment qualification remain before closure. Do not replace shared routes or reset an owner merely to meet an audit gate.
+
+## 2026-11-17 — Verified application result
+
+Workflow version: application-2527/5. Delta: all current method judgments, meaningful regressions, two independent reviews and isolated installed acceptance are complete. The conservative current census retains all240methods/222selected/34cells:167PARTIAL,55UNAVAILABLE and18OUT_OF_SCOPE. All seven confirmed Medium source findings are FIXED. The current full-source manifest is source-manifest-v6.json, with4027verified inputs. Five is this continuation record version, not a claim of five optimizer sweeps; three complete diagnostic sweeps were performed within the default five-sweep ceiling.
+
+Independent review1 discovered the synthetic seed mismatch; fresh review2 returned no confirmed Medium+ on current v6. Actual private native status/passive-forecast checks, installed default-seed byte replay and Chrome0.12.1 reasons/real30-second health transitions/teardown passed. All264installed Python and174extension files match current application input lineage. The new browser test now waits for the existing submit-ready phase before its unchanged input-enabled check; the original scheduling failure and exact successful repeat remain evidence. No production behavior was changed for that fixture correction.
+
+Final source versions: backtester0.2.2, Oracle0.2.7, research-runtime0.4.7, manager0.7.10, ecosystem0.4.19, extension0.12.1, website0.4.1 and analysis-runtime1.0.1. Local checks include1152backtester,200Oracle,316ecosystem,390manager,634extension,212auto-trade,322website,65engine and76affected TUI cases, repository lint/type/syntax, deterministic metadata and real-browser fixture gates. Raw final exits and earlier failed attempts are preserved; do not infer installation or live provider acceptance from source versions alone.
+
+Delivery authority: https://github.com/mithudso/solmargintrader/pull/322 and the actual delivery-final.json receipt under /Users/mitch/.local/share/solmargintrader/audits/application-2527. The versioned ledger-final.json, current independent report final-review-2.json and installed-acceptance-v6.json record exact source and scope. Read the live PR/delivery receipt before resuming or claiming a merge.
+
+Remaining qualification is explicit: real provider/customer/venue acceptance, shared protected native/TUI and remote analysis-Container rollout, representative device/assistive/platform/load/energy evidence, actual participant/demand/retention/cost/toil data and mature prospective model utility/calibration. Overall status is NEEDS_EVIDENCE; no universal CLEAN, profitability or world-class certificate is issued. These gaps are not permission to restart owners, reset cohorts or launch studies. The existing .4.15/.4.18 owners, shared native route, collectors, private browser/model state, frozen cohorts, archived liquidity and paused audits remain protected.

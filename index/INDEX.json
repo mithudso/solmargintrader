@@ -1,11 +1,11 @@
 {
-  "generatedAt": "2026-11-17T07:32:16+00:00",
+  "generatedAt": "2026-11-17T08:17:26+00:00",
   "schemaVersion": 1,
   "repoRoot": "~/dev/solmargintrader",
-  "commit": "646002e",
+  "commit": "f9f66b2",
   "counts": {
     "files": 4008,
-    "bytes": 140900450,
+    "bytes": 140903551,
     "byKind": {
       "strategy-card": 1478,
       "doc": 840,
@@ -88476,9 +88476,9 @@
       "title": "Work continuation",
       "summary": "After PR 318 merged as 4196d47, actual loaded acceptance found that the TUI displayed no shared signal while the private relay held fresh six-horizon BTC and ZEC data. Production `main()` passes `QuoteReader(args.prices)`, and the constructor incorrectly treated any injected quote loader as a request for an empty signal loader.",
       "summarySource": "opening-prose",
-      "bytes": 646123,
-      "lines": 3137,
-      "sha1": "82d4687addd772deada1de2da50cc805485f805d",
+      "bytes": 649114,
+      "lines": 3150,
+      "sha1": "b80638abdbb9bbf659042c85ffcc19d292ea8213",
       "symbols": [],
       "imports": [],
       "internalImports": [],
@@ -118795,9 +118795,9 @@
       "title": "backtest-recovery-browser",
       "summary": "Real browser + Worker/D1 contracts. All accounts, engine data and network are isolated fixtures.",
       "summarySource": "docstring",
-      "bytes": 8832,
-      "lines": 123,
-      "sha1": "e99896d61c659506d61ae8ca6c41fe71947c6997",
+      "bytes": 8942,
+      "lines": 124,
+      "sha1": "c0c513db4d201a8e8c7d59ec85347cdfb314828e",
       "symbols": [],
       "imports": [],
       "internalImports": [],
@@ -119330,5 +119330,5 @@
       "frontmatter": {}
     }
   ],
-  "textSha256": "6d3cf8a807c50e24c14e532f6ae8289b4efa3043bc64359bebe50a46e656b1f8"
+  "textSha256": "e46ca81584dcdf266cc7d9939bf4191720a1f80435d2af7868bf84f4d0286dd5"
 }

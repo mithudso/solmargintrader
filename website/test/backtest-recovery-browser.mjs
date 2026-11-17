@@ -82,6 +82,7 @@ try {
   assert.match(await page.locator('#backtest-form button[type="submit"]').innerText(), /Recover/);
   await page.locator('#backtest-form button[type="submit"]').click();
   await page.waitForFunction(() => document.querySelector('#backtest-output').textContent.includes('Results, with context'));
+  await page.waitForFunction(() => !document.querySelector('#backtest-form button[type="submit"]').disabled);
   assert.equal(jobs.size, 1); assert.equal(env.sqlite.prepare("SELECT COUNT(*) AS n FROM backtest_usage WHERE state='complete'").get().n, 1);
   assert.equal(await page.locator('#backtest-form [name="coin"]').isDisabled(), false);
   await page.locator('#backtest-form button[type="submit"]').click();
