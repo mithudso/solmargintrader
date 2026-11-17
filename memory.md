@@ -1,6 +1,9 @@
 # Work continuation
 
-Version: 621
+Routing follow-up: source adds owner-only optional connection routing for ordinary clients; explicit environment homes remain first. The isolated 1000x paper acceptance passed one start and stop with recorded modeled outcome. The user-owned registry and shared wrapper remain unchanged. Verify focused checks, review and deliver the routing PR before a separately controlled activation. Routing alone does not fence concurrent starts or migrate journal history.
+
+Version: 622
+Delta: v621 to v622; add private shared-owner routing and preserve isolated acceptance and activation boundary.
 Delta: v620 to v621; record the qualified optimizer receipt and remaining delivery gates.
 Delta: v619 to v620; preserve accepted auto-action teardown and review scope.
 Delta: v618 to v619; record integrated audit, paper-session identity display and pending acceptance.

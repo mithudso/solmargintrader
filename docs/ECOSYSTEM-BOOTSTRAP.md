@@ -17,8 +17,8 @@ python3 /Users/mitch/dev/solmargintrader/scripts/bootstrap_ecosystem.py start
 No arguments also means `start`. The script installs five local projects:
 backtester, Oracle, Bot Manager, the headless SolTUI research runtime, and the
 ecosystem supervisor. It uses `/Users/mitch/.venvs/solecosystem-0.4.2` by default.
-The current source coordinates manager 0.7.7, canonical backtester 0.2.1, Oracle 0.2.6
-and headless research-runtime 0.4.4. It preserves schema 4 telemetry. It does not
+The current source coordinates manager 0.7.8, canonical backtester 0.2.1, Oracle 0.2.6
+and headless research-runtime 0.4.5. It preserves schema 4 telemetry. It does not
 upgrade or stop the existing /Users/mitch/.venvs/solecosystem-0.1.1 or
 /Users/mitch/.venvs/solecosystem-0.1.2 or /Users/mitch/.venvs/solecosystem-0.1.3 or /Users/mitch/.venvs/solecosystem-0.2.1
 environments or their immutable experiments. Continue an existing run with
