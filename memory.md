@@ -1,5 +1,8 @@
 # Work continuation
 
+Version: 642
+Delta: v641 to v642; bind qualified PR235 to merged PR224/PR226 default source.
+
 Version: 641
 Delta: v640 to v641; qualify all full-suite shards and current boundary/CSV/parser repairs before delivery.
 
@@ -28,6 +31,9 @@ Delta: v560 to v561; integrate current master and preserve incoming ZEC paper pu
 Delta: v559 to v560; classify macOS launcher fixtures as platform-specific after Linux CI lacked /bin/zsh.
 Delta: v558 to v559; fix final Linux/native CI integration failures after c7f9ab9.
 Delta: v555 to v557; integrate master25e1d60 into PR235 and preserve the separate PR224 record reservation.
+Version: 640
+Delta: v639 to v640; bind PR226 to merged master77bf655 and preserve its exact audit files.
+
 Version: 639
 Delta: v638 to v639; preserve PR226 audit checkpoint during requested merge sweep.
 

@@ -1,11 +1,16 @@
 # Prompt history
 
+Version: 289
+Delta: v288 to v289; bind qualified PR235 to merged PR224/PR226 default source.
+
 Version: 288
 Delta: v287 to v288; integrate PR235 checkpoint while retaining current execution and persistence behavior.
 
 
 Version: 249
 Delta: v248 to v249; preserve the ZEC two-bar reversal paper request while integrating master.
+Delta: v287 to v288; bind PR226 to merged master77bf655 and preserve its exact audit files.
+
 Version: 287
 Delta: v286 to v287; preserve PR226 audit checkpoint during requested merge sweep.
 
