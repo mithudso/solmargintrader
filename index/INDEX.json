@@ -1,11 +1,11 @@
 {
-  "generatedAt": "2026-11-17T20:21:09+00:00",
+  "generatedAt": "2026-11-17T20:59:27+00:00",
   "schemaVersion": 1,
   "repoRoot": "~/dev/solmargintrader",
-  "commit": "23152f6",
+  "commit": "cc5741b",
   "counts": {
     "files": 4109,
-    "bytes": 208291317,
+    "bytes": 208303467,
     "byKind": {
       "strategy-card": 1478,
       "doc": 849,
@@ -89719,11 +89719,11 @@
       "ext": ".md",
       "kind": "doc",
       "title": "Work continuation",
-      "summary": "Version: 645 Delta: v644 to v645; retain concurrently delivered native pair batch source and all prior integration repairs. Concurrent PR330 landed as284c695 with native pair batch studies and reports. Preserve its exact source, artifact archive, documentation and added CI command.",
+      "summary": "Version: 647 Delta: v646 to v647; bind PR289 to delivered PR235 squash and preserve exact source. PR224 merged as77bf655, PR226 as00d5673 and PR235 as3cacfea after all final-head checks passed. PR235\u2019s exact merged tree matches reviewed629d9d2; its macOS gate passed after34minutes. The current PR289 integration has zero runtime delta from that actual remote default source.",
       "summarySource": "opening-prose",
-      "bytes": 844646,
-      "lines": 4322,
-      "sha1": "4ee07cc2b60c0708c1e98cb0a919dc4742e5acb0",
+      "bytes": 853190,
+      "lines": 4388,
+      "sha1": "4c6a80d5ef91f5191f32da7afa01e7e478539805",
       "symbols": [],
       "imports": [],
       "internalImports": [],
@@ -93745,11 +93745,11 @@
       "ext": ".md",
       "kind": "doc",
       "title": "Prompt history",
-      "summary": "Version: 292 Delta: v291 to v292; retain concurrently delivered native pair batch source and all prior integration repairs. Version: 291",
+      "summary": "Version: 294 Delta: v293 to v294; bind PR289 to delivered PR235 squash and preserve exact source. Version: 293",
       "summarySource": "opening-prose",
-      "bytes": 283653,
-      "lines": 4689,
-      "sha1": "8c9b10a626f87c65c0d27ac0b031d2d913af2f13",
+      "bytes": 287259,
+      "lines": 4780,
+      "sha1": "121b4c4013d049adb8dd0d22f1f381d3be54eaeb",
       "symbols": [],
       "imports": [],
       "internalImports": [],
@@ -122255,5 +122255,5 @@
       "frontmatter": {}
     }
   ],
-  "textSha256": "b3ff240c57028f35c096a43c6259c7125c8d70b23fbfca65e812887f3cec8fa4"
+  "textSha256": "a92af88d45e4a269de5e4bf3045dd84e1e019aa67238e24acea300fc2c67e82b"
 }

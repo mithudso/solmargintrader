@@ -1,5 +1,35 @@
 # Prompt history
 
+Version: 294
+Delta: v293 to v294; bind PR289 to delivered PR235 squash and preserve exact source.
+
+Version: 293
+Delta: v292 to v293; prepare PR289 with current-default pair source while PR235 CI runs.
+
+Version: 292
+Delta: v291 to v292; retain final public exports while preparing PR289 exact-head checks.
+
+Delta: v291 to v292; retain concurrently delivered native pair batch source and all prior integration repairs.
+
+Version: 291
+Delta: v290 to v291; preserve final PR235 source and hosted fixture repairs in PR289.
+
+Version: 289
+Delta: v288 to v289; preserve current leveraged preview and paper-study contracts during PR289 integration.
+
+
+Version: 269
+Delta: v268 to v269; record chart interval and owner screenshots.
+Delta: v267 to v268; record chart and default-input clarification.
+Delta: v266 to v267; record strategy research, cards, backtests and additional data request.
+Delta: v265 to v266; record TradingView observations and resume request.
+Delta: v264 to v265; record Jupiter developer organization.
+Delta: v263 to v264; record Jupiter documentation links.
+Delta: v262 to v263; record Preview error and explicit resume steering.
+Delta: v261 to v262; record two-column layout and causal bar/shape display request.
+Delta: v260 to v261; record 50 percent collateral exit, delayed close and order-flow research request.
+
+
 Version: 292
 Delta: v291 to v292; retain concurrently delivered native pair batch source and all prior integration repairs.
 
@@ -4541,6 +4571,7 @@ You only have 3%left of my weekly budget of tokens, when you’re running routin
 Make the center status update stop flashing "unavailable" and redrawing the data if it misses one second. '/Users/mitch/Desktop/Screen Recording 2026-11-16 at 2.35.08 AM.mov' if you’re going to insist on saying it then display it in a silent, green/yellow/red indicator dot. Also it says that trades are disarmed but I don’t have an "arm" button. Also the current results of the forward test, please display them next to the forward test status lines.
 ```
 
+
 ## Preview error — 2026-11-16
 
 ```text
@@ -4616,6 +4647,66 @@ Put the positions and oracle calls on the right side of the /Users/mitch/.venvs/
 ```
 
 
+## Preview error and resume — 2026-11-16
+
+```text
+I get an error when clicking on Preview, [Image #1]
+```
+
+Screenshot supplied at /var/folders/hz/s7btlxx54c32yt375m03q0h40000gn/T/codex-clipboard-n1I9KT.png; visible text: `error: process_nonzero_exit`.
+
+```text
+resume
+```
+
+## Jupiter documentation links — 2026-11-16
+
+```text
+https://developers.jup.ag/docs/get-started https://developers.jup.ag/docs/guides
+```
+
+## Jupiter developer organization — 2026-11-16
+
+```text
+https://github.com/Jupiter-DevRel
+```
+
+## TradingView observations and resume — 2026-11-16
+
+```text
+I was on TradingView trying out various strategies to play with, and for ZEC, during a 5 mo lookbak these are the strategies that brought in over 100% return: momentum, moving averaage, parabolic SAR, Pivot Reversal, Price channel, two moving averages crossover, volatility expansion-close strategies.
+```
+
+```text
+resume what you were doing
+```
+
+## Strategy research and additional data — 2026-11-16
+
+```text
+I was on TradingView trying out various strategies to play with, and for ZEC, during a 5 mo lookbak these are the strategies that
+  brought in over 100% return: momentum, moving averaage, parabolic SAR, Pivot Reversal, Price channel, two moving averages crossover, volatility expansion-close strategies. Fully investigate each of these strategies with a rabbithole skill, then build strategy cards for each if they don't already exist, and backtest using each of them. Also keep pulling more BTC and SEC fine grained data for another chance at testing
+```
+
+## TradingView chart and settings — 2026-11-16
+
+```text
+https://www.tradingview.com/chart/qV1poosp/?symbol=COINBASE%3AZECUSDC.P
+```
+
+```text
+Strategy inputs were left at defaults, yes.
+```
+
+## TradingView interval — 2026-11-16
+
+```text
+10min
+```
+
+Owner-provided Volty report image: /var/folders/hz/s7btlxx54c32yt375m03q0h40000gn/T/A958C090-E168-4DF1-A4C0-21056A357BE1-742-00000899567ACA0B/pasted-image-20261116-053827-F3235074-E0B0-4F3B-9434-09F3D56E8633.png (SHA-256 98a14bb203cdf242f401b5663a9d3ea3ae8c08cde47f85f08bc5c68773697759).
+
+Owner-provided Channel report image: /var/folders/hz/s7btlxx54c32yt375m03q0h40000gn/T/codex-clipboard-mluclG.png (SHA-256 ec4f3a08bcbcaaed56855eb4e6b482ad7552b2c993dbc415e8d0eae5e3a18882).
 ## 2026-11-16 — Oracle feed controls and UI audit (TASK-2399)
 
 > In the /Users/mitch/.venvs/soltui/bin/python /Users/mitch/dev/solmargintrader/scripts/oracle_winners.py tui let me turn off either of the feeds, to cut down on noise. If I de-select coinbase remove all coinbase related items from the page until I re-enable coinbase.
