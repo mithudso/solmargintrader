@@ -25,15 +25,84 @@ _BLOCK = (
 
 
 def _home():
-    return Path(
-        os.environ.get(
-            "ORACLE_AUTOTRADE_HOME", Path.home() / ".local/state/oracle-autotrade"
-        )
-    )
+    if "ORACLE_AUTOTRADE_HOME" in os.environ:
+        return Path(os.environ["ORACLE_AUTOTRADE_HOME"])
+
+    default = Path.home() / ".local/state/oracle-autotrade"
+    directory = Path.home() / ".config/oracle-autotrade"
+    try:
+        dirfd = os.open(directory, os.O_RDONLY | os.O_DIRECTORY | os.O_NOFOLLOW)
+    except FileNotFoundError:
+        return default
+    except OSError:
+        raise ValueError("Auto-trade connection directory must be private") from None
+    try:
+        info = os.fstat(dirfd)
+        if (
+            not stat.S_ISDIR(info.st_mode)
+            or info.st_uid != os.getuid()
+            or info.st_mode & 0o077
+        ):
+            raise ValueError("Auto-trade connection directory must be private")
+        try:
+            fd = os.open(
+                "connection.json",
+                os.O_RDONLY | os.O_NOFOLLOW | os.O_NONBLOCK,
+                dir_fd=dirfd,
+            )
+        except FileNotFoundError:
+            return default
+        except OSError:
+            raise ValueError("Auto-trade connection file must be private") from None
+        try:
+            info = os.fstat(fd)
+            if (
+                not stat.S_ISREG(info.st_mode)
+                or info.st_uid != os.getuid()
+                or info.st_mode & 0o077
+                or info.st_nlink != 1
+            ):
+                raise ValueError("Auto-trade connection file must be private")
+            with os.fdopen(fd, "rb") as stream:
+                fd = -1
+                raw = stream.read(4097)
+        finally:
+            if fd >= 0:
+                os.close(fd)
+    except OSError:
+        raise ValueError("Auto-trade connection file cannot be read") from None
+    finally:
+        os.close(dirfd)
+
+    def unique_pairs(pairs):
+        result = {}
+        for key, value in pairs:
+            if key in result:
+                raise ValueError("Duplicate connection field")
+            result[key] = value
+        return result
+
+    try:
+        if len(raw) > 4096:
+            raise ValueError("Connection file too large")
+        value = json.loads(raw, object_pairs_hook=unique_pairs)
+        if (
+            not isinstance(value, dict)
+            or set(value) != {"version", "state_home"}
+            or type(value["version"]) is not int
+            or value["version"] != 1
+            or not isinstance(value["state_home"], str)
+            or "\x00" in value["state_home"]
+            or not Path(value["state_home"]).is_absolute()
+        ):
+            raise ValueError("Invalid connection schema")
+    except (ValueError, UnicodeError, RecursionError):
+        raise ValueError("Invalid auto-trade connection file") from None
+    return Path(value["state_home"])
 
 
-def _connect():
-    home = _home()
+def _connect(home=None):
+    home = _home() if home is None else home
     home.mkdir(mode=0o700, parents=True, exist_ok=True)
     info = home.lstat()
     if (
@@ -88,7 +157,7 @@ def _call(action, request_id=None, config=None):
 
     home = _home()
     # Establish and verify private directory and journal before spawning.
-    with closing(_connect()):
+    with closing(_connect(home)):
         pass
     request = (
         json.dumps(
@@ -121,6 +190,7 @@ def _call(action, request_id=None, config=None):
         return exchange()
     except (FileNotFoundError, ConnectionRefusedError):
         env = os.environ.copy()
+        env["ORACLE_AUTOTRADE_HOME"] = str(home)
         try:
             child = subprocess.Popen(
                 [sys.executable, "-m", "oracle_leverage.autotrade_worker"],
