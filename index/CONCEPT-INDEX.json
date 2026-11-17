@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-11-17T21:27:25+00:00",
+  "generatedAt": "2026-11-17T21:33:22+00:00",
   "schemaVersion": 1,
   "note": "Concepts are derived from the repo's own vocabulary \u2014 the FAMILY dict, strategy-card frontmatter, docs/trading-signals-concept-family.md, and terms verified to recur in the corpus. A concept matching no file is dropped, not kept.",
   "counts": {
@@ -170,7 +170,7 @@
         },
         {
           "path": "memory.md",
-          "hits": 388
+          "hits": 393
         },
         {
           "path": "docs/FILES.md",
@@ -198,7 +198,7 @@
         },
         {
           "path": "prompts.md",
-          "hits": 115
+          "hits": 117
         },
         {
           "path": "research/results/shape_spot_20261111_manifest.json",
@@ -496,7 +496,7 @@
         },
         {
           "path": "memory.md",
-          "hits": 27
+          "hits": 28
         },
         {
           "path": "research/tradingview-script-understanding.json",
@@ -603,7 +603,7 @@
         },
         {
           "path": "memory.md",
-          "hits": 475
+          "hits": 485
         },
         {
           "path": "llms/jupsol-llms.txt",
@@ -623,7 +623,7 @@
         },
         {
           "path": "prompts.md",
-          "hits": 240
+          "hits": 246
         },
         {
           "path": "llms-infra.txt",
@@ -1177,12 +1177,12 @@
           "hits": 56
         },
         {
-          "path": "research/eth-week-20261117/summary.json",
+          "path": "memory.md",
           "hits": 52
         },
         {
-          "path": "memory.md",
-          "hits": 51
+          "path": "research/eth-week-20261117/summary.json",
+          "hits": 52
         },
         {
           "path": "extension/test/fixtures/oracle-0.9-10m-state.json",
@@ -1430,11 +1430,11 @@
           "hits": 51
         },
         {
-          "path": ".cdo/reviews-2026-11-12/final-owned-integration.json",
-          "hits": 50
+          "path": "memory.md",
+          "hits": 51
         },
         {
-          "path": "memory.md",
+          "path": ".cdo/reviews-2026-11-12/final-owned-integration.json",
           "hits": 50
         },
         {

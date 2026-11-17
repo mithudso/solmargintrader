@@ -1,11 +1,11 @@
 {
-  "generatedAt": "2026-11-17T21:27:25+00:00",
+  "generatedAt": "2026-11-17T21:33:22+00:00",
   "schemaVersion": 1,
   "repoRoot": "~/dev/solmargintrader",
-  "commit": "f8b6291",
+  "commit": "8494c91",
   "counts": {
     "files": 4117,
-    "bytes": 208517824,
+    "bytes": 208530216,
     "byKind": {
       "strategy-card": 1478,
       "doc": 850,
@@ -89808,11 +89808,11 @@
       "ext": ".md",
       "kind": "doc",
       "title": "Work continuation",
-      "summary": "Version: 649 Delta: v648 to v649; repair three confirmed inherited research contracts, preserve refused-state fixtures and add their declared-dependency CI gate. Delta: integrate delivered PR235 maintenance with Oracle persistence; preserve both histories, current review3 partial provenance and last whole-sweep allowance.",
+      "summary": "Version: 650 Delta: preserve delivered PR289 workflow/index checkpoint and the combined Oracle/research repairs before final source8. Delta: v648 to v649; repair three confirmed inherited research contracts, preserve refused-state fixtures and add their declared-dependency CI gate.",
       "summarySource": "opening-prose",
-      "bytes": 866304,
-      "lines": 4412,
-      "sha1": "cadc1e98c6c9a17adbe9c86241e5675b4a6bc9d9",
+      "bytes": 874969,
+      "lines": 4479,
+      "sha1": "3361b2f56faa1f72a219e223682a9b4b0b5d4313",
       "symbols": [],
       "imports": [],
       "internalImports": [],
@@ -94014,11 +94014,11 @@
       "ext": ".md",
       "kind": "doc",
       "title": "Prompt history",
-      "summary": "Version: 293 Delta: integrate delivered PR235 maintenance with Oracle persistence; preserve both histories, current review3 partial provenance and last whole-sweep allowance. Delta: v289 to v290; preserve PR330 request and both Oracle persistence requirements during final delivery integration.",
+      "summary": "Version: 295 Delta: preserve delivered PR289 workflow/index checkpoint and the combined Oracle/research repairs before final source8. Delta: integrate delivered PR235 maintenance with Oracle persistence; preserve both histories, current review3 partial provenance and last whole-sweep allowance.",
       "summarySource": "opening-prose",
-      "bytes": 286307,
-      "lines": 4727,
-      "sha1": "5b3e7dd5571af902bd8539c2a58ba8719d6cd507",
+      "bytes": 290034,
+      "lines": 4819,
+      "sha1": "edb7dc1b597affac10eb943d8388e6c5f7ac029f",
       "symbols": [],
       "imports": [],
       "internalImports": [],
@@ -122525,5 +122525,5 @@
       "frontmatter": {}
     }
   ],
-  "textSha256": "5e449d79f730d560a4ae8a31ca3af81b8e53045f4e17674a665d543b0e7a3a9a"
+  "textSha256": "2faf415350889561cb88c328bb897b6df0f6ad4262aad4db18306c81e8b7d663"
 }

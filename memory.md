@@ -1,6 +1,7 @@
 # Work continuation
 
-Version: 649
+Version: 650
+Delta: preserve delivered PR289 workflow/index checkpoint and the combined Oracle/research repairs before final source8.
 Delta: v648 to v649; repair three confirmed inherited research contracts, preserve refused-state fixtures and add their declared-dependency CI gate.
 Delta: integrate delivered PR235 maintenance with Oracle persistence; preserve both histories, current review3 partial provenance and last whole-sweep allowance.
 Delta: v646 to v647; preserve source6 acceptance gap and require fresh shared-state restart to supersede an older Stop acknowledgment.
@@ -11,6 +12,20 @@ Delta: v642 to v643; preserve CI failure receipts and correct asynchronous test 
 Delta: v641 to v642; preserve the confirmed cold-reload quota failure and guarded readonly-history repair.
 Delta: v640 to v641; preserve PR224/PR226 and both browser learner changes before final combined reassessment.
 
+Version: 647
+Delta: v646 to v647; bind PR289 to delivered PR235 squash and preserve exact source.
+
+## PR289 delivery binding — TASK-2579
+
+PR224 merged as77bf655, PR226 as00d5673 and PR235 as3cacfea after all final-head checks passed. PR235’s exact merged tree matches reviewed629d9d2; its macOS gate passed after34minutes. The current PR289 integration has zero runtime delta from that actual remote default source. Preserve both historical workflow records and regenerate all deterministic projections from the committed source. Next: nine local gates, push original PR289 branch, all final-head CI, squash merge and exact tree receipt; then complete PR328’s independent learner checkpoint integration. Original paused audits remain paused.
+
+Version: 646
+Delta: v645 to v646; prepare PR289 with current-default pair source while PR235 CI runs.
+
+Version: 645
+Delta: v644 to v645; retain final public exports while preparing PR289 exact-head checks.
+
+
 Version: 645
 Delta: v644 to v645; retain concurrently delivered native pair batch source and all prior integration repairs.
 
@@ -19,6 +34,33 @@ Delta: v644 to v645; retain concurrently delivered native pair batch source and 
 Concurrent PR330 landed as284c695 with native pair batch studies and reports. Preserve its exact source, artifact archive, documentation and added CI command. Merge conflicts are limited to workflow history and generated whole-file indexes; no source implementation conflict occurred. The42 pair-study integration cases pass. The23-file public export is current. Regenerate committed-source deterministic projections before pushing. This supersedes the earlier unmerged PR235 head; old CI is historical evidence, not a final-head gate. PR329 is a newly created active TASK-2574 draft with its own unfinished current review. Preserve that draft and original owner checkout while finishing the five PRs frozen at this request. Next: final-head CI235 and squash merge, then refresh/check/merge289 and328 against actual remote master. Original optimizer audit remains USER-PAUSED.
 
 Version: 644
+Delta: v643 to v644; preserve final PR235 source and hosted fixture repairs in PR289.
+
+## PR289 source qualification checkpoint — TASK-2579
+
+All PR289 runtime and report changes are already included in the newer PR235 source. The panel specialist verified the newer60-case implementation preserves all older functions and tests. Report/policy digest bindings and31 SDK tests pass. This merge carries the final CSV, result parser, HTTP fixture, cleanup fixture and picker repairs without additional runtime changes. Next: bind delivered PR235 master, regenerate deterministic projections from the committed source, push the original PR289 branch and await all exact-head checks before merge. No paid research, owner activity or source audit restart.
+
+Version: 641
+Delta: v640 to v641; preserve current leveraged preview and paper-study contracts during PR289 integration.
+
+## PR289 integration — TASK-2579
+
+Preserve newer inspection-only SDK oracle validation and immutable published exit-study report/policy bindings. Preserve feed controls, auto-trade confirmations, paper owner identity and lifecycle cleanup in the panel. No historical study, paid research, live trade, signing or service action is commissioned. Panel conflict resolution is delegated to the Textual lifecycle specialist for the two panel source/test paths only. Next: review net source differences, wait for source gates, bind merged predecessors, regenerate deterministic projections, then final-head CI and merge.
+
+
+Version: 586
+Delta: v585 to v586; record chart interval and unverified owner-provided reports.
+Delta: v584 to v585; record perpetual instrument and default strategy inputs.
+Delta: v583 to v584; record new separate strategy research and data scope.
+Delta: v582 to v583; preserve owner observations without changing the frozen study.
+Delta: v581 to v582; record bounded on-chain IDL check.
+Delta: v580 to v581; record Jupiter documentation links and Preview continuation.
+Delta: v579 to v580; preserve Preview-error recovery scope and execution boundary.
+Delta: v578 to v579; record resumed source archival and preserved forward state.
+Delta: v577 to v578; record owner two-column and causal candle/shape display request.
+Delta: v576 to v577; begin isolated 50 percent collateral exit and order-flow evidence study.
+
+
 Delta: v643 to v644; regenerate public research projections after merged tracked-source changes.
 
 ## PR235 public export freshness — TASK-2579
@@ -3993,6 +4035,31 @@ MTF native model, two result artifacts and both independent audit receipts passe
 
 PR 288 macOS CI caught a ShapeGuide mount transition race: textual.css.query.NoMatches for #shape-guide-body during timer-driven paint. Correct the guide lifecycle narrowly and rerun the failed gate; prior financial and model gates remain accepted.
 
+
+## 50 percent collateral exit and unified reversal research — 2026-11-16
+
+TASK-2309 claimed; research TASK-2311, integration TASK-2312 and audit/delivery TASK-2313. Worktree /Users/mitch/dev/worktrees/oracle-exit50-2309 starts from clean master 877d3069f1f505bb4b2afb5c231168ef77edc9ed. Preserve original Coinbase paper collector and separate MTF observer, their models, ledgers, live services and disarmed state. No funded trade authorized by this request. Research and method must be frozen natively before outcomes. Current frontend-derived nonlinear P&L and margin-protective boundary are documented in /Users/mitch/.local/state/reversal-leverage-2289/acceptance/capability-audit/liquidation-formulas.json; live keeper and on-chain parity and historical fee schedule remain unverified. +50 percent means total close payout relative to original margin, not mark return or displayed uPnL; test the minimum 15-second position age and explicitly separate trigger from delayed close and observed or simulated path. Evaluate OHLC balance-of-power as an indicator, separately from genuinely recorded L2 order imbalance. Remaining: inspect qualified L2/source overlap; freeze contract and scopes in Mongo; derive outcomes; audit independently; integrate paper-only controls and deliver.
+
+The owner also requests positions and Oracle calls in a right-hand column, two large completed-candle blocks that shift left as new bars arrive, red/green/gray direction with range-from-mean color intensity, and four shape-time plus/minus context indicators grounded in backtest evidence. TASK-2312 owns integration. Preserve width/accessibility, completed-bar causality and uncertainty; do not fabricate probabilities.
+
+
+### Resumed acquisition checkpoint — 2026-11-16
+
+Recovered isolated worktree /Users/mitch/dev/worktrees/oracle-exit50-2309 from master 877d3069f1f505bb4b2afb5c231168ef77edc9ed with concurrent task-owned changes preserved. Native main run run:e85763700341ee675c8032fa91277ca76bca06d655031389033219c1e83470d4 held by codex-exit50-task2309; own lease renewed. Accepted 3250 initial windows and BTC/ZEC first two adaptive batches remain archived/readback. BTC003 recovery has 800 independently validated response grids, but its original subprocess exit status is unknown; archive exact bodies and retry metadata without claiming successful process exit. ZEC003 recovered plan is independently validated but original plan-process exit is unknown. No completed performance result is inferred from source acquisition. Current working changes belong to parallel workers; preserve all. Existing paper services and live config are owned elsewhere and remain untouched.
+
+Preview error TASK-2321: the supplied screenshot shows process_nonzero_exit. Author is testing simulation-only inspection fallback with Submit disabled; executable guards remain intact. Authoritative current UpdatePrice/keeper oracle schema is not established by the checked SDK, IDL, frontend and Jupiter MCP. Do not claim executable funded support from inspection or simulate-only evidence. No funded trade was performed. Resume native source archival under owned fenced lease; preserve existing armed runtime configuration.
+
+The user provided Jupiter documentation links. Their related product documentation is a lead, not evidence of the actual YOLO program instruction schema. An independent agent is checking the official links and on-chain Anchor IDL. PR 290 provides inspection-only Preview; canonical acceptance is pending.
+
+Read-only Anchor 0.31.1 Program.fetchIdl returned null for YOLO program yoLovHV5eT4DNPMG2Bu1NLmq8nVygEAPrNT1Rx6vWFA. Its derived IDL account DZT94u5ZnWTy8pSXWvZnDj1H23cmdE9vo9tT9WLzHJPU was absent on mainnet at about 10:04 UTC. This rules out the standard published Anchor IDL account only; it does not rule out an off-chain schema.
+
+The user described TradingView strategy results as possible research leads. They are unverified owner observations; interval, settings, costs and baselines were not supplied. Do not add them to the frozen exit50 selection or claim a verified return. Continue the existing study and Preview delivery.
+
+The user authorized rabbithole research for seven named strategy families, missing strategy cards, backtests and additional fine-grained BTC/ZEC data. Interpret SEC as ZEC from context. This is separate from the frozen exit50 cohort and policy selection. Deduplicate existing research and cards first, preserve all 21 protected holds, and reserve prospective data before outcomes. The TradingView returns remain unverified observations with missing settings and costs.
+
+The user identified the TradingView chart as Coinbase ZEC/USDC perpetual and stated strategy inputs were defaults. Chart interval and tester properties including sizing, leverage, commission, slippage and funding remain unconfirmed. Research must not treat earlier ZEC-USD spot data as equivalent.
+
+The user confirmed a 10-minute chart and supplied Volty and Channel report screenshots. These are owner-provided report evidence, not independently qualified profit or fill proof. Strategy inputs were default; tester properties, funding and costs are still unconfirmed. The Channel legend values 42946.42 and 14866.70 are a hover-point reading, not final baseline P&L.
 ## Preview inspection fix — 2026-11-16
 
 The 1000x Preview fallback reports a verified unsigned simulation as inspection only when current keeper or transaction layout cannot be verified for execution. It does not create a preview ID or enable Submit. The current executable guards remain in place. Focused Python, Node and lint checks passed in the isolated hotfix worktree; canonical installed acceptance remains pending. The separate exit50 study and UI integration continue in /Users/mitch/dev/worktrees/oracle-exit50-2309.
