@@ -328,6 +328,11 @@ CURATED: dict[str, dict[str, str]] = {
         "use": "`python3 index/search.py \"how are costs applied\"`, `--concepts`, "
                "`--concept <id>`, `--file <path>`, `--kind code-python`.",
     },
+    "research/zec_tui.py": {
+        "purpose": "Oracle workbench with explicit leveraged trading and paper trial controls.",
+        "use": "Launch via the repository wrapper: `python3 scripts/oracle_winners.py tui`. "
+               "The module is not a standalone script.",
+    },
     "index/make_files_doc.py": {
         "purpose": "Generates `docs/FILES.md` from the index plus the curated table in "
                    "this module, so per-file documentation is regenerable and curation is "

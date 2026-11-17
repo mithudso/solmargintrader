@@ -323,12 +323,18 @@ class QueryTests(unittest.TestCase):
         self.assertLessEqual(len(result.hits), 5)
 
     def test_hybrid_falls_back_to_keyword_with_the_reason_when_ollama_is_down(self):
+        import hashlib
+        import numpy as np
+
         down = oe.Status(False, False, False, None, "ollama is not reachable")
         with tempfile.TemporaryDirectory() as tmp:
             manifest = Path(tmp) / "m.json"
-            manifest.write_text(json.dumps({"model": oe.EMBED_MODEL}))
+            array = Path(tmp) / "m.npz"
+            np.savez_compressed(array, embeddings=np.array([[1, 0]], dtype="float16"))
+            manifest.write_text(json.dumps({"model": oe.EMBED_MODEL, "chunkOwners": ["fixture"],
+                                            "arraySha256": hashlib.sha256(array.read_bytes()).hexdigest()}))
             with mock.patch.object(oe, "ensure", return_value=down), \
-                    mock.patch.object(search, "semantic_pair", return_value=(manifest, manifest)), \
+                    mock.patch.object(search, "semantic_pair", return_value=(manifest, array)), \
                     mock.patch("builtins.print") as printed:
                 result = search.run_query("slippage", "hybrid", 3, auto_index=False)
         printed.assert_not_called()

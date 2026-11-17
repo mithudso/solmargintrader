@@ -2836,7 +2836,7 @@
 - index/INDEX.json — config [src: git]
 - index/README.md — docs [src: git]
 - index/SEMANTIC-MANIFEST.json — config [src: git]
-- index/TEXT-INDEX.json — config [src: git]
+- index/TEXT-INDEX.json.gz — config [src: git]
 - index/build.py — code [src: git]
 - index/idle.py — code [src: git]
 - index/make_concepts_doc.py — code [src: git]

@@ -3,6 +3,7 @@ import assert from 'node:assert/strict';
 import { createServer } from 'node:http';
 import { readFile } from 'node:fs/promises';
 import { fileURLToPath } from 'node:url';
+import { waitForFixture } from './helpers/deadline.mjs';
 const { chromium } = await import(process.env.PLAYWRIGHT_MODULE || 'playwright');
 const publicRoot = new URL('../public/', import.meta.url);
 const types = { js: 'text/javascript', html: 'text/html', css: 'text/css', svg: 'image/svg+xml', json: 'application/json' };
@@ -225,7 +226,7 @@ try {
   await go({ holdLogout, logoutStarted });
   await page.evaluate(() => { window.fixtureConnectGate = new Promise(resolve => { window.releaseFixtureConnect = resolve; }); });
   await submit(); await page.waitForFunction(() => window.fixtureConnects === 1);
-  await page.locator('main [data-action="logout"]').click(); await logoutStarted.promise;
+  await page.locator('main [data-action="logout"]').click(); await waitForFixture(logoutStarted.promise, 'logoutStarted');
   await page.evaluate(() => document.querySelector('#wallet-dialog').showModal());
   await page.locator('[data-provider="solflare"]').click();
   assert.equal(await page.evaluate(() => window.fixtureConnects), 1);
@@ -247,7 +248,7 @@ try {
   await go({ holdLogout: signLogout, logoutStarted: signLogoutStarted });
   await page.evaluate(() => { window.fixtureSignGate = new Promise(resolve => { window.releaseFixtureSignature = resolve; }); });
   await submit(); await page.waitForFunction(() => window.fixtureSignatures.length === 1);
-  await page.locator('main [data-action="logout"]').click(); await signLogoutStarted.promise;
+  await page.locator('main [data-action="logout"]').click(); await waitForFixture(signLogoutStarted.promise, 'signLogoutStarted');
   await page.evaluate(() => window.releaseFixtureSignature());
   await page.waitForFunction(() => window.fixtureSignReturned === 1);
   await page.evaluate(() => new Promise(resolve => requestAnimationFrame(() => requestAnimationFrame(resolve))));
@@ -258,8 +259,8 @@ try {
 
   const holdApproval = deferred(); const approvalStarted = deferred(); const readLogout = deferred(); const readLogoutStarted = deferred();
   await go({ trading: false, holdApproval, approvalStarted, holdLogout: readLogout, logoutStarted: readLogoutStarted });
-  await submit(); await approvalStarted.promise;
-  await page.locator('main [data-action="logout"]').click(); await readLogoutStarted.promise;
+  await submit(); await waitForFixture(approvalStarted.promise, 'approvalStarted');
+  await page.locator('main [data-action="logout"]').click(); await waitForFixture(readLogoutStarted.promise, 'readLogoutStarted');
   const approvalResponse = page.waitForResponse(response => new URL(response.url()).pathname === '/api/agent/authorization' && response.request().method() === 'POST');
   holdApproval.resolve(); await (await approvalResponse).finished();
   await page.waitForFunction(() => window.fixtureJsonReads.some(value => value.path === '/api/agent/authorization' && value.method === 'POST'));
@@ -277,7 +278,7 @@ try {
   console.log('PASS agent history displays limits and immediately exposes revocation without claiming order cancellation');
 
   const holdGrants = deferred(); const grantsStarted = deferred();
-  await go({ holdGrants, grantsStarted, grants: [{ ...grant, clientName: 'Previous account private agent' }] }, false); await grantsStarted.promise;
+  await go({ holdGrants, grantsStarted, grants: [{ ...grant, clientName: 'Previous account private agent' }] }, false); await waitForFixture(grantsStarted.promise, 'grantsStarted');
   await page.locator('main [data-action="logout"]').click(); await page.waitForFunction(() => document.querySelector('main [data-action="logout"]') === null);
   const grantsResponse = page.waitForResponse(response => new URL(response.url()).pathname === '/api/agent/grants');
   const expectedGrantReads = fixture.grantGets;

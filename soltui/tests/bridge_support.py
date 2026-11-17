@@ -12,6 +12,7 @@ import urllib.error
 import urllib.request
 from contextlib import ExitStack
 from pathlib import Path
+from typing import Self
 from unittest import mock
 
 from soltui import api, bgcontrol, bgqueue, cli, commands, live_run, native_host
@@ -19,6 +20,12 @@ from soltui import api, bgcontrol, bgqueue, cli, commands, live_run, native_host
 TOKEN = "test-token-not-a-secret"
 MANAGER_REQUEST_ID = "11111111-1111-4111-8111-111111111111"
 MANAGER_CONFIG_HASH = "a" * 64
+AUTO_REQUEST_ID = "22222222-2222-4222-8222-222222222222"
+AUTO_CONFIG = {
+    "mode": "paper", "asset": "BTC", "venue": "jupiter-cli-10x",
+    "base_collateral_usd": 10.0, "max_collateral_usd": 15.0,
+    "max_session_loss_usd": 50.0, "advice_enabled": False,
+}
 
 # Commands that run for minutes, spawn processes, hit the network or write repo files. The parity suite
 # replaces their handlers with fixed answers; the registry, validation, envelope and surfaces are real.
@@ -145,9 +152,32 @@ HEAVY = {
 def default_params() -> dict[str, dict]:
     """A valid call for every command with a required parameter."""
     from backtester.core.strategies import REGISTRY
+    from oracle_leverage.tests.test_signals import packet as signal_packet
 
     fresh = next(n for n in sorted(REGISTRY) if n not in ("buy_and_hold", "ma_crossover", "rsi", "breakout"))
     return {
+        "oracle.signals.status": {},
+        "oracle.signals.publish": {"packet": signal_packet()},
+        "oracle.signals.invalidate": {"event": {"asset": "BTC", "publisher_id": "one",
+                                                 "sequence": 2, "reason": "feed_unavailable"}},
+        "autotrade.status": {},
+        "autotrade.start_paper": {"request_id": AUTO_REQUEST_ID, "config": dict(AUTO_CONFIG)},
+        "autotrade.start_live": {"request_id": AUTO_REQUEST_ID,
+                                 "config": {**AUTO_CONFIG, "mode": "live"}, "confirm": True},
+        "autotrade.stop": {"request_id": AUTO_REQUEST_ID},
+        "autotrade.configure": {"request_id": AUTO_REQUEST_ID, "config": dict(AUTO_CONFIG)},
+        "autotrade.ingest_forecast": {
+            "request_id": AUTO_REQUEST_ID,
+            "forecast": {
+                "forecast_id": "a" * 64, "asset": "BTC", "horizon_seconds": 600,
+                "source_basis": "jupiter-pyth:1", "stream": "fixed_rate@200ms",
+                "market_address": "BXQQo2VTJV2upjdA6qFMGBY3uMyTMnRmaZjPCB5ZVmr7",
+                "kind": "oracle-ohlc", "model_version": "projected-logit-l2-v1",
+                "target_type": "closed-price-up-vs-nonup-v1", "cutoff_at": 1800000000,
+                "target_at": 1800000600, "issued_at": 1800000001,
+                "reference_price": 100.0, "p_up": 0.6, "sample_count": 20, "mode": "active",
+            },
+        },
         "forwardtest.explain": {"asset": "SOL", "label": "rsi_14_30_50"},
         "batch.start": {"run_id": "a" * 32},
         "batch.status": {"run_id": "a" * 32},
@@ -219,11 +249,12 @@ class World:
         self.root = Path(tempfile.mkdtemp(prefix="soltui-bridge-"))
         self.stack = ExitStack()
 
-    def __enter__(self) -> "World":
+    def __enter__(self) -> Self:
         env = {
             "SOLTUI_CONFIG_DIR": self.root / "config", "SOLTUI_LOG_DIR": self.root / "logs",
             "SOLTUI_SUPPORT_DIR": self.root / "support", "AERO_LP_HOME": self.root / "aero",
             "SOLTUI_KEY_DIR": self.root / "keys",
+            "ORACLE_AUTOTRADE_HOME": self.root / "auto",
         }
         self.stack.enter_context(mock.patch.dict(os.environ, {k: str(v) for k, v in env.items()}))
         for mod, attr, value in (
@@ -240,6 +271,25 @@ class World:
         self.stack.enter_context(mock.patch.object(bgcontrol, "LOCK_PATH", self.root / "bg" / "w.lock"))
         self.stack.enter_context(mock.patch.object(live_run, "RECOMMENDATION_FILE",
                                                    self.root / "none.json"))
+        # Keep real registry handlers, confirmation and redaction active, but never
+        # let any bridge-test surface create an owner, socket or execution feed.
+        from oracle_leverage import autotrade
+        for name, result in {
+            "status": {"state": "stopped", "mode": "paper", "session_id": "auto-fixture"},
+            "start": {"state": "blocked", "reason": "offline bridge fixture"},
+            "stop": {"state": "stopped", "mode": "paper"},
+            "configure": {"defaults": dict(AUTO_CONFIG)},
+            "ingest_forecast": {"accepted": True, "forecast_id": "a" * 64},
+        }.items():
+            self.stack.enter_context(mock.patch.object(autotrade, name, return_value=result))
+        # Freeze the relay boundary; parity tests exercise dispatch, not live state or clock.
+        from oracle_leverage import signals
+        for name, result in {
+            "status": {"available": False, "now_ms": 100000, "assets": {}},
+            "publish": {"accepted": True},
+            "invalidate": {"accepted": True},
+        }.items():
+            self.stack.enter_context(mock.patch.object(signals, name, return_value=result))
         commands.reset_default_runtime()
         return self
 
@@ -289,7 +339,7 @@ def via_cli(name: str, params: dict) -> str:
 
 
 class ApiServer:
-    def __enter__(self) -> "ApiServer":
+    def __enter__(self) -> Self:
         self.server = api.create_server(0, TOKEN)
         self.port = self.server.server_address[1]
         self.thread = threading.Thread(target=self.server.serve_forever, daemon=True)

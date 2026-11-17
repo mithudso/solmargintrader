@@ -89,6 +89,46 @@ class PublicDataTests(unittest.TestCase):
 
 
 class RuntimeTests(unittest.TestCase):
+    def test_cache_failures_do_not_starve_other_markets_or_minute_refresh(self):
+        with tempfile.TemporaryDirectory() as temp:
+            now = [1000.0]
+            runtime = Runtime(temp, MemoryState(), clock=lambda: now[0])
+            calls = []
+
+            def refresh(coin, interval):
+                calls.append((now[0], coin, interval))
+                if coin == "SOL":
+                    raise DataError("fixture provider unavailable")
+
+            def advance(delay):
+                now[0] += delay
+                if now[0] >= 1080:
+                    runtime.stop.set()
+
+            with (
+                mock.patch.object(runtime, "initialize"),
+                mock.patch.object(runtime, "save"),
+                mock.patch.object(runtime, "tick"),
+                mock.patch.object(runtime, "refresh_cache", side_effect=refresh),
+                mock.patch.object(runtime.stop, "wait", side_effect=advance),
+                mock.patch("website.engine.runtime.threading.Thread"),
+            ):
+                runtime.storage_ready = True
+                runtime.run()
+            self.assertTrue(
+                any(coin != "SOL" and interval != "1m" for _, coin, interval in calls)
+            )
+            self.assertTrue(
+                any(
+                    stamp >= 1060 and coin != "SOL" and interval == "1m"
+                    for stamp, coin, interval in calls
+                )
+            )
+            self.assertEqual(
+                sum(coin == "SOL" and interval == "5m" for _, coin, interval in calls),
+                1,
+            )
+
     def test_legacy_http_defaults_match_explicit_economics_without_weakening_jobs(self):
         with tempfile.TemporaryDirectory() as temp:
             runtime = Runtime(temp, MemoryState())

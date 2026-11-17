@@ -2,14 +2,20 @@
 
 from __future__ import annotations
 
+import fcntl
 import hashlib
 import inspect
 import json
 import math
+import os
+import re
 import sqlite3
+import stat
+import tempfile
 import time
+import uuid
 from collections.abc import Callable
-from contextlib import closing
+from contextlib import closing, contextmanager
 from itertools import pairwise
 from pathlib import Path
 from threading import Event
@@ -63,18 +69,27 @@ _MIGRATIONS = {
 
 def _schema_current(db: sqlite3.Connection) -> bool:
     objects = {r[0] for r in db.execute("SELECT name FROM sqlite_master WHERE type IN ('table','index')")}
-    if not {"candle", "session", "trial", "call", "adoption", "call_pending", "call_training"} <= objects:
+    if not {"candle", "session", "trial", "call", "adoption", "call_pending", "call_training", "default_outbox", "default_outbox_identity"} <= objects:
         return False
     return all(set(columns) <= {r[1] for r in db.execute(f"PRAGMA table_info({table})")}
                for table, columns in _MIGRATIONS.items())
+
+
+class _ForwardConnection(sqlite3.Connection):
+    """Retain the file identity observed when this writer opens its database."""
 
 
 def _db(path: Path | None = None) -> sqlite3.Connection:
     """Open a writer, initializing journal mode and schema only when needed."""
     path = path or config.CONFIG_DIR / "forwardtest" / "trials.sqlite3"
     path.parent.mkdir(mode=0o700, parents=True, exist_ok=True)
-    db = sqlite3.connect(path)
+    before = path.stat() if path.exists() else None
+    db = sqlite3.connect(path, factory=_ForwardConnection)
     try:
+        after = path.stat()
+        if before is not None and (before.st_dev, before.st_ino) != (after.st_dev, after.st_ino):
+            raise RuntimeError("forward_default_database_changed")
+        db.forward_identity = (after.st_dev, after.st_ino)
         # Writers establish WAL before opening a transaction. Readers never run
         # this initializer or request a journal-mode change.
         if db.execute("PRAGMA journal_mode").fetchone()[0].lower() != "wal":
@@ -103,8 +118,14 @@ def _db(path: Path | None = None) -> sqlite3.Connection:
         """, """CREATE TABLE IF NOT EXISTS adoption (
             trial TEXT, at INTEGER, previous TEXT, next TEXT, confidence REAL,
             samples INTEGER, PRIMARY KEY(trial, at)
+        )""", """CREATE TABLE IF NOT EXISTS default_outbox (
+            id TEXT PRIMARY KEY, key TEXT NOT NULL, expected_present INTEGER NOT NULL,
+            expected TEXT, desired TEXT NOT NULL
+        )""", """CREATE TABLE IF NOT EXISTS default_outbox_identity (
+            id INTEGER PRIMARY KEY CHECK(id=1), generation TEXT NOT NULL
         )"""):
             db.execute(statement)
+        db.execute("INSERT OR IGNORE INTO default_outbox_identity VALUES(1,?)", (uuid.uuid4().hex,))
         # Recheck under the migration lock: another writer may have migrated
         # between the initial schema read and BEGIN IMMEDIATE.
         for table, columns in _MIGRATIONS.items():
@@ -171,17 +192,165 @@ def load_defaults() -> dict[str, dict[str, Any]]:
     return raw if isinstance(raw, dict) else {}
 
 
+@contextmanager
+def _defaults_lock():
+    """Serialize all current-version writers across separate forward databases."""
+    directory = defaults_path().parent
+    directory.mkdir(mode=0o700, parents=True, exist_ok=True)
+    with (directory / "defaults.lock").open("a+b") as lock:
+        fcntl.flock(lock.fileno(), fcntl.LOCK_EX)
+        try:
+            yield
+        finally:
+            fcntl.flock(lock.fileno(), fcntl.LOCK_UN)
+
+
+def _sync_directory(path: Path) -> None:
+    fd = os.open(path, os.O_RDONLY)
+    try:
+        os.fsync(fd)
+    finally:
+        os.close(fd)
+
+
+def _write_durable(path: Path, value: Any) -> None:
+    existed = path.parent.exists()
+    path.parent.mkdir(mode=0o700, parents=True, exist_ok=True)
+    if not existed:
+        _sync_directory(path.parent.parent)
+    fd, name = tempfile.mkstemp(prefix=".pending-", dir=path.parent)
+    try:
+        with os.fdopen(fd, "w", encoding="utf-8") as stream:
+            json.dump(value, stream, sort_keys=True, allow_nan=False)
+            stream.flush()
+            os.fsync(stream.fileno())
+        os.replace(name, path)
+        _sync_directory(path.parent)
+    finally:
+        if os.path.exists(name):
+            os.unlink(name)
+
+
+def _strict_defaults() -> dict:
+    try:
+        value = json.loads(defaults_path().read_text(encoding="utf-8"))
+    except FileNotFoundError:
+        return {}
+    except (OSError, ValueError) as exc:
+        raise RuntimeError("forward_defaults_unavailable") from exc
+    if not isinstance(value, dict):
+        raise RuntimeError("forward_defaults_unavailable")  # noqa: TRY004 - durable state is unavailable
+    return value
+
+
+def _stage_default(db: sqlite3.Connection, key: str, expected: dict, desired: dict) -> None:
+    """Make a durable discovery marker before inserting the transactional intent."""
+    database = db.execute("PRAGMA database_list").fetchone()[2]
+    if not database:
+        raise RuntimeError("forward_default_database_unavailable")
+    path = Path(database).resolve()
+    stat = path.stat()
+    if (stat.st_dev, stat.st_ino) != getattr(db, "forward_identity", None):
+        raise RuntimeError("forward_default_database_changed")
+    generation = db.execute("SELECT generation FROM default_outbox_identity WHERE id=1").fetchone()
+    if generation is None:
+        raise RuntimeError("forward_default_database_unavailable")
+    identity = uuid.uuid4().hex
+    directory = defaults_path().parent / "defaults-pending"
+    sequence = len(list(directory.iterdir())) if directory.exists() else 0
+    marker = directory / f"{sequence:016d}-{identity}.json"
+    _write_durable(marker, {"id": identity, "database": str(path), "device": stat.st_dev,
+                            "inode": stat.st_ino, "generation": generation[0]})
+    current = path.stat()
+    if (current.st_dev, current.st_ino) != (stat.st_dev, stat.st_ino):
+        raise RuntimeError("forward_default_database_changed")
+    db.execute("INSERT INTO default_outbox VALUES (?,?,?,?,?)", (
+        identity, key, int(key in expected), _json(expected[key]) if key in expected else None,
+        _json(desired),
+    ))
+    expected[key] = desired
+
+
+def _recover_defaults_locked() -> None:
+    """Apply committed intents once; conflicts and inaccessible databases block progress."""
+    directory = defaults_path().parent / "defaults-pending"
+    if not directory.exists():
+        return
+    for marker in sorted(directory.iterdir()):
+        try:
+            if marker.name == "quarantine":
+                info = marker.lstat()
+                if (not stat.S_ISDIR(info.st_mode) or info.st_uid != os.geteuid()
+                        or stat.S_IMODE(info.st_mode) != 0o700):
+                    raise ValueError("invalid quarantine")
+                continue
+            if re.fullmatch(r"\.pending-[a-z0-9_]{8}", marker.name):
+                info = marker.lstat()
+                if (not stat.S_ISREG(info.st_mode) or info.st_uid != os.geteuid()
+                        or stat.S_IMODE(info.st_mode) != 0o600 or info.st_nlink != 1):
+                    raise ValueError("unverified temporary marker")
+                quarantine = directory / "quarantine"
+                created = not quarantine.exists()
+                quarantine.mkdir(mode=0o700, exist_ok=True)
+                qinfo = quarantine.lstat()
+                if (not stat.S_ISDIR(qinfo.st_mode) or qinfo.st_uid != os.geteuid()
+                        or stat.S_IMODE(qinfo.st_mode) != 0o700):
+                    raise ValueError("invalid quarantine")
+                if created:
+                    _sync_directory(directory)
+                target = quarantine / (marker.name + "-" + uuid.uuid4().hex)
+                reservation = os.open(target, os.O_CREAT | os.O_EXCL | os.O_WRONLY, 0o600)
+                os.close(reservation)
+                os.replace(marker, target)
+                _sync_directory(quarantine)
+                _sync_directory(directory)
+                continue
+            if marker.is_symlink() or not marker.is_file() or marker.stat().st_size > 4096:
+                raise ValueError("invalid marker")
+            value = json.loads(marker.read_text(encoding="utf-8"))
+            identity, path = value["id"], Path(value["database"])
+            if (len(identity) != 32 or any(c not in "0123456789abcdef" for c in identity)
+                    or marker.name[16:] != "-" + identity + ".json" or not marker.name[:16].isdigit()
+                    or not path.is_absolute() or not path.is_file()):
+                raise ValueError("invalid marker")
+            expected_identity = (value["device"], value["inode"])
+            db_stat = path.stat()
+            if (db_stat.st_dev, db_stat.st_ino) != expected_identity:
+                raise ValueError("database replaced")
+            with closing(sqlite3.connect(path.as_uri() + "?mode=rw", uri=True)) as db, db:
+                db.execute("BEGIN IMMEDIATE")
+                db_stat = path.stat()
+                generation = db.execute("SELECT generation FROM default_outbox_identity WHERE id=1").fetchone()
+                if (db_stat.st_dev, db_stat.st_ino) != expected_identity or generation != (value["generation"],):
+                    raise ValueError("database replaced")
+                row = db.execute("SELECT key,expected_present,expected,desired FROM default_outbox WHERE id=?", (identity,)).fetchone()
+                if row is not None:
+                    key, present, expected, encoded = row
+                    desired = json.loads(encoded)
+                    current = _strict_defaults()
+                    actual_present = key in current
+                    actual = current.get(key)
+                    if not (actual_present and _json(actual) == encoded):
+                        if actual_present != bool(present) or (actual_present and _json(actual) != expected):
+                            raise RuntimeError("forward_default_conflict")
+                        current[key] = desired
+                        _write_durable(defaults_path(), current)
+                    db.execute("DELETE FROM default_outbox WHERE id=?", (identity,))
+            marker.unlink()
+            _sync_directory(directory)
+        except (OSError, ValueError, KeyError, TypeError, sqlite3.Error) as exc:
+            raise RuntimeError("forward_default_recovery_unavailable") from exc
+
+
 def save_default(asset: str, label: str, minutes: int, spec: Spec, previous: Spec, *,
                  probability: float, samples: int, bar: int) -> None:
-    data = load_defaults()
-    data[_default_key(asset, label, minutes)] = {
-        "members": spec, "previous": previous, "probability": probability, "samples": samples,
-        "bar": bar, "saved_at": time.time()}
-    path = defaults_path()
-    path.parent.mkdir(mode=0o700, parents=True, exist_ok=True)
-    tmp = path.with_name(path.name + ".tmp")
-    tmp.write_text(json.dumps(data, indent=1, sort_keys=True, allow_nan=False), encoding="utf-8")
-    tmp.replace(path)
+    with _defaults_lock():
+        _recover_defaults_locked()
+        data = _strict_defaults()
+        data[_default_key(asset, label, minutes)] = {
+            "members": spec, "previous": previous, "probability": probability, "samples": samples,
+            "bar": bar, "saved_at": time.time()}
+        _write_durable(defaults_path(), data)
 
 
 def saved_default(asset: str, label: str, minutes: int, defaults: dict | None = None) -> Spec | None:
@@ -383,6 +552,9 @@ def tick(asset: str, trials: list[dict], horizons: tuple[int, ...], cost: float,
         return compound.http_json(url)
 
     check_stop()
+    # Recover all batches before fetching or admitting any new work.
+    with _defaults_lock():
+        _recover_defaults_locked()
     code = code or revision()
     observed = clock()
     admit_read(
@@ -462,89 +634,94 @@ def tick(asset: str, trials: list[dict], horizons: tuple[int, ...], cost: float,
     pending_windows = 0
     due_trials = 0
     active_keys = {}
-    defaults = load_defaults()
     _SOURCE_EPOCH.verify(_SOURCE_ROOT)
-    with closing(_db(db_path)) as db, db:
-        db.execute("BEGIN IMMEDIATE")
-        for trial in trials:
-            seed, mode, label = trial["members"], trial["mode"], trial["label"]
-            for h in horizons:
-                # The key stays the configured seed; a saved default only sets where a new trial starts.
-                trial_cost = (profile.round_trip_bps + max(profile.borrow_long_bps_hour,
-                              profile.borrow_short_bps_hour) * h / 60) if profile else cost
-                # A period counts signal bars. Minute and five-minute inputs
-                # cannot share a track record even when the label/settings match.
-                identity = [code, asset, label, h, trial_cost, mode, seed, signal_interval]
-                if execution:
-                    identity.append(execution)
-                key = hashlib.sha256(_json(identity).encode()).hexdigest()
-                active_keys[key] = h
-                start_spec = _usable_default(saved_default(asset, label, h, defaults), seed, mode)
-                db.execute("INSERT OR IGNORE INTO trial(id,asset,label,mode,minutes,cost,active,execution) VALUES (?,?,?,?,?,?,?,?)",
-                           (key, asset, label, mode, h, trial_cost, _json(start_spec), _json(execution) if execution else ""))
-        # Settle all existing trials for the asset, including a horizon no longer selected.
-        for key, raw_spec, mode, gen, moved, h, trial_cost, label, raw_execution in db.execute(
-            "SELECT id,active,mode,generation,moved,minutes,cost,label,execution FROM trial WHERE asset=?", (asset,)
-        ).fetchall():
-            check_stop()
-
-            def adopt(spec: Spec, previous: Spec, probability: float, samples: int,
-                      label: str = label, h: int = h) -> None:
-                _SOURCE_EPOCH.verify(_SOURCE_ROOT)
-                save_default(asset, label, h, spec, previous, probability=probability, samples=samples, bar=bar)
-
-            active, gen = _resolve(db, key, gen, json.loads(raw_spec), moved, trial_cost, candles, bar,
-                                   h, tune and key in active_keys, adopt, expire_missing=expire_missing,
-                                   execution=json.loads(raw_execution) if raw_execution else None)
-            if key not in active_keys or not bar + 60 <= observed < start:
-                continue
-            previous = db.execute("SELECT finish FROM call WHERE trial=? ORDER BY bar DESC LIMIT 1",
-                                  (key,)).fetchone()
-            # One call per non-overlapping window. A 30m move is one observation, not 30.
-            if previous and start < previous[0]:
-                pending_windows += 1
-                continue
-            due_trials += 1
-            guesses = []
-            note = ""
-            for spec in (neighbours(active, mode) if tune else [active]):
+    with _defaults_lock():
+        _recover_defaults_locked()
+        defaults = _strict_defaults()
+        with closing(_db(db_path)) as db, db:
+            db.execute("BEGIN IMMEDIATE")
+            for trial in trials:
+                seed, mode, label = trial["members"], trial["mode"], trial["label"]
+                for h in horizons:
+                    # The key stays the configured seed; a saved default only sets where a new trial starts.
+                    trial_cost = (profile.round_trip_bps + max(profile.borrow_long_bps_hour,
+                                  profile.borrow_short_bps_hour) * h / 60) if profile else cost
+                    # A period counts signal bars. Minute and five-minute inputs
+                    # cannot share a track record even when the label/settings match.
+                    identity = [code, asset, label, h, trial_cost, mode, seed, signal_interval]
+                    if execution:
+                        identity.append(execution)
+                    key = hashlib.sha256(_json(identity).encode()).hexdigest()
+                    active_keys[key] = h
+                    start_spec = _usable_default(saved_default(asset, label, h, defaults), seed, mode)
+                    db.execute("INSERT OR IGNORE INTO trial(id,asset,label,mode,minutes,cost,active,execution) VALUES (?,?,?,?,?,?,?,?)",
+                               (key, asset, label, mode, h, trial_cost, _json(start_spec), _json(execution) if execution else ""))
+            # Settle all existing trials for the asset, including a horizon no longer selected.
+            for key, raw_spec, mode, gen, moved, h, trial_cost, label, raw_execution in db.execute(
+                "SELECT id,active,mode,generation,moved,minutes,cost,label,execution FROM trial WHERE asset=?", (asset,)
+            ).fetchall():
                 check_stop()
-                ck = mode, _json(spec)
-                try:
-                    if ck not in forecasts:
-                        forecasts[ck] = (_predict(spec, mode, bars, allow_short=True)
-                                         if profile and profile.allow_short else _predict(spec, mode, bars))
-                    call = forecasts[ck]
-                except (ValueError, RuntimeError, TypeError, ArithmeticError) as exc:
-                    if spec == active:
-                        note = str(exc)
-                    call = None
-                guesses.append((spec, call))
-            prediction = guesses[0][1]
-            if prediction is None:
-                note = note or "Waiting for contiguous warm-up bars"
-            else:
-                prior = db.execute("""SELECT prediction=outcome FROM call WHERE trial=? AND generation=?
-                    AND outcome IS NOT NULL AND prediction!=0 AND finish<=? ORDER BY bar DESC LIMIT ?""",
-                    (key, gen, start, simulation.CONFIDENCE_WINDOW)).fetchall()
-                confidence = simulation.confidence_score(sum(r[0] for r in prior), len(prior))
-                wiped_out = db.execute("""SELECT 1 FROM call WHERE trial=? AND net_return<=-1
-                    AND finish<=? LIMIT 1""", (key, bar + 60)).fetchone()
-                traded = int(profile.permits(prediction, confidence) and not wiped_out) if profile else None
-                staged.append((key, bar, start, start + h * 60, gen, _json(guesses), prediction,
-                               confidence, traded))
-            db.execute("UPDATE trial SET note=? WHERE id=?", (note, key))
-        check_stop()
-        _SOURCE_EPOCH.verify(_SOURCE_ROOT)
-        issued = clock()
-        # The issuance deadline applies only to a calculated call. A poll that
-        # merely checks an existing long window can cross a minute boundary
-        # without missing any forecast opportunity.
-        fresh = bar + 60 <= observed < start and (not staged or issued < start - 1)
-        if fresh:
-            db.executemany("""INSERT OR IGNORE INTO call
-                (trial,bar,start,finish,generation,guesses,prediction,confidence,traded,issued) VALUES (?,?,?,?,?,?,?,?,?,?)""",
-                ((*r, issued) for r in staged))
+
+                def adopt(spec: Spec, previous: Spec, probability: float, samples: int,
+                          label: str = label, h: int = h) -> None:
+                    _SOURCE_EPOCH.verify(_SOURCE_ROOT)
+                    desired = {"members": spec, "previous": previous, "probability": probability,
+                               "samples": samples, "bar": bar, "saved_at": time.time()}
+                    _stage_default(db, _default_key(asset, label, h), defaults, desired)
+
+                active, gen = _resolve(db, key, gen, json.loads(raw_spec), moved, trial_cost, candles, bar,
+                                       h, tune and key in active_keys, adopt, expire_missing=expire_missing,
+                                       execution=json.loads(raw_execution) if raw_execution else None)
+                if key not in active_keys or not bar + 60 <= observed < start:
+                    continue
+                previous = db.execute("SELECT finish FROM call WHERE trial=? ORDER BY bar DESC LIMIT 1",
+                                      (key,)).fetchone()
+                # One call per non-overlapping window. A 30m move is one observation, not 30.
+                if previous and start < previous[0]:
+                    pending_windows += 1
+                    continue
+                due_trials += 1
+                guesses = []
+                note = ""
+                for spec in (neighbours(active, mode) if tune else [active]):
+                    check_stop()
+                    ck = mode, _json(spec)
+                    try:
+                        if ck not in forecasts:
+                            forecasts[ck] = (_predict(spec, mode, bars, allow_short=True)
+                                             if profile and profile.allow_short else _predict(spec, mode, bars))
+                        call = forecasts[ck]
+                    except (ValueError, RuntimeError, TypeError, ArithmeticError) as exc:
+                        if spec == active:
+                            note = str(exc)
+                        call = None
+                    guesses.append((spec, call))
+                prediction = guesses[0][1]
+                if prediction is None:
+                    note = note or "Waiting for contiguous warm-up bars"
+                else:
+                    prior = db.execute("""SELECT prediction=outcome FROM call WHERE trial=? AND generation=?
+                        AND outcome IS NOT NULL AND prediction!=0 AND finish<=? ORDER BY bar DESC LIMIT ?""",
+                        (key, gen, start, simulation.CONFIDENCE_WINDOW)).fetchall()
+                    confidence = simulation.confidence_score(sum(r[0] for r in prior), len(prior))
+                    wiped_out = db.execute("""SELECT 1 FROM call WHERE trial=? AND net_return<=-1
+                        AND finish<=? LIMIT 1""", (key, bar + 60)).fetchone()
+                    traded = int(profile.permits(prediction, confidence) and not wiped_out) if profile else None
+                    staged.append((key, bar, start, start + h * 60, gen, _json(guesses), prediction,
+                                   confidence, traded))
+                db.execute("UPDATE trial SET note=? WHERE id=?", (note, key))
+            check_stop()
+            _SOURCE_EPOCH.verify(_SOURCE_ROOT)
+            issued = clock()
+            # The issuance deadline applies only to a calculated call. A poll that
+            # merely checks an existing long window can cross a minute boundary
+            # without missing any forecast opportunity.
+            fresh = bar + 60 <= observed < start and (not staged or issued < start - 1)
+            if fresh:
+                db.executemany("""INSERT OR IGNORE INTO call
+                    (trial,bar,start,finish,generation,guesses,prediction,confidence,traded,issued) VALUES (?,?,?,?,?,?,?,?,?,?)""",
+                    ((*r, issued) for r in staged))
+        _recover_defaults_locked()
     return {"bar": bar if fresh else None, "recorded": len(staged) if fresh else 0,
             "message": ("Waiting for a fresh candle" if not bar + 60 <= observed < start
                         else "Forecast window elapsed during calculation" if not fresh

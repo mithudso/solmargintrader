@@ -1,11 +1,15 @@
 # Work continuation
 
+Version: 638
+Delta: v637 to v638; qualify PR224 integration before final-head CI.
+Delta: integrated v636 to v637; retain both histories and the PR224 merge sweep.
+
 Version: 564
 Delta: v563 to v564; record the PR integration and merge request.
 
 ## PR merge sweep — TASK-2579 — 2026-11-17
 
-Target: inventory every open PR and resolve conflicts, commit, push and merge after final checks. Frozen inventory: PR224, PR226, PR235, PR289 and draft PR328. Preserve 16 original worktrees, primary package manifests and private Pine file. Use only /Users/mitch/dev/solmargintrader-wt-01a1eaac. Original PR235 optimizer remains USER-PAUSED; PR226 and PR328 audit work remains incomplete. The current request authorizes merging reviewed checkpoints without restarting their audits. Source changes must preserve current master behavior. Stage all conflicts before regenerating deterministic documentation/index projections; no embeddings, inference, live orders or service changes. Recovery inventory and private diffs: /Users/mitch/.local/share/solmargintrader/pr-merge-20261117-2579. Next: integrate and verify PR224, then PR226, PR235, PR289, PR328; wait for every final-head check before each merge; verify remote content and clean only task-owned branches/worktree.
+Target: inventory every open PR and resolve conflicts, commit, push and merge after final checks. Frozen inventory: PR224, PR226, PR235, PR289 and draft PR328. Preserve 16 original worktrees, primary package manifests and private Pine file. Use only /Users/mitch/dev/solmargintrader-wt-01a1eaac. Original PR235 optimizer remains USER-PAUSED; PR226 and PR328 audit work remains incomplete. The current request authorizes merging reviewed checkpoints without restarting their audits. Source changes must preserve current master behavior. Stage all conflicts before regenerating deterministic documentation/index projections; no embeddings, inference, live orders or service changes. Recovery inventory and private diffs: /Users/mitch/.local/share/solmargintrader/pr-merge-20261117-2579. PR224 local qualification: dependency stays HTTPX>=0.28.1,<1; installed test environment uses0.28.1. Consumer tests and documentation discovery passed. The historical customer-name index postings match remote master exactly; no customer material was added. Regenerated deterministic projections after conflict staging. Next: final-head CI and merge PR224, then integrate PR226, PR235, PR289, PR328; wait for every final-head check before each merge; verify remote content and clean only task-owned branches/worktree.
 
 ## Retained workflow history
 
@@ -22,6 +26,176 @@ Delta: v555 to v556; integrate both current master updates into PR224 under TASK
 ## Incoming master continuation
 
 Version: 559
+## Weekly coin study — TASK-2571 — 2026-11-17
+
+The requested output is a reusable seven-day, one-minute coin study, first run on ETH. Work is isolated in /Users/mitch/dev/worktrees/weekly-coin-2571 on research/weekly-coin-2571. Preserve the canonical package edits, private Pine file, active cross-coin studies and all running owners.
+
+Inventory covers ZEC ensemble sweeps, expanded causal shape/frequency controls, cost sensitivity, Volty, grid/DCA, cycle nulls, and reversal/shape studies. Candle-based transfer must retain next-bar decisions, explicit costs, chronological selection and broad-search corrections. Historical receive-time book fills, Oracle barriers and long-history daily CPCV cannot be reconstructed from seven days of spot candles. Record these exclusions rather than fabricate inputs. No live execution, paper promotion, indexing or service changes are authorized by this study.
+
+Completed: reusable CLI and explicit download/offline/verify/resume phases; sixteen-family coverage map; complete 1,707-template catalogue and six causal/control modes; whole seven-day Binance ETH/BTC/ZEC USDT snapshots (10,080 bars each); 491,712 strategy rows (441,888 completed), 7,920 Volty/grid/DCA rows, cycle and reversal studies. Same-minute ETH/BTC correlation is 0.901870 and ETH/ZEC is 0.704691. None of eighteen features across six future-return horizons passes the corrected 5% test threshold (best adjusted p=0.0785). Cycle significance is inconclusive because 1,638 tests and 1,999 replicates imply a minimum attainable Holm p of0.819. No executable edge was established.
+
+The complete immutable run is /Users/mitch/.local/share/solmargintrader/research/weekly-coin/ETH-20261117T1713Z-2571. The public report/chart/summary/audit and complete artifacts.zip are under /Users/mitch/dev/solmargintrader/research/eth-week-20261117. A separate incomplete Coinbase attempt preserves the two confirmed ETH/BTC missing minutes; no venues were spliced. The first long component attempt exposed TriggerTrade's absolute-index crash beyond6,512 bars; the adapter now preserves its full causal prefix. An independent audit closed stale-cache input binding and the load/write race before the numerical run. Exact snapshots freeze before load and must match at every checkpoint and finalization. All16 selected test accounts matched independent scalar accounting.
+
+Verification:26 focused tests,1,152 backtester tests,17 index tests,1,084 legacy figure checks, pinned Ruff on the study/adapter, operation inventories and repository documentation counts passed. The complete run verified78 artifact hashes and result counts, including a fresh ZIP extraction. The final independent audit passed with no remaining blockers. ZIP archive bodies now stay out of the keyword index; metadata and adjacent report/manifest JSON remain indexed. The index generator retains its ten pre-existing lint findings, with no new findings.
+
+Delivery is PR327 at https://github.com/mithudso/solmargintrader/pull/327 . Head97b3b4d passed the backtester, docs, browser and other completed checks, but its ecosystem check correctly found a stale generated wiki after the README gained the new study link. The wiki bundle and manifest were regenerated; final-tip CI/merge and canonical CLI acceptance remain at this checkpoint. No product or numerical work remains. The canonical package.json has unrelated dependency edits and incoming default-branch script edits. A conflict-free three-way merge and exact backups are prepared under /Users/mitch/.local/state/weekly-coin-2571/canonical-sync; require fresh hashes before synchronizing. Preserve the package-lock and private Pine bytes. Stele writes are queued because its MCP transport closed:6fc88b90,e67e2987,af2507fc,fc81b4aa,de3e1ca2,9c6568f2,76ee71f7. TASK-2571 tracks delivery; preserve all existing owners.
+
+## Application delivery integration — TASK-2529 — 2026-11-17
+
+PR 323 reached remote master as 0ead38c while the application branch completed CI. Preserve its connecting/error/recovery UI and test alongside the optimizer reason display. Extension 0.12.3 includes both changes; no native owner, shared route or active session changes. Prior final-head 411cdb4 CI passed, but merge delivery is withheld until the integrated source passes current checks. The final application status remains NEEDS_EVIDENCE. The independent review cap is two; preserve both original review outputs and state their exact source scope. A fourth complete selected-method reassessment and current extension installation evidence cover the integration.
+
+## Paper-config connection repair — TASK-2550 — 2026-11-17
+
+Chrome Profile 1 loads extension id gjhpfdnfmjeoheoimbldikhilmimbain from /Users/mitch.hudson/dev/solmargintrader/extension. The missing com.mitchhudson.soltui native registration, wrapper and default runtime caused the screenshot. Installed the four documented headless local packages into /Users/mitch.hudson/.venvs/soltui with Python 3.13.18. The canonical native installer registered that exact extra extension ID in existing browser directories. No active local owner/session or route existed before installation. Original status polling can bootstrap an idle owner; activation was authorized for this repair. PID 70633 appeared afterward. Preserve that owner and concurrent M5 work. Do not apply the separate TASK-2528 backend changes here.
+
+Extension 0.12.2 now shows a connecting state, preserves the native transport/command error and marks failed status unavailable. It retains backend-owned paper defaults and automatically loads them when the connection recovers. The regression failed on the hidden helper message before the patch (exit 1), then passed all five focused cases (exit 0). The full extension suite passed 632/632 (exit 0), root JavaScript lint/typecheck passed (exit 0), and the offline integration closed one round trip with modeled net 0.3492 USD (exit 0). Actual Chrome for Testing loaded 0.12.2 and passed 26/26 gates using the real native helper (exit 0). No order endpoint was touched and the extension remained disarmed/dry-run.
+
+Independent installed verification passed framed ping/buildHash/catalog with the exact actual origin and 175 commands, including six autotrade commands. The receipt is /Users/mitch.hudson/.local/state/solmargintrader/paper-connection-2550/acceptance.json. Receipt version 2 verifies the actual user-profile connection: seven observed native hosts had parent Chrome PID 863 and the exact profile origin, while five subsequent native status polls succeeded at five-second intervals. Read-only SQLite inspection found zero sessions, requests, events and forecasts. Only the visible DOM/new UI revision is not directly observed: Chrome has no CDP endpoint and AppleScript timed out with -1712. Do not restart the browser or alter its settings. Textual and the declared solders/httpx requirements were added to the new runtime for documentation test discovery; no GUI service was installed or started.
+
+PR https://github.com/mithudso/solmargintrader/pull/323 contains source checkpoint 517a222f. Its first ecosystem CI job exposed stale operation/tool inventories bound to extension/package.json. Regenerate those two deterministic registries, the wiki and offline index before the next final-head check. The local inventory drift check reproduced the failure (exit 1); regeneration and freshness check pass (exit 0). No runtime logic changed for this correction.
+
+Branch fix/paper-config-connection-2550 began at 4cf80513. Source and installed-helper repair are verified. Documentation discovery passed with executor/src on PYTHONPATH (3446 counted tests). Native registration/bridge parity passed seven tests. Deterministic wiki and offline index regeneration/freshness checks passed; no semantic output changed. Remaining delivery gates: final-head CI, merge, remote master verification and safe local synchronization. All selected checks use /opt/homebrew/bin/node v26.13.0. No key reads, funded trading, user paper Start/Stop, frozen-cohort changes, semantic indexing, inference or embeddings were performed. Stele steps TASK-2551 and TASK-2552 are complete; TASK-2553 owns final delivery. Version 0.12.1 was reserved by the concurrent application candidate, so this isolated UI correction uses 0.12.2.
+
+## Loaded TUI relay wiring correction
+
+After PR 318 merged as 4196d47, actual loaded acceptance found that the TUI displayed no shared signal while the private relay held fresh six-horizon BTC and ZEC data. Production `main()` passes `QuoteReader(args.prices)`, and the constructor incorrectly treated any injected quote loader as a request for an empty signal loader. The follow-up makes the default shared signal status loader independent of quote and candle loader selection. Explicit test signal loaders remain supported and isolate fixtures from the real home. No relay, model, owner, collector or trading behavior changes.
+
+The real-constructor regression first failed because the default status function was not called. After the correction, it rendered all six fixture horizons and verified the explicit injected loader did not call the default. Final delivery and independent loaded-TUI acceptance remain pending. Preserve the running browser, TUI, owner, quote workers and user data until the reviewed follow-up is merged.
+
+## Browser CI fixture correction
+
+Draft PR 318 checkpoint 8a66c41 failed the real-browser CI abort/reload check. The fixture restored its `OracleController.prototype.observe` wrapper before the later pause flag was set. A genuine next-minute transaction advanced the stored ledger during the comparison. The scoped fixture repair reinstalls and restores a per-context pause, drains existing transactions, checks the expected abort error, and keeps the twin paused during reload comparison. It does not change the production model, controller or store. The aborted reducer throws before a write is queued; this check does not prove rollback of a queued write.
+
+The final fixture passed 27/27 real-browser checks with the server and browser clocks frozen during the full-ledger reload comparison. The drain uses bounded waits and each live realm is restored independently. The independent UI/DDO review found no remaining corroborated Medium-or-higher product finding, with NEEDS_EVIDENCE coverage limits. Deterministic metadata and final-head CI remain required before merge. The immutable environment built from the earlier 80d997 tree remains unactivated; rebind its inputs to the eventual final commit before use. Preserve the user route, owner, browser data and workers.
+
+## Current UI and confidence handoff
+
+The extension UI and descriptive-prose work is integrated in the isolated extension-ui-2498 worktree. Its frozen UI source and guides were reviewed against the private census; the JavaScript baseline contains 4,745 individually classified fragments. Review remains NEEDS_EVIDENCE until the final current-source delta, independent UI/DDO sweep and blind review are complete. Preserve the frozen source and the sole UI writer's edits.
+
+The 6e2 native core receipt records private-browser atomic storage, shared relay behavior and fixture-based threshold transitions. Its separate follow-up records one real UP endpoint label and relay competition; it does not establish other label classes, expiry-only transitions, final UI behavior or market accuracy. No new user paper session or funded order was started. The TUI now labels ended-window elapsed and observed durations separately and uses the supplied sustained flag. It does not change the relay or model contract.
+
+Remaining: finish mechanical counts, inventories, wiki and offline indexes after staging new tracked inputs; complete final source and browser checks and independent review; integrate into PR 318, pass final-head CI and merge; then verify final installed source, existing browser learner retention and read-only TUI display under separately authorized activation. Preserve the user-owned route, old owner and all existing workers. No semantic indexing or inference was started.
+
+## Current confidence-window candidate — TASK-2497 / TASK-2498
+
+The user requests useful graded directional estimates, visible80%-score windows and their ends, whole-indicator green/up, red/down and grey/neutral colors, then the actual extension UI deep optimizer and full document optimizer. The three implementation requests are preserved verbatim in prompts.md. The follow-up TUI-opening request was executed: the canonical TUI is visible in Terminal, PID81937 in oracle-forward-2289:%1.
+
+Canonical master is7c17fd1dfd73fd9a53ac7632cf317fc9c9db18f1 after merged PR309 and PR315. Runtime0.4.17 and the private connection route are active. The route points to /Users/mitch/.local/state/oracle-autotrade-2458/live-acceptance/registry-paper10x; this is now user-owned data. Preserve owner25300, all existing requests/events/cohorts, the twelve old browser learner partitions, private Pine, concurrent canonical package files, paused PR235 and existing workers. Do not treat the former test-home name as permission to delete or migrate it.
+
+The new candidate is in /Users/mitch/dev/worktrees/oracle-confidence-2497 on codex/oracle-confidence-2497. It adds a separately versioned three-class UP/DOWN/FLAT live model, a separate four-store IndexedDB database, one-second committed scores, immutable five-second probes for six horizons, and incremental bounded persistence. The old minute learners stay unchanged. The pending cap is1500 per partition; the simulated peak was1332. A simulated peak write fell from528518 bytes for a complete state to20064 bytes of changed-operation JSON; native disk and CPU performance remain unmeasured.
+
+The new private signals.sqlite3 relay shares one publisher per asset with Chrome and the TUI. It stores bounded window history and validates market/source, both timestamps, model target, class scores, sequence and producer lease. Status reads do not create a database or trading owner. A sequenced invalidation fences a delayed publish, including invalidation before the first publish. Lower-strength valid model estimates remain visible. Scores are uncalibrated and are not measured trade-win probabilities.
+
+Root integrated oracle-live-controller.js and panel.js. The controller does not wait for complete minute history, continues on feed callbacks while the chart is hidden, and never blocks model updates behind native transport. Publish and status requests have bounded waits and late-result guards. Local view expiry uses the earlier of source and receipt timestamps plus two seconds. Independent cross-reviews corroborated and then closed four Medium findings: stuck relay requests, delayed publication after suspension, receipt-only local expiry, and regressing source timestamps at the relay boundary. Offline invalidation remains best effort, bounded by source expiry.
+
+Latest scoped verification:24 live JavaScript tests and13 Python relay/registry/TUI tests passed; repository JavaScript lint and its configured typecheck passed. That typecheck covers two website evidence files and does not typecheck the new live modules. Pinned Ruff0.17.4 reported only the twenty established soltui/commands.py baseline findings, with no new-file or changed-TUI findings. Receipts are in /Users/mitch/.local/state/oracle-confidence-2497/integration-checks/result-v2.json; separate source handoffs are model-handoff.json and relay-handoff.json in the same private parent directory. These results do not replace native-browser concurrency/storage or actual shared-display acceptance.
+
+Remaining: commit a recoverable source checkpoint; coordinate package versions and every deterministic generator; prove the new native IndexedDB store and shared transport in isolated real Chrome; run the actual extension UI optimizer from its frozen23-surface plan, then full DDO on UI prose and linked operating guides; obtain independent final reviews and honest coverage exits; deliver final-tip CI/merge and verify loaded behavior. The70-method UI workflow and DDO have NOT run yet. Their current private plan is /Users/mitch/.local/state/extension-ui-2498/scope-plan-v2.json. Do not call the implementation complete or calibrated. No funded trades or new user paper sessions were used for this candidate.
+
+## Historical routing checkpoint before activation
+
+Browser CI fixture: the native IndexedDB abort assertion raced an independent next-minute model commit. The fixture now pauses both producers and drains tracked operations and an IndexedDB barrier before the unchanged equality check. The full local browser fixture passed 27/27 with exit 0.
+
+Routing follow-up: source adds owner-only optional connection routing for ordinary clients; explicit environment homes remain first. The isolated 1000x paper acceptance passed one start and stop with recorded modeled outcome. The user-owned registry and shared wrapper remain unchanged. Verify focused checks, review and deliver the routing PR before a separately controlled activation. Routing alone does not fence concurrent starts or migrate journal history.
+
+Version: 636
+Delta: v635 to v636; record the public archive, metadata-only ZIP indexing, PR327 wiki correction and safe canonical-sync preconditions.
+Delta: v634 to v635; record completed ETH findings, independent numerical audit, exact artifacts, checks and remaining delivery gates.
+Delta: v633 to v634; preserve the weekly ETH study scope, isolation, provenance constraints and remaining work.
+Delta: v632 to v633; integrate delivered paper-helper connection diagnostics, retain all optimizer repairs, and rerun affected delivery gates.
+Delta: v629 to v630; record the current verified application result, seven repaired findings and evidence-qualified delivery.
+Delta: v628 to v629; preserve delivered shared-signal loading while integrating whole-application repairs.
+Delta: v627 to v628; integrate the application optimizer and six verified source repairs.
+Delta: v627 to v628; record the loaded-TUI relay wiring failure and bounded correction.
+Delta: v631 to v632; record the final-head inventory drift correction.
+Delta: v626 to v627; record the browser CI fixture race and scoped correction pending final verification.
+Delta: v625 to v626; record scoped UI and prose review, bounded native evidence and final integration gates.
+Delta: v624 to v625; preserve the tested live-signal candidate, independent fixes, active routing and pending native/UI/prose gates.
+Delta: v623 to v624; integrate merged routing and fixture history with pending Oracle confidence and extension UI continuation.
+Delta: v622 to v623; preserve the browser fixture race diagnosis, quiescence repair and full local receipt.
+Delta: v621 to v622; add private shared-owner routing and preserve isolated acceptance and activation boundary.
+Delta: v621 to v622; preserve pending Oracle confidence window, UI and prose review coordination.
+Delta: v620 to v621; record the qualified optimizer receipt and remaining delivery gates.
+Delta: v619 to v620; preserve accepted auto-action teardown and review scope.
+Delta: v618 to v619; record integrated audit, paper-session identity display and pending acceptance.
+Delta: v617 to v618; reconcile auto-trade delivery and current-source audit continuation.
+Delta: v615 to v616; record bounded current-source audit diagnostics, fixes and open integrity work.
+Delta: v614 to v615; preserve audit and screenshot continuation across merged 0.10 source.
+Delta: v616 to v617; bind the out-of-tree runtime to installer freshness and advance coordinated candidate versions.
+Delta: v615 to v616; qualify reviewed auto-trade core, packaged runtime, controls and exact remaining installed/delivery gates.
+Delta: v614 to v615; begin isolated auto-trading implementation and preserve safety and continuation boundaries.
+Delta: v613 to v614; diagnose exact-head CI index discovery and Linux fixture foreground assumptions without runtime changes.
+Delta: v612 to v613; qualify all-horizon source, independent replay and full native/public gates with unchanged reviewed runtime.
+Delta: v611 to v612; implement six independent horizon models, shared-minute/chart separation and stale-completion regression coverage.
+Delta: v610 to v611; begin isolated all-horizon learning and same-source stale-completion repair.
+Delta: v609 to v610; integrate delivered feed/UI source7bfeb02 while preserving frozen reviewed Oracle runtime.
+Delta: v606 to v607; integrate the UI checkpoint with compressed offline indexes.
+Delta: v603 to v604; save final UI ledger, 85 checks and seven repaired findings pending independent delivery.
+Delta: v602 to v603; preserve both UI optimizer continuation and current-format market-order verifier evidence.
+Delta: v596 to v597; qualify first UI sweep and six repaired defects before upstream integration.
+Delta: v595 to v596; begin isolated feed controls and frozen UI optimizer matrix.
+Delta: v608 to v609; reproduce and repair trained Oracle display invalidation; qualify 574 source / 24 fixture / 8 public checks and push draft PR308.
+Delta: v607 to v608; integrate delivered reversal/index migration with unchanged Oracle runtime and current research receipt.
+Delta: concurrent integration to v607; preserve streaming Oracle and merged compressed-index records.
+Delta: v605 to v606; confirm final resolved-label browser gate and preserve the source-qualified commit.
+Delta: v604 to v605; implement and qualify streaming Oracle source/browser behavior; await index migration and delivery.
+Delta: v603 to v604; start the approved streaming Oracle implementation child with a recoverable design.
+Delta: v605 to v606; document intentional metadata-only invalidation and offline recovery.
+Delta: v604 to v605; bind compressed index to current catalog and repair documentation after independent review.
+Delta: v603 to v604; begin current-source bootstrap, code review, and lossless index-size repair.
+Delta: v602 to v603; integrate extension reversal delivery with current YOLO continuation.
+Delta: v596 to v597; complete and browser-qualify extension reversal candidate, preserve delivery continuation.
+Delta: v595 to v596; start extension reversal/shape/EMA/MACD implementation in an isolated worktree.
+Delta: v601 to v602; qualify market-open route and explicit close limitation.
+Delta: v600 to v601; qualify market-order account exposure and replay evidence.
+Delta: v599 to v600; preserve independent paper live acceptance and research continuation.
+Delta: v598 to v599; harden market-order wallet exposure and investigate close.
+Delta: v597 to v598; block current execution on observed unbounded oracle advance.
+Delta: v596 to v597; implement current YOLO open checks with pending independent review.
+Delta: v595 to v596; begin isolated current-format YOLO verifier implementation and independent review.
+Delta: v594 to v595; integrate YOLO contract evidence and concurrent exit50 continuation.
+Delta: v593 to v594; record authenticated Lazer payload and post-state evidence.
+Delta: v592 to v593; preserve current YOLO contract evidence and pending verifier proof.
+Delta: concurrent v592 to v593; record the exit50 source integration and pending lifecycle fixes.
+Delta: v591 to v592; begin source-age and unsupported-shape follow-up.
+Delta: v590 to v591; integrate UI delivery with the concurrent Jupiter overlay.
+Delta: v589 to v590; complete full developer-corpus review and final repaired-source browser checks.
+Delta: v588 to v589; qualify temporal history/stream merge ordering.
+Delta: v587 to v588; qualify reviewed warmup capacity and replacement-stream freshness.
+Delta: integrated to v587; preserve both Jupiter overlay and incoming nine-strategy research records.
+Delta: v581 to v582; repair generated operation inventories found by final-head CI.
+Delta: v580 to v581; preserve the qualified candidate and final delivery-receipt location.
+Delta: v579 to v580; qualify current-source browser, public feed and numerical gates before delivery.
+Delta: v578 to v579; record optimized prompt acceptance, live SOL discovery, selected architecture and implementation.
+Delta: v577 to v578; begin isolated Jupiter 1000x overlay prompt optimization and implementation.
+Delta: v586 to v587; extract leverage panel UI into an isolated delivery stage.
+Delta: v585 to v586; integrate nine provisional source adapters and common sensitivity report.
+Delta: v584 to v585; record measured depth cap and draft-only evidence status.
+Delta: v583 to v584; add common oracle window and equal-notional comparison.
+Delta: v582 to v583; record independent proxy audit and remaining publication limitations.
+Delta: v581 to v582; record restoration of the earlier research scope.
+Delta: v580 to v581; preserve paired proxy output and verified project-venv docs check.
+Delta: v579 to v580; record shared Pine order model and retrospective oracle proxy.
+Delta: v578 to v579; add research-only ZigZag paths, card and tests.
+Delta: v577 to v578; begin the owner-superseding RS ZigZag investigation.
+Delta: v576 to v577; record the Preview inspection fix and pending acceptance.
+Delta: v575 to v576; record the macOS shape-guide lifecycle failure and recovery.
+Delta: v574 to v575; record PR 286 delivery and active MTF/status controls continuation.
+Delta: v573 to v574; record delivered first scope and second-turn study, dual-feed monitor, and pending MTF work.
+Delta: v572 to v573; show full transaction wallet and verify its actual collateral balances.
+Delta: v571 to v572; correct the implicit compute-budget fee ceiling found by independent review; qualify15 SDK/service cases.
+Delta: v570 to v571; qualify native empirical audit, SDK keeper contract and guarded manual controls; paper collector active, delivery acceptance pending.
+Delta: v569 to v570; begin TASK-2289 study, CLI/SDK adapters and monitored paper forward test.
+Delta: v568 to v569; qualify153 focused units,62 independent UI assertions, exact native containers and final report review.
+Delta: v567 to v568; archive nine native cross-coin inputs/results, qualify648 rows and84 focused UI regressions.
+Delta: v566 to v567; begin titlebar, opt-in event sounds and cross-coin pattern comparison.
+Delta: v565 to v566; qualify stage clarity, native excursion archive and independent reproduction.
+Delta: v564 to v565; begin stage clarification and frozen minute-data excursion study.
+Delta: v563 to v564; qualify135 focused regressions and freeze bearish-alert source for delivery.
+Delta: v562 to v563; begin fixed ten-minute bearish-only reversal alerts.
+Delta: v561 to v562; qualify final300s input rendering and complete independent candidate/fixture checks.
+Delta: v560 to v561; qualify combined80-case source gate and independent32-check live candidate before delivery.
+Delta: v559 to v560; record streaming indicators, click-to-chart overlays and two-bar TUI request.
 Delta: integrated to v559; retain parallel automated merge ancestry and all owner/research/AdSense records.
 Delta: v557 to v558; merge concurrent AdSense and ZEC working-paper continuation records.
 Delta: integrated to v558; preserve concurrent published ZEC reversal paper and qualified AdSense verification changes.
@@ -261,6 +435,109 @@ Delta: v402 to v403; initialize Stele TASK-1276 for Market Graph Geometry resear
 Delta: v401 to v402; record merged delivery and final CI for excluded coin removal.
 
 Merge note: retained initial planning entries are historical. The section titled "Hosted ecosystem completion — 2026-11-13 active checkpoint" records the later hosted implementation state; this merge does not mark the complete ecosystem live.
+
+
+## 2026-11-16 — pending Oracle confidence and extension UI
+
+The confidence-window work begins in /Users/mitch/dev/worktrees/oracle-confidence-2497 from 96e8e7fa2262d481512f70bcc55a8bb17c5df95a. The user requests visibility when confidence reaches 80% or more, including when a window begins, how long it lasts, and when it ends or reverses; lower strengths remain visible without requiring certainty. The signal model contract is pending; do not equate non-UP with DOWN because the prior complement includes flat. The extension UI deep optimizer precedes full DDO of extension descriptive prose; appropriate full indicators use green UP, red DOWN and grey neutral with text/icons retained. The UI work has a separate isolated worktree and private ledger. Preserve archived research, quotes, other workers, private data, the canonical checkout and the existing dry-run/disarmed and execution fences. Use only isolated fake fixtures and task-owned browser profiles; do not touch live owner, funded trades or paper cohorts. PR 315 routing CI and fixture repair are pending separately. Next: coordinate the model contract, integrate the routing fix when delivered, implement and verify each scoped change, complete UI and then DDO, and deliver after final source and installed-state checks. No implementation or verification has yet occurred in this worktree.
+
+## 2026-11-16 — TASK-2289 reversal study and leveraged Oracle controls
+
+This checkpoint supersedes the initial implementation-not-started record below.
+User confirmed BTW means BTC. The scope remains ZEC/BTC5/10/15/20m,
+causal two-same-color-bar patterns,10x CLI,1000x SDK and a persistent paper
+forward test. No funded trade or wallet funding was requested for the forward test.
+
+The fixed41680-minute window per asset ends before all21 unsealed holdout
+reservations. Sparse KuCoin BTC-USDC was rejected on data quality before outcomes;
+liquid Binance BTCUSDT was acquired in42 raw pages. ZEC uses existing Binance
+ZECUSDT. The frozen64-candidate-per-asset grid uses60/20/20 chronological splits,
+training/validation eligibility and validation Wilson-lower-bound ranking only.
+Older studies used these histories, so the final split is retrospective within
+this run, not an independent prospective holdout. Both selected candidates lose
+under the16bps roundtrip scenario: ZEC15m DD/range reversal UP39/73, mean net
+-24.255984854bps; BTC20m DD continuation DOWN52/107, mean net-13.733123842bps.
+There is no qualified profitable strategy. The requested forward test preserves
+these validation-selected candidates without final-split retuning.
+
+Mongo run run:80a9e65c7d86db88538308b8f313c8db344f3ed476410fccb16872b707f9600a
+contains complete native inputs, outputs, plan, frozen selection and audit.
+The tracked manifest binds exact IDs/hashes; result zlib files decode to exact
+native UTF8 bodies. Independent audit verified16506 events,163416 numeric cells,
+128 rules,24 prefix checks,42 raw BTC pages and288 MCP source-read spans.
+Final source SHA fc4b07f9437f3980c9da2600fdd315845a94ac61ba9ac5fe065a2319d27578ce
+is bound to audit v2 art:cfa1b46e03323cb7fd5609bcdaab591f0674597cff9ec17151203f1655f2be67.
+The topic/frontier/incomplete census is complete, but the global queue census
+is explicitly partial. No queue/concept edits, paid research, embeddings or
+trusted literature publication were performed or claimed.
+
+The10x CLI0.10.1 adapter pins the installed source hash, uses explicit named
+wallet identity and separates Preview/Submit. Standard Perps has BTC/SOL/ETH,
+not ZEC. The actual BTC unsigned simulation failed for insufficient balance.
+The1000x SDK0.6.0 program was matched to the official jup.ag public application.
+The public yolo-api.jup.ag contract supports both BTC and ZEC. This supersedes
+the earlier missing-keeper-contract blocker. service.mjs verifies generated-SDK
+intent/accounts, owner/keeper signature slots and unchanged v0 message bytes;
+the pinned CLI signs locally and the official keeper co-signs execution.
+The ledger stores the owner signature before transmission; ambiguous outcomes
+remain quarantined and can reconcile by chain signature. Close preserves the
+venue prefix and checks owned positions and15second minimum. An actual unsigned
+ZEC service build reached HTTP400 insufficient_balance. No owner signature,
+keeper execution or funded fill occurred. Manual1000x execution additionally
+requires sdk.enabled:true in the owner-only armed configuration.
+
+The new oracle-forward-2289 tmux collector uses Coinbase BTC-USD/ZEC-USD public
+candles/quotes. It persists observations and only future newly matching setups,
+uses an immutable selection hash and cannot import execution modules. Home is
+/Users/mitch/.local/state/oracle-leverage; its selection canonical hash is
+c0ed494b893933e3ee38306e0986188016a5156591ca10269a500d94a1a96c51.
+No armed configuration was created. The collector initially runs from the owned
+worktree; final delivery must retarget it to the canonical checkout, preserve
+its ledger, open the owner-visible TUI and verify loaded source before cleanup.
+Preserve all preexisting recorders, paper jobs and webhook services.
+
+Verification includes independent candidate UI/PTY/visual acceptance and real
+loopback/process fixtures. The final new official-service path is undergoing
+independent acceptance; Node15 SDK/service tests and the final130-case Python
+focused suite passed with final exit0. Source checks use
+Ruff0.17.4. check_docs.py passes with the existing SolTUI environment and
+PYTHONPATH=/Users/mitch/dev/worktrees/reversal-leverage-2289/botmanager/src;
+the alternate repair environment lacks Textual, and the primary environment's
+old installed BotManager caused three discovery import failures until that
+source path was supplied. One final-suite command used a nonexistent entrypoint
+test name; it was corrected to research.tests.test_oracle_winners_entrypoint.
+Dependency-review tooling is unavailable; SDK security review status remains
+UNKNOWN. Dependencies are exact-pinned and installed with lifecycle scripts off.
+
+Independent review found a concrete priority-fee calculation error: without an
+explicit CU limit, an unsigned ATA+Winning transaction accepted under a200k
+assumption was quoted20160000lamports by getFeeForMessage. The adapter now uses
+the1400000CU ceiling by default and rejects duplicate limit/price instructions.
+A new adversarial fixture and all15 SDK/service tests pass. The130 Python
+checks remain valid because this correction changes only the Node fee guard.
+A raw unsigned SDK build against the actual owned config and ZEC market also
+passed, verifying current SDK/account compatibility without funds or signing.
+The work is pushed in draft PR285; the fee correction and final CI are pending.
+User replied that integration documentation can be shared; the official public
+contract was already independently found, so no new documentation blocker exists.
+
+Owner requested the full transaction wallet address in the margin trader app.
+The panel now shows the complete public identity, named key, arming state and
+configured mismatch without abbreviation. CLI key mv and actual SolTUI config
+both resolve to EMTK62aecgScjEuZqbqeGquk8cBoQF9Z4DnxQZxn8myV.
+Public mainnet RPC at2026-11-16T06:22:54Z showed0.203943505SOL,
+0USDC,0JupUSD and39.931191JUICED (mint metadata verified through Jupiter).
+The wallet has funds, but no collateral accepted by the current direct-USDC/
+direct-JupUSD adapters. No swap or transfer was made. Console20 and panel19
+focused tests pass, including full-address actual wide/narrow renders. The
+previous130-case source result plus these changed-path checks remain bound.
+
+Remaining at this checkpoint: changed-path independent acceptance;
+commit/push/CI/merge and canonical monitor/collector acceptance. New docs were
+staged and the packaged1877-page wiki and307-entry index were regenerated;
+metadata, Ruff, compile and diff checks passed. Funded execution
+cannot be live-qualified with the current balance; no funds are moved automatically.
+
 
 ## Hosted ecosystem completion — 2026-11-13 active checkpoint
 
@@ -2428,8 +2705,6 @@ ChromeDevTools has the intended signed-in GoogleAdSense publisher session. Its e
 
 
 ## ZEC reversal working paper — 2026-11-14
-
-Version: 1.1.0
 Delta: independently audit counts and exact public/Mongo bytes; qualify PDF, website source and browser gates.
 
 Owner request: explain whether the two-up/two-down 10-minute observations justify betting, then publish a paper on oraclebot.io. Task: TASK-2191; numerical verification TASK-2192, paper/audit TASK-2193, delivery/live acceptance TASK-2194.
@@ -2450,3 +2725,491 @@ Incoming main18dae4cef65b51633f1f4bf2f96aba85f931f988/PR263 publishes a separate
 ## Parallel branch integration qualification
 
 Preserve remoteGitHubAgentMerge commitdaba39a62e4345c12c7421237bc77f4389ca5264 as a mergeparent alongside the localmain integration; noforcepush. Both variants containall nonblank recordbodylines; retainall Delta descriptions andthe complete localintegrationcheckpoint. All8AdSense implementationfiles andincomingpaper/results/PDF/catalog/export bytes remainexact. The first publicexportcheck useddefaultPython withoutpandas andexited1; theexisting qualifiedMCP2.3environment ran the same23filecheck successfully0 withnosource ordependency changes. Finalqualifiedexport/wiki/inventory/index/diff gates andnewtipCI are mandatory before delivery.
+
+
+## Oracle winner live indicators and two-bar check — 2026-11-14
+Delta: implement and peer-review source/stream/UI; qualify80unique focused tests and preliminary real trade feed.
+
+Owner requests genuine streaming indicator numbers, a full Refresh now button, clickable aligned indicator overlays and the two-consecutive-bar reversal check in the existing oracle_winners.py TUI. Starting clean master f74eeed573a92f6a7d6331ea38c7bab4d4ea9874. Isolated task worktree /Users/mitch/dev/worktrees/zec-tui-live-indicators-20261114; evidence /Users/mitch/.local/state/zec-tui-live-indicators-20261114. Stele create queued as3acd3f35 after Transport closed; no task ID guessed/claimed.
+
+Steps: (1) causal indicator-series/two-bar model and genuine market stream, completed; (2) Textual lifecycle/UI/buttons/overlay implementation and meaningful tests, completed; (3) independent candidate viewport/live checks, integrated gates, PR/CI/merge and canonical acceptance, in progress. Root owns metrics/chart/model/tests/docs/workflow/Git; textual-job-lifecycle-specialist owns TUI/source/stream workers and UI/source/stream tests in the shared isolated worktree. Preserve concurrent work.
+
+Use existing stdlib soltui.pricefeed.WebSocket for foreground, memory-only public ZEC-USD matches+heartbeat; no recorder/service/archive changes. Mark first developing candle partial since attach/reconnect and show gap/stale state. Never invent full-period volume or feed provisional bars into authoritative strategies/shapes. Background calculations coalesce and remain cancelable; retain is_running/_display_stopping/public exit guards. Force-refresh bypasses successful per-bar cache but preserves provider backoff and fixed seed/cycle origins.
+
+Two-bar display uses only completed contiguous trade candles; historical one-day body-color results are exploratory reference counts, not calibrated live probabilities or a new registered strategy. Reference results /Users/mitch/dev/solmargintrader/research/zec-two-bar-reversal-20261114/results.json SHA25683c4b4b15f990a8d7b7e4804f6c1d2ea15d3f784c2d500033cc4c94fc33734df. Show rolling versus newly formed two-bar run, flat/no-trigger, source/target timestamps and stale state.
+
+Overlay histories align timestamps with price; price-level metrics share USD axis, oscillators have an explicitly separate scale. One indicator toggles by click/Enter; keep labels/units and preserve all existing timeframe/strategy/editor/lookback/shape-guide controls and preferences. No orders, new backtests, paid research, embedding, historical result edits or website changes.
+
+
+Current source qualification: root20metric/chart tests,17original model tests and26legacy live/shape tests pass0. Specialist final60UI/model/worker/source/stream tests pass27.093s/0, Ruff0/diff0; combined unique focused coverage is80tests. Separate read-only peer inspection found no material metric/chart causality, unit, timestamp or target issue under validated source inputs. Source is frozen for candidate acceptance.
+
+A real foreground probe received3snapshots/4actualZEC-USD trades with changing observed OHLCV, first-bar partialtrue/gapfalse, then thread stopped, exit0. This is preliminary availability, not final source/canonical qualification. Specialist used actual loopback RFC6455 handshake/subscription tests. Exact frozen owned receipt /Users/mitch/.local/state/zec-tui-live-indicators-20261114/textual-worker-receipt.json; root supplemental record model-checks.json.
+
+Single-click DataTable default only selected an already-highlighted row; IndicatorTable now explicitly handles one first click while Enter remains supported. Real Textual click tests pass. A300s max-refresh/1m boundary case initially stopped live points because the current trade bucket no longer matched cached end; source now caps refresh at new settled bar boundaries and regression proves real newly completed candle fetch/resumption. Initial fixture expected100.60 instead of100.56 was corrected without changing production math. Price caption now counts95closed+1partial within96total points and uses actual plot timestamps.
+
+Root Stele remains disconnected: create3acd3f35 and decisionb75246e9queued; actual task ID/claim unresolved. No guessed claim. Independent verifier observed existing recorder1673 and user TUI22015; preserve both and any unsaved view. New code applies on a fresh canonical TUI launch; do not hot-reload/kill the user process. Final verification/delivery receipt at /Users/mitch/.local/state/zec-tui-live-indicators-20261114/delivery.json will supersede in-progress wording.
+
+
+Combined final focused suite passed80tests in27.188s, exit0; all actual model/UI/source/stream/worker gates ran together. Root legacy live/shape26tests and independent candidate real-market32checks also passed0. Candidate proves actual same10-minute candle OHLCV/indicator changes while completed strategy targets stay fixed, real R/button forced REST overlap/quote refresh, first-click/Enter overlays, independent/shared scales, aligned96timestamps and95+1caption, usable wide/narrow controls and owned-thread shutdown. Receipt /Users/mitch/.local/state/zec-tui-live-indicators-20261114/acceptance/candidate-1/live-receipt.json. Labelled two-bar/warmup/backoff/boundary fixture/visual checks, deterministic metadata gates, final-headCI, merge and final canonical/PTY acceptance remain. No canonical completion claim yet.
+
+
+Final source freeze: independent candidate32real-market and28controlled-case checks plus wide168x60/narrow90x40 visual review passed0. Existing owner recorder1673 and user TUI22015 remain untouched. The only final production change after that acceptance is CSS refresh-input width8→12: old source red1 visibly clipped300.0 to30; final real-render regression and entire23-case UI module passed27.206s/0, Ruff0/diff0. Independent final canonical probe will verify the CSS-only difference and full saved/applied300 values without repeating accepted source research. Final appSHA46a42a81034c1152577ede1bb8f846ba795c462b42f46de67753ed884f9e8120 and testSHAeeb750072d5439ca53a93c323e926645105a61482b5275410741658af27f3b54. All production source is frozen; only deterministic metadata/Git delivery/canonical acceptance remain.
+
+
+## Ten-minute bearish alerts in Oracle winners TUI — 2026-11-14
+
+Task: TASK-2216, with implementation TASK-2217 claimed and verification/delivery TASK-2218/TASK-2219 linked as blockers. Starting clean master4600de3a1a038539c1c08f58138a4d7ec8e776e1. Isolated worktree /Users/mitch/dev/worktrees/zec-ten-minute-bearish-alerts-20261114; evidence /Users/mitch/.local/state/zec-ten-minute-bearish-alerts-20261114. Root Stele task writes succeeded; decision write failed Transport closed and was queued as8d433df3. Do not guess another graph task identity.
+
+Scope: fixed10m top-of-screen bearish alerts independent of chart selection. Midway means elapsed>=300s, with current fresh trade below the actual current10m opening price after one full UP candle. Two adjacent completed UP/UP candles create a qualified next10m DOWN watch. Do not create a DD-to-UP counterpart. Reuse the immutable one-day counts only as labelled historical context; do not invent a calibrated live probability. KNOW-819 warns that missing/partial candles cannot establish the true open. Use completed constituent5m evidence, and withhold alerts on missing/stale/gapped input. Preserve closed-only strategies/shapes and existing recorder/user TUI, foreground stream, services and frozen research.
+
+Remaining: implement source/evaluator/banner with focused causal/freshness/layout tests; independently verify actual data and literal command; update maintained docs/metadata; commit/push/PR/requiredCI/merge; verify canonical loaded revision, clean up only owned branch/worktree, complete tracker. No source changes or checks claimed yet.
+
+
+### Verified source checkpoint and delivery lookup
+
+The fixed10m feature is implemented and production source is frozen. New /Users/mitch/dev/solmargintrader/research/zec_tui_alerts.py evaluates both bearish conditions against actual completed5m constituents and current fresh exchange-time trades. AlertSession reads six recent5m candles in its own worker, caches each settled boundary, retains15s failure backoff and coalesces manual refresh. The3-line banner sits immediately below the header. It runs independently of selected chart timeframe and refresh cadence, expires each UTC10m target, and never emits a DD-to-UP alert. Existing generic historical panel, indicator streaming and closed-only strategy/shape math remain unchanged.
+
+Completed checks: author51tests(17pure/source+11newTextual+23existingUI) passed0 in44.877s; root model/worker/metric/stream58passed0 in1.144s; legacy live/shape26passed0 in0.839s. Total135unique tests. PinnedRuff0.17.4 check0 and format0; CLIhelp0; operation inventories current0; public research export23files current0. The initial B023 test-lambda lint failure and first rapid-button-debounce fixture failure were corrected; final gates above passed. Source/test hashes are unchanged from /Users/mitch/.local/state/zec-ten-minute-bearish-alerts-20261114/source-freeze.json. Read-back verified author receipt: /Users/mitch/.local/state/zec-ten-minute-bearish-alerts-20261114/textual-worker-receipt.json.
+
+Baseline observed existing recorder1673, with no user oracle_winners TUI running. Preserve all actual user processes. Foreground HTTP cancellation remains cooperative around the existing8s transport bound; bounded UI joins do not imply forcibly interrupted HTTP. No services, orders, capture extensions, archived results or embedding jobs were started or changed.
+
+Delivery state is kept in /Users/mitch/.local/state/zec-ten-minute-bearish-alerts-20261114/delivery.json, independent runtime/visual/PTY evidence in /Users/mitch/.local/state/zec-ten-minute-bearish-alerts-20261114/acceptance/receipt.json, and the complete evidence inventory in /Users/mitch/.local/state/zec-ten-minute-bearish-alerts-20261114/file-manifest.json. These receipts contain the actual final PR/merge/source hashes and installed result after this source checkpoint. On resume, read delivery.json first: complete means no work remains; otherwise follow its remaining phase and /Users/mitch/.local/state/zec-ten-minute-bearish-alerts-20261114/tracking.json. Do not repeat accepted tests or frozen research without a changed source hash or new failure.
+
+Root Stele task transport closed after startup. Implementation completion queued6a6f4552 and verification claim queued1e9bf95a; decision queued8d433df3. TASK-2216 and children2217–2219 exist; final lifecycle receipts distinguish applied writes from outbox operations.
+
+
+## Explicit reversal stages and excursion distances — 2026-11-15
+
+Two outcomes: clarify one completedUP/currentbar2, two completedUP/currentbar3 and observedreversal in the top banner; measure subsequent downward distance from retained1m observations of10m setups. Starting clean master5f8c27c42b8741f1885c5a2ee7bb9d383ee19440. Worktree /Users/mitch/dev/worktrees/zec-reversal-stages-excursions-20261115; evidence /Users/mitch/.local/state/zec-reversal-stages-excursions-20261115. Root Stele create failedTransportclosed and was queuede81b8164; no newTASKid/claim invented. PreviousTASK2216/2217graphstatus is stale; PR269 and accepted receipts prove delivery.
+
+Research uses Mongo-first empirical mode and fixed accepted capture. No concept edits, paidresearch, newcapture, orders, modelfitting or embeddings. Freeze definitions in a native run before calculation. Default10m setup/1m observations, fixed5/10/20min horizons, USD/% downward excursions and end-horizon continuation separately. Never count signal-minute lows as future movement. Preserve hashes and gap/censoring exclusions. Existing midpoint>=5min trigger remains unchanged in UI; new historical broadintrabar results are a1mproxy.
+
+Phases:1freeze definitions/native run;2clarify stages and calculate;3independent numerical/source/liveverification and native readback;4requiredchecks/Gitdelivery/canonicalacceptance/ownedcleanup. Native research and all new calculations pending at this initial snapshot. Local tracking is /Users/mitch/.local/state/zec-reversal-stages-excursions-20261115/tracking.json.
+
+
+### Verified empirical/source checkpoint and delivery lookup
+
+Native run run:125d5e7f32471c641a1400376b8e69c500cece918dee2fab8e639f576909c03c saved definitions at revision2 before any new calculation. It remains a descriptive empirical archive with no concept edits, paid literature gates, prospective qualification, model fitting, new capture, orders or embeddings. Prior21runs and selectedtopic74frontier/75incomplete pages were inspected with explicit broad/narrow semantic/keyword searches.200global queue rows were inspected; the globalqueue census is incomplete, no queue/concept work was selected and no globalnovelty or saturation is claimed. All holds and scores remain unchanged.
+
+Fixed inputs:134746trades,1439complete1m buckets(allobserved),1430gap-safe;26candidate gaps. Inputsha verifyaccepted tape21db6ff5a1b6fdd12f887ef506f654ff634af3c355ca898d2f0838de09fd6f4c, WALeea4a026d1a093a2be996d32c552262358516ca27494f60df3091d54312f3d31 and metadata89502534e0f80f17475c3212a98f01ed24a4b4c5ac00c52a5bf488e036325e88. All269tagged variant events and72rows×2entryrefs independently reproduced. Eleven adversarial timing checks and all60numeric report cells passed.269is not an independent-opportunity count. The one-UP continuation premise is unsupported in this day. For current>=5min UI proxy, ten minutes after detection oneUP7/17lower, meanmaxdown$3.1441/0.3258%, max$12.32/1.2776%; twoUP12/20lower, mean$4.6980/0.4879%, max$20.36/2.1004%. Early1..9min primary differs9/26vs16/22; do not use it as the live midpoint rate. Meanexcursion differs from endpoint return. Maxima are gap-safe historical extrema.
+
+Canonical native result archive art:b928dd19d998d969230eb66128698eeb4c08b1d2eb891867ff6251b9c31e12bf has a readableprimary subset and losslesszlib/base64 complete body. Decoded784401bytes SHAe3b28398ecfcde1b633f7db241b8ba44812b30173d378965a2ef375fdc6f8f9c equals repositoryresults.json byte-for-byte. Final report art:737241dfd345b9e426cc8371b975b8a15d0996cef63a272a968f135ca9b38baa SHA8213e7f09f68e9ec537cd733795cbf730f507a4e20a7e6602aaf39f1274fb21c; finalLLMS art:3bb8cea037cefd42345cc67ccf2f883aec8f52079a0e169b1bffc711062b02af SHAf1439031725d6c6bea1ae1be08ad492b189641829b9a7232996641fc17f76b15. Both projections match native bytes after correcting one extra terminal LF. Audit archive art:4bcac9e74d218f7dd545cc3f4ace1321895cf20df9489259814f67ed6f075750; UI/alias source archive art:a60f65bce6bc0161739a60b9c603d7d6a4c218ce6fdb6da7100abb5a18d4e198. Complete source/test/result/report/LLMS/audit body readbacks passed; census is stored separately as a draft. Native artifact indexing was not run; no semantic coverage claimed and embedding pause preserved.
+
+UI now separates confirmedclosed-UP count/currentbar/setupstage/dataavailability. OneUP/bar2 and twoUP/bar3 persist through actualreversal and tradeoutage; olderunknown saysconfirmed rather than asserting exactrun length. Live>=300s true-open/freshness/gap/expiry guards remain intact. Furtherdecline remains unproven. The prior advertised trailingtui argument actually failed the oldparser; wrapper now strips onlythat leadingalias before unchangeddispatch. Actualcandidate aliasPTY exit0 and3routingregressions verify the fix. Preserve existing recorder1673; no user oraclewinners process was running atbaseline and no settings were saved.
+
+Verification: author51tests passed0/40.608s; root99model/stream/source/legacy/newcausal/alias tests passed0/1.931s,150unique total. PinnedRuff0.17.4 check/format0. IndependentUI candidate47stageassertions+10actualpublicchecks+11literalaliasPTYchecks all0, with wide/narrowvisual inspection. Numericalaudit receipt /Users/mitch/.local/state/zec-reversal-stages-excursions-20261115/numerical-audit/audit-receipt.json; candidateUI /Users/mitch/.local/state/zec-reversal-stages-excursions-20261115/acceptance/candidate-receipt.json.
+
+Tool lesson: research_run_lease uses token, not lease_token. Passing lease_token produced literal Error executing tool research_run_lease without changingrevision; renewing with token succeeded. Discover the full execdeclaration in ALL_TOOLS.description before writes. Checkpoint/artifact mutations separately require lease_token and currentrevision. Do not print private tokens.
+
+Final delivery state is /Users/mitch/.local/state/zec-reversal-stages-excursions-20261115/delivery.json; final runtime receipt /Users/mitch/.local/state/zec-reversal-stages-excursions-20261115/acceptance/receipt.json; complete task evidence inventory /Users/mitch/.local/state/zec-reversal-stages-excursions-20261115/file-manifest.json. These receipts supply finalPR/merge/native-run closure and loadedproof after thissource checkpoint. Onresume read delivery.json: complete meansstop; otherwisefollowits remainingphase and tracking.json. Do not rerun accepted data orresearch without changedhash/newfailure. Remaining atthischeckpoint: metadata/driftchecks, finalCI, remote merge/canonicalaliasPTY andownedcleanup/nativefinish.
+
+
+## Oracle titlebar, optional sounds and cross-coin comparison — 2026-11-15
+
+TASK-2276created/claimed beforeprojectedits. Cleanbase69f811afb087e12349118ff9780ef85d9a44112f. Worktree /Users/mitch/dev/worktrees/oracle-title-sounds-crosscoin-20261115; evidence /Users/mitch/.local/state/oracle-title-sounds-crosscoin-20261115. Userwants current10m setup/detection firstline in actualtopheader and optional bell/audiblealerts at reversal orcompletedtwoUPpair. Soundsopt-in, per-event, onceperqualifying10mwindow withsafeownedplayback/exit and backwardcompatibleSaveview. Do not change existing>=5min trigger, trueopen/freshness/gapguards, historicalstrategyP&L or sourceownership.
+
+Secondrequestadds HYPE ETH BTC SOL analysis withsame frozenZEC10msetup/1mobservation, firstclosebelowopen, separateintrabar/midpoint/closeconfirmation,5/10/20min meanmaxdownside/endpointcontinuation. Inspectavailablecoin/venue/datecoverage beforechoosingcommonwindow. Persistcommission/methods/datahashes/results/auditsdirectMongo thenprojectreport/llms. No retuning, newpersistentrecorder, orders orpausedindexing. Different sourceclock/venue andone-day/small-sample limits mustremainvisible. Data scope frozen before outcomes: verified KuCoin USDC30-day HYPE/ETH/BTC/SOL archive plus common Coinbase USD Nov12 05:00Z to Nov13 05:00Z includingZEC, with20minsetup/outcomebuffers. Keep present and all-required-minutes-positive-volume masks separate.
+
+Header/sounds implemented and84author tests passed0. Independent candidate31notification/backend assertions and31visibleUI assertions passed0. Actual90-columnHeader,modal,persistence,notificationdedup and controlledchildteardown passed. LiteralcandidateCLI helper/child0 with12runtimehashes and17executedfingerprints bound. Physicalaudibility nottested; userTUI32881 andrecorder1673 preserved. Finalcanonical run stillpending. Allnine sources andnine resultarchives persisted directly in Mongo with full byte-for-byte readback before shared projections. Run run:81ab918bd3e5d5aa8ad4ef4f4a691f32a289c9ad27ffccfeb3deff540dc3e10d;648summaryrows and16820taggedvariants. Independent raw-page/numerical reconstruction matched all9sources/648rows×2refs/all event outcomes within1e-11, exit0; report62rows/203numericcells and14targetedcausalchecks passed0. Native source/results are projected through byte-identical .json.zlib containers after initialtextindex grew to130.18MiB; all18 inner/native hashes verified. Thirteen new crosscoin tests plus12original excursion regressions passed0. Larger sample does not supportgeneral70% odds; HYPEzero-volume34008/43200, ETH8441, BTC8802,SOL12670. CommonCoinbaseHYPE69missingminutes,ZEC1missing, preserved. Globalqueue100/4950retained and explicitlypartial; noqueue/conceptscoring/dispatch/edits, no noveltyclaim, embeddingpausepreserved. Native empirical archives remain unverified research material. Stele writes unavailable: knowledge outboxe56930ce, researchclaimoutboxef6c1210.
+
+Combined153focusedunits passed0(47.565s); pinnedRuff0.17.4 check/format0, docs0, operationinventory0. Initialtextindex130.18MiB fixed withlosslessbinarycontainers; offlineindex95.47MiB, noembeddings. Nativefencedrunstate running/revision41 beforefinalaudit/deliverywrites.
+
+Finalauditorreceipt a3b6d32f5f5ba1836e67457ad4fee465bf62cb9fc48ee03b1ee3bdbf8ac90eca:648rows/16820events/203reportcells/14causalchecks/18containerbindings allpass0. Publicaudit andnativefinalreport/method/bindings/llms pointers arepresent.
+
+Remaining: final derivedchecks, commit/push/PR/CI/merge, canonicalacceptance andownedcleanup. Use taskprivatetracking.json forphases andfinaldelivery.json forauthoritativecompletion afterthischeckpoint.
+
+
+## Shape-conditioned reversals and leveraged Oracle forward test — 2026-11-15
+
+TASK-2289, with steps TASK-2290 through TASK-2294. BTC clarification is confirmed. Clean base a0128f92251b34873802737230fa82a1200cff92. Owned worktree /Users/mitch/dev/worktrees/reversal-leverage-2289; branch codex/reversal-leverage-2289. Preserve existing accepted reversal archives, current TUI controls/sounds and active services. Do not claim or restart older overlapping tasks.
+
+Study: two completed same-color candles, next-bar direction at 5/10/15/20 minutes, causal trailing shapes, chronological training/validation/final holdout. Freeze definitions in a Mongo empirical run before computation. No paid research, concept edits, indexing or embeddings. Existing BTC archive has 30 days; current retained Coinbase ZEC archive has one day. Inspect longer ZEC history or acquire public historical candles rather than select from a tiny slice.
+
+Execution: official Jupiter CLI supports BTC/SOL/ETH JLP perps, configurable leverage, noninteractive JSON and dry run; ZEC is unsupported in this CLI. Community 1000x SDK builds instructions but owner and keeper signatures are required. Investigate actual co-signing access; never invent success. Implement both paths with explicit capabilities and dry-run defaults. Forward test means paper on live data; user has not requested funded automatic strategy activation in this message. Reconcile ambiguous submissions and protect private signing material.
+
+Root owns study/backend/dependencies/workflow/Git. textual-job-lifecycle-specialist owns research/zec_tui.py, research/zec_leverage_panel.py and focused UI tests. live-acceptance-verifier investigates installed CLI/keeper availability and later verifies canonical runtime and persistent monitored TUI. Both work in the same owned worktree and must preserve each other's edits.
+
+Current stage: freeze input contract and Mongo run. Source implementation and backtest computation have not started. Postman CLI1.87.0 has initialized resources but no signed-in account; resource search/context graph are unavailable. Free Orbit discovery returned HTTP403; use current official Jupiter docs and public source instead. No wallet operations, orders or new services have run.
+
+
+## Second-turn study and dual-feed monitor — 2026-11-16
+
+PR 285 merged to master at 56e4a7e97fc27de7b7525891ae6af6ebb69e4f5a. The independent second-turn study covers 24,480 events and uses Oracle outcomes, with Binance signal diagnostics separately labelled. Its native bindings and compressed outputs are in research/second-turn-20261116/manifest.json. The independent numerical audit passed at maximum difference 2.31e-12. Results are retrospective and do not prove funded fills. The original paper selection and collector remain unchanged.
+
+The leveraged panel displays separately timestamped Jupiter Oracle and Coinbase midpoint streams, with explicit primary source, freshness and basis. Live terminal color requires removing inherited NO_COLOR for the monitor only. The paper collector remains active; all trading paths are disarmed. Delivery of this scope and canonical runtime acceptance are pending at this checkpoint. The separate MTF observer remains in progress and must not be included in this scope.
+
+
+## MTF observer and status controls — 2026-11-16
+
+PR 286 merged as 1c1b7467f80b169395359c0fbdf77a5b9aada68b after all required CI passed. The canonical monitor and quote sidecar run from /Users/mitch/dev/solmargintrader; original paper collector PID 35217 continues unchanged. The MTF observer and retrospective analysis are separate work on codex/mtf-observer-2307; they are not yet delivered. Native model and result drafts passed complete byte-for-byte readback; independent numerical audit passed. Keep the model retrospective and do not claim a profitable edge. Preserve disarmed defaults and require explicit arming. The recording shows a 1.07–1.09 second Jupiter exchange age crossing the one-second limit while Coinbase remains live. Keep source freshness truthful while making status display stable. Remaining: finish controls, independent audit and acceptance, persist the audit, run checks and deliver PR, then verify canonical runtime.
+
+The Stele task-create write for the status and arming controls is queued as outbox a2e35dd2. On replay, link the created task as blocking TASK-2289. Delivered-scope completion writes are queued as 3066547d and 89726979.
+
+MTF native model, two result artifacts and both independent audit receipts passed exact readback. Independent audit covered 742128 comparisons and 15 adversarial checks. The retrospective final split does not establish a profitable edge: BTC selected 30/48 direction and 24 joint, identical to DOWN on those 48; ZEC selected 202/427 direction and 122 joint versus DOWN 202/427 and 121 joint. Candidate observer PID 38413 uses a separate private ledger and frozen bundle; it displays four completed frames and ready scores for both assets. Thirteen observer tests and 51 console/panel tests passed with ResourceWarning as error; exact raw-unit 9.8bps touch regression passed. Original collector PID 35217 remains running. Candidate monitor PID 45304 loads the worktree; independent live acceptance and final CI/merge/canonical retarget remain. No real arm action or funded trade occurred.
+
+PR 288 macOS CI caught a ShapeGuide mount transition race: textual.css.query.NoMatches for #shape-guide-body during timer-driven paint. Correct the guide lifecycle narrowly and rerun the failed gate; prior financial and model gates remain accepted.
+
+## Preview inspection fix — 2026-11-16
+
+The 1000x Preview fallback reports a verified unsigned simulation as inspection only when current keeper or transaction layout cannot be verified for execution. It does not create a preview ID or enable Submit. The current executable guards remain in place. Focused Python, Node and lint checks passed in the isolated hotfix worktree; canonical installed acceptance remains pending. The separate exit50 study and UI integration continue in /Users/mitch/dev/worktrees/oracle-exit50-2309.
+
+
+## 2026-11-16 — Jupiter 1000x overlay in progress
+
+TASK-2348/2349/2350/2351 track optimization, discovery/plan, implementation and delivery. Worktree /Users/mitch/dev/worktrees/jup1000x-overlay-2348; source baseline 2b5e973. Preserve the untracked Pine file and every other worktree. User requested fan-out investigation and implementation after deep prompt optimization. The optimizer owns /Users/mitch/.local/state/jup1000x-overlay-2348/prompt-optimizer. Public JavaScript downloads are requested outputs; keep third-party bundles out of Git and archive URL/hash/status manifest. Preserve disarmed defaults, local chart licence/attribution, registry-only actions and stale/missing-data refusal. Verify actual SOL market support and distinguish GUM/1000x from JLP perps and Trigger. Existing order and feed work remains owned separately.
+
+Readiness: hub semantic request did not complete; existing offline index used without indexing/inference. Context7 reached monthly quota; use current official docs and exact source. Postman status reports no account; skip signed-in resource search/context graph. No services, wallet keys or orders touched. Pending optimized-prompt audit, parallel engineering discovery, coherent plan, implementation, source/browser checks and full delivery.
+
+
+## Jupiter 1000x overlay source implementation
+
+Prompt v1.1 passed a second fresh isolated A-P review after an enforceable20min/2000asset/250MiB discovery cutoff. Raw/optimized/full audit and helper evidence are under /Users/mitch/.local/state/jup1000x-overlay-2348/prompt-optimizer; repo copy docs/JUPITER-1000X-OVERLAY-PROMPT.md. The written plan docs/JUPITER-1000X-OVERLAY.md selects existing MV3 plus an extension-origin floating chart: native custom React canvas exposes no verified chart handle. Seven current markets include SOL feed6/marketEw8sRjpuBttpmhSUeaAn4dLAegWnz55AuafVcGuojCPS; Stele KNOW-2296 updated to distinguish earlier BTC/ZEC-only snapshot. Current public data contract is yolo-api markets plus perps-api Pyth200ms history/stream.
+
+Workers own feed/capture, pure indicators and docs/JUPITER-1000X-SDK.md. Root owns host/panel/model/manifest0.7.0/tests. First24 math/panel-model tests passed0; independent numerical Volty Python/JS comparison passed. Indicator defaults: ZigZag0.5%, WilderRSI14, BOP1, VoltySMA(TR)5x0.75 with prior-bar active stops, SAR0.02/0.02/0.2. Closed-only signal labels require contiguous current closed history and fresh3s quote/receipt; partial old bars reset math. All runtime defaults remain disarmed.
+
+Wallet follow-up: user approved official Web Store install but browser reports Installation is not enabled. Normal Chrome Profile2 already has Jupiter Wallet1.20.2 installed. Do not bypass browser restrictions or copy wallet data. The portal/data and overlay proceed without authentication. SDK review is unsigned only and preserves current keeper-verification/submission refusal. Pending worker finalization, frozen-source review, browser fixture/live acceptance, complete required checks/docs-index refresh and final PR/CI/merge/canonical acceptance.
+
+
+## Jupiter 1000x overlay qualified candidate
+
+The implementation, discovery and prompt tasks are complete. TASK-2351 tracks delivery. Extension 0.7.0 adds the read-only floating window. The final unit set includes 22 feed, 15 indicator and 10 panel-model tests. The existing full extension suite passed before the last two regressions were added; the final 530-case repeat follows this checkpoint.
+
+Independent review fixed closed-only solid ZigZag pivots, editable RSI guide lines and back/forward-cache restoration. The source review is now clean. Independent browser acceptance passed 17 fixture checks and seven actual public-portal checks. The public gate binds SOL feed 6, history HTTP 200, stream frames and executed source hashes to the extension iframe. The adopted fixture also passed 17 checks with stricter user/request path denial and an explicit dry-run assertion. The existing browser gate passed 26 checks. SDK constructor/refusal fixtures passed without signing. Keeper verification and funded execution remain unverified.
+
+The public archive manifest is /Users/mitch/.local/state/jup1000x-overlay-2348/public-site/snapshot/manifest.json. It records 1,176 URLs: 1,172 JavaScript HTTP 200 responses and four literal-path 404s. All 1,169 source-map probes returned 404. Bodies total 113,604,207 bytes. One throttled retry cleared initial rate limiting. Computed imports, authenticated branches and future builds remain outside this finite census. The actual browser exposed an Illegal invocation bug in saved Window functions. Binding fetch and timer receivers fixed it and has a regression test. The verified feed hash is 65ca7989602054ce2162f6569b21d8324dce448185ee3ae96c57402c273187d1.
+
+JavaScript lint/type checks passed after installing the locked development tools inside this worktree. The initial backtester failure was the expected stale index. Regenerate only the offline metadata/text/concept indexes after final source and docs are fixed. Initial Mongo failures came from missing PyMongo in the TUI environment. Isolated Python 3.13 dependencies under /Users/mitch/.local/state/jup1000x-overlay-2348/verification-deps restored all 57 tests, with 11 native-database skips, exit 0. Endor risk evidence is unavailable; no production dependency changed. Documentation discovery uses the current botmanager/src on PYTHONPATH. Documentation counts are 530 extension tests and 3,289 total.
+
+At this checkpoint, generated documentation/index checks and final CI/merge remain in progress. The final delivery state is recorded at /Users/mitch/.local/state/jup1000x-overlay-2348/delivery.json. That receipt is authoritative for the PR, merged revision, completed checks and final canonical browser acceptance. The original untracked Pine file and other worktrees are preserved. No existing recorder or trading service was restarted.
+
+
+## Jupiter 1000x final-head inventory correction
+
+PR https://github.com/mithudso/solmargintrader/pull/297 contains the implementation. Its first final-head CI found `Inventory drift: docs/operations-registry.json, docs/tool-inventory.json`. The installed paper tests passed; the deterministic source inventory check failed. Regenerated both inventories with scripts/build_operation_inventories.py. No product or trading code changed. Refresh the offline index after this generated update, wait for final-tip CI and use the external delivery receipt for the merged and canonical acceptance state.
+## RS ZigZag PA strategy, 2026-11-16
+
+The owner initially superseded the seven-strategy and Channel Breakout investigation with this strategy, then explicitly restored the earlier rabbitholes and made ZigZag the top priority. TASK-2333 tracks ZigZag; the eight earlier Mongo runs were paused and their owned leases released at the prior boundary. The coordinator is reassigning the restored strategy runs using fresh fences. Draft PR 292 preserves the earlier checkpoint and must not be represented as completed research.
+
+The owner-supplied source remains untracked at `rs_zig_zag_pa_strategy.pine`, SHA-256 `a708103541426c6746c1cb33b0ad5016094ce29b4342c2f92375bcadbb01e5a9`. It contains stray trailing `Z` and `ZZ` on lines 227–228. A private syntax-only reference removes exactly those tokens and retains the missing version annotation; it is uncompiled and not verified as the screenshot source. Never stage or overwrite the original.
+
+The current screenshot shows COINBASE ZEC/USDC perpetual at 15 minutes, March 31–November 16, 2026; it reports 20,889.85% total P&L under zero commission and slippage. A prior report shows June 21–November 16 and 17,203.27%. Results, chart source history, input provenance and screenshot-to-code identity require independent validation. The source defaults to Pine v1 because its version annotation is omitted. Official TradingView documentation says legacy unoffset higher-timeframe `security` behaves like lookahead on; its line 20 uses a 60-minute request. This leaks future hourly information on historical 15-minute bars, conditional on executing that exact source.
+
+A separate private reference copy and its exact hash are recorded under `the private research state`. The native research run is `run:ba37f1d11d0e8c021761b63f1b3e082290b832edfddd611920e8124e95f637a4`. Full dedup, independent research, trusted evidence gate, causal implementation and paired historical comparison remain. Protect active recording and existing holdouts.
+
+Research-only `research/rs_zigzag.py` now contains a deliberately biased historical path, a confirmed-hour path and an explicitly approximate next-open cost/margin sensitivity. `research/tests/test_rs_zigzag.py` passes nine focused tests including 10/15-minute prefix invariance and intentional legacy leakage. The source card is spec-only, not a registry entry. `uvx --offline ruff==0.17.4 check research/rs_zigzag.py research/tests/test_rs_zigzag.py` and `python3 scripts/check_tradingview_cards.py` pass. `python3 scripts/check_docs.py` failed because the Python environment lacks pandas; the isolated temporary package install was subject to an unavailable dependency-review advisory and was not used as proof. Independent audit, source-to-screenshot identity, exact venue history, full research gates and real-data comparisons remain.
+
+Shared research-only Pine order engine and its tests are present; the model explicitly omits exchange margin, funding and spread. A frozen paired 10/15-minute ZEC Jupiter oracle proxy run has been saved to Mongo and `research/RS-ZIGZAG-PROXY-2333.md`. Its legacy lookahead path reported large uncollateralized gains; its confirmed-hour path produced negative-equity stress outputs. The 1x one-unit-multiplier sensitivity rejected every fixed 10,000-unit entry. These are not Coinbase or TradingView parity and require independent audit; raw data and output stay private.
+
+The documentation checker passed after using `the project Python environment` with this worktree’s `botmanager/src` on PYTHONPATH; the earlier system-Python and missing-source-path failures are historical. Sixteen focused tests, pinned Ruff and TradingView card coverage passed. The actual chart scanner returned null pointvalue/unit_id, so the proxy 1x scenario remains a one-unit-multiplier assumption. Proxy output Mongo `art:1ad06f6ccde823942128d9a8c707cc74a060450fd115b5bb5547a490abcf5983` was fully read back and its hash matched. Numeric independence, source/fill parity and matching Coinbase data remain pending.
+
+An independent reviewer reproduced all 16 proxy scenarios, verified 340,000 pattern-branch comparisons and sampled causal prefixes, and marked the review partial because TradingView compilation, screenshot identity, contract point value and venue/order parity remain unknown. The reviewer receipt is archived as `art:2e6826af7b679961a62866e412040ce25f5e561851c801c2d54b857621022e20`; no trusted publication is claimed.
+
+The independent RS audit reproduced the original 16 source-quantity proxy cases but did not establish TradingView/venue parity. A later equal-notional comparison was separately frozen and computed using 1,000 USD divided by each completed signal close; its four reported zero-cost and costed comparisons are in the proxy report and remain independently unaudited. Shared common-window and intent comparator helpers validate the archived tape and permit reservation checks around every scenario.
+
+The ZigZag run now records a nine-claim draft baseline and six bounded source-review passes with rates 0.1, 3/13, 3/16, 3/19, 2/21 and 2/23. The cap yielded BUDGET_EXHAUSTED, not saturation. The 23 source spans passed deterministic Unicode binding checks, but no trusted semantic gate or research publication ran. Five documentation URLs all originate with TradingView. The dossier is native `art:f55504e4149f4a78691125fc777d6a091aa0476d08fba63c25b189a1c7574c33`.
+
+## Nine-source provisional integration — 2026-11-16
+
+The integration worktree combines RS/SAR/Pivot commits through 1308e7a, source-specific moving average paths from b4e415a, Momentum/Price Channel/Channel Breakout/Volty paths from 4e12206, and source-contract text from 9450cd8. The frozen readiness and original strategy cards were not overwritten. The new combined runner and nine-row report reproduce all 36 equal-notional table cells on the exact archived Jupiter window; its private output SHA-256 is f30545666700422fb15814594de550ab107348d70442aa3503ac8f4d8d24617c. Independent final audit SHA-256 793e4806f036619326d14fba06df8173b7224887360c54c89eab3995748f7ac6 covers 56 cases, 55,520 intent comparisons and 297 causal prefix samples under stated conventions. Sixty-six focused tests and 43 card tests pass. The 10-minute Channel Breakout and Volty outcomes change under alternative OHLC paths. Pine semantics, venue fills, costs, funding, true margin and execution parity are not established. Mongo research gating/publication and the separate exit50 draft remain unfinished.
+
+
+## Jupiter overlay integration with concurrent delivery
+
+Merged incoming master 6286bfc into the overlay branch after PR296 delivered the nine-source research. Preserve all incoming source, cards, original prompts and continuation records. The overlay implementation and its disarmed behavior are unchanged. Combined counts are1143 backtester,530 extension,1582 SolTUI and57 Mongo; regenerate derived inventories/wiki/indexes and repeat integration checks before delivery. The final receipt remains /Users/mitch/.local/state/jup1000x-overlay-2348/delivery.json.
+
+
+## Jupiter overlay automated-review repairs
+
+Automated review of the original PR identified two valid P2 issues. Added three regressions and saved red exit1, cap-only green and final25-case green receipts under /Users/mitch/.local/state/jup1000x-overlay-2348/review-regressions. The shared MAX_INDICATOR_LENGTH remains500. The feed now requests502 completed bars and retains503 including developing. It supports maximum RSI/BOP/Volty periods at startup and rollover. Disconnect clears the prior quote, preventing history from reviving it before a replacement frame and preserving the new socket's20-second idle grace. Final feed hash f7c9616578f1b75ff633440e26f4384adf3277a8087ba562efb70b33cd9d926b.
+
+Independent review-fix acceptance passed18 native-browser fixture checks and7 actual-public checks. The old quote was643ms old during immediate reconnect history; all signals stayed unavailable until a new frame. The actual public gate saw502 completed candles. Receipts and exact hashes are under /Users/mitch/.local/state/jup1000x-overlay-2348/acceptance/review-fix. Adopted the one-check harness update. Combined test counts are1143 backtester,533 extension,1582 SolTUI and57 Mongo, total3315. PR297 is temporarily draft while final checks run. The accepted earlier CI head10d3b97 passed all jobs; the final repaired head requires its own CI before merge. Use the external delivery receipt for final status.
+
+
+## Jupiter overlay temporal merge regression
+
+A further received review comment reproduced a cached stream close71 overwriting a newer developing history close80. The26th feed regression failed before the repair and passed afterward. Preserve a cached close or replay its quote only when exchangeMs follows requestedAtMs. Keep authentic observed extrema and the quote's own timestamp. All prior post-request streaming, closed-history, maximum-period and replacement-connection regressions remain green. Red/green evidence is under /Users/mitch/.local/state/jup1000x-overlay-2348/review-regressions/history-order. Final feed hash a23946e418c90223c11fa64a6b486c2f8f0c9366b73c7b2b90789953f26dd5a0. Combined source counts are534 extension and3316 total. Final same-scope browser/CI checks and delivery continue under TASK-2351 and the external delivery receipt.
+
+## Jupiter overlay final source and documentation gate
+
+Three separate reviewers read all 27,452 lines of the requested developer snapshot, raw SHA256 28db4e6df245eea4ef85336a6740fef9db4c5420c11a462238917312f116e873. Their contiguous ranges 1–9151, 9152–18302 and 18303–27452 have no remaining gaps or unrepaired truncation. Combined coverage and findings are under /Users/mitch/.local/state/jup1000x-overlay-2348/docs-full-review. This supersedes the earlier relevant-pages-only limitation. External OpenAPI links are not part of that full-file claim. The SDK report distinguishes separate product contracts and general Interface terms; neither establishes a supported 1000x write API or user eligibility.
+
+The exact repaired source passed 534 extension tests, JavaScript lint/types, docs/index freshness, 18 browser fixture checks and 7 public-live checks. The first final public attempt returned 5/7 because a minute-boundary history request did not certify the newly closed candle within 25 seconds and a native-control text comparison included volatile ticker prices. The unchanged repeat passed 7/7; both receipts are preserved under /Users/mitch/.local/state/jup1000x-overlay-2348/acceptance/history-order-final. No harness threshold or product code was changed to obtain the repeat. Final-tip CI, merge and canonical loaded-state acceptance remain tracked by TASK-2351 and /Users/mitch/.local/state/jup1000x-overlay-2348/delivery.json.
+## UI delivery stage, 2026-11-16
+
+Worktree: /Users/mitch/dev/worktrees/oracle-tui-2312. Extracted the leverage panel UI from the committed draft while preserving current master and Preview. Reconstructed sampled bars read-only from the existing normalized quote capture, and displayed the published MTF model components. The exit50 policy and forward observer remain separate and pending. Do not alter the running user TUI or wallet state. Final checks and delivery are in progress.
+
+## Source-age follow-up — 2026-11-16
+
+Use isolated worktree /Users/mitch/dev/worktrees/oracle-source-ages-2312. The live ZEC 5m cap cell has 15 training examples against the frozen model minimum of 20, so it has no supported component. The 5m range cell has 300. Preserve the frozen model, observer and wallet. Numeric source ages and an explicit unsupported shape label are in progress.
+
+## Current YOLO contract investigation (2026-11-16)
+
+Draft PR 301 binds inspection to the market-mint-derived OraclePrice PDA, its discriminator, mint and bump. It is inspection only; legacy execution verification is unchanged. SDK tests passed 17/17 and fresh unsigned BTC and ZEC simulations passed. Deterministic indexes were refreshed and their check passed; final PR CI remains pending.
+
+The upgradeable program data account is 86FJSZxQwcyUdWBzVknsfwm3qCVwK3Z7ocBXLVoSxA7z; observed upgrade slot 468172111 and account SHA-256 ee5fca1c7a4380b06fd5c89b5234b401868da67b53f675a33465560c3b7cbda7. The observed service signer 2BcxBiR3KiUwnSwM8eViGj9hp7s9JRi4QqiWuVU8Eve7 and Config.keeper both pass unsigned current UpdatePrice and OpenPosition simulations; admin and fee receiver substitutions fail keeper ConstraintAddress 2012. The logs contain no expected Left/Right values, and the two accepted public key byte strings do not occur verbatim in the program data. A confirmed successful public close transaction at slot 470169170 contains a valid Ed25519 signature by 2Bcx: 67YXGWPwFhbnVW1rjR5AuFekteS8W1saUEQBCFYyGZZLTx7pmk15xjDVYkM62kGALt1XCuQy1yGfG4XJcHay1BEC. These observations do not establish signer governance.
+
+Single-bit UpdatePrice mutations at offsets 8, 16, 32, 64, 96 and 132 failed in Pyth Lazer VerifyEcdsaMessage. Remaining: prove payload feed and economic binding and transaction post-state effects; construct and independently review a strict two-instruction verifier before enabling current-format execution. Do not sign, submit, fund, arm or change the wallet in this investigation.
+
+Pyth Lazer source at commit f8c8a9565c77953124369c73b9195a10449a2075 defines the LE-ECDSA envelope and standard payload. Fresh BTC and ZEC payloads decoded as channel 3, one feed (1 or 66), price, exponent -8, confidence and feed timestamp. Signature recovery with the installed noble libraries matched current unexpired on-chain Pyth Storage trusted ECDSA signer 26fb61a864c758ae9fba027a96010480658385b9; the Storage account is Pyth-owned and quotes one lamport. In each unsigned simulation the post-update oracle price equaled signed mantissa times 10000 and position entry price, and the oracle time equaled the feed timestamp. Swapping the complete valid BTC/ZEC Pyth payloads caused successful Pyth signature verification followed by YOLO InvalidOracle 6013.
+
+In two isolated unsigned simulated opens, owner collateral ATA fell and vault rose by exactly 5000000 raw units. The decoded positions had the requested market, owner, long side, margin 5000000 and notional 5000000000. The owner lost 1269840 lamports including 1259840 position rent and 10000 network fee; the service keeper lost the one-lamport Pyth fee. These are observed simulations only. The program remains upgradeable, so an off-chain hash check alone cannot bind the deployed bytes atomically through later submission. Determine whether this remaining trust assumption is acceptable before any execution enablement; do not substitute simulation success for guaranteed future state.
+## Exit50 study integration — 2026-11-16
+
+The full-cohort retrospective result, selected policy and independent numerical audit are stored in native research artifacts. BTC selected validation return was -8.6858% on 44 trades; ZEC was -6.4275% on 126 trades under modeled trade fees. These are not prospective or funded results. The copied core and observer bytes initially matched the frozen paper profile. Independent lifecycle review found two high-severity issues: restart entry cutoff must exclude process downtime, and existing ledger binding must be checked read-only under exclusive writer ownership before schema changes. The source author corrected both in commit 58f7f09; independent lifecycle review passed five isolated tests. The V3 paper profile matches the corrected observer and core. Canonical merge, prospective startup and loaded acceptance remain pending. Preserve the current UI, paper collector and all existing holdouts.
+
+
+## 2026-11-16 — TASK-2399 feed controls and UI optimizer
+
+Target: canonical Oracle wrapper, leverage screen and its foreground Coinbase TradeStream. Candidate worktree: /Users/mitch/dev/worktrees/oracle-ui-2399, branch feat/oracle-feed-controls-2399, base 6f69efc2f01741380f3f8d7838d3fb75762859a5. Preserve all other worktrees, private Pine, protected TUI PID28953 and shared services. Never arm, sign, submit, or change private execution configuration during this audit.
+
+Both independent view toggles default on. Persist only view preferences in a separate file. Hide every deselected provider surface and mixed-provider basis. Stop only the foreground Coinbase subscription. The leverage panel itself reads shared snapshots; it does not own the shared dual-quote collector. KNOW-2401 and KNOW-2404 record this boundary. Source/runtime truth remains authoritative. SDK preview disclosure is owned by the concurrent SDK worker and must be retained on integration.
+
+UI optimizer: editable, max five complete sweeps. Frozen matrix and source inventory are in docs/design/oracle-ui-2399/scope.json. Research methods are unrequested and out of scope. AT/terminal capability limits must remain explicit, and missing selected evidence prevents CLEAN. Context7 failed with monthly quota reached. Semantic MCP search stalled and was terminated; targeted offline retrieval supplied relevant paths. An offline search without INDEX_NO_AUTO emitted a rebuild notice; no rebuild process remained on immediate inspection. All subsequent searches use INDEX_NO_AUTO=1.
+
+Next: snapshot sources, run method P01, reproduce missing controls and responsive-state failures, apply confirmed Medium+ repairs immediately, then complete all selected methods and a fresh no-edit sweep. Independent final review, ledger validation, focused tests, draft PR, parent merge, and independent loaded acceptance remain. Evidence captures and command logs: /Users/mitch/.local/state/oracle-ui-2399.
+
+### TASK-2399 checkpoint — first sweep complete
+
+All P01–P48 were individually inspected and checkpointed in /Users/mitch/.local/state/oracle-ui-2399/pass-history.jsonl. Six distinct issues were repaired: missing provider controls, unreachable content at80x24, invisible snapshot failure, bright-bar contrast, dot-only freshness, and null nested provider snapshots crashing the UI. The focused panel/feed/stream/entrypoint suite completed54tests successfully with ResourceWarning treated as an error. The exact pinned Ruff tool is /Users/mitch/.venvs/solmargintrader-cdo-20261111/bin/ruff (0.17.4); the global0.17.5 cannot satisfy the repository pin.
+
+The first sweep contains explicit partial/unavailable evidence for P08/P40 pending SDK disclosure integration, P18/P19 full native contrast, P29 accessibility tree, P30 native zoom/spacing, P33 reduced motion, P39 native installed platform and P41 actual assistive technology. ResearchP49–P70 remains unrequested and out of scope. Never report CLEAN with these gaps.
+
+Next: preserve this checkpoint, merge origin/master including SDK PR303 (4e2dac8b5b73ceafdd63ec01f01078a82bef439b), retain its market-price/nonbinding-entry and unavailable-close disclosures, finish the final48-cell capture plus a complete no-edit sweep, independent review and ledger validation. Parent owns final merge and loaded monitor acceptance. Protected/historical PIDs must be re-inventoried; do not infer runtime identity from an old PID.
+
+
+## Extension two-bar reversal and indicator continuation — 2026-11-16
+
+TASK-2398 owns the extension feature in /Users/mitch/dev/worktrees/extension-reversal-2398, branch feat/extension-reversal-2398 from origin/master 6f69efc. Preserve canonical untracked Pine, SDK PR303, TUI/feed UI work and all existing live configuration. The feature extends the existing public-read floating window. Default reversal interval is10m. Detect DD→UP and UU→DOWN only from the previous two completed contiguous candle bodies; developing target context stays separate. Use completed5/10/15/20m shape windows with the exact trailing48-bar research/shape_study.py geometry, and oracle_leverage/exit50.py first-close-seeded EMA9/21, MACD12/26/9 and BOP SMA3 on completed1m candles (78-bar warmup). No shipped compatible model or typed position source has been established; probability, model score, ROE and exit status stay unavailable. Do not mirror UU empirical evidence to DD. Reuse the existing JupiterFeed and one public stream. Extra bounded1m history may supply shape/momentum context without another recorder.
+
+Before implementation the exact user prompt is saved in prompts.md. Required remaining work: implement pure analytics and lifecycle-safe minute context; extend accessible panel/series; add independent Python parity and prefix/future/gap/stale regressions; run owning tests, lint/types and fixture/public browser gates with exact loaded hashes; coordinate deterministic docs/index/wiki changes with parent; commit and push a reviewable draft PR. Parent owns independent review and merge. Hub semantic lookup did not return before a bounded wait; existing INDEX_NO_AUTO=1 keyword lookup and targeted source reads supplied the contracts.
+
+
+## Extension reversal candidate verification and delivery continuation — 2026-11-16
+
+Version0.8.0 now extends the existing floating public-read window with previous-two-completed10m DD→UP / UU→DOWN context, separate developing target, completed48-bar5/10/15/20m shapes, selected-chart EMA9/21 and MACD12/26/9, separate research-aligned closed1m momentum with BOP SMA3 and78-bar warmup, and an explicitly heuristic0–3 alignment count. Empirical probability/model score and position/ROE/exit remain unavailable. Existing saved view settings, trading config, disarmed installation defaults, host permissions, command registry and wallet boundaries are preserved. Updated owner-source module census for the new pure reversal module. Frozen numerical vectors bind actual Python source hashes; every observable shape label and EMA/MACD/BOP value passed parity, with prefix/future mutation, gap, partial-opening, history ordering, reconnect and abort coverage.
+
+The actual public history endpoint returned HTTP400 Unsupported resolution:10 and20;5m succeeded. Chart10m/20m now aggregate complete5m constituents and omit incomplete completed buckets, while retaining502 completed chart bars. The same existing public stream feeds bounded979-minute context; no recorder or extra stream was created. Durable provider lesson is KNOW-2409, linked to TASK-2398 and the existing window architecture.
+
+Completed candidate checks:552/552 extension tests and root JavaScript lint/types, both exit0 (routine Terra logs /Users/mitch/.local/state/extension-reversal-2398/checks/extension-test-repaired.log and check-js-repaired.log); native browser fixture20/20 exit0 at /Users/mitch/.local/state/extension-reversal-2398/fixture-resampled/receipt.json; actual public portal7/7 exit0 at /Users/mitch/.local/state/extension-reversal-2398/public-live-resampled/receipt.json. Receipts verify loaded0.8.0 module hashes, single stream and read-only network/storage behavior. Public SOL showed mixed-pair abstention, a developing UP target, four completed shape windows and closed1m momentum. Visual inspection passed. Earlier19/20 fixture and6/7 public failures are retained; they exposed the partial-opening fixture boundary and unsupported native interval, respectively. The repaired fixture reseeds away from a minute boundary; runtime refusal was not weakened. Offline dry-run closed one round trip at net+$0.3492 after fees, exit0.
+
+Deterministic documentation, operation/tool inventories, packaged wiki and metadata/text/concept indexes were regenerated without embeddings/inference. Docs check exit0 counts1143 backtester +1582 SolTUI +57 Mongo +552 extension =3334. The qualified command uses PYTHONPATH=/Users/mitch/dev/worktrees/extension-reversal-2398/botmanager/src with /Users/mitch/.venvs/soltui/bin/python; unqualified environments lacked either botmanager.blind/config or executor/solders imports. No installed environment was modified. Remaining: commit/push this owned candidate, open a draft PR, let parent independently review, wait for final-head CI, merge and perform canonical loaded acceptance. Parent owns the merge and final task completion. Preserve all unrelated SDK/TUI work and canonical Pine.
+
+## Current-format YOLO verifier implementation
+
+Worktree: /Users/mitch/dev/worktrees/yolo-execution-v2; branch depends on inspection PR 301. Implement the observed open subset with current YOLO/Pyth deployment pins, live Pyth ECDSA trust state, exact canonical price feed, exact owner intent, transaction/account binding and read-only post-state simulation. Preserve the legacy verifier. Current-format close remains blocked until payout and debt account semantics are independently demonstrated. No signing, sending, funding or arming during investigation. Independent code and economic review is required before merge or funded use. Program upgradeability and simulation drift remain explicit limitations.
+
+Current open prototype adds exact program pins, signed Pyth feed parsing and current trusted signer verification, exact-message unsigned simulation, and position/collateral/fee delta checks. SDK tests pass 27/27. BTC long/short and ZEC long/short each passed at least once across the evolving prototype; current-oracle post-state mismatch and provider 429 correctly block other attempts. Repeat all live unsigned cases on the final reviewed tip. Current close remains blocked because the claim and payout contract is not established. Both programs remain upgradeable; simulation cannot guarantee future state. Independent security, dependency and economic review and final CI are outstanding. No signatures, funded transactions, wallet changes or arming occurred.
+
+A fresh ZEC simulation demonstrated a newer shared oracle than the still-valid signed payload: feed timestamp 1794841599000000 and price 857443686750000, post-oracle timestamp 1794841599200000 and price 857507202020000. The SDK OpenPosition data has no known entry-price bound. A matching simulation cannot enforce its checked price at later execution. Current-format open therefore fails closed with current_execution_price_not_bound after verification; current close is blocked for missing claim and payout proof. Preserve legacy behavior. Determine an on-chain enforceable price bound before enabling current execution.
+
+Independent review identified missing SPL token delegate, allowance and close-authority checks. Preserve the temporary current-open gate until complete account metadata and exact amount-only mutation checks pass and reviewers accept them. Current opens are market orders; any simulated price is nonbinding, and a newer verified program-owned oracle may be used if its feed, PDA, timestamp, freshness and actual position entry match. Continue investigating current-format close claim and payout behavior with unsigned reads/simulations only.
+
+On 2026-11-16 at 15:14:56 UTC independent live acceptance observed canonical PR 302 paper observer PID 85148 and owned monitor PID 87752; the first paper decision followed the process cutoff. One ZEC paper observation had settled liquidated with modeled payout zero. The UI showed wallet, arm, inline results and dual source ages. Paper outcomes are not live fills. Running-process heap bytes were not independently attested. Private receipt: /Users/mitch/.local/state/oracle-exit50-2309/tui-acceptance/paper-final-receipt.json. The nine-strategy first research finalization remains unresolved; current missing record does not prove historical non-dispatch or zero cost. Operator receipt: /Users/mitch/.local/state/tv-nine-audit-2329/operator-reconciliation.json.
+
+Independent review treats current opens as market orders: the price observed in simulation is nonbinding. Token account delegate, allowance, native state and close authority now fail closed; all token metadata and data except the exact expected amount must match. Owner and keeper system metadata must remain unchanged. The bounded raw RPC reader preserves exact u64 rentEpoch lexemes and rejects unsafe lamport numbers. A deterministic exact-message HTTP simulation fixture covers a newer fresh oracle and post-state, with a separately injected test-only program-pin check. SDK tests pass 30/30. Current-open execution remains gated pending independent review. Private live unsigned ZEC long replay: /Users/mitch/.local/state/yolo-current-verifier-replays/zec-long-unsigned-20261116.json, SHA-256 bfcb649a69fc5798cb857e32e23acdeb048a8dc5f39ddc7933c13ec3cbd3afa3; ZEC short replay: /Users/mitch/.local/state/yolo-current-verifier-replays/zec-short-unsigned-20261116.json, SHA-256 5aac7bebc96ca95d93bcb7344b2241f4e5328eddd1dce0d0111eea3809e69f6c. Balance and positions must be refreshed at use time. Current-close claim/payout verification remains open.
+
+Independent reviewer cleared the revised wallet authority, exact rentEpoch and end-to-end fixture checks. The current observed open route now returns a verified market-order preview; the simulated entry is indicative and not a limit. The owner-facing preview states that current-format close is unavailable in this client and a failed transaction can incur up to 0.01 SOL network fee. A fresh BTC long unsigned build returned ready without signing or sending. Current-format close remains blocked: 3000 recent public trade rows had no queued close, and the observed immediate close does not prove claim PDA or queued payout recipient. Final integrated-head independent review and CI remain pending; program upgrades and changing market state remain explicit limitations.
+
+### TASK-2399 final source/render checkpoint
+
+Implementation is frozen at 347420978a439c169dc628a7ffbe8d4313c02e9a after integrating PR303. Final rendering-source fingerprint: 1bbcbb1b28b6daf2d926c3875effb6bc97d8b141698a9360681be82d8a31d24e. The complete ledger and human report are in docs/design/oracle-ui-2399/report.json and README.md. The initial frozen scope is retained; the same 48 cells and 48 selected methods remain.
+
+The final actual Console.preview message, produced with fake adapters in a temporary home, exposed a seventh Medium defect: long market-order warnings collapsed the monitor and clipped actions. The repaired result region scrolls independently and puts the MARKET/indicative-entry/close-unavailable summary first. The same long-preview regression passes at 80x24 and 120x42. The integrated 85-test suite, pinned Ruff 0.17.4 and format checks completed successfully. All 48 final captures passed provider-leak, persistent-toggle, no-execute and owned-worker cleanup invariants. Native figures are synthetic, not market/execution evidence.
+
+UI optimizer exit is NEEDS_EVIDENCE: 37 PASS, 4 N_A, 5 PARTIAL, 2 UNAVAILABLE; 22 unrequested research methods remain OUT_OF_SCOPE. There were two complete method sweeps, with a partial integration repair between them. The final complete sweep made no source edits. All seven confirmed Medium+ findings are fixed, and uio_check validate returned valid=true with no errors. Independent final review and real installed acceptance are still pending with the parent; do not claim CLEAN or complete TASK-2399 yet. Durable lessons are KNOW-2415 (null nested snapshot crash) and KNOW-2416 (long real preview layout).
+
+Raw evidence, driver, commands and complete pass history: /Users/mitch/.local/state/oracle-ui-2399. The candidate worktree is /Users/mitch/dev/worktrees/oracle-ui-2399. The current protected replacement user TUI is PID35320; historical PIDs 28953 and 87752 are not current ownership proof. Re-inventory before any lifecycle action. Parent owns fresh independent review, final-head CI/merge and launching an owned monitor only after verified installation. Preserve all shared collectors, paper observers, SDK source disclosures, private Pine and private armed configuration. No task-owned index regeneration ran; parent TASK-2410 owns the near-limit TEXT-INDEX delivery boundary.
+
+## Current-source repo health — 2026-11-16
+
+TASK-2410 audits the current source without resuming paused TASK-1541 or PR 235. Ledger baseline at 4e2dac8 planned 50 changed and 176 new files, with 796 unchanged skipped. PR 304 was independently reviewed and merged at c250f307; this worktree now starts from that commit. The tracked keyword index was within 181104 bytes of GitHub’s 100 MiB limit before that merge. Preserve all postings and source bodies; implement and verify deterministic gzip and artifact integrity before delivery. Current readers reject a missing gzip even if an old raw file exists, so stale legacy data cannot silently win. The old-format code remains able to read old checkouts. Baseline test commands require isolation from owner configuration, processes, wallets and paused services. Full CDO per-file fan-out and final feature-source review remain pending capacity; no strategy benchmark or empirical champion is authorized.
+
+Independent review proved an old valid gzip plus its own matching checksum passed the initial freshness gate. The index catalog now binds the decoded SHA-256, and both search and freshness validation reject a mismatch. A regression test failed before the correction and passed afterward. The previous reader remains in old checkouts; current readers do not fall back to an untrusted raw artifact.
+
+The metadata-only index command deliberately clears the catalog text binding. Search and freshness checks fail until the offline all rebuild restores a matching catalog and gzip index. Independent review accepted this fail-closed behavior when documented.
+
+## Adaptive streaming Oracle implementation continuation — 2026-11-16
+
+Child TASK-2414 blocks parent TASK-2405. Worktree /Users/mitch/dev/worktrees/extension-oracle-2405 and branch feat/extension-oracle-2405 start from integrated reversal candidate6a59a3e. Preserve PR304/TASK2398, SDK and TUI work, original owner configuration and canonical untracked Pine. Exact approved prompt is copied to docs/EXTENSION-STREAMING-ORACLE-PROMPT.md. The raw original request is saved in prompts.md. Dedicated research agent/root owns native full-suite run a6585948d2fce4f576ddd5decff3a70908d912580dec95b766f2906dc7948bb4; current primary findings are draft engineering leads, not qualified research proof.
+
+Implementation design: pure oracle-model.js, native atomic oracle-store.js, lifecycle oracle-controller.js and DOM oracle-view.js, integrated into the existing1000x window. Reuse its one public Pyth stream and validated1m context; feed helper adds public catalog source identity. Forecast ten-minute closed-price UP vs NON-UP (DOWN or exact FLAT), once per fresh completed1m cutoff within15s. Mature only actual contiguous ten closed1m bars by a bounded90s late grace; unknown/expired labels are not trained/scored. Store causal fixed bounded feature transforms and issued probabilities. Score stored probabilities; gradient uses CURRENT weights on stored features (KNOW-2412), exactly once per outcome. Fixed0.5 same-event baseline, no fake heuristic probability. Historical label warm-start is disabled. Cold start and heuristic recent-underperformance serve a labeled baseline while candidate shadow learning continues.
+
+All per-partition weights, forecasts, metrics and issue/resolution watermarks commit in one IndexedDB readwrite transaction, isolated by market/catalog feed+address/source/horizon/feature-model-target version. Bounded128 recent forecasts/metrics and32 pending forecasts; at most16 partitions, refuse capacity rather than evict exact-once history. No runtime dependencies/LLM/extra inference/indexers/recorder. Remaining: implement actual learner/state/controller/UI; independent analytical and leakage/bounds/recovery/multitab tests; native browser learning/persistence/read-only gates; docs and prompt self-check; coordinate deterministic index size below100MiB; push draft PR for independent parent review, then final CI/merge/canonical acceptance. Do not merge before parent review.
+
+
+## Streaming Oracle implemented candidate checkpoint — 2026-11-16
+
+The0.9.0 implementation is complete in /Users/mitch/dev/worktrees/extension-oracle-2405 (TASK-2414 blocks TASK-2405). New pure oracle-model.js, atomic native oracle-store.js, lifecycle oracle-controller.js and DOM oracle-view.js reuse the existing public feed and validated1m context. Source identity now binds the catalog feed/address. The learner forecasts rolling10m completed close-to-close UP versus NON-UP, explicitly counting DOWN/FLAT separately. It issues per fresh1m cutoff, records immutable transformed features and candidate/baseline/actually-served probabilities, scores genuine outcomes and learns current weights exactly once. Cold start/fallback continue shadow learning. Pending32/recent128/partitions16 bounds, finite projected L2 updates, flat/unknown denominators, per-source/version isolation and expiry are implemented. Hidden windows pause learning; suspend/close abort owned IndexedDB transactions. No wallet, trading-default, permission, recorder, runtime inference or live-strategy change was made.
+
+Source checks completed572/572 and root JavaScript lint/checked-interface exit0 with INDEX_NO_AUTO=1; logs /Users/mitch/.local/state/oracle-streaming-2405/checks/extension-test-final.log and check-js-final.log. Native Chrome full fixture23/23 and actual public8/8 passed at browser-fixture-ready/receipt.json and browser-public-ready/receipt.json under the same evidence root, with exact loaded0.9.0 hashes. A final display-label clarification (resolved outcomes retain their known label after all pending forecasts expire) passed the complete23/23 fixture and8/8 public gate at browser-fixture-reviewed and browser-public-reviewed; current JavaScript checks also passed. The fixture demonstrates32 issued forecasts,22 exact-once learned labels and separate candidate/served/baseline metrics across actual extension contexts. It also checks native abort, collapse/reopen and unknown expiry with no added training/scoring. The accelerated synthetic ORCL fixture is not actual-market performance. The real public profile shows an initialized untrained learner waiting for a fresh minute with zero genuine resolved outcomes. Visual inspection confirmed the initial-source error was corrected; unread state no longer shows fabricated sample counts.
+
+Earlier browser failures are preserved. A same-URL top-level twin confused the iframe lookup after reopen; findPanel now binds target type=iframe. A quote pause that straddles a minute correctly refuses the partial close until history certifies it; the fixture explicitly refreshes history after recovery without weakening runtime conditions. No label/freshness/timer gate was removed. Native store abort smoke passed independently.
+
+Exact approved prompt is byte-preserved at docs/EXTENSION-STREAMING-ORACLE-PROMPT.md (SHA25606d3ffc424af00824dd0ea27f0b1fff09e80b4b1dd15ac4bcafa00367623a0d6). Design/equations/limits and provisional research provenance are in docs/EXTENSION-STREAMING-ORACLE.md. Research run a6585948d2fce4f576ddd5decff3a70908d912580dec95b766f2906dc7948bb4 remains parent/research-owned and unqualified at the last checkpoint (23 draft claims,0 trusted accepted). The execution self-check and active continuation are private under /Users/mitch/.local/state/oracle-streaming-2405/.
+
+Remaining: merge current master containing delivered PR304/c250f307; acquire the parent-owned lossless text-index migration PR307 before any index growth/push, regenerate deterministic docs/wiki/inventories/indexes under INDEX_NO_AUTO=1, update combined counts after integration, push a reviewable draft PR, independent parent review, final-head CI, merge and canonical loaded acceptance. Do not publish the nearly100MiB old raw text-index artifact or start any semantic/inference worker. All new source files are owned by this task; preserve current TUI/SDK and canonical Pine work.
+
+
+## Streaming Oracle integration checkpoint — 2026-11-16
+
+Source-qualified commit03978a92ca3c2c27dc7972e13889d5f755613930 is locally committed and its runtime is unchanged while merging current master15bbfa87bac6a8acb6409edc7ecaae4b91f229c1 (PR304/c250f307 plus PR307 lossless gzip index). All conflicted incoming extension files exactly matched the6a59a3e base; retained our reviewed source. /Users/mitch/.local/state/oracle-streaming-2405/runtime-hashes.json binds all eleven changed runtime/manifest/package files. Preserved incoming index migration code/test sources, deleted the old raw artifact, and retained both complete prompt/memory tails and all deltas. Combined source counts are1146 backtester +1582 SolTUI +57 Mongo +572 extension =3357. New gzip/static metadata will be generated with INDEX_NO_AUTO=1; no semantic vectors/workers may run.
+
+All exact final runtime source gates passed:572/572, JavaScript quality0, full native browser23/23 and actual public8/8. Authoritative final receipts are /Users/mitch/.local/state/oracle-streaming-2405/browser-fixture-reviewed/receipt.json and /Users/mitch/.local/state/oracle-streaming-2405/browser-public-reviewed/receipt.json. The public initialization assertion now requires a ready actual learner, and the native expiry assertion checks the retained resolved label. The last metadata merge does not change runtime bytes.
+
+Research status advanced: trusted job pub:1062e08eeed03535f5fa9af230e37e23 completed, probability/scoring concept revision50 has verified completion hash def78224c361cd7de96ab44da2fe5df40e9f8c7c78027d62edf53c5924de5520, and gate receipt art:4103e5f516ac34787bb21e96a5743c35aeb13b69dd8015ba0abc423f8f06e4a0 supported16/16 source-method claims. This does not validate app accuracy/calibration/profitability or full-suite completion. Pack compilation returned HTTP524 and remains under parent/research reconciliation. Do not repeat accepted gates. Remaining: deterministic integration checks, merged checkpoint commit, draft push/PR and independent parent review/finalCI/merge/canonical loaded acceptance.
+
+
+## 2026-11-16 — streaming Oracle independent-review corrections
+
+Draft https://github.com/mithudso/solmargintrader/pull/308 preserves source checkpoint03978a92ca3c2c27dc7972e13889d5f755613930 on origin/feat/extension-oracle-2405. Independent review found two Medium display-trust defects: panelModel failure did not suspend Oracle; OracleController reused a trained prior partition during unknown identity, delayed rebind or load failure. Two trained-state controller regressions failed first. A native Chrome finite-OHLC/indicator-overflow case also failed first because the old issued prediction remained visible. Red evidence is retained under /Users/mitch/.local/state/oracle-streaming-2405/checks/trained-view-regressions-red.log and browser-trained-invalid-red/receipt.json.
+
+The correction changes only oracle-controller.js, oracle-view.js and panel.js runtime bytes from the reviewed checkpoint. The controller immediately invalidates source changes, unknown identities, storage errors and suspension. It binds loaded state to the exact current source key and cancels obsolete transactions. The view displays same-source stale evidence only with an explicit historical label. Invalid chart/indicator data suspends Oracle and clears predictions/counters/feedback until valid analytics reload stored evidence. Learner/model/store bytes and target/scoring contracts are unchanged. Exact hashes are /Users/mitch/.local/state/oracle-streaming-2405/runtime-reviewfix-hashes.json.
+
+Current affected checks completed with INDEX_NO_AUTO=1:574/574 source tests, root lint/checked-JavaScript exit0, full native fixture24/24 at browser-fixture-reviewfix/receipt.json and actual public8/8 at browser-public-controls-fixed/receipt.json. The initial public7/8 receipt remains preserved: a live ETH ticker changed during collapse, so the harness now verifies retained native button DOM identities/presence instead of exact changing price text. No runtime freshness/unknown-label gate was loosened. Generated wiki customer-term scan found zero new customer-bearing values beyond existing source histories; a minified whole-file diff caused the generic guard notice. No customer material was authored.
+
+Remaining: finish merge of delivered compressed index15bbfa87, integrate delivered UI7bfeb02, regenerate/check deterministic gzip/static artifacts, commit and push the final draft candidate, independent parent re-review, final CI, merge and canonical visible persistent-profile public acceptance. Existing e2e profiles are deliberately disposable; the parent owns the final persistent visible launch. Do not touch personal browser profiles, owner configuration, Pine or live trading defaults. Do not start semantic/index inference workers. Source tests and synthetic learning are not public-market accuracy, calibration or profit evidence.
+
+
+### TASK-2414 final independent re-review and delivered-base integration
+
+Parent independent re-review closed both display-trust Medium findings, found no new corroborated Medium in the three corrected runtime files, passed22 focused tests and matched all eleven manifest hashes before/after inspection. Source/model/store remain frozen. Local merge commit7d9e7bb integrates the compressed-index base; the final integration now preserves delivered UI7bfeb02 source and all distinct prompt/memory sections. Final source counters remain574 extension /3359 counted suites. All final commands use INDEX_NO_AUTO=1. Remaining delivery is final deterministic metadata verification/push, final-head CI/parent merge and canonical visible persistent-profile public acceptance; the author must not merge independently.
+
+
+## 2026-11-16 — TASK-2414 all-horizon streaming Oracle delta
+
+Owner request: Make the feed train all of the timeframes, not just the one chosen. Decision KNOW-2433 requires independent1m/5m/10m/15m/20m/1h rolling close-to-close horizon models from the one existing validated minute stream. New isolated worktree /Users/mitch/dev/worktrees/extension-oracle-all-timeframes-2414 and branch feat/extension-oracle-all-timeframes-2414 start from canonical0.9 ed7f4bd. Preserve accepted0.9 worktree/profile, the health-audit worktree, current TUI/Terminal/Chrome/paper observers/collectors, private Pine, owner configuration and all frozen research cohorts.
+
+The candidate keeps existing schema/model/feature/target versions and exact600-second partition keys so genuine10m weights, forecasts and metrics survive unchanged. New horizons begin prospectively with historicalTrainingSamples=0. Use64 pending records per model (60 one-minute targets plus90s outcome grace/issuance margin),96 total logical partitions (room for16 six-model source groups),128 recent outcomes and constant-size cumulative scores. These are explicit engineering bounds, not empirical optimal choices. Never evict/reset evidence for capacity; per-horizon failures must leave healthy existing partitions operational.
+
+The current feed ties minute data to the selected1m chart and restarts its socket/context when chart intervals change. The candidate will separate authoritative minute context and source readiness from chart loading/derived arithmetic, switch chart history on the same socket, and show six compact model rows plus selected detail. Invalid shared minute/source/quote input withholds all models. A same-source stale observation must immediately mark saved evidence historical; a delayed older completion must consult the latest eligibility and never repaint active. The external real-model/actual-view repro is /Users/mitch/.local/share/solmargintrader/audits/index-2410/repro-03-oracle-controller.mjs; do not edit the audit source or apply unrelated findings.
+
+Plan: preserve the verbatim request and reproduce the race; generalize causal horizons and finite state validation; implement six-model lifecycle and feed/chart independence; add actual overview/detail UI; verify all six target windows, deselected learning, legacy10m,1h pending past32, independent fallback/capacity, restart/two-context exact-once and latest-eligibility races; run source and actual browser/public gates; regenerate deterministic metadata and push a draft immutable candidate for independent parent review. Parent owns final installed migration and actual live-profile acceptance. All offline commands use INDEX_NO_AUTO=1. No inference, embeddings, extra recorder/stream, signing/orders/arming/config changes or protected-worker restarts.
+
+
+### TASK-2414 all-horizon source checkpoint
+
+Candidate0.10 source uses the one shared TIMEFRAMES catalog, six independent rolling targets and legacy-compatible600 keys. Model equations and22 fixed feature coordinates remain unchanged.64 pending slots sustain60-minute targets,96 logical partitions leave existing records intact. The controller processes each horizon independently and consults the latest shared snapshot inside delayed reducers and at display time. It preserves verified same-source historical evidence through stale transitions; no older completion can repaint live. The feed now retains authoritative minute context across chart changes, aborts only obsolete chart history and exposes stream readiness separately. Panel learning runs independently of selected chart calculations. All six overview rows and selected detail are connected.
+
+Initial597/597 source tests passed before the final shared-feature-health regression was added. The focused race/horizon/core/feed checks passed78/78, including real-model/actual-view race red→green. Source now also checks invalid shared minute arithmetic even after a cutoff was issued; this must withhold labels/forecasts across all six. Candidate full598/598 and root lint/checked-JavaScript checks completed successfully. Browser fixture changes and final deterministic metadata are next; source tests alone do not establish loaded0.10 behavior. No real profile or protected service was modified. The historical exact prompt SHA remains unchanged.
+
+
+### TASK-2414 all-horizon final candidate qualification
+
+Recoverable source c3847d07580f608086cc6aedb2ed1efb826f1f5e is pushed in draft https://github.com/mithudso/solmargintrader/pull/311. All598/598 extension tests, root lint/checked-JavaScript and source-count docs checks passed (3383 counted suite tests). Independent read-only review found no corroborated Medium+, passed65 focused tests and exactly replayed121 complete0.9/new600-second states (121 issued/111 trained/10 pending). All ten runtime files remain frozen and match /Users/mitch/.local/state/oracle-all-timeframes-2414/runtime-checkpoint-hashes.json; no runtime edits followed that review.
+
+Actual full Chrome fixture27/27 and actual public8/8 passed at browser-fixture-final/receipt.json and browser-public-first/receipt.json under /Users/mitch/.local/state/oracle-all-timeframes-2414. Native two-context proof:82 issued per horizon and learned1m81/5m77/10m72/15m67/20m62/1h22;1h preserves60 pending. All six keep learning through selected-chart refusal without replacing sockets. Native96-partition capacity refuses a97th key without eviction or blocking existing writes. Abort/reopen and unknown-label expiry preserve all six metrics/learning denominators. Fresh public rows correctly show0 trained/resolved and unavailable accuracy. These are implementation and public-read proofs, not market quality or profitability.
+
+The first native receipt25/27 and native diagnostic6/7 remain preserved. Chart refusal can alternate error/backfilling while all chart signals stay withheld; the corrected test asserts non-live/unavailable rather than a frozen status word. The Node-generated0.9 golden JSON had one score-field difference under Chrome and was correctly refused by strict validation. A tracked frozen original0.9 source reference (original SHA82c042098fc695d6ff24c5eda9349afb64f094e9663b7036092e8a1b717258ac, only relative import paths adjusted) now generates actual old-browser state in a quarantined native store. That21-sample state survives exactly and resumes to22; actual view counts stay historical immediately after stale and after six earlier commits complete. No validator, score or runtime model was changed to accommodate the fixture. JavaScript checks and18 focused horizon/actual-view cases passed after the test-only reference addition.
+
+Remaining: finalize/check deterministic metadata, commit/push final proof/harness/docs delta, bind exact final head and remote tip, leave draft PR311 for parent final-headCI/merge and canonical12-state BTC/ZEC migration/visible acceptance. Preserve the running canonical0.9 profile, all protected workers, original config and old approved prompt SHA06d3ffc424af00824dd0ea27f0b1fff09e80b4b1dd15ac4bcafa00367623a0d6. No new streams/recorders, inference, embeddings, secrets, signing/orders/Arm or unrelated CDO batch fixes were introduced. Parent rebinds affected source diagnostics; do not repeat accepted research gates.
+
+
+### TASK-2414 final-head CI integration correction
+
+Candidate d75e70febe8a78c342a88ed82c1371996607e4c8 was pushed and PR311 readied. Exact-head CI43949665539 failed its backtester/docs index gate because three newly committed test-reference files were absent from the pre-stage catalog. The deterministic builder selects tracked files, so a local pre-stage freshness check did not include those untracked paths. Rebuild/check only after the new sources are tracked. The1146-test backtester failure was solely test_the_committed_index_matches_the_tree with those three paths; preserve the failed run.
+
+The generic browser gate passed25/25, while Linux1000x stopped at all-six minute1 issuance and its dependent trained cases failed. The Mac full27 and public8 remain accepted source proofs; Linux fixture setup must explicitly activate its owned second page because target creation does not establish visible state on every platform. The fixture now activates the owned page before restored-state checks and each accelerated minute. It retains one observation of the unchanged snapshot passed to the actual controller and logs visibility, timestamps, source/minute readiness and oracleInput eligibility if issuance fails. No production clock, freshness, label, visibility or model rule changes. Chart refusal checks unavailable signals/non-live status rather than an error word that valid quote callbacks can replace with backfilling. All ten runtime hashes remain c3847d0; no source re-review is needed unless a genuine runtime defect is found. Parent authorized waiting for final-head checks, merging only PR311 after green, and safe canonical fast-forward while preserving Pine; root owns subsequent independent profile migration acceptance. Do not touch PR309/310.
+
+
+The fixture bootstrap had a second reproducible setup defect: both Page.addScriptToEvaluateOnNewDocument and immediate evaluation could wrap Date.now again. A controlled repeat of the exact old bootstrap with a22,000ms offset produced144,000 instead of122,000 after two applications. The fixed idempotent bootstrap produces122,000 and preserves the wrapper identities. The actual browser learning case now reapplies it twice and verifies no clock/transport rewrapping, explicitly waits for a visible/fresh second context, and keeps bounded diagnostics. This is synthetic fixture code only; production source, quote freshness and label completion rules remain frozen. Red/green evidence: /Users/mitch/.local/state/oracle-all-timeframes-2414/checks/fixture-clock-red-green.json.
+
+## Current-source health audit continuation — 2026-11-16
+
+The existing TASK-2410 CDO run 2026-11-16T17:00:08Z has reviewed zero files. Preliminary master 7bfeb02 planned 52 changed, 183 new and 794 unchanged-skipped files before the 50-file cap. Replan the same run after the active ML work merges. The offline text-search examples now set INDEX_NO_AUTO=1 because keyword search can otherwise launch a background semantic rebuild; the separately authorized semantic commands remain explicit. Preserve the paused TASK-1541 and PR 235 and the private incident evidence.
+
+## Terminal working-directory repair — 2026-11-16
+
+The owner supplied a screenshot showing getcwd failing because the terminal working directory was deleted. The live verifier changed the idle owned shell to the canonical repository and restarted only the proven-dead monitor from that directory. The actual leverage/wallet/paper UI rendered, four protected workers remained alive and their configuration was unchanged. The prior retention worker was already absent and was not restarted or reset. Evidence: /Users/mitch/.local/state/reversal-leverage-2289/acceptance/urgent-cwd-repair-receipt.json. TASK-2294 remains the owner of live acceptance.
+
+
+## Current-source audit triage continuation — 2026-11-16
+
+The existing code optimizer run 2026-11-16T17:00:08Z has 54 scoped diagnostic receipts. Their pass qualifications and partial methods remain in force; no official final receipt was issued. Review source-hash and changed-contract rebindings for the six all-horizon files before recording coverage. The historic ledger, including the earlier unfinished run, must remain intact. The private helper copy preserves historical runs; assert the current run identity before every helper mutation and issue the final receipt only once.
+
+Focused regressions in the isolated audit worktree cover archive replacement and premature resolution, disabled-stream and corrupt-preference handling, public catalog recovery, semantic artifact generation pairing, queue byte cursors, startup cleanup and installation rechecks, scheduler isolation, and stale historical labels. These changes still require independent review and integration with the concurrently delivered auto-trade work before delivery. Static index and inventory regeneration is pending. No live process, owner database, model, embedding job or trading action was used for the isolated fixtures.
+
+The forward-test default file can diverge from rolled-back adoption evidence. A draft uses a transactional per-database outbox, shared durable discovery markers, a shared lock, idempotent recovery and expected-value conflict checks. Independent review found a replaced-database gap, and the draft now binds device, inode and database generation; re-review and final checks remain. Legacy writers that do not honor the lock require an activation boundary; no active worker was restarted. Other candidate findings, partial passes and test limitations remain open. The authoritative private checkpoint is /Users/mitch/.local/share/solmargintrader/audits/index-2410/TRIAGE-CHECKPOINT.json and the complete diagnostics are in ROOT-CDO-DISPATCH-STATE.json in the same directory. Keep PR 309 draft until integration, independent review and final checks are complete.
+
+
+## Oracle auto-trading continuation — 2026-11-16
+
+TASK-2458 is claimed. Isolated worktree /Users/mitch/dev/worktrees/oracle-autotrade-2458 is based on b242cbd6a8467a8e8b66d1451a739db82167bee8. Parent owns integration, final review, commit, delivery and subsequent workflow records. Preserve canonical private Pine, TASK-2410 and paused TASK-1541/PR235. No live trades, real services, key reads, embedding/index jobs or frozen paper-cohort changes are authorized during implementation. Paper is default and disarmed; use one durable exclusive session, distinct journal and validated Jupiter price basis. Each accepted start must open a base-size long or short within 900 seconds or visibly fail on operational integrity, never silently wait for a perfect signal. Freeze execution-aware exit, cost and liquidation assumptions before entry; liquidation touch is a failure and incomplete price continuity is unknown. 1000x close, settlement and payout are unverified and must block automatic opening. Live requires explicit new positive collateral and loss limits, and existing Console safeguards remain authoritative. Calibration and realized net-outcome minimum-sample gates precede any exposure escalation. Optional Anthropic advice cannot override limits or delay entry. Remaining: implement and test backend, worker and shared API; integrate surfaces and independently review; parent handles delivery.
+
+
+### TASK-2458 reviewed auto-trade candidate
+
+Extension0.11.0 and research-runtime0.4.3 add one shared private paper owner, immutable entry/exit plans, a900-second first-position deadline, observed liquidation failures,15-second minimum hold and10-second close delay. BTC/ZEC10x/1000x simulation remains explicitly separate from real venue execution and from old frozen cohorts. Both native-registry Chrome and TUI controls expose Start Paper, readiness-gated Live and Stop entries/managed closure. A fresh source-bound Chrome directional forecast is advisory; a distinct policy-partitioned prospective net-outcome learner controls bounded engineering boost gates. Optional private Anthropic advice is off and bounded. No paid provider call or funded transaction was used in source verification.
+
+Independent review closed four reproduced Medium findings (cost reserve/slipped liquidation, terminal resource retirement, micro-USDC precision and pre-Start exchange time), then closed the final cleanup/IPC responsiveness reproduction. All six final backend hashes match the independent closure receipt. Final44 isolated backend/registry tests and pinned Ruff0.17.4 passed. Surface checks include601 extension tests and46 Python surface tests. Root changed only defined metric labels to data/continuity failures instead of displaying nonexistent unknown/failed-start count fields; final source gates must bind this small display delta.
+
+The runtime wheel is self-contained, including oracle_leverage; its portable sdist also rebuilds successfully. Final packaging proof binds102 source files and both isolated native imports/mock dispatches. Artifacts: direct wheel0a067068f43e88f925b56bd487ba863b7e8802e9c03c3ffdffe7d2957c139002, sdist a1191d76b56b702690633d5f01ae34df21d89e308f053ccc3a1e33338af4bb01, roundtrip wheel3a3e2bda628b508c3391ebc941730d0f5c7d092cd0923e1f67381b4fdf39e77d. Private receipts live under /Users/mitch/.local/state/oracle-autotrade-2458; they are not public research outputs.
+
+Live10x remains blocked on validated position/request/fill/fee/settlement binding. Live1000x remains blocked on close, queue, recipient and payout proof. The owner was asked once for explicit new live collateral/session-loss limits; no answer is present yet. Do not reuse old75%-balance authorization or activate funded trading for acceptance. Remaining: final source/docs/index/wiki checks after tracking new files; delivery through final-headCI/merge; safe installed native-host runtime and genuine public-price paperStart/plan/cross-surface/managedStop outcome acceptance. Preserve protected collector and four paper workers, Chrome learned state, exact historical optimized prompt and private Pine.
+
+
+### TASK-2458 delivery integration
+
+Manager 0.7.6 and ecosystem 0.4.15 pin research-runtime 0.4.3. Installer source fingerprint includes the packaged oracle_leverage tree without treating it as a sixth project; installed health checks import its worker. A temporary-repository regression checks fingerprint changes. Existing immutable 0.4.14 environment remains untouched. Remaining: finish source and generated documentation gates, push draft for parent final-head CI and merge, and independently verify installed paper behavior after authorized installation.
+
+
+## Integrated audit and paper-session display — 2026-11-17
+
+The current-source health branch integrates auto-trade source from d0b26a4 without changing its backend trading logic. The draft repairs include lossless index and owner-state safeguards. The audit has 54 scoped diagnostic receipts with partial methods; it has no final receipt or whole-repository clean verdict. Earlier run bodies and file records remain preserved. The first integrated commands.py clarification remains partial despite a complete source read.
+
+The paper-session summary now identifies the actual shared policy asset and product, position direction/state and realized modeled session net, rather than relying on editable next-session selections. The TUI puts session, plan and outcomes in its first three summary lines; the Chrome status header names the same active identity. Focused tests use stub owners only. The public research export is regenerated from tracked allowed sources; no private Pine is included.
+
+Remaining: independent review of these final UI changes, exact-head CI, the user's live-owner attribution and paper acceptance, qualified audit ledger records and the single final receipt, final static freshness checks and parent-coordinated delivery. No running owner was installed, restarted or stopped by these edits.
+
+
+## Accepted auto actions on panel close — 2026-11-17
+
+A source-bound synthetic review reproduced a queued Stop being lost when the panel closed during a status request. Status reads and auto actions now use separate workers. An accepted action retains its request ID and drains on close; stale pre-action status cannot acknowledge it. The action worker is non-daemon so orderly process exit waits for its bounded RPC; read workers retain their prior cancellation defaults. Hard process termination is not a delivery guarantee. Stubbed tests cover queued and in-flight Start/Stop, duplicate suppression, late status, responsive close and orderly process exit. Independent review and final CI are required before delivery. No active owner was contacted by these tests.
+
+## Qualified optimizer receipt — 2026-11-17
+
+The single existing optimizer run 2026-11-16T17:00:08Z recorded all 54 selected diagnostics and issued its only final receipt with PARTIAL status. Twenty-one diagnostics retain exact unchanged source and contract bindings; 33 have changed or unproven bindings and require fresh method review. The integrated commands file has 13 applicable methods explicitly partial. The helper's hash-based coverage total does not establish complete reviews. See docs/audit-2026-11-17.md for the scope and limits.
+
+The prior ten run bodies and 806 nonselected file rows were verified unchanged. A private complete pre-record ledger backup retains all 846 original rows, including the 40 selected rows replaced by current records. Fourteen selected rows were new. Do not issue another helper mutation: an older unfinished run could become current. Source checkpoint d9c24f25 passed its source CI and independent mocked worker lifecycle review. The user confirmed the observed BTC and ZEC paper sessions were theirs. Remaining: deterministic metadata and documentation verification, final draft PR CI, separately coordinated isolated installed acceptance, and parent-controlled delivery. Do not activate or alter existing owners or frozen cohorts.
+
+
+## 2026-11-17 — Whole-application optimizer TASK-2527
+
+Workflow version: application-2527/1. Delta: initial application contract and continuation.
+
+Target: whole solmargintrader product, all eleven current components and their supported user/operating journeys. Use the240-method application-deep-optimizer catalog, REPAIR mode and default five-sweep ceiling. Baseline source is7c17fd1dfd73fd9a53ac7632cf317fc9c9db18f1 in isolated /Users/mitch/dev/worktrees/application-optimizer-2527; original checkout retains its two modified package manifests and private untracked Pine file.
+
+Preserve paused TASK-1541/TASK-1529/PR235/PR226, finalized PARTIAL TASK-2410 ledger, active Oracle confidence/UI work, frozen paper cohorts, shared-session ownership, disarmed defaults and archived liquidity. No service/model/indexer restart is a setup step. Canonical source outranks dated summaries.
+
+Completed: skill/standing instructions read; exact-run dedup and prior decisions; new tasks2527/2528/2529; isolated checkout; original request and skill pinned. Semantic lookup did not return within five seconds; bounded offline keyword retrieval succeeded with INDEX_NO_AUTO=1.
+
+Next: map current journeys and read-only runtime, freeze all240method selections and matrix, evaluate one method per pass, implement confirmed authorized Medium+ repairs, recheck complete selected coverage on final source, obtain independent acceptance, validate ledger and deliver owned changes. Keep evidence, attempts and versioned continuation in /Users/mitch/.local/share/solmargintrader/audits/application-2527/. Missing real research or runtime evidence stays explicit and cannot certify CLEAN.
+
+## 2026-11-17 — Application repairs TASK-2528
+
+Workflow version: application-2527/2. Delta: all240baseline method rows evaluated; six confirmed Medium findings under repair. Frozen plan selects222methods and18OUT_OF_SCOPE methods across34cells. Source/fixture checks do not satisfy missing participant, cost, provider, device and prospective evidence. The eventual stop is expected NEEDS_EVIDENCE, not a whole-application CLEAN certificate.
+
+Implemented: inert status/passive-forecast inspection, historical saved-configuration display with current exposure unknown when the owner is absent, Chrome session/position/cleanup reasons, automatic read-only control-room health refresh and teardown, account-bound tab-persistent backtest recovery with original job identity, fair cache scheduling with per-market public-feed failure isolation, and a dry-run operations guide matching the live-signing refusal. Browser tests exercise actual Worker/D1 fixture quota across lost acceptance and polling replies, reload and account switching; no real accounts or venue writes. Before/after inspection and scheduler failures are retained in the audit directory.
+
+Source candidate: runtime0.4.6, manager0.7.9, ecosystem0.4.18, extension0.11.2, website0.4.1. Package versions are source declarations; installation is not yet verified.
+
+Next: complete required checks and source review; regenerate deterministic documentation/wiki indexes without semantic indexing; freeze current hashes; rerun all222selected methods in a no-edit sweep, preserving evidence gaps; independent final review; installed/isolated acceptance without altering protected running owners; validate ledger and deliver the owned branch through passing CI and merged PR. Do not resume older audits or merge another task.
+
+Version note: workflow application-2527/3 reserves runtime0.4.7, manager0.7.10 and ecosystem0.4.19 because concurrent TASK2497 installed the previous0.4.6/0.7.9/0.4.18 candidate and moved the shared native wrapper. Preserve its environment and clients. Our acceptance environment is /Users/mitch/.venvs/application-optimizer-2527, and no task-owned installation may replace that shared route or stop its owner. Historical version declarations above describe the earlier local candidate.
+
+## 2026-11-17 — Independent application replay correction
+
+Workflow version: application-2527/4. Delta: current source integrates delivered PR320 shared-signal loading and fixes the full JavaScript CI check. Independent review1 corroborated a seventh Medium issue: default synthetic generation used42 but recorded seed0, so replay changed the data and return. The CLI now resolves one effective seed, and an actual manifest/result replay regression preserves omitted42 and explicit0 behavior. Source candidate advances canonical backtester0.2.2 and Oracle0.2.7 with coherent consumer pins; protected installed owners retain their old versions and cohorts. Native installed subset evidence for the earlier candidate is historical until final delivery wheels are verified.
+
+PR322 is draft at https://github.com/mithudso/solmargintrader/pull/322. Its initial JS check failed no-ex-assign; the handler now uses displayError and local full check:js passes. The new recovery module is included in the existing lint command. Required final checks, complete current-method sweep, fresh review2, coherent installed acceptance, final CI/merge and deployment qualification remain before closure. Do not replace shared routes or reset an owner merely to meet an audit gate.
+
+## 2026-11-17 — Verified application result
+
+Workflow version: application-2527/5. Delta: all current method judgments, meaningful regressions, two independent reviews and isolated installed acceptance are complete. The conservative current census retains all240methods/222selected/34cells:167PARTIAL,55UNAVAILABLE and18OUT_OF_SCOPE. All seven confirmed Medium source findings are FIXED. The current full-source manifest is source-manifest-v6.json, with4027verified inputs. Five is this continuation record version, not a claim of five optimizer sweeps; three complete diagnostic sweeps were performed within the default five-sweep ceiling.
+
+Independent review1 discovered the synthetic seed mismatch; fresh review2 returned no confirmed Medium+ on current v6. Actual private native status/passive-forecast checks, installed default-seed byte replay and Chrome0.12.1 reasons/real30-second health transitions/teardown passed. All264installed Python and174extension files match current application input lineage. The new browser test now waits for the existing submit-ready phase before its unchanged input-enabled check; the original scheduling failure and exact successful repeat remain evidence. No production behavior was changed for that fixture correction.
+
+Final source versions: backtester0.2.2, Oracle0.2.7, research-runtime0.4.7, manager0.7.10, ecosystem0.4.19, extension0.12.1, website0.4.1 and analysis-runtime1.0.1. Local checks include1152backtester,200Oracle,316ecosystem,390manager,634extension,212auto-trade,322website,65engine and76affected TUI cases, repository lint/type/syntax, deterministic metadata and real-browser fixture gates. Raw final exits and earlier failed attempts are preserved; do not infer installation or live provider acceptance from source versions alone.
+
+Delivery authority: https://github.com/mithudso/solmargintrader/pull/322 and the actual delivery-final.json receipt under /Users/mitch/.local/share/solmargintrader/audits/application-2527. The versioned ledger-final.json, current independent report final-review-2.json and installed-acceptance-v6.json record exact source and scope. Read the live PR/delivery receipt before resuming or claiming a merge.
+
+Remaining qualification is explicit: real provider/customer/venue acceptance, shared protected native/TUI and remote analysis-Container rollout, representative device/assistive/platform/load/energy evidence, actual participant/demand/retention/cost/toil data and mature prospective model utility/calibration. Overall status is NEEDS_EVIDENCE; no universal CLEAN, profitability or world-class certificate is issued. These gaps are not permission to restart owners, reset cohorts or launch studies. The existing .4.15/.4.18 owners, shared native route, collectors, private browser/model state, frozen cohorts, archived liquidity and paused audits remain protected.

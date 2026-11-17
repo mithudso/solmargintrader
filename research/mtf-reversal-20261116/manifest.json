@@ -1,0 +1,45 @@
+{
+  "version": "1.0.0",
+  "run_id": "run:80a9e65c7d86db88538308b8f313c8db344f3ed476410fccb16872b707f9600a",
+  "qualification": "unverified empirical drafts; independent numerical reproduction is not literature publication or venue execution proof",
+  "files": {
+    "model-bundle.json": {
+      "artifact_id": "art:6c7523c51bbe002c35c7a33786c795b9b9590c6b5cc4a27416c939517680e6d7",
+      "sha256_native": "26582590db90a0d82b5e080074c8f7adfe50eaca9ca15b0fe4c050699037fce3",
+      "native_bytes": 8501
+    },
+    "BTC-results.json.zlib": {
+      "artifact_id": "art:c551e418e1e0ef31d597a6140a7daf40006409d80c80a5238c1376135fb0d27a",
+      "sha256_native": "1fda9977a6cac0f43954e9790ec0f5947aea081eca89f40e6534fdb4ff3cf711",
+      "native_bytes": 535786
+    },
+    "ZEC-results.json.zlib": {
+      "artifact_id": "art:d74ca9209c35ca3b9245d0f2f64e6f7d5e582cbafb80fa283b839dfea3721066",
+      "sha256_native": "800b6eb236b26be8f024ca48fc2a4a7babc14b3dba4bbe81304897a93e4f4ca8",
+      "native_bytes": 502110
+    }
+  },
+  "report": {
+    "artifact_id": "art:507cd28a3ec974a64a499eb6d25dde16337d58f669cc89a8f079e272c0ff1927",
+    "sha256": "165c743760e4874f7843a4205bc8edb54237dd16923fb04aa0374d531e583e75"
+  },
+  "audit": {
+    "independent": {
+      "artifact_id": "art:be1be8778d332a8a86b362d6447bb27bf380cf1550d1492155b16c8caa636510",
+      "sha256": "a7d5ee2439e6b40c3810aab9a7ca68ed34b3beb52a03f2ce10c578313793ce4a"
+    },
+    "adversarial": {
+      "artifact_id": "art:507d821809d182b2f886fe7e2a37bb090d9f25d916ded6471011dbb13b2e2e06",
+      "sha256": "d13c090de7955d48ebd1ba7c778b6ae90c7a2ad5c6aa23e8794861a88ef7b54d"
+    }
+  },
+  "hypothesis": "art:94f8615970269f8b3d5d452c548b43f782466d3b1aa0adbbd4247ddf0b11ec1d",
+  "inputs": {
+    "BTC": "art:a38a25cc5e74050a42c467a6bbed033318f950684f0ecc24e0dad6e8af0d5259",
+    "ZEC": "art:daf887a414eb6078d63bbb2e557fbe6ebfc29433c43feaec69506a884bfda896"
+  },
+  "plan": {
+    "artifact_id": "art:89661fa35e6d70ef2f4508cc1a5ff0934c6c62fb9fd7eb3aa3f93dd817075cb1",
+    "sha256": "926e2259225b2a4abc8e878515fe59738449b7797251efb8a148fe9e06ac4699"
+  }
+}

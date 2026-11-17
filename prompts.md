@@ -1,5 +1,8 @@
 # Prompt history
 
+Version: 286
+Delta: integrated v285 to v286; retain both histories and the PR224 merge sweep.
+
 Version: 252
 Delta: v251 to v252; record the PR integration and merge request.
 
@@ -10,6 +13,78 @@ Resolve all the conflicts in the pull requests for https://github.com/mithudso/s
 ## Retained workflow history
 
 Version: 251
+Version: 285
+Delta: v284 to v285; preserve the reusable ZEC-analysis transfer and seven-day ETH request.
+
+## Weekly coin study — 2026-11-17
+
+Look at all of the backtests done for ZEC and write a script to do that whole same analysis for another coin, have it download the last week's worth of 1min bars and then run it through and see if we can find any correlations. The next coin to operate on is ETH.
+Delta: v283 to v284; retain both commissioned requests during concurrent delivery integration.
+Delta: v282 to v283; commission the whole-application optimizer with frozen coverage.
+Delta: v281 to v282; preserve the current status question.
+Delta: v282 to v283; preserve the paper-config connection error request.
+
+## Paper-config connection error — 2026-11-17
+
+I'm getting this error whe lading a paper config [Image #1]
+
+The supplied screenshot shows “Auto-trade owner unavailable” and blank paper collateral fields.
+
+## Current status question
+
+What are you doing?
+
+## Earlier follow-ups
+
+Delta: v280 to v281; preserve the TUI-opening request and streaming storage / multiple-window question.
+
+## Current session follow-ups
+
+open the  tui
+
+How is the streaming data being saved? Can I have two sessions open at the same time in separate windows?
+
+## Prior version history
+
+Delta: v279 to v280; preserve confidence-window, extension UI and directional-color requests verbatim.
+Delta: v278 to v279; preserve both auto-trade and audit screenshot requests.
+Delta: v277 to v278; preserve audit and screenshot continuation across merged 0.10 source.
+Delta: v277 to v278; preserve the autonomous paper and live trading request.
+Delta: v276 to v277; record the all-supported-timeframes streaming learner request.
+Delta: v275 to v276; preserve the delivered feed controls/UI prompt alongside the streaming Oracle history.
+Delta: v273 to v274; integrate the feed controls and UI audit request.
+Delta: v271 to v272; integrate independent feed controls/UI audit with current-format SDK and host reply.
+Delta: v269 to v270; preserve feed controls and complete UI optimizer request.
+Delta: v274 to v275; preserve the delegated independent-review correction scope for the streaming Oracle.
+Delta: concurrent integration to v274; preserve streaming Oracle and merged compressed-index records.
+Delta: v272 to v273; record and execute the approved adaptive streaming Oracle prompt.
+Delta: v272 to v273; record the current optimizer and bootstrap request.
+Delta: v271 to v272; integrate extension reversal and owner host reply.
+Delta: v269 to v270; record the extension two-bar reversal and indicator request.
+Delta: v270 to v271; preserve the owner host-identification reply.
+Delta: v269 to v270; begin reviewed current-format YOLO verifier implementation for the recorded owner request.
+Delta: v268 to v269; integrate current YOLO contract and concurrent exit50 requests.
+Delta: v267 to v268; record the current YOLO contract investigation excerpt.
+Delta: v267 to v268; preserve the exit50 and two-column requests verbatim.
+Delta: v266 to v267; record source-age and supported-shape follow-up.
+Delta: v265 to v266; integrate the UI delivery stage with concurrent Jupiter overlay records.
+Delta: integrated to v265; preserve both Jupiter overlay and incoming nine-strategy research records.
+Delta: v262 to v263; record the Jupiter Wallet installation follow-up messages.
+Delta: v261 to v262; record the Jupiter 1000x overlay optimization, fan-out, implementation and SDK request.
+Delta: v264 to v265; identify the UI-only delivery stage of the previously recorded owner requests.
+Delta: v263 to v264; record the complete strategy research commission and scope restoration verbatim.
+Delta: v262 to v263; record the restored strategy research and ZigZag priority.
+Delta: v261 to v262; record the superseding RS ZigZag strategy request.
+Delta: v260 to v261; record the Preview error request.
+Delta: v259 to v260; record the status flicker, arm control and forward results request.
+Delta: v258 to v259; record dual-price streams, visual accessibility, MTF study, and model-use requests.
+Delta: v257 to v258; record second reversal heuristics and any-time1000x liquidation requirement.
+Delta: v256 to v257; record full transaction wallet display and documentation reply.
+Delta: v255 to v256; record ZEC/BTC reversal-shape study, leveraged adapters and persistent paper forward test.
+Delta: v254 to v255; record titlebar/sound options and HYPE ETH BTC SOL comparisons.
+Delta: v253 to v254; record explicit reversal stages and one-minute excursion analysis.
+Delta: v252 to v253; record fixed ten-minute bearish-only reversal alerts.
+Delta: v251 to v252; record streaming indicators, click-to-chart overlays and two-bar TUI request.
 Delta: integrated to v251; retain parallel automated merge ancestry and all owner/research/AdSense records.
 Delta: v249 to v250; merge concurrent AdSense verification and ZEC working-paper request records.
 Delta: integrated to v250; preserve concurrent published ZEC reversal paper and qualified AdSense verification changes.
@@ -115,6 +190,26 @@ Delta: v191 to v192; capture ZEC ensemble backtest, data extension, top ten pape
 Delta: v191 to v192; record Lead Quantitative Orchestrator prompt optimization and market graph geometry research runbook.
 Delta: v190 to v191; capture the request to remove six assets from coin lists.
 Delta: v189 to v190; capture the additional friend-facing solbot diagnostics request.
+
+## 2026-11-16 — confidence window and extension UI
+
+I recognize that the oracle doesn't want to bet on something it can't 100% for sure prove ever time, but that's not the way of stocks. I want the oracle to tell me WHEN it is MORE certain, and stop refusing to give any information because it's not perfect. More accurate predictions are better than less accurate predictions and I do not blame the oracle for following the data if it happens to be incorrect. The oracle doesn't need to always have a strong opinion, but if there for 15seconds there is a window of 80+% confidence it will swing in one direction, then I absolutely want to know that and when, and when the window is gone. I don't want to guess and get stuck at the wrong end of a reversal.
+
+Run the deep ui optimizer on the chrome extension, and then run the deep document optimizer on all of the prose describing things. It is both too wordy and not descriptive enough.
+
+For all of the appropriate values adopt a shorthand to help visually scan:  if that indicator suggests it'll go upm then make the whole thing green. red for down, grey for neutral.
+
+## 2026-11-16 — Second reversal and liquidation path analysis
+
+> After the initial trade is executed, there is no stop-loss/take-profit, so look at the past detail instances where this pattern succeeded, and 1) identify if there are any correlations that would improve your odds of guessing this pattern occuring. 2) identify which factors, strategies, or indicators pointed to a the 2nd reversal, by which I mean you have 2bars up, then first reversal down, what would give you a heuristic of the second reversal where it goes from down to up? Also keep in mind that when puttin gin a 1000x trade the price can't go past the liquidation price at any point.
+
+
+## 2026-11-16 — Full transaction wallet identity
+
+> Display the full wallet address that's being used for the transactions in the margin trader app.. That wallet should have money in it.
+
+Owner also replied to the integration-documentation question: “Yes, I can share integration documentation”. The official public contract was independently located before this reply; no new document blocker is inferred.
+
 
 ## 2026-11-11 — All-component deep code optimization
 
@@ -2315,3 +2410,214 @@ Supplied screenshots preserved privately under /Users/mitch/.local/state/oracleb
 ```text
 Two things: 1)  If this is true, can I bet on a reversal after two ups or two down 10 mins?  10 minutes                          1.80 bars                        1.72 bars                20.8%                    41.4%     and 2) Can you write this up into a paper and post it on the oraclebot.io site?
 ```
+
+
+## Oracle winner live indicators and two-bar check — 2026-11-14
+
+```text
+1) Add this two bars in a row check to the /Users/mitch/.venvs/soltui/bin/python /Users/mitch/dev/solmargintrader/scripts/oracle_winners.py tui, also add a "refresh now" button which refreshes all the data, also the market indicators should be a streaming and constantly changing set of numbers. Also if I click on an indicator make it project the numbers onto the graph.
+```
+
+
+## Ten-minute bearish alerts in Oracle winners TUI — 2026-11-14
+
+```text
+FOr the  /Users/mitch/.venvs/soltui/bin/python /Users/mitch/dev/solmargintrader/scripts/oracle_winners.py tui add a check that if a full 10 min bar passes up, and midway through the 2nd 10min bar it starts to go down, consider that a reversal. And alert that on the screen near the top. If two full 10 min bars pass up/up, also alert that that the next one is very likely to be down. Don't do the same with down down up/
+```
+
+
+## Explicit reversal stages and excursion distances — 2026-11-15
+
+```text
+The 3-line alert banner is ambiguous as to whether it has detected 2 bars in a row, is watching for a second bar, and if it's in the reversal stage. Can you make it clarify? : If a bar is up, and while inside the 2nd bar a reversal starts, then it is likely to keep going. Can you look back at the 1min data and see when there as a reversal either inside or aftert the 2nd bar, what is the average breakout distance? What is the maximum breakout distance for reference?
+```
+
+
+## Oracle titlebar, optional sounds and cross-coin comparison — 2026-11-15
+
+```text
+Make the  "10m · 0 prior UP → bar ? (no UP setup) · WATCHING"  appear on the top title bar, along with if a reversal is detected, and then add a bell or audible alert option when it is detected, or after the 2nd bar.
+```
+
+```text
+Also check these coins for the same pattern in Hype coin, ETH, BTC, and SOL
+```
+
+
+## Shape-conditioned reversals and leveraged Oracle forward test — 2026-11-15
+
+On both ZEC and BTW, do a similar backtest looking at 5/10/15/20 min bars for the 2 bar reversal pattern. And then cross reference the 2bar reversal patterns with the graph shape during that time, For example if the graph shape is rising, then maybe the 3rd bar isn't as often a down. And then create and implement the standard 10x leverage through the CLI and integrate it into the /Users/mitch/.venvs/soltui/bin/python /Users/mitch/dev/solmargintrader/scripts/oracle_winners.py script. And then write and implement through the SDK the 1000x trading. I understand the risks, I know about the queue, betting against the house, and not being able to close within 15s. Please do it anyway and integrate it intyo the same tui. And then, start a forward test using the TUI and the best predictive strategy you can develop and let it keep running in the TUI so I can monitor how well it does against live data.
+
+Asset clarification: Yes, BTC (Bitcoin).
+
+
+## Dual streams, color, MTF study and routine model use — 2026-11-16
+
+```text
+When you’re doing the 1000x trade, can you stream the prices from Jupiter instead of coinbase? Can you make it always stream from both? to compare prices etc?
+```
+
+```text
+Colorize the TUI so it’s easier to visually scan. Bolding any text on buttons, underlining any links, making the most important features slightly larger, and using a more vibrant color for the important words.
+```
+
+```text
+Using the data in /Users/mitch/dev/solmargintrader/research/REVERSAL-SHAPES.md, make the system aware of 5, 10, 15, and 20 min graph shapes, and apply the logic based on the scores, so for example, it’s in a 20 min bowl or downward trend and you get an up-up, the next is almost certainly a down, but if it’s in a 15 min cap or 5 min cap then it’s almost certainluy NOT going to be a down. Rerun the tets with this strategy.
+```
+
+```text
+You only have 3%left of my weekly budget of tokens, when you’re running routine commands, checks, verification, anything that doesn’t require a lot of complex reasoning, context, or memory - call that using the Terra model using an appropriate reasoning level. Also use this model to do any front running work you need like pulling basic data and research, finding files or configs, updating indexes, or running any required audit tasks.
+```
+
+
+## Status flicker, arm control and forward results — 2026-11-16
+
+```text
+Make the center status update stop flashing "unavailable" and redrawing the data if it misses one second. '/Users/mitch/Desktop/Screen Recording 2026-11-16 at 2.35.08 AM.mov' if you’re going to insist on saying it then display it in a silent, green/yellow/red indicator dot. Also it says that trades are disarmed but I don’t have an "arm" button. Also the current results of the forward test, please display them next to the forward test status lines.
+```
+
+## Preview error — 2026-11-16
+
+```text
+I get an error when clicking on Preview, [Image #1]
+```
+
+
+## 2026-11-16 — Jupiter 1000x indicator overlay
+
+Run the deep prompt optimizer skill on this prompt and then run it: I have been using this margin trading system via online portal: https://jup.ag/1000x?market=SOL&mode=classic go to that site and download all of the javascript and learn how to stream the data with the site, such that with a plugin or userscript technical data, signals, strategies, etc can be overlaid on the chart itself or as a floating indicators window. I want some indicators like zig zag, rsi, balance of power, volty expans, and parabolic SAR. Read all of the rules, as well as https://developers.jup.ag/docs/llms-full.txt  Use the other code in this repo to help understand how to calculate the stratgy and indicator numbers, but don't be stuck by them. Do this as a fan out of agents each investigating their part and aggregate the information into a cohereent writing plan, choose between a userscript and a chrome plugin, and then implement it. Also use the SDK to learn how to create and close orders such that eventually you can be fully automated in watching and trading.
+
+
+## 2026-11-16 — Jupiter Wallet browser installation follow-up
+
+User: it won't lety me install the jupiter wallet for you so I can sign in and do all the signing and stuff.
+
+User: https://chromewebstore.google.com/detail/jupiter-wallet/iledlaeogohbilgbfhmbgkgmpplbfboh?utm_source=jup.ag&utm_medium=wallet&utm_campaign=wallet-extension__hero-install-chrome
+
+User: I click approved and then it gives me an error: Download error: Installation is not enabled and spins forever
+## RS ZigZag strategy, 2026-11-16
+
+> Add a new one to the list, forget the others, this one is showing17,000%returns in3mo with86%winrates. Iputthecodein ~/dev/solmargintrader/rs_zig_zag_pa_strategy.pine
+
+The owner supplied screenshots of the reported simulator performance, inputs and properties, including a subsequent 15-minute chart. Reported results are reproduction targets, not independently verified performance.
+
+Owner follow-up: "fan out agents to complete the rabbitholes you were told to do, and add this zig zag rs pa strategy as the top contender." The earlier seven strategies and distinct Channel Breakout reference are restored; the ZigZag investigation is the first priority.
+
+## Strategy research commission and restoration — 2026-11-16
+
+```text
+I was on TradingView trying out various strategies to play with, and for ZEC, during a 5 mo lookbak these are the strategies that
+  brought in over 100% return: momentum, moving averaage, parabolic SAR, Pivot Reversal, Price channel, two moving averages crossover, volatility expansion-close strategies. Fully investigate each of these strategies with a rabbithole skill, then build strategy cards for each if they don't already exist, and backtest using each of them. Also keep pulling more BTC and SEC fine grained data for another chance at testing
+```
+
+```text
+fan out agents to complete the rabbitholes you were told to do, and add this zig zag rs pa strategy as the top contender.
+```
+
+```text
+Strategy inputs were left at defaults, yes.
+```
+
+```text
+10min
+```
+
+SEC is interpreted as ZEC from context. Channel Breakout came from a separate screenshot and is distinct from Price Channel. ZigZag is first research priority; this is not a live-profit qualification. The later 15-minute ZigZag screenshot has a different date window from the prior 10-minute reports. The owner-supplied source remains private and uncommitted.
+
+## UI delivery stage, 2026-11-16
+
+The owner requests are preserved verbatim in the earlier v257–v260 entries. This stage implements the leverage panel changes separately from the ongoing exit50 and MTF research. This paragraph is an implementation interpretation, not a verbatim prompt.
+
+## Source-age follow-up — 2026-11-16
+
+The earlier owner requests for source-aware prices and 5/10/15/20-minute conditional shapes remain recorded above. This follow-up interprets those requests as adding numeric per-source quote ages and explaining unsupported model components without altering the frozen model.
+
+## YOLO contract investigation — original user request excerpt
+
+On both ZEC and BTW, do a similar backtest looking at 5/10/15/20 min bars for the 2 bar reversal pattern. And then cross reference the 2bar reversal patterns with the graph shape during that time, For example if the graph shape is rising, then maybe the 3rd bar isn't as often a down. And then create and implement the standard 10x leverage through the CLI and integrate it into the /Users/mitch/.venvs/soltui/bin/python /Users/mitch/dev/solmargintrader/scripts/oracle_winners.py script. And then write and implement through the SDK the 1000x trading. I understand the risks, I know about the queue, betting against the house, and not being able to close within 15s. Please do it anyway and integrate it intyo the same tui. And then, start a forward test using the TUI and the best predictive strategy you can develop and let it keep running in the TUI so I can monitor how well it does against live data.
+
+The user clarified that BTW means BTC.
+## 50 percent collateral exit and unified reversal research — 2026-11-16
+
+```text
+Redo the tests again but this time, instead of letting it ride until there's a signal of a 2nd reversal, for for the 1000x margin make it close its position after reaching 50% profitability, and include that it generally takes up to 10s for a position to close after submission. So let's put this all together into a single framework. It will look for 10min up bars, if there's a reversal near the end of the 2nd bar or if the 2nd bar is also up it will make that known, it will be graph shape aware so that if certain graph shapes occur it is more likely to downward reversal will be true. And then it'll watch the ema, and macd, along with profitability tracking to identify when to exit. Is it possible to incorporate the "balance of power" indicator or some other reliable orderbook volume measure to show which side has more orders? Can you see if that affects the results from the backtests?
+```
+
+
+## Two-column Oracle display and candle blocks — 2026-11-16
+
+```text
+Put the positions and oracle calls on the right side of the /Users/mitch/.venvs/soltui/bin/python /Users/mitch/dev/solmargintrader/scripts/oracle_winners.py instead of having to scroll down, just add a 2nd column. Also At thte top have two large buttons that as the bars come in they highlight the bars red if they're downm, green if they're up, grey if flat, and it moves from right to left, so the right block moves to the left block and then the right one refreshes with the new bar. Make the make the price range distance from mean increase the color of the block, so a large dip would be very bright red, while a very small one would be very grey-red. And above them should be the 4 shape-times with a + or - next to it indicating whether or not the next block is more or less likely to come out higher or lower based on the shape, according to the backtest data.
+```
+
+
+## 2026-11-16 — Oracle feed controls and UI audit (TASK-2399)
+
+> In the /Users/mitch/.venvs/soltui/bin/python /Users/mitch/dev/solmargintrader/scripts/oracle_winners.py tui let me turn off either of the feeds, to cut down on noise. If I de-select coinbase remove all coinbase related items from the page until I re-enable coinbase.
+
+> Run the deep UI optimizer on the /Users/mitch/.venvs/soltui/bin/python /Users/mitch/dev/solmargintrader/scripts/oracle_winners.py tui. And run the deep code optimizer, and the repo-bootstrapper.
+
+This implementation owns feed controls and the UI optimizer; the parent task owns the separate deep-code and bootstrap workflows.
+
+
+## Extension two-bar reversal and indicators — 2026-11-16
+
+```text
+Add the same down down up logic and indicators to the /Users/mitch/dev/solmargintrader/extension chrome extension.
+```
+
+## Owner host-identification reply
+
+The name of the box is M-GN90147X97, or m3, or work.
+
+## Current-source optimizer request — 2026-11-16
+
+Run the deep UI optimizer on the /Users/mitch/.venvs/soltui/bin/python /Users/mitch/dev/solmargintrader/scripts/oracle_winners.py tui. And run the deep code optimizer, and the repo-bootstrapper.
+
+## Adaptive streaming Oracle extension — 2026-11-16
+
+```text
+Also add to the extension a streaming version of the oracle with predictions based on the data, but use the streaming data to train and inform the predictions. Make it a self correcting feedback loop. spin off an agent to do a full-suite skill research on real time machine learning streamning market data.
+```
+
+Execute the final approved optimized prompt byte-for-byte in docs/EXTENSION-STREAMING-ORACLE-PROMPT.md (SHA25606d3ffc424af00824dd0ea27f0b1fff09e80b4b1dd15ac4bcafa00367623a0d6). Structural optimization and native full-suite research are parent-owned; do not repeat optimization or claim unqualified research as published.
+
+
+## 2026-11-16 — delegated streaming Oracle review correction
+
+The parent requested these corrections after independent review. This is implementation-review continuation, not a new user model/target request:
+
+> Independent03978a9MLreviewfoundTWO MEDIUMdisplay/trust defects, fixred→greenbeforefinalreview/delivery: 1)panel.js:121-134 catches panelModelinvalidsnapshot andreturnswithout suspending/invalidationOracle. PreviousactivepredictioncanstayLIVEindefinitelywhilechart sayssignals unavailable. In catchsuspend/invalidateOracleview (historicalsame-sourceonlyifexplicitstale) andtestbadfeedthenfreshrecovery. 2)oracle-controller.js:29-30,46-48,52-55 spreads#lastduringconnecting/errorswithoutbindingincomingkey; oracle-view.js:39-55 rendersoldpartitionprediction+metricswhilefeedId/marketAddresscatalogrebindunverifiedorstoragefails. Clear/unavailableoldstateuntilcurrentidentityverifiedandloaded (orstrictlybindhistoricaldisplaytosamecurrentkeyexplicitly); add testsfromanALREADYTRAINEDoldcontroller, thensourceidentityswitchwithloaddelay/failure. Existingtestsfromemptydidn'tcoverthis. Sourcecorrectlearnercurrentgradient/score-before-learn/flatNONUPconfirmedbyreviewer, noempiricalqualityclaims. Role/root/streaming_oracle_code_reviewcompletedifneedfindingscontext. Fixonlyactualdefectswithoutrelaxingstagegates; exactsourcehashesnewreceipts+574-ishactualcountsdocscorrect. 307master15bbavailablegZip. Pushrecoverabledraftsourceaftergates/staticregen, keepunmergeduntilre-review+CI. Tests23/public8oldpassreceiptsretainbutnewaffectedgatesmustrerun. AllcmdINDEX_NO_AUTO=1. No extrauserpermissionneeded.
+
+
+## 2026-11-16 — streaming Oracle trains every supported timeframe
+
+```text
+Make the feed train all of the timeframes, not just the one chosen.
+```
+
+Train independent rolling close-to-close models for1m/5m/10m/15m/20m/1h from the existing validated minute stream. The selected chart controls displayed detail. Preserve genuine0.9 ten-minute state and its exact historical approved prompt. This delta also fences the corroborated same-source pending-completion display race from KNOW-2430; it does not authorize unrelated CDO repairs or trading changes.
+
+## Owner screenshot — 2026-11-16
+
+[Image #1]
+
+The image shows a terminal reporting that getcwd cannot access a deleted parent directory.
+
+
+## Oracle auto-trading and dry run — 2026-11-16
+
+```text
+Add the the chrome extension an auto-trading feature, and a dry run feature, the dry run is auto trading but with paper, the oracle makes a specific entry point and exit point and if it liquidates then that's a failure. Because I know the oracle would happily simply never making a trade waiting on a perfect set of circumstances that will never happen when I click start on the auto-trading it is required to make an up or down prediction by starting a Long or a Short position within the next 15 min, and seeing it through till the end. It is allowed to use my anthropic api key to ask for advice or lookup something. The auto-trading should also be available via the TUI. When the oracle feels strongly about a price movement (75+%) then it can bet more of my funds and do it more frequently. As long as the oracle is overall surviving and staying profitable then keep learning, training, betting. Is there anything in this that I am missing?
+```
+
+
+## 2026-11-17 — Whole-application optimizer TASK-2527
+
+Workflow version: application-2527/1. Delta: new application-level run; previous entries preserved.
+
+```text
+$application-deep-optimizer  /Users/mitch/dev/solmargintrader
+```
+
+The user explicitly supplied application-deep-optimizer1.0.0. Preserve its complete commission and exact skill hash in /Users/mitch/.local/share/solmargintrader/audits/application-2527/commission.json. This invocation commissions whole-product evaluation and authorized Medium+ repair, separate from skill creation and older code/UI audits.

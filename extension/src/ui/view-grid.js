@@ -155,7 +155,7 @@ function renderBanner() {
     el.textContent = 'Dry run — real prices, simulated fills, nothing placed on chain.';
     el.className = 'banner ok';
   } else {
-    el.textContent = `LIVE (${config.mode}) — orders are real and spend real funds.`;
+    el.textContent = `Configured ${config.mode} — bundled live Trigger orders are blocked. Other enabled live actions can spend real funds.`;
     el.className = 'banner warn';
   }
 }

@@ -204,6 +204,24 @@ command registry. No npm runtime dependencies by design; one vendored charting l
 | `extension/manifest.json` | MV3 manifest; validated in CI |
 | `extension/package.json` | Scripts only — no runtime and no dev dependencies |
 | `extension/README.md` | Includes the **Verification status** section; read it before extending |
+| `extension/src/1000x/feed.js` | Catalog-bound public oracle history and one stream, with bounded1m reversal context and owned teardown |
+| `extension/src/1000x/indicators.js` | Pure causal ZigZag/RSI/BOP/Volty/SAR and research-aligned EMA/MACD recurrences |
+| `extension/src/1000x/reversal.js` | Completed10m DD/UU context, trailing48-bar5/10/15/20m shapes and separate closed1m momentum; no model or position inference |
+| `extension/src/1000x/panel-model.js` | Independent quote/history freshness and closed/developing eligibility checks |
+| `extension/src/1000x/panel.js` | Floating read-only chart, labeled reversal/shape/momentum cards and local view settings |
+| `extension/src/1000x/timeframes.js` | Shared supported-horizon catalog for chart selection and all six learners |
+| `extension/src/1000x/oracle-model.js` | Pure bounded logistic learner, immutable prospective forecasts, genuine delayed labels and paired probability metrics |
+| `extension/src/1000x/oracle-store.js` | Separate native IndexedDB atomic partition transitions across windows and reloads |
+| `extension/src/1000x/oracle-controller.js` | Existing-feed coalescing, source/version isolation, stale/obsolete-session refusal and owned teardown |
+| `extension/src/1000x/oracle-view.js` | Rolling10m UP/NON-UP forecasts, candidate/served/baseline metrics and explicit fallback/unknown states |
+| `extension/test/1000x-oracle-model.test.js` | Analytical gradient/scoring, delayed current-weight learning, flat/unknown labels, prefix invariance and bounded recovery |
+| `extension/test/1000x-oracle-controller.test.js` | Concurrent/reloaded controllers, stored forecast reuse, quote coalescing and obsolete-session fences |
+| `docs/EXTENSION-STREAMING-ORACLE.md` | Streaming learner target, equations, atomic persistence, bounds, research status and verification limits |
+| `docs/EXTENSION-STREAMING-ORACLE-PROMPT.md` | Exact byte-preserved approved adaptive streaming Oracle execution prompt |
+| `extension/tools/1000x-e2e.mjs` | Native Chrome fixture and actual-public-portal gates with exact executed module hashes |
+| `extension/tools/1000x-reference.py` | Offline independent Python numerical-vector generator for extension analytics |
+| `extension/test/1000x-reversal.test.js` | Bound Python parity, prefix/future invariance, gap/partial resets and unsupported model/position regressions |
+| `docs/JUPITER-1000X-OVERLAY.md` | Public feed contracts, causal indicator/reversal formulas, browser evidence and installation |
 | `extension/src/core/commands.js` | The single registry. Every action lives here or the parity test fails |
 | `extension/src/core/risk.js` | Every risk rail, as a gate an order must pass. Rails fail closed |
 | `extension/src/core/grid.js` | Ladder geometry. `backtester/core/gridsim.py` is its port |
@@ -440,6 +458,25 @@ part of any component.
 | `soltui/live_score.py` | Current forward-vote eligibility, latest call snapshot and terminal tick-window layout. |
 | `extension/src/ui/live-score.js` | Browser score adapter and aligned immutable price/score tick chart. |
 | `docs/LIVE-PREDICTION-SCORE.md` | Scoring, eligibility, freshness and observation-history contract. |
+
+### Oracle leverage and paper reversal observer
+
+| Path | Purpose |
+| --- | --- |
+| `scripts/oracle_winners.py` | Canonical Oracle TUI entrypoint, plain-mode compatibility and optional leverage-panel startup. |
+| `research/zec_leverage_panel.py` | Responsive ZEC/BTC paper monitor and explicit Preview/Submit/Close controls. |
+| `oracle_leverage/console.py` | Disarmed-default execution boundary, wallet binding, intent journal and reconciliation. |
+| `oracle_leverage/cli.py` | Pinned official10x CLI, bounded child processes, dry runs and frozen named keys. |
+| `oracle_leverage/sdk/service.mjs` | Official1000x API, SDK intent checks and owner-signature verification. |
+| `oracle_leverage/sdk/bridge.mjs` | Real1000x SDK builders, unsigned simulation and official keeper service dispatch. |
+| `oracle_leverage/forward.py` | Future-only paper decisions, immutable selection, collector lock and settlement. |
+| `oracle_leverage/market.py` | Bounded public Coinbase USD minute candles, quotes, freshness and recovery reads. |
+| `oracle_leverage/store.py` | Persistent paper predictions, explicit trading intents and all-history performance. |
+| `oracle_leverage/README.md` | Operator workflow, current capabilities, limitations and verification. |
+| `docs/ORACLE-LEVERAGE.md` | Public packaged-wiki copy of the leveraged Oracle operator guide. |
+| `research/reversal_shapes.py` | Causal48bar shape conditioning, four bar intervals and fixed64-candidate selection. |
+| `research/reversal_inputs.py` | Bounded liquidBTC minute acquisition with exact raw-response hashes. |
+| `research/REVERSAL-SHAPES.md` | Independently reproduced ZEC/BTC rates, final-split results and cost scenarios. |
 
 ### Signal Desk interface
 
