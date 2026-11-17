@@ -1,11 +1,11 @@
 {
-  "generatedAt": "2026-11-17T01:56:05+00:00",
+  "generatedAt": "2026-11-17T02:06:15+00:00",
   "schemaVersion": 1,
   "repoRoot": "~/dev/solmargintrader",
-  "commit": "5e86dda",
+  "commit": "a8091ab",
   "counts": {
     "files": 3988,
-    "bytes": 140714237,
+    "bytes": 140716184,
     "byKind": {
       "strategy-card": 1478,
       "doc": 839,
@@ -73768,9 +73768,9 @@
       "title": "Every file in this repository",
       "summary": "Regenerate with: python3 index/build.py all # refresh the index python3 index/make_files_doc.py # rewrite this file",
       "summarySource": "opening-prose",
-      "bytes": 1838999,
+      "bytes": 1838903,
       "lines": 38262,
-      "sha1": "df269883b157fb381f3240e2bb6d20f745dd0a3e",
+      "sha1": "3943cf92681e87d904fa023dbdadb2a3613be3f7",
       "symbols": [],
       "imports": [],
       "internalImports": [],
@@ -84686,9 +84686,9 @@
       "title": "1000x-e2e",
       "summary": "Read-only 1000x overlay browser gate. No dependencies; uses real CfT and the repository CDP transport. Default is a deterministic public-contract fixture. --live separately visits the actual public portal; it never connects a wallet. Fixture: real browser fetch + native WebSocket to an ephemeral loopback server. Only the exact public stream URL is mapped; source modules are never replaced.",
       "summarySource": "docstring",
-      "bytes": 75592,
-      "lines": 679,
-      "sha1": "ca5e3b912f0921edffbe5d5fc2118c909a5dfb0d",
+      "bytes": 77235,
+      "lines": 689,
+      "sha1": "d7dbf70caebac5203a95f1705d6f74aa11b8ac79",
       "symbols": [
         "CATALOG",
         "EXT",
@@ -88187,11 +88187,11 @@
       "ext": ".md",
       "kind": "doc",
       "title": "Work continuation",
-      "summary": "Routing follow-up: source adds owner-only optional connection routing for ordinary clients; explicit environment homes remain first. The isolated 1000x paper acceptance passed one start and stop with recorded modeled outcome. The user-owned registry and shared wrapper remain unchanged. Verify focused checks, review and deliver the routing PR before a separately controlled activation.",
+      "summary": "Browser CI fixture: the native IndexedDB abort assertion raced an independent next-minute model commit. The fixture now pauses both producers and drains tracked operations and an IndexedDB barrier before the unchanged equality check. The full local browser fixture passed 27/27 with exit 0.",
       "summarySource": "opening-prose",
-      "bytes": 630224,
-      "lines": 3053,
-      "sha1": "42f5b6d2a9bb072aa5e0f6a432b6f212df2fad57",
+      "bytes": 630624,
+      "lines": 3056,
+      "sha1": "536782058c1da9004e004a9dc02f4be5531e5317",
       "symbols": [],
       "imports": [],
       "internalImports": [],
@@ -118824,5 +118824,5 @@
       "frontmatter": {}
     }
   ],
-  "textSha256": "51eae71a56aa5fe4e12371795b92b7b55d0adc5d24cc616a1b7b124a722cea33"
+  "textSha256": "f79c078dea4c0534321f2cf9d12fd9a9c63566065dc6fa78749fed76425ada90"
 }

@@ -1,6 +1,6 @@
 # Every file in this repository
 
-**Generated** from `index/INDEX.json` at commit `e06f9d7` (2026-11-17T01:50:40+00:00). 3988 tracked files, 140.7 MB.
+**Generated** from `index/INDEX.json` at commit `a8091ab` (2026-11-17T02:06:04+00:00). 3988 tracked files, 140.7 MB.
 
 Regenerate with:
 
@@ -648,9 +648,9 @@ Repository-level entry points and agent instructions. `AGENTS.md` and `CLAUDE.md
 
 #### `memory.md`
 
-`doc` · 3053 lines · 630,224 B · description: **extracted**
+`doc` · 3056 lines · 630,624 B · description: **extracted**
 
-**Purpose.** Routing follow-up: source adds owner-only optional connection routing for ordinary clients; explicit environment homes remain first. The isolated 1000x paper acceptance passed one start and stop with recorded modeled outcome. The user-owned registry and shared wrapper remain unchanged. Verify focused checks, review and deliver the routing PR before a separately controlled activation.
+**Purpose.** Browser CI fixture: the native IndexedDB abort assertion raced an independent next-minute model commit. The fixture now pauses both producers and drains tracked operations and an IndexedDB barrier before the unchanged equality check. The full local browser fixture passed 27/27 with exit 0.
 
 **Use.** Read it.
 
@@ -28306,7 +28306,7 @@ The Chrome extension has a separately armed trading surface. Dry-run is the defa
 
 #### `extension/tools/1000x-e2e.mjs`
 
-`code-js` · 679 lines · 75,592 B · description: **extracted**
+`code-js` · 689 lines · 77,235 B · description: **extracted**
 
 **Purpose.** Read-only 1000x overlay browser gate. No dependencies; uses real CfT and the repository CDP transport. Default is a deterministic public-contract fixture. --live separately visits the actual public portal; it never connects a wallet. Fixture: real browser fetch + native WebSocket to an ephemeral loopback server. Only the exact public stream URL is mapped; source modules are never replaced.
 

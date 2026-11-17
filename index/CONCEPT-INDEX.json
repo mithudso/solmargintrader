@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-11-17T01:56:05+00:00",
+  "generatedAt": "2026-11-17T02:06:15+00:00",
   "schemaVersion": 1,
   "note": "Concepts are derived from the repo's own vocabulary \u2014 the FAMILY dict, strategy-card frontmatter, docs/trading-signals-concept-family.md, and terms verified to recur in the corpus. A concept matching no file is dropped, not kept.",
   "counts": {
@@ -658,12 +658,12 @@
           "hits": 114
         },
         {
-          "path": "skills/trading-and-investing/SKILL.md",
-          "hits": 109
+          "path": "extension/tools/1000x-e2e.mjs",
+          "hits": 111
         },
         {
-          "path": "extension/tools/1000x-e2e.mjs",
-          "hits": 108
+          "path": "skills/trading-and-investing/SKILL.md",
+          "hits": 109
         },
         {
           "path": "soltui/JUPITER_ORDER_WIDGET_IMPLEMENTATION_GUIDE.md",
