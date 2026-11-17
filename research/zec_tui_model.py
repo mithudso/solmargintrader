@@ -19,6 +19,7 @@ from backtester.core.zec_ensemble import canonical_config
 from research import zec_live as live
 from research.shape_study import detect_shapes
 from research.zec_expanded import key as config_key
+from research.zec_tui_notifications import sound_settings
 
 CONFIG_KEYS = {
     "members",
@@ -138,6 +139,7 @@ class WorkingSet:
             96,
         )
         self.overrides = {}
+        self.sounds = sound_settings()
         self.selected = set()
         for interval in live.STEPS:
             choices = [
@@ -247,6 +249,7 @@ class WorkingSet:
                 "lookback": self.lookback,
                 "selected": sorted(self.selected),
                 "overrides": self.overrides,
+                "sounds": sound_settings(self.sounds),
             }
         )
         if len(body.encode()) > 1_048_576:
@@ -288,6 +291,9 @@ class WorkingSet:
         ):
             raise ValueError("Unknown saved strategy")
         candidate = WorkingSet(list(self.originals.values()))
+        if "sounds" in data and not isinstance(data["sounds"], dict):
+            raise ValueError("Invalid saved sound settings")
+        candidate.sounds = sound_settings(data.get("sounds"))
         for identity, config in data["overrides"].items():
             if identity not in self.originals:
                 raise ValueError("Unknown saved configuration")
@@ -299,6 +305,7 @@ class WorkingSet:
             data["lookback"],
         )
         self.selected, self.overrides = selected, candidate.overrides
+        self.sounds = candidate.sounds
 
 
 def market_details(rows, interval, end, lookback=96, configs=()):
@@ -316,7 +323,34 @@ def market_details(rows, interval, end, lookback=96, configs=()):
         "shape": live.latest_shape(bars, valid, live.STEPS[interval]),
         "indicators": [],
     }
-    values = result["indicators"]
+    result["indicators"] = market_indicators(clean, configs)
+    if n >= 48:
+        frame = pd.DataFrame(
+            {"timestamp": clean["ts"], "close": close, "high": high, "low": low}
+        )
+        tag = detect_shapes(frame, window=48).iloc[-1]
+        result["shape"].update(
+            episode_age_bars=int(tag.episode_age_bars),
+            turn_phase=str(tag.turn_phase),
+            range_low=float(np.min(low[-48:])),
+            range_high=float(np.max(high[-48:])),
+            trace=close[-48:].tolist(),
+            trace_start=int(clean["ts"][-48]),
+            trace_end=int(clean["ts"][-1]),
+            fitted_turn_bars_ago=(
+                float(tag.fitted_turn_bars_ago)
+                if np.isfinite(tag.fitted_turn_bars_ago)
+                else None
+            ),
+        )
+    return result
+
+
+def market_indicators(clean, configs=()):
+    """Canonical trailing scalar readings; callers control completed/live inputs."""
+    close, high, low = (clean[k] for k in ("close", "high", "low"))
+    n = len(close)
+    values = []
 
     def add(name, value, ready=True):
         values.append(
@@ -399,24 +433,4 @@ def market_details(rows, interval, end, lookback=96, configs=()):
                 add(f"Stoch K{k_period}/D{d_period} %K", k_value)
                 add(f"Stoch K{k_period}/D{d_period} %D", d_value)
     # Multiple strategies can share the same indicator parameters.
-    result["indicators"] = list({r["name"]: r for r in values}.values())
-    if n >= 48:
-        frame = pd.DataFrame(
-            {"timestamp": clean["ts"], "close": close, "high": high, "low": low}
-        )
-        tag = detect_shapes(frame, window=48).iloc[-1]
-        result["shape"].update(
-            episode_age_bars=int(tag.episode_age_bars),
-            turn_phase=str(tag.turn_phase),
-            range_low=float(np.min(low[-48:])),
-            range_high=float(np.max(high[-48:])),
-            trace=close[-48:].tolist(),
-            trace_start=int(clean["ts"][-48]),
-            trace_end=int(clean["ts"][-1]),
-            fitted_turn_bars_ago=(
-                float(tag.fitted_turn_bars_ago)
-                if np.isfinite(tag.fitted_turn_bars_ago)
-                else None
-            ),
-        )
-    return result
+    return list({r["name"]: r for r in values}.values())

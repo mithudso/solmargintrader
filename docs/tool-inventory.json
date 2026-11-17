@@ -12,7 +12,7 @@
   "sources": [
     {
       "path": "backtester/pyproject.toml",
-      "sha256": "d5f9d3b02e49ea4821a93c4b11a60eed0c646363ab18204e9af0ef215ee2a2b4"
+      "sha256": "f3cf793fbde3d66845c36b0ba9b19dedfb64f50bc83e73d32d3e802cdd0e04dd"
     },
     {
       "path": "backtester/run.py",
@@ -20,7 +20,7 @@
     },
     {
       "path": "botmanager/pyproject.toml",
-      "sha256": "116f3d094b8ff32383a67cf0402ca9c5fe318d8c7a8f90b1e32a9b1458a5cefd"
+      "sha256": "44bc8c5aaf9d41c2d6800472c9d1bb623bd54b5da666b870c9c5945508aa3444"
     },
     {
       "path": "botmanager/src/botmanager/cli.py",
@@ -36,7 +36,7 @@
     },
     {
       "path": "ecosystem/cli.py",
-      "sha256": "68b42fc4e520558820a5d73e428f3c5a3cfc3cd1f537bf7a724ce2f5697dfe9c"
+      "sha256": "c3ba6af0b972ab64698f85a823f5c6b7041b33dd6163276c89f419e83947b867"
     },
     {
       "path": "ecosystem/forecast.py",
@@ -52,7 +52,7 @@
     },
     {
       "path": "ecosystem/pyproject.toml",
-      "sha256": "9a601e7566a102414bcf6b26033a09ccbcbfc43ab675c5a55435a2f93e362b7e"
+      "sha256": "68eeee06fb2764f6ab7740d2f019756126e2d8bee2502f5da2b5d5b8bdb81764"
     },
     {
       "path": "ecosystem/web.py",
@@ -68,15 +68,15 @@
     },
     {
       "path": "executor/src/executor/registry.py",
-      "sha256": "53a41f1d416d893fa0328049f414fbab36a8517572e012c16929d51ed70d8993"
+      "sha256": "c5c5506adcf712b6780d2676b81f078e93f13e278acef4257f22348450ca333c"
     },
     {
       "path": "extension/package.json",
-      "sha256": "fa0c582d6efc41069a51694bdf8a42755620abb3ebfeda53ffe01810e2903b02"
+      "sha256": "d544ffad066debfc938eecb69b0fc01553c4403319e05d61c6e746e0fe33ccd4"
     },
     {
       "path": "extension/src/core/commands.js",
-      "sha256": "4974b050dcebbd6cbd59d4afee7d845a2f0142de04c5085af7b7b353695fce8e"
+      "sha256": "2478c2930e280ef4b4bcb9b4632e2e38540c077bb587659ef0f551b7ef757107"
     },
     {
       "path": "liquidity/pyproject.toml",
@@ -84,27 +84,27 @@
     },
     {
       "path": "liquidity/scripts/aero-lp-service",
-      "sha256": "f6647cef5a10525f5ca1aa16fde643da68b1935683c869a9221927f25314804a"
+      "sha256": "40143c8d9e1a541d7c2340e6f2fcf7bab27985c9033af2fbacef3610d0fab6f9"
     },
     {
       "path": "liquidity/src/aero_lp/cli.py",
-      "sha256": "81b44980489379c6179ee7f6aedce971cba27c243d637b53f2c3a5cc751007e1"
+      "sha256": "e6a4a366c579969f52de1262d140f4fd013dd2166a7f02a7a32f21eee3fb0176"
     },
     {
       "path": "oracle/cli.py",
-      "sha256": "30855ad53d29c7c35900d1e0a752bd4f30214e1337c425f5ff2b4fce6ea76764"
+      "sha256": "736e9d4d33f19f9ce58cd03689230dee489e10e9c1b762f0b1d6f97ec1187649"
     },
     {
       "path": "oracle/pyproject.toml",
-      "sha256": "4c21549fe2081d6ff9f7ee399bd0b70d1c4ce76d5f4a53d564d3c7364571cb6e"
+      "sha256": "c8866e0de87e328a8e9a302d2c36e4f16aea7ff300cb1806a7499cb6d124d8f6"
     },
     {
       "path": "oracle/server.py",
-      "sha256": "3dba2dfa041f5bd2ba542c7f54607f1e3098a00442c320d87ea7096be9bd3587"
+      "sha256": "dd6545433ee57150e38efcfcb03a529f15114b113707cb3e52b44ac9c2077d03"
     },
     {
       "path": "package.json",
-      "sha256": "5e2112e957d708bbb1fd4a3f127da8de4e06c9be8805e5173647dbbd9e7737e5"
+      "sha256": "4f26d803a45fcba085e9bbabf6bf1e34a7916d705ba2ecb851db2af4cf08ac7d"
     },
     {
       "path": "scripts/build_operation_inventories.py",
@@ -120,11 +120,11 @@
     },
     {
       "path": "soltui/bin/soltui",
-      "sha256": "17c4cd5582fd3a248e82e83cb7bd979794b6ed1365f75433ad0505325a5abaf1"
+      "sha256": "2e8640844a056424ada5bbe7cc5d62160eb2e650bb2f0985002b29a3fc103ae8"
     },
     {
       "path": "soltui/commands.py",
-      "sha256": "b059886396392f634a92f51e6d4c3e2780ff32340e2bb1dbaf03827edb9e98a0"
+      "sha256": "ccc751193de508d3efdf7c3ebbc50776c0c3ed708e1621247cb547d067259611"
     },
     {
       "path": "soltui/make_icon.py",
@@ -132,15 +132,15 @@
     },
     {
       "path": "soltui/pyproject.toml",
-      "sha256": "5bd9ffabe35746979845e87d6b28eaff1412b422fd3a99a2fb095ccb992831fd"
+      "sha256": "05e0ef644fa8a8ec926adc17c3b3aee9af1a9a42c8a1b4a35496e723224ad0be"
     },
     {
       "path": "soltui/soltui-service",
-      "sha256": "f2ce931f6b9f1d7769d668357ef030c2942a5d4d7ac2e42d901aa28ec9ea27ec"
+      "sha256": "3ed51a530bfd2f7ad2efadc98f8924313a11be28d565cfde2e41071ec313f798"
     },
     {
       "path": "website/package.json",
-      "sha256": "bc3e9f738fdc1391409177a1b11b8f6d52d106fcb7ec7de82cf69495c6263b95"
+      "sha256": "823a956de79e8f1b51c354045e5945a55c98ee2fb8965d488ca12f55f19182cd"
     }
   ],
   "tools": [
@@ -178,6 +178,20 @@
       "source": "extension/package.json",
       "symbol": "scripts.e2e",
       "declared_command": "node tools/e2e.mjs",
+      "help_command": null,
+      "side_effects": "script-specific; inspect declared command before invoking",
+      "signing": "not inferred from npm metadata",
+      "ambiguity": "no financial retry inferred",
+      "gate_refs": [
+        "extension/package.json"
+      ]
+    },
+    {
+      "id": "extension/package.json:e2e:1000x",
+      "kind": "npm-script",
+      "source": "extension/package.json",
+      "symbol": "scripts.e2e:1000x",
+      "declared_command": "node tools/1000x-e2e.mjs",
       "help_command": null,
       "side_effects": "script-specific; inspect declared command before invoking",
       "signing": "not inferred from npm metadata",
@@ -247,7 +261,7 @@
       "kind": "npm-script",
       "source": "package.json",
       "symbol": "scripts.lint:js",
-      "declared_command": "eslint extension website/src website/public/app.js website/public/evidence.js website/public/agent-access.js ecosystem/web eslint.config.mjs",
+      "declared_command": "eslint extension website/src website/public/app.js website/public/evidence.js website/public/agent-access.js website/public/backtest-recovery.js ecosystem/web eslint.config.mjs",
       "help_command": null,
       "side_effects": "script-specific; inspect declared command before invoking",
       "signing": "not inferred from npm metadata",
@@ -626,7 +640,7 @@
       "kind": "npm-script",
       "source": "website/package.json",
       "symbol": "scripts.test:browser",
-      "declared_command": "node test/ui-browser.mjs && node test/agent-browser.mjs && node test/hosted-browser.mjs",
+      "declared_command": "node test/ui-browser.mjs && node test/agent-browser.mjs && node test/hosted-browser.mjs && node test/backtest-recovery-browser.mjs",
       "help_command": null,
       "side_effects": "script-specific; inspect declared command before invoking",
       "signing": "not inferred from npm metadata",

@@ -159,7 +159,7 @@ export function mountSignalDesk(root, { ask, openTool, refreshLive, transport, p
       kpi('Progress', status ? `${status.done ?? '—'} / ${status.total ?? '—'}` : 'Unavailable', 'Cancellation stops at a configuration boundary'),
       kpi('Saved run snapshots', String(runs.length), 'Saved in this browser · source context retained'),
       kpi('Current backend asset', actual?.asset ?? 'Unavailable', `${actual?.interval ?? '—'} · historical settings are independent of the live-view asset`)));
-    target.append(buttons([['New backtest', 'backtest.run', {}, true], ['Review dates & costs', 'settings.save'], ['Edit roster', 'roster.list'], ['Inspect research queue', 'queue.progress'], ['Review cancel sweep', 'backtest.cancel']]));
+    target.append(buttons([['New backtest', 'backtest.run', {}, true], ['Review dates & costs', 'settings.save'], ['Edit roster', 'roster.list'], ['Inspect research queue', 'queue.progress'], ['Cancel backtest sweep', 'backtest.cancel']]));
     if (actual) target.append(note(`Run settings: ${actual.asset} / ${actual.interval} · ${actual.start || 'beginning'} to ${actual.end || 'end of cache'} · capital ${numberText(actual.capital)}.`));
     const section = el('div', { class: 'card' }, el('div', { class: 'card-head' }, el('h2', { text: 'Historical evidence' }),
       action('Compare selected runs', () => compare())), note('CPCV results · net returns include recorded costs.'));
@@ -215,7 +215,7 @@ export function mountSignalDesk(root, { ask, openTool, refreshLive, transport, p
       kpi('Saved trial rows', data['forwardtest.status'] ? String(rows.length) : 'Unavailable', `${asset()} · separate trial / horizon records`),
       kpi('Active tuning', state?.optimize == null ? 'Unavailable' : state.optimize ? 'Enabled' : 'Off', 'Adoption changes are kept in the saved trial history'),
       kpi('Paper entry confidence', state?.execution ? numberText(state.execution.min_confidence) : 'Unavailable', 'Separate from live vote accuracy and sample floors')));
-    target.append(buttons([['New paper setup', 'forwardtest.start', {}, true], ['Start prepared checks', 'forwardtest.run'], ['Review stop checks', 'forwardtest.stop'], ['Review saved session', 'forwardtest.state'], ['Resume saved session', 'forwardtest.restore']]));
+    target.append(buttons([['New paper setup', 'forwardtest.start', {}, true], ['Start prepared checks', 'forwardtest.run'], ['Stop shared predictions', 'forwardtest.stop'], ['Review saved session', 'forwardtest.state'], ['Resume saved session', 'forwardtest.restore']]));
     if (state?.execution) target.append(note(costText(state.execution)));
     target.append(note('Paper predictions share one producer across apps. Stop pauses automatic recovery until Start.'));
     const section = el('div', { class: 'card' }, el('h2', { text: `${asset()} prospective evidence` }));

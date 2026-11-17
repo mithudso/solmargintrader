@@ -113,7 +113,7 @@ see [local API setup](INSTALLATION.md#optional-the-local-http-surface).
 
 ```bash
 cd extension
-npm test                                              # 555 tests
+npm test                                              # 707 tests
 node tools/dryrun.js --ticks 8 --osc 6 --offline 100  # the integration gate
 node tools/cli.js                                     # lists every command in the registry
 node tools/api-server.js                              # local HTTP surface; requires SMT_API_TOKEN
@@ -185,10 +185,10 @@ This component has its own dependencies and lockfile. Offline pytest excludes th
 Run all of these before claiming a change works:
 
 ```bash
-python3 -m unittest discover -s backtester/tests -t .   # 1196 tests
-python3 -m unittest discover -s soltui/tests -t .       # 1694 tests (TUI dependencies required)
+python3 -m unittest discover -s backtester/tests -t .   # 1228 tests
+python3 -m unittest discover -s soltui/tests -t .       # 1718 tests (TUI dependencies required)
 python3 -m unittest discover -s mongo/tests -t .        # 73 tests
-cd extension && npm test                                # 555 tests
+cd extension && npm test                                # 707 tests
 node tools/dryrun.js --ticks 8 --osc 6 --offline 100    # a round trip must close POSITIVE
 cd extension && npm run e2e                             # real-browser load + dry-run (needs Chrome for Testing)
 python3 scripts/check_docs.py                           # doc counts and retrieval indexes

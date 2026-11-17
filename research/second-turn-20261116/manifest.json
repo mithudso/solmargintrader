@@ -1,0 +1,71 @@
+{
+  "version": "1.0.0",
+  "run_id": "run:80a9e65c7d86db88538308b8f313c8db344f3ed476410fccb16872b707f9600a",
+  "scope": "Retrospective descriptive study; no global novelty claim. Native artifacts are research material, not trusted publication proof.",
+  "files": {
+    "ZEC-results.json.zlib": {
+      "artifact_id": "art:c0720dfb00a15ccc300f477bcdda85bfc7185a6f93b22ce424f32442585dc467",
+      "sha256_native": "89d49aacbb8ebfa0c1b0ff0bb96872f3aa0007bf932b3d35cc082e9218d54175",
+      "bytes_native": 3189248,
+      "sha256_file": "9a8f3a09e798da27231d4e4669b18fa9dd23584fac6f26909f3b7e372bd51aa9"
+    },
+    "BTC-results.json.zlib": {
+      "artifact_id": "art:6377ccbf9beff4f8e15bbca4b132bef1463202e762aab28ddea6b1c1d1db2f20",
+      "sha256_native": "a94b192037ef7243cbbdab598e5e3401084455784661686aaf9ae203047c5401",
+      "bytes_native": 3354020,
+      "sha256_file": "af7d571082f69afe9eb149facd911f6d42b5a2e65c0269193e90e1d18633e7ba"
+    },
+    "derived-details.json.zlib": {
+      "artifact_id": "art:f80e83df1875fc195f10d67ca6cc9a5d3324dfd5090d18c06f95755e7c596c2b",
+      "sha256_native": "f1ba341fa2d211f91ff0a40a5e8e6655650fc6e282ed28bb5bfae84432c0a3ad",
+      "bytes_native": 267058,
+      "sha256_file": "a71edd24c812d9723da1f182676373bde3ceeddf8b875fcd551f141950b4eb95"
+    },
+    "ZEC-first_down.svg": {
+      "artifact_id": "art:c1b8bccc30afa62edf2f6fe0a394a023fff40d50c3a22b8b20b7c40027b3a457",
+      "sha256_native": "3e98eaeb564a77157c1ddcfe32dabf2b55a610f42372f5d53534a9ce839fc27b",
+      "bytes_native": 123427,
+      "sha256_file": "3e98eaeb564a77157c1ddcfe32dabf2b55a610f42372f5d53534a9ce839fc27b"
+    },
+    "ZEC-second_up.svg": {
+      "artifact_id": "art:ea76bb3e30c123ad0dd792f445288b066396e345b3ed1593664000c2182a7711",
+      "sha256_native": "4246a3e104ddb0985196ac581a994bf477d062a1c292d6fa573b06b8edc1a9e7",
+      "bytes_native": 118948,
+      "sha256_file": "4246a3e104ddb0985196ac581a994bf477d062a1c292d6fa573b06b8edc1a9e7"
+    },
+    "BTC-first_down.svg": {
+      "artifact_id": "art:66282699324fdeda08bb4dce3fabac4752ef384e2ff8461c1eb7c4cde35ed37e",
+      "sha256_native": "a062370336d0097a39ec4e9b16271d6a0f222b5735bdc968102ae79cb4ae5be4",
+      "bytes_native": 121593,
+      "sha256_file": "a062370336d0097a39ec4e9b16271d6a0f222b5735bdc968102ae79cb4ae5be4"
+    },
+    "BTC-second_up.svg": {
+      "artifact_id": "art:7ff80bd85259bc99a5a541225b0da72eb9da11ba2cee0eb0a2bdffbb5302c94e",
+      "sha256_native": "a0cfaca91b09dc54e04bb92d889d0d096198aa47c57be38f70a8addc7ed90321",
+      "bytes_native": 121322,
+      "sha256_file": "a0cfaca91b09dc54e04bb92d889d0d096198aa47c57be38f70a8addc7ed90321"
+    }
+  },
+  "native_only": {
+    "method_v2": "art:a8e910397cca0fb96a917ab8005a298241dc88b18715ea214925fb477934f23d",
+    "quality_v3": "art:66be83f81c44762b64619dc780bb727918567dfabdef033c3ff1e133e7bfc25e",
+    "ZEC_oracle_source": {
+      "artifact_id": "art:daf887a414eb6078d63bbb2e557fbe6ebfc29433c43feaec69506a884bfda896",
+      "sha256": "8b5eb4f54851fad81c28137bda85e643e34c93da349c3c0178b8df271948b2bc",
+      "bytes": 2884035
+    },
+    "BTC_oracle_source": {
+      "artifact_id": "art:a38a25cc5e74050a42c467a6bbed033318f950684f0ecc24e0dad6e8af0d5259",
+      "sha256": "fbd5534c9fa21d2d9cb21ad3614b6a5ec5e5ee6369ec0f2be879b7af0304fba6",
+      "bytes": 3445043
+    },
+    "report": {
+      "artifact_id": "art:e958d24930aef663f3106682c3b7d5ade1aaa30013aeaba51cd3412edf88cf4a",
+      "sha256": "c466ae7f034db4eec8ffd51f120fb2cf593caf216ff77149a86668498af42f26"
+    },
+    "audit": {
+      "artifact_id": "art:4042f4c88875e5391cf3bdba1335ece84ff7e71bf94c4ddd5a41c1ef4e74099c",
+      "sha256": "e8a983c0645243da0268778127497197e1607a5feb74caaca37064f94a43e2e7"
+    }
+  }
+}

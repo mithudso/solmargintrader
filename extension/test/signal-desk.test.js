@@ -15,6 +15,7 @@ test('comparison binds data, code, geometry, timing and costs, independent of st
   }
   assert.equal(comparisonKey({}), null);
   assert.match(comparisonStatus([{ context }, { context: other, cancelled: true }]), /Partial/);
+  assert.match(comparisonStatus([{ context }, { context: other, error: 'fixture failure' }]), /canceled or failed/);
 });
 test('saved run detaches evidence and never mistakes a different command for a sweep', () => {
   const run = runFromEnvelope(env);

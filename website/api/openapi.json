@@ -2,7 +2,7 @@
   "openapi": "3.1.0",
   "info": {
     "title": "Oraclebot account and research API",
-    "version": "0.4.0",
+    "version": "0.4.1",
     "description": "Wallet-authenticated accounts, durable analysis jobs, finite trading authorizations and subscription lifecycle controls. Customer credentials stay in a separate private executor. Deployment gates independently control billing and trading; source tests do not establish provider acceptance."
   },
   "servers": [

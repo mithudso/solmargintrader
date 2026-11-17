@@ -27,7 +27,7 @@ export function comparisonStatus(runs) {
   if (runs.length < 2) return 'Select at least two saved runs to compare.';
   const keys = runs.map((r) => comparisonKey(r.context));
   if (keys.some((k) => k === null) || new Set(keys).size !== 1) return 'Incompatible evidence: data, code, dates, costs or evaluation settings differ. Inspect separately; no combined ranking.';
-  if (runs.some((r) => r.cancelled || r.error)) return 'Partial evidence: a selected run was canceled. Completed rows remain inspectable; no combined ranking.';
+  if (runs.some((r) => r.cancelled || r.error)) return 'Partial evidence: a selected run was canceled or failed. Completed rows remain inspectable; no combined ranking.';
   return 'Matched dataset, code, interval, capital, CPCV geometry and cost scenario. Compare the recorded summaries below.';
 }
 export function runFromEnvelope(env) {

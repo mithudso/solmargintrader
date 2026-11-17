@@ -130,6 +130,10 @@ class ReadOnlyStore(Store):
         self.path = Path(path).expanduser().absolute()
         if self.path.is_symlink() or not self.path.is_file():
             raise ValueError("oracle_archive_unavailable")
+        stat = self.path.stat()
+        self._identity = (stat.st_dev, stat.st_ino)
+        self._verify_resolutions = False
+        self._policy_body = None
         with self.connection() as db:
             version = db.execute("PRAGMA user_version").fetchone()[0]
             if version not in (1, 2) or db.execute(
@@ -198,16 +202,36 @@ class ReadOnlyStore(Store):
                     != columns
                 ):
                     raise ValueError("oracle_archive_incompatible")
+        self._verify_resolutions = True
 
     @contextmanager
     def connection(self):
+        def check_identity():
+            try:
+                stat = self.path.stat()
+                if self.path.is_symlink() or (stat.st_dev, stat.st_ino) != self._identity:
+                    raise ValueError("oracle_archive_changed")
+            except OSError as exc:
+                raise ValueError("oracle_archive_changed") from exc
+
+        check_identity()
         db = sqlite3.connect(self.path.as_uri() + "?mode=ro", uri=True, timeout=2)
         db.row_factory = sqlite3.Row
         try:
+            check_identity()
             db.execute("PRAGMA query_only=ON")
             db.execute("PRAGMA trusted_schema=OFF")
+            db.execute("BEGIN")
+            if self._policy_body is not None:
+                row = db.execute("SELECT body FROM metadata WHERE key='policy'").fetchone()
+                if row is None or row[0] != self._policy_body:
+                    raise ValueError("oracle_archive_changed")
+            if self._verify_resolutions and db.execute(
+                "SELECT 1 FROM resolutions r JOIN forecasts f ON f.id=r.forecast "
+                "WHERE r.resolved_at < f.target LIMIT 1"
+            ).fetchone():
+                raise ValueError("oracle_resolution_before_target")
             with db:
-                db.execute("BEGIN")
                 verifier = getattr(self, "verifier", None)
                 if verifier is not None:
                     verifier(db)
@@ -234,6 +258,7 @@ class ReadOnlyOracle(OracleEngine):
             row = db.execute("SELECT body FROM metadata WHERE key='policy'").fetchone()
         if row is None or len(row[0]) > 128_000:
             raise ValueError("oracle_policy_unavailable")
+        self.store._policy_body = row[0]
         policy = json.loads(row[0])
         if (
             not isinstance(policy, dict)

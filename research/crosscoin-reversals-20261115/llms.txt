@@ -1,0 +1,54 @@
+# Cross-coin reversal replication
+
+Version: 1.2.0
+Qualification: descriptive in-sample empirical archive; client writes do not establish trusted research qualification.
+
+The larger fixed sample does not establish a general 70% rule. Separate next-candle color from post-detection endpoint continuation and maximum favorable excursion.
+
+Native Mongo run: run:81ab918bd3e5d5aa8ad4ef4f4a691f32a289c9ad27ffccfeb3deff540dc3e10d
+Original ZEC receipt-clock study remains unchanged.
+
+Methods: 10m setup, 1m observations; intrabar minutes1–9, midpoint5–9, close confirmation10; one priorUP vs lasttwoUP; future5/10/20min excluding signalminute, signalclose vs nextopen, all vs non-overlap. Provider completeness and positive-volume masks stay separate. No DOWN/DOWN/UP, no forward fill, no fees/fills/P&L, no live qualification.
+
+Coverage: KuCoin USDC30days Oct10 20:20Z to Nov9 20:20Z forHYPE/ETH/BTC/SOL; common Coinbase USD day Nov12 05:00Z to Nov13 05:00Z forfivecoins includingZEC, with20mininputbuffers. Coinbase HYPE69missingminutes andZEC1missing; zero-volumeKuCoin rows remainvisible.
+
+Summary:648 rows;16820 tagged variants across policies/masks are not independent opportunities.
+
+## Shared outputs
+
+- ../CROSSCOIN-REVERSAL-PATTERNS.md - qualified numerical report
+- ../crosscoin_reversals.py - pure causal replication and base report renderer
+- ../reversal_history.py - bounded public collection and integrity-checked archive codec
+
+- sources/kucoin-HYPE.json.zlib - immutable exact provider responses and normalized candles; art:074708758537d027a1914994d681e413b1d6b2a590d862f7491b62ac8c5ebdf6; decodedSHA256 2a1049d7747b2c33d07359f51c4221bce92ce43d75b2eef0bd063a6f5a86002a
+- results-kucoin-HYPE.json.zlib -72 rows and causal event outcomes; art:b7e0f5e9c3cd36f6e638343129ff719c676edf493b6820bcc9f4d9c2e38a1f55; decodedSHA256 8137a3d37fa89a345132a9f0a9d62c92659ca351158c47cf5e414d7cec5b0abc
+- sources/kucoin-ETH.json.zlib - immutable exact provider responses and normalized candles; art:1bf80aea5213f0b328f5e7d27a29e5b7179d7a0d74bf65c7a0fbef015704648d; decodedSHA256 2e4c51ffa2ff221403bf85682016e85648224ad05914dcdea601d752adbc8808
+- results-kucoin-ETH.json.zlib -72 rows and causal event outcomes; art:8465ac615e4f16eb6d3994f1f363b5eb860c1ec1168da1e6d489b281786c5daf; decodedSHA256 bb0bc33687dae13eee682dd4dbfddb28832dd33168a65f0c9d6d25deef807bc3
+- sources/kucoin-BTC.json.zlib - immutable exact provider responses and normalized candles; art:77b1f7190e350648060a315e49265fe4c1a7065728fa24ef5741f6ebaf4ce32e; decodedSHA256 c6bbf87d72cb2c985717da9ca32a467dc757894ad8b83f61e263deb76801725e
+- results-kucoin-BTC.json.zlib -72 rows and causal event outcomes; art:926ccc8b4b5fad2471151b2ec99a947826fa31ebf7e667a7282ae14265135f72; decodedSHA256 453ee7bec1c3d5aa8b8a06ab27d7786102ad42bc452b7ec7d261ca47cb78a5fa
+- sources/kucoin-SOL.json.zlib - immutable exact provider responses and normalized candles; art:375cd96b4f0fcda250e4a7cd605ef578621886f1f7db4cc96f6c621cd0312a93; decodedSHA256 41ee0d329eb37755952ca6f618120c516a832c6a4aa4e2e2ddc963b546476bde
+- results-kucoin-SOL.json.zlib -72 rows and causal event outcomes; art:2575ad426862e32eb83bf074c659d50e15c2dd141ff046c6ca7cb13b3d7efb13; decodedSHA256 8bf66bdf7f3a8c62343f5150fb5ac465939ac04be0afd2236a314b0656ec606f
+- sources/coinbase-HYPE.json.zlib - immutable exact provider responses and normalized candles; art:a2669f8e49f644e2a03974d1d315b6851a071123db03bf1c0aca89c675945a47; decodedSHA256 96599d5e14c540aeb95f0355715102b835290a89e7f7ef1d9e1ccbb8bc79258c
+- results-coinbase-HYPE.json.zlib -72 rows and causal event outcomes; art:b1fafb10972123ed3ec9f1e334711304230a70b6f92dc38f2ccccb83a14a849c; decodedSHA256 8dc0631175df4c44b6833f465db99caa247b8c011b2af62a37719badae93d0a2
+- sources/coinbase-ETH.json.zlib - immutable exact provider responses and normalized candles; art:84b9ff17213edd999a4086f968ff573b2698b98bf82b57ef83827396d206dc59; decodedSHA256 ad3a4cfdca1d929784cf54cc6c7a7c0fefd0ec5ae5fa473cf9d27dcf3c38fdb7
+- results-coinbase-ETH.json.zlib -72 rows and causal event outcomes; art:37d87122b89802ea9ae92a4bee9c85d327f8c862572b12818e8c0898d51cb89d; decodedSHA256 92ccee9915a43e8e08ce20d60bcabe9640c1154354d8d6279d08a01d0aac1a6e
+- sources/coinbase-BTC.json.zlib - immutable exact provider responses and normalized candles; art:2e2beb1ab15e21851e7784410b93e22d53183f8ced9fc169495cd7eab4095ec5; decodedSHA256 b8ac96f085a76dfdedbf3332e137a78dbfeffb27c9c4001ce5323e370cc1af06
+- results-coinbase-BTC.json.zlib -72 rows and causal event outcomes; art:d9f4b2d9ff82a6b3c92c46b355af23eda6a61491d7fdf96e3290f096f93bf741; decodedSHA256 7fe437d28ecbd3c653ac3207692e1cff7b44807647125912ecd6329eb13fc92d
+- sources/coinbase-SOL.json.zlib - immutable exact provider responses and normalized candles; art:8cd0ab3cf792ab48b61a6c9167fdd16fc13dd123956c7416fc1e30887a99bd3e; decodedSHA256 b17c88b93f50a0d82913b327b60c373fed52f0062cbf8d0714ef208aca5f379c
+- results-coinbase-SOL.json.zlib -72 rows and causal event outcomes; art:fdbaaad1df90caea476112b4f8efceda6b27c22ff6ab371881f83913ec41c5ab; decodedSHA256 692962b2311e2c87a3ddde35b63395d69505e8d64d753f67658057f4327518b2
+- sources/coinbase-ZEC.json.zlib - immutable exact provider responses and normalized candles; art:5abe2f1aed0f2244e4fac66c163821f3b9e5abb2b189e712202cce5c9188c726; decodedSHA256 ba870d6886b59aeef7af28d7e34f2f4dd8039ae663e07268456c7f3e717a936c
+- results-coinbase-ZEC.json.zlib -72 rows and causal event outcomes; art:cb1ed9a7b6876e3340862650804e3a9edc373fa5daea2b9ec0ff04a3b88e4c94; decodedSHA256 bdbea169f737ae479283e113ff9739aa329d77c34eccaa4ea52614ec29c9642b
+
+Native report: art:cd37ecfbd2dc9e4f80828c68366727eaca68ec5b3e08764f1a8c14af98acaa7d
+Native method source: art:9032187fccde7be8a1ce724548da87302c2a130a08283beb6108099becbcefd5 (numeric methods unchanged by repository-container reader)
+
+Independent audit: all9 source raw-page replays,648 summaries×2references,16820eventrecords,18colorbaselines and54endpointbaselines matched within1e-11; exit0. Independent audit artifact: art:b5717be8c5216d8a92ce13cc254d20bf72671fa0d6e05905f6f7e5141e02c137; SHA256 a3b6d32f5f5ba1836e67457ad4fee465bf62cb9fc48ee03b1ee3bdbf8ac90eca. It also verified62reportrows/203numericcells,14targetedcausalitychecks andall18binary/nativecontainerbindings. Delivery is verified separately.
+
+Library census: full selected family75concepts/74frontiers,75incomplete rows and22existingruns inspected. Globalqueue has4950rows; only initial100row page retained (secondpage returned thenboundedloop stopped). This is explicitly partial globalqueue coverage; no novelty/saturation claim, queue dispatch, scoring or concept mutation. Other leases/holds/pauses preserved. Semantic artifact indexing remains paused.
+
+Repository containers use .json.zlib: decompress to the exact native UTF-8 artifact, then validate and decode the inner zlib+base64 archive. All18 container hashes and inner text hashes are in manifest.json. This keeps encoded price archives out of prose keyword tokens. The first offline build grew to130.18MiB; binary containers avoid that transport-size failure without losing data.
+
+The positive-volume outcome subset uses future data only to censor unavailable outcomes. Its eligibility is retrospective and cannot be used as an executable entry filter. No comparison with an unconditional baseline establishes causal uplift.
+
+Final native bindings: art:7511c152e9dbcdabd00a21c83be4b08284198fc2c8ff5582c1e88b314e3021b8
+Runtime titlebar/sound candidate acceptance: art:7bea6700d34605eb955fd4dfe09f5c2c4a610fcd567ab9a2ab3bcea6245c8aab (62controlledassertions andliteralCLI, all0; physicalaudibilityunverified).

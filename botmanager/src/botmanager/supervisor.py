@@ -300,8 +300,14 @@ class Supervisor:
             try:
                 process.start()
             except (OSError, RuntimeError, ValueError):
-                self.ledger.failed(bot_id, generation, "worker_spawn_failed")
-                process.close()
+                try:
+                    self.ledger.failed(bot_id, generation, "worker_spawn_failed")
+                except ManagerError:
+                    # Preserve the exact claimed generation for close/reconciliation.
+                    self._pending_failures[bot_id] = (generation, "worker_spawn_failed")
+                    raise
+                finally:
+                    process.close()
                 continue
             self.children[bot_id] = (process, generation)
             deadline = time.monotonic() + STALE_SECONDS - 2

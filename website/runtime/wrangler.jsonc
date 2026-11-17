@@ -15,5 +15,5 @@
   "exports": { "RuntimeOwner": { "type": "durable-object", "storage": "sqlite" } },
   "r2_buckets": [{ "binding": "STATE", "bucket_name": "oraclebot-analysis-state" }],
   "observability": { "enabled": true },
-  "vars": { "APP_VERSION": "analysis-1.0.0" }
+  "vars": { "APP_VERSION": "analysis-1.0.1" }
 }

@@ -50,10 +50,10 @@ See [its guide](website/README.md) for independent billing, analysis and executi
 ## Before claiming a change works
 
 ```bash
-python3 -m unittest discover -s backtester/tests -t .   # 1196 tests
-python3 -m unittest discover -s soltui/tests -t .       # 1694 tests (TUI dependencies required)
+python3 -m unittest discover -s backtester/tests -t .   # 1228 tests
+python3 -m unittest discover -s soltui/tests -t .       # 1718 tests (TUI dependencies required)
 python3 -m unittest discover -s mongo/tests -t .        # 73 tests
-cd extension && npm test                                # 555 tests
+cd extension && npm test                                # 707 tests
 node tools/dryrun.js --ticks 8 --osc 6 --offline 100    # a round trip must close positive
 python3 scripts/check_docs.py                           # doc counts and retrieval indexes
 ```

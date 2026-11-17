@@ -344,6 +344,39 @@ class SetupTests(unittest.TestCase):
         card.write_text("new card")
         self.assertNotEqual(setup.source_fingerprint(self.repo), before)
 
+    def test_source_fingerprint_binds_out_of_tree_runtime(self):
+        runtime = self.repo / "oracle_leverage"
+        runtime.mkdir()
+        worker = runtime / "autotrade_worker.py"
+        worker.write_text("original")
+        before = setup.source_fingerprint(self.repo)
+        worker.write_text("changed")
+        self.assertNotEqual(setup.source_fingerprint(self.repo), before)
+
+    def test_source_fingerprint_ignores_sdk_dependencies_but_binds_runtime(self):
+        runtime = self.repo / "oracle_leverage"
+        runtime.mkdir()
+        worker = runtime / "autotrade_worker.py"
+        worker.write_text("original")
+        before = setup.source_fingerprint(self.repo)
+        dependencies = runtime / "sdk" / "node_modules"
+        dependencies.mkdir(parents=True)
+        dependency = dependencies / "dependency.js"
+        dependency.write_text("dependency version one")
+        self.assertEqual(setup.source_fingerprint(self.repo), before)
+        dependency.write_text("dependency version two")
+        self.assertEqual(setup.source_fingerprint(self.repo), before)
+        external = self.root / "external-dependency"
+        external.mkdir()
+        (external / "module.py").write_text("not shipped runtime")
+        (dependencies / "linked-package").symlink_to(external, target_is_directory=True)
+        alternate = runtime / "other-sdk"
+        alternate.mkdir()
+        (alternate / "node_modules").symlink_to(external, target_is_directory=True)
+        self.assertEqual(setup.source_fingerprint(self.repo), before)
+        worker.write_text("changed")
+        self.assertNotEqual(setup.source_fingerprint(self.repo), before)
+
     def test_source_fingerprint_binds_each_shipped_web_asset_type(self):
         web = self.repo / "ecosystem" / "web"
         web.mkdir()

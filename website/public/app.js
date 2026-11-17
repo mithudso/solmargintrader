@@ -1,11 +1,13 @@
 import { freshStrategy } from './evidence.js';
 import { createAgentAccess } from './agent-access.js';
+import { createBacktestRecovery } from './backtest-recovery.js';
 const $ = (selector, root = document) => root.querySelector(selector);
 const $$ = (selector, root = document) => [...root.querySelectorAll(selector)];
 const main = $('#main');
 const TIMING = Object.freeze({ requestTimeoutMs: 25000, toastMs: 6500, oraclePollMs: 15000, evidenceCheckMs: 1000 });
 const state = { config: { coins: ['SOL', 'BTC', 'ETH', 'ZEC'], trialDays: 7 }, user: null, subscription: null, usage: null, portalAvailable: false, bots: [], botsNextPage: null, botsUnavailable: false, accountStatus: 'loading', accountEpoch: 0, accountRequest: 0, accountTransition: false, navigationEpoch: 0, backtestRequest: 0, articles: [], strategies: [], coin: 'SOL', oracle: null, view: 'overview', search: '', category: 'all', loadingOracle: false, oracleRequest: 0 };
 const agentAccess = createAgentAccess({ api, getUser: () => state.accountTransition ? null : state.user, isSettings: () => state.view === 'settings', openWallet, toast });
+const backtestRecovery = createBacktestRecovery();
 const views = { overview: 'Overview', oracle: 'The oracle', bots: 'My bots', backtest: 'Backtest lab', research: 'Research journal', pricing: 'Membership', settings: 'Settings & account' };
 const coinNames = { SOL: 'Solana', BTC: 'Bitcoin', ETH: 'Ethereum', ZEC: 'Zcash' };
 const coinSymbols = { SOL: '◎', BTC: '₿', ETH: 'Ξ', ZEC: 'Z' };
@@ -45,6 +47,7 @@ async function api(path, options = {}, expectedAccountId = state.user?.id) {
       const message = body.error?.message || body.message;
       const error = new Error(message || `Request could not complete (${response.status}).`);
       error.code = code;
+      error.status = response.status;
       throw error;
     }
     return body;
@@ -200,6 +203,8 @@ function populateSelects(root = document) {
     for (const item of state.strategies) { const option = el('option', '', item.name || strategyLabels[item.id] || item.id); option.value = item.id; select.append(option); }
     if ([...select.options].some(option => option.value === chosen)) select.value = chosen;
   }
+  const form = $('#backtest-form', root);
+  if (form && state.config.durableBacktests && state.user) paintBacktestRecovery(form);
 }
 async function openAutomation(bot) {
   if (!accountActionReady() || !state.user) return;
@@ -261,7 +266,25 @@ function backtestView() {
   const current = usagePanel(); if (current) main.append(current);
   if (state.config.durableBacktests && state.user) recentBacktests(accountContext(), state.navigationEpoch);
 }
-async function followBacktest(job, context, current, message) {
+function paintBacktestRecovery(form) {
+  try {
+    const saved = backtestRecovery.pending(state.user.id);
+    for (const input of $$('input, select', form)) {
+      if (saved) {
+        if (input.tagName === 'SELECT' && ![...input.options].some(option => option.value === String(saved.request[input.name]))) {
+          const option = el('option', '', saved.request[input.name]); option.value = saved.request[input.name]; input.append(option);
+        }
+        input.value = saved.request[input.name];
+      }
+      input.disabled = Boolean(saved);
+    }
+    $('button[type="submit"]', form).textContent = saved ? 'Recover saved calculation' : 'Run backtest ↗';
+    if (saved) $('#backtest-message').textContent = 'An earlier calculation is unresolved. Recover it with the same request before starting another experiment.';
+    return saved;
+  } catch (error) { $('#backtest-message').textContent = errorText(error); }
+}
+async function followBacktest(job, context, current, message, idempotencyKey) {
+  backtestRecovery.observe(context.userId, job, idempotencyKey);
   for (let attempt = 0; attempt < 120 && current(); attempt += 1) {
     if (job.status === 'complete') return job.result;
     if (job.status === 'failed') throw new Error('This calculation could not complete. Its daily credit was released.');
@@ -269,6 +292,7 @@ async function followBacktest(job, context, current, message) {
     await new Promise(resolve => setTimeout(resolve, 1500));
     if (!current()) return null;
     job = await api(`/api/backtest-jobs/${job.id}`, {}, context.userId);
+    backtestRecovery.observe(context.userId, job);
   }
   if (current()) message.textContent = 'Your job is saved. Use Recent calculations to check it again.';
   return null;
@@ -774,20 +798,39 @@ document.addEventListener('submit', async event => {
   if (isBot && values.venue === 'coinbase' && values.leverage !== 1) { message.textContent = 'Coinbase spot configurations use 1× leverage. Choose Jupiter for a leveraged configuration.'; return; }
   const requestId = isBot ? null : ++state.backtestRequest;
   setBusy(button, true);
+  let submission;
   try {
     if (isBot) {
       await api('/api/bots', { method: 'POST', body: JSON.stringify(values) }, context.userId);
       if (currentAccount(context) && await refreshAccount() && current()) { $('#bot-dialog').close(); location.hash = 'bots'; render(); toast('Paper configuration saved. No funds have moved.'); }
     } else {
-      const result = state.config.durableBacktests
-        ? await followBacktest(await api('/api/backtest-jobs', { method: 'POST', body: JSON.stringify({ idempotencyKey: crypto.randomUUID(), request: values }) }, context.userId), context, current, message)
-        : await api('/api/backtests', { method: 'POST', body: JSON.stringify(values) }, context.userId);
+      let result;
+      if (state.config.durableBacktests) {
+        submission = backtestRecovery.begin(context.userId, values);
+        if (current()) paintBacktestRecovery(form);
+        const { record } = submission;
+        const job = record.jobId
+          ? await api(`/api/backtest-jobs/${record.jobId}`, {}, context.userId)
+          : await api('/api/backtest-jobs', { method: 'POST', body: JSON.stringify({ idempotencyKey: record.idempotencyKey, request: record.request }) }, context.userId);
+        result = await followBacktest(job, context, current, message, record.idempotencyKey);
+      } else result = await api('/api/backtests', { method: 'POST', body: JSON.stringify(values) }, context.userId);
       if (!currentAccount(context)) return;
       if (current() && requestId === state.backtestRequest && result) renderBacktest(result);
       const account = await api('/api/me', {}, context.userId).catch(() => null);
       if (currentAccount(context) && account?.user?.id === context.userId) state.usage = account.usage || null;
     }
-  } catch (error) { if (current()) message.textContent = errorText(error); } finally { setBusy(button, false); }
+  } catch (error) {
+    let displayError = error;
+    try { if (submission) backtestRecovery.rejected(context.userId, submission, error); }
+    catch (storageError) { displayError = storageError; }
+    if (current()) message.textContent = errorText(displayError);
+  } finally {
+    if (!isBot && current() && state.config.durableBacktests) {
+      const text = message.textContent; const saved = paintBacktestRecovery(form);
+      if (text) message.textContent = `${text}${saved ? ' Recover the saved calculation to check its original outcome.' : ''}`;
+    }
+    setBusy(button, false);
+  }
 });
 document.addEventListener('input', event => { if (event.target.id === 'research-search') { state.search = event.target.value; filterResearch(); } });
 document.addEventListener('change', event => {
@@ -819,6 +862,9 @@ async function initialize() {
   if (state.accountEpoch === epoch && state.navigationEpoch === navigation) {
     if (state.accountStatus === 'ready' && ['settings', 'backtest'].includes(state.view)) populateSelects(main);
     else render();
+  } else if (results[1].status === 'fulfilled' && ['overview', 'research'].includes(state.view)) {
+    // The catalog is public; refresh its current view even if navigation changed.
+    render();
   }
   loadOracle();
 }

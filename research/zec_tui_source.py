@@ -7,6 +7,8 @@ import time
 
 from oracle.feeds import FeedUnavailable, RecorderFeed
 from research import zec_live as live
+from research.zec_tui_alerts import HALF
+from research.zec_tui_metrics import STREAK_HASH, streak_reference
 from research.zec_tui_model import market_details
 
 
@@ -41,26 +43,47 @@ class DataSession:
         now = self.clock()
         end = int((now - live.SETTLE_SECONDS) // step) * step
         window = self.windows.setdefault(
-            interval, {"raw": {}, "end": None, "attempt": -1e12, "cycle": {}}
+            interval,
+            {
+                "raw": {},
+                "end": None,
+                "attempt": -1e12,
+                "retry_at": -1e12,
+                "last_error": None,
+                "cycle": {},
+            },
         )
         raw = window["raw"]
         try:
+            if now < window["retry_at"] and window["last_error"]:
+                raise FeedUnavailable(window["last_error"])
             if raw and (end - min(raw)) // step > live.MAX_HISTORY:
                 raise FeedUnavailable("history_capacity_exceeded")
             # Fixed seed: chart lookback and manual selection do not change a
             # stateful strategy's initial conditions or the cycle decision clock.
-            if window["end"] != end and now - window["attempt"] >= 15:
+            force = request.get("force") is True
+            needs_fetch = window["end"] != end or force
+            permitted = now >= window["retry_at"] and (
+                force or now - window["attempt"] >= 15
+            )
+            if needs_fetch and permitted:
                 start = (
                     max(min(raw), max(raw) - 3 * base_step) if raw else end - 512 * step
                 )
                 window["attempt"] = now
                 fetched = self.fetch(base_step, start, end, cancelled)
+                window["last_error"] = None
                 raw.update(fetched)
                 complete = (
                     live.aggregate(raw, base_step, step) if step != base_step else raw
                 )
                 if end - step in complete:
                     window["end"] = end
+                    window["retry_at"] = -1e12
+                else:
+                    # A successful but incomplete provider response is not a
+                    # reason to hammer the endpoint on repeated manual clicks.
+                    window["retry_at"] = now + 15
             rows = live.aggregate(raw, base_step, step) if step != base_step else raw
             if cancelled():
                 raise Cancelled()
@@ -72,10 +95,16 @@ class DataSession:
             )
             if cancelled():
                 raise Cancelled()
+            market_rows = {t: bar for t, bar in rows.items() if t < end}
             return {
                 "interval": interval,
                 "rows": evaluated,
                 "details": details,
+                "market_rows": market_rows,
+                "market_token": live.digest(
+                    live.canonical([interval, end, market_rows]).encode()
+                ),
+                "end": end,
                 "calculated_at": self.clock(),
                 "error": None,
             }
@@ -83,6 +112,9 @@ class DataSession:
             window["attempt"] = -1e12
             raise
         except FeedUnavailable as exc:
+            if window["last_error"] is None or now >= window["retry_at"]:
+                window["retry_at"] = self.clock() + 15
+            window["last_error"] = exc.code
             return {
                 "interval": interval,
                 "rows": [
@@ -98,6 +130,74 @@ class DataSession:
                 "calculated_at": self.clock(),
                 "error": exc.code,
             }
+
+
+class AlertSession(DataSession):
+    """Small fixed-five-minute cache, independent of the selected chart seed."""
+
+    def __init__(self, client=None, clock=time.time):
+        super().__init__(client, clock)
+        self.context = None
+        self.retry_at = -1e12
+        self.last_error = None
+
+    def __call__(self, request, cancelled):
+        now = self.clock()
+        end = int((now - live.SETTLE_SECONDS) // HALF) * HALF
+        try:
+            if cancelled():
+                raise Cancelled()
+            if self.last_error and now < self.retry_at:
+                raise FeedUnavailable(self.last_error)
+            if (
+                self.context is None
+                or self.context["end"] != end
+                or request.get("force") is True
+            ) and now >= self.retry_at:
+                # Six actual closed 5m constituents cover both prior full 10m
+                # bars and the current first half. The venue has no 600s candles.
+                rows = self.fetch(HALF, end - 6 * HALF, end, cancelled)
+                if cancelled():
+                    raise Cancelled()
+                rows = {t: bar for t, bar in rows.items() if end - 6 * HALF <= t < end}
+                if end - HALF not in rows:
+                    raise FeedUnavailable("alert_recent_candle_missing")
+                try:
+                    stats = streak_reference()[600]["conditional"]["up2"]
+                    reference = {
+                        "reversals": stats["next_down"],
+                        "total": stats["n"],
+                        "source_sha256": STREAK_HASH,
+                    }
+                except (OSError, KeyError, ValueError):
+                    reference = None
+                self.context = {
+                    "rows": rows,
+                    "end": end,
+                    "calculated_at": self.clock(),
+                    "error": None,
+                    "reference": reference,
+                }
+                self.last_error, self.retry_at = None, -1e12
+            return copy.deepcopy(self.context)
+        except Cancelled:
+            raise
+        except FeedUnavailable as exc:
+            if self.last_error is None or now >= self.retry_at:
+                self.retry_at = self.clock() + 15
+            self.last_error = exc.code
+            return {
+                "rows": {},
+                "end": end,
+                "calculated_at": self.clock(),
+                "error": exc.code,
+                "reference": None,
+            }
+
+
+def disabled_alert_source(request, cancelled):
+    """Injected apps must explicitly opt into a real alert-history reader."""
+    return {"error": "alert_source_not_attached"}
 
 
 class QuoteReader:

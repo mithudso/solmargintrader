@@ -20,7 +20,7 @@ import sys
 import threading
 import time
 import uuid
-from contextlib import closing
+from contextlib import closing, contextmanager
 from itertools import pairwise
 from pathlib import Path
 from threading import Event
@@ -287,12 +287,28 @@ def _global_lock(root: Path | None = None) -> int | None:
     return fd
 
 
+@contextmanager
+def _identity_lock(directory: Path):
+    """Serialize worker-token publication with stop requests."""
+    fd = os.open(directory / "worker-identity.lock", os.O_CREAT | os.O_RDWR, 0o600)
+    try:
+        fcntl.flock(fd, fcntl.LOCK_EX)
+        yield
+    finally:
+        os.close(fd)
+
+
 def start(run_id: str, *, root: Path | None = None) -> dict[str, Any]:
     """Start or resume exactly this batch; does not interact with other workers."""
     _SOURCE_EPOCH.verify(_REPO)
     directory = _directory(run_id, root)
     if not (directory / "batch.sqlite3").is_file():
         raise ValueError("batch does not exist")
+    with _identity_lock(directory):
+        return _start_locked(run_id, directory, root)
+
+
+def _start_locked(run_id: str, directory: Path, root: Path | None) -> dict[str, Any]:
     global_fd = _global_lock(root)
     if global_fd is None:
         raise RuntimeError("another F5 batch is already running")
@@ -324,6 +340,11 @@ def stop(run_id: str, *, root: Path | None = None) -> dict[str, Any]:
     directory = _directory(run_id, root)
     if not (directory / "batch.sqlite3").is_file():
         raise ValueError("batch does not exist")
+    with _identity_lock(directory):
+        return _stop_locked(run_id, directory)
+
+
+def _stop_locked(run_id: str, directory: Path) -> dict[str, Any]:
     fd = _lock(directory)
     if fd is not None:
         os.close(fd)

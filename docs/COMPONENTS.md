@@ -72,6 +72,10 @@ per-leg intents, account reconciliation and ambiguity holds gate that path;
 dry-run remains the default. See [Oracle integration](bot-manager-oracle-interface.md)
 and [Jupiter ZEC execution](JUPITER-ZEC-WEBHOOK.md).
 
+## Auto-trading API
+
+The native command registry exposes the shared Oracle auto-trading owner to Chrome and SolTUI. It defaults to disarmed paper mode and records immutable entry and exit plans; live execution remains gated by venue-specific evidence. See [Oracle auto-trading](ORACLE-AUTO-TRADING.md).
+
 ## `executor/`
 
 The optional executor owns guarded Solana spot execution through its separate

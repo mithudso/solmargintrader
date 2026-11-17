@@ -1245,10 +1245,11 @@ test('an unusable history record is rejected and blocks further admission', asyn
       return normaliseOrders([{ id: 'ord-broken', status: 'filled' }], { strict: false });
     },
   };
-  const { added, rejected } = await ingestFills({ venue, store, config: RECON_CONFIG });
+  const { added, rejected, blocked } = await ingestFills({ venue, store, config: RECON_CONFIG });
   assert.equal(added.length, 0);
   assert.equal(rejected.length, 1);
   assert.match(rejected[0].reason, /unusable/);
+  assert.equal(blocked, true);
 });
 
 test('an ambiguous envelope holding two candidate lists is refused', () => {
@@ -1332,9 +1333,10 @@ test('the label names Metis and Ultra for exactly what the extension uses them f
 
 test('every Jupiter URL the market reads call sits under a declared attribution base', async () => {
   const { ENDPOINTS } = await import('../src/market/tokens.js');
+  const { JUPITER_ENDPOINTS } = await import('../src/1000x/feed.js');
   const declared = SURFACES.flatMap((s) => s.bases);
-  for (const url of Object.values(ENDPOINTS).filter((u) => u.includes('jup.ag'))) {
-    assert.ok(declared.some((base) => url.startsWith(base)), `${url} is called but not named in the attribution`);
+  for (const url of [...Object.values(ENDPOINTS), ...Object.values(JUPITER_ENDPOINTS)].filter((u) => u.includes('jup.ag'))) {
+    assert.ok(declared.some((base) => url.replace(/^wss:/, 'https:').startsWith(base)), `${url} is called but not named in the attribution`);
   }
 });
 

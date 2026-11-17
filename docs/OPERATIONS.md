@@ -1,13 +1,10 @@
-# Extension operations runbook
+# Experimental grid operations
 
-This guide covers the extension's grid engine and its separate CLI/local HTTP
-state. Oracle's optional TradingView worker, the standalone executor and managed
-paper owners have their own boundaries and runbooks. Source tests do not authorize
-or establish live execution.
+These commands control the extension's experimental grid. Other sessions retain
+their own owners and stop controls; see [ORACLE-AUTO-TRADING.md](ORACLE-AUTO-TRADING.md)
+for the shared auto-trade session. Closing a display does not stop its session.
 
-## Stop the selected owner
-
-From the repository root, this command kills the CLI's selected local state:
+## Latch the grid kill switch
 
 ```bash
 (cd extension && node tools/cli.js kill)
@@ -48,11 +45,21 @@ or arming the installed owner:
 (cd extension && node tools/dryrun.js --ticks 8 --osc 6 --offline 100)
 ```
 
-Its round trip must close positive. This verifies the simulated rung/lot economics,
-not authenticated wallet responses, real execution valuation, fee attribution or
-live signing. See [the Trigger contract](jupiter-trigger-contract.md) and
-[testing limits](TESTING.md). A future independently verified live path needs its
-own owner-authorized acceptance plan; one test order cannot close all those gaps.
+4. **Set the rails deliberately.** The defaults are conservative, not correct for you.
+   ```bash
+   node tools/cli.js setLimits --maxTotalNotionalUsd 250 --dailyLossLimitUsd 25 --maxOrdersPerTick 2
+   ```
+
+5. **Finish the simulation and disarm.** Inspect the journal and P&L, then stop the dry run.
+   ```bash
+   node tools/cli.js data --json
+   node tools/cli.js pnl
+   node tools/cli.js disarm
+   ```
+   Simulation results do not validate venue execution, funding, reconciliation or
+   profitability. The outstanding live checks in [TESTING.md](TESTING.md) remain
+   unverified. A separately implemented and qualified intent verifier is required
+   before a future live activation procedure can be supported.
 
 ## Daily checks
 
@@ -103,9 +110,12 @@ does not grant permission to change strategy or risk parameters.
 The journal is a plain JSON file (`~/.solmargintrader/journal.json`, or IndexedDB in the browser —
 the two are separate).
 
-Preserve the complete journal and configuration as well as any exported fills before
-an explicitly authorized state reset. `exportCsv` is a fill export, not a complete
-submission/ambiguity backup. `reset` erases only the selected local history; it does
-not cancel venue orders, resolve unknown submissions or clear another owner's state.
-Do not reset as a recovery shortcut. Reconcile first and retain evidence; follow
-[the rollback guide](runbooks/rollback.md) when reverting source.
+```bash
+node tools/cli.js exportCsv > fills-$(date +%F).csv   # back up before anything destructive
+node tools/cli.js reset --confirm                     # erases LOCAL history only
+```
+
+`reset` does not cancel venue-side orders. Do not reset while any order or intent
+is unresolved. Use the venue-side cancellation and confirmation steps above
+first. The CSV preserves fills; it is not a complete journal backup. Preserve the
+private journal before clearing local history.

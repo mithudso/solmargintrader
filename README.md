@@ -10,6 +10,15 @@ Bot configurations in this release are inactive paper definitions.
 
 Trading research, execution tooling and the hosted workspace, in eleven parts:
 
+The Oracle winner TUI now has an explicit leveraged-controls panel and a
+persistent ZEC/BTC paper forward test. See
+[the leveraged Oracle guide](docs/ORACLE-LEVERAGE.md) and the
+[5/10/15/20-minute reversal/shape study](research/REVERSAL-SHAPES.md). The [second-turn study](research/REVERSAL-SECOND-TURN.md) evaluates the first downward and subsequent upward moves as retrospective observations.
+The [multi-timeframe study](research/MTF-REVERSAL.md) reports its separate retrospective test and paper observer limitations.
+The standard10x CLI adapter supports BTC. The1000x integration checks BTC/ZEC
+service transactions with the pinned SDK and submits explicit owner-signed
+requests through the official keeper service. Trading starts disarmed.
+
 | Path | What it is | Language |
 | --- | --- | --- |
 | [`website/`](website/README.md) | Cloudflare wallet accounts, optional Stripe billing, public research and a separate read-only canonical analysis adapter. Trading definitions remain inactive. | JavaScript ESM/Python |
@@ -46,6 +55,11 @@ independent paper forward accounts. The selected top configuration is published
 on the Oracle page. See [measured results and reproduction](docs/ZEC-ENSEMBLE-STUDY.md)
 and [forward owner and recovery](docs/ZEC-ENSEMBLES-FORWARD.md).
 
+The [weekly coin runner](research/WEEKLY-COIN-STUDY.md) repeats the candle-supported
+ZEC analyses for a named coin using a fresh seven-day minute snapshot. Its first
+[ETH report](research/eth-week-20261117/report.md) includes matched BTC/ZEC
+correlations, chronological strategy comparisons and explicit input exclusions.
+
 ## Shape-aware spot study
 
 The [Coinbase spot shape study](research/SHAPE-AWARE-SPOT.md) tags completed hourly,
@@ -80,9 +94,9 @@ sample do not establish a causal effect or a calibrated trading forecast.
 
 ## Managed bot suite
 
-The current coordinated source candidate is manager 0.7.5, research-runtime 0.4.2
-and ecosystem 0.4.14, with backtester 0.2.1, Oracle 0.2.5, optional executor 0.2.1
-and extension source 0.6.8. Archived liquidity source is 0.1.1 and remains disabled. It retains paper/disarmed defaults and separates source
+The current coordinated source candidate is manager 0.7.10, research-runtime 0.4.7
+and ecosystem 0.4.19, with backtester 0.2.2, Oracle 0.2.7, optional executor 0.2.1
+and extension source 0.12.5. Archived liquidity source is 0.1.1 and remains disabled. It retains paper/disarmed defaults and separates source
 checks from installed acceptance and final delivery. Run `solbot --help` for the ordered
 walkthrough, `solbot ui open` for the verified control room, and `solbot health-check`
 for collector measurements. The [managed suite guide](docs/bot-manager-managed-suite.md)
@@ -107,7 +121,7 @@ python3 -m backtester.cli --asset SOL --strategy all --split 0.7 --out results/
 
 # Extension — no install step, no dependencies
 cd extension
-npm test                                               # 555 tests
+npm test                                               # 707 tests
 node tools/dryrun.js --ticks 8 --osc 6 --offline 100   # end-to-end tick loop
 node tools/cli.js                                      # every available command
 ```
@@ -118,10 +132,10 @@ Load the extension: `chrome://extensions` → Developer mode → **Load unpacked
 ## Tests
 
 ```bash
-python3 -m unittest discover -s backtester/tests -t .   # 1196 tests
-python3 -m unittest discover -s soltui/tests -t .       # 1694 tests (TUI dependencies required)
+python3 -m unittest discover -s backtester/tests -t .   # 1228 tests
+python3 -m unittest discover -s soltui/tests -t .       # 1718 tests (TUI dependencies required)
 python3 -m unittest discover -s mongo/tests -t .        # 73 tests
-cd extension && npm test                                # 555 tests
+cd extension && npm test                                # 707 tests
 ```
 
 Counts are asserted by CI, so a stale number here fails the build rather than

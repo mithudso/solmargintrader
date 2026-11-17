@@ -27,7 +27,7 @@ function chainCard(c) {
       { label: 'Price', num: true, value: (h) => usd(h.priceUsd) },
       { label: 'Value', num: true, value: (h) => (h.included ? usd(h.usd) : el('span', { class: 'muted', text: 'not counted' })) },
       { label: '', value: (h) => extLink(h.link, '↗') },
-    ], c.holdings, { emptyText: c.status === 'skipped' ? 'Set an address under Settings.' : 'No balances above dust.' }),
+    ], c.holdings, { emptyText: c.status === 'skipped' ? 'Set an address under Settings.' : c.status === 'ok' ? 'No balances above dust.' : 'No balances returned; the read is incomplete.' }),
     ...(c.errors ?? []).map((e) => el('p', { class: 'err', text: e })),
     ...(c.notes ?? []).map((n) => el('p', { class: 'note', text: n })));
 }
@@ -112,7 +112,8 @@ function pnlSection(s) {
           const r = await soltui('portfolio.snapshot');
           snap.textContent = `Recorded ${usd(r.total_usd)}${r.total_complete ? '' : ' (partial)'}; a second snapshot later shows a change`;
         } catch (err) {
-          snap.textContent = `Not recorded: ${err.message}`;
+          snap.textContent = `Not recorded: ${err.message}. Retry`;
+          snap.disabled = false;
         }
       });
     }

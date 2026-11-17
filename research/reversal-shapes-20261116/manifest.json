@@ -1,0 +1,87 @@
+{
+  "schema": "reversal-shape-bindings/v1",
+  "run_id": "run:80a9e65c7d86db88538308b8f313c8db344f3ed476410fccb16872b707f9600a",
+  "qualification": "exploratory-empirical; numerical reproduction passed; no prospective or venue-execution qualification",
+  "sources": [
+    {
+      "asset": "ZEC",
+      "artifact_id": "art:9d261aa5b860720df5b648f9f36d2aca87e0f078cc85c36adec985abbeda318f",
+      "body_utf8_sha256": "51596fd71fdcf4927d4f6138336279fe3253aab990e500ef708f0750faac6ccf",
+      "byte_count": 893535,
+      "decoded_sha256": "e1c5a5f0aa3c41aef68504b336cd415c8ca056c32f747c5ffde602d42c33d6ad"
+    },
+    {
+      "asset": "BTC",
+      "artifact_id": "art:e686f821f19e2e55d81aaaecdb37563b45070e9b00833862ae46d1481659dd36",
+      "body_utf8_sha256": "0c50879f5c43f628aa04eaa5275ab4f316fb01192183aecb1a65d19b3bb7988a",
+      "byte_count": 3711160,
+      "decoded_sha256": "03c562cc4b0cd15eb8f433ec6dca33d432927c7f239fe7eb6e532b729cfe2ac1"
+    }
+  ],
+  "outputs": [
+    {
+      "name": "ZEC-complete-results-v1.json",
+      "id": "art:820161420db6a38b6e753750f673c6414a714a40fe4268e4ba9353b9d5b28c43",
+      "sha256": "69665b26ed3d5b56c7401ce691d6306cb35b1929419a5a62b49203dfb647dc0d",
+      "bytes": 485991
+    },
+    {
+      "name": "BTC-complete-results-v1.json",
+      "id": "art:98566e6c66154b46911b3759da4f222c06e4cf4bba69f3b043feae96febfcf7d",
+      "sha256": "a854e36fa39e164f85b775e7144a746fabe9bd14297c7d51398654db865e3a5b",
+      "bytes": 508063
+    },
+    {
+      "name": "frozen-forward-selection-v1.json",
+      "id": "art:5264aa221be3d92843000b6478d130ffae2dbee119f1bbe70418ecea5c8a4620",
+      "sha256": "1327fb9349c384532b6210701e7e887e26ca770543c4f5d26d3c7e32da2a4dd1",
+      "bytes": 1068
+    },
+    {
+      "name": "reversal-shape-report-v1.md",
+      "id": "art:3b1f5cfdb1d20e90ca4eb456122ac0fd823d08ca974d7d6525238b2a3580fc48",
+      "sha256": "f4ff8df5522cfcd0eaa837ed19c159079d31361e069ab0cd76f49b496486c8d3",
+      "bytes": 4779
+    }
+  ],
+  "audits": [
+    {
+      "name": "independent-numerical-audit-v2-final-source.json",
+      "id": "art:cfa1b46e03323cb7fd5609bcdaab591f0674597cff9ec17151203f1655f2be67",
+      "sha256": "1b42132494a641fbcd954cc929abf79c650a18cb35c005bb6f285c7e9e6dcb2b",
+      "source_module_sha256": "fc4b07f9437f3980c9da2600fdd315845a94ac61ba9ac5fe065a2319d27578ce"
+    },
+    {
+      "name": "independent-numerical-audit.json",
+      "id": "art:b4a4413d4d2db23399096b0f0db1a8404b7fd2b6e6b8eb67a6ac945d1a17af12",
+      "sha256": "e823e5a161772bb2390c2b059833185e90d428148a3083342db7939f43d57928"
+    },
+    {
+      "name": "independent-reproducer.py",
+      "id": "art:ca685af6bed3b4a22bba595c3152ff3b1670cff362ff99b8b0e3740bc0c88140",
+      "sha256": "fb7274839fe1be818d09c90278741b6e409bbf9107623a9ac2b70ce8b25beff3"
+    },
+    {
+      "name": "native-input-readback-receipt.json",
+      "id": "art:5653e1f5d6c93ea64fd46bb42d449a9dadf97d60e3eb534e5d264c0c50522a6d",
+      "sha256": "c75d9b2357cb29e268d9c679f8edb3a3235c562e69d96ca1ce7148ceb43dca37"
+    }
+  ],
+  "census": {
+    "topic": "c:short-window-microstructure-and-statistics",
+    "children": 74,
+    "topic_plus_children": 75,
+    "frontier_complete": true,
+    "incomplete_complete": true,
+    "global_queue_complete": false,
+    "queue_selected": false
+  },
+  "paid_research_calls": 0,
+  "concept_edits": 0,
+  "semantic_indexing": false,
+  "notes": [
+    "Seven initial BTC transport chunks remain redundant native provenance; complete BTC artifact is authoritative.",
+    "Source bodies remain in Mongo; tracked result containers are exact native UTF-8 archives compressed with zlib.",
+    "Final split was excluded from this run's selection but older studies used these histories."
+  ]
+}

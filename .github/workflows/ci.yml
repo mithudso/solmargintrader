@@ -169,6 +169,9 @@ jobs:
         # No user namespaces on hosted runners, so Chrome's sandbox cannot start.
         run: E2E_NO_SANDBOX=1 node tools/e2e.mjs
 
+      - name: 1000x overlay browser contract (fixture, read only)
+        run: E2E_NO_SANDBOX=1 npm run e2e:1000x -- --evidence "$RUNNER_TEMP/1000x-overlay"
+
       - uses: actions/setup-python@6d4fd22b20465ccc0f7354476588e8df7c9ca0e0 # v7
         with:
           python-version: '3.13'
@@ -204,7 +207,16 @@ jobs:
         run: python3 -c "import backtester.cli; print('imports ok')"
 
       - name: Causal shape, cycle, Volty and news-event diagnostics
-        run: python3 -m unittest research.tests.test_shape_study research.tests.test_zec_cycles research.tests.test_volty_zec research.tests.test_volty_predictive_checks research.tests.test_news_event_study research.tests.test_zec_granular research.tests.test_zec_expanded research.tests.test_zec_live research.tests.test_zec_tui_model research.tests.test_zec_tui_workers research.tests.test_zec_shape_view -v
+        run: python3 -m unittest research.tests.test_shape_study research.tests.test_zec_cycles research.tests.test_volty_zec research.tests.test_volty_predictive_checks research.tests.test_news_event_study research.tests.test_zec_granular research.tests.test_zec_expanded research.tests.test_zec_live research.tests.test_zec_tui_model research.tests.test_zec_tui_workers research.tests.test_zec_shape_view research.tests.test_zec_reversal_excursions research.tests.test_crosscoin_reversals -v
+
+      - name: Reversal selection and paper-only leveraged observer
+        run: python3 -W error::ResourceWarning -m unittest research.tests.test_reversal_shapes research.tests.test_reversal_second_turn research.tests.test_mtf_reversal oracle_leverage.tests.test_mtf_forward oracle_leverage.tests.test_quotes oracle_leverage.tests.test_console oracle_leverage.tests.test_forward oracle_leverage.tests.test_market oracle_leverage.tests.test_process_adapters -v
+
+      - name: Weekly coin study acquisition and temporal isolation
+        run: python3 -W error::ResourceWarning -m unittest research.tests.test_coin_week -v
+
+      - name: Exit50 paper research, lifecycle and bounded retention
+        run: python3 -W error::ResourceWarning -m unittest oracle_leverage.tests.test_exit50 oracle_leverage.tests.test_exit50_forward research.tests.test_exit50_acquire research.tests.test_exit50_backtest research.tests.test_exit50_diagnostic research.tests.test_exit50_evaluate research.tests.test_exit50_lazy research.tests.test_exit50_orderflow research.tests.test_exit50_report research.tests.test_exit50_run scripts.tests.test_preserve_dual_quotes -v
 
       - name: Meta evidence consolidation and actual-cost replay contracts
         run: python3 -m unittest research.tests.test_meta_analysis research.tests.test_meta_followups -v
@@ -213,6 +225,22 @@ jobs:
         run: |
           pip install -r research/coinbase50-requirements.txt
           OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1 python3 -m unittest research.tests.test_coinbase50_study -v
+
+  jupiter-sdk:
+    name: Jupiter SDK and keeper contract
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: oracle_leverage/sdk
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1
+        with:
+          node-version: '22'
+      - run: npm ci --ignore-scripts --no-audit --no-fund
+      - run: node --check bridge.mjs
+      - run: node --check service.mjs
+      - run: npm test
 
   # soltui is macOS-only (py2app, the menu-bar app and launchd have no Linux
   # equivalent), so this job runs on a macOS runner. It covers the unit suite
@@ -290,7 +318,9 @@ jobs:
       - name: Install headless research owners for actual macOS judge checks
         run: python -m pip install ./backtester ./oracle ./soltui ./botmanager
       - name: Oracle winning-strategy TUI interactions
-        run: python -m unittest research.tests.test_zec_tui -v
+        run: python -m unittest research.tests.test_zec_tui research.tests.test_zec_tui_metrics research.tests.test_zec_tui_stream research.tests.test_zec_tui_alerts research.tests.test_zec_tui_alert_ui research.tests.test_oracle_winners_entrypoint research.tests.test_zec_tui_notifications research.tests.test_zec_tui_notifications_ui -v
+      - name: Explicit leverage panel interactions
+        run: python -m unittest research.tests.test_zec_leverage_panel -v
       - name: Actual operating-system judge isolation
         run: python -m unittest discover -s botmanager/tests -t botmanager -p test_blind.py
       - name: Actual optimizer and stalled-writer capacity under macOS isolation
