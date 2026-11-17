@@ -1,6 +1,6 @@
 # Whole-application assessment, 2026-11-17
 
-Version: 1.0.0. Delta: first complete catalog census and bounded application repairs.
+Version: 1.1.0. Delta: preserve the independent replay-seed finding and verified seventh repair.
 
 **Outcome: NEEDS_EVIDENCE.** This assessment covers the eleven-component research,
 paper-operation, hosted-account and guarded-execution application. It does not
@@ -22,6 +22,7 @@ to invent a feature or downgrade a confirmed problem.
 | APP-03 | An open dashboard keeps showing old healthy availability. | Poll health through bounded read-only requests in every state, isolate requests and cancel the timer on close. Polling cannot start a server. |
 | APP-04 | A lost browser reply can lead to a second calculation and another daily credit. | Persist one account-bound request/key per tab before sending. Restore its exact inputs after reload, recover the same key or known job, and unlock new experiments after a terminal receipt. Refuse before submission if recovery storage cannot be written. |
 | APP-05 | One failed candle refresh prevents healthy markets and minute caches from refreshing. | Advance the historical rotation before each attempt and isolate expected public-feed failures per market. Checkpoint failure still withholds readiness. |
+| APP-07 | Default synthetic data uses a different seed from the manifest and report. | Resolve the effective seed once for generation, simulation, manifest and report. A replay must reproduce data and result bytes; explicit zero remains valid. |
 | APP-06 | The operations guide asks for funding and activation that the bundled signer refuses. | Document the supported dry-run journey and the independent transaction-intent verifier gate. Do not instruct premature session-key funding. |
 
 Before/after regressions exercise absent/existing owners, journal preservation,
@@ -35,7 +36,7 @@ not establish real customer or venue acceptance.
 ## Scope and preservation
 
 The source candidate is runtime 0.4.7, manager 0.7.10, ecosystem 0.4.19,
-extension 0.12.1, website 0.4.1 and analysis-runtime 1.0.1. These declarations do not
+extension 0.12.1, website 0.4.1, analysis-runtime 1.0.1, backtester 0.2.2 and Oracle 0.2.7. These declarations do not
 prove installation. The concurrent confidence-window/control delivery remains
 included. Existing paper owners, collectors, frozen cohorts, learned state,
 shared native routing, paused audits and archived liquidity are preserved.

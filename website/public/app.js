@@ -816,9 +816,10 @@ document.addEventListener('submit', async event => {
       if (currentAccount(context) && account?.user?.id === context.userId) state.usage = account.usage || null;
     }
   } catch (error) {
+    let displayError = error;
     try { if (submission) backtestRecovery.rejected(context.userId, submission, error); }
-    catch (storageError) { error = storageError; }
-    if (current()) message.textContent = errorText(error);
+    catch (storageError) { displayError = storageError; }
+    if (current()) message.textContent = errorText(displayError);
   } finally {
     if (!isBot && current() && state.config.durableBacktests) {
       const text = message.textContent; const saved = paintBacktestRecovery(form);

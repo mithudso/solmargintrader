@@ -58,6 +58,7 @@ class TenMinuteAlertsUI(unittest.IsolatedAsyncioTestCase):
                 "error": None,
             },
             "stream": self.stream,
+            "signal_loader": lambda request, cancelled: {"assets": {}},
             "alert_loader": self.alert_source,
             "clock": self.clock,
         }

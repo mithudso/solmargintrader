@@ -106,6 +106,7 @@ class Interface(unittest.IsolatedAsyncioTestCase):
                 "quote": {"price": 100.5, "observed_at": self.now[0] - 1},
                 "error": None,
             },
+            signal_loader=lambda request, cancelled: {"assets": {}},
             clock=lambda: self.now[0],
             **kwargs,
         )

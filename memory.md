@@ -1,5 +1,11 @@
 # Work continuation
 
+## Loaded TUI relay wiring correction
+
+After PR 318 merged as 4196d47, actual loaded acceptance found that the TUI displayed no shared signal while the private relay held fresh six-horizon BTC and ZEC data. Production `main()` passes `QuoteReader(args.prices)`, and the constructor incorrectly treated any injected quote loader as a request for an empty signal loader. The follow-up makes the default shared signal status loader independent of quote and candle loader selection. Explicit test signal loaders remain supported and isolate fixtures from the real home. No relay, model, owner, collector or trading behavior changes.
+
+The real-constructor regression first failed because the default status function was not called. After the correction, it rendered all six fixture horizons and verified the explicit injected loader did not call the default. Final delivery and independent loaded-TUI acceptance remain pending. Preserve the running browser, TUI, owner, quote workers and user data until the reviewed follow-up is merged.
+
 ## Browser CI fixture correction
 
 Draft PR 318 checkpoint 8a66c41 failed the real-browser CI abort/reload check. The fixture restored its `OracleController.prototype.observe` wrapper before the later pause flag was set. A genuine next-minute transaction advanced the stored ledger during the comparison. The scoped fixture repair reinstalls and restores a per-context pause, drains existing transactions, checks the expected abort error, and keeps the twin paused during reload comparison. It does not change the production model, controller or store. The aborted reducer throws before a write is queued; this check does not prove rollback of a queued write.
@@ -36,8 +42,10 @@ Browser CI fixture: the native IndexedDB abort assertion raced an independent ne
 
 Routing follow-up: source adds owner-only optional connection routing for ordinary clients; explicit environment homes remain first. The isolated 1000x paper acceptance passed one start and stop with recorded modeled outcome. The user-owned registry and shared wrapper remain unchanged. Verify focused checks, review and deliver the routing PR before a separately controlled activation. Routing alone does not fence concurrent starts or migrate journal history.
 
-Version: 628
+Version: 629
+Delta: v628 to v629; preserve delivered shared-signal loading while integrating whole-application repairs.
 Delta: v627 to v628; integrate the application optimizer and six verified source repairs.
+Delta: v627 to v628; record the loaded-TUI relay wiring failure and bounded correction.
 Delta: v626 to v627; record the browser CI fixture race and scoped correction pending final verification.
 Delta: v625 to v626; record scoped UI and prose review, bounded native evidence and final integration gates.
 Delta: v624 to v625; preserve the tested live-signal candidate, independent fixes, active routing and pending native/UI/prose gates.
@@ -3120,3 +3128,9 @@ Source candidate: runtime0.4.6, manager0.7.9, ecosystem0.4.18, extension0.11.2, 
 Next: complete required checks and source review; regenerate deterministic documentation/wiki indexes without semantic indexing; freeze current hashes; rerun all222selected methods in a no-edit sweep, preserving evidence gaps; independent final review; installed/isolated acceptance without altering protected running owners; validate ledger and deliver the owned branch through passing CI and merged PR. Do not resume older audits or merge another task.
 
 Version note: workflow application-2527/3 reserves runtime0.4.7, manager0.7.10 and ecosystem0.4.19 because concurrent TASK2497 installed the previous0.4.6/0.7.9/0.4.18 candidate and moved the shared native wrapper. Preserve its environment and clients. Our acceptance environment is /Users/mitch/.venvs/application-optimizer-2527, and no task-owned installation may replace that shared route or stop its owner. Historical version declarations above describe the earlier local candidate.
+
+## 2026-11-17 — Independent application replay correction
+
+Workflow version: application-2527/4. Delta: current source integrates delivered PR320 shared-signal loading and fixes the full JavaScript CI check. Independent review1 corroborated a seventh Medium issue: default synthetic generation used42 but recorded seed0, so replay changed the data and return. The CLI now resolves one effective seed, and an actual manifest/result replay regression preserves omitted42 and explicit0 behavior. Source candidate advances canonical backtester0.2.2 and Oracle0.2.7 with coherent consumer pins; protected installed owners retain their old versions and cohorts. Native installed subset evidence for the earlier candidate is historical until final delivery wheels are verified.
+
+PR322 is draft at https://github.com/mithudso/solmargintrader/pull/322. Its initial JS check failed no-ex-assign; the handler now uses displayError and local full check:js passes. The new recovery module is included in the existing lint command. Required final checks, complete current-method sweep, fresh review2, coherent installed acceptance, final CI/merge and deployment qualification remain before closure. Do not replace shared routes or reset an owner merely to meet an audit gate.

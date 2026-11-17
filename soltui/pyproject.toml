@@ -8,7 +8,7 @@ name = "solmargintrader-research-runtime"
 version = "0.4.7"
 description = "Headless SolTUI backtest and prospective paper trial runtime"
 requires-python = ">=3.13"
-dependencies = ["solmargintrader-backtester==0.2.1"]
+dependencies = ["solmargintrader-backtester==0.2.2"]
 
 [tool.setuptools]
 packages = ["soltui", "oracle_leverage"]

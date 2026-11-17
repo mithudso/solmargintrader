@@ -1,10 +1,11 @@
 """CLI failures preserve safe errors, source selection and explicit seed values."""
 
-from contextlib import redirect_stdout, redirect_stderr
 import io
-from pathlib import Path
+import json
 import tempfile
 import unittest
+from contextlib import redirect_stderr, redirect_stdout
+from pathlib import Path
 from unittest.mock import patch
 
 import numpy as np
@@ -59,6 +60,27 @@ class CliBoundariesTests(unittest.TestCase):
             code = cli.main(["--synthetic", "100", "--seed", "0", "--strategy", "buy_and_hold", "--start", "2020-01-01", "--no-charts"])
         self.assertEqual(code, 0)
         self.assertEqual(loader.call_args.kwargs["seed"], 0)
+
+    def test_synthetic_manifest_seed_replays_identical_data_and_results(self):
+        with tempfile.TemporaryDirectory() as temp:
+            common = ["--synthetic", "100", "--strategy", "buy_and_hold",
+                      "--start", "2020-01-01", "--no-charts"]
+            for requested, expected in [(None, 42), (0, 0)]:
+                with self.subTest(seed=requested):
+                    original = Path(temp) / f"original-{requested}"
+                    replay = Path(temp) / f"replay-{requested}"
+                    explicit = [] if requested is None else ["--seed", str(requested)]
+                    with redirect_stdout(io.StringIO()), redirect_stderr(io.StringIO()):
+                        self.assertEqual(cli.main([*common, *explicit, "--out", str(original)]), 0)
+                    manifest = json.loads((original / "run_manifest.json").read_text())
+                    self.assertEqual(manifest["seed"], expected)
+                    with redirect_stdout(io.StringIO()), redirect_stderr(io.StringIO()):
+                        self.assertEqual(cli.main([*common, "--seed", str(manifest["seed"]), "--out", str(replay)]), 0)
+                    replay_manifest = json.loads((replay / "run_manifest.json").read_text())
+                    self.assertEqual(manifest["data_checksum"], replay_manifest["data_checksum"])
+                    self.assertEqual(manifest["data_source"], replay_manifest["data_source"])
+                    for name in ["comparison.csv", "equity_buy_and_hold.csv", "trades_buy_and_hold.csv", "report.md"]:
+                        self.assertEqual((original / name).read_bytes(), (replay / name).read_bytes(), name)
 
     def test_pair_invalid_cost_and_unavailable_diagnostic_return_clear_status(self):
         with tempfile.TemporaryDirectory() as temp:

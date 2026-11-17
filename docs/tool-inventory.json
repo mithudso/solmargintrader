@@ -12,7 +12,7 @@
   "sources": [
     {
       "path": "backtester/pyproject.toml",
-      "sha256": "d5f9d3b02e49ea4821a93c4b11a60eed0c646363ab18204e9af0ef215ee2a2b4"
+      "sha256": "f3cf793fbde3d66845c36b0ba9b19dedfb64f50bc83e73d32d3e802cdd0e04dd"
     },
     {
       "path": "backtester/run.py",
@@ -20,7 +20,7 @@
     },
     {
       "path": "botmanager/pyproject.toml",
-      "sha256": "be16943f01c960ad77647886b1284b70cc5456e42ec47c618ae8f0dfbc0cd65f"
+      "sha256": "44bc8c5aaf9d41c2d6800472c9d1bb623bd54b5da666b870c9c5945508aa3444"
     },
     {
       "path": "botmanager/src/botmanager/cli.py",
@@ -52,7 +52,7 @@
     },
     {
       "path": "ecosystem/pyproject.toml",
-      "sha256": "bca0f1647611a8ecbc1705cac242ae901837c4c2f527d5b4847a9d0bd0a74b00"
+      "sha256": "68eeee06fb2764f6ab7740d2f019756126e2d8bee2502f5da2b5d5b8bdb81764"
     },
     {
       "path": "ecosystem/web.py",
@@ -96,15 +96,15 @@
     },
     {
       "path": "oracle/pyproject.toml",
-      "sha256": "4ffcb5f123596080722dea87bc23ee33ffeb4249dfaa1ab7b0c4025a6fa80cb0"
+      "sha256": "c8866e0de87e328a8e9a302d2c36e4f16aea7ff300cb1806a7499cb6d124d8f6"
     },
     {
       "path": "oracle/server.py",
-      "sha256": "58d094b68e0cace19ef2a16c4512600215cefbafaa07d49f19f96b7d660f0721"
+      "sha256": "dd6545433ee57150e38efcfcb03a529f15114b113707cb3e52b44ac9c2077d03"
     },
     {
       "path": "package.json",
-      "sha256": "5e2112e957d708bbb1fd4a3f127da8de4e06c9be8805e5173647dbbd9e7737e5"
+      "sha256": "4f26d803a45fcba085e9bbabf6bf1e34a7916d705ba2ecb851db2af4cf08ac7d"
     },
     {
       "path": "scripts/build_operation_inventories.py",
@@ -132,7 +132,7 @@
     },
     {
       "path": "soltui/pyproject.toml",
-      "sha256": "640544812d4ca41fa788cbbce8bdcafab452e6e0719e6e5874ac00f902842d9c"
+      "sha256": "05e0ef644fa8a8ec926adc17c3b3aee9af1a9a42c8a1b4a35496e723224ad0be"
     },
     {
       "path": "soltui/soltui-service",
@@ -261,7 +261,7 @@
       "kind": "npm-script",
       "source": "package.json",
       "symbol": "scripts.lint:js",
-      "declared_command": "eslint extension website/src website/public/app.js website/public/evidence.js website/public/agent-access.js ecosystem/web eslint.config.mjs",
+      "declared_command": "eslint extension website/src website/public/app.js website/public/evidence.js website/public/agent-access.js website/public/backtest-recovery.js ecosystem/web eslint.config.mjs",
       "help_command": null,
       "side_effects": "script-specific; inspect declared command before invoking",
       "signing": "not inferred from npm metadata",

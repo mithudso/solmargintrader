@@ -1,6 +1,6 @@
 # Every file in this repository
 
-**Generated** from `index/INDEX.json` at commit `8a66c41` (2026-11-17T06:13:51+00:00). 4003 tracked files, 140.9 MB.
+**Generated** from `index/INDEX.json` at commit `4196d47` (2026-11-17T06:44:51+00:00). 4003 tracked files, 140.9 MB.
 
 Regenerate with:
 
@@ -648,9 +648,9 @@ Repository-level entry points and agent instructions. `AGENTS.md` and `CLAUDE.md
 
 #### `memory.md`
 
-`doc` · 3097 lines · 639,600 B · description: **extracted**
+`doc` · 3104 lines · 640,722 B · description: **extracted**
 
-**Purpose.** Draft PR 318 checkpoint 8a66c41 failed the real-browser CI abort/reload check. The fixture restored its `OracleController.prototype.observe` wrapper before the later pause flag was set. A genuine next-minute transaction advanced the stored ledger during the comparison.
+**Purpose.** After PR 318 merged as 4196d47, actual loaded acceptance found that the TUI displayed no shared signal while the private relay held fresh six-horizon BTC and ZEC data. Production `main()` passes `QuoteReader(args.prices)`, and the constructor incorrectly treated any injected quote loader as a request for an empty signal loader.
 
 **Use.** Read it.
 
@@ -976,7 +976,7 @@ Curated prose. `ARCHITECTURE.md` explains how the pieces fit, `TESTING.md` is th
 
 #### `docs/FILES.md`
 
-`doc` · 38412 lines · 1,843,658 B · description: **extracted**
+`doc` · 38412 lines · 1,843,620 B · description: **extracted**
 
 **Purpose.** Regenerate with: python3 index/build.py all # refresh the index python3 index/make_files_doc.py # rewrite this file
 
@@ -23440,7 +23440,7 @@ Drivers that produce the numbers, and the write-ups that quote them. Everything 
 
 #### `research/zec_tui.py`
 
-`code-python` · 1406 lines · 57,571 B · description: **curated**
+`code-python` · 1402 lines · 57,399 B · description: **curated**
 
 **Purpose.** Oracle workbench with explicit leveraged trading and paper trial controls.
 
@@ -25806,7 +25806,7 @@ Drivers that produce the numbers, and the write-ups that quote them. Everything 
 
 #### `research/tests/test_zec_leverage_panel.py`
 
-`test` · 1310 lines · 56,984 B · description: **extracted**
+`test` · 1312 lines · 57,130 B · description: **extracted**
 
 **Purpose.** Real Textual controls, single-flight actions and owned worker teardown.
 
@@ -25846,17 +25846,17 @@ Drivers that produce the numbers, and the write-ups that quote them. Everything 
 
 #### `research/tests/test_zec_signal_window_display.py`
 
-`test` · 21 lines · 875 B · description: **extracted**
+`test` · 84 lines · 3,794 B · description: **extracted**
 
 **Purpose.** Ended signal windows distinguish elapsed and observed time.
 
-**Contents.** Defines `class EndedSignalWindowDisplayTest`. Depends on `research`.
+**Contents.** Defines `class EndedSignalWindowDisplayTest`, `class SignalLoaderWiringTest`. Depends on `research`.
 
 **Use.** `python3 -m pytest research/tests/test_zec_signal_window_display.py -q`
 
 #### `research/tests/test_zec_tui.py`
 
-`test` · 705 lines · 30,359 B · description: **extracted**
+`test` · 706 lines · 30,428 B · description: **extracted**
 
 **Purpose.** Real Textual keyboard/mouse, background lifecycle and layout regressions.
 
@@ -25866,7 +25866,7 @@ Drivers that produce the numbers, and the write-ups that quote them. Everything 
 
 #### `research/tests/test_zec_tui_alert_ui.py`
 
-`test` · 483 lines · 20,572 B · description: **extracted**
+`test` · 484 lines · 20,644 B · description: **extracted**
 
 **Purpose.** Real Textual fixed-window alert delivery, freshness, refresh and teardown.
 
@@ -25916,7 +25916,7 @@ Drivers that produce the numbers, and the write-ups that quote them. Everything 
 
 #### `research/tests/test_zec_tui_notifications_ui.py`
 
-`test` · 209 lines · 8,454 B · description: **extracted**
+`test` · 210 lines · 8,523 B · description: **extracted**
 
 **Purpose.** Actual Header, sound modal, main-thread bell and quiet view persistence.
 
