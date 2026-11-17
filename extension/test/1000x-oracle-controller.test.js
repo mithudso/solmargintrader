@@ -109,6 +109,29 @@ test('generic storage errors on a valid source visibly abstain for every horizon
   c.stop();
 });
 
+test('a cold reload with quota-denied writes keeps verified saved counts historical', async () => {
+  const db = atomicFixture(); let now;
+  const training = new OracleController({ store: db.client(), clock: () => now });
+  for (let minute = 1000; minute <= 1030; minute++) {
+    now = (base + minute * 60) * 1000 + 2000; training.observe(snapshot(now)); await settle();
+  }
+  training.stop(); const before = structuredClone([...db.states]), views = [];
+  const c = new OracleController({ clock: () => now, onChange: view => views.push(view), store: {
+    update: async () => { throw new DOMException('fixture quota exceeded', 'QuotaExceededError'); },
+    load: async key => structuredClone(db.states.get(key)), close() {},
+  } });
+  c.observe(snapshot(now)); await settle();
+  assert.equal(views.at(-1).state.model.n, 21);
+  for (const view of Object.values(views.at(-1).horizons)) {
+    assert.equal(view.state.key, view.sourceKey); assert.equal(view.inputReady, false);
+    assert.equal(view.error, 'oracle_storage_unavailable');
+  }
+  assert.deepEqual([...db.states], before, 'readonly recovery cannot advance or reset evidence');
+  c.observe({ ...snapshot(now), sourceIdentity: null }); await settle();
+  assert.equal(views.at(-1).state, undefined, 'unknown identity cannot retain the old source');
+  c.stop();
+});
+
 test('a trained source never leaks predictions through unknown identity or a delayed failing catalog rebind', async () => {
   const db = atomicFixture(), views = [], client = db.client();
   let now = (base + 1000 * 60) * 1000 + 2000, oldKey; const rejectLoads = [];

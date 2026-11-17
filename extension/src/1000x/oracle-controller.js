@@ -1,5 +1,5 @@
 import { OracleStore } from './oracle-store.js';
-import { ORACLE, oracleIdentity, oracleInput, transitionOracle, oracleMetrics, oracleMode } from './oracle-model.js';
+import { ORACLE, oracleIdentity, oracleInput, transitionOracle, oracleMetrics, oracleMode, validateOracleState } from './oracle-model.js';
 import { TIMEFRAMES } from './timeframes.js';
 
 const safeError = error => ['oracle_partition_capacity', 'invalid_oracle_state', 'oracle_source_unavailable'].includes(error?.message)
@@ -73,8 +73,10 @@ export class OracleController {
       if (!key) { this.#publish(); return; }
       await Promise.all(TIMEFRAMES.map(async ({ seconds }) => {
         if (this.#clock() < (this.#errors.get(seconds)?.retryAt || 0)) return;
+        let partition;
         try {
           const initial = oracleIdentity(this.#latest, seconds);
+          partition = initial.key;
           const result = await this.#store.update(initial.key, state => {
             if (this.#disposed || generation !== this.#generation || key !== this.#key) throw new Error('oracle_obsolete_session');
             const current = oracleInput(this.#latest, this.#clock(), seconds);
@@ -87,8 +89,21 @@ export class OracleController {
             this.#errors.delete(seconds);
           }
         } catch (error) {
-          if (!this.#disposed && generation === this.#generation) this.#errors.set(seconds,
-            { error: safeError(error), retryAt: this.#clock() + 5000 });
+          if (!this.#disposed && generation === this.#generation) {
+            this.#errors.set(seconds, { error: safeError(error), retryAt: this.#clock() + 5000 });
+            // A failed write must not hide a readable, verified old partition
+            // on cold reload. Keep it historical and retain the write error.
+            if (partition && !this.#models.has(seconds) && this.#store.load) {
+              try {
+                const saved = await this.#store.load(partition);
+                if (saved) {
+                  validateOracleState(saved, partition);
+                  if (!this.#disposed && generation === this.#generation && key === this.#key)
+                    this.#models.set(seconds, { state: saved, metrics: oracleMetrics(saved), mode: oracleMode(saved) });
+                }
+              } catch { /* Preserve the original refusal; never create empty evidence. */ }
+            }
+          }
         }
       }));
       if (!this.#disposed && generation === this.#generation) this.#publish();
