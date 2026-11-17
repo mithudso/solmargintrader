@@ -1,11 +1,11 @@
 {
-  "generatedAt": "2026-11-17T21:09:24+00:00",
+  "generatedAt": "2026-11-17T21:39:07+00:00",
   "schemaVersion": 1,
   "repoRoot": "~/dev/solmargintrader",
-  "commit": "c0f3c73",
+  "commit": "efeee9a",
   "counts": {
     "files": 4117,
-    "bytes": 208478665,
+    "bytes": 208480747,
     "byKind": {
       "strategy-card": 1478,
       "doc": 850,
@@ -89808,11 +89808,11 @@
       "ext": ".md",
       "kind": "doc",
       "title": "Work continuation",
-      "summary": "Version: 648 Delta: v647 to v648; bind the final learner checkpoint to all four delivered predecessors. Four initial PRs are merged and all final-head checks are now successful: PR22477bf655485b1e281dfc5c7277a4c178c47d8d7a9; PR22600d56735f0e9a2576e252284c4da29c8ae3f4adf; PR2353cacfea2f8062967ecc829ba4588f972a81717f3; PR289371c96e6a941410a1a3263aeed19afcb4da61caf.",
+      "summary": "Version: 649 Delta: v648 to v649; repair required learning-command parity fixtures and private SQLite isolation. Final head e8a7a6c passed all checks except macOS:106 changed-area cases had one failure because oracle.learning.save lacked a valid bridge fixture.",
       "summarySource": "opening-prose",
-      "bytes": 870564,
-      "lines": 4490,
-      "sha1": "f5b52d3aa5684b1fc1030f989c23f72a246c24f0",
+      "bytes": 871739,
+      "lines": 4497,
+      "sha1": "7dc9c5f72ffd3e7c0828967e997516d4cdfbb3ed",
       "symbols": [],
       "imports": [],
       "internalImports": [],
@@ -94014,11 +94014,11 @@
       "ext": ".md",
       "kind": "doc",
       "title": "Prompt history",
-      "summary": "Version: 295 Delta: v294 to v295; bind the final learner checkpoint to all four delivered predecessors. Version: 294",
+      "summary": "Version: 296 Delta: v295 to v296; repair required learning-command parity fixtures and private SQLite isolation. Version: 295",
       "summarySource": "opening-prose",
-      "bytes": 290756,
-      "lines": 4845,
-      "sha1": "b9d5f77c0e144977efd606d91174343b77da6e14",
+      "bytes": 290870,
+      "lines": 4848,
+      "sha1": "1cd19033f43c7ac53544f3854ccc592d915a4e5d",
       "symbols": [],
       "imports": [],
       "internalImports": [],
@@ -114648,9 +114648,9 @@
       "title": "Commands that run for minutes, spawn processes, hit the network or write repo files. The parity suite",
       "summary": "Shared fixtures for the command-bridge tests: an isolated world and the four surface runners.",
       "summarySource": "docstring",
-      "bytes": 22803,
-      "lines": 396,
-      "sha1": "ed2d6d5b85cebe3db3472e236dde9c0f4e98eb95",
+      "bytes": 23574,
+      "lines": 406,
+      "sha1": "d0e1afc0ca6525266fb4c84f8fa4282fa5f7fd1e",
       "symbols": [
         "TOKEN",
         "MANAGER_REQUEST_ID",
@@ -115382,9 +115382,9 @@
       "title": "test_bridge_parity",
       "summary": "One registry, four surfaces: the same call returns the same envelope bytes everywhere. Driven by the registry itself, so a command added tomorrow is covered the day it is registered (the way extension/test/surfaces.test.js covers the extension's registry).",
       "summarySource": "docstring",
-      "bytes": 4092,
+      "bytes": 4114,
       "lines": 97,
-      "sha1": "159d9dfa3063481ea392b7bc505eefbfe5391526",
+      "sha1": "7a3973b56ec269a7efcb70edb13edaf2b33b20ba",
       "symbols": [
         "class ParityTests"
       ],
@@ -122524,5 +122524,5 @@
       "frontmatter": {}
     }
   ],
-  "textSha256": "4504544797d4bbee0d2ea4a455ba3cb41ec4fd7ce2852261e1154df71b9eda0e"
+  "textSha256": "8bc81332be40427508bbb1d90e95da774068f6a78f35106cf6d92dbc7e52d589"
 }
