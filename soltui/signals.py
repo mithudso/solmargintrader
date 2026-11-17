@@ -262,6 +262,10 @@ def validate(defaults: SignalDefaults) -> SignalDefaults:
         if int(getattr(d, name)) < 1:
             raise SignalError(f"{name} must be at least 1")
 
+    for name, minimum in (("adx_period", 2), ("ou_fit_window", 20), ("vol_window", 2)):
+        if getattr(d, name) < minimum:
+            raise SignalError(f"{name} must be at least {minimum}")
+
     if d.sma_fast >= d.sma_slow:
         raise SignalError("sma_fast must be shorter than sma_slow")
     if d.macd_fast >= d.macd_slow:

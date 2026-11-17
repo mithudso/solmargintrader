@@ -43,7 +43,7 @@ class TriggerTrade:
             raise ValueError("direction must be 1 (long) or -1 (short)")
         if horizon < 1:
             raise ValueError("horizon must be at least 1 bar")
-        if not stop >= 0.0:
+        if not np.isfinite(stop) or not stop >= 0.0:
             raise ValueError("stop must be a nonnegative fraction")
         self.names, self.direction, self.horizon, self.stop = names, int(direction), int(horizon), float(stop)
         self._entry_i: int | None = None
@@ -72,10 +72,8 @@ class TriggerTrade:
             stopped = self.stop > 0 and r <= -self.stop
             if expired or stopped:
                 self._entry_i = None
-                # a new trigger on the exit bar starts a fresh trade
-                if self._fires(history):
-                    self._entry_i = i + 1
-                    return float(self.direction)
+                # A same-side target would retain the old position and erase
+                # its stop baseline. The next open must first execute flat.
                 return 0.0
             return float(self.direction)
         if self._entry_i is None and self._fires(history):

@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { TriggerVenue, normaliseOrders } from '../src/venues/triggerVenue.js';
-import { listOrders, initiateCancel, confirmCancel } from '../src/jupiter/trigger.js';
+import { listOrders, initiateCancel, confirmCancel, resolveVault, validateOrderBody } from '../src/jupiter/trigger.js';
 
 const BASE = 'BASE';
 const QUOTE = 'QUOTE';
@@ -14,6 +14,29 @@ function venue(fetchImpl) {
   return result;
 }
 const json = (value) => new Response(JSON.stringify(value));
+
+test('CDO-0c6241b439 active execution quantities require reconciliation', async () => {
+  for (const evidence of [{ filledBaseQty: .5 }, { inputUsed: '1' }, { outputAmount: '1' }]) {
+    await assert.rejects(venue(async () => json({ orders: [{ ...order, ...evidence }], pagination: { total: 1, limit: 100, offset: 0 } })).getOpenOrders(), /execution/);
+  }
+});
+
+test('CDO-561bf176f9 invalid trigger prices refuse before transport or verifier', async () => {
+  for (const level of [-1, 0, NaN, Infinity, '100', true, undefined]) {
+    let calls = 0;
+    const v = venue(async () => { calls++; throw new Error('side effect forbidden'); });
+    await assert.rejects(v.placeOrder({ intent: { side: 'buy', notionalUsd: 100, level }, slippageBps: 100, ttlMs: 60000 }), /price|level/i);
+    assert.equal(calls, 0);
+    assert.ok(validateOrderBody({ inputMint: 'a', outputMint: 'b', expiresAt: Date.now() + 60000, triggerPriceUsd: level }).some(x => /price|exactly one/i.test(x)));
+  }
+});
+
+test('CDO-1306963477 unrelated vault lookup failures never register', async () => {
+  const calls = [];
+  await assert.rejects(resolveVault({ fetchImpl: async url => { calls.push(url); return new Response('', { status: 401 }); } }));
+  assert.equal(calls.length, 1);
+  assert.ok(!calls.some(url => url.endsWith('/register')));
+});
 
 test('missing mint decimals refuse order sizing instead of guessing SPL conventions', async () => {
   await assert.rejects(() => venue(async () => json({ [BASE]: { usdPrice: 100 } })).getDecimals(), /decimal/i);

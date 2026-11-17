@@ -169,6 +169,8 @@ def load_top5(csv_path: Path | None = None) -> list[Top5Config]:
     try:
         with src.open(newline="", encoding="utf-8") as fh:
             for row in csv.DictReader(fh):
+                if None in row or any(value is None for value in row.values()):
+                    raise EvidenceUnavailable(f"{src.name} contains a truncated evidence row")
                 try:
                     rank = int(row["rank"])
                 except (KeyError, ValueError, TypeError):

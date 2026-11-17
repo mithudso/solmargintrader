@@ -55,7 +55,7 @@ class CompressedIndexTests(unittest.TestCase):
             source = root / "source.txt"
             source.write_text("source")
             catalog = root / "INDEX.json"
-            catalog.write_text(json.dumps({"files": [{"path": "source.txt", "sha1": build.sha1_of(source)}],
+            catalog.write_text(json.dumps({"files": [{"path": "source.txt", "sha1": hashlib.sha1(source.read_bytes()).hexdigest()}],
                                            "generatedAt": "test"}))
             artifact = root / "TEXT-INDEX.json.gz"
             text_index.write(artifact, {"postings": {"key": {"a": 1}}})

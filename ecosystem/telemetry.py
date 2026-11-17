@@ -702,6 +702,8 @@ def _bootstrap(home: Path) -> dict:
         if not path.is_file() or path.stat().st_size > 1_048_576:
             raise ValueError
         state = json.loads(path.read_text())
+        if not isinstance(state, dict):
+            raise TypeError("invalid_bootstrap_state")
         phase = state.get("phase")
         if phase not in PHASES:
             phase = "unknown"

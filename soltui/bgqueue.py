@@ -287,6 +287,9 @@ class JobResult:
         out the whole pane over one bad row, which is exactly the failure the
         line-skipping in `read_results` exists to prevent.
         """
+        for name in ("job_id", "strategy", "asset", "interval", "horizon", "family", "variation"):
+            if name in data and not isinstance(data[name], str):
+                raise ValueError(f"{name} must be a string")
         known = {f for f in cls.__dataclass_fields__}  # noqa: SLF001 - dataclass API
         clean = {k: v for k, v in data.items() if k in known}
         if "asset" in clean and not isinstance(clean["asset"], str):
@@ -649,7 +652,7 @@ def _parse_lines(text: str) -> list[JobResult]:
             continue
         try:
             out.append(JobResult.from_dict(data))
-        except TypeError:
+        except (TypeError, ValueError):
             continue
     return out
 

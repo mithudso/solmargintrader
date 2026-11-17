@@ -16,7 +16,16 @@ from .csv_safety import spreadsheet_safe_text
 
 def _plain(value: object) -> str:
     text = value.plain if isinstance(value, Text) else str(value) if value is not None else ""
-    return spreadsheet_safe_text(text)
+    return text
+
+
+def _spreadsheet_cell(value: object) -> str:
+    """Neutralize spreadsheet formulas, including hidden leading controls.
+
+    Plain finite decimal numbers keep their numeric meaning. Formula-like text
+    gets a leading apostrophe in both headers and values.
+    """
+    return spreadsheet_safe_text(_plain(value))
 
 
 def export_table(table: DataTable, directory: Path | None = None) -> Path:
@@ -34,9 +43,9 @@ def export_table(table: DataTable, directory: Path | None = None) -> Path:
         raise OSError("Could not choose a unique export filename")
     with handle:
         writer = csv.writer(handle)
-        writer.writerow([_plain(column.label) for column in table.ordered_columns])
+        writer.writerow([_spreadsheet_cell(column.label) for column in table.ordered_columns])
         for index in range(table.row_count):
-            writer.writerow([_plain(value) for value in table.get_row_at(index)])
+            writer.writerow([_spreadsheet_cell(value) for value in table.get_row_at(index)])
     return path
 
 

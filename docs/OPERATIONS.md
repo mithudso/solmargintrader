@@ -7,77 +7,89 @@ for the shared auto-trade session. Closing a display does not stop its session.
 ## Latch the grid kill switch
 
 ```bash
-cd extension && node tools/cli.js kill
+(cd extension && node tools/cli.js kill)
 ```
 
-`kill` is latching: it disarms **and** blocks every rail until you run `clearKill`. A stray `arm`
-cannot resume trading. In the extension, the popup's red KILL SWITCH button does the same thing.
+`kill` latches that owner's kill switch and disarms it until explicitly cleared.
+A stray `arm` cannot resume it. The browser extension has separate IndexedDB and
+configuration state: use its popup's red KILL SWITCH button to stop that browser
+owner. A CLI kill does not stop another store, browser profile, Oracle worker,
+executor or paper process. Identify each actual owner before acting; see
+[incident scope and reconciliation](runbooks/incident.md).
 
-`kill` does **not** cancel resting venue orders. Inspect the journal for their IDs:
+`kill` does not cancel resting venue orders or reverse an in-flight request. Read
+the selected owner's journal and inspect venue state before attempting any
+separately authorized cancellation. The CLI data view is:
 
 ```bash
-node tools/cli.js data --json          # find venueOrderId values
+(cd extension && node tools/cli.js data --json)
 ```
 
-The bundled `cancelOrder` command also refuses live cancellation without an
-independent withdrawal-intent verifier. Cancel existing orders in Jupiter's own
-order-management interface using the owning wallet. Verify their terminal status
-at the venue and reconcile the local record before resuming or resetting. An
-ambiguous cancellation is not permission to retry a write automatically. The
-local kill switch alone does not establish that venue orders are gone.
+Keep unknown intents and transaction/order identities until venue evidence resolves
+them. Do not delete state or retry a write because the local process stopped.
 
 ## Supported grid dry run, in order
 
-The bundled Trigger signer refuses live writes because it does not independently
-verify the economic intent of remote-crafted transactions. A session key, funding,
-`full-auto` mode or live confirmation does not satisfy that gate. Do not fund a new
-session key to follow this runbook. Keep the extension in its default dry-run mode.
-See [jupiter-trigger-contract.md](jupiter-trigger-contract.md) for the verifier and
-live-fixture requirements. These steps exercise simulated fills only.
+The bundled Trigger adapter refuses live placement without a signer that implements
+`signVerifiedTriggerDeposit`. Its `capabilities.canPlaceLive` is false when that
+trusted transaction-intent verifier is absent. The bundled session-key signer does
+not supply it. Creating or funding a key, choosing `full-auto`, or confirming an arm
+does not satisfy this gate. Keep fresh installs dry-run and disarmed; do not attempt
+to bypass the refusal.
 
 1. **Shape the grid and read the economics.**
    ```bash
-   node tools/cli.js setConfig --lower 60 --upper 90 --rungs 7 --notionalPerRungUsd 12
-   node tools/cli.js levels     # rung width and gross per round trip
-   node tools/cli.js capital    # what it needs funded
+   (cd extension && node tools/cli.js setConfig --lower 60 --upper 90 --rungs 7 --notionalPerRungUsd 12)
+   (cd extension && node tools/cli.js levels     # rung width and gross per round trip)
+   (cd extension && node tools/cli.js capital    # what it needs funded)
    ```
    If gross per round trip is not comfortably larger than two fills' fees plus slippage, the grid
    cannot win. Widen the rungs or stop here.
 
 2. **Confirm the plan matches your intent.**
    ```bash
-   node tools/cli.js plan --price <current>
+   (cd extension && node tools/cli.js plan --price <current>)
    ```
    Every sell must sit one rung above a lot you hold. No sell should share a price with its entry.
 
 3. **Run it in dry-run for a while.** Real prices, simulated fills, zero writes.
    ```bash
-   node tools/cli.js arm
-   node tools/cli.js tick --count 5
-   node tools/cli.js pnl
+   (cd extension && node tools/cli.js arm)
+   (cd extension && node tools/cli.js tick --count 5)
+   (cd extension && node tools/cli.js pnl)
    ```
 
 4. **Set the rails deliberately.** The defaults are conservative, not correct for you.
    ```bash
-   node tools/cli.js setLimits --maxTotalNotionalUsd 250 --dailyLossLimitUsd 25 --maxOrdersPerTick 2
+   (cd extension && node tools/cli.js setLimits --maxTotalNotionalUsd 250 --dailyLossLimitUsd 25 --maxOrdersPerTick 2)
    ```
 
 5. **Finish the simulation and disarm.** Inspect the journal and P&L, then stop the dry run.
    ```bash
-   node tools/cli.js data --json
-   node tools/cli.js pnl
-   node tools/cli.js disarm
+   (cd extension && node tools/cli.js data --json)
+   (cd extension && node tools/cli.js pnl)
+   (cd extension && node tools/cli.js disarm)
    ```
    Simulation results do not validate venue execution, funding, reconciliation or
    profitability. The outstanding live checks in [TESTING.md](TESTING.md) remain
    unverified. A separately implemented and qualified intent verifier is required
    before a future live activation procedure can be supported.
 
-## Daily checks
+The deterministic offline integration gate requires no credentials or funding:
 
 ```bash
-node tools/cli.js status | head -40
-node tools/cli.js pnl
+(cd extension && node tools/dryrun.js --ticks 8 --osc 6 --offline 100)
+```
+
+Its closed round trip must be positive. This does not validate venue execution or live signing.
+
+## Daily checks
+
+From the repository root:
+
+```bash
+(cd extension && node tools/cli.js status)
+(cd extension && node tools/cli.js pnl)
 ```
 
 Watch for:
@@ -85,10 +97,11 @@ Watch for:
 | Signal | Meaning |
 | --- | --- |
 | Intents stuck in `unknown` | A submit was ambiguous. Reconcile them by hand against the venue — the engine will never auto-retry |
-| Intents in `failed` | The submit threw. Safe to retry, and the next tick will re-plan |
+| A placement call throws, or persistence fails after acceptance | The current engine records `unknown`; the venue may have accepted it. Never auto-retry |
+| Intents in `failed` | Inspect the recorded cause. A pre-submit stop with `definitelyNotSubmitted` differs from an ambiguous venue call; a historical `failed` label alone proves no absence |
 | `lastTickDeltaMs` far above your `tickSeconds` | Chrome clamped the alarm, or the worker is being killed |
-| `realizedPnlUsdToday` at the daily limit | The engine has halted for the UTC day. It resumes tomorrow |
-| Rising `feeTotalUsd` with flat `roundTripCount` | Paying to trade without capturing spread. Stop and re-check step 1 |
+| `realizedPnlUsdToday` at the daily limit | The daily-loss rail blocks new admission. A new UTC day resets this counter; other rails, kill state and ambiguity holds still apply |
+| Rising `feeTotalUsd` with flat `roundTripCount` | Paying to trade without capturing spread. Stop the affected owner and inspect rung spread, costs and fill evidence |
 | `unmatchedSellQty` above zero | A sell had no lot behind it. The fill log is incomplete |
 
 ## Common situations
@@ -96,17 +109,20 @@ Watch for:
 **A tick reports `venue returned an unusable price`.** Correct behaviour — the tick aborted rather
 than writing a NaN into P&L. Check Jupiter's status and `node tools/cli.js price`.
 
-**Leverage is refused.** Trigger V2 is a spot venue. `leverage > 1` there is unreachable, so the
-engine refuses to tick rather than trading unleveraged while the config claims otherwise. Set
-`--leverage 1`, or wait for the Perps write API.
+**Leverage is refused.** Trigger V2 is a spot venue. The extension refuses an
+incompatible leverage setting rather than trading unleveraged while claiming otherwise.
+The extension's Perps adapter remains read-only. Oracle's separate GUM ZEC worker
+does not enable leveraged orders in this adapter.
 
-**A venue read fails with 401/403.** Inspect authentication and API-key availability.
-Supported reads can clear the cached JWT and re-authenticate once. Order and
-cancellation writes do not retry authentication automatically; reconcile an
-ambiguous outcome at the venue before considering another write.
+**An authenticated request returns 401/403.** The adapter can refresh authentication
+once on its eligible read path. Persistent refusal requires checking the actual account,
+key permissions and provider response category without exposing credentials. It does
+not prove an ambiguous order was absent or authorize another submit.
 
-**Rate limited (429).** The client backs off and honours `Retry-After`, and a per-tick budget caps
-requests. If it recurs, raise `tickSeconds` or lower `maxOrdersPerTick`.
+**Rate limited (429).** Eligible reads use bounded backoff and `Retry-After`; a
+per-attempt budget limits requests. Writes are not automatically replayed. Reconcile
+an ambiguous submission before deciding the next action; a rate-limit observation
+does not grant permission to change strategy or risk parameters.
 
 **The service worker seems dead.** MV3 terminates it when idle; it wakes on the alarm. Confirm with
 `chrome://extensions` → Service worker → Inspect, and check `lastTickMs` in `status`.
@@ -117,8 +133,8 @@ The journal is a plain JSON file (`~/.solmargintrader/journal.json`, or IndexedD
 the two are separate).
 
 ```bash
-node tools/cli.js exportCsv > fills-$(date +%F).csv   # back up before anything destructive
-node tools/cli.js reset --confirm                     # erases LOCAL history only
+(cd extension && node tools/cli.js exportCsv > fills-$(date +%F).csv   # back up before anything destructive)
+(cd extension && node tools/cli.js reset --confirm                     # erases LOCAL history only)
 ```
 
 `reset` does not cancel venue-side orders. Do not reset while any order or intent

@@ -93,8 +93,10 @@ class WalletActivity(unittest.TestCase):
         self.assertEqual(result["coverage"][1]["state"], "partial")
 
     def test_invalid_owners_and_cancelled_reads_make_no_requests(self):
+        calls = []
         def forbidden(*args):
-            self.fail("No network call is allowed")
+            calls.append(args)
+            raise AssertionError("No network call is allowed")
         self.settings.base_address = "0x'; SELECT secret"
         self.settings.solana_address = "invalid"
         result = activity.snapshot(self.settings, query=forbidden, rpc=forbidden)
@@ -103,6 +105,8 @@ class WalletActivity(unittest.TestCase):
         stopped = threading.Event(); stopped.set()
         result = activity.snapshot(self.settings, query=forbidden, rpc=forbidden, stop=stopped)
         self.assertEqual(result["items"], [])
+
+        self.assertEqual(calls, [], "invalid or cancelled reads must not reach either transport")
 
     def test_cdp_transport_uses_fixed_argv_and_redacts_failures(self):
         error = subprocess.CompletedProcess([], 1, "", "Authorization: PRIVATE")

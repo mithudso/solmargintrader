@@ -75,13 +75,18 @@ def main(argv=None) -> int:
     args = build_parser().parse_args(argv)
     home = args.home.expanduser().absolute()
     try:
+        existing = runner.load(home).get("config", {})
+        manager_home = args.manager_home
+        if manager_home is None and existing.get("manager_home"):
+            manager_home = Path(existing["manager_home"])
+        disabled_ui = {"running": False, "url": None, "reason": "embedded_ui_disabled"}
         if args.command == "status":
             from .ui_service import status as ui_status
 
             data = runner.status(home)
             if data.get("ui_url"):
                 data["recorded_ui_url"] = data["ui_url"]
-            interface = ui_status(home, args.manager_home)
+            interface = ui_status(home, manager_home)
             data.update(
                 home=str(home),
                 control_server=interface,
@@ -155,7 +160,7 @@ def main(argv=None) -> int:
             from .ui_service import ensure as ensure_ui
 
             if runner.running(home):
-                interface = ensure_ui(home, args.manager_home)
+                interface = ensure_ui(home, manager_home) if existing.get("embedded_ui", True) else disabled_ui
                 emit(
                     {
                         "ok": True,
@@ -203,7 +208,7 @@ def main(argv=None) -> int:
                 "embedded_ui": existing.get("embedded_ui", True),
             }
             runner.plan(home, **config)
-            interface = ensure_ui(home, Path(config["manager_home"]))
+            interface = ensure_ui(home, Path(config["manager_home"])) if config["embedded_ui"] else disabled_ui
             result = runner.start(home)
             # Observe real progress, not just successful Popen.
             for _ in range(100):

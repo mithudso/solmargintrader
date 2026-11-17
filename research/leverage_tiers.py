@@ -94,6 +94,7 @@ def run(asset: str, interval: str, tiers, groups: int, k: int):
             res = cpcv_evaluate(name, lambda n=name, q=p: build(n, **q), arrays, cfg,
                                 n_groups=groups, k_test=k)
             if res.insufficient:
+                per.append({"tier": tname, "leverage": lev, "strategy": name, "insufficient": True, "reason": res.reason, "trades": res.total_trades, "usable_blocks": res.usable_blocks})
                 continue
             st = path_stats(res.blocks, k)
             per.append({
@@ -105,7 +106,7 @@ def run(asset: str, interval: str, tiers, groups: int, k: int):
                 "p_ruin": float(np.mean([s["min_equity"] <= RUIN_LEVEL for s in st])),
             })
             pz = pooled[tname]
-            pz["sharpe"].append(res.median_sharpe)
+            pz["sharpe"].extend(res.path_sharpes)
             pz["pos"] += list(res.path_sharpes > 0)
             pz["dd"] += [s["max_dd"] for s in st]
             pz["ruin"] += [s["min_equity"] <= RUIN_LEVEL for s in st]
@@ -118,7 +119,7 @@ def run(asset: str, interval: str, tiers, groups: int, k: int):
         if not z["sharpe"]:
             continue
         summary.append({
-            "tier": tname, "leverage": lev, "strategies": len(z["sharpe"]), "paths": len(z["pos"]),
+            "tier": tname, "leverage": lev, "strategies": sum(r["tier"] == tname and not r.get("insufficient", False) for r in per), "paths": len(z["pos"]),
             "oos_median_sharpe": float(np.nanmedian(z["sharpe"])),
             "pct_paths_positive": 100 * float(np.mean(z["pos"])),
             "median_path_return_pct": 100 * float(np.median(z["ret"])),
@@ -135,11 +136,16 @@ def coverage_audit(arrays, layers) -> dict:
     """How much of the coarse series a finer layer covers, and where feeds disagree."""
     if not layers:
         return {"layers": []}
-    ts = arrays["ts"]; span = int(ts[1] - ts[0])
+    ts = arrays["ts"]
+    if len(ts) < 2 or (np.diff(ts) <= 0).any() or (np.diff(ts) != np.diff(ts)[0]).any():
+        raise ValueError("coarse coverage requires a regular ordered calendar")
+    span = int(ts[1] - ts[0])
     out = {"bars": int(len(ts)), "layers": []}
     for lay in layers:
         a = np.searchsorted(lay.ts, ts, "left"); b = np.searchsorted(lay.ts, ts + span, "left")
         full = (b - a) == span // lay.seconds
+        for i in np.where(full)[0]:
+            full[i] = np.array_equal(lay.ts[a[i]:b[i]], np.arange(ts[i], ts[i] + span, lay.seconds))
         mism = 0
         for i in np.where(full)[0]:
             if arrays["low"][i] < lay.low[a[i]:b[i]].min() * (1 - 5e-4):

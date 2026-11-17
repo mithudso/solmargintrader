@@ -189,7 +189,7 @@ class FakeRB:
     def claim(self, pos, runner):
         self.calls.append(("claim", self._kind(runner)))
         if self.on_claim:
-            self.on_claim()
+            self.on_claim(self._kind(runner))
         return RebalanceResult(
             pos.token_id, True, ["claim"], ["0xc1"], {"claim": 100000}, aero_claimed=self.claimed, fee_wei=10**12
         )
@@ -455,11 +455,13 @@ def test_kill_switch_created_between_claim_and_swap_stops_the_compound(make_daem
     chain.positions[42] = pos
     open_slot(d)
     d.decisions["42"] = {"_pos": pos, "_ev": decision_ev(pos)}
-    d.rb.on_claim = lambda: (d.root / "KILL").write_text("")
+    d.rb.on_claim = lambda kind: (d.root / "KILL").write_text("") if kind == "live" else None
     with pytest.raises(dmod.KillSwitchEngaged):
         d.compound_slot("42")
     kinds = [c[0] for c in d.rb.calls]
-    assert kinds == ["claim"]  # no swap, no topup: the claimed AERO stays in the wallet
+    assert kinds == ["claim", "claim"]  # simulation then live; no swap or topup
+    assert d.rb.calls == [("claim", "sim"), ("claim", "live")]
+    assert len(events(d, "claim")) == 1  # the confirmed claim is booked before KILL refuses conversion
     assert d.ledger.db.execute("SELECT COUNT(*) FROM flows WHERE kind='topup'").fetchone()[0] == 0
 
 
@@ -1063,16 +1065,21 @@ def test_a_mint_is_tracked_the_moment_it_lands_not_when_the_sequence_ends(make_d
     pool = make_pool(WETH, USDC, MAIN_TICK)
     d.test.chain.add_pool(pool)
     seen_during = []
+    returned = False
     real = d.rb.deploy
 
     def deploy(*a, on_stage=None, **k):
+        nonlocal returned
+        returned = False
         res = real(*a, on_stage=on_stage, **k)
+        returned = True
         return res
 
     # open slots as seen from inside the hook, i.e. before deploy() has returned
     orig_open = d._open_slot
 
     def spy(*a, **k):
+        assert not returned, "tracking must happen before deploy returns"
         out = orig_open(*a, **k)
         seen_during.append([s["slot"] for s in d.ledger.open_slots()])
         return out

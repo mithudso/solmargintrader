@@ -193,11 +193,12 @@ def run(settings, state, stopped):
         session = live_tools.grid_metadata()
         asset = session["asset"] if session else state["asset"]
         cfg = session["config"] if session else bots.get_config("grid", asset)
+        resolved_data_dir = bots.data_dir(settings).resolve()
         proof = {"asset": asset, "config": cfg, "fee_bps": session.get("fee_bps") if session else settings.fee_bps,
                  "slippage_bps": session.get("slippage_bps") if session else settings.slippage_bps,
-                 "start": settings.start, "end": settings.end, "data_dir": str(settings.data_dir), "replay_revision": live_tools.REPLAY_REVISION}
+                 "start": settings.start, "end": settings.end, "data_dir": str(resolved_data_dir), "replay_revision": live_tools.REPLAY_REVISION}
         from pathlib import Path
-        inputs = [Path(settings.data_dir) / f"{asset}_{interval}.csv" for interval in ("1h", "1m")]
+        inputs = [resolved_data_dir / f"{asset}_{interval}.csv" for interval in ("1h", "1m")]
         proof["inputs"] = {}
         for path in inputs:
             if path.exists():
@@ -211,7 +212,8 @@ def run(settings, state, stopped):
         # This stage evaluates the actual saved grid rather than substituting a
         # historical winning coin or overwriting the ongoing paper session.
         import dataclasses
-        effective = dataclasses.replace(settings, fee_bps=proof["fee_bps"], slippage_bps=proof["slippage_bps"])
+        effective = dataclasses.replace(settings, data_dir=str(resolved_data_dir),
+                                        fee_bps=proof["fee_bps"], slippage_bps=proof["slippage_bps"])
         result = bots.backtest("grid", asset, effective, config=cfg)
         after = {}
         for path in inputs:

@@ -13,8 +13,8 @@ cannot be forgotten:
                                    Sharpe haircut (backtester.core.deflated_sharpe),
                                    discounting the proven bb_reversion/zscore duplicate.
     S3  evidence floor           — a result standing on too few trades is not evidence.
-                                   A `q1_sharpe` of exactly 0.000 is the specific tell
-                                   that most CPCV paths took no trade at all.
+                                   Near-zero lower-quartile Sharpe describes weak path
+                                   performance; it does not identify no-trade paths.
     S4  degeneracy               — nominally different strategies whose published results
                                    coincide are usually one strategy wearing several names,
                                    because some constraint binds on every bar. It compares
@@ -43,6 +43,7 @@ from collections import defaultdict
 from pathlib import Path
 
 import pandas as pd
+import numpy as np
 
 # Same convention as research/sweep.py and research/perturb.py: running a script puts
 # the script's own directory on sys.path, not the repo root.
@@ -63,9 +64,8 @@ from backtester.core.types import periods_per_year  # noqa: E402
 
 RESULTS = Path(__file__).resolve().parent / "results"
 
-# A CPCV path Sharpe of exactly 0.000 at the first quartile means at least a quarter of
-# paths produced no trades. Compared with a tolerance rather than `== 0` because the CSV
-# round-trips through text.
+# A near-zero first quartile describes performance; it does not identify how
+# many paths traded. The tolerance accounts for CSV rounding only.
 FLAT_TOL = 5e-4
 
 # Columns whose agreement across strategies constitutes a degenerate twin. Deliberately
@@ -146,7 +146,13 @@ def s2_burden(
     total = sum(len(df) for df in frames.values())
     for name, df in frames.items():
         out.append(f"  {name}: {len(df)} configurations")
-    eff = effective_trials(total, KNOWN_DUPLICATE_GROUPS)
+    pairs = 0
+    for frame in frames.values():
+        cohorts = frame.groupby("asset") if "asset" in frame else [(None, frame)]
+        for _, cohort in cohorts:
+            pairs += min(int((cohort.strategy == "bb_reversion").sum()),
+                         int((cohort.strategy == "zscore").sum()))
+    eff = effective_trials(total, (2,) * pairs)
     out.append(
         f"  TOTAL {total} configurations across {len(frames)} files; "
         f"{eff:.0f} after collapsing the known bb_reversion/zscore duplicate."
@@ -175,7 +181,11 @@ def s2_burden(
             continue
         # De-annualise the whole cross-section so SR and V[SR] share units.
         var = var_annual / ppy
-        sr0 = expected_max_sharpe(eff, var)
+        try:
+            sr0 = expected_max_sharpe(eff, var)
+        except DeflatedSharpeError as exc:
+            out.append(f"  [{name}] cannot deflate: {exc}")
+            continue
         out.append(
             f"\n  [{name}] interval {interval}, trial Sharpe sd "
             f"{var_annual ** 0.5:+.3f} annualised\n"
@@ -207,6 +217,11 @@ def s2_burden(
 def s3_evidence_floor(df: pd.DataFrame, floor: int) -> list[str]:
     """Rows resting on too few trades, or whose Q1 path Sharpe is flat at zero."""
     out = []
+    for name in ("total_trades", "q1_sharpe", "median_sharpe"):
+        if name in df:
+            values = pd.to_numeric(df[name], errors="coerce")
+            for _, row in df[~np.isfinite(values)].iterrows():
+                out.append(f"  [{row.get('_file', 'unknown')}] {row['strategy']}: {name} unavailable; evidence cannot be assessed")
     if "total_trades" in df:
         thin = df[df["total_trades"] < floor]
         for _, r in thin.iterrows():
@@ -220,8 +235,8 @@ def s3_evidence_floor(df: pd.DataFrame, floor: int) -> list[str]:
         for _, r in flat.iterrows():
             out.append(
                 f"  [{r['_file']}] {r.get('asset', '')} {r['strategy']}: "
-                f"q1_sharpe = {r['q1_sharpe']:.3f} — a quarter or more of paths took "
-                "no trade"
+                f"q1_sharpe = {r['q1_sharpe']:.3f} — lower-quartile performance is near zero; "
+                "path trade counts are required to identify no-trade paths"
             )
     return out
 

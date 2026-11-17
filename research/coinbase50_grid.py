@@ -132,7 +132,7 @@ def permissions(frame, features, train_end):
     train["r"] = np.log(train.close / train.open)
     train["r"] -= train.groupby("day").r.transform("mean")
     best_hours = train.groupby("hour").r.mean().sort_values(kind="stable").index.to_numpy()[-12:]
-    return np.column_stack([joined.cycle_allowed.fillna(0).to_numpy() > 0, shape_allowed, np.isin(utc_hour, best_hours), joined.H1.fillna(-1).to_numpy() >= threshold]), {"H1_training_median": threshold if np.isfinite(threshold) else None, "time_hours": sorted(int(x) for x in best_hours)}
+    return np.column_stack([np.isfinite(joined.cycle_allowed.to_numpy()) & (joined.cycle_allowed.to_numpy() > 0), shape_allowed, np.isin(utc_hour, best_hours), np.isfinite(joined.H1.to_numpy()) & np.isfinite(threshold) & (joined.H1.to_numpy() >= threshold)]), {"H1_training_median": threshold if np.isfinite(threshold) else None, "time_hours": sorted(int(x) for x in best_hours)}
 
 
 def normalized_arrays(frame, scale):

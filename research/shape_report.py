@@ -26,12 +26,20 @@ def table(frame):
     return "\n".join(lines)
 
 
+def verify_fixed_report_contract(manifest, repo):
+    canonical = json.loads((Path(repo) / "research/results/shape_spot_20261111_manifest.json").read_text())
+    fields = ("artifacts", "target_day", "timezone", "cutoff", "replicates", "seed", "intervals", "scenarios", "assets")
+    if any(manifest.get(key) != canonical.get(key) for key in fields) or not manifest.get("artifacts"):
+        raise ValueError("fixed report prose requires the canonical artifact set; alternative runs need a new report")
+
+
 def main(argv=None):
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--run", type=Path, required=True)
     parser.add_argument("--repo", type=Path, required=True)
     args = parser.parse_args(argv)
     manifest = json.loads((args.run / "manifest.json").read_text())
+    verify_fixed_report_contract(manifest, args.repo)
     if manifest["status"] != "complete":
         raise ValueError("study did not complete")
     if digest(args.repo / "research/shape_study.py") != manifest["source_sha256"]:

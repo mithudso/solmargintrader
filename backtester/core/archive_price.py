@@ -23,6 +23,7 @@ from __future__ import annotations
 
 import argparse
 import csv
+import fcntl
 import json
 import math
 import sys
@@ -92,14 +93,16 @@ def append_observation(path: Path, mint: str, price: float, *, when: datetime | 
     price = _validated_price(price)
     when = when or datetime.now(timezone.utc)
     path.parent.mkdir(parents=True, exist_ok=True)
-    new = not path.exists()
-    with path.open("a", newline="", encoding="utf-8") as handle:
+    with path.open("a+", newline="", encoding="utf-8") as handle:
+        fcntl.flock(handle, fcntl.LOCK_EX)
+        handle.seek(0, 2)
         writer = csv.writer(handle)
-        if new:
+        if handle.tell() == 0:
             writer.writerow(HEADER)
         writer.writerow(
             [int(when.timestamp()), when.isoformat(), mint, f"{price:.10g}", "jupiter-price-v3"]
         )
+        handle.flush()
 
 
 def count_rows(path: Path) -> int:

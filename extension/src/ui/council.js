@@ -31,7 +31,10 @@ export function mountCouncil({ ask, supports }) {
     el('p', { class: 'note', text: 'Strong Buy opens long; Sell closes it. Optional shorts mirror this. Neutral votes hold the position.' }),
     status, summary, form, el('div', { class: 'row' }, start, stop, refreshButton),
     el('p', { class: 'note', text: 'Jupiter fee model; real Coinbase candles supply paper fills. Confidence warms up from 20 prospective outcomes. Stop pauses monitoring and retains an open paper position.' }), fills);
-  let disposed = false, busy = false, initialized = false;
+  let disposed = false, busy = false, initialized = false, dirty = false;
+  let queue = Promise.resolve();
+  form.addEventListener('input', () => { dirty = true; });
+  form.addEventListener('change', () => { dirty = true; });
   async function request(name, params = {}) {
     const env = await ask(name, params);
     if (!env?.ok) throw new Error(env?.error?.message ?? 'Council request failed');
@@ -46,7 +49,7 @@ export function mountCouncil({ ask, supports }) {
     for (const input of Object.values(fields)) input.disabled = locked;
     save.disabled = locked; start.disabled = !!s.running; stop.disabled = !s.running;
     if (!initialized && s.config) {
-      for (const [key, input] of Object.entries(fields)) {
+      if (!dirty) for (const [key, input] of Object.entries(fields)) {
         const value = s.config[key] ?? s.config.execution?.[key];
         if (input.type === 'checkbox') input.checked = !!value;
         else if (value != null) input.value = value;
@@ -60,8 +63,11 @@ export function mountCouncil({ ask, supports }) {
       { label: 'Reason', value: r => r.reason }, { label: 'Paper equity', value: r => r.equity },
     ], s.fills));
   }
-  async function run(name, params) {
-    if (busy || disposed) return;
+  function run(name, params) {
+    if (disposed) return Promise.resolve();
+    if (busy && name === 'council.status') return queue;
+    const operation = queue.catch(() => {}).then(async () => {
+    if (disposed) return;
     if (!supports('council.status')) { status.textContent = 'Council needs the updated native host.'; return; }
     busy = true;
     try {
@@ -70,6 +76,9 @@ export function mountCouncil({ ask, supports }) {
       if (!disposed) paint(state);
     } catch (error) { if (!disposed) status.textContent = error.message; }
     finally { busy = false; }
+    });
+    queue = operation;
+    return operation;
   }
   form.addEventListener('submit', event => {
     event.preventDefault();

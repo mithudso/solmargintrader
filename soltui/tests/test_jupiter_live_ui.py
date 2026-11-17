@@ -125,23 +125,64 @@ class JupiterLiveUI(unittest.IsolatedAsyncioTestCase):
         app = self.app()
         original = app._call
         started, release = threading.Event(), threading.Event()
+        unmounting = threading.Event()
+        release_after_unmount = threading.Event()
+        shutdown_finished_before_release = threading.Event()
+        original_unmount = app.on_unmount
+        async def unmount(_app):
+            unmounting.set()
+            try:
+                await original_unmount()
+            finally:
+                if not release.is_set():
+                    shutdown_finished_before_release.set()
+        def release_during_shutdown():
+            # Observe the actual drain wait, not a timer-driven early release.
+            if unmounting.wait(60) and waiting.wait(2):
+                release_after_unmount.set()
+            release.set()
+        waiting = threading.Event()
+        original_wait = None
+        wait_patch = None
+        def drain_wait(timeout=None):
+            if unmounting.is_set(): waiting.set()
+            return original_wait(timeout)
         def call(name, params=None, **kwargs):
             if name != 'prices.quote': return original(name, params, **kwargs)
             started.set()
-            if not release.wait(30): raise RuntimeError('held fixture timed out')
+            if not release.wait(120): raise RuntimeError('held fixture timed out')
             return {'ok': True, 'result': {'price': 88., 'fetched_at': time.time()}}
         with mock.patch('soltui.live_score.prediction_snapshot', return_value={'rows': []}), \
              mock.patch.object(app, '_call', side_effect=call), \
+             mock.patch.object(type(app), 'on_unmount', new=unmount), \
              mock.patch.object(app, '_signal_live_jupiter_done', wraps=app._signal_live_jupiter_done) as publish:
             try:
-                async with app.run_test(size=TEST_SIZE) as pilot:
+                helper = None
+                async with app.run_test(size=TEST_SIZE):
                     app.query_one('#signal-live-price-source', Select).value = 'jupiter'
                     self.assertTrue(await asyncio.to_thread(started.wait, 5))
-                    app._signal_live_alive.clear()
-                    release.set()
-                    await self.drained(app, pilot)
+                    self.assertTrue(app._jupiter_price_busy)
+                    self.assertFalse(app._signal_live_jupiter_drained.is_set())
+                    # Each read installs a new drain Event; observe that current
+                    # event only after the fake reader has actually entered.
+                    original_wait = app._signal_live_jupiter_drained.wait
+                    wait_patch = mock.patch.object(app._signal_live_jupiter_drained, 'wait', side_effect=drain_wait)
+                    wait_patch.start()
+                    helper = threading.Thread(target=release_during_shutdown, daemon=True)
+                    helper.start()
+                # CDO-c890bc1a53: context exit itself must wait for held IO.
+                helper.join(3)
+                self.assertTrue(release_after_unmount.is_set())
+                self.assertFalse(shutdown_finished_before_release.is_set())
+                self.assertTrue(app._jupiter_price_shutdown_drained)
                 publish.assert_not_called()
                 self.assertFalse(app._jupiter_price_busy)
                 self.assertTrue(app._signal_live_jupiter_drained.is_set())
             finally:
                 release.set()
+                unmounting.set()
+                waiting.set()
+                if helper is not None:
+                    helper.join(3)
+                if wait_patch is not None:
+                    wait_patch.stop()

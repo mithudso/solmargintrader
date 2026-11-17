@@ -13,7 +13,7 @@ from pathlib import Path, PurePosixPath
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
 
-def selected_modules(paths: list[str]) -> list[str] | None:
+def selected_modules(paths: list[str], exists=lambda p: Path(p).is_file()) -> list[str] | None:
     """Only narrow a PR consisting entirely of individual SolTUI test files.
 
     Every other change, including helpers, deleted files, docs, configuration,
@@ -23,6 +23,8 @@ def selected_modules(paths: list[str]) -> list[str] | None:
     for path in paths:
         p = PurePosixPath(path)
         if len(p.parts) != 3 or p.parts[:2] != ('soltui', 'tests') or not p.name.startswith('test_') or p.suffix != '.py':
+            return None
+        if not exists(path):
             return None
         modules.append(f'soltui.tests.{p.stem}')
     return sorted(set(modules)) if modules else None

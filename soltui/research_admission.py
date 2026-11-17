@@ -220,7 +220,7 @@ def inspect_history(root, kind):
                     }
                     cells = [
                         dict(r)
-                        for r in db.execute("SELECT * FROM cell WHERE state!='pending'")
+                        for r in db.execute("SELECT * FROM cell WHERE state!='pending' OR id IN (SELECT cell FROM attempt)")
                     ]
                     trials = [dict(r) for r in db.execute("SELECT * FROM attempt")]
                     series = [dict(r) for r in db.execute("SELECT * FROM series")]
@@ -234,6 +234,9 @@ def inspect_history(root, kind):
                             evidence["active"] = True
                 if not cells and not trials and meta.get("phase") == "planned":
                     continue
+                known_cells = {cell["id"] for cell in cells}
+                if any(trial["cell"] not in known_cells for trial in trials):
+                    evidence["coverage"] = "unknown_history"
                 evaluated = {(c["asset"], c["interval"]) for c in cells}
                 intervals = []
                 for asset, interval in evaluated:

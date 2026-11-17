@@ -116,7 +116,8 @@ def test_missing_prices_block_sizing(tmp_path):
         raise RuntimeError("feed down")
 
     rep = run(eng, tmp_path, prices_fn=boom)
-    assert rep.positions[0].status == "blocked" and "feed down" in rep.positions[0].reason
+    assert rep.positions[0].status == "blocked" and "USD prices unavailable" in rep.positions[0].reason
+    assert "RuntimeError" in rep.positions[0].reason and "feed down" not in rep.positions[0].reason
 
 
 def test_position_larger_than_max_position_usd_can_still_exit(tmp_path):
@@ -181,6 +182,7 @@ def test_conversion_plan_uses_a_direct_pool_with_slippage_floor(tmp_path):
     rep = run(eng, tmp_path, convert_to="USDC")
     (step,) = rep.positions[0].converts  # only WETH: the USDC leg is already the target
     assert step.token == "WETH" and not step.refused and step.min_out_raw < step.expected_out_raw
+    assert 0 < step.min_out_raw == int(step.expected_out_raw * (1 - eng.cfg.execution.max_slippage_bps / 1e4))
     assert step.expected_out_raw == pytest.approx(1999 * 10**6, rel=1e-3)
 
 

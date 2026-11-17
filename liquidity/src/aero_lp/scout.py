@@ -15,20 +15,54 @@ expected net APR.
 from __future__ import annotations
 
 import json
+import signal
+import threading
 import time
 from collections.abc import Callable, Iterable
+from contextlib import contextmanager
 from pathlib import Path
 from typing import Any
 
 from web3 import Web3
 
 from .chain import ZERO, AeroChain
+from .diagnostics import safe_error
 from .market import MarketData
 from .metrics import KNOWN_TOKENS, PoolMetrics, evaluate_pool
 from .state import atomic_write_json
 from .strategy import StrategyConfig
+from .validation import finite_number
 
 SCHEMA = "aero-lp-scout/1"
+
+
+class ScoutDeadline(BaseException):
+    """Do not let provider fallback handlers swallow the whole-run read-only deadline."""
+
+
+@contextmanager
+def _budget(seconds: float | None):
+    if seconds is None:
+        yield
+        return
+    finite_number(seconds, "max_seconds", positive=True)
+    if threading.current_thread() is not threading.main_thread():
+        raise ValueError("bounded scout requires the main thread")
+    if signal.getitimer(signal.ITIMER_REAL) != (0.0, 0.0):
+        raise ValueError("bounded scout cannot replace another active process timer")
+    previous = signal.getsignal(signal.SIGALRM)
+
+    def expired(signum, frame):
+        raise ScoutDeadline
+
+    signal.signal(signal.SIGALRM, expired)
+    signal.setitimer(signal.ITIMER_REAL, seconds)
+    try:
+        yield
+    finally:
+        signal.setitimer(signal.ITIMER_REAL, 0)
+        signal.signal(signal.SIGALRM, previous)
+
 
 _SYM = {v: k for k, v in KNOWN_TOKENS.items()}
 # Pairs whose price ratio is (nearly) pegged. Order does not matter.
@@ -93,33 +127,48 @@ def run_scout(
     l1_fee_usd: float = 0.005,
     max_seconds: float | None = None,
 ) -> dict[str, Any]:
-    """Score the candidate pools and write `out`. `max_seconds` bounds the run (the daemon blocks on it, and
-    GeckoTerminal rate limits can make a full scan slow): pools not reached are listed under `errors`."""
-    pools = pools or candidate_pools(chain, market, top_by_volume)
+    """Bound discovery and evaluation together; partial reads never claim complete coverage.
+
+    A bounded call runs on the main thread without an existing real-time timer. It interrupts only
+    this read-only scout, never a transaction sequence or a worker left running in the background.
+    """
     results: list[PoolMetrics] = []
     errors: list[dict[str, str]] = []
     started = time.monotonic()
-    for i, addr in enumerate(pools, 1):
-        if max_seconds is not None and time.monotonic() - started > max_seconds:
-            errors.extend({"pool": a, "error": "skipped: scout time budget used up"} for a in pools[i - 1 :])
-            if progress:
-                progress(f"time budget of {max_seconds:.0f}s used up after {i - 1} of {len(pools)} pools")
-            break
-        try:
-            m = evaluate_pool(chain, market, addr, deposit_usd, cfg, gas_units=gas_units, l1_fee_usd=l1_fee_usd)
-            results.append(m)
-            if progress:
-                progress(f"[{i}/{len(pools)}] {m.pair} CL{m.tick_spacing}: net {m.expected_net_apr:+.1f}% APR")
-        except Exception as e:  # noqa: BLE001 - one bad pool must not end the scan
-            errors.append({"pool": addr, "error": f"{type(e).__name__}: {e}"[:300]})
-            if progress:
-                progress(f"[{i}/{len(pools)}] {addr}: error {type(e).__name__}")
+    remaining = list(pools) if pools is not None else []
+    exhausted = False
+    try:
+        with _budget(max_seconds):
+            if pools is None:
+                remaining = candidate_pools(chain, market, top_by_volume)
+            total = len(remaining)
+            while remaining:
+                if max_seconds is not None and time.monotonic() - started >= max_seconds:
+                    raise ScoutDeadline
+                addr = remaining[0]
+                try:
+                    m = evaluate_pool(chain, market, addr, deposit_usd, cfg, gas_units=gas_units, l1_fee_usd=l1_fee_usd)
+                    results.append(m)
+                    if progress:
+                        progress(f"[{total - len(remaining) + 1}/{total}] {m.pair}: net {m.expected_net_apr:+.1f}% APR")
+                except Exception as error:  # noqa: BLE001 -- one bad pool must not end the scan
+                    errors.append({"pool": addr, "error": safe_error(error)})
+                    if progress:
+                        progress(f"{addr}: error {type(error).__name__}")
+                remaining.pop(0)
+    except ScoutDeadline:
+        exhausted = True
+        errors.extend({"pool": addr, "error": "skipped: scout time budget used up"} for addr in remaining)
+        if not remaining:
+            errors.append({"pool": "discovery", "error": "scout time budget used up during discovery"})
     doc = {
         "schema": SCHEMA,
         "generated_at": time.time(),
         "deposit_usd": deposit_usd,
         "pools": [m.to_json() for m in rank(results)],
         "errors": errors,
+        "budget_exhausted": exhausted,
+        "complete": not exhausted and not errors,
     }
     if out is not None:
         atomic_write_json(out, doc)

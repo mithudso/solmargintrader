@@ -9,7 +9,7 @@ Ten components with different failure modes:
 | Component | Worst case if you break it |
 | --- | --- |
 | `ecosystem/` | Incorrect paper orchestration or UI owner control |
-| `oracle/` | Mislabelled observations or unverified forecasts |
+| `oracle/` | Mislabelled forecasts or a separately enabled TradingView Coinbase/GUM order |
 | `botmanager/` | Incorrect paper account state, evidence or lifecycle ownership |
 | `backtester/` | A dishonest number. Nobody loses money, but a decision built on it might |
 | `research/` | An overstated result |
@@ -18,6 +18,12 @@ Ten components with different failure modes:
 | `mongo/` | Wrong derived research records; selected collections are dropped on load |
 | `liquidity/` | **Retained live-capable code** — archived, disabled and killed |
 | `executor/` | **A real Solana swap for real money** |
+
+The separate [hosted website package](../website/README.md) handles wallet accounts,
+public research and inactive paper bot definitions. Its account, billing and read-only
+analysis gates are independent; it cannot inherit local owner credentials or execute
+those definitions. Follow its own development/test guide without starting local trading
+services or configuring production billing as part of onboarding.
 
 Read `CLAUDE.md` before touching anything. It carries the non-negotiables per component and
 they are not stylistic — each one is there because the failure it prevents already

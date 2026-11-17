@@ -367,6 +367,26 @@ class _NoRedirect(urllib.request.HTTPRedirectHandler):
         raise QuoteError("quote_redirect_refused")
 
 
+def _read_body(response, deadline):
+    data = bytearray()
+    while len(data) <= MAX_RESPONSE:
+        remaining = deadline - time.monotonic()
+        if remaining <= 0:
+            raise QuoteError("quote_deadline_exceeded")
+        # CPython's HTTPResponse exposes the transport beneath its buffered file.
+        # read1 performs one socket receive, so progress cannot reset the budget.
+        transport = getattr(getattr(getattr(response, "fp", None), "raw", None), "_sock", None)
+        if transport is not None:
+            transport.settimeout(remaining)
+        chunk = response.read1(min(65536, MAX_RESPONSE + 1 - len(data)))
+        if time.monotonic() >= deadline:
+            raise QuoteError("quote_deadline_exceeded")
+        if not chunk:
+            return bytes(data)
+        data.extend(chunk)
+    raise QuoteError("quote_response_too_large")
+
+
 def collect_quote(
     archive_path,
     request,
@@ -465,6 +485,7 @@ def collect_quote(
         headers={"x-api-key": api_key, "Accept": "application/json"},
     )
     requested = time.time()
+    deadline = time.monotonic() + timeout
     try:
         with urllib.request.build_opener(_NoRedirect).open(
             req, timeout=timeout
@@ -474,9 +495,7 @@ def collect_quote(
                 or response.headers.get_content_type() != "application/json"
             ):
                 raise QuoteError("quote_http_response_invalid")
-            raw = response.read(MAX_RESPONSE + 1)
-            if len(raw) > MAX_RESPONSE:
-                raise QuoteError("quote_response_too_large")
+            raw = _read_body(response, deadline)
         received = time.time()
         body = json.loads(raw)
     except urllib.error.HTTPError as exc:

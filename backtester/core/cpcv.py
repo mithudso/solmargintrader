@@ -263,6 +263,12 @@ def cpcv_evaluate(
     )
 
 
+def split_positions(total: int, maximum: int) -> set[int]:
+    """Deterministically span both ends of the full combination space."""
+    count = min(total, maximum) if maximum > 0 else total
+    return set(np.linspace(0, total - 1, count, dtype=int).tolist())
+
+
 def _combination_at(n: int, k: int, rank: int) -> tuple[int, ...]:
     """Return one lexicographic combination without enumerating earlier ones."""
     if not 0 <= rank < math.comb(n, k):
@@ -303,7 +309,7 @@ def pbo_cscv(
     stable long before that. The cap SAMPLES EVENLY across the combination space
     rather than taking the first N: `itertools.combinations` emits in
     lexicographic order, so the first N all share low-index blocks and would
-    systematically under-represent the later ones. Sampling is by fixed stride,
+    systematically under-represent the later ones. Sampling includes both ends of the full combination space,
     so the result is still fully deterministic and reproducible.
     """
     labels = list(block_returns)
@@ -328,11 +334,11 @@ def pbo_cscv(
     # Select the same evenly spaced lexicographic positions directly. Walking
     # every skipped combination makes a small cap unbounded on large spaces.
     total_splits = math.comb(n_blocks, half)
-    stride = max(1, total_splits // max_splits) if max_splits > 0 else 1
+    positions = sorted(split_positions(total_splits, max_splits))
 
     below_median = 0
     splits = 0
-    for position in range(0, total_splits, stride):
+    for position in positions:
         if splits >= max_splits:
             break
         train_idx = _combination_at(n_blocks, half, position)

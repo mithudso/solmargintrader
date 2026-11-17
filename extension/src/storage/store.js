@@ -149,9 +149,22 @@ export class Store {
   }
 
   async recentEvents(limit = 100) {
+    if (!Number.isSafeInteger(limit) || limit < 0) throw new RangeError('event limit must be a nonnegative integer');
+    if (limit === 0) return [];
     const t = this.db.transaction(STORES.EVENTS, 'readonly');
-    const all = await asPromise(t.objectStore(STORES.EVENTS).getAll());
-    return all.slice(-limit).reverse();
+    return new Promise((resolve, reject) => {
+      const values = [];
+      const request = t.objectStore(STORES.EVENTS).openCursor(null, 'prev');
+      request.onerror = () => reject(request.error);
+      t.onabort = () => reject(t.error ?? new Error('event read aborted'));
+      request.onsuccess = () => {
+        const cursor = request.result;
+        if (!cursor) return resolve(values);
+        values.push(cursor.value);
+        if (values.length >= limit) return resolve(values);
+        cursor.continue();
+      };
+    });
   }
 
   /** Erase every local record. Does not touch venue-side orders. */

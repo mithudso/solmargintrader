@@ -56,7 +56,8 @@ class AddrStat:
 
 
 def _int(value: Any) -> int:
-    if isinstance(value, bool) or not isinstance(value, (int, float)):
+    if (isinstance(value, bool) or not isinstance(value, (int, float))
+            or (isinstance(value, float) and (not math.isfinite(value) or not value.is_integer()))):
         raise WalletHttpError(0, "explorer reply had a non-numeric field")
     try:
         valid = math.isfinite(value) and value >= 0 and int(value) == value

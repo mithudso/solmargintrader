@@ -311,7 +311,7 @@ class LegacyAdapter:
             return result
         except (OSError, http.client.HTTPException):
             raise _fail("owner_unreachable") from None
-        except (ValueError, UnicodeError):
+        except (ValueError, UnicodeError, RecursionError):
             raise _fail("incompatible_owner") from None
         finally:
             if deadline_timer is not None:

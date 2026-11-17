@@ -162,6 +162,8 @@ function renderBanner() {
 
 function renderPnl() {
   const { fills, carry, price } = cache;
+  for (const id of ['net', 'realized', 'unrealized', 'fees', 'trips', 'winRate', 'drawdown', 'inventory']) $(`#${id}`).textContent = '—';
+  $('#ladderChart').replaceChildren();
   if (!fills.length) {
     disposeChart($('#equityChart'));
     $('#equityChart').innerHTML = '<p class="note">No fills yet.</p>';
@@ -177,15 +179,15 @@ function renderPnl() {
   }
   const pnl = snapshot({ fills, markPriceUsd: price, carryEntries: carry });
   const curve = equityCurve({ roundTrips: pnl.roundTrips, carryEntries: carry });
-  const dd = maxDrawdown(curve);
+  const dd = pnl.accountingComplete ? maxDrawdown(curve) : null;
 
   $('#net').textContent = usd(pnl.totalNetUsd);
   $('#realized').textContent = usd(pnl.realizedNetUsd);
   $('#unrealized').textContent = usd(pnl.unrealizedNetUsd);
   $('#fees').textContent = usd(pnl.feeTotalUsd);
   $('#trips').textContent = String(pnl.roundTripCount);
-  $('#winRate').textContent = `${(pnl.winRate * 100).toFixed(0)}%`;
-  $('#drawdown').textContent = `${usd(dd.drawdownUsd)} (${dd.drawdownPct.toFixed(1)}%)`;
+  $('#winRate').textContent = pnl.winRate == null ? '—' : `${(pnl.winRate * 100).toFixed(0)}%`;
+  $('#drawdown').textContent = dd ? `${usd(dd.drawdownUsd)} (${dd.drawdownPct.toFixed(1)}%)` : '—';
   $('#inventory').textContent = `${pnl.openBaseQty.toFixed(4)} @ ${usd(pnl.avgEntryUsd)} avg`;
 
   const last = curve.at(-1)?.equityUsd;
@@ -296,9 +298,11 @@ function renderCapital() {
 /* --------------------------------------------------------------------- wiring -- */
 
 export async function refreshGrid() {
+  try {
   const status = await send({ type: 'status' });
-  if (!status?.ok) return;
+  if (!status?.ok) throw new Error('Status unavailable');
   const data = await send({ type: 'data' });
+  if (!data?.ok || !['fills', 'intents', 'carry', 'events'].every(key => Array.isArray(data[key]))) throw new Error('Journal unavailable');
 
   cache = {
     config: status.config,
@@ -316,20 +320,37 @@ export async function refreshGrid() {
   renderPnl();
   renderTables();
   renderCapital();
+  } catch {
+    $('#banner').className = 'banner warn';
+    $('#banner').textContent = 'Grid data unavailable. Previously displayed journal and totals may be stale.';
+    return null;
+  }
 }
 
 /** Wire the grid forms. Called once. */
 export function mountGrid() {
+  const save = async (message) => {
+    try {
+      const result = await send(message);
+      if (!result?.ok) {
+        $('#banner').className = 'banner warn';
+        $('#banner').textContent = `Not saved: ${result?.error ?? 'request refused'}`;
+        return;
+      }
+      await refreshGrid();
+    } catch {
+      $('#banner').className = 'banner warn';
+      $('#banner').textContent = 'Not saved: request unavailable.';
+    }
+  };
   $('#configForm').addEventListener('submit', async (e) => {
     e.preventDefault();
-    await send({ type: 'setConfig', patch: readForm($('#configForm')) });
-    await refreshGrid();
+    await save({ type: 'setConfig', patch: readForm($('#configForm')) });
   });
 
   $('#limitsForm').addEventListener('submit', async (e) => {
     e.preventDefault();
-    await send({ type: 'setLimits', patch: readForm($('#limitsForm')) });
-    await refreshGrid();
+    await save({ type: 'setLimits', patch: readForm($('#limitsForm')) });
   });
 
   $('#sessionKeyForm').addEventListener('submit', async (e) => {
@@ -352,7 +373,7 @@ export function mountGrid() {
       out.textContent = problem;
       return;
     }
-    const message = buildCreateSessionKeyMessage(form.elements.passphrase.value);
+    const message = buildCreateSessionKeyMessage(form.elements.passphrase.value, form.elements.acknowledged.checked);
     clear();
     try {
       out.textContent = describeCreateResult(await send(message)).text;

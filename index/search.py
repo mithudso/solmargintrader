@@ -49,6 +49,7 @@ OUT = REPO / "index"
 if str(OUT) not in sys.path:  # sibling modules, whether run as a script or imported
     sys.path.insert(0, str(OUT))
 
+import build  # noqa: E402
 import idle  # noqa: E402
 import ollama_ensure  # noqa: E402
 import text_index  # noqa: E402
@@ -141,24 +142,29 @@ def _semantic_matrix(pair: tuple[Path, Path]):
     """(manifest, embeddings float32, owners), read once and cached by file and mtime."""
     import numpy as np
 
-    key = f"semantic:{pair[1]}:{pair[1].stat().st_mtime_ns}:{pair[0].stat().st_mtime_ns}"
-    hit = _CACHE.get(key)
-    if hit is not None:
-        return hit
-    for stale in [k for k in _CACHE if k.startswith("semantic:")]:
-        del _CACHE[stale]
-    manifest = json.loads(pair[0].read_text())
-    array_bytes = pair[1].read_bytes()
-    if (not isinstance(manifest, dict)
-            or manifest.get("arraySha256") != hashlib.sha256(array_bytes).hexdigest()):
-        raise ValueError("semantic array is not bound to its manifest")
-    # No `allow_pickle`: the array holds only floats, and the chunk-to-file mapping comes
-    # from the manifest. Unpickling an array is arbitrary code execution, which is not a
-    # risk an index should carry.
-    with np.load(io.BytesIO(array_bytes), allow_pickle=False) as archive:
-        emb = archive["embeddings"].astype("float32")   # L2-normalised at build time
-    _CACHE[key] = (manifest, emb, manifest.get("chunkOwners") or [])
-    return _CACHE[key]
+    with build.semantic_lock(pair[1]):
+        stats = [p.stat() for p in pair]
+        key = "semantic:" + str(pair) + repr([(s.st_ino, s.st_mtime_ns, s.st_ctime_ns, s.st_size) for s in stats])
+        hit = _CACHE.get(key)
+        if hit is not None:
+            return hit
+        manifest = json.loads(pair[0].read_text())
+        if not isinstance(manifest, dict):
+            raise ValueError("semantic manifest must be an object")
+        data = pair[1].read_bytes()
+        if manifest.get("arraySha256") != hashlib.sha256(data).hexdigest():
+            raise ValueError("semantic array and manifest do not belong to the same publication")
+        with np.load(io.BytesIO(data), allow_pickle=False) as z:
+            emb = z["embeddings"].astype("float32")
+        owners = manifest.get("chunkOwners")
+        if (emb.ndim != 2 or not np.isfinite(emb).all() or not isinstance(owners, list)
+                or len(owners) != emb.shape[0] or any(not isinstance(owner, str) for owner in owners)
+                or manifest.get("dims", emb.shape[1]) != emb.shape[1]):
+            raise ValueError("semantic array shape or owner mapping is invalid")
+        for stale in [k for k in _CACHE if k.startswith("semantic:")]:
+            del _CACHE[stale]
+        _CACHE[key] = (manifest, emb, owners)
+        return _CACHE[key]
 
 
 def semantic(query: str, limit: int | None = 40, notes: list[str] | None = None,
@@ -201,9 +207,16 @@ def semantic(query: str, limit: int | None = 40, notes: list[str] | None = None,
                            "keep_alive": QUERY_KEEP_ALIVE}).encode()
         req = urllib.request.Request(url, data=body,
                                     headers={"Content-Type": "application/json"})
-        with urllib.request.urlopen(req, timeout=120) as r:
+        with ollama_ensure.local_urlopen(req, timeout=120) as r:
             d = json.loads(r.read())
-        q = np.asarray((d.get("embeddings") or [d["embedding"]])[0], dtype="float32")
+        vectors = d.get("embeddings") if isinstance(d, dict) else None
+        if vectors is None and isinstance(d, dict) and "embedding" in d:
+            vectors = [d["embedding"]]
+        if not isinstance(vectors, list) or len(vectors) != 1:
+            raise ValueError("query embedding response count is invalid")
+        q = np.asarray(vectors[0], dtype="float32")
+        if q.ndim != 1 or q.shape[0] != emb.shape[1] or not np.isfinite(q).all() or np.linalg.norm(q) == 0:
+            raise ValueError("query embedding shape or values are invalid")
     except Exception as exc:  # noqa: BLE001 - any transport failure degrades to text
         _say(notes, f"semantic unavailable: {type(exc).__name__}")
         return None
@@ -282,7 +295,7 @@ def unload(model: bool = True) -> str:
                            "keep_alive": 0}).encode()
         req = urllib.request.Request(f"{base}/api/embed", data=body,
                                      headers={"Content-Type": "application/json"})
-        urllib.request.urlopen(req, timeout=10).read()  # noqa: S310 - local only
+        ollama_ensure.local_urlopen(req, timeout=10).read()  # noqa: S310 - local only
     except Exception as exc:  # noqa: BLE001 - best effort; the cache is already cleared
         return f"cleared the in-process index cache; could not unload the model ({type(exc).__name__})"
     return "cleared the in-process index cache and asked ollama to unload the embedding model"
@@ -315,8 +328,8 @@ def run_query(query: str, mode: str = "hybrid", limit: int = 20, kind: str | Non
         raise ValueError(f"mode must be one of {', '.join(MODES)}")
     result = QueryResult()
     meta = _cached_json(INDEX_JSON, "the file metadata index")
-    if auto_index:
-        result.notes.append(idle.maybe_start())
+    if auto_index and mode != "keyword":
+        result.notes.append(idle.maybe_start(**({} if start_ollama else {"start_ollama": False})))
     tx: list[tuple[str, float]] = []
     if mode in ("keyword", "hybrid"):
         tx = bm25(query, _cached_json(TEXT_JSON, "the text index"))

@@ -13,6 +13,7 @@ import hashlib
 import json
 import math
 import os
+import re
 from pathlib import Path
 import sqlite3
 import time
@@ -26,6 +27,7 @@ from .market_diagnostics import market_request
 MINUTE = 60
 WINDOW = 1440 * MINUTE  # below KuCoin's documented 1500-candle maximum
 URL = "https://api.kucoin.com/api/v1/market/candles"
+MAX_PAGE_BYTES = 2 * 1024 * 1024
 
 
 class HistoryError(ValueError):
@@ -44,7 +46,10 @@ def decode_page(raw: bytes, start: int, end: int) -> list[tuple[int, float, floa
         for item in payload["data"]:
             if not isinstance(item, list) or len(item) != 7:
                 raise ValueError("unexpected candle schema")
-            ts = int(item[0]); op, close, high, low, volume, turnover = map(float, item[1:])
+            timestamp = item[0]
+            if not (type(timestamp) is int or isinstance(timestamp, str) and re.fullmatch(r"0|[1-9][0-9]*", timestamp)):
+                raise ValueError("timestamp must be an exact integer")
+            ts = int(timestamp); op, close, high, low, volume, turnover = map(float, item[1:])
             if (ts % MINUTE or not start <= ts < end or not all(math.isfinite(v) for v in (op, close, high, low, volume, turnover))
                     or min(op, close, high, low) <= 0 or volume < 0 or turnover < 0
                     or high < max(op, close, low) or low > min(op, close, high)):
@@ -111,7 +116,10 @@ def _get_unlocked(url: str, *, timeout: float = 15) -> bytes:
         try:
             request = urllib.request.Request(url, headers={"User-Agent": "solmargintrader-research/1.0"})
             with market_request("kucoin_history"), urllib.request.urlopen(request, timeout=timeout) as response:
-                return response.read()
+                raw = response.read(MAX_PAGE_BYTES + 1)
+                if len(raw) > MAX_PAGE_BYTES:
+                    raise HistoryError("provider page exceeds byte capacity")
+                return raw
         except urllib.error.HTTPError as exc:
             if exc.code != 429 and exc.code < 500:
                 raise

@@ -28,6 +28,7 @@ import re
 import secrets
 import stat
 import sys
+import threading
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
 from typing import Any
@@ -40,6 +41,37 @@ DEFAULT_PORT = 8788
 MAX_BODY_BYTES = 1024 * 1024
 REJECT_DRAIN_TIMEOUT_S = 0.25
 REQUEST_READ_TIMEOUT_S = 10.0
+
+REQUEST_TIMEOUT_S = REQUEST_READ_TIMEOUT_S
+MAX_CONNECTIONS = 16
+
+
+class BoundedHTTPServer(ThreadingHTTPServer):
+    def __init__(self, *args, **kwargs):
+        self._slots = threading.BoundedSemaphore(MAX_CONNECTIONS)
+        super().__init__(*args, **kwargs)
+
+    def get_request(self):
+        request, address = super().get_request()
+        request.settimeout(REQUEST_TIMEOUT_S)
+        return request, address
+
+    def process_request(self, request, client_address):
+        if not self._slots.acquire(blocking=False):
+            self.shutdown_request(request)
+            return
+        try:
+            super().process_request(request, client_address)
+        except BaseException:
+            self._slots.release()
+            raise
+
+    def process_request_thread(self, request, client_address):
+        try:
+            super().process_request_thread(request, client_address)
+        finally:
+            self._slots.release()
+
 
 _ROUTE = re.compile(r"^/v1/([A-Za-z][A-Za-z0-9_.]*)$")
 _STATUS = {"bad_params": 400, "unknown_command": 404, "forbidden": 403, "failed": 500, "timeout": 504}
@@ -83,7 +115,7 @@ def make_handler(token: str):
 
         def setup(self) -> None:
             super().setup()
-            self.connection.settimeout(REQUEST_READ_TIMEOUT_S)
+            self.connection.settimeout(min(REQUEST_READ_TIMEOUT_S, REQUEST_TIMEOUT_S))
 
         def log_message(self, fmt: str, *args: Any) -> None:  # request lines carry query values
             pass
@@ -95,6 +127,8 @@ def make_handler(token: str):
             self.send_header("content-length", str(len(data)))
             self.send_header("x-content-type-options", "nosniff")
             self.send_header("cache-control", "no-store")
+            if self.close_connection:
+                self.send_header("connection", "close")
             self.end_headers()
             self.wfile.write(data)
 
@@ -102,6 +136,16 @@ def make_handler(token: str):
             self._send(status, commands.dumps(commands.error_envelope(name, code, message)))
 
         def _handle(self, method: str) -> None:
+            if method == "POST":
+                self.close_connection = True
+            try:
+                length = self._body_length()
+                if method == "GET" and length:
+                    raise commands.CommandError("bad_params", "GET request bodies are not supported")
+            except commands.CommandError as exc:
+                self.close_connection = True
+                self._refuse(413 if "too large" in exc.message else 400, exc.code, exc.message)
+                return
             url = urlsplit(self.path)
             path = url.path.rstrip("/")
             if path == "/v1/health" and method == "GET":
@@ -146,12 +190,30 @@ def make_handler(token: str):
             code = (env["error"] or {}).get("code")
             self._send(200 if env["ok"] else _STATUS.get(code, 500), commands.dumps(env))
 
+        def _body_length(self) -> int:
+            lengths = self.headers.get_all("Content-Length", [])
+            if self.headers.get("Transfer-Encoding") is not None or len(lengths) > 1:
+                raise commands.CommandError("bad_params", "unsupported or ambiguous request framing")
+            text = lengths[0].strip() if lengths else "0"
+            if not text.isascii() or not text.isdecimal():
+                raise commands.CommandError("bad_params", "bad Content-Length")
+            if len(text) > 12 or int(text) > MAX_BODY_BYTES:
+                raise commands.CommandError("bad_params", "request body too large")
+            return int(text)
+
         def _read_json(self) -> dict[str, Any]:
             if self.headers.get("Transfer-Encoding"):
                 self.close_connection = True
                 raise commands.CommandError("bad_params", "Transfer-Encoding is not supported")
+            lengths = self.headers.get_all("Content-Length", [])
+            if len(lengths) > 1:
+                self.close_connection = True
+                raise commands.CommandError("bad_params", "ambiguous Content-Length")
+            value = lengths[0].strip() if lengths else "0"
             try:
-                length = int(self.headers.get("Content-Length") or 0)
+                if not value.isascii() or not value.isdecimal():
+                    raise ValueError
+                length = int(value)
             except ValueError:
                 self.close_connection = True
                 raise commands.CommandError("bad_params", "bad Content-Length") from None
@@ -209,7 +271,7 @@ def make_handler(token: str):
 
 def create_server(port: int = 0, token: str | None = None) -> ThreadingHTTPServer:
     """Build (without serving) a server bound to 127.0.0.1. `port=0` picks a free port."""
-    server = ThreadingHTTPServer((HOST, port), make_handler(token or load_token()))
+    server = BoundedHTTPServer((HOST, port), make_handler(token or load_token()))
     server.daemon_threads = True
     return server
 

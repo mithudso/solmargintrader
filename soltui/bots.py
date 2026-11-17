@@ -482,6 +482,11 @@ def bridged(arrays: dict[str, Any], start_index: int = 0, max_bars: int | None =
     Returns {"bars": arrays, "bridged": bool per bar, "bridged_bars", "bridged_gaps", "stopped_at_gap"}.
     """
     ts = arrays["ts"]
+    if (isinstance(step, bool) or not isinstance(step, int) or step <= 0
+            or ts.ndim != 1 or not np.issubdtype(ts.dtype, np.integer)
+            or not ts.size or not 0 <= start_index < ts.size
+            or np.any(np.diff(ts) <= 0) or np.any((ts - ts[0]) % step)):
+        raise ValueError("Candle cadence must be ordered integral multiples of step")
     gaps = np.diff(ts[start_index:]) // step - 1
     long_gap = np.nonzero(gaps > MAX_BRIDGE_BARS)[0]
     end = ts.size if not long_gap.size else start_index + int(long_gap[0]) + 1
@@ -500,7 +505,7 @@ def bridged(arrays: dict[str, Any], start_index: int = 0, max_bars: int | None =
     is_bridge = src < 0
     filled = np.maximum.accumulate(np.where(is_bridge, -1, src))  # last real bar at or before each slot
     close = arrays["close"][filled]
-    out = {"ts": grid_ts}
+    out = {"ts": grid_ts, "observed": ~is_bridge}
     for name in ("open", "high", "low"):
         out[name] = np.where(is_bridge, close, arrays[name][filled])
     out["close"] = close
@@ -983,6 +988,7 @@ class MinuteBars:
         cutoff = int(before // 60) * 60
         minutes = sorted(m for m in self.bars if m < cutoff)
         rows: list[list[float]] = []
+        observed: list[bool] = []
         gap_at = None
         bridged = 0
         for m in minutes:
@@ -994,9 +1000,11 @@ class MinuteBars:
                 last = rows[-1][4]
                 for k in range(1, missing + 1):
                     rows.append([rows[-1][0] + 60, last, last, last, last])
+                    observed.append(False)
                 bridged += max(0, missing)
             o, h, low, c = self.bars[m]
             rows.append([m, o, h, low, c])
+            observed.append(True)
         if rows and gap_at is None:
             missing = (cutoff - int(rows[-1][0])) // 60 - 1
             if missing > MAX_FORWARD_GAP_MIN:
@@ -1005,10 +1013,11 @@ class MinuteBars:
                 last = rows[-1][4]
                 for _ in range(max(0, missing)):
                     rows.append([rows[-1][0] + 60, last, last, last, last])
+                    observed.append(False)
                 bridged += max(0, missing)
         arr = np.asarray(rows, dtype="float64").reshape(-1, 5)
         return ({"ts": arr[:, 0].astype("int64"), "open": arr[:, 1], "high": arr[:, 2], "low": arr[:, 3],
-                 "close": arr[:, 4]}, gap_at, bridged)
+                 "close": arr[:, 4], "observed": np.asarray(observed, dtype=bool)}, gap_at, bridged)
 
 
 @dataclass

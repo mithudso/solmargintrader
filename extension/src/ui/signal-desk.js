@@ -4,6 +4,11 @@ import { mountCouncil } from './council.js';
 import { DESK_PAGES, DESK_READS, commandBlock, finite, numberText, percentText,
   runFromEnvelope, comparisonStatus, handoffValues, forwardColumns } from './desk-model.js';
 
+function savedRun(value) {
+  try { return runFromEnvelope({ ok: true, command: 'backtest.results', result: value }); }
+  catch { return null; } // A malformed persisted draft cannot disable the workspace.
+}
+
 const STORE = 'signalDesk.v1';
 const TITLE = { signal: 'Live signals', research: 'Backtesting', forward: 'Forward testing', bots: 'Bot monitor' };
 const PURPOSE = { signal: 'Prices and current strategy signals.',
@@ -12,7 +17,8 @@ const PURPOSE = { signal: 'Prices and current strategy signals.',
   bots: 'Monitor running jobs.' };
 const action = (text, fn, primary = false) => { const b = el('button', { text, class: primary ? 'primary' : '', onclick: fn }); b.type = 'button'; return b; };
 const note = (text, warning = false) => el('p', { class: warning ? 'banner warn' : 'note', text });
-const stamp = (ts) => finite(ts) ? new Date(ts * 1000).toISOString().replace('T', ' ').slice(0, 19) + ' UTC' : 'Unavailable';
+const validStamp = ts => finite(ts) && Number.isFinite(new Date(ts * 1000).getTime());
+const stamp = (ts) => validStamp(ts) ? new Date(ts * 1000).toISOString().replace('T', ' ').slice(0, 19) + ' UTC' : 'Unavailable';
 const kpi = (label, value, detail) => el('div', { class: 'kpi' }, el('div', { class: 'label', text: label }),
   el('div', { class: 'value', text: value }), el('div', { class: 'sub', text: detail }));
 
@@ -21,13 +27,15 @@ export function mountSignalDesk(root, { ask, openTool, refreshLive, transport, p
   const host = $('#deskWorkspace');
   if (!host) return { route() {}, commands() {}, receive() {}, live() {}, jobs() {}, dispose() {}, restore: Promise.resolve() };
   const storage = persist ?? globalThis.chrome?.storage?.local;
-  let commands = [], page = 'signal', epoch = 0, disposed = false, busy = false, lastAt = null;
+  let commands = [], page = 'signal', epoch = 0, disposed = false, busy = false, lastAt = null, searchTimer = null;
   let renderedRead = '';
   let runs = [], selected = new Set(), draft = null, settings = null, data = {}, failures = {}, liveSnapshot = null;
   const activity = [], waiting = new Map();
   const council = mountCouncil({ ask, supports: name => commands.some(c => c.name === name) });
   const asset = () => $('#soltuiLiveAsset').value.trim().toUpperCase();
   async function save() {
+    await restore;
+    if (disposed) return;
     const val = { runs, selected: [...selected], draft, asset: asset(), page, source: $('#soltuiPriceSource')?.value ?? 'coinbase',
       density: $('#deskDensity')?.value ?? 'comfortable' };
     try {
@@ -49,7 +57,8 @@ export function mountSignalDesk(root, { ask, openTool, refreshLive, transport, p
       } catch { return []; } // One corrupt browser record cannot disable the workspace.
     });
     selected = new Set(Array.isArray(s.selected) ? s.selected.filter((id) => runs.some((r) => r.id === id)) : []);
-    draft = s.draft?.run && s.draft?.row ? s.draft : null;
+    const restoredDraft = s.draft?.run ? savedRun(s.draft.run) : null;
+    draft = restoredDraft && handoffValues(restoredDraft, s.draft?.row) ? { run: restoredDraft, row: s.draft.row } : null;
     if (/^[A-Z0-9]{1,20}$/.test(s.asset ?? '')) $('#soltuiLiveAsset').value = s.asset;
     if (['compact', 'comfortable'].includes(s.density)) { if ($('#deskDensity')) $('#deskDensity').value = s.density; root.querySelector('body')?.setAttribute('data-density', s.density); }
     if (!location.hash && DESK_PAGES.has(s.page)) location.hash = `soltui/${s.page}`;
@@ -304,7 +313,13 @@ export function mountSignalDesk(root, { ask, openTool, refreshLive, transport, p
     if (!activity.length) $('#deskActivity').textContent = 'No actions requested in this dashboard session.';
   }
   function findTools() {
-    if ($('#view-soltui').hidden) { location.hash = 'soltui/all'; setTimeout(findTools, 0); return; }
+    if (disposed) return;
+    if ($('#view-soltui').hidden) {
+      location.hash = 'soltui/all';
+      clearTimeout(searchTimer);
+      searchTimer = setTimeout(() => { searchTimer = null; findTools(); }, 0);
+      return;
+    }
     const dialog = $('#deskSearchDialog'), input = $('#deskSearchInput'), target = $('#deskSearchResults');
     const trigger = document.activeElement;
     const paint = () => {
@@ -334,5 +349,5 @@ export function mountSignalDesk(root, { ask, openTool, refreshLive, transport, p
   const timer = setInterval(() => { if (!disposed && !document.hidden && !$('#view-soltui').hidden) { refresh(); if (page === 'bots') council.refresh(); } }, 10_000);
   return { restore, route, live, receive, jobs, inspect, commands(list) { commands = list; },
     assetChanged() { epoch++; data = {}; failures = {}; liveSnapshot = null; live({ asset: asset(), quote: null, aggregate: null }); render(); save(); refresh(); },
-    dispose() { disposed = true; epoch++; council.dispose(); clearInterval(timer); window.removeEventListener('keydown', keydown); } };
+    dispose() { disposed = true; epoch++; clearTimeout(searchTimer); $('#deskFind')?.removeEventListener('click', findTools); council.dispose(); clearInterval(timer); window.removeEventListener('keydown', keydown); } };
 }
