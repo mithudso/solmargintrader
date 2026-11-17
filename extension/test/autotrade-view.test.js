@@ -100,3 +100,42 @@ test('controls reuse request ID after a refusal and closing does not stop the ow
     assert.equal(calls.length, beforeClose);
   } finally { ui?.close(); globalThis.document = previous; globalThis.window = previousWindow; }
 });
+
+test('connection failures keep the helper error visible and recover paper defaults', async t => {
+  const { autotradeView } = await import('../src/1000x/autotrade-view.js');
+  class Node {
+    constructor() { this.children = []; this.dataset = {}; this.value = ''; this.textContent = ''; }
+    set value(value) { this._value = String(value); }
+    get value() { return this._value; }
+    append(...nodes) { this.children.push(...nodes); }
+    before(node) { this.sibling = node; }
+    setAttribute() {}
+    addEventListener() {}
+  }
+  const previous = globalThis.document;
+  globalThis.document = { createElement: () => new Node() };
+  let refresh, available = false;
+  t.mock.method(globalThis, 'setInterval', callback => { refresh = callback; return 1; });
+  t.mock.method(globalThis, 'clearInterval', () => {});
+  const failure = 'Specified native messaging host not found; install the local helper';
+  const calls = [], root = new Node();
+  const ui = autotradeView(root, { call: async command => {
+    calls.push(command);
+    if (!available) throw new Error(failure);
+    return { state: 'stopped', mode: 'paper', defaults: { asset: 'BTC', venue: 'jupiter-cli-10x',
+      base_collateral_usd: 10, max_collateral_usd: 15, max_session_loss_usd: 50 } };
+  } });
+  try {
+    await new Promise(resolve => setImmediate(resolve));
+    const section = root.sibling, status = section.children[1];
+    assert.ok(status.textContent.includes(failure), status.textContent);
+    assert.equal(status.dataset.state, 'unavailable');
+    available = true; await refresh();
+    assert.match(status.textContent, /STOPPED/);
+    assert.match(section.children[2].children[0].textContent, /base \$10.*max \$15.*loss cap \$50/);
+    available = false; await refresh();
+    assert.ok(status.textContent.includes(failure), status.textContent);
+    assert.equal(status.dataset.state, 'unavailable');
+    assert.deepEqual(calls, Array(3).fill('autotrade.status'));
+  } finally { ui.close(); globalThis.document = previous; }
+});

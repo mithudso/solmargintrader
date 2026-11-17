@@ -1,5 +1,15 @@
 # Work continuation
 
+## Paper-config connection repair — TASK-2550 — 2026-11-17
+
+Chrome Profile 1 loads extension id gjhpfdnfmjeoheoimbldikhilmimbain from /Users/mitch.hudson/dev/solmargintrader/extension. The missing com.mitchhudson.soltui native registration, wrapper and default runtime caused the screenshot. Installed the four documented headless local packages into /Users/mitch.hudson/.venvs/soltui with Python 3.13.18. The canonical native installer registered that exact extra extension ID in existing browser directories. No active local owner/session or route existed before installation. Original status polling can bootstrap an idle owner; activation was authorized for this repair. PID 70633 appeared afterward. Preserve that owner and concurrent M5 work. Do not apply the separate TASK-2528 backend changes here.
+
+Extension 0.12.2 now shows a connecting state, preserves the native transport/command error and marks failed status unavailable. It retains backend-owned paper defaults and automatically loads them when the connection recovers. The regression failed on the hidden helper message before the patch (exit 1), then passed all five focused cases (exit 0). The full extension suite passed 632/632 (exit 0), root JavaScript lint/typecheck passed (exit 0), and the offline integration closed one round trip with modeled net 0.3492 USD (exit 0). Actual Chrome for Testing loaded 0.12.2 and passed 26/26 gates using the real native helper (exit 0). No order endpoint was touched and the extension remained disarmed/dry-run.
+
+Independent installed verification passed framed ping/buildHash/catalog with the exact actual origin and 175 commands, including six autotrade commands. The receipt is /Users/mitch.hudson/.local/state/solmargintrader/paper-connection-2550/acceptance.json. Receipt version 2 verifies the actual user-profile connection: seven observed native hosts had parent Chrome PID 863 and the exact profile origin, while five subsequent native status polls succeeded at five-second intervals. Read-only SQLite inspection found zero sessions, requests, events and forecasts. Only the visible DOM/new UI revision is not directly observed: Chrome has no CDP endpoint and AppleScript timed out with -1712. Do not restart the browser or alter its settings. Textual and the declared solders/httpx requirements were added to the new runtime for documentation test discovery; no GUI service was installed or started.
+
+Branch fix/paper-config-connection-2550 began at 4cf80513. Source and installed-helper repair are verified. Documentation discovery passed with executor/src on PYTHONPATH (3446 counted tests). Native registration/bridge parity passed seven tests. Deterministic wiki and offline index regeneration/freshness checks passed; no semantic output changed. Remaining delivery gates: final-head CI, merge, remote master verification and safe local synchronization. All selected checks use /opt/homebrew/bin/node v26.13.0. No key reads, funded trading, user paper Start/Stop, frozen-cohort changes, semantic indexing, inference or embeddings were performed. Stele steps TASK-2551 and TASK-2552 are complete; TASK-2553 owns final delivery. Version 0.12.1 was reserved by the concurrent application candidate, so this isolated UI correction uses 0.12.2.
+
 ## Loaded TUI relay wiring correction
 
 After PR 318 merged as 4196d47, actual loaded acceptance found that the TUI displayed no shared signal while the private relay held fresh six-horizon BTC and ZEC data. Production `main()` passes `QuoteReader(args.prices)`, and the constructor incorrectly treated any injected quote loader as a request for an empty signal loader. The follow-up makes the default shared signal status loader independent of quote and candle loader selection. Explicit test signal loaders remain supported and isolate fixtures from the real home. No relay, model, owner, collector or trading behavior changes.
@@ -42,8 +52,8 @@ Browser CI fixture: the native IndexedDB abort assertion raced an independent ne
 
 Routing follow-up: source adds owner-only optional connection routing for ordinary clients; explicit environment homes remain first. The isolated 1000x paper acceptance passed one start and stop with recorded modeled outcome. The user-owned registry and shared wrapper remain unchanged. Verify focused checks, review and deliver the routing PR before a separately controlled activation. Routing alone does not fence concurrent starts or migrate journal history.
 
-Version: 628
-Delta: v627 to v628; record the loaded-TUI relay wiring failure and bounded correction.
+Version: 631
+Delta: v630 to v631; record actual-profile connection acceptance and delivery readiness.
 Delta: v626 to v627; record the browser CI fixture race and scoped correction pending final verification.
 Delta: v625 to v626; record scoped UI and prose review, bounded native evidence and final integration gates.
 Delta: v624 to v625; preserve the tested live-signal candidate, independent fixes, active routing and pending native/UI/prose gates.
