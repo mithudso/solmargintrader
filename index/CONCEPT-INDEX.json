@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-11-16T20:46:12+00:00",
+  "generatedAt": "2026-11-17T00:30:15+00:00",
   "schemaVersion": 1,
   "note": "Concepts are derived from the repo's own vocabulary \u2014 the FAMILY dict, strategy-card frontmatter, docs/trading-signals-concept-family.md, and terms verified to recur in the corpus. A concept matching no file is dropped, not kept.",
   "counts": {
@@ -22,7 +22,7 @@
         "confirm",
         "fail-closed"
       ],
-      "matchingFiles": 1974,
+      "matchingFiles": 1975,
       "shown": 30,
       "files": [
         {
@@ -161,12 +161,12 @@
         "universe",
         "top_coins"
       ],
-      "matchingFiles": 1769,
+      "matchingFiles": 1773,
       "shown": 30,
       "files": [
         {
           "path": "docs/FILES.md",
-          "hits": 315
+          "hits": 319
         },
         {
           "path": "memory.md",
@@ -300,7 +300,7 @@
         "borrow",
         "financing"
       ],
-      "matchingFiles": 1603,
+      "matchingFiles": 1604,
       "shown": 30,
       "files": [
         {
@@ -439,7 +439,7 @@
         "centred",
         "shift"
       ],
-      "matchingFiles": 1540,
+      "matchingFiles": 1541,
       "shown": 30,
       "files": [
         {
@@ -520,7 +520,7 @@
         },
         {
           "path": "docs/FILES.md",
-          "hits": 18
+          "hits": 17
         },
         {
           "path": "backtester/tests/test_engine_audit.py",
@@ -578,7 +578,7 @@
         "perps",
         "solana"
       ],
-      "matchingFiles": 1111,
+      "matchingFiles": 1115,
       "shown": 30,
       "files": [
         {
@@ -586,12 +586,12 @@
           "hits": 668
         },
         {
-          "path": "research/strategy_experiment/results/results.json",
-          "hits": 544
+          "path": "docs/FILES.md",
+          "hits": 573
         },
         {
-          "path": "docs/FILES.md",
-          "hits": 506
+          "path": "research/strategy_experiment/results/results.json",
+          "hits": 544
         },
         {
           "path": "llms/jupsol-llms.txt",
@@ -631,7 +631,7 @@
         },
         {
           "path": "prompts.md",
-          "hits": 137
+          "hits": 136
         },
         {
           "path": ".cdo/reviews-2026-11-13/cdo-forecast-app-delta.json",
@@ -735,7 +735,7 @@
         },
         {
           "path": "docs/FILES.md",
-          "hits": 375
+          "hits": 376
         },
         {
           "path": "research/tradingview-card-readiness.json",
@@ -852,7 +852,7 @@
         "anchor_window",
         "levels"
       ],
-      "matchingFiles": 899,
+      "matchingFiles": 900,
       "shown": 30,
       "files": [
         {
@@ -869,7 +869,7 @@
         },
         {
           "path": "docs/FILES.md",
-          "hits": 198
+          "hits": 202
         },
         {
           "path": "research/strategy_experiment/audit_realism.json",
@@ -1260,7 +1260,7 @@
         "benchmark",
         "baseline"
       ],
-      "matchingFiles": 593,
+      "matchingFiles": 594,
       "shown": 30,
       "files": [
         {
@@ -1289,7 +1289,7 @@
         },
         {
           "path": "docs/FILES.md",
-          "hits": 89
+          "hits": 90
         },
         {
           "path": ".cdo/reviews-2026-11-12/research-scripts.json",
@@ -1394,7 +1394,7 @@
         "buy_and_hold",
         "baseline"
       ],
-      "matchingFiles": 522,
+      "matchingFiles": 523,
       "shown": 30,
       "files": [
         {
@@ -1419,7 +1419,7 @@
         },
         {
           "path": "docs/FILES.md",
-          "hits": 64
+          "hits": 65
         },
         {
           "path": "extension/test/fixtures/oracle-0.9-10m-state.json",
@@ -1546,7 +1546,7 @@
         },
         {
           "path": "docs/FILES.md",
-          "hits": 143
+          "hits": 145
         },
         {
           "path": "FILES.md",

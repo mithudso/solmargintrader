@@ -84,6 +84,11 @@ catalog, text and concepts together. Use `all` for the normal offline refresh.
   cosine similarity are on different scales, so averaging them would let whichever
   is numerically larger win; reciprocal rank fusion only uses position.
 
+Semantic manifests bind the exact array bytes with SHA-256. Missing or mismatched
+bindings are rejected before starting a model; hybrid search falls back to text.
+Older unbound arrays remain on disk but cannot be searched until an explicitly
+authorized semantic rebuild creates a bound pair.
+
 ## Four decisions worth knowing
 
 **The embeddings are gitignored.** A few thousand chunks at 1024 float16 comes to

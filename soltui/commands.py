@@ -2379,7 +2379,9 @@ def _backtest_curves(ctx: Context) -> tuple[list[pnl_mod.Curve], list[str]]:
         arrays = load_arrays(s)
         cfg = engine_config(s)
     except Exception as exc:  # noqa: BLE001 - say what is missing instead of failing the tab
-        notes.append(f"no backtest data: {type(exc).__name__}: {str(exc).splitlines()[0]}")
+        lines = str(exc).splitlines()
+        detail = f": {lines[0]}" if lines else ""
+        notes.append(f"no backtest data: {type(exc).__name__}{detail}")
         arrays = None
     if arrays is not None:
         from backtester.core.engine import run_backtest
@@ -2738,7 +2740,8 @@ def _daemon_context() -> dict[str, Any]:
                 tokens = [r[0] for r in conn.execute("SELECT DISTINCT token FROM wallet_balances")]
             finally:
                 conn.close()
-        except sqlite3.Error:
+        except sqlite3.Error as exc:
+            _LOGGER.warning("daemon token ledger read failed (%s)", type(exc).__name__)
             tokens = []
     return wallet_mod.daemon_context(status, tokens)
 

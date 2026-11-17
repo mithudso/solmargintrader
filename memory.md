@@ -1,6 +1,7 @@
 # Work continuation
 
-Version: 615
+Version: 616
+Delta: v615 to v616; record bounded current-source audit diagnostics, fixes and open integrity work.
 Delta: v614 to v615; preserve audit and screenshot continuation across merged 0.10 source.
 Delta: v613 to v614; diagnose exact-head CI index discovery and Linux fixture foreground assumptions without runtime changes.
 Delta: v612 to v613; qualify all-horizon source, independent replay and full native/public gates with unchanged reviewed runtime.
@@ -2989,3 +2990,12 @@ The existing TASK-2410 CDO run 2026-11-16T17:00:08Z has reviewed zero files. Pre
 ## Terminal working-directory repair — 2026-11-16
 
 The owner supplied a screenshot showing getcwd failing because the terminal working directory was deleted. The live verifier changed the idle owned shell to the canonical repository and restarted only the proven-dead monitor from that directory. The actual leverage/wallet/paper UI rendered, four protected workers remained alive and their configuration was unchanged. The prior retention worker was already absent and was not restarted or reset. Evidence: /Users/mitch/.local/state/reversal-leverage-2289/acceptance/urgent-cwd-repair-receipt.json. TASK-2294 remains the owner of live acceptance.
+
+
+## Current-source audit triage continuation — 2026-11-16
+
+The existing code optimizer run 2026-11-16T17:00:08Z has 54 scoped diagnostic receipts. Their pass qualifications and partial methods remain in force; no official final receipt was issued. Review source-hash and changed-contract rebindings for the six all-horizon files before recording coverage. The historic ledger, including the earlier unfinished run, must remain intact. The private helper copy preserves historical runs; assert the current run identity before every helper mutation and issue the final receipt only once.
+
+Focused regressions in the isolated audit worktree cover archive replacement and premature resolution, disabled-stream and corrupt-preference handling, public catalog recovery, semantic artifact generation pairing, queue byte cursors, startup cleanup and installation rechecks, scheduler isolation, and stale historical labels. These changes still require independent review and integration with the concurrently delivered auto-trade work before delivery. Static index and inventory regeneration is pending. No live process, owner database, model, embedding job or trading action was used for the isolated fixtures.
+
+The forward-test default file can diverge from rolled-back adoption evidence. A draft uses a transactional per-database outbox, shared durable discovery markers, a shared lock, idempotent recovery and expected-value conflict checks. Independent review found a replaced-database gap, and the draft now binds device, inode and database generation; re-review and final checks remain. Legacy writers that do not honor the lock require an activation boundary; no active worker was restarted. Other candidate findings, partial passes and test limitations remain open. The authoritative private checkpoint is /Users/mitch/.local/share/solmargintrader/audits/index-2410/TRIAGE-CHECKPOINT.json and the complete diagnostics are in ROOT-CDO-DISPATCH-STATE.json in the same directory. Keep PR 309 draft until integration, independent review and final checks are complete.

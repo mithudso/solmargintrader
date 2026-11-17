@@ -79,6 +79,33 @@ function harness({ now = BASE + 10_000, catalog = { markets: [MARKET] }, readHis
   };
 }
 
+test('a transient initial catalog failure retries, and stop cancels the pending retry', async () => {
+  let calls = 0;
+  const h = harness({ fetchImpl: async (url) => {
+    if (url === JUPITER_ENDPOINTS.markets) {
+      calls += 1;
+      if (calls === 1) throw new Error('offline');
+      return response({ markets: [MARKET] });
+    }
+    return response(history());
+  } });
+  await h.feed.start();
+  assert.equal(h.feed.getSnapshot().error, 'public_read_failed');
+  await h.advance(10_000);
+  assert.equal(calls, 2);
+  assert.equal(h.sockets.length, 1);
+  h.feed.stop();
+  await h.advance(20_000);
+  assert.equal(calls, 2);
+
+  let stoppedCalls = 0;
+  const stopped = harness({ fetchImpl: async () => { stoppedCalls += 1; throw new Error('offline'); } });
+  await stopped.feed.start();
+  stopped.feed.stop();
+  await stopped.advance(20_000);
+  assert.equal(stoppedCalls, 1);
+});
+
 test('observed SOL Pyth shape scales integer price and microsecond timestamp', () => {
   const parsed = decodeQuote(message(BASE), { feedId: 6, nowMs: BASE + 20 });
   assert.equal(parsed.price, 71.37601654);

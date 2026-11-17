@@ -815,6 +815,9 @@ async function initialize() {
   if (state.accountEpoch === epoch && state.navigationEpoch === navigation) {
     if (state.accountStatus === 'ready' && ['settings', 'backtest'].includes(state.view)) populateSelects(main);
     else render();
+  } else if (results[1].status === 'fulfilled' && ['overview', 'research'].includes(state.view)) {
+    // The catalog is public; refresh its current view even if navigation changed.
+    render();
   }
   loadOracle();
 }

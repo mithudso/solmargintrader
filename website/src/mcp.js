@@ -30,7 +30,7 @@ const tools = [
         reduceOnly: { type: 'boolean', default: false },
     }, required: ['idempotencyKey', 'venue', 'asset', 'side', 'budgetUsd'], additionalProperties: false },
     annotations: { readOnlyHint: false, destructiveHint: false, idempotentHint: true, openWorldHint: true } },
-  { name: 'oraclebot_get_trade_status', title: 'Read an owned trade intent', description: 'Read one of your wallet-bound intents. Unknown submission outcomes require venue reconciliation and are never automatically resubmitted.', inputSchema: intentSchema, annotations: { readOnlyHint: true, destructiveHint: false, idempotentHint: true, openWorldHint: false } },
+  { name: 'oraclebot_get_trade_status', title: 'Read an owned trade intent', description: 'Read one of your wallet-bound intents. When enabled, venue reconciliation can update the stored status. Unknown submission outcomes are never automatically resubmitted.', inputSchema: intentSchema, annotations: { readOnlyHint: false, destructiveHint: false, idempotentHint: false, openWorldHint: true } },
   { name: 'oraclebot_submit_trade', title: 'Submit a preauthorized trade', description: 'Submit an owned, prepared intent using its verified customer wallet delegation and current policy. The initial policy consent covers this call; there is no per-trade wallet approval. An unknown outcome must not be retried at the venue.', inputSchema: intentSchema, annotations: { readOnlyHint: false, destructiveHint: true, idempotentHint: true, openWorldHint: true } },
 ];
 const plain = value => value !== null && typeof value === 'object' && !Array.isArray(value);

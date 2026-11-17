@@ -279,7 +279,11 @@ def mtf_tilt_text(scores, frames=None):
     baseline = model.get("base_down_rate") if isinstance(model, dict) else None
     components = model.get("components", []) if isinstance(model, dict) else []
     by_frame = (
-        {c.get("minutes"): c for c in components if isinstance(c, dict)}
+        {
+            c["minutes"]: c
+            for c in components
+            if isinstance(c, dict) and type(c.get("minutes")) is int
+        }
         if isinstance(components, list)
         else {}
     )

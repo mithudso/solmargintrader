@@ -26,7 +26,8 @@ export function oracleView(root) {
   const details = node('details');
   const summary = node('summary', 'Candidate, served and fixed-baseline metrics');
   const table = node('table'); table.id = 'oracle-metrics';
-  const caption = node('caption', 'Prospective binary metrics · recent ≤128 / cumulative · no historical label training');
+  const captionLabel = 'Prospective binary metrics · recent ≤128 / cumulative · no historical label training';
+  const caption = node('caption', captionLabel);
   const head = node('thead'), headRow = node('tr');
   for (const text of ['Cohort / predictor', 'n', 'Accuracy', 'Brier ↓', 'Log loss ↓']) headRow.append(node('th', text));
   head.append(headRow); const body = node('tbody'); table.append(caption, head, body);
@@ -57,6 +58,7 @@ export function oracleView(root) {
     // Historical evidence is visible only after this session has loaded and
     // verified the exact source partition. Unbound or invalid sessions clear it.
     const state = view?.sourceKey === view?.state?.key ? view?.state : undefined;
+    caption.textContent = state && !view?.inputReady ? `Historical · ${captionLabel}` : captionLabel;
     root.dataset.state = view?.error ? 'error' : !view?.inputReady ? 'waiting' : view?.mode || 'waiting';
     const messages = { active: 'Online candidate active · shadow price-direction forecast', 'baseline-warmup': `Fixed baseline served · model warm-up (<${ORACLE.minTrained} resolved)`,
       'baseline-performance': 'Fixed baseline served · heuristic recent underperformance; shadow learning continues' };
@@ -76,7 +78,7 @@ export function oracleView(root) {
     const last = state.pending.at(-1) ?? state.recent.at(-1);
     prediction.textContent = last ? `${view.inputReady ? 'Stored' : 'Historical stored · current feed unavailable ·'} ${last.mode === 'active' ? 'candidate' : 'baseline'} P(UP) ${percent(last.servedP)} · shadow candidate ${percent(last.p)} · NON-UP ${percent(1 - last.servedP)} · cutoff ${utc(last.cutoff)} → ${utc(last.target)} · ${last.outcome ? `resolved ${last.outcome}` : last.target * 1000 > Date.now() ? 'pending outcome' : 'matured / waiting for validated label'}`
       : 'No issued forecast yet · waiting for a fresh minute boundary; no backfilled predictions';
-    counts.textContent = `Trained ${state.model.n} · resolved ${state.totals.n} · pending ${state.pending.length} · expired ${state.expired} · UP ${state.totals.up} / DOWN ${state.totals.down} / FLAT ${state.totals.flat}`;
+    counts.textContent = `${view.inputReady ? '' : 'Historical · '}Trained ${state.model.n} · resolved ${state.totals.n} · pending ${state.pending.length} · expired ${state.expired} · UP ${state.totals.up} / DOWN ${state.totals.down} / FLAT ${state.totals.flat}`;
     counts.dataset.trained = String(state.model.n); counts.dataset.resolved = String(state.totals.n);
     feedback.textContent = state.updatedAtMs ? `Last genuine feedback ${utc(state.updatedAtMs / 1000)} · model updated on stored features; issued probabilities stay unchanged. Historical label training: 0.`
       : 'No genuine outcome resolved yet. Baseline and candidate forecasts collect labels together. Historical label training: 0.';

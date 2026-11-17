@@ -357,8 +357,16 @@ export class JupiterFeed {
       this.#connect(generation);
       this.#maintenance(generation);
     } catch (error) {
-      if (this.#active(generation)) this.#publish('error', error?.code === 'invalid_market_catalog'
-        ? 'invalid_market_catalog' : 'public_read_failed');
+      if (this.#active(generation)) {
+        this.#publish('error', error?.code === 'invalid_market_catalog'
+          ? 'invalid_market_catalog' : 'public_read_failed');
+        // A transient startup failure must not strand this feed indefinitely.
+        if (this.#active(generation)) this.#after(() => {
+          if (!this.#active(generation)) return;
+          this.#running = false;
+          void this.start();
+        }, 10_000);
+      }
     }
   }
 

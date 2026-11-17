@@ -4,7 +4,9 @@ import { createServer } from 'node:http';
 import { readFile } from 'node:fs/promises';
 import { fileURLToPath } from 'node:url';
 import { chromium } from 'playwright';
+import { waitForFixture } from './helpers/deadline.mjs';
 
+const pendingGates = new Set();
 const publicRoot = new URL('../public/', import.meta.url);
 const adsenseVerificationURL = 'https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1706083044457708';
 const isAdSenseVerification = request => request.url() === adsenseVerificationURL && request.method() === 'GET' && request.resourceType() === 'script';
@@ -116,7 +118,7 @@ try {
   console.log('PASS membership navigation and portal cancellation stay available without checkout');
 
   let release;
-  const gate = new Promise(resolve => { release = resolve; });
+  const gate = new Promise(resolve => { release = resolve; pendingGates.add(resolve); });
   let requested;
   const started = new Promise(resolve => { requested = resolve; });
   await page.route('**/api/backtests', async route => {
@@ -129,7 +131,7 @@ try {
   await page.waitForFunction(() => document.querySelector('#backtest-form [name="strategy"]').value === 'rsi');
   await page.evaluate(() => { window.originalForm = document.querySelector('#backtest-form'); });
   await page.locator('#backtest-form button[type="submit"]').click();
-  await started;
+  await waitForFixture(started, 'backtest request');
   await page.evaluate(() => { location.hash = 'research'; });
   await page.waitForSelector('#research-search');
   await page.evaluate(() => { location.hash = 'backtest'; });
@@ -161,7 +163,7 @@ try {
   assert.equal(await page.locator('[data-action="more-bots"]').count(), 0);
   console.log('PASS bounded bot pages keep earlier and later configurations accessible');
   let releasePage; let pageStarted;
-  const pageHeld = new Promise(resolve => { releasePage = resolve; });
+  const pageHeld = new Promise(resolve => { releasePage = resolve; pendingGates.add(resolve); });
   const pageRequested = new Promise(resolve => { pageStarted = resolve; });
   await page.route(url => url.pathname === '/api/bots' && url.searchParams.get('page') === '1', async route => {
     pageStarted(); await pageHeld;
@@ -170,7 +172,7 @@ try {
   await page.goto(`${origin}/?fixture=pending-page#bots`);
   await page.waitForSelector('[data-action="more-bots"]');
   await page.evaluate(() => { window.pendingPageButton = document.querySelector('[data-action="more-bots"]'); });
-  await page.locator('[data-action="more-bots"]').click(); await pageRequested;
+  await page.locator('[data-action="more-bots"]').click(); await waitForFixture(pageRequested, 'bot page request');
   await page.evaluate(() => { location.hash = 'settings'; });
   await page.locator('main [data-action="logout"]').click();
   await page.waitForFunction(() => document.querySelector('main [data-action="wallet"]') !== null);
@@ -225,7 +227,7 @@ try {
     await fixturePage.waitForFunction(() => document.querySelector('[data-wallet-label]')?.textContent === 'seco…llet');
   };
   const heldResponse = async (fixturePage, path, value, method = 'GET') => {
-    const gate = deferred(); const started = deferred(); let request;
+    const gate = deferred(); pendingGates.add(gate.resolve); const started = deferred(); let request;
     await fixturePage.route(url => url.pathname === path, async route => {
       if (request || route.request().method() !== method) { await route.fallback(); return; }
       request = route.request(); started.resolve(); await gate.promise; await route.fulfill({ json: value });
@@ -262,7 +264,7 @@ try {
   for (const path of ['/api/me', '/api/bots']) {
     const { page: fixturePage } = await freshPage();
     const old = await heldResponse(fixturePage, path, path === '/api/me' ? accountSnapshot(firstUser) : { bots: [{ id: 'old-private', name: 'Previous account private configuration', coin: 'SOL', status: 'configured' }], nextPage: 2 });
-    await fixturePage.goto(`${origin}/#settings`); await old.started;
+    await fixturePage.goto(`${origin}/#settings`); await waitForFixture(old.started, 'held account request');
     assert.equal(old.request().headers()['x-oraclebot-account'], path === '/api/me' ? undefined : firstUser.id);
     bots = [{ id: 'second-only', name: 'Second account configuration', coin: 'BTC', status: 'configured' }];
     await signInSecond(fixturePage); await old.release(); await assertSecond(fixturePage);
@@ -275,7 +277,7 @@ try {
     const { page: fixturePage } = await freshPage(); botsUnavailable = true;
     await ready(fixturePage, 'bots'); botsUnavailable = false;
     const old = await heldResponse(fixturePage, path, path === '/api/me' ? accountSnapshot(firstUser) : { bots: [{ id: 'old-private', name: 'Previous account private configuration', coin: 'SOL', status: 'configured' }], nextPage: 2 });
-    await fixturePage.locator('[data-action="refresh-bots"]').click(); await old.started;
+    await fixturePage.locator('[data-action="refresh-bots"]').click(); await waitForFixture(old.started, 'held account request');
     assert.equal(old.request().headers()['x-oraclebot-account'], firstUser.id);
     await switchAccount(fixturePage, action); await old.release(); await assertSecond(fixturePage);
     assert.match(await fixturePage.locator('main').innerText(), /Second account configuration/);
@@ -287,7 +289,7 @@ try {
     const { page: fixturePage } = await freshPage(); botsUnavailable = true;
     await ready(fixturePage, 'bots');
     const ended = await heldResponse(fixturePage, '/api/me', accountSnapshot(null));
-    await fixturePage.locator('[data-action="refresh-bots"]').click(); await ended.started;
+    await fixturePage.locator('[data-action="refresh-bots"]').click(); await waitForFixture(ended.started, 'held account request');
     await fixturePage.evaluate(() => { location.hash = 'settings'; });
     await fixturePage.waitForSelector('.settings-value');
     assert.equal(await fixturePage.locator('.settings-value').innerText(), firstUser.wallet);
@@ -302,7 +304,7 @@ try {
   {
     const { page: fixturePage, blockedRequests } = await freshPage(); await ready(fixturePage, 'pricing');
     const old = await heldResponse(fixturePage, '/api/billing/portal', { url: 'https://billing.stripe.com/p/session/synthetic-old-account' }, 'POST');
-    await fixturePage.locator('main [data-action="portal"]').last().click(); await old.started;
+    await fixturePage.locator('main [data-action="portal"]').last().click(); await waitForFixture(old.started, 'held account request');
     assert.equal(old.request().headers()['x-oraclebot-account'], firstUser.id);
     await switchAccount(fixturePage); await old.release();
     assert.deepEqual(blockedRequests, []);
@@ -315,7 +317,7 @@ try {
     const { page: fixturePage } = await freshPage(); await ready(fixturePage, 'backtest');
     await fixturePage.route('**/api/backtests', route => route.fulfill({ json: { metrics: { total_return: 0.1 } } }));
     const old = await heldResponse(fixturePage, '/api/me', { ...accountSnapshot(firstUser), usage: { policy: { ...plans[0], name: 'Previous account private allowance' }, bots: 99, backtests: 99 } });
-    await fixturePage.locator('#backtest-form button[type="submit"]').click(); await old.started;
+    await fixturePage.locator('#backtest-form button[type="submit"]').click(); await waitForFixture(old.started, 'held account request');
     assert.equal(old.request().headers()['x-oraclebot-account'], firstUser.id);
     await switchAccount(fixturePage); await old.release();
     await fixturePage.evaluate(() => { location.hash = 'pricing'; });
@@ -337,7 +339,7 @@ try {
       await fixturePage.locator('#bot-form button[type="submit"]').click();
       await fixturePage.locator('#bot-dialog [data-close-dialog]').click();
     }
-    await old.started; assert.equal(old.request().headers()['x-oraclebot-account'], firstUser.id);
+    await waitForFixture(old.started, 'held account request'); assert.equal(old.request().headers()['x-oraclebot-account'], firstUser.id);
     await switchAccount(fixturePage);
     const accountReads = observedRequests.filter(item => item.pathname === '/api/me' && item.method === 'GET').length;
     await old.release();
@@ -383,6 +385,7 @@ try {
   console.log('PASS null and undefined wallet rejections stay recoverable and never reach account verification');
   assert.deepEqual(errors, []);
 } finally {
+  for (const releaseGate of pendingGates) releaseGate();
   await browser?.close();
   await new Promise(resolve => server.close(resolve));
 }

@@ -194,8 +194,8 @@ def classify(rel: str) -> str:
 def read_text(p: Path) -> str:
     try:
         return p.read_text(encoding="utf-8", errors="replace")
-    except (OSError, UnicodeError):
-        return ""
+    except (OSError, UnicodeError) as exc:
+        raise OSError(f"Cannot read indexed source: {p}") from exc
 
 
 def parse_frontmatter(text: str) -> dict[str, Any]:
@@ -783,7 +783,8 @@ def build_semantic(meta: dict[str, Any], *, local: bool = False, pull: bool = Fa
     # the mapping inspectable without numpy.
     buffer = io.BytesIO()
     np.savez_compressed(buffer, embeddings=arr)
-    _atomic_write(npz_path, buffer.getvalue())
+    array_bytes = buffer.getvalue()
+    _atomic_write(npz_path, array_bytes)
 
     note = ("Local, gitignored copy built by the idle job (`index/idle.py`)." if local else
             "The array is gitignored: derived, a few MB, and it re-diffs on every "
@@ -801,6 +802,7 @@ def build_semantic(meta: dict[str, Any], *, local: bool = False, pull: bool = Fa
         "chunkOverlap": CHUNK_OVERLAP,
         "dtype": "float16, L2-normalised (cosine == dot product)",
         "arrayFile": npz_path.name,
+        "arraySha256": hashlib.sha256(array_bytes).hexdigest(),
         "arrayCommitted": False,
         "local": local,
         "chunkOwners": owners,

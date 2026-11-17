@@ -860,6 +860,8 @@ class ControlPlane:
         )
         try:
             recorder = pricefeed.status()
+            if not isinstance(recorder, dict) or type(recorder.get("running")) is not bool:
+                raise ValueError("recorder_status_unavailable")
             recorder = {
                 k: recorder.get(k)
                 for k in (
@@ -875,13 +877,14 @@ class ControlPlane:
                 )
             }
         except (OSError, ValueError, TypeError):
-            recorder = {"running": False, "reason": "recorder_unavailable"}
+            recorder = {"running": None, "reason": "recorder_unavailable"}
         servers.append(
             {
                 "id": "recorder",
                 "label": "Shared market recorder",
                 "owner": "soltui.pricefeed",
-                "state": "running" if recorder["running"] else "stopped",
+                "state": "unavailable" if recorder["running"] is None else
+                "running" if recorder["running"] else "stopped",
                 **recorder,
                 "recovery_enabled": recorder_recovery_enabled(active_home),
                 "recovery_scope": "owned_control_family",
@@ -894,12 +897,16 @@ class ControlPlane:
                 ],
             }
         )
+        manager_available = True
         try:
             manager = self._manager("status", {})
             schema = self._manager("schema", {})
             service = self._manager("service", {"action": "status"})
             configs = self._manager("list", {}).get("bots", [])
+            if not isinstance(service, dict) or type(service.get("supervisor_lock_held")) is not bool:
+                raise ValueError("manager_status_unavailable")
         except (ValueError, OSError):
+            manager_available = False
             manager, schema, service, configs = {}, {}, {}, []
         servers.append(
             {
@@ -908,10 +915,12 @@ class ControlPlane:
                 "owner": "botmanager.suite"
                 if service.get("suite_owner_lock_held")
                 else "botmanager.service",
-                "state": "running"
+                "state": "unavailable"
+                if not manager_available
+                else "running"
                 if service.get("supervisor_lock_held")
                 else "stopped",
-                "running": bool(service.get("supervisor_lock_held")),
+                "running": bool(service.get("supervisor_lock_held")) if manager_available else None,
                 "service": service,
                 "actions": [
                     {

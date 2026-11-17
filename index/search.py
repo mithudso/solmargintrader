@@ -35,6 +35,8 @@ first use and held in `_CACHE`; `unload()` drops them.
 from __future__ import annotations
 
 import argparse
+import hashlib
+import io
 import json
 import math
 import re
@@ -146,16 +148,20 @@ def _semantic_matrix(pair: tuple[Path, Path]):
     for stale in [k for k in _CACHE if k.startswith("semantic:")]:
         del _CACHE[stale]
     manifest = json.loads(pair[0].read_text())
+    array_bytes = pair[1].read_bytes()
+    if (not isinstance(manifest, dict)
+            or manifest.get("arraySha256") != hashlib.sha256(array_bytes).hexdigest()):
+        raise ValueError("semantic array is not bound to its manifest")
     # No `allow_pickle`: the array holds only floats, and the chunk-to-file mapping comes
     # from the manifest. Unpickling an array is arbitrary code execution, which is not a
     # risk an index should carry.
-    with np.load(pair[1], allow_pickle=False) as archive:
+    with np.load(io.BytesIO(array_bytes), allow_pickle=False) as archive:
         emb = archive["embeddings"].astype("float32")   # L2-normalised at build time
     _CACHE[key] = (manifest, emb, manifest.get("chunkOwners") or [])
     return _CACHE[key]
 
 
-def semantic(query: str, limit: int = 40, notes: list[str] | None = None,
+def semantic(query: str, limit: int | None = 40, notes: list[str] | None = None,
              *, start_ollama: bool = True) -> list[tuple[str, float]] | None:
     """Cosine similarity over chunk embeddings, best chunk per file.
 
@@ -173,11 +179,11 @@ def semantic(query: str, limit: int = 40, notes: list[str] | None = None,
     except ImportError:
         return None
     try:
-        man = json.loads(pair[0].read_text())
+        man, emb, owners = _semantic_matrix(pair)
         if not isinstance(man, dict):
             raise TypeError("invalid manifest")
-    except (OSError, ValueError, TypeError):
-        _say(notes, "semantic manifest is unreadable; rebuild: python3 index/build.py semantic")
+    except Exception:  # noqa: BLE001 - an invalid pair must not start a model
+        _say(notes, "semantic index is unverified; rebuild: python3 index/build.py semantic")
         return None
     model = man.get("model", ollama_ensure.EMBED_MODEL)
     url = man.get("endpoint", f"{ollama_ensure.OLLAMA_BASE}/api/embed")
@@ -206,7 +212,6 @@ def semantic(query: str, limit: int = 40, notes: list[str] | None = None,
         if q.ndim != 1 or not q.size or not np.isfinite(q).all() or not np.isfinite(norm) or norm == 0:
             raise ValueError("invalid query embedding")
         q /= norm
-        _, emb, owners = _semantic_matrix(pair)
         if not isinstance(owners, list) or not owners or not all(isinstance(owner, str) for owner in owners):
             raise ValueError("invalid chunk owners")
         if emb.ndim != 2 or emb.shape != (len(owners), q.size) or not np.isfinite(emb).all():
@@ -317,7 +322,8 @@ def run_query(query: str, mode: str = "hybrid", limit: int = 20, kind: str | Non
         tx = bm25(query, _cached_json(TEXT_JSON, "the text index"))
     sm = None
     if mode in ("semantic", "hybrid"):
-        sm = semantic(query, notes=result.notes, start_ollama=start_ollama)
+        sm = semantic(query, limit=None if kind else max(40, limit),
+                      notes=result.notes, start_ollama=start_ollama)
         if sm is None:
             result.notes.append("no semantic result; "
                                 + ("showing keyword results" if mode == "hybrid"
@@ -424,7 +430,7 @@ def main(argv: list[str] | None = None) -> int:
         return 0
 
     if args.semantic:
-        hits = semantic(q)
+        hits = semantic(q, limit=None if args.kind else max(40, args.limit))
         if hits is None:
             sys.exit("Semantic index unavailable. It is gitignored by design — "
                      "build it with:\n  python3 index/build.py semantic")
@@ -437,7 +443,7 @@ def main(argv: list[str] | None = None) -> int:
         show(tx, meta, args.limit, f"text/BM25: {q!r}", args.kind)
         return 0
 
-    sm = semantic(q)
+    sm = semantic(q, limit=None if args.kind else max(40, args.limit))
     if sm is None:
         print("  (no semantic index — text only. Build: python3 index/build.py semantic)\n")
         show(tx, meta, args.limit, f"text/BM25: {q!r}", args.kind)

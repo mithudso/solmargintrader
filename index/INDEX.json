@@ -1,15 +1,15 @@
 {
-  "generatedAt": "2026-11-16T20:46:12+00:00",
+  "generatedAt": "2026-11-17T00:30:15+00:00",
   "schemaVersion": 1,
   "repoRoot": "~/dev/solmargintrader",
-  "commit": "d75e70f",
+  "commit": "6b1fa93",
   "counts": {
-    "files": 3953,
-    "bytes": 140385522,
+    "files": 3972,
+    "bytes": 140480793,
     "byKind": {
       "strategy-card": 1478,
       "doc": 837,
-      "test": 472,
+      "test": 491,
       "code-python": 430,
       "config": 288,
       "result": 133,
@@ -22,20 +22,20 @@
       "code-shell": 4
     },
     "byTopDir": {
-      "backtester": 1966,
-      "research": 489,
-      "soltui": 192,
+      "backtester": 1967,
+      "research": 492,
+      "soltui": 196,
       "docs": 174,
       ".cdo": 161,
       "extension": 160,
+      "website": 95,
       "(root)": 94,
-      "botmanager": 91,
-      "website": 90,
-      "ecosystem": 68,
+      "botmanager": 93,
+      "ecosystem": 71,
       "skills": 67,
       "liquidity": 61,
       "executor": 48,
-      "oracle": 43,
+      "oracle": 44,
       "oracle_leverage": 34,
       "scripts": 34,
       ".superpowers": 32,
@@ -59,7 +59,7 @@
       "archive": 1,
       "tradingskilllist": 1
     },
-    "withSummary": 3544
+    "withSummary": 3558
   },
   "files": [
     {
@@ -72,9 +72,9 @@
       "title": "ledger",
       "summary": "Generated JSON object, 3 keys (files, runs, version).",
       "summarySource": "derived",
-      "bytes": 317530,
-      "lines": 20530,
-      "sha1": "4d5989fa69fa14b3d5b52811a4fd5338841d5ca8",
+      "bytes": 317736,
+      "lines": 20540,
+      "sha1": "0c66ea2f049fc3d03e700ba6c4594d262cf3746f",
       "symbols": [],
       "imports": [],
       "internalImports": [],
@@ -4120,11 +4120,11 @@
       "ext": ".md",
       "kind": "doc",
       "title": "Retrieval before exploration",
-      "summary": "Use the configured global AI hub semantic search first when it is available. If the connector is unreachable or returns no relevant hit, use the existing local keyword index (`python3 index/search.py --text \"<query>\"`) and targeted source reads. See",
+      "summary": "Use the configured global AI hub semantic search first when it is available. If the connector is unreachable or returns no relevant hit, use the existing local keyword index (`INDEX_NO_AUTO=1 python3 index/search.py --text \"<query>\"`) and targeted source reads. See",
       "summarySource": "opening-prose",
-      "bytes": 17575,
+      "bytes": 17591,
       "lines": 241,
-      "sha1": "0d93162c6c2a393cd75420738610d9236409f737",
+      "sha1": "8516d3ee3d8c1a2c21d09c6abc2bbe38df6f1c25",
       "symbols": [],
       "imports": [],
       "internalImports": [],
@@ -66938,6 +66938,37 @@
       "frontmatter": {}
     },
     {
+      "id": "backtester/tests/test_cdo_semantic_binding.py",
+      "path": "backtester/tests/test_cdo_semantic_binding.py",
+      "dir": "backtester/tests",
+      "name": "test_cdo_semantic_binding.py",
+      "ext": ".py",
+      "kind": "test",
+      "title": "test_cdo_semantic_binding",
+      "summary": "Synthetic semantic generations cannot be paired across replacements.",
+      "summarySource": "docstring",
+      "bytes": 5171,
+      "lines": 100,
+      "sha1": "b5184b6ad563f3d6c80ceff2fcd2c97224585d33",
+      "symbols": [
+        "class SemanticBindingTests"
+      ],
+      "imports": [
+        "build",
+        "hashlib",
+        "json",
+        "numpy",
+        "pathlib",
+        "search",
+        "sys",
+        "tempfile",
+        "types",
+        "unittest"
+      ],
+      "internalImports": [],
+      "frontmatter": {}
+    },
+    {
       "id": "backtester/tests/test_cli_boundaries_audit.py",
       "path": "backtester/tests/test_cli_boundaries_audit.py",
       "dir": "backtester/tests",
@@ -67780,9 +67811,9 @@
       "title": "test_index",
       "summary": "The repository index: isolation, correctness, and the staleness gate. No test here builds the real index or calls the network. `index/build.py`'s `semantic` subcommand is the only thing in this repo that opens a socket, and it talks to localhost ollama; a test that exercised it would be neither deterministic nor available in CI. The load-bearing test is the first one.",
       "summarySource": "docstring",
-      "bytes": 12416,
+      "bytes": 12448,
       "lines": 267,
-      "sha1": "3a83eedbd77ca8c995a30f7a579ef98d15968ac0",
+      "sha1": "a6daada9120c27cf555b09daaea9d2b07e2d9b84",
       "symbols": [
         "REPO",
         "INDEX_DIR",
@@ -67886,9 +67917,9 @@
       "title": "test_index_search_tooling",
       "summary": "The index helper scripts: ollama auto-start, the idle rebuild decision, and library search. No test touches a real ollama or embeds anything. Servers, clocks, load and processes are injected or patched, so these are deterministic and offline.",
       "summarySource": "docstring",
-      "bytes": 19702,
-      "lines": 384,
-      "sha1": "8ac9be59a2df6d686cf107d6d766681e08d32a5e",
+      "bytes": 20012,
+      "lines": 390,
+      "sha1": "baa50a928b4795dd4f0e25e832266c6617bbfdf0",
       "symbols": [
         "REPO",
         "class EnsureTests",
@@ -67898,8 +67929,10 @@
       "imports": [
         "__future__",
         "fcntl",
+        "hashlib",
         "idle",
         "json",
+        "numpy",
         "ollama_ensure",
         "os",
         "pathlib",
@@ -71124,9 +71157,9 @@
       "title": "supervisor",
       "summary": "Explicit foreground daemon, four process slots, no unbounded tick queue.",
       "summarySource": "docstring",
-      "bytes": 15850,
-      "lines": 380,
-      "sha1": "250e0dd4d6c96a2a2f82f4636a357ec87726aa16",
+      "bytes": 16142,
+      "lines": 386,
+      "sha1": "86a3de62c899d00f53ac0bfeeeb98a3a9cda6aea",
       "symbols": [
         "class Supervisor"
       ],
@@ -71397,6 +71430,56 @@
         "tests",
         "unittest",
         "uuid"
+      ],
+      "internalImports": [],
+      "frontmatter": {}
+    },
+    {
+      "id": "botmanager/tests/test_cdo_load_cleanup.py",
+      "path": "botmanager/tests/test_cdo_load_cleanup.py",
+      "dir": "botmanager/tests",
+      "name": "test_cdo_load_cleanup.py",
+      "ext": ".py",
+      "kind": "test",
+      "title": "test_cdo_load_cleanup",
+      "summary": "Exercise the load fixture's real cleanup block without spawning a worker.",
+      "summarySource": "docstring",
+      "bytes": 1809,
+      "lines": 30,
+      "sha1": "ffcaf630179f8f2d4e21125e4525919c78a665da",
+      "symbols": [
+        "class LoadCleanupTests"
+      ],
+      "imports": [
+        "ast",
+        "pathlib",
+        "types",
+        "unittest"
+      ],
+      "internalImports": [],
+      "frontmatter": {}
+    },
+    {
+      "id": "botmanager/tests/test_cdo_spawn_cleanup.py",
+      "path": "botmanager/tests/test_cdo_spawn_cleanup.py",
+      "dir": "botmanager/tests",
+      "name": "test_cdo_spawn_cleanup.py",
+      "ext": ".py",
+      "kind": "test",
+      "title": "test_cdo_spawn_cleanup",
+      "summary": "A failed spawn still releases its Process object when journaling fails.",
+      "summarySource": "docstring",
+      "bytes": 1729,
+      "lines": 32,
+      "sha1": "40acb758e417cd20c5313b6245fd0ddba3300f8f",
+      "symbols": [
+        "class SpawnCleanupTests"
+      ],
+      "imports": [
+        "ast",
+        "pathlib",
+        "types",
+        "unittest"
       ],
       "internalImports": [],
       "frontmatter": {}
@@ -71875,9 +71958,9 @@
       "title": "test_load",
       "summary": "Real paper workers and a canonical optimizer over isolated numerical inputs.",
       "summarySource": "docstring",
-      "bytes": 35589,
-      "lines": 799,
-      "sha1": "bf6d7e9eb2868742f6add854cfeb0fafc68d4b34",
+      "bytes": 35671,
+      "lines": 801,
+      "sha1": "2632d7dc0b742afa4b6e7d4da9acf863b985319d",
       "symbols": [
         "optimizer_recording()",
         "optimizer_judge()",
@@ -73685,9 +73768,9 @@
       "title": "Every file in this repository",
       "summary": "Regenerate with: python3 index/build.py all # refresh the index python3 index/make_files_doc.py # rewrite this file",
       "summarySource": "opening-prose",
-      "bytes": 1804307,
-      "lines": 37292,
-      "sha1": "bcc3cc1d1a7c63780462b41fb4b18ce188f13830",
+      "bytes": 1833397,
+      "lines": 38108,
+      "sha1": "4fa78a5c4e6341ba032f5db0187809bf55b7922f",
       "symbols": [],
       "imports": [],
       "internalImports": [],
@@ -76797,9 +76880,9 @@
       "title": "control",
       "summary": "Durable, paper-only controls delegated to the established component owners.",
       "summarySource": "docstring",
-      "bytes": 42117,
-      "lines": 1052,
-      "sha1": "89838cd57b3cffcb2a48139d0fa4ec68b8b05e99",
+      "bytes": 42682,
+      "lines": 1061,
+      "sha1": "91bb8c8b723080310f813eb3dfb84f5bd42de7a0",
       "symbols": [
         "APP_ID",
         "MANAGER_ACTIONS",
@@ -77032,9 +77115,9 @@
       "title": "installation",
       "summary": "Isolated local installation and bounded installed-runtime health checks. The bootstrap owns its dedicated virtual environment. No shell profile, global package environment, remote installer, recorder or wallet is modified here.",
       "summarySource": "docstring",
-      "bytes": 19189,
-      "lines": 496,
-      "sha1": "442b2de226212a7ec33673f7f44c989c0af9402e",
+      "bytes": 20313,
+      "lines": 518,
+      "sha1": "ed0caaa95a7ac3859dd3f536e7869bda7491e7c0",
       "symbols": [
         "PROJECTS",
         "MODULES",
@@ -77631,6 +77714,82 @@
       "internalImports": [
         "soltui"
       ],
+      "frontmatter": {}
+    },
+    {
+      "id": "ecosystem/tests/test_cdo_installation.py",
+      "path": "ecosystem/tests/test_cdo_installation.py",
+      "dir": "ecosystem/tests",
+      "name": "test_cdo_installation.py",
+      "ext": ".py",
+      "kind": "test",
+      "title": "test_cdo_installation",
+      "summary": "Concurrent installation reuse must not replace an already completed owner.",
+      "summarySource": "docstring",
+      "bytes": 1771,
+      "lines": 42,
+      "sha1": "da3df6010c604c6933e197e0a30375bd9834a5af",
+      "symbols": [
+        "class InstallationRaceTests"
+      ],
+      "imports": [
+        "contextlib",
+        "ecosystem",
+        "pathlib",
+        "tempfile",
+        "unittest"
+      ],
+      "internalImports": [],
+      "frontmatter": {}
+    },
+    {
+      "id": "ecosystem/tests/test_cdo_owner_status.py",
+      "path": "ecosystem/tests/test_cdo_owner_status.py",
+      "dir": "ecosystem/tests",
+      "name": "test_cdo_owner_status.py",
+      "ext": ".py",
+      "kind": "test",
+      "title": "test_cdo_owner_status",
+      "summary": "Unavailable owner status must not be presented as a verified stop.",
+      "summarySource": "docstring",
+      "bytes": 3018,
+      "lines": 47,
+      "sha1": "76cdf7dc27faf68ea3688a9bce1edcfddb7bc37a",
+      "symbols": [
+        "class OwnerStatusTests"
+      ],
+      "imports": [
+        "ecosystem",
+        "pathlib",
+        "tempfile",
+        "unittest"
+      ],
+      "internalImports": [],
+      "frontmatter": {}
+    },
+    {
+      "id": "ecosystem/tests/test_cdo_web_startup.py",
+      "path": "ecosystem/tests/test_cdo_web_startup.py",
+      "dir": "ecosystem/tests",
+      "name": "test_cdo_web_startup.py",
+      "ext": ".py",
+      "kind": "test",
+      "title": "test_cdo_web_startup",
+      "summary": "A failed control-room startup must release its already-started worker.",
+      "summarySource": "docstring",
+      "bytes": 997,
+      "lines": 33,
+      "sha1": "1f0d6d12088027fd675c4367ffd4fa8c3c3a4563",
+      "symbols": [
+        "class StartupCleanupTests"
+      ],
+      "imports": [
+        "ecosystem",
+        "pathlib",
+        "tempfile",
+        "unittest"
+      ],
+      "internalImports": [],
       "frontmatter": {}
     },
     {
@@ -78700,9 +78859,9 @@
       "title": "web",
       "summary": "Local paper controls and observability over the established ecosystem owners. ``make_server`` binds before returning. The caller owns serving and shutdown, so the supervisor can publish the actual ephemeral port without claiming liveness before bind succeeds. This module never starts a recorder, worker, or order path.",
       "summarySource": "docstring",
-      "bytes": 23604,
-      "lines": 587,
-      "sha1": "dbbfe6c3f15e2d89f5f58e3f33b083b4d048c4cd",
+      "bytes": 23682,
+      "lines": 591,
+      "sha1": "e6aed5bf81ba589f583d57f3d5f20a8fa37e4c16",
       "symbols": [
         "SCHEMA_VERSION",
         "STATIC",
@@ -81359,9 +81518,9 @@
       "title": "feed",
       "summary": "Observed public Jupiter oracle contracts, bound in docs/JUPITER-1000X-OVERLAY.md. This module only reads markets/history and subscribes to public oracle prices. Prices are oracle observations, not venue fills or trade-volume observations.",
       "summarySource": "docstring",
-      "bytes": 26922,
-      "lines": 587,
-      "sha1": "c81ed496ac0c491edb94af31ac5b05a24af25221",
+      "bytes": 27210,
+      "lines": 595,
+      "sha1": "5ff344886f3a431c62ab8fd49558f15ffdb4476b",
       "symbols": [
         "CONTEXT_HISTORY_BARS",
         "GAP_MS",
@@ -81504,9 +81663,9 @@
       "title": "oracle-view",
       "summary": "",
       "summarySource": "none",
-      "bytes": 9051,
-      "lines": 91,
-      "sha1": "8434cbd049c1c52e3994b3f6ca8e3b427889b6b3",
+      "bytes": 9233,
+      "lines": 93,
+      "sha1": "c36fe4b102e93e5e87bf0b23e919672bba54ee2e",
       "symbols": [
         "oracleView"
       ],
@@ -83420,9 +83579,9 @@
       "title": "1000x-feed.test",
       "summary": "",
       "summarySource": "none",
-      "bytes": 35060,
-      "lines": 710,
-      "sha1": "177d07077998400e86512c61ab4066277001893f",
+      "bytes": 35940,
+      "lines": 737,
+      "sha1": "5946d642096a6b36046853a812e9a4fcdea3127f",
       "symbols": [
         "BASE",
         "MARKET",
@@ -83468,9 +83627,9 @@
       "title": "1000x-oracle-controller.test",
       "summary": "",
       "summarySource": "none",
-      "bytes": 12801,
-      "lines": 182,
-      "sha1": "184ec7de76ef67a0445dd5db22cdc411384634bd",
+      "bytes": 13452,
+      "lines": 198,
+      "sha1": "80bb91adc512ad7e782d5a4272ae5693c604e5cd",
       "symbols": [
         "atomicFixture"
       ],
@@ -83526,9 +83685,9 @@
       "title": "1000x-oracle-view.test",
       "summary": "",
       "summarySource": "none",
-      "bytes": 3400,
-      "lines": 58,
-      "sha1": "5de5338d9e55c5357380c94ba8f5bb59cd736cf7",
+      "bytes": 3946,
+      "lines": 65,
+      "sha1": "6b8af78717d7419aeb43aaf56ecc369102be42f0",
       "symbols": [
         "class Element"
       ],
@@ -83766,9 +83925,9 @@
       "title": "core.test",
       "summary": "",
       "summarySource": "none",
-      "bytes": 62032,
-      "lines": 1558,
-      "sha1": "d77c3045fb54a1506a3aabb48577bdcf826fb165",
+      "bytes": 62072,
+      "lines": 1559,
+      "sha1": "cc2bfafdd6a2964e20c2cd9b0817397fb99b5556",
       "symbols": [
         "CONFIG",
         "LINK_CONFIG",
@@ -84958,9 +85117,9 @@
       "title": "The repository index",
       "summary": "A searchable index over every tracked file in this repo: what exists, which files contain a word, which files mean something like a question, and which bear on an idea. Built to answer \"where is the thing that does X\" without reading every file.",
       "summarySource": "opening-prose",
-      "bytes": 11287,
-      "lines": 187,
-      "sha1": "facf884dd83766396edb806b4e1aeca789e3263e",
+      "bytes": 11874,
+      "lines": 196,
+      "sha1": "e0f583790bf5fd1835ab6b206116000d024e041a",
       "symbols": [],
       "imports": [],
       "internalImports": [],
@@ -84976,9 +85135,9 @@
       "title": "The idle job's output. Gitignored pair, so a background rebuild never dirties a tracked file.",
       "summary": "Build the searchable indexes over every tracked file in this repository. python3 index/build.py all # metadata + text + concepts (no network) python3 index/build.py semantic # embeddings; needs a local ollama (opt-in) python3 index/build.py --check # exit 1 if the index is stale vs the tree Four indexes, three of them committed: | Artifact | What it answers | Committed | |---|---|---| | `index/IND",
       "summarySource": "docstring",
-      "bytes": 40113,
-      "lines": 931,
-      "sha1": "3f453c80d42b50879963d1fc0b6c85ef475d384c",
+      "bytes": 40263,
+      "lines": 933,
+      "sha1": "f7fd95b8fd2e0a6378d5e814dc68bb0e1be6ed88",
       "symbols": [
         "REPO",
         "OUT",
@@ -85145,9 +85304,9 @@
       "title": "Ordering of the top-level sections: what a newcomer should read in sequence.",
       "summary": "Generate `docs/FILES.md` \u2014 every tracked file, its purpose, contents and use. python3 index/make_files_doc.py # writes docs/FILES.md python3 index/make_files_doc.py --stdout # preview without writing Reads `index/INDEX.json`, so run `python3 index/build.py all` first.",
       "summarySource": "docstring",
-      "bytes": 29429,
-      "lines": 550,
-      "sha1": "3750d7e4eca8f14e6d0733a140791a50f6880075",
+      "bytes": 29713,
+      "lines": 555,
+      "sha1": "431899de55030373c09ca30ff60d975395ce4175",
       "symbols": [
         "REPO",
         "INDEX_JSON",
@@ -85226,9 +85385,9 @@
       "title": "How long ollama keeps the embedding model resident after a query. The model is ~670 MB, so",
       "summary": "Search the repository index: keyword, meaning, or concept. python3 index/search.py \"how are costs applied\" # hybrid python3 index/search.py --text \"purged cross validation\" # BM25, exact terms python3 index/search.py --semantic \"why did the strategy stop working\" python3 index/search.py --concept evidence-floor python3 index/search.py --concepts # list every concept python3 index/search.py --file",
       "summarySource": "docstring",
-      "bytes": 19311,
-      "lines": 451,
-      "sha1": "5dd1006191db966c6b822b977881f30031be44ba",
+      "bytes": 19746,
+      "lines": 457,
+      "sha1": "94d0139f67e238fdbef018920fda208c94553ac6",
       "symbols": [
         "REPO",
         "OUT",
@@ -85264,7 +85423,9 @@
         "__future__",
         "argparse",
         "dataclasses",
+        "hashlib",
         "idle",
+        "io",
         "json",
         "math",
         "numpy",
@@ -87948,11 +88109,11 @@
       "ext": ".md",
       "kind": "doc",
       "title": "Work continuation",
-      "summary": "Version: 614 Delta: v613 to v614; diagnose exact-head CI index discovery and Linux fixture foreground assumptions without runtime changes. Delta: v612 to v613; qualify all-horizon source, independent replay and full native/public gates with unchanged reviewed runtime.",
+      "summary": "Version: 616 Delta: v615 to v616; record bounded current-source audit diagnostics, fixes and open integrity work. Delta: v614 to v615; preserve audit and screenshot continuation across merged 0.10 source.",
       "summarySource": "opening-prose",
-      "bytes": 617411,
-      "lines": 2983,
-      "sha1": "26cac8d08203fb10f302024213be652b85e44fb3",
+      "bytes": 620892,
+      "lines": 3002,
+      "sha1": "450a6dc9ff3de01774e38031372b4bad452b639f",
       "symbols": [],
       "imports": [],
       "internalImports": [],
@@ -89101,9 +89262,9 @@
       "title": "These exact implementations have reviewed read compatibility. The schema-2",
       "summary": "Inert archive inspection through the canonical Oracle query implementation.",
       "summarySource": "docstring",
-      "bytes": 15367,
-      "lines": 374,
-      "sha1": "74a4ccab4a07e49f7ab2d75a3a46a85ddc1bcadd",
+      "bytes": 16591,
+      "lines": 400,
+      "sha1": "abf897d4dca8eb2bcef82bc350ed1035bcbdf340",
       "symbols": [
         "LEGACY_EVALUATOR_SHA256",
         "ARCHIVED_EVALUATOR_SHA256",
@@ -89293,6 +89454,33 @@
         "hashlib",
         "json",
         "oracle",
+        "pathlib",
+        "tempfile",
+        "unittest"
+      ],
+      "internalImports": [],
+      "frontmatter": {}
+    },
+    {
+      "id": "oracle/tests/test_cdo_reader_integrity.py",
+      "path": "oracle/tests/test_cdo_reader_integrity.py",
+      "dir": "oracle/tests",
+      "name": "test_cdo_reader_integrity.py",
+      "ext": ".py",
+      "kind": "test",
+      "title": "test_cdo_reader_integrity",
+      "summary": "",
+      "summarySource": "none",
+      "bytes": 2039,
+      "lines": 48,
+      "sha1": "1a1c8d2a4b10f3db4b3f6d5381f0618894705bef",
+      "symbols": [
+        "class ReaderIntegrityTests"
+      ],
+      "imports": [
+        "__future__",
+        "oracle",
+        "os",
         "pathlib",
         "tempfile",
         "unittest"
@@ -91350,11 +91538,11 @@
       "ext": ".md",
       "kind": "doc",
       "title": "Prompt history",
-      "summary": "Version: 277 Delta: v276 to v277; record the all-supported-timeframes streaming learner request. Delta: v275 to v276; preserve the delivered feed controls/UI prompt alongside the streaming Oracle history.",
+      "summary": "Version: 278 Delta: v277 to v278; preserve audit and screenshot continuation across merged 0.10 source. Delta: v276 to v277; record the all-supported-timeframes streaming learner request.",
       "summarySource": "opening-prose",
-      "bytes": 154861,
-      "lines": 2539,
-      "sha1": "ab77006aceb6b2987502e3a56b325ee01c83299e",
+      "bytes": 155092,
+      "lines": 2546,
+      "sha1": "d66fdde84a7d48848b00507409b6994b9b7f818e",
       "symbols": [],
       "imports": [],
       "internalImports": [],
@@ -99755,6 +99943,84 @@
       "frontmatter": {}
     },
     {
+      "id": "research/tests/test_cdo_feed_settings.py",
+      "path": "research/tests/test_cdo_feed_settings.py",
+      "dir": "research/tests",
+      "name": "test_cdo_feed_settings.py",
+      "ext": ".py",
+      "kind": "test",
+      "title": "test_cdo_feed_settings",
+      "summary": "Damaged saved preferences must not silently reactivate feeds.",
+      "summarySource": "docstring",
+      "bytes": 1286,
+      "lines": 34,
+      "sha1": "e4053318ebae3c9efca6437a9b2094b2cf3e0bff",
+      "symbols": [
+        "class FeedPreferencesTests"
+      ],
+      "imports": [
+        "pathlib",
+        "research",
+        "tempfile",
+        "unittest"
+      ],
+      "internalImports": [
+        "research"
+      ],
+      "frontmatter": {}
+    },
+    {
+      "id": "research/tests/test_cdo_mtf_tilt.py",
+      "path": "research/tests/test_cdo_mtf_tilt.py",
+      "dir": "research/tests",
+      "name": "test_cdo_mtf_tilt.py",
+      "ext": ".py",
+      "kind": "test",
+      "title": "test_cdo_mtf_tilt",
+      "summary": "Malformed component identifiers must leave the panel usable.",
+      "summarySource": "docstring",
+      "bytes": 514,
+      "lines": 15,
+      "sha1": "1c33b178ee2793a196d446a73a5ec88a153082bc",
+      "symbols": [
+        "class ComponentValidationTests"
+      ],
+      "imports": [
+        "research",
+        "unittest"
+      ],
+      "internalImports": [
+        "research"
+      ],
+      "frontmatter": {}
+    },
+    {
+      "id": "research/tests/test_cdo_stream_fence.py",
+      "path": "research/tests/test_cdo_stream_fence.py",
+      "dir": "research/tests",
+      "name": "test_cdo_stream_fence.py",
+      "ext": ".py",
+      "kind": "test",
+      "title": "test_cdo_stream_fence",
+      "summary": "A disabled subscription cannot be resurrected by an in-flight send.",
+      "summarySource": "docstring",
+      "bytes": 1503,
+      "lines": 51,
+      "sha1": "31e3bd3f2b1e3bf087b1d2c05ffac64db143b921",
+      "symbols": [
+        "class StreamFenceTests"
+      ],
+      "imports": [
+        "research",
+        "threading",
+        "unittest"
+      ],
+      "internalImports": [
+        "research"
+      ],
+      "frontmatter": {}
+    },
+    {
       "id": "research/tests/test_coinbase50_study.py",
       "path": "research/tests/test_coinbase50_study.py",
       "dir": "research/tests",
@@ -103684,17 +103950,19 @@
       "title": "zec_feed_settings",
       "summary": "View preferences never share the private trading-configuration write path.",
       "summarySource": "docstring",
-      "bytes": 1484,
-      "lines": 47,
-      "sha1": "27e9a014fa7b8ab4a2986f6b165b383fd9834e66",
+      "bytes": 2006,
+      "lines": 57,
+      "sha1": "43bfeb922e12acd7cbc8ba199b2ee83958bf2450",
       "symbols": [
         "SOURCES",
+        "_LOGGER",
         "load_feeds()",
         "save_feeds()"
       ],
       "imports": [
         "__future__",
         "json",
+        "logging",
         "os",
         "pathlib",
         "stat",
@@ -103778,9 +104046,9 @@
       "title": "zec_leverage_panel",
       "summary": "Explicit trading controls and a read-only view of the durable paper trial. The panel owns only its UI workers. The forward collector belongs to its service, so closing this screen never stops a trial or starts a second collector.",
       "summarySource": "docstring",
-      "bytes": 63478,
-      "lines": 1489,
-      "sha1": "3e2c49147335652d2d8f578c98d08d0cc5ab2ff6",
+      "bytes": 63554,
+      "lines": 1493,
+      "sha1": "37c2330f690571b7ac386d83a33867b77aea32a6",
       "symbols": [
         "default_home()",
         "_text()",
@@ -104255,9 +104523,9 @@
       "title": "zec_tui_stream",
       "summary": "Session-owned public trade stream for provisional indicator readings. This is an in-memory subscriber, never a recorder or a trading connection. A first candle starts at the first trade actually observed; it cannot claim the unobserved open, high, low or volume from before attachment or a reconnect.",
       "summarySource": "docstring",
-      "bytes": 12384,
-      "lines": 355,
-      "sha1": "3aa815f3ea15af52d3bdc1e1b717f51f78f711b9",
+      "bytes": 12805,
+      "lines": 365,
+      "sha1": "0b7f332f017e2861f1f29fada14304bb132601cc",
       "symbols": [
         "WS_URL",
         "PRODUCT",
@@ -107459,9 +107727,9 @@
       "title": "Where the worker and the TUI meet. Under the existing config dir rather than a",
       "summary": "Job queue for the background backtest sweep. Pure logic; no UI, no processes. The TUI's own sweep (`runner.py`) evaluates the roster and blocks a thread until it finishes.",
       "summarySource": "docstring",
-      "bytes": 40662,
-      "lines": 1027,
-      "sha1": "0ec66352065ea39230ea60e4beb8c85afdd50d6d",
+      "bytes": 40854,
+      "lines": 1034,
+      "sha1": "151dc52cc9a38f7c1c41bbd12c789a9671476fdd",
       "symbols": [
         "BG_DIR",
         "RESULTS_PATH",
@@ -107971,9 +108239,9 @@
       "title": "The research scripts import pandas and numpy, so they must run on the interpreter running this",
       "summary": "The soltui command registry: one set of calls for the TUI, CLI, HTTP API and native host. Every action the console can take is a registered `Command`. Every surface goes through `dispatch(name, params, surface)`, which validates parameters, applies the confirm gate, runs the handler, wraps the outcome in the response envelope and appends one line to the call log.",
       "summarySource": "docstring",
-      "bytes": 172247,
-      "lines": 3452,
-      "sha1": "8dd7463a0caf3759cdeed01004375efb65f2e57f",
+      "bytes": 172410,
+      "lines": 3455,
+      "sha1": "a169bb9a6c4da30b03243e46aff323fb0e986e98",
       "symbols": [
         "REPO",
         "UNTESTED_SWEEP_TIMEOUT_S",
@@ -108808,9 +109076,9 @@
       "title": "f5_batch",
       "summary": "Durable, isolated all-strategy backtest and prospective forward runner. The caller supplies the supported coin universe. The plan freezes it and the supported intervals before work starts. A worker is started only by explicit `start`, never import. All data stays under a run-specific directory and the existing queue is untouched.",
       "summarySource": "docstring",
-      "bytes": 43605,
-      "lines": 816,
-      "sha1": "1b046b1316ba73f6d15e50eeb339bb2edba035b7",
+      "bytes": 44250,
+      "lines": 837,
+      "sha1": "6e891d186876142e141bd00f490dc167a1a44d04",
       "symbols": [
         "_REPO",
         "_SOURCE_EPOCH",
@@ -108830,8 +109098,11 @@
         "create()",
         "_lock()",
         "_global_lock()",
+        "_identity_lock()",
         "start()",
+        "_start_locked()",
         "stop()",
+        "_stop_locked()",
         "_forward_backlog()",
         "status()",
         "list_runs()",
@@ -108890,9 +109161,9 @@
       "title": "-- saved defaults: a setting that tested superior becomes the trial's starting point -------------",
       "summary": "Prospective, paper-only trials of registered strategies on closed Coinbase minutes.",
       "summarySource": "docstring",
-      "bytes": 34687,
-      "lines": 680,
-      "sha1": "07932dea8e6fddfd3d79d87b3ffdfc961cc24e47",
+      "bytes": 43640,
+      "lines": 857,
+      "sha1": "0a0602d12a9ac8936198f23286945ac6dacb4a82",
       "symbols": [
         "_SOURCE_ROOT",
         "_SOURCE_EPOCH",
@@ -108905,12 +109176,19 @@
         "_json()",
         "_MIGRATIONS",
         "_schema_current()",
+        "class _ForwardConnection",
         "_db()",
         "save_session()",
         "load_session()",
         "defaults_path()",
         "_default_key()",
         "load_defaults()",
+        "_defaults_lock()",
+        "_sync_directory()",
+        "_write_durable()",
+        "_strict_defaults()",
+        "_stage_default()",
+        "_recover_defaults_locked()",
         "save_default()",
         "saved_default()",
         "_usable_default()",
@@ -108929,19 +109207,25 @@
         "backtester",
         "collections",
         "contextlib",
+        "fcntl",
         "hashlib",
         "inspect",
         "itertools",
         "json",
         "math",
         "numpy",
+        "os",
         "pathlib",
+        "re",
         "research_admission",
         "source_epoch",
         "sqlite3",
+        "stat",
+        "tempfile",
         "threading",
         "time",
-        "typing"
+        "typing",
+        "uuid"
       ],
       "internalImports": [
         "backtester"
@@ -111518,6 +111802,123 @@
         "tempfile",
         "unittest",
         "uuid"
+      ],
+      "internalImports": [
+        "soltui"
+      ],
+      "frontmatter": {}
+    },
+    {
+      "id": "soltui/tests/test_cdo_batch_stop.py",
+      "path": "soltui/tests/test_cdo_batch_stop.py",
+      "dir": "soltui/tests",
+      "name": "test_cdo_batch_stop.py",
+      "ext": ".py",
+      "kind": "test",
+      "title": "test_cdo_batch_stop",
+      "summary": "A stop cannot acknowledge the previous identity during worker startup.",
+      "summarySource": "docstring",
+      "bytes": 3200,
+      "lines": 72,
+      "sha1": "f702876cbeab96c28fde4a503302f31626301216",
+      "symbols": [
+        "class BatchStopRaceTests"
+      ],
+      "imports": [
+        "os",
+        "pathlib",
+        "soltui",
+        "tempfile",
+        "threading",
+        "unittest"
+      ],
+      "internalImports": [
+        "soltui"
+      ],
+      "frontmatter": {}
+    },
+    {
+      "id": "soltui/tests/test_cdo_forward_outbox.py",
+      "path": "soltui/tests/test_cdo_forward_outbox.py",
+      "dir": "soltui/tests",
+      "name": "test_cdo_forward_outbox.py",
+      "ext": ".py",
+      "kind": "test",
+      "title": "test_cdo_forward_outbox",
+      "summary": "Crash and conflict recovery for forward-test saved defaults.",
+      "summarySource": "docstring",
+      "bytes": 7877,
+      "lines": 164,
+      "sha1": "86760b64ab60a75fc90856d5700083d88bb2a6a8",
+      "symbols": [
+        "class ForwardOutboxTests"
+      ],
+      "imports": [
+        "contextlib",
+        "json",
+        "os",
+        "pathlib",
+        "soltui",
+        "tempfile",
+        "unittest"
+      ],
+      "internalImports": [
+        "soltui"
+      ],
+      "frontmatter": {}
+    },
+    {
+      "id": "soltui/tests/test_cdo_health_bgqueue.py",
+      "path": "soltui/tests/test_cdo_health_bgqueue.py",
+      "dir": "soltui/tests",
+      "name": "test_cdo_health_bgqueue.py",
+      "ext": ".py",
+      "kind": "test",
+      "title": "test_cdo_health_bgqueue",
+      "summary": "Corrupt or torn queue files must not hide subsequent valid results.",
+      "summarySource": "docstring",
+      "bytes": 4176,
+      "lines": 92,
+      "sha1": "847bf63e38de61903b5819fabd581ef42dd00d13",
+      "symbols": [
+        "result()",
+        "class QueueFileIntegrityTests"
+      ],
+      "imports": [
+        "json",
+        "os",
+        "pathlib",
+        "soltui",
+        "tempfile",
+        "unittest"
+      ],
+      "internalImports": [
+        "soltui"
+      ],
+      "frontmatter": {}
+    },
+    {
+      "id": "soltui/tests/test_cdo_health_commands.py",
+      "path": "soltui/tests/test_cdo_health_commands.py",
+      "dir": "soltui/tests",
+      "name": "test_cdo_health_commands.py",
+      "ext": ".py",
+      "kind": "test",
+      "title": "test_cdo_health_commands",
+      "summary": "Regressions for safe reporting in the command bridge.",
+      "summarySource": "docstring",
+      "bytes": 2335,
+      "lines": 48,
+      "sha1": "b2a039e42c8bf5a041560c2be6c598df2892968e",
+      "symbols": [
+        "class BacktestFallbackTests"
+      ],
+      "imports": [
+        "pathlib",
+        "soltui",
+        "tempfile",
+        "types",
+        "unittest"
       ],
       "internalImports": [
         "soltui"
@@ -116622,9 +117023,9 @@
       "title": "app",
       "summary": "",
       "summarySource": "none",
-      "bytes": 82526,
-      "lines": 835,
-      "sha1": "4f53a32856dc3a9048d5a81e938385286661ac3d",
+      "bytes": 82722,
+      "lines": 838,
+      "sha1": "1d368402fc60bc9f4a60e4a2b58ffccd5a928966",
       "symbols": [
         "TIMING",
         "accountActionReady",
@@ -117124,9 +117525,9 @@
       "title": "mcp",
       "summary": "",
       "summarySource": "none",
-      "bytes": 15904,
+      "bytes": 15937,
       "lines": 187,
-      "sha1": "c1b1c2f14cd541fc490c1fdf7dd25b110832cf97",
+      "sha1": "54c015e8dde56e665e593ded745b7abbc451d8e6",
       "symbols": [
         "DIAGNOSTIC_EVENTS",
         "MCP_PROTOCOL_VERSION",
@@ -117278,9 +117679,9 @@
       "title": "worker",
       "summary": "",
       "summarySource": "none",
-      "bytes": 55614,
-      "lines": 662,
-      "sha1": "65f097533d179d671fba65cc3292ef21170a9159",
+      "bytes": 55862,
+      "lines": 668,
+      "sha1": "fcfa6250562cffe8327018d17827b328a853da51",
       "symbols": [
         "BACKTEST_CONCURRENCY",
         "BLOCKED",
@@ -117366,9 +117767,9 @@
       "title": "agent-browser",
       "summary": "Real Chrome against isolated HTTP/wallet fixtures. No provider or real key calls.",
       "summarySource": "docstring",
-      "bytes": 24478,
-      "lines": 294,
-      "sha1": "92b865b36d6fc71785784afe4f3cbb46f3fb6943",
+      "bytes": 24710,
+      "lines": 295,
+      "sha1": "4d6e284e4e73f52c3b1dc021a9023c8a96faa3e4",
       "symbols": [
         "body",
         "reset"
@@ -117456,6 +117857,24 @@
       "frontmatter": {}
     },
     {
+      "id": "website/test/catalog-navigation.test.js",
+      "path": "website/test/catalog-navigation.test.js",
+      "dir": "website/test",
+      "name": "catalog-navigation.test.js",
+      "ext": ".js",
+      "kind": "test",
+      "title": "catalog-navigation.test",
+      "summary": "",
+      "summarySource": "none",
+      "bytes": 1470,
+      "lines": 22,
+      "sha1": "10676d4a220d5eb3b5e5af03db663c1b27ef31fb",
+      "symbols": [],
+      "imports": [],
+      "internalImports": [],
+      "frontmatter": {}
+    },
+    {
       "id": "website/test/customer-execution.test.js",
       "path": "website/test/customer-execution.test.js",
       "dir": "website/test",
@@ -117503,6 +117922,24 @@
       "frontmatter": {}
     },
     {
+      "id": "website/test/fixture-deadline.test.js",
+      "path": "website/test/fixture-deadline.test.js",
+      "dir": "website/test",
+      "name": "fixture-deadline.test.js",
+      "ext": ".js",
+      "kind": "test",
+      "title": "fixture-deadline.test",
+      "summary": "",
+      "summarySource": "none",
+      "bytes": 466,
+      "lines": 9,
+      "sha1": "fe8f5be481ee319e53385caaa20c5d09d733528b",
+      "symbols": [],
+      "imports": [],
+      "internalImports": [],
+      "frontmatter": {}
+    },
+    {
       "id": "website/test/helpers/d1.js",
       "path": "website/test/helpers/d1.js",
       "dir": "website/test/helpers",
@@ -117522,6 +117959,26 @@
         "keypair",
         "request",
         "seedUser"
+      ],
+      "imports": [],
+      "internalImports": [],
+      "frontmatter": {}
+    },
+    {
+      "id": "website/test/helpers/deadline.mjs",
+      "path": "website/test/helpers/deadline.mjs",
+      "dir": "website/test/helpers",
+      "name": "deadline.mjs",
+      "ext": ".mjs",
+      "kind": "test",
+      "title": "deadline",
+      "summary": "Fail a fixture request wait in bounded time without retaining its timer.",
+      "summarySource": "docstring",
+      "bytes": 416,
+      "lines": 13,
+      "sha1": "952f339d8dc879ddf90bb4a193e30a9b2f930a46",
+      "symbols": [
+        "waitForFixture"
       ],
       "imports": [],
       "internalImports": [],
@@ -117644,6 +118101,24 @@
       "frontmatter": {}
     },
     {
+      "id": "website/test/mcp-tool-annotations.test.js",
+      "path": "website/test/mcp-tool-annotations.test.js",
+      "dir": "website/test",
+      "name": "mcp-tool-annotations.test.js",
+      "ext": ".js",
+      "kind": "test",
+      "title": "mcp-tool-annotations.test",
+      "summary": "",
+      "summarySource": "none",
+      "bytes": 803,
+      "lines": 17,
+      "sha1": "ff0fdb21db2686ee4bb9868c35c8dd35b99439b2",
+      "symbols": [],
+      "imports": [],
+      "internalImports": [],
+      "frontmatter": {}
+    },
+    {
       "id": "website/test/mcp.test.js",
       "path": "website/test/mcp.test.js",
       "dir": "website/test",
@@ -117714,6 +118189,24 @@
       "frontmatter": {}
     },
     {
+      "id": "website/test/scheduled-isolation.test.js",
+      "path": "website/test/scheduled-isolation.test.js",
+      "dir": "website/test",
+      "name": "scheduled-isolation.test.js",
+      "ext": ".js",
+      "kind": "test",
+      "title": "scheduled-isolation.test",
+      "summary": "",
+      "summarySource": "none",
+      "bytes": 1692,
+      "lines": 35,
+      "sha1": "f43ad23c6cb86406d60045db5401c1219f3dd428",
+      "symbols": [],
+      "imports": [],
+      "internalImports": [],
+      "frontmatter": {}
+    },
+    {
       "id": "website/test/stripe-lifecycle-runner.test.js",
       "path": "website/test/stripe-lifecycle-runner.test.js",
       "dir": "website/test",
@@ -117773,9 +118266,9 @@
       "title": "ui-browser",
       "summary": "Real browser regressions against local fixtures. No wallet, Stripe or venue calls.",
       "summarySource": "docstring",
-      "bytes": 28123,
-      "lines": 389,
-      "sha1": "047210cd3d478ccb045793e8ad1652baaefa0209",
+      "bytes": 28667,
+      "lines": 392,
+      "sha1": "966f223e671e9f21a1c5fb304077f86b7031e74a",
       "symbols": [
         "accountSnapshot"
       ],
@@ -117865,5 +118358,5 @@
       "frontmatter": {}
     }
   ],
-  "textSha256": "b552be3404f14a43533add877fcdbc32d879e56ba7be39eedf0d95451756eeb1"
+  "textSha256": "d0cc27e5f6e6b0f943e7563e238edd278aec05dac41f67e48a1c2b1687dbd126"
 }
