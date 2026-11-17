@@ -1,11 +1,11 @@
 {
-  "generatedAt": "2026-11-17T20:42:42+00:00",
+  "generatedAt": "2026-11-17T21:09:24+00:00",
   "schemaVersion": 1,
   "repoRoot": "~/dev/solmargintrader",
-  "commit": "cda96fc",
+  "commit": "c0f3c73",
   "counts": {
     "files": 4117,
-    "bytes": 208475370,
+    "bytes": 208478665,
     "byKind": {
       "strategy-card": 1478,
       "doc": 850,
@@ -89808,11 +89808,11 @@
       "ext": ".md",
       "kind": "doc",
       "title": "Work continuation",
-      "summary": "Version: 647 Delta: v646 to v647; preserve concurrent pair-source integration in PR328 without changing accepted learner runtime. Version: 646",
+      "summary": "Version: 648 Delta: v647 to v648; bind the final learner checkpoint to all four delivered predecessors. Four initial PRs are merged and all final-head checks are now successful: PR22477bf655485b1e281dfc5c7277a4c178c47d8d7a9; PR22600d56735f0e9a2576e252284c4da29c8ae3f4adf; PR2353cacfea2f8062967ecc829ba4588f972a81717f3; PR289371c96e6a941410a1a3263aeed19afcb4da61caf.",
       "summarySource": "opening-prose",
-      "bytes": 867719,
-      "lines": 4460,
-      "sha1": "6bcbed8add9ddcf6f47ef609a6230cd0744c94a8",
+      "bytes": 870564,
+      "lines": 4490,
+      "sha1": "f5b52d3aa5684b1fc1030f989c23f72a246c24f0",
       "symbols": [],
       "imports": [],
       "internalImports": [],
@@ -94014,11 +94014,11 @@
       "ext": ".md",
       "kind": "doc",
       "title": "Prompt history",
-      "summary": "Version: 294 Delta: v293 to v294; preserve concurrent pair-source integration in PR328 without changing accepted learner runtime. Version: 293",
+      "summary": "Version: 295 Delta: v294 to v295; bind the final learner checkpoint to all four delivered predecessors. Version: 294",
       "summarySource": "opening-prose",
-      "bytes": 290306,
-      "lines": 4827,
-      "sha1": "f935c7098673504e5cd4269b907d5448581e97db",
+      "bytes": 290756,
+      "lines": 4845,
+      "sha1": "b9d5f77c0e144977efd606d91174343b77da6e14",
       "symbols": [],
       "imports": [],
       "internalImports": [],
@@ -122524,5 +122524,5 @@
       "frontmatter": {}
     }
   ],
-  "textSha256": "418f8af65b7e89b0615477ff4477ef0d6212d99318203361fcb2bc48cc6095ff"
+  "textSha256": "4504544797d4bbee0d2ea4a455ba3cb41ec4fd7ce2852261e1154df71b9eda0e"
 }
