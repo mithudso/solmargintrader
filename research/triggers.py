@@ -207,7 +207,6 @@ def load_funding(asset: str, ts: np.ndarray, interval: str, data_dir: Path) -> n
             if 0 <= p < len(ts) and ts[p] <= timestamp < ts[p] + step:
                 out[p] += r; hit[p] = True
         out[~hit] = np.nan
-        out = pd.Series(out).ffill().to_numpy()
         return out
     idx = np.searchsorted(ft, ts, side="right") - 1
     out = np.where(idx >= 0, fr[np.clip(idx, 0, None)], np.nan)

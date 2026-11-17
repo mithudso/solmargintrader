@@ -1,10 +1,18 @@
 # Prompt history
 
+Version: 297
+Delta: v296 to v297; preserve concurrent0.12.8 delivery and repair its numerical source fixture.
+
 Version: 296
 Delta: v295 to v296; repair required learning-command parity fixtures and private SQLite isolation.
 
 Version: 295
 Delta: v294 to v295; bind the final learner checkpoint to all four delivered predecessors.
+
+Version: 295
+Delta: preserve delivered PR289 workflow/index checkpoint and the combined Oracle/research repairs before final source8.
+Delta: integrate delivered PR235 maintenance with Oracle persistence; preserve both histories, current review3 partial provenance and last whole-sweep allowance.
+Delta: v289 to v290; preserve PR330 request and both Oracle persistence requirements during final delivery integration.
 
 Version: 294
 Delta: v293 to v294; preserve concurrent pair-source integration in PR328 without changing accepted learner runtime.
@@ -97,6 +105,14 @@ Delta: v288 to v289; preserve the native market coin-list and explicit report re
 ## Native market combinations and explicit reports — 2026-11-17
 
 I tried testing ETH and it tested against ETH/BTC and ETH/ZEC but not ETH/USD, how do I get it to test that one? Also make is so I can give it a list of coins and it'll pull the data and backtest all the combinations of those coins. Also in the report, make it more explicit and apparent what was being tested. "LINEAR" is not enough information to know what test you were running.
+
+Delta: v288 to v289; integrate delivered PR224/PR226 while retaining both browser Oracle persistence requirements.
+Delta: v286 to v287; preserve PR327 and expand persistence to both browser Oracle learners from user screenshots.
+Delta: v285 to v286; add the explicit per-coin ML retention and durable disk requirement.
+
+## Integrated PR224/PR226 workflow history
+
+Version: 288
 Delta: v287 to v288; bind PR226 to merged master77bf655 and preserve its exact audit files.
 
 Version: 287

@@ -223,7 +223,7 @@ def common_suffix(frames: dict[str, pd.DataFrame], interval: str):
 def protected_intervals(path: Path, assets: tuple[str, ...]):
     """Read only. Protect dates for a constituent coin even in a cross pair."""
     if not path.is_file():
-        return []
+        raise FileNotFoundError(path)
     with closing(sqlite3.connect(path.resolve().as_uri() + "?mode=ro", uri=True)) as db:
         rows = db.execute(
             "SELECT coin,start,end,run_id FROM holdouts WHERE sealed_at IS NULL"

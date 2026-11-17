@@ -226,6 +226,9 @@ jobs:
           pip install -r research/coinbase50-requirements.txt
           OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1 python3 -m unittest research.tests.test_coinbase50_study -v
 
+      - name: Research admission, data integrity and numerical contracts
+        run: python3 -m unittest research.tests.test_audit_artifact_admission research.tests.test_audit_data_integrity research.tests.test_audit_numerical_receipts research.tests.test_backfill_control -v
+
   jupiter-sdk:
     name: Jupiter SDK and keeper contract
     runs-on: ubuntu-latest

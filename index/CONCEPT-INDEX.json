@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-11-17T21:39:07+00:00",
+  "generatedAt": "2026-11-17T21:33:22+00:00",
   "schemaVersion": 1,
   "note": "Concepts are derived from the repo's own vocabulary \u2014 the FAMILY dict, strategy-card frontmatter, docs/trading-signals-concept-family.md, and terms verified to recur in the corpus. A concept matching no file is dropped, not kept.",
   "counts": {
@@ -22,7 +22,7 @@
         "confirm",
         "fail-closed"
       ],
-      "matchingFiles": 2010,
+      "matchingFiles": 2011,
       "shown": 30,
       "files": [
         {
@@ -47,7 +47,7 @@
         },
         {
           "path": "docs/FILES.md",
-          "hits": 176
+          "hits": 178
         },
         {
           "path": "llms-filemap.txt",
@@ -161,7 +161,7 @@
         "universe",
         "top_coins"
       ],
-      "matchingFiles": 1827,
+      "matchingFiles": 1828,
       "shown": 30,
       "files": [
         {
@@ -170,11 +170,11 @@
         },
         {
           "path": "memory.md",
-          "hits": 392
+          "hits": 393
         },
         {
           "path": "docs/FILES.md",
-          "hits": 321
+          "hits": 327
         },
         {
           "path": "llms-filemap.txt",
@@ -340,12 +340,12 @@
           "hits": 68
         },
         {
-          "path": "skills/trading-and-investing/references/jupiter-perps-trading.md",
+          "path": "docs/FILES.md",
           "hits": 61
         },
         {
-          "path": "docs/FILES.md",
-          "hits": 60
+          "path": "skills/trading-and-investing/references/jupiter-perps-trading.md",
+          "hits": 61
         },
         {
           "path": "backtester/tests/test_engine.py",
@@ -595,7 +595,7 @@
         },
         {
           "path": "docs/FILES.md",
-          "hits": 617
+          "hits": 637
         },
         {
           "path": "research/strategy_experiment/results/results.json",
@@ -603,7 +603,7 @@
         },
         {
           "path": "memory.md",
-          "hits": 482
+          "hits": 485
         },
         {
           "path": "llms/jupsol-llms.txt",
@@ -623,7 +623,7 @@
         },
         {
           "path": "prompts.md",
-          "hits": 243
+          "hits": 246
         },
         {
           "path": "llms-infra.txt",
@@ -990,7 +990,7 @@
         "monotone",
         "gap"
       ],
-      "matchingFiles": 870,
+      "matchingFiles": 869,
       "shown": 30,
       "files": [
         {
@@ -1086,6 +1086,10 @@
           "hits": 40
         },
         {
+          "path": "memory.md",
+          "hits": 39
+        },
+        {
           "path": "research/strategy_experiment/FILES.md",
           "hits": 38
         },
@@ -1100,10 +1104,6 @@
         {
           "path": "research/tradingview-strategy-understanding.json",
           "hits": 38
-        },
-        {
-          "path": "memory.md",
-          "hits": 36
         },
         {
           "path": "research/tradingview-script-profiles/shard-a.jsonl",
@@ -1125,7 +1125,7 @@
         "benchmark",
         "baseline"
       ],
-      "matchingFiles": 633,
+      "matchingFiles": 632,
       "shown": 30,
       "files": [
         {
@@ -1177,12 +1177,12 @@
           "hits": 56
         },
         {
-          "path": "research/eth-week-20261117/summary.json",
+          "path": "memory.md",
           "hits": 52
         },
         {
-          "path": "memory.md",
-          "hits": 51
+          "path": "research/eth-week-20261117/summary.json",
+          "hits": 52
         },
         {
           "path": "extension/test/fixtures/oracle-0.9-10m-state.json",
@@ -1394,7 +1394,7 @@
         "buy_and_hold",
         "baseline"
       ],
-      "matchingFiles": 560,
+      "matchingFiles": 559,
       "shown": 30,
       "files": [
         {
@@ -1430,11 +1430,11 @@
           "hits": 51
         },
         {
-          "path": ".cdo/reviews-2026-11-12/final-owned-integration.json",
-          "hits": 50
+          "path": "memory.md",
+          "hits": 51
         },
         {
-          "path": "memory.md",
+          "path": ".cdo/reviews-2026-11-12/final-owned-integration.json",
           "hits": 50
         },
         {
@@ -1731,15 +1731,15 @@
           "hits": 26
         },
         {
+          "path": "docs/FILES.md",
+          "hits": 23
+        },
+        {
           "path": "research/ratio_rotation.py",
           "hits": 22
         },
         {
           "path": "FILES.md",
-          "hits": 21
-        },
-        {
-          "path": "docs/FILES.md",
           "hits": 21
         },
         {
@@ -2090,7 +2090,7 @@
         },
         {
           "path": "docs/FILES.md",
-          "hits": 80
+          "hits": 81
         },
         {
           "path": "FILES.md",
@@ -2235,11 +2235,11 @@
           "hits": 39
         },
         {
-          "path": "FILES.md",
-          "hits": 34
+          "path": "docs/FILES.md",
+          "hits": 35
         },
         {
-          "path": "docs/FILES.md",
+          "path": "FILES.md",
           "hits": 34
         },
         {
@@ -2335,7 +2335,7 @@
           "hits": 12
         },
         {
-          "path": "docs/CONCEPTS.md",
+          "path": "docs/SCRIPTS.md",
           "hits": 12
         }
       ],

@@ -48,11 +48,35 @@ class AuditDataIntegrityTests(unittest.TestCase):
                   patch.object(minute_sweep, "minute_path", return_value=source),
                   patch.object(minute_sweep, "load_minutes", side_effect=lambda _: pd.read_csv(source))):
                 first = minute_sweep.build_slice("BTC", 2, None)
+                original = first.read_bytes()
+                binding = first.with_suffix(".json")
+                original_binding = binding.read_bytes()
+                # A frozen source binding must survive refusal; use a new directory.
                 source.write_text("timestamp\n0\n60\n120\n180\n")
-                second = minute_sweep.build_slice("BTC", 2, None)
+                with self.assertRaisesRegex(ValueError, "binding changed"):
+                    minute_sweep.build_slice("BTC", 2, None)
+                self.assertEqual(first.read_bytes(), original)
+                self.assertEqual(binding.read_bytes(), original_binding)
+                with patch.object(minute_sweep, "SLICES", root / "fresh-slices"):
+                    second = minute_sweep.build_slice("BTC", 2, None)
                 with np.load(second) as data:
                     self.assertEqual(int(data["timestamp"][-1]), 180)
                 self.assertNotEqual(first, second)
+
+    def test_prepared_slice_loads_its_bound_path_without_an_extra_suffix(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            source = root / "source.csv"
+            pd.DataFrame({"timestamp": [0, 60, 120], "open": [1., 1., 1.],
+                          "high": [1., 1., 1.], "low": [1., 1., 1.],
+                          "close": [1., 1., 1.], "volume": [1., 1., 1.]}).to_csv(source, index=False)
+            with (patch.object(minute_sweep, "SLICES", root / "slices"),
+                  patch.object(minute_sweep, "minute_path", return_value=source),
+                  patch.object(minute_sweep, "_ARRAYS", {})):
+                prepared = minute_sweep.build_slice("BTC", 2, None)
+                _, first, last = minute_sweep._arrays_for("BTC", 2, None, prepared)
+                self.assertEqual((first, last), (60, 120))
+                self.assertEqual(len(minute_sweep._ARRAYS), 1)
 
     def test_interrupted_slice_does_not_publish_partial_zip(self):
         with tempfile.TemporaryDirectory() as directory:

@@ -250,7 +250,7 @@ def _arrays_for(asset: str, bars: int | None, window: tuple[int, int] | None, pa
     path = Path(path) if path is not None else build_slice(asset, bars, window)
     key = str(path)
     if key not in _ARRAYS:
-        with np.load(io.BytesIO(_slice_bytes(SLICES / f"{key}.npz"))) as data:
+        with np.load(io.BytesIO(_slice_bytes(path))) as data:
             frame = pd.DataFrame({c: data[c] for c in data.files})
         ts = frame["timestamp"].to_numpy(dtype="int64")
         _ARRAYS.clear()          # one asset-slice per worker; keep memory flat
