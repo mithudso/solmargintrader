@@ -1,6 +1,6 @@
 # Every file in this repository
 
-**Generated** from `index/INDEX.json` at commit `021b33f` (2026-11-17T22:53:21+00:00). 4117 tracked files, 208.5 MB.
+**Generated** from `index/INDEX.json` at commit `0cec76d` (2026-11-17T22:56:22+00:00). 4117 tracked files, 208.5 MB.
 
 Regenerate with:
 
