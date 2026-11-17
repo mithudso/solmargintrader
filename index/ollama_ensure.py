@@ -69,8 +69,21 @@ def is_local(base: str) -> bool:
         return False
 
 
+class _NoRedirect(urllib.request.HTTPRedirectHandler):
+    def redirect_request(self, req, fp, code, msg, headers, newurl):
+        raise urllib.error.HTTPError(req.full_url, code, "local redirects are refused", headers, fp)
+
+
+def local_urlopen(url, *, timeout):
+    endpoint = url.full_url if isinstance(url, urllib.request.Request) else url
+    if not is_local(endpoint):
+        raise ValueError("index tooling only accepts a local HTTP endpoint")
+    opener = urllib.request.build_opener(urllib.request.ProxyHandler({}), _NoRedirect())
+    return opener.open(url, timeout=timeout)
+
+
 def _get_json(url: str, timeout: float) -> dict:
-    with urllib.request.urlopen(url, timeout=timeout) as r:  # noqa: S310 - local only, checked by caller
+    with local_urlopen(url, timeout=timeout) as r:
         return json.loads(r.read())
 
 

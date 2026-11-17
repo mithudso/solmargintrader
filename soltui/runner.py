@@ -186,16 +186,17 @@ class SweepRunner:
         *, longest_contiguous: bool = False,
     ) -> None:
         """Begin a sweep. Refuses to start a second one concurrently."""
-        if self.running:
-            raise RuntimeError("a sweep is already running")
-        if len(roster) == 0:
-            raise ValueError("the roster is empty — add a strategy first")
-        self._cancel.clear()
-        self.outcome = None
-        self._thread = threading.Thread(
-            target=self._run, args=(roster, settings, on_done, longest_contiguous), daemon=True
-        )
-        self._thread.start()
+        with self.lock:
+            if self.running:
+                raise RuntimeError("a sweep is already running")
+            if len(roster) == 0:
+                raise ValueError("the roster is empty — add a strategy first")
+            self._cancel.clear()
+            self.outcome = None
+            self._thread = threading.Thread(
+                target=self._run, args=(roster, settings, on_done, longest_contiguous), daemon=True
+            )
+            self._thread.start()
 
     def _run(
         self,

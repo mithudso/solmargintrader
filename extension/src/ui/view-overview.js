@@ -44,7 +44,7 @@ function holdingsKpis(state) {
   }
   const base = chain('base');
   const idle = (base?.holdings ?? []).filter((x) => x.stable && x.included && Number.isFinite(x.usd)).reduce((s, x) => s + x.usd, 0);
-  $('#kpiIdle').textContent = base && base.status !== 'skipped' ? usd(idle) : '—';
+  $('#kpiIdle').textContent = base?.status === 'ok' ? usd(idle) : base?.status === 'partial' ? `at least ${usd(idle)}` : '—';
 }
 
 function lpKpi(state) {
@@ -64,22 +64,30 @@ function scoutTable(pools) {
   ], pools, { emptyText: 'No scout data. The aero-lp daemon writes it; soltui reads it.' });
 }
 
+let overviewGeneration = 0;
 export async function renderOverview(state, { onAck }) {
+  const generation = ++overviewGeneration;
+  const latest = () => generation === overviewGeneration;
+  const read = async (target, fn) => {
+    try { await fn(); }
+    catch (error) { if (latest()) target.textContent = `Refresh unavailable; displayed evidence may be stale: ${error.message}`; }
+  };
   holdingsKpis(state);
   lpKpi(state);
   const scan = state.overview?.scan;
   const open = (scan?.alerts ?? []).filter((a) => !a.acked).slice(0, 5);
   clear($('#overviewAlerts'), open.length ? open.map((a) => alertCard(a, onAck))
-    : empty(scan ? 'Nothing needs attention. The scan found no better modelled pool or strategy.' : 'Press "Scan now" for the first scan.'));
+    : empty(!scan ? 'Press "Scan now" for the first scan.' : Array.isArray(scan.alerts) ? 'No unacknowledged alerts in the latest scan.' : 'Alert results are unavailable.'));
   const best = scan?.liquidity?.bestScout ?? [];
   clear($('#overviewScout'), scoutTable(best.slice(0, 5)));
-  if (best.length && best.every((p) => !(p.expected_net_apr > 0))) {
+  if (best.length && best.every((p) => Number.isFinite(p.expected_net_apr) && p.expected_net_apr < 0)) {
     $('#overviewScout').append(el('p', { class: 'note', text: 'Every scouted pool models negative after loss-versus-rebalancing right now: holding beats providing liquidity.' }));
   }
 
   // Live: wallet P&L and strategy, each independent of the other.
-  guard($('#kpiPnlSub'), async () => {
+  const pnlRead = read($('#kpiPnlSub'), async () => {
     const r = await soltui('pnl.summary', { window: '30d', source: 'wallet (live)' });
+    if (!latest()) return;
     const s = r.sections?.find((x) => x.source === 'wallet (live)');
     if (s?.status === 'ok') {
       paint($('#kpiPnl'), s.totals?.net_usd, { sign: true });
@@ -89,26 +97,30 @@ export async function renderOverview(state, { onAck }) {
       $('#kpiPnlSub').textContent = s?.message ?? 'no wallet snapshots yet';
     }
   });
-  guard($('#overviewStrategy'), async () => {
+  const strategyRead = read($('#overviewStrategy'), async () => {
     const [rec, top5] = await Promise.all([
       soltui('live.recommendation').catch(() => null),
       soltui('top5.list').catch(() => null),
     ]);
+    if (!latest()) return;
     const leader = top5?.configs?.find((c) => c.rank === 1);
     clear($('#overviewStrategy'),
       leader ? el('div', {},
         el('div', { class: 'row' }, el('strong', { text: leader.label }), chip('Top 5 #1', 'backtest')),
-        el('p', { class: 'note', text: `${leader.home?.net_pct_text ?? ''} · median Sharpe ${leader.home?.median_sharpe?.toFixed?.(2) ?? '—'} · ${Math.round((leader.home?.frac_positive ?? 0) * 100)}% of paths positive` }))
+        el('p', { class: 'note', text: `${leader.home?.net_pct_text ?? ''} · median Sharpe ${leader.home?.median_sharpe?.toFixed?.(2) ?? '—'} · ${Number.isFinite(leader.home?.frac_positive) ? `${Math.round(leader.home.frac_positive * 100)}% of paths positive` : 'Positive paths unavailable'}` }))
         : empty('Top 5 evidence is not available (soltui not connected or not generated).'),
       rec ? el('p', { class: 'note', text: `Live-run pick: ${rec.strategy} (${rec.source}; ${rec.details})` }) : null,
       state.overview?.prefs?.activeStrategy ? el('p', { class: 'note', text: `Active strategy: ${state.overview.prefs.activeStrategy}` }) : null);
   });
 
   // Fresh balances; the stored scan already painted something.
-  await guard(null, async () => {
-    state.holdings = await call({ type: 'holdings' });
+  const holdingsRead = read($('#kpiTotalSub'), async () => {
+    const holdings = await call({ type: 'holdings' });
+    if (!latest()) return;
+    state.holdings = holdings;
     holdingsKpis(state);
   });
+  await Promise.all([pnlRead, strategyRead, holdingsRead]);
 }
 
 /* --------------------------------------------------------------- Alerts -- */

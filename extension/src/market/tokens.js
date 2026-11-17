@@ -1,3 +1,4 @@
+import { base58Decode } from '../wallet/solana.js';
 /**
  * Chains, endpoints and the known-token lists the market reads use.
  *
@@ -92,4 +93,7 @@ export function findToken(chain, ref) {
 }
 
 const SOLANA_ADDRESS = /^[1-9A-HJ-NP-Za-km-z]{32,44}$/;
-export const isSolanaAddress = (value) => typeof value === 'string' && SOLANA_ADDRESS.test(value);
+export function isSolanaAddress(value) {
+  if (typeof value !== 'string' || !SOLANA_ADDRESS.test(value)) return false;
+  try { return base58Decode(value).length === 32; } catch { return false; }
+}

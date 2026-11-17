@@ -29,6 +29,7 @@ from textual.widgets import (
 )
 
 from research import zec_live as live
+from research.zec_feed_settings import load_feeds
 from research.zec_shape_view import shape_guide, shape_summary
 from research.zec_tui_alerts import HALF, bearish_alert
 from research.zec_tui_chart import MarketChart
@@ -48,6 +49,29 @@ from research.zec_tui_source import (
 )
 from research.zec_tui_stream import DisabledStream, TradeStream
 from research.zec_tui_workers import LatestWorker
+
+
+def ended_signal_window_text(event):
+    """Distinguish elapsed wall time from the observed qualifying span."""
+    elapsed = event.get("duration_ms")
+    start, last = event.get("start_ms"), event.get("last_ms")
+    elapsed_text = (
+        f"{elapsed / 1000:.1f}s" if isinstance(elapsed, (int, float)) else "unavailable"
+    )
+    observed = (
+        f"{max(0, last - start) / 1000:.1f}s"
+        if isinstance(start, (int, float)) and isinstance(last, (int, float))
+        else "unavailable"
+    )
+    sustained = (
+        "sustained 15s" if event.get("sustained") is True else
+        "not sustained 15s" if event.get("sustained") is False else
+        "sustained status unavailable"
+    )
+    return (
+        f" · ended {event.get('reason', 'unknown')} · elapsed {elapsed_text}"
+        f" · observed {observed} · {sustained}"
+    )
 
 
 class IndicatorTable(DataTable):
@@ -356,6 +380,7 @@ class OracleWinnersApp(App):
     DataTable > .datatable--header { background: #18475c; color: #8df5ff; text-style: bold; }
     DataTable > .datatable--cursor { background: #186878; color: #ffffff; text-style: bold; }
     #faster, #slower { min-width: 4; width: 4; }
+    #shared-signals { height: auto; padding: 0 1; }
     #market { height: 2; padding: 0 1; background: #123440; color: #74f6e0; text-style: bold; }
     #notice { height: 2; padding: 0 1; color: #a8c1dd; }
     #workspace { height: 1fr; padding: 0 1; }
@@ -398,6 +423,7 @@ class OracleWinnersApp(App):
         stream=None,
         indicator_loader=None,
         alert_loader=None,
+        signal_loader=None,
         sound_player=None,
         leverage_home=None,
         leverage_console=None,
@@ -431,6 +457,13 @@ class OracleWinnersApp(App):
             else AlertSession(clock=clock)
         )
         self.alert_worker = LatestWorker(alert_loader, name="oracle-ten-minute-alerts")
+        from oracle_leverage.signals import status as signal_status
+        if signal_loader is None:
+            signal_loader = lambda _request, cancelled: {} if cancelled() else signal_status()
+        self.signal_worker = LatestWorker(signal_loader, name="oracle-shared-signals")
+        self.signal_result = None
+        self._signal_rendered = None
+        self._next_signal = 0.0
         # Dependency-injected loaders must never secretly create a real network
         # subscription in tests or an embedding application.
         self.trade_stream = (
@@ -440,6 +473,13 @@ class OracleWinnersApp(App):
             if data_loader is not None or quote_loader is not None
             else TradeStream(clock=clock)
         )
+        if isinstance(self.trade_stream, TradeStream):
+            home = (
+                Path(leverage_home)
+                if leverage_home
+                else Path.home() / ".local/state/oracle-leverage"
+            )
+            self.trade_stream.set_enabled(load_feeds(home / "view.json")["coinbase"])
         self.current_frame, self.quote_result = None, None
         self.indicator_frame = None
         self.alert_context = self.current_alert = None
@@ -513,6 +553,10 @@ class OracleWinnersApp(App):
             yield Button("Shape guide [H]", id="show-shape-guide")
             yield Button("Sounds", id="show-sounds")
         yield Static("Connecting to existing ZEC/USD recorder…", id="market")
+        with Horizontal(classes="controls"):
+            yield Label("Jupiter relay asset")
+            yield Select([("ZEC", "ZEC"), ("BTC", "BTC")], value="ZEC", allow_blank=False, id="signal-asset")
+        yield Static("Jupiter relay · waiting for shared signals", id="shared-signals")
         yield Static(
             "Select a timeframe and choose the strategies you want to watch.",
             id="notice",
@@ -550,6 +594,8 @@ class OracleWinnersApp(App):
         self.request_data(clear=True)
         self.request_alerts()
         self.quote_worker.submit(None)
+        self.signal_worker.submit(None)
+        self._next_signal = time.monotonic() + 1
         self._next_quote = time.monotonic() + 1
         self.trade_stream.start()
         self._poll_timer = self.set_interval(0.25, self.poll_workers)
@@ -691,6 +737,13 @@ class OracleWinnersApp(App):
                 self.clear_details(
                     "Market data unavailable: " + str(self.current_frame["error"])
                 )
+        signal = self.signal_worker.poll()
+        if signal is not None and not signal.error:
+            self.signal_result = signal.value
+        if now >= self._next_signal and not self.signal_worker.busy:
+            self.signal_worker.submit(None)
+            self._next_signal = now + 1
+        self.paint_shared_signals()
         quoted = self.quote_worker.poll()
         if quoted is not None:
             self.quote_result = (
@@ -748,6 +801,43 @@ class OracleWinnersApp(App):
             self.request_alerts(force=self._pending_alert_force)
         self.request_indicators()
         self.paint()
+
+    def paint_shared_signals(self):
+        """Render the Jupiter source independently of the Coinbase market chart."""
+        asset = self.query_one("#signal-asset", Select).value
+        state = (self.signal_result or {}).get("assets", {}).get(asset)
+        text = Text(f"Jupiter relay · {asset} · ")
+        if not state:
+            text.append("no shared signal")
+        else:
+            display_now = max(self.signal_result["now_ms"], time.time() * 1000)
+            fresh = state.get("fresh", False) and display_now <= state["expires_at_ms"]
+            text.append("● live" if fresh else "○ old", style="green" if fresh else "dim")
+            age = max(0, (display_now - state["as_of_ms"]) / 1000)
+            text.append(f" · {state.get('status', '')} · age {age:.0f}s · Jupiter ${state['quote']['price']:,.4f} · raw uncalibrated score · {state.get('source', '')}\n")
+            for horizon, row in state.get("horizons", {}).items():
+                scores = row.get("scores")
+                direction = row.get("direction", "FLAT")
+                style = "green" if direction == "UP" else "red" if direction == "DOWN" else "dim"
+                arrow = {"UP": "↑", "DOWN": "↓", "FLAT": "→"}.get(direction, "→")
+                score = (" / ".join(f"{scores[k] * 100:.1f}%" for k in ("up", "down", "flat")) + " U/D/F") if scores else "warming"
+                window = row.get("window")
+                suffix = ""
+                if window and fresh:
+                    suffix = f" · 80% window {window['duration_ms'] / 1000:.1f}s" + (" sustained" if window['sustained'] else "")
+                elif window:
+                    suffix = " · window ended (stale)"
+                elif row.get("history"):
+                    last = row["history"][-1]
+                    suffix = ended_signal_window_text(last)
+                resolved = row.get("resolved", 0)
+                metric = row.get("candidate", {})
+                accuracy = f"{100 * metric.get('hits', 0) / resolved:.0f}%" if resolved else "n/a"
+                text.append(f"{horizon}s  {arrow} {direction}  score {score}  n={row.get('samples', 0)}  accuracy {accuracy}{suffix}\n", style=style)
+        rendered = (text.plain, tuple(str(span) for span in text.spans))
+        if rendered != self._signal_rendered:
+            self.query_one("#shared-signals", Static).update(text)
+            self._signal_rendered = rendered
 
     def notice(self, text):
         self.query_one("#notice", Static).update(Text(text))
@@ -1109,8 +1199,14 @@ class OracleWinnersApp(App):
             console=self.leverage_console,
             console_factory=self.leverage_console_factory,
             clock=self.clock,
+            feed_changed=self.leverage_feeds_changed,
         )
         self.push_screen(self._leverage_panel)
+
+    def leverage_feeds_changed(self, feeds):
+        toggle = getattr(self.trade_stream, "set_enabled", None)
+        if toggle is not None:
+            toggle(feeds["coinbase"])
 
     def sounds_changed(self, settings):
         if self._display_stopping or not self.is_running or settings is None:
@@ -1244,6 +1340,7 @@ class OracleWinnersApp(App):
         self.quote_worker.close(0.1)
         self.indicator_worker.close(0.1)
         self.alert_worker.close(0.1)
+        self.signal_worker.close(0.1)
         self.trade_stream.close(0.3)
 
     def exit(self, result=None, return_code=0, message=None):

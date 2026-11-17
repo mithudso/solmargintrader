@@ -4,8 +4,121 @@ A Chrome MV3 extension for the owner's Base and Solana money: **holdings, profit
 discovery, backtests and strategy changes, swap quotes, and alerts** when a more profitable pool or
 strategy appears. It also keeps an **experimental grid trading strategy on Jupiter (Solana)** with
 hard risk rails, on its own tab, **dry-run by default** — it will not place an order until you
-change the mode and type a confirmation. The grid lost to buy-and-hold walk-forward on 9 of 9 coins,
-which is why 0.3.0 moved it off the front page.
+change the mode and type a confirmation. A historical report says the grid lagged buy-and-hold walk-forward on 9 of 9 coins;
+that result has not been reverified. Version 0.3.0 moved it off the front page.
+
+## Live Oracle (0.12.2)
+
+The Live Oracle estimates whether the price at each selected horizon will be
+above, below or equal to its reference price. It shows UP, DOWN and FLAT
+model estimates across six horizons after at least 30 seconds of fresh
+observations. These estimates are uncalibrated; they are not a measured success
+rate or a promise of profit.
+
+For supported shared assets, an UP or DOWN estimate of at least 80% opens a
+window. The panel shows its start, observed span and peak. For ended windows,
+it also shows elapsed time to the end and whether 15 seconds were sustained.
+The sustained label requires 15 seconds between qualifying observations. If sharing is unavailable, the browser can still show its local
+estimates, but the shared window is unavailable. The separate minute-close
+learner below uses a different UP versus NON-UP target.
+
+### Windows, shared sessions and stored data
+
+Jupiter panels in the same Chrome profile share the persistent learner state.
+Different browser profiles learn independently. Live learning needs an open
+Jupiter panel receiving the source; the TUI reads the shared relay. Closing all
+panels stops new live estimates but keeps saved browser learning.
+
+By default, native controls in either interface address one shared paper session.
+Two TUI windows are views of that session, not independent traders: Start and
+Stop affect the same paper position. Separately, the quote collector stores
+normalized observations in hourly gzip files under a seven-day retention policy;
+the browser does not contain the complete quote history.
+
+When the paper-session helper cannot connect, Auto Long / Short shows the
+underlying connection error and setup hint. Paper defaults load after the helper
+answers; a connection failure does not mean a paper configuration is invalid.
+
+## Streaming Oracle (0.10.0)
+
+The existing 1000x window trains six independent prospective rolling price-direction
+models for 1m/5m/10m/15m/20m/1h from one validated public minute stream. The chart
+selector changes displayed detail only; every horizon continues learning through
+chart-only loading or failure. Each fresh completed 1m cutoff may issue one
+immutable forecast per horizon. UP means that horizon's later close exceeds its reference;
+NON-UP includes both DOWN and exact FLAT. This target is separate from the
+DD/UU candle-pattern context below. Overlapping targets are not independent.
+
+A bounded L2 logistic candidate learns only after genuine completed outcomes.
+Cold start serves a labeled fixed 0.5 baseline while shadow learning continues.
+The compact panel distinguishes candidate, actually served and fixed-baseline
+accuracy/Brier/log-loss metrics, recent and cumulative, plus trained/resolved,
+pending, expired and flat counts. Probabilities are uncalibrated shadow estimates;
+no improvement or profit is promised. Unknown outcomes never train the model.
+
+The overview shows all six horizons with trained/resolved/pending counts, stored
+served predictions, state and paired recent Brier metrics. Selected detail keeps
+all three predictors' recent/cumulative accuracy, Brier and log-loss metrics.
+Native IndexedDB commits each horizon's pending forecasts, weights and metrics atomically across
+windows and reloads. State is isolated by market/source/horizon/feature version.
+Genuine 0.9 ten-minute keys, weights, pending forecasts and metrics stay compatible.
+New horizons begin prospectively without historical label training. There are 64
+pending slots per model and 96 total partitions; capacity failures do not evict
+evidence or stop healthy existing models. Hidden windows pause learning; the
+same feed and collapse/route teardown apply. No wallet or trading permission
+is added. See [target, update equations, bounds and research status](../docs/EXTENSION-STREAMING-ORACLE.md)
+and the [exact approved execution prompt](../docs/EXTENSION-STREAMING-ORACLE-PROMPT.md).
+
+## Jupiter 1000x indicator window (0.8.0)
+
+On `https://jup.ag/1000x`, the extension adds a draggable, resizable floating
+window with oracle candles, configurable ZigZag, Wilder RSI, Balance of Power,
+Volty Expan Close, Parabolic SAR, EMA9/21 and MACD12/26/9. The same public Jupiter
+Pyth source supplies history and one streaming subscription. The default chart
+interval is 10m; 1m, 5m, 15m, 20m and 1h are also available.
+Developing values and provisional ZigZag endpoints stay separate from completed
+candle explanations. Stale quotes, gaps and partial history withhold signals.
+Collapse or hide the window to stop its feed. Market navigation creates a fresh
+session. Settings stay in local browser storage. No wallet connection is needed.
+
+The reversal section always uses the previous two completed 10m candle bodies:
+DD watches UP (long context); UU watches DOWN (short context). The developing
+target stays separate and can change color. Flat or mixed pairs have no setup.
+Four shape cards use 48 completed 5m/10m/15m/20m bars and restart after a gap.
+The separate closed 1m momentum row matches the research EMA9/21, MACD12/26/9
+and BOP SMA3 formulas, with 78 contiguous bars before a reading. The chart's
+indicator table uses its selected interval and labels that distinction.
+
+Heuristic alignment counts how many of EMA trend, MACD histogram and BOP agree
+with the watched direction. It is not a probability. The DD/UU section has no compatible empirical pattern model or typed position
+source: its empirical probability, model score, ROE and exit intent remain
+unavailable. The separate streaming Oracle is not a DD/UU pattern probability. The window does not borrow UU probabilities
+for DD or simulate a position from candle colors.
+
+The chart and its forecasts remain analysis views. The separate **Auto Long / Short**
+section controls the shared owner described below. Load or reload the unpacked
+extension, then reload the portal tab. Its header identifies extension version 0.12.2.
+See [design, formulas and verification](../docs/JUPITER-1000X-OVERLAY.md),
+[optimized execution prompt](../docs/JUPITER-1000X-OVERLAY-PROMPT.md), and
+[SDK create/close capabilities and remaining gates](../docs/JUPITER-1000X-SDK.md).
+
+## Shared automatic paper trading (0.11.0)
+
+**Start Paper** runs the selected BTC/ZEC 10x or 1000x observed-price model through
+one durable owner shared with the Oracle TUI. It freezes an entry, target, stop,
+liquidation boundary and modeled execution costs. Start chooses Long or Short
+within 15 minutes when fresh execution observations are available. Missing or
+invalid observations cause a visible failure. Stop prevents new entries and
+continues managing an open position. Closing the panel leaves the owner running.
+Paper results include observed liquidation touches as failures and retain unknown
+outcomes when continuity is lost. They do not establish actual venue fills.
+
+**Start Live** checks explicit collateral/session-loss limits and backend
+readiness. Automatic live opening remains unavailable: the 10x path lacks verified
+position/fill/net-settlement binding; the 1000x path lacks verified close, queue and
+payout handling. A high directional score does not override these requirements.
+The optional private advice setting defaults off. No key goes into browser storage.
+See [controls, execution assumptions and live blockers](../docs/ORACLE-AUTO-TRADING.md).
 
 ## Signal Desk workspace (0.6.3)
 
@@ -28,7 +141,7 @@ The backend verifies the snapshot and pins its one strategy and full cost scenar
 no worker; **Start prepared checks** is a separate explicit action. Changing code or overriding a
 pinned asset/cost is refused. Unsupported wrapper translations are refused rather than approximated.
 
-Live predictions keep the existing ten-second read cadence and immutable observed score tape.
+SolTUI strategy predictions keep their ten-second read cadence and immutable observed score tape.
 Accuracy/sample floors and paper confidence remain separate. The bot monitor shows session and
 detached lifetimes, liveness and output freshness independently. Search filters tool descriptions
 locally; every backend docs.search remains a deliberate resource-disclosed operation.
@@ -105,8 +218,8 @@ with a pointer to Anchor IDL parsing of the perps program. Opening or closing a 
 therefore requires building Anchor instructions and going through the keeper request/fulfil flow —
 not something to ship inside a service worker on a first pass.
 
-So the **executable** venue is the **Trigger V2 API**, which does return signable transactions over
-HTTP. A grid is a ladder of resting limit orders, which is precisely what Trigger is for. It also
+The grid's intended venue is the **Trigger V2 API**, which returns signable transactions over
+HTTP. Trigger live writes remain blocked pending independent transaction verification. A grid is a ladder of resting limit orders, which is precisely what Trigger is for. It also
 keeps pending orders **off-chain**, so your ladder is not a public roadmap for front-runners — a
 real advantage over the V1 on-chain PDA model.
 
@@ -132,7 +245,7 @@ Chrome 137+ is recommended: full-auto signing uses WebCrypto Ed25519, which land
 Everything else works from Chrome 120.
 
 **Did a reload pick up the new code?** The popup header and the dashboard title show the
-manifest version (`v0.6.3`). Every change to `src/` or `manifest.json` bumps it, in
+manifest version (`v0.12.0`). Every change to `src/` or `manifest.json` bumps it, in
 `manifest.json` and `package.json` together; CI fails a pull request that changes either
 without a bump, and `test/version.test.js` keeps the two fields equal. The SolTUI console
 is the primary dashboard workspace (popup → **Full workspace**).
@@ -141,11 +254,11 @@ is the primary dashboard workspace (popup → **Full workspace**).
 
 ## Modes, and what each one can actually do
 
-| Mode | Places orders | Signing | Unattended |
+| Mode | Current order behavior | Intended signing | Unattended design |
 |---|---|---|---|
-| `dry-run` *(default)* | No — simulated fills | Never signs | Yes |
-| `semi-auto` | Yes | You approve every signature | **No** |
-| `full-auto` | Yes | Dedicated session key | Yes |
+| `dry-run` *(default)* | Simulated fills; no orders | Never signs | Yes |
+| `semi-auto` | Trigger live writes blocked pending independent transaction verification | Approval for every signature | No |
+| `full-auto` | Trigger live writes blocked pending independent transaction verification | Dedicated session key | Yes |
 
 **Why three modes and not one:** an injected browser wallet (Phantom et al.) cannot produce a
 silent signature, and `window.solana` does not exist in a service worker at all. "Unattended bot"
@@ -345,7 +458,7 @@ gross $10.00, fees $1.05, **net $8.95**; with $2.00 carry, **realized $6.95**.
 
 ## Three surfaces, one registry
 
-Every action lives in `src/core/commands.js` (35 commands). The Chrome message handler, the CLI and
+Every action lives in `src/core/commands.js`; use the generated command listing for the current inventory. The Chrome message handler, the CLI and
 the HTTP API are thin adapters over it, so anything you can do in the UI you can script — and
 `test/surfaces.test.js` fails the build if any surface drifts.
 
@@ -389,12 +502,12 @@ clear a newer stop. Missing legacy generations start at zero; explicitly
 malformed generations remain held for review.
 
 HTTP response bodies have a four MiB default limit and a deadline through body
-reading. The large DefiLlama pool feed explicitly allows up to32MiB. Writes are
+reading. The large DefiLlama pool feed explicitly allows up to 32MiB. Writes are
 never retried automatically. Swap quotes bind the input amount, tokens, mode
 and tolerance; editing the form also invalidates any pending quote response.
 
 The Node entrypoints support `--help` before reading state, fetching data or
-starting a listener. Unknown or missing arguments exit2 with usage. The API
+starting a listener. Unknown or missing arguments exit 2 with usage. The API
 requires its bearer token in the service environment and reports missing
 configuration before creating its stores.
 
@@ -502,7 +615,7 @@ tools/api-server.js        Local HTTP API surface, generated from the registry
 tools/soltui-transport.js  Node transport to the same soltui host (CLI and API)
 tools/dryrun.js            Headless end-to-end tick
 tools/e2e.mjs              Real-browser e2e (Chrome for Testing, DevTools pipe); helpers in e2e/
-test/                      361 tests, no npm dependencies (node:test)
+test/                      Node tests, no npm dependencies (node:test)
 ```
 
 No build step and no npm dependencies. The one runtime library is Lightweight Charts 5.2.1, vendored
@@ -522,7 +635,7 @@ owner's public addresses read Base $2.25 and Solana $51.33, quoted 0.01 ETH → 
 Slipstream and 0.5 SOL → 44.75 USDC through Jupiter, refused a 5,000 WETH Base quote past the active
 range, and listed 5,403 Base and Solana pools. No transaction was built or signed.
 
-**Current offline gate (2026-11-07):** 303 tests pass. The deterministic oscillating
+**Historical offline gate (2026-11-07):** 303 tests pass. The deterministic oscillating
 dry run closes one round trip: gross $0.3738, fees $0.0246, net +$0.3492, with no
 unknown-fee fills. Public endpoint reachability passed; the keyed price check skipped.
 Live money movement remains blocked without the transaction-intent verifier described
@@ -540,10 +653,14 @@ extension CLI and, with the production host, byte-identical to `soltui list` and
 dashboard panel renders the result as text; a missing host is a clean `failed` envelope. This verifies
 loading, dry-run behaviour and the read-only bridge only. It never arms or signs, it calls only commands
 soltui lists as `read_only` (`e2e/lib/guard.mjs`), it does not exercise authenticated Jupiter responses,
-and **no live order has ever been placed**. Not verified by any test: an actual `chrome.runtime.reload()`
+and this test placed no live order. Not verified by any test: an actual `chrome.runtime.reload()`
 in Chrome (the gate is unit-tested with a fake `reload`, because a reload would end the test session), and
 the owner's own browser, which needs the one-time extension reload for the new `nativeMessaging`
 permission.
+
+The current offline economics gate is `node tools/dryrun.js --ticks 8 --osc 6 --offline 100 --assert-economics`.
+The explicit assertion refuses tick errors, unknown fees, or a run without a positive closed round trip.
+Exploratory `--walk` reports remain available without that assertion.
 
 **Historical development receipts (the figures below are not the current gate):**
 
@@ -617,7 +734,7 @@ Two results matter here:
 
 **Not verified — do these before risking money:**
 
-1. **No live order has been placed.** The bundled signer cannot verify the economic intent of
+1. **Live Trigger signing remains blocked.** This historical test did not place a live order. The bundled signer cannot verify the economic intent of
    a remote-crafted deposit/cancellation transaction. Live signing refuses before sending it to
    the raw signer. A trusted verifier must be implemented and tested before any funded live test;
    a key and funded wallet alone do not satisfy that requirement.

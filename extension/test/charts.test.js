@@ -3,7 +3,8 @@ import assert from 'node:assert/strict';
 import { createHash } from 'node:crypto';
 import { readFile, access } from 'node:fs/promises';
 import { fileURLToPath } from 'node:url';
-import { toLineData, renderEquityChart, disposeChart } from '../src/ui/charts.js';
+import { toLineData, renderEquityChart, renderStrategyChart, disposeChart } from '../src/ui/charts.js';
+import { lineChart } from '../src/ui/ui-kit.js';
 
 const VENDOR = fileURLToPath(new URL('../vendor/lightweight-charts/', import.meta.url));
 
@@ -69,6 +70,7 @@ function fakeElement() {
     children: [],
     style: {},
     append(...nodes) { this.children.push(...nodes); },
+    replaceChildren(...nodes) { this.children = nodes; },
     setAttribute(k, v) { attrs[k] = v; },
     getAttribute(k) { return attrs[k] ?? null; },
   };
@@ -93,6 +95,29 @@ const POINTS = [
   { tsMs: 2_000, equityUsd: 101 },
 ];
 globalThis.document ??= { createElement: () => fakeElement() };
+
+test('CDO-029f071944 strategy initialization failure disposes its created chart', async () => {
+  const oldStyle = globalThis.getComputedStyle; globalThis.getComputedStyle = () => ({ getPropertyValue: () => '' });
+  let removed = 0;
+  const lib = { CandlestickSeries: 'candle', createChart: () => ({ addSeries: () => ({ setData() { throw new Error('synthetic setup failure'); } }), remove() { removed++; } }) };
+  const target = fakeElement();
+  try {
+    await assert.rejects(renderStrategyChart(target, [{ chart: { candles: [{ time: 1, open: 1, high: 2, low: 0, close: 1 }] } }], { loadLib: async () => lib }));
+    disposeChart(target); assert.equal(removed, 1);
+  } finally { globalThis.getComputedStyle = oldStyle; }
+});
+
+test('CDO-cf892e0bfc large valid chart series has bounded output and retained endpoints', () => {
+  const original = globalThis.document, oldNode = globalThis.Node;
+  globalThis.document = { createElement: () => fakeElement(), createElementNS: () => fakeElement() };
+  globalThis.Node = { [Symbol.hasInstance]: value => !!value && typeof value === 'object' };
+  try {
+    const node = lineChart(Array.from({ length: 1000000 }, (_, x) => ({ x, y: x })));
+    const svg = node.children[0], path = svg.children.find(child => child.getAttribute('d'));
+    assert.ok(path.getAttribute('d').split(/[ML]/).length <= 2001);
+    assert.match(svg.getAttribute('aria-label'), /1000000/);
+  } finally { globalThis.document = original; globalThis.Node = oldNode; }
+});
 
 test('renderEquityChart falls back below two points and never loads the library', async () => {
   const el = fakeElement();

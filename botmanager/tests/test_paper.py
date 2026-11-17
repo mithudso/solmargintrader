@@ -113,19 +113,15 @@ class PaperTests(unittest.TestCase):
                 with self.subTest(key=key), self.assertRaises(ManagerError):
                     load_recording({**d, key: value})
             path = Path(d["paths"][0])
+            with gzip.open(path, "rt") as stream:
+                rows = [json.loads(line) for line in stream]
+            self.assertGreater(len(rows), 1)
+            load_recording(d)  # Complete, current recording is admitted before mutation.
             for age in (20, -1):
                 with gzip.open(path, "wt") as out:
-                    out.write(
-                        json.dumps(
-                            {
-                                "t": d["start_ts"],
-                                "q": {
-                                    "SOL-USD": [99, 101, 100, 1, 1, d["start_ts"] - age]
-                                },
-                            }
-                        )
-                        + "\n"
-                    )
+                    for row in rows:
+                        row["q"]["SOL-USD"][5] = row["t"] - age
+                        out.write(json.dumps(row) + "\n")
                 with self.assertRaises(ManagerError):
                     load_recording(d)
 

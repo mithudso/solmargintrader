@@ -45,6 +45,7 @@ manufacture disagreement that is really just differing membership.
 from __future__ import annotations
 
 import argparse
+import itertools
 import json
 import sys
 from dataclasses import dataclass, field
@@ -79,6 +80,8 @@ class GeometryRun:
     unevaluable: dict[str, str] = field(default_factory=dict)
     pbo: float = float("nan")
     pbo_splits: int = 0
+    block_returns: dict = field(default_factory=dict, repr=False)
+    pbo_configs: list[str] = field(default_factory=list)
 
     def ranking(self, names: list[str]) -> list[str]:
         """`names` ordered best-first by median Sharpe at this geometry."""
@@ -116,13 +119,30 @@ def evaluate_geometry(horizon: str, blocks: int, k: int) -> GeometryRun:
         run.trades[name] = res.total_trades
         per_config_blocks[name] = {b.index: b.returns for b in res.blocks if b.usable}
 
+    run.block_returns = per_config_blocks
     if len(per_config_blocks) >= 2:
         common = sorted(set.intersection(*(set(d) for d in per_config_blocks.values())))
         if len(common) >= 4:
+            from backtester.core.cpcv import _sharpe
+            from backtester.core.types import periods_per_year
+            for name, values in per_config_blocks.items():
+                path_sharpes = [_sharpe(np.concatenate([values[i] for i in combo]), periods_per_year(cfg.interval))
+                                for combo in itertools.combinations(common, k)]
+                run.medians[name] = float(np.median(path_sharpes))
+                run.frac_positive[name] = float(np.mean(np.asarray(path_sharpes) > 0))
             out = pbo_cscv({n: [d[i] for i in common] for n, d in per_config_blocks.items()})
             run.pbo = out["pbo"]
             run.pbo_splits = int(out["n_splits"])
     return run
+
+
+def align_pbo_populations(runs):
+    common_names = sorted(set.intersection(*(set(run.block_returns) for run in runs))) if runs else []
+    for run in runs:
+        run.pbo_configs = common_names
+        common_blocks = sorted(set.intersection(*(set(run.block_returns[name]) for name in common_names))) if common_names else []
+        result = pbo_cscv({name: [run.block_returns[name][i] for i in common_blocks] for name in common_names})
+        run.pbo, run.pbo_splits = result["pbo"], int(result["n_splits"])
 
 
 def tidy_frame(horizon: str, runs: list[GeometryRun], names: list[str]) -> pd.DataFrame:
@@ -281,6 +301,7 @@ def main(argv: list[str] | None = None) -> int:
         print(f"  {args.horizon}: {n} blocks …", file=sys.stderr)
         runs.append(evaluate_geometry(args.horizon, n, args.k))
 
+    align_pbo_populations(runs)
     text, frame = render(args.horizon, runs)
     print(text)
 
@@ -290,7 +311,7 @@ def main(argv: list[str] | None = None) -> int:
     frame.to_csv(OUT / f"{stem}.csv", index=False)
     (OUT / f"{stem}.json").write_text(json.dumps(
         [{"blocks": r.blocks, "k": r.k, "pbo": r.pbo, "pbo_splits": r.pbo_splits,
-          "unevaluable": r.unevaluable} for r in runs], indent=2) + "\n")
+          "unevaluable": r.unevaluable, "pbo_configs": r.pbo_configs} for r in runs], indent=2) + "\n")
     print(f"\nwrote {OUT}/{stem}.{{txt,csv,json}}", file=sys.stderr)
     return 0
 

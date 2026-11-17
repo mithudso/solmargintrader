@@ -35,7 +35,7 @@ class RemainingBoundaryTests(unittest.TestCase):
         envelopes = []
         screen = SimpleNamespace(call=Mock(side_effect=OSError(canary)),
             query_one=lambda *_: SimpleNamespace(update=lambda _text: None),
-            _received=lambda name, env, callback, quiet: envelopes.append(env),
+            _received=lambda name, env, callback, quiet, accept: envelopes.append(env),
             app=SimpleNamespace(call_from_thread=lambda callback, *args: callback(*args)),
             run_worker=lambda function, **kwargs: function())
         ExperimentScreen._command(screen, "experiments.get", {})

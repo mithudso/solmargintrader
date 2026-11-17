@@ -150,14 +150,15 @@ class HealthStore:
 
     @contextmanager
     def connection(self, write=False):
-        if write:
-            self.home.mkdir(mode=0o700, parents=True, exist_ok=True)
-        db = sqlite3.connect(
-            self.path if write else self.path.absolute().as_uri() + "?mode=ro",
-            uri=not write,
-            timeout=1,
-        )
+        db = None
         try:
+            if write:
+                self.home.mkdir(mode=0o700, parents=True, exist_ok=True)
+            db = sqlite3.connect(
+                self.path if write else self.path.absolute().as_uri() + "?mode=ro",
+                uri=not write,
+                timeout=1,
+            )
             db.row_factory = sqlite3.Row
             db.execute("BEGIN IMMEDIATE" if write else "BEGIN")
             if write:
@@ -168,12 +169,13 @@ class HealthStore:
             yield db
             if write:
                 db.commit()
-        except sqlite3.Error as exc:
+        except (sqlite3.Error, OSError) as exc:
             raise ManagerError(
                 "store_unavailable", "Health journal is unavailable.", 4
             ) from exc
         finally:
-            db.close()
+            if db is not None:
+                db.close()
 
     def observe(self, row, *, now, cooldown=300):
         snapshot = health_snapshot(row, now=now)

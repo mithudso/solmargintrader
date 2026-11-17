@@ -19,8 +19,8 @@
   ],
   "vars": {
     "APP_ORIGIN": "http://localhost:8799",
-    "RELEASE": "website-0.4.0",
-    "APP_VERSION": "0.4.0",
+    "RELEASE": "website-0.4.1",
+    "APP_VERSION": "0.4.1",
     "BILLING_LAUNCH_ENABLED": "false",
     "LIVE_EXECUTION_ENABLED": "false"
   },

@@ -26,8 +26,10 @@ class LatestWorker:
 
     ``submit`` supersedes both pending work and unread results. A superseded
     loader may finish its current bounded operation, but its output and errors
-    cannot become current. ``close`` discards everything and joins at most the
-    specified timeout; ``alive`` truthfully exposes any still-finishing loader.
+    cannot become current. By default ``close`` cancels pending work. Explicit
+    ``drain=True`` finishes the accepted request without reporting a result to
+    a closed owner. Both modes join only for the specified timeout; ``alive``
+    truthfully exposes a still-finishing loader.
     """
 
     def __init__(
@@ -35,15 +37,19 @@ class LatestWorker:
         loader: Callable[[Any, Callable[[], bool]], Any],
         *,
         name: str = "oracle-tui-worker",
+        daemon: bool = True,
     ) -> None:
+        if type(daemon) is not bool:
+            raise ValueError("invalid_worker_daemon")
         self._loader = loader
         self._condition = threading.Condition()
         self._stop_requested = False
+        self._drain_on_close = False
         self._generation = 0
         self._active_generation: int | None = None
         self._pending: tuple[int, Any] | None = None
         self._result: WorkerResult | None = None
-        self._thread = threading.Thread(target=self._run, name=name, daemon=True)
+        self._thread = threading.Thread(target=self._run, name=name, daemon=daemon)
         self._thread.start()
 
     @property
@@ -85,15 +91,20 @@ class LatestWorker:
                 return None
             return result
 
-    def close(self, timeout: float = 0.3) -> None:
+    def close(self, timeout: float = 0.3, *, drain: bool = False) -> None:
         if (
             type(timeout) not in (int, float)
             or not 0 <= timeout <= threading.TIMEOUT_MAX
         ):
             raise ValueError("invalid_close_timeout")
+        if type(drain) is not bool:
+            raise ValueError("invalid_close_mode")
         with self._condition:
-            self._stop_requested = True
-            self._pending = None
+            if not self._stop_requested:
+                self._stop_requested = True
+                self._drain_on_close = drain
+            if not self._drain_on_close:
+                self._pending = None
             self._result = None
             self._condition.notify_all()
         if threading.current_thread() is not self._thread:
@@ -101,7 +112,9 @@ class LatestWorker:
 
     def _cancelled(self, generation: int) -> bool:
         with self._condition:
-            return self._stop_requested or generation != self._generation
+            return (
+                self._stop_requested and not self._drain_on_close
+            ) or generation != self._generation
 
     def _run(self) -> None:
         while True:
@@ -109,7 +122,9 @@ class LatestWorker:
                 self._condition.wait_for(
                     lambda: self._stop_requested or self._pending is not None
                 )
-                if self._stop_requested:
+                if self._stop_requested and not (
+                    self._drain_on_close and self._pending is not None
+                ):
                     return
                 assert self._pending is not None
                 generation, request = self._pending

@@ -1,7 +1,7 @@
 {
   "name": "oraclebot-website",
   "private": true,
-  "version": "0.4.0",
+  "version": "0.4.1",
   "type": "module",
   "engines": {
     "node": "^22.16.0 || >=24.0.0"
@@ -13,7 +13,7 @@
     "deploy": "wrangler deploy",
     "db:local": "wrangler d1 migrations apply oraclebot-accounts --local",
     "db:remote": "wrangler d1 migrations apply oraclebot-accounts --remote",
-    "test:browser": "node test/ui-browser.mjs && node test/agent-browser.mjs && node test/hosted-browser.mjs"
+    "test:browser": "node test/ui-browser.mjs && node test/agent-browser.mjs && node test/hosted-browser.mjs && node test/backtest-recovery-browser.mjs"
   },
   "devDependencies": {
     "playwright": "1.65.0",

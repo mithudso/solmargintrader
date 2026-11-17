@@ -9,6 +9,7 @@ import os
 import shutil
 import subprocess
 import tempfile
+import sys
 import unittest
 from pathlib import Path
 
@@ -66,6 +67,17 @@ class LauncherTest(unittest.TestCase):
         out = self.run_launcher("nosuchmodule")
         self.assertEqual(out.returncode, 2)
         self.assertIn("no module soltui.nosuchmodule", out.stderr)
+
+    def test_real_dependency_probe_does_not_import_from_callers_directory(self):
+        # CDO-0f80700eaf. --help exits before creating an API server.
+        sentinel = self.tmp / "imported-caller-textual"
+        (self.tmp / "textual.py").write_text(f"from pathlib import Path\nPath({str(sentinel)!r}).touch()\n")
+        env = {**os.environ, "SOLTUI_PYTHON": sys.executable, "INDEX_NO_AUTO": "1"}
+        env.pop("PYTHONPATH", None)
+        result = subprocess.run([str(self.link), "api", "--help"], cwd=self.tmp,
+                                env=env, capture_output=True, text=True, timeout=30)
+        self.assertFalse(sentinel.exists())
+        self.assertEqual(result.returncode, 0, result.stderr)
 
 
 if __name__ == "__main__":

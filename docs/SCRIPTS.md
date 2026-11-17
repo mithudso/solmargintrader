@@ -1,13 +1,55 @@
 # Scripts
 
-Every runnable entry point in this repo: what it is for, when to reach for it, **when
-not to**, its options, a real invocation, and the output you should expect.
+This page retains the research and extension script reference and routes current
+packaged entry points to their owning guides. It is not an exhaustive dynamic CLI
+inventory. Read the owning guide for options, effects and verification limits.
 
 `docs/COMPONENTS.md` is the shape of the code; `docs/FILES.md` is the exhaustive file
 list. This page is the operator's manual — the commands you actually type.
 
-Every example below was executed against this repo. Where output is shown it is
-real, trimmed for length, never illustrative.
+The historical experiment examples below were executed against this repo. Where
+output is shown it is real, trimmed for length, never illustrative.
+
+Later source-derived additions label their verification scope explicitly. The separate
+[website guide](../website/README.md) owns its Worker development/deployment and
+read-only Python analysis commands; those commands do not activate live trading.
+
+## Current packaged owners
+
+| Entry point | Owner and authoritative guide | Boundary |
+| --- | --- | --- |
+| `soloracle`, `soloracle-mcp` | [Oracle](../oracle/README.md), [MCP contract](MCP.md) | Source-labelled forecasts/archive and read-only MCP; optional TradingView execution is separately enabled and gated |
+| `solbot` | [Bot Manager](../botmanager/README.md), [managed suite](bot-manager-managed-suite.md) | Owner-aware paper lifecycle/evidence and explicit suite controls; reads start nothing |
+| `solecosystem`, `solecosystem-ui` | [Ecosystem](../ecosystem/README.md), [control room](ECOSYSTEM-CONTROL-ROOM.md) | Paper pipeline coordination and scoped local UI actions; preserve existing owners |
+| `executor` | [Executor](../executor/README.md), [execution rules](../executor/CLAUDE.md) | Dry-run by default; exact verifier, rails and unknown-send journal guard the separate live swap path |
+| `aero-lp` | [Archived liquidity](../liquidity/README.md), [archive constraints](../liquidity/CLAUDE.md) | Retained CLI only; daemon/scout stay disabled and killed without a new explicit owner request |
+
+## Bounded raw-event capture
+
+`scripts/capture_market.py` is a separate public-feed recorder and dedicated MongoDB
+uploader. Its `prepare`, `capture`, `upload` and `status` actions require an explicit
+run home. `prepare` fixes a product and duration (defaults ZEC-USD and 86,400 seconds),
+URI variable name and private X509 certificate selection. The producer and uploader
+have separate locks; upload availability never determines whether raw capture continues.
+
+This section describes the source contract, not a newly started capture. Use `--help`
+to inspect arguments. Do not run `prepare`, change the run home/deadline or restart an
+existing owner merely to inspect a running capture. Its status record and upload
+checkpoint distinguish capture progress, acknowledged uploads and completion. A partial
+or actively uploading dataset is not a completed one-day dataset.
+
+The producer retains raw payloads with connection identity, sequence and local receipt
+time in an fsynced spool. Coinbase's public `level2_batch` feed is provider-batched;
+do not claim every internal exchange event. The uploader selects `MONGODB_URI` or
+`MONGODB_URI2` from the environment or its explicitly selected private dotenv file.
+Never put the URI or certificate contents in process arguments, output or Git.
+
+The destination is independent of `mongo/load.py`'s derived collections. An ambiguous
+time-series insert leaves a durable inflight marker and stops automatic upload rather
+than risking duplicates. Preserve the spool, checkpoint and marker for reconciliation.
+The offline test command is
+`python3 -m unittest discover -s scripts -p test_capture_market.py -v`; native MongoDB
+coverage requires a disposable local server, not the owner's active capture namespace.
 
 ## The one rule
 
@@ -734,22 +776,25 @@ fee both sides pay, whereas funding changes sign, and no funding history is cach
 
 ## Index and search
 
-Full detail in `index/README.md`. `build.py all` is offline; only `semantic` opens a
-socket, to localhost ollama, and nothing under `backtester/` may import `index/` —
-there is a test asserting it.
+Full detail in `index/README.md`. The builder's `all` mode is offline; its explicit
+`semantic` mode calls localhost Ollama. Nothing under `backtester/` may import
+`index/` — a test asserts that boundary. Set `INDEX_NO_AUTO=1` for ordinary lookup
+so reading the existing index does not start idle semantic indexing. Semantic
+generation or inference remains a separate explicit operation.
 
 ```bash
-python3 index/build.py all          # metadata + BM25 + concepts
+INDEX_NO_AUTO=1 python3 index/build.py all # metadata + BM25 + concepts
 python3 index/build.py semantic     # embeddings (opt-in, needs ollama)
-python3 index/build.py --check      # gate: index matches the tree
+INDEX_NO_AUTO=1 python3 index/build.py --check # gate: index matches the tree
 
-python3 index/search.py "how are costs applied"   # hybrid, the default
-python3 index/search.py --text "fee_bps"          # exact
-python3 index/search.py --semantic "why did this stop working"
-python3 index/search.py --concepts                # 21 concepts
-python3 index/search.py --concept evidence-floor
-python3 index/search.py --file backtester/core/cpcv.py
-python3 index/search.py --kind code-python "grid"
+INDEX_NO_AUTO=1 python3 index/search.py --text "fee_bps" # keyword/BM25
+INDEX_NO_AUTO=1 python3 index/search.py --concepts
+INDEX_NO_AUTO=1 python3 index/search.py --concept evidence-floor
+INDEX_NO_AUTO=1 python3 index/search.py --file backtester/core/cpcv.py
+# Explicit semantic/hybrid queries below require their separately available model/index:
+INDEX_NO_AUTO=1 python3 index/search.py "how are costs applied"
+INDEX_NO_AUTO=1 python3 index/search.py --semantic "why did this stop working"
+INDEX_NO_AUTO=1 python3 index/search.py --kind code-python "grid"
 ```
 
 **When to use which.** `--text` when you know the identifier; `--semantic` when you

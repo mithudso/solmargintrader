@@ -134,8 +134,10 @@ def check_review(profile: dict, source: dict, audit: dict) -> None:
     ):
         raise ValueError(f"Independent review lacks a full-source read: {pid}")
     if not audit.get("summary") or any(
-        finding.get("severity") in {"critical", "high", "medium"}
-        and finding.get("status") != "resolved"
+        not isinstance(finding, dict)
+        or finding.get("severity") not in {"critical", "high", "medium", "low"}
+        or (finding["severity"] in {"critical", "high", "medium"}
+            and finding.get("status") != "resolved")
         for finding in audit.get("findings", [])
     ):
         raise ValueError(f"Independent review has unresolved findings: {pid}")

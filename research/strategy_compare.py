@@ -300,7 +300,7 @@ def run(experiment: Path, data_dir: Path, datasets: list[str], out: Path,
                 try:
                     if dataset_error:
                         raise ValueError(dataset_error)
-                    signal = targets(registry[name], arrays)
+                    signal = targets(registry[name], {k: v[:boundary] for k, v in arrays.items()})
                     signal_error = None
                 except Exception as exc:
                     signal_error = f'{type(exc).__name__}: {exc}'
@@ -310,9 +310,15 @@ def run(experiment: Path, data_dir: Path, datasets: list[str], out: Path,
                     row: dict[str, Any] = {'dataset': dataset, 'strategy': name,
                                           'variant': variant, 'split': label}
                     try:
-                        if signal_error:
-                            raise ValueError(signal_error)
-                        row.update(evaluate(registry[name], arrays, interval, max(start, common_warmup + 1), stop, signal))
+                        if dataset_error:
+                            raise ValueError(dataset_error)
+                        if label == 'working':
+                            if signal_error:
+                                raise ValueError(signal_error)
+                            split_signal = signal
+                        else:
+                            split_signal = targets(registry[name], arrays)
+                        row.update(evaluate(registry[name], arrays, interval, max(start, common_warmup + 1), stop, split_signal))
                     except Exception as exc:
                         row.update(status='failed', error=f'{type(exc).__name__}: {exc}')
                     rows.append(row)

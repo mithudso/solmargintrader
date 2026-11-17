@@ -52,7 +52,7 @@ for item in expected:
     if version != item["version"]:
         raise RuntimeError("package_version_mismatch")
     packages[item["name"]] = {"version": version, "module_path": str(path)}
-for name in ("soltui.f5_batch", "soltui.forwardtest"):
+for name in ("soltui.f5_batch", "soltui.forwardtest", "oracle_leverage.autotrade_worker"):
     path = Path(inspect.getfile(importlib.import_module(name))).resolve()
     if not path.is_relative_to(prefix):
         raise RuntimeError("installed_import_required")
@@ -102,13 +102,13 @@ def _manifests(repo: Path) -> list[dict[str, str]]:
 def source_fingerprint(repo: Path) -> str:
     """Hash local package code, strategy cards, and shipped web assets."""
     digest = hashlib.sha256()
-    for name in PROJECTS:
+    for name in (*PROJECTS, "oracle_leverage"):
         root = repo / name
         for path in sorted(root.rglob("*")):
             relative = path.relative_to(root)
             if any(
                 part.startswith(".")
-                or part in ("tests", "__pycache__", "build", "dist")
+                or part in ("tests", "__pycache__", "build", "dist", "node_modules")
                 or part.endswith(".egg-info")
                 for part in relative.parts
             ):
@@ -169,6 +169,9 @@ def _terminate(process: subprocess.Popen) -> None:
     try:
         process.wait(timeout=2)
     except subprocess.TimeoutExpired:
+        pass
+    finally:
+        # Descendants can retain pipes after the group leader has exited.
         try:
             os.killpg(process.pid, signal.SIGKILL)
         except ProcessLookupError:
@@ -440,6 +443,30 @@ def install_environment(repo: Path, venv_dir: Path, *, constraints_file: Path | 
             _installation_lock(venv_dir),
             tempfile.TemporaryDirectory(prefix="ecosystem-install-") as temporary,
         ):
+            # Another owner may have finished after our precheck but before this lock.
+            # A completed environment is immutable; verify and reuse it instead.
+            if receipt_path.exists():
+                saved = _read_receipt(receipt_path)
+                if saved != receipt:
+                    return _intent_mismatch(saved, receipt)
+                health = verify_environment(python, repo)
+                if health.get("status") != "complete":
+                    return health
+                if source_fingerprint(repo) != fingerprint:
+                    return _failure("source_changed_during_install")
+                if not _constraints_unchanged(constraints, constraints_sha256):
+                    return _failure("constraints_changed_during_install")
+                return {
+                    "schema_version": 1,
+                    "status": "complete",
+                    "python": str(python),
+                    "source_fingerprint": fingerprint,
+                    "reused": True,
+                    "health": health,
+                    **constraint_result,
+                }
+            if _read_receipt(owner_path) != receipt:
+                return _failure("environment_source_changed_use_new_venv")
             cwd = Path(temporary)
             if not (venv_dir / "pyvenv.cfg").is_file():
                 code, _ = _run(

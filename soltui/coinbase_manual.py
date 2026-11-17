@@ -301,7 +301,9 @@ def submit(preview_id: str, call: Callable[[list[str]], dict[str, Any]] | None =
         _save(_path(preview_id), record)
         try:
             outcome = call(['orders','get',order_id])
-            if outcome.get('order_id') != order_id or outcome.get('product_id') != record['product_id'] or outcome.get('side') != record['side']:
+            if (outcome.get('order_id') != order_id or outcome.get('product_id') != record['product_id']
+                    or outcome.get('side') != record['side']
+                    or outcome.get('client_order_id', record['client_order_id']) != record['client_order_id']):
                 raise ValueError('Order identity differs')
             status = str(outcome.get('status') or '').upper()
             if status in TERMINAL:

@@ -169,6 +169,9 @@ jobs:
         # No user namespaces on hosted runners, so Chrome's sandbox cannot start.
         run: E2E_NO_SANDBOX=1 node tools/e2e.mjs
 
+      - name: 1000x overlay browser contract (fixture, read only)
+        run: E2E_NO_SANDBOX=1 npm run e2e:1000x -- --evidence "$RUNNER_TEMP/1000x-overlay"
+
       - uses: actions/setup-python@6d4fd22b20465ccc0f7354476588e8df7c9ca0e0 # v7
         with:
           python-version: '3.13'
@@ -208,6 +211,12 @@ jobs:
 
       - name: Reversal selection and paper-only leveraged observer
         run: python3 -W error::ResourceWarning -m unittest research.tests.test_reversal_shapes research.tests.test_reversal_second_turn research.tests.test_mtf_reversal oracle_leverage.tests.test_mtf_forward oracle_leverage.tests.test_quotes oracle_leverage.tests.test_console oracle_leverage.tests.test_forward oracle_leverage.tests.test_market oracle_leverage.tests.test_process_adapters -v
+
+      - name: Weekly coin study acquisition and temporal isolation
+        run: python3 -W error::ResourceWarning -m unittest research.tests.test_coin_week -v
+
+      - name: Exit50 paper research, lifecycle and bounded retention
+        run: python3 -W error::ResourceWarning -m unittest oracle_leverage.tests.test_exit50 oracle_leverage.tests.test_exit50_forward research.tests.test_exit50_acquire research.tests.test_exit50_backtest research.tests.test_exit50_diagnostic research.tests.test_exit50_evaluate research.tests.test_exit50_lazy research.tests.test_exit50_orderflow research.tests.test_exit50_report research.tests.test_exit50_run scripts.tests.test_preserve_dual_quotes -v
 
       - name: Meta evidence consolidation and actual-cost replay contracts
         run: python3 -m unittest research.tests.test_meta_analysis research.tests.test_meta_followups -v
@@ -363,20 +372,21 @@ jobs:
       - name: Layout describes itself without a server
         run: python3 mongo/schema.py --describe
 
-      - name: Load what a fresh clone has
-        # `data/` and `results/` are gitignored, so most collections load empty
-        # here. Request the empty bars collection explicitly too: its native
-        # time-series layout is under test. --only now preserves unselected
-        # collections instead of accidentally creating the whole schema.
-        run: python3 mongo/load.py --only bars,strategies,signals,indicators,documents
-
       - name: Unit and integration tests
+        env:
+          SOLMARGINTRADER_MONGO_TEST_URI: mongodb://127.0.0.1:27017
         run: python3 -m unittest discover -s mongo/tests -t .
 
       - name: Raw event capture durability and upload boundaries
         env:
-          MARKET_CAPTURE_REQUIRE_MONGO: '1'
+          SOLMARGINTRADER_MONGO_TEST_URI: mongodb://127.0.0.1:27017
         run: python3 -m unittest discover -s scripts -p test_capture_market.py -v
+
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1
+        with:
+          node-version: "22"
+      - name: Read-only query regression fixtures
+        run: node mongo/tests/query_regressions.cjs
 
   # Documentation drift is a build failure, not a nit: the docs claimed 250
   # backtester tests for several commits while the suite had grown to 454, and
@@ -424,6 +434,11 @@ jobs:
 
       - name: Offline HTML converter behavior
         run: python3 -m unittest scripts.test_html_to_markdown
+
+      - name: Workflow publication and source-bound tool safety
+        run: |
+          python3 -m unittest scripts.test_workflow_safety scripts.test_maintenance_tools
+          node --test scripts/test_workflow_rotation.mjs
 
       - name: MCP credential and endpoint boundaries
         run: python3 -m unittest scripts.test_mcp_remote_client

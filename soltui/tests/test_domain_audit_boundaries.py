@@ -95,7 +95,7 @@ class DomainBoundaryTests(unittest.TestCase):
                 self.assertFalse(live_score.aggregate_predictions([{**row, **changes}], **kwargs)["available"])
 
     def test_analysis_price_change_uses_the_same_replayed_array(self):
-        arrays = {"close": np.array([100., 110.])}
+        arrays = {"close": np.array([100., 110.]), "ts": np.array([0, 3600])}
         with patch.object(analyze, "_prepare", return_value=(arrays, 1, analyze.parse_as_of("2026-01-01"), False)), \
                 patch("research.decide.strategy_decisions", return_value=[]), \
                 patch.object(analyze, "_first_close", return_value=9999.) as reload:
@@ -146,12 +146,15 @@ class DomainBoundaryTests(unittest.TestCase):
     def test_wallet_history_transport_events_never_include_input_or_exception_text(self):
         canary = "PRIVATE-RPC-OR-CREDENTIAL-CANARY"
         response = MagicMock()
-        response.__enter__.return_value.read.return_value = b'{"result": []}'
-        with patch.object(wallet_activity.urllib.request, "urlopen", return_value=response), \
+        response.status = 200
+        response.read1.side_effect = [b'{"result": []}', b'']
+        connection = MagicMock()
+        connection.getresponse.return_value = response
+        with patch.object(wallet_activity.http.client, "HTTPSConnection", return_value=connection), \
                 self.assertLogs(wallet_activity.logger, level="DEBUG") as success:
             self.assertEqual(wallet_activity._rpc("getSignaturesForAddress", [canary], 1.), [])
         self.assertEqual([record.phase for record in success.records], ["request", "success"])
-        with patch.object(wallet_activity.urllib.request, "urlopen", side_effect=urllib.error.URLError(canary)), \
+        with patch.object(wallet_activity.http.client, "HTTPSConnection", side_effect=urllib.error.URLError(canary)), \
                 self.assertLogs(wallet_activity.logger, level="DEBUG") as failure, \
                 self.assertRaises(urllib.error.URLError):
             wallet_activity._rpc("getSignaturesForAddress", [canary], 1.)

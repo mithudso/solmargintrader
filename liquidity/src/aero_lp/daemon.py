@@ -32,7 +32,6 @@ import math
 import signal
 import threading
 import time
-import traceback
 from collections.abc import Callable
 from dataclasses import dataclass, field
 from pathlib import Path
@@ -44,6 +43,7 @@ from . import addresses, gates
 from .allocator import plan_allocation, plan_graduation
 from .chain import ZERO, AeroChain, PoolState, PositionGone, PositionState
 from .config import Config
+from .diagnostics import safe_error, safe_text
 from .engine import Engine, Evaluation, defer_sigint
 from .executor import (
     LiveRunner,
@@ -146,6 +146,7 @@ class Daemon:
         res: RebalanceResult | None = None,
         reward_usd: float = 0.0,
     ) -> None:
+        detail = safe_text(detail)
         gas_usd = 0.0
         if res is not None and res.fee_wei:
             gas_usd = res.fee_wei / 1e18 * self.eth_usd()
@@ -175,10 +176,12 @@ class Daemon:
     def prices(self) -> dict[str, float]:
         """Fresh USD prices (raises if the feed is down). Use this for anything that sizes or gates a trade."""
         tokens = [SYMBOL_TO_ADDR[s] for s in self.cfg.allocator.allowed_tokens if s in SYMBOL_TO_ADDR]
-        out = self.market.token_prices_usd(tokens + [addresses.AERO_TOKEN, addresses.WETH])
-        for token, price in out.items():
-            finite_number(price, f"{token} USD price", positive=True)
-        self._last_prices = out
+        required = tokens + [addresses.AERO_TOKEN, addresses.WETH]
+        out = self.market.token_prices_usd(required)
+        for price in out.values():
+            finite_number(price, "observed USD price", positive=True)
+        finite_number(out.get(addresses.WETH.lower()), "required ETH USD price", positive=True)
+        self._last_prices = {**self._last_prices, **out}
         return out
 
     def known_prices(self) -> dict[str, float]:
@@ -239,7 +242,7 @@ class Daemon:
         self.journal.reconcile(self.chain, apply)
 
     def _apply_submission(self, record: dict[str, Any], group: list[dict[str, Any]]) -> None:
-        LedgerRecovery(self.cfg, self.chain, self.ledger, self.prices, self.decisions).apply(record, group)
+        LedgerRecovery(self.cfg, self.chain, self.ledger, self.known_prices, self.decisions).apply(record, group)
 
     def _pool_prices(self, pool: PoolState, prices: dict[str, float] | None = None) -> tuple[float, float]:
         p = self.prices() if prices is None else prices
@@ -431,7 +434,7 @@ class Daemon:
         except Exception as e:  # noqa: BLE001 - gas top-up is best effort
             partial = e.partial if isinstance(e, RebalanceError) else None
             if partial is not None or self.timers.due("gas-topup-err", 6 * 3600, time.time()):
-                self.log("error", f"gas top-up failed: {e}", None, partial)
+                self.log("error", f"gas top-up failed: {safe_error(e)}", None, partial)
             return wallet
         self.log("unwrap", detail, None, res)
         return self.read_wallet()  # idle amounts below must not include what was just spent
@@ -546,7 +549,9 @@ class Daemon:
                 continue
             except Exception as e:  # noqa: BLE001 - one unreadable position must not stop the others
                 if self.timers.due(f"register:{tid}", 3600, time.time()):
-                    self.log("error", f"cannot track position #{tid} yet: {type(e).__name__}: {e}", str(tid))
+                    self.log(
+                        "error", f"cannot track position #{tid} yet: {type(e).__name__}: {safe_error(e)}", str(tid)
+                    )
 
     def _register(self, tid: int) -> None:
         pos = self.chain.position(tid, owner_hint=self.cfg.owner)
@@ -641,7 +646,7 @@ class Daemon:
             self._close_gone(slot)
             return
         except RebalanceError as e:
-            self.log("error", f"rebalance failed: {e}", slot, e.partial)
+            self.log("error", f"rebalance failed: {safe_error(e)}", slot, e.partial)
             if e.partial.new_token_id:
                 self.ledger.set_token_id(slot, e.partial.new_token_id)
             if slot in self.decisions:
@@ -979,8 +984,7 @@ class Daemon:
             except Exception as e:  # noqa: BLE001 - one failed arm must not stop the loop
                 partial = e.partial if isinstance(e, RebalanceError) else None
                 slot = str(partial.new_token_id) if partial and partial.new_token_id else None
-                self.log("error", f"deploy into {arm.candidate.pair} failed: {e}", slot, partial)
-                traceback.print_exc()
+                self.log("error", f"deploy into {arm.candidate.pair} failed: {safe_error(e)}", slot, partial)
 
     def deploy_arm(self, arm: Any, idle: list[dict[str, Any]], exp_id: str | None, exp_note: str = "") -> None:
         if self.live:
@@ -1166,7 +1170,10 @@ class Daemon:
                 for s in exp["arms"]:
                     self.snapshot_now(s)
             except Exception as e:  # noqa: BLE001
-                self.log("error", f"graduation of {exp['id']} waits: cannot value an arm ({type(e).__name__}: {e})")
+                self.log(
+                    "error",
+                    f"graduation of {exp['id']} waits: cannot value an arm ({type(e).__name__}: {safe_error(e)})",
+                )
                 continue
             arms = [x for x in (self.ledger.pnl(s) for s in exp["arms"]) if x]
             winner, losers = plan_graduation(exp, arms, a)
@@ -1186,7 +1193,7 @@ class Daemon:
                     self._close_arm(row, exp["id"], winner)
                 except Exception as e:  # noqa: BLE001 - the other losers and experiments go on; funds stay put
                     partial = e.partial if isinstance(e, RebalanceError) else None
-                    self.log("error", f"closing losing arm {slot} failed: {e}", slot, partial)
+                    self.log("error", f"closing losing arm {slot} failed: {safe_error(e)}", slot, partial)
                     all_closed = False
             if all_closed:
                 self.ledger.graduate(exp["id"], winner)
@@ -1204,8 +1211,11 @@ class Daemon:
         pr = self.known_prices()
         r0, r1 = res.amounts_in_position
         h0, h1 = r0 / 10**pos.pool.token0.decimals, r1 / 10**pos.pool.token1.decimals
-        usd = h0 * pr.get(pos.pool.token0.address.lower(), 0) + h1 * pr.get(pos.pool.token1.address.lower(), 0)
+        u0, u1 = self._pool_prices(pos.pool, pr)
+        usd = h0 * u0 + h1 * u1
         self.ledger.flow(slot, "withdraw", h0, h1, usd, receipt_hash=self._receipt_hash(res, {"remove"}))
+        basis0, basis1 = self.ledger.deposited_amounts(slot)
+        self.ledger.snapshot(slot, token_id, 0.0, basis0 * u0 + basis1 * u1, 0.0)
         self.ledger.close_slot(slot)
         self.decisions.pop(slot, None)
         self.log(
@@ -1303,7 +1313,7 @@ class Daemon:
             try:  # credit this dry-run interval to the soak gate; bookkeeping must never stop a tick
                 gates.record_dry_run_tick(self.root, self.cfg, now)
             except Exception as e:  # noqa: BLE001
-                self.log("error", f"soak record failed: {e}")
+                self.log("error", f"soak record failed: {safe_error(e)}")
         if self.live:
             self._reconcile_submissions()
         self.chain.check_fresh()
@@ -1315,8 +1325,7 @@ class Daemon:
             try:
                 self.manage_slot(row["slot"], now)
             except Exception as e:  # noqa: BLE001 - keep managing the other slots
-                self.log("error", f"{type(e).__name__}: {e}", row["slot"])
-                traceback.print_exc()
+                self.log("error", f"{type(e).__name__}: {safe_error(e)}", row["slot"])
             self._check_stop()
         self._check_stop()
         if self.timers.due("compound", a.compound_interval_h * 3600, now):
@@ -1325,7 +1334,7 @@ class Daemon:
                     self.compound_slot(row["slot"])
                 except Exception as e:  # noqa: BLE001
                     partial = e.partial if isinstance(e, RebalanceError) else None
-                    self.log("error", f"compound failed: {e}", row["slot"], partial)
+                    self.log("error", f"compound failed: {safe_error(e)}", row["slot"], partial)
                 self._check_stop()
         if a.enabled and self.timers.due("scout", a.scout_interval_h * 3600, now):
             try:
@@ -1344,19 +1353,17 @@ class Daemon:
                 )
                 self.log("scout", f"scored pools for a ${deposit:,.2f} deposit")
             except Exception as e:  # noqa: BLE001
-                self.log("error", f"scout failed: {e}")
+                self.log("error", f"scout failed: {safe_error(e)}")
         self._check_stop()
         if a.enabled and self.timers.due("allocate", a.allocate_interval_h * 3600, now):
             try:
                 self.allocate(self.read_wallet())
             except Exception as e:  # noqa: BLE001
-                self.log("error", f"allocation failed: {e}")
-                traceback.print_exc()
+                self.log("error", f"allocation failed: {safe_error(e)}")
             try:  # a failed allocation must not stop a finished experiment from graduating
                 self.graduate()
             except Exception as e:  # noqa: BLE001
-                self.log("error", f"graduation failed: {e}")
-                traceback.print_exc()
+                self.log("error", f"graduation failed: {safe_error(e)}")
         self.write_status(self.read_wallet())
 
     def run(self, once: bool = False) -> None:
@@ -1370,8 +1377,7 @@ class Daemon:
                 try:
                     self.tick()
                 except Exception as e:  # noqa: BLE001 - the loop survives RPC outages; funds stay where they are
-                    self.log("error", f"tick failed: {type(e).__name__}: {e}")
-                    traceback.print_exc()
+                    self.log("error", f"tick failed: {type(e).__name__}: {safe_error(e)}")
                 self._check_stop()
                 if once:
                     return

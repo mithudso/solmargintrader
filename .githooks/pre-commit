@@ -10,16 +10,25 @@
 # Skip with `git commit --no-verify` when you genuinely mean to (a WIP commit you
 # will amend). Nothing here touches a remote.
 
-set -uo pipefail
+set -euo pipefail
 cd "$(git rev-parse --show-toplevel)"
 
+# Validate exactly what will be committed. Preserve partial staging by refusing
+# before generation when the working tree has additional, unreviewed content.
 # Only bother when something is actually staged.
 git diff --cached --quiet && exit 0
+if ! git diff --quiet || [ -n "$(git ls-files --others --exclude-standard)" ]; then
+  echo "pre-commit: stage or isolate the intended changes before validating the staged tree" >&2
+  exit 1
+fi
 
 if [ -f index/build.py ]; then
   if python3 index/build.py all >/dev/null 2>&1; then
-    if ! git diff --quiet -- index/; then
-      git add index/
+    if ! git diff --quiet -- index/INDEX.json index/TEXT-INDEX.json index/CONCEPT-INDEX.json; then
+      git add -- index/INDEX.json index/TEXT-INDEX.json index/CONCEPT-INDEX.json || {
+        echo "pre-commit: generated index staging failed — commit refused" >&2
+        exit 1
+      }
       echo "pre-commit: index rebuilt and staged"
     fi
   else

@@ -142,20 +142,28 @@ test('buildHash and list use the same envelope path', async () => {
 
 /* ------------------------------------------------------- engine lock -- */
 
-test('a running soltui command does not hold the engine lock', async () => {
-  let release;
-  const gate = new Promise((r) => { release = r; });
-  const soltui = { async request(request) { if (request.op === 'call') await gate; return fakeHandle(request); } };
+test('CDO-313cd8a729 a running host call does not hold the engine lock', { timeout: 2000 }, async () => {
+  let release, entered;
+  const gate = new Promise(resolve => { release = resolve; });
+  const hostEntered = new Promise(resolve => { entered = resolve; });
+  const soltui = { async request(request) {
+    if (request.op === 'call') { entered(); await gate; }
+    return fakeHandle(request);
+  } };
   const deps = depsWith(soltui);
   const running = runCommand({ name: 'soltuiCall', args: { command: 'demo.echo' }, deps });
-  // A locked command (disarm) must complete while the soltui call is still pending.
-  const disarmed = await runCommand({ name: 'disarm', args: {}, deps });
-  assert.equal(disarmed.runtime.armed, false);
-  assert.equal(enginePending(deps.store), 0);
-  release();
+  let timer;
+  try {
+    await hostEntered;
+    const disarmed = await Promise.race([
+      runCommand({ name: 'disarm', args: {}, deps }),
+      new Promise((_, reject) => { timer = setTimeout(() => reject(new Error('host call blocked safety command')), 500); }),
+    ]);
+    assert.equal(disarmed.runtime.armed, false);
+    assert.equal(enginePending(deps.store), 0);
+  } finally { clearTimeout(timer); release(); await running; }
   assert.equal((await running).ok, true);
 });
-
 test('soltuiCommands is read-only; soltuiCall is not, so the API serves it by POST only', () => {
   assert.equal(COMMANDS.soltuiCommands.readOnly, true);
   assert.notEqual(COMMANDS.soltuiCall.readOnly, true);

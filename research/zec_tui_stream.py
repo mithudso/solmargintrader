@@ -194,6 +194,9 @@ class DisabledStream:
     def refresh(self):
         pass
 
+    def set_enabled(self, enabled):
+        pass
+
     def close(self, timeout=0.3):
         pass
 
@@ -221,6 +224,9 @@ class TradeStream:
         self._close_lock = threading.Lock()
         self._stop = threading.Event()
         self._wake = threading.Event()
+        self._enabled = threading.Event()
+        self._enabled.set()
+        self._feed_generation = 0
         self._state = TradeAccumulator()
         self._socket = None
         self._thread = None
@@ -246,6 +252,23 @@ class TradeStream:
         # healthy stream's current candle or fabricates a new trade observation.
         self._wake.set()
 
+    def set_enabled(self, enabled):
+        """Pause only this foreground subscription; resume with a fresh candle."""
+        if type(enabled) is not bool:
+            raise ValueError("invalid_feed_state")
+        with self._lock:
+            if enabled == self._enabled.is_set():
+                return
+            self._enabled.set() if enabled else self._enabled.clear()
+            self._feed_generation += 1
+            self._state = TradeAccumulator()
+            if not enabled:
+                self._state.disconnect("stream_hidden")
+            connection = self._socket
+        if not enabled and connection is not None:
+            self._close_socket(connection)
+        self._wake.set()
+
     def close(self, timeout=0.3):
         self._stop.set()
         self._wake.set()
@@ -267,19 +290,39 @@ class TradeStream:
 
     def _run(self):
         while not self._stop.is_set():
+            if not self._enabled.is_set():
+                self._wake.wait(0.25)
+                self._wake.clear()
+                continue
             connection = None
             try:
+                with self._lock:
+                    generation = self._feed_generation
                 connection = self.ws_factory(WS_URL, timeout=3.0)
                 with self._lock:
                     self._socket = connection
                 connection.open()
                 connection.settimeout(0.25)
-                if self._stop.is_set():
-                    break
+                if (
+                    self._stop.is_set()
+                    or not self._enabled.is_set()
+                    or generation != self._feed_generation
+                ):
+                    continue
                 connection.send_text(json.dumps(SUBSCRIPTION))
                 with self._lock:
+                    if (
+                        self._stop.is_set()
+                        or not self._enabled.is_set()
+                        or generation != self._feed_generation
+                    ):
+                        continue
                     self._state.connect(self.clock())
-                while not self._stop.is_set():
+                while (
+                    not self._stop.is_set()
+                    and self._enabled.is_set()
+                    and generation == self._feed_generation
+                ):
                     try:
                         raw = connection.recv_text()
                     except TimeoutError:
@@ -295,11 +338,19 @@ class TradeStream:
                         raise ValueError("stream_message_too_large")
                     message = json.loads(raw)
                     with self._lock:
-                        self._state.apply(message, self.clock())
+                        if (
+                            self._enabled.is_set()
+                            and generation == self._feed_generation
+                        ):
+                            self._state.apply(message, self.clock())
             except Exception:  # noqa: BLE001 - provider payloads must never leak through the UI.
                 if not self._stop.is_set():
                     with self._lock:
-                        self._state.disconnect("stream_disconnected")
+                        if (
+                            self._enabled.is_set()
+                            and generation == self._feed_generation
+                        ):
+                            self._state.disconnect("stream_disconnected")
             finally:
                 if connection is not None:
                     self._close_socket(connection)

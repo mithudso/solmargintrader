@@ -60,11 +60,15 @@ acceptance and final-head CI remain separate release gates.
 
 ## Existing component suites
 
+Oracle's forecast/archive/MCP and optional webhook boundaries use the installed
+canonical package environment described in [development](DEVELOPMENT.md). From the
+repository root, run its offline tests and Ruff gate with:
+
 ```bash
-python3 -m unittest discover -s backtester/tests -t .   # 1120 tests
-python3 -m unittest discover -s soltui/tests -t .       # 1582 tests (TUI dependencies required)
-python3 -m unittest discover -s mongo/tests -t .        # 57 tests
-cd extension && npm test                                # 483 tests
+python3 -m unittest discover -s backtester/tests -t .   # 1228 tests
+python3 -m unittest discover -s soltui/tests -t .       # 1718 tests (TUI dependencies required)
+python3 -m unittest discover -s mongo/tests -t .        # 73 tests
+cd extension && npm test                                # 707 tests
 python3 scripts/check_docs.py                           # these counts, and the retrieval indexes
 ```
 
@@ -74,19 +78,21 @@ locally with the command above, or manually dispatch CI with the boolean
 enabled. The full local suite was run during the 2026-11-12 audit. Its source
 binding and skipped tests are recorded in the audit report.
 
-3242 tests total in the four counted suites: backtester, soltui, mongo and extension. Additional component gates are listed below. `liquidity/` additionally has its own pytest suite in its own virtualenv; see `liquidity/README.md`.
+3726 tests total in the four counted suites: backtester, soltui, mongo and extension. Additional component gates are listed below. `liquidity/` additionally has its own pytest suite in its own virtualenv; see `liquidity/README.md`.
 
 Every count on this page is checked by `scripts/check_docs.py`, which counts the suites by
 discovery and fails on a stale figure. That exists because these numbers were wrong for
 several commits — the docs claimed 250 backtester tests while the suite had grown to 454, and
 nothing caught it.
 
-## Extension — what the 483 tests cover
+## Extension — what the 707 tests cover
 
 | Area | Examples |
 | --- | --- |
 | Live prediction score | Shared Python/browser vectors bind all five grades, accuracy/sample floors, freshness and equal strategy weighting. Headless TUI and Chrome checks prove aligned immutable tick scores, leftward motion, automatic ten-second prediction refresh, error recovery, non-overlapping reads, coin-switch reset and obsolete-response/error suppression |
 | Charts | the vendored Lightweight Charts file is the pinned 5.2.1 build (sha256), ships LICENSE and NOTICE; equity points map to ascending second-resolution line data (`test/charts.test.js`); `npm run e2e` draws it under the real extension CSP with the attribution link |
+| Jupiter1000x reversal window | Independent Python EMA/MACD/BOP and shape vectors; DD/UU closed-body context; prefix/future invariance; gaps, partial openings, stale data, history ordering, shared-stream minute context and aborts. The separate `npm run e2e:1000x` fixture exercises seven chart toggles and actual DOM/canvas/lifecycle behavior; `--live` separately checks public portal reads. No model probability, position or ROE is inferred |
+| Streaming Oracle | Analytical sigmoid/L2 gradients and proper-score arithmetic; stored-probability scoring with current-weight delayed gradients; flat-inclusive binary denominators; candidate/served/baseline separation; source isolation, unknown-label expiry, late older pending outcomes, bounded ledgers and controller/reload fencing. All six horizon targets, legacy10m compatibility,1h pending past32, deselected learning, chart-only loading/failure independence, per-model capacity/fallback and latest-input races are covered. Already-trained invalid-input and source-rebind regressions verify unavailable displays, atomic saved evidence and fresh recovery. Native browser fixtures separately exercise real IndexedDB and actual extension contexts; synthetic fixture learning is not public-market performance |
 | Grid math | Arithmetic and geometric ladders against hand-computed values; endpoint pinning; degenerate configs rejected |
 | **Round-trip economics** | An exit rests one rung above its lot, never at the same level; `gross === notional × rungWidth` |
 | Planning | Lot aggregation (two lots on one rung produce **one** order, not a duplicate key); venue minimum; deadband; already-resting suppression |
@@ -111,9 +117,9 @@ resolved **without executing the handler** — no side effects, no network calls
 
 Read this before trusting anything with money.
 
-1. **No live order has ever been placed.** The write path (auth → vault → deposit craft → sign →
-   create) matches the documented shapes but has never executed. It needs an API key and a funded
-   wallet. Test with one rung at the $10 minimum.
+1. **Offline tests do not establish live order acceptance.** Synthetic fixtures exercise the write
+   path (auth → vault → deposit craft → sign → create). Installed venue acceptance remains a
+   separate owner-authorized gate; the maintenance suites do not fund, sign or submit an order.
 2. **The Trigger contract has offline fixtures, not live acceptance.** History pagination and
    cancellation were checked against current public documentation. Wallet-specific responses,
    execution USD valuation and semantic transaction verification still need verified fixtures.
@@ -154,21 +160,21 @@ command-line extension loading); set `CHROME` for another build and `E2E_NO_SAND
 
 ## Verification commands
 
-```bash
-cd extension
+From the repository root:
 
-npm test                                              # unit + parity
-node tools/dryrun.js --ticks 8 --osc 6 --offline 100  # a round trip must close positive
-npm run e2e                                           # real-browser load + dry-run checks (needs Chrome for Testing)
-node tools/dryrun.js --ticks 4 --walk 5 --offline 100 # trending case: bids fill, no exits
-node tools/verify-endpoints.js                        # live Jupiter reachability
-find src tools test -name '*.js' -print0 | xargs -0 -n1 node --check
+```bash
+(cd extension && npm test)                             # unit + parity
+(cd extension && node tools/dryrun.js --ticks 8 --osc 6 --offline 100 --assert-economics) # a round trip must close positive
+(cd extension && npm run e2e)                          # real-browser load + dry-run checks (needs Chrome for Testing)
+(cd extension && node tools/dryrun.js --ticks 4 --walk 5 --offline 100) # trending case: bids fill, no exits
+(cd extension && node tools/verify-endpoints.js)        # live Jupiter reachability
+(cd extension && find src tools test -name '*.js' -print0 | xargs -0 -n1 node --check)
 ```
 
 The oscillating dry run is the meaningful one: it is the only check that closes a round trip and so
 the only one that can detect a zero-spread regression.
 
-## Backtester — 1120 tests
+## Backtester — 1228 tests
 
 Correctness of the simulation is the priority, so the suite concentrates on the things that silently
 inflate a result: **lookahead leaks**, cost application, and metric arithmetic. Any change touching
@@ -220,7 +226,7 @@ lie — a truncated-history test that fails if the replay is ever "optimised" in
 call on the last bar, and a constructed series where that shortcut gives the *opposite*
 answer, so the first test is known to be load-bearing rather than vacuously true.
 
-## soltui — 1582 tests
+## soltui — 1718 tests
 
 The suite includes real Textual render cycles, subprocess lifecycle checks and offline strategy integration.
 Run all tests with
@@ -243,17 +249,18 @@ spent/explored temporal reservations, legacy fences, historical mutation, cooper
 process termination/recovery, baseline comparison, adoption crash receipts and the headless UI.
 Fixtures isolate configuration/data; tests stub the live order path and do not submit real orders.
 
-## mongo — 57 tests
+## mongo — 73 tests
 
-Split between pure helpers that need nothing and integration tests that **skip cleanly
-when no mongod is listening**, so a checkout without a database runs the suite green
-rather than red.
+Pure helpers need no server. Native integration tests **skip unless
+`SOLMARGINTRADER_MONGO_TEST_URI` is explicitly set to a bare loopback URI** for a
+disposable test server. They use unique database names and reject credentials, URI paths,
+queries and non-loopback hosts. An explicitly configured but unreachable server fails the
+test. An ordinary local MongoDB listener does not opt the suite in.
 
-The one that earns its keep asserts *idempotency*. `load.py` drops before it writes, and
-two consecutive loads must leave identical counts — a time series collection accepts no
-unique index, so nothing else would catch a second load silently doubling all 18,381
-bars. It runs over a three-collection subset to stay fast; the mechanism is the same for
-every collection.
+The load fixture asserts *idempotency*: two loads of its synthetic three-collection subset
+must leave identical counts. A time series collection accepts no unique index, so the
+assertion detects duplicate appends. The fixture uses a unique disposable database and
+removes only that database.
 
 The rest guard the store's honesty: every document carries provenance, the server refuses
 one that does not (strict validation, proven by an insert that must raise), NaN never
@@ -270,8 +277,8 @@ set on exactly 25, every key real.
   from `research/coinbase50-requirements.txt` and runs
   `python3 -m unittest research.tests.test_coinbase50_study -v`; CI runs that gate.
 - soltui: `soltui/tests/`, `unittest`.
-- mongo: `mongo/tests/`, `unittest`. Guard anything server-dependent with the module's
-  `needs_server` decorator so a checkout without mongod still passes.
+- mongo: `mongo/tests/`, `unittest`. Use the guarded disposable Mongo fixture for server-dependent tests;
+  never infer permission from a listening local MongoDB server.
 - A new command needs no new parity test — the registry-driven suite picks it up automatically. If it
   takes an argument that changes money, add a behavioural test for that argument.
 
@@ -283,8 +290,12 @@ failure modes, state transitions and emitted logs. This repository does not conf
 numeric line-coverage threshold. A blanket 100% line target is not an existing CI gate.
 
 `.github/workflows/ci.yml` runs extension unit/parity/syntax/manifest/offline-dry-run
-checks, backtester tests/imports, soltui tests on macOS, MongoDB integration tests with
-a service container, documentation/index drift checks, and liquidity Ruff/format/pytest.
+and isolated real-browser checks, backtester/research tests, Oracle and installed paper
+ecosystem tests, manager lifecycle checks, bounded SolTUI checks on macOS, MongoDB and
+raw-capture integration tests with a service container, documentation/index drift checks,
+and executor/liquidity offline pytest and lint gates. The separate
+`.github/workflows/website.yml` runs Node tests/syntax, Python adapter tests and public
+research export freshness when its configured source paths change.
 The default liquidity pytest selection excludes the `network` marker. Public Jupiter
 reachability is informational and runs on workflow dispatch, not on each PR.
 

@@ -358,24 +358,23 @@ def directional_movement(
     minus_dm = np.where((down_move > up_move) & (down_move > 0), down_move, 0.0)
     tr = true_range(highs, lows, closes)
 
-    dx = np.empty(period, dtype="float64")
-    for j in range(period):
-        end = len(tr) - period + j + 1
-        atr_j = wilder_smooth(tr[:end], period)
-        if not np.isfinite(atr_j) or atr_j <= 1e-15:
-            dx[j] = 0.0
-            continue
-        pdi = 100.0 * wilder_smooth(plus_dm[:end], period) / atr_j
-        mdi = 100.0 * wilder_smooth(minus_dm[:end], period) / atr_j
-        total = pdi + mdi
-        dx[j] = 0.0 if total <= 1e-15 else 100.0 * abs(pdi - mdi) / total
+    atr_now = float(np.mean(tr[:period]))
+    plus = float(np.mean(plus_dm[:period]))
+    minus = float(np.mean(minus_dm[:period]))
+    dx = []
+    for index in range(period - 1, len(tr)):
+        if index >= period:
+            atr_now = (atr_now * (period - 1) + tr[index]) / period
+            plus = (plus * (period - 1) + plus_dm[index]) / period
+            minus = (minus * (period - 1) + minus_dm[index]) / period
+        total = plus + minus
+        dx.append(0.0 if total <= 1e-15 else 100.0 * abs(plus - minus) / total)
 
-    atr_now = wilder_smooth(tr, period)
     if not np.isfinite(atr_now) or atr_now <= 1e-15:
         return (float("nan"), float("nan"), float("nan"))
-    plus_di = 100.0 * wilder_smooth(plus_dm, period) / atr_now
-    minus_di = 100.0 * wilder_smooth(minus_dm, period) / atr_now
-    return (float(plus_di), float(minus_di), float(np.mean(dx)))
+    plus_di = 100.0 * plus / atr_now
+    minus_di = 100.0 * minus / atr_now
+    return (float(plus_di), float(minus_di), wilder_smooth(np.asarray(dx), period))
 
 
 def variance_ratio(closes: np.ndarray, window: int = 250, lag: int = 5) -> float:

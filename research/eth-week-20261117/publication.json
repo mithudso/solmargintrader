@@ -1,0 +1,29 @@
+{
+  "schema": "weekly-coin-publication/v1",
+  "version": "1.0.0",
+  "full_local_run": "/Users/mitch/.local/share/solmargintrader/research/weekly-coin/ETH-20261117T1713Z-2571",
+  "original_manifest_sha256": "f8005a6f464310019c9855f48c2bcd2e1c31d27c5ea2fb80a4611837f8ca3dc7",
+  "archive_entries": 79,
+  "files": {
+    "artifacts.zip": {
+      "sha256": "d67cfd6ee530623a372d7c583ecb6f286c7f004236956448c8a9e2f48e5b24fb",
+      "bytes": 18883848
+    },
+    "audit.json": {
+      "sha256": "dbed0aba15e9bcca4525f677663d2947e37456b1bb51c0e8a5a606e431915fda",
+      "bytes": 7743
+    },
+    "correlations.png": {
+      "sha256": "0b62becf7337211eb9f2d3a9a217ef078f131b802dc4897da8383fccef33c616",
+      "bytes": 238613
+    },
+    "report.md": {
+      "sha256": "b313b492a1662fe158ef38ca7009d0f79381dd11c01aa6f98f52f4d642dcee64",
+      "bytes": 6085
+    },
+    "summary.json": {
+      "sha256": "e7e8dec65cb601a2d5c60b851cebd18eb4e5fd003084875c46c5398011f71997",
+      "bytes": 49234
+    }
+  }
+}

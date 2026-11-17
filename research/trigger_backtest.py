@@ -64,8 +64,10 @@ def run(asset: str, interval: str, df: pd.DataFrame, meta: dict) -> pd.DataFrame
     ppy = periods_per_year(interval)
     rows = []
     for _, t in chosen.iterrows():
+        if not np.isfinite(t["stop_frac"]) or not 0 < t["stop_frac"] < 1:
+            raise ValueError("trigger requires a finite discovery stop in (0, 1)")
         spec = dict(conditions=t["conditions"], direction=1 if t["direction"] == "long" else -1,
-                    horizon=int(t["horizon"]), stop=round(float(t["stop_frac"]), 4) if t["stop_frac"] == t["stop_frac"] else 0.0)
+                    horizon=int(t["horizon"]), stop=float(t["stop_frac"]))
         for tier in [("1x", 1.0)] + [(x.name, x.leverage) for x in DEFAULT_TIERS]:
             cfg = tier_config(tier[1], interval, allow_short=True, intrabar=layers)
             make = lambda s=spec: build("trigger_trade", **s)
@@ -78,6 +80,8 @@ def run(asset: str, interval: str, df: pd.DataFrame, meta: dict) -> pd.DataFrame
                 eq = np.concatenate([[1.0], np.cumprod(1 + r)])
                 paths.append((_sharpe(r, ppy), float(eq[-1] - 1), float((1 - eq / np.maximum.accumulate(eq)).max()),
                               sum(blocks[i].liquidations for i in combo)))
+            if not full.usable:
+                raise ValueError(f"unusable validation evaluation: {full.reason}")
             eq_full = np.concatenate([[1.0], np.cumprod(1 + full.returns)]) if full.usable else np.ones(1)
             rows.append({
                 "label": label, "conditions": spec["conditions"], "direction": t["direction"],

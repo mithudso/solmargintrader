@@ -173,6 +173,18 @@ def resolve(path: str, entries: list[DocEntry]) -> Path:
     return target
 
 
+class _DocumentTooLarge(ValueError):
+    pass
+
+
+def _read_bounded(target: Path) -> bytes:
+    with target.open("rb") as stream:
+        raw = stream.read(MAX_VIEW_BYTES + 1)
+    if len(raw) > MAX_VIEW_BYTES:
+        raise _DocumentTooLarge("The document exceeds the viewer limit")
+    return raw
+
+
 def read_document(path: str, entries: list[DocEntry]) -> tuple[str, str, bool]:
     """(text, language, is_real_text) for one catalogued file.
 
@@ -187,7 +199,9 @@ def read_document(path: str, entries: list[DocEntry]) -> tuple[str, str, bool]:
         return (f"{path} is {size:,} bytes, above the {MAX_VIEW_BYTES:,}-byte "
                 f"viewer limit. Open it outside the console.", "", False)
     try:
-        text = target.read_bytes().decode("utf-8")
+        text = _read_bounded(target).decode("utf-8")
+    except _DocumentTooLarge:
+        return (f"{path} exceeds the {MAX_VIEW_BYTES:,}-byte viewer limit. Open it outside the console.", "", False)
     except (UnicodeDecodeError, OSError):
         return (f"{path} is not UTF-8 text ({size:,} bytes) — nothing to display.",
                 "", False)
@@ -257,9 +271,7 @@ def write_document(path: str, text: str, entries: list[DocEntry], *, expected_re
         # Resolve again inside the lock: a stale catalogue cannot redirect a save.
         if resolve(path, entries) != target:
             raise ValueError("The document path changed; reload before saving")
-        before = target.read_bytes()
-        if len(before) > MAX_VIEW_BYTES:
-            raise ValueError("The document exceeds the viewer limit")
+        before = _read_bounded(target)
         before.decode("utf-8")
         if hashlib.sha256(before).hexdigest() != expected_revision:
             raise ValueError("The document changed; reload before saving")

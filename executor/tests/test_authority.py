@@ -690,13 +690,14 @@ def test_concurrent_home_cannot_enroll_over_newly_observed_tighter_caps(cfg, tmp
     first = WalletAuthority(cfg, tmp_path / "home")
     cfg.rails.max_position_usd = 1
     second = WalletAuthority(replace(cfg, rails=Rails()), tmp_path / "new-client")
-    with first.lock(), ThreadPoolExecutor(max_workers=1) as pool:
+    # Release the held lock before the pool waits for a regressed blocking worker.
+    with ThreadPoolExecutor(max_workers=1) as pool, first.lock():
         with pytest.raises(Refused, match="another shared wallet writer"):
-            pool.submit(first.effective_config).result()
+            pool.submit(first.effective_config).result(timeout=1)
         assert first.owns_lock
         assert first.effective_config().rails.max_position_usd == 1
         with pytest.raises(Refused, match="another shared wallet writer"):
-            pool.submit(second.register, "100", [{"root": str(second.client), "aware": True}], True).result()
+            pool.submit(second.register, "100", [{"root": str(second.client), "aware": True}], True).result(timeout=1)
     second.register("100", [{"root": str(second.client), "aware": True}], True)
     assert second.effective_config().rails.max_position_usd == 1
 

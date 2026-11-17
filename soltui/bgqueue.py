@@ -287,8 +287,13 @@ class JobResult:
         out the whole pane over one bad row, which is exactly the failure the
         line-skipping in `read_results` exists to prevent.
         """
+        for name in ("job_id", "strategy", "asset", "interval", "horizon", "family", "variation"):
+            if name in data and not isinstance(data[name], str):
+                raise ValueError(f"{name} must be a string")
         known = {f for f in cls.__dataclass_fields__}  # noqa: SLF001 - dataclass API
         clean = {k: v for k, v in data.items() if k in known}
+        if "asset" in clean and not isinstance(clean["asset"], str):
+            raise TypeError("result asset must be a string")
         valid_metrics = all(_finite_number(data.get(name)) for name in (
             "median_sharpe", "iqr", "frac_positive", "median_return", "trades"))
         for name in ("median_sharpe", "iqr", "frac_positive", "median_return", "seconds",
@@ -616,8 +621,13 @@ def append_result(result: JobResult, path: Path | None = None) -> None:
     """
     path = path or RESULTS_PATH
     ensure_dir(path.parent)
-    with path.open("a", encoding="utf-8") as fh:
-        fh.write(result.to_json() + "\n")
+    with path.open("a+b") as fh:
+        fh.seek(0, os.SEEK_END)
+        has_tail = fh.tell() > 0
+        if has_tail:
+            fh.seek(-1, os.SEEK_END)
+            has_tail = fh.read(1) != b"\n"
+        fh.write((b"\n" if has_tail else b"") + (result.to_json() + "\n").encode("utf-8"))
         fh.flush()
         os.fsync(fh.fileno())
 
@@ -706,7 +716,7 @@ def read_results_since(
         # opening by name would let the file be replaced in between, and the
         # cursor would carry the old file's inode over the new file's bytes --
         # defeating the identity check this cursor exists for.
-        fh = path.open("r", encoding="utf-8", errors="replace")
+        fh = path.open("rb")
     except OSError:
         return [], ResultsCursor(), True
 
@@ -714,27 +724,27 @@ def read_results_since(
         stat = os.fstat(fh.fileno())
         offset = cursor.offset
         restarted = not cursor.matches(stat) or offset > stat.st_size
+        if not restarted and offset:
+            fh.seek(offset - 1)
+            restarted = fh.read(1) != b"\n"
         if restarted:
             offset = 0
         fh.seek(offset)
         text = fh.read()
     # Only consume through the last complete line; a trailing partial line is
     # left unread so the next call re-reads it once it is whole.
-    cut = text.rfind("\n")
+    cut = text.rfind(b"\n")
     here = ResultsCursor(offset, stat.st_ino, stat.st_dev, stat.st_mtime)
     if cut == -1:
         return [], here, restarted
     consumed = text[: cut + 1]
-    # `to_json` writes with json.dumps' default ensure_ascii=True, so the file is
-    # pure ASCII and this byte count equals the file's. A field written with
-    # ensure_ascii=False would break that equivalence and this arithmetic.
     advanced = ResultsCursor(
-        offset + len(consumed.encode("utf-8")),
+        offset + len(consumed),
         stat.st_ino,
         stat.st_dev,
         stat.st_mtime,
     )
-    return _parse_lines(consumed), advanced, restarted
+    return _parse_lines(consumed.decode("utf-8", errors="replace")), advanced, restarted
 
 
 def completed_ids(results: Sequence[JobResult]) -> set[str]:

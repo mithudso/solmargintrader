@@ -9,18 +9,31 @@ from __future__ import annotations
 
 import argparse
 import sys
+from collections.abc import Sequence
 from pathlib import Path
-from typing import Sequence
 
 import numpy as np
 
 from .core import plotting, report
-from .core.data import CsvLoader, SnapshotLoader, SyntheticLoader, checksum_frame, describe_data_error, frame_to_arrays
+from .core.data import (
+    CsvLoader,
+    SnapshotLoader,
+    SyntheticLoader,
+    checksum_frame,
+    describe_data_error,
+    frame_to_arrays,
+)
 from .core.engine import BacktestResult, EngineConfig, run_backtest
 from .core.metrics import compute_metrics
 from .core.report import SplitResult
 from .core.strategies import DEFAULT_SET, REGISTRY, build
-from .core.types import CostConfig, INTERVAL_SECONDS, Mode, RunManifest, periods_per_year
+from .core.types import (
+    INTERVAL_SECONDS,
+    CostConfig,
+    Mode,
+    RunManifest,
+    periods_per_year,
+)
 
 
 def build_parser() -> argparse.ArgumentParser:
@@ -229,10 +242,11 @@ def main(argv: Sequence[str] | None = None) -> int:
     if args.quote != "USD" and (mode != Mode.SPOT or not args.snapshot_id):
         print("error: stablecoin accounting requires spot mode and a matching verified snapshot", file=sys.stderr)
         return 2
+    seed = args.seed if args.seed is not None else (42 if args.synthetic is not None else 0)
     if args.snapshot_id:
         loader = SnapshotLoader(args.history_archive, args.snapshot_id, quote=args.quote)
     elif args.synthetic is not None:
-        loader = SyntheticLoader(n_bars=args.synthetic, seed=42 if args.seed is None else args.seed)
+        loader = SyntheticLoader(n_bars=args.synthetic, seed=seed)
     else:
         path = Path(args.data) if args.data else Path("data") / f"{args.asset.upper()}_{args.interval}.csv"
         loader = CsvLoader(path, allow_gaps=args.allow_gaps)
@@ -242,7 +256,7 @@ def main(argv: Sequence[str] | None = None) -> int:
     except FileNotFoundError as exc:
         print(f"error: {exc}", file=sys.stderr)
         return 1
-    except Exception as exc:
+    except Exception as exc:  # noqa: BLE001 - sanitize arbitrary loader errors at the CLI boundary.
         print(f"error loading data: {describe_data_error(exc)}", file=sys.stderr)
         return 1
 
@@ -252,7 +266,7 @@ def main(argv: Sequence[str] | None = None) -> int:
         costs = CostConfig(
             fee_bps=args.fee_bps,
             slippage_bps=args.slippage_bps,
-            perp_base_fee_bps=6.0,
+            perp_base_fee_bps=args.fee_bps,
             max_hourly_rate_bps_long=args.borrow_bps_long,
             max_hourly_rate_bps_short=args.borrow_bps_short,
             utilization=args.utilization,
@@ -269,7 +283,7 @@ def main(argv: Sequence[str] | None = None) -> int:
             risk_free_rate=args.risk_free_rate,
             costs=costs,
             allow_short=args.allow_short,
-            seed=0 if args.seed is None else args.seed,
+            seed=seed,
         )
     except ValueError as exc:
         print(f"error: {exc}", file=sys.stderr)

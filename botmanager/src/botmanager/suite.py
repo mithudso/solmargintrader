@@ -164,9 +164,10 @@ class AlertJournal:
                 previous = _ALERT_JOURNAL_LAST_OBSERVED.get(key)
                 if previous is not None and observed_at <= previous:
                     stale_components.add(name)
-                else:
-                    _ALERT_JOURNAL_LAST_OBSERVED[key] = observed_at
             self._observe_locked(snapshot, stale_components)
+            for name in snapshot["components"]:
+                if name not in stale_components:
+                    _ALERT_JOURNAL_LAST_OBSERVED[(str(self.path), name)] = observed_at
 
     def _observe_locked(self, snapshot, stale_components):
         try:
@@ -799,6 +800,9 @@ def _checkpoint(home, ecosystem_home):
 
 def _stop_receipt(home, ecosystem_home, instance):
     final = _checkpoint(home, ecosystem_home)
+    if (instance is not None and final is not None and final["instance"] == instance
+            and (final.get("state") == "release_unconfirmed" or final.get("release_confirmed") is False)):
+        raise ManagerError("suite_unavailable", "Child release is explicitly unconfirmed; reconcile before restarting.", 4)
     if (
         instance is not None
         and final is not None

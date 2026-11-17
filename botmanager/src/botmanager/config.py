@@ -343,8 +343,8 @@ def resolve_config(
             <= set(DEFAULTS[strategy_id]) - SHARED_PROTECTED_FIELDS
         ):
             raise _invalid()
+        _validate_fields(strategy_id, shared_values, partial=True)
         candidate = {**values, **shared_values}
-        validate_values(strategy_id, candidate)
         values = candidate
         for key in shared_values:
             provenance[key] = {

@@ -39,8 +39,8 @@ export async function realHostAnswers(env = process.env) {
  * Write the wrapper script and the host manifest for this run.
  * @returns {{kind: 'real'|'fixture', manifestPath: string, env: object, remove: function, restore: function}}
  */
-export async function installHost({ profile, extensionId, mode = process.env.SOLTUI_E2E_HOST }) {
-  const real = mode !== 'fixture' && (await realHostAnswers());
+export async function installHost({ profile, extensionId, mode = process.env.SOLTUI_E2E_HOST, probe = realHostAnswers }) {
+  const real = mode !== 'fixture' && await probe();
   if (mode === 'real' && !real) throw new Error('SOLTUI_E2E_HOST=real but the soltui native host did not answer a ping');
 
   const dir = path.join(profile, 'NativeMessagingHosts');

@@ -14,6 +14,26 @@ sharing runtime code. Their trading paths retain independent gates. The executor
 has its own guarded Solana execution boundary. Liquidity is retained for reference
 and remains disabled with its kill switch set.
 
+## Separate hosted package: `website/`
+
+The Cloudflare Worker in `website/src/worker.js` serves static assets and wallet-account
+API routes. D1 migrations under `website/migrations/` define tenant-owned accounts,
+single-use challenges, hashed sessions, subscription receipts and inactive paper bot
+definitions. Connecting a wallet authenticates an account; it delegates no trading power.
+Stripe billing and analysis readiness are separate from account storage and live execution.
+
+`website/engine/server.py` exposes named public-market backtests and inert Oracle
+archive reads. It reuses the canonical Python packages, requires its own server-side
+bearer token and refuses unavailable inputs. It cannot start the local managed suite,
+read its trading accounts or place an order. `website/scripts/export_research.py`
+generates the reviewed public research catalog and body shards from tracked sources.
+The export manifest preserves source and published hashes; the generated copies are
+not independent research evidence.
+
+Use the [website guide](../website/README.md) for setup, bindings and tests, and the
+[analysis contract](../website/engine/README.md) for request bounds and input provenance.
+This separate package does not change the ten trading components' ownership boundaries.
+
 ---
 
 ## `botmanager/`
@@ -51,6 +71,10 @@ ZEC perpetual Actions through an explicitly configured owner signer. Durable
 per-leg intents, account reconciliation and ambiguity holds gate that path;
 dry-run remains the default. See [Oracle integration](bot-manager-oracle-interface.md)
 and [Jupiter ZEC execution](JUPITER-ZEC-WEBHOOK.md).
+
+## Auto-trading API
+
+The native command registry exposes the shared Oracle auto-trading owner to Chrome and SolTUI. It defaults to disarmed paper mode and records immutable entry and exit plans; live execution remains gated by venue-specific evidence. See [Oracle auto-trading](ORACLE-AUTO-TRADING.md).
 
 ## `executor/`
 

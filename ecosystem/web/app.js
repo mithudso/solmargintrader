@@ -804,7 +804,8 @@ function renderActionLedger() {
       state.pendingPrefs.delete(id);
     } else if (record?.state === "succeeded" && effect.run === state.activeRun) {
       const expected = record.result?.revision;
-      const actual = effect.kind === "recording" ? state.control?.recording?.revision : effect.kind === "forecast" ? state.oracle?.live_forecast?.settings?.revision : state.oracle?.selection?.revision;
+      const policyMatches = effect.kind === "recording" || (effect.instrument === state.oracleInstrument && effect.instrument === state.oracle?.instrument);
+      const actual = effect.kind === "recording" ? state.control?.recording?.revision : policyMatches ? (effect.kind === "forecast" ? state.oracle?.live_forecast?.settings?.revision : state.oracle?.selection?.revision) : undefined;
       if (Number.isSafeInteger(expected) && Number.isSafeInteger(actual) && actual >= expected) {
         if (effect.kind === "recording") state.recordingDirty = false;
         else if (effect.kind === "forecast") state.forecastDirty.clear();

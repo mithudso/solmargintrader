@@ -1,4 +1,7 @@
+import hashlib
+import json
 import unittest
+from pathlib import Path
 
 from research.exit50_report import render_report
 
@@ -71,6 +74,22 @@ def result(asset):
 
 
 class ReportTests(unittest.TestCase):
+    def test_repository_projection_matches_native_binding(self):
+        root = Path(__file__).resolve().parents[1]
+        manifest = json.loads(
+            (root / "exit50-reversal-20261116/manifest.json").read_text()
+        )
+        report = root / "EXIT50-REVERSAL.md"
+        policy = root / "exit50-reversal-20261116/selected-policy.json"
+        self.assertEqual(
+            hashlib.sha256(report.read_bytes()).hexdigest(),
+            manifest["report"]["sha256"],
+        )
+        self.assertEqual(
+            hashlib.sha256(policy.read_bytes()).hexdigest(),
+            manifest["policy"]["sha256"],
+        )
+
     def test_reports_fixed_comparisons_and_sampled_limit(self):
         report, policies = render_report(
             {"BTC": result("BTC"), "ZEC": result("ZEC")},

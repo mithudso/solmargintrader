@@ -19,6 +19,7 @@ import subprocess
 import sys
 import threading
 import traceback
+from contextlib import ExitStack, contextmanager
 from pathlib import Path
 from typing import Any
 
@@ -50,6 +51,22 @@ def active(store: ExperimentStore, run_id: str) -> bool:
     return False
 
 
+@contextmanager
+def _native_idle(store: ExperimentStore, run_id: str):
+    # Direct runners acquire the native lock without the detached-job lease.
+    # Keep that exclusion until reconciliation has finished its state mutation.
+    from .experiment_runner import _lock
+
+    with ExitStack() as ownership:
+        try:
+            ownership.enter_context(_lock(store, "run:" + run_id))
+        except ExperimentError:
+            busy = True
+        else:
+            busy = False
+        yield busy
+
+
 def status(store: ExperimentStore, run_id: str) -> dict[str, Any]:
     lease, log, settings_path = _paths(store, run_id)
     # Keep the lease while reconciling. A new launcher cannot acquire it
@@ -61,20 +78,19 @@ def status(store: ExperimentStore, run_id: str) -> dict[str, Any]:
             busy = True
             run = store.get_run(run_id)
         else:
-            from .experiment_runner import run_active
-            busy = run_active(run_id, store=store)
-            run = store.get_run(run_id)
-            stale = run["status"] in {"running", "validating", "finalizing", "pause_requested", "cancel_requested"}
-            stale = stale or (run["status"] == "created" and settings_path.exists())
-            if stale and not busy:
-                state = {"pause_requested": "paused", "cancel_requested": "cancelled"}.get(run["status"], "interrupted")
-                message = run.get("error") or "worker no longer holds its process lease; completed cells were preserved"
-                if log.exists():
-                    with log.open("rb") as output:
-                        output.seek(max(0, log.stat().st_size - 2000))
-                        message += "\n" + output.read().decode("utf-8", errors="replace").strip()
-                run = store.settle_run(run_id, status=state, expected=[run["status"]],
-                                       error=message if state == "interrupted" else None)
+            with _native_idle(store, run_id) as busy:
+                run = store.get_run(run_id)
+                stale = run["status"] in {"running", "validating", "finalizing", "pause_requested", "cancel_requested"}
+                stale = stale or (run["status"] == "created" and settings_path.exists())
+                if stale and not busy:
+                    state = {"pause_requested": "paused", "cancel_requested": "cancelled"}.get(run["status"], "interrupted")
+                    message = run.get("error") or "worker no longer holds its process lease; completed cells were preserved"
+                    if log.exists():
+                        with log.open("rb") as output:
+                            output.seek(max(0, log.stat().st_size - 2000))
+                            message += "\n" + output.read().decode("utf-8", errors="replace").strip()
+                    run = store.settle_run(run_id, status=state, expected=[run["status"]],
+                                           error=message if state == "interrupted" else None)
             fcntl.flock(fh, fcntl.LOCK_UN)
     run["worker_active"] = busy
     run["log_path"] = str(log)
@@ -116,18 +132,21 @@ def _reap(proc: subprocess.Popen, store: ExperimentStore, run_id: str) -> None:
                 fcntl.flock(fh, fcntl.LOCK_EX | fcntl.LOCK_NB)
             except BlockingIOError:
                 return  # A later explicit launch now owns this experiment.
-            run = store.get_run(run_id)
-            if run["status"] in _ACTIVE:
-                tail = ""
-                if log.exists():
-                    with log.open("rb") as output:
-                        output.seek(max(0, log.stat().st_size - 2000))
-                        tail = output.read().decode("utf-8", errors="replace").strip()
-                message = f"worker exited with status {code}; completed cells remain available"
-                if tail:
-                    message += "\n" + tail
-                store.settle_run(run_id, status="interrupted" if code else "failed",
-                                 expected=tuple(_ACTIVE), error=message)
+            with _native_idle(store, run_id) as busy:
+                if busy:
+                    return
+                run = store.get_run(run_id)
+                if run["status"] in _ACTIVE:
+                    tail = ""
+                    if log.exists():
+                        with log.open("rb") as output:
+                            output.seek(max(0, log.stat().st_size - 2000))
+                            tail = output.read().decode("utf-8", errors="replace").strip()
+                    message = f"worker exited with status {code}; completed cells remain available"
+                    if tail:
+                        message += "\n" + tail
+                    store.settle_run(run_id, status="interrupted" if code else "failed",
+                                     expected=tuple(_ACTIVE), error=message)
             fcntl.flock(fh, fcntl.LOCK_UN)
     except (OSError, sqlite3.Error, ExperimentError) as exc:
         # The OS lease still makes a later status query recover process death.

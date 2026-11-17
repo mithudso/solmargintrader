@@ -22,6 +22,31 @@ Eleven components with separate execution boundaries:
 Read `CLAUDE.md` before changing any of them; it carries the non-negotiables per
 component.
 
+The separate hosted `website/` package adds wallet accounts, public research and
+inactive paper definitions. It has its own deployment, credentials and validation;
+it cannot control the local owner services or execute bot definitions.
+
+## `website/` — hosted accounts and public analysis
+
+| Path | What it is |
+| --- | --- |
+| `website/README.md` | Implemented website scope, independent readiness gates, setup and deployment |
+| `website/package.json` | Node test/syntax commands and pinned Wrangler development tool |
+| `website/package-lock.json` | Locked website development dependencies |
+| `website/wrangler.jsonc` | Production Worker, assets, D1 and cron bindings |
+| `website/wrangler.dev.jsonc` | Separate local development configuration without production routes |
+| `website/src/worker.js` | Wallet authentication, tenant API, Stripe entitlement and read-only analysis proxy |
+| `website/public/app.js` | Browser account, research and inactive-paper-definition interface |
+| `website/public/evidence.js` | Research/Oracle evidence presentation and expiry checks |
+| `website/engine/server.py` | Bounded canonical backtests and inert Oracle archive HTTP adapter |
+| `website/engine/README.md` | Analysis request, token, input and provenance contract |
+| `website/scripts/export_research.py` | Deterministic public research catalog/body export and hash checks |
+| `website/test/api.test.js` | Worker account, tenant, billing and refusal fixtures |
+| `website/test/evidence.test.js` | Evidence units, freshness and eligibility regressions |
+| `website/engine/test_server.py` | Synthetic analysis requests, limits and authentication tests |
+| `website/engine/test_research.py` | Public-export source selection and content regression tests |
+| `.github/workflows/website.yml` | Website Node/Python/export CI gates |
+
 ---
 
 ## `ecosystem/` — paper orchestration and control room
@@ -204,6 +229,24 @@ command registry. No npm runtime dependencies by design; one vendored charting l
 | `extension/manifest.json` | MV3 manifest; validated in CI |
 | `extension/package.json` | Scripts only — no runtime and no dev dependencies |
 | `extension/README.md` | Includes the **Verification status** section; read it before extending |
+| `extension/src/1000x/feed.js` | Catalog-bound public oracle history and one stream, with bounded1m reversal context and owned teardown |
+| `extension/src/1000x/indicators.js` | Pure causal ZigZag/RSI/BOP/Volty/SAR and research-aligned EMA/MACD recurrences |
+| `extension/src/1000x/reversal.js` | Completed10m DD/UU context, trailing48-bar5/10/15/20m shapes and separate closed1m momentum; no model or position inference |
+| `extension/src/1000x/panel-model.js` | Independent quote/history freshness and closed/developing eligibility checks |
+| `extension/src/1000x/panel.js` | Floating read-only chart, labeled reversal/shape/momentum cards and local view settings |
+| `extension/src/1000x/timeframes.js` | Shared supported-horizon catalog for chart selection and all six learners |
+| `extension/src/1000x/oracle-model.js` | Pure bounded logistic learner, immutable prospective forecasts, genuine delayed labels and paired probability metrics |
+| `extension/src/1000x/oracle-store.js` | Separate native IndexedDB atomic partition transitions across windows and reloads |
+| `extension/src/1000x/oracle-controller.js` | Existing-feed coalescing, source/version isolation, stale/obsolete-session refusal and owned teardown |
+| `extension/src/1000x/oracle-view.js` | Rolling10m UP/NON-UP forecasts, candidate/served/baseline metrics and explicit fallback/unknown states |
+| `extension/test/1000x-oracle-model.test.js` | Analytical gradient/scoring, delayed current-weight learning, flat/unknown labels, prefix invariance and bounded recovery |
+| `extension/test/1000x-oracle-controller.test.js` | Concurrent/reloaded controllers, stored forecast reuse, quote coalescing and obsolete-session fences |
+| `docs/EXTENSION-STREAMING-ORACLE.md` | Streaming learner target, equations, atomic persistence, bounds, research status and verification limits |
+| `docs/EXTENSION-STREAMING-ORACLE-PROMPT.md` | Exact byte-preserved approved adaptive streaming Oracle execution prompt |
+| `extension/tools/1000x-e2e.mjs` | Native Chrome fixture and actual-public-portal gates with exact executed module hashes |
+| `extension/tools/1000x-reference.py` | Offline independent Python numerical-vector generator for extension analytics |
+| `extension/test/1000x-reversal.test.js` | Bound Python parity, prefix/future invariance, gap/partial resets and unsupported model/position regressions |
+| `docs/JUPITER-1000X-OVERLAY.md` | Public feed contracts, causal indicator/reversal formulas, browser evidence and installation |
 | `extension/src/core/commands.js` | The single registry. Every action lives here or the parity test fails |
 | `extension/src/core/risk.js` | Every risk rail, as a gate an order must pass. Rails fail closed |
 | `extension/src/core/grid.js` | Ladder geometry. `backtester/core/gridsim.py` is its port |
@@ -245,8 +288,10 @@ command registry. No npm runtime dependencies by design; one vendored charting l
 
 ## `soltui/` — macOS menu-bar app and TUI
 
-Read-only over the research side. Places no orders. Supervised by launchd, so the flag
-file — not the menu-bar Quit item — is the real off switch.
+The research runtime remains paper-only. Manual Coinbase spot orders use a separately
+armed path; manual Jupiter V2 submission stays blocked pending independent economic
+verification. The optional menu-bar app is supervised by launchd, so the flag file —
+not the menu-bar Quit item — is its real off switch.
 
 | Path | What it is |
 | --- | --- |
@@ -335,10 +380,12 @@ Three things about the shape, because they will come up:
 | `CONTRIBUTING.md` | Contribution boundaries and validation workflow |
 | `CODE_OF_CONDUCT.md` | Contributor conduct and reporting boundary |
 | `docs/requirements.md` | Existing functional/runtime/safety requirements |
-| `docs/MCP.md` | No repo MCP server; global connectors and offline fallback |
+| `docs/MCP.md` | Oracle's read-only stdio MCP contract, host-specific registration and offline retrieval fallback |
 | `docs/caching-and-optimization.md` | Cache freshness and performance invariants |
 | `docs/runbooks/incident.md` | Kill, preserve evidence, reconcile unknown outcomes |
 | `docs/runbooks/rollback.md` | Revert code without discarding execution state |
+| `scripts/capture_market.py` | Bounded public raw-event spool and independent dedicated MongoDB uploader |
+| `scripts/test_capture_market.py` | Disposable spool, deadline, upload ambiguity and native MongoDB boundary tests |
 | `docs/runbooks/handoff.md` | Prompt/memory/Git continuation workflow |
 | `scripts/check_docs.py` | Fails the build on stale test counts or dead index entries |
 | `docs/` | The documentation suite; `README.md` links every page |

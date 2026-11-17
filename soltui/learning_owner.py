@@ -996,7 +996,7 @@ class LearningOwner:
     def reconcile(self, proposal_id, request_id, manager_receipt):
         with self.connection(True) as db:
             row = db.execute(
-                "SELECT * FROM learning_requests WHERE request_id=? AND proposal_id=?",
+                "SELECT rowid AS sequence,* FROM learning_requests WHERE request_id=? AND proposal_id=?",
                 (request_id, proposal_id),
             ).fetchone()
             if row is None:
@@ -1035,6 +1035,19 @@ class LearningOwner:
                 and json.loads(row["manager_receipt"]) != manager_receipt
             ):
                 raise ValueError("manager receipt replay conflict")
+            if row["manager_receipt"] is not None:
+                return {"proposal_id": proposal_id, "state": proposal["state"], "receipt": manager_receipt}
+            # A delayed first reconciliation cannot supersede a later accepted
+            # revision in this scope, even if its journal receipt is authentic.
+            current = db.execute("SELECT receipt FROM learned_defaults WHERE scope=?", (proposal["scope"],)).fetchone()
+            if current is not None:
+                current_receipt = json.loads(current[0])
+                newer = db.execute("SELECT rowid FROM learning_requests WHERE request_id=?",
+                                   (current_receipt["request_id"],)).fetchone()
+                if newer is not None and newer[0] > row["sequence"]:
+                    db.execute("UPDATE learning_requests SET manager_receipt=? WHERE request_id=?",
+                               (canonical(manager_receipt), request_id))
+                    return {"proposal_id": proposal_id, "state": proposal["state"], "receipt": manager_receipt}
             proposal = self._read_proposal(db, proposal_id)
             proposal["adoption" if row["operation"] == "promote" else "rollback"] = {
                 "owner_receipt": receipt,

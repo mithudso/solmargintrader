@@ -202,19 +202,8 @@ def _report(
         raise ValueError("invalid_oracle_clock")
     from .zec_forward import oracle_view, publication
 
-    study = publication(home, instrument, now=now)
+    study = publication(home, instrument, now=now, display_strategy=display_strategy)
     if study and study["selected"]:
-        if display_strategy and display_strategy != "published":
-            chosen_account = next((row for row in study.get("accounts", []) if row["id"] == display_strategy), None)
-            if chosen_account:
-                from .zec_forward import connection
-
-                pointer = json.loads((Path(home).expanduser().absolute() / "zec-study.json").read_text())
-                with connection(pointer["home"]) as db:
-                    history = [dict(row) for row in db.execute(
-                        "SELECT bar,issued,target,equity,exposure,price FROM forecasts WHERE id=? AND bar<=? ORDER BY bar DESC LIMIT 240",
-                        (chosen_account["id"], chosen_account["last_ts"]))]
-                study = {**study, "publication": chosen_account, "history": list(reversed(history))}
         study = _warmup_reference(home, study, now)
         winner = study.get("publication")
         if winner:

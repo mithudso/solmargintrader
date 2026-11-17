@@ -10,6 +10,7 @@ import copy
 import math
 import re
 import time
+import uuid
 from pathlib import Path
 from typing import ClassVar
 
@@ -19,8 +20,9 @@ from textual.app import ComposeResult
 from textual.containers import Horizontal, Vertical, VerticalScroll
 from textual.events import Click
 from textual.screen import ModalScreen
-from textual.widgets import Button, DataTable, Input, Label, Select, Static
+from textual.widgets import Button, Checkbox, DataTable, Input, Label, Select, Static
 
+from research.zec_feed_settings import load_feeds, save_feeds
 from research.zec_tui_workers import LatestWorker
 
 
@@ -60,7 +62,8 @@ def emphasized(value):
     return text
 
 
-def comparison_text(data, asset, venue, now, basis_cache=None):
+def comparison_text(data, asset, venue, now, basis_cache=None, enabled=None):
+    enabled = enabled if enabled is not None else {"jupiter": True, "coinbase": True}
     state = data.get("price_comparison", {})
     state = state if isinstance(state, dict) else {}
     feeds = state.get("feeds", {})
@@ -74,8 +77,10 @@ def comparison_text(data, asset, venue, now, basis_cache=None):
         type(stamp) in (int, float) and math.isfinite(stamp) and 0 <= now - stamp <= 2
     )
     primary = "jupiter" if venue == "jupiter-sdk-1000x" else "coinbase"
+    if not enabled.get(primary):
+        primary = next((s for s in ("jupiter", "coinbase") if enabled.get(s)), None)
     lines = [
-        f"{asset}/USD · both live streams · primary display: {'Jupiter oracle' if primary == 'jupiter' else 'Coinbase book midpoint'}"
+        f"{asset}/USD · {'both live streams' if all(enabled.values()) else 'selected live stream'} · primary display: {'Jupiter oracle' if primary == 'jupiter' else 'Coinbase book midpoint'}"
     ]
     valid = {}
     exchange_times = {}
@@ -84,6 +89,8 @@ def comparison_text(data, asset, venue, now, basis_cache=None):
         ("jupiter", "Jupiter oracle", 1),
         ("coinbase", "Coinbase synced book midpoint", 3),
     ):
+        if not enabled.get(source):
+            continue
         rows = feeds.get(source, {})
         row = rows.get(asset, {}) if isinstance(rows, dict) else {}
         row = row if isinstance(row, dict) else {}
@@ -128,10 +135,15 @@ def comparison_text(data, asset, venue, now, basis_cache=None):
             else "red"
         )
         colors.append(color)
+        age_labels = [f"{age:.2f}s" if age is not None else "unknown" for age in ages]
         lines.append(
-            f"{title}{' · PRIMARY' if source == primary else ''}: {display} · {color.upper()}●"
+            f"{title}{' · PRIMARY' if source == primary else ''}: {display} · {color.upper()}● · exchange {age_labels[0]} · received {age_labels[1]}"
+            + f" · {'LIVE' if fresh else 'DELAYED' if color == 'yellow' else 'STALE'}"
         )
-    comparable = all(valid[source] is not None for source in ("jupiter", "coinbase"))
+    both = all(enabled.get(s) for s in ("jupiter", "coinbase"))
+    comparable = both and all(
+        valid.get(source) is not None for source in ("jupiter", "coinbase")
+    )
     skew = (
         abs(exchange_times["jupiter"] - exchange_times["coinbase"])
         if comparable
@@ -166,10 +178,10 @@ def comparison_text(data, asset, venue, now, basis_cache=None):
         if basis_cache is not None:
             basis_cache["line"] = line
         lines.append(line + " · GREEN●")
-    elif basis_cache is not None and basis_cache.get("line"):
+    elif both and basis_cache is not None and basis_cache.get("line"):
         color = "RED" if "red" in colors else "YELLOW"
-        lines.append(basis_cache["line"] + f" · {color}●")
-    else:
+        lines.append(basis_cache["line"] + f" · {color}● · STALE PAIR")
+    elif both:
         lines.append("Basis: —")
     result = emphasized("\n".join(lines))
     for color in ("GREEN", "YELLOW", "RED"):
@@ -224,6 +236,18 @@ def bar_view(bar, current=False):
     return f"{label} {arrow} {change:+.3f}%{suffix}", color
 
 
+def bar_text_color(background):
+    """Choose a readable label on every magnitude-tinted bar background."""
+    channels = [int(background[i : i + 2], 16) / 255 for i in (1, 3, 5)]
+    linear = [
+        v / 12.92 if v <= 0.04045 else ((v + 0.055) / 1.055) ** 2.4 for v in channels
+    ]
+    luminance = sum(
+        a * b for a, b in zip(linear, (0.2126, 0.7152, 0.0722), strict=True)
+    )
+    return "#000000" if luminance > 0.179 else "#ffffff"
+
+
 def tilt_text(tilts, tentative=False):
     items = []
     for minutes in (5, 10, 15, 20):
@@ -248,6 +272,50 @@ def tilt_text(tilts, tentative=False):
         + " · ΔP(up) vs baseline: "
         + " · ".join(items)
     )
+
+
+def mtf_tilt_text(scores, frames=None):
+    """Display published 10m model components against their training baseline."""
+    model = scores.get("10", {}) if isinstance(scores, dict) else {}
+    baseline = model.get("base_down_rate") if isinstance(model, dict) else None
+    components = model.get("components", []) if isinstance(model, dict) else []
+    by_frame = (
+        {
+            c["minutes"]: c
+            for c in components
+            if isinstance(c, dict) and type(c.get("minutes")) is int
+        }
+        if isinstance(components, list)
+        else {}
+    )
+    items = []
+    for minutes in (5, 10, 15, 20):
+        row = by_frame.get(minutes, {})
+        posterior = row.get("posterior_down")
+        n = row.get("n")
+        if (
+            type(baseline) not in (int, float)
+            or not math.isfinite(baseline)
+            or type(posterior) not in (int, float)
+            or not math.isfinite(posterior)
+            or type(n) is not int
+            or n <= 0
+        ):
+            frame = frames.get(str(minutes), {}) if isinstance(frames, dict) else {}
+            shape = frame.get("shape") if isinstance(frame, dict) else None
+            if (
+                isinstance(shape, str)
+                and shape != "unknown"
+                and isinstance(model, dict)
+                and model.get("status") == "ready"
+            ):
+                items.append(f"{minutes}m {_text(shape, limit=24)} unsupported")
+            else:
+                items.append(f"{minutes}m ?")
+        else:
+            uplift = (baseline - posterior) * 100
+            items.append(f"{minutes}m {uplift:+.1f}pp n={n}")
+    return "10m model shape component ΔP(up) vs baseline · " + " · ".join(items)
 
 
 def wallet_text(data):
@@ -356,8 +424,16 @@ class LeveragePanel(ModalScreen[None]):
     LeveragePanel Link { text-style: underline; color: #4ce5ff; }
     LeveragePanel DataTable > .datatable--header { background: #18475c; color: #8df5ff; text-style: bold; }
     LeveragePanel DataTable > .datatable--cursor { background: #186878; color: #ffffff; text-style: bold; }
+    #leverage-body { height: 1fr; overflow-y: hidden; }
+    LeveragePanel.short #leverage-body { overflow-y: auto; }
+    LeveragePanel.short #leverage-workspace { height: 24; min-height: 24; }
     #leverage-dialog { width: 98%; height: 96%; background: #152338; border: thick #418aab; padding: 0 1; }
     #leverage-title { height: 2; text-style: bold; color: #58e9f0; }
+    #leverage-feed-controls { height: 3; }
+    #leverage-feed-controls Checkbox { width: auto; margin-right: 1; }
+    #leverage-feed-controls Label { width: auto; content-align: left middle; }
+    #leverage-feed-notice { height: auto; color: #ffdda6; }
+    #leverage-trading { height: auto; }
     #leverage-status { height: auto; min-height: 3; color: #a8c1dd; }
     #leverage-wallet { height: auto; min-height: 2; color: #74f6e0; background: #123440; text-style: bold; border-left: tall #27d9c2; padding: 0 1; }
     .leverage-controls { height: 3; }
@@ -373,6 +449,12 @@ class LeveragePanel(ModalScreen[None]):
     #leverage-bar-tilts { height: auto; min-height: 1; }
     #leverage-bars { height: 3; }
     #leverage-bars Button { width: 1fr; min-width: 1; height: 3; }
+    #auto-status { height: auto; max-height: 3; overflow-y: auto; color: #8ffff0; }
+    #auto-controls { height: 3; }
+    #auto-controls Button { min-width: 1; width: 1fr; }
+    #auto-caps { height: 3; }
+    #auto-caps Input { width: 1fr; min-width: 5; }
+    #auto-caps Checkbox { width: auto; }
     #leverage-right #leverage-strategies, #leverage-right #leverage-positions { height: 1fr; min-height: 3; }
     #leverage-price-comparison { height: auto; min-height: 7; color: #d9fbff; border: round #28b8b8; padding: 0 1; }
     #leverage-capabilities, #leverage-performance, #leverage-result { height: auto; min-height: 3; }
@@ -382,18 +464,32 @@ class LeveragePanel(ModalScreen[None]):
     #leverage-events { height: auto; min-height: 3; }
     .leverage-section { height: 1; text-style: bold; color: #50dfe8; }
     #leverage-result { color: #ffdda6; border: round #2c637d; padding: 0 1; }
+    #leverage-result-region { height: auto; min-height: 3; max-height: 6; }
     #leverage-preview, #leverage-submit, #leverage-close-position { min-width: 12; }
+    #leverage-preview { background: #005ea8; color: #ffffff; }
     #leverage-return { min-width: 14; }
     """
 
     def __init__(
-        self, home=None, *, console=None, console_factory=None, clock=time.time
+        self,
+        home=None,
+        *,
+        console=None,
+        console_factory=None,
+        clock=time.time,
+        feed_changed=None,
     ):
         super().__init__()
         self.home = Path(home) if home is not None else default_home()
         self.console = console
         self.console_factory = console_factory
         self.clock = clock
+        self._feed_settings = (
+            self.home / "view.json" if home is not None or console is None else None
+        )
+        self.feed_enabled = load_feeds(self._feed_settings)
+        self._feed_changed = feed_changed
+        self._feed_notice = ""
         self.snapshot_data = None
         self.last_result = None
         self.preview_id = None
@@ -404,12 +500,26 @@ class LeveragePanel(ModalScreen[None]):
         self._operation_selection = None
         self._next_read = 0.0
         self._next_market_paint = 0.0
-        self._read_worker = self._action_worker = None
+        self._read_worker = self._action_worker = self._auto_worker = None
+        self._auto_action_worker = None
+        self._auto_busy = False
+        self._auto_epoch = 0
+        self._auto_read_epoch = 0
+        self._auto_next = 0.0
+        self._auto_retry = None
+        self._auto_live_confirm = False
+        self._auto_live_caps = set()
+        self._auto_unknown = False
+        self._auto_stop_confirm = False
+        self._auto_initialized = False
         self._basis_cache = {}
         self._basis_key = None
         self._last_feeds = {}
         self._table_rows = {}
         self._read_failed = False
+        from research.quote_bars import QuoteBars
+
+        self._quote_bars = QuoteBars(self.home / "dual-quotes")
 
     def _console(self):
         # Import and disk-backed setup happen in a worker, never on the event loop.
@@ -432,6 +542,7 @@ class LeveragePanel(ModalScreen[None]):
                 raise TypeError("malformed_console_snapshot_section")
         if "performance" in value and not isinstance(value["performance"], dict):
             raise TypeError("malformed_console_performance")
+        value["quote_bars"] = self._quote_bars.read(self.clock())
         return value
 
     def _act(self, request, cancelled):
@@ -450,117 +561,176 @@ class LeveragePanel(ModalScreen[None]):
     def compose(self) -> ComposeResult:
         with Vertical(id="leverage-dialog"):
             yield Label("Leverage & live paper forward test", id="leverage-title")
-            yield Static(
-                "Next 10m IF UU · ΔP(up) vs baseline: waiting",
-                id="leverage-bar-tilts",
-                markup=False,
-            )
-            with Horizontal(id="leverage-bars"):
-                yield Button(
-                    "Previous closed 10m · waiting", id="leverage-previous-bar"
+            with Horizontal(id="leverage-feed-controls"):
+                yield Label("Show feeds")
+                yield Checkbox(
+                    "Jupiter",
+                    value=self.feed_enabled["jupiter"],
+                    id="leverage-feed-jupiter",
                 )
-                yield Button("Developing 10m · waiting", id="leverage-current-bar")
-            yield Static(
-                "Loading durable trial status…", id="leverage-status", markup=False
-            )
-            yield Static(
-                "Transaction wallet: loading public identity…",
-                id="leverage-wallet",
-                markup=False,
-            )
-            with Horizontal(classes="leverage-controls"):
-                yield Label("Asset")
-                yield Select(
-                    [("ZEC", "ZEC"), ("BTC", "BTC")],
-                    value="ZEC",
-                    allow_blank=False,
-                    id="leverage-asset",
+                yield Checkbox(
+                    "Coinbase",
+                    value=self.feed_enabled["coinbase"],
+                    id="leverage-feed-coinbase",
                 )
-                yield Label("Bar")
-                yield Select(
-                    [("All bars", 0), *[(f"{n}m", n) for n in (5, 10, 15, 20)]],
-                    value=0,
-                    allow_blank=False,
-                    id="leverage-interval",
-                )
-                yield Button("Refresh [R]", id="leverage-refresh")
                 yield Button("Return [Esc]", id="leverage-return")
-            with Horizontal(id="leverage-workspace"):
-                with VerticalScroll(id="leverage-contents"):
-                    yield Static(
-                        "Both price streams: waiting for source observations…",
-                        id="leverage-price-comparison",
-                        markup=False,
-                    )
-                    yield Static(
-                        "10m reversal: waiting for paper observer",
-                        id="leverage-exit50",
-                        markup=False,
-                    )
-                    yield Static(
-                        "Venue capabilities pending",
-                        id="leverage-capabilities",
-                        markup=False,
-                    )
-                    yield Static(
-                        "Live source observation pending…",
-                        id="leverage-live-market",
-                        markup=False,
-                    )
-                    yield Static(
-                        "Paper performance pending",
-                        id="leverage-performance",
-                        markup=False,
-                    )
-                    yield Static(
-                        "No trial events yet", id="leverage-events", markup=False
-                    )
-                with Vertical(id="leverage-right"):
-                    yield Label(
-                        "Positions · select before Close", classes="leverage-section"
-                    )
-                    yield PositionTable(id="leverage-positions", cursor_type="row")
-                    yield Label(
-                        "Oracle calls · frozen evidence", classes="leverage-section"
-                    )
-                    yield DataTable(id="leverage-strategies", cursor_type="row")
-            with Horizontal(classes="leverage-controls"):
-                yield Select(
-                    [
-                        ("Jupiter CLI · 10×", "jupiter-cli-10x"),
-                        ("Jupiter SDK · 1000×", "jupiter-sdk-1000x"),
-                    ],
-                    value="jupiter-cli-10x",
-                    allow_blank=False,
-                    id="leverage-venue",
+            yield Static("", id="leverage-feed-notice", markup=False)
+            with VerticalScroll(id="leverage-body"):
+                yield Static(
+                    "Next 10m IF UU · ΔP(up) vs baseline: waiting",
+                    id="leverage-bar-tilts",
+                    markup=False,
                 )
-                yield Select(
-                    [("Long", "long"), ("Short", "short")],
-                    value="short",
-                    allow_blank=False,
-                    id="leverage-side",
+                with Horizontal(id="leverage-bars"):
+                    yield Button(
+                        "Previous closed 10m · waiting", id="leverage-previous-bar"
+                    )
+                    yield Button("Developing 10m · waiting", id="leverage-current-bar")
+                yield Static(
+                    "Loading durable trial status…", id="leverage-status", markup=False
                 )
-                yield Label("Collateral $")
-                yield Input("10", type="number", id="leverage-collateral")
-            yield Static(
-                "Preview checks a fresh unsigned build. Submit signs and sends that preview after backend arming and revalidation.\n10× collateral: USDC · 1000× collateral: JupUSD · Close uses the selected position's venue.",
-                id="leverage-result",
-                markup=False,
-            )
-            with Horizontal(classes="leverage-controls"):
-                yield Button("Arm 10x", id="leverage-arm", variant="warning")
-                yield Button("Preview", id="leverage-preview", variant="primary")
-                yield Button(
-                    "Submit preview",
-                    id="leverage-submit",
-                    variant="error",
-                    disabled=True,
+                yield Static(
+                    "Transaction wallet: loading public identity…",
+                    id="leverage-wallet",
+                    markup=False,
                 )
-                yield Button(
-                    "Close position", id="leverage-close-position", disabled=True
-                )
+                with Horizontal(classes="leverage-controls"):
+                    yield Label("Asset")
+                    yield Select(
+                        [("ZEC", "ZEC"), ("BTC", "BTC")],
+                        value="ZEC",
+                        allow_blank=False,
+                        id="leverage-asset",
+                    )
+                    yield Label("Bar", id="leverage-interval-label")
+                    yield Select(
+                        [("All bars", 0), *[(f"{n}m", n) for n in (5, 10, 15, 20)]],
+                        value=0,
+                        allow_blank=False,
+                        id="leverage-interval",
+                    )
+                    yield Button("Refresh [R]", id="leverage-refresh")
+                with Horizontal(id="leverage-workspace"):
+                    with VerticalScroll(id="leverage-contents"):
+                        yield Static(
+                            "Both price streams: waiting for source observations…",
+                            id="leverage-price-comparison",
+                            markup=False,
+                        )
+                        yield Static(
+                            "10m reversal: waiting for paper observer",
+                            id="leverage-exit50",
+                            markup=False,
+                        )
+                        yield Static(
+                            "Venue capabilities pending",
+                            id="leverage-capabilities",
+                            markup=False,
+                        )
+                        yield Static(
+                            "Live source observation pending…",
+                            id="leverage-live-market",
+                            markup=False,
+                        )
+                        yield Static(
+                            "Paper performance pending",
+                            id="leverage-performance",
+                            markup=False,
+                        )
+                        yield Static(
+                            "No trial events yet", id="leverage-events", markup=False
+                        )
+                    with Vertical(id="leverage-right"):
+                        yield Static(
+                            "Auto Long / Short · owner unavailable",
+                            id="auto-status",
+                            markup=False,
+                        )
+                        with Horizontal(id="auto-caps"):
+                            yield Input(
+                                placeholder="Base $", type="number", id="auto-base"
+                            )
+                            yield Input(
+                                placeholder="Max $", type="number", id="auto-max"
+                            )
+                            yield Input(
+                                placeholder="Loss cap $", type="number", id="auto-loss"
+                            )
+                            yield Checkbox("Advice", value=False, id="auto-advice")
+                        with Horizontal(id="auto-controls"):
+                            yield Button(
+                                "Start Paper", id="auto-paper", variant="primary"
+                            )
+                            yield Button(
+                                "Start Live", id="auto-live", variant="warning"
+                            )
+                            yield Button(
+                                "Stop entries", id="auto-stop", variant="error"
+                            )
+                        yield Label(
+                            "Positions · select before Close",
+                            classes="leverage-section",
+                            id="leverage-positions-title",
+                        )
+                        yield PositionTable(id="leverage-positions", cursor_type="row")
+                        yield Label(
+                            "Oracle calls · frozen evidence",
+                            classes="leverage-section",
+                            id="leverage-strategies-title",
+                        )
+                        yield DataTable(id="leverage-strategies", cursor_type="row")
+                with Vertical(id="leverage-trading"):
+                    with Horizontal(classes="leverage-controls"):
+                        yield Select(
+                            [
+                                ("Jupiter CLI · 10×", "jupiter-cli-10x"),
+                                ("Jupiter SDK · 1000×", "jupiter-sdk-1000x"),
+                            ],
+                            value="jupiter-cli-10x",
+                            allow_blank=False,
+                            id="leverage-venue",
+                        )
+                        yield Select(
+                            [("Long", "long"), ("Short", "short")],
+                            value="short",
+                            allow_blank=False,
+                            id="leverage-side",
+                        )
+                        yield Label("Collateral $")
+                        yield Input("10", type="number", id="leverage-collateral")
+                    with VerticalScroll(id="leverage-result-region"):
+                        yield Static(
+                            "Preview checks a fresh unsigned build. Submit signs and sends that preview after backend arming and revalidation.\n10× collateral: USDC · 1000× collateral: JupUSD · Close uses the selected position's venue.",
+                            id="leverage-result",
+                            markup=False,
+                        )
+                    with Horizontal(classes="leverage-controls"):
+                        yield Button(
+                            "Arm state unknown",
+                            id="leverage-arm",
+                            variant="warning",
+                            disabled=True,
+                        )
+                        yield Button(
+                            "Preview", id="leverage-preview", variant="primary"
+                        )
+                        yield Button(
+                            "Submit preview",
+                            id="leverage-submit",
+                            variant="error",
+                            disabled=True,
+                        )
+                        yield Button(
+                            "Close position",
+                            id="leverage-close-position",
+                            disabled=True,
+                        )
+
+    def on_resize(self, event):
+        self.set_class(event.size.height < 38, "short")
 
     def on_mount(self):
+        self.set_class(self.size.height < 38, "short")
         self.query_one("#leverage-strategies", DataTable).add_columns(
             "Asset", "Bar", "Shape", "Call", "Evidence"
         )
@@ -569,7 +739,85 @@ class LeveragePanel(ModalScreen[None]):
         )
         self._read_worker = LatestWorker(self._read, name="oracle-leverage-read")
         self._action_worker = LatestWorker(self._act, name="oracle-leverage-action")
-        self._poll_timer = self.set_interval(0.1, self.poll_workers)
+        self._auto_worker = LatestWorker(self._auto_call, name="oracle-auto-bridge")
+        self._auto_action_worker = LatestWorker(
+            self._auto_call, name="oracle-auto-action", daemon=False
+        )
+        try:
+            self._poll_timer = self.set_interval(0.1, self.poll_workers)
+            self._apply_feed_visibility()
+            if self._feed_changed is not None:
+                self._feed_changed(dict(self.feed_enabled))
+            self.action_refresh()
+        except BaseException:
+            self.stop_owned()
+            raise
+
+    def _apply_feed_visibility(self):
+        jupiter, coinbase = (self.feed_enabled[k] for k in ("jupiter", "coinbase"))
+        for identity in (
+            "leverage-bar-tilts",
+            "leverage-bars",
+            "leverage-wallet",
+            "leverage-capabilities",
+            "leverage-exit50",
+            "leverage-performance",
+            "leverage-trading",
+        ):
+            self.query_one(f"#{identity}").display = jupiter
+        for identity in (
+            "leverage-live-market",
+            "leverage-strategies",
+            "leverage-strategies-title",
+            "leverage-events",
+            "leverage-interval",
+            "leverage-interval-label",
+        ):
+            self.query_one(f"#{identity}").display = coinbase
+        self.query_one("#leverage-workspace").display = jupiter or coinbase
+        self.query_one("#leverage-status").display = jupiter or coinbase
+        self.query_one("#leverage-price-comparison").display = jupiter or coinbase
+        self.query_one("#leverage-positions").display = jupiter
+        self.query_one("#leverage-positions-title").display = jupiter
+        notice = self._feed_notice
+        if self._read_failed:
+            notice = (
+                "Snapshot unavailable. Refresh retries; retained observations may be stale. "
+                + notice
+            )
+        if not jupiter and not coinbase:
+            notice = "Both feeds hidden. Re-enable a feed above to resume its view. Shared paper recording continues."
+        self.query_one("#leverage-feed-notice", Static).update(Text(notice))
+
+    @on(Checkbox.Changed, "#auto-advice")
+    def auto_advice_changed(self, event):
+        if self.is_mounted and self._auto_live_confirm:
+            self._auto_live_confirm = False
+            self.query_one("#auto-live", Button).label = "Start Live"
+
+    @on(Checkbox.Changed, "#leverage-feed-controls Checkbox")
+    def feed_changed(self, event):
+        event.stop()
+        if not self.is_mounted or self._stopping:
+            return
+        source = event.checkbox.id.removeprefix("leverage-feed-")
+        if self.feed_enabled.get(source) == event.value:
+            return
+        self.feed_enabled[source] = event.value
+        self._basis_cache.clear()
+        self._basis_key = None
+        self._feed_notice = ""
+        try:
+            save_feeds(self._feed_settings, self.feed_enabled)
+        except (OSError, ValueError):
+            self._feed_notice = (
+                "Feed view changed for this session. Preferences could not be saved."
+            )
+        if self._feed_changed is not None:
+            self._feed_changed(dict(self.feed_enabled))
+        self._apply_feed_visibility()
+        if self.snapshot_data is not None:
+            self.paint_snapshot()
         self.action_refresh()
 
     def action_refresh(self):
@@ -582,16 +830,22 @@ class LeveragePanel(ModalScreen[None]):
     def _set_result(self, message):
         if not self._stopping and self.is_mounted:
             self.query_one("#leverage-result", Static).update(emphasized(message))
+            self.query_one("#leverage-result-region", VerticalScroll).scroll_home(
+                animate=False
+            )
 
     def _controls(self):
         busy = self._operation is not None
         arm = self.query_one("#leverage-arm", Button)
         venue = self.query_one("#leverage-venue", Select).value
-        active = venue in (self.snapshot_data or {}).get("enabled_venues", [])
-        arm.label = ("Disarm " if active else "Arm ") + (
-            "10x" if venue == "jupiter-cli-10x" else "1000x"
-        )
-        arm.disabled = busy
+        enabled = (self.snapshot_data or {}).get("enabled_venues")
+        armed = (self.snapshot_data or {}).get("armed")
+        known = isinstance(enabled, list) and type(armed) is bool
+        active = known and armed and venue in enabled
+        arm.label = (
+            "Disarm " if active else "Arm " if known else "Arm state unknown "
+        ) + ("10x" if venue == "jupiter-cli-10x" else "1000x")
+        arm.disabled = busy or not known or self._read_failed
         self.query_one("#leverage-preview", Button).disabled = busy
         self.query_one("#leverage-submit", Button).disabled = (
             busy or self.preview_id is None
@@ -619,13 +873,142 @@ class LeveragePanel(ModalScreen[None]):
         )
         self._controls()
 
+    @staticmethod
+    def _auto_call(request, cancelled):
+        if cancelled():
+            return None
+        from soltui.commands import dispatch
+
+        command, params = request
+        return dispatch(
+            command, params, surface="tui", quiet=command == "autotrade.status"
+        )
+
+    def _auto_submit(self, command, params):
+        if self._auto_busy or self._stopping:
+            return
+        signature = (command, repr(params))
+        if self._auto_retry is None or self._auto_retry[0] != signature:
+            self._auto_retry = (signature, str(uuid.uuid4()))
+        self._auto_action_worker.submit(
+            (command, {**params, "request_id": self._auto_retry[1]})
+        )
+        self._auto_busy = True
+        self._auto_epoch += 1
+        if self.is_mounted:
+            self.query_one("#auto-status", Static).update(
+                "Auto-trade action pending; awaiting owner acknowledgement."
+            )
+
+    def _paint_auto(self, data):
+        defaults = data.get("configuration") or data.get("defaults") or {}
+        if not self._auto_initialized and defaults:
+            for field, key in (
+                ("base", "base_collateral_usd"),
+                ("max", "max_collateral_usd"),
+                ("loss", "max_session_loss_usd"),
+            ):
+                self.query_one(f"#auto-{field}", Input).value = str(
+                    defaults.get(key, "")
+                )
+            self.query_one("#auto-advice", Checkbox).value = (
+                defaults.get("advice_enabled") is True
+            )
+            self._auto_initialized = True
+        pos = data.get("position") or {}
+        self._auto_unknown = pos.get("state") == "unknown"
+        if not self._auto_unknown:
+            self._auto_stop_confirm = False
+            self.query_one("#auto-stop", Button).label = "Stop entries"
+        plan = pos.get("plan") or {}
+        learner = data.get("learner") or {}
+        forecast = data.get("forecast") or {}
+        policy = data.get("policy") or {}
+        leverage = plan.get("leverage")
+        if leverage not in (10, 1000):
+            leverage = {"jupiter-cli-10x": 10, "jupiter-sdk-1000x": 1000}.get(
+                policy.get("venue")
+            )
+        product = f"{leverage}x" if leverage in (10, 1000) else "unknown product"
+        deadline = data.get("first_entry_deadline")
+        remaining = (
+            f"{max(0, int(deadline - self.clock()))}s"
+            if isinstance(deadline, (int, float))
+            else "unknown"
+        )
+        self.query_one("#auto-status", Static).update(
+            f"AUTO {_text(data.get('state'))} {_text(data.get('mode'))} {_text(policy.get('asset'))} {product} {_text(plan.get('direction'))}/{_text(pos.get('state'))} · realized session net (modeled) {_text(data.get('net_pnl_usd'))}\n"
+            f"Entry fill {_text(plan.get('entry_fill'))} · target {_text(plan.get('target_price'))} · stop {_text(plan.get('stop_price'))} · liq {_text(plan.get('liquidation_price'))}\n"
+            f"Wins {_text(learner.get('wins'))} · losses {_text(learner.get('losses'))} · liq {_text(learner.get('liquidations'))} · samples {_text(learner.get('samples'))} · data failures {_text(learner.get('availability_failures'))}\n"
+            f"Live: {_text((data.get('readiness') or {}).get('live'))}; 1000x: {_text((data.get('readiness') or {}).get('1000x'))}; advice: {_text((data.get('readiness') or {}).get('advice'))}\n"
+            f"First entry {remaining} · reason {_text(data.get('reason'))}; exit fill {_text(pos.get('exit_price'))}; {_text(plan.get('assumptions'))}\n"
+            f"All-cohort modeled results {_text((data.get('history') or {}).get('samples'))} samples / net {_text((data.get('history') or {}).get('net_pnl_usd'))}\n"
+            f"Training {_text(data.get('training'))}; samples {_text(learner.get('samples'))}; uncalibrated {_text(forecast.get('score'))}; boost {_text(forecast.get('boost_eligible'))} {_text(forecast.get('boost_reason'))}\n"
+            f"Caps {_text(policy.get('base_collateral_usd'))} / {_text(policy.get('max_collateral_usd'))} / loss {_text(policy.get('max_session_loss_usd'))}; forecast {_text(forecast.get('source') or forecast.get('advisory_forecast_id'))}\n"
+            "Stop prevents entries and manages open positions. Unknown outcomes require acknowledgement; session persists after closing."
+        )
+
     def poll_workers(self):
         if self._stopping or not self.is_mounted:
             return
+        auto_result = self._auto_action_worker.poll()
+        if auto_result is not None:
+            self._auto_busy = False
+            envelope = auto_result.value
+            if (
+                auto_result.error
+                or not isinstance(envelope, dict)
+                or not envelope.get("ok")
+            ):
+                error = (
+                    (envelope or {})
+                    .get("error", {})
+                    .get("message", "Owner unavailable")
+                    if isinstance(envelope, dict)
+                    else "Owner unavailable"
+                )
+                self.query_one("#auto-status", Static).update(f"Auto-trade: {error}")
+            else:
+                self._auto_retry = None
+                self._paint_auto(envelope["result"])
+            self._auto_next = time.monotonic() + 5
+        status_result = self._auto_worker.poll()
+        if (
+            status_result is not None
+            and not self._auto_busy
+            and self._auto_read_epoch == self._auto_epoch
+        ):
+            envelope = status_result.value
+            if (
+                status_result.error
+                or not isinstance(envelope, dict)
+                or not envelope.get("ok")
+            ):
+                error = (
+                    (envelope or {})
+                    .get("error", {})
+                    .get("message", "Owner unavailable")
+                    if isinstance(envelope, dict)
+                    else "Owner unavailable"
+                )
+                self.query_one("#auto-status", Static).update(f"Auto-trade: {error}")
+            else:
+                self._paint_auto(envelope["result"])
+            self._auto_next = time.monotonic() + 5
+        if (
+            not self._auto_busy
+            and not self._auto_worker.busy
+            and time.monotonic() >= self._auto_next
+        ):
+            self._auto_next = time.monotonic() + 5
+            self._auto_read_epoch = self._auto_epoch
+            self._auto_worker.submit(("autotrade.status", {}))
         result = self._read_worker.poll()
         if result is not None:
             if result.error or not isinstance(result.value, dict):
                 self._read_failed = True
+                self._apply_feed_visibility()
+                self._controls()
                 self.query_one(
                     "#leverage-price-comparison", Static
                 ).tooltip = (
@@ -633,6 +1016,7 @@ class LeveragePanel(ModalScreen[None]):
                 )
             else:
                 self._read_failed = False
+                self._apply_feed_visibility()
                 self.snapshot_data = result.value
                 comparison = self.snapshot_data.get("price_comparison", {})
                 feeds = (
@@ -686,6 +1070,19 @@ class LeveragePanel(ModalScreen[None]):
                 details = [
                     f"{_text(value.get('status'))}: {_text(value.get('message'), limit=600)}"
                 ]
+                preview = value.get("preview", {})
+                checked = (
+                    preview.get("checked", {}) if isinstance(preview, dict) else {}
+                )
+                if (
+                    action == "preview"
+                    and isinstance(checked, dict)
+                    and checked.get("verification") == "current_observed_subset"
+                ):
+                    details.insert(
+                        0,
+                        "1000x MARKET · entry indicative · close unavailable in this client.",
+                    )
                 for key in (
                     "asset",
                     "venue",
@@ -719,12 +1116,17 @@ class LeveragePanel(ModalScreen[None]):
     def paint_live_market(self):
         asset = self.query_one("#leverage-asset", Select).value
         venue = self.query_one("#leverage-venue", Select).value
-        key = (asset, venue)
+        key = (asset, venue, tuple(self.feed_enabled.items()))
         if key != self._basis_key:
             self._basis_cache.clear()
             self._basis_key = key
         comparison = comparison_text(
-            self.snapshot_data or {}, asset, venue, self.clock(), self._basis_cache
+            self.snapshot_data or {},
+            asset,
+            venue,
+            self.clock(),
+            self._basis_cache,
+            self.feed_enabled,
         )
         widget = self.query_one("#leverage-price-comparison", Static)
         signature = (comparison.plain, str(comparison.spans))
@@ -741,6 +1143,8 @@ class LeveragePanel(ModalScreen[None]):
         )
         details = []
         for source in ("jupiter", "coinbase"):
+            if not self.feed_enabled[source]:
+                continue
             rows = feeds.get(source, {})
             row = rows.get(asset, {}) if isinstance(rows, dict) else {}
             row = row if isinstance(row, dict) else {}
@@ -768,7 +1172,12 @@ class LeveragePanel(ModalScreen[None]):
                 if self._read_failed
                 else ""
             )
-            + "Green: fresh; yellow: delayed up to 5s; red: longer delay or stopped. Basis retains its last valid pair. "
+            + "LIVE: fresh; DELAYED: up to 5s; STALE: longer delay or stopped. "
+            + (
+                "Basis retains its last valid pair. "
+                if all(self.feed_enabled.values())
+                else ""
+            )
             + "; ".join(details)
         )
 
@@ -794,6 +1203,7 @@ class LeveragePanel(ModalScreen[None]):
         perf = data.get("performance", {})
         per_asset = perf.get("by_asset", {}) if isinstance(perf, dict) else {}
         perf = per_asset.get(asset, perf) if isinstance(per_asset, dict) else perf
+        perf = perf if isinstance(perf, dict) else {}
         mtf = data.get("mtf_forward", {})
         mtf = mtf if isinstance(mtf, dict) else {}
         mtf_perf = mtf.get("performance", {})
@@ -808,15 +1218,25 @@ class LeveragePanel(ModalScreen[None]):
                 else str(value)
             )
 
-        status = Text(
+        coinbase_status = Text(
             f"Coinbase {asset} paper {_text(data.get('status'))}: settled {number(perf.get('settled'))} · open {number(perf.get('open'))} · correct {number(perf.get('correct'))} · hit {number(perf.get('hit_rate'))} · net bps {number(perf.get('mean_net_bps'))} "
         )
-        status.append(
-            "●", style="green" if age is not None and 0 <= age <= 45 else "red"
+        coinbase_status.append(
+            "●",
+            style=(
+                "green"
+                if age is not None and 0 <= age <= 45
+                else "yellow"
+                if age is not None and 45 < age <= 90
+                else "red"
+            ),
         )
-        status.append(
-            f"\nMTF Jupiter ALL-ASSETS {_text(mtf.get('status', 'waiting'))}: settled {number(mtf_perf.get('settled'))} · open {number(mtf_perf.get('open'))} · pending {number(mtf_perf.get('pending_unscored'))} · correct {number(mtf_perf.get('direction_correct'))} · wins {number(mtf_perf.get('paper_wins'))} · hit {number(mtf_perf.get('hit_rate'))} · liquidated {number(mtf_perf.get('verified_liquidations'))} · gross underlying bps {number(mtf_perf.get('mean_unlevered_gross_bps'))}"
-        )
+        coinbase_status.append(f" {freshness}")
+        status = coinbase_status if self.feed_enabled["coinbase"] else Text()
+        if self.feed_enabled["jupiter"]:
+            status.append(
+                f"\nMTF Jupiter ALL-ASSETS {_text(mtf.get('status', 'waiting'))}: settled {number(mtf_perf.get('settled'))} · open {number(mtf_perf.get('open'))} · pending {number(mtf_perf.get('pending_unscored'))} · correct {number(mtf_perf.get('direction_correct'))} · wins {number(mtf_perf.get('paper_wins'))} · hit {number(mtf_perf.get('hit_rate'))} · liquidated {number(mtf_perf.get('verified_liquidations'))} · gross underlying bps {number(mtf_perf.get('mean_unlevered_gross_bps'))}"
+            )
         new = data.get("exit50_forward", {})
         new = new if isinstance(new, dict) else {}
         new_perf = (
@@ -824,14 +1244,20 @@ class LeveragePanel(ModalScreen[None]):
             if isinstance(new.get("performance"), dict)
             else {}
         )
-        status.append(
-            f"\n10m +50% paper {_text(new.get('status', 'waiting'))}: open {number(new_perf.get('open'))} · close pending {number(new_perf.get('close_pending'))} · unscored {number(new_perf.get('unscored'))} · settled {number(new_perf.get('settled'))} · profitable {number(new_perf.get('profitable'))}"
-        )
+        if self.feed_enabled["jupiter"]:
+            status.append(
+                f"\n10m +50% paper {_text(new.get('status', 'waiting'))}: open {number(new_perf.get('open'))} · close pending {number(new_perf.get('close_pending'))} · unscored {number(new_perf.get('unscored'))} · settled {number(new_perf.get('settled'))} · profitable {number(new_perf.get('profitable'))}"
+            )
         widget = self.query_one("#leverage-status", Static)
         widget.update(status)
         widget.tooltip = (
             freshness
-            + "; paper results are simulated. MTF gross underlying return excludes fees and is not leveraged PnL."
+            + "; paper results are simulated."
+            + (
+                " MTF gross underlying return excludes fees and is not leveraged PnL."
+                if self.feed_enabled["jupiter"]
+                else ""
+            )
         )
 
         self.query_one("#leverage-wallet", Static).update(emphasized(wallet_text(data)))
@@ -881,22 +1307,29 @@ class LeveragePanel(ModalScreen[None]):
             if isinstance(new_asset.get("indicators"), dict)
             else {}
         )
+        mtf_assets = (
+            mtf.get("assets", {}) if isinstance(mtf.get("assets"), dict) else {}
+        )
+        mtf_asset = (
+            mtf_assets.get(asset, {}) if isinstance(mtf_assets.get(asset), dict) else {}
+        )
         frames = (
-            new_asset.get("frames", {})
-            if isinstance(new_asset.get("frames"), dict)
+            mtf_asset.get("frames", {})
+            if isinstance(mtf_asset.get("frames"), dict)
             else {}
         )
-        bars = (
-            new_asset.get("bars", {}) if isinstance(new_asset.get("bars"), dict) else {}
-        )
+        quote_bars = data.get("quote_bars", {})
+        bars = quote_bars.get(asset, {}) if isinstance(quote_bars, dict) else {}
+        bars = bars if isinstance(bars, dict) else {}
         for kind in ("previous", "current"):
             button = self.query_one(f"#leverage-{kind}-bar", Button)
             label, color = bar_view(bars.get(kind), current=kind == "current")
             button.label = f"{asset} {label}"
             button.styles.background = color
-            button.tooltip = "Body magnitude / trailing mean range of up to 20 completed 10m bars; no forming bar enters its baseline. Click for prices."
+            button.styles.color = bar_text_color(color)
+            button.tooltip = "Sampled Jupiter oracle quotes; bar requires observations at each boundary and no gap over 5s. Body magnitude / trailing mean range of up to 20 completed 10m bars. Click for prices."
         previous_bar, current_bar = bars.get("previous"), bars.get("current")
-        tentative = (
+        _tentative = (
             isinstance(previous_bar, dict)
             and isinstance(current_bar, dict)
             and type(previous_bar.get("open")) in (int, float)
@@ -907,8 +1340,21 @@ class LeveragePanel(ModalScreen[None]):
             and current_bar["close"] > current_bar["open"]
         )
         tilts = self.query_one("#leverage-bar-tilts", Static)
-        tilts.update(Text(tilt_text(new_asset.get("tilts", {}), tentative)))
-        tilts.tooltip = "Training-only conditional P(up) minus baseline P(up), percentage points; n is the supported shape count. Current UU is tentative until close."
+        mtf_at = mtf.get("at")
+        mtf_age = (
+            self.clock() - mtf_at
+            if type(mtf_at) in (int, float) and math.isfinite(mtf_at)
+            else None
+        )
+        mtf_age_label = (
+            f" · observer age {max(0, mtf_age):.0f}s"
+            if mtf_age is not None
+            else " · observer age unknown"
+        )
+        tilts.update(
+            Text(mtf_tilt_text(mtf_asset.get("scores", {}), frames) + mtf_age_label)
+        )
+        tilts.tooltip = "Published 10m model component posterior P(up) minus its training baseline; n is the historical shape count. Not a forecast guarantee."
         shapes = " · ".join(
             f"{m}m {_text(frames.get(str(m), {}).get('shape')) if isinstance(frames.get(str(m)), dict) else '—'}"
             for m in (5, 10, 15, 20)
@@ -948,32 +1394,33 @@ class LeveragePanel(ModalScreen[None]):
             if type(roe) in (int, float) and math.isfinite(roe)
             else "—"
         )
+        indicator_line = (
+            f"Closed 1m EMA9 {_text(indicators.get('ema9'))} / EMA21 {_text(indicators.get('ema21'))} · MACD {_text(indicators.get('macd'))} / signal {_text(indicators.get('macd_signal'))} · BOP SMA3 price proxy {_text(indicators.get('bop_sma3'))}\n"
+            if self.feed_enabled["coinbase"]
+            else ""
+        )
+        indicator_note = (
+            f"EMA/MACD {_text(new_asset.get('indicator_note', 'waiting for bootstrap'))}; seed {_text(new_asset.get('indicator_seed_s'))}.\nCoinbase {visible_book} · visible liquidity, not order counts."
+            if self.feed_enabled["coinbase"]
+            else ""
+        )
         self.query_one("#leverage-exit50", Static).update(
             Text(
                 f"10m reversal {asset}: {_text(new_asset.get('signal', 'waiting'))} · policy {_text(selected_policy.get('family'))}/{_text(selected_policy.get('filter'))} ({_text(selected_policy.get('selection_status'))}) · model {_text(new_asset.get('model_sha256'), limit=64)} · score {_text(new_asset.get('score'))} (context score; not a probability)\n"
                 f"Completed shapes: {shapes}\n"
-                f"Closed 1m EMA9 {_text(indicators.get('ema9'))} / EMA21 {_text(indicators.get('ema21'))} · MACD {_text(indicators.get('macd'))} / signal {_text(indicators.get('macd_signal'))} · BOP SMA3 price proxy {_text(indicators.get('bop_sma3'))}\n"
-                f"Paper 1000x: {_text(new_asset.get('position_status', 'waiting'))} · modeled collateral ROE {roe_text} · target +50% · intent {_text(new_asset.get('intent'))} · min age 15s / close delay 10s\nAfter modeled trade fees; chain/keeper fees excluded. Oracle proxy; no verified fill.\nEMA/MACD {_text(new_asset.get('indicator_note', 'waiting for bootstrap'))}; seed {_text(new_asset.get('indicator_seed_s'))}.\nCoinbase {visible_book} · visible liquidity, not order counts."
+                f"{indicator_line}"
+                f"Paper 1000x: {_text(new_asset.get('position_status', 'waiting'))} · modeled collateral ROE {roe_text} · target +50% · intent {_text(new_asset.get('intent'))} · min age 15s / close delay 10s\nAfter modeled trade fees; chain/keeper fees excluded. Oracle proxy; no verified fill.\n{indicator_note}"
             )
         )
-        performance = data.get("performance", {})
-        if isinstance(performance, dict) and isinstance(
-            performance.get("by_asset"), dict
-        ):
-            selected = performance["by_asset"].get(asset)
-            performance = selected if selected is not None else performance
-        mtf_asset = (
-            mtf.get("assets", {}).get(asset, {})
-            if isinstance(mtf.get("assets"), dict)
-            else {}
-        )
-        frames = mtf_asset.get("frames", {}) if isinstance(mtf_asset, dict) else {}
-        scores = mtf_asset.get("scores", {}) if isinstance(mtf_asset, dict) else {}
+        scores = mtf_asset.get("scores", {})
         contexts = []
         for minutes in (5, 10, 15, 20):
             frame = frames.get(str(minutes), {}) if isinstance(frames, dict) else {}
             score = scores.get(str(minutes), {}) if isinstance(scores, dict) else {}
+            frame = frame if isinstance(frame, dict) else {}
+            score = score if isinstance(score, dict) else {}
             components = score.get("components", []) if isinstance(score, dict) else []
+            components = components if isinstance(components, list) else []
             support = (
                 ", ".join(
                     f"{c.get('minutes')}m n={c.get('n')}"
@@ -1111,10 +1558,21 @@ class LeveragePanel(ModalScreen[None]):
 
     @on(Select.Changed)
     @on(Input.Changed, "#leverage-collateral")
+    @on(Input.Changed, "#auto-base")
+    @on(Input.Changed, "#auto-max")
+    @on(Input.Changed, "#auto-loss")
     def selection_changed(self, event):
         event.stop()
         if not self.is_mounted or self._stopping:
             return
+        if (
+            isinstance(event, Input.Changed)
+            and event.input.id in ("auto-base", "auto-max", "auto-loss")
+            and self.focused is event.input
+        ):
+            self._auto_live_caps.add(event.input.id)
+        self._auto_live_confirm = False
+        self.query_one("#auto-live", Button).label = "Start Live"
         self.preview_id = None
         self._selection_generation += 1
         if (
@@ -1143,12 +1601,65 @@ class LeveragePanel(ModalScreen[None]):
     def button_pressed(self, event):
         event.stop()
         name = event.button.id
-        if name in ("leverage-previous-bar", "leverage-current-bar"):
+        if name in ("auto-paper", "auto-live", "auto-stop"):
+            if name == "auto-stop":
+                if self._auto_unknown and not self._auto_stop_confirm:
+                    self._auto_stop_confirm = True
+                    event.button.label = "Acknowledge unknown"
+                    self.query_one("#auto-status", Static).update(
+                        "Unknown paper outcome: press Acknowledge unknown to end the session."
+                    )
+                    return
+                params = {"acknowledge_unknown": True} if self._auto_unknown else {}
+                self._auto_stop_confirm = False
+                self._auto_submit("autotrade.stop", params)
+                return
+            if name == "auto-live" and len(self._auto_live_caps) != 3:
+                self.query_one("#auto-status", Static).update(
+                    "Explicitly enter all three live caps before confirming."
+                )
+                return
+            if name == "auto-live" and not self._auto_live_confirm:
+                self._auto_live_confirm = True
+                event.button.label = "Confirm Live"
+                self.query_one("#auto-status", Static).update(
+                    "Confirm Live again with the displayed explicit caps. Backend readiness still applies."
+                )
+                return
+            self._auto_live_confirm = False
+            self.query_one("#auto-live", Button).label = "Start Live"
+            try:
+                caps = {
+                    key: float(self.query_one(f"#auto-{field}", Input).value)
+                    for field, key in (
+                        ("base", "base_collateral_usd"),
+                        ("max", "max_collateral_usd"),
+                        ("loss", "max_session_loss_usd"),
+                    )
+                }
+                if not all(math.isfinite(v) and v > 0 for v in caps.values()):
+                    raise ValueError
+            except ValueError:
+                self.query_one("#auto-status", Static).update(
+                    "Enter positive finite base, maximum and loss caps."
+                )
+                return
+            mode = "live" if name == "auto-live" else "paper"
+            config = {
+                "mode": mode,
+                "asset": self.query_one("#leverage-asset", Select).value,
+                "venue": self.query_one("#leverage-venue", Select).value,
+                "advice_enabled": self.query_one("#auto-advice", Checkbox).value,
+                **caps,
+            }
+            params = {"config": config}
+            if mode == "live":
+                params["confirm"] = True
+            self._auto_submit(f"autotrade.start_{mode}", params)
+        elif name in ("leverage-previous-bar", "leverage-current-bar"):
             asset = self.query_one("#leverage-asset", Select).value
-            source = (self.snapshot_data or {}).get("exit50_forward", {})
-            assets = source.get("assets", {}) if isinstance(source, dict) else {}
-            row = assets.get(asset, {}) if isinstance(assets, dict) else {}
-            bars = row.get("bars", {}) if isinstance(row, dict) else {}
+            source = (self.snapshot_data or {}).get("quote_bars", {})
+            bars = source.get(asset, {}) if isinstance(source, dict) else {}
             kind = "previous" if name == "leverage-previous-bar" else "current"
             bar = bars.get(kind) if isinstance(bars, dict) else None
             self._set_result(
@@ -1159,8 +1670,20 @@ class LeveragePanel(ModalScreen[None]):
         elif name == "leverage-refresh":
             self.action_refresh()
         elif name == "leverage-arm":
+            if (
+                self._read_failed
+                or not isinstance(
+                    (self.snapshot_data or {}).get("enabled_venues"), list
+                )
+                or type((self.snapshot_data or {}).get("armed")) is not bool
+            ):
+                self._set_result("Arm state unavailable; refresh before changing it.")
+                return
             venue = self.query_one("#leverage-venue", Select).value
-            active = venue in (self.snapshot_data or {}).get("enabled_venues", [])
+            active = (
+                self.snapshot_data["armed"]
+                and venue in self.snapshot_data["enabled_venues"]
+            )
             self.preview_id = None
             self._dispatch(
                 "set_venue_armed",
@@ -1212,9 +1735,11 @@ class LeveragePanel(ModalScreen[None]):
         self._stopping = True
         if hasattr(self, "_poll_timer"):
             self._poll_timer.stop()
-        for worker in (self._read_worker, self._action_worker):
+        for worker in (self._read_worker, self._action_worker, self._auto_worker):
             if worker is not None:
                 worker.close(0.15)
+        if self._auto_action_worker is not None:
+            self._auto_action_worker.close(0.15, drain=True)
 
     def on_unmount(self):
         self.stop_owned()

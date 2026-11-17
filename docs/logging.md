@@ -20,6 +20,9 @@ currently record nothing.
 | `ecosystem/` | Pipeline `supervisor.log`, control-room `control-room.log`, `control.sqlite3` action receipts and sanitized `telemetry.sqlite3` mirror | Yes; original manager evidence remains with its owner |
 | `website/` | Worker fixed request-failure events; Python engine fixed HTTP/analysis events | Cloudflare runtime logs or captured engine stderr; no common persistent sink |
 | `oracle/` | Selected archive events/forecasts; separate webhook SQLite signals, per-leg intents, sanitized results and public fill evidence | Durable journals; fixed CLI/MCP/HTTP failures are not a universal transport-attempt log |
+| `executor/` | Append-only submission journal and registry `calls.jsonl` under its selected private log root | Journal persists intent/send/outcome; call metadata records parameter keys, not values; no shared per-HTTP-attempt sink |
+| `website/` | D1 account/session/subscription/webhook receipts and fixed public API errors | Durable application state; not a shared JSONL error or transport-attempt log |
+| Raw-event capture | Durable event spool, capture/upload status and upload-progress records in the explicit run home | Independent producer/uploader evidence; an acknowledged upload offset is distinct from a separate database read-back |
 
 The extension's real log is **not the console**. `src/storage/store.js` defines four
 object stores — `intents`, `fills`, `carry`, `events` — and the intent journal is what
@@ -55,6 +58,12 @@ console call, the DOM, or an HTTP response body:
 - the Jupiter API key,
 - the session-key vault contents or the passphrase that unseals it,
 - a private key or seed in any encoding.
+
+Hosted integration credentials (`STRIPE_SECRET_KEY`, `STRIPE_WEBHOOK_SECRET` and
+`ENGINE_TOKEN`), wallet challenge signatures, session tokens, MongoDB connection
+strings and X509 private material follow the same rule. Log symbolic failure codes
+and bounded nonsensitive metadata. Never copy raw provider/driver errors into a public
+response or persist request bodies to obtain transport observability.
 
 `commands.js` already models the rule: `setApiKey` deliberately returns only a length,
 with the comment that echoing a secret puts it in shell history. Follow that. If a value

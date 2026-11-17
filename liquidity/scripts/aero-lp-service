@@ -13,7 +13,7 @@ LIQ="${HERE:h}"
 BIN="$LIQ/.venv/bin/aero-lp"
 LP_HOME="${AERO_LP_HOME:-$HOME/.aero-lp}"
 CONFIG="$LP_HOME/config.toml"
-PLIST="$HOME/Library/LaunchAgents/$LABEL.plist"
+PLIST="${AERO_LP_LAUNCHAGENTS_DIR:-$HOME/Library/LaunchAgents}/$LABEL.plist"
 DOMAIN="gui/$(id -u)"
 
 case "${1:-}" in
@@ -23,6 +23,7 @@ case "${1:-}" in
     }
     [[ -x "$BIN" ]] || { echo "missing $BIN — run: cd $LIQ && uv sync --extra dev -p 3.13"; exit 1; }
     [[ -f "$CONFIG" ]] || { echo "missing $CONFIG — copy $LIQ/config.example.toml there and edit it"; exit 1; }
+    mode="${2:---dry-run}"
     mode_args=""
     mode_label="dry-run"
     if [[ "${2:-}" == "--live" ]]; then
@@ -30,25 +31,10 @@ case "${1:-}" in
       mode_label="live"
     fi
     mkdir -p "$LP_HOME" "${PLIST:h}"
-    cat > "$PLIST" <<PL
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
-<plist version="1.0"><dict>
-  <key>Label</key><string>$LABEL</string>
-  <key>ProgramArguments</key><array>
-    <string>$BIN</string><string>daemon</string><string>-c</string><string>$CONFIG</string>$mode_args
-  </array>
-  <key>EnvironmentVariables</key><dict><key>AERO_LP_HOME</key><string>$LP_HOME</string>
-    <key>PYTHONUNBUFFERED</key><string>1</string></dict>
-  <key>RunAtLoad</key><true/>
-  <key>KeepAlive</key><true/>
-  <key>ThrottleInterval</key><integer>60</integer>
-  <key>ExitTimeOut</key><integer>180</integer>
-  <key>ProcessType</key><string>Background</string>
-  <key>StandardOutPath</key><string>$LP_HOME/daemon.log</string>
-  <key>StandardErrorPath</key><string>$LP_HOME/daemon.log</string>
-</dict></plist>
-PL
+    temporary="$(mktemp "${PLIST}.XXXXXX")"
+    trap 'rm -f "$temporary"' EXIT
+    "$LIQ/.venv/bin/python" -m aero_lp.service "$BIN" "$LP_HOME" "$LABEL" "$mode" > "$temporary"
+    mv "$temporary" "$PLIST"
     launchctl bootout "$DOMAIN/$LABEL" 2>/dev/null || true
     launchctl bootstrap "$DOMAIN" "$PLIST"
     echo "started $LABEL ($mode_label); log: $LP_HOME/daemon.log"

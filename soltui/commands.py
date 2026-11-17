@@ -510,6 +510,93 @@ def dispatch(name: str, params: dict[str, Any] | None = None, surface: str = "ap
 
 # -- settings ------------------------------------------------------------------------------------
 
+# The owner is shared across surfaces; the registry only validates and forwards.
+def _autotrade_public(value):
+    """Do not export the owner's learner parameters or per-decision features."""
+    if isinstance(value, dict):
+        return {key: _autotrade_public(item) for key, item in value.items()
+                if key not in ("weights", "features")}
+    if isinstance(value, list):
+        return [_autotrade_public(item) for item in value]
+    return value
+
+
+def _autotrade_call(action, *args):
+    from oracle_leverage import autotrade
+
+    try:
+        return _autotrade_public(getattr(autotrade, action)(*args))
+    except ValueError as exc:
+        raise CommandError("bad_params", str(exc)) from exc
+
+
+@command("oracle.signals.status", "Read the private Jupiter directional signal relay.")
+def oracle_signals_status(ctx, p):
+    from oracle_leverage import signals
+    try:
+        return signals.status()
+    except ValueError as exc:
+        raise CommandError("bad_params", str(exc)) from exc
+
+
+@command("oracle.signals.publish", "Publish a private Jupiter directional signal snapshot.",
+         (P("packet", "json", "Bounded versioned signal packet.", True),), read_only=False)
+def oracle_signals_publish(ctx, p):
+    from oracle_leverage import signals
+    try:
+        return signals.publish(p["packet"])
+    except ValueError as exc:
+        raise CommandError("bad_params", str(exc)) from exc
+
+
+@command("oracle.signals.invalidate", "Fence and close a publisher's advisory windows.",
+         (P("event", "json", "Publisher sequence and bounded invalidation reason.", True),), read_only=False)
+def oracle_signals_invalidate(ctx, p):
+    from oracle_leverage import signals
+    try:
+        return signals.invalidate(p["event"])
+    except ValueError as exc:
+        raise CommandError("bad_params", str(exc)) from exc
+
+
+@command("autotrade.status", "Read the shared auto-trade owner status.")
+def autotrade_status(ctx, p):
+    return _autotrade_call("status")
+
+
+_AUTO_ID = P("request_id", "string", "Stable unique request identity.", True)
+_AUTO_CONFIG = P("config", "json", "Explicit session policy.", True)
+
+
+@command("autotrade.start_paper", "Start the shared paper session.", (_AUTO_ID, _AUTO_CONFIG), read_only=False)
+def autotrade_start_paper(ctx, p):
+    if not isinstance(p["config"], dict) or p["config"].get("mode") != "paper":
+        raise CommandError("bad_params", "Paper start requires mode=paper")
+    return _autotrade_call("start", p["request_id"], p["config"])
+
+
+@command("autotrade.start_live", "Request live start with explicit confirmation and limits.", (_AUTO_ID, _AUTO_CONFIG), read_only=False, requires_confirm=True)
+def autotrade_start_live(ctx, p):
+    if not isinstance(p["config"], dict) or p["config"].get("mode") != "live":
+        raise CommandError("bad_params", "Live start requires mode=live")
+    return _autotrade_call("start", p["request_id"], p["config"])
+
+
+@command("autotrade.stop", "Stop entries and manage open positions; unknown paper outcomes require explicit acknowledgement.",
+         (_AUTO_ID, P("acknowledge_unknown", "bool", "Explicitly acknowledge an unknown paper outcome.")), read_only=False)
+def autotrade_stop(ctx, p):
+    return _autotrade_call("stop", p["request_id"], p.get("acknowledge_unknown", False))
+
+
+@command("autotrade.configure", "Configure the next session; active policy remains immutable.", (_AUTO_ID, _AUTO_CONFIG), read_only=False)
+def autotrade_configure(ctx, p):
+    return _autotrade_call("configure", p["request_id"], p["config"])
+
+
+@command("autotrade.ingest_forecast", "Submit a fresh immutable Oracle advisory forecast.", (_AUTO_ID, P("forecast", "json", "Forecast provenance and advisory probability.", True)), read_only=False)
+def autotrade_ingest_forecast(ctx, p):
+    return _autotrade_call("ingest_forecast", p["request_id"], p["forecast"])
+
 _SETTING_CASTS = {
     "asset": str, "start": str, "end": str, "interval": str, "capital": float,
     "fee_bps": float, "slippage_bps": float, "fill_delay": int, "cpcv_groups": int, "cpcv_k": int,
@@ -1681,6 +1768,7 @@ def analyze_run(ctx: Context, p: dict[str, Any]) -> Any:
     net = result.net_pct
     return {
         "headline": result.headline, "truncated": result.truncated,
+        "gap_count": result.gap_count, "missing_bars": result.missing_bars,
         "net_pct": net, "net_pct_text": labelled(net, "backtest", "data price change"),
         "decisions": [{"name": d.name, "family": d.family, "action": d.action, "detail": d.detail,
                        "warmup": d.warmup, "bars": d.bars} for d in result.decisions],
@@ -2253,7 +2341,15 @@ def docs_list(ctx: Context, p: dict[str, Any]) -> Any:
 DOCS_SEARCH_MODES = ("keyword", "semantic", "hybrid")
 
 
+_REPO_SEARCH_LOCK = threading.RLock()
+
+
 def _repo_search():
+    with _REPO_SEARCH_LOCK:
+        return _repo_search_locked()
+
+
+def _repo_search_locked():
     """The index/search.py module, imported on first use and never before.
 
     The keyword postings (12 MB of JSON), the embedding matrix and the ~670 MB embedding model
@@ -2379,7 +2475,9 @@ def _backtest_curves(ctx: Context) -> tuple[list[pnl_mod.Curve], list[str]]:
         arrays = load_arrays(s)
         cfg = engine_config(s)
     except Exception as exc:  # noqa: BLE001 - say what is missing instead of failing the tab
-        notes.append(f"no backtest data: {type(exc).__name__}: {str(exc).splitlines()[0]}")
+        lines = str(exc).splitlines()
+        detail = f": {lines[0]}" if lines else ""
+        notes.append(f"no backtest data: {type(exc).__name__}{detail}")
         arrays = None
     if arrays is not None:
         from backtester.core.engine import run_backtest
@@ -2444,7 +2542,10 @@ def _lp_curves() -> list[tuple[str, list[pnl_mod.Curve], list[str]]]:
         except sqlite3.Error as exc:
             notes.append(f"ledger.sqlite unreadable: {exc}")
     if curve is None:
-        curve = pnl_mod.curve_from_lp_status(status.data)
+        try:
+            curve = pnl_mod.curve_from_lp_status(status.data)
+        except ValueError:
+            notes.append("LP status financial measurements unavailable")
         if curve is not None:
             notes.append("no ledger history: showing the status.json cumulative figure")
     return [(source, [curve] if curve else [], notes)]
@@ -2738,7 +2839,8 @@ def _daemon_context() -> dict[str, Any]:
                 tokens = [r[0] for r in conn.execute("SELECT DISTINCT token FROM wallet_balances")]
             finally:
                 conn.close()
-        except sqlite3.Error:
+        except sqlite3.Error as exc:
+            _LOGGER.warning("daemon token ledger read failed (%s)", type(exc).__name__)
             tokens = []
     return wallet_mod.daemon_context(status, tokens)
 
@@ -3405,7 +3507,7 @@ def bots_progress(ctx: Context, p: dict[str, Any]) -> Any:
           P("minutes", "number", "Forecast horizon: 1, 5 or 30 minutes."),
           P("capital", "number", "Starting paper dollars."),
           P("params", "json", "Strategy parameter overrides.")), read_only=False)
-def experiments_start(ctx: Context, p: dict[str, Any]) -> Any:
+def paper_experiment_start(ctx: Context, p: dict[str, Any]) -> Any:
     from . import paper_experiments
     params = p.get("params") or {}
     if not isinstance(params, dict):

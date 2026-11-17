@@ -125,6 +125,9 @@ export function computeAlerts({ holdings, liquidity, leads = [], top5, previousL
   for (const pos of liquidity?.positions ?? []) {
     const current = finite(pos.apr_realized);
     if (current === null || !best || best.pool === pos.pool) continue;
+    const capital = finite(pos.value_usd) ?? finite(pos.deposited_usd);
+    const required = finite(best.break_even_deposit_usd);
+    if (capital === null || capital <= 0 || required === null || required <= 0 || capital < required) continue;
     const gain = best.expected_net_apr - current;
     if (gain < p.minAprGainPct) continue;
     out.push({
@@ -149,7 +152,7 @@ export function computeAlerts({ holdings, liquidity, leads = [], top5, previousL
   const idleUsd = Math.max(baseStableUsd, finite(liquidity?.wallet?.idle_usd) ?? 0);
   // Below its break-even deposit a position loses to its own rebalancing gas.
   const breakEven = finite(best?.break_even_deposit_usd);
-  if (best && idleUsd >= p.minIdleUsd && breakEven !== null && breakEven >= 0 && breakEven <= idleUsd) {
+  if (best && idleUsd >= p.minIdleUsd && (breakEven !== null && breakEven > 0 && breakEven <= idleUsd)) {
     const deposit = finite(liquidity?.scout?.deposit_usd);
     out.push({
       id: `idle:${best.pool}`,

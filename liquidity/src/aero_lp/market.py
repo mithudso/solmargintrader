@@ -15,6 +15,7 @@ from typing import Any
 import httpx
 
 from . import clmath
+from .validation import finite_number
 
 GT = "https://api.geckoterminal.com/api/v2"
 STABLES = {
@@ -150,8 +151,17 @@ class PoolEconomics:
     # Realized fee income per unit of unstaked in-range liquidity per day, in USD, measured from the
     # change in feeGrowthGlobal over the last day. CLPool.calculateFees credits feeGrowthGlobal per unit of
     # *unstaked* liquidity, already net of the unstaked fee, so this captures dynamic fees and MEV capture.
-    # 0 = not measured; fall back to volume * current fee.
-    fee_usd_per_l_day: float = 0.0
+    # None = not measured; a measured zero is still authoritative.
+    fee_usd_per_l_day: float | None = None
+
+    def __post_init__(self) -> None:
+        for name in self.__dataclass_fields__:
+            value = getattr(self, name)
+            if name == "fee_usd_per_l_day" and value is None:
+                continue
+            finite_number(value, name, integer=name in ("active_liquidity", "staked_liquidity", "dec0", "dec1"))
+        if self.fee > 1 or self.unstaked_fee_share > 1:
+            raise ValueError("pool fee fractions must be at most 1")
 
 
 def fee_usd_per_liquidity_per_day(d_growth0_x128: int, d_growth1_x128: int, days: float, e: PoolEconomics) -> float:
@@ -185,7 +195,7 @@ def earn_usd_per_day(liquidity: int, staked: bool, in_range: bool, e: PoolEconom
     if staked:
         denom = e.staked_liquidity + (0 if already_counted else liquidity)
         return e.aero_per_day * e.aero_usd * liquidity / max(1, denom)
-    if e.fee_usd_per_l_day > 0:
+    if e.fee_usd_per_l_day is not None:
         # Measured per-unit growth; a new deposit dilutes it by its share of unstaked in-range liquidity.
         unstaked = max(0, e.active_liquidity - e.staked_liquidity)
         dilution = 1.0 if already_counted else unstaked / max(1, unstaked + liquidity)
@@ -198,8 +208,12 @@ def with_realized_fees(chain: Any, pool: str, head: int, e: PoolEconomics) -> Po
     """Return `e` with fee_usd_per_l_day measured on chain (unchanged if history is unavailable)."""
     try:
         d0, d1, days = chain.fee_growth_delta(pool, head)
-    except Exception:  # noqa: BLE001
-        return e
+    except Exception as error:  # noqa: BLE001 -- history absence is distinct from a failed provider read
+        from .chain import insufficient_history
+
+        if insufficient_history(error):
+            return e
+        raise RuntimeError("fee history provider unavailable") from None
     if days <= 0:
         return e
     return dataclasses.replace(e, fee_usd_per_l_day=fee_usd_per_liquidity_per_day(d0, d1, days, e))

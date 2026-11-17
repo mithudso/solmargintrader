@@ -144,8 +144,15 @@ class Roster:
         """
         roster = cls()
         for item in raw or []:
+            if not isinstance(item, dict) or not isinstance(item.get("name"), str):
+                continue
+            params = item.get("params", {})
+            if params is None:
+                params = {}
+            if not isinstance(params, dict) or not all(isinstance(k, str) for k in params):
+                continue
             try:
-                roster.add(item.get("name", ""), **(item.get("params") or {}))
+                roster.add(item["name"], **params)
             except RosterError:
                 continue
         return roster

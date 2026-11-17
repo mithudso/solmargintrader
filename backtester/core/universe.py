@@ -32,7 +32,7 @@ import pandas as pd
 
 from .assets import REMOVED_ASSETS, filter_removed_assets
 from .data import validate_bars
-from .fetch import FetchError, default_cache_path, fetch_coinbase
+from .fetch import FetchError, atomic_csv, default_cache_path, fetch_coinbase
 from .types import INTERVAL_SECONDS
 
 COINBASE_PRODUCTS_URL = "https://api.exchange.coinbase.com/products"
@@ -207,7 +207,9 @@ def fetch_universe(
     results: dict[str, str] = {asset: "not-listed" for asset in plan.missing}
 
     for asset in plan.available:
-        out = (out_dir / f"{asset}_{interval}.csv") if out_dir else default_cache_path(asset, interval)
+        quote = plan.products[asset].rsplit("-", 1)[-1]
+        name = default_cache_path(asset, interval, quote).name
+        out = (out_dir / name) if out_dir else default_cache_path(asset, interval, quote)
         if skip_existing and out.exists():
             results[asset] = f"skipped (cached at {out})"
             continue
@@ -223,8 +225,11 @@ def fetch_universe(
             results[asset] = f"FAILED validation: {exc}"
             continue
 
-        out.parent.mkdir(parents=True, exist_ok=True)
-        frame.to_csv(out, index=False)
+        try:
+            atomic_csv(frame, out)
+        except OSError as exc:
+            results[asset] = f"FAILED cache publication: {type(exc).__name__}"
+            continue
         results[asset] = f"wrote {len(frame)} bars to {out}"
 
     return results

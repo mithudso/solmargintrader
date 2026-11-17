@@ -1,7 +1,7 @@
 /** Browser-only window transport; the action stays in the shared registry. */
 export function createLiveWindows({ runtime, windows, getURL, timeoutMs = 5000 }) {
   const owners = new Map(), pending = new Map();
-  let sequence = 0, opening = null;
+  let sequence = 0, opening = null, openingAsset = null;
   const allowed = new Set([getURL('src/ui/dashboard.html'), getURL('src/ui/live-window.html')]);
   runtime.onConnect.addListener(port => {
     if (port.name !== 'signal-live-owner' || !allowed.has((port.sender?.url ?? '').split(/[?#]/)[0])) return;
@@ -46,10 +46,12 @@ export function createLiveWindows({ runtime, windows, getURL, timeoutMs = 5000 }
       }
       // A new document cannot inherit DOM activation. Its direct Pin button is
       // the minimal second gesture Chrome requires; do not claim this is AOT.
+      if (opening && openingAsset !== asset) return Promise.reject(new Error('Another coin is opening. Retry after the live window opens.'));
+      openingAsset = asset;
       opening ??= windows.create({ url: getURL(`src/ui/live-window.html?asset=${asset}`),
         type: 'popup', width: 430, height: 740, focused: true }).then(window => ({
         mode: 'window', windowId: window?.id, requiresPin: true,
-        message: 'Live window opened. Click Pin on top there.' })).finally(() => { opening = null; });
+        message: 'Live window opened. Click Pin on top there.' })).finally(() => { opening = null; openingAsset = null; });
       return opening;
     },
   };

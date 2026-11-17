@@ -644,8 +644,14 @@ export default {
   async scheduled(event, env) {
     if (!env.DB) return;
     if (event.cron === '* * * * *') {
-      if (engineConfigured(env)) await reconcileBacktestJobs(env, jobServices(env));
-      if (engineConfigured(env) && executionAvailable(env, 'coinbase')) await tickManagedBots(env, managedServices(null, env));
+      const failures = [];
+      if (engineConfigured(env)) {
+        try { await reconcileBacktestJobs(env, jobServices(env)); } catch (error) { failures.push(error); }
+      }
+      if (engineConfigured(env) && executionAvailable(env, 'coinbase')) {
+        try { await tickManagedBots(env, managedServices(null, env)); } catch (error) { failures.push(error); }
+      }
+      if (failures.length) throw new AggregateError(failures, 'scheduled_tasks_failed');
       return;
     }
     await env.DB.batch([

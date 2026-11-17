@@ -201,7 +201,10 @@ def target_range(tick_current: int, spacing: int, half_width: float, skew: float
     lower = min(lower, clmath.floor_tick(tick_current, spacing))
     upper = max(upper, clmath.floor_tick(tick_current, spacing) + spacing)
     min_t, max_t = clmath.usable_tick_bounds(spacing)
-    return Range(max(lower, min_t), min(upper, max_t))
+    result = Range(max(lower, min_t), min(upper, max_t))
+    if result.tick_lower >= result.tick_upper or not result.contains(tick_current):
+        raise ValueError("current tick cannot be contained in a usable range")
+    return result
 
 
 def range_position(tick: float, rng: Range) -> float:
@@ -320,6 +323,7 @@ def decide(
     new = target_range(tick, spacing, hw, skew)
     parts = rebalance_cost(cost, cfg)
     total_cost = sum(parts.values())
+    finite_number(total_cost, "total rebalance cost")
 
     occupancy = in_range_probability(hw, sigma_daily, cfg.horizon_days)
     net_new = earn.earn_usd_per_day_new - cfg.lvr_weight * earn.lvr_usd_per_day_new

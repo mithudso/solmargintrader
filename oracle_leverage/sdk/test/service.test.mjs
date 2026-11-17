@@ -10,13 +10,13 @@ const keeper = key(2), now = 1794800000;
 const settings = { keeper, paused: false, settings: { maxRequestExecutionSec: 30 } };
 const connection = { async getBlockHeight() { return 100; } };
 const readAccount = async (_connection, _key, decoder) => decoder === sdk.deserializeConfigAccount ? settings :
-  decoder === sdk.deserializeMarketAccount ? { oracle: key(4) } :
+  decoder === sdk.deserializeMarketAccount ? { oracle: key(4), mint: key(5) } :
     { owner: owner.publicKey, market: new PublicKey(MARKETS.ZEC), isOpen: true, updateTime: BigInt(now - 20) };
 const options = { connection, now, readAccount };
 const markets = () => ({ paused: false, minMargin: '5000000', fees: { closeFeePpm: 20, winFeePpm: 30000 }, markets:
   Object.entries(MARKETS).map(([symbol, address]) => ({ symbol, address, closed: false, closeOnly: false })) });
 const intent = () => ({ operation: 'open', owner: owner.publicKey.toBase58(), asset: 'ZEC', side: 'short', margin: '5000000', leverage: 1000 });
-async function fixture({ operation = 'open', margin = 5000000n, extra = [], side = false } = {}) {
+async function fixture({ operation = 'open', margin = 5000000n, extra = [], side = false, oracle = key(4) } = {}) {
   const program = new PublicKey(PROGRAM), usdMint = new PublicKey(USD_MINT);
   const [config] = await sdk.findConfigPda(program), [pool] = await sdk.findPoolPda(program), [vault] = await sdk.findVaultPda(program);
   const [position] = await sdk.findPositionPda({ owner: owner.publicKey, id: 17n }, program);
@@ -25,7 +25,7 @@ async function fixture({ operation = 'open', margin = 5000000n, extra = [], side
   const [funding] = PublicKey.findProgramAddressSync([owner.publicKey.toBuffer(), token.toBuffer(), usdMint.toBuffer()], associated);
   const [eventAuthority] = PublicKey.findProgramAddressSync([Buffer.from('__event_authority')], program);
   const common = { owner: owner.publicKey, keeper, config, market: new PublicKey(MARKETS.ZEC), pool, vault, usdMint,
-    oracle: key(4), tokenProgram: token, systemProgram: SystemProgram.programId, eventAuthority, program, position };
+    oracle, tokenProgram: token, systemProgram: SystemProgram.programId, eventAuthority, program, position };
   const ix = operation === 'open' ? await sdk.createOpenPositionInstruction({ ...common, fundingAccount: funding },
     { id: 17n, margin, leverage: 1000, long: side, requestTime: BigInt(now) }, program) :
     await sdk.createClosePositionInstruction({ ...common, destination: funding, claim: key(9) }, { requestTime: BigInt(now) }, program);
@@ -37,6 +37,7 @@ async function fixture({ operation = 'open', margin = 5000000n, extra = [], side
 
 async function inspectionFixture() {
   const program = new PublicKey(PROGRAM), [config] = await sdk.findConfigPda(program);
+  const [oracle] = PublicKey.findProgramAddressSync([Buffer.from('price'), key(5).toBuffer()], program);
   const update = new TransactionInstruction({ programId: program, data: Buffer.concat([Buffer.from('3d22759b4b227bd0', 'hex'), Buffer.alloc(125)]), keys: [
     { pubkey: keeper, isSigner: true, isWritable: true },
     { pubkey: config, isSigner: false, isWritable: false },
@@ -44,14 +45,16 @@ async function inspectionFixture() {
     { pubkey: new PublicKey('Gx4MBPb1vqZLJajZmsKLg8fGw9ErhoKsR8LeKcCKFyak'), isSigner: false, isWritable: true },
     { pubkey: new PublicKey('pytd2yyk641x7ak7mkaasSJVXh6YYZnC7wTmtgAyxPt'), isSigner: false, isWritable: false },
     { pubkey: SystemProgram.programId, isSigner: false, isWritable: false },
-    { pubkey: key(4), isSigner: false, isWritable: true },
+    { pubkey: oracle, isSigner: false, isWritable: true },
   ] });
-  return { ...(await fixture({ extra: [update] })), update };
+  return { ...(await fixture({ extra: [update], oracle })), update, oracle };
 }
 
 test('inspection validates intent and simulates unsigned without producing executable preview', async () => {
-  const { build } = await inspectionFixture(); let simulations = 0;
-  const connection = { async getBlockHeight() { return 100; }, async getAccountInfo() { return { owner: new PublicKey(PROGRAM), executable: false }; },
+  const { build, oracle } = await inspectionFixture(); let simulations = 0;
+  const [, bump] = PublicKey.findProgramAddressSync([Buffer.from('price'), key(5).toBuffer()], new PublicKey(PROGRAM));
+  const data = Buffer.concat([Buffer.from('47a6e51536f70822', 'hex'), key(5).toBuffer(), Buffer.alloc(20), Buffer.from([bump])]);
+  const connection = { async getBlockHeight() { return 100; }, async getAccountInfo(address) { assert.ok(address.equals(oracle)); return { owner: new PublicKey(PROGRAM), executable: false, data }; },
     async simulateTransaction(tx, opts) { simulations++; assert.equal(opts.sigVerify, false); assert.equal(opts.replaceRecentBlockhash, true); assert.ok(tx.signatures.every(s => s.every(b => b === 0))); return { value: { err: null, unitsConsumed: 1234 } }; } };
   const deps = { connection, now, readAccount };
   const result = await inspectOpenBuild(build, intent(), deps);
@@ -63,12 +66,19 @@ test('inspection validates intent and simulates unsigned without producing execu
   await assert.rejects(inspectOpenBuild(build, { ...intent(), owner: key(8).toBase58() }, deps), /signers/);
   const { update } = await inspectionFixture();
   update.keys[2].pubkey = key(9);
-  await assert.rejects(inspectOpenBuild((await fixture({ extra: [update] })).build, intent(), deps), /unexpected_price_update_accounts/);
+  await assert.rejects(inspectOpenBuild((await fixture({ extra: [update], oracle })).build, intent(), deps), /unexpected_price_update_accounts/);
   const { update: validUpdate } = await inspectionFixture();
   const unknown = new TransactionInstruction({ programId: key(11), keys: [], data: Buffer.alloc(0) });
-  await assert.rejects(inspectOpenBuild((await fixture({ extra: [validUpdate, unknown] })).build, intent(), deps), /unexpected_service_instruction/);
+  await assert.rejects(inspectOpenBuild((await fixture({ extra: [validUpdate, unknown], oracle })).build, intent(), deps), /unexpected_service_instruction/);
   const expensive = ComputeBudgetProgram.setComputeUnitPrice({ microLamports: 10000001 });
-  await assert.rejects(inspectOpenBuild((await fixture({ extra: [validUpdate, expensive] })).build, intent(), deps), /priority_fee/);
+  await assert.rejects(inspectOpenBuild((await fixture({ extra: [validUpdate, expensive], oracle })).build, intent(), deps), /priority_fee/);
+  await assert.rejects(inspectOpenBuild((await fixture({ extra: [validUpdate] })).build, intent(), deps), /oracle_market_mismatch/);
+  data[8] ^= 1;
+  await assert.rejects(inspectOpenBuild(build, intent(), deps), /invalid_oracle_account/);
+  data[8] ^= 1;
+  data[60] ^= 1;
+  await assert.rejects(inspectOpenBuild(build, intent(), deps), /invalid_oracle_account/);
+  data[60] ^= 1;
   assert.equal(simulations, 1);
   connection.simulateTransaction = async () => ({ value: { err: { InstructionError: [1, { Custom: 17 }] } } });
   const failed = await inspectOpenBuild(build, intent(), deps);
@@ -188,4 +198,32 @@ test('known live insufficient balance is actionable and stops before signing', a
   const api = async path => { if (path === 'markets') return markets(); throw new Error('service_400_insufficient_balance'); };
   const result = await serviceHandle({ ...intent(), action: 'service-build-open' }, { ...options, api });
   assert.equal(result.status, 'blocked'); assert.match(result.message, /JupUSD/);
+});
+
+test('current-format RPC failure is structured and never exposes transaction bytes', async () => {
+  const { build, oracle } = await inspectionFixture();
+  const [, bump] = PublicKey.findProgramAddressSync([Buffer.from('price'), key(5).toBuffer()], new PublicKey(PROGRAM));
+  const data = Buffer.concat([Buffer.from('47a6e51536f70822', 'hex'), key(5).toBuffer(), Buffer.alloc(20), Buffer.from([bump])]);
+  const connection = { async getBlockHeight() { return 100; }, async getAccountInfo(address) { assert.ok(address.equals(oracle)); return { owner: new PublicKey(PROGRAM), executable: false, data }; },
+    async getMultipleAccountsInfo() { throw new Error('429 private provider response'); } };
+  const api = async path => path === 'markets' ? markets() : build;
+  const result = await serviceHandle({ ...intent(), action: 'service-build-open' }, { connection, readAccount, now, api });
+  assert.equal(result.status, 'blocked'); assert.equal(result.code, 'current_rpc_unavailable');
+  assert.equal(result.build, undefined); assert.doesNotMatch(result.message, /429|private provider/);
+});
+
+test('current update plus close refuses before the legacy close verifier', async () => {
+  const { update, oracle } = await inspectionFixture();
+  const { build, position } = await fixture({ operation: 'close', extra: [update], oracle });
+  await assert.rejects(verifyBuild(build, { ...intent(), operation: 'close', position: position.toBase58() }, options), /current_close_unverified/);
+});
+
+
+test('service build HTTP and transport failures return structured blocked responses', async () => {
+  for (const [error, code] of [['service_503_request_rejected', 'service_503_request_rejected'], ['fetch failed with private detail', 'current_service_unavailable']]) {
+    const api = async path => { if (path === 'markets') return markets(); throw new Error(error); };
+    const result = await serviceHandle({ ...intent(), action: 'service-build-open' }, { ...options, api });
+    assert.equal(result.status, 'blocked'); assert.equal(result.code, code); assert.equal(result.build, undefined);
+    assert.doesNotMatch(result.message, /private detail/);
+  }
 });

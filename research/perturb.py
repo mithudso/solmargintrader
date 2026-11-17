@@ -151,6 +151,9 @@ class Report:
 
     def verdict(self) -> str:
         """Plain-language reading, using the criterion in the module docstring."""
+        if (not self.baseline.evaluable or not np.isfinite(self.baseline.median_sharpe)
+                or not np.isfinite(self.baseline.iqr) or self.baseline.iqr <= 1e-12):
+            return "INCONCLUSIVE — baseline or its sampling scale is unavailable"
         if not self.usable:
             return "INCONCLUSIVE — no perturbation produced an evaluable result"
         r = self.ratio_to_iqr
@@ -361,7 +364,8 @@ def render_batch(horizon: str, reports: list[Report], pct: float = 0.10) -> str:
             f"population: ratio min {ratios.min():.2f}  median {np.median(ratios):.2f}  "
             f"max {ratios.max():.2f}   |   sign flips {flips}/{total}",
             f"Spearman(median Sharpe, ratio) = {rho:+.3f}  "
-            + ("— better performers are LESS stable, i.e. the ranking is partly "
+            + ("— rank correlation is undefined; no directional stability evidence" if not np.isfinite(rho) else
+               "— better performers are LESS stable, i.e. the ranking is partly "
                "selecting parameter luck" if rho > 0.3 else
                "— performance and stability are not strongly linked" if abs(rho) <= 0.3 else
                "— better performers are MORE stable"),
@@ -404,7 +408,7 @@ def main(argv: list[str] | None = None) -> int:
         stem = f"perturb_all_singles_{asset_prefix}{args.horizon}"
         (OUT / f"{stem}.txt").write_text(text + "\n")
         pd.DataFrame([
-            {"horizon": args.horizon, "label": r.baseline.label,
+            {"asset": args.asset, "horizon": args.horizon, "label": r.baseline.label,
              "median_sharpe": r.baseline.median_sharpe, "iqr": r.baseline.iqr,
              "max_abs_delta": r.max_abs_delta, "ratio_to_iqr": r.ratio_to_iqr,
              "sign_flips": len(r.sign_flips), "perturbations": len(r.usable),

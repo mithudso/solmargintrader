@@ -20,10 +20,9 @@ class WebTests(unittest.TestCase):
         self.temp = tempfile.TemporaryDirectory()
         self.addCleanup(self.temp.cleanup)
         self.home = Path(self.temp.name) / "absent"
-        self.server = make_server(self.home, port=0)
-        self.thread = threading.Thread(
-            target=lambda: self.server.serve_forever(poll_interval=0.01), daemon=True
-        )
+        self.manager_home = Path(self.temp.name) / "manager"
+        self.server = make_server(self.home, manager_home=self.manager_home, port=0)
+        self.thread = threading.Thread(target=lambda: self.server.serve_forever(poll_interval=0.01), daemon=True)
         self.thread.start()
         self.addCleanup(self.close_server)
         self.host = f"127.0.0.1:{self.server.server_port}"
@@ -265,7 +264,7 @@ class WebTests(unittest.TestCase):
             owner.assert_called_once_with(self.home, limit=17, after=cursor)
         with patch("ecosystem.web._telemetry", return_value={"events": []}) as owner:
             self.assertEqual(self.body("/api/telemetry?after=101&limit=13")[0], 200)
-            owner.assert_called_once_with(self.home, None, after=101, limit=13)
+            owner.assert_called_once_with(self.home, self.manager_home, after=101, limit=13)
 
     def test_secret_redaction_adversarial_content_and_fixed_owner_errors(self):
         record = {

@@ -20,6 +20,21 @@ from botmanager.strategies.grid import evaluate
 from tests.test_paper import recording
 
 
+def _reap_edit_child(process):
+    try:
+        if process.poll() is None:
+            process.terminate()
+        try:
+            process.wait(timeout=2)
+        except subprocess.TimeoutExpired:
+            process.kill()
+            process.wait(timeout=2)
+    finally:
+        for stream in (process.stdout, process.stderr):
+            if stream is not None:
+                stream.close()
+
+
 class EditingTests(unittest.TestCase):
     def setUp(self):
         self.temp = tempfile.TemporaryDirectory()
@@ -228,8 +243,9 @@ class EditingTests(unittest.TestCase):
 
     def test_concurrent_fresh_process_edits_merge_explicit_deltas(self):
         env = dict(os.environ, SOLBOT_HOME=str(self.home))
-        processes = [
-            subprocess.Popen(
+        processes = []
+        for setting in ("range_pct=20", "deadband_bps=45"):
+            process = subprocess.Popen(
                 [
                     sys.executable,
                     "-m",
@@ -244,8 +260,8 @@ class EditingTests(unittest.TestCase):
                 stderr=subprocess.PIPE,
                 text=True,
             )
-            for setting in ("range_pct=20", "deadband_bps=45")
-        ]
+            self.addCleanup(_reap_edit_child, process)
+            processes.append(process)
         for process in processes:
             stdout, stderr = process.communicate(timeout=15)
             self.assertEqual(process.returncode, 0, (stdout, stderr))

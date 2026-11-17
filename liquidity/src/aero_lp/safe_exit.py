@@ -33,6 +33,7 @@ from web3 import Web3
 from . import addresses
 from .chain import ZERO, PoolState, PositionState
 from .config import SAFE_EXIT_TARGETS, Config
+from .diagnostics import safe_error
 from .engine import Engine
 from .executor import RebalanceError, RebalanceResult, SimRunner, fmt_amount, gas_cost_usd, runner_tokens
 from .metrics import KNOWN_TOKENS
@@ -56,6 +57,8 @@ class ConvertStep:
     refused: str = ""  # why this conversion will not run
     tx_hashes: list[str] = field(default_factory=list)
     out_raw: int = 0
+    status: str = "planned"  # planned | refused | complete | failed | unknown
+    stages: list[str] = field(default_factory=list)
 
 
 @dataclass
@@ -88,7 +91,10 @@ class ExitReport:
     @property
     def ok(self) -> bool:
         wanted = "exited" if self.live else "ready"
-        return not self.error and all(p.status == wanted for p in self.positions)
+        return not self.error and all(
+            p.status == wanted and all(c.status not in ("failed", "unknown") for c in p.converts)
+            for p in self.positions
+        )
 
 
 def managed_token_ids(cfg: Config, eng: Engine, ledger_token_ids: list[int], explicit: list[int] | None) -> list[int]:
@@ -118,7 +124,13 @@ def plan_conversion(eng: Engine, token: str, amount: int, target: str, prices: d
     if amount <= 0:
         step.refused = "nothing to convert"
         return step
-    route = best_direct_pool(eng, token, target)
+    try:
+        finite_number(amount, "conversion amount", positive=True, integer=True)
+        route = best_direct_pool(eng, token, target)
+    except Exception as error:  # noqa: BLE001 -- optional conversion cannot prevent withdrawal
+        step.refused = "conversion route unavailable: " + safe_error(error)
+        step.status = "refused"
+        return step
     if route is None:
         step.refused = "no direct pool to the target coin (multi-hop routes are not used)"
         return step
@@ -126,8 +138,6 @@ def plan_conversion(eng: Engine, token: str, amount: int, target: str, prices: d
     dec_in, dec_out = (
         (route.token0.decimals, route.token1.decimals) if fwd else (route.token1.decimals, route.token0.decimals)
     )
-    raw_p = route.raw_price
-    expected = amount * raw_p * (1 - route.fee) if fwd else amount / raw_p * (1 - route.fee)
     pin, pout = prices.get(token.lower(), 0.0), prices.get(target.lower(), 0.0)
     try:
         finite_number(pin, "input token USD price", positive=True)
@@ -136,6 +146,8 @@ def plan_conversion(eng: Engine, token: str, amount: int, target: str, prices: d
         step.refused = "no USD price for both coins: cannot check the pool price"
         return step
     try:
+        finite_number(route.raw_price, "pool conversion price", positive=True)
+        expected = (amount * route.raw_price if fwd else amount / route.raw_price) * (1 - route.fee)
         finite_number(expected, "expected conversion output", positive=True)
     except ValueError:
         step.refused = "invalid expected conversion output: cannot check the pool price"
@@ -149,9 +161,12 @@ def plan_conversion(eng: Engine, token: str, amount: int, target: str, prices: d
     if in_usd < eng.cfg.execution.min_swap_usd:
         step.refused = f"${float(in_usd):.2f} is below execution.min_swap_usd"
         return step
-    step.route_pool = route.address
     step.expected_out_raw = int(expected)
     step.min_out_raw = int(expected * (1 - eng.cfg.execution.max_slippage_bps / 1e4))
+    if step.min_out_raw <= 0:
+        step.refused = "conversion minimum output rounds to zero"
+        return step
+    step.route_pool = route.address
     return step
 
 
@@ -188,7 +203,7 @@ def build_plan(eng: Engine, token_id: int, convert_to: str, prices_fn: Any) -> P
     try:
         pos, sim, gas_usd = eng.withdraw(token_id, False)
     except Exception as e:  # noqa: BLE001 - one unreadable position must not hide the others
-        return PositionPlan(token_id, "?", False, "blocked", f"simulation failed: {type(e).__name__}: {e}")
+        return PositionPlan(token_id, "?", False, "blocked", "simulation failed: " + safe_error(e))
     t0, t1 = pos.pool.token0, pos.pool.token1
     plan = PositionPlan(
         token_id,
@@ -207,7 +222,7 @@ def build_plan(eng: Engine, token_id: int, convert_to: str, prices_fn: Any) -> P
         prices = prices_fn([t0.address, t1.address, addresses.AERO_TOKEN, addresses.WETH])
     except Exception as e:  # noqa: BLE001
         prices = {}
-        blocks.append(f"USD prices unavailable ({e}): cannot size the exit")
+        blocks.append(f"USD prices unavailable ({safe_error(e)}): cannot size the exit")
     plan.value_usd = _value_usd(pos, prices, plan.receive)
     blocks += eng.pool_blocks(pos.pool, live=True)
     if not math.isfinite(gas_usd) or gas_usd > cfg.safety.max_gas_usd:  # NaN or over the cap
@@ -245,7 +260,12 @@ def format_plan(report: ExitReport) -> str:
         )
         for c in p.converts:
             if c.refused:
-                lines.append(f"      convert {c.token}: SKIPPED, {c.refused}; stays in the wallet")
+                if c.status in ("failed", "unknown"):
+                    lines.append(
+                        f"      convert {c.token}: {c.status.upper()}, {c.refused}; check transaction evidence"
+                    )
+                else:
+                    lines.append(f"      convert {c.token}: SKIPPED, {c.refused}; stays in the wallet")
             else:
                 lines.append(
                     f"      convert {c.token}: {c.amount_raw} raw via pool {c.route_pool}, "
@@ -297,6 +317,7 @@ def _convert_live(eng: Engine, plan: PositionPlan, step: ConvertStep, target: st
         route, token, step.amount_raw, eng._live_runner(signer, tokens, route.address, wallet=True), fresh.min_out_raw
     )
     step.route_pool, step.tx_hashes, step.out_raw = fresh.route_pool, res.tx_hashes, res.amount_out
+    step.stages, step.status = list(res.stages), "complete"
 
 
 def run_exit(
@@ -317,7 +338,11 @@ def run_exit(
         raise ValueError("live mode needs a signer")
     prices_fn = prices_fn or eng.market.token_prices_usd
     report = ExitReport(live, time.time() if now is None else now, convert_to)
-    report.positions = [build_plan(eng, t, convert_to, prices_fn) for t in token_ids]
+    for token_id in token_ids:
+        try:
+            report.positions.append(build_plan(eng, token_id, convert_to, prices_fn))
+        except Exception as error:  # noqa: BLE001 -- retain other independently readable positions
+            report.positions.append(PositionPlan(token_id, "?", False, "blocked", safe_error(error)))
     if not live:
         return report
     kill = root / "KILL"
@@ -338,8 +363,8 @@ def run_exit(
             report.error = f"#{plan.token_id}: {e}; stopped, remaining positions untouched"
             break
         except Exception as e:  # noqa: BLE001 - e.g. ETH reserve or price check refused before any send
-            plan.status, plan.reason = "failed", f"{type(e).__name__}: {e}"
-            report.error = f"#{plan.token_id}: {e}; stopped, remaining positions untouched"
+            plan.status, plan.reason = "failed", safe_error(e)
+            report.error = f"#{plan.token_id}: {safe_error(e)}; stopped, remaining positions untouched"
             break
         plan.status, plan.tx_hashes, plan.stages = "exited", res.tx_hashes, res.stages
         plan.receive, plan.aero_claimed_raw = tuple(res.amounts_in_position), res.aero_claimed
@@ -352,8 +377,15 @@ def run_exit(
                 continue
             try:
                 _convert_live(eng, plan, step, target, signer, prices_fn)
+            except RebalanceError as error:
+                step.tx_hashes = list(error.partial.tx_hashes)
+                step.out_raw = error.partial.amount_out
+                step.stages = list(error.partial.stages)
+                step.status = "unknown" if step.tx_hashes else "failed"
+                step.refused = safe_error(error)
             except Exception as e:  # noqa: BLE001 - the coins are already in the wallet; leave them there
-                step.refused = f"{type(e).__name__}: {e}"
+                step.status = "failed"
+                step.refused = safe_error(e)
     return report
 
 

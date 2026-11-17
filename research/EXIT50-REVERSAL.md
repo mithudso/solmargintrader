@@ -153,4 +153,3 @@ Result artifact: `art:82ce2836012edc1ffe85ea480584af172349eae54b57cdc7ec03b7087f
 | near_end complement | 11 | 11 | 11 | 0 | 7/11 | 7 | 4 | 4 | -3.4% |
 
 Other exit policies have their own one-position overlap skips; the fixed and cap-equivalent second-turn near-end all/qualified groups each skip three entries, and the complement group skips one. Exact same-entry comparisons must not be confused with separately capacity-constrained groups.
-

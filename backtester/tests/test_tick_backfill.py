@@ -15,6 +15,7 @@ import sys
 import tempfile
 import unittest
 from pathlib import Path
+from unittest.mock import patch
 
 import pandas as pd
 
@@ -120,6 +121,10 @@ class TestCheckpointRoundTrip(unittest.TestCase):
             binding = _checkpoint_binding("SOL-USD", "1m", 0, 3600)
             _write_ck(ck, first, cursor=9, pages=1, trades=1, done=False, binding=binding)
             self.assertTrue(ck.exists())
+            accepted = ck.read_bytes()
+            with patch.object(Path, "replace", side_effect=OSError("disposable replacement failure")), self.assertRaises(OSError):
+                _write_ck(ck, first, cursor=2, pages=2, trades=2, done=False, binding=binding)
+            self.assertEqual(ck.read_bytes(), accepted)
             self.assertEqual(json.loads(ck.read_text())["binding"], binding)
             resumed = MinuteAggregator(60)
             resumed.load(json.loads(ck.read_text())["bars"])
@@ -142,6 +147,10 @@ class TestCheckpointRoundTrip(unittest.TestCase):
             _write_ck(ck, agg, cursor=1, pages=1, trades=1, done=True, binding=binding)
             self.assertEqual([p.name for p in Path(tmp).iterdir()], ["ck.json"])
             self.assertTrue(json.loads(ck.read_text())["done"])
+            accepted = ck.read_bytes()
+            with patch.object(Path, "replace", side_effect=OSError("disposable replacement failure")), self.assertRaises(OSError):
+                _write_ck(ck, agg, cursor=2, pages=2, trades=2, done=False, binding=binding)
+            self.assertEqual(ck.read_bytes(), accepted)
             self.assertEqual(json.loads(ck.read_text())["binding"], binding)
 
 
