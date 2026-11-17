@@ -1,5 +1,12 @@
 # Work continuation
 
+Version: 641
+Delta: v640 to v641; qualify all full-suite shards and current boundary/CSV/parser repairs before delivery.
+
+## PR235 final local qualification — TASK-2579
+
+The full1,718-case SolTUI suite completed in four supported shards. Three corrected shards passed; the final shard passed after preserving strict result validation and teaching its JSONL reader to discard ValueError rows. Full background-queue regressions also passed. Focused125 boundary tests,1,228 backtester tests,707 extension tests,227 Oracle tests,359 ecosystem tests,54 conflict targets,12 workflow checks, picker scheduling reproduction, JavaScript quality, undefined-name lint and the positive offline round trip passed. Initial failures and the intentionally stopped serial attempt remain recorded externally. Full-scope test fixtures now use actual HTTP headers, the current default outbox, verified NFT ownership, private rollback destinations, immutable evidence refusal, canonical macOS paths and observed picker dispatch. One shared CSV escape policy preserves signed numeric text and refuses formulas/hidden controls. The test-only local package overlay supplies declared distribution metadata; shared runtimes were unchanged. Next: bind merged master00d5673, regenerate projections from committed source, push current PR235, await every exact-head check and merge. Underlying optimizer remains USER-PAUSED.
+
 Version: 640
 Delta: v639 to v640; integrate PR235 checkpoint while retaining current execution and persistence behavior.
 

@@ -198,9 +198,12 @@ class OwnerProtocolTests(unittest.TestCase):
                 db.execute("SELECT SUM(attempts) FROM manager_imports").fetchone()[0], 1
             )
         prices.write_text("timestamp,open,high,low,close,volume\n100,2,2,2,2,1\n")
-        self.assertEqual(
-            owner.manager_register_client(client)["coverage"], "unknown_history"
-        )
+        with self.assertRaisesRegex(ExperimentError, "import identity changed"):
+            owner.manager_register_client(client)
+        with owner._connect() as db:
+            self.assertEqual(
+                db.execute("SELECT SUM(attempts) FROM manager_imports").fetchone()[0], 1
+            )
 
     def test_owner_binding_cannot_reset_with_new_authority_root(self):
         ExperimentStore(self.authority)
@@ -555,17 +558,17 @@ class OwnerProtocolTests(unittest.TestCase):
             )
         paths = {r["root"] for r in rows}
         self.assertIn(
-            str(Path.home() / ".local/share/solmargintrader/ecosystem/batches"), paths
+            str((Path.home() / ".local/share/solmargintrader/ecosystem/batches").resolve()), paths
         )
         self.assertIn(
             str(
-                Path.home() / ".local/share/solmargintrader/ecosystem-paper-v1/batches"
+                (Path.home() / ".local/share/solmargintrader/ecosystem-paper-v1/batches").resolve()
             ),
             paths,
         )
         self.assertIn(
             str(
-                Path.home() / ".local/share/solmargintrader/ecosystem-paper-v2/batches"
+                (Path.home() / ".local/share/solmargintrader/ecosystem-paper-v2/batches").resolve()
             ),
             paths,
         )
@@ -585,7 +588,7 @@ class OwnerProtocolTests(unittest.TestCase):
         paths = {r["root"] for r in result["registration"]["history"]}
         self.assertIn(str((self.root / "config" / "f5-batches").resolve()), paths)
         self.assertNotIn(
-            str(Path.home() / ".local/share/solmargintrader/ecosystem/batches"), paths
+            str((Path.home() / ".local/share/solmargintrader/ecosystem/batches").resolve()), paths
         )
 
     def test_default_v2_activity_and_unknown_history_block_final_freshness(self):

@@ -23,7 +23,7 @@ class HookSafetyTests(unittest.TestCase):
         self.git("config", "core.hooksPath", os.devnull)
         self.git("config", "user.name", "Synthetic Fixture")
         self.git("config", "user.email", "fixture@example.invalid")
-        for rel in ("index/build.py", "index/search.py", "index/INDEX.json", "index/TEXT-INDEX.json", "index/CONCEPT-INDEX.json", "source.txt"):
+        for rel in ("index/build.py", "index/search.py", "index/INDEX.json", "index/TEXT-INDEX.json.gz", "index/TEXT-INDEX.json.gz.sha256", "index/CONCEPT-INDEX.json", "source.txt"):
             target = self.root / rel
             target.parent.mkdir(exist_ok=True, parents=True)
             target.write_text("baseline\n")
@@ -32,7 +32,7 @@ class HookSafetyTests(unittest.TestCase):
         bindir = self.root / "fake-bin"
         bindir.mkdir()
         python = bindir / "python3"
-        python.write_text('#!/bin/sh\nif [ "$1" = index/build.py ]; then\n for name in INDEX TEXT-INDEX CONCEPT-INDEX; do echo generated > "index/$name.json"; done\nfi\nexit 0\n')
+        python.write_text('#!/bin/sh\nif [ "$1" = index/build.py ]; then\n for name in INDEX CONCEPT-INDEX; do echo generated > "index/$name.json"; done\n echo generated > index/TEXT-INDEX.json.gz\n echo generated > index/TEXT-INDEX.json.gz.sha256\nfi\nexit 0\n')
         python.chmod(0o700)
         (self.root / ".gitignore").write_text("fake-bin/\nempty-template/\n.gitignore\n")
         self.env["PATH"] = str(bindir) + os.pathsep + self.env["PATH"]
@@ -58,7 +58,7 @@ class HookSafetyTests(unittest.TestCase):
         self.git("add", "source.txt")
         result = self.hook()
         self.assertEqual(result.returncode, 0, result.stderr)
-        self.assertEqual(self.git("diff", "--cached", "--name-only").splitlines(), ["index/CONCEPT-INDEX.json", "index/INDEX.json", "index/TEXT-INDEX.json", "source.txt"])
+        self.assertEqual(self.git("diff", "--cached", "--name-only").splitlines(), ["index/CONCEPT-INDEX.json", "index/INDEX.json", "index/TEXT-INDEX.json.gz", "index/TEXT-INDEX.json.gz.sha256", "source.txt"])
 
     def test_partially_staged_source_is_refused_without_changing_the_index(self):
         (self.root / "source.txt").write_text("staged\n")

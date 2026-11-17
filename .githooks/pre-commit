@@ -24,8 +24,8 @@ fi
 
 if [ -f index/build.py ]; then
   if python3 index/build.py all >/dev/null 2>&1; then
-    if ! git diff --quiet -- index/INDEX.json index/TEXT-INDEX.json index/CONCEPT-INDEX.json; then
-      git add -- index/INDEX.json index/TEXT-INDEX.json index/CONCEPT-INDEX.json || {
+    if ! git diff --quiet -- index/INDEX.json index/TEXT-INDEX.json.gz index/TEXT-INDEX.json.gz.sha256 index/CONCEPT-INDEX.json; then
+      git add -- index/INDEX.json index/TEXT-INDEX.json.gz index/TEXT-INDEX.json.gz.sha256 index/CONCEPT-INDEX.json || {
         echo "pre-commit: generated index staging failed — commit refused" >&2
         exit 1
       }
