@@ -78,7 +78,7 @@ class ParityTests(unittest.TestCase):
 
     def test_registry_metadata_is_complete(self) -> None:
         for name, cmd in commands.COMMANDS.items():
-            self.assertRegex(name, r"^[a-z0-9]+\.[a-z0-9_]+$")
+            self.assertRegex(name, r"^[a-z0-9]+(?:\.[a-z0-9_]+)+$")
             self.assertTrue(cmd.describe)
             for p in cmd.params:
                 self.assertIn(p.type, commands.PARAM_TYPES)

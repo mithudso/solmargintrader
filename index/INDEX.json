@@ -1,11 +1,11 @@
 {
-  "generatedAt": "2026-11-17T04:20:40+00:00",
+  "generatedAt": "2026-11-17T04:40:14+00:00",
   "schemaVersion": 1,
   "repoRoot": "~/dev/solmargintrader",
-  "commit": "87d7716",
+  "commit": "c8b0857",
   "counts": {
     "files": 3999,
-    "bytes": 140822930,
+    "bytes": 140824496,
     "byKind": {
       "strategy-card": 1478,
       "doc": 839,
@@ -81666,9 +81666,9 @@
       "title": "oracle-live-controller",
       "summary": "",
       "summarySource": "none",
-      "bytes": 9312,
-      "lines": 185,
-      "sha1": "1bd15f2f91100fd0f6c9b2af42758be3d717f717",
+      "bytes": 9392,
+      "lines": 186,
+      "sha1": "3bf56ea371163a56ed0bec967bb48e291a358459",
       "symbols": [
         "class LiveOracleController",
         "liveInput"
@@ -82339,9 +82339,9 @@
       "title": "owner-source",
       "summary": "Versioned source identity covers the complete shipped execution module set.",
       "summarySource": "docstring",
-      "bytes": 2052,
-      "lines": 75,
-      "sha1": "92eefca7487443a546b8beb4f902707c6f4b8259",
+      "bytes": 2200,
+      "lines": 79,
+      "sha1": "e6a799520eafba1e87f810e1c09da14c1407e75f",
       "symbols": [
         "OWNER_SOURCE_FILES",
         "OWNER_SOURCE_SCHEMA"
@@ -83826,9 +83826,9 @@
       "title": "1000x-oracle-live-controller.test",
       "summary": "",
       "summarySource": "none",
-      "bytes": 9154,
-      "lines": 145,
-      "sha1": "5cdff86ae361979c37a8ac3b0e9f74b18acf652e",
+      "bytes": 9685,
+      "lines": 151,
+      "sha1": "154027ee6325065ac3ec5af213fb707eddaf07db",
       "symbols": [
         "fixture",
         "input"
@@ -111739,9 +111739,9 @@
       "title": "Commands that run for minutes, spawn processes, hit the network or write repo files. The parity suite",
       "summary": "Shared fixtures for the command-bridge tests: an isolated world and the four surface runners.",
       "summarySource": "docstring",
-      "bytes": 22001,
-      "lines": 383,
-      "sha1": "9de8d3942be2da278bb180c76022d1ab6579bbd8",
+      "bytes": 22803,
+      "lines": 396,
+      "sha1": "ed2d6d5b85cebe3db3472e236dde9c0f4e98eb95",
       "symbols": [
         "TOKEN",
         "MANAGER_REQUEST_ID",
@@ -112446,9 +112446,9 @@
       "title": "test_bridge_parity",
       "summary": "One registry, four surfaces: the same call returns the same envelope bytes everywhere. Driven by the registry itself, so a command added tomorrow is covered the day it is registered (the way extension/test/surfaces.test.js covers the extension's registry).",
       "summarySource": "docstring",
-      "bytes": 4087,
+      "bytes": 4092,
       "lines": 97,
-      "sha1": "d4f52e78ab5aa341691c7e81fedebc21bbaeda07",
+      "sha1": "159d9dfa3063481ea392b7bc505eefbfe5391526",
       "symbols": [
         "class ParityTests"
       ],
@@ -119120,5 +119120,5 @@
       "frontmatter": {}
     }
   ],
-  "textSha256": "1d4fbb809a697dd1faddea96b08541c181122924b234eeecc9bca81a2a906c77"
+  "textSha256": "0e3a750d09e19530b9b1b3d0506310dc4bb58e0d49d99bc1040899755ea2fd21"
 }

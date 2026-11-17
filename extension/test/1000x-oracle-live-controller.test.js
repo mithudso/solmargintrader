@@ -27,6 +27,11 @@ function fixture() {
 }
 
 test('live scores and all horizons need fresh quotes rather than completed minute history', async () => {
+  const nativeSet = globalThis.setTimeout, nativeClear = globalThis.clearTimeout;
+  // Browsers require a Window receiver; Node's permissive timers hide this bug.
+  globalThis.setTimeout = function (...args) { assert.equal(this, globalThis); return Reflect.apply(nativeSet, globalThis, args); };
+  globalThis.clearTimeout = function (...args) { assert.equal(this, globalThis); return Reflect.apply(nativeClear, globalThis, args); };
+  try {
   const store = fixture(), views = [], packets = []; let now = origin;
   const c = new LiveOracleController({ store, clock: () => now, id: () => 'producer',
     onChange: view => views.push(view), call: async (command, params) => {
@@ -43,6 +48,7 @@ test('live scores and all horizons need fresh quotes rather than completed minut
   assert(packets.length > 0); assert(!JSON.stringify(packets).includes('weights'));
   assert(!JSON.stringify(packets).includes('"pending":['));
   assert.equal(store.states.size, 1); c.stop();
+  } finally { globalThis.setTimeout = nativeSet; globalThis.clearTimeout = nativeClear; }
 });
 
 test('a stalled native relay neither queues unbounded sends nor blocks one-second learning observations', async () => {

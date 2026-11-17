@@ -34,7 +34,8 @@ export class LiveOracleController {
 
   constructor({ store = new LiveOracleStore(), clock = Date.now, call = soltui,
     onChange = () => {}, id = () => crypto.randomUUID(), relayTimeoutMs = 1500,
-    schedule = setTimeout, cancelTimer = clearTimeout } = {}) {
+    schedule = (callback, delay) => globalThis.setTimeout(callback, delay),
+    cancelTimer = timer => globalThis.clearTimeout(timer) } = {}) {
     if (!Number.isFinite(relayTimeoutMs) || relayTimeoutMs <= 0) throw new Error('invalid_signal_timeout');
     this.#store = store; this.#clock = clock; this.#call = call; this.#change = onChange; this.#id = id;
     this.#timeoutMs = relayTimeoutMs; this.#schedule = schedule; this.#cancelTimer = cancelTimer;
