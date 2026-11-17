@@ -1,5 +1,11 @@
 # Work continuation
 
+## Loaded TUI relay wiring correction
+
+After PR 318 merged as 4196d47, actual loaded acceptance found that the TUI displayed no shared signal while the private relay held fresh six-horizon BTC and ZEC data. Production `main()` passes `QuoteReader(args.prices)`, and the constructor incorrectly treated any injected quote loader as a request for an empty signal loader. The follow-up makes the default shared signal status loader independent of quote and candle loader selection. Explicit test signal loaders remain supported and isolate fixtures from the real home. No relay, model, owner, collector or trading behavior changes.
+
+The real-constructor regression first failed because the default status function was not called. After the correction, it rendered all six fixture horizons and verified the explicit injected loader did not call the default. Final delivery and independent loaded-TUI acceptance remain pending. Preserve the running browser, TUI, owner, quote workers and user data until the reviewed follow-up is merged.
+
 ## Browser CI fixture correction
 
 Draft PR 318 checkpoint 8a66c41 failed the real-browser CI abort/reload check. The fixture restored its `OracleController.prototype.observe` wrapper before the later pause flag was set. A genuine next-minute transaction advanced the stored ledger during the comparison. The scoped fixture repair reinstalls and restores a per-context pause, drains existing transactions, checks the expected abort error, and keeps the twin paused during reload comparison. It does not change the production model, controller or store. The aborted reducer throws before a write is queued; this check does not prove rollback of a queued write.
@@ -36,7 +42,8 @@ Browser CI fixture: the native IndexedDB abort assertion raced an independent ne
 
 Routing follow-up: source adds owner-only optional connection routing for ordinary clients; explicit environment homes remain first. The isolated 1000x paper acceptance passed one start and stop with recorded modeled outcome. The user-owned registry and shared wrapper remain unchanged. Verify focused checks, review and deliver the routing PR before a separately controlled activation. Routing alone does not fence concurrent starts or migrate journal history.
 
-Version: 627
+Version: 628
+Delta: v627 to v628; record the loaded-TUI relay wiring failure and bounded correction.
 Delta: v626 to v627; record the browser CI fixture race and scoped correction pending final verification.
 Delta: v625 to v626; record scoped UI and prose review, bounded native evidence and final integration gates.
 Delta: v624 to v625; preserve the tested live-signal candidate, independent fixes, active routing and pending native/UI/prose gates.

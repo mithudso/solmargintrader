@@ -459,11 +459,7 @@ class OracleWinnersApp(App):
         self.alert_worker = LatestWorker(alert_loader, name="oracle-ten-minute-alerts")
         from oracle_leverage.signals import status as signal_status
         if signal_loader is None:
-            signal_loader = (
-                (lambda _request, _cancelled: {"assets": {}})
-                if data_loader is not None or quote_loader is not None
-                else (lambda _request, cancelled: {} if cancelled() else signal_status())
-            )
+            signal_loader = lambda _request, cancelled: {} if cancelled() else signal_status()
         self.signal_worker = LatestWorker(signal_loader, name="oracle-shared-signals")
         self.signal_result = None
         self._signal_rendered = None
