@@ -1287,13 +1287,18 @@ class BacktestTabTests(unittest.IsolatedAsyncioTestCase):
         self.enterContext(offline_console_reads())
 
     async def test_picker_lists_the_roster_and_runs_only_the_pick(self):
+        import asyncio
+
         from textual.widgets import Select
         app = SolTuiApp(make_settings())
         seen = []
+        dispatched = asyncio.Queue()
+        loop = asyncio.get_running_loop()
         real = commands.COMMANDS["backtest.run"]
 
         def handler(ctx, p):
             seen.append(p.get("labels"))
+            loop.call_soon_threadsafe(dispatched.put_nowait, p.get("labels"))
             return {"rows": [], "evaluable": 0, "positive": 0, "skipped": [], "cancelled": False,
                     "message": "done"}
 
@@ -1308,12 +1313,13 @@ class BacktestTabTests(unittest.IsolatedAsyncioTestCase):
                 self.assertIn(f"Whole roster ({len(labels)} strategies)", str(pick._options[0][0]))
                 self.assertIn(labels[0], text_of(app, "#backtest-roster"))
                 app.query_one("#btn-run", Button).press()
-                await pilot.pause(0.2)
+                # A queued press may not have created a worker yet.
+                self.assertIsNone(await asyncio.wait_for(dispatched.get(), timeout=5))
                 await app.workers.wait_for_complete()
                 pick.value = labels[0]
                 await pilot.pause()
                 app.query_one("#btn-run", Button).press()
-                await pilot.pause(0.2)
+                self.assertEqual(await asyncio.wait_for(dispatched.get(), timeout=5), [labels[0]])
                 await app.workers.wait_for_complete()
         self.assertEqual(seen, [None, [labels[0]]])
 

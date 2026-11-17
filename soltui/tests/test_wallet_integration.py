@@ -132,6 +132,9 @@ class ScanCommandTests(Env):
         self.assertEqual(portfolio.load_snapshots(), [])   # nothing scanned, nothing recorded
 
     def test_daemon_context_feeds_the_scan_read_only(self) -> None:
+        manager = wallet.POSITION_MANAGERS["Aero Slipstream"].lower()
+        self.fake.nft_count[manager] = 1
+        self.fake.nft_ids[manager] = [777]
         home = Path(os.environ["AERO_LP_HOME"])
         home.mkdir(parents=True)
         (home / "status.json").write_text(json.dumps({

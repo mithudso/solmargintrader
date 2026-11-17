@@ -69,16 +69,22 @@ class ForwardIntegrity(unittest.TestCase):
         def adopt(db,key,generation,active,moved,cost,candles,bar,minutes,tune,on_adopt,**_):
             on_adopt(active,active,.99,100)
             return active,generation
-        with mock.patch.object(ft,'_resolve',side_effect=adopt), mock.patch.object(ft,'save_default',side_effect=OSError('fixture disk unavailable')):
-            with self.assertRaises(OSError):
+        write = ft._write_durable
+        def unavailable(path, document):
+            if path == ft.defaults_path():
+                raise OSError('fixture disk unavailable')
+            return write(path, document)
+        with mock.patch.object(ft,'_resolve',side_effect=adopt), mock.patch.object(ft,'_write_durable',side_effect=unavailable):
+            with self.assertRaisesRegex(RuntimeError, 'forward_default_recovery_unavailable'):
                 self.tick(0)
         with closing(ft._db()) as db:
-            self.assertEqual(db.execute('SELECT count(*) FROM default_export').fetchone()[0],1)
+            self.assertEqual(db.execute('SELECT count(*) FROM default_outbox').fetchone()[0],1)
             self.assertEqual(db.execute('SELECT count(*) FROM trial').fetchone()[0],1)
-        ft._export_committed_defaults(None)
+        with ft._defaults_lock():
+            ft._recover_defaults_locked()
         self.assertIn('SOL|fixture|1',ft.load_defaults())
         with closing(ft._db()) as db:
-            self.assertEqual(db.execute('SELECT count(*) FROM default_export').fetchone()[0],0)
+            self.assertEqual(db.execute('SELECT count(*) FROM default_outbox').fetchone()[0],0)
 
     def test_council_recovers_more_than_seven_days_in_bounded_pages(self):
         # CDO-012278d812

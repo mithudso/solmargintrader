@@ -14,6 +14,7 @@ import sys
 import tempfile
 import unittest
 from contextlib import redirect_stderr, redirect_stdout
+from email.message import Message
 from pathlib import Path
 from types import ModuleType, SimpleNamespace
 from unittest import mock
@@ -45,7 +46,8 @@ class HttpBodyBoundaryTests(unittest.TestCase):
         api = isolated_api()
         handler_type = api.make_handler("fixture")
         handler = handler_type.__new__(handler_type)
-        handler.headers = {"Content-Length": str(length)}
+        handler.headers = Message()
+        handler.headers["Content-Length"] = str(length)
         handler.rfile = mock.Mock(wraps=io.BytesIO(body))
         handler.close_connection = False
         handler.connection = mock.Mock()
@@ -215,6 +217,10 @@ class ServiceOwnerBoundaryTests(unittest.TestCase):
                 dist = root / "dist/SolTUI.app"
                 dist.mkdir(parents=True)
                 (dist / "candidate").write_bytes(b"new application")
+                executable = dist / "Contents" / "MacOS" / service.APP_NAME
+                executable.parent.mkdir(parents=True)
+                executable.write_text("synthetic executable")
+                executable.chmod(0o700)
                 bundle = root / "apps/SolTUI.app"
                 bundle.mkdir(parents=True)
                 (bundle / "preserved").write_bytes(b"installed application")
@@ -224,10 +230,13 @@ class ServiceOwnerBoundaryTests(unittest.TestCase):
                         raise OSError("fixture publish failure")
                     return original_rename(path, target)
                 with mock.patch.multiple(service, REPO=repo, DIST_BUNDLE=dist,
-                                         APPS_DIR=bundle.parent, BUNDLE=bundle), \
-                        mock.patch.object(Path, "rename", rename), redirect_stdout(io.StringIO()), \
-                        self.assertRaises(OSError):
-                    service.install()
+                                         APPS_DIR=bundle.parent, BUNDLE=bundle,
+                                         SUPPORT=root / "support", LOG=root / "logs/service.log", AGENT=root / "agent.plist"), \
+                        mock.patch.object(service, "runtime_problem", return_value=None), \
+                        mock.patch.object(service, "reload_agent") as reload_agent, \
+                        mock.patch.object(Path, "rename", rename), redirect_stdout(io.StringIO()):
+                    self.assertEqual(service.install(), 1)
+                    reload_agent.assert_not_called()
                 if rollback_fails:
                     saved = list(bundle.parent.glob(".soltui-install-*/previous.app/preserved"))
                     self.assertEqual(len(saved), 1)
@@ -249,10 +258,11 @@ class ServiceOwnerBoundaryTests(unittest.TestCase):
             sentinel = bundle / "preserved"
             sentinel.write_bytes(b"installed application")
             with mock.patch.multiple(service, REPO=repo, DIST_BUNDLE=dist,
-                                     APPS_DIR=bundle.parent, BUNDLE=bundle), \
+                                     APPS_DIR=bundle.parent, BUNDLE=bundle,
+                                     SUPPORT=root / "support", LOG=root / "logs/service.log", AGENT=root / "agent.plist"), \
                     mock.patch.object(service.shutil, "copytree", side_effect=OSError("fixture full disk")), \
-                    redirect_stdout(io.StringIO()), self.assertRaises(OSError):
-                service.install()
+                    redirect_stdout(io.StringIO()):
+                self.assertEqual(service.install(), 1)
             self.assertEqual(sentinel.read_bytes(), b"installed application")
 
     def test_missing_supervisor_keeps_help_available_and_gives_isolated_remedy(self):
@@ -512,7 +522,11 @@ class WalletReadBoundaryTests(unittest.TestCase):
             {"mode": "dry-run", "positions": [{"token_id": 1, "value_usd": 1000000.0}]},
             [],
         )
-        result = wallet.scan_base(BASE_ADDR, Fake(), daemon=daemon).to_dict()
+        fetch = Fake()
+        manager = wallet.POSITION_MANAGERS["Aero Slipstream"].lower()
+        fetch.nft_count[manager] = 1
+        fetch.nft_ids[manager] = [1]
+        result = wallet.scan_base(BASE_ADDR, fetch, daemon=daemon).to_dict()
         self.assertIsNone(result["positions"][0]["value_usd"])
         self.assertFalse(result["total_complete"])
 
@@ -530,7 +544,11 @@ class WalletReadBoundaryTests(unittest.TestCase):
                     },
                     [],
                 )
-                result = wallet.scan_base(BASE_ADDR, Fake(), daemon=daemon).to_dict()
+                fetch = Fake()
+                manager = wallet.POSITION_MANAGERS["Aero Slipstream"].lower()
+                fetch.nft_count[manager] = 1
+                fetch.nft_ids[manager] = [1]
+                result = wallet.scan_base(BASE_ADDR, fetch, daemon=daemon).to_dict()
                 self.assertEqual(
                     result["positions"][0]["value_usd"],
                     10.0 if owner == BASE_ADDR else None,
