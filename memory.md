@@ -1,5 +1,12 @@
 # Work continuation
 
+Version: 649
+Delta: v648 to v649; repair required learning-command parity fixtures and private SQLite isolation.
+
+## PR328 final parity fixture repair — TASK-2579
+
+Final head e8a7a6c passed all checks except macOS:106 changed-area cases had one failure because oracle.learning.save lacked a valid bridge fixture. The standalone test-only fix from peer commit04ad835 supplies complete canonical save/load/profiles inputs, isolates ORACLE_LEARNING_HOME inside the temporary World, resets it between all four surfaces and requires actual successful learning responses. Preserve the strict fixture-coverage assertion. Only the two test files are ported; active PR329 and its unrelated forward-test changes remain with their owner. Production runtime and both accepted hash sets remain unchanged. All35 parity/button/storage cases and pinned lint pass independently after the test-only patch. All31 accepted runtime hashes remain unchanged. Next: regenerate committed-source metadata, push a fresh final head, and wait all CI before marking ready and merging. Earlier JavaScript checkout timeout was retried successfully on the same e8a7a6c head; retain both attempt receipts.
+
 Version: 648
 Delta: v647 to v648; bind the final learner checkpoint to all four delivered predecessors.
 

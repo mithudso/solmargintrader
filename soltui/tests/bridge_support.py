@@ -155,7 +155,16 @@ def default_params() -> dict[str, dict]:
     from oracle_leverage.tests.test_signals import packet as signal_packet
 
     fresh = next(n for n in sorted(REGISTRY) if n not in ("buy_and_hold", "ma_crossover", "rsi", "breakout"))
+    learning_state = json.loads((Path(__file__).resolve().parents[2] / "extension" / "test" /
+                                 "fixtures" / "oracle-0.9-10m-state.json").read_text())["state"]
+    learning_address = {"namespace": "33333333-3333-4333-8333-333333333333",
+                        "kind": "minute", "key": learning_state["key"]}
     return {
+        "oracle.learning.save": {**learning_address, "checkpoint": {
+            "lineage": "44444444-4444-4444-8444-444444444444", "revision": 1,
+            "text": json.dumps(learning_state, sort_keys=True, separators=(",", ":"), allow_nan=False)}},
+        "oracle.learning.load": dict(learning_address),
+        "oracle.learning.profiles": {"limit": 2},
         "oracle.signals.status": {},
         "oracle.signals.publish": {"packet": signal_packet()},
         "oracle.signals.invalidate": {"event": {"asset": "BTC", "publisher_id": "one",
@@ -255,6 +264,7 @@ class World:
             "SOLTUI_SUPPORT_DIR": self.root / "support", "AERO_LP_HOME": self.root / "aero",
             "SOLTUI_KEY_DIR": self.root / "keys",
             "ORACLE_AUTOTRADE_HOME": self.root / "auto",
+            "ORACLE_LEARNING_HOME": self.root / "learning",
         }
         self.stack.enter_context(mock.patch.dict(os.environ, {k: str(v) for k, v in env.items()}))
         for mod, attr, value in (
@@ -295,7 +305,7 @@ class World:
 
     def reset_state(self) -> None:
         """Back to a fresh install between surfaces, so each sees identical starting state."""
-        for sub in ("config", "aero", "bg"):
+        for sub in ("config", "aero", "bg", "learning"):
             shutil.rmtree(self.root / sub, ignore_errors=True)
         commands.reset_default_runtime()
 

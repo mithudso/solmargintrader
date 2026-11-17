@@ -1,5 +1,8 @@
 # Prompt history
 
+Version: 296
+Delta: v295 to v296; repair required learning-command parity fixtures and private SQLite isolation.
+
 Version: 295
 Delta: v294 to v295; bind the final learner checkpoint to all four delivered predecessors.
 
