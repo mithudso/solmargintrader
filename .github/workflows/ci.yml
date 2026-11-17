@@ -213,7 +213,7 @@ jobs:
         run: python3 -W error::ResourceWarning -m unittest research.tests.test_reversal_shapes research.tests.test_reversal_second_turn research.tests.test_mtf_reversal oracle_leverage.tests.test_mtf_forward oracle_leverage.tests.test_quotes oracle_leverage.tests.test_console oracle_leverage.tests.test_forward oracle_leverage.tests.test_market oracle_leverage.tests.test_process_adapters -v
 
       - name: Weekly coin study acquisition and temporal isolation
-        run: python3 -W error::ResourceWarning -m unittest research.tests.test_coin_week -v
+        run: python3 -W error::ResourceWarning -m unittest research.tests.test_coin_week research.tests.test_coin_week_batch -v
 
       - name: Exit50 paper research, lifecycle and bounded retention
         run: python3 -W error::ResourceWarning -m unittest oracle_leverage.tests.test_exit50 oracle_leverage.tests.test_exit50_forward research.tests.test_exit50_acquire research.tests.test_exit50_backtest research.tests.test_exit50_diagnostic research.tests.test_exit50_evaluate research.tests.test_exit50_lazy research.tests.test_exit50_orderflow research.tests.test_exit50_report research.tests.test_exit50_run scripts.tests.test_preserve_dual_quotes -v

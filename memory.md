@@ -1,11 +1,38 @@
 # Work continuation
 
-Version: 645
+Version: 646
+Delta: v645 to v646; integrate delivered PR330, preserve both workflow histories, and diagnose final macOS forward-test fixture before current reassessment.
 Delta: v644 to v645; repair required command-parity fixtures after final macOS CI and preserve the source-v4 review.
 Delta: v643 to v644; record the complete current240-method sweep and real installed browser/native disk acceptance.
 Delta: v642 to v643; preserve CI failure receipts and correct asynchronous test milestones before the final source freeze.
 Delta: v641 to v642; preserve the confirmed cold-reload quota failure and guarded readonly-history repair.
 Delta: v640 to v641; preserve PR224/PR226 and both browser learner changes before final combined reassessment.
+Delta: v642 to v643; preserve full native-pair study, independent audit, archive verification and final delivery context.
+Delta: v641 to v642; implement native market combinations, report v2 and review fixes; preserve current verification state.
+Delta: v640 to v641; preserve TASK-2599 native pair batch scope, report requirements and isolation.
+
+## Native pair batch and explicit weekly reports — TASK-2599
+
+Work is isolated in /Users/mitch/dev/solmargintrader-wt-01a1ea6d on agent-01a1ea6d. Another live session owns the canonical checkout. Preserve its dependency edits, private Pine, and the user's research/new-eth-study output. The prior weekly runner tested ETH/USDT strategies; ETH/BTC and ETH/ZEC headings described return correlations, not native pair backtests.
+
+The new CLI will accept a coin list and an explicit quote, enumerate every distinct combination plus cash markets, and use actual venue products. Missing native markets must remain visible; never invent cross-pair OHLCV by dividing unrelated highs/lows. Reports must identify base/quote, venue/product, requested versus usable timestamps, policy members/parameters, exact filter/control definitions, costs and account currency. Completed v1 runs must still verify without modifying their bytes. Preserve chronological selection and add a batch-wide correlation correction. If an operator chooses a longest-contiguous gap policy, label the reduced window prominently; default single-coin strict behavior stays available.
+
+Completed: native quote-aware acquisition; bounded frozen venue catalogue and every unordered coin-plus-cash combination; per-child run locks and parent/child source, window and numeric bindings; explicit v2 market/strategy/filter reports with resolved parameter defaults; immutable v1 renderer compatibility; gap-safe longest/strict policies; batch-wide correlation correction. The audit caught sparse references suppressing target-only diagnostics. Correlations now group feature masks and permute the full regular target clock before masking; reports count computed, insufficient and constant tests per horizon. Original finalized v1 run still verifies all78 artifacts and491712 strategy rows.
+
+Acquisition is preserved outside Git at /Users/mitch/.local/share/solmargintrader/research/native-pairs-2599/acquired for2026-11-10T19:46Z..2026-11-17T19:46Z. Coinbase ETH/USD and BTC/USD each have10078 observed minutes and4350 in the longest segment; ZEC/USD has10065 and2610; ETH/BTC has7968 and382, below the explicit1440-minute requirement. ZEC/BTC is delisted and ETH/ZEC absent from the exact current catalogue. No synthetic OHLC or interpolated candles. These are coverage observations, not final backtest findings.
+
+Verification complete:42 focused tests and1152 backtester tests pass. Pinned Ruff,17 index tests, documentation counts, current wiki/operation inventories and1084 existing research figures pass. Regenerating the deterministic index closed the initial expected stale-index failure. No semantic indexing. The new full batch verifies246 artifacts and six planned combinations:three completed USD markets, three explicit exclusions, zero failures. It evaluates1475136 strategy rows (1172980 completed) and23664 special-model rows. An independent auditor re-ranked all36 validation winners, recomputed all972 correlations with1999 replicates and six-market correction, reproduced cycle corrections, and replayed four fresh ETH/USD test accounts within1.23e-15. None of216 estimable final-test correlations passed correction;108 final-test feature tests lacked enough observations. These counts do not qualify an executable edge.
+
+Public report, charts, summaries, publication hashes, independent audit and complete40491663-byte ZIP are under /Users/mitch/dev/solmargintrader/research/native-pairs-week-20261117. Fresh archive extraction verifies the complete246-artifact batch. The separate native Binance ETH/BTC one-day8-template smoke verifies76 artifacts and2400 strategy rows; it is labelled incomplete and does not replace the full USD study. The --coin ETH --quote USD CLI verifies the finalized native USD child. Existing v1 reports remain byte-compatible and verify78 artifacts/491712 rows.
+
+Source files froze before the full numerical run; the run's exact file/runtime hashes identify reviewed code even though source_commit records the pre-delivery base. Delivery uses branch agent-01a1ea6d, the passing-final-head GitHub PR and TASK-2599's receipt as current status. Check actual GitHub merge state before resuming work. Preserve the root checkout's package manifests, private Pine and user's research/new-eth-study directory. Stele writes are queued because the MCP transport is closed:2ef84c03,051d6757,7bd63c2b,a514510a,a203503e,bf8fab07; replay only owned operations, preserve unrelated outbox entries.
+
+## Current Oracle persistence delivery — TASK-2574
+
+Own branch fix/oracle-learning-persistence-2574 and draft PR329 at https://github.com/mithudso/solmargintrader/pull/329 . Preserve PR328 and feat/application-optimizer-2556 because another active workflow extended their remote branch. Both browser learners and native per-coin memory are implemented. Source-v5 has two complete240-method sweeps across50 frozen cells and two independent final reviews without confirmed Medium product findings. Overall NEEDS_EVIDENCE remains; missing selected participant, production, load, economics and prospective evidence cannot become CLEAN. Private installed acceptance saved/restored21 partitions and55 available outcomes through actual Chrome/native/SQLite. Global activation has not occurred.
+
+PR330 reached master284c695 during final CI. Its native-pair study/report changes have no runtime or package payload overlap; preserve exact published study artifacts and both histories. Current04ad835 macOS targeted CI and an isolated deterministic source-v5 replay confirmed that late pre-Stop and post-Stop status callbacks replace acknowledged Stopping with Running while the worker still drains. KNOW-2607 records the trigger. The UI now retains acknowledged stop until fresh idle or accepted Start; the existing test explicitly holds/releases the worker, replays both late snapshots, and joins its runner/watcher. Preserve original failed logs and same-command red/green regression; verify current source before the final third independent review. Remaining: current complete selected-method sweep, bounded review3 of3, current ledger, final-tip CI, actual merge/default sync, guarded host activation and existing user-profile acceptance. Private versioned receipts live in /Users/mitch/.local/share/solmargintrader/audits/application-2556-oracles. Preserve all root dependency/Pine/research edits and existing owners.
+
 Delta: v639 to v640; bind PR226 to merged master77bf655 and preserve its exact audit files.
 
 Version: 639

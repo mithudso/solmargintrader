@@ -1,6 +1,6 @@
 # Every file in this repository
 
-**Generated** from `index/INDEX.json` at commit `ad63b86` (2026-11-17T17:52:53+00:00). 4010 tracked files, 141.0 MB.
+**Generated** from `index/INDEX.json` at commit `04ad835` (2026-11-17T20:35:18+00:00). 4047 tracked files, 202.2 MB.
 
 Regenerate with:
 
@@ -15,8 +15,8 @@ python3 index/build.py --check      # fail if the index is stale
 Every entry marks where its description came from, because a generated one-liner and a considered one should not look alike:
 
 - **curated** (43 files) — hand-written purpose and usage, in the `CURATED` table of `index/make_files_doc.py`. Used where extraction cannot give a reader what they need: the engine, the research drivers, the order-placing path, and the files with no prose of their own.
-- **extracted** (3101 files) — the file's own module docstring, JSDoc header, or frontmatter `summary`. Trustworthy here because 729/850 Python modules and 89/194 JS files carry a substantial one. (These counts are computed at generation time, not hardcoded — an earlier revision asserted a frozen ratio and it was wrong within a day as the repo grew.)
-- **derived** (458 files) — shape only, for generated artifacts: a CSV's header and row count, a JSON's keys. Prose for a result file would be invented.
+- **extracted** (3120 files) — the file's own module docstring, JSDoc header, or frontmatter `summary`. Trustworthy here because 738/859 Python modules and 91/197 JS files carry a substantial one. (These counts are computed at generation time, not hardcoded — an earlier revision asserted a frozen ratio and it was wrong within a day as the repo grew.)
+- **derived** (469 files) — shape only, for generated artifacts: a CSV's header and row count, a JSON's keys. Prose for a result file would be invented.
 
 *How to use* is curated where it matters and otherwise inferred from the file's kind — a test gets its runner, a CLI gets `--help`, a module gets its import path.
 
@@ -34,12 +34,12 @@ To *search* rather than browse: `python3 index/search.py "your question"`.
 ## Contents
 
 - [`(root)`](#root) — 94 files
-- [`docs`](#docs) — 177 files
+- [`docs`](#docs) — 179 files
 - [`index`](#index) — 8 files
 - [`backtester`](#backtester) — 1967 files
-- [`research`](#research) — 494 files
+- [`research`](#research) — 522 files
 - [`oracle`](#oracle) — 44 files
-- [`extension`](#extension) — 174 files
+- [`extension`](#extension) — 177 files
 - [`executor`](#executor) — 48 files
 - [`liquidity`](#liquidity) — 61 files
 - [`botmanager`](#botmanager) — 93 files
@@ -50,7 +50,7 @@ To *search* rather than browse: `python3 index/search.py "your question"`.
 - [`.github`](#github) — 12 files
 - [`tradingskilllist`](#tradingskilllist) — 1 files
 - [`.remember`](#remember) — 1 files
-- [`.cdo`](#cdo) — 161 files
+- [`.cdo`](#cdo) — 163 files
 - [`.claude`](#claude) — 2 files
 - [`.githooks`](#githooks) — 2 files
 - [`.postman`](#postman) — 1 files
@@ -61,7 +61,7 @@ To *search* rather than browse: `python3 index/search.py "your question"`.
 - [`design`](#design) — 32 files
 - [`dso-skill`](#dso-skill) — 3 files
 - [`llms`](#llms) — 5 files
-- [`oracle_leverage`](#oracle_leverage) — 46 files
+- [`oracle_leverage`](#oracle_leverage) — 48 files
 - [`postman`](#postman) — 8 files
 - [`runbooks`](#runbooks) — 3 files
 - [`scripts`](#scripts) — 34 files
@@ -344,7 +344,7 @@ Repository-level entry points and agent instructions. `AGENTS.md` and `CLAUDE.md
 
 #### `README.md`
 
-`doc` · 234 lines · 15,535 B · description: **curated**
+`doc` · 239 lines · 15,858 B · description: **curated**
 
 **Purpose.** Entry point: what the project is, its components, and the honest summary of what the research established.
 
@@ -648,9 +648,9 @@ Repository-level entry points and agent instructions. `AGENTS.md` and `CLAUDE.md
 
 #### `memory.md`
 
-`doc` · 3186 lines · 658,224 B · description: **extracted**
+`doc` · 3353 lines · 688,620 B · description: **extracted**
 
-**Purpose.** PR 323 reached remote master as 0ead38c while the application branch completed CI. Preserve its connecting/error/recovery UI and test alongside the optimizer reason display. Extension 0.12.3 includes both changes; no native owner, shared route or active session changes. Prior final-head 411cdb4 CI passed, but merge delivery is withheld until the integrated source passes current checks.
+**Purpose.** Version: 646 Delta: v645 to v646; integrate delivered PR330, preserve both workflow histories, and diagnose final macOS forward-test fixture before current reassessment. Delta: v644 to v645; repair required command-parity fixtures after final macOS CI and preserve the source-v4 review.
 
 **Use.** Read it.
 
@@ -728,9 +728,9 @@ Repository-level entry points and agent instructions. `AGENTS.md` and `CLAUDE.md
 
 #### `prompts.md`
 
-`doc` · 2618 lines · 160,030 B · description: **extracted**
+`doc` · 2687 lines · 163,624 B · description: **extracted**
 
-**Purpose.** Version: 286 Delta: v285 to v286; add the explicit per-coin ML retention and durable disk requirement. Delta: v282 to v283; commission the whole-application optimizer with frozen coverage.
+**Purpose.** Version: 290 Delta: v289 to v290; preserve PR330 request and both Oracle persistence requirements during final delivery integration. Delta: v288 to v289; preserve the native market coin-list and explicit report request.
 
 **Use.** Read it.
 
@@ -836,7 +836,7 @@ Repository-level entry points and agent instructions. `AGENTS.md` and `CLAUDE.md
 
 Curated prose. `ARCHITECTURE.md` explains how the pieces fit, `TESTING.md` is the coverage contract, `SECURITY.md` covers the order-placing surface, and this file indexes everything.
 
-177 files.
+179 files.
 
 #### `docs/API.md`
 
@@ -872,7 +872,7 @@ Curated prose. `ARCHITECTURE.md` explains how the pieces fit, `TESTING.md` is th
 
 #### `docs/COMPONENTS.md`
 
-`doc` · 346 lines · 19,088 B · description: **extracted**
+`doc` · 352 lines · 19,458 B · description: **extracted**
 
 **Purpose.** What each module is for, what it exposes, and what it depends on. `docs/codebase-overview.md` is the flat file map; this page is the shape of the thing. The eleven components have explicit ownership boundaries. `backtester/` supplies the
 
@@ -976,7 +976,7 @@ Curated prose. `ARCHITECTURE.md` explains how the pieces fit, `TESTING.md` is th
 
 #### `docs/FILES.md`
 
-`doc` · 38412 lines · 1,843,714 B · description: **extracted**
+`doc` · 38478 lines · 1,846,721 B · description: **extracted**
 
 **Purpose.** Regenerate with: python3 index/build.py all # refresh the index python3 index/make_files_doc.py # rewrite this file
 
@@ -1104,9 +1104,9 @@ Curated prose. `ARCHITECTURE.md` explains how the pieces fit, `TESTING.md` is th
 
 #### `docs/ORACLE-AUTO-TRADING.md`
 
-`doc` · 220 lines · 12,766 B · description: **extracted**
+`doc` · 221 lines · 12,888 B · description: **extracted**
 
-**Purpose.** Version: 1.2.0 Delta: retain compatible per-coin paper learning and replayable samples on local disk. Extension 0.11.0 adds **Auto Long / Short** to the Jupiter chart panel. The Oracle
+**Purpose.** Version: 1.2.1 Delta: link both browser learners' independent disk checkpoint and recovery path. Extension 0.11.0 adds **Auto Long / Short** to the Jupiter chart panel. The Oracle
 
 **Use.** Read it.
 
@@ -1115,6 +1115,14 @@ Curated prose. `ARCHITECTURE.md` explains how the pieces fit, `TESTING.md` is th
 `doc` · 56 lines · 2,771 B · description: **extracted**
 
 **Purpose.** The current official application matches program https://yolo-api.jup.ag Its public frontend uses JSON POST requests without an API-key or login header.
+
+**Use.** Read it.
+
+#### `docs/ORACLE-LEARNING-STORAGE.md`
+
+`doc` · 90 lines · 5,161 B · description: **extracted**
+
+**Purpose.** Version: 1.0.0 Delta: preserve both browser learners and add complete local disk checkpoints. The Live Oracle and minute-close Oracle remember their own results for each
 
 **Use.** Read it.
 
@@ -1312,9 +1320,9 @@ Curated prose. `ARCHITECTURE.md` explains how the pieces fit, `TESTING.md` is th
 
 #### `docs/application-optimizer-2026-11-17.md`
 
-`doc` · 72 lines · 5,495 B · description: **extracted**
+`doc` · 109 lines · 6,761 B · description: **extracted**
 
-**Purpose.** Version: 1.2.0. Delta: preserve both concurrent helper diagnostics and the seven optimizer repairs; qualify the independent review source binding. paper-operation, hosted-account and guarded-execution application. It does not certify the application as globally clean, profitable or ready for live trading.
+**Purpose.** Version: 2.0.1. Delta: preserve delivered PR330 and current verification history alongside the three-review assessment and complete Oracle disk recovery. research, paper-operation, hosted-account and guarded-execution application. The complete current no-edit sweep records all 240 methods, 222 selected, across
 
 **Use.** Read it.
 
@@ -1446,6 +1454,14 @@ Curated prose. `ARCHITECTURE.md` explains how the pieces fit, `TESTING.md` is th
 
 **Use.** Read it.
 
+#### `docs/code-deep-optimizer-2026-11-11.md`
+
+`doc` · 87 lines · 5,157 B · description: **extracted**
+
+**Purpose.** Status: **IN PROGRESS — no whole-repository clean or completed optimization claim.** The owner requested the deep code optimizer on each component. This run uses code-deep-optimizer 1.17.1, the standard 18-pass profile, full source coverage and
+
+**Use.** Read it.
+
 #### `docs/code-optimizer-scope-2026-11-06.json`
 
 `doc` · 329 lines · 11,977 B · description: **derived**
@@ -1544,7 +1560,7 @@ Curated prose. `ARCHITECTURE.md` explains how the pieces fit, `TESTING.md` is th
 
 #### `docs/operations-registry.json`
 
-`doc` · 4708 lines · 231,881 B · description: **derived**
+`doc` · 4768 lines · 234,824 B · description: **derived**
 
 **Purpose.** Generated JSON object, 8 keys (schema_version, version, delta, generator, scope, limits...).
 
@@ -2308,7 +2324,7 @@ The search layer over the repo itself. Generators plus three committed indexes; 
 
 #### `index/build.py`
 
-`code-python` · 933 lines · 40,263 B · description: **curated**
+`code-python` · 934 lines · 40,353 B · description: **curated**
 
 **Purpose.** Builds the four indexes over every tracked file: metadata, BM25 text, concepts, and the opt-in semantic embeddings. `--check` re-hashes the tree so a stale index fails loudly.
 
@@ -2864,7 +2880,7 @@ The simulation engine and everything that supports it. Never gains live-trading 
 
 #### `backtester/core/zec_ensemble.py`
 
-`code-python` · 460 lines · 18,115 B · description: **extracted**
+`code-python` · 466 lines · 18,463 B · description: **extracted**
 
 **Purpose.** Serializable causal ZEC ensemble policies shared by research and paper workers. This module only computes exposures. It has no network or order-submission path. Member policies use the canonical registry. Stateful members are advanced from all prior bars, including before the ensemble's longest warmup completes.
 
@@ -22054,7 +22070,7 @@ The simulation engine and everything that supports it. Never gains live-trading 
 
 Drivers that produce the numbers, and the write-ups that quote them. Everything here is reproducible from a committed script — the two occasions that was not true both produced a wrong published figure.
 
-494 files.
+522 files.
 
 #### `research/5minleveragestrategies.json`
 
@@ -22336,6 +22352,14 @@ Drivers that produce the numbers, and the write-ups that quote them. Everything 
 
 **Use.** Read it.
 
+#### `research/WEEKLY-COIN-STUDY.md`
+
+`doc` · 229 lines · 13,366 B · description: **extracted**
+
+**Purpose.** Version: 2.0.0 Run from `/Users/mitch/dev/solmargintrader` in a Python 3.13 environment with the backtester dependencies. The legacy single-coin default is still Binance
+
+**Use.** Read it.
+
 #### `research/ZEC-CYCLE-VALIDATION.md`
 
 `doc` · 156 lines · 10,747 B · description: **extracted**
@@ -22411,6 +22435,56 @@ Drivers that produce the numbers, and the write-ups that quote them. Everything 
 **Contents.** Defines `REPO`, `PAD_BARS`, `class TickFetchUnavailable`, `gap_runs()`, `classify_run()`, `_fetch_window()`, `repair_window()`, `_run()`, `main()`. Depends on `backtester`.
 
 **Use.** `python3 research/candle_gap_audit.py --help`
+
+#### `research/coin_week.py`
+
+`code-python` · 1318 lines · 54,586 B · description: **extracted**
+
+**Purpose.** Repeat the candle-supported ZEC study on a fresh, frozen week of another coin. python -m research.coin_week --coin ETH --output /absolute/path/to/new-study python -m research.coin_week --coin ETH --output /absolute/path/to/new-study --resume Acquisition is an explicit phase; analysis and verification can run offline. This module never changes a recorder, model owner, paper trial or live account.
+
+**Contents.** Defines `ROOT`, `VERSION`, `STEPS`, `FEES`, `WINDOWS`, `STUDIES`, `identity()`, `coverage()`, `write_table()`, `input_hashes()` and 16 more. Depends on `backtester`, `research`.
+
+**Use.** `python3 research/coin_week.py --help`
+
+#### `research/coin_week_batch.py`
+
+`code-python` · 631 lines · 27,630 B · description: **extracted**
+
+**Purpose.** Frozen native-market combination studies; acquisition precedes simulation.
+
+**Contents.** Defines `CATALOGUE_URLS`, `coin_list()`, `catalogue_rows()`, `acquire_catalogue()`, `verify_catalogue()`, `combinations()`, `shared_path()`, `ledger()`, `frozen_ledger()`, `batch_report()` and 6 more. Depends on `research`.
+
+**Use.** `import research.coin_week_batch`
+
+#### `research/coin_week_correlations.py`
+
+`code-python` · 266 lines · 11,819 B · description: **extracted**
+
+**Purpose.** Past-only features, purged temporal splits and an explicit correlation search.
+
+**Contents.** Defines `HORIZONS`, `SEED`, `features()`, `split_indices()`, `sample_indices()`, `standardized()`, `permute_blocks()`, `analyze()`.
+
+**Use.** `import research.coin_week_correlations`
+
+#### `research/coin_week_data.py`
+
+`code-python` · 415 lines · 15,146 B · description: **extracted**
+
+**Purpose.** Explicit public candle acquisition for the weekly study; no execution access.
+
+**Contents.** Defines `BASE`, `BINANCE`, `PROVIDERS`, `MAX_BYTES`, `COLUMNS`, `digest()`, `save()`, `load()`, `coin_symbol()`, `week_bounds()` and 10 more. Depends on `research`.
+
+**Use.** `import research.coin_week_data`
+
+#### `research/coin_week_reports.py`
+
+`code-python` · 205 lines · 13,930 B · description: **extracted**
+
+**Purpose.** Human-readable definitions of the actual weekly market tests (report v2).
+
+**Contents.** Defines `MODE_LABELS`, `resolved_policy()`, `spec_label()`, `policy_label()`, `policy_details()`, `number()`, `render_report()`. Depends on `backtester`, `research`.
+
+**Use.** `import research.coin_week_reports`
 
 #### `research/coinbase50-requirements.txt`
 
@@ -23798,6 +23872,56 @@ Drivers that produce the numbers, and the write-ups that quote them. Everything 
 
 **Use.** Read it.
 
+### `research/eth-week-20261117/`
+
+#### `research/eth-week-20261117/artifacts.zip`
+
+`other` · 0 lines · 18,883,848 B · description: **none**
+
+**Purpose.** _No description available._
+
+**Use.** Read it.
+
+#### `research/eth-week-20261117/audit.json`
+
+`config` · 290 lines · 7,743 B · description: **derived**
+
+**Purpose.** Generated JSON object, 8 keys (agent, definition_version, status, observed_at, evidence, changes...).
+
+**Use.** Configuration; nothing to run.
+
+#### `research/eth-week-20261117/correlations.png`
+
+`other` · 0 lines · 238,613 B · description: **none**
+
+**Purpose.** _No description available._
+
+**Use.** Read it.
+
+#### `research/eth-week-20261117/publication.json`
+
+`config` · 30 lines · 989 B · description: **derived**
+
+**Purpose.** Generated JSON object, 6 keys (schema, version, full_local_run, original_manifest_sha256, archive_entries, files).
+
+**Use.** Configuration; nothing to run.
+
+#### `research/eth-week-20261117/report.md`
+
+`doc` · 85 lines · 6,085 B · description: **extracted**
+
+**Purpose.** Version: 1.0.0 UTC window: 2026-11-10T17:13:00Z to 2026-11-17T17:13:00Z (exclusive). Source: Binance spot ETH/USDT, 10,080 completed one-minute bars.
+
+**Use.** Read it.
+
+#### `research/eth-week-20261117/summary.json`
+
+`config` · 2 lines · 49,234 B · description: **derived**
+
+**Purpose.** Generated JSON object, 13 keys (correlations, coverage, cycle_resolution_floor, cycle_tests, minimum_cycle_p_holm, minutes...).
+
+**Use.** Configuration; nothing to run.
+
 ### `research/exit50-reversal-20261116/`
 
 #### `research/exit50-reversal-20261116/manifest.json`
@@ -23961,6 +24085,126 @@ Drivers that produce the numbers, and the write-ups that quote them. Everything 
 `config` · 2 lines · 8,501 B · description: **derived**
 
 **Purpose.** Generated JSON object, 2 keys (models, schema).
+
+**Use.** Configuration; nothing to run.
+
+### `research/native-pairs-week-20261117/`
+
+#### `research/native-pairs-week-20261117/artifacts.zip`
+
+`other` · 0 lines · 40,491,663 B · description: **none**
+
+**Purpose.** _No description available._
+
+**Use.** Read it.
+
+#### `research/native-pairs-week-20261117/audit.json`
+
+`config` · 265 lines · 12,227 B · description: **derived**
+
+**Purpose.** Generated JSON object, 9 keys (agent, changes, definition_version, details, evidence, observed_at...).
+
+**Use.** Configuration; nothing to run.
+
+#### `research/native-pairs-week-20261117/batch-summary.json`
+
+`config` · 2 lines · 3,815 B · description: **derived**
+
+**Purpose.** Generated JSON object, 7 keys (completed_markets, failed_markets, markets, plan, status, unavailable_markets...).
+
+**Use.** Configuration; nothing to run.
+
+#### `research/native-pairs-week-20261117/publication.json`
+
+`config` · 2 lines · 1,880 B · description: **derived**
+
+**Purpose.** Generated JSON object, 12 keys (archive, artifacts, batch_manifest_sha256, complete_run, completed_markets, failures...).
+
+**Use.** Configuration; nothing to run.
+
+#### `research/native-pairs-week-20261117/report.md`
+
+`doc` · 45 lines · 5,107 B · description: **extracted**
+
+**Purpose.** Report version: 2.0.0 Coins: **ETH, BTC, ZEC**. Added cash quote: **USD**. Venue: **Coinbase Exchange spot**. Requested acquisition: **2026-11-10T19:46:00Z to 2026-11-17T19:46:00Z**, exclusive. Each available native market downloads real one-minute candles once. No cross-pair OHLC is synthesized.
+
+**Use.** Read it.
+
+### `research/native-pairs-week-20261117/markets/BTC-USD/`
+
+#### `research/native-pairs-week-20261117/markets/BTC-USD/correlations.png`
+
+`other` · 0 lines · 248,715 B · description: **none**
+
+**Purpose.** _No description available._
+
+**Use.** Read it.
+
+#### `research/native-pairs-week-20261117/markets/BTC-USD/report.md`
+
+`doc` · 119 lines · 13,844 B · description: **extracted**
+
+**Purpose.** Report version: 2.0.0 Each reference account starts with 10,000 USD units. This normalized simulation has no order-book capacity model; it does not assert that this size is executable. Requested acquisition: **2026-11-10T19:46:00Z to 2026-11-17T19:46:00Z**, exclusive (10,080 minutes).
+
+**Use.** Read it.
+
+#### `research/native-pairs-week-20261117/markets/BTC-USD/summary.json`
+
+`config` · 2 lines · 50,012 B · description: **derived**
+
+**Purpose.** Generated JSON object, 15 keys (analysis_window, correlations, coverage, cycle_resolution_floor, cycle_tests, market...).
+
+**Use.** Configuration; nothing to run.
+
+### `research/native-pairs-week-20261117/markets/ETH-USD/`
+
+#### `research/native-pairs-week-20261117/markets/ETH-USD/correlations.png`
+
+`other` · 0 lines · 249,133 B · description: **none**
+
+**Purpose.** _No description available._
+
+**Use.** Read it.
+
+#### `research/native-pairs-week-20261117/markets/ETH-USD/report.md`
+
+`doc` · 121 lines · 13,106 B · description: **extracted**
+
+**Purpose.** Report version: 2.0.0 Each reference account starts with 10,000 USD units. This normalized simulation has no order-book capacity model; it does not assert that this size is executable. Requested acquisition: **2026-11-10T19:46:00Z to 2026-11-17T19:46:00Z**, exclusive (10,080 minutes).
+
+**Use.** Read it.
+
+#### `research/native-pairs-week-20261117/markets/ETH-USD/summary.json`
+
+`config` · 2 lines · 49,066 B · description: **derived**
+
+**Purpose.** Generated JSON object, 15 keys (analysis_window, correlations, coverage, cycle_resolution_floor, cycle_tests, market...).
+
+**Use.** Configuration; nothing to run.
+
+### `research/native-pairs-week-20261117/markets/ZEC-USD/`
+
+#### `research/native-pairs-week-20261117/markets/ZEC-USD/correlations.png`
+
+`other` · 0 lines · 251,207 B · description: **none**
+
+**Purpose.** _No description available._
+
+**Use.** Read it.
+
+#### `research/native-pairs-week-20261117/markets/ZEC-USD/report.md`
+
+`doc` · 121 lines · 13,335 B · description: **extracted**
+
+**Purpose.** Report version: 2.0.0 Each reference account starts with 10,000 USD units. This normalized simulation has no order-book capacity model; it does not assert that this size is executable. Requested acquisition: **2026-11-10T19:46:00Z to 2026-11-17T19:46:00Z**, exclusive (10,080 minutes).
+
+**Use.** Read it.
+
+#### `research/native-pairs-week-20261117/markets/ZEC-USD/summary.json`
+
+`config` · 2 lines · 47,714 B · description: **derived**
+
+**Purpose.** Generated JSON object, 15 keys (analysis_window, correlations, coverage, cycle_resolution_floor, cycle_tests, market...).
 
 **Use.** Configuration; nothing to run.
 
@@ -25431,6 +25675,26 @@ Drivers that produce the numbers, and the write-ups that quote them. Everything 
 **Contents.** Defines `class StreamFenceTests`. Depends on `research`.
 
 **Use.** `python3 -m pytest research/tests/test_cdo_stream_fence.py -q`
+
+#### `research/tests/test_coin_week.py`
+
+`test` · 432 lines · 17,323 B · description: **extracted**
+
+**Purpose.** Weekly acquisition, temporal isolation and broad-search inference contracts.
+
+**Contents.** Defines `candles()`, `class AcquisitionTests`, `class TemporalTests`, `class CorrelationTests`, `class StudyTransferTests`. Depends on `backtester`, `research`.
+
+**Use.** `python3 -m pytest research/tests/test_coin_week.py -q`
+
+#### `research/tests/test_coin_week_batch.py`
+
+`test` · 412 lines · 16,357 B · description: **extracted**
+
+**Purpose.** Native quote identity, full combination census, gaps and explicit reports.
+
+**Contents.** Defines `catalogue()`, `options()`, `class NativeMarketTests`, `class BatchAcquisitionTests`, `class GapAndInferenceTests`, `class ExplicitReportTests`. Depends on `research`.
+
+**Use.** `python3 -m pytest research/tests/test_coin_week_batch.py -q`
 
 #### `research/tests/test_coinbase50_study.py`
 
@@ -26930,11 +27194,11 @@ Forecast evidence, strategy votes, archives and separately controlled webhook ex
 
 The Chrome extension has a separately armed trading surface. Dry-run is the default, risk rails live in code and fail closed, and a fresh install must not be able to trade.
 
-174 files.
+177 files.
 
 #### `extension/README.md`
 
-`doc` · 820 lines · 55,886 B · description: **extracted**
+`doc` · 829 lines · 56,432 B · description: **extracted**
 
 **Purpose.** A Chrome MV3 extension for the owner's Base and Solana money: **holdings, profit and loss, pool discovery, backtests and strategy changes, swap quotes, and alerts** when a more profitable pool or strategy appears. It also keeps an **experimental grid trading strategy on Jupiter (Solana)** with
 
@@ -27076,7 +27340,7 @@ The Chrome extension has a separately armed trading surface. Dry-run is the defa
 
 #### `extension/src/1000x/autotrade-view.js`
 
-`code-js` · 131 lines · 13,002 B · description: **none**
+`code-js` · 131 lines · 13,042 B · description: **none**
 
 **Purpose.** _No description available._
 
@@ -27114,9 +27378,19 @@ The Chrome extension has a separately armed trading surface. Dry-run is the defa
 
 **Use.** Loaded by the extension; see `extension/manifest.json` for entry points.
 
+#### `extension/src/1000x/oracle-checkpoint.js`
+
+`code-js` · 27 lines · 1,689 B · description: **extracted**
+
+**Purpose.** Metadata accompanies the learner in the same IndexedDB transaction.
+
+**Contents.** Defines `checkpointMeta`, `checkpointText`, `nextCheckpoint`, `restoreCheckpoint`.
+
+**Use.** Loaded by the extension; see `extension/manifest.json` for entry points.
+
 #### `extension/src/1000x/oracle-controller.js`
 
-`code-js` · 104 lines · 5,287 B · description: **none**
+`code-js` · 124 lines · 6,454 B · description: **none**
 
 **Purpose.** _No description available._
 
@@ -27124,9 +27398,19 @@ The Chrome extension has a separately armed trading surface. Dry-run is the defa
 
 **Use.** Loaded by the extension; see `extension/manifest.json` for entry points.
 
+#### `extension/src/1000x/oracle-disk.js`
+
+`code-js` · 207 lines · 12,031 B · description: **extracted**
+
+**Purpose.** IndexedDB remains primary. Disk I/O happens after commit, never in a reducer.
+
+**Contents.** Defines `MAX_BYTES`, `PROFILE_DB`, `class MirroredOracleStore`, `class OracleDiskBackup`, `learningProfile`.
+
+**Use.** Loaded by the extension; see `extension/manifest.json` for entry points.
+
 #### `extension/src/1000x/oracle-live-controller.js`
 
-`code-js` · 186 lines · 9,392 B · description: **none**
+`code-js` · 208 lines · 10,601 B · description: **none**
 
 **Purpose.** _No description available._
 
@@ -27136,17 +27420,17 @@ The Chrome extension has a separately armed trading surface. Dry-run is the defa
 
 #### `extension/src/1000x/oracle-live-model.js`
 
-`code-js` · 152 lines · 12,282 B · description: **extracted**
+`code-js` · 153 lines · 12,361 B · description: **extracted**
 
 **Purpose.** Causal, prospective advisory only. No execution or historical warm start.
 
-**Contents.** Defines `CLASSES`, `LIVE_ORACLE`, `admitLiveProbe`, `direction`, `features`, `learn`, `liveIdentity`, `liveProbabilities`, `liveSnapshot`, `newLiveState` and 4 more.
+**Contents.** Defines `CLASSES`, `LIVE_ORACLE`, `admitLiveProbe`, `direction`, `features`, `learn`, `liveIdentity`, `liveProbabilities`, `liveSnapshot`, `newLiveState` and 5 more.
 
 **Use.** Loaded by the extension; see `extension/manifest.json` for entry points.
 
 #### `extension/src/1000x/oracle-live-store.js`
 
-`code-js` · 91 lines · 6,051 B · description: **extracted**
+`code-js` · 105 lines · 7,192 B · description: **extracted**
 
 **Purpose.** Separate database. Every synchronous reducer runs in one multi-store transaction. Per-probe and per-score records avoid rewriting the full pending queue each second.
 
@@ -27156,7 +27440,7 @@ The Chrome extension has a separately armed trading surface. Dry-run is the defa
 
 #### `extension/src/1000x/oracle-live-view.js`
 
-`code-js` · 109 lines · 9,328 B · description: **extracted**
+`code-js` · 109 lines · 9,410 B · description: **extracted**
 
 **Purpose.** Present supplied committed advisory data only; this view performs no I/O.
 
@@ -27176,7 +27460,7 @@ The Chrome extension has a separately armed trading surface. Dry-run is the defa
 
 #### `extension/src/1000x/oracle-store.js`
 
-`code-js` · 69 lines · 3,255 B · description: **extracted**
+`code-js` · 83 lines · 4,345 B · description: **extracted**
 
 **Purpose.** Separate from the money-moving journal. Each conditional learner transition stays inside one native readwrite transaction, including across browser tabs.
 
@@ -27222,7 +27506,7 @@ The Chrome extension has a separately armed trading surface. Dry-run is the defa
 
 #### `extension/src/1000x/panel.js`
 
-`code-js` · 293 lines · 22,281 B · description: **none**
+`code-js` · 318 lines · 25,017 B · description: **none**
 
 **Purpose.** _No description available._
 
@@ -27376,7 +27660,7 @@ The Chrome extension has a separately armed trading surface. Dry-run is the defa
 
 #### `extension/src/core/owner-source.js`
 
-`code-js` · 79 lines · 2,200 B · description: **extracted**
+`code-js` · 81 lines · 2,266 B · description: **extracted**
 
 **Purpose.** Versioned source identity covers the complete shipped execution module set.
 
@@ -27906,13 +28190,23 @@ The Chrome extension has a separately armed trading surface. Dry-run is the defa
 
 #### `extension/test/1000x-oracle-controller.test.js`
 
-`test` · 198 lines · 13,452 B · description: **none**
+`test` · 222 lines · 14,836 B · description: **none**
 
 **Purpose.** _No description available._
 
 **Contents.** Defines `atomicFixture`.
 
 **Use.** `node --test extension/test/1000x-oracle-controller.test.js`
+
+#### `extension/test/1000x-oracle-disk.test.js`
+
+`test` · 238 lines · 16,935 B · description: **none**
+
+**Purpose.** _No description available._
+
+**Contents.** Defines `localStore`, `remote`, `timers`, `trained`.
+
+**Use.** `node --test extension/test/1000x-oracle-disk.test.js`
 
 #### `extension/test/1000x-oracle-horizons.test.js`
 
@@ -27924,7 +28218,7 @@ The Chrome extension has a separately armed trading surface. Dry-run is the defa
 
 #### `extension/test/1000x-oracle-live-controller.test.js`
 
-`test` · 151 lines · 9,685 B · description: **none**
+`test` · 174 lines · 11,168 B · description: **none**
 
 **Purpose.** _No description available._
 
@@ -27944,7 +28238,7 @@ The Chrome extension has a separately armed trading surface. Dry-run is the defa
 
 #### `extension/test/1000x-oracle-live-store.test.js`
 
-`test` · 66 lines · 5,062 B · description: **none**
+`test` · 67 lines · 5,183 B · description: **none**
 
 **Purpose.** _No description available._
 
@@ -28036,7 +28330,7 @@ The Chrome extension has a separately armed trading surface. Dry-run is the defa
 
 #### `extension/test/autotrade-view.test.js`
 
-`test` · 237 lines · 14,459 B · description: **none**
+`test` · 244 lines · 15,001 B · description: **none**
 
 **Purpose.** _No description available._
 
@@ -30604,7 +30898,7 @@ Isolated bot-owner management, health journals and managed-suite supervision.
 
 #### `botmanager/tests/test_supervisor.py`
 
-`test` · 748 lines · 29,933 B · description: **none**
+`test` · 750 lines · 30,148 B · description: **none**
 
 **Purpose.** _No description available._
 
@@ -31516,7 +31810,7 @@ The local TUI, browser workspace and service interfaces. Coinbase order executio
 
 #### `soltui/commands.py`
 
-`code-python` · 3542 lines · 176,258 B · description: **extracted**
+`code-python` · 3578 lines · 178,178 B · description: **extracted**
 
 **Purpose.** The soltui command registry: one set of calls for the TUI, CLI, HTTP API and native host. Every action the console can take is a registered `Command`. Every surface goes through `dispatch(name, params, surface)`, which validates parameters, applies the confirm gate, runs the handler, wraps the outcome in the response envelope and appends one line to the call log.
 
@@ -32004,7 +32298,7 @@ The local TUI, browser workspace and service interfaces. Coinbase order executio
 
 #### `soltui/requirements.txt`
 
-`data` · 39 lines · 2,007 B · description: **curated**
+`data` · 39 lines · 2,009 B · description: **curated**
 
 **Purpose.** Runtime dependencies for the menu-bar app (rumps/pyobjc and the py2app build tooling).
 
@@ -32170,7 +32464,7 @@ The local TUI, browser workspace and service interfaces. Coinbase order executio
 
 #### `soltui/tui.py`
 
-`code-python` · 8300 lines · 453,874 B · description: **extracted**
+`code-python` · 8311 lines · 454,486 B · description: **extracted**
 
 **Purpose.** Textual TUI: the console over the backtester. python3 -m soltui.tui The panes (Settings, Strategies, Signals, Compound 5m, Backtest, Execute, ... Docs, and Now) are grouped by `shell.py` into six destinations; `--classic` shows the original tab bar. All decisions live in the pure modules (`config`, `roster`, `runner`, `paper`, `status`); this file is presentation and wiring.
 
@@ -32242,7 +32536,7 @@ The local TUI, browser workspace and service interfaces. Coinbase order executio
 
 #### `soltui/tests/bridge_support.py`
 
-`test` · 396 lines · 22,803 B · description: **extracted**
+`test` · 406 lines · 23,574 B · description: **extracted**
 
 **Purpose.** Shared fixtures for the command-bridge tests: an isolated world and the four surface runners.
 
@@ -32282,7 +32576,7 @@ The local TUI, browser workspace and service interfaces. Coinbase order executio
 
 #### `soltui/tests/test_autotrade_packaging.py`
 
-`test` · 43 lines · 1,590 B · description: **extracted**
+`test` · 44 lines · 1,626 B · description: **extracted**
 
 **Purpose.** The monorepo runtime wheel must own the same auto-session package as its bridge.
 
@@ -32432,7 +32726,7 @@ The local TUI, browser workspace and service interfaces. Coinbase order executio
 
 #### `soltui/tests/test_bridge_parity.py`
 
-`test` · 97 lines · 4,092 B · description: **extracted**
+`test` · 97 lines · 4,114 B · description: **extracted**
 
 **Purpose.** One registry, four surfaces: the same call returns the same envelope bytes everywhere. Driven by the registry itself, so a command added tomorrow is covered the day it is registered (the way extension/test/surfaces.test.js covers the extension's registry).
 
@@ -32762,7 +33056,7 @@ The local TUI, browser workspace and service interfaces. Coinbase order executio
 
 #### `soltui/tests/test_forwardtest.py`
 
-`test` · 392 lines · 21,145 B · description: **extracted**
+`test` · 412 lines · 22,676 B · description: **extracted**
 
 **Purpose.** Prospective evidence, horizon isolation, and the roster keyboard workflow.
 
@@ -34512,7 +34806,7 @@ CI. Runs the test suite and the figure verifier.
 
 #### `.github/workflows/ci.yml`
 
-`ci` · 510 lines · 23,624 B · description: **curated**
+`ci` · 513 lines · 23,820 B · description: **curated**
 
 **Purpose.** The gate. Runs the Python suite and `research/verify_numbers.py`, so a documented figure that no longer matches its result file fails the build rather than surviving in prose.
 
@@ -34578,7 +34872,7 @@ Session handoff notes, newest first. Prose, not machine-read.
 
 ## .cdo
 
-161 files.
+163 files.
 
 #### `.cdo/ledger.json`
 
@@ -34593,6 +34887,24 @@ Session handoff notes, newest first. Prose, not machine-read.
 `config` · 2765 lines · 50,992 B · description: **derived**
 
 **Purpose.** Generated JSON object, 5 keys (review, deferred, unchanged_skipped, removed_from_disk, full).
+
+**Use.** Configuration; nothing to run.
+
+#### `.cdo/scope-20261111-task1423.json`
+
+`config` · 6948 lines · 236,317 B · description: **derived**
+
+**Purpose.** Generated JSON object, 8 keys (base_commit, profile, full, max_files, truncated, excluded...).
+
+**Use.** Configuration; nothing to run.
+
+### `.cdo/checkpoints/`
+
+#### `.cdo/checkpoints/pr226-20261114-ledger.json`
+
+`config` · 855 lines · 18,584 B · description: **derived**
+
+**Purpose.** Generated JSON object, 3 keys (files, runs, version).
 
 **Use.** Configuration; nothing to run.
 
@@ -36656,7 +36968,7 @@ Session handoff notes, newest first. Prose, not machine-read.
 
 ## oracle_leverage
 
-46 files.
+48 files.
 
 #### `oracle_leverage/README.md`
 
@@ -36783,6 +37095,16 @@ Session handoff notes, newest first. Prose, not machine-read.
 **Contents.** Defines `MAX_SELECTION_BYTES`, `class ForwardError`, `canonical()`, `load_selection()`, `_freeze()`, `class ForwardWorker`, `main()`. Depends on `research`.
 
 **Use.** `python3 oracle_leverage/forward.py --help`
+
+#### `oracle_leverage/learning_checkpoints.py`
+
+`code-python` · 528 lines · 27,043 B · description: **extracted**
+
+**Purpose.** Private disk mirror of prospective browser learners; never a trading owner. Browser transactions own learning. Admission checks the complete frozen schemas before opening writable storage. A checkpoint and its recent outcomes commit in one transaction; neither raw historical ticks nor unobserved labels are inferred.
+
+**Contents.** Defines `MAX_BYTES`, `MAX_COMPRESSED_BYTES`, `CHUNK_CHARS`, `MAX_INTEGER`, `HORIZONS`, `HORIZON_KEYS`, `UUID`, `DIGEST`, `MINUTE_FORECAST`, `MINUTE_RESULT` and 28 more.
+
+**Use.** `import oracle_leverage.learning_checkpoints`
 
 #### `oracle_leverage/market.py`
 
@@ -37057,6 +37379,16 @@ Session handoff notes, newest first. Prose, not machine-read.
 **Contents.** Defines `NOW`, `selection()`, `class FakeMarket`, `class ForwardTests`.
 
 **Use.** `python3 -m pytest oracle_leverage/tests/test_forward.py -q`
+
+#### `oracle_leverage/tests/test_learning_checkpoints.py`
+
+`test` · 507 lines · 26,864 B · description: **extracted**
+
+**Purpose.** Prospective JS states exercise the private native mirror through real SQLite.
+
+**Contents.** Defines `ROOT`, `NAMESPACE`, `LINEAGE`, `OTHER_LINEAGE`, `FIXTURES`, `class LearningCheckpointTests`. Depends on `soltui`.
+
+**Use.** `python3 -m pytest oracle_leverage/tests/test_learning_checkpoints.py -q`
 
 #### `oracle_leverage/tests/test_market.py`
 

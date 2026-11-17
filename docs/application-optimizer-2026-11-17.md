@@ -1,6 +1,6 @@
 # Whole-application assessment, 2026-11-17
 
-Version: 2.0.0. Delta: rerun with the three-review limit; retain native per-coin memory and both browser learners with complete disk recovery.
+Version: 2.0.1. Delta: preserve delivered PR330 and current verification history alongside the three-review assessment and complete Oracle disk recovery.
 
 **Outcome: NEEDS_EVIDENCE.** The current assessment covers the eleven-component
 research, paper-operation, hosted-account and guarded-execution application.
@@ -52,7 +52,7 @@ bounded health polling, account-bound calculation recovery, fair candle refresh,
 reproducible synthetic seeds and the supported dry-run/verifier operating guide.
 They were delivered previously; this run does not claim them as new discoveries.
 
-The current ledger retains 28 resolved product, implementation and verification
+The current ledger retains 29 resolved product, implementation and verification
 findings. Failure attempts exposed canonical JSON/revision conflicts, malformed
 profile IDs, overlapping physical saves after logical timeout, obsolete revision
 retries, missing legacy backup metadata, stale recovery and cold quota display.
@@ -61,6 +61,9 @@ native regressions. Tests now wait for actual acknowledgements and terminal
 supervisor state instead of assuming a fixed number of event-loop turns or polls.
 The three learning commands also have valid isolated four-surface parity fixtures;
 the tests require successful responses and cannot write the user learning home.
+A deterministic stop/drain replay also exposed a late status callback that could
+paint Running after Stop. The UI retains the acknowledged stop until actual idle,
+and its test releases and joins the held worker explicitly.
 
 Current local checks pass 652 extension tests, 252 native tests, 20 supervisor
 lifecycle tests, checked JavaScript, pinned Python lint, documentation counts and
@@ -75,7 +78,7 @@ recovery. Corruption, isolation, concurrent local restoration, historical counts
 and chart reset passed. All test processes and profiles were cleaned up.
 
 The candidate versions are runtime 0.4.8, manager 0.7.11, ecosystem 0.4.20 and
-extension 0.12.4. The source includes delivered PR327/224/226 and their preserved
+extension 0.12.4. The source includes delivered PR327/224/226/330 and their preserved
 research/audit histories. No active cohort, paused study, archived liquidity
 service, credentials or trading authority was changed for evaluation. Actual
 user-profile/global activation is a separate delivery receipt; private-profile

@@ -1,6 +1,13 @@
 # Prompt history
 
-Version: 289
+Version: 290
+Delta: v289 to v290; preserve PR330 request and both Oracle persistence requirements during final delivery integration.
+Delta: v288 to v289; preserve the native market coin-list and explicit report request.
+
+## Native market combinations and explicit reports — 2026-11-17
+
+I tried testing ETH and it tested against ETH/BTC and ETH/ZEC but not ETH/USD, how do I get it to test that one? Also make is so I can give it a list of coins and it'll pull the data and backtest all the combinations of those coins. Also in the report, make it more explicit and apparent what was being tested. "LINEAR" is not enough information to know what test you were running.
+
 Delta: v288 to v289; integrate delivered PR224/PR226 while retaining both browser Oracle persistence requirements.
 Delta: v286 to v287; preserve PR327 and expand persistence to both browser Oracle learners from user screenshots.
 Delta: v285 to v286; add the explicit per-coin ML retention and durable disk requirement.
