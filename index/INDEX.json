@@ -1,11 +1,11 @@
 {
-  "generatedAt": "2026-11-17T19:30:11+00:00",
+  "generatedAt": "2026-11-17T19:43:48+00:00",
   "schemaVersion": 1,
   "repoRoot": "~/dev/solmargintrader",
-  "commit": "f076b36",
+  "commit": "ad6ff72",
   "counts": {
     "files": 4092,
-    "bytes": 166757211,
+    "bytes": 166757652,
     "byKind": {
       "strategy-card": 1478,
       "doc": 845,
@@ -71753,17 +71753,16 @@
       "ext": ".py",
       "kind": "test",
       "title": "test_cdo_load_cleanup",
-      "summary": "Exercise the load fixture's real cleanup block without spawning a worker.",
+      "summary": "Exercise the load fixture's cleanup helper without spawning a worker.",
       "summarySource": "docstring",
-      "bytes": 1809,
-      "lines": 30,
-      "sha1": "ffcaf630179f8f2d4e21125e4525919c78a665da",
+      "bytes": 1104,
+      "lines": 23,
+      "sha1": "d5b77892f404826982d907d6d7fcc870a0307b0c",
       "symbols": [
         "class LoadCleanupTests"
       ],
       "imports": [
-        "ast",
-        "pathlib",
+        "tests",
         "types",
         "unittest"
       ],
@@ -89720,11 +89719,11 @@
       "ext": ".md",
       "kind": "doc",
       "title": "Work continuation",
-      "summary": "Version: 642 Delta: v641 to v642; bind qualified PR235 to merged PR224/PR226 default source. Version: 641",
+      "summary": "Version: 643 Delta: v642 to v643; reconcile hosted integration test fixtures without weakening current source contracts. Hosted CI exposed a client VM missing the real createBacktestRecovery import and an older cleanup test that expected an inline finally block. The VM now receives the real factory. All326 website tests,18-file syntax check and70 Python engine tests pass.",
       "summarySource": "opening-prose",
-      "bytes": 837045,
-      "lines": 4280,
-      "sha1": "dc5fa10b3ff510c85e7ddcce720b9b3715e66a12",
+      "bytes": 837972,
+      "lines": 4287,
+      "sha1": "cde9bae876c0bbfdd16f1c8672ad819f2dce5e95",
       "symbols": [],
       "imports": [],
       "internalImports": [],
@@ -93746,11 +93745,11 @@
       "ext": ".md",
       "kind": "doc",
       "title": "Prompt history",
-      "summary": "Version: 289 Delta: v288 to v289; bind qualified PR235 to merged PR224/PR226 default source. Version: 288",
+      "summary": "Version: 290 Delta: v289 to v290; reconcile hosted integration test fixtures without weakening current source contracts. Version: 289",
       "summarySource": "opening-prose",
-      "bytes": 282744,
-      "lines": 4673,
-      "sha1": "bdcae43b412d389c29216a773751d49c7c04fa7a",
+      "bytes": 282866,
+      "lines": 4676,
+      "sha1": "67f330949ba4efb4385c836fff51846c417d3d0e",
       "symbols": [],
       "imports": [],
       "internalImports": [],
@@ -121386,9 +121385,9 @@
       "title": "client-races.test",
       "summary": "",
       "summarySource": "none",
-      "bytes": 4906,
-      "lines": 79,
-      "sha1": "e1e77875d0592182efabea4410ea50682165b93c",
+      "bytes": 5003,
+      "lines": 80,
+      "sha1": "f17a1cefe37d00663493fa7b369696cdcb736562",
       "symbols": [
         "client",
         "deferred"
@@ -121881,5 +121880,5 @@
       "frontmatter": {}
     }
   ],
-  "textSha256": "cae1b7295f9aec26bf9970f0b6e60bb2f0fe1a86541830a78f1644cbef91b59a"
+  "textSha256": "d6da2b375898159bcf0e1f2101ac1cb880dd2a5e10a5ea06c985f81f7b95f925"
 }
