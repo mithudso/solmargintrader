@@ -1,5 +1,8 @@
 # Work continuation
 
+Version: 645
+Delta: v644 to v645; retain final public exports while preparing PR289 exact-head checks.
+
 Version: 644
 Delta: v643 to v644; preserve final PR235 source and hosted fixture repairs in PR289.
 
@@ -26,6 +29,12 @@ Delta: v579 to v580; preserve Preview-error recovery scope and execution boundar
 Delta: v578 to v579; record resumed source archival and preserved forward state.
 Delta: v577 to v578; record owner two-column and causal candle/shape display request.
 Delta: v576 to v577; begin isolated 50 percent collateral exit and order-flow evidence study.
+
+Delta: v643 to v644; regenerate public research projections after merged tracked-source changes.
+
+## PR235 public export freshness — TASK-2579
+
+The repaired hosted website passed unit, browser, Worker and Python engine gates before its export freshness check found five stale public JSON files. The established exporter adds the already tracked weekly ETH study and its guide, and refreshes the existing CPCV source binding. No article was removed, private store read or research rerun. The unchanged transform retains original source hashes, published hashes, source caveats and workstation-path redaction. Export generation and the23-file export check pass. Next: regenerate deterministic indexes from committed source, push and wait all final-head checks.
 
 Version: 643
 Delta: v642 to v643; reconcile hosted integration test fixtures without weakening current source contracts.
