@@ -1,11 +1,11 @@
 {
-  "generatedAt": "2026-11-17T17:44:36+00:00",
+  "generatedAt": "2026-11-17T17:50:54+00:00",
   "schemaVersion": 1,
   "repoRoot": "~/dev/solmargintrader",
-  "commit": "ad63b86",
+  "commit": "97b3b4d",
   "counts": {
     "files": 4019,
-    "bytes": 160197416,
+    "bytes": 160198336,
     "byKind": {
       "strategy-card": 1478,
       "doc": 842,
@@ -88476,9 +88476,9 @@
       "title": "Work continuation",
       "summary": "The requested output is a reusable seven-day, one-minute coin study, first run on ETH. Work is isolated in /Users/mitch/dev/worktrees/weekly-coin-2571 on research/weekly-coin-2571. Preserve the canonical package edits, private Pine file, active cross-coin studies and all running owners.",
       "summarySource": "opening-prose",
-      "bytes": 657101,
-      "lines": 3182,
-      "sha1": "dd4b3397b0236a9085a697e3734079fb8eb70049",
+      "bytes": 658021,
+      "lines": 3185,
+      "sha1": "731ae27a29885a411b4a2ee7fabb8cdfe72ab272",
       "symbols": [],
       "imports": [],
       "internalImports": [],
@@ -119642,5 +119642,5 @@
       "frontmatter": {}
     }
   ],
-  "textSha256": "118cc6f9eab157a32da978d9a1e4a44bf5655022abd4e4cc902efd8c20e60dc7"
+  "textSha256": "36978bce2ebcc4b2bc8e37e501c21fd7026e8864c4a9a935d2837410211c5163"
 }
