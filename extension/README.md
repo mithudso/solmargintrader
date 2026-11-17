@@ -7,6 +7,15 @@ hard risk rails, on its own tab, **dry-run by default** — it will not place an
 change the mode and type a confirmation. A historical report says the grid lagged buy-and-hold walk-forward on 9 of 9 coins;
 that result has not been reverified. Version 0.3.0 moved it off the front page.
 
+## Saved learning and disk backup (0.12.4)
+
+Both browser Oracle learners retain per-coin, per-source and six-horizon models,
+pending forecasts and results across chart changes and reloads. Saved counts stay
+visible as historical when the feed is paused or stale. The native helper mirrors
+complete checkpoints to private SQLite storage; the panel shows acknowledged disk
+status and provides **Save now**. Browser learning continues if backup is unavailable.
+See [storage, exact-identity recovery and limits](../docs/ORACLE-LEARNING-STORAGE.md).
+
 ## Live Oracle (0.12.2)
 
 The Live Oracle estimates whether the price at each selected horizon will be
@@ -97,7 +106,7 @@ for DD or simulate a position from candle colors.
 
 The chart and its forecasts remain analysis views. The separate **Auto Long / Short**
 section controls the shared owner described below. Load or reload the unpacked
-extension, then reload the portal tab. Its header identifies extension version 0.12.2.
+extension, then reload the portal tab. Its header identifies extension version 0.12.4.
 See [design, formulas and verification](../docs/JUPITER-1000X-OVERLAY.md),
 [optimized execution prompt](../docs/JUPITER-1000X-OVERLAY-PROMPT.md), and
 [SDK create/close capabilities and remaining gates](../docs/JUPITER-1000X-SDK.md).
@@ -112,6 +121,14 @@ invalid observations cause a visible failure. Stop prevents new entries and
 continues managing an open position. Closing the panel leaves the owner running.
 Paper results include observed liquidation touches as failures and retain unknown
 outcomes when continuity is lost. They do not establish actual venue fills.
+
+Version 0.12.4 displays saved per-coin learning and disk status. The compatible
+BTC/ZEC models and resolved samples persist in the private shared owner's local
+SQLite journal across settings changes, coin switches and helper restarts. The
+10x and 1000x models remain separate. Remembered model samples do not qualify a
+new policy for increased exposure. An older or unavailable helper reports that
+limitation instead of showing a new empty model as a successful save. See
+[storage and migration](../docs/ORACLE-AUTO-TRADING.md#learning-confidence-and-bounded-exposure).
 
 **Start Live** checks explicit collateral/session-loss limits and backend
 readiness. Automatic live opening remains unavailable: the 10x path lacks verified

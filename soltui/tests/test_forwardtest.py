@@ -2,8 +2,9 @@
 
 from __future__ import annotations
 
-import unittest
+import asyncio
 import sqlite3
+import unittest
 from pathlib import Path
 from tempfile import TemporaryDirectory
 from threading import Event
@@ -12,11 +13,10 @@ from unittest.mock import patch
 import numpy as np
 from textual.widgets import Button, DataTable, Input, Static, TabbedContent
 
-from soltui.tests.test_tui import offline_console_reads
 from soltui import commands, config
 from soltui import forwardtest as ft
 from soltui.roster import Roster
-from soltui.tests.test_tui import TEST_SIZE
+from soltui.tests.test_tui import TEST_SIZE, offline_console_reads
 from soltui.tui import SolTuiApp
 
 BASE = 1_800_000_000
@@ -304,42 +304,71 @@ class RosterForwardUI(unittest.IsolatedAsyncioTestCase):
     async def test_start_runs_in_the_background_across_tabs_and_stop_drains_it(self) -> None:
         app = SolTuiApp(config.Settings(poll_interval_seconds=60, forwardtest_autostart=False))
         entered, released = Event(), Event()
+        observed = {}
 
         def check(asset, trials, horizons, cost, **kw):
             entered.set()
-            released.wait(5)
-            self.assertTrue(kw["stop"].is_set())
-            self.assertEqual(horizons, ft.HORIZONS)
-            self.assertIs(kw["tune"], True)
+            released.wait()
+            observed.update(stop_seen=kw["stop"].is_set(), horizons=horizons, tune=kw["tune"])
             return {"bar": None, "recorded": 0, "rows": [], "message": "stub"}
 
         with patch.object(ft, "tick", side_effect=check), patch("soltui.commands.time.time", return_value=BASE + 4):
             async with app.run_test(size=TEST_SIZE) as pilot:
-                app.query_one(TabbedContent).active = "tab-forwardtest"
-                await pilot.pause()
-                await pilot.click("#forward-start")
-                self.assertTrue(app._forward_running, str(app.query_one("#forward-status", Static).content))
-                # The runner is a thread of its own: leaving the tab does not pause it.
-                app.query_one(TabbedContent).active = "tab-backtest"
-                for _ in range(40):
-                    if entered.is_set():
-                        break
-                    await pilot.pause(0.05)
-                self.assertTrue(entered.is_set())
-                self.assertIn("forwardtest running", app.sub_title)
-                app.query_one(TabbedContent).active = "tab-forwardtest"
-                await pilot.pause()
-                await pilot.click("#forward-stop")
-                self.assertIn("forwardtest running", app.sub_title)
-                self.assertIn("Stopping", str(app.query_one("#forward-status", Static).content))
-                released.set()
-                for _ in range(60):
-                    await pilot.pause(0.05)
+                runner = owner = None
+                try:
+                    app.query_one(TabbedContent).active = "tab-forwardtest"
+                    await pilot.pause()
+                    await pilot.click("#forward-start")
+                    self.assertTrue(await asyncio.to_thread(entered.wait, 5.0))
+                    runner, owner = app.ctx.runtime.forward_thread, app.ctx.runtime.forward_owner
+                    self.assertIsNotNone(runner)
+                    self.assertIsNotNone(owner)
+                    self.assertTrue(app._forward_running, str(app.query_one("#forward-status", Static).content))
+                    # Leaving the tab cannot pause the separately owned runner.
+                    app.query_one(TabbedContent).active = "tab-backtest"
+                    await pilot.pause()
+                    self.assertTrue(runner.is_alive())
+                    self.assertIn("forwardtest running", app.sub_title)
+                    app.query_one(TabbedContent).active = "tab-forwardtest"
+                    await pilot.pause()
+                    pre_stop = app._call("forwardtest.state", quiet=True)["result"]
+                    await pilot.click("#forward-stop")
+                    self.assertTrue(await asyncio.to_thread(app.ctx.runtime.forward_stop.wait, 5.0))
+                    self.assertIn("forwardtest running", app.sub_title)
+                    self.assertIn("Stopping", str(app.query_one("#forward-status", Static).content))
+                    env = app._call("forwardtest.status", quiet=True)
+                    # Both a pre-Stop read and a paused-but-draining read can finish late.
+                    app._forward_done(env, pre_stop)
+                    self.assertIn("Stopping", str(app.query_one("#forward-status", Static).content))
+                    post_stop = app._call("forwardtest.state", quiet=True)["result"]
+                    app._forward_done(env, post_stop)
+                    self.assertIn("Stopping", str(app.query_one("#forward-status", Static).content))
+                    self.assertTrue(app.query_one("#forward-start").disabled)
+                    self.assertTrue(runner.is_alive())
+                finally:
+                    app.ctx.runtime.forward_stop.set()
+                    released.set()
+                    thread = runner or app.ctx.runtime.forward_thread
+                    if thread is not None:
+                        await asyncio.to_thread(thread.join, 5.0)
+                        self.assertFalse(thread.is_alive())
+                # Another console can resume between our Stop and next state poll.
+                # A fresh shared-state read wins; an old status callback cannot.
+                resumed = {**post_stop, "running": True, "busy": False, "prepared": True,
+                           "paused": False, "optimize": True}
+                with (patch.object(app, "_call", return_value={"ok": True, "result": resumed}),
+                      patch.object(app, "_forward_status_job")):
                     app._forward_schedule()
-                    if not app.query_one("#forward-start").disabled:
-                        break
+                app._forward_done(env, resumed)
+                self.assertFalse(app._forward_stopping)
+                self.assertIn("Running", str(app.query_one("#forward-status", Static).content))
+                app._forward_schedule()
                 self.assertFalse(app.query_one("#forward-start").disabled)
                 self.assertNotIn("forwardtest running", app.sub_title)
+                self.assertTrue(owner.monitor is None or not owner.monitor.is_alive())
+                self.assertIs(observed["stop_seen"], True)
+                self.assertEqual(observed["horizons"], ft.HORIZONS)
+                self.assertIs(observed["tune"], True)
 
     async def test_autostart_uses_shared_producer_and_preserves_saved_scope(self) -> None:
         with TemporaryDirectory() as directory, patch.object(config, "CONFIG_DIR", Path(directory)):

@@ -1088,6 +1088,7 @@ class SolTuiApp(App):
         self._docs_loaded_text = ""
         self._docs_revision: str | None = None
         self._forward_running = False
+        self._forward_stopping = False
         self._forward_busy = False
         self._forward_seen: dict[str, Any] = {}
         self._batch_id: str | None = None
@@ -1645,6 +1646,7 @@ class SolTuiApp(App):
             status.update(self._msg(run))
             return
         self._forward_running = True
+        self._forward_stopping = False
         self._forward_seen = {}
         self._forward_controls()
         status.update(f"{len(result['assets'])} coin(s): watching {result['trials']} trials each; horizons "
@@ -1664,6 +1666,7 @@ class SolTuiApp(App):
             status.update("Stop not confirmed: the producer returned an invalid safety state.")
             return
         self._forward_running = result["stopping"]
+        self._forward_stopping = self._forward_running or self._forward_busy
         self._forward_controls()
         if not self._forward_running:
             self._forward_show_running([])
@@ -1711,6 +1714,7 @@ class SolTuiApp(App):
         if not run["ok"]:
             return
         self._forward_running = True
+        self._forward_stopping = False
         self._forward_seen = {}
         self._forward_controls()
         self._forward_show_running(result.get("assets", []))
@@ -1735,9 +1739,15 @@ class SolTuiApp(App):
         was_busy = self._forward_busy
         self._forward_busy = bool(st["busy"]) or (not st["running"] and st["prepared"])
         self._forward_running = bool(st["running"])
+        if st.get("paused") and (self._forward_running or self._forward_busy):
+            self._forward_stopping = True
+        elif st.get("paused") is False and self._forward_running:
+            # A different console may have explicitly resumed the shared producer.
+            self._forward_stopping = False
         self._forward_show_running(st.get("assets", []) if self._forward_running else [])
         if not self._forward_running and not st["busy"]:
             self._forward_busy = False
+            self._forward_stopping = False
         self._forward_controls()
         seen = {a: v.get("at") for a, v in st["last"].items()}
         if seen != getattr(self, "_forward_seen", {}) or was_busy != self._forward_busy:
@@ -1762,7 +1772,11 @@ class SolTuiApp(App):
         last = st.get("last") or {}
         errors = {a: v["error"] for a, v in last.items() if v.get("error")}
         recorded = sum(v.get("recorded", 0) for v in last.values())
-        if self._forward_running:
+        # A status read can finish after Stop while the producer still drains.
+        # Its older snapshot cannot revoke an acknowledged stop request.
+        if self._forward_stopping:
+            status.update("Stopping after the current check…")
+        elif self._forward_running:
             when = max((v.get("at") or 0 for v in last.values()), default=0)
             stamp = time.strftime("%H:%M:%S", time.localtime(when)) if when else "-"
             text = (f"Running in the background on {len(st.get('assets') or [])} coin(s), auto-optimize "

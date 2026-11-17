@@ -1,5 +1,10 @@
 # Prompt history
 
+Version: 295
+Delta: preserve delivered PR289 workflow/index checkpoint and the combined Oracle/research repairs before final source8.
+Delta: integrate delivered PR235 maintenance with Oracle persistence; preserve both histories, current review3 partial provenance and last whole-sweep allowance.
+Delta: v289 to v290; preserve PR330 request and both Oracle persistence requirements during final delivery integration.
+
 Version: 294
 Delta: v293 to v294; bind PR289 to delivered PR235 squash and preserve exact source.
 
@@ -55,6 +60,14 @@ Delta: v288 to v289; preserve the native market coin-list and explicit report re
 ## Native market combinations and explicit reports — 2026-11-17
 
 I tried testing ETH and it tested against ETH/BTC and ETH/ZEC but not ETH/USD, how do I get it to test that one? Also make is so I can give it a list of coins and it'll pull the data and backtest all the combinations of those coins. Also in the report, make it more explicit and apparent what was being tested. "LINEAR" is not enough information to know what test you were running.
+
+Delta: v288 to v289; integrate delivered PR224/PR226 while retaining both browser Oracle persistence requirements.
+Delta: v286 to v287; preserve PR327 and expand persistence to both browser Oracle learners from user screenshots.
+Delta: v285 to v286; add the explicit per-coin ML retention and durable disk requirement.
+
+## Integrated PR224/PR226 workflow history
+
+Version: 288
 Delta: v287 to v288; bind PR226 to merged master77bf655 and preserve its exact audit files.
 
 Version: 287
@@ -4777,3 +4790,29 @@ $application-deep-optimizer  /Users/mitch/dev/solmargintrader
 ```
 
 The user explicitly supplied application-deep-optimizer1.0.0. Preserve its complete commission and exact skill hash in /Users/mitch/.local/share/solmargintrader/audits/application-2527/commission.json. This invocation commissions whole-product evaluation and authorized Medium+ repair, separate from skill creation and older code/UI audits.
+
+## Cap-three application optimizer rerun — 2026-11-17
+
+```text
+Raise the two-review cap on the application deep optimizer to three and run it again on this repo.
+```
+
+Executed invocation: `$application-deep-optimizer  /Users/mitch/dev/solmargintrader`. Skill1.0.1 is delivered via https://github.com/mithudso/skills/pull/115 and verified source-exact through the native .agents alias. New application run TASK-2556, independent review/delivery TASK-2557; prior TASK-2529 and its immutable qualified evidence remain lineage.
+
+## Per-coin ML persistence and disk state — 2026-11-17
+
+```text
+Also the machine learning auto trader in the extension doesn't save its data anywhere, it resets when I change or reset it. 1) have it save the state for next time so it remembers the results for each coin, 2) have it save the data to disk, we may use a mongodb timeseries db.
+```
+
+Root implementation TASK-2574 blocks optimizer TASK-2556 and final review/delivery TASK-2557. User may clarify Auto Long/Short, live prediction indicator or both; native Auto Long/Short is the source-supported default.
+
+## Learner-display clarification — 2026-11-17
+
+Answer to “Which display loses its learning/results when you change or reset it?”:
+
+```text
+"/var/folders/hz/s7btlxx54c32yt375m03q0h40000gn/T/3CE638E5-6FFE-409D-A7F8-A3CF9826BF07-814-0000002029DC9042/pasted-image-20261117-130405-6FAE2836-4FBE-4DF5-9D8D-C90FB90A4CCA.png" "/var/folders/hz/s7btlxx54c32yt375m03q0h40000gn/T/8A0495A0-6132-4870-A5E3-E712E721094B-814-00000020485612B3/pasted-image-20261117-130427-34880B75-938F-4C66-BBA8-854BEEF28EDD.png"
+```
+
+The supplied screenshots identify Minute-close Oracle — six horizons, and Live Oracle — direction estimates. Both show untrained counts. The latter includes SOL and the separate blocked Auto Long / Short session. Extend durable per-coin/horizon continuity and disk backup to both browser learners. Do not claim their IndexedDB data is absent from these screenshots alone.

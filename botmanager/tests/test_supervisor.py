@@ -140,7 +140,9 @@ class SupervisorTests(unittest.TestCase):
         self.assertTrue(status["process_health"]["worker_lock_held"])
         self.assertEqual(status["input_quality"]["state"], "reference_snapshot")
         self.ledger.control(self.spec, "stop", str(uuid4()))
-        self.supervisor.step()
+        # Process exit and release of its lifetime lock can span several steps
+        # under CI load. Wait for the acknowledged terminal state, not one poll.
+        self.spin(lambda: self.ledger.get(self.spec.bot_id)["observed"] == "stopped")
         self.assertEqual(self.ledger.get(self.spec.bot_id)["observed"], "stopped")
         self.supervisor.close()
         self.supervisor = Supervisor(self.home).open()

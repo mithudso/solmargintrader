@@ -41,10 +41,12 @@ def candles(count=4, step=60):
 
 class NumericalReceiptTests(unittest.TestCase):
     def test_candle_comparison_refuses_nonfinite_before_reduction(self):
-        fine = candles()
+        from backtester.core.data import DataValidationError
+        fine = candles(5)
         fine.loc[1, 'high'] = np.nan
-        with self.assertRaisesRegex(ValueError, 'nonfinite'):
-            candle_crosscheck.compare(fine, candles(1, 240), 240, 60)
+        with (patch.object(pd.DataFrame, 'groupby', side_effect=AssertionError('invalid input reached reduction')),
+              self.assertRaisesRegex(DataValidationError, 'NaN or infinite')):
+            candle_crosscheck.compare(fine, candles(1, 300), 300, 60)
 
     def test_clock_refuses_infinite_profile_before_null_generation(self):
         profiles = pd.DataFrame(np.ones((120, 24)), index=pd.date_range('2025-01-01', periods=120))
@@ -276,17 +278,33 @@ class OrchestrationReceiptTests(unittest.TestCase):
             self.assertEqual([call.args[0] for call in loader.call_args_list], ['A', 'B'])
 
     def test_stalled_tick_pager_remains_incomplete_and_does_not_double_aggregate(self):
+        from backtester.core.fetch import FetchError
         with tempfile.TemporaryDirectory() as tmp:
             root = Path(tmp)
             page = pd.DataFrame({'timestamp': [100.], 'trade_id': [11], 'price': [1.], 'size': [1.]})
-            with patch.object(tick_backfill, 'seek_trade_id', return_value=10), patch.object(tick_backfill, '_page', return_value=page), patch.object(tick_backfill, '_stop', False):
-                result = tick_backfill.backfill('A', 'EUR', '1970-01-01', '1970-01-02', '1m', root / 'checkpoints', root / 'output', pause=0)
-            self.assertIsNone(result)
+            with (patch.object(tick_backfill, 'seek_trade_id', return_value=10),
+                  patch.object(tick_backfill, '_page', return_value=page),
+                  patch.object(tick_backfill, '_stop', False),
+                  self.assertRaisesRegex(FetchError, 'tick_backfill_nonprogress')):
+                tick_backfill.backfill('A', 'EUR', '1970-01-01', '1970-01-02', '1m', root / 'checkpoints', root / 'output', pause=0)
             checkpoint = root / 'checkpoints/A_EUR_1m_1970-01-01_1970-01-02.json'
-            state = json.loads(checkpoint.read_text())
-            self.assertFalse(state['done'])
-            self.assertEqual(state['trades'], 0)
+            self.assertFalse(checkpoint.exists())
+            output = root / 'output/A_EUR_1m_1970-01-01_1970-01-02_from_ticks.csv'
+            self.assertFalse(output.exists())
             self.assertFalse((root / 'checkpoints/A_1m_1970-01-01_1970-01-02.json').exists())
+            prior = {'binding': tick_backfill._checkpoint_binding('A-EUR', '1m', 0., 86400.),
+                     'bars': tick_backfill.MinuteAggregator(60).state(),
+                     'cursor': 10, 'pages': 4, 'trades': 99, 'done': False}
+            checkpoint.write_text(json.dumps(prior))
+            output.parent.mkdir()
+            output.write_bytes(b'previous output\n')
+            checkpoint_before, output_before = checkpoint.read_bytes(), output.read_bytes()
+            with (patch.object(tick_backfill, '_page', return_value=page),
+                  patch.object(tick_backfill, '_stop', False),
+                  self.assertRaisesRegex(FetchError, 'tick_backfill_nonprogress')):
+                tick_backfill.backfill('A', 'EUR', '1970-01-01', '1970-01-02', '1m', root / 'checkpoints', root / 'output', pause=0)
+            self.assertEqual(checkpoint.read_bytes(), checkpoint_before)
+            self.assertEqual(output.read_bytes(), output_before)
 
     def test_decision_equality_ignores_provenance_but_compares_targets(self):
         import subprocess
@@ -358,14 +376,14 @@ class RemainingOrchestrationTests(unittest.TestCase):
     def test_failed_untested_candidates_report_failure(self):
         from research import sweep_untested
         with patch.object(sweep_untested, 'REGISTRY', {}), patch.object(sweep_untested, 'load_horizon', return_value=({}, None)), patch.object(sweep_untested, 'walk_forward', side_effect=ValueError('fixture unusable')):
-            self.assertEqual(sweep_untested.main(), 1)
+            self.assertEqual(sweep_untested.main([]), 1)
 
     def test_untested_recommendation_retains_exact_evaluated_parameters(self):
         from research import sweep_untested
         metric = SimpleNamespace(sharpe=1., total_return=.1, max_drawdown=.2, trade_count=20)
         with tempfile.TemporaryDirectory() as tmp, patch.object(sweep_untested, 'REPO', Path(tmp)), patch.object(sweep_untested, 'REGISTRY', {}), patch.object(sweep_untested, 'load_horizon', return_value=({}, None)), patch.object(sweep_untested, 'walk_forward', return_value=(metric, metric, metric)), patch.object(sweep_untested, 'fmt_table', return_value='fixture'):
             (Path(tmp) / 'research').mkdir()
-            self.assertEqual(sweep_untested.main(), 0)
+            self.assertEqual(sweep_untested.main([]), 0)
             recommendation = json.loads((Path(tmp) / 'research/TOP_UNTESTED_RECOMMENDATION.json').read_text())
             self.assertEqual(recommendation['strategy'], 'rsi')
             self.assertEqual(recommendation['params'], {'period': 5, 'oversold': 20., 'exit_level': 70.})

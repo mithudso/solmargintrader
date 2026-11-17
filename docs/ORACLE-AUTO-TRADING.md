@@ -1,7 +1,7 @@
 # Oracle automatic trading and paper mode
 
-Version: 1.1.0
-Delta: document optional private shared-owner routing and its activation boundary.
+Version: 1.2.1
+Delta: link both browser learners' independent disk checkpoint and recovery path.
 
 ## Controls
 
@@ -104,9 +104,43 @@ source-bound stored forecast to the session owner as an advisory input.
 The owner has a separate prospective logistic learner for the selected
 position's modeled net outcome. It scores the issued forecast before learning
 from the later resolved outcome. Liquidation and losing trades train negative
-labels; integrity failures stay outside that outcome denominator. Results remain
-partitioned by asset, product, leverage and the entire frozen policy/cost cohort.
-Paper history never supplies live performance evidence.
+labels; integrity failures stay outside that outcome denominator.
+
+The owner now remembers compatible models across collateral, loss-limit and
+advice-setting changes. Switching BTC to ZEC and back, returning to default
+settings, stopping, or restarting the helper does not erase that memory. BTC and
+ZEC have separate models. The 10x and 1000x products also have separate models,
+with exact execution, source, feature, target and model versions. Per-coin
+history includes remembered results across policy cohorts. It remains modeled
+paper history and never supplies live performance evidence.
+
+The panel's saved-memory line shows each selected coin's remembered results and
+the compatible model's sample count. Current-policy and side-specific performance
+stay separate. Changing policy starts new qualification; remembered model samples
+cannot satisfy exposure-boost gates. An unavailable helper shows the last reported
+disk state rather than claiming a fresh save.
+
+The private `journal.sqlite3` under the resolved shared-owner state directory is
+the durable store. With the default route, its absolute path is
+`/Users/mitch/.local/state/oracle-autotrade/journal.sqlite3`. Existing route and
+`ORACLE_AUTOTRADE_HOME` overrides still apply. The owner saves resolved sample
+features, issued scores, outcome, net result and model identity alongside model
+checkpoints. It commits these with session and policy evidence in one SQLite
+transaction. Repeated outcome IDs cannot train twice. A failed write rolls back;
+corrupt checkpoints fail visibly instead of becoming an empty model.
+
+Existing cohort rows are retained. A bounded background index attributes a
+legacy cohort only when its exact saved policy identifies it. A verified compatible
+legacy checkpoint can seed a model once; selecting an older policy cannot replace
+that saved model. Unknown legacy rows stay intact and are counted as unattributed.
+The panel reports an incomplete legacy index until it finishes. No settings or
+session control deletes this data. Status inspection remains read-only.
+
+This storage requires no database service. MongoDB can be added later as a
+separate history destination; the derived `mongo/load.py` rebuild process must
+not own or overwrite this primary learning store. Both browser learners keep
+their independent atomic IndexedDB stores and now mirror complete checkpoints
+to a separate private SQLite database. See [saved Oracle learning and recovery](ORACLE-LEARNING-STORAGE.md).
 
 A score of 75% alone cannot raise exposure. The bounded paper boost also requires
 at least 100 prospective outcomes for the selected side, 30 high-score outcomes,
@@ -152,7 +186,7 @@ their own capabilities and restrictions.
 
 ## Runtime and verification
 
-Research-runtime 0.4.7 includes `oracle_leverage` with the native host. Its wheel
+Research-runtime 0.4.8 includes `oracle_leverage` with the native host. Its wheel
 and self-contained source distribution are tested outside the repository.
 The owner uses private local SQLite state and a Unix socket under
 `/Users/mitch/.local/state/oracle-autotrade` by default. Request IDs are durable;

@@ -6,6 +6,9 @@ import { oracleView } from './oracle-view.js';
 import { autotradeView } from './autotrade-view.js';
 import { LiveOracleController } from './oracle-live-controller.js';
 import { liveOracleView } from './oracle-live-view.js';
+import { OracleStore } from './oracle-store.js';
+import { LiveOracleStore } from './oracle-live-store.js';
+import { OracleDiskBackup, MirroredOracleStore } from './oracle-disk.js';
 import { POWERED_BY } from '../jupiter/attribution.js';
 import { createChart, CandlestickSeries, LineSeries, HistogramSeries, LineStyle } from '../../vendor/lightweight-charts/lightweight-charts.standalone.production.mjs';
 
@@ -13,8 +16,30 @@ const $ = id => document.getElementById(id);
 const renderOracle = oracleView($('streaming-oracle'));
 const auto = autotradeView($('streaming-oracle'));
 const liveView = liveOracleView($('live-oracle'));
-const liveOracle = new LiveOracleController({ onChange: view => liveView.render(view) });
-const oracle = new OracleController({ onChange: view => { renderOracle(view); void auto.observe(view, latest?.sourceIdentity).catch(() => {}); } });
+const saved = document.createElement('details'), savedHeading = document.createElement('summary');
+savedHeading.textContent = 'Saved learning and disk backup'; saved.append(savedHeading);
+const savedStatus = document.createElement('p'); savedStatus.id = 'oracle-disk-status'; savedStatus.setAttribute('role', 'status');
+savedStatus.textContent = 'Learning is saved in this browser; local disk backup waits for verified learner state.';
+const savedHelp = document.createElement('p');
+savedHelp.textContent = 'Both learners keep separate results for every coin, source and horizon. Chart resets keep this memory. The local helper saves complete models and results to disk automatically, at most every 30 seconds per partition. A confirmed disk save is shown below. Clearing all extension data also removes its private recovery-profile identity; disk copies are retained.';
+const savedLines = document.createElement('div'), saveNow = document.createElement('button');
+saveNow.type = 'button'; saveNow.textContent = 'Save learning to disk now';
+saved.append(savedStatus, savedHelp, saveNow, savedLines); $('live-oracle').before(saved);
+const diskStates = new Map();
+const disk = new OracleDiskBackup({ onChange: event => {
+  const binding = JSON.parse(event.key), market = binding.at(-2);
+  const horizon = event.kind === 'minute' ? `${binding[4] / 60}m` : 'six horizons';
+  const labels = { saved: 'Saved to local disk', pending: 'Saved in this browser · disk backup pending', verified: 'Disk checkpoint verified',
+    'local-only': 'No disk copy yet · saved browser state is retained', unavailable: 'Disk backup or recovery unavailable · saved browser state is preserved',
+    conflict: 'Browser and disk histories differ · both retained; recovery required', 'disk-newer': 'Disk has a newer checkpoint from another window' };
+  const text = `${event.kind === 'minute' ? 'Minute-close' : 'Live Oracle'} · ${market} · ${horizon} · ${labels[event.status] || 'Disk state unavailable'}${event.savedAt ? ` · ${new Date(event.savedAt).toLocaleTimeString()}` : ''}`;
+  diskStates.set(event.key, { market, text });
+  savedStatus.textContent = text; savedLines.replaceChildren();
+  for (const row of diskStates.values()) if (row.market === SYMBOL) { const line = document.createElement('p'); line.textContent = row.text; savedLines.append(line); }
+} });
+saveNow.addEventListener('click', () => disk.flush());
+const liveOracle = new LiveOracleController({ store: new MirroredOracleStore(new LiveOracleStore(), disk, 'live'), onChange: view => liveView.render(view) });
+const oracle = new OracleController({ store: new MirroredOracleStore(new OracleStore(), disk, 'minute'), onChange: view => { renderOracle(view); void auto.observe(view, latest?.sourceIdentity).catch(() => {}); } });
 document.querySelector('header .tag').textContent = 'Paper default';
 $('api-attribution').textContent = `${POWERED_BY} — 1000x public catalog; Pyth oracle history and stream.`;
 const SYMBOL = new URLSearchParams(location.hash.slice(1)).get('market') || '';
@@ -288,5 +313,5 @@ document.addEventListener('visibilitychange', () => {
   if (document.hidden) oracle.suspend();
   else { if (latest) oracle.observe(latest); queueDraw(); }
 });
-window.addEventListener('pagehide', () => { disposed = true; auto.close(); liveView.close(); liveOracle.stop(); clearInterval(staleClock); feed?.stop(); oracle.stop(); chart.remove(); }, { once: true });
+window.addEventListener('pagehide', () => { disposed = true; auto.close(); liveView.close(); liveOracle.stop(); disk.close(); clearInterval(staleClock); feed?.stop(); oracle.stop(); chart.remove(); }, { once: true });
 await restart();
