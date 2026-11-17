@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-11-17T19:50:01+00:00",
+  "generatedAt": "2026-11-17T20:21:09+00:00",
   "schemaVersion": 1,
   "note": "Concepts are derived from the repo's own vocabulary \u2014 the FAMILY dict, strategy-card frontmatter, docs/trading-signals-concept-family.md, and terms verified to recur in the corpus. A concept matching no file is dropped, not kept.",
   "counts": {
@@ -161,7 +161,7 @@
         "universe",
         "top_coins"
       ],
-      "matchingFiles": 1810,
+      "matchingFiles": 1824,
       "shown": 30,
       "files": [
         {
@@ -170,7 +170,7 @@
         },
         {
           "path": "memory.md",
-          "hits": 382
+          "hits": 386
         },
         {
           "path": "docs/FILES.md",
@@ -198,7 +198,7 @@
         },
         {
           "path": "prompts.md",
-          "hits": 114
+          "hits": 115
         },
         {
           "path": "research/results/shape_spot_20261111_manifest.json",
@@ -300,7 +300,7 @@
         "borrow",
         "financing"
       ],
-      "matchingFiles": 1617,
+      "matchingFiles": 1620,
       "shown": 30,
       "files": [
         {
@@ -388,6 +388,18 @@
           "hits": 36
         },
         {
+          "path": "research/native-pairs-week-20261117/markets/BTC-USD/summary.json",
+          "hits": 36
+        },
+        {
+          "path": "research/native-pairs-week-20261117/markets/ETH-USD/summary.json",
+          "hits": 36
+        },
+        {
+          "path": "research/native-pairs-week-20261117/markets/ZEC-USD/summary.json",
+          "hits": 36
+        },
+        {
           "path": "ecosystem/meta_forward.py",
           "hits": 35
         },
@@ -410,18 +422,6 @@
         {
           "path": "research/eth-week-20261117/audit.json",
           "hits": 32
-        },
-        {
-          "path": "research/minute_sweep.py",
-          "hits": 31
-        },
-        {
-          "path": "research/strategy_experiment/results/auxiliary.json",
-          "hits": 31
-        },
-        {
-          "path": "backtester/README.md",
-          "hits": 31
         }
       ],
       "source": "curated-from-repo-vocabulary"
@@ -439,7 +439,7 @@
         "centred",
         "shift"
       ],
-      "matchingFiles": 1561,
+      "matchingFiles": 1567,
       "shown": 30,
       "files": [
         {
@@ -578,7 +578,7 @@
         "perps",
         "solana"
       ],
-      "matchingFiles": 1179,
+      "matchingFiles": 1188,
       "shown": 30,
       "files": [
         {
@@ -714,7 +714,7 @@
         "macd",
         "ichimoku"
       ],
-      "matchingFiles": 935,
+      "matchingFiles": 942,
       "shown": 30,
       "files": [
         {
@@ -852,7 +852,7 @@
         "anchor_window",
         "levels"
       ],
-      "matchingFiles": 921,
+      "matchingFiles": 930,
       "shown": 30,
       "files": [
         {
@@ -952,6 +952,10 @@
           "hits": 57
         },
         {
+          "path": "research/native-pairs-week-20261117/markets/ETH-USD/summary.json",
+          "hits": 57
+        },
+        {
           "path": "botmanager/tests/test_legacy.py",
           "hits": 55
         },
@@ -970,10 +974,6 @@
         {
           "path": "skills/trading-and-investing/references/empirical-backtest-findings-log.md",
           "hits": 53
-        },
-        {
-          "path": "botmanager/src/botmanager/walkthrough.py",
-          "hits": 52
         }
       ],
       "source": "curated-from-repo-vocabulary"
@@ -990,7 +990,7 @@
         "monotone",
         "gap"
       ],
-      "matchingFiles": 860,
+      "matchingFiles": 870,
       "shown": 30,
       "files": [
         {
@@ -1102,15 +1102,15 @@
           "hits": 38
         },
         {
+          "path": "memory.md",
+          "hits": 36
+        },
+        {
           "path": "research/tradingview-script-profiles/shard-a.jsonl",
           "hits": 35
         },
         {
           "path": "backtester/tests/test_engine.py",
-          "hits": 34
-        },
-        {
-          "path": ".cdo/reviews-2026-11-12/backtester-data-boundaries.json",
           "hits": 34
         }
       ],
@@ -1125,7 +1125,7 @@
         "benchmark",
         "baseline"
       ],
-      "matchingFiles": 625,
+      "matchingFiles": 631,
       "shown": 30,
       "files": [
         {
@@ -1221,6 +1221,10 @@
           "hits": 37
         },
         {
+          "path": "research/native-pairs-week-20261117/markets/ZEC-USD/summary.json",
+          "hits": 36
+        },
+        {
           "path": "research/perturb.py",
           "hits": 36
         },
@@ -1243,10 +1247,6 @@
         {
           "path": "research/RANKED_LISTS.md",
           "hits": 25
-        },
-        {
-          "path": ".cdo/reviews-2026-11-12/botmanager-root.json",
-          "hits": 25
         }
       ],
       "source": "curated-from-repo-vocabulary"
@@ -1260,7 +1260,7 @@
         "stochastic",
         "oscillator"
       ],
-      "matchingFiles": 606,
+      "matchingFiles": 613,
       "shown": 30,
       "files": [
         {
@@ -1394,7 +1394,7 @@
         "buy_and_hold",
         "baseline"
       ],
-      "matchingFiles": 552,
+      "matchingFiles": 558,
       "shown": 30,
       "files": [
         {
@@ -1454,6 +1454,10 @@
           "hits": 42
         },
         {
+          "path": "research/native-pairs-week-20261117/markets/ZEC-USD/summary.json",
+          "hits": 36
+        },
+        {
           "path": "research/perturb.py",
           "hits": 36
         },
@@ -1511,10 +1515,6 @@
         },
         {
           "path": ".cdo/reviews-2026-11-12/liquidity-independent-iter1.json",
-          "hits": 21
-        },
-        {
-          "path": "research/tradingview-script-profiles/shard-b.jsonl",
           "hits": 21
         }
       ],
@@ -1667,7 +1667,7 @@
         "evidence floor",
         "rankable"
       ],
-      "matchingFiles": 410,
+      "matchingFiles": 423,
       "shown": 30,
       "files": [
         {
@@ -1703,6 +1703,10 @@
           "hits": 39
         },
         {
+          "path": "research/native-pairs-week-20261117/markets/BTC-USD/summary.json",
+          "hits": 36
+        },
+        {
           "path": "research/CANDLE-GAP-AUDIT.md",
           "hits": 36
         },
@@ -1715,8 +1719,16 @@
           "hits": 33
         },
         {
+          "path": "research/native-pairs-week-20261117/markets/ZEC-USD/summary.json",
+          "hits": 33
+        },
+        {
           "path": "research/tradingview-card-coverage.json",
           "hits": 33
+        },
+        {
+          "path": "research/native-pairs-week-20261117/markets/ETH-USD/summary.json",
+          "hits": 26
         },
         {
           "path": "research/ratio_rotation.py",
@@ -1731,11 +1743,11 @@
           "hits": 21
         },
         {
-          "path": "index/build.py",
-          "hits": 19
+          "path": "memory.md",
+          "hits": 20
         },
         {
-          "path": "memory.md",
+          "path": "index/build.py",
           "hits": 19
         },
         {
@@ -1777,18 +1789,6 @@
         {
           "path": "research/decide.py",
           "hits": 13
-        },
-        {
-          "path": ".cdo/reviews-2026-11-12/pipeline-pr241-ui-current.json",
-          "hits": 11
-        },
-        {
-          "path": ".cdo/reviews-2026-11-13/cdo-forecast-app-delta.json",
-          "hits": 11
-        },
-        {
-          "path": "SCRIPTS.md",
-          "hits": 10
         }
       ],
       "source": "curated-from-repo-vocabulary"
@@ -1939,7 +1939,7 @@
         "bb_breakout",
         "keltner"
       ],
-      "matchingFiles": 307,
+      "matchingFiles": 309,
       "shown": 30,
       "files": [
         {
@@ -2055,11 +2055,11 @@
           "hits": 23
         },
         {
-          "path": "TRADINGVIEW-CARD-FILES.md",
-          "hits": 20
+          "path": "research/native-pairs-week-20261117/markets/BTC-USD/summary.json",
+          "hits": 22
         },
         {
-          "path": "docs/CONCEPTS.md",
+          "path": "TRADINGVIEW-CARD-FILES.md",
           "hits": 20
         }
       ],
@@ -2077,7 +2077,7 @@
         "k_test",
         "path_sharpes"
       ],
-      "matchingFiles": 266,
+      "matchingFiles": 273,
       "shown": 30,
       "files": [
         {
@@ -2153,10 +2153,6 @@
           "hits": 21
         },
         {
-          "path": "memory.md",
-          "hits": 21
-        },
-        {
           "path": "research/coin-intelligence/eth-ethereum.md",
           "hits": 21
         },
@@ -2170,6 +2166,10 @@
         },
         {
           "path": "docs/design/soltui-v2/mockup.py",
+          "hits": 20
+        },
+        {
+          "path": "memory.md",
           "hits": 20
         },
         {
@@ -2352,7 +2352,7 @@
         "sign_flips",
         "stability"
       ],
-      "matchingFiles": 194,
+      "matchingFiles": 197,
       "shown": 30,
       "files": [
         {
@@ -2376,6 +2376,10 @@
           "hits": 56
         },
         {
+          "path": "research/native-pairs-week-20261117/markets/ETH-USD/summary.json",
+          "hits": 33
+        },
+        {
           "path": "llms-sitemap.txt",
           "hits": 32
         },
@@ -2396,6 +2400,10 @@
           "hits": 25
         },
         {
+          "path": "research/native-pairs-week-20261117/markets/ZEC-USD/summary.json",
+          "hits": 24
+        },
+        {
           "path": "research/tradingview-card-coverage.json",
           "hits": 23
         },
@@ -2405,6 +2413,10 @@
         },
         {
           "path": ".cdo/reviews-2026-11-12/research-scripts.json",
+          "hits": 15
+        },
+        {
+          "path": "research/native-pairs-week-20261117/markets/BTC-USD/summary.json",
           "hits": 15
         },
         {
@@ -2462,18 +2474,6 @@
         {
           "path": "research/tradingview-script-profiles/shard-b.jsonl",
           "hits": 7
-        },
-        {
-          "path": "SCRIPTS.md",
-          "hits": 6
-        },
-        {
-          "path": "docs/SCRIPTS.md",
-          "hits": 6
-        },
-        {
-          "path": "index/build.py",
-          "hits": 6
         }
       ],
       "source": "curated-from-repo-vocabulary"
@@ -2623,7 +2623,7 @@
         "vwap_reversion",
         "ou_reversion"
       ],
-      "matchingFiles": 154,
+      "matchingFiles": 158,
       "shown": 30,
       "files": [
         {
@@ -2677,6 +2677,10 @@
         {
           "path": "backtester/tests/test_strategy_duplication.py",
           "hits": 20
+        },
+        {
+          "path": "research/native-pairs-week-20261117/markets/ZEC-USD/summary.json",
+          "hits": 18
         },
         {
           "path": "research/results/compound-10coin-fullhistory-2026-11-07.json",
@@ -2741,10 +2745,6 @@
         {
           "path": "docs/strategy-optimization-concept-family.md",
           "hits": 10
-        },
-        {
-          "path": "research/COMPOUND-FRONTIER.md",
-          "hits": 10
         }
       ],
       "source": "backtester/core/strategies/__init__.py FAMILY"
@@ -2759,7 +2759,7 @@
         "garch",
         "risk-overlay"
       ],
-      "matchingFiles": 69,
+      "matchingFiles": 73,
       "shown": 30,
       "files": [
         {
@@ -2803,6 +2803,10 @@
           "hits": 16
         },
         {
+          "path": "research/native-pairs-week-20261117/markets/BTC-USD/summary.json",
+          "hits": 14
+        },
+        {
           "path": "backtester/core/strategies/__init__.py",
           "hits": 13
         },
@@ -2820,6 +2824,10 @@
         },
         {
           "path": "docs/strategy-optimization-concept-family.md",
+          "hits": 9
+        },
+        {
+          "path": "research/native-pairs-week-20261117/markets/BTC-USD/report.md",
           "hits": 9
         },
         {
@@ -2873,14 +2881,6 @@
         {
           "path": "research/coin-intelligence/btc-bitcoin.md",
           "hits": 6
-        },
-        {
-          "path": "backtester/core/zec_ensemble.py",
-          "hits": 5
-        },
-        {
-          "path": "research/coin-intelligence/eth-ethereum.md",
-          "hits": 5
         }
       ],
       "source": "backtester/core/strategies/__init__.py FAMILY"
