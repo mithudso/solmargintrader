@@ -1,6 +1,7 @@
 # Work continuation
 
-Version: 621
+Version: 622
+Delta: v621 to v622; preserve pending Oracle confidence window, UI and prose review coordination.
 Delta: v620 to v621; record the qualified optimizer receipt and remaining delivery gates.
 Delta: v619 to v620; preserve accepted auto-action teardown and review scope.
 Delta: v618 to v619; record integrated audit, paper-session identity display and pending acceptance.
@@ -322,6 +323,10 @@ Delta: v401 to v402; record merged delivery and final CI for excluded coin remov
 
 Merge note: retained initial planning entries are historical. The section titled "Hosted ecosystem completion — 2026-11-13 active checkpoint" records the later hosted implementation state; this merge does not mark the complete ecosystem live.
 
+
+## 2026-11-16 — pending Oracle confidence and extension UI
+
+The confidence-window work begins in /Users/mitch/dev/worktrees/oracle-confidence-2497 from 96e8e7fa2262d481512f70bcc55a8bb17c5df95a. The user requests visibility when confidence reaches 80% or more, including when a window begins, how long it lasts, and when it ends or reverses; lower strengths remain visible without requiring certainty. The signal model contract is pending; do not equate non-UP with DOWN because the prior complement includes flat. The extension UI deep optimizer precedes full DDO of extension descriptive prose; appropriate full indicators use green UP, red DOWN and grey neutral with text/icons retained. The UI work has a separate isolated worktree and private ledger. Preserve archived research, quotes, other workers, private data, the canonical checkout and the existing dry-run/disarmed and execution fences. Use only isolated fake fixtures and task-owned browser profiles; do not touch live owner, funded trades or paper cohorts. PR 315 routing CI and fixture repair are pending separately. Next: coordinate the model contract, integrate the routing fix when delivered, implement and verify each scoped change, complete UI and then DDO, and deliver after final source and installed-state checks. No implementation or verification has yet occurred in this worktree.
 
 ## 2026-11-16 — TASK-2289 reversal study and leveraged Oracle controls
 

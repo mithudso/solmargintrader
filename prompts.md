@@ -1,6 +1,7 @@
 # Prompt history
 
-Version: 279
+Version: 280
+Delta: v279 to v280; preserve confidence-window, extension UI and directional-color requests verbatim.
 Delta: v278 to v279; preserve both auto-trade and audit screenshot requests.
 Delta: v277 to v278; preserve audit and screenshot continuation across merged 0.10 source.
 Delta: v277 to v278; preserve the autonomous paper and live trading request.
@@ -144,6 +145,14 @@ Delta: v191 to v192; capture ZEC ensemble backtest, data extension, top ten pape
 Delta: v191 to v192; record Lead Quantitative Orchestrator prompt optimization and market graph geometry research runbook.
 Delta: v190 to v191; capture the request to remove six assets from coin lists.
 Delta: v189 to v190; capture the additional friend-facing solbot diagnostics request.
+
+## 2026-11-16 — confidence window and extension UI
+
+I recognize that the oracle doesn't want to bet on something it can't 100% for sure prove ever time, but that's not the way of stocks. I want the oracle to tell me WHEN it is MORE certain, and stop refusing to give any information because it's not perfect. More accurate predictions are better than less accurate predictions and I do not blame the oracle for following the data if it happens to be incorrect. The oracle doesn't need to always have a strong opinion, but if there for 15seconds there is a window of 80+% confidence it will swing in one direction, then I absolutely want to know that and when, and when the window is gone. I don't want to guess and get stuck at the wrong end of a reversal.
+
+Run the deep ui optimizer on the chrome extension, and then run the deep document optimizer on all of the prose describing things. It is both too wordy and not descriptive enough.
+
+For all of the appropriate values adopt a shorthand to help visually scan:  if that indicator suggests it'll go upm then make the whole thing green. red for down, grey for neutral.
 
 ## 2026-11-16 — Second reversal and liquidation path analysis
 
