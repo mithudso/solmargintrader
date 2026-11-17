@@ -4,6 +4,7 @@ import { LiveOracleController, liveInput } from '../src/1000x/oracle-live-contro
 
 const origin = 1_800_000_000_000;
 const markets = {
+  SOL: [6, 'Ew8sRjpuBttpmhSUeaAn4dLAegWnz55AuafVcGuojCPS'],
   BTC: [1, 'BXQQo2VTJV2upjdA6qFMGBY3uMyTMnRmaZjPCB5ZVmr7'],
   ZEC: [66, '4ohWGDrmqdiEHinL5Kf2BYzM9UVSe3RJ1bzoveHehiwj'],
 };
@@ -25,6 +26,28 @@ function fixture() {
     }, close() {}, cancelPending() {},
   };
 }
+
+test('stale SOL reload restores saved six-horizon evidence without learning or publishing', async () => {
+  const { oracleIdentity } = await import('../src/1000x/oracle-model.js');
+  const { transitionLive } = await import('../src/1000x/oracle-live-model.js');
+  const identity = oracleIdentity(input(origin, 'SOL'));
+  let state = null;
+  for (let second = 0; second <= 100; second++) {
+    const nowMs = origin + second * 1000;
+    state = transitionLive(state, { identity, quote: input(nowMs, 'SOL').quote, nowMs }).state;
+  }
+  const before = structuredClone(state), views = []; let loads = 0, updates = 0, native = 0;
+  const c = new LiveOracleController({ clock: () => origin + 103000, onChange: view => views.push(view),
+    store: { load: async key => { loads++; assert.equal(key, state.key); return structuredClone(state); },
+      update: async () => { updates++; throw new Error('stale state must not train'); }, close() {}, cancelPending() {} },
+    call: async () => { native++; return {}; } });
+  c.observe(input(origin + 100000, 'SOL')); await settle();
+  assert.equal(loads, 1); assert.equal(updates, 0); assert.equal(native, 0);
+  assert.equal(views.at(-1).status, 'stale'); assert.equal(views.at(-1).local.horizons[60].samples, 3);
+  assert.equal(views.at(-1).local.horizons[60].scores, null);
+  assert.equal(views.at(-1).local.horizons[600].samples, 0);
+  assert.deepEqual(state, before); c.stop();
+});
 
 test('live scores and all horizons need fresh quotes rather than completed minute history', async () => {
   const nativeSet = globalThis.setTimeout, nativeClear = globalThis.clearTimeout;

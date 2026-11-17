@@ -32,6 +32,7 @@ class Packaging(unittest.TestCase):
             "autotrade",
             "autotrade_worker",
             "autotrade_memory",
+            "learning_checkpoints",
             "autotrade_engine",
             "autotrade_feed",
             "autotrade_advice",

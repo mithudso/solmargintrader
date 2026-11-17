@@ -38,12 +38,13 @@ test('aborted storage and asynchronous reducer preserve prior committed state', 
   assert.equal((await s.load(key)).revision, 1); s.close();
 });
 test('ordinary state update does not rewrite unchanged pending or metric records', async () => {
-  const fake = fakeIndexedDB(), s = new LiveOracleStore(fake), state = newLiveState(identity), key = state.key;
-  state.pending.push({ id: 'one', issuedAtMs: 1, horizon: 60 });
+  const fake = fakeIndexedDB(), s = new LiveOracleStore(fake); let state = null;
+  for (let t = 0; t <= 31000; t += 1000) state = transitionLive(state, { identity, quote: { price: 100, exchangeMs: t, receivedMs: t }, nowMs: t }).state;
+  const key = state.key, pendingId = state.pending[0].id;
   await s.update(key, () => ({ changed: true, state }));
   await s.update(key, prior => { prior.revision++; return { changed: true, state: prior }; });
   assert.deepEqual(fake.writes.map(v => v.name), ['partitions']);
-  assert.equal((await s.load(key)).pending[0].id, 'one'); s.close();
+  assert.equal((await s.load(key)).pending[0].id, pendingId); s.close();
 });
 test('peak six-horizon queue reconstructs and writes only changed records', async () => {
   let state = null; const observe = (previous, nowMs) => transitionLive(previous, { identity,

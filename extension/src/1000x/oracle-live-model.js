@@ -105,6 +105,7 @@ export function liveSnapshot(state, nowMs) {
         samples: m.n, issued: s.issued, resolved: s.resolved, expired: s.expired, capacityDrops: s.capacityDrops,
         pending: state.pending.filter(f => f.horizon === h).length, candidate: { ...s.candidate }, uniform: { ...s.uniform }, frequency: { ...s.frequency } }]; })) };
 }
+export function validateLiveState(state, key) { return validate(state, key); }
 /** Only committed return values should be published. Unknown outcomes never train. */
 export function transitionLive(previous, { identity, quote, nowMs }) {
   if (!Number.isSafeInteger(nowMs) || nowMs < 0) fail(); const key = liveIdentity(identity);

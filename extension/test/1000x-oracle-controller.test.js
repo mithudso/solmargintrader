@@ -131,14 +131,15 @@ test('a trained source never leaks predictions through unknown identity or a del
   assert.equal(db.states.get(oldKey).model.n, 21, 'display invalidation must preserve persisted evidence'); c.stop();
 });
 
-test('suspending an already trained invalid session clears its visible state and fresh recovery reloads evidence', async () => {
+test('suspending a trained session keeps historical counts inactive and recovery reloads evidence', async () => {
   const db = atomicFixture(), views = []; let now;
   const c = new OracleController({ store: db.client(), clock: () => now, onChange: view => views.push(view) });
   for (let minute = 1000; minute <= 1030; minute++) { now = (base + minute * 60) * 1000 + 2000; c.observe(snapshot(now)); await settle(); }
   const trained = structuredClone(views.at(-1).state); assert.equal(trained.model.n, 21);
   c.suspend();
-  assert.equal(views.at(-1).state, undefined, 'invalidated analytics cannot retain an active prediction');
-  assert.equal(views.at(-1).metrics, undefined); assert.equal(views.at(-1).inputReady, false);
+  assert.equal(views.at(-1).state.model.n, 21, 'pause keeps verified historical counts');
+  assert.equal(views.at(-1).suspended, true); assert.equal(views.at(-1).inputReady, false);
+  for (const view of Object.values(views.at(-1).horizons)) assert.equal(view.inputReady, false);
   now += 1000; c.observe(snapshot(now)); await settle();
   assert.equal(views.at(-1).state.model.n, 21); assert.deepEqual(views.at(-1).state.pending, trained.pending);
   c.stop();

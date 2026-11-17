@@ -29,7 +29,7 @@ function paint(card, row, historical) {
 }
 function resultText(row) {
   const side = direction(row);
-  if (!side) return 'Waiting for 30 seconds of fresh observations · no estimate yet';
+  if (!side) return `Waiting for 30 seconds of fresh observations · no estimate yet${row && Number.isSafeInteger(row.samples) ? ` · learning n=${count(row.samples)}` : ''}`;
   const s = row.scores, max = Math.max(s.up, s.down, s.flat);
   const tie = [s.up, s.down, s.flat].filter(x => x === max).length > 1;
   return `${directions[side]}${tie ? ' · tied' : ''} · model estimate ${pct(max)} · UP ${pct(s.up)} / DOWN ${pct(s.down)} / FLAT ${pct(s.flat)} · learning n=${count(row.samples)}`;
@@ -72,7 +72,7 @@ export function liveOracleView(container, { clock = Date.now } = {}) {
       paint(primary, row, !fresh);
       rows.replaceChildren();
       for (const h of HORIZONS) {
-        const item = node('div', `${label(h)} · ${fresh ? '' : 'Historical · '}${validScores(source?.horizons?.[h]?.scores) ? resultText(source.horizons[h]) : 'Warming up'}`);
+        const item = node('div', `${label(h)} · ${fresh ? '' : 'Historical · '}${source?.horizons?.[h] ? resultText(source.horizons[h]) : 'Saved counts unavailable'}`);
         item.dataset.horizon = String(h); paint(item, source?.horizons?.[h], !fresh); rows.append(item);
       }
       const w = sharedFresh ? row?.window : null;

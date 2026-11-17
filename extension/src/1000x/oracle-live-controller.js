@@ -30,6 +30,7 @@ export class LiveOracleController {
   #status = 'unavailable'; #error = null;
   #relayRunning = false; #relayQueued = null;
   #lastQueuedQuote = null;
+  #restoreTicket = null; #restoreRetryAt = 0;
   #localExpiresAtMs = null; #timeoutMs; #schedule; #cancelTimer; #calls = new Set();
 
   constructor({ store = new LiveOracleStore(), clock = Date.now, call = soltui,
@@ -68,7 +69,10 @@ export class LiveOracleController {
       this.#local = null; this.#shared = null; this.#localExpiresAtMs = null; this.#relayQueued = null; this.#nextAt = 0;
       this.#publisher = this.#id(); this.#sequence = 0;
       this.#lastQueuedQuote = null;
+      this.#restoreRetryAt = 0;
     }
+    if (!this.#local && typeof this.#store.load === 'function' && this.#clock() >= this.#restoreRetryAt
+      && (this.#restoreTicket?.generation !== this.#generation || this.#restoreTicket?.key !== this.#key)) void this.#restore(this.#generation, this.#key);
     if (!input.valid) {
       if (this.#eligible) { this.#revoke(input.reason === 'feed_unavailable' ? 'feed_unavailable' : 'stale');
         this.#generation++; this.#store.cancelPending?.(); this.#cancelCalls(); }
@@ -77,6 +81,24 @@ export class LiveOracleController {
     }
     this.#eligible = true; this.#queued = true;
     if (!this.#running && this.#clock() >= this.#nextAt) void this.#drain();
+  }
+
+  async #restore(generation, key) {
+    const ticket = { generation, key }; this.#restoreTicket = ticket;
+    try {
+      const state = await this.#store.load(key);
+      if (this.#disposed || generation !== this.#generation || key !== this.#key || this.#local || !state) return;
+      this.#local = liveSnapshot(state, this.#clock());
+      const quote = state.lastQuote;
+      this.#localExpiresAtMs = quote ? Math.min(quote.exchangeMs, quote.receivedMs) + LIVE_ORACLE.graceMs : null;
+      this.#emit();
+    } catch {
+      if (!this.#disposed && generation === this.#generation && key === this.#key && !this.#local) {
+        this.#status = 'error'; this.#error = 'live_oracle_storage_unavailable'; this.#emit();
+      }
+    } finally {
+      if (this.#restoreTicket === ticket) { this.#restoreTicket = null; this.#restoreRetryAt = this.#clock() + 5000; }
+    }
   }
 
   async #drain() {

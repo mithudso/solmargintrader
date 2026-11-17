@@ -76,6 +76,12 @@ and [Jupiter ZEC execution](JUPITER-ZEC-WEBHOOK.md).
 
 The native command registry exposes the shared Oracle auto-trading owner to Chrome and SolTUI. It defaults to disarmed paper mode and records immutable entry and exit plans; live execution remains gated by venue-specific evidence. See [Oracle auto-trading](ORACLE-AUTO-TRADING.md).
 
+The separate `oracle.learning.save`, `oracle.learning.load` and
+`oracle.learning.profiles` commands mirror complete browser learner checkpoints
+to private local SQLite storage. IndexedDB remains primary; validated disk restore
+fills only an absent exact partition. These commands do not start the trading
+owner. See [saved Oracle learning](ORACLE-LEARNING-STORAGE.md).
+
 ## `executor/`
 
 The optional executor owns guarded Solana spot execution through its separate
