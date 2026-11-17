@@ -21,7 +21,7 @@ test('fresh shared estimates show all strengths, observed windows and transition
     const local = { market: 'SOL', source: 'feed', model: 'm', target: 't', asOfMs: now, status: 'learning', horizons: horizons(row()) };
     const shared = { source: 'feed', model: 'm', target: 't', as_of_ms: now, expires_at_ms: now + 2000, fresh: true, quote: { price: 123 }, horizons: horizons(row()) };
     shared.horizons[600].window = { direction: 'UP', start_ms: 80000, last_ms: 94000, peak: .87 };
-    shared.horizons[600].history = [{ direction: 'DOWN', start_ms: 60000, end_ms: 70000, duration_ms: 10000, peak: .9, reason: 'side_flip' }];
+    shared.horizons[600].history = [{ direction: 'DOWN', start_ms: 60000, last_ms: 74000, end_ms: 76000, duration_ms: 16000, sustained: false, peak: .9, reason: 'side_flip' }];
     const view = { asset: 'SOL', selectedHorizon: 600, local, shared, localExpiresAtMs: 102000, status: 'ready' };
     ui.render(view);
     assert.match(find(root, 'live-oracle-primary').textContent, /↑ UP.*81\.0%.*learning n=2/);
@@ -29,6 +29,7 @@ test('fresh shared estimates show all strengths, observed windows and transition
     assert.match(find(root, 'live-oracle-window').textContent, /14\.0s/);
     assert.doesNotMatch(find(root, 'live-oracle-window').textContent, /sustained/);
     assert.match(allText(find(root, 'live-oracle-evidence')), /reversed/);
+    assert.match(allText(find(root, 'live-oracle-evidence')), /elapsed 16\.0s · observed 14\.0s · not sustained 15s/);
     assert.match(allText(find(root, 'live-oracle-evidence')), /accuracy 50\.0%, Brier 0\.400/);
     assert.equal(find(root, 'live-oracle-horizons').children.length, 6);
     const announcement = find(root, 'live-oracle-announcement'); announcement.textContent = 'sentinel';
@@ -38,7 +39,7 @@ test('fresh shared estimates show all strengths, observed windows and transition
     now += 2000; ui.render(view);
     assert.match(find(root, 'live-oracle-status').textContent, /Historical/);
     assert.equal(find(root, 'live-oracle-primary').dataset.direction, 'FLAT');
-    assert.match(find(root, 'live-oracle-window').textContent, /No current/);
+    assert.match(find(root, 'live-oracle-window').textContent, /unavailable/);
     ui.close(); assert.equal(root.children[0].removed, true);
   } finally { globalThis.document = original; }
 });
@@ -49,7 +50,7 @@ test('local fallback, neutral ties, warming, source change and malicious text re
   try {
     const local = { market: 'SOL', source: 'feed', model: 'm', target: 't', asOfMs: 100000, status: 'learning', horizons: horizons(row({ up: .1, down: .6, flat: .3 })) };
     const base = { asset: 'SOL', selectedHorizon: 60, local, localExpiresAtMs: 102000, status: 'ready' };
-    ui.render(base); assert.match(find(root, 'live-oracle-status').textContent, /This browser · sharing offline/);
+    ui.render(base); assert.match(find(root, 'live-oracle-status').textContent, /This browser · shared relay supports BTC\/ZEC only/);
     assert.equal(find(root, 'live-oracle-primary').dataset.direction, 'DOWN');
     local.horizons[60] = row({ up: .4, down: .4, flat: .2 }); ui.render(base);
     assert.match(find(root, 'live-oracle-primary').textContent, /NEUTRAL · tied/);
@@ -78,7 +79,7 @@ test('local quote expires at the source deadline without a controller update', (
     assert.equal(find(root, 'live-oracle-primary').dataset.direction, 'FLAT');
     assert.match(find(root, 'live-oracle-primary').textContent, /Historical/);
     assert.match(find(root, 'live-oracle-status').textContent, /Historical/);
-    assert.match(find(root, 'live-oracle-window').textContent, /No current/);
+    assert.match(find(root, 'live-oracle-window').textContent, /unavailable/);
     delete view.localExpiresAtMs; now = 101800; ui.render(view);
     assert.equal(find(root, 'live-oracle-primary').dataset.direction, 'FLAT', 'missing deadline must fail closed');
   } finally { globalThis.document = original; }

@@ -36,7 +36,7 @@ export function autotradeView(container, { call = soltui, clock = Date.now, id =
     }
     input.required = true; input.name = key; wrap.append(input); fields.append(wrap); inputs[key] = input;
   }
-  const adviceLabel = document.createElement('label'); adviceLabel.textContent = 'Optional private advice';
+  const adviceLabel = document.createElement('label'); adviceLabel.textContent = 'Optional Anthropic advice (sends numeric price and momentum data)';
   const advice = document.createElement('input'); advice.type = 'checkbox'; advice.checked = false; adviceLabel.append(advice); fields.append(adviceLabel);
   const liveEdited = new Set();
   for (const key of ['base_collateral_usd', 'max_collateral_usd', 'max_session_loss_usd']) inputs[key].addEventListener('input', () => liveEdited.add(key));
@@ -44,13 +44,28 @@ export function autotradeView(container, { call = soltui, clock = Date.now, id =
   const paper = document.createElement('button'); paper.textContent = 'Start Paper';
   const live = document.createElement('button'); live.textContent = 'Start Live';
   const stop = document.createElement('button'); stop.textContent = 'Stop entries / manage position';
-  buttons.append(paper, live, stop); section.append(title, status, fields, buttons, detail); container.before(section);
+  const settings = document.createElement('details');
+  const settingsSummary = document.createElement('summary'); settingsSummary.textContent = 'Paper and live settings';
+  const showSettings = () => {
+    const text = input => input.value?.trim() || 'not set';
+    const amount = input => input.value?.trim() ? `$${input.value.trim()}` : 'not set';
+    const venue = inputs.venue.value === 'jupiter-cli-10x' ? '10× paper proxy' : inputs.venue.value === 'jupiter-sdk-1000x' ? '1000× paper proxy' : 'venue not set';
+    settingsSummary.textContent = `Settings · ${text(inputs.asset)} · ${venue} · base ${amount(inputs.base_collateral_usd)} · max ${amount(inputs.max_collateral_usd)} · loss cap ${amount(inputs.max_session_loss_usd)} · advice ${advice.checked ? 'on' : 'off'}`;
+  };
+  for (const input of [...Object.values(inputs), advice]) input.addEventListener('change', showSettings);
+  settings.append(settingsSummary, fields); showSettings();
+  const advanced = document.createElement('details');
+  const advancedSummary = document.createElement('summary'); advancedSummary.textContent = 'Session details and readiness';
+  advanced.append(advancedSummary, detail);
+  const paperHelp = document.createElement('p'); paperHelp.textContent = 'Paper results model observed prices and omit network, keeper, conversion and unverified venue costs; observation gaps can leave outcomes unknown.';
+  const stopHelp = document.createElement('p'); stopHelp.textContent = 'Stop prevents new entries and manages open positions. An unknown paper outcome needs acknowledgement. The session continues when this panel closes; automatic live opening is unavailable.';
+  buttons.append(paper, live, stop); section.append(title, status, settings, buttons, paperHelp, stopHelp, advanced); container.before(section);
   let disposed = false, initialized = false, busy = false, retry = null, current = null, sent = new Set(), pending = new Set();
   const render = s => {
     if (disposed) return;
     current = s;
     status.dataset.state = s.state || 'unknown';
-    if (!initialized && (s.configuration || s.defaults)) { const saved = s.configuration || s.defaults; for (const key of Object.keys(inputs)) inputs[key].value = saved[key] ?? ''; advice.checked = saved.advice_enabled === true; initialized = true; }
+    if (!initialized && (s.configuration || s.defaults)) { const saved = s.configuration || s.defaults; for (const key of Object.keys(inputs)) inputs[key].value = saved[key] ?? ''; advice.checked = saved.advice_enabled === true; initialized = true; showSettings(); }
     const p = s.position || {}, plan = p.plan || {}, f = s.forecast || {}, l = s.learner || {}, policy = s.policy || {};
     const leverage = [10, 1000].includes(plan.leverage) ? plan.leverage : ({ 'jupiter-cli-10x': 10, 'jupiter-sdk-1000x': 1000 })[policy.venue];
     status.textContent = `${val(s.state).toUpperCase()} · ${val(s.mode)} · ${val(policy.asset)} ${leverage ? `${leverage}x` : 'unknown product'} · ${val(plan.direction)}/${val(p.state)} · realized session net (modeled) ${val(s.net_pnl_usd)}`;

@@ -47,7 +47,7 @@
       if (value) { frame?.remove(); frame = null; }
       else if (!frame) {
         frame = document.createElement('iframe');
-        frame.title = 'Read-only Jupiter oracle indicators';
+        frame.title = 'Jupiter indicators and auto-trading controls';
         frame.src = chrome.runtime.getURL('src/1000x/panel.html') + `#market=${encodeURIComponent(symbol)}`;
         body.append(frame);
       }

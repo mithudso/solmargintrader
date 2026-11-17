@@ -66,19 +66,19 @@ export function mountControlRoom(root = document.getElementById('controlRoom'), 
     busy = true;
     open.disabled = start.disabled = refresh.disabled = true;
     feedback.textContent = command === 'controlRoomStart' || command === 'controlRoomOpen' ? 'Contacting the local managed suite…' : '';
-    let snapshot;
+    let snapshot, failure = 'The helper did not answer. Refresh to retry this read.';
     try {
       const response = await send({ type: command });
-      if (!response?.ok) throw new Error('availability request failed');
+      if (!response?.ok) { failure = 'The availability request failed. Refresh to retry.'; throw new Error('availability request failed'); }
       snapshot = response.result;
-      if (!snapshot || typeof snapshot !== 'object') throw new Error('invalid availability response');
+      if (!snapshot || typeof snapshot !== 'object') { failure = 'The helper returned invalid availability data. Refresh to retry.'; throw new Error('invalid availability response'); }
       if (snapshot.reason === 'suite_request_failed') feedback.textContent = 'The suite request failed. Inspect local solbot stack status and logs.';
       else if (command === 'controlRoomOpen' && snapshot.opened) feedback.textContent = 'Control room opened in a new tab.';
       else if (command === 'controlRoomOpen' && snapshot.state === 'starting') feedback.textContent = 'Servers are starting. Click Open control room when its verified address appears.';
       else if (command === 'controlRoomStart') feedback.textContent = snapshot.ui_url ? 'Servers answered. Open the control room to inspect bot stages.' : 'Startup requested. Check component health for the result.';
     } catch {
       snapshot = { helper: 'unavailable', state: 'unknown', ready: null, components: [], ui_url: null };
-      feedback.textContent = 'The helper did not answer. Refresh to retry this read.';
+      feedback.textContent = failure;
     } finally {
       busy = false;
       if (!closed) paint(snapshot);

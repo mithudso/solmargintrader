@@ -51,6 +51,29 @@ from research.zec_tui_stream import DisabledStream, TradeStream
 from research.zec_tui_workers import LatestWorker
 
 
+def ended_signal_window_text(event):
+    """Distinguish elapsed wall time from the observed qualifying span."""
+    elapsed = event.get("duration_ms")
+    start, last = event.get("start_ms"), event.get("last_ms")
+    elapsed_text = (
+        f"{elapsed / 1000:.1f}s" if isinstance(elapsed, (int, float)) else "unavailable"
+    )
+    observed = (
+        f"{max(0, last - start) / 1000:.1f}s"
+        if isinstance(start, (int, float)) and isinstance(last, (int, float))
+        else "unavailable"
+    )
+    sustained = (
+        "sustained 15s" if event.get("sustained") is True else
+        "not sustained 15s" if event.get("sustained") is False else
+        "sustained status unavailable"
+    )
+    return (
+        f" · ended {event.get('reason', 'unknown')} · elapsed {elapsed_text}"
+        f" · observed {observed} · {sustained}"
+    )
+
+
 class IndicatorTable(DataTable):
     """A single mouse click plots a row, independent of cursor highlight."""
 
@@ -810,7 +833,7 @@ class OracleWinnersApp(App):
                     suffix = " · window ended (stale)"
                 elif row.get("history"):
                     last = row["history"][-1]
-                    suffix = f" · ended {last['reason']} ({last['duration_ms'] / 1000:.1f}s)"
+                    suffix = ended_signal_window_text(last)
                 resolved = row.get("resolved", 0)
                 metric = row.get("candidate", {})
                 accuracy = f"{100 * metric.get('hits', 0) / resolved:.0f}%" if resolved else "n/a"

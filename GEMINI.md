@@ -45,7 +45,7 @@ Save requests in `prompts.md` and versioned continuation records in `memory.md`,
 python3 -m unittest discover -s backtester/tests -t .   # 1151 tests
 python3 -m unittest discover -s soltui/tests -t .       # 1606 tests (TUI dependencies required)
 python3 -m unittest discover -s mongo/tests -t .        # 57 tests
-cd extension && npm test                                # 628 tests
+cd extension && npm test                                # 631 tests
 node tools/dryrun.js --ticks 8 --osc 6 --offline 100    # a round trip must close positive
 python3 scripts/check_docs.py                           # doc counts and retrieval indexes
 ```

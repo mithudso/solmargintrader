@@ -27,7 +27,7 @@ curl -H "Authorization: Bearer $SMT_API_TOKEN" http://127.0.0.1:8787/v1/commands
 
 ## Commands
 
-`*` marks a required argument. 34 commands as of this writing.
+`*` marks a required argument. Use the generated listing above for the current command inventory.
 
 ### Portfolio, discovery, swaps and alerts
 

@@ -1,6 +1,6 @@
 # Conceptual index
 
-**Generated** from `index/CONCEPT-INDEX.json` (2026-11-17T04:20:28+00:00). 21 concepts.
+**Generated** from `index/CONCEPT-INDEX.json` (2026-11-17T05:47:10+00:00). 21 concepts.
 
 ```bash
 python3 index/build.py all              # refresh
@@ -40,13 +40,13 @@ Full list: `python3 index/search.py --concept risk-rails -n 1987`
 
 ### Cross-asset and cross-timeframe transfer
 
-`transfer` · **1784 files** · matched on `cross_asset`, `cross-asset`, `transfer`, `doge`, `zec`, `universe`, `top_coins`
+`transfer` · **1787 files** · matched on `cross_asset`, `cross-asset`, `transfer`, `doge`, `zec`, `universe`, `top_coins`
 
 The same 25 strategies score 25/25 on BTC daily and 0/25 on SOL hourly. The dataset has repeatedly explained more than the strategy.
 
 Strongest files:
 
-- `docs/FILES.md` (319 hits)
+- `docs/FILES.md` (321 hits)
 - `memory.md` (256 hits)
 - `research/coin-intelligence/zec-zcash.md` (196 hits)
 - `research/results/coinbase50_20261111_summary.json` (183 hits)
@@ -55,7 +55,7 @@ Strongest files:
 - `research/results/shape_spot_20261111_manifest.json` (97 hits)
 - `research/tradingview-card-coverage.json` (90 hits)
 
-Full list: `python3 index/search.py --concept transfer -n 1784`
+Full list: `python3 index/search.py --concept transfer -n 1787`
 
 ### Cost model
 
@@ -135,7 +135,7 @@ Full list: `python3 index/search.py --concept grid -n 900`
 
 ### Data integrity
 
-`data-integrity` · **851 files** · matched on `validate_bars`, `strict_gaps`, `allow_gaps`, `datavalidationerror`, `monotone`, `gap`
+`data-integrity` · **850 files** · matched on `validate_bars`, `strict_gaps`, `allow_gaps`, `datavalidationerror`, `monotone`, `gap`
 
 Gaps refused rather than filled, columns resolved by name, timestamps monotone. A concatenated XRP series hides a 2.5-year join.
 
@@ -150,7 +150,7 @@ Strongest files:
 - `docs/FILES.md` (81 hits)
 - `TRADINGVIEW-CARD-READINESS.md` (77 hits)
 
-Full list: `python3 index/search.py --concept data-integrity -n 851`
+Full list: `python3 index/search.py --concept data-integrity -n 850`
 
 ### Buy-and-hold benchmark
 
@@ -166,7 +166,7 @@ Strongest files:
 - `research/results/news_events_20261112_manifest.json` (280 hits)
 - `research/strategy_experiment/audit_realism.json` (178 hits)
 - `research/tradingview-card-coverage.json` (112 hits)
-- `docs/FILES.md` (90 hits)
+- `docs/FILES.md` (91 hits)
 - `.cdo/reviews-2026-11-12/research-scripts.json` (81 hits)
 
 Full list: `python3 index/search.py --concept benchmark -n 598`
@@ -260,7 +260,7 @@ The families also carry a historical measured finding. Of the study's 25 strateg
 | `trend` | 924 | `trend`, `ma_crossover`, `macd`, `ichimoku` |
 | `oscillator-reversion` | 596 | `rsi`, `stochastic`, `oscillator` |
 | `baseline` | 527 | `buy_and_hold`, `baseline` |
-| `momentum` | 478 | `momentum`, `ts_momentum`, `dual_momentum` |
+| `momentum` | 479 | `momentum`, `ts_momentum`, `dual_momentum` |
 | `regime-filter` | 389 | `regime`, `sma_regime`, `adx_trend`, `hurst`, `vol_regime` |
 | `breakout` | 306 | `breakout`, `bb_breakout`, `keltner` |
 | `volume-flow` | 167 | `obv`, `volume-flow` |

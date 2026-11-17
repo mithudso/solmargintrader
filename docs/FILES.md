@@ -1,6 +1,6 @@
 # Every file in this repository
 
-**Generated** from `index/INDEX.json` at commit `87d7716` (2026-11-17T04:20:28+00:00). 3999 tracked files, 140.8 MB.
+**Generated** from `index/INDEX.json` at commit `6e2cc6d` (2026-11-17T05:47:10+00:00). 4003 tracked files, 140.8 MB.
 
 Regenerate with:
 
@@ -15,7 +15,7 @@ python3 index/build.py --check      # fail if the index is stale
 Every entry marks where its description came from, because a generated one-liner and a considered one should not look alike:
 
 - **curated** (43 files) — hand-written purpose and usage, in the `CURATED` table of `index/make_files_doc.py`. Used where extraction cannot give a reader what they need: the engine, the research drivers, the order-placing path, and the files with no prose of their own.
-- **extracted** (3094 files) — the file's own module docstring, JSDoc header, or frontmatter `summary`. Trustworthy here because 725/846 Python modules and 88/189 JS files carry a substantial one. (These counts are computed at generation time, not hardcoded — an earlier revision asserted a frozen ratio and it was wrong within a day as the repo grew.)
+- **extracted** (3095 files) — the file's own module docstring, JSDoc header, or frontmatter `summary`. Trustworthy here because 726/847 Python modules and 88/192 JS files carry a substantial one. (These counts are computed at generation time, not hardcoded — an earlier revision asserted a frozen ratio and it was wrong within a day as the repo grew.)
 - **derived** (458 files) — shape only, for generated artifacts: a CSV's header and row count, a JSON's keys. Prose for a result file would be invented.
 
 *How to use* is curated where it matters and otherwise inferred from the file's kind — a test gets its runner, a CLI gets `--help`, a module gets its import path.
@@ -37,9 +37,9 @@ To *search* rather than browse: `python3 index/search.py "your question"`.
 - [`docs`](#docs) — 176 files
 - [`index`](#index) — 8 files
 - [`backtester`](#backtester) — 1967 files
-- [`research`](#research) — 493 files
+- [`research`](#research) — 494 files
 - [`oracle`](#oracle) — 44 files
-- [`extension`](#extension) — 170 files
+- [`extension`](#extension) — 173 files
 - [`executor`](#executor) — 48 files
 - [`liquidity`](#liquidity) — 61 files
 - [`botmanager`](#botmanager) — 93 files
@@ -160,7 +160,7 @@ Repository-level entry points and agent instructions. `AGENTS.md` and `CLAUDE.md
 
 #### `CLAUDE.md`
 
-`doc` · 241 lines · 17,591 B · description: **curated**
+`doc` · 241 lines · 17,636 B · description: **curated**
 
 **Purpose.** Agent-facing companion to AGENTS.md — the same non-negotiables plus the workflow conventions (commit discipline, where numbers may come from, what must be regenerable).
 
@@ -648,9 +648,9 @@ Repository-level entry points and agent instructions. `AGENTS.md` and `CLAUDE.md
 
 #### `memory.md`
 
-`doc` · 3081 lines · 636,625 B · description: **extracted**
+`doc` · 3090 lines · 638,219 B · description: **extracted**
 
-**Purpose.** The user requests useful graded directional estimates, visible80%-score windows and their ends, whole-indicator green/up, red/down and grey/neutral colors, then the actual extension UI deep optimizer and full document optimizer. The three implementation requests are preserved verbatim in prompts.md.
+**Purpose.** The extension UI and descriptive-prose work is integrated in the isolated extension-ui-2498 worktree. Its frozen UI source and guides were reviewed against the private census; the JavaScript baseline contains 4,745 individually classified fragments. Review remains NEEDS_EVIDENCE until the final current-source delta, independent UI/DDO sweep and blind review are complete.
 
 **Use.** Read it.
 
@@ -840,7 +840,7 @@ Curated prose. `ARCHITECTURE.md` explains how the pieces fit, `TESTING.md` is th
 
 #### `docs/API.md`
 
-`doc` · 217 lines · 12,046 B · description: **extracted**
+`doc` · 217 lines · 12,081 B · description: **extracted**
 
 **Purpose.** Every action lives in one registry: `extension/src/core/commands.js`. Three surfaces adapt it. drift apart. SolTUI tools reached through `soltuiCall` retain their own safety gates. Manual Jupiter V2 preview
 
@@ -960,15 +960,15 @@ Curated prose. `ARCHITECTURE.md` explains how the pieces fit, `TESTING.md` is th
 
 #### `docs/EXTENSION-STREAMING-ORACLE.md`
 
-`doc` · 266 lines · 16,245 B · description: **extracted**
+`doc` · 266 lines · 16,370 B · description: **extracted**
 
-**Purpose.** Version: 2.0.0. Delta: train all six horizons independently, preserve0.9 evidence and fence latest shared-input eligibility. The extension's existing public-read window now contains a streaming Oracle. It reuses the validated Pyth stream and bounded one-minute history already owned by
+**Purpose.** Version: 2.0.0. Delta: train all six horizons independently, preserve 0.9 evidence and fence latest shared-input eligibility. The extension's existing public-read window now contains a streaming Oracle. It reuses the validated Pyth stream and bounded one-minute history already owned by
 
 **Use.** Read it.
 
 #### `docs/EXTENSION-TUI-PARITY.md`
 
-`doc` · 110 lines · 8,003 B · description: **extracted**
+`doc` · 111 lines · 8,077 B · description: **extracted**
 
 **Purpose.** The dashboard is the extension's primary workspace as of version 0.5.0. The popup links into it. Open the extension's **Full workspace** link. The sidebar groups tools by the same work they perform in the TUI. Existing holdings, alerts, swap quotes and the experimental grid remain available.
 
@@ -976,7 +976,7 @@ Curated prose. `ARCHITECTURE.md` explains how the pieces fit, `TESTING.md` is th
 
 #### `docs/FILES.md`
 
-`doc` · 38372 lines · 1,842,523 B · description: **extracted**
+`doc` · 38412 lines · 1,843,762 B · description: **extracted**
 
 **Purpose.** Regenerate with: python3 index/build.py all # refresh the index python3 index/make_files_doc.py # rewrite this file
 
@@ -1008,7 +1008,7 @@ Curated prose. `ARCHITECTURE.md` explains how the pieces fit, `TESTING.md` is th
 
 #### `docs/JUPITER-1000X-OVERLAY.md`
 
-`doc` · 244 lines · 16,395 B · description: **extracted**
+`doc` · 241 lines · 16,564 B · description: **extracted**
 
 **Purpose.** Version: 1.5.0. Delta: distinguish chart analysis from separate auto-trading controls, 2026-11-16. Extend the existing Chrome MV3 extension with a floating, extension-owned chart on https://jup.ag/1000x?market=SOL&mode=classic . Use the locally vendored
 
@@ -1016,9 +1016,9 @@ Curated prose. `ARCHITECTURE.md` explains how the pieces fit, `TESTING.md` is th
 
 #### `docs/JUPITER-1000X-SDK.md`
 
-`doc` · 197 lines · 16,383 B · description: **extracted**
+`doc` · 195 lines · 16,191 B · description: **extracted**
 
-**Purpose.** Version: 1.1.0. Delta: distinguish interface terms and full-corpus review from the initial SDK slice, 2026-11-16. The indicator overlay is read-only. This document prepares a later execution design; it does not enable signing, submission, arming, or autonomous trading.
+**Purpose.** Version: 1.1.0. Delta: distinguish interface terms and full-corpus review from the initial SDK slice, 2026-11-16. The indicator chart is read-only. Separate paper-default controls use the shared owner. This SDK review does not itself enable signing, submission, arming or
 
 **Use.** Read it.
 
@@ -1104,9 +1104,9 @@ Curated prose. `ARCHITECTURE.md` explains how the pieces fit, `TESTING.md` is th
 
 #### `docs/ORACLE-AUTO-TRADING.md`
 
-`doc` · 180 lines · 10,113 B · description: **extracted**
+`doc` · 180 lines · 10,155 B · description: **extracted**
 
-**Purpose.** Version: 1.1.0 Delta: document optional private shared-owner routing and its activation boundary. Extension0.11.0 adds **Auto Long / Short** to the Jupiter chart panel. The Oracle
+**Purpose.** Version: 1.1.0 Delta: document optional private shared-owner routing and its activation boundary. Extension 0.11.0 adds **Auto Long / Short** to the Jupiter chart panel. The Oracle
 
 **Use.** Read it.
 
@@ -1120,7 +1120,7 @@ Curated prose. `ARCHITECTURE.md` explains how the pieces fit, `TESTING.md` is th
 
 #### `docs/ORACLE-LEVERAGE.md`
 
-`doc` · 160 lines · 11,428 B · description: **extracted**
+`doc` · 150 lines · 11,989 B · description: **extracted**
 
 **Purpose.** The existing Oracle winner display now opens a separate panel with **L** or the Leverage button. The panel shows ZEC/BTC venue capabilities, frozen strategy rules, live Coinbase quotes and the durable paper ledger. It displays the full
 
@@ -1192,7 +1192,7 @@ Curated prose. `ARCHITECTURE.md` explains how the pieces fit, `TESTING.md` is th
 
 #### `docs/SIGNAL-DESK.md`
 
-`doc` · 152 lines · 10,800 B · description: **extracted**
+`doc` · 152 lines · 10,816 B · description: **extracted**
 
 **Purpose.** Version: 1.2 Delta: native CDP child-runtime PATH and coordinator-specific readiness wording. Signal Desk is the extension's default full dashboard in version 0.5.0. Its light/dark interface
 
@@ -22046,7 +22046,7 @@ The simulation engine and everything that supports it. Never gains live-trading 
 
 Drivers that produce the numbers, and the write-ups that quote them. Everything here is reproducible from a committed script — the two occasions that was not true both produced a wrong published figure.
 
-493 files.
+494 files.
 
 #### `research/5minleveragestrategies.json`
 
@@ -23440,11 +23440,11 @@ Drivers that produce the numbers, and the write-ups that quote them. Everything 
 
 #### `research/zec_tui.py`
 
-`code-python` · 1383 lines · 56,758 B · description: **curated**
+`code-python` · 1406 lines · 57,571 B · description: **curated**
 
 **Purpose.** Oracle workbench with explicit leveraged trading and paper trial controls.
 
-**Contents.** Defines `class IndicatorTable`, `class StrategyPicker`, `class ConfigEditor`, `class ShapeGuide`, `class SoundsDialog`, `class OracleWinnersApp`, `main()`. Depends on `research`.
+**Contents.** Defines `ended_signal_window_text()`, `class IndicatorTable`, `class StrategyPicker`, `class ConfigEditor`, `class ShapeGuide`, `class SoundsDialog`, `class OracleWinnersApp`, `main()`. Depends on `research`.
 
 **Use.** Launch via the repository wrapper: `python3 scripts/oracle_winners.py tui`. The module is not a standalone script.
 
@@ -25844,6 +25844,16 @@ Drivers that produce the numbers, and the write-ups that quote them. Everything 
 
 **Use.** `python3 -m pytest research/tests/test_zec_shape_view.py -q`
 
+#### `research/tests/test_zec_signal_window_display.py`
+
+`test` · 21 lines · 875 B · description: **extracted**
+
+**Purpose.** Ended signal windows distinguish elapsed and observed time.
+
+**Contents.** Defines `class EndedSignalWindowDisplayTest`. Depends on `research`.
+
+**Use.** `python3 -m pytest research/tests/test_zec_signal_window_display.py -q`
+
 #### `research/tests/test_zec_tui.py`
 
 `test` · 705 lines · 30,359 B · description: **extracted**
@@ -26912,11 +26922,11 @@ Forecast evidence, strategy votes, archives and separately controlled webhook ex
 
 The Chrome extension has a separately armed trading surface. Dry-run is the default, risk rails live in code and fail closed, and a fresh install must not be able to trade.
 
-170 files.
+173 files.
 
 #### `extension/README.md`
 
-`doc` · 780 lines · 53,079 B · description: **extracted**
+`doc` · 808 lines · 55,081 B · description: **extracted**
 
 **Purpose.** A Chrome MV3 extension for the owner's Base and Solana money: **holdings, profit and loss, pool discovery, backtests and strategy changes, swap quotes, and alerts** when a more profitable pool or strategy appears. It also keeps an **experimental grid trading strategy on Jupiter (Solana)** with
 
@@ -27058,7 +27068,7 @@ The Chrome extension has a separately armed trading surface. Dry-run is the defa
 
 #### `extension/src/1000x/autotrade-view.js`
 
-`code-js` · 85 lines · 8,975 B · description: **none**
+`code-js` · 100 lines · 10,719 B · description: **none**
 
 **Purpose.** _No description available._
 
@@ -27068,7 +27078,7 @@ The Chrome extension has a separately armed trading surface. Dry-run is the defa
 
 #### `extension/src/1000x/content.js`
 
-`code-js` · 108 lines · 5,096 B · description: **none**
+`code-js` · 108 lines · 5,105 B · description: **none**
 
 **Purpose.** _No description available._
 
@@ -27108,7 +27118,7 @@ The Chrome extension has a separately armed trading surface. Dry-run is the defa
 
 #### `extension/src/1000x/oracle-live-controller.js`
 
-`code-js` · 185 lines · 9,312 B · description: **none**
+`code-js` · 186 lines · 9,392 B · description: **none**
 
 **Purpose.** _No description available._
 
@@ -27138,7 +27148,7 @@ The Chrome extension has a separately armed trading surface. Dry-run is the defa
 
 #### `extension/src/1000x/oracle-live-view.js`
 
-`code-js` · 103 lines · 7,795 B · description: **extracted**
+`code-js` · 109 lines · 9,328 B · description: **extracted**
 
 **Purpose.** Present supplied committed advisory data only; this view performs no I/O.
 
@@ -27168,7 +27178,7 @@ The Chrome extension has a separately armed trading surface. Dry-run is the defa
 
 #### `extension/src/1000x/oracle-view.js`
 
-`code-js` · 93 lines · 9,233 B · description: **none**
+`code-js` · 94 lines · 9,431 B · description: **none**
 
 **Purpose.** _No description available._
 
@@ -27188,7 +27198,7 @@ The Chrome extension has a separately armed trading surface. Dry-run is the defa
 
 #### `extension/src/1000x/panel.css`
 
-`code-web` · 17 lines · 5,847 B · description: **none**
+`code-web` · 31 lines · 6,862 B · description: **none**
 
 **Purpose.** _No description available._
 
@@ -27196,7 +27206,7 @@ The Chrome extension has a separately armed trading surface. Dry-run is the defa
 
 #### `extension/src/1000x/panel.html`
 
-`code-web` · 50 lines · 3,185 B · description: **none**
+`code-web` · 51 lines · 3,259 B · description: **none**
 
 **Purpose.** _No description available._
 
@@ -27204,11 +27214,11 @@ The Chrome extension has a separately armed trading surface. Dry-run is the defa
 
 #### `extension/src/1000x/panel.js`
 
-`code-js` · 272 lines · 20,376 B · description: **none**
+`code-js` · 293 lines · 22,281 B · description: **none**
 
 **Purpose.** _No description available._
 
-**Contents.** Defines `NAMES`, `STORAGE`, `SYMBOL`, `clearChart`, `draw`, `drawContext`, `parameterForm`, `queueDraw`, `readoutRows`, `resetContext` and 4 more.
+**Contents.** Defines `FEED_ERRORS`, `NAMES`, `STORAGE`, `SYMBOL`, `clearChart`, `draw`, `drawContext`, `parameterForm`, `queueDraw`, `readoutRows` and 5 more.
 
 **Use.** Loaded by the extension; see `extension/manifest.json` for entry points.
 
@@ -27358,7 +27368,7 @@ The Chrome extension has a separately armed trading surface. Dry-run is the defa
 
 #### `extension/src/core/owner-source.js`
 
-`code-js` · 75 lines · 2,052 B · description: **extracted**
+`code-js` · 79 lines · 2,200 B · description: **extracted**
 
 **Purpose.** Versioned source identity covers the complete shipped execution module set.
 
@@ -27554,7 +27564,7 @@ The Chrome extension has a separately armed trading surface. Dry-run is the defa
 
 #### `extension/src/ui/control-room.js`
 
-`code-js` · 93 lines · 6,373 B · description: **extracted**
+`code-js` · 93 lines · 6,542 B · description: **extracted**
 
 **Purpose.** The extension is a launcher and availability view for the same local control room.
 
@@ -27574,7 +27584,7 @@ The Chrome extension has a separately armed trading surface. Dry-run is the defa
 
 #### `extension/src/ui/dashboard.html`
 
-`code-web` · 613 lines · 37,075 B · description: **curated**
+`code-web` · 613 lines · 37,150 B · description: **curated**
 
 **Purpose.** Full-page dashboard shell for open state, ladder rungs and recent ticks. Markup only.
 
@@ -27592,7 +27602,7 @@ The Chrome extension has a separately armed trading surface. Dry-run is the defa
 
 #### `extension/src/ui/desk-model.js`
 
-`code-js` · 61 lines · 4,494 B · description: **none**
+`code-js` · 61 lines · 4,504 B · description: **none**
 
 **Purpose.** _No description available._
 
@@ -27666,7 +27676,7 @@ The Chrome extension has a separately armed trading surface. Dry-run is the defa
 
 #### `extension/src/ui/popup.js`
 
-`code-js` · 291 lines · 13,151 B · description: **extracted**
+`code-js` · 297 lines · 13,375 B · description: **extracted**
 
 **Purpose.** Popup: holdings and alerts at a glance, shortcuts into the dashboard, and the grid's arm / disarm / kill controls (collapsed: the grid is experimental). All state comes from the service worker over messages. The popup holds no strategy logic — it can be closed mid-tick without consequence, and it must never be the thing that decides whether an order is placed.
 
@@ -27704,7 +27714,7 @@ The Chrome extension has a separately armed trading surface. Dry-run is the defa
 
 #### `extension/src/ui/signal-desk.js`
 
-`code-js` · 339 lines · 28,350 B · description: **extracted**
+`code-js` · 339 lines · 28,357 B · description: **extracted**
 
 **Purpose.** Composed Signal Desk screens over the same reviewed native command registry.
 
@@ -27752,7 +27762,7 @@ The Chrome extension has a separately armed trading surface. Dry-run is the defa
 
 #### `extension/src/ui/view-grid.js`
 
-`code-js` · 375 lines · 13,422 B · description: **extracted**
+`code-js` · 375 lines · 13,478 B · description: **extracted**
 
 **Purpose.** Grid view: the Jupiter ladder grid's configuration, risk rails, journal and P&L. Moved off the front page in the 0.3.0 redesign because the strategy loses to buy-and-hold walk-forward (Stele KNOW-605); the behaviour is unchanged. The equity curve is drawn with the vendored Lightweight Charts library (src/ui/charts.js; local file, because MV3 forbids remote code).
 
@@ -27762,7 +27772,7 @@ The Chrome extension has a separately armed trading surface. Dry-run is the defa
 
 #### `extension/src/ui/view-markets.js`
 
-`code-js` · 222 lines · 12,757 B · description: **extracted**
+`code-js` · 223 lines · 12,867 B · description: **extracted**
 
 **Purpose.** Holdings, Profit & loss and Discover views. Holdings come from the extension's own read-only market reads (holdings); the deeper scan, snapshots, P&L history and the Aero scout come from soltui. Every figure keeps its source label: a quoted APY is never shown as income.
 
@@ -27772,7 +27782,7 @@ The Chrome extension has a separately armed trading surface. Dry-run is the defa
 
 #### `extension/src/ui/view-overview.js`
 
-`code-js` · 150 lines · 7,548 B · description: **extracted**
+`code-js` · 150 lines · 7,734 B · description: **extracted**
 
 **Purpose.** Overview and Alerts views. The overview paints from the stored scan first (instant, no network), then refreshes holdings live. Alerts come from the background scan (scanAlerts, src/core/alerts.js); this page only shows and acknowledges them.
 
@@ -27782,7 +27792,7 @@ The Chrome extension has a separately armed trading surface. Dry-run is the defa
 
 #### `extension/src/ui/view-trade.js`
 
-`code-js` · 287 lines · 12,774 B · description: **extracted**
+`code-js` · 291 lines · 13,039 B · description: **extracted**
 
 **Purpose.** Backtest & strategies and Swap views. Strategy work runs in soltui (the backtester is Python): Top 5 evidence, the roster, CPCV sweeps and signal defaults. Swaps are quotes from the extension's registry (swapQuote); signing happens on the venue page (Stele KNOW-837).
 
@@ -27906,7 +27916,7 @@ The Chrome extension has a separately armed trading surface. Dry-run is the defa
 
 #### `extension/test/1000x-oracle-live-controller.test.js`
 
-`test` · 145 lines · 9,154 B · description: **none**
+`test` · 151 lines · 9,685 B · description: **none**
 
 **Purpose.** _No description available._
 
@@ -27936,7 +27946,7 @@ The Chrome extension has a separately armed trading surface. Dry-run is the defa
 
 #### `extension/test/1000x-oracle-live-view.test.js`
 
-`test` · 86 lines · 6,246 B · description: **none**
+`test` · 87 lines · 6,423 B · description: **none**
 
 **Purpose.** _No description available._
 
@@ -28018,7 +28028,7 @@ The Chrome extension has a separately armed trading surface. Dry-run is the defa
 
 #### `extension/test/autotrade-view.test.js`
 
-`test` · 102 lines · 6,423 B · description: **none**
+`test` · 103 lines · 6,607 B · description: **none**
 
 **Purpose.** _No description available._
 
@@ -28218,7 +28228,7 @@ The Chrome extension has a separately armed trading surface. Dry-run is the defa
 
 #### `extension/test/signal-desk.test.js`
 
-`test` · 55 lines · 3,875 B · description: **none**
+`test` · 56 lines · 3,992 B · description: **none**
 
 **Purpose.** _No description available._
 
@@ -28317,6 +28327,36 @@ The Chrome extension has a separately armed trading surface. Dry-run is the defa
 **Purpose.** The manifest version is what the owner sees in chrome://extensions and in the popup header. A change that ships without bumping it looks like no change at all (2026-11-07: the SolTUI panel shipped as 0.1.0 and read as "nothing changed"). CI also fails a pull request that edits src/ or manifest.json without bumping the version; this test keeps the two version fields in step.
 
 **Use.** `node --test extension/test/version.test.js`
+
+#### `extension/test/view-markets-failure.test.js`
+
+`test` · 35 lines · 2,173 B · description: **none**
+
+**Purpose.** _No description available._
+
+**Contents.** Defines `class FakeNode`.
+
+**Use.** `node --test extension/test/view-markets-failure.test.js`
+
+#### `extension/test/view-overview-unknown.test.js`
+
+`test` · 36 lines · 2,313 B · description: **none**
+
+**Purpose.** _No description available._
+
+**Contents.** Defines `class FakeNode`.
+
+**Use.** `node --test extension/test/view-overview-unknown.test.js`
+
+#### `extension/test/view-trade-failure.test.js`
+
+`test` · 30 lines · 1,717 B · description: **none**
+
+**Purpose.** _No description available._
+
+**Contents.** Defines `class FakeNode`.
+
+**Use.** `node --test extension/test/view-trade-failure.test.js`
 
 #### `extension/test/wallet-audit.test.js`
 
@@ -32184,7 +32224,7 @@ The local TUI, browser workspace and service interfaces. Coinbase order executio
 
 #### `soltui/tests/bridge_support.py`
 
-`test` · 383 lines · 22,001 B · description: **extracted**
+`test` · 396 lines · 22,803 B · description: **extracted**
 
 **Purpose.** Shared fixtures for the command-bridge tests: an isolated world and the four surface runners.
 
@@ -32374,7 +32414,7 @@ The local TUI, browser workspace and service interfaces. Coinbase order executio
 
 #### `soltui/tests/test_bridge_parity.py`
 
-`test` · 97 lines · 4,087 B · description: **extracted**
+`test` · 97 lines · 4,092 B · description: **extracted**
 
 **Purpose.** One registry, four surfaces: the same call returns the same envelope bytes everywhere. Driven by the registry itself, so a command added tomorrow is covered the day it is registered (the way extension/test/surfaces.test.js covers the extension's registry).
 

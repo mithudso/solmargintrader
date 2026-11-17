@@ -130,7 +130,7 @@ Ecosystem setup and control room use `python -m pip install ./backtester ./oracl
 python3 -m unittest discover -s backtester/tests -t .   # 1151 tests
 python3 -m unittest discover -s soltui/tests -t .       # 1606 tests (TUI dependencies required)
 python3 -m unittest discover -s mongo/tests -t .        # 57 tests
-cd extension && npm test                                # 628 tests
+cd extension && npm test                                # 631 tests
 node tools/dryrun.js --ticks 8 --osc 6 --offline 100    # a round trip must still close positive
 cd extension && npm run e2e                             # real Chrome for Testing: load, dry-run, rails (needs one; see below)
 node tools/verify-endpoints.js                          # live Jupiter reachability
@@ -165,8 +165,8 @@ base58 zero bytes, FIFO vs paired-lot attribution, one-bar leaks). Do not narrat
 
 ## Known-unverified areas
 
-Read "Verification status" in `extension/README.md` before extending it. In short: **no live order
-has ever been placed**. The unpacked extension is now loaded and exercised in a real browser (`npm run e2e`,
+Read "Verification status" in `extension/README.md` before extending it. The browser gate tests
+dry-run behavior; it does not establish the owner's lifetime order history. The unpacked extension is loaded and exercised in a real browser (`npm run e2e`,
 dry-run only), so the MV3 load path, service worker, popup, dashboard and message routing are
 covered; live trading is not. Trigger history/cancellation have public-contract fixtures, but authenticated
 wallet responses, execution USD valuation and fee attribution remain unverified. The bundled signer

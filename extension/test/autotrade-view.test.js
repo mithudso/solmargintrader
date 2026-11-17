@@ -39,8 +39,8 @@ test('active status names the owner session, not editable next-session fields', 
   try {
     await new Promise(resolve => setImmediate(resolve));
     const section = root.sibling;
-    section.children[2].children[0].children[0].value = 'ZEC';
-    section.children[2].children[1].children[0].value = 'jupiter-cli-10x';
+    section.children[2].children[1].children[0].children[0].value = 'ZEC';
+    section.children[2].children[1].children[1].children[0].value = 'jupiter-cli-10x';
     const text = section.children[1].textContent;
     for (const item of ['BTC', '1000x', 'long', 'open', '2.5']) assert.ok(text.includes(item), text);
     assert.ok(!text.includes('ZEC'));
@@ -74,7 +74,8 @@ test('controls reuse request ID after a refusal and closing does not stop the ow
     ui = autotradeView(root, { call, id: () => 'stable-id' });
     await new Promise(resolve => setImmediate(resolve));
     const section = root.sibling, buttons = section.children[3].children, status = section.children[1];
-    section.children[2].children[1].children[0].value = 'jupiter-sdk-1000x';
+    assert.match(section.children[2].children[0].textContent, /BTC.*10× paper proxy.*base \$10.*max \$15.*loss cap \$50.*advice off/);
+    section.children[2].children[1].children[1].children[0].value = 'jupiter-sdk-1000x';
     buttons[0].onclick(); await new Promise(resolve => setImmediate(resolve));
     assert.match(status.textContent, /fixture refusal/);
     buttons[0].onclick(); await new Promise(resolve => setImmediate(resolve));
@@ -86,7 +87,7 @@ test('controls reuse request ID after a refusal and closing does not stop the ow
     buttons[1].onclick(); await new Promise(resolve => setImmediate(resolve));
     assert.match(status.textContent, /Enter each live/);
     assert.equal(calls.some(([name]) => name === 'autotrade.start_live'), false);
-    for (const label of section.children[2].children.slice(2, 5)) label.children[0].input();
+    for (const label of section.children[2].children[1].children.slice(2, 5)) label.children[0].input();
     buttons[1].onclick(); await new Promise(resolve => setImmediate(resolve));
     assert.equal(calls.find(([name]) => name === 'autotrade.start_live')[1].confirm, true);
     buttons[2].onclick(); await new Promise(resolve => setImmediate(resolve));

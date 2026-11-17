@@ -12,13 +12,23 @@ import { createChart, CandlestickSeries, LineSeries, HistogramSeries, LineStyle 
 const $ = id => document.getElementById(id);
 const renderOracle = oracleView($('streaming-oracle'));
 const auto = autotradeView($('streaming-oracle'));
-const liveView = liveOracleView($('streaming-oracle'));
+const liveView = liveOracleView($('live-oracle'));
 const liveOracle = new LiveOracleController({ onChange: view => liveView.render(view) });
 const oracle = new OracleController({ onChange: view => { renderOracle(view); void auto.observe(view, latest?.sourceIdentity).catch(() => {}); } });
 document.querySelector('header .tag').textContent = 'Paper default';
 $('api-attribution').textContent = `${POWERED_BY} — 1000x public catalog; Pyth oracle history and stream.`;
 const SYMBOL = new URLSearchParams(location.hash.slice(1)).get('market') || '';
 const STORAGE = 'jupiter1000xIndicatorView';
+const FEED_ERRORS = {
+  unsupported_market_or_timeframe: 'Market or interval is unsupported', ambiguous_market: 'Market selection is ambiguous',
+  market_unavailable: 'Market is unavailable', market_closed: 'Market is closed',
+  invalid_market_catalog: 'Market catalog is invalid', public_read_failed: 'Public market request failed',
+  history_lagging: 'History is delayed; refresh history', history_unavailable: 'History is unavailable; refresh history',
+  invalid_history: 'History data is invalid; refresh history', conflicting_history_duplicate: 'History has conflicting candles; refresh history',
+  subscription_refused: 'Live subscription was refused', reconnect_exhausted: 'Reconnect attempts stopped; refresh the page',
+  awaiting_history: 'Waiting for history', stale_quote: 'Quote is stale; waiting for a fresh update',
+  stream_disconnected: 'Live stream disconnected', feed_stopped: 'Feed stopped',
+};
 const NAMES = { zigzag: 'ZigZag', rsi: 'RSI', bop: 'Balance of Power', volty: 'Volty Expan Close', psar: 'Parabolic SAR', ema: 'EMA9 / EMA21', macd: 'MACD12 / 26 / 9' };
 const fields = [
   ['zigzag', 'reversalPercent', 'ZigZag reversal %', '0.1'],
@@ -137,6 +147,7 @@ function draw() {
     $('status').dataset.state = 'error';
     document.querySelectorAll('[data-value]').forEach(el => { el.textContent = 'Unavailable'; });
     document.querySelectorAll('[data-signal]').forEach(el => { el.textContent = 'Invalid input'; });
+    document.querySelectorAll('[data-indicator][data-direction]').forEach(el => { el.dataset.direction = 'neutral'; });
     return;
   }
   const metrics = model.developing;
@@ -162,7 +173,7 @@ function draw() {
   const price = latest.quote?.price;
   $('market').textContent = `${SYMBOL || 'Select market'}${numeric(price) ? ' · $' + fmt(price) : ''}`;
   $('status').dataset.state = model.signalEligible ? 'live' : latest.status === 'live' ? 'stale' : latest.status;
-  $('status').textContent = settingsError || (model.signalEligible ? 'Live oracle · completed-candle explanations' : `${model.reason}${latest.error ? ' · ' + latest.error : ''}`);
+  $('status').textContent = settingsError || (model.signalEligible ? 'Live oracle · completed-candle explanations' : `${model.reason}${latest.error ? ' · ' + (FEED_ERRORS[latest.error] ?? String(latest.error).replaceAll('_', ' ')) : ''}`);
   $('timing').textContent = `Exchange ${stamp(latest.quote?.exchangeMs)} · received ${stamp(latest.quote?.receivedMs)} · age ${model.ageMs === null ? 'unavailable' : (model.ageMs / 1000).toFixed(2) + 's'}`;
   for (const key of Object.keys(NAMES)) {
     const metric = model.completed[key];
@@ -173,7 +184,16 @@ function draw() {
     if (key === 'ema') value = numeric(metric.latest) ? `${fmt(metric.latest)} / ${fmt(metric.slowLatest)}` : null;
     if (key === 'macd') value = numeric(metric.latest) ? `${fmt(metric.latest)} / ${fmt(metric.signalLatest)}` : null;
     row.querySelector('[data-value]').textContent = typeof value === 'string' ? value : fmt(value);
-    row.querySelector('[data-signal]').textContent = !config[key].enabled ? 'Hidden' : model.signalEligible ? (metric.signal || 'Waiting for confirmation') : 'Unavailable until feed is fresh';
+    const signal = row.querySelector('[data-signal]');
+    signal.textContent = !config[key].enabled ? 'Hidden' : model.signalEligible ? (metric.signal || 'Waiting for confirmation') : 'Unavailable until feed is fresh';
+    // Only comparisons that actually express direction receive directional styling.
+    if (key === 'ema' || key === 'macd') {
+      const first = metric.latest, second = key === 'ema' ? metric.slowLatest : metric.signalLatest;
+      const direction = model.signalEligible && config[key].enabled && numeric(first) && numeric(second)
+        ? first > second ? 'up' : first < second ? 'down' : 'neutral' : 'neutral';
+      row.dataset.direction = direction;
+      if (model.signalEligible && config[key].enabled && numeric(first) && numeric(second)) signal.textContent = `${direction === 'up' ? '↑' : direction === 'down' ? '↓' : '↔'} ${signal.textContent}`;
+    }
   }
   drawContext(model.reversal);
   $('readout-caption').textContent = `Completed ${TIMEFRAMES.find(entry => entry.seconds === intervalSec)?.label} chart-candle readings · 1m momentum is separate above`;
@@ -237,6 +257,7 @@ async function restart() {
   $('status').textContent = 'Connecting to Jupiter…'; $('status').dataset.state = 'connecting';
   document.querySelectorAll('[data-value]').forEach(el => { el.textContent = 'Warming up'; });
   document.querySelectorAll('[data-signal]').forEach(el => { el.textContent = 'Waiting for live data'; });
+  document.querySelectorAll('[data-indicator][data-direction]').forEach(el => { el.dataset.direction = 'neutral'; });
   feed = new JupiterFeed({ symbol: SYMBOL, intervalSec, withReversalContext: true, onUpdate: snapshot => {
     latest = snapshot;
     liveOracle.observe(snapshot);

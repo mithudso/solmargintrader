@@ -1,5 +1,13 @@
 # Work continuation
 
+## Current UI and confidence handoff
+
+The extension UI and descriptive-prose work is integrated in the isolated extension-ui-2498 worktree. Its frozen UI source and guides were reviewed against the private census; the JavaScript baseline contains 4,745 individually classified fragments. Review remains NEEDS_EVIDENCE until the final current-source delta, independent UI/DDO sweep and blind review are complete. Preserve the frozen source and the sole UI writer's edits.
+
+The 6e2 native core receipt records private-browser atomic storage, shared relay behavior and fixture-based threshold transitions. Its separate follow-up records one real UP endpoint label and relay competition; it does not establish other label classes, expiry-only transitions, final UI behavior or market accuracy. No new user paper session or funded order was started. The TUI now labels ended-window elapsed and observed durations separately and uses the supplied sustained flag. It does not change the relay or model contract.
+
+Remaining: finish mechanical counts, inventories, wiki and offline indexes after staging new tracked inputs; complete final source and browser checks and independent review; integrate into PR 318, pass final-head CI and merge; then verify final installed source, existing browser learner retention and read-only TUI display under separately authorized activation. Preserve the user-owned route, old owner and all existing workers. No semantic indexing or inference was started.
+
 ## Current confidence-window candidate — TASK-2497 / TASK-2498
 
 The user requests useful graded directional estimates, visible80%-score windows and their ends, whole-indicator green/up, red/down and grey/neutral colors, then the actual extension UI deep optimizer and full document optimizer. The three implementation requests are preserved verbatim in prompts.md. The follow-up TUI-opening request was executed: the canonical TUI is visible in Terminal, PID81937 in oracle-forward-2289:%1.
@@ -22,7 +30,8 @@ Browser CI fixture: the native IndexedDB abort assertion raced an independent ne
 
 Routing follow-up: source adds owner-only optional connection routing for ordinary clients; explicit environment homes remain first. The isolated 1000x paper acceptance passed one start and stop with recorded modeled outcome. The user-owned registry and shared wrapper remain unchanged. Verify focused checks, review and deliver the routing PR before a separately controlled activation. Routing alone does not fence concurrent starts or migrate journal history.
 
-Version: 625
+Version: 626
+Delta: v625 to v626; record scoped UI and prose review, bounded native evidence and final integration gates.
 Delta: v624 to v625; preserve the tested live-signal candidate, independent fixes, active routing and pending native/UI/prose gates.
 Delta: v623 to v624; integrate merged routing and fixture history with pending Oracle confidence and extension UI continuation.
 Delta: v622 to v623; preserve the browser fixture race diagnosis, quiescence repair and full local receipt.

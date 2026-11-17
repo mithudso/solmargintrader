@@ -14,9 +14,9 @@ From the canonical checkout, the monitored view is:
 
 The original `tui` alias and plain/JSON display modes remain supported. The bar
 filter has All, 5, 10, 15 and 20 minute choices. The selected paper rules are
-ZEC15m DD/range reversal→UP and BTC20m DD continuation→DOWN. These were selected
+ZEC 15m DD/range reversal→UP and BTC 20m DD continuation→DOWN. These were selected
 on validation data before examining the final split. Both lost under the
-historical16bps roundtrip scenario; they are exploratory forward candidates.
+historical 16bps roundtrip scenario; they are exploratory forward candidates.
 The complete study is in `research/REVERSAL-SHAPES.md`.
 
 The panel compares independently timestamped Jupiter Oracle and Coinbase book streams. A silent green/yellow/red dot and numeric exchange and receipt ages report each source’s freshness while the last displayed price remains visible; the basis appears only when both observations meet strict freshness and synchronization checks. Jupiter is the primary display for 1000×. These display quotes do not change the frozen Coinbase paper collector or its selection. The [second-turn study](../research/REVERSAL-SECOND-TURN.md) is retrospective and does not qualify a funded strategy.
@@ -55,17 +55,17 @@ window uses the same home. Closing the TUI leaves the collector running.
 
 The collector reads public Coinbase Exchange ZEC-USD/BTC-USD minute candles and
 fresh bid/ask midpoint quotes. It records only a new matching current-boundary
-setup, at most30seconds late. It commits the decision before the outcome and
+setup, at most 30 seconds late. It commits the decision before the outcome and
 never fills missed targets retrospectively. Settlement requires every target
 minute, positive volume and a completed target. A missing outcome stays
 unscored. One bounded recovery read per asset/minute can recover outcomes from
-the preceding24hours. Older missing data stays unavailable.
+the preceding 24 hours. Older missing data stays unavailable.
 
 The ledger is `/Users/mitch/.local/state/oracle-leverage/ledger.sqlite3`.
 Selection is hashed and cannot change after observations begin. The collector
 never imports the execution adapters and cannot send an order. Paper returns
 use the actual observed entry midpoint, the final completed target close and
-a16bps roundtrip scenario. They do not include observed Jupiter borrow/funding,
+a 16bps roundtrip scenario. They do not include observed Jupiter borrow/funding,
 liquidation or venue fills. Historical Binance USDT and prospective Coinbase
 USD data have separate identities.
 
@@ -79,7 +79,7 @@ The **Arm** control explicitly enables only the selected venue, binds the active
 operation. A submitted or ambiguous intent remains quarantined until chain and
 venue reconciliation establishes its state; a timeout never causes a retry.
 
-The standard10x adapter uses the installed official Jupiter CLI0.10.1, with its
+The standard 10x adapter uses the installed official Jupiter CLI 0.10.1, with its
 entrypoint SHA256 pinned in `oracle_leverage/cli.py`. It supports BTC here. The
 official CLI's JLP markets are BTC/SOL/ETH; ZEC is not one of them. A preview
 records the public wallet and named key. Live submission checks that identity,
@@ -87,42 +87,32 @@ the private collateral cap, current positions, required quote/fee fields and
 the preview lifetime. The named key is passed explicitly without changing the
 CLI's global active key. No keys are imported or copied by this feature.
 
-An owner-only0600 configuration at
+An owner-only 0600 configuration at
 `/Users/mitch/.local/state/oracle-leverage/config.json` may explicitly set
 `armed`, `wallet_address` and `max_collateral_usd`. No configuration is created
 to arm trading during the forward test. The wallet must already exist in the
 CLI. Funded execution remains unverified in this delivery; all funded tests
 use controlled fixtures.
 
-The1000x bridge uses community `jupiter-sdk`0.6.0 and the official public
+The 1000x bridge uses community `jupiter-sdk` 0.6.0 and the official public
 service at https://yolo-api.jup.ag . The current official app matches the SDK
-program, BTC and ZEC market addresses. The backend builds v0 transactions and
-co-signs keeper execution after the owner signs. No API key is needed for this
+program, BTC and ZEC market addresses. The service offers v0 transaction builds and a keeper submission flow after the owner signs. A bounded current-format open shape can pass source verification; current-format close is refused. Passing verification does not establish keeper acceptance or funded execution. No API key is needed for this
 public contract. The implementation accepts direct JupUSD collateral only;
 fund the existing wallet with JupUSD and enough SOL for network fees.
 
-The SDK verifies the requested margin,1000x leverage, direction, market, owner,
-keeper, funding account, known config/pool/vault/position PDAs and execution
-window before signing. The service supplies a close claim address; the on-chain
-program validates its allocation, rather than this client deriving an unverified
-claim sequence. It
-rejects unknown extra instructions and priority fees above0.01SOL. The existing
+For a supported legacy transaction shape, the SDK verifies the requested margin, 1000x leverage, direction, market, owner, keeper, funding account, known config/pool/vault/position PDAs and execution window before signing. For a legacy close, the service supplies a claim address that the on-chain program validates; the client does not derive the claim sequence. The verifier rejects unknown extra instructions and priority fees above 0.01 SOL. The current-format open verifier checks the keeper against the service signer or configured keeper. Current-format close is refused as unverified; keeper acceptance is not established by verification. The existing
 pinned CLI signs with the explicit named wallet; private keys never enter this
 module. A second check verifies the owner signature cryptographically and keeps
-the message and keeper signature slot unchanged. The ledger records the owner
-signature before sending to the keeper. Processing means queued, not filled.
+the message and keeper signature slot unchanged. For an accepted verified shape, the ledger records the owner signature before submission to the keeper service. Processing means queued, not filled.
 
-To permit manual1000x execution, the private configuration must also contain
+To permit manual 1000x execution, the private configuration must also contain
 `"sdk": {"enabled": true}`. A configuration example is:
 
 ```json
 {"armed": true, "wallet_address": "YOUR_EXISTING_PUBLIC_WALLET", "max_collateral_usd": 10, "sdk": {"enabled": true}}
 ```
 
-The Arm control creates or updates this private configuration only after an explicit operator action. Submit refreshes and verifies
-the reviewed economic intent because the service's execution window starts at
-build time. Close verifies the current owned position, its trigger/timer state
-and the minimum15second hold. SDK positions have a1000x prefix to preserve venue
+The Arm control creates or updates this private configuration only after an explicit operator action. Submit refreshes and verifies the reviewed economic intent because the service's execution window starts at build time. A supported legacy close checks the owned position, trigger/timer state and minimum 15-second hold; current-format close is refused. SDK positions have a 1000x prefix to preserve venue
 identity. The pending execution queue and unpaid-profit queue are distinct.
 
 The public frontend contract and source hashes are recorded in
@@ -150,7 +140,7 @@ Product execution rules: https://docs.jup.ag/user-docs/trade/1000x/trading
 
 Community SDK: https://github.com/ChiefWoods/jupiter-sdk
 
-The leverage panel reconstructs sampled Jupiter oracle 10-minute bars from the existing local normalized quote capture. It reads incrementally and starts no collector. A bar is displayed only when its boundary observations and internal gaps meet the five-second continuity rule; it is a sampled quote bar, not an exchange candle. Colors compare the body with the mean range of up to 20 prior qualified closed bars. The 5/10/15/20-minute annotations use the published MTF model's 10-minute posterior shape components relative to its training baseline and report observer age and sample counts. A known shape without a supported component is labeled unsupported instead of being assigned a score. They are conditional model statistics, not guaranteed outcomes. The separate 50% exit observer remains pending until its integration is delivered.
+The leverage panel reconstructs sampled Jupiter oracle 10-minute bars from the existing local normalized quote capture. It reads incrementally and starts no collector. A bar is displayed only when its boundary observations and internal gaps meet the five-second continuity rule; it is a sampled quote bar, not an exchange candle. Colors compare the body with the mean range of up to 20 prior qualified closed bars. The 5/10/15/20-minute annotations use the published MTF model's 10-minute posterior shape components relative to its training baseline and report observer age and sample counts. A known shape without a supported component is labeled unsupported instead of being assigned a score. They are conditional model statistics, not guaranteed outcomes. The separate 50% exit observer is integrated in source; this description does not establish that it is running or deployed.
 
 ## Exit50 paper research and bounded quote retention
 

@@ -10,10 +10,11 @@ export function oracleView(root) {
     const el = document.createElement(tag); if (text !== undefined) el.textContent = text;
     if (className) el.className = className; return el;
   };
-  const heading = node('h2', 'Streaming Oracle · all six horizons');
+  const heading = node('h2', 'Minute-close Oracle · six horizons');
+  const distinction = node('p', 'Separate minute-close learner: UP versus NON-UP (down or flat). See Live Oracle above for three-direction estimates.', 'muted');
   const overview = node('div', undefined, 'oracle-overview');
   const horizonTable = node('table'); horizonTable.id = 'oracle-horizons';
-  const horizonCaption = node('caption', 'One shared minute feed · every horizon learns · counts: trained / resolved / pending · recent Brier: candidate / served / fixed0.5');
+  const horizonCaption = node('caption', 'One shared minute feed · every horizon learns · counts: trained / resolved / pending · recent Brier: candidate / served / fixed 0.5');
   const horizonHead = node('thead'), horizonHeadRow = node('tr');
   for (const text of ['Horizon', 'State', 'Served P(UP)', 'Evidence', 'Recent Brier ↓']) horizonHeadRow.append(node('th', text));
   horizonHead.append(horizonHeadRow); const horizonBody = node('tbody');
@@ -34,11 +35,11 @@ export function oracleView(root) {
   const target = node('p', undefined, 'muted');
   const limits = node('p', 'Candidate P(UP) is an uncalibrated shadow estimate. Warm-up or recent underperformance serves fixed P(UP)=50% while candidate learning continues. Labels need every completed contiguous minute in their own horizon; unknown/expired labels are excluded. Chart selection changes detail only. Learning pauses when this window is hidden. No position, profit or trading instruction is produced.', 'muted');
   details.append(summary, table, target, limits);
-  root.append(heading, overview, selected, status, prediction, counts, feedback, details);
+  root.append(heading, distinction, overview, selected, status, prediction, counts, feedback, details);
   return view => {
     const horizon = view?.selectedHorizon || ORACLE.horizon, label = TIMEFRAMES.find(t => t.seconds === horizon)?.label || '10m';
     selected.textContent = `Selected rolling ${label} detail`; root.dataset.horizon = String(horizon);
-    target.textContent = `UP means the completed close ${label} after the forecast cutoff is above its reference close. NON-UP includes DOWN and exact FLAT. Every horizon issues per minute; overlapping targets within and across models are not independent trials. This is separate from the DD/UU candle-pattern context.`;
+    target.textContent = `UP means the completed close ${label} after the forecast cutoff is above its reference close. NON-UP includes DOWN and exact FLAT. Each horizon may issue once per fresh completed minute; overlapping targets within and across models are not independent trials. This is separate from the DD/UU candle-pattern context.`;
     horizonBody.replaceChildren();
     for (const t of TIMEFRAMES) {
       const v = view?.horizons?.[t.seconds], saved = v?.sourceKey === v?.state?.key ? v?.state : undefined;
