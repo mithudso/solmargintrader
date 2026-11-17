@@ -1,11 +1,11 @@
 {
-  "generatedAt": "2026-11-17T20:36:05+00:00",
+  "generatedAt": "2026-11-17T20:46:59+00:00",
   "schemaVersion": 1,
   "repoRoot": "~/dev/solmargintrader",
-  "commit": "04ad835",
+  "commit": "18090e3",
   "counts": {
     "files": 4047,
-    "bytes": 202191122,
+    "bytes": 202193130,
     "byKind": {
       "strategy-card": 1478,
       "doc": 848,
@@ -74577,11 +74577,11 @@
       "ext": ".md",
       "kind": "doc",
       "title": "Whole-application assessment, 2026-11-17",
-      "summary": "Version: 2.0.1. Delta: preserve delivered PR330 and current verification history alongside the three-review assessment and complete Oracle disk recovery. research, paper-operation, hosted-account and guarded-execution application. The complete current no-edit sweep records all 240 methods, 222 selected, across",
+      "summary": "Version: 2.0.2. Delta: retain late-callback stop acknowledgment while a fresh shared-producer restart can supersede it; preserve PR330 and all prior audit evidence. research, paper-operation, hosted-account and guarded-execution application. The complete current no-edit sweep records all 240 methods, 222 selected, across",
       "summarySource": "opening-prose",
-      "bytes": 6761,
-      "lines": 109,
-      "sha1": "a699aea88a46be73a7abff11bd7f55af4754decc",
+      "bytes": 6847,
+      "lines": 110,
+      "sha1": "40bcdfbc7d7480d3edce8fe05212361f7403e90f",
       "symbols": [],
       "imports": [],
       "internalImports": [],
@@ -88617,11 +88617,11 @@
       "ext": ".md",
       "kind": "doc",
       "title": "Work continuation",
-      "summary": "Version: 646 Delta: v645 to v646; integrate delivered PR330, preserve both workflow histories, and diagnose final macOS forward-test fixture before current reassessment. Delta: v644 to v645; repair required command-parity fixtures after final macOS CI and preserve the source-v4 review.",
+      "summary": "Version: 647 Delta: v646 to v647; preserve source6 acceptance gap and require fresh shared-state restart to supersede an older Stop acknowledgment. Delta: v645 to v646; integrate delivered PR330, preserve both workflow histories, and diagnose final macOS forward-test fixture before current reassessment.",
       "summarySource": "opening-prose",
-      "bytes": 688620,
-      "lines": 3353,
-      "sha1": "42a04552784e6175abd11c9fd8e3a7ff79466305",
+      "bytes": 689629,
+      "lines": 3359,
+      "sha1": "96029af1c0e6273ff5fad8a6a69608bb200a0d58",
       "symbols": [],
       "imports": [],
       "internalImports": [],
@@ -114739,9 +114739,9 @@
       "title": "test_forwardtest",
       "summary": "Prospective evidence, horizon isolation, and the roster keyboard workflow.",
       "summarySource": "docstring",
-      "bytes": 22643,
-      "lines": 411,
-      "sha1": "5ac781719b69d1c074939ff23f6edb62695296ee",
+      "bytes": 23364,
+      "lines": 421,
+      "sha1": "50180784be97b7f309694b9145f0646d8d107497",
       "symbols": [
         "BASE",
         "candles()",
@@ -116722,9 +116722,9 @@
       "title": "Rows the Docs table renders at once. The repo has ~470 tracked files; leave headroom.",
       "summary": "Textual TUI: the console over the backtester. python3 -m soltui.tui The panes (Settings, Strategies, Signals, Compound 5m, Backtest, Execute, ... Docs, and Now) are grouped by `shell.py` into six destinations; `--classic` shows the original tab bar. All decisions live in the pure modules (`config`, `roster`, `runner`, `paper`, `status`); this file is presentation and wiring.",
       "summarySource": "docstring",
-      "bytes": 454486,
-      "lines": 8311,
-      "sha1": "ac7c2aef0de3758b6a33d836e30f6fa9bef11db8",
+      "bytes": 454678,
+      "lines": 8314,
+      "sha1": "8a73aa445061cc676bd9e313b19268f9f2dd66d1",
       "symbols": [
         "class _CaptureWithoutInvalidFd",
         "_mtime()",
@@ -120341,5 +120341,5 @@
       "frontmatter": {}
     }
   ],
-  "textSha256": "1783f9ed76037f1c4adde4cd241717eb2f93266642575dccd14c4458f9242705"
+  "textSha256": "3555f338975174bb899f0728a78fa1878a9f2e37ca945b98b7393d2366d7b71e"
 }

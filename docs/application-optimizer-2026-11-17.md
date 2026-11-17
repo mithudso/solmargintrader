@@ -1,6 +1,6 @@
 # Whole-application assessment, 2026-11-17
 
-Version: 2.0.1. Delta: preserve delivered PR330 and current verification history alongside the three-review assessment and complete Oracle disk recovery.
+Version: 2.0.2. Delta: retain late-callback stop acknowledgment while a fresh shared-producer restart can supersede it; preserve PR330 and all prior audit evidence.
 
 **Outcome: NEEDS_EVIDENCE.** The current assessment covers the eleven-component
 research, paper-operation, hosted-account and guarded-execution application.
@@ -62,8 +62,9 @@ supervisor state instead of assuming a fixed number of event-loop turns or polls
 The three learning commands also have valid isolated four-surface parity fixtures;
 the tests require successful responses and cannot write the user learning home.
 A deterministic stop/drain replay also exposed a late status callback that could
-paint Running after Stop. The UI retains the acknowledged stop until actual idle,
-and its test releases and joins the held worker explicitly.
+paint Running after Stop. The UI retains the acknowledgment until fresh idle or
+a confirmed unpaused running producer, including a restart from another console.
+Its test releases and joins the held worker explicitly.
 
 Current local checks pass 652 extension tests, 252 native tests, 20 supervisor
 lifecycle tests, checked JavaScript, pinned Python lint, documentation counts and

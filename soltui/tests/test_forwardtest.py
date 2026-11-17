@@ -339,6 +339,16 @@ class RosterForwardUI(unittest.IsolatedAsyncioTestCase):
                     if thread is not None:
                         await asyncio.to_thread(thread.join, 5.0)
                         self.assertFalse(thread.is_alive())
+                # Another console can resume between our Stop and next state poll.
+                # A fresh shared-state read wins; an old status callback cannot.
+                resumed = {**post_stop, "running": True, "busy": False, "prepared": True,
+                           "paused": False, "optimize": True}
+                with (patch.object(app, "_call", return_value={"ok": True, "result": resumed}),
+                      patch.object(app, "_forward_status_job")):
+                    app._forward_schedule()
+                app._forward_done(env, resumed)
+                self.assertFalse(app._forward_stopping)
+                self.assertIn("Running", str(app.query_one("#forward-status", Static).content))
                 app._forward_schedule()
                 self.assertFalse(app.query_one("#forward-start").disabled)
                 self.assertNotIn("forwardtest running", app.sub_title)

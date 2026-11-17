@@ -1741,6 +1741,9 @@ class SolTuiApp(App):
         self._forward_running = bool(st["running"])
         if st.get("paused") and (self._forward_running or self._forward_busy):
             self._forward_stopping = True
+        elif st.get("paused") is False and self._forward_running:
+            # A different console may have explicitly resumed the shared producer.
+            self._forward_stopping = False
         self._forward_show_running(st.get("assets", []) if self._forward_running else [])
         if not self._forward_running and not st["busy"]:
             self._forward_busy = False

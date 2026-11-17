@@ -1,6 +1,7 @@
 # Work continuation
 
-Version: 646
+Version: 647
+Delta: v646 to v647; preserve source6 acceptance gap and require fresh shared-state restart to supersede an older Stop acknowledgment.
 Delta: v645 to v646; integrate delivered PR330, preserve both workflow histories, and diagnose final macOS forward-test fixture before current reassessment.
 Delta: v644 to v645; repair required command-parity fixtures after final macOS CI and preserve the source-v4 review.
 Delta: v643 to v644; record the complete current240-method sweep and real installed browser/native disk acceptance.
@@ -26,6 +27,11 @@ Verification complete:42 focused tests and1152 backtester tests pass. Pinned Ruf
 Public report, charts, summaries, publication hashes, independent audit and complete40491663-byte ZIP are under /Users/mitch/dev/solmargintrader/research/native-pairs-week-20261117. Fresh archive extraction verifies the complete246-artifact batch. The separate native Binance ETH/BTC one-day8-template smoke verifies76 artifacts and2400 strategy rows; it is labelled incomplete and does not replace the full USD study. The --coin ETH --quote USD CLI verifies the finalized native USD child. Existing v1 reports remain byte-compatible and verify78 artifacts/491712 rows.
 
 Source files froze before the full numerical run; the run's exact file/runtime hashes identify reviewed code even though source_commit records the pre-delivery base. Delivery uses branch agent-01a1ea6d, the passing-final-head GitHub PR and TASK-2599's receipt as current status. Check actual GitHub merge state before resuming work. Preserve the root checkout's package manifests, private Pine and user's research/new-eth-study directory. Stele writes are queued because the MCP transport is closed:2ef84c03,051d6757,7bd63c2b,a514510a,a203503e,bf8fab07; replay only owned operations, preserve unrelated outbox entries.
+
+
+## Final shared-state qualification — TASK-2574
+
+Source6 at18090e3 remains an immutable checkpoint. Root's controlled real-method probe confirms a remaining stop/reentry gap: a fresh shared state running=true and paused=false can retain the older Stopping label if another console resumed between polls. The original late-callback repair passes, but APP-FWD-01 acceptance is incomplete on source6. Preserve bound-v6-fresh-shared-state-before-1.json. Fresh authoritative polling now clears the acknowledgment for an explicitly unpaused running producer; stale asynchronous result callbacks still cannot clear it. The existing lifecycle test covers both callback orderings, fresh shared restart, explicit release and joined cleanup. Freeze a new source after verification, retain every prior sweep/review and keep the final independent review within the three-review cap.
 
 ## Current Oracle persistence delivery — TASK-2574
 
