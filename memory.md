@@ -1,5 +1,18 @@
 # Work continuation
 
+Version: 652
+Delta: v651 to v652. Record the completed application assessment, independent final review and verified default-branch source.
+
+## Final application assessment and delivery — TASK-2556 / TASK-2557 / TASK-2574
+
+Application Deep Optimizer 1.0.1 raises the independent review cap to three and retains the five-sweep limit. The last complete sweep covers 240 methods, 222 selected, across 50 application states. It retains 33 verified fixes. The third reviewer found no confirmed Medium-or-higher defect and identified two Low stale research fixture issues. Keep NEEDS_EVIDENCE because participant, production, provider and prospective evidence remains incomplete.
+
+PR329 delivered per-coin learner persistence. PR328 delivered the matching fixture correction at 007b44101f62f502e1afee0b9b4e044b817056a1. All 4,136 reviewed application inputs match the merged source bytes and executable flags. Both reviewed candidate and delivered branch CI passed. The earlier required provenance failure and independent exploratory failures are preserved in the private receipts.
+
+Installed Chromium, framed native messaging and SQLite verified recovery of 21 SOL, BTC and ZEC partitions, including complete models and results across both learners and all six horizons. IndexedDB remains primary. The native helper mirrors checkpoints and available outcomes to private local SQLite. The native paper owner's journal separately retains compatible learning across settings changes. MongoDB time series remains an optional future destination.
+
+The authoritative activation and handoff records are under /Users/mitch/.local/share/solmargintrader/audits/application-2556-oracles. Start with ledger-v9-reviewed-pre-activation.json and delivery-merge-gate-v2.json, then look for the final activation receipt before touching the live profile or worker. Preserve the existing Chrome Beta origin, browser history, journals and owner policy. The unresolved Low fixtures are follow-up maintenance and do not warrant another sweep of this invocation.
+
 Version: 651
 Delta: v650 to v651; preserve concurrent0.12.8 delivery and repair its numerical source fixture.
 

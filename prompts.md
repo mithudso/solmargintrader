@@ -1,5 +1,8 @@
 # Prompt history
 
+Version: 298
+Delta: v297 to v298. Bind the preserved cap-three invocation and both learner requests to the completed application assessment and verified default-branch delivery.
+
 Version: 297
 Delta: v296 to v297; preserve concurrent0.12.8 delivery and repair its numerical source fixture.
 
