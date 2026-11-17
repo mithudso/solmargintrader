@@ -1,0 +1,2 @@
+include soltui_build.py
+recursive-include oracle_leverage *.py

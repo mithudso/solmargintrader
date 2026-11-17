@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-11-16T20:46:12+00:00",
+  "generatedAt": "2026-11-16T23:48:38+00:00",
   "schemaVersion": 1,
   "note": "Concepts are derived from the repo's own vocabulary \u2014 the FAMILY dict, strategy-card frontmatter, docs/trading-signals-concept-family.md, and terms verified to recur in the corpus. A concept matching no file is dropped, not kept.",
   "counts": {
@@ -22,7 +22,7 @@
         "confirm",
         "fail-closed"
       ],
-      "matchingFiles": 1974,
+      "matchingFiles": 1984,
       "shown": 30,
       "files": [
         {
@@ -39,7 +39,7 @@
         },
         {
           "path": "docs/operations-registry.json",
-          "hits": 210
+          "hits": 216
         },
         {
           "path": "docs/FILES.md",
@@ -102,12 +102,12 @@
           "hits": 54
         },
         {
-          "path": "soltui/tui.py",
+          "path": "soltui/commands.py",
           "hits": 53
         },
         {
-          "path": "soltui/commands.py",
-          "hits": 52
+          "path": "soltui/tui.py",
+          "hits": 53
         },
         {
           "path": "TRADINGVIEW-CARD-READINESS.md",
@@ -161,7 +161,7 @@
         "universe",
         "top_coins"
       ],
-      "matchingFiles": 1769,
+      "matchingFiles": 1773,
       "shown": 30,
       "files": [
         {
@@ -300,7 +300,7 @@
         "borrow",
         "financing"
       ],
-      "matchingFiles": 1603,
+      "matchingFiles": 1607,
       "shown": 30,
       "files": [
         {
@@ -439,7 +439,7 @@
         "centred",
         "shift"
       ],
-      "matchingFiles": 1540,
+      "matchingFiles": 1544,
       "shown": 30,
       "files": [
         {
@@ -578,7 +578,7 @@
         "perps",
         "solana"
       ],
-      "matchingFiles": 1111,
+      "matchingFiles": 1125,
       "shown": 30,
       "files": [
         {
@@ -603,7 +603,7 @@
         },
         {
           "path": "memory.md",
-          "hits": 326
+          "hits": 332
         },
         {
           "path": "FILES.md",
@@ -626,12 +626,12 @@
           "hits": 141
         },
         {
-          "path": "soltui/tui.py",
+          "path": "prompts.md",
           "hits": 141
         },
         {
-          "path": "prompts.md",
-          "hits": 137
+          "path": "soltui/tui.py",
+          "hits": 141
         },
         {
           "path": ".cdo/reviews-2026-11-13/cdo-forecast-app-delta.json",
@@ -990,7 +990,7 @@
         "monotone",
         "gap"
       ],
-      "matchingFiles": 846,
+      "matchingFiles": 850,
       "shown": 30,
       "files": [
         {
@@ -1260,7 +1260,7 @@
         "benchmark",
         "baseline"
       ],
-      "matchingFiles": 593,
+      "matchingFiles": 595,
       "shown": 30,
       "files": [
         {
@@ -1394,7 +1394,7 @@
         "buy_and_hold",
         "baseline"
       ],
-      "matchingFiles": 522,
+      "matchingFiles": 524,
       "shown": 30,
       "files": [
         {
@@ -1529,7 +1529,7 @@
         "ts_momentum",
         "dual_momentum"
       ],
-      "matchingFiles": 474,
+      "matchingFiles": 478,
       "shown": 30,
       "files": [
         {
@@ -1667,7 +1667,7 @@
         "evidence floor",
         "rankable"
       ],
-      "matchingFiles": 393,
+      "matchingFiles": 394,
       "shown": 30,
       "files": [
         {

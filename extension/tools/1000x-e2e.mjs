@@ -30,7 +30,7 @@ const HISTORY = 'https://perps-api.jup.ag/v1/pyth/fixed_rate%40200ms/history';
 const STREAM = 'wss://perps-api.jup.ag/v1/pyth/stream';
 const PORTAL = 'https://jup.ag/1000x?market=SOL&mode=classic';
 const SHA = data => createHash('sha256').update(data).digest('hex');
-const reviewedFiles = ['manifest.json', 'src/1000x/content.js', 'src/1000x/feed.js', 'src/1000x/timeframes.js', 'src/1000x/indicators.js', 'src/1000x/panel-model.js', 'src/1000x/reversal.js', 'src/1000x/oracle-model.js', 'src/1000x/oracle-store.js', 'src/1000x/oracle-controller.js', 'src/1000x/oracle-view.js', 'src/1000x/panel.js', 'src/1000x/panel.html', 'src/1000x/panel.css', 'src/jupiter/attribution.js', 'vendor/lightweight-charts/lightweight-charts.standalone.production.mjs'];
+const reviewedFiles = ['manifest.json', 'src/1000x/autotrade-view.js', 'src/1000x/content.js', 'src/1000x/feed.js', 'src/1000x/timeframes.js', 'src/1000x/indicators.js', 'src/1000x/panel-model.js', 'src/1000x/reversal.js', 'src/1000x/oracle-model.js', 'src/1000x/oracle-store.js', 'src/1000x/oracle-controller.js', 'src/1000x/oracle-view.js', 'src/1000x/panel.js', 'src/1000x/panel.html', 'src/1000x/panel.css', 'src/jupiter/attribution.js', 'vendor/lightweight-charts/lightweight-charts.standalone.production.mjs'];
 const source = Object.fromEntries(reviewedFiles.map(file => [file, SHA(fs.readFileSync(path.join(EXT, file)))]));
 const manifest = JSON.parse(fs.readFileSync(path.join(EXT, 'manifest.json'), 'utf8'));
 const { TIMEFRAMES } = await import(pathToFileURL(path.join(EXT, 'src/1000x/timeframes.js')));

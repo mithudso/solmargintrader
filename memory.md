@@ -1,6 +1,9 @@
 # Work continuation
 
-Version: 614
+Version: 617
+Delta: v616 to v617; bind the out-of-tree runtime to installer freshness and advance coordinated candidate versions.
+Delta: v615 to v616; qualify reviewed auto-trade core, packaged runtime, controls and exact remaining installed/delivery gates.
+Delta: v614 to v615; begin isolated auto-trading implementation and preserve safety and continuation boundaries.
 Delta: v613 to v614; diagnose exact-head CI index discovery and Linux fixture foreground assumptions without runtime changes.
 Delta: v612 to v613; qualify all-horizon source, independent replay and full native/public gates with unchanged reviewed runtime.
 Delta: v611 to v612; implement six independent horizon models, shared-minute/chart separation and stale-completion regression coverage.
@@ -2980,3 +2983,24 @@ The generic browser gate passed25/25, while Linux1000x stopped at all-six minute
 
 
 The fixture bootstrap had a second reproducible setup defect: both Page.addScriptToEvaluateOnNewDocument and immediate evaluation could wrap Date.now again. A controlled repeat of the exact old bootstrap with a22,000ms offset produced144,000 instead of122,000 after two applications. The fixed idempotent bootstrap produces122,000 and preserves the wrapper identities. The actual browser learning case now reapplies it twice and verifies no clock/transport rewrapping, explicitly waits for a visible/fresh second context, and keeps bounded diagnostics. This is synthetic fixture code only; production source, quote freshness and label completion rules remain frozen. Red/green evidence: /Users/mitch/.local/state/oracle-all-timeframes-2414/checks/fixture-clock-red-green.json.
+
+
+## Oracle auto-trading continuation — 2026-11-16
+
+TASK-2458 is claimed. Isolated worktree /Users/mitch/dev/worktrees/oracle-autotrade-2458 is based on b242cbd6a8467a8e8b66d1451a739db82167bee8. Parent owns integration, final review, commit, delivery and subsequent workflow records. Preserve canonical private Pine, TASK-2410 and paused TASK-1541/PR235. No live trades, real services, key reads, embedding/index jobs or frozen paper-cohort changes are authorized during implementation. Paper is default and disarmed; use one durable exclusive session, distinct journal and validated Jupiter price basis. Each accepted start must open a base-size long or short within 900 seconds or visibly fail on operational integrity, never silently wait for a perfect signal. Freeze execution-aware exit, cost and liquidation assumptions before entry; liquidation touch is a failure and incomplete price continuity is unknown. 1000x close, settlement and payout are unverified and must block automatic opening. Live requires explicit new positive collateral and loss limits, and existing Console safeguards remain authoritative. Calibration and realized net-outcome minimum-sample gates precede any exposure escalation. Optional Anthropic advice cannot override limits or delay entry. Remaining: implement and test backend, worker and shared API; integrate surfaces and independently review; parent handles delivery.
+
+
+### TASK-2458 reviewed auto-trade candidate
+
+Extension0.11.0 and research-runtime0.4.3 add one shared private paper owner, immutable entry/exit plans, a900-second first-position deadline, observed liquidation failures,15-second minimum hold and10-second close delay. BTC/ZEC10x/1000x simulation remains explicitly separate from real venue execution and from old frozen cohorts. Both native-registry Chrome and TUI controls expose Start Paper, readiness-gated Live and Stop entries/managed closure. A fresh source-bound Chrome directional forecast is advisory; a distinct policy-partitioned prospective net-outcome learner controls bounded engineering boost gates. Optional private Anthropic advice is off and bounded. No paid provider call or funded transaction was used in source verification.
+
+Independent review closed four reproduced Medium findings (cost reserve/slipped liquidation, terminal resource retirement, micro-USDC precision and pre-Start exchange time), then closed the final cleanup/IPC responsiveness reproduction. All six final backend hashes match the independent closure receipt. Final44 isolated backend/registry tests and pinned Ruff0.17.4 passed. Surface checks include601 extension tests and46 Python surface tests. Root changed only defined metric labels to data/continuity failures instead of displaying nonexistent unknown/failed-start count fields; final source gates must bind this small display delta.
+
+The runtime wheel is self-contained, including oracle_leverage; its portable sdist also rebuilds successfully. Final packaging proof binds102 source files and both isolated native imports/mock dispatches. Artifacts: direct wheel0a067068f43e88f925b56bd487ba863b7e8802e9c03c3ffdffe7d2957c139002, sdist a1191d76b56b702690633d5f01ae34df21d89e308f053ccc3a1e33338af4bb01, roundtrip wheel3a3e2bda628b508c3391ebc941730d0f5c7d092cd0923e1f67381b4fdf39e77d. Private receipts live under /Users/mitch/.local/state/oracle-autotrade-2458; they are not public research outputs.
+
+Live10x remains blocked on validated position/request/fill/fee/settlement binding. Live1000x remains blocked on close, queue, recipient and payout proof. The owner was asked once for explicit new live collateral/session-loss limits; no answer is present yet. Do not reuse old75%-balance authorization or activate funded trading for acceptance. Remaining: final source/docs/index/wiki checks after tracking new files; delivery through final-headCI/merge; safe installed native-host runtime and genuine public-price paperStart/plan/cross-surface/managedStop outcome acceptance. Preserve protected collector and four paper workers, Chrome learned state, exact historical optimized prompt and private Pine.
+
+
+### TASK-2458 delivery integration
+
+Manager 0.7.6 and ecosystem 0.4.15 pin research-runtime 0.4.3. Installer source fingerprint includes the packaged oracle_leverage tree without treating it as a sixth project; installed health checks import its worker. A temporary-repository regression checks fingerprint changes. Existing immutable 0.4.14 environment remains untouched. Remaining: finish source and generated documentation gates, push draft for parent final-head CI and merge, and independently verify installed paper behavior after authorized installation.

@@ -3,12 +3,15 @@ import { DEFAULT_INDICATORS, validateIndicatorConfig } from './indicators.js';
 import { panelModel } from './panel-model.js';
 import { OracleController } from './oracle-controller.js';
 import { oracleView } from './oracle-view.js';
+import { autotradeView } from './autotrade-view.js';
 import { POWERED_BY } from '../jupiter/attribution.js';
 import { createChart, CandlestickSeries, LineSeries, HistogramSeries, LineStyle } from '../../vendor/lightweight-charts/lightweight-charts.standalone.production.mjs';
 
 const $ = id => document.getElementById(id);
 const renderOracle = oracleView($('streaming-oracle'));
-const oracle = new OracleController({ onChange: renderOracle });
+const auto = autotradeView($('streaming-oracle'));
+const oracle = new OracleController({ onChange: view => { renderOracle(view); void auto.observe(view, latest?.sourceIdentity).catch(() => {}); } });
+document.querySelector('header .tag').textContent = 'Paper default';
 $('api-attribution').textContent = `${POWERED_BY} — 1000x public catalog; Pyth oracle history and stream.`;
 const SYMBOL = new URLSearchParams(location.hash.slice(1)).get('market') || '';
 const STORAGE = 'jupiter1000xIndicatorView';
@@ -257,5 +260,5 @@ document.addEventListener('visibilitychange', () => {
   if (document.hidden) oracle.suspend();
   else { if (latest) oracle.observe(latest); queueDraw(); }
 });
-window.addEventListener('pagehide', () => { disposed = true; clearInterval(staleClock); feed?.stop(); oracle.stop(); chart.remove(); }, { once: true });
+window.addEventListener('pagehide', () => { disposed = true; auto.close(); clearInterval(staleClock); feed?.stop(); oracle.stop(); chart.remove(); }, { once: true });
 await restart();
