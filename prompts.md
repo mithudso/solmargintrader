@@ -1,5 +1,18 @@
 # Prompt history
 
+Version: 286
+Delta: integrated v285 to v286; retain both histories and the PR224 merge sweep.
+
+Version: 252
+Delta: v251 to v252; record the PR integration and merge request.
+
+## PR conflict resolution and merge sweep — 2026-11-17
+
+Resolve all the conflicts in the pull requests for https://github.com/mithudso/solmargintrader/pull/ and merge, commit, push , pr.
+
+## Retained workflow history
+
+Version: 251
 Version: 285
 Delta: v284 to v285; preserve the reusable ZEC-analysis transfer and seven-day ETH request.
 
@@ -2374,6 +2387,10 @@ For the shape analysis, make it explain and show what the shape is so I can unde
 ## 2026-11-13 — Masked Coinbase credential entry
 
 My coinbase API keys are two strings, I don't have a file. Just make it an obfuscated text entry box with two fields for the key id and secret.
+
+## 2026-11-14 — Update PR 224 against current master
+
+Resolve the conflicts and push  all the PRs for https://github.com/mithudso/solmargintrader/pull/235 224 and 226 as well.
 
 ## 2026-11-14 — Disabled Coinbase connection screenshot
 
