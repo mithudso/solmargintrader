@@ -1,5 +1,8 @@
 # Prompt history
 
+Version: 290
+Delta: v289 to v290; reconcile hosted integration test fixtures without weakening current source contracts.
+
 Version: 289
 Delta: v288 to v289; bind qualified PR235 to merged PR224/PR226 default source.
 

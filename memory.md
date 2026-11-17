@@ -1,5 +1,12 @@
 # Work continuation
 
+Version: 643
+Delta: v642 to v643; reconcile hosted integration test fixtures without weakening current source contracts.
+
+## PR235 hosted-fixture reconciliation — TASK-2579
+
+Hosted CI exposed a client VM missing the real createBacktestRecovery import and an older cleanup test that expected an inline finally block. The VM now receives the real factory. All326 website tests,18-file syntax check and70 Python engine tests pass. The cleanup test now calls the actual helper with inert doubles. It proves stop, bounded join, kill, second join and process close still occur after supervisor close fails. The exact supervisor exception propagates. The focused regression and pinned lint pass; production lifecycle code is unchanged. Existing source safety stays unchanged. Next: finish cleanup checks, commit the fixture repair, regenerate committed-source projections, push and await every new-head hosted gate before merging.
+
 Version: 642
 Delta: v641 to v642; bind qualified PR235 to merged PR224/PR226 default source.
 

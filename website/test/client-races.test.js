@@ -3,6 +3,7 @@ import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 import vm from 'node:vm';
 import { requester } from '../scripts/smoke_request.mjs';
+import { createBacktestRecovery } from '../public/backtest-recovery.js';
 
 function deferred() { let resolve; const promise = new Promise(r => { resolve = r; }); return { promise, resolve }; }
 function client() {
@@ -11,7 +12,7 @@ function client() {
   const element = () => ({ textContent: '', close() {}, reset() {}, setAttribute() {}, querySelector: element });
   const get = selector => nodes.get(selector) ?? (nodes.set(selector, element()), nodes.get(selector));
   const document = { querySelector: get, querySelectorAll: () => [], addEventListener(name, callback) { listeners[name] = callback; } };
-  const context = vm.createContext({ document, window: {}, location: { hash: '#backtest' }, FormData: class { constructor(form) { return Object.entries(form.values); } }, setTimeout, clearTimeout, AbortController, console, createAgentAccess: () => ({invalidate() {}, routeChanged() {}}) });
+  const context = vm.createContext({ document, window: {}, location: { hash: '#backtest' }, FormData: class { constructor(form) { return Object.entries(form.values); } }, setTimeout, clearTimeout, AbortController, console, createBacktestRecovery, createAgentAccess: () => ({invalidate() {}, routeChanged() {}}) });
   const source = readFileSync(new URL('../public/app.js', import.meta.url), 'utf8');
   vm.runInContext(source.replace(/^import .*;\n/gm, '').split("$('#menu-button').addEventListener")[0], context);
   vm.runInContext('updateAccountUI = () => {}; render = () => {}; toast = () => {};', context);
