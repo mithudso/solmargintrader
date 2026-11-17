@@ -187,6 +187,7 @@ export async function refreshStrategies(state) {
 
 let swapChain = 'base';
 let tokens = null;
+let swapGeneration = 0;
 
 function fillTokenSelects() {
   const list = tokens?.[swapChain] ?? [];
@@ -238,6 +239,7 @@ export function mountSwap(state) {
   });
   form.addEventListener('submit', async (e) => {
     e.preventDefault();
+    stale();
     const f = form.elements;
     const requestGeneration = ++generation;
     $('#swapError').textContent = '';

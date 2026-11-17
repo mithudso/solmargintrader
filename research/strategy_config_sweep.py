@@ -18,6 +18,7 @@ import re
 import sys
 import tempfile
 from collections import OrderedDict
+from concurrent.futures.process import BrokenProcessPool
 from dataclasses import asdict, replace
 from pathlib import Path
 from typing import Any
@@ -26,13 +27,13 @@ REPO = Path(__file__).resolve().parent.parent
 if str(REPO) not in sys.path:
     sys.path.insert(0, str(REPO))
 
+from backtester.core.assets import REMOVED_ASSETS
 from backtester.core.data import (
     CsvLoader,
     frame_to_arrays,
     resolve_data_dir,
     validate_bars,
 )
-from backtester.core.assets import REMOVED_ASSETS
 from backtester.core.strategies import build
 from backtester.core.strategy_cards import load_all
 from soltui.bgqueue import Job, build_queue
@@ -313,6 +314,8 @@ def _read_done(path: Path) -> set[str]:
         return done
     with path.open(encoding="utf-8") as handle:
         for line in handle:
+            if not line.endswith("\n"):
+                continue
             try:
                 row = json.loads(line)
                 if isinstance(row.get("configuration_id"), str):
@@ -529,6 +532,8 @@ def main(argv: list[str] | None = None) -> int:
                 task = inflight.pop(future)
                 try:
                     row = future.result()
+                except BrokenProcessPool:
+                    raise RuntimeError("worker pool exited; pending configurations were preserved for retry")
                 except Exception as exc:  # noqa: BLE001 - preserve one failed result per task
                     job = Job(**task["job"])
                     row = asdict(failed_result(job, exc)) | {

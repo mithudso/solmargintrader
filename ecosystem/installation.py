@@ -169,6 +169,9 @@ def _terminate(process: subprocess.Popen) -> None:
     try:
         process.wait(timeout=2)
     except subprocess.TimeoutExpired:
+        pass
+    finally:
+        # Descendants can retain pipes after the group leader has exited.
         try:
             os.killpg(process.pid, signal.SIGKILL)
         except ProcessLookupError:
@@ -462,6 +465,8 @@ def install_environment(repo: Path, venv_dir: Path, *, constraints_file: Path | 
                     "health": health,
                     **constraint_result,
                 }
+            if _read_receipt(owner_path) != receipt:
+                return _failure("environment_source_changed_use_new_venv")
             cwd = Path(temporary)
             if not (venv_dir / "pyvenv.cfg").is_file():
                 code, _ = _run(

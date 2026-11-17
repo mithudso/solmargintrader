@@ -231,7 +231,7 @@ class TestNoLookahead(unittest.TestCase):
                 for i in range(cut + 1):
                     got_a = a.on_bar(window(close, high, low, vol, upto=i))
                     got_b = b.on_bar(window(close2, high2, low2, vol2, upto=i))
-                self.assertEqual(got_a, got_b)
+                    self.assertEqual(got_a, got_b, (key, i))
 
 
 class TestRegistered(unittest.TestCase):

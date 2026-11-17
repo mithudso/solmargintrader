@@ -23,9 +23,12 @@ there is no live account here -- see `status.py`.
 
 from __future__ import annotations
 
+import json
+
 import shlex
 import subprocess
 import sys
+import threading
 import time
 import webbrowser
 from pathlib import Path
@@ -38,6 +41,34 @@ from .status import AppState, Phase, build_menu_summary, build_title
 
 REPO = Path(__file__).resolve().parent.parent
 RESULTS_DIR = REPO / "research" / "results"
+
+
+class _ConsoleErrors:
+    """Drain the owned child's pipe continuously, retaining only a bounded tail."""
+
+    limit = 16_384
+
+    def __init__(self, stream):
+        self.tail = b""
+        self._lock = threading.Lock()
+        def drain():
+            try:
+                while chunk := stream.read(4096):
+                    with self._lock:
+                        self.tail = (self.tail + chunk)[-self.limit:]
+            except (OSError, ValueError):
+                with self._lock:
+                    if not self.tail:
+                        self.tail = b"Console error stream unavailable."
+            finally:
+                stream.close()
+        self.thread = threading.Thread(target=drain, daemon=True, name="console-stderr")
+        self.thread.start()
+
+    def message(self):
+        with self._lock:
+            text = self.tail.decode("utf-8", errors="replace")
+        return " ".join("".join(c for c in text if c.isprintable() or c.isspace()).split())[-200:]
 
 
 def _wait_for_port(port: int, timeout: float = 8.0, host: str = "127.0.0.1") -> bool:
@@ -101,9 +132,9 @@ def build_app(settings: Settings | None = None):
             self.state = state
             self.settings = cfg
             self.roster = Roster.from_list(
-                [{"name": n} for n in cfg.enabled_strategies]
+                cfg.roster or [{"name": n} for n in cfg.enabled_strategies]
             )
-            if len(self.roster) == 0:
+            if len(self.roster) == 0 and cfg.enabled_strategies:
                 self.roster = Roster.default()
             self.runner = SweepRunner(self.state)
             # The served console, if one has been opened. Tracked so a second
@@ -111,6 +142,7 @@ def build_app(settings: Settings | None = None):
             # and leaving orphaned servers behind.
             self.serve_proc: subprocess.Popen | None = None
             self.serve_port: int | None = None
+            self.serve_errors: _ConsoleErrors | None = None
             # One-line "a balance changed" notice from the portfolio snapshots, re-read at most once a minute.
             self.portfolio_line: str | None = None
             self._portfolio_checked = 0.0
@@ -155,9 +187,14 @@ def build_app(settings: Settings | None = None):
             `soltui.serve` needs no TTY, which is the constraint that forced the
             Terminal detour in the first place.
             """
-            if self.serve_proc is not None and self.serve_proc.poll() is None:
-                webbrowser.open(serve_mod.url_for(self.serve_port))
-                return
+            if self.serve_proc is not None:
+                if self.serve_proc.poll() is None and _wait_for_port(self.serve_port, timeout=1.0):
+                    webbrowser.open(serve_mod.url_for(self.serve_port))
+                    return
+                if not self._discard_console():
+                    rumps.notification("soltui", "Console is still stopping",
+                                       "The previous console child has not exited; retry after it stops.")
+                    return
             port = serve_mod.find_port()
             if port is None:
                 rumps.notification("soltui", "Could not open the console",
@@ -174,18 +211,39 @@ def build_app(settings: Settings | None = None):
                 rumps.notification("soltui", "Could not open the console", str(exc))
                 return
             self.serve_port = port
+            self.serve_errors = _ConsoleErrors(self.serve_proc.stderr)
             # The server needs a moment to bind. Opening the browser first would
             # show a connection error the user would read as "it is broken".
             if not _wait_for_port(port, timeout=8.0):
-                err = ""
-                if self.serve_proc.poll() is not None and self.serve_proc.stderr:
-                    err = self.serve_proc.stderr.read().decode()[:200]
+                errors = self.serve_errors
+                self._discard_console()
+                err = errors.message() if errors else ""
                 rumps.notification(
                     "soltui", "Console did not start",
                     err or "Is textual-serve installed? "
                            f"uv pip install --python {shlex.quote(sys.executable)} 'textual-serve>=1.1,<2'")
                 return
             webbrowser.open(serve_mod.url_for(port))
+
+        def _discard_console(self) -> bool:
+            """Reap only the failed child this app launched, with bounded waits."""
+            child, errors = self.serve_proc, self.serve_errors
+            try:
+                if child is not None and child.poll() is None:
+                    child.terminate()
+                    try:
+                        child.wait(timeout=2)
+                    except subprocess.TimeoutExpired:
+                        child.kill()
+                        child.wait(timeout=2)
+            except (OSError, subprocess.TimeoutExpired):
+                # Retain this ownership handle; another click must not start a
+                # duplicate while an unresponsive child still holds its port.
+                return False
+            self.serve_proc = self.serve_port = self.serve_errors = None
+            if errors:
+                errors.thread.join(timeout=1)
+            return True
 
         @rumps.clicked("Open console in Terminal")
         def open_tui(self, _sender) -> None:
@@ -196,10 +254,8 @@ def build_app(settings: Settings | None = None):
             almost always means Terminal automation was denied, which the user must
             grant in System Settings > Privacy & Security > Automation.
             """
-            script = (
-                f'tell application "Terminal" to do script '
-                f'"cd {REPO} && {sys.executable} -m soltui.tui"'
-            )
+            command = f"cd {shlex.quote(str(REPO))} && {shlex.quote(sys.executable)} -m soltui.tui"
+            script = f'tell application "Terminal" to do script {json.dumps(command, ensure_ascii=False)}'
             result = subprocess.run(["osascript", "-e", script],
                                     capture_output=True, text=True, check=False)
             if result.returncode != 0:

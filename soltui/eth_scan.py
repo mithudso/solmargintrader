@@ -65,9 +65,9 @@ def scan_ethereum(address: str, fetch: Callable[..., Any], rpcs: tuple[str, ...]
     calls = [_eth_call(t[0].lower(), ERC20_BALANCE_OF + _pad(address)) for t in TOKENS]
     out = call_rpc("ethereum balanceOf batch", lambda u: _batch(fetch, u, calls)) or [None] * len(TOKENS)
     held = [(t, _hex_int(r)) for t, r in zip(TOKENS, out) if _hex_int(r)]
-    answered = sum(1 for r in out if r is not None)
+    answered = sum(1 for r in out if _hex_int(r) is not None)
     if answered < len(TOKENS) and not any(e["source"] == "ethereum balanceOf batch" for e in scan.errors):
-        scan.notes.append(f"{len(TOKENS) - answered} token(s) did not answer balanceOf and are not listed")
+        scan.error("ethereum balanceOf batch", WalletHttpError(0, f"{len(TOKENS) - answered} token balance measurements unavailable"))
     scan.notes.append(f"only {len(TOKENS)} well-known tokens are checked (no token indexer): a token "
                       "outside that list is not discovered")
     wanted = (["ETH"] if scan.native else []) + [t[3] for t, _ in held if t[3]]

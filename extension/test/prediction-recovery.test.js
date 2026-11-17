@@ -81,3 +81,43 @@ test('start failures remain actionable and disposed views suppress late updates'
   await recovery.start(); await recovery.update('ETH', expired);
   assert.equal(states.length, count);
 });
+
+test('CDO-4833a8eec6 manual start survives an overlapping automatic health read', async () => {
+  let release, held = false; const calls = [];
+  const gate = new Promise(r => { release = r; });
+  const recovery = predictionRecovery({ clock: () => 100000, ask: async (name, params) => {
+    calls.push([name, params]);
+    return env(name.endsWith('health') ? held ? await gate : { ...stopped, paused: true } : running);
+  } });
+  await recovery.update('SOL', expired);
+  held = true; const automatic = recovery.update('SOL', expired), manual = recovery.start();
+  release({ ...stopped, paused: true }); await Promise.all([automatic, manual]);
+  assert.deepEqual(calls.filter(([name]) => name.endsWith('ensure')), [['forwardtest.ensure', { asset: 'SOL', manual: true }]]);
+});
+
+test('CDO-423a330b4b returning asset gets its own current-generation health', async () => {
+  let release; const calls = [], states = [];
+  const gate = new Promise(r => { release = r; });
+  const recovery = predictionRecovery({ clock: () => 100000, changed: value => states.push(value), ask: async (name, params) => {
+    calls.push([name, params]);
+    return env(name.endsWith('health') ? calls.length === 1 ? await gate : stopped : running);
+  } });
+  const old = recovery.update('SOL', expired);
+  await recovery.update('ETH', current);
+  const returned = recovery.update('SOL', expired);
+  release(stopped); await Promise.all([old, returned]);
+  assert.equal(calls.filter(([name]) => name.endsWith('health')).length, 2);
+  assert.equal(states.at(-1).asset, 'SOL'); assert.equal(states.at(-1).running, true);
+});
+
+test('CDO-0033742db8 disposal suppresses an already-entered ensure completion', async () => {
+  let release, entered; const states = [];
+  const gate = new Promise(r => { release = r; }), started = new Promise(r => { entered = r; });
+  const recovery = predictionRecovery({ clock: () => 100000, changed: s => states.push(s), ask: async name => {
+    if (name.endsWith('ensure')) { entered(); return gate; }
+    return env(stopped);
+  } });
+  const update = recovery.update('SOL', expired); await started;
+  recovery.dispose(); const count = states.length;
+  release(env(running)); await update; assert.equal(states.length, count);
+});

@@ -26,9 +26,10 @@ export async function restorePaperVenue(venue, config, state) {
 function validOrder(o) {
   if (!o || typeof o !== 'object' || typeof o.venueOrderId !== 'string' || !o.venueOrderId
       || typeof o.intentKey !== 'string' || !o.intentKey
-      || !['buy', 'sell'].includes(o.side) || !['active', 'filled', 'cancelled'].includes(o.status)
+      || !['buy', 'sell'].includes(o.side) || !['active', 'filled', 'cancelled', 'expired'].includes(o.status)
       || !Number.isFinite(o.triggerPriceUsd) || o.triggerPriceUsd <= 0
       || !Number.isFinite(o.createdAtMs) || o.createdAtMs < 0) return false;
+  if (o.status === 'active' && !(o.expiresAtMs === null || Number.isFinite(o.expiresAtMs) && o.expiresAtMs >= o.createdAtMs)) return false;
   for (const k of ['baseQty', 'executedPriceUsd', 'filledBaseQty']) {
     if (o[k] !== undefined && (!Number.isFinite(o[k]) || o[k] <= 0)) return false;
   }

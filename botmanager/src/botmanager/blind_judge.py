@@ -6,7 +6,6 @@ import hashlib
 import json
 import math
 import re
-import statistics
 import sys
 
 MAX_PACKET = 1024 * 1024
@@ -33,6 +32,15 @@ def number(value, *, minimum=None):
         or (minimum is not None and value < minimum)
     ):
         raise ValueError("invalid anonymous metric")
+
+
+def _median(values):
+    values = sorted(values)
+    middle = len(values) // 2
+    if len(values) % 2:
+        return values[middle]
+    lower, upper = values[middle - 1:middle + 1]
+    return lower + (upper - lower) / 2 if (lower < 0) == (upper < 0) else lower / 2 + upper / 2
 
 
 def decide(packet):
@@ -108,11 +116,11 @@ def decide(packet):
             rejected.append(cid)
             continue
         ranking[cid] = (
-            statistics.median(
+            _median(
                 c["net_return"] - POLICY["drawdown_weight"] * c["drawdown"]
                 for c in cells
             ),
-            -statistics.median(c["turnover"] for c in cells),
+            -_median(c["turnover"] for c in cells),
         )
     best = max(ranking.values(), default=None)
     body = {

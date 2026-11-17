@@ -695,6 +695,13 @@ def test_deploy_spends_only_the_designated_amounts_and_stakes():
     m = runner.minted
     swapped_out = runner.bal[T1] - HUGE + m["amount1Desired"] * 0.999
     assert m["amount0Desired"] <= designated
+    swaps = [
+        W3.eth.contract(abi=abi.SWAP_ROUTER).decode_function_input(tx.data)[1]["params"]
+        for tx in runner.txs
+        if tx.label.startswith("swap")
+    ]
+    spent0 = sum(p["amountIn"] for p in swaps if p["tokenIn"].lower() == T0.lower())
+    assert m["amount0Desired"] + spent0 <= designated
     assert m["amount0Desired"] + m["amount1Desired"] > 0
     assert m["amount1Desired"] <= int(swapped_out) + 1  # token1 can only come from our own swap
     assert m["tickLower"] == new.tick_lower and m["recipient"] == OWNER

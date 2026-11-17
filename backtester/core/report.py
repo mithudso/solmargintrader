@@ -298,7 +298,17 @@ def write_outputs(
     def write_artifact(name: str, text: str) -> None:
         raw = text.encode("utf-8")
         path = out / name
-        path.write_bytes(raw)
+        if path.is_symlink():
+            raise ValueError("refusing an artifact symlink")
+        fd, temporary = tempfile.mkstemp(prefix=".artifact-", dir=out)
+        try:
+            with os.fdopen(fd, "wb") as stream:
+                stream.write(raw)
+                stream.flush()
+                os.fsync(stream.fileno())
+            os.replace(temporary, path)
+        finally:
+            Path(temporary).unlink(missing_ok=True)
         inventory[name] = hashlib.sha256(raw).hexdigest()
         written.append(path)
 

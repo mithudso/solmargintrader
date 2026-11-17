@@ -16,6 +16,7 @@ from __future__ import annotations
 
 import os
 import shutil
+import stat
 import subprocess
 
 from eth_account import Account
@@ -47,17 +48,24 @@ def _from_keychain(owner: str) -> str | None:
 def _from_file(path: str) -> str:
     p = os.path.expanduser(path)
     try:
-        st = os.stat(p)
+        descriptor = os.open(p, os.O_RDONLY | os.O_NONBLOCK | getattr(os, "O_NOFOLLOW", 0))
     except OSError as e:
         raise WalletError(f"key file {p} is not readable: {e.strerror}") from None
-    if st.st_uid != os.getuid():
-        raise WalletError(f"key file {p} is owned by uid {st.st_uid}, not you; fix: sudo chown $USER {p}")
-    if st.st_mode & 0o077:
-        raise WalletError(
-            f"key file {p} is readable by other users (mode {oct(st.st_mode & 0o777)}); fix: chmod 600 {p}"
-        )
-    with open(p) as f:
-        return f.read().strip()
+    with os.fdopen(descriptor, "rb") as stream:
+        st = os.fstat(stream.fileno())
+        if not stat.S_ISREG(st.st_mode):
+            raise WalletError("key file must be a regular file")
+        if st.st_uid != os.getuid():
+            raise WalletError("key file is owned by another user, not you")
+        if st.st_mode & 0o077:
+            raise WalletError("key file is readable by other users; require mode 0600")
+        body = stream.read(257)
+        if len(body) > 256:
+            raise WalletError("key file is too large")
+        try:
+            return body.decode("ascii").strip()
+        except UnicodeError:
+            raise WalletError("key file must contain an ASCII private key") from None
 
 
 def load_signer(owner: str, key_file: str | None = None) -> LocalAccount:

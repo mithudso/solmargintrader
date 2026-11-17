@@ -164,7 +164,7 @@ def main(argv: Sequence[str] | None = None) -> int:
     try:
         whole = engle_granger(base["close"], peer_closes)
     except (ValueError, LinAlgError) as exc:
-        print(f"error: full-sample pair diagnostic unavailable ({type(exc).__name__}); check nondegenerate history", file=sys.stderr)
+        print(f"error: full-sample pair diagnostic unavailable ({type(exc).__name__}); check nondegenerate history and the requested split", file=sys.stderr)
         return 1
 
     payload: dict[str, Any] = {

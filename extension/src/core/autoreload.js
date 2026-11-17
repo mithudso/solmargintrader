@@ -85,8 +85,9 @@ export async function checkForUpdate({
     // Inside the lock this operation is the one pending entry. Anything more is
     // work queued beside it, and that work goes first.
     if (pending() > 1) return OUTCOME.DEFERRED;
+    const metadata = describe ? await describe() : {};
     await state.set(BUILD_STATE_KEY, { hash, hostDown: false });
-    await logEvent({ type: 'auto-reload', from: saved.hash.slice(0, 12), to: hash.slice(0, 12), ...(describe ? await describe() : {}) });
+    await logEvent({ type: 'auto-reload', from: saved.hash.slice(0, 12), to: hash.slice(0, 12), ...metadata });
     try {
       reload();
     } catch {

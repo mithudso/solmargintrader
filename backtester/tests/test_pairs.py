@@ -135,9 +135,12 @@ class TestPeerSpreadReversion(unittest.TestCase):
         base = np.cumsum(rng.normal(0, 1, 500)) + 200.0
         peer = np.cumsum(rng.normal(0, 1, 500)) + 80.0  # independent walk
         strat = PeerSpreadReversion(peer_closes=peer, fit_window=250)
-        windows = 0
+        windows = screened = 0
         for i in range(300, 500):
-            strat.on_bar(window_at(base, i))
+            exposure = strat.on_bar(window_at(base, i))
+            if strat.bars_screened_out > screened:
+                self.assertEqual(exposure, 0.0)
+            screened = strat.bars_screened_out
             windows += 1
         # A 5% test has a 5% false-positive rate BY CONSTRUCTION, so "never passes"
         # would be the wrong assertion — an occasional spurious window is the test

@@ -51,13 +51,17 @@ export function resultTables(value, path = 'result', depth = 0) {
   if (Array.isArray(value)) {
     if (!value.length) return [];
     const rows = value.map((r) => r !== null && typeof r === 'object' && !Array.isArray(r) ? r : { value: r });
-    const nested = value.length <= 20
-      ? value.flatMap((r, i) => resultTables(r, `${path}[${i}]`, depth + 1)) : [];
+    const nested = value.flatMap((r, i) => resultTables(r, `${path}[${i}]`, depth + 1));
     return [{ path, rows }, ...nested];
   }
   const entries = Object.entries(value);
   const mapped = entries.length && entries.every(([, v]) => v !== null && typeof v === 'object' && !Array.isArray(v))
-    ? [{ path, rows: entries.map(([key, v]) => ({ key, ...v })) }] : [];
+    ? [{ path, rows: entries.map(([key, v]) => {
+      if (!Object.hasOwn(v, 'key')) return { key, ...v };
+      let identity = 'dictionaryKey';
+      while (Object.hasOwn(v, identity)) identity = '_' + identity;
+      return { [identity]: key, ...v };
+    }) }] : [];
   return [...mapped, ...entries.flatMap(([k, v]) => resultTables(v, `${path}.${k}`, depth + 1))];
 }
 

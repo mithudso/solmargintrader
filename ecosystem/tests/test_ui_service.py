@@ -269,7 +269,7 @@ class UiServiceTests(unittest.TestCase):
         with (
             patch(
                 "ecosystem.ui_service.status",
-                side_effect=lambda home, manager_home=None: healthy if ready.is_set() else absent,
+                side_effect=lambda home, manager_home=None, **kwargs: healthy if ready.is_set() else absent,
             ),
             patch(
                 "ecosystem.ui_service.subprocess.Popen", side_effect=spawned

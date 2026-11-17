@@ -42,6 +42,11 @@ def _ema(x: pd.Series, span: int) -> pd.Series:
 def compute_conditions(o, h, l, c, v, funding=None, names=None) -> dict[str, np.ndarray]:
     """Boolean arrays, one per condition. `names` restricts the work (trigger_trade)."""
     o, h, l, c, v = (pd.Series(np.asarray(a, float)) for a in (o, h, l, c, v))
+    if len({len(a) for a in (o, h, l, c, v)}) != 1 or any(not np.isfinite(a).all() for a in (o, h, l, c, v)):
+        raise ValueError("conditions require aligned finite OHLCV")
+    # Missing funding is expected before its first settlement; infinity is not.
+    if funding is not None and (len(funding) != len(c) or np.isinf(np.asarray(funding, float)).any()):
+        raise ValueError("invalid funding measurements")
     want = set(names) if names is not None else set(BASE_CONDITIONS)
     out: dict[str, pd.Series] = {}
     eps = 1e-12

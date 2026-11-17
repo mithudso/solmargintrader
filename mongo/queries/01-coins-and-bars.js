@@ -83,12 +83,15 @@ printjson(
       { $match: { "series.interval": "1d" } },
       {
         $setWindowFields: {
-          partitionBy: "$series.asset",
+          partitionBy: { asset: "$series.asset", source: "$series.source", pair: "$series.pair", frame_checksum: "$series.frame_checksum" },
           sortBy: { ts: 1 },
-          output: { prevClose: { $shift: { output: "$close", by: -1, default: null } } },
+          output: {
+            prevClose: { $shift: { output: "$close", by: -1, default: null } },
+            prevTs: { $shift: { output: "$ts", by: -1, default: null } },
+          },
         },
       },
-      { $match: { prevClose: { $ne: null } } },
+      { $match: { prevClose: { $gt: 0 }, $expr: { $eq: [{ $subtract: ["$ts", "$prevTs"] }, 86400000] } } },
       {
         $addFields: {
           changePct: {

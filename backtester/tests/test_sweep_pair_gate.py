@@ -52,8 +52,8 @@ class GateFixture(unittest.TestCase):
         patcher.start()
         self.addCleanup(patcher.stop)
         self.addCleanup(self._tmp.cleanup)
-        from backtester.tests.test_engine_audit import bars
         from backtester.core.engine import EngineConfig
+        from backtester.tests.test_engine_audit import bars
         from research.evidence import discovery_context, write_gate_proof
         arrays = bars((100.,) * 100)
         loader = mock.patch.object(sweep, "load_horizon", return_value=(arrays, EngineConfig()))
@@ -105,7 +105,15 @@ class TestMeasuredRedundantPairs(GateFixture):
             ",False\n", ',"false"\n'
         )
         (self.out / sweep.redundancy_filename("SOL", "long")).write_text(quoted)
-        self.assertEqual(sweep.measured_redundant_pairs("long"), frozenset())
+        from io import StringIO
+
+        import pandas as pd
+        table = pd.read_csv(StringIO(quoted), dtype={"redundant": str})
+        table["redundant"] = table["redundant"].astype(object)
+        self.assertEqual(table.redundant.dtype, object)
+        self.assertTrue(table.redundant.astype(bool).all())
+        with mock.patch("research.evidence.read_gate_table", return_value=table):
+            self.assertEqual(sweep.measured_redundant_pairs("long"), frozenset())
 
     def test_unparseable_flag_column_refuses(self) -> None:
         broken = CSV.replace(",True\n", ",yes-ish\n")

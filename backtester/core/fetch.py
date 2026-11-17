@@ -19,7 +19,9 @@ from __future__ import annotations
 
 import argparse
 import json
+import os
 import sys
+import tempfile
 import time
 import urllib.error
 import urllib.parse
@@ -115,10 +117,11 @@ def fetch_coinbase(
             if verbose:
                 print(
                     f"  no candles before {pd.Timestamp(cursor, unit='s', tz='UTC').date()}"
-                    " -- stopping (likely start of listing)",
+                    " -- checking the preceding window",
                     file=sys.stderr,
                 )
-            break
+            cursor = window_start
+            continue
 
         arr = np.asarray(rows, dtype="float64")
         chunks.append(arr)
@@ -166,9 +169,23 @@ def fetch_coinbase(
     return df.loc[:, list(BAR_COLUMNS)].reset_index(drop=True)
 
 
-def default_cache_path(asset: str, interval: str) -> Path:
+def default_cache_path(asset: str, interval: str, quote: str = "USD") -> Path:
     """Conventional cache location for an asset/interval pair."""
-    return Path("data") / f"{asset.upper()}_{interval}.csv"
+    return Path("data") / f"{asset.upper()}{'_' + quote.upper() if quote.upper() != 'USD' else ''}_{interval}.csv"
+
+
+def atomic_csv(frame: pd.DataFrame, target: Path) -> None:
+    """Keep the previous accepted cache intact until its replacement is durable."""
+    target.parent.mkdir(parents=True, exist_ok=True)
+    fd, name = tempfile.mkstemp(prefix=target.name + ".tmp-", dir=target.parent)
+    try:
+        with os.fdopen(fd, "w", encoding="utf-8", newline="") as stream:
+            frame.to_csv(stream, index=False)
+            stream.flush()
+            os.fsync(stream.fileno())
+        os.replace(name, target)
+    finally:
+        Path(name).unlink(missing_ok=True)
 
 
 def main(argv: list[str] | None = None) -> int:
@@ -195,7 +212,7 @@ def main(argv: list[str] | None = None) -> int:
     args = ap.parse_args(argv)
 
     product = f"{args.asset.upper()}-{args.quote.upper()}"
-    out = Path(args.out) if args.out else default_cache_path(args.asset, args.interval)
+    out = Path(args.out) if args.out else default_cache_path(args.asset, args.interval, args.quote)
     out.parent.mkdir(parents=True, exist_ok=True)
 
     print(f"Fetching {product} {args.interval} {args.start}..{args.end}", file=sys.stderr)
@@ -205,15 +222,14 @@ def main(argv: list[str] | None = None) -> int:
         validate_bars(df, args.interval, strict_gaps=not args.allow_gaps)
     except Exception as exc:
         print(f"\nValidation failed: {exc}", file=sys.stderr)
-        if not args.allow_gaps:
-            print(
+        print(
                 "Re-run with --allow-gaps to accept an incomplete series.",
                 file=sys.stderr,
             )
         # The flag relaxes cadence inside validate_bars, never prices or volume.
         return 1
 
-    df.to_csv(out, index=False)
+    atomic_csv(df, out)
     first = pd.Timestamp(int(df["timestamp"].iloc[0]), unit="s", tz="UTC").date()
     last = pd.Timestamp(int(df["timestamp"].iloc[-1]), unit="s", tz="UTC").date()
     print(f"Wrote {len(df)} bars ({first} .. {last}) to {out}", file=sys.stderr)

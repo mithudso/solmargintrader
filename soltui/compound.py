@@ -1057,7 +1057,7 @@ def forward_tick(asset: str, *, now: float | None = None, wallet_address: str | 
         adopted, adopt_rows = auto_adopt(asset, state, x["components"], ledger, stamp)
     except CompoundError as exc:
         adopted, adopt_rows = {}, []
-        extra["notes"] = [*extra["notes"], f"autopilot could not adopt tuned settings: {exc}"]
+        extra["notes"]["adoption_error"] = f"autopilot could not adopt tuned settings: {exc}"
     _append(asset, adopt_rows)
     return {"asset": asset, "recorded": new_call, "call": x["call"], "composite": x["composite"],
             "bar_ts": x["bar_ts"], "regime": x["regime"], "blocked_by": x["blocked_by"],
@@ -1254,11 +1254,18 @@ def materialize_bars(asset: str) -> tuple[Any, str]:
             pass
     df, source = cbt.load_bars_5m(a)
     path.parent.mkdir(parents=True, exist_ok=True)
-    tmp = path.with_name(path.stem + ".tmp.npz")
-    np.savez(tmp, sig=np.array([str(s) for s in sig]), source=np.array(source),
-             **{k: df[k].to_numpy() for k in ("timestamp", "open", "high", "low", "close", "volume", "minutes")
-                if k in df})
-    os.replace(tmp, path)
+    fd, name = tempfile.mkstemp(prefix=path.stem + ".tmp-", suffix=".npz", dir=path.parent)
+    tmp = Path(name)
+    try:
+        with os.fdopen(fd, "wb") as stream:
+            np.savez(stream, sig=np.array([str(s) for s in sig]), source=np.array(source),
+                     **{k: df[k].to_numpy() for k in ("timestamp", "open", "high", "low", "close", "volume", "minutes")
+                        if k in df})
+            stream.flush()
+            os.fsync(stream.fileno())
+        os.replace(tmp, path)
+    finally:
+        tmp.unlink(missing_ok=True)
     return df, source
 
 

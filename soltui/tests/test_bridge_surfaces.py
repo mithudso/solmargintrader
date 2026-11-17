@@ -3,12 +3,14 @@
 from __future__ import annotations
 
 import io
+import http.client
 import json
 import os
 import stat
 import struct
 import threading
 import unittest
+from contextlib import closing
 from pathlib import Path
 from unittest import mock
 
@@ -117,8 +119,17 @@ class ApiAccessTests(unittest.TestCase):
             self.assertEqual(server.request("POST", "/v1/nope.nothing", {})[0], 404)
             self.assertEqual(server.request("POST", "/v1/roster.add", {"name": 1})[0], 400)
             self.assertEqual(server.request("POST", "/v1/liquidity.resume", {})[0], 403)
-            big = {"text": "x" * (api.MAX_BODY_BYTES + 10)}
-            self.assertEqual(server.request("POST", "/v1/docs.write", big)[0], 413)
+            # The server refuses oversized framing before consuming a body. Send
+            # headers alone so this assertion tests the 413 rather than racing
+            # the client's megabyte write against the intentional early close.
+            with closing(http.client.HTTPConnection(*server.server.server_address, timeout=2)) as client:
+                client.putrequest("POST", "/v1/docs.write")
+                client.putheader("Authorization", f"Bearer {TOKEN}")
+                client.putheader("Content-Length", str(api.MAX_BODY_BYTES + 10))
+                client.endheaders()
+                response = client.getresponse()
+                self.assertEqual(response.status, 413)
+                self.assertEqual(json.loads(response.read())["error"]["code"], "bad_params")
 
     def test_get_query_is_typed_from_the_declaration(self) -> None:
         with World(), ApiServer() as server:
@@ -388,6 +399,8 @@ class InstallerTests(unittest.TestCase):
             payload = json.dumps({"id": "z", "op": "ping"}).encode()
             proc = subprocess.run([str(wrapper)], input=struct.pack("<I", len(payload)) + payload,
                                   capture_output=True, timeout=60, env={**os.environ})
+            self.assertEqual(proc.returncode, 0, proc.stderr.decode(errors="replace"))
+            self.assertGreaterEqual(len(proc.stdout), 4, proc.stderr.decode(errors="replace"))
             (length,) = struct.unpack("<I", proc.stdout[:4])
             reply = json.loads(proc.stdout[4:4 + length])
             self.assertEqual(reply["id"], "z")

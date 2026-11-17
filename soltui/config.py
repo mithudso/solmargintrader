@@ -233,6 +233,8 @@ def load_settings(path: Path | None = None) -> Settings:
             break
     if raw is None:
         return default_settings()
+    if not isinstance(raw, dict):
+        raise ConfigError("configuration root must be a mapping")
 
     # Migrate the old venue-independent (often Coinbase) fee assumption once.
     if "fee_schedule" not in raw:

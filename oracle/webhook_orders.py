@@ -35,9 +35,13 @@ def database(path: Path):
                 ("client_order_id", "TEXT"),
                 ("order_id", "TEXT"),
                 ("portfolio_id", "TEXT"),
+                ("reconciled_at", "REAL"),
+                ("reconciliation_reason", "TEXT"),
             ):
                 if name not in columns:
                     db.execute(f"ALTER TABLE signals ADD COLUMN {name} {kind}")
+            db.execute("CREATE INDEX IF NOT EXISTS queued_signals ON signals(status) WHERE status='queued'")
+            db.execute("CREATE INDEX IF NOT EXISTS blocking_signals ON signals(status) WHERE status IN ('planning','submitting','unknown','pending')")
         yield db
 
 
@@ -50,7 +54,7 @@ def records(path: Path, limit: int = 50) -> list[dict]:
         return [
             dict(r)
             for r in db.execute(
-                "SELECT event_id,symbol,side,timestamp,status,mode,plan,result,client_order_id,order_id,portfolio_id FROM signals ORDER BY rowid DESC LIMIT ?",
+                "SELECT event_id,symbol,side,timestamp,status,mode,plan,result,client_order_id,order_id,portfolio_id,reconciled_at,reconciliation_reason FROM signals ORDER BY rowid DESC LIMIT ?",
                 (limit,),
             )
         ]
@@ -79,9 +83,16 @@ def recover_planning(path: Path):
         )
 
 
+def _reconciliation_attempt(path, event_id, reason):
+    # Preserve original submission evidence and its blocking lifecycle state.
+    with database(path) as db, db:
+        db.execute("UPDATE signals SET reconciled_at=?,reconciliation_reason=? WHERE event_id=?",
+                   (time.time(), reason, event_id))
+
+
 def _reconcile(path, row, venue):
-    plan = json.loads(row["plan"])
     try:
+        plan = json.loads(row["plan"])
         order = (
             venue.get(row["order_id"])
             if row["order_id"]
@@ -90,6 +101,7 @@ def _reconcile(path, row, venue):
             )
         )
         if not isinstance(order, dict) or not order:
+            _reconciliation_attempt(path, row["event_id"], "reconciliation_not_found")
             return "unknown"
         if (
             not order.get("order_id")
@@ -105,6 +117,7 @@ def _reconcile(path, row, venue):
                 and order["client_order_id"] != row["client_order_id"]
             )
         ):
+            _reconciliation_attempt(path, row["event_id"], "reconciliation_identity_mismatch")
             return "unknown"
         state = "complete" if order.get("status") in TERMINAL else "pending"
         _update(
@@ -114,8 +127,10 @@ def _reconcile(path, row, venue):
             order_id=order["order_id"],
             result=json.dumps(order, allow_nan=False),
         )
+        _reconciliation_attempt(path, row["event_id"], "reconciliation_" + state)
         return state
-    except (ValueError, RuntimeError, OSError):
+    except (ValueError, RuntimeError, OSError, TypeError, KeyError):
+        _reconciliation_attempt(path, row["event_id"], "reconciliation_unavailable")
         return "unknown"
 
 

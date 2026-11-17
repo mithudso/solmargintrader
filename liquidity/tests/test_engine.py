@@ -257,12 +257,13 @@ def test_defer_sigint_also_holds_sigterm_and_then_exits_the_process():
 
     from aero_lp.engine import defer_sigint
 
+    previous = signal.getsignal(signal.SIGTERM)
     finished = []
     with pytest.raises(SystemExit) as e, defer_sigint():
         os.kill(os.getpid(), signal.SIGTERM)
         finished.append(True)
     assert finished == [True] and e.value.code == 128 + signal.SIGTERM
-    assert signal.getsignal(signal.SIGTERM) == signal.SIG_DFL  # handlers restored
+    assert signal.getsignal(signal.SIGTERM) == previous  # exact incoming handler restored
 
 
 def test_defer_sigint_hands_a_held_signal_to_the_caller_even_when_the_block_fails():

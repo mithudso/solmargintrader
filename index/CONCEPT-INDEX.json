@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-11-17T18:13:17+00:00",
+  "generatedAt": "2026-11-17T18:13:02+00:00",
   "schemaVersion": 1,
   "note": "Concepts are derived from the repo's own vocabulary \u2014 the FAMILY dict, strategy-card frontmatter, docs/trading-signals-concept-family.md, and terms verified to recur in the corpus. A concept matching no file is dropped, not kept.",
   "counts": {
@@ -43,7 +43,7 @@
         },
         {
           "path": "docs/FILES.md",
-          "hits": 176
+          "hits": 178
         },
         {
           "path": "FILES.md",
@@ -67,7 +67,7 @@
         },
         {
           "path": "memory.md",
-          "hits": 112
+          "hits": 111
         },
         {
           "path": "research/tradingview-script-profiles/shard-b.jsonl",
@@ -161,16 +161,16 @@
         "universe",
         "top_coins"
       ],
-      "matchingFiles": 1794,
+      "matchingFiles": 1792,
       "shown": 30,
       "files": [
         {
           "path": "docs/FILES.md",
-          "hits": 321
+          "hits": 322
         },
         {
           "path": "memory.md",
-          "hits": 262
+          "hits": 263
         },
         {
           "path": "research/coin-intelligence/zec-zcash.md",
@@ -578,7 +578,7 @@
         "perps",
         "solana"
       ],
-      "matchingFiles": 1148,
+      "matchingFiles": 1146,
       "shown": 30,
       "files": [
         {
@@ -587,7 +587,7 @@
         },
         {
           "path": "docs/FILES.md",
-          "hits": 617
+          "hits": 610
         },
         {
           "path": "research/strategy_experiment/results/results.json",
@@ -603,7 +603,7 @@
         },
         {
           "path": "memory.md",
-          "hits": 346
+          "hits": 345
         },
         {
           "path": "FILES.md",
@@ -623,7 +623,7 @@
         },
         {
           "path": "prompts.md",
-          "hits": 149
+          "hits": 145
         },
         {
           "path": "docs/archive/memory-2026-11-10.md",
@@ -691,7 +691,7 @@
         },
         {
           "path": "extension/README.md",
-          "hits": 84
+          "hits": 83
         },
         {
           "path": "archive/memory-2026-11-08.md",
@@ -869,7 +869,7 @@
         },
         {
           "path": "docs/FILES.md",
-          "hits": 203
+          "hits": 202
         },
         {
           "path": "research/strategy_experiment/audit_realism.json",
@@ -1529,7 +1529,7 @@
         "ts_momentum",
         "dual_momentum"
       ],
-      "matchingFiles": 477,
+      "matchingFiles": 476,
       "shown": 30,
       "files": [
         {
@@ -1739,11 +1739,11 @@
           "hits": 19
         },
         {
-          "path": "memory.md",
-          "hits": 18
+          "path": "soltui/tui.py",
+          "hits": 17
         },
         {
-          "path": "soltui/tui.py",
+          "path": "memory.md",
           "hits": 17
         },
         {

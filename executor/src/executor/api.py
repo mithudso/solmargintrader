@@ -27,6 +27,7 @@ import re
 import secrets
 import stat
 import sys
+import threading
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
 from typing import Any
@@ -40,6 +41,41 @@ HOST = "127.0.0.1"
 DEFAULT_PORT = 8789
 MAX_BODY_BYTES = 1024 * 1024
 LOGGER = logging.getLogger(__name__)
+
+MAX_CONNECTIONS = 16
+REQUEST_TIMEOUT_S = 5.0
+
+
+class BoundedHTTPServer(ThreadingHTTPServer):
+    """Admit a bounded number of requests before allocating their threads."""
+
+    daemon_threads = True
+
+    def __init__(self, *args, **kwargs):
+        self._slots = threading.BoundedSemaphore(MAX_CONNECTIONS)
+        super().__init__(*args, **kwargs)
+
+    def get_request(self):
+        request, address = super().get_request()
+        request.settimeout(REQUEST_TIMEOUT_S)
+        return request, address
+
+    def process_request(self, request, client_address):
+        if not self._slots.acquire(blocking=False):
+            self.shutdown_request(request)
+            return
+        try:
+            super().process_request(request, client_address)
+        except BaseException:
+            self._slots.release()
+            raise
+
+    def process_request_thread(self, request, client_address):
+        try:
+            super().process_request_thread(request, client_address)
+        finally:
+            self._slots.release()
+
 
 _ROUTE = re.compile(r"^/v1/([A-Za-z][A-Za-z0-9_.]*)$")
 _STATUS = {
@@ -86,7 +122,7 @@ def make_handler(token: str):
 
         def setup(self):
             super().setup()
-            self.connection.settimeout(5)
+            self.connection.settimeout(REQUEST_TIMEOUT_S)
 
         def log_message(self, fmt: str, *args: Any) -> None:  # request lines carry query values
             pass
@@ -167,12 +203,16 @@ def make_handler(token: str):
             code = (env["error"] or {}).get("code")
             self._send(200 if env["ok"] else _STATUS.get(code, 500), registry.dumps(env))
 
-        def _read_json(self) -> dict[str, Any]:
+        def _body_length(self) -> int:
+            lengths = self.headers.get_all("Content-Length", [])
             if self.headers.get("Transfer-Encoding") is not None or len(self.headers.get_all("Content-Length", [])) > 1:
                 self.close_connection = True
                 raise ExecutorError("unsupported request body framing", "bad_params")
             try:
-                length = int(self.headers.get("Content-Length") or 0)
+                text = lengths[0].strip() if lengths else "0"
+                if not text.isascii() or not text.isdecimal():
+                    raise ValueError
+                length = int(text)
             except ValueError:
                 self.close_connection = True
                 raise ExecutorError("bad Content-Length", "bad_params") from None
@@ -182,7 +222,17 @@ def make_handler(token: str):
             if length > MAX_BODY_BYTES:
                 self.close_connection = True
                 raise ExecutorError("request body too large", "bad_params")
-            raw = self.rfile.read(length).decode("utf-8", "replace").strip() if length else ""
+            return length
+
+        def _read_json(self) -> dict[str, Any]:
+            length = self._body_length()
+            data = self.rfile.read(length) if length else b""
+            if len(data) != length:
+                raise ExecutorError("request body is incomplete", "bad_params")
+            try:
+                raw = data.decode("utf-8").strip()
+            except UnicodeDecodeError:
+                raise ExecutorError("body is not valid UTF-8", "bad_params") from None
             if not raw:
                 return {}
             try:
@@ -209,9 +259,7 @@ def make_handler(token: str):
 
 def create_server(port: int = 0, token: str | None = None) -> ThreadingHTTPServer:
     """Build (without serving) a server bound to 127.0.0.1. `port=0` picks a free port."""
-    server = ThreadingHTTPServer((HOST, port), make_handler(token or load_token()))
-    server.daemon_threads = True
-    return server
+    return BoundedHTTPServer((HOST, port), make_handler(token or load_token()))
 
 
 def main(argv: list[str] | None = None) -> int:

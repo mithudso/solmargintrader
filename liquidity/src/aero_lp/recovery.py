@@ -10,7 +10,7 @@ from collections.abc import Callable
 from typing import Any
 
 from . import addresses
-from .chain import AeroChain, PoolState, PositionState
+from .chain import AeroChain, PoolState, PositionGone, PositionState
 from .config import Config
 from .executor import increased_amounts, minted_token_id, receipt_fee_wei, token_delta
 from .ledger import Ledger
@@ -107,13 +107,28 @@ class LedgerRecovery:
             token_id = intent["token_ids"][0]
         if receipt["status"] == 1:
             if kind == "mint":
+                gone = False
                 tid = minted_token_id(receipt["logs"], addresses.NONFUNGIBLE_POSITION_MANAGER, self.cfg.owner)
                 if tid is None or pool is None:
                     raise PendingSubmission("mint receipt lacks verified NFT/pool evidence")
-                pos = self.chain.position(tid, owner_hint=self.cfg.owner)
-                self._require_owner(pos)
-                if pos.pool.address.lower() != pool.address.lower():
-                    raise PendingSubmission("recovered NFT pool does not match the submitted intent")
+                try:
+                    pos = self.chain.position(tid, owner_hint=self.cfg.owner)
+                except PositionGone:
+                    gone = True
+                    # A later withdrawal can burn this NFT before its historical mint is booked.
+                    # The journal intent and verified mint Transfer retain the original identity.
+                    if (
+                        intent.get("recipient", "").lower() != self.cfg.owner.lower()
+                        or intent.get("token0", "").lower() != pool.token0.address.lower()
+                        or intent.get("token1", "").lower() != pool.token1.address.lower()
+                    ):
+                        raise PendingSubmission(
+                            "burned mint lacks verified historical pool/recipient identity"
+                        ) from None
+                else:
+                    self._require_owner(pos)
+                    if pos.pool.address.lower() != pool.address.lower():
+                        raise PendingSubmission("recovered NFT pool does not match the submitted intent")
                 a0, a1 = increased_amounts(receipt["logs"], addresses.NONFUNGIBLE_POSITION_MANAGER, tid)
                 old_ids = {r["intent"]["token_id"] for r in group if r["intent"]["kind"] == "remove"}
                 if old_ids and slot is not None and self.ledger.slot_row(slot) is not None:
@@ -134,10 +149,17 @@ class LedgerRecovery:
                     u0, u1 = self._pool_prices(pool, prices)
                     h0, h1 = a0 / 10**pool.token0.decimals, a1 / 10**pool.token1.decimals
                     self.ledger.flow(slot, "deposit", h0, h1, h0 * u0 + h1 * u1, receipt_hash=tx_hash)
+                if gone:
+                    self.ledger.close_slot(slot)
             elif kind == "increase":
                 if slot is None or pool is None:
                     raise PendingSubmission("confirmed increase belongs to an untracked position")
-                self._require_owner(self.chain.position(token_id, owner_hint=self.cfg.owner))
+                try:
+                    self._require_owner(self.chain.position(token_id, owner_hint=self.cfg.owner))
+                except PositionGone:
+                    row = self.ledger.slot_row(slot)
+                    if row is None or row["pool"].lower() != pool.address.lower():
+                        raise PendingSubmission("burned increase has no matching historical slot/pool") from None
                 a0, a1 = increased_amounts(receipt["logs"], addresses.NONFUNGIBLE_POSITION_MANAGER, token_id)
                 u0, u1 = self._pool_prices(pool, prices)
                 h0, h1 = a0 / 10**pool.token0.decimals, a1 / 10**pool.token1.decimals
@@ -155,6 +177,8 @@ class LedgerRecovery:
                     u0, u1 = self._pool_prices(pool, prices)
                     h0, h1 = a0 / 10**pool.token0.decimals, a1 / 10**pool.token1.decimals
                     self.ledger.flow(slot, "withdraw", h0, h1, h0 * u0 + h1 * u1, receipt_hash=tx_hash)
+                    basis0, basis1 = self.ledger.deposited_amounts(slot)
+                    self.ledger.snapshot(slot, token_id, 0.0, basis0 * u0 + basis1 * u1, 0.0)
                     self.ledger.close_slot(slot)
             removed = any(r["intent"]["kind"] == "remove" and r["receipt"]["status"] == 1 for r in group)
             if kind in ("claim", "unstake") and (kind == "claim" or not self._pool_has_aero(pool) or not removed):

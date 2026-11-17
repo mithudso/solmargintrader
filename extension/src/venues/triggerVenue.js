@@ -162,7 +162,7 @@ export class TriggerVenue {
       if (order.raw.triggerMint !== this.baseMint || (buy ? order.side !== 'buy' : order.side !== 'sell')) {
         throw new OrderEnvelopeError('configured pair has an unsupported trigger direction or mint');
       }
-      if (strict && (num(order.raw.inputUsed) > 0 ||
+      if (strict && (num(order.raw.inputUsed) > 0 || num(order.raw.outputAmount) > 0 || order.filledBaseQty > 0 ||
           order.raw.events?.some?.((event) => event?.type === 'fill' && event.state === 'success'))) {
         throw new OrderEnvelopeError('live order has execution history that must be reconciled before planning');
       }
@@ -188,6 +188,7 @@ export class TriggerVenue {
    * state that reconciliation has to find.
    */
   async placeOrder({ intent, slippageBps, ttlMs }) {
+    if (!Number.isFinite(intent?.level) || intent.level <= 0) throw new RangeError('trigger price must be a positive finite number');
     if (!this.capabilities.canPlaceLive) {
       throw new Error('live deposit requires an independent transaction intent verifier; raw signing is refused');
     }

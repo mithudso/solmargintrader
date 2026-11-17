@@ -36,6 +36,33 @@ def coin_ranking(run, eligible, scenario, gate):
     return sorted(rows, key=lambda x: -x["grid_return_pct"])
 
 
+def verify_inputs(run, manifest):
+    if manifest.get("status") != "complete":
+        raise ValueError("study did not complete")
+    checksums = {}
+    for name, expected in manifest["artifacts"].items():
+        local = Path(name).name
+        if local in checksums:
+            raise ValueError("duplicate artifact identity")
+        checksums[local] = expected
+    required = {"cycle_summary.json", "clock_tests.json", "portfolios.json", "baselines.json",
+                "selection.json", "portfolio_curves.npz"}
+    for symbol in manifest["grid_eligible"]:
+        required.add(f"{symbol}_grid.json")
+        required.update(f"{symbol}_f{fold}_{scenario}.npz" for fold in range(3)
+                        for scenario in ("zero_2", "zero_25"))
+    if required - checksums.keys():
+        raise ValueError("missing artifact checksum")
+    for name, expected in checksums.items():
+        path = run / name
+        if path.is_symlink() or not path.is_file() or sha(path) != expected:
+            raise ValueError(f"artifact hash mismatch: {name}")
+    data = Path(manifest["data"])
+    for name in ("universe", "protocol"):
+        if sha(data / (name + ".json")) != manifest[name + "_sha256"]:
+            raise ValueError(name + " binding changed")
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--run", type=Path, required=True)
@@ -43,8 +70,9 @@ def main():
     parser.add_argument("--results", type=Path, required=True)
     args = parser.parse_args()
     run, dest = args.run, args.results
-    dest.mkdir(parents=True, exist_ok=True)
     manifest = json.loads((run / "manifest.json").read_text())
+    verify_inputs(run, manifest)
+    dest.mkdir(parents=True, exist_ok=True)
     root = Path(manifest["data"])
     universe = json.loads((root / "universe.json").read_text())
     cycles = json.loads((run / "cycle_summary.json").read_text())

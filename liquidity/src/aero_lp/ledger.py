@@ -6,7 +6,10 @@ rebalances. Money flows in and out of a slot as `flows` (deposit, topup, withdra
 amounts would be worth now if never deployed.
 
     P&L         = value_now + withdrawn_usd + rewards_claimed_usd - deposited_usd - gas_usd
-    P&L vs HODL = value_now + withdrawn_usd + rewards_claimed_usd - hodl_now - gas_usd
+    P&L vs HODL = value_now + rewards_claimed_usd - net_hodl_now - gas_usd
+
+The HODL token basis subtracts withdrawn token quantities. Historical withdrawal cash must not be
+added a second time against that remaining basis. New withdrawal snapshots use the same convention.
 
 `wallet_balances` records the wallet's token balances over time. The allocator counts a coin as idle only
 if its balance has been present for the whole idle window, so a token you just received or are about to
@@ -132,9 +135,7 @@ class SlotPnl:
 
     @property
     def pnl_vs_hodl_usd(self) -> float:
-        return (
-            self.value_usd + self.unclaimed_usd + self.withdrawn_usd + self.rewards_usd - self.hodl_usd - self.gas_usd
-        )
+        return self.value_usd + self.unclaimed_usd + self.rewards_usd - self.hodl_usd - self.gas_usd
 
     @property
     def apr_realized(self) -> float:
@@ -347,7 +348,7 @@ class Ledger:
         ).fetchone()
         # No snapshot yet (just opened): assume the net money still in the position, not a total loss.
         value, hodl, unclaimed = (
-            (snap[0], snap[1], snap[2]) if snap else (max(0.0, float(dep) - float(wd)), float(dep), 0.0)
+            (snap[0], snap[1], snap[2]) if snap else (max(0.0, float(dep) - float(wd)), float(dep) - float(wd), 0.0)
         )
         if s["closed_at"] is not None:
             value, unclaimed = 0.0, 0.0

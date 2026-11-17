@@ -35,7 +35,14 @@ fi
 
 die() { printf 'land: %s\n' "$1" >&2; exit 1; }
 
-git rev-parse --verify "$BRANCH" >/dev/null 2>&1 || die "no such branch: $BRANCH"
+for arg in "$@"; do
+  case "$arg" in
+    --net) ;;
+    *) die "unsupported gate flag: $arg (only --net is accepted)" ;;
+  esac
+done
+VERIFIED_SHA="$(git rev-parse --verify --end-of-options "$BRANCH^{commit}")" || die "no such branch: $BRANCH"
+MASTER_SHA="$(git rev-parse HEAD)"
 
 CURRENT="$(git rev-parse --abbrev-ref HEAD)"
 [ "$CURRENT" = "master" ] || die "the main checkout is on '$CURRENT', not master"
@@ -67,7 +74,7 @@ cleanup() { git worktree remove --force "$TMP/w" >/dev/null 2>&1 || true; rm -rf
 trap cleanup EXIT
 
 echo "land: gating $BRANCH ($(git rev-parse --short "$BRANCH")) before touching master"
-git worktree add --detach "$TMP/w" "$BRANCH" >/dev/null 2>&1 \
+git worktree add --detach "$TMP/w" "$VERIFIED_SHA" >/dev/null 2>&1 \
   || die "could not create a temporary worktree to gate in"
 
 # data/ is a gitignored fetch cache that lives only in the main checkout; link it
@@ -80,8 +87,11 @@ if ! (cd "$TMP/w" && ./tools/gate.sh "$@"); then
   die "gate failed on $BRANCH — master untouched"
 fi
 
+[ "$(git rev-parse HEAD)" = "$MASTER_SHA" ] || die "master moved while the gate ran"
+[ "$(git rev-parse --verify --end-of-options "$BRANCH^{commit}")" = "$VERIFIED_SHA" ] || die "target moved while the gate ran; verify its new commit"
+[ -z "$(git status --porcelain)" ] || die "main checkout changed while the gate ran"
 echo "land: gate passed, fast-forwarding master"
-git merge "$BRANCH" --ff-only || die "fast-forward failed"
+git merge "$VERIFIED_SHA" --ff-only || die "fast-forward failed"
 echo "land: master now at $(git rev-parse --short HEAD)"
 
 # The tree that just landed was gated in isolation; confirm it in place too, since

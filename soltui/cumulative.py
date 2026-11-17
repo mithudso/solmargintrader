@@ -160,7 +160,10 @@ def load_result_file(path: Path) -> FileSummary:
     summary = FileSummary(source=path.name)
     try:
         with path.open(newline="", encoding="utf-8") as fh:
-            for row in csv.DictReader(fh):
+            reader = csv.DictReader(fh)
+            if not any(name in (reader.fieldnames or []) for name in COLUMNS["median_sharpe"]):
+                return summary
+            for row in reader:
                 sharpe = _as_float(_pick(row, "median_sharpe"))
                 label = _pick(row, "label")
                 if label is None and sharpe is None:
@@ -176,8 +179,8 @@ def load_result_file(path: Path) -> FileSummary:
                     trades=_as_int(_pick(row, "trades")),
                     n_paths=_as_int(_pick(row, "n_paths")),
                 ))
-    except (OSError, csv.Error):
-        return summary
+    except (OSError, csv.Error, UnicodeError) as exc:
+        raise ValueError(f"{path.name}: result evidence unavailable ({type(exc).__name__})") from None
     return summary
 
 

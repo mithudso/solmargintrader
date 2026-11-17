@@ -175,8 +175,13 @@ class SuiteTests(unittest.TestCase):
                     return {"installed": True}
 
                 with patch("botmanager.suite_service.operation", side_effect=service):
-                    value = suite.operation("stop", self.home, self.ecosystem)
-                self.assertEqual(value["ui_retained"], None if changes else True)
+                    if changes == {"release_confirmed": False}:
+                        with self.assertRaises(ManagerError) as rejected:
+                            suite.operation("stop", self.home, self.ecosystem)
+                        self.assertEqual(rejected.exception.code, "suite_unavailable")
+                    else:
+                        value = suite.operation("stop", self.home, self.ecosystem)
+                        self.assertEqual(value["ui_retained"], None if changes else True)
 
     def test_failed_owned_ui_release_writes_no_successful_retention_claim(self):
         owner = suite.Suite(self.home, self.ecosystem, ui_factory=ReadyUi).open()

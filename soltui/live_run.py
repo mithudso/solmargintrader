@@ -60,7 +60,10 @@ def run_dryrun(strategy_name: str, settings=None, progress=None) -> dict:
     seconds = INTERVAL_SECONDS.get(interval)
     if seconds is None:
         raise ValueError(f"Unsupported candle interval {interval!r}")
-    gaps = np.flatnonzero(np.diff(arrays["ts"]) != seconds)
+    deltas = np.diff(arrays["ts"])
+    if np.any(deltas <= 0) or np.any(deltas % seconds != 0):
+        raise ValueError("Candle cadence is invalid for the selected interval")
+    gaps = np.flatnonzero(deltas != seconds)
     first = int(gaps[-1] + 1) if len(gaps) else 0
     if first:
         arrays = {key: value[first:] for key, value in arrays.items()}

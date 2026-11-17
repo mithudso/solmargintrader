@@ -1,6 +1,7 @@
 # Security
 
-This is personal tooling with local services and no users other than its author. There is no security mailbox and no disclosure SLA. Report anything you find by
+This repository contains personal research/execution tooling and a separate hosted
+wallet-account website. There is no security mailbox and no disclosure SLA. Report anything you find by
 opening an issue, or directly to the repository owner.
 
 ## What is actually at risk here
@@ -17,11 +18,17 @@ boundary but its daemon is archived and disabled:
 | Oracle webhook secret and GUM signing key | Private local process/file configuration; never committed | Default dry-run; authenticate ingress and verify owner-bound order Actions; see `docs/JUPITER-ZEC-WEBHOOK.md` |
 | Liquidity signing key | Owner-only key file / macOS Keychain / legacy environment fallback | Agents never read, print or copy it; see `liquidity/CLAUDE.md` |
 | Local HTTP API | `extension/tools/api-server.js`, bound locally | Requires `SMT_API_TOKEN`; treat the port as trusted-local only |
+| Hosted accounts and sessions | Cloudflare D1, through `website/src/worker.js` | Single-use wallet challenges, hashed session tokens and tenant-scoped queries; never expose local owner services |
+| Hosted billing and analysis credentials | Cloudflare Worker secrets | Never commit or expose Stripe secrets or `ENGINE_TOKEN`; see `website/README.md` |
 
 `SMT_API_TOKEN`, `SMT_PASSPHRASE` and `JUPITER_API_KEY` are read from the environment by
 the tools. Real values belong in a local `.env` that is gitignored — see `.env.example`
-for the shape. Never commit one. Programs require exported environment variables; they
+for the shape. Never commit one. These extension tools require exported environment variables; they
 do not automatically source a `.env` file. See `docs/SECURITY.md` for the full threat model.
+
+The separate raw-capture uploader can read its explicitly selected dotenv file for
+`MONGODB_URI` or `MONGODB_URI2`. Keep that file and its X509 certificate private.
+Hosted Worker secrets use Wrangler's secret store rather than the repository dotenv file.
 
 ## Reporting something that could move money
 

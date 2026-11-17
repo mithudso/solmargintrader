@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import shutil
 import subprocess
+import sys
 from pathlib import Path
 from types import SimpleNamespace
 
@@ -138,6 +139,7 @@ def service_copy(tmp_path):
     binary.parent.mkdir(parents=True)
     binary.write_text("#!/bin/sh\nexit 0\n")
     binary.chmod(0o700)
+    (binary.parent / "python").symlink_to(sys.executable)
     fakebin = tmp_path / "fakebin"
     fakebin.mkdir()
     launcher = fakebin / "launchctl"
@@ -148,7 +150,12 @@ def service_copy(tmp_path):
     (lp / "config.toml").write_text("# synthetic config\n")
     home = tmp_path / "home"
     home.mkdir()
-    env = {"HOME": str(home), "AERO_LP_HOME": str(lp), "PATH": str(fakebin) + ":/usr/bin:/bin"}
+    env = {
+        "PYTHONPATH": str(Path(__file__).parents[1] / "src"),
+        "HOME": str(home),
+        "AERO_LP_HOME": str(lp),
+        "PATH": str(fakebin) + ":/usr/bin:/bin",
+    }
     return target, home / "Library/LaunchAgents/com.mithudso.aero-lp.plist", env
 
 

@@ -42,7 +42,7 @@ class SavedVoteExplanation(unittest.TestCase):
     def result(self, now=BASE + 30):
         return explain.explain("SOL", "probe", now=now)
 
-    def test_call_spec_eligibility_and_sma_origin_values_are_reproduced(self):
+    def test_CDO_68836a154b_saved_forecast_keeps_eligibility_without_invented_features(self):
         result = self.result()
         self.assertTrue(result["available"])
         self.assertEqual(result["eligible_horizons"], [1])
@@ -52,11 +52,14 @@ class SavedVoteExplanation(unittest.TestCase):
         self.assertEqual(call["direction"], "UP")
         self.assertEqual(call["resolved"], 20)
         self.assertTrue(call["recorded_signal_basis"]["contract_verified"])
-        self.assertTrue(call["recorded_signal_basis"]["features_available"])
-        values = {r["name"]: r["value"] for r in call["recorded_signal_basis"]["features"]}
-        self.assertGreater(values["fast_sma"], values["slow_sma"])
+        self.assertFalse(call["recorded_signal_basis"]["features_available"])
+        self.assertFalse(call["recorded_signal_basis"]["original_input_verified"])
+        self.assertIsNone(call["recorded_signal_basis"]["signal_interval"])
+        self.assertEqual(call["recorded_signal_basis"]["features"], [])
+        self.assertIn("original signal interval", call["recorded_signal_basis"]["reason"])
         self.assertEqual(result["chart_suggestions"][0]["strategy"], "ma_crossover")
-        self.assertTrue(result["chart"]["series"])
+        self.assertEqual(result["chart"]["series"], [])
+        self.assertFalse(result["chart"]["proof"]["origin_indicator_verified"])
 
     def test_future_candles_do_not_change_saved_basis_or_chart(self):
         original = self.result()

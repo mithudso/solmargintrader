@@ -9,6 +9,7 @@
  */
 
 import { FileStore, createFileArea, DEFAULT_STORE_PATH, DEFAULT_CONFIG_PATH } from '../src/storage/fileStore.js';
+import { restorePaperVenue } from '../src/bg/paper-venue.js';
 import { MemoryStore } from '../src/storage/memoryStore.js';
 import { ConfigStore } from '../src/storage/store.js';
 import { buildVenue } from '../src/venues/index.js';
@@ -71,7 +72,7 @@ export async function createNodeDeps(opts = {}) {
       const context = JSON.stringify([config.gridId, config.venue, config.mode,
         config.baseMint, config.quoteMint, config.userPubkey, config.rpcUrl]);
       if (dryContext !== context || !dryVenue) {
-        dryVenue = fresh;
+        dryVenue = await restorePaperVenue(fresh, config, configStore);
         dryContext = context;
       } else {
         // Refresh credentials/read configuration while retaining resting paper

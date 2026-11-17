@@ -5,6 +5,9 @@ import hashlib
 import json
 from pathlib import Path
 import zipfile
+import tempfile
+import shutil
+import os
 
 DEFAULT_EXPERIMENT = Path(__file__).resolve().parent / 'strategy_experiment'
 
@@ -37,11 +40,16 @@ def ensure_snapshots(experiment: Path = DEFAULT_EXPERIMENT) -> None:
                     content = zipped.read(member)
                     if hashlib.sha256(content).hexdigest() != expected[member.filename]:
                         raise ValueError(f'{variant} member checksum mismatch')
-                # All members checked before creating a source tree.
-                for member in zipped.infolist():
-                    target = root / member.filename
-                    target.parent.mkdir(parents=True, exist_ok=True)
-                    target.write_bytes(zipped.read(member))
+                stage = Path(tempfile.mkdtemp(prefix=f'.{variant}-', dir=experiment))
+                try:
+                    for member in zipped.infolist():
+                        target = stage / member.filename
+                        target.parent.mkdir(parents=True, exist_ok=True)
+                        target.write_bytes(zipped.read(member))
+                    os.rename(stage, root)
+                finally:
+                    if stage.exists():
+                        shutil.rmtree(stage)
         # Finder metadata is ignored by Git and cannot execute as experiment
         # source. Keep every other extra file and all source hashes fail-closed.
         actual = {str(p.relative_to(root)): hashlib.sha256(p.read_bytes()).hexdigest()

@@ -21,7 +21,7 @@ exact p-value; treat 0.04 and 0.06 as the same answer.
 from __future__ import annotations
 
 import math
-from dataclasses import dataclass
+from dataclasses import dataclass, replace
 
 import numpy as np
 
@@ -126,7 +126,7 @@ def adf_pvalue(statistic: float, nobs: int) -> float:
     return 0.10
 
 
-def adf_test(series: np.ndarray, lags: int | None = None) -> AdfResult:
+def adf_test(series: np.ndarray, lags: int | None = None, *, constant: bool = True) -> AdfResult:
     """Augmented Dickey-Fuller test with a constant and no trend.
 
     Regresses `dy_t` on `y_{t-1}` plus `lags` lagged differences, and reports the
@@ -135,6 +135,8 @@ def adf_test(series: np.ndarray, lags: int | None = None) -> AdfResult:
     """
     y = np.asarray(series, dtype="float64")
     n = y.size
+    if y.ndim != 1 or not np.isfinite(y).all():
+        raise ValueError("ADF requires a finite one-dimensional series")
     if n < 20:
         raise ValueError(f"ADF needs at least 20 observations, got {n}")
     if lags is None:
@@ -148,7 +150,9 @@ def adf_test(series: np.ndarray, lags: int | None = None) -> AdfResult:
         raise ValueError(f"too few usable rows ({rows}) after {lags} lags")
 
     # Design: [y_{t-1}, 1, dy_{t-1}, ..., dy_{t-lags}]
-    cols = [y[lags : lags + rows], np.ones(rows)]
+    cols = [y[lags : lags + rows]]
+    if constant:
+        cols.append(np.ones(rows))
     for k in range(1, lags + 1):
         cols.append(dy[lags - k : lags - k + rows])
     x = np.column_stack(cols)
@@ -165,7 +169,7 @@ def adf_test(series: np.ndarray, lags: int | None = None) -> AdfResult:
     except np.linalg.LinAlgError as exc:  # pragma: no cover - singular design
         raise ValueError("ADF design matrix is singular") from exc
     se = math.sqrt(max(sigma2 * float(xtx_inv[0, 0]), 0.0))
-    stat = float("-inf") if se <= 1e-18 else float(coef[0]) / se
+    stat = (math.copysign(float("inf"), float(coef[0])) if coef[0] else 0.0) if se <= 1e-18 else float(coef[0]) / se
 
     return AdfResult(
         statistic=stat,
@@ -192,6 +196,26 @@ def engle_granger(
         raise ValueError(f"series lengths differ: {x.size} vs {y.size}")
     beta, intercept = _ols(x, y)
     spread = x - beta * y - intercept
-    return CointegrationResult(
-        beta=beta, intercept=intercept, adf=adf_test(spread, lags), spread=spread
-    )
+    residual_test = adf_test(spread, lags, constant=False)
+    # MacKinnon 2010 N=2, constant in the cointegrating regression. These
+    # response-surface coefficients are also published by statsmodels:
+    # https://github.com/statsmodels/statsmodels/blob/main/statsmodels/tsa/adfvalues.py
+    nobs = x.size - 1
+    coefficients = ((-3.89644, -10.9519, -33.527),
+                    (-3.33613, -6.1101, -6.823),
+                    (-3.04445, -4.2412, -2.720))
+    critical = {level: a + b / nobs + c / nobs**2
+                for level, (a, b, c) in zip(("1%", "5%", "10%"), coefficients)}
+    statistic = residual_test.statistic
+    if statistic <= -18.86:
+        pvalue = 0.0
+    elif statistic >= 0.92:
+        pvalue = 1.0
+    else:
+        # MacKinnon 1994 N=2 response surface; the p-value's null also
+        # differs from an ADF test of a series specified before fitting.
+        coef = (2.92, 1.5012, .039796) if statistic <= -2.62 else (2.1945, .64695, -.29198, -.042377)
+        z = sum(value * statistic**power for power, value in enumerate(coef))
+        pvalue = .5 * (1 + math.erf(z / math.sqrt(2)))
+    residual_test = replace(residual_test, pvalue=pvalue, critical=critical)
+    return CointegrationResult(beta=beta, intercept=intercept, adf=residual_test, spread=spread)

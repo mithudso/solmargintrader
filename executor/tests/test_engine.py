@@ -144,6 +144,11 @@ def test_live_happy_path_journals_before_and_after_sending(cfg, chain, owner):
     assert recs[1]["signature"] == out["signature"] == recs[2]["signature"]
     assert recs[2]["status"] == "confirmed" and recs[2]["base_raw"] == AMOUNT
     assert chain.simulations == 2  # the unsigned build, then the exact signed bytes with signature verification
+    unsigned, signed = chain.simulation_calls
+    assert unsigned["sig_verify"] is False and unsigned["replace_blockhash"] is True
+    assert signed["sig_verify"] is True and signed["replace_blockhash"] is False
+    assert signed["tx_b64"] == chain.sent[0]
+    assert signed["watch"] == unsigned["watch"]
     assert not (engine.root / "KILL").exists()
 
 

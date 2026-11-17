@@ -331,12 +331,14 @@ class BaseTests(unittest.TestCase):
         by_id = {p["token_id"]: p for p in scan["positions"]}
         self.assertEqual(by_id[1609324]["held_by"], "wallet")
         self.assertEqual(by_id[1609324]["value_usd"], 43.1)
-        self.assertEqual(by_id[777]["held_by"], "gauge (staked) or not in the wallet")
+        self.assertEqual(by_id[777]["held_by"], "ownership unverified")
+        self.assertIsNone(by_id[777]["value_usd"])
         self.assertEqual(by_id[777]["manager"], aero)
         self.assertTrue(by_id[777]["link"].startswith("https://basescan.org/nft/"))
-        positions_usd = 43.1 + 10.0
+        positions_usd = 43.1
         base = scan["native"]["usd"] + scan["holdings"][0]["usd"]
         self.assertAlmostEqual(scan["total_usd"], base + positions_usd)
+        self.assertFalse(scan["total_complete"])
         self.assertTrue(any(c["kind"] == "position NFT" and c["address"] == aero for c in scan["contracts"]))
 
     def test_an_owned_nft_with_no_value_source_is_listed_but_not_counted(self) -> None:

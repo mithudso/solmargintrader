@@ -123,6 +123,7 @@ test('changed loaded economic source revokes the old paper grant before another 
 // These exercise the real registry lock and engine queue, rather than mocking
 // lifecycle helpers: a paper registration has no authority over a legacy owner.
 import { engineStopGeneration, stopEngine } from '../src/core/engine.js';
+import { withStoreLock } from '../src/core/engine.js';
 import { OWNER_SOURCE_FILES, OWNER_SOURCE_SCHEMA } from '../src/core/owner-source.js';
 import fs from 'node:fs';
 
@@ -136,6 +137,57 @@ const execution = async d => {
   return { running: s.running, generation: s.generation, runtime_id: s.runtime_id,
     last_sequence: s.last_sequence, stopGeneration: engineStopGeneration(d.store), runtime: await d.configStore.getRuntime() };
 };
+
+test('CDO-dc89105dcf lifecycle revocation cannot overwrite a serialized durable receipt', async () => {
+  const d = deps(); await applyManagerControl(d, await command(d));
+  const get = d.configStore.get.bind(d.configStore);
+  let entered, release, intercept = true;
+  const waiting = new Promise(r => { entered = r; });
+  const gate = new Promise(r => { release = r; });
+  d.configStore.get = async (...args) => {
+    const value = await get(...args);
+    if (args[0] === MANAGER_KEY && intercept) { intercept = false; entered(); await gate; }
+    return value;
+  };
+  const revocation = runCommand({ name: 'disarm', deps: d });
+  await waiting;
+  const committed = withStoreLock(d.store, async () => {
+    const state = await get(MANAGER_KEY);
+    await d.configStore.set(MANAGER_KEY, { ...state, last_sequence: 3, requests: { ...state.requests, marker: { durable: true } } });
+  });
+  await new Promise(r => setImmediate(r));
+  release(); await Promise.all([revocation, committed]);
+  const state = await get(MANAGER_KEY);
+  assert.equal(state.requests.marker.durable, true);
+  assert.equal(state.last_sequence, 3);
+});
+
+test('CDO-2c19095efc delivered receipt compaction preserves stop and replay fencing', async () => {
+  const d = deps(); await applyManagerControl(d, await command(d));
+  const stop = await command(d, 'stop', 10002);
+  const state = await d.configStore.get(MANAGER_KEY);
+  state.last_sequence = 10001;
+  for (let sequence = 2; sequence < 10002; sequence++) state.requests[`delivered-${sequence}`] = {
+    request: { operation: 'stop', sequence }, delivered: true, prepared: false, receipt: { outcome: 'skipped' },
+  };
+  await d.configStore.set(MANAGER_KEY, state);
+  assert.equal((await applyManagerControl(d, stop)).outcome, 'acknowledged');
+  const saved = await d.configStore.get(MANAGER_KEY);
+  assert.equal(saved.running, false);
+  assert.ok(Object.keys(saved.requests).length < 10000);
+  assert.equal(saved.last_sequence, 10002);
+});
+
+test('CDO-a4a2746eac registry lifecycle revokes delegated grants permanently', async () => {
+  for (const name of ['kill', 'arm', 'disarm']) {
+    const d = deps(); await applyManagerControl(d, await command(d));
+    await runCommand({ name, deps: d });
+    if (name === 'kill') await runCommand({ name: 'clearKill', deps: d });
+    if (name === 'arm') await runCommand({ name: 'disarm', deps: d });
+    assert.equal((await managerSnapshot(d)).running, false, name);
+    assert.equal((await paperConfigStore(d.configStore).getRuntime()).armed, false, name);
+  }
+});
 
 test('registry registration and refused controls preserve armed legacy execution gate', async () => {
   for (const mode of ['dry-run', 'semi-auto']) {
@@ -186,10 +238,10 @@ test('registry pending, lost acknowledgment, replay and expired/stale stops pres
   assert.deepEqual(await execution(d), final);
 });
 
-test('source identity covers canonical economics and every shipped JavaScript module', () => {
+test('CDO-a759537d69 source identity covers canonical economics and every shipped JavaScript module', () => {
   assert.equal(OWNER_SOURCE_SCHEMA, 2);
   const extension = new URL('../', import.meta.url);
-  const actual = fs.readdirSync(new URL('src/', extension), { recursive: true }).filter(p => p.endsWith('.js')).map(p => `src/${p}`);
+  const actual = ['src', 'vendor'].flatMap(root => fs.readdirSync(new URL(`${root}/`, extension), { recursive: true }).filter(p => /\.(js|mjs)$/.test(p)).map(p => `${root}/${p}`));
   assert.deepEqual([...OWNER_SOURCE_FILES].sort(), ['manifest.json', ...actual].sort());
   for (const file of ['src/core/engine.js', 'src/core/grid.js', 'src/core/risk.js', 'src/core/pnl.js', 'src/storage/store.js']) {
     assert.ok(OWNER_SOURCE_FILES.includes(file), file);

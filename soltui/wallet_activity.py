@@ -7,20 +7,22 @@ only coverage rather than claiming an exhaustive token-account index.
 """
 from __future__ import annotations
 
+import http.client
 import json
 import logging
 import math
 import os
 import re
 import shutil
+import socket
 import subprocess
 import threading
 import time
-import urllib.request
 from concurrent.futures import ThreadPoolExecutor
 from datetime import datetime, timezone
 from functools import wraps
 from typing import Any, Callable
+from urllib.parse import urlsplit
 
 from . import wallet
 
@@ -53,14 +55,17 @@ def _timestamp(value: Any) -> float | None:
     if isinstance(value, bool):
         return None
     if isinstance(value, (int, float)):
-        return float(value) if math.isfinite(value) and value > 0 else None
+        try:
+            return float(value) if math.isfinite(value) and value > 0 else None
+        except OverflowError:
+            return None
     if isinstance(value, str):
         try:
             parsed = datetime.fromisoformat(value.replace("Z", "+00:00"))
             if parsed.tzinfo is None:
                 parsed = parsed.replace(tzinfo=timezone.utc)
             return parsed.timestamp()
-        except ValueError:
+        except (ValueError, OverflowError, OSError):
             pass
     return None
 
@@ -89,20 +94,69 @@ def _cdp_query(sql: str, timeout: float) -> list[dict]:
 
 
 @_observed("solana_history")
-def _rpc(method: str, params: list, timeout: float) -> Any:
+def _rpc(method: str, params: list, timeout: float, *, stop=None) -> Any:
     if method not in {"getSignaturesForAddress", "getTransaction"}:
         raise ValueError("Wallet activity accepts only history reads")
-    request = urllib.request.Request(wallet.SOLANA_RPC, data=json.dumps({
-        "jsonrpc": "2.0", "id": 1, "method": method, "params": params}).encode(),
-        headers={"Content-Type": "application/json", "User-Agent": "SolTUI-wallet-history/1"})
-    with urllib.request.urlopen(request, timeout=timeout) as response:
-        data = response.read(1_000_001)
-    if len(data) > 1_000_000:
-        raise ValueError("History response too large")
-    payload = json.loads(data)
-    if not isinstance(payload, dict) or payload.get("error") or "result" not in payload:
-        raise ValueError("Solana history unavailable")
-    return payload["result"]
+    deadline = time.monotonic() + timeout
+
+    def check():
+        if time.monotonic() >= deadline or (stop is not None and stop.is_set()):
+            raise TimeoutError("Wallet activity read cancelled or expired")
+
+    check()
+    target = urlsplit(wallet.SOLANA_RPC)
+    if target.scheme not in ("http", "https") or not target.hostname or target.username or target.password:
+        raise ValueError("Solana history endpoint unavailable")
+    constructor = http.client.HTTPSConnection if target.scheme == "https" else http.client.HTTPConnection
+    connection = constructor(target.hostname, target.port, timeout=timeout)
+    response = None
+    done = threading.Event()
+    watcher = None
+    try:
+        connection.connect()
+        transport = connection.sock
+
+        def expire():
+            while not done.wait(min(.02, max(0, deadline - time.monotonic()))):
+                if time.monotonic() >= deadline or (stop is not None and stop.is_set()):
+                    try:
+                        transport.shutdown(socket.SHUT_RDWR)
+                    except OSError:
+                        pass
+                    return
+
+        watcher = threading.Thread(target=expire, name="wallet-history-deadline", daemon=True)
+        watcher.start()
+        check()
+        path = target.path or "/"
+        if target.query:
+            path += "?" + target.query
+        connection.request("POST", path, body=json.dumps({"jsonrpc": "2.0", "id": 1, "method": method, "params": params}).encode(),
+                           headers={"Content-Type": "application/json", "User-Agent": "SolTUI-wallet-history/1"})
+        response = connection.getresponse()
+        data = bytearray()
+        while len(data) <= 1_000_000:
+            check()
+            part = response.read1(1_000_001 - len(data))
+            if not part:
+                break
+            data.extend(part)
+        check()
+        if response.status != 200:
+            raise ValueError("Solana history unavailable")
+        if len(data) > 1_000_000:
+            raise ValueError("History response too large")
+        payload = json.loads(data)
+        if not isinstance(payload, dict) or payload.get("error") or "result" not in payload:
+            raise ValueError("Solana history unavailable")
+        return payload["result"]
+    finally:
+        done.set()
+        if watcher is not None:
+            watcher.join()
+        if response is not None:
+            response.close()
+        connection.close()
 
 
 def _base(address: str, limit: int, query: Callable, remaining: Callable) -> tuple[list, dict, list]:
@@ -230,7 +284,8 @@ def snapshot(settings, *, limit: int = 8, query: Callable | None = None, rpc: Ca
 
     with ThreadPoolExecutor(max_workers=2, thread_name_prefix="wallet-history") as pool:
         base = pool.submit(_base, getattr(settings, "base_address", ""), limit, query or _cdp_query, remaining)
-        sol = pool.submit(_solana, getattr(settings, "solana_address", ""), limit, rpc or _rpc, remaining)
+        sol = pool.submit(_solana, getattr(settings, "solana_address", ""), limit,
+                          rpc or (lambda method, params, timeout: _rpc(method, params, timeout, stop=stop)), remaining)
         results = [base.result(), sol.result()]
     items = [item for rows, _, _ in results for item in rows]
     items = list({item["id"]: item for item in items}.values())

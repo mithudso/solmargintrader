@@ -3,20 +3,25 @@ import assert from 'node:assert/strict';
 import { readFile } from 'node:fs/promises';
 import { aggregatePredictions, agreementUnavailableReason, appendScoreTick, scoreTickLayout } from '../src/ui/live-score.js';
 
-test('browser votes match the shared Python policy vectors', async () => {
+test('CDO-97a22515d8 browser votes match the shared Python policy vectors', async () => {
   const cases = JSON.parse(await readFile(new URL('../../soltui/tests/fixtures/live-score.json', import.meta.url), 'utf8'));
   for (const c of cases) {
     const actual = aggregatePredictions(c.rows, c.now, c.policy);
+    assert.equal(actual.available, c.expected.strategies > 0, c.name);
     assert.deepEqual(Object.fromEntries(Object.keys(c.expected).map((key) => [key, actual[key]])), c.expected, c.name);
   }
 });
 
-test('a tick score is immutable, keyed by source time and slides left on the next tick', () => {
+test('CDO-1a69b3a0d4 a tick score is immutable, keyed by source time and slides left on the next tick', () => {
   const a = { at: 1000, price: 100, aggregate: { score: 80, label: 'Strong Buy', color: 'green' } };
   const first = appendScoreTick([], a);
   const duplicate = appendScoreTick(first, { ...a, aggregate: { score: -100 } });
   assert.equal(duplicate, first);
+  const savedFirst = structuredClone(first);
   const second = appendScoreTick(first, { at: 2000, price: 101, aggregate: { score: -40, label: 'Sell', color: 'red' } });
+  assert.deepEqual(first, savedFirst);
+  assert.notEqual(second, first);
+  assert.equal(first.length, 1);
   assert.equal(second[0].score, 80);
   assert.equal(scoreTickLayout(first)[0].plotX - scoreTickLayout(second)[0].plotX, 56);
   assert.equal(scoreTickLayout(second).at(-1).plotX, scoreTickLayout(first)[0].plotX);
