@@ -23,7 +23,7 @@ export async function forecastPayload(view, identity, now = Date.now(), digest =
 export function autotradeView(container, { call = soltui, clock = Date.now, id = () => crypto.randomUUID() } = {}) {
   const section = document.createElement('section'); section.className = 'autotrade';
   const title = document.createElement('h2'); title.textContent = 'Auto Long / Short';
-  const status = document.createElement('p'); status.setAttribute('role', 'status'); status.textContent = 'Auto-trade owner unavailable';
+  const status = document.createElement('p'); status.setAttribute('role', 'status'); status.textContent = 'Connecting to the auto-trade helper…';
   const detail = document.createElement('pre'); detail.className = 'autotrade-detail';
   const fields = document.createElement('div'); fields.className = 'autotrade-fields';
   const inputs = {};
@@ -76,7 +76,14 @@ export function autotradeView(container, { call = soltui, clock = Date.now, id =
       .map(([label, reason]) => `${label}: ${reason}`).join('\n');
     detail.textContent = `Live readiness: ${val(s.readiness?.live)}\n1000× readiness: ${val(s.readiness?.['1000x'])} · advice ${val(s.readiness?.advice)}${reasons ? `\n${reasons}` : ''}\nFirst entry deadline: ${remaining} · session ${val(s.session_id)}\nPosition: ${val(p.state)} ${val(plan.direction)} · entry ${val(plan.target_entry)} · target ${val(plan.target_price)} · stop ${val(plan.stop_price)} · liquidation ${val(plan.liquidation_price)}\nModeled fills: entry ${val(plan.entry_fill)} · exit ${val(p.exit_price)} · modeled net PnL ${val(s.net_pnl_usd)}\nModel ${val(plan.model_version)} · ${val(plan.assumptions)} · ${val(plan.cost_scope)}\nOutcomes: wins ${val(l.wins)} · losses ${val(l.losses)} · liquidations ${val(l.liquidations)} · data/continuity failures ${val(l.availability_failures)}\nAll-cohort modeled results: ${val(s.history?.samples)} samples · net ${val(s.history?.net_pnl_usd)} · ${val(s.history?.scope)}\nTraining ${val(s.training)} · samples ${val(l.samples)} · confidence ${val(f.score)} (uncalibrated) · boost ${val(f.boost_eligible)} ${val(f.boost_reason)}\nCaps: base ${val(policy.base_collateral_usd)} · max ${val(policy.max_collateral_usd)} · loss ${val(policy.max_session_loss_usd)}\nForecast provenance: ${val(f.source || f.advisory_forecast_id)}\nStop prevents new entries and manages open positions; ending an unknown paper outcome requires acknowledgement. Session continues when this panel closes.`;
   };
-  const refresh = async () => { try { render(await call('autotrade.status')); } catch { if (!disposed) status.textContent = 'Auto-trade owner unavailable'; } };
+  const refresh = async () => {
+    try { render(await call('autotrade.status')); }
+    catch (error) {
+      if (disposed) return;
+      status.dataset.state = 'unavailable';
+      status.textContent = `Auto-trade connection unavailable: ${error?.message || 'the local helper did not answer'}`;
+    }
+  };
   async function act(command, params) {
     if (busy) return; busy = true; for (const b of [paper, live, stop]) b.disabled = true;
     const signature = JSON.stringify([command, params]);

@@ -1,8 +1,16 @@
 # Prompt history
 
-Version: 283
+Version: 284
+Delta: v283 to v284; retain both commissioned requests during concurrent delivery integration.
 Delta: v282 to v283; commission the whole-application optimizer with frozen coverage.
 Delta: v281 to v282; preserve the current status question.
+Delta: v282 to v283; preserve the paper-config connection error request.
+
+## Paper-config connection error — 2026-11-17
+
+I'm getting this error whe lading a paper config [Image #1]
+
+The supplied screenshot shows “Auto-trade owner unavailable” and blank paper collateral fields.
 
 ## Current status question
 

@@ -1,6 +1,6 @@
 # Whole-application assessment, 2026-11-17
 
-Version: 1.1.0. Delta: preserve the independent replay-seed finding and verified seventh repair.
+Version: 1.2.0. Delta: preserve both concurrent helper diagnostics and the seven optimizer repairs; qualify the independent review source binding.
 
 **Outcome: NEEDS_EVIDENCE.** This assessment covers the eleven-component research,
 paper-operation, hosted-account and guarded-execution application. It does not
@@ -36,11 +36,16 @@ not establish real customer or venue acceptance.
 ## Scope and preservation
 
 The source candidate is runtime 0.4.7, manager 0.7.10, ecosystem 0.4.19,
-extension 0.12.1, website 0.4.1, analysis-runtime 1.0.1, backtester 0.2.2 and Oracle 0.2.7. These declarations do not
+extension 0.12.3, website 0.4.1, analysis-runtime 1.0.1, backtester 0.2.2 and Oracle 0.2.7. These declarations do not
 prove installation. The concurrent confidence-window/control delivery remains
 included. Existing paper owners, collectors, frozen cohorts, learned state,
 shared native routing, paused audits and archived liquidity are preserved.
 Actual installed checks use a task-specific environment and disposable profiles.
+The final delivery also preserves PR 323's helper connecting/error/recovery behavior.
+Both independent review outputs retain their exact pre-integration source binding;
+the two-review cap is not reset by a concurrent merge. Current integration checks
+and the complete selected-method reassessment are recorded separately. The whole
+application therefore retains NEEDS_EVIDENCE, including the current-review gap.
 
 The assessment did not find evidence supporting a new application service,
 chatbot, monetization mechanism or broader trading authority. Profiling expensive

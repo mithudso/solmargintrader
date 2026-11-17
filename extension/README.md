@@ -7,7 +7,7 @@ hard risk rails, on its own tab, **dry-run by default** — it will not place an
 change the mode and type a confirmation. A historical report says the grid lagged buy-and-hold walk-forward on 9 of 9 coins;
 that result has not been reverified. Version 0.3.0 moved it off the front page.
 
-## Live Oracle (0.12.0)
+## Live Oracle (0.12.2)
 
 The Live Oracle estimates whether the price at each selected horizon will be
 above, below or equal to its reference price. It shows UP, DOWN and FLAT
@@ -34,6 +34,10 @@ Two TUI windows are views of that session, not independent traders: Start and
 Stop affect the same paper position. Separately, the quote collector stores
 normalized observations in hourly gzip files under a seven-day retention policy;
 the browser does not contain the complete quote history.
+
+When the paper-session helper cannot connect, Auto Long / Short shows the
+underlying connection error and setup hint. Paper defaults load after the helper
+answers; a connection failure does not mean a paper configuration is invalid.
 
 ## Streaming Oracle (0.10.0)
 
@@ -93,7 +97,7 @@ for DD or simulate a position from candle colors.
 
 The chart and its forecasts remain analysis views. The separate **Auto Long / Short**
 section controls the shared owner described below. Load or reload the unpacked
-extension, then reload the portal tab. Its header identifies extension version 0.12.0.
+extension, then reload the portal tab. Its header identifies extension version 0.12.2.
 See [design, formulas and verification](../docs/JUPITER-1000X-OVERLAY.md),
 [optimized execution prompt](../docs/JUPITER-1000X-OVERLAY-PROMPT.md), and
 [SDK create/close capabilities and remaining gates](../docs/JUPITER-1000X-SDK.md).
