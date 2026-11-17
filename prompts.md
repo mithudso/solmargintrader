@@ -1,6 +1,9 @@
 # Prompt history
 
-Version: 283
+Version: 284
+Delta: v283 to v284; retain both commissioned requests during concurrent delivery integration.
+Delta: v282 to v283; commission the whole-application optimizer with frozen coverage.
+Delta: v281 to v282; preserve the current status question.
 Delta: v282 to v283; preserve the paper-config connection error request.
 
 ## Paper-config connection error — 2026-11-17
@@ -2585,3 +2588,14 @@ The image shows a terminal reporting that getcwd cannot access a deleted parent 
 ```text
 Add the the chrome extension an auto-trading feature, and a dry run feature, the dry run is auto trading but with paper, the oracle makes a specific entry point and exit point and if it liquidates then that's a failure. Because I know the oracle would happily simply never making a trade waiting on a perfect set of circumstances that will never happen when I click start on the auto-trading it is required to make an up or down prediction by starting a Long or a Short position within the next 15 min, and seeing it through till the end. It is allowed to use my anthropic api key to ask for advice or lookup something. The auto-trading should also be available via the TUI. When the oracle feels strongly about a price movement (75+%) then it can bet more of my funds and do it more frequently. As long as the oracle is overall surviving and staying profitable then keep learning, training, betting. Is there anything in this that I am missing?
 ```
+
+
+## 2026-11-17 — Whole-application optimizer TASK-2527
+
+Workflow version: application-2527/1. Delta: new application-level run; previous entries preserved.
+
+```text
+$application-deep-optimizer  /Users/mitch/dev/solmargintrader
+```
+
+The user explicitly supplied application-deep-optimizer1.0.0. Preserve its complete commission and exact skill hash in /Users/mitch/.local/share/solmargintrader/audits/application-2527/commission.json. This invocation commissions whole-product evaluation and authorized Medium+ repair, separate from skill creation and older code/UI audits.

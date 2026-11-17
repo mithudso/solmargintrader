@@ -56,7 +56,7 @@ def _sdk_model(model: Any, **fields: Any) -> Any:
     return model(**fields)
 
 
-VERSION = "0.2.6"
+VERSION = "0.2.7"
 RESOURCE_NAMES = {
     f"oracle://{name}": name for name in ("market", "predictions", "status")
 }

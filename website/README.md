@@ -1,6 +1,6 @@
 # oraclebot.io
 
-Version: 0.4.0
+Version: 0.4.1
 
 Oraclebot separates the public account service, analysis runtime and customer
 execution service. The local owner control room remains independent. This source
@@ -90,6 +90,17 @@ receipt consumes one daily credit. A durable failed receipt releases it. Polling
 and the minute cron reconcile pending work. Legacy synchronous backtests remain
 available with their existing timeout semantics. Status and results are bound to
 the owner and the exact request hash.
+
+The browser saves one unresolved request per account in session storage before
+submission. Reloading this tab restores its exact inputs and offers **Recover
+saved calculation**. Recovery reuses the original key, or reads the known job;
+it never silently creates another experiment. Inputs unlock after a terminal
+receipt. If browser storage is unavailable, submission refuses before reserving
+credit. Recent calculations remains the recovery path from another tab or device.
+
+Historical cache refreshes rotate across markets even when one public feed fails.
+Minute refreshes also isolate individual provider failures. Checkpoint failures
+still withhold readiness and stop the affected cycle until storage recovers.
 
 The runtime's authenticated `/v1/signals` endpoint computes the canonical spot
 strategy on fully closed contiguous bars with fill delay one. It returns exact

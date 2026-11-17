@@ -47,6 +47,31 @@ test('active status names the owner session, not editable next-session fields', 
   } finally { ui.close(); globalThis.document = previous; }
 });
 
+test('blocked and unknown session reasons remain visible without HTML interpretation', async () => {
+  const { autotradeView } = await import('../src/1000x/autotrade-view.js');
+  class Node {
+    constructor() { this.children = []; this.dataset = {}; this.value = ''; this.textContent = ''; }
+    append(...nodes) { this.children.push(...nodes); }
+    before(node) { this.sibling = node; }
+    setAttribute() {}
+    addEventListener() {}
+  }
+  const previous = globalThis.document; globalThis.document = { createElement: () => new Node() };
+  const root = new Node();
+  const reason = 'Owner restarted; continuity is unknown';
+  const positionReason = 'Jupiter quote stream gap while position was at risk <script>not markup</script>';
+  const ui = autotradeView(root, { call: async () => ({ state: 'blocked', mode: 'paper', reason,
+    position: { state: 'unknown', reason: positionReason }, cleanup: { state: 'pending', reason: 'advice cleanup pending' } }) });
+  try {
+    await new Promise(resolve => setImmediate(resolve));
+    const detail = root.sibling.children.flatMap(node => [node, ...node.children]).find(node => node.className === 'autotrade-detail');
+    assert.ok(detail, 'the session-details disclosure contains the owner reasons');
+    const text = detail.textContent;
+    for (const value of [reason, positionReason, 'advice cleanup pending']) assert.ok(text.includes(value), text);
+    assert.equal(detail.children.length, 0, 'reasons are text, not executable markup');
+  } finally { ui.close(); globalThis.document = previous; }
+});
+
 test('controls reuse request ID after a refusal and closing does not stop the owner', async () => {
   const { autotradeView } = await import('../src/1000x/autotrade-view.js');
   class Node {

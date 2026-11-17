@@ -17,6 +17,7 @@ _DEFAULT = {
     "base_collateral_usd": 10.0,
     "max_collateral_usd": 15.0,
     "max_session_loss_usd": 50.0,
+    "advice_enabled": False,
 }
 _BLOCK = (
     "Auto-trading unavailable: the existing feed exposes snapshots and buffers "
@@ -101,16 +102,24 @@ def _home():
     return Path(value["state_home"])
 
 
-def _connect(home=None):
-    home = _home() if home is None else home
-    home.mkdir(mode=0o700, parents=True, exist_ok=True)
-    info = home.lstat()
+def _private_home_exists(home):
+    try:
+        info = home.lstat()
+    except FileNotFoundError:
+        return False
     if (
         not stat.S_ISDIR(info.st_mode)
         or info.st_uid != os.getuid()
         or info.st_mode & 0o077
     ):
         raise ValueError("Auto-trade state directory must be owner-only")
+    return True
+
+
+def _connect(home=None):
+    home = _home() if home is None else home
+    home.mkdir(mode=0o700, parents=True, exist_ok=True)
+    _private_home_exists(home)
     path = home / "journal.sqlite3"
     fd = os.open(path, os.O_RDWR | os.O_CREAT | os.O_NOFOLLOW, 0o600)
     try:
@@ -150,15 +159,92 @@ def _startup_receipt(home, code):
             os.close(fd)
 
 
+def _saved_status(home):
+    path = home / "journal.sqlite3"
+    try:
+        info = path.lstat()
+    except FileNotFoundError:
+        return {}
+    if (
+        not stat.S_ISREG(info.st_mode)
+        or info.st_uid != os.getuid()
+        or info.st_mode & 0o077
+    ):
+        raise ValueError("Auto-trade journal must be owner-only")
+    with closing(
+        sqlite3.connect(path.absolute().as_uri() + "?mode=ro", uri=True, timeout=0.2)
+    ) as db:
+        db.execute("PRAGMA query_only=ON")
+        if not db.execute(
+            "SELECT 1 FROM sqlite_master WHERE type='table' AND name='session'"
+        ).fetchone():
+            return {}
+        row = db.execute("SELECT value FROM session WHERE singleton=1").fetchone()
+    if not row:
+        return {}
+    value = json.loads(row[0])
+    if not isinstance(value, dict):
+        raise TypeError("Invalid saved auto-trade session")
+    from oracle_leverage.autotrade_worker import public_state
+
+    return public_state(value)
+
+
+def _unavailable_status(home):
+    result = {
+        "state": "unavailable",
+        "mode": None,
+        "session_id": None,
+        "position": None,
+        "reason": (
+            "Auto-trade owner unavailable; session and position are unknown. "
+            "Inspection did not start or recover an owner. Use an explicit session action."
+        ),
+        "defaults": dict(_DEFAULT),
+        "readiness": {
+            "paper": "requires explicit Start Paper and fresh observed input",
+            "live": "unavailable: position, fill and settlement binding unverified",
+            "1000x": "paper proxy only; live close, queue and payout unverified",
+            "advice": "off by default; credentials checked only on an advice call",
+        },
+    }
+    # Retain saved next-session choices without migrating or recovering the owner.
+    try:
+        saved = _saved_status(home)
+    except sqlite3.Error:
+        raise RuntimeError(
+            "Auto-trade owner and saved state unavailable; nothing was recovered"
+        ) from None
+    result.update(saved)
+    result["last_known_state"] = saved.get("state")
+    result["state"] = "unavailable"
+    result["reason"] = (
+        "Auto-trade owner unavailable; current session and position are unknown. "
+        "Saved details are historical. Inspection did not start or recover an owner. "
+        "Use an explicit session action."
+    )
+    position = result.get("position")
+    if isinstance(position, dict) and position.get("state") in {"open", "closing"}:
+        position["state"] = "unknown"
+        position["reason"] = (
+            "Owner unavailable; continuity and the current outcome are unknown"
+        )
+    return result
+
+
 def _call(action, request_id=None, config=None):
     import socket
     import subprocess
     import sys
 
     home = _home()
-    # Establish and verify private directory and journal before spawning.
-    with closing(_connect(home)):
-        pass
+    may_start_owner = action in {"start", "stop", "configure"}
+    if may_start_owner:
+        # Only an explicit session action may initialize storage or recover an owner.
+        with closing(_connect(home)):
+            pass
+    else:
+        _private_home_exists(home)
     request = (
         json.dumps(
             {"action": action, "request_id": request_id, "config": config},
@@ -189,6 +275,12 @@ def _call(action, request_id=None, config=None):
     try:
         return exchange()
     except (FileNotFoundError, ConnectionRefusedError):
+        if not may_start_owner:
+            if action == "status":
+                return _unavailable_status(home)
+            raise RuntimeError(
+                "Auto-trade owner unavailable; forecast was not sent"
+            ) from None
         env = os.environ.copy()
         env["ORACLE_AUTOTRADE_HOME"] = str(home)
         try:

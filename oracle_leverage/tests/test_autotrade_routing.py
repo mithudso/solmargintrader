@@ -101,7 +101,7 @@ class Routing(unittest.TestCase):
             patch("subprocess.Popen", side_effect=spawn),
             self.assertRaisesRegex(RuntimeError, "owner failed to start"),
         ):
-            autotrade.status()
+            autotrade.start("explicit-start", {"mode": "paper"})
         self.assertEqual(received["ORACLE_AUTOTRADE_HOME"], str(first))
         self.assertTrue((first / "journal.sqlite3").exists())
         self.assertFalse(second.exists())
