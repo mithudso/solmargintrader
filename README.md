@@ -128,7 +128,7 @@ Load the extension: `chrome://extensions` → Developer mode → **Load unpacked
 
 ```bash
 python3 -m unittest discover -s backtester/tests -t .   # 1151 tests
-python3 -m unittest discover -s soltui/tests -t .       # 1628 tests (TUI dependencies required)
+python3 -m unittest discover -s soltui/tests -t .       # 1606 tests (TUI dependencies required)
 python3 -m unittest discover -s mongo/tests -t .        # 57 tests
 cd extension && npm test                                # 628 tests
 ```

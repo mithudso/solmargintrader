@@ -62,7 +62,7 @@ acceptance and final-head CI remain separate release gates.
 
 ```bash
 python3 -m unittest discover -s backtester/tests -t .   # 1151 tests
-python3 -m unittest discover -s soltui/tests -t .       # 1628 tests (TUI dependencies required)
+python3 -m unittest discover -s soltui/tests -t .       # 1606 tests (TUI dependencies required)
 python3 -m unittest discover -s mongo/tests -t .        # 57 tests
 cd extension && npm test                                # 628 tests
 python3 scripts/check_docs.py                           # these counts, and the retrieval indexes
@@ -222,7 +222,7 @@ lie — a truncated-history test that fails if the replay is ever "optimised" in
 call on the last bar, and a constructed series where that shortcut gives the *opposite*
 answer, so the first test is known to be load-bearing rather than vacuously true.
 
-## soltui — 1628 tests
+## soltui — 1606 tests
 
 The suite includes real Textual render cycles, subprocess lifecycle checks and offline strategy integration.
 Run all tests with

@@ -1,6 +1,6 @@
 # Conceptual index
 
-**Generated** from `index/CONCEPT-INDEX.json` (2026-11-17T04:17:40+00:00). 21 concepts.
+**Generated** from `index/CONCEPT-INDEX.json` (2026-11-17T04:20:28+00:00). 21 concepts.
 
 ```bash
 python3 index/build.py all              # refresh
@@ -104,7 +104,7 @@ Oracle-priced perps, priority fees as a product, per-account fee markets, droppe
 Strongest files:
 
 - `docs/design/oracle-ui-2399/report.json` (668 hits)
-- `docs/FILES.md` (592 hits)
+- `docs/FILES.md` (610 hits)
 - `research/strategy_experiment/results/results.json` (544 hits)
 - `llms/jupsol-llms.txt` (427 hits)
 - `research/strategy_experiment/results/initial-gapped-run/results.json` (408 hits)
