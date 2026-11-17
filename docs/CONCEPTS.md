@@ -1,6 +1,6 @@
 # Conceptual index
 
-**Generated** from `index/CONCEPT-INDEX.json` (2026-11-17T01:48:17+00:00). 21 concepts.
+**Generated** from `index/CONCEPT-INDEX.json` (2026-11-17T06:13:51+00:00). 21 concepts.
 
 ```bash
 python3 index/build.py all              # refresh
@@ -21,7 +21,7 @@ The ideas that decide whether a number in this repo means anything. Ordered by h
 
 ### Risk rails and dry-run safety
 
-`risk-rails` · **1986 files** · matched on `dry_run`, `dryrun`, `risk`, `rails`, `kill`, `guard`, `confirm`, `fail-closed`
+`risk-rails` · **1987 files** · matched on `dry_run`, `dryrun`, `risk`, `rails`, `kill`, `guard`, `confirm`, `fail-closed`
 
 The extension can place real orders. Dry-run is the default, rails live in code and fail closed, and a fresh install must never be able to trade.
 
@@ -30,23 +30,23 @@ Strongest files:
 - `research/tradingview-card-coverage.json` (1724 hits)
 - `research/tradingview-script-understanding.json` (317 hits)
 - `research/zec-expanded-20261113.llms/special-runner-summary.json` (228 hits)
-- `docs/operations-registry.json` (216 hits)
+- `docs/operations-registry.json` (219 hits)
 - `docs/FILES.md` (178 hits)
 - `FILES.md` (157 hits)
 - `research/tradingview-script-profiles/shard-a.jsonl` (126 hits)
 - `.cdo/reviews-2026-11-12/ecosystem-full-final.json` (124 hits)
 
-Full list: `python3 index/search.py --concept risk-rails -n 1986`
+Full list: `python3 index/search.py --concept risk-rails -n 1987`
 
 ### Cross-asset and cross-timeframe transfer
 
-`transfer` · **1779 files** · matched on `cross_asset`, `cross-asset`, `transfer`, `doge`, `zec`, `universe`, `top_coins`
+`transfer` · **1787 files** · matched on `cross_asset`, `cross-asset`, `transfer`, `doge`, `zec`, `universe`, `top_coins`
 
 The same 25 strategies score 25/25 on BTC daily and 0/25 on SOL hourly. The dataset has repeatedly explained more than the strategy.
 
 Strongest files:
 
-- `docs/FILES.md` (319 hits)
+- `docs/FILES.md` (321 hits)
 - `memory.md` (256 hits)
 - `research/coin-intelligence/zec-zcash.md` (196 hits)
 - `research/results/coinbase50_20261111_summary.json` (183 hits)
@@ -55,7 +55,7 @@ Strongest files:
 - `research/results/shape_spot_20261111_manifest.json` (97 hits)
 - `research/tradingview-card-coverage.json` (90 hits)
 
-Full list: `python3 index/search.py --concept transfer -n 1779`
+Full list: `python3 index/search.py --concept transfer -n 1787`
 
 ### Cost model
 
@@ -78,7 +78,7 @@ Full list: `python3 index/search.py --concept costs -n 1608`
 
 ### Lookahead and fill timing
 
-`lookahead` · **1545 files** · matched on `lookahead`, `fill_delay`, `warmup`, `warmup_bars`, `displacement`, `centred`, `shift`
+`lookahead` · **1547 files** · matched on `lookahead`, `fill_delay`, `warmup`, `warmup_bars`, `displacement`, `centred`, `shift`
 
 A signal at bar t may use data only through t. Centred indicators, same-bar fills and displaced clouds are the recurring hazards.
 
@@ -93,26 +93,26 @@ Strongest files:
 - `research/tradingview-script-profiles/shard-a.jsonl` (36 hits)
 - `backtester/core/strategies/advanced.py` (32 hits)
 
-Full list: `python3 index/search.py --concept lookahead -n 1545`
+Full list: `python3 index/search.py --concept lookahead -n 1547`
 
 ### On-chain execution reality
 
-`execution-onchain` · **1130 files** · matched on `jupiter`, `jlp`, `oracle`, `priority`, `slippage`, `perps`, `solana`
+`execution-onchain` · **1141 files** · matched on `jupiter`, `jlp`, `oracle`, `priority`, `slippage`, `perps`, `solana`
 
 Oracle-priced perps, priority fees as a product, per-account fee markets, dropped-versus-reverted. Decides whether a strategy is executable at all.
 
 Strongest files:
 
 - `docs/design/oracle-ui-2399/report.json` (668 hits)
-- `docs/FILES.md` (590 hits)
+- `docs/FILES.md` (610 hits)
 - `research/strategy_experiment/results/results.json` (544 hits)
 - `llms/jupsol-llms.txt` (427 hits)
 - `research/strategy_experiment/results/initial-gapped-run/results.json` (408 hits)
-- `memory.md` (332 hits)
+- `memory.md` (342 hits)
 - `FILES.md` (283 hits)
 - `.cdo/reviews-2026-11-12/oracle.json` (271 hits)
 
-Full list: `python3 index/search.py --concept execution-onchain -n 1130`
+Full list: `python3 index/search.py --concept execution-onchain -n 1141`
 
 ### Grid trading
 
@@ -154,7 +154,7 @@ Full list: `python3 index/search.py --concept data-integrity -n 850`
 
 ### Buy-and-hold benchmark
 
-`benchmark` · **596 files** · matched on `buy_and_hold`, `benchmark`, `baseline`
+`benchmark` · **598 files** · matched on `buy_and_hold`, `benchmark`, `baseline`
 
 Zero parameters, and it out-ranked all but one or two strategies on SOL and all five recommended configurations on ZEC.
 
@@ -169,7 +169,7 @@ Strongest files:
 - `docs/FILES.md` (90 hits)
 - `.cdo/reviews-2026-11-12/research-scripts.json` (81 hits)
 
-Full list: `python3 index/search.py --concept benchmark -n 596`
+Full list: `python3 index/search.py --concept benchmark -n 598`
 
 ### Evidence floor
 
@@ -259,8 +259,8 @@ The families also carry a historical measured finding. Of the study's 25 strateg
 |---|---|---|
 | `trend` | 924 | `trend`, `ma_crossover`, `macd`, `ichimoku` |
 | `oscillator-reversion` | 596 | `rsi`, `stochastic`, `oscillator` |
-| `baseline` | 525 | `buy_and_hold`, `baseline` |
-| `momentum` | 478 | `momentum`, `ts_momentum`, `dual_momentum` |
+| `baseline` | 527 | `buy_and_hold`, `baseline` |
+| `momentum` | 479 | `momentum`, `ts_momentum`, `dual_momentum` |
 | `regime-filter` | 389 | `regime`, `sma_regime`, `adx_trend`, `hurst`, `vol_regime` |
 | `breakout` | 306 | `breakout`, `bb_breakout`, `keltner` |
 | `volume-flow` | 167 | `obv`, `volume-flow` |

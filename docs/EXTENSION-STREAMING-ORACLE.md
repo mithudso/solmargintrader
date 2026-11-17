@@ -1,6 +1,6 @@
 # Streaming Oracle in the Jupiter indicator window
 
-Version: 2.0.0. Delta: train all six horizons independently, preserve0.9 evidence and fence latest shared-input eligibility.
+Version: 2.0.0. Delta: train all six horizons independently, preserve 0.9 evidence and fence latest shared-input eligibility.
 
 The extension's existing public-read window now contains a streaming Oracle. It
 reuses the validated Pyth stream and bounded one-minute history already owned by
@@ -11,7 +11,7 @@ open; collapsing, hiding or leaving the route stops its feed and controller.
 
 ## Target and timing
 
-Six independent models predict **rolling1m/5m/10m/15m/20m/1h close-to-close UP
+Six independent models predict **rolling 1m/5m/10m/15m/20m/1h close-to-close UP
 versus NON-UP**. Each may issue once per fresh completed one-minute cutoff.
 Each horizon owns its weights, immutable forecasts, outcomes, serving policy and
 paired metrics. Chart selection changes the displayed detail; it does not choose
@@ -20,9 +20,9 @@ pattern context. Overlapping targets within and across models are not independen
 trials. A compact overview shows every horizon; selected detail shows all three
 predictors' recent/cumulative metrics.
 
-For the10m horizon, if cutoff is 10:00 UTC, the known reference is the closed 09:59–10:00 one-minute
+For the 10m horizon, if cutoff is 10:00 UTC, the known reference is the closed 09:59–10:00 one-minute
 candle's close. The target is the close of 10:09–10:10. The forecast must be
-stored within 15 seconds after10:00, before that target exists. A mid-minute
+stored within 15 seconds after 10:00, before that target exists. A mid-minute
 startup waits for the next cutoff; it never backfills supposedly forward calls.
 
 UP means target close is strictly greater than the stored reference. NON-UP
@@ -59,7 +59,7 @@ b = clip(b - 0.05 * (p - y), -8, 8)
 
 The intercept is unregularized. The projection and fixed step bound the update;
 they are engineering settings, not empirically optimized choices. Each new horizon model
-starts with zero coefficients and p=0.5. Existing10m weights retain their values. The stable sigmoid avoids overflow.
+starts with zero coefficients and p=0.5. Existing 10m weights retain their values. The stable sigmoid avoids overflow.
 
 Twenty-two fixed, versioned features include 1/5/10-minute log returns, EMA9/21
 gap, MACD histogram, BOP SMA3, normalized RSI, the latest completed candle body,
@@ -83,10 +83,10 @@ probabilities and serving mode are never rewritten.
 ## Baseline, fallback and metrics
 
 Every candidate forecast has a paired, fixed 0.5 no-learning baseline for the
-same event. The existing0–3 indicator alignment is not a probability baseline.
-While fewer than20 genuine outcomes have trained a horizon, each newly issued
-forecast serves a labeled0.5 baseline while the candidate continues collecting
-labels and learning. This can span many more than20 issued forecasts for long
+same event. The existing 0–3 indicator alignment is not a probability baseline.
+While fewer than 20 genuine outcomes have trained a horizon, each newly issued
+forecast serves a labeled 0.5 baseline while the candidate continues collecting
+labels and learning. This can span many more than 20 issued forecasts for long
 horizons because their feedback is delayed. Cold start therefore
 has a path to a trained model.
 
@@ -126,13 +126,13 @@ transaction's completed result. There is no network request or asynchronous
 control gap inside the transaction. Concurrent windows read the first window's
 stored same-cutoff forecast instead of recomputing it under newer weights.
 
-Each pending ledger is capped at64 and each recent resolved ledger at128. The
+Each pending ledger is capped at 64 and each recent resolved ledger at 128. The
 model and cumulative paired totals remain bounded-size records. Persistent
 last-issued watermarks prevent replay after recent-history pruning. Resolution
 watermarks describe completed work but do not reject older existing pending
-forecasts. Sixty one-minute-spaced1h targets plus90s outcome lateness and an
-issuance margin fit64 pending records. The database allows96 logical partitions,
-room for16 complete six-horizon source groups. Capacity is a global bound, not
+forecasts. Sixty one-minute-spaced 1h targets plus 90s outcome lateness and an
+issuance margin fit 64 pending records. The database allows 96 logical partitions,
+room for 16 complete six-horizon source groups. Capacity is a global bound, not
 a reservation per market; partial old groups can occupy slots. New-partition
 capacity failures do not stop updates to existing healthy partitions. No evidence
 is evicted to make room. These limits are engineering bounds, not measured
@@ -140,8 +140,8 @@ optimal settings. Browser data clearing or
 storage eviction ends that local history; local browser storage is not an
 external audit archive or a guarantee against every device failure.
 
-The schema/model/feature/target version strings and exact600-second key remain
-unchanged. Genuine0.9 ten-minute weights, pending IDs, probabilities and scores
+The schema/model/feature/target version strings and exact 600-second key remain
+unchanged. Genuine 0.9 ten-minute weights, pending IDs, probabilities and scores
 remain usable without a schema migration or retrospective rewrite. New horizons
 start prospectively with historicalTrainingSamples=0.
 
@@ -160,13 +160,13 @@ snapshot, so an older live completion cannot reactivate a same-source stale
 view. A stale observation marks every row unavailable immediately, without
 clearing verified same-source history.
 
-The feed keeps one authoritative minute ledger across chart intervals. A1m chart
+The feed keeps one authoritative minute ledger across chart intervals. A 1m chart
 reuses that exact history request. Larger selected charts have their own history;
 changing them aborts obsolete chart reads without replacing the socket or shared
 minute ledger. Chart loading/failure/indicator arithmetic cannot poison healthy
 shared-minute learning. Invalid shared source/quote/minute arithmetic still
 withholds all six. Per-horizon storage failures and fallback stay independent.
-Trading remains read only on this surface.
+The minute-close Oracle and chart are read-only analysis. Separate controls in the panel can operate the shared paper session.
 
 ## Research provenance
 
@@ -177,15 +177,15 @@ Prompt optimization was structural-only; it established no benchmark gain.
 
 The parent commissioned a distinct Mongo SK full-suite research run:
 `a6585948d2fce4f576ddd5decff3a70908d912580dec95b766f2906dc7948bb4`.
-The probability/scoring leaf now has16/16 SUPPORTED source-method claims under
+The probability/scoring leaf now has 16/16 SUPPORTED source-method claims under
 trusted completed job`pub:1062e08eeed03535f5fa9af230e37e23`. The concept
-`c:ten-minute-market-probability-scoring-calibration-and-baselines`, revision50,
+`c:ten-minute-market-probability-scoring-calibration-and-baselines`, revision 50,
 records verified completion SHA-256
 `def78224c361cd7de96ab44da2fe5df40e9f8c7c78027d62edf53c5924de5520`.
 Its gate-v4 receipt is
 `art:4103e5f516ac34787bb21e96a5743c35aeb13b69dd8015ba0abc423f8f06e4a0`.
 The actual gate used gpt-6.1-sol at medium effort. The full suite remains partial;
-pack compilation returned HTTP524 and its outcome requires reconciliation.
+pack compilation returned HTTP 524 and its outcome requires reconciliation.
 Accepted source-method claims support scoring/calibration methodology and its
 limits. They do not validate this application's accuracy, calibration,
 profitability or full-suite completion. Application mathematics and observable
@@ -226,31 +226,31 @@ Candidate counts, completed checks, exact loaded module hashes and final
 delivery limitations belong in the delivery receipt. A pushed draft or passing
 source tests alone is not canonical installation or a merged release.
 
-The0.10 candidate passed598/598 extension tests and root JavaScript checks.
+The 0.10 candidate passed 598/598 extension tests and root JavaScript checks.
 Its direct tests cover all six exact target windows, causal-prefix/future
-mutation, gaps/partials/expiry, trained0.9 key/weights/pending/score compatibility,
-1h pending beyond32, all-six deselected learning, independent fallback/capacity
+mutation, gaps/partials/expiry, trained 0.9 key/weights/pending/score compatibility,
+1h pending beyond 32, all-six deselected learning, independent fallback/capacity
 and both sides of the same-source completion race. Independent read-only review
 found no corroborated Medium-or-higher issue across all ten runtime files,
-passed65 focused cases and exactly matched121 complete old/new ten-minute
+passed 65 focused cases and exactly matched 121 complete old/new ten-minute
 state transitions (121 issued,111 trained,10 pending).
 
-The complete native Chrome fixture passed27/27 and actual public gate passed8/8
-with exact loaded0.10.0 asset hashes. Two actual contexts produced82 immutable
-forecasts per horizon; observed trained counts were81/77/72/67/62/22 for
-1m/5m/10m/15m/20m/1h, with60 genuine pending1h forecasts. Selected-chart
+The complete native Chrome fixture passed 27/27 and actual public gate passed 8/8
+with exact loaded 0.10.0 asset hashes. Two actual contexts produced 82 immutable
+forecasts per horizon; observed trained counts were 81/77/72/67/62/22 for
+1m/5m/10m/15m/20m/1h, with 60 genuine pending 1h forecasts. Selected-chart
 failure left all six learning on the same sockets. Native abort/reopen and
 unknown outcomes preserve each model's separate evidence. A quarantined native
-store refused partition97 without evicting records or blocking existing updates.
+store refused partition 97 without evicting records or blocking existing updates.
 
-A separate quarantined native test executes the frozen0.9 model source inside
-Chrome, preserves its21-sample ten-minute weights/pending/scores exactly, and
-resumes to22 samples. Its actual DOM retains historical counts immediately on
+A separate quarantined native test executes the frozen 0.9 model source inside
+Chrome, preserves its 21-sample ten-minute weights/pending/scores exactly, and
+resumes to 22 samples. Its actual DOM retains historical counts immediately on
 stale input and after all six earlier commits complete. The original Node-made
 golden JSON had one score-field difference under Chrome's math and was correctly
 refused. The browser reference therefore uses the original model in its own
 engine; no validation threshold, stored score or production equation was relaxed.
-Earlier25/27 and6/7 harness receipts remain preserved. The first chart-refusal
+Earlier 25/27 and 6/7 harness receipts remain preserved. The first chart-refusal
 assertion incorrectly required a fixed error label while fresh quotes can change
 that withheld chart status to backfilling; the final assertion checks non-live
 chart status and unavailable signals while all six models remain independent.

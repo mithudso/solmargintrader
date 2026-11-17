@@ -2,8 +2,9 @@
 
 Version: 1.1.0. Delta: distinguish interface terms and full-corpus review from the initial SDK slice, 2026-11-16.
 
-The indicator overlay is read-only. This document prepares a later execution
-design; it does not enable signing, submission, arming, or autonomous trading.
+The indicator chart is read-only. Separate paper-default controls use the shared
+owner. This SDK review does not itself enable signing, submission, arming or
+autonomous trading.
 The existing executor remains restricted to BTC and ZEC. SOL market-data
 availability does not grant SOL execution support.
 
@@ -148,15 +149,12 @@ Source hashes are recorded in
    never auto-retry an unknown action. Track closed-position settlement and
    unpaid-profit claims separately.
 
-The current source already records a concrete blocker. In
-/Users/mitch/dev/solmargintrader/oracle_leverage/sdk/service.mjs:108,
-`inspectOpenBuild` can inspect the observed `UpdatePrice` + `OpenPosition`
-shape and run unsigned simulation, but explicitly says it cannot establish
-the service keeper authorization and that Submit is disabled. The stricter
-`verifyBuild` path requires the keeper from program config and one allowed
-trade instruction. Its supported shape cannot be broadened merely to make a
-current service transaction pass. This review did not call the build endpoint,
-verify an actual account, or resolve that gap.
+The initial inspection found that `inspectOpenBuild` could inspect an observed
+`UpdatePrice` + `OpenPosition` shape and simulate unsigned bytes, but could not
+establish service keeper authorization. Current `verifyBuild` routes that open
+shape through `verifyCurrentOpen`; current-format close remains unverified.
+This review did not call the build endpoint, verify an actual account, or
+establish funded execution.
 
 Bridge status reports `serviceSubmitAvailable:true` because a service handler
 exists. That static flag does not certify service verification, a funded fill,

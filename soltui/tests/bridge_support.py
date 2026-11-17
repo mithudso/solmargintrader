@@ -152,9 +152,14 @@ HEAVY = {
 def default_params() -> dict[str, dict]:
     """A valid call for every command with a required parameter."""
     from backtester.core.strategies import REGISTRY
+    from oracle_leverage.tests.test_signals import packet as signal_packet
 
     fresh = next(n for n in sorted(REGISTRY) if n not in ("buy_and_hold", "ma_crossover", "rsi", "breakout"))
     return {
+        "oracle.signals.status": {},
+        "oracle.signals.publish": {"packet": signal_packet()},
+        "oracle.signals.invalidate": {"event": {"asset": "BTC", "publisher_id": "one",
+                                                 "sequence": 2, "reason": "feed_unavailable"}},
         "autotrade.status": {},
         "autotrade.start_paper": {"request_id": AUTO_REQUEST_ID, "config": dict(AUTO_CONFIG)},
         "autotrade.start_live": {"request_id": AUTO_REQUEST_ID,
@@ -277,6 +282,14 @@ class World:
             "ingest_forecast": {"accepted": True, "forecast_id": "a" * 64},
         }.items():
             self.stack.enter_context(mock.patch.object(autotrade, name, return_value=result))
+        # Freeze the relay boundary; parity tests exercise dispatch, not live state or clock.
+        from oracle_leverage import signals
+        for name, result in {
+            "status": {"available": False, "now_ms": 100000, "assets": {}},
+            "publish": {"accepted": True},
+            "invalidate": {"accepted": True},
+        }.items():
+            self.stack.enter_context(mock.patch.object(signals, name, return_value=result))
         commands.reset_default_runtime()
         return self
 

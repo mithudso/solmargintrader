@@ -530,6 +530,35 @@ def _autotrade_call(action, *args):
         raise CommandError("bad_params", str(exc)) from exc
 
 
+@command("oracle.signals.status", "Read the private Jupiter directional signal relay.")
+def oracle_signals_status(ctx, p):
+    from oracle_leverage import signals
+    try:
+        return signals.status()
+    except ValueError as exc:
+        raise CommandError("bad_params", str(exc)) from exc
+
+
+@command("oracle.signals.publish", "Publish a private Jupiter directional signal snapshot.",
+         (P("packet", "json", "Bounded versioned signal packet.", True),), read_only=False)
+def oracle_signals_publish(ctx, p):
+    from oracle_leverage import signals
+    try:
+        return signals.publish(p["packet"])
+    except ValueError as exc:
+        raise CommandError("bad_params", str(exc)) from exc
+
+
+@command("oracle.signals.invalidate", "Fence and close a publisher's advisory windows.",
+         (P("event", "json", "Publisher sequence and bounded invalidation reason.", True),), read_only=False)
+def oracle_signals_invalidate(ctx, p):
+    from oracle_leverage import signals
+    try:
+        return signals.invalidate(p["event"])
+    except ValueError as exc:
+        raise CommandError("bad_params", str(exc)) from exc
+
+
 @command("autotrade.status", "Read the shared auto-trade owner status.")
 def autotrade_status(ctx, p):
     return _autotrade_call("status")
