@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-11-17T18:49:46+00:00",
+  "generatedAt": "2026-11-17T19:52:14+00:00",
   "schemaVersion": 1,
   "note": "Concepts are derived from the repo's own vocabulary \u2014 the FAMILY dict, strategy-card frontmatter, docs/trading-signals-concept-family.md, and terms verified to recur in the corpus. A concept matching no file is dropped, not kept.",
   "counts": {
@@ -59,7 +59,7 @@
         },
         {
           "path": "memory.md",
-          "hits": 140
+          "hits": 141
         },
         {
           "path": "research/tradingview-script-profiles/shard-a.jsonl",
@@ -300,7 +300,7 @@
         "borrow",
         "financing"
       ],
-      "matchingFiles": 1616,
+      "matchingFiles": 1617,
       "shown": 30,
       "files": [
         {
@@ -2170,7 +2170,7 @@
         },
         {
           "path": "memory.md",
-          "hits": 19
+          "hits": 20
         },
         {
           "path": "backtester/tests/test_research_regressions.py",

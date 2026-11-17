@@ -1,11 +1,11 @@
 {
-  "generatedAt": "2026-11-17T18:49:46+00:00",
+  "generatedAt": "2026-11-17T19:52:14+00:00",
   "schemaVersion": 1,
   "repoRoot": "~/dev/solmargintrader",
-  "commit": "c6c4912",
+  "commit": "2b5a6c5",
   "counts": {
     "files": 4092,
-    "bytes": 166762041,
+    "bytes": 166769506,
     "byKind": {
       "strategy-card": 1478,
       "doc": 845,
@@ -3106,9 +3106,9 @@
       "title": "Keep the committed index in step with the tree, and refuse a commit whose",
       "summary": "",
       "summarySource": "none",
-      "bytes": 1876,
+      "bytes": 1946,
       "lines": 48,
-      "sha1": "1b41fc289803079c137c64f9325d2998c8a25ef8",
+      "sha1": "10adfa3ddb06dedded47df1fefb9842265c36f31",
       "symbols": [],
       "imports": [],
       "internalImports": [],
@@ -71753,17 +71753,16 @@
       "ext": ".py",
       "kind": "test",
       "title": "test_cdo_load_cleanup",
-      "summary": "Exercise the load fixture's real cleanup block without spawning a worker.",
+      "summary": "Exercise the load fixture's cleanup helper without spawning a worker.",
       "summarySource": "docstring",
-      "bytes": 1809,
-      "lines": 30,
-      "sha1": "ffcaf630179f8f2d4e21125e4525919c78a665da",
+      "bytes": 1104,
+      "lines": 23,
+      "sha1": "d5b77892f404826982d907d6d7fcc870a0307b0c",
       "symbols": [
         "class LoadCleanupTests"
       ],
       "imports": [
-        "ast",
-        "pathlib",
+        "tests",
         "types",
         "unittest"
       ],
@@ -74352,9 +74351,9 @@
       "title": "Experimental grid operations",
       "summary": "These commands control the extension's experimental grid. Other sessions retain their own owners and stop controls; see [ORACLE-AUTO-TRADING.md](ORACLE-AUTO-TRADING.md) for the shared auto-trade session. Closing a display does not stop its session.",
       "summarySource": "opening-prose",
-      "bytes": 5857,
-      "lines": 122,
-      "sha1": "d7e88826bdb9947957cb0673973347d1e74dfa5a",
+      "bytes": 6948,
+      "lines": 144,
+      "sha1": "c02c3f37fea400797b9b2df0ec62db5c97fe7161",
       "symbols": [],
       "imports": [],
       "internalImports": [],
@@ -89720,11 +89719,11 @@
       "ext": ".md",
       "kind": "doc",
       "title": "Work continuation",
-      "summary": "Version: 641 Delta: v640 to v641; preserve current leveraged preview and paper-study contracts during PR289 integration. Preserve newer inspection-only SDK oracle validation and immutable published exit-study report/policy bindings. Preserve feed controls, auto-trade confirmations, paper owner identity and lifecycle cleanup in the panel.",
+      "summary": "Version: 645 Delta: v644 to v645; retain final public exports while preparing PR289 exact-head checks. Version: 644",
       "summarySource": "opening-prose",
-      "bytes": 842280,
-      "lines": 4311,
-      "sha1": "45727a855cf2d90819636032f29eb3041d68bada",
+      "bytes": 846437,
+      "lines": 4348,
+      "sha1": "4ee2ffdb2f78cdc611616a15586e8233a5f73405",
       "symbols": [],
       "imports": [],
       "internalImports": [],
@@ -91245,9 +91244,9 @@
       "title": "test_audit_integrity",
       "summary": "",
       "summarySource": "none",
-      "bytes": 7471,
+      "bytes": 7468,
       "lines": 160,
-      "sha1": "aa1ba2845642fe0dc0b4236acb263f93371e7101",
+      "sha1": "2383792e6295a67fcdfde6544944c692d7fcabc7",
       "symbols": [
         "class TemporalIntegrityTests"
       ],
@@ -93746,11 +93745,11 @@
       "ext": ".md",
       "kind": "doc",
       "title": "Prompt history",
-      "summary": "Version: 289 Delta: v288 to v289; preserve current leveraged preview and paper-study contracts during PR289 integration. Version: 269",
+      "summary": "Version: 292 Delta: v291 to v292; retain final public exports while preparing PR289 exact-head checks. Version: 291",
       "summarySource": "opening-prose",
-      "bytes": 285643,
-      "lines": 4743,
-      "sha1": "55ac863f132333329d960460257103f59ed41a9f",
+      "bytes": 286255,
+      "lines": 4760,
+      "sha1": "0a83c36b732d7dfafcef92caf12e1a50ce7f6bb4",
       "symbols": [],
       "imports": [],
       "internalImports": [],
@@ -108693,9 +108692,9 @@
       "title": "test_workflow_safety",
       "summary": "Repository hooks run only against disposable Git fixtures with inert gates.",
       "summarySource": "docstring",
-      "bytes": 6839,
+      "bytes": 6999,
       "lines": 132,
-      "sha1": "8480ee1d1e67aed70da04f9d704bfbcc4bc590e6",
+      "sha1": "d25a54ccf01494e3145e13e912af475b80f98532",
       "symbols": [
         "REPO",
         "class HookSafetyTests"
@@ -110626,9 +110625,9 @@
       "title": "Where the worker and the TUI meet. Under the existing config dir rather than a",
       "summary": "Job queue for the background backtest sweep. Pure logic; no UI, no processes. The TUI's own sweep (`runner.py`) evaluates the roster and blocks a thread until it finishes.",
       "summarySource": "docstring",
-      "bytes": 41079,
+      "bytes": 41093,
       "lines": 1037,
-      "sha1": "8dbddfefe44ee7b6c399b1757c004f781e1d2732",
+      "sha1": "1b37d203f86b4af9d80b6f7ab706bf3b62b3e527",
       "symbols": [
         "BG_DIR",
         "RESULTS_PATH",
@@ -111485,15 +111484,16 @@
       "title": "csv_safety",
       "summary": "Keep exported display strings literal when opened by spreadsheet software. Call ``spreadsheet_safe_text(cell)`` before passing cells to ``csv.writer``. Formula-like strings receive an apostrophe. Signed numeric values, including grouped numbers, scientific notation and percentages, keep their numeric text. This helper has no UI dependency, so headless reports can share the same policy.",
       "summarySource": "docstring",
-      "bytes": 859,
-      "lines": 21,
-      "sha1": "c9809af650b405357e0faf87142bb5c22426e4e0",
+      "bytes": 1122,
+      "lines": 27,
+      "sha1": "39f0efcfcf4451f730f7285ffd22f8dfd5678585",
       "symbols": [
         "_NUMBER",
         "spreadsheet_safe_text()"
       ],
       "imports": [
         "__future__",
+        "math",
         "re"
       ],
       "internalImports": [],
@@ -111509,9 +111509,9 @@
       "title": "csv_table",
       "summary": "CSV export for Textual tables.",
       "summarySource": "docstring",
-      "bytes": 3548,
-      "lines": 97,
-      "sha1": "ab5888215db385548e41bc8fc9e73a71e7ec2b91",
+      "bytes": 3134,
+      "lines": 86,
+      "sha1": "52d529c99cdb47e87ed2bd83c60e85fe9ba08296",
       "symbols": [
         "_plain()",
         "_spreadsheet_cell()",
@@ -111524,9 +111524,7 @@
         "csv",
         "csv_safety",
         "datetime",
-        "math",
         "pathlib",
-        "re",
         "rich",
         "textual"
       ],
@@ -115860,9 +115858,9 @@
       "title": "test_forward_integrity",
       "summary": "Retained-candle and publication boundaries with disposable SQLite fixtures.",
       "summarySource": "docstring",
-      "bytes": 5386,
-      "lines": 105,
-      "sha1": "ace46af48c65b6ea65ee6c0795d35125468364b2",
+      "bytes": 5663,
+      "lines": 111,
+      "sha1": "363b0803c7bc5081f0858b0e7272c9dc1d00023a",
       "symbols": [
         "BASE",
         "class ForwardIntegrity"
@@ -116030,9 +116028,9 @@
       "title": "test_health_boundaries",
       "summary": "Offline stream bounds and test-owner isolation; no sockets or application jobs.",
       "summarySource": "docstring",
-      "bytes": 51076,
-      "lines": 1221,
-      "sha1": "aa96a8ab35596153f7aa174cc981fdc584743085",
+      "bytes": 52179,
+      "lines": 1239,
+      "sha1": "f560394f4aca5beace21ff287f43e1e02d5c76d1",
       "symbols": [
         "class ApiError",
         "isolated_api()",
@@ -117117,9 +117115,9 @@
       "title": "test_research_owner",
       "summary": "",
       "summarySource": "none",
-      "bytes": 28754,
-      "lines": 742,
-      "sha1": "94c21aae949f1781586a19576b8a2ae36a6f9d3e",
+      "bytes": 28986,
+      "lines": 745,
+      "sha1": "9a06edddd795fd49aaec81f2a9187cfb2856923b",
       "symbols": [
         "class OwnerProtocolTests"
       ],
@@ -117786,9 +117784,9 @@
       "title": "Terminal big enough that every button is on-screen; Pilot.click() raises",
       "summary": "Smoke tests for the Textual app, driven through Textual's own test harness. An app that imports cleanly but explodes on mount is not working, so these actually mount it, click things, and assert on widget state. `run_test()` runs a headless terminal, so no TTY is required and this is safe in CI.",
       "summarySource": "docstring",
-      "bytes": 64964,
-      "lines": 1473,
-      "sha1": "f150fe05648c43947f9d4cd181bc679a3440c627",
+      "bytes": 65321,
+      "lines": 1479,
+      "sha1": "ef781ba532d7f4b8c77f83ffe10bff934e194ef0",
       "symbols": [
         "_queue_row()",
         "TEST_SIZE",
@@ -117816,6 +117814,7 @@
       ],
       "imports": [
         "__future__",
+        "asyncio",
         "backtester",
         "contextlib",
         "os",
@@ -118067,9 +118066,9 @@
       "title": "test_wallet_integration",
       "summary": "Wallet discovery wired into the console: Settings addresses, the key-source row, `portfolio.scan`, the Wallet tab, and the separate `wallet (live)` section of the P&L tab. The network is replaced by the recorded-fixture `Fake` from test_wallet; nothing here reads a key file.",
       "summarySource": "docstring",
-      "bytes": 15527,
-      "lines": 305,
-      "sha1": "5bb3d81cedb5cc477aeac272424c36456375eb3f",
+      "bytes": 15681,
+      "lines": 308,
+      "sha1": "932c380c9ebff2c10218057cd3b7ad9c33bf835d",
       "symbols": [
         "class Env",
         "class SettingsTests",
@@ -121386,9 +121385,9 @@
       "title": "client-races.test",
       "summary": "",
       "summarySource": "none",
-      "bytes": 4906,
-      "lines": 79,
-      "sha1": "e1e77875d0592182efabea4410ea50682165b93c",
+      "bytes": 5003,
+      "lines": 80,
+      "sha1": "f17a1cefe37d00663493fa7b369696cdcb736562",
       "symbols": [
         "client",
         "deferred"
@@ -121881,5 +121880,5 @@
       "frontmatter": {}
     }
   ],
-  "textSha256": "caf80fe3c5a425d84f152d72736d1e51e265da09644f641d73ad0f9db4125559"
+  "textSha256": "cdd416cdf38e63fb150c71fea7dee4afedb39540c24a4894f13e623c19d71525"
 }
