@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-11-17T19:34:00+00:00",
+  "generatedAt": "2026-11-17T20:00:06+00:00",
   "schemaVersion": 1,
   "note": "Concepts are derived from the repo's own vocabulary \u2014 the FAMILY dict, strategy-card frontmatter, docs/trading-signals-concept-family.md, and terms verified to recur in the corpus. A concept matching no file is dropped, not kept.",
   "counts": {
@@ -22,7 +22,7 @@
         "confirm",
         "fail-closed"
       ],
-      "matchingFiles": 1987,
+      "matchingFiles": 1988,
       "shown": 30,
       "files": [
         {
@@ -161,7 +161,7 @@
         "universe",
         "top_coins"
       ],
-      "matchingFiles": 1796,
+      "matchingFiles": 1797,
       "shown": 30,
       "files": [
         {
@@ -170,7 +170,7 @@
         },
         {
           "path": "memory.md",
-          "hits": 266
+          "hits": 267
         },
         {
           "path": "research/coin-intelligence/zec-zcash.md",
@@ -603,7 +603,7 @@
         },
         {
           "path": "memory.md",
-          "hits": 347
+          "hits": 349
         },
         {
           "path": "FILES.md",
@@ -990,7 +990,7 @@
         "monotone",
         "gap"
       ],
-      "matchingFiles": 851,
+      "matchingFiles": 850,
       "shown": 30,
       "files": [
         {
@@ -1125,7 +1125,7 @@
         "benchmark",
         "baseline"
       ],
-      "matchingFiles": 607,
+      "matchingFiles": 606,
       "shown": 30,
       "files": [
         {
@@ -1394,7 +1394,7 @@
         "buy_and_hold",
         "baseline"
       ],
-      "matchingFiles": 535,
+      "matchingFiles": 534,
       "shown": 30,
       "files": [
         {

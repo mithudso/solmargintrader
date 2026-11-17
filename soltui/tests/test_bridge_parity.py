@@ -44,7 +44,7 @@ class ParityTests(unittest.TestCase):
                 with self.subTest(command=name):
                     baseline = seen["tui"]
                     json.loads(baseline)
-                    if name.startswith("autotrade."):
+                    if name.startswith(("autotrade.", "oracle.learning.")):
                         self.assertTrue(json.loads(baseline)["ok"], baseline)
                     for surface, text in seen.items():
                         self.assertEqual(text, baseline, f"{name}: {surface} differs from tui")
