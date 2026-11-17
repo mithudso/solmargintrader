@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import hashlib
+import itertools
 import json
 import re
 import time
@@ -88,14 +89,14 @@ def week_bounds(end: str | None = None, days: int = 7, *, now=None) -> tuple[int
     return stop - days * 86400, stop
 
 
-def read_url(url: str) -> bytes:
+def read_url(url: str, *, max_bytes: int = MAX_BYTES) -> bytes:
     opener = urllib.request.build_opener(NoRedirect())
     request = urllib.request.Request(
         url, headers={"User-Agent": "solmargintrader-weekly-study/1"}
     )
     with opener.open(request, timeout=20) as response:
-        raw = response.read(MAX_BYTES + 1)
-        if response.status != 200 or len(raw) > MAX_BYTES:
+        raw = response.read(max_bytes + 1)
+        if response.status != 200 or len(raw) > max_bytes:
             raise ValueError("invalid or oversized candle response")
         return raw
 
@@ -136,7 +137,9 @@ def page_rows(raw: bytes, left: int, right: int, provider: str = "coinbase") -> 
     return [r for r in normalized if left <= r[0] < right]
 
 
-def verify_snapshot(source: dict, coin: str, start: int, stop: int) -> list:
+def verify_snapshot(
+    source: dict, coin: str, start: int, stop: int, quote: str | None = None
+) -> list:
     if (source["coin"], source["input_start"], source["input_end_exclusive"]) != (
         coin,
         start,
@@ -145,12 +148,15 @@ def verify_snapshot(source: dict, coin: str, start: int, stop: int) -> list:
         raise ValueError("snapshot coin or window mismatch")
     provider = source.get("provider", "coinbase")
     meta = PROVIDERS[provider]
-    product = f"{coin}-USD" if provider == "coinbase" else f"{coin}USDT"
+    actual_quote = coin_symbol(source["quote"])
+    if quote is not None and actual_quote != coin_symbol(quote):
+        raise ValueError("snapshot quote mismatch")
+    product = market_product(coin, actual_quote, provider)
     if (source["study_start"], source["study_end_exclusive"]) != (start, stop):
         raise ValueError("study window does not match acquisition")
     if (source["venue"], source["quote"], source["product"], source["source_url"]) != (
         meta["venue"],
-        meta["quote"],
+        actual_quote,
         product,
         meta["base"],
     ):
@@ -164,7 +170,7 @@ def verify_snapshot(source: dict, coin: str, start: int, stop: int) -> list:
             page["start"],
             min(stop, page["start"] + meta["page_minutes"] * 60),
         )
-        url = candle_url(coin, left, right, provider)
+        url = candle_url(coin, left, right, provider, actual_quote)
         raw = page["raw"].encode()
         if (
             page["url"] != url
@@ -179,14 +185,28 @@ def verify_snapshot(source: dict, coin: str, start: int, stop: int) -> list:
     return rows
 
 
-def candle_url(coin: str, left: int, right: int, provider: str = "coinbase") -> str:
+def market_product(coin: str, quote: str, provider: str) -> str:
+    base, counter = coin_symbol(coin), coin_symbol(quote)
+    if base == counter:
+        raise ValueError("a market needs different base and quote assets")
+    return f"{base}-{counter}" if provider == "coinbase" else f"{base}{counter}"
+
+
+def candle_url(
+    coin: str,
+    left: int,
+    right: int,
+    provider: str = "coinbase",
+    quote: str | None = None,
+) -> str:
+    product = market_product(coin, quote or PROVIDERS[provider]["quote"], provider)
     if provider == "binance":
         return (
             BINANCE
             + "?"
             + urllib.parse.urlencode(
                 {
-                    "symbol": f"{coin}USDT",
+                    "symbol": product,
                     "interval": "1m",
                     "startTime": left * 1000,
                     "endTime": right * 1000 - 1,
@@ -194,7 +214,7 @@ def candle_url(coin: str, left: int, right: int, provider: str = "coinbase") -> 
                 }
             )
         )
-    return f"{BASE}/products/{coin}-USD/candles?" + urllib.parse.urlencode(
+    return f"{BASE}/products/{product}/candles?" + urllib.parse.urlencode(
         {"granularity": 60, "start": iso(left), "end": iso(right)}
     )
 
@@ -208,17 +228,20 @@ def download(
     get=read_url,
     pause=time.sleep,
     provider="coinbase",
+    quote: str | None = None,
 ) -> dict:
     """Resume a frozen page census; archive bytes before advancing to another page."""
     coin = coin_symbol(coin)
     meta = PROVIDERS[provider]
+    quote = coin_symbol(quote or meta["quote"])
+    product = market_product(coin, quote, provider)
     if start % 60 or stop % 60 or stop <= start:
         raise ValueError("invalid minute acquisition bounds")
     if path.exists():
         source = load(path)
         if source.get("provider", "coinbase") != provider:
             raise ValueError("snapshot provider mismatch; never mix venues")
-        verify_snapshot(source, coin, start, stop)
+        verify_snapshot(source, coin, start, stop, quote)
         return source
     partial = path.with_name(path.name + ".partial")
     source = (
@@ -229,8 +252,8 @@ def download(
             "coin": coin,
             "provider": provider,
             "venue": meta["venue"],
-            "quote": meta["quote"],
-            "product": f"{coin}-USD" if provider == "coinbase" else f"{coin}USDT",
+            "quote": quote,
+            "product": product,
             "clock": "exchange UTC minute open; available after minute close",
             "source_url": meta["base"],
             "study_start": start,
@@ -250,11 +273,13 @@ def download(
         stop,
     ):
         raise ValueError("partial acquisition belongs to another run")
+    if source["quote"] != quote or source.get("provider", "coinbase") != provider:
+        raise ValueError("partial acquisition belongs to another market")
     # A partial file is a checkpoint, never evidence until its pages revalidate.
     for page in source["pages"]:
         raw = page["raw"].encode()
         if digest(raw) != page["sha256"] or page["url"] != candle_url(
-            coin, page["start"], page["end_exclusive"], provider
+            coin, page["start"], page["end_exclusive"], provider, quote
         ):
             raise ValueError("partial acquisition integrity mismatch")
     existing = {p["start"]: p for p in source["pages"]}
@@ -262,7 +287,7 @@ def download(
         right = min(stop, left + meta["page_minutes"] * 60)
         if left in existing:
             continue
-        url = candle_url(coin, left, right, provider)
+        url = candle_url(coin, left, right, provider, quote)
         for attempt in range(3):
             try:
                 raw = get(url)
@@ -306,7 +331,7 @@ def download(
             )
         ]
     )
-    verify_snapshot(source, coin, start, stop)
+    verify_snapshot(source, coin, start, stop, quote)
     present = {r[0] for r in source["rows"]}
     source["coverage"] = {
         "expected_minutes": (stop - start) // 60,
@@ -349,3 +374,41 @@ def arrays(frame: pd.DataFrame) -> dict:
         "ts": frame.timestamp.to_numpy(np.int64),
         **{k: frame[k].to_numpy(float) for k in COLUMNS[1:]},
     }
+
+
+def analysis_window(
+    frame: pd.DataFrame, start: int, stop: int, policy: str = "strict"
+) -> tuple[pd.DataFrame, dict]:
+    """Select real consecutive minutes; never fill a gap or hide a reduced range."""
+    if policy not in ("strict", "longest"):
+        raise ValueError("gap policy must be strict or longest")
+    if frame.empty:
+        raise ValueError("provider returned no observed candles")
+    stamps = frame.timestamp.to_numpy(np.int64)
+    complete = np.array_equal(stamps, np.arange(start, stop, 60, dtype=np.int64))
+    if not complete and policy == "strict":
+        raise ValueError(
+            "primary history has missing minutes; exact-week simulations refused, acquisition preserved"
+        )
+    if complete:
+        part = frame.copy()
+    else:
+        boundaries = np.r_[0, np.flatnonzero(np.diff(stamps) != 60) + 1, len(stamps)]
+        # Length, then earliest timestamp: selection never sees price or outcome.
+        left, right = max(
+            itertools.pairwise(boundaries), key=lambda x: (x[1] - x[0], -stamps[x[0]])
+        )
+        part = frame.iloc[left:right].copy().reset_index(drop=True)
+    info = {
+        "policy": policy,
+        "requested_start": start,
+        "requested_end_exclusive": stop,
+        "analysis_start": int(part.timestamp.iloc[0]),
+        "analysis_end_exclusive": int(part.timestamp.iloc[-1]) + 60,
+        "requested_minutes": (stop - start) // 60,
+        "observed_minutes": len(frame),
+        "analyzed_minutes": len(part),
+        "complete_requested_window": complete,
+        "excluded_observed_minutes": len(frame) - len(part),
+    }
+    return part, info
