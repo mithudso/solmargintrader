@@ -1,11 +1,11 @@
 {
-  "generatedAt": "2026-11-17T07:02:23+00:00",
+  "generatedAt": "2026-11-17T07:12:16+00:00",
   "schemaVersion": 1,
   "repoRoot": "~/dev/solmargintrader",
-  "commit": "4196d47",
+  "commit": "484b91d",
   "counts": {
     "files": 4008,
-    "bytes": 140891158,
+    "bytes": 140892081,
     "byKind": {
       "strategy-card": 1478,
       "doc": 840,
@@ -74035,12 +74035,12 @@
       "name": "OPERATIONS.md",
       "ext": ".md",
       "kind": "doc",
-      "title": "Operations runbook",
-      "summary": "cd extension && node tools/cli.js kill cannot resume trading. In the extension, the popup's red KILL SWITCH button does the same thing. node tools/cli.js data --json # find venueOrderId values",
+      "title": "Experimental grid operations",
+      "summary": "These commands control the extension's experimental grid. Other sessions retain their own owners and stop controls; see [ORACLE-AUTO-TRADING.md](ORACLE-AUTO-TRADING.md) for the shared auto-trade session. Closing a display does not stop its session.",
       "summarySource": "opening-prose",
-      "bytes": 4847,
-      "lines": 114,
-      "sha1": "5ee80c645feacce8da3571acbdab74aecb41e8d2",
+      "bytes": 5770,
+      "lines": 128,
+      "sha1": "9c607688c40ca7c84ef9651de1bdf90b684bbf91",
       "symbols": [],
       "imports": [],
       "internalImports": [],
@@ -119324,5 +119324,5 @@
       "frontmatter": {}
     }
   ],
-  "textSha256": "ba8a48eef18b0f13c4edaeda31631fe4bdcab799f61463ce9d5c0c74cdc56e60"
+  "textSha256": "3ab8c1cdaa4aa7ae0b62e75492e8ad97ca9ed11d7b2d20b3eedc404f5f0d1683"
 }
