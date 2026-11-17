@@ -1,6 +1,11 @@
 # Prompt history
 
-Version: 288
+Version: 289
+Delta: v288 to v289; preserve the native market coin-list and explicit report request.
+
+## Native market combinations and explicit reports — 2026-11-17
+
+I tried testing ETH and it tested against ETH/BTC and ETH/ZEC but not ETH/USD, how do I get it to test that one? Also make is so I can give it a list of coins and it'll pull the data and backtest all the combinations of those coins. Also in the report, make it more explicit and apparent what was being tested. "LINEAR" is not enough information to know what test you were running.
 Delta: v287 to v288; bind PR226 to merged master77bf655 and preserve its exact audit files.
 
 Version: 287

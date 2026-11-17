@@ -25,6 +25,7 @@ from research import zec_expanded as expanded
 from research import zec_granular as granular
 from research.coin_week_data import (
     PROVIDERS,
+    analysis_window,
     arrays,
     coin_symbol,
     digest,
@@ -41,7 +42,7 @@ from research.zec_cycles import fit_forecast, holm, null_test
 from research.zec_ensembles import batch_spot, canonical_replay, verify_batch_parity
 
 ROOT = Path(__file__).resolve().parents[1]
-VERSION = "1.0.0"
+VERSION = "2.0.0"
 STEPS = {"1m": 60, "5m": 300, "10m": 600, "1h": 3600}
 FEES = (10, 15, 25, 60)
 WINDOWS = ("full", "validation", "test")
@@ -158,6 +159,8 @@ def identity() -> dict:
             "research/coin_week.py",
             "research/coin_week_data.py",
             "research/coin_week_correlations.py",
+            "research/coin_week_reports.py",
+            "research/coin_week_batch.py",
             "soltui/bgqueue.py",
             "research/reversal_history.py",
             "research/zec_reversal_excursions.py",
@@ -294,6 +297,7 @@ def strategy_matrix(
     from concurrent.futures import ProcessPoolExecutor
 
     from backtester.core.zec_ensemble import spec_id
+    from research.coin_week_reports import resolved_policy
 
     step = STEPS[interval]
     bars = arrays(frame)
@@ -462,12 +466,19 @@ def strategy_matrix(
                         item[1]["mode"],
                     ),
                 )
+                winner_config = next(
+                    row["config"]
+                    for row in candidates
+                    if row["candidate_id"] == winner["candidate_id"]
+                )
                 selected.append(
                     {
                         "interval": interval,
                         "fee_bps_per_fill": fee,
                         "candidate_id": winner["candidate_id"],
                         "mode": winner["mode"],
+                        "config": winner_config,
+                        "resolved_config": resolved_policy(winner_config, step),
                         "selection": "validation net return; at least ten validation exits; deterministic tie-break; no test ranking",
                         "splits": {s: records[j] for s, records in by_split.items()},
                     }
@@ -692,13 +703,13 @@ def special_models(frame: pd.DataFrame, interval: str, plan: dict) -> dict:
     }
 
 
-def text_report(summary: dict) -> str:
+def legacy_text_report(summary: dict) -> str:
     p = summary["plan"]
     corr = summary["correlations"]
     lines = [
         f"# {p['coin']} weekly candle study",
         "",
-        f"Version: {VERSION}",
+        "Version: 1.0.0",
         f"UTC window: {iso(p['start'])} to {iso(p['end_exclusive'])} (exclusive).",
         f"Source: {p['venue']} {p['coin']}/{p['quote']}, {summary['minutes']:,} completed one-minute bars.",
         "",
@@ -777,6 +788,14 @@ def text_report(summary: dict) -> str:
     return "\n".join(lines)
 
 
+def text_report(summary: dict) -> str:
+    if summary.get("version", "1.0.0") == "1.0.0":
+        return legacy_text_report(summary)
+    from research.coin_week_reports import render_report
+
+    return render_report(summary)
+
+
 def plot_findings(
     primary: pd.DataFrame, sources: dict, corr: dict, output: Path
 ) -> None:
@@ -797,11 +816,11 @@ def plot_findings(
         axes[0].plot(
             pd.to_datetime(frame.timestamp, unit="s", utc=True),
             frame.close / frame.close.iloc[0] * 100,
-            label=coin,
+            label=f"{coin}/{source['quote']}",
             linewidth=0.8,
         )
     axes[0].set(
-        title="Same-week spot prices, first observed close = 100",
+        title="Actual analysis window: native market closes, first observed close = 100",
         ylabel="Rebased price",
     )
     axes[0].legend()
@@ -815,16 +834,17 @@ def plot_findings(
                 correlations.HORIZONS.index(row["horizon_minutes"]),
             )
             matrix[i, j] = row["pearson"]
-            significant[i, j] = row.get("p_maxT_validation_and_test", 1) <= 0.05
-    limit = max(0.1, float(np.nanmax(np.abs(matrix))))
+            significant[i, j] = row.get("p_familywise", 1) <= 0.05
+    finite = np.abs(matrix[np.isfinite(matrix)])
+    limit = max(0.1, float(finite.max()) if len(finite) else 0.1)
     heat = axes[1].imshow(matrix, aspect="auto", cmap="RdBu", vmin=-limit, vmax=limit)
     axes[1].set(
         yticks=range(len(names)),
         yticklabels=names,
         xticks=range(len(correlations.HORIZONS)),
         xticklabels=[f"{n}m" for n in correlations.HORIZONS],
-        xlabel="Future target return horizon",
-        title="Final-window Pearson correlations (* approximate max-statistic p <= 0.05)",
+        xlabel=f"Future {next(iter(sources))}/{next(iter(sources.values()))['quote']} return horizon",
+        title="Final-window Pearson correlations (* batch-family corrected p <= 0.05)",
     )
     for i, j in zip(*np.where(significant)):
         axes[1].text(j, i, "*", ha="center", va="center")
@@ -845,8 +865,47 @@ def verify_run(output: Path) -> dict:
             coin,
             plan["start"],
             plan["end_exclusive"],
+            plan["quote"],
         )
     summary = load(output / "summary.json")
+    if summary.get("version") == "2.0.0":
+        expected_plan = {k: plan[k] for k in summary["plan"]}
+        primary = load(output / "inputs" / f"{plan['coin']}.json.zlib")
+        _, window = analysis_window(
+            frame_from(primary),
+            plan["start"],
+            plan["end_exclusive"],
+            plan["gap_policy"],
+        )
+        if (
+            summary["plan"] != expected_plan
+            or summary["analysis_window"] != window
+            or summary["market"]
+            != {
+                "base": plan["coin"],
+                "quote": plan["quote"],
+                "product": primary["product"],
+                "venue": plan["venue"],
+                "kind": "native spot market candles",
+                "initial_reference_equity_quote": 10000,
+            }
+        ):
+            raise ValueError("summary market, plan or analysis window mismatch")
+        result = load(output / "correlations.json.zlib")
+        if summary["correlations"] != {k: v for k, v in result.items() if k != "rows"}:
+            raise ValueError("correlation summary mismatch")
+        for row in result["rows"]:
+            if "p_maxT_validation_and_test" in row and row["p_familywise"] != min(
+                1.0,
+                row["p_maxT_validation_and_test"]
+                * plan.get("correlation_family_multiplier", 1),
+            ):
+                raise ValueError("correlation batch correction mismatch")
+        if result["corrected_test_findings"] != sum(
+            r["split"] == "test" and r.get("p_familywise", 1) <= 0.05
+            for r in result["rows"]
+        ):
+            raise ValueError("corrected correlation count mismatch")
     if (output / "report.md").read_text() != text_report(summary):
         raise ValueError("report no longer reproduces from bound summary")
     count = sum(len(pd.read_csv(output / f"strategies-{i}.csv.gz")) for i in STEPS)
@@ -870,17 +929,50 @@ def analyze(plan: dict, output: Path, workers: int) -> dict:
         for coin in [plan["coin"], *plan["references"]]
     }
     for coin, source in sources.items():
-        verify_snapshot(source, coin, plan["start"], plan["end_exclusive"])
+        verify_snapshot(
+            source, coin, plan["start"], plan["end_exclusive"], plan["quote"]
+        )
         if source.get("provider", "coinbase") != plan["provider"]:
             raise ValueError("all comparison inputs must use the frozen provider")
-    primary = frame_from(sources[plan["coin"]])
-    frozen_inputs(output)
-    if primary.timestamp.tolist() != list(
-        range(plan["start"], plan["end_exclusive"], 60)
-    ):
+    primary, used_window = analysis_window(
+        frame_from(sources[plan["coin"]]),
+        plan["start"],
+        plan["end_exclusive"],
+        plan.get("gap_policy", "strict"),
+    )
+    if len(primary) < plan.get("minimum_contiguous_minutes", 1440):
         raise ValueError(
-            "primary history has missing minutes; exact-week simulations refused, acquisition preserved"
+            "at least 1440 consecutive real minutes are required; acquisition preserved"
         )
+    frozen_inputs(output)
+    analysis_plan = {
+        **plan,
+        "start": used_window["analysis_start"],
+        "end_exclusive": used_window["analysis_end_exclusive"],
+    }
+    print(
+        f"Backtest market: {plan['coin']}/{plan['quote']} ({plan['venue']}); requested {used_window['requested_minutes']} minutes, analyzing {used_window['analyzed_minutes']} real consecutive minutes",
+        flush=True,
+    )
+    print(
+        f"Actual test input: {iso(analysis_plan['start'])}..{iso(analysis_plan['end_exclusive'])}; gap policy: {used_window['policy']}",
+        flush=True,
+    )
+    analysis_sources = {}
+    for coin, source in sources.items():
+        rows = [
+            r
+            for r in source["rows"]
+            if analysis_plan["start"] <= r[0] < analysis_plan["end_exclusive"]
+        ]
+        analysis_sources[coin] = {
+            **source,
+            "rows": rows,
+            "study_start": analysis_plan["start"],
+            "study_end_exclusive": analysis_plan["end_exclusive"],
+            "input_start": analysis_plan["start"],
+            "input_end_exclusive": analysis_plan["end_exclusive"],
+        }
     primary.to_csv(
         output / f"{plan['coin']}-{plan['quote']}_1m.csv.gz",
         index=False,
@@ -899,11 +991,13 @@ def analyze(plan: dict, output: Path, workers: int) -> dict:
                 before = {p for p in output.iterdir() if p.is_file()}
                 print(f"{interval}: {stage}, {len(frame)} complete bars", flush=True)
                 if stage == "strategies":
-                    result = strategy_matrix(frame, interval, plan, output, workers)
+                    result = strategy_matrix(
+                        frame, interval, analysis_plan, output, workers
+                    )
                 elif stage == "cycles":
-                    result = cycle_study(frame, interval, plan)
+                    result = cycle_study(frame, interval, analysis_plan)
                 else:
-                    result = special_models(frame, interval, plan)
+                    result = special_models(frame, interval, analysis_plan)
                     write_table(output / f"special-{interval}.csv.gz", result["rows"])
                     result = {"rows": len(result["rows"]), "limits": result["limits"]}
                 save(checkpoint, result)
@@ -918,7 +1012,7 @@ def analyze(plan: dict, output: Path, workers: int) -> dict:
     from research.crosscoin_reversals import analyze as reversal_excursions
     from research.reversal_shapes import analyze as reversal_shapes
 
-    source = sources[plan["coin"]]
+    source = analysis_sources[plan["coin"]]
     for name, callback in (
         ("reversal-excursions", reversal_excursions),
         ("reversal-shapes", reversal_shapes),
@@ -935,13 +1029,18 @@ def analyze(plan: dict, output: Path, workers: int) -> dict:
     else:
         corr = correlations.analyze(
             primary,
-            {k: frame_from(v) for k, v in sources.items() if k != plan["coin"]},
+            {
+                k: frame_from(v)
+                for k, v in analysis_sources.items()
+                if k != plan["coin"]
+            },
             plan["replicates"],
+            family_multiplier=plan.get("correlation_family_multiplier", 1),
         )
         save(target, corr)
         bind_files(output, proof, [target])
     write_table(output / "correlations.csv.gz", corr["rows"])
-    plot_findings(primary, sources, corr, output)
+    plot_findings(primary, analysis_sources, corr, output)
     all_tests = [
         {"interval": item["interval"], "scope": "global", **r}
         for item in cycles
@@ -974,6 +1073,15 @@ def analyze(plan: dict, output: Path, workers: int) -> dict:
             )
         },
         "minutes": len(primary),
+        "analysis_window": used_window,
+        "market": {
+            "base": plan["coin"],
+            "quote": plan["quote"],
+            "product": sources[plan["coin"]]["product"],
+            "venue": plan["venue"],
+            "kind": "native spot market candles",
+            "initial_reference_equity_quote": 10000,
+        },
         "strategy_rows": sum(r["rows"] for r in strategies),
         "strategy_completed": sum(
             r["status_counts"].get("completed", 0) for r in strategies
@@ -1012,11 +1120,88 @@ def analyze(plan: dict, output: Path, workers: int) -> dict:
     return summary
 
 
+def make_plan(
+    *,
+    coin: str,
+    provider: str,
+    quote: str,
+    references: list[str],
+    start: int,
+    stop: int,
+    days: int,
+    replicates: int,
+    candidate_limit: int,
+    workers: int,
+    gap_policy: str,
+    family_multiplier: int = 1,
+    catalogue: dict | None = None,
+) -> dict:
+    catalogue = catalogue or expanded.catalogue(ROOT)
+    return {
+        "schema": "weekly-coin-plan/v2",
+        "version": VERSION,
+        "coin": coin_symbol(coin),
+        "provider": provider,
+        "venue": PROVIDERS[provider]["venue"],
+        "quote": coin_symbol(quote),
+        "references": references,
+        "start": start,
+        "end_exclusive": stop,
+        "days": days,
+        "replicates": replicates,
+        "candidate_limit": candidate_limit,
+        "templates": min(candidate_limit, len(catalogue["candidates"]))
+        if candidate_limit
+        else len(catalogue["candidates"]),
+        "fees_bps_per_fill": list(FEES),
+        "slippage_bps_per_fill": 2,
+        "workers": workers,
+        "gap_policy": gap_policy,
+        "minimum_contiguous_minutes": 1440,
+        "correlation_family_multiplier": family_multiplier,
+        "filter_definitions": {
+            "shape_rules": expanded.SHAPE_RULE,
+            "shape_window_bars": 48,
+            "frequency_train_bars": expanded.TRAIN,
+            "frequency_frozen_bars": expanded.BLOCK,
+        },
+        "selection": "60/20/20 chronological; validation-only net-return ranking; at least ten validation exits",
+        "catalogue": catalogue,
+        "identity": identity(),
+        "coverage": coverage(),
+        "source_commit": subprocess.check_output(
+            ["git", "rev-parse", "HEAD"], cwd=ROOT, text=True
+        ).strip(),
+    }
+
+
 def main(argv=None) -> int:
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--coin", default="ETH")
-    parser.add_argument("--venue", choices=tuple(PROVIDERS), default="binance")
-    parser.add_argument("--references", default="BTC,ZEC")
+    selection = parser.add_mutually_exclusive_group()
+    selection.add_argument("--coin", help="single base coin; default ETH")
+    selection.add_argument(
+        "--coins",
+        nargs="+",
+        help="comma- or space-separated coin list; test each distinct native pair plus cash markets",
+    )
+    parser.add_argument(
+        "--venue",
+        choices=tuple(PROVIDERS),
+        help="default Binance/USDT for legacy single-coin mode; Coinbase/USD for coin lists",
+    )
+    parser.add_argument(
+        "--quote",
+        help="account/quote asset, e.g. USD, USDT or BTC; USD selects Coinbase by default",
+    )
+    parser.add_argument(
+        "--gap-policy",
+        choices=("strict", "longest"),
+        help="strict requires the full window; longest uses only its longest real contiguous segment (minimum one day), prominently reported",
+    )
+    parser.add_argument(
+        "--references",
+        help="single-coin return comparisons (default BTC,ZEC); batch references come from its native markets",
+    )
     parser.add_argument("--days", type=int, default=7)
     parser.add_argument(
         "--end", help="exclusive UTC minute boundary; default latest completed minute"
@@ -1036,6 +1221,10 @@ def main(argv=None) -> int:
     parser.add_argument("--resume", action="store_true")
     args = parser.parse_args(argv)
     output = args.output.resolve()
+    if args.coins or (output / "batch-plan.json.zlib").exists():
+        from research.coin_week_batch import run_batch
+
+        return run_batch(args, output)
     if args.phase == "verify":
         print(json.dumps(verify_run(output), indent=2))
         return 0
@@ -1060,49 +1249,47 @@ def main(argv=None) -> int:
                     "unfinished study exists; resume its frozen plan with --resume"
                 )
             plan = load(plan_path)
-            if args.coin.upper() != plan["coin"]:
+            if args.coin is not None and args.coin.upper() != plan["coin"]:
                 raise ValueError("resume coin does not match frozen plan")
+            if args.quote is not None and args.quote.upper() != plan["quote"]:
+                raise ValueError("resume quote does not match frozen plan")
         else:
             if args.phase == "analyze":
                 raise ValueError("offline analysis needs an existing acquired plan")
-            coin = coin_symbol(args.coin)
+            coin = coin_symbol(args.coin or "ETH")
+            provider = args.venue or (
+                "coinbase" if (args.quote or "").upper() == "USD" else "binance"
+            )
+            quote = coin_symbol(args.quote or PROVIDERS[provider]["quote"])
             start, stop = week_bounds(args.end, args.days)
             references = sorted(
                 {
                     coin_symbol(c.strip())
-                    for c in args.references.split(",")
+                    for c in (
+                        args.references if args.references is not None else "BTC,ZEC"
+                    ).split(",")
                     if c.strip()
                 }
-                - {coin}
+                - {coin, quote}
             )
-            catalogue = expanded.catalogue(ROOT)
-            plan = {
-                "schema": "weekly-coin-plan/v1",
-                "version": VERSION,
-                "coin": coin,
-                "provider": args.venue,
-                "venue": PROVIDERS[args.venue]["venue"],
-                "quote": PROVIDERS[args.venue]["quote"],
-                "references": references,
-                "start": start,
-                "end_exclusive": stop,
-                "days": args.days,
-                "replicates": args.replicates,
-                "candidate_limit": args.candidate_limit,
-                "templates": min(args.candidate_limit, len(catalogue["candidates"]))
-                if args.candidate_limit
-                else len(catalogue["candidates"]),
-                "fees_bps_per_fill": list(FEES),
-                "slippage_bps_per_fill": 2,
-                "workers": args.workers,
-                "selection": "60/20/20 chronological; validation-only net-return ranking; at least ten validation exits",
-                "catalogue": catalogue,
-                "identity": identity(),
-                "coverage": coverage(),
-                "source_commit": subprocess.check_output(
-                    ["git", "rev-parse", "HEAD"], cwd=ROOT, text=True
-                ).strip(),
-            }
+            plan = make_plan(
+                coin=coin,
+                provider=provider,
+                quote=quote,
+                references=references,
+                start=start,
+                stop=stop,
+                days=args.days,
+                replicates=args.replicates,
+                candidate_limit=args.candidate_limit,
+                workers=args.workers,
+                gap_policy=args.gap_policy
+                or (
+                    "longest"
+                    if args.quote is not None and provider == "coinbase"
+                    else "strict"
+                ),
+            )
             save(plan_path, plan)
             save(output / "coverage.json", plan["coverage"])
         if args.phase in ("all", "fetch"):
@@ -1117,6 +1304,7 @@ def main(argv=None) -> int:
                     plan["end_exclusive"],
                     output / "inputs" / f"{coin}.json.zlib",
                     provider=plan["provider"],
+                    quote=plan["quote"],
                 )
         if args.phase in ("all", "analyze"):
             analyze(plan, output, args.workers)
