@@ -72,11 +72,11 @@
     },
     {
       "path": "extension/package.json",
-      "sha256": "e9ac0fa198826e8398db4d24579f906bfcac5b093cc5c77b47cc0a4a0ada7f4a"
+      "sha256": "86ff6b66a35442fda2e8e87086113d61370720e130c498ce63334a7088fa7051"
     },
     {
       "path": "extension/src/core/commands.js",
-      "sha256": "4974b050dcebbd6cbd59d4afee7d845a2f0142de04c5085af7b7b353695fce8e"
+      "sha256": "2993c0fb6d03a65c24dd1b3ac5218b1ce520e456ba283276602389438283656f"
     },
     {
       "path": "liquidity/pyproject.toml",
@@ -192,6 +192,20 @@
       "source": "extension/package.json",
       "symbol": "scripts.e2e:1000x",
       "declared_command": "node tools/1000x-e2e.mjs",
+      "help_command": null,
+      "side_effects": "script-specific; inspect declared command before invoking",
+      "signing": "not inferred from npm metadata",
+      "ambiguity": "no financial retry inferred",
+      "gate_refs": [
+        "extension/package.json"
+      ]
+    },
+    {
+      "id": "extension/package.json:e2e:zec",
+      "kind": "npm-script",
+      "source": "extension/package.json",
+      "symbol": "scripts.e2e:zec",
+      "declared_command": "node tools/zec-advisory-e2e.mjs",
       "help_command": null,
       "side_effects": "script-specific; inspect declared command before invoking",
       "signing": "not inferred from npm metadata",

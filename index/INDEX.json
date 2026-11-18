@@ -1,11 +1,11 @@
 {
-  "generatedAt": "2026-11-18T15:34:10+00:00",
+  "generatedAt": "2026-11-18T15:39:02+00:00",
   "schemaVersion": 1,
   "repoRoot": "~/dev/solmargintrader",
-  "commit": "f72baaf",
+  "commit": "7d666e3",
   "counts": {
     "files": 4182,
-    "bytes": 212009869,
+    "bytes": 212014094,
     "byKind": {
       "strategy-card": 1478,
       "doc": 843,
@@ -65645,9 +65645,9 @@
       "title": "operations-registry",
       "summary": "Generated JSON object, 8 keys (schema_version, version, delta, generator, scope, limits...).",
       "summarySource": "derived",
-      "bytes": 234837,
-      "lines": 4768,
-      "sha1": "38ed9eab762924a7e9299e1bd29bf4d75300d2c7",
+      "bytes": 238563,
+      "lines": 4844,
+      "sha1": "67f279bf1b7f6aea1a0e0ce071095cf266a773a8",
       "symbols": [],
       "imports": [],
       "internalImports": [],
@@ -66185,9 +66185,9 @@
       "title": "tool-inventory",
       "summary": "Generated JSON object, 8 keys (schema_version, version, delta, generator, scope, limits...).",
       "summarySource": "derived",
-      "bytes": 25327,
-      "lines": 654,
-      "sha1": "5cccc1b6599f7b8e6a194ebf326b4d896188c3c3",
+      "bytes": 25826,
+      "lines": 668,
+      "sha1": "195f61579dc95683a72785ef7bcc57fff8447f72",
       "symbols": [],
       "imports": [],
       "internalImports": [],
@@ -124157,5 +124157,5 @@
       "frontmatter": {}
     }
   ],
-  "textSha256": "da204b456595dda64bce0b15631a9658f7d8c0ac21c5e303ca520c368f1a7a0a"
+  "textSha256": "2c26a81395bbfed4c9b4d09c959ec6b2a6e8d0e7df9e1e89cad854e9f8ec2bc5"
 }
