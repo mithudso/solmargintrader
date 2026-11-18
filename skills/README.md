@@ -6,7 +6,7 @@ Version-controlled copies of the Claude Code skills this project's research depe
 
 The live skills are installed at `~/.claude/skills/`, which is outside this repository and not
 version-controlled. Several of this project's research documents cite them as the source of a
-method or a convention — `research/RANKED_LISTS.md` on CPCV and PBO, the strategy cards on
+method or a convention — `research/papers/RANKED_LISTS.md` on CPCV and PBO, the strategy cards on
 signal definitions, `backtester/core/fetch_minutes.py` on the venue/universe reasoning. A citation
 to a file that only exists on one machine is not a citation, so the copy is here to make those
 references resolvable and to record which version of the guidance a result was produced under.

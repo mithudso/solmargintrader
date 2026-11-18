@@ -43,7 +43,7 @@ REPO = Path(__file__).resolve().parent.parent
 RESULTS_DIR = REPO / "research" / "results"
 
 # The project's own evidence floor, matching `MIN_RANKABLE_TRADES` in
-# research/cross_asset_cpcv.py and the selection checks in TOP5-RECOMMENDATION.md.
+# research/scripts/cross_asset_cpcv.py and the selection checks in TOP5-RECOMMENDATION.md.
 # Defined here rather than imported so this module stays independent of research/.
 MIN_RANKABLE_TRADES = 10
 
@@ -238,7 +238,7 @@ def headline(summaries: list[FileSummary]) -> str:
     t = totals(summaries)
     if not t["rows"]:
         return ("No result CSVs found in research/results/ — "
-                "run python3 research/cpcv_sweep.py")
+                "run python3 research/scripts/cpcv_sweep.py")
     return (f"{t['files']} files · {t['rows']} configurations · "
             f"{t['rankable']} rankable at ≥{MIN_RANKABLE_TRADES} trades · "
             f"{t['below_floor']} below the floor · "

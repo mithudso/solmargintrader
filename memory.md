@@ -1,5 +1,35 @@
 # Work continuation
 
+Version: 668
+Delta: v667 to v668. Record the extension version gate for the revised sweep path.
+
+## Research layout CI
+
+PR 338. The first extension job passed all 732 tests and failed the source-version gate. The Top 5 hint displays the relocated sweep path, so the manifest and package now identify the change as version 0.13.1. The full local SolTUI run reached its runner timeout. The repository's normal PR gate runs the targeted macOS suite. Next confirm the final-head checks and merge.
+
+Version: 667
+Delta: v666 to v667. Record local research migration verification and the delivery gate.
+
+## Research layout verification
+
+TASK-2641. The relocation check verified 731 tracked moves, 1,557 stable reader slugs and the original decompressed ZEC replay SHA-256. Chromium opened the existing ZEC report URL and all three profile cards with the new sources. The backtester, research, Mongo, extension, website and documentation checks passed. The full SolTUI run and final-head GitHub checks are the remaining verification before merge and cleanup. The deployed reader catalog still predates the report. Use the repository report for the current findings.
+
+Version: 666
+Delta: v665 to v666. Record the 731-file research relocation and source compatibility checks.
+
+## Research layout and ZEC study lookup
+
+The 6,048-configuration ZEC GUM walk-forward study and three cards now live under research/papers/results. The seventh-week fixed Volty variants returned −2.79%, −3.46% and −3.00%, with no modeled liquidations. Only ungated Volty gained in the continuous 21-day test, at +4.75%. The original 5m/10m report, rankings and compressed replay are linked from the research index.
+
+The move preserves existing Python module names, public article slugs and wiki identities. Historical Zip and compressed evidence, three CRLF-bound replay CSVs and the protected TradingView review inputs retain their original bytes. Normal research scripts, reviewed cards and ranked results now have separate navigation. Untracked local batches, execution code and active owner state stay in the primary checkout. Task receipts and the exact move map are under /Users/mitch/.local/share/solmargintrader/audits/research-layout-2641. Next verify the final candidate checks and default-branch tree.
+
+Version: 665
+Delta: v664 to v665. Start TASK-2641 in an isolated tracked worktree.
+
+## Research layout and ZEC study lookup
+
+The exact ZEC GUM 25× five-minute report is the 6,048-case TASK-2634 walk-forward study. Move papers, study tooling and JSON evidence into the three requested directories. Keep private batches and operational owners separate. Preserve immutable bundles, public catalog slugs, Python module names and the result digests. Next verify all call sites, projections and final-head CI.
+
 Version: 664
 Delta: v663 to v664. Record the extended replay, winner cards and paper runtime.
 

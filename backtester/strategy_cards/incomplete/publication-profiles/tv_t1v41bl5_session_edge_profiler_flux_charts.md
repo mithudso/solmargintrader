@@ -204,9 +204,9 @@ When a new pivot high confirms with a level greater than the session's previous 
 
 The earlier catalog associated this publication with the entries below. These links preserve that history; they do not establish exact equivalence to this complete publication or executable support.
 
-- [tv_method_fair_value_gap](../../../strategy_research/tv_method_fair_value_gap.md)
-- [tv_method_liquidity_sweep](../../../strategy_research/tv_method_liquidity_sweep.md)
-- [tv_t1v41bl5_session_edge_profiler_flux_charts](../../../strategy_research/tv_t1v41bl5_session_edge_profiler_flux_charts.md)
+- [tv_method_fair_value_gap](../../../../research/papers/strategy_research/tv_method_fair_value_gap.md)
+- [tv_method_liquidity_sweep](../../../../research/papers/strategy_research/tv_method_liquidity_sweep.md)
+- [tv_t1v41bl5_session_edge_profiler_flux_charts](../../../../research/papers/strategy_research/tv_t1v41bl5_session_edge_profiler_flux_charts.md)
 
 ## Source
 

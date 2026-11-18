@@ -763,7 +763,7 @@ index 5eda148..2961bcb 100644
 
 Excerpt capped at 14 lines; full diff retained in Git.
 
-### research/decide.py
+### research/scripts/decide.py
 
 ```diff
 diff --git a/research/decide.py b/research/decide.py
@@ -784,7 +784,7 @@ index 150896d..c9e0f95 100644
 
 Excerpt capped at 14 lines; full diff retained in Git.
 
-### research/sweep.py
+### research/scripts/sweep.py
 
 ```diff
 diff --git a/research/sweep.py b/research/sweep.py

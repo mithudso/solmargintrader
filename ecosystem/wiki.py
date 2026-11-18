@@ -65,6 +65,12 @@ def canonical(value: object) -> bytes:
 
 
 def page_id(source_path: str) -> str:
+    if source_path.startswith("research/papers/strategy_research/"):
+        source_path = "backtester/" + source_path.removeprefix("research/papers/")
+    elif source_path.startswith("research/papers/docs/"):
+        source_path = source_path.removeprefix("research/papers/")
+    elif source_path == "research/papers/ZEC-ENSEMBLE-HYPOTHESES.md":
+        source_path = "research/ZEC-ENSEMBLE-HYPOTHESES.md"
     return "doc-" + hashlib.sha256(source_path.encode()).hexdigest()[:24]
 
 
@@ -86,7 +92,11 @@ def selected_source(source_path: str) -> bool:
         return True
     if path.parts[0] in {"oracle", "botmanager", "backtester"}:
         return True
-    if source_path in {"ecosystem/README.md", "research/ZEC-ENSEMBLE-HYPOTHESES.md"}:
+    if source_path.startswith("research/papers/strategy_research/"):
+        return True
+    if source_path.startswith("research/papers/docs/"):
+        return selected_source(source_path.removeprefix("research/papers/"))
+    if source_path in {"ecosystem/README.md", "research/papers/ZEC-ENSEMBLE-HYPOTHESES.md"}:
         return True
     if path.parts[0] != "docs":
         return False

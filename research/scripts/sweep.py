@@ -1,0 +1,890 @@
+"""Reproduce every number in STRATEGIES.md and RANKED_LISTS.md.
+
+    python3 research/scripts/sweep.py                 # everything
+    python3 research/scripts/sweep.py --stage singles
+    python3 research/scripts/sweep.py --horizon medium
+
+Design rules this script exists to enforce:
+
+  * **Rank on out-of-sample only**, always displaying in-sample beside it so the
+    per-row decay is visible. Ranking on full-sample performance is the
+    "liar's leaderboard" the whole exercise is meant to avoid.
+  * **Count and print every configuration evaluated.** It is the denominator
+    that makes a top row interpretable under multiple testing.
+  * **Flag thin evidence.** A high Sharpe on 3 trades is noise, so rows below
+    MIN_OOS_TRADES are listed but never ranked.
+  * Pairs and triples must clear a **measured** redundancy gate, not merely the
+    asserted FAMILY labels -- combining two trend signals mostly measures the
+    same thing twice, and the labels have been wrong about which pairs those
+    are. See `independent_combos` and `--pair-gate`.
+"""
+
+from __future__ import annotations
+
+import argparse
+import itertools
+import json
+import os
+import sys
+from dataclasses import dataclass, field
+from pathlib import Path
+from typing import Any, Iterable, Sequence
+
+import numpy as np
+import pandas as pd
+
+from research.result_paths import result_path
+REPO = Path(__file__).resolve().parents[2]
+if str(REPO) not in sys.path:
+    sys.path.insert(0, str(REPO))
+
+from backtester.core.data import (  # noqa: E402
+    CsvLoader, frame_to_arrays, resolve_data_dir,
+)
+
+# Where the bar cache is read from. Overridable so a run can be pointed at a
+# rebuilt series (data/authoritative/) and compared against the same run on the
+# candle cache, WITHOUT swapping files underneath data/ -- silently substituting
+# one provenance for another under a fixed path is how a result stops being
+# reproducible.
+_DATA_DIR_OVERRIDE: Path | None = None
+
+
+def data_dir() -> Path:
+    """The bar cache to read.
+
+    Resolved on every call, never captured at import. Two reasons: --data-dir is
+    parsed long after import, and a module-level constant would ignore both.
+    """
+    if _DATA_DIR_OVERRIDE is not None:
+        return _DATA_DIR_OVERRIDE
+    env = os.environ.get("SOLMT_DATA_DIR")
+    return Path(env) if env else resolve_data_dir()
+
+
+def set_data_dir(path: str | Path) -> None:
+    """Point subsequent loads at a different bar cache."""
+    global _DATA_DIR_OVERRIDE
+    _DATA_DIR_OVERRIDE = Path(path)
+
+
+from backtester.core.engine import EngineConfig, run_backtest  # noqa: E402
+from backtester.core.metrics import Metrics, compute_metrics  # noqa: E402
+from backtester.core.strategies import (  # noqa: E402
+    FAMILY,
+    build,
+    build_composite,
+)
+from backtester.core.types import CostConfig, periods_per_year  # noqa: E402
+
+OUT_DIR = REPO / "research" / "results"
+
+# A row needs at least this many out-of-sample trades to be ranked rather than
+# merely listed. Three lucky trades can produce any Sharpe you like.
+MIN_OOS_TRADES = 10
+
+# Constituent eligibility is a discovery decision, independent of held-out data.
+MIN_DISCOVERY_TRADES = 10
+
+# Walk-forward in-sample fraction.
+SPLIT = 0.70
+
+# Signal parameters scaled per horizon. The SAME mechanism at a different scale
+# is a different strategy and is reported separately -- that is the whole point
+# of asking "short, medium, or long term".
+HORIZONS: dict[str, dict[str, Any]] = {
+    "short": {
+        "data": "data/SOL_1h.csv",
+        "interval": "1h",
+        "allow_gaps": True,
+        "note": "8,823 hourly bars, 2025-08-01..2026-08-04. Contains 2 disclosed gaps (largest 6h).",
+        "params": {
+            "buy_and_hold": {},
+            "ma_crossover": {"fast": 12, "slow": 48},
+            "macd": {"fast": 6, "slow": 13, "signal": 5},
+            "ts_momentum": {"window": 24},
+            "sma_regime": {"window": 168},
+            "breakout": {"entry_lookback": 12, "exit_lookback": 6},
+            "bb_breakout": {"window": 20, "num_std": 2.0},
+            "keltner": {"ema_span": 12, "atr_period": 7, "mult": 2.0},
+            "rsi": {"period": 7, "oversold": 30.0, "exit_level": 55.0},
+            "stochastic": {"k_period": 14, "d_period": 3},
+            "bb_reversion": {"window": 20, "num_std": 2.0},
+            "zscore": {"window": 20, "entry_z": -2.0},
+            "vwap_reversion": {"window": 20, "entry_discount": 0.01},
+            "grid": {"anchor_window": 48, "levels": 4, "step": 0.03},
+            "obv_trend": {"ma_window": 24},
+            "voltarget": {"trend_window": 168, "vol_window": 24, "target_vol": 0.8},
+            "dual_momentum": {"formation": 24, "skip": 2},
+            "adx_trend": {"adx_period": 7, "adx_threshold": 25.0},
+            "ma_ribbon": {"windows": 5, "base": 6},
+            "ichimoku": {"tenkan": 9, "kijun": 26, "senkou_b": 52, "displacement": 26},
+            "ou_reversion": {"fit_window": 250, "entry_z": -2.0, "max_half_life_bars": 48},
+            "hurst_switch": {"window": 250, "lag": 5, "trend_window": 168},
+            "vol_regime": {"vol_window": 24, "lookback": 250, "trend_window": 168},
+            "atr_sized": {"atr_period": 7, "trend_window": 168},
+            "garch_voltarget": {"lam": 0.94, "target_vol": 0.8, "trend_window": 168},
+        },
+    },
+    "medium": {
+        "data": "data/SOL_1d.csv",
+        "interval": "1d",
+        "allow_gaps": False,
+        "note": "1,875 daily bars, 2021-06-17..2026-08-04. Clean, passes gap validation.",
+        "params": {
+            "buy_and_hold": {},
+            "ma_crossover": {"fast": 20, "slow": 50},
+            "macd": {"fast": 12, "slow": 26, "signal": 9},
+            "ts_momentum": {"window": 60},
+            "sma_regime": {"window": 100},
+            "breakout": {"entry_lookback": 20, "exit_lookback": 10},
+            "bb_breakout": {"window": 20, "num_std": 2.0},
+            "keltner": {"ema_span": 20, "atr_period": 14, "mult": 2.0},
+            "rsi": {"period": 14, "oversold": 30.0, "exit_level": 50.0},
+            "stochastic": {"k_period": 14, "d_period": 3},
+            "bb_reversion": {"window": 20, "num_std": 2.0},
+            "zscore": {"window": 20, "entry_z": -2.0},
+            "vwap_reversion": {"window": 20, "entry_discount": 0.02},
+            "grid": {"anchor_window": 50, "levels": 4, "step": 0.05},
+            "obv_trend": {"ma_window": 20},
+            "voltarget": {"trend_window": 100, "vol_window": 20, "target_vol": 0.6},
+            "dual_momentum": {"formation": 12, "skip": 1},
+            "adx_trend": {"adx_period": 14, "adx_threshold": 25.0},
+            "ma_ribbon": {"windows": 5, "base": 10},
+            "ichimoku": {"tenkan": 9, "kijun": 26, "senkou_b": 52, "displacement": 26},
+            "ou_reversion": {"fit_window": 250, "entry_z": -2.0, "max_half_life_bars": 30},
+            "hurst_switch": {"window": 250, "lag": 5, "trend_window": 100},
+            "vol_regime": {"vol_window": 20, "lookback": 250, "trend_window": 100},
+            "atr_sized": {"atr_period": 14, "trend_window": 100},
+            "garch_voltarget": {"lam": 0.94, "target_vol": 0.6, "trend_window": 100},
+        },
+    },
+    "long": {
+        "data": "data/SOL_1d.csv",
+        "interval": "1d",
+        "allow_gaps": False,
+        "note": "1,875 daily bars, 2021-06-17..2026-08-04. Slow parameter scale.",
+        "params": {
+            "buy_and_hold": {},
+            "ma_crossover": {"fast": 50, "slow": 200},
+            "macd": {"fast": 26, "slow": 52, "signal": 18},
+            "ts_momentum": {"window": 200},
+            "sma_regime": {"window": 200},
+            "breakout": {"entry_lookback": 60, "exit_lookback": 30},
+            "bb_breakout": {"window": 60, "num_std": 2.0},
+            "keltner": {"ema_span": 50, "atr_period": 30, "mult": 2.0},
+            "rsi": {"period": 30, "oversold": 35.0, "exit_level": 55.0},
+            "stochastic": {"k_period": 40, "d_period": 5},
+            "bb_reversion": {"window": 60, "num_std": 2.0},
+            "zscore": {"window": 60, "entry_z": -2.0},
+            "vwap_reversion": {"window": 60, "entry_discount": 0.05},
+            "grid": {"anchor_window": 120, "levels": 4, "step": 0.10},
+            "obv_trend": {"ma_window": 60},
+            "voltarget": {"trend_window": 200, "vol_window": 60, "target_vol": 0.6},
+            "dual_momentum": {"formation": 24, "skip": 1},
+            "adx_trend": {"adx_period": 30, "adx_threshold": 25.0},
+            "ma_ribbon": {"windows": 5, "base": 20},
+            "ichimoku": {"tenkan": 18, "kijun": 52, "senkou_b": 104, "displacement": 52},
+            "ou_reversion": {"fit_window": 250, "entry_z": -2.0, "hold_multiple": 3.0},
+            "hurst_switch": {"window": 250, "lag": 10, "trend_window": 200},
+            "vol_regime": {"vol_window": 60, "lookback": 250, "trend_window": 200},
+            "atr_sized": {"atr_period": 30, "trend_window": 200},
+            "garch_voltarget": {"lam": 0.97, "target_vol": 0.6, "trend_window": 200},
+        },
+    },
+}
+
+# Candidates offered to the pair/triple generator. Excludes buy_and_hold (it is
+# the baseline, and "hold plus X" is just X with extra exposure) and voltarget
+# (a sizing overlay, tested separately as a wrapper).
+COMBO_CANDIDATES = (
+    # trend
+    "ma_crossover", "macd", "ma_ribbon", "ichimoku",
+    # momentum
+    "ts_momentum", "dual_momentum",
+    # regime filters
+    "sma_regime", "adx_trend", "hurst_switch", "vol_regime",
+    # breakout
+    "breakout", "bb_breakout", "keltner",
+    # oscillator reversion
+    "rsi", "stochastic",
+    # mean reversion
+    "bb_reversion", "zscore", "vwap_reversion", "ou_reversion",
+    # volume flow
+    "obv_trend",
+)
+# Risk overlays (voltarget, atr_sized, garch_voltarget) are deliberately absent:
+# they change position SIZE, not direction, so a cross-family "pair" with one is
+# really a wrapper test and belongs in its own experiment.
+
+
+FAILED_EVALUATIONS: list[dict] = []
+
+
+@dataclass
+class Row:
+    """One evaluated configuration."""
+
+    label: str
+    kind: str  # single | pair | triple
+    horizon: str
+    families: str
+    mode: str
+    full: Metrics
+    in_sample: Metrics | None
+    out_sample: Metrics | None
+    members: list[str] = field(default_factory=list)
+
+    @property
+    def oos_sharpe(self) -> float:
+        """Out-of-sample Sharpe, or -inf when unavailable (sorts last)."""
+        return self.out_sample.sharpe if self.out_sample else float("-inf")
+
+    @property
+    def oos_trades(self) -> int:
+        """Out-of-sample decided-trade count."""
+        return self.out_sample.trade_count if self.out_sample else 0
+
+    @property
+    def rankable(self) -> bool:
+        """Whether this row carries enough out-of-sample evidence to rank."""
+        return self.out_sample is not None and self.oos_trades >= MIN_OOS_TRADES
+
+    def to_dict(self) -> dict[str, Any]:
+        """Flat record for CSV output."""
+        rec: dict[str, Any] = {
+            "label": self.label,
+            "kind": self.kind,
+            "horizon": self.horizon,
+            "families": self.families,
+            "mode": self.mode,
+            "rankable": self.rankable,
+        }
+        for tag, m in (("full", self.full), ("is", self.in_sample), ("oos", self.out_sample)):
+            if m is None:
+                continue
+            rec[f"{tag}_return"] = m.total_return
+            rec[f"{tag}_sharpe"] = m.sharpe
+            rec[f"{tag}_maxdd"] = m.max_drawdown
+            rec[f"{tag}_trades"] = m.trade_count
+            rec[f"{tag}_exposure"] = m.exposure_fraction
+        return rec
+
+
+def load_horizon(
+    h: str, asset: str = "SOL"
+) -> tuple[dict[str, np.ndarray], EngineConfig]:
+    """Load the price series and engine config for a horizon.
+
+    `asset` defaults to SOL, so every published figure is reproduced unchanged.
+    Passing another asset swaps the series while holding the horizon's interval,
+    costs and fill delay fixed, which is what makes a cross-asset comparison a
+    comparison rather than two different experiments.
+    """
+    spec = HORIZONS[h]
+    # The horizon's path names SOL; substitute the requested asset into it, and
+    # resolve against the main checkout because data/ is a gitignored cache.
+    filename = Path(spec["data"]).name.replace("SOL", asset.upper())
+    path = data_dir() / filename
+    if not path.exists():
+        raise FileNotFoundError(
+            f"{path} not found. Fetch it first:\n"
+            f"  python3 -m backtester.core.fetch --asset {asset.upper()} "
+            f"--interval {spec['interval']}"
+        )
+    loader = CsvLoader(path, allow_gaps=spec["allow_gaps"])
+    df = loader.load(asset.upper(), None, None, spec["interval"])
+    cfg = EngineConfig(
+        interval=spec["interval"],
+        fill_delay=1,
+        initial_capital=10_000.0,
+        costs=CostConfig(fee_bps=6.0, slippage_bps=2.0),
+    )
+    return frame_to_arrays(df), cfg
+
+
+def walk_forward(
+    make_strategy, arrays: dict[str, np.ndarray], cfg: EngineConfig
+) -> tuple[Metrics, Metrics | None, Metrics | None]:
+    """Run full-sample, in-sample, and out-of-sample legs.
+
+    The out-of-sample slice starts `warmup + fill_delay` bars BEFORE the split
+    so indicators warm from trailing in-sample bars; trading therefore begins
+    exactly at the split. Reading earlier history is not look-ahead, and
+    starting cold would silently discard `warmup` bars of real out-of-sample
+    data. Out-of-sample metrics are then computed over the post-split region
+    only, so those flat warm-up bars do not dilute the Sharpe.
+    """
+    full = run_backtest(make_strategy(), arrays, cfg).metrics
+    n = len(arrays["close"])
+    k = int(n * SPLIT)
+    warm = int(make_strategy().warmup_bars())
+
+    if k <= warm + 5 or (n - k) <= warm + 5:
+        return full, None, None
+
+    is_arrays = {key: v[:k] for key, v in arrays.items()}
+    is_metrics = run_backtest(make_strategy(), is_arrays, cfg).metrics
+
+    oos_start = max(0, k - warm - cfg.fill_delay)
+    oos_arrays = {key: v[oos_start:] for key, v in arrays.items()}
+    oos_res = run_backtest(make_strategy(), oos_arrays, cfg)
+    skip = k - oos_start
+    trades = [t for t in oos_res.trades if t.bar_index >= skip]
+    oos_metrics = compute_metrics(
+        oos_res.equity[skip:],
+        oos_res.timestamps[skip:],
+        trades,
+        oos_res.exposure[skip:],
+        periods_per_year(cfg.interval),
+        cfg.risk_free_rate,
+        oos_res.liquidation_count,
+        initial_equity=float(oos_res.equity[skip - 1]) if skip > 0 else cfg.initial_capital,
+    )
+    return full, is_metrics, oos_metrics
+
+
+def select_triple_candidates(singles: Sequence[Row], limit: int) -> list[str]:
+    """Construct triples using only qualified in-sample single-strategy evidence."""
+    qualified = [row for row in singles if len(row.members) == 1
+                 and row.members[0] in COMBO_CANDIDATES and row.in_sample is not None
+                 and row.in_sample.trade_count >= MIN_DISCOVERY_TRADES
+                 and np.isfinite(row.in_sample.sharpe)]
+    qualified.sort(key=lambda row: (-row.in_sample.sharpe, row.members[0]))
+    return [row.members[0] for row in qualified[:max(0, limit)]]
+
+
+def sweep_singles(horizon: str) -> list[Row]:
+    """Every registered mechanism at this horizon's parameter scale."""
+    arrays, cfg = load_horizon(horizon)
+    params = HORIZONS[horizon]["params"]
+    rows: list[Row] = []
+    for name, p in params.items():
+        try:
+            full, ins, oos = walk_forward(lambda n=name, q=p: build(n, **q), arrays, cfg)
+        except ValueError as exc:
+            FAILED_EVALUATIONS.append({"horizon": horizon, "kind": "single", "label": name, "params": p, "error": str(exc)})
+            print(f"  skip {name}: {exc}", file=sys.stderr)
+            continue
+        rows.append(
+            Row(
+                label=build(name, **p).name,
+                kind="single",
+                horizon=horizon,
+                families=FAMILY[name],
+                mode="-",
+                full=full,
+                in_sample=ins,
+                out_sample=oos,
+                members=[name],
+            )
+        )
+    return rows
+
+
+def cross_family_combos(names: Sequence[str], size: int) -> list[tuple[str, ...]]:
+    """Combinations whose members all come from different families.
+
+    The label-only gate. Kept because `cpcv_sweep.py` still uses it and its
+    published results were produced with it; new work here should prefer
+    `independent_combos`, which measures instead of trusting the labels.
+    """
+    out = []
+    for combo in itertools.combinations(names, size):
+        fams = {FAMILY[n] for n in combo}
+        if len(fams) == size:
+            out.append(combo)
+    return out
+
+
+# Thresholds for READING the redundancy diagnostic, not calibrated constants:
+# the defensible claim is the ordering (higher means more redundant), not the
+# cutoff. They live here rather than in `signal_redundancy.py` for the same
+# reason `redundancy_filename` does -- that module imports from this one, so
+# owning shared constants there would make the pair circular.
+REDUNDANT_CORR = 0.80
+REDUNDANT_AGREEMENT = 0.90
+
+
+def redundancy_filename(asset: str, horizon: str) -> str:
+    """Canonical name of a measured-redundancy result under `research/results/`.
+
+    Defined here rather than in `signal_redundancy.py` purely to keep the import
+    graph one-directional: that module already imports HORIZONS from this one, so
+    owning the shared convention there would make the pair circular.
+
+    Keyed on the HORIZON, not the interval: `medium` and `long` are the same 1d
+    series with different parameters, so keying on interval would collide two
+    different measurements onto one filename.
+    """
+    return f"signal_redundancy_{asset.lower()}_{horizon}.csv"
+
+
+def combination_redundancy_filename(asset: str, horizon: str) -> str:
+    """Canonical name of the COMBINATION-level redundancy evidence.
+
+    Separate from the singles file because it answers a different question: not
+    "are these two signals interchangeable" but "are these two combinations the
+    same experiment". The second does not follow from the first.
+    """
+    return f"combination_redundancy_{asset.lower()}_{horizon}.csv"
+
+
+def measured_redundant_pairs(
+    horizon: str, asset: str = "SOL", *, discovery: dict | None = None
+) -> frozenset[frozenset[str]]:
+    """Strategy pairs `signal_redundancy.py` flagged at this horizon's parameters.
+
+    Refuses when the measurement is absent rather than falling back to FAMILY
+    labels. A silent fallback would reinstate exactly the mislabelling the
+    measurement exists to catch, and would do it invisibly -- the sweep would
+    print a configuration count that reads as measured when it was not.
+    """
+    path = OUT_DIR / redundancy_filename(asset, horizon)
+    if not path.exists():
+        raise SystemExit(
+            f"missing {path}\n"
+            f"run: python3 research/scripts/signal_redundancy.py --asset {asset} "
+            f"--horizon {horizon} --out auto"
+        )
+    from research.evidence import read_gate_table
+    table = read_gate_table(path, discovery)
+    flags = table["redundant"]
+    if flags.dtype != bool:
+        # read_csv infers bool from True/False, so this is normally a no-op --
+        # but if the column ever arrives as text, `astype(bool)` makes every
+        # non-empty string truthy INCLUDING "false", every pair reads as
+        # redundant, and the gate silently drops the entire search. Map the
+        # strings explicitly and refuse anything that is not a boolean.
+        flags = (
+            flags.astype(str)
+            .str.strip()
+            .str.lower()
+            .map({"true": True, "false": False})
+        )
+        if flags.isna().any():
+            raise SystemExit(
+                f"{path}: `redundant` column holds non-boolean values; "
+                f"regenerate it with research/scripts/signal_redundancy.py"
+            )
+    flagged = table[flags.to_numpy(dtype=bool)]
+    return frozenset(frozenset((a, b)) for a, b in zip(flagged["a"], flagged["b"]))
+
+
+def measured_redundant_combinations(
+    horizon: str, asset: str = "SOL", *, discovery: dict | None = None
+) -> frozenset[frozenset[str]] | None:
+    """Twin COMBINATIONS measured redundant as combinations, keyed by label.
+
+    Returns None when the evidence has not been generated, which callers treat as
+    "fall back to collapsing the whole class" -- the previous behaviour, and a
+    documented over-collapse rather than a silent one.
+
+    Why this file exists at all: class membership is measured on a strategy's
+    STANDALONE exposure, and applying it to combinations assumes the members stay
+    interchangeable once a partner decides which bars either may act on. Measured
+    on SOL that assumption mostly holds -- 926 of 1,019 measurable twin pairs are
+    redundant as combinations too -- but roughly 90 are not, and those are the
+    combinations the class rule discards without evidence.
+    """
+    path = OUT_DIR / combination_redundancy_filename(asset, horizon)
+    if not path.exists():
+        return None
+    from research.evidence import read_gate_table
+    table = read_gate_table(path, discovery)
+
+    def members(label: str) -> frozenset[str]:
+        return frozenset(label[label.index("(") + 1 : -1].split("+"))
+
+    # The evidence is per-mode; the gate is not, because sweep_combos picks the
+    # combinations first and applies every mode to each. Resolve conservatively:
+    # a twin pair collapses only if it is redundant under EVERY mode measured, so
+    # a single mode that tells them apart is enough to keep both. Erring the other
+    # way would discard a distinguishable experiment on the strength of the modes
+    # where it happens to look the same.
+    verdicts: dict[frozenset[frozenset[str]], list[bool]] = {}
+    for a, b, flag in zip(table["a"], table["b"], table["redundant"]):
+        key = frozenset((members(a), members(b)))
+        verdicts.setdefault(key, []).append(str(flag).lower() == "true")
+    return frozenset(k for k, flags in verdicts.items() if all(flags))
+
+
+def redundancy_classes(
+    horizon: str, asset: str = "SOL", *, discovery: dict | None = None
+) -> tuple[dict[str, str], list[tuple[list[str], float]]]:
+    """Group interchangeable strategies and pick one representative for each.
+
+    Excluding a redundant pair INSIDE a combination does not stop two DIFFERENT
+    combinations from being the same experiment reported twice. zscore and
+    bb_reversion measure 0.96-1.00 correlated, so every triple containing one has
+    a twin containing the other; both clear the pair test, both get ranked, and
+    the pair of identical results reads as corroboration. Grouping the members
+    and keeping one per group is what removes the twin.
+
+    Groups are connected components over the measured-redundant pairs, and each
+    collapses to its alphabetically-first member -- an arbitrary but stable
+    choice, so the surviving combination does not depend on iteration order.
+
+    Connected components can CHAIN: a~b and b~c does not make a~c, so a component
+    can be looser than any pair in it. The minimum intra-class correlation is
+    returned with each group for exactly that reason -- a value below
+    REDUNDANT_CORR means the group over-merged and should not be trusted.
+    Measured on SOL none of them chain; the loosest is 0.806.
+    """
+    pairs = measured_redundant_pairs(horizon, asset, discovery=discovery)
+    parent: dict[str, str] = {}
+
+    def find(x: str) -> str:
+        parent.setdefault(x, x)
+        while parent[x] != x:
+            parent[x] = parent[parent[x]]
+            x = parent[x]
+        return x
+
+    for pair in pairs:
+        a, b = sorted(pair)
+        parent[find(a)] = find(b)
+
+    grouped: dict[str, list[str]] = {}
+    for member in list(parent):
+        grouped.setdefault(find(member), []).append(member)
+
+    path = OUT_DIR / redundancy_filename(asset, horizon)
+    from research.evidence import read_gate_table
+    table = read_gate_table(path, discovery)
+    corr = {
+        frozenset((a, b)): c
+        for a, b, c in zip(table["a"], table["b"], table["corr"])
+    }
+
+    canonical: dict[str, str] = {}
+    classes: list[tuple[list[str], float]] = []
+    for members in grouped.values():
+        members = sorted(members)
+        rep = members[0]
+        for member in members:
+            canonical[member] = rep
+        inner = [
+            corr[frozenset(p)]
+            for p in itertools.combinations(members, 2)
+            if frozenset(p) in corr
+        ]
+        classes.append((members, min(inner) if inner else float("nan")))
+    return canonical, sorted(classes)
+
+
+# Gates a combination has to clear to enter the sweep. They disagree, and the
+# disagreement is the finding -- see `independent_combos`.
+PAIR_GATES = ("both", "measured", "family")
+
+
+def independent_combos(
+    names: Sequence[str], size: int, horizon: str, gate: str = "both", arrays: dict[str, np.ndarray] | None = None
+) -> list[tuple[str, ...]]:
+    """Combinations of `size` members containing no redundant pair.
+
+    Three gates:
+
+      * `family`   -- every member from a different asserted FAMILY. The original
+                      behaviour; reproduces the published tables.
+      * `measured` -- no member pair flagged by `signal_redundancy.py`. What the
+                      exposure vectors actually support. It EXCLUDES cross-family
+                      pairs that measure redundant, and ADMITS same-family pairs
+                      that measure independent -- so it does not simply tighten
+                      the filter, it grows the search in one direction while
+                      shrinking it in the other.
+      * `both`     -- the default, and the strictest: dropped by either test.
+
+    `both` is the default because this script ranks on a search whose size it
+    prints, and widening that search silently is the one thing its design rules
+    forbid. Measured over the 20 combo candidates on SOL: 190 possible pairs, of
+    which `family` admits 170, `measured` 186-188, and `both` 168-170; for
+    triples `measured` admits 1,070-1,104 against `both`'s 772-800, so choosing
+    it enlarges the triple search by roughly a third. Use `measured` to see what
+    the labels cost, `family` to reproduce an older table.
+    """
+    if gate not in PAIR_GATES:
+        raise SystemExit(f"--pair-gate must be one of {PAIR_GATES}, got {gate!r}")
+    redundant: frozenset[frozenset[str]] = frozenset()
+    canonical: dict[str, str] = {}
+    if gate in ("measured", "both"):
+        from research.evidence import discovery_context
+        if arrays is None:
+            arrays, _cfg = load_horizon(horizon)
+        _, discovery = discovery_context(arrays, HORIZONS[horizon]["params"], "SOL", horizon, SPLIT)
+        redundant = measured_redundant_pairs(horizon, discovery=discovery)
+        canonical, _ = redundancy_classes(horizon, discovery=discovery)
+
+    # Representatives are chosen among the names actually being combined. A class
+    # whose alphabetical head is not a candidate (sma_regime's class leads with
+    # atr_sized, which is not one) would otherwise elect an absent member and no
+    # combination could ever be the representative one.
+    present = set(names)
+    local_rep: dict[str, str] = {}
+    if canonical:
+        by_class: dict[str, list[str]] = {}
+        for member, rep in canonical.items():
+            if member in present:
+                by_class.setdefault(rep, []).append(member)
+        for members in by_class.values():
+            head = sorted(members)[0]
+            for member in members:
+                local_rep[member] = head
+
+    def admissible(combo: tuple[str, ...]) -> bool:
+        if gate in ("family", "both") and len({FAMILY[n] for n in combo}) != size:
+            return False
+        if gate in ("measured", "both") and any(
+            frozenset(pair) in redundant
+            for pair in itertools.combinations(combo, 2)
+        ):
+            return False
+        return True
+
+    combo_evidence = (
+        measured_redundant_combinations(horizon, discovery=discovery)
+        if gate in ("measured", "both")
+        else None
+    )
+    out: list[tuple[str, ...]] = []
+    seen: dict[frozenset[str], tuple[str, ...]] = {}
+    added: set[tuple[str, ...]] = set()
+    if not local_rep:
+        return [c for c in itertools.combinations(names, size) if admissible(c)]
+
+    # Two passes so the survivor is PREDICTABLE rather than an artifact of
+    # enumeration order: the combination built entirely from class
+    # representatives wins, and only if none exists does the first admissible
+    # variant stand in. Enumeration order alone would keep whichever twin the
+    # candidate list happened to mention first, silently retiring the label a
+    # reader was told to look for.
+    for representatives_only in (True, False):
+        for combo in itertools.combinations(names, size):
+            if not admissible(combo):
+                continue
+            if representatives_only and any(local_rep.get(n, n) != n for n in combo):
+                continue
+            # A key shorter than `size` means two members share a class without
+            # their own pair being flagged -- reachable only through a chained
+            # component, and dropped for the same reason.
+            key = frozenset(local_rep.get(n, n) for n in combo)
+            if len(key) < size:
+                continue
+            if combo in added:
+                # The second pass revisits every combination, including the ones
+                # the first pass already kept. Without this the representative is
+                # emitted twice and the admitted count exceeds the family gate's,
+                # which is arithmetically impossible for an intersection.
+                continue
+            if key in seen:
+                # A twin of something already kept. Collapse it only if the two
+                # were measured redundant AS COMBINATIONS; the class rule alone
+                # asserts that without evidence.
+                if combo_evidence is None:
+                    continue
+                twin = frozenset((frozenset(combo), frozenset(seen[key])))
+                if twin in combo_evidence:
+                    continue
+            else:
+                seen[key] = combo
+            added.add(combo)
+            out.append(combo)
+    return out
+
+
+def gate_counts(names: Sequence[str], size: int, horizon: str, arrays: dict[str, np.ndarray] | None = None) -> str:
+    """What each gate admits, for the log line.
+
+    Printed on every combo stage so the multiple-testing denominator is visible
+    at the moment it is chosen, not reconstructed afterwards from a CSV.
+    """
+    return "  ".join(
+        f"{g}={len(independent_combos(names, size, horizon, g, arrays))}" for g in PAIR_GATES
+    )
+
+
+def sweep_combos(
+    horizon: str,
+    size: int,
+    modes: Iterable[str] = ("all", "any"),
+    gate: str = "both",
+) -> list[Row]:
+    """Non-redundant combinations of `size` members, under each combine mode."""
+    arrays, cfg = load_horizon(horizon)
+    params = HORIZONS[horizon]["params"]
+    candidates = [n for n in COMBO_CANDIDATES if n in params]
+    admitted = independent_combos(candidates, size, horizon, gate, arrays)
+    counts = (f"family={len(admitted)}" if gate == "family"
+              else gate_counts(candidates, size, horizon, arrays))
+    print(f"[{horizon}] size-{size} gate={gate}  admitted: {counts}", file=sys.stderr)
+    rows: list[Row] = []
+    for combo in admitted:
+        specs = [(n, params[n]) for n in combo]
+        for mode in modes:
+            try:
+                full, ins, oos = walk_forward(
+                    lambda s=specs, m=mode: build_composite(list(s), mode=m), arrays, cfg
+                )
+            except ValueError as exc:
+                FAILED_EVALUATIONS.append({"horizon": horizon, "kind": "combination", "label": f"{mode}({'+'.join(combo)})", "error": str(exc)})
+                continue
+            rows.append(
+                Row(
+                    label=f"{mode}({'+'.join(combo)})",
+                    kind={2: "pair", 3: "triple"}.get(size, f"n{size}"),
+                    horizon=horizon,
+                    families="+".join(FAMILY[n] for n in combo),
+                    mode=mode,
+                    full=full,
+                    in_sample=ins,
+                    out_sample=oos,
+                    members=list(combo),
+                )
+            )
+    return rows
+
+
+def fmt_table(rows: Sequence[Row], limit: int | None = None) -> str:
+    """Markdown table ordered by out-of-sample Sharpe, in-sample shown beside."""
+    ranked = sorted(
+        [r for r in rows if r.rankable], key=lambda r: r.oos_sharpe, reverse=True
+    )
+    thin = [r for r in rows if not r.rankable]
+    shown = ranked[:limit] if limit else ranked
+
+    head = (
+        "| # | configuration | families | OOS Sharpe | IS Sharpe | OOS return | "
+        "IS return | OOS maxDD | OOS trades |\n"
+        "|---|---|---|---|---|---|---|---|---|\n"
+    )
+    body = ""
+    for i, r in enumerate(shown, 1):
+        o, s = r.out_sample, r.in_sample
+        body += (
+            f"| {i} | `{r.label}` | {r.families} | **{o.sharpe:.3f}** | "
+            f"{s.sharpe:.3f} | {o.total_return * 100:.1f}% | "
+            f"{s.total_return * 100:.1f}% | {o.max_drawdown * 100:.1f}% | "
+            f"{o.trade_count} |\n"
+        )
+    out = head + body
+    if thin:
+        out += (
+            f"\n_{len(thin)} configuration(s) excluded from the ranking for "
+            f"fewer than {MIN_OOS_TRADES} out-of-sample trades: "
+            + ", ".join(f"`{r.label}`" for r in thin[:12])
+            + ("…" if len(thin) > 12 else "")
+            + "._\n"
+        )
+    return out
+
+
+def main(argv: Sequence[str] | None = None) -> int:
+    """Run the requested sweep stages and write results."""
+    ap = argparse.ArgumentParser(description="Strategy sweep for SOL.")
+    ap.add_argument(
+        "--stage",
+        action="append",
+        choices=["singles", "pairs", "triples"],
+        default=None,
+    )
+    ap.add_argument("--horizon", action="append", choices=list(HORIZONS), default=None)
+    ap.add_argument("--triple-top", type=int, default=6,
+                    help="restrict triples to top-N in-sample-qualified singles")
+    ap.add_argument(
+        "--pair-gate",
+        choices=list(PAIR_GATES),
+        default="both",
+        help="which redundancy test a combination must clear (default: both)",
+    )
+    ap.add_argument(
+        "--data-dir",
+        default=None,
+        help="read bars from here instead of data/ (e.g. data/authoritative "
+        "to re-run against a tick-rebuilt series). Also settable via SOLMT_DATA_DIR",
+    )
+    args = ap.parse_args(argv)
+
+    if args.data_dir:
+        set_data_dir(args.data_dir)
+    print(f"bars from: {data_dir()}", file=sys.stderr)
+
+    stages = args.stage or ["singles", "pairs", "triples"]
+    horizons = args.horizon or list(HORIZONS)
+    OUT_DIR.mkdir(parents=True, exist_ok=True)
+
+    FAILED_EVALUATIONS.clear()
+    all_rows: list[Row] = []
+    counts: dict[str, int] = {}
+
+    for h in horizons:
+        if "singles" in stages or "triples" in stages:
+            print(f"[{h}] singles…", file=sys.stderr)
+            rows = sweep_singles(h)
+            all_rows += rows
+            counts[f"{h}/singles"] = len(rows)
+
+        if "pairs" in stages:
+            print(f"[{h}] pairs…", file=sys.stderr)
+            rows = sweep_combos(h, 2, gate=args.pair_gate)
+            all_rows += rows
+            counts[f"{h}/pairs"] = len(rows)
+
+        if "triples" in stages:
+            # Bound the space using discovery evidence only. Held-out scores
+            # and held-out trade counts cannot select their own future models.
+            singles = [r for r in all_rows if r.kind == "single" and r.horizon == h]
+            top = select_triple_candidates(singles, args.triple_top)
+            if len(top) >= 3:
+                print(f"[{h}] triples from top-{len(top)} discovery singles…", file=sys.stderr)
+                arrays, cfg = load_horizon(h)
+                params = HORIZONS[h]["params"]
+                rows = []
+                for combo in independent_combos(top, 3, h, args.pair_gate, arrays):
+                    specs = [(n, params[n]) for n in combo]
+                    for mode in ("all", "vote"):
+                        try:
+                            full, ins, oos = walk_forward(
+                                lambda s=specs, m=mode: build_composite(list(s), mode=m),
+                                arrays, cfg,
+                            )
+                        except ValueError as exc:
+                            FAILED_EVALUATIONS.append({"horizon": h, "kind": "triple", "label": f"{mode}({'+'.join(combo)})", "error": str(exc)})
+                            continue
+                        rows.append(Row(
+                            label=f"{mode}({'+'.join(combo)})", kind="triple", horizon=h,
+                            families="+".join(FAMILY[n] for n in combo), mode=mode,
+                            full=full, in_sample=ins, out_sample=oos, members=list(combo),
+                        ))
+                all_rows += rows
+                counts[f"{h}/triples"] = len(rows)
+
+    df = pd.DataFrame([r.to_dict() for r in all_rows])
+    df.to_csv(OUT_DIR / "sweep_results.csv", index=False)
+    (result_path(OUT_DIR, "configuration_counts.json")).write_text(
+        json.dumps({**counts, "total": len(all_rows) + len(FAILED_EVALUATIONS), "completed": len(all_rows), "failed": len(FAILED_EVALUATIONS), "failed_evaluations": FAILED_EVALUATIONS}, indent=2, sort_keys=True) + "\n"
+    )
+
+    # Markdown fragments, one per (horizon, kind), consumed by the documents.
+    frags: list[str] = []
+    for h in horizons:
+        for kind in ("single", "pair", "triple"):
+            sub = [r for r in all_rows if r.horizon == h and r.kind == kind]
+            if not sub:
+                continue
+            limit = None if kind == "single" else 15
+            frags.append(
+                f"\n### {h.upper()} horizon — {kind}s "
+                f"({len(sub)} configurations evaluated)\n\n" + fmt_table(sub, limit)
+            )
+    (OUT_DIR / "tables.md").write_text("".join(frags))
+
+    print(f"\nTotal configurations attempted: {len(all_rows) + len(FAILED_EVALUATIONS)} (completed {len(all_rows)}, failed {len(FAILED_EVALUATIONS)})", file=sys.stderr)
+    for k in sorted(counts):
+        print(f"  {k}: {counts[k]}", file=sys.stderr)
+    print(f"Wrote {OUT_DIR}/sweep_results.csv, tables.md, configuration_counts.json",
+          file=sys.stderr)
+    return 0
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())

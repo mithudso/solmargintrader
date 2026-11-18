@@ -22,7 +22,7 @@ test('CDO-3f0336d073 registry passphrase survives shared global flag parsing', a
   assert.equal(calls.run[0].args.passphrase, 'synthetic-passphrase');
 });
 test('CDO-014ac7de94 measure venue echoes exact stable order identities across ticks', async () => {
-  const { recordingVenue } = await importSource('tools/measure-recentre.js', { tail: 'main().then', append: 'export {recordingVenue};' });
+  const { recordingVenue } = await importSource('../research/scripts/perps/measure-recentre.mjs', { tail: 'main().then', append: 'export {recordingVenue};' });
   const v = recordingVenue(() => 100), intent = { intentKey: 'i', side: 'buy', level: 90, baseQty: 1, notionalUsd: 90 };
   const placed = await v.placeOrder({ intent });
   const [live] = await v.getOpenOrders();
@@ -30,7 +30,7 @@ test('CDO-014ac7de94 measure venue echoes exact stable order identities across t
   assert.equal(live.baseQty, 1);
 });
 test('CDO-eec409deee measure rejects each malformed observation instead of filtering it', async () => {
-  const { main } = await importSource('tools/measure-recentre.js', { replace: [["import { readFileSync } from 'node:fs';", 'const readFileSync = () => globalThis.__csvFixture;']], tail: 'main().then', append: 'export {main};' });
+  const { main } = await importSource('../research/scripts/perps/measure-recentre.mjs', { replace: [["import { readFileSync } from 'node:fs';", 'const readFileSync = () => globalThis.__csvFixture;']], tail: 'main().then', append: 'export {main};' });
   const saved = process.argv;
   try {
     process.argv = ['node', 'fixture'];
@@ -41,7 +41,7 @@ test('CDO-eec409deee measure rejects each malformed observation instead of filte
   } finally { process.argv = saved; delete globalThis.__csvFixture; }
 });
 test('CDO-a50f34bc7b measure refuses an errors-bearing tick', async () => {
-  const { run } = await importSource('tools/measure-recentre.js', { replace: [["import { tick } from '../src/core/engine.js';", 'const tick = async () => ({ errors: [{error: "safe-code"}] });']], tail: 'main().then', append: 'export {run};' });
+  const { run } = await importSource('../research/scripts/perps/measure-recentre.mjs', { replace: [["import { tick } from '../../../extension/src/core/engine.js';", 'const tick = async () => ({ errors: [{error: "safe-code"}] });']], tail: 'main().then', append: 'export {run};' });
   await assert.rejects(run({ closes: [100, 101], autoRecentre: false }), /tick|bar|failed/i);
 });
 test('CDO-8d9b566e2a dry-run tick count refuses before scenario effects', async () => {

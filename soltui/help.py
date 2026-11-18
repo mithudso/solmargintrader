@@ -127,7 +127,7 @@ HEADER_GLOSSARY = {
     "holding -> wants": "Position it would be holding, versus what it wants now.",
     "warmup": "Bars of history the strategy needs before its first signal.",
     "bars": "Bars of the truncated series available to the replay.",
-    "#": "Rank in research/TOP5-RECOMMENDATION.md — by robustness checks cleared, not by Sharpe.",
+    "#": "Rank in research/papers/TOP5-RECOMMENDATION.md — by robustness checks cleared, not by Sharpe.",
     "asset": "The coin the configuration was evaluated on for this row.",
     "when": "Timestamp of the bar (UTC).",
     "price": "Fill price used by the simulation for that bar.",

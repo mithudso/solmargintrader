@@ -95,7 +95,7 @@ RATE_LIMIT_PER_SECOND = 8.0
 MINUTE_ASSETS = ("BTC", "ETH", "SOL", "DOGE", "ZEC", "XRP", "BNB", "HYPE")
 
 DATA = Path("data")
-MANIFEST = Path("research/results/minute_coverage.json")
+MANIFEST = Path("research/json/results/minute_coverage.json")
 
 
 class RateLimiter:

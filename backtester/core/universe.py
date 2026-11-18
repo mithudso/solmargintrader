@@ -4,7 +4,7 @@
 importantly, is honest about the set it could not fetch.
 
 The reason that matters more than the loop: **the venue does not list every asset
-in the universe.** The 2026-08-04 screen is in `research/TOP_COINS.md`. Coinbase Exchange
+in the universe.** The 2026-08-04 screen is in `research/papers/TOP_COINS.md`. Coinbase Exchange
 lists eight of the remaining active candidates; TRX is absent
 from its product list entirely. A fetcher that quietly writes eight files hands
 the next stage a partial universe wearing a complete-set name, and every
@@ -103,7 +103,7 @@ USD_ONLY: dict[str, str] = {
 TRADEABLE_UNIVERSE = tuple(a for a in CANDIDATE_ASSETS if a not in EXCLUDED)
 
 # The five-minute compound's coins, chosen by the owner on 2026-11-07 from a screen of the top
-# 50 non-pegged coins (research/results/top50-screen-2026-11-07.json). A 5m call pays only with
+# 50 non-pegged coins (research/json/results/top50-screen-2026-11-07.json). A 5m call pays only with
 # leverage and a round trip near 16 bps, so each coin here has a Hyperliquid perp (10x or more),
 # turnover well above 0.5% of its cap, and Coinbase USD candles for live forward calls. The screen
 # records why each of the other 40 is out. Jupiter Perps lists only SOL, ETH and BTC.

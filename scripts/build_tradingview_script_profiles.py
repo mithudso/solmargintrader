@@ -20,7 +20,7 @@ sys.path.insert(0, str(ROOT))
 from scripts.check_tradingview_strategy_profiles import publication
 
 CACHE = ROOT / "tradingview/.script-card-work"
-WORK = ROOT / "research/tradingview-script-profile-work.json"
+WORK = ROOT / "research/json/tradingview-script-profile-work.json"
 CLASSES = {
     "indicator",
     "trading-strategy",
@@ -35,6 +35,14 @@ CLASSES = {
 FIELDS = ("mechanism", "outputs_and_use", "parameters", "risks", "missing_information")
 
 
+def authored_shard(path: str) -> Path:
+    """Keep the accepted authoring manifest byte-for-byte at its new location."""
+    old = "research/tradingview-script-profiles/"
+    if path.startswith(old):
+        path = "research/json/tradingview-script-profiles/" + path.removeprefix(old)
+    return Path(path)
+
+
 def dump(path: Path, value: object) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
     path.write_text(json.dumps(value, indent=2, ensure_ascii=False) + "\n")
@@ -42,10 +50,10 @@ def dump(path: Path, value: object) -> None:
 
 def prepare(source_root: Path) -> None:
     protected = json.loads(
-        (ROOT / "research/tradingview-strategy-understanding.json").read_text()
+        (ROOT / "research/json/tradingview-strategy-understanding.json").read_text()
     )
     ids = {row["publication_id"] for row in protected["publications"]}
-    ledger = json.loads((ROOT / "research/tradingview-card-coverage.json").read_text())
+    ledger = json.loads((ROOT / "research/json/tradingview-card-coverage.json").read_text())
     legacy = {
         row["publication_id"]: row
         for row in ledger["rows"]
@@ -116,7 +124,7 @@ def prepare(source_root: Path) -> None:
             name: {
                 "publication_ids": sorted(value["ids"]),
                 "description_characters": value["characters"],
-                "output": f"research/tradingview-script-profiles/shard-{name}.jsonl",
+                "output": f"research/json/tradingview-script-profiles/shard-{name}.jsonl",
             }
             for name, value in bins.items()
         },
@@ -205,7 +213,7 @@ def validate_record(row: dict, source: dict) -> None:
 def records(shard: str, complete: bool = True) -> list[dict]:
     work, sources = inputs()
     entry = work["shards"][shard]
-    path = ROOT / entry["output"]
+    path = ROOT / authored_shard(entry["output"])
     rows = (
         [json.loads(line) for line in path.read_text().splitlines() if line.strip()]
         if path.exists()

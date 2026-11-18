@@ -3,7 +3,7 @@
 | Cache | Owner | Freshness / invalidation | Safe interpretation |
 | --- | --- | --- | --- |
 | `data/` CSVs | Explicit backtester fetch commands | Refetch explicitly; validate timestamps/schema/gaps/checksum | File mtime alone does not establish current bars |
-| Minute probes and sliced arrays | `backtester/core/fetch_minutes.py`, `research/minute_sweep.py` | Resume/probe rules in source; slices regenerate from the CSV | Retain coverage manifests; a partial fetch is not complete history |
+| Minute probes and sliced arrays | `backtester/core/fetch_minutes.py`, `research/scripts/minute_sweep.py` | Resume/probe rules in source; slices regenerate from the CSV | Retain coverage manifests; a partial fetch is not complete history |
 | Sweep worker arrays | `soltui/bgworker.py` `ArrayCache` | Per-worker process memory | A new worker reloads data; restarting a worker is separate from downloading data |
 | GeckoTerminal responses | `liquidity/src/aero_lp/market.py` | `MarketData.ttl`, default 120s; keyed by URL and sorted parameters | Cached market data is not a mined transaction result |
 | DefiLlama pool list | `liquidity/src/aero_lp/providers.py` | Disk cache per chain, 6h TTL; `providers --refresh` bypasses it | Comparison-only quotes retain their source labels |

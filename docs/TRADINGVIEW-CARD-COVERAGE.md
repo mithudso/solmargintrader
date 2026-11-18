@@ -9,7 +9,7 @@ active directory and moves **791 incomplete cards** to
 `backtester/strategy_cards/incomplete/`. All 59 pre-existing cards stay active;
 the active catalog has 351 cards and all 1,142 remain preserved. See
 [the per-card readiness report](TRADINGVIEW-CARD-READINESS.md) and
-`research/tradingview-card-readiness.json` for exact evidence, paths and gaps.
+`research/json/tradingview-card-readiness.json` for exact evidence, paths and gaps.
 The creation dispositions below record the original existence check, not runtime
 support or a claim that every newly created card is complete.
 
@@ -17,7 +17,7 @@ Scope: 114 built-in studies; 747 canonical script publications; 1610 canonical c
 
 Publication HTML descriptions were read from `ssrIdeaData`, and help definitions from `solution.description`, not from menus, related publications or chart widget state. Captured publication script.content fields are empty. Descriptions can contain formulas and illustrative Pine snippets; no repository implementation is inferred from them. Cards preserve bounded author passages, explicit source gaps and required validation. Generic method formulas are reference specifications, not reverse-engineered proprietary code.
 
-The machine-readable ledger is `research/tradingview-card-coverage.json`. Each publication carries its URL, physical-source hashes, normalized-description hash, excerpts with Unicode-codepoint offsets, disposition, match rationale and card/code targets. Built-in rows retain the exact input-catalog line.
+The machine-readable ledger is `research/json/tradingview-card-coverage.json`. Each publication carries its URL, physical-source hashes, normalized-description hash, excerpts with Unicode-codepoint offsets, disposition, match rationale and card/code targets. Built-in rows retain the exact input-catalog line.
 
 The full inventory and initial matching used deterministic source extraction and curated aliases. Independent review screened 401 candidate chart titles, inspected targeted full descriptions, and audited 72 library functions plus 313 help-definition candidates. This is a complete file inventory with targeted semantic review; it is not a claim that every chart commentary page received an independent human-style semantic audit.
 

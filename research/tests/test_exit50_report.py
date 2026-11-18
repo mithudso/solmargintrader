@@ -77,10 +77,10 @@ class ReportTests(unittest.TestCase):
     def test_repository_projection_matches_native_binding(self):
         root = Path(__file__).resolve().parents[1]
         manifest = json.loads(
-            (root / "exit50-reversal-20261116/manifest.json").read_text()
+            (root / "json/exit50-reversal-20261116/manifest.json").read_text()
         )
-        report = root / "EXIT50-REVERSAL.md"
-        policy = root / "exit50-reversal-20261116/selected-policy.json"
+        report = root / "papers/EXIT50-REVERSAL.md"
+        policy = root / "json/exit50-reversal-20261116/selected-policy.json"
         self.assertEqual(
             hashlib.sha256(report.read_bytes()).hexdigest(),
             manifest["report"]["sha256"],

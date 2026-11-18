@@ -809,8 +809,8 @@ Canonical checkout paths for every created, modified or relocated file. Card con
 - [/Users/mitch/dev/solmargintrader/index/TEXT-INDEX.json](/Users/mitch/dev/solmargintrader/index/TEXT-INDEX.json) — Readiness review, validation or continuation metadata.
 - [/Users/mitch/dev/solmargintrader/memory.md](/Users/mitch/dev/solmargintrader/memory.md) — Readiness review, validation or continuation metadata.
 - [/Users/mitch/dev/solmargintrader/prompts.md](/Users/mitch/dev/solmargintrader/prompts.md) — Readiness review, validation or continuation metadata.
-- [/Users/mitch/dev/solmargintrader/research/tradingview-card-coverage.json](/Users/mitch/dev/solmargintrader/research/tradingview-card-coverage.json) — Readiness review, validation or continuation metadata.
-- [/Users/mitch/dev/solmargintrader/research/tradingview-card-readiness.json](/Users/mitch/dev/solmargintrader/research/tradingview-card-readiness.json) — Readiness review, validation or continuation metadata.
+- [/Users/mitch/dev/solmargintrader/research/json/tradingview-card-coverage.json](/Users/mitch/dev/solmargintrader/research/json/tradingview-card-coverage.json) — Readiness review, validation or continuation metadata.
+- [/Users/mitch/dev/solmargintrader/research/json/tradingview-card-readiness.json](/Users/mitch/dev/solmargintrader/research/json/tradingview-card-readiness.json) — Readiness review, validation or continuation metadata.
 - [/Users/mitch/dev/solmargintrader/scripts/check_tradingview_cards.py](/Users/mitch/dev/solmargintrader/scripts/check_tradingview_cards.py) — Readiness review, validation or continuation metadata.
 - [/Users/mitch/dev/solmargintrader/scripts/test_card_readiness.py](/Users/mitch/dev/solmargintrader/scripts/test_card_readiness.py) — Readiness review, validation or continuation metadata.
 - [/Users/mitch/dev/solmargintrader/docs/high_signal_file_index.json](/Users/mitch/dev/solmargintrader/docs/high_signal_file_index.json) — Refreshed committed source line metadata.

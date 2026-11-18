@@ -64,7 +64,7 @@ def resample_complete(df_1m: pd.DataFrame, minutes: int = 5) -> pd.DataFrame:
     A bucket with no 1m candle stays a gap; nothing is invented. A bucket with SOME minutes
     missing is kept, because requiring all five discards most of a thin market (DOGE, ZEC had
     no contiguous run of 300 bars that way). It is not a clean bar, though: Coinbase's candle
-    endpoint drops minutes that DID trade (84% of sampled gaps, research/CANDLE-GAP-AUDIT.md),
+    endpoint drops minutes that DID trade (84% of sampled gaps, research/papers/CANDLE-GAP-AUDIT.md),
     so such a bucket can carry a wrong close and an understated high/low -- what liquidation
     checks read. The `minutes` column records how many 1m candles each bar was built from, and
     the backtest reports the incomplete share per coin so a reader can discount it.
@@ -188,7 +188,7 @@ class PrecomputedTargets:
         return float(self.targets[history.i])
 
 
-# Hyperliquid perp max leverage per coin (research/results/top50-screen-2026-11-07.json). Hyperliquid's
+# Hyperliquid perp max leverage per coin (research/json/results/top50-screen-2026-11-07.json). Hyperliquid's
 # maintenance margin is half the initial margin at max leverage, so a 10x-max coin is liquidated
 # at 5% of notional, not the 0.2% the engine's Jupiter default (max_lev_constant 500) assumes. At 5x
 # that moves liquidation from about 19.7% away to about 15% away. A coin not listed here keeps the
@@ -449,7 +449,7 @@ def variants(cfg: Mapping[str, Any], *, standalone: bool = True, perturb: bool =
     if frontier:
         # Every historical metric, enabled or not, alone: only its strongest 2% of readings (by its own
         # trailing record), held 1 h / 4 h / 24 h. One round trip then has to beat a bigger move,
-        # which is the only way a 5m reading can pay a 13 bps toll (research/COMPOUND-FRONTIER.md).
+        # which is the only way a 5m reading can pay a 13 bps toll (research/papers/COMPOUND-FRONTIER.md).
         for comp in sc.COMPONENTS:
             if comp.kind != "score" or comp.forward_only:
                 continue

@@ -25,7 +25,7 @@ class SourceReviewTests(unittest.TestCase):
     def test_catalog_link_follows_relocated_cards_and_rejects_duplicates(self) -> None:
         with tempfile.TemporaryDirectory() as directory:
             root = Path(directory)
-            target = root / "backtester/strategy_research/example.md"
+            target = root / "research/papers/strategy_research/example.md"
             target.parent.mkdir(parents=True)
             target.write_text("example")
             with patch("scripts.render_tradingview_script_cards.ROOT", root):

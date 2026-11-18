@@ -39,7 +39,7 @@ async function loadTop5(state) {
         });
         return el('span', { class: 'row' }, add, use);
       } },
-    ], r.configs, { emptyText: 'No Top 5 evidence: run the research sweep (research/sweep.py) first.' }));
+    ], r.configs, { emptyText: 'No Top 5 evidence: run the research sweep (research/scripts/sweep.py) first.' }));
   });
 }
 

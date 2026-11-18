@@ -651,7 +651,7 @@ class ControlGateTests(PatchMixin):
     def test_an_agreeing_control_passes_and_writes_the_declared_frame(self):
         """The baseline the other cases are read against, and the only test that
         inspects an artifact `main` produced. A dropped `index=False` would add an
-        unnamed index column to tracked evidence that research/verify_numbers.py
+        unnamed index column to tracked evidence that research/scripts/verify_numbers.py
         reads -- silent corruption that an exit code cannot see.
         """
         code, out = self.run_top5_main(self.frame())

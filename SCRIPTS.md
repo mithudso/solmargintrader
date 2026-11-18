@@ -20,9 +20,9 @@ leaderboard is worse than a coin flip at predicting out-of-sample rank. Read
 Three commands are gates rather than experiments. Run them before trusting the rest:
 
 ```bash
-python3 research/verify_numbers.py                   # docs match their result files
+python3 research/scripts/verify_numbers.py                   # docs match their result files
 python3 index/build.py --check                       # the index matches the tree
-python3 research/cross_asset_cpcv.py --self-test     # the harness reproduces the reference
+python3 research/scripts/cross_asset_cpcv.py --self-test     # the harness reproduces the reference
 ```
 
 ## Quick reference
@@ -35,22 +35,22 @@ python3 research/cross_asset_cpcv.py --self-test     # the harness reproduces th
 | `python3 -m backtester.core.fetch` | fetch one asset's bars into `data/` | **yes** |
 | `python3 -m backtester.core.universe` | fetch many assets, refuse a partial set | **yes** |
 | `python3 -m backtester.core.ticks` | fetch trade ticks into `data/ticks/` | **yes** |
-| `python3 research/candle_gap_audit.py` | classify and repair candle gaps using ticks | **yes** |
+| `python3 research/scripts/candle_gap_audit.py` | classify and repair candle gaps using ticks | **yes** |
 | `./research/run_backfill.sh` | long, resumable, low-priority tick backfill + audit | **yes** |
 | `python3 -m backtester.core.fetch_minutes` | fetch 1-minute history (hours; resumable) | **yes** |
-| `python3 research/minute_sweep.py` | preliminary 1-minute strategy sweep (no CPCV) | no |
-| `python3 research/sweep.py` | the horizon parameter tables; single-split walk-forward | no |
-| `python3 research/cpcv_sweep.py` | **primary evaluation** — CPCV + PBO | no |
-| `python3 research/cross_asset_cpcv.py` | does a result transfer to another coin | no |
-| `python3 research/perturb.py` | ±10% parameter robustness | no |
-| `python3 research/geometry.py` | is the leaderboard an artifact of block count | no |
-| `python3 research/decide.py` | per-bar readout of what each rule decided | no |
-| `python3 research/dso_audit.py` | deflated-Sharpe / evidence-floor audit of results | no |
-| `python3 research/verify_numbers.py` | **gate:** every quoted figure vs its CSV | no |
-| `python3 research/turnover_table.py` | the one comparable turnover table | no |
-| `python3 research/leverage_economics.py` | what leverage costs before it earns; the viable region | no |
-| `python3 research/ratio_rotation.py` | multi-asset numeraire-switching rotation; chained-vs-direct routing | no |
-| `python3 research/short_horizon_economics.py` | the same cost question below one hour, where turnover dominates | no |
+| `python3 research/scripts/minute_sweep.py` | preliminary 1-minute strategy sweep (no CPCV) | no |
+| `python3 research/scripts/sweep.py` | the horizon parameter tables; single-split walk-forward | no |
+| `python3 research/scripts/cpcv_sweep.py` | **primary evaluation** — CPCV + PBO | no |
+| `python3 research/scripts/cross_asset_cpcv.py` | does a result transfer to another coin | no |
+| `python3 research/scripts/perturb.py` | ±10% parameter robustness | no |
+| `python3 research/scripts/geometry.py` | is the leaderboard an artifact of block count | no |
+| `python3 research/scripts/decide.py` | per-bar readout of what each rule decided | no |
+| `python3 research/scripts/dso_audit.py` | deflated-Sharpe / evidence-floor audit of results | no |
+| `python3 research/scripts/verify_numbers.py` | **gate:** every quoted figure vs its CSV | no |
+| `python3 research/scripts/turnover_table.py` | the one comparable turnover table | no |
+| `python3 research/scripts/leverage_economics.py` | what leverage costs before it earns; the viable region | no |
+| `python3 research/scripts/ratio_rotation.py` | multi-asset numeraire-switching rotation; chained-vs-direct routing | no |
+| `python3 research/scripts/short_horizon_economics.py` | the same cost question below one hour, where turnover dominates | no |
 | `python3 index/build.py` | build the four repo indexes | localhost only |
 | `python3 index/search.py` | search the repo three ways | localhost only |
 | `python3 scripts/check_docs.py` | **gate:** doc drift, test counts, dead index paths | no |
@@ -66,7 +66,7 @@ python3 research/cross_asset_cpcv.py --self-test     # the harness reproduces th
 ## Strategy publication card validation
 
 The strategy-publication interpretation pass is indexed in
-`research/TRADINGVIEW-STRATEGY-CARDS.md`. Its validator checks all 21 native
+`research/papers/TRADINGVIEW-STRATEGY-CARDS.md`. Its validator checks all 21 native
 strategy publications against the recorded 742-page metadata inventory, card
 hashes, classifications and evidence passages:
 
@@ -252,7 +252,7 @@ the full window. `--allow-truncated` is a disclosure, not a repair.
 candle endpoint against raw prints. It found that the candle endpoint drops minutes
 that traded — see **Candle data is not trustworthy near a gap** below.
 
-### `python3 research/candle_gap_audit.py` — why a candle is missing, and repair
+### `python3 research/scripts/candle_gap_audit.py` — why a candle is missing, and repair
 
 **Purpose.** A missing 1m candle has two causes that look identical in the file and
 mean opposite things: the minute genuinely had no trades, or the minute traded and
@@ -261,10 +261,10 @@ asks it, and can rebuild the affected bars.
 
 ```bash
 # classify a sample of gap runs, no writes
-python3 research/candle_gap_audit.py --assets SOL,BTC,ETH --sample 5
+python3 research/scripts/candle_gap_audit.py --assets SOL,BTC,ETH --sample 5
 
 # rebuild every gap window from ticks into data/repaired/
-python3 research/candle_gap_audit.py --assets SOL --repair --report research/CANDLE-GAP-AUDIT.md
+python3 research/scripts/candle_gap_audit.py --assets SOL --repair --report research/papers/CANDLE-GAP-AUDIT.md
 ```
 
 Options: `--assets`, `--quote`, `--interval`, `--suffix`, `--data-dir`, `--sample`,
@@ -353,17 +353,17 @@ Established 2026-08-06 by `candle_gap_audit.py` against the trades endpoint, ove
 **What to do about it.** Treat a gap as *suspected data loss* until classified —
 never assume a quiet minute — and do not treat a gapless window as clean either.
 Before trusting a result that depends on volume or on intrabar extremes, rebuild the
-range from ticks (`research/tick_backfill.py`) and compare. Small spot checks will
+range from ticks (`research/scripts/tick_backfill.py`) and compare. Small spot checks will
 mislead you here: many windows match bit-exactly, and roughly one minute in eleven
 does not.
 
-Full evidence, per asset, with the sampled gap runs: **`research/CANDLE-GAP-AUDIT.md`**.
+Full evidence, per asset, with the sampled gap runs: **`research/papers/CANDLE-GAP-AUDIT.md`**.
 
-### `research/run_backfill.sh` — the long, polite version
+### `research/scripts/run_backfill.sh` — the long, polite version
 
 **Purpose.** `candle_gap_audit.py` pays a ~29-request bisection to locate each gap,
 which is fine for five gaps and absurd for DOGE's 3,739 (~24,000 requests, mostly
-spent finding windows rather than reading them). `research/tick_backfill.py` walks
+spent finding windows rather than reading them). `research/scripts/tick_backfill.py` walks
 the window **once**, backward, at `total_trades / 1000` requests, and classifies
 every gap instead of a sample — while producing an authoritative bar series that
 also exposes the errors in bars that are *present*.
@@ -415,7 +415,7 @@ exactly like a long one.
 
 ## Research and evaluation
 
-### `python3 research/sweep.py` — the parameter tables
+### `python3 research/scripts/sweep.py` — the parameter tables
 
 **Purpose.** Owns `HORIZONS`: per-horizon data file, interval, gap policy and the
 parameter set for all 25 strategies. Also runs the single-split walk-forward that
@@ -430,7 +430,7 @@ structurally required to look excellent in-sample and terrible out.
 **Every other driver imports `HORIZONS` from here.** Editing a parameter moves every
 downstream number in the repo.
 
-### `python3 research/cpcv_sweep.py` — primary evaluation
+### `python3 research/scripts/cpcv_sweep.py` — primary evaluation
 
 **Purpose.** Combinatorial purged cross-validation over singles, pairs and triples,
 then PBO across the configuration set. Prints its own legend so the numbers cannot
@@ -450,14 +450,14 @@ that picking a winner does not work here.
 | `--quiet` | off | suppress the legend — only for scripting |
 
 ```bash
-python3 research/cpcv_sweep.py --horizon medium --groups 8 --k 2 --stage singles
+python3 research/scripts/cpcv_sweep.py --horizon medium --groups 8 --k 2 --stage singles
 ```
 
 **Expect fewer paths than 28.** Warm-up makes 1–2 blocks unusable for almost every
 configuration: of 1,287 evaluated, **3 reached 28 paths** (all `buy_and_hold`, the
 only zero-warm-up strategy), 1,094 ran on 21 and 190 on 15.
 
-### `python3 research/cross_asset_cpcv.py` — does it transfer?
+### `python3 research/scripts/cross_asset_cpcv.py` — does it transfer?
 
 **Purpose.** Run the registered set on another coin with the SOL-tuned parameters
 **deliberately not refitted**, so the measurement is transfer rather than fit.
@@ -470,9 +470,9 @@ this be made to fit", which at PBO 0.700 the search cannot answer honestly.
 Two gates, and they run before any new row is written:
 
 ```bash
-python3 research/cross_asset_cpcv.py --self-test               # reproduces the BTC/ETH reference
-python3 research/cross_asset_cpcv.py --assets SOL,DOGE,ZEC     # 25 singles, medium horizon
-python3 research/cross_asset_cpcv.py --top5 --assets DOGE,ZEC  # the five, SOL as control
+python3 research/scripts/cross_asset_cpcv.py --self-test               # reproduces the BTC/ETH reference
+python3 research/scripts/cross_asset_cpcv.py --assets SOL,DOGE,ZEC     # 25 singles, medium horizon
+python3 research/scripts/cross_asset_cpcv.py --top5 --assets DOGE,ZEC  # the five, SOL as control
 ```
 
 ```
@@ -487,7 +487,7 @@ Options: `--assets`, `--horizon`, `--groups`, `--k`, `--self-test`, `--top5`,
 reference file and any path escaping that directory. At a geometry other than 8/k=2
 the control declines to run rather than reporting a divergence it cannot attribute.
 
-### `python3 research/perturb.py` — robustness
+### `python3 research/scripts/perturb.py` — robustness
 
 **Purpose.** The second independent axis: nudge each parameter ±10% and re-run CPCV.
 A point that collapses under a small nudge was fitted to noise, whatever its Sharpe.
@@ -499,7 +499,7 @@ Options: `--horizon`, `--single NAME`, `--pair A B`, `--triple A B C`,
 `--groups`, `--k`, `--no-geometry`, `--out`.
 
 ```bash
-python3 research/perturb.py --horizon long --all-singles
+python3 research/scripts/perturb.py --horizon long --all-singles
 ```
 
 Read `ratio_to_iqr` — max |Δ median| over the path IQR — and `sign_flips`. Compare
@@ -508,7 +508,7 @@ like with like: singles' median ratio is **0.171** at the long horizon against
 Against the *pooled* singles median of 0.208 the multiple is 2.1×; quoting 0.21
 alongside "2.6×" mixes two populations.
 
-### `python3 research/geometry.py` — is it the block count?
+### `python3 research/scripts/geometry.py` — is it the block count?
 
 **Purpose.** Sweep the CPCV block count and see how much the leaderboard moves.
 
@@ -518,7 +518,7 @@ pair's median Sharpe by −0.441, more than the worst parameter nudge (−0.392)
 
 Options: `--horizon`, `--blocks LO HI`, `--k`.
 
-### `python3 research/decide.py` — what did the rule decide, bar by bar?
+### `python3 research/scripts/decide.py` — what did the rule decide, bar by bar?
 
 **Purpose.** Per-bar readout of each strategy's signal, indicator values and target
 exposure, with the guarantee that the targets are the numbers the engine would have
@@ -530,7 +530,7 @@ Options include `--asset`, `--interval`, `--data`, `--start`, `--end`,
 `--strategy NAME` (repeatable), `--mode`, `--allow-short`, `--tolerance`,
 `--fill-delay`, `--allow-gaps`, `--json`.
 
-### `python3 research/dso_audit.py` — evidence-floor and deflation audit
+### `python3 research/scripts/dso_audit.py` — evidence-floor and deflation audit
 
 **Purpose.** Audit result files for configurations that should not be ranked: below
 the trade floor, or leaders whose Sharpe does not survive a deflation haircut for
@@ -545,13 +545,13 @@ full path count — so a filter on `n_paths > 0` counts rows the engine just ref
 BTC's *top-ranked* strategy is one of them: `ou_reversion` medians **+1.657 on six
 trades**.
 
-### `python3 research/verify_numbers.py` — the figure gate
+### `python3 research/scripts/verify_numbers.py` — the figure gate
 
 **Purpose.** Re-check every number quoted in `RANKED_LISTS.md` and `STRATEGIES.md`
 against the result files that produced them. No arguments; CI runs it.
 
 ```bash
-python3 research/verify_numbers.py
+python3 research/scripts/verify_numbers.py
 ```
 
 ```
@@ -566,7 +566,7 @@ buy-and-hold is 3rd" where its machine-generated table puts it **6th**, and the
 verifier passes at 950 figures regardless. A green run means no *table* figure
 drifted, not that the document is right.
 
-### `python3 research/turnover_table.py` — one comparable table
+### `python3 research/scripts/turnover_table.py` — one comparable table
 
 **Purpose.** Build the ten-coin turnover table from a **single** timestamped pull,
 and `--check` that every coin spoke agrees with it.
@@ -577,16 +577,16 @@ claimed the highest turnover of the ten at 3.69% from a per-asset endpoint, whil
 single-timestamp pull puts **DOGE ahead**, 3.44% to SOL's 3.32%.
 
 ```bash
-python3 research/turnover_table.py            # print it
-python3 research/turnover_table.py --check     # fail if a spoke disagrees
+python3 research/scripts/turnover_table.py            # print it
+python3 research/scripts/turnover_table.py --check     # fail if a spoke disagrees
 ```
 
-### `python3 research/leverage_economics.py` — what leverage costs before it earns
+### `python3 research/scripts/leverage_economics.py` — what leverage costs before it earns
 
 **Purpose.** The cost model for high-leverage perpetuals on Jupiter Perps: break-even
 move by holding period, where borrow carry overtakes the round-trip fee, time to
 liquidation from carry alone, and the fee cost of trade *count* at leverage. Generates
-every table in `research/LEVERAGE-ECONOMICS.md`.
+every table in `research/papers/LEVERAGE-ECONOMICS.md`.
 
 **No network, no data files.** Closed-form arithmetic over published venue parameters,
 so it reproduces exactly and needs no cache. It is also the one research script whose
@@ -616,9 +616,9 @@ at 10x costs 120% of collateral in fees alone**, which is why grid and market-ma
 structurally insolvent at leverage rather than mistuned.
 
 ```bash
-python3 research/leverage_economics.py --self-test   # gate: 7 load-bearing claims
-python3 research/leverage_economics.py               # all tables
-python3 research/leverage_economics.py --markdown    # the doc's tables, regenerated
+python3 research/scripts/leverage_economics.py --self-test   # gate: 7 load-bearing claims
+python3 research/scripts/leverage_economics.py               # all tables
+python3 research/scripts/leverage_economics.py --markdown    # the doc's tables, regenerated
 ```
 
 **Limits, stated in the script and the doc.** Borrow rates are Gauntlet's May-2024
@@ -628,11 +628,11 @@ are on-chain and undocumented), nor are keeper latency, priority fees, failed
 transactions, or the liquidation penalty itself. Every omission makes the real picture
 worse, never better. Verify venue parameters at `docs.jup.ag` before relying on them.
 
-### `python3 research/short_horizon_economics.py` — the same question below one hour
+### `python3 research/scripts/short_horizon_economics.py` — the same question below one hour
 
 **Purpose.** The sibling of `leverage_economics.py` for holds of seconds to hours, where
 the cost picture inverts. Generates every table in
-`docs/short-horizon-leverage-concept-family.md`: the toll decomposed by sub-hour holding
+`research/papers/docs/short-horizon-leverage-concept-family.md`: the toll decomposed by sub-hour holding
 period, fixed Solana transaction cost in bps of notional, the win rate a symmetric trade
 needs to break even, daily fee burn by turnover, and where the liquidation barrier sits
 relative to the noise band.
@@ -659,10 +659,10 @@ resolve the intrabar path that decides whether a leveraged position survives.
   and 0.04 bps on $250,000.
 
 ```bash
-python3 research/short_horizon_economics.py --self-test   # gate: 10 load-bearing claims
-python3 research/short_horizon_economics.py               # all tables
-python3 research/short_horizon_economics.py --markdown    # the doc's tables, regenerated
-python3 research/short_horizon_economics.py --vol 1.2     # barrier table at a different vol
+python3 research/scripts/short_horizon_economics.py --self-test   # gate: 10 load-bearing claims
+python3 research/scripts/short_horizon_economics.py               # all tables
+python3 research/scripts/short_horizon_economics.py --markdown    # the doc's tables, regenerated
+python3 research/scripts/short_horizon_economics.py --vol 1.2     # barrier table at a different vol
 ```
 
 **Limits.** It inherits every limit of `leverage_economics.py` — venue parameters are not
@@ -673,12 +673,12 @@ than buried. Keeper latency is not modelled because Jupiter publishes no figure 
 
 ---
 
-### `python3 research/ratio_rotation.py` — hold whichever coin is cheapest against its peers
+### `python3 research/scripts/ratio_rotation.py` — hold whichever coin is cheapest against its peers
 
 **Purpose.** Test the folk strategy of chaining discounted pairs — buy ETH because
 ETH/BTC is cheap, then spend that ETH on SOL because SOL/ETH is cheap. Separates the
 three claims bundled in that idea and answers each: chained routing, buy-the-discount
-rotation, and its inverse. Generates every table in `research/RATIO-ROTATION.md`.
+rotation, and its inverse. Generates every table in `research/papers/RATIO-ROTATION.md`.
 
 **Why it is not a registered strategy.** The engine is single-asset — `run_backtest`
 takes one series and a strategy returning exposure on *that* asset, so "which of five
@@ -714,12 +714,12 @@ both universes** and still lost to simply holding ZEC (+13.71%/month) on the sam
 # data/ is gitignored; fetch the panel first on a clean checkout.
 python3 -m backtester.core.universe --assets BTC,ETH,SOL,DOGE,ZEC --interval 1d
 
-python3 research/ratio_rotation.py --self-test        # gate: 23 checks
-python3 research/ratio_rotation.py --universes        # why the panel is 5 coins, not 8
-python3 research/ratio_rotation.py --turnover-table   # cost drag by holding period
-python3 research/ratio_rotation.py --demo-chain       # chained vs direct routing
-python3 research/ratio_rotation.py --sweep --out rotation_5coin_1d.csv
-python3 research/ratio_rotation.py --carry            # borrow-fee sensitivity
+python3 research/scripts/ratio_rotation.py --self-test        # gate: 23 checks
+python3 research/scripts/ratio_rotation.py --universes        # why the panel is 5 coins, not 8
+python3 research/scripts/ratio_rotation.py --turnover-table   # cost drag by holding period
+python3 research/scripts/ratio_rotation.py --demo-chain       # chained vs direct routing
+python3 research/scripts/ratio_rotation.py --sweep --out rotation_5coin_1d.csv
+python3 research/scripts/ratio_rotation.py --carry            # borrow-fee sensitivity
 ```
 
 **Limits, stated in the script and the doc.** Rotation needs every asset present at bar
@@ -931,16 +931,16 @@ count and the table separates them:
   counts *bars*, so a 200-bar average on ZEC spans far more wall-clock time than 200 minutes, and
   nothing downstream can tell.
 
-Coverage is recorded in `research/results/minute_coverage.json`, which is tracked. The CSVs are not.
+Coverage is recorded in `research/json/results/minute_coverage.json`, which is tracked. The CSVs are not.
 
-### `python3 research/minute_sweep.py` — preliminary 1-minute sweep
+### `python3 research/scripts/minute_sweep.py` — preliminary 1-minute sweep
 
 ```bash
-python3 research/minute_sweep.py                                  # 500k bars per asset
-python3 research/minute_sweep.py --common-window --tag common     # like-for-like
-python3 research/minute_sweep.py --all-bars                       # full history; hours
-python3 research/minute_sweep.py --param-scale 60                 # wall-clock params; slow
-python3 research/minute_sweep.py --asset BTC --strategy macd --bars 50000
+python3 research/scripts/minute_sweep.py                                  # 500k bars per asset
+python3 research/scripts/minute_sweep.py --common-window --tag common     # like-for-like
+python3 research/scripts/minute_sweep.py --all-bars                       # full history; hours
+python3 research/scripts/minute_sweep.py --param-scale 60                 # wall-clock params; slow
+python3 research/scripts/minute_sweep.py --asset BTC --strategy macd --bars 50000
 ```
 
 | Flag | Meaning |
@@ -984,7 +984,7 @@ against a measured 0.500 noise line. Spearman ρ(in-sample, out-of-sample Sharpe
 measurably worse than choosing at random.
 
 **2. The five recommended configurations do not transfer.** From
-`research/CROSS-ASSET-TRANSFER.md`, run unchanged on DOGE and ZEC:
+`research/papers/CROSS-ASSET-TRANSFER.md`, run unchanged on DOGE and ZEC:
 
 | # | Configuration | Horizon | SOL | DOGE | ZEC |
 |---|---|---|---|---|---|

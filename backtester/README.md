@@ -197,7 +197,7 @@ unsupported borrowing costs or annualization. Public history arrays own only the
 prefix and cannot mutate future/caller data; this is not a sandbox for hostile Python.
 Metrics include initial entry costs against explicit starting capital. The ladder limits
 planning to 10,000 rungs, rejects key collisions and never exits below the actual lot entry.
-Triple construction in `research/sweep.py` uses in-sample scores/trade counts only.
+Triple construction in `research/scripts/sweep.py` uses in-sample scores/trade counts only.
 
 ## The leverage cost model — a borrow fee, *not* a funding rate
 

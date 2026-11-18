@@ -338,7 +338,7 @@ def load_signals() -> list[dict[str, Any]]:
     """The stateless one-bar rules, including which strategy defaults each mirrors."""
     from research import decide
 
-    path = REPO / "research" / "decide.py"
+    path = REPO / "research/scripts/decide.py"
     # Three rules take their periods from a registered strategy's own defaults so
     # the two cannot drift; recording which lets a reader follow that link.
     tracks = {
@@ -361,7 +361,7 @@ def load_indicators() -> list[dict[str, Any]]:
     """The reported indicator rows plus the functions deliberately not reported."""
     from research import decide
 
-    path = REPO / "research" / "decide.py"
+    path = REPO / "research/scripts/decide.py"
     docs = [
         {
             "_id": row.key,
@@ -586,7 +586,10 @@ def load_experiments() -> tuple[list[dict[str, Any]], list[dict[str, Any]]]:
         table, prov = read_csv_snapshot(path)
         experiment_id = f"{kind}/{name}"
 
-        summary, summary_rows, summary_prov = read_sidecar_snapshot(path.with_suffix(".json"))
+        sidecar = results_dir.parent / "json/results" / path.with_suffix(".json").name
+        if not sidecar.exists():
+            sidecar = path.with_suffix(".json")
+        summary, summary_rows, summary_prov = read_sidecar_snapshot(sidecar)
         experiments.append(
             {
                 "_id": experiment_id,

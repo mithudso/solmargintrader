@@ -11,7 +11,7 @@ import tempfile
 import unittest
 from pathlib import Path
 
-SCRIPT = Path(__file__).resolve().parents[1] / "research/run_backfill.sh"
+SCRIPT = Path(__file__).resolve().parents[1] / "research/scripts/run_backfill.sh"
 
 
 class BackfillLauncherTests(unittest.TestCase):

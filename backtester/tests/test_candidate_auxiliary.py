@@ -12,7 +12,7 @@ ensure_snapshots()
 
 
 def module(variant: str, name: str):
-    return importlib.import_module(f'research.strategy_experiment.{variant}.core.{name}')
+    return importlib.import_module(f'research.json.strategy_experiment.{variant}.core.{name}')
 
 
 class CandidateAuxiliaryTests(unittest.TestCase):

@@ -73,7 +73,7 @@ The optimizer did not regenerate historical sweeps or change published historica
 ### The cached data is a snapshot with no freshness contract
 
 `data/` is gitignored and regenerable, and nothing in a CSV records when it was fetched.
-`research/decide.py` prints the decision bar's age in bars and says `STALE` past two, which
+`research/scripts/decide.py` prints the decision bar's age in bars and says `STALE` past two, which
 is a mitigation, not a fix — the underlying cache still has to be refetched by hand.
 
 A historical check found bars behind wall clock despite a current file mtime. That
@@ -105,7 +105,7 @@ that does not provide an independent bar history.
 
 Every registered strategy's default parameters are long-or-flat; only
 `ma_crossover(short_when_below=True)` can go short, and nothing constructs it that way.
-So `research/decide.py --allow-short` widens the stated exposure bound and changes nothing
+So `research/scripts/decide.py --allow-short` widens the stated exposure bound and changes nothing
 else, and `HOLD-SHORT` is unreachable through that CLI. A test asserts this, so a future
 shorting default will fail rather than quietly make the help text wrong.
 

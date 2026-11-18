@@ -248,7 +248,7 @@ class CompoundUniverseTests(unittest.TestCase):
         from backtester.core.universe import COMPOUND_5M_UNIVERSE
 
         root = Path(__file__).resolve().parents[2]
-        screen = json.loads((root / "research/results/top50-screen-2026-11-07.json").read_text())
+        screen = json.loads((root / "research/json/results/top50-screen-2026-11-07.json").read_text())
         self.assertEqual(tuple(screen["kept"]), COMPOUND_5M_UNIVERSE)
         rows = {r["symbol"]: r for r in screen["coins"]}
         for coin in COMPOUND_5M_UNIVERSE:

@@ -116,13 +116,13 @@ only. A partially observed opening has no developing direction.
 
 The 5m/10m/15m/20m cards use epoch-aligned buckets with every minute present and
 closed. Oracle candles have no qualified executed-volume requirement. This
-matches `research/reversal_second_turn.py` with `require_volume=False` and the
-causal frame lookup in `research/mtf_reversal.py`. Each label uses the last 48
+matches `research/scripts/reversal_second_turn.py` with `require_volume=False` and the
+causal frame lookup in `research/scripts/mtf_reversal.py`. Each label uses the last 48
 contiguous completed bars, with no centered window or future pivot. A gap resets
 warmup. Labels describe currently observed geometry; they do not measure how
 much of a future pattern has completed.
 
-The port follows `research/shape_study.py`: fit a quadratic to log closes and
+The port follows `research/scripts/shape_study.py`: fit a quadratic to log closes and
 linear envelopes to log highs/lows; measure trailing range position, path
 efficiency, return deviation, curvature and envelope contraction. Priority is
 range/trend, V/inverted V, bowl/cap, then compression. The shape and range position
@@ -142,7 +142,7 @@ minimum 15s age and 10s close delay are inactive explanatory context. No positio
 fees, fill, profit or execution claim is inferred from prices.
 
 Independent numerical vectors are generated without network access by
-`extension/tools/1000x-reference.py` using the actual Python research functions.
+`research/scripts/perps/1000x-reference.py` using the actual Python research functions.
 `extension/test/1000x-reversal.test.js` checks their exact source hashes and
 compares EMA/MACD/BOP values and all eight observable shape labels plus a flat
 path. It also checks prefix/future invariance, incomplete minutes, gaps,

@@ -172,7 +172,7 @@ affected alert instead of inventing an opening price. A separate small candle
 worker keeps this context independent of a slow or unavailable selected chart.
 It retains provider retry backoff and stops with the display.
 
-The [one-minute excursion follow-up](../research/ZEC-REVERSAL-EXCURSIONS.md)
+The [one-minute excursion follow-up](../research/papers/ZEC-REVERSAL-EXCURSIONS.md)
 measures subsequent downward distances and endpoint continuation separately.
 Its early intrabar timing and the current five-minute gate have different
 results. The old19/24 next-candle-color count is not either continuation rate.
@@ -183,7 +183,7 @@ Sounds are off by default. Open **Sounds** and enable **Reversal detected**, **T
 
 The display rings once for each newly observed event in the current UTC ten-minute window. It starts with a silent baseline. Enabling sounds does not replay a known event, and quote refreshes, temporary disconnects, repeated below-open trades and chart changes do not ring it again. Two completed UP bars can be known while the live price is unavailable; a reversal sound requires a fresh validated below-open detection after the five-minute gate. If both events arrive together, one sound represents both. Applying preferences changes this session only; **Save view** explicitly persists them. Old preference files load with sounds off.
 
-The [cross-coin replication](../research/CROSSCOIN-REVERSAL-PATTERNS.md) checks the same definitions on HYPE, ETH, BTC and SOL. Its larger sample does not establish a general70% reversal probability. It does not alter ZEC signals or qualify those coins for live trading.
+The [cross-coin replication](../research/papers/CROSSCOIN-REVERSAL-PATTERNS.md) checks the same definitions on HYPE, ETH, BTC and SOL. Its larger sample does not establish a general70% reversal probability. It does not alter ZEC signals or qualify those coins for live trading.
 
 ### Completed two-bar historical panel
 
@@ -320,8 +320,8 @@ loading any winner. It joins configurations to the frozen inventory rather
 than regenerating the current catalog. The original study and all its outputs
 remain unchanged:
 
-- [Expanded findings](../research/ZEC-EXPANDED-STRATEGIES.md)
-- [Complete evidence index](../research/zec-expanded-20261113.llms/llms.txt)
+- [Expanded findings](../research/papers/ZEC-EXPANDED-STRATEGIES.md)
+- [Complete evidence index](../research/json/zec-expanded-20261113.llms/llms.txt)
 - [Current default-card Oracle display](ORACLE-LIVE-FORECAST.md)
 
 Provider contract:

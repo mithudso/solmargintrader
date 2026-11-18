@@ -50,7 +50,7 @@ RUN=/Users/mitch/dev/solmargintrader/research/zec-usd-fresh
 "$PY" -m research.coin_week --output "$RUN" --phase verify
 ```
 
-The new report ranks the policies on its own validation window. To follow the same equal-weight policy through the new study, look up candidate `697f3b1dd4526147f43ca3d4` with `mode=baseline` in the five-minute strategy CSV. Use `--resume` with the existing output to continue an interrupted run under its frozen plan. Use `--coins ETH BTC ZEC HYPE SOL --quote USD` in the fetch command to study the full native-pair list in a new directory. See [the weekly runner guide](../research/WEEKLY-COIN-STUDY.md) and [the ZEC analysis](../research/ZEC-5M-MEAN-REVERSION.md).
+The new report ranks the policies on its own validation window. To follow the same equal-weight policy through the new study, look up candidate `697f3b1dd4526147f43ca3d4` with `mode=baseline` in the five-minute strategy CSV. Use `--resume` with the existing output to continue an interrupted run under its frozen plan. Use `--coins ETH BTC ZEC HYPE SOL --quote USD` in the fetch command to study the full native-pair list in a new directory. See [the weekly runner guide](../research/papers/WEEKLY-COIN-STUDY.md) and [the ZEC analysis](../research/papers/ZEC-5M-MEAN-REVERSION.md).
 
 ## Run other common tools
 

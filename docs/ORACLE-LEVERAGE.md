@@ -17,9 +17,9 @@ filter has All, 5, 10, 15 and 20 minute choices. The selected paper rules are
 ZEC 15m DD/range reversal→UP and BTC 20m DD continuation→DOWN. These were selected
 on validation data before examining the final split. Both lost under the
 historical 16bps roundtrip scenario; they are exploratory forward candidates.
-The complete study is in `research/REVERSAL-SHAPES.md`.
+The complete study is in `research/papers/REVERSAL-SHAPES.md`.
 
-The panel compares independently timestamped Jupiter Oracle and Coinbase book streams. A silent green/yellow/red dot and numeric exchange and receipt ages report each source’s freshness while the last displayed price remains visible; the basis appears only when both observations meet strict freshness and synchronization checks. Jupiter is the primary display for 1000×. These display quotes do not change the frozen Coinbase paper collector or its selection. The [second-turn study](../research/REVERSAL-SECOND-TURN.md) is retrospective and does not qualify a funded strategy.
+The panel compares independently timestamped Jupiter Oracle and Coinbase book streams. A silent green/yellow/red dot and numeric exchange and receipt ages report each source’s freshness while the last displayed price remains visible; the basis appears only when both observations meet strict freshness and synchronization checks. Jupiter is the primary display for 1000×. These display quotes do not change the frozen Coinbase paper collector or its selection. The [second-turn study](../research/papers/REVERSAL-SECOND-TURN.md) is retrospective and does not qualify a funded strategy.
 
 The **Show feeds** checkboxes independently hide Jupiter or Coinbase. Hiding
 Coinbase removes its price, paper rows, book sizes, indicators, bar filter and
@@ -71,7 +71,7 @@ USD data have separate identities.
 
 ## Multi-timeframe paper observer
 
-The separate MTF observer uses frozen training-only shape models on completed 5, 10, 15 and 20 minute bars. Its own ledger and model live under `/Users/mitch/.local/state/oracle-leverage/mtf`; it does not change the original collector or its selection. Its results use observed Oracle proxy prices, not venue fills. A complete 200ms price path is required for final survival scoring; missing evidence stays unscored. The [retrospective report](../research/MTF-REVERSAL.md) explains the model, selection and limitations.
+The separate MTF observer uses frozen training-only shape models on completed 5, 10, 15 and 20 minute bars. Its own ledger and model live under `/Users/mitch/.local/state/oracle-leverage/mtf`; it does not change the original collector or its selection. Its results use observed Oracle proxy prices, not venue fills. A complete 200ms price path is required for final survival scoring; missing evidence stays unscored. The [retrospective report](../research/papers/MTF-REVERSAL.md) explains the model, selection and limitations.
 
 ## Explicit trading controls
 
@@ -144,6 +144,6 @@ The leverage panel reconstructs sampled Jupiter oracle 10-minute bars from the e
 
 ## Exit50 paper research and bounded quote retention
 
-The 10-minute +50% collateral-return study is summarized in `research/EXIT50-REVERSAL.md`; native evidence bindings and limitations are in `research/exit50-reversal-20261116/manifest.json`. Its selected BTC and ZEC validation outcomes were negative after modeled trade fees. The study uses sampled prices and does not establish continuous keeper-path survival, actual fees, funded execution or future profit. The observer is paper-only and uses a separately bound policy, model, code hashes and prospective entry cutoff.
+The 10-minute +50% collateral-return study is summarized in `research/papers/EXIT50-REVERSAL.md`; native evidence bindings and limitations are in `research/json/exit50-reversal-20261116/manifest.json`. Its selected BTC and ZEC validation outcomes were negative after modeled trade fees. The study uses sampled prices and does not establish continuous keeper-path survival, actual fees, funded execution or future profit. The observer is paper-only and uses a separately bound policy, model, code hashes and prospective entry cutoff.
 
 The `scripts/preserve_dual_quotes.py` helper retains verified closed-hour normalized Jupiter Oracle and Coinbase quote files under a fixed 24-hour deadline, a 2 GiB cap and a 20 GiB minimum free-space floor. It does not capture raw wire data or a full order book. Its private heartbeat records its current state; it never deletes the collector's source files.

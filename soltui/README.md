@@ -294,7 +294,7 @@ before the recording it falls back to a **candle proxy** (Coinbase 1m closes wit
 half-spread, labelled `candle-proxy`, executed a minute later), which bounds noise rather than
 measuring an opportunity.
 
-**Coin suitability ranking.** **Rank all coins (quick)** screens every cached coin on the current grid or DCA settings, reserves the newest period, and shows a sorted table with full-account returns, drawdown, costs and reasons. Select a row and press **Audit selected coin** to inspect three chronological folds, the reserved holdout, a continuous account and doubled-cost scenarios. All ten windows expose equity and inventory; auditing one coin does not change its provisional quick score or table order. Jobs are cancellable and never adopt settings. The triangle bot is excluded from this per-coin screen. Details and the matching skill/CLI: [coin-fit method](../docs/coin-fit/README.md).
+**Coin suitability ranking.** **Rank all coins (quick)** screens every cached coin on the current grid or DCA settings, reserves the newest period, and shows a sorted table with full-account returns, drawdown, costs and reasons. Select a row and press **Audit selected coin** to inspect three chronological folds, the reserved holdout, a continuous account and doubled-cost scenarios. All ten windows expose equity and inventory; auditing one coin does not change its provisional quick score or table order. Jobs are cancellable and never adopt settings. The triangle bot is excluded from this per-coin screen. Details and the matching skill/CLI: [coin-fit method](../research/json/coin-fit/README.md).
 
 **Forward test = the same bot on the future, in dry-run.** It starts now on the current
 settings and, on every refresh, replays what the recorder captured since (incrementally: only
@@ -349,7 +349,7 @@ the registry command `docs.search`, so the CLI, API and extension get it too.
 ### Top 5 presets and net %
 
 `top5.presets` (one registry command, so the TUI, CLI, API and extension see the same list) turns each Top 5 row
-into a preset: label, member signals with the SOL-tuned parameters read from `research/sweep.py` `HORIZONS`
+into a preset: label, member signals with the SOL-tuned parameters read from `research/scripts/sweep.py` `HORIZONS`
 (never copied), the series it was fitted on and its evidence. Clicking one in Analyze, Live Run or Execute only
 fills that tab's fields; running still goes through the tab's own button.
 

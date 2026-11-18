@@ -49,8 +49,8 @@ Two failure modes worth knowing:
 The arithmetic passes are code in the repo proper, not prose in the skill:
 
 ```bash
-python3 research/dso_audit.py             # S2 deflated Sharpe, S3 evidence floor, S4 degeneracy, S5 attribution
-python3 research/dso_audit.py --floor 50  # stricter evidence floor
+python3 research/scripts/dso_audit.py             # S2 deflated Sharpe, S3 evidence floor, S4 degeneracy, S5 attribution
+python3 research/scripts/dso_audit.py --floor 50  # stricter evidence floor
 ```
 
 It reports and never gates — gating would create an incentive to delete inconvenient strategies,
@@ -60,4 +60,4 @@ Supporting maths, with tests pinned to the source paper's own worked figure:
 `backtester/core/deflated_sharpe.py`.
 
 Design rationale and the measured evidence behind the two-track split:
-`docs/strategy-optimization-concept-family.md`.
+`research/papers/docs/strategy-optimization-concept-family.md`.

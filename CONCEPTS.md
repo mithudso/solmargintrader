@@ -13,7 +13,7 @@ python3 index/search.py --concept cpcv  # files for one
 
 A text search finds a word; this finds an *idea* under all the names it goes by in this repo. The evidence floor, for instance, appears as `min_total_trades`, `insufficient`, `DROPPED` and `rankable` in different files, and no single keyword finds all four.
 
-**The concepts are the repo's own vocabulary, not a taxonomy imposed on it.** They are drawn from the `FAMILY` dict in `backtester/core/strategies/__init__.py`, the strategy-card frontmatter, `docs/trading-signals-concept-family.md`, and terms verified to recur in the corpus. A concept matching no file is dropped rather than kept — none were dropped on the last build, so every concept below is real.
+**The concepts are the repo's own vocabulary, not a taxonomy imposed on it.** They are drawn from the `FAMILY` dict in `backtester/core/strategies/__init__.py`, the strategy-card frontmatter, `research/papers/docs/trading-signals-concept-family.md`, and terms verified to recur in the corpus. A concept matching no file is dropped rather than kept — none were dropped on the last build, so every concept below is real.
 
 ## Method concepts
 
@@ -27,13 +27,13 @@ The extension can place real orders. Dry-run is the default, rails live in code 
 
 Strongest files:
 
-- `research/tradingview-card-coverage.json` (1724 hits)
-- `research/tradingview-script-understanding.json` (317 hits)
+- `research/json/tradingview-card-coverage.json` (1724 hits)
+- `research/json/tradingview-script-understanding.json` (317 hits)
 - `docs/FILES.md` (157 hits)
-- `research/tradingview-script-profiles/shard-a.jsonl` (126 hits)
-- `research/tradingview-script-profiles/shard-c.jsonl` (115 hits)
-- `research/TRADINGVIEW-SCRIPT-CARDS.md` (113 hits)
-- `research/tradingview-script-profiles/shard-b.jsonl` (100 hits)
+- `research/json/tradingview-script-profiles/shard-a.jsonl` (126 hits)
+- `research/json/tradingview-script-profiles/shard-c.jsonl` (115 hits)
+- `research/papers/TRADINGVIEW-SCRIPT-CARDS.md` (113 hits)
+- `research/json/tradingview-script-profiles/shard-b.jsonl` (100 hits)
 - `skills/trading-and-investing/references/jlp-risk-profile-and-anti-patterns.md` (86 hits)
 
 Full list: `python3 index/search.py --concept risk-rails -n 1664`
@@ -46,9 +46,9 @@ Fees and slippage are never optional and must be applied exactly once. The engin
 
 Strongest files:
 
-- `research/strategy_experiment/results/results.json` (2176 hits)
-- `research/strategy_experiment/results/initial-gapped-run/results.json` (1632 hits)
-- `research/ratio_rotation.py` (89 hits)
+- `research/json/strategy_experiment/results/results.json` (2176 hits)
+- `research/json/strategy_experiment/results/initial-gapped-run/results.json` (1632 hits)
+- `research/scripts/ratio_rotation.py` (89 hits)
 - `soltui/coin_fit.py` (73 hits)
 - `soltui/simulation.py` (68 hits)
 - `backtester/core/engine.py` (61 hits)
@@ -65,14 +65,14 @@ A signal at bar t may use data only through t. Centred indicators, same-bar fill
 
 Strongest files:
 
-- `research/tradingview-card-coverage.json` (63 hits)
-- `research/decide.py` (44 hits)
-- `research/strategy_experiment/audit_integrity.json` (40 hits)
-- `research/tradingview-script-profiles/shard-b.jsonl` (39 hits)
-- `research/tradingview-script-profiles/shard-a.jsonl` (36 hits)
+- `research/json/tradingview-card-coverage.json` (63 hits)
+- `research/scripts/decide.py` (44 hits)
+- `research/json/strategy_experiment/audit_integrity.json` (40 hits)
+- `research/json/tradingview-script-profiles/shard-b.jsonl` (39 hits)
+- `research/json/tradingview-script-profiles/shard-a.jsonl` (36 hits)
 - `backtester/core/strategies/advanced.py` (32 hits)
 - `docs/TRADINGVIEW-REFERENCE.md` (31 hits)
-- `research/tradingview-script-understanding.json` (27 hits)
+- `research/json/tradingview-script-understanding.json` (27 hits)
 
 Full list: `python3 index/search.py --concept lookahead -n 1389`
 
@@ -84,12 +84,12 @@ The same 25 strategies score 25/25 on BTC daily and 0/25 on SOL hourly. The data
 
 Strongest files:
 
-- `research/coin-intelligence/zec-zcash.md` (196 hits)
-- `research/coin-intelligence/doge-dogecoin.md` (147 hits)
-- `research/tradingview-card-coverage.json` (90 hits)
+- `research/papers/coin-intelligence/zec-zcash.md` (196 hits)
+- `research/papers/coin-intelligence/doge-dogecoin.md` (147 hits)
+- `research/json/tradingview-card-coverage.json` (90 hits)
 - `docs/FILES.md` (78 hits)
-- `research/results/frontier-2026-11-07.json` (62 hits)
-- `research/CROSS-ASSET-TRANSFER.md` (60 hits)
+- `research/json/results/frontier-2026-11-07.json` (62 hits)
+- `research/papers/CROSS-ASSET-TRANSFER.md` (60 hits)
 - `research/results/minute_sweep_x1_common.txt` (54 hits)
 - `docs/SCRIPTS.md` (50 hits)
 
@@ -103,14 +103,14 @@ A resting grid converts a sustained trend into a maximum-size losing position; t
 
 Strongest files:
 
-- `research/tradingview-card-coverage.json` (800 hits)
-- `research/tradingview-script-understanding.json` (256 hits)
-- `research/strategy_experiment/audit_realism.json` (178 hits)
+- `research/json/tradingview-card-coverage.json` (800 hits)
+- `research/json/tradingview-script-understanding.json` (256 hits)
+- `research/json/strategy_experiment/audit_realism.json` (178 hits)
 - `docs/FILES.md` (175 hits)
 - `backtester/tests/test_gridsim.py` (167 hits)
 - `llms-full.txt` (129 hits)
 - `skills/trading-and-investing/references/grid-trading-strategy.md` (128 hits)
-- `research/tradingview-script-profiles/shard-c.jsonl` (125 hits)
+- `research/json/tradingview-script-profiles/shard-c.jsonl` (125 hits)
 
 Full list: `python3 index/search.py --concept grid -n 652`
 
@@ -122,14 +122,14 @@ Gaps refused rather than filled, columns resolved by name, timestamps monotone. 
 
 Strongest files:
 
-- `research/strategy_experiment/results/initial-gapped-run/results.json` (272 hits)
-- `research/tradingview-card-coverage.json` (267 hits)
-- `research/tradingview-script-understanding.json` (144 hits)
-- `research/tradingview-card-readiness.json` (106 hits)
+- `research/json/strategy_experiment/results/initial-gapped-run/results.json` (272 hits)
+- `research/json/tradingview-card-coverage.json` (267 hits)
+- `research/json/tradingview-script-understanding.json` (144 hits)
+- `research/json/tradingview-card-readiness.json` (106 hits)
 - `docs/TRADINGVIEW-CARD-READINESS.md` (77 hits)
 - `docs/FILES.md` (74 hits)
 - `ecosystem/web/styles.css` (63 hits)
-- `research/tradingview-script-profiles/shard-b.jsonl` (61 hits)
+- `research/json/tradingview-script-profiles/shard-b.jsonl` (61 hits)
 
 Full list: `python3 index/search.py --concept data-integrity -n 592`
 
@@ -141,8 +141,8 @@ Oracle-priced perps, priority fees as a product, per-account fee markets, droppe
 
 Strongest files:
 
-- `research/strategy_experiment/results/results.json` (544 hits)
-- `research/strategy_experiment/results/initial-gapped-run/results.json` (408 hits)
+- `research/json/strategy_experiment/results/results.json` (544 hits)
+- `research/json/strategy_experiment/results/initial-gapped-run/results.json` (408 hits)
 - `docs/FILES.md` (264 hits)
 - `skills/trading-and-investing/references/jupiter-jlp-pool.md` (163 hits)
 - `soltui/tui.py` (141 hits)
@@ -160,14 +160,14 @@ Zero parameters, and it out-ranked all but one or two strategies on SOL and all 
 
 Strongest files:
 
-- `research/strategy_experiment/results/results.json` (560 hits)
-- `research/strategy_experiment/results/initial-gapped-run/results.json` (424 hits)
-- `research/strategy_experiment/audit_realism.json` (178 hits)
-- `research/tradingview-card-coverage.json` (112 hits)
-- `research/strategy_experiment/results/auxiliary.json` (77 hits)
-- `research/tradingview-script-profiles/shard-a.jsonl` (68 hits)
+- `research/json/strategy_experiment/results/results.json` (560 hits)
+- `research/json/strategy_experiment/results/initial-gapped-run/results.json` (424 hits)
+- `research/json/strategy_experiment/audit_realism.json` (178 hits)
+- `research/json/tradingview-card-coverage.json` (112 hits)
+- `research/json/strategy_experiment/results/auxiliary.json` (77 hits)
+- `research/json/tradingview-script-profiles/shard-a.jsonl` (68 hits)
 - `docs/FILES.md` (61 hits)
-- `research/tradingview-script-profiles/shard-b.jsonl` (56 hits)
+- `research/json/tradingview-script-profiles/shard-b.jsonl` (56 hits)
 
 Full list: `python3 index/search.py --concept benchmark -n 329`
 
@@ -179,13 +179,13 @@ Below a minimum trade count a result is not eligible to be reported as an improv
 
 Strongest files:
 
-- `research/strategy_experiment/results/results.json` (334 hits)
-- `research/strategy_experiment/results/initial-gapped-run/results.json` (284 hits)
-- `research/strategy_experiment/audit_realism.json` (112 hits)
-- `research/strategy_experiment/audit_realism.md` (112 hits)
-- `research/cross_asset_cpcv.py` (67 hits)
-- `research/strategy_experiment/audit_integrity.json` (55 hits)
-- `research/strategy_experiment/audit_integrity.md` (54 hits)
+- `research/json/strategy_experiment/results/results.json` (334 hits)
+- `research/json/strategy_experiment/results/initial-gapped-run/results.json` (284 hits)
+- `research/json/strategy_experiment/audit_realism.json` (112 hits)
+- `research/json/strategy_experiment/audit_realism.md` (112 hits)
+- `research/scripts/cross_asset_cpcv.py` (67 hits)
+- `research/json/strategy_experiment/audit_integrity.json` (55 hits)
+- `research/json/strategy_experiment/audit_integrity.md` (54 hits)
 - `soltui/cumulative.py` (40 hits)
 
 Full list: `python3 index/search.py --concept evidence-floor -n 254`
@@ -199,13 +199,13 @@ The repo's primary evaluation method: 8 blocks, k=2, up to 28 paths. Replaced th
 Strongest files:
 
 - `docs/FILES.md` (77 hits)
-- `research/cpcv_sweep.py` (68 hits)
-- `research/verify_numbers.py` (63 hits)
+- `research/scripts/cpcv_sweep.py` (68 hits)
+- `research/scripts/verify_numbers.py` (63 hits)
 - `backtester/core/cpcv.py` (60 hits)
 - `backtester/tests/test_cross_asset_cpcv.py` (41 hits)
-- `research/RANKED_LISTS.md` (37 hits)
-- `research/coin-intelligence/sol-solana.md` (35 hits)
-- `research/cross_asset_cpcv.py` (31 hits)
+- `research/papers/RANKED_LISTS.md` (37 hits)
+- `research/papers/coin-intelligence/sol-solana.md` (35 hits)
+- `research/scripts/cross_asset_cpcv.py` (31 hits)
 
 Full list: `python3 index/search.py --concept cpcv -n 174`
 
@@ -217,13 +217,13 @@ PBO measured 0.700 at daily horizons against a 0.500 noise line, so in-sample ra
 
 Strongest files:
 
-- `research/cpcv_sweep.py` (109 hits)
+- `research/scripts/cpcv_sweep.py` (109 hits)
 - `backtester/tests/test_cpcv.py` (58 hits)
-- `research/RANKED_LISTS.md` (42 hits)
-- `research/verify_numbers.py` (39 hits)
+- `research/papers/RANKED_LISTS.md` (42 hits)
+- `research/scripts/verify_numbers.py` (39 hits)
 - `docs/FILES.md` (34 hits)
 - `mongo/queries/06-experiments-and-pbo.js` (27 hits)
-- `docs/strategy-optimization-concept-family.md` (25 hits)
+- `research/papers/docs/strategy-optimization-concept-family.md` (25 hits)
 - `backtester/tests/test_interpret.py` (24 hits)
 
 Full list: `python3 index/search.py --concept overfitting-pbo -n 138`
@@ -237,13 +237,13 @@ Second independent axis beside CPCV: nudge each parameter +/-10% and re-run. A p
 Strongest files:
 
 - `docs/FILES.md` (100 hits)
-- `research/perturb.py` (54 hits)
-- `research/verify_numbers.py` (31 hits)
-- `research/RANKED_LISTS.md` (25 hits)
-- `research/tradingview-card-coverage.json` (23 hits)
+- `research/scripts/perturb.py` (54 hits)
+- `research/scripts/verify_numbers.py` (31 hits)
+- `research/papers/RANKED_LISTS.md` (25 hits)
+- `research/json/tradingview-card-coverage.json` (23 hits)
 - `soltui/compound.py` (16 hits)
-- `research/coin-intelligence/sol-solana.md` (11 hits)
-- `research/triggers.py` (10 hits)
+- `research/papers/coin-intelligence/sol-solana.md` (11 hits)
+- `research/scripts/triggers.py` (10 hits)
 
 Full list: `python3 index/search.py --concept robustness -n 137`
 
@@ -253,7 +253,7 @@ Full list: `python3 index/search.py --concept robustness -n 137`
 
 These are not editorial: each is a value of the `FAMILY` dict in `backtester/core/strategies/__init__.py`, which is what the engine itself uses to decide that two signals measure the same thing (the combination sweep skips same-family pairs for exactly that reason).
 
-The families also carry a measured finding. Of the 25 registered strategies run on five assets, the eight positive on all five are drawn from breakout, trend, momentum, regime-filter and volume-flow — and **not one is from a reversion family**. No reversion-family strategy clears all five. See `research/CROSS-ASSET-TRANSFER.md`.
+The families also carry a measured finding. Of the 25 registered strategies run on five assets, the eight positive on all five are drawn from breakout, trend, momentum, regime-filter and volume-flow — and **not one is from a reversion family**. No reversion-family strategy clears all five. See `research/papers/CROSS-ASSET-TRANSFER.md`.
 
 | Family | Files | Matched on |
 |---|---|---|

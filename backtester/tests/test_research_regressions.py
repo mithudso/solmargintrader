@@ -23,7 +23,7 @@ class WarmupParityRegressions(unittest.TestCase):
         from research.evidence import source_hashes
         hashes = source_hashes()
         replay_source = Path(decide.__file__).read_bytes()
-        self.assertEqual(hashes['research/decide.py'], hashlib.sha256(replay_source).hexdigest())
+        self.assertEqual(hashes['research/scripts/decide.py'], hashlib.sha256(replay_source).hexdigest())
 
     def test_stateful_single_and_composite_exposures_match_engine_warmup(self):
         from research import signal_redundancy as producer

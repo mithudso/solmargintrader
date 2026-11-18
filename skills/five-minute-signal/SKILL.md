@@ -10,7 +10,7 @@ description: >-
   "score the metrics", "compound 5m call", "should I long/short SOL for 5 minutes", "check each
   metric", "forward test the 5m strategies", "backtest the 5m compound". SKIP: placing or
   sizing a real order (no order path; route to the extension and its risk rails), daily/hourly
-  strategy research (soltui Strategies/Queue tabs, research/sweep.py), Aero LP (liquidity/).
+  strategy research (soltui Strategies/Queue tabs, research/scripts/sweep.py), Aero LP (liquidity/).
 ---
 
 # Five-minute signal
@@ -90,7 +90,7 @@ Repo: `/Users/mitch/dev/solmargintrader`. Interpreter with the dependencies:
 ## Several coins
 
 The compound's coins are BTC, ETH, SOL, XRP, HYPE, DOGE, LINK, NEAR, SUI and AVAX, chosen on
-2026-11-07 from a screen of the top 50 (`research/results/top50-screen-2026-11-07.json` in the repo
+2026-11-07 from a screen of the top 50 (`research/json/results/top50-screen-2026-11-07.json` in the repo
 says why each other coin is out). If asked about a coin outside the ten, say it was screened out and
 give the recorded reason before scoring it. The owner trades them on Hyperliquid (all ten have
 perps there; Jupiter lists only SOL, ETH and BTC), and the default costs are Hyperliquid's taker fee.

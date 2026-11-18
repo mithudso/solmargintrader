@@ -149,7 +149,7 @@ class ClassificationTests(unittest.TestCase):
         self.assertEqual(self.classify("backtester/strategy_cards/zscore.md"),
                          "strategy-card")
         self.assertEqual(self.classify("research/results/cpcv_results.csv"), "result")
-        self.assertEqual(self.classify("research/coin-intelligence/btc-bitcoin.md"),
+        self.assertEqual(self.classify("research/papers/coin-intelligence/btc-bitcoin.md"),
                          "coin-reference")
 
     def test_plain_files_fall_through_to_their_language(self):

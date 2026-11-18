@@ -86,8 +86,8 @@ LOG_ROTATE_BYTES = 5 * 1024 * 1024
 
 
 def untested_sweep_command(repo: Path) -> list[str]:
-    """argv for research/sweep_untested.py on this process's own interpreter."""
-    return [sys.executable, str(repo / "research" / "sweep_untested.py")]
+    """argv for research/scripts/sweep_untested.py on this process's own interpreter."""
+    return [sys.executable, str(repo / "research/scripts/sweep_untested.py")]
 
 
 def failure_summary(stderr: str, lines: int = 3) -> str:
@@ -1595,7 +1595,7 @@ def backtest_results(ctx: Context, p: dict[str, Any]) -> Any:
 
 
 @command("backtest.untested_sweep",
-         "Run research/sweep_untested.py on this interpreter (30 minute limit).",
+         "Run research/scripts/sweep_untested.py on this interpreter (30 minute limit).",
          read_only=False, long_running=True)
 def backtest_untested_sweep(ctx: Context, p: dict[str, Any]) -> Any:
     try:
@@ -1745,7 +1745,7 @@ def top5_list(ctx: Context, p: dict[str, Any]) -> Any:
          "The five Top 5 configurations as one-click presets for Analyze, Live Run and Execute.")
 def top5_presets(ctx: Context, p: dict[str, Any]) -> Any:
     return {"presets": presets_mod.build_presets(), "home_asset": top5_mod.HOME_ASSET,
-            "note": "Parameters are the SOL-tuned values of research/sweep.py HORIZONS; "
+            "note": "Parameters are the SOL-tuned values of research/scripts/sweep.py HORIZONS; "
                     "net % is the backtest median path return, not a live result."}
 
 

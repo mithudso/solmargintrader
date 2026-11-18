@@ -1,7 +1,7 @@
 """Trigger trading: wait for a mined trigger, enter next open, exit when the context expires.
 
 The conditions come from `core/trigger_conditions.py`, the same causal code the
-miner (`research/triggers.py`) scores, so what is traded is what was measured:
+miner (`research/scripts/triggers.py`) scores, so what is traded is what was measured:
 
   * the trigger is evaluated at the CLOSE of bar t from bars <= t;
   * the target is returned then, so the engine fills it at the OPEN of bar t+1;

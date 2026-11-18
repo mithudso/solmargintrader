@@ -45,13 +45,13 @@ say so.
 ## Step 3 — ask what the rules say right now (5 minutes)
 
 ```bash
-python3 research/decide.py --asset SOL --interval 1d
+python3 research/scripts/decide.py --asset SOL --interval 1d
 ```
 
 Three sections, and the useful lesson is in the disagreements: the same band break reads
 bullish to the mean-reversion rule and bearish to the breakout rule. There is deliberately
 **no** consensus verdict. If you find yourself wanting one, read
-`research/cpcv_sweep.py`'s `interpret()` — it exists specifically to stop the "lots of
+`research/scripts/cpcv_sweep.py`'s `interpret()` — it exists specifically to stop the "lots of
 strategies agree, so it must be real" conclusion.
 
 Note the header: decision bar, close, checksum, and how stale the data is. That header is

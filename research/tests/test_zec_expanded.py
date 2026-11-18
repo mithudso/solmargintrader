@@ -38,7 +38,7 @@ def tape_for(a):
 class Expanded(unittest.TestCase):
     def test_complete_catalog_has_more_than_baseline_and_keeps_census(self):
         root=Path(__file__).resolve().parents[2]
-        frozen=json.loads(gzip.decompress((root/"research/zec-expanded-20261113.llms/plan.json.gz").read_bytes()))["inventory"]
+        frozen=json.loads(gzip.decompress((root/"research/json/zec-expanded-20261113.llms/plan.json.gz").read_bytes()))["inventory"]
         c=e.catalogue(root)
         self.assertEqual(len(c["candidates"]),1707)
         self.assertEqual(c["candidates"],frozen["candidates"])
@@ -61,7 +61,7 @@ class Expanded(unittest.TestCase):
 
     def test_historical_source_archive_and_original_queue_census(self):
         root=Path(__file__).resolve().parents[2]
-        archive=root/"research/zec-expanded-20261113.llms"
+        archive=root/"research/json/zec-expanded-20261113.llms"
         frozen=json.loads(gzip.decompress((archive/"plan.json.gz").read_bytes()))["inventory"]
         identity=json.loads((archive/"identity.json").read_text())["code_and_cards"]
         with zipfile.ZipFile(archive/"simulation-source.zip") as source:
@@ -69,7 +69,15 @@ class Expanded(unittest.TestCase):
             for name,digest in identity.items():
                 self.assertEqual(hashlib.sha256(source.read(name)).hexdigest(),digest,name)
             with tempfile.TemporaryDirectory() as temporary:
-                path=Path(temporary)/"archived_bgqueue.py"
+                historical_root = Path(temporary)
+                for name in identity:
+                    member = Path(name)
+                    if member.parts[:2] == ("backtester", "strategy_cards"):
+                        self.assertNotIn("..", member.parts)
+                        target = historical_root / member
+                        target.parent.mkdir(parents=True, exist_ok=True)
+                        target.write_bytes(source.read(name))
+                path=historical_root/"archived_bgqueue.py"
                 path.write_bytes(source.read("soltui/bgqueue.py"))
                 spec=importlib.util.spec_from_file_location("soltui._zec_archived_bgqueue",path)
                 module=importlib.util.module_from_spec(spec)
@@ -79,7 +87,7 @@ class Expanded(unittest.TestCase):
                         kwargs.pop("exclusions",None)
                         return module.build_queue(*args,**kwargs)
                     with patch.object(e,"build_queue",side_effect=historical_queue):
-                        historical=e.catalogue(root)
+                        historical=e.catalogue(historical_root)
         self.assertEqual(len(historical["queue_census"]),1059)
         self.assertEqual(len(historical["invalid_jobs"]),46)
         self.assertEqual(sum(row["status"]=="unsupported_actual_perp_inputs" for row in historical["queue_census"]),30)

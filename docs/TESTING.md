@@ -208,7 +208,7 @@ frontmatter supplies numbers to a backtest, so the machine-readable half is chec
 rather than trusted: registry drift is asserted in **both** directions (every registered strategy has
 a card, every card's `registry_key` still exists), every declared default is compared against its
 constructor's actual default, `warmup_bars` and `family` against the code, and every card's presets
-against `research/sweep.py` so a card documents the same experiment the sweep runs. Every buildable
+against `research/scripts/sweep.py` so a card documents the same experiment the sweep runs. Every buildable
 card is also constructed and run through a full backtest. Prose in a card can still be wrong — no
 test catches that — but a number cannot.
 
@@ -221,7 +221,7 @@ future data. That test asserts the value used equals the cloud computed from the
 truncated slice *and* differs from the full-history cloud, so the distinction is
 verified rather than assumed.
 
-63 cover the **per-bar rule readout** (`research/decide.py`), and the one that matters
+63 cover the **per-bar rule readout** (`research/scripts/decide.py`), and the one that matters
 asserts *engine parity*: a recording wrapper captures every `on_bar` return
 `run_backtest` asks for, and the readout's replay must reproduce that index sequence and
 those values exactly for all 25 strategies. The rest guard the two ways the readout can

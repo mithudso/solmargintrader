@@ -197,7 +197,7 @@ def classify(rel: str) -> str:
         return "test"
     if "strategy_cards" in parts:
         return "strategy-card"
-    if "results" in parts:
+    if "results" in parts or parts[:2] == ("research", "json"):
         return "result"
     if "coin-intelligence" in parts:
         return "coin-reference"

@@ -25,7 +25,7 @@ def load_catalog(repo: Path) -> tuple[dict, dict]:
     directory = repo / "backtester/strategy_cards"
     active = load_all(directory)
     incomplete = load_all(directory / "incomplete")
-    for extra in (repo / "backtester/guides", repo / "backtester/strategy_research"):
+    for extra in (repo / "backtester/guides", repo / "research/papers/strategy_research"):
         more = load_all(extra) if extra.is_dir() else {}
         duplicates = (active.keys() | incomplete.keys()) & more.keys()
         if duplicates:
@@ -62,7 +62,10 @@ def validate_readiness(review: dict, created: set[str], active: dict,
         expected_folder = {"guide": "guides", "research": "strategy_research", "incomplete": "incomplete"}.get(disposition)
         if expected_folder and card.path.parent.name != expected_folder:
             raise ValueError(f"{key}: readiness disposition disagrees with card location")
-        if row["path"] != card.path.relative_to(repo).as_posix():
+        recorded_path = row["path"]
+        if recorded_path.startswith("backtester/strategy_research/"):
+            recorded_path = "research/papers/" + recorded_path.removeprefix("backtester/")
+        if recorded_path != card.path.relative_to(repo).as_posix():
             raise ValueError(f"{key}: readiness path does not match card")
         if hashlib.sha256(card.path.read_bytes()).hexdigest() != row["sha256"]:
             raise ValueError(f"{key}: readiness review is stale after a card edit")
@@ -125,7 +128,7 @@ def validate(data: dict, repo: Path = REPO, source_root: Path | None = None) -> 
         raise ValueError("created card missing from card directory")
     if {key for key in cards if key.startswith("tv_")} != created:
         raise ValueError("unrecorded or orphaned TradingView card")
-    review = json.loads((repo / "research/tradingview-card-readiness.json").read_text())
+    review = json.loads((repo / "research/json/tradingview-card-readiness.json").read_text())
     validate_readiness(review, created, active, incomplete, repo)
     rows = data["rows"]
     builtin_rows = [row for row in rows if row["kind"] == "builtin"]
@@ -264,7 +267,7 @@ def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--source-root", type=Path)
     args = parser.parse_args()
-    data = json.loads((REPO / "research/tradingview-card-coverage.json").read_text())
+    data = json.loads((REPO / "research/json/tradingview-card-coverage.json").read_text())
     try:
         result = validate(data, source_root=args.source_root)
     except (ValueError, KeyError, OSError) as exc:

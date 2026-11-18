@@ -23,7 +23,7 @@ T0 = 1_600_000_000 - (1_600_000_000 % DAY)
 
 def _load_triggers():
     name = "_triggers_for_tests"
-    spec = importlib.util.spec_from_file_location(name, REPO / "research" / "triggers.py")
+    spec = importlib.util.spec_from_file_location(name, REPO / "research/scripts/triggers.py")
     mod = importlib.util.module_from_spec(spec)
     sys.modules[name] = mod
     try:

@@ -16,7 +16,7 @@ test('Node tools expose help and reject unknown arguments before any I/O', async
   const env = { ...process.env, HOME: home, SMT_API_TOKEN: '', JUPITER_API_KEY: '',
     NODE_OPTIONS: `--import=data:text/javascript,${encodeURIComponent(preload)}` };
   try {
-    for (const tool of ['api-server.js', 'dryrun.js', 'measure-recentre.js', 'verify-endpoints.js']) {
+    for (const tool of ['api-server.js', 'dryrun.js', '../../research/scripts/perps/measure-recentre.mjs', 'verify-endpoints.js']) {
       const result = await run(process.execPath, [path.join(root, tool), '--help'], { cwd: home, env, timeout: 5000 });
       assert.match(result.stdout, /Usage:/, tool);
       assert.match(result.stdout, /Example:/, tool);

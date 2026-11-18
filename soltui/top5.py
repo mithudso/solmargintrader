@@ -11,7 +11,7 @@ singles at both daily horizons against a 0.500 noise line, and Spearman
 ρ(in-sample, out-of-sample) is −0.419 at the medium horizon. A list titled
 "top 5 by Sharpe" would be a list of the rows most likely to be noise.
 
-The five shown here are the selection of `research/TOP5-RECOMMENDATION.md`:
+The five shown here are the selection of `research/papers/TOP5-RECOMMENDATION.md`:
 drawn from the only seven configurations tested on *two independent
 robustness axes* (the CPCV path distribution and ±10% parameter
 perturbation), ordered by how many checks they clear, not by Sharpe. This
@@ -26,7 +26,7 @@ inference).
 
 ## Members are parsed from the label, not duplicated
 
-`research/cross_asset_cpcv.py` holds the members/mode literals. Copying them
+`research/scripts/cross_asset_cpcv.py` holds the members/mode literals. Copying them
 here would drift; the label ("all(dual_momentum+vol_regime)",
 "obv_trend_60") already encodes them, so `parse_members` recovers them from
 the string instead. A label this module cannot parse yields no members — the
@@ -51,7 +51,7 @@ HOME_ASSET = "SOL"
 # The command that regenerates the evidence file, quoted when it is missing
 # and offered as the full-fidelity path for re-running the composites — the
 # roster can only hold registry singles, not all()/any() combinations.
-REPRO_COMMAND = "python3 research/cross_asset_cpcv.py --top5 --assets DOGE,ZEC"
+REPRO_COMMAND = "python3 research/scripts/cross_asset_cpcv.py --top5 --assets DOGE,ZEC"
 
 _COMPOSITE = re.compile(r"^(all|any)\(([^)]+)\)$")
 

@@ -172,7 +172,7 @@ the measured closed-trade illusion); `references/empirical-backtest-findings-log
 `references/strategy-failure-modes-and-synergy.md` §3 (grid's failure atlas).
 
 **Evidence note.** The §1 table is **closed-form arithmetic** over a ~12 bps round-trip
-assumption — reproduce with `~/dev/solmargintrader/research/leverage_economics.py`. The
+assumption — reproduce with `~/dev/solmargintrader/research/scripts/leverage_economics.py`. The
 closed-trade illusion figures in §3 (+$95 closed, 100% win rate, −37.5% account) and the
 240-config sweep in §2 are **first-party measurements on unlevered SOL**, carried over here
 because leverage scales them rather than changing their character; **the levered case has not
