@@ -1,5 +1,16 @@
 # Prompt history
 
+Version: 307
+Delta: v306 to v307. Save the optimizer request, Chrome advisory workflow and Zec correction.
+
+## Zec agent and Chrome advisory workflow
+
+> Run the /sko, agent deep optimizer, deep prompt optimizer, and application deep optimizer on the Zed agent.
+
+> Launch the Zed agent, and write a helper script that connects to the google chrome plugin such that the data can be streamed to Zed as a snapshot of market conditions and ask for how to proceed. If it's not already there, then make sure the chrome plugin has API and CLI access to every method, call, function, and read so Zed can watch or view what's going on at any time, be asked for advisorship, or inject suggestions into the auto-trading proceedings.
+
+> I made a mistake. I forgot there was an application called Zed, I meant Zec, the ZEC agent created recently. Not the application.
+
 Version: 306
 Delta: v305 to v306. Record the Perps workbench and ZEC history request.
 

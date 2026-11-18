@@ -25,6 +25,45 @@ mountControlRoom();
 
 const send = (msg) => chrome.runtime.sendMessage(msg);
 
+const zecAdvisor = $('#zecAdvisor');
+const zecToggle = $('#zecBridgeToggle');
+const zecBridgeStatus = $('#zecBridgeStatus');
+let zecEnabled = false;
+let zecBusy = false;
+let zecTimer;
+async function refreshZec(change = false) {
+  if (zecBusy || !zecAdvisor.open) return;
+  zecBusy = true;
+  if (change) zecToggle.disabled = true;
+  try {
+    if (change) await call({ type: 'zecBridge', enabled: !zecEnabled });
+    const { bridge, advisories } = await call({ type: 'zecAdvisories' });
+    zecEnabled = bridge.enabled;
+    zecBridgeStatus.textContent = bridge.connected ? 'Local connection active. Suggestions are for review.'
+      : bridge.enabled ? bridge.issue ?? 'Waiting for the local host.' : 'Local connection disabled.';
+    $('#zecAdviceList').replaceChildren(...advisories.map(advice => {
+      const item = document.createElement('li');
+      item.textContent = `${advice.decision}${advice.expired ? ' (expired)' : ''} · ${advice.capturedAt} · ${advice.rationale} Reassess when ${advice.invalidation}`;
+      return item;
+    }));
+  } catch {
+    zecBridgeStatus.textContent = 'Zec advisory state unavailable.';
+  } finally {
+    zecToggle.textContent = zecEnabled ? 'Disable local connection' : 'Enable local connection';
+    zecToggle.disabled = false;
+    zecBusy = false;
+  }
+}
+zecAdvisor.addEventListener('toggle', () => {
+  clearInterval(zecTimer);
+  if (zecAdvisor.open) {
+    void refreshZec();
+    zecTimer = setInterval(refreshZec, 8000);
+  }
+});
+zecToggle.addEventListener('click', () => void refreshZec(true));
+
+
 // The version is the only visible sign that a reload picked up new code.
 document.getElementById('version').textContent = `v${chrome.runtime.getManifest().version}`;
 

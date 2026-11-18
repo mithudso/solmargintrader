@@ -192,7 +192,7 @@ async function main() {
     return;
   }
   const pollSeconds = Number(values['poll-seconds']);
-  const attempts = values.samples === undefined ? (values.once ? 1 : Infinity) : Number(values.samples);
+  const attempts = values.samples === undefined ? 1 : Number(values.samples);
   if (!values.output || (values.once && values.samples !== undefined)
       || (values.samples !== undefined && !Number.isSafeInteger(attempts)) || attempts < 1
       || !Number.isInteger(pollSeconds) || pollSeconds < 5 || pollSeconds > 30) {
