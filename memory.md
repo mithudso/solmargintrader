@@ -1,5 +1,23 @@
 # Work continuation
 
+Version: 674
+Delta: v673 to v674. Record the Todoist installation and app-side activation gate.
+
+## Todoist workstation installation
+
+TASK-2651. Both vendor MCP endpoints are configured in Codex, Claude Code and Antigravity's global MCP configuration. The existing todoist name points to Automations. The new todoist-tasks name points to the task MCP. Codex OAuth succeeded for both and the Automations workspace lookup returned successfully. Claude and Antigravity still require an authenticated connection check.
+
+Installed td 6.2.0 and imported Todoist Python SDK 4.0.1 and TypeScript SDK 21.1.0 from isolated SDK environments under /Users/mitch/.local/share/todoist. The user LaunchAgent dev.mithudso.todoist-webhook starts the signed listener on 127.0.0.1:8786. A separate user LaunchAgent connects the dedicated Cloudflare Tunnel. The public HTTPS route is https://todoist-webhook.llmsx.org/todoist/webhook. Its other paths return 404. Synthetic HTTPS checks returned 200 for a valid signature and its replay, 401 for an unsigned request, and 409 for conflicting content under the same delivery ID. SQLite retained exact bytes for one delivery. The temporary test key and delivery were removed.
+
+Account activation remains open. The Todoist app must have the HTTPS callback, a selected event, and the OAuth redirect http://127.0.0.1:8787/callback. The local helper /Users/mitch/.local/bin/todoist-webhook-activate handles the owner OAuth exchange and stores the signing secret privately. Check local /healthz for signing_ready and verify a real event landed. The CLI still needs account OAuth at this checkpoint.
+
+Version: 673
+Delta: v672 to v673. Start the Todoist workstation integration.
+
+## Todoist workstation integration
+
+TASK-2651. Install both Todoist MCP endpoints in Codex, Claude Code and Antigravity. Install the official CLI and SDKs. Run a local launchd webhook listener with signature verification and private durable receipts. Check OAuth and delivery after installation.
+
 Version: 672
 Delta: v671 to v672. Record the Perps workbench implementation and ZEC archive coverage.
 
