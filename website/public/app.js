@@ -138,7 +138,7 @@ function oraclePanel(full = false) {
   return panel;
 }
 function featuredArticles() {
-  const preferred = ['research/META-ANALYSIS.md', 'research/SHAPE-AWARE-SPOT.md', 'research/COINBASE50-GRID-CYCLES.md'];
+  const preferred = ['research/papers/META-ANALYSIS.md', 'research/papers/SHAPE-AWARE-SPOT.md', 'research/papers/COINBASE50-GRID-CYCLES.md'];
   const selected = preferred.map(path => state.articles.find(article => article.source === path)).filter(Boolean);
   return [...selected, ...state.articles.filter(article => !selected.includes(article))].slice(0, 3);
 }

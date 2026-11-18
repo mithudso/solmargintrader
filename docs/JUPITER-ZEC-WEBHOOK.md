@@ -73,7 +73,7 @@ and funding, compared with the displayed average trade expectancy of about 0.09%
 This is only a scale comparison. Lower fees and native shorting correct two
 Coinbase mismatches; they do not establish a profitable leveraged strategy.
 The historical held-out losses and source/fill-model limits remain recorded in
-[the chart review](VOLTY-TRADINGVIEW-ALERT-REVIEW.md). Leverage magnifies the net
+[the chart review](../research/papers/docs/VOLTY-TRADINGVIEW-ALERT-REVIEW.md). Leverage magnifies the net
 result and introduces liquidation; it does not repair a negative trading edge.
 
 Public source snapshots, account preflight and private deployment receipts live

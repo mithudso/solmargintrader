@@ -53,10 +53,8 @@ INDEX_JSON = REPO / "index" / "INDEX.json"
 # cannot hang the UI thread.
 MAX_VIEW_BYTES = 2_000_000
 
-# Directories no write may touch, regardless of caller. research/results/ is
-# evidence: everything in it is meant to change only by re-running the driver
-# that produced it (see verify_numbers.py, turnover_table.py --check).
-NO_WRITE_PREFIXES = ("research/results/",)
+# Research outputs change through the driver that produced them.
+NO_WRITE_PREFIXES = ("research/results/", "research/papers/results/", "research/json/")
 
 # Extension -> Textual/Rich syntax name. Anything absent renders as plain text,
 # which is correct for .txt reports and better than guessing wrong.

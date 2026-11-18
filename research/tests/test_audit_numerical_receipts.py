@@ -175,7 +175,7 @@ class NumericalReceiptTests(unittest.TestCase):
 
     def test_fixed_report_refuses_alternative_artifacts(self):
         with tempfile.TemporaryDirectory() as tmp:
-            p = Path(tmp) / 'research/results'
+            p = Path(tmp) / 'research/json/results'
             p.mkdir(parents=True)
             for module, filename in [(shape_report, 'shape_spot_20261111_manifest.json'), (zec_cycle_report, 'zec_cycles_20261111_manifest.json')]:
                 (p / filename).write_text(json.dumps({'artifacts': {'data.csv': 'known'}}))

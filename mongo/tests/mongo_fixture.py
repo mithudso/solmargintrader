@@ -283,7 +283,8 @@ class DisposableMongoFixture:
             tempfile.TemporaryDirectory(prefix="mongo-test-input-")
         )
         root = Path(temporary)
-        for subdir in ("data", "research/results", "backtester/strategy_cards"):
+        for subdir in ("data", "research/results", "research/json/results",
+                       "research/scripts", "backtester/strategy_cards"):
             (root / subdir).mkdir(parents=True, exist_ok=True)
         (root / "data/SOL_1d.csv").write_text(
             "timestamp,open,high,low,close,volume\n86400,10,12,9,11,100\n172800,11,13,10,12,120\n"
@@ -291,11 +292,11 @@ class DisposableMongoFixture:
         (root / "data/JLP_spot.csv").write_text("symbol,price\n")
         for source in Path(strategy_cards.CARD_DIR).glob("*.md"):
             shutil.copyfile(source, root / "backtester/strategy_cards" / source.name)
-        shutil.copyfile(source_root / "research/decide.py", root / "research/decide.py")
+        shutil.copyfile(source_root / "research/scripts/decide.py", root / "research/scripts/decide.py")
         (root / "research/results/cpcv_fixture.csv").write_text(
             "horizon,pbo,score\nshort,0.1,nan\nlong,0.2,1\n"
         )
-        (root / "research/results/cpcv_fixture.json").write_text(
+        (root / "research/json/results/cpcv_fixture.json").write_text(
             json.dumps(
                 [{"horizon": "short", "pbo": 0.1}, {"horizon": "long", "pbo": 0.2}]
             )

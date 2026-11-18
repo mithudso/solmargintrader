@@ -55,7 +55,7 @@ Future paper configurations are prepared separately and do not claim to run.
 Basis: measured-oos. All five first-half selected winners lost on their held-out
 second half. Daily adaptive walk-forward selection gained 22.69% but trailed
 passive ZEC. These exploratory results after 250 trials do not prove an edge.
-Measured study results and reproduction are in `docs/VOLTY-ZEC-STUDY.md`.
+Measured study results and reproduction are in `research/papers/docs/VOLTY-ZEC-STUDY.md`.
 
 ## Sources
 

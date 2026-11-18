@@ -20,7 +20,7 @@ room; select **Wiki**. The source links below remain usable without a running UI
 | Commands and setup | [Managed suite](bot-manager-managed-suite.md) | [Installation](INSTALLATION.md), [development](DEVELOPMENT.md), [Bot Manager](../botmanager/README.md) |
 | Reference and architecture | [Component map](COMPONENTS.md) | [Architecture](ARCHITECTURE.md), [source file map](codebase-overview.md), [requirements](requirements.md) |
 | Scripts and maintenance | [Script inventory](SCRIPTS.md) | [Testing](TESTING.md), [incident runbook](runbooks/incident.md), [rollback](runbooks/rollback.md) |
-| Strategy and evidence | [Canonical strategy cards](../backtester/strategy_cards/README.md) | [Research survey](../research/STRATEGIES.md), [strategy optimization](strategy-optimization-concept-family.md), [Oracle consumer interface](bot-manager-oracle-interface.md) |
+| Strategy and evidence | [Canonical strategy cards](../backtester/strategy_cards/README.md) | [Research survey](../research/papers/STRATEGIES.md), [strategy optimization](../research/papers/docs/strategy-optimization-concept-family.md), [Oracle consumer interface](bot-manager-oracle-interface.md) |
 | Execution and security boundaries | [Security](SECURITY.md) | [Known issues](known-issues.md), [external calls](external-calls.md), [executor rules](../executor/CLAUDE.md) |
 | Separate hosted website | [Website guide](../website/README.md) | [Read-only analysis bridge](../website/engine/README.md); wallet accounts and inactive paper definitions do not control the local owner suite |
 | Jupiter 1000x indicators | [Overlay plan and formulas](JUPITER-1000X-OVERLAY.md) | [SDK create/close boundaries](JUPITER-1000X-SDK.md), [optimized implementation prompt](JUPITER-1000X-OVERLAY-PROMPT.md) |

@@ -1271,7 +1271,7 @@ def materialize_bars(asset: str) -> tuple[Any, str]:
 
 def _prepared(asset: str) -> dict[str, Any]:
     # The tab's process lives for days; without the signature it would keep backtesting the
-    # data it first loaded after research/full_suite.py replaced the files.
+    # data it first loaded after research/scripts/full_suite.py replaced the files.
     sig = _data_signature(asset)
     cached = _PREPARED.get(asset)
     if cached is None or cached[0] != sig:
@@ -1541,7 +1541,7 @@ def run_summary(rows: Sequence[Mapping[str, Any]], window_count: int | None = No
     data = ""
     if bad is not None and bad >= DATA_WARN_PCT:
         data = (f" Data: {bad:.1f}% of these 5m bars were built from incomplete minutes. Coinbase drops "
-                "minutes that traded (research/CANDLE-GAP-AUDIT.md), so closes, highs and lows there may be "
+                "minutes that traded (research/papers/CANDLE-GAP-AUDIT.md), so closes, highs and lows there may be "
                 "wrong and liquidations understated.")
     return " ".join((head, direction, money, verdict)) + data
 

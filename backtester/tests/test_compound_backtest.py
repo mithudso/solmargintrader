@@ -93,7 +93,7 @@ class HyperliquidMarginTests(unittest.TestCase):
         import json
 
         root = Path(__file__).resolve().parents[2]
-        screen = json.loads((root / "research/results/top50-screen-2026-11-07.json").read_text())
+        screen = json.loads((root / "research/json/results/top50-screen-2026-11-07.json").read_text())
         rows = {r["symbol"]: r for r in screen["coins"]}
         for coin, max_lev in cbt.HYPERLIQUID_MAX_LEVERAGE.items():
             with self.subTest(coin=coin):

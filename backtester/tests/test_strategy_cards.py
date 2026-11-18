@@ -9,7 +9,7 @@ Drift is checked in both directions, because both failures are silent:
 * a card declares a default the constructor no longer has, or
 * a registry entry has no card at all / a card names a registry key that is gone.
 
-A third check ties in `research/sweep.py`: where both declare per-horizon
+A third check ties in `research/scripts/sweep.py`: where both declare per-horizon
 parameters for the same strategy, they must agree. Otherwise the card documents
 one experiment and the sweep runs another.
 """
@@ -506,13 +506,13 @@ class TestBotCards(unittest.TestCase):
 
 
 class TestSweepDrift(unittest.TestCase):
-    """Card presets and research/sweep.py must describe the same experiment."""
+    """Card presets and research/scripts/sweep.py must describe the same experiment."""
 
     def setUp(self) -> None:
         self.cards = sc.load_all()
-        path = REPO_ROOT / "research" / "sweep.py"
+        path = REPO_ROOT / "research/scripts/sweep.py"
         if not path.exists():
-            self.skipTest("research/sweep.py not present")
+            self.skipTest("research/scripts/sweep.py not present")
         # research/ is not a package, so load the module by path rather than
         # importing it.
         name = "_sweep_for_tests"
@@ -548,7 +548,7 @@ class TestSweepDrift(unittest.TestCase):
                 self.assertEqual(
                     declared,
                     params,
-                    f"{card.id}: {horizon} preset disagrees with research/sweep.py",
+                    f"{card.id}: {horizon} preset disagrees with research/scripts/sweep.py",
                 )
 
 
@@ -589,7 +589,7 @@ class TestCardsAreRunnable(unittest.TestCase):
 
     def test_a_spec_only_card_refuses_to_build_and_says_what_it_needs(self) -> None:
         self.assertTrue(all(c.runner and c.registry_key in REGISTRY for c in self.cards.values()))
-        research_dir = sc.CARD_DIR.parent / "strategy_research"
+        research_dir = REPO_ROOT / "research/papers/strategy_research"
         spec_only = [c for c in sc.load_all(research_dir).values() if c.status == "spec-only"]
         self.assertTrue(spec_only, "expected preserved research cards")
         for card in spec_only:

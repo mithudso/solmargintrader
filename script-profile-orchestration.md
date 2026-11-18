@@ -12,8 +12,8 @@ Remote key: git@github.com:mithudso/solmargintrader.git. Registry solmargintrade
 
 ## Context found
 
-- Existing catalog contains the broad source inventory and stable card identities. [src: research/tradingview-card-coverage.json]
-- The21 native-strategy cards are already independently accepted and must remain unchanged. [src: research/tradingview-strategy-understanding-audit.json]
+- Existing catalog contains the broad source inventory and stable card identities. [src: research/json/tradingview-card-coverage.json]
+- The21 native-strategy cards are already independently accepted and must remain unchanged. [src: research/json/tradingview-strategy-understanding-audit.json]
 - The user's scope includes indicators and all trading-related scripts. [src: prompts.md]
 - Registry lookup succeeded; memory substring query returned no hits. [src: index:hub_pm_get] [src: index:hub_memory_search]
 - Semantic lookups route to the source coverage, reference and file inventory. [src: index:hub_search_codebase] [src: index:hub_ask]
@@ -21,7 +21,7 @@ Remote key: git@github.com:mithudso/solmargintrader.git. Registry solmargintrade
 
 ## Existing artifacts
 
-research/tradingview-strategy-understanding.json; research/tradingview-strategy-understanding-audit.json; research/tradingview-card-coverage.json; research/tradingview-script-profile-work.json.
+research/json/tradingview-strategy-understanding.json; research/json/tradingview-strategy-understanding-audit.json; research/json/tradingview-card-coverage.json; research/tradingview-script-profile-work.json.
 
 ## Plan
 
@@ -46,7 +46,7 @@ B1-B3:done source authors (TASK948-TASK950). B4-B6:running independent reviewers
 
 ## Artifacts written
 
-scripts/build_tradingview_script_profiles.py; research/tradingview-script-profile-work.json; context-bundle.json; script-profile-orchestration.md. Raw corpus under tradingview/.script-card-work remains ignored.
+scripts/build_tradingview_script_profiles.py; research/json/tradingview-script-profile-work.json; context-bundle.json; script-profile-orchestration.md. Raw corpus under tradingview/.script-card-work remains ignored.
 
 ## Stage log
 
@@ -65,13 +65,13 @@ Architecture decision: The expanded cards live under research/tradingview-script
 
 Completeness refinement: Each in-scope source record includes readiness.status, reason and blocking gaps. Incomplete expanded companion cards go beneath backtester/strategy_cards/incomplete/publication-profiles. Preserve the accepted21 semantic manifest and card bytes while binding physical moves through a separately reviewed location receipt. [src: prompts.md] [src: stele:KNOW-951]
 
-Continuation accounting: Actual complete-source review exceeds one context per shard. Continue existing assignments from saved exact receipts. The user-required complete goal and added completeness refinement override the optional default eight-dispatch cap; log real counts and stage8 degradation instead of truncating source coverage. Root integrates only landed PR97, not its former unfinished branch. [src: prompts.md] [src: research/tradingview-script-profile-audit-prompts.md]
+Continuation accounting: Actual complete-source review exceeds one context per shard. Continue existing assignments from saved exact receipts. The user-required complete goal and added completeness refinement override the optional default eight-dispatch cap; log real counts and stage8 degradation instead of truncating source coverage. Root integrates only landed PR97, not its former unfinished branch. [src: prompts.md] [src: research/papers/tradingview-script-profile-audit-prompts.md]
 
-B4 final acceptance:240/240 current source-profile pairs pass, all1269027 source characters read and40 findings resolved. B5/B6 still active; their source/read/finding receipts are authoritative. B7 enum correction and physical moves are complete, native source gate verifies742 captures and broad catalog gate verifies4890 capture files. [src: research/tradingview-script-profile-audits/shard-a.jsonl] [src: research/tradingview-strategy-card-locations.json]
+B4 final acceptance:240/240 current source-profile pairs pass, all1269027 source characters read and40 findings resolved. B5/B6 still active; their source/read/finding receipts are authoritative. B7 enum correction and physical moves are complete, native source gate verifies742 captures and broad catalog gate verifies4890 capture files. [src: research/json/tradingview-script-profile-audits/shard-a.jsonl] [src: research/json/tradingview-strategy-card-locations.json]
 
-Final source QA:all742 publications accounted for,691 source cards,51 evidenced non-trading exclusions,721 expanded independent source/profile passes plus21 native profiles. All source reads cover3899878 raw-description characters. User clarified standalone coin-test completeness; no current card is qualified for that, so all691 source cards are in incomplete. The source-disclosure review does not certify coin tests. [src: research/tradingview-script-understanding.json] [src: prompts.md]
+Final source QA:all742 publications accounted for,691 source cards,51 evidenced non-trading exclusions,721 expanded independent source/profile passes plus21 native profiles. All source reads cover3899878 raw-description characters. User clarified standalone coin-test completeness; no current card is qualified for that, so all691 source cards are in incomplete. The source-disclosure review does not certify coin tests. [src: research/json/tradingview-script-understanding.json] [src: prompts.md]
 
 9 llms:ok — own family backed up;5 sourced facts and1 sourced index entry appended.
 10 selfcheck:executed,8/8,zero invalid artifacts. Stage8 actual continuations exceeded the optional default cap to finish owner scope;22 dispatches across7 distinct agents, no external research. Final Git checks/delivery remain pending.
 
-Concurrent delivery integration preserves the incoming root context bundle; this source run bundle is retained as research/tradingview-script-context-bundle.json. Both run-log entries and all llms/prompt/memory histories are preserved. No runtime feature from PR93/98/99 is reverted. [src: research/tradingview-script-context-bundle.json]
+Concurrent delivery integration preserves the incoming root context bundle; this source run bundle is retained as research/tradingview-script-context-bundle.json. Both run-log entries and all llms/prompt/memory histories are preserved. No runtime feature from PR93/98/99 is reverted. [src: research/json/tradingview-script-context-bundle.json]

@@ -89,7 +89,7 @@ class PpoCross:
 
     Algebraically MACD divided by the slow EMA, so on one asset over a short span the
     two cross at almost the same bars. The card records that and the redundancy
-    measurement is `research/signal_redundancy.py`'s job, not an assumption here.
+    measurement is `research/scripts/signal_redundancy.py`'s job, not an assumption here.
     """
 
     def __init__(self, fast: int = 12, slow: int = 26, signal: int = 9) -> None:

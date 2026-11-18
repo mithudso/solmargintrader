@@ -13,7 +13,7 @@ forward test, metric by metric and combined. Nothing here places an order.
 | The tab | soltui → **Compound 5m** |
 | Registry commands (TUI, CLI, API, extension host) | `compound.catalog`, `compound.config`, `compound.save`, `compound.reset`, `compound.signal`, `compound.backtest`, `compound.results`, `compound.forward_tick`, `compound.forward_status` |
 | Agent skill | `skills/five-minute-signal/SKILL.md` (live copy in `~/.claude/skills/`) |
-| One command for everything | `research/full_suite.py` |
+| One command for everything | `research/scripts/full_suite.py` |
 
 ## How a call is made
 
@@ -105,8 +105,8 @@ in every row**: a better hit rate does not beat a 16 bps round trip on a 6–9 b
 The compound runs on ten coins: **BTC, ETH, SOL, XRP, HYPE, DOGE, LINK, NEAR, SUI, AVAX**
 (`COMPOUND_5M_UNIVERSE` in `backtester/core/universe.py`). The owner chose them on 2026-11-07
 from a screen of the top 50 coins by market cap, pegged tokens left out
-(`research/results/top50-nonpegged-2026-11-07.json`). The screen, with each coin's live turnover,
-perp leverage, Coinbase status, verdict and reason, is `research/results/top50-screen-2026-11-07.json`.
+(`research/json/results/top50-nonpegged-2026-11-07.json`). The screen, with each coin's live turnover,
+perp leverage, Coinbase status, verdict and reason, is `research/json/results/top50-screen-2026-11-07.json`.
 
 The screen applied the owner's minimum-leverage requirement and an assumed 13 bps
 round-trip cost. Leverage scales price exposure and proportional costs together; it does
@@ -128,7 +128,7 @@ coin. Cached data for any other coin can still be backtested from the CLI with `
 **Costs are Hyperliquid's.** The owner can trade on Hyperliquid (confirmed 2026-11-07), which
 lists perps for all ten coins and charges less than Jupiter Perps. The default execution is its
 base taker fee, 4.5 bps per side (Jupiter: 6 bps), plus 2 bps slippage per side: a **13 bps**
-round trip (16 on Jupiter). `research/results/hyperliquid-costs-2026-11-07.json` holds the live fee
+round trip (16 on Jupiter). `research/json/results/hyperliquid-costs-2026-11-07.json` holds the live fee
 schedule and an order-book walk per coin. At $2k a market order cost at most 2.2 bps from mid on
 every coin, so 2 bps holds for small size. At $10k–$50k, LINK, SUI and AVAX reached 2–6 bps on one
 side. Raise `slippage_bps` for that coin before sizing up. A resting (maker) order pays 1.5 bps,
@@ -142,7 +142,7 @@ notional on BTC (40x), 2% on ETH (25x), 2.5% on SOL and XRP (20x), 5% on the 10x
 0.2%. At 5x a 10x-max coin is liquidated about 15% away, not about 19.7%. The engine, the
 liquidation price in each sized call and `gate_liquidation` all use the coin's margin.
 
-* **Data.** `research/full_suite.py` caches 1-minute candles back to each coin's earliest
+* **Data.** `research/scripts/full_suite.py` caches 1-minute candles back to each coin's earliest
   available minute: `python3 -m backtester.core.fetch_minutes --assets BTC,ETH,... --years 7`. That
   is the finest history Coinbase serves; trade-by-trade ticks exist but a single month took days
   to backfill.
@@ -153,7 +153,7 @@ liquidation price in each sized call and `gate_liquidation` all use the coin's m
     `[time, open, close, high, low, ...]`; the fetcher reorders them and stops when more than 1% of
     a page has impossible OHLC. These coins are backtest only.
 * **Data quality, per coin.** Coinbase's 1m endpoint drops minutes that *did* trade (84% of
-  sampled gaps, `research/CANDLE-GAP-AUDIT.md`), so a 5m bar built from fewer than five minutes
+  sampled gaps, `research/papers/CANDLE-GAP-AUDIT.md`), so a 5m bar built from fewer than five minutes
   can carry a wrong close and an understated high or low, which flatters liquidation checks.
   Coinbase's own 5m candles carry the same damage. Every bar records how many minutes it came
   from. Each backtest reports the share of incomplete bars, and the status bar warns above 1%.
@@ -167,7 +167,7 @@ liquidation price in each sized call and `gate_liquidation` all use the coin's m
   | DOGE | 2021-06 to now | 570,808 | 4.49% |
   | ZEC | 2020-12 to now | 575,919 | **60.3%** (64% minute coverage; read its results as unreliable) |
 
-  Only trades repair a bar (`research/tick_backfill.py`).
+  Only trades repair a bar (`research/scripts/tick_backfill.py`).
 * **Own numbers.** Each coin has its own learned record, backtests and forward ledger. It can also
   have its own settings stacked on the shared ones. Pick the coin at the top of the tab.
   **Edits apply to** switches between all coins (the shared base) and this coin. Adopt tuned
@@ -349,7 +349,7 @@ them.
 
 ## Beating the fees: fewer, stronger, longer calls (2026-11-07)
 
-Full write-up: `research/COMPOUND-FRONTIER.md`. In short:
+Full write-up: `research/papers/COMPOUND-FRONTIER.md`. In short:
 
 - The reversion metrics' 52% next-bar hit carried about **0 bps** of gross edge per call: wins smaller
   than losses, at every holding period from 5 minutes to 4 hours. No fee trick fixes zero gross.
@@ -372,7 +372,7 @@ Run `20261107T192614Z`: `python3 -m soltui.compound sweep --workers 6`, the save
 every single-metric variant on each of the ten coins, 300 configurations. Each coin's whole 1m
 history was built into 5m bars. Out of sample is the last 30% of each coin's bars. Costs are
 Hyperliquid's (13 bps round trip) at 5x, with each coin's maintenance margin.
-`research/results/compound-10coin-fullhistory-2026-11-07.json` holds the table.
+`research/json/results/compound-10coin-fullhistory-2026-11-07.json` holds the table.
 
 | Coin | 5m bars from | Bars | Incomplete bars | OOS mean move | Perfect call, net | Compound OOS hit (z) | Best single metric, OOS hit (z) | Best gross per call |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- |
@@ -393,7 +393,7 @@ round-trip cost. It includes FLAT/no-call periods and ties. It does not conditio
 strategy's selected events, model next-open fills, or check the intrabar liquidation path.
 A negative average cannot rule out every selective five-minute strategy; a positive one
 does not establish an executable strategy. The saved engine results below describe the
-configurations actually tested. See `research/five-minute-perps-suite/benchmark-scope-review.json`
+configurations actually tested. See `research/json/five-minute-perps-suite/benchmark-scope-review.json`
 for the code review and a synthetic counterexample. Historical cost assumptions are not
 live venue quotes.
 
@@ -488,11 +488,11 @@ run's count, is the multiple-testing denominator. A fresh fetch moves the window
 /Users/mitch/.venvs/soltui/bin/python -m soltui.compound backtest --asset SOL
 
 # Everything: fresh data, registry tiers 0–2, compound perturbations, grid and frontier
-/Users/mitch/.venvs/soltui/bin/python research/full_suite.py --plan
-/Users/mitch/.venvs/soltui/bin/python research/full_suite.py
+/Users/mitch/.venvs/soltui/bin/python research/scripts/full_suite.py --plan
+/Users/mitch/.venvs/soltui/bin/python research/scripts/full_suite.py
 
 # After a successful --fetch-only run, start a fresh sweep without downloading twice
-/Users/mitch/.venvs/soltui/bin/python research/full_suite.py --skip-fetch --archive-results
+/Users/mitch/.venvs/soltui/bin/python research/scripts/full_suite.py --skip-fetch --archive-results
 ```
 
 Files: config `~/.config/soltui/compound/config.json`; backtest rows

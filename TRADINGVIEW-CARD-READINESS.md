@@ -6,14 +6,14 @@ The active catalog contains 34 registered strategies. The original 1,142 cards a
 
 The tables below preserve the earlier source-mechanics review. Their decisions describe whether a calculation was sufficiently specified; they do not assert that a card is an executable strategy. The owner subsequently required unimplemented specifications and guides to leave the active catalog. Links point to the current locations.
 
-`research/tradingview-card-readiness.json` records exact supporting quotations, current paths, hashes and gaps for every extracted card. The integrity checker audits all locations and rejects missing, duplicated or stale evidence. To add a strategy to the active catalog, implement and register it, update its card and reviewed location, and verify the change.
+`research/json/tradingview-card-readiness.json` records exact supporting quotations, current paths, hashes and gaps for every extracted card. The integrity checker audits all locations and rejects missing, duplicated or stale evidence. To add a strategy to the active catalog, implement and register it, update its card and reviewed location, and verify the change.
 
 ```bash
 python3 scripts/check_tradingview_cards.py
 python3 -m unittest scripts.test_card_readiness
 ```
 
-The native source review records 21 strategy publications, including 13 enriched canonical cards. All 691 new source profiles remain incomplete standalone coin tests. See `research/tradingview-strategy-card-locations.json` for native source locations.
+The native source review records 21 strategy publications, including 13 enriched canonical cards. All 691 new source profiles remain incomplete standalone coin tests. See `research/json/tradingview-strategy-card-locations.json` for native source locations.
 
 ## Previously retained specifications
 

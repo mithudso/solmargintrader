@@ -88,7 +88,7 @@ REGISTRY: dict[str, Callable[..., Any]] = {
     "lev_low": LevLow,
     "lev_medium": LevMedium,
     "lev_high": LevHigh,
-    # Waits for a mined trigger (research/triggers.py), trades it to expiry.
+    # Waits for a mined trigger (research/scripts/triggers.py), trades it to expiry.
     "trigger_trade": TriggerTrade,
 }
 
@@ -96,7 +96,7 @@ REGISTRY: dict[str, Callable[..., Any]] = {
 # orthogonality when proposing pairs.
 #
 # A family here is a claim that two members are NOT independent bets, so it has
-# to answer to measurement. `research/signal_redundancy.py` scores this dict
+# to answer to measurement. `research/scripts/signal_redundancy.py` scores this dict
 # against exposure vectors; when the two disagree, this dict is what changes.
 #
 # Hence `sma-gated`: sma_regime, voltarget, atr_sized and garch_voltarget all

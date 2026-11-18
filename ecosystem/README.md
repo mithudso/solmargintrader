@@ -35,7 +35,7 @@ research runtime 0.4.0 and Backtester 0.2.0. Its dedicated paper owner uses
 `/Users/mitch/.venvs/zec-ensembles-20261110`; the existing managed UI receives
 the same coherent package bundle under the owner's ZEC publication request.
 The earlier `/Users/mitch/.venvs/solecosystem-0.4.2` candidate is historical.
-See [the measured ZEC study](../docs/ZEC-ENSEMBLE-STUDY.md) and
+See [the measured ZEC study](../research/papers/docs/ZEC-ENSEMBLE-STUDY.md) and
 [forward owner commands](../docs/ZEC-ENSEMBLES-FORWARD.md). The managed suite can maintain manager/UI availability independently of research;
 see [managed operations](../docs/bot-manager-managed-suite.md).
 Persistent supervision, independent heartbeat alerts and daily reports are documented in

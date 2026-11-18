@@ -764,7 +764,7 @@ def _c_btc_lead(b: Bars, p: Params, aux: Params) -> np.ndarray:
     return np.tanh(_safe_div(lr, p["scale"] * sigma))
 
 
-# -- frontier metrics (2026-11-07): named in research/STRATEGIES.md, RELIABLE_SIGNALS.md and the
+# -- frontier metrics (2026-11-07): named in research/papers/STRATEGIES.md, RELIABLE_SIGNALS.md and the
 # research digest of that day. Off by default: they are candidates to test, not proven inputs.
 
 
@@ -1186,19 +1186,19 @@ COMPONENTS: tuple[Component, ...] = (
               (P("span", 20, 2, 500), P("atr", 14, 2, 200), P("mult", 2.0, 0.2, 10, "float")), _c_keltner,
               "clip((close - EMA(span)) / (mult * ATR(atr)))",
               "Volatility-scaled breakouts that keep going.", "Ranges: a band touch reverses.",
-              "research/STRATEGIES.md (keltner); 1h CPCV median Sharpe -0.961", default_enabled=False),
+              "research/papers/STRATEGIES.md (keltner); 1h CPCV median Sharpe -0.961", default_enabled=False),
     Component("mom_skip", "Momentum with a skip (n, k)", "momentum", "momentum", "score",
               (P("lookback", 48, 3, 5000), P("skip", 6, 0, 1000), P("vol_window", 288, 10, 5000),
                P("scale", 1.0, 0.1, 20, "float")), _c_mom_skip,
               "tanh(log(C[t-skip] / C[t-lookback]) / (scale * sigma1 * sqrt(lookback - skip)))",
               "Persistent drifts; skipping the last bars removes their short-term reversal.",
-              "Choppy markets; turning points.", "research/STRATEGIES.md (dual momentum)", default_enabled=False),
+              "Choppy markets; turning points.", "research/papers/STRATEGIES.md (dual momentum)", default_enabled=False),
     Component("vr_regime", "Variance-ratio regime switch", "regime-switch", "adaptive", "score",
               (P("q", 6, 2, 500), P("window", 288, 30, 10000), P("gain", 2.0, 0.1, 20, "float")), _c_vr_regime,
               "clip(sign(r_q) * gain * (VR - 1)), VR = Var(q-bar returns) / (q * Var(1-bar returns)) over window",
               "Follows moves while they extend (VR > 1) and fades them while they undo (VR < 1).",
               "VR is noisy over short windows; regime changes lag.",
-              "research/STRATEGIES.md (\"highest-value unimplemented item\"); daily hurst_switch DSR 0.416",
+              "research/papers/STRATEGIES.md (\"highest-value unimplemented item\"); daily hurst_switch DSR 0.416",
               default_enabled=False),
     Component("ou_reversion", "Ornstein-Uhlenbeck fade", "stretch", "reversion", "score",
               (P("window", 48, 5, 5000), P("fit_window", 288, 30, 10000), P("entry", 2.5, 0.2, 10, "float"),
@@ -1206,18 +1206,18 @@ COMPONENTS: tuple[Component, ...] = (
               _c_ou_reversion,
               "clip(-z / entry) while the AR(1) half-life of (close - SMA) over fit_window <= max_half_life, else 0",
               "Stretches that are measurably snapping back.", "Trends: the half-life grows and it goes quiet.",
-              "research/STRATEGIES.md (OU); indicators.ou_half_life; daily +0.412 Sharpe", default_enabled=False),
+              "research/papers/STRATEGIES.md (OU); indicators.ou_half_life; daily +0.412 Sharpe", default_enabled=False),
     Component("consec_run", "Consecutive-close exhaustion", "structure", "reversion", "score",
               (P("min_run", 3, 2, 50), P("span", 3, 1, 50)), _c_consec_run,
               "-sign(run) * min(1, (|run| - min_run + 1) / span) for runs of min_run+ same-sign closes",
               "Short bursts that overshoot.", "Strong trends print long runs.",
-              "research/RELIABLE_SIGNALS.md (consec_dn3, near-miss: failed FDR and replication)",
+              "research/papers/RELIABLE_SIGNALS.md (consec_dn3, near-miss: failed FDR and replication)",
               default_enabled=False),
     Component("pairs_spread", "Spread vs BTC (relative value)", "relative-value", "reversion", "score",
               (P("window", 288, 30, 10000), P("entry", 2.0, 0.2, 10, "float")), _c_pairs_spread,
               "clip(-z / entry), z of log C - beta * log C_BTC over window, beta from rolling return regression",
               "Coins that drift away from BTC and come back.", "Regime breaks and coin-specific news.",
-              "research/STRATEGIES.md (pairs / stat-arb)", needs=("btc",), default_enabled=False),
+              "research/papers/STRATEGIES.md (pairs / stat-arb)", needs=("btc",), default_enabled=False),
     Component("gate_cost", "Cost hurdle", "gate", "gate", "gate",
               (P("window", 48, 5, 2000), P("hold_bars", 3, 1, 100, "int", "bars a position is expected to last"),
                P("multiple", 1.0, 0.1, 10, "float", "required move as a multiple of round-trip cost")), _g_cost,
@@ -1329,7 +1329,7 @@ AGGREGATE_SPECS: tuple[ParamSpec, ...] = (
 EXECUTION_SPECS: tuple[ParamSpec, ...] = (
     P("leverage", 5.0, 1.0, 250.0, "float", "perp leverage for P&L and the liquidation gate"),
     P("fee_bps", 4.5, 0.0, 100.0, "float",
-      "per side; Hyperliquid base taker 0.045% (Jupiter Perps 0.06%; research/results/hyperliquid-costs-2026-11-07.json)"),
+      "per side; Hyperliquid base taker 0.045% (Jupiter Perps 0.06%; research/json/results/hyperliquid-costs-2026-11-07.json)"),
     P("slippage_bps", 2.0, 0.0, 100.0, "float",
       "per side; Hyperliquid book cost at $2k was at most 2.2 bps on all ten coins; raise it per coin for large size"),
     P("risk_pct", 1.0, 0.01, 100.0, "float",

@@ -128,7 +128,7 @@
       "component": "website",
       "kind": "javascript",
       "summary": "Browser account, research and inactive-paper-definition interface",
-      "lines": 884
+      "lines": 963
     },
     {
       "path": "website/public/evidence.js",
@@ -703,233 +703,209 @@
       "lines": 77
     },
     {
-      "path": "research/meta_analysis.py",
+      "path": "research/scripts/meta_analysis.py",
       "component": "research",
       "kind": "python",
-      "summary": "Source-bound trial consolidation preserving original units, exclusions and explicit extra receipts",
-      "lines": 174
+      "summary": "Source-bound trial consolidation preserving original units, exclusions and explicit extra receipts"
     },
     {
-      "path": "research/meta_followups.py",
+      "path": "research/scripts/meta_followups.py",
       "component": "research",
       "kind": "python",
-      "summary": "Actual-fee canonical spot replays and fixed-slot concentration attribution",
-      "lines": 277
+      "summary": "Actual-fee canonical spot replays and fixed-slot concentration attribution"
     },
     {
-      "path": "research/META-ANALYSIS.md",
+      "path": "research/papers/META-ANALYSIS.md",
       "component": "research",
       "kind": "markdown",
-      "summary": "Evidence synthesis, independent comparison, implemented followups and investment decision",
-      "lines": 400
+      "summary": "Evidence synthesis, independent comparison, implemented followups and investment decision"
     },
     {
-      "path": "research/decide.py",
+      "path": "research/scripts/decide.py",
       "component": "research",
       "kind": "python",
-      "summary": "Per-bar readout: what every strategy, signal and indicator says about the last bar",
-      "lines": 1303
+      "summary": "Per-bar readout: what every strategy, signal and indicator says about the last bar"
     },
     {
-      "path": "research/sweep.py",
+      "path": "research/scripts/sweep.py",
       "component": "research",
       "kind": "python",
-      "summary": "Parameter sweeps",
-      "lines": 889
+      "summary": "Parameter sweeps"
     },
     {
-      "path": "research/cpcv_sweep.py",
+      "path": "research/scripts/cpcv_sweep.py",
       "component": "research",
       "kind": "python",
-      "summary": "CPCV sweep plus interpret(), which exists to kill the \"lots of strategies work\" misreading",
-      "lines": 529
+      "summary": "CPCV sweep plus interpret(), which exists to kill the \"lots of strategies work\" misreading"
     },
     {
-      "path": "research/cross_asset_cpcv.py",
+      "path": "research/scripts/cross_asset_cpcv.py",
       "component": "research",
       "kind": "python",
-      "summary": "Whether a result on one coin transfers to another",
-      "lines": 838
+      "summary": "Whether a result on one coin transfers to another"
     },
     {
-      "path": "research/turnover_table.py",
+      "path": "research/scripts/turnover_table.py",
       "component": "research",
       "kind": "python",
-      "summary": "One turnover pull shared by all ten coin spokes",
-      "lines": 203
+      "summary": "One turnover pull shared by all ten coin spokes"
     },
     {
-      "path": "research/verify_numbers.py",
+      "path": "research/scripts/verify_numbers.py",
       "component": "research",
       "kind": "python",
-      "summary": "Re-derives every figure quoted in the research docs; exit 0 means they all check out",
-      "lines": 1123
+      "summary": "Re-derives every figure quoted in the research docs; exit 0 means they all check out"
     },
     {
-      "path": "research/full_suite.py",
+      "path": "research/scripts/full_suite.py",
       "component": "research",
       "kind": "python",
-      "summary": "One command: fetch fresh candles and funding for the universe, then the registry sweep and the compound 5m sweep on every asset",
-      "lines": 254
+      "summary": "One command: fetch fresh candles and funding for the universe, then the registry sweep and the compound 5m sweep on every asset"
     },
     {
-      "path": "research/geometry.py",
+      "path": "research/scripts/geometry.py",
       "component": "research",
       "kind": "python",
-      "summary": "Grid geometry helpers",
-      "lines": 320
+      "summary": "Grid geometry helpers"
     },
     {
-      "path": "research/shape_study.py",
+      "path": "research/scripts/shape_study.py",
       "component": "research",
       "kind": "python",
-      "summary": "Causal OHLC price-path labels, shape intervals and train-only spot strategy routing with execution-cost sensitivity",
-      "lines": 667
+      "summary": "Causal OHLC price-path labels, shape intervals and train-only spot strategy routing with execution-cost sensitivity"
     },
     {
-      "path": "research/shape_report.py",
+      "path": "research/scripts/shape_report.py",
       "component": "research",
       "kind": "python",
-      "summary": "Verify artifact/source hashes and regenerate the measured shape-study report",
-      "lines": 341
+      "summary": "Verify artifact/source hashes and regenerate the measured shape-study report"
     },
     {
-      "path": "research/SHAPE-AWARE-SPOT.md",
+      "path": "research/papers/SHAPE-AWARE-SPOT.md",
       "component": "research",
       "kind": "markdown",
-      "summary": "Eight-coin Coinbase spot geometry study, shape-conditioned comparisons and cost limits",
-      "lines": 214
+      "summary": "Eight-coin Coinbase spot geometry study, shape-conditioned comparisons and cost limits"
     },
     {
-      "path": "research/zec_cycles.py",
+      "path": "research/scripts/zec_cycles.py",
       "component": "research",
       "kind": "python",
-      "summary": "Irregular-time ZEC periodicity tests, searched-frequency nulls and frozen harmonic forecasts",
-      "lines": 477
+      "summary": "Irregular-time ZEC periodicity tests, searched-frequency nulls and frozen harmonic forecasts"
     },
     {
-      "path": "research/coinbase50_data.py",
+      "path": "research/scripts/coinbase50_data.py",
       "component": "research",
       "kind": "python",
-      "summary": "Identity-bound Coinbase universe and resumable native-candle evidence collection",
-      "lines": 163
+      "summary": "Identity-bound Coinbase universe and resumable native-candle evidence collection"
     },
     {
-      "path": "research/coinbase50_stats.py",
+      "path": "research/scripts/coinbase50_stats.py",
       "component": "research",
       "kind": "python",
-      "summary": "Cross-coin period stability, frozen forecasts and corrected hour-of-day tests",
-      "lines": 179
+      "summary": "Cross-coin period stability, frozen forecasts and corrected hour-of-day tests"
     },
     {
-      "path": "research/coinbase50_grid.py",
+      "path": "research/scripts/coinbase50_grid.py",
       "component": "research",
       "kind": "python",
-      "summary": "Training-only recovery ranking, shape/cycle/calendar/H1 gates and normalized canonical grids",
-      "lines": 185
+      "summary": "Training-only recovery ranking, shape/cycle/calendar/H1 gates and normalized canonical grids"
     },
     {
-      "path": "research/coinbase50_study.py",
+      "path": "research/scripts/coinbase50_study.py",
       "component": "research",
       "kind": "python",
-      "summary": "Protected-window study runner, matched-budget factorial portfolios and source-bound manifests",
-      "lines": 332
+      "summary": "Protected-window study runner, matched-budget factorial portfolios and source-bound manifests"
     },
     {
-      "path": "research/coinbase50_report.py",
+      "path": "research/scripts/coinbase50_report.py",
       "component": "research",
       "kind": "python",
-      "summary": "Top50 numerical report and standalone scientific figures",
-      "lines": 141
+      "summary": "Top50 numerical report and standalone scientific figures"
     },
     {
-      "path": "research/COINBASE50-GRID-CYCLES.md",
+      "path": "research/papers/COINBASE50-GRID-CYCLES.md",
       "component": "research",
       "kind": "markdown",
-      "summary": "Measured wavelength, grid-combination and time-of-day findings with exclusions and costs",
-      "lines": 585
+      "summary": "Measured wavelength, grid-combination and time-of-day findings with exclusions and costs"
     },
     {
-      "path": "research/zec_cycle_report.py",
+      "path": "research/scripts/zec_cycle_report.py",
       "component": "research",
       "kind": "python",
-      "summary": "Verify cycle artifacts and render the evidence report and figures",
-      "lines": 440
+      "summary": "Verify cycle artifacts and render the evidence report and figures"
     },
     {
-      "path": "research/ZEC-CYCLE-VALIDATION.md",
+      "path": "research/papers/ZEC-CYCLE-VALIDATION.md",
       "component": "research",
       "kind": "markdown",
-      "summary": "Yesterday's ZEC swing spacing compared with no-clock controls and later prediction",
-      "lines": 155
+      "summary": "Yesterday's ZEC swing spacing compared with no-clock controls and later prediction"
     },
     {
-      "path": "research/perturb.py",
+      "path": "research/scripts/perturb.py",
       "component": "research",
       "kind": "python",
-      "summary": "Parameter perturbation for robustness",
-      "lines": 467
+      "summary": "Parameter perturbation for robustness"
     },
     {
-      "path": "research/STRATEGIES.md",
+      "path": "research/papers/STRATEGIES.md",
       "component": "research",
       "kind": "markdown",
-      "summary": "The strategy survey",
-      "lines": 801
+      "summary": "The strategy survey"
     },
     {
-      "path": "research/RANKED_LISTS.md",
+      "path": "research/papers/RANKED_LISTS.md",
       "component": "research",
       "kind": "markdown",
-      "summary": "Ranked results",
-      "lines": 1083
+      "summary": "Ranked results"
     },
     {
-      "path": "research/TOP_COINS.md",
+      "path": "research/papers/TOP_COINS.md",
       "component": "research",
       "kind": "markdown",
-      "summary": "Coin shortlist",
-      "lines": 141
+      "summary": "Coin shortlist"
     },
     {
-      "path": "research/TOP5-RECOMMENDATION.md",
+      "path": "research/papers/TOP5-RECOMMENDATION.md",
       "component": "research",
       "kind": "markdown",
-      "summary": "The narrowed recommendation",
-      "lines": 107
+      "summary": "The narrowed recommendation"
     },
     {
-      "path": "research/CROSS-ASSET-TRANSFER.md",
+      "path": "research/papers/CROSS-ASSET-TRANSFER.md",
       "component": "research",
       "kind": "markdown",
-      "summary": "Cross-asset transfer findings",
-      "lines": 224
+      "summary": "Cross-asset transfer findings"
     },
     {
-      "path": "research/PROMPT_STRATEGIES.md",
+      "path": "research/papers/PROMPT_STRATEGIES.md",
       "component": "research",
       "kind": "markdown",
-      "summary": "The prompt the strategy work was built from",
-      "lines": 174
+      "summary": "The prompt the strategy work was built from"
     },
     {
-      "path": "research/coin-intelligence",
+      "path": "research/papers/coin-intelligence",
       "component": "research",
       "kind": "directory",
-      "summary": "Ten per-coin spokes (BTC, ETH, SOL, BNB, XRP, TRX, HYPE, DOGE, ZEC, RAIN) plus a README"
+      "summary": "Ten per-coin research notes plus an index"
+    },
+    {
+      "path": "research/json",
+      "component": "research",
+      "kind": "directory",
+      "summary": "Structured research evidence, manifests and sealed study bundles"
     },
     {
       "path": "research/results",
       "component": "research",
       "kind": "directory",
-      "summary": "Generated output; not source"
+      "summary": "Tabular research outputs consumed by SolTUI and reports"
     },
     {
       "path": "extension/manifest.json",
       "component": "extension",
       "kind": "json",
       "summary": "MV3 manifest; validated in CI",
-      "lines": 81
+      "lines": 83
     },
     {
       "path": "extension/package.json",
@@ -943,7 +919,7 @@
       "component": "extension",
       "kind": "markdown",
       "summary": "Includes the Verification status section; read it before extending",
-      "lines": 832
+      "lines": 838
     },
     {
       "path": "extension/src/1000x/feed.js",
@@ -1051,11 +1027,10 @@
       "lines": 708
     },
     {
-      "path": "extension/tools/1000x-reference.py",
-      "component": "extension",
+      "path": "research/scripts/perps/1000x-reference.py",
+      "component": "research",
       "kind": "python",
-      "summary": "Offline independent Python numerical-vector generator for extension analytics",
-      "lines": 82
+      "summary": "Offline independent Python numerical-vector generator for extension analytics"
     },
     {
       "path": "extension/test/1000x-reversal.test.js",
@@ -2155,11 +2130,10 @@
       "lines": 28
     },
     {
-      "path": "research/zec_leverage_panel.py",
+      "path": "research/scripts/zec_leverage_panel.py",
       "component": "research",
       "kind": "python",
-      "summary": "Responsive ZEC/BTC paper monitor and explicit Preview/Submit/Close controls.",
-      "lines": 1745
+      "summary": "Responsive ZEC/BTC paper monitor and explicit Preview/Submit/Close controls."
     },
     {
       "path": "oracle_leverage/console.py",
@@ -2225,25 +2199,22 @@
       "lines": 149
     },
     {
-      "path": "research/reversal_shapes.py",
+      "path": "research/scripts/reversal_shapes.py",
       "component": "research",
       "kind": "python",
-      "summary": "Causal48bar shape conditioning, four bar intervals and fixed64-candidate selection.",
-      "lines": 470
+      "summary": "Causal48bar shape conditioning, four bar intervals and fixed64-candidate selection."
     },
     {
-      "path": "research/reversal_inputs.py",
+      "path": "research/scripts/reversal_inputs.py",
       "component": "research",
       "kind": "python",
-      "summary": "Bounded liquidBTC minute acquisition with exact raw-response hashes.",
-      "lines": 126
+      "summary": "Bounded liquidBTC minute acquisition with exact raw-response hashes."
     },
     {
-      "path": "research/REVERSAL-SHAPES.md",
+      "path": "research/papers/REVERSAL-SHAPES.md",
       "component": "research",
       "kind": "markdown",
-      "summary": "Independently reproduced ZEC/BTC rates, final-split results and cost scenarios.",
-      "lines": 101
+      "summary": "Independently reproduced ZEC/BTC rates, final-split results and cost scenarios."
     },
     {
       "path": "extension/src/ui/signal-desk.js",

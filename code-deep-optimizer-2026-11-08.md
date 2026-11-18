@@ -1568,7 +1568,7 @@ index eb7ef64..b66f9da 100644
 ```
 8 further patch lines omitted.
 
-### /Users/mitch/dev/solmargintrader/research/cpcv_sweep.py
+### /Users/mitch/dev/solmargintrader/research/scripts/cpcv_sweep.py
 
 ```diff
 diff --git a/research/cpcv_sweep.py b/research/cpcv_sweep.py
@@ -1586,7 +1586,7 @@ index 9816a1e..052b672 100644
 ```
 117 further patch lines omitted.
 
-### /Users/mitch/dev/solmargintrader/research/decide.py
+### /Users/mitch/dev/solmargintrader/research/scripts/decide.py
 
 ```diff
 diff --git a/research/decide.py b/research/decide.py
@@ -1604,7 +1604,7 @@ index 988b68a..967ffd7 100644
 ```
 103 further patch lines omitted.
 
-### /Users/mitch/dev/solmargintrader/research/evidence.py
+### /Users/mitch/dev/solmargintrader/research/scripts/evidence.py
 
 ```diff
 diff --git a/research/evidence.py b/research/evidence.py
@@ -1622,7 +1622,7 @@ index 0000000..2b00368
 ```
 63 further patch lines omitted.
 
-### /Users/mitch/dev/solmargintrader/research/signal_redundancy.py
+### /Users/mitch/dev/solmargintrader/research/scripts/signal_redundancy.py
 
 ```diff
 diff --git a/research/signal_redundancy.py b/research/signal_redundancy.py
@@ -1640,7 +1640,7 @@ index 0f81ba4..1c04ecb 100644
 ```
 181 further patch lines omitted.
 
-### /Users/mitch/dev/solmargintrader/research/sweep.py
+### /Users/mitch/dev/solmargintrader/research/scripts/sweep.py
 
 ```diff
 diff --git a/research/sweep.py b/research/sweep.py

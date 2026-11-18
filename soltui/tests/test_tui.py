@@ -1457,14 +1457,14 @@ class UntestedSweepCommandTest(unittest.TestCase):
         argv = untested_sweep_command(Path("/repo"))
         self.assertEqual(argv[0], sys.executable)
         self.assertNotEqual(argv[0], "python3")
-        self.assertEqual(argv[1], "/repo/research/sweep_untested.py")
+        self.assertEqual(argv[1], "/repo/research/scripts/sweep_untested.py")
 
     def test_failure_summary_shows_the_exception_not_the_traceback_head(self):
         stderr = (
             "Traceback (most recent call last):\n"
-            '  File "research/sweep_untested.py", line 18, in <module>\n'
+            '  File "research/scripts/sweep_untested.py", line 18, in <module>\n'
             "    from research.sweep import HORIZONS\n"
-            '  File "research/sweep.py", line 34, in <module>\n'
+            '  File "research/scripts/sweep.py", line 34, in <module>\n'
             "    import pandas as pd\n"
             "ModuleNotFoundError: No module named 'pandas'\n\n"
         )

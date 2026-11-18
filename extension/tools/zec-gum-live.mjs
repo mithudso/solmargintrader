@@ -16,7 +16,7 @@ const warmup = 720 * minute;
 const decisionGrace = 60;
 const maxMarkGap = 45;
 const settings = { sizing: 'notional', amount: 250, leverage: 25, slippageBps: 2, additiveBps: 0, networkUsd: 0.01 };
-const defaultConfig = new URL('../../research/results/zec_gum_25x_5m_live.json', import.meta.url);
+const defaultConfig = new URL('../../research/json/results/zec_gum_25x_5m_live.json', import.meta.url);
 const wallSeconds = () => Math.floor(Date.now() / 1000);
 const floorBar = time => Math.floor(time / step) * step;
 const digest = bytes => createHash('sha256').update(bytes).digest('hex');

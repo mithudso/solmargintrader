@@ -4,7 +4,7 @@
 //
 // These are small reference collections. They exist so a
 // reader can answer "what does this rule actually compare?" without opening
-// research/decide.py, and so the readouts in `decisions` can be joined to their
+// research/scripts/decide.py, and so the readouts in `decisions` can be joined to their
 // definitions.
 
 print("=== the stateless one-bar rules ===");

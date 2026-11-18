@@ -39,7 +39,7 @@ PRICE_URL = "https://lite-api.jup.ag/price/v3?ids={ids}"
 
 # Mints for the assets this repo has a documented reason to track. Sourced from
 # the perps page's own hydration payload — see
-# docs/trading-signals-concept-family.md section 10.
+# research/papers/docs/trading-signals-concept-family.md section 10.
 KNOWN_MINTS = {
     "JLP": "27G8MtK7VtTcCHkpASjSDdkWWYfoqT6ggEuKidVJidD4",
     "SOL": "So11111111111111111111111111111111111111112",

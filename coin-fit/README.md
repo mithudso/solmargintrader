@@ -18,10 +18,10 @@ failed or interrupted job cannot appear completed. No config is auto-adopted.
 ## Command line
 
 ```sh
-python scripts/coin_strategy_fit.py --coin SOL --bot grid --mode quick
-python scripts/coin_strategy_fit.py --coins SOL BTC ETH --bot dca --mode quick --format csv
-python scripts/coin_strategy_fit.py --coin SOL --bot grid --mode audit --format json --output coin-audit.json
-python scripts/coin_strategy_fit.py --demo --bot all --mode audit
+python research/scripts/coin_strategy_fit.py --coin SOL --bot grid --mode quick
+python research/scripts/coin_strategy_fit.py --coins SOL BTC ETH --bot dca --mode quick --format csv
+python research/scripts/coin_strategy_fit.py --coin SOL --bot grid --mode audit --format json --output coin-audit.json
+python research/scripts/coin_strategy_fit.py --demo --bot all --mode audit
 ```
 
 The CLI, reusable skill and command registry call the same backend. Use the
@@ -37,7 +37,7 @@ are in `skills/coin-strategy-fit/references/method.md`.
 
 ```sh
 python -m unittest backtester.tests.test_coinfit soltui.tests.test_coin_fit soltui.tests.test_coin_fit_ui -v
-python scripts/coin_strategy_fit.py --demo --bot all --mode audit --format json --output /tmp/coin-fit-demo.json
+python research/scripts/coin_strategy_fit.py --demo --bot all --mode audit --format json --output /tmp/coin-fit-demo.json
 ```
 
 The demo is deterministic synthetic data with explicit RANGE/RALLY/FALL names,

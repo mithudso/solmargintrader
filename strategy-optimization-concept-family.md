@@ -46,13 +46,13 @@ optimization, whose whole culture assumes you can hold out an i.i.d. slice.
 ## 3. Children / sub-concepts, tagged against this repo
 
 `HAVE` = implemented and tested here. `HAVE` (screen) = added by this work as a reporting screen in
-`research/dso_audit.py`, which flags but does not gate. `PARTIAL` = done once by hand, not tooled.
+`research/scripts/dso_audit.py`, which flags but does not gate. `PARTIAL` = done once by hand, not tooled.
 `GAP` = absent.
 
 ### 3.1 Parameter search
 | Concept | Status | Where / note |
 | --- | --- | --- |
-| Grid / preset sweep | `HAVE` | `research/sweep.py`, `research/cpcv_sweep.py` (1,287 configs) |
+| Grid / preset sweep | `HAVE` | `research/scripts/sweep.py`, `research/scripts/cpcv_sweep.py` (1,287 configs) |
 | Random / Bayesian / TPE / CMA-ES / genetic search | `GAP` | **Deliberately not wanted.** A more efficient searcher over a PBO-0.700 objective finds overfit configurations faster. Search efficiency is the wrong axis to improve here. |
 | Presets as the unit of search | `HAVE` | cards carry `presets: {short, medium, long}`, drift-tested against `sweep.py` |
 
@@ -80,16 +80,16 @@ This row is the repo's genuine strength. Most of the standard overfitting defenc
 | Concept | Status | Note |
 | --- | --- | --- |
 | PBO | `HAVE` | measured 0.700 medium/long |
-| Deflated Sharpe / multiple-testing haircut | `HAVE` | `core/deflated_sharpe.py`; applied by `research/dso_audit.py` S2. §5.1 |
+| Deflated Sharpe / multiple-testing haircut | `HAVE` | `core/deflated_sharpe.py`; applied by `research/scripts/dso_audit.py` S2. §5.1 |
 | Minimum backtest length / minimum track record length | `GAP` | §5.2 |
 | White's Reality Check / Hansen SPA | `GAP` | heavier; bootstrap over the whole config set. Lower priority than DSR because PBO already answers the "is the leaderboard informative" question |
-| **Evidence floor on trade count** | `HAVE` (screen) | was only a phrase in the cards; `research/dso_audit.py` now flags it mechanically. Still not a *veto* in the sweep itself. §5.2 |
-| **Result-vector degeneracy** | `HAVE` (screen) | `research/dso_audit.py` S4, on published summary scalars. Confirming a twin still needs equity curves. §5.3 |
+| **Evidence floor on trade count** | `HAVE` (screen) | was only a phrase in the cards; `research/scripts/dso_audit.py` now flags it mechanically. Still not a *veto* in the sweep itself. §5.2 |
+| **Result-vector degeneracy** | `HAVE` (screen) | `research/scripts/dso_audit.py` S4, on published summary scalars. Confirming a twin still needs equity curves. §5.3 |
 
 ### 3.5 Robustness
 | Concept | Status | Note |
 | --- | --- | --- |
-| Parameter perturbation ±10% | `HAVE` | `research/perturb.py`, now across all 25 singles at every horizon |
+| Parameter perturbation ±10% | `HAVE` | `research/scripts/perturb.py`, now across all 25 singles at every horizon |
 | Cross-asset transfer | `HAVE` (screen) | BTC/ETH runs were by hand; `dso_audit.py` S5 now reports the swing. Not a gate |
 | Cross-timeframe transfer | `HAVE` (screen) | catastrophic for `hurst_switch` (1st to 23rd); `dso_audit.py` S5 reports it |
 | Regime stratification | `GAP` | would explain the 1d/1h collapse rather than just observing it |
@@ -105,7 +105,7 @@ This row is the repo's genuine strength. Most of the standard overfitting defenc
 ### 3.7 Attribution
 | Concept | Status | Note |
 | --- | --- | --- |
-| Dataset vs strategy | `HAVE` (screen) | was the sharpest finding here and untooled; `research/dso_audit.py` S5 now reports rank swings across asset and timeframe |
+| Dataset vs strategy | `HAVE` (screen) | was the sharpest finding here and untooled; `research/scripts/dso_audit.py` S5 now reports rank swings across asset and timeframe |
 | Is it just beta / buy-and-hold in disguise | `PARTIAL` | `buy_and_hold` is in the registry as a benchmark, compared by hand |
 | Parameter vs structure | `HAVE` | that is exactly what `perturb.py` answers |
 
@@ -135,7 +135,7 @@ The neighborhood that actually pays here.
   criticals) — and the reminder built into its own test that a 5% test has a 5% false-positive rate
   by construction, so scanning many windows *will* find spurious cointegration.
 - **Reproducibility and provenance.** Strategy cards with bidirectional drift tests, and
-  `research/verify_numbers.py` re-deriving every published figure from the result CSVs. This is
+  `research/scripts/verify_numbers.py` re-deriving every published figure from the result CSVs. This is
   rarer than it should be and it is what makes any claim here auditable.
 
 ## 5. Frontier / the gaps worth closing
@@ -168,7 +168,7 @@ inverse, keeping scipy out per the stdlib-first rule.
 
 ### What it says about this repo's results
 
-`python3 research/dso_audit.py` applies it. Over the **200 single-strategy configurations** now
+`python3 research/scripts/dso_audit.py` applies it. Over the **200 single-strategy configurations** now
 evaluated across SOL/DOGE/ZEC 1d, BTC/ETH 1d and SOL 1h — 199 after collapsing the proven
 `bb_reversion`/`zscore` duplicate — **two clear the benchmark their own search produced, and only one
 of those also clears the evidence floor:**
@@ -210,7 +210,7 @@ below the floor, a result is not eligible to be reported as an improvement at al
 "different" strategies were one strategy. Nothing detects this, and it inflates apparent search
 breadth — which in turn inflates the multiple-testing burden in §5.1 while adding no diversity.
 
-`research/dso_audit.py` implements this screen. Its first run flagged a second pair: on BTC daily,
+`research/scripts/dso_audit.py` implements this screen. Its first run flagged a second pair: on BTC daily,
 `bb_reversion` and `zscore` post identical summary scalars (median Sharpe `0.056701`, median return
 `-0.037425`, 56 trades).
 
@@ -253,8 +253,8 @@ See §6. Not tooled; done by hand.
 
 ## 6. The measured evidence that decides the design
 
-Every figure here is from this repo's own runs, reproducible via `research/cpcv_sweep.py` and
-`research/verify_numbers.py`.
+Every figure here is from this repo's own runs, reproducible via `research/scripts/cpcv_sweep.py` and
+`research/scripts/verify_numbers.py`.
 
 | Observation | Figure | What it implies for an optimizer |
 | --- | --- | --- |

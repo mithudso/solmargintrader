@@ -5,7 +5,7 @@ These requirements describe existing code boundaries, not future product promise
 | Component | Functional requirement | Verification |
 | --- | --- | --- |
 | Backtester | Run strategy/exposure and ladder-grid simulations from local bars, with costs and no lookahead | `backtester/tests/`; strategy-card and grid parity checks |
-| Research | Preserve source/checksum/evidence limits and distinguish in-sample rankings from held-out results | `research/verify_numbers.py`, CPCV and interpretation tests |
+| Research | Preserve source/checksum/evidence limits and distinguish in-sample rankings from held-out results | `research/scripts/verify_numbers.py`, CPCV and interpretation tests |
 | Extension | Reconcile before plan; enforce fail-closed risk rails; persist intents before submission | `extension/test/`, offline dry run |
 | Soltui | Display research/paper/liquidity state without signing; make explicit fetch/worker/KILL controls visible | `soltui/tests/`; installed app acceptance remains separate |
 | MongoDB | Rebuild selected derived collections with provenance; repeated loads must not duplicate bars | `mongo/tests/`; server-backed cases skip if MongoDB is unavailable |

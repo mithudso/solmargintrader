@@ -50,13 +50,24 @@ def title_summary(source, text):
     return title[:220], summary[:320]
 
 
+def publication_path(source):
+    """Return the original public identity for a relocated research document."""
+    if source == "research/README.md" or source.startswith(
+        ("research/papers/docs/", "research/papers/strategy_research/", "research/json/coin-fit/")
+    ):
+        return None
+    for prefix in ("research/papers/", "research/json/"):
+        if source.startswith(prefix):
+            return "research/" + source.removeprefix(prefix)
+    return source
+
+
 def export(repo=ROOT):
     repo = Path(repo).resolve()
     names = subprocess.check_output(["git", "ls-files", "-z", "research", "backtester/strategy_cards"], cwd=repo).decode().split("\0")
     articles, skipped, bodies = [], [], []
-    for source in sorted(filter(None, names)):
-        if not source.endswith(".md"):
-            continue
+    sources = [(publication_path(source), source) for source in names if source.endswith(".md")]
+    for identity, source in sorted((identity, source) for identity, source in sources if identity):
         if any(word in source.lower() for word in EXCLUDE_WORDS) or Path(source).name in ("FILES.md",):
             skipped.append({"source": source, "reason": "workflow_or_review_artifact"})
             continue
@@ -71,7 +82,7 @@ def export(repo=ROOT):
             raise ValueError(f"credential-like content refused in {source}")
         body = public_body(text)
         title, summary = title_summary(source, body)
-        slug = re.sub(r"[^a-z0-9]+", "-", Path(source).stem.lower()).strip("-")[:100] + "-" + hashlib.sha256(source.encode()).hexdigest()[:8]
+        slug = re.sub(r"[^a-z0-9]+", "-", Path(identity).stem.lower()).strip("-")[:100] + "-" + hashlib.sha256(identity.encode()).hexdigest()[:8]
         incomplete = "/incomplete/" in source
         category = "Incomplete profiles" if incomplete else "TradingView profiles" if "/publication-profiles/" in source or "/native-strategy-profiles/" in source else "Strategy cards" if source.startswith("backtester/") else "Coin intelligence" if "/coin-intelligence/" in source else "Research studies"
         status = "incomplete: not coin-test ready" if incomplete else "historical research: not a live recommendation"

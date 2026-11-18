@@ -1,4 +1,4 @@
-"""Incremental aggregation and checkpoint round-trip in `research/tick_backfill.py`.
+"""Incremental aggregation and checkpoint round-trip in `research/scripts/tick_backfill.py`.
 
 The backfill walks a month of trades BACKWARD in pages, folding each page into
 a running per-bar aggregate. That means a bar's opening trade usually arrives

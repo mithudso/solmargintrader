@@ -199,7 +199,7 @@ Internal: `references/liquidation-as-an-absorbing-barrier.md` (the ruin path);
 `references/crypto-and-digital-asset-trading.md` §2–§4 (generic perp and funding theory).
 
 **Evidence note.** The tables are **closed-form arithmetic over published venue parameters**,
-not a backtest — reproduce with `~/dev/solmargintrader/research/leverage_economics.py`
+not a backtest — reproduce with `~/dev/solmargintrader/research/scripts/leverage_economics.py`
 (`--self-test` asserts the seven load-bearing claims). The per-custody borrow rates are
 **Gauntlet's May-2024 recommendation, not a live read**, and utilisation moves continuously, so
 every figure is an order-of-magnitude frame rather than a quote. **Price impact is not

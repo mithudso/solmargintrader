@@ -13,8 +13,8 @@ Trading research, execution tooling and the hosted workspace, in eleven parts:
 The Oracle winner TUI now has an explicit leveraged-controls panel and a
 persistent ZEC/BTC paper forward test. See
 [the leveraged Oracle guide](docs/ORACLE-LEVERAGE.md) and the
-[5/10/15/20-minute reversal/shape study](research/REVERSAL-SHAPES.md). The [second-turn study](research/REVERSAL-SECOND-TURN.md) evaluates the first downward and subsequent upward moves as retrospective observations.
-The [multi-timeframe study](research/MTF-REVERSAL.md) reports its separate retrospective test and paper observer limitations.
+[5/10/15/20-minute reversal/shape study](research/papers/REVERSAL-SHAPES.md). The [second-turn study](research/papers/REVERSAL-SECOND-TURN.md) evaluates the first downward and subsequent upward moves as retrospective observations.
+The [multi-timeframe study](research/papers/MTF-REVERSAL.md) reports its separate retrospective test and paper observer limitations.
 The standard10x CLI adapter supports BTC. The1000x integration checks BTC/ZEC
 service transactions with the pinned SDK and submits explicit owner-signed
 requests through the official keeper service. Trading starts disarmed.
@@ -26,7 +26,7 @@ requests through the official keeper service. Trading starts disarmed.
 | [`oracle/`](oracle/README.md) | Source-labelled market observations, prospective strategy votes, durable history, read-only MCP subscriptions and explicitly enabled TradingView workers for Coinbase spot or Jupiter ZEC Beta perpetuals. | Python 3.13 |
 | [`botmanager/`](botmanager/README.md) | Standalone `solbot` CLI: pinned bot specifications, legacy discovery/control and an explicit multi-instance reference-paper supervisor for Grid, DCA, Trend and Momentum. Reuses the shared Oracle archive; Jupiter quote evidence stays separate. | Python 3.13 |
 | [`backtester/`](backtester/README.md) | Offline event-driven backtester for spot and Jupiter-Perps-style leveraged strategies, with an honestly modelled borrow fee. **No live-trading capability, by design.** | Python 3.13 |
-| [`research/`](research/STRATEGIES.md) | Strategy survey, ranked lists, parameter sweeps and the per-bar rule readout, built on the backtester. | Python |
+| [`research/`](research/README.md) | Strategy survey, ranked lists, parameter sweeps and the per-bar rule readout, built on the backtester. | Python |
 | [`extension/`](extension/README.md) | Holdings, P&L, pool discovery, backtests and strategy changes, swap quotes and alerts for Base and Solana, plus an experimental grid on Jupiter (Solana) with hard risk rails — a Chrome MV3 extension plus a CLI and a local HTTP API over one shared command registry. **The grid is the part that can place real orders.** | JavaScript (ESM, no deps) |
 | [`soltui/`](soltui/README.md) | macOS menu-bar app and TUI for signals, paper positions and research, supervised by launchd. Manual Coinbase spot orders use a separately armed path. | Python 3.13 |
 | [`mongo/`](mongo/README.md) | Local MongoDB copy of everything measured — bars, strategies, readouts, backtests, CPCV results — plus a runnable query reference. Derived; the files stay the source of truth. | Python 3.13 + pymongo |
@@ -56,35 +56,35 @@ coverage and lifecycle limits.
 The ZEC study tests 1m and 1h hypotheses using checksum-verified Binance ZEC/USDT
 history, a shared causal ensemble policy, validation-only selection and ten
 independent paper forward accounts. The selected top configuration is published
-on the Oracle page. See [measured results and reproduction](docs/ZEC-ENSEMBLE-STUDY.md)
+on the Oracle page. See [measured results and reproduction](research/papers/docs/ZEC-ENSEMBLE-STUDY.md)
 and [forward owner and recovery](docs/ZEC-ENSEMBLES-FORWARD.md).
 
-The [weekly coin runner](research/WEEKLY-COIN-STUDY.md) repeats the candle-supported
+The [weekly coin runner](research/papers/WEEKLY-COIN-STUDY.md) repeats the candle-supported
 ZEC analyses for a named coin using a fresh seven-day minute snapshot. Its first
-[ETH report](research/eth-week-20261117/report.md) includes matched BTC/ZEC
+[ETH report](research/json/eth-week-20261117/report.md) includes matched BTC/ZEC
 correlations, chronological strategy comparisons and explicit input exclusions.
-The [ZEC/USD five-minute mean-reversion analysis](research/ZEC-5M-MEAN-REVERSION.md)
+The [ZEC/USD five-minute mean-reversion analysis](research/papers/ZEC-5M-MEAN-REVERSION.md)
 covers the frozen RSI, z-score and Bollinger Band ensemble, with a linked strategy card.
 
 ## Shape-aware spot study
 
-The [Coinbase spot shape study](research/SHAPE-AWARE-SPOT.md) tags completed hourly,
+The [Coinbase spot shape study](research/papers/SHAPE-AWARE-SPOT.md) tags completed hourly,
 six-hour and daily candles, compares individual strategies and mixtures, and tests
 train-only shape routing. Its zero-commission scenarios retain spread/slippage;
 Coinbase One does not waive Advanced Trade fees.
 
-The [ZEC cycle validation](research/ZEC-CYCLE-VALIDATION.md) tests apparent regular
+The [ZEC cycle validation](research/papers/ZEC-CYCLE-VALIDATION.md) tests apparent regular
 peak/dip spacing against no-clock simulations and frozen future forecasts. A
 short local rhythm was visible, but the declared tests did not validate a stable clock.
 
-The [Coinbase top50 study](research/COINBASE50-GRID-CYCLES.md) compares wavelength
+The [Coinbase top50 study](research/papers/COINBASE50-GRID-CYCLES.md) compares wavelength
 consistency, hour-of-day seasonality, grid-coin selection, chart geometry and
 persistent homology. Its factorial spot backtests count idle cash, residual
 inventory and execution costs, and keep incomplete-history exclusions visible.
 
 ## Combined research and prospective plan
 
-The [trial meta-analysis](research/META-ANALYSIS.md) consolidates the retained
+The [trial meta-analysis](research/papers/META-ANALYSIS.md) consolidates the retained
 strategy families, tests actual API fees and passive attribution, and compares
 an independent recommendation. The [frozen paper cohort](docs/META-FORWARD.md)
 runs ten separate accounts with durable future-only decisions. The tiny
@@ -93,7 +93,7 @@ remains unqualified.
 
 ## News publication and price study
 
-The [coin-news event study](research/NEWS-EVENT-STUDY.md) follows 61 reviewed
+The [coin-news event study](research/papers/NEWS-EVENT-STUDY.md) follows 61 reviewed
 publication events across six coins, with prepublication moves, market controls
 and delayed-observation checks. Its minute-bar proxies and selected historical
 sample do not establish a causal effect or a calibrated trading forecast.
@@ -252,4 +252,4 @@ code — including the test counts quoted above.
 
 ## Coin suitability skill and Bots ranking
 
-The simulation-only coin-fit tool supports single and bulk screens, fast provisional ranking and a detailed ten-scenario audit. The Bots tab provides ranking, selected-coin audit, reasons, equity and cancellation; the CLI and reusable Codex skill call the same backend. See [coin-fit usage and limits](docs/coin-fit/README.md).
+The simulation-only coin-fit tool supports single and bulk screens, fast provisional ranking and a detailed ten-scenario audit. The Bots tab provides ranking, selected-coin audit, reasons, equity and cancellation; the CLI and reusable Codex skill call the same backend. See [coin-fit usage and limits](research/json/coin-fit/README.md).

@@ -14,7 +14,7 @@ Design notes, because the shape is the part worth arguing about:
     exactly the constraint a metaField wants, and MongoDB stores it once per bucket
     rather than once per bar.
   * **JLP spot is its own collection**, one document, on purpose. It is a Jupiter
-    price snapshot with no OHLCV columns -- `research/decide.py` refuses to read it
+    price snapshot with no OHLCV columns -- `research/scripts/decide.py` refuses to read it
     as bars and `docs/known-issues.md` records that as correct. Merging the two here
     would contradict the distinction the code enforces, and `granularity` is a
     per-collection setting that cannot suit both 18k regular bars and one snapshot.
@@ -160,7 +160,7 @@ COLLECTIONS: dict[str, dict[str, Any]] = {
             ["_id", "rule"],
         ),
         "indexes": [([("tracks_strategy", 1)], {"name": "tracks_strategy"})],
-        "comment": "Stateless one-bar rules from research/decide.py",
+        "comment": "Stateless one-bar rules from research/scripts/decide.py",
     },
     "indicators": {
         "validator": _doc(

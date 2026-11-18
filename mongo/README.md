@@ -70,7 +70,7 @@ Run `.venv/bin/python mongo/load.py --dry-run` for the current artifact counts.
 | `spot_prices` | **Time series.** The JLP snapshot — not OHLCV, see below |
 | `equity_points` | **Time series.** `ts` + `curve` meta `{run_id, strategy}` |
 | `strategies` | One per loaded strategy card, with live registry facts when a registry key is present |
-| `signals` | The stateless one-bar rules from `research/decide.py` |
+| `signals` | The stateless one-bar rules from `research/scripts/decide.py` |
 | `indicators` | Reported rows and explicitly skip-listed functions |
 | `decisions` | One per readout, exactly as `decide.build_report()` emits it |
 | `backtest_runs` | Manifest + per-strategy metrics |
@@ -89,7 +89,7 @@ rather than once per bar.
 
 **`spot_prices` is separate.** `data/JLP_spot.csv` is a Jupiter
 price snapshot with columns `timestamp,iso,mint,usd_price,source` — no OHLCV at
-all. `research/decide.py` refuses to read it as bars, and merging the two here
+all. `research/scripts/decide.py` refuses to read it as bars, and merging the two here
 would contradict the distinction the code enforces.
 
 **Strategy cards keep their own vocabulary.** There is no `registered` boolean.

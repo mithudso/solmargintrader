@@ -11,7 +11,7 @@ whenever I look."* That means three things this module owns:
   * **An ordering that puts the most promising work first.** A background sweep
     is never finished — it is interrupted. So the value delivered is whatever it
     got through, which makes the ORDER the main design decision, not the extent.
-  * **The evidence floor, carried into the leaderboard.** `research/sweep.py`
+  * **The evidence floor, carried into the leaderboard.** `research/scripts/sweep.py`
     exists to avoid the "liar's leaderboard": ranking on in-sample performance,
     or ranking a Sharpe computed from three trades. A background sweep that
     quietly re-introduces either is worse than no sweep, because it looks
@@ -105,7 +105,7 @@ ASSET_RE = re.compile(r"^[A-Za-z0-9][A-Za-z0-9._-]*$")
 # floor are listed, never ranked.
 MIN_TRADES = 10
 
-# Bar interval each horizon is defined at, matching research/sweep.py's HORIZONS.
+# Bar interval each horizon is defined at, matching research/scripts/sweep.py's HORIZONS.
 # A horizon is a parameter SCALE, and a scale is only meaningful against a bar
 # size -- running the "short" presets against daily bars would evaluate a
 # 12-bar fast MA as 12 days rather than 12 hours and report it under the wrong

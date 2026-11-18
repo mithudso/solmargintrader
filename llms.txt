@@ -19,23 +19,23 @@ Static repository navigation separates source contracts from historical research
 - [Agent access](website/docs/MCP-DESIGN.md): wallet-bound preauthorization, private customer execution and remaining launch gates.
 
 ## Captured ZEC backtests
-- [2026-11-13 replay report](research/ZEC-GRANULAR-BACKTESTS.md): complete finite1m/5m/10m/1h matrix, costs and one-day limitations.
-- [Shared empirical archive](research/zec-granular-20261113.llms/llms.txt): all result rows, frozen plan, independent audit and Mongo artifact handles.
+- [2026-11-13 replay report](research/papers/ZEC-GRANULAR-BACKTESTS.md): complete finite1m/5m/10m/1h matrix, costs and one-day limitations.
+- [Shared empirical archive](research/json/zec-granular-20261113.llms/llms.txt): all result rows, frozen plan, independent audit and Mongo artifact handles.
 
 ## Confirmed lower-fee ZEC rerun
-- [0.25% and0.15% per-fill comparison](research/ZEC-GRANULAR-FEE-SENSITIVITY.md): unchanged data/strategy matrix, conditional maker-rate sensitivity.
-- [Complete empirical archive](research/zec-fee-sensitivity-20261113.llms/llms.txt): full results, parameters, independent audit and Mongo handles.
+- [0.25% and0.15% per-fill comparison](research/papers/ZEC-GRANULAR-FEE-SENSITIVITY.md): unchanged data/strategy matrix, conditional maker-rate sensitivity.
+- [Complete empirical archive](research/json/zec-fee-sensitivity-20261113.llms/llms.txt): full results, parameters, independent audit and Mongo handles.
 
 ## Expanded ZEC strategies, shapes and cycles
-- [Expanded comparison](research/ZEC-EXPANDED-STRATEGIES.md): 85,312 rows, both confirmed fees, matched controls and search-aware cycle tests.
-- [Complete empirical archive](research/zec-expanded-20261113.llms/llms.txt): finite executable census, results, audit and Mongo bindings.
+- [Expanded comparison](research/papers/ZEC-EXPANDED-STRATEGIES.md): 85,312 rows, both confirmed fees, matched controls and search-aware cycle tests.
+- [Complete empirical archive](research/json/zec-expanded-20261113.llms/llms.txt): finite executable census, results, audit and Mongo bindings.
 
 ## Interactive winning-strategy workbench
 - [Read-only ZEC stream](docs/ORACLE-WINNING-STRATEGY-STREAM.md): focused timeframe/watchlist, validated untested configuration edits, a visual shape guide with actual 48-bar trace, streaming indicators and chart overlays, fixed ten-minute bearish reversal/UP-UP title-bar alerts with optional event sounds, and the original complete plain/JSON stream. The alerts use actual candle opens and qualified historical counts; no DOWN-DOWN-to-UP alert.
 - [Foreground script](scripts/oracle_winners.py): Textual TUI by default; shared-recorder quotes and completed public trade candles, with no order or service changes.
 
 ## Reversal stages and excursion distances
-- [One-minute observations of ten-minute reversals](research/ZEC-REVERSAL-EXCURSIONS.md): distinct one-UP/bar-2 and two-UP/bar-3 stages; mean/max future downside versus endpoint continuation; early-trigger, midpoint and close-confirmation timings kept separate.
-- [Native empirical evidence and exact results](research/zec-reversal-excursions-20261115/llms.txt): frozen captured day,72summaryrows,269 tagged variant events, independent reproduction and Mongo artifact bindings. The banner retains confirmed counts when live prices fail and labels observed reversals explicitly.
-- [Cross-coin reversal replication](research/CROSSCOIN-REVERSAL-PATTERNS.md): fixed rules on30days of HYPE/ETH/BTC/SOL USDC candles plus a common Coinbase USD day with ZEC; separate positive-volume sensitivity, next-bar color and post-detection distances. No general70% rule or executable profit is established.
-- [Native cross-coin inputs and exact results](research/crosscoin-reversals-20261115/llms.txt): nine source snapshots,648 summary rows, exact provider responses, native Mongo artifact bindings and reproducible code.
+- [One-minute observations of ten-minute reversals](research/papers/ZEC-REVERSAL-EXCURSIONS.md): distinct one-UP/bar-2 and two-UP/bar-3 stages; mean/max future downside versus endpoint continuation; early-trigger, midpoint and close-confirmation timings kept separate.
+- [Native empirical evidence and exact results](research/json/zec-reversal-excursions-20261115/llms.txt): frozen captured day,72summaryrows,269 tagged variant events, independent reproduction and Mongo artifact bindings. The banner retains confirmed counts when live prices fail and labels observed reversals explicitly.
+- [Cross-coin reversal replication](research/papers/CROSSCOIN-REVERSAL-PATTERNS.md): fixed rules on30days of HYPE/ETH/BTC/SOL USDC candles plus a common Coinbase USD day with ZEC; separate positive-volume sensitivity, next-bar color and post-detection distances. No general70% rule or executable profit is established.
+- [Native cross-coin inputs and exact results](research/json/crosscoin-reversals-20261115/llms.txt): nine source snapshots,648 summary rows, exact provider responses, native Mongo artifact bindings and reproducible code.

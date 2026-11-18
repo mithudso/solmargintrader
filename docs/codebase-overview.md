@@ -183,38 +183,39 @@ The danger here is overstating a result, so the honesty machinery is the point.
 
 | Path | What it is |
 | --- | --- |
-| `research/meta_analysis.py` | Source-bound trial consolidation preserving original units, exclusions and explicit extra receipts |
-| `research/meta_followups.py` | Actual-fee canonical spot replays and fixed-slot concentration attribution |
-| `research/META-ANALYSIS.md` | Evidence synthesis, independent comparison, implemented followups and investment decision |
-| `research/decide.py` | Per-bar readout: what every strategy, signal and indicator says about the last bar |
-| `research/sweep.py` | Parameter sweeps |
-| `research/cpcv_sweep.py` | CPCV sweep plus `interpret()`, which exists to kill the "lots of strategies work" misreading |
-| `research/cross_asset_cpcv.py` | Whether a result on one coin transfers to another |
-| `research/turnover_table.py` | One turnover pull shared by all ten coin spokes |
-| `research/verify_numbers.py` | Re-derives every figure quoted in the research docs; exit 0 means they all check out |
-| `research/full_suite.py` | One command: fetch fresh candles and funding for the universe, then the registry sweep and the compound 5m sweep on every asset |
-| `research/geometry.py` | Grid geometry helpers |
-| `research/shape_study.py` | Causal OHLC price-path labels, shape intervals and train-only spot strategy routing with execution-cost sensitivity |
-| `research/shape_report.py` | Verify artifact/source hashes and regenerate the measured shape-study report |
-| `research/SHAPE-AWARE-SPOT.md` | Eight-coin Coinbase spot geometry study, shape-conditioned comparisons and cost limits |
-| `research/zec_cycles.py` | Irregular-time ZEC periodicity tests, searched-frequency nulls and frozen harmonic forecasts |
-| `research/coinbase50_data.py` | Identity-bound Coinbase universe and resumable native-candle evidence collection |
-| `research/coinbase50_stats.py` | Cross-coin period stability, frozen forecasts and corrected hour-of-day tests |
-| `research/coinbase50_grid.py` | Training-only recovery ranking, shape/cycle/calendar/H1 gates and normalized canonical grids |
-| `research/coinbase50_study.py` | Protected-window study runner, matched-budget factorial portfolios and source-bound manifests |
-| `research/coinbase50_report.py` | Top50 numerical report and standalone scientific figures |
-| `research/COINBASE50-GRID-CYCLES.md` | Measured wavelength, grid-combination and time-of-day findings with exclusions and costs |
-| `research/zec_cycle_report.py` | Verify cycle artifacts and render the evidence report and figures |
-| `research/ZEC-CYCLE-VALIDATION.md` | Yesterday's ZEC swing spacing compared with no-clock controls and later prediction |
-| `research/perturb.py` | Parameter perturbation for robustness |
-| `research/STRATEGIES.md` | The strategy survey |
-| `research/RANKED_LISTS.md` | Ranked results |
-| `research/TOP_COINS.md` | Coin shortlist |
-| `research/TOP5-RECOMMENDATION.md` | The narrowed recommendation |
-| `research/CROSS-ASSET-TRANSFER.md` | Cross-asset transfer findings |
-| `research/PROMPT_STRATEGIES.md` | The prompt the strategy work was built from |
-| `research/coin-intelligence/` | Ten per-coin spokes (BTC, ETH, SOL, BNB, XRP, TRX, HYPE, DOGE, ZEC, RAIN) plus a README |
-| `research/results/` | Generated output; not source |
+| `research/scripts/meta_analysis.py` | Source-bound trial consolidation preserving original units, exclusions and explicit extra receipts |
+| `research/scripts/meta_followups.py` | Actual-fee canonical spot replays and fixed-slot concentration attribution |
+| `research/papers/META-ANALYSIS.md` | Evidence synthesis, independent comparison, implemented followups and investment decision |
+| `research/scripts/decide.py` | Per-bar readout: what every strategy, signal and indicator says about the last bar |
+| `research/scripts/sweep.py` | Parameter sweeps |
+| `research/scripts/cpcv_sweep.py` | CPCV sweep plus `interpret()`, which exists to kill the "lots of strategies work" misreading |
+| `research/scripts/cross_asset_cpcv.py` | Whether a result on one coin transfers to another |
+| `research/scripts/turnover_table.py` | One turnover pull shared by all ten coin spokes |
+| `research/scripts/verify_numbers.py` | Re-derives every figure quoted in the research docs; exit 0 means they all check out |
+| `research/scripts/full_suite.py` | One command: fetch fresh candles and funding for the universe, then the registry sweep and the compound 5m sweep on every asset |
+| `research/scripts/geometry.py` | Grid geometry helpers |
+| `research/scripts/shape_study.py` | Causal OHLC price-path labels, shape intervals and train-only spot strategy routing with execution-cost sensitivity |
+| `research/scripts/shape_report.py` | Verify artifact/source hashes and regenerate the measured shape-study report |
+| `research/papers/SHAPE-AWARE-SPOT.md` | Eight-coin Coinbase spot geometry study, shape-conditioned comparisons and cost limits |
+| `research/scripts/zec_cycles.py` | Irregular-time ZEC periodicity tests, searched-frequency nulls and frozen harmonic forecasts |
+| `research/scripts/coinbase50_data.py` | Identity-bound Coinbase universe and resumable native-candle evidence collection |
+| `research/scripts/coinbase50_stats.py` | Cross-coin period stability, frozen forecasts and corrected hour-of-day tests |
+| `research/scripts/coinbase50_grid.py` | Training-only recovery ranking, shape/cycle/calendar/H1 gates and normalized canonical grids |
+| `research/scripts/coinbase50_study.py` | Protected-window study runner, matched-budget factorial portfolios and source-bound manifests |
+| `research/scripts/coinbase50_report.py` | Top50 numerical report and standalone scientific figures |
+| `research/papers/COINBASE50-GRID-CYCLES.md` | Measured wavelength, grid-combination and time-of-day findings with exclusions and costs |
+| `research/scripts/zec_cycle_report.py` | Verify cycle artifacts and render the evidence report and figures |
+| `research/papers/ZEC-CYCLE-VALIDATION.md` | Yesterday's ZEC swing spacing compared with no-clock controls and later prediction |
+| `research/scripts/perturb.py` | Parameter perturbation for robustness |
+| `research/papers/STRATEGIES.md` | The strategy survey |
+| `research/papers/RANKED_LISTS.md` | Ranked results |
+| `research/papers/TOP_COINS.md` | Coin shortlist |
+| `research/papers/TOP5-RECOMMENDATION.md` | The narrowed recommendation |
+| `research/papers/CROSS-ASSET-TRANSFER.md` | Cross-asset transfer findings |
+| `research/papers/PROMPT_STRATEGIES.md` | The prompt the strategy work was built from |
+| `research/papers/coin-intelligence/` | Ten per-coin research notes plus an index |
+| `research/json/` | Structured research evidence, manifests and sealed study bundles |
+| `research/results/` | Tabular research outputs consumed by SolTUI and reports |
 
 ---
 
@@ -244,7 +245,7 @@ command registry. No npm runtime dependencies by design; one vendored charting l
 | `docs/EXTENSION-STREAMING-ORACLE.md` | Streaming learner target, equations, atomic persistence, bounds, research status and verification limits |
 | `docs/EXTENSION-STREAMING-ORACLE-PROMPT.md` | Exact byte-preserved approved adaptive streaming Oracle execution prompt |
 | `extension/tools/1000x-e2e.mjs` | Native Chrome fixture and actual-public-portal gates with exact executed module hashes |
-| `extension/tools/1000x-reference.py` | Offline independent Python numerical-vector generator for extension analytics |
+| `research/scripts/perps/1000x-reference.py` | Offline independent Python numerical-vector generator for extension analytics |
 | `extension/test/1000x-reversal.test.js` | Bound Python parity, prefix/future invariance, gap/partial resets and unsupported model/position regressions |
 | `docs/JUPITER-1000X-OVERLAY.md` | Public feed contracts, causal indicator/reversal formulas, browser evidence and installation |
 | `extension/src/core/commands.js` | The single registry. Every action lives here or the parity test fails |
@@ -493,7 +494,7 @@ part of any component.
 | Path | Purpose |
 | --- | --- |
 | `scripts/oracle_winners.py` | Canonical Oracle TUI entrypoint, plain-mode compatibility and optional leverage-panel startup. |
-| `research/zec_leverage_panel.py` | Responsive ZEC/BTC paper monitor and explicit Preview/Submit/Close controls. |
+| `research/scripts/zec_leverage_panel.py` | Responsive ZEC/BTC paper monitor and explicit Preview/Submit/Close controls. |
 | `oracle_leverage/console.py` | Disarmed-default execution boundary, wallet binding, intent journal and reconciliation. |
 | `oracle_leverage/cli.py` | Pinned official10x CLI, bounded child processes, dry runs and frozen named keys. |
 | `oracle_leverage/sdk/service.mjs` | Official1000x API, SDK intent checks and owner-signature verification. |
@@ -503,9 +504,9 @@ part of any component.
 | `oracle_leverage/store.py` | Persistent paper predictions, explicit trading intents and all-history performance. |
 | `oracle_leverage/README.md` | Operator workflow, current capabilities, limitations and verification. |
 | `docs/ORACLE-LEVERAGE.md` | Public packaged-wiki copy of the leveraged Oracle operator guide. |
-| `research/reversal_shapes.py` | Causal48bar shape conditioning, four bar intervals and fixed64-candidate selection. |
-| `research/reversal_inputs.py` | Bounded liquidBTC minute acquisition with exact raw-response hashes. |
-| `research/REVERSAL-SHAPES.md` | Independently reproduced ZEC/BTC rates, final-split results and cost scenarios. |
+| `research/scripts/reversal_shapes.py` | Causal48bar shape conditioning, four bar intervals and fixed64-candidate selection. |
+| `research/scripts/reversal_inputs.py` | Bounded liquidBTC minute acquisition with exact raw-response hashes. |
+| `research/papers/REVERSAL-SHAPES.md` | Independently reproduced ZEC/BTC rates, final-split results and cost scenarios. |
 
 ### Signal Desk interface
 

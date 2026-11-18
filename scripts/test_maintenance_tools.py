@@ -65,8 +65,8 @@ class ToolBoundaryTests(unittest.TestCase):
                     wiki_builder.compile_snapshot(self.root, output)
 
     def test_duplicate_publications_cannot_replace_missing_inventory_entries(self):
-        research = self.root / 'research'
-        research.mkdir()
+        research = self.root / 'research/json'
+        research.mkdir(parents=True)
         ids = [f'fixture-{i:03}' for i in range(742)]
         (research / 'tradingview-strategy-understanding.json').write_text(json.dumps({'publications': [{'publication_id': key} for key in ids[:21]]}))
         (research / 'tradingview-card-coverage.json').write_text(json.dumps({'rows': [{'kind': 'script', 'publication_id': key, 'disposition': 'non-signal'} for key in ids]}))
@@ -85,10 +85,10 @@ class ToolBoundaryTests(unittest.TestCase):
 
     def test_repeated_sources_must_satisfy_each_declared_digest(self):
         (self.root / 'docs').mkdir()
-        (self.root / 'research').mkdir()
+        (self.root / 'research/json').mkdir(parents=True)
         names = [f'fixture-{i}' for i in range(114)]
         (self.root / 'docs/TRADINGVIEW-REFERENCE.md').write_text('### 1. Catalog of built-in indicators\n' + '\n'.join(f'| `{name}` | fixture |' for name in names) + '\n### Standard equations\n')
-        (self.root / 'research/tradingview-card-readiness.json').write_text('{}')
+        (self.root / 'research/json/tradingview-card-readiness.json').write_text('{}')
         source = self.root / 'source.md'
         source.write_text('synthetic public input')
         digest = hashlib.sha256(source.read_bytes()).hexdigest()
@@ -101,8 +101,8 @@ class ToolBoundaryTests(unittest.TestCase):
                 cards.validate(data, self.root)
 
     def test_missing_coin_readiness_cannot_promote_a_strategy_card(self):
-        research = self.root / 'research'
-        research.mkdir()
+        research = self.root / 'research/json'
+        research.mkdir(parents=True)
         profile = {'publication_id': 'demo', 'card_path': 'backtester/strategy_cards/demo.md', 'card_sha256': 'a' * 64, 'source_sha256': 'b' * 64, 'raw_description_sha256': 'c' * 64, 'description_characters': 7}
         accepted = research / 'tradingview-strategy-understanding.json'
         accepted.write_text(json.dumps({'publications': [profile]}))

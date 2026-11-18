@@ -106,7 +106,7 @@ class AuditBoundaryTests(unittest.TestCase):
             self.assertEqual(result['data_sha256'], hashlib.sha256(original).hexdigest())
 
     def test_sweep_help_and_invalid_input_do_not_start_strategy_work(self):
-        script = Path(__file__).resolve().parents[1] / 'sweep_untested.py'
+        script = Path(__file__).resolve().parents[1] / 'scripts/sweep_untested.py'
         program = '''
 from pathlib import Path
 import runpy, sys
@@ -214,14 +214,14 @@ runpy.run_path(script, run_name='__main__')
     def test_nonadvancing_tick_page_cannot_complete_or_publish_backfill(self):
         with tempfile.TemporaryDirectory() as directory:
             root = Path(directory)
-            checkpoint = root / 'checkpoints/TEST_1m_2026-01-01_2026-01-02.json'
+            checkpoint = root / 'checkpoints/TEST_USD_1m_2026-01-01_2026-01-02.json'
             checkpoint.parent.mkdir()
             binding = tick_backfill._checkpoint_binding('TEST-USD', '1m',
                 pd.Timestamp('2026-01-01T00:00:00Z').timestamp(),
                 pd.Timestamp('2026-01-02T00:00:00Z').timestamp())
             checkpoint.write_text(json.dumps({'binding': binding, 'cursor': 50, 'pages': 1, 'trades': 1, 'done': False, 'bars': {}}))
             prior = checkpoint.read_bytes()
-            output = root / 'output/TEST_1m_2026-01-01_2026-01-02_from_ticks.csv'
+            output = root / 'output/TEST_USD_1m_2026-01-01_2026-01-02_from_ticks.csv'
             output.parent.mkdir()
             output.write_bytes(b'preserved earlier output\n')
             page = pd.DataFrame({'timestamp': [int(pd.Timestamp('2026-01-01T00:01:00Z').timestamp())],
@@ -245,11 +245,13 @@ runpy.run_path(script, run_name='__main__')
             aggregator.add(pd.DataFrame({'timestamp': [stamp], 'trade_id': [1], 'price': [100.], 'size': [1.]}))
             checkpoint.write_text(json.dumps({'cursor': 1, 'pages': 1, 'trades': 1, 'done': True, 'bars': aggregator.state()}))
             prior = checkpoint.read_bytes()
-            with (patch.object(tick_backfill, '_page', side_effect=AssertionError('network boundary')),
+            with (patch.object(tick_backfill, 'seek_trade_id', side_effect=tick_backfill.FetchError('fresh quote seek')) as seek,
+                  patch.object(tick_backfill, '_page', side_effect=AssertionError('network boundary')),
                   redirect_stderr(io.StringIO()),
-                  self.assertRaisesRegex(tick_backfill.FetchError, 'checkpoint.*identity')):
+                  self.assertRaisesRegex(tick_backfill.FetchError, 'fresh quote seek')):
                 tick_backfill.backfill('TEST', 'USDT', '2026-01-01', '2026-01-02', '1m',
                     checkpoint.parent, root / 'output', pause=0, verbose=False)
+            self.assertEqual(seek.call_args.args[0], 'TEST-USDT')
             self.assertEqual(checkpoint.read_bytes(), prior)
             self.assertFalse((root / 'output').exists())
 
@@ -357,10 +359,10 @@ class RemainingAuditBoundaries(unittest.TestCase):
         from research import triggers
         with tempfile.TemporaryDirectory() as directory:
             root = Path(directory)
-            pd.DataFrame({'timestamp': [100, 172801], 'funding_rate': [.01, .9]}).to_csv(
+            pd.DataFrame({'timestamp': [3600, 172800], 'funding_rate': [.01, .9]}).to_csv(
                 root / 'TEST_funding_1h.csv', index=False)
             result = triggers.load_funding('TEST', np.array([0, 86400]), '1d', root)
-            np.testing.assert_allclose(result, [.01, .01])
+            np.testing.assert_allclose(result, [.01, np.nan])
 
     def test_batch_perturbation_preserves_requested_asset_and_output(self):
         from research import perturb

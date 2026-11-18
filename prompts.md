@@ -1,5 +1,12 @@
 # Prompt history
 
+Version: 304
+Delta: v303 to v304. Record the study lookup and repository research reorganization request.
+
+## Research layout and ZEC study lookup
+
+> There was recently a lot of testing done with ZEC 25x margin, at 5m, but I can't find the output that told me where that research is or what the findings were, where is it?  Also all of the research articles in this folder and all subfolders, generally the markdown files, move them all to a new folder in research/papers. All of the research scripts which are in a half dozen folderts, move those into research/scripts, and all of the json research files move to research/json.
+
 Version: 303
 Delta: v302 to v303. Record the one-week extension and 25× 5m walk-forward request.
 

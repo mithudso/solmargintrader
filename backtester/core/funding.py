@@ -16,7 +16,7 @@ leverage arithmetic runs on. It is *not* a funding rate.
 A funding rate **changes sign** with the long/short imbalance. When it is
 negative, shorts pay longs, and *receiving* it is the entire basis-carry trade.
 No model built on a floored-at-zero fee can express a payment you receive, so
-`research/RATIO-ROTATION.md` had to write the carry question up as unevaluable.
+`research/papers/RATIO-ROTATION.md` had to write the carry question up as unevaluable.
 This module is what makes it evaluable: realised, per-interval, signed funding.
 
 ## Venue choice was decided by probing, not preference

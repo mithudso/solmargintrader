@@ -2,7 +2,7 @@
 
 Pure logic behind the Analyze tab. No Textual import, no widget.
 
-## It wraps `research/decide.py`; it does not reimplement it
+## It wraps `research/scripts/decide.py`; it does not reimplement it
 
 `decide.py`'s one substantive guarantee is that the exposures it reports are the
 numbers the engine would have acted on. A parallel implementation here would lose

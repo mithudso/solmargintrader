@@ -9,26 +9,26 @@ from __future__ import annotations
 # The Research tab's content. Kept here as data rather than fetched or computed:
 # these are the questions each driver answers and what it actually established,
 # and both are stable facts about the study. Figures match docs/SCRIPTS.md and
-# research/CROSS-ASSET-TRANSFER.md; `python3 research/verify_numbers.py` is the
+# research/papers/CROSS-ASSET-TRANSFER.md; `python3 research/scripts/verify_numbers.py` is the
 # gate that keeps the underlying documents honest.
 RESEARCH_DRIVERS = [
-    ("research/cpcv_sweep.py", "Is a configuration any good?",
+    ("research/scripts/cpcv_sweep.py", "Is a configuration any good?",
      "PBO 0.700 at both daily horizons vs a 0.500 noise line"),
-    ("research/cross_asset_cpcv.py", "Does it transfer to another coin?",
+    ("research/scripts/cross_asset_cpcv.py", "Does it transfer to another coin?",
      "All 10 top-5 transfers to DOGE/ZEC degraded; none improved"),
-    ("research/perturb.py", "Was it fitted to noise?",
+    ("research/scripts/perturb.py", "Was it fitted to noise?",
      "Pairs are ~2.6x more parameter-sensitive than long-horizon singles"),
-    ("research/geometry.py", "Is the leaderboard an artifact of block count?",
+    ("research/scripts/geometry.py", "Is the leaderboard an artifact of block count?",
      "8->9 blocks moved the best pair -0.441, more than any parameter"),
-    ("research/decide.py", "What does each rule say right now?",
+    ("research/scripts/decide.py", "What does each rule say right now?",
      "Targets provably match what the engine would have acted on"),
-    ("research/dso_audit.py", "Which results are below the evidence floor?",
+    ("research/scripts/dso_audit.py", "Which results are below the evidence floor?",
      "BTC's rank-1 ou_reversion sits on 6 trades"),
-    ("research/sweep.py", "The single 70/30 split it all replaced",
+    ("research/scripts/sweep.py", "The single 70/30 split it all replaced",
      "In-sample window ended on the highest close in the series"),
-    ("research/verify_numbers.py", "Do the docs match their CSVs?",
+    ("research/scripts/verify_numbers.py", "Do the docs match their CSVs?",
      "950 figures checked; CI fails the build on drift"),
-    ("research/turnover_table.py", "One comparable turnover table",
+    ("research/scripts/turnover_table.py", "One comparable turnover table",
      "DOGE 3.44% leads SOL 3.32% on a single-timestamp pull"),
 ]
 
@@ -47,7 +47,7 @@ RESEARCH_FINDINGS = [
 ]
 
 # One-line description per signal family, for the Signals tab. Sourced from the
-# taxonomy in research/STRATEGIES.md so the two do not drift into disagreement.
+# taxonomy in research/papers/STRATEGIES.md so the two do not drift into disagreement.
 FAMILY_NOTES = {
     "baseline": "The null hypothesis. Any strategy that cannot beat it is a cost-generating machine.",
     "trend": "Bets that direction persists. Fails in chop, where every oscillation is a whipsaw pair.",
@@ -61,9 +61,9 @@ FAMILY_NOTES = {
     "sma-gated": "One entry rule -- close above its SMA -- under four sizing schemes. "
                  "Measured 0.92-1.00 correlated, so treat them as one bet, not four.",
     "leverage-tier": "Not a signal: runs another strategy as a 2x/5x/20x perp. Leverage multiplies the "
-                     "result and adds carry; on SOL daily 20x is ruinous (research/LEVERAGE-TIERS.md).",
+                     "result and adds carry; on SOL daily 20x is ruinous (research/papers/LEVERAGE-TIERS.md).",
     "trigger": "Waits for a mined condition conjunction, trades it to expiry. Exploratory unless it "
-               "passed every honesty gate (research/RELIABLE_SIGNALS.md).",
+               "passed every honesty gate (research/papers/RELIABLE_SIGNALS.md).",
 }
 
 # Indicator functions exposed on the Signals tab, with their equations.

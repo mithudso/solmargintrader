@@ -16,13 +16,13 @@ Apply the same rules as the runnable script and SolTUI Bots tab. Use this reposi
 
 ## Run the shared tool
 
-Resolve this skill's `scripts/coin_strategy_fit.py` relative to this file. It locates the containing SolTUI checkout. Use the existing SolTUI Python environment (NumPy/Pandas); do not assume system Python has dependencies.
+Resolve this skill's `research/scripts/coin_strategy_fit.py` relative to this file. It locates the containing SolTUI checkout. Use the existing SolTUI Python environment (NumPy/Pandas); do not assume system Python has dependencies.
 
 ```sh
-python scripts/coin_strategy_fit.py --coin SOL --bot grid --mode quick
-python scripts/coin_strategy_fit.py --coins SOL BTC ETH --bot dca --mode quick --format csv
-python scripts/coin_strategy_fit.py --coin SOL --bot grid --mode audit --format json --output coin-audit.json
-python scripts/coin_strategy_fit.py --demo --bot all --mode audit
+python research/scripts/coin_strategy_fit.py --coin SOL --bot grid --mode quick
+python research/scripts/coin_strategy_fit.py --coins SOL BTC ETH --bot dca --mode quick --format csv
+python research/scripts/coin_strategy_fit.py --coin SOL --bot grid --mode audit --format json --output coin-audit.json
+python research/scripts/coin_strategy_fit.py --demo --bot all --mode audit
 ```
 
 Quick ranking scores only the older development slice, leaving the newest quarter (at most thirty days) out of the score. Audit runs three chronological development folds, the reserved newest holdout, a continuous account and doubled-cost scenarios. It uses fixed parameters, not an in-sample configuration search. Previous research may already have inspected the reserved dates; do not call them globally untouched or proof of an independent edge.

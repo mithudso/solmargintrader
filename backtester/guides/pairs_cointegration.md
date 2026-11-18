@@ -73,7 +73,7 @@ gate on: no trades, no loss. The ADF screen is not decoration — on this data i
 difference between losing a quarter of the account and standing still.
 
 The figures come from a **single 70/30 walk-forward split**, whose in-sample window
-ends within one bar of the highest close in the series. `research/RANKED_LISTS.md`
+ends within one bar of the highest close in the series. `research/papers/RANKED_LISTS.md`
 documents why that makes it hostile, and `core/cpcv.py` is now the repo's primary
 evaluation for exactly that reason. Read these as evidence about **one regime
 transition**.

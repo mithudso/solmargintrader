@@ -21,7 +21,7 @@ Project key: `git@github.com:mithudso/solmargintrader.git`. Existing registry en
 - `soltui/bgqueue.py`: prior durable whole-job queue and evidence limitations.
 - `soltui/commands.py`: shared CLI/API/UI registry.
 - `soltui/bots_screens.py`: existing candidate/progress modal.
-- `research/perturb.py`: existing one-at-a-time sensitivity differs from observed joint maps.
+- `research/scripts/perturb.py`: existing one-at-a-time sensitivity differs from observed joint maps.
 - Project registry: existing `solmargintrader` record; no duplicate registration.
 
 ## Existing artifacts

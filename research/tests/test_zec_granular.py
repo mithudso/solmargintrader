@@ -179,7 +179,7 @@ class GranularReplay(unittest.TestCase):
             rows,coverage=g.run_matrix(tape,info,out,fees=(60,))
             manifest=json.loads((out/"manifest.json").read_text())
             self.assertEqual(manifest["rows"],len(rows))
-            self.assertIn("research/zec_granular.py",manifest["identity"]["code"])
+            self.assertIn("research/scripts/zec_granular.py",manifest["identity"]["code"])
             self.assertIsInstance(coverage["1m"]["longest_valid_segment"],int)
             self.assertTrue((out/"results.csv").is_file())
 

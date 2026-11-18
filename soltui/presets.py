@@ -4,7 +4,7 @@
 with one click, from one place, so every surface (TUI, CLI, API, extension) sees the same list.
 
 A preset carries the configuration's label (what Live Run launches), its member signals with the
-SOL-tuned parameters of `research/sweep.py`'s `HORIZONS` (what Execute replays and Analyze judges)
+SOL-tuned parameters of `research/scripts/sweep.py`'s `HORIZONS` (what Execute replays and Analyze judges)
 and the data series it was fitted on. The parameters are read from `HORIZONS`, not copied: a copy
 would drift from the research that produced the evidence.
 
@@ -99,7 +99,7 @@ def build_strategy(preset: dict[str, Any]):
     from backtester.core.strategies import build, build_composite
 
     if not preset["usable"]:
-        raise ValueError(f"preset {preset['label']} has no parameters in research/sweep.py HORIZONS")
+        raise ValueError(f"preset {preset['label']} has no parameters in research/scripts/sweep.py HORIZONS")
     specs = [(m["name"], m["params"]) for m in preset["members"]]
     if len(specs) == 1:
         return build(specs[0][0], **specs[0][1])

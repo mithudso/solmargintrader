@@ -78,11 +78,11 @@ class CardReadinessTests(unittest.TestCase):
             self.check()
 
     def test_guide_and_research_locations_keep_evidence_and_stay_out_of_runtime(self):
-        for folder, disposition in (("guides", "guide"), ("strategy_research", "research")):
+        for folder, disposition in (("backtester/guides", "guide"), ("research/papers/strategy_research", "research")):
             with self.subTest(disposition=disposition):
                 old = self.directory / "incomplete" / "research_example.md"
-                target = self.repo / "backtester" / folder / old.name
-                target.parent.mkdir(exist_ok=True)
+                target = self.repo / folder / old.name
+                target.parent.mkdir(exist_ok=True, parents=True)
                 old.rename(target)
                 row = self.review["cards"][1]
                 row["disposition"] = disposition

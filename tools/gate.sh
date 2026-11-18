@@ -56,7 +56,7 @@ if [ -f index/build.py ]; then
 fi
 
 run "backtester suite"   python3 -m unittest discover -s backtester/tests -t .
-run "figure verification" python3 research/verify_numbers.py
+run "figure verification" python3 research/scripts/verify_numbers.py
 
 if [ "$QUICK" -eq 0 ]; then
   run "soltui suite" python3 -m unittest discover -s soltui/tests -t .

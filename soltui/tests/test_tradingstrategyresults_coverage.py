@@ -88,7 +88,7 @@ class TestCatalogueCoverage(unittest.TestCase):
     def setUpClass(cls) -> None:
         cls.active_cards = load_all()
         cls.cards = dict(cls.active_cards)
-        for directory in (REPO / "backtester/guides", REPO / "backtester/strategy_research"):
+        for directory in (REPO / "backtester/guides", REPO / "research/papers/strategy_research"):
             found = load_all(directory)
             if cls.cards.keys() & found.keys():
                 raise AssertionError("card duplicated across active and research catalogs")

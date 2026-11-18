@@ -47,11 +47,11 @@ Read [the complete replay grid](../research/results/jupiter_perps_leverage_20261
 
 ## Reproduce
 
-Run from the repository root. Use a new output directory to capture data and `--offline` to replay an existing capture. The CLI issues public reads in acquisition mode. The input and result hashes are in the [companion receipt](../research/results/jupiter_perps_leverage_20261118_receipt.json). Reobserved funding or venue-candle revisions can change a fresh capture.
+Run from the repository root. Use a new output directory to capture data and `--offline` to replay an existing capture. The CLI issues public reads in acquisition mode. The input and result hashes are in the [companion receipt](../research/json/results/jupiter_perps_leverage_20261118_receipt.json). Reobserved funding or venue-candle revisions can change a fresh capture.
 
 ```sh
-node extension/tools/perps-sweep.mjs --output /absolute/path/to/new-perps-capture --end 2026-11-18T01:10:00Z
-node extension/tools/perps-sweep.mjs --offline --output /absolute/path/to/new-perps-capture --end 2026-11-18T01:10:00Z
+node research/scripts/perps/perps-sweep.mjs --output /absolute/path/to/new-perps-capture --end 2026-11-18T01:10:00Z
+node research/scripts/perps/perps-sweep.mjs --offline --output /absolute/path/to/new-perps-capture --end 2026-11-18T01:10:00Z
 ```
 
 ## Funded execution requirements

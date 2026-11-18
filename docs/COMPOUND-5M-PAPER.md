@@ -394,7 +394,7 @@ on a strategy's selected events. A negative all-bars average therefore cannot ru
 selective one-bar policy with different conditional outcomes. Holding through several bars
 is another way to amortize the toll; neither possibility is validated by this diagnostic.
 Actual next-open fills, costs and intrabar survival must be evaluated for the selected
-policy. See `research/five-minute-perps-suite/benchmark-scope-review.json` for the reviewed
+policy. See `research/json/five-minute-perps-suite/benchmark-scope-review.json` for the reviewed
 metric definition and a synthetic counterexample. These figures retain their historical
 sample and configured costs; they are not live venue quotes.
 
@@ -483,7 +483,7 @@ Learning fixes the direction problem on four of five coins: it mutes the trend m
 
 ### 6.7 Forward testing and the full suite
 
-The forward tester exists (one call per closed 5-minute bar, resolved when the next bar closes, written to `~/.config/soltui/compound/forward/<ASSET>.jsonl`). **No forward ledger has been recorded on this machine**, so there is no live out-of-sample evidence at all. The full suite (`research/full_suite.py`: a year of 5-minute data for the universe, then every registry and compound backtest) has not been run to completion. Both are required before any of section 6 is more than a 30-day observation. Live SOL calls now show learned weights, and they currently give weight only to the reversion metrics (from the project's progress notes; not re-verified for this paper).
+The forward tester exists (one call per closed 5-minute bar, resolved when the next bar closes, written to `~/.config/soltui/compound/forward/<ASSET>.jsonl`). **No forward ledger has been recorded on this machine**, so there is no live out-of-sample evidence at all. The full suite (`research/scripts/full_suite.py`: a year of 5-minute data for the universe, then every registry and compound backtest) has not been run to completion. Both are required before any of section 6 is more than a 30-day observation. Live SOL calls now show learned weights, and they currently give weight only to the reversion metrics (from the project's progress notes; not re-verified for this paper).
 
 ## 7. Threats to validity
 
@@ -503,7 +503,7 @@ What has been established: the machinery is causal (prefix-invariance tested), t
 In order of value:
 
 1. Run the forward tester unattended on SOL so that evidence accrues on data the sweeps never saw (`python3 -m soltui.compound forward --asset SOL --loop`).
-2. Run `research/full_suite.py` for a year of 5-minute data and re-test the reversion pattern across regimes before reading anything into it.
+2. Run `research/scripts/full_suite.py` for a year of 5-minute data and re-test the reversion pattern across regimes before reading anything into it.
 3. Test the reversion effect on oracle-priced bars, or against bid and ask, to separate bounce from signal.
 4. Evaluate holding periods of several bars (the cost-gate path) rather than one-bar calls, scored by net basis points over the hold.
 5. Treat any configuration that passes as a hypothesis for the registry's CPCV and deflated-Sharpe machinery, not as a result.
@@ -567,7 +567,7 @@ Defaults and bounds are as shipped. Ranges are inclusive. A parameter's range is
 /Users/mitch/.venvs/soltui/bin/python -m soltui.compound status --asset SOL
 
 # a year of 5m data and every backtest
-/Users/mitch/.venvs/soltui/bin/python research/full_suite.py --plan
+/Users/mitch/.venvs/soltui/bin/python research/scripts/full_suite.py --plan
 ```
 
-Run id behind the tables: `20261107T130441Z-f7fea5b2368e` (rows in `~/.config/soltui/compound/backtests.jsonl`, which holds the same sweep twice). Related documents: `docs/COMPOUND-5M.md` (user guide), `docs/short-horizon-leverage-concept-family.md` (venue economics), `research/RANKED_LISTS.md` (registry strategies).
+Run id behind the tables: `20261107T130441Z-f7fea5b2368e` (rows in `~/.config/soltui/compound/backtests.jsonl`, which holds the same sweep twice). Related documents: `docs/COMPOUND-5M.md` (user guide), `research/papers/docs/short-horizon-leverage-concept-family.md` (venue economics), `research/papers/RANKED_LISTS.md` (registry strategies).

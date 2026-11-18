@@ -17,7 +17,7 @@ filter has All, 5, 10, 15 and 20 minute choices. The selected paper rules are
 ZEC15m DD/range reversal→UP and BTC20m DD continuation→DOWN. These were selected
 on validation data before examining the final split. Both lost under the
 historical16bps roundtrip scenario; they are exploratory forward candidates.
-The complete study is in `research/REVERSAL-SHAPES.md`.
+The complete study is in `research/papers/REVERSAL-SHAPES.md`.
 
 ## Persistent paper collector
 

@@ -93,21 +93,21 @@ The danger here is overstating a result, so the honesty machinery is the point.
 
 | Path | What it is |
 | --- | --- |
-| `research/decide.py` | Per-bar readout: what every strategy, signal and indicator says about the last bar |
-| `research/sweep.py` | Parameter sweeps |
-| `research/cpcv_sweep.py` | CPCV sweep plus `interpret()`, which exists to kill the "lots of strategies work" misreading |
-| `research/cross_asset_cpcv.py` | Whether a result on one coin transfers to another |
-| `research/turnover_table.py` | One turnover pull shared by all ten coin spokes |
-| `research/verify_numbers.py` | Re-derives every figure quoted in the research docs; exit 0 means they all check out |
-| `research/full_suite.py` | One command: fetch fresh candles and funding for the universe, then the registry sweep and the compound 5m sweep on every asset |
-| `research/geometry.py` | Grid geometry helpers |
-| `research/perturb.py` | Parameter perturbation for robustness |
-| `research/STRATEGIES.md` | The strategy survey |
-| `research/RANKED_LISTS.md` | Ranked results |
-| `research/TOP_COINS.md` | Coin shortlist |
-| `research/TOP5-RECOMMENDATION.md` | The narrowed recommendation |
-| `research/CROSS-ASSET-TRANSFER.md` | Cross-asset transfer findings |
-| `research/PROMPT_STRATEGIES.md` | The prompt the strategy work was built from |
+| `research/scripts/decide.py` | Per-bar readout: what every strategy, signal and indicator says about the last bar |
+| `research/scripts/sweep.py` | Parameter sweeps |
+| `research/scripts/cpcv_sweep.py` | CPCV sweep plus `interpret()`, which exists to kill the "lots of strategies work" misreading |
+| `research/scripts/cross_asset_cpcv.py` | Whether a result on one coin transfers to another |
+| `research/scripts/turnover_table.py` | One turnover pull shared by all ten coin spokes |
+| `research/scripts/verify_numbers.py` | Re-derives every figure quoted in the research docs; exit 0 means they all check out |
+| `research/scripts/full_suite.py` | One command: fetch fresh candles and funding for the universe, then the registry sweep and the compound 5m sweep on every asset |
+| `research/scripts/geometry.py` | Grid geometry helpers |
+| `research/scripts/perturb.py` | Parameter perturbation for robustness |
+| `research/papers/STRATEGIES.md` | The strategy survey |
+| `research/papers/RANKED_LISTS.md` | Ranked results |
+| `research/papers/TOP_COINS.md` | Coin shortlist |
+| `research/papers/TOP5-RECOMMENDATION.md` | The narrowed recommendation |
+| `research/papers/CROSS-ASSET-TRANSFER.md` | Cross-asset transfer findings |
+| `research/papers/PROMPT_STRATEGIES.md` | The prompt the strategy work was built from |
 | `research/coin-intelligence/` | Ten per-coin spokes (BTC, ETH, SOL, BNB, XRP, TRX, HYPE, DOGE, ZEC, RAIN) plus a README |
 | `research/results/` | Generated output; not source |
 

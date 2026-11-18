@@ -13,7 +13,7 @@ Done: all six capabilities are reachable through the shared command registry and
 - `soltui/bgqueue.py`: existing backtest queue persists whole-job records; its identifiers do not bind all experiment evidence.
 - `soltui/commands.py`: shared command registry supplies CLI, API and UI parity.
 - `soltui/bots_screens.py` and `soltui/tui.py`: existing progress modal and candidate table provide the entry point.
-- `research/perturb.py`: existing one-at-a-time sensitivity is distinct from the proposed observed joint-parameter view.
+- `research/scripts/perturb.py`: existing one-at-a-time sensitivity is distinct from the proposed observed joint-parameter view.
 - External comparison dossier is already delivered in PR 95. The upstream bundle's Smart Linear loop is unfinished and will not be ported.
 
 ## Plan A

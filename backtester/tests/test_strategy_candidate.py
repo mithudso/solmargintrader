@@ -16,7 +16,7 @@ from research.strategy_snapshots import ensure_snapshots
 
 _scratch = tempfile.TemporaryDirectory(prefix='candidate-strategies-')
 EXPERIMENT = Path(_scratch.name)
-_SOURCE = Path(__file__).resolve().parents[2] / 'research/strategy_experiment'
+_SOURCE = Path(__file__).resolve().parents[2] / 'research/json/strategy_experiment'
 for _name in ('archives.json', 'snapshot.json', 'original.zip', 'candidate.zip'):
     shutil.copyfile(_SOURCE / _name, EXPERIMENT / _name)
 ensure_snapshots(EXPERIMENT)

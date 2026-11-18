@@ -108,5 +108,5 @@ printjson(
 
 print("\n=== the JLP spot snapshot, which is NOT a bar series ===");
 // Deliberately a separate collection: different columns, no OHLCV, irregular.
-// `research/decide.py` refuses to read it as bars; see docs/known-issues.md.
+// `research/scripts/decide.py` refuses to read it as bars; see docs/known-issues.md.
 printjson(db.spot_prices.find({}, { _id: 0, loaded_at: 0 }).toArray());

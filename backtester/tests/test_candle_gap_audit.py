@@ -1,4 +1,4 @@
-"""Gap detection and repair-merge logic in `research/candle_gap_audit.py`.
+"""Gap detection and repair-merge logic in `research/scripts/candle_gap_audit.py`.
 
 The audit's whole value is the distinction between "this minute was quiet" and
 "this minute traded and the exchange dropped it", so the tests here pin the

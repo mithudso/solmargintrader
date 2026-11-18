@@ -314,7 +314,8 @@ class NewsPrerequisites(unittest.TestCase):
             for name in ("summary.csv", "event-returns.csv", "latency5-summary.csv", "latency5-event-returns.csv"):
                 (analyzed / name).write_text("coin,horizon_minutes,return_pct\n")
             (output / f"{news_event_report.PREFIX}_summary.csv").write_text("original summary")
-            (repo / "research/NEWS-EVENT-STUDY.md").write_text("original report")
+            (repo / "research/papers").mkdir(parents=True, exist_ok=True)
+            (repo / "research/papers/NEWS-EVENT-STUDY.md").write_text("original report")
             before = {str(p.relative_to(repo)): p.read_bytes() for p in repo.rglob("*") if p.is_file()}
             with patch.dict(sys.modules, {"matplotlib": None}), self.assertRaises((ImportError, RuntimeError)):
                 news_event_report.render(home, analyzed, repo)

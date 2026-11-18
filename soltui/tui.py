@@ -5233,7 +5233,7 @@ class SolTuiApp(App):
         """Start backtesting, at once and in the background, every strategy never tested or with
         little testing (`queue.backtest`, scope undertested).
 
-        It used to run research/sweep_untested.py, which listed the untested strategies and then
+        It used to run research/scripts/sweep_untested.py, which listed the untested strategies and then
         backtested a fixed handful on one horizon, so the button seemed to find work and do none.
         """
         status = self.query_one("#backtest-status", Static)
@@ -5427,7 +5427,7 @@ class SolTuiApp(App):
 
         Deliberately titled by the selection rule, not "best by Sharpe": the
         study's PBO of 0.700 means ranking by in-sample Sharpe selects noise,
-        so the five here are the ones of research/TOP5-RECOMMENDATION.md --
+        so the five here are the ones of research/papers/TOP5-RECOMMENDATION.md --
         drawn from the only seven configurations tested on two independent
         robustness axes, ordered by checks cleared.
         """
@@ -5437,7 +5437,7 @@ class SolTuiApp(App):
                 "parameter perturbation, 0 sign flips), NOT by Sharpe rank: "
                 "PBO is 0.700 against a 0.500 noise line, so 'top 5 by Sharpe' "
                 "would list the rows most likely to be noise. Source: "
-                "research/TOP5-RECOMMENDATION.md.",
+                "research/papers/TOP5-RECOMMENDATION.md.",
                 classes="hint",
             )
             yield Static("", id="top5-headline")

@@ -293,7 +293,7 @@ console that refreshes every few seconds.
 |---|---|
 | CPCV rows | `research/results/cpcv_results.csv` |
 | Top 5 combos and cross-asset | `research/results/cpcv_top5_sol_doge_zec_1d.csv` |
-| Compound OOS hit and z (SOL, BTC, ETH, HYPE), fees 378%, return −100% | `research/results/compound-10coin-fullhistory-2026-11-07.json` |
+| Compound OOS hit and z (SOL, BTC, ETH, HYPE), fees 378%, return −100% | `research/json/results/compound-10coin-fullhistory-2026-11-07.json` |
 | Forward hit rates (SOL 50.2%, DOGE 55.6%) | `docs/COMPOUND-5M.md` |
 | LP position, scout pool, idle $45.60 | `liquidity/STATE_FILES.md` example data |
 | Cumulative headline (3,286 / 1,212 / 665 / 96) | committed result files, summarised by soltui's cumulative view |

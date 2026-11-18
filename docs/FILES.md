@@ -1,6 +1,6 @@
 # Every file in this repository
 
-**Generated** from `index/INDEX.json` at commit `0cec76d` (2026-11-17T22:56:22+00:00). 4117 tracked files, 208.5 MB.
+**Generated** from `index/INDEX.json` at commit `fe35b4f` (2026-11-18T07:43:22+00:00). 4157 tracked files, 211.8 MB.
 
 Regenerate with:
 
@@ -14,9 +14,9 @@ python3 index/build.py --check      # fail if the index is stale
 
 Every entry marks where its description came from, because a generated one-liner and a considered one should not look alike:
 
-- **curated** (43 files) — hand-written purpose and usage, in the `CURATED` table of `index/make_files_doc.py`. Used where extraction cannot give a reader what they need: the engine, the research drivers, the order-placing path, and the files with no prose of their own.
-- **extracted** (3160 files) — the file's own module docstring, JSDoc header, or frontmatter `summary`. Trustworthy here because 775/904 Python modules and 90/209 JS files carry a substantial one. (These counts are computed at generation time, not hardcoded — an earlier revision asserted a frozen ratio and it was wrong within a day as the repo grew.)
-- **derived** (474 files) — shape only, for generated artifacts: a CSV's header and row count, a JSON's keys. Prose for a result file would be invented.
+- **curated** (34 files) — hand-written purpose and usage, in the `CURATED` table of `index/make_files_doc.py`. Used where extraction cannot give a reader what they need: the engine, the research drivers, the order-placing path, and the files with no prose of their own.
+- **extracted** (3190 files) — the file's own module docstring, JSDoc header, or frontmatter `summary`. Trustworthy here because 778/907 Python modules and 91/215 JS files carry a substantial one. (These counts are computed at generation time, not hardcoded — an earlier revision asserted a frozen ratio and it was wrong within a day as the repo grew.)
+- **derived** (481 files) — shape only, for generated artifacts: a CSV's header and row count, a JSON's keys. Prose for a result file would be invented.
 
 *How to use* is curated where it matters and otherwise inferred from the file's kind — a test gets its runner, a CLI gets `--help`, a module gets its import path.
 
@@ -34,12 +34,12 @@ To *search* rather than browse: `python3 index/search.py "your question"`.
 ## Contents
 
 - [`(root)`](#root) — 99 files
-- [`docs`](#docs) — 181 files
+- [`docs`](#docs) — 167 files
 - [`index`](#index) — 8 files
-- [`backtester`](#backtester) — 1972 files
-- [`research`](#research) — 527 files
+- [`backtester`](#backtester) — 1664 files
+- [`research`](#research) — 881 files
 - [`oracle`](#oracle) — 47 files
-- [`extension`](#extension) — 191 files
+- [`extension`](#extension) — 200 files
 - [`executor`](#executor) — 54 files
 - [`liquidity`](#liquidity) — 66 files
 - [`botmanager`](#botmanager) — 95 files
@@ -64,7 +64,7 @@ To *search* rather than browse: `python3 index/search.py "your question"`.
 - [`oracle_leverage`](#oracle_leverage) — 48 files
 - [`postman`](#postman) — 8 files
 - [`runbooks`](#runbooks) — 3 files
-- [`scripts`](#scripts) — 37 files
+- [`scripts`](#scripts) — 36 files
 - [`skills`](#skills) — 67 files
 - [`superpowers`](#superpowers) — 12 files
 - [`tools`](#tools) — 3 files
@@ -96,7 +96,7 @@ Repository-level entry points and agent instructions. `AGENTS.md` and `CLAUDE.md
 
 #### `.gitattributes`
 
-`other` · 33 lines · 1,050 B · description: **curated**
+`other` · 33 lines · 1,065 B · description: **curated**
 
 **Purpose.** Per-path git behaviour: line-ending normalisation, and which files are treated as binary or excluded from diffs and archives. Keeps a CSV or a generated artifact from producing noise in review.
 
@@ -184,7 +184,7 @@ Repository-level entry points and agent instructions. `AGENTS.md` and `CLAUDE.md
 
 #### `COMPOUND-5M-PAPER.md`
 
-`doc` · 574 lines · 53,792 B · description: **extracted**
+`doc` · 574 lines · 53,844 B · description: **extracted**
 
 **Purpose.** The compound scorecard asks one question: **will the next five-minute bar of a crypto perpetual close up or down?** It scores 28 metrics from -1 (down) to +1 (up), removes the double-counting between metrics that measure the same thing, reweights styles by market regime, and combines the scores into one call (UP, DOWN or FLAT) behind seven veto gates.
 
@@ -192,7 +192,7 @@ Repository-level entry points and agent instructions. `AGENTS.md` and `CLAUDE.md
 
 #### `COMPOUND-5M.md`
 
-`doc` · 503 lines · 35,901 B · description: **extracted**
+`doc` · 503 lines · 35,988 B · description: **extracted**
 
 **Purpose.** A tester for one question: **will the next 5-minute bar close up or down?** Every metric in (up). The scores are combined into one call (UP, DOWN or FLAT), which you can backtest and forward test, metric by metric and combined. Nothing here places an order.
 
@@ -200,7 +200,7 @@ Repository-level entry points and agent instructions. `AGENTS.md` and `CLAUDE.md
 
 #### `CONCEPTS.md`
 
-`doc` · 321 lines · 20,654 B · description: **extracted**
+`doc` · 321 lines · 21,039 B · description: **extracted**
 
 **Purpose.** python3 index/build.py all # refresh python3 index/make_concepts_doc.py # rewrite this file python3 index/search.py --concepts # list them
 
@@ -224,7 +224,7 @@ Repository-level entry points and agent instructions. `AGENTS.md` and `CLAUDE.md
 
 #### `DEVELOPMENT.md`
 
-`doc` · 200 lines · 9,736 B · description: **extracted**
+`doc` · 200 lines · 9,800 B · description: **extracted**
 
 **Purpose.** Setup, the commands you will actually use, and the environment each component needs. Backtester and research use NumPy and pandas; mongo uses pymongo; soltui uses Textual and optional macOS packaging dependencies. Liquidity has a separate web3/httpx stack.
 
@@ -272,7 +272,7 @@ Repository-level entry points and agent instructions. `AGENTS.md` and `CLAUDE.md
 
 #### `FILES.md`
 
-`doc` · 28633 lines · 1,464,645 B · description: **extracted**
+`doc` · 28633 lines · 1,467,973 B · description: **extracted**
 
 **Purpose.** Regenerate with: python3 index/build.py all # refresh the index python3 index/make_files_doc.py # rewrite this file
 
@@ -344,7 +344,7 @@ Repository-level entry points and agent instructions. `AGENTS.md` and `CLAUDE.md
 
 #### `README.md`
 
-`doc` · 247 lines · 16,314 B · description: **curated**
+`doc` · 256 lines · 16,997 B · description: **curated**
 
 **Purpose.** Entry point: what the project is, its components, and the honest summary of what the research established.
 
@@ -352,7 +352,7 @@ Repository-level entry points and agent instructions. `AGENTS.md` and `CLAUDE.md
 
 #### `SCRIPTS.md`
 
-`doc` · 1041 lines · 52,964 B · description: **extracted**
+`doc` · 1041 lines · 53,515 B · description: **extracted**
 
 **Purpose.** Every runnable entry point in this repo: what it is for, when to reach for it, **when not to**, its options, a real invocation, and the output you should expect. list. This page is the operator's manual — the commands you actually type.
 
@@ -376,7 +376,7 @@ Repository-level entry points and agent instructions. `AGENTS.md` and `CLAUDE.md
 
 #### `TESTING.md`
 
-`doc` · 256 lines · 20,218 B · description: **extracted**
+`doc` · 256 lines · 20,234 B · description: **extracted**
 
 **Purpose.** The `botmanager/` package has its own unittest suite and CI job. Install the four regular local projects into an isolated Python 3.13 environment, then run from the repository root:
 
@@ -384,7 +384,7 @@ Repository-level entry points and agent instructions. `AGENTS.md` and `CLAUDE.md
 
 #### `TRADINGVIEW-CARD-COVERAGE.md`
 
-`doc` · 1270 lines · 101,193 B · description: **extracted**
+`doc` · 1270 lines · 101,203 B · description: **extracted**
 
 **Purpose.** Version: 1.1.0 (2026-11-08). Delta: preserve source coverage across active and incomplete research cards. Created **1083 specification cards** after checking existing cards, the strategy registry, indicator functions and Compound scorecard. Existing code and measured cards keep their status. The subsequent completeness review keeps **292 new usable specifications** in the
 
@@ -392,7 +392,7 @@ Repository-level entry points and agent instructions. `AGENTS.md` and `CLAUDE.md
 
 #### `TRADINGVIEW-CARD-FILES.md`
 
-`doc` · 1106 lines · 300,135 B · description: **extracted**
+`doc` · 1106 lines · 302,965 B · description: **extracted**
 
 **Purpose.** Version: 1.2.0 (2026-11-08). Delta: preserve the extraction receipt and update guide and research locations. Canonical checkout paths for every file created or modified by this task. The coverage report and JSON ledger explain the matches and source limitations.
 
@@ -400,7 +400,7 @@ Repository-level entry points and agent instructions. `AGENTS.md` and `CLAUDE.md
 
 #### `TRADINGVIEW-CARD-READINESS-FILES.md`
 
-`doc` · 817 lines · 225,724 B · description: **extracted**
+`doc` · 817 lines · 225,744 B · description: **extracted**
 
 **Purpose.** Version: 1.1.0 (2026-11-08). Delta: retain the separation inventory and refresh the13 enriched native-strategy locations. Canonical checkout paths for every created, modified or relocated file. Card contents are preserved; research cards move into the incomplete directory.
 
@@ -408,7 +408,7 @@ Repository-level entry points and agent instructions. `AGENTS.md` and `CLAUDE.md
 
 #### `TRADINGVIEW-CARD-READINESS.md`
 
-`doc` · 1110 lines · 290,255 B · description: **extracted**
+`doc` · 1110 lines · 290,265 B · description: **extracted**
 
 **Purpose.** Version: 1.3.0 (2026-11-08). Delta: retain source reviews and current catalog locations. The active catalog contains 34 registered strategies. The original 1,142 cards are preserved: 42 guides and templates, 302 other research cards, 764 incomplete cards and 34 active cards. The executable registry is unchanged. The tables below preserve the earlier source-mechanics review.
 
@@ -424,7 +424,7 @@ Repository-level entry points and agent instructions. `AGENTS.md` and `CLAUDE.md
 
 #### `TRADINGVIEW-SCRIPT-CARD-FILES.md`
 
-`doc` · 736 lines · 239,149 B · description: **extracted**
+`doc` · 736 lines · 239,345 B · description: **extracted**
 
 **Purpose.** Version:1.0.0. Delta: complete created/modified path inventory for the full-script source-card task. All691 source cards remain coin-test-incomplete.
 
@@ -480,7 +480,7 @@ Repository-level entry points and agent instructions. `AGENTS.md` and `CLAUDE.md
 
 #### `caching-and-optimization.md`
 
-`doc` · 36 lines · 2,580 B · description: **extracted**
+`doc` · 36 lines · 2,588 B · description: **extracted**
 
 **Purpose.** Preserve the economic and evidence contract before reducing runtime. A per-bar strategy replay cannot be replaced by one last-bar invocation: stateful strategies can return a different answer. The ladder simulator and extension must retain matching lot economics.
 
@@ -488,7 +488,7 @@ Repository-level entry points and agent instructions. `AGENTS.md` and `CLAUDE.md
 
 #### `code-deep-optimizer-2026-11-06.md`
 
-`doc` · 904 lines · 37,962 B · description: **extracted**
+`doc` · 904 lines · 37,978 B · description: **extracted**
 
 **Purpose.** Version: 1.1.0. Delta: record CI fixture correction after real-server validation. Target: solmargintrader, base `eebadbb`; integration preserves newer upstream work. This run audits 17 primary risk-first files across six components and their necessary
 
@@ -496,7 +496,7 @@ Repository-level entry points and agent instructions. `AGENTS.md` and `CLAUDE.md
 
 #### `code-deep-optimizer-2026-11-08.md`
 
-`doc` · 2136 lines · 132,250 B · description: **extracted**
+`doc` · 2136 lines · 132,290 B · description: **extracted**
 
 **Purpose.** Status: **BLIND-AUDIT-DISSENT**. This is a capped review of **50 primary sources out of 261 candidates at audited base 2ca3041**, with 211 explicit deferred paths. Dependencies and added helper files received targeted checks. This report does not claim repository-wide cleanliness. The run applied the default 18-pass standard profile. No advisory or feature phase ran.
 
@@ -520,7 +520,7 @@ Repository-level entry points and agent instructions. `AGENTS.md` and `CLAUDE.md
 
 #### `codebase-overview.md`
 
-`doc` · 372 lines · 25,933 B · description: **extracted**
+`doc` · 372 lines · 26,047 B · description: **extracted**
 
 **Purpose.** A file map for orientation, grouped by directory. Every path here is checked by Eight components with separate execution boundaries: Read `CLAUDE.md` before changing any of them; it carries the non-negotiables per
 
@@ -584,7 +584,7 @@ Repository-level entry points and agent instructions. `AGENTS.md` and `CLAUDE.md
 
 #### `known-issues.md`
 
-`doc` · 186 lines · 8,862 B · description: **extracted**
+`doc` · 186 lines · 8,878 B · description: **extracted**
 
 **Purpose.** Active limitations, in descending order of how much damage they could do. Nothing here is speculative — each item is either stated in the code or was reproduced. Source markers are not an exhaustive issue list. The dated bootstrap and optimizer
 
@@ -664,7 +664,7 @@ Repository-level entry points and agent instructions. `AGENTS.md` and `CLAUDE.md
 
 #### `llms.txt`
 
-`data` · 42 lines · 4,220 B · description: **derived**
+`data` · 42 lines · 4,280 B · description: **derived**
 
 **Purpose.** Generated report. Opens: # solmargintrader — family index / > Source: /Users/mitch/dev/oraclebot.io · https://github.com/mithudso/solmargintrader @ 722839798e22 + hosted ecosystem delta
 
@@ -688,15 +688,15 @@ Repository-level entry points and agent instructions. `AGENTS.md` and `CLAUDE.md
 
 #### `memory.md`
 
-`doc` · 4575 lines · 887,008 B · description: **extracted**
+`doc` · 4681 lines · 897,901 B · description: **extracted**
 
-**Purpose.** Version: 653 Delta: v652 to v653. Preserve Live Oracle learning and its disk identity through an upgrade with older tabs open. The original Chrome Beta profile saved seven SOL partitions. After reloading the panel, all six Minute-close horizons advanced. Live Oracle retained local history but its native saves returned bad_params.
+**Purpose.** Version: 667 Delta: v666 to v667. Record local research migration verification and the delivery gate. TASK-2641. The relocation check verified 731 tracked moves, 1,557 stable reader slugs and the original decompressed ZEC replay SHA-256. Chromium opened the existing ZEC report URL and all three profile cards with the new sources.
 
 **Use.** Read it.
 
 #### `onboarding.md`
 
-`doc` · 146 lines · 6,043 B · description: **extracted**
+`doc` · 146 lines · 6,059 B · description: **extracted**
 
 **Purpose.** An offline verification path, followed by optional component setup. Identify the two components that can move money before running any live command. Seven components with different failure modes:
 
@@ -704,7 +704,7 @@ Repository-level entry points and agent instructions. `AGENTS.md` and `CLAUDE.md
 
 #### `optimization-workbench-plan.md`
 
-`doc` · 70 lines · 9,228 B · description: **extracted**
+`doc` · 70 lines · 9,236 B · description: **extracted**
 
 **Purpose.** Version: 5 Delta: v4 to v5; preserve concurrent Strategies browser delivery and verify combined integration. Goal: make native optimization inspectable, configurable, resumable and resistant to repeated holdout selection.
 
@@ -712,7 +712,7 @@ Repository-level entry points and agent instructions. `AGENTS.md` and `CLAUDE.md
 
 #### `optimization-workbench-run.md`
 
-`doc` · 78 lines · 6,412 B · description: **extracted**
+`doc` · 78 lines · 6,420 B · description: **extracted**
 
 **Purpose.** Version: 2 Delta: v1 to v2; record concurrent strategy-browser delivery reconciliation. Goal: implement all six accepted comparison recommendations.
 
@@ -768,9 +768,9 @@ Repository-level entry points and agent instructions. `AGENTS.md` and `CLAUDE.md
 
 #### `prompts.md`
 
-`doc` · 4867 lines · 291,955 B · description: **extracted**
+`doc` · 4909 lines · 295,234 B · description: **extracted**
 
-**Purpose.** Version: 298 Delta: v297 to v298. Bind the preserved cap-three invocation and both learner requests to the completed application assessment and verified default-branch delivery. Version: 297
+**Purpose.** Version: 304 Delta: v303 to v304. Record the study lookup and repository research reorganization request. Version: 303
 
 **Use.** Read it.
 
@@ -800,7 +800,7 @@ Repository-level entry points and agent instructions. `AGENTS.md` and `CLAUDE.md
 
 #### `requirements.md`
 
-`doc` · 36 lines · 2,604 B · description: **extracted**
+`doc` · 36 lines · 2,612 B · description: **extracted**
 
 **Purpose.** These requirements describe existing code boundaries, not future product promises. interpreter range and locked dependencies live in `liquidity/pyproject.toml` and `uv.lock`. remains ESM with zero runtime/development dependencies and no build step.
 
@@ -832,7 +832,7 @@ Repository-level entry points and agent instructions. `AGENTS.md` and `CLAUDE.md
 
 #### `script-profile-orchestration.md`
 
-`doc` · 78 lines · 7,695 B · description: **extracted**
+`doc` · 78 lines · 7,752 B · description: **extracted**
 
 **Purpose.** Generator: p/2.1.0. Run:20261108-055917. Pipeline:full. Goal: Explain the idea and objective of every trading-related publication in the saved script directory. Scope:All742 native publications, including indicator studies and financial libraries; preserve the accepted21 strategy-publication cards.
 
@@ -840,15 +840,15 @@ Repository-level entry points and agent instructions. `AGENTS.md` and `CLAUDE.md
 
 #### `short-horizon-leverage-concept-family.md`
 
-`doc` · 468 lines · 26,932 B · description: **extracted**
+`doc` · 468 lines · 27,010 B · description: **extracted**
 
-**Purpose.** leveraged perpetual position for seconds to hours, on Jupiter Perps (jup.ag) specifically. This is a *map*, not an implementation plan, and **not financial advice.** Every figure is generated by `research/short_horizon_economics.py`:
+**Purpose.** leveraged perpetual position for seconds to hours, on Jupiter Perps (jup.ag) specifically. This is a *map*, not an implementation plan, and **not financial advice.** Every figure is generated by `research/scripts/short_horizon_economics.py`:
 
 **Use.** Read it.
 
 #### `strategy-optimization-concept-family.md`
 
-`doc` · 303 lines · 19,699 B · description: **extracted**
+`doc` · 303 lines · 19,803 B · description: **extracted**
 
 **Purpose.** Scoping document for `/dso` (deep strategy optimizer). Written to answer one question: **what would a strategy optimizer have to do to be worth running on this repo, given what this repo has already measured?**
 
@@ -876,7 +876,7 @@ Repository-level entry points and agent instructions. `AGENTS.md` and `CLAUDE.md
 
 Curated prose. `ARCHITECTURE.md` explains how the pieces fit, `TESTING.md` is the coverage contract, `SECURITY.md` covers the order-placing surface, and this file indexes everything.
 
-181 files.
+167 files.
 
 #### `docs/API.md`
 
@@ -920,7 +920,7 @@ Curated prose. `ARCHITECTURE.md` explains how the pieces fit, `TESTING.md` is th
 
 #### `docs/COMPOUND-5M-PAPER.md`
 
-`doc` · 574 lines · 53,792 B · description: **extracted**
+`doc` · 574 lines · 53,844 B · description: **extracted**
 
 **Purpose.** The compound scorecard asks one question: **will the next five-minute bar of a crypto perpetual close up or down?** It scores 28 metrics from -1 (down) to +1 (up), removes the double-counting between metrics that measure the same thing, reweights styles by market regime, and combines the scores into one call (UP, DOWN or FLAT) behind seven veto gates.
 
@@ -928,7 +928,7 @@ Curated prose. `ARCHITECTURE.md` explains how the pieces fit, `TESTING.md` is th
 
 #### `docs/COMPOUND-5M.md`
 
-`doc` · 503 lines · 35,901 B · description: **extracted**
+`doc` · 503 lines · 35,988 B · description: **extracted**
 
 **Purpose.** A tester for one question: **will the next 5-minute bar close up or down?** Every metric in (up). The scores are combined into one call (UP, DOWN or FLAT), which you can backtest and forward test, metric by metric and combined. Nothing here places an order.
 
@@ -936,7 +936,7 @@ Curated prose. `ARCHITECTURE.md` explains how the pieces fit, `TESTING.md` is th
 
 #### `docs/CONCEPTS.md`
 
-`doc` · 323 lines · 20,453 B · description: **extracted**
+`doc` · 323 lines · 20,756 B · description: **extracted**
 
 **Purpose.** python3 index/build.py all # refresh python3 index/make_concepts_doc.py # rewrite this file python3 index/search.py --concepts # list them
 
@@ -952,7 +952,7 @@ Curated prose. `ARCHITECTURE.md` explains how the pieces fit, `TESTING.md` is th
 
 #### `docs/DEVELOPMENT.md`
 
-`doc` · 293 lines · 15,884 B · description: **extracted**
+`doc` · 293 lines · 15,964 B · description: **extracted**
 
 **Purpose.** Setup, the commands you will actually use, and the environment each component needs. Backtester and research use NumPy and pandas; mongo uses pymongo; soltui uses Textual and optional macOS packaging dependencies. Liquidity has a separate web3/httpx stack.
 
@@ -984,7 +984,7 @@ Curated prose. `ARCHITECTURE.md` explains how the pieces fit, `TESTING.md` is th
 
 #### `docs/ECOSYSTEM-WIKI.md`
 
-`doc` · 154 lines · 9,873 B · description: **extracted**
+`doc` · 154 lines · 9,904 B · description: **extracted**
 
 **Purpose.** The control room wiki collects the Oracle, ecosystem supervisor, Bot Manager and Backtester documentation in one searchable snapshot. It also includes the architecture, installation, testing, lifecycle, operating and accepted UI design
 
@@ -1016,7 +1016,7 @@ Curated prose. `ARCHITECTURE.md` explains how the pieces fit, `TESTING.md` is th
 
 #### `docs/FILES.md`
 
-`doc` · 39484 lines · 1,885,759 B · description: **extracted**
+`doc` · 39872 lines · 1,917,457 B · description: **extracted**
 
 **Purpose.** Regenerate with: python3 index/build.py all # refresh the index python3 index/make_files_doc.py # rewrite this file
 
@@ -1048,7 +1048,7 @@ Curated prose. `ARCHITECTURE.md` explains how the pieces fit, `TESTING.md` is th
 
 #### `docs/JUPITER-1000X-OVERLAY.md`
 
-`doc` · 241 lines · 16,564 B · description: **extracted**
+`doc` · 241 lines · 16,595 B · description: **extracted**
 
 **Purpose.** Version: 1.5.0. Delta: distinguish chart analysis from separate auto-trading controls, 2026-11-16. Extend the existing Chrome MV3 extension with a floating, extension-owned chart on https://jup.ag/1000x?market=SOL&mode=classic . Use the locally vendored
 
@@ -1062,17 +1062,17 @@ Curated prose. `ARCHITECTURE.md` explains how the pieces fit, `TESTING.md` is th
 
 **Use.** Read it.
 
-#### `docs/JUPITER-EXPERIMENT-COSTS.md`
+#### `docs/JUPITER-PERPS-PAPER.md`
 
-`doc` · 33 lines · 3,252 B · description: **extracted**
+`doc` · 60 lines · 8,069 B · description: **extracted**
 
-**Purpose.** Spot swaps and perpetual positions are separate products. Do not apply a perps fee to a spot swap. For a SOL/USDC spot round trip, derive the realized return from the actual quote or fills: `(USDC received after the sell - USDC spent on the buy - separately paid network and priority fees) / USDC spent on the buy`.
+**Purpose.** Open the [SOL JupUSD route](https://jup.ag/perps/long/JupUSD-SOL) with the unpacked SolMarginTrader extension. The floating **Perps paper** panel follows the market and side in the URL. It opens on the ETH, BTC, ZEC and HYPE routes too. The window can be dragged, resized or collapsed. A new window starts with $1,000 of virtual equity.
 
 **Use.** Read it.
 
 #### `docs/JUPITER-ZEC-WEBHOOK.md`
 
-`doc` · 83 lines · 6,333 B · description: **extracted**
+`doc` · 83 lines · 6,357 B · description: **extracted**
 
 **Purpose.** Version: 1.0.1. Delta: bind the owner-selected ZEC/USDC2x75%collateral policy and prepared Solana/GUM account. Jupiter offers ZEC long/short perpetuals through its **GUM Beta market**. This is a separate execution path from Jupiter Swap and the SOL/ETH/wBTC JLP markets.
 
@@ -1168,7 +1168,7 @@ Curated prose. `ARCHITECTURE.md` explains how the pieces fit, `TESTING.md` is th
 
 #### `docs/ORACLE-LEVERAGE.md`
 
-`doc` · 150 lines · 11,989 B · description: **extracted**
+`doc` · 150 lines · 12,022 B · description: **extracted**
 
 **Purpose.** The existing Oracle winner display now opens a separate panel with **L** or the Leverage button. The panel shows ZEC/BTC venue capabilities, frozen strategy rules, live Coinbase quotes and the durable paper ledger. It displays the full
 
@@ -1184,7 +1184,7 @@ Curated prose. `ARCHITECTURE.md` explains how the pieces fit, `TESTING.md` is th
 
 #### `docs/ORACLE-WINNING-STRATEGY-STREAM.md`
 
-`doc` · 344 lines · 22,859 B · description: **extracted**
+`doc` · 344 lines · 22,885 B · description: **extracted**
 
 **Purpose.** Version: 1.2.0 Delta: show the current ten-minute setup in the top title bar and add optional deduplicated sounds. Start the interactive, read-only workbench:
 
@@ -1222,9 +1222,17 @@ Curated prose. `ARCHITECTURE.md` explains how the pieces fit, `TESTING.md` is th
 
 **Use.** Read it.
 
+#### `docs/RUNNING-TOOLS.md`
+
+`doc` · 88 lines · 5,451 B · description: **extracted**
+
+**Purpose.** On the existing Mac checkout, start in the repository and use its Python 3.13 SolTUI environment for local modules. If installed elsewhere, use that checkout's root and virtual environment. See the [installation guide](INSTALLATION.md) for a fresh setup and the [development guide](DEVELOPMENT.md) for dependency and test commands.
+
+**Use.** Read it.
+
 #### `docs/SCRIPTS.md`
 
-`doc` · 1109 lines · 57,711 B · description: **extracted**
+`doc` · 1109 lines · 58,262 B · description: **extracted**
 
 **Purpose.** This page retains the research and extension script reference and routes current packaged entry points to their owning guides. It is not an exhaustive dynamic CLI inventory. Read the owning guide for options, effects and verification limits.
 
@@ -1248,7 +1256,7 @@ Curated prose. `ARCHITECTURE.md` explains how the pieces fit, `TESTING.md` is th
 
 #### `docs/TESTING.md`
 
-`doc` · 395 lines · 28,994 B · description: **extracted**
+`doc` · 398 lines · 29,179 B · description: **extracted**
 
 **Purpose.** The `botmanager/` package has its own unittest suite and CI job. Install the four regular local projects into an isolated Python 3.13 environment, then run from the repository root:
 
@@ -1264,7 +1272,7 @@ Curated prose. `ARCHITECTURE.md` explains how the pieces fit, `TESTING.md` is th
 
 #### `docs/TRADINGVIEW-CARD-COVERAGE.md`
 
-`doc` · 1270 lines · 101,193 B · description: **extracted**
+`doc` · 1270 lines · 101,203 B · description: **extracted**
 
 **Purpose.** Version: 1.1.0 (2026-11-08). Delta: preserve source coverage across active and incomplete research cards. Created **1083 specification cards** after checking existing cards, the strategy registry, indicator functions and Compound scorecard. Existing code and measured cards keep their status. The subsequent completeness review keeps **292 new usable specifications** in the
 
@@ -1272,7 +1280,7 @@ Curated prose. `ARCHITECTURE.md` explains how the pieces fit, `TESTING.md` is th
 
 #### `docs/TRADINGVIEW-CARD-FILES.md`
 
-`doc` · 1106 lines · 300,135 B · description: **extracted**
+`doc` · 1106 lines · 302,965 B · description: **extracted**
 
 **Purpose.** Version: 1.2.0 (2026-11-08). Delta: preserve the extraction receipt and update guide and research locations. Canonical checkout paths for every file created or modified by this task. The coverage report and JSON ledger explain the matches and source limitations.
 
@@ -1280,7 +1288,7 @@ Curated prose. `ARCHITECTURE.md` explains how the pieces fit, `TESTING.md` is th
 
 #### `docs/TRADINGVIEW-CARD-READINESS-FILES.md`
 
-`doc` · 817 lines · 225,724 B · description: **extracted**
+`doc` · 817 lines · 225,744 B · description: **extracted**
 
 **Purpose.** Version: 1.1.0 (2026-11-08). Delta: retain the separation inventory and refresh the13 enriched native-strategy locations. Canonical checkout paths for every created, modified or relocated file. Card contents are preserved; research cards move into the incomplete directory.
 
@@ -1288,7 +1296,7 @@ Curated prose. `ARCHITECTURE.md` explains how the pieces fit, `TESTING.md` is th
 
 #### `docs/TRADINGVIEW-CARD-READINESS.md`
 
-`doc` · 1110 lines · 290,255 B · description: **extracted**
+`doc` · 1110 lines · 291,675 B · description: **extracted**
 
 **Purpose.** Version: 1.3.0 (2026-11-08). Delta: retain source reviews and current catalog locations. The active catalog contains 34 registered strategies. The original 1,142 cards are preserved: 42 guides and templates, 302 other research cards, 764 incomplete cards and 34 active cards. The executable registry is unchanged. The tables below preserve the earlier source-mechanics review.
 
@@ -1304,7 +1312,7 @@ Curated prose. `ARCHITECTURE.md` explains how the pieces fit, `TESTING.md` is th
 
 #### `docs/TRADINGVIEW-SCRIPT-CARD-FILES.md`
 
-`doc` · 736 lines · 239,149 B · description: **extracted**
+`doc` · 736 lines · 239,345 B · description: **extracted**
 
 **Purpose.** Version:1.0.0. Delta: complete created/modified path inventory for the full-script source-card task. All691 source cards remain coin-test-incomplete.
 
@@ -1315,38 +1323,6 @@ Curated prose. `ARCHITECTURE.md` explains how the pieces fit, `TESTING.md` is th
 `doc` · 119 lines · 6,935 B · description: **extracted**
 
 **Purpose.** Version: 1.0.1. Delta: independently reviewed post-commit durability and immutable specification provenance; retire the initial unverified cohort. The watcher observes the exact TradingView chart parameters (length 5, multiplier 1, one minute) and the five previously frozen study configurations. Each account
-
-**Use.** Read it.
-
-#### `docs/VOLTY-PREDICTIVE-CHECKS.md`
-
-`doc` · 98 lines · 5,694 B · description: **extracted**
-
-**Purpose.** Version: 1.0.0. Delta: freeze the inspected chart parameters and measure cost, execution-delay, candle-path and block uncertainty sensitivities. The exact inspected chart settings (length5, multiplier1,1minute) fail the new
-
-**Use.** Read it.
-
-#### `docs/VOLTY-TRADINGVIEW-ALERT-REVIEW.md`
-
-`doc` · 81 lines · 6,939 B · description: **extracted**
-
-**Purpose.** Version: 1.0.1. Delta: 1.0.0 to 1.0.1; add authenticated chart settings, displayed results and current Coinbase fee comparison. As of 2026-11-11, the available evidence does not validate enabling the listed Volty strategy as a live Coinbase spot strategy. The authenticated chart and its settings were inspected in Chrome after the user completed sign-in. No alert was created or enabled.
-
-**Use.** Read it.
-
-#### `docs/VOLTY-ZEC-STUDY.md`
-
-`doc` · 95 lines · 7,415 B · description: **extracted**
-
-**Purpose.** Version: 1.0.1. Delta: link the separately initialized prospective watcher and frozen-chart diagnostics; historical study artifacts remain unchanged. All five first-half winners lost on the held-out second half. Expanding daily walk-forward selection returned +22.69%, while passive ZEC gained +1783.71% across the same overall test dates. These exploratory results establish no tradable edge.
-
-**Use.** Read it.
-
-#### `docs/ZEC-ENSEMBLE-STUDY.md`
-
-`doc` · 184 lines · 10,894 B · description: **extracted**
-
-**Purpose.** Status: historical study complete; ten paper accounts started. The Oracle page publishes the frozen top configuration and may use historical warmup for a current reference independently of paper activation. The owner requested ZEC backtests at **1m and 1h**, guided by ten selected paper forward tests, and Oracle publication of the top configuration.
 
 **Use.** Read it.
 
@@ -1464,7 +1440,7 @@ Curated prose. `ARCHITECTURE.md` explains how the pieces fit, `TESTING.md` is th
 
 #### `docs/caching-and-optimization.md`
 
-`doc` · 38 lines · 3,126 B · description: **extracted**
+`doc` · 38 lines · 3,134 B · description: **extracted**
 
 **Purpose.** Preserve the economic and evidence contract before reducing runtime. A per-bar strategy replay cannot be replaced by one last-bar invocation: stateful strategies can return a different answer. The ladder simulator and extension must retain matching lot economics.
 
@@ -1472,7 +1448,7 @@ Curated prose. `ARCHITECTURE.md` explains how the pieces fit, `TESTING.md` is th
 
 #### `docs/code-deep-optimizer-2026-11-06.md`
 
-`doc` · 904 lines · 37,962 B · description: **extracted**
+`doc` · 904 lines · 37,978 B · description: **extracted**
 
 **Purpose.** Version: 1.1.0. Delta: record CI fixture correction after real-server validation. Target: solmargintrader, base `eebadbb`; integration preserves newer upstream work. This run audits 17 primary risk-first files across six components and their necessary
 
@@ -1480,7 +1456,7 @@ Curated prose. `ARCHITECTURE.md` explains how the pieces fit, `TESTING.md` is th
 
 #### `docs/code-deep-optimizer-2026-11-08.md`
 
-`doc` · 2136 lines · 132,250 B · description: **extracted**
+`doc` · 2136 lines · 132,290 B · description: **extracted**
 
 **Purpose.** Status: **BLIND-AUDIT-DISSENT**. This is a capped review of **50 primary sources out of 261 candidates at audited base 2ca3041**, with 211 explicit deferred paths. Dependencies and added helper files received targeted checks. This report does not claim repository-wide cleanliness. The run applied the default 18-pass standard profile. No advisory or feature phase ran.
 
@@ -1520,17 +1496,9 @@ Curated prose. `ARCHITECTURE.md` explains how the pieces fit, `TESTING.md` is th
 
 #### `docs/codebase-overview.md`
 
-`doc` · 545 lines · 40,159 B · description: **extracted**
+`doc` · 546 lines · 40,503 B · description: **extracted**
 
 **Purpose.** A file map for orientation, grouped by directory. Every path here is checked by Eleven components with separate execution boundaries: Read `CLAUDE.md` before changing any of them; it carries the non-negotiables per
-
-**Use.** Read it.
-
-#### `docs/crypto-bot-monitor-full-suite-20261109.md`
-
-`doc` · 32 lines · 3,366 B · description: **extracted**
-
-**Purpose.** Version: 1.0.0 Delta: initial source-qualified research and reference-pack delivery record. The suite researched 15 monitoring concepts across four native evidence-gated cohorts. It retained 320 exact assertions: 257 source-supported statements and 63 non-factual summaries or questions. Three aggregate views and the organizational subject node receive no additional research credit.
 
 **Use.** Read it.
 
@@ -1552,7 +1520,7 @@ Curated prose. `ARCHITECTURE.md` explains how the pieces fit, `TESTING.md` is th
 
 #### `docs/high_signal_file_index.json`
 
-`doc` · 2313 lines · 71,112 B · description: **derived**
+`doc` · 2284 lines · 70,850 B · description: **derived**
 
 **Purpose.** Generated JSON object, 4 keys ($comment, repo, components, files).
 
@@ -1576,7 +1544,7 @@ Curated prose. `ARCHITECTURE.md` explains how the pieces fit, `TESTING.md` is th
 
 #### `docs/known-issues.md`
 
-`doc` · 186 lines · 8,862 B · description: **extracted**
+`doc` · 186 lines · 8,878 B · description: **extracted**
 
 **Purpose.** Active limitations, in descending order of how much damage they could do. Nothing here is speculative — each item is either stated in the code or was reproduced. Source markers are not an exhaustive issue list. The dated bootstrap and optimizer
 
@@ -1592,7 +1560,7 @@ Curated prose. `ARCHITECTURE.md` explains how the pieces fit, `TESTING.md` is th
 
 #### `docs/onboarding.md`
 
-`doc` · 163 lines · 7,359 B · description: **extracted**
+`doc` · 163 lines · 7,375 B · description: **extracted**
 
 **Purpose.** An offline verification path, followed by optional component setup. Read each execution boundary before running any live command. Ten components with different failure modes: The separate [hosted website package](../website/README.md) handles wallet accounts,
 
@@ -1600,7 +1568,7 @@ Curated prose. `ARCHITECTURE.md` explains how the pieces fit, `TESTING.md` is th
 
 #### `docs/operations-registry.json`
 
-`doc` · 4768 lines · 234,829 B · description: **derived**
+`doc` · 4768 lines · 234,837 B · description: **derived**
 
 **Purpose.** Generated JSON object, 8 keys (schema_version, version, delta, generator, scope, limits...).
 
@@ -1608,7 +1576,7 @@ Curated prose. `ARCHITECTURE.md` explains how the pieces fit, `TESTING.md` is th
 
 #### `docs/optimization-workbench-plan.md`
 
-`doc` · 70 lines · 9,228 B · description: **extracted**
+`doc` · 70 lines · 9,236 B · description: **extracted**
 
 **Purpose.** Version: 5 Delta: v4 to v5; preserve concurrent Strategies browser delivery and verify combined integration. Goal: make native optimization inspectable, configurable, resumable and resistant to repeated holdout selection.
 
@@ -1616,7 +1584,7 @@ Curated prose. `ARCHITECTURE.md` explains how the pieces fit, `TESTING.md` is th
 
 #### `docs/optimization-workbench-run.md`
 
-`doc` · 78 lines · 6,412 B · description: **extracted**
+`doc` · 78 lines · 6,420 B · description: **extracted**
 
 **Purpose.** Version: 2 Delta: v1 to v2; record concurrent strategy-browser delivery reconciliation. Goal: implement all six accepted comparison recommendations.
 
@@ -1635,14 +1603,6 @@ Curated prose. `ARCHITECTURE.md` explains how the pieces fit, `TESTING.md` is th
 `doc` · 16 lines · 4,948 B · description: **extracted**
 
 **Purpose.** Create the Oracle for this crypto trading ecosystem. Inspect current code, existing work, the crypto trading and bot-management skills, and relevant llms-explorer concept packs first. Reuse established owners, feeds, strategy implementations, archive contracts and lifecycle evidence. Do not start a competing recorder or change another active task's work.
-
-**Use.** Read it.
-
-#### `docs/profitable-crypto-strategies-analysis.md`
-
-`doc` · 245 lines · 18,589 B · description: **extracted**
-
-**Purpose.** The vast majority of headline yields in decentralized finance are economic illusions. In competitive, permissionless financial markets, sustained positive expected value ($+\text{EV}$) cannot exist without an economic counterparty taking an equal and opposite negative expected value ($-\text{EV}$) position, or an entity paying non-dilutive economic rent for a verifiable service (liquidity, credit,
 
 **Use.** Read it.
 
@@ -1696,25 +1656,9 @@ Curated prose. `ARCHITECTURE.md` explains how the pieces fit, `TESTING.md` is th
 
 #### `docs/requirements.md`
 
-`doc` · 50 lines · 4,070 B · description: **extracted**
+`doc` · 50 lines · 4,078 B · description: **extracted**
 
 **Purpose.** These requirements describe existing code boundaries, not future product promises. The separate hosted `website/` package authenticates wallet accounts, isolates tenant-owned data and stores inactive paper bot definitions. Its Stripe subscription
-
-**Use.** Read it.
-
-#### `docs/short-horizon-leverage-concept-family.md`
-
-`doc` · 468 lines · 26,932 B · description: **extracted**
-
-**Purpose.** leveraged perpetual position for seconds to hours, on Jupiter Perps (jup.ag) specifically. This is a *map*, not an implementation plan, and **not financial advice.** Every figure is generated by `research/short_horizon_economics.py`:
-
-**Use.** Read it.
-
-#### `docs/strategy-optimization-concept-family.md`
-
-`doc` · 303 lines · 19,699 B · description: **extracted**
-
-**Purpose.** Scoping document for `/dso` (deep strategy optimizer). Written to answer one question: **what would a strategy optimizer have to do to be worth running on this repo, given what this repo has already measured?**
 
 **Use.** Read it.
 
@@ -1723,14 +1667,6 @@ Curated prose. `ARCHITECTURE.md` explains how the pieces fit, `TESTING.md` is th
 `doc` · 654 lines · 25,327 B · description: **derived**
 
 **Purpose.** Generated JSON object, 8 keys (schema_version, version, delta, generator, scope, limits...).
-
-**Use.** Read it.
-
-#### `docs/trading-signals-concept-family.md`
-
-`doc` · 443 lines · 27,593 B · description: **extracted**
-
-**Purpose.** automated trading signals and their execution on Jupiter (jup.ag) on Solana. This is a *map*, not an implementation plan, and not financial advice. Facts about Jupiter APIs were verified against live `developers.jup.ag`;
 
 **Use.** Read it.
 
@@ -1746,7 +1682,7 @@ Curated prose. `ARCHITECTURE.md` explains how the pieces fit, `TESTING.md` is th
 
 #### `docs/archive/memory-2026-11-08.md`
 
-`doc` · 1727 lines · 271,950 B · description: **extracted**
+`doc` · 1727 lines · 272,210 B · description: **extracted**
 
 **Purpose.** Archived on 2026-11-08. Active: repo-bootstrapper and code-deep-optimizer; Stele TASK-723. Base: eebadbb5a937aa485825016650589bd5a4538b0d.
 
@@ -1754,7 +1690,7 @@ Curated prose. `ARCHITECTURE.md` explains how the pieces fit, `TESTING.md` is th
 
 #### `docs/archive/memory-2026-11-10.md`
 
-`doc` · 1207 lines · 245,578 B · description: **extracted**
+`doc` · 1207 lines · 245,583 B · description: **extracted**
 
 **Purpose.** Archived on 2026-11-10. The paper service and actual backtest-to-forward handoff are verified as described below. Delivery is tracked by https://github.com/mithudso/solmargintrader/pull/185. All 11 non-optional CI jobs passed on implementation commit 08d7807f76a98e983154f4b0a787be3f7b821665. The final notes/comment push must pass the same checks before merge.
 
@@ -1762,59 +1698,9 @@ Curated prose. `ARCHITECTURE.md` explains how the pieces fit, `TESTING.md` is th
 
 #### `docs/archive/memory-2026-11-12.md`
 
-`doc` · 380 lines · 83,180 B · description: **extracted**
+`doc` · 380 lines · 83,196 B · description: **extracted**
 
 **Purpose.** Archived on 2026-11-12. Freshworker /root/m3_implementation has completed initial4family/source/quote/cycle code, format and Ruff; fullregression/report/review/install/delivery stillpending.
-
-**Use.** Read it.
-
-### `docs/coin-fit/`
-
-#### `docs/coin-fit/README.md`
-
-`doc` · 46 lines · 2,354 B · description: **extracted**
-
-**Purpose.** In the default v2 shell, open **Research → Bots**. Classic mode retains the Bots tab. The Bots tab has **Rank all coins (quick)** and **Audit selected coin** controls for the grid and averaging-down DCA bots. Ranking uses every coin in the local
-
-**Use.** Read it.
-
-#### `docs/coin-fit/merge-89-receipt.json`
-
-`doc` · 24 lines · 854 B · description: **derived**
-
-**Purpose.** Generated JSON object, 7 keys (version, delta, incoming_commit, incoming_pr, conflict_backups, conflicted_files...).
-
-**Use.** Read it.
-
-#### `docs/coin-fit/merge-93-receipt.json`
-
-`doc` · 22 lines · 749 B · description: **derived**
-
-**Purpose.** Generated JSON object, 7 keys (version, delta, incoming_commit, incoming_pr, conflict_backups, conflicted_files...).
-
-**Use.** Read it.
-
-#### `docs/coin-fit/merge-98-receipt.json`
-
-`doc` · 27 lines · 876 B · description: **derived**
-
-**Purpose.** Generated JSON object, 7 keys (version, delta, incoming_commit, incoming_pr, conflict_backups, conflicted_files...).
-
-**Use.** Read it.
-
-#### `docs/coin-fit/merge-99-receipt.json`
-
-`doc` · 29 lines · 1,339 B · description: **derived**
-
-**Purpose.** Generated JSON object, 5 keys (version, incoming, preimages, files, resolution).
-
-**Use.** Read it.
-
-#### `docs/coin-fit/tasks.json`
-
-`doc` · 33 lines · 889 B · description: **derived**
-
-**Purpose.** Generated JSON object, 4 keys (version, delta, steps, final_receipt).
 
 **Use.** Read it.
 
@@ -2106,7 +1992,7 @@ Curated prose. `ARCHITECTURE.md` explains how the pieces fit, `TESTING.md` is th
 
 #### `docs/design/soltui-v2/DESIGN.md`
 
-`doc` · 327 lines · 18,519 B · description: **extracted**
+`doc` · 327 lines · 18,524 B · description: **extracted**
 
 **Purpose.** Status: **implemented** in `soltui/` (Stele TASK-904). The clickable mockup below remains the reference. Proposal: TASK-877, decision KNOW-878. The classic console is preserved as the git tag - the five destinations plus Settings (`,`), with sub-view rows and `[` `]` cycling;
 
@@ -2184,7 +2070,7 @@ Curated prose. `ARCHITECTURE.md` explains how the pieces fit, `TESTING.md` is th
 
 #### `docs/dso-skill/README.md`
 
-`doc` · 64 lines · 2,669 B · description: **extracted**
+`doc` · 64 lines · 2,701 B · description: **extracted**
 
 **Purpose.** ~/.claude/skills/deep-strategy-optimizer -> <repo>/docs/dso-skill follows the link. There is exactly one copy, which is the point — the earlier arrangement kept two and had to warn that they could drift. They can't now.
 
@@ -2380,7 +2266,7 @@ The search layer over the repo itself. Generators plus three committed indexes; 
 
 #### `index/build.py`
 
-`code-python` · 1000 lines · 43,130 B · description: **curated**
+`code-python` · 1000 lines · 43,167 B · description: **curated**
 
 **Purpose.** Builds the four indexes over every tracked file: metadata, BM25 text, concepts, and the opt-in semantic embeddings. `--check` re-hashes the tree so a stale index fails loudly.
 
@@ -2454,7 +2340,7 @@ The search layer over the repo itself. Generators plus three committed indexes; 
 
 The simulation engine and everything that supports it. Never gains live-trading capability, never touches the network, and costs are never optional. `core/` is the engine; `strategy_cards/` are the specs; `tests/` is the acceptance suite.
 
-1972 files.
+1664 files.
 
 #### `backtester/.gitignore`
 
@@ -2474,7 +2360,7 @@ The simulation engine and everything that supports it. Never gains live-trading 
 
 #### `backtester/README.md`
 
-`doc` · 562 lines · 29,952 B · description: **extracted**
+`doc` · 562 lines · 29,960 B · description: **extracted**
 
 **Purpose.** An offline, event-driven backtesting harness for crypto trading strategies, built around SOL. Supports unlevered **spot** and **Jupiter-Perps-style leveraged perpetuals** with a correctly-modelled borrow fee.
 
@@ -2576,7 +2462,7 @@ The simulation engine and everything that supports it. Never gains live-trading 
 
 #### `backtester/core/archive_price.py`
 
-`code-python` · 173 lines · 6,653 B · description: **extracted**
+`code-python` · 173 lines · 6,669 B · description: **extracted**
 
 **Purpose.** Append-only spot-price archiver, for series nobody publishes history for. python -m backtester.core.archive_price --mint JLP --out data/JLP_spot.csv Some cards are blocked on data that **cannot be fetched retroactively**. JLP is the clearest case: Jupiter's Price API serves its current price keyless, no exchange this repo can reach lists a JLP pair, and there is no charts endpoint.
 
@@ -2616,7 +2502,7 @@ The simulation engine and everything that supports it. Never gains live-trading 
 
 #### `backtester/core/compound.py`
 
-`code-python` · 500 lines · 24,232 B · description: **extracted**
+`code-python` · 500 lines · 24,251 B · description: **extracted**
 
 **Purpose.** Backtest a scorecard configuration on 5m bars: direction accuracy and net P&L, IS vs OOS. from backtester.core.compound import run_compound, load_bars_5m report = run_compound("SOL", config) Two different questions, answered separately because they disagree at 5m: * **Does the call predict the next bar?** `forecast_stats` scores every bar's call against sign(close[t+1] - close[t]).
 
@@ -2696,7 +2582,7 @@ The simulation engine and everything that supports it. Never gains live-trading 
 
 #### `backtester/core/fetch_minutes.py`
 
-`code-python` · 809 lines · 37,674 B · description: **extracted**
+`code-python` · 809 lines · 37,679 B · description: **extracted**
 
 **Purpose.** Resumable, parallel 1-minute candle fetch with an honest coverage manifest. python3 -m backtester.core.fetch_minutes --asset BTC --years 5 python3 -m backtester.core.fetch_minutes --all --years 5 --workers 6 ## Why this is not `fetch.py` `fetch_coinbase` chains a cursor: each request's window start comes from the previous response's oldest bar.
 
@@ -2716,7 +2602,7 @@ The simulation engine and everything that supports it. Never gains live-trading 
 
 #### `backtester/core/funding.py`
 
-`code-python` · 544 lines · 23,642 B · description: **extracted**
+`code-python` · 544 lines · 23,649 B · description: **extracted**
 
 **Purpose.** Explicit historical **funding-rate** fetch, for the carry question `perps.py` cannot answer. python3 -m backtester.core.funding --plan-only python3 -m backtester.core.funding --assets BTC,ETH,SOL,DOGE,ZEC python3 -m backtester.core.funding --assets BTC --cross-check-okx Never called implicitly by a backtest.
 
@@ -2846,7 +2732,7 @@ The simulation engine and everything that supports it. Never gains live-trading 
 
 #### `backtester/core/scorecard.py`
 
-`code-python` · 2070 lines · 104,718 B · description: **extracted**
+`code-python` · 2070 lines · 104,772 B · description: **extracted**
 
 **Purpose.** Compound five-minute scorecard: score each metric, aggregate into an UP / DOWN / FLAT call. from backtester.core.scorecard import default_config, evaluate, explain, Bars Every component maps visible history to a score in [-1, 1] (+1 = the metric says the next bar closes higher, -1 = lower, 0 = no opinion, NaN = undefined here). Gates map history to "blocked" (no trade, whatever the score says).
 
@@ -2896,9 +2782,9 @@ The simulation engine and everything that supports it. Never gains live-trading 
 
 #### `backtester/core/trigger_conditions.py`
 
-`code-python` · 112 lines · 6,110 B · description: **extracted**
+`code-python` · 112 lines · 6,118 B · description: **extracted**
 
-**Purpose.** Causal trading conditions shared by the trigger miner and `trigger_trade`. Every value at index t is computed from bars 0..t only (trailing windows, EMAs). `research/triggers.py` mines conjunctions of these; `core/strategies/trigger.py` trades them. One implementation keeps the mined edge and the traded edge the same measurement. No I/O here.
+**Purpose.** Causal trading conditions shared by the trigger miner and `trigger_trade`. Every value at index t is computed from bars 0..t only (trailing windows, EMAs). `research/scripts/triggers.py` mines conjunctions of these; `core/strategies/trigger.py` trades them. One implementation keeps the mined edge and the traded edge the same measurement. No I/O here.
 
 **Contents.** Defines `GROUPS`, `FUNDING_CONDITIONS`, `BASE_CONDITIONS`, `_ema()`, `compute_conditions()`.
 
@@ -2916,9 +2802,9 @@ The simulation engine and everything that supports it. Never gains live-trading 
 
 #### `backtester/core/universe.py`
 
-`code-python` · 338 lines · 14,078 B · description: **extracted**
+`code-python` · 338 lines · 14,090 B · description: **extracted**
 
-**Purpose.** Fetch a multi-asset universe into the local CSV cache. `fetch.py` fetches one product. This fetches a named set of them and, more importantly, is honest about the set it could not fetch. The reason that matters more than the loop: **the venue does not list every asset in the universe.** The 2026-08-04 screen is in `research/TOP_COINS.md`.
+**Purpose.** Fetch a multi-asset universe into the local CSV cache. `fetch.py` fetches one product. This fetches a named set of them and, more importantly, is honest about the set it could not fetch. The reason that matters more than the loop: **the venue does not list every asset in the universe.** The 2026-08-04 screen is in `research/papers/TOP_COINS.md`.
 
 **Contents.** Defines `COINBASE_PRODUCTS_URL`, `CANDIDATE_ASSETS`, `ALREADY_CACHED`, `TRADEABLE_UNIVERSE`, `COMPOUND_5M_UNIVERSE`, `class FetchPlan`, `product_id()`, `plan_universe_fetch()`, `list_coinbase_products()`, `fetch_universe()` and 1 more.
 
@@ -2948,7 +2834,7 @@ The simulation engine and everything that supports it. Never gains live-trading 
 
 #### `backtester/core/strategies/__init__.py`
 
-`code-python` · 181 lines · 5,827 B · description: **curated**
+`code-python` · 181 lines · 5,843 B · description: **curated**
 
 **Purpose.** The strategy registry and the `FAMILY` taxonomy. `build(name, **params)` and `build_composite(specs, mode)` are the only sanctioned ways to construct a configuration, so the registry stays the single source of truth for what exists.
 
@@ -3028,7 +2914,7 @@ The simulation engine and everything that supports it. Never gains live-trading 
 
 #### `backtester/core/strategies/textbook.py`
 
-`code-python` · 242 lines · 10,389 B · description: **extracted**
+`code-python` · 242 lines · 10,397 B · description: **extracted**
 
 **Purpose.** Five textbook mechanisms that the cited trading guides name and the registry lacked. Source: `tradingstrategyresults.json` (a catalogue of strategies and indicators from public trading guides).
 
@@ -3048,9 +2934,9 @@ The simulation engine and everything that supports it. Never gains live-trading 
 
 #### `backtester/core/strategies/trigger.py`
 
-`code-python` · 83 lines · 4,000 B · description: **extracted**
+`code-python` · 83 lines · 4,008 B · description: **extracted**
 
-**Purpose.** Trigger trading: wait for a mined trigger, enter next open, exit when the context expires. The conditions come from `core/trigger_conditions.py`, the same causal code the miner (`research/triggers.py`) scores, so what is traded is what was measured: * the trigger is evaluated at the CLOSE of bar t from bars <= t; * the target is returned then, so the engine fills it at the OPEN of bar t+1; * the p
+**Purpose.** Trigger trading: wait for a mined trigger, enter next open, exit when the context expires. The conditions come from `core/trigger_conditions.py`, the same causal code the miner (`research/scripts/triggers.py`) scores, so what is traded is what was measured: * the trigger is evaluated at the CLOSE of bar t from bars <= t; * the target is returned then, so the engine fills it at the OPEN of bar t+1;
 
 **Contents.** Defines `WINDOW`, `class TriggerTrade`.
 
@@ -3088,7 +2974,7 @@ The simulation engine and everything that supports it. Never gains live-trading 
 
 #### `backtester/guides/ladder_grid.md`
 
-`doc` · 228 lines · 11,962 B · description: **extracted**
+`doc` · 228 lines · 11,975 B · description: **extracted**
 
 **Purpose.** A ladder of resting limit orders with paired exits one rung above each lot. The strategy the extension trades.
 
@@ -3098,7 +2984,7 @@ The simulation engine and everything that supports it. Never gains live-trading 
 
 #### `backtester/guides/pairs_cointegration.md`
 
-`doc` · 120 lines · 5,983 B · description: **extracted**
+`doc` · 120 lines · 5,990 B · description: **extracted**
 
 **Purpose.** Trade a spread whose stationarity is actually tested. The rigorous version of zscore.
 
@@ -3108,7 +2994,7 @@ The simulation engine and everything that supports it. Never gains live-trading 
 
 #### `backtester/guides/triangular_arbitrage.md`
 
-`doc` · 318 lines · 18,431 B · description: **extracted**
+`doc` · 318 lines · 18,439 B · description: **extracted**
 
 **Purpose.** Three-leg spot cycle at executable bid/ask. An L1 screening replay over quotes recorded from the live Coinbase ticker stream exists (core/trianglesim.py); the size-aware L2 replay and a measured result do not.
 
@@ -3488,7 +3374,7 @@ The simulation engine and everything that supports it. Never gains live-trading 
 
 #### `backtester/guides/volty_expan_close.md`
 
-`doc` · 69 lines · 3,538 B · description: **extracted**
+`doc` · 69 lines · 3,554 B · description: **extracted**
 
 **Purpose.** Next-bar stop entries at prior close plus or minus a simple average of true range; independent long/short reference simulator with costed walk-forward study.
 
@@ -11612,7 +11498,7 @@ The simulation engine and everything that supports it. Never gains live-trading 
 
 #### `backtester/strategy_cards/incomplete/publication-profiles/tv_0ghsw1kr_moving_regression.md`
 
-`strategy-card` · 119 lines · 5,779 B · description: **extracted**
+`strategy-card` · 119 lines · 5,798 B · description: **extracted**
 
 **Purpose.** Moving Regression creates a rolling smooth representation of chart data while allowing the trader to tune how closely the line follows recent curvature. It combines a local polynomial fit with a moving window, so its role is broader than a fixed moving average.
 
@@ -11662,7 +11548,7 @@ The simulation engine and everything that supports it. Never gains live-trading 
 
 #### `backtester/strategy_cards/incomplete/publication-profiles/tv_0s4usqeb_nasan_risk_score_postion_size_estimator.md`
 
-`strategy-card` · 135 lines · 6,023 B · description: **extracted**
+`strategy-card` · 135 lines · 6,042 B · description: **extracted**
 
 **Purpose.** Nasan estimates a trade risk percentage and position size by combining the stock’s return relative to a benchmark, its historical volatility and drawdown, and the trader’s own performance assumptions. It attempts to refine a generic capital-risk allowance for the particular stock and trader.
 
@@ -11702,7 +11588,7 @@ The simulation engine and everything that supports it. Never gains live-trading 
 
 #### `backtester/strategy_cards/incomplete/publication-profiles/tv_12ferxal_harmonicpattern.md`
 
-`strategy-card` · 123 lines · 4,773 B · description: **extracted**
+`strategy-card` · 123 lines · 4,811 B · description: **extracted**
 
 **Purpose.** Provide callable ratio and tolerance helpers for recognizing named harmonic and repeated-top/bottom patterns from supplied pivot values.
 
@@ -11732,7 +11618,7 @@ The simulation engine and everything that supports it. Never gains live-trading 
 
 #### `backtester/strategy_cards/incomplete/publication-profiles/tv_17xrxgad_auto_pitchfan_fib_extension_retracement_and_zigzag_by_dgt.md`
 
-`strategy-card` · 124 lines · 5,039 B · description: **extracted**
+`strategy-card` · 124 lines · 5,077 B · description: **extracted**
 
 **Purpose.** Automate a shared swing-based framework for pitchfan rays, Fibonacci retracement/extension levels and connecting zigzag structure.
 
@@ -11782,7 +11668,7 @@ The simulation engine and everything that supports it. Never gains live-trading 
 
 #### `backtester/strategy_cards/incomplete/publication-profiles/tv_1nhvl40i_fibonacci_time_price_zones.md`
 
-`strategy-card` · 127 lines · 5,648 B · description: **extracted**
+`strategy-card` · 127 lines · 5,667 B · description: **extracted**
 
 **Purpose.** Visualize Fibonacci relationships jointly in elapsed chart time and price. The tool offers curved and straight constructions from manually selected anchors, helping a trader compare potential interaction zones rather than producing a predictive entry signal.
 
@@ -11792,7 +11678,7 @@ The simulation engine and everything that supports it. Never gains live-trading 
 
 #### `backtester/strategy_cards/incomplete/publication-profiles/tv_1uw4irtx_all_time_high_low_widget.md`
 
-`strategy-card` · 112 lines · 4,515 B · description: **extracted**
+`strategy-card` · 112 lines · 4,534 B · description: **extracted**
 
 **Purpose.** Keep historical price extremes visible and show how the current market relates to those extremes, with notifications when an extreme is exceeded.
 
@@ -11832,7 +11718,7 @@ The simulation engine and everything that supports it. Never gains live-trading 
 
 #### `backtester/strategy_cards/incomplete/publication-profiles/tv_2gaiphlg_periodic_activity_tracker_luxalgo.md`
 
-`strategy-card` · 134 lines · 5,626 B · description: **extracted**
+`strategy-card` · 134 lines · 5,645 B · description: **extracted**
 
 **Purpose.** Periodic Activity Tracker summarizes the balance of attributed buying and selling volume within calendar aggregation periods. It is intended to help a discretionary trader compare activity across periods and see when the difference between the two sides expands or contracts.
 
@@ -11842,7 +11728,7 @@ The simulation engine and everything that supports it. Never gains live-trading 
 
 #### `backtester/strategy_cards/incomplete/publication-profiles/tv_2s4bqqzq_tasc_2026_10_a_low_risk_etf_trading_strategy.md`
 
-`strategy-card` · 206 lines · 7,751 B · description: **extracted**
+`strategy-card` · 206 lines · 7,770 B · description: **extracted**
 
 **Purpose.** This ETF scanner expresses Katsanos’s short-term relative-strength method as screener columns and chart annotations. It seeks comparatively strong non-leveraged ETFs that have recovered from a recent oversold pullback without becoming excessively stretched. Benchmark correlation changes the market-risk gate, so a falling benchmark favors sufficiently negatively correlated candidates.
 
@@ -11862,7 +11748,7 @@ The simulation engine and everything that supports it. Never gains live-trading 
 
 #### `backtester/strategy_cards/incomplete/publication-profiles/tv_2vec0xzu_annual_returns_comparison_by_muqwishi.md`
 
-`strategy-card` · 123 lines · 5,500 B · description: **extracted**
+`strategy-card` · 123 lines · 5,519 B · description: **extracted**
 
 **Purpose.** Annual Returns % Comparison provides a visual history of how two chosen instruments changed from year to year. Its purpose is comparative performance inspection: the reader can see which symbol led in a given year and how the pattern changes across the chosen date range. The output is constructed as a table-based paired column display, rather than an entry signal on the price chart.
 
@@ -11902,7 +11788,7 @@ The simulation engine and everything that supports it. Never gains live-trading 
 
 #### `backtester/strategy_cards/incomplete/publication-profiles/tv_34r4mh5w_market_microstructure_analytics.md`
 
-`strategy-card` · 188 lines · 12,817 B · description: **extracted**
+`strategy-card` · 188 lines · 12,836 B · description: **extracted**
 
 **Purpose.** Market Microstructure Analytics estimates spread and liquidity stress from ordinary chart bars, helping users compare execution conditions with their own recent history. Its outputs are statistical proxies for transaction mechanics rather than observations of the exchange order book.
 
@@ -11942,7 +11828,7 @@ The simulation engine and everything that supports it. Never gains live-trading 
 
 #### `backtester/strategy_cards/incomplete/publication-profiles/tv_3mkewfnn_10x_bull_vs_bear_vp_intraday_sessions_kioseff_trading.md`
 
-`strategy-card` · 120 lines · 5,025 B · description: **extracted**
+`strategy-card` · 120 lines · 5,044 B · description: **extracted**
 
 **Purpose.** Compare estimated buying and selling participation across selected intraday ranges by separating volume-at-price distributions and their important price levels.
 
@@ -11982,7 +11868,7 @@ The simulation engine and everything that supports it. Never gains live-trading 
 
 #### `backtester/strategy_cards/incomplete/publication-profiles/tv_49yiv1jw_machine_learning_logistic_regression.md`
 
-`strategy-card` · 135 lines · 5,747 B · description: **extracted**
+`strategy-card` · 135 lines · 5,766 B · description: **extracted**
 
 **Purpose.** This publication applies logistic classification to chart data to generate long-versus-short indications. Despite the author calling it a strategy, the saved publication is an indicator and the prose chiefly explains its model rather than a complete order lifecycle.
 
@@ -12032,7 +11918,7 @@ The simulation engine and everything that supports it. Never gains live-trading 
 
 #### `backtester/strategy_cards/incomplete/publication-profiles/tv_4odvb8q4_relative_currency_strength.md`
 
-`strategy-card` · 124 lines · 5,439 B · description: **extracted**
+`strategy-card` · 124 lines · 5,458 B · description: **extracted**
 
 **Purpose.** Relative Currency Strength supplies context about whether a currency pair’s movement comes from strength in its base currency, weakness in its quote currency, or both. It compares major currencies and crosses from a chosen intraday reference point. A reader considering a EURUSD long can therefore inspect broader EUR and USD behavior before deciding whether the pair-level idea is coherent.
 
@@ -12082,7 +11968,7 @@ The simulation engine and everything that supports it. Never gains live-trading 
 
 #### `backtester/strategy_cards/incomplete/publication-profiles/tv_5fqgmcio_adaptive_candlestick_pattern_recognition_system.md`
 
-`strategy-card` · 174 lines · 8,271 B · description: **extracted**
+`strategy-card` · 174 lines · 8,309 B · description: **extracted**
 
 **Purpose.** Recognize configurable candlestick formations and summarize their subsequent returns by market-range location. Adaptive label colors communicate historical pattern behavior rather than assigning textbook bullish/bearish labels unconditionally.
 
@@ -12092,7 +11978,7 @@ The simulation engine and everything that supports it. Never gains live-trading 
 
 #### `backtester/strategy_cards/incomplete/publication-profiles/tv_5ghqjxjj_vol_control_fund_positioning.md`
 
-`strategy-card` · 168 lines · 6,660 B · description: **extracted**
+`strategy-card` · 168 lines · 6,679 B · description: **extracted**
 
 **Purpose.** Reconstruct stylized volatility-targeting equity exposure and prospective mechanical rebalancing from public risk-control rules.
 
@@ -12102,7 +11988,7 @@ The simulation engine and everything that supports it. Never gains live-trading 
 
 #### `backtester/strategy_cards/incomplete/publication-profiles/tv_5js51rsp_multitimeframe_fair_value_gap_fvg_zeiierman.md`
 
-`strategy-card` · 128 lines · 5,650 B · description: **extracted**
+`strategy-card` · 128 lines · 5,707 B · description: **extracted**
 
 **Purpose.** Track unmitigated fair-value gaps from a selected timeframe and add approximate volume pressure and a smoothed directional context. The indicator organizes candidate reaction zones rather than proving that institutions caused the price move.
 
@@ -12122,7 +12008,7 @@ The simulation engine and everything that supports it. Never gains live-trading 
 
 #### `backtester/strategy_cards/incomplete/publication-profiles/tv_5nsvcovp_industry_group_strength.md`
 
-`strategy-card` · 126 lines · 5,706 B · description: **extracted**
+`strategy-card` · 126 lines · 5,725 B · description: **extracted**
 
 **Purpose.** Industry Group Strength helps a trader locate leadership among peers rather than judging a stock solely against the broad market. It recognizes the charted stock’s industry, requests the predefined peer list, and ranks the group using a selected performance measure. This can reveal whether a candidate is leading a strong cohort or lagging its immediate competitors.
 
@@ -12182,7 +12068,7 @@ The simulation engine and everything that supports it. Never gains live-trading 
 
 #### `backtester/strategy_cards/incomplete/publication-profiles/tv_66gsofej_separated_moving_average_evo.md`
 
-`strategy-card` · 114 lines · 4,936 B · description: **extracted**
+`strategy-card` · 114 lines · 4,955 B · description: **extracted**
 
 **Purpose.** Separated Moving Average splits the price history into positive-candle and negative-candle streams instead of letting every candle update the same average. The aim is to display two directional references that represent different candle populations.
 
@@ -12202,7 +12088,7 @@ The simulation engine and everything that supports it. Never gains live-trading 
 
 #### `backtester/strategy_cards/incomplete/publication-profiles/tv_680r1i3z_strength_of_divergence_across_multiple_indicators.md`
 
-`strategy-card` · 125 lines · 5,160 B · description: **extracted**
+`strategy-card` · 125 lines · 5,179 B · description: **extracted**
 
 **Purpose.** Rank price/indicator divergences by a weighted magnitude score and summarize agreement across multiple technical indicators.
 
@@ -12272,7 +12158,7 @@ The simulation engine and everything that supports it. Never gains live-trading 
 
 #### `backtester/strategy_cards/incomplete/publication-profiles/tv_6tsfpe3w_reflex_trendflex.md`
 
-`strategy-card` · 140 lines · 4,925 B · description: **extracted**
+`strategy-card` · 140 lines · 4,944 B · description: **extracted**
 
 **Purpose.** Separate smoothed price behavior into cycle-like and trend-like deviation oscillators with adaptable extreme bands.
 
@@ -12322,7 +12208,7 @@ The simulation engine and everything that supports it. Never gains live-trading 
 
 #### `backtester/strategy_cards/incomplete/publication-profiles/tv_7jm5ebze_yelober_sector_rotation_detector.md`
 
-`strategy-card` · 161 lines · 6,239 B · description: **extracted**
+`strategy-card` · 161 lines · 6,277 B · description: **extracted**
 
 **Purpose.** Yelober Sector Rotation Detector monitors a fixed sector-ETF panel to highlight relative daily leadership, defensive conditions and unusual volume. It interprets a large spread between the strongest and weakest sectors as rotation and offers associated stock ideas. The risk-off label is more specific: defensive staples and utilities must be positive while technology is negative.
 
@@ -12382,7 +12268,7 @@ The simulation engine and everything that supports it. Never gains live-trading 
 
 #### `backtester/strategy_cards/incomplete/publication-profiles/tv_7vcb6m4j_volume_delta_footprint_map_zeiierman.md`
 
-`strategy-card` · 132 lines · 5,771 B · description: **extracted**
+`strategy-card` · 132 lines · 5,790 B · description: **extracted**
 
 **Purpose.** Volume Delta Footprint Map estimates directional activity within chart candles and spreads that activity across price stripes. Its aim is to reveal where buying- or selling-associated volume concentrated and how those concentrations persist over time. A trader can inspect clusters for possible support, resistance, continuation or absorption, then interpret subsequent price behavior.
 
@@ -12422,7 +12308,7 @@ The simulation engine and everything that supports it. Never gains live-trading 
 
 #### `backtester/strategy_cards/incomplete/publication-profiles/tv_8ezad3cw_supertrend_ladder_atr.md`
 
-`strategy-card` · 124 lines · 5,317 B · description: **extracted**
+`strategy-card` · 124 lines · 5,355 B · description: **extracted**
 
 **Purpose.** Supertrend - Ladder ATR modifies volatility-based trailing stops to avoid widening their distance during an active trend. It argues that favorable large candles should not determine how far a protective stop sits: long positions use volatility from negative candles, while shorts use positive candles.
 
@@ -12432,7 +12318,7 @@ The simulation engine and everything that supports it. Never gains live-trading 
 
 #### `backtester/strategy_cards/incomplete/publication-profiles/tv_8jahmkxs_bear_market_probability_model.md`
 
-`strategy-card` · 148 lines · 5,776 B · description: **extracted**
+`strategy-card` · 148 lines · 5,814 B · description: **extracted**
 
 **Purpose.** Combine macroeconomic,technical,sentiment and breadth stress proxies into a weighted systemic-risk score labeled bear-market probability.
 
@@ -12452,7 +12338,7 @@ The simulation engine and everything that supports it. Never gains live-trading 
 
 #### `backtester/strategy_cards/incomplete/publication-profiles/tv_8mvftxpg_tape_lucf.md`
 
-`strategy-card` · 131 lines · 5,736 B · description: **extracted**
+`strategy-card` · 131 lines · 5,774 B · description: **extracted**
 
 **Purpose.** Tape reproduces a trading-console-style stream of chart-feed updates and estimates cumulative volume delta within the live bar. It is specifically a realtime tool: historical bars cannot reconstruct its update sequence. The author distinguishes chart updates from individual exchange ticks because multiple transactions may be aggregated before Pine receives them.
 
@@ -12462,7 +12348,7 @@ The simulation engine and everything that supports it. Never gains live-trading 
 
 #### `backtester/strategy_cards/incomplete/publication-profiles/tv_8njgasbv_volume_rotor_clock_hapharmonic.md`
 
-`strategy-card` · 138 lines · 5,554 B · description: **extracted**
+`strategy-card` · 138 lines · 5,573 B · description: **extracted**
 
 **Purpose.** Volume Rotor Clock combines an ornamental clock with a financial volume dashboard and multi-symbol scanner. The current chart’s volume dominance appears on clock-hand tips, while scanned assets occupy bullish or bearish halves according to their attributed buy/sell totals. An additional watchlist highlights bullish assets whose volume persistently exceeds its moving average.
 
@@ -12592,7 +12478,7 @@ The simulation engine and everything that supports it. Never gains live-trading 
 
 #### `backtester/strategy_cards/incomplete/publication-profiles/tv_9pd60gmz_blackcat_l2_ehlers_swamicharts_rsi.md`
 
-`strategy-card` · 113 lines · 4,584 B · description: **extracted**
+`strategy-card` · 113 lines · 4,603 B · description: **extracted**
 
 **Purpose.** Display a family of modified RSI calculations across lookbacks as a heatmap to reveal how momentum interpretation varies with horizon.
 
@@ -12662,7 +12548,7 @@ The simulation engine and everything that supports it. Never gains live-trading 
 
 #### `backtester/strategy_cards/incomplete/publication-profiles/tv_a8peqinu_smart_nr2_nr20_and_inside_bar_zeiierman.md`
 
-`strategy-card` · 125 lines · 4,963 B · description: **extracted**
+`strategy-card` · 125 lines · 4,982 B · description: **extracted**
 
 **Purpose.** Find unusually compressed price ranges and mark their first breakout, optionally constrained by trend and accompanied by exit annotations.
 
@@ -12792,7 +12678,7 @@ The simulation engine and everything that supports it. Never gains live-trading 
 
 #### `backtester/strategy_cards/incomplete/publication-profiles/tv_ausph7vf_fair_value_ms.md`
 
-`strategy-card` · 123 lines · 4,857 B · description: **extracted**
+`strategy-card` · 123 lines · 4,876 B · description: **extracted**
 
 **Purpose.** Define market swings from opposite-direction fair-value-gap events and form support/resistance areas only after additional structural confirmation.
 
@@ -12802,7 +12688,7 @@ The simulation engine and everything that supports it. Never gains live-trading 
 
 #### `backtester/strategy_cards/incomplete/publication-profiles/tv_axtmvrud_fair_value_gap_profile_rolling_poc_bigbeluga.md`
 
-`strategy-card` · 142 lines · 6,261 B · description: **extracted**
+`strategy-card` · 142 lines · 6,299 B · description: **extracted**
 
 **Purpose.** FVG Profile + Rolling POC profiles where candle-gap formations concentrate, rather than simply where volume traded. It separates bullish and bearish gap counts and associated volume to describe directional imbalance by price region. A rolling peak/average and optional moving average add temporal context.
 
@@ -12832,7 +12718,7 @@ The simulation engine and everything that supports it. Never gains live-trading 
 
 #### `backtester/strategy_cards/incomplete/publication-profiles/tv_b3almahh_indices_sector_sigmaspikes.md`
 
-`strategy-card` · 120 lines · 5,036 B · description: **extracted**
+`strategy-card` · 120 lines · 5,055 B · description: **extracted**
 
 **Purpose.** Indices Sector SigmaSpikes compares sector moves in units of their own recent return variability. The aim is to make cross-market daily changes meaningful: the same point or percentage move can be ordinary in one market and unusual in another. The screener helps locate sectors with outsized positive or negative movement, without specifying that those moves should be faded or followed.
 
@@ -13012,7 +12898,7 @@ The simulation engine and everything that supports it. Never gains live-trading 
 
 #### `backtester/strategy_cards/incomplete/publication-profiles/tv_bswaptez_breakout_volume_delta_flux_charts.md`
 
-`strategy-card` · 125 lines · 5,169 B · description: **extracted**
+`strategy-card` · 125 lines · 5,188 B · description: **extracted**
 
 **Purpose.** Assess participation inside a swing-level breakout candle using lower-timeframe candle-direction volume and a split-color body overlay.
 
@@ -13032,7 +12918,7 @@ The simulation engine and everything that supports it. Never gains live-trading 
 
 #### `backtester/strategy_cards/incomplete/publication-profiles/tv_bugfwu53_atr_based_trendlines_jd.md`
 
-`strategy-card` · 107 lines · 4,231 B · description: **extracted**
+`strategy-card` · 107 lines · 4,250 B · description: **extracted**
 
 **Purpose.** Draw pivot-anchored trendlines whose slopes reflect volatility at the moment the pivot is detected.
 
@@ -13072,7 +12958,7 @@ The simulation engine and everything that supports it. Never gains live-trading 
 
 #### `backtester/strategy_cards/incomplete/publication-profiles/tv_by9maioc_oscillator_workbench_chart_lucf.md`
 
-`strategy-card` · 157 lines · 7,759 B · description: **extracted**
+`strategy-card` · 157 lines · 7,778 B · description: **extracted**
 
 **Purpose.** Oscillator Workbench translates oscillator behavior into price-chart channels so traders can explore configurations in market context. It normalizes an oscillator’s position above or below its centerline, weights a price source with that percentage, and compares a weighted average with an unweighted reference.
 
@@ -13082,7 +12968,7 @@ The simulation engine and everything that supports it. Never gains live-trading 
 
 #### `backtester/strategy_cards/incomplete/publication-profiles/tv_bzgubzri_smart_trader_episode_03_by_ata_sabanci_candles_and_tradelines.md`
 
-`strategy-card` · 163 lines · 6,795 B · description: **extracted**
+`strategy-card` · 163 lines · 6,871 B · description: **extracted**
 
 **Purpose.** Describe market structure through aggregated candle blocks,volume-pressure estimates and a rule-generated narrative while keeping chart levels sparse.
 
@@ -13102,7 +12988,7 @@ The simulation engine and everything that supports it. Never gains live-trading 
 
 #### `backtester/strategy_cards/incomplete/publication-profiles/tv_c2fzxjii_evar_indicator_and_position_sizing.md`
 
-`strategy-card` · 121 lines · 4,681 B · description: **extracted**
+`strategy-card` · 121 lines · 4,700 B · description: **extracted**
 
 **Purpose.** Explore a Tsallis/q-exponential tail-risk proxy and use its normalized level to vary suggested exposure and stop references.
 
@@ -13132,7 +13018,7 @@ The simulation engine and everything that supports it. Never gains live-trading 
 
 #### `backtester/strategy_cards/incomplete/publication-profiles/tv_c8rargoe_relative_crypto_dominance_polar_chart_luxalgo.md`
 
-`strategy-card` · 123 lines · 5,571 B · description: **extracted**
+`strategy-card` · 123 lines · 5,590 B · description: **extracted**
 
 **Purpose.** Relative Crypto Dominance Polar Chart compares selected instruments using a custom activity-and-volatility notion of dominance. It is not conventional market-cap dominance: radius represents volatility and arc length represents traded dollar volume. Larger polar regions therefore identify assets with greater combined activity on those dimensions.
 
@@ -13142,7 +13028,7 @@ The simulation engine and everything that supports it. Never gains live-trading 
 
 #### `backtester/strategy_cards/incomplete/publication-profiles/tv_capg3ivf_bjorgum_key_levels.md`
 
-`strategy-card` · 116 lines · 4,723 B · description: **extracted**
+`strategy-card` · 116 lines · 4,742 B · description: **extracted**
 
 **Purpose.** Bjorgum Key Levels identifies three related price-action situations around important levels: an initial breakout, a breakout that fails, and a later pullback to a flipped level. The idea is to help a trader distinguish momentum entries from trap reversals and trend pullback entries, each with a different balance between entry price and directional support.
 
@@ -13192,7 +13078,7 @@ The simulation engine and everything that supports it. Never gains live-trading 
 
 #### `backtester/strategy_cards/incomplete/publication-profiles/tv_cjnk8au1_volume_bubbles_quantalgo.md`
 
-`strategy-card` · 125 lines · 5,032 B · description: **extracted**
+`strategy-card` · 125 lines · 5,051 B · description: **extracted**
 
 **Purpose.** Highlight unusually large total-volume or estimated directional-delta events using percentile agreement across several history windows.
 
@@ -13292,7 +13178,7 @@ The simulation engine and everything that supports it. Never gains live-trading 
 
 #### `backtester/strategy_cards/incomplete/publication-profiles/tv_cujanbts_kinetic_slippage_index_ksi.md`
 
-`strategy-card` · 129 lines · 5,153 B · description: **extracted**
+`strategy-card` · 129 lines · 5,191 B · description: **extracted**
 
 **Purpose.** Kinetic Slippage Index compares large price ranges with the amount of reported volume supporting them. The author interprets high readings as hollow movement and low readings as absorption, then suggests using extremes to inspect false breakouts, exhaustion or compression.
 
@@ -13342,7 +13228,7 @@ The simulation engine and everything that supports it. Never gains live-trading 
 
 #### `backtester/strategy_cards/incomplete/publication-profiles/tv_cztmlgfy_magnificent_7_oscillator.md`
 
-`strategy-card` · 183 lines · 7,433 B · description: **extracted**
+`strategy-card` · 183 lines · 7,471 B · description: **extracted**
 
 **Purpose.** Compare momentum in a fixed group of large technology companies with an equal-weight market benchmark. The publication combines absolute momentum, relative leadership and breadth to help assess concentration and rotation; cited academic research does not validate this particular implementation.
 
@@ -13382,7 +13268,7 @@ The simulation engine and everything that supports it. Never gains live-trading 
 
 #### `backtester/strategy_cards/incomplete/publication-profiles/tv_d4tdeuru_volume_composition_flowly_indicators.md`
 
-`strategy-card` · 141 lines · 5,694 B · description: **extracted**
+`strategy-card` · 141 lines · 5,732 B · description: **extracted**
 
 **Purpose.** Volume Composition decomposes lower-timeframe candle volume into directional and rising/falling-volume subsets. It aims to reveal whether total attributed pressure agrees with the subset labeled active. Here active means volume increased from the preceding intrabar, not directly observed market-order aggression.
 
@@ -13402,7 +13288,7 @@ The simulation engine and everything that supports it. Never gains live-trading 
 
 #### `backtester/strategy_cards/incomplete/publication-profiles/tv_ddvp5qaz_match_finder_theultimator5.md`
 
-`strategy-card` · 134 lines · 5,702 B · description: **extracted**
+`strategy-card` · 134 lines · 5,721 B · description: **extracted**
 
 **Purpose.** Match Finder searches a chosen comparison list for the asset whose recent price shape most closely tracks the active chart. It is explicitly about current compatibility, not forecasting continued correlation. After selecting the strongest positive Pearson relationship, it rescales the matched segment for visual comparison, optionally displaying every candidate’s coefficient.
 
@@ -13432,7 +13318,7 @@ The simulation engine and everything that supports it. Never gains live-trading 
 
 #### `backtester/strategy_cards/incomplete/publication-profiles/tv_dfy6orqi_intraday_volume_swings.md`
 
-`strategy-card` · 128 lines · 5,640 B · description: **extracted**
+`strategy-card` · 128 lines · 5,659 B · description: **extracted**
 
 **Purpose.** Intraday Volume Swings records price extremes reached during stretches of rising volume, then carries the day’s final selected high and low into the following session. It aims to distinguish participation-supported swings from arbitrary daily extremes, providing possible retracement or support/resistance references.
 
@@ -13472,7 +13358,7 @@ The simulation engine and everything that supports it. Never gains live-trading 
 
 #### `backtester/strategy_cards/incomplete/publication-profiles/tv_djr8hv4v_waindrops_makit0.md`
 
-`strategy-card` · 154 lines · 5,427 B · description: **extracted**
+`strategy-card` · 154 lines · 5,446 B · description: **extracted**
 
 **Purpose.** Waindrops splits user-defined periods into two portions and draws separate price-volume distributions and VWAPs for each. It aims to make intraperiod migration of value visible, with color based on whether the later VWAP rises, falls or matches the earlier one. Custom unbalanced/session settings support overnight-versus-cash comparison.
 
@@ -13532,7 +13418,7 @@ The simulation engine and everything that supports it. Never gains live-trading 
 
 #### `backtester/strategy_cards/incomplete/publication-profiles/tv_dxc0pi3n_swingarm_atr_trend_indicator.md`
 
-`strategy-card` · 113 lines · 4,310 B · description: **extracted**
+`strategy-card` · 113 lines · 4,329 B · description: **extracted**
 
 **Purpose.** SwingArm provides a simple color-based confirmation of a perceived trend change, designed to make directional interpretation accessible to a novice. The description establishes the intended bullish/bearish display, but does not explain the actual trend calculation. The ATR language in the title is insufficient evidence for an ATR length, trailing formula or reversal threshold.
 
@@ -13542,7 +13428,7 @@ The simulation engine and everything that supports it. Never gains live-trading 
 
 #### `backtester/strategy_cards/incomplete/publication-profiles/tv_dyb13ida_hull_candles_bigbitsio.md`
 
-`strategy-card` · 113 lines · 4,523 B · description: **extracted**
+`strategy-card` · 113 lines · 4,561 B · description: **extracted**
 
 **Purpose.** Smooth candle geometry to reduce visual noise and emphasize trends while retaining a separate line for current market price.
 
@@ -13572,7 +13458,7 @@ The simulation engine and everything that supports it. Never gains live-trading 
 
 #### `backtester/strategy_cards/incomplete/publication-profiles/tv_e5azkgtc_best_dollar_cost_average.md`
 
-`strategy-card` · 112 lines · 4,498 B · description: **extracted**
+`strategy-card` · 112 lines · 4,517 B · description: **extracted**
 
 **Purpose.** Compare repeated equal-cash purchases with investing the corresponding capital at the start of a chosen historical period.
 
@@ -13602,7 +13488,7 @@ The simulation engine and everything that supports it. Never gains live-trading 
 
 #### `backtester/strategy_cards/incomplete/publication-profiles/tv_ebb5mw6b_extreme_trend_reversal_points_hewhomustnotbenamed.md`
 
-`strategy-card` · 137 lines · 6,399 B · description: **extracted**
+`strategy-card` · 137 lines · 6,418 B · description: **extracted**
 
 **Purpose.** Extreme Trend Reversal Points restricts moving-average reversal candidates to strongly ordered multi-level smoothing states. It recursively smooths an average repeatedly, measures their relative ordering and highlights price crosses only when the averages are fully aligned.
 
@@ -13612,7 +13498,7 @@ The simulation engine and everything that supports it. Never gains live-trading 
 
 #### `backtester/strategy_cards/incomplete/publication-profiles/tv_edel00bp_risk_adjusted_momentum_oscillator.md`
 
-`strategy-card` · 138 lines · 6,057 B · description: **extracted**
+`strategy-card` · 138 lines · 6,076 B · description: **extracted**
 
 **Purpose.** Dampen momentum according to a drawdown-based risk context, then combine normalization, adaptive smoothing and leading-style components. RAMO aims to make momentum signals risk-aware; its broad literature claims do not establish the indicator’s own empirical advantages.
 
@@ -13632,7 +13518,7 @@ The simulation engine and everything that supports it. Never gains live-trading 
 
 #### `backtester/strategy_cards/incomplete/publication-profiles/tv_efbdipvs_bjorgum_autotrail.md`
 
-`strategy-card` · 122 lines · 5,453 B · description: **extracted**
+`strategy-card` · 122 lines · 5,472 B · description: **extracted**
 
 **Purpose.** Bjorgum AutoTrail manages a single existing position with an interactively anchored trailing stop. The user places crosshairs to establish an initial reference, and the script infers a long trail when placed below price or a short trail when above. Its aim is to monitor positional risk when the trader cannot continually watch the chart.
 
@@ -13692,7 +13578,7 @@ The simulation engine and everything that supports it. Never gains live-trading 
 
 #### `backtester/strategy_cards/incomplete/publication-profiles/tv_ejmwjmdf_dynamic_gap_probability_tool.md`
 
-`strategy-card` · 126 lines · 5,247 B · description: **extracted**
+`strategy-card` · 126 lines · 5,266 B · description: **extracted**
 
 **Purpose.** Dynamic Gap Probability Tool estimates the historical next-candle color associated with the current percentage distance from a selected moving average. It tries to avoid presenting a tiny exact-match sample as reliable by broadening the deviation sample when occurrences are scarce.
 
@@ -13702,7 +13588,7 @@ The simulation engine and everything that supports it. Never gains live-trading 
 
 #### `backtester/strategy_cards/incomplete/publication-profiles/tv_ekbuz93v_delta_ladder_kioseff_trading.md`
 
-`strategy-card` · 115 lines · 4,831 B · description: **extracted**
+`strategy-card` · 115 lines · 4,850 B · description: **extracted**
 
 **Purpose.** Delta Ladder renders per-price volume differences as a ladder or colored blocks around each candle. Its purpose is to make localized directional-volume imbalance and point-of-control structure visible.
 
@@ -13732,7 +13618,7 @@ The simulation engine and everything that supports it. Never gains live-trading 
 
 #### `backtester/strategy_cards/incomplete/publication-profiles/tv_enc8rzn0_modern_portfolio_management_indicator.md`
 
-`strategy-card` · 119 lines · 5,178 B · description: **extracted**
+`strategy-card` · 119 lines · 5,197 B · description: **extracted**
 
 **Purpose.** Modern Portfolio Management Indicator is a scenario planner for periodically buying selected equities. It combines historical DCA returns, allocation views, pairwise relationships and basic fundamentals, while adding a simple extrapolated portfolio projection.
 
@@ -13772,7 +13658,7 @@ The simulation engine and everything that supports it. Never gains live-trading 
 
 #### `backtester/strategy_cards/incomplete/publication-profiles/tv_eqk0bwy4_analytics_tables.md`
 
-`strategy-card` · 126 lines · 4,962 B · description: **extracted**
+`strategy-card` · 126 lines · 4,981 B · description: **extracted**
 
 **Purpose.** analytics_tables supplies reusable strategy-performance tables rather than a standalone market signal. It separates caller-provided win/loss statistics from table presentation and also maintains seasonality data for calendar performance views. The intended integration is a trailing-strategy framework, while the exposed objects let other strategy scripts reuse the reporting layer.
 
@@ -13802,7 +13688,7 @@ The simulation engine and everything that supports it. Never gains live-trading 
 
 #### `backtester/strategy_cards/incomplete/publication-profiles/tv_erbzovy8_fair_value_gap.md`
 
-`strategy-card` · 121 lines · 4,694 B · description: **extracted**
+`strategy-card` · 121 lines · 4,713 B · description: **extracted**
 
 **Purpose.** Fair Value Gap displays current-timeframe and optional higher-timeframe gaps as possible future price targets. It aims to make imbalance references and cross-timeframe confluence easy to monitor. The user can remove a gap at its midpoint instead of waiting for full fill, optionally deleting filled historical drawings.
 
@@ -13812,7 +13698,7 @@ The simulation engine and everything that supports it. Never gains live-trading 
 
 #### `backtester/strategy_cards/incomplete/publication-profiles/tv_ertrxbpf_musashi_fractal_dimension.md`
 
-`strategy-card` · 128 lines · 4,756 B · description: **extracted**
+`strategy-card` · 128 lines · 4,775 B · description: **extracted**
 
 **Purpose.** Combine several fractal-dimension estimates with momentum and volatility context to distinguish relatively trend-like from reversal-prone market behavior.
 
@@ -13882,7 +13768,7 @@ The simulation engine and everything that supports it. Never gains live-trading 
 
 #### `backtester/strategy_cards/incomplete/publication-profiles/tv_f2yleyoo_delta_volume_columns_pro_lucf.md`
 
-`strategy-card` · 150 lines · 8,159 B · description: **extracted**
+`strategy-card` · 150 lines · 8,178 B · description: **extracted**
 
 **Purpose.** Inspect estimated directional volume through five balance models, with configurable columns, signal lines, divergence context and alerts. Crucially, the publication uses different historical and realtime methods and explicitly warns that refreshed elapsed realtime bars change.
 
@@ -13902,7 +13788,7 @@ The simulation engine and everything that supports it. Never gains live-trading 
 
 #### `backtester/strategy_cards/incomplete/publication-profiles/tv_fgvtpifr_tf_segmented_linear_regression.md`
 
-`strategy-card` · 131 lines · 5,413 B · description: **extracted**
+`strategy-card` · 131 lines · 5,432 B · description: **extracted**
 
 **Purpose.** Separate price history into calendar-time intervals and fit a regression channel within each interval to compare local trends and residual variation.
 
@@ -13952,7 +13838,7 @@ The simulation engine and everything that supports it. Never gains live-trading 
 
 #### `backtester/strategy_cards/incomplete/publication-profiles/tv_fnxxrrpg_auto_pitchfork_fib_retracement_and_zig_zag_by_dgt.md`
 
-`strategy-card` · 124 lines · 5,297 B · description: **extracted**
+`strategy-card` · 124 lines · 5,316 B · description: **extracted**
 
 **Purpose.** Auto Pitchfork, Fib Retracement and Zig Zag automates three related chart-annotation tools around detected turning points. The main goal is identifying possible support/resistance with a pitchfork placed at prior trend endpoints. Fibonacci retracement and zigzag overlays share the pivot framework.
 
@@ -13962,7 +13848,7 @@ The simulation engine and everything that supports it. Never gains live-trading 
 
 #### `backtester/strategy_cards/incomplete/publication-profiles/tv_fq7ig92h_deeptest.md`
 
-`strategy-card` · 172 lines · 7,076 B · description: **extracted**
+`strategy-card` · 172 lines · 7,095 B · description: **extracted**
 
 **Purpose.** Deeptest extends strategy reporting with trade statistics, risk-adjusted metrics, drawdowns, distribution diagnostics, benchmark comparison and robustness-style summaries. It reads closed trades from an existing Pine strategy, so it evaluates supplied simulated outcomes rather than creating a strategy.
 
@@ -14002,7 +13888,7 @@ The simulation engine and everything that supports it. Never gains live-trading 
 
 #### `backtester/strategy_cards/incomplete/publication-profiles/tv_ft4zyo1f_swing_structure_forecast_boswaves.md`
 
-`strategy-card` · 141 lines · 5,271 B · description: **extracted**
+`strategy-card` · 141 lines · 5,290 B · description: **extracted**
 
 **Purpose.** Project a next swing from recent completed-leg statistics and maintain volatility-sized reaction zones at confirmed pivot extremes.
 
@@ -14022,7 +13908,7 @@ The simulation engine and everything that supports it. Never gains live-trading 
 
 #### `backtester/strategy_cards/incomplete/publication-profiles/tv_fwb6gwpc_support_resistance_ai_k_means_median_thinklogicai.md`
 
-`strategy-card` · 131 lines · 5,261 B · description: **extracted**
+`strategy-card` · 131 lines · 5,299 B · description: **extracted**
 
 **Purpose.** Cluster historical price behavior into candidate support/resistance centers and characterize each cluster with density and dispersion.
 
@@ -14062,7 +13948,7 @@ The simulation engine and everything that supports it. Never gains live-trading 
 
 #### `backtester/strategy_cards/incomplete/publication-profiles/tv_gamszeig_logarithmic_moving_average_lma_quantalgo.md`
 
-`strategy-card` · 145 lines · 6,532 B · description: **extracted**
+`strategy-card` · 145 lines · 6,551 B · description: **extracted**
 
 **Purpose.** Logarithmic Moving Average converts a logarithmically weighted price average into a trend-quality-adjusted slope oscillator. Its aim is to favor recent data while distinguishing cleaner directional movement from weaker drift.
 
@@ -14092,7 +13978,7 @@ The simulation engine and everything that supports it. Never gains live-trading 
 
 #### `backtester/strategy_cards/incomplete/publication-profiles/tv_gdgxyl8b_recursive_reversal_chart_patterns_trendoscope.md`
 
-`strategy-card` · 126 lines · 5,237 B · description: **extracted**
+`strategy-card` · 126 lines · 5,294 B · description: **extracted**
 
 **Purpose.** Recursive Reversal Chart Patterns scans nested zigzag structures for common reversal formations. It aims to find both smaller and larger structures and optionally require supporting indicator divergence. The categories include double/triple tops and bottoms, cup variants and head-and-shoulders variants.
 
@@ -14102,7 +13988,7 @@ The simulation engine and everything that supports it. Never gains live-trading 
 
 #### `backtester/strategy_cards/incomplete/publication-profiles/tv_gewgoj30_neuralib_a_native_ai_and_deep_learning_runtime.md`
 
-`strategy-card` · 168 lines · 7,447 B · description: **extracted**
+`strategy-card` · 168 lines · 7,466 B · description: **extracted**
 
 **Purpose.** Provide a native neural-network research runtime for financial indicators and strategies. NeuraLib packages tensor operations, automatic differentiation, training, validation and scaling, leaving the caller to define a model, target and trading interpretation.
 
@@ -14162,7 +14048,7 @@ The simulation engine and everything that supports it. Never gains live-trading 
 
 #### `backtester/strategy_cards/incomplete/publication-profiles/tv_guxndiot_interactive_atr_stop_loss_tanhef.md`
 
-`strategy-card` · 115 lines · 4,821 B · description: **extracted**
+`strategy-card` · 115 lines · 4,859 B · description: **extracted**
 
 **Purpose.** Draw a manually anchored ATR trailing exit and optional fixed profit target to monitor a trade from a chosen starting point.
 
@@ -14212,7 +14098,7 @@ The simulation engine and everything that supports it. Never gains live-trading 
 
 #### `backtester/strategy_cards/incomplete/publication-profiles/tv_h0yzptis_delta_volume_candles_lucf.md`
 
-`strategy-card` · 142 lines · 6,175 B · description: **extracted**
+`strategy-card` · 142 lines · 6,194 B · description: **extracted**
 
 **Purpose.** Delta Volume Candles augments or replaces price candles with intrabar-derived volume-pressure information. It separates up/down intrabar volume, constructs several balance measures and uses them for candle additions, moving-average channels, divergence regions, colors and configurable alerts.
 
@@ -14222,7 +14108,7 @@ The simulation engine and everything that supports it. Never gains live-trading 
 
 #### `backtester/strategy_cards/incomplete/publication-profiles/tv_h4xuu8kn_dynamic_rsi_regression_bands_zeiierman.md`
 
-`strategy-card` · 109 lines · 4,842 B · description: **extracted**
+`strategy-card` · 109 lines · 4,861 B · description: **extracted**
 
 **Purpose.** Dynamic RSI Regression Bands re-anchors its regression window when RSI enters an overbought or oversold zone. It treats an extreme-momentum event as a reason to reconsider the current trend model, then grows the fitted sample until a maximum length. The purpose is event-driven channel context and rejection monitoring, not a proof that RSI extremes always introduce a new regime.
 
@@ -14232,7 +14118,7 @@ The simulation engine and everything that supports it. Never gains live-trading 
 
 #### `backtester/strategy_cards/incomplete/publication-profiles/tv_haxmmjon_risk_distribution_histogram.md`
 
-`strategy-card` · 128 lines · 4,882 B · description: **extracted**
+`strategy-card` · 128 lines · 4,901 B · description: **extracted**
 
 **Purpose.** Place a current risk statistic inside its historical distribution so relative risk conditions and tails can be reviewed.
 
@@ -14262,7 +14148,7 @@ The simulation engine and everything that supports it. Never gains live-trading 
 
 #### `backtester/strategy_cards/incomplete/publication-profiles/tv_hdskv6q5_ltf_volume_microburst_bubbles_zeiierman.md`
 
-`strategy-card` · 131 lines · 5,636 B · description: **extracted**
+`strategy-card` · 131 lines · 5,655 B · description: **extracted**
 
 **Purpose.** LTF Volume Microburst Bubbles identifies unusually large, directionally efficient lower-timeframe candles inside each chart candle. It aims to distinguish concentrated bursts of participation from ordinary total-bar volume. A signed aggregate score reflects whether bullish or bearish qualifying bursts dominate.
 
@@ -14272,7 +14158,7 @@ The simulation engine and everything that supports it. Never gains live-trading 
 
 #### `backtester/strategy_cards/incomplete/publication-profiles/tv_hefekydl_sma_directional_matrix_luxalgo.md`
 
-`strategy-card` · 114 lines · 4,652 B · description: **extracted**
+`strategy-card` · 114 lines · 4,671 B · description: **extracted**
 
 **Purpose.** SMA Directional Matrix shows whether simple moving averages across a chosen period range are rising or falling. It aims to reveal agreement between short-, medium- and long-horizon trend readings without overlaying many lines. Divergence between short and long averages can show a recent retracement against a broader direction.
 
@@ -14292,7 +14178,7 @@ The simulation engine and everything that supports it. Never gains live-trading 
 
 #### `backtester/strategy_cards/incomplete/publication-profiles/tv_hfcy7ciq_cvd_cumulative_volume_delta_chart.md`
 
-`strategy-card` · 146 lines · 6,482 B · description: **extracted**
+`strategy-card` · 146 lines · 6,501 B · description: **extracted**
 
 **Purpose.** CVD Chart maps cumulative or raw intrabar volume delta onto the price pane in reset-defined zones. It preserves volume-pressure context alongside price while offering multiple reset schedules, including trend-change events.
 
@@ -14312,7 +14198,7 @@ The simulation engine and everything that supports it. Never gains live-trading 
 
 #### `backtester/strategy_cards/incomplete/publication-profiles/tv_hg385dby_ichimoku_kink_hy.md`
 
-`strategy-card` · 121 lines · 5,144 B · description: **extracted**
+`strategy-card` · 121 lines · 5,163 B · description: **extracted**
 
 **Purpose.** This Ichimoku extension aims to make a complex multi-component framework easier to interpret while exposing extensive filtering and display options. It combines configurable Ichimoku relationships with volume and volatility context, then summarizes selected conditions through a help panel, colored bars and support/resistance drawings.
 
@@ -14332,7 +14218,7 @@ The simulation engine and everything that supports it. Never gains live-trading 
 
 #### `backtester/strategy_cards/incomplete/publication-profiles/tv_hjgcuw6g_dynamic_equity_allocation_model.md`
 
-`strategy-card` · 367 lines · 23,140 B · description: **extracted**
+`strategy-card` · 367 lines · 23,159 B · description: **extracted**
 
 **Purpose.** DEAM recommends a changing US-equity versus cash allocation by combining market regime, risk capacity, valuation, sentiment and macro conditions. It is a tactical exposure model with a separate crisis override, not a documented executed portfolio or verified return record.
 
@@ -14352,7 +14238,7 @@ The simulation engine and everything that supports it. Never gains live-trading 
 
 #### `backtester/strategy_cards/incomplete/publication-profiles/tv_hjxrfmmg_session_candles_reversals_flowly_indicators.md`
 
-`strategy-card` · 202 lines · 7,719 B · description: **extracted**
+`strategy-card` · 202 lines · 7,757 B · description: **extracted**
 
 **Purpose.** Session Candles & Reversals rebuilds candles around trading sessions, detects wick/engulfing reversals relative to the previous corresponding session, and reports historical conditional outcomes. It aims to reveal session-specific directional changes obscured by ordinary daily bars. Its statistics measure next-corresponding-session behavior, not a complete executable strategy.
 
@@ -14412,7 +14298,7 @@ The simulation engine and everything that supports it. Never gains live-trading 
 
 #### `backtester/strategy_cards/incomplete/publication-profiles/tv_hnpilzeg_market_sessions_by_leviathan.md`
 
-`strategy-card` · 142 lines · 6,062 B · description: **extracted**
+`strategy-card` · 142 lines · 6,081 B · description: **extracted**
 
 **Purpose.** Market Sessions marks customizable trading windows and summarizes their price range or open-to-close movement. It aims to keep session context visible in boxes, zones, timelines or colored candles. Optional overlap merging truncates each session at the next session’s start, changing the effective measurement windows rather than merely hiding graphics.
 
@@ -14462,7 +14348,7 @@ The simulation engine and everything that supports it. Never gains live-trading 
 
 #### `backtester/strategy_cards/incomplete/publication-profiles/tv_hto2ol8g_drawdown_distribution_analysis_dda.md`
 
-`strategy-card` · 174 lines · 8,815 B · description: **extracted**
+`strategy-card` · 174 lines · 8,834 B · description: **extracted**
 
 **Purpose.** Place the current asset-price drawdown within its historical distribution and add return/risk summaries. DDA supports contextual risk monitoring and allocation research; it does not establish a portfolio’s realized drawdown unless the supplied price series represents that portfolio.
 
@@ -14472,7 +14358,7 @@ The simulation engine and everything that supports it. Never gains live-trading 
 
 #### `backtester/strategy_cards/incomplete/publication-profiles/tv_hv8ghojp_recursive_auto_pitchfork_trendoscope.md`
 
-`strategy-card` · 108 lines · 4,337 B · description: **extracted**
+`strategy-card` · 108 lines · 4,356 B · description: **extracted**
 
 **Purpose.** Automatically draw pitchforks across a hierarchy of zigzag scales while demonstrating reusable financial drawing objects.
 
@@ -14492,7 +14378,7 @@ The simulation engine and everything that supports it. Never gains live-trading 
 
 #### `backtester/strategy_cards/incomplete/publication-profiles/tv_hvk5wzpi_smart_money_breakout_channels_algoalpha.md`
 
-`strategy-card` · 113 lines · 4,645 B · description: **extracted**
+`strategy-card` · 113 lines · 4,664 B · description: **extracted**
 
 **Purpose.** Identify compressed price ranges and monitor their subsequent breakouts with a visual participation overlay.
 
@@ -14512,7 +14398,7 @@ The simulation engine and everything that supports it. Never gains live-trading 
 
 #### `backtester/strategy_cards/incomplete/publication-profiles/tv_hxxk64fl_sip_evaluator_and_screener_trendoscope.md`
 
-`strategy-card` · 179 lines · 6,816 B · description: **extracted**
+`strategy-card` · 179 lines · 6,835 B · description: **extracted**
 
 **Purpose.** Simulate recurring investment outcomes with commissions, fractional-unit rules and delayed dividend reinvestment, including screener-friendly output metrics.
 
@@ -14542,7 +14428,7 @@ The simulation engine and everything that supports it. Never gains live-trading 
 
 #### `backtester/strategy_cards/incomplete/publication-profiles/tv_i2k4hidp_pine3d_a_native_3d_graphical_rendering_engine.md`
 
-`strategy-card` · 153 lines · 6,590 B · description: **extracted**
+`strategy-card` · 153 lines · 6,609 B · description: **extracted**
 
 **Purpose.** Pine3D is a general rendering engine with explicit financial-analysis applications, including option-volatility surfaces, market-depth grids, oscillator-pair trails, asset/sector dashboards and signed PnL or momentum bars. It therefore remains in scope as financial visualization infrastructure despite its many purely graphical examples.
 
@@ -14622,7 +14508,7 @@ The simulation engine and everything that supports it. Never gains live-trading 
 
 #### `backtester/strategy_cards/incomplete/publication-profiles/tv_ifjxxalc_the_investment_clock_orbital_graph.md`
 
-`strategy-card` · 129 lines · 5,381 B · description: **extracted**
+`strategy-card` · 129 lines · 5,400 B · description: **extracted**
 
 **Purpose.** Place economic growth and inflation in a quadrant-based investment-clock chart to frame broad asset-allocation hypotheses.
 
@@ -14682,7 +14568,7 @@ The simulation engine and everything that supports it. Never gains live-trading 
 
 #### `backtester/strategy_cards/incomplete/publication-profiles/tv_in9ftv45_divergence_for_many_indicator_v3.md`
 
-`strategy-card` · 116 lines · 4,687 B · description: **extracted**
+`strategy-card` · 116 lines · 4,706 B · description: **extracted**
 
 **Purpose.** Divergence for Many Indicators compares the latest pivot with the developing current bar across several familiar technical measures. It aims to show potential momentum disagreement earlier than a prior higher-timeframe-completion approach. On finding a new divergence it draws a line and removes the previous one.
 
@@ -14712,7 +14598,7 @@ The simulation engine and everything that supports it. Never gains live-trading 
 
 #### `backtester/strategy_cards/incomplete/publication-profiles/tv_ipvs7b7x_multi_ticker_anchored_candles.md`
 
-`strategy-card` · 131 lines · 5,439 B · description: **extracted**
+`strategy-card` · 131 lines · 5,458 B · description: **extracted**
 
 **Purpose.** Overlay several assets in a common session-relative price coordinate system so different nominal price scales can be compared visually.
 
@@ -14782,7 +14668,7 @@ The simulation engine and everything that supports it. Never gains live-trading 
 
 #### `backtester/strategy_cards/incomplete/publication-profiles/tv_j9a6nwwm_volume_open_interest_footprint_by_leviathan.md`
 
-`strategy-card` · 122 lines · 5,190 B · description: **extracted**
+`strategy-card` · 122 lines · 5,209 B · description: **extracted**
 
 **Purpose.** This footprint-style display summarizes volume or open-interest behavior across the chart’s visible range into a single profile at the screen edge. Panning or zooming changes the sample, so it is a viewport-conditioned research view rather than a fixed historical signal.
 
@@ -14792,7 +14678,7 @@ The simulation engine and everything that supports it. Never gains live-trading 
 
 #### `backtester/strategy_cards/incomplete/publication-profiles/tv_jcrhuirl_tensor_market_analysis_engine_tmae.md`
 
-`strategy-card` · 214 lines · 6,960 B · description: **extracted**
+`strategy-card` · 214 lines · 7,036 B · description: **extracted**
 
 **Purpose.** Tensor Market Analysis Engine proposes a composite of multidimensional volatility jumps, Hurst-style regime detection and transfer-entropy-like information flow. It aims to choose context-dependent signals and express them through a heavily decorated dashboard and chart layers. Long/short confirmation uses momentum, while voting modes change how many components must agree.
 
@@ -14842,7 +14728,7 @@ The simulation engine and everything that supports it. Never gains live-trading 
 
 #### `backtester/strategy_cards/incomplete/publication-profiles/tv_jncgedj7_order_chain_kioseff_trading.md`
 
-`strategy-card` · 135 lines · 5,923 B · description: **extracted**
+`strategy-card` · 135 lines · 5,942 B · description: **extracted**
 
 **Purpose.** Order Chain turns live chart-feed volume changes into price-level boxes and cumulative signed-volume readings. It aims to expose the sequence and relative size of recent activity rather than summarize only finished candles.
 
@@ -14872,7 +14758,7 @@ The simulation engine and everything that supports it. Never gains live-trading 
 
 #### `backtester/strategy_cards/incomplete/publication-profiles/tv_jqoxsbq8_auto_backtest_optimize_engine.md`
 
-`strategy-card` · 124 lines · 5,729 B · description: **extracted**
+`strategy-card` · 124 lines · 5,767 B · description: **extracted**
 
 **Purpose.** Search stop-loss and take-profit parameter combinations and inspect simulated outcomes for built-in examples or connected signals. The engine offers batch exploration and recommendations, rather than establishing that the selected historical optimum will generalize.
 
@@ -14882,7 +14768,7 @@ The simulation engine and everything that supports it. Never gains live-trading 
 
 #### `backtester/strategy_cards/incomplete/publication-profiles/tv_jqrhr1xy_relative_strength_of_volume_indicators_by_dgt.md`
 
-`strategy-card` · 147 lines · 5,415 B · description: **extracted**
+`strategy-card` · 147 lines · 5,434 B · description: **extracted**
 
 **Purpose.** Relative Strength of Volume Indicators applies RSI-style momentum analysis to several volume-derived series and displays the result beside ordinary price RSI. It aims to reveal whether price momentum is supported or contradicted by volume-related behavior. The author combines multiple familiar tools rather than proposing a wholly new predictor.
 
@@ -14932,7 +14818,7 @@ The simulation engine and everything that supports it. Never gains live-trading 
 
 #### `backtester/strategy_cards/incomplete/publication-profiles/tv_jzxkmci2_williams_fractal_trailing_stops.md`
 
-`strategy-card` · 115 lines · 4,946 B · description: **extracted**
+`strategy-card` · 115 lines · 4,965 B · description: **extracted**
 
 **Purpose.** Williams Fractal Trailing Stops uses confirmed high and low fractals as moving protective references. Unlike a fixed confirmation convention, the user can choose how many bars establish a fractal. The indicator then trails those structural points and can switch between long and short orientation when price crosses the trail.
 
@@ -14942,7 +14828,7 @@ The simulation engine and everything that supports it. Never gains live-trading 
 
 #### `backtester/strategy_cards/incomplete/publication-profiles/tv_k2br8xol_intraday_spark_chart_astrideunicorn.md`
 
-`strategy-card` · 128 lines · 5,160 B · description: **extracted**
+`strategy-card` · 128 lines · 5,198 B · description: **extracted**
 
 **Purpose.** Show intraday performance relative to the session's opening price through a compact percentage-change sparkline.
 
@@ -15002,7 +14888,7 @@ The simulation engine and everything that supports it. Never gains live-trading 
 
 #### `backtester/strategy_cards/incomplete/publication-profiles/tv_kjj8hddk_dynamic_dots_dashboard_a_cloud_zlema_composite.md`
 
-`strategy-card` · 130 lines · 5,021 B · description: **extracted**
+`strategy-card` · 130 lines · 5,040 B · description: **extracted**
 
 **Purpose.** Dynamic Dots Dashboard summarizes whether price sits above or below several cloud and moving-average references. It aims to declutter the chart while preserving a quick view of dynamic support/resistance density. Each reference above price is shown in the resistance region and each below in support; an optional histogram sums the relationship.
 
@@ -15052,7 +14938,7 @@ The simulation engine and everything that supports it. Never gains live-trading 
 
 #### `backtester/strategy_cards/incomplete/publication-profiles/tv_ksmls0hh_supertrend_parameter_sensitivity_3d_luxalgo.md`
 
-`strategy-card` · 129 lines · 4,972 B · description: **extracted**
+`strategy-card` · 129 lines · 4,991 B · description: **extracted**
 
 **Purpose.** Supertrend Parameter Sensitivity evaluates a grid of ATR lengths and multipliers to reveal parameter robustness. It aims to distinguish an isolated best historical result from a neighborhood of comparatively strong results, reducing reliance on a single optimized peak. Each grid cell maintains an independent always-in-market long/short Supertrend simulation.
 
@@ -15092,7 +14978,7 @@ The simulation engine and everything that supports it. Never gains live-trading 
 
 #### `backtester/strategy_cards/incomplete/publication-profiles/tv_l0aiilvh_pivot_point_supertrend.md`
 
-`strategy-card` · 137 lines · 5,078 B · description: **extracted**
+`strategy-card` · 137 lines · 5,097 B · description: **extracted**
 
 **Purpose.** Pivot Point Supertrend replaces an ordinary price center with a smoothed average of pivots, then builds ATR bands around it. The intended benefit is holding trends longer by reducing sensitivity to minor price noise. Optional centerline and pivot-derived support/resistance add context, and the author suggests the centerline as an earlier partial-exit reference.
 
@@ -15112,7 +14998,7 @@ The simulation engine and everything that supports it. Never gains live-trading 
 
 #### `backtester/strategy_cards/incomplete/publication-profiles/tv_l2lxyays_zig_zag_volume_profile_bull_vs_bear_kioseff_trading.md`
 
-`strategy-card` · 113 lines · 4,751 B · description: **extracted**
+`strategy-card` · 113 lines · 4,770 B · description: **extracted**
 
 **Purpose.** Compare estimated bullish and bearish volume-at-price distributions within individual zigzag-defined market legs.
 
@@ -15132,7 +15018,7 @@ The simulation engine and everything that supports it. Never gains live-trading 
 
 #### `backtester/strategy_cards/incomplete/publication-profiles/tv_lbobwukj_sync_frame_mtf_charts_kioseff_trading.md`
 
-`strategy-card` · 115 lines · 4,412 B · description: **extracted**
+`strategy-card` · 115 lines · 4,431 B · description: **extracted**
 
 **Purpose.** Show several lower-timeframe views of the current asset together so the reader can compare local price behavior without switching the main chart.
 
@@ -15152,7 +15038,7 @@ The simulation engine and everything that supports it. Never gains live-trading 
 
 #### `backtester/strategy_cards/incomplete/publication-profiles/tv_lcgcwwwi_bar_balance_lucf.md`
 
-`strategy-card` · 193 lines · 6,690 B · description: **extracted**
+`strategy-card` · 193 lines · 6,709 B · description: **extracted**
 
 **Purpose.** Count bullish,bearish and unchanged lower-timeframe candles inside historical parent bars and summarize their relative balance as participation-strength context.
 
@@ -15222,7 +15108,7 @@ The simulation engine and everything that supports it. Never gains live-trading 
 
 #### `backtester/strategy_cards/incomplete/publication-profiles/tv_llhsdjyh_angle_market_structure_bigbeluga.md`
 
-`strategy-card` · 115 lines · 4,733 B · description: **extracted**
+`strategy-card` · 115 lines · 4,752 B · description: **extracted**
 
 **Purpose.** Angle Market Structure gradually moves pivot-derived resistance downward and support upward, making potential breaks occur sooner than static pivot levels. It then marks extension zones and sequential break counts. Its purpose is a more reactive structure view; the acceleration is an intentional moving threshold rather than evidence that a static historical structure was actually broken.
 
@@ -15252,7 +15138,7 @@ The simulation engine and everything that supports it. Never gains live-trading 
 
 #### `backtester/strategy_cards/incomplete/publication-profiles/tv_lper4qca_volume_analysis_heatmap_and_volume_profile.md`
 
-`strategy-card` · 137 lines · 5,566 B · description: **extracted**
+`strategy-card` · 137 lines · 5,585 B · description: **extracted**
 
 **Purpose.** Volume Analysis combines a lower-timeframe volume heatmap with a volume profile and column statistics. The user chooses the grid dimensions and history depth, and the script examines lower-timeframe price movement and volume inside chart candles. The resulting display is intended to expose where activity concentrates and how buying and selling estimates differ across time columns.
 
@@ -15302,7 +15188,7 @@ The simulation engine and everything that supports it. Never gains live-trading 
 
 #### `backtester/strategy_cards/incomplete/publication-profiles/tv_lu0mtsud_earnings_snapshot_trendoscope.md`
 
-`strategy-card` · 143 lines · 6,399 B · description: **extracted**
+`strategy-card` · 143 lines · 6,418 B · description: **extracted**
 
 **Purpose.** Earnings Snapshot organizes historical stock EPS releases, future estimates and associated price growth into a chart table and release-date labels. It replaces manual comparisons of quarterly reports with a compact view of growth and price reaction. Revenue is expressly excluded because the author had not resolved its data presentation.
 
@@ -15322,7 +15208,7 @@ The simulation engine and everything that supports it. Never gains live-trading 
 
 #### `backtester/strategy_cards/incomplete/publication-profiles/tv_lvqopkkp_volume_surprise_luxalgo.md`
 
-`strategy-card` · 121 lines · 5,185 B · description: **extracted**
+`strategy-card` · 121 lines · 5,204 B · description: **extracted**
 
 **Purpose.** Volume Surprise compares observed volume with the activity historically typical for the same calendar grouping. It distinguishes unusual participation from an ordinary recurring busy or quiet period, then extrapolates the expected pattern into future bars.
 
@@ -15332,7 +15218,7 @@ The simulation engine and everything that supports it. Never gains live-trading 
 
 #### `backtester/strategy_cards/incomplete/publication-profiles/tv_lwoxh0vh_range_volume_change.md`
 
-`strategy-card` · 121 lines · 5,582 B · description: **extracted**
+`strategy-card` · 121 lines · 5,601 B · description: **extracted**
 
 **Purpose.** Range Volume Change compares cumulative volume in a user-selected daily time interval with the prior day’s corresponding interval. It was motivated by premarket-volume monitoring but supports any selected range and continuous markets.
 
@@ -15342,7 +15228,7 @@ The simulation engine and everything that supports it. Never gains live-trading 
 
 #### `backtester/strategy_cards/incomplete/publication-profiles/tv_lx3zlt9l_volume_profile_3d_zeiierman.md`
 
-`strategy-card` · 115 lines · 4,836 B · description: **extracted**
+`strategy-card` · 115 lines · 4,874 B · description: **extracted**
 
 **Purpose.** Volume Profile 3D adds perspective and shading to a price-binned volume distribution. It maps each bar’s volume by average price, optionally splitting up-bar and down-bar contributions, then tilts and scales blocks to make concentration visually prominent. The dimensional effect is a rendering choice; it does not add a third measured market variable or reveal actual resting liquidity.
 
@@ -15372,7 +15258,7 @@ The simulation engine and everything that supports it. Never gains live-trading 
 
 #### `backtester/strategy_cards/incomplete/publication-profiles/tv_ma35whu5_r_r_trading_system_framework.md`
 
-`strategy-card` · 114 lines · 5,060 B · description: **extracted**
+`strategy-card` · 114 lines · 5,098 B · description: **extracted**
 
 **Purpose.** R:R Trading System Framework provides educational scaffolding for running and visualizing several trade-management ideas concurrently. It tracks entries, stops, targets, excursions and time-to-level expectations so users can study risk/reward during trades.
 
@@ -15412,7 +15298,7 @@ The simulation engine and everything that supports it. Never gains live-trading 
 
 #### `backtester/strategy_cards/incomplete/publication-profiles/tv_mcogjc67_strategy.md`
 
-`strategy-card` · 155 lines · 7,204 B · description: **extracted**
+`strategy-card` · 155 lines · 7,223 B · description: **extracted**
 
 **Purpose.** Provide strategy programmers with unit conversions, direction-aware exit levels, risk-based size helpers and a percentage-exit wrapper. These functions support a caller’s existing strategy and do not define an entry edge.
 
@@ -15452,7 +15338,7 @@ The simulation engine and everything that supports it. Never gains live-trading 
 
 #### `backtester/strategy_cards/incomplete/publication-profiles/tv_mekxyft0_bias_and_sentiment_strength_bass_indicator_by_mattzab.md`
 
-`strategy-card` · 119 lines · 5,049 B · description: **extracted**
+`strategy-card` · 119 lines · 5,068 B · description: **extracted**
 
 **Purpose.** BASS overlays several familiar momentum histograms and a volume-weighted price bias to give a quick visual view of directional agreement. It is not a weighted composite score: positive blue and negative red components can coexist, which the author calls a battle between bulls and bears.
 
@@ -15462,7 +15348,7 @@ The simulation engine and everything that supports it. Never gains live-trading 
 
 #### `backtester/strategy_cards/incomplete/publication-profiles/tv_mfupuzwd_arbitrage_detector_luxalgo.md`
 
-`strategy-card` · 121 lines · 4,744 B · description: **extracted**
+`strategy-card` · 121 lines · 4,763 B · description: **extracted**
 
 **Purpose.** Monitor cross-venue prices/volumes and classify the largest observed spread relative to its own historical distribution.
 
@@ -15512,7 +15398,7 @@ The simulation engine and everything that supports it. Never gains live-trading 
 
 #### `backtester/strategy_cards/incomplete/publication-profiles/tv_mk7uyofu_adjustable_ma_alternating_extremities_luxalgo.md`
 
-`strategy-card` · 127 lines · 4,854 B · description: **extracted**
+`strategy-card` · 127 lines · 4,873 B · description: **extracted**
 
 **Purpose.** Control moving-average lag and overshoot through a custom weighting kernel, then display alternating extremes or synthetic candles derived from that average.
 
@@ -15522,7 +15408,7 @@ The simulation engine and everything that supports it. Never gains live-trading 
 
 #### `backtester/strategy_cards/incomplete/publication-profiles/tv_mketjg7e_periodic_linear_regressions_luxalgo.md`
 
-`strategy-card` · 120 lines · 4,995 B · description: **extracted**
+`strategy-card` · 120 lines · 5,014 B · description: **extracted**
 
 **Purpose.** Periodic Linear Regressions fits price from a period anchor to the current observation and optionally resets at each selected interval. It offers a refitted straight-line view or a causal sequence of fitted endpoints, plus residual-error envelopes. The distinction matters: the static line redraws the past fit as the sample grows, while rolling mode retains the endpoint observed on each bar.
 
@@ -15552,7 +15438,7 @@ The simulation engine and everything that supports it. Never gains live-trading 
 
 #### `backtester/strategy_cards/incomplete/publication-profiles/tv_mombnm8e_tick_cvd_kioseff_trading.md`
 
-`strategy-card` · 119 lines · 4,809 B · description: **extracted**
+`strategy-card` · 119 lines · 4,828 B · description: **extracted**
 
 **Purpose.** Accumulate a live tick-rule estimate of cumulative volume delta alongside a tick-oriented price display.
 
@@ -15572,7 +15458,7 @@ The simulation engine and everything that supports it. Never gains live-trading 
 
 #### `backtester/strategy_cards/incomplete/publication-profiles/tv_mxdttwh8_footprint_iq_pro_tradingiq.md`
 
-`strategy-card` · 128 lines · 4,905 B · description: **extracted**
+`strategy-card` · 128 lines · 4,924 B · description: **extracted**
 
 **Purpose.** Build candle-level footprint displays with volume/delta metrics, imbalance flags and selected historical price-level references.
 
@@ -15612,7 +15498,7 @@ The simulation engine and everything that supports it. Never gains live-trading 
 
 #### `backtester/strategy_cards/incomplete/publication-profiles/tv_n0f50jkv_relative_volume_at_time.md`
 
-`strategy-card` · 142 lines · 5,619 B · description: **extracted**
+`strategy-card` · 142 lines · 5,638 B · description: **extracted**
 
 **Purpose.** Relative Volume at Time compares current participation with historical participation at the same offset inside a chosen time unit. It addresses recurring intraday or weekly volume cycles that an ordinary rolling average can obscure. Users can compare either cumulative activity since the anchor or a single matched-offset bar.
 
@@ -15702,7 +15588,7 @@ The simulation engine and everything that supports it. Never gains live-trading 
 
 #### `backtester/strategy_cards/incomplete/publication-profiles/tv_niy5oyf7_volume_by_session.md`
 
-`strategy-card` · 106 lines · 4,198 B · description: **extracted**
+`strategy-card` · 106 lines · 4,217 B · description: **extracted**
 
 **Purpose.** Judge session volume against comparable sessions instead of mixing sessions with structurally different activity levels.
 
@@ -15722,7 +15608,7 @@ The simulation engine and everything that supports it. Never gains live-trading 
 
 #### `backtester/strategy_cards/incomplete/publication-profiles/tv_nlm312nk_cvd_cumulative_volume_delta_candles.md`
 
-`strategy-card` · 142 lines · 5,942 B · description: **extracted**
+`strategy-card` · 142 lines · 5,980 B · description: **extracted**
 
 **Purpose.** Cumulative Volume Delta Candles approximates directional volume from intrabars and displays its accumulated path as candles. It aims to expose within-bar pressure and longer reset-period progression more precisely than assigning each whole chart candle a single sign. Users can compare CVD direction, wicks and price disagreement, while choosing a precision/history tradeoff.
 
@@ -15732,7 +15618,7 @@ The simulation engine and everything that supports it. Never gains live-trading 
 
 #### `backtester/strategy_cards/incomplete/publication-profiles/tv_nlygzrmb_short_volume_stamper.md`
 
-`strategy-card` · 138 lines · 5,962 B · description: **extracted**
+`strategy-card` · 138 lines · 5,981 B · description: **extracted**
 
 **Purpose.** Annotate unusual short-sale-volume episodes and summarize short-volume participation around historical highs.
 
@@ -15752,7 +15638,7 @@ The simulation engine and everything that supports it. Never gains live-trading 
 
 #### `backtester/strategy_cards/incomplete/publication-profiles/tv_nueh5q6t_linear_regression_all_data.md`
 
-`strategy-card` · 100 lines · 4,050 B · description: **extracted**
+`strategy-card` · 100 lines · 4,069 B · description: **extracted**
 
 **Purpose.** Show a single broad price trend by fitting a regression line across the instrument history available on the chart.
 
@@ -15762,7 +15648,7 @@ The simulation engine and everything that supports it. Never gains live-trading 
 
 #### `backtester/strategy_cards/incomplete/publication-profiles/tv_nw5ogfdo_ict_killzones_pivots_tfo.md`
 
-`strategy-card` · 136 lines · 5,723 B · description: **extracted**
+`strategy-card` · 136 lines · 5,742 B · description: **extracted**
 
 **Purpose.** ICT Killzones + Pivots preserves the price extremes established during configurable session windows. It is designed to keep potentially relevant session highs and lows visible after the session has ended, rather than requiring the user to redraw them. Optional opening-price references and timestamps add temporal context.
 
@@ -15772,7 +15658,7 @@ The simulation engine and everything that supports it. Never gains live-trading 
 
 #### `backtester/strategy_cards/incomplete/publication-profiles/tv_nwjy3xpv_first_passage_time_distribution_analysis.md`
 
-`strategy-card` · 134 lines · 5,392 B · description: **extracted**
+`strategy-card` · 134 lines · 5,411 B · description: **extracted**
 
 **Purpose.** First Passage Time Distribution Analysis simulates when price might first reach user-defined upper or lower percentage targets. It separates time-to-target summaries from which boundary is reached first, making it a scenario tool for holding-period and risk planning.
 
@@ -15782,7 +15668,7 @@ The simulation engine and everything that supports it. Never gains live-trading 
 
 #### `backtester/strategy_cards/incomplete/publication-profiles/tv_ny63myd9_time_volume_point_of_control_flowly_indicators.md`
 
-`strategy-card` · 131 lines · 5,389 B · description: **extracted**
+`strategy-card` · 131 lines · 5,408 B · description: **extracted**
 
 **Purpose.** Show where each candle's strongest time occupancy and volume concentration occurred using lower-timeframe approximations.
 
@@ -15812,7 +15698,7 @@ The simulation engine and everything that supports it. Never gains live-trading 
 
 #### `backtester/strategy_cards/incomplete/publication-profiles/tv_o2toj6ez_bitcoin_monthly_seasonality_alpha_extract.md`
 
-`strategy-card` · 121 lines · 4,978 B · description: **extracted**
+`strategy-card` · 121 lines · 4,997 B · description: **extracted**
 
 **Purpose.** Summarize Bitcoin performance by calendar month to compare historical seasonal tendencies and their consistency.
 
@@ -15842,7 +15728,7 @@ The simulation engine and everything that supports it. Never gains live-trading 
 
 #### `backtester/strategy_cards/incomplete/publication-profiles/tv_odyzzlzu_median_convergence_divergence.md`
 
-`strategy-card` · 119 lines · 4,838 B · description: **extracted**
+`strategy-card` · 119 lines · 4,857 B · description: **extracted**
 
 **Purpose.** Replace the central-tendency component of MACD with rolling medians to reduce the influence of extreme observations.
 
@@ -15862,7 +15748,7 @@ The simulation engine and everything that supports it. Never gains live-trading 
 
 #### `backtester/strategy_cards/incomplete/publication-profiles/tv_okuj0d2n_earnings_price_move_cheat_sheet_kt.md`
 
-`strategy-card` · 133 lines · 6,070 B · description: **extracted**
+`strategy-card` · 133 lines · 6,089 B · description: **extracted**
 
 **Purpose.** Earnings Price Move Cheat Sheet summarizes historical price behavior around earnings, separating surprises, misses and all releases. It aims to help users inspect repeatability and event risk, with average returns, post-release range and historical-tail metrics.
 
@@ -15872,7 +15758,7 @@ The simulation engine and everything that supports it. Never gains live-trading 
 
 #### `backtester/strategy_cards/incomplete/publication-profiles/tv_onab2fve_fair_value_gaps_by_dgt.md`
 
-`strategy-card` · 117 lines · 4,707 B · description: **extracted**
+`strategy-card` · 117 lines · 4,726 B · description: **extracted**
 
 **Purpose.** Track price-gap regions across chart, higher and lower timeframes and show how subsequent price movement interacts with each region.
 
@@ -15922,7 +15808,7 @@ The simulation engine and everything that supports it. Never gains live-trading 
 
 #### `backtester/strategy_cards/incomplete/publication-profiles/tv_ostukg4q_all_candlestick_patterns_on_backtest_by_muqwishi.md`
 
-`strategy-card` · 122 lines · 5,185 B · description: **extracted**
+`strategy-card` · 122 lines · 5,204 B · description: **extracted**
 
 **Purpose.** All Candlestick Patterns on Backtest compares historical return percentages for multiple candle-pattern methods in a table. It is intended as a starting point for research, with configurable execution assumptions and risk/reward geometry.
 
@@ -15952,7 +15838,7 @@ The simulation engine and everything that supports it. Never gains live-trading 
 
 #### `backtester/strategy_cards/incomplete/publication-profiles/tv_oyazawb9_d_shape_breakout_signals_luxalgo.md`
 
-`strategy-card` · 120 lines · 4,977 B · description: **extracted**
+`strategy-card` · 120 lines · 4,996 B · description: **extracted**
 
 **Purpose.** Create curved support/resistance shapes from swing pairs, mark their first breakout and derive a conditional trailing reference from broken shapes.
 
@@ -15972,7 +15858,7 @@ The simulation engine and everything that supports it. Never gains live-trading 
 
 #### `backtester/strategy_cards/incomplete/publication-profiles/tv_p5ggwhl5_trailing_management_zeiierman.md`
 
-`strategy-card` · 122 lines · 4,855 B · description: **extracted**
+`strategy-card` · 122 lines · 4,893 B · description: **extracted**
 
 **Purpose.** Visualize hypothetical trailing exits and the reward/risk relationship needed for a strategy to break even at the current price.
 
@@ -15992,7 +15878,7 @@ The simulation engine and everything that supports it. Never gains live-trading 
 
 #### `backtester/strategy_cards/incomplete/publication-profiles/tv_pco280uj_lsma_a_fast_and_simple_alternative_calculation.md`
 
-`strategy-card` · 107 lines · 4,733 B · description: **extracted**
+`strategy-card` · 107 lines · 4,752 B · description: **extracted**
 
 **Purpose.** This publication derives a simpler calculation for the least-squares moving average by expressing its linear-filter weights as a combination of WMA and SMA. The purpose is computational simplification of a familiar trend smoother, rather than a new forecast signal.
 
@@ -16022,7 +15908,7 @@ The simulation engine and everything that supports it. Never gains live-trading 
 
 #### `backtester/strategy_cards/incomplete/publication-profiles/tv_pkflcpyi_mandelbrot_fibonacci_cascade_vortex_mfcv.md`
 
-`strategy-card` · 216 lines · 8,065 B · description: **extracted**
+`strategy-card` · 216 lines · 8,084 B · description: **extracted**
 
 **Purpose.** MFCV combines a Hurst-based regime estimate, ATR-spaced bands, price-centered sinusoidal curves and Fibonacci retracement context. It aims to describe persistence, complexity and confluence across several visual components.
 
@@ -16082,7 +15968,7 @@ The simulation engine and everything that supports it. Never gains live-trading 
 
 #### `backtester/strategy_cards/incomplete/publication-profiles/tv_psnjpa2y_vwap_price_channel.md`
 
-`strategy-card` · 136 lines · 6,104 B · description: **extracted**
+`strategy-card` · 136 lines · 6,123 B · description: **extracted**
 
 **Purpose.** VWAP Price Channel replaces the flat corners of a Donchian channel with VWAP-derived paths anchored at new channel extremes. It is explicitly a thought experiment, implemented as a trend-flipping trail rather than a proven predictive model. The idea is to let price and volume update a reference while the underlying Donchian boundary remains flat.
 
@@ -16132,7 +16018,7 @@ The simulation engine and everything that supports it. Never gains live-trading 
 
 #### `backtester/strategy_cards/incomplete/publication-profiles/tv_q1hxs0v6_liquidity_void_detector_zeiierman.md`
 
-`strategy-card` · 176 lines · 6,535 B · description: **extracted**
+`strategy-card` · 176 lines · 6,554 B · description: **extracted**
 
 **Purpose.** Liquidity Void Detector emphasizes unusually large recent returns when volume is weak relative to its own baseline. It explicitly offers a practical OHLCV proxy, not measured order-book emptiness.
 
@@ -16162,7 +16048,7 @@ The simulation engine and everything that supports it. Never gains live-trading 
 
 #### `backtester/strategy_cards/incomplete/publication-profiles/tv_q7yqqq7g_volume_gaps_imbalances_zeiierman.md`
 
-`strategy-card` · 115 lines · 4,673 B · description: **extracted**
+`strategy-card` · 115 lines · 4,692 B · description: **extracted**
 
 **Purpose.** Map sampled volume into price rows and show directional candle-volume imbalance by row and larger vertical sector.
 
@@ -16192,7 +16078,7 @@ The simulation engine and everything that supports it. Never gains live-trading 
 
 #### `backtester/strategy_cards/incomplete/publication-profiles/tv_qamnmxzi_volume_forks_trendoscope.md`
 
-`strategy-card` · 120 lines · 4,862 B · description: **extracted**
+`strategy-card` · 120 lines · 4,881 B · description: **extracted**
 
 **Purpose.** Draw automatically detected pitchfork structures with volume-profile levels aligned to the fork direction instead of fixed Fibonacci offsets.
 
@@ -16202,7 +16088,7 @@ The simulation engine and everything that supports it. Never gains live-trading 
 
 #### `backtester/strategy_cards/incomplete/publication-profiles/tv_qe4dq4zm_chart_vwap.md`
 
-`strategy-card` · 131 lines · 5,319 B · description: **extracted**
+`strategy-card` · 131 lines · 5,338 B · description: **extracted**
 
 **Purpose.** Calculate viewport-anchored averages and extremes so the displayed chart segment becomes the explicit analysis interval.
 
@@ -16212,7 +16098,7 @@ The simulation engine and everything that supports it. Never gains live-trading 
 
 #### `backtester/strategy_cards/incomplete/publication-profiles/tv_qeqcsffc_dekidaka_ashi_candles_and_volume_teaming_up_again.md`
 
-`strategy-card` · 150 lines · 6,506 B · description: **extracted**
+`strategy-card` · 150 lines · 6,525 B · description: **extracted**
 
 **Purpose.** Dekidaka-Ashi overlays volume-sensitive price envelopes without replacing the underlying candle shape. It aims to combine candle body movement and relative volume in a price-scaled display, enabling derived bands and experimental breakout labels. The author explicitly doubts signal accuracy and observes that signals often occur in low-volume/low-volatility conditions.
 
@@ -16232,7 +16118,7 @@ The simulation engine and everything that supports it. Never gains live-trading 
 
 #### `backtester/strategy_cards/incomplete/publication-profiles/tv_qhncxbml_relative_strength_rsmk_perks_markos_katsanos.md`
 
-`strategy-card` · 113 lines · 4,697 B · description: **extracted**
+`strategy-card` · 113 lines · 4,716 B · description: **extracted**
 
 **Purpose.** Compare an asset's performance with a chosen market benchmark using RSMK and an optional companion comparative-strength formulation.
 
@@ -16292,7 +16178,7 @@ The simulation engine and everything that supports it. Never gains live-trading 
 
 #### `backtester/strategy_cards/incomplete/publication-profiles/tv_qnqbqiex_correlation_heatmap_tradingfinder_sessions_data_science_stats.md`
 
-`strategy-card` · 116 lines · 5,430 B · description: **extracted**
+`strategy-card` · 116 lines · 5,468 B · description: **extracted**
 
 **Purpose.** Correlation HeatMap tracks how each selected asset relates to a central reference through time, rather than showing only a static correlation table. Session overlays align relationship changes with market opens, helping users investigate intermarket shifts or portfolio exposure.
 
@@ -16412,7 +16298,7 @@ The simulation engine and everything that supports it. Never gains live-trading 
 
 #### `backtester/strategy_cards/incomplete/publication-profiles/tv_r7o3zulh_estimated_time_at_price_kioseff_trading.md`
 
-`strategy-card` · 122 lines · 5,074 B · description: **extracted**
+`strategy-card` · 122 lines · 5,093 B · description: **extracted**
 
 **Purpose.** Estimated Time At Price estimates how long price occupies individual price blocks or levels. It substitutes a time-at-price perspective for the related author volume-delta study, using lower-timeframe observations to build the estimates. The resulting highlighted level and extended reference line identify the greatest estimated duration, not necessarily the largest volume.
 
@@ -16422,7 +16308,7 @@ The simulation engine and everything that supports it. Never gains live-trading 
 
 #### `backtester/strategy_cards/incomplete/publication-profiles/tv_r8g2yhdg_order_block_finder_experimental.md`
 
-`strategy-card` · 122 lines · 4,983 B · description: **extracted**
+`strategy-card` · 122 lines · 5,002 B · description: **extracted**
 
 **Purpose.** Order Block Finder marks the final opposite-direction candle before a qualifying consecutive move. It aims to locate price regions that might later be revisited and used for discretionary limit-order planning. The author describes these as institutional order blocks, but candle sequences do not directly establish institutional participation.
 
@@ -16432,7 +16318,7 @@ The simulation engine and everything that supports it. Never gains live-trading 
 
 #### `backtester/strategy_cards/incomplete/publication-profiles/tv_rbeervr5_rolling_z_score_trend_quantalgo.md`
 
-`strategy-card` · 125 lines · 4,905 B · description: **extracted**
+`strategy-card` · 125 lines · 4,924 B · description: **extracted**
 
 **Purpose.** Rolling Z-Score Trend standardizes closing price around a rolling mean and displays the smoothed deviation together with its bar-to-bar change. It supports both momentum and mean-reversion interpretation: an extreme can indicate a strong ongoing move or a possible reversal context, so direction alone does not decide the trade.
 
@@ -16452,7 +16338,7 @@ The simulation engine and everything that supports it. Never gains live-trading 
 
 #### `backtester/strategy_cards/incomplete/publication-profiles/tv_rddlqjfh_berlin_candles.md`
 
-`strategy-card` · 120 lines · 4,615 B · description: **extracted**
+`strategy-card` · 120 lines · 4,634 B · description: **extracted**
 
 **Purpose.** Retain a Heikin-Ashi-like trend view while keeping synthetic candle bodies inside actual price extremes and marking the true close.
 
@@ -16472,7 +16358,7 @@ The simulation engine and everything that supports it. Never gains live-trading 
 
 #### `backtester/strategy_cards/incomplete/publication-profiles/tv_rgnbiicd_abc_on_recursive_zigzag_trendoscope.md`
 
-`strategy-card` · 122 lines · 5,019 B · description: **extracted**
+`strategy-card` · 122 lines · 5,038 B · description: **extracted**
 
 **Purpose.** ABC on Recursive Zigzag detects corrective patterns across nested swing scales and adds configurable trade levels and historical summaries. Its aim is to let users experiment with entry, target and stop ratios rather than accept a fixed pattern-only display.
 
@@ -16502,7 +16388,7 @@ The simulation engine and everything that supports it. Never gains live-trading 
 
 #### `backtester/strategy_cards/incomplete/publication-profiles/tv_rs3xqwyx_support_and_resistance_logistic_regression_flux_charts.md`
 
-`strategy-card` · 117 lines · 5,001 B · description: **extracted**
+`strategy-card` · 117 lines · 5,020 B · description: **extracted**
 
 **Purpose.** Learn which historical pivot conditions tend to produce repeatedly respected levels, then score and monitor new support/resistance candidates.
 
@@ -16532,7 +16418,7 @@ The simulation engine and everything that supports it. Never gains live-trading 
 
 #### `backtester/strategy_cards/incomplete/publication-profiles/tv_rxrafvef_langlands_operadic_m_bius_vortex_lomv.md`
 
-`strategy-card` · 174 lines · 5,982 B · description: **extracted**
+`strategy-card` · 174 lines · 6,001 B · description: **extracted**
 
 **Purpose.** LOMV proposes a composite market score combining a Möbius-weighted return sum, several familiar technical components and higher-timeframe agreement. It surrounds the score with bands, projected levels, flow graphics and a performance dashboard. The mathematical branding and claims of improved win rates are author assertions without validation in the description.
 
@@ -16602,7 +16488,7 @@ The simulation engine and everything that supports it. Never gains live-trading 
 
 #### `backtester/strategy_cards/incomplete/publication-profiles/tv_sg5cvyr9_tick_data_detailed.md`
 
-`strategy-card` · 125 lines · 4,826 B · description: **extracted**
+`strategy-card` · 125 lines · 4,845 B · description: **extracted**
 
 **Purpose.** Tick Data Detailed accumulates realtime price-update volume into size buckets and compares current-bar detail with cumulative observations. It aims to distinguish large and small activity and flag disagreement between candle direction and classified buy/sell volume.
 
@@ -16652,7 +16538,7 @@ The simulation engine and everything that supports it. Never gains live-trading 
 
 #### `backtester/strategy_cards/incomplete/publication-profiles/tv_shy8kacw_market_structure_volume_profiles_kioseff_trading.md`
 
-`strategy-card` · 128 lines · 5,257 B · description: **extracted**
+`strategy-card` · 128 lines · 5,276 B · description: **extracted**
 
 **Purpose.** Market Structure Volume Profiles divides activity into structural price legs rather than arbitrary sessions. Each completed break-of-structure or change-of-character event triggers a profile for that leg, and cumulative delta adds a participation view. The intended use is to compare continuation, reversal and balanced legs by their internal volume distribution.
 
@@ -16672,7 +16558,7 @@ The simulation engine and everything that supports it. Never gains live-trading 
 
 #### `backtester/strategy_cards/incomplete/publication-profiles/tv_snufopt6_modified_mannarino_market_risk_indicator_mmmri_mmri.md`
 
-`strategy-card` · 129 lines · 5,559 B · description: **extracted**
+`strategy-card` · 129 lines · 5,578 B · description: **extracted**
 
 **Purpose.** Modified Mannarino Market Risk Indicator displays a dollar-strength/interest-rate risk heuristic and a debt-to-GDP-adjusted variant. It aims to provide broad market-risk context, with customizable source symbols and scale factors. The score is a formula-based research proxy rather than a calibrated probability of loss or a complete trading strategy, as the source itself emphasizes.
 
@@ -16682,7 +16568,7 @@ The simulation engine and everything that supports it. Never gains live-trading 
 
 #### `backtester/strategy_cards/incomplete/publication-profiles/tv_sq5xt0ez_hyperfork_matrix.md`
 
-`strategy-card` · 137 lines · 5,215 B · description: **extracted**
+`strategy-card` · 137 lines · 5,253 B · description: **extracted**
 
 **Purpose.** Build a manually anchored pitchfork and propagate action/reaction geometry into a price-time lattice for discretionary chart study.
 
@@ -16702,7 +16588,7 @@ The simulation engine and everything that supports it. Never gains live-trading 
 
 #### `backtester/strategy_cards/incomplete/publication-profiles/tv_su8qcnj3_expected_value_monte_carlo.md`
 
-`strategy-card` · 127 lines · 5,049 B · description: **extracted**
+`strategy-card` · 127 lines · 5,068 B · description: **extracted**
 
 **Purpose.** Expected Value Monte Carlo contrasts historical holding-period returns with a forward GBM projection fitted to recent behavior. It expresses both in return and dollar terms, with win-rate and Sharpe summaries, so the user can inspect assumptions about horizon and recent trend.
 
@@ -16722,7 +16608,7 @@ The simulation engine and everything that supports it. Never gains live-trading 
 
 #### `backtester/strategy_cards/incomplete/publication-profiles/tv_swwmsmqw_indicator_panel.md`
 
-`strategy-card` · 126 lines · 5,176 B · description: **extracted**
+`strategy-card` · 126 lines · 5,195 B · description: **extracted**
 
 **Purpose.** Compare selected technical-indicator values across several symbols in a dynamic table and highlight whether each value has risen or fallen.
 
@@ -16772,7 +16658,7 @@ The simulation engine and everything that supports it. Never gains live-trading 
 
 #### `backtester/strategy_cards/incomplete/publication-profiles/tv_t1v41bl5_session_edge_profiler_flux_charts.md`
 
-`strategy-card` · 218 lines · 9,034 B · description: **extracted**
+`strategy-card` · 218 lines · 9,091 B · description: **extracted**
 
 **Purpose.** Session Edge Profiler measures completed-session behavior and compares the developing session with its own weekday-filtered history. It aims to replace generic claims about Asia, London or New York with instrument-specific evidence. The dashboard covers range, volume, directional persistence, daily extremes and explicitly defined structural counts.
 
@@ -16792,7 +16678,7 @@ The simulation engine and everything that supports it. Never gains live-trading 
 
 #### `backtester/strategy_cards/incomplete/publication-profiles/tv_tbz9rgx9_weekly_volume_heatmap.md`
 
-`strategy-card` · 119 lines · 5,059 B · description: **extracted**
+`strategy-card` · 119 lines · 5,078 B · description: **extracted**
 
 **Purpose.** Map typical weekly trading-volume patterns to identify relatively active and quiet hourly slots.
 
@@ -16842,7 +16728,7 @@ The simulation engine and everything that supports it. Never gains live-trading 
 
 #### `backtester/strategy_cards/incomplete/publication-profiles/tv_tlz0mxsj_sticky_notes_checklist_to_do_journal_algoat.md`
 
-`strategy-card` · 116 lines · 4,743 B · description: **extracted**
+`strategy-card` · 116 lines · 4,762 B · description: **extracted**
 
 **Purpose.** Sticky Notes, Checklist, To-do, Journal puts a trader’s own notes and plans directly on the chart. Its financial purpose is workflow support rather than price analysis: the user can record market insights, trade plans, tasks and deadlines near the chart being monitored. Generic advice about confirming indicators in the latter description does not imply this note tool computes technical signals.
 
@@ -16862,7 +16748,7 @@ The simulation engine and everything that supports it. Never gains live-trading 
 
 #### `backtester/strategy_cards/incomplete/publication-profiles/tv_tmqir1jp_rsi_cyclic_smoothed_v2.md`
 
-`strategy-card` · 108 lines · 4,382 B · description: **extracted**
+`strategy-card` · 108 lines · 4,401 B · description: **extracted**
 
 **Purpose.** Cyclic Smoothed RSI adapts RSI smoothing and overbought/oversold bands to a dominant-cycle input. The aim is to reflect the market’s current rhythm rather than use fixed responsiveness and static extremes. The author proposes signal-line crossings of adaptive bands as trading cues, but the provided historical anecdote does not establish improved forecasting or measured performance.
 
@@ -16872,7 +16758,7 @@ The simulation engine and everything that supports it. Never gains live-trading 
 
 #### `backtester/strategy_cards/incomplete/publication-profiles/tv_tng177sv_realtime_5d_profile_lucf.md`
 
-`strategy-card` · 163 lines · 6,933 B · description: **extracted**
+`strategy-card` · 163 lines · 6,952 B · description: **extracted**
 
 **Purpose.** Realtime 5D Profile accumulates live chart updates into price-level distributions of volume or update counts. It encodes level activity, directional imbalance and age, offering an evolving view of where observed participation occurred. Unlike a historical profile, it starts when loaded and loses its accumulated state when refreshed or re-executed.
 
@@ -16882,7 +16768,7 @@ The simulation engine and everything that supports it. Never gains live-trading 
 
 #### `backtester/strategy_cards/incomplete/publication-profiles/tv_tnq7fvvw_trend_target_ribbon_boswaves.md`
 
-`strategy-card` · 142 lines · 7,293 B · description: **extracted**
+`strategy-card` · 142 lines · 7,331 B · description: **extracted**
 
 **Purpose.** Trend Target Ribbon combines ALMA trend confirmation with a chart-based position plan. A directional flip creates an entry reference, structural risk distance and staged reward levels, while a gradient ribbon conveys the strength of the existing trend.
 
@@ -16902,7 +16788,7 @@ The simulation engine and everything that supports it. Never gains live-trading 
 
 #### `backtester/strategy_cards/incomplete/publication-profiles/tv_tpseizhp_volume_x_ray_lucf.md`
 
-`strategy-card` · 129 lines · 5,627 B · description: **extracted**
+`strategy-card` · 129 lines · 5,665 B · description: **extracted**
 
 **Purpose.** Diagnose differences between historical intraday and end-of-day volume reporting. Volume X-ray helps identify instruments whose feeds deserve investigation; the author explicitly leaves the reporting cause and interpretation to the user.
 
@@ -16912,7 +16798,7 @@ The simulation engine and everything that supports it. Never gains live-trading 
 
 #### `backtester/strategy_cards/incomplete/publication-profiles/tv_tstsp9sk_peak_trading_activity_graphs_luxalgo.md`
 
-`strategy-card` · 114 lines · 4,956 B · description: **extracted**
+`strategy-card` · 114 lines · 4,975 B · description: **extracted**
 
 **Purpose.** Peak Trading Activity Graphs groups volume or volatility by calendar periods to reveal when activity has historically been relatively high or low. It is intended for choosing execution times and adjusting exposure to recurring conditions, rather than predicting the next price direction.
 
@@ -16922,7 +16808,7 @@ The simulation engine and everything that supports it. Never gains live-trading 
 
 #### `backtester/strategy_cards/incomplete/publication-profiles/tv_tt0t369u_volatility_stop_mtf.md`
 
-`strategy-card` · 126 lines · 4,792 B · description: **extracted**
+`strategy-card` · 126 lines · 4,811 B · description: **extracted**
 
 **Purpose.** Volatility Stop MTF displays an ATR-based trend/stop reference from a selected higher timeframe and optionally detects chart-timeframe breaches before the higher trend changes. Early Breach distinguishes an exit warning from a trend reversal by marking a limbo state.
 
@@ -16942,7 +16828,7 @@ The simulation engine and everything that supports it. Never gains live-trading 
 
 #### `backtester/strategy_cards/incomplete/publication-profiles/tv_ttq7bdk2_real_time_candles.md`
 
-`strategy-card` · 192 lines · 7,248 B · description: **extracted**
+`strategy-card` · 192 lines · 7,267 B · description: **extracted**
 
 **Purpose.** real_time_candles builds candle objects from live samples of prices or other financial series. It supports chart-synchronized candles and independently sampled time/count candles, exposing both their OHLC state and drawing helpers. Its financial uses include watching an oscillator change within a bar or examining short-lived price structures.
 
@@ -16982,7 +16868,7 @@ The simulation engine and everything that supports it. Never gains live-trading 
 
 #### `backtester/strategy_cards/incomplete/publication-profiles/tv_u1l7ixmp_rolling_candle_profile_with_buy_sell_signals_zeiierman.md`
 
-`strategy-card` · 140 lines · 5,100 B · description: **extracted**
+`strategy-card` · 140 lines · 5,119 B · description: **extracted**
 
 **Purpose.** Show localized directional pressure between price and an adaptive reference line, then mark fresh agreement of profile, price position and anchor slope.
 
@@ -17012,7 +16898,7 @@ The simulation engine and everything that supports it. Never gains live-trading 
 
 #### `backtester/strategy_cards/incomplete/publication-profiles/tv_ucux0rjl_tops_bottoms_time_of_day_report.md`
 
-`strategy-card` · 113 lines · 4,496 B · description: **extracted**
+`strategy-card` · 113 lines · 4,515 B · description: **extracted**
 
 **Purpose.** Describe when daily highs and lows have historically occurred to help readers understand intraday timing tendencies for a market.
 
@@ -17022,7 +16908,7 @@ The simulation engine and everything that supports it. Never gains live-trading 
 
 #### `backtester/strategy_cards/incomplete/publication-profiles/tv_udti2iuw_central_bank_liquidity_gap_indicator.md`
 
-`strategy-card` · 124 lines · 5,257 B · description: **extracted**
+`strategy-card` · 124 lines · 5,276 B · description: **extracted**
 
 **Purpose.** Central Bank Liquidity Gap compares growth in a global liquidity aggregate with growth in the S&P 500. The author interprets positive divergence as potential long-term accumulation context, particularly when liquidity growth materially exceeds market growth. It is expressly aimed at daily/weekly investment analysis rather than precise bottoms or day trading.
 
@@ -17062,7 +16948,7 @@ The simulation engine and everything that supports it. Never gains live-trading 
 
 #### `backtester/strategy_cards/incomplete/publication-profiles/tv_ujgvguvt_volatility_risk_premium.md`
 
-`strategy-card` · 171 lines · 7,235 B · description: **extracted**
+`strategy-card` · 171 lines · 7,292 B · description: **extracted**
 
 **Purpose.** Volatility Risk Premium compares VIX-implied volatility with trailing realized volatility to describe the market’s apparent insurance premium. It aims to contextualize equity risk and option strategy selection, with regime labels, historical standardization and momentum. This is a backward-looking realized-versus-forward-looking implied comparison, not an ex-post matched-horizon variance premium.
 
@@ -17122,7 +17008,7 @@ The simulation engine and everything that supports it. Never gains live-trading 
 
 #### `backtester/strategy_cards/incomplete/publication-profiles/tv_ulzjcb7h_volume_by_time_luxalgo.md`
 
-`strategy-card` · 128 lines · 4,942 B · description: **extracted**
+`strategy-card` · 128 lines · 4,961 B · description: **extracted**
 
 **Purpose.** Volume by Time compares each bar with historical volume observed at the same time of day. It aims to distinguish an unusually active interval from a routine seasonal volume peak, instead of comparing all intraday bars indiscriminately. The historical benchmark can use a mean or median and either the whole available chart history or a selected number of days.
 
@@ -17182,7 +17068,7 @@ The simulation engine and everything that supports it. Never gains live-trading 
 
 #### `backtester/strategy_cards/incomplete/publication-profiles/tv_uudeajsi_quadratic_regression.md`
 
-`strategy-card` · 119 lines · 4,779 B · description: **extracted**
+`strategy-card` · 119 lines · 4,798 B · description: **extracted**
 
 **Purpose.** Fit a local parabola to price and optionally extend it to explore curved trends that a straight regression cannot represent.
 
@@ -17242,7 +17128,7 @@ The simulation engine and everything that supports it. Never gains live-trading 
 
 #### `backtester/strategy_cards/incomplete/publication-profiles/tv_vakdjwdk_head_shoulders_s_r_regular.md`
 
-`strategy-card` · 146 lines · 5,205 B · description: **extracted**
+`strategy-card` · 146 lines · 5,224 B · description: **extracted**
 
 **Purpose.** Head & Shoulders S/R Regular searches a particular pivot/line geometry and monitors price inside a projected right-shoulder trigger region. It aims to make potential regular head-and-shoulders structures visible while distinguishing upside, downside and unresolved trigger behavior. The method first waits for aligned baseline points, then finds the intervening head and left shoulder.
 
@@ -17302,7 +17188,7 @@ The simulation engine and everything that supports it. Never gains live-trading 
 
 #### `backtester/strategy_cards/incomplete/publication-profiles/tv_vozihfu9_obv_traffic_lights.md`
 
-`strategy-card` · 102 lines · 4,189 B · description: **extracted**
+`strategy-card` · 102 lines · 4,208 B · description: **extracted**
 
 **Purpose.** Make volume-driven directional trends easier to read by combining a Heikin-Ashi-based OBV variation with several visual moving averages.
 
@@ -17332,7 +17218,7 @@ The simulation engine and everything that supports it. Never gains live-trading 
 
 #### `backtester/strategy_cards/incomplete/publication-profiles/tv_vrtl3vwf_machine_learning_rsi_ai_classification_ranking_zeiierman.md`
 
-`strategy-card` · 171 lines · 6,220 B · description: **extracted**
+`strategy-card` · 171 lines · 6,239 B · description: **extracted**
 
 **Purpose.** Machine Learning RSI classifies the current momentum environment by matching a multidimensional RSI fingerprint to historical labeled analogs. It aims to replace a simple threshold interpretation with adaptive feature importance, distance-weighted votes and quality gates. The learned conviction also changes Supertrend width.
 
@@ -17362,7 +17248,7 @@ The simulation engine and everything that supports it. Never gains live-trading 
 
 #### `backtester/strategy_cards/incomplete/publication-profiles/tv_vxui7vrm_market_structure_dashboard_flux_charts.md`
 
-`strategy-card` · 203 lines · 7,605 B · description: **extracted**
+`strategy-card` · 203 lines · 7,643 B · description: **extracted**
 
 **Purpose.** Market Structure Dashboard integrates trend, confirmed pivots, price zones, participation and session context across multiple timeframes. It exposes individual components and a weighted directional summary to distinguish agreement from conflict.
 
@@ -17522,7 +17408,7 @@ The simulation engine and everything that supports it. Never gains live-trading 
 
 #### `backtester/strategy_cards/incomplete/publication-profiles/tv_wixmhdwt_seasonality_tfo.md`
 
-`strategy-card` · 123 lines · 4,826 B · description: **extracted**
+`strategy-card` · 123 lines · 4,845 B · description: **extracted**
 
 **Purpose.** Seasonality TFO estimates typical daily, monthly and quarterly performance by trading-day position within the year. It deliberately uses a fixed trading-day calendar rather than actual calendar month boundaries. This makes it an approximate seasonal alignment model particularly intended for US stocks and indices.
 
@@ -17532,7 +17418,7 @@ The simulation engine and everything that supports it. Never gains live-trading 
 
 #### `backtester/strategy_cards/incomplete/publication-profiles/tv_wlsrg7cx_best_sma_finder.md`
 
-`strategy-card` · 124 lines · 4,776 B · description: **extracted**
+`strategy-card` · 124 lines · 4,795 B · description: **extracted**
 
 **Purpose.** Select a historically favorable simple-moving-average length using a composite backtest ranking rather than manual trial and error.
 
@@ -17562,7 +17448,7 @@ The simulation engine and everything that supports it. Never gains live-trading 
 
 #### `backtester/strategy_cards/incomplete/publication-profiles/tv_wp7wwjll_supertrend_ai_clustering_luxalgo.md`
 
-`strategy-card` · 116 lines · 5,024 B · description: **extracted**
+`strategy-card` · 116 lines · 5,043 B · description: **extracted**
 
 **Purpose.** SuperTrend AI evaluates several SuperTrend factor settings with a smoothed directional-performance proxy, clusters their scores and uses the average factor from a selected performance group. It adapts a trailing reference according to recent fit rather than training a supervised forecast. The displayed score is not a win probability, and the author says it cannot predict every signal reliably.
 
@@ -17592,7 +17478,7 @@ The simulation engine and everything that supports it. Never gains live-trading 
 
 #### `backtester/strategy_cards/incomplete/publication-profiles/tv_wspypw8w_session_bar_candle_coloring.md`
 
-`strategy-card` · 121 lines · 4,573 B · description: **extracted**
+`strategy-card` · 121 lines · 4,592 B · description: **extracted**
 
 **Purpose.** Apply session-specific candle styling to emphasize selected market hours and distinguish bullish, bearish or neutral candles.
 
@@ -17652,7 +17538,7 @@ The simulation engine and everything that supports it. Never gains live-trading 
 
 #### `backtester/strategy_cards/incomplete/publication-profiles/tv_x2llrvbe_higher_order_pivots.md`
 
-`strategy-card` · 114 lines · 4,889 B · description: **extracted**
+`strategy-card` · 114 lines · 4,908 B · description: **extracted**
 
 **Purpose.** Higher Order Pivots recursively identifies turning points among already confirmed turning points. It is intended for retrospective market-structure analysis, where broader inflections can be distinguished from local candle noise.
 
@@ -17662,7 +17548,7 @@ The simulation engine and everything that supports it. Never gains live-trading 
 
 #### `backtester/strategy_cards/incomplete/publication-profiles/tv_x2y6hyok_bitcoin_bullish_percent_index.md`
 
-`strategy-card` · 169 lines · 6,525 B · description: **extracted**
+`strategy-card` · 169 lines · 6,544 B · description: **extracted**
 
 **Purpose.** Bitcoin Bullish Percent Index measures breadth across a manually chosen crypto basket by counting point-and-figure buy states, then applies another point-and-figure representation to that breadth series. It asks whether strength is broad among assets the author regards as BTC-correlated, rather than measuring Bitcoin alone.
 
@@ -17682,7 +17568,7 @@ The simulation engine and everything that supports it. Never gains live-trading 
 
 #### `backtester/strategy_cards/incomplete/publication-profiles/tv_x8mujqgt_bjcandlepatterns.md`
 
-`strategy-card` · 215 lines · 7,260 B · description: **extracted**
+`strategy-card` · 215 lines · 7,298 B · description: **extracted**
 
 **Purpose.** BjCandlePatterns supplies reusable Japanese-candlestick predicates, helper measurements and optional labels for financial scripts. It spans single-bar shapes, engulfing and harami formations, gaps, stars, multi-bar continuation structures and soldiers/crows. The author intentionally omits trend and average-size filters in some patterns so callers can apply their own context.
 
@@ -17712,7 +17598,7 @@ The simulation engine and everything that supports it. Never gains live-trading 
 
 #### `backtester/strategy_cards/incomplete/publication-profiles/tv_xdwgv3fx_ttrades_daily_bias_tfo.md`
 
-`strategy-card` · 115 lines · 5,078 B · description: **extracted**
+`strategy-card` · 115 lines · 5,097 B · description: **extracted**
 
 **Purpose.** TTrades Daily Bias assigns a next-period target toward a previous high or low from the latest completed period’s relationship to its own prior range. It then measures how often those target levels are reached and closed through. Daily and weekly modes share the same scenario logic, making the tool a directional-target heuristic plus historical reporting rather than a complete entry/stop strategy.
 
@@ -17742,7 +17628,7 @@ The simulation engine and everything that supports it. Never gains live-trading 
 
 #### `backtester/strategy_cards/incomplete/publication-profiles/tv_xh8tldte_realtime_delta_volume_action_lucf.md`
 
-`strategy-card` · 149 lines · 7,223 B · description: **extracted**
+`strategy-card` · 149 lines · 7,261 B · description: **extracted**
 
 **Purpose.** Realtime Delta Volume Action builds a custom live candle view from incoming price/volume updates. It supplements price action with signed update counts, signed volume, relative deltas and a volume-weighted update-price reference.
 
@@ -17762,7 +17648,7 @@ The simulation engine and everything that supports it. Never gains live-trading 
 
 #### `backtester/strategy_cards/incomplete/publication-profiles/tv_xlv4mwjk_time_range_statistics.md`
 
-`strategy-card` · 119 lines · 5,201 B · description: **extracted**
+`strategy-card` · 119 lines · 5,220 B · description: **extracted**
 
 **Purpose.** Time Range Statistics summarizes a manually selected chart interval, combining familiar price statistics with volume, gaps and intermarket correlation. It lets the user study a specific episode instead of a fixed rolling window. The panel includes directional context based on higher-high versus lower-low counts, while chart lines expose the interval’s mean and extremes.
 
@@ -17782,7 +17668,7 @@ The simulation engine and everything that supports it. Never gains live-trading 
 
 #### `backtester/strategy_cards/incomplete/publication-profiles/tv_xp9odtfm_volume_profile_volume_delta_oi_delta_kioseff_trading.md`
 
-`strategy-card` · 128 lines · 6,083 B · description: **extracted**
+`strategy-card` · 128 lines · 6,102 B · description: **extracted**
 
 **Purpose.** This profile estimates per-level volume delta and, for supported Binance perpetuals, open-interest delta. It distributes minute-bar activity across crossed price levels and optionally imposes a two-sided split when only one component appears. The goal is footprint-like visualization under limited data, with assumptions made explicit rather than a claim of true trade-by-trade aggressor volume.
 
@@ -17802,7 +17688,7 @@ The simulation engine and everything that supports it. Never gains live-trading 
 
 #### `backtester/strategy_cards/incomplete/publication-profiles/tv_xyaiqwd8_auto_trendline_indicator_based_on_fractals.md`
 
-`strategy-card` · 122 lines · 4,735 B · description: **extracted**
+`strategy-card` · 122 lines · 4,754 B · description: **extracted**
 
 **Purpose.** Auto Trendline connects recently detected fractals to make trendline placement systematic. Its aim is to reduce discretionary drawing bias by using a consistent pivot-selection process. Crossing markers can highlight price interaction with the resulting lines, but the author explicitly treats the lines as references rather than evidence that slope predicts future direction.
 
@@ -17822,7 +17708,7 @@ The simulation engine and everything that supports it. Never gains live-trading 
 
 #### `backtester/strategy_cards/incomplete/publication-profiles/tv_y3pnzg2q_correlation_heatmap.md`
 
-`strategy-card` · 142 lines · 5,673 B · description: **extracted**
+`strategy-card` · 142 lines · 5,692 B · description: **extracted**
 
 **Purpose.** Correlation Heatmap compares aligned weekly or monthly arithmetic returns across a selected asset list. It aims to support diversification and relationship research while avoiding misleading comparisons caused by different session closing times. The distinctive alignment method reconstructs each other symbol’s price from sum/difference spread series sampled in chart context.
 
@@ -17852,7 +17738,7 @@ The simulation engine and everything that supports it. Never gains live-trading 
 
 #### `backtester/strategy_cards/incomplete/publication-profiles/tv_y6jyas39_market_sessions_and_tpo_forecast.md`
 
-`strategy-card` · 129 lines · 5,493 B · description: **extracted**
+`strategy-card` · 129 lines · 5,512 B · description: **extracted**
 
 **Purpose.** Market Sessions and TPO combines session boundaries, time-price-opportunity profiles and an unspecified remainder-of-session forecast. It adds participation and range statistics so the user can inspect session structure in one view. Profiles and naked PoC references provide descriptive context; the forecast’s method is not given and must not be inferred from the presence of ATR augmentation.
 
@@ -17872,7 +17758,7 @@ The simulation engine and everything that supports it. Never gains live-trading 
 
 #### `backtester/strategy_cards/incomplete/publication-profiles/tv_ya0kopdo_markov_chain_3d_fractalyst.md`
 
-`strategy-card` · 159 lines · 6,880 B · description: **extracted**
+`strategy-card` · 159 lines · 6,918 B · description: **extracted**
 
 **Purpose.** Markov Chain [3D] summarizes recent transitions among detected bullish, bearish and neutral regimes. Its animated state diagram is paired with a numeric bias output intended for connecting regime filters to separately specified systematic trading rules.
 
@@ -17912,7 +17798,7 @@ The simulation engine and everything that supports it. Never gains live-trading 
 
 #### `backtester/strategy_cards/incomplete/publication-profiles/tv_ygno2g1v_tick_chart.md`
 
-`strategy-card` · 113 lines · 4,468 B · description: **extracted**
+`strategy-card` · 113 lines · 4,487 B · description: **extracted**
 
 **Purpose.** Build a live candle chart organized by count of price updates rather than fixed elapsed time.
 
@@ -17922,7 +17808,7 @@ The simulation engine and everything that supports it. Never gains live-trading 
 
 #### `backtester/strategy_cards/incomplete/publication-profiles/tv_yhpgau7a_carrier_volatility_pumori.md`
 
-`strategy-card` · 117 lines · 4,534 B · description: **extracted**
+`strategy-card` · 117 lines · 4,553 B · description: **extracted**
 
 **Purpose.** Explore an intentionally overreactive fractional-length recursive transform as a visual carrier of rapid changes in RSI or price.
 
@@ -17932,7 +17818,7 @@ The simulation engine and everything that supports it. Never gains live-trading 
 
 #### `backtester/strategy_cards/incomplete/publication-profiles/tv_yjxpjg0y_multi_asset_performance_spaghetti_by_leviathan.md`
 
-`strategy-card` · 150 lines · 8,158 B · description: **extracted**
+`strategy-card` · 150 lines · 8,196 B · description: **extracted**
 
 **Purpose.** Monitor relative performance across a caller-selected asset group using price, open interest or on-balance volume. The spaghetti display emphasizes leaders, laggards and changes around an anchor, with auxiliary relationship statistics for rotation or pair-research ideas.
 
@@ -17992,7 +17878,7 @@ The simulation engine and everything that supports it. Never gains live-trading 
 
 #### `backtester/strategy_cards/incomplete/publication-profiles/tv_yqkwbg4m_intrabar_analyzer_kioseff_trading.md`
 
-`strategy-card` · 136 lines · 5,424 B · description: **extracted**
+`strategy-card` · 136 lines · 5,443 B · description: **extracted**
 
 **Purpose.** Intrabar Analyzer displays lower-timeframe prices and technical calculations within a higher-timeframe chart context. It aims to make hidden intrabar structure inspectable through alternate candle constructions, overlays, volume/price graphics and technical ratings.
 
@@ -18002,7 +17888,7 @@ The simulation engine and everything that supports it. Never gains live-trading 
 
 #### `backtester/strategy_cards/incomplete/publication-profiles/tv_yr3kt0ui_time_of_day_session_performance_stats_quantalgo.md`
 
-`strategy-card` · 169 lines · 7,353 B · description: **extracted**
+`strategy-card` · 169 lines · 7,372 B · description: **extracted**
 
 **Purpose.** Time-of-Day/Session Performance Stats ranks historical activity by hour and session to help traders focus on appropriate market windows. It separately measures range, volume, directional frequency and average open-to-close drift, avoiding the assumption that a high bullish bar count necessarily means positive average return. Session overlaps count in every involved session.
 
@@ -18032,7 +17918,7 @@ The simulation engine and everything that supports it. Never gains live-trading 
 
 #### `backtester/strategy_cards/incomplete/publication-profiles/tv_yyrxrhi9_atr_rope.md`
 
-`strategy-card` · 133 lines · 5,503 B · description: **extracted**
+`strategy-card` · 133 lines · 5,541 B · description: **extracted**
 
 **Purpose.** Separate movement beyond an ATR-sized tolerance from smaller noise and preserve reference zones formed while the filtered center stays flat.
 
@@ -18042,7 +17928,7 @@ The simulation engine and everything that supports it. Never gains live-trading 
 
 #### `backtester/strategy_cards/incomplete/publication-profiles/tv_zdqq3mfb_minervini_qualifier.md`
 
-`strategy-card` · 154 lines · 5,922 B · description: **extracted**
+`strategy-card` · 154 lines · 5,941 B · description: **extracted**
 
 **Purpose.** Minervini Qualifier colors a moving-average envelope according to a stock trend-template qualification and exposes individual condition states. It aims to make progress toward the referenced stock-selection conditions visible over time. A separate relative-strength display compares the stock with a chosen index.
 
@@ -18062,7 +17948,7 @@ The simulation engine and everything that supports it. Never gains live-trading 
 
 #### `backtester/strategy_cards/incomplete/publication-profiles/tv_zhfjqywg_cvd_profiles_tradingiq.md`
 
-`strategy-card` · 129 lines · 4,939 B · description: **extracted**
+`strategy-card` · 129 lines · 4,958 B · description: **extracted**
 
 **Purpose.** Map estimated cumulative directional participation into session price profiles and contrast it with activity, notional and imbalance views.
 
@@ -18072,7 +17958,7 @@ The simulation engine and everything that supports it. Never gains live-trading 
 
 #### `backtester/strategy_cards/incomplete/publication-profiles/tv_zkbuifk7_delta_volume_channels_lucf.md`
 
-`strategy-card` · 150 lines · 7,145 B · description: **extracted**
+`strategy-card` · 150 lines · 7,164 B · description: **extracted**
 
 **Purpose.** Translate lower-timeframe directional-volume estimates into price-chart channels and configurable condition markers. The design emphasizes visual pressure and consolidation context rather than raw flow values or verified exchange aggressor volume.
 
@@ -18112,7 +17998,7 @@ The simulation engine and everything that supports it. Never gains live-trading 
 
 #### `backtester/strategy_cards/incomplete/publication-profiles/tv_zmxb93wd_volume_footprint_voids_bigbeluga.md`
 
-`strategy-card` · 115 lines · 5,137 B · description: **extracted**
+`strategy-card` · 115 lines · 5,156 B · description: **extracted**
 
 **Purpose.** Volume Footprint Voids builds a separate lower-timeframe profile within each chart candle, emphasizing concentrations and sparse areas. The author calls the largest block a time point of control and interprets black voids as potential imbalance-fill zones.
 
@@ -18122,7 +18008,7 @@ The simulation engine and everything that supports it. Never gains live-trading 
 
 #### `backtester/strategy_cards/incomplete/publication-profiles/tv_zn9dhlps_volume_delta_compare_ticks_ltf_data.md`
 
-`strategy-card` · 141 lines · 5,407 B · description: **extracted**
+`strategy-card` · 141 lines · 5,426 B · description: **extracted**
 
 **Purpose.** Volume Delta Compare contrasts live-update and lower-timeframe estimates of directional volume. Its purpose is to show why the same chart candle can yield different delta values depending on observation granularity. It preserves a neutral category instead of forcing unchanged-price volume into a directional side.
 
@@ -18182,7 +18068,7 @@ The simulation engine and everything that supports it. Never gains live-trading 
 
 #### `backtester/strategy_cards/incomplete/publication-profiles/tv_zsgx4esy_smart_trader_episode_06_isotropic_trend_lines.md`
 
-`strategy-card` · 156 lines · 5,839 B · description: **extracted**
+`strategy-card` · 156 lines · 5,858 B · description: **extracted**
 
 **Purpose.** Isotropic Trend Lines measures structural trend slope in log-price units normalized by realized volatility, aiming to make steepness less dependent on display scaling. It reduces non-overlapping blocks to range midpoints, finds a monotonic sequence, fits boundary lines through selected extremes and compares multiple scales. A state machine describes channel exits, returns and failures.
 
@@ -18222,7 +18108,7 @@ The simulation engine and everything that supports it. Never gains live-trading 
 
 #### `backtester/strategy_cards/incomplete/publication-profiles/tv_zvct18wt_mawreez_rsi_divergence_detector.md`
 
-`strategy-card` · 121 lines · 4,841 B · description: **extracted**
+`strategy-card` · 121 lines · 4,860 B · description: **extracted**
 
 **Purpose.** Mawreez RSI Divergence Detector represents divergence strength continuously instead of marking only a few selected pivot pairs. It sums valid divergences of regular and hidden types, using opposite slopes between price and RSI and requiring connecting lines not to cross their underlying series.
 
@@ -18252,7 +18138,7 @@ The simulation engine and everything that supports it. Never gains live-trading 
 
 #### `backtester/strategy_cards/incomplete/publication-profiles/tv_zxcxrnij_redk_multi_modal_trailingstop_redk_mmtstop.md`
 
-`strategy-card` · 129 lines · 5,207 B · description: **extracted**
+`strategy-card` · 129 lines · 5,226 B · description: **extracted**
 
 **Purpose.** RedK Multi-Modal TrailingStop places several common stop-distance models behind one visual and alert interface. It aims to support management of an existing position, letting the trader change the stop method without changing how proximity and risk states are presented. A separate ATR-based distance gauge labels price as safe, watch or critical regardless of the selected stop model.
 
@@ -18272,3093 +18158,13 @@ The simulation engine and everything that supports it. Never gains live-trading 
 
 #### `backtester/strategy_cards/incomplete/publication-profiles/tv_zxxjiyij_adaptive_volume_delta_map.md`
 
-`strategy-card` · 124 lines · 5,274 B · description: **extracted**
+`strategy-card` · 124 lines · 5,293 B · description: **extracted**
 
 **Purpose.** Adaptive Volume Delta Map chooses available data granularity and displays directional-volume imbalance plus an optional per-price distribution. It aims to adapt an order-flow-style view to feed/subscription capabilities, from fine updates to coarse candles.
 
 **Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
 
 **Use.** Specification only — read it; there is no runner. Status: documentation-only.
-
-### `backtester/strategy_research/`
-
-#### `backtester/strategy_research/README.md`
-
-`doc` · 4 lines · 164 B · description: **extracted**
-
-**Purpose.** Cards without an implemented runner are preserved here for further research. They are excluded from the active strategy catalog.
-
-**Use.** Read it.
-
-#### `backtester/strategy_research/avellaneda_stoikov_mm.md`
-
-`doc` · 60 lines · 2,331 B · description: **extracted**
-
-**Purpose.** Optimal quotes around a reservation price with an inventory penalty. Wrong shape for this harness.
-
-**Contents.** Frontmatter: `status`=spec-only, `family`=microstructure, `evaluation`=None, `success_likelihood`=very-low, `data_available`=false, `registry_key`=null.
-
-**Use.** Read it.
-
-#### `backtester/strategy_research/day_trading.md`
-
-`doc` · 61 lines · 2,492 B · description: **extracted**
-
-**Purpose.** A holding-period rule, not a signal: open and close within one UTC day. Spec-only until a session-flat wrapper exists.
-
-**Contents.** Frontmatter: `status`=spec-only, `family`=intraday, `evaluation`=None, `success_likelihood`=very-low, `data_available`=true, `registry_key`=null.
-
-**Use.** Read it.
-
-#### `backtester/strategy_research/dex_cex_dislocation.md`
-
-`doc` · 188 lines · 10,321 B · description: **extracted**
-
-**Purpose.** Cross-venue basis as both a signal and an arbitrage.
-
-**Contents.** Frontmatter: `status`=spec-only, `family`=microstructure, `evaluation`=None, `success_likelihood`=very-low, `data_available`=false, `registry_key`=null.
-
-**Use.** Read it.
-
-#### `backtester/strategy_research/discount_to_anchor.md`
-
-`doc` · 147 lines · 7,266 B · description: **extracted**
-
-**Purpose.** Buy in proportion to the discount against a fair-value anchor. Documented as a duplicate of the existing mean-reversion family rather than registered.
-
-**Contents.** Frontmatter: `status`=spec-only, `family`=mean-reversion, `evaluation`=None, `success_likelihood`=very-low, `data_available`=true, `registry_key`=null.
-
-**Use.** Read it.
-
-#### `backtester/strategy_research/event_driven.md`
-
-`doc` · 62 lines · 2,298 B · description: **extracted**
-
-**Purpose.** Trade around scheduled or news events (listings, unlocks, forks, macro prints). Spec-only: needs a dated event feed.
-
-**Contents.** Frontmatter: `status`=spec-only, `family`=event, `evaluation`=None, `success_likelihood`=very-low, `data_available`=false, `registry_key`=null.
-
-**Use.** Read it.
-
-#### `backtester/strategy_research/exchange_net_flow.md`
-
-`doc` · 56 lines · 1,889 B · description: **extracted**
-
-**Purpose.** Stablecoins moving onto exchanges as a proxy for incoming buying power.
-
-**Contents.** Frontmatter: `status`=spec-only, `family`=crypto-native, `evaluation`=None, `success_likelihood`=very-low, `data_available`=false, `registry_key`=null.
-
-**Use.** Read it.
-
-#### `backtester/strategy_research/funding_utilization_extremes.md`
-
-`doc` · 78 lines · 3,649 B · description: **extracted**
-
-**Purpose.** On Jupiter there is no funding rate. The tradeable signal is pool UTILIZATION. Highest-ranked spec-only signal.
-
-**Contents.** Frontmatter: `status`=spec-only, `family`=crypto-native, `evaluation`=None, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
-
-**Use.** Read it.
-
-#### `backtester/strategy_research/implied_vs_realised_vol.md`
-
-`doc` · 60 lines · 2,234 B · description: **extracted**
-
-**Purpose.** Harvest the variance risk premium when implied minus realised volatility is historically wide.
-
-**Contents.** Frontmatter: `status`=spec-only, `family`=volatility, `evaluation`=None, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
-
-**Use.** Read it.
-
-#### `backtester/strategy_research/kalman_hedge_ratio.md`
-
-`doc` · 60 lines · 2,256 B · description: **extracted**
-
-**Purpose.** Let the hedge ratio evolve as a state variable instead of fixing it per window.
-
-**Contents.** Frontmatter: `status`=spec-only, `family`=mean-reversion, `evaluation`=None, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
-
-**Use.** Read it.
-
-#### `backtester/strategy_research/liquidation_cascade_proximity.md`
-
-`doc` · 59 lines · 2,244 B · description: **extracted**
-
-**Purpose.** Estimate clustered liquidation levels, then fade or follow the cascade.
-
-**Contents.** Frontmatter: `status`=spec-only, `family`=crypto-native, `evaluation`=None, `success_likelihood`=very-low, `data_available`=false, `registry_key`=null.
-
-**Use.** Read it.
-
-#### `backtester/strategy_research/mvrv_nupl_valuation.md`
-
-`doc` · 59 lines · 2,077 B · description: **extracted**
-
-**Purpose.** Market value against realised value as a cycle-position gauge.
-
-**Contents.** Frontmatter: `status`=spec-only, `family`=crypto-native, `evaluation`=None, `success_likelihood`=very-low, `data_available`=false, `registry_key`=null.
-
-**Use.** Read it.
-
-#### `backtester/strategy_research/open_interest_divergence.md`
-
-`doc` · 57 lines · 1,902 B · description: **extracted**
-
-**Purpose.** Open interest rising while price is flat marks leverage build-up and liquidation risk.
-
-**Contents.** Frontmatter: `status`=spec-only, `family`=crypto-native, `evaluation`=None, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
-
-**Use.** Read it.
-
-#### `backtester/strategy_research/order_book_imbalance.md`
-
-`doc` · 57 lines · 1,912 B · description: **extracted**
-
-**Purpose.** The highest-frequency edge available, and completely out of reach here.
-
-**Contents.** Frontmatter: `status`=spec-only, `family`=microstructure, `evaluation`=None, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
-
-**Use.** Read it.
-
-#### `backtester/strategy_research/pivot_reversal_v33_source_research.md`
-
-`doc` · 42 lines · 1,799 B · description: **extracted**
-
-**Purpose.** Confirmed high/low pivot stop-order adapter with unresolved tie semantics.
-
-**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
-
-**Use.** Read it.
-
-#### `backtester/strategy_research/prediction_markets.md`
-
-`doc` · 71 lines · 4,814 B · description: **extracted**
-
-**Purpose.** Two distinct ideas to consider: read prediction-market odds as a forward-looking signal for crypto, or trade the markets themselves (cross-venue mispricing, calibration bias). Spec-only: needs a price and resolution history the repo does not have.
-
-**Contents.** Frontmatter: `status`=spec-only, `family`=event, `evaluation`=None, `success_likelihood`=very-low, `data_available`=false, `registry_key`=null.
-
-**Use.** Read it.
-
-#### `backtester/strategy_research/rs_zigzag_pa_v1.md`
-
-`doc` · 71 lines · 3,640 B · description: **extracted**
-
-**Purpose.** Legacy harmonic ZigZag strategy with higher-timeframe lookahead; research only.
-
-**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
-
-**Use.** Read it.
-
-#### `backtester/strategy_research/sar_v33_source_research.md`
-
-`doc` · 39 lines · 1,616 B · description: **extracted**
-
-**Purpose.** Source-bound SAR stop-order research adapter, not a validated TradingView replica.
-
-**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
-
-**Use.** Read it.
-
-#### `backtester/strategy_research/scalping.md`
-
-`doc` · 61 lines · 2,290 B · description: **extracted**
-
-**Purpose.** Many very small gains from tiny price moves on a tick or order-book edge. Spec-only: needs tick and book data the repo does not have.
-
-**Contents.** Frontmatter: `status`=spec-only, `family`=microstructure, `evaluation`=None, `success_likelihood`=very-low, `data_available`=false, `registry_key`=null.
-
-**Use.** Read it.
-
-#### `backtester/strategy_research/single_ma_v31_source_research.md`
-
-`doc` · 28 lines · 1,350 B · description: **extracted**
-
-**Purpose.** Source-bound moving-average research adapter; TradingView parity remains unverified.
-
-**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
-
-**Use.** Read it.
-
-#### `backtester/strategy_research/social_sentiment.md`
-
-`doc` · 59 lines · 2,156 B · description: **extracted**
-
-**Purpose.** Documented alpha horizon of 1-2 days with fast decay; bot noise is the principal difficulty.
-
-**Contents.** Frontmatter: `status`=spec-only, `family`=alt-data, `evaluation`=None, `success_likelihood`=very-low, `data_available`=false, `registry_key`=null.
-
-**Use.** Read it.
-
-#### `backtester/strategy_research/staking_ratio_flow.md`
-
-`doc` · 57 lines · 2,029 B · description: **extracted**
-
-**Purpose.** SOL-specific float dynamics: a rising staked fraction reduces liquid supply.
-
-**Contents.** Frontmatter: `status`=spec-only, `family`=crypto-native, `evaluation`=None, `success_likelihood`=very-low, `data_available`=false, `registry_key`=null.
-
-**Use.** Read it.
-
-#### `backtester/strategy_research/trade_flow_imbalance.md`
-
-`doc` · 57 lines · 2,017 B · description: **extracted**
-
-**Purpose.** Signed trade prints. Naive flow-following is systematically picked off.
-
-**Contents.** Frontmatter: `status`=spec-only, `family`=microstructure, `evaluation`=None, `success_likelihood`=very-low, `data_available`=false, `registry_key`=null.
-
-**Use.** Read it.
-
-#### `backtester/strategy_research/tv_0ghsw1kr_moving_regression.md`
-
-`doc` · 98 lines · 4,857 B · description: **extracted**
-
-**Purpose.** Specification of Moving Regression; not a tested trading strategy.
-
-**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
-
-**Use.** Read it.
-
-#### `backtester/strategy_research/tv_119rqjou_potential_breakout_on_btcusd_to_the_upside.md`
-
-`doc` · 130 lines · 5,570 B · description: **extracted**
-
-**Purpose.** Specification of Potential breakout on BTCUSD to the upside; not a tested trading strategy.
-
-**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
-
-**Use.** Read it.
-
-#### `backtester/strategy_research/tv_1imcwzbc_the_simplest_scalping_strategy_with_3_ema_s_for_20_pips_per_day.md`
-
-`doc` · 98 lines · 4,660 B · description: **extracted**
-
-**Purpose.** Specification of The Simplest Scalping Strategy With 3 EMA's For 20 Pips Per Day; not a tested trading strategy.
-
-**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
-
-**Use.** Read it.
-
-#### `backtester/strategy_research/tv_1uw4irtx_all_time_high_low_widget.md`
-
-`doc` · 92 lines · 3,958 B · description: **extracted**
-
-**Purpose.** Specification of All-Time High/Low Widget; not a tested trading strategy.
-
-**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
-
-**Use.** Read it.
-
-#### `backtester/strategy_research/tv_2vec0xzu_annual_returns_comparison_by_muqwishi.md`
-
-`doc` · 91 lines · 4,223 B · description: **extracted**
-
-**Purpose.** Specification of Annual Returns % Comparison [By MUQWISHI]; not a tested trading strategy.
-
-**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
-
-**Use.** Read it.
-
-#### `backtester/strategy_research/tv_34r4mh5w_market_microstructure_analytics.md`
-
-`doc` · 100 lines · 7,642 B · description: **extracted**
-
-**Purpose.** Specification of Market Microstructure Analytics; not a tested trading strategy.
-
-**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
-
-**Use.** Read it.
-
-#### `backtester/strategy_research/tv_3aqxmxoc_s_p_500_vs_stocks.md`
-
-`doc` · 95 lines · 4,230 B · description: **extracted**
-
-**Purpose.** Specification of S&P 500 VS STOCKS; not a tested trading strategy.
-
-**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
-
-**Use.** Read it.
-
-#### `backtester/strategy_research/tv_43000501972_bollinger_bandwidth_bbw.md`
-
-`doc` · 98 lines · 5,477 B · description: **extracted**
-
-**Purpose.** Specification of Bollinger BandWidth (BBW); not a tested trading strategy.
-
-**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
-
-**Use.** Read it.
-
-#### `backtester/strategy_research/tv_43000502040_volume_profile_indicators_basic_concepts.md`
-
-`doc` · 104 lines · 5,845 B · description: **extracted**
-
-**Purpose.** Specification of Volume profile indicators: basic concepts; not a tested trading strategy.
-
-**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
-
-**Use.** Read it.
-
-#### `backtester/strategy_research/tv_43000583769_bearish_engulfing_recognizing_sellers_taking_over_at_an_uptrend_s.md`
-
-`doc` · 96 lines · 5,103 B · description: **extracted**
-
-**Purpose.** Specification of Bearish Engulfing: recognizing sellers taking over at an uptrend's peak; not a tested trading strategy.
-
-**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
-
-**Use.** Read it.
-
-#### `backtester/strategy_research/tv_43000583771_bullish_engulfing_recognizing_buyers_taking_over_at_a_downtrend_s.md`
-
-`doc` · 96 lines · 5,110 B · description: **extracted**
-
-**Purpose.** Specification of Bullish Engulfing: recognizing buyers taking over at a downtrend's base; not a tested trading strategy.
-
-**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
-
-**Use.** Read it.
-
-#### `backtester/strategy_research/tv_43000583777_bearish_harami_how_to_confirm_a_slowdown_at_the_top_of_an_uptrend.md`
-
-`doc` · 96 lines · 5,099 B · description: **extracted**
-
-**Purpose.** Specification of Bearish Harami: how to confirm a slowdown at the top of an uptrend; not a tested trading strategy.
-
-**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
-
-**Use.** Read it.
-
-#### `backtester/strategy_research/tv_43000583778_harami_bullish.md`
-
-`doc` · 96 lines · 4,724 B · description: **extracted**
-
-**Purpose.** Specification of Harami - Bullish; not a tested trading strategy.
-
-**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
-
-**Use.** Read it.
-
-#### `backtester/strategy_research/tv_43000583782_kicking_bullish.md`
-
-`doc` · 90 lines · 4,389 B · description: **extracted**
-
-**Purpose.** Specification of Kicking - Bullish; not a tested trading strategy.
-
-**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
-
-**Use.** Read it.
-
-#### `backtester/strategy_research/tv_43000583785_marubozu_black_bearish.md`
-
-`doc` · 92 lines · 4,120 B · description: **extracted**
-
-**Purpose.** Specification of Marubozu Black - Bearish; not a tested trading strategy.
-
-**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
-
-**Use.** Read it.
-
-#### `backtester/strategy_research/tv_43000583786_marubozu_white_bullish.md`
-
-`doc` · 92 lines · 4,143 B · description: **extracted**
-
-**Purpose.** Specification of Marubozu White - Bullish; not a tested trading strategy.
-
-**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
-
-**Use.** Read it.
-
-#### `backtester/strategy_research/tv_43000583791_spinning_top_black.md`
-
-`doc` · 92 lines · 4,049 B · description: **extracted**
-
-**Purpose.** Specification of Spinning Top Black; not a tested trading strategy.
-
-**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
-
-**Use.** Read it.
-
-#### `backtester/strategy_research/tv_43000589093_advance_decline_ratio.md`
-
-`doc` · 95 lines · 4,620 B · description: **extracted**
-
-**Purpose.** Specification of Advance/Decline Ratio; not a tested trading strategy.
-
-**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
-
-**Use.** Read it.
-
-#### `backtester/strategy_research/tv_43000589126_cumulative_volume_index_cvi.md`
-
-`doc` · 99 lines · 4,583 B · description: **extracted**
-
-**Purpose.** Specification of Cumulative Volume Index (CVI); not a tested trading strategy.
-
-**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
-
-**Use.** Read it.
-
-#### `backtester/strategy_research/tv_43000589129_dividend_yield.md`
-
-`doc` · 94 lines · 4,548 B · description: **extracted**
-
-**Purpose.** Specification of Dividend Yield; not a tested trading strategy.
-
-**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
-
-**Use.** Read it.
-
-#### `backtester/strategy_research/tv_43000589195_pivot_points_high_low.md`
-
-`doc` · 96 lines · 4,983 B · description: **extracted**
-
-**Purpose.** Specification of Pivot Points High Low; not a tested trading strategy.
-
-**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
-
-**Use.** Read it.
-
-#### `backtester/strategy_research/tv_43000591664_zigzag_indicator.md`
-
-`doc` · 102 lines · 6,021 B · description: **extracted**
-
-**Purpose.** Specification of Zigzag indicator; not a tested trading strategy.
-
-**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
-
-**Use.** Read it.
-
-#### `backtester/strategy_research/tv_43000591665_inside_bar_strategy.md`
-
-`doc` · 100 lines · 6,098 B · description: **extracted**
-
-**Purpose.** Specification of InSide Bar Strategy; not a tested trading strategy.
-
-**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
-
-**Use.** Read it.
-
-#### `backtester/strategy_research/tv_43000592713_bearish_falling_window_interpreting_a_price_gap_within_a_downtren.md`
-
-`doc` · 100 lines · 5,444 B · description: **extracted**
-
-**Purpose.** Specification of Bearish Falling window: interpreting a price gap within a downtrend; not a tested trading strategy.
-
-**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
-
-**Use.** Read it.
-
-#### `backtester/strategy_research/tv_43000592721_rising_window_bullish.md`
-
-`doc` · 98 lines · 4,958 B · description: **extracted**
-
-**Purpose.** Specification of Rising Window - Bullish; not a tested trading strategy.
-
-**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
-
-**Use.** Read it.
-
-#### `backtester/strategy_research/tv_43000592723_bearish_downside_tasuki_gap_how_to_confirm_a_downtrend_will_conti.md`
-
-`doc` · 100 lines · 5,420 B · description: **extracted**
-
-**Purpose.** Specification of Bearish Downside Tasuki gap: how to confirm a downtrend will continue; not a tested trading strategy.
-
-**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
-
-**Use.** Read it.
-
-#### `backtester/strategy_research/tv_43000594673_woodies_cci.md`
-
-`doc` · 98 lines · 4,729 B · description: **extracted**
-
-**Purpose.** Specification of Woodies CCI; not a tested trading strategy.
-
-**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
-
-**Use.** Read it.
-
-#### `backtester/strategy_research/tv_43000594676_volatility_stop.md`
-
-`doc` · 110 lines · 7,707 B · description: **extracted**
-
-**Purpose.** Specification of Volatility Stop; not a tested trading strategy.
-
-**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
-
-**Use.** Read it.
-
-#### `backtester/strategy_research/tv_43000599823_barupdn_strategy.md`
-
-`doc` · 96 lines · 4,378 B · description: **extracted**
-
-**Purpose.** Specification of BarUpDn Strategy; not a tested trading strategy.
-
-**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
-
-**Use.** Read it.
-
-#### `backtester/strategy_research/tv_43000599826_bollinger_bands_strategy_directed.md`
-
-`doc` · 102 lines · 5,519 B · description: **extracted**
-
-**Purpose.** Specification of Bollinger Bands Strategy Directed; not a tested trading strategy.
-
-**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
-
-**Use.** Read it.
-
-#### `backtester/strategy_research/tv_43000599828_channel_breakout_strategy.md`
-
-`doc` · 98 lines · 4,931 B · description: **extracted**
-
-**Purpose.** Specification of Channel BreakOut Strategy; not a tested trading strategy.
-
-**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
-
-**Use.** Read it.
-
-#### `backtester/strategy_research/tv_43000599836_consecutive_up_down_strategy.md`
-
-`doc` · 96 lines · 4,921 B · description: **extracted**
-
-**Purpose.** Specification of Consecutive Up/Down Strategy; not a tested trading strategy.
-
-**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
-
-**Use.** Read it.
-
-#### `backtester/strategy_research/tv_43000599840_rob_booker_reversal.md`
-
-`doc` · 92 lines · 4,454 B · description: **extracted**
-
-**Purpose.** Specification of Rob Booker Reversal; not a tested trading strategy.
-
-**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
-
-**Use.** Read it.
-
-#### `backtester/strategy_research/tv_43000599876_greedy_strategy.md`
-
-`doc` · 106 lines · 5,127 B · description: **extracted**
-
-**Purpose.** Specification of Greedy Strategy; not a tested trading strategy.
-
-**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
-
-**Use.** Read it.
-
-#### `backtester/strategy_research/tv_43000599883_momentum_strategy.md`
-
-`doc` · 92 lines · 4,762 B · description: **extracted**
-
-**Purpose.** Specification of Momentum Strategy; not a tested trading strategy.
-
-**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
-
-**Use.** Read it.
-
-#### `backtester/strategy_research/tv_43000599887_outside_bar_strategy.md`
-
-`doc` · 90 lines · 4,228 B · description: **extracted**
-
-**Purpose.** Specification of OutSide Bar Strategy; not a tested trading strategy.
-
-**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
-
-**Use.** Read it.
-
-#### `backtester/strategy_research/tv_43000599888_pivot_extension_strategy.md`
-
-`doc` · 94 lines · 4,826 B · description: **extracted**
-
-**Purpose.** Specification of Pivot Extension Strategy; not a tested trading strategy.
-
-**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
-
-**Use.** Read it.
-
-#### `backtester/strategy_research/tv_43000599890_volty_expan_close_strategy.md`
-
-`doc` · 90 lines · 4,330 B · description: **extracted**
-
-**Purpose.** Specification of Volty Expan Close Strategy; not a tested trading strategy.
-
-**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
-
-**Use.** Read it.
-
-#### `backtester/strategy_research/tv_43000601862_price_channel_strategy.md`
-
-`doc` · 92 lines · 4,795 B · description: **extracted**
-
-**Purpose.** Specification of Price Channel Strategy; not a tested trading strategy.
-
-**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
-
-**Use.** Read it.
-
-#### `backtester/strategy_research/tv_43000644914_advance_decline_ratio_bars.md`
-
-`doc` · 92 lines · 4,485 B · description: **extracted**
-
-**Purpose.** Specification of Advance/Decline Ratio (Bars); not a tested trading strategy.
-
-**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
-
-**Use.** Read it.
-
-#### `backtester/strategy_research/tv_43000645066_rsi_strategy.md`
-
-`doc` · 96 lines · 4,171 B · description: **extracted**
-
-**Purpose.** Specification of RSI Strategy; not a tested trading strategy.
-
-**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
-
-**Use.** Read it.
-
-#### `backtester/strategy_research/tv_43000668584_24_hour_volume.md`
-
-`doc` · 98 lines · 5,315 B · description: **extracted**
-
-**Purpose.** Specification of 24-hour Volume; not a tested trading strategy.
-
-**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
-
-**Use.** Read it.
-
-#### `backtester/strategy_research/tv_43000678766_visible_average_price.md`
-
-`doc` · 92 lines · 4,168 B · description: **extracted**
-
-**Purpose.** Specification of Visible Average Price; not a tested trading strategy.
-
-**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
-
-**Use.** Read it.
-
-#### `backtester/strategy_research/tv_43000695003_average_daily_range_adr_indicator.md`
-
-`doc` · 98 lines · 5,021 B · description: **extracted**
-
-**Purpose.** Specification of Average Daily Range (ADR) indicator; not a tested trading strategy.
-
-**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
-
-**Use.** Read it.
-
-#### `backtester/strategy_research/tv_43000705489_relative_volume_at_time.md`
-
-`doc` · 98 lines · 6,151 B · description: **extracted**
-
-**Purpose.** Specification of Relative Volume at Time; not a tested trading strategy.
-
-**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
-
-**Use.** Read it.
-
-#### `backtester/strategy_research/tv_43000707882_stochastic_momentum_index_smi.md`
-
-`doc` · 98 lines · 4,775 B · description: **extracted**
-
-**Purpose.** Specification of Stochastic Momentum Index (SMI); not a tested trading strategy.
-
-**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
-
-**Use.** Read it.
-
-#### `backtester/strategy_research/tv_43000717955_bull_bear_power.md`
-
-`doc` · 94 lines · 4,343 B · description: **extracted**
-
-**Purpose.** Specification of Bull Bear Power; not a tested trading strategy.
-
-**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
-
-**Use.** Read it.
-
-#### `backtester/strategy_research/tv_43000736064_performance.md`
-
-`doc` · 98 lines · 5,360 B · description: **extracted**
-
-**Purpose.** Specification of Performance; not a tested trading strategy.
-
-**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
-
-**Use.** Read it.
-
-#### `backtester/strategy_research/tv_43000762397_long_short_accounts.md`
-
-`doc` · 91 lines · 3,943 B · description: **extracted**
-
-**Purpose.** Specification of Long Short Accounts %; not a tested trading strategy.
-
-**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
-
-**Use.** Read it.
-
-#### `backtester/strategy_research/tv_43000762399_long_short_ratio_accounts.md`
-
-`doc` · 95 lines · 4,465 B · description: **extracted**
-
-**Purpose.** Specification of Long / Short Ratio Accounts; not a tested trading strategy.
-
-**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
-
-**Use.** Read it.
-
-#### `backtester/strategy_research/tv_43000773005_negative_volume_index_nvi.md`
-
-`doc` · 96 lines · 4,783 B · description: **extracted**
-
-**Purpose.** Specification of Negative Volume Index (NVI); not a tested trading strategy.
-
-**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
-
-**Use.** Read it.
-
-#### `backtester/strategy_research/tv_43000773115_ulcer_index.md`
-
-`doc` · 100 lines · 5,015 B · description: **extracted**
-
-**Purpose.** Specification of Ulcer Index; not a tested trading strategy.
-
-**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
-
-**Use.** Read it.
-
-#### `backtester/strategy_research/tv_43000773986_1_year_active_supply.md`
-
-`doc` · 94 lines · 4,903 B · description: **extracted**
-
-**Purpose.** Specification of 1 year active supply %; not a tested trading strategy.
-
-**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
-
-**Use.** Read it.
-
-#### `backtester/strategy_research/tv_43000773987_addresses_with_balance_x_of_supply.md`
-
-`doc` · 98 lines · 5,254 B · description: **extracted**
-
-**Purpose.** Specification of Addresses with balance ≥ X (% of supply); not a tested trading strategy.
-
-**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
-
-**Use.** Read it.
-
-#### `backtester/strategy_research/tv_43000773988_addresses_with_balance_x_usd.md`
-
-`doc` · 96 lines · 5,202 B · description: **extracted**
-
-**Purpose.** Specification of Addresses with balance ≥ X (USD); not a tested trading strategy.
-
-**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
-
-**Use.** Read it.
-
-#### `backtester/strategy_research/tv_43000773989_average_transaction_volume.md`
-
-`doc` · 94 lines · 4,265 B · description: **extracted**
-
-**Purpose.** Specification of Average transaction volume; not a tested trading strategy.
-
-**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
-
-**Use.** Read it.
-
-#### `backtester/strategy_research/tv_43000773990_held_tokens_in_addresses_x_usd.md`
-
-`doc` · 96 lines · 5,236 B · description: **extracted**
-
-**Purpose.** Specification of Held tokens in addresses ≥ X (USD); not a tested trading strategy.
-
-**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
-
-**Use.** Read it.
-
-#### `backtester/strategy_research/tv_43000773991_held_tokens_in_addresses_x_tokens.md`
-
-`doc` · 98 lines · 5,315 B · description: **extracted**
-
-**Purpose.** Specification of Held tokens in addresses ≥ X (tokens); not a tested trading strategy.
-
-**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
-
-**Use.** Read it.
-
-#### `backtester/strategy_research/tv_43000773992_held_tokens_in_addresses_x_of_supply.md`
-
-`doc` · 96 lines · 5,311 B · description: **extracted**
-
-**Purpose.** Specification of Held tokens in addresses ≥ X (% of supply); not a tested trading strategy.
-
-**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
-
-**Use.** Read it.
-
-#### `backtester/strategy_research/tv_43000773993_large_transaction_volume.md`
-
-`doc` · 94 lines · 4,290 B · description: **extracted**
-
-**Purpose.** Specification of Large transaction volume; not a tested trading strategy.
-
-**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
-
-**Use.** Read it.
-
-#### `backtester/strategy_research/tv_43000773994_realized_market_cap.md`
-
-`doc` · 92 lines · 4,511 B · description: **extracted**
-
-**Purpose.** Specification of Realized market cap; not a tested trading strategy.
-
-**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
-
-**Use.** Read it.
-
-#### `backtester/strategy_research/tv_43000773995_rvt_ratio_90_days.md`
-
-`doc` · 92 lines · 4,314 B · description: **extracted**
-
-**Purpose.** Specification of RVT ratio, 90 days; not a tested trading strategy.
-
-**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
-
-**Use.** Read it.
-
-#### `backtester/strategy_research/tv_43000773997_transaction_fees.md`
-
-`doc` · 92 lines · 4,143 B · description: **extracted**
-
-**Purpose.** Specification of Transaction fees; not a tested trading strategy.
-
-**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
-
-**Use.** Read it.
-
-#### `backtester/strategy_research/tv_43000778534_sending_addresses.md`
-
-`doc` · 92 lines · 4,132 B · description: **extracted**
-
-**Purpose.** Specification of Sending addresses; not a tested trading strategy.
-
-**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
-
-**Use.** Read it.
-
-#### `backtester/strategy_research/tv_43000778535_receiving_addresses.md`
-
-`doc` · 92 lines · 4,156 B · description: **extracted**
-
-**Purpose.** Specification of Receiving addresses; not a tested trading strategy.
-
-**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
-
-**Use.** Read it.
-
-#### `backtester/strategy_research/tv_43000778537_spent_output_profit_ratio_sopr.md`
-
-`doc` · 90 lines · 4,235 B · description: **extracted**
-
-**Purpose.** Specification of Spent Output Profit Ratio (SOPR); not a tested trading strategy.
-
-**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
-
-**Use.** Read it.
-
-#### `backtester/strategy_research/tv_43000778538_mean_transfer_volume.md`
-
-`doc` · 96 lines · 4,247 B · description: **extracted**
-
-**Purpose.** Specification of Mean transfer volume; not a tested trading strategy.
-
-**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
-
-**Use.** Read it.
-
-#### `backtester/strategy_research/tv_43000778539_median_transfer_volume.md`
-
-`doc` · 94 lines · 4,190 B · description: **extracted**
-
-**Purpose.** Specification of Median transfer volume; not a tested trading strategy.
-
-**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
-
-**Use.** Read it.
-
-#### `backtester/strategy_research/tv_43000778541_transfer_count.md`
-
-`doc` · 94 lines · 4,517 B · description: **extracted**
-
-**Purpose.** Specification of Transfer count; not a tested trading strategy.
-
-**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
-
-**Use.** Read it.
-
-#### `backtester/strategy_research/tv_43000778542_transfer_rate.md`
-
-`doc` · 90 lines · 3,880 B · description: **extracted**
-
-**Purpose.** Specification of Transfer rate; not a tested trading strategy.
-
-**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
-
-**Use.** Read it.
-
-#### `backtester/strategy_research/tv_43000778543_transaction_rate.md`
-
-`doc` · 90 lines · 3,970 B · description: **extracted**
-
-**Purpose.** Specification of Transaction rate; not a tested trading strategy.
-
-**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
-
-**Use.** Read it.
-
-#### `backtester/strategy_research/tv_43000778547_transaction_fees.md`
-
-`doc` · 92 lines · 4,140 B · description: **extracted**
-
-**Purpose.** Specification of Transaction fees; not a tested trading strategy.
-
-**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
-
-**Use.** Read it.
-
-#### `backtester/strategy_research/tv_43000778548_mean_transaction_fees.md`
-
-`doc` · 92 lines · 4,223 B · description: **extracted**
-
-**Purpose.** Specification of Mean transaction fees; not a tested trading strategy.
-
-**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
-
-**Use.** Read it.
-
-#### `backtester/strategy_research/tv_43000778549_median_transaction_fees.md`
-
-`doc` · 90 lines · 4,033 B · description: **extracted**
-
-**Purpose.** Specification of Median transaction fees; not a tested trading strategy.
-
-**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
-
-**Use.** Read it.
-
-#### `backtester/strategy_research/tv_43000778550_total_gas_used.md`
-
-`doc` · 92 lines · 4,037 B · description: **extracted**
-
-**Purpose.** Specification of Total gas used; not a tested trading strategy.
-
-**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
-
-**Use.** Read it.
-
-#### `backtester/strategy_research/tv_43000778551_mean_gas_used.md`
-
-`doc` · 92 lines · 4,024 B · description: **extracted**
-
-**Purpose.** Specification of Mean gas used; not a tested trading strategy.
-
-**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
-
-**Use.** Read it.
-
-#### `backtester/strategy_research/tv_43000778552_median_gas_used.md`
-
-`doc` · 92 lines · 4,053 B · description: **extracted**
-
-**Purpose.** Specification of Median gas used; not a tested trading strategy.
-
-**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
-
-**Use.** Read it.
-
-#### `backtester/strategy_research/tv_43000778553_mean_transaction_gas_price.md`
-
-`doc` · 96 lines · 4,384 B · description: **extracted**
-
-**Purpose.** Specification of Mean transaction gas price; not a tested trading strategy.
-
-**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
-
-**Use.** Read it.
-
-#### `backtester/strategy_research/tv_43000778554_median_transaction_gas_price.md`
-
-`doc` · 96 lines · 4,515 B · description: **extracted**
-
-**Purpose.** Specification of Median transaction gas price; not a tested trading strategy.
-
-**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
-
-**Use.** Read it.
-
-#### `backtester/strategy_research/tv_43000778555_block_height.md`
-
-`doc` · 90 lines · 4,021 B · description: **extracted**
-
-**Purpose.** Specification of Block height; not a tested trading strategy.
-
-**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
-
-**Use.** Read it.
-
-#### `backtester/strategy_research/tv_43000778556_blocks_mined.md`
-
-`doc` · 94 lines · 4,391 B · description: **extracted**
-
-**Purpose.** Specification of Blocks mined; not a tested trading strategy.
-
-**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
-
-**Use.** Read it.
-
-#### `backtester/strategy_research/tv_43000778557_mean_block_interval.md`
-
-`doc` · 94 lines · 4,369 B · description: **extracted**
-
-**Purpose.** Specification of Mean block interval; not a tested trading strategy.
-
-**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
-
-**Use.** Read it.
-
-#### `backtester/strategy_research/tv_43000778558_median_block_interval.md`
-
-`doc` · 92 lines · 4,146 B · description: **extracted**
-
-**Purpose.** Specification of Median block interval; not a tested trading strategy.
-
-**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
-
-**Use.** Read it.
-
-#### `backtester/strategy_research/tv_43000778559_total_block_size_in_bytes.md`
-
-`doc` · 96 lines · 4,471 B · description: **extracted**
-
-**Purpose.** Specification of Total block size in bytes; not a tested trading strategy.
-
-**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
-
-**Use.** Read it.
-
-#### `backtester/strategy_research/tv_43000778560_mean_block_size_in_bytes.md`
-
-`doc` · 90 lines · 3,999 B · description: **extracted**
-
-**Purpose.** Specification of Mean block size in bytes; not a tested trading strategy.
-
-**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
-
-**Use.** Read it.
-
-#### `backtester/strategy_research/tv_43000778563_total_utxos.md`
-
-`doc` · 90 lines · 3,969 B · description: **extracted**
-
-**Purpose.** Specification of Total UTXOs; not a tested trading strategy.
-
-**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
-
-**Use.** Read it.
-
-#### `backtester/strategy_research/tv_43000778564_created_utxos.md`
-
-`doc` · 92 lines · 4,085 B · description: **extracted**
-
-**Purpose.** Specification of Created UTXOs; not a tested trading strategy.
-
-**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
-
-**Use.** Read it.
-
-#### `backtester/strategy_research/tv_43000778565_spent_utxos.md`
-
-`doc` · 92 lines · 4,078 B · description: **extracted**
-
-**Purpose.** Specification of Spent UTXOs; not a tested trading strategy.
-
-**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
-
-**Use.** Read it.
-
-#### `backtester/strategy_research/tv_43000778566_mean_utxo_value_created.md`
-
-`doc` · 96 lines · 4,410 B · description: **extracted**
-
-**Purpose.** Specification of Mean UTXO value created; not a tested trading strategy.
-
-**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
-
-**Use.** Read it.
-
-#### `backtester/strategy_research/tv_43000778567_median_utxo_value_created.md`
-
-`doc` · 96 lines · 4,418 B · description: **extracted**
-
-**Purpose.** Specification of Median UTXO value created; not a tested trading strategy.
-
-**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
-
-**Use.** Read it.
-
-#### `backtester/strategy_research/tv_43000778568_total_utxo_value_created.md`
-
-`doc` · 98 lines · 4,599 B · description: **extracted**
-
-**Purpose.** Specification of Total UTXO value created; not a tested trading strategy.
-
-**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
-
-**Use.** Read it.
-
-#### `backtester/strategy_research/tv_43000778569_mean_utxo_value_spent.md`
-
-`doc` · 98 lines · 4,668 B · description: **extracted**
-
-**Purpose.** Specification of Mean UTXO value spent; not a tested trading strategy.
-
-**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
-
-**Use.** Read it.
-
-#### `backtester/strategy_research/tv_43000778570_median_utxo_value_spent.md`
-
-`doc` · 96 lines · 4,424 B · description: **extracted**
-
-**Purpose.** Specification of Median UTXO value spent; not a tested trading strategy.
-
-**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
-
-**Use.** Read it.
-
-#### `backtester/strategy_research/tv_43000778572_total_utxo_value_spent.md`
-
-`doc` · 98 lines · 4,555 B · description: **extracted**
-
-**Purpose.** Specification of Total UTXO value spent; not a tested trading strategy.
-
-**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
-
-**Use.** Read it.
-
-#### `backtester/strategy_research/tv_43000778573_total_transactions_size_in_bytes.md`
-
-`doc` · 96 lines · 4,490 B · description: **extracted**
-
-**Purpose.** Specification of Total transactions size in bytes; not a tested trading strategy.
-
-**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
-
-**Use.** Read it.
-
-#### `backtester/strategy_research/tv_43000778574_mean_transaction_size_in_bytes.md`
-
-`doc` · 96 lines · 4,438 B · description: **extracted**
-
-**Purpose.** Specification of Mean transaction size in bytes; not a tested trading strategy.
-
-**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
-
-**Use.** Read it.
-
-#### `backtester/strategy_research/tv_43000778577_stock_to_flow_ratio_in_usd.md`
-
-`doc` · 92 lines · 4,286 B · description: **extracted**
-
-**Purpose.** Specification of Stock-to-Flow Ratio in USD; not a tested trading strategy.
-
-**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
-
-**Use.** Read it.
-
-#### `backtester/strategy_research/tv_43000778578_ethereum_new_deposits.md`
-
-`doc` · 92 lines · 4,175 B · description: **extracted**
-
-**Purpose.** Specification of Ethereum new deposits; not a tested trading strategy.
-
-**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
-
-**Use.** Read it.
-
-#### `backtester/strategy_research/tv_43000778579_ethereum_new_value_staked.md`
-
-`doc` · 94 lines · 4,458 B · description: **extracted**
-
-**Purpose.** Specification of Ethereum new value staked; not a tested trading strategy.
-
-**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
-
-**Use.** Read it.
-
-#### `backtester/strategy_research/tv_43000778580_ethereum_new_unique_depositors.md`
-
-`doc` · 90 lines · 4,194 B · description: **extracted**
-
-**Purpose.** Specification of Ethereum new unique depositors; not a tested trading strategy.
-
-**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
-
-**Use.** Read it.
-
-#### `backtester/strategy_research/tv_43000778581_ethereum_total_number_of_deposits.md`
-
-`doc` · 90 lines · 4,077 B · description: **extracted**
-
-**Purpose.** Specification of Ethereum total number of deposits; not a tested trading strategy.
-
-**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
-
-**Use.** Read it.
-
-#### `backtester/strategy_research/tv_43000778582_ethereum_total_unique_depositors.md`
-
-`doc` · 90 lines · 4,150 B · description: **extracted**
-
-**Purpose.** Specification of Ethereum total unique depositors; not a tested trading strategy.
-
-**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
-
-**Use.** Read it.
-
-#### `backtester/strategy_research/tv_43000778583_ethereum_total_value_staked.md`
-
-`doc` · 90 lines · 4,049 B · description: **extracted**
-
-**Purpose.** Specification of Ethereum total value staked; not a tested trading strategy.
-
-**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
-
-**Use.** Read it.
-
-#### `backtester/strategy_research/tv_43000778584_mean_transaction_gas_limit.md`
-
-`doc` · 94 lines · 4,231 B · description: **extracted**
-
-**Purpose.** Specification of Mean transaction gas limit; not a tested trading strategy.
-
-**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
-
-**Use.** Read it.
-
-#### `backtester/strategy_research/tv_43000778585_median_transaction_gas_limit.md`
-
-`doc` · 94 lines · 4,145 B · description: **extracted**
-
-**Purpose.** Specification of Median transaction gas limit; not a tested trading strategy.
-
-**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
-
-**Use.** Read it.
-
-#### `backtester/strategy_research/tv_43000778587_active_addresses_with_contracts.md`
-
-`doc` · 90 lines · 4,165 B · description: **extracted**
-
-**Purpose.** Specification of Active addresses with contracts; not a tested trading strategy.
-
-**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
-
-**Use.** Read it.
-
-#### `backtester/strategy_research/tv_43000778588_us_spot_crypto_etf_balances.md`
-
-`doc` · 94 lines · 4,215 B · description: **extracted**
-
-**Purpose.** Specification of US spot crypto ETF balances; not a tested trading strategy.
-
-**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
-
-**Use.** Read it.
-
-#### `backtester/strategy_research/tv_43000778589_us_spot_crypto_etf_flows.md`
-
-`doc` · 94 lines · 4,281 B · description: **extracted**
-
-**Purpose.** Specification of US spot crypto ETF flows; not a tested trading strategy.
-
-**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
-
-**Use.** Read it.
-
-#### `backtester/strategy_research/tv_43000778591_etf_flows.md`
-
-`doc` · 90 lines · 3,927 B · description: **extracted**
-
-**Purpose.** Specification of ETF flows; not a tested trading strategy.
-
-**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
-
-**Use.** Read it.
-
-#### `backtester/strategy_research/tv_43000784536_basis.md`
-
-`doc` · 99 lines · 4,176 B · description: **extracted**
-
-**Purpose.** Specification of Basis; not a tested trading strategy.
-
-**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
-
-**Use.** Read it.
-
-#### `backtester/strategy_research/tv_43000793423_options_volume_profile_see_call_and_put_volume_right_on_the_chart.md`
-
-`doc` · 97 lines · 4,815 B · description: **extracted**
-
-**Purpose.** Specification of Options Volume Profile: see call and put volume right on the chart; not a tested trading strategy.
-
-**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
-
-**Use.** Read it.
-
-#### `backtester/strategy_research/tv_43000796657_supply_in_profit.md`
-
-`doc` · 96 lines · 4,556 B · description: **extracted**
-
-**Purpose.** Specification of Supply in Profit; not a tested trading strategy.
-
-**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
-
-**Use.** Read it.
-
-#### `backtester/strategy_research/tv_5ghqjxjj_vol_control_fund_positioning.md`
-
-`doc` · 102 lines · 5,624 B · description: **extracted**
-
-**Purpose.** Specification of Vol-Control Fund Positioning; not a tested trading strategy.
-
-**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
-
-**Use.** Read it.
-
-#### `backtester/strategy_research/tv_7jm5ebze_yelober_sector_rotation_detector.md`
-
-`doc` · 102 lines · 4,808 B · description: **extracted**
-
-**Purpose.** Specification of Yelober - Sector Rotation Detector; not a tested trading strategy.
-
-**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
-
-**Use.** Read it.
-
-#### `backtester/strategy_research/tv_8mvftxpg_tape_lucf.md`
-
-`doc` · 100 lines · 5,633 B · description: **extracted**
-
-**Purpose.** Specification of Tape [LucF]; not a tested trading strategy.
-
-**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
-
-**Use.** Read it.
-
-#### `backtester/strategy_research/tv_a3eudme3_raff_regression_channel_rrc.md`
-
-`doc` · 92 lines · 4,298 B · description: **extracted**
-
-**Purpose.** Specification of Raff Regression Channel (RRC); not a tested trading strategy.
-
-**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
-
-**Use.** Read it.
-
-#### `backtester/strategy_research/tv_b3almahh_indices_sector_sigmaspikes.md`
-
-`doc` · 100 lines · 4,548 B · description: **extracted**
-
-**Purpose.** Specification of Indices Sector SigmaSpikes; not a tested trading strategy.
-
-**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
-
-**Use.** Read it.
-
-#### `backtester/strategy_research/tv_builtin_52_week_high_low.md`
-
-`doc` · 92 lines · 3,906 B · description: **extracted**
-
-**Purpose.** Specification of 52 Week High/Low; not a tested trading strategy.
-
-**Contents.** Frontmatter: `status`=spec-only, `family`=other, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
-
-**Use.** Read it.
-
-#### `backtester/strategy_research/tv_builtin_accelerator_oscillator.md`
-
-`doc` · 90 lines · 3,561 B · description: **extracted**
-
-**Purpose.** Specification of Accelerator Oscillator; not a tested trading strategy.
-
-**Contents.** Frontmatter: `status`=spec-only, `family`=momentum, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
-
-**Use.** Read it.
-
-#### `backtester/strategy_research/tv_builtin_accumulation_distribution.md`
-
-`doc` · 110 lines · 4,330 B · description: **extracted**
-
-**Purpose.** Specification of Accumulation/Distribution; not a tested trading strategy.
-
-**Contents.** Frontmatter: `status`=spec-only, `family`=volume, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
-
-**Use.** Read it.
-
-#### `backtester/strategy_research/tv_builtin_advance_decline.md`
-
-`doc` · 91 lines · 3,807 B · description: **extracted**
-
-**Purpose.** Specification of Advance/Decline; not a tested trading strategy.
-
-**Contents.** Frontmatter: `status`=spec-only, `family`=other, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
-
-**Use.** Read it.
-
-#### `backtester/strategy_research/tv_builtin_anchored_vwap.md`
-
-`doc` · 96 lines · 4,812 B · description: **extracted**
-
-**Purpose.** Specification of Anchored VWAP; not a tested trading strategy.
-
-**Contents.** Frontmatter: `status`=spec-only, `family`=volume, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
-
-**Use.** Read it.
-
-#### `backtester/strategy_research/tv_builtin_arnaud_legoux_moving_average.md`
-
-`doc` · 113 lines · 5,242 B · description: **extracted**
-
-**Purpose.** Specification of Arnaud Legoux Moving Average; not a tested trading strategy.
-
-**Contents.** Frontmatter: `status`=spec-only, `family`=trend, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
-
-**Use.** Read it.
-
-#### `backtester/strategy_research/tv_builtin_aroon.md`
-
-`doc` · 111 lines · 4,768 B · description: **extracted**
-
-**Purpose.** Specification of Aroon; not a tested trading strategy.
-
-**Contents.** Frontmatter: `status`=spec-only, `family`=trend, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
-
-**Use.** Read it.
-
-#### `backtester/strategy_research/tv_builtin_average_price.md`
-
-`doc` · 90 lines · 3,557 B · description: **extracted**
-
-**Purpose.** Specification of Average Price; not a tested trading strategy.
-
-**Contents.** Frontmatter: `status`=spec-only, `family`=other, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
-
-**Use.** Read it.
-
-#### `backtester/strategy_research/tv_builtin_awesome_oscillator.md`
-
-`doc` · 110 lines · 4,526 B · description: **extracted**
-
-**Purpose.** Specification of Awesome Oscillator; not a tested trading strategy.
-
-**Contents.** Frontmatter: `status`=spec-only, `family`=momentum, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
-
-**Use.** Read it.
-
-#### `backtester/strategy_research/tv_builtin_bollinger_bands_b.md`
-
-`doc` · 112 lines · 4,474 B · description: **extracted**
-
-**Purpose.** Specification of Bollinger Bands %B; not a tested trading strategy.
-
-**Contents.** Frontmatter: `status`=spec-only, `family`=volatility, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
-
-**Use.** Read it.
-
-#### `backtester/strategy_research/tv_builtin_bollinger_bands_width.md`
-
-`doc` · 92 lines · 3,832 B · description: **extracted**
-
-**Purpose.** Specification of Bollinger Bands Width; not a tested trading strategy.
-
-**Contents.** Frontmatter: `status`=spec-only, `family`=volatility, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
-
-**Use.** Read it.
-
-#### `backtester/strategy_research/tv_builtin_chaikin_oscillator.md`
-
-`doc` · 112 lines · 4,936 B · description: **extracted**
-
-**Purpose.** Specification of Chaikin Oscillator; not a tested trading strategy.
-
-**Contents.** Frontmatter: `status`=spec-only, `family`=volume, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
-
-**Use.** Read it.
-
-#### `backtester/strategy_research/tv_builtin_chaikin_volatility.md`
-
-`doc` · 92 lines · 3,876 B · description: **extracted**
-
-**Purpose.** Specification of Chaikin Volatility; not a tested trading strategy.
-
-**Contents.** Frontmatter: `status`=spec-only, `family`=volatility, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
-
-**Use.** Read it.
-
-#### `backtester/strategy_research/tv_builtin_chande_kroll_stop.md`
-
-`doc` · 113 lines · 5,443 B · description: **extracted**
-
-**Purpose.** Specification of Chande Kroll Stop; not a tested trading strategy.
-
-**Contents.** Frontmatter: `status`=spec-only, `family`=volatility, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
-
-**Use.** Read it.
-
-#### `backtester/strategy_research/tv_builtin_chande_momentum_oscillator.md`
-
-`doc` · 111 lines · 4,581 B · description: **extracted**
-
-**Purpose.** Specification of Chande Momentum Oscillator; not a tested trading strategy.
-
-**Contents.** Frontmatter: `status`=spec-only, `family`=momentum, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
-
-**Use.** Read it.
-
-#### `backtester/strategy_research/tv_builtin_choppiness_index.md`
-
-`doc` · 111 lines · 4,392 B · description: **extracted**
-
-**Purpose.** Specification of Choppiness Index; not a tested trading strategy.
-
-**Contents.** Frontmatter: `status`=spec-only, `family`=trend, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
-
-**Use.** Read it.
-
-#### `backtester/strategy_research/tv_builtin_connors_rsi.md`
-
-`doc` · 113 lines · 5,097 B · description: **extracted**
-
-**Purpose.** Specification of Connors RSI; not a tested trading strategy.
-
-**Contents.** Frontmatter: `status`=spec-only, `family`=momentum, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
-
-**Use.** Read it.
-
-#### `backtester/strategy_research/tv_builtin_coppock_curve.md`
-
-`doc` · 113 lines · 5,216 B · description: **extracted**
-
-**Purpose.** Specification of Coppock Curve; not a tested trading strategy.
-
-**Contents.** Frontmatter: `status`=spec-only, `family`=momentum, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
-
-**Use.** Read it.
-
-#### `backtester/strategy_research/tv_builtin_correlation_coefficient.md`
-
-`doc` · 111 lines · 4,549 B · description: **extracted**
-
-**Purpose.** Specification of Correlation Coefficient; not a tested trading strategy.
-
-**Contents.** Frontmatter: `status`=spec-only, `family`=other, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
-
-**Use.** Read it.
-
-#### `backtester/strategy_research/tv_builtin_correlation_log.md`
-
-`doc` · 91 lines · 3,860 B · description: **extracted**
-
-**Purpose.** Specification of Correlation - Log; not a tested trading strategy.
-
-**Contents.** Frontmatter: `status`=spec-only, `family`=other, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
-
-**Use.** Read it.
-
-#### `backtester/strategy_research/tv_builtin_detrended_price_oscillator.md`
-
-`doc` · 108 lines · 4,424 B · description: **extracted**
-
-**Purpose.** Specification of Detrended Price Oscillator; not a tested trading strategy.
-
-**Contents.** Frontmatter: `status`=spec-only, `family`=momentum, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
-
-**Use.** Read it.
-
-#### `backtester/strategy_research/tv_builtin_double_ema.md`
-
-`doc` · 111 lines · 4,316 B · description: **extracted**
-
-**Purpose.** Specification of Double EMA; not a tested trading strategy.
-
-**Contents.** Frontmatter: `status`=spec-only, `family`=trend, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
-
-**Use.** Read it.
-
-#### `backtester/strategy_research/tv_builtin_ease_of_movement.md`
-
-`doc` · 112 lines · 4,490 B · description: **extracted**
-
-**Purpose.** Specification of Ease of Movement; not a tested trading strategy.
-
-**Contents.** Frontmatter: `status`=spec-only, `family`=volume, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
-
-**Use.** Read it.
-
-#### `backtester/strategy_research/tv_builtin_elder_s_force_index.md`
-
-`doc` · 111 lines · 4,523 B · description: **extracted**
-
-**Purpose.** Specification of Elder's Force Index; not a tested trading strategy.
-
-**Contents.** Frontmatter: `status`=spec-only, `family`=volume, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
-
-**Use.** Read it.
-
-#### `backtester/strategy_research/tv_builtin_envelopes.md`
-
-`doc` · 115 lines · 4,914 B · description: **extracted**
-
-**Purpose.** Specification of Envelopes; not a tested trading strategy.
-
-**Contents.** Frontmatter: `status`=spec-only, `family`=volatility, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
-
-**Use.** Read it.
-
-#### `backtester/strategy_research/tv_builtin_guppy_multiple_moving_average.md`
-
-`doc` · 102 lines · 5,711 B · description: **extracted**
-
-**Purpose.** Specification of Guppy Multiple Moving Average; not a tested trading strategy.
-
-**Contents.** Frontmatter: `status`=spec-only, `family`=trend, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
-
-**Use.** Read it.
-
-#### `backtester/strategy_research/tv_builtin_hull_moving_average.md`
-
-`doc` · 111 lines · 4,338 B · description: **extracted**
-
-**Purpose.** Specification of Hull Moving Average; not a tested trading strategy.
-
-**Contents.** Frontmatter: `status`=spec-only, `family`=trend, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
-
-**Use.** Read it.
-
-#### `backtester/strategy_research/tv_builtin_know_sure_thing.md`
-
-`doc` · 119 lines · 5,887 B · description: **extracted**
-
-**Purpose.** Specification of Know Sure Thing; not a tested trading strategy.
-
-**Contents.** Frontmatter: `status`=spec-only, `family`=momentum, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
-
-**Use.** Read it.
-
-#### `backtester/strategy_research/tv_builtin_least_squares_moving_average.md`
-
-`doc` · 112 lines · 5,040 B · description: **extracted**
-
-**Purpose.** Specification of Least Squares Moving Average; not a tested trading strategy.
-
-**Contents.** Frontmatter: `status`=spec-only, `family`=trend, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
-
-**Use.** Read it.
-
-#### `backtester/strategy_research/tv_builtin_linear_regression_slope.md`
-
-`doc` · 91 lines · 3,718 B · description: **extracted**
-
-**Purpose.** Specification of Linear Regression Slope; not a tested trading strategy.
-
-**Contents.** Frontmatter: `status`=spec-only, `family`=trend, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
-
-**Use.** Read it.
-
-#### `backtester/strategy_research/tv_builtin_ma_with_ema_cross.md`
-
-`doc` · 92 lines · 3,877 B · description: **extracted**
-
-**Purpose.** Specification of MA with EMA Cross; not a tested trading strategy.
-
-**Contents.** Frontmatter: `status`=spec-only, `family`=trend, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
-
-**Use.** Read it.
-
-#### `backtester/strategy_research/tv_builtin_majority_rule.md`
-
-`doc` · 91 lines · 3,727 B · description: **extracted**
-
-**Purpose.** Specification of Majority Rule; not a tested trading strategy.
-
-**Contents.** Frontmatter: `status`=spec-only, `family`=other, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
-
-**Use.** Read it.
-
-#### `backtester/strategy_research/tv_builtin_mass_index.md`
-
-`doc` · 111 lines · 4,916 B · description: **extracted**
-
-**Purpose.** Specification of Mass Index; not a tested trading strategy.
-
-**Contents.** Frontmatter: `status`=spec-only, `family`=volatility, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
-
-**Use.** Read it.
-
-#### `backtester/strategy_research/tv_builtin_mcginley_dynamic.md`
-
-`doc` · 111 lines · 4,811 B · description: **extracted**
-
-**Purpose.** Specification of McGinley Dynamic; not a tested trading strategy.
-
-**Contents.** Frontmatter: `status`=spec-only, `family`=trend, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
-
-**Use.** Read it.
-
-#### `backtester/strategy_research/tv_builtin_median_price.md`
-
-`doc` · 110 lines · 4,747 B · description: **extracted**
-
-**Purpose.** Specification of Median Price; not a tested trading strategy.
-
-**Contents.** Frontmatter: `status`=spec-only, `family`=other, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
-
-**Use.** Read it.
-
-#### `backtester/strategy_research/tv_builtin_momentum.md`
-
-`doc` · 108 lines · 4,772 B · description: **extracted**
-
-**Purpose.** Specification of Momentum; not a tested trading strategy.
-
-**Contents.** Frontmatter: `status`=spec-only, `family`=momentum, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
-
-**Use.** Read it.
-
-#### `backtester/strategy_research/tv_builtin_money_flow_index.md`
-
-`doc` · 111 lines · 4,960 B · description: **extracted**
-
-**Purpose.** Specification of Money Flow Index; not a tested trading strategy.
-
-**Contents.** Frontmatter: `status`=spec-only, `family`=volume, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
-
-**Use.** Read it.
-
-#### `backtester/strategy_research/tv_builtin_moving_average_double.md`
-
-`doc` · 93 lines · 4,146 B · description: **extracted**
-
-**Purpose.** Specification of Moving Average Double; not a tested trading strategy.
-
-**Contents.** Frontmatter: `status`=spec-only, `family`=trend, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
-
-**Use.** Read it.
-
-#### `backtester/strategy_research/tv_builtin_moving_average_hamming.md`
-
-`doc` · 91 lines · 3,769 B · description: **extracted**
-
-**Purpose.** Specification of Moving Average Hamming; not a tested trading strategy.
-
-**Contents.** Frontmatter: `status`=spec-only, `family`=trend, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
-
-**Use.** Read it.
-
-#### `backtester/strategy_research/tv_builtin_moving_average_multiple.md`
-
-`doc` · 97 lines · 4,739 B · description: **extracted**
-
-**Purpose.** Specification of Moving Average Multiple; not a tested trading strategy.
-
-**Contents.** Frontmatter: `status`=spec-only, `family`=trend, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
-
-**Use.** Read it.
-
-#### `backtester/strategy_research/tv_builtin_moving_average_triple.md`
-
-`doc` · 94 lines · 4,203 B · description: **extracted**
-
-**Purpose.** Specification of Moving Average Triple; not a tested trading strategy.
-
-**Contents.** Frontmatter: `status`=spec-only, `family`=trend, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
-
-**Use.** Read it.
-
-#### `backtester/strategy_research/tv_builtin_moving_average_weighted.md`
-
-`doc` · 93 lines · 3,946 B · description: **extracted**
-
-**Purpose.** Specification of Moving Average Weighted; not a tested trading strategy.
-
-**Contents.** Frontmatter: `status`=spec-only, `family`=trend, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
-
-**Use.** Read it.
-
-#### `backtester/strategy_research/tv_builtin_net_volume.md`
-
-`doc` · 110 lines · 5,281 B · description: **extracted**
-
-**Purpose.** Specification of Net Volume; not a tested trading strategy.
-
-**Contents.** Frontmatter: `status`=spec-only, `family`=volume, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
-
-**Use.** Read it.
-
-#### `backtester/strategy_research/tv_builtin_pivot_points_standard.md`
-
-`doc` · 114 lines · 5,396 B · description: **extracted**
-
-**Purpose.** Specification of Pivot Points Standard; not a tested trading strategy.
-
-**Contents.** Frontmatter: `status`=spec-only, `family`=other, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
-
-**Use.** Read it.
-
-#### `backtester/strategy_research/tv_builtin_price_volume_trend.md`
-
-`doc` · 106 lines · 4,139 B · description: **extracted**
-
-**Purpose.** Specification of Price Volume Trend; not a tested trading strategy.
-
-**Contents.** Frontmatter: `status`=spec-only, `family`=volume, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
-
-**Use.** Read it.
-
-#### `backtester/strategy_research/tv_builtin_rank_correlation_index.md`
-
-`doc` · 111 lines · 4,878 B · description: **extracted**
-
-**Purpose.** Specification of Rank Correlation Index; not a tested trading strategy.
-
-**Contents.** Frontmatter: `status`=spec-only, `family`=momentum, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
-
-**Use.** Read it.
-
-#### `backtester/strategy_research/tv_builtin_ratio.md`
-
-`doc` · 91 lines · 3,846 B · description: **extracted**
-
-**Purpose.** Specification of Ratio; not a tested trading strategy.
-
-**Contents.** Frontmatter: `status`=spec-only, `family`=other, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
-
-**Use.** Read it.
-
-#### `backtester/strategy_research/tv_builtin_regression_trend.md`
-
-`doc` · 97 lines · 4,780 B · description: **extracted**
-
-**Purpose.** Specification of Regression Trend; not a tested trading strategy.
-
-**Contents.** Frontmatter: `status`=spec-only, `family`=other, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
-
-**Use.** Read it.
-
-#### `backtester/strategy_research/tv_builtin_relative_vigor_index.md`
-
-`doc` · 111 lines · 4,505 B · description: **extracted**
-
-**Purpose.** Specification of Relative Vigor Index; not a tested trading strategy.
-
-**Contents.** Frontmatter: `status`=spec-only, `family`=momentum, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
-
-**Use.** Read it.
-
-#### `backtester/strategy_research/tv_builtin_sessions.md`
-
-`doc` · 110 lines · 4,772 B · description: **extracted**
-
-**Purpose.** Specification of Sessions; not a tested trading strategy.
-
-**Contents.** Frontmatter: `status`=spec-only, `family`=other, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
-
-**Use.** Read it.
-
-#### `backtester/strategy_research/tv_builtin_smi_ergodic_indicator_oscillator.md`
-
-`doc` · 134 lines · 5,650 B · description: **extracted**
-
-**Purpose.** Specification of SMI Ergodic Indicator/Oscillator; not a tested trading strategy.
-
-**Contents.** Frontmatter: `status`=spec-only, `family`=momentum, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
-
-**Use.** Read it.
-
-#### `backtester/strategy_research/tv_builtin_spread.md`
-
-`doc` · 91 lines · 3,830 B · description: **extracted**
-
-**Purpose.** Specification of Spread; not a tested trading strategy.
-
-**Contents.** Frontmatter: `status`=spec-only, `family`=other, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
-
-**Use.** Read it.
-
-#### `backtester/strategy_research/tv_builtin_standard_error.md`
-
-`doc` · 91 lines · 3,782 B · description: **extracted**
-
-**Purpose.** Specification of Standard Error; not a tested trading strategy.
-
-**Contents.** Frontmatter: `status`=spec-only, `family`=volatility, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
-
-**Use.** Read it.
-
-#### `backtester/strategy_research/tv_builtin_stochastic_rsi.md`
-
-`doc` · 114 lines · 5,295 B · description: **extracted**
-
-**Purpose.** Specification of Stochastic RSI; not a tested trading strategy.
-
-**Contents.** Frontmatter: `status`=spec-only, `family`=momentum, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
-
-**Use.** Read it.
-
-#### `backtester/strategy_research/tv_builtin_trend_strength_index.md`
-
-`doc` · 107 lines · 4,580 B · description: **extracted**
-
-**Purpose.** Specification of Trend Strength Index; not a tested trading strategy.
-
-**Contents.** Frontmatter: `status`=spec-only, `family`=trend, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
-
-**Use.** Read it.
-
-#### `backtester/strategy_research/tv_builtin_triple_ema.md`
-
-`doc` · 111 lines · 4,442 B · description: **extracted**
-
-**Purpose.** Specification of Triple EMA; not a tested trading strategy.
-
-**Contents.** Frontmatter: `status`=spec-only, `family`=trend, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
-
-**Use.** Read it.
-
-#### `backtester/strategy_research/tv_builtin_trix.md`
-
-`doc` · 111 lines · 4,184 B · description: **extracted**
-
-**Purpose.** Specification of TRIX; not a tested trading strategy.
-
-**Contents.** Frontmatter: `status`=spec-only, `family`=momentum, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
-
-**Use.** Read it.
-
-#### `backtester/strategy_research/tv_builtin_true_strength_indicator.md`
-
-`doc` · 113 lines · 5,231 B · description: **extracted**
-
-**Purpose.** Specification of True Strength Indicator; not a tested trading strategy.
-
-**Contents.** Frontmatter: `status`=spec-only, `family`=momentum, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
-
-**Use.** Read it.
-
-#### `backtester/strategy_research/tv_builtin_typical_price.md`
-
-`doc` · 90 lines · 3,526 B · description: **extracted**
-
-**Purpose.** Specification of Typical Price; not a tested trading strategy.
-
-**Contents.** Frontmatter: `status`=spec-only, `family`=other, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
-
-**Use.** Read it.
-
-#### `backtester/strategy_research/tv_builtin_ultimate_oscillator.md`
-
-`doc` · 113 lines · 5,146 B · description: **extracted**
-
-**Purpose.** Specification of Ultimate Oscillator; not a tested trading strategy.
-
-**Contents.** Frontmatter: `status`=spec-only, `family`=momentum, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
-
-**Use.** Read it.
-
-#### `backtester/strategy_research/tv_builtin_volatility_o_h_l_c.md`
-
-`doc` · 93 lines · 4,111 B · description: **extracted**
-
-**Purpose.** Specification of Volatility O-H-L-C; not a tested trading strategy.
-
-**Contents.** Frontmatter: `status`=spec-only, `family`=volatility, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
-
-**Use.** Read it.
-
-#### `backtester/strategy_research/tv_builtin_volatility_zero_trend_close_to_close.md`
-
-`doc` · 92 lines · 3,982 B · description: **extracted**
-
-**Purpose.** Specification of Volatility Zero Trend Close-to-Close; not a tested trading strategy.
-
-**Contents.** Frontmatter: `status`=spec-only, `family`=volatility, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
-
-**Use.** Read it.
-
-#### `backtester/strategy_research/tv_builtin_volume_oscillator.md`
-
-`doc` · 108 lines · 4,342 B · description: **extracted**
-
-**Purpose.** Specification of Volume Oscillator; not a tested trading strategy.
-
-**Contents.** Frontmatter: `status`=spec-only, `family`=volume, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
-
-**Use.** Read it.
-
-#### `backtester/strategy_research/tv_builtin_vortex_indicator.md`
-
-`doc` · 111 lines · 4,557 B · description: **extracted**
-
-**Purpose.** Specification of Vortex Indicator; not a tested trading strategy.
-
-**Contents.** Frontmatter: `status`=spec-only, `family`=trend, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
-
-**Use.** Read it.
-
-#### `backtester/strategy_research/tv_builtin_vwma.md`
-
-`doc` · 111 lines · 4,883 B · description: **extracted**
-
-**Purpose.** Specification of VWMA; not a tested trading strategy.
-
-**Contents.** Frontmatter: `status`=spec-only, `family`=trend, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
-
-**Use.** Read it.
-
-#### `backtester/strategy_research/tv_builtin_williams_fractal.md`
-
-`doc` · 91 lines · 3,778 B · description: **extracted**
-
-**Purpose.** Specification of Williams Fractal; not a tested trading strategy.
-
-**Contents.** Frontmatter: `status`=spec-only, `family`=other, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
-
-**Use.** Read it.
-
-#### `backtester/strategy_research/tv_builtin_williams_r.md`
-
-`doc` · 111 lines · 4,768 B · description: **extracted**
-
-**Purpose.** Specification of Williams %R; not a tested trading strategy.
-
-**Contents.** Frontmatter: `status`=spec-only, `family`=momentum, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
-
-**Use.** Read it.
-
-#### `backtester/strategy_research/tv_d4tdeuru_volume_composition_flowly_indicators.md`
-
-`doc` · 102 lines · 5,724 B · description: **extracted**
-
-**Purpose.** Specification of Volume composition / Flowly Indicators; not a tested trading strategy.
-
-**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
-
-**Use.** Read it.
-
-#### `backtester/strategy_research/tv_ddvp5qaz_match_finder_theultimator5.md`
-
-`doc` · 98 lines · 4,844 B · description: **extracted**
-
-**Purpose.** Specification of Match Finder [theUltimator5]; not a tested trading strategy.
-
-**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
-
-**Use.** Read it.
-
-#### `backtester/strategy_research/tv_dfy6orqi_intraday_volume_swings.md`
-
-`doc` · 92 lines · 3,966 B · description: **extracted**
-
-**Purpose.** Specification of Intraday Volume Swings; not a tested trading strategy.
-
-**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
-
-**Use.** Read it.
-
-#### `backtester/strategy_research/tv_djr8hv4v_waindrops_makit0.md`
-
-`doc` · 104 lines · 5,234 B · description: **extracted**
-
-**Purpose.** Specification of Waindrops [Makit0]; not a tested trading strategy.
-
-**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
-
-**Use.** Read it.
-
-#### `backtester/strategy_research/tv_dyb13ida_hull_candles_bigbitsio.md`
-
-`doc` · 98 lines · 4,747 B · description: **extracted**
-
-**Purpose.** Specification of Hull Candles [BigBitsIO]; not a tested trading strategy.
-
-**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
-
-**Use.** Read it.
-
-#### `backtester/strategy_research/tv_e5azkgtc_best_dollar_cost_average.md`
-
-`doc` · 98 lines · 4,387 B · description: **extracted**
-
-**Purpose.** Specification of BEST Dollar Cost Average; not a tested trading strategy.
-
-**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
-
-**Use.** Read it.
-
-#### `backtester/strategy_research/tv_ejmwjmdf_dynamic_gap_probability_tool.md`
-
-`doc` · 102 lines · 4,885 B · description: **extracted**
-
-**Purpose.** Specification of Dynamic Gap Probability Tool; not a tested trading strategy.
-
-**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
-
-**Use.** Read it.
-
-#### `backtester/strategy_research/tv_enc8rzn0_modern_portfolio_management_indicator.md`
-
-`doc` · 100 lines · 5,915 B · description: **extracted**
-
-**Purpose.** Specification of Modern Portfolio Management Indicator; not a tested trading strategy.
-
-**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
-
-**Use.** Read it.
-
-#### `backtester/strategy_research/tv_fgvtpifr_tf_segmented_linear_regression.md`
-
-`doc` · 98 lines · 4,645 B · description: **extracted**
-
-**Purpose.** Specification of TF Segmented Linear Regression; not a tested trading strategy.
-
-**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
-
-**Use.** Read it.
-
-#### `backtester/strategy_research/tv_fuzfly3o_is_it_time_to_lighten_equities_and_go_overweight_gold.md`
-
-`doc` · 93 lines · 4,477 B · description: **extracted**
-
-**Purpose.** Specification of Is it time to lighten equities and go overweight gold?; not a tested trading strategy.
-
-**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
-
-**Use.** Read it.
-
-#### `backtester/strategy_research/tv_gamszeig_logarithmic_moving_average_lma_quantalgo.md`
-
-`doc` · 106 lines · 6,563 B · description: **extracted**
-
-**Purpose.** Specification of Logarithmic Moving Average (LMA) [QuantAlgo]; not a tested trading strategy.
-
-**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
-
-**Use.** Read it.
-
-#### `backtester/strategy_research/tv_glj0deuy_indicator_introduction_custom_volume_periodic_peaks_troughs.md`
-
-`doc` · 94 lines · 4,318 B · description: **extracted**
-
-**Purpose.** Specification of Indicator introduction: Custom Volume - Periodic Peaks & Troughs; not a tested trading strategy.
-
-**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
-
-**Use.** Read it.
-
-#### `backtester/strategy_research/tv_hefekydl_sma_directional_matrix_luxalgo.md`
-
-`doc` · 96 lines · 4,972 B · description: **extracted**
-
-**Purpose.** Specification of SMA Directional Matrix [LuxAlgo]; not a tested trading strategy.
-
-**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
-
-**Use.** Read it.
-
-#### `backtester/strategy_research/tv_hjxrfmmg_session_candles_reversals_flowly_indicators.md`
-
-`doc` · 102 lines · 6,271 B · description: **extracted**
-
-**Purpose.** Specification of Session candles & reversals / Flowly Indicators; not a tested trading strategy.
-
-**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
-
-**Use.** Read it.
-
-#### `backtester/strategy_research/tv_hnpilzeg_market_sessions_by_leviathan.md`
-
-`doc` · 98 lines · 5,166 B · description: **extracted**
-
-**Purpose.** Specification of Market Sessions - By Leviathan; not a tested trading strategy.
-
-**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
-
-**Use.** Read it.
-
-#### `backtester/strategy_research/tv_hxxk64fl_sip_evaluator_and_screener_trendoscope.md`
-
-`doc` · 100 lines · 5,708 B · description: **extracted**
-
-**Purpose.** Specification of SIP Evaluator and Screener [Trendoscope®]; not a tested trading strategy.
-
-**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
-
-**Use.** Read it.
-
-#### `backtester/strategy_research/tv_ikvq3zpr_defining_a_single_market_indicator_in_tradingview.md`
-
-`doc` · 94 lines · 4,289 B · description: **extracted**
-
-**Purpose.** Specification of Defining a single market indicator in TradingView -; not a tested trading strategy.
-
-**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
-
-**Use.** Read it.
-
-#### `backtester/strategy_research/tv_ipvs7b7x_multi_ticker_anchored_candles.md`
-
-`doc` · 98 lines · 4,894 B · description: **extracted**
-
-**Purpose.** Specification of Multi-Ticker Anchored Candles; not a tested trading strategy.
-
-**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
-
-**Use.** Read it.
-
-#### `backtester/strategy_research/tv_k2br8xol_intraday_spark_chart_astrideunicorn.md`
-
-`doc` · 96 lines · 4,657 B · description: **extracted**
-
-**Purpose.** Specification of Intraday Spark Chart [AstrideUnicorn]; not a tested trading strategy.
-
-**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
-
-**Use.** Read it.
-
-#### `backtester/strategy_research/tv_lcgcwwwi_bar_balance_lucf.md`
-
-`doc` · 108 lines · 7,242 B · description: **extracted**
-
-**Purpose.** Specification of Bar Balance [LucF]; not a tested trading strategy.
-
-**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
-
-**Use.** Read it.
-
-#### `backtester/strategy_research/tv_lei57qv6_rotation_in_international_markets.md`
-
-`doc` · 96 lines · 4,634 B · description: **extracted**
-
-**Purpose.** Specification of Rotation in international markets; not a tested trading strategy.
-
-**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
-
-**Use.** Read it.
-
-#### `backtester/strategy_research/tv_library_x8mujqgt_long_shadow.md`
-
-`doc` · 98 lines · 3,980 B · description: **extracted**
-
-**Purpose.** Specification of BjCandlePatterns: lls, lus; not a tested trading strategy.
-
-**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
-
-**Use.** Read it.
-
-#### `backtester/strategy_research/tv_library_x8mujqgt_spinning_top.md`
-
-`doc` · 105 lines · 4,672 B · description: **extracted**
-
-**Purpose.** Specification of BjCandlePatterns: spinningTopBull, spinningTopBear, spinningTop; not a tested trading strategy.
-
-**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
-
-**Use.** Read it.
-
-#### `backtester/strategy_research/tv_lu0mtsud_earnings_snapshot_trendoscope.md`
-
-`doc` · 100 lines · 5,532 B · description: **extracted**
-
-**Purpose.** Specification of Earnings Snapshot [Trendoscope]; not a tested trading strategy.
-
-**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
-
-**Use.** Read it.
-
-#### `backtester/strategy_research/tv_lvqopkkp_volume_surprise_luxalgo.md`
-
-`doc` · 102 lines · 4,920 B · description: **extracted**
-
-**Purpose.** Specification of Volume Surprise [LuxAlgo]; not a tested trading strategy.
-
-**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
-
-**Use.** Read it.
-
-#### `backtester/strategy_research/tv_lwoxh0vh_range_volume_change.md`
-
-`doc` · 90 lines · 3,959 B · description: **extracted**
-
-**Purpose.** Specification of Range Volume Change; not a tested trading strategy.
-
-**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
-
-**Use.** Read it.
-
-#### `backtester/strategy_research/tv_lx3zlt9l_volume_profile_3d_zeiierman.md`
-
-`doc` · 98 lines · 5,078 B · description: **extracted**
-
-**Purpose.** Specification of Volume Profile 3D (Zeiierman); not a tested trading strategy.
-
-**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
-
-**Use.** Read it.
-
-#### `backtester/strategy_research/tv_mekxyft0_bias_and_sentiment_strength_bass_indicator_by_mattzab.md`
-
-`doc` · 96 lines · 4,846 B · description: **extracted**
-
-**Purpose.** Specification of Bias And Sentiment Strength (BASS) Indicator by mattzab; not a tested trading strategy.
-
-**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
-
-**Use.** Read it.
-
-#### `backtester/strategy_research/tv_method_atr_trailing.md`
-
-`doc` · 92 lines · 3,994 B · description: **extracted**
-
-**Purpose.** Specification of ATR trailing band stops; not a tested trading strategy.
-
-**Contents.** Frontmatter: `status`=spec-only, `family`=research-method, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
-
-**Use.** Read it.
-
-#### `backtester/strategy_research/tv_method_covered_call.md`
-
-`doc` · 92 lines · 4,223 B · description: **extracted**
-
-**Purpose.** Specification of Covered call strike selection; not a tested trading strategy.
-
-**Contents.** Frontmatter: `status`=spec-only, `family`=research-method, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
-
-**Use.** Read it.
-
-#### `backtester/strategy_research/tv_method_doji.md`
-
-`doc` · 92 lines · 4,058 B · description: **extracted**
-
-**Purpose.** Specification of Doji indecision; not a tested trading strategy.
-
-**Contents.** Frontmatter: `status`=spec-only, `family`=research-method, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
-
-**Use.** Read it.
-
-#### `backtester/strategy_research/tv_method_dominance_rotation.md`
-
-`doc` · 92 lines · 4,284 B · description: **extracted**
-
-**Purpose.** Specification of Bitcoin dominance and altcoin rotation; not a tested trading strategy.
-
-**Contents.** Frontmatter: `status`=spec-only, `family`=research-method, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
-
-**Use.** Read it.
-
-#### `backtester/strategy_research/tv_method_engulfing.md`
-
-`doc` · 92 lines · 4,172 B · description: **extracted**
-
-**Purpose.** Specification of Bullish and bearish engulfing; not a tested trading strategy.
-
-**Contents.** Frontmatter: `status`=spec-only, `family`=research-method, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
-
-**Use.** Read it.
-
-#### `backtester/strategy_research/tv_method_fair_value_gap.md`
-
-`doc` · 92 lines · 4,063 B · description: **extracted**
-
-**Purpose.** Specification of Three-candle fair value gap; not a tested trading strategy.
-
-**Contents.** Frontmatter: `status`=spec-only, `family`=research-method, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
-
-**Use.** Read it.
-
-#### `backtester/strategy_research/tv_method_fib_extensions.md`
-
-`doc` · 92 lines · 4,173 B · description: **extracted**
-
-**Purpose.** Specification of Fibonacci extension and channel projections; not a tested trading strategy.
-
-**Contents.** Frontmatter: `status`=spec-only, `family`=research-method, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
-
-**Use.** Read it.
-
-#### `backtester/strategy_research/tv_method_futures_hedge.md`
-
-`doc` · 89 lines · 3,934 B · description: **extracted**
-
-**Purpose.** Specification of Spot and futures hedge; not a tested trading strategy.
-
-**Contents.** Frontmatter: `status`=spec-only, `family`=research-method, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
-
-**Use.** Read it.
-
-#### `backtester/strategy_research/tv_method_head_shoulders.md`
-
-`doc` · 92 lines · 4,184 B · description: **extracted**
-
-**Purpose.** Specification of Head and shoulders reversal; not a tested trading strategy.
-
-**Contents.** Frontmatter: `status`=spec-only, `family`=research-method, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
-
-**Use.** Read it.
-
-#### `backtester/strategy_research/tv_method_heikin_ashi.md`
-
-`doc` · 92 lines · 4,051 B · description: **extracted**
-
-**Purpose.** Specification of Heikin Ashi trend candles; not a tested trading strategy.
-
-**Contents.** Frontmatter: `status`=spec-only, `family`=research-method, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
-
-**Use.** Read it.
-
-#### `backtester/strategy_research/tv_method_inside_bar.md`
-
-`doc` · 92 lines · 4,165 B · description: **extracted**
-
-**Purpose.** Specification of Inside bar and narrow range breakout; not a tested trading strategy.
-
-**Contents.** Frontmatter: `status`=spec-only, `family`=research-method, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
-
-**Use.** Read it.
-
-#### `backtester/strategy_research/tv_method_intermarket_correlation.md`
-
-`doc` · 92 lines · 4,258 B · description: **extracted**
-
-**Purpose.** Specification of Intermarket correlation and lead lag; not a tested trading strategy.
-
-**Contents.** Frontmatter: `status`=spec-only, `family`=research-method, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
-
-**Use.** Read it.
-
-#### `backtester/strategy_research/tv_method_iron_condor.md`
-
-`doc` · 92 lines · 4,161 B · description: **extracted**
-
-**Purpose.** Specification of Iron condor options spread; not a tested trading strategy.
-
-**Contents.** Frontmatter: `status`=spec-only, `family`=research-method, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
-
-**Use.** Read it.
-
-#### `backtester/strategy_research/tv_method_kelly_sizing.md`
-
-`doc` · 88 lines · 3,812 B · description: **extracted**
-
-**Purpose.** Specification of Fractional Kelly position sizing; not a tested trading strategy.
-
-**Contents.** Frontmatter: `status`=spec-only, `family`=research-method, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
-
-**Use.** Read it.
-
-#### `backtester/strategy_research/tv_method_liquidity_sweep.md`
-
-`doc` · 92 lines · 4,110 B · description: **extracted**
-
-**Purpose.** Specification of Liquidity sweep and failed break; not a tested trading strategy.
-
-**Contents.** Frontmatter: `status`=spec-only, `family`=research-method, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
-
-**Use.** Read it.
-
-#### `backtester/strategy_research/tv_method_logistic_prediction.md`
-
-`doc` · 89 lines · 3,933 B · description: **extracted**
-
-**Purpose.** Specification of Logistic regression classification; not a tested trading strategy.
-
-**Contents.** Frontmatter: `status`=spec-only, `family`=research-method, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
-
-**Use.** Read it.
-
-#### `backtester/strategy_research/tv_method_martingale_sizing.md`
-
-`doc` · 89 lines · 3,899 B · description: **extracted**
-
-**Purpose.** Specification of Martingale loss recovery sizing; not a tested trading strategy.
-
-**Contents.** Frontmatter: `status`=spec-only, `family`=research-method, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
-
-**Use.** Read it.
-
-#### `backtester/strategy_research/tv_method_oops_gap_reversal.md`
-
-`doc` · 87 lines · 3,681 B · description: **extracted**
-
-**Purpose.** Specification of OOPS opening gap reversal; not a tested trading strategy.
-
-**Contents.** Frontmatter: `status`=spec-only, `family`=research-method, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
-
-**Use.** Read it.
-
-#### `backtester/strategy_research/tv_method_pitchfork.md`
-
-`doc` · 92 lines · 4,137 B · description: **extracted**
-
-**Purpose.** Specification of Andrews pitchfork and median lines; not a tested trading strategy.
-
-**Contents.** Frontmatter: `status`=spec-only, `family`=research-method, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
-
-**Use.** Read it.
-
-#### `backtester/strategy_research/tv_method_risk_based_sizing.md`
-
-`doc` · 92 lines · 4,104 B · description: **extracted**
-
-**Purpose.** Specification of Fixed fractional risk and stop sizing; not a tested trading strategy.
-
-**Contents.** Frontmatter: `status`=spec-only, `family`=research-method, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
-
-**Use.** Read it.
-
-#### `backtester/strategy_research/tv_method_rsi_divergence.md`
-
-`doc` · 92 lines · 4,088 B · description: **extracted**
-
-**Purpose.** Specification of RSI divergence; not a tested trading strategy.
-
-**Contents.** Frontmatter: `status`=spec-only, `family`=research-method, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
-
-**Use.** Read it.
-
-#### `backtester/strategy_research/tv_method_short_strangle.md`
-
-`doc` · 91 lines · 3,817 B · description: **extracted**
-
-**Purpose.** Specification of Short strangle option premium; not a tested trading strategy.
-
-**Contents.** Frontmatter: `status`=spec-only, `family`=research-method, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
-
-**Use.** Read it.
-
-#### `backtester/strategy_research/tv_method_trailing_stop.md`
-
-`doc` · 92 lines · 4,046 B · description: **extracted**
-
-**Purpose.** Specification of Trailing and breakeven stops; not a tested trading strategy.
-
-**Contents.** Frontmatter: `status`=spec-only, `family`=research-method, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
-
-**Use.** Read it.
-
-#### `backtester/strategy_research/tv_method_triple_top_bottom.md`
-
-`doc` · 92 lines · 4,097 B · description: **extracted**
-
-**Purpose.** Specification of Triple top and triple bottom; not a tested trading strategy.
-
-**Contents.** Frontmatter: `status`=spec-only, `family`=research-method, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
-
-**Use.** Read it.
-
-#### `backtester/strategy_research/tv_method_vertical_debit_spread.md`
-
-`doc` · 88 lines · 3,789 B · description: **extracted**
-
-**Purpose.** Specification of Vertical debit option spread; not a tested trading strategy.
-
-**Contents.** Frontmatter: `status`=spec-only, `family`=research-method, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
-
-**Use.** Read it.
-
-#### `backtester/strategy_research/tv_method_volume_delta.md`
-
-`doc` · 92 lines · 4,108 B · description: **extracted**
-
-**Purpose.** Specification of Cumulative volume delta; not a tested trading strategy.
-
-**Contents.** Frontmatter: `status`=spec-only, `family`=research-method, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
-
-**Use.** Read it.
-
-#### `backtester/strategy_research/tv_mketjg7e_periodic_linear_regressions_luxalgo.md`
-
-`doc` · 100 lines · 4,967 B · description: **extracted**
-
-**Purpose.** Specification of Periodic Linear Regressions [LuxAlgo]; not a tested trading strategy.
-
-**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
-
-**Use.** Read it.
-
-#### `backtester/strategy_research/tv_n0f50jkv_relative_volume_at_time.md`
-
-`doc` · 102 lines · 4,598 B · description: **extracted**
-
-**Purpose.** Specification of Relative Volume at Time; not a tested trading strategy.
-
-**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
-
-**Use.** Read it.
-
-#### `backtester/strategy_research/tv_niy5oyf7_volume_by_session.md`
-
-`doc` · 94 lines · 4,366 B · description: **extracted**
-
-**Purpose.** Specification of Volume by Session; not a tested trading strategy.
-
-**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
-
-**Use.** Read it.
-
-#### `backtester/strategy_research/tv_nlygzrmb_short_volume_stamper.md`
-
-`doc` · 98 lines · 5,283 B · description: **extracted**
-
-**Purpose.** Specification of Short Volume Stamper; not a tested trading strategy.
-
-**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
-
-**Use.** Read it.
-
-#### `backtester/strategy_research/tv_nueh5q6t_linear_regression_all_data.md`
-
-`doc` · 90 lines · 4,031 B · description: **extracted**
-
-**Purpose.** Specification of Linear Regression (All Data); not a tested trading strategy.
-
-**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
-
-**Use.** Read it.
-
-#### `backtester/strategy_research/tv_nw5ogfdo_ict_killzones_pivots_tfo.md`
-
-`doc` · 92 lines · 4,466 B · description: **extracted**
-
-**Purpose.** Specification of ICT Killzones + Pivots [TFO]; not a tested trading strategy.
-
-**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
-
-**Use.** Read it.
-
-#### `backtester/strategy_research/tv_ny63myd9_time_volume_point_of_control_flowly_indicators.md`
-
-`doc` · 98 lines · 5,932 B · description: **extracted**
-
-**Purpose.** Specification of Time & volume point of control / Flowly Indicators; not a tested trading strategy.
-
-**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
-
-**Use.** Read it.
-
-#### `backtester/strategy_research/tv_o2toj6ez_bitcoin_monthly_seasonality_alpha_extract.md`
-
-`doc` · 100 lines · 4,513 B · description: **extracted**
-
-**Purpose.** Specification of Bitcoin Monthly Seasonality [Alpha Extract]; not a tested trading strategy.
-
-**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
-
-**Use.** Read it.
-
-#### `backtester/strategy_research/tv_odyzzlzu_median_convergence_divergence.md`
-
-`doc` · 102 lines · 5,313 B · description: **extracted**
-
-**Purpose.** Specification of Median Convergence Divergence; not a tested trading strategy.
-
-**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
-
-**Use.** Read it.
-
-#### `backtester/strategy_research/tv_okuj0d2n_earnings_price_move_cheat_sheet_kt.md`
-
-`doc` · 98 lines · 4,885 B · description: **extracted**
-
-**Purpose.** Specification of Earnings Price Move Cheat Sheet [KT]; not a tested trading strategy.
-
-**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
-
-**Use.** Read it.
-
-#### `backtester/strategy_research/tv_p6xx04kb_vix_multi_tool.md`
-
-`doc` · 132 lines · 6,162 B · description: **extracted**
-
-**Purpose.** Specification of VIX Multi-Tool; not a tested trading strategy.
-
-**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
-
-**Use.** Read it.
-
-#### `backtester/strategy_research/tv_qe4dq4zm_chart_vwap.md`
-
-`doc` · 98 lines · 5,319 B · description: **extracted**
-
-**Purpose.** Specification of Chart VWAP; not a tested trading strategy.
-
-**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
-
-**Use.** Read it.
-
-#### `backtester/strategy_research/tv_r8g2yhdg_order_block_finder_experimental.md`
-
-`doc` · 100 lines · 4,924 B · description: **extracted**
-
-**Purpose.** Specification of Order Block Finder (Experimental); not a tested trading strategy.
-
-**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
-
-**Use.** Read it.
-
-#### `backtester/strategy_research/tv_rbeervr5_rolling_z_score_trend_quantalgo.md`
-
-`doc` · 100 lines · 5,286 B · description: **extracted**
-
-**Purpose.** Specification of Rolling Z-Score Trend [QuantAlgo]; not a tested trading strategy.
-
-**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
-
-**Use.** Read it.
-
-#### `backtester/strategy_research/tv_sg5cvyr9_tick_data_detailed.md`
-
-`doc` · 92 lines · 4,405 B · description: **extracted**
-
-**Purpose.** Specification of Tick Data Detailed; not a tested trading strategy.
-
-**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
-
-**Use.** Read it.
-
-#### `backtester/strategy_research/tv_snufopt6_modified_mannarino_market_risk_indicator_mmmri_mmri.md`
-
-`doc` · 94 lines · 4,920 B · description: **extracted**
-
-**Purpose.** Specification of Modified Mannarino Market Risk Indicator MMMRI MMRI; not a tested trading strategy.
-
-**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
-
-**Use.** Read it.
-
-#### `backtester/strategy_research/tv_sq5xt0ez_hyperfork_matrix.md`
-
-`doc` · 102 lines · 4,944 B · description: **extracted**
-
-**Purpose.** Specification of Hyperfork Matrix; not a tested trading strategy.
-
-**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
-
-**Use.** Read it.
-
-#### `backtester/strategy_research/tv_swwmsmqw_indicator_panel.md`
-
-`doc` · 94 lines · 4,447 B · description: **extracted**
-
-**Purpose.** Specification of Indicator Panel; not a tested trading strategy.
-
-**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
-
-**Use.** Read it.
-
-#### `backtester/strategy_research/tv_t1v41bl5_session_edge_profiler_flux_charts.md`
-
-`doc` · 104 lines · 7,357 B · description: **extracted**
-
-**Purpose.** Specification of Session Edge Profiler | Flux Charts; not a tested trading strategy.
-
-**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
-
-**Use.** Read it.
-
-#### `backtester/strategy_research/tv_ta_relativevolume.md`
-
-`doc` · 94 lines · 4,639 B · description: **extracted**
-
-**Purpose.** Specification of TradingView ta library: relativeVolume; not a tested trading strategy.
-
-**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
-
-**Use.** Read it.
-
-#### `backtester/strategy_research/tv_ta_rms.md`
-
-`doc` · 92 lines · 3,637 B · description: **extracted**
-
-**Purpose.** Specification of TradingView ta library: rms; not a tested trading strategy.
-
-**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
-
-**Use.** Read it.
-
-#### `backtester/strategy_research/tv_tbz9rgx9_weekly_volume_heatmap.md`
-
-`doc` · 98 lines · 4,607 B · description: **extracted**
-
-**Purpose.** Specification of Weekly Volume Heatmap; not a tested trading strategy.
-
-**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
-
-**Use.** Read it.
-
-#### `backtester/strategy_research/tv_tnq7fvvw_trend_target_ribbon_boswaves.md`
-
-`doc` · 112 lines · 8,587 B · description: **extracted**
-
-**Purpose.** Specification of Trend Target Ribbon [BOSWaves]; not a tested trading strategy.
-
-**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
-
-**Use.** Read it.
-
-#### `backtester/strategy_research/tv_tpseizhp_volume_x_ray_lucf.md`
-
-`doc` · 100 lines · 6,312 B · description: **extracted**
-
-**Purpose.** Specification of Volume X-ray [LucF]; not a tested trading strategy.
-
-**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
-
-**Use.** Read it.
-
-#### `backtester/strategy_research/tv_tstsp9sk_peak_trading_activity_graphs_luxalgo.md`
-
-`doc` · 98 lines · 5,157 B · description: **extracted**
-
-**Purpose.** Specification of Peak Trading Activity Graphs [LuxAlgo]; not a tested trading strategy.
-
-**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
-
-**Use.** Read it.
-
-#### `backtester/strategy_research/tv_ucux0rjl_tops_bottoms_time_of_day_report.md`
-
-`doc` · 92 lines · 4,023 B · description: **extracted**
-
-**Purpose.** Specification of Tops & Bottoms - Time of Day Report; not a tested trading strategy.
-
-**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
-
-**Use.** Read it.
-
-#### `backtester/strategy_research/tv_udti2iuw_central_bank_liquidity_gap_indicator.md`
-
-`doc` · 96 lines · 4,335 B · description: **extracted**
-
-**Purpose.** Specification of Central Bank Liquidity Gap Indicator; not a tested trading strategy.
-
-**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
-
-**Use.** Read it.
-
-#### `backtester/strategy_research/tv_ujgvguvt_volatility_risk_premium.md`
-
-`doc` · 106 lines · 7,149 B · description: **extracted**
-
-**Purpose.** Specification of Volatility Risk Premium; not a tested trading strategy.
-
-**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
-
-**Use.** Read it.
-
-#### `backtester/strategy_research/tv_ulzjcb7h_volume_by_time_luxalgo.md`
-
-`doc` · 92 lines · 4,071 B · description: **extracted**
-
-**Purpose.** Specification of Volume by Time [LuxAlgo]; not a tested trading strategy.
-
-**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
-
-**Use.** Read it.
-
-#### `backtester/strategy_research/tv_uudeajsi_quadratic_regression.md`
-
-`doc` · 98 lines · 4,741 B · description: **extracted**
-
-**Purpose.** Specification of Quadratic Regression; not a tested trading strategy.
-
-**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
-
-**Use.** Read it.
-
-#### `backtester/strategy_research/tv_wixmhdwt_seasonality_tfo.md`
-
-`doc` · 94 lines · 4,869 B · description: **extracted**
-
-**Purpose.** Specification of Seasonality [TFO]; not a tested trading strategy.
-
-**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
-
-**Use.** Read it.
-
-#### `backtester/strategy_research/tv_x2llrvbe_higher_order_pivots.md`
-
-`doc` · 94 lines · 4,225 B · description: **extracted**
-
-**Purpose.** Specification of Higher Order Pivots; not a tested trading strategy.
-
-**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
-
-**Use.** Read it.
-
-#### `backtester/strategy_research/tv_x2y6hyok_bitcoin_bullish_percent_index.md`
-
-`doc` · 97 lines · 4,962 B · description: **extracted**
-
-**Purpose.** Specification of Bitcoin Bullish Percent Index; not a tested trading strategy.
-
-**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
-
-**Use.** Read it.
-
-#### `backtester/strategy_research/tv_xh8tldte_realtime_delta_volume_action_lucf.md`
-
-`doc` · 106 lines · 6,988 B · description: **extracted**
-
-**Purpose.** Specification of Realtime Delta Volume Action [LucF]; not a tested trading strategy.
-
-**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
-
-**Use.** Read it.
-
-#### `backtester/strategy_research/tv_xlv4mwjk_time_range_statistics.md`
-
-`doc` · 96 lines · 5,232 B · description: **extracted**
-
-**Purpose.** Specification of Time Range Statistics; not a tested trading strategy.
-
-**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
-
-**Use.** Read it.
-
-#### `backtester/strategy_research/tv_xyaiqwd8_auto_trendline_indicator_based_on_fractals.md`
-
-`doc` · 100 lines · 5,438 B · description: **extracted**
-
-**Purpose.** Specification of Auto Trendline Indicator (based on fractals); not a tested trading strategy.
-
-**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
-
-**Use.** Read it.
-
-#### `backtester/strategy_research/tv_y1x3vuyd_bollinger_band_and_t_line_timing.md`
-
-`doc` · 100 lines · 6,830 B · description: **extracted**
-
-**Purpose.** Specification of Bollinger Band and T-Line Timing; not a tested trading strategy.
-
-**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
-
-**Use.** Read it.
-
-#### `backtester/strategy_research/tv_y3pnzg2q_correlation_heatmap.md`
-
-`doc` · 102 lines · 6,039 B · description: **extracted**
-
-**Purpose.** Specification of Correlation Heatmap; not a tested trading strategy.
-
-**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
-
-**Use.** Read it.
-
-#### `backtester/strategy_research/tv_ygno2g1v_tick_chart.md`
-
-`doc` · 92 lines · 4,304 B · description: **extracted**
-
-**Purpose.** Specification of Tick Chart; not a tested trading strategy.
-
-**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
-
-**Use.** Read it.
-
-#### `backtester/strategy_research/tv_yhpgau7a_carrier_volatility_pumori.md`
-
-`doc` · 100 lines · 5,425 B · description: **extracted**
-
-**Purpose.** Specification of Carrier Volatility [Pumori]; not a tested trading strategy.
-
-**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
-
-**Use.** Read it.
-
-#### `backtester/strategy_research/tv_yjxpjg0y_multi_asset_performance_spaghetti_by_leviathan.md`
-
-`doc` · 100 lines · 6,033 B · description: **extracted**
-
-**Purpose.** Specification of Multi-Asset Performance [Spaghetti] - By Leviathan; not a tested trading strategy.
-
-**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
-
-**Use.** Read it.
-
-#### `backtester/strategy_research/tv_yr3kt0ui_time_of_day_session_performance_stats_quantalgo.md`
-
-`doc` · 100 lines · 6,295 B · description: **extracted**
-
-**Purpose.** Specification of Time-of-Day/Session Performance Stats [QuantAlgo]; not a tested trading strategy.
-
-**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
-
-**Use.** Read it.
-
-#### `backtester/strategy_research/tv_yyrxrhi9_atr_rope.md`
-
-`doc` · 102 lines · 5,876 B · description: **extracted**
-
-**Purpose.** Specification of ATR Rope; not a tested trading strategy.
-
-**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
-
-**Use.** Read it.
-
-#### `backtester/strategy_research/tv_zartjpet_simple_investing_strategy_affordable_for_all.md`
-
-`doc` · 100 lines · 5,196 B · description: **extracted**
-
-**Purpose.** Specification of Simple Investing Strategy, Affordable for all!; not a tested trading strategy.
-
-**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
-
-**Use.** Read it.
-
-#### `backtester/strategy_research/two_ma_v31_source_research.md`
-
-`doc` · 28 lines · 1,317 B · description: **extracted**
-
-**Purpose.** Source-bound moving-average research adapter; TradingView parity remains unverified.
-
-**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
-
-**Use.** Read it.
-
-#### `backtester/strategy_research/vol_of_vol_term_structure.md`
-
-`doc` · 57 lines · 1,885 B · description: **extracted**
-
-**Purpose.** Trade the shape and instability of the volatility surface.
-
-**Contents.** Frontmatter: `status`=spec-only, `family`=volatility, `evaluation`=None, `success_likelihood`=very-low, `data_available`=false, `registry_key`=null.
-
-**Use.** Read it.
-
-#### `backtester/strategy_research/xs_momentum.md`
-
-`doc` · 64 lines · 2,571 B · description: **extracted**
-
-**Purpose.** Rank a universe by trailing return and hold the top decile. Needs peers this repo does not have.
-
-**Contents.** Frontmatter: `status`=spec-only, `family`=momentum, `evaluation`=None, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
-
-**Use.** Read it.
 
 ### `backtester/tests/`
 
@@ -21472,7 +18278,7 @@ The simulation engine and everything that supports it. Never gains live-trading 
 
 #### `backtester/tests/test_candidate_auxiliary.py`
 
-`test` · 61 lines · 2,725 B · description: **extracted**
+`test` · 61 lines · 2,730 B · description: **extracted**
 
 **Purpose.** Known-answer auxiliary defects: gap-aligned labels and causal quote time.
 
@@ -21482,9 +18288,9 @@ The simulation engine and everything that supports it. Never gains live-trading 
 
 #### `backtester/tests/test_candle_gap_audit.py`
 
-`test` · 114 lines · 4,400 B · description: **extracted**
+`test` · 114 lines · 4,408 B · description: **extracted**
 
-**Purpose.** Gap detection and repair-merge logic in `research/candle_gap_audit.py`. The audit's whole value is the distinction between "this minute was quiet" and "this minute traded and the exchange dropped it", so the tests here pin the mechanics that decision rests on: which bars are reported missing, and that a repaired series replaces the damaged bars rather than accumulating duplicates of them.
+**Purpose.** Gap detection and repair-merge logic in `research/scripts/candle_gap_audit.py`. The audit's whole value is the distinction between "this minute was quiet" and "this minute traded and the exchange dropped it", so the tests here pin the mechanics that decision rests on: which bars are reported missing, and that a repaired series replaces the damaged bars rather than accumulating duplicates of them.
 
 **Contents.** Defines `REPO`, `MINUTE`, `_bars()`, `class TestGapRuns`, `class TestRepairMerge`. Depends on `research`.
 
@@ -21532,7 +18338,7 @@ The simulation engine and everything that supports it. Never gains live-trading 
 
 #### `backtester/tests/test_compound_backtest.py`
 
-`test` · 212 lines · 11,462 B · description: **extracted**
+`test` · 212 lines · 11,467 B · description: **extracted**
 
 **Purpose.** Compound backtest runner: data loading, gap handling, engine wiring, IS/OOS honesty.
 
@@ -21572,7 +18378,7 @@ The simulation engine and everything that supports it. Never gains live-trading 
 
 #### `backtester/tests/test_cross_asset_cpcv.py`
 
-`test` · 1203 lines · 59,198 B · description: **extracted**
+`test` · 1203 lines · 59,206 B · description: **extracted**
 
 **Purpose.** The cross-asset CPCV script's pure parts. No test here loads a price file, runs the engine, or writes anywhere under `research/results/`. That is not tidiness -- it is what makes these tests runnable at all, and safe to run: * `data/` is gitignored, so a test that opened `data/BTC_1d.csv` would pass on a development machine and fail in CI for a reason unrelated to the code.
 
@@ -21602,9 +18408,9 @@ The simulation engine and everything that supports it. Never gains live-trading 
 
 #### `backtester/tests/test_decide.py`
 
-`test` · 923 lines · 41,176 B · description: **extracted**
+`test` · 923 lines · 41,184 B · description: **extracted**
 
-**Purpose.** Tests for the per-bar rule readout in `research/decide.py`. The readout's one substantive claim is that its target exposures are the same numbers the engine would have acted on. Three tests defend it: * **Engine parity.** A recording wrapper captures every `on_bar` return the engine asks for, and the replay must reproduce that sequence exactly, for every registered strategy.
+**Purpose.** Tests for the per-bar rule readout in `research/scripts/decide.py`. The readout's one substantive claim is that its target exposures are the same numbers the engine would have acted on. Three tests defend it: * **Engine parity.** A recording wrapper captures every `on_bar` return the engine asks for, and the replay must reproduce that sequence exactly, for every registered strategy.
 
 **Contents.** Defines `REPO`, `ZERO_COST`, `SYNTHETIC_BARS`, `synthetic_arrays()`, `truncate()`, `make_arrays()`, `class Recorder`, `class TestEngineParity`, `class TestNoLeak`, `class TestPathDependence` and 6 more. Depends on `backtester`, `research`.
 
@@ -21752,7 +18558,7 @@ The simulation engine and everything that supports it. Never gains live-trading 
 
 #### `backtester/tests/test_index.py`
 
-`test` · 499 lines · 24,811 B · description: **extracted**
+`test` · 499 lines · 24,818 B · description: **extracted**
 
 **Purpose.** The repository index: isolation, correctness, and the staleness gate. No test here builds the real index or calls the network. `index/build.py`'s `semantic` subcommand is the only thing in this repo that opens a socket, and it talks to localhost ollama; a test that exercised it would be neither deterministic nor available in CI. The load-bearing test is the first one.
 
@@ -21912,7 +18718,7 @@ The simulation engine and everything that supports it. Never gains live-trading 
 
 #### `backtester/tests/test_research_regressions.py`
 
-`test` · 193 lines · 12,738 B · description: **extracted**
+`test` · 193 lines · 12,746 B · description: **extracted**
 
 **Purpose.** Bounded synthetic/mocked guards for research selection and experiment identity.
 
@@ -21992,7 +18798,7 @@ The simulation engine and everything that supports it. Never gains live-trading 
 
 #### `backtester/tests/test_strategy_candidate.py`
 
-`test` · 69 lines · 3,185 B · description: **extracted**
+`test` · 69 lines · 3,190 B · description: **extracted**
 
 **Purpose.** Candidate economic corrections remain separate from the frozen baseline.
 
@@ -22002,7 +18808,7 @@ The simulation engine and everything that supports it. Never gains live-trading 
 
 #### `backtester/tests/test_strategy_cards.py`
 
-`test` · 660 lines · 28,152 B · description: **extracted**
+`test` · 660 lines · 28,195 B · description: **extracted**
 
 **Purpose.** Tests for strategy cards. These are the tests that make a card a contract rather than a claim. Prose in a card can be wrong and no test will catch it; a *number* in a card is checked against the code that would use it.
 
@@ -22022,9 +18828,9 @@ The simulation engine and everything that supports it. Never gains live-trading 
 
 #### `backtester/tests/test_strategy_duplication.py`
 
-`test` · 143 lines · 6,622 B · description: **extracted**
+`test` · 143 lines · 6,630 B · description: **extracted**
 
-**Purpose.** `bb_reversion` and `zscore` are one hypothesis counted twice. Found by `research/dso_audit.py`'s S4 pass, which flagged them as posting identical summary scalars on BTC daily, and confirmed by comparing per-bar exposure: on 1,875 BTC daily bars the two strategies took **exactly the same position on every bar**. The reason is algebra, not coincidence.
+**Purpose.** `bb_reversion` and `zscore` are one hypothesis counted twice. Found by `research/scripts/dso_audit.py`'s S4 pass, which flagged them as posting identical summary scalars on BTC daily, and confirmed by comparing per-bar exposure: on 1,875 BTC daily bars the two strategies took **exactly the same position on every bar**. The reason is algebra, not coincidence.
 
 **Contents.** Defines `exposures()`, `series()`, `class TestTheTwoAreTheSameRule`. Depends on `backtester`.
 
@@ -22052,9 +18858,9 @@ The simulation engine and everything that supports it. Never gains live-trading 
 
 #### `backtester/tests/test_tick_backfill.py`
 
-`test` · 159 lines · 7,191 B · description: **extracted**
+`test` · 159 lines · 7,199 B · description: **extracted**
 
-**Purpose.** Incremental aggregation and checkpoint round-trip in `research/tick_backfill.py`. The backfill walks a month of trades BACKWARD in pages, folding each page into a running per-bar aggregate. That means a bar's opening trade usually arrives *after* its closing trade, and often in a different page entirely.
+**Purpose.** Incremental aggregation and checkpoint round-trip in `research/scripts/tick_backfill.py`. The backfill walks a month of trades BACKWARD in pages, folding each page into a running per-bar aggregate. That means a bar's opening trade usually arrives *after* its closing trade, and often in a different page entirely.
 
 **Contents.** Defines `REPO`, `BASE`, `_trades()`, `class TestMinuteAggregator`, `class TestCheckpointRoundTrip`. Depends on `backtester`, `research`.
 
@@ -22102,7 +18908,7 @@ The simulation engine and everything that supports it. Never gains live-trading 
 
 #### `backtester/tests/test_triggers.py`
 
-`test` · 184 lines · 8,297 B · description: **extracted**
+`test` · 184 lines · 8,301 B · description: **extracted**
 
 **Purpose.** The trigger miner and trigger_trade: causality, statistics, gates and timing.
 
@@ -22152,7 +18958,7 @@ The simulation engine and everything that supports it. Never gains live-trading 
 
 #### `backtester/tests/test_universe.py`
 
-`test` · 265 lines · 12,034 B · description: **extracted**
+`test` · 265 lines · 12,039 B · description: **extracted**
 
 **Purpose.** The multi-asset universe fetch. No test here touches the network. `list_coinbase_products` takes an injected `get_json` and `fetch_universe` takes an injected `fetcher`, for the reason `fetch.py`'s own docstring gives: fetching is an explicit step, and a test suite that performs it is neither deterministic nor polite to the venue. The behaviour most worth pinning is the refusal.
 
@@ -22176,431 +18982,23 @@ The simulation engine and everything that supports it. Never gains live-trading 
 
 Drivers that produce the numbers, and the write-ups that quote them. Everything here is reproducible from a committed script — the two occasions that was not true both produced a wrong published figure.
 
-527 files.
+881 files.
 
-#### `research/5minleveragestrategies.json`
+#### `research/README.md`
 
-`config` · 473 lines · 37,754 B · description: **derived**
+`doc` · 11 lines · 1,106 B · description: **extracted**
 
-**Purpose.** Generated JSON object, 9 keys (as_of, scope_note, answer_summary, jupiter_perps_context, current_cross_venue_observation, regime_identification...).
-
-**Use.** Configuration; nothing to run.
-
-#### `research/CANDLE-GAP-AUDIT.md`
-
-`doc` · 209 lines · 12,779 B · description: **extracted**
-
-**Purpose.** Generated by `research/candle_gap_audit.py` over 2026-07-06 .. 2026-08-06, five assets. Every figure comes from the Coinbase **trades** endpoint compared against the 1m candle cache in `data/`.
+**Purpose.** Read the [6,048-configuration walk-forward report](papers/results/zec_gum_25x_5m_walk_forward.md) and the [three strategy cards](papers/results/zec_gum_25x_5m_card_1.md). The report links to the other two cards, rankings, frozen selection and complete compressed replay.
 
 **Use.** Read it.
 
-#### `research/COINBASE50-GRID-CYCLES.md`
+#### `research/__init__.py`
 
-`doc` · 586 lines · 41,267 B · description: **extracted**
+`code-python` · 6 lines · 165 B · description: **extracted**
 
-**Purpose.** This is a current-survivor, complete-feed historical experiment. It does not establish future profit or an executable live edge. No orders, runtime universe, or armed settings changed. At zero commission +2bps execution per side, the unfiltered marketcap10 grid returns 1.19%, training-ranked coin selection returns 1.90%, and all five factors together return -0.48%.
+**Purpose.** Keep existing research module entry points after organizing script files.
 
-**Use.** Read it.
-
-#### `research/COMPOUND-FRONTIER.md`
-
-`doc` · 155 lines · 10,577 B · description: **extracted**
-
-**Purpose.** The owner's question: the reversion metrics "are doing ok in testing" (52% out-of-sample hit on SOL) but every row says the profit is eaten by fees. How do you get around that, and is there a better strategy nearby? This page answers both with the frontier sweep (run `20261107T202943Z`, 1,250
-
-**Use.** Read it.
-
-#### `research/CROSS-ASSET-TRANSFER.md`
-
-`doc` · 225 lines · 14,429 B · description: **extracted**
-
-**Purpose.** python3 research/cross_asset_cpcv.py --self-test # gate: reproduces the BTC/ETH file python3 research/cross_asset_cpcv.py --assets SOL,DOGE,ZEC # 25 singles, medium horizon python3 research/cross_asset_cpcv.py --top5 --assets DOGE,ZEC # the five, with SOL as control
-
-**Use.** Read it.
-
-#### `research/CROSSCOIN-REVERSAL-PATTERNS.md`
-
-`doc` · 115 lines · 10,418 B · description: **extracted**
-
-**Purpose.** The two-UP-bars rule does not establish a general 70% probability. In the full 30-day KuCoin archive, the next 10-minute candle closed DOWN after UU in 148/420 HYPE cases (35.2%; 117 flat), 538/1032 ETH cases (52.1%), 548/1028 BTC cases (53.3%) and 524/972 SOL cases (53.9%).
-
-**Use.** Read it.
-
-#### `research/EXIT50-REVERSAL.md`
-
-`doc` · 156 lines · 13,843 B · description: **extracted**
-
-**Purpose.** This is an exploratory retrospective: the historical period and earlier shape tables were already seen. The splits do not create an independent holdout. The 200 ms observations and 1-minute no-touch envelopes do not prove a continuous keeper path. Current fee configuration is a scenario, not verified historical fees. Entry, network and keeper costs and actual fills are not qualified.
-
-**Use.** Read it.
-
-#### `research/FIVE-MINUTE-PERPS.md`
-
-`doc` · 115 lines · 7,246 B · description: **extracted**
-
-**Purpose.** Version: 1 Delta: initial public synthesis from the accepted TASK-808 evidence cohort and preserved prior research. Reviewed: 2026-11-08. This is research, not a tested trading rule.
-
-**Use.** Read it.
-
-#### `research/GRID-REVIEW.md`
-
-`doc` · 51 lines · 4,974 B · description: **extracted**
-
-**Purpose.** Reviewed 2026-11-07 using engine `ad6fe0830c661fa1437a0c5606118f076dd13888`. The strategy named `grid` in the roster increases exposure as price falls below a rolling average. It is an exposure staircase, not a set of resting buy and sell orders. Its archived single-split SOL results lost money out of sample (see `backtester/strategy_cards/grid.md`).
-
-**Use.** Read it.
-
-#### `research/LEVERAGE-ECONOMICS.md`
-
-`doc` · 162 lines · 8,146 B · description: **extracted**
-
-**Purpose.** No network, no data files — this is closed-form arithmetic over published venue parameters, so it reproduces exactly. python3 research/leverage_economics.py --self-test # gate: 7 load-bearing claims
-
-**Use.** Read it.
-
-#### `research/LEVERAGE-TIERS.md`
-
-`doc` · 63 lines · 5,740 B · description: **extracted**
-
-**Purpose.** Simulation only. Reproduce with `python3 -m research.leverage_tiers --asset SOL --interval 1d` (about 6 seconds). Raw rows: `research/results/leverage_tiers_sol_1d_summary.csv`, Leverage multiplies the existing result and adds carry, so it can only help a signal that already
-
-**Use.** Read it.
-
-#### `research/META-ANALYSIS.md`
-
-`doc` · 401 lines · 35,276 B · description: **extracted**
-
-**Purpose.** Version: 1.2.0. Evidence cutoff: 2026-11-11. Status: retrospective follow-ups, tiny live validation and installed paper-cohort acceptance complete; future economic evidence remains unqualified. /dr semantic review passed; skill publication is withheld by the owning hub structural gate. Keep new autonomous strategy capital in cash while the frozen paper comparison runs.
-
-**Use.** Read it.
-
-#### `research/META-ANALYSIS.md.ddo-report.md`
-
-`doc` · 107 lines · 10,780 B · description: **extracted**
-
-**Purpose.** Result: **blind_audit_dissent**. Full depth, write + report, standard profile, Medium floor, three-iteration cap. The final independent review retains one Medium finding. Do not claim convergence or publication readiness from this run. Target: /Users/mitch/dev/solmargintrader-wt-01a1ca3c-meta/research/META-ANALYSIS.md Snapshot started: 2026-11-11T17:23:54Z.
-
-**Use.** Read it.
-
-#### `research/MTF-REVERSAL.md`
-
-`doc` · 20 lines · 3,016 B · description: **extracted**
-
-**Purpose.** This exploratory study asks whether completed 5, 10, 15 and 20 minute shapes add useful context to an up/up reversal. BTC and ZEC use 41,680 complete one-minute Jupiter Oracle observations each. The model uses only completed bars at the decision boundary.
-
-**Use.** Read it.
-
-#### `research/NEWS-EVENT-STUDY.md`
-
-`doc` · 116 lines · 11,218 B · description: **extracted**
-
-**Purpose.** Version: 1.0.0 Delta: initial measured, outcome-blind publication-time event study. This exploratory study follows 61 reviewed coin/article events from August 14 through November 10, 2026 UTC (89 complete days). It measures subsequent Coinbase USD candle-open returns at 1, 5, 15, 60, 240 and 1,440 minutes. The primary horizon is one hour.
-
-**Use.** Read it.
-
-#### `research/NONLINEAR-LEAD-LAG-CHILDREN.md`
-
-`doc` · 106 lines · 7,775 B · description: **extracted**
-
-**Purpose.** Version: 2 Delta: v1 to v2; link the completed canonical run and separate remote delivery qualification. Reviewed: 2026-11-08. Research only; no new market backtest or live trade.
-
-**Use.** Read it.
-
-#### `research/PROMPT_STRATEGIES.md`
-
-`doc` · 175 lines · 14,396 B · description: **extracted**
-
-**Purpose.** <!-- HISTORICAL SPEC — preserved as written, do not retro-edit. This is the pdo-optimized spec that drove the first pass of the work. Two of its
-
-**Use.** Read it.
-
-#### `research/RANKED_LISTS.md`
-
-`doc` · 1084 lines · 74,160 B · description: **extracted**
-
-**Purpose.** configuration, so realised path counts are lower; see "How many paths each figure actually rests on" below. The earlier single 70/30 walk-forward is retained as List 1b, because the disagreement between the two methods is the most instructive result here.
-
-**Use.** Read it.
-
-#### `research/RATIO-ROTATION.md`
-
-`doc` · 270 lines · 12,563 B · description: **extracted**
-
-**Purpose.** Reproduce with: python3 -m backtester.core.universe --assets BTC,ETH,SOL,DOGE,ZEC --interval 1d python3 -m backtester.core.universe --assets XRP --interval 1d --allow-gaps
-
-**Use.** Read it.
-
-#### `research/RELIABLE_SIGNALS.md`
-
-`doc` · 144 lines · 12,002 B · description: **extracted**
-
-**Purpose.** Generated by `python3 -m research.triggers` (`build_report`). Simulation only. Not investment advice. A **trigger** is a conjunction of 1 to 3 conditions, each computed from bars up to and including bar t. When it fires at the close of bar t the trade enters at the open of bar t+1 and is judged at the close
-
-**Use.** Read it.
-
-#### `research/REVERSAL-SECOND-TURN.md`
-
-`doc` · 117 lines · 12,106 B · description: **extracted**
-
-**Purpose.** A correct closing direction does not establish a surviving 1000x trade. The tables below require the entire holding bar to stay inside the modeled liquidation boundary. No stop-loss or take-profit is assumed; exit is at the target bar's close. The first decision is SHORT after two completed UP bars. The second is LONG only after UP–UP–DOWN has completed.
-
-**Use.** Read it.
-
-#### `research/REVERSAL-SHAPES.md`
-
-`doc` · 102 lines · 4,779 B · description: **extracted**
-
-**Purpose.** Frozen 5/10/15/20-minute study. Two completed UP bars predict DOWN only under a reversal rule; two DOWN bars predict UP. Shapes use the previous48 completed bars. The study ends before the existing unsealed BTC holdout. The60/20/20 split is chronological.
-
-**Use.** Read it.
-
-#### `research/RS-ZIGZAG-PA-SOURCE-CONTRACT-2333.md`
-
-`doc` · 98 lines · 6,119 B · description: **extracted**
-
-**Purpose.** Version: 1.1.0. Delta: record measured six-pass draft and publication limits. The owner supplied a Pine file and screenshots for this investigation. This is an audit and proposed comparison, not an executable card, completed research,
-
-**Use.** Read it.
-
-#### `research/RS-ZIGZAG-PROXY-2333.md`
-
-`doc` · 89 lines · 6,277 B · description: **extracted**
-
-**Purpose.** Version: 1.2.0. Delta: add separately fenced equal-notional sensitivity. These results are **not TradingView replication or evidence of live profit**. They use previously observed Jupiter ZEC/USD oracle OHLC, not Coinbase's
-
-**Use.** Read it.
-
-#### `research/SAR-PIVOT-SOURCE-REVIEW-2324.md`
-
-`doc` · 37 lines · 5,784 B · description: **extracted**
-
-**Purpose.** Status: provisional source review, not a completed rabbithole or trusted publication. Each built-in has one primary software source organization, TradingView. Neither has met an independent-source floor, a measured two-pass novelty convergence test, completed deduplication, or trusted claim review. Six-pass budgets remain ceilings, not completed passes. No saturation is claimed.
-
-**Use.** Read it.
-
-#### `research/SHAPE-AWARE-SPOT.md`
-
-`doc` · 215 lines · 13,570 B · description: **extracted**
-
-**Purpose.** As of 2026-11-11. Historical research only. The detector and results establish no live trading edge. All return tables are percentages on an initial $10,000 spot account, with no borrowing or shorting. The practical result is mixed: use shape routing as a research candidate, not an established edge.
-
-**Use.** Read it.
-
-#### `research/STRATEGIES.md`
-
-`doc` · 802 lines · 41,316 B · description: **extracted**
-
-**Purpose.** The request asked for a `/dr` deep-research pass. Subagent fan-out is unavailable in this environment, so this is grounded in the **local citation-backed corpus** — technical analysis, trading styles, algorithmic/quant methods, ML-for-trading pitfalls, crypto
-
-**Use.** Read it.
-
-#### `research/SWEEP-9COIN.md`
-
-`doc` · 146 lines · 7,123 B · description: **extracted**
-
-**Purpose.** into `sweep_results_9coin.json`, `sweep_wf_9coin.json` and `sweep_grid_9coin.json`. cd ~/Downloads/sol-backtest-data/_scripts python3 run_sweep.py --interval 1h --symbols BTCUSDT,ETHUSDT,SOLUSDT,BNBUSDT,XRPUSDT,DOGEUSDT,LINKUSDT,AVAXUSDT,TRXUSDT
-
-**Use.** Read it.
-
-#### `research/TOP5-RECOMMENDATION.md`
-
-`doc` · 108 lines · 7,216 B · description: **extracted**
-
-**Purpose.** files. Nothing is transcribed by hand. PBO (probability of backtest overfitting) is **0.700** for singles at both daily horizons, against a measured pure-noise line of 0.500. Above the noise line means selecting by in-sample
-
-**Use.** Read it.
-
-#### `research/TOP_COINS.md`
-
-`doc` · 142 lines · 7,828 B · description: **extracted**
-
-**Purpose.** Machine-readable copy: `research/results/top_coins.csv`. Regenerate rather than edit by hand — every figure here came from that one API call and none is transcribed. market cap and that is what market cap says. They are marked because a trading universe that
-
-**Use.** Read it.
-
-#### `research/TRADINGVIEW-NINE-COMMON-PROXY-2329.md`
-
-`doc` · 32 lines · 4,640 B · description: **extracted**
-
-**Purpose.** Version: 0.1.0. This is a provisional code and model comparison, not trusted research publication, TradingView parity, a strategy recommendation, or evidence of live profitability. The shared input is 41,640 previously observed one-minute Jupiter ZEC/USD oracle rows from 2026-10-10 21:00 UTC through 2026-11-08 19:00 UTC, end exclusive.
-
-**Use.** Read it.
-
-#### `research/TRADINGVIEW-SCRIPT-CARDS.md`
-
-`doc` · 772 lines · 405,954 B · description: **extracted**
-
-**Purpose.** Version: 1.0.0. Delta: expand the accepted strategy subset to all trading-related saved scripts. Source-review state: **accepted**. 742 of 742 publications accounted for; 691 trading-related cards and 51 source-grounded non-trading exclusions. Each card explains the idea, mechanism, intended use, settings, limitations and data needs.
-
-**Use.** Read it.
-
-#### `research/TRADINGVIEW-SEVEN-SOURCE-CONTRACT-2324.md`
-
-`doc` · 127 lines · 9,925 B · description: **extracted**
-
-**Purpose.** Version: 1.3.0. Delta: record bounded Coinbase public data and funding discovery. This is a working research record, not a completed rabbithole, executable card, TradingView parity proof, or backtest. The owner identified the chart as
-
-**Use.** Read it.
-
-#### `research/TRADINGVIEW-STRATEGY-CARDS.md`
-
-`doc` · 155 lines · 11,880 B · description: **extracted**
-
-**Purpose.** Version: 1.2.0. Delta: distinguish source disclosure from standalone coin-test qualification. The21 native-strategy descriptions were read in full (92,770 characters). Their accepted card contents remain unchanged. Ten disclose a principal calculation; eleven have partial computational definitions. All21 remain coin-test-incomplete.
-
-**Use.** Read it.
-
-#### `research/ULTRA-SHORT-MACRO-MICRO.md`
-
-`doc` · 37 lines · 1,951 B · description: **extracted**
-
-**Purpose.** Version: 2 Delta: route all thirteen accepted concepts to the owner-selected shared corpus. The canonical research and evidence live in the private Global AI Hub repository.
-
-**Use.** Read it.
-
-#### `research/WEEKLY-COIN-STUDY.md`
-
-`doc` · 229 lines · 13,366 B · description: **extracted**
-
-**Purpose.** Version: 2.0.0 Run from `/Users/mitch/dev/solmargintrader` in a Python 3.13 environment with the backtester dependencies. The legacy single-coin default is still Binance
-
-**Use.** Read it.
-
-#### `research/ZEC-CYCLE-VALIDATION.md`
-
-`doc` · 156 lines · 10,747 B · description: **extracted**
-
-**Purpose.** As of 2026-11-11. The observed day is **2026-11-10, America/New_York**. The exact original chart timeframe/venue was not supplied; this study checks Coinbase ZEC-USD at 1m, 5m, 15m and 1h. chart, a fixed 2% reversal rule found five intervals between larger alternating turns with a median
-
-**Use.** Read it.
-
-#### `research/ZEC-ENSEMBLE-HYPOTHESES.md`
-
-`doc` · 107 lines · 7,062 B · description: **extracted**
-
-**Purpose.** Version: 1 Delta: initial runnable catalog and preregistered selection method. The supplied `/Users/mitch/Downloads/Strategy Ensembles.md` is a hypothesis guide.
-
-**Use.** Read it.
-
-#### `research/ZEC-EXPANDED-STRATEGIES.md`
-
-`doc` · 92 lines · 14,301 B · description: **extracted**
-
-**Purpose.** Version: 1.0.0 The complete executable expansion produced **85,312 rows** on the previously captured Coinbase ZEC-USD day, using **1m, 5m, 10m and 1h signal bars** and **0.25% or 0.15% per fill**, charged on entry and exit. Of these rows, 38,664 completed and 46,648 explicitly lack sufficient history. A bar interval determines the signal clock; it does not impose an equal trade holding period.
-
-**Use.** Read it.
-
-#### `research/ZEC-GRANULAR-BACKTESTS.md`
-
-`doc` · 79 lines · 10,162 B · description: **extracted**
-
-**Purpose.** Version: 1.0.1 The full finite matrix finished on 2026-11-13: **10,576 rows**, including 4,878 completed strategy/benchmark rows, 5,670 insufficient-warm-up rows and 28 explicit exclusions. Results describe one captured day; they do not establish a durable edge or 70% next-minute accuracy. At a 60 bps fee per fill, every active 1m spot policy lost money.
-
-**Use.** Read it.
-
-#### `research/ZEC-GRANULAR-FEE-SENSITIVITY.md`
-
-`doc` · 58 lines · 6,057 B · description: **extracted**
-
-**Purpose.** Version: 1.0.0 The owner clarified the requested fees as **0.25% and 0.15%**, equivalent to **25 and 15 basis points per fill**. Both entries and exits pay that scenario rate. This reruns the complete prior captured-event matrix, changing fees only. Best *active* spot return in each interval, after all modelled costs:
-
-**Use.** Read it.
-
-#### `research/ZEC-REVERSAL-EXCURSIONS.md`
-
-`doc` · 85 lines · 11,015 B · description: **extracted**
-
-**Purpose.** Version: 1.0.0 Date: 2026-11-15 Status: independently reproduced descriptive calculation on one previously examined day; no prospective probability, execution or profitability qualification.
-
-**Use.** Read it.
-
-#### `research/ZEC-TWO-BAR-REVERSAL.md`
-
-`doc` · 149 lines · 13,640 B · description: **extracted**
-
-**Purpose.** The next 10-minute candle reversed after two up candles in 19 of 24 observed cases, but after two down candles in only 16 of 29. This exploratory one-day study identifies an asymmetric pattern worth testing; it does not establish a profitable or reliable live betting rule. Version: 1.0.0 Date: 2026-11-14
-
-**Use.** Read it.
-
-#### `research/backfill_control.py`
-
-`code-python` · 150 lines · 5,711 B · description: **extracted**
-
-**Purpose.** Explicit singleton backfill control; PIDs are diagnostic, never signal targets.
-
-**Contents.** Defines `parse_mode()`, `_record()`, `_publish()`, `held()`, `stop()`, `start()`, `main()`.
-
-**Use.** `python3 research/backfill_control.py --help`
-
-#### `research/candle_crosscheck.py`
-
-`code-python` · 168 lines · 7,544 B · description: **extracted**
-
-**Purpose.** Check the candle cache against itself: does a 1d bar equal its own 24 1h bars? No network, no ticks, and it covers the **entire** history rather than the month a tick rebuild can reach. That matters because the alternative -- rebuilding five years of ticks to audit the 1d series -- is several days of API calls, and this answers a large part of the same question in seconds.
-
-**Contents.** Defines `REPO`, `PRICE_REL_TOL`, `VOLUME_REL_TOL`, `compare()`, `main()`, `_resolve()`. Depends on `backtester`.
-
-**Use.** `python3 research/candle_crosscheck.py --help`
-
-#### `research/candle_gap_audit.py`
-
-`code-python` · 309 lines · 12,922 B · description: **extracted**
-
-**Purpose.** Audit -- and optionally repair -- gaps in Coinbase 1m candle data using ticks. Why this exists. A missing 1m candle has two possible causes that look identical in the file and have opposite consequences: * the minute genuinely had no trades (thin market), or * the minute traded and the candle endpoint dropped it. The first is honest data.
-
-**Contents.** Defines `REPO`, `PAD_BARS`, `class TickFetchUnavailable`, `gap_runs()`, `classify_run()`, `_fetch_window()`, `repair_window()`, `_run()`, `main()`. Depends on `backtester`.
-
-**Use.** `python3 research/candle_gap_audit.py --help`
-
-#### `research/coin_week.py`
-
-`code-python` · 1318 lines · 54,586 B · description: **extracted**
-
-**Purpose.** Repeat the candle-supported ZEC study on a fresh, frozen week of another coin. python -m research.coin_week --coin ETH --output /absolute/path/to/new-study python -m research.coin_week --coin ETH --output /absolute/path/to/new-study --resume Acquisition is an explicit phase; analysis and verification can run offline. This module never changes a recorder, model owner, paper trial or live account.
-
-**Contents.** Defines `ROOT`, `VERSION`, `STEPS`, `FEES`, `WINDOWS`, `STUDIES`, `identity()`, `coverage()`, `write_table()`, `input_hashes()` and 16 more. Depends on `backtester`, `research`.
-
-**Use.** `python3 research/coin_week.py --help`
-
-#### `research/coin_week_batch.py`
-
-`code-python` · 631 lines · 27,630 B · description: **extracted**
-
-**Purpose.** Frozen native-market combination studies; acquisition precedes simulation.
-
-**Contents.** Defines `CATALOGUE_URLS`, `coin_list()`, `catalogue_rows()`, `acquire_catalogue()`, `verify_catalogue()`, `combinations()`, `shared_path()`, `ledger()`, `frozen_ledger()`, `batch_report()` and 6 more. Depends on `research`.
-
-**Use.** `import research.coin_week_batch`
-
-#### `research/coin_week_correlations.py`
-
-`code-python` · 266 lines · 11,819 B · description: **extracted**
-
-**Purpose.** Past-only features, purged temporal splits and an explicit correlation search.
-
-**Contents.** Defines `HORIZONS`, `SEED`, `features()`, `split_indices()`, `sample_indices()`, `standardized()`, `permute_blocks()`, `analyze()`.
-
-**Use.** `import research.coin_week_correlations`
-
-#### `research/coin_week_data.py`
-
-`code-python` · 415 lines · 15,146 B · description: **extracted**
-
-**Purpose.** Explicit public candle acquisition for the weekly study; no execution access.
-
-**Contents.** Defines `BASE`, `BINANCE`, `PROVIDERS`, `MAX_BYTES`, `COLUMNS`, `digest()`, `save()`, `load()`, `coin_symbol()`, `week_bounds()` and 10 more. Depends on `research`.
-
-**Use.** `import research.coin_week_data`
-
-#### `research/coin_week_reports.py`
-
-`code-python` · 205 lines · 13,930 B · description: **extracted**
-
-**Purpose.** Human-readable definitions of the actual weekly market tests (report v2).
-
-**Contents.** Defines `MODE_LABELS`, `resolved_policy()`, `spec_label()`, `policy_label()`, `policy_details()`, `number()`, `render_report()`. Depends on `backtester`, `research`.
-
-**Use.** `import research.coin_week_reports`
+**Use.** `import research.__init__`
 
 #### `research/coinbase50-requirements.txt`
 
@@ -22610,97 +19008,2203 @@ Drivers that produce the numbers, and the write-ups that quote them. Everything 
 
 **Use.** Read it.
 
-#### `research/coinbase50_data.py`
+### `research/json/`
 
-`code-python` · 164 lines · 8,611 B · description: **extracted**
+#### `research/json/5minleveragestrategies.json`
 
-**Purpose.** Explicit, resumable public-candle collection. Never connects to order APIs.
+`result` · 473 lines · 37,754 B · description: **derived**
 
-**Contents.** Defines `CUTOFF`, `PLAN`, `sha()`, `save()`, `universe()`, `class RateLimit`, `collect_cell()`, `main()`. Depends on `backtester`.
+**Purpose.** Generated JSON object, 9 keys (as_of, scope_note, answer_summary, jupiter_perps_context, current_cross_venue_observation, regime_identification...).
 
-**Use.** `python3 research/coinbase50_data.py --help`
+**Use.** `json.load(open('research/json/5minleveragestrategies.json'))`
 
-#### `research/coinbase50_grid.py`
+#### `research/json/exchangefees.json`
 
-`code-python` · 186 lines · 10,727 B · description: **extracted**
+`result` · 136 lines · 8,846 B · description: **derived**
 
-**Purpose.** Training-only grid selection and entry gates; canonical resting-order fills.
+**Purpose.** Generated JSON object, 3 keys (compiled_at, scope, exchanges).
 
-**Contents.** Defines `FACTORS`, `SCENARIOS`, `persistent_h1()`, `grid_features()`, `hourly_from_quarters()`, `causal_hour_features()`, `permissions()`, `normalized_arrays()`, `simulate()`, `passive()` and 1 more. Depends on `backtester`, `research`.
+**Use.** `json.load(open('research/json/exchangefees.json'))`
 
-**Use.** `import research.coinbase50_grid`
+#### `research/json/tradingstrategyresults.json`
 
-#### `research/coinbase50_report.py`
+`result` · 197 lines · 15,075 B · description: **derived**
 
-`code-python` · 142 lines · 20,417 B · description: **extracted**
+**Purpose.** Generated JSON object, 4 keys (scope, as_of, strategies, indicators_and_signals).
 
-**Purpose.** Render audited numerical artifacts; the report never reruns a strategy.
+**Use.** `json.load(open('research/json/tradingstrategyresults.json'))`
 
-**Contents.** Defines `table()`, `coin_ranking()`, `verify_inputs()`, `main()`. Depends on `research`.
+#### `research/json/tradingview-card-coverage.json`
 
-**Use.** `python3 research/coinbase50_report.py --help`
+`result` · 225068 lines · 10,480,010 B · description: **derived**
 
-#### `research/coinbase50_stats.py`
+**Purpose.** Generated JSON object, 10 keys (schema_version, version, delta, source_root, source_publication_counts, existing_card_ids...).
 
-`code-python` · 180 lines · 9,899 B · description: **extracted**
+**Use.** `json.load(open('research/json/tradingview-card-coverage.json'))`
 
-**Purpose.** Clock and wavelength diagnostics, with later-time validation and controls.
+#### `research/json/tradingview-card-readiness.json`
 
-**Contents.** Defines `SEED`, `market_calendar_residual()`, `harmonic_fit()`, `wavelength_windows()`, `cycle_summary()`, `daily_profiles()`, `clock_test()`, `adjust_clock_family()`. Depends on `research`.
+`result` · 16732 lines · 720,957 B · description: **derived**
 
-**Use.** `import research.coinbase50_stats`
+**Purpose.** Generated JSON object, 9 keys (schema_version, version, reviewed_on, delta, scope, criteria...).
 
-#### `research/coinbase50_study.py`
+**Use.** `json.load(open('research/json/tradingview-card-readiness.json'))`
 
-`code-python` · 333 lines · 19,208 B · description: **extracted**
+#### `research/json/tradingview-script-context-bundle.json`
 
-**Purpose.** Coinbase survivor-cohort study. Explicit data, no orders or runtime changes.
+`result` · 38 lines · 1,300 B · description: **derived**
 
-**Contents.** Defines `STUDY_END`, `TRAIN_DAYS`, `binding()`, `read()`, `admit_inputs()`, `diagnostics()`, `grid_coin()`, `bootstrap_differences()`, `portfolios()`, `main()`. Depends on `backtester`, `research`.
+**Purpose.** Generated JSON object, 9 keys (schema_version, generated_at, project_key, paths, indexes, links...).
 
-**Use.** `python3 research/coinbase50_study.py --help`
+**Use.** `json.load(open('research/json/tradingview-script-context-bundle.json'))`
 
-#### `research/cpcv_sweep.py`
+#### `research/json/tradingview-script-profile-run.json`
 
-`code-python` · 530 lines · 24,318 B · description: **curated**
+`result` · 148 lines · 3,758 B · description: **derived**
 
-**Purpose.** The primary evaluation driver: CPCV over singles, pairs and triples, then PBO across the configuration set. Prints its own legend so the numbers cannot travel without their meaning.
+**Purpose.** Generated JSON object, 10 keys (pipeline, plan_b, cited_paths, sections, scripts, artifacts...).
 
-**Contents.** Defines `REPO`, `OUT`, `LEGEND`, `PBO_NOISE`, `PBO_INFORMATIVE`, `LOW_POSITIVE_SHARE`, `interpret()`, `TRIPLE_CANDIDATES`, `experiment_metadata()`, `bind_experiment()` and 3 more. Depends on `backtester`, `research`.
+**Use.** `json.load(open('research/json/tradingview-script-profile-run.json'))`
 
-**Use.** `python3 research/cpcv_sweep.py --horizon medium --groups 8 --k 2`.
+#### `research/json/tradingview-script-profile-work.json`
 
-#### `research/cross_asset_cpcv.py`
+`result` · 778 lines · 15,883 B · description: **derived**
 
-`code-python` · 839 lines · 40,232 B · description: **curated**
+**Purpose.** Generated JSON object, 9 keys (version, delta, scope, source_count, protected_strategy_ids, native_type_counts...).
 
-**Purpose.** Runs the registered strategy set on another coin with the SOL-tuned parameters deliberately NOT refitted, so the measurement is transfer rather than fit. Two gates: it reproduces the committed BTC/ETH reference, and reproduces SOL's five published medians.
+**Use.** `json.load(open('research/json/tradingview-script-profile-work.json'))`
 
-**Contents.** Defines `REPO`, `data_dir()`, `OUT`, `REFERENCE`, `REFERENCE_ASSETS`, `REFERENCE_HORIZON`, `REFERENCE_GROUPS`, `REFERENCE_K`, `MIN_RANKABLE_TRADES`, `MAX_PATHS` and 18 more. Depends on `backtester`, `research`.
+#### `research/json/tradingview-script-understanding.json`
 
-**Use.** `python3 research/cross_asset_cpcv.py --self-test` then `--assets SOL,DOGE,ZEC` or `--top5 --assets DOGE,ZEC`.
+`result` · 72634 lines · 3,000,483 B · description: **derived**
 
-#### `research/crosscoin_reversals.py`
+**Purpose.** Generated JSON object, 13 keys (schema_version, version, delta, state, source_count, source_root...).
 
-`code-python` · 372 lines · 15,084 B · description: **extracted**
+**Use.** `json.load(open('research/json/tradingview-script-understanding.json'))`
 
-**Purpose.** Repeat the frozen ZEC reversal definitions on labelled historical candles. This descriptive analysis emits JSON only. It does not fit rules, submit trades, estimate fills, or interpret an excursion maximum as an executable profit.
+#### `research/json/tradingview-strategy-card-locations.json`
 
-**Contents.** Defines `MASKS`, `wilson()`, `dense_bars()`, `rate_summary()`, `bar_color_baseline()`, `unconditional_endpoint()`, `analyze()`, `report()`, `main()`. Depends on `research`.
+`result` · 814 lines · 63,105 B · description: **derived**
 
-**Use.** `python3 research/crosscoin_reversals.py --help`
+**Purpose.** Generated JSON object, 11 keys (schema_version, version, delta, verdict, accepted_manifest_sha256, reviewer...).
 
-#### `research/decide.py`
+**Use.** `json.load(open('research/json/tradingview-strategy-card-locations.json'))`
 
-`code-python` · 1304 lines · 50,116 B · description: **extracted**
+#### `research/json/tradingview-strategy-understanding-audit.json`
 
-**Purpose.** What every registered strategy, signal and indicator says about the last bar. python3 research/decide.py --asset SOL --interval 1d python3 research/decide.py --data data/BTC_1d.csv --json Three sections, because they are three different kinds of claim: * **Strategies** -- every entry in `core.strategies.REGISTRY`, replayed bar-by-bar from the start of history.
+`result` · 53 lines · 3,175 B · description: **derived**
 
-**Contents.** Defines `REPO`, `DEFAULT_TOLERANCE`, `FLAT_EPSILON`, `STALE_AFTER_BARS`, `HOLD_LONG`, `HOLD_SHORT`, `FLAT`, `BUY`, `SELL`, `INSUFFICIENT` and 30 more. Depends on `backtester`.
+**Purpose.** Generated JSON object, 21 keys (schema_version, version, delta, agent, definition_version, observed_at...).
 
-**Use.** `python3 research/decide.py --help`
+**Use.** `json.load(open('research/json/tradingview-strategy-understanding-audit.json'))`
 
-#### `research/defillama-llms-risk-analysis.md`
+#### `research/json/tradingview-strategy-understanding.json`
+
+`result` · 6474 lines · 340,543 B · description: **derived**
+
+**Purpose.** Generated JSON object, 8 keys (schema_version, version, delta, scope, source_root, read_description_characters...).
+
+**Use.** `json.load(open('research/json/tradingview-strategy-understanding.json'))`
+
+### `research/json/coin-fit/`
+
+#### `research/json/coin-fit/README.md`
+
+`result` · 46 lines · 2,399 B · description: **extracted**
+
+**Purpose.** In the default v2 shell, open **Research → Bots**. Classic mode retains the Bots tab. The Bots tab has **Rank all coins (quick)** and **Audit selected coin** controls for the grid and averaging-down DCA bots. Ranking uses every coin in the local
+
+**Use.** Read it; regenerate with the driver that produced it.
+
+#### `research/json/coin-fit/merge-89-receipt.json`
+
+`result` · 24 lines · 854 B · description: **derived**
+
+**Purpose.** Generated JSON object, 7 keys (version, delta, incoming_commit, incoming_pr, conflict_backups, conflicted_files...).
+
+**Use.** `json.load(open('research/json/coin-fit/merge-89-receipt.json'))`
+
+#### `research/json/coin-fit/merge-93-receipt.json`
+
+`result` · 22 lines · 749 B · description: **derived**
+
+**Purpose.** Generated JSON object, 7 keys (version, delta, incoming_commit, incoming_pr, conflict_backups, conflicted_files...).
+
+**Use.** `json.load(open('research/json/coin-fit/merge-93-receipt.json'))`
+
+#### `research/json/coin-fit/merge-98-receipt.json`
+
+`result` · 27 lines · 876 B · description: **derived**
+
+**Purpose.** Generated JSON object, 7 keys (version, delta, incoming_commit, incoming_pr, conflict_backups, conflicted_files...).
+
+**Use.** `json.load(open('research/json/coin-fit/merge-98-receipt.json'))`
+
+#### `research/json/coin-fit/merge-99-receipt.json`
+
+`result` · 29 lines · 1,339 B · description: **derived**
+
+**Purpose.** Generated JSON object, 5 keys (version, incoming, preimages, files, resolution).
+
+**Use.** `json.load(open('research/json/coin-fit/merge-99-receipt.json'))`
+
+#### `research/json/coin-fit/tasks.json`
+
+`result` · 33 lines · 889 B · description: **derived**
+
+**Purpose.** Generated JSON object, 4 keys (version, delta, steps, final_receipt).
+
+**Use.** `json.load(open('research/json/coin-fit/tasks.json'))`
+
+### `research/json/crosscoin-reversals-20261115/`
+
+#### `research/json/crosscoin-reversals-20261115/audit.json`
+
+`result` · 219 lines · 9,527 B · description: **derived**
+
+**Purpose.** Generated JSON object, 8 keys (agent, definition_version, status, observed_at, evidence, changes...).
+
+**Use.** `json.load(open('research/json/crosscoin-reversals-20261115/audit.json'))`
+
+#### `research/json/crosscoin-reversals-20261115/llms.txt`
+
+`result` · 55 lines · 7,619 B · description: **derived**
+
+**Purpose.** Generated report. Opens: # Cross-coin reversal replication / Version: 1.2.0
+
+**Use.** Read it; regenerate with the driver that produced it.
+
+#### `research/json/crosscoin-reversals-20261115/manifest.json`
+
+`result` · 210 lines · 11,821 B · description: **derived**
+
+**Purpose.** Generated JSON object, 9 keys (schema, run_id, qualification, datasets, repository_container_note, audit...).
+
+**Use.** `json.load(open('research/json/crosscoin-reversals-20261115/manifest.json'))`
+
+#### `research/json/crosscoin-reversals-20261115/results-coinbase-BTC.json.zlib`
+
+`result` · 0 lines · 95,201 B · description: **none**
+
+**Purpose.** _No description available._
+
+**Use.** Read it; regenerate with the driver that produced it.
+
+#### `research/json/crosscoin-reversals-20261115/results-coinbase-ETH.json.zlib`
+
+`result` · 0 lines · 111,878 B · description: **none**
+
+**Purpose.** _No description available._
+
+**Use.** Read it; regenerate with the driver that produced it.
+
+#### `research/json/crosscoin-reversals-20261115/results-coinbase-HYPE.json.zlib`
+
+`result` · 0 lines · 59,509 B · description: **none**
+
+**Purpose.** _No description available._
+
+**Use.** Read it; regenerate with the driver that produced it.
+
+#### `research/json/crosscoin-reversals-20261115/results-coinbase-SOL.json.zlib`
+
+`result` · 0 lines · 82,041 B · description: **none**
+
+**Purpose.** _No description available._
+
+**Use.** Read it; regenerate with the driver that produced it.
+
+#### `research/json/crosscoin-reversals-20261115/results-coinbase-ZEC.json.zlib`
+
+`result` · 0 lines · 111,803 B · description: **none**
+
+**Purpose.** _No description available._
+
+**Use.** Read it; regenerate with the driver that produced it.
+
+#### `research/json/crosscoin-reversals-20261115/results-kucoin-BTC.json.zlib`
+
+`result` · 0 lines · 1,299,055 B · description: **none**
+
+**Purpose.** _No description available._
+
+**Use.** Read it; regenerate with the driver that produced it.
+
+#### `research/json/crosscoin-reversals-20261115/results-kucoin-ETH.json.zlib`
+
+`result` · 0 lines · 1,401,112 B · description: **none**
+
+**Purpose.** _No description available._
+
+**Use.** Read it; regenerate with the driver that produced it.
+
+#### `research/json/crosscoin-reversals-20261115/results-kucoin-HYPE.json.zlib`
+
+`result` · 0 lines · 412,347 B · description: **none**
+
+**Purpose.** _No description available._
+
+**Use.** Read it; regenerate with the driver that produced it.
+
+#### `research/json/crosscoin-reversals-20261115/results-kucoin-SOL.json.zlib`
+
+`result` · 0 lines · 908,219 B · description: **none**
+
+**Purpose.** _No description available._
+
+**Use.** Read it; regenerate with the driver that produced it.
+
+### `research/json/crosscoin-reversals-20261115/sources/`
+
+#### `research/json/crosscoin-reversals-20261115/sources/coinbase-BTC.json.zlib`
+
+`result` · 0 lines · 66,455 B · description: **none**
+
+**Purpose.** _No description available._
+
+**Use.** Read it; regenerate with the driver that produced it.
+
+#### `research/json/crosscoin-reversals-20261115/sources/coinbase-ETH.json.zlib`
+
+`result` · 0 lines · 59,421 B · description: **none**
+
+**Purpose.** _No description available._
+
+**Use.** Read it; regenerate with the driver that produced it.
+
+#### `research/json/crosscoin-reversals-20261115/sources/coinbase-HYPE.json.zlib`
+
+`result` · 0 lines · 36,909 B · description: **none**
+
+**Purpose.** _No description available._
+
+**Use.** Read it; regenerate with the driver that produced it.
+
+#### `research/json/crosscoin-reversals-20261115/sources/coinbase-SOL.json.zlib`
+
+`result` · 0 lines · 49,083 B · description: **none**
+
+**Purpose.** _No description available._
+
+**Use.** Read it; regenerate with the driver that produced it.
+
+#### `research/json/crosscoin-reversals-20261115/sources/coinbase-ZEC.json.zlib`
+
+`result` · 0 lines · 57,482 B · description: **none**
+
+**Purpose.** _No description available._
+
+**Use.** Read it; regenerate with the driver that produced it.
+
+#### `research/json/crosscoin-reversals-20261115/sources/kucoin-BTC.json.zlib`
+
+`result` · 0 lines · 2,164,327 B · description: **none**
+
+**Purpose.** _No description available._
+
+**Use.** Read it; regenerate with the driver that produced it.
+
+#### `research/json/crosscoin-reversals-20261115/sources/kucoin-ETH.json.zlib`
+
+`result` · 0 lines · 2,137,022 B · description: **none**
+
+**Purpose.** _No description available._
+
+**Use.** Read it; regenerate with the driver that produced it.
+
+#### `research/json/crosscoin-reversals-20261115/sources/kucoin-HYPE.json.zlib`
+
+`result` · 0 lines · 609,742 B · description: **none**
+
+**Purpose.** _No description available._
+
+**Use.** Read it; regenerate with the driver that produced it.
+
+#### `research/json/crosscoin-reversals-20261115/sources/kucoin-SOL.json.zlib`
+
+`result` · 0 lines · 1,389,313 B · description: **none**
+
+**Purpose.** _No description available._
+
+**Use.** Read it; regenerate with the driver that produced it.
+
+### `research/json/eth-week-20261117/`
+
+#### `research/json/eth-week-20261117/artifacts.zip`
+
+`result` · 0 lines · 18,883,848 B · description: **none**
+
+**Purpose.** _No description available._
+
+**Use.** Read it; regenerate with the driver that produced it.
+
+#### `research/json/eth-week-20261117/audit.json`
+
+`result` · 290 lines · 7,743 B · description: **derived**
+
+**Purpose.** Generated JSON object, 8 keys (agent, definition_version, status, observed_at, evidence, changes...).
+
+**Use.** `json.load(open('research/json/eth-week-20261117/audit.json'))`
+
+#### `research/json/eth-week-20261117/correlations.png`
+
+`result` · 0 lines · 238,613 B · description: **none**
+
+**Purpose.** _No description available._
+
+**Use.** Read it; regenerate with the driver that produced it.
+
+#### `research/json/eth-week-20261117/publication.json`
+
+`result` · 30 lines · 989 B · description: **derived**
+
+**Purpose.** Generated JSON object, 6 keys (schema, version, full_local_run, original_manifest_sha256, archive_entries, files).
+
+**Use.** `json.load(open('research/json/eth-week-20261117/publication.json'))`
+
+#### `research/json/eth-week-20261117/report.md`
+
+`result` · 85 lines · 6,085 B · description: **extracted**
+
+**Purpose.** Version: 1.0.0 UTC window: 2026-11-10T17:13:00Z to 2026-11-17T17:13:00Z (exclusive). Source: Binance spot ETH/USDT, 10,080 completed one-minute bars.
+
+**Use.** Read it; regenerate with the driver that produced it.
+
+#### `research/json/eth-week-20261117/summary.json`
+
+`result` · 2 lines · 49,234 B · description: **derived**
+
+**Purpose.** Generated JSON object, 13 keys (correlations, coverage, cycle_resolution_floor, cycle_tests, minimum_cycle_p_holm, minutes...).
+
+**Use.** `json.load(open('research/json/eth-week-20261117/summary.json'))`
+
+### `research/json/exit50-reversal-20261116/`
+
+#### `research/json/exit50-reversal-20261116/manifest.json`
+
+`result` · 35 lines · 1,694 B · description: **derived**
+
+**Purpose.** Generated JSON object, 7 keys (schema, qualification, source_results, report, policy, paper_profile...).
+
+**Use.** `json.load(open('research/json/exit50-reversal-20261116/manifest.json'))`
+
+#### `research/json/exit50-reversal-20261116/selected-policy.json`
+
+`result` · 2 lines · 624 B · description: **derived**
+
+**Purpose.** Generated JSON object, 3 keys (assets, model_bundle_sha256, schema).
+
+**Use.** `json.load(open('research/json/exit50-reversal-20261116/selected-policy.json'))`
+
+### `research/json/five-minute-perps-suite/`
+
+#### `research/json/five-minute-perps-suite/accepted-gate-receipt.json`
+
+`result` · 122 lines · 5,679 B · description: **derived**
+
+**Purpose.** Generated JSON object, 22 keys (schema, created, run_slug, research_depth, research_model, research_effort...).
+
+**Use.** `json.load(open('research/json/five-minute-perps-suite/accepted-gate-receipt.json'))`
+
+#### `research/json/five-minute-perps-suite/archive-receipt.json`
+
+`result` · 23 lines · 1,041 B · description: **derived**
+
+**Purpose.** Generated JSON object, 15 keys (schema, version, delta, original_retired_path, preserved_source, destination...).
+
+**Use.** `json.load(open('research/json/five-minute-perps-suite/archive-receipt.json'))`
+
+#### `research/json/five-minute-perps-suite/benchmark-scope-review.json`
+
+`result` · 107 lines · 4,823 B · description: **derived**
+
+**Purpose.** Generated JSON object, 16 keys (schema, version, delta, reviewed_as_of, reviewer, source_revision...).
+
+**Use.** `json.load(open('research/json/five-minute-perps-suite/benchmark-scope-review.json'))`
+
+#### `research/json/five-minute-perps-suite/coverage-resolution.json`
+
+`result` · 363 lines · 13,167 B · description: **derived**
+
+**Purpose.** Generated JSON array, 30 entries.
+
+**Use.** `json.load(open('research/json/five-minute-perps-suite/coverage-resolution.json'))`
+
+#### `research/json/five-minute-perps-suite/full-suite-receipt.json`
+
+`result` · 241 lines · 10,631 B · description: **derived**
+
+**Purpose.** Generated JSON object, 34 keys (schema, record_version, created, subject, research_slug, cohort_status...).
+
+**Use.** `json.load(open('research/json/five-minute-perps-suite/full-suite-receipt.json'))`
+
+#### `research/json/five-minute-perps-suite/inherited-evidence-receipt.json`
+
+`result` · 651 lines · 37,588 B · description: **derived**
+
+**Purpose.** Generated JSON object, 12 keys (schema, as_of, canonical_run, canonical_gate, gate_sha256, gate_packet_sha256...).
+
+**Use.** `json.load(open('research/json/five-minute-perps-suite/inherited-evidence-receipt.json'))`
+
+#### `research/json/five-minute-perps-suite/inventory.json`
+
+`result` · 165 lines · 5,653 B · description: **derived**
+
+**Purpose.** Generated JSON object, 10 keys (schema, as_of, source_path, source_sha256, node_count, inventory_mode...).
+
+**Use.** `json.load(open('research/json/five-minute-perps-suite/inventory.json'))`
+
+#### `research/json/five-minute-perps-suite/run-state.json`
+
+`result` · 1063 lines · 41,769 B · description: **derived**
+
+**Purpose.** Generated JSON object, 40 keys (schema, subject, started, updated, budget, round...).
+
+**Use.** `json.load(open('research/json/five-minute-perps-suite/run-state.json'))`
+
+#### `research/json/five-minute-perps-suite/scored-concepts.json`
+
+`result` · 546 lines · 16,715 B · description: **derived**
+
+**Purpose.** Generated JSON object, 2 keys (threshold, rows).
+
+**Use.** `json.load(open('research/json/five-minute-perps-suite/scored-concepts.json'))`
+
+#### `research/json/five-minute-perps-suite/skill-installation-receipt.json`
+
+`result` · 39 lines · 2,070 B · description: **derived**
+
+**Purpose.** Generated JSON object, 29 keys (schema, version, delta, reviewed, source_pr, source_merge_commit...).
+
+**Use.** `json.load(open('research/json/five-minute-perps-suite/skill-installation-receipt.json'))`
+
+#### `research/json/five-minute-perps-suite/source-leads.json`
+
+`result` · 156 lines · 8,283 B · description: **derived**
+
+**Purpose.** Generated JSON object, 8 keys (schema, as_of, concepts_scouted, fast_path_concepts, url_library_seeds_written, mirrors_written...).
+
+**Use.** `json.load(open('research/json/five-minute-perps-suite/source-leads.json'))`
+
+#### `research/json/five-minute-perps-suite/synthesis-audit-receipt.json`
+
+`result` · 34 lines · 1,568 B · description: **derived**
+
+**Purpose.** Generated JSON object, 13 keys (schema, version, delta, reviewed, reviewer, definition_version...).
+
+**Use.** `json.load(open('research/json/five-minute-perps-suite/synthesis-audit-receipt.json'))`
+
+### `research/json/mtf-reversal-20261116/`
+
+#### `research/json/mtf-reversal-20261116/BTC-results.json.zlib`
+
+`result` · 0 lines · 404,699 B · description: **none**
+
+**Purpose.** _No description available._
+
+**Use.** Read it; regenerate with the driver that produced it.
+
+#### `research/json/mtf-reversal-20261116/ZEC-results.json.zlib`
+
+`result` · 0 lines · 379,478 B · description: **none**
+
+**Purpose.** _No description available._
+
+**Use.** Read it; regenerate with the driver that produced it.
+
+#### `research/json/mtf-reversal-20261116/manifest.json`
+
+`result` · 46 lines · 2,091 B · description: **derived**
+
+**Purpose.** Generated JSON object, 9 keys (version, run_id, qualification, files, report, audit...).
+
+**Use.** `json.load(open('research/json/mtf-reversal-20261116/manifest.json'))`
+
+#### `research/json/mtf-reversal-20261116/model-bundle.json`
+
+`result` · 2 lines · 8,501 B · description: **derived**
+
+**Purpose.** Generated JSON object, 2 keys (models, schema).
+
+**Use.** `json.load(open('research/json/mtf-reversal-20261116/model-bundle.json'))`
+
+### `research/json/native-pairs-week-20261117/`
+
+#### `research/json/native-pairs-week-20261117/artifacts.zip`
+
+`result` · 0 lines · 40,491,663 B · description: **none**
+
+**Purpose.** _No description available._
+
+**Use.** Read it; regenerate with the driver that produced it.
+
+#### `research/json/native-pairs-week-20261117/audit.json`
+
+`result` · 265 lines · 12,227 B · description: **derived**
+
+**Purpose.** Generated JSON object, 9 keys (agent, changes, definition_version, details, evidence, observed_at...).
+
+**Use.** `json.load(open('research/json/native-pairs-week-20261117/audit.json'))`
+
+#### `research/json/native-pairs-week-20261117/batch-summary.json`
+
+`result` · 2 lines · 3,815 B · description: **derived**
+
+**Purpose.** Generated JSON object, 7 keys (completed_markets, failed_markets, markets, plan, status, unavailable_markets...).
+
+**Use.** `json.load(open('research/json/native-pairs-week-20261117/batch-summary.json'))`
+
+#### `research/json/native-pairs-week-20261117/publication.json`
+
+`result` · 2 lines · 1,880 B · description: **derived**
+
+**Purpose.** Generated JSON object, 12 keys (archive, artifacts, batch_manifest_sha256, complete_run, completed_markets, failures...).
+
+**Use.** `json.load(open('research/json/native-pairs-week-20261117/publication.json'))`
+
+#### `research/json/native-pairs-week-20261117/report.md`
+
+`result` · 45 lines · 5,107 B · description: **extracted**
+
+**Purpose.** Report version: 2.0.0 Coins: **ETH, BTC, ZEC**. Added cash quote: **USD**. Venue: **Coinbase Exchange spot**. Requested acquisition: **2026-11-10T19:46:00Z to 2026-11-17T19:46:00Z**, exclusive. Each available native market downloads real one-minute candles once. No cross-pair OHLC is synthesized.
+
+**Use.** Read it; regenerate with the driver that produced it.
+
+### `research/json/native-pairs-week-20261117/markets/BTC-USD/`
+
+#### `research/json/native-pairs-week-20261117/markets/BTC-USD/correlations.png`
+
+`result` · 0 lines · 248,715 B · description: **none**
+
+**Purpose.** _No description available._
+
+**Use.** Read it; regenerate with the driver that produced it.
+
+#### `research/json/native-pairs-week-20261117/markets/BTC-USD/report.md`
+
+`result` · 119 lines · 13,844 B · description: **extracted**
+
+**Purpose.** Report version: 2.0.0 Each reference account starts with 10,000 USD units. This normalized simulation has no order-book capacity model; it does not assert that this size is executable. Requested acquisition: **2026-11-10T19:46:00Z to 2026-11-17T19:46:00Z**, exclusive (10,080 minutes).
+
+**Use.** Read it; regenerate with the driver that produced it.
+
+#### `research/json/native-pairs-week-20261117/markets/BTC-USD/summary.json`
+
+`result` · 2 lines · 50,012 B · description: **derived**
+
+**Purpose.** Generated JSON object, 15 keys (analysis_window, correlations, coverage, cycle_resolution_floor, cycle_tests, market...).
+
+**Use.** `json.load(open('research/json/native-pairs-week-20261117/markets/BTC-USD/summary.json'))`
+
+### `research/json/native-pairs-week-20261117/markets/ETH-USD/`
+
+#### `research/json/native-pairs-week-20261117/markets/ETH-USD/correlations.png`
+
+`result` · 0 lines · 249,133 B · description: **none**
+
+**Purpose.** _No description available._
+
+**Use.** Read it; regenerate with the driver that produced it.
+
+#### `research/json/native-pairs-week-20261117/markets/ETH-USD/report.md`
+
+`result` · 121 lines · 13,106 B · description: **extracted**
+
+**Purpose.** Report version: 2.0.0 Each reference account starts with 10,000 USD units. This normalized simulation has no order-book capacity model; it does not assert that this size is executable. Requested acquisition: **2026-11-10T19:46:00Z to 2026-11-17T19:46:00Z**, exclusive (10,080 minutes).
+
+**Use.** Read it; regenerate with the driver that produced it.
+
+#### `research/json/native-pairs-week-20261117/markets/ETH-USD/summary.json`
+
+`result` · 2 lines · 49,066 B · description: **derived**
+
+**Purpose.** Generated JSON object, 15 keys (analysis_window, correlations, coverage, cycle_resolution_floor, cycle_tests, market...).
+
+**Use.** `json.load(open('research/json/native-pairs-week-20261117/markets/ETH-USD/summary.json'))`
+
+### `research/json/native-pairs-week-20261117/markets/ZEC-USD/`
+
+#### `research/json/native-pairs-week-20261117/markets/ZEC-USD/correlations.png`
+
+`result` · 0 lines · 251,207 B · description: **none**
+
+**Purpose.** _No description available._
+
+**Use.** Read it; regenerate with the driver that produced it.
+
+#### `research/json/native-pairs-week-20261117/markets/ZEC-USD/report.md`
+
+`result` · 121 lines · 13,335 B · description: **extracted**
+
+**Purpose.** Report version: 2.0.0 Each reference account starts with 10,000 USD units. This normalized simulation has no order-book capacity model; it does not assert that this size is executable. Requested acquisition: **2026-11-10T19:46:00Z to 2026-11-17T19:46:00Z**, exclusive (10,080 minutes).
+
+**Use.** Read it; regenerate with the driver that produced it.
+
+#### `research/json/native-pairs-week-20261117/markets/ZEC-USD/summary.json`
+
+`result` · 2 lines · 47,714 B · description: **derived**
+
+**Purpose.** Generated JSON object, 15 keys (analysis_window, correlations, coverage, cycle_resolution_floor, cycle_tests, market...).
+
+**Use.** `json.load(open('research/json/native-pairs-week-20261117/markets/ZEC-USD/summary.json'))`
+
+### `research/json/nonlinear-lead-lag-children/`
+
+#### `research/json/nonlinear-lead-lag-children/accepted-gate-receipt.json`
+
+`result` · 40 lines · 1,373 B · description: **derived**
+
+**Purpose.** Generated JSON object, 17 keys (version, schema, validated, packet_sha256, validation_sha256, counts...).
+
+**Use.** `json.load(open('research/json/nonlinear-lead-lag-children/accepted-gate-receipt.json'))`
+
+#### `research/json/nonlinear-lead-lag-children/claim-index.json`
+
+`result` · 107 lines · 6,911 B · description: **derived**
+
+**Purpose.** Generated JSON object, 4 keys (version, status, selected_claims, packet_sha256).
+
+**Use.** `json.load(open('research/json/nonlinear-lead-lag-children/claim-index.json'))`
+
+### `research/json/results/`
+
+#### `research/json/results/coinbase50_20261111_report_manifest.json`
+
+`result` · 13 lines · 967 B · description: **derived**
+
+**Purpose.** Generated JSON object, 3 keys (artifacts, report, run_manifest_sha256).
+
+**Use.** `json.load(open('research/json/results/coinbase50_20261111_report_manifest.json'))`
+
+#### `research/json/results/coinbase50_20261111_summary.json`
+
+`result` · 38863 lines · 1,357,275 B · description: **derived**
+
+**Purpose.** Generated JSON object, 11 keys (baselines, clock_tests, coin_rankings, cycle_summary, grid_eligible, grid_excluded...).
+
+**Use.** `json.load(open('research/json/results/coinbase50_20261111_summary.json'))`
+
+#### `research/json/results/compound-10coin-fullhistory-2026-11-07.json`
+
+`result` · 422 lines · 8,760 B · description: **derived**
+
+**Purpose.** Generated JSON object, 8 keys (run_id, configurations, round_trip_bps, leverage, coins, command...).
+
+**Use.** `json.load(open('research/json/results/compound-10coin-fullhistory-2026-11-07.json'))`
+
+#### `research/json/results/configuration_counts.json`
+
+`result` · 13 lines · 222 B · description: **derived**
+
+**Purpose.** Generated JSON object, 10 keys (long/pairs, long/singles, long/triples, medium/pairs, medium/singles, medium/triples...).
+
+**Use.** `json.load(open('research/json/results/configuration_counts.json'))`
+
+#### `research/json/results/cpcv_combos_pbo.json`
+
+`result` · 97 lines · 1,288 B · description: **derived**
+
+**Purpose.** Generated JSON array, 6 entries.
+
+**Use.** `json.load(open('research/json/results/cpcv_combos_pbo.json'))`
+
+#### `research/json/results/cpcv_pbo.json`
+
+`result` · 127 lines · 2,601 B · description: **derived**
+
+**Purpose.** Generated JSON array, 3 entries.
+
+**Use.** `json.load(open('research/json/results/cpcv_pbo.json'))`
+
+#### `research/json/results/frontier-2026-11-07.json`
+
+`result` · 5556 lines · 143,755 B · description: **derived**
+
+**Purpose.** Generated JSON object, 8 keys (run_id, coins, configurations_tried_per_coin, note, candidates, chosen...).
+
+**Use.** `json.load(open('research/json/results/frontier-2026-11-07.json'))`
+
+#### `research/json/results/geometry_long_k2.json`
+
+`result` · 52 lines · 725 B · description: **derived**
+
+**Purpose.** Generated JSON array, 7 entries.
+
+**Use.** `json.load(open('research/json/results/geometry_long_k2.json'))`
+
+#### `research/json/results/geometry_medium_k2.json`
+
+`result` · 52 lines · 742 B · description: **derived**
+
+**Purpose.** Generated JSON array, 7 entries.
+
+**Use.** `json.load(open('research/json/results/geometry_medium_k2.json'))`
+
+#### `research/json/results/geometry_short_k2.json`
+
+`result` · 52 lines · 747 B · description: **derived**
+
+**Purpose.** Generated JSON array, 7 entries.
+
+**Use.** `json.load(open('research/json/results/geometry_short_k2.json'))`
+
+#### `research/json/results/grid_holdout_20261107.json`
+
+`result` · 34 lines · 987 B · description: **derived**
+
+**Purpose.** Generated JSON object, 8 keys (bars, data_sha256, first_close, first_ts, last_close, last_ts...).
+
+**Use.** `json.load(open('research/json/results/grid_holdout_20261107.json'))`
+
+#### `research/json/results/grid_review_20261107.json`
+
+`result` · 296 lines · 9,023 B · description: **derived**
+
+**Purpose.** Generated JSON object, 13 keys (schema, review_date, engine_revision, data_file, data_sha256, costs...).
+
+**Use.** `json.load(open('research/json/results/grid_review_20261107.json'))`
+
+#### `research/json/results/hyperliquid-costs-2026-11-07.json`
+
+`result` · 187 lines · 3,599 B · description: **derived**
+
+**Purpose.** Generated JSON object, 10 keys (as_of, source, perp_fee_schedule_base, vip_tiers, referral_discount, book_cost_definition...).
+
+**Use.** `json.load(open('research/json/results/hyperliquid-costs-2026-11-07.json'))`
+
+#### `research/json/results/jupiter_perps_leverage_20261118_receipt.json`
+
+`result` · 197 lines · 5,511 B · description: **derived**
+
+**Purpose.** Generated JSON object, 6 keys (version, start, end, markets, summarySha256, csvSha256).
+
+**Use.** `json.load(open('research/json/results/jupiter_perps_leverage_20261118_receipt.json'))`
+
+#### `research/json/results/leverage_tiers_sol_1d.json`
+
+`result` · 78 lines · 2,255 B · description: **derived**
+
+**Purpose.** Generated JSON object, 5 keys (coverage, summary, ruin_level, groups, k).
+
+**Use.** `json.load(open('research/json/results/leverage_tiers_sol_1d.json'))`
+
+#### `research/json/results/minute_coverage.json`
+
+`result` · 225 lines · 6,481 B · description: **derived**
+
+**Purpose.** Generated JSON object, 5 keys (generated, interval, venue, note, assets).
+
+**Use.** `json.load(open('research/json/results/minute_coverage.json'))`
+
+#### `research/json/results/news_events_20261112_manifest.json`
+
+`result` · 3082 lines · 135,636 B · description: **derived**
+
+**Purpose.** Generated JSON object, 13 keys (version, delta, study, selection, price_acquisition, analysis_source_provenance...).
+
+**Use.** `json.load(open('research/json/results/news_events_20261112_manifest.json'))`
+
+#### `research/json/results/perturb_long_all_dual_momentum_vol_regime.json`
+
+`result` · 11 lines · 274 B · description: **derived**
+
+**Purpose.** Generated JSON object, 8 keys (target, horizon, baseline_median_sharpe, baseline_iqr, max_abs_delta, ratio_to_iqr...).
+
+**Use.** `json.load(open('research/json/results/perturb_long_all_dual_momentum_vol_regime.json'))`
+
+#### `research/json/results/perturb_long_all_macd_vol_regime.json`
+
+`result` · 11 lines · 265 B · description: **derived**
+
+**Purpose.** Generated JSON object, 8 keys (target, horizon, baseline_median_sharpe, baseline_iqr, max_abs_delta, ratio_to_iqr...).
+
+**Use.** `json.load(open('research/json/results/perturb_long_all_macd_vol_regime.json'))`
+
+#### `research/json/results/perturb_long_any_adx_trend_ou_reversion.json`
+
+`result` · 11 lines · 273 B · description: **derived**
+
+**Purpose.** Generated JSON object, 8 keys (target, horizon, baseline_median_sharpe, baseline_iqr, max_abs_delta, ratio_to_iqr...).
+
+**Use.** `json.load(open('research/json/results/perturb_long_any_adx_trend_ou_reversion.json'))`
+
+#### `research/json/results/perturb_long_any_hurst_switch_ou_reversion.json`
+
+`result` · 11 lines · 274 B · description: **derived**
+
+**Purpose.** Generated JSON object, 8 keys (target, horizon, baseline_median_sharpe, baseline_iqr, max_abs_delta, ratio_to_iqr...).
+
+**Use.** `json.load(open('research/json/results/perturb_long_any_hurst_switch_ou_reversion.json'))`
+
+#### `research/json/results/perturb_long_any_ou_reversion_obv_trend.json`
+
+`result` · 11 lines · 271 B · description: **derived**
+
+**Purpose.** Generated JSON object, 8 keys (target, horizon, baseline_median_sharpe, baseline_iqr, max_abs_delta, ratio_to_iqr...).
+
+**Use.** `json.load(open('research/json/results/perturb_long_any_ou_reversion_obv_trend.json'))`
+
+#### `research/json/results/perturb_long_obv_trend.json`
+
+`result` · 11 lines · 253 B · description: **derived**
+
+**Purpose.** Generated JSON object, 8 keys (target, horizon, baseline_median_sharpe, baseline_iqr, max_abs_delta, ratio_to_iqr...).
+
+**Use.** `json.load(open('research/json/results/perturb_long_obv_trend.json'))`
+
+#### `research/json/results/perturb_long_vol_regime.json`
+
+`result` · 11 lines · 254 B · description: **derived**
+
+**Purpose.** Generated JSON object, 8 keys (target, horizon, baseline_median_sharpe, baseline_iqr, max_abs_delta, ratio_to_iqr...).
+
+**Use.** `json.load(open('research/json/results/perturb_long_vol_regime.json'))`
+
+#### `research/json/results/perturb_medium_adx_trend.json`
+
+`result` · 11 lines · 256 B · description: **derived**
+
+**Purpose.** Generated JSON object, 8 keys (target, horizon, baseline_median_sharpe, baseline_iqr, max_abs_delta, ratio_to_iqr...).
+
+**Use.** `json.load(open('research/json/results/perturb_medium_adx_trend.json'))`
+
+#### `research/json/results/shape_spot_20261111_audit.json`
+
+`result` · 29 lines · 1,330 B · description: **derived**
+
+**Purpose.** Generated JSON object, 16 keys (schema_version, task, run, reviewer, verdict, artifacts_verified...).
+
+**Use.** `json.load(open('research/json/results/shape_spot_20261111_audit.json'))`
+
+#### `research/json/results/shape_spot_20261111_manifest.json`
+
+`result` · 873 lines · 51,757 B · description: **derived**
+
+**Purpose.** Generated JSON object, 21 keys (artifacts, assets, code_sha256, fill_delay, folds, inputs...).
+
+**Use.** `json.load(open('research/json/results/shape_spot_20261111_manifest.json'))`
+
+#### `research/json/results/shape_spot_20261111_snapshots.json`
+
+`result` · 483 lines · 13,391 B · description: **derived**
+
+**Purpose.** Generated JSON array, 24 entries.
+
+**Use.** `json.load(open('research/json/results/shape_spot_20261111_snapshots.json'))`
+
+#### `research/json/results/top50-nonpegged-2026-11-07.json`
+
+`result` · 487 lines · 10,633 B · description: **derived**
+
+**Purpose.** Generated JSON object, 8 keys (as_of, source, listing_source, rule, excluded_pegged, coins...).
+
+**Use.** `json.load(open('research/json/results/top50-nonpegged-2026-11-07.json'))`
+
+#### `research/json/results/top50-screen-2026-11-07.json`
+
+`result` · 580 lines · 16,416 B · description: **derived**
+
+**Purpose.** Generated JSON object, 7 keys (as_of, universe_source, sources, criteria, not_checked, kept...).
+
+**Use.** `json.load(open('research/json/results/top50-screen-2026-11-07.json'))`
+
+#### `research/json/results/trigger_backtest_sol_1d.json`
+
+`result` · 6 lines · 133 B · description: **derived**
+
+**Purpose.** Generated JSON object, 4 keys (label, validation_start, validation_end, triggers).
+
+**Use.** `json.load(open('research/json/results/trigger_backtest_sol_1d.json'))`
+
+#### `research/json/results/triggers_sol_1d.json`
+
+`result` · 50 lines · 983 B · description: **derived**
+
+**Purpose.** Generated JSON object, 25 keys (asset, interval, bars, first_bar_utc, last_bar_utc, discovery_start...).
+
+**Use.** `json.load(open('research/json/results/triggers_sol_1d.json'))`
+
+#### `research/json/results/triggers_sol_1h.json`
+
+`result` · 42 lines · 902 B · description: **derived**
+
+**Purpose.** Generated JSON object, 25 keys (asset, interval, bars, first_bar_utc, last_bar_utc, discovery_start...).
+
+**Use.** `json.load(open('research/json/results/triggers_sol_1h.json'))`
+
+#### `research/json/results/volty_predictive_20261111.json`
+
+`result` · 251 lines · 7,604 B · description: **derived**
+
+**Purpose.** Generated JSON object, 10 keys (schema_version, created_at, source, source_sha256, source_market, evaluation...).
+
+**Use.** `json.load(open('research/json/results/volty_predictive_20261111.json'))`
+
+#### `research/json/results/volty_zec_20261110_forward_specs.json`
+
+`result` · 81 lines · 2,238 B · description: **derived**
+
+**Purpose.** Generated JSON object, 2 keys (schema_version, accounts).
+
+**Use.** `json.load(open('research/json/results/volty_zec_20261110_forward_specs.json'))`
+
+#### `research/json/results/volty_zec_20261110_manifest.json`
+
+`result` · 104 lines · 5,634 B · description: **derived**
+
+**Purpose.** Generated JSON object, 12 keys (schema_version, created_at, strategy, trials, configs_per_interval, selection...).
+
+**Use.** `json.load(open('research/json/results/volty_zec_20261110_manifest.json'))`
+
+#### `research/json/results/zec_cycles_20261111_audit.json`
+
+`result` · 31 lines · 1,055 B · description: **derived**
+
+**Purpose.** Generated JSON object, 17 keys (version, task, reviewer, status, run, run_artifacts_verified...).
+
+**Use.** `json.load(open('research/json/results/zec_cycles_20261111_audit.json'))`
+
+#### `research/json/results/zec_cycles_20261111_calibration.json`
+
+`result` · 710 lines · 19,799 B · description: **derived**
+
+**Purpose.** Generated JSON object, 6 keys (version, source_sha256, method, rejection_threshold, rejected, rows).
+
+**Use.** `json.load(open('research/json/results/zec_cycles_20261111_calibration.json'))`
+
+#### `research/json/results/zec_cycles_20261111_manifest.json`
+
+`result` · 61 lines · 2,712 B · description: **derived**
+
+**Purpose.** Generated JSON object, 14 keys (artifacts, cutoff, forecast, inputs, missing_bars, replicates...).
+
+**Use.** `json.load(open('research/json/results/zec_cycles_20261111_manifest.json'))`
+
+#### `research/json/results/zec_cycles_20261111_report_manifest.json`
+
+`result` · 20 lines · 1,698 B · description: **derived**
+
+**Purpose.** Generated JSON object, 5 keys (analysis_source_sha256, outputs, report_source_sha256, run_manifest_sha256, version).
+
+**Use.** `json.load(open('research/json/results/zec_cycles_20261111_report_manifest.json'))`
+
+#### `research/json/results/zec_gum_25x_5m_live.json`
+
+`result` · 35 lines · 628 B · description: **derived**
+
+**Purpose.** Generated JSON object, 6 keys (version, market, step, mode, settings, profiles).
+
+**Use.** `json.load(open('research/json/results/zec_gum_25x_5m_live.json'))`
+
+#### `research/json/results/zec_gum_25x_5m_selection.json`
+
+`result` · 300 lines · 8,750 B · description: **derived**
+
+**Purpose.** Generated JSON object, 6 keys (version, recordedBase, developmentWeeks, policy, eligibleRows, selected).
+
+**Use.** `json.load(open('research/json/results/zec_gum_25x_5m_selection.json'))`
+
+#### `research/json/results/zec_gum_25x_5m_walk_forward.json.gz`
+
+`result` · 0 lines · 1,628,479 B · description: **none**
+
+**Purpose.** _No description available._
+
+**Use.** Read it; regenerate with the driver that produced it.
+
+#### `research/json/results/zec_gum_5m_10m_full.json.gz`
+
+`result` · 0 lines · 602,751 B · description: **none**
+
+**Purpose.** _No description available._
+
+**Use.** Read it; regenerate with the driver that produced it.
+
+### `research/json/reversal-shapes-20261116/`
+
+#### `research/json/reversal-shapes-20261116/BTC-results.json.zlib`
+
+`result` · 0 lines · 384,673 B · description: **none**
+
+**Purpose.** _No description available._
+
+**Use.** Read it; regenerate with the driver that produced it.
+
+#### `research/json/reversal-shapes-20261116/ZEC-results.json.zlib`
+
+`result` · 0 lines · 367,978 B · description: **none**
+
+**Purpose.** _No description available._
+
+**Use.** Read it; regenerate with the driver that produced it.
+
+#### `research/json/reversal-shapes-20261116/manifest.json`
+
+`result` · 88 lines · 3,706 B · description: **derived**
+
+**Purpose.** Generated JSON object, 11 keys (schema, run_id, qualification, sources, outputs, audits...).
+
+**Use.** `json.load(open('research/json/reversal-shapes-20261116/manifest.json'))`
+
+#### `research/json/reversal-shapes-20261116/selection.json`
+
+`result` · 2 lines · 1,068 B · description: **derived**
+
+**Purpose.** Generated JSON object, 5 keys (limits, rules, run_id, schema, source).
+
+**Use.** `json.load(open('research/json/reversal-shapes-20261116/selection.json'))`
+
+### `research/json/second-turn-20261116/`
+
+#### `research/json/second-turn-20261116/BTC-first_down.svg`
+
+`result` · 0 lines · 121,593 B · description: **none**
+
+**Purpose.** _No description available._
+
+**Use.** Read it; regenerate with the driver that produced it.
+
+#### `research/json/second-turn-20261116/BTC-results.json.zlib`
+
+`result` · 0 lines · 2,539,686 B · description: **none**
+
+**Purpose.** _No description available._
+
+**Use.** Read it; regenerate with the driver that produced it.
+
+#### `research/json/second-turn-20261116/BTC-second_up.svg`
+
+`result` · 0 lines · 121,322 B · description: **none**
+
+**Purpose.** _No description available._
+
+**Use.** Read it; regenerate with the driver that produced it.
+
+#### `research/json/second-turn-20261116/ZEC-first_down.svg`
+
+`result` · 0 lines · 123,427 B · description: **none**
+
+**Purpose.** _No description available._
+
+**Use.** Read it; regenerate with the driver that produced it.
+
+#### `research/json/second-turn-20261116/ZEC-results.json.zlib`
+
+`result` · 0 lines · 2,414,925 B · description: **none**
+
+**Purpose.** _No description available._
+
+**Use.** Read it; regenerate with the driver that produced it.
+
+#### `research/json/second-turn-20261116/ZEC-second_up.svg`
+
+`result` · 0 lines · 118,948 B · description: **none**
+
+**Purpose.** _No description available._
+
+**Use.** Read it; regenerate with the driver that produced it.
+
+#### `research/json/second-turn-20261116/derived-details.json.zlib`
+
+`result` · 0 lines · 30,371 B · description: **none**
+
+**Purpose.** _No description available._
+
+**Use.** Read it; regenerate with the driver that produced it.
+
+#### `research/json/second-turn-20261116/manifest.json`
+
+`result` · 72 lines · 3,708 B · description: **derived**
+
+**Purpose.** Generated JSON object, 5 keys (version, run_id, scope, files, native_only).
+
+**Use.** `json.load(open('research/json/second-turn-20261116/manifest.json'))`
+
+### `research/json/strategy_experiment/`
+
+#### `research/json/strategy_experiment/.gitignore`
+
+`result` · 4 lines · 94 B · description: **none**
+
+**Purpose.** _No description available._
+
+**Use.** Read it; regenerate with the driver that produced it.
+
+#### `research/json/strategy_experiment/FILES.md`
+
+`result` · 3692 lines · 659,593 B · description: **extracted**
+
+**Purpose.** Tracked task changes and expanded copies in the durable export. Index files also include current default-branch content.
+
+**Use.** Read it; regenerate with the driver that produced it.
+
+#### `research/json/strategy_experiment/README.md`
+
+`result` · 73 lines · 4,066 B · description: **extracted**
+
+**Purpose.** Research output, not investment advice; simulation only. The baseline comes from source commit 898f09611dc65fd8e8457ced29ac05e0b87568db. The experiment preserves all 34 registered default strategies, all core simulators,
+
+**Use.** Read it; regenerate with the driver that produced it.
+
+#### `research/json/strategy_experiment/REPORT.md`
+
+`result` · 86 lines · 6,176 B · description: **extracted**
+
+**Purpose.** Research output, not investment advice; simulation only. before/after directional accuracy on each of the four matched datasets. The two hourly sizing corrections produce worse net returns on the evaluated temporal
+
+**Use.** Read it; regenerate with the driver that produced it.
+
+#### `research/json/strategy_experiment/archives.json`
+
+`result` · 3658 lines · 555,039 B · description: **derived**
+
+**Purpose.** Generated JSON object, 2 keys (original, candidate).
+
+**Use.** `json.load(open('research/json/strategy_experiment/archives.json'))`
+
+#### `research/json/strategy_experiment/audit_integrity.json`
+
+`result` · 1198 lines · 51,369 B · description: **derived**
+
+**Purpose.** Generated JSON object, 13 keys (version, delta, artifact, target_kind, families, strategy_count...).
+
+**Use.** `json.load(open('research/json/strategy_experiment/audit_integrity.json'))`
+
+#### `research/json/strategy_experiment/audit_integrity.md`
+
+`result` · 173 lines · 24,894 B · description: **extracted**
+
+**Purpose.** research output, not investment advice; simulation only Version: 1 Delta: Initial audit.
+
+**Use.** Read it; regenerate with the driver that produced it.
+
+#### `research/json/strategy_experiment/audit_realism.json`
+
+`result` · 7638 lines · 215,312 B · description: **derived**
+
+**Purpose.** Generated JSON object, 15 keys (schema_version, delta, target_kind, track, research_disclaimer, registry_count...).
+
+**Use.** `json.load(open('research/json/strategy_experiment/audit_realism.json'))`
+
+#### `research/json/strategy_experiment/audit_realism.md`
+
+`result` · 249 lines · 47,851 B · description: **extracted**
+
+**Purpose.** Research output, not investment advice; simulation only. Version: 1 Delta: initial collection before candidate writes.
+
+**Use.** Read it; regenerate with the driver that produced it.
+
+#### `research/json/strategy_experiment/candidate.zip`
+
+`result` · 0 lines · 4,563,118 B · description: **none**
+
+**Purpose.** _No description available._
+
+**Use.** Read it; regenerate with the driver that produced it.
+
+#### `research/json/strategy_experiment/original.zip`
+
+`result` · 0 lines · 4,562,679 B · description: **none**
+
+**Purpose.** _No description available._
+
+**Use.** Read it; regenerate with the driver that produced it.
+
+#### `research/json/strategy_experiment/snapshot.json`
+
+`result` · 1829 lines · 273,936 B · description: **derived**
+
+**Purpose.** Generated JSON object, 3 keys (source_head, scope, original_files).
+
+**Use.** `json.load(open('research/json/strategy_experiment/snapshot.json'))`
+
+### `research/json/strategy_experiment/results/`
+
+#### `research/json/strategy_experiment/results/auxiliary.json`
+
+`result` · 7427 lines · 671,723 B · description: **derived**
+
+**Purpose.** Generated JSON object, 8 keys (version, delta, disclaimer, protocol, sources, inputs...).
+
+**Use.** `json.load(open('research/json/strategy_experiment/results/auxiliary.json'))`
+
+#### `research/json/strategy_experiment/results/auxiliary.md`
+
+`result` · 35 lines · 2,247 B · description: **extracted**
+
+**Purpose.** research output, not investment advice; simulation only Frozen defaults, historical final 30%; no parameter search or promotion. Grid rails +/-15% first evaluation open, 7 geometric rungs at $100; $10000 capital. Spot fees 6bps, slippage 2bps. Scorecard common executable next-open-to-close accuracy: 149/318 (46.86%) original, 149/318 (46.86%) candidate.
+
+**Use.** Read it; regenerate with the driver that produced it.
+
+#### `research/json/strategy_experiment/results/comparison.csv`
+
+`result` · 274 lines · 95,189 B · description: **derived**
+
+**Purpose.** Generated data: 272 rows x 34 columns (dataset, strategy, split, status, original_accuracy, candidate_accuracy, delta_accuracy, original_win_rate...).
+
+**Contents.** Columns: `dataset`, `strategy`, `split`, `status`, `original_accuracy`, `candidate_accuracy`, `delta_accuracy`, `original_win_rate`, `candidate_win_rate`, `delta_win_rate`, `original_total_return`, `candidate_total_return`, `delta_total_return`, `original_sharpe`, `candidate_sharpe`, `delta_sharpe`, `original_max_drawdown`, `candidate_max_drawdown`, `delta_max_drawdown`, `original_trade_count`, `candidate_trade_count`, `delta_trade_count`, `original_active_calls`, `candidate_active_calls`, `delta_active_calls`, `original_coverage`, `candidate_coverage`, `delta_coverage`, `original_total_fees`, `candidate_total_fees`, `delta_total_fees`, `original_total_borrow_fees`, `candidate_total_borrow_fees`, `delta_total_borrow_fees`.
+
+**Use.** `pandas.read_csv('research/json/strategy_experiment/results/comparison.csv')` — regenerate with the driver that names it.
+
+#### `research/json/strategy_experiment/results/comparison.md`
+
+`result` · 153 lines · 14,748 B · description: **extracted**
+
+**Purpose.** Research output, not investment advice; simulation only. 136 holdout strategy/dataset pairs; 2 changed accuracy or net return; 0 failed pairs. All results are exploratory historical comparisons, not proof of a live edge. The final chronological 30% is a temporal holdout in this run. Previously researched data is not a fresh independent confirmation set. No parameter search or promotion runs.
+
+**Use.** Read it; regenerate with the driver that produced it.
+
+#### `research/json/strategy_experiment/results/manifest.json`
+
+`result` · 3805 lines · 561,811 B · description: **derived**
+
+**Purpose.** Generated JSON object, 15 keys (schema_version, split_fraction, runner_sha256, contiguous_tail_requested, strategy_count, strategies...).
+
+**Use.** `json.load(open('research/json/strategy_experiment/results/manifest.json'))`
+
+#### `research/json/strategy_experiment/results/results.csv`
+
+`result` · 546 lines · 483,031 B · description: **derived**
+
+**Purpose.** Generated data: 544 rows x 40 columns (dataset, strategy, variant, split, total_return, cagr, sharpe, sortino...).
+
+**Contents.** Columns: `dataset`, `strategy`, `variant`, `split`, `total_return`, `cagr`, `sharpe`, `sortino`, `max_drawdown`, `max_drawdown_start`, `max_drawdown_end`, `max_drawdown_bars`, `calmar`, `volatility_annual`, `win_rate`, `profit_factor`, `avg_win`, `avg_loss`, `trade_count`, `exposure_fraction`, `total_fees`, `total_borrow_fees`, `liquidation_count`, `final_equity`, `bars`, `accuracy`, `correct_calls`, `active_calls`, `eligible_bars`, `coverage`, `majority_baseline`, `accuracy_evidence`, `scored_start_index`, `scored_stop_index`, `mode`, `leverage`, `costs`, `trade_evidence`, `params`, `status`.
+
+**Use.** `pandas.read_csv('research/json/strategy_experiment/results/results.csv')` — regenerate with the driver that names it.
+
+#### `research/json/strategy_experiment/results/results.json`
+
+`result` · 32003 lines · 965,090 B · description: **derived**
+
+**Purpose.** Generated JSON array, 544 entries.
+
+**Use.** `json.load(open('research/json/strategy_experiment/results/results.json'))`
+
+### `research/json/strategy_experiment/results/initial-gapped-run/`
+
+#### `research/json/strategy_experiment/results/initial-gapped-run/comparison.csv`
+
+`result` · 274 lines · 75,229 B · description: **derived**
+
+**Purpose.** Generated data: 272 rows x 34 columns (dataset, strategy, split, status, original_accuracy, candidate_accuracy, delta_accuracy, original_win_rate...).
+
+**Contents.** Columns: `dataset`, `strategy`, `split`, `status`, `original_accuracy`, `candidate_accuracy`, `delta_accuracy`, `original_win_rate`, `candidate_win_rate`, `delta_win_rate`, `original_total_return`, `candidate_total_return`, `delta_total_return`, `original_sharpe`, `candidate_sharpe`, `delta_sharpe`, `original_max_drawdown`, `candidate_max_drawdown`, `delta_max_drawdown`, `original_trade_count`, `candidate_trade_count`, `delta_trade_count`, `original_active_calls`, `candidate_active_calls`, `delta_active_calls`, `original_coverage`, `candidate_coverage`, `delta_coverage`, `original_total_fees`, `candidate_total_fees`, `delta_total_fees`, `original_total_borrow_fees`, `candidate_total_borrow_fees`, `delta_total_borrow_fees`.
+
+**Use.** `pandas.read_csv('research/json/strategy_experiment/results/initial-gapped-run/comparison.csv')` — regenerate with the driver that names it.
+
+#### `research/json/strategy_experiment/results/initial-gapped-run/comparison.md`
+
+`result` · 153 lines · 13,824 B · description: **extracted**
+
+**Purpose.** Research output, not investment advice; simulation only. 136 holdout strategy/dataset pairs; 0 changed accuracy or net return; 34 failed pairs. All results are exploratory historical comparisons, not proof of a live edge. The final chronological 30% is a temporal holdout in this run. Previously researched data is not a fresh independent confirmation set. No parameter search or promotion runs.
+
+**Use.** Read it; regenerate with the driver that produced it.
+
+#### `research/json/strategy_experiment/results/initial-gapped-run/manifest.json`
+
+`result` · 3778 lines · 560,764 B · description: **derived**
+
+**Purpose.** Generated JSON object, 13 keys (schema_version, split_fraction, strategy_count, strategies, sources, common_engine_sources...).
+
+**Use.** `json.load(open('research/json/strategy_experiment/results/initial-gapped-run/manifest.json'))`
+
+#### `research/json/strategy_experiment/results/initial-gapped-run/results.csv`
+
+`result` · 546 lines · 401,720 B · description: **derived**
+
+**Purpose.** Generated data: 544 rows x 41 columns (dataset, strategy, variant, split, total_return, cagr, sharpe, sortino...).
+
+**Contents.** Columns: `dataset`, `strategy`, `variant`, `split`, `total_return`, `cagr`, `sharpe`, `sortino`, `max_drawdown`, `max_drawdown_start`, `max_drawdown_end`, `max_drawdown_bars`, `calmar`, `volatility_annual`, `win_rate`, `profit_factor`, `avg_win`, `avg_loss`, `trade_count`, `exposure_fraction`, `total_fees`, `total_borrow_fees`, `liquidation_count`, `final_equity`, `bars`, `accuracy`, `correct_calls`, `active_calls`, `eligible_bars`, `coverage`, `majority_baseline`, `accuracy_evidence`, `scored_start_index`, `scored_stop_index`, `mode`, `leverage`, `costs`, `trade_evidence`, `params`, `status`, `error`.
+
+**Use.** `pandas.read_csv('research/json/strategy_experiment/results/initial-gapped-run/results.csv')` — regenerate with the driver that names it.
+
+#### `research/json/strategy_experiment/results/initial-gapped-run/results.json`
+
+`result` · 25091 lines · 773,213 B · description: **derived**
+
+**Purpose.** Generated JSON array, 544 entries.
+
+**Use.** `json.load(open('research/json/strategy_experiment/results/initial-gapped-run/results.json'))`
+
+### `research/json/tradingview-script-profile-audits/`
+
+#### `research/json/tradingview-script-profile-audits/shard-a.jsonl`
+
+`result` · 0 lines · 226,356 B · description: **none**
+
+**Purpose.** _No description available._
+
+**Use.** Read it; regenerate with the driver that produced it.
+
+#### `research/json/tradingview-script-profile-audits/shard-b.jsonl`
+
+`result` · 0 lines · 253,096 B · description: **none**
+
+**Purpose.** _No description available._
+
+**Use.** Read it; regenerate with the driver that produced it.
+
+#### `research/json/tradingview-script-profile-audits/shard-c.jsonl`
+
+`result` · 0 lines · 244,992 B · description: **none**
+
+**Purpose.** _No description available._
+
+**Use.** Read it; regenerate with the driver that produced it.
+
+### `research/json/tradingview-script-profiles/`
+
+#### `research/json/tradingview-script-profiles/shard-a.jsonl`
+
+`result` · 0 lines · 643,954 B · description: **none**
+
+**Purpose.** _No description available._
+
+**Use.** Read it; regenerate with the driver that produced it.
+
+#### `research/json/tradingview-script-profiles/shard-b.jsonl`
+
+`result` · 0 lines · 613,007 B · description: **none**
+
+**Purpose.** _No description available._
+
+**Use.** Read it; regenerate with the driver that produced it.
+
+#### `research/json/tradingview-script-profiles/shard-c.jsonl`
+
+`result` · 0 lines · 658,537 B · description: **none**
+
+**Purpose.** _No description available._
+
+**Use.** Read it; regenerate with the driver that produced it.
+
+### `research/json/zec-expanded-20261113.llms/`
+
+#### `research/json/zec-expanded-20261113.llms/archive-manifest.json`
+
+`result` · 137 lines · 4,148 B · description: **derived**
+
+**Purpose.** Generated JSON object, 4 keys (version, files, report, run_rows).
+
+**Use.** `json.load(open('research/json/zec-expanded-20261113.llms/archive-manifest.json'))`
+
+#### `research/json/zec-expanded-20261113.llms/audit-expanded-contexts.json`
+
+`result` · 16 lines · 520 B · description: **derived**
+
+**Purpose.** Generated JSON object, 13 keys (contexts_independently_checked, fit_windows_independently_derived, harmonic_selection_and_coefficients, shape_contexts, candidate_history_masks_checked, null_rows_checked...).
+
+**Use.** `json.load(open('research/json/zec-expanded-20261113.llms/audit-expanded-contexts.json'))`
+
+#### `research/json/zec-expanded-20261113.llms/audit-expanded-direct-controls.json`
+
+`result` · 18 lines · 370 B · description: **derived**
+
+**Purpose.** Generated JSON object, 5 keys (full_direct_math_cases, strategies, modes, checks, audit_exit_code).
+
+**Use.** `json.load(open('research/json/zec-expanded-20261113.llms/audit-expanded-direct-controls.json'))`
+
+#### `research/json/zec-expanded-20261113.llms/audit-expanded-ledger.json`
+
+`result` · 29 lines · 801 B · description: **derived**
+
+**Purpose.** Generated JSON object, 16 keys (attempt, rows, status_counts, artifact_hashes, code_and_card_hashes, input_provenance_matches...).
+
+**Use.** `json.load(open('research/json/zec-expanded-20261113.llms/audit-expanded-ledger.json'))`
+
+#### `research/json/zec-expanded-20261113.llms/audit-expanded-lifecycle-nulls.json`
+
+`result` · 12 lines · 351 B · description: **derived**
+
+**Purpose.** Generated JSON object, 9 keys (strict_observed_trade_crosses_checked, lifecycle_singleflight_fills_checked, dca_fills_and_deal_basis_checked, grid_buy_sizing_checked, full_null_fits_reproduced, full_null_rows_reproduced...).
+
+**Use.** `json.load(open('research/json/zec-expanded-20261113.llms/audit-expanded-lifecycle-nulls.json'))`
+
+#### `research/json/zec-expanded-20261113.llms/audit-expanded-receipt.json`
+
+`result` · 192 lines · 10,503 B · description: **derived**
+
+**Purpose.** Generated JSON object, 7 keys (agent, definition_version, status, evidence, changes, remaining...).
+
+**Use.** `json.load(open('research/json/zec-expanded-20261113.llms/audit-expanded-receipt.json'))`
+
+#### `research/json/zec-expanded-20261113.llms/coverage.json`
+
+`result` · 55 lines · 1,016 B · description: **derived**
+
+**Purpose.** Generated JSON object, 4 keys (10m, 1h, 1m, 5m).
+
+**Use.** `json.load(open('research/json/zec-expanded-20261113.llms/coverage.json'))`
+
+#### `research/json/zec-expanded-20261113.llms/cycle-null-tests.json`
+
+`result` · 3403 lines · 95,175 B · description: **derived**
+
+**Purpose.** Generated JSON array, 200 entries.
+
+**Use.** `json.load(open('research/json/zec-expanded-20261113.llms/cycle-null-tests.json'))`
+
+#### `research/json/zec-expanded-20261113.llms/frequency-fits-10m.json`
+
+`result` · 90 lines · 1,198 B · description: **derived**
+
+**Purpose.** Generated JSON array, 1 entries.
+
+**Use.** `json.load(open('research/json/zec-expanded-20261113.llms/frequency-fits-10m.json'))`
+
+#### `research/json/zec-expanded-20261113.llms/frequency-fits-1h.json`
+
+`result` · 2 lines · 3 B · description: **derived**
+
+**Purpose.** Generated JSON array, 0 entries.
+
+**Use.** `json.load(open('research/json/zec-expanded-20261113.llms/frequency-fits-1h.json'))`
+
+#### `research/json/zec-expanded-20261113.llms/frequency-fits-1m.json`
+
+`result` · 7485 lines · 108,751 B · description: **derived**
+
+**Purpose.** Generated JSON array, 86 entries.
+
+**Use.** `json.load(open('research/json/zec-expanded-20261113.llms/frequency-fits-1m.json'))`
+
+#### `research/json/zec-expanded-20261113.llms/frequency-fits-5m.json`
+
+`result` · 1134 lines · 16,014 B · description: **derived**
+
+**Purpose.** Generated JSON array, 13 entries.
+
+**Use.** `json.load(open('research/json/zec-expanded-20261113.llms/frequency-fits-5m.json'))`
+
+#### `research/json/zec-expanded-20261113.llms/identity.json`
+
+`result` · 1544 lines · 252,456 B · description: **derived**
+
+**Purpose.** Generated JSON object, 5 keys (code_and_cards, executable, numpy, pandas, python).
+
+**Use.** `json.load(open('research/json/zec-expanded-20261113.llms/identity.json'))`
+
+#### `research/json/zec-expanded-20261113.llms/input-provenance.json`
+
+`result` · 12 lines · 684 B · description: **derived**
+
+**Purpose.** Generated JSON object, 5 keys (accepted_manifest, hashes, parent, prior_run, wal_sha256).
+
+**Use.** `json.load(open('research/json/zec-expanded-20261113.llms/input-provenance.json'))`
+
+#### `research/json/zec-expanded-20261113.llms/integration-source-proof.json`
+
+`result` · 31 lines · 782 B · description: **derived**
+
+**Purpose.** Generated JSON object, 16 keys (source_archive_files, source_archive_all_hashes_match, current_source_differences, all_numeric_model_ast_unchanged, allowed_research_changes, upstream...).
+
+**Use.** `json.load(open('research/json/zec-expanded-20261113.llms/integration-source-proof.json'))`
+
+#### `research/json/zec-expanded-20261113.llms/llms.txt`
+
+`result` · 23 lines · 1,716 B · description: **derived**
+
+**Purpose.** Generated report. Opens: # Expanded ZEC strategy, shape and cycle evidence / Version: 1.0.0
+
+**Use.** Read it; regenerate with the driver that produced it.
+
+#### `research/json/zec-expanded-20261113.llms/manifest.json`
+
+`result` · 1655 lines · 258,835 B · description: **derived**
+
+**Purpose.** Generated JSON object, 6 keys (artifacts, identity, rows, source_sha256, status_counts, version).
+
+**Use.** `json.load(open('research/json/zec-expanded-20261113.llms/manifest.json'))`
+
+#### `research/json/zec-expanded-20261113.llms/mongo-artifacts.json`
+
+`result` · 441 lines · 16,140 B · description: **derived**
+
+**Purpose.** Generated JSON object, 15 keys (run_id, run_revision_at_readback, qualification, csv, frozen_plan, native_proof...).
+
+**Use.** `json.load(open('research/json/zec-expanded-20261113.llms/mongo-artifacts.json'))`
+
+#### `research/json/zec-expanded-20261113.llms/mongo-readback-receipt.json`
+
+`result` · 18 lines · 664 B · description: **derived**
+
+**Purpose.** Generated JSON object, 15 keys (full_csv_readback, bytes, sha256, encoded_chars, transport_fragments, rows...).
+
+**Use.** `json.load(open('research/json/zec-expanded-20261113.llms/mongo-readback-receipt.json'))`
+
+#### `research/json/zec-expanded-20261113.llms/paired-comparisons.json`
+
+`result` · 339 lines · 6,948 B · description: **derived**
+
+**Purpose.** Generated JSON array, 24 entries.
+
+**Use.** `json.load(open('research/json/zec-expanded-20261113.llms/paired-comparisons.json'))`
+
+#### `research/json/zec-expanded-20261113.llms/plan.json.gz`
+
+`result` · 0 lines · 206,295 B · description: **none**
+
+**Purpose.** _No description available._
+
+**Use.** Read it; regenerate with the driver that produced it.
+
+#### `research/json/zec-expanded-20261113.llms/results.csv`
+
+`result` · 85314 lines · 17,637,322 B · description: **derived**
+
+**Purpose.** Generated data: 85312 rows x 24 columns (interval, candidate_id, family, mode, fee_bps, market, eligible_bars, status...).
+
+**Contents.** Columns: `interval`, `candidate_id`, `family`, `mode`, `fee_bps`, `market`, `eligible_bars`, `status`, `replay_id`, `return_pct`, `end_equity`, `fees_usd`, `turnover_usd`, `residual_slippage_usd`, `carry_usd`, `fills`, `decision_fill_drawdown_pct`, `rejections`, `open_units`, `terminal_mark_ns`, `terminal_mark_age_seconds`, `terminal_state`, `lifecycle_diagnostics`, `execution_variant`.
+
+**Use.** `pandas.read_csv('research/json/zec-expanded-20261113.llms/results.csv')` — regenerate with the driver that names it.
+
+#### `research/json/zec-expanded-20261113.llms/simulation-source.zip`
+
+`result` · 0 lines · 3,979,986 B · description: **none**
+
+**Purpose.** _No description available._
+
+**Use.** Read it; regenerate with the driver that produced it.
+
+#### `research/json/zec-expanded-20261113.llms/special-runner-summary.json`
+
+`result` · 4218 lines · 130,612 B · description: **derived**
+
+**Purpose.** Generated JSON array, 144 entries.
+
+**Use.** `json.load(open('research/json/zec-expanded-20261113.llms/special-runner-summary.json'))`
+
+#### `research/json/zec-expanded-20261113.llms/summary-statistics.json`
+
+`result` · 615 lines · 13,267 B · description: **derived**
+
+**Purpose.** Generated JSON array, 48 entries.
+
+**Use.** `json.load(open('research/json/zec-expanded-20261113.llms/summary-statistics.json'))`
+
+#### `research/json/zec-expanded-20261113.llms/summary.json`
+
+`result` · 38 lines · 916 B · description: **derived**
+
+**Purpose.** Generated JSON object, 19 keys (version, rows, status_counts, run_id, row_key, fees_bps_per_fill...).
+
+**Use.** `json.load(open('research/json/zec-expanded-20261113.llms/summary.json'))`
+
+### `research/json/zec-fee-sensitivity-20261113.llms/`
+
+#### `research/json/zec-fee-sensitivity-20261113.llms/archive-manifest.json`
+
+`result` · 19 lines · 1,208 B · description: **derived**
+
+**Purpose.** Generated JSON object, 3 keys (version, artifacts, report_sha256).
+
+**Use.** `json.load(open('research/json/zec-fee-sensitivity-20261113.llms/archive-manifest.json'))`
+
+#### `research/json/zec-fee-sensitivity-20261113.llms/audit-ledger.json`
+
+`result` · 24 lines · 693 B · description: **derived**
+
+**Purpose.** Generated JSON object, 15 keys (audit, attempt, artifact_hashes_verified, rows, statuses, exact_catalog_census...).
+
+**Use.** `json.load(open('research/json/zec-fee-sensitivity-20261113.llms/audit-ledger.json'))`
+
+#### `research/json/zec-fee-sensitivity-20261113.llms/audit.json`
+
+`result` · 170 lines · 8,171 B · description: **derived**
+
+**Purpose.** Generated JSON object, 7 keys (agent, definition_version, status, evidence, changes, remaining...).
+
+**Use.** `json.load(open('research/json/zec-fee-sensitivity-20261113.llms/audit.json'))`
+
+#### `research/json/zec-fee-sensitivity-20261113.llms/coverage.json`
+
+`result` · 35 lines · 810 B · description: **derived**
+
+**Purpose.** Generated JSON object, 4 keys (10m, 1h, 1m, 5m).
+
+**Use.** `json.load(open('research/json/zec-fee-sensitivity-20261113.llms/coverage.json'))`
+
+#### `research/json/zec-fee-sensitivity-20261113.llms/identity.json`
+
+`result` · 61 lines · 5,662 B · description: **derived**
+
+**Purpose.** Generated JSON object, 5 keys (code, executable, numpy, pandas, python).
+
+**Use.** `json.load(open('research/json/zec-fee-sensitivity-20261113.llms/identity.json'))`
+
+#### `research/json/zec-fee-sensitivity-20261113.llms/llms-full.txt`
+
+`result` · 58 lines · 6,064 B · description: **derived**
+
+**Purpose.** Generated report. Opens: # ZEC fee sensitivity at 0.25% and 0.15% per fill / Version: 1.0.0
+
+**Use.** Read it; regenerate with the driver that produced it.
+
+#### `research/json/zec-fee-sensitivity-20261113.llms/llms.txt`
+
+`result` · 18 lines · 976 B · description: **derived**
+
+**Purpose.** Generated report. Opens: # ZEC25/15bps fee sensitivity / Version: 1.0.0
+
+**Use.** Read it; regenerate with the driver that produced it.
+
+#### `research/json/zec-fee-sensitivity-20261113.llms/manifest.json`
+
+`result` · 86 lines · 7,212 B · description: **derived**
+
+**Purpose.** Generated JSON object, 6 keys (artifacts, capture_sha256, identity, rows, statuses, version).
+
+**Use.** `json.load(open('research/json/zec-fee-sensitivity-20261113.llms/manifest.json'))`
+
+#### `research/json/zec-fee-sensitivity-20261113.llms/mongo-artifacts.json`
+
+`result` · 75 lines · 2,584 B · description: **derived**
+
+**Purpose.** Generated JSON object, 11 keys (status, artifacts, csv_bytes, csv_sha256, full_csv_readback, other_readbacks...).
+
+**Use.** `json.load(open('research/json/zec-fee-sensitivity-20261113.llms/mongo-artifacts.json'))`
+
+#### `research/json/zec-fee-sensitivity-20261113.llms/plan.json.gz`
+
+`result` · 0 lines · 20,015 B · description: **none**
+
+**Purpose.** _No description available._
+
+**Use.** Read it; regenerate with the driver that produced it.
+
+#### `research/json/zec-fee-sensitivity-20261113.llms/rerun-provenance.json`
+
+`result` · 17 lines · 831 B · description: **derived**
+
+**Purpose.** Generated JSON object, 11 keys (clarification, driver, driver_sha256, execution_model, fee_bps, other_changes...).
+
+**Use.** `json.load(open('research/json/zec-fee-sensitivity-20261113.llms/rerun-provenance.json'))`
+
+#### `research/json/zec-fee-sensitivity-20261113.llms/results.csv`
+
+`result` · 7062 lines · 1,271,529 B · description: **derived**
+
+**Purpose.** Generated data: 7060 rows x 21 columns (interval, candidate_id, family, fee_bps, eligible_signal_bars, market, status, return_pct...).
+
+**Contents.** Columns: `interval`, `candidate_id`, `family`, `fee_bps`, `eligible_signal_bars`, `market`, `status`, `return_pct`, `end_equity`, `fees_usd`, `turnover_usd`, `residual_slippage_usd`, `carry_usd`, `fills`, `decision_fill_drawdown_pct`, `rejections`, `open_units`, `terminal_mark_ns`, `terminal_mark_age_seconds`, `terminal_state`, `reason`.
+
+**Use.** `pandas.read_csv('research/json/zec-fee-sensitivity-20261113.llms/results.csv')` — regenerate with the driver that names it.
+
+#### `research/json/zec-fee-sensitivity-20261113.llms/summary.json`
+
+`result` · 788 lines · 26,797 B · description: **derived**
+
+**Purpose.** Generated JSON object, 11 keys (coverage, fee_bps, fee_percent, mongo_run_id, original_source_sha256, parent_run_id...).
+
+**Use.** `json.load(open('research/json/zec-fee-sensitivity-20261113.llms/summary.json'))`
+
+### `research/json/zec-granular-20261113.llms/`
+
+#### `research/json/zec-granular-20261113.llms/archive-manifest.json`
+
+`result` · 20 lines · 1,233 B · description: **derived**
+
+**Purpose.** Generated JSON object, 4 keys (artifacts, attempt, report_sha256, version).
+
+**Use.** `json.load(open('research/json/zec-granular-20261113.llms/archive-manifest.json'))`
+
+#### `research/json/zec-granular-20261113.llms/audit-ledger.json`
+
+`result` · 22 lines · 593 B · description: **derived**
+
+**Purpose.** Generated JSON object, 13 keys (audit, attempt, artifact_hashes_verified, rows, statuses, exact_catalog_census...).
+
+**Use.** `json.load(open('research/json/zec-granular-20261113.llms/audit-ledger.json'))`
+
+#### `research/json/zec-granular-20261113.llms/audit-raw-book.json`
+
+`result` · 18 lines · 547 B · description: **derived**
+
+**Purpose.** Generated JSON object, 11 keys (attempt, original_wal_sha256, records_verified, all_trade_rows_verified, book_samples_independently_sorted_from_raw, connection_ids...).
+
+**Use.** `json.load(open('research/json/zec-granular-20261113.llms/audit-raw-book.json'))`
+
+#### `research/json/zec-granular-20261113.llms/audit.json`
+
+`result` · 88 lines · 5,207 B · description: **derived**
+
+**Purpose.** Generated JSON object, 7 keys (agent, definition_version, status, evidence, changes, remaining...).
+
+**Use.** `json.load(open('research/json/zec-granular-20261113.llms/audit.json'))`
+
+#### `research/json/zec-granular-20261113.llms/coverage.json`
+
+`result` · 35 lines · 810 B · description: **derived**
+
+**Purpose.** Generated JSON object, 4 keys (10m, 1h, 1m, 5m).
+
+**Use.** `json.load(open('research/json/zec-granular-20261113.llms/coverage.json'))`
+
+#### `research/json/zec-granular-20261113.llms/identity.json`
+
+`result` · 61 lines · 5,662 B · description: **derived**
+
+**Purpose.** Generated JSON object, 5 keys (code, executable, numpy, pandas, python).
+
+**Use.** `json.load(open('research/json/zec-granular-20261113.llms/identity.json'))`
+
+#### `research/json/zec-granular-20261113.llms/llms-full.txt`
+
+`result` · 79 lines · 10,162 B · description: **derived**
+
+**Purpose.** Generated report. Opens: # ZEC captured-event backtests / Version: 1.0.1
+
+**Use.** Read it; regenerate with the driver that produced it.
+
+#### `research/json/zec-granular-20261113.llms/llms.txt`
+
+`result` · 16 lines · 1,021 B · description: **derived**
+
+**Purpose.** Generated report. Opens: # ZEC captured-event backtests / Version: 1.0.1
+
+**Use.** Read it; regenerate with the driver that produced it.
+
+#### `research/json/zec-granular-20261113.llms/manifest.json`
+
+`result` · 85 lines · 7,116 B · description: **derived**
+
+**Purpose.** Generated JSON object, 6 keys (artifacts, capture_sha256, identity, rows, statuses, version).
+
+**Use.** `json.load(open('research/json/zec-granular-20261113.llms/manifest.json'))`
+
+#### `research/json/zec-granular-20261113.llms/mongo-artifacts.json`
+
+`result` · 72 lines · 2,813 B · description: **derived**
+
+**Purpose.** Generated JSON object, 12 keys (version, run_id, run_revision, mode, result_csv_sha256, result_csv_bytes...).
+
+**Use.** `json.load(open('research/json/zec-granular-20261113.llms/mongo-artifacts.json'))`
+
+#### `research/json/zec-granular-20261113.llms/plan.json.gz`
+
+`result` · 0 lines · 20,018 B · description: **none**
+
+**Purpose.** _No description available._
+
+**Use.** Read it; regenerate with the driver that produced it.
+
+#### `research/json/zec-granular-20261113.llms/results.csv`
+
+`result` · 10578 lines · 1,904,716 B · description: **derived**
+
+**Purpose.** Generated data: 10576 rows x 21 columns (interval, candidate_id, family, fee_bps, eligible_signal_bars, market, status, return_pct...).
+
+**Contents.** Columns: `interval`, `candidate_id`, `family`, `fee_bps`, `eligible_signal_bars`, `market`, `status`, `return_pct`, `end_equity`, `fees_usd`, `turnover_usd`, `residual_slippage_usd`, `carry_usd`, `fills`, `decision_fill_drawdown_pct`, `rejections`, `open_units`, `terminal_mark_ns`, `terminal_mark_age_seconds`, `terminal_state`, `reason`.
+
+**Use.** `pandas.read_csv('research/json/zec-granular-20261113.llms/results.csv')` — regenerate with the driver that names it.
+
+#### `research/json/zec-granular-20261113.llms/summary.json`
+
+`result` · 879 lines · 29,411 B · description: **derived**
+
+**Purpose.** Generated JSON object, 8 keys (attempt, capture_sha256, costs, coverage, matrix_rows, statuses...).
+
+**Use.** `json.load(open('research/json/zec-granular-20261113.llms/summary.json'))`
+
+### `research/json/zec-reversal-excursions-20261115/`
+
+#### `research/json/zec-reversal-excursions-20261115/llms.txt`
+
+`result` · 27 lines · 2,319 B · description: **derived**
+
+**Purpose.** Generated report. Opens: # ZEC second-bar reversal excursion study / Version: 1.0.0
+
+**Use.** Read it; regenerate with the driver that produced it.
+
+#### `research/json/zec-reversal-excursions-20261115/mongo-artifacts.json`
+
+`result` · 234 lines · 9,943 B · description: **derived**
+
+**Purpose.** Generated JSON object, 11 keys (version, run_id, native_revision_at_projection, qualification, source_artifacts, decoded_results_sha256...).
+
+**Use.** `json.load(open('research/json/zec-reversal-excursions-20261115/mongo-artifacts.json'))`
+
+#### `research/json/zec-reversal-excursions-20261115/results.json`
+
+`result` · 1 lines · 784,401 B · description: **derived**
+
+**Purpose.** Generated JSON object, 5 keys (events, input, schema, selection_counts, summaries).
+
+**Use.** `json.load(open('research/json/zec-reversal-excursions-20261115/results.json'))`
+
+### `research/json/zec-two-bar-reversal-20261114/`
+
+#### `research/json/zec-two-bar-reversal-20261114/llms.txt`
+
+`result` · 37 lines · 3,070 B · description: **derived**
+
+**Purpose.** Generated report. Opens: # ZEC two-bar reversal working paper / Version: 1.0.0
+
+**Use.** Read it; regenerate with the driver that produced it.
+
+#### `research/json/zec-two-bar-reversal-20261114/results.json`
+
+`result` · 3271 lines · 81,808 B · description: **derived**
+
+**Purpose.** Generated JSON object, 4 keys (schema, input, definitions, results).
+
+**Use.** `json.load(open('research/json/zec-two-bar-reversal-20261114/results.json'))`
+
+### `research/papers/`
+
+#### `research/papers/CANDLE-GAP-AUDIT.md`
+
+`doc` · 209 lines · 12,810 B · description: **extracted**
+
+**Purpose.** Generated by `research/scripts/candle_gap_audit.py` over 2026-07-06 .. 2026-08-06, five assets. Every figure comes from the Coinbase **trades** endpoint compared against the 1m candle cache in `data/`.
+
+**Use.** Read it.
+
+#### `research/papers/COINBASE50-GRID-CYCLES.md`
+
+`doc` · 586 lines · 41,281 B · description: **extracted**
+
+**Purpose.** This is a current-survivor, complete-feed historical experiment. It does not establish future profit or an executable live edge. No orders, runtime universe, or armed settings changed. At zero commission +2bps execution per side, the unfiltered marketcap10 grid returns 1.19%, training-ranked coin selection returns 1.90%, and all five factors together return -0.48%.
+
+**Use.** Read it.
+
+#### `research/papers/COMPOUND-FRONTIER.md`
+
+`doc` · 155 lines · 10,606 B · description: **extracted**
+
+**Purpose.** The owner's question: the reversion metrics "are doing ok in testing" (52% out-of-sample hit on SOL) but every row says the profit is eaten by fees. How do you get around that, and is there a better strategy nearby? This page answers both with the frontier sweep (run `20261107T202943Z`, 1,250
+
+**Use.** Read it.
+
+#### `research/papers/CROSS-ASSET-TRANSFER.md`
+
+`doc` · 225 lines · 14,491 B · description: **extracted**
+
+**Purpose.** python3 research/scripts/cross_asset_cpcv.py --self-test # gate: reproduces the BTC/ETH file python3 research/scripts/cross_asset_cpcv.py --assets SOL,DOGE,ZEC # 25 singles, medium horizon python3 research/scripts/cross_asset_cpcv.py --top5 --assets DOGE,ZEC # the five, with SOL as control
+
+**Use.** Read it.
+
+#### `research/papers/CROSSCOIN-REVERSAL-PATTERNS.md`
+
+`doc` · 115 lines · 10,418 B · description: **extracted**
+
+**Purpose.** The two-UP-bars rule does not establish a general 70% probability. In the full 30-day KuCoin archive, the next 10-minute candle closed DOWN after UU in 148/420 HYPE cases (35.2%; 117 flat), 538/1032 ETH cases (52.1%), 548/1028 BTC cases (53.3%) and 524/972 SOL cases (53.9%).
+
+**Use.** Read it.
+
+#### `research/papers/EXIT50-REVERSAL.md`
+
+`doc` · 156 lines · 13,843 B · description: **extracted**
+
+**Purpose.** This is an exploratory retrospective: the historical period and earlier shape tables were already seen. The splits do not create an independent holdout. The 200 ms observations and 1-minute no-touch envelopes do not prove a continuous keeper path. Current fee configuration is a scenario, not verified historical fees. Entry, network and keeper costs and actual fills are not qualified.
+
+**Use.** Read it.
+
+#### `research/papers/FIVE-MINUTE-PERPS.md`
+
+`doc` · 115 lines · 7,246 B · description: **extracted**
+
+**Purpose.** Version: 1 Delta: initial public synthesis from the accepted TASK-808 evidence cohort and preserved prior research. Reviewed: 2026-11-08. This is research, not a tested trading rule.
+
+**Use.** Read it.
+
+#### `research/papers/GRID-REVIEW.md`
+
+`doc` · 51 lines · 4,992 B · description: **extracted**
+
+**Purpose.** Reviewed 2026-11-07 using engine `ad6fe0830c661fa1437a0c5606118f076dd13888`. The strategy named `grid` in the roster increases exposure as price falls below a rolling average. It is an exposure staircase, not a set of resting buy and sell orders. Its archived single-split SOL results lost money out of sample (see `backtester/strategy_cards/grid.md`).
+
+**Use.** Read it.
+
+#### `research/papers/LEVERAGE-ECONOMICS.md`
+
+`doc` · 162 lines · 8,178 B · description: **extracted**
+
+**Purpose.** No network, no data files — this is closed-form arithmetic over published venue parameters, so it reproduces exactly. python3 research/scripts/leverage_economics.py --self-test # gate: 7 load-bearing claims
+
+**Use.** Read it.
+
+#### `research/papers/LEVERAGE-TIERS.md`
+
+`doc` · 63 lines · 5,752 B · description: **extracted**
+
+**Purpose.** Simulation only. Reproduce with `python3 -m research.leverage_tiers --asset SOL --interval 1d` (about 6 seconds). Raw rows: `research/results/leverage_tiers_sol_1d_summary.csv`, Leverage multiplies the existing result and adds carry, so it can only help a signal that already
+
+**Use.** Read it.
+
+#### `research/papers/META-ANALYSIS.md`
+
+`doc` · 401 lines · 35,418 B · description: **extracted**
+
+**Purpose.** Version: 1.2.0. Evidence cutoff: 2026-11-11. Status: retrospective follow-ups, tiny live validation and installed paper-cohort acceptance complete; future economic evidence remains unqualified. /dr semantic review passed; skill publication is withheld by the owning hub structural gate. Keep new autonomous strategy capital in cash while the frozen paper comparison runs.
+
+**Use.** Read it.
+
+#### `research/papers/META-ANALYSIS.md.ddo-report.md`
+
+`doc` · 107 lines · 10,780 B · description: **extracted**
+
+**Purpose.** Result: **blind_audit_dissent**. Full depth, write + report, standard profile, Medium floor, three-iteration cap. The final independent review retains one Medium finding. Do not claim convergence or publication readiness from this run. Target: /Users/mitch/dev/solmargintrader-wt-01a1ca3c-meta/research/META-ANALYSIS.md Snapshot started: 2026-11-11T17:23:54Z.
+
+**Use.** Read it.
+
+#### `research/papers/MTF-REVERSAL.md`
+
+`doc` · 20 lines · 3,021 B · description: **extracted**
+
+**Purpose.** This exploratory study asks whether completed 5, 10, 15 and 20 minute shapes add useful context to an up/up reversal. BTC and ZEC use 41,680 complete one-minute Jupiter Oracle observations each. The model uses only completed bars at the decision boundary.
+
+**Use.** Read it.
+
+#### `research/papers/NEWS-EVENT-STUDY.md`
+
+`doc` · 116 lines · 11,238 B · description: **extracted**
+
+**Purpose.** Version: 1.0.0 Delta: initial measured, outcome-blind publication-time event study. This exploratory study follows 61 reviewed coin/article events from August 14 through November 10, 2026 UTC (89 complete days). It measures subsequent Coinbase USD candle-open returns at 1, 5, 15, 60, 240 and 1,440 minutes. The primary horizon is one hour.
+
+**Use.** Read it.
+
+#### `research/papers/NONLINEAR-LEAD-LAG-CHILDREN.md`
+
+`doc` · 106 lines · 7,775 B · description: **extracted**
+
+**Purpose.** Version: 2 Delta: v1 to v2; link the completed canonical run and separate remote delivery qualification. Reviewed: 2026-11-08. Research only; no new market backtest or live trade.
+
+**Use.** Read it.
+
+#### `research/papers/PROMPT_STRATEGIES.md`
+
+`doc` · 175 lines · 14,396 B · description: **extracted**
+
+**Purpose.** <!-- HISTORICAL SPEC — preserved as written, do not retro-edit. This is the pdo-optimized spec that drove the first pass of the work. Two of its
+
+**Use.** Read it.
+
+#### `research/papers/RANKED_LISTS.md`
+
+`doc` · 1084 lines · 74,310 B · description: **extracted**
+
+**Purpose.** configuration, so realised path counts are lower; see "How many paths each figure actually rests on" below. The earlier single 70/30 walk-forward is retained as List 1b, because the disagreement between the two methods is the most instructive result here.
+
+**Use.** Read it.
+
+#### `research/papers/RATIO-ROTATION.md`
+
+`doc` · 270 lines · 12,611 B · description: **extracted**
+
+**Purpose.** Reproduce with: python3 -m backtester.core.universe --assets BTC,ETH,SOL,DOGE,ZEC --interval 1d python3 -m backtester.core.universe --assets XRP --interval 1d --allow-gaps
+
+**Use.** Read it.
+
+#### `research/papers/RELIABLE_SIGNALS.md`
+
+`doc` · 144 lines · 12,002 B · description: **extracted**
+
+**Purpose.** Generated by `python3 -m research.triggers` (`build_report`). Simulation only. Not investment advice. A **trigger** is a conjunction of 1 to 3 conditions, each computed from bars up to and including bar t. When it fires at the close of bar t the trade enters at the open of bar t+1 and is judged at the close
+
+**Use.** Read it.
+
+#### `research/papers/REVERSAL-SECOND-TURN.md`
+
+`doc` · 117 lines · 12,138 B · description: **extracted**
+
+**Purpose.** A correct closing direction does not establish a surviving 1000x trade. The tables below require the entire holding bar to stay inside the modeled liquidation boundary. No stop-loss or take-profit is assumed; exit is at the target bar's close. The first decision is SHORT after two completed UP bars. The second is LONG only after UP–UP–DOWN has completed.
+
+**Use.** Read it.
+
+#### `research/papers/REVERSAL-SHAPES.md`
+
+`doc` · 102 lines · 4,779 B · description: **extracted**
+
+**Purpose.** Frozen 5/10/15/20-minute study. Two completed UP bars predict DOWN only under a reversal rule; two DOWN bars predict UP. Shapes use the previous48 completed bars. The study ends before the existing unsealed BTC holdout. The60/20/20 split is chronological.
+
+**Use.** Read it.
+
+#### `research/papers/RS-ZIGZAG-PA-SOURCE-CONTRACT-2333.md`
+
+`doc` · 98 lines · 6,119 B · description: **extracted**
+
+**Purpose.** Version: 1.1.0. Delta: record measured six-pass draft and publication limits. The owner supplied a Pine file and screenshots for this investigation. This is an audit and proposed comparison, not an executable card, completed research,
+
+**Use.** Read it.
+
+#### `research/papers/RS-ZIGZAG-PROXY-2333.md`
+
+`doc` · 89 lines · 6,277 B · description: **extracted**
+
+**Purpose.** Version: 1.2.0. Delta: add separately fenced equal-notional sensitivity. These results are **not TradingView replication or evidence of live profit**. They use previously observed Jupiter ZEC/USD oracle OHLC, not Coinbase's
+
+**Use.** Read it.
+
+#### `research/papers/SAR-PIVOT-SOURCE-REVIEW-2324.md`
+
+`doc` · 37 lines · 5,784 B · description: **extracted**
+
+**Purpose.** Status: provisional source review, not a completed rabbithole or trusted publication. Each built-in has one primary software source organization, TradingView. Neither has met an independent-source floor, a measured two-pass novelty convergence test, completed deduplication, or trusted claim review. Six-pass budgets remain ceilings, not completed passes. No saturation is claimed.
+
+**Use.** Read it.
+
+#### `research/papers/SHAPE-AWARE-SPOT.md`
+
+`doc` · 215 lines · 13,593 B · description: **extracted**
+
+**Purpose.** As of 2026-11-11. Historical research only. The detector and results establish no live trading edge. All return tables are percentages on an initial $10,000 spot account, with no borrowing or shorting. The practical result is mixed: use shape routing as a research candidate, not an established edge.
+
+**Use.** Read it.
+
+#### `research/papers/STRATEGIES.md`
+
+`doc` · 802 lines · 41,370 B · description: **extracted**
+
+**Purpose.** The request asked for a `/dr` deep-research pass. Subagent fan-out is unavailable in this environment, so this is grounded in the **local citation-backed corpus** — technical analysis, trading styles, algorithmic/quant methods, ML-for-trading pitfalls, crypto
+
+**Use.** Read it.
+
+#### `research/papers/SWEEP-9COIN.md`
+
+`doc` · 146 lines · 7,123 B · description: **extracted**
+
+**Purpose.** into `sweep_results_9coin.json`, `sweep_wf_9coin.json` and `sweep_grid_9coin.json`. cd ~/Downloads/sol-backtest-data/_scripts python3 run_sweep.py --interval 1h --symbols BTCUSDT,ETHUSDT,SOLUSDT,BNBUSDT,XRPUSDT,DOGEUSDT,LINKUSDT,AVAXUSDT,TRXUSDT
+
+**Use.** Read it.
+
+#### `research/papers/TOP5-RECOMMENDATION.md`
+
+`doc` · 108 lines · 7,239 B · description: **extracted**
+
+**Purpose.** files. Nothing is transcribed by hand. PBO (probability of backtest overfitting) is **0.700** for singles at both daily horizons, against a measured pure-noise line of 0.500. Above the noise line means selecting by in-sample
+
+**Use.** Read it.
+
+#### `research/papers/TOP_COINS.md`
+
+`doc` · 142 lines · 7,835 B · description: **extracted**
+
+**Purpose.** Machine-readable copy: `research/results/top_coins.csv`. Regenerate rather than edit by hand — every figure here came from that one API call and none is transcribed. market cap and that is what market cap says. They are marked because a trading universe that
+
+**Use.** Read it.
+
+#### `research/papers/TRADINGVIEW-NINE-COMMON-PROXY-2329.md`
+
+`doc` · 32 lines · 4,640 B · description: **extracted**
+
+**Purpose.** Version: 0.1.0. This is a provisional code and model comparison, not trusted research publication, TradingView parity, a strategy recommendation, or evidence of live profitability. The shared input is 41,640 previously observed one-minute Jupiter ZEC/USD oracle rows from 2026-10-10 21:00 UTC through 2026-11-08 19:00 UTC, end exclusive.
+
+**Use.** Read it.
+
+#### `research/papers/TRADINGVIEW-SCRIPT-CARDS.md`
+
+`doc` · 772 lines · 405,954 B · description: **extracted**
+
+**Purpose.** Version: 1.0.0. Delta: expand the accepted strategy subset to all trading-related saved scripts. Source-review state: **accepted**. 742 of 742 publications accounted for; 691 trading-related cards and 51 source-grounded non-trading exclusions. Each card explains the idea, mechanism, intended use, settings, limitations and data needs.
+
+**Use.** Read it.
+
+#### `research/papers/TRADINGVIEW-SEVEN-SOURCE-CONTRACT-2324.md`
+
+`doc` · 127 lines · 9,925 B · description: **extracted**
+
+**Purpose.** Version: 1.3.0. Delta: record bounded Coinbase public data and funding discovery. This is a working research record, not a completed rabbithole, executable card, TradingView parity proof, or backtest. The owner identified the chart as
+
+**Use.** Read it.
+
+#### `research/papers/TRADINGVIEW-STRATEGY-CARDS.md`
+
+`doc` · 155 lines · 11,958 B · description: **extracted**
+
+**Purpose.** Version: 1.2.0. Delta: distinguish source disclosure from standalone coin-test qualification. The21 native-strategy descriptions were read in full (92,770 characters). Their accepted card contents remain unchanged. Ten disclose a principal calculation; eleven have partial computational definitions. All21 remain coin-test-incomplete.
+
+**Use.** Read it.
+
+#### `research/papers/ULTRA-SHORT-MACRO-MICRO.md`
+
+`doc` · 37 lines · 1,951 B · description: **extracted**
+
+**Purpose.** Version: 2 Delta: route all thirteen accepted concepts to the owner-selected shared corpus. The canonical research and evidence live in the private Global AI Hub repository.
+
+**Use.** Read it.
+
+#### `research/papers/WEEKLY-COIN-STUDY.md`
+
+`doc` · 229 lines · 13,386 B · description: **extracted**
+
+**Purpose.** Version: 2.0.0 Run from `/Users/mitch/dev/solmargintrader` in a Python 3.13 environment with the backtester dependencies. The legacy single-coin default is still Binance
+
+**Use.** Read it.
+
+#### `research/papers/ZEC-5M-MEAN-REVERSION-CARD.md`
+
+`doc` · 52 lines · 3,206 B · description: **extracted**
+
+**Purpose.** Start each signal flat and carry its state between closed bars. Keep the current state until its entry or exit condition is met. The z-score is `(close − SMA20) / sample_std20`. The Bollinger lower band is `SMA20 − 2 × population_std20`. Both rolling windows include the just-closed bar. Wilder RSI starts with the mean of the initial gains and losses, then smooths each with weight `1/14`.
+
+**Use.** Read it.
+
+#### `research/papers/ZEC-5M-MEAN-REVERSION.md`
+
+`doc` · 65 lines · 7,295 B · description: **extracted**
+
+**Purpose.** The equal-weight RSI, z-score and Bollinger Band ensemble turned **$10,000 into $10,248.71** in the held-out Coinbase ZEC/USD spot simulation at 10 bps commission plus 2 bps execution allowance per fill. Cash finished at **$10,000.00** and buy-and-hold at **$9,499.66**. The ensemble had **1.32% peak-to-trough drawdown**, 28 fills and 13 sell events over **8 hours 40 minutes**.
+
+**Use.** Read it.
+
+#### `research/papers/ZEC-CYCLE-VALIDATION.md`
+
+`doc` · 156 lines · 10,760 B · description: **extracted**
+
+**Purpose.** As of 2026-11-11. The observed day is **2026-11-10, America/New_York**. The exact original chart timeframe/venue was not supplied; this study checks Coinbase ZEC-USD at 1m, 5m, 15m and 1h. chart, a fixed 2% reversal rule found five intervals between larger alternating turns with a median
+
+**Use.** Read it.
+
+#### `research/papers/ZEC-ENSEMBLE-HYPOTHESES.md`
+
+`doc` · 107 lines · 7,086 B · description: **extracted**
+
+**Purpose.** Version: 1 Delta: initial runnable catalog and preregistered selection method. The supplied `/Users/mitch/Downloads/Strategy Ensembles.md` is a hypothesis guide.
+
+**Use.** Read it.
+
+#### `research/papers/ZEC-EXPANDED-STRATEGIES.md`
+
+`doc` · 92 lines · 14,301 B · description: **extracted**
+
+**Purpose.** Version: 1.0.0 The complete executable expansion produced **85,312 rows** on the previously captured Coinbase ZEC-USD day, using **1m, 5m, 10m and 1h signal bars** and **0.25% or 0.15% per fill**, charged on entry and exit. Of these rows, 38,664 completed and 46,648 explicitly lack sufficient history. A bar interval determines the signal clock; it does not impose an equal trade holding period.
+
+**Use.** Read it.
+
+#### `research/papers/ZEC-GRANULAR-BACKTESTS.md`
+
+`doc` · 79 lines · 10,162 B · description: **extracted**
+
+**Purpose.** Version: 1.0.1 The full finite matrix finished on 2026-11-13: **10,576 rows**, including 4,878 completed strategy/benchmark rows, 5,670 insufficient-warm-up rows and 28 explicit exclusions. Results describe one captured day; they do not establish a durable edge or 70% next-minute accuracy. At a 60 bps fee per fill, every active 1m spot policy lost money.
+
+**Use.** Read it.
+
+#### `research/papers/ZEC-GRANULAR-FEE-SENSITIVITY.md`
+
+`doc` · 58 lines · 6,064 B · description: **extracted**
+
+**Purpose.** Version: 1.0.0 The owner clarified the requested fees as **0.25% and 0.15%**, equivalent to **25 and 15 basis points per fill**. Both entries and exits pay that scenario rate. This reruns the complete prior captured-event matrix, changing fees only. Best *active* spot return in each interval, after all modelled costs:
+
+**Use.** Read it.
+
+#### `research/papers/ZEC-REVERSAL-EXCURSIONS.md`
+
+`doc` · 85 lines · 11,028 B · description: **extracted**
+
+**Purpose.** Version: 1.0.0 Date: 2026-11-15 Status: independently reproduced descriptive calculation on one previously examined day; no prospective probability, execution or profitability qualification.
+
+**Use.** Read it.
+
+#### `research/papers/ZEC-TWO-BAR-REVERSAL.md`
+
+`doc` · 149 lines · 13,640 B · description: **extracted**
+
+**Purpose.** The next 10-minute candle reversed after two up candles in 19 of 24 observed cases, but after two down candles in only 16 of 29. This exploratory one-day study identifies an asymmetric pattern worth testing; it does not establish a profitable or reliable live betting rule. Version: 1.0.0 Date: 2026-11-14
+
+**Use.** Read it.
+
+#### `research/papers/defillama-llms-risk-analysis.md`
 
 `doc` · 41 lines · 4,845 B · description: **extracted**
 
@@ -22708,295 +21212,7 @@ Drivers that produce the numbers, and the write-ups that quote them. Everything 
 
 **Use.** Read it.
 
-#### `research/dso_audit.py`
-
-`code-python` · 381 lines · 16,898 B · description: **extracted**
-
-**Purpose.** Mechanical half of the /dso statistical-honesty passes, run over the CPCV result CSVs. python3 research/dso_audit.py # audit every cpcv_* result file python3 research/dso_audit.py --floor 30 # raise the evidence floor `/dso` (the deep-strategy-optimizer skill) defines 19 audit passes.
-
-**Contents.** Defines `REPO`, `RESULTS`, `FLAT_TOL`, `RESULT_KEYS`, `class AuditError`, `load()`, `KNOWN_DUPLICATE_GROUPS`, `DATA_DIR`, `DEFAULT_ASSET`, `ASSET_TOKENS` and 8 more. Depends on `backtester`.
-
-**Use.** `python3 research/dso_audit.py --help`
-
-#### `research/evidence.py`
-
-`code-python` · 70 lines · 3,125 B · description: **extracted**
-
-**Purpose.** Stable experiment identities and byte-bound discovery gate evidence.
-
-**Contents.** Defines `canonical()`, `identity()`, `array_checksum()`, `source_hashes()`, `discovery_context()`, `write_gate_proof()`, `read_gate_table()`.
-
-**Use.** `import research.evidence`
-
-#### `research/exchangefees.json`
-
-`config` · 136 lines · 8,846 B · description: **derived**
-
-**Purpose.** Generated JSON object, 3 keys (compiled_at, scope, exchanges).
-
-**Use.** Configuration; nothing to run.
-
-#### `research/exit50_acquire.py`
-
-`code-python` · 247 lines · 9,122 B · description: **extracted**
-
-**Purpose.** Bounded public oracle acquisition for the frozen exit50 study. Writes only private local transport, to be archived natively before scoring.
-
-**Contents.** Defines `census()`, `fetch_one()`, `main()`. Depends on `research`.
-
-**Use.** `python3 research/exit50_acquire.py --help`
-
-#### `research/exit50_backtest.py`
-
-`code-python` · 227 lines · 8,230 B · description: **extracted**
-
-**Purpose.** Causal fixed-grid paper exit replay; inputs must be natively archived. 200 ms is observed sampling, not a guarantee of keeper-path completeness. No OHLC price interpolation, signing, order placement, or fill assertion occurs.
-
-**Contents.** Defines `GRID_US`, `MARGIN`, `NOTIONAL`, `HOLD_US`, `POLICIES`, `replay()`, `sparse_replay()`, `fit_family_model()`, `select_policy()`. Depends on `research`.
-
-**Use.** `import research.exit50_backtest`
-
-#### `research/exit50_diagnostic.py`
-
-`code-python` · 415 lines · 16,769 B · description: **extracted**
-
-**Purpose.** Causal Coinbase visible-depth alignment for a separate ZEC diagnostic. This does not equate Coinbase orderbook imbalance with Jupiter orders or fills.
-
-**Contents.** Defines `diagnostic_candidates()`, `fetch_plan()`, `load_archived_inputs()`, `full_grid_position()`, `load_diagnostic_candidates()`, `diagnostic_lazy_plan()`, `evaluate_diagnostic()`. Depends on `research`.
-
-**Use.** `import research.exit50_diagnostic`
-
-#### `research/exit50_evaluate.py`
-
-`code-python` · 116 lines · 4,202 B · description: **extracted**
-
-**Purpose.** Evaluate the completed frozen cohort from native-archived local transport.
-
-**Contents.** Defines `main()`. Depends on `research`.
-
-**Use.** `python3 research/exit50_evaluate.py --help`
-
-#### `research/exit50_lazy.py`
-
-`code-python` · 138 lines · 5,275 B · description: **extracted**
-
-**Purpose.** Resume bounded native-first paper replay acquisition, without funded actions.
-
-**Contents.** Defines `main()`. Depends on `research`.
-
-**Use.** `python3 research/exit50_lazy.py --help`
-
-#### `research/exit50_orderflow.py`
-
-`code-python` · 118 lines · 4,278 B · description: **extracted**
-
-**Purpose.** Past-only visible Coinbase L2 imbalance for the frozen exit50 diagnostic. Inputs are retained receipt-time snapshots, not order counts or an exchange-wide book.
-
-**Contents.** Defines `NS`, `MAX_AGE_NS`, `BAND_BPS`, `book_feature()`, `taker_quote_imbalance()`.
-
-**Use.** `import research.exit50_orderflow`
-
-#### `research/exit50_report.py`
-
-`code-python` · 270 lines · 13,758 B · description: **extracted**
-
-**Purpose.** Render an auditable report from completed, archived exit50 result packs.
-
-**Contents.** Defines `pct()`, `line()`, `eligible_count()`, `render_report()`, `main()`. Depends on `research`.
-
-**Use.** `python3 research/exit50_report.py --help`
-
-#### `research/exit50_run.py`
-
-`code-python` · 818 lines · 31,274 B · description: **extracted**
-
-**Purpose.** Build frozen-cohort oracle minute acquisition plan and paper replay. All input transports must be archived and hash-verified before results publish.
-
-**Contents.** Defines `price_int()`, `slot_data()`, `study_candidates()`, `acquisition_slots()`, `minute_reader()`, `summarize()`, `run_scenarios()`, `check_envelopes()`, `paired_baseline()`, `summarize_paired()` and 5 more. Depends on `research`.
-
-**Use.** `import research.exit50_run`
-
-#### `research/fetch_zec_history.py`
-
-`code-python` · 245 lines · 12,216 B · description: **extracted**
-
-**Purpose.** Fetch checksum-verified Binance ZECUSDT spot history without altering shared caches. Explicit network step. Monthly/daily public ZIPs preserve publisher checksums; the market-data-only API appends closed tail candles. Both intervals use the same venue and quote currency. Missing bars remain missing and appear in a separate gap ledger.
-
-**Contents.** Defines `ARCHIVE_BASE`, `API_BASE`, `COLUMNS`, `STEPS`, `DEFAULT_OUTPUT`, `request_bytes()`, `digest()`, `normalize_frame()`, `archive_job()`, `read_archive()` and 5 more. Depends on `backtester`.
-
-**Use.** `python3 research/fetch_zec_history.py --help`
-
-#### `research/frontier_tune.py`
-
-`code-python` · 265 lines · 13,201 B · description: **extracted**
-
-**Purpose.** Tune the frontier's promising rows without peeking at the out-of-sample window. /Users/mitch/.venvs/soltui/bin/python research/frontier_tune.py --run-id <frontier sweep run id> Input: one `python -m soltui.compound sweep --frontier` run in the compound results file (every metric alone, its strongest 2% of readings, held 1 h / 4 h / 24 h, unlevered, on every coin). 1.
-
-**Contents.** Defines `REPO`, `HOLDS`, `QUANTILES`, `FACTORS`, `results_file()`, `load_run()`, `is_sharpe()`, `oos()`, `candidates()`, `config_for()` and 5 more. Depends on `backtester`.
-
-**Use.** `python3 research/frontier_tune.py --help`
-
-#### `research/full_suite.py`
-
-`code-python` · 255 lines · 13,819 B · description: **extracted**
-
-**Purpose.** Pull fresh data, then run every backtest: all coins, all strategies, all configurations. python3 research/full_suite.py --plan # print every step; touches nothing python3 research/full_suite.py # fetch, then both sweeps (hours) python3 research/full_suite.py --skip-fetch # re-run the sweeps on the cache you have python3 research/full_suite.py --fetch-only # refresh the cache and stop Run it with t
-
-**Contents.** Defines `REPO`, `DEFAULT_ASSETS`, `fetch_steps()`, `sweep_steps()`, `listed_only()`, `archive_registry_results()`, `main()`. Depends on `backtester`, `soltui`.
-
-**Use.** `python3 research/full_suite.py --help`
-
-#### `research/geometry.py`
-
-`code-python` · 321 lines · 14,129 B · description: **curated**
-
-**Purpose.** Sensitivity of results to the CPCV geometry itself. Changing 8 blocks to 9 moved the best pair's median Sharpe more than the worst parameter nudge did — the evaluation design mattered more than the strategy.
-
-**Contents.** Defines `REPO`, `OUT`, `class GeometryRun`, `spearman()`, `evaluate_geometry()`, `align_pbo_populations()`, `tidy_frame()`, `render()`, `verdict()`, `main()`. Depends on `backtester`, `research`.
-
-**Use.** `python3 research/geometry.py --help`.
-
-#### `research/grid_holdout.py`
-
-`code-python` · 85 lines · 3,336 B · description: **extracted**
-
-**Purpose.** Run the predeclared ladder from research/results/grid_review_20261107.json on bars it never saw. The review used a cache that ended 2026-08-04. This script scores the same configuration (bounds 85%-115% of the first close, seven geometric rungs, $12 per rung, $144 account) on bars from 2026-08-05 onward, at the review's costs and at twice those costs. Nothing is fitted.
-
-**Contents.** Defines `HOLDOUT_START_TS`, `HOLDOUT_END_TS`, `ACCOUNT_USD`, `run()`, `main()`. Depends on `backtester`.
-
-**Use.** `python3 research/grid_holdout.py --help`
-
-#### `research/leverage_economics.py`
-
-`code-python` · 170 lines · 8,131 B · description: **extracted**
-
-**Purpose.** Cost economics of high-leverage perpetuals, for Jupiter Perps specifically. Generates every table in research/LEVERAGE-ECONOMICS.md. No network, no data files -- this is closed-form arithmetic over published venue parameters, so it reproduces exactly.
-
-**Contents.** Defines `FEE_RT`, `R_LONG`, `R_SHORT`, `HOLDS`, `LEVS`, `break_even_move()`, `carry_crossover_hours()`, `hours_to_zero_collateral()`, `liquidation_move()`, `_fmt_h()` and 3 more.
-
-**Use.** `python3 research/leverage_economics.py --help`
-
-#### `research/leverage_tiers.py`
-
-`code-python` · 183 lines · 8,545 B · description: **extracted**
-
-**Purpose.** Low / medium / high margin tiers across the existing strategies, CPCV out-of-sample. python3 -m research.leverage_tiers --asset SOL --interval 1d python3 -m research.leverage_tiers --asset SOL --interval 1d --tiers 2,5,20 Every registered strategy (at the sweep's horizon parameters) is run as a Jupiter-Perps position at each tier's leverage, with fees, slippage, borrow carry, maintenance margin an
-
-**Contents.** Defines `REPO`, `OUT`, `RUIN_LEVEL`, `HORIZON_FOR`, `_layer()`, `load_layers()`, `path_stats()`, `run()`, `coverage_audit()`, `main()`. Depends on `backtester`, `research`.
-
-**Use.** `python3 research/leverage_tiers.py --help`
-
-#### `research/meta_analysis.py`
-
-`code-python` · 175 lines · 8,616 B · description: **extracted**
-
-**Purpose.** Consolidate trial evidence without treating overlapping artifacts as studies. The single JSON output preserves original records and units. The prose synthesis uses family-level findings; it never pools incompatible returns into a grand mean.
-
-**Contents.** Defines `sha()`, `clean()`, `load()`, `_decode_bytes()`, `family()`, `role()`, `sources()`, `consolidate()`, `main()`.
-
-**Use.** `python3 research/meta_analysis.py --help`
-
-#### `research/meta_followups.py`
-
-`code-python` · 278 lines · 17,368 B · description: **extracted**
-
-**Purpose.** Fixed, costed reanalysis of examined history; never a fresh holdout test. This module cannot trade. It reuses the canonical long/flat spot book and records the exact common calendar, data, source and costs used by each comparison.
-
-**Contents.** Defines `END_EXCLUSIVE`, `ASSETS`, `FEES_BPS`, `CAPITAL`, `STRATEGIES`, `sha()`, `save()`, `class FrozenTargets`, `longest_common_calendar()`, `replay()` and 5 more. Depends on `backtester`, `research`.
-
-**Use.** `python3 research/meta_followups.py --help`
-
-#### `research/minute_sweep.py`
-
-`code-python` · 530 lines · 24,974 B · description: **extracted**
-
-**Purpose.** Preliminary backtest of every registered strategy against every 1-minute series. python3 research/minute_sweep.py # default 500k-bar window python3 research/minute_sweep.py --all-bars # full history, hours python3 research/minute_sweep.py --common-window # one calendar for all assets python3 research/minute_sweep.py --param-scale 60 # wall-clock-preserving params ## This is preliminary, and the wo
-
-**Contents.** Defines `REPO`, `OUT`, `BAR_KEYS`, `FEE_BPS`, `SLIPPAGE_BPS`, `DEFAULT_BARS`, `MINUTE`, `SLICES`, `class Cell`, `scaled_params()` and 11 more. Depends on `backtester`, `research`.
-
-**Use.** `python3 research/minute_sweep.py --help`
-
-#### `research/mtf_reversal.py`
-
-`code-python` · 324 lines · 10,996 B · description: **extracted**
-
-**Purpose.** Causal, exploratory multi-timeframe UU reversal study; no execution.
-
-**Contents.** Defines `THRESHOLDS`, `BARRIERS`, `frame_index()`, `context_at()`, `live_context()`, `score_context()`, `classify()`, `make_events()`, `fit()`, `metrics()` and 4 more. Depends on `research`.
-
-**Use.** `python3 research/mtf_reversal.py --help`
-
-#### `research/news_event_report.py`
-
-`code-python` · 350 lines · 18,816 B · description: **extracted**
-
-**Purpose.** Render the frozen coin-news event study without fetching or selecting events.
-
-**Contents.** Defines `PREFIX`, `number()`, `interval()`, `render()`, `_paired_latency()`, `_figure()`, `main()`. Depends on `research`.
-
-**Use.** `python3 research/news_event_report.py --help`
-
-#### `research/news_event_study.py`
-
-`code-python` · 487 lines · 18,746 B · description: **extracted**
-
-**Purpose.** Exploratory publication-time event study on frozen local news and prices. The analysis never fetches, fills missing candles, or submits orders. A minute open is a bucket proxy; it is not the trade available at publication time.
-
-**Contents.** Defines `VERSION`, `SEED`, `COINS`, `HORIZONS`, `COIN_WORDS`, `EVENT_TYPES`, `COMMENTARY`, `class NewsPrerequisiteError`, `_preflight()`, `_bootstrap_and_reexec()` and 17 more. Depends on `backtester`.
-
-**Use.** `python3 research/news_event_study.py --help`
-
-#### `research/oracle_common_window.py`
-
-`code-python` · 78 lines · 3,990 B · description: **extracted**
-
-**Purpose.** Shared, read-only Jupiter ZEC oracle comparison window; not TV market data.
-
-**Contents.** Defines `SOURCE_SHA256`, `SOURCE_ARTIFACT`, `START`, `STOP`, `ALIASES`, `load_window()`, `aggregate()`, `equal_notional_qty()`. Depends on `research`.
-
-**Use.** `import research.oracle_common_window`
-
-#### `research/oracle_compare.py`
-
-`code-python` · 64 lines · 3,198 B · description: **extracted**
-
-**Purpose.** Common-window equal-notional order sensitivity; no live execution.
-
-**Contents.** Defines `size_at_close()`, `compare()`. Depends on `research`.
-
-**Use.** `import research.oracle_compare`
-
-#### `research/oracle_reversal_inputs.py`
-
-`code-python` · 103 lines · 3,406 B · description: **extracted**
-
-**Purpose.** Bounded public oracle OHLC acquisition for the frozen second-turn study.
-
-**Contents.** Defines `ENDPOINT`, `PAGE_MINUTES`, `MAX_BYTES`, `class NoRedirect`, `decode_history()`, `acquire()`, `main()`. Depends on `research`.
-
-**Use.** `python3 research/oracle_reversal_inputs.py --help`
-
-#### `research/perturb.py`
-
-`code-python` · 468 lines · 20,095 B · description: **curated**
-
-**Purpose.** The second independent robustness axis: nudge each parameter ±10% and re-run CPCV. A point that collapses under a small nudge was fitted to noise, whatever its Sharpe.
-
-**Contents.** Defines `REPO`, `OUT`, `BOUNDED_UNIT`, `REFERENCE`, `REFERENCE_HIGH`, `class Trial`, `class Report`, `perturbed_values()`, `evaluate()`, `run()` and 4 more. Depends on `backtester`, `research`.
-
-**Use.** `python3 research/perturb.py --help`.
-
-#### `research/pine_bar_emulator.py`
-
-`code-python` · 160 lines · 8,175 B · description: **extracted**
-
-**Purpose.** Offline Pine-style order sensitivity; not a TradingView parity claim. Callers emit ordered close-time intent lists. Orders become eligible on the next bar. Historical OHLC order is assumed rather than observed. Quantity is explicit and has a one-price-unit contract multiplier. Funding, spread, margin and liquidation are not modelled.
-
-**Contents.** Defines `class Intent`, `class Bar`, `simulate()`.
-
-**Use.** `import research.pine_bar_emulator`
-
-#### `research/profitable-crypto-strategies-analysis.md`
+#### `research/papers/profitable-crypto-strategies-analysis.md`
 
 `doc` · 245 lines · 18,589 B · description: **extracted**
 
@@ -23004,391 +21220,23 @@ Drivers that produce the numbers, and the write-ups that quote them. Everything 
 
 **Use.** Read it.
 
-#### `research/quote_bars.py`
+#### `research/papers/tradingview-script-profile-audit-prompts.md`
 
-`code-python` · 135 lines · 4,608 B · description: **extracted**
-
-**Purpose.** Read existing normalized quote captures without starting a recorder.
-
-**Contents.** Defines `class QuoteBars`.
-
-**Use.** `import research.quote_bars`
-
-#### `research/ratio_rotation.py`
-
-`code-python` · 1535 lines · 67,108 B · description: **extracted**
-
-**Purpose.** Numeraire-switching rotation: hold whichever coin is cheapest against its peers. python3 research/ratio_rotation.py --self-test python3 research/ratio_rotation.py --turnover-table python3 research/ratio_rotation.py --demo-chain python3 research/ratio_rotation.py --sweep python3 research/ratio_rotation.py --sweep --assets BTC,ETH,SOL,DOGE,ZEC,XRP This answers a question the single-asset engine cann
-
-**Contents.** Defines `REPO`, `OUT_DIR`, `PRIMARY_ASSETS`, `SECONDARY_ASSETS`, `MIN_OOS_ROTATIONS`, `SPLIT`, `SWEEP_WINDOWS`, `SWEEP_TOP_K`, `SWEEP_DIRECTIONS`, `SWEEP_MARGINS` and 26 more. Depends on `backtester`.
-
-**Use.** `python3 research/ratio_rotation.py --help`
-
-#### `research/reversal_history.py`
-
-`code-python` · 293 lines · 10,273 B · description: **extracted**
-
-**Purpose.** Bounded, public historical inputs for the fixed cross-coin reversal study. Commands emit JSON to stdout. They never modify caches, recorders or databases. The caller archives each snapshot in MongoDB before creating local projections.
-
-**Contents.** Defines `COINS`, `MAX_BYTES`, `canonical()`, `digest()`, `pack()`, `unpack()`, `read_archive()`, `epoch()`, `iso()`, `validated_rows()` and 4 more.
-
-**Use.** `python3 research/reversal_history.py --help`
-
-#### `research/reversal_inputs.py`
-
-`code-python` · 127 lines · 3,980 B · description: **extracted**
-
-**Purpose.** Acquire an exact public BTC minute snapshot; never trade or synthesize bars.
-
-**Contents.** Defines `BASE`, `class NoRedirect`, `fetch()`, `main()`. Depends on `research`.
-
-**Use.** `python3 research/reversal_inputs.py --help`
-
-#### `research/reversal_second_turn.py`
-
-`code-python` · 447 lines · 15,030 B · description: **extracted**
-
-**Purpose.** Exploratory causal UU→D and UUD→U study with full-bar oracle barriers. The existing prospective trial and its immutable selection are not modified.
-
-**Contents.** Defines `BARRIERS`, `BASES`, `STAGES`, `COMMON`, `SECOND`, `aggregate()`, `features()`, `flags()`, `crosses()`, `make_events()` and 5 more. Depends on `research`.
-
-**Use.** `python3 research/reversal_second_turn.py --help`
-
-#### `research/reversal_shapes.py`
-
-`code-python` · 471 lines · 17,169 B · description: **extracted**
-
-**Purpose.** Frozen, causal two-bar/shape study and the identical prospective signal rule. Spot candles support direction counts and cost sensitivities, not Jupiter fills. The final chronological split is never consulted by the selector.
-
-**Contents.** Defines `START`, `STOP`, `INTERVALS`, `WINDOW`, `FEE_BPS`, `GROUPS`, `sha()`, `group_for()`, `boundaries()`, `wilson()` and 12 more. Depends on `research`.
-
-**Use.** `python3 research/reversal_shapes.py --help`
-
-#### `research/rs_zigzag.py`
-
-`code-python` · 260 lines · 12,874 B · description: **extracted**
-
-**Purpose.** Research-only RS ZigZag signal model; no networking or trading. The user-supplied legacy Pine source is not distributed here. The `legacy` mode intentionally projects a completed hourly bar into its first child bar and is unsuitable for live use. `confirmed` delays the hourly expression by one complete hourly bar. Neither mode is certified TradingView parity.
-
-**Contents.** Defines `class Bar`, `_validate()`, `_hourly()`, `_zigzags()`, `pivot_events()`, `_patterns()`, `signals()`, `class ExecutionAssumptions`, `simulate_decisions()`.
-
-**Use.** `import research.rs_zigzag`
-
-#### `research/rs_zigzag_equal_proxy.py`
-
-`code-python` · 67 lines · 2,984 B · description: **extracted**
-
-**Purpose.** Common-window RS ZigZag sizing comparison; never TV or venue parity.
-
-**Contents.** Defines `run()`, `main()`. Depends on `research`.
-
-**Use.** `python3 research/rs_zigzag_equal_proxy.py --help`
-
-#### `research/rs_zigzag_proxy.py`
-
-`code-python` · 106 lines · 5,449 B · description: **extracted**
-
-**Purpose.** Frozen retrospective Jupiter-oracle sensitivity; never TV parity.
-
-**Contents.** Defines `SOURCE_SHA256`, `SOURCE_ID`, `START`, `STOP`, `ALIASES`, `aggregate()`, `run()`, `main()`. Depends on `research`.
-
-**Use.** `python3 research/rs_zigzag_proxy.py --help`
-
-#### `research/run_backfill.sh`
-
-`code-shell` · 157 lines · 5,532 B · description: **none**
-
-**Purpose.** _No description available._
-
-**Use.** Read it.
-
-#### `research/second_turn_report.py`
-
-`code-python` · 352 lines · 16,851 B · description: **extracted**
-
-**Purpose.** Derive the readable report and fixed examples from native second-turn results.
-
-**Contents.** Defines `iso()`, `fraction()`, `baseline_rows()`, `lifts()`, `examples()`, `report()`, `figures()`, `main()`. Depends on `research`.
-
-**Use.** `python3 research/second_turn_report.py --help`
-
-#### `research/shape_report.py`
-
-`code-python` · 342 lines · 19,347 B · description: **extracted**
-
-**Purpose.** Verify shape-study evidence and render its measured tables without hand edits.
-
-**Contents.** Defines `table()`, `verify_fixed_report_contract()`, `main()`. Depends on `research`.
-
-**Use.** `python3 research/shape_report.py --help`
-
-#### `research/shape_study.py`
-
-`code-python` · 668 lines · 26,670 B · description: **extracted**
-
-**Purpose.** Causal price-path geometry and unlevered spot research; never submits orders. Run with local Coinbase USD candle files. The geometric rules are hypotheses, not the unsupported effect sizes quoted in the earlier geometry dossier.
-
-**Contents.** Defines `VERSION`, `ASSETS`, `SINGLES`, `PAIRS`, `SCENARIOS`, `SHAPES`, `WINDOW`, `digest()`, `write_json()`, `_fit()` and 12 more. Depends on `backtester`.
-
-**Use.** `python3 research/shape_study.py --help`
-
-#### `research/short_horizon_economics.py`
-
-`code-python` · 283 lines · 13,637 B · description: **extracted**
-
-**Purpose.** Cost economics of SHORT-HORIZON leveraged perpetuals on Jupiter Perps. Sibling of research/leverage_economics.py, which stops at a 1-hour hold.
-
-**Contents.** Defines `FEE_RT`, `R_LONG`, `R_SHORT`, `UTIL`, `VOL_ANNUAL`, `HOURS_PER_YEAR`, `HORIZONS`, `TX_COSTS`, `NOTIONALS`, `LEVS` and 11 more.
-
-**Use.** `python3 research/short_horizon_economics.py --help`
-
-#### `research/signal_redundancy.py`
-
-`code-python` · 630 lines · 27,374 B · description: **extracted**
-
-**Purpose.** Measure how many independent bets the strategy registry actually contains. python3 research/signal_redundancy.py # SOL, medium python3 research/signal_redundancy.py --horizon short # SOL hourly, slower python3 research/signal_redundancy.py --asset BTC --out auto # BTC, canonical name python3 research/signal_redundancy.py --top 25 # longer pair list Why this script exists.
-
-**Contents.** Defines `REPO`, `OUT`, `VARIANCE_TARGET`, `SKIP_FAMILIES`, `exposure_matrix()`, `redundancy()`, `pair_table()`, `per_strategy_table()`, `family_verdict()`, `twin_groups()` and 6 more. Depends on `backtester`, `research`.
-
-**Use.** `python3 research/signal_redundancy.py --help`
-
-#### `research/strategy_aux_compare.py`
-
-`code-python` · 308 lines · 17,077 B · description: **extracted**
-
-**Purpose.** Offline paired comparison of executable mechanisms outside the strategy registry.
-
-**Contents.** Defines `REPO`, `sha()`, `_percent()`, `module()`, `paired_bots()`, `paired_peer()`, `run()`, `percentage()`, `main()`. Depends on `backtester`, `research`.
-
-**Use.** `python3 research/strategy_aux_compare.py --help`
-
-#### `research/strategy_compare.py`
-
-`code-python` · 356 lines · 19,625 B · description: **extracted**
-
-**Purpose.** Paired, offline comparison of frozen strategy packages; never selects parameters. Run ``python3 research/strategy_compare.py --help``. Research output, not investment advice; simulation only. Every failed cell remains in the output.
-
-**Contents.** Defines `REPO`, `DEFAULT_DATASETS`, `source_hashes()`, `load_registry()`, `window()`, `targets()`, `accuracy_panel()`, `class EvaluationWindow`, `class FrozenSignals`, `load_sample()` and 6 more. Depends on `backtester`, `research`.
-
-**Use.** `python3 research/strategy_compare.py --help`
-
-#### `research/strategy_config_sweep.py`
-
-`code-python` · 560 lines · 28,138 B · description: **extracted**
-
-**Purpose.** Resumable, parallel CPCV sweep over every active cached coin and buildable card. This command reads cached candles only. Use ``--plan`` first; fetching is a separate, explicit command. Results are append-only JSONL under the selected output directory and are flushed after every completed configuration.
-
-**Contents.** Defines `REPO`, `MIN_CONFIGURATIONS`, `ASSET_FILE`, `_OUTPUT_LOCK_HANDLE`, `_hash()`, `_atomic_json()`, `discover_assets()`, `_derived_interval()`, `available_files()`, `_source_fingerprint()` and 12 more. Depends on `backtester`, `soltui`.
-
-**Use.** `python3 research/strategy_config_sweep.py --help`
-
-#### `research/strategy_snapshots.py`
-
-`code-python` · 60 lines · 3,023 B · description: **extracted**
-
-**Purpose.** Expand content-verified experiment sources without duplicating search indexes.
-
-**Contents.** Defines `DEFAULT_EXPERIMENT`, `ensure_snapshots()`.
-
-**Use.** `import research.strategy_snapshots`
-
-#### `research/sweep.py`
-
-`code-python` · 890 lines · 38,630 B · description: **curated**
-
-**Purpose.** Defines `HORIZONS` — the per-horizon data file, interval, gap policy and parameter set — and runs the single-split walk-forward that CPCV superseded. The parameter tables here are what every other driver imports, so an edit moves every downstream number.
-
-**Contents.** Defines `REPO`, `data_dir()`, `set_data_dir()`, `OUT_DIR`, `MIN_OOS_TRADES`, `MIN_DISCOVERY_TRADES`, `SPLIT`, `COMBO_CANDIDATES`, `class Row`, `load_horizon()` and 17 more. Depends on `backtester`, `research`.
-
-**Use.** `python3 research/sweep.py --help`. Imported by the other drivers for `HORIZONS` and `load_horizon`.
-
-#### `research/sweep_untested.py`
-
-`code-python` · 112 lines · 4,188 B · description: **extracted**
-
-**Purpose.** Finds and sweeps untested strategies and configurations. Identifies strategies in the REGISTRY that do not have baseline parameters in `research/sweep.py` or runs new configurations for existing strategies to compute profitability metrics like Sharpe, Kelly, and Drawdown.
-
-**Contents.** Defines `REPO`, `main()`. Depends on `backtester`, `research`.
-
-**Use.** `python3 research/sweep_untested.py --help`
-
-#### `research/tick_backfill.py`
-
-`code-python` · 394 lines · 17,758 B · description: **extracted**
-
-**Purpose.** Long-running, resumable tick backfill and candle-integrity audit. Built to run for hours at low priority in the background. See `research/run_backfill.sh` for the wrapper that sets the priority. Why a streaming walk instead of `candle_gap_audit.py`'s per-gap fetch.
-
-**Contents.** Defines `REPO`, `PAGE`, `CHECKPOINT_EVERY`, `_handle_stop()`, `class MinuteAggregator`, `_page()`, `_checkpoint_binding()`, `backfill()`, `_write_ck()`, `audit()` and 2 more. Depends on `backtester`.
-
-**Use.** `python3 research/tick_backfill.py --help`
-
-#### `research/tradingstrategyresults.json`
-
-`config` · 197 lines · 15,075 B · description: **derived**
-
-**Purpose.** Generated JSON object, 4 keys (scope, as_of, strategies, indicators_and_signals).
-
-**Use.** Configuration; nothing to run.
-
-#### `research/tradingview-card-coverage.json`
-
-`config` · 225068 lines · 10,480,010 B · description: **derived**
-
-**Purpose.** Generated JSON object, 10 keys (schema_version, version, delta, source_root, source_publication_counts, existing_card_ids...).
-
-**Use.** Configuration; nothing to run.
-
-#### `research/tradingview-card-readiness.json`
-
-`config` · 16732 lines · 720,957 B · description: **derived**
-
-**Purpose.** Generated JSON object, 9 keys (schema_version, version, reviewed_on, delta, scope, criteria...).
-
-**Use.** Configuration; nothing to run.
-
-#### `research/tradingview-script-context-bundle.json`
-
-`config` · 38 lines · 1,300 B · description: **derived**
-
-**Purpose.** Generated JSON object, 9 keys (schema_version, generated_at, project_key, paths, indexes, links...).
-
-**Use.** Configuration; nothing to run.
-
-#### `research/tradingview-script-profile-audit-prompts.md`
-
-`doc` · 41 lines · 6,545 B · description: **extracted**
+`doc` · 41 lines · 6,550 B · description: **extracted**
 
 **Purpose.** Version: 1.0.0. Delta: preserve exact source-semantic and completeness audit contract. The user requests an explanation and card for every trading script, including indicators. Incomplete cards belong beneath backtester/strategy_cards/incomplete.
 
 **Use.** Read it.
 
-#### `research/tradingview-script-profile-prompts.md`
+#### `research/papers/tradingview-script-profile-prompts.md`
 
-`doc` · 30 lines · 4,263 B · description: **extracted**
+`doc` · 30 lines · 4,278 B · description: **extracted**
 
 **Purpose.** Version:1.1.0. Delta: add the user-requested completeness and incomplete-location decision. User request: For all of the strategies in the script directory, extract and understand the idea and what it's trying to accomplish, and create strategy cards for each one. User clarification: All trading scripts, including indicators.
 
 **Use.** Read it.
 
-#### `research/tradingview-script-profile-run.json`
-
-`config` · 148 lines · 3,758 B · description: **derived**
-
-**Purpose.** Generated JSON object, 10 keys (pipeline, plan_b, cited_paths, sections, scripts, artifacts...).
-
-**Use.** Configuration; nothing to run.
-
-#### `research/tradingview-script-profile-work.json`
-
-`config` · 778 lines · 15,883 B · description: **derived**
-
-**Purpose.** Generated JSON object, 9 keys (version, delta, scope, source_count, protected_strategy_ids, native_type_counts...).
-
-**Use.** Configuration; nothing to run.
-
-#### `research/tradingview-script-understanding.json`
-
-`config` · 72634 lines · 3,000,443 B · description: **derived**
-
-**Purpose.** Generated JSON object, 13 keys (schema_version, version, delta, state, source_count, source_root...).
-
-**Use.** Configuration; nothing to run.
-
-#### `research/tradingview-strategy-card-locations.json`
-
-`config` · 814 lines · 63,105 B · description: **derived**
-
-**Purpose.** Generated JSON object, 11 keys (schema_version, version, delta, verdict, accepted_manifest_sha256, reviewer...).
-
-**Use.** Configuration; nothing to run.
-
-#### `research/tradingview-strategy-understanding-audit.json`
-
-`config` · 53 lines · 3,175 B · description: **derived**
-
-**Purpose.** Generated JSON object, 21 keys (schema_version, version, delta, agent, definition_version, observed_at...).
-
-**Use.** Configuration; nothing to run.
-
-#### `research/tradingview-strategy-understanding.json`
-
-`config` · 6474 lines · 340,543 B · description: **derived**
-
-**Purpose.** Generated JSON object, 8 keys (schema_version, version, delta, scope, source_root, read_description_characters...).
-
-**Use.** Configuration; nothing to run.
-
-#### `research/tradingview_pivot_reversal.py`
-
-`code-python` · 68 lines · 3,449 B · description: **extracted**
-
-**Purpose.** TradingView Pivot Reversal v33.0 adapter with explicit tie sensitivity. The built-in Pine snapshot is src:f1cf879aa1a71c9a, SHA-256 cd6def72548fb84e02312f302dd2799f897638d0a2c688aef04ca861b5a5628f. Pine pivot tie semantics remain unverified; no mode is certified parity.
-
-**Contents.** Defines `pivot_intents()`. Depends on `research`.
-
-**Use.** `import research.tradingview_pivot_reversal`
-
-#### `research/tradingview_sar.py`
-
-`code-python` · 69 lines · 3,079 B · description: **extracted**
-
-**Purpose.** Research adapter for TradingView Parabolic SAR strategy v33.0. Derived independently from the owner-requested built-in source; unregistered, offline and not certified TradingView fill parity. The source snapshot is src:260da27279d3c3e8, SHA-256 800f3fe7f02df408f9f144951e6e44744240a67dec2825d0953d5309b0a4bef1.
-
-**Contents.** Defines `sar_intents()`. Depends on `research`.
-
-**Use.** `import research.tradingview_sar`
-
-#### `research/tradingview_sar_pivot_proxy.py`
-
-`code-python` · 59 lines · 2,913 B · description: **extracted**
-
-**Purpose.** Retrospective SAR and Pivot equal-notional oracle sensitivities.
-
-**Contents.** Defines `run()`, `main()`. Depends on `research`.
-
-**Use.** `python3 research/tradingview_sar_pivot_proxy.py --help`
-
-#### `research/trigger_backtest.py`
-
-`code-python` · 109 lines · 5,998 B · description: **extracted**
-
-**Purpose.** Trade the mined triggers through the leverage tiers, out of sample only. Called by `python3 -m research.triggers --backtest`. Takes the qualified (reliable) triggers; if none qualified, takes the best near-misses and labels every number EXPLORATORY. The stop for each trigger is its discovery-period MAE (`stop_frac`), never a number chosen after seeing the validation period.
-
-**Contents.** Defines `OUT`, `TOP_NEAR_MISSES`, `VALIDATION_BLOCKS`, `select()`, `run()`. Depends on `backtester`, `research`.
-
-**Use.** `import research.trigger_backtest`
-
-#### `research/triggers.py`
-
-`code-python` · 612 lines · 30,493 B · description: **extracted**
-
-**Purpose.** Reliable-trigger miner: which conjunctions of conditions predict direction, and how well. python3 -m research.triggers --asset SOL --interval 1d python3 -m research.triggers --asset SOL --interval 1h python3 -m research.triggers --asset SOL --interval 1d --backtest Simulation and research only: no network, no keys, no orders.
-
-**Contents.** Defines `REPO`, `OUT`, `HORIZONS`, `H_MAX`, `MIN_EVENTS`, `FDR_Q`, `HLZ_Z`, `DISCOVERY_FRACTION`, `STABILITY_MIN_EVENTS`, `STABILITY_SHARE` and 30 more. Depends on `backtester`, `research`.
-
-**Use.** `python3 research/triggers.py --help`
-
-#### `research/turnover_table.py`
-
-`code-python` · 204 lines · 8,648 B · description: **curated**
-
-**Purpose.** The one comparable turnover table for the ten coins, plus a checker. Exists because ten spokes each pulling their own snapshot produced ten figures that were ranked against each other anyway, and the ranking was wrong.
-
-**Contents.** Defines `REPO`, `SOURCE`, `AS_OF`, `SPOKE_DIRS`, `SPOKES`, `turnover_table()`, `render()`, `find_spoke()`, `check()`, `main()`.
-
-**Use.** `python3 research/turnover_table.py` or `--check`.
-
-#### `research/tv_channel_breakout_intents.py`
-
-`code-python` · 30 lines · 1,398 B · description: **extracted**
-
-**Purpose.** Close-time intents for TradingView Channel Breakout v29, not Price Channel.
-
-**Contents.** Defines `channel_breakout_intents()`. Depends on `research`.
-
-**Use.** `import research.tv_channel_breakout_intents`
-
-#### `research/tv_channel_breakout_rabbithole.md`
+#### `research/papers/tv_channel_breakout_rabbithole.md`
 
 `doc` · 26 lines · 1,561 B · description: **extracted**
 
@@ -23396,27 +21244,7 @@ Drivers that produce the numbers, and the write-ups that quote them. Everything 
 
 **Use.** Read it.
 
-#### `research/tv_ma_proxy.py`
-
-`code-python` · 65 lines · 2,938 B · description: **extracted**
-
-**Purpose.** Retrospective equal-notional MA comparison on the validated oracle window. The common loader and order engine are independently owned. This wrapper never claims Coinbase perpetual parity, an out-of-sample test, or live-net returns.
-
-**Contents.** Defines `run()`, `main()`. Depends on `research`.
-
-**Use.** `python3 research/tv_ma_proxy.py --help`
-
-#### `research/tv_momentum_intents.py`
-
-`code-python` · 34 lines · 1,657 B · description: **extracted**
-
-**Purpose.** TradingView Momentum v29 close-of-bar order intents; no execution or fills.
-
-**Contents.** Defines `momentum_intents()`. Depends on `research`.
-
-**Use.** `import research.tv_momentum_intents`
-
-#### `research/tv_momentum_rabbithole.md`
+#### `research/papers/tv_momentum_rabbithole.md`
 
 `doc` · 73 lines · 4,184 B · description: **extracted**
 
@@ -23424,35 +21252,15 @@ Drivers that produce the numbers, and the write-ups that quote them. Everything 
 
 **Use.** Read it.
 
-#### `research/tv_moving_average_rabbithole.md`
+#### `research/papers/tv_moving_average_rabbithole.md`
 
-`doc` · 106 lines · 6,030 B · description: **extracted**
+`doc` · 106 lines · 6,043 B · description: **extracted**
 
 **Purpose.** Version: 0.1.0. Delta: record source contract and preliminary evidence. This is not a qualified rabbithole, registered strategy card, or performance result. The TradingView built-in `STD;MovingAvg%1Cross%1Strategy`, Pine v6 source
 
 **Use.** Read it.
 
-#### `research/tv_nine_common_proxy.py`
-
-`code-python` · 84 lines · 3,174 B · description: **extracted**
-
-**Purpose.** Reproduce nine source-strategy sensitivities on the frozen oracle window. This is retrospective research, not TradingView or executable venue parity.
-
-**Contents.** Defines `run()`, `main()`. Depends on `research`.
-
-**Use.** `python3 research/tv_nine_common_proxy.py --help`
-
-#### `research/tv_price_channel_intents.py`
-
-`code-python` · 24 lines · 1,114 B · description: **extracted**
-
-**Purpose.** Close-time intents for the TradingView Price Channel v29 built-in.
-
-**Contents.** Defines `price_channel_intents()`. Depends on `research`.
-
-**Use.** `import research.tv_price_channel_intents`
-
-#### `research/tv_price_channel_rabbithole.md`
+#### `research/papers/tv_price_channel_rabbithole.md`
 
 `doc` · 30 lines · 1,759 B · description: **extracted**
 
@@ -23460,27 +21268,7 @@ Drivers that produce the numbers, and the write-ups that quote them. Everything 
 
 **Use.** Read it.
 
-#### `research/tv_single_ma.py`
-
-`code-python` · 57 lines · 2,652 B · description: **extracted**
-
-**Purpose.** Source-level TradingView single-SMA order intents, not a fill simulator. Pinned built-in source: src:d009b1e195649778, Pine 31.0. The shared emulator supplies the order factory; this module does not size or fill orders.
-
-**Contents.** Defines `class SingleMovingAverage`. Depends on `research`.
-
-**Use.** `import research.tv_single_ma`
-
-#### `research/tv_two_ma.py`
-
-`code-python` · 50 lines · 2,295 B · description: **extracted**
-
-**Purpose.** Source-level TradingView two-SMA crossover intents; not an order simulator.
-
-**Contents.** Defines `class TwoMovingAverages`. Depends on `research`.
-
-**Use.** `import research.tv_two_ma`
-
-#### `research/tv_two_ma_rabbithole.md`
+#### `research/papers/tv_two_ma_rabbithole.md`
 
 `doc` · 60 lines · 3,250 B · description: **extracted**
 
@@ -23488,17 +21276,7 @@ Drivers that produce the numbers, and the write-ups that quote them. Everything 
 
 **Use.** Read it.
 
-#### `research/tv_volty_close_intents.py`
-
-`code-python` · 29 lines · 1,412 B · description: **extracted**
-
-**Purpose.** Close-time intents for TradingView Volatility Expansion Close v30.
-
-**Contents.** Defines `volty_close_intents()`. Depends on `research`.
-
-**Use.** `import research.tv_volty_close_intents`
-
-#### `research/tv_volty_close_rabbithole.md`
+#### `research/papers/tv_volty_close_rabbithole.md`
 
 `doc` · 27 lines · 1,623 B · description: **extracted**
 
@@ -23506,583 +21284,181 @@ Drivers that produce the numbers, and the write-ups that quote them. Everything 
 
 **Use.** Read it.
 
-#### `research/verify_numbers.py`
+### `research/papers/coin-intelligence/`
 
-`code-python` · 1124 lines · 50,850 B · description: **curated**
+#### `research/papers/coin-intelligence/README.md`
 
-**Purpose.** The figure gate. Re-checks every number quoted in `RANKED_LISTS.md` and `STRATEGIES.md` against the result files that produced them, so a transcription slip cannot survive in prose. CI runs it.
-
-**Contents.** Defines `RESEARCH`, `CSV`, `DOCS`, `EXPECTED_FIGURES`, `TOL_SHARPE`, `TOL_PCT`, `ROW`, `PAIR_ROW`, `PROSE_IS_OOS`, `PROSE_OOS_SHARPE` and 30 more.
-
-**Use.** `python3 research/verify_numbers.py` — currently 950 figures, exit 0.
-
-#### `research/volty_predictive_checks.py`
-
-`code-python` · 141 lines · 7,096 B · description: **extracted**
-
-**Purpose.** Frozen-chart diagnostics on local candles; never a forecast or execution client. These data were already examined. Replaying their later half is a sensitivity check, not a new untouched holdout. No configuration is selected by these results.
-
-**Contents.** Defines `digest()`, `daily_log_growth()`, `block_interval()`, `passive_equity()`, `run_checks()`, `main()`. Depends on `backtester`.
-
-**Use.** `python3 research/volty_predictive_checks.py --help`
-
-#### `research/zec_cycle_report.py`
-
-`code-python` · 441 lines · 20,374 B · description: **extracted**
-
-**Purpose.** Render verified ZEC periodicity evidence, plots and compact public results.
-
-**Contents.** Defines `render_plots()`, `verify_fixed_report_contract()`, `main()`. Depends on `research`.
-
-**Use.** `python3 research/zec_cycle_report.py --help`
-
-#### `research/zec_cycles.py`
-
-`code-python` · 478 lines · 18,597 B · description: **extracted**
-
-**Purpose.** Test apparent ZEC rhythms against no-clock paths and frozen future forecasts. Harmonic regression uses actual observation timestamps, including missing bars. It never interpolates prices or treats a hindsight pivot as a live signal.
-
-**Contents.** Defines `VERSION`, `SEED`, `INTERVALS`, `TZ`, `sha()`, `write_json()`, `class Spectrum`, `holm()`, `surrogate_paths()`, `pivots()` and 6 more. Depends on `backtester`, `research`.
-
-**Use.** `python3 research/zec_cycles.py --help`
-
-#### `research/zec_ensembles.py`
-
-`code-python` · 1001 lines · 37,360 B · description: **extracted**
-
-**Purpose.** Reproducible ZEC ensemble study; public data is fetched separately. The search uses fixed chronological windows, three validation folds, next-open spot accounting and a reserved final fifth. Selection never reads holdout results. Batch accounting is checked against the canonical event engine before a run and selected results receive an independent canonical replay. Outputs stay outside Git.
-
-**Contents.** Defines `ROOT`, `VERSION`, `GUIDE`, `COSTS`, `sha()`, `atomic_json()`, `spec()`, `catalog()`, `component_specs()`, `_init_worker()` and 12 more. Depends on `backtester`.
-
-**Use.** `python3 research/zec_ensembles.py --help`
-
-#### `research/zec_expanded.py`
-
-`code-python` · 454 lines · 24,975 B · description: **extracted**
-
-**Purpose.** Expanded offline ZEC strategy, causal shape and frozen-frequency comparisons. All policies are reference simulations; no network, signing or order path exists.
-
-**Contents.** Defines `FEES`, `MODES`, `TRAIN`, `BLOCK`, `SEED`, `SHAPE_RULE`, `key()`, `normalize_spec()`, `catalogue()`, `identity()` and 7 more. Depends on `backtester`, `research`, `soltui`.
-
-**Use.** `python3 research/zec_expanded.py --help`
-
-#### `research/zec_feed_settings.py`
-
-`code-python` · 57 lines · 2,006 B · description: **extracted**
-
-**Purpose.** View preferences never share the private trading-configuration write path.
-
-**Contents.** Defines `SOURCES`, `_LOGGER`, `load_feeds()`, `save_feeds()`.
-
-**Use.** `import research.zec_feed_settings`
-
-#### `research/zec_granular.py`
-
-`code-python` · 572 lines · 27,336 B · description: **extracted**
-
-**Purpose.** Offline, receive-time ZEC tape replay. No network or live execution path. The book is sampled at the first received update in each UTC second. Orders wait at least one second after a closed-bar decision (or observed stop trigger), then use the first sampled book at/after eligibility. This is deliberately not an exchange matching-engine or queue-position simulation.
-
-**Contents.** Defines `VERSION`, `STEPS`, `NS`, `CAPTURE_HASH`, `CAPTURE_START`, `CAPTURE_END`, `DEPTH`, `LATENCY_NS`, `MAX_WAIT_NS`, `digest()` and 15 more. Depends on `backtester`, `research`.
-
-**Use.** `python3 research/zec_granular.py --help`
-
-#### `research/zec_leverage_panel.py`
-
-`code-python` · 1746 lines · 75,935 B · description: **extracted**
-
-**Purpose.** Explicit trading controls and a read-only view of the durable paper trial. The panel owns only its UI workers. The forward collector belongs to its service, so closing this screen never stops a trial or starts a second collector.
-
-**Contents.** Defines `default_home()`, `_text()`, `_summary()`, `emphasized()`, `comparison_text()`, `bar_view()`, `bar_text_color()`, `tilt_text()`, `mtf_tilt_text()`, `wallet_text()` and 3 more. Depends on `research`, `soltui`.
-
-**Use.** `import research.zec_leverage_panel`
-
-#### `research/zec_lifecycle.py`
-
-`code-python` · 237 lines · 10,663 B · description: **extracted**
-
-**Purpose.** Observed-cross, limit-guarded grid/DCA reference lifecycles, simulation only. These use canonical ladder/deal planners. A historical trade crossing triggers a single-flight simulated intent. After >=1s a fresh displayed book must satisfy its exchange-price limit after adverse execution slippage; fees are separate.
-
-**Contents.** Defines `lifecycle_configs()`, `affordable_quote()`, `replay_lifecycle()`. Depends on `backtester`, `research`.
-
-**Use.** `import research.zec_lifecycle`
-
-#### `research/zec_live.py`
-
-`code-python` · 687 lines · 26,210 B · description: **extracted**
-
-**Purpose.** Read-only live Oracle hypotheses for the frozen profitable ZEC study rows. Quotes follow the existing recorder. Completed trade OHLCV comes from public Coinbase candles, never from invented snapshot volume. No orders or services.
-
-**Contents.** Defines `ROOT`, `STUDY`, `CSV_HASH`, `PLAN_HASH`, `STEPS`, `BASE`, `SETTLE_SECONDS`, `MAX_HISTORY`, `canonical()`, `digest()` and 16 more. Depends on `backtester`, `research`.
-
-**Use.** `python3 research/zec_live.py --help`
-
-#### `research/zec_reversal_excursions.py`
-
-`code-python` · 364 lines · 13,319 B · description: **extracted**
-
-**Purpose.** Fixed-day, causal one-minute observations of ten-minute bearish setups. This descriptive study writes nothing, fetches nothing and places no orders. Signal-minute lows never enter subsequent excursions. Inputs remain immutable.
-
-**Contents.** Defines `NS`, `MINUTE`, `SETUP`, `HORIZONS`, `POLICIES`, `TAPE_SHA`, `WAL_SHA`, `REFERENCE_SHA`, `sha()`, `minute_bars()` and 6 more.
-
-**Use.** `python3 research/zec_reversal_excursions.py --help`
-
-#### `research/zec_shape_view.py`
-
-`code-python` · 216 lines · 8,431 B · description: **extracted**
-
-**Purpose.** Explain observed geometry without changing the detector or strategy calls.
-
-**Contents.** Defines `GUIDES`, `range_readout()`, `shape_summary()`, `price_trace()`, `shape_guide()`. Depends on `research`.
-
-**Use.** `import research.zec_shape_view`
-
-#### `research/zec_tui.py`
-
-`code-python` · 1402 lines · 57,399 B · description: **curated**
-
-**Purpose.** Oracle workbench with explicit leveraged trading and paper trial controls.
-
-**Contents.** Defines `ended_signal_window_text()`, `class IndicatorTable`, `class StrategyPicker`, `class ConfigEditor`, `class ShapeGuide`, `class SoundsDialog`, `class OracleWinnersApp`, `main()`. Depends on `research`.
-
-**Use.** Launch via the repository wrapper: `python3 scripts/oracle_winners.py tui`. The module is not a standalone script.
-
-#### `research/zec_tui_alerts.py`
-
-`code-python` · 315 lines · 11,753 B · description: **extracted**
-
-**Purpose.** Pure fixed-ten-minute bearish checks; no I/O, orders or calibrated odds.
-
-**Contents.** Defines `STEP`, `HALF`, `FRESH_SECONDS`, `_number()`, `_five()`, `_ten()`, `_price()`, `_historical()`, `bearish_alert()`. Depends on `research`.
-
-**Use.** `import research.zec_tui_alerts`
-
-#### `research/zec_tui_chart.py`
-
-`code-python` · 140 lines · 5,105 B · description: **extracted**
-
-**Purpose.** Timestamp-aligned terminal price/indicator plots without a plotting dependency.
-
-**Contents.** Defines `finite()`, `plot_text()`, `class MarketChart`. Depends on `research`.
-
-**Use.** `import research.zec_tui_chart`
-
-#### `research/zec_tui_metrics.py`
-
-`code-python` · 303 lines · 11,840 B · description: **extracted**
-
-**Purpose.** Causal, display-only streaming indicators and captured-day streak context. Developing trade bars never enter the authoritative winner or shape adapters. Closed history is cached; a new trade computes only one provisional point.
-
-**Contents.** Defines `STREAK_HASH`, `streak_reference()`, `two_bar_context()`, `indicator_units()`, `compact_two_bar()`, `clean_bars()`, `valid_live_bar()`, `class IndicatorSession`. Depends on `research`.
-
-**Use.** `import research.zec_tui_metrics`
-
-#### `research/zec_tui_model.py`
-
-`code-python` · 437 lines · 16,313 B · description: **extracted**
-
-**Purpose.** Editable display state and causal market details; no trading or UI imports.
-
-**Contents.** Defines `CONFIG_KEYS`, `LOOKBACKS`, `row_key()`, `label()`, `finite_tree()`, `validate_config()`, `default_path()`, `validate_reference()`, `class WorkingSet`, `market_details()` and 1 more. Depends on `backtester`, `research`.
-
-**Use.** `import research.zec_tui_model`
-
-#### `research/zec_tui_notifications.py`
-
-`code-python` · 233 lines · 8,507 B · description: **extracted**
-
-**Purpose.** Optional display-only notifications: bounded identities and owned playback.
-
-**Contents.** Defines `DEFAULT_SOUNDS`, `AFPLAY`, `SYSTEM_SOUND`, `sound_settings()`, `class NotificationEvents`, `class SoundPlayer`.
-
-**Use.** `import research.zec_tui_notifications`
-
-#### `research/zec_tui_source.py`
-
-`code-python` · 244 lines · 9,296 B · description: **extracted**
-
-**Purpose.** Worker-owned market sessions for the editable read-only Oracle TUI.
-
-**Contents.** Defines `class Cancelled`, `class DataSession`, `class AlertSession`, `disabled_alert_source()`, `class QuoteReader`, `live_view()`. Depends on `research`.
-
-**Use.** `import research.zec_tui_source`
-
-#### `research/zec_tui_stream.py`
-
-`code-python` · 365 lines · 12,805 B · description: **extracted**
-
-**Purpose.** Session-owned public trade stream for provisional indicator readings. This is an in-memory subscriber, never a recorder or a trading connection. A first candle starts at the first trade actually observed; it cannot claim the unobserved open, high, low or volume from before attachment or a reconnect.
-
-**Contents.** Defines `WS_URL`, `PRODUCT`, `SUBSCRIPTION`, `STALE_SECONDS`, `_positive()`, `_trade_id()`, `_timestamp()`, `class TradeAccumulator`, `class DisabledStream`, `class TradeStream`. Depends on `research`, `soltui`.
-
-**Use.** `import research.zec_tui_stream`
-
-#### `research/zec_tui_workers.py`
-
-`code-python` · 145 lines · 5,385 B · description: **extracted**
-
-**Purpose.** Single-owner background reads with bounded, latest-request delivery. Loaders must bound their own blocking operations and check ``cancelled`` between them. Python threads cannot forcibly interrupt an arbitrary blocking call. This helper never calls UI objects; the UI polls immutable completion envelopes.
-
-**Contents.** Defines `class WorkerResult`, `class LatestWorker`.
-
-**Use.** `import research.zec_tui_workers`
-
-### `research/coin-intelligence/`
-
-#### `research/coin-intelligence/README.md`
-
-`coin-reference` · 138 lines · 10,431 B · description: **extracted**
+`coin-reference` · 138 lines · 10,454 B · description: **extracted**
 
 **Purpose.** >-
 
 **Use.** Read it.
 
-#### `research/coin-intelligence/bnb-binance-coin.md`
+#### `research/papers/coin-intelligence/bnb-binance-coin.md`
 
-`coin-reference` · 570 lines · 38,287 B · description: **extracted**
+`coin-reference` · 570 lines · 38,295 B · description: **extracted**
 
 **Purpose.** Trader-facing reference for BNB (Binance Coin) — exchange-token mechanics, the Auto-Burn supply schedule, extreme address concentration, venue and issuer risk, and what its 0.73% headline turnover really means for sizing and backtesting.
 
 **Use.** Read it.
 
-#### `research/coin-intelligence/btc-bitcoin.md`
+#### `research/papers/coin-intelligence/btc-bitcoin.md`
 
-`coin-reference` · 1092 lines · 75,540 B · description: **extracted**
+`coin-reference` · 1092 lines · 75,591 B · description: **extracted**
 
 **Purpose.** Trader-facing reference on Bitcoin — mechanics, supply, price regimes, market structure, volatility/correlation, liquidity, and what a BTC backtest does and does not prove about SOL. Read before using BTC as a signal source, a benchmark, or a cross-asset generalisation test.
 
 **Use.** Read it.
 
-#### `research/coin-intelligence/doge-dogecoin.md`
+#### `research/papers/coin-intelligence/doge-dogecoin.md`
 
-`coin-reference` · 199 lines · 22,951 B · description: **extracted**
+`coin-reference` · 199 lines · 22,959 B · description: **extracted**
 
 **Purpose.** Trader-facing reference for Dogecoin (DOGE) — uncapped supply with fixed ~5.256B/yr issuance and therefore a declining inflation rate, merge-mined with Litecoin, and the purest sentiment/reflexivity asset in this set; a stable high-beta BTC proxy rather than a diversifier.
 
 **Use.** Read it.
 
-#### `research/coin-intelligence/eth-ethereum.md`
+#### `research/papers/coin-intelligence/eth-ethereum.md`
 
-`coin-reference` · 1077 lines · 72,932 B · description: **extracted**
+`coin-reference` · 1077 lines · 72,987 B · description: **extracted**
 
 **Purpose.** Trader-facing reference on Ethereum (ETH) — mechanics, supply and burn, the L2 value-accrual bear case, the ETH/BTC ratio, market structure, measured volatility and beta vs BTC, and what backtesting on the local ETH_1d.csv does and does not establish. Educational only, not investment advice.
 
 **Use.** Read it.
 
-#### `research/coin-intelligence/hype-hyperliquid.md`
+#### `research/papers/coin-intelligence/hype-hyperliquid.md`
 
-`coin-reference` · 520 lines · 37,041 B · description: **extracted**
+`coin-reference` · 520 lines · 37,049 B · description: **extracted**
 
 **Purpose.** Trader-facing reference on Hyperliquid (HYPE) — on-chain CLOB perp DEX with its own L1, the HLP vault versus Jupiter's JLP, fee-funded buybacks, unlock overhang, and validator centralisation caveats.
 
 **Use.** Read it.
 
-#### `research/coin-intelligence/rain-rain.md`
+#### `research/papers/coin-intelligence/rain-rain.md`
 
-`coin-reference` · 568 lines · 39,204 B · description: **extracted**
+`coin-reference` · 568 lines · 39,212 B · description: **extracted**
 
 **Purpose.** Sceptical trader-facing reference on Rain (RAIN), an Arbitrum prediction-market token whose ~$8.6B headline market cap is not corroborated by tracked protocol activity, tradeable float, or order-book depth.
 
 **Use.** Read it.
 
-#### `research/coin-intelligence/sol-solana.md`
+#### `research/papers/coin-intelligence/sol-solana.md`
 
-`coin-reference` · 498 lines · 35,638 B · description: **extracted**
+`coin-reference` · 498 lines · 35,767 B · description: **extracted**
 
 **Purpose.** Solana (SOL) for a systematic trader — execution reality on a no-mempool chain, a 98.6%-volatility and −96.3%-drawdown record with a +1.31 beta to BTC, and what this project's own 1,287-configuration backtest measured, including that its five recommended configurations do not transfer off SOL. Read before designing or trusting any SOL strategy.
 
 **Use.** Read it.
 
-#### `research/coin-intelligence/trx-tron.md`
+#### `research/papers/coin-intelligence/trx-tron.md`
 
-`coin-reference` · 187 lines · 23,730 B · description: **extracted**
+`coin-reference` · 187 lines · 23,738 B · description: **extracted**
 
 **Purpose.** Trader-facing reference for TRON (TRX) — the dominant USDT settlement chain by transfer count, a low-turnover asset whose recent realized volatility runs below Bitcoin's despite a −51% historical drawdown, with contested holder concentration, and NOT listed on Coinbase (a hard blocker for this project's fetcher).
 
 **Use.** Read it.
 
-#### `research/coin-intelligence/xrp-ripple.md`
+#### `research/papers/coin-intelligence/xrp-ripple.md`
 
-`coin-reference` · 593 lines · 40,556 B · description: **extracted**
+`coin-reference` · 593 lines · 40,564 B · description: **extracted**
 
 **Purpose.** Trader-facing reference for XRP — XRPL mechanics, the 100B pre-mine and escrow release schedule, what Ripple actually holds, the SEC litigation record with dates, venue structure, and what its 1.37% turnover means for sizing and backtesting.
 
 **Use.** Read it.
 
-#### `research/coin-intelligence/zec-zcash.md`
+#### `research/papers/coin-intelligence/zec-zcash.md`
 
-`coin-reference` · 228 lines · 32,501 B · description: **extracted**
+`coin-reference` · 228 lines · 32,509 B · description: **extracted**
 
 **Purpose.** Trader-facing reference for Zcash (ZEC) — $513/coin on a ~16.8M supply and an $8.6B cap, optional-privacy design with transparent and shielded pools, a 38x move dated to a 2025-10-01 breakout, and real venue-availability risk (Coinbase lists ZEC-USD but has delisted ZEC-BTC and ZEC-USDC).
 
 **Use.** Read it.
 
-### `research/crosscoin-reversals-20261115/`
+### `research/papers/docs/`
 
-#### `research/crosscoin-reversals-20261115/audit.json`
+#### `research/papers/docs/JUPITER-EXPERIMENT-COSTS.md`
 
-`config` · 219 lines · 9,527 B · description: **derived**
+`doc` · 33 lines · 3,252 B · description: **extracted**
 
-**Purpose.** Generated JSON object, 8 keys (agent, definition_version, status, observed_at, evidence, changes...).
-
-**Use.** Configuration; nothing to run.
-
-#### `research/crosscoin-reversals-20261115/llms.txt`
-
-`data` · 55 lines · 7,619 B · description: **derived**
-
-**Purpose.** Generated report. Opens: # Cross-coin reversal replication / Version: 1.2.0
+**Purpose.** Spot swaps and perpetual positions are separate products. Do not apply a perps fee to a spot swap. For a SOL/USDC spot round trip, derive the realized return from the actual quote or fills: `(USDC received after the sell - USDC spent on the buy - separately paid network and priority fees) / USDC spent on the buy`.
 
 **Use.** Read it.
 
-#### `research/crosscoin-reversals-20261115/manifest.json`
+#### `research/papers/docs/VOLTY-PREDICTIVE-CHECKS.md`
 
-`config` · 210 lines · 11,821 B · description: **derived**
+`doc` · 98 lines · 5,729 B · description: **extracted**
 
-**Purpose.** Generated JSON object, 9 keys (schema, run_id, qualification, datasets, repository_container_note, audit...).
-
-**Use.** Configuration; nothing to run.
-
-#### `research/crosscoin-reversals-20261115/results-coinbase-BTC.json.zlib`
-
-`other` · 0 lines · 95,201 B · description: **none**
-
-**Purpose.** _No description available._
+**Purpose.** Version: 1.0.0. Delta: freeze the inspected chart parameters and measure cost, execution-delay, candle-path and block uncertainty sensitivities. The exact inspected chart settings (length5, multiplier1,1minute) fail the new
 
 **Use.** Read it.
 
-#### `research/crosscoin-reversals-20261115/results-coinbase-ETH.json.zlib`
+#### `research/papers/docs/VOLTY-TRADINGVIEW-ALERT-REVIEW.md`
 
-`other` · 0 lines · 111,878 B · description: **none**
+`doc` · 81 lines · 6,960 B · description: **extracted**
 
-**Purpose.** _No description available._
-
-**Use.** Read it.
-
-#### `research/crosscoin-reversals-20261115/results-coinbase-HYPE.json.zlib`
-
-`other` · 0 lines · 59,509 B · description: **none**
-
-**Purpose.** _No description available._
+**Purpose.** Version: 1.0.1. Delta: 1.0.0 to 1.0.1; add authenticated chart settings, displayed results and current Coinbase fee comparison. As of 2026-11-11, the available evidence does not validate enabling the listed Volty strategy as a live Coinbase spot strategy. The authenticated chart and its settings were inspected in Chrome after the user completed sign-in. No alert was created or enabled.
 
 **Use.** Read it.
 
-#### `research/crosscoin-reversals-20261115/results-coinbase-SOL.json.zlib`
+#### `research/papers/docs/VOLTY-ZEC-STUDY.md`
 
-`other` · 0 lines · 82,041 B · description: **none**
+`doc` · 95 lines · 7,439 B · description: **extracted**
 
-**Purpose.** _No description available._
-
-**Use.** Read it.
-
-#### `research/crosscoin-reversals-20261115/results-coinbase-ZEC.json.zlib`
-
-`other` · 0 lines · 111,803 B · description: **none**
-
-**Purpose.** _No description available._
+**Purpose.** Version: 1.0.1. Delta: link the separately initialized prospective watcher and frozen-chart diagnostics; historical study artifacts remain unchanged. All five first-half winners lost on the held-out second half. Expanding daily walk-forward selection returned +22.69%, while passive ZEC gained +1783.71% across the same overall test dates. These exploratory results establish no tradable edge.
 
 **Use.** Read it.
 
-#### `research/crosscoin-reversals-20261115/results-kucoin-BTC.json.zlib`
+#### `research/papers/docs/ZEC-ENSEMBLE-STUDY.md`
 
-`other` · 0 lines · 1,299,055 B · description: **none**
+`doc` · 184 lines · 10,901 B · description: **extracted**
 
-**Purpose.** _No description available._
-
-**Use.** Read it.
-
-#### `research/crosscoin-reversals-20261115/results-kucoin-ETH.json.zlib`
-
-`other` · 0 lines · 1,401,112 B · description: **none**
-
-**Purpose.** _No description available._
+**Purpose.** Status: historical study complete; ten paper accounts started. The Oracle page publishes the frozen top configuration and may use historical warmup for a current reference independently of paper activation. The owner requested ZEC backtests at **1m and 1h**, guided by ten selected paper forward tests, and Oracle publication of the top configuration.
 
 **Use.** Read it.
 
-#### `research/crosscoin-reversals-20261115/results-kucoin-HYPE.json.zlib`
+#### `research/papers/docs/crypto-bot-monitor-full-suite-20261109.md`
 
-`other` · 0 lines · 412,347 B · description: **none**
+`doc` · 32 lines · 3,366 B · description: **extracted**
 
-**Purpose.** _No description available._
-
-**Use.** Read it.
-
-#### `research/crosscoin-reversals-20261115/results-kucoin-SOL.json.zlib`
-
-`other` · 0 lines · 908,219 B · description: **none**
-
-**Purpose.** _No description available._
+**Purpose.** Version: 1.0.0 Delta: initial source-qualified research and reference-pack delivery record. The suite researched 15 monitoring concepts across four native evidence-gated cohorts. It retained 320 exact assertions: 257 source-supported statements and 63 non-factual summaries or questions. Three aggregate views and the organizational subject node receive no additional research credit.
 
 **Use.** Read it.
 
-### `research/crosscoin-reversals-20261115/sources/`
+#### `research/papers/docs/profitable-crypto-strategies-analysis.md`
 
-#### `research/crosscoin-reversals-20261115/sources/coinbase-BTC.json.zlib`
+`doc` · 245 lines · 18,589 B · description: **extracted**
 
-`other` · 0 lines · 66,455 B · description: **none**
-
-**Purpose.** _No description available._
+**Purpose.** The vast majority of headline yields in decentralized finance are economic illusions. In competitive, permissionless financial markets, sustained positive expected value ($+\text{EV}$) cannot exist without an economic counterparty taking an equal and opposite negative expected value ($-\text{EV}$) position, or an entity paying non-dilutive economic rent for a verifiable service (liquidity, credit,
 
 **Use.** Read it.
 
-#### `research/crosscoin-reversals-20261115/sources/coinbase-ETH.json.zlib`
+#### `research/papers/docs/short-horizon-leverage-concept-family.md`
 
-`other` · 0 lines · 59,421 B · description: **none**
+`doc` · 468 lines · 27,010 B · description: **extracted**
 
-**Purpose.** _No description available._
-
-**Use.** Read it.
-
-#### `research/crosscoin-reversals-20261115/sources/coinbase-HYPE.json.zlib`
-
-`other` · 0 lines · 36,909 B · description: **none**
-
-**Purpose.** _No description available._
+**Purpose.** leveraged perpetual position for seconds to hours, on Jupiter Perps (jup.ag) specifically. This is a *map*, not an implementation plan, and **not financial advice.** Every figure is generated by `research/scripts/short_horizon_economics.py`:
 
 **Use.** Read it.
 
-#### `research/crosscoin-reversals-20261115/sources/coinbase-SOL.json.zlib`
+#### `research/papers/docs/strategy-optimization-concept-family.md`
 
-`other` · 0 lines · 49,083 B · description: **none**
+`doc` · 303 lines · 19,803 B · description: **extracted**
 
-**Purpose.** _No description available._
-
-**Use.** Read it.
-
-#### `research/crosscoin-reversals-20261115/sources/coinbase-ZEC.json.zlib`
-
-`other` · 0 lines · 57,482 B · description: **none**
-
-**Purpose.** _No description available._
+**Purpose.** Scoping document for `/dso` (deep strategy optimizer). Written to answer one question: **what would a strategy optimizer have to do to be worth running on this repo, given what this repo has already measured?**
 
 **Use.** Read it.
 
-#### `research/crosscoin-reversals-20261115/sources/kucoin-BTC.json.zlib`
+#### `research/papers/docs/trading-signals-concept-family.md`
 
-`other` · 0 lines · 2,164,327 B · description: **none**
+`doc` · 443 lines · 27,593 B · description: **extracted**
 
-**Purpose.** _No description available._
-
-**Use.** Read it.
-
-#### `research/crosscoin-reversals-20261115/sources/kucoin-ETH.json.zlib`
-
-`other` · 0 lines · 2,137,022 B · description: **none**
-
-**Purpose.** _No description available._
+**Purpose.** automated trading signals and their execution on Jupiter (jup.ag) on Solana. This is a *map*, not an implementation plan, and not financial advice. Facts about Jupiter APIs were verified against live `developers.jup.ag`;
 
 **Use.** Read it.
 
-#### `research/crosscoin-reversals-20261115/sources/kucoin-HYPE.json.zlib`
+### `research/papers/five-minute-perps-suite/`
 
-`other` · 0 lines · 609,742 B · description: **none**
-
-**Purpose.** _No description available._
-
-**Use.** Read it.
-
-#### `research/crosscoin-reversals-20261115/sources/kucoin-SOL.json.zlib`
-
-`other` · 0 lines · 1,389,313 B · description: **none**
-
-**Purpose.** _No description available._
-
-**Use.** Read it.
-
-### `research/eth-week-20261117/`
-
-#### `research/eth-week-20261117/artifacts.zip`
-
-`other` · 0 lines · 18,883,848 B · description: **none**
-
-**Purpose.** _No description available._
-
-**Use.** Read it.
-
-#### `research/eth-week-20261117/audit.json`
-
-`config` · 290 lines · 7,743 B · description: **derived**
-
-**Purpose.** Generated JSON object, 8 keys (agent, definition_version, status, observed_at, evidence, changes...).
-
-**Use.** Configuration; nothing to run.
-
-#### `research/eth-week-20261117/correlations.png`
-
-`other` · 0 lines · 238,613 B · description: **none**
-
-**Purpose.** _No description available._
-
-**Use.** Read it.
-
-#### `research/eth-week-20261117/publication.json`
-
-`config` · 30 lines · 989 B · description: **derived**
-
-**Purpose.** Generated JSON object, 6 keys (schema, version, full_local_run, original_manifest_sha256, archive_entries, files).
-
-**Use.** Configuration; nothing to run.
-
-#### `research/eth-week-20261117/report.md`
-
-`doc` · 85 lines · 6,085 B · description: **extracted**
-
-**Purpose.** Version: 1.0.0 UTC window: 2026-11-10T17:13:00Z to 2026-11-17T17:13:00Z (exclusive). Source: Binance spot ETH/USDT, 10,080 completed one-minute bars.
-
-**Use.** Read it.
-
-#### `research/eth-week-20261117/summary.json`
-
-`config` · 2 lines · 49,234 B · description: **derived**
-
-**Purpose.** Generated JSON object, 13 keys (correlations, coverage, cycle_resolution_floor, cycle_tests, minimum_cycle_p_holm, minutes...).
-
-**Use.** Configuration; nothing to run.
-
-### `research/exit50-reversal-20261116/`
-
-#### `research/exit50-reversal-20261116/manifest.json`
-
-`config` · 35 lines · 1,694 B · description: **derived**
-
-**Purpose.** Generated JSON object, 7 keys (schema, qualification, source_results, report, policy, paper_profile...).
-
-**Use.** Configuration; nothing to run.
-
-#### `research/exit50-reversal-20261116/selected-policy.json`
-
-`config` · 2 lines · 624 B · description: **derived**
-
-**Purpose.** Generated JSON object, 3 keys (assets, model_bundle_sha256, schema).
-
-**Use.** Configuration; nothing to run.
-
-### `research/five-minute-perps-suite/`
-
-#### `research/five-minute-perps-suite/accepted-gate-receipt.json`
-
-`config` · 122 lines · 5,679 B · description: **derived**
-
-**Purpose.** Generated JSON object, 22 keys (schema, created, run_slug, research_depth, research_model, research_effort...).
-
-**Use.** Configuration; nothing to run.
-
-#### `research/five-minute-perps-suite/archive-receipt.json`
-
-`config` · 23 lines · 1,041 B · description: **derived**
-
-**Purpose.** Generated JSON object, 15 keys (schema, version, delta, original_retired_path, preserved_source, destination...).
-
-**Use.** Configuration; nothing to run.
-
-#### `research/five-minute-perps-suite/benchmark-scope-review.json`
-
-`config` · 107 lines · 4,823 B · description: **derived**
-
-**Purpose.** Generated JSON object, 16 keys (schema, version, delta, reviewed_as_of, reviewer, source_revision...).
-
-**Use.** Configuration; nothing to run.
-
-#### `research/five-minute-perps-suite/competency-questions.md`
+#### `research/papers/five-minute-perps-suite/competency-questions.md`
 
 `doc` · 11 lines · 1,136 B · description: **none**
 
@@ -24090,39 +21466,7 @@ Drivers that produce the numbers, and the write-ups that quote them. Everything 
 
 **Use.** Read it.
 
-#### `research/five-minute-perps-suite/coverage-resolution.json`
-
-`config` · 363 lines · 13,167 B · description: **derived**
-
-**Purpose.** Generated JSON array, 30 entries.
-
-**Use.** Configuration; nothing to run.
-
-#### `research/five-minute-perps-suite/full-suite-receipt.json`
-
-`config` · 241 lines · 10,631 B · description: **derived**
-
-**Purpose.** Generated JSON object, 34 keys (schema, record_version, created, subject, research_slug, cohort_status...).
-
-**Use.** Configuration; nothing to run.
-
-#### `research/five-minute-perps-suite/inherited-evidence-receipt.json`
-
-`config` · 651 lines · 37,588 B · description: **derived**
-
-**Purpose.** Generated JSON object, 12 keys (schema, as_of, canonical_run, canonical_gate, gate_sha256, gate_packet_sha256...).
-
-**Use.** Configuration; nothing to run.
-
-#### `research/five-minute-perps-suite/inventory.json`
-
-`config` · 165 lines · 5,653 B · description: **derived**
-
-**Purpose.** Generated JSON object, 10 keys (schema, as_of, source_path, source_sha256, node_count, inventory_mode...).
-
-**Use.** Configuration; nothing to run.
-
-#### `research/five-minute-perps-suite/run-report.md`
+#### `research/papers/five-minute-perps-suite/run-report.md`
 
 `doc` · 54 lines · 8,231 B · description: **extracted**
 
@@ -24130,223 +21474,3159 @@ Drivers that produce the numbers, and the write-ups that quote them. Everything 
 
 **Use.** Read it.
 
-#### `research/five-minute-perps-suite/run-state.json`
+### `research/papers/nonlinear-lead-lag-children/`
 
-`config` · 1063 lines · 41,769 B · description: **derived**
-
-**Purpose.** Generated JSON object, 40 keys (schema, subject, started, updated, budget, round...).
-
-**Use.** Configuration; nothing to run.
-
-#### `research/five-minute-perps-suite/scored-concepts.json`
-
-`config` · 546 lines · 16,715 B · description: **derived**
-
-**Purpose.** Generated JSON object, 2 keys (threshold, rows).
-
-**Use.** Configuration; nothing to run.
-
-#### `research/five-minute-perps-suite/skill-installation-receipt.json`
-
-`config` · 39 lines · 2,070 B · description: **derived**
-
-**Purpose.** Generated JSON object, 29 keys (schema, version, delta, reviewed, source_pr, source_merge_commit...).
-
-**Use.** Configuration; nothing to run.
-
-#### `research/five-minute-perps-suite/source-leads.json`
-
-`config` · 156 lines · 8,283 B · description: **derived**
-
-**Purpose.** Generated JSON object, 8 keys (schema, as_of, concepts_scouted, fast_path_concepts, url_library_seeds_written, mirrors_written...).
-
-**Use.** Configuration; nothing to run.
-
-#### `research/five-minute-perps-suite/synthesis-audit-receipt.json`
-
-`config` · 34 lines · 1,568 B · description: **derived**
-
-**Purpose.** Generated JSON object, 13 keys (schema, version, delta, reviewed, reviewer, definition_version...).
-
-**Use.** Configuration; nothing to run.
-
-### `research/mtf-reversal-20261116/`
-
-#### `research/mtf-reversal-20261116/BTC-results.json.zlib`
-
-`other` · 0 lines · 404,699 B · description: **none**
-
-**Purpose.** _No description available._
-
-**Use.** Read it.
-
-#### `research/mtf-reversal-20261116/ZEC-results.json.zlib`
-
-`other` · 0 lines · 379,478 B · description: **none**
-
-**Purpose.** _No description available._
-
-**Use.** Read it.
-
-#### `research/mtf-reversal-20261116/manifest.json`
-
-`config` · 46 lines · 2,091 B · description: **derived**
-
-**Purpose.** Generated JSON object, 9 keys (version, run_id, qualification, files, report, audit...).
-
-**Use.** Configuration; nothing to run.
-
-#### `research/mtf-reversal-20261116/model-bundle.json`
-
-`config` · 2 lines · 8,501 B · description: **derived**
-
-**Purpose.** Generated JSON object, 2 keys (models, schema).
-
-**Use.** Configuration; nothing to run.
-
-### `research/native-pairs-week-20261117/`
-
-#### `research/native-pairs-week-20261117/artifacts.zip`
-
-`other` · 0 lines · 40,491,663 B · description: **none**
-
-**Purpose.** _No description available._
-
-**Use.** Read it.
-
-#### `research/native-pairs-week-20261117/audit.json`
-
-`config` · 265 lines · 12,227 B · description: **derived**
-
-**Purpose.** Generated JSON object, 9 keys (agent, changes, definition_version, details, evidence, observed_at...).
-
-**Use.** Configuration; nothing to run.
-
-#### `research/native-pairs-week-20261117/batch-summary.json`
-
-`config` · 2 lines · 3,815 B · description: **derived**
-
-**Purpose.** Generated JSON object, 7 keys (completed_markets, failed_markets, markets, plan, status, unavailable_markets...).
-
-**Use.** Configuration; nothing to run.
-
-#### `research/native-pairs-week-20261117/publication.json`
-
-`config` · 2 lines · 1,880 B · description: **derived**
-
-**Purpose.** Generated JSON object, 12 keys (archive, artifacts, batch_manifest_sha256, complete_run, completed_markets, failures...).
-
-**Use.** Configuration; nothing to run.
-
-#### `research/native-pairs-week-20261117/report.md`
-
-`doc` · 45 lines · 5,107 B · description: **extracted**
-
-**Purpose.** Report version: 2.0.0 Coins: **ETH, BTC, ZEC**. Added cash quote: **USD**. Venue: **Coinbase Exchange spot**. Requested acquisition: **2026-11-10T19:46:00Z to 2026-11-17T19:46:00Z**, exclusive. Each available native market downloads real one-minute candles once. No cross-pair OHLC is synthesized.
-
-**Use.** Read it.
-
-### `research/native-pairs-week-20261117/markets/BTC-USD/`
-
-#### `research/native-pairs-week-20261117/markets/BTC-USD/correlations.png`
-
-`other` · 0 lines · 248,715 B · description: **none**
-
-**Purpose.** _No description available._
-
-**Use.** Read it.
-
-#### `research/native-pairs-week-20261117/markets/BTC-USD/report.md`
-
-`doc` · 119 lines · 13,844 B · description: **extracted**
-
-**Purpose.** Report version: 2.0.0 Each reference account starts with 10,000 USD units. This normalized simulation has no order-book capacity model; it does not assert that this size is executable. Requested acquisition: **2026-11-10T19:46:00Z to 2026-11-17T19:46:00Z**, exclusive (10,080 minutes).
-
-**Use.** Read it.
-
-#### `research/native-pairs-week-20261117/markets/BTC-USD/summary.json`
-
-`config` · 2 lines · 50,012 B · description: **derived**
-
-**Purpose.** Generated JSON object, 15 keys (analysis_window, correlations, coverage, cycle_resolution_floor, cycle_tests, market...).
-
-**Use.** Configuration; nothing to run.
-
-### `research/native-pairs-week-20261117/markets/ETH-USD/`
-
-#### `research/native-pairs-week-20261117/markets/ETH-USD/correlations.png`
-
-`other` · 0 lines · 249,133 B · description: **none**
-
-**Purpose.** _No description available._
-
-**Use.** Read it.
-
-#### `research/native-pairs-week-20261117/markets/ETH-USD/report.md`
-
-`doc` · 121 lines · 13,106 B · description: **extracted**
-
-**Purpose.** Report version: 2.0.0 Each reference account starts with 10,000 USD units. This normalized simulation has no order-book capacity model; it does not assert that this size is executable. Requested acquisition: **2026-11-10T19:46:00Z to 2026-11-17T19:46:00Z**, exclusive (10,080 minutes).
-
-**Use.** Read it.
-
-#### `research/native-pairs-week-20261117/markets/ETH-USD/summary.json`
-
-`config` · 2 lines · 49,066 B · description: **derived**
-
-**Purpose.** Generated JSON object, 15 keys (analysis_window, correlations, coverage, cycle_resolution_floor, cycle_tests, market...).
-
-**Use.** Configuration; nothing to run.
-
-### `research/native-pairs-week-20261117/markets/ZEC-USD/`
-
-#### `research/native-pairs-week-20261117/markets/ZEC-USD/correlations.png`
-
-`other` · 0 lines · 251,207 B · description: **none**
-
-**Purpose.** _No description available._
-
-**Use.** Read it.
-
-#### `research/native-pairs-week-20261117/markets/ZEC-USD/report.md`
-
-`doc` · 121 lines · 13,335 B · description: **extracted**
-
-**Purpose.** Report version: 2.0.0 Each reference account starts with 10,000 USD units. This normalized simulation has no order-book capacity model; it does not assert that this size is executable. Requested acquisition: **2026-11-10T19:46:00Z to 2026-11-17T19:46:00Z**, exclusive (10,080 minutes).
-
-**Use.** Read it.
-
-#### `research/native-pairs-week-20261117/markets/ZEC-USD/summary.json`
-
-`config` · 2 lines · 47,714 B · description: **derived**
-
-**Purpose.** Generated JSON object, 15 keys (analysis_window, correlations, coverage, cycle_resolution_floor, cycle_tests, market...).
-
-**Use.** Configuration; nothing to run.
-
-### `research/nonlinear-lead-lag-children/`
-
-#### `research/nonlinear-lead-lag-children/accepted-gate-receipt.json`
-
-`config` · 40 lines · 1,373 B · description: **derived**
-
-**Purpose.** Generated JSON object, 17 keys (version, schema, validated, packet_sha256, validation_sha256, counts...).
-
-**Use.** Configuration; nothing to run.
-
-#### `research/nonlinear-lead-lag-children/claim-index.json`
-
-`config` · 107 lines · 6,911 B · description: **derived**
-
-**Purpose.** Generated JSON object, 4 keys (version, status, selected_claims, packet_sha256).
-
-**Use.** Configuration; nothing to run.
-
-#### `research/nonlinear-lead-lag-children/run-report.md`
+#### `research/papers/nonlinear-lead-lag-children/run-report.md`
 
 `doc` · 37 lines · 3,359 B · description: **extracted**
 
 **Purpose.** Version: 2 Delta: v1 to v2; use an operator-neutral continuation identifier for public metadata. Run status: COMPLETED. Four named concepts were researched, with none blocked. The supported runtime finalized the run in 39 elapsed minutes, including installation work; this is not a claim that remote CI or deployment finished in that time.
+
+**Use.** Read it.
+
+### `research/papers/results/`
+
+#### `research/papers/results/cpcv_combos_tables.md`
+
+`result` · 145 lines · 12,226 B · description: **extracted**
+
+**Purpose.** _Top 15 of 262 evaluable shown._ _Top 15 of 52 evaluable shown._ _Top 15 of 260 evaluable shown._
+
+**Use.** Read it; regenerate with the driver that produced it.
+
+#### `research/papers/results/cpcv_tables.md`
+
+`result` · 94 lines · 7,016 B · description: **none**
+
+**Purpose.** _No description available._
+
+**Use.** Read it; regenerate with the driver that produced it.
+
+#### `research/papers/results/tables.md`
+
+`result` · 178 lines · 17,493 B · description: **extracted**
+
+**Purpose.** _1 configuration(s) excluded from the ranking for fewer than 10 out-of-sample trades: `buy_and_hold`._ _27 configuration(s) excluded from the ranking for fewer than 10 out-of-sample trades: `all(macd+hurst_switch)`, `all(ichimoku+hurst_switch)`, `all(dual_momentum+hurst_switch)`, `all(sma_regime+hurst_switch)`, `all(adx_trend+bb_reversion)`, `all(adx_trend+vwap_reversion)`, `all(adx_trend+ou_rever
+
+**Use.** Read it; regenerate with the driver that produced it.
+
+#### `research/papers/results/zec_gum_25x_5m_card_1.md`
+
+`result` · 45 lines · 2,844 B · description: **extracted**
+
+**Purpose.** The stops become eligible after the signal candle closes. An eligible opposite stop closes and reverses under the paper broker. Both directions are eligible after the true-range warmup. The historical model uses the 3.5 bps taker fee and 2 bps assumed slippage per side, $0.01 per side, hourly GUM funding and a 75 bps liquidation fee.
+
+**Use.** Read it; regenerate with the driver that produced it.
+
+#### `research/papers/results/zec_gum_25x_5m_card_2.md`
+
+`result` · 45 lines · 3,173 B · description: **extracted**
+
+**Purpose.** The stops become eligible after the signal candle closes. An eligible opposite stop closes and reverses under the paper broker. Long eligibility requires both Z-score(20) and RSI(14) to be in their oversold states. Z-score enters at or below −2 and resets at or above 0, using sample standard deviation. RSI enters below 30 and resets above 50.
+
+**Use.** Read it; regenerate with the driver that produced it.
+
+#### `research/papers/results/zec_gum_25x_5m_card_3.md`
+
+`result` · 45 lines · 3,018 B · description: **extracted**
+
+**Purpose.** The stops become eligible after the signal candle closes. An eligible opposite stop closes and reverses under the paper broker. Long eligibility uses RSI(14) below 30 to enter its oversold state and above 50 to reset. Shorts apply the same state machine to reflected OHLC prices. A blocked opposite stop leaves the current position open.
+
+**Use.** Read it; regenerate with the driver that produced it.
+
+#### `research/papers/results/zec_gum_25x_5m_walk_forward.md`
+
+`result` · 76 lines · 6,639 B · description: **extracted**
+
+**Purpose.** The three highest-ranked eligible strategies were **Volty(10 × 1.5)**, the same Volty rule with **Z-score + RSI** confirmation, and Volty with **RSI** confirmation alone. All three lost in the added week, with no modeled liquidations. Ungated Volty was the only one of the three to make money on the continuous October 28–November 18 test.
+
+**Use.** Read it; regenerate with the driver that produced it.
+
+#### `research/papers/results/zec_gum_5m_10m_replay.md`
+
+`result` · 101 lines · 12,178 B · description: **extracted**
+
+**Purpose.** The earlier seven-day sweep ranked returns on a $1,000 paper account. Its global top 50 contained 47 ZEC rows and three ETH Volty rows. Of those 47 ZEC rows, 32 used the requested cadences and leverage. None of those 32 came from the 5m/50× cell. Only five of the global top 50 made money in validation.
+
+**Use.** Read it; regenerate with the driver that produced it.
+
+### `research/papers/strategy_research/`
+
+#### `research/papers/strategy_research/README.md`
+
+`doc` · 4 lines · 164 B · description: **extracted**
+
+**Purpose.** Cards without an implemented runner are preserved here for further research. They are excluded from the active strategy catalog.
+
+**Use.** Read it.
+
+#### `research/papers/strategy_research/avellaneda_stoikov_mm.md`
+
+`doc` · 60 lines · 2,331 B · description: **extracted**
+
+**Purpose.** Optimal quotes around a reservation price with an inventory penalty. Wrong shape for this harness.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=microstructure, `evaluation`=None, `success_likelihood`=very-low, `data_available`=false, `registry_key`=null.
+
+**Use.** Read it.
+
+#### `research/papers/strategy_research/day_trading.md`
+
+`doc` · 61 lines · 2,492 B · description: **extracted**
+
+**Purpose.** A holding-period rule, not a signal: open and close within one UTC day. Spec-only until a session-flat wrapper exists.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=intraday, `evaluation`=None, `success_likelihood`=very-low, `data_available`=true, `registry_key`=null.
+
+**Use.** Read it.
+
+#### `research/papers/strategy_research/dex_cex_dislocation.md`
+
+`doc` · 188 lines · 10,321 B · description: **extracted**
+
+**Purpose.** Cross-venue basis as both a signal and an arbitrage.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=microstructure, `evaluation`=None, `success_likelihood`=very-low, `data_available`=false, `registry_key`=null.
+
+**Use.** Read it.
+
+#### `research/papers/strategy_research/discount_to_anchor.md`
+
+`doc` · 147 lines · 7,266 B · description: **extracted**
+
+**Purpose.** Buy in proportion to the discount against a fair-value anchor. Documented as a duplicate of the existing mean-reversion family rather than registered.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=mean-reversion, `evaluation`=None, `success_likelihood`=very-low, `data_available`=true, `registry_key`=null.
+
+**Use.** Read it.
+
+#### `research/papers/strategy_research/event_driven.md`
+
+`doc` · 62 lines · 2,298 B · description: **extracted**
+
+**Purpose.** Trade around scheduled or news events (listings, unlocks, forks, macro prints). Spec-only: needs a dated event feed.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=event, `evaluation`=None, `success_likelihood`=very-low, `data_available`=false, `registry_key`=null.
+
+**Use.** Read it.
+
+#### `research/papers/strategy_research/exchange_net_flow.md`
+
+`doc` · 56 lines · 1,889 B · description: **extracted**
+
+**Purpose.** Stablecoins moving onto exchanges as a proxy for incoming buying power.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=crypto-native, `evaluation`=None, `success_likelihood`=very-low, `data_available`=false, `registry_key`=null.
+
+**Use.** Read it.
+
+#### `research/papers/strategy_research/funding_utilization_extremes.md`
+
+`doc` · 78 lines · 3,649 B · description: **extracted**
+
+**Purpose.** On Jupiter there is no funding rate. The tradeable signal is pool UTILIZATION. Highest-ranked spec-only signal.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=crypto-native, `evaluation`=None, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
+
+**Use.** Read it.
+
+#### `research/papers/strategy_research/implied_vs_realised_vol.md`
+
+`doc` · 60 lines · 2,234 B · description: **extracted**
+
+**Purpose.** Harvest the variance risk premium when implied minus realised volatility is historically wide.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=volatility, `evaluation`=None, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
+
+**Use.** Read it.
+
+#### `research/papers/strategy_research/kalman_hedge_ratio.md`
+
+`doc` · 60 lines · 2,256 B · description: **extracted**
+
+**Purpose.** Let the hedge ratio evolve as a state variable instead of fixing it per window.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=mean-reversion, `evaluation`=None, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
+
+**Use.** Read it.
+
+#### `research/papers/strategy_research/liquidation_cascade_proximity.md`
+
+`doc` · 59 lines · 2,244 B · description: **extracted**
+
+**Purpose.** Estimate clustered liquidation levels, then fade or follow the cascade.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=crypto-native, `evaluation`=None, `success_likelihood`=very-low, `data_available`=false, `registry_key`=null.
+
+**Use.** Read it.
+
+#### `research/papers/strategy_research/mvrv_nupl_valuation.md`
+
+`doc` · 59 lines · 2,077 B · description: **extracted**
+
+**Purpose.** Market value against realised value as a cycle-position gauge.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=crypto-native, `evaluation`=None, `success_likelihood`=very-low, `data_available`=false, `registry_key`=null.
+
+**Use.** Read it.
+
+#### `research/papers/strategy_research/open_interest_divergence.md`
+
+`doc` · 57 lines · 1,902 B · description: **extracted**
+
+**Purpose.** Open interest rising while price is flat marks leverage build-up and liquidation risk.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=crypto-native, `evaluation`=None, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
+
+**Use.** Read it.
+
+#### `research/papers/strategy_research/order_book_imbalance.md`
+
+`doc` · 57 lines · 1,912 B · description: **extracted**
+
+**Purpose.** The highest-frequency edge available, and completely out of reach here.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=microstructure, `evaluation`=None, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
+
+**Use.** Read it.
+
+#### `research/papers/strategy_research/pivot_reversal_v33_source_research.md`
+
+`doc` · 42 lines · 1,799 B · description: **extracted**
+
+**Purpose.** Confirmed high/low pivot stop-order adapter with unresolved tie semantics.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
+
+**Use.** Read it.
+
+#### `research/papers/strategy_research/prediction_markets.md`
+
+`doc` · 71 lines · 4,814 B · description: **extracted**
+
+**Purpose.** Two distinct ideas to consider: read prediction-market odds as a forward-looking signal for crypto, or trade the markets themselves (cross-venue mispricing, calibration bias). Spec-only: needs a price and resolution history the repo does not have.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=event, `evaluation`=None, `success_likelihood`=very-low, `data_available`=false, `registry_key`=null.
+
+**Use.** Read it.
+
+#### `research/papers/strategy_research/rs_zigzag_pa_v1.md`
+
+`doc` · 71 lines · 3,640 B · description: **extracted**
+
+**Purpose.** Legacy harmonic ZigZag strategy with higher-timeframe lookahead; research only.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
+
+**Use.** Read it.
+
+#### `research/papers/strategy_research/sar_v33_source_research.md`
+
+`doc` · 39 lines · 1,616 B · description: **extracted**
+
+**Purpose.** Source-bound SAR stop-order research adapter, not a validated TradingView replica.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
+
+**Use.** Read it.
+
+#### `research/papers/strategy_research/scalping.md`
+
+`doc` · 61 lines · 2,290 B · description: **extracted**
+
+**Purpose.** Many very small gains from tiny price moves on a tick or order-book edge. Spec-only: needs tick and book data the repo does not have.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=microstructure, `evaluation`=None, `success_likelihood`=very-low, `data_available`=false, `registry_key`=null.
+
+**Use.** Read it.
+
+#### `research/papers/strategy_research/single_ma_v31_source_research.md`
+
+`doc` · 28 lines · 1,350 B · description: **extracted**
+
+**Purpose.** Source-bound moving-average research adapter; TradingView parity remains unverified.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
+
+**Use.** Read it.
+
+#### `research/papers/strategy_research/social_sentiment.md`
+
+`doc` · 59 lines · 2,156 B · description: **extracted**
+
+**Purpose.** Documented alpha horizon of 1-2 days with fast decay; bot noise is the principal difficulty.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=alt-data, `evaluation`=None, `success_likelihood`=very-low, `data_available`=false, `registry_key`=null.
+
+**Use.** Read it.
+
+#### `research/papers/strategy_research/staking_ratio_flow.md`
+
+`doc` · 57 lines · 2,029 B · description: **extracted**
+
+**Purpose.** SOL-specific float dynamics: a rising staked fraction reduces liquid supply.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=crypto-native, `evaluation`=None, `success_likelihood`=very-low, `data_available`=false, `registry_key`=null.
+
+**Use.** Read it.
+
+#### `research/papers/strategy_research/trade_flow_imbalance.md`
+
+`doc` · 57 lines · 2,017 B · description: **extracted**
+
+**Purpose.** Signed trade prints. Naive flow-following is systematically picked off.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=microstructure, `evaluation`=None, `success_likelihood`=very-low, `data_available`=false, `registry_key`=null.
+
+**Use.** Read it.
+
+#### `research/papers/strategy_research/tv_0ghsw1kr_moving_regression.md`
+
+`doc` · 98 lines · 4,857 B · description: **extracted**
+
+**Purpose.** Specification of Moving Regression; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Read it.
+
+#### `research/papers/strategy_research/tv_119rqjou_potential_breakout_on_btcusd_to_the_upside.md`
+
+`doc` · 130 lines · 5,570 B · description: **extracted**
+
+**Purpose.** Specification of Potential breakout on BTCUSD to the upside; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Read it.
+
+#### `research/papers/strategy_research/tv_1imcwzbc_the_simplest_scalping_strategy_with_3_ema_s_for_20_pips_per_day.md`
+
+`doc` · 98 lines · 4,660 B · description: **extracted**
+
+**Purpose.** Specification of The Simplest Scalping Strategy With 3 EMA's For 20 Pips Per Day; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Read it.
+
+#### `research/papers/strategy_research/tv_1uw4irtx_all_time_high_low_widget.md`
+
+`doc` · 92 lines · 3,958 B · description: **extracted**
+
+**Purpose.** Specification of All-Time High/Low Widget; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Read it.
+
+#### `research/papers/strategy_research/tv_2vec0xzu_annual_returns_comparison_by_muqwishi.md`
+
+`doc` · 91 lines · 4,223 B · description: **extracted**
+
+**Purpose.** Specification of Annual Returns % Comparison [By MUQWISHI]; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
+
+**Use.** Read it.
+
+#### `research/papers/strategy_research/tv_34r4mh5w_market_microstructure_analytics.md`
+
+`doc` · 100 lines · 7,642 B · description: **extracted**
+
+**Purpose.** Specification of Market Microstructure Analytics; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
+
+**Use.** Read it.
+
+#### `research/papers/strategy_research/tv_3aqxmxoc_s_p_500_vs_stocks.md`
+
+`doc` · 95 lines · 4,230 B · description: **extracted**
+
+**Purpose.** Specification of S&P 500 VS STOCKS; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
+
+**Use.** Read it.
+
+#### `research/papers/strategy_research/tv_43000501972_bollinger_bandwidth_bbw.md`
+
+`doc` · 98 lines · 5,477 B · description: **extracted**
+
+**Purpose.** Specification of Bollinger BandWidth (BBW); not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Read it.
+
+#### `research/papers/strategy_research/tv_43000502040_volume_profile_indicators_basic_concepts.md`
+
+`doc` · 104 lines · 5,845 B · description: **extracted**
+
+**Purpose.** Specification of Volume profile indicators: basic concepts; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Read it.
+
+#### `research/papers/strategy_research/tv_43000583769_bearish_engulfing_recognizing_sellers_taking_over_at_an_uptrend_s.md`
+
+`doc` · 96 lines · 5,103 B · description: **extracted**
+
+**Purpose.** Specification of Bearish Engulfing: recognizing sellers taking over at an uptrend's peak; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Read it.
+
+#### `research/papers/strategy_research/tv_43000583771_bullish_engulfing_recognizing_buyers_taking_over_at_a_downtrend_s.md`
+
+`doc` · 96 lines · 5,110 B · description: **extracted**
+
+**Purpose.** Specification of Bullish Engulfing: recognizing buyers taking over at a downtrend's base; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Read it.
+
+#### `research/papers/strategy_research/tv_43000583777_bearish_harami_how_to_confirm_a_slowdown_at_the_top_of_an_uptrend.md`
+
+`doc` · 96 lines · 5,099 B · description: **extracted**
+
+**Purpose.** Specification of Bearish Harami: how to confirm a slowdown at the top of an uptrend; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Read it.
+
+#### `research/papers/strategy_research/tv_43000583778_harami_bullish.md`
+
+`doc` · 96 lines · 4,724 B · description: **extracted**
+
+**Purpose.** Specification of Harami - Bullish; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Read it.
+
+#### `research/papers/strategy_research/tv_43000583782_kicking_bullish.md`
+
+`doc` · 90 lines · 4,389 B · description: **extracted**
+
+**Purpose.** Specification of Kicking - Bullish; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Read it.
+
+#### `research/papers/strategy_research/tv_43000583785_marubozu_black_bearish.md`
+
+`doc` · 92 lines · 4,120 B · description: **extracted**
+
+**Purpose.** Specification of Marubozu Black - Bearish; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Read it.
+
+#### `research/papers/strategy_research/tv_43000583786_marubozu_white_bullish.md`
+
+`doc` · 92 lines · 4,143 B · description: **extracted**
+
+**Purpose.** Specification of Marubozu White - Bullish; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Read it.
+
+#### `research/papers/strategy_research/tv_43000583791_spinning_top_black.md`
+
+`doc` · 92 lines · 4,049 B · description: **extracted**
+
+**Purpose.** Specification of Spinning Top Black; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Read it.
+
+#### `research/papers/strategy_research/tv_43000589093_advance_decline_ratio.md`
+
+`doc` · 95 lines · 4,620 B · description: **extracted**
+
+**Purpose.** Specification of Advance/Decline Ratio; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
+
+**Use.** Read it.
+
+#### `research/papers/strategy_research/tv_43000589126_cumulative_volume_index_cvi.md`
+
+`doc` · 99 lines · 4,583 B · description: **extracted**
+
+**Purpose.** Specification of Cumulative Volume Index (CVI); not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
+
+**Use.** Read it.
+
+#### `research/papers/strategy_research/tv_43000589129_dividend_yield.md`
+
+`doc` · 94 lines · 4,548 B · description: **extracted**
+
+**Purpose.** Specification of Dividend Yield; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
+
+**Use.** Read it.
+
+#### `research/papers/strategy_research/tv_43000589195_pivot_points_high_low.md`
+
+`doc` · 96 lines · 4,983 B · description: **extracted**
+
+**Purpose.** Specification of Pivot Points High Low; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Read it.
+
+#### `research/papers/strategy_research/tv_43000591664_zigzag_indicator.md`
+
+`doc` · 102 lines · 6,021 B · description: **extracted**
+
+**Purpose.** Specification of Zigzag indicator; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Read it.
+
+#### `research/papers/strategy_research/tv_43000591665_inside_bar_strategy.md`
+
+`doc` · 100 lines · 6,098 B · description: **extracted**
+
+**Purpose.** Specification of InSide Bar Strategy; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Read it.
+
+#### `research/papers/strategy_research/tv_43000592713_bearish_falling_window_interpreting_a_price_gap_within_a_downtren.md`
+
+`doc` · 100 lines · 5,444 B · description: **extracted**
+
+**Purpose.** Specification of Bearish Falling window: interpreting a price gap within a downtrend; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Read it.
+
+#### `research/papers/strategy_research/tv_43000592721_rising_window_bullish.md`
+
+`doc` · 98 lines · 4,958 B · description: **extracted**
+
+**Purpose.** Specification of Rising Window - Bullish; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Read it.
+
+#### `research/papers/strategy_research/tv_43000592723_bearish_downside_tasuki_gap_how_to_confirm_a_downtrend_will_conti.md`
+
+`doc` · 100 lines · 5,420 B · description: **extracted**
+
+**Purpose.** Specification of Bearish Downside Tasuki gap: how to confirm a downtrend will continue; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Read it.
+
+#### `research/papers/strategy_research/tv_43000594673_woodies_cci.md`
+
+`doc` · 98 lines · 4,729 B · description: **extracted**
+
+**Purpose.** Specification of Woodies CCI; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Read it.
+
+#### `research/papers/strategy_research/tv_43000594676_volatility_stop.md`
+
+`doc` · 110 lines · 7,707 B · description: **extracted**
+
+**Purpose.** Specification of Volatility Stop; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Read it.
+
+#### `research/papers/strategy_research/tv_43000599823_barupdn_strategy.md`
+
+`doc` · 96 lines · 4,378 B · description: **extracted**
+
+**Purpose.** Specification of BarUpDn Strategy; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Read it.
+
+#### `research/papers/strategy_research/tv_43000599826_bollinger_bands_strategy_directed.md`
+
+`doc` · 102 lines · 5,519 B · description: **extracted**
+
+**Purpose.** Specification of Bollinger Bands Strategy Directed; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Read it.
+
+#### `research/papers/strategy_research/tv_43000599828_channel_breakout_strategy.md`
+
+`doc` · 98 lines · 4,931 B · description: **extracted**
+
+**Purpose.** Specification of Channel BreakOut Strategy; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Read it.
+
+#### `research/papers/strategy_research/tv_43000599836_consecutive_up_down_strategy.md`
+
+`doc` · 96 lines · 4,921 B · description: **extracted**
+
+**Purpose.** Specification of Consecutive Up/Down Strategy; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Read it.
+
+#### `research/papers/strategy_research/tv_43000599840_rob_booker_reversal.md`
+
+`doc` · 92 lines · 4,454 B · description: **extracted**
+
+**Purpose.** Specification of Rob Booker Reversal; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Read it.
+
+#### `research/papers/strategy_research/tv_43000599876_greedy_strategy.md`
+
+`doc` · 106 lines · 5,127 B · description: **extracted**
+
+**Purpose.** Specification of Greedy Strategy; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Read it.
+
+#### `research/papers/strategy_research/tv_43000599883_momentum_strategy.md`
+
+`doc` · 92 lines · 4,762 B · description: **extracted**
+
+**Purpose.** Specification of Momentum Strategy; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Read it.
+
+#### `research/papers/strategy_research/tv_43000599887_outside_bar_strategy.md`
+
+`doc` · 90 lines · 4,228 B · description: **extracted**
+
+**Purpose.** Specification of OutSide Bar Strategy; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Read it.
+
+#### `research/papers/strategy_research/tv_43000599888_pivot_extension_strategy.md`
+
+`doc` · 94 lines · 4,826 B · description: **extracted**
+
+**Purpose.** Specification of Pivot Extension Strategy; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Read it.
+
+#### `research/papers/strategy_research/tv_43000599890_volty_expan_close_strategy.md`
+
+`doc` · 90 lines · 4,330 B · description: **extracted**
+
+**Purpose.** Specification of Volty Expan Close Strategy; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Read it.
+
+#### `research/papers/strategy_research/tv_43000601862_price_channel_strategy.md`
+
+`doc` · 92 lines · 4,795 B · description: **extracted**
+
+**Purpose.** Specification of Price Channel Strategy; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Read it.
+
+#### `research/papers/strategy_research/tv_43000644914_advance_decline_ratio_bars.md`
+
+`doc` · 92 lines · 4,485 B · description: **extracted**
+
+**Purpose.** Specification of Advance/Decline Ratio (Bars); not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Read it.
+
+#### `research/papers/strategy_research/tv_43000645066_rsi_strategy.md`
+
+`doc` · 96 lines · 4,171 B · description: **extracted**
+
+**Purpose.** Specification of RSI Strategy; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Read it.
+
+#### `research/papers/strategy_research/tv_43000668584_24_hour_volume.md`
+
+`doc` · 98 lines · 5,315 B · description: **extracted**
+
+**Purpose.** Specification of 24-hour Volume; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Read it.
+
+#### `research/papers/strategy_research/tv_43000678766_visible_average_price.md`
+
+`doc` · 92 lines · 4,168 B · description: **extracted**
+
+**Purpose.** Specification of Visible Average Price; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Read it.
+
+#### `research/papers/strategy_research/tv_43000695003_average_daily_range_adr_indicator.md`
+
+`doc` · 98 lines · 5,021 B · description: **extracted**
+
+**Purpose.** Specification of Average Daily Range (ADR) indicator; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Read it.
+
+#### `research/papers/strategy_research/tv_43000705489_relative_volume_at_time.md`
+
+`doc` · 98 lines · 6,151 B · description: **extracted**
+
+**Purpose.** Specification of Relative Volume at Time; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Read it.
+
+#### `research/papers/strategy_research/tv_43000707882_stochastic_momentum_index_smi.md`
+
+`doc` · 98 lines · 4,775 B · description: **extracted**
+
+**Purpose.** Specification of Stochastic Momentum Index (SMI); not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Read it.
+
+#### `research/papers/strategy_research/tv_43000717955_bull_bear_power.md`
+
+`doc` · 94 lines · 4,343 B · description: **extracted**
+
+**Purpose.** Specification of Bull Bear Power; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Read it.
+
+#### `research/papers/strategy_research/tv_43000736064_performance.md`
+
+`doc` · 98 lines · 5,360 B · description: **extracted**
+
+**Purpose.** Specification of Performance; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Read it.
+
+#### `research/papers/strategy_research/tv_43000762397_long_short_accounts.md`
+
+`doc` · 91 lines · 3,943 B · description: **extracted**
+
+**Purpose.** Specification of Long Short Accounts %; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
+
+**Use.** Read it.
+
+#### `research/papers/strategy_research/tv_43000762399_long_short_ratio_accounts.md`
+
+`doc` · 95 lines · 4,465 B · description: **extracted**
+
+**Purpose.** Specification of Long / Short Ratio Accounts; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
+
+**Use.** Read it.
+
+#### `research/papers/strategy_research/tv_43000773005_negative_volume_index_nvi.md`
+
+`doc` · 96 lines · 4,783 B · description: **extracted**
+
+**Purpose.** Specification of Negative Volume Index (NVI); not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Read it.
+
+#### `research/papers/strategy_research/tv_43000773115_ulcer_index.md`
+
+`doc` · 100 lines · 5,015 B · description: **extracted**
+
+**Purpose.** Specification of Ulcer Index; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Read it.
+
+#### `research/papers/strategy_research/tv_43000773986_1_year_active_supply.md`
+
+`doc` · 94 lines · 4,903 B · description: **extracted**
+
+**Purpose.** Specification of 1 year active supply %; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
+
+**Use.** Read it.
+
+#### `research/papers/strategy_research/tv_43000773987_addresses_with_balance_x_of_supply.md`
+
+`doc` · 98 lines · 5,254 B · description: **extracted**
+
+**Purpose.** Specification of Addresses with balance ≥ X (% of supply); not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
+
+**Use.** Read it.
+
+#### `research/papers/strategy_research/tv_43000773988_addresses_with_balance_x_usd.md`
+
+`doc` · 96 lines · 5,202 B · description: **extracted**
+
+**Purpose.** Specification of Addresses with balance ≥ X (USD); not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
+
+**Use.** Read it.
+
+#### `research/papers/strategy_research/tv_43000773989_average_transaction_volume.md`
+
+`doc` · 94 lines · 4,265 B · description: **extracted**
+
+**Purpose.** Specification of Average transaction volume; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
+
+**Use.** Read it.
+
+#### `research/papers/strategy_research/tv_43000773990_held_tokens_in_addresses_x_usd.md`
+
+`doc` · 96 lines · 5,236 B · description: **extracted**
+
+**Purpose.** Specification of Held tokens in addresses ≥ X (USD); not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
+
+**Use.** Read it.
+
+#### `research/papers/strategy_research/tv_43000773991_held_tokens_in_addresses_x_tokens.md`
+
+`doc` · 98 lines · 5,315 B · description: **extracted**
+
+**Purpose.** Specification of Held tokens in addresses ≥ X (tokens); not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
+
+**Use.** Read it.
+
+#### `research/papers/strategy_research/tv_43000773992_held_tokens_in_addresses_x_of_supply.md`
+
+`doc` · 96 lines · 5,311 B · description: **extracted**
+
+**Purpose.** Specification of Held tokens in addresses ≥ X (% of supply); not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
+
+**Use.** Read it.
+
+#### `research/papers/strategy_research/tv_43000773993_large_transaction_volume.md`
+
+`doc` · 94 lines · 4,290 B · description: **extracted**
+
+**Purpose.** Specification of Large transaction volume; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
+
+**Use.** Read it.
+
+#### `research/papers/strategy_research/tv_43000773994_realized_market_cap.md`
+
+`doc` · 92 lines · 4,511 B · description: **extracted**
+
+**Purpose.** Specification of Realized market cap; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
+
+**Use.** Read it.
+
+#### `research/papers/strategy_research/tv_43000773995_rvt_ratio_90_days.md`
+
+`doc` · 92 lines · 4,314 B · description: **extracted**
+
+**Purpose.** Specification of RVT ratio, 90 days; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
+
+**Use.** Read it.
+
+#### `research/papers/strategy_research/tv_43000773997_transaction_fees.md`
+
+`doc` · 92 lines · 4,143 B · description: **extracted**
+
+**Purpose.** Specification of Transaction fees; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
+
+**Use.** Read it.
+
+#### `research/papers/strategy_research/tv_43000778534_sending_addresses.md`
+
+`doc` · 92 lines · 4,132 B · description: **extracted**
+
+**Purpose.** Specification of Sending addresses; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
+
+**Use.** Read it.
+
+#### `research/papers/strategy_research/tv_43000778535_receiving_addresses.md`
+
+`doc` · 92 lines · 4,156 B · description: **extracted**
+
+**Purpose.** Specification of Receiving addresses; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
+
+**Use.** Read it.
+
+#### `research/papers/strategy_research/tv_43000778537_spent_output_profit_ratio_sopr.md`
+
+`doc` · 90 lines · 4,235 B · description: **extracted**
+
+**Purpose.** Specification of Spent Output Profit Ratio (SOPR); not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
+
+**Use.** Read it.
+
+#### `research/papers/strategy_research/tv_43000778538_mean_transfer_volume.md`
+
+`doc` · 96 lines · 4,247 B · description: **extracted**
+
+**Purpose.** Specification of Mean transfer volume; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
+
+**Use.** Read it.
+
+#### `research/papers/strategy_research/tv_43000778539_median_transfer_volume.md`
+
+`doc` · 94 lines · 4,190 B · description: **extracted**
+
+**Purpose.** Specification of Median transfer volume; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
+
+**Use.** Read it.
+
+#### `research/papers/strategy_research/tv_43000778541_transfer_count.md`
+
+`doc` · 94 lines · 4,517 B · description: **extracted**
+
+**Purpose.** Specification of Transfer count; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
+
+**Use.** Read it.
+
+#### `research/papers/strategy_research/tv_43000778542_transfer_rate.md`
+
+`doc` · 90 lines · 3,880 B · description: **extracted**
+
+**Purpose.** Specification of Transfer rate; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
+
+**Use.** Read it.
+
+#### `research/papers/strategy_research/tv_43000778543_transaction_rate.md`
+
+`doc` · 90 lines · 3,970 B · description: **extracted**
+
+**Purpose.** Specification of Transaction rate; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
+
+**Use.** Read it.
+
+#### `research/papers/strategy_research/tv_43000778547_transaction_fees.md`
+
+`doc` · 92 lines · 4,140 B · description: **extracted**
+
+**Purpose.** Specification of Transaction fees; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
+
+**Use.** Read it.
+
+#### `research/papers/strategy_research/tv_43000778548_mean_transaction_fees.md`
+
+`doc` · 92 lines · 4,223 B · description: **extracted**
+
+**Purpose.** Specification of Mean transaction fees; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
+
+**Use.** Read it.
+
+#### `research/papers/strategy_research/tv_43000778549_median_transaction_fees.md`
+
+`doc` · 90 lines · 4,033 B · description: **extracted**
+
+**Purpose.** Specification of Median transaction fees; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
+
+**Use.** Read it.
+
+#### `research/papers/strategy_research/tv_43000778550_total_gas_used.md`
+
+`doc` · 92 lines · 4,037 B · description: **extracted**
+
+**Purpose.** Specification of Total gas used; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
+
+**Use.** Read it.
+
+#### `research/papers/strategy_research/tv_43000778551_mean_gas_used.md`
+
+`doc` · 92 lines · 4,024 B · description: **extracted**
+
+**Purpose.** Specification of Mean gas used; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
+
+**Use.** Read it.
+
+#### `research/papers/strategy_research/tv_43000778552_median_gas_used.md`
+
+`doc` · 92 lines · 4,053 B · description: **extracted**
+
+**Purpose.** Specification of Median gas used; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
+
+**Use.** Read it.
+
+#### `research/papers/strategy_research/tv_43000778553_mean_transaction_gas_price.md`
+
+`doc` · 96 lines · 4,384 B · description: **extracted**
+
+**Purpose.** Specification of Mean transaction gas price; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
+
+**Use.** Read it.
+
+#### `research/papers/strategy_research/tv_43000778554_median_transaction_gas_price.md`
+
+`doc` · 96 lines · 4,515 B · description: **extracted**
+
+**Purpose.** Specification of Median transaction gas price; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
+
+**Use.** Read it.
+
+#### `research/papers/strategy_research/tv_43000778555_block_height.md`
+
+`doc` · 90 lines · 4,021 B · description: **extracted**
+
+**Purpose.** Specification of Block height; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
+
+**Use.** Read it.
+
+#### `research/papers/strategy_research/tv_43000778556_blocks_mined.md`
+
+`doc` · 94 lines · 4,391 B · description: **extracted**
+
+**Purpose.** Specification of Blocks mined; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
+
+**Use.** Read it.
+
+#### `research/papers/strategy_research/tv_43000778557_mean_block_interval.md`
+
+`doc` · 94 lines · 4,369 B · description: **extracted**
+
+**Purpose.** Specification of Mean block interval; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
+
+**Use.** Read it.
+
+#### `research/papers/strategy_research/tv_43000778558_median_block_interval.md`
+
+`doc` · 92 lines · 4,146 B · description: **extracted**
+
+**Purpose.** Specification of Median block interval; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
+
+**Use.** Read it.
+
+#### `research/papers/strategy_research/tv_43000778559_total_block_size_in_bytes.md`
+
+`doc` · 96 lines · 4,471 B · description: **extracted**
+
+**Purpose.** Specification of Total block size in bytes; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
+
+**Use.** Read it.
+
+#### `research/papers/strategy_research/tv_43000778560_mean_block_size_in_bytes.md`
+
+`doc` · 90 lines · 3,999 B · description: **extracted**
+
+**Purpose.** Specification of Mean block size in bytes; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
+
+**Use.** Read it.
+
+#### `research/papers/strategy_research/tv_43000778563_total_utxos.md`
+
+`doc` · 90 lines · 3,969 B · description: **extracted**
+
+**Purpose.** Specification of Total UTXOs; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
+
+**Use.** Read it.
+
+#### `research/papers/strategy_research/tv_43000778564_created_utxos.md`
+
+`doc` · 92 lines · 4,085 B · description: **extracted**
+
+**Purpose.** Specification of Created UTXOs; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
+
+**Use.** Read it.
+
+#### `research/papers/strategy_research/tv_43000778565_spent_utxos.md`
+
+`doc` · 92 lines · 4,078 B · description: **extracted**
+
+**Purpose.** Specification of Spent UTXOs; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
+
+**Use.** Read it.
+
+#### `research/papers/strategy_research/tv_43000778566_mean_utxo_value_created.md`
+
+`doc` · 96 lines · 4,410 B · description: **extracted**
+
+**Purpose.** Specification of Mean UTXO value created; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
+
+**Use.** Read it.
+
+#### `research/papers/strategy_research/tv_43000778567_median_utxo_value_created.md`
+
+`doc` · 96 lines · 4,418 B · description: **extracted**
+
+**Purpose.** Specification of Median UTXO value created; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
+
+**Use.** Read it.
+
+#### `research/papers/strategy_research/tv_43000778568_total_utxo_value_created.md`
+
+`doc` · 98 lines · 4,599 B · description: **extracted**
+
+**Purpose.** Specification of Total UTXO value created; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
+
+**Use.** Read it.
+
+#### `research/papers/strategy_research/tv_43000778569_mean_utxo_value_spent.md`
+
+`doc` · 98 lines · 4,668 B · description: **extracted**
+
+**Purpose.** Specification of Mean UTXO value spent; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
+
+**Use.** Read it.
+
+#### `research/papers/strategy_research/tv_43000778570_median_utxo_value_spent.md`
+
+`doc` · 96 lines · 4,424 B · description: **extracted**
+
+**Purpose.** Specification of Median UTXO value spent; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
+
+**Use.** Read it.
+
+#### `research/papers/strategy_research/tv_43000778572_total_utxo_value_spent.md`
+
+`doc` · 98 lines · 4,555 B · description: **extracted**
+
+**Purpose.** Specification of Total UTXO value spent; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
+
+**Use.** Read it.
+
+#### `research/papers/strategy_research/tv_43000778573_total_transactions_size_in_bytes.md`
+
+`doc` · 96 lines · 4,490 B · description: **extracted**
+
+**Purpose.** Specification of Total transactions size in bytes; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
+
+**Use.** Read it.
+
+#### `research/papers/strategy_research/tv_43000778574_mean_transaction_size_in_bytes.md`
+
+`doc` · 96 lines · 4,438 B · description: **extracted**
+
+**Purpose.** Specification of Mean transaction size in bytes; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
+
+**Use.** Read it.
+
+#### `research/papers/strategy_research/tv_43000778577_stock_to_flow_ratio_in_usd.md`
+
+`doc` · 92 lines · 4,286 B · description: **extracted**
+
+**Purpose.** Specification of Stock-to-Flow Ratio in USD; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
+
+**Use.** Read it.
+
+#### `research/papers/strategy_research/tv_43000778578_ethereum_new_deposits.md`
+
+`doc` · 92 lines · 4,175 B · description: **extracted**
+
+**Purpose.** Specification of Ethereum new deposits; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
+
+**Use.** Read it.
+
+#### `research/papers/strategy_research/tv_43000778579_ethereum_new_value_staked.md`
+
+`doc` · 94 lines · 4,458 B · description: **extracted**
+
+**Purpose.** Specification of Ethereum new value staked; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
+
+**Use.** Read it.
+
+#### `research/papers/strategy_research/tv_43000778580_ethereum_new_unique_depositors.md`
+
+`doc` · 90 lines · 4,194 B · description: **extracted**
+
+**Purpose.** Specification of Ethereum new unique depositors; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
+
+**Use.** Read it.
+
+#### `research/papers/strategy_research/tv_43000778581_ethereum_total_number_of_deposits.md`
+
+`doc` · 90 lines · 4,077 B · description: **extracted**
+
+**Purpose.** Specification of Ethereum total number of deposits; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
+
+**Use.** Read it.
+
+#### `research/papers/strategy_research/tv_43000778582_ethereum_total_unique_depositors.md`
+
+`doc` · 90 lines · 4,150 B · description: **extracted**
+
+**Purpose.** Specification of Ethereum total unique depositors; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
+
+**Use.** Read it.
+
+#### `research/papers/strategy_research/tv_43000778583_ethereum_total_value_staked.md`
+
+`doc` · 90 lines · 4,049 B · description: **extracted**
+
+**Purpose.** Specification of Ethereum total value staked; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
+
+**Use.** Read it.
+
+#### `research/papers/strategy_research/tv_43000778584_mean_transaction_gas_limit.md`
+
+`doc` · 94 lines · 4,231 B · description: **extracted**
+
+**Purpose.** Specification of Mean transaction gas limit; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
+
+**Use.** Read it.
+
+#### `research/papers/strategy_research/tv_43000778585_median_transaction_gas_limit.md`
+
+`doc` · 94 lines · 4,145 B · description: **extracted**
+
+**Purpose.** Specification of Median transaction gas limit; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
+
+**Use.** Read it.
+
+#### `research/papers/strategy_research/tv_43000778587_active_addresses_with_contracts.md`
+
+`doc` · 90 lines · 4,165 B · description: **extracted**
+
+**Purpose.** Specification of Active addresses with contracts; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
+
+**Use.** Read it.
+
+#### `research/papers/strategy_research/tv_43000778588_us_spot_crypto_etf_balances.md`
+
+`doc` · 94 lines · 4,215 B · description: **extracted**
+
+**Purpose.** Specification of US spot crypto ETF balances; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
+
+**Use.** Read it.
+
+#### `research/papers/strategy_research/tv_43000778589_us_spot_crypto_etf_flows.md`
+
+`doc` · 94 lines · 4,281 B · description: **extracted**
+
+**Purpose.** Specification of US spot crypto ETF flows; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
+
+**Use.** Read it.
+
+#### `research/papers/strategy_research/tv_43000778591_etf_flows.md`
+
+`doc` · 90 lines · 3,927 B · description: **extracted**
+
+**Purpose.** Specification of ETF flows; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
+
+**Use.** Read it.
+
+#### `research/papers/strategy_research/tv_43000784536_basis.md`
+
+`doc` · 99 lines · 4,176 B · description: **extracted**
+
+**Purpose.** Specification of Basis; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
+
+**Use.** Read it.
+
+#### `research/papers/strategy_research/tv_43000793423_options_volume_profile_see_call_and_put_volume_right_on_the_chart.md`
+
+`doc` · 97 lines · 4,815 B · description: **extracted**
+
+**Purpose.** Specification of Options Volume Profile: see call and put volume right on the chart; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
+
+**Use.** Read it.
+
+#### `research/papers/strategy_research/tv_43000796657_supply_in_profit.md`
+
+`doc` · 96 lines · 4,556 B · description: **extracted**
+
+**Purpose.** Specification of Supply in Profit; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
+
+**Use.** Read it.
+
+#### `research/papers/strategy_research/tv_5ghqjxjj_vol_control_fund_positioning.md`
+
+`doc` · 102 lines · 5,624 B · description: **extracted**
+
+**Purpose.** Specification of Vol-Control Fund Positioning; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
+
+**Use.** Read it.
+
+#### `research/papers/strategy_research/tv_7jm5ebze_yelober_sector_rotation_detector.md`
+
+`doc` · 102 lines · 4,808 B · description: **extracted**
+
+**Purpose.** Specification of Yelober - Sector Rotation Detector; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
+
+**Use.** Read it.
+
+#### `research/papers/strategy_research/tv_8mvftxpg_tape_lucf.md`
+
+`doc` · 100 lines · 5,633 B · description: **extracted**
+
+**Purpose.** Specification of Tape [LucF]; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
+
+**Use.** Read it.
+
+#### `research/papers/strategy_research/tv_a3eudme3_raff_regression_channel_rrc.md`
+
+`doc` · 92 lines · 4,298 B · description: **extracted**
+
+**Purpose.** Specification of Raff Regression Channel (RRC); not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Read it.
+
+#### `research/papers/strategy_research/tv_b3almahh_indices_sector_sigmaspikes.md`
+
+`doc` · 100 lines · 4,548 B · description: **extracted**
+
+**Purpose.** Specification of Indices Sector SigmaSpikes; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
+
+**Use.** Read it.
+
+#### `research/papers/strategy_research/tv_builtin_52_week_high_low.md`
+
+`doc` · 92 lines · 3,906 B · description: **extracted**
+
+**Purpose.** Specification of 52 Week High/Low; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=other, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Read it.
+
+#### `research/papers/strategy_research/tv_builtin_accelerator_oscillator.md`
+
+`doc` · 90 lines · 3,561 B · description: **extracted**
+
+**Purpose.** Specification of Accelerator Oscillator; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=momentum, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Read it.
+
+#### `research/papers/strategy_research/tv_builtin_accumulation_distribution.md`
+
+`doc` · 110 lines · 4,330 B · description: **extracted**
+
+**Purpose.** Specification of Accumulation/Distribution; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=volume, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Read it.
+
+#### `research/papers/strategy_research/tv_builtin_advance_decline.md`
+
+`doc` · 91 lines · 3,807 B · description: **extracted**
+
+**Purpose.** Specification of Advance/Decline; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=other, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
+
+**Use.** Read it.
+
+#### `research/papers/strategy_research/tv_builtin_anchored_vwap.md`
+
+`doc` · 96 lines · 4,812 B · description: **extracted**
+
+**Purpose.** Specification of Anchored VWAP; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=volume, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Read it.
+
+#### `research/papers/strategy_research/tv_builtin_arnaud_legoux_moving_average.md`
+
+`doc` · 113 lines · 5,242 B · description: **extracted**
+
+**Purpose.** Specification of Arnaud Legoux Moving Average; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=trend, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Read it.
+
+#### `research/papers/strategy_research/tv_builtin_aroon.md`
+
+`doc` · 111 lines · 4,768 B · description: **extracted**
+
+**Purpose.** Specification of Aroon; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=trend, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Read it.
+
+#### `research/papers/strategy_research/tv_builtin_average_price.md`
+
+`doc` · 90 lines · 3,557 B · description: **extracted**
+
+**Purpose.** Specification of Average Price; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=other, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Read it.
+
+#### `research/papers/strategy_research/tv_builtin_awesome_oscillator.md`
+
+`doc` · 110 lines · 4,526 B · description: **extracted**
+
+**Purpose.** Specification of Awesome Oscillator; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=momentum, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Read it.
+
+#### `research/papers/strategy_research/tv_builtin_bollinger_bands_b.md`
+
+`doc` · 112 lines · 4,474 B · description: **extracted**
+
+**Purpose.** Specification of Bollinger Bands %B; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=volatility, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Read it.
+
+#### `research/papers/strategy_research/tv_builtin_bollinger_bands_width.md`
+
+`doc` · 92 lines · 3,832 B · description: **extracted**
+
+**Purpose.** Specification of Bollinger Bands Width; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=volatility, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Read it.
+
+#### `research/papers/strategy_research/tv_builtin_chaikin_oscillator.md`
+
+`doc` · 112 lines · 4,936 B · description: **extracted**
+
+**Purpose.** Specification of Chaikin Oscillator; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=volume, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Read it.
+
+#### `research/papers/strategy_research/tv_builtin_chaikin_volatility.md`
+
+`doc` · 92 lines · 3,876 B · description: **extracted**
+
+**Purpose.** Specification of Chaikin Volatility; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=volatility, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Read it.
+
+#### `research/papers/strategy_research/tv_builtin_chande_kroll_stop.md`
+
+`doc` · 113 lines · 5,443 B · description: **extracted**
+
+**Purpose.** Specification of Chande Kroll Stop; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=volatility, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Read it.
+
+#### `research/papers/strategy_research/tv_builtin_chande_momentum_oscillator.md`
+
+`doc` · 111 lines · 4,581 B · description: **extracted**
+
+**Purpose.** Specification of Chande Momentum Oscillator; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=momentum, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Read it.
+
+#### `research/papers/strategy_research/tv_builtin_choppiness_index.md`
+
+`doc` · 111 lines · 4,392 B · description: **extracted**
+
+**Purpose.** Specification of Choppiness Index; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=trend, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Read it.
+
+#### `research/papers/strategy_research/tv_builtin_connors_rsi.md`
+
+`doc` · 113 lines · 5,097 B · description: **extracted**
+
+**Purpose.** Specification of Connors RSI; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=momentum, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Read it.
+
+#### `research/papers/strategy_research/tv_builtin_coppock_curve.md`
+
+`doc` · 113 lines · 5,216 B · description: **extracted**
+
+**Purpose.** Specification of Coppock Curve; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=momentum, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Read it.
+
+#### `research/papers/strategy_research/tv_builtin_correlation_coefficient.md`
+
+`doc` · 111 lines · 4,549 B · description: **extracted**
+
+**Purpose.** Specification of Correlation Coefficient; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=other, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
+
+**Use.** Read it.
+
+#### `research/papers/strategy_research/tv_builtin_correlation_log.md`
+
+`doc` · 91 lines · 3,860 B · description: **extracted**
+
+**Purpose.** Specification of Correlation - Log; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=other, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
+
+**Use.** Read it.
+
+#### `research/papers/strategy_research/tv_builtin_detrended_price_oscillator.md`
+
+`doc` · 108 lines · 4,424 B · description: **extracted**
+
+**Purpose.** Specification of Detrended Price Oscillator; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=momentum, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Read it.
+
+#### `research/papers/strategy_research/tv_builtin_double_ema.md`
+
+`doc` · 111 lines · 4,316 B · description: **extracted**
+
+**Purpose.** Specification of Double EMA; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=trend, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Read it.
+
+#### `research/papers/strategy_research/tv_builtin_ease_of_movement.md`
+
+`doc` · 112 lines · 4,490 B · description: **extracted**
+
+**Purpose.** Specification of Ease of Movement; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=volume, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Read it.
+
+#### `research/papers/strategy_research/tv_builtin_elder_s_force_index.md`
+
+`doc` · 111 lines · 4,523 B · description: **extracted**
+
+**Purpose.** Specification of Elder's Force Index; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=volume, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Read it.
+
+#### `research/papers/strategy_research/tv_builtin_envelopes.md`
+
+`doc` · 115 lines · 4,914 B · description: **extracted**
+
+**Purpose.** Specification of Envelopes; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=volatility, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Read it.
+
+#### `research/papers/strategy_research/tv_builtin_guppy_multiple_moving_average.md`
+
+`doc` · 102 lines · 5,711 B · description: **extracted**
+
+**Purpose.** Specification of Guppy Multiple Moving Average; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=trend, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Read it.
+
+#### `research/papers/strategy_research/tv_builtin_hull_moving_average.md`
+
+`doc` · 111 lines · 4,338 B · description: **extracted**
+
+**Purpose.** Specification of Hull Moving Average; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=trend, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Read it.
+
+#### `research/papers/strategy_research/tv_builtin_know_sure_thing.md`
+
+`doc` · 119 lines · 5,887 B · description: **extracted**
+
+**Purpose.** Specification of Know Sure Thing; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=momentum, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Read it.
+
+#### `research/papers/strategy_research/tv_builtin_least_squares_moving_average.md`
+
+`doc` · 112 lines · 5,040 B · description: **extracted**
+
+**Purpose.** Specification of Least Squares Moving Average; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=trend, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Read it.
+
+#### `research/papers/strategy_research/tv_builtin_linear_regression_slope.md`
+
+`doc` · 91 lines · 3,718 B · description: **extracted**
+
+**Purpose.** Specification of Linear Regression Slope; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=trend, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Read it.
+
+#### `research/papers/strategy_research/tv_builtin_ma_with_ema_cross.md`
+
+`doc` · 92 lines · 3,877 B · description: **extracted**
+
+**Purpose.** Specification of MA with EMA Cross; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=trend, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Read it.
+
+#### `research/papers/strategy_research/tv_builtin_majority_rule.md`
+
+`doc` · 91 lines · 3,727 B · description: **extracted**
+
+**Purpose.** Specification of Majority Rule; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=other, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Read it.
+
+#### `research/papers/strategy_research/tv_builtin_mass_index.md`
+
+`doc` · 111 lines · 4,916 B · description: **extracted**
+
+**Purpose.** Specification of Mass Index; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=volatility, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Read it.
+
+#### `research/papers/strategy_research/tv_builtin_mcginley_dynamic.md`
+
+`doc` · 111 lines · 4,811 B · description: **extracted**
+
+**Purpose.** Specification of McGinley Dynamic; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=trend, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Read it.
+
+#### `research/papers/strategy_research/tv_builtin_median_price.md`
+
+`doc` · 110 lines · 4,747 B · description: **extracted**
+
+**Purpose.** Specification of Median Price; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=other, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Read it.
+
+#### `research/papers/strategy_research/tv_builtin_momentum.md`
+
+`doc` · 108 lines · 4,772 B · description: **extracted**
+
+**Purpose.** Specification of Momentum; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=momentum, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Read it.
+
+#### `research/papers/strategy_research/tv_builtin_money_flow_index.md`
+
+`doc` · 111 lines · 4,960 B · description: **extracted**
+
+**Purpose.** Specification of Money Flow Index; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=volume, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Read it.
+
+#### `research/papers/strategy_research/tv_builtin_moving_average_double.md`
+
+`doc` · 93 lines · 4,146 B · description: **extracted**
+
+**Purpose.** Specification of Moving Average Double; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=trend, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Read it.
+
+#### `research/papers/strategy_research/tv_builtin_moving_average_hamming.md`
+
+`doc` · 91 lines · 3,769 B · description: **extracted**
+
+**Purpose.** Specification of Moving Average Hamming; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=trend, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Read it.
+
+#### `research/papers/strategy_research/tv_builtin_moving_average_multiple.md`
+
+`doc` · 97 lines · 4,739 B · description: **extracted**
+
+**Purpose.** Specification of Moving Average Multiple; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=trend, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Read it.
+
+#### `research/papers/strategy_research/tv_builtin_moving_average_triple.md`
+
+`doc` · 94 lines · 4,203 B · description: **extracted**
+
+**Purpose.** Specification of Moving Average Triple; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=trend, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Read it.
+
+#### `research/papers/strategy_research/tv_builtin_moving_average_weighted.md`
+
+`doc` · 93 lines · 3,946 B · description: **extracted**
+
+**Purpose.** Specification of Moving Average Weighted; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=trend, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Read it.
+
+#### `research/papers/strategy_research/tv_builtin_net_volume.md`
+
+`doc` · 110 lines · 5,281 B · description: **extracted**
+
+**Purpose.** Specification of Net Volume; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=volume, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Read it.
+
+#### `research/papers/strategy_research/tv_builtin_pivot_points_standard.md`
+
+`doc` · 114 lines · 5,396 B · description: **extracted**
+
+**Purpose.** Specification of Pivot Points Standard; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=other, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Read it.
+
+#### `research/papers/strategy_research/tv_builtin_price_volume_trend.md`
+
+`doc` · 106 lines · 4,139 B · description: **extracted**
+
+**Purpose.** Specification of Price Volume Trend; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=volume, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Read it.
+
+#### `research/papers/strategy_research/tv_builtin_rank_correlation_index.md`
+
+`doc` · 111 lines · 4,878 B · description: **extracted**
+
+**Purpose.** Specification of Rank Correlation Index; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=momentum, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Read it.
+
+#### `research/papers/strategy_research/tv_builtin_ratio.md`
+
+`doc` · 91 lines · 3,846 B · description: **extracted**
+
+**Purpose.** Specification of Ratio; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=other, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
+
+**Use.** Read it.
+
+#### `research/papers/strategy_research/tv_builtin_regression_trend.md`
+
+`doc` · 97 lines · 4,780 B · description: **extracted**
+
+**Purpose.** Specification of Regression Trend; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=other, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Read it.
+
+#### `research/papers/strategy_research/tv_builtin_relative_vigor_index.md`
+
+`doc` · 111 lines · 4,505 B · description: **extracted**
+
+**Purpose.** Specification of Relative Vigor Index; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=momentum, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Read it.
+
+#### `research/papers/strategy_research/tv_builtin_sessions.md`
+
+`doc` · 110 lines · 4,772 B · description: **extracted**
+
+**Purpose.** Specification of Sessions; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=other, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Read it.
+
+#### `research/papers/strategy_research/tv_builtin_smi_ergodic_indicator_oscillator.md`
+
+`doc` · 134 lines · 5,650 B · description: **extracted**
+
+**Purpose.** Specification of SMI Ergodic Indicator/Oscillator; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=momentum, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Read it.
+
+#### `research/papers/strategy_research/tv_builtin_spread.md`
+
+`doc` · 91 lines · 3,830 B · description: **extracted**
+
+**Purpose.** Specification of Spread; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=other, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
+
+**Use.** Read it.
+
+#### `research/papers/strategy_research/tv_builtin_standard_error.md`
+
+`doc` · 91 lines · 3,782 B · description: **extracted**
+
+**Purpose.** Specification of Standard Error; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=volatility, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Read it.
+
+#### `research/papers/strategy_research/tv_builtin_stochastic_rsi.md`
+
+`doc` · 114 lines · 5,295 B · description: **extracted**
+
+**Purpose.** Specification of Stochastic RSI; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=momentum, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Read it.
+
+#### `research/papers/strategy_research/tv_builtin_trend_strength_index.md`
+
+`doc` · 107 lines · 4,580 B · description: **extracted**
+
+**Purpose.** Specification of Trend Strength Index; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=trend, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Read it.
+
+#### `research/papers/strategy_research/tv_builtin_triple_ema.md`
+
+`doc` · 111 lines · 4,442 B · description: **extracted**
+
+**Purpose.** Specification of Triple EMA; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=trend, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Read it.
+
+#### `research/papers/strategy_research/tv_builtin_trix.md`
+
+`doc` · 111 lines · 4,184 B · description: **extracted**
+
+**Purpose.** Specification of TRIX; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=momentum, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Read it.
+
+#### `research/papers/strategy_research/tv_builtin_true_strength_indicator.md`
+
+`doc` · 113 lines · 5,231 B · description: **extracted**
+
+**Purpose.** Specification of True Strength Indicator; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=momentum, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Read it.
+
+#### `research/papers/strategy_research/tv_builtin_typical_price.md`
+
+`doc` · 90 lines · 3,526 B · description: **extracted**
+
+**Purpose.** Specification of Typical Price; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=other, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Read it.
+
+#### `research/papers/strategy_research/tv_builtin_ultimate_oscillator.md`
+
+`doc` · 113 lines · 5,146 B · description: **extracted**
+
+**Purpose.** Specification of Ultimate Oscillator; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=momentum, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Read it.
+
+#### `research/papers/strategy_research/tv_builtin_volatility_o_h_l_c.md`
+
+`doc` · 93 lines · 4,111 B · description: **extracted**
+
+**Purpose.** Specification of Volatility O-H-L-C; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=volatility, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Read it.
+
+#### `research/papers/strategy_research/tv_builtin_volatility_zero_trend_close_to_close.md`
+
+`doc` · 92 lines · 3,982 B · description: **extracted**
+
+**Purpose.** Specification of Volatility Zero Trend Close-to-Close; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=volatility, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Read it.
+
+#### `research/papers/strategy_research/tv_builtin_volume_oscillator.md`
+
+`doc` · 108 lines · 4,342 B · description: **extracted**
+
+**Purpose.** Specification of Volume Oscillator; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=volume, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Read it.
+
+#### `research/papers/strategy_research/tv_builtin_vortex_indicator.md`
+
+`doc` · 111 lines · 4,557 B · description: **extracted**
+
+**Purpose.** Specification of Vortex Indicator; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=trend, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Read it.
+
+#### `research/papers/strategy_research/tv_builtin_vwma.md`
+
+`doc` · 111 lines · 4,883 B · description: **extracted**
+
+**Purpose.** Specification of VWMA; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=trend, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Read it.
+
+#### `research/papers/strategy_research/tv_builtin_williams_fractal.md`
+
+`doc` · 91 lines · 3,778 B · description: **extracted**
+
+**Purpose.** Specification of Williams Fractal; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=other, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Read it.
+
+#### `research/papers/strategy_research/tv_builtin_williams_r.md`
+
+`doc` · 111 lines · 4,768 B · description: **extracted**
+
+**Purpose.** Specification of Williams %R; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=momentum, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Read it.
+
+#### `research/papers/strategy_research/tv_d4tdeuru_volume_composition_flowly_indicators.md`
+
+`doc` · 102 lines · 5,724 B · description: **extracted**
+
+**Purpose.** Specification of Volume composition / Flowly Indicators; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Read it.
+
+#### `research/papers/strategy_research/tv_ddvp5qaz_match_finder_theultimator5.md`
+
+`doc` · 98 lines · 4,844 B · description: **extracted**
+
+**Purpose.** Specification of Match Finder [theUltimator5]; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
+
+**Use.** Read it.
+
+#### `research/papers/strategy_research/tv_dfy6orqi_intraday_volume_swings.md`
+
+`doc` · 92 lines · 3,966 B · description: **extracted**
+
+**Purpose.** Specification of Intraday Volume Swings; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Read it.
+
+#### `research/papers/strategy_research/tv_djr8hv4v_waindrops_makit0.md`
+
+`doc` · 104 lines · 5,234 B · description: **extracted**
+
+**Purpose.** Specification of Waindrops [Makit0]; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Read it.
+
+#### `research/papers/strategy_research/tv_dyb13ida_hull_candles_bigbitsio.md`
+
+`doc` · 98 lines · 4,747 B · description: **extracted**
+
+**Purpose.** Specification of Hull Candles [BigBitsIO]; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Read it.
+
+#### `research/papers/strategy_research/tv_e5azkgtc_best_dollar_cost_average.md`
+
+`doc` · 98 lines · 4,387 B · description: **extracted**
+
+**Purpose.** Specification of BEST Dollar Cost Average; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Read it.
+
+#### `research/papers/strategy_research/tv_ejmwjmdf_dynamic_gap_probability_tool.md`
+
+`doc` · 102 lines · 4,885 B · description: **extracted**
+
+**Purpose.** Specification of Dynamic Gap Probability Tool; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Read it.
+
+#### `research/papers/strategy_research/tv_enc8rzn0_modern_portfolio_management_indicator.md`
+
+`doc` · 100 lines · 5,915 B · description: **extracted**
+
+**Purpose.** Specification of Modern Portfolio Management Indicator; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
+
+**Use.** Read it.
+
+#### `research/papers/strategy_research/tv_fgvtpifr_tf_segmented_linear_regression.md`
+
+`doc` · 98 lines · 4,645 B · description: **extracted**
+
+**Purpose.** Specification of TF Segmented Linear Regression; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Read it.
+
+#### `research/papers/strategy_research/tv_fuzfly3o_is_it_time_to_lighten_equities_and_go_overweight_gold.md`
+
+`doc` · 93 lines · 4,477 B · description: **extracted**
+
+**Purpose.** Specification of Is it time to lighten equities and go overweight gold?; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
+
+**Use.** Read it.
+
+#### `research/papers/strategy_research/tv_gamszeig_logarithmic_moving_average_lma_quantalgo.md`
+
+`doc` · 106 lines · 6,563 B · description: **extracted**
+
+**Purpose.** Specification of Logarithmic Moving Average (LMA) [QuantAlgo]; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Read it.
+
+#### `research/papers/strategy_research/tv_glj0deuy_indicator_introduction_custom_volume_periodic_peaks_troughs.md`
+
+`doc` · 94 lines · 4,318 B · description: **extracted**
+
+**Purpose.** Specification of Indicator introduction: Custom Volume - Periodic Peaks & Troughs; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Read it.
+
+#### `research/papers/strategy_research/tv_hefekydl_sma_directional_matrix_luxalgo.md`
+
+`doc` · 96 lines · 4,972 B · description: **extracted**
+
+**Purpose.** Specification of SMA Directional Matrix [LuxAlgo]; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Read it.
+
+#### `research/papers/strategy_research/tv_hjxrfmmg_session_candles_reversals_flowly_indicators.md`
+
+`doc` · 102 lines · 6,271 B · description: **extracted**
+
+**Purpose.** Specification of Session candles & reversals / Flowly Indicators; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Read it.
+
+#### `research/papers/strategy_research/tv_hnpilzeg_market_sessions_by_leviathan.md`
+
+`doc` · 98 lines · 5,166 B · description: **extracted**
+
+**Purpose.** Specification of Market Sessions - By Leviathan; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Read it.
+
+#### `research/papers/strategy_research/tv_hxxk64fl_sip_evaluator_and_screener_trendoscope.md`
+
+`doc` · 100 lines · 5,708 B · description: **extracted**
+
+**Purpose.** Specification of SIP Evaluator and Screener [Trendoscope®]; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
+
+**Use.** Read it.
+
+#### `research/papers/strategy_research/tv_ikvq3zpr_defining_a_single_market_indicator_in_tradingview.md`
+
+`doc` · 94 lines · 4,289 B · description: **extracted**
+
+**Purpose.** Specification of Defining a single market indicator in TradingView -; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
+
+**Use.** Read it.
+
+#### `research/papers/strategy_research/tv_ipvs7b7x_multi_ticker_anchored_candles.md`
+
+`doc` · 98 lines · 4,894 B · description: **extracted**
+
+**Purpose.** Specification of Multi-Ticker Anchored Candles; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
+
+**Use.** Read it.
+
+#### `research/papers/strategy_research/tv_k2br8xol_intraday_spark_chart_astrideunicorn.md`
+
+`doc` · 96 lines · 4,657 B · description: **extracted**
+
+**Purpose.** Specification of Intraday Spark Chart [AstrideUnicorn]; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
+
+**Use.** Read it.
+
+#### `research/papers/strategy_research/tv_lcgcwwwi_bar_balance_lucf.md`
+
+`doc` · 108 lines · 7,242 B · description: **extracted**
+
+**Purpose.** Specification of Bar Balance [LucF]; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
+
+**Use.** Read it.
+
+#### `research/papers/strategy_research/tv_lei57qv6_rotation_in_international_markets.md`
+
+`doc` · 96 lines · 4,634 B · description: **extracted**
+
+**Purpose.** Specification of Rotation in international markets; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
+
+**Use.** Read it.
+
+#### `research/papers/strategy_research/tv_library_x8mujqgt_long_shadow.md`
+
+`doc` · 98 lines · 3,980 B · description: **extracted**
+
+**Purpose.** Specification of BjCandlePatterns: lls, lus; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Read it.
+
+#### `research/papers/strategy_research/tv_library_x8mujqgt_spinning_top.md`
+
+`doc` · 105 lines · 4,672 B · description: **extracted**
+
+**Purpose.** Specification of BjCandlePatterns: spinningTopBull, spinningTopBear, spinningTop; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Read it.
+
+#### `research/papers/strategy_research/tv_lu0mtsud_earnings_snapshot_trendoscope.md`
+
+`doc` · 100 lines · 5,532 B · description: **extracted**
+
+**Purpose.** Specification of Earnings Snapshot [Trendoscope]; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
+
+**Use.** Read it.
+
+#### `research/papers/strategy_research/tv_lvqopkkp_volume_surprise_luxalgo.md`
+
+`doc` · 102 lines · 4,920 B · description: **extracted**
+
+**Purpose.** Specification of Volume Surprise [LuxAlgo]; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Read it.
+
+#### `research/papers/strategy_research/tv_lwoxh0vh_range_volume_change.md`
+
+`doc` · 90 lines · 3,959 B · description: **extracted**
+
+**Purpose.** Specification of Range Volume Change; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Read it.
+
+#### `research/papers/strategy_research/tv_lx3zlt9l_volume_profile_3d_zeiierman.md`
+
+`doc` · 98 lines · 5,078 B · description: **extracted**
+
+**Purpose.** Specification of Volume Profile 3D (Zeiierman); not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
+
+**Use.** Read it.
+
+#### `research/papers/strategy_research/tv_mekxyft0_bias_and_sentiment_strength_bass_indicator_by_mattzab.md`
+
+`doc` · 96 lines · 4,846 B · description: **extracted**
+
+**Purpose.** Specification of Bias And Sentiment Strength (BASS) Indicator by mattzab; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Read it.
+
+#### `research/papers/strategy_research/tv_method_atr_trailing.md`
+
+`doc` · 92 lines · 3,994 B · description: **extracted**
+
+**Purpose.** Specification of ATR trailing band stops; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=research-method, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Read it.
+
+#### `research/papers/strategy_research/tv_method_covered_call.md`
+
+`doc` · 92 lines · 4,223 B · description: **extracted**
+
+**Purpose.** Specification of Covered call strike selection; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=research-method, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
+
+**Use.** Read it.
+
+#### `research/papers/strategy_research/tv_method_doji.md`
+
+`doc` · 92 lines · 4,058 B · description: **extracted**
+
+**Purpose.** Specification of Doji indecision; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=research-method, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Read it.
+
+#### `research/papers/strategy_research/tv_method_dominance_rotation.md`
+
+`doc` · 92 lines · 4,284 B · description: **extracted**
+
+**Purpose.** Specification of Bitcoin dominance and altcoin rotation; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=research-method, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
+
+**Use.** Read it.
+
+#### `research/papers/strategy_research/tv_method_engulfing.md`
+
+`doc` · 92 lines · 4,172 B · description: **extracted**
+
+**Purpose.** Specification of Bullish and bearish engulfing; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=research-method, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Read it.
+
+#### `research/papers/strategy_research/tv_method_fair_value_gap.md`
+
+`doc` · 92 lines · 4,063 B · description: **extracted**
+
+**Purpose.** Specification of Three-candle fair value gap; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=research-method, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Read it.
+
+#### `research/papers/strategy_research/tv_method_fib_extensions.md`
+
+`doc` · 92 lines · 4,173 B · description: **extracted**
+
+**Purpose.** Specification of Fibonacci extension and channel projections; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=research-method, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Read it.
+
+#### `research/papers/strategy_research/tv_method_futures_hedge.md`
+
+`doc` · 89 lines · 3,934 B · description: **extracted**
+
+**Purpose.** Specification of Spot and futures hedge; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=research-method, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
+
+**Use.** Read it.
+
+#### `research/papers/strategy_research/tv_method_head_shoulders.md`
+
+`doc` · 92 lines · 4,184 B · description: **extracted**
+
+**Purpose.** Specification of Head and shoulders reversal; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=research-method, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Read it.
+
+#### `research/papers/strategy_research/tv_method_heikin_ashi.md`
+
+`doc` · 92 lines · 4,051 B · description: **extracted**
+
+**Purpose.** Specification of Heikin Ashi trend candles; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=research-method, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Read it.
+
+#### `research/papers/strategy_research/tv_method_inside_bar.md`
+
+`doc` · 92 lines · 4,165 B · description: **extracted**
+
+**Purpose.** Specification of Inside bar and narrow range breakout; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=research-method, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Read it.
+
+#### `research/papers/strategy_research/tv_method_intermarket_correlation.md`
+
+`doc` · 92 lines · 4,258 B · description: **extracted**
+
+**Purpose.** Specification of Intermarket correlation and lead lag; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=research-method, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
+
+**Use.** Read it.
+
+#### `research/papers/strategy_research/tv_method_iron_condor.md`
+
+`doc` · 92 lines · 4,161 B · description: **extracted**
+
+**Purpose.** Specification of Iron condor options spread; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=research-method, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
+
+**Use.** Read it.
+
+#### `research/papers/strategy_research/tv_method_kelly_sizing.md`
+
+`doc` · 88 lines · 3,812 B · description: **extracted**
+
+**Purpose.** Specification of Fractional Kelly position sizing; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=research-method, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
+
+**Use.** Read it.
+
+#### `research/papers/strategy_research/tv_method_liquidity_sweep.md`
+
+`doc` · 92 lines · 4,110 B · description: **extracted**
+
+**Purpose.** Specification of Liquidity sweep and failed break; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=research-method, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Read it.
+
+#### `research/papers/strategy_research/tv_method_logistic_prediction.md`
+
+`doc` · 89 lines · 3,933 B · description: **extracted**
+
+**Purpose.** Specification of Logistic regression classification; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=research-method, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Read it.
+
+#### `research/papers/strategy_research/tv_method_martingale_sizing.md`
+
+`doc` · 89 lines · 3,899 B · description: **extracted**
+
+**Purpose.** Specification of Martingale loss recovery sizing; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=research-method, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
+
+**Use.** Read it.
+
+#### `research/papers/strategy_research/tv_method_oops_gap_reversal.md`
+
+`doc` · 87 lines · 3,681 B · description: **extracted**
+
+**Purpose.** Specification of OOPS opening gap reversal; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=research-method, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
+
+**Use.** Read it.
+
+#### `research/papers/strategy_research/tv_method_pitchfork.md`
+
+`doc` · 92 lines · 4,137 B · description: **extracted**
+
+**Purpose.** Specification of Andrews pitchfork and median lines; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=research-method, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Read it.
+
+#### `research/papers/strategy_research/tv_method_risk_based_sizing.md`
+
+`doc` · 92 lines · 4,104 B · description: **extracted**
+
+**Purpose.** Specification of Fixed fractional risk and stop sizing; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=research-method, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Read it.
+
+#### `research/papers/strategy_research/tv_method_rsi_divergence.md`
+
+`doc` · 92 lines · 4,088 B · description: **extracted**
+
+**Purpose.** Specification of RSI divergence; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=research-method, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Read it.
+
+#### `research/papers/strategy_research/tv_method_short_strangle.md`
+
+`doc` · 91 lines · 3,817 B · description: **extracted**
+
+**Purpose.** Specification of Short strangle option premium; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=research-method, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
+
+**Use.** Read it.
+
+#### `research/papers/strategy_research/tv_method_trailing_stop.md`
+
+`doc` · 92 lines · 4,046 B · description: **extracted**
+
+**Purpose.** Specification of Trailing and breakeven stops; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=research-method, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Read it.
+
+#### `research/papers/strategy_research/tv_method_triple_top_bottom.md`
+
+`doc` · 92 lines · 4,097 B · description: **extracted**
+
+**Purpose.** Specification of Triple top and triple bottom; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=research-method, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Read it.
+
+#### `research/papers/strategy_research/tv_method_vertical_debit_spread.md`
+
+`doc` · 88 lines · 3,789 B · description: **extracted**
+
+**Purpose.** Specification of Vertical debit option spread; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=research-method, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
+
+**Use.** Read it.
+
+#### `research/papers/strategy_research/tv_method_volume_delta.md`
+
+`doc` · 92 lines · 4,108 B · description: **extracted**
+
+**Purpose.** Specification of Cumulative volume delta; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=research-method, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
+
+**Use.** Read it.
+
+#### `research/papers/strategy_research/tv_mketjg7e_periodic_linear_regressions_luxalgo.md`
+
+`doc` · 100 lines · 4,967 B · description: **extracted**
+
+**Purpose.** Specification of Periodic Linear Regressions [LuxAlgo]; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Read it.
+
+#### `research/papers/strategy_research/tv_n0f50jkv_relative_volume_at_time.md`
+
+`doc` · 102 lines · 4,598 B · description: **extracted**
+
+**Purpose.** Specification of Relative Volume at Time; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
+
+**Use.** Read it.
+
+#### `research/papers/strategy_research/tv_niy5oyf7_volume_by_session.md`
+
+`doc` · 94 lines · 4,366 B · description: **extracted**
+
+**Purpose.** Specification of Volume by Session; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Read it.
+
+#### `research/papers/strategy_research/tv_nlygzrmb_short_volume_stamper.md`
+
+`doc` · 98 lines · 5,283 B · description: **extracted**
+
+**Purpose.** Specification of Short Volume Stamper; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Read it.
+
+#### `research/papers/strategy_research/tv_nueh5q6t_linear_regression_all_data.md`
+
+`doc` · 90 lines · 4,031 B · description: **extracted**
+
+**Purpose.** Specification of Linear Regression (All Data); not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Read it.
+
+#### `research/papers/strategy_research/tv_nw5ogfdo_ict_killzones_pivots_tfo.md`
+
+`doc` · 92 lines · 4,466 B · description: **extracted**
+
+**Purpose.** Specification of ICT Killzones + Pivots [TFO]; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Read it.
+
+#### `research/papers/strategy_research/tv_ny63myd9_time_volume_point_of_control_flowly_indicators.md`
+
+`doc` · 98 lines · 5,932 B · description: **extracted**
+
+**Purpose.** Specification of Time & volume point of control / Flowly Indicators; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Read it.
+
+#### `research/papers/strategy_research/tv_o2toj6ez_bitcoin_monthly_seasonality_alpha_extract.md`
+
+`doc` · 100 lines · 4,513 B · description: **extracted**
+
+**Purpose.** Specification of Bitcoin Monthly Seasonality [Alpha Extract]; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Read it.
+
+#### `research/papers/strategy_research/tv_odyzzlzu_median_convergence_divergence.md`
+
+`doc` · 102 lines · 5,313 B · description: **extracted**
+
+**Purpose.** Specification of Median Convergence Divergence; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Read it.
+
+#### `research/papers/strategy_research/tv_okuj0d2n_earnings_price_move_cheat_sheet_kt.md`
+
+`doc` · 98 lines · 4,885 B · description: **extracted**
+
+**Purpose.** Specification of Earnings Price Move Cheat Sheet [KT]; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
+
+**Use.** Read it.
+
+#### `research/papers/strategy_research/tv_p6xx04kb_vix_multi_tool.md`
+
+`doc` · 132 lines · 6,162 B · description: **extracted**
+
+**Purpose.** Specification of VIX Multi-Tool; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
+
+**Use.** Read it.
+
+#### `research/papers/strategy_research/tv_qe4dq4zm_chart_vwap.md`
+
+`doc` · 98 lines · 5,319 B · description: **extracted**
+
+**Purpose.** Specification of Chart VWAP; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Read it.
+
+#### `research/papers/strategy_research/tv_r8g2yhdg_order_block_finder_experimental.md`
+
+`doc` · 100 lines · 4,924 B · description: **extracted**
+
+**Purpose.** Specification of Order Block Finder (Experimental); not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Read it.
+
+#### `research/papers/strategy_research/tv_rbeervr5_rolling_z_score_trend_quantalgo.md`
+
+`doc` · 100 lines · 5,286 B · description: **extracted**
+
+**Purpose.** Specification of Rolling Z-Score Trend [QuantAlgo]; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Read it.
+
+#### `research/papers/strategy_research/tv_sg5cvyr9_tick_data_detailed.md`
+
+`doc` · 92 lines · 4,405 B · description: **extracted**
+
+**Purpose.** Specification of Tick Data Detailed; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
+
+**Use.** Read it.
+
+#### `research/papers/strategy_research/tv_snufopt6_modified_mannarino_market_risk_indicator_mmmri_mmri.md`
+
+`doc` · 94 lines · 4,920 B · description: **extracted**
+
+**Purpose.** Specification of Modified Mannarino Market Risk Indicator MMMRI MMRI; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Read it.
+
+#### `research/papers/strategy_research/tv_sq5xt0ez_hyperfork_matrix.md`
+
+`doc` · 102 lines · 4,944 B · description: **extracted**
+
+**Purpose.** Specification of Hyperfork Matrix; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Read it.
+
+#### `research/papers/strategy_research/tv_swwmsmqw_indicator_panel.md`
+
+`doc` · 94 lines · 4,447 B · description: **extracted**
+
+**Purpose.** Specification of Indicator Panel; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Read it.
+
+#### `research/papers/strategy_research/tv_t1v41bl5_session_edge_profiler_flux_charts.md`
+
+`doc` · 104 lines · 7,357 B · description: **extracted**
+
+**Purpose.** Specification of Session Edge Profiler | Flux Charts; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Read it.
+
+#### `research/papers/strategy_research/tv_ta_relativevolume.md`
+
+`doc` · 94 lines · 4,639 B · description: **extracted**
+
+**Purpose.** Specification of TradingView ta library: relativeVolume; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Read it.
+
+#### `research/papers/strategy_research/tv_ta_rms.md`
+
+`doc` · 92 lines · 3,637 B · description: **extracted**
+
+**Purpose.** Specification of TradingView ta library: rms; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Read it.
+
+#### `research/papers/strategy_research/tv_tbz9rgx9_weekly_volume_heatmap.md`
+
+`doc` · 98 lines · 4,607 B · description: **extracted**
+
+**Purpose.** Specification of Weekly Volume Heatmap; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Read it.
+
+#### `research/papers/strategy_research/tv_tnq7fvvw_trend_target_ribbon_boswaves.md`
+
+`doc` · 112 lines · 8,587 B · description: **extracted**
+
+**Purpose.** Specification of Trend Target Ribbon [BOSWaves]; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
+
+**Use.** Read it.
+
+#### `research/papers/strategy_research/tv_tpseizhp_volume_x_ray_lucf.md`
+
+`doc` · 100 lines · 6,312 B · description: **extracted**
+
+**Purpose.** Specification of Volume X-ray [LucF]; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
+
+**Use.** Read it.
+
+#### `research/papers/strategy_research/tv_tstsp9sk_peak_trading_activity_graphs_luxalgo.md`
+
+`doc` · 98 lines · 5,157 B · description: **extracted**
+
+**Purpose.** Specification of Peak Trading Activity Graphs [LuxAlgo]; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Read it.
+
+#### `research/papers/strategy_research/tv_ucux0rjl_tops_bottoms_time_of_day_report.md`
+
+`doc` · 92 lines · 4,023 B · description: **extracted**
+
+**Purpose.** Specification of Tops & Bottoms - Time of Day Report; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Read it.
+
+#### `research/papers/strategy_research/tv_udti2iuw_central_bank_liquidity_gap_indicator.md`
+
+`doc` · 96 lines · 4,335 B · description: **extracted**
+
+**Purpose.** Specification of Central Bank Liquidity Gap Indicator; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
+
+**Use.** Read it.
+
+#### `research/papers/strategy_research/tv_ujgvguvt_volatility_risk_premium.md`
+
+`doc` · 106 lines · 7,149 B · description: **extracted**
+
+**Purpose.** Specification of Volatility Risk Premium; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
+
+**Use.** Read it.
+
+#### `research/papers/strategy_research/tv_ulzjcb7h_volume_by_time_luxalgo.md`
+
+`doc` · 92 lines · 4,071 B · description: **extracted**
+
+**Purpose.** Specification of Volume by Time [LuxAlgo]; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Read it.
+
+#### `research/papers/strategy_research/tv_uudeajsi_quadratic_regression.md`
+
+`doc` · 98 lines · 4,741 B · description: **extracted**
+
+**Purpose.** Specification of Quadratic Regression; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Read it.
+
+#### `research/papers/strategy_research/tv_wixmhdwt_seasonality_tfo.md`
+
+`doc` · 94 lines · 4,869 B · description: **extracted**
+
+**Purpose.** Specification of Seasonality [TFO]; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Read it.
+
+#### `research/papers/strategy_research/tv_x2llrvbe_higher_order_pivots.md`
+
+`doc` · 94 lines · 4,225 B · description: **extracted**
+
+**Purpose.** Specification of Higher Order Pivots; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Read it.
+
+#### `research/papers/strategy_research/tv_x2y6hyok_bitcoin_bullish_percent_index.md`
+
+`doc` · 97 lines · 4,962 B · description: **extracted**
+
+**Purpose.** Specification of Bitcoin Bullish Percent Index; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
+
+**Use.** Read it.
+
+#### `research/papers/strategy_research/tv_xh8tldte_realtime_delta_volume_action_lucf.md`
+
+`doc` · 106 lines · 6,988 B · description: **extracted**
+
+**Purpose.** Specification of Realtime Delta Volume Action [LucF]; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
+
+**Use.** Read it.
+
+#### `research/papers/strategy_research/tv_xlv4mwjk_time_range_statistics.md`
+
+`doc` · 96 lines · 5,232 B · description: **extracted**
+
+**Purpose.** Specification of Time Range Statistics; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Read it.
+
+#### `research/papers/strategy_research/tv_xyaiqwd8_auto_trendline_indicator_based_on_fractals.md`
+
+`doc` · 100 lines · 5,438 B · description: **extracted**
+
+**Purpose.** Specification of Auto Trendline Indicator (based on fractals); not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Read it.
+
+#### `research/papers/strategy_research/tv_y1x3vuyd_bollinger_band_and_t_line_timing.md`
+
+`doc` · 100 lines · 6,830 B · description: **extracted**
+
+**Purpose.** Specification of Bollinger Band and T-Line Timing; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Read it.
+
+#### `research/papers/strategy_research/tv_y3pnzg2q_correlation_heatmap.md`
+
+`doc` · 102 lines · 6,039 B · description: **extracted**
+
+**Purpose.** Specification of Correlation Heatmap; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
+
+**Use.** Read it.
+
+#### `research/papers/strategy_research/tv_ygno2g1v_tick_chart.md`
+
+`doc` · 92 lines · 4,304 B · description: **extracted**
+
+**Purpose.** Specification of Tick Chart; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Read it.
+
+#### `research/papers/strategy_research/tv_yhpgau7a_carrier_volatility_pumori.md`
+
+`doc` · 100 lines · 5,425 B · description: **extracted**
+
+**Purpose.** Specification of Carrier Volatility [Pumori]; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Read it.
+
+#### `research/papers/strategy_research/tv_yjxpjg0y_multi_asset_performance_spaghetti_by_leviathan.md`
+
+`doc` · 100 lines · 6,033 B · description: **extracted**
+
+**Purpose.** Specification of Multi-Asset Performance [Spaghetti] - By Leviathan; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
+
+**Use.** Read it.
+
+#### `research/papers/strategy_research/tv_yr3kt0ui_time_of_day_session_performance_stats_quantalgo.md`
+
+`doc` · 100 lines · 6,295 B · description: **extracted**
+
+**Purpose.** Specification of Time-of-Day/Session Performance Stats [QuantAlgo]; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Read it.
+
+#### `research/papers/strategy_research/tv_yyrxrhi9_atr_rope.md`
+
+`doc` · 102 lines · 5,876 B · description: **extracted**
+
+**Purpose.** Specification of ATR Rope; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Read it.
+
+#### `research/papers/strategy_research/tv_zartjpet_simple_investing_strategy_affordable_for_all.md`
+
+`doc` · 100 lines · 5,196 B · description: **extracted**
+
+**Purpose.** Specification of Simple Investing Strategy, Affordable for all!; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Read it.
+
+#### `research/papers/strategy_research/two_ma_v31_source_research.md`
+
+`doc` · 28 lines · 1,317 B · description: **extracted**
+
+**Purpose.** Source-bound moving-average research adapter; TradingView parity remains unverified.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
+
+**Use.** Read it.
+
+#### `research/papers/strategy_research/vol_of_vol_term_structure.md`
+
+`doc` · 57 lines · 1,885 B · description: **extracted**
+
+**Purpose.** Trade the shape and instability of the volatility surface.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=volatility, `evaluation`=None, `success_likelihood`=very-low, `data_available`=false, `registry_key`=null.
+
+**Use.** Read it.
+
+#### `research/papers/strategy_research/xs_momentum.md`
+
+`doc` · 64 lines · 2,571 B · description: **extracted**
+
+**Purpose.** Rank a universe by trailing return and hold the top decile. Needs peers this repo does not have.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=momentum, `evaluation`=None, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
 
 **Use.** Read it.
 
@@ -24375,22 +24655,6 @@ Drivers that produce the numbers, and the write-ups that quote them. Everything 
 **Purpose.** _No description available._
 
 **Use.** Read it; regenerate with the driver that produced it.
-
-#### `research/results/coinbase50_20261111_report_manifest.json`
-
-`result` · 13 lines · 967 B · description: **derived**
-
-**Purpose.** Generated JSON object, 3 keys (artifacts, report, run_manifest_sha256).
-
-**Use.** `json.load(open('research/results/coinbase50_20261111_report_manifest.json'))`
-
-#### `research/results/coinbase50_20261111_summary.json`
-
-`result` · 38863 lines · 1,357,275 B · description: **derived**
-
-**Purpose.** Generated JSON object, 11 keys (baselines, clock_tests, coin_rankings, cycle_summary, grid_eligible, grid_excluded...).
-
-**Use.** `json.load(open('research/results/coinbase50_20261111_summary.json'))`
 
 #### `research/results/combination_redundancy_sol_long.csv`
 
@@ -24421,22 +24685,6 @@ Drivers that produce the numbers, and the write-ups that quote them. Everything 
 **Contents.** Columns: `horizon`, `size`, `mode`, `a`, `b`, `corr`, `agree_active`, `both_flat`, `redundant`.
 
 **Use.** `pandas.read_csv('research/results/combination_redundancy_sol_short.csv')` — regenerate with the driver that names it.
-
-#### `research/results/compound-10coin-fullhistory-2026-11-07.json`
-
-`result` · 422 lines · 8,760 B · description: **derived**
-
-**Purpose.** Generated JSON object, 8 keys (run_id, configurations, round_trip_bps, leverage, coins, command...).
-
-**Use.** `json.load(open('research/results/compound-10coin-fullhistory-2026-11-07.json'))`
-
-#### `research/results/configuration_counts.json`
-
-`result` · 13 lines · 222 B · description: **derived**
-
-**Purpose.** Generated JSON object, 10 keys (long/pairs, long/singles, long/triples, medium/pairs, medium/singles, medium/triples...).
-
-**Use.** `json.load(open('research/results/configuration_counts.json'))`
 
 #### `research/results/cpcv_all25_1h.csv`
 
@@ -24478,14 +24726,6 @@ Drivers that produce the numbers, and the write-ups that quote them. Everything 
 
 **Use.** `pandas.read_csv('research/results/cpcv_all25_sol_doge_zec_1d.csv')` — regenerate with the driver that names it.
 
-#### `research/results/cpcv_combos_pbo.json`
-
-`result` · 97 lines · 1,288 B · description: **derived**
-
-**Purpose.** Generated JSON array, 6 entries.
-
-**Use.** `json.load(open('research/results/cpcv_combos_pbo.json'))`
-
 #### `research/results/cpcv_combos_results.csv`
 
 `result` · 1048 lines · 203,572 B · description: **derived**
@@ -24495,22 +24735,6 @@ Drivers that produce the numbers, and the write-ups that quote them. Everything 
 **Contents.** Columns: `horizon`, `kind`, `label`, `mode`, `family`, `n_paths`, `usable_blocks`, `median_sharpe`, `q1_sharpe`, `q3_sharpe`, `iqr_spread`, `frac_paths_positive`, `median_path_return`, `total_trades`, `insufficient`, `reason`.
 
 **Use.** `pandas.read_csv('research/results/cpcv_combos_results.csv')` — regenerate with the driver that names it.
-
-#### `research/results/cpcv_combos_tables.md`
-
-`result` · 145 lines · 12,226 B · description: **extracted**
-
-**Purpose.** _Top 15 of 262 evaluable shown._ _Top 15 of 52 evaluable shown._ _Top 15 of 260 evaluable shown._
-
-**Use.** Read it; regenerate with the driver that produced it.
-
-#### `research/results/cpcv_pbo.json`
-
-`result` · 127 lines · 2,601 B · description: **derived**
-
-**Purpose.** Generated JSON array, 3 entries.
-
-**Use.** `json.load(open('research/results/cpcv_pbo.json'))`
 
 #### `research/results/cpcv_results.csv`
 
@@ -24522,14 +24746,6 @@ Drivers that produce the numbers, and the write-ups that quote them. Everything 
 
 **Use.** `pandas.read_csv('research/results/cpcv_results.csv')` — regenerate with the driver that names it.
 
-#### `research/results/cpcv_tables.md`
-
-`result` · 94 lines · 7,016 B · description: **curated**
-
-**Purpose.** Generated Markdown tables from the CPCV sweep — the human-readable face of `cpcv_results.csv`, including the IQR column the headline medians must be read against.
-
-**Use.** Regenerate with `python3 research/cpcv_sweep.py`. Read alongside `research/RANKED_LISTS.md`.
-
 #### `research/results/cpcv_top5_sol_doge_zec_1d.csv`
 
 `result` · 17 lines · 2,599 B · description: **derived**
@@ -24540,14 +24756,6 @@ Drivers that produce the numbers, and the write-ups that quote them. Everything 
 
 **Use.** `pandas.read_csv('research/results/cpcv_top5_sol_doge_zec_1d.csv')` — regenerate with the driver that names it.
 
-#### `research/results/frontier-2026-11-07.json`
-
-`result` · 5556 lines · 143,755 B · description: **derived**
-
-**Purpose.** Generated JSON object, 8 keys (run_id, coins, configurations_tried_per_coin, note, candidates, chosen...).
-
-**Use.** `json.load(open('research/results/frontier-2026-11-07.json'))`
-
 #### `research/results/geometry_long_k2.csv`
 
 `result` · 177 lines · 10,235 B · description: **derived**
@@ -24557,14 +24765,6 @@ Drivers that produce the numbers, and the write-ups that quote them. Everything 
 **Contents.** Columns: `horizon`, `blocks`, `k`, `strategy`, `median_sharpe`, `frac_positive`, `trades`.
 
 **Use.** `pandas.read_csv('research/results/geometry_long_k2.csv')` — regenerate with the driver that names it.
-
-#### `research/results/geometry_long_k2.json`
-
-`result` · 52 lines · 725 B · description: **derived**
-
-**Purpose.** Generated JSON array, 7 entries.
-
-**Use.** `json.load(open('research/results/geometry_long_k2.json'))`
 
 #### `research/results/geometry_long_k2.txt`
 
@@ -24584,14 +24784,6 @@ Drivers that produce the numbers, and the write-ups that quote them. Everything 
 
 **Use.** `pandas.read_csv('research/results/geometry_medium_k2.csv')` — regenerate with the driver that names it.
 
-#### `research/results/geometry_medium_k2.json`
-
-`result` · 52 lines · 742 B · description: **derived**
-
-**Purpose.** Generated JSON array, 7 entries.
-
-**Use.** `json.load(open('research/results/geometry_medium_k2.json'))`
-
 #### `research/results/geometry_medium_k2.txt`
 
 `result` · 61 lines · 4,388 B · description: **derived**
@@ -24610,14 +24802,6 @@ Drivers that produce the numbers, and the write-ups that quote them. Everything 
 
 **Use.** `pandas.read_csv('research/results/geometry_short_k2.csv')` — regenerate with the driver that names it.
 
-#### `research/results/geometry_short_k2.json`
-
-`result` · 52 lines · 747 B · description: **derived**
-
-**Purpose.** Generated JSON array, 7 entries.
-
-**Use.** `json.load(open('research/results/geometry_short_k2.json'))`
-
 #### `research/results/geometry_short_k2.txt`
 
 `result` · 61 lines · 4,369 B · description: **derived**
@@ -24626,29 +24810,15 @@ Drivers that produce the numbers, and the write-ups that quote them. Everything 
 
 **Use.** Read it; regenerate with the driver that produced it.
 
-#### `research/results/grid_holdout_20261107.json`
+#### `research/results/jupiter_perps_leverage_20261118.csv`
 
-`result` · 34 lines · 987 B · description: **derived**
+`result` · 3896 lines · 557,907 B · description: **derived**
 
-**Purpose.** Generated JSON object, 8 keys (bars, data_sha256, first_close, first_ts, last_close, last_ts...).
+**Purpose.** Generated data: 3894 rows x 21 columns (asset, strategy, cadenceSeconds, size, leverage, risk, bufferPct, validation_returnPct...).
 
-**Use.** `json.load(open('research/results/grid_holdout_20261107.json'))`
+**Contents.** Columns: `asset`, `strategy`, `cadenceSeconds`, `size`, `leverage`, `risk`, `bufferPct`, `validation_returnPct`, `validation_drawdownPct`, `validation_trades`, `validation_liquidations`, `validation_refused`, `validation_stops`, `validation_takes`, `test_returnPct`, `test_drawdownPct`, `test_trades`, `test_liquidations`, `test_refused`, `test_stops`, `test_takes`.
 
-#### `research/results/grid_review_20261107.json`
-
-`result` · 296 lines · 9,023 B · description: **derived**
-
-**Purpose.** Generated JSON object, 13 keys (schema, review_date, engine_revision, data_file, data_sha256, costs...).
-
-**Use.** `json.load(open('research/results/grid_review_20261107.json'))`
-
-#### `research/results/hyperliquid-costs-2026-11-07.json`
-
-`result` · 187 lines · 3,599 B · description: **derived**
-
-**Purpose.** Generated JSON object, 10 keys (as_of, source, perp_fee_schedule_base, vip_tiers, referral_discount, book_cost_definition...).
-
-**Use.** `json.load(open('research/results/hyperliquid-costs-2026-11-07.json'))`
+**Use.** `pandas.read_csv('research/results/jupiter_perps_leverage_20261118.csv')` — regenerate with the driver that names it.
 
 #### `research/results/ladder_grid_sol.csv`
 
@@ -24659,14 +24829,6 @@ Drivers that produce the numbers, and the write-ups that quote them. Everything 
 **Contents.** Columns: `interval`, `mode`, `block`, `bars`, `lower`, `upper`, `capital_deployed`, `round_trips`, `realized_usd`, `pct_of_deployed`, `grid_total_return`, `grid_max_drawdown`, `hold_total_return`, `hold_max_drawdown`, `pct_bars_outside_ladder`, `buys`, `sells`, `forced_exit_qty`.
 
 **Use.** `pandas.read_csv('research/results/ladder_grid_sol.csv')` — regenerate with the driver that names it.
-
-#### `research/results/leverage_tiers_sol_1d.json`
-
-`result` · 78 lines · 2,255 B · description: **derived**
-
-**Purpose.** Generated JSON object, 5 keys (coverage, summary, ruin_level, groups, k).
-
-**Use.** `json.load(open('research/results/leverage_tiers_sol_1d.json'))`
 
 #### `research/results/leverage_tiers_sol_1d_per_strategy.csv`
 
@@ -24688,14 +24850,6 @@ Drivers that produce the numbers, and the write-ups that quote them. Everything 
 
 **Use.** `pandas.read_csv('research/results/leverage_tiers_sol_1d_summary.csv')` — regenerate with the driver that names it.
 
-#### `research/results/minute_coverage.json`
-
-`result` · 225 lines · 6,481 B · description: **derived**
-
-**Purpose.** Generated JSON object, 5 keys (generated, interval, venue, note, assets).
-
-**Use.** `json.load(open('research/results/minute_coverage.json'))`
-
 #### `research/results/minute_sweep_x1_common.csv`
 
 `result` · 202 lines · 36,423 B · description: **derived**
@@ -24708,7 +24862,7 @@ Drivers that produce the numbers, and the write-ups that quote them. Everything 
 
 #### `research/results/minute_sweep_x1_common.txt`
 
-`result` · 265 lines · 23,244 B · description: **derived**
+`result` · 265 lines · 23,260 B · description: **derived**
 
 **Purpose.** Generated report. Opens: PRELIMINARY 1-MINUTE SWEEP -- all cached assets x all registered strategies / parameter scale: x1 (bar counts as written)   window: common calendar across assets, capped at 500,000   fees 6bps + slippage 2bps
 
@@ -24753,14 +24907,6 @@ Drivers that produce the numbers, and the write-ups that quote them. Everything 
 **Contents.** Columns: `coin`, `horizon_minutes`, `selected`, `n`, `up_fraction`, `median_return_pct`, `mean_return_pct`, `return_pct_n`, `return_pct_ci_low`, `return_pct_ci_high`, `seven_day_blocks`, `mean_benchmark_pct`, `benchmark_pct_n`, `benchmark_pct_ci_low`, `benchmark_pct_ci_high`, `mean_excess_pp`, `excess_pp_n`, `excess_pp_ci_low`, `excess_pp_ci_high`, `mean_pre60_return_pct`, `pre60_return_pct_n`, `pre60_return_pct_ci_low`, `pre60_return_pct_ci_high`, `mean_pre60_excess_pp`, `pre60_excess_pp_n`, `pre60_excess_pp_ci_low`, `pre60_excess_pp_ci_high`, `mean_prior_week_return_pct`, `prior_week_return_pct_n`, `prior_week_return_pct_ci_low`, `prior_week_return_pct_ci_high`, `mean_paired_excess_delta_pp`, `paired_excess_delta_pp_n`, `paired_excess_delta_pp_ci_low`, `paired_excess_delta_pp_ci_high`, `mean_paired_absolute_delta_pp`, `paired_absolute_delta_pp_n`, `paired_absolute_delta_pp_ci_low`, `paired_absolute_delta_pp_ci_high`.
 
 **Use.** `pandas.read_csv('research/results/news_events_20261112_latency5_summary.csv')` — regenerate with the driver that names it.
-
-#### `research/results/news_events_20261112_manifest.json`
-
-`result` · 3082 lines · 135,636 B · description: **derived**
-
-**Purpose.** Generated JSON object, 13 keys (version, delta, study, selection, price_acquisition, analysis_source_provenance...).
-
-**Use.** `json.load(open('research/results/news_events_20261112_manifest.json'))`
 
 #### `research/results/news_events_20261112_reactions.png`
 
@@ -24844,14 +24990,6 @@ Drivers that produce the numbers, and the write-ups that quote them. Everything 
 
 **Use.** `pandas.read_csv('research/results/perturb_long_all_dual_momentum_vol_regime.csv')` — regenerate with the driver that names it.
 
-#### `research/results/perturb_long_all_dual_momentum_vol_regime.json`
-
-`result` · 11 lines · 274 B · description: **derived**
-
-**Purpose.** Generated JSON object, 8 keys (target, horizon, baseline_median_sharpe, baseline_iqr, max_abs_delta, ratio_to_iqr...).
-
-**Use.** `json.load(open('research/results/perturb_long_all_dual_momentum_vol_regime.json'))`
-
 #### `research/results/perturb_long_all_dual_momentum_vol_regime.txt`
 
 `result` · 27 lines · 1,979 B · description: **derived**
@@ -24869,14 +25007,6 @@ Drivers that produce the numbers, and the write-ups that quote them. Everything 
 **Contents.** Columns: `what`, `median_sharpe`, `iqr`, `frac_positive`, `median_return`, `trades`, `evaluable`.
 
 **Use.** `pandas.read_csv('research/results/perturb_long_all_macd_vol_regime.csv')` — regenerate with the driver that names it.
-
-#### `research/results/perturb_long_all_macd_vol_regime.json`
-
-`result` · 11 lines · 265 B · description: **derived**
-
-**Purpose.** Generated JSON object, 8 keys (target, horizon, baseline_median_sharpe, baseline_iqr, max_abs_delta, ratio_to_iqr...).
-
-**Use.** `json.load(open('research/results/perturb_long_all_macd_vol_regime.json'))`
 
 #### `research/results/perturb_long_all_macd_vol_regime.txt`
 
@@ -24896,14 +25026,6 @@ Drivers that produce the numbers, and the write-ups that quote them. Everything 
 
 **Use.** `pandas.read_csv('research/results/perturb_long_any_adx_trend_ou_reversion.csv')` — regenerate with the driver that names it.
 
-#### `research/results/perturb_long_any_adx_trend_ou_reversion.json`
-
-`result` · 11 lines · 273 B · description: **derived**
-
-**Purpose.** Generated JSON object, 8 keys (target, horizon, baseline_median_sharpe, baseline_iqr, max_abs_delta, ratio_to_iqr...).
-
-**Use.** `json.load(open('research/results/perturb_long_any_adx_trend_ou_reversion.json'))`
-
 #### `research/results/perturb_long_any_adx_trend_ou_reversion.txt`
 
 `result` · 25 lines · 1,843 B · description: **derived**
@@ -24921,14 +25043,6 @@ Drivers that produce the numbers, and the write-ups that quote them. Everything 
 **Contents.** Columns: `what`, `median_sharpe`, `iqr`, `frac_positive`, `median_return`, `trades`, `evaluable`.
 
 **Use.** `pandas.read_csv('research/results/perturb_long_any_hurst_switch_ou_reversion.csv')` — regenerate with the driver that names it.
-
-#### `research/results/perturb_long_any_hurst_switch_ou_reversion.json`
-
-`result` · 11 lines · 274 B · description: **derived**
-
-**Purpose.** Generated JSON object, 8 keys (target, horizon, baseline_median_sharpe, baseline_iqr, max_abs_delta, ratio_to_iqr...).
-
-**Use.** `json.load(open('research/results/perturb_long_any_hurst_switch_ou_reversion.json'))`
 
 #### `research/results/perturb_long_any_hurst_switch_ou_reversion.txt`
 
@@ -24948,14 +25062,6 @@ Drivers that produce the numbers, and the write-ups that quote them. Everything 
 
 **Use.** `pandas.read_csv('research/results/perturb_long_any_ou_reversion_obv_trend.csv')` — regenerate with the driver that names it.
 
-#### `research/results/perturb_long_any_ou_reversion_obv_trend.json`
-
-`result` · 11 lines · 271 B · description: **derived**
-
-**Purpose.** Generated JSON object, 8 keys (target, horizon, baseline_median_sharpe, baseline_iqr, max_abs_delta, ratio_to_iqr...).
-
-**Use.** `json.load(open('research/results/perturb_long_any_ou_reversion_obv_trend.json'))`
-
 #### `research/results/perturb_long_any_ou_reversion_obv_trend.txt`
 
 `result` · 23 lines · 1,670 B · description: **derived**
@@ -24973,14 +25079,6 @@ Drivers that produce the numbers, and the write-ups that quote them. Everything 
 **Contents.** Columns: `what`, `median_sharpe`, `iqr`, `frac_positive`, `median_return`, `trades`, `evaluable`.
 
 **Use.** `pandas.read_csv('research/results/perturb_long_obv_trend.csv')` — regenerate with the driver that names it.
-
-#### `research/results/perturb_long_obv_trend.json`
-
-`result` · 11 lines · 253 B · description: **derived**
-
-**Purpose.** Generated JSON object, 8 keys (target, horizon, baseline_median_sharpe, baseline_iqr, max_abs_delta, ratio_to_iqr...).
-
-**Use.** `json.load(open('research/results/perturb_long_obv_trend.json'))`
 
 #### `research/results/perturb_long_obv_trend.txt`
 
@@ -25000,14 +25098,6 @@ Drivers that produce the numbers, and the write-ups that quote them. Everything 
 
 **Use.** `pandas.read_csv('research/results/perturb_long_vol_regime.csv')` — regenerate with the driver that names it.
 
-#### `research/results/perturb_long_vol_regime.json`
-
-`result` · 11 lines · 254 B · description: **derived**
-
-**Purpose.** Generated JSON object, 8 keys (target, horizon, baseline_median_sharpe, baseline_iqr, max_abs_delta, ratio_to_iqr...).
-
-**Use.** `json.load(open('research/results/perturb_long_vol_regime.json'))`
-
 #### `research/results/perturb_long_vol_regime.txt`
 
 `result` · 21 lines · 1,469 B · description: **derived**
@@ -25025,14 +25115,6 @@ Drivers that produce the numbers, and the write-ups that quote them. Everything 
 **Contents.** Columns: `what`, `median_sharpe`, `iqr`, `frac_positive`, `median_return`, `trades`, `evaluable`.
 
 **Use.** `pandas.read_csv('research/results/perturb_medium_adx_trend.csv')` — regenerate with the driver that names it.
-
-#### `research/results/perturb_medium_adx_trend.json`
-
-`result` · 11 lines · 256 B · description: **derived**
-
-**Purpose.** Generated JSON object, 8 keys (target, horizon, baseline_median_sharpe, baseline_iqr, max_abs_delta, ratio_to_iqr...).
-
-**Use.** `json.load(open('research/results/perturb_medium_adx_trend.json'))`
 
 #### `research/results/perturb_medium_adx_trend.txt`
 
@@ -25052,14 +25134,6 @@ Drivers that produce the numbers, and the write-ups that quote them. Everything 
 
 **Use.** `pandas.read_csv('research/results/rotation_5coin_1d.csv')` — regenerate with the driver that names it.
 
-#### `research/results/shape_spot_20261111_audit.json`
-
-`result` · 29 lines · 1,330 B · description: **derived**
-
-**Purpose.** Generated JSON object, 16 keys (schema_version, task, run, reviewer, verdict, artifacts_verified...).
-
-**Use.** `json.load(open('research/results/shape_spot_20261111_audit.json'))`
-
 #### `research/results/shape_spot_20261111_comparisons.csv`
 
 `result` · 362 lines · 40,350 B · description: **derived**
@@ -25077,22 +25151,6 @@ Drivers that produce the numbers, and the write-ups that quote them. Everything 
 **Purpose.** _No description available._
 
 **Use.** Read it; regenerate with the driver that produced it.
-
-#### `research/results/shape_spot_20261111_manifest.json`
-
-`result` · 873 lines · 51,757 B · description: **derived**
-
-**Purpose.** Generated JSON object, 21 keys (artifacts, assets, code_sha256, fill_delay, folds, inputs...).
-
-**Use.** `json.load(open('research/results/shape_spot_20261111_manifest.json'))`
-
-#### `research/results/shape_spot_20261111_snapshots.json`
-
-`result` · 483 lines · 13,391 B · description: **derived**
-
-**Purpose.** Generated JSON array, 24 entries.
-
-**Use.** `json.load(open('research/results/shape_spot_20261111_snapshots.json'))`
 
 #### `research/results/shape_spot_20261111_summary.csv`
 
@@ -25184,30 +25242,6 @@ Drivers that produce the numbers, and the write-ups that quote them. Everything 
 
 **Use.** `pandas.read_csv('research/results/sweep_results.csv')` — regenerate with the driver that names it.
 
-#### `research/results/tables.md`
-
-`result` · 178 lines · 17,493 B · description: **extracted**
-
-**Purpose.** _1 configuration(s) excluded from the ranking for fewer than 10 out-of-sample trades: `buy_and_hold`._ _27 configuration(s) excluded from the ranking for fewer than 10 out-of-sample trades: `all(macd+hurst_switch)`, `all(ichimoku+hurst_switch)`, `all(dual_momentum+hurst_switch)`, `all(sma_regime+hurst_switch)`, `all(adx_trend+bb_reversion)`, `all(adx_trend+vwap_reversion)`, `all(adx_trend+ou_rever
-
-**Use.** Read it; regenerate with the driver that produced it.
-
-#### `research/results/top50-nonpegged-2026-11-07.json`
-
-`result` · 487 lines · 10,633 B · description: **derived**
-
-**Purpose.** Generated JSON object, 8 keys (as_of, source, listing_source, rule, excluded_pegged, coins...).
-
-**Use.** `json.load(open('research/results/top50-nonpegged-2026-11-07.json'))`
-
-#### `research/results/top50-screen-2026-11-07.json`
-
-`result` · 580 lines · 16,416 B · description: **derived**
-
-**Purpose.** Generated JSON object, 7 keys (as_of, universe_source, sources, criteria, not_checked, kept...).
-
-**Use.** `json.load(open('research/results/top50-screen-2026-11-07.json'))`
-
 #### `research/results/top_coins.csv`
 
 `result` · 17 lines · 910 B · description: **derived**
@@ -25228,14 +25262,6 @@ Drivers that produce the numbers, and the write-ups that quote them. Everything 
 
 **Use.** `pandas.read_csv('research/results/trigger_backtest_sol_1d.csv')` — regenerate with the driver that names it.
 
-#### `research/results/trigger_backtest_sol_1d.json`
-
-`result` · 6 lines · 133 B · description: **derived**
-
-**Purpose.** Generated JSON object, 4 keys (label, validation_start, validation_end, triggers).
-
-**Use.** `json.load(open('research/results/trigger_backtest_sol_1d.json'))`
-
 #### `research/results/triggers_sol_1d.csv`
 
 `result` · 302 lines · 262,454 B · description: **derived**
@@ -25246,14 +25272,6 @@ Drivers that produce the numbers, and the write-ups that quote them. Everything 
 
 **Use.** `pandas.read_csv('research/results/triggers_sol_1d.csv')` — regenerate with the driver that names it.
 
-#### `research/results/triggers_sol_1d.json`
-
-`result` · 50 lines · 983 B · description: **derived**
-
-**Purpose.** Generated JSON object, 25 keys (asset, interval, bars, first_bar_utc, last_bar_utc, discovery_start...).
-
-**Use.** `json.load(open('research/results/triggers_sol_1d.json'))`
-
 #### `research/results/triggers_sol_1h.csv`
 
 `result` · 302 lines · 237,022 B · description: **derived**
@@ -25263,38 +25281,6 @@ Drivers that produce the numbers, and the write-ups that quote them. Everything 
 **Contents.** Columns: `conditions`, `depth`, `direction`, `horizon`, `is_n`, `is_hit`, `is_base`, `is_p`, `is_z`, `is_ci_lo`, `is_ci_hi`, `is_mean_ret`, `is_median_ret`, `oos_n`, `oos_hit`, `oos_base`, `oos_p`, `oos_ci_lo`, `oos_ci_hi`, `oos_mean_ret`, `oos_median_ret`, `oos_mae_median`, `oos_mae_p10`, `oos_mfe_median`, `decay_hit`, `stop_frac`, `stable_share`, `stable_periods`, `stable_detail`, `repl_assets`, `repl_beating`, `repl_detail`, `path_is`, `path_oos`, `reliable`, `failed_gates`, `uses_funding`.
 
 **Use.** `pandas.read_csv('research/results/triggers_sol_1h.csv')` — regenerate with the driver that names it.
-
-#### `research/results/triggers_sol_1h.json`
-
-`result` · 42 lines · 902 B · description: **derived**
-
-**Purpose.** Generated JSON object, 25 keys (asset, interval, bars, first_bar_utc, last_bar_utc, discovery_start...).
-
-**Use.** `json.load(open('research/results/triggers_sol_1h.json'))`
-
-#### `research/results/volty_predictive_20261111.json`
-
-`result` · 251 lines · 7,604 B · description: **derived**
-
-**Purpose.** Generated JSON object, 10 keys (schema_version, created_at, source, source_sha256, source_market, evaluation...).
-
-**Use.** `json.load(open('research/results/volty_predictive_20261111.json'))`
-
-#### `research/results/volty_zec_20261110_forward_specs.json`
-
-`result` · 81 lines · 2,238 B · description: **derived**
-
-**Purpose.** Generated JSON object, 2 keys (schema_version, accounts).
-
-**Use.** `json.load(open('research/results/volty_zec_20261110_forward_specs.json'))`
-
-#### `research/results/volty_zec_20261110_manifest.json`
-
-`result` · 104 lines · 5,634 B · description: **derived**
-
-**Purpose.** Generated JSON object, 12 keys (schema_version, created_at, strategy, trials, configs_per_interval, selection...).
-
-**Use.** `json.load(open('research/results/volty_zec_20261110_manifest.json'))`
 
 #### `research/results/volty_zec_20261110_sweep.csv`
 
@@ -25326,22 +25312,6 @@ Drivers that produce the numbers, and the write-ups that quote them. Everything 
 
 **Use.** `pandas.read_csv('research/results/volty_zec_20261110_winners.csv')` — regenerate with the driver that names it.
 
-#### `research/results/zec_cycles_20261111_audit.json`
-
-`result` · 31 lines · 1,055 B · description: **derived**
-
-**Purpose.** Generated JSON object, 17 keys (version, task, reviewer, status, run, run_artifacts_verified...).
-
-**Use.** `json.load(open('research/results/zec_cycles_20261111_audit.json'))`
-
-#### `research/results/zec_cycles_20261111_calibration.json`
-
-`result` · 710 lines · 19,799 B · description: **derived**
-
-**Purpose.** Generated JSON object, 6 keys (version, source_sha256, method, rejection_threshold, rejected, rows).
-
-**Use.** `json.load(open('research/results/zec_cycles_20261111_calibration.json'))`
-
 #### `research/results/zec_cycles_20261111_coverage.csv`
 
 `result` · 34 lines · 1,880 B · description: **derived**
@@ -25372,14 +25342,6 @@ Drivers that produce the numbers, and the write-ups that quote them. Everything 
 
 **Use.** `pandas.read_csv('research/results/zec_cycles_20261111_forecasts.csv')` — regenerate with the driver that names it.
 
-#### `research/results/zec_cycles_20261111_manifest.json`
-
-`result` · 61 lines · 2,712 B · description: **derived**
-
-**Purpose.** Generated JSON object, 14 keys (artifacts, cutoff, forecast, inputs, missing_bars, replicates...).
-
-**Use.** `json.load(open('research/results/zec_cycles_20261111_manifest.json'))`
-
 #### `research/results/zec_cycles_20261111_pivots.csv`
 
 `result` · 94 lines · 5,627 B · description: **derived**
@@ -25389,14 +25351,6 @@ Drivers that produce the numbers, and the write-ups that quote them. Everything 
 **Contents.** Columns: `interval`, `kind`, `index`, `confirmed_index`, `threshold`, `timestamp`, `confirmed_at`, `price`.
 
 **Use.** `pandas.read_csv('research/results/zec_cycles_20261111_pivots.csv')` — regenerate with the driver that names it.
-
-#### `research/results/zec_cycles_20261111_report_manifest.json`
-
-`result` · 20 lines · 1,698 B · description: **derived**
-
-**Purpose.** Generated JSON object, 5 keys (analysis_source_sha256, outputs, report_source_sha256, run_manifest_sha256, version).
-
-**Use.** `json.load(open('research/results/zec_cycles_20261111_report_manifest.json'))`
 
 #### `research/results/zec_cycles_20261111_spacing.csv`
 
@@ -25434,311 +25388,1201 @@ Drivers that produce the numbers, and the write-ups that quote them. Everything 
 
 **Use.** Read it; regenerate with the driver that produced it.
 
-### `research/reversal-shapes-20261116/`
+#### `research/results/zec_gum_25x_5m_bracket_rankings.csv`
 
-#### `research/reversal-shapes-20261116/BTC-results.json.zlib`
+`result` · 73 lines · 21,574 B · description: **derived**
 
-`other` · 0 lines · 384,673 B · description: **none**
+**Purpose.** Generated data: 71 rows x 17 columns (scope, rank, candidate_id, name, family, parameters, tp_pct, sl_pct...).
+
+**Contents.** Columns: `scope`, `rank`, `candidate_id`, `name`, `family`, `parameters`, `tp_pct`, `sl_pct`, `development_return_pct`, `development_min_week_pct`, `development_max_drawdown_pct`, `development_exits`, `added_week_return_pct`, `added_week_drawdown_pct`, `added_week_exits`, `added_week_wins`, `added_week_liquidations`.
+
+**Use.** `pandas.read_csv('research/results/zec_gum_25x_5m_bracket_rankings.csv')` — regenerate with the driver that names it.
+
+#### `research/results/zec_gum_5m_10m_rankings.csv`
+
+`result` · 142 lines · 81,055 B · description: **derived**
+
+**Purpose.** Generated data: 140 rows x 48 columns (scope, rank, name, family, rules, parameters, origin, strategy_id...).
+
+**Contents.** Columns: `scope`, `rank`, `name`, `family`, `rules`, `parameters`, `origin`, `strategy_id`, `minutes`, `leverage`, `sizing`, `amount_usd`, `filter`, `bracket`, `tp_pct`, `sl_pct`, `initial_long_buffer_pct`, `initial_short_buffer_pct`, `validation_returnPct`, `validation_drawdownPct`, `validation_trades`, `validation_wins`, `validation_liquidations`, `validation_refused`, `validation_stops`, `validation_takes`, `validation_signals`, `validation_ends`, `validation_endPnlUsd`, `validation_fundingUsd`, `validation_heldMinutes`, `validation_grossWins`, `validation_grossLosses`, `test_returnPct`, `test_drawdownPct`, `test_trades`, `test_wins`, `test_liquidations`, `test_refused`, `test_stops`, `test_takes`, `test_signals`, `test_ends`, `test_endPnlUsd`, `test_fundingUsd`, `test_heldMinutes`, `test_grossWins`, `test_grossLosses`.
+
+**Use.** `pandas.read_csv('research/results/zec_gum_5m_10m_rankings.csv')` — regenerate with the driver that names it.
+
+#### `research/results/zec_gum_prior_top50_decoded.csv`
+
+`result` · 102 lines · 29,008 B · description: **derived**
+
+**Purpose.** Generated data: 100 rows x 29 columns (scope, rank, strategyFamily, strategyName, strategyRules, sizingAmountUsd, takeProfitPct, stopLossPct...).
+
+**Contents.** Columns: `scope`, `rank`, `strategyFamily`, `strategyName`, `strategyRules`, `sizingAmountUsd`, `takeProfitPct`, `stopLossPct`, `asset`, `strategy`, `cadenceSeconds`, `size`, `leverage`, `risk`, `bufferPct`, `validation_returnPct`, `validation_drawdownPct`, `validation_trades`, `validation_liquidations`, `validation_refused`, `validation_stops`, `validation_takes`, `test_returnPct`, `test_drawdownPct`, `test_trades`, `test_liquidations`, `test_refused`, `test_stops`, `test_takes`.
+
+**Use.** `pandas.read_csv('research/results/zec_gum_prior_top50_decoded.csv')` — regenerate with the driver that names it.
+
+### `research/scripts/`
+
+#### `research/scripts/backfill_control.py`
+
+`code-python` · 150 lines · 5,719 B · description: **extracted**
+
+**Purpose.** Explicit singleton backfill control; PIDs are diagnostic, never signal targets.
+
+**Contents.** Defines `parse_mode()`, `_record()`, `_publish()`, `held()`, `stop()`, `start()`, `main()`.
+
+**Use.** `python3 research/scripts/backfill_control.py --help`
+
+#### `research/scripts/candle_crosscheck.py`
+
+`code-python` · 168 lines · 7,549 B · description: **extracted**
+
+**Purpose.** Check the candle cache against itself: does a 1d bar equal its own 24 1h bars? No network, no ticks, and it covers the **entire** history rather than the month a tick rebuild can reach. That matters because the alternative -- rebuilding five years of ticks to audit the 1d series -- is several days of API calls, and this answers a large part of the same question in seconds.
+
+**Contents.** Defines `REPO`, `PRICE_REL_TOL`, `VOLUME_REL_TOL`, `compare()`, `main()`, `_resolve()`. Depends on `backtester`.
+
+**Use.** `python3 research/scripts/candle_crosscheck.py --help`
+
+#### `research/scripts/candle_gap_audit.py`
+
+`code-python` · 309 lines · 12,927 B · description: **extracted**
+
+**Purpose.** Audit -- and optionally repair -- gaps in Coinbase 1m candle data using ticks. Why this exists. A missing 1m candle has two possible causes that look identical in the file and have opposite consequences: * the minute genuinely had no trades (thin market), or * the minute traded and the candle endpoint dropped it. The first is honest data.
+
+**Contents.** Defines `REPO`, `PAD_BARS`, `class TickFetchUnavailable`, `gap_runs()`, `classify_run()`, `_fetch_window()`, `repair_window()`, `_run()`, `main()`. Depends on `backtester`.
+
+**Use.** `python3 research/scripts/candle_gap_audit.py --help`
+
+#### `research/scripts/coin_strategy_fit.py`
+
+`code-python` · 12 lines · 298 B · description: **extracted**
+
+**Purpose.** Stable direct-script entrypoint for the shared SolTUI coin-fit backend.
+
+**Contents.** Depends on `soltui`.
+
+**Use.** `import research.scripts.coin_strategy_fit`
+
+#### `research/scripts/coin_week.py`
+
+`code-python` · 1318 lines · 54,762 B · description: **extracted**
+
+**Purpose.** Repeat the candle-supported ZEC study on a fresh, frozen week of another coin. python -m research.coin_week --coin ETH --output /absolute/path/to/new-study python -m research.coin_week --coin ETH --output /absolute/path/to/new-study --resume Acquisition is an explicit phase; analysis and verification can run offline. This module never changes a recorder, model owner, paper trial or live account.
+
+**Contents.** Defines `ROOT`, `VERSION`, `STEPS`, `FEES`, `WINDOWS`, `STUDIES`, `identity()`, `coverage()`, `write_table()`, `input_hashes()` and 16 more. Depends on `backtester`, `research`.
+
+**Use.** `python3 research/scripts/coin_week.py --help`
+
+#### `research/scripts/coin_week_batch.py`
+
+`code-python` · 631 lines · 27,630 B · description: **extracted**
+
+**Purpose.** Frozen native-market combination studies; acquisition precedes simulation.
+
+**Contents.** Defines `CATALOGUE_URLS`, `coin_list()`, `catalogue_rows()`, `acquire_catalogue()`, `verify_catalogue()`, `combinations()`, `shared_path()`, `ledger()`, `frozen_ledger()`, `batch_report()` and 6 more. Depends on `research`.
+
+**Use.** `import research.scripts.coin_week_batch`
+
+#### `research/scripts/coin_week_correlations.py`
+
+`code-python` · 266 lines · 11,819 B · description: **extracted**
+
+**Purpose.** Past-only features, purged temporal splits and an explicit correlation search.
+
+**Contents.** Defines `HORIZONS`, `SEED`, `features()`, `split_indices()`, `sample_indices()`, `standardized()`, `permute_blocks()`, `analyze()`.
+
+**Use.** `import research.scripts.coin_week_correlations`
+
+#### `research/scripts/coin_week_data.py`
+
+`code-python` · 415 lines · 15,146 B · description: **extracted**
+
+**Purpose.** Explicit public candle acquisition for the weekly study; no execution access.
+
+**Contents.** Defines `BASE`, `BINANCE`, `PROVIDERS`, `MAX_BYTES`, `COLUMNS`, `digest()`, `save()`, `load()`, `coin_symbol()`, `week_bounds()` and 10 more. Depends on `research`.
+
+**Use.** `import research.scripts.coin_week_data`
+
+#### `research/scripts/coin_week_reports.py`
+
+`code-python` · 205 lines · 13,930 B · description: **extracted**
+
+**Purpose.** Human-readable definitions of the actual weekly market tests (report v2).
+
+**Contents.** Defines `MODE_LABELS`, `resolved_policy()`, `spec_label()`, `policy_label()`, `policy_details()`, `number()`, `render_report()`. Depends on `backtester`, `research`.
+
+**Use.** `import research.scripts.coin_week_reports`
+
+#### `research/scripts/coinbase50_data.py`
+
+`code-python` · 164 lines · 8,611 B · description: **extracted**
+
+**Purpose.** Explicit, resumable public-candle collection. Never connects to order APIs.
+
+**Contents.** Defines `CUTOFF`, `PLAN`, `sha()`, `save()`, `universe()`, `class RateLimit`, `collect_cell()`, `main()`. Depends on `backtester`.
+
+**Use.** `python3 research/scripts/coinbase50_data.py --help`
+
+#### `research/scripts/coinbase50_grid.py`
+
+`code-python` · 186 lines · 10,727 B · description: **extracted**
+
+**Purpose.** Training-only grid selection and entry gates; canonical resting-order fills.
+
+**Contents.** Defines `FACTORS`, `SCENARIOS`, `persistent_h1()`, `grid_features()`, `hourly_from_quarters()`, `causal_hour_features()`, `permissions()`, `normalized_arrays()`, `simulate()`, `passive()` and 1 more. Depends on `backtester`, `research`.
+
+**Use.** `import research.scripts.coinbase50_grid`
+
+#### `research/scripts/coinbase50_report.py`
+
+`code-python` · 142 lines · 20,422 B · description: **extracted**
+
+**Purpose.** Render audited numerical artifacts; the report never reruns a strategy.
+
+**Contents.** Defines `table()`, `coin_ranking()`, `verify_inputs()`, `main()`. Depends on `research`.
+
+**Use.** `python3 research/scripts/coinbase50_report.py --help`
+
+#### `research/scripts/coinbase50_stats.py`
+
+`code-python` · 180 lines · 9,899 B · description: **extracted**
+
+**Purpose.** Clock and wavelength diagnostics, with later-time validation and controls.
+
+**Contents.** Defines `SEED`, `market_calendar_residual()`, `harmonic_fit()`, `wavelength_windows()`, `cycle_summary()`, `daily_profiles()`, `clock_test()`, `adjust_clock_family()`. Depends on `research`.
+
+**Use.** `import research.scripts.coinbase50_stats`
+
+#### `research/scripts/coinbase50_study.py`
+
+`code-python` · 333 lines · 19,240 B · description: **extracted**
+
+**Purpose.** Coinbase survivor-cohort study. Explicit data, no orders or runtime changes.
+
+**Contents.** Defines `STUDY_END`, `TRAIN_DAYS`, `binding()`, `read()`, `admit_inputs()`, `diagnostics()`, `grid_coin()`, `bootstrap_differences()`, `portfolios()`, `main()`. Depends on `backtester`, `research`.
+
+**Use.** `python3 research/scripts/coinbase50_study.py --help`
+
+#### `research/scripts/cpcv_sweep.py`
+
+`code-python` · 531 lines · 24,401 B · description: **extracted**
+
+**Purpose.** CPCV sweep: replaces the single 70/30 split with a distribution of paths. python3 research/scripts/cpcv_sweep.py python3 research/scripts/cpcv_sweep.py --horizon medium --groups 8 --k 2 Why this exists: a single 70/30 split on SOL ends its in-sample window on the highest close in the whole series, so one split conflates "is this strategy any good" with "which regime landed in the test set".
+
+**Contents.** Defines `REPO`, `OUT`, `LEGEND`, `PBO_NOISE`, `PBO_INFORMATIVE`, `LOW_POSITIVE_SHARE`, `interpret()`, `TRIPLE_CANDIDATES`, `experiment_metadata()`, `bind_experiment()` and 3 more. Depends on `backtester`, `research`.
+
+**Use.** `python3 research/scripts/cpcv_sweep.py --help`
+
+#### `research/scripts/cross_asset_cpcv.py`
+
+`code-python` · 839 lines · 40,307 B · description: **extracted**
+
+**Purpose.** Cross-asset CPCV: run the registered strategy set, unchanged, on another coin. python3 research/scripts/cross_asset_cpcv.py --self-test python3 research/scripts/cross_asset_cpcv.py --assets DOGE,ZEC python3 research/scripts/cross_asset_cpcv.py --assets DOGE,ZEC --horizon long python3 research/scripts/cross_asset_cpcv.py --top5 --assets DOGE,ZEC --skip-self-test The last line is the second gate and
+
+**Contents.** Defines `REPO`, `data_dir()`, `OUT`, `REFERENCE`, `REFERENCE_ASSETS`, `REFERENCE_HORIZON`, `REFERENCE_GROUPS`, `REFERENCE_K`, `MIN_RANKABLE_TRADES`, `MAX_PATHS` and 18 more. Depends on `backtester`, `research`.
+
+**Use.** `python3 research/scripts/cross_asset_cpcv.py --help`
+
+#### `research/scripts/crosscoin_reversals.py`
+
+`code-python` · 372 lines · 15,084 B · description: **extracted**
+
+**Purpose.** Repeat the frozen ZEC reversal definitions on labelled historical candles. This descriptive analysis emits JSON only. It does not fit rules, submit trades, estimate fills, or interpret an excursion maximum as an executable profit.
+
+**Contents.** Defines `MASKS`, `wilson()`, `dense_bars()`, `rate_summary()`, `bar_color_baseline()`, `unconditional_endpoint()`, `analyze()`, `report()`, `main()`. Depends on `research`.
+
+**Use.** `python3 research/scripts/crosscoin_reversals.py --help`
+
+#### `research/scripts/decide.py`
+
+`code-python` · 1304 lines · 50,140 B · description: **extracted**
+
+**Purpose.** What every registered strategy, signal and indicator says about the last bar. python3 research/scripts/decide.py --asset SOL --interval 1d python3 research/scripts/decide.py --data data/BTC_1d.csv --json Three sections, because they are three different kinds of claim: * **Strategies** -- every entry in `core.strategies.REGISTRY`, replayed bar-by-bar from the start of history.
+
+**Contents.** Defines `REPO`, `DEFAULT_TOLERANCE`, `FLAT_EPSILON`, `STALE_AFTER_BARS`, `HOLD_LONG`, `HOLD_SHORT`, `FLAT`, `BUY`, `SELL`, `INSUFFICIENT` and 30 more. Depends on `backtester`.
+
+**Use.** `python3 research/scripts/decide.py --help`
+
+#### `research/scripts/dso_audit.py`
+
+`code-python` · 381 lines · 16,931 B · description: **extracted**
+
+**Purpose.** Mechanical half of the /dso statistical-honesty passes, run over the CPCV result CSVs. python3 research/scripts/dso_audit.py # audit every cpcv_* result file python3 research/scripts/dso_audit.py --floor 30 # raise the evidence floor `/dso` (the deep-strategy-optimizer skill) defines 19 audit passes.
+
+**Contents.** Defines `REPO`, `RESULTS`, `FLAT_TOL`, `RESULT_KEYS`, `class AuditError`, `load()`, `KNOWN_DUPLICATE_GROUPS`, `DATA_DIR`, `DEFAULT_ASSET`, `ASSET_TOKENS` and 8 more. Depends on `backtester`.
+
+**Use.** `python3 research/scripts/dso_audit.py --help`
+
+#### `research/scripts/evidence.py`
+
+`code-python` · 70 lines · 3,165 B · description: **extracted**
+
+**Purpose.** Stable experiment identities and byte-bound discovery gate evidence.
+
+**Contents.** Defines `canonical()`, `identity()`, `array_checksum()`, `source_hashes()`, `discovery_context()`, `write_gate_proof()`, `read_gate_table()`.
+
+**Use.** `import research.scripts.evidence`
+
+#### `research/scripts/exit50_acquire.py`
+
+`code-python` · 247 lines · 9,127 B · description: **extracted**
+
+**Purpose.** Bounded public oracle acquisition for the frozen exit50 study. Writes only private local transport, to be archived natively before scoring.
+
+**Contents.** Defines `census()`, `fetch_one()`, `main()`. Depends on `research`.
+
+**Use.** `python3 research/scripts/exit50_acquire.py --help`
+
+#### `research/scripts/exit50_backtest.py`
+
+`code-python` · 227 lines · 8,230 B · description: **extracted**
+
+**Purpose.** Causal fixed-grid paper exit replay; inputs must be natively archived. 200 ms is observed sampling, not a guarantee of keeper-path completeness. No OHLC price interpolation, signing, order placement, or fill assertion occurs.
+
+**Contents.** Defines `GRID_US`, `MARGIN`, `NOTIONAL`, `HOLD_US`, `POLICIES`, `replay()`, `sparse_replay()`, `fit_family_model()`, `select_policy()`. Depends on `research`.
+
+**Use.** `import research.scripts.exit50_backtest`
+
+#### `research/scripts/exit50_diagnostic.py`
+
+`code-python` · 415 lines · 16,769 B · description: **extracted**
+
+**Purpose.** Causal Coinbase visible-depth alignment for a separate ZEC diagnostic. This does not equate Coinbase orderbook imbalance with Jupiter orders or fills.
+
+**Contents.** Defines `diagnostic_candidates()`, `fetch_plan()`, `load_archived_inputs()`, `full_grid_position()`, `load_diagnostic_candidates()`, `diagnostic_lazy_plan()`, `evaluate_diagnostic()`. Depends on `research`.
+
+**Use.** `import research.scripts.exit50_diagnostic`
+
+#### `research/scripts/exit50_evaluate.py`
+
+`code-python` · 116 lines · 4,202 B · description: **extracted**
+
+**Purpose.** Evaluate the completed frozen cohort from native-archived local transport.
+
+**Contents.** Defines `main()`. Depends on `research`.
+
+**Use.** `python3 research/scripts/exit50_evaluate.py --help`
+
+#### `research/scripts/exit50_lazy.py`
+
+`code-python` · 138 lines · 5,275 B · description: **extracted**
+
+**Purpose.** Resume bounded native-first paper replay acquisition, without funded actions.
+
+**Contents.** Defines `main()`. Depends on `research`.
+
+**Use.** `python3 research/scripts/exit50_lazy.py --help`
+
+#### `research/scripts/exit50_orderflow.py`
+
+`code-python` · 118 lines · 4,278 B · description: **extracted**
+
+**Purpose.** Past-only visible Coinbase L2 imbalance for the frozen exit50 diagnostic. Inputs are retained receipt-time snapshots, not order counts or an exchange-wide book.
+
+**Contents.** Defines `NS`, `MAX_AGE_NS`, `BAND_BPS`, `book_feature()`, `taker_quote_imbalance()`.
+
+**Use.** `import research.scripts.exit50_orderflow`
+
+#### `research/scripts/exit50_report.py`
+
+`code-python` · 270 lines · 13,758 B · description: **extracted**
+
+**Purpose.** Render an auditable report from completed, archived exit50 result packs.
+
+**Contents.** Defines `pct()`, `line()`, `eligible_count()`, `render_report()`, `main()`. Depends on `research`.
+
+**Use.** `python3 research/scripts/exit50_report.py --help`
+
+#### `research/scripts/exit50_run.py`
+
+`code-python` · 818 lines · 31,274 B · description: **extracted**
+
+**Purpose.** Build frozen-cohort oracle minute acquisition plan and paper replay. All input transports must be archived and hash-verified before results publish.
+
+**Contents.** Defines `price_int()`, `slot_data()`, `study_candidates()`, `acquisition_slots()`, `minute_reader()`, `summarize()`, `run_scenarios()`, `check_envelopes()`, `paired_baseline()`, `summarize_paired()` and 5 more. Depends on `research`.
+
+**Use.** `import research.scripts.exit50_run`
+
+#### `research/scripts/fetch_zec_history.py`
+
+`code-python` · 245 lines · 12,216 B · description: **extracted**
+
+**Purpose.** Fetch checksum-verified Binance ZECUSDT spot history without altering shared caches. Explicit network step. Monthly/daily public ZIPs preserve publisher checksums; the market-data-only API appends closed tail candles. Both intervals use the same venue and quote currency. Missing bars remain missing and appear in a separate gap ledger.
+
+**Contents.** Defines `ARCHIVE_BASE`, `API_BASE`, `COLUMNS`, `STEPS`, `DEFAULT_OUTPUT`, `request_bytes()`, `digest()`, `normalize_frame()`, `archive_job()`, `read_archive()` and 5 more. Depends on `backtester`.
+
+**Use.** `python3 research/scripts/fetch_zec_history.py --help`
+
+#### `research/scripts/frontier_tune.py`
+
+`code-python` · 265 lines · 13,207 B · description: **extracted**
+
+**Purpose.** Tune the frontier's promising rows without peeking at the out-of-sample window. /Users/mitch/.venvs/soltui/bin/python research/scripts/frontier_tune.py --run-id <frontier sweep run id> Input: one `python -m soltui.compound sweep --frontier` run in the compound results file (every metric alone, its strongest 2% of readings, held 1 h / 4 h / 24 h, unlevered, on every coin). 1.
+
+**Contents.** Defines `REPO`, `HOLDS`, `QUANTILES`, `FACTORS`, `results_file()`, `load_run()`, `is_sharpe()`, `oos()`, `candidates()`, `config_for()` and 5 more. Depends on `backtester`.
+
+**Use.** `python3 research/scripts/frontier_tune.py --help`
+
+#### `research/scripts/full_suite.py`
+
+`code-python` · 255 lines · 13,861 B · description: **extracted**
+
+**Purpose.** Pull fresh data, then run every backtest: all coins, all strategies, all configurations. python3 research/scripts/full_suite.py --plan # print every step; touches nothing python3 research/scripts/full_suite.py # fetch, then both sweeps (hours) python3 research/scripts/full_suite.py --skip-fetch # re-run the sweeps on the cache you have python3 research/scripts/full_suite.py --fetch-only # refresh
+
+**Contents.** Defines `REPO`, `DEFAULT_ASSETS`, `fetch_steps()`, `sweep_steps()`, `listed_only()`, `archive_registry_results()`, `main()`. Depends on `backtester`, `soltui`.
+
+**Use.** `python3 research/scripts/full_suite.py --help`
+
+#### `research/scripts/geometry.py`
+
+`code-python` · 322 lines · 14,200 B · description: **extracted**
+
+**Purpose.** How much of the CPCV ranking is an artifact of the block count? python3 research/scripts/geometry.py --horizon long python3 research/scripts/geometry.py --horizon medium --blocks 6 12 --k 2 ## The question, and why it is not the perturbation question `perturb.py` asks whether a configuration's *number* survives nudging its parameters.
+
+**Contents.** Defines `REPO`, `OUT`, `class GeometryRun`, `spearman()`, `evaluate_geometry()`, `align_pbo_populations()`, `tidy_frame()`, `render()`, `verdict()`, `main()`. Depends on `backtester`, `research`.
+
+**Use.** `python3 research/scripts/geometry.py --help`
+
+#### `research/scripts/grid_holdout.py`
+
+`code-python` · 85 lines · 3,351 B · description: **extracted**
+
+**Purpose.** Run the predeclared ladder from research/json/results/grid_review_20261107.json on bars it never saw. The review used a cache that ended 2026-08-04. This script scores the same configuration (bounds 85%-115% of the first close, seven geometric rungs, $12 per rung, $144 account) on bars from 2026-08-05 onward, at the review's costs and at twice those costs. Nothing is fitted.
+
+**Contents.** Defines `HOLDOUT_START_TS`, `HOLDOUT_END_TS`, `ACCOUNT_USD`, `run()`, `main()`. Depends on `backtester`.
+
+**Use.** `python3 research/scripts/grid_holdout.py --help`
+
+#### `research/scripts/jupiter_perps_presets.py`
+
+`code-python` · 53 lines · 1,959 B · description: **extracted**
+
+**Purpose.** Export positive baseline rows the Perps paper signal engine can express.
+
+**Contents.** Defines `OUTPUT`, `SUPPORTED`, `main()`. Depends on `research`.
+
+**Use.** `python3 research/scripts/jupiter_perps_presets.py --help`
+
+#### `research/scripts/leverage_economics.py`
+
+`code-python` · 170 lines · 8,155 B · description: **extracted**
+
+**Purpose.** Cost economics of high-leverage perpetuals, for Jupiter Perps specifically. Generates every table in research/LEVERAGE-ECONOMICS.md. No network, no data files -- this is closed-form arithmetic over published venue parameters, so it reproduces exactly.
+
+**Contents.** Defines `FEE_RT`, `R_LONG`, `R_SHORT`, `HOLDS`, `LEVS`, `break_even_move()`, `carry_crossover_hours()`, `hours_to_zero_collateral()`, `liquidation_move()`, `_fmt_h()` and 3 more.
+
+**Use.** `python3 research/scripts/leverage_economics.py --help`
+
+#### `research/scripts/leverage_tiers.py`
+
+`code-python` · 184 lines · 8,600 B · description: **extracted**
+
+**Purpose.** Low / medium / high margin tiers across the existing strategies, CPCV out-of-sample. python3 -m research.leverage_tiers --asset SOL --interval 1d python3 -m research.leverage_tiers --asset SOL --interval 1d --tiers 2,5,20 Every registered strategy (at the sweep's horizon parameters) is run as a Jupiter-Perps position at each tier's leverage, with fees, slippage, borrow carry, maintenance margin an
+
+**Contents.** Defines `REPO`, `OUT`, `RUIN_LEVEL`, `HORIZON_FOR`, `_layer()`, `load_layers()`, `path_stats()`, `run()`, `coverage_audit()`, `main()`. Depends on `backtester`, `research`.
+
+**Use.** `python3 research/scripts/leverage_tiers.py --help`
+
+#### `research/scripts/meta_analysis.py`
+
+`code-python` · 177 lines · 8,746 B · description: **extracted**
+
+**Purpose.** Consolidate trial evidence without treating overlapping artifacts as studies. The single JSON output preserves original records and units. The prose synthesis uses family-level findings; it never pools incompatible returns into a grand mean.
+
+**Contents.** Defines `sha()`, `clean()`, `load()`, `_decode_bytes()`, `family()`, `role()`, `sources()`, `consolidate()`, `main()`.
+
+**Use.** `python3 research/scripts/meta_analysis.py --help`
+
+#### `research/scripts/meta_followups.py`
+
+`code-python` · 278 lines · 17,376 B · description: **extracted**
+
+**Purpose.** Fixed, costed reanalysis of examined history; never a fresh holdout test. This module cannot trade. It reuses the canonical long/flat spot book and records the exact common calendar, data, source and costs used by each comparison.
+
+**Contents.** Defines `END_EXCLUSIVE`, `ASSETS`, `FEES_BPS`, `CAPITAL`, `STRATEGIES`, `sha()`, `save()`, `class FrozenTargets`, `longest_common_calendar()`, `replay()` and 5 more. Depends on `backtester`, `research`.
+
+**Use.** `python3 research/scripts/meta_followups.py --help`
+
+#### `research/scripts/minute_sweep.py`
+
+`code-python` · 530 lines · 25,031 B · description: **extracted**
+
+**Purpose.** Preliminary backtest of every registered strategy against every 1-minute series. python3 research/scripts/minute_sweep.py # default 500k-bar window python3 research/scripts/minute_sweep.py --all-bars # full history, hours python3 research/scripts/minute_sweep.py --common-window # one calendar for all assets python3 research/scripts/minute_sweep.py --param-scale 60 # wall-clock-preserving params ##
+
+**Contents.** Defines `REPO`, `OUT`, `BAR_KEYS`, `FEE_BPS`, `SLIPPAGE_BPS`, `DEFAULT_BARS`, `MINUTE`, `SLICES`, `class Cell`, `scaled_params()` and 11 more. Depends on `backtester`, `research`.
+
+**Use.** `python3 research/scripts/minute_sweep.py --help`
+
+#### `research/scripts/mtf_reversal.py`
+
+`code-python` · 324 lines · 10,996 B · description: **extracted**
+
+**Purpose.** Causal, exploratory multi-timeframe UU reversal study; no execution.
+
+**Contents.** Defines `THRESHOLDS`, `BARRIERS`, `frame_index()`, `context_at()`, `live_context()`, `score_context()`, `classify()`, `make_events()`, `fit()`, `metrics()` and 4 more. Depends on `research`.
+
+**Use.** `python3 research/scripts/mtf_reversal.py --help`
+
+#### `research/scripts/news_event_report.py`
+
+`code-python` · 351 lines · 18,877 B · description: **extracted**
+
+**Purpose.** Render the frozen coin-news event study without fetching or selecting events.
+
+**Contents.** Defines `PREFIX`, `number()`, `interval()`, `render()`, `_paired_latency()`, `_figure()`, `main()`. Depends on `research`.
+
+**Use.** `python3 research/scripts/news_event_report.py --help`
+
+#### `research/scripts/news_event_study.py`
+
+`code-python` · 487 lines · 18,746 B · description: **extracted**
+
+**Purpose.** Exploratory publication-time event study on frozen local news and prices. The analysis never fetches, fills missing candles, or submits orders. A minute open is a bucket proxy; it is not the trade available at publication time.
+
+**Contents.** Defines `VERSION`, `SEED`, `COINS`, `HORIZONS`, `COIN_WORDS`, `EVENT_TYPES`, `COMMENTARY`, `class NewsPrerequisiteError`, `_preflight()`, `_bootstrap_and_reexec()` and 17 more. Depends on `backtester`.
+
+**Use.** `python3 research/scripts/news_event_study.py --help`
+
+#### `research/scripts/oracle_common_window.py`
+
+`code-python` · 78 lines · 3,990 B · description: **extracted**
+
+**Purpose.** Shared, read-only Jupiter ZEC oracle comparison window; not TV market data.
+
+**Contents.** Defines `SOURCE_SHA256`, `SOURCE_ARTIFACT`, `START`, `STOP`, `ALIASES`, `load_window()`, `aggregate()`, `equal_notional_qty()`. Depends on `research`.
+
+**Use.** `import research.scripts.oracle_common_window`
+
+#### `research/scripts/oracle_compare.py`
+
+`code-python` · 64 lines · 3,198 B · description: **extracted**
+
+**Purpose.** Common-window equal-notional order sensitivity; no live execution.
+
+**Contents.** Defines `size_at_close()`, `compare()`. Depends on `research`.
+
+**Use.** `import research.scripts.oracle_compare`
+
+#### `research/scripts/oracle_reversal_inputs.py`
+
+`code-python` · 103 lines · 3,406 B · description: **extracted**
+
+**Purpose.** Bounded public oracle OHLC acquisition for the frozen second-turn study.
+
+**Contents.** Defines `ENDPOINT`, `PAGE_MINUTES`, `MAX_BYTES`, `class NoRedirect`, `decode_history()`, `acquire()`, `main()`. Depends on `research`.
+
+**Use.** `python3 research/scripts/oracle_reversal_inputs.py --help`
+
+#### `research/scripts/perturb.py`
+
+`code-python` · 469 lines · 20,174 B · description: **extracted**
+
+**Purpose.** Parameter-perturbation stability check for one configuration. python3 research/scripts/perturb.py --horizon long --pair dual_momentum vol_regime --mode all python3 research/scripts/perturb.py --horizon medium --single hurst_switch ## What this answers, and why it is the right question A CPCV median Sharpe tells you how a configuration did across regime-mixed paths.
+
+**Contents.** Defines `REPO`, `OUT`, `BOUNDED_UNIT`, `REFERENCE`, `REFERENCE_HIGH`, `class Trial`, `class Report`, `perturbed_values()`, `evaluate()`, `run()` and 4 more. Depends on `backtester`, `research`.
+
+**Use.** `python3 research/scripts/perturb.py --help`
+
+#### `research/scripts/pine_bar_emulator.py`
+
+`code-python` · 160 lines · 8,175 B · description: **extracted**
+
+**Purpose.** Offline Pine-style order sensitivity; not a TradingView parity claim. Callers emit ordered close-time intent lists. Orders become eligible on the next bar. Historical OHLC order is assumed rather than observed. Quantity is explicit and has a one-price-unit contract multiplier. Funding, spread, margin and liquidation are not modelled.
+
+**Contents.** Defines `class Intent`, `class Bar`, `simulate()`.
+
+**Use.** `import research.scripts.pine_bar_emulator`
+
+#### `research/scripts/quote_bars.py`
+
+`code-python` · 135 lines · 4,608 B · description: **extracted**
+
+**Purpose.** Read existing normalized quote captures without starting a recorder.
+
+**Contents.** Defines `class QuoteBars`.
+
+**Use.** `import research.scripts.quote_bars`
+
+#### `research/scripts/ratio_rotation.py`
+
+`code-python` · 1535 lines · 67,191 B · description: **extracted**
+
+**Purpose.** Numeraire-switching rotation: hold whichever coin is cheapest against its peers. python3 research/scripts/ratio_rotation.py --self-test python3 research/scripts/ratio_rotation.py --turnover-table python3 research/scripts/ratio_rotation.py --demo-chain python3 research/scripts/ratio_rotation.py --sweep python3 research/scripts/ratio_rotation.py --sweep --assets BTC,ETH,SOL,DOGE,ZEC,XRP This answers
+
+**Contents.** Defines `REPO`, `OUT_DIR`, `PRIMARY_ASSETS`, `SECONDARY_ASSETS`, `MIN_OOS_ROTATIONS`, `SPLIT`, `SWEEP_WINDOWS`, `SWEEP_TOP_K`, `SWEEP_DIRECTIONS`, `SWEEP_MARGINS` and 26 more. Depends on `backtester`.
+
+**Use.** `python3 research/scripts/ratio_rotation.py --help`
+
+#### `research/scripts/result_paths.py`
+
+`code-python` · 14 lines · 588 B · description: **extracted**
+
+**Purpose.** Locations for published research outputs in the repository.
+
+**Contents.** Defines `result_path()`.
+
+**Use.** `import research.scripts.result_paths`
+
+#### `research/scripts/reversal_history.py`
+
+`code-python` · 293 lines · 10,273 B · description: **extracted**
+
+**Purpose.** Bounded, public historical inputs for the fixed cross-coin reversal study. Commands emit JSON to stdout. They never modify caches, recorders or databases. The caller archives each snapshot in MongoDB before creating local projections.
+
+**Contents.** Defines `COINS`, `MAX_BYTES`, `canonical()`, `digest()`, `pack()`, `unpack()`, `read_archive()`, `epoch()`, `iso()`, `validated_rows()` and 4 more.
+
+**Use.** `python3 research/scripts/reversal_history.py --help`
+
+#### `research/scripts/reversal_inputs.py`
+
+`code-python` · 127 lines · 3,980 B · description: **extracted**
+
+**Purpose.** Acquire an exact public BTC minute snapshot; never trade or synthesize bars.
+
+**Contents.** Defines `BASE`, `class NoRedirect`, `fetch()`, `main()`. Depends on `research`.
+
+**Use.** `python3 research/scripts/reversal_inputs.py --help`
+
+#### `research/scripts/reversal_second_turn.py`
+
+`code-python` · 447 lines · 15,030 B · description: **extracted**
+
+**Purpose.** Exploratory causal UU→D and UUD→U study with full-bar oracle barriers. The existing prospective trial and its immutable selection are not modified.
+
+**Contents.** Defines `BARRIERS`, `BASES`, `STAGES`, `COMMON`, `SECOND`, `aggregate()`, `features()`, `flags()`, `crosses()`, `make_events()` and 5 more. Depends on `research`.
+
+**Use.** `python3 research/scripts/reversal_second_turn.py --help`
+
+#### `research/scripts/reversal_shapes.py`
+
+`code-python` · 471 lines · 17,169 B · description: **extracted**
+
+**Purpose.** Frozen, causal two-bar/shape study and the identical prospective signal rule. Spot candles support direction counts and cost sensitivities, not Jupiter fills. The final chronological split is never consulted by the selector.
+
+**Contents.** Defines `START`, `STOP`, `INTERVALS`, `WINDOW`, `FEE_BPS`, `GROUPS`, `sha()`, `group_for()`, `boundaries()`, `wilson()` and 12 more. Depends on `research`.
+
+**Use.** `python3 research/scripts/reversal_shapes.py --help`
+
+#### `research/scripts/rs_zigzag.py`
+
+`code-python` · 260 lines · 12,874 B · description: **extracted**
+
+**Purpose.** Research-only RS ZigZag signal model; no networking or trading. The user-supplied legacy Pine source is not distributed here. The `legacy` mode intentionally projects a completed hourly bar into its first child bar and is unsuitable for live use. `confirmed` delays the hourly expression by one complete hourly bar. Neither mode is certified TradingView parity.
+
+**Contents.** Defines `class Bar`, `_validate()`, `_hourly()`, `_zigzags()`, `pivot_events()`, `_patterns()`, `signals()`, `class ExecutionAssumptions`, `simulate_decisions()`.
+
+**Use.** `import research.scripts.rs_zigzag`
+
+#### `research/scripts/rs_zigzag_equal_proxy.py`
+
+`code-python` · 67 lines · 2,984 B · description: **extracted**
+
+**Purpose.** Common-window RS ZigZag sizing comparison; never TV or venue parity.
+
+**Contents.** Defines `run()`, `main()`. Depends on `research`.
+
+**Use.** `python3 research/scripts/rs_zigzag_equal_proxy.py --help`
+
+#### `research/scripts/rs_zigzag_proxy.py`
+
+`code-python` · 106 lines · 5,449 B · description: **extracted**
+
+**Purpose.** Frozen retrospective Jupiter-oracle sensitivity; never TV parity.
+
+**Contents.** Defines `SOURCE_SHA256`, `SOURCE_ID`, `START`, `STOP`, `ALIASES`, `aggregate()`, `run()`, `main()`. Depends on `research`.
+
+**Use.** `python3 research/scripts/rs_zigzag_proxy.py --help`
+
+#### `research/scripts/run_backfill.sh`
+
+`code-shell` · 158 lines · 5,553 B · description: **none**
 
 **Purpose.** _No description available._
 
 **Use.** Read it.
 
-#### `research/reversal-shapes-20261116/ZEC-results.json.zlib`
+#### `research/scripts/second_turn_report.py`
 
-`other` · 0 lines · 367,978 B · description: **none**
+`code-python` · 352 lines · 16,851 B · description: **extracted**
 
-**Purpose.** _No description available._
+**Purpose.** Derive the readable report and fixed examples from native second-turn results.
 
-**Use.** Read it.
+**Contents.** Defines `iso()`, `fraction()`, `baseline_rows()`, `lifts()`, `examples()`, `report()`, `figures()`, `main()`. Depends on `research`.
 
-#### `research/reversal-shapes-20261116/manifest.json`
+**Use.** `python3 research/scripts/second_turn_report.py --help`
 
-`config` · 88 lines · 3,706 B · description: **derived**
+#### `research/scripts/shape_report.py`
 
-**Purpose.** Generated JSON object, 11 keys (schema, run_id, qualification, sources, outputs, audits...).
+`code-python` · 342 lines · 19,390 B · description: **extracted**
 
-**Use.** Configuration; nothing to run.
+**Purpose.** Verify shape-study evidence and render its measured tables without hand edits.
 
-#### `research/reversal-shapes-20261116/selection.json`
+**Contents.** Defines `table()`, `verify_fixed_report_contract()`, `main()`. Depends on `research`.
 
-`config` · 2 lines · 1,068 B · description: **derived**
+**Use.** `python3 research/scripts/shape_report.py --help`
 
-**Purpose.** Generated JSON object, 5 keys (limits, rules, run_id, schema, source).
+#### `research/scripts/shape_study.py`
 
-**Use.** Configuration; nothing to run.
+`code-python` · 668 lines · 26,670 B · description: **extracted**
 
-### `research/second-turn-20261116/`
+**Purpose.** Causal price-path geometry and unlevered spot research; never submits orders. Run with local Coinbase USD candle files. The geometric rules are hypotheses, not the unsupported effect sizes quoted in the earlier geometry dossier.
 
-#### `research/second-turn-20261116/BTC-first_down.svg`
+**Contents.** Defines `VERSION`, `ASSETS`, `SINGLES`, `PAIRS`, `SCENARIOS`, `SHAPES`, `WINDOW`, `digest()`, `write_json()`, `_fit()` and 12 more. Depends on `backtester`.
 
-`other` · 0 lines · 121,593 B · description: **none**
+**Use.** `python3 research/scripts/shape_study.py --help`
 
-**Purpose.** _No description available._
+#### `research/scripts/short_horizon_economics.py`
 
-**Use.** Read it.
+`code-python` · 283 lines · 13,676 B · description: **extracted**
 
-#### `research/second-turn-20261116/BTC-results.json.zlib`
+**Purpose.** Cost economics of SHORT-HORIZON leveraged perpetuals on Jupiter Perps. Sibling of research/scripts/leverage_economics.py, which stops at a 1-hour hold.
 
-`other` · 0 lines · 2,539,686 B · description: **none**
+**Contents.** Defines `FEE_RT`, `R_LONG`, `R_SHORT`, `UTIL`, `VOL_ANNUAL`, `HOURS_PER_YEAR`, `HORIZONS`, `TX_COSTS`, `NOTIONALS`, `LEVS` and 11 more.
 
-**Purpose.** _No description available._
+**Use.** `python3 research/scripts/short_horizon_economics.py --help`
 
-**Use.** Read it.
+#### `research/scripts/signal_redundancy.py`
 
-#### `research/second-turn-20261116/BTC-second_up.svg`
+`code-python` · 630 lines · 27,403 B · description: **extracted**
 
-`other` · 0 lines · 121,322 B · description: **none**
+**Purpose.** Measure how many independent bets the strategy registry actually contains. python3 research/scripts/signal_redundancy.py # SOL, medium python3 research/scripts/signal_redundancy.py --horizon short # SOL hourly, slower python3 research/scripts/signal_redundancy.py --asset BTC --out auto # BTC, canonical name python3 research/scripts/signal_redundancy.py --top 25 # longer pair list Why this script e
 
-**Purpose.** _No description available._
+**Contents.** Defines `REPO`, `OUT`, `VARIANCE_TARGET`, `SKIP_FAMILIES`, `exposure_matrix()`, `redundancy()`, `pair_table()`, `per_strategy_table()`, `family_verdict()`, `twin_groups()` and 6 more. Depends on `backtester`, `research`.
 
-**Use.** Read it.
+**Use.** `python3 research/scripts/signal_redundancy.py --help`
 
-#### `research/second-turn-20261116/ZEC-first_down.svg`
+#### `research/scripts/strategy_aux_compare.py`
 
-`other` · 0 lines · 123,427 B · description: **none**
+`code-python` · 308 lines · 17,075 B · description: **extracted**
 
-**Purpose.** _No description available._
+**Purpose.** Offline paired comparison of executable mechanisms outside the strategy registry.
 
-**Use.** Read it.
+**Contents.** Defines `REPO`, `sha()`, `_percent()`, `module()`, `paired_bots()`, `paired_peer()`, `run()`, `percentage()`, `main()`. Depends on `backtester`, `research`.
 
-#### `research/second-turn-20261116/ZEC-results.json.zlib`
+**Use.** `python3 research/scripts/strategy_aux_compare.py --help`
 
-`other` · 0 lines · 2,414,925 B · description: **none**
+#### `research/scripts/strategy_compare.py`
 
-**Purpose.** _No description available._
+`code-python` · 356 lines · 19,619 B · description: **extracted**
 
-**Use.** Read it.
+**Purpose.** Paired, offline comparison of frozen strategy packages; never selects parameters. Run ``python3 research/scripts/strategy_compare.py --help``. Research output, not investment advice; simulation only. Every failed cell remains in the output.
 
-#### `research/second-turn-20261116/ZEC-second_up.svg`
+**Contents.** Defines `REPO`, `DEFAULT_DATASETS`, `source_hashes()`, `load_registry()`, `window()`, `targets()`, `accuracy_panel()`, `class EvaluationWindow`, `class FrozenSignals`, `load_sample()` and 6 more. Depends on `backtester`, `research`.
 
-`other` · 0 lines · 118,948 B · description: **none**
+**Use.** `python3 research/scripts/strategy_compare.py --help`
 
-**Purpose.** _No description available._
+#### `research/scripts/strategy_config_sweep.py`
 
-**Use.** Read it.
+`code-python` · 560 lines · 28,135 B · description: **extracted**
 
-#### `research/second-turn-20261116/derived-details.json.zlib`
+**Purpose.** Resumable, parallel CPCV sweep over every active cached coin and buildable card. This command reads cached candles only. Use ``--plan`` first; fetching is a separate, explicit command. Results are append-only JSONL under the selected output directory and are flushed after every completed configuration.
 
-`other` · 0 lines · 30,371 B · description: **none**
+**Contents.** Defines `REPO`, `MIN_CONFIGURATIONS`, `ASSET_FILE`, `_OUTPUT_LOCK_HANDLE`, `_hash()`, `_atomic_json()`, `discover_assets()`, `_derived_interval()`, `available_files()`, `_source_fingerprint()` and 12 more. Depends on `backtester`, `soltui`.
 
-**Purpose.** _No description available._
+**Use.** `python3 research/scripts/strategy_config_sweep.py --help`
 
-**Use.** Read it.
+#### `research/scripts/strategy_snapshots.py`
 
-#### `research/second-turn-20261116/manifest.json`
+`code-python` · 60 lines · 3,032 B · description: **extracted**
 
-`config` · 72 lines · 3,708 B · description: **derived**
+**Purpose.** Expand content-verified experiment sources without duplicating search indexes.
 
-**Purpose.** Generated JSON object, 5 keys (version, run_id, scope, files, native_only).
+**Contents.** Defines `DEFAULT_EXPERIMENT`, `ensure_snapshots()`.
 
-**Use.** Configuration; nothing to run.
+**Use.** `import research.scripts.strategy_snapshots`
 
-### `research/strategy_experiment/`
+#### `research/scripts/sweep.py`
 
-#### `research/strategy_experiment/.gitignore`
+`code-python` · 891 lines · 38,725 B · description: **extracted**
 
-`other` · 4 lines · 94 B · description: **none**
+**Purpose.** Reproduce every number in STRATEGIES.md and RANKED_LISTS.md. python3 research/scripts/sweep.py # everything python3 research/scripts/sweep.py --stage singles python3 research/scripts/sweep.py --horizon medium Design rules this script exists to enforce: * **Rank on out-of-sample only**, always displaying in-sample beside it so the per-row decay is visible.
 
-**Purpose.** _No description available._
+**Contents.** Defines `REPO`, `data_dir()`, `set_data_dir()`, `OUT_DIR`, `MIN_OOS_TRADES`, `MIN_DISCOVERY_TRADES`, `SPLIT`, `COMBO_CANDIDATES`, `class Row`, `load_horizon()` and 17 more. Depends on `backtester`, `research`.
 
-**Use.** Read it.
+**Use.** `python3 research/scripts/sweep.py --help`
 
-#### `research/strategy_experiment/FILES.md`
+#### `research/scripts/sweep_untested.py`
 
-`doc` · 3692 lines · 659,593 B · description: **extracted**
+`code-python` · 112 lines · 4,193 B · description: **extracted**
 
-**Purpose.** Tracked task changes and expanded copies in the durable export. Index files also include current default-branch content.
+**Purpose.** Finds and sweeps untested strategies and configurations. Identifies strategies in the REGISTRY that do not have baseline parameters in `research/scripts/sweep.py` or runs new configurations for existing strategies to compute profitability metrics like Sharpe, Kelly, and Drawdown.
 
-**Use.** Read it.
+**Contents.** Defines `REPO`, `main()`. Depends on `backtester`, `research`.
 
-#### `research/strategy_experiment/README.md`
+**Use.** `python3 research/scripts/sweep_untested.py --help`
 
-`doc` · 73 lines · 4,066 B · description: **extracted**
+#### `research/scripts/tick_backfill.py`
 
-**Purpose.** Research output, not investment advice; simulation only. The baseline comes from source commit 898f09611dc65fd8e8457ced29ac05e0b87568db. The experiment preserves all 34 registered default strategies, all core simulators,
+`code-python` · 394 lines · 17,786 B · description: **extracted**
 
-**Use.** Read it.
+**Purpose.** Long-running, resumable tick backfill and candle-integrity audit. Built to run for hours at low priority in the background. See `research/scripts/run_backfill.sh` for the wrapper that sets the priority. Why a streaming walk instead of `candle_gap_audit.py`'s per-gap fetch.
 
-#### `research/strategy_experiment/REPORT.md`
+**Contents.** Defines `REPO`, `PAGE`, `CHECKPOINT_EVERY`, `_handle_stop()`, `class MinuteAggregator`, `_page()`, `_checkpoint_binding()`, `backfill()`, `_write_ck()`, `audit()` and 2 more. Depends on `backtester`.
 
-`doc` · 86 lines · 6,176 B · description: **extracted**
+**Use.** `python3 research/scripts/tick_backfill.py --help`
 
-**Purpose.** Research output, not investment advice; simulation only. before/after directional accuracy on each of the four matched datasets. The two hourly sizing corrections produce worse net returns on the evaluated temporal
+#### `research/scripts/tradingview_pivot_reversal.py`
 
-**Use.** Read it.
+`code-python` · 68 lines · 3,449 B · description: **extracted**
 
-#### `research/strategy_experiment/archives.json`
+**Purpose.** TradingView Pivot Reversal v33.0 adapter with explicit tie sensitivity. The built-in Pine snapshot is src:f1cf879aa1a71c9a, SHA-256 cd6def72548fb84e02312f302dd2799f897638d0a2c688aef04ca861b5a5628f. Pine pivot tie semantics remain unverified; no mode is certified parity.
 
-`config` · 3658 lines · 555,039 B · description: **derived**
+**Contents.** Defines `pivot_intents()`. Depends on `research`.
 
-**Purpose.** Generated JSON object, 2 keys (original, candidate).
+**Use.** `import research.scripts.tradingview_pivot_reversal`
 
-**Use.** Configuration; nothing to run.
+#### `research/scripts/tradingview_sar.py`
 
-#### `research/strategy_experiment/audit_integrity.json`
+`code-python` · 69 lines · 3,079 B · description: **extracted**
 
-`config` · 1198 lines · 51,369 B · description: **derived**
+**Purpose.** Research adapter for TradingView Parabolic SAR strategy v33.0. Derived independently from the owner-requested built-in source; unregistered, offline and not certified TradingView fill parity. The source snapshot is src:260da27279d3c3e8, SHA-256 800f3fe7f02df408f9f144951e6e44744240a67dec2825d0953d5309b0a4bef1.
 
-**Purpose.** Generated JSON object, 13 keys (version, delta, artifact, target_kind, families, strategy_count...).
+**Contents.** Defines `sar_intents()`. Depends on `research`.
 
-**Use.** Configuration; nothing to run.
+**Use.** `import research.scripts.tradingview_sar`
 
-#### `research/strategy_experiment/audit_integrity.md`
+#### `research/scripts/tradingview_sar_pivot_proxy.py`
 
-`doc` · 173 lines · 24,894 B · description: **extracted**
+`code-python` · 59 lines · 2,913 B · description: **extracted**
 
-**Purpose.** research output, not investment advice; simulation only Version: 1 Delta: Initial audit.
+**Purpose.** Retrospective SAR and Pivot equal-notional oracle sensitivities.
 
-**Use.** Read it.
+**Contents.** Defines `run()`, `main()`. Depends on `research`.
 
-#### `research/strategy_experiment/audit_realism.json`
+**Use.** `python3 research/scripts/tradingview_sar_pivot_proxy.py --help`
 
-`config` · 7638 lines · 215,312 B · description: **derived**
+#### `research/scripts/trigger_backtest.py`
 
-**Purpose.** Generated JSON object, 15 keys (schema_version, delta, target_kind, track, research_disclaimer, registry_count...).
+`code-python` · 110 lines · 6,060 B · description: **extracted**
 
-**Use.** Configuration; nothing to run.
+**Purpose.** Trade the mined triggers through the leverage tiers, out of sample only. Called by `python3 -m research.triggers --backtest`. Takes the qualified (reliable) triggers; if none qualified, takes the best near-misses and labels every number EXPLORATORY. The stop for each trigger is its discovery-period MAE (`stop_frac`), never a number chosen after seeing the validation period.
 
-#### `research/strategy_experiment/audit_realism.md`
+**Contents.** Defines `OUT`, `TOP_NEAR_MISSES`, `VALIDATION_BLOCKS`, `select()`, `run()`. Depends on `backtester`, `research`.
 
-`doc` · 249 lines · 47,851 B · description: **extracted**
+**Use.** `import research.scripts.trigger_backtest`
 
-**Purpose.** Research output, not investment advice; simulation only. Version: 1 Delta: initial collection before candidate writes.
+#### `research/scripts/triggers.py`
 
-**Use.** Read it.
+`code-python` · 613 lines · 30,570 B · description: **extracted**
 
-#### `research/strategy_experiment/candidate.zip`
+**Purpose.** Reliable-trigger miner: which conjunctions of conditions predict direction, and how well. python3 -m research.triggers --asset SOL --interval 1d python3 -m research.triggers --asset SOL --interval 1h python3 -m research.triggers --asset SOL --interval 1d --backtest Simulation and research only: no network, no keys, no orders.
 
-`other` · 0 lines · 4,563,118 B · description: **none**
+**Contents.** Defines `REPO`, `OUT`, `HORIZONS`, `H_MAX`, `MIN_EVENTS`, `FDR_Q`, `HLZ_Z`, `DISCOVERY_FRACTION`, `STABILITY_MIN_EVENTS`, `STABILITY_SHARE` and 30 more. Depends on `backtester`, `research`.
 
-**Purpose.** _No description available._
+**Use.** `python3 research/scripts/triggers.py --help`
 
-**Use.** Read it.
+#### `research/scripts/turnover_table.py`
 
-#### `research/strategy_experiment/original.zip`
+`code-python` · 204 lines · 8,664 B · description: **extracted**
 
-`other` · 0 lines · 4,562,679 B · description: **none**
+**Purpose.** The one comparable turnover table for the ten non-pegged coins. python3 research/scripts/turnover_table.py python3 research/scripts/turnover_table.py --check # exit 1 if a spoke disagrees Why this exists: turnover is `24h volume / market cap`, and both terms move continuously.
 
-**Purpose.** _No description available._
+**Contents.** Defines `REPO`, `SOURCE`, `AS_OF`, `SPOKE_DIRS`, `SPOKES`, `turnover_table()`, `render()`, `find_spoke()`, `check()`, `main()`.
 
-**Use.** Read it.
+**Use.** `python3 research/scripts/turnover_table.py --help`
 
-#### `research/strategy_experiment/snapshot.json`
+#### `research/scripts/tv_channel_breakout_intents.py`
 
-`config` · 1829 lines · 273,936 B · description: **derived**
+`code-python` · 30 lines · 1,398 B · description: **extracted**
 
-**Purpose.** Generated JSON object, 3 keys (source_head, scope, original_files).
+**Purpose.** Close-time intents for TradingView Channel Breakout v29, not Price Channel.
 
-**Use.** Configuration; nothing to run.
+**Contents.** Defines `channel_breakout_intents()`. Depends on `research`.
 
-### `research/strategy_experiment/results/`
+**Use.** `import research.scripts.tv_channel_breakout_intents`
 
-#### `research/strategy_experiment/results/auxiliary.json`
+#### `research/scripts/tv_ma_proxy.py`
 
-`result` · 7427 lines · 671,723 B · description: **derived**
+`code-python` · 65 lines · 2,938 B · description: **extracted**
 
-**Purpose.** Generated JSON object, 8 keys (version, delta, disclaimer, protocol, sources, inputs...).
+**Purpose.** Retrospective equal-notional MA comparison on the validated oracle window. The common loader and order engine are independently owned. This wrapper never claims Coinbase perpetual parity, an out-of-sample test, or live-net returns.
 
-**Use.** `json.load(open('research/strategy_experiment/results/auxiliary.json'))`
+**Contents.** Defines `run()`, `main()`. Depends on `research`.
 
-#### `research/strategy_experiment/results/auxiliary.md`
+**Use.** `python3 research/scripts/tv_ma_proxy.py --help`
 
-`result` · 35 lines · 2,247 B · description: **extracted**
+#### `research/scripts/tv_momentum_intents.py`
 
-**Purpose.** research output, not investment advice; simulation only Frozen defaults, historical final 30%; no parameter search or promotion. Grid rails +/-15% first evaluation open, 7 geometric rungs at $100; $10000 capital. Spot fees 6bps, slippage 2bps. Scorecard common executable next-open-to-close accuracy: 149/318 (46.86%) original, 149/318 (46.86%) candidate.
+`code-python` · 34 lines · 1,657 B · description: **extracted**
 
-**Use.** Read it; regenerate with the driver that produced it.
+**Purpose.** TradingView Momentum v29 close-of-bar order intents; no execution or fills.
 
-#### `research/strategy_experiment/results/comparison.csv`
+**Contents.** Defines `momentum_intents()`. Depends on `research`.
 
-`result` · 274 lines · 95,189 B · description: **derived**
+**Use.** `import research.scripts.tv_momentum_intents`
 
-**Purpose.** Generated data: 272 rows x 34 columns (dataset, strategy, split, status, original_accuracy, candidate_accuracy, delta_accuracy, original_win_rate...).
+#### `research/scripts/tv_nine_common_proxy.py`
 
-**Contents.** Columns: `dataset`, `strategy`, `split`, `status`, `original_accuracy`, `candidate_accuracy`, `delta_accuracy`, `original_win_rate`, `candidate_win_rate`, `delta_win_rate`, `original_total_return`, `candidate_total_return`, `delta_total_return`, `original_sharpe`, `candidate_sharpe`, `delta_sharpe`, `original_max_drawdown`, `candidate_max_drawdown`, `delta_max_drawdown`, `original_trade_count`, `candidate_trade_count`, `delta_trade_count`, `original_active_calls`, `candidate_active_calls`, `delta_active_calls`, `original_coverage`, `candidate_coverage`, `delta_coverage`, `original_total_fees`, `candidate_total_fees`, `delta_total_fees`, `original_total_borrow_fees`, `candidate_total_borrow_fees`, `delta_total_borrow_fees`.
+`code-python` · 84 lines · 3,174 B · description: **extracted**
 
-**Use.** `pandas.read_csv('research/strategy_experiment/results/comparison.csv')` — regenerate with the driver that names it.
+**Purpose.** Reproduce nine source-strategy sensitivities on the frozen oracle window. This is retrospective research, not TradingView or executable venue parity.
 
-#### `research/strategy_experiment/results/comparison.md`
+**Contents.** Defines `run()`, `main()`. Depends on `research`.
 
-`result` · 153 lines · 14,748 B · description: **extracted**
+**Use.** `python3 research/scripts/tv_nine_common_proxy.py --help`
 
-**Purpose.** Research output, not investment advice; simulation only. 136 holdout strategy/dataset pairs; 2 changed accuracy or net return; 0 failed pairs. All results are exploratory historical comparisons, not proof of a live edge. The final chronological 30% is a temporal holdout in this run. Previously researched data is not a fresh independent confirmation set. No parameter search or promotion runs.
+#### `research/scripts/tv_price_channel_intents.py`
 
-**Use.** Read it; regenerate with the driver that produced it.
+`code-python` · 24 lines · 1,114 B · description: **extracted**
 
-#### `research/strategy_experiment/results/manifest.json`
+**Purpose.** Close-time intents for the TradingView Price Channel v29 built-in.
 
-`result` · 3805 lines · 561,811 B · description: **derived**
+**Contents.** Defines `price_channel_intents()`. Depends on `research`.
 
-**Purpose.** Generated JSON object, 15 keys (schema_version, split_fraction, runner_sha256, contiguous_tail_requested, strategy_count, strategies...).
+**Use.** `import research.scripts.tv_price_channel_intents`
 
-**Use.** `json.load(open('research/strategy_experiment/results/manifest.json'))`
+#### `research/scripts/tv_single_ma.py`
 
-#### `research/strategy_experiment/results/results.csv`
+`code-python` · 57 lines · 2,652 B · description: **extracted**
 
-`result` · 546 lines · 483,031 B · description: **derived**
+**Purpose.** Source-level TradingView single-SMA order intents, not a fill simulator. Pinned built-in source: src:d009b1e195649778, Pine 31.0. The shared emulator supplies the order factory; this module does not size or fill orders.
 
-**Purpose.** Generated data: 544 rows x 40 columns (dataset, strategy, variant, split, total_return, cagr, sharpe, sortino...).
+**Contents.** Defines `class SingleMovingAverage`. Depends on `research`.
 
-**Contents.** Columns: `dataset`, `strategy`, `variant`, `split`, `total_return`, `cagr`, `sharpe`, `sortino`, `max_drawdown`, `max_drawdown_start`, `max_drawdown_end`, `max_drawdown_bars`, `calmar`, `volatility_annual`, `win_rate`, `profit_factor`, `avg_win`, `avg_loss`, `trade_count`, `exposure_fraction`, `total_fees`, `total_borrow_fees`, `liquidation_count`, `final_equity`, `bars`, `accuracy`, `correct_calls`, `active_calls`, `eligible_bars`, `coverage`, `majority_baseline`, `accuracy_evidence`, `scored_start_index`, `scored_stop_index`, `mode`, `leverage`, `costs`, `trade_evidence`, `params`, `status`.
+**Use.** `import research.scripts.tv_single_ma`
 
-**Use.** `pandas.read_csv('research/strategy_experiment/results/results.csv')` — regenerate with the driver that names it.
+#### `research/scripts/tv_two_ma.py`
 
-#### `research/strategy_experiment/results/results.json`
+`code-python` · 50 lines · 2,295 B · description: **extracted**
 
-`result` · 32003 lines · 965,090 B · description: **derived**
+**Purpose.** Source-level TradingView two-SMA crossover intents; not an order simulator.
 
-**Purpose.** Generated JSON array, 544 entries.
+**Contents.** Defines `class TwoMovingAverages`. Depends on `research`.
 
-**Use.** `json.load(open('research/strategy_experiment/results/results.json'))`
+**Use.** `import research.scripts.tv_two_ma`
 
-### `research/strategy_experiment/results/initial-gapped-run/`
+#### `research/scripts/tv_volty_close_intents.py`
 
-#### `research/strategy_experiment/results/initial-gapped-run/comparison.csv`
+`code-python` · 29 lines · 1,412 B · description: **extracted**
 
-`result` · 274 lines · 75,229 B · description: **derived**
+**Purpose.** Close-time intents for TradingView Volatility Expansion Close v30.
 
-**Purpose.** Generated data: 272 rows x 34 columns (dataset, strategy, split, status, original_accuracy, candidate_accuracy, delta_accuracy, original_win_rate...).
+**Contents.** Defines `volty_close_intents()`. Depends on `research`.
 
-**Contents.** Columns: `dataset`, `strategy`, `split`, `status`, `original_accuracy`, `candidate_accuracy`, `delta_accuracy`, `original_win_rate`, `candidate_win_rate`, `delta_win_rate`, `original_total_return`, `candidate_total_return`, `delta_total_return`, `original_sharpe`, `candidate_sharpe`, `delta_sharpe`, `original_max_drawdown`, `candidate_max_drawdown`, `delta_max_drawdown`, `original_trade_count`, `candidate_trade_count`, `delta_trade_count`, `original_active_calls`, `candidate_active_calls`, `delta_active_calls`, `original_coverage`, `candidate_coverage`, `delta_coverage`, `original_total_fees`, `candidate_total_fees`, `delta_total_fees`, `original_total_borrow_fees`, `candidate_total_borrow_fees`, `delta_total_borrow_fees`.
+**Use.** `import research.scripts.tv_volty_close_intents`
 
-**Use.** `pandas.read_csv('research/strategy_experiment/results/initial-gapped-run/comparison.csv')` — regenerate with the driver that names it.
+#### `research/scripts/verify_numbers.py`
 
-#### `research/strategy_experiment/results/initial-gapped-run/comparison.md`
+`code-python` · 1124 lines · 50,977 B · description: **extracted**
 
-`result` · 153 lines · 13,824 B · description: **extracted**
+**Purpose.** Assert every performance figure in the research documents came from the sweep. The documents' entire credibility rests on "no number was estimated". A transcription slip is indistinguishable from a fabrication to a reader, so this checks the whole surface rather than a sample.
 
-**Purpose.** Research output, not investment advice; simulation only. 136 holdout strategy/dataset pairs; 0 changed accuracy or net return; 34 failed pairs. All results are exploratory historical comparisons, not proof of a live edge. The final chronological 30% is a temporal holdout in this run. Previously researched data is not a fresh independent confirmation set. No parameter search or promotion runs.
+**Contents.** Defines `RESEARCH`, `CSV`, `DOCS`, `EXPECTED_FIGURES`, `TOL_SHARPE`, `TOL_PCT`, `ROW`, `PAIR_ROW`, `PROSE_IS_OOS`, `PROSE_OOS_SHARPE` and 30 more.
 
-**Use.** Read it; regenerate with the driver that produced it.
+**Use.** `python3 research/scripts/verify_numbers.py --help`
 
-#### `research/strategy_experiment/results/initial-gapped-run/manifest.json`
+#### `research/scripts/volty_predictive_checks.py`
 
-`result` · 3778 lines · 560,764 B · description: **derived**
+`code-python` · 141 lines · 7,104 B · description: **extracted**
 
-**Purpose.** Generated JSON object, 13 keys (schema_version, split_fraction, strategy_count, strategies, sources, common_engine_sources...).
+**Purpose.** Frozen-chart diagnostics on local candles; never a forecast or execution client. These data were already examined. Replaying their later half is a sensitivity check, not a new untouched holdout. No configuration is selected by these results.
 
-**Use.** `json.load(open('research/strategy_experiment/results/initial-gapped-run/manifest.json'))`
+**Contents.** Defines `digest()`, `daily_log_growth()`, `block_interval()`, `passive_equity()`, `run_checks()`, `main()`. Depends on `backtester`.
 
-#### `research/strategy_experiment/results/initial-gapped-run/results.csv`
+**Use.** `python3 research/scripts/volty_predictive_checks.py --help`
 
-`result` · 546 lines · 401,720 B · description: **derived**
+#### `research/scripts/zec_cycle_report.py`
 
-**Purpose.** Generated data: 544 rows x 41 columns (dataset, strategy, variant, split, total_return, cagr, sharpe, sortino...).
+`code-python` · 441 lines · 20,401 B · description: **extracted**
 
-**Contents.** Columns: `dataset`, `strategy`, `variant`, `split`, `total_return`, `cagr`, `sharpe`, `sortino`, `max_drawdown`, `max_drawdown_start`, `max_drawdown_end`, `max_drawdown_bars`, `calmar`, `volatility_annual`, `win_rate`, `profit_factor`, `avg_win`, `avg_loss`, `trade_count`, `exposure_fraction`, `total_fees`, `total_borrow_fees`, `liquidation_count`, `final_equity`, `bars`, `accuracy`, `correct_calls`, `active_calls`, `eligible_bars`, `coverage`, `majority_baseline`, `accuracy_evidence`, `scored_start_index`, `scored_stop_index`, `mode`, `leverage`, `costs`, `trade_evidence`, `params`, `status`, `error`.
+**Purpose.** Render verified ZEC periodicity evidence, plots and compact public results.
 
-**Use.** `pandas.read_csv('research/strategy_experiment/results/initial-gapped-run/results.csv')` — regenerate with the driver that names it.
+**Contents.** Defines `render_plots()`, `verify_fixed_report_contract()`, `main()`. Depends on `research`.
 
-#### `research/strategy_experiment/results/initial-gapped-run/results.json`
+**Use.** `python3 research/scripts/zec_cycle_report.py --help`
 
-`result` · 25091 lines · 773,213 B · description: **derived**
+#### `research/scripts/zec_cycles.py`
 
-**Purpose.** Generated JSON array, 544 entries.
+`code-python` · 478 lines · 18,597 B · description: **extracted**
 
-**Use.** `json.load(open('research/strategy_experiment/results/initial-gapped-run/results.json'))`
+**Purpose.** Test apparent ZEC rhythms against no-clock paths and frozen future forecasts. Harmonic regression uses actual observation timestamps, including missing bars. It never interpolates prices or treats a hindsight pivot as a live signal.
+
+**Contents.** Defines `VERSION`, `SEED`, `INTERVALS`, `TZ`, `sha()`, `write_json()`, `class Spectrum`, `holm()`, `surrogate_paths()`, `pivots()` and 6 more. Depends on `backtester`, `research`.
+
+**Use.** `python3 research/scripts/zec_cycles.py --help`
+
+#### `research/scripts/zec_ensembles.py`
+
+`code-python` · 1001 lines · 37,360 B · description: **extracted**
+
+**Purpose.** Reproducible ZEC ensemble study; public data is fetched separately. The search uses fixed chronological windows, three validation folds, next-open spot accounting and a reserved final fifth. Selection never reads holdout results. Batch accounting is checked against the canonical event engine before a run and selected results receive an independent canonical replay. Outputs stay outside Git.
+
+**Contents.** Defines `ROOT`, `VERSION`, `GUIDE`, `COSTS`, `sha()`, `atomic_json()`, `spec()`, `catalog()`, `component_specs()`, `_init_worker()` and 12 more. Depends on `backtester`.
+
+**Use.** `python3 research/scripts/zec_ensembles.py --help`
+
+#### `research/scripts/zec_expanded.py`
+
+`code-python` · 454 lines · 25,020 B · description: **extracted**
+
+**Purpose.** Expanded offline ZEC strategy, causal shape and frozen-frequency comparisons. All policies are reference simulations; no network, signing or order path exists.
+
+**Contents.** Defines `FEES`, `MODES`, `TRAIN`, `BLOCK`, `SEED`, `SHAPE_RULE`, `key()`, `normalize_spec()`, `catalogue()`, `identity()` and 7 more. Depends on `backtester`, `research`, `soltui`.
+
+**Use.** `python3 research/scripts/zec_expanded.py --help`
+
+#### `research/scripts/zec_feed_settings.py`
+
+`code-python` · 57 lines · 2,006 B · description: **extracted**
+
+**Purpose.** View preferences never share the private trading-configuration write path.
+
+**Contents.** Defines `SOURCES`, `_LOGGER`, `load_feeds()`, `save_feeds()`.
+
+**Use.** `import research.scripts.zec_feed_settings`
+
+#### `research/scripts/zec_granular.py`
+
+`code-python` · 572 lines · 27,344 B · description: **extracted**
+
+**Purpose.** Offline, receive-time ZEC tape replay. No network or live execution path. The book is sampled at the first received update in each UTC second. Orders wait at least one second after a closed-bar decision (or observed stop trigger), then use the first sampled book at/after eligibility. This is deliberately not an exchange matching-engine or queue-position simulation.
+
+**Contents.** Defines `VERSION`, `STEPS`, `NS`, `CAPTURE_HASH`, `CAPTURE_START`, `CAPTURE_END`, `DEPTH`, `LATENCY_NS`, `MAX_WAIT_NS`, `digest()` and 15 more. Depends on `backtester`, `research`.
+
+**Use.** `python3 research/scripts/zec_granular.py --help`
+
+#### `research/scripts/zec_leverage_panel.py`
+
+`code-python` · 1746 lines · 75,935 B · description: **extracted**
+
+**Purpose.** Explicit trading controls and a read-only view of the durable paper trial. The panel owns only its UI workers. The forward collector belongs to its service, so closing this screen never stops a trial or starts a second collector.
+
+**Contents.** Defines `default_home()`, `_text()`, `_summary()`, `emphasized()`, `comparison_text()`, `bar_view()`, `bar_text_color()`, `tilt_text()`, `mtf_tilt_text()`, `wallet_text()` and 3 more. Depends on `research`, `soltui`.
+
+**Use.** `import research.scripts.zec_leverage_panel`
+
+#### `research/scripts/zec_lifecycle.py`
+
+`code-python` · 237 lines · 10,663 B · description: **extracted**
+
+**Purpose.** Observed-cross, limit-guarded grid/DCA reference lifecycles, simulation only. These use canonical ladder/deal planners. A historical trade crossing triggers a single-flight simulated intent. After >=1s a fresh displayed book must satisfy its exchange-price limit after adverse execution slippage; fees are separate.
+
+**Contents.** Defines `lifecycle_configs()`, `affordable_quote()`, `replay_lifecycle()`. Depends on `backtester`, `research`.
+
+**Use.** `import research.scripts.zec_lifecycle`
+
+#### `research/scripts/zec_live.py`
+
+`code-python` · 687 lines · 26,247 B · description: **extracted**
+
+**Purpose.** Read-only live Oracle hypotheses for the frozen profitable ZEC study rows. Quotes follow the existing recorder. Completed trade OHLCV comes from public Coinbase candles, never from invented snapshot volume. No orders or services.
+
+**Contents.** Defines `ROOT`, `STUDY`, `CSV_HASH`, `PLAN_HASH`, `STEPS`, `BASE`, `SETTLE_SECONDS`, `MAX_HISTORY`, `canonical()`, `digest()` and 16 more. Depends on `backtester`, `research`.
+
+**Use.** `python3 research/scripts/zec_live.py --help`
+
+#### `research/scripts/zec_reversal_excursions.py`
+
+`code-python` · 364 lines · 13,323 B · description: **extracted**
+
+**Purpose.** Fixed-day, causal one-minute observations of ten-minute bearish setups. This descriptive study writes nothing, fetches nothing and places no orders. Signal-minute lows never enter subsequent excursions. Inputs remain immutable.
+
+**Contents.** Defines `NS`, `MINUTE`, `SETUP`, `HORIZONS`, `POLICIES`, `TAPE_SHA`, `WAL_SHA`, `REFERENCE_SHA`, `sha()`, `minute_bars()` and 6 more.
+
+**Use.** `python3 research/scripts/zec_reversal_excursions.py --help`
+
+#### `research/scripts/zec_shape_view.py`
+
+`code-python` · 216 lines · 8,431 B · description: **extracted**
+
+**Purpose.** Explain observed geometry without changing the detector or strategy calls.
+
+**Contents.** Defines `GUIDES`, `range_readout()`, `shape_summary()`, `price_trace()`, `shape_guide()`. Depends on `research`.
+
+**Use.** `import research.scripts.zec_shape_view`
+
+#### `research/scripts/zec_tui.py`
+
+`code-python` · 1402 lines · 57,399 B · description: **extracted**
+
+**Purpose.** Oracle workbench with explicit leveraged trading and paper trial controls.
+
+**Contents.** Defines `ended_signal_window_text()`, `class IndicatorTable`, `class StrategyPicker`, `class ConfigEditor`, `class ShapeGuide`, `class SoundsDialog`, `class OracleWinnersApp`, `main()`. Depends on `research`.
+
+**Use.** `python3 research/scripts/zec_tui.py --help`
+
+#### `research/scripts/zec_tui_alerts.py`
+
+`code-python` · 315 lines · 11,753 B · description: **extracted**
+
+**Purpose.** Pure fixed-ten-minute bearish checks; no I/O, orders or calibrated odds.
+
+**Contents.** Defines `STEP`, `HALF`, `FRESH_SECONDS`, `_number()`, `_five()`, `_ten()`, `_price()`, `_historical()`, `bearish_alert()`. Depends on `research`.
+
+**Use.** `import research.scripts.zec_tui_alerts`
+
+#### `research/scripts/zec_tui_chart.py`
+
+`code-python` · 140 lines · 5,105 B · description: **extracted**
+
+**Purpose.** Timestamp-aligned terminal price/indicator plots without a plotting dependency.
+
+**Contents.** Defines `finite()`, `plot_text()`, `class MarketChart`. Depends on `research`.
+
+**Use.** `import research.scripts.zec_tui_chart`
+
+#### `research/scripts/zec_tui_metrics.py`
+
+`code-python` · 303 lines · 11,845 B · description: **extracted**
+
+**Purpose.** Causal, display-only streaming indicators and captured-day streak context. Developing trade bars never enter the authoritative winner or shape adapters. Closed history is cached; a new trade computes only one provisional point.
+
+**Contents.** Defines `STREAK_HASH`, `streak_reference()`, `two_bar_context()`, `indicator_units()`, `compact_two_bar()`, `clean_bars()`, `valid_live_bar()`, `class IndicatorSession`. Depends on `research`.
+
+**Use.** `import research.scripts.zec_tui_metrics`
+
+#### `research/scripts/zec_tui_model.py`
+
+`code-python` · 437 lines · 16,313 B · description: **extracted**
+
+**Purpose.** Editable display state and causal market details; no trading or UI imports.
+
+**Contents.** Defines `CONFIG_KEYS`, `LOOKBACKS`, `row_key()`, `label()`, `finite_tree()`, `validate_config()`, `default_path()`, `validate_reference()`, `class WorkingSet`, `market_details()` and 1 more. Depends on `backtester`, `research`.
+
+**Use.** `import research.scripts.zec_tui_model`
+
+#### `research/scripts/zec_tui_notifications.py`
+
+`code-python` · 233 lines · 8,507 B · description: **extracted**
+
+**Purpose.** Optional display-only notifications: bounded identities and owned playback.
+
+**Contents.** Defines `DEFAULT_SOUNDS`, `AFPLAY`, `SYSTEM_SOUND`, `sound_settings()`, `class NotificationEvents`, `class SoundPlayer`.
+
+**Use.** `import research.scripts.zec_tui_notifications`
+
+#### `research/scripts/zec_tui_source.py`
+
+`code-python` · 244 lines · 9,296 B · description: **extracted**
+
+**Purpose.** Worker-owned market sessions for the editable read-only Oracle TUI.
+
+**Contents.** Defines `class Cancelled`, `class DataSession`, `class AlertSession`, `disabled_alert_source()`, `class QuoteReader`, `live_view()`. Depends on `research`.
+
+**Use.** `import research.scripts.zec_tui_source`
+
+#### `research/scripts/zec_tui_stream.py`
+
+`code-python` · 365 lines · 12,805 B · description: **extracted**
+
+**Purpose.** Session-owned public trade stream for provisional indicator readings. This is an in-memory subscriber, never a recorder or a trading connection. A first candle starts at the first trade actually observed; it cannot claim the unobserved open, high, low or volume from before attachment or a reconnect.
+
+**Contents.** Defines `WS_URL`, `PRODUCT`, `SUBSCRIPTION`, `STALE_SECONDS`, `_positive()`, `_trade_id()`, `_timestamp()`, `class TradeAccumulator`, `class DisabledStream`, `class TradeStream`. Depends on `research`, `soltui`.
+
+**Use.** `import research.scripts.zec_tui_stream`
+
+#### `research/scripts/zec_tui_workers.py`
+
+`code-python` · 145 lines · 5,385 B · description: **extracted**
+
+**Purpose.** Single-owner background reads with bounded, latest-request delivery. Loaders must bound their own blocking operations and check ``cancelled`` between them. Python threads cannot forcibly interrupt an arbitrary blocking call. This helper never calls UI objects; the UI polls immutable completion envelopes.
+
+**Contents.** Defines `class WorkerResult`, `class LatestWorker`.
+
+**Use.** `import research.scripts.zec_tui_workers`
+
+### `research/scripts/perps/`
+
+#### `research/scripts/perps/1000x-reference.py`
+
+`code-python` · 83 lines · 3,590 B · description: **extracted**
+
+**Purpose.** Freeze vectors from the independent Python research functions; no network. Run with the existing research environment. Node tests consume the frozen JSON and verify the Python source bindings, so npm test needs no Python dependencies.
+
+**Contents.** Defines `ROOT`, `rows_for()`, `main()`. Depends on `research`.
+
+**Use.** `python3 research/scripts/perps/1000x-reference.py --help`
+
+#### `research/scripts/perps/capture-jupiter.py`
+
+`code-python` · 248 lines · 11,939 B · description: **extracted**
+
+**Purpose.** Archive a bounded public Jupiter app graph; never execute downloaded code. This records public response bodies outside the checkout. It uses no browser, cookies, credentials, source-map execution, wallet requests, or transaction APIs.
+
+**Contents.** Defines `PORTAL`, `SCRIPT`, `SOURCE_MAP`, `DYNAMIC_IMPORT`, `SAFE_HEADERS`, `class Resources`, `class PublicRedirect`, `safe_url()`, `asset_url()`, `retrieve()` and 1 more.
+
+**Use.** `python3 research/scripts/perps/capture-jupiter.py --help`
+
+#### `research/scripts/perps/measure-recentre.mjs`
+
+`code-js` · 156 lines · 6,785 B · description: **extracted**
+
+**Purpose.** How often does the shipped auto-recentre gate actually open? node research/scripts/perps/measure-recentre.mjs --csv ../data/SOL_1d.csv `recentreDecision()` refuses to move the ladder while anything is resting or any lot is open, because `tick()` cannot cancel. That gate is deliberately tight, and the honest question is whether it is so tight the feature never fires.
+
+**Contents.** Defines `USAGE`, `closeColumn`, `main`, `parseArgs`, `recordingVenue`, `run`.
+
+**Use.** Loaded by the extension; see `extension/manifest.json` for entry points.
+
+#### `research/scripts/perps/perps-sweep.mjs`
+
+`code-js` · 100 lines · 4,776 B · description: **extracted**
+
+**Purpose.** Public-read data acquisition and deterministic paper replay. No wallet or order interface.
+
+**Contents.** Defines `longest`.
+
+**Use.** Loaded by the extension; see `extension/manifest.json` for entry points.
+
+#### `research/scripts/perps/zec-gum-walk-forward.mjs`
+
+`code-js` · 198 lines · 10,096 B · description: **extracted**
+
+**Purpose.** Historical ZEC GUM research. The added week is scored only after the rank file is frozen.
+
+**Contents.** Defines `capture`, `rank`, `staticTerms`, `summarize`.
+
+**Use.** Loaded by the extension; see `extension/manifest.json` for entry points.
+
+#### `research/scripts/perps/zec-leaderboard.mjs`
+
+`code-js` · 105 lines · 4,718 B · description: **extracted**
+
+**Purpose.** Decode the published Jupiter Perps replay rankings. Writes CSV to stdout.
+
+**Contents.** Defines `EXTRA_COLUMNS`, `INPUT`, `PRESETS_BY_ID`, `decodeLeaderboard`, `describeMember`, `describePreset`.
+
+**Use.** Loaded by the extension; see `extension/manifest.json` for entry points.
+
+#### `research/scripts/perps/zec-perps-capture.mjs`
+
+`code-js` · 75 lines · 3,476 B · description: **extracted**
+
+**Purpose.** Freeze public ZEC GUM candles, funding distributions and market terms for research.
+
+**Contents.** Defines `withRetry`.
+
+**Use.** Loaded by the extension; see `extension/manifest.json` for entry points.
+
+#### `research/scripts/perps/zec-perps-suite.mjs`
+
+`code-js` · 128 lines · 6,152 B · description: **extracted**
+
+**Purpose.** Offline paper replay of the focused ZEC GUM grid.
+
+**Contents.** Defines `bufferAtTestOpen`, `byValidation`.
+
+**Use.** Loaded by the extension; see `extension/manifest.json` for entry points.
+
+### `research/scripts/perps/lib/`
+
+#### `research/scripts/perps/lib/zec-gum-replay.mjs`
+
+`code-js` · 86 lines · 3,934 B · description: **extracted**
+
+**Purpose.** Shared offline GUM market path and account metrics for the ZEC studies.
+
+**Contents.** Defines `prepareGumWindows`, `prepareWindow`, `runGumWindow`, `summarize`, `validateCapture`.
+
+**Use.** Loaded by the extension; see `extension/manifest.json` for entry points.
+
+### `research/scripts/zec-two-bar-reversal-20261114/`
+
+#### `research/scripts/zec-two-bar-reversal-20261114/analysis.py`
+
+`code-python` · 205 lines · 7,797 B · description: **extracted**
+
+**Purpose.** Descriptive candle-color counts. No execution or prospective accuracy claim. Adapted only to accept input paths from native artifact art:b7b9b518c0c9baf5243a63fb39db79e5c2f2afdae3324cda691456811468074f. Requires Python 3 and NumPy. Prints the original results schema unchanged.
+
+**Contents.** Defines `ROOT`, `NS`, `descriptive()`, `summarize()`.
+
+**Use.** `python3 research/scripts/zec-two-bar-reversal-20261114/analysis.py --help`
 
 ### `research/tests/`
 
@@ -25754,7 +26598,7 @@ Drivers that produce the numbers, and the write-ups that quote them. Everything 
 
 #### `research/tests/test_audit_boundaries.py`
 
-`test` · 430 lines · 24,030 B · description: **extracted**
+`test` · 432 lines · 24,242 B · description: **extracted**
 
 **Purpose.** Synthetic evidence and launch boundaries; no external data or strategy search.
 
@@ -25774,7 +26618,7 @@ Drivers that produce the numbers, and the write-ups that quote them. Everything 
 
 #### `research/tests/test_audit_numerical_receipts.py`
 
-`test` · 488 lines · 32,451 B · description: **extracted**
+`test` · 488 lines · 32,456 B · description: **extracted**
 
 **Purpose.** Fixed synthetic boundaries; no studies, searches, models, or network calls.
 
@@ -25934,7 +26778,7 @@ Drivers that produce the numbers, and the write-ups that quote them. Everything 
 
 #### `research/tests/test_exit50_report.py`
 
-`test` · 110 lines · 3,359 B · description: **none**
+`test` · 110 lines · 3,376 B · description: **none**
 
 **Purpose.** _No description available._
 
@@ -25994,7 +26838,7 @@ Drivers that produce the numbers, and the write-ups that quote them. Everything 
 
 #### `research/tests/test_news_event_study.py`
 
-`test` · 387 lines · 16,651 B · description: **extracted**
+`test` · 388 lines · 16,732 B · description: **extracted**
 
 **Purpose.** Protect timestamp alignment, selection independence and missing-data behavior.
 
@@ -26204,7 +27048,7 @@ Drivers that produce the numbers, and the write-ups that quote them. Everything 
 
 #### `research/tests/test_zec_expanded.py`
 
-`test` · 251 lines · 14,849 B · description: **extracted**
+`test` · 259 lines · 15,329 B · description: **extracted**
 
 **Purpose.** Expanded-universe coverage, causal contexts and new lifecycle accounting.
 
@@ -26224,7 +27068,7 @@ Drivers that produce the numbers, and the write-ups that quote them. Everything 
 
 #### `research/tests/test_zec_granular.py`
 
-`test` · 226 lines · 10,940 B · description: **extracted**
+`test` · 226 lines · 10,948 B · description: **extracted**
 
 **Purpose.** Causal execution, coverage and book-capacity regression gates.
 
@@ -26371,540 +27215,6 @@ Drivers that produce the numbers, and the write-ups that quote them. Everything 
 **Contents.** Defines `class LatestWorkerTests`. Depends on `research`.
 
 **Use.** `python3 -m pytest research/tests/test_zec_tui_workers.py -q`
-
-### `research/tradingview-script-profile-audits/`
-
-#### `research/tradingview-script-profile-audits/shard-a.jsonl`
-
-`other` · 0 lines · 226,356 B · description: **none**
-
-**Purpose.** _No description available._
-
-**Use.** Read it.
-
-#### `research/tradingview-script-profile-audits/shard-b.jsonl`
-
-`other` · 0 lines · 253,096 B · description: **none**
-
-**Purpose.** _No description available._
-
-**Use.** Read it.
-
-#### `research/tradingview-script-profile-audits/shard-c.jsonl`
-
-`other` · 0 lines · 244,992 B · description: **none**
-
-**Purpose.** _No description available._
-
-**Use.** Read it.
-
-### `research/tradingview-script-profiles/`
-
-#### `research/tradingview-script-profiles/shard-a.jsonl`
-
-`other` · 0 lines · 643,954 B · description: **none**
-
-**Purpose.** _No description available._
-
-**Use.** Read it.
-
-#### `research/tradingview-script-profiles/shard-b.jsonl`
-
-`other` · 0 lines · 613,007 B · description: **none**
-
-**Purpose.** _No description available._
-
-**Use.** Read it.
-
-#### `research/tradingview-script-profiles/shard-c.jsonl`
-
-`other` · 0 lines · 658,537 B · description: **none**
-
-**Purpose.** _No description available._
-
-**Use.** Read it.
-
-### `research/zec-expanded-20261113.llms/`
-
-#### `research/zec-expanded-20261113.llms/archive-manifest.json`
-
-`config` · 137 lines · 4,148 B · description: **derived**
-
-**Purpose.** Generated JSON object, 4 keys (version, files, report, run_rows).
-
-**Use.** Configuration; nothing to run.
-
-#### `research/zec-expanded-20261113.llms/audit-expanded-contexts.json`
-
-`config` · 16 lines · 520 B · description: **derived**
-
-**Purpose.** Generated JSON object, 13 keys (contexts_independently_checked, fit_windows_independently_derived, harmonic_selection_and_coefficients, shape_contexts, candidate_history_masks_checked, null_rows_checked...).
-
-**Use.** Configuration; nothing to run.
-
-#### `research/zec-expanded-20261113.llms/audit-expanded-direct-controls.json`
-
-`config` · 18 lines · 370 B · description: **derived**
-
-**Purpose.** Generated JSON object, 5 keys (full_direct_math_cases, strategies, modes, checks, audit_exit_code).
-
-**Use.** Configuration; nothing to run.
-
-#### `research/zec-expanded-20261113.llms/audit-expanded-ledger.json`
-
-`config` · 29 lines · 801 B · description: **derived**
-
-**Purpose.** Generated JSON object, 16 keys (attempt, rows, status_counts, artifact_hashes, code_and_card_hashes, input_provenance_matches...).
-
-**Use.** Configuration; nothing to run.
-
-#### `research/zec-expanded-20261113.llms/audit-expanded-lifecycle-nulls.json`
-
-`config` · 12 lines · 351 B · description: **derived**
-
-**Purpose.** Generated JSON object, 9 keys (strict_observed_trade_crosses_checked, lifecycle_singleflight_fills_checked, dca_fills_and_deal_basis_checked, grid_buy_sizing_checked, full_null_fits_reproduced, full_null_rows_reproduced...).
-
-**Use.** Configuration; nothing to run.
-
-#### `research/zec-expanded-20261113.llms/audit-expanded-receipt.json`
-
-`config` · 192 lines · 10,503 B · description: **derived**
-
-**Purpose.** Generated JSON object, 7 keys (agent, definition_version, status, evidence, changes, remaining...).
-
-**Use.** Configuration; nothing to run.
-
-#### `research/zec-expanded-20261113.llms/coverage.json`
-
-`config` · 55 lines · 1,016 B · description: **derived**
-
-**Purpose.** Generated JSON object, 4 keys (10m, 1h, 1m, 5m).
-
-**Use.** Configuration; nothing to run.
-
-#### `research/zec-expanded-20261113.llms/cycle-null-tests.json`
-
-`config` · 3403 lines · 95,175 B · description: **derived**
-
-**Purpose.** Generated JSON array, 200 entries.
-
-**Use.** Configuration; nothing to run.
-
-#### `research/zec-expanded-20261113.llms/frequency-fits-10m.json`
-
-`config` · 90 lines · 1,198 B · description: **derived**
-
-**Purpose.** Generated JSON array, 1 entries.
-
-**Use.** Configuration; nothing to run.
-
-#### `research/zec-expanded-20261113.llms/frequency-fits-1h.json`
-
-`config` · 2 lines · 3 B · description: **derived**
-
-**Purpose.** Generated JSON array, 0 entries.
-
-**Use.** Configuration; nothing to run.
-
-#### `research/zec-expanded-20261113.llms/frequency-fits-1m.json`
-
-`config` · 7485 lines · 108,751 B · description: **derived**
-
-**Purpose.** Generated JSON array, 86 entries.
-
-**Use.** Configuration; nothing to run.
-
-#### `research/zec-expanded-20261113.llms/frequency-fits-5m.json`
-
-`config` · 1134 lines · 16,014 B · description: **derived**
-
-**Purpose.** Generated JSON array, 13 entries.
-
-**Use.** Configuration; nothing to run.
-
-#### `research/zec-expanded-20261113.llms/identity.json`
-
-`config` · 1544 lines · 252,456 B · description: **derived**
-
-**Purpose.** Generated JSON object, 5 keys (code_and_cards, executable, numpy, pandas, python).
-
-**Use.** Configuration; nothing to run.
-
-#### `research/zec-expanded-20261113.llms/input-provenance.json`
-
-`config` · 12 lines · 684 B · description: **derived**
-
-**Purpose.** Generated JSON object, 5 keys (accepted_manifest, hashes, parent, prior_run, wal_sha256).
-
-**Use.** Configuration; nothing to run.
-
-#### `research/zec-expanded-20261113.llms/integration-source-proof.json`
-
-`config` · 31 lines · 782 B · description: **derived**
-
-**Purpose.** Generated JSON object, 16 keys (source_archive_files, source_archive_all_hashes_match, current_source_differences, all_numeric_model_ast_unchanged, allowed_research_changes, upstream...).
-
-**Use.** Configuration; nothing to run.
-
-#### `research/zec-expanded-20261113.llms/llms.txt`
-
-`data` · 23 lines · 1,716 B · description: **derived**
-
-**Purpose.** Generated report. Opens: # Expanded ZEC strategy, shape and cycle evidence / Version: 1.0.0
-
-**Use.** Read it.
-
-#### `research/zec-expanded-20261113.llms/manifest.json`
-
-`config` · 1655 lines · 258,835 B · description: **derived**
-
-**Purpose.** Generated JSON object, 6 keys (artifacts, identity, rows, source_sha256, status_counts, version).
-
-**Use.** Configuration; nothing to run.
-
-#### `research/zec-expanded-20261113.llms/mongo-artifacts.json`
-
-`config` · 441 lines · 16,140 B · description: **derived**
-
-**Purpose.** Generated JSON object, 15 keys (run_id, run_revision_at_readback, qualification, csv, frozen_plan, native_proof...).
-
-**Use.** Configuration; nothing to run.
-
-#### `research/zec-expanded-20261113.llms/mongo-readback-receipt.json`
-
-`config` · 18 lines · 664 B · description: **derived**
-
-**Purpose.** Generated JSON object, 15 keys (full_csv_readback, bytes, sha256, encoded_chars, transport_fragments, rows...).
-
-**Use.** Configuration; nothing to run.
-
-#### `research/zec-expanded-20261113.llms/paired-comparisons.json`
-
-`config` · 339 lines · 6,948 B · description: **derived**
-
-**Purpose.** Generated JSON array, 24 entries.
-
-**Use.** Configuration; nothing to run.
-
-#### `research/zec-expanded-20261113.llms/plan.json.gz`
-
-`other` · 0 lines · 206,295 B · description: **none**
-
-**Purpose.** _No description available._
-
-**Use.** Read it.
-
-#### `research/zec-expanded-20261113.llms/results.csv`
-
-`data` · 85314 lines · 17,637,322 B · description: **derived**
-
-**Purpose.** Generated data: 85312 rows x 24 columns (interval, candidate_id, family, mode, fee_bps, market, eligible_bars, status...).
-
-**Contents.** Columns: `interval`, `candidate_id`, `family`, `mode`, `fee_bps`, `market`, `eligible_bars`, `status`, `replay_id`, `return_pct`, `end_equity`, `fees_usd`, `turnover_usd`, `residual_slippage_usd`, `carry_usd`, `fills`, `decision_fill_drawdown_pct`, `rejections`, `open_units`, `terminal_mark_ns`, `terminal_mark_age_seconds`, `terminal_state`, `lifecycle_diagnostics`, `execution_variant`.
-
-**Use.** Read it.
-
-#### `research/zec-expanded-20261113.llms/simulation-source.zip`
-
-`other` · 0 lines · 3,979,986 B · description: **none**
-
-**Purpose.** _No description available._
-
-**Use.** Read it.
-
-#### `research/zec-expanded-20261113.llms/special-runner-summary.json`
-
-`config` · 4218 lines · 130,612 B · description: **derived**
-
-**Purpose.** Generated JSON array, 144 entries.
-
-**Use.** Configuration; nothing to run.
-
-#### `research/zec-expanded-20261113.llms/summary-statistics.json`
-
-`config` · 615 lines · 13,267 B · description: **derived**
-
-**Purpose.** Generated JSON array, 48 entries.
-
-**Use.** Configuration; nothing to run.
-
-#### `research/zec-expanded-20261113.llms/summary.json`
-
-`config` · 38 lines · 916 B · description: **derived**
-
-**Purpose.** Generated JSON object, 19 keys (version, rows, status_counts, run_id, row_key, fees_bps_per_fill...).
-
-**Use.** Configuration; nothing to run.
-
-### `research/zec-fee-sensitivity-20261113.llms/`
-
-#### `research/zec-fee-sensitivity-20261113.llms/archive-manifest.json`
-
-`config` · 19 lines · 1,208 B · description: **derived**
-
-**Purpose.** Generated JSON object, 3 keys (version, artifacts, report_sha256).
-
-**Use.** Configuration; nothing to run.
-
-#### `research/zec-fee-sensitivity-20261113.llms/audit-ledger.json`
-
-`config` · 24 lines · 693 B · description: **derived**
-
-**Purpose.** Generated JSON object, 15 keys (audit, attempt, artifact_hashes_verified, rows, statuses, exact_catalog_census...).
-
-**Use.** Configuration; nothing to run.
-
-#### `research/zec-fee-sensitivity-20261113.llms/audit.json`
-
-`config` · 170 lines · 8,171 B · description: **derived**
-
-**Purpose.** Generated JSON object, 7 keys (agent, definition_version, status, evidence, changes, remaining...).
-
-**Use.** Configuration; nothing to run.
-
-#### `research/zec-fee-sensitivity-20261113.llms/coverage.json`
-
-`config` · 35 lines · 810 B · description: **derived**
-
-**Purpose.** Generated JSON object, 4 keys (10m, 1h, 1m, 5m).
-
-**Use.** Configuration; nothing to run.
-
-#### `research/zec-fee-sensitivity-20261113.llms/identity.json`
-
-`config` · 61 lines · 5,662 B · description: **derived**
-
-**Purpose.** Generated JSON object, 5 keys (code, executable, numpy, pandas, python).
-
-**Use.** Configuration; nothing to run.
-
-#### `research/zec-fee-sensitivity-20261113.llms/llms-full.txt`
-
-`data` · 58 lines · 6,057 B · description: **derived**
-
-**Purpose.** Generated report. Opens: # ZEC fee sensitivity at 0.25% and 0.15% per fill / Version: 1.0.0
-
-**Use.** Read it.
-
-#### `research/zec-fee-sensitivity-20261113.llms/llms.txt`
-
-`data` · 18 lines · 976 B · description: **derived**
-
-**Purpose.** Generated report. Opens: # ZEC25/15bps fee sensitivity / Version: 1.0.0
-
-**Use.** Read it.
-
-#### `research/zec-fee-sensitivity-20261113.llms/manifest.json`
-
-`config` · 86 lines · 7,212 B · description: **derived**
-
-**Purpose.** Generated JSON object, 6 keys (artifacts, capture_sha256, identity, rows, statuses, version).
-
-**Use.** Configuration; nothing to run.
-
-#### `research/zec-fee-sensitivity-20261113.llms/mongo-artifacts.json`
-
-`config` · 75 lines · 2,584 B · description: **derived**
-
-**Purpose.** Generated JSON object, 11 keys (status, artifacts, csv_bytes, csv_sha256, full_csv_readback, other_readbacks...).
-
-**Use.** Configuration; nothing to run.
-
-#### `research/zec-fee-sensitivity-20261113.llms/plan.json.gz`
-
-`other` · 0 lines · 20,015 B · description: **none**
-
-**Purpose.** _No description available._
-
-**Use.** Read it.
-
-#### `research/zec-fee-sensitivity-20261113.llms/rerun-provenance.json`
-
-`config` · 17 lines · 831 B · description: **derived**
-
-**Purpose.** Generated JSON object, 11 keys (clarification, driver, driver_sha256, execution_model, fee_bps, other_changes...).
-
-**Use.** Configuration; nothing to run.
-
-#### `research/zec-fee-sensitivity-20261113.llms/results.csv`
-
-`data` · 7062 lines · 1,271,529 B · description: **derived**
-
-**Purpose.** Generated data: 7060 rows x 21 columns (interval, candidate_id, family, fee_bps, eligible_signal_bars, market, status, return_pct...).
-
-**Contents.** Columns: `interval`, `candidate_id`, `family`, `fee_bps`, `eligible_signal_bars`, `market`, `status`, `return_pct`, `end_equity`, `fees_usd`, `turnover_usd`, `residual_slippage_usd`, `carry_usd`, `fills`, `decision_fill_drawdown_pct`, `rejections`, `open_units`, `terminal_mark_ns`, `terminal_mark_age_seconds`, `terminal_state`, `reason`.
-
-**Use.** Read it.
-
-#### `research/zec-fee-sensitivity-20261113.llms/summary.json`
-
-`config` · 788 lines · 26,797 B · description: **derived**
-
-**Purpose.** Generated JSON object, 11 keys (coverage, fee_bps, fee_percent, mongo_run_id, original_source_sha256, parent_run_id...).
-
-**Use.** Configuration; nothing to run.
-
-### `research/zec-granular-20261113.llms/`
-
-#### `research/zec-granular-20261113.llms/archive-manifest.json`
-
-`config` · 20 lines · 1,233 B · description: **derived**
-
-**Purpose.** Generated JSON object, 4 keys (artifacts, attempt, report_sha256, version).
-
-**Use.** Configuration; nothing to run.
-
-#### `research/zec-granular-20261113.llms/audit-ledger.json`
-
-`config` · 22 lines · 593 B · description: **derived**
-
-**Purpose.** Generated JSON object, 13 keys (audit, attempt, artifact_hashes_verified, rows, statuses, exact_catalog_census...).
-
-**Use.** Configuration; nothing to run.
-
-#### `research/zec-granular-20261113.llms/audit-raw-book.json`
-
-`config` · 18 lines · 547 B · description: **derived**
-
-**Purpose.** Generated JSON object, 11 keys (attempt, original_wal_sha256, records_verified, all_trade_rows_verified, book_samples_independently_sorted_from_raw, connection_ids...).
-
-**Use.** Configuration; nothing to run.
-
-#### `research/zec-granular-20261113.llms/audit.json`
-
-`config` · 88 lines · 5,207 B · description: **derived**
-
-**Purpose.** Generated JSON object, 7 keys (agent, definition_version, status, evidence, changes, remaining...).
-
-**Use.** Configuration; nothing to run.
-
-#### `research/zec-granular-20261113.llms/coverage.json`
-
-`config` · 35 lines · 810 B · description: **derived**
-
-**Purpose.** Generated JSON object, 4 keys (10m, 1h, 1m, 5m).
-
-**Use.** Configuration; nothing to run.
-
-#### `research/zec-granular-20261113.llms/identity.json`
-
-`config` · 61 lines · 5,662 B · description: **derived**
-
-**Purpose.** Generated JSON object, 5 keys (code, executable, numpy, pandas, python).
-
-**Use.** Configuration; nothing to run.
-
-#### `research/zec-granular-20261113.llms/llms-full.txt`
-
-`data` · 79 lines · 10,162 B · description: **derived**
-
-**Purpose.** Generated report. Opens: # ZEC captured-event backtests / Version: 1.0.1
-
-**Use.** Read it.
-
-#### `research/zec-granular-20261113.llms/llms.txt`
-
-`data` · 16 lines · 1,021 B · description: **derived**
-
-**Purpose.** Generated report. Opens: # ZEC captured-event backtests / Version: 1.0.1
-
-**Use.** Read it.
-
-#### `research/zec-granular-20261113.llms/manifest.json`
-
-`config` · 85 lines · 7,116 B · description: **derived**
-
-**Purpose.** Generated JSON object, 6 keys (artifacts, capture_sha256, identity, rows, statuses, version).
-
-**Use.** Configuration; nothing to run.
-
-#### `research/zec-granular-20261113.llms/mongo-artifacts.json`
-
-`config` · 72 lines · 2,813 B · description: **derived**
-
-**Purpose.** Generated JSON object, 12 keys (version, run_id, run_revision, mode, result_csv_sha256, result_csv_bytes...).
-
-**Use.** Configuration; nothing to run.
-
-#### `research/zec-granular-20261113.llms/plan.json.gz`
-
-`other` · 0 lines · 20,018 B · description: **none**
-
-**Purpose.** _No description available._
-
-**Use.** Read it.
-
-#### `research/zec-granular-20261113.llms/results.csv`
-
-`data` · 10578 lines · 1,904,716 B · description: **derived**
-
-**Purpose.** Generated data: 10576 rows x 21 columns (interval, candidate_id, family, fee_bps, eligible_signal_bars, market, status, return_pct...).
-
-**Contents.** Columns: `interval`, `candidate_id`, `family`, `fee_bps`, `eligible_signal_bars`, `market`, `status`, `return_pct`, `end_equity`, `fees_usd`, `turnover_usd`, `residual_slippage_usd`, `carry_usd`, `fills`, `decision_fill_drawdown_pct`, `rejections`, `open_units`, `terminal_mark_ns`, `terminal_mark_age_seconds`, `terminal_state`, `reason`.
-
-**Use.** Read it.
-
-#### `research/zec-granular-20261113.llms/summary.json`
-
-`config` · 879 lines · 29,411 B · description: **derived**
-
-**Purpose.** Generated JSON object, 8 keys (attempt, capture_sha256, costs, coverage, matrix_rows, statuses...).
-
-**Use.** Configuration; nothing to run.
-
-### `research/zec-reversal-excursions-20261115/`
-
-#### `research/zec-reversal-excursions-20261115/llms.txt`
-
-`data` · 27 lines · 2,319 B · description: **derived**
-
-**Purpose.** Generated report. Opens: # ZEC second-bar reversal excursion study / Version: 1.0.0
-
-**Use.** Read it.
-
-#### `research/zec-reversal-excursions-20261115/mongo-artifacts.json`
-
-`config` · 234 lines · 9,943 B · description: **derived**
-
-**Purpose.** Generated JSON object, 11 keys (version, run_id, native_revision_at_projection, qualification, source_artifacts, decoded_results_sha256...).
-
-**Use.** Configuration; nothing to run.
-
-#### `research/zec-reversal-excursions-20261115/results.json`
-
-`config` · 1 lines · 784,401 B · description: **derived**
-
-**Purpose.** Generated JSON object, 5 keys (events, input, schema, selection_counts, summaries).
-
-**Use.** Configuration; nothing to run.
-
-### `research/zec-two-bar-reversal-20261114/`
-
-#### `research/zec-two-bar-reversal-20261114/analysis.py`
-
-`code-python` · 205 lines · 7,797 B · description: **extracted**
-
-**Purpose.** Descriptive candle-color counts. No execution or prospective accuracy claim. Adapted only to accept input paths from native artifact art:b7b9b518c0c9baf5243a63fb39db79e5c2f2afdae3324cda691456811468074f. Requires Python 3 and NumPy. Prints the original results schema unchanged.
-
-**Contents.** Defines `ROOT`, `NS`, `descriptive()`, `summarize()`.
-
-**Use.** `python3 research/zec-two-bar-reversal-20261114/analysis.py --help`
-
-#### `research/zec-two-bar-reversal-20261114/llms.txt`
-
-`data` · 37 lines · 3,070 B · description: **derived**
-
-**Purpose.** Generated report. Opens: # ZEC two-bar reversal working paper / Version: 1.0.0
-
-**Use.** Read it.
-
-#### `research/zec-two-bar-reversal-20261114/results.json`
-
-`config` · 3271 lines · 81,808 B · description: **derived**
-
-**Purpose.** Generated JSON object, 4 keys (schema, input, definitions, results).
-
-**Use.** Configuration; nothing to run.
 
 ---
 
@@ -27380,11 +27690,11 @@ Forecast evidence, strategy votes, archives and separately controlled webhook ex
 
 The Chrome extension has a separately armed trading surface. Dry-run is the default, risk rails live in code and fail closed, and a fresh install must not be able to trade.
 
-191 files.
+200 files.
 
 #### `extension/README.md`
 
-`doc` · 833 lines · 56,721 B · description: **extracted**
+`doc` · 839 lines · 57,003 B · description: **extracted**
 
 **Purpose.** A Chrome MV3 extension for the owner's Base and Solana money: **holdings, profit and loss, pool discovery, backtests and strategy changes, swap quotes, and alerts** when a more profitable pool or strategy appears. It also keeps an **experimental grid trading strategy on Jupiter (Solana)** with
 
@@ -27392,7 +27702,7 @@ The Chrome extension has a separately armed trading surface. Dry-run is the defa
 
 #### `extension/manifest.json`
 
-`config` · 82 lines · 2,201 B · description: **curated**
+`config` · 84 lines · 2,271 B · description: **curated**
 
 **Purpose.** MV3 manifest: permissions, the service worker entry point, and the UI surfaces. The permission list is the extension's blast radius, so review any addition against `docs/SECURITY.md`.
 
@@ -27564,7 +27874,7 @@ The Chrome extension has a separately armed trading surface. Dry-run is the defa
 
 #### `extension/src/1000x/content.js`
 
-`code-js` · 108 lines · 5,105 B · description: **none**
+`code-js` · 119 lines · 5,782 B · description: **none**
 
 **Purpose.** _No description available._
 
@@ -27874,7 +28184,7 @@ The Chrome extension has a separately armed trading surface. Dry-run is the defa
 
 #### `extension/src/core/owner-source.js`
 
-`code-js` · 82 lines · 2,342 B · description: **extracted**
+`code-js` · 88 lines · 2,503 B · description: **extracted**
 
 **Purpose.** Versioned source identity covers the complete shipped execution module set.
 
@@ -28013,6 +28323,84 @@ The Chrome extension has a separately armed trading surface. Dry-run is the defa
 **Purpose.** _No description available._
 
 **Contents.** Defines `BASE`, `BASE_TOKENS`, `CHAINS`, `ENDPOINTS`, `JUPITER_MARKET_BASES`, `SOLANA`, `SOLANA_ADDRESS`, `SOLANA_TOKENS`, `findToken`, `isSolanaAddress`.
+
+**Use.** Loaded by the extension; see `extension/manifest.json` for entry points.
+
+### `extension/src/perps/`
+
+#### `extension/src/perps/archive-presets.js`
+
+`code-js` · 1318 lines · 33,918 B · description: **extracted**
+
+**Purpose.** Generated by python -m research.jupiter_perps_presets.
+
+**Contents.** Defines `ARCHIVE_PRESETS`.
+
+**Use.** Loaded by the extension; see `extension/manifest.json` for entry points.
+
+#### `extension/src/perps/market.js`
+
+`code-js` · 132 lines · 6,658 B · description: **none**
+
+**Purpose.** _No description available._
+
+**Contents.** Defines `GUM`, `PERPS`, `PRICES`, `gumTerms`, `jlpTerms`, `marketFor`, `parseGumMinutes`, `parseJlpPrices`, `readJson`, `readMinutes` and 1 more.
+
+**Use.** Loaded by the extension; see `extension/manifest.json` for entry points.
+
+#### `extension/src/perps/model.js`
+
+`code-js` · 106 lines · 6,327 B · description: **extracted**
+
+**Purpose.** Isolated paper positions. All prices are USD and all percentages are price distances.
+
+**Contents.** Defines `MARKETS`, `barrier`, `carryCost`, `liquidationPrice`, `planPosition`, `settle`.
+
+**Use.** Loaded by the extension; see `extension/manifest.json` for entry points.
+
+#### `extension/src/perps/panel.css`
+
+`code-web` · 25 lines · 1,523 B · description: **none**
+
+**Purpose.** _No description available._
+
+**Use.** Read it.
+
+#### `extension/src/perps/panel.html`
+
+`code-web` · 50 lines · 3,026 B · description: **none**
+
+**Purpose.** _No description available._
+
+**Use.** Read it.
+
+#### `extension/src/perps/panel.js`
+
+`code-js` · 273 lines · 12,375 B · description: **none**
+
+**Purpose.** _No description available._
+
+**Contents.** Defines `fresh`, `latestDecision`, `newBroker`, `observe`, `poll`, `refreshChart`, `refreshHistory`, `render`.
+
+**Use.** Loaded by the extension; see `extension/manifest.json` for entry points.
+
+#### `extension/src/perps/replay.js`
+
+`code-js` · 139 lines · 5,490 B · description: **none**
+
+**Purpose.** _No description available._
+
+**Contents.** Defines `PAPER_CAPITAL`, `class PaperBroker`, `replay`.
+
+**Use.** Loaded by the extension; see `extension/manifest.json` for entry points.
+
+#### `extension/src/perps/strategies.js`
+
+`code-js` · 160 lines · 6,883 B · description: **none**
+
+**Purpose.** _No description available._
+
+**Contents.** Defines `BANDS`, `INTERVALS`, `PRESETS`, `RISK_PRESETS`, `RSI`, `ZSCORE`, `aggregateMinutes`, `breakout`, `memberState`, `practiceSignals` and 1 more.
 
 **Use.** Loaded by the extension; see `extension/manifest.json` for entry points.
 
@@ -28298,7 +28686,7 @@ The Chrome extension has a separately armed trading surface. Dry-run is the defa
 
 #### `extension/src/ui/view-trade.js`
 
-`code-js` · 293 lines · 13,076 B · description: **extracted**
+`code-js` · 293 lines · 13,084 B · description: **extracted**
 
 **Purpose.** Backtest & strategies and Swap views. Strategy work runs in soltui (the backtester is Python): Top 5 evidence, the roster, CPCV sweeps and signal defaults. Swaps are quotes from the extension's registry (swapQuote); signing happens on the venue page (Stele KNOW-837).
 
@@ -28626,7 +29014,7 @@ The Chrome extension has a separately armed trading surface. Dry-run is the defa
 
 #### `extension/test/cdo-iter1-tools.test.js`
 
-`test` · 51 lines · 3,640 B · description: **none**
+`test` · 51 lines · 3,719 B · description: **none**
 
 **Purpose.** _No description available._
 
@@ -28804,6 +29192,14 @@ The Chrome extension has a separately armed trading surface. Dry-run is the defa
 
 **Use.** `node --test extension/test/node-deps-audit.test.js`
 
+#### `extension/test/perps-paper.test.js`
+
+`test` · 91 lines · 5,164 B · description: **none**
+
+**Purpose.** _No description available._
+
+**Use.** `node --test extension/test/perps-paper.test.js`
+
 #### `extension/test/persisted-safety-audit.test.js`
 
 `test` · 150 lines · 8,205 B · description: **none**
@@ -28864,7 +29260,7 @@ The Chrome extension has a separately armed trading surface. Dry-run is the defa
 
 #### `extension/test/soltui-panel.test.js`
 
-`test` · 119 lines · 8,268 B · description: **none**
+`test` · 119 lines · 8,337 B · description: **none**
 
 **Purpose.** _No description available._
 
@@ -28904,7 +29300,7 @@ The Chrome extension has a separately armed trading surface. Dry-run is the defa
 
 #### `extension/test/tool-help.test.js`
 
-`test` · 50 lines · 2,819 B · description: **none**
+`test` · 50 lines · 2,849 B · description: **none**
 
 **Purpose.** _No description available._
 
@@ -29010,7 +29406,7 @@ The Chrome extension has a separately armed trading surface. Dry-run is the defa
 
 #### `extension/test/fixtures/1000x-python-parity.json`
 
-`test` · 2 lines · 90,642 B · description: **derived**
+`test` · 2 lines · 90,650 B · description: **derived**
 
 **Purpose.** Generated JSON object, 4 keys (schema, source_sha256, shapes, momentum).
 
@@ -29064,16 +29460,6 @@ The Chrome extension has a separately armed trading surface. Dry-run is the defa
 
 **Use.** Loaded by the extension; see `extension/manifest.json` for entry points.
 
-#### `extension/tools/1000x-reference.py`
-
-`code-python` · 83 lines · 3,582 B · description: **extracted**
-
-**Purpose.** Freeze vectors from the independent Python research functions; no network. Run with the existing research environment. Node tests consume the frozen JSON and verify the Python source bindings, so npm test needs no Python dependencies.
-
-**Contents.** Defines `ROOT`, `rows_for()`, `main()`. Depends on `research`.
-
-**Use.** `python3 extension/tools/1000x-reference.py --help`
-
 #### `extension/tools/api-server.js`
 
 `code-js` · 282 lines · 11,075 B · description: **extracted**
@@ -29103,16 +29489,6 @@ The Chrome extension has a separately armed trading surface. Dry-run is the defa
 **Contents.** Defines `ALLOWED`, `CHROME`, `EXT`, `HOST`, `INSTALLED`, `PYTHON`, `ROOT`.
 
 **Use.** Loaded by the extension; see `extension/manifest.json` for entry points.
-
-#### `extension/tools/capture-jupiter.py`
-
-`code-python` · 248 lines · 11,939 B · description: **extracted**
-
-**Purpose.** Archive a bounded public Jupiter app graph; never execute downloaded code. This records public response bodies outside the checkout. It uses no browser, cookies, credentials, source-map execution, wallet requests, or transaction APIs.
-
-**Contents.** Defines `PORTAL`, `SCRIPT`, `SOURCE_MAP`, `DYNAMIC_IMPORT`, `SAFE_HEADERS`, `class Resources`, `class PublicRedirect`, `safe_url()`, `asset_url()`, `retrieve()` and 1 more.
-
-**Use.** `python3 extension/tools/capture-jupiter.py --help`
 
 #### `extension/tools/cli.js`
 
@@ -29164,16 +29540,6 @@ The Chrome extension has a separately armed trading surface. Dry-run is the defa
 
 **Use.** Loaded by the extension; see `extension/manifest.json` for entry points.
 
-#### `extension/tools/measure-recentre.js`
-
-`code-js` · 156 lines · 6,657 B · description: **extracted**
-
-**Purpose.** How often does the shipped auto-recentre gate actually open? node tools/measure-recentre.js --csv ../data/SOL_1d.csv `recentreDecision()` refuses to move the ladder while anything is resting or any lot is open, because `tick()` cannot cancel. That gate is deliberately tight, and the honest question is whether it is so tight the feature never fires.
-
-**Contents.** Defines `USAGE`, `closeColumn`, `main`, `parseArgs`, `recordingVenue`, `run`.
-
-**Use.** Loaded by the extension; see `extension/manifest.json` for entry points.
-
 #### `extension/tools/soltui-transport.js`
 
 `code-js` · 122 lines · 5,597 B · description: **extracted**
@@ -29191,6 +29557,38 @@ The Chrome extension has a separately armed trading surface. Dry-run is the defa
 **Purpose.** Live endpoint check. Confirms the read-side assumptions this extension hardcodes still hold, so a Jupiter API change surfaces here rather than mid-tick. Read-only: nothing is signed, deposited, or ordered. node tools/verify-endpoints.js JUPITER_API_KEY=... node tools/verify-endpoints.js # also checks the keyed tier
 
 **Contents.** Defines `MINTS`, `USAGE`, `checkPrice`, `checkTriggerReachable`, `endpointRead`, `main`, `report`.
+
+**Use.** Loaded by the extension; see `extension/manifest.json` for entry points.
+
+#### `extension/tools/zec-gum-live.mjs`
+
+`code-js` · 258 lines · 12,955 B · description: **extracted**
+
+**Purpose.** Operator-run ZEC paper forward books on public GUM candles and sampled marks.
+
+**Contents.** Defines `class LivePaperSession`, `main`, `resolveProfiles`, `sampleBook`, `visibleDecision`.
+
+**Use.** Loaded by the extension; see `extension/manifest.json` for entry points.
+
+### `extension/tools/lib/`
+
+#### `extension/tools/lib/zec-gum-five-minute.mjs`
+
+`code-js` · 189 lines · 9,040 B · description: **none**
+
+**Purpose.** _No description available._
+
+**Contents.** Defines `BOP_SMOOTHING`, `SHAPE_GATE`, `STEP`, `bop`, `breakoutSignals`, `candidate`, `combinedSignals`, `filteredVolty`, `fiveMinuteCandidates`, `fiveMinuteContext` and 8 more.
+
+**Use.** Loaded by the extension; see `extension/manifest.json` for entry points.
+
+#### `extension/tools/lib/zec-perps-signals.mjs`
+
+`code-js` · 263 lines · 11,884 B · description: **none**
+
+**Purpose.** _No description available._
+
+**Contents.** Defines `ALIAS_MEMBERS`, `BANDS`, `BOP_WINDOWS`, `CADENCE_POLICY`, `FAMILY`, `REVERSAL_SHAPES`, `RSI`, `SHAPE_ENTRY`, `SHAPE_EXIT`, `TREND_SHAPES` and 13 more.
 
 **Use.** Loaded by the extension; see `extension/manifest.json` for entry points.
 
@@ -31374,7 +31772,7 @@ The local control room, pipeline supervision, telemetry and embedded documentati
 
 #### `ecosystem/README.md`
 
-`doc` · 119 lines · 7,547 B · description: **extracted**
+`doc` · 119 lines · 7,563 B · description: **extracted**
 
 **Purpose.** This source version includes compatible per-coin automatic paper-learning memory on local disk, while keeping each policy's exposure qualification separate. It pins Bot Manager0.7.11, Oracle0.2.7 and research-runtime0.4.8.
 
@@ -31618,7 +32016,7 @@ The local control room, pipeline supervision, telemetry and embedded documentati
 
 #### `ecosystem/wiki.py`
 
-`code-python` · 340 lines · 12,510 B · description: **extracted**
+`code-python` · 350 lines · 13,146 B · description: **extracted**
 
 **Purpose.** Search the packaged documentation snapshot without opening caller paths. Markdown and its links are untrusted document content. This module returns text and provenance; callers must render it without evaluating HTML or instructions.
 
@@ -32114,7 +32512,7 @@ The local TUI, browser workspace and service interfaces. Coinbase order executio
 
 #### `soltui/README.md`
 
-`doc` · 710 lines · 57,093 B · description: **extracted**
+`doc` · 710 lines · 57,110 B · description: **extracted**
 
 **Purpose.** The Bots picker lists **DCA, Grid, Arbitrage, Trend and Council**. All five are paper bots. Trend follows momentum with simple moving averages: it buys after the fast average exceeds the slow average by the entry buffer and exits when fast falls to or below slow.
 
@@ -32138,9 +32536,9 @@ The local TUI, browser workspace and service interfaces. Coinbase order executio
 
 #### `soltui/analyze.py`
 
-`code-python` · 284 lines · 11,832 B · description: **extracted**
+`code-python` · 284 lines · 11,840 B · description: **extracted**
 
-**Purpose.** What every strategy, signal and indicator said about one coin at one moment. Pure logic behind the Analyze tab. No Textual import, no widget. ## It wraps `research/decide.py`; it does not reimplement it `decide.py`'s one substantive guarantee is that the exposures it reports are the numbers the engine would have acted on.
+**Purpose.** What every strategy, signal and indicator said about one coin at one moment. Pure logic behind the Analyze tab. No Textual import, no widget. ## It wraps `research/scripts/decide.py`; it does not reimplement it `decide.py`'s one substantive guarantee is that the exposures it reports are the numbers the engine would have acted on.
 
 **Contents.** Defines `REPO`, `DATA_DIR`, `class Series`, `class Analysis`, `available_assets()`, `load_series()`, `parse_as_of()`, `slice_to()`, `_prepare()`, `_first_close()` and 2 more. Depends on `backtester`, `research`.
 
@@ -32188,7 +32586,7 @@ The local TUI, browser workspace and service interfaces. Coinbase order executio
 
 #### `soltui/bgqueue.py`
 
-`code-python` · 1037 lines · 41,093 B · description: **extracted**
+`code-python` · 1037 lines · 41,109 B · description: **extracted**
 
 **Purpose.** Job queue for the background backtest sweep. Pure logic; no UI, no processes. The TUI's own sweep (`runner.py`) evaluates the roster and blocks a thread until it finishes.
 
@@ -32278,7 +32676,7 @@ The local TUI, browser workspace and service interfaces. Coinbase order executio
 
 #### `soltui/commands.py`
 
-`code-python` · 3590 lines · 178,510 B · description: **extracted**
+`code-python` · 3590 lines · 178,538 B · description: **extracted**
 
 **Purpose.** The soltui command registry: one set of calls for the TUI, CLI, HTTP API and native host. Every action the console can take is a registered `Command`. Every surface goes through `dispatch(name, params, surface)`, which validates parameters, applies the confirm gate, runs the handler, wraps the outcome in the response envelope and appends one line to the call log.
 
@@ -32288,7 +32686,7 @@ The local TUI, browser workspace and service interfaces. Coinbase order executio
 
 #### `soltui/compound.py`
 
-`code-python` · 2105 lines · 104,332 B · description: **extracted**
+`code-python` · 2105 lines · 104,347 B · description: **extracted**
 
 **Purpose.** Compound five-minute tester: saved configuration, live reads, forward ledger, sweeps. python3 -m soltui.compound signal --asset SOL # score now, explain every metric python3 -m soltui.compound forward --asset SOL --loop # record a call per closed 5m bar python3 -m soltui.compound status --asset SOL # forward-test hit rates python3 -m soltui.compound backtest --asset SOL # compound + each component
 
@@ -32348,7 +32746,7 @@ The local TUI, browser workspace and service interfaces. Coinbase order executio
 
 #### `soltui/cumulative.py`
 
-`code-python` · 246 lines · 9,355 B · description: **extracted**
+`code-python` · 246 lines · 9,371 B · description: **extracted**
 
 **Purpose.** Aggregate every committed backtest result — with the evidence floor applied. Pure logic behind the Cumulative tab. No Textual import, no widget. ## The defect this module is built to avoid `cpcv_evaluate` marks a configuration `insufficient` when it falls below `min_total_trades`, prints it **DROPPED**, and **still returns a full path count**.
 
@@ -32388,7 +32786,7 @@ The local TUI, browser workspace and service interfaces. Coinbase order executio
 
 #### `soltui/docs_browser.py`
 
-`code-python` · 306 lines · 12,990 B · description: **extracted**
+`code-python` · 304 lines · 12,874 B · description: **extracted**
 
 **Purpose.** Read-only catalogue and file reader behind the Docs tab. No Textual import or widgets. Reads are limited to catalogued files; guarded saves use content revisions, per-document locks, and atomic replacements. That split is what lets this be tested without driving a terminal, and it matches `config.py`, `roster.py` and the other modules the TUI sits on.
 
@@ -32488,7 +32886,7 @@ The local TUI, browser workspace and service interfaces. Coinbase order executio
 
 #### `soltui/help.py`
 
-`code-python` · 775 lines · 110,052 B · description: **extracted**
+`code-python` · 775 lines · 110,059 B · description: **extracted**
 
 **Purpose.** Plain-language help shared by hover tooltips and the F1 reference.
 
@@ -32728,7 +33126,7 @@ The local TUI, browser workspace and service interfaces. Coinbase order executio
 
 #### `soltui/presets.py`
 
-`code-python` · 120 lines · 5,276 B · description: **extracted**
+`code-python` · 120 lines · 5,292 B · description: **extracted**
 
 **Purpose.** The Top 5 configurations as ready-to-use presets for Analyze, Live Run and Execute. `top5.py` reads the committed evidence; this module turns each row into something a tab can apply with one click, from one place, so every surface (TUI, CLI, API, extension) sees the same list.
 
@@ -32756,7 +33154,7 @@ The local TUI, browser workspace and service interfaces. Coinbase order executio
 
 #### `soltui/reference.py`
 
-`code-python` · 87 lines · 5,483 B · description: **extracted**
+`code-python` · 87 lines · 5,591 B · description: **extracted**
 
 **Purpose.** Static reference content for the Research and Signals tabs. Kept out of `tui.py` so the command registry (`research.get`, `signals.reference`) can serve the same data to every surface without importing Textual.
 
@@ -32912,7 +33310,7 @@ The local TUI, browser workspace and service interfaces. Coinbase order executio
 
 #### `soltui/top5.py`
 
-`code-python` · 226 lines · 9,170 B · description: **extracted**
+`code-python` · 226 lines · 9,193 B · description: **extracted**
 
 **Purpose.** The five recommended configurations, read from the committed evidence. Pure logic behind the Top 5 tab. No Textual import, no widget, and — like `cumulative.py` — no re-computation: this reads what the research drivers wrote and cannot disagree with `verify_numbers.py`.
 
@@ -32932,7 +33330,7 @@ The local TUI, browser workspace and service interfaces. Coinbase order executio
 
 #### `soltui/tui.py`
 
-`code-python` · 8317 lines · 454,743 B · description: **extracted**
+`code-python` · 8317 lines · 454,765 B · description: **extracted**
 
 **Purpose.** Textual TUI: the console over the backtester. python3 -m soltui.tui The panes (Settings, Strategies, Signals, Compound 5m, Backtest, Execute, ... Docs, and Now) are grouped by `shell.py` into six destinations; `--classic` shows the original tab bar. All decisions live in the pure modules (`config`, `roster`, `runner`, `paper`, `status`); this file is presentation and wiring.
 
@@ -34064,7 +34462,7 @@ The local TUI, browser workspace and service interfaces. Coinbase order executio
 
 #### `soltui/tests/test_tradingstrategyresults_coverage.py`
 
-`test` · 154 lines · 6,845 B · description: **extracted**
+`test` · 154 lines · 6,850 B · description: **extracted**
 
 **Purpose.** Every strategy and indicator in `tradingstrategyresults.json` is represented in soltui. That file is a catalogue of strategies and indicators from public trading guides.
 
@@ -34084,7 +34482,7 @@ The local TUI, browser workspace and service interfaces. Coinbase order executio
 
 #### `soltui/tests/test_tui.py`
 
-`test` · 1479 lines · 65,321 B · description: **extracted**
+`test` · 1479 lines · 65,345 B · description: **extracted**
 
 **Purpose.** Smoke tests for the Textual app, driven through Textual's own test harness. An app that imports cleanly but explodes on mount is not working, so these actually mount it, click things, and assert on widget state. `run_test()` runs a headless terminal, so no TTY is required and this is safe in CI.
 
@@ -34218,7 +34616,7 @@ Derived research and public-market stores, loaders and analysis queries.
 
 #### `mongo/README.md`
 
-`doc` · 238 lines · 12,189 B · description: **extracted**
+`doc` · 238 lines · 12,205 B · description: **extracted**
 
 **Purpose.** A read-mostly MongoDB copy of everything this repo has measured: price history, strategies and their cards, the signal and indicator layers, per-bar readouts, backtest runs, CPCV and sweep results, the coin write-ups, and the test-suite
 
@@ -34244,7 +34642,7 @@ Derived research and public-market stores, loaders and analysis queries.
 
 #### `mongo/load.py`
 
-`code-python` · 886 lines · 34,252 B · description: **extracted**
+`code-python` · 889 lines · 34,410 B · description: **extracted**
 
 **Purpose.** Load the repo's research artifacts into the local MongoDB store. pip install -r mongo/requirements.txt python3 mongo/load.py # everything python3 mongo/load.py --only bars,strategies python3 mongo/load.py --dry-run # count what would load, write nothing Derived artifact collections are dropped and rebuilt to prevent duplicate time series measurements.
 
@@ -34262,7 +34660,7 @@ Derived research and public-market stores, loaders and analysis queries.
 
 #### `mongo/schema.py`
 
-`code-python` · 538 lines · 23,378 B · description: **extracted**
+`code-python` · 538 lines · 23,394 B · description: **extracted**
 
 **Purpose.** Collection layout for the local research store: specs, validators, indexes. python3 mongo/schema.py --create # rebuild derived data; retain test receipts python3 mongo/schema.py --describe # print the layout, touch nothing Design notes, because the shape is the part worth arguing about: * **Bars are a native time series collection.** Per-bar, time-ordered, append-only measurements are what that co
 
@@ -34274,7 +34672,7 @@ Derived research and public-market stores, loaders and analysis queries.
 
 #### `mongo/queries/01-coins-and-bars.js`
 
-`code-js` · 113 lines · 3,850 B · description: **extracted**
+`code-js` · 113 lines · 3,858 B · description: **extracted**
 
 **Purpose.** Coins and price history. mongosh solmargintrader mongo/queries/01-coins-and-bars.js `bars` is a native time series collection: `ts` is the time field and `series` the metaField, so every query below should filter on `series.*` and a time range. MongoDB creates the meta+time index itself; there are no user indexes to add.
 
@@ -34290,9 +34688,9 @@ Derived research and public-market stores, loaders and analysis queries.
 
 #### `mongo/queries/03-signals-and-indicators.js`
 
-`code-js` · 72 lines · 2,423 B · description: **extracted**
+`code-js` · 72 lines · 2,431 B · description: **extracted**
 
-**Purpose.** Signals and indicators — the two layers beneath the strategies. mongosh solmargintrader mongo/queries/03-signals-and-indicators.js These are small reference collections. They exist so a reader can answer "what does this rule actually compare?" without opening research/decide.py, and so the readouts in `decisions` can be joined to their definitions.
+**Purpose.** Signals and indicators — the two layers beneath the strategies. mongosh solmargintrader mongo/queries/03-signals-and-indicators.js These are small reference collections. They exist so a reader can answer "what does this rule actually compare?" without opening research/scripts/decide.py, and so the readouts in `decisions` can be joined to their definitions.
 
 **Use.** Loaded by the extension; see `extension/manifest.json` for entry points.
 
@@ -34348,7 +34746,7 @@ Derived research and public-market stores, loaders and analysis queries.
 
 #### `mongo/tests/mongo_fixture.py`
 
-`test` · 349 lines · 11,843 B · description: **extracted**
+`test` · 350 lines · 11,932 B · description: **extracted**
 
 **Purpose.** Explicit, namespace-guarded native Mongo fixtures. Importing this module does no I/O. Unset SOLMARGINTRADER_MONGO_TEST_URI skips before importing the driver. An explicit URI must be bare loopback and failures are errors. The facade prevents accidental namespace escapes; it is not a sandbox against malicious Python introspection.
 
@@ -34870,11 +35268,11 @@ The hosted wallet-account and subscription workspace. Stored bot definitions are
 
 #### `website/public/app.js`
 
-`code-js` · 885 lines · 85,330 B · description: **none**
+`code-js` · 964 lines · 88,874 B · description: **none**
 
 **Purpose.** _No description available._
 
-**Contents.** Defines `TIMING`, `accountActionReady`, `accountContext`, `accountNotice`, `api`, `appendText`, `articleView`, `backtestView`, `beginAccountTransition`, `billingAction` and 30 more.
+**Contents.** Defines `TIMING`, `accountActionReady`, `accountContext`, `accountNotice`, `api`, `appendRow`, `appendText`, `articleHref`, `articleView`, `backtestView` and 30 more.
 
 **Use.** See `website/README.md`; run the workspace with `npm --prefix website run dev`.
 
@@ -34916,7 +35314,7 @@ The hosted wallet-account and subscription workspace. Stored bot definitions are
 
 #### `website/public/styles.css`
 
-`code-web` · 10 lines · 25,696 B · description: **none**
+`code-web` · 10 lines · 25,722 B · description: **none**
 
 **Purpose.** _No description available._
 
@@ -34974,11 +35372,11 @@ The hosted wallet-account and subscription workspace. Stored bot definitions are
 
 #### `website/scripts/export_research.py`
 
-`code-python` · 125 lines · 6,855 B · description: **extracted**
+`code-python` · 136 lines · 7,423 B · description: **extracted**
 
 **Purpose.** Export tracked public research into deterministic metadata and body shards. This is a publication transform, not another research verdict. Original source hashes and transformed-body hashes remain distinct. Never export private stores, local account state, workflows, credentials or the scraped jup.ag mirror.
 
-**Contents.** Defines `ROOT`, `OUTPUT`, `SHARD_BYTES`, `EXCLUDE_WORDS`, `SENSITIVE`, `encoded()`, `public_body()`, `title_summary()`, `export()`, `main()`.
+**Contents.** Defines `ROOT`, `OUTPUT`, `SHARD_BYTES`, `EXCLUDE_WORDS`, `SENSITIVE`, `encoded()`, `public_body()`, `title_summary()`, `publication_path()`, `export()` and 1 more.
 
 **Use.** `python3 website/scripts/export_research.py --help`
 
@@ -35166,7 +35564,7 @@ The hosted wallet-account and subscription workspace. Stored bot definitions are
 
 #### `website/test/catalog-navigation.test.js`
 
-`test` · 22 lines · 1,470 B · description: **none**
+`test` · 33 lines · 1,907 B · description: **none**
 
 **Purpose.** _No description available._
 
@@ -35324,7 +35722,7 @@ The hosted wallet-account and subscription workspace. Stored bot definitions are
 
 #### `website/test/ui-browser.mjs`
 
-`test` · 392 lines · 28,667 B · description: **extracted**
+`test` · 430 lines · 31,653 B · description: **extracted**
 
 **Purpose.** Real browser regressions against local fixtures. No wallet, Stripe or venue calls.
 
@@ -37196,7 +37594,7 @@ Session handoff notes, newest first. Prose, not machine-read.
 
 #### `archive/memory-2026-11-08.md`
 
-`doc` · 1727 lines · 271,950 B · description: **extracted**
+`doc` · 1727 lines · 272,210 B · description: **extracted**
 
 **Purpose.** Archived on 2026-11-08. Active: repo-bootstrapper and code-deep-optimizer; Stele TASK-723. Base: eebadbb5a937aa485825016650589bd5a4538b0d.
 
@@ -37210,7 +37608,7 @@ Session handoff notes, newest first. Prose, not machine-read.
 
 #### `coin-fit/README.md`
 
-`doc` · 46 lines · 2,354 B · description: **extracted**
+`doc` · 46 lines · 2,399 B · description: **extracted**
 
 **Purpose.** In the default v2 shell, open **Research → Bots**. Classic mode retains the Bots tab. The Bots tab has **Rank all coins (quick)** and **Audit selected coin** controls for the grid and averaging-down DCA bots. Ranking uses every coin in the local
 
@@ -37458,7 +37856,7 @@ Session handoff notes, newest first. Prose, not machine-read.
 
 #### `design/soltui-v2/DESIGN.md`
 
-`doc` · 327 lines · 18,519 B · description: **extracted**
+`doc` · 327 lines · 18,524 B · description: **extracted**
 
 **Purpose.** Status: **implemented** in `soltui/` (Stele TASK-904). The clickable mockup below remains the reference. Proposal: TASK-877, decision KNOW-878. The classic console is preserved as the git tag - the five destinations plus Settings (`,`), with sub-view rows and `[` `]` cycling;
 
@@ -37540,7 +37938,7 @@ Session handoff notes, newest first. Prose, not machine-read.
 
 #### `dso-skill/README.md`
 
-`doc` · 64 lines · 2,669 B · description: **extracted**
+`doc` · 64 lines · 2,701 B · description: **extracted**
 
 **Purpose.** ~/.claude/skills/deep-strategy-optimizer -> <repo>/docs/dso-skill follows the link. There is exactly one copy, which is the point — the earlier arrangement kept two and had to warn that they could drift. They can't now.
 
@@ -37618,7 +38016,7 @@ Session handoff notes, newest first. Prose, not machine-read.
 
 #### `oracle_leverage/README.md`
 
-`doc` · 128 lines · 6,972 B · description: **extracted**
+`doc` · 128 lines · 6,979 B · description: **extracted**
 
 **Purpose.** The existing Oracle winner display now opens a separate panel with **L** or the Leverage button. The panel shows ZEC/BTC venue capabilities, frozen strategy rules, live Coinbase quotes and the durable paper ledger. It displays the full
 
@@ -38200,7 +38598,7 @@ Session handoff notes, newest first. Prose, not machine-read.
 
 ## scripts
 
-37 files.
+36 files.
 
 #### `scripts/bootstrap_ecosystem.py`
 
@@ -38244,11 +38642,11 @@ Session handoff notes, newest first. Prose, not machine-read.
 
 #### `scripts/build_tradingview_script_profiles.py`
 
-`code-python` · 307 lines · 12,076 B · description: **extracted**
+`code-python` · 315 lines · 12,421 B · description: **extracted**
 
 **Purpose.** Prepare resumable semantic-authoring batches for every saved TradingView script. Raw author descriptions stay in the gitignored tradingview/.script-card-work cache. Authors write original interpretations to assigned JSONL files; this helper checks source coverage and exact quotations, never synthesizes trading rules from titles.
 
-**Contents.** Defines `ROOT`, `CACHE`, `WORK`, `CLASSES`, `FIELDS`, `dump()`, `prepare()`, `inputs()`, `validate_record()`, `records()` and 1 more.
+**Contents.** Defines `ROOT`, `CACHE`, `WORK`, `CLASSES`, `FIELDS`, `authored_shard()`, `dump()`, `prepare()`, `inputs()`, `validate_record()` and 2 more.
 
 **Use.** `python3 scripts/build_tradingview_script_profiles.py --help`
 
@@ -38274,7 +38672,7 @@ Session handoff notes, newest first. Prose, not machine-read.
 
 #### `scripts/check_tradingview_cards.py`
 
-`code-python` · 279 lines · 15,761 B · description: **extracted**
+`code-python` · 282 lines · 15,975 B · description: **extracted**
 
 **Purpose.** Check card coverage; optionally re-bind evidence to the owner's local dumps. The default is offline and uses committed evidence. --source-root verifies physical capture hashes, decoded descriptions and excerpt offsets; it never fetches pages.
 
@@ -38284,23 +38682,13 @@ Session handoff notes, newest first. Prose, not machine-read.
 
 #### `scripts/check_tradingview_strategy_profiles.py`
 
-`code-python` · 362 lines · 15,250 B · description: **extracted**
+`code-python` · 362 lines · 15,275 B · description: **extracted**
 
 **Purpose.** Verify strategy-publication cards and optionally bind them to saved HTML. Without --source-root, verify committed cards, inventory and quoted evidence. With --source-root, also verify every HTML hash and the complete strategy subset.
 
 **Contents.** Defines `REPO`, `class PublicationParser`, `publication()`, `sha256()`, `bounded()`, `card_location()`, `legacy_normalize()`, `validate()`, `main()`. Depends on `backtester`.
 
 **Use.** `python3 scripts/check_tradingview_strategy_profiles.py --help`
-
-#### `scripts/coin_strategy_fit.py`
-
-`code-python` · 12 lines · 298 B · description: **extracted**
-
-**Purpose.** Stable direct-script entrypoint for the shared SolTUI coin-fit backend.
-
-**Contents.** Depends on `soltui`.
-
-**Use.** `import scripts.coin_strategy_fit`
 
 #### `scripts/html_to_markdown.py`
 
@@ -38364,7 +38752,7 @@ Session handoff notes, newest first. Prose, not machine-read.
 
 #### `scripts/render_tradingview_script_cards.py`
 
-`code-python` · 819 lines · 34,988 B · description: **extracted**
+`code-python` · 819 lines · 35,072 B · description: **extracted**
 
 **Purpose.** Render and verify source-reviewed documentation cards for saved trading scripts. The authored JSONL records are the semantic input. Rendering does no semantic classification. Final rendering requires an independent review of every record. The raw HTML stays local; the default check uses only committed artifacts.
 
@@ -38412,7 +38800,7 @@ Session handoff notes, newest first. Prose, not machine-read.
 
 #### `scripts/test_card_readiness.py`
 
-`test` · 128 lines · 5,556 B · description: **extracted**
+`test` · 128 lines · 5,582 B · description: **extracted**
 
 **Purpose.** Prevent loss, duplicate ownership and stale reviews during card relocation.
 
@@ -38432,7 +38820,7 @@ Session handoff notes, newest first. Prose, not machine-read.
 
 #### `scripts/test_maintenance_tools.py`
 
-`test` · 118 lines · 7,234 B · description: **extracted**
+`test` · 118 lines · 7,290 B · description: **extracted**
 
 **Purpose.** Metadata tools validate their consumers' boundaries using disposable inputs.
 
@@ -38462,7 +38850,7 @@ Session handoff notes, newest first. Prose, not machine-read.
 
 #### `scripts/test_research_backfill.py`
 
-`test` · 124 lines · 5,954 B · description: **extracted**
+`test` · 124 lines · 5,962 B · description: **extracted**
 
 **Purpose.** Launcher contracts use isolated shell stubs; never start or signal a collector.
 
@@ -38482,7 +38870,7 @@ Session handoff notes, newest first. Prose, not machine-read.
 
 #### `scripts/test_tradingview_script_profiles.py`
 
-`test` · 174 lines · 7,146 B · description: **extracted**
+`test` · 174 lines · 7,151 B · description: **extracted**
 
 **Purpose.** Failure checks for the independent source-review gate and literal evidence.
 
@@ -38570,7 +38958,7 @@ Session handoff notes, newest first. Prose, not machine-read.
 
 #### `skills/README.md`
 
-`doc` · 35 lines · 1,905 B · description: **extracted**
+`doc` · 35 lines · 1,912 B · description: **extracted**
 
 **Purpose.** Version-controlled copies of the Claude Code skills this project's research depends on. The live skills are installed at `~/.claude/skills/`, which is outside this repository and not version-controlled. Several of this project's research documents cite them as the source of a
 
@@ -38580,7 +38968,7 @@ Session handoff notes, newest first. Prose, not machine-read.
 
 #### `skills/coin-strategy-fit/SKILL.md`
 
-`doc` · 45 lines · 4,307 B · description: **extracted**
+`doc` · 45 lines · 4,352 B · description: **extracted**
 
 **Purpose.** Evaluate one coin or rank a group for spot grid, averaging-down DCA or scheduled accumulation using the 22-field screening template and shared SolTUI quick/audit backtests. Use for coin suitability, explanations or bulk comparison tables; does not place orders or optimize/adopt bot settings.
 
@@ -38634,7 +39022,7 @@ Session handoff notes, newest first. Prose, not machine-read.
 
 #### `skills/five-minute-signal/SKILL.md`
 
-`doc` · 138 lines · 8,187 B · description: **extracted**
+`doc` · 138 lines · 8,200 B · description: **extracted**
 
 **Purpose.** >-
 
@@ -38652,7 +39040,7 @@ Session handoff notes, newest first. Prose, not machine-read.
 
 #### `skills/trading-and-investing/SKILL.md`
 
-`doc` · 363 lines · 70,317 B · description: **extracted**
+`doc` · 363 lines · 70,325 B · description: **extracted**
 
 **Purpose.** >-
 
@@ -38830,7 +39218,7 @@ Session handoff notes, newest first. Prose, not machine-read.
 
 #### `skills/trading-and-investing/references/leverage-cost-arithmetic-and-the-viable-region.md`
 
-`doc` · 211 lines · 10,045 B · description: **extracted**
+`doc` · 211 lines · 10,053 B · description: **extracted**
 
 **Purpose.** >-
 
@@ -38838,7 +39226,7 @@ Session handoff notes, newest first. Prose, not machine-read.
 
 #### `skills/trading-and-investing/references/liquidation-as-an-absorbing-barrier.md`
 
-`doc` · 190 lines · 9,843 B · description: **extracted**
+`doc` · 190 lines · 9,851 B · description: **extracted**
 
 **Purpose.** >-
 
@@ -39118,7 +39506,7 @@ Session handoff notes, newest first. Prose, not machine-read.
 
 #### `skills/trading-and-investing/references/why-high-frequency-strategies-die-at-leverage.md`
 
-`doc` · 183 lines · 8,709 B · description: **extracted**
+`doc` · 183 lines · 8,717 B · description: **extracted**
 
 **Purpose.** >-
 
@@ -39240,7 +39628,7 @@ Session handoff notes, newest first. Prose, not machine-read.
 
 #### `tools/gate.sh`
 
-`code-shell` · 81 lines · 2,618 B · description: **none**
+`code-shell` · 81 lines · 2,626 B · description: **none**
 
 **Purpose.** _No description available._
 

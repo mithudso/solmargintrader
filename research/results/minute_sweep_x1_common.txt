@@ -259,6 +259,6 @@ NEXT STEP, IF ANY CELL SURVIVED
 ------------------------------------------------------------------------------
   A positive cell here has been selected by looking at the whole sample, which
   is the definition of in-sample. Put it through CPCV before believing it:
-      python3 research/cpcv_sweep.py
+      python3 research/scripts/cpcv_sweep.py
   and check it is not an artifact of one evaluation geometry:
-      python3 research/geometry.py --horizon long --blocks 6 12 --k 2
+      python3 research/scripts/geometry.py --horizon long --blocks 6 12 --k 2

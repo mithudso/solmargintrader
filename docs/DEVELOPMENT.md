@@ -74,16 +74,16 @@ python3 -m backtester.paircli --help    # pairs / cointegration
 
 ```bash
 # What every strategy, signal and indicator says about the last cached bar.
-python3 research/decide.py --asset SOL --interval 1d
-python3 research/decide.py --data data/ZEC_1d.csv --json
+python3 research/scripts/decide.py --asset SOL --interval 1d
+python3 research/scripts/decide.py --data data/ZEC_1d.csv --json
 
-python3 research/sweep.py            # parameter sweeps
-python3 research/cpcv_sweep.py       # CPCV, with the interpretation guard
-python3 research/verify_numbers.py   # re-derives every figure quoted in the research docs
+python3 research/scripts/sweep.py            # parameter sweeps
+python3 research/scripts/cpcv_sweep.py       # CPCV, with the interpretation guard
+python3 research/scripts/verify_numbers.py   # re-derives every figure quoted in the research docs
 
 # Parallel, resumable CPCV across every locally cached coin and buildable strategy card:
-python3 research/strategy_config_sweep.py --plan
-python3 research/strategy_config_sweep.py --workers 8
+python3 research/scripts/strategy_config_sweep.py --plan
+python3 research/scripts/strategy_config_sweep.py --workers 8
 ```
 
 The config sweep does not fetch data. It discovers cached 1m/1h/1d coin files,
@@ -210,7 +210,7 @@ dotenv file; it does not export those values into the shell.
 | `SMT_API_PORT` | `tools/api-server.js:211` | Port for the local HTTP surface |
 | `SMT_API_TOKEN` | `tools/api-server.js:213,228` | Bearer token the HTTP surface requires |
 | `SMT_PASSPHRASE` | `extension/tools/api-server.js` | Unseals the session-key vault for that surface |
-| `SOLMT_DATA_DIR` | `research/sweep.py`, `research/cross_asset_cpcv.py` | Overrides the research CSV-cache directory |
+| `SOLMT_DATA_DIR` | `research/scripts/sweep.py`, `research/scripts/cross_asset_cpcv.py` | Overrides the research CSV-cache directory |
 | `AERO_LP_HOME` | `liquidity/src/aero_lp/state.py`, `soltui/liquidity.py` | Overrides the liquidity state directory |
 | `AERO_LP_KEY_FILE` | `liquidity/src/aero_lp/wallet.py` | Optional path to an owner-only mode-0600 signing-key file |
 | `AERO_LP_PRIVATE_KEY` | `liquidity/src/aero_lp/wallet.py` | Legacy signing-key fallback; prefer the key file or Keychain, never put a value in tracked files |
@@ -258,7 +258,7 @@ row ordering if you touch the fetch path.
 | --- | --- |
 | `no cached data at data/SOL_1d.csv` | Fresh clone, gitignored cache. Run the fetch command |
 | `N gap(s) larger than one 1h bar` | The cache has holes. Refetch, or pass `--allow-gaps` to accept it knowingly |
-| `data is spaced as 1h bars but --interval says 1d` | `research/decide.py` refusing a mismatch that would corrupt its staleness and volatility figures. Use the interval it names |
+| `data is spaced as 1h bars but --interval says 1d` | `research/scripts/decide.py` refusing a mismatch that would corrupt its staleness and volatility figures. Use the interval it names |
 | `missing required column(s)` | You pointed a bar tool at `JLP_spot.csv` |
 | soltui not running after login | The flag file, not Quit. `python3 soltui/soltui-service status` |
 | soltui bundle broken after moving the repo | It is an **alias** py2app build that references this checkout. `soltui-service build` |

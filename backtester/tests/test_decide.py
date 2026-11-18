@@ -1,4 +1,4 @@
-"""Tests for the per-bar rule readout in `research/decide.py`.
+"""Tests for the per-bar rule readout in `research/scripts/decide.py`.
 
 The readout's one substantive claim is that its target exposures are the same
 numbers the engine would have acted on. Three tests defend it:

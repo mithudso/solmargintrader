@@ -20,7 +20,7 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
-from scripts.build_tradingview_script_profiles import FIELDS, WORK, inputs, records
+from scripts.build_tradingview_script_profiles import FIELDS, WORK, authored_shard, inputs, records
 from scripts.check_tradingview_strategy_profiles import (
     bounded,
     card_location,
@@ -28,12 +28,12 @@ from scripts.check_tradingview_strategy_profiles import (
 )
 from scripts.check_tradingview_strategy_profiles import validate as validate_protected
 
-MANIFEST = Path("research/tradingview-script-understanding.json")
-INDEX = Path("research/TRADINGVIEW-SCRIPT-CARDS.md")
+MANIFEST = Path("research/json/tradingview-script-understanding.json")
+INDEX = Path("research/papers/TRADINGVIEW-SCRIPT-CARDS.md")
 CARD_DIR = Path("research/tradingview-script-cards")
 INCOMPLETE_DIR = Path("backtester/strategy_cards/incomplete/publication-profiles")
-PROTECTED = Path("research/tradingview-strategy-understanding.json")
-LOCATIONS = Path("research/tradingview-strategy-card-locations.json")
+PROTECTED = Path("research/json/tradingview-strategy-understanding.json")
+LOCATIONS = Path("research/json/tradingview-strategy-card-locations.json")
 FROZEN_MANIFEST = "1d40b13ab4eb8976f7cf2f419aa70932c9c1aab45ea54e19342d14736724ecd5"
 REVIEW_FIELDS = {
     "in_scope",
@@ -288,7 +288,7 @@ def render_card(source: dict, profile: dict, *, reviewed: bool) -> str:
 def catalog_link(cid: str, parent: Path) -> str:
     candidates = [Path(folder) / f"{cid}.md" for folder in (
         "backtester/strategy_cards", "backtester/strategy_cards/incomplete",
-        "backtester/guides", "backtester/strategy_research",
+        "backtester/guides", "research/papers/strategy_research",
     )]
     matches = [target for target in candidates if (ROOT / target).is_file()]
     if len(matches) != 1:
@@ -394,9 +394,9 @@ def render(draft: bool) -> dict:
     if (ROOT / LOCATIONS).exists():
         bindings[LOCATIONS.as_posix()] = sha((ROOT / LOCATIONS).read_bytes())
     for shard in work["shards"]:
-        path = Path(work["shards"][shard]["output"])
+        path = authored_shard(work["shards"][shard]["output"])
         audit_path = Path(
-            f"research/tradingview-script-profile-audits/shard-{shard}.jsonl"
+            f"research/json/tradingview-script-profile-audits/shard-{shard}.jsonl"
         )
         authored = records(shard, complete=not draft)
         audit_rows = read_jsonl(ROOT / audit_path)
@@ -634,7 +634,7 @@ def check(source_root: Path | None = None, allow_draft: bool = False) -> dict:
     profiles = {}
     audits = {}
     for shard, config in json.loads(WORK.read_text())["shards"].items():
-        for row in read_jsonl(ROOT / config["output"]):
+        for row in read_jsonl(ROOT / authored_shard(config["output"])):
             if (
                 row["publication_id"] in profiles
                 or row["publication_id"] not in config["publication_ids"]
@@ -642,7 +642,7 @@ def check(source_root: Path | None = None, allow_draft: bool = False) -> dict:
                 raise ValueError("Duplicate or unassigned authored publication")
             profiles[row["publication_id"]] = row
         for row in read_jsonl(
-            ROOT / f"research/tradingview-script-profile-audits/shard-{shard}.jsonl"
+            ROOT / f"research/json/tradingview-script-profile-audits/shard-{shard}.jsonl"
         ):
             if (
                 row["publication_id"] in audits
@@ -760,7 +760,7 @@ def check(source_root: Path | None = None, allow_draft: bool = False) -> dict:
 def check_audit(shard: str, partial: bool) -> dict:
     work, sources = inputs()
     authored = {row["publication_id"]: row for row in records(shard)}
-    path = ROOT / f"research/tradingview-script-profile-audits/shard-{shard}.jsonl"
+    path = ROOT / f"research/json/tradingview-script-profile-audits/shard-{shard}.jsonl"
     rows = read_jsonl(path)
     seen = set()
     for audit in rows:

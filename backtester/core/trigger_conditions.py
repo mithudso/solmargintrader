@@ -1,7 +1,7 @@
 """Causal trading conditions shared by the trigger miner and `trigger_trade`.
 
 Every value at index t is computed from bars 0..t only (trailing windows, EMAs).
-`research/triggers.py` mines conjunctions of these; `core/strategies/trigger.py`
+`research/scripts/triggers.py` mines conjunctions of these; `core/strategies/trigger.py`
 trades them. One implementation keeps the mined edge and the traded edge the same
 measurement. No I/O here.
 """

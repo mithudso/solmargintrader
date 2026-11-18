@@ -124,7 +124,7 @@
     },
     {
       "path": "soltui/commands.py",
-      "sha256": "659a888750e56fb8b3be15f1048430cf7b19ebb58131d512c15220dccc6952d4"
+      "sha256": "bd4322302a6b9640487af91096497335336b5a4477c1c10aca9b3a4939a60416"
     },
     {
       "path": "soltui/make_icon.py",
@@ -1452,7 +1452,7 @@
       ],
       "help_reference": "Authoritative registry description and surface discovery; no handler executed.",
       "name": "backtest.untested_sweep",
-      "description": "Run research/sweep_untested.py on this interpreter (30 minute limit).",
+      "description": "Run research/scripts/sweep_untested.py on this interpreter (30 minute limit).",
       "symbol": "backtest_untested_sweep",
       "line": 1597,
       "read_only": false,

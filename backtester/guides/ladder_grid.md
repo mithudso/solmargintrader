@@ -115,7 +115,7 @@ The tables in this section preserve the August experiment and predate the
 November accounting audit. They are historical results, not current-engine
 validation. A fresh daily rerun with the recorded engine revision, data hash,
 costs and full-account return denominator is in
-`research/results/grid_review_20261107.json`. Independent block resets in either
+`research/json/results/grid_review_20261107.json`. Independent block resets in either
 experiment do not validate the extension's continuous recentering policy.
 
 Previously this card said "not evaluated on real SOL history yet". It has now been run on
@@ -170,7 +170,7 @@ still does not describe a live install.** `planGrid` gained an opt-in, default-o
 at every block boundary. The extension may only move it when **nothing is resting and no lot
 is open**, because `tick()` has no cancel step and a moved ladder would otherwise strand real
 orders or recompute an open lot's exit below its own entry. Measured on this same daily series
-with `extension/tools/measure-recentre.js`, that gate opens **once, on the first bar** — and
+with `research/scripts/perps/measure-recentre.mjs`, that gate opens **once, on the first bar** — and
 on this path it made placement *worse* (93.1% of bars outside the ladder, versus 87.3% for the
 untouched default), because one inception-time move locked the ladder onto the 2021 price.
 

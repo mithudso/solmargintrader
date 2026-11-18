@@ -183,7 +183,7 @@ measurement — the first-passage and Kelly arguments in §2 are standard result
 external citation and not re-derived here. The figures it borrows are sourced: the drift and
 penalty mechanics from `jupiter-perps-leverage-and-liquidation.md`, the carry-exhaustion times
 from `leverage-cost-arithmetic-and-the-viable-region.md` §4 (closed-form arithmetic over venue
-parameters, reproducible via `~/dev/solmargintrader/research/leverage_economics.py`), and the
+parameters, reproducible via `~/dev/solmargintrader/research/scripts/leverage_economics.py`), and the
 100%-win-rate case from a first-party unlevered SOL backtest. **No levered scenario in this file
 has been simulated**, and nothing here indicates that any leveraged strategy is profitable — it
 describes only how one ends.

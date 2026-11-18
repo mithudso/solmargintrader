@@ -1,6 +1,6 @@
 """`bb_reversion` and `zscore` are one hypothesis counted twice.
 
-Found by `research/dso_audit.py`'s S4 pass, which flagged them as posting identical
+Found by `research/scripts/dso_audit.py`'s S4 pass, which flagged them as posting identical
 summary scalars on BTC daily, and confirmed by comparing per-bar exposure: on 1,875
 BTC daily bars the two strategies took **exactly the same position on every bar**.
 

@@ -67,11 +67,11 @@ def card_location(repo: Path, profile: dict) -> Path:
     A location receipt cannot change accepted card bytes. It binds a separately
     reviewed completeness decision to each final path after the owner's move.
     """
-    receipt_path = repo / "research/tradingview-strategy-card-locations.json"
+    receipt_path = repo / "research/json/tradingview-strategy-card-locations.json"
     if not receipt_path.exists():
         return bounded(repo, profile["card_path"])
     receipt = json.loads(receipt_path.read_text())
-    accepted_path = repo / "research/tradingview-strategy-understanding.json"
+    accepted_path = repo / "research/json/tradingview-strategy-understanding.json"
     if (
         receipt.get("schema_version") != 1
         or receipt.get("verdict") != "pass"
@@ -165,7 +165,7 @@ def legacy_normalize(text: str) -> str:
 
 def validate(repo: Path, source_root: Path | None = None) -> dict:
     manifest_bytes = (
-        repo / "research/tradingview-strategy-understanding.json"
+        repo / "research/json/tradingview-strategy-understanding.json"
     ).read_bytes()
     data = json.loads(manifest_bytes)
     if data["schema_version"] != 1:
@@ -179,7 +179,7 @@ def validate(repo: Path, source_root: Path | None = None) -> dict:
     }
     profiles = data["publications"]
     receipt = json.loads(
-        (repo / "research/tradingview-strategy-understanding-audit.json").read_text()
+        (repo / "research/json/tradingview-strategy-understanding-audit.json").read_text()
     )
     tuples = sorted(
         [row["publication_id"], row["card_path"], row["card_sha256"]]
@@ -322,7 +322,7 @@ def validate(repo: Path, source_root: Path | None = None) -> dict:
                         raise ValueError(
                             f"Legacy evidence offsets do not bind: {row['publication_id']}"
                         )
-            locations = repo / "research/tradingview-strategy-card-locations.json"
+            locations = repo / "research/json/tradingview-strategy-card-locations.json"
             if locations.exists():
                 entry = next(
                     item

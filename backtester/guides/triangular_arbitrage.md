@@ -131,7 +131,7 @@ stablecoin market, for example ETH/BTC, BTC/USDT and ETH/USDT. Three non-USD pai
 are not mandatory; three independent tradable edges are.
 
 OHLCV also lacks spread, size, queue/depletion state and event ordering. Smaller
-bars do not fix those omissions. `research/ratio_rotation.py` studies relative
+bars do not fix those omissions. `research/scripts/ratio_rotation.py` studies relative
 asset selection over time; it is a different mechanism and cannot validate this
 card. The single-asset bar exposure engine must not simulate three instantaneous
 fills from a closing-price signal.
