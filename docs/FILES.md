@@ -1,6 +1,6 @@
 # Every file in this repository
 
-**Generated** from `index/INDEX.json` at commit `fe35b4f` (2026-11-18T07:43:22+00:00). 4157 tracked files, 211.8 MB.
+**Generated** from `index/INDEX.json` at commit `5d3704b` (2026-11-18T07:52:51+00:00). 4157 tracked files, 211.8 MB.
 
 Regenerate with:
 
@@ -688,9 +688,9 @@ Repository-level entry points and agent instructions. `AGENTS.md` and `CLAUDE.md
 
 #### `memory.md`
 
-`doc` · 4681 lines · 897,901 B · description: **extracted**
+`doc` · 4688 lines · 898,395 B · description: **extracted**
 
-**Purpose.** Version: 667 Delta: v666 to v667. Record local research migration verification and the delivery gate. TASK-2641. The relocation check verified 731 tracked moves, 1,557 stable reader slugs and the original decompressed ZEC replay SHA-256. Chromium opened the existing ZEC report URL and all three profile cards with the new sources.
+**Purpose.** Version: 668 Delta: v667 to v668. Record the extension version gate for the revised sweep path. PR 338. The first extension job passed all 732 tests and failed the source-version gate. The Top 5 hint displays the relocated sweep path, so the manifest and package now identify the change as version 0.13.1. The full local SolTUI run reached its runner timeout.
 
 **Use.** Read it.
 
@@ -1016,7 +1016,7 @@ Curated prose. `ARCHITECTURE.md` explains how the pieces fit, `TESTING.md` is th
 
 #### `docs/FILES.md`
 
-`doc` · 39872 lines · 1,917,457 B · description: **extracted**
+`doc` · 39872 lines · 1,917,397 B · description: **extracted**
 
 **Purpose.** Regenerate with: python3 index/build.py all # refresh the index python3 index/make_files_doc.py # rewrite this file
 

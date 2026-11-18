@@ -1,5 +1,12 @@
 # Work continuation
 
+Version: 668
+Delta: v667 to v668. Record the extension version gate for the revised sweep path.
+
+## Research layout CI
+
+PR 338. The first extension job passed all 732 tests and failed the source-version gate. The Top 5 hint displays the relocated sweep path, so the manifest and package now identify the change as version 0.13.1. The full local SolTUI run reached its runner timeout. The repository's normal PR gate runs the targeted macOS suite. Next confirm the final-head checks and merge.
+
 Version: 667
 Delta: v666 to v667. Record local research migration verification and the delivery gate.
 

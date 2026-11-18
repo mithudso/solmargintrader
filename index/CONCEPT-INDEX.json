@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-11-18T07:43:22+00:00",
+  "generatedAt": "2026-11-18T07:52:51+00:00",
   "schemaVersion": 1,
   "note": "Concepts are derived from the repo's own vocabulary \u2014 the FAMILY dict, strategy-card frontmatter, docs/trading-signals-concept-family.md, and terms verified to recur in the corpus. A concept matching no file is dropped, not kept.",
   "counts": {
@@ -59,7 +59,7 @@
         },
         {
           "path": "memory.md",
-          "hits": 142
+          "hits": 143
         },
         {
           "path": "research/json/tradingview-script-profiles/shard-a.jsonl",
@@ -170,11 +170,11 @@
         },
         {
           "path": "memory.md",
-          "hits": 423
+          "hits": 421
         },
         {
           "path": "docs/FILES.md",
-          "hits": 416
+          "hits": 417
         },
         {
           "path": "llms-filemap.txt",
