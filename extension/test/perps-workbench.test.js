@@ -1,5 +1,6 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
+import { marketPresets, workbenchPresets } from '../src/perps/strategies.js';
 import { beginPaper, closePaper, managePaper, observePaper, stopPaperEntries } from '../src/perps/workbench.js';
 
 const terms = {
@@ -20,6 +21,9 @@ const spec = (overrides = {}) => ({
 });
 
 test('the frozen Volty preset admits a short entry and emits a trainable managed take-profit settlement', () => {
+  assert.ok(workbenchPresets('ZEC').some(preset => preset.id === 'zec-volty-10-1.5'));
+  assert.ok(!marketPresets('ZEC').some(preset => preset.id === 'zec-volty-10-1.5'));
+  assert.deepEqual(workbenchPresets('SOL'), marketPresets('SOL'));
   let result = beginPaper(null, feed(6000, 100), spec());
   assert.equal(result.account.running, true);
   assert.equal(stopPaperEntries(result.account, 'older-run'), null);

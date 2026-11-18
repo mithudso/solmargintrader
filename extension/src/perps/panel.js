@@ -3,7 +3,7 @@ import { computeIndicators } from '../1000x/indicators.js';
 import { readMinutes, readSnapshot } from './market.js';
 import { liquidationPrice, MARKETS, planPosition, settle } from './model.js';
 import { PAPER_CAPITAL } from './replay.js';
-import { aggregateMinutes, INTERVALS, marketPresets, RISK_PRESETS } from './strategies.js';
+import { aggregateMinutes, INTERVALS, RISK_PRESETS, workbenchPresets } from './strategies.js';
 import { beginPaper, closePaper, freshQuote, managePaper, observePaper, stopPaperEntries } from './workbench.js';
 import { causalEntryFeatures, openWorkbenchStore, paperMarketKey } from './workbench-store.js';
 
@@ -11,7 +11,7 @@ const $ = id => document.getElementById(id);
 const args = new URLSearchParams(location.hash.slice(1));
 const asset = args.get('market') ?? '';
 const market = Object.hasOwn(MARKETS, asset) ? MARKETS[asset] : null;
-const presets = marketPresets(asset);
+const presets = workbenchPresets(asset);
 const formIds = ['preset', 'step', 'direction', 'sizing', 'amount', 'leverage', 'tp', 'sl', 'exit-preset', 'slippageBps', 'additiveBps', 'networkUsd'];
 const numeric = id => $(id).valueAsNumber;
 const selection = () => presets.find(preset => preset.id === $('preset').value);

@@ -1,6 +1,6 @@
 # Every file in this repository
 
-**Generated** from `index/INDEX.json` at commit `bc8fa49` (2026-11-18T09:43:31+00:00). 4173 tracked files, 211.9 MB.
+**Generated** from `index/INDEX.json` at commit `d8e6451` (2026-11-18T09:47:28+00:00). 4173 tracked files, 211.9 MB.
 
 Regenerate with:
 
@@ -28461,7 +28461,7 @@ The Chrome extension has a separately armed trading surface. Dry-run is the defa
 
 #### `extension/src/perps/panel.js`
 
-`code-js` · 472 lines · 23,333 B · description: **none**
+`code-js` · 472 lines · 23,339 B · description: **none**
 
 **Purpose.** _No description available._
 
@@ -28481,11 +28481,11 @@ The Chrome extension has a separately armed trading surface. Dry-run is the defa
 
 #### `extension/src/perps/strategies.js`
 
-`code-js` · 163 lines · 7,133 B · description: **none**
+`code-js` · 171 lines · 7,331 B · description: **none**
 
 **Purpose.** _No description available._
 
-**Contents.** Defines `BANDS`, `INTERVALS`, `PRESETS`, `RISK_PRESETS`, `RSI`, `ZSCORE`, `aggregateMinutes`, `breakout`, `memberState`, `practiceSignals` and 1 more.
+**Contents.** Defines `BANDS`, `INTERVALS`, `PRESETS`, `RISK_PRESETS`, `RSI`, `ZEC_WORKBENCH_VOLTY`, `ZSCORE`, `aggregateMinutes`, `breakout`, `memberState` and 3 more.
 
 **Use.** Loaded by the extension; see `extension/manifest.json` for entry points.
 
@@ -28501,7 +28501,7 @@ The Chrome extension has a separately armed trading surface. Dry-run is the defa
 
 #### `extension/src/perps/workbench.js`
 
-`code-js` · 139 lines · 7,079 B · description: **none**
+`code-js` · 139 lines · 7,088 B · description: **none**
 
 **Purpose.** _No description available._
 
@@ -29327,7 +29327,7 @@ The Chrome extension has a separately armed trading surface. Dry-run is the defa
 
 #### `extension/test/perps-workbench.test.js`
 
-`test` · 65 lines · 3,740 B · description: **none**
+`test` · 69 lines · 4,057 B · description: **none**
 
 **Purpose.** _No description available._
 

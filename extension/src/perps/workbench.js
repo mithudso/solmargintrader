@@ -1,7 +1,7 @@
 import { causalEntryFeatures } from './workbench-store.js';
 import { planPosition } from './model.js';
 import { PaperBroker, PAPER_CAPITAL } from './replay.js';
-import { marketPresets, signalMap } from './strategies.js';
+import { signalMap, workbenchPresets } from './strategies.js';
 
 export const QUOTE_MAX_AGE = 20;
 
@@ -31,7 +31,7 @@ export function beginPaper(current, feed, { asset, settings, direction, strategy
   const quote = freshQuote(feed, now);
   if (!quote || !causalEntryFeatures(feed.history, quote.time)) throw new Error('Wait for a fresh market mark and contiguous closed one-minute candles.');
   if (current?.running || current?.broker.position) throw new Error('This paper account already has an active strategy or position.');
-  const preset = strategy && marketPresets(asset).find(value => value.id === strategy);
+  const preset = strategy && workbenchPresets(asset).find(value => value.id === strategy);
   if (strategy && !preset) throw new Error('Unknown paper strategy.');
   if ((!preset || preset.kind !== 'volty') && direction === 0) throw new Error('Choose a single direction for this entry.');
   if (preset && preset.kind !== 'volty' && direction !== 1) throw new Error('This strategy only supplies long signals.');
@@ -89,7 +89,7 @@ export function observePaper(current, feed, now, makeId) {
   if (!quote || !current || !current.running && !current.broker.position || quote.time <= current.lastPoint) return null;
   const account = { ...current };
   const broker = PaperBroker.fromCheckpoint(current.broker, hooks(feed, makeId));
-  const preset = account.strategy && marketPresets(account.asset).find(value => value.id === account.strategy);
+  const preset = account.strategy && workbenchPresets(account.asset).find(value => value.id === account.strategy);
   if (account.running && !preset) pause(account, broker, 'The saved strategy is unavailable. Entries are paused.');
   const decisions = account.running ? signalMap(feed.history, preset) : null;
   for (const point of feed.snapshot.points) {

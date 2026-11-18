@@ -1,11 +1,11 @@
 {
-  "generatedAt": "2026-11-18T09:43:31+00:00",
+  "generatedAt": "2026-11-18T09:47:28+00:00",
   "schemaVersion": 1,
   "repoRoot": "~/dev/solmargintrader",
-  "commit": "bc8fa49",
+  "commit": "d8e6451",
   "counts": {
     "files": 4173,
-    "bytes": 211929034,
+    "bytes": 211929564,
     "byKind": {
       "strategy-card": 1478,
       "doc": 842,
@@ -63259,7 +63259,7 @@
       "summarySource": "opening-prose",
       "bytes": 20716,
       "lines": 323,
-      "sha1": "91d452bbb74615375a10ed7ccfc7297e0eff8b24",
+      "sha1": "83843a37f097dea43038184487019b33b8e549e9",
       "symbols": [],
       "imports": [],
       "internalImports": [],
@@ -63439,7 +63439,7 @@
       "summarySource": "opening-prose",
       "bytes": 1923740,
       "lines": 40029,
-      "sha1": "c61c842238dfc8eab515fe9c1b421ce10c62b9b3",
+      "sha1": "7c0abb0289dd1586b0dc76e0431a545dfc64ecae",
       "symbols": [],
       "imports": [],
       "internalImports": [],
@@ -72847,9 +72847,9 @@
       "title": "panel",
       "summary": "",
       "summarySource": "none",
-      "bytes": 23333,
+      "bytes": 23339,
       "lines": 472,
-      "sha1": "acb447e736558afcb3bd3a2770761d62dc2f4f57",
+      "sha1": "cd08f1e2506fdb1cbb81073530136966b7eee236",
       "symbols": [
         "editAccount",
         "exitRule",
@@ -72905,21 +72905,23 @@
       "title": "strategies",
       "summary": "",
       "summarySource": "none",
-      "bytes": 7133,
-      "lines": 163,
-      "sha1": "39c6312eafd5683fccaff1cff889b44268944d25",
+      "bytes": 7331,
+      "lines": 171,
+      "sha1": "eddcbd303a0dcf0a24ceb508859f7d39aeaf642b",
       "symbols": [
         "BANDS",
         "INTERVALS",
         "PRESETS",
         "RISK_PRESETS",
         "RSI",
+        "ZEC_WORKBENCH_VOLTY",
         "ZSCORE",
         "aggregateMinutes",
         "breakout",
         "memberState",
         "practiceSignals",
-        "signalMap"
+        "signalMap",
+        "workbenchPresets"
       ],
       "imports": [],
       "internalImports": [],
@@ -72973,9 +72975,9 @@
       "title": "workbench",
       "summary": "",
       "summarySource": "none",
-      "bytes": 7079,
+      "bytes": 7088,
       "lines": 139,
-      "sha1": "7f7cec55a1603abd3233d93d9761c040e6ada0a4",
+      "sha1": "2814c2cd496ba215b671ad58e51b0aba0808a159",
       "symbols": [
         "QUOTE_MAX_AGE",
         "beginPaper",
@@ -75068,9 +75070,9 @@
       "title": "perps-workbench.test",
       "summary": "",
       "summarySource": "none",
-      "bytes": 3740,
-      "lines": 65,
-      "sha1": "d68466d7e60b92193934650bc1af2423fd8673dc",
+      "bytes": 4057,
+      "lines": 69,
+      "sha1": "4e2778b786d8559a944bd6a73d0d89fa7c328b4a",
       "symbols": [],
       "imports": [],
       "internalImports": [],
@@ -123914,5 +123916,5 @@
       "frontmatter": {}
     }
   ],
-  "textSha256": "a8d608293c5c365d7aff3e0334f85dc43c53f1ce75c9793918e46422840feaae"
+  "textSha256": "85474a04e561a06f76b1867d58e21c372239a021e1122a1e163acabd5c1a244c"
 }
