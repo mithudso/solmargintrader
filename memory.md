@@ -1,5 +1,12 @@
 # Work continuation
 
+Version: 658
+Delta: v657 to v658. Verify the independent public catalog loading and retry repair.
+
+## Whole-application optimizer rerun (TASK-2621)
+
+The second independent review reproduced an anonymous article showing as unavailable while account hydration was pending. A catalog 503 also appeared as an empty journal. The public catalog now settles independently, separates loading and errors from empty or absent articles, and offers an explicit retry. A held account fixture and a 503 followed by a verified catalog response exercise both paths in real Chromium. The account and navigation regression suite stays in place.
+
 Version: 657
 Delta: v656 to v657. Record the verified research reader repair and the separate hosted release gap.
 

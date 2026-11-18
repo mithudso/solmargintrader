@@ -5,7 +5,7 @@ const $ = (selector, root = document) => root.querySelector(selector);
 const $$ = (selector, root = document) => [...root.querySelectorAll(selector)];
 const main = $('#main');
 const TIMING = Object.freeze({ requestTimeoutMs: 25000, toastMs: 6500, oraclePollMs: 15000, evidenceCheckMs: 1000 });
-const state = { config: { coins: ['SOL', 'BTC', 'ETH', 'ZEC'], trialDays: 7 }, user: null, subscription: null, usage: null, portalAvailable: false, bots: [], botsNextPage: null, botsUnavailable: false, accountStatus: 'loading', accountEpoch: 0, accountRequest: 0, accountTransition: false, navigationEpoch: 0, backtestRequest: 0, articles: [], strategies: [], coin: 'SOL', oracle: null, view: 'overview', search: '', category: 'all', loadingOracle: false, oracleRequest: 0 };
+const state = { config: { coins: ['SOL', 'BTC', 'ETH', 'ZEC'], trialDays: 7 }, user: null, subscription: null, usage: null, portalAvailable: false, bots: [], botsNextPage: null, botsUnavailable: false, accountStatus: 'loading', accountEpoch: 0, accountRequest: 0, accountTransition: false, navigationEpoch: 0, backtestRequest: 0, articles: [], researchStatus: 'idle', strategies: [], coin: 'SOL', oracle: null, view: 'overview', search: '', category: 'all', loadingOracle: false, oracleRequest: 0 };
 const agentAccess = createAgentAccess({ api, getUser: () => state.accountTransition ? null : state.user, isSettings: () => state.view === 'settings', openWallet, toast });
 const backtestRecovery = createBacktestRecovery();
 const views = { overview: 'Overview', oracle: 'The oracle', bots: 'My bots', backtest: 'Backtest lab', research: 'Research journal', pricing: 'Membership', settings: 'Settings & account' };
@@ -356,9 +356,21 @@ function renderBacktest(result) {
   if (provenance) appendText(output, 'p', 'fine-print', typeof provenance === 'string' ? provenance : JSON.stringify(provenance));
   appendText(output, 'p', 'result-notes', 'Simulated past performance does not predict future results. Selection bias, limited history and changing execution costs can affect the result.');
 }
+function researchNotice(container) {
+  if (state.researchStatus === 'ready') return false;
+  const unavailable = state.researchStatus === 'unavailable';
+  const message = unavailable ? 'The research catalog could not be loaded.' : 'Loading the research catalog…';
+  appendText(container, 'p', 'fine-print', message).setAttribute('role', 'status');
+  if (unavailable) {
+    const retry = el('button', 'button button-outline', 'Retry research catalog');
+    retry.type = 'button'; retry.dataset.action = 'refresh-research'; container.append(retry);
+  }
+  return true;
+}
 function renderArticles(container, articles) {
   if (!container) return; container.replaceChildren();
-  if (!articles.length) { appendText(container, 'p', 'fine-print', state.articles.length ? 'No articles match your search.' : 'The research journal is being prepared. Check back shortly.'); return; }
+  if (researchNotice(container)) return;
+  if (!articles.length) { appendText(container, 'p', 'fine-print', state.articles.length ? 'No articles match your search.' : 'No notes have been published yet.'); return; }
   for (const article of articles) {
     const card = el('article', 'article-card'); const meta = el('div', 'article-meta'); meta.append(el('span', '', article.category || 'Research'), el('span', '', article.status?.startsWith('incomplete') ? 'INCOMPLETE' : 'RESEARCH NOTE')); card.append(meta);
     const link = el('a'); link.href = `#research/${encodeURIComponent(article.slug)}`; appendText(link, 'h3', '', article.title); card.append(link);
@@ -368,6 +380,7 @@ function renderArticles(container, articles) {
 }
 function researchView() {
   main.innerHTML = heading('WORKING NOTES. OPEN QUESTIONS.', 'From the research desk.', 'The thinking behind the signals. Explore the studies, strategy cards and experiments in the research library. Historical findings retain their original limitations.');
+  if (researchNotice(main)) return;
   const filters = el('div', 'filter-bar'); const search = el('input'); search.type = 'search'; search.placeholder = 'Search the research library…'; search.setAttribute('aria-label', 'Search research'); search.id = 'research-search'; search.value = state.search;
   const select = el('select'); select.id = 'research-category'; select.setAttribute('aria-label', 'Filter by category');
   const all = el('option', '', 'All categories'); all.value = 'all'; select.append(all);
@@ -464,6 +477,7 @@ function markdown(body, parent, resolveLink) {
 async function articleView(slug) {
   const article = state.articles.find(item => item.slug === slug);
   main.replaceChildren(); const wrapper = el('article', 'article-reading'); const back = el('a', 'text-link', '← Back to the journal'); back.href = '#research'; wrapper.append(back); main.append(wrapper);
+  if (researchNotice(wrapper)) return;
   if (!article) { appendText(wrapper, 'h1', '', 'This note is unavailable.'); appendText(wrapper, 'p', '', 'Return to the research journal to find an available article.'); return; }
   appendText(wrapper, 'p', 'eyebrow', article.category || 'RESEARCH'); appendText(wrapper, 'h1', '', article.title);
   appendText(wrapper, 'p', 'article-provenance', `Source: ${article.source || 'Research library'} · ${article.status || 'Historical research'}${article.sourceSha256 || article.sha256 ? ` · Source SHA-256 ${article.sourceSha256 || article.sha256}` : ''}`);
@@ -800,6 +814,7 @@ document.addEventListener('click', async event => {
     const context = accountContext(); const navigation = state.navigationEpoch; setBusy(actionButton, true);
     try { if (await refreshAccount() && state.accountEpoch === context.epoch && state.navigationEpoch === navigation) render(); } finally { setBusy(actionButton, false); }
   }
+  if (action === 'refresh-research') await loadResearchCatalog();
   if (action === 'new-bot') openBot();
   if (action === 'more-bots' && state.botsNextPage !== null) {
     if (!accountActionReady() || !state.user) return;
@@ -896,8 +911,24 @@ window.addEventListener('pagehide', clearConnectionCredentials);
 window.addEventListener('hashchange', () => { state.navigationEpoch++; for (const dialog of $$('.automation-dialog')) dialog.remove(); render(); main.focus({ preventScroll: true }); window.scrollTo(0, 0); });
 $('#year').textContent = new Date().getFullYear();
 render();
+async function loadResearchCatalog() {
+  if (state.researchStatus === 'loading') return;
+  const isRetry = state.researchStatus === 'unavailable';
+  state.researchStatus = 'loading';
+  if (isRetry && ['overview', 'research'].includes(state.view)) render();
+  try {
+    const result = await api('/research/catalog.json');
+    if (!Array.isArray(result?.articles)) throw new Error('Invalid research catalog.');
+    state.articles = result.articles;
+    state.researchStatus = 'ready';
+  } catch {
+    state.researchStatus = 'unavailable';
+  }
+  if (['overview', 'research'].includes(state.view)) render();
+}
 async function initialize() {
   const epoch = state.accountEpoch; const navigation = state.navigationEpoch;
+  void loadResearchCatalog();
   const config = api('/api/config').then(value => {
     if (!value || typeof value !== 'object' || Array.isArray(value)) throw new Error('The configuration service returned invalid settings.');
     state.config = { ...state.config, ...value, customerConnectionsConfigured: value.customerConnectionsConfigured === true };
@@ -908,15 +939,11 @@ async function initialize() {
       else if (state.view === 'backtest') populateSelects(main);
     }
   });
-  const results = await Promise.allSettled([config, api('/research/catalog.json'), api('/api/strategies').catch(() => api('/research/strategies.json')), refreshAccount()]);
-  if (results[1].status === 'fulfilled') state.articles = results[1].value.articles || [];
-  if (results[2].status === 'fulfilled') state.strategies = results[2].value.strategies || [];
+  const [, strategies] = await Promise.allSettled([config, api('/api/strategies').catch(() => api('/research/strategies.json')), refreshAccount()]);
+  if (strategies.status === 'fulfilled') state.strategies = strategies.value.strategies || [];
   if (state.accountEpoch === epoch && state.navigationEpoch === navigation) {
     if (state.accountStatus === 'ready' && ['settings', 'backtest'].includes(state.view)) populateSelects(main);
     else render();
-  } else if (results[1].status === 'fulfilled' && ['overview', 'research'].includes(state.view)) {
-    // The catalog is public; refresh its current view even if navigation changed.
-    render();
   }
   loadOracle();
 }

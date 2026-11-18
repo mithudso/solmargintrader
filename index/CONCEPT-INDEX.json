@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-11-18T00:21:04+00:00",
+  "generatedAt": "2026-11-18T00:27:38+00:00",
   "schemaVersion": 1,
   "note": "Concepts are derived from the repo's own vocabulary \u2014 the FAMILY dict, strategy-card frontmatter, docs/trading-signals-concept-family.md, and terms verified to recur in the corpus. A concept matching no file is dropped, not kept.",
   "counts": {
@@ -1074,10 +1074,6 @@
           "hits": 41
         },
         {
-          "path": "memory.md",
-          "hits": 41
-        },
-        {
           "path": "backtester/core/data.py",
           "hits": 40
         },
@@ -1087,6 +1083,10 @@
         },
         {
           "path": "backtester/strategy_cards/incomplete/tv_ghocsiv7_gap_filling_strategy.md",
+          "hits": 40
+        },
+        {
+          "path": "memory.md",
           "hits": 40
         },
         {

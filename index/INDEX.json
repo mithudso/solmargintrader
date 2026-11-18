@@ -1,11 +1,11 @@
 {
-  "generatedAt": "2026-11-18T00:21:04+00:00",
+  "generatedAt": "2026-11-18T00:27:38+00:00",
   "schemaVersion": 1,
   "repoRoot": "~/dev/solmargintrader",
-  "commit": "caf69e9",
+  "commit": "33892d8",
   "counts": {
     "files": 4120,
-    "bytes": 208572487,
+    "bytes": 208576191,
     "byKind": {
       "strategy-card": 1478,
       "doc": 853,
@@ -89827,11 +89827,11 @@
       "ext": ".md",
       "kind": "doc",
       "title": "Work continuation",
-      "summary": "Version: 657 Delta: v656 to v657. Record the verified research reader repair and the separate hosted release gap. The rerun starts from remote default caf69e9 and retains the 240 catalog methods, 222 selected methods, 50 states and prior finding criteria.",
+      "summary": "Version: 658 Delta: v657 to v658. Verify the independent public catalog loading and retry repair. The second independent review reproduced an anonymous article showing as unavailable while account hydration was pending. A catalog 503 also appeared as an empty journal.",
       "summarySource": "opening-prose",
-      "bytes": 890735,
-      "lines": 4609,
-      "sha1": "6e8b011635f76ba9c23bad9eb4d030f5ea8e3d3a",
+      "bytes": 891363,
+      "lines": 4616,
+      "sha1": "2ec2c178958654ddfbeb65e9095ddf3bc3c9cd9e",
       "symbols": [],
       "imports": [],
       "internalImports": [],
@@ -121162,9 +121162,9 @@
       "title": "app",
       "summary": "",
       "summarySource": "none",
-      "bytes": 87778,
-      "lines": 937,
-      "sha1": "2cba5fdd4dae595fda403d0fd6374937801b7bbc",
+      "bytes": 88853,
+      "lines": 964,
+      "sha1": "14952207f5a126aed94227908f550b8baf2ad9e5",
       "symbols": [
         "TIMING",
         "accountActionReady",
@@ -121199,13 +121199,13 @@
         "inlineMarkdown",
         "load",
         "loadOracle",
+        "loadResearchCatalog",
         "markdown",
         "markdownTable",
         "membershipChanges",
         "openAutomation",
         "openBot",
-        "openWallet",
-        "oraclePanel"
+        "openWallet"
       ],
       "imports": [],
       "internalImports": [],
@@ -122067,9 +122067,9 @@
       "title": "catalog-navigation.test",
       "summary": "",
       "summarySource": "none",
-      "bytes": 1470,
-      "lines": 22,
-      "sha1": "10676d4a220d5eb3b5e5af03db663c1b27ef31fb",
+      "bytes": 1907,
+      "lines": 33,
+      "sha1": "236f8e8a54402b14aa0c1d71c84f1c0f117232b8",
       "symbols": [],
       "imports": [],
       "internalImports": [],
@@ -122488,9 +122488,9 @@
       "title": "ui-browser",
       "summary": "Real browser regressions against local fixtures. No wallet, Stripe or venue calls.",
       "summarySource": "docstring",
-      "bytes": 30089,
-      "lines": 408,
-      "sha1": "68d69aee26052aa758749fad5a367faee7c3cacb",
+      "bytes": 31653,
+      "lines": 430,
+      "sha1": "d4c6904b8ac624fa67895014e9464fc4fb04ebc3",
       "symbols": [
         "accountSnapshot"
       ],
@@ -122580,5 +122580,5 @@
       "frontmatter": {}
     }
   ],
-  "textSha256": "c7fa15f912e8233af6a13a9cc92ee26ae4d50e30a3560c83c391cdae9d58e3fa"
+  "textSha256": "05616f378d4bc1a691f20363894f004b2a474acd5813ff9ed40f4bca5dfee041"
 }
