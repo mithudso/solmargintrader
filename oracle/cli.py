@@ -14,7 +14,7 @@ import stat
 import sys
 import tempfile
 import threading
-from contextlib import closing, contextmanager
+from contextlib import closing, contextmanager, nullcontext
 from pathlib import Path
 
 
@@ -265,13 +265,13 @@ def main(argv=None) -> int:
                     secret = handle.read(4097).strip()
                     if len(secret) > 4096:
                         raise ValueError("secret_file_too_large")
-            venue = None
+            venue, account_lock = None, nullcontext()
             if args.coinbase:
                 from .coinbase_orders import CoinbaseOrders
 
                 venue = CoinbaseOrders()
             if args.jupiter_perps:
-                from .gum_orders import GumOrders
+                from .gum_orders import GumOrders, gum_account_owner
                 from .gum_webhook_orders import process_one, recover_planning
 
                 def sign_action(message):
@@ -290,7 +290,9 @@ def main(argv=None) -> int:
                     signer=sign_action if args.live else None,
                 )
                 args.portfolio_id = venue.binding
-            with owner(args.inbox):
+                if args.live:
+                    account_lock = gum_account_owner(venue, "tradingview", args.inbox)
+            with account_lock, owner(args.inbox):
                 serve(
                     args.inbox,
                     secret,

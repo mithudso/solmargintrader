@@ -8,6 +8,15 @@
 <body>
   <header><div><h1 id="market">Jupiter Perps</h1><p id="source"></p></div><strong>Paper</strong></header>
   <p id="status" role="status">Waiting for fresh market data…</p>
+  <section id="volty" aria-labelledby="volty-heading" hidden>
+    <h2 id="volty-heading">ZEC Volty 25×</h2>
+    <p data-volty-status role="status">Waiting for the local Volty owner…</p>
+    <p class="muted" data-volty-updated></p>
+    <p data-volty-signal></p>
+    <h3>GUM order receipts</h3>
+    <p class="muted" data-volty-orders-note></p>
+    <ol aria-label="Recent Volty order receipts" data-volty-orders></ol>
+  </section>
   <div id="chart" aria-label="Market candles and position levels"></div>
   <details open>
     <summary>Indicators and trade learning</summary>

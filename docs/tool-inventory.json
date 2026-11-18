@@ -72,7 +72,7 @@
     },
     {
       "path": "extension/package.json",
-      "sha256": "86ff6b66a35442fda2e8e87086113d61370720e130c498ce63334a7088fa7051"
+      "sha256": "5e2aae9563f2d3d3d10fd3050839f145860941e4a9aa08ed45e5d0bfde019e7e"
     },
     {
       "path": "extension/src/core/commands.js",
@@ -92,7 +92,7 @@
     },
     {
       "path": "oracle/cli.py",
-      "sha256": "30855ad53d29c7c35900d1e0a752bd4f30214e1337c425f5ff2b4fce6ea76764"
+      "sha256": "cdb6aae8a784a0c6a826cca80e4ed5c23b59e0ec7b5865fe8af51d5dec48a72f"
     },
     {
       "path": "oracle/pyproject.toml",
@@ -124,7 +124,7 @@
     },
     {
       "path": "soltui/commands.py",
-      "sha256": "bd4322302a6b9640487af91096497335336b5a4477c1c10aca9b3a4939a60416"
+      "sha256": "33a57ed857d0143e6c471d8b5af27697a6d31d873572b26309c9c21c285bb5ce"
     },
     {
       "path": "soltui/make_icon.py",

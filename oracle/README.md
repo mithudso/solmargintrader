@@ -253,6 +253,13 @@ creation, collateral deposit, leverage-preference change or transfer is performe
 Existing incompatible preferences, unsettled collateral and venue limits refuse
 the order rather than changing the requested allocation.
 
+## Standalone ZEC Volty 25× owner
+
+The [ZEC Volty bot](../docs/JUPITER-ZEC-VOLTY.md) derives its own five-minute
+breakouts from GUM and has a dedicated account policy and journal. Its Chrome
+section reads execution status and verified venue fills. Start it in observe
+mode with `python -m oracle.zec_volty --watch`.
+
 ## TradingView → Coinbase orders
 
 The optional webhook worker treats TradingView as the trading decision. It does

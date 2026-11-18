@@ -1,5 +1,21 @@
 # Work continuation
 
+Version: 677
+Delta: v676 to v677. Record the Volty execution, native panel and verification.
+
+## Standalone Volty execution and verification
+
+TASK-2660 adds the fixed Volty-10-1.5 breakout owner and Chrome 0.16.0 ZEC section. The host follows fresh GUM marks and closed five-minute candles. It verifies the isolated 25× venue preference and a dedicated account with explicit opening notional and slippage limits. An opposite signal reduces the owned position first and only opens after a settled close while the event remains current. The SQLite journal records intent and indexes authenticated GUM acknowledgments and fill receipts. Browser status has no signing authority.
+
+Oracle discovery passed 264 tests and Ruff 0.17.4 passed. Quote refresh regressions cover the capped opening reserve while preserving order size and price limits. The fixture-backed Chrome run passed 26 checks. Chrome with the real native host passed 27 checks. An independent test with the installed wheels and a private Chrome profile verified two advancing observe-mode heartbeats against the public GUM feed. A read-only production preflight found the existing 2× dry-run parent flat with 0 USDC and no isolated 25× preference. No funded Volty policy or order exists. Continue with GitHub CI and the dedicated owner account and size selection for a later funded run.
+
+Version: 676
+Delta: v675 to v676. Record the standalone Volty execution contract before implementation.
+
+## Standalone ZEC Volty funded owner
+
+TASK-2660 builds a single-strategy host owner and Chrome verification panel. Use completed GUM five-minute candles and fresh mark crossings with the frozen Volty-10-1.5 bands. Up targets long and down targets short. The opposite signal is the strategy exit. Do not apply the study's paper bracket or paper notional to funded execution. A dedicated subaccount, explicitly bounded order size, verified leverage, and in-venue reconciliation are required for live mode. Preserve every existing trading owner. Validate the native Chrome path and distinguish venue acknowledgments from confirmed fills.
+
 Version: 675
 Delta: v674 to v675. Record the Codex advisory path and live publication.
 

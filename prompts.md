@@ -1,5 +1,12 @@
 # Prompt history
 
+Version: 308
+Delta: v307 to v308. Record the standalone funded Volty request.
+
+## Standalone ZEC Volty strategy
+
+> Make a bot whose sole purpose is to follow a volty 25x signal only strategy and actually puts in orders at the signals. I want a bot that will actually put in real for money orders with this specific strategy, using shorts for downs and longs for ups. Write this as a standalone ssection of the chrome plugin. so that I can verify that it is indeed trading.
+
 Version: 307
 Delta: v306 to v307. Save the optimizer request, Chrome advisory workflow and Zec correction.
 

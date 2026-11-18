@@ -56,6 +56,7 @@ export const OWNER_SOURCE_FILES = [
   "src/perps/panel.js",
   "src/perps/replay.js",
   "src/perps/strategies.js",
+  "src/perps/volty-status.js",
   "src/perps/workbench-store.js",
   "src/perps/workbench.js",
   "src/storage/fileStore.js",

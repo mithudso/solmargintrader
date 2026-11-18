@@ -633,6 +633,14 @@ def autotrade_configure(ctx, p):
 def autotrade_ingest_forecast(ctx, p):
     return _autotrade_call("ingest_forecast", p["request_id"], p["forecast"])
 
+
+@command("zec.volty.status", "Read the ZEC Volty owner's public signal and venue receipt snapshot.")
+def zec_volty_status(ctx, p):
+    from .zec_volty_status import read_status
+
+    return read_status()
+
+
 _SETTING_CASTS = {
     "asset": str, "start": str, "end": str, "interval": str, "capital": float,
     "fee_bps": float, "slippage_bps": float, "fill_delay": int, "cpcv_groups": int, "cpcv_k": int,
