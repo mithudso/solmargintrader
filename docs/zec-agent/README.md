@@ -46,6 +46,7 @@ Chrome distribution's native host directory with `--dir` if its location differs
 node extension/tools/zec-advisor.mjs snapshot
 node extension/tools/zec-advisor.mjs watch --samples 12 --interval 10
 node extension/tools/zec-advisor.mjs ask --publish
+node extension/tools/zec-advisor.mjs ask --provider codex --publish
 ```
 
 The watch emits one JSON object per line. The snapshot includes the GUM ZEC mark
@@ -57,6 +58,7 @@ channel. A disconnected host returns an error. Market or candle failures appear
 in the relevant snapshot field.
 
 `ask` invokes the project `zec` agent through Claude Code with tools disabled.
+Use `--provider codex` to load the same definition in a tool-free Codex session.
 Add `--question` to focus the assessment. `--publish` attaches the returned
 suggestion to the snapshot and shows it in Chrome. Chrome accepts one suggestion
 per recent snapshot, with idempotent retry of the same suggestion, and marks

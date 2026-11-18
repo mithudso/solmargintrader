@@ -1,5 +1,12 @@
 # Work continuation
 
+Version: 675
+Delta: v674 to v675. Record the Codex advisory path and live publication.
+
+## Live Zec advisory through Codex
+
+TASK-2658. The helper supports `ask --provider codex` and loads the canonical Zec instructions into an ephemeral standalone Codex session when chosen. It rejects tool-call events, invalid advice, absent snapshot binding and expired submission. Verified one real GUM snapshot and a returned advisory through the installed Chrome account. The installed profile reported 12 closed candles, no local paper account, funded inventory unavailable and grid disarmed. Continue with GitHub checks and confirm the final merged helper and loaded version.
+
 Version: 674
 Delta: v673 to v674. Record the Zec agent and Chrome advisory implementation and local acceptance.
 

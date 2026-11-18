@@ -50,7 +50,7 @@ function gumResponse(request, stale) {
   return undefined;
 }
 
-async function installFakeClaude(root) {
+async function installFakeProviders(root) {
   const bin = path.join(root, 'bin');
   const entry = path.join(bin, 'fake-claude.mjs');
   await mkdir(bin, { mode: 0o700 });
@@ -82,6 +82,30 @@ async function installFakeClaude(root) {
       snapshotId: snapshot.id, decision: 'OBSERVE', rationale: 'Fixture response from simulated Claude Code.',
       invalidation: 'The supplied market or paper position changes.',
     } }));
+  `);
+  const codex = path.join(bin, 'fake-codex.mjs');
+  await writeFile(path.join(bin, 'codex'),
+    `#!/bin/sh\nexec ${shellQuote(process.execPath)} ${shellQuote(codex)} "$@"\n`, { mode: 0o700 });
+  await writeFile(codex, `
+    import assert from 'node:assert/strict';
+    import { readFileSync } from 'node:fs';
+    const args = process.argv.slice(2);
+    assert.equal(args[0], 'exec');
+    for (const flag of ['--ignore-user-config', '--ephemeral', 'hooks', 'shell_tool', 'apps', 'plugins', 'read-only', 'web_search="disabled"']) {
+      assert.ok(args.includes(flag));
+    }
+    assert.ok(args.some(arg => arg.startsWith('developer_instructions=') && arg.includes('Chrome advisory')));
+    let input = '';
+    for await (const chunk of process.stdin) input += chunk;
+    const { question, snapshot } = JSON.parse(input.trim().split('\\n').at(-1));
+    const schema = JSON.parse(readFileSync(args[args.indexOf('--output-schema') + 1]));
+    assert.deepEqual(schema.properties.snapshotId.enum, [snapshot.id]);
+    if (question === 'Simulate unexpected tool use') {
+      console.log(JSON.stringify({ type: 'item.completed', item: { type: 'command_execution' } }));
+    }
+    const reply = { snapshotId: snapshot.id, decision: 'OBSERVE', rationale: 'Fixture response from simulated Codex.',
+      invalidation: 'A new completed five-minute bar changes the assessment.' };
+    console.log(JSON.stringify({ type: 'item.completed', item: { type: 'agent_message', text: JSON.stringify(reply) } }));
   `);
   return bin;
 }
@@ -236,10 +260,10 @@ async function verify() {
     assert.equal(advisories[0].rationale, advice.rationale);
     assert.ok(await browser.waitFor(() => evaluate('document.getElementById("zecAdviceList").textContent.includes("E2E: watch this paper position")')), 'Dashboard did not display the injected advisory');
 
-    const pathWithFakeClaude = await installFakeClaude(root);
+    const pathWithFakeProviders = await installFakeProviders(root);
     const helper = async (...args) => {
       const { stdout } = await execute(process.execPath, [path.join(EXT, 'tools/zec-advisor.mjs'), ...args],
-        { env: { ...env, PATH: pathWithFakeClaude }, timeout: 15_000 });
+        { env: { ...env, PATH: pathWithFakeProviders }, timeout: 15_000 });
       return stdout.trim().split('\n').map(line => JSON.parse(line));
     };
     const stream = await helper('watch', '--samples', '2', '--interval', '5');
@@ -255,6 +279,12 @@ async function verify() {
     assert.equal(published.advice.snapshotId, published.snapshot.id);
     assert.equal(published.published.snapshotId, published.snapshot.id);
     assert.equal((await cli('zecAdvisories')).advisories.length, 2);
+    const [codex] = await helper('ask', '--provider', 'codex', '--publish');
+    assert.equal(codex.published.snapshotId, codex.snapshot.id);
+    assert.equal(codex.published.rationale, 'Fixture response from simulated Codex.');
+    await assert.rejects(helper('ask', '--provider', 'codex', '--question', 'Simulate unexpected tool use', '--publish'),
+      /Codex attempted a tool action/);
+    assert.equal((await cli('zecAdvisories')).advisories.length, 3);
 
     stale = true;
     const staleSnapshot = (await cli('zecSnapshot')).snapshot;
