@@ -1,6 +1,6 @@
 # Conceptual index
 
-**Generated** from `index/CONCEPT-INDEX.json` (2026-11-18T08:31:41+00:00). 21 concepts.
+**Generated** from `index/CONCEPT-INDEX.json` (2026-11-18T09:43:31+00:00). 21 concepts.
 
 ```bash
 python3 index/build.py all              # refresh
@@ -21,7 +21,7 @@ The ideas that decide whether a number in this repo means anything. Ordered by h
 
 ### Risk rails and dry-run safety
 
-`risk-rails` · **2030 files** · matched on `dry_run`, `dryrun`, `risk`, `rails`, `kill`, `guard`, `confirm`, `fail-closed`
+`risk-rails` · **2033 files** · matched on `dry_run`, `dryrun`, `risk`, `rails`, `kill`, `guard`, `confirm`, `fail-closed`
 
 The extension can place real orders. Dry-run is the default, rails live in code and fail closed, and a fresh install must never be able to trade.
 
@@ -32,30 +32,30 @@ Strongest files:
 - `llms-executable.txt` (251 hits)
 - `research/json/zec-expanded-20261113.llms/special-runner-summary.json` (228 hits)
 - `docs/operations-registry.json` (222 hits)
-- `docs/FILES.md` (182 hits)
+- `docs/FILES.md` (184 hits)
 - `llms-filemap.txt` (164 hits)
 - `FILES.md` (157 hits)
 
-Full list: `python3 index/search.py --concept risk-rails -n 2030`
+Full list: `python3 index/search.py --concept risk-rails -n 2033`
 
 ### Cross-asset and cross-timeframe transfer
 
-`transfer` · **1872 files** · matched on `cross_asset`, `cross-asset`, `transfer`, `doge`, `zec`, `universe`, `top_coins`
+`transfer` · **1874 files** · matched on `cross_asset`, `cross-asset`, `transfer`, `doge`, `zec`, `universe`, `top_coins`
 
 The same 25 strategies score 25/25 on BTC daily and 0/25 on SOL hourly. The dataset has repeatedly explained more than the strategy.
 
 Strongest files:
 
 - `llms-executable.txt` (504 hits)
-- `memory.md` (429 hits)
-- `docs/FILES.md` (415 hits)
+- `docs/FILES.md` (439 hits)
+- `memory.md` (436 hits)
 - `llms-filemap.txt` (276 hits)
 - `research/papers/coin-intelligence/zec-zcash.md` (196 hits)
 - `extension/src/perps/archive-presets.js` (186 hits)
 - `research/json/results/coinbase50_20261111_summary.json` (183 hits)
-- `prompts.md` (147 hits)
+- `prompts.md` (152 hits)
 
-Full list: `python3 index/search.py --concept transfer -n 1872`
+Full list: `python3 index/search.py --concept transfer -n 1874`
 
 ### Cost model
 
@@ -78,7 +78,7 @@ Full list: `python3 index/search.py --concept costs -n 1634`
 
 ### Lookahead and fill timing
 
-`lookahead` · **1577 files** · matched on `lookahead`, `fill_delay`, `warmup`, `warmup_bars`, `displacement`, `centred`, `shift`
+`lookahead` · **1578 files** · matched on `lookahead`, `fill_delay`, `warmup`, `warmup_bars`, `displacement`, `centred`, `shift`
 
 A signal at bar t may use data only through t. Centred indicators, same-bar fills and displaced clouds are the recurring hazards.
 
@@ -93,11 +93,11 @@ Strongest files:
 - `research/scripts/ratio_rotation.py` (39 hits)
 - `research/json/tradingview-script-profiles/shard-a.jsonl` (36 hits)
 
-Full list: `python3 index/search.py --concept lookahead -n 1577`
+Full list: `python3 index/search.py --concept lookahead -n 1578`
 
 ### On-chain execution reality
 
-`execution-onchain` · **1235 files** · matched on `jupiter`, `jlp`, `oracle`, `priority`, `slippage`, `perps`, `solana`
+`execution-onchain` · **1242 files** · matched on `jupiter`, `jlp`, `oracle`, `priority`, `slippage`, `perps`, `solana`
 
 Oracle-priced perps, priority fees as a product, per-account fee markets, dropped-versus-reverted. Decides whether a strategy is executable at all.
 
@@ -105,14 +105,14 @@ Strongest files:
 
 - `llms-executable.txt` (937 hits)
 - `llms-filemap.txt` (752 hits)
-- `docs/FILES.md` (700 hits)
+- `docs/FILES.md` (722 hits)
 - `docs/design/oracle-ui-2399/report.json` (668 hits)
 - `research/json/strategy_experiment/results/results.json` (544 hits)
-- `memory.md` (499 hits)
+- `memory.md` (507 hits)
 - `llms/jupsol-llms.txt` (427 hits)
 - `research/json/strategy_experiment/results/initial-gapped-run/results.json` (408 hits)
 
-Full list: `python3 index/search.py --concept execution-onchain -n 1235`
+Full list: `python3 index/search.py --concept execution-onchain -n 1242`
 
 ### Grid trading
 
@@ -135,7 +135,7 @@ Full list: `python3 index/search.py --concept grid -n 940`
 
 ### Data integrity
 
-`data-integrity` · **879 files** · matched on `validate_bars`, `strict_gaps`, `allow_gaps`, `datavalidationerror`, `monotone`, `gap`
+`data-integrity` · **878 files** · matched on `validate_bars`, `strict_gaps`, `allow_gaps`, `datavalidationerror`, `monotone`, `gap`
 
 Gaps refused rather than filled, columns resolved by name, timestamps monotone. A concatenated XRP series hides a 2.5-year join.
 
@@ -150,7 +150,7 @@ Strongest files:
 - `llms-filemap.txt` (95 hits)
 - `docs/FILES.md` (80 hits)
 
-Full list: `python3 index/search.py --concept data-integrity -n 879`
+Full list: `python3 index/search.py --concept data-integrity -n 878`
 
 ### Buy-and-hold benchmark
 
@@ -173,7 +173,7 @@ Full list: `python3 index/search.py --concept benchmark -n 641`
 
 ### Evidence floor
 
-`evidence-floor` · **427 files** · matched on `min_total_trades`, `min_rankable_trades`, `insufficient`, `dropped`, `evidence floor`, `rankable`
+`evidence-floor` · **428 files** · matched on `min_total_trades`, `min_rankable_trades`, `insufficient`, `dropped`, `evidence floor`, `rankable`
 
 Below a minimum trade count a result is not eligible to be reported as an improvement. cpcv_evaluate prints DROPPED but still returns paths, which is how a 6-trade Sharpe reached a headline.
 
@@ -188,7 +188,7 @@ Strongest files:
 - `research/json/strategy_experiment/audit_integrity.md` (54 hits)
 - `soltui/cumulative.py` (39 hits)
 
-Full list: `python3 index/search.py --concept evidence-floor -n 427`
+Full list: `python3 index/search.py --concept evidence-floor -n 428`
 
 ### Combinatorial purged cross-validation
 
@@ -257,8 +257,8 @@ The families also carry a historical measured finding. Of the study's 25 strateg
 
 | Family | Files | Matched on |
 |---|---|---|
-| `trend` | 946 | `trend`, `ma_crossover`, `macd`, `ichimoku` |
-| `oscillator-reversion` | 632 | `rsi`, `stochastic`, `oscillator` |
+| `trend` | 951 | `trend`, `ma_crossover`, `macd`, `ichimoku` |
+| `oscillator-reversion` | 636 | `rsi`, `stochastic`, `oscillator` |
 | `baseline` | 567 | `buy_and_hold`, `baseline` |
 | `momentum` | 483 | `momentum`, `ts_momentum`, `dual_momentum` |
 | `regime-filter` | 391 | `regime`, `sma_regime`, `adx_trend`, `hurst`, `vol_regime` |

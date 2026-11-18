@@ -1,6 +1,6 @@
 # Every file in this repository
 
-**Generated** from `index/INDEX.json` at commit `dd27199` (2026-11-18T08:31:41+00:00). 4166 tracked files, 211.9 MB.
+**Generated** from `index/INDEX.json` at commit `bc8fa49` (2026-11-18T09:43:31+00:00). 4173 tracked files, 211.9 MB.
 
 Regenerate with:
 
@@ -15,7 +15,7 @@ python3 index/build.py --check      # fail if the index is stale
 Every entry marks where its description came from, because a generated one-liner and a considered one should not look alike:
 
 - **curated** (34 files) — hand-written purpose and usage, in the `CURATED` table of `index/make_files_doc.py`. Used where extraction cannot give a reader what they need: the engine, the research drivers, the order-placing path, and the files with no prose of their own.
-- **extracted** (3197 files) — the file's own module docstring, JSDoc header, or frontmatter `summary`. Trustworthy here because 780/909 Python modules and 91/215 JS files carry a substantial one. (These counts are computed at generation time, not hardcoded — an earlier revision asserted a frozen ratio and it was wrong within a day as the repo grew.)
+- **extracted** (3199 files) — the file's own module docstring, JSDoc header, or frontmatter `summary`. Trustworthy here because 780/909 Python modules and 93/222 JS files carry a substantial one. (These counts are computed at generation time, not hardcoded — an earlier revision asserted a frozen ratio and it was wrong within a day as the repo grew.)
 - **derived** (482 files) — shape only, for generated artifacts: a CSV's header and row count, a JSON's keys. Prose for a result file would be invented.
 
 *How to use* is curated where it matters and otherwise inferred from the file's kind — a test gets its runner, a CLI gets `--help`, a module gets its import path.
@@ -39,7 +39,7 @@ To *search* rather than browse: `python3 index/search.py "your question"`.
 - [`backtester`](#backtester) — 1664 files
 - [`research`](#research) — 884 files
 - [`oracle`](#oracle) — 49 files
-- [`extension`](#extension) — 200 files
+- [`extension`](#extension) — 207 files
 - [`executor`](#executor) — 54 files
 - [`liquidity`](#liquidity) — 66 files
 - [`botmanager`](#botmanager) — 95 files
@@ -689,9 +689,9 @@ Repository-level entry points and agent instructions. `AGENTS.md` and `CLAUDE.md
 
 #### `memory.md`
 
-`doc` · 4703 lines · 900,071 B · description: **extracted**
+`doc` · 4718 lines · 901,824 B · description: **extracted**
 
-**Purpose.** Version: 670 Delta: v669 to v670. Record the directional results and Zec runtime boundary. TASK-2644. The published five-minute Volty profiles already took both directions. Reproduced all archived added-week and continuous metrics before comparing one-sided entries. For ungated Volty the 21-day short-only, long-only and two-sided returns were +6.92%, −1.99% and +4.75%.
+**Purpose.** Version: 672 Delta: v671 to v672. Record the Perps workbench implementation and ZEC archive coverage. TASK-2647. The frozen three-profile direction run still matches the accepted result byte for byte. The Perps overlay now has the exact five-minute ungated Volty preset and can admit either direction in one net paper position per market.
 
 **Use.** Read it.
 
@@ -769,9 +769,9 @@ Repository-level entry points and agent instructions. `AGENTS.md` and `CLAUDE.md
 
 #### `prompts.md`
 
-`doc` · 4917 lines · 297,458 B · description: **extracted**
+`doc` · 4924 lines · 298,430 B · description: **extracted**
 
-**Purpose.** Version: 305 Delta: v304 to v305. Save the Zec agent and directional replay request. Version: 304
+**Purpose.** Version: 306 Delta: v305 to v306. Record the Perps workbench and ZEC history request. Version: 305
 
 **Use.** Read it.
 
@@ -937,7 +937,7 @@ Curated prose. `ARCHITECTURE.md` explains how the pieces fit, `TESTING.md` is th
 
 #### `docs/CONCEPTS.md`
 
-`doc` · 323 lines · 20,756 B · description: **extracted**
+`doc` · 323 lines · 20,716 B · description: **extracted**
 
 **Purpose.** python3 index/build.py all # refresh python3 index/make_concepts_doc.py # rewrite this file python3 index/search.py --concepts # list them
 
@@ -1017,7 +1017,7 @@ Curated prose. `ARCHITECTURE.md` explains how the pieces fit, `TESTING.md` is th
 
 #### `docs/FILES.md`
 
-`doc` · 39872 lines · 1,917,425 B · description: **extracted**
+`doc` · 40029 lines · 1,923,740 B · description: **extracted**
 
 **Purpose.** Regenerate with: python3 index/build.py all # refresh the index python3 index/make_files_doc.py # rewrite this file
 
@@ -1065,9 +1065,9 @@ Curated prose. `ARCHITECTURE.md` explains how the pieces fit, `TESTING.md` is th
 
 #### `docs/JUPITER-PERPS-PAPER.md`
 
-`doc` · 60 lines · 8,069 B · description: **extracted**
+`doc` · 70 lines · 10,110 B · description: **extracted**
 
-**Purpose.** Open the [SOL JupUSD route](https://jup.ag/perps/long/JupUSD-SOL) with the unpacked SolMarginTrader extension. The floating **Perps paper** panel follows the market and side in the URL. It opens on the ETH, BTC, ZEC and HYPE routes too. The window can be dragged, resized or collapsed. A new window starts with $1,000 of virtual equity.
+**Purpose.** Open the [SOL JupUSD route](https://jup.ag/perps/long/JupUSD-SOL) with the unpacked SolMarginTrader extension. The floating **Perps paper** panel follows the market and side in the URL. It opens on the ETH, BTC, ZEC and HYPE routes too. The window can be dragged, resized or collapsed. Each market starts with $1,000 of virtual equity. Chrome restores the paper accounts from local IndexedDB.
 
 **Use.** Read it.
 
@@ -27755,11 +27755,11 @@ Forecast evidence, strategy votes, archives and separately controlled webhook ex
 
 The Chrome extension has a separately armed trading surface. Dry-run is the default, risk rails live in code and fail closed, and a fresh install must not be able to trade.
 
-200 files.
+207 files.
 
 #### `extension/README.md`
 
-`doc` · 839 lines · 57,003 B · description: **extracted**
+`doc` · 841 lines · 57,140 B · description: **extracted**
 
 **Purpose.** A Chrome MV3 extension for the owner's Base and Solana money: **holdings, profit and loss, pool discovery, backtests and strategy changes, swap quotes, and alerts** when a more profitable pool or strategy appears. It also keeps an **experimental grid trading strategy on Jupiter (Solana)** with
 
@@ -28249,7 +28249,7 @@ The Chrome extension has a separately armed trading surface. Dry-run is the defa
 
 #### `extension/src/core/owner-source.js`
 
-`code-js` · 88 lines · 2,503 B · description: **extracted**
+`code-js` · 92 lines · 2,631 B · description: **extracted**
 
 **Purpose.** Versioned source identity covers the complete shipped execution module set.
 
@@ -28403,6 +28403,26 @@ The Chrome extension has a separately armed trading surface. Dry-run is the defa
 
 **Use.** Loaded by the extension; see `extension/manifest.json` for entry points.
 
+#### `extension/src/perps/candle-learning.js`
+
+`code-js` · 88 lines · 4,305 B · description: **extracted**
+
+**Purpose.** Prospective close-to-close models for native Perps candles. Prices and marks identify the feed; the model does not observe orders or simulated outcomes.
+
+**Contents.** Defines `EPOCH_LIMIT`, `advanceCandlePartition`, `causalEntryFeatures`, `nativeMinuteTail`, `paperMarketKey`, `prepareCandleModel`, `requirePaperMarket`, `safeFeatures`.
+
+**Use.** Loaded by the extension; see `extension/manifest.json` for entry points.
+
+#### `extension/src/perps/managed-exits.js`
+
+`code-js` · 72 lines · 3,480 B · description: **none**
+
+**Purpose.** _No description available._
+
+**Contents.** Defines `closedPerpsBars`, `evaluateExitSignals`, `validateExitSignals`.
+
+**Use.** Loaded by the extension; see `extension/manifest.json` for entry points.
+
 #### `extension/src/perps/market.js`
 
 `code-js` · 132 lines · 6,658 B · description: **none**
@@ -28425,7 +28445,7 @@ The Chrome extension has a separately armed trading surface. Dry-run is the defa
 
 #### `extension/src/perps/panel.css`
 
-`code-web` · 25 lines · 1,523 B · description: **none**
+`code-web` · 36 lines · 2,210 B · description: **none**
 
 **Purpose.** _No description available._
 
@@ -28433,7 +28453,7 @@ The Chrome extension has a separately armed trading surface. Dry-run is the defa
 
 #### `extension/src/perps/panel.html`
 
-`code-web` · 50 lines · 3,026 B · description: **none**
+`code-web` · 82 lines · 5,434 B · description: **none**
 
 **Purpose.** _No description available._
 
@@ -28441,31 +28461,51 @@ The Chrome extension has a separately armed trading surface. Dry-run is the defa
 
 #### `extension/src/perps/panel.js`
 
-`code-js` · 273 lines · 12,375 B · description: **none**
+`code-js` · 472 lines · 23,333 B · description: **none**
 
 **Purpose.** _No description available._
 
-**Contents.** Defines `fresh`, `latestDecision`, `newBroker`, `observe`, `poll`, `refreshChart`, `refreshHistory`, `render`.
+**Contents.** Defines `editAccount`, `exitRule`, `feedFor`, `learningScope`, `openEditor`, `poll`, `refreshChart`, `refreshFeed`, `refreshHistory`, `refreshLearning` and 5 more.
 
 **Use.** Loaded by the extension; see `extension/manifest.json` for entry points.
 
 #### `extension/src/perps/replay.js`
 
-`code-js` · 139 lines · 5,490 B · description: **none**
+`code-js` · 245 lines · 11,642 B · description: **none**
 
 **Purpose.** _No description available._
 
-**Contents.** Defines `PAPER_CAPITAL`, `class PaperBroker`, `replay`.
+**Contents.** Defines `PAPER_CAPITAL`, `bindEntry`, `class PaperBroker`, `replay`, `validCheckpointPosition`.
 
 **Use.** Loaded by the extension; see `extension/manifest.json` for entry points.
 
 #### `extension/src/perps/strategies.js`
 
-`code-js` · 160 lines · 6,883 B · description: **none**
+`code-js` · 163 lines · 7,133 B · description: **none**
 
 **Purpose.** _No description available._
 
 **Contents.** Defines `BANDS`, `INTERVALS`, `PRESETS`, `RISK_PRESETS`, `RSI`, `ZSCORE`, `aggregateMinutes`, `breakout`, `memberState`, `practiceSignals` and 1 more.
+
+**Use.** Loaded by the extension; see `extension/manifest.json` for entry points.
+
+#### `extension/src/perps/workbench-store.js`
+
+`code-js` · 225 lines · 10,938 B · description: **extracted**
+
+**Purpose.** Local paper state, immutable fills and online learning share one IndexedDB commit.
+
+**Contents.** Defines `CANDLE_STORE`, `DB_VERSION`, `SCHEMA`, `STORES`, `TARGET`, `WORKBENCH_DB`, `advanceCandleModel`, `flatten`, `modelId`, `newModel` and 9 more.
+
+**Use.** Loaded by the extension; see `extension/manifest.json` for entry points.
+
+#### `extension/src/perps/workbench.js`
+
+`code-js` · 139 lines · 7,079 B · description: **none**
+
+**Purpose.** _No description available._
+
+**Contents.** Defines `QUOTE_MAX_AGE`, `beginPaper`, `closePaper`, `freshQuote`, `hooks`, `managePaper`, `observation`, `observePaper`, `pause`, `saved` and 1 more.
 
 **Use.** Loaded by the extension; see `extension/manifest.json` for entry points.
 
@@ -29257,6 +29297,16 @@ The Chrome extension has a separately armed trading surface. Dry-run is the defa
 
 **Use.** `node --test extension/test/node-deps-audit.test.js`
 
+#### `extension/test/perps-managed-exits.test.js`
+
+`test` · 116 lines · 6,589 B · description: **none**
+
+**Purpose.** _No description available._
+
+**Contents.** Defines `tracked`.
+
+**Use.** `node --test extension/test/perps-managed-exits.test.js`
+
 #### `extension/test/perps-paper.test.js`
 
 `test` · 91 lines · 5,164 B · description: **none**
@@ -29264,6 +29314,24 @@ The Chrome extension has a separately armed trading surface. Dry-run is the defa
 **Purpose.** _No description available._
 
 **Use.** `node --test extension/test/perps-paper.test.js`
+
+#### `extension/test/perps-workbench-store.test.js`
+
+`test` · 217 lines · 10,661 B · description: **none**
+
+**Purpose.** _No description available._
+
+**Contents.** Defines `fakeIndexedDB`.
+
+**Use.** `node --test extension/test/perps-workbench-store.test.js`
+
+#### `extension/test/perps-workbench.test.js`
+
+`test` · 65 lines · 3,740 B · description: **none**
+
+**Purpose.** _No description available._
+
+**Use.** `node --test extension/test/perps-workbench.test.js`
 
 #### `extension/test/persisted-safety-audit.test.js`
 

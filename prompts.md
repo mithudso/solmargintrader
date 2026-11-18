@@ -1,5 +1,12 @@
 # Prompt history
 
+Version: 306
+Delta: v305 to v306. Record the Perps workbench and ZEC history request.
+
+## Perps workbench and ZEC history
+
+> Build Zec and compare entries using the frozen Volty study. Also for the Jupiter Perps page chrome plugin, add the option to open both long and short trades with a strateguy; have a section on the bottom which is positions currently open, and have it populate with all the currently open posititions but add a take profit/stop loss button which will exit the position when the conditions are met, but also have it be able to exit based on one or more signals like exit at the next macd cross, or rsi 30/60, this is because there is no native SL/TP with ZEC coin. Also download ZEC trading data as far back as you can in 1min bars. Also Add the same machine learning, and indicators that are on the 1000x page for the chrome extension into the perps page. The trades should always be training the model. And those trades should be stored to disk.
+
 Version: 305
 Delta: v304 to v305. Save the Zec agent and directional replay request.
 

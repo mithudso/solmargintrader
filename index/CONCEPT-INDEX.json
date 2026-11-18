@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-11-18T08:31:41+00:00",
+  "generatedAt": "2026-11-18T09:43:31+00:00",
   "schemaVersion": 1,
   "note": "Concepts are derived from the repo's own vocabulary \u2014 the FAMILY dict, strategy-card frontmatter, docs/trading-signals-concept-family.md, and terms verified to recur in the corpus. A concept matching no file is dropped, not kept.",
   "counts": {
@@ -22,7 +22,7 @@
         "confirm",
         "fail-closed"
       ],
-      "matchingFiles": 2030,
+      "matchingFiles": 2033,
       "shown": 30,
       "files": [
         {
@@ -47,7 +47,7 @@
         },
         {
           "path": "docs/FILES.md",
-          "hits": 182
+          "hits": 184
         },
         {
           "path": "llms-filemap.txt",
@@ -161,7 +161,7 @@
         "universe",
         "top_coins"
       ],
-      "matchingFiles": 1872,
+      "matchingFiles": 1874,
       "shown": 30,
       "files": [
         {
@@ -169,12 +169,12 @@
           "hits": 504
         },
         {
-          "path": "memory.md",
-          "hits": 429
+          "path": "docs/FILES.md",
+          "hits": 439
         },
         {
-          "path": "docs/FILES.md",
-          "hits": 415
+          "path": "memory.md",
+          "hits": 436
         },
         {
           "path": "llms-filemap.txt",
@@ -194,7 +194,7 @@
         },
         {
           "path": "prompts.md",
-          "hits": 147
+          "hits": 152
         },
         {
           "path": "research/papers/coin-intelligence/doge-dogecoin.md",
@@ -439,7 +439,7 @@
         "centred",
         "shift"
       ],
-      "matchingFiles": 1577,
+      "matchingFiles": 1578,
       "shown": 30,
       "files": [
         {
@@ -578,7 +578,7 @@
         "perps",
         "solana"
       ],
-      "matchingFiles": 1235,
+      "matchingFiles": 1242,
       "shown": 30,
       "files": [
         {
@@ -591,7 +591,7 @@
         },
         {
           "path": "docs/FILES.md",
-          "hits": 700
+          "hits": 722
         },
         {
           "path": "docs/design/oracle-ui-2399/report.json",
@@ -603,7 +603,7 @@
         },
         {
           "path": "memory.md",
-          "hits": 499
+          "hits": 507
         },
         {
           "path": "llms/jupsol-llms.txt",
@@ -623,7 +623,7 @@
         },
         {
           "path": "prompts.md",
-          "hits": 252
+          "hits": 258
         },
         {
           "path": "llms-infra.txt",
@@ -714,7 +714,7 @@
         "macd",
         "ichimoku"
       ],
-      "matchingFiles": 946,
+      "matchingFiles": 951,
       "shown": 30,
       "files": [
         {
@@ -990,7 +990,7 @@
         "monotone",
         "gap"
       ],
-      "matchingFiles": 879,
+      "matchingFiles": 878,
       "shown": 30,
       "files": [
         {
@@ -1260,7 +1260,7 @@
         "stochastic",
         "oscillator"
       ],
-      "matchingFiles": 632,
+      "matchingFiles": 636,
       "shown": 30,
       "files": [
         {
@@ -1281,7 +1281,7 @@
         },
         {
           "path": "docs/FILES.md",
-          "hits": 339
+          "hits": 340
         },
         {
           "path": "FILES.md",
@@ -1667,7 +1667,7 @@
         "evidence floor",
         "rankable"
       ],
-      "matchingFiles": 427,
+      "matchingFiles": 428,
       "shown": 30,
       "files": [
         {

@@ -2,6 +2,9 @@ import { ARCHIVE_PRESETS } from './archive-presets.js';
 
 /** Prior-study candidates. Presets retain the published cadence and signal parameters. */
 export const PRESETS = Object.freeze([
+  { id: 'zec-volty-10-1.5', name: 'ZEC · Volty 10 × 1.5', assets: ['ZEC'], step: 300, kind: 'volty',
+    length: 10, factor: 1.5, source: 'Frozen ZEC GUM 25× study', details: '10-bar SMA of true range · 1.5×',
+    bracket: { tp: 0, sl: 0.8 } },
   { id: 'zec-mean', name: 'ZEC · RSI + Z-score + Bollinger', assets: ['ZEC'], step: 300, kind: 'mean',
     source: 'Native Coinbase study, 697f3b1dd4526147f43ca3d4; +2.49% spot test at 10+2 bps',
     details: 'RSI 14/30/50 · z-score 20/−2/0 · Bollinger 20/2' },
