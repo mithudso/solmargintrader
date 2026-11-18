@@ -1,5 +1,19 @@
 # Work continuation
 
+Version: 662
+Delta: v661 to v662. Bind the focused ZEC replay, evidence and validation results.
+
+## Focused ZEC perpetuals replay results
+
+TASK-2632. The frozen ZEC GUM capture contains 60,480 continuous minute candles and 1,008 hourly funding distributions. The 81-strategy, 5,056-case offline replay was byte-identical on a second run. The report, both readable leaderboards and the compressed receipt are under research/results. At fixed target exposure, 25× beat 50× in 1,190 of 1,264 test pairs. All four validation leaders lost on the holdout. Three rows stayed positive in both periods with at least ten exits each: shape-filtered BOP at 5m, its shape-plus-cadence variant, and shape-plus-cadence RSI(7) at 10m. Each used 25× and the 1.5% TP / 0.8% SL bracket. These retrospective results use trade OHLC as a mark proxy. The exact frozen input remains at /Users/mitch/.local/state/zec-perps-suite-2632/ZEC.json.
+
+Version: 661
+Delta: v660 to v661. Start the focused ZEC perpetuals replay.
+
+## Focused ZEC perpetuals replay
+
+TASK-2632. Decode the earlier leaderboard. Replay ZEC GUM at 5m and 10m, 25× and 50×. Use matched fixed-notional and fixed-collateral cases, causal decisions and separately timed validation and test periods. Measure available GUM candle and funding history. Preserve unrelated work in the user's main checkout.
+
 Version: 660
 Delta: v659 to v660. Record the implemented Perps paper panel, replay and funded execution gap.
 

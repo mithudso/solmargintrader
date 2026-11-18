@@ -1,5 +1,12 @@
 # Prompt history
 
+Version: 302
+Delta: v301 to v302. Record the focused ZEC perpetuals replay request.
+
+## Focused ZEC perpetuals replay
+
+> Looking at the top 50 strategies with the highest returns it is clear that that ZEC with 25-50x margin, at 5-10min intervals is the winner. The strategy says "archive-xxxx" so I can't tell what the strategy actually is. Run the whole suite of analyses on just ZEC, 5 and 10 min, 25 and 50x margin, making sure to include z-score, RSI, Balance of Power, Bollinger, MACD, Volty, graph shapes, and cadence awareness.
+
 Version: 301
 Delta: v300 to v301. Record the JupUSD extension and leverage comparison request.
 
