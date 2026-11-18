@@ -10,6 +10,7 @@ Follow the workflow-record rule in `CLAUDE.md` before implementation and at deli
 | Agent | Scope | Model | When to use | Tools / access |
 | --- | --- | --- | --- | --- |
 | [oracle](.claude/agents/oracle.md) | Oracle inspection and guide routing | inherit | Market provenance, strategy votes, lifecycle and readiness | Bash and Read; no signing or orders |
+| [zec](.claude/agents/zec.md) | ZEC GUM research, paper tests and position review | inherit | Matched direction studies, forward paper tests and owner-scoped exit review | Paper and advisory by default. A deployed close-only host must verify authority before a funded exit. |
 | [aero-pool-scout](.claude/agents/aero-pool-scout.md) | Archived `liquidity/` research procedure | sonnet | Only after a new explicit owner request to run the scout; keep the daemon disabled and kill switch set | Bash, Read, Write, WebSearch, WebFetch; Base RPC and public market sources; no signing, reactivation or config changes |
 
 The agent definitions are the source of truth.

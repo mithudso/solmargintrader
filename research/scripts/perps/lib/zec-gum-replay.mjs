@@ -62,8 +62,7 @@ function summarize(broker, last, to) {
   };
 }
 
-export function runGumWindow(window, candidate, decisions, settings) {
-  const broker = new PaperBroker(settings);
+function replayBroker(window, candidate, decisions, broker) {
   const observation = { decision: undefined, decisionKind: candidate.kind, long: null, short: null };
   for (const { bar, market } of window.bars) {
     const decision = decisions.get(bar.time);
@@ -81,5 +80,38 @@ export function runGumWindow(window, candidate, decisions, settings) {
     const closeBar = { open: last.close, high: last.close, low: last.close };
     broker.close(window.to, barrier(position, closeBar, position.carry) ?? { reason: 'end', price: last.close });
   }
+  return last;
+}
+
+export function runGumWindow(window, candidate, decisions, settings) {
+  const broker = new PaperBroker(settings);
+  const last = replayBroker(window, candidate, decisions, broker);
   return summarize(broker, last, window.to);
+}
+
+/** Keep all exits and signal transitions. Restrict only which new entries can fill. */
+class DirectionalBroker extends PaperBroker {
+  constructor(settings, allowedDirection) {
+    super(settings);
+    this.allowedDirection = allowedDirection;
+  }
+
+  open(time, price, direction, market, weight) {
+    if (this.allowedDirection === 0 || direction === this.allowedDirection) {
+      super.open(time, price, direction, market, weight);
+    }
+  }
+}
+
+export function runGumDirectionalWindow(window, candidate, decisions, settings, allowedDirection) {
+  if (![-1, 0, 1].includes(allowedDirection)) throw new Error('Invalid replay entry direction.');
+  const broker = new DirectionalBroker(settings, allowedDirection);
+  const last = replayBroker(window, candidate, decisions, broker);
+  const sides = { long: { trades: 0, pnlUsd: 0 }, short: { trades: 0, pnlUsd: 0 } };
+  for (const trade of broker.ledger) {
+    const side = trade.direction === 1 ? sides.long : sides.short;
+    side.trades += 1;
+    side.pnlUsd += trade.pnl;
+  }
+  return { ...summarize(broker, last, window.to), sides };
 }

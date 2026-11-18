@@ -1,6 +1,6 @@
 # Every file in this repository
 
-**Generated** from `index/INDEX.json` at commit `d5ee55a` (2026-11-18T07:57:11+00:00). 4157 tracked files, 211.8 MB.
+**Generated** from `index/INDEX.json` at commit `dd27199` (2026-11-18T08:31:41+00:00). 4166 tracked files, 211.9 MB.
 
 Regenerate with:
 
@@ -15,8 +15,8 @@ python3 index/build.py --check      # fail if the index is stale
 Every entry marks where its description came from, because a generated one-liner and a considered one should not look alike:
 
 - **curated** (34 files) — hand-written purpose and usage, in the `CURATED` table of `index/make_files_doc.py`. Used where extraction cannot give a reader what they need: the engine, the research drivers, the order-placing path, and the files with no prose of their own.
-- **extracted** (3190 files) — the file's own module docstring, JSDoc header, or frontmatter `summary`. Trustworthy here because 778/907 Python modules and 91/215 JS files carry a substantial one. (These counts are computed at generation time, not hardcoded — an earlier revision asserted a frozen ratio and it was wrong within a day as the repo grew.)
-- **derived** (481 files) — shape only, for generated artifacts: a CSV's header and row count, a JSON's keys. Prose for a result file would be invented.
+- **extracted** (3197 files) — the file's own module docstring, JSDoc header, or frontmatter `summary`. Trustworthy here because 780/909 Python modules and 91/215 JS files carry a substantial one. (These counts are computed at generation time, not hardcoded — an earlier revision asserted a frozen ratio and it was wrong within a day as the repo grew.)
+- **derived** (482 files) — shape only, for generated artifacts: a CSV's header and row count, a JSON's keys. Prose for a result file would be invented.
 
 *How to use* is curated where it matters and otherwise inferred from the file's kind — a test gets its runner, a CLI gets `--help`, a module gets its import path.
 
@@ -34,11 +34,11 @@ To *search* rather than browse: `python3 index/search.py "your question"`.
 ## Contents
 
 - [`(root)`](#root) — 99 files
-- [`docs`](#docs) — 167 files
+- [`docs`](#docs) — 169 files
 - [`index`](#index) — 8 files
 - [`backtester`](#backtester) — 1664 files
-- [`research`](#research) — 881 files
-- [`oracle`](#oracle) — 47 files
+- [`research`](#research) — 884 files
+- [`oracle`](#oracle) — 49 files
 - [`extension`](#extension) — 200 files
 - [`executor`](#executor) — 54 files
 - [`liquidity`](#liquidity) — 66 files
@@ -51,7 +51,8 @@ To *search* rather than browse: `python3 index/search.py "your question"`.
 - [`tradingskilllist`](#tradingskilllist) — 1 files
 - [`.remember`](#remember) — 1 files
 - [`.cdo`](#cdo) — 163 files
-- [`.claude`](#claude) — 2 files
+- [`.claude`](#claude) — 3 files
+- [`.codex`](#codex) — 1 files
 - [`.githooks`](#githooks) — 2 files
 - [`.postman`](#postman) — 1 files
 - [`.superpowers`](#superpowers) — 32 files
@@ -128,7 +129,7 @@ Repository-level entry points and agent instructions. `AGENTS.md` and `CLAUDE.md
 
 #### `AGENTS.md`
 
-`doc` · 29 lines · 1,700 B · description: **curated**
+`doc` · 30 lines · 1,977 B · description: **curated**
 
 **Purpose.** The operative rules for changing this repo. The backtester never gains live-trading capability, no lookahead, costs are never optional, the engine does not touch the network; the extension defaults to dry-run and its risk rails fail closed.
 
@@ -688,9 +689,9 @@ Repository-level entry points and agent instructions. `AGENTS.md` and `CLAUDE.md
 
 #### `memory.md`
 
-`doc` · 4688 lines · 898,395 B · description: **extracted**
+`doc` · 4703 lines · 900,071 B · description: **extracted**
 
-**Purpose.** Version: 668 Delta: v667 to v668. Record the extension version gate for the revised sweep path. PR 338. The first extension job passed all 732 tests and failed the source-version gate. The Top 5 hint displays the relocated sweep path, so the manifest and package now identify the change as version 0.13.1. The full local SolTUI run reached its runner timeout.
+**Purpose.** Version: 670 Delta: v669 to v670. Record the directional results and Zec runtime boundary. TASK-2644. The published five-minute Volty profiles already took both directions. Reproduced all archived added-week and continuous metrics before comparing one-sided entries. For ungated Volty the 21-day short-only, long-only and two-sided returns were +6.92%, −1.99% and +4.75%.
 
 **Use.** Read it.
 
@@ -768,9 +769,9 @@ Repository-level entry points and agent instructions. `AGENTS.md` and `CLAUDE.md
 
 #### `prompts.md`
 
-`doc` · 4909 lines · 295,234 B · description: **extracted**
+`doc` · 4917 lines · 297,458 B · description: **extracted**
 
-**Purpose.** Version: 304 Delta: v303 to v304. Record the study lookup and repository research reorganization request. Version: 303
+**Purpose.** Version: 305 Delta: v304 to v305. Save the Zec agent and directional replay request. Version: 304
 
 **Use.** Read it.
 
@@ -876,7 +877,7 @@ Repository-level entry points and agent instructions. `AGENTS.md` and `CLAUDE.md
 
 Curated prose. `ARCHITECTURE.md` explains how the pieces fit, `TESTING.md` is the coverage contract, `SECURITY.md` covers the order-placing surface, and this file indexes everything.
 
-167 files.
+169 files.
 
 #### `docs/API.md`
 
@@ -2245,6 +2246,24 @@ Curated prose. `ARCHITECTURE.md` explains how the pieces fit, `TESTING.md` is th
 `doc` · 216 lines · 36,398 B · description: **extracted**
 
 **Purpose.** Version: 1.0.2 Delta: v1.0.1 to v1.0.2; record subsequent owner implementation approval and the immutable editing/adoption contract without relabelling historical design observations. Delta: v1.0.0 to v1.0.1; make the first paper runtime independently buildable after builder review.
+
+**Use.** Read it.
+
+### `docs/zec-agent/`
+
+#### `docs/zec-agent/README.md`
+
+`doc` · 73 lines · 3,358 B · description: **extracted**
+
+**Purpose.** Zec researches Jupiter GUM ZEC perpetuals, runs offline and forward paper tests, and reviews exit decisions for an identified position. The [agent definition](../../.claude/agents/zec.md) governs both harnesses. The
+
+**Use.** Read it.
+
+#### `docs/zec-agent/optimized-prompt.md`
+
+`doc` · 26 lines · 8,532 B · description: **extracted**
+
+**Purpose.** Version 1.0.0 · Owner: repo operator · Initial contract You are the repository maintainer and a quantitative trading research engineer. Build **Zec**, a reusable ZEC specialist focused on after-cost asset growth on Jupiter, with explicit loss limits and evidence for every trading claim. Take more research risk through diverse paper experiments. Keep account risk within the owner's actual mandate.
 
 **Use.** Read it.
 
@@ -18982,11 +19001,11 @@ The simulation engine and everything that supports it. Never gains live-trading 
 
 Drivers that produce the numbers, and the write-ups that quote them. Everything here is reproducible from a committed script — the two occasions that was not true both produced a wrong published figure.
 
-881 files.
+884 files.
 
 #### `research/README.md`
 
-`doc` · 11 lines · 1,106 B · description: **extracted**
+`doc` · 13 lines · 1,329 B · description: **extracted**
 
 **Purpose.** Read the [6,048-configuration walk-forward report](papers/results/zec_gum_25x_5m_walk_forward.md) and the [three strategy cards](papers/results/zec_gum_25x_5m_card_1.md). The report links to the other two cards, rankings, frozen selection and complete compressed replay.
 
@@ -19987,6 +20006,14 @@ Drivers that produce the numbers, and the write-ups that quote them. Everything 
 **Purpose.** Generated JSON object, 5 keys (analysis_source_sha256, outputs, report_source_sha256, run_manifest_sha256, version).
 
 **Use.** `json.load(open('research/json/results/zec_cycles_20261111_report_manifest.json'))`
+
+#### `research/json/results/zec_gum_25x_5m_directions.json`
+
+`result` · 567 lines · 16,059 B · description: **derived**
+
+**Purpose.** Generated JSON object, 11 keys (version, mode, market, step, capital, settings...).
+
+**Use.** `json.load(open('research/json/results/zec_gum_25x_5m_directions.json'))`
 
 #### `research/json/results/zec_gum_25x_5m_live.json`
 
@@ -21531,6 +21558,14 @@ Drivers that produce the numbers, and the write-ups that quote them. Everything 
 `result` · 45 lines · 3,018 B · description: **extracted**
 
 **Purpose.** The stops become eligible after the signal candle closes. An eligible opposite stop closes and reverses under the paper broker. Long eligibility uses RSI(14) below 30 to enter its oversold state and above 50 to reset. Shorts apply the same state machine to reflected OHLC prices. A blocked opposite stop leaves the current position open.
+
+**Use.** Read it; regenerate with the driver that produced it.
+
+#### `research/papers/results/zec_gum_25x_5m_directions.md`
+
+`result` · 39 lines · 4,485 B · description: **extracted**
+
+**Purpose.** The original ZEC Volty replay already opened longs and shorts. In the matched 21-day replay, ungated Volty returned **+6.92% short-only**, **−1.99% long-only**, and **+4.75% with both sides enabled**. In the final seven days, ungated short-only returned **−0.25%**. The Z-score and RSI variant was the only short-only profile positive in that week, at **+0.33% across four exits**.
 
 **Use.** Read it; regenerate with the driver that produced it.
 
@@ -26520,6 +26555,16 @@ Drivers that produce the numbers, and the write-ups that quote them. Everything 
 
 **Use.** Loaded by the extension; see `extension/manifest.json` for entry points.
 
+#### `research/scripts/perps/zec-gum-directions.mjs`
+
+`code-js` · 110 lines · 5,735 B · description: **extracted**
+
+**Purpose.** Re-run the frozen ZEC Volty profiles with matched long-only, short-only and two-sided entries.
+
+**Contents.** Defines `compareWithPublished`, `main`, `validatedCapture`.
+
+**Use.** Loaded by the extension; see `extension/manifest.json` for entry points.
+
 #### `research/scripts/perps/zec-gum-walk-forward.mjs`
 
 `code-js` · 198 lines · 10,096 B · description: **extracted**
@@ -26564,11 +26609,11 @@ Drivers that produce the numbers, and the write-ups that quote them. Everything 
 
 #### `research/scripts/perps/lib/zec-gum-replay.mjs`
 
-`code-js` · 86 lines · 3,934 B · description: **extracted**
+`code-js` · 118 lines · 5,171 B · description: **extracted**
 
 **Purpose.** Shared offline GUM market path and account metrics for the ZEC studies.
 
-**Contents.** Defines `prepareGumWindows`, `prepareWindow`, `runGumWindow`, `summarize`, `validateCapture`.
+**Contents.** Defines `class DirectionalBroker`, `prepareGumWindows`, `prepareWindow`, `replayBroker`, `runGumDirectionalWindow`, `runGumWindow`, `summarize`, `validateCapture`.
 
 **Use.** Loaded by the extension; see `extension/manifest.json` for entry points.
 
@@ -27222,7 +27267,7 @@ Drivers that produce the numbers, and the write-ups that quote them. Everything 
 
 Forecast evidence, strategy votes, archives and separately controlled webhook execution.
 
-47 files.
+49 files.
 
 #### `oracle/README.md`
 
@@ -27310,7 +27355,7 @@ Forecast evidence, strategy votes, archives and separately controlled webhook ex
 
 #### `oracle/gum_orders.py`
 
-`code-python` · 959 lines · 37,555 B · description: **extracted**
+`code-python` · 976 lines · 38,157 B · description: **extracted**
 
 **Purpose.** Exact ZEC isolated-perpetual orders through the official GUM JTX Action API. Order messages are constructed locally from checked economics. This module never signs a server-supplied transaction, creates an account, deposits, or retries a write. The optional signer signs bytes and returns 64 Ed25519 signature bytes. The binary layout follows jupnet/gum-perp-sdk 0.2.0 action.rs/request.rs.
 
@@ -27443,6 +27488,16 @@ Forecast evidence, strategy votes, archives and separately controlled webhook ex
 **Contents.** Defines `TERMINAL`, `BLOCKING`, `database()`, `records()`, `_update()`, `recover_planning()`, `_reconciliation_attempt()`, `_reconcile()`, `process_one()`.
 
 **Use.** `import oracle.webhook_orders`
+
+#### `oracle/zec_exit.py`
+
+`code-python` · 410 lines · 15,894 B · description: **extracted**
+
+**Purpose.** A close-only GUM consumer for a trusted signing host. The host supplies authenticated, revocable mandates and position attestations with a unique opening lineage. The host must use the same account lock for every writer on this account. This module does not expose an approval or signing tool.
+
+**Contents.** Defines `_MANDATE_ID`, `_FINGERPRINT`, `_TERMINAL`, `_CREATE_LEDGER`, `class CloseMandate`, `class PositionEvidence`, `_private_ledger()`, `initialize_exit_ledger()`, `_result()`, `class ZecExitGuard`.
+
+**Use.** `import oracle.zec_exit`
 
 ### `oracle/tests/`
 
@@ -27683,6 +27738,16 @@ Forecast evidence, strategy votes, archives and separately controlled webhook ex
 **Contents.** Defines `class Venue`, `class WebhookOrderTests`.
 
 **Use.** `python3 -m pytest oracle/tests/test_webhook_orders.py -q`
+
+#### `oracle/tests/test_zec_exit.py`
+
+`test` · 371 lines · 14,739 B · description: **extracted**
+
+**Purpose.** Offline acceptance for a host-owned, one-shot ZEC exit mandate.
+
+**Contents.** Defines `class CloseVenue`, `class DriftingMarket`, `class ZecCloseTests`.
+
+**Use.** `python3 -m pytest oracle/tests/test_zec_exit.py -q`
 
 ---
 
@@ -37232,7 +37297,7 @@ Session handoff notes, newest first. Prose, not machine-read.
 
 ## .claude
 
-2 files.
+3 files.
 
 ### `.claude/agents/`
 
@@ -37251,6 +37316,30 @@ Session handoff notes, newest first. Prose, not machine-read.
 **Purpose.** Inspect Oracle market provenance, prospective strategy votes, archive history, lifecycle guidance and readiness. Use for SOL/USDC price or prediction questions, strategy accuracy, subscription setup, and the next evidence step for a bot. Never signs or places orders.
 
 **Use.** Read it.
+
+#### `.claude/agents/zec.md`
+
+`doc` · 84 lines · 4,905 B · description: **extracted**
+
+**Purpose.** Research Jupiter GUM ZEC perpetuals, compare long and short strategies, run bounded paper tests, and review exits for an explicitly identified position.
+
+**Use.** Read it.
+
+---
+
+## .codex
+
+1 files.
+
+### `.codex/agents/`
+
+#### `.codex/agents/zec.toml`
+
+`config` · 11 lines · 625 B · description: **none**
+
+**Purpose.** _No description available._
+
+**Use.** Configuration; nothing to run.
 
 ---
 
