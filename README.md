@@ -37,6 +37,10 @@ requests through the official keeper service. Trading starts disarmed.
 > predict future results. Grid trading is short volatility: it earns in a range and loses in a trend.
 > Leveraged positions can be liquidated. Trade only capital you can lose entirely.
 
+The [Jupiter Perps paper panel](docs/JUPITER-PERPS-PAPER.md) covers SOL, ETH, BTC,
+ZEC and HYPE with editable margin, leverage and exit levels. The replay compares
+fixed collateral and fixed position size under their separate JLP and GUM fees.
+
 ## Automated paper ecosystem
 
 The operational control room adds server buttons, configuration launches, stage progress, per-coin paper P&L, selected Oracle voters, a source-linked wiki and an isolated manual Jupiter swap page. Oracle also records all strategy directions, the full-catalog aggregate and prior-bar shape for each evaluated tick, then overlays those calls on its observed-price chart. See [the operating guide](docs/ECOSYSTEM-CONTROL-ROOM.md).
@@ -98,7 +102,7 @@ sample do not establish a causal effect or a calibrated trading forecast.
 
 The current coordinated source candidate is manager 0.7.11, research-runtime 0.4.8
 and ecosystem 0.4.20, with backtester 0.2.2, Oracle 0.2.7, optional executor 0.2.1
-and extension source 0.12.8. Archived liquidity source is 0.1.1 and remains disabled. It retains paper/disarmed defaults and separates source
+and extension source 0.13.0. Archived liquidity source is 0.1.1 and remains disabled. It retains paper/disarmed defaults and separates source
 checks from installed acceptance and final delivery. Run `solbot --help` for the ordered
 walkthrough, `solbot ui open` for the verified control room, and `solbot health-check`
 for collector measurements. The [managed suite guide](docs/bot-manager-managed-suite.md)
@@ -126,7 +130,7 @@ python3 -m backtester.cli --asset SOL --strategy all --split 0.7 --out results/
 
 # Extension — no install step, no dependencies
 cd extension
-npm test                                               # 725 tests
+npm test                                               # 732 tests
 node tools/dryrun.js --ticks 8 --osc 6 --offline 100   # end-to-end tick loop
 node tools/cli.js                                      # every available command
 ```
@@ -140,7 +144,7 @@ Load the extension: `chrome://extensions` → Developer mode → **Load unpacked
 python3 -m unittest discover -s backtester/tests -t .   # 1228 tests
 python3 -m unittest discover -s soltui/tests -t .       # 1718 tests (TUI dependencies required)
 python3 -m unittest discover -s mongo/tests -t .        # 73 tests
-cd extension && npm test                                # 725 tests
+cd extension && npm test                                # 732 tests
 ```
 
 Counts are asserted by CI, so a stale number here fails the build rather than

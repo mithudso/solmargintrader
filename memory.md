@@ -1,5 +1,19 @@
 # Work continuation
 
+Version: 660
+Delta: v659 to v660. Record the implemented Perps paper panel, replay and funded execution gap.
+
+## JupUSD perpetuals overlay and leverage comparison
+
+TASK-2628 owns the separate extension Perps chart and active paper account, 67 strategy presets, public quote/fee reads and a 3,894-case replay across all five markets. The GUM routes are distinct. SOL/ETH/BTC cap at 250×, ZEC at 50× and HYPE at 25×. Keep new accounts paper/disarmed. The seven-day replay, report and public-live Chrome evidence are bound in the results receipt and the private directory /Users/mitch/.local/state/jupusd-perps-2628. Funded automation still needs verified per-product signing, position reconciliation and settlement. The feature branch delivery uses final-head CI.
+
+Version: 659
+Delta: v658 to v659. Record the JupUSD extension and leverage comparison request.
+
+## JupUSD perpetuals overlay and leverage comparison
+
+TASK-2628. Verified SOL/ETH/BTC JLP routes and ZEC/HYPE GUM routes. Build separate venue models. Preserve existing trading controls and source archives. Retest fixed candidates under fixed collateral and fixed notional. Funded execution needs exact route-specific order and settlement proof.
+
 Version: 658
 Delta: v657 to v658. Verify the independent public catalog loading and retry repair.
 

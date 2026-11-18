@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Jupiter Perps · SolMarginTrader</title>
+  <link href="panel.css" rel="stylesheet">
+</head>
+<body>
+  <header><div><h1 id="market">Jupiter Perps</h1><p id="source"></p></div><strong>Paper</strong></header>
+  <p id="status" role="status">Waiting for fresh market data…</p>
+  <div id="chart" aria-label="Market candles and position levels"></div>
+  <section aria-label="Paper trade settings">
+    <div class="fields">
+      <label class="wide">Strategy<select id="preset"><option value="">Manual</option></select></label>
+      <label>Candles<select id="step"><option value="60">1m</option><option value="300">5m</option><option value="600">10m</option><option value="3600">1h</option></select></label>
+      <label>Side<select id="direction"><option value="1">Long</option><option value="-1">Short</option></select></label>
+      <label>Size basis<select id="sizing"><option value="collateral">Fixed collateral</option><option value="notional">Fixed notional</option></select></label>
+      <label>Size (USD)<input id="amount" type="number" min="0.01" step="any" value="25"></label>
+      <label>Leverage (×)<input id="leverage" type="number" min="1.1" step="0.1" value="5"></label>
+      <label>TP distance (%)<input id="tp" type="number" min="0" max="99" step="0.05" value="0"></label>
+      <label>SL distance (%)<input id="sl" type="number" min="0" max="99" step="0.05" value="0"></label>
+      <label>Exit settings<select id="exit-preset"><option value="original">Signal only</option><option value="tight">Tight</option><option value="wide">Wide</option><option value="custom">Custom</option></select></label>
+    </div>
+    <p id="preset-info" class="muted"></p>
+    <details>
+      <summary>Execution assumptions</summary>
+      <div class="fields">
+        <label>Slippage (bps / side)<input id="slippageBps" type="number" min="0" step="any" value="2"></label>
+        <label id="impact-field">Additive JLP impact (bps)<input id="additiveBps" type="number" min="0" max="44" step="1" value="0"></label>
+        <label>Network cost (USD / side)<input id="networkUsd" type="number" min="0" step="any" value="0.01"></label>
+      </div>
+      <p id="fees" class="muted"></p>
+    </details>
+  </section>
+  <section aria-label="Position estimate and paper results">
+    <dl id="risk"></dl>
+    <p id="warning" role="status"></p>
+    <div class="actions">
+      <button id="open" type="button" disabled>Open paper</button>
+      <button id="auto" type="button" disabled>Start strategy</button>
+      <button id="close" type="button" disabled>Close paper</button>
+    </div>
+    <p class="muted">A fresh $1,000 paper account for this window. Keep it open to observe positions. Zero disables TP or SL.</p>
+    <p id="performance" role="status"></p>
+    <ol id="ledger" aria-label="Recent paper exits"></ol>
+  </section>
+  <script type="module" src="panel.js"></script>
+</body>
+</html>

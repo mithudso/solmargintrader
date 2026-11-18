@@ -1,0 +1,196 @@
+{
+  "version": 1,
+  "start": 1794359400,
+  "end": 1794964200,
+  "markets": {
+    "SOL": {
+      "sourceSha256": "412a515618b6d9e8badbf1513b139d6da52ad8db1cf4601da197ef066450fdf0",
+      "capturedAt": "2026-11-18T01:23:05.626Z",
+      "venue": "JLP",
+      "capturedMinutes": 10080,
+      "continuousMinutes": 10080,
+      "from": 1794359400,
+      "validation": 1794722280,
+      "test": 1794843240,
+      "to": 1794964200,
+      "terms": {
+        "long": {
+          "venue": "JLP",
+          "max": 250,
+          "feed": 6,
+          "mint": "So11111111111111111111111111111111111111112",
+          "impactStep": 375000,
+          "baseBps": 6,
+          "maxImpactBps": 44,
+          "carryBps": 0.15,
+          "maintenanceBps": 20
+        },
+        "short": {
+          "venue": "JLP",
+          "max": 250,
+          "feed": 6,
+          "mint": "So11111111111111111111111111111111111111112",
+          "impactStep": 375000,
+          "baseBps": 6,
+          "maxImpactBps": 44,
+          "carryBps": 0.06999999999999999,
+          "maintenanceBps": 20
+        }
+      }
+    },
+    "ETH": {
+      "sourceSha256": "a931672f29bebd976ab9ed6a06501a85f6d957dfa9ce6368135a252bdc80a505",
+      "capturedAt": "2026-11-18T01:23:21.284Z",
+      "venue": "JLP",
+      "capturedMinutes": 10080,
+      "continuousMinutes": 10080,
+      "from": 1794359400,
+      "validation": 1794722280,
+      "test": 1794843240,
+      "to": 1794964200,
+      "terms": {
+        "long": {
+          "venue": "JLP",
+          "max": 250,
+          "feed": 2,
+          "mint": "7vfCXTUXx5WJV5JADk17DUJ4ksgau7utNKj4b963voxs",
+          "impactStep": 1500000,
+          "baseBps": 6,
+          "maxImpactBps": 44,
+          "carryBps": 0.13,
+          "maintenanceBps": 20
+        },
+        "short": {
+          "venue": "JLP",
+          "max": 250,
+          "feed": 2,
+          "mint": "7vfCXTUXx5WJV5JADk17DUJ4ksgau7utNKj4b963voxs",
+          "impactStep": 1500000,
+          "baseBps": 6,
+          "maxImpactBps": 44,
+          "carryBps": 0.06999999999999999,
+          "maintenanceBps": 20
+        }
+      }
+    },
+    "BTC": {
+      "sourceSha256": "1f5775e98fbfb9430053d560066951ff1c12216afa92b66186ee5cb5297a466a",
+      "capturedAt": "2026-11-18T01:23:37.091Z",
+      "venue": "JLP",
+      "capturedMinutes": 10080,
+      "continuousMinutes": 10080,
+      "from": 1794359400,
+      "validation": 1794722280,
+      "test": 1794843240,
+      "to": 1794964200,
+      "terms": {
+        "long": {
+          "venue": "JLP",
+          "max": 250,
+          "feed": 1,
+          "mint": "3NZ9JMVBmGAqocybic2c7LQCJScmgsAZ6vQqTDzcqmJh",
+          "impactStep": 2400000,
+          "baseBps": 6,
+          "maxImpactBps": 44,
+          "carryBps": 0.15,
+          "maintenanceBps": 20
+        },
+        "short": {
+          "venue": "JLP",
+          "max": 250,
+          "feed": 1,
+          "mint": "3NZ9JMVBmGAqocybic2c7LQCJScmgsAZ6vQqTDzcqmJh",
+          "impactStep": 2400000,
+          "baseBps": 6,
+          "maxImpactBps": 44,
+          "carryBps": 0.06999999999999999,
+          "maintenanceBps": 20
+        }
+      }
+    },
+    "ZEC": {
+      "sourceSha256": "a61fb8bbd924c247964b5f3345868e7d9729d08a86f486a363865d3f25e73d85",
+      "capturedAt": "2026-11-18T01:23:43.932Z",
+      "venue": "GUM",
+      "capturedMinutes": 10080,
+      "continuousMinutes": 10080,
+      "from": 1794359400,
+      "validation": 1794722280,
+      "test": 1794843240,
+      "to": 1794964200,
+      "terms": {
+        "long": {
+          "venue": "GUM",
+          "max": 50,
+          "baseBps": 3.5,
+          "makerBps": 0.5,
+          "maintenanceBps": 100,
+          "firstTierCap": 10000,
+          "maxOrder": 20000,
+          "minOrder": 5,
+          "maxQty": 25,
+          "stepSize": 0.001,
+          "liquidationBps": 75,
+          "carryBps": -0.011733355
+        },
+        "short": {
+          "venue": "GUM",
+          "max": 50,
+          "baseBps": 3.5,
+          "makerBps": 0.5,
+          "maintenanceBps": 100,
+          "firstTierCap": 10000,
+          "maxOrder": 20000,
+          "minOrder": 5,
+          "maxQty": 25,
+          "stepSize": 0.001,
+          "liquidationBps": 75,
+          "carryBps": -0.011733355
+        }
+      }
+    },
+    "HYPE": {
+      "sourceSha256": "cacde7faa7e4ebb4190849b8a43fd8dd15fde210db30031249436178d70912e9",
+      "capturedAt": "2026-11-18T01:23:51.959Z",
+      "venue": "GUM",
+      "capturedMinutes": 10080,
+      "continuousMinutes": 10080,
+      "from": 1794359400,
+      "validation": 1794722280,
+      "test": 1794843240,
+      "to": 1794964200,
+      "terms": {
+        "long": {
+          "venue": "GUM",
+          "max": 25,
+          "baseBps": 3.5,
+          "makerBps": 0.5,
+          "maintenanceBps": 200,
+          "firstTierCap": 25000,
+          "maxOrder": 20000,
+          "minOrder": 5,
+          "maxQty": 250,
+          "stepSize": 0.01,
+          "liquidationBps": 75,
+          "carryBps": 0.125
+        },
+        "short": {
+          "venue": "GUM",
+          "max": 25,
+          "baseBps": 3.5,
+          "makerBps": 0.5,
+          "maintenanceBps": 200,
+          "firstTierCap": 25000,
+          "maxOrder": 20000,
+          "minOrder": 5,
+          "maxQty": 250,
+          "stepSize": 0.01,
+          "liquidationBps": 75,
+          "carryBps": 0.125
+        }
+      }
+    }
+  },
+  "summarySha256": "3baec1c316c10fdfc8e0cd9b522ca1534d8738bddd817912d25c705da5231086",
+  "csvSha256": "24f184bd223764709b168392f02ba1f9e712679b11835298a847f7e273642277"
+}
