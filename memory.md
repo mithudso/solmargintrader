@@ -1,5 +1,20 @@
 # Work continuation
 
+Version: 672
+Delta: v671 to v672. Record the Perps workbench implementation and ZEC archive coverage.
+
+## Perps workbench and ZEC history results
+
+TASK-2647. The frozen three-profile direction run still matches the accepted result byte for byte. The Perps overlay now has the exact five-minute ungated Volty preset and can admit either direction in one net paper position per market. Open paper positions, position-specific TP/SL and completed-candle MACD/RSI exits, ledgers, trade-trained models and six prospective candle horizons use an extension-local IndexedDB store. Every settled new trade carries causal entry features and commits the close with the learner update. The position inventory does not treat an unavailable authenticated live route as an empty account. Keep at least one panel open to observe paper exits. The ZEC data package under /Users/mitch/.local/share/solmargintrader/audits/zec-perps-workbench-20261118/data contains five completed venue/instrument feeds and an independently counted 11,726,516 native minute rows, plus identified partial Bitfinex checkpoints. GUM endpoint rows before 2026-09-09 07:18 UTC carry zero reported volume. The GUM data matches every 70,560 frozen VOLTY OHLC row. Validate final revision and ship the owned worktree.
+
+
+Version: 671
+Delta: v670 to v671. Start the Perps workbench and ZEC history task.
+
+## Perps workbench and ZEC history
+
+TASK-2647. Preserve the frozen Volty study and active services. Work in an isolated branch. Add direction selection, managed paper position exits, durable trade and learning state, and native-candle 1000x indicators. Verify authentic live position and close authority before advertising them. Download and validate available one-minute ZEC archives off Git.
+
 Version: 670
 Delta: v669 to v670. Record the directional results and Zec runtime boundary.
 

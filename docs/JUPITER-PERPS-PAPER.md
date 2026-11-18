@@ -1,10 +1,20 @@
 # Jupiter Perps paper panel and leverage replay
 
-Open the [SOL JupUSD route](https://jup.ag/perps/long/JupUSD-SOL) with the unpacked SolMarginTrader extension. The floating **Perps paper** panel follows the market and side in the URL. It opens on the ETH, BTC, ZEC and HYPE routes too. The window can be dragged, resized or collapsed. A new window starts with $1,000 of virtual equity.
+Open the [SOL JupUSD route](https://jup.ag/perps/long/JupUSD-SOL) with the unpacked SolMarginTrader extension. The floating **Perps paper** panel follows the market and side in the URL. It opens on the ETH, BTC, ZEC and HYPE routes too. The window can be dragged, resized or collapsed. Each market starts with $1,000 of virtual equity. Chrome restores the paper accounts from local IndexedDB.
 
 Select **Fixed collateral** to keep the dollar margin constant as leverage changes. Select **Fixed notional** to keep the exposure constant and vary the margin. Take-profit and stop-loss are distances from entry in underlying price percent. A zero disables that level. The chart and preview show entry, estimated liquidation, take-profit and stop-loss. A stop at or beyond estimated liquidation displays a warning. The preview uses the currently selected side and full requested size. A strategy may open a smaller position based on its signal.
 
-**Open paper** and **Close paper** use observed quotes. Select a strategy and use **Start strategy** to trade a new closed-bar signal or armed Volty level. The preset sets its original timeframe and parameters. The adjustable stop, target and leverage belong to the paper experiment. **Pause entries** keeps checking price levels for an open position while the window stays open. Collapsing the window, switching routes or closing the tab ends that window's paper session. The five-market browser check exercised route replacement, preset cadence, editable risk levels and a paper open and close.
+**Open paper** and **Close paper** use observed quotes. Select a strategy and use **Start strategy** to trade a new closed-bar signal or armed Volty level. Volty supports **Long**, **Short** and **Long and short**. The two-sided choice holds one net position per market and can admit either direction. A one-sided choice keeps the opposite signal as an exit. Long-only presets supply long signals. The ZEC **Volty 10 × 1.5** preset matches the ungated five-minute rule in the [frozen direction study](../research/papers/results/zec_gum_25x_5m_directions.md).
+
+**Open positions** lists the saved paper positions across all five markets. Choose **TP / SL and signals** to edit the position's price exits or add indicator exits. MACD can cross above or below its signal line. RSI can cross 30 or 60 in either configured direction. **Any rule** uses the first qualifying newly closed candle. **All on one candle** requires all chosen crosses on that candle. A price stop can fill at a worse sampled price after a gap. Liquidation takes priority. Managing a position does not arm orders on Jupiter.
+
+Keep at least one Perps panel open to evaluate positions. Market changes and browser reloads preserve saved positions and rules. After a missed quote interval the engine pauses strategy entries and checks existing price exits on the next fresh mark. It cannot recover intervening marks or guarantee an indicator-triggered fill while all panels were closed.
+
+## Indicators and learning
+
+The chart uses the 1000x indicator calculations on completed Perps candles for EMA 9/21, MACD, RSI, Balance of Power, Volty, Parabolic SAR and confirmed ZigZag. Each market has a separate prospective closed-minute price learner for the six 1000x horizons. The learner waits for enough consecutive native bars and a fresh source mark. It resolves samples only from complete future closes after their forecast was issued. The separate 1000x high-frequency quote learner needs its own faster feed.
+
+Paper entries capture the shared 1000x feature vector from contiguous completed one-minute candles. Each close writes the trade and updates the after-cost model once in the same IndexedDB transaction. Trade outcomes are separated by venue, market, side, strategy and candle interval. The panel shows sample counts and displays estimates when a model warms up. Forecasts do not authorize orders or override stops. **Export trades** downloads a JSON copy of the saved trade journal. The journal and open paper positions survive browser restarts in the same Chrome profile.
 
 ## Market and fee rules
 
@@ -56,4 +66,4 @@ node research/scripts/perps/perps-sweep.mjs --offline --output /absolute/path/to
 
 ## Funded execution requirements
 
-The integration is an active paper trader. Funded automation needs a route-specific verified build, signing, order and position reconciliation, and settlement contract. The public price endpoints and the replay establish none of those. Existing 1000x controls, paper owners and account state keep their separate product bindings.
+Funded position inventory and execution require an authenticated venue account source and a verified execution owner with order, position and settlement reconciliation. The Perps panel receives public market data and reports the live position inventory as unavailable. Existing 1000x controls, paper owners and account state keep their separate product bindings.

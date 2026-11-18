@@ -10,8 +10,10 @@ that result has not been reverified. Version 0.3.0 moved it off the front page.
 ## Jupiter Perps paper window
 
 The SOL, ETH, BTC, HYPE and ZEC Perps routes open a floating chart and paper
-account with variable collateral, leverage and exits. The [Perps guide](../docs/JUPITER-PERPS-PAPER.md)
-covers the separate JLP and GUM terms, presets and seven-day replay.
+workbench. It shows 1000x indicators and candle forecasts, supports Volty entry
+direction and managed exits, and saves paper positions, trade history and
+learning in Chrome's local database. The [Perps guide](../docs/JUPITER-PERPS-PAPER.md)
+covers the controls, separate JLP and GUM terms and replay evidence.
 
 ## Saved learning and disk backup (0.12.4)
 

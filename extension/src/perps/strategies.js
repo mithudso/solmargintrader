@@ -22,6 +22,17 @@ export const PRESETS = Object.freeze([
 
 export const marketPresets = asset => PRESETS.filter(preset => preset.assets.includes(asset) || preset.kind !== 'archive');
 
+const ZEC_WORKBENCH_VOLTY = Object.freeze({
+  id: 'zec-volty-10-1.5', name: 'ZEC · Volty 10 × 1.5', assets: ['ZEC'], step: 300, kind: 'volty',
+  length: 10, factor: 1.5, source: 'Frozen ZEC GUM 25× study', details: '10-bar SMA of true range · 1.5×',
+  bracket: { tp: 0, sl: 0.8 },
+});
+
+export function workbenchPresets(asset) {
+  const presets = marketPresets(asset);
+  return asset === 'ZEC' ? [ZEC_WORKBENCH_VOLTY, ...presets] : presets;
+}
+
 export const INTERVALS = Object.freeze({ 60: '1m', 300: '5m', 600: '10m', 3600: '1h' });
 export const RISK_PRESETS = Object.freeze({
   original: { tp: 0, sl: 0 },
