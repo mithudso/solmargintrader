@@ -138,7 +138,7 @@ Ecosystem setup and control room use `python -m pip install ./backtester ./oracl
 python3 -m unittest discover -s backtester/tests -t .   # 1228 tests
 python3 -m unittest discover -s soltui/tests -t .       # 1718 tests (TUI dependencies required)
 python3 -m unittest discover -s mongo/tests -t .        # 73 tests
-cd extension && npm test                                # 725 tests
+cd extension && npm test                                # 732 tests
 node tools/dryrun.js --ticks 8 --osc 6 --offline 100    # a round trip must still close positive
 cd extension && npm run e2e                             # real Chrome for Testing: load, dry-run, rails (needs one; see below)
 node tools/verify-endpoints.js                          # live Jupiter reachability

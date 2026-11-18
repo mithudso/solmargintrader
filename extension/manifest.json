@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "SolMarginTrader",
-  "version": "0.12.9",
+  "version": "0.13.0",
   "description": "Signal Desk: live signals, backtests, paper forward tests and bot monitoring. Experimental grid installs disarmed in dry-run.",
   "minimum_chrome_version": "120",
   "background": {
@@ -34,7 +34,8 @@
     "https://coins.llama.fi/*",
     "https://yields.llama.fi/*",
     "https://yolo-api.jup.ag/*",
-    "https://perps-api.jup.ag/*"
+    "https://perps-api.jup.ag/*",
+    "https://api.gum.ag/app/perps/*"
   ],
   "content_security_policy": {
     "extension_pages": "script-src 'self'; object-src 'self'; base-uri 'none'; frame-src https://www.tradingview-widget.com"
@@ -60,6 +61,7 @@
     {
       "resources": [
         "src/1000x/panel.html",
+        "src/perps/panel.html",
         "src/1000x/panel.css",
         "src/1000x/panel.js",
         "src/1000x/feed.js",

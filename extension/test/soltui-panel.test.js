@@ -67,11 +67,11 @@ test('the manifest asks for exactly the permissions and hosts it uses, and widen
     'https://mainnet.base.org/*', 'https://base-rpc.publicnode.com/*', 'https://api.mainnet-beta.solana.com/*',
     'https://coins.llama.fi/*', 'https://yields.llama.fi/*',
     // The 1000x window only reads the public market catalog and oracle candles/stream.
-    'https://yolo-api.jup.ag/*', 'https://perps-api.jup.ag/*',
+    'https://yolo-api.jup.ag/*', 'https://perps-api.jup.ag/*', 'https://api.gum.ag/app/perps/*',
   ]);
   assert.deepEqual(manifest.content_scripts, [{ matches: ['https://jup.ag/*'], js: ['src/1000x/content.js'], run_at: 'document_idle' }]);
   assert.deepEqual(manifest.web_accessible_resources[0].matches, ['https://jup.ag/*']);
-  assert.ok(manifest.web_accessible_resources[0].resources.every(path => path.startsWith('src/1000x/') || path.startsWith('vendor/lightweight-charts/')));
+  assert.ok(manifest.web_accessible_resources[0].resources.every(path => path.startsWith('src/1000x/') || path === 'src/perps/panel.html' || path.startsWith('vendor/lightweight-charts/')));
   assert.equal(manifest.content_security_policy.extension_pages, "script-src 'self'; object-src 'self'; base-uri 'none'; frame-src https://www.tradingview-widget.com");
   assert.equal(manifest.externally_connectable, undefined, 'no other page or extension may message this one');
   assert.equal(manifest.background.service_worker, 'src/bg/service-worker.js');

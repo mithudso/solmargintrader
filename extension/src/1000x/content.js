@@ -5,10 +5,11 @@
   let host, frame, body, heading, key = '', collapsed = false;
   const version = chrome.runtime.getManifest().version;
 
-  function mount(symbol) {
+  function mount({ symbol, kind, side }) {
+    const perps = kind === 'perps';
     host = document.createElement('aside');
-    host.id = 'smt-1000x-indicators';
-    host.setAttribute('aria-label', 'SolMarginTrader indicator window');
+    host.id = perps ? 'smt-perps-panel' : 'smt-1000x-indicators';
+    host.setAttribute('aria-label', perps ? 'SolMarginTrader Perps paper window' : 'SolMarginTrader indicator window');
     const shadow = host.attachShadow({ mode: 'open' });
     const style = document.createElement('style');
     style.textContent = `
@@ -28,7 +29,7 @@
     `;
     const bar = document.createElement('header');
     heading = document.createElement('strong');
-    heading.textContent = `Indicators · ${symbol || 'select market'} · v${version}`;
+    heading.textContent = `${perps ? 'Perps paper' : 'Indicators'} · ${symbol || 'select market'} · v${version}`;
     const toggle = document.createElement('button');
     toggle.textContent = '−';
     toggle.title = 'Collapse indicators';
@@ -47,8 +48,11 @@
       if (value) { frame?.remove(); frame = null; }
       else if (!frame) {
         frame = document.createElement('iframe');
-        frame.title = 'Jupiter indicators and auto-trading controls';
-        frame.src = chrome.runtime.getURL('src/1000x/panel.html') + `#market=${encodeURIComponent(symbol)}`;
+        frame.title = perps ? 'Jupiter Perps paper and risk controls' : 'Jupiter indicators and auto-trading controls';
+        const path = perps ? 'src/perps/panel.html' : 'src/1000x/panel.html';
+        const fragment = new URLSearchParams({ market: symbol });
+        if (perps) fragment.set('side', side);
+        frame.src = chrome.runtime.getURL(path) + '#' + fragment;
         body.append(frame);
       }
     };
@@ -78,15 +82,22 @@
 
   function route() {
     const url = new URL(location.href);
-    if (!/^\/1000x\/?$/.test(url.pathname)) {
+    let target;
+    if (/^\/1000x\/?$/.test(url.pathname)) {
+      const raw = url.searchParams.get('market') || '';
+      target = { kind: 'yolo', symbol: /^[A-Z0-9]{1,12}$/.test(raw) ? raw : '' };
+    } else {
+      const match = /^\/perps\/(long|short)\/(JupUSD-(SOL|ETH|BTC|ZEC|HYPE)|USDC-(ZEC|HYPE))\/?$/.exec(url.pathname);
+      if (match) target = { kind: 'perps', symbol: match[3] ?? match[4], side: match[1] };
+    }
+    if (!target) {
       host?.remove(); host = frame = null; key = ''; return;
     }
-    const raw = url.searchParams.get('market') || '';
-    const symbol = /^[A-Z0-9]{1,12}$/.test(raw) ? raw : '';
-    if (host?.isConnected && key === symbol) return;
+    const next = JSON.stringify(target);
+    if (host?.isConnected && key === next) return;
     host?.remove(); host = frame = null;
-    key = symbol;
-    mount(symbol);
+    key = next;
+    mount(target);
   }
   let timer;
   const resume = () => {

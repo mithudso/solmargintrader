@@ -7,6 +7,12 @@ hard risk rails, on its own tab, **dry-run by default** — it will not place an
 change the mode and type a confirmation. A historical report says the grid lagged buy-and-hold walk-forward on 9 of 9 coins;
 that result has not been reverified. Version 0.3.0 moved it off the front page.
 
+## Jupiter Perps paper window
+
+The SOL, ETH, BTC, HYPE and ZEC Perps routes open a floating chart and paper
+account with variable collateral, leverage and exits. The [Perps guide](../docs/JUPITER-PERPS-PAPER.md)
+covers the separate JLP and GUM terms, presets and seven-day replay.
+
 ## Saved learning and disk backup (0.12.4)
 
 Both browser Oracle learners retain per-coin, per-source and six-horizon models,

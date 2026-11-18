@@ -1,5 +1,12 @@
 # Prompt history
 
+Version: 301
+Delta: v300 to v301. Record the JupUSD extension and leverage comparison request.
+
+## JupUSD perpetuals overlay and leverage comparison
+
+> With the chrome extension, create a display page similar to the one on the 1000x page, but for the coins at https://jup.ag/perps/long/JupUSD-SOL this one is SOL, but there is also ETH, BTC, HYPE, ZEC, all with margin trades up to 250x. Create an active trading partner, these margins mean less likelihood of a liquidation, so make the margin variable, the TP/SL, Redo the most successful strategies tried in backtesting but with variable margin and corresponding liquiodation levels. Also look up and use the fee schedule used by Jupiter. In the active trader have all the successful strategies with their configuartions preset so when it's chosen the configurations change to match it like the 1min/5min etc.  Some of the strategies werte amazing except they liquidated too often, so what if we chose a lower margin and wider safety?
+
 Version: 300
 Delta: v299 to v300. Record the new whole-application optimizer request.
 
