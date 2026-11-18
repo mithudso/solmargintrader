@@ -1,5 +1,13 @@
 # Prompt history
 
+Version: 305
+Delta: v304 to v305. Save the Zec agent and directional replay request.
+
+## Zec agent and directional replay
+
+> Run the deep prompt optimizer on this prompt and then run it: What happens if I 25x short when it says it's going to drop, as well as the 25x long with ZEC? Also Create a trading agent who is an expert crypto trader specializing in ZEC, that knows my wallet credentials and can make trades on my behalf using the mcp servers, api servers, etc as needed. We'll call it Zec, the purpose of Zec is to maximize my profits trading with ZEC coin usually on Jupiter. If I ask Zec to take the reigns of a trade position I'm in, I want Zec  to look at all of the market conditions, the appropriate number of past bars, and all of the technicals and indicators and determine the optimal time to exit the position based on market conditions. For instance if I have a trade open with Jupiter I want Zec to examine the trade thoroughly and watch for the appropriate signals to indicate the best time to close that position, and then do that. Zec should also be thinking of new strategies to try, manage, create, and interpret backtests, and create and monitor forward walk paper tests of a wide range of strategies, looking always for patterns that result in greater profit. Zec should also do /dr /rabbithole and /full-suite research into new strategy and trading terms, concepts, indicators, strategies, etc. Whenever there is a concept Zec doesn't fully undertstand, it should do the research necessary to understand it and record that in the research papers, as well as in skills, and in the skaas mongodb database. Zec should always have access to all of the trading and finance skills. As well it is Zec's job to manage, organize, and make available all of the information stored in the reserarch files and create skills and reference files in the mongodb database, sort and distill all the informaiton into llms files, and create skills that other agents can use. If Zec strongly feels like a specific trade is a good or bad idea it should be made known, Zec should be risk tolerant in favor of gaining information or potential profit over a slow static rise and prioritize asset growth over stability.
+
+
 Version: 304
 Delta: v303 to v304. Record the study lookup and repository research reorganization request.
 

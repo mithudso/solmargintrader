@@ -1,5 +1,20 @@
 # Work continuation
 
+Version: 670
+Delta: v669 to v670. Record the directional results and Zec runtime boundary.
+
+## Zec directional replay and agent
+
+TASK-2644. The published five-minute Volty profiles already took both directions. Reproduced all archived added-week and continuous metrics before comparing one-sided entries. For ungated Volty the 21-day short-only, long-only and two-sided returns were +6.92%, −1.99% and +4.75%. Its short-only added week returned −0.25%. The retrospective paper and exact JSON record the other profiles, costs, risk and input hashes. Claude and Codex definitions share one reusable Zec instruction body. The live-data paper runner recorded one public observation and stopped. The close-only library requires a trusted host with authenticated mandates, position-lineage evidence and the account's exclusive writer lock. The current webhook can reverse the position. The hosted reduce-only MCP route is Coinbase spot. Neither is a Zec GUM exit route. PR 338 shipped the prerequisite research layout. Finish independent source and runtime checks, then deliver this follow-up.
+
+Version: 669
+Delta: v668 to v669. Start the Zec prompt, replay and agent work.
+
+## Zec agent and directional replay
+
+TASK-2644. Optimize the commissioned prompt, verify whether the published five-minute Volty profiles already took shorts, run the frozen 25× direction comparison and build a reusable agent. Bound funded exit authority to the existing guarded signer and a verified close-only route. Preserve the existing reversal webhook and all running owners. Audit receipts and the baseline prompt are under /Users/mitch/.local/share/solmargintrader/audits/zec-agent-20261118.
+
+
 Version: 668
 Delta: v667 to v668. Record the extension version gate for the revised sweep path.
 

@@ -8,3 +8,5 @@
 ## ZEC GUM 25× five-minute study
 
 Read the [6,048-configuration walk-forward report](papers/results/zec_gum_25x_5m_walk_forward.md) and the [three strategy cards](papers/results/zec_gum_25x_5m_card_1.md). The report links to the other two cards, rankings, frozen selection and complete compressed replay. The [earlier 25×/50× sweep](papers/results/zec_gum_5m_10m_replay.md) covers the 5m and 10m comparison and the decoded archive leaders.
+
+The [matched direction replay](papers/results/zec_gum_25x_5m_directions.md) compares long-only, short-only and two-sided entries on the three frozen profiles. It reproduces the original results for the two-sided accounts.

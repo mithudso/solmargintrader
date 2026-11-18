@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-11-18T07:57:11+00:00",
+  "generatedAt": "2026-11-18T08:31:41+00:00",
   "schemaVersion": 1,
   "note": "Concepts are derived from the repo's own vocabulary \u2014 the FAMILY dict, strategy-card frontmatter, docs/trading-signals-concept-family.md, and terms verified to recur in the corpus. A concept matching no file is dropped, not kept.",
   "counts": {
@@ -22,7 +22,7 @@
         "confirm",
         "fail-closed"
       ],
-      "matchingFiles": 2024,
+      "matchingFiles": 2030,
       "shown": 30,
       "files": [
         {
@@ -59,7 +59,7 @@
         },
         {
           "path": "memory.md",
-          "hits": 143
+          "hits": 144
         },
         {
           "path": "research/json/tradingview-script-profiles/shard-a.jsonl",
@@ -161,7 +161,7 @@
         "universe",
         "top_coins"
       ],
-      "matchingFiles": 1862,
+      "matchingFiles": 1872,
       "shown": 30,
       "files": [
         {
@@ -170,7 +170,7 @@
         },
         {
           "path": "memory.md",
-          "hits": 421
+          "hits": 429
         },
         {
           "path": "docs/FILES.md",
@@ -193,12 +193,12 @@
           "hits": 183
         },
         {
-          "path": "research/papers/coin-intelligence/doge-dogecoin.md",
+          "path": "prompts.md",
           "hits": 147
         },
         {
-          "path": "prompts.md",
-          "hits": 129
+          "path": "research/papers/coin-intelligence/doge-dogecoin.md",
+          "hits": 147
         },
         {
           "path": "llms-sitemap.txt",
@@ -300,7 +300,7 @@
         "borrow",
         "financing"
       ],
-      "matchingFiles": 1631,
+      "matchingFiles": 1634,
       "shown": 30,
       "files": [
         {
@@ -439,7 +439,7 @@
         "centred",
         "shift"
       ],
-      "matchingFiles": 1575,
+      "matchingFiles": 1577,
       "shown": 30,
       "files": [
         {
@@ -578,7 +578,7 @@
         "perps",
         "solana"
       ],
-      "matchingFiles": 1227,
+      "matchingFiles": 1235,
       "shown": 30,
       "files": [
         {
@@ -623,7 +623,7 @@
         },
         {
           "path": "prompts.md",
-          "hits": 250
+          "hits": 252
         },
         {
           "path": "llms-infra.txt",
@@ -990,7 +990,7 @@
         "monotone",
         "gap"
       ],
-      "matchingFiles": 877,
+      "matchingFiles": 879,
       "shown": 30,
       "files": [
         {
@@ -1125,7 +1125,7 @@
         "benchmark",
         "baseline"
       ],
-      "matchingFiles": 638,
+      "matchingFiles": 641,
       "shown": 30,
       "files": [
         {
@@ -1178,7 +1178,7 @@
         },
         {
           "path": "memory.md",
-          "hits": 52
+          "hits": 53
         },
         {
           "path": "research/json/eth-week-20261117/summary.json",
@@ -1260,7 +1260,7 @@
         "stochastic",
         "oscillator"
       ],
-      "matchingFiles": 630,
+      "matchingFiles": 632,
       "shown": 30,
       "files": [
         {
@@ -1394,7 +1394,7 @@
         "buy_and_hold",
         "baseline"
       ],
-      "matchingFiles": 565,
+      "matchingFiles": 567,
       "shown": 30,
       "files": [
         {
@@ -1422,15 +1422,15 @@
           "hits": 66
         },
         {
+          "path": "memory.md",
+          "hits": 52
+        },
+        {
           "path": "research/json/eth-week-20261117/summary.json",
           "hits": 52
         },
         {
           "path": "extension/test/fixtures/oracle-0.9-10m-state.json",
-          "hits": 51
-        },
-        {
-          "path": "memory.md",
           "hits": 51
         },
         {
@@ -1667,7 +1667,7 @@
         "evidence floor",
         "rankable"
       ],
-      "matchingFiles": 426,
+      "matchingFiles": 427,
       "shown": 30,
       "files": [
         {
@@ -1804,7 +1804,7 @@
         "hurst",
         "vol_regime"
       ],
-      "matchingFiles": 390,
+      "matchingFiles": 391,
       "shown": 30,
       "files": [
         {
@@ -2489,7 +2489,7 @@
         "vwap_reversion",
         "ou_reversion"
       ],
-      "matchingFiles": 168,
+      "matchingFiles": 169,
       "shown": 30,
       "files": [
         {

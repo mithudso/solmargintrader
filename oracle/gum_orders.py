@@ -15,6 +15,7 @@ import struct
 import time
 import urllib.error
 import urllib.request
+from copy import deepcopy
 from decimal import ROUND_CEILING, ROUND_FLOOR, Decimal, InvalidOperation
 from typing import Any
 
@@ -655,7 +656,16 @@ class GumOrders:
         )
         return plan
 
-    def submit_leg(self, plan, client_order_id, *, enabled=lambda: True, deadline=None):
+    def submit_leg(
+        self,
+        plan,
+        client_order_id,
+        *,
+        enabled=lambda: True,
+        deadline=None,
+        approve_fresh=None,
+    ):
+        """Submit once after the optional owner approval of rebuilt economics."""
         _enabled(enabled, deadline)
         if self.signer is None:
             raise GumError("gum_signer_unavailable")
@@ -742,6 +752,13 @@ class GumOrders:
         )
 
         def fresh_and_enabled():
+            if approve_fresh is not None:
+                try:
+                    approved = approve_fresh(deepcopy(fresh))
+                except Exception:  # noqa: BLE001 - a failing authority check cannot permit signing
+                    raise GumError("gum_fresh_plan_approval_unavailable") from None
+                if approved is not True:
+                    raise GumError("gum_fresh_plan_refused")
             _enabled(enabled, deadline)
             elapsed = time.monotonic() - fresh["quote_monotonic_at"]
             if (
