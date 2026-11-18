@@ -1,5 +1,28 @@
 # Work continuation
 
+Version: 675
+Delta: v674 to v675. Record the Codex advisory path and live publication.
+
+## Live Zec advisory through Codex
+
+TASK-2658. The helper supports `ask --provider codex` and loads the canonical Zec instructions into an ephemeral standalone Codex session when chosen. It rejects tool-call events, invalid advice, absent snapshot binding and expired submission. Verified one real GUM snapshot and a returned advisory through the installed Chrome account. The installed profile reported 12 closed candles, no local paper account, funded inventory unavailable and grid disarmed. Continue with GitHub checks and confirm the final merged helper and loaded version.
+
+Version: 674
+Delta: v673 to v674. Record the Zec agent and Chrome advisory implementation and local acceptance.
+
+## Zec advisor and Chrome snapshot delivery
+
+TASK-2658. Zec v1.1.0 keeps one canonical agent definition, a Codex shim, and a snapshot-only advisory lane. The independent source recheck found no High or Medium blocker. The Chrome worker supplies timestamped GUM ZEC observations, complete five-minute candles, grid mode, and browser-owned paper state over a private native host. The native host accepts snapshot reads, advisory history reads, and suggestion submissions. Suggestions are bound to a two-minute snapshot and shown separately in the dashboard. The direct paper runner defaults to one observation.
+
+The extension has 750 passing tests. Chrome for Testing verified the native host, CLI, HTTP API, watch, fixture model, suggestion display, stale market handling and unchanged disarmed state. The general Chrome regression suite passed 25 checks. The documentation checker reports 3,769 cases across the four suites. The installed 0.15.0 bridge uses a separate Chrome profile under the local SolMarginTrader advisory directory and returned current GUM data. Claude Code reached its weekly quota. A Codex invocation without persistent thread state could not spawn the custom agent. Verify any later native result and final remote delivery before reporting completion.
+
+Version: 673
+Delta: v672 to v673. Start the Zec optimizer and Chrome advisory integration.
+
+## Zec advisor and Chrome snapshot
+
+TASK-2658 targets the Zec agent added in PR 339. The advisory channel consumes an allowlisted projection from the Chrome worker and delivers separate, snapshot-bound suggestions to the owner. Keep signing and live execution outside that channel. Review the agent definitions and prompt, implement and test the browser/API/CLI path, exercise an actual Zec invocation, then deliver the owned worktree.
+
 Version: 672
 Delta: v671 to v672. Record the Perps workbench implementation and ZEC archive coverage.
 

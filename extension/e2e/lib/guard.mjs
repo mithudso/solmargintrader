@@ -12,6 +12,8 @@ export const ALLOWED_MESSAGES = Object.freeze([
   // read-only inspection
   'status',
   'controlRoomStatus',
+  'zecSnapshot',
+  'zecAdvisories',
   'getConfig',
   'getLimits',
   'levels',
@@ -50,6 +52,9 @@ export const FORBIDDEN_MESSAGES = Object.freeze([
   // Delegated controls require the separate isolated paper-manager gate.
   'browserManagerSnapshot',
   'browserManagerPoll',
+  // A separate Chrome/native-host probe tests advisory writes.
+  'zecAdvice',
+  'zecBridge',
   'arm',
   'disarm',
   'kill',

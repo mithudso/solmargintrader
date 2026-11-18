@@ -16,6 +16,7 @@ import { buildVenue } from '../src/venues/index.js';
 import { makeSigner } from '../src/wallet/signer.js';
 import { RequestBudget } from '../src/jupiter/http.js';
 import { createNodeSoltuiTransport } from './soltui-transport.js';
+import { requestZecChrome } from './zec-transport.js';
 
 /**
  * @param {object} [opts]
@@ -36,6 +37,7 @@ export async function createNodeDeps(opts = {}) {
     passphrase,
     quiet = false,
     soltui,
+    zecRequest = requestZecChrome,
   } = opts;
 
   const area = ephemeral ? null : createFileArea(configPath);
@@ -49,6 +51,7 @@ export async function createNodeDeps(opts = {}) {
     store,
     configStore,
     budget,
+    zecRequest,
     soltui: soltui ?? createNodeSoltuiTransport(),
     // Market reads (holdings, pools, swapQuote, scanAlerts) use the platform fetch.
     // One function per process, so the pool cache (keyed on it) can hit.
