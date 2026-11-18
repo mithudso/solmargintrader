@@ -1,4 +1,4 @@
-# ZEC/USD five-minute mean reversion
+# ZEC/USD five-minute mean-reversion strategy card
 
 | Field | Value |
 | --- | --- |

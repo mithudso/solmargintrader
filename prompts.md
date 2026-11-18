@@ -1,5 +1,12 @@
 # Prompt history
 
+Version: 300
+Delta: v299 to v300. Record the new whole-application optimizer request.
+
+## Whole-application optimizer rerun (TASK-2621)
+
+> Run the application deep optimizer skill on this repo.
+
 Version: 299
 Delta: v298 to v299. Preserve the exact request for the ZEC/USD five-minute strategy analysis, card and repository launch guide.
 

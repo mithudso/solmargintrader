@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-11-17T23:14:14+00:00",
+  "generatedAt": "2026-11-18T00:27:38+00:00",
   "schemaVersion": 1,
   "note": "Concepts are derived from the repo's own vocabulary \u2014 the FAMILY dict, strategy-card frontmatter, docs/trading-signals-concept-family.md, and terms verified to recur in the corpus. A concept matching no file is dropped, not kept.",
   "counts": {
@@ -161,7 +161,7 @@
         "universe",
         "top_coins"
       ],
-      "matchingFiles": 1831,
+      "matchingFiles": 1832,
       "shown": 30,
       "files": [
         {
@@ -170,7 +170,7 @@
         },
         {
           "path": "memory.md",
-          "hits": 396
+          "hits": 398
         },
         {
           "path": "docs/FILES.md",
@@ -198,7 +198,7 @@
         },
         {
           "path": "prompts.md",
-          "hits": 121
+          "hits": 120
         },
         {
           "path": "research/results/shape_spot_20261111_manifest.json",
@@ -603,7 +603,7 @@
         },
         {
           "path": "memory.md",
-          "hits": 492
+          "hits": 493
         },
         {
           "path": "llms/jupsol-llms.txt",
@@ -1087,7 +1087,7 @@
         },
         {
           "path": "memory.md",
-          "hits": 39
+          "hits": 40
         },
         {
           "path": "research/strategy_experiment/FILES.md",
