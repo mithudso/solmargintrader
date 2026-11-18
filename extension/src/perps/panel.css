@@ -33,3 +33,11 @@ h2{font-size:14px;margin:4px 0 6px}
 dialog{width:min(490px,calc(100% - 20px));max-height:calc(100% - 20px);overflow:auto;color:inherit;background:#101723;border:1px solid #46536c;border-radius:8px;padding:12px}
 dialog::backdrop{background:#070d18b8}
 #exit-error{color:#ffcb83}
+#volty{border-color:#527486;padding:8px 10px}
+#volty h3{font-size:12px;margin:7px 0 3px}
+[data-volty-status]{color:#a2ebd0;font-weight:650}
+[data-volty-status][data-stale]{color:#ffcb83}
+[data-volty-orders]{list-style:none;padding:0}
+.volty-order{overflow-wrap:anywhere;border-top:1px solid #29374f;padding:6px 0}
+.volty-order p{margin:2px 0}
+.volty-order ul{padding-left:18px;margin:4px 0;font-size:11px}

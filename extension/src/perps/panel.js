@@ -6,6 +6,7 @@ import { PAPER_CAPITAL } from './replay.js';
 import { aggregateMinutes, INTERVALS, RISK_PRESETS, workbenchPresets } from './strategies.js';
 import { beginPaper, closePaper, freshQuote, managePaper, observePaper, stopPaperEntries } from './workbench.js';
 import { causalEntryFeatures, openWorkbenchStore, paperMarketKey } from './workbench-store.js';
+import { mountVoltyStatus } from './volty-status.js';
 
 const $ = id => document.getElementById(id);
 const args = new URLSearchParams(location.hash.slice(1));
@@ -37,6 +38,7 @@ let busy = false;
 let disposed = false;
 let chartReady = false;
 let pollTimer;
+let voltyView;
 let editing;
 let learned = [];
 let forecast = null;
@@ -391,6 +393,7 @@ function requestEntry(allowStrategy) {
 }
 
 if (market) {
+  if (asset === 'ZEC') voltyView = mountVoltyStatus($('volty'));
   $('market').textContent = `${asset}/USD · ${market.venue === 'JLP' ? 'JLP · JupUSD input' : 'GUM Beta · USDC'}`;
   $('source').textContent = market.venue === 'JLP' ? 'Jupiter Pyth oracle candles and prices' : 'GUM trade candles · GUM sampled mark';
   $('impact-field').hidden = market.venue !== 'JLP';
@@ -466,6 +469,7 @@ if (market) {
 window.addEventListener('pagehide', () => {
   disposed = true;
   clearTimeout(pollTimer);
+  voltyView?.close();
   lifetime.abort();
   chart.remove();
 }, { once: true });

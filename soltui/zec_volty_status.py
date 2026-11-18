@@ -1,0 +1,135 @@
+"""Read the local Volty owner's public status snapshot without taking control."""
+
+import json
+import os
+import re
+import stat
+import time
+from decimal import Decimal
+from pathlib import Path
+
+_MAX_BYTES = 256 * 1024
+_MAX_ORDERS = 16
+_MAX_FILLS = 32
+_MODES = {"observe", "live"}
+_STATES = {"watching", "armed", "paused", "data-unavailable", "checking", "blocked", "stopped"}
+_ORDER_STATES = {"submitting", "acknowledged", "pending", "filled", "cancelled", "refused", "unknown"}
+_SIDES = {"buy", "sell"}
+_MAX_TIMESTAMP = 253402300799
+
+
+def _member(value, allowed):
+    if not isinstance(value, str) or value not in allowed:
+        raise ValueError
+    return value
+
+
+def _identifier(value, pattern):
+    if not isinstance(value, str) or not re.fullmatch(pattern, value):
+        raise ValueError
+    return value
+
+
+def _timestamp(value, latest):
+    if type(value) not in (float, int) or not 0 < value <= min(_MAX_TIMESTAMP, latest):
+        raise ValueError
+    return value
+
+
+def _price(value):
+    if type(value) not in (float, int) or not 0 < value <= 1e12:
+        raise ValueError
+    return value
+
+
+def _quantity(value, *, zero=False):
+    text = _identifier(value, r"[0-9]{1,18}(?:\.[0-9]{1,18})?")
+    if not zero and not Decimal(text):
+        raise ValueError
+    return text
+
+
+def _signal(signal, latest):
+    return {
+        "event_id": _identifier(signal["event_id"], r"[A-Za-z0-9_.:-]{1,96}"),
+        "side": _member(signal["side"], _SIDES),
+        "at": _timestamp(signal["at"], latest),
+        "mark": _price(signal["mark"]),
+        "upper": _price(signal["upper"]),
+        "lower": _price(signal["lower"]),
+    }
+
+
+def _fill(fill, latest):
+    return {
+        "signature": _identifier(fill["signature"], r"[!-~]{1,128}"),
+        "price": _quantity(fill["price"]),
+        "size": _quantity(fill["size"]),
+        "fee": _quantity(fill["fee"], zero=True),
+        "timestamp": _timestamp(fill["timestamp"], latest),
+    }
+
+
+def _order(order, observed_at):
+    requested = _quantity(order["requested_quantity"])
+    quantity = order["filled_quantity"]
+    filled = None if quantity is None else _quantity(quantity, zero=True)
+    if filled is not None and Decimal(filled) > Decimal(requested):
+        raise ValueError
+    order_id = order["order_id"]
+    order_id = None if order_id is None else _identifier(order_id, r"[0-9]{1,32}")
+    fills = order["fills"]
+    state = _member(order["state"], _ORDER_STATES)
+    if not isinstance(fills, list) or (fills and (order_id is None or not filled or not Decimal(filled))):
+        raise ValueError
+    if state == "filled" and (not fills or Decimal(filled) != Decimal(requested)):
+        raise ValueError
+    return {
+        "event_id": _identifier(order["event_id"], r"[A-Za-z0-9_.:-]{1,96}"),
+        "client_order_id": _identifier(order["client_order_id"], r"[1-9][0-9]{0,19}"),
+        "side": _member(order["side"], _SIDES),
+        "leg": _member(order["leg"], {"open", "close"}),
+        "state": state,
+        "order_id": order_id,
+        "requested_quantity": requested,
+        "filled_quantity": filled,
+        "updated_at": _timestamp(order["updated_at"], observed_at + 5),
+        # GUM accepts venue clocks up to 30 seconds ahead of the host.
+        "fills": [_fill(fill, observed_at + 30) for fill in fills[:_MAX_FILLS]],
+    }
+
+
+def read_status():
+    # The test/profile config override keeps the native bridge isolated from the owner.
+    config = Path(os.environ.get("SOLTUI_CONFIG_DIR") or Path.home() / ".soltui")
+    path = config / "zec-volty" / "status.json"
+    try:
+        # The writer atomically replaces the file. Read only the inode opened here.
+        fd = os.open(path, os.O_RDONLY | os.O_NOFOLLOW | os.O_NONBLOCK)
+        with os.fdopen(fd, "rb") as stream:
+            metadata = os.fstat(stream.fileno())
+            if not stat.S_ISREG(metadata.st_mode) or metadata.st_uid != os.getuid() or metadata.st_mode & 0o022:
+                return None
+            data = stream.read(_MAX_BYTES + 1)
+        if len(data) > _MAX_BYTES:
+            return None
+        row = json.loads(data)
+        if not isinstance(row, dict) or type(row.get("schema")) is not int or row["schema"] != 1:
+            return None
+        mode = _member(row["mode"], _MODES)
+        state = _member(row["state"], _STATES)
+        updated_at = _timestamp(row["updated_at"], time.time() + 5)
+        orders = row["orders"]
+        if not isinstance(orders, list):
+            return None
+        signal = row["signal"]
+        return {
+            "schema": 1,
+            "mode": mode,
+            "state": state,
+            "updated_at": updated_at,
+            "signal": None if signal is None else _signal(signal, updated_at + 5),
+            "orders": [_order(order, updated_at) for order in orders[:_MAX_ORDERS]],
+        }
+    except (OSError, KeyError, TypeError, ValueError, RecursionError):
+        return None

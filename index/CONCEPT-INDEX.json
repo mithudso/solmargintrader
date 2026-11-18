@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-11-18T15:39:02+00:00",
+  "generatedAt": "2026-11-18T17:36:09+00:00",
   "schemaVersion": 1,
   "note": "Concepts are derived from the repo's own vocabulary \u2014 the FAMILY dict, strategy-card frontmatter, docs/trading-signals-concept-family.md, and terms verified to recur in the corpus. A concept matching no file is dropped, not kept.",
   "counts": {
@@ -22,7 +22,7 @@
         "confirm",
         "fail-closed"
       ],
-      "matchingFiles": 2035,
+      "matchingFiles": 2038,
       "shown": 30,
       "files": [
         {
@@ -43,7 +43,7 @@
         },
         {
           "path": "docs/operations-registry.json",
-          "hits": 222
+          "hits": 223
         },
         {
           "path": "docs/FILES.md",
@@ -161,7 +161,7 @@
         "universe",
         "top_coins"
       ],
-      "matchingFiles": 1890,
+      "matchingFiles": 1903,
       "shown": 30,
       "files": [
         {
@@ -169,12 +169,12 @@
           "hits": 504
         },
         {
-          "path": "memory.md",
-          "hits": 446
+          "path": "docs/FILES.md",
+          "hits": 481
         },
         {
-          "path": "docs/FILES.md",
-          "hits": 440
+          "path": "memory.md",
+          "hits": 448
         },
         {
           "path": "llms-filemap.txt",
@@ -300,7 +300,7 @@
         "borrow",
         "financing"
       ],
-      "matchingFiles": 1635,
+      "matchingFiles": 1638,
       "shown": 30,
       "files": [
         {
@@ -341,7 +341,7 @@
         },
         {
           "path": "docs/FILES.md",
-          "hits": 62
+          "hits": 63
         },
         {
           "path": "skills/trading-and-investing/references/jupiter-perps-trading.md",
@@ -439,7 +439,7 @@
         "centred",
         "shift"
       ],
-      "matchingFiles": 1579,
+      "matchingFiles": 1580,
       "shown": 30,
       "files": [
         {
@@ -519,16 +519,16 @@
           "hits": 20
         },
         {
+          "path": "docs/FILES.md",
+          "hits": 19
+        },
+        {
           "path": "research/scripts/signal_redundancy.py",
           "hits": 19
         },
         {
           "path": "research/scripts/strategy_compare.py",
           "hits": 19
-        },
-        {
-          "path": "docs/FILES.md",
-          "hits": 18
         },
         {
           "path": "backtester/tests/test_engine_audit.py",
@@ -578,7 +578,7 @@
         "perps",
         "solana"
       ],
-      "matchingFiles": 1245,
+      "matchingFiles": 1252,
       "shown": 30,
       "files": [
         {
@@ -591,7 +591,7 @@
         },
         {
           "path": "docs/FILES.md",
-          "hits": 722
+          "hits": 734
         },
         {
           "path": "docs/design/oracle-ui-2399/report.json",
@@ -603,7 +603,7 @@
         },
         {
           "path": "memory.md",
-          "hits": 505
+          "hits": 508
         },
         {
           "path": "llms/jupsol-llms.txt",
@@ -852,7 +852,7 @@
         "anchor_window",
         "levels"
       ],
-      "matchingFiles": 942,
+      "matchingFiles": 943,
       "shown": 30,
       "files": [
         {
@@ -990,7 +990,7 @@
         "monotone",
         "gap"
       ],
-      "matchingFiles": 879,
+      "matchingFiles": 882,
       "shown": 30,
       "files": [
         {
@@ -1023,7 +1023,7 @@
         },
         {
           "path": "docs/FILES.md",
-          "hits": 80
+          "hits": 81
         },
         {
           "path": "TRADINGVIEW-CARD-READINESS.md",
@@ -1125,7 +1125,7 @@
         "benchmark",
         "baseline"
       ],
-      "matchingFiles": 641,
+      "matchingFiles": 643,
       "shown": 30,
       "files": [
         {
@@ -1394,7 +1394,7 @@
         "buy_and_hold",
         "baseline"
       ],
-      "matchingFiles": 567,
+      "matchingFiles": 569,
       "shown": 30,
       "files": [
         {
@@ -1667,7 +1667,7 @@
         "evidence floor",
         "rankable"
       ],
-      "matchingFiles": 428,
+      "matchingFiles": 429,
       "shown": 30,
       "files": [
         {
@@ -1939,7 +1939,7 @@
         "bb_breakout",
         "keltner"
       ],
-      "matchingFiles": 312,
+      "matchingFiles": 315,
       "shown": 30,
       "files": [
         {
@@ -1956,7 +1956,7 @@
         },
         {
           "path": "docs/FILES.md",
-          "hits": 84
+          "hits": 86
         },
         {
           "path": "llms-filemap.txt",

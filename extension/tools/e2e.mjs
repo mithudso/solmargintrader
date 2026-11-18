@@ -91,6 +91,7 @@ const MARKET_GETS = [
   // The shipped chart iframe attempts this keyless UI read. Interception still
   // blocks it; recognizing the exact path does not grant network access.
   (u) => u === 'https://www.tradingview-widget.com/embed-widget/advanced-chart/',
+  (u) => /^https:\/\/api\.gum\.ag\/app\/perps\/(markets|fundingRate\/ZEC|ohlcv\/ZEC)$/.test(u),
 ];
 const RPC_ORIGINS = ['https://base-rpc.publicnode.com', 'https://mainnet.base.org', 'https://api.mainnet-beta.solana.com'];
 const READ_RPC = /^(eth_(call|chainId|getBalance|blockNumber)|get[A-Z][A-Za-z]*)$/;
@@ -232,7 +233,8 @@ try {
     const files = ['src/bg/service-worker.js', 'src/bg/paper-venue.js', 'src/core/engine.js',
       'src/core/commands.js', 'src/core/risk.js', 'src/core/pnl.js', 'src/core/csv.js',
       'src/ui/soltui-panel.js', 'src/ui/workspace-model.js', 'src/ui/signal-desk.js',
-      'src/ui/desk-model.js', 'src/ui/signal-desk.css'];
+      'src/ui/desk-model.js', 'src/ui/signal-desk.css', 'src/perps/panel.html',
+      'src/perps/panel.css', 'src/perps/panel.js', 'src/perps/volty-status.js'];
     for (const file of files) {
       const loaded = await sw.ev(`fetch(chrome.runtime.getURL(${JSON.stringify(file)})).then(r => {if(!r.ok)throw new Error('source unavailable');return r.text()})`);
       const expected = createHash('sha256').update(fs.readFileSync(path.join(EXT, file))).digest('hex');
@@ -460,6 +462,25 @@ try {
     same(res.result, JSON.parse(cli.stdout), 'extension and CLI list envelopes differ');
   });
   if (!listing) throw new Error('cannot continue without the soltui command list');
+
+  await check('ZEC Perps loads the read-only Volty section and distinguishes pending orders from confirmed fills', async () => {
+    assertSoltuiCallAllowed('zec.volty.status', {}, listing);
+    const page = await openPage('src/perps/panel.html#market=ZEC&side=short');
+    try {
+      const rendered = await browser.waitFor(() => page.ev(`(() => {
+        const section = document.getElementById('volty');
+        if (!section || section.hidden || !section.textContent.includes('0:e2e-fixture-transaction')) return null;
+        return { text: section.textContent, controls: section.querySelectorAll('button, input, select, form').length };
+      })()`));
+      assert(rendered, 'ZEC Volty native receipt did not render');
+      for (const text of ['Last signal Short', 'Open short · Pending', 'Close long · Confirmed fill', '1234567890123456', 'client order 7654321']) {
+        assert(rendered.text.includes(text), `missing Volty evidence: ${text}`);
+      }
+      eq(rendered.controls, 0, 'Volty verification section must be read-only');
+    } finally {
+      await browser.call('Target.closeTarget', { targetId: page.targetId });
+    }
+  });
 
   // A command that cannot change anything (read_only, no confirm, nothing required)
   // and whose answer is stable across two calls, so a comparison is not a race.

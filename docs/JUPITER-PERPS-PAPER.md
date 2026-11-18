@@ -10,6 +10,10 @@ Select **Fixed collateral** to keep the dollar margin constant as leverage chang
 
 Keep at least one Perps panel open to evaluate positions. Market changes and browser reloads preserve saved positions and rules. After a missed quote interval the engine pauses strategy entries and checks existing price exits on the next fresh mark. It cannot recover intervening marks or guarantee an indicator-triggered fill while all panels were closed.
 
+The ZEC routes also show the standalone [ZEC Volty 25×
+bot](JUPITER-ZEC-VOLTY.md). Its order evidence comes from a separate local GUM
+owner. The paper controls have no effect on that owner.
+
 ## Indicators and learning
 
 The chart uses the 1000x indicator calculations on completed Perps candles for EMA 9/21, MACD, RSI, Balance of Power, Volty, Parabolic SAR and confirmed ZigZag. Each market has a separate prospective closed-minute price learner for the six 1000x horizons. The learner waits for enough consecutive native bars and a fresh source mark. It resolves samples only from complete future closes after their forecast was issued. The separate 1000x high-frequency quote learner needs its own faster feed.

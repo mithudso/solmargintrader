@@ -42,6 +42,9 @@ def _json(value) -> str:
 
 
 def _save(path, row, status, state, *, result=None, client_id=None):
+    legs = state.get("legs")
+    if isinstance(legs, list) and legs and isinstance(legs[-1], dict) and (result is not None or client_id is not None):
+        legs[-1]["updated_at"] = int(time.time())
     fields = {"plan": _json(state)}
     if result is not None:
         fields["result"] = _json(result)

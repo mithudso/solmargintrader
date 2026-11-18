@@ -19,6 +19,7 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { execFile } from 'node:child_process';
 import { createNodeSoltuiTransport, defaultHostCommand, repoRoot, soltuiPython } from '../../tools/soltui-transport.js';
+import { voltyStatusFixture } from '../fixtures/fake-soltui-registry.js';
 
 export const HOST_NAME = 'com.mitchhudson.soltui';
 const EXT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..', '..');
@@ -51,6 +52,9 @@ export async function installHost({ profile, extensionId, mode = process.env.SOL
   const configDir = path.join(profile, 'soltui-config');
   fs.mkdirSync(path.join(configDir, 'forwardtest'), { recursive: true });
   fs.writeFileSync(path.join(configDir, 'forwardtest', 'control.json'), JSON.stringify({ paused: true }), { mode: 0o600 });
+  const voltyDir = path.join(configDir, 'zec-volty');
+  fs.mkdirSync(voltyDir, { recursive: true });
+  fs.writeFileSync(path.join(voltyDir, 'status.json'), JSON.stringify(voltyStatusFixture()), { mode: 0o600 });
   const scopedEnv = { ...process.env, SOLTUI_CONFIG_DIR: configDir };
   const host = defaultHostCommand(process.env);
   const launch = real
