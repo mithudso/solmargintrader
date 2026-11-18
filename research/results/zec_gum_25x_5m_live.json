@@ -1,0 +1,34 @@
+{
+  "version": 1,
+  "market": "ZEC",
+  "step": 300,
+  "mode": "paper",
+  "settings": {
+    "sizing": "notional",
+    "amount": 250,
+    "leverage": 25,
+    "slippageBps": 2,
+    "additiveBps": 0,
+    "networkUsd": 0.01
+  },
+  "profiles": [
+    {
+      "id": "zec-25x-5m-1",
+      "candidateId": "volty-10-1.5",
+      "tp": 0,
+      "sl": 0.8
+    },
+    {
+      "id": "zec-25x-5m-2",
+      "candidateId": "gate--volty-10-1.5--zscore-20--2-0--rsi-14-30-50",
+      "tp": 0,
+      "sl": 1.2
+    },
+    {
+      "id": "zec-25x-5m-3",
+      "candidateId": "gate--volty-10-1.5--rsi-14-30-50",
+      "tp": 0,
+      "sl": 0.8
+    }
+  ]
+}

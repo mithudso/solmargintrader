@@ -1,5 +1,19 @@
 # Work continuation
 
+Version: 664
+Delta: v663 to v664. Record the extended replay, winner cards and paper runtime.
+
+## ZEC GUM 25× five-minute results
+
+TASK-2634. An independently hashed week joined the earlier six-week capture for 70,560 contiguous one-minute candles and 1,176 hourly funding distributions. The 108-rule by 56-bracket study froze its shortlist before scoring that week. Ungated Volty(10 × 1.5), the same rule with Z-score and RSI confirmation, and RSI-confirmed Volty selected 0% TP and 0.8%, 1.2% and 0.8% SL. The added week returned −2.79%, −3.46% and −3.00%, with no modeled liquidations for the three. Only ungated Volty made money in the continuous 21-day holdout. All three rolling bracket selections lost in the added week. Replay evidence, profile cards and public-data paper configuration are in research/results. The GUM live paper runner uses current marks, independent books and a fresh journal per launch. The existing funded webhook remains separate. Original capture: /Users/mitch/.local/state/zec-perps-suite-2632/ZEC.json. Added week: /Users/mitch/.local/state/zec-gum-walk-forward-2634/ZEC-additional-week.json.
+
+Version: 663
+Delta: v662 to v663. Start the seven-week ZEC GUM bracket and walk-forward study.
+
+## ZEC GUM 25× five-minute brackets and live setup
+
+TASK-2634. Preserve the frozen 42-day capture and append November 11–18 UTC. Lock the selection before scoring that additional week. Use the existing GUM paper model, fixed $250 notional, strategy definitions shared with the live-data runner, per-winner cards and weekly walk-forward results. Use an isolated worktree and leave the existing funded webhook ownership and configuration untouched.
+
 Version: 662
 Delta: v661 to v662. Bind the focused ZEC replay, evidence and validation results.
 

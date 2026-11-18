@@ -1,5 +1,12 @@
 # Prompt history
 
+Version: 303
+Delta: v302 to v303. Record the one-week extension and 25× 5m walk-forward request.
+
+## ZEC GUM 25× five-minute brackets and live setup
+
+> Add another week to the testing time frames, and do a suite of back tests on ZEC 25x 5m testing the vartious configurations and combinations of z-score, RSI, balance of power, and Volty, at a range of different TP and SL. Then for the top 3 winners create strategy cards for them, create a walk forward test for each, and set them up to be run live.
+
 Version: 302
 Delta: v301 to v302. Record the focused ZEC perpetuals replay request.
 

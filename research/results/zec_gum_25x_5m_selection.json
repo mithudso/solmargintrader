@@ -1,0 +1,299 @@
+{
+  "version": 1,
+  "recordedBase": {
+    "sha256": "933b9f6e116d8d366d6c73ccda5ec360b30f60dbe63daa26214c3fa010c46dee",
+    "start": 1790730600,
+    "end": 1794359400,
+    "capturedAt": "2026-11-18T03:26:16.223Z",
+    "sources": {
+      "candles": "https://api.gum.ag/app/perps/ohlcv/ZEC",
+      "funding": "https://api.gum.ag/app/perps/fundingRate/ZEC/history",
+      "market": "https://api.gum.ag/app/perps/markets"
+    },
+    "minutes": 60480,
+    "fundingHours": 1008
+  },
+  "developmentWeeks": [
+    [
+      1791940200,
+      1792545000
+    ],
+    [
+      1792545000,
+      1793149800
+    ],
+    [
+      1793149800,
+      1793754600
+    ],
+    [
+      1793754600,
+      1794359400
+    ]
+  ],
+  "policy": {
+    "score": "Sum of four weekly net returns, each starting from the same $1,000 and fixed $250 target exposure.",
+    "eligibility": "At least 24 development exits, at least three per week, no simulated liquidations or refused entries.",
+    "tiebreaks": "Higher worst-week return, lower maximum weekly drawdown, then candidate ID, TP and SL.",
+    "distinct": "One bracket per rule and per exact development signal stream.",
+    "walkForward": "Select the eligible bracket for the same rule using the previous two scored weeks, then run the next week flat from $1,000."
+  },
+  "eligibleRows": 2787,
+  "selected": [
+    {
+      "id": "zec-25x-5m-1",
+      "candidateId": "volty-10-1.5",
+      "tp": 0,
+      "sl": 0.8,
+      "development": [
+        {
+          "returnPct": -1.262509853598465,
+          "drawdownPct": 5.122402759610257,
+          "trades": 120,
+          "wins": 36,
+          "liquidations": 0,
+          "refused": 0,
+          "stops": 48,
+          "takes": 0,
+          "signals": 71,
+          "ends": 1,
+          "endPnlUsd": -0.0799833350451739,
+          "fundingUsd": 0.05156248068843261,
+          "heldMinutes": 8268,
+          "grossWins": 131.0855204137965,
+          "grossLosses": 143.71061894978166
+        },
+        {
+          "returnPct": -3.7220135489705397,
+          "drawdownPct": 4.727242302034595,
+          "trades": 98,
+          "wins": 27,
+          "liquidations": 0,
+          "refused": 0,
+          "stops": 40,
+          "takes": 0,
+          "signals": 57,
+          "ends": 1,
+          "endPnlUsd": -0.9928363795886594,
+          "fundingUsd": 0.17778315622532692,
+          "heldMinutes": 8420,
+          "grossWins": 83.94692495165958,
+          "grossLosses": 121.16706044136511
+        },
+        {
+          "returnPct": 5.3348400184469025,
+          "drawdownPct": 2.3102720227800244,
+          "trades": 87,
+          "wins": 34,
+          "liquidations": 0,
+          "refused": 0,
+          "stops": 22,
+          "takes": 0,
+          "signals": 64,
+          "ends": 1,
+          "endPnlUsd": 3.9777216074785353,
+          "fundingUsd": -0.02226574572947265,
+          "heldMinutes": 9091,
+          "grossWins": 139.20860922220714,
+          "grossLosses": 85.86020903773841
+        },
+        {
+          "returnPct": 2.2832468517457185,
+          "drawdownPct": 2.0032841178175276,
+          "trades": 86,
+          "wins": 33,
+          "liquidations": 0,
+          "refused": 0,
+          "stops": 31,
+          "takes": 0,
+          "signals": 54,
+          "ends": 1,
+          "endPnlUsd": 2.176246669905731,
+          "fundingUsd": 0.011310848583372045,
+          "heldMinutes": 8760,
+          "grossWins": 119.38839291411779,
+          "grossLosses": 96.55592439666086
+        }
+      ],
+      "score": {
+        "returnPct": 2.633563467623616,
+        "worstWeekPct": -3.7220135489705397,
+        "maxDrawdownPct": 5.122402759610257,
+        "profitableWeeks": 2,
+        "trades": 391,
+        "liquidations": 0
+      },
+      "fingerprint": "0524c68533b6a6161c1094b92e9e0e651419345f650ed72f8bc91b4783dca4e2"
+    },
+    {
+      "id": "zec-25x-5m-2",
+      "candidateId": "gate--volty-10-1.5--zscore-20--2-0--rsi-14-30-50",
+      "tp": 0,
+      "sl": 1.2,
+      "development": [
+        {
+          "returnPct": 2.7136682339630624,
+          "drawdownPct": 2.136026879581554,
+          "trades": 22,
+          "wins": 8,
+          "liquidations": 0,
+          "refused": 0,
+          "stops": 13,
+          "takes": 0,
+          "signals": 8,
+          "ends": 1,
+          "endPnlUsd": -0.0799833350451739,
+          "fundingUsd": 0.06240741512208924,
+          "heldMinutes": 4657,
+          "grossWins": 69.37192403788566,
+          "grossLosses": 42.23524169825494
+        },
+        {
+          "returnPct": -0.24463942320226123,
+          "drawdownPct": 2.235223021275712,
+          "trades": 14,
+          "wins": 3,
+          "liquidations": 0,
+          "refused": 0,
+          "stops": 11,
+          "takes": 0,
+          "signals": 3,
+          "ends": 0,
+          "endPnlUsd": 0,
+          "fundingUsd": 0.26514015086337794,
+          "heldMinutes": 5363,
+          "grossWins": 34.15978099349781,
+          "grossLosses": 36.60617522552046
+        },
+        {
+          "returnPct": 1.8316071344642295,
+          "drawdownPct": 2.2605960622602894,
+          "trades": 12,
+          "wins": 4,
+          "liquidations": 0,
+          "refused": 0,
+          "stops": 8,
+          "takes": 0,
+          "signals": 3,
+          "ends": 1,
+          "endPnlUsd": 11.268203588784809,
+          "fundingUsd": -0.17818990523183137,
+          "heldMinutes": 7812,
+          "grossWins": 45.06578080575047,
+          "grossLosses": 26.749709461107976
+        },
+        {
+          "returnPct": -2.8104543249625182,
+          "drawdownPct": 3.3151475599868863,
+          "trades": 11,
+          "wins": 1,
+          "liquidations": 0,
+          "refused": 0,
+          "stops": 10,
+          "takes": 0,
+          "signals": 1,
+          "ends": 0,
+          "endPnlUsd": 0,
+          "fundingUsd": 0.01142538464120931,
+          "heldMinutes": 1192,
+          "grossWins": 4.255157211060678,
+          "grossLosses": 32.359700460685744
+        }
+      ],
+      "score": {
+        "returnPct": 1.4901816202625122,
+        "worstWeekPct": -2.8104543249625182,
+        "maxDrawdownPct": 3.3151475599868863,
+        "profitableWeeks": 2,
+        "trades": 59,
+        "liquidations": 0
+      },
+      "fingerprint": "63549bd6e37b6582499fd3ee26ab4da9c1d62163ca07c16687f0d106a625d9bb"
+    },
+    {
+      "id": "zec-25x-5m-3",
+      "candidateId": "gate--volty-10-1.5--rsi-14-30-50",
+      "tp": 0,
+      "sl": 0.8,
+      "development": [
+        {
+          "returnPct": 3.35611545336842,
+          "drawdownPct": 2.458215282179843,
+          "trades": 32,
+          "wins": 10,
+          "liquidations": 0,
+          "refused": 0,
+          "stops": 21,
+          "takes": 0,
+          "signals": 10,
+          "ends": 1,
+          "endPnlUsd": -0.0799833350451739,
+          "fundingUsd": 0.10062419884567708,
+          "heldMinutes": 5519,
+          "grossWins": 81.94017789297678,
+          "grossLosses": 48.379023359292546
+        },
+        {
+          "returnPct": -2.163057124755767,
+          "drawdownPct": 2.4256867687557526,
+          "trades": 21,
+          "wins": 3,
+          "liquidations": 0,
+          "refused": 0,
+          "stops": 18,
+          "takes": 0,
+          "signals": 3,
+          "ends": 0,
+          "endPnlUsd": 0,
+          "fundingUsd": 0.19395655988595728,
+          "heldMinutes": 3863,
+          "grossWins": 19.463815048531053,
+          "grossLosses": 41.094386296088764
+        },
+        {
+          "returnPct": 2.801856203844932,
+          "drawdownPct": 2.217305250982582,
+          "trades": 12,
+          "wins": 4,
+          "liquidations": 0,
+          "refused": 0,
+          "stops": 8,
+          "takes": 0,
+          "signals": 3,
+          "ends": 1,
+          "endPnlUsd": 13.021535062078884,
+          "fundingUsd": -0.23318291631032625,
+          "heldMinutes": 7602,
+          "grossWins": 46.819112279044546,
+          "grossLosses": 18.80055024059518
+        },
+        {
+          "returnPct": -2.636666750182053,
+          "drawdownPct": 3.0641994612229495,
+          "trades": 20,
+          "wins": 2,
+          "liquidations": 0,
+          "refused": 0,
+          "stops": 18,
+          "takes": 0,
+          "signals": 2,
+          "ends": 0,
+          "endPnlUsd": 0,
+          "fundingUsd": 0.0060094041886326385,
+          "heldMinutes": 1877,
+          "grossWins": 14.234231454578772,
+          "grossLosses": 40.60089895639955
+        }
+      ],
+      "score": {
+        "returnPct": 1.3582477822755323,
+        "worstWeekPct": -2.636666750182053,
+        "maxDrawdownPct": 3.0641994612229495,
+        "profitableWeeks": 2,
+        "trades": 85,
+        "liquidations": 0
+      },
+      "fingerprint": "f120a432fcebfa06d54d9b2e24425c0db5076779f38baee0848dab02ccfa7e64"
+    }
+  ]
+}
