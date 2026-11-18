@@ -68,6 +68,22 @@ try {
     if (isAdSenseVerification(request)) return route.fulfill({ contentType: 'application/javascript', body: '', headers: { 'Access-Control-Allow-Origin': '*' } });
     return new URL(request.url()).origin === origin ? route.continue() : route.abort();
   });
+  await page.setViewportSize({ width: 390, height: 844 });
+  await page.goto(`${origin}/#research/zec-5m-mean-reversion-bbc93995`);
+  const body = page.locator('.article-body');
+  await body.getByRole('heading', { name: 'Fee sensitivity for the same policy' }).waitFor({ timeout: 5000 });
+  const feeTable = body.getByRole('table').filter({ has: page.getByRole('columnheader', { name: 'Commission per fill' }) });
+  assert.equal(await feeTable.count(), 1);
+  assert.match(await feeTable.getByRole('row').filter({ has: page.getByRole('cell', { name: '10 bps', exact: true }) }).innerText(), /\+\$248\.71/);
+  assert.equal(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth), true);
+  assert.equal(await body.getByRole('link', { name: 'launch and scripts guide' }).count(), 0);
+  await body.getByRole('link', { name: 'strategy card', exact: true }).click({ timeout: 5000 });
+  await page.getByRole('heading', { level: 1, name: 'ZEC/USD five-minute mean-reversion strategy card' }).waitFor({ timeout: 5000 });
+  await body.getByRole('link', { name: 'analysis and evidence files' }).click({ timeout: 5000 });
+  await page.getByRole('heading', { level: 1, name: 'ZEC/USD five-minute mean reversion', exact: true }).waitFor({ timeout: 5000 });
+  await page.setViewportSize({ width: 1280, height: 720 });
+  console.log('PASS public research comparisons are tables and companion notes link both ways');
+
   fixtureSubscription = false;
   for (const [index, value] of [false, undefined, 'true', true].entries()) {
     billingConfigured = value;

@@ -379,32 +379,84 @@ function filterResearch() {
   const articles = state.articles.filter(item => (state.category === 'all' || item.category === state.category) && (!query || `${item.title} ${item.summary} ${item.category}`.toLowerCase().includes(query)));
   renderArticles($('#research-list'), articles); const count = $('.research-count'); if (count) count.textContent = `${articles.length} ${articles.length === 1 ? 'NOTE' : 'NOTES'}`;
 }
-function inlineMarkdown(text, parent) {
+function articleHref(source, href) {
+  if (!source || /^(?:[a-z][a-z0-9+.-]*:|\/)|[\\?#]/i.test(href.trim())) return null;
+  try {
+    const base = new URL('/' + source.split('/').map(encodeURIComponent).join('/'), location.origin);
+    const target = new URL(href, base);
+    if (target.origin !== base.origin) return null;
+    const path = decodeURIComponent(target.pathname.slice(1));
+    const match = state.articles.find(article => article.source === path);
+    return match ? '#research/' + encodeURIComponent(match.slug) : null;
+  } catch { return null; }
+}
+function inlineMarkdown(text, parent, resolveLink) {
   const pattern = /\[([^\]]+)\]\(([^)]+)\)|`([^`]+)`|\*\*([^*]+)\*\*|\*([^*]+)\*/g;
   let start = 0, match;
   while ((match = pattern.exec(text))) {
     parent.append(document.createTextNode(text.slice(start, match.index)));
     if (match[1]) {
-      const href = match[2];
-      if (/^https?:\/\//i.test(href)) { const link = el('a', '', match[1]); link.href = href; link.rel = 'noopener noreferrer'; link.target = '_blank'; parent.append(link); }
-      else parent.append(document.createTextNode(match[1]));
+      const external = /^https?:\/\//i.test(match[2]);
+      const href = external ? match[2] : resolveLink(match[2]);
+      if (href) {
+        const link = el('a', '', match[1]); link.href = href;
+        if (external) { link.rel = 'noopener noreferrer'; link.target = '_blank'; }
+        parent.append(link);
+      } else parent.append(document.createTextNode(match[1]));
     } else parent.append(el(match[3] ? 'code' : match[4] ? 'strong' : 'em', '', match[3] || match[4] || match[5]));
     start = pattern.lastIndex;
   }
   parent.append(document.createTextNode(text.slice(start)));
 }
-function markdown(body, parent) {
+function tableCells(line = '') {
+  const trimmed = line.trim();
+  if (!trimmed.includes('|')) return [];
+  return trimmed.replace(/^\|/, '').replace(/(?<!\\)\|$/, '').split(/(?<!\\)\|/)
+    .map(cell => cell.trim().replace(/\\\|/g, '|'));
+}
+function markdownTable(parent, headings, delimiters, renderInline) {
+  const scroll = el('div', 'article-table');
+  const table = el('table');
+  const head = el('thead'), body = el('tbody');
+  table.append(head, body); scroll.append(table); parent.append(scroll);
+  function appendRow(section, cells, tag) {
+    const row = el('tr'); section.append(row);
+    cells.forEach((value, index) => {
+      const cell = el(tag);
+      if (tag === 'th') cell.scope = 'col';
+      const marker = delimiters[index];
+      if (marker.endsWith(':')) cell.style.textAlign = marker.startsWith(':') ? 'center' : 'right';
+      else if (marker.startsWith(':')) cell.style.textAlign = 'left';
+      renderInline(value, cell); row.append(cell);
+    });
+  }
+  appendRow(head, headings, 'th');
+  return cells => appendRow(body, cells, 'td');
+}
+function markdown(body, parent, resolveLink) {
   const lines = String(body || '').split('\n'); let code = null, paragraph = [], list = null;
-  const flush = () => { if (paragraph.length) { const p = el('p'); inlineMarkdown(paragraph.join(' '), p); parent.append(p); paragraph = []; } list = null; };
-  for (const line of lines) {
+  const renderInline = (value, container) => inlineMarkdown(value, container, resolveLink);
+  const flush = () => { if (paragraph.length) { const p = el('p'); renderInline(paragraph.join(' '), p); parent.append(p); paragraph = []; } list = null; };
+  for (let index = 0; index < lines.length; index++) {
+    const line = lines[index];
     if (/^```/.test(line)) { flush(); if (code) { parent.append(code); code = null; } else code = el('pre'); continue; }
     if (code) { code.append(document.createTextNode(`${line}\n`)); continue; }
     if (!line.trim()) { flush(); continue; }
     const headingMatch = line.match(/^(#{1,6})\s+(.+)$/);
-    if (headingMatch) { flush(); const tag = `h${Math.min(headingMatch[1].length + 1, 6)}`; const h = el(tag); inlineMarkdown(headingMatch[2], h); parent.append(h); continue; }
+    if (headingMatch) { flush(); const tag = `h${Math.min(headingMatch[1].length + 1, 6)}`; const h = el(tag); renderInline(headingMatch[2], h); parent.append(h); continue; }
     const listMatch = line.match(/^\s*(?:[-*+]\s+|\d+\.\s+)(.+)$/);
-    if (listMatch) { if (paragraph.length) flush(); if (!list) { list = el(/^\s*\d/.test(line) ? 'ol' : 'ul'); parent.append(list); } const item = el('li'); inlineMarkdown(listMatch[1], item); list.append(item); continue; }
+    if (listMatch) { if (paragraph.length) flush(); if (!list) { list = el(/^\s*\d/.test(line) ? 'ol' : 'ul'); parent.append(list); } const item = el('li'); renderInline(listMatch[1], item); list.append(item); continue; }
     if (/^\s*---\s*$/.test(line)) { flush(); parent.append(el('hr')); continue; }
+    const headings = tableCells(line), delimiters = tableCells(lines[index + 1]);
+    if (headings.length && headings.length === delimiters.length && delimiters.every(cell => /^:?-+:?$/.test(cell))) {
+      flush();
+      const appendRow = markdownTable(parent, headings, delimiters, renderInline);
+      index++;
+      for (let row = tableCells(lines[index + 1]); row.length === headings.length; row = tableCells(lines[index + 1])) {
+        appendRow(row); index++;
+      }
+      continue;
+    }
     paragraph.push(line);
   }
   flush(); if (code) parent.append(code);
@@ -424,7 +476,7 @@ async function articleView(slug) {
       const response = await researchShards.get(article.bodyPath); content = article.bodyKey ? response.articles?.[article.bodyKey]?.body : response.body;
     }
     if (state.view !== 'research' || location.hash !== `#research/${encodeURIComponent(slug)}`) return;
-    body.replaceChildren(); markdown(content || 'The full text is not available yet.', body);
+    body.replaceChildren(); markdown(content || 'The full text is not available yet.', body, href => articleHref(article.source, href));
   } catch (error) { body.replaceChildren(el('p', 'form-message', errorText(error))); }
 }
 function usagePanel() {

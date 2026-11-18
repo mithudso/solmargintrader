@@ -1,5 +1,23 @@
 # Work continuation
 
+Version: 657
+Delta: v656 to v657. Record the verified research reader repair and the separate hosted release gap.
+
+## Whole-application optimizer rerun (TASK-2621)
+
+The rerun starts from remote default caf69e9 and retains the 240 catalog methods, 222 selected methods, 50 states and prior finding criteria. The public reader now renders the ZEC report's fee and comparison tables with column headers, opens catalog-listed companion notes both ways and distinguishes the strategy card by title. The same browser regression fails on the original source and passes on the repair at a 390-pixel viewport. URLs outside the public catalog keep their existing handling.
+
+The hosted anonymous catalog served 1,544 records while the checked source export contains 1,552. Both ZEC five-minute documents are absent from the hosted response. Source verification and public publication have separate release gates. Keep hosted freshness, authenticated provider operation, participant outcomes and prospective evidence open. The original 337-artifact local research batch verifies. Disposable Chrome and the installed native SQLite helper also verify the prior Live Oracle legacy upgrade, while the owner's profile stays separate.
+
+The versioned plan, method ledger, checks, independent review and delivery receipt are under /Users/mitch/.local/share/solmargintrader/audits/application-2621. The normal repository PR ships the source reader and generated catalog. Production rollout needs a separately scoped, verified website release.
+
+Version: 656
+Delta: v655 to v656. Start a fresh application optimizer assessment of current remote-default source.
+
+## Whole-application optimizer rerun (TASK-2621)
+
+The current run carries forward the 240-method catalog, 222 selected methods, 50 journey states and accepted finding criteria from the completed TASK-2556 assessment. The new evidence lives under /Users/mitch/.local/share/solmargintrader/audits/application-2621. Start at caf69e9 and compare actual input bytes. Verify changed launch, research publication and browser recovery journeys in an isolated worktree while preserving owner state. The next step is a fresh method sweep and current verification.
+
 Version: 655
 Delta: v654 to v655. Record the completed strategy documents and verification.
 
