@@ -1,11 +1,11 @@
 {
-  "generatedAt": "2026-11-18T07:52:51+00:00",
+  "generatedAt": "2026-11-18T07:57:11+00:00",
   "schemaVersion": 1,
   "repoRoot": "~/dev/solmargintrader",
-  "commit": "5d3704b",
+  "commit": "d5ee55a",
   "counts": {
     "files": 4157,
-    "bytes": 211769882,
+    "bytes": 211769910,
     "byKind": {
       "strategy-card": 1478,
       "doc": 839,
@@ -63218,7 +63218,7 @@
       "summarySource": "opening-prose",
       "bytes": 20756,
       "lines": 323,
-      "sha1": "f2f177028e2d59bfda3b4f15ff35eb07a9e33788",
+      "sha1": "8a04e64e7e4c3c1181107e6b723337d64cde857e",
       "symbols": [],
       "imports": [],
       "internalImports": [],
@@ -63396,9 +63396,9 @@
       "title": "Every file in this repository",
       "summary": "Regenerate with: python3 index/build.py all # refresh the index python3 index/make_files_doc.py # rewrite this file",
       "summarySource": "opening-prose",
-      "bytes": 1917397,
+      "bytes": 1917425,
       "lines": 39872,
-      "sha1": "6a5dc80a7d8617e5c7f82d61f546f108f172ac7b",
+      "sha1": "ab33a6c74963b8588957f64f0b685ed4f58ef6a4",
       "symbols": [],
       "imports": [],
       "internalImports": [],
@@ -65606,7 +65606,7 @@
       "summarySource": "derived",
       "bytes": 234837,
       "lines": 4768,
-      "sha1": "5fbdb53fa6ca845cdfcc42e1763659f8a535bd96",
+      "sha1": "674ec786471e329a70c2abb004374c453bd2d37d",
       "symbols": [],
       "imports": [],
       "internalImports": [],
@@ -66146,7 +66146,7 @@
       "summarySource": "derived",
       "bytes": 25327,
       "lines": 654,
-      "sha1": "5e3d1e2d1e59f8e487515791f26fbea610e4fc41",
+      "sha1": "ea2f80bdebca37ca8e38dce79d03c832e2f9369e",
       "symbols": [],
       "imports": [],
       "internalImports": [],
@@ -123511,5 +123511,5 @@
       "frontmatter": {}
     }
   ],
-  "textSha256": "915bf98d4ca1d39cec8cac604b5a65032ff887d661fb3b9083a7fb28ed6a4189"
+  "textSha256": "26c3f80096eef5f9117704dc5bd9256fb36f1ad7435cabdb3dbb916eb7a804e6"
 }

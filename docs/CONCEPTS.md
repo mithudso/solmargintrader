@@ -1,6 +1,6 @@
 # Conceptual index
 
-**Generated** from `index/CONCEPT-INDEX.json` (2026-11-18T07:52:51+00:00). 21 concepts.
+**Generated** from `index/CONCEPT-INDEX.json` (2026-11-18T07:57:11+00:00). 21 concepts.
 
 ```bash
 python3 index/build.py all              # refresh
@@ -48,7 +48,7 @@ Strongest files:
 
 - `llms-executable.txt` (504 hits)
 - `memory.md` (421 hits)
-- `docs/FILES.md` (417 hits)
+- `docs/FILES.md` (415 hits)
 - `llms-filemap.txt` (276 hits)
 - `research/papers/coin-intelligence/zec-zcash.md` (196 hits)
 - `extension/src/perps/archive-presets.js` (186 hits)
