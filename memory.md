@@ -1,5 +1,19 @@
 # Work continuation
 
+Version: 679
+Delta: v678 to v679. Record the public inventory and source acceptance.
+
+## Oraclebot public discovery source verification
+
+The sitemap lists the public homepage, the crawlable journal and the already published working paper. Local Wrangler served the exact sitemap and Markdown assets and returned 404 for unsupported paths. The public journal stays linked from the workspace, with existing research hash links. JavaScript, browser and analysis source checks passed. Complete final GitHub checks and verify the deployed Worker version, aliases and file bytes.
+
+Version: 678
+Delta: v677 to v678. Start Oraclebot public discovery and bind the production baseline.
+
+## Oraclebot search and public discovery
+
+The live Worker returns the home HTML for missing discovery resources and invalid routes. Deliver typed public files, a real missing-resource response, and crawlable descriptions of the public workspace and journal. Preserve the existing hash routes, account API, and trading and billing configuration. Verify the owning release path from the exact merged source.
+
 Version: 677
 Delta: v676 to v677. Record the Volty execution, native panel and verification.
 

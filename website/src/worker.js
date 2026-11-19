@@ -37,7 +37,7 @@ class ApiError extends Error {
   constructor(status, code, message = code) { super(message); this.status = status; this.code = code; }
 }
 const now = () => Math.floor(Date.now() / 1000);
-const json = (value, status = 200, headers = {}) => Response.json(value, { status, headers: { 'Cache-Control': 'no-store', ...headers } });
+const json = (value, status = 200, headers = {}) => Response.json(value, { status, headers: { 'Cache-Control': 'no-store', 'X-Robots-Tag': 'noindex', ...headers } });
 const fail = (status, code, message) => { throw new ApiError(status, code, message); };
 const requireDB = env => { if (!env.DB) fail(503, 'storage_unavailable', 'Account storage is not configured.'); return env.DB; };
 const query = (env, sql, ...args) => requireDB(env).prepare(sql).bind(...args);
@@ -454,7 +454,7 @@ async function route(request, env) {
     }
   }
   const path = url.pathname;
-  // Protocol routes must run before the single-page asset fallback. They use
+  // Protocol routes must run before static asset lookup. They use
   // bearer/PKCE authority, while cookie-based consent keeps its own CSRF gate.
   if (path === '/mcp' || path.startsWith('/oauth/') || path.startsWith('/.well-known/') || path.startsWith('/api/agent/')) {
     originOf(request, env);
@@ -463,7 +463,19 @@ async function route(request, env) {
     if (path === '/mcp') return handleMcp(request, env, { authenticateAgent, getStatus: user => agentStatus(env, user), requireEntitlement: user => entitled(env, user) });
     fail(404, 'endpoint_not_found');
   }
-  if (!path.startsWith('/api/')) return env.ASSETS ? env.ASSETS.fetch(request) : new Response('Not found', { status: 404 });
+  if (!path.startsWith('/api/')) {
+    const asset = env.ASSETS ? await env.ASSETS.fetch(request) : new Response('Not found', { status: 404 });
+    if (!asset.ok) return asset;
+    const response = new Response(asset.body, asset);
+    if (['/llms.txt', '/llms-full.txt', '/index.md', '/research/index.md'].includes(path)) {
+      response.headers.set('Content-Type', 'text/markdown; charset=utf-8');
+      response.headers.set('X-Robots-Tag', 'noindex');
+    }
+    if (path.startsWith('/research/') && path.endsWith('.json')) {
+      response.headers.set('X-Robots-Tag', 'noindex');
+    }
+    return response;
+  }
   originOf(request, env);
   if (request.method !== 'GET' && request.method !== 'HEAD' && path !== '/api/billing/webhook') sameOrigin(request, env);
   if (path === '/api/health' && request.method === 'GET') return json({ status: env.DB ? 'ok' : 'setup_required', version: env.APP_VERSION || '1.0.0', storage: Boolean(env.DB), engine: engineConfigured(env), billing: checkoutEnabled(env), liveExecution: executionAvailable(env), mcp: { protocolVersion: MCP_PROTOCOL_VERSION, authentication: 'oauth-pkce', executionAdapterConfigured: executionAvailable(env) } });

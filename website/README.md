@@ -246,6 +246,12 @@ python3 -m unittest website.engine.test_server website.engine.test_research webs
 python3 -m website.scripts.export_research --check
 ```
 
+The canonical homepage and research journal carry public Markdown twins. When
+those texts or the published working paper change, regenerate the discovery
+files with `python3 -m website.scripts.build_discovery`. CI checks that the
+sitemap, robots file and both LLMS files match the source. Hash workspace views
+use the homepage. Unrecognized path routes return 404.
+
 Set `CHROME` to an installed Chromium executable or install the pinned Playwright
 browser. Browser fixtures block external calls and use synthetic wallet keys.
 Source/fixture checks, installed-image inspection, real storage acceptance and
