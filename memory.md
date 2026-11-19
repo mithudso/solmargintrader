@@ -1,5 +1,12 @@
 # Work continuation
 
+Version: 680
+Delta: v679 to v680. Record the CI regeneration and installed-host checks.
+
+## Perps chart delivery checks
+
+PR 345 covers TASK-2688. The local Chrome suite also passed 28 of 28 checks with the real native host. The first CI run detected stale offline source indexes and operation inventories after the extension version bump. Regenerate both from tracked files and verify the new PR tip. The original Chrome Beta profile is registered to the primary checkout, so verify the updated panel there after the default branch advances.
+
 Version: 679
 Delta: v678 to v679. Record the Perps chart fix and acceptance.
 

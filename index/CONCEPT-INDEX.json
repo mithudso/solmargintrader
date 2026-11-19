@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-11-19T07:20:14+00:00",
+  "generatedAt": "2026-11-19T13:01:42+00:00",
   "schemaVersion": 1,
   "note": "Concepts are derived from the repo's own vocabulary \u2014 the FAMILY dict, strategy-card frontmatter, docs/trading-signals-concept-family.md, and terms verified to recur in the corpus. A concept matching no file is dropped, not kept.",
   "counts": {
@@ -174,7 +174,7 @@
         },
         {
           "path": "memory.md",
-          "hits": 447
+          "hits": 448
         },
         {
           "path": "llms-filemap.txt",
@@ -194,7 +194,7 @@
         },
         {
           "path": "prompts.md",
-          "hits": 156
+          "hits": 159
         },
         {
           "path": "research/papers/coin-intelligence/doge-dogecoin.md",
@@ -578,7 +578,7 @@
         "perps",
         "solana"
       ],
-      "matchingFiles": 1254,
+      "matchingFiles": 1255,
       "shown": 30,
       "files": [
         {
@@ -603,7 +603,7 @@
         },
         {
           "path": "memory.md",
-          "hits": 507
+          "hits": 513
         },
         {
           "path": "llms/jupsol-llms.txt",
@@ -623,7 +623,7 @@
         },
         {
           "path": "prompts.md",
-          "hits": 257
+          "hits": 260
         },
         {
           "path": "llms-infra.txt",
