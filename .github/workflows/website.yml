@@ -32,3 +32,4 @@ jobs:
       - run: python -m pip install ./backtester ./oracle
       - run: python -m unittest website.engine.test_server website.engine.test_research website.engine.test_state website.engine.test_jobs website.engine.test_runtime website.engine.test_signals
       - run: python -m website.scripts.export_research --check
+      - run: python -m website.scripts.build_discovery --check

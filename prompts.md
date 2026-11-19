@@ -1,5 +1,14 @@
 # Prompt history
 
+Version: 309
+Delta: v308 to v309. Record the Oraclebot public discovery portion of the fleet request.
+
+## Oraclebot search and public discovery
+
+> Also add to each to create a full sitemap for each site, as well as a llms-full.txt and  llms.txt files for each.
+
+Apply the requested deep SEO pass to oraclebot.io. Fix verified search discovery defects, publish the three public files, and verify the canonical host, www alias, unknown paths, and guest boundaries.
+
 Version: 308
 Delta: v307 to v308. Record the standalone funded Volty request.
 
