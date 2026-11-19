@@ -50,6 +50,7 @@ export const OWNER_SOURCE_FILES = [
   "src/market/tokens.js",
   "src/perps/archive-presets.js",
   "src/perps/candle-learning.js",
+  "src/perps/chart-candles.js",
   "src/perps/managed-exits.js",
   "src/perps/market.js",
   "src/perps/model.js",
