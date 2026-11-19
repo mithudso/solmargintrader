@@ -1,6 +1,20 @@
 # Work continuation
 
 Version: 679
+Delta: v678 to v679. Record the Perps chart fix and acceptance.
+
+## Perps chart fix and acceptance
+
+TASK-2688 added a muted forming chart candle from closed venue minutes, a UTC freshness label, a Latest control, and immediate polling when the page becomes visible. The chart follows new candles while at the right edge. Indicators and strategy inputs still use fully closed intervals. Replay matched the screenshot to the 12:40 UTC five-minute close, one candle behind at 12:46:51 UTC. Extension unit tests passed 755 of 755 and the fixture-backed Chrome regression passed 27 of 27. An isolated Chrome profile with the actual public GUM feed rendered the 12:54 forming candle, the 12:55 completed candle and the 12:56 forming candle. Continue with the PR gates and acceptance in the existing Chrome Beta profile.
+
+Version: 678
+Delta: v677 to v678. Record the Perps chart diagnosis and scope.
+
+## Perps chart updates
+
+TASK-2688 investigates the ZEC Perps paper chart in Chrome Beta 0.16.0. The GUM adapter returned current completed minute candles and a current mark. The quoted candle close in the screenshot matched recent cached aggregates. The chart currently shows only completed intervals and has no visible candle timestamp. Add a forming display candle from completed source minutes, label stale history, and verify chart polling and foreground recovery. Keep execution, paper signals and learning on their existing inputs.
+
+Version: 679
 Delta: v678 to v679. Record the public inventory and source acceptance.
 
 ## Oraclebot public discovery source verification

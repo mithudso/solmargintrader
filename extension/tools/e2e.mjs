@@ -18,8 +18,8 @@
  *
  * Scope, stated plainly: this verifies LOADING and DRY-RUN behaviour. It never
  * arms the extension, never signs, never sends a message that can change mode,
- * limits or keys (see e2e/lib/guard.mjs), and it blocks every network request
- * except a stubbed Jupiter price read. It proves nothing about live orders.
+ * limits or keys (see e2e/lib/guard.mjs), and it blocks external requests
+ * and serves fixtures for public prices and candles. It proves nothing about live orders.
  *
  * Exit codes: 0 all checks passed, 1 a check failed, 2 no usable browser.
  */
@@ -96,6 +96,18 @@ const MARKET_GETS = [
 const RPC_ORIGINS = ['https://base-rpc.publicnode.com', 'https://mainnet.base.org', 'https://api.mainnet-beta.solana.com'];
 const READ_RPC = /^(eth_(call|chainId|getBalance|blockNumber)|get[A-Z][A-Za-z]*)$/;
 const pageErrors = [];
+const chartFixtureStart = Date.parse('2026-11-19T12:00:00Z') / 1000;
+let chartFixtureEnabled = false;
+
+function gumChartFixture(url) {
+  const start = Math.max(chartFixtureStart - 4 * 3600, Number(url.searchParams.get('from')));
+  const end = Math.min(chartFixtureStart + 5 * 60, Number(url.searchParams.get('to')));
+  return JSON.stringify(Array.from({ length: Math.max(0, (end - start) / 60) }, (_, i) => {
+    const time = start + i * 60;
+    const o = 100 + (time - chartFixtureStart) / 300;
+    return { t: time * 1000, T: (time + 60) * 1000, i: '1m', s: 'ZEC', o, h: o + 1, l: o - 1, c: o + 0.5 };
+  }));
+}
 
 const priceBody = JSON.stringify({
   [SOL]: { usdPrice: STUB_PRICE, decimals: 9 },
@@ -111,13 +123,17 @@ function handleBrowserEvent(m, browser) {
   const { requestId, request } = m.params;
   const url = new URL(request.url);
   requests.push({ method: request.method, url: `${url.origin}${url.pathname}`, rpcMethods: rpcMethodsOf(request.postData) });
-  // Only the keyless price read is allowed, and it is answered locally: nothing
-  // leaves the machine, so no order endpoint is reachable even by mistake.
-  const isPriceRead =
-    request.method === 'GET' && url.origin === 'https://lite-api.jup.ag' && url.pathname === '/price/v3';
+  // Fixtures satisfy only the two allowlisted reads. External requests stay blocked.
+  let body = null;
+  if (request.method === 'GET') {
+    if (url.origin === 'https://lite-api.jup.ag' && url.pathname === '/price/v3') body = priceBody;
+    if (chartFixtureEnabled && url.origin === 'https://api.gum.ag' && url.pathname === '/app/perps/ohlcv/ZEC') {
+      body = gumChartFixture(url);
+    }
+  }
   const reply = ['chrome-extension:', 'data:', 'about:', 'blob:'].includes(url.protocol)
     ? browser.call('Fetch.continueRequest', { requestId }, m.sessionId)
-    : isPriceRead
+    : body !== null
     ? browser.call('Fetch.fulfillRequest', {
         requestId,
         responseCode: 200,
@@ -125,7 +141,7 @@ function handleBrowserEvent(m, browser) {
           { name: 'content-type', value: 'application/json' },
           { name: 'access-control-allow-origin', value: '*' },
         ],
-        body: Buffer.from(priceBody).toString('base64'),
+        body: Buffer.from(body).toString('base64'),
       }, m.sessionId)
     : browser.call('Fetch.failRequest', { requestId, errorReason: 'BlockedByClient' }, m.sessionId);
   reply.catch(() => {});
@@ -234,7 +250,7 @@ try {
       'src/core/commands.js', 'src/core/risk.js', 'src/core/pnl.js', 'src/core/csv.js',
       'src/ui/soltui-panel.js', 'src/ui/workspace-model.js', 'src/ui/signal-desk.js',
       'src/ui/desk-model.js', 'src/ui/signal-desk.css', 'src/perps/panel.html',
-      'src/perps/panel.css', 'src/perps/panel.js', 'src/perps/volty-status.js'];
+      'src/perps/panel.css', 'src/perps/panel.js', 'src/perps/chart-candles.js', 'src/perps/volty-status.js'];
     for (const file of files) {
       const loaded = await sw.ev(`fetch(chrome.runtime.getURL(${JSON.stringify(file)})).then(r => {if(!r.ok)throw new Error('source unavailable');return r.text()})`);
       const expected = createHash('sha256').update(fs.readFileSync(path.join(EXT, file))).digest('hex');
@@ -478,6 +494,50 @@ try {
       }
       eq(rendered.controls, 0, 'Volty verification section must be read-only');
     } finally {
+      await browser.call('Target.closeTarget', { targetId: page.targetId });
+    }
+  });
+
+  await check('ZEC Perps advances the forming candle on foreground refresh and labels stalled data', async () => {
+    const page = await openPage('src/perps/panel.html#market=ZEC');
+    try {
+      assert(await browser.waitFor(() => page.ev("Boolean(document.getElementById('chart-status'))")), 'Perps panel did not load');
+      await browser.call('Page.enable', {}, page.sessionId);
+      await browser.call('Page.addScriptToEvaluateOnNewDocument', {
+        source: `globalThis.chartClock = ${(chartFixtureStart + 62) * 1000}; Date.now = () => globalThis.chartClock;`,
+      }, page.sessionId);
+      chartFixtureEnabled = true;
+      await browser.call('Page.reload', {}, page.sessionId);
+      assert(await browser.waitFor(() => page.ev("document.getElementById('chart-status')?.textContent.includes('12:01 UTC')").catch(() => null)),
+        'initial candle did not render using the fixture clock');
+      await page.ev(`(() => {
+        const step = document.getElementById('step');
+        step.value = '300';
+        step.dispatchEvent(new Event('change'));
+      })()`);
+      const chartStatus = () => page.ev("document.getElementById('chart-status').textContent");
+      eq(await chartStatus(), 'Candles through 2026-11-19 12:01 UTC · Forming', 'opening minute');
+      const before = await page.ev(`(() => {
+        globalThis.initialChart = document.querySelector('#chart canvas').toDataURL();
+        return document.getElementById('indicators').textContent;
+      })()`);
+      const resumeAt = seconds => page.ev(`(() => {
+        chartClock = ${(chartFixtureStart + seconds) * 1000};
+        document.dispatchEvent(new Event('visibilitychange'));
+      })()`);
+      await resumeAt(122);
+      assert(await browser.waitFor(async () => (await chartStatus()).includes('12:02 UTC · Forming')), 'forming candle did not advance');
+      assert(await browser.waitFor(() => page.ev("document.querySelector('#chart canvas').toDataURL() !== initialChart")), 'chart did not redraw');
+      eq(await page.ev("document.getElementById('indicators').textContent"), before, 'indicators during a forming candle');
+
+      await resumeAt(302);
+      assert(await browser.waitFor(async () => (await chartStatus()).endsWith('12:05 UTC')), 'completed candle did not render');
+      assert(await page.ev("document.getElementById('indicators').textContent") !== before, 'closed candle did not reach indicators');
+      await resumeAt(482);
+      assert(await browser.waitFor(async () => (await chartStatus()).endsWith('12:05 UTC · Stale')), 'stale candles were not labelled');
+      eq(await page.ev("document.getElementById('chart-latest').disabled"), false, 'latest control for retained history');
+    } finally {
+      chartFixtureEnabled = false;
       await browser.call('Target.closeTarget', { targetId: page.targetId });
     }
   });

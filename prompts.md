@@ -1,6 +1,13 @@
 # Prompt history
 
 Version: 309
+Delta: v308 to v309. Record the stalled ZEC Perps chart report.
+
+## ZEC Perps paper chart updates
+
+> [Image #1]  This graph in this window has not changed in over a day.
+
+Version: 309
 Delta: v308 to v309. Record the Oraclebot public discovery portion of the fleet request.
 
 ## Oraclebot search and public discovery

@@ -14,7 +14,7 @@ button{padding:5px 9px;cursor:pointer}
 button:disabled{cursor:default;opacity:.48}
 :focus-visible{outline:2px solid #86d5ec;outline-offset:2px}
 summary{cursor:pointer;color:#c7d3e5}.muted,#source{color:#a8b7cb;font-size:11px}
-#status,#warning{min-height:1em;color:#ffcb83}
+#status,#warning,#chart-status[data-stale="true"]{min-height:1em;color:#ffcb83}
 dl{margin:0 0 6px;display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:4px}
 dt{color:#a8b7cb;font-size:10px} dd{font-variant-numeric:tabular-nums;margin:1px 0;font-weight:650}
 .actions{display:flex;flex-wrap:wrap;gap:6px}
