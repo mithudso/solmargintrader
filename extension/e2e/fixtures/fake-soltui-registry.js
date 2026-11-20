@@ -9,10 +9,18 @@ export const FAKE_COMMANDS = [
   { name: 'zec.volty.status', describe: 'Read the ZEC Volty status.', params: [], read_only: true, long_running: false, requires_confirm: false },
 ];
 
+export function voltyLearningFixture() {
+  const at = Math.floor(Date.now() / 1000);
+  return { schema: 1, mode: 'shadow', state: 'learning', updated_at: at, last_tick_at: at, ticks: 120,
+    horizons: [60, 300, 600, 900, 1200, 3600].map(seconds => ({ seconds, trained: 30, pending: 45,
+      expired: 1, capacity_drops: 0, candidate_brier: 0.55, frequency_brier: 0.66 })) };
+}
+
 export function voltyStatusFixture() {
   const at = Math.floor(Date.now() / 1000);
   return {
     schema: 1, mode: 'live', state: 'checking', updated_at: at,
+    learning: voltyLearningFixture(),
     signal: { event_id: 'e2e-volty-signal', side: 'sell', at, mark: 540, lower: 541, upper: 560 },
     telemetry: {
       market: { window_start: Math.floor(at / 300) * 300, mark_at: at, mark: 548, lower: 541, upper: 560 },

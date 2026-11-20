@@ -15,6 +15,16 @@ __all__ = ["client_order_id", "process_one", "recover_planning"]
 
 VENUE = "jupiter-gum"
 PRODUCT = "ZEC-PERP"
+_PLAN_DIAGNOSTICS = {
+    "gum_below_minimum_order", "gum_crossed_market", "gum_exact_leverage_preference_required",
+    "gum_explicit_risk_tier_configuration_required", "gum_idle_isolated_collateral_requires_reconciliation",
+    "gum_inconsistent_isolated_snapshot", "gum_insufficient_collateral", "gum_invalid_balance",
+    "gum_invalid_market_units", "gum_invalid_response", "gum_leverage_unavailable",
+    "gum_market_identity_changed", "gum_market_lot_identity_changed", "gum_missing_order_limits",
+    "gum_open_orders_or_unavailable", "gum_order_limit_exceeded", "gum_order_notional_cap_exceeded",
+    "gum_read_unavailable", "gum_stale_market", "gum_trading_unavailable",
+    "volty_external_position_or_fill", "volty_fill_lineage_unverified",
+}
 
 
 def client_order_id(binding: str, event_id: str, leg: int) -> str:
@@ -55,11 +65,14 @@ def _save(path, row, status, state, *, result=None, client_id=None):
     _update(path, row["event_id"], status, **fields)
 
 
-def _refuse(path, row, state, reason, *, ambiguous=False):
+def _refuse(path, row, state, reason, *, ambiguous=False, diagnostic=None):
     status = "unknown" if ambiguous else "refused"
     if ambiguous:
         state["phase"] = "halted"
-    _save(path, row, status, state, result={"reason": reason})
+    result = {"reason": reason}
+    if diagnostic is not None:
+        result["diagnostic"] = diagnostic
+    _save(path, row, status, state, result=result)
     return status
 
 
@@ -253,8 +266,12 @@ def _prepare(path, row, venue, state, *, now, started, enabled):
         state["phase"] = "awaiting_fill"
         # This exact leg and its id survive any exception or process death below.
         _save(path, row, "submitting", state, client_id=client_id)
+    except GumError as error:
+        code = str(error)
+        return _refuse(path, row, state, "gum_plan_unavailable",
+                       diagnostic=code if code in _PLAN_DIAGNOSTICS else "gum_check_failed")
     except (ValueError, RuntimeError, OSError, TypeError):
-        return _refuse(path, row, state, "gum_plan_unavailable")
+        return _refuse(path, row, state, "gum_plan_unavailable", diagnostic="plan_validation_failed")
 
     if not enabled():
         return _refuse(path, row, state, "disarmed_before_submission")

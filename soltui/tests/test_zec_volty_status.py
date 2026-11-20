@@ -79,6 +79,16 @@ class VoltyStatusTests(unittest.TestCase):
         self.write({**expected, "orders": [{**order, "settlement_pending": True}]})
         self.assertEqual(self.dispatch()["result"]["orders"], [order])
 
+        learning = self.path.with_name("learning-status.json")
+        horizons = [{"seconds": seconds, "trained": 5, "pending": 6, "expired": 0, "capacity_drops": 0,
+                     "candidate_brier": 0.25, "frequency_brier": 0.4} for seconds in (60, 300, 600, 900, 1200, 3600)]
+        shadow = {"mode": "shadow", "state": "learning", "updated_at": self.at,
+                  "last_tick_at": self.at - 1, "ticks": 41, "horizons": horizons}
+        learning.write_text(json.dumps({"schema": 1, **shadow, "private": "hidden"}))
+        self.assertEqual(self.dispatch()["result"]["learning"], shadow)
+        learning.write_text(json.dumps({"schema": 1, **shadow, "ticks": 1}))
+        self.assertEqual(self.dispatch()["result"], expected)
+
     def test_observe_preserves_live_history_and_unverified_order_remains_pending(self):
         order = {"event_id": "volty:1", "client_order_id": "1234", "side": "buy", "leg": "open", "state": "acknowledged",
                  "order_id": None, "requested_quantity": "0.017", "filled_quantity": None,

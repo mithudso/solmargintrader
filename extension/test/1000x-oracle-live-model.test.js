@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { LIVE_ORACLE, admitLiveProbe, liveIdentity, liveProbabilities, transitionLive } from '../src/1000x/oracle-live-model.js';
+import { LIVE_ORACLE, VOLTY_TICK_IDENTITY, admitLiveProbe, liveIdentity, liveProbabilities, transitionLive } from '../src/1000x/oracle-live-model.js';
 
 const identity = { market: 'BTC', source: 'test:btc:feed-a' };
 const quote = (t, price = 100) => ({ price, exchangeMs: t, receivedMs: t });
@@ -17,6 +17,17 @@ test('causal warmup issues independent six-horizon frozen probes with uniform co
   assert.equal(step(next, 35000, 101).issued, 6);
   const publicView = step(s, 31000).snapshot; assert.equal(JSON.stringify(publicView).includes('weights'), false);
   assert.equal(publicView.horizons[60].direction, 'FLAT');
+
+  const volty = (state, t, price = 100) => step(state, t, price, { identity: VOLTY_TICK_IDENTITY });
+  let ticks = null;
+  for (let t = 0; t <= 34000; t += 2000) ticks = volty(ticks, t).state;
+  assert.equal(ticks.metrics[60].issued, 3);
+  assert.equal(ticks.models[60].n, 0);
+  assert.equal(volty(ticks, 34000).changed, false);
+  const settled = volty(ticks, 93000, 101).state;
+  assert.equal(settled.models[60].n, 2);
+  assert.equal(settled.metrics[60].counts[0], 2);
+  assert.equal(volty(settled, 93000, 101).state.models[60].n, 2);
 });
 
 test('endpoint DOWN differs from FLAT, scoring uses frozen probabilities and labels train once', () => {

@@ -571,6 +571,22 @@ class GumWebhookOrderTests(unittest.TestCase):
         self.assertEqual(self.process(enabled=lambda: next(checks)), "refused")
         self.assertFalse(self.venue.submissions)
 
+    def test_planning_refusal_records_only_allowlisted_diagnostics(self):
+        for index, (error, expected) in enumerate((
+            (GumError("gum_stale_market"), "gum_stale_market"),
+            (GumError("private upstream details"), "gum_check_failed"),
+            (ValueError("private parser details"), "plan_validation_failed"),
+        )):
+            event_id = f"event-{index}"
+            self.enqueue(event_id)
+            self.venue.plan_error = error
+            self.assertEqual(self.process(), "refused")
+            with database(self.path) as db:
+                row = db.execute("SELECT plan,result FROM signals WHERE event_id=?", (event_id,)).fetchone()
+            self.assertEqual(json.loads(row["plan"])["legs"], [])
+            self.assertEqual(json.loads(row["result"]), {"reason": "gum_plan_unavailable", "diagnostic": expected})
+        self.assertFalse(self.venue.submissions)
+
     def test_position_changed_after_close_halts_instead_of_closing_again(self):
         self.venue.position_side, self.venue.position_size = "sell", "1.000"
         self.enqueue()

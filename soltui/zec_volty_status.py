@@ -13,6 +13,7 @@ _MAX_ORDERS = 16
 _MAX_FILLS = 32
 _MAX_ACTIVITY = 6
 _WINDOW_SECONDS = 300
+_LEARNING_HORIZONS = (60, 300, 600, 900, 1200, 3600)
 _MODES = {"observe", "live"}
 _STATES = {"watching", "armed", "paused", "data-unavailable", "checking", "blocked", "stopped"}
 _ORDER_STATES = {"submitting", "acknowledged", "pending", "filled", "cancelled", "refused", "unknown"}
@@ -130,7 +131,56 @@ def _telemetry(row, updated_at):
         activity = [{"at": _timestamp(event["at"], updated_at + 5), "side": _member(event["side"], _SIDES),
                      "mark": _price(event["mark"]), "outcome": _member(event["outcome"], _OUTCOMES)}
                     for event in activity[:_MAX_ACTIVITY]]
-    return {"market": market, "activity": activity}
+    capture = row.get("capture")
+    return {"market": market, "activity": activity,
+            **({"capture": capture} if capture in ("waiting", "recording", "unavailable") else {})}
+
+
+def _bounded_json(path):
+    # The writer atomically replaces the file. Read only the inode opened here.
+    fd = os.open(path, os.O_RDONLY | os.O_NOFOLLOW | os.O_NONBLOCK)
+    with os.fdopen(fd, "rb") as stream:
+        metadata = os.fstat(stream.fileno())
+        if not stat.S_ISREG(metadata.st_mode) or metadata.st_uid != os.getuid() or metadata.st_mode & 0o022:
+            raise ValueError
+        data = stream.read(_MAX_BYTES + 1)
+    if len(data) > _MAX_BYTES:
+        raise ValueError
+    return json.loads(data)
+
+
+def _learning(path):
+    try:
+        row = _bounded_json(path)
+        if type(row["schema"]) is not int or row["schema"] != 1 or row["mode"] != "shadow":
+            raise ValueError
+        state = _member(row["state"], {"waiting", "warming", "learning", "stale", "unavailable"})
+        updated_at = _timestamp(row["updated_at"], time.time() + 5)
+        ticks = row["ticks"]
+        if type(ticks) is not int or not 0 <= ticks <= 10**12:
+            raise ValueError
+        last = _timestamp(row["last_tick_at"], updated_at) if ticks else None
+        horizons = row["horizons"]
+        if not isinstance(horizons, list) or len(horizons) != (len(_LEARNING_HORIZONS) if ticks else 0):
+            raise ValueError
+        summary = []
+        for seconds, horizon in zip(_LEARNING_HORIZONS, horizons):
+            if horizon["seconds"] != seconds:
+                raise ValueError
+            counts = {key: horizon[key] for key in ("trained", "pending", "expired", "capacity_drops")}
+            if any(type(value) is not int or not 0 <= value <= ticks for value in counts.values()):
+                raise ValueError
+            scores = {key: horizon[key] for key in ("candidate_brier", "frequency_brier")}
+            if counts["trained"]:
+                if any(type(value) not in (int, float) or not 0 <= value <= 2 for value in scores.values()):
+                    raise ValueError
+            elif any(value is not None for value in scores.values()):
+                raise ValueError
+            summary.append({"seconds": seconds, **counts, **scores})
+        return {"mode": "shadow", "state": state, "updated_at": updated_at,
+                "last_tick_at": last, "ticks": ticks, "horizons": summary}
+    except (OSError, KeyError, TypeError, ValueError, RecursionError):
+        return None
 
 
 def read_status():
@@ -138,16 +188,7 @@ def read_status():
     config = Path(os.environ.get("SOLTUI_CONFIG_DIR") or Path.home() / ".soltui")
     path = config / "zec-volty" / "status.json"
     try:
-        # The writer atomically replaces the file. Read only the inode opened here.
-        fd = os.open(path, os.O_RDONLY | os.O_NOFOLLOW | os.O_NONBLOCK)
-        with os.fdopen(fd, "rb") as stream:
-            metadata = os.fstat(stream.fileno())
-            if not stat.S_ISREG(metadata.st_mode) or metadata.st_uid != os.getuid() or metadata.st_mode & 0o022:
-                return None
-            data = stream.read(_MAX_BYTES + 1)
-        if len(data) > _MAX_BYTES:
-            return None
-        row = json.loads(data)
+        row = _bounded_json(path)
         if not isinstance(row, dict) or type(row.get("schema")) is not int or row["schema"] != 1:
             return None
         mode = _member(row["mode"], _MODES)
@@ -171,6 +212,9 @@ def read_status():
             except (KeyError, TypeError, ValueError):
                 # An unsupported optional extension must not hide valid receipts.
                 pass
+        learner = _learning(path.with_name("learning-status.json"))
+        if learner is not None:
+            result["learning"] = learner
         return result
     except (OSError, KeyError, TypeError, ValueError, RecursionError):
         return None

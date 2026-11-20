@@ -100,3 +100,28 @@ state. The native status command provides the same evidence:
 ```sh
 soltui call zec.volty.status
 ```
+
+## Tick learning
+
+The watcher saves every distinct fresh GUM mark it accepts, including marks that
+generate no crossing. The private tick database survives a Chrome close or host
+restart. Run the read-only worker from the source checkout with Node 22.16 or
+newer to learn even while Chrome is closed:
+
+```sh
+node extension/tools/zec-volty-learning.mjs --state-dir "$HOME/.soltui/zec-volty"
+```
+
+**Tick learning** shows processed marks and trained, pending, expired and
+capacity counts for each of the six live-Oracle horizons. The worker imports the
+same softmax model, price features and baselines as the extension's live-price
+Oracle. Its GUM mark identity uses per-tick issuance after warmup and a
+20-second endpoint grace to match the standalone feed. Marks recorded during
+warmup stay in the journal. Only later observed marks within the target window
+train an issued example. A checkpoint and the recorded tick cursor allow
+deterministic replay after interruption. Training runs in shadow. Directional
+scores do not measure executable after-cost profit.
+
+New refused plans record an allowlisted diagnostic in the execution journal.
+An older row with only `gum_plan_unavailable` and no legs proves the planner
+stopped before submission. It does not identify which planning check failed.

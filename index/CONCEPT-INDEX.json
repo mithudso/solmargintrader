@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-11-20T08:33:07+00:00",
+  "generatedAt": "2026-11-20T09:55:44+00:00",
   "schemaVersion": 1,
   "note": "Concepts are derived from the repo's own vocabulary \u2014 the FAMILY dict, strategy-card frontmatter, docs/trading-signals-concept-family.md, and terms verified to recur in the corpus. A concept matching no file is dropped, not kept.",
   "counts": {
@@ -22,7 +22,7 @@
         "confirm",
         "fail-closed"
       ],
-      "matchingFiles": 2039,
+      "matchingFiles": 2040,
       "shown": 30,
       "files": [
         {
@@ -59,7 +59,7 @@
         },
         {
           "path": "memory.md",
-          "hits": 145
+          "hits": 146
         },
         {
           "path": "research/json/tradingview-script-profiles/shard-a.jsonl",
@@ -161,7 +161,7 @@
         "universe",
         "top_coins"
       ],
-      "matchingFiles": 1907,
+      "matchingFiles": 1909,
       "shown": 30,
       "files": [
         {
@@ -194,7 +194,7 @@
         },
         {
           "path": "prompts.md",
-          "hits": 163
+          "hits": 162
         },
         {
           "path": "research/papers/coin-intelligence/doge-dogecoin.md",
@@ -439,7 +439,7 @@
         "centred",
         "shift"
       ],
-      "matchingFiles": 1580,
+      "matchingFiles": 1581,
       "shown": 30,
       "files": [
         {
@@ -578,7 +578,7 @@
         "perps",
         "solana"
       ],
-      "matchingFiles": 1255,
+      "matchingFiles": 1256,
       "shown": 30,
       "files": [
         {
@@ -603,7 +603,7 @@
         },
         {
           "path": "memory.md",
-          "hits": 518
+          "hits": 521
         },
         {
           "path": "llms/jupsol-llms.txt",
@@ -1125,7 +1125,7 @@
         "benchmark",
         "baseline"
       ],
-      "matchingFiles": 644,
+      "matchingFiles": 646,
       "shown": 30,
       "files": [
         {
@@ -1394,7 +1394,7 @@
         "buy_and_hold",
         "baseline"
       ],
-      "matchingFiles": 570,
+      "matchingFiles": 572,
       "shown": 30,
       "files": [
         {
@@ -1667,7 +1667,7 @@
         "evidence floor",
         "rankable"
       ],
-      "matchingFiles": 430,
+      "matchingFiles": 431,
       "shown": 30,
       "files": [
         {
@@ -1735,15 +1735,15 @@
           "hits": 23
         },
         {
+          "path": "memory.md",
+          "hits": 22
+        },
+        {
           "path": "research/scripts/ratio_rotation.py",
           "hits": 22
         },
         {
           "path": "FILES.md",
-          "hits": 21
-        },
-        {
-          "path": "memory.md",
           "hits": 21
         },
         {
