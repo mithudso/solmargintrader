@@ -38,6 +38,12 @@ LEVERAGE = 25
 MAX_POLICY_BYTES = 4096
 STATUS_LIMIT = 16
 MAX_FILLS_PER_ORDER = 32
+ACTIVITY_LIMIT = 6
+_ACTIVITY_OUTCOMES = {
+    "queued": "evaluating", "planning": "evaluating", "submitting": "pending",
+    "pending": "pending", "expired": "expired", "refused": "refused",
+    "cancelled": "cancelled", "unknown": "unknown", "complete": "complete",
+}
 
 
 @dataclass(frozen=True)
@@ -136,6 +142,10 @@ def _orders(path: Path) -> list[dict]:
                     outcome = row["status"]
                 if outcome == "pending" and not receipt:
                     outcome = "acknowledged"
+                settling = (
+                    outcome == "pending" and leg["plan"]["action"] == "close"
+                    and receipt.get("status") == "filled" and receipt.get("settled") is False
+                )
                 projected.append(
                     {
                         "event_id": row["event_id"],
@@ -148,9 +158,30 @@ def _orders(path: Path) -> list[dict]:
                         "filled_quantity": receipt.get("filled_quantity"),
                         "updated_at": leg.get("updated_at", row["timestamp"]),
                         "fills": _fill_details(receipt),
+                        **({"settlement_pending": True} if settling else {}),
                     }
                 )
     return projected
+
+
+def _recent_activity(path: Path) -> list[dict]:
+    """Project the latest recorded crossings without exporting plan or account data."""
+    with _read_inbox(path) as db:
+        rows = db.execute(
+            """SELECT inputs.observation, inputs.skip_reason, signals.status,
+                      json_extract(signals.result, '$.reason') AS reason
+               FROM volty_inputs AS inputs LEFT JOIN signals USING (event_id)
+               ORDER BY inputs.rowid DESC LIMIT ?""",
+            (ACTIVITY_LIMIT,),
+        ).fetchall()
+    events = []
+    for row in rows:
+        signal = json.loads(row["observation"])
+        outcome = row["skip_reason"] or _ACTIVITY_OUTCOMES.get(row["status"], "unknown")
+        if outcome == "complete" and row["reason"] == "target_position_already_held":
+            outcome = "already_held"
+        events.append({"at": signal["at"], "side": signal["side"], "mark": signal["mark"], "outcome": outcome})
+    return events
 
 
 def _fill_details(receipt: dict) -> list[dict]:
@@ -256,6 +287,7 @@ class VoltyRunner:
         self.active = None
         self.window_start = None
         self.mark_at = None
+        self.observation = None
         self.checked_owner = False
         if venue is not None:
             venue.verify_binding()
@@ -264,15 +296,32 @@ class VoltyRunner:
                 db.execute("UPDATE signals SET status='expired' WHERE status='queued'")
 
     def publish(self, state: str) -> str:
+        now = int(self.clock())
+        observation = self.observation
+        market = None
+        if (
+            observation is not None and state not in {"paused", "stopped", "data-unavailable"}
+            and 0 <= now - observation.mark_at <= MARK_MAX_AGE_SEC
+            and now < observation.window_start + WINDOW_SEC
+        ):
+            market = asdict(observation)
+        activity = []
+        if self.venue is not None:
+            try:
+                activity = _recent_activity(self.inbox)
+            except (OSError, sqlite3.Error, KeyError, TypeError, ValueError, RecursionError):
+                # Optional activity must never interrupt the owner's loop.
+                activity = None
         _write_status(
             self.state_dir / "status.json",
             {
                 "schema": 1,
                 "mode": "live" if self.venue is not None else "observe",
                 "state": state,
-                "updated_at": int(self.clock()),
+                "updated_at": now,
                 "signal": None if self.last_signal is None else asdict(self.last_signal),
                 "orders": _orders(self.inbox),
+                "telemetry": {"market": market, "activity": activity},
             },
         )
         return state
@@ -320,6 +369,7 @@ class VoltyRunner:
     def _poll(self) -> VoltySignal | None:
         observation = self.source.read()
         event = self.engine.observe(observation, now=self.clock())
+        self.observation = observation
         self.window_start = observation.window_start
         self.mark_at = observation.mark_at
         if event is not None:

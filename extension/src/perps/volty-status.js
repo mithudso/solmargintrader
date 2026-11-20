@@ -2,6 +2,8 @@ import { el, soltui } from '../ui/ui-kit.js';
 
 const POLL_MS = 5000;
 const MAX_AGE_SECONDS = 60;
+const MAX_MARK_AGE_SECONDS = 20;
+const WINDOW_SECONDS = 300;
 const OWNER_STATES = Object.freeze({
   watching: 'Watching for signals', armed: 'Armed', paused: 'Entries paused',
   'data-unavailable': 'Waiting for fresh GUM data', checking: 'Reconciling with GUM',
@@ -11,9 +13,32 @@ const ORDER_STATES = Object.freeze({
   submitting: 'Submission in progress', acknowledged: 'Acknowledged', pending: 'Pending', filled: 'Confirmed fill',
   cancelled: 'Cancelled', refused: 'Refused', unknown: 'Outcome unknown',
 });
+const STATE_NOTES = Object.freeze({
+  armed: 'Waiting for a fresh breakout crossing.',
+  watching: 'Watching for Volty crossings in observe mode.',
+  paused: 'New submissions are paused. The host can still reconcile outstanding orders.',
+  checking: 'Reconciling the current signal with GUM.',
+  blocked: 'Execution checks blocked new orders. See signal history and order receipts.',
+  'data-unavailable': 'The bot is waiting for a fresh GUM mark and completed candles.',
+  stopped: 'The local Volty process has stopped.',
+});
+const OUTCOMES = Object.freeze({
+  already_held: 'Skipped · already holding this side',
+  cancelled: 'Order cancelled',
+  complete: 'Execution complete',
+  evaluating: 'Evaluating',
+  expired: 'Signal expired',
+  owner_preflight_refused: 'Skipped · account or venue check failed',
+  pending: 'Waiting for GUM',
+  preceding_order_unresolved: 'Skipped · prior order unresolved',
+  refused: 'Order refused',
+  unknown: 'Order outcome unverified',
+});
 
 const stamp = seconds => new Date(seconds * 1000).toISOString().replace('T', ' ').replace(/\.\d+Z$/, ' UTC');
 const direction = side => side === 'buy' ? 'Long' : 'Short';
+const usd = new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', maximumFractionDigits: 4 });
+const eventLabel = event => `${direction(event.side)} · ${OUTCOMES[event.outcome] ?? 'Observed'}`;
 const orderAction = ({ leg, side }) => leg === 'open'
   ? `Open ${direction(side).toLowerCase()}`
   : `Close ${direction(side === 'buy' ? 'sell' : 'buy').toLowerCase()}`;
@@ -23,7 +48,8 @@ const setText = (node, value) => {
 
 function orderRow(order) {
   const verified = order.fills.length && order.state !== 'filled' ? ' · Venue fill transactions recorded' : '';
-  const status = (ORDER_STATES[order.state] ?? 'Unverified') + verified;
+  const status = order.settlement_pending ? 'Filled · awaiting collateral settlement'
+    : (ORDER_STATES[order.state] ?? 'Unverified') + verified;
   const quantities = `Requested ${order.requested_quantity} ZEC · ${order.filled_quantity === null ? 'filled size unverified' : `filled ${order.filled_quantity} ZEC`}`;
   const orderId = order.order_id === null ? 'Venue ID unavailable' : `GUM order ${order.order_id}`;
   const fills = order.fills.map(fill => el('li', {
@@ -39,7 +65,15 @@ function orderRow(order) {
 export function mountVoltyStatus(section, { call = soltui, clock = Date.now } = {}) {
   const status = section.querySelector('[data-volty-status]');
   const updated = section.querySelector('[data-volty-updated]');
+  const stateNote = section.querySelector('[data-volty-state-note]');
+  const mark = section.querySelector('[data-volty-mark]');
+  const upper = section.querySelector('[data-volty-upper]');
+  const lower = section.querySelector('[data-volty-lower]');
+  const marketNote = section.querySelector('[data-volty-market-note]');
   const signal = section.querySelector('[data-volty-signal]');
+  const activityNote = section.querySelector('[data-volty-activity-note]');
+  const activity = section.querySelector('[data-volty-activity]');
+  const orderTitle = section.querySelector('[data-volty-orders-title]');
   const note = section.querySelector('[data-volty-orders-note]');
   const orders = section.querySelector('[data-volty-orders]');
   let current = null;
@@ -47,20 +81,53 @@ export function mountVoltyStatus(section, { call = soltui, clock = Date.now } = 
   let closed = false;
   let busy = false;
   let renderedOrders = '';
+  let renderedActivity = '';
 
   function render() {
+    const now = clock() / 1000;
     const mode = current?.mode === 'live' ? 'Live' : 'Observe';
-    const stale = current !== null && clock() / 1000 - current.updated_at > MAX_AGE_SECONDS;
-    status.toggleAttribute('data-stale', !available || stale);
+    const stale = current !== null && now - current.updated_at > MAX_AGE_SECONDS;
+    const fresh = available && !stale;
+    const recent = current?.orders ?? [];
+    status.toggleAttribute('data-stale', !fresh);
+    status.toggleAttribute('data-attention', ['blocked', 'data-unavailable'].includes(current?.state));
     const health = !available ? 'Local Volty status unavailable' : stale ? `${mode} · Status stale`
       : `${mode} · ${OWNER_STATES[current.state]}`;
     setText(status, health);
-    setText(updated, current ? `Last report ${stamp(current.updated_at)}` : 'Start the local Volty owner to receive status.');
-    const last = current?.signal;
-    setText(signal, last
-      ? `Last signal ${direction(last.side)} · ${stamp(last.at)} · mark $${last.mark} · bands $${last.lower} / $${last.upper} · ${last.event_id}`
-      : 'No Volty signal reported.');
-    const recent = current?.orders ?? [];
+    setText(updated, current ? `Host reported ${stamp(current.updated_at)}` : 'Waiting for the local Volty host.');
+    const settling = recent.some(order => order.settlement_pending === true);
+    setText(stateNote, fresh
+      ? current.state === 'checking' && settling ? 'Close filled. Waiting for collateral to settle back to the parent account.'
+        : STATE_NOTES[current.state]
+      : current ? 'Showing historical signals and order receipts.' : '');
+    const telemetry = current?.telemetry;
+    const market = telemetry?.market;
+    const activeMarket = fresh && market && Number.isFinite(market.mark_at) && Number.isFinite(market.window_start)
+      && now - market.mark_at <= MAX_MARK_AGE_SECONDS && now >= market.window_start && now < market.window_start + WINDOW_SECONDS;
+    setText(mark, activeMarket ? usd.format(market.mark) : '—');
+    setText(upper, activeMarket ? usd.format(market.upper) : '—');
+    setText(lower, activeMarket ? usd.format(market.lower) : '—');
+    setText(marketNote, activeMarket
+      ? `Mark at ${stamp(market.mark_at)} · Window ends ${stamp(market.window_start + WINDOW_SECONDS)}`
+      : telemetry && fresh ? 'Waiting for a current five-minute observation.' : 'Current trigger levels unavailable.');
+    const events = Array.isArray(telemetry?.activity) ? telemetry.activity : [];
+    const latest = current?.signal;
+    const decision = events[0];
+    // A new observe-mode crossing has no execution outcome in the live ledger.
+    const showDecision = decision && (!latest || decision.at >= latest.at);
+    setText(signal, showDecision ? `Last signal ${eventLabel(decision)} · ${stamp(decision.at)}`
+      : latest ? `Last signal ${direction(latest.side)} · ${stamp(latest.at)} · mark ${usd.format(latest.mark)}`
+        : 'No Volty signal reported.');
+    setText(activityNote, events.length ? '' : telemetry?.activity ? 'No live decisions reported.' : 'Signal decisions unavailable.');
+    const activityRevision = JSON.stringify(events);
+    if (activityRevision !== renderedActivity) {
+      activity.replaceChildren(...events.map(event => el('li', { class: 'volty-activity' },
+        el('strong', { text: eventLabel(event) }),
+        el('time', { class: 'muted', datetime: new Date(event.at * 1000).toISOString(), text: stamp(event.at) }),
+        el('span', { class: 'muted', text: ` · ${usd.format(event.mark)}` }))));
+      renderedActivity = activityRevision;
+    }
+    setText(orderTitle, `GUM order receipts (${recent.length})`);
     setText(note, current?.mode === 'observe'
       ? `Observe mode submits no orders.${recent.length ? ' Receipts below are from prior live runs.' : ''}`
       : recent.length ? '' : 'No GUM order receipts reported.');

@@ -81,9 +81,16 @@ running to reconcile outstanding submissions.
 
 ## Verify trading
 
-The panel shows each execution leg. **Acknowledged** means GUM accepted the
-request. **Pending** means a venue outcome or settlement is still being
-reconciled. Use the client order ID to correlate the request before a venue
+The **ZEC Volty 25×** panel shows the host heartbeat and the current GUM mark
+with its timestamp, long trigger, short trigger and five-minute window end.
+Trigger levels clear when the observation is stale or the window ends. Open
+**Signal history** for recent decisions, including skipped crossings and expired
+signals. Historical receipts remain visible if the host goes stale.
+
+Open **GUM order receipts** for the execution legs. **Acknowledged** means GUM
+accepted the request. **Pending** means the venue outcome is still being
+reconciled. A filled close can still be **awaiting collateral settlement**.
+Use the client order ID to correlate the request before a venue
 order ID is available. A confirmed fill shows the GUM order ID, filled
 quantity, fill price, fee and venue transaction signature.
 Compare the order ID or fill transaction with the history for the same GUM

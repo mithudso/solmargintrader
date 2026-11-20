@@ -11,10 +11,16 @@ from pathlib import Path
 _MAX_BYTES = 256 * 1024
 _MAX_ORDERS = 16
 _MAX_FILLS = 32
+_MAX_ACTIVITY = 6
+_WINDOW_SECONDS = 300
 _MODES = {"observe", "live"}
 _STATES = {"watching", "armed", "paused", "data-unavailable", "checking", "blocked", "stopped"}
 _ORDER_STATES = {"submitting", "acknowledged", "pending", "filled", "cancelled", "refused", "unknown"}
 _SIDES = {"buy", "sell"}
+_OUTCOMES = {
+    "already_held", "cancelled", "complete", "evaluating", "expired", "owner_preflight_refused",
+    "pending", "preceding_order_unresolved", "refused", "unknown",
+}
 _MAX_TIMESTAMP = 253402300799
 
 
@@ -84,11 +90,16 @@ def _order(order, observed_at):
         raise ValueError
     if state == "filled" and (not fills or Decimal(filled) != Decimal(requested)):
         raise ValueError
+    leg = _member(order["leg"], {"open", "close"})
+    settling = (
+        order.get("settlement_pending") is True and leg == "close" and state == "pending"
+        and bool(fills) and Decimal(filled) == Decimal(requested)
+    )
     return {
         "event_id": _identifier(order["event_id"], r"[A-Za-z0-9_.:-]{1,96}"),
         "client_order_id": _identifier(order["client_order_id"], r"[1-9][0-9]{0,19}"),
         "side": _member(order["side"], _SIDES),
-        "leg": _member(order["leg"], {"open", "close"}),
+        "leg": leg,
         "state": state,
         "order_id": order_id,
         "requested_quantity": requested,
@@ -96,7 +107,30 @@ def _order(order, observed_at):
         "updated_at": _timestamp(order["updated_at"], observed_at + 5),
         # GUM accepts venue clocks up to 30 seconds ahead of the host.
         "fills": [_fill(fill, observed_at + 30) for fill in fills[:_MAX_FILLS]],
+        **({"settlement_pending": True} if settling else {}),
     }
+
+
+def _telemetry(row, updated_at):
+    if not isinstance(row, dict):
+        raise ValueError
+    market = row["market"]
+    if market is not None:
+        started = _timestamp(market["window_start"], updated_at)
+        mark_at = _timestamp(market["mark_at"], updated_at)
+        lower, upper = _price(market["lower"]), _price(market["upper"])
+        if started % _WINDOW_SECONDS or not started <= mark_at < started + _WINDOW_SECONDS or lower >= upper:
+            raise ValueError
+        market = {"window_start": started, "mark_at": mark_at, "mark": _price(market["mark"]),
+                  "lower": lower, "upper": upper}
+    activity = row["activity"]
+    if activity is not None:
+        if not isinstance(activity, list):
+            raise ValueError
+        activity = [{"at": _timestamp(event["at"], updated_at + 5), "side": _member(event["side"], _SIDES),
+                     "mark": _price(event["mark"]), "outcome": _member(event["outcome"], _OUTCOMES)}
+                    for event in activity[:_MAX_ACTIVITY]]
+    return {"market": market, "activity": activity}
 
 
 def read_status():
@@ -123,7 +157,7 @@ def read_status():
         if not isinstance(orders, list):
             return None
         signal = row["signal"]
-        return {
+        result = {
             "schema": 1,
             "mode": mode,
             "state": state,
@@ -131,5 +165,12 @@ def read_status():
             "signal": None if signal is None else _signal(signal, updated_at + 5),
             "orders": [_order(order, updated_at) for order in orders[:_MAX_ORDERS]],
         }
+        if "telemetry" in row:
+            try:
+                result["telemetry"] = _telemetry(row["telemetry"], updated_at)
+            except (KeyError, TypeError, ValueError):
+                # An unsupported optional extension must not hide valid receipts.
+                pass
+        return result
     except (OSError, KeyError, TypeError, ValueError, RecursionError):
         return None

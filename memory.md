@@ -1,5 +1,19 @@
 # Work continuation
 
+Version: 684
+Delta: v683 to v684. Record the validated browser and native activity view.
+
+## Volty activity verification
+
+Extension 0.16.2 shows the host heartbeat, current five-minute GUM mark and breakout levels, recent signal outcomes and filled closes waiting on collateral. The snapshot and native reader add bounded optional telemetry to schema 1. Oracle passed 265 tests, the focused SolTUI bridge passed 12 tests, and the extension passed 755 tests and 28 real-host Chrome checks. Verify the merged extension through the installed browser, the running Volty process and the actual native status reader. Use TASK-2694 for the delivery receipt.
+
+Version: 683
+Delta: v682 to v683. Record the Volty panel activity and acceptance scope.
+
+## ZEC Volty activity on Jupiter Perps
+
+TASK-2694 extends the existing read-only ZEC Volty section on both Jupiter Perps routes. Show the host's current five-minute mark and trigger prices, independent heartbeat and market freshness, and recent journal decisions including skipped crossings and unsettled closes. Keep the native command backward compatible. Verify the host projection, the native reader, and the installed extension. TASK-2692 already delivered the collateral settlement repair and verified the live service.
+
 Version: 682
 Delta: v681 to v682. Record the tested settlement patch and live read-only rehearsal.
 

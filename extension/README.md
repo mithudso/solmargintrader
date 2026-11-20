@@ -18,7 +18,8 @@ covers the controls, separate JLP and GUM terms and replay evidence.
 ## ZEC Volty 25× bot
 
 Open the standalone **ZEC Volty 25×** section on either ZEC Perps route. It shows
-the local bot's latest signal, venue order status, and confirmed GUM fills. The
+the host heartbeat, current GUM mark and breakout levels, the latest signal decision,
+and expandable history with skipped crossings, order receipts and confirmed fills. The
 [operator guide](../docs/JUPITER-ZEC-VOLTY.md) covers observation, funded
 activation and reading the trade evidence.
 

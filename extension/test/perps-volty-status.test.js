@@ -1,4 +1,5 @@
 import assert from 'node:assert/strict';
+import { readFileSync } from 'node:fs';
 import test from 'node:test';
 import { mountVoltyStatus } from '../src/perps/volty-status.js';
 
@@ -13,14 +14,15 @@ class Node {
 }
 
 const at = 1800000000;
+const markup = readFileSync(new URL('../src/perps/panel.html', import.meta.url), 'utf8');
 const report = (values = {}) => ({
   schema: 1, mode: 'observe', state: 'watching', updated_at: at, orders: [], signal: null, ...values,
 });
 
 async function mount(t, snapshot, now = at) {
   const nodes = new Map();
-  for (const name of ['status', 'updated', 'signal', 'orders-note', 'orders']) {
-    nodes.set(`[data-volty-${name}]`, new Node());
+  for (const attribute of markup.matchAll(/\bdata-volty-[a-z-]+\b/g)) {
+    nodes.set(`[${attribute[0]}]`, new Node());
   }
   const section = { hidden: true, querySelector: key => nodes.get(key) };
   const priorDocument = globalThis.document;
@@ -41,6 +43,8 @@ test('observe status says the owner will only watch for signals', async t => {
   const node = await mount(t, report());
   assert.equal(node('status').textContent, 'Observe · Watching for signals');
   assert.equal(node('orders-note').textContent, 'Observe mode submits no orders.');
+  assert.equal(node('mark').textContent, '—');
+  assert.match(node('market-note').textContent, /unavailable/);
 });
 
 test('live receipts distinguish an unverified open from a confirmed close', async t => {
@@ -72,10 +76,12 @@ test('observe shows historical acknowledgements without treating them as filled'
   assert.equal(node('orders').children[0].children[0].textContent, 'Open long · Acknowledged');
 });
 
-test('old live state never renders as currently armed', async t => {
-  const node = await mount(t, report({ mode: 'live', state: 'armed' }), at + 61);
+test('old live state never renders as currently armed even when an observation is present', async t => {
+  const telemetry = { market: { window_start: at, mark_at: at, mark: 550, upper: 600, lower: 551 }, activity: [] };
+  const node = await mount(t, report({ mode: 'live', state: 'armed', telemetry }), at + 61);
   assert.equal(node('status').textContent, 'Live · Status stale');
   assert.ok(node('status').attributes.has('data-stale'));
+  assert.equal(node('mark').textContent, '—');
 });
 
 test('future snapshot is unavailable', async t => {
