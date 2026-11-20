@@ -15,11 +15,19 @@ from unittest.mock import patch
 
 from cryptography.hazmat.primitives.asymmetric.ed25519 import Ed25519PrivateKey
 
+from oracle.cli import owner
 from oracle.gum_orders import GumError, b58encode, gum_account_owner
 from oracle.tests.test_gum_orders import ACCOUNT
 from oracle.tests.test_gum_webhook_orders import LifecycleProvider
-from oracle.zec_volty import LivePolicy, VoltyRunner, VoltyVenue, main, preflight
-from oracle.zec_volty_signal import WINDOW_SEC, VoltyObservation
+from oracle.zec_volty import (
+    LivePolicy,
+    VoltyRunner,
+    VoltyVenue,
+    main,
+    preflight,
+    rotate_allocation,
+)
+from oracle.zec_volty_signal import STRATEGY_ID, WINDOW_SEC, VoltyObservation
 
 
 class InertGum(LifecycleProvider):
@@ -329,6 +337,140 @@ class DeployedRunnerTests(unittest.TestCase):
         self.assertTrue(json.loads(stream.getvalue())["eligible"])
         self.assertFalse(absent.exists())
         self.assertEqual(self.inert.creates, [])
+
+    def journal_bindings(self):
+        with closing(sqlite3.connect(self.inbox)) as db:
+            active = db.execute("SELECT binding FROM volty_policy WHERE slot=1").fetchone()[0]
+            events = db.execute(
+                "SELECT event_id,portfolio_id,status,client_order_id,plan,result FROM signals ORDER BY rowid"
+            ).fetchall()
+        return active, events
+
+    def rotate(self, replacement=None):
+        if replacement is None:
+            replacement = replace(self.policy, allocation="50")
+        with patch.object(Path, "home", return_value=self.state):
+            return rotate_allocation(self.state, self.policy, replacement, call=self.inert)
+
+    def test_allocation_rotation_preserves_fills_and_configures_fresh_signals(self):
+        self.open_long()
+        self.assertEqual(self.step(998), "checking")
+        self.inert.settle()
+        kill = self.state / "KILL"
+        kill.touch()
+        self.assertEqual(self.step(998), "paused")
+        self.assertEqual(self.step(998), "paused")
+        kill.unlink()
+        old_binding, old_rows = self.journal_bindings()
+        self.assertEqual([row[2] for row in old_rows], ["complete", "expired"])
+
+        replacement = replace(self.policy, allocation="50")
+        old_file, new_file = self.state / "old.json", self.state / "new.json"
+        for path, config in ((old_file, self.policy), (new_file, replacement)):
+            path.write_text(json.dumps(config.__dict__, default=str))
+            path.chmod(0o600)
+        stream = StringIO()
+        with (
+            patch.object(Path, "home", return_value=self.state),
+            patch("oracle.zec_volty.load_signer", side_effect=AssertionError("unexpected signer access")),
+            patch("oracle.zec_volty.rotate_allocation", wraps=lambda state, old, new:
+                  rotate_allocation(state, old, new, call=self.inert)),
+            redirect_stdout(stream),
+        ):
+            self.assertEqual(main([
+                "--rotate-allocation-from", str(old_file), "--config", str(new_file),
+                "--state-dir", str(self.state),
+            ]), 0)
+        receipt = json.loads(stream.getvalue())
+        self.assertEqual(receipt["allocation"], "50")
+        self.assertEqual(receipt["max_order_notional_usdc"], "20")
+        self.assertEqual([item["side"] for item in receipt["preview"]], ["buy", "sell"])
+        self.assertEqual(len(self.inert.creates), 2)
+
+        current = VoltyVenue(replacement, self.inbox, call=self.inert, signer=self.venue.signer)
+        self.assertNotEqual(current.binding, old_binding)
+        self.assertEqual(self.journal_bindings(), (current.binding, old_rows))
+        current.verify_binding()
+        self.assertTrue(preflight(current)["eligible"])
+        with self.assertRaisesRegex(GumError, "volty_live_inbox_policy_changed"):
+            preflight(self.venue)
+        with self.assertRaisesRegex(GumError, "volty_live_inbox_policy_changed"):
+            self.venue.verify_binding()
+
+        self.runner = VoltyRunner(self.state, source=self, venue=current, clock=self.clock)
+        self.assertEqual(self.step(1000), "armed")
+        self.assertEqual(self.step(1002), "checking")
+        self.assertEqual(self.step(1002), "armed")
+        _, new_rows = self.journal_bindings()
+        self.assertEqual(new_rows[:2], old_rows)
+        self.assertEqual(new_rows[2][1:3], (current.binding, "complete"))
+        self.assertEqual(len(self.inert.creates), 3)
+        current.verify_lineage(current.get_net_position())
+
+        with closing(sqlite3.connect(self.inbox)) as db, db:
+            # Retirement is per exact event. A stray old-policy row and a
+            # previously retired event made executable must both fail closed.
+            db.execute(
+                "INSERT INTO signals (event_id,digest,symbol,side,timestamp,status,mode,portfolio_id) "
+                "VALUES ('unregistered','x','ZEC','buy',?,'expired','live',?)",
+                (self.now, old_binding),
+            )
+        with self.assertRaisesRegex(GumError, "volty_live_inbox_binding_mismatch"):
+            current.verify_binding()
+        with closing(sqlite3.connect(self.inbox)) as db, db:
+            db.execute("DELETE FROM signals WHERE event_id='unregistered'")
+            db.execute("UPDATE signals SET status='queued' WHERE event_id=?", (old_rows[0][0],))
+        with self.assertRaisesRegex(GumError, "volty_live_inbox_binding_mismatch"):
+            preflight(current)
+
+    def test_allocation_rotation_fails_with_foreign_or_unresolved_signal(self):
+        before = self.journal_bindings()
+        for status, binding, reason in (
+            ("expired", "foreign-policy", "volty_live_inbox_binding_mismatch"),
+            ("queued", self.venue.binding, "volty_execution_requires_reconciliation"),
+            ("unknown", self.venue.binding, "volty_execution_requires_reconciliation"),
+        ):
+            with self.subTest(status=status):
+                with closing(sqlite3.connect(self.inbox)) as db, db:
+                    db.execute(
+                        "INSERT INTO signals (event_id,digest,symbol,side,timestamp,status,mode,portfolio_id) "
+                        "VALUES ('blocked','x','ZEC','buy',?,?,'live',?)",
+                        (self.now, status, binding),
+                    )
+                with self.assertRaisesRegex(GumError, reason):
+                    self.rotate()
+                self.assertEqual(self.journal_bindings()[0], before[0])
+                self.assertFalse(self.inert.calls)
+                with closing(sqlite3.connect(self.inbox)) as db, db:
+                    db.execute("DELETE FROM signals WHERE event_id='blocked'")
+
+    def test_allocation_rotation_fails_with_owned_position_or_changes_other_than_allocation(self):
+        self.open_long()
+        before = self.journal_bindings()
+        with self.assertRaisesRegex(GumError, "volty_open_position_requires_reconciliation"):
+            self.rotate()
+        with self.assertRaisesRegex(GumError, "volty_rotation_requires_allocation_only_change"):
+            self.rotate(replace(self.policy, allocation="50", max_order_notional_usdc="80"))
+        with self.assertRaisesRegex(GumError, "volty_rotation_requires_new_allocation"):
+            self.rotate(replace(self.policy, allocation="10.0"))
+        self.assertEqual(self.journal_bindings(), before)
+        self.assertEqual(len(self.inert.creates), 1)
+
+    def test_allocation_rotation_requires_both_offline_owner_locks(self):
+        before = self.journal_bindings()
+        with (
+            owner(self.state / "status.json"),
+            self.assertRaisesRegex(RuntimeError, "archive_owner_already_running"),
+        ):
+            self.rotate()
+        with (
+            patch.object(Path, "home", return_value=self.state),
+            gum_account_owner(self.venue, STRATEGY_ID, self.inbox),
+            self.assertRaisesRegex(GumError, "gum_account_already_running"),
+        ):
+            self.rotate()
+        self.assertEqual(self.journal_bindings(), before)
+        self.assertFalse(self.inert.calls)
 
     def test_observe_reports_history_without_venue_reads_or_submissions(self):
         self.open_long()

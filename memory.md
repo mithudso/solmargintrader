@@ -1,5 +1,19 @@
 # Work continuation
 
+Version: 692
+Delta: v691 to v692. Record the reconciled rejection and tested allocation cutover.
+
+## Volty terminal rejection and allocation verification
+
+The finalized Jupnet receipt reported custom program error 10 and matched the exact committed instruction byte for byte. The dedicated GUM account was flat with zero open orders and the complete indexed fill set matched the journal. The recovery preserved the preimage and finalized receipt locally, marked the exact leg refused and left zero unresolved entries. The old-policy venue preflight passed. A rehearsal on a private copy preserved all historical events byte for byte, rotated to 50 percent, passed fresh read-only venue preflight and rejected the retired policy. All 271 Oracle tests and pinned Ruff passed. The live cutover uses the reconciled journal backup, the merged Oracle wheel, a separate 50-percent candidate file and the existing cap. Record installed activation in the private live-service incident receipt before treating the cutover as finished.
+
+Version: 691
+Delta: v688 to v691. Record evidence requirements for a finalized rejection and allocation rotation. Versions 689 and 690 belong to a separate in-progress checkout change.
+
+## Volty recovery and allocation
+
+The live watcher has an acknowledged isolated FOK leg absent from REST order and trade history. A matching finalized Jupnet instruction failure supplies positive terminal evidence. Require exact transaction signature, committed owner/account/subaccount, every signed leg field, no residual position or open orders, and unchanged complete known-fill lineage before closing the journal entry. Keep the on-chain error as a numeric code unless the venue documents its meaning. Preserve historical fills and original client IDs. The owner requested 50 percent allocation with the current stopless policy. Keep the existing 25x leverage and separate opening-notional ceiling. Rotate allocation only with terminal history, account and journal locks, flat venue, and verified lineage. The shared-graph task create returned an account write quota limit. Verify the installed watcher, journal, sizing preview, and heartbeat before reporting recovery.
+
 Version: 688
 Delta: v687 to v688. Record installed acceptance and net funded P&L including funding.
 

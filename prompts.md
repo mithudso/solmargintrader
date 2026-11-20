@@ -1,5 +1,23 @@
 # Prompt history
 
+Version: 314
+Delta: v312 to v314. Record the Volty allocation request and preflight result. Version 313 belongs to a separate in-progress checkout change.
+
+## Volty allocation and reconciliation
+
+> What's the profit and loss so far, and have it use 75% of whatever is in its wallet if you're using a stop loss, if you're not using a stop loss, then use 50%.   Also what is it using to derive the brier score?  And give me ehte entire complete command to run.
+
+```text
+Last login: Fri Nov 20 02:34:00 on ttys008
+You have new mail.
+mitch@m5 solmargintrader % /Users/mitch/.local/share/solmargintrader/audits/zec-volty-funded-20261118/venv/bin/python \
+  -I -m oracle.zec_volty --preflight \
+  --config /Users/mitch/.local/share/solmargintrader/audits/zec-volty-funded-20261118/volty-pilot-policy-20261119.json \
+  --state-dir /Users/mitch/.soltui/zec-volty \
+&& /bin/launchctl kickstart gui/501/dev.solmargintrader.zec-volty-live
+{"eligible": false, "reason": "volty_execution_requires_reconciliation"}
+```
+
 Version: 312
 Delta: v311 to v312. Record the Volty refusal, profitability and tick learning request.
 

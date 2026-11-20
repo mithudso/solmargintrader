@@ -79,6 +79,27 @@ Keep the journal when restarting. To pause orders, create a file named `KILL`
 in the state directory. The pause does not close positions. Leave the owner
 running to reconcile outstanding submissions.
 
+### Changing the allocation on a funded journal
+
+Allocation is part of the binding used to identify orders. Copy the current
+private policy and change only `allocation` in the candidate. After the
+watcher stops, run the allocation rotation against the existing state directory.
+The command takes both owner locks and requires a flat account, zero open
+orders, no unresolved journal entries and verified fill lineage. It preserves
+the binding and receipts of every earlier event.
+
+```sh
+python -m oracle.zec_volty --rotate-allocation-from "$VOLTY_POLICY" \
+  --config "$VOLTY_NEW_POLICY" --state-dir "$VOLTY_STATE"
+```
+
+Run preflight with the candidate policy and the same state directory before
+restarting the watcher on that policy. The separate opening-notional ceiling
+still applies to every order. If a policy change is blocked on reconciliation,
+a signed, finalized Jupnet instruction failure can establish a rejection even
+when GUM has no order history row. Match the transaction to the original
+account and every committed instruction field before recording that outcome.
+
 ## Verify trading
 
 The **ZEC Volty 25×** panel shows the host heartbeat and the current GUM mark

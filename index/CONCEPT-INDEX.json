@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-11-20T10:14:43+00:00",
+  "generatedAt": "2026-11-20T22:26:33+00:00",
   "schemaVersion": 1,
   "note": "Concepts are derived from the repo's own vocabulary \u2014 the FAMILY dict, strategy-card frontmatter, docs/trading-signals-concept-family.md, and terms verified to recur in the corpus. A concept matching no file is dropped, not kept.",
   "counts": {
@@ -194,7 +194,7 @@
         },
         {
           "path": "prompts.md",
-          "hits": 162
+          "hits": 167
         },
         {
           "path": "research/papers/coin-intelligence/doge-dogecoin.md",
@@ -603,7 +603,7 @@
         },
         {
           "path": "memory.md",
-          "hits": 520
+          "hits": 522
         },
         {
           "path": "llms/jupsol-llms.txt",
@@ -623,7 +623,7 @@
         },
         {
           "path": "prompts.md",
-          "hits": 261
+          "hits": 262
         },
         {
           "path": "llms-infra.txt",
