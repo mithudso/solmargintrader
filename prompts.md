@@ -1,5 +1,12 @@
 # Prompt history
 
+Version: 311
+Delta: v310 to v311. Record the request for more visibility into the ZEC bot.
+
+## ZEC Volty activity on Jupiter Perps
+
+> Add more visibility into what the bot is doing on the zec page of jup.ag
+
 Version: 310
 Delta: v309 to v310. Record the Volty settlement repair request.
 

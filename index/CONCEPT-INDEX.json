@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-11-20T07:51:03+00:00",
+  "generatedAt": "2026-11-20T08:33:07+00:00",
   "schemaVersion": 1,
   "note": "Concepts are derived from the repo's own vocabulary \u2014 the FAMILY dict, strategy-card frontmatter, docs/trading-signals-concept-family.md, and terms verified to recur in the corpus. A concept matching no file is dropped, not kept.",
   "counts": {
@@ -174,7 +174,7 @@
         },
         {
           "path": "memory.md",
-          "hits": 448
+          "hits": 450
         },
         {
           "path": "llms-filemap.txt",
@@ -194,7 +194,7 @@
         },
         {
           "path": "prompts.md",
-          "hits": 159
+          "hits": 163
         },
         {
           "path": "research/papers/coin-intelligence/doge-dogecoin.md",
@@ -603,7 +603,7 @@
         },
         {
           "path": "memory.md",
-          "hits": 513
+          "hits": 518
         },
         {
           "path": "llms/jupsol-llms.txt",
@@ -623,7 +623,7 @@
         },
         {
           "path": "prompts.md",
-          "hits": 259
+          "hits": 261
         },
         {
           "path": "llms-infra.txt",
@@ -852,7 +852,7 @@
         "anchor_window",
         "levels"
       ],
-      "matchingFiles": 943,
+      "matchingFiles": 944,
       "shown": 30,
       "files": [
         {
@@ -941,7 +941,7 @@
         },
         {
           "path": "extension/README.md",
-          "hits": 59
+          "hits": 60
         },
         {
           "path": "research/json/strategy_experiment/results/auxiliary.json",
@@ -1174,7 +1174,7 @@
         },
         {
           "path": "memory.md",
-          "hits": 58
+          "hits": 56
         },
         {
           "path": "research/json/tradingview-script-profiles/shard-b.jsonl",
@@ -1423,7 +1423,7 @@
         },
         {
           "path": "memory.md",
-          "hits": 57
+          "hits": 55
         },
         {
           "path": "research/json/eth-week-20261117/summary.json",
@@ -1939,7 +1939,7 @@
         "bb_breakout",
         "keltner"
       ],
-      "matchingFiles": 315,
+      "matchingFiles": 317,
       "shown": 30,
       "files": [
         {

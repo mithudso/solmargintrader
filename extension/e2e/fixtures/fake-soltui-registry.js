@@ -12,14 +12,22 @@ export const FAKE_COMMANDS = [
 export function voltyStatusFixture() {
   const at = Math.floor(Date.now() / 1000);
   return {
-    schema: 1, mode: 'live', state: 'armed', updated_at: at,
+    schema: 1, mode: 'live', state: 'checking', updated_at: at,
     signal: { event_id: 'e2e-volty-signal', side: 'sell', at, mark: 540, lower: 541, upper: 560 },
+    telemetry: {
+      market: { window_start: Math.floor(at / 300) * 300, mark_at: at, mark: 548, lower: 541, upper: 560 },
+      activity: [
+        { at, side: 'sell', mark: 540, outcome: 'preceding_order_unresolved' },
+        { at: at - 3, side: 'buy', mark: 560, outcome: 'complete' },
+      ],
+    },
     orders: [
-      { event_id: 'e2e-volty-signal', client_order_id: '7654321', side: 'sell', leg: 'open', state: 'pending',
-        order_id: null, requested_quantity: '0.02', filled_quantity: null, updated_at: at, fills: [] },
-      { event_id: 'e2e-volty-signal', client_order_id: '7654320', side: 'sell', leg: 'close', state: 'filled', order_id: '1234567890123456',
-        requested_quantity: '0.02', filled_quantity: '0.02', updated_at: at - 1,
+      { event_id: 'e2e-volty-signal', client_order_id: '7654321', side: 'sell', leg: 'close', state: 'pending',
+        settlement_pending: true, order_id: '1234567890123456', requested_quantity: '0.02', filled_quantity: '0.02', updated_at: at,
         fills: [{ signature: '0:e2e-fixture-transaction', price: '540', size: '0.02', fee: '0.00378', timestamp: at - 1 }] },
+      { event_id: 'e2e-volty-open', client_order_id: '7654320', side: 'buy', leg: 'open', state: 'filled',
+        order_id: '1234567890123455', requested_quantity: '0.02', filled_quantity: '0.02', updated_at: at - 3,
+        fills: [{ signature: '0:e2e-open-transaction', price: '560', size: '0.02', fee: '0.004', timestamp: at - 3 }] },
     ],
   };
 }

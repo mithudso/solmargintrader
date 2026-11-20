@@ -60,6 +60,24 @@ class VoltyStatusTests(unittest.TestCase):
         self.write({**expected, "private_key": "hidden", "signal": {**signal, "wallet": "hidden"},
                     "orders": [{**order, "path": "hidden", "fills": [{**fill, "internal": "hidden"}]}]})
         self.assertEqual(self.dispatch()["result"], expected)
+        market = {"window_start": self.at // 300 * 300, "mark_at": self.at,
+                  "mark": 600, "upper": 601, "lower": 580}
+        event = {"at": self.at, "side": "buy", "mark": 600, "outcome": "preceding_order_unresolved"}
+        self.write({**expected, "telemetry": {"market": {**market, "account": "hidden"},
+                                              "activity": [{**event, "plan": "hidden"}] * 8}})
+        result = self.dispatch()["result"]
+        self.assertEqual(result.pop("telemetry"), {"market": market, "activity": [event] * 6})
+        self.assertEqual(result, expected)
+        for invalid in ({**market, "lower": 602}, {**market, "mark_at": self.at + 1}):
+            self.write({**expected, "telemetry": {"market": invalid, "activity": []}})
+            self.assertEqual(self.dispatch()["result"], expected)
+        self.write({**expected, "telemetry": {"market": None, "activity": [{**event, "outcome": "private"}]}})
+        self.assertEqual(self.dispatch()["result"], expected)
+        waiting = {**order, "leg": "close", "state": "pending", "settlement_pending": True}
+        self.write({**expected, "state": "checking", "orders": [waiting]})
+        self.assertEqual(self.dispatch()["result"]["orders"], [waiting])
+        self.write({**expected, "orders": [{**order, "settlement_pending": True}]})
+        self.assertEqual(self.dispatch()["result"]["orders"], [order])
 
     def test_observe_preserves_live_history_and_unverified_order_remains_pending(self):
         order = {"event_id": "volty:1", "client_order_id": "1234", "side": "buy", "leg": "open", "state": "acknowledged",

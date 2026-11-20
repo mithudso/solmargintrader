@@ -89,6 +89,10 @@ class DeployedRunnerTests(unittest.TestCase):
 
     def open_long(self):
         self.assertEqual(self.step(1000), "armed")
+        self.assertEqual(self.status()["telemetry"]["market"], {
+            "window_start": self.now // WINDOW_SEC * WINDOW_SEC, "mark_at": self.now,
+            "mark": 1000, "upper": 1001, "lower": 999,
+        })
         self.assertEqual(self.step(1002), "checking")
         status = self.status()
         self.assertEqual(status["signal"]["side"], "buy")
@@ -96,8 +100,10 @@ class DeployedRunnerTests(unittest.TestCase):
         self.assertTrue(status["orders"][0]["client_order_id"].isdigit())
         self.assertIsNone(status["orders"][0]["order_id"])
         self.assertEqual(status["orders"][0]["fills"], [])
+        self.assertEqual(status["telemetry"]["activity"][0]["outcome"], "pending")
         self.assertEqual(self.step(1002), "armed")
         self.assertEqual(self.status()["orders"][0]["state"], "filled")
+        self.assertEqual(self.status()["telemetry"]["activity"][0]["outcome"], "complete")
 
     def test_bounded_both_directions_and_close_first_with_funded_receipts(self):
         self.open_long()
@@ -119,6 +125,7 @@ class DeployedRunnerTests(unittest.TestCase):
         self.assertEqual(close["side"], "Ask")
         self.assertEqual(self.step(998), "checking")
         self.assertEqual(len(self.inert.creates), 2)
+        self.assertTrue(self.status()["orders"][0]["settlement_pending"])
         self.inert.settle()
         self.assertEqual(self.step(998), "checking")
         self.assertEqual(len(self.inert.creates), 2)
@@ -187,6 +194,8 @@ class DeployedRunnerTests(unittest.TestCase):
         self.assertEqual(self.step(998), "blocked")
         self.assertEqual(len(self.inert.creates), 1)
         self.assertEqual(self.status()["orders"][0]["state"], "unknown")
+        activity = self.status()["telemetry"]["activity"]
+        self.assertEqual([a["outcome"] for a in activity], ["preceding_order_unresolved", "unknown"])
         self.runner = VoltyRunner(self.state, source=self, venue=self.venue, clock=self.clock)
         self.assertEqual(self.step(1000), "blocked")
         self.assertEqual(self.step(1002), "blocked")
@@ -233,6 +242,7 @@ class DeployedRunnerTests(unittest.TestCase):
         halt.touch()
         self.assertEqual(self.step(998), "paused")
         self.assertEqual(self.step(998), "paused")
+        self.assertIsNone(self.status()["telemetry"]["market"])
         self.assertEqual(len(self.inert.creates), 2)
         self.assertEqual(self.status()["orders"][0]["state"], "filled")
 
