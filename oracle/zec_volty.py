@@ -15,14 +15,14 @@ import tempfile
 import threading
 import time
 from contextlib import closing, nullcontext
-from dataclasses import asdict, dataclass
+from dataclasses import asdict, dataclass, replace
 from decimal import Decimal
 from pathlib import Path
 
 from .cli import owner
 from .gum_orders import GumError, GumOrders, gum_account_owner
 from .gum_signer import load_signer
-from .gum_webhook_orders import client_order_id, process_one, recover_planning
+from .gum_webhook_orders import VENUE, client_order_id, process_one, recover_planning
 from .webhook_orders import database
 from .zec_volty_signal import (
     MARK_MAX_AGE_SEC,
@@ -86,8 +86,9 @@ def _unique_policy_fields(pairs: list[tuple[str, object]]) -> dict:
     return fields
 
 
-def _private_state(path: Path) -> Path:
-    path.mkdir(parents=True, exist_ok=True, mode=0o700)
+def _private_state(path: Path, *, create: bool = True) -> Path:
+    if create:
+        path.mkdir(parents=True, exist_ok=True, mode=0o700)
     info = path.lstat()
     if not stat.S_ISDIR(info.st_mode) or info.st_uid != os.getuid() or info.st_mode & 0o077:
         raise ValueError("state_directory_not_private")
@@ -107,10 +108,14 @@ def _write_status(path: Path, data: dict) -> None:
         Path(temporary).unlink(missing_ok=True)
 
 
-def _read_inbox(path: Path):
+def _check_private_inbox(path: Path) -> None:
     info = path.lstat()
     if not stat.S_ISREG(info.st_mode) or info.st_uid != os.getuid() or info.st_mode & 0o077:
         raise ValueError("live_inbox_not_private")
+
+
+def _read_inbox(path: Path):
+    _check_private_inbox(path)
     connection = sqlite3.connect(f"{path.resolve().as_uri()}?mode=ro", uri=True)
     connection.row_factory = sqlite3.Row
     return closing(connection)
@@ -118,11 +123,49 @@ def _read_inbox(path: Path):
 
 def _leg_rows(db, *, limit=None):
     if limit is None:
-        return db.execute("SELECT event_id,status,plan,timestamp FROM signals WHERE plan IS NOT NULL ORDER BY rowid")
+        return db.execute(
+            "SELECT event_id,portfolio_id,plan FROM signals WHERE plan IS NOT NULL ORDER BY rowid"
+        )
     return db.execute(
         "SELECT event_id,status,plan,timestamp FROM signals WHERE plan IS NOT NULL ORDER BY rowid DESC LIMIT ?",
         (limit,),
     )
+
+
+def _verify_inbox_binding(db, binding: str) -> None:
+    policy = db.execute("SELECT binding FROM volty_policy WHERE slot=1").fetchone()
+    if policy is None or policy["binding"] != binding:
+        raise GumError("volty_live_inbox_policy_changed")
+    retired = db.execute(
+        "SELECT 1 FROM sqlite_schema WHERE type='table' AND name='volty_retired_events'"
+    ).fetchone()
+    if retired is None:
+        foreign = db.execute(
+            "SELECT 1 FROM signals WHERE mode IS NOT 'live' OR portfolio_id IS NOT ? LIMIT 1",
+            (binding,),
+        ).fetchone()
+    else:
+        foreign = db.execute(
+            """SELECT 1 FROM signals AS s LEFT JOIN volty_retired_events AS r USING (event_id)
+                WHERE s.mode IS NOT 'live'
+                   OR (r.event_id IS NULL AND s.portfolio_id IS NOT ?)
+                   OR (r.event_id IS NOT NULL AND (
+                       s.portfolio_id IS NOT r.binding
+                       OR s.status NOT IN ('complete','expired','refused','cancelled')
+                   )) LIMIT 1""",
+            (binding,),
+        ).fetchone()
+    if foreign is not None:
+        raise GumError("volty_live_inbox_binding_mismatch")
+
+
+def _require_idle_inbox(db, binding: str) -> None:
+    _verify_inbox_binding(db, binding)
+    outstanding = db.execute(
+        "SELECT 1 FROM signals WHERE status NOT IN ('complete','expired','refused','cancelled') LIMIT 1"
+    ).fetchone()
+    if outstanding is not None:
+        raise GumError("volty_execution_requires_reconciliation")
 
 
 def _orders(path: Path) -> list[dict]:
@@ -222,14 +265,7 @@ class VoltyVenue(GumOrders):
         with database(self.path) as db, db:
             db.execute("CREATE TABLE IF NOT EXISTS volty_policy (slot INTEGER PRIMARY KEY CHECK (slot=1), binding TEXT NOT NULL)")
             db.execute("INSERT OR IGNORE INTO volty_policy (slot,binding) VALUES (1,?)", (self.binding,))
-            if db.execute("SELECT binding FROM volty_policy WHERE slot=1").fetchone()[0] != self.binding:
-                raise GumError("volty_live_inbox_policy_changed")
-            foreign = db.execute(
-                "SELECT 1 FROM signals WHERE mode IS NOT 'live' OR portfolio_id IS NOT ? LIMIT 1",
-                (self.binding,),
-            ).fetchone()
-            if foreign is not None:
-                raise GumError("volty_live_inbox_binding_mismatch")
+            _verify_inbox_binding(db, self.binding)
             db.execute(
                 "CREATE TABLE IF NOT EXISTS volty_inputs ("
                 "event_id TEXT PRIMARY KEY, observation TEXT NOT NULL, skip_reason TEXT)"
@@ -240,22 +276,37 @@ class VoltyVenue(GumOrders):
         filled_orders = set()
         if os.path.lexists(self.path):
             with _read_inbox(self.path) as db:
+                _verify_inbox_binding(db, self.binding)
                 for row in _leg_rows(db):
                     state = json.loads(row["plan"])
-                    if state["binding"] != self.binding:
+                    binding = row["portfolio_id"]
+                    if state["binding"] != binding or state["venue"] != VENUE:
                         raise GumError("volty_live_inbox_binding_mismatch")
                     for index, leg in enumerate(state["legs"]):
                         if leg["state"] != "filled":
                             continue
+                        plan = leg["plan"]
                         receipt = leg["receipt"]
+                        fill_id = (receipt["order_id"], receipt["client_order_id"])
                         if (
-                            leg["client_order_id"] != client_order_id(self.binding, row["event_id"], index)
+                            leg["client_order_id"] != client_order_id(binding, row["event_id"], index)
                             or receipt["client_order_id"] != leg["client_order_id"]
                             or receipt["status"] != "filled"
-                            or receipt["account_id"] != self.account_id
+                            or plan["binding"] != binding
+                            or fill_id in filled_orders
+                            or any(
+                                values[field] != expected
+                                for values in (plan, receipt)
+                                for field, expected in (
+                                    ("owner", self.owner),
+                                    ("account_id", self.account_id),
+                                    ("subaccount_id", self.subaccount_id),
+                                    ("symbol", "ZEC"),
+                                )
+                            )
                         ):
                             raise GumError("volty_fill_lineage_unverified")
-                        filled_orders.add((receipt["order_id"], receipt["client_order_id"]))
+                        filled_orders.add(fill_id)
                         expected_side = receipt["position"]["side"]
                         expected_size = Decimal(receipt["position"]["size"])
         if (
@@ -501,28 +552,77 @@ def preflight(venue: VoltyVenue) -> dict:
     """Check both opening sides through the exact planner using only venue reads."""
     if os.path.lexists(venue.path):
         with _read_inbox(venue.path) as db:
-            configuration = db.execute("SELECT binding FROM volty_policy WHERE slot=1").fetchone()
-            if configuration is None or configuration["binding"] != venue.binding:
-                raise GumError("volty_live_inbox_policy_changed")
-            if db.execute(
-                "SELECT 1 FROM signals WHERE status IN ('queued','planning','submitting','unknown','pending') LIMIT 1"
-            ).fetchone() is not None:
-                raise GumError("volty_execution_requires_reconciliation")
-    account = venue.preflight()
-    venue.verify_lineage(account["position"])
-    if account["position"]["side"] is not None:
+            _require_idle_inbox(db, venue.binding)
+    return _opening_preview(venue, venue)
+
+
+def _verify_flat_lineage(venue: VoltyVenue, position: dict) -> None:
+    venue.verify_lineage(position)
+    if position["side"] is not None:
         raise GumError("volty_open_position_requires_reconciliation")
-    plans = [venue.plan("ZEC", side, venue.account_id) for side in ("buy", "sell")]
+
+
+def _opening_preview(candidate: VoltyVenue, current: VoltyVenue) -> dict:
+    # During rotation the candidate supplies economics, while the current
+    # binding continues to authorize the immutable journal and fill lineage.
+    account = candidate.preflight()
+    _verify_flat_lineage(current, account["position"])
+    plans = []
+    for side in ("buy", "sell"):
+        plan = GumOrders.plan(candidate, "ZEC", side, candidate.account_id)
+        _verify_flat_lineage(current, plan["position_before"])
+        plans.append({key: plan[key] for key in ("side", "quantity", "notional_cap")})
     return {
         "eligible": True,
         "selected_leverage": account["selected_leverage"],
-        "max_order_notional_usdc": venue.max_order_notional_usdc.to_eng_string(),
+        "max_order_notional_usdc": candidate.max_order_notional_usdc.to_eng_string(),
         "free_usdc": account["free_usdc"],
-        "preview": [
-            {key: plan[key] for key in ("side", "quantity", "notional_cap")}
-            for plan in plans
-        ],
+        "preview": plans,
     }
+
+
+def rotate_allocation(state_dir: Path, old_policy: LivePolicy, new_policy: LivePolicy, *, call=None) -> dict:
+    """Promote a new allocation only on an offline, reconciled Volty account."""
+    if replace(old_policy, allocation=new_policy.allocation) != new_policy:
+        raise GumError("volty_rotation_requires_allocation_only_change")
+    state_dir = _private_state(state_dir, create=False)
+    inbox = state_dir / "live.sqlite3"
+    _check_private_inbox(inbox)
+    current = VoltyVenue(old_policy, inbox, call=call)
+    candidate = VoltyVenue(new_policy, inbox, call=call)
+    if current.allocation == candidate.allocation:
+        raise GumError("volty_rotation_requires_new_allocation")
+
+    with owner(state_dir / "status.json"), gum_account_owner(current, STRATEGY_ID, inbox):
+        with _read_inbox(inbox) as db:
+            _require_idle_inbox(db, current.binding)
+        preview = _opening_preview(candidate, current)
+        _check_private_inbox(inbox)
+        uri = f"{inbox.as_uri()}?mode=rw"
+        with closing(sqlite3.connect(uri, uri=True, timeout=5)) as db, db:
+            db.row_factory = sqlite3.Row
+            db.execute("BEGIN IMMEDIATE")
+            _require_idle_inbox(db, current.binding)
+            db.execute(
+                "CREATE TABLE IF NOT EXISTS volty_retired_events "
+                "(event_id TEXT PRIMARY KEY, binding TEXT NOT NULL)"
+            )
+            db.execute(
+                """INSERT INTO volty_retired_events (event_id,binding)
+                   SELECT event_id,portfolio_id FROM signals AS s
+                   WHERE s.portfolio_id=? AND NOT EXISTS (
+                       SELECT 1 FROM volty_retired_events AS r WHERE r.event_id=s.event_id
+                   )""",
+                (current.binding,),
+            )
+            updated = db.execute(
+                "UPDATE volty_policy SET binding=? WHERE slot=1 AND binding=?",
+                (candidate.binding, current.binding),
+            )
+            if updated.rowcount != 1:
+                raise GumError("volty_live_inbox_policy_changed")
+            _require_idle_inbox(db, candidate.binding)
+    return {**preview, "allocation": str(candidate.allocation)}
 
 
 def main(argv=None) -> int:
@@ -530,27 +630,35 @@ def main(argv=None) -> int:
     mode = parser.add_mutually_exclusive_group()
     mode.add_argument("--live", action="store_true")
     mode.add_argument("--preflight", action="store_true")
+    mode.add_argument("--rotate-allocation-from", type=Path, metavar="OLD_CONFIG")
     parser.add_argument("--config", type=Path)
     parser.add_argument("--watch", action="store_true")
     parser.add_argument("--interval", type=float, default=2)
     parser.add_argument("--state-dir", type=Path, default=Path.home() / ".soltui" / "zec-volty")
     args = parser.parse_args(argv)
-    if (args.live or args.preflight) != (args.config is not None):
-        parser.error("--config is required with --live or --preflight")
+    rotating = args.rotate_allocation_from is not None
+    if (args.live or args.preflight or rotating) != (args.config is not None):
+        parser.error("--config is required with --live, --preflight, or --rotate-allocation-from")
     if args.live and not args.watch:
         parser.error("--live requires --watch")
     if args.preflight and args.watch:
         parser.error("--preflight runs once")
+    if rotating and args.watch:
+        parser.error("--rotate-allocation-from requires an offline watcher")
     if not math.isfinite(args.interval) or not 0.5 <= args.interval <= 10:
         parser.error("interval must be between 0.5 and 10 seconds")
-    if args.preflight:
+    if args.preflight or rotating:
         try:
             policy = LivePolicy.load(args.config)
-            result = preflight(VoltyVenue(policy, args.state_dir / "live.sqlite3"))
+            if rotating:
+                old_policy = LivePolicy.load(args.rotate_allocation_from)
+                result = rotate_allocation(args.state_dir, old_policy, policy)
+            else:
+                result = preflight(VoltyVenue(policy, args.state_dir / "live.sqlite3"))
         except GumError as error:
             print(json.dumps({"eligible": False, "reason": str(error)}))
             return 2
-        except (OSError, ValueError, TypeError, sqlite3.Error):
+        except (OSError, ValueError, TypeError, RuntimeError, sqlite3.Error):
             print(json.dumps({"eligible": False, "reason": "volty_policy_or_inbox_unavailable"}))
             return 2
         print(json.dumps(result))
