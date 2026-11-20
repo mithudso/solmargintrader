@@ -1,11 +1,11 @@
 {
-  "generatedAt": "2026-11-20T10:04:16+00:00",
+  "generatedAt": "2026-11-20T10:14:43+00:00",
   "schemaVersion": 1,
   "repoRoot": "~/dev/solmargintrader",
-  "commit": "cc3988f",
+  "commit": "c081923",
   "counts": {
     "files": 4199,
-    "bytes": 212186798,
+    "bytes": 212187877,
     "byKind": {
       "strategy-card": 1478,
       "doc": 845,
@@ -79709,11 +79709,11 @@
       "ext": ".md",
       "kind": "doc",
       "title": "Work continuation",
-      "summary": "Version: 687 Delta: v686 to v687. Record the subsequent filled close and extend refusal diagnostics to submission preflight. The funded pilot closed its second round trip at 09:58 UTC on 2026-11-20. GUM confirmed the long close and the journal recorded a preflight refusal on the new short leg. The two completed round trips lost 0.137085 USDC after trading fees and before funding.",
+      "summary": "Version: 688 Delta: v687 to v688. Record installed acceptance and net funded P&L including funding. PR 348 merged as `c08192322622da7d62239e42342c26aebbe44f87` after 15 active checks passed. The funded Volty watcher resumed armed after a GUM lineage check. The separate launchd shadow learner processed 39 of 39 durable GUM ticks, and one-minute training advanced from one to two examples.",
       "summarySource": "opening-prose",
-      "bytes": 914580,
-      "lines": 4841,
-      "sha1": "cae5239198e387df2cf389f03e2147e8855ed909",
+      "bytes": 915659,
+      "lines": 4848,
+      "sha1": "4648b023a81f52f4e37bd909f7ee9f1370e9a220",
       "symbols": [],
       "imports": [],
       "internalImports": [],
@@ -124676,5 +124676,5 @@
       "frontmatter": {}
     }
   ],
-  "textSha256": "3bb21ec6cc81be9ce17de79f5b9637d99dba05445d56002607f82d5ca4df6055"
+  "textSha256": "df126c56f09529f09bfeb6f83279bdb85d1a7a882b44eb9c60881fdc849c336e"
 }
