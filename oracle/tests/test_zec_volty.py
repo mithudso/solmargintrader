@@ -3,9 +3,10 @@
 from __future__ import annotations
 
 import json
+import sqlite3
 import tempfile
 import unittest
-from contextlib import redirect_stdout
+from contextlib import closing, redirect_stdout
 from dataclasses import replace
 from decimal import Decimal
 from io import StringIO
@@ -251,6 +252,18 @@ class DeployedRunnerTests(unittest.TestCase):
         self.assertEqual(len(self.inert.creates), 2)
         self.assertEqual(self.step(1002), "checking")
         self.assertEqual(self.inert.creates[-1]["side"], "Bid")
+
+    def test_learning_ticks_are_durable_and_dedupe_after_restart(self):
+        self.assertEqual(self.step(1000), "armed")
+        self.assertEqual(self.runner.step(), "armed")
+        self.runner = VoltyRunner(self.state, source=self, venue=self.venue, clock=self.clock)
+        self.assertEqual(self.runner.step(), "armed")
+        self.assertEqual(self.step(1000.4), "armed")
+        with closing(sqlite3.connect(self.state / "learning-ticks.sqlite3")) as db:
+            observed = db.execute("SELECT mark_at,received_ms,mark FROM ticks ORDER BY mark_at").fetchall()
+        self.assertEqual(observed, [(self.now - 1, (self.now - 1) * 1000, 1000), (self.now, self.now * 1000, 1000.4)])
+        self.assertEqual(self.status()["telemetry"]["capture"], "recording")
+        self.assertFalse(self.inert.creates)
 
     def test_preflight_requires_exact_venue_leverage_funding_and_both_valid_plans(self):
         preview = preflight(self.venue)

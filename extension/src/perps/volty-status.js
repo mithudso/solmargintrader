@@ -4,6 +4,7 @@ const POLL_MS = 5000;
 const MAX_AGE_SECONDS = 60;
 const MAX_MARK_AGE_SECONDS = 20;
 const WINDOW_SECONDS = 300;
+const LEARNING_HEARTBEAT_SECONDS = 20;
 const OWNER_STATES = Object.freeze({
   watching: 'Watching for signals', armed: 'Armed', paused: 'Entries paused',
   'data-unavailable': 'Waiting for fresh GUM data', checking: 'Reconciling with GUM',
@@ -73,6 +74,8 @@ export function mountVoltyStatus(section, { call = soltui, clock = Date.now } = 
   const signal = section.querySelector('[data-volty-signal]');
   const activityNote = section.querySelector('[data-volty-activity-note]');
   const activity = section.querySelector('[data-volty-activity]');
+  const learning = section.querySelector('[data-volty-learning]');
+  const horizons = section.querySelector('[data-volty-horizons]');
   const orderTitle = section.querySelector('[data-volty-orders-title]');
   const note = section.querySelector('[data-volty-orders-note]');
   const orders = section.querySelector('[data-volty-orders]');
@@ -82,6 +85,7 @@ export function mountVoltyStatus(section, { call = soltui, clock = Date.now } = 
   let busy = false;
   let renderedOrders = '';
   let renderedActivity = '';
+  let renderedLearning = '';
 
   function render() {
     const now = clock() / 1000;
@@ -101,6 +105,24 @@ export function mountVoltyStatus(section, { call = soltui, clock = Date.now } = 
         : STATE_NOTES[current.state]
       : current ? 'Showing historical signals and order receipts.' : '');
     const telemetry = current?.telemetry;
+    const learner = current?.learning;
+    const learningStatus = !learner ? 'Unavailable'
+      : !fresh || now - learner.updated_at > LEARNING_HEARTBEAT_SECONDS ? 'Historical'
+        : ({ warming: 'Warming up', learning: 'Online', stale: 'Waiting for fresh ticks', waiting: 'Waiting for first tick',
+          unavailable: 'Unavailable' }[learner.state] ?? 'Unavailable');
+    const captureStatus = fresh && telemetry?.capture === 'unavailable' ? ' · Tick capture unavailable' : '';
+    const counts = learner ? ` · ${learner.ticks.toLocaleString('en-US')} ticks` : '';
+    setText(learning, `Tick learning · ${learningStatus}${counts}${captureStatus}`);
+    const learningRows = learner?.horizons ?? [];
+    const learningRevision = JSON.stringify(learningRows);
+    if (learningRevision !== renderedLearning) {
+      horizons.replaceChildren(...learningRows.map(h => el('li', { class: 'volty-activity' },
+        el('strong', { text: `${h.seconds / 60}m · ${h.trained} trained · ${h.pending} pending` }),
+        el('span', { class: 'muted', text: (h.candidate_brier === null ? ''
+          : ` · Brier ${h.candidate_brier.toFixed(3)} vs ${h.frequency_brier.toFixed(3)} baseline`)
+          + (h.expired ? ` · ${h.expired} expired` : '') + (h.capacity_drops ? ` · ${h.capacity_drops} at capacity` : '') }))));
+      renderedLearning = learningRevision;
+    }
     const market = telemetry?.market;
     const activeMarket = fresh && market && Number.isFinite(market.mark_at) && Number.isFinite(market.window_start)
       && now - market.mark_at <= MAX_MARK_AGE_SECONDS && now >= market.window_start && now < market.window_start + WINDOW_SECONDS;

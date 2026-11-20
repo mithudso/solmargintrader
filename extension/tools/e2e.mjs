@@ -33,7 +33,7 @@ import { execFile } from 'node:child_process';
 import { assertAllowedMessage, assertDisarmed, assertSoltuiCallAllowed } from '../e2e/lib/guard.mjs';
 import { isolateTargets } from '../e2e/lib/isolation.mjs';
 import { installHost } from '../e2e/lib/soltui-host.mjs';
-import { voltyStatusFixture } from '../e2e/fixtures/fake-soltui-registry.js';
+import { voltyLearningFixture, voltyStatusFixture } from '../e2e/fixtures/fake-soltui-registry.js';
 import { verifyDashboardWorkflows } from '../e2e/lib/dashboard-workspace.mjs';
 import { verifySignalDesk } from '../e2e/lib/signal-desk.mjs';
 
@@ -490,6 +490,7 @@ try {
           source: `globalThis.voltyClockOffset = 0; const realVoltyNow = Date.now; Date.now = () => realVoltyNow() + globalThis.voltyClockOffset;`,
         }, page.sessionId);
         fs.writeFileSync(path.join(host.env.SOLTUI_CONFIG_DIR, 'zec-volty', 'status.json'), JSON.stringify(voltyStatusFixture()));
+        fs.writeFileSync(path.join(host.env.SOLTUI_CONFIG_DIR, 'zec-volty', 'learning-status.json'), JSON.stringify(voltyLearningFixture()), { mode: 0o600 });
         await browser.call('Page.reload', {}, page.sessionId);
         const rendered = await browser.waitFor(() => page.ev(`(() => {
           const section = document.getElementById('volty');
@@ -500,7 +501,8 @@ try {
         assert(rendered, `ZEC Volty observation did not render on the ${side} route`);
         for (const text of ['$560.00', '$541.00', 'Last signal Short · Skipped · prior order unresolved',
           'Waiting for collateral to settle', 'Close long · Filled · awaiting collateral settlement',
-          'Open long · Confirmed fill', '0:e2e-fixture-transaction', 'client order 7654321']) {
+          'Open long · Confirmed fill', '0:e2e-fixture-transaction', 'client order 7654321',
+          'Tick learning · Online · 120 ticks', '1m · 30 trained · 45 pending', 'Brier 0.550 vs 0.660 baseline']) {
           assert(rendered.text.includes(text), `missing Volty evidence: ${text}`);
         }
         eq(rendered.controls, 0, 'Volty verification section must be read-only');

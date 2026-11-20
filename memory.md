@@ -1,5 +1,26 @@
 # Work continuation
 
+Version: 687
+Delta: v686 to v687. Record the subsequent filled close and extend refusal diagnostics to submission preflight.
+
+## Volty submission preflight
+
+The funded pilot closed its second round trip at 09:58 UTC on 2026-11-20. GUM confirmed the long close and the journal recorded a preflight refusal on the new short leg. The two completed round trips lost 0.137085 USDC after trading fees and before funding. Both planning and definitely-unsent preflight refusals now preserve allowlisted diagnostic codes. Keep ambiguous submissions in reconciliation and leave the learner in shadow until prospective after-cost results support a trading change.
+
+Version: 686
+Delta: v685 to v686. Record tested tick capture, exact learner reuse and browser acceptance scope.
+
+## Volty tick learner verification
+
+The watcher durably captures each distinct accepted GUM mark in a separate private SQLite file. The Node shadow worker applies the same live Oracle model code and six horizons used by Chrome, with a distinct GUM identity and per-tick cadence. A fixture verified delayed training, exact checkpoint replay and no duplicate training after restart. The browser shows tick and outcome counts and paired Brier scores. Refused plans retain allowlisted diagnostics without retrying a signal. Deploy from the merged tree, confirm live tick counts and trained outcomes advance, and bind acceptance to the installed runner and browser. One closed funded round trip is insufficient to verify profitable operation. See TASK-2699.
+
+Version: 685
+Delta: v684 to v685. Record the Volty refusal investigation and tick learner scope.
+
+## Volty planning diagnostics and tick learning
+
+TASK-2699 investigates a planning refusal with zero execution legs. The journal saved a generic reason and no contemporaneous quote/account proof. A separate fresh signal filled later. The funded pilot has one closed round trip and negative after-fee performance on that trade. The historical paper preset differs from the funded policy and cannot establish a live edge. Record bounded machine diagnostics on future refusals. Feed each distinct fresh GUM tick from the existing owner to the same live Oracle model used by the extension. Use a separate source identity, causal delayed labels and independent shadow metrics before funding any learned strategy.
+
 Version: 684
 Delta: v683 to v684. Record the validated browser and native activity view.
 

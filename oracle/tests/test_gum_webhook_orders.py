@@ -336,11 +336,21 @@ class GumWebhookOrderTests(unittest.TestCase):
         )
 
     def test_known_unsent_adapter_refusal_does_not_create_a_permanent_halt(self):
-        self.enqueue()
-        self.venue.submit_error = GumError("gum_plan_expired")
-        self.assertEqual(self.process(), "refused")
-        self.assertEqual(self.state()["legs"][0]["state"], "refused")
-        self.assertEqual(self.process(), "idle")
+        for index, (code, expected) in enumerate((
+            ("gum_price_cap_widened", "gum_price_cap_widened"),
+            ("private upstream details", "gum_check_failed"),
+        )):
+            event_id = f"event-{index}"
+            self.enqueue(event_id)
+            self.venue.submit_error = GumError(code)
+            self.assertEqual(self.process(), "refused")
+            with database(self.path) as db:
+                row = db.execute("SELECT plan,result FROM signals WHERE event_id=?", (event_id,)).fetchone()
+            self.assertEqual(json.loads(row["plan"])["legs"][0]["state"], "refused")
+            self.assertEqual(json.loads(row["result"]), {
+                "reason": "gum_submission_preflight_refused", "diagnostic": expected,
+            })
+            self.assertEqual(self.process(), "idle")
         self.assertFalse(self.venue.reconciliations)
 
     def test_ambiguous_adapter_error_is_not_a_known_unsent_refusal(self):
@@ -569,6 +579,22 @@ class GumWebhookOrderTests(unittest.TestCase):
         self.enqueue()
         checks = iter((True, False))
         self.assertEqual(self.process(enabled=lambda: next(checks)), "refused")
+        self.assertFalse(self.venue.submissions)
+
+    def test_planning_refusal_records_only_allowlisted_diagnostics(self):
+        for index, (error, expected) in enumerate((
+            (GumError("gum_stale_market"), "gum_stale_market"),
+            (GumError("private upstream details"), "gum_check_failed"),
+            (ValueError("private parser details"), "plan_validation_failed"),
+        )):
+            event_id = f"event-{index}"
+            self.enqueue(event_id)
+            self.venue.plan_error = error
+            self.assertEqual(self.process(), "refused")
+            with database(self.path) as db:
+                row = db.execute("SELECT plan,result FROM signals WHERE event_id=?", (event_id,)).fetchone()
+            self.assertEqual(json.loads(row["plan"])["legs"], [])
+            self.assertEqual(json.loads(row["result"]), {"reason": "gum_plan_unavailable", "diagnostic": expected})
         self.assertFalse(self.venue.submissions)
 
     def test_position_changed_after_close_halts_instead_of_closing_again(self):

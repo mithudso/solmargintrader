@@ -1,5 +1,12 @@
 # Prompt history
 
+Version: 312
+Delta: v311 to v312. Record the Volty refusal, profitability and tick learning request.
+
+## Volty planning diagnostics and tick learning
+
+> investigate the failure, and get the bot running profitablyl. Make sure the machine learning is turned on exactly like for the other part of the chrome extension. Eveyr tick should add to the training set and better undresatnd the potterns involved.
+
 Version: 311
 Delta: v310 to v311. Record the request for more visibility into the ZEC bot.
 

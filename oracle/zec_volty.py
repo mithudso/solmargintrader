@@ -288,6 +288,9 @@ class VoltyRunner:
         self.window_start = None
         self.mark_at = None
         self.observation = None
+        self.tick_path = state_dir / "learning-ticks.sqlite3"
+        self.tick_watermark = None
+        self.capture = "waiting"
         self.checked_owner = False
         if venue is not None:
             venue.verify_binding()
@@ -321,7 +324,7 @@ class VoltyRunner:
                 "updated_at": now,
                 "signal": None if self.last_signal is None else asdict(self.last_signal),
                 "orders": _orders(self.inbox),
-                "telemetry": {"market": market, "activity": activity},
+                "telemetry": {"market": market, "activity": activity, "capture": self.capture},
             },
         )
         return state
@@ -368,7 +371,8 @@ class VoltyRunner:
 
     def _poll(self) -> VoltySignal | None:
         observation = self.source.read()
-        event = self.engine.observe(observation, now=self.clock())
+        received = self.clock()
+        event = self.engine.observe(observation, now=received)
         self.observation = observation
         self.window_start = observation.window_start
         self.mark_at = observation.mark_at
@@ -378,7 +382,37 @@ class VoltyRunner:
             # pending order still reconciles, but its old direction cannot open.
             if self.active is not None and event.side != self.active.side:
                 self.active = None
+        self._capture_tick(observation, int(received * 1000))
         return event
+
+    def _capture_tick(self, observation, received_ms: int) -> None:
+        if self.tick_watermark is not None and observation.mark_at <= self.tick_watermark:
+            return
+        try:
+            with os.fdopen(os.open(self.tick_path, os.O_CREAT | os.O_NOFOLLOW | os.O_NONBLOCK | os.O_WRONLY, 0o600), "wb") as handle:
+                info = os.fstat(handle.fileno())
+                if not stat.S_ISREG(info.st_mode) or info.st_uid != os.getuid() or info.st_mode & 0o077:
+                    raise ValueError("volty_ticks_not_private")
+            with closing(sqlite3.connect(self.tick_path, timeout=0.05)) as db, db:
+                if self.tick_watermark is None:
+                    db.execute("PRAGMA journal_mode=WAL")
+                    db.execute("""CREATE TABLE IF NOT EXISTS ticks (
+                        mark_at INTEGER PRIMARY KEY, received_ms INTEGER NOT NULL,
+                        mark REAL NOT NULL, lower REAL NOT NULL, upper REAL NOT NULL, window_start INTEGER NOT NULL
+                    )""")
+                latest = db.execute("SELECT mark_at,received_ms FROM ticks ORDER BY mark_at DESC LIMIT 1").fetchone()
+                if latest is None or observation.mark_at > latest[0]:
+                    if latest and received_ms <= latest[1]:
+                        raise ValueError("volty_receipt_clock_regressed")
+                    db.execute("INSERT INTO ticks VALUES (?,?,?,?,?,?)", (
+                        observation.mark_at, received_ms, observation.mark, observation.lower,
+                        observation.upper, observation.window_start,
+                    ))
+            self.tick_watermark = max(observation.mark_at, latest[0]) if latest else observation.mark_at
+            self.capture = "recording"
+        except (OSError, ValueError, sqlite3.Error):
+            # An analytical write cannot interrupt existing funded lifecycle checks.
+            self.capture = "unavailable"
 
     def step(self) -> str:
         if self._paused():
