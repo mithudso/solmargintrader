@@ -1,11 +1,18 @@
 # Work continuation
 
+Version: 688
+Delta: v687 to v688. Record installed acceptance and net funded P&L including funding.
+
+## Volty tick learner deployment
+
+PR 348 merged as `c08192322622da7d62239e42342c26aebbe44f87` after 15 active checks passed. The funded Volty watcher resumed armed after a GUM lineage check. The separate launchd shadow learner processed 39 of 39 durable GUM ticks, and one-minute training advanced from one to two examples. The installed Chrome Beta ZEC panel later showed 57 ticks, 20 one-minute examples and all six horizons. Independent acceptance matched the installed Python, Node, native bridge and browser files to the merge. GUM confirmed a flat account and zero unresolved signals. The two closed trades produced a net loss after fees and funding. The historical generic refusals cannot identify the rejected check. Future planning and definitely-unsent preflight refusals preserve safe codes. Prospective after-cost profitability remains unproven. Keep the learner in shadow and evaluate executable prices, fees, funding and missed fills before changing funded signals. See TASK-2699.
+
 Version: 687
 Delta: v686 to v687. Record the subsequent filled close and extend refusal diagnostics to submission preflight.
 
 ## Volty submission preflight
 
-The funded pilot closed its second round trip at 09:58 UTC on 2026-11-20. GUM confirmed the long close and the journal recorded a preflight refusal on the new short leg. The two completed round trips lost 0.137085 USDC after trading fees and before funding. Both planning and definitely-unsent preflight refusals now preserve allowlisted diagnostic codes. Keep ambiguous submissions in reconciliation and leave the learner in shadow until prospective after-cost results support a trading change.
+The funded pilot closed its second round trip at 09:58 UTC on 2026-11-20. GUM confirmed the long close and the journal recorded a preflight refusal on the new short leg. The two completed round trips produced a net loss after trading fees. Both planning and definitely-unsent preflight refusals now preserve allowlisted diagnostic codes. Keep ambiguous submissions in reconciliation and leave the learner in shadow until prospective after-cost results support a trading change.
 
 Version: 686
 Delta: v685 to v686. Record tested tick capture, exact learner reuse and browser acceptance scope.
