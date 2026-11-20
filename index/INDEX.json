@@ -1,11 +1,11 @@
 {
-  "generatedAt": "2026-11-19T13:01:42+00:00",
+  "generatedAt": "2026-11-20T07:51:03+00:00",
   "schemaVersion": 1,
   "repoRoot": "~/dev/solmargintrader",
-  "commit": "c4f5d54",
+  "commit": "369432f",
   "counts": {
     "files": 4198,
-    "bytes": 212143728,
+    "bytes": 212147742,
     "byKind": {
       "strategy-card": 1478,
       "doc": 845,
@@ -79674,11 +79674,11 @@
       "ext": ".md",
       "kind": "doc",
       "title": "Work continuation",
-      "summary": "Version: 680 Delta: v679 to v680. Record the CI regeneration and installed-host checks. PR 345 covers TASK-2688. The local Chrome suite also passed 28 of 28 checks with the real native host. The first CI run detected stale offline source indexes and operation inventories after the extension version bump. Regenerate both from tracked files and verify the new PR tip.",
+      "summary": "Version: 682 Delta: v681 to v682. Record the tested settlement patch and live read-only rehearsal. GumOrders now confirms native parent cash to the same cent as both display balances before using the additional precision. It retains a full-precision baseline for new closes and reads the recorded baseline for existing closes.",
       "summarySource": "opening-prose",
-      "bytes": 909575,
-      "lines": 4792,
-      "sha1": "3f7b257e7425b314896ae6299f113c903f1ea9f1",
+      "bytes": 910984,
+      "lines": 4806,
+      "sha1": "96381c941d03a6ef2813356800eca2212d16761b",
       "symbols": [],
       "imports": [],
       "internalImports": [],
@@ -80757,9 +80757,9 @@
       "title": "gum_orders",
       "summary": "Exact ZEC isolated-perpetual orders through the official GUM JTX Action API. Order messages are constructed locally from checked economics. This module never signs a server-supplied transaction, creates an account, deposits, or retries a write. The optional signer signs bytes and returns 64 Ed25519 signature bytes. The binary layout follows jupnet/gum-perp-sdk 0.2.0 action.rs/request.rs.",
       "summarySource": "docstring",
-      "bytes": 42764,
-      "lines": 1070,
-      "sha1": "fceeb70b639a6f7ed8015a3115894c320e292f13",
+      "bytes": 43600,
+      "lines": 1087,
+      "sha1": "6ae998f8f90f1db7c8171d9d21196db91d051a2f",
       "symbols": [
         "BASE_URL",
         "PROGRAM_ID",
@@ -81509,9 +81509,9 @@
       "title": "Generated with official gum-perp-sdk 0.2.0 SignableTradingRequest::message_to_sign",
       "summary": "",
       "summarySource": "none",
-      "bytes": 23759,
-      "lines": 578,
-      "sha1": "454a6bfd45ed6ca055f16c8f8663f0f96d0a2037",
+      "bytes": 25276,
+      "lines": 609,
+      "sha1": "0a50fa6db1c5d69a27957ed342cb6ec5f2d62baf",
       "symbols": [
         "OWNER",
         "ACCOUNT",
@@ -84144,11 +84144,11 @@
       "ext": ".md",
       "kind": "doc",
       "title": "Prompt history",
-      "summary": "Version: 309 Delta: v308 to v309. Record the stalled ZEC Perps chart report. Version: 309",
+      "summary": "Version: 310 Delta: v309 to v310. Record the Volty settlement repair request. The request follows a bot health check that found a fully filled close still pending at the collateral settlement check.",
       "summarySource": "opening-prose",
-      "bytes": 300407,
-      "lines": 4958,
-      "sha1": "837f20484c96139a133c1510be3ab9f18dbedb61",
+      "bytes": 300659,
+      "lines": 4967,
+      "sha1": "922df8a095261fdcb8c35f59a100e4e2c84954b6",
       "symbols": [],
       "imports": [],
       "internalImports": [],
@@ -124628,5 +124628,5 @@
       "frontmatter": {}
     }
   ],
-  "textSha256": "100263912ec967f7496dd6c18acdbe8ebd0075faee97fcb36e2f7c6430eb5659"
+  "textSha256": "25eb83de59aad9da34044eb02dc245e37adf8713cad6a62dc517ba43e8376890"
 }

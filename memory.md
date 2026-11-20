@@ -1,5 +1,19 @@
 # Work continuation
 
+Version: 682
+Delta: v681 to v682. Record the tested settlement patch and live read-only rehearsal.
+
+## Volty settlement verification
+
+GumOrders now confirms native parent cash to the same cent as both display balances before using the additional precision. It retains a full-precision baseline for new closes and reads the recorded baseline for existing closes. The regression covers exact micro-USDC thresholds, conflicting balance fields and isolated collateral. The patched reconciliation confirmed the existing close was fully filled and settled against GUM with the original policy and read-only journal. Deliver through the default branch, then verify that the installed launchd job reconciles the close and expires its stale reversal intent. Deployment uses the existing journal and policy.
+
+Version: 681
+Delta: v680 to v681. Record the Volty settlement repair scope and recovery plan.
+
+## Volty isolated close settlement
+
+TASK-2692 addresses a fully filled reduce-only close that remained pending when GUM supplied free collateral at cent precision and the close receipt reported returned cash in micro-USDC. Keep the existing close record, verify the native token balance against the display amounts, and preserve the full-fill, flat-position and isolated-cash checks. Add a regression for the existing journal format and verify the installed bot against the same policy and journal after delivery.
+
 Version: 680
 Delta: v679 to v680. Record the CI regeneration and installed-host checks.
 
