@@ -122,6 +122,7 @@ train an issued example. A checkpoint and the recorded tick cursor allow
 deterministic replay after interruption. Training runs in shadow. Directional
 scores do not measure executable after-cost profit.
 
-New refused plans record an allowlisted diagnostic in the execution journal.
+Planning refusals and confirmed preflight refusals before submission record an
+allowlisted diagnostic in the execution journal.
 An older row with only `gum_plan_unavailable` and no legs proves the planner
 stopped before submission. It does not identify which planning check failed.

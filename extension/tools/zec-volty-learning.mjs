@@ -28,16 +28,17 @@ function privatePath(stat, type) {
 
 function atomicWrite(path, value) {
   const temp = `${path}.${randomUUID()}.tmp`;
+  const fd = openSync(temp, 'wx', 0o600);
   try {
-    const fd = openSync(temp, 'wx', 0o600);
     try {
       writeFileSync(fd, JSON.stringify(value));
       fsyncSync(fd);
     } finally { closeSync(fd); }
     renameSync(temp, path);
-  } finally {
+  } catch (error) {
     try { unlinkSync(temp); }
-    catch (error) { if (error.code !== 'ENOENT') throw error; }
+    catch { /* Preserve the original write failure. */ }
+    throw error;
   }
 }
 

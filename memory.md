@@ -1,5 +1,12 @@
 # Work continuation
 
+Version: 687
+Delta: v686 to v687. Record the subsequent filled close and extend refusal diagnostics to submission preflight.
+
+## Volty submission preflight
+
+The funded pilot closed its second round trip at 09:58 UTC on 2026-11-20. GUM confirmed the long close and the journal recorded a preflight refusal on the new short leg. The two completed round trips lost 0.137085 USDC after trading fees and before funding. Both planning and definitely-unsent preflight refusals now preserve allowlisted diagnostic codes. Keep ambiguous submissions in reconciliation and leave the learner in shadow until prospective after-cost results support a trading change.
+
 Version: 686
 Delta: v685 to v686. Record tested tick capture, exact learner reuse and browser acceptance scope.
 
