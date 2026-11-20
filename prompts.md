@@ -1,5 +1,14 @@
 # Prompt history
 
+Version: 310
+Delta: v309 to v310. Record the Volty settlement repair request.
+
+## ZEC Volty settlement repair
+
+> Can you fix it?
+
+The request follows a bot health check that found a fully filled close still pending at the collateral settlement check.
+
 Version: 309
 Delta: v308 to v309. Record the stalled ZEC Perps chart report.
 

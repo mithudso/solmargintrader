@@ -396,10 +396,41 @@ class GumOrderTests(unittest.TestCase):
         result = self.venue.reconcile(plan, CLIENT_ID)
         self.assertEqual(result["status"], "filled")
         self.assertFalse(result["settled"])
-        self.provider.balance["freeBalance"] = "175"
+        self.provider.balance.update(
+            freeBalance="175", availableToTrade="175", tokenBalance=174999999,
+        )
+        self.assertFalse(self.venue.reconcile(plan, CLIENT_ID)["settled"])
+        self.provider.balance.update(
+            freeBalance="175", availableToTrade="175", tokenBalance=175000000,
+        )
         self.assertTrue(self.venue.reconcile(plan, CLIENT_ID)["settled"])
         self.provider.idle_balance["tokenBalance"] = 1
         self.assertFalse(self.venue.reconcile(plan, CLIENT_ID)["settled"])
+
+    def test_close_settlement_uses_native_cash_only_when_balances_agree(self):
+        self.provider.position(size="0.006")
+        self.provider.balance.update(
+            freeBalance="48.32", availableToTrade="48.32", tokenBalance=48321094,
+        )
+        plan = self.venue.plan("ZEC", "sell", ACCOUNT)
+        legacy = dict(plan)
+        legacy.pop("settlement_usdc_before", None)
+        self.history(plan)
+        self.provider.history[0]["executedCollateral"] = "-0.173851"
+        self.provider.positions = []
+        for available, native, legacy_settled, new_settled in (
+            ("48.49", 48494945, True, True),
+            ("48.49", 48494944, True, False),
+            ("48.49", 48493850, False, False),
+            ("48.48", 48494945, False, False),
+            ("48.49", 48500000, False, False),
+        ):
+            with self.subTest(available=available, native=native):
+                self.provider.balance.update(
+                    freeBalance="48.49", availableToTrade=available, tokenBalance=native,
+                )
+                self.assertIs(self.venue.reconcile(legacy, CLIENT_ID)["settled"], legacy_settled)
+                self.assertIs(self.venue.reconcile(plan, CLIENT_ID)["settled"], new_settled)
 
     def test_fill_economics_are_bound_to_quantity_price_cap_and_fee_quote(self):
         plan = self.venue.plan("ZEC", "buy", ACCOUNT)

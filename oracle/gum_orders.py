@@ -535,8 +535,17 @@ class GumOrders:
         if not isinstance(balance, dict):
             raise GumError("gum_invalid_balance")
         free = _decimal(balance.get("freeBalance"), zero=True)
-        _decimal(balance.get("availableToTrade"), zero=True)
-        _integer(balance.get("tokenBalance"), zero=True)
+        available = _decimal(balance.get("availableToTrade"), zero=True)
+        cash = Decimal(_integer(balance.get("tokenBalance"), zero=True)) / 1000000
+        settlement_usdc = min(free, cash)
+        # Preflight excludes cross positions and open orders. Use native cash
+        # for settlement only when both display balances agree with its cents.
+        if (
+            free.as_tuple().exponent == -2
+            and free == available
+            and free <= cash < free + Decimal("0.01")
+        ):
+            settlement_usdc = cash
         residual = Decimal(0)
         for row in rows:
             if row["isolated"] and row["subaccountId"] == self.subaccount_id:
@@ -556,6 +565,7 @@ class GumOrders:
             "market": market,
             "position": position,
             "free_usdc": _text(free),
+            "settlement_usdc": _text(settlement_usdc),
             "idle_isolated_usdc": _text(residual),
             "selected_leverage": selected[0] if selected else None,
             "observed_at": received_at,
@@ -636,6 +646,10 @@ class GumOrders:
         collateral_native = 0
         if action == "close":
             quantity = _decimal(position["size"])
+            plan["settlement_usdc_before"] = _text(max(
+                _decimal(state["free_usdc"], zero=True),
+                _decimal(state["settlement_usdc"], zero=True),
+            ))
         else:
             if _decimal(state["idle_isolated_usdc"], zero=True):
                 raise GumError("gum_idle_isolated_collateral_requires_reconciliation")
@@ -1042,10 +1056,13 @@ class GumOrders:
                 if not returned.is_finite() or returned < 0:
                     raise ValueError
                 state = self.preflight()
+                before = _decimal(
+                    plan.get("settlement_usdc_before", plan["free_usdc_before"]), zero=True,
+                )
                 settled = (
-                    Decimal(state["idle_isolated_usdc"]) == 0
-                    and Decimal(state["free_usdc"])
-                    >= Decimal(plan["free_usdc_before"]) + returned
+                    state["position"]["side"] is None
+                    and Decimal(state["idle_isolated_usdc"]) == 0
+                    and Decimal(state["settlement_usdc"]) >= before + returned
                 )
             except (InvalidOperation, TypeError, ValueError):
                 settled = False
