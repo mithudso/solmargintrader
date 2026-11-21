@@ -492,12 +492,21 @@ try {
         fs.writeFileSync(path.join(host.env.SOLTUI_CONFIG_DIR, 'zec-volty', 'status.json'), JSON.stringify(voltyStatusFixture()));
         fs.writeFileSync(path.join(host.env.SOLTUI_CONFIG_DIR, 'zec-volty', 'learning-status.json'), JSON.stringify(voltyLearningFixture()), { mode: 0o600 });
         await browser.call('Page.reload', {}, page.sessionId);
-        const rendered = await browser.waitFor(() => page.ev(`(() => {
-          const section = document.getElementById('volty');
-          if (!section || section.hidden || section.querySelector('[data-volty-mark]').textContent !== '$548.00') return null;
-          for (const details of section.querySelectorAll('details')) details.open = true;
-          return { text: section.innerText, controls: section.querySelectorAll('button, input, select, form').length };
-        })()`));
+        const rendered = await browser.waitFor(async () => {
+          try {
+            return await page.ev(`(() => {
+              const section = document.getElementById('volty');
+              if (globalThis.voltyClockOffset !== 0 || !section || section.hidden
+                || section.querySelector('[data-volty-mark]').textContent !== '$548.00') return null;
+              for (const details of section.querySelectorAll('details')) details.open = true;
+              return { text: section.innerText, controls: section.querySelectorAll('button, input, select, form').length };
+            })()`);
+          } catch (error) {
+            // Page.reload can return while Chrome is replacing the execution context.
+            if (/Cannot find default execution context|Execution context was destroyed/.test(error.message)) return null;
+            throw error;
+          }
+        });
         assert(rendered, `ZEC Volty observation did not render on the ${side} route`);
         for (const text of ['$560.00', '$541.00', 'Last signal Short · Skipped · prior order unresolved',
           'Waiting for collateral to settle', 'Close long · Filled · awaiting collateral settlement',
