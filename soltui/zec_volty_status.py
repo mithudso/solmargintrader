@@ -1,6 +1,7 @@
 """Read the local Volty owner's public status snapshot without taking control."""
 
 import json
+import math
 import os
 import re
 import stat
@@ -114,7 +115,7 @@ def _order(order, observed_at):
 
 def _telemetry(row, updated_at):
     if not isinstance(row, dict):
-        raise ValueError
+        raise TypeError
     market = row["market"]
     if market is not None:
         started = _timestamp(market["window_start"], updated_at)
@@ -183,6 +184,25 @@ def _learning(path):
         return None
 
 
+def _performance(path):
+    try:
+        row = _bounded_json(path)
+        if type(row["schema"]) is not int or row["schema"] != 1:
+            raise ValueError
+        updated_at = _timestamp(row["updated_at"], time.time() + 5)
+        closed, profitable = row["closed_trades"], row["profitable_trades"]
+        if type(closed) is not int or type(profitable) is not int or not 0 <= profitable <= closed <= 10**12:
+            raise ValueError
+        amounts = {key: row[key] for key in ("gross_pnl_usdc", "net_pnl_usdc")}
+        if any(type(amount) not in (int, float) or not math.isfinite(amount) for amount in amounts.values()):
+            raise ValueError
+        if not closed and any(amounts.values()):
+            raise ValueError
+        return {"updated_at": updated_at, "closed_trades": closed, "profitable_trades": profitable, **amounts}
+    except (OSError, KeyError, TypeError, ValueError, OverflowError, RecursionError):
+        return None
+
+
 def read_status():
     # The test/profile config override keeps the native bridge isolated from the owner.
     config = Path(os.environ.get("SOLTUI_CONFIG_DIR") or Path.home() / ".soltui")
@@ -215,6 +235,10 @@ def read_status():
         learner = _learning(path.with_name("learning-status.json"))
         if learner is not None:
             result["learning"] = learner
+        if mode == "live":
+            performance = _performance(path.with_name("performance.json"))
+            if performance is not None:
+                result["performance"] = performance
         return result
     except (OSError, KeyError, TypeError, ValueError, RecursionError):
         return None

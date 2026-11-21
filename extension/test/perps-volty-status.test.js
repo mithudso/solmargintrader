@@ -18,6 +18,10 @@ const markup = readFileSync(new URL('../src/perps/panel.html', import.meta.url),
 const report = (values = {}) => ({
   schema: 1, mode: 'observe', state: 'watching', updated_at: at, orders: [], signal: null, ...values,
 });
+const performanceReport = (values = {}) => ({
+  updated_at: at, gross_pnl_usdc: 0.012345, net_pnl_usdc: -0.000002,
+  closed_trades: 3, profitable_trades: 2, ...values,
+});
 
 async function mount(t, snapshot, now = at) {
   const nodes = new Map();
@@ -45,6 +49,7 @@ test('observe status says the owner will only watch for signals', async t => {
   assert.equal(node('orders-note').textContent, 'Observe mode submits no orders.');
   assert.equal(node('mark').textContent, '—');
   assert.match(node('market-note').textContent, /unavailable/);
+  assert.equal(node('gross').textContent, '—');
 });
 
 test('live receipts distinguish an unverified open from a confirmed close', async t => {
@@ -88,4 +93,35 @@ test('future snapshot is unavailable', async t => {
   const node = await mount(t, report({ mode: 'live', state: 'armed' }), at - 10);
   assert.equal(node('status').textContent, 'Local Volty status unavailable');
   assert.equal(node('orders').children.length, 0);
+  assert.match(node('performance-note').textContent, /Local host unavailable/);
+});
+
+test('closed performance shows gross, net and win rate with its own freshness', async t => {
+  const node = await mount(t, report({ mode: 'live', state: 'armed', performance: performanceReport() }), at + 61);
+  assert.equal(node('status').textContent, 'Live · Status stale');
+  assert.equal(node('gross').textContent, '+0.012345 USDC');
+  assert.ok(node('gross').attributes.has('data-profit'));
+  assert.equal(node('net').textContent, '-0.000002 USDC');
+  assert.ok(node('net').attributes.has('data-loss'));
+  assert.equal(node('profitable').textContent, '2 of 3 (66.7%)');
+  assert.match(node('performance-note').textContent, /Closed trades as of .*Net includes fees and funding/);
+  assert.ok(!node('performance-note').attributes.has('data-stale'));
+});
+
+test('zero confirmed closes have zero realized P&L and an undefined win rate', async t => {
+  const performance = performanceReport({ gross_pnl_usdc: 0, net_pnl_usdc: 0, closed_trades: 0, profitable_trades: 0 });
+  const node = await mount(t, report({ mode: 'live', state: 'armed', performance }));
+  assert.equal(node('gross').textContent, '0.00 USDC');
+  assert.equal(node('net').textContent, '0.00 USDC');
+  assert.equal(node('profitable').textContent, '0 of 0 (—)');
+});
+
+test('malformed performance leaves the valid bot status and shows no amounts', async t => {
+  const performance = performanceReport({ profitable_trades: 4 });
+  const node = await mount(t, report({ mode: 'live', state: 'armed', performance }));
+  assert.equal(node('status').textContent, 'Live · Armed');
+  assert.equal(node('gross').textContent, '—');
+  assert.equal(node('net').textContent, '—');
+  assert.equal(node('profitable').textContent, '—');
+  assert.equal(node('performance-note').textContent, 'Closed-trade performance unavailable.');
 });

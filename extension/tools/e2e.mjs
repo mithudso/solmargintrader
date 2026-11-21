@@ -33,7 +33,7 @@ import { execFile } from 'node:child_process';
 import { assertAllowedMessage, assertDisarmed, assertSoltuiCallAllowed } from '../e2e/lib/guard.mjs';
 import { isolateTargets } from '../e2e/lib/isolation.mjs';
 import { installHost } from '../e2e/lib/soltui-host.mjs';
-import { voltyLearningFixture, voltyStatusFixture } from '../e2e/fixtures/fake-soltui-registry.js';
+import { voltyLearningFixture, voltyPerformanceFixture, voltyStatusFixture } from '../e2e/fixtures/fake-soltui-registry.js';
 import { verifyDashboardWorkflows } from '../e2e/lib/dashboard-workspace.mjs';
 import { verifySignalDesk } from '../e2e/lib/signal-desk.mjs';
 
@@ -480,7 +480,7 @@ try {
   });
   if (!listing) throw new Error('cannot continue without the soltui command list');
 
-  await check('ZEC Perps shows live Volty decisions, settlement, and independent market freshness on both routes', async () => {
+  await check('ZEC Perps shows Volty closed-trade performance, decisions, settlement, and market freshness on both routes', async () => {
     assertSoltuiCallAllowed('zec.volty.status', {}, listing);
     for (const side of ['long', 'short']) {
       const page = await openPage(`src/perps/panel.html#market=ZEC&side=${side}`);
@@ -491,13 +491,15 @@ try {
         }, page.sessionId);
         fs.writeFileSync(path.join(host.env.SOLTUI_CONFIG_DIR, 'zec-volty', 'status.json'), JSON.stringify(voltyStatusFixture()));
         fs.writeFileSync(path.join(host.env.SOLTUI_CONFIG_DIR, 'zec-volty', 'learning-status.json'), JSON.stringify(voltyLearningFixture()), { mode: 0o600 });
+        fs.writeFileSync(path.join(host.env.SOLTUI_CONFIG_DIR, 'zec-volty', 'performance.json'), JSON.stringify(voltyPerformanceFixture()), { mode: 0o600 });
         await browser.call('Page.reload', {}, page.sessionId);
         const rendered = await browser.waitFor(async () => {
           try {
             return await page.ev(`(() => {
               const section = document.getElementById('volty');
               if (globalThis.voltyClockOffset !== 0 || !section || section.hidden
-                || section.querySelector('[data-volty-mark]').textContent !== '$548.00') return null;
+                || section.querySelector('[data-volty-mark]').textContent !== '$548.00'
+                || section.querySelector('[data-volty-gross]').textContent !== '+0.047516 USDC') return null;
               for (const details of section.querySelectorAll('details')) details.open = true;
               return { text: section.innerText, controls: section.querySelectorAll('button, input, select, form').length };
             })()`);
@@ -511,9 +513,12 @@ try {
         for (const text of ['$560.00', '$541.00', 'Last signal Short · Skipped · prior order unresolved',
           'Waiting for collateral to settle', 'Close long · Filled · awaiting collateral settlement',
           'Open long · Confirmed fill', '0:e2e-fixture-transaction', 'client order 7654321',
+          'Gross P&L', 'Net P&L', '-0.012115 USDC', 'Profitable trades', '3 of 8 (37.5%)',
+          'Closed trades as of', 'Net includes fees and funding',
           'Tick learning · Online · 120 ticks', '1m · 30 trained · 45 pending', 'Brier 0.550 vs 0.660 baseline']) {
           assert(rendered.text.includes(text), `missing Volty evidence: ${text}`);
         }
+        assert(rendered.text.indexOf('Gross P&L') < rendered.text.indexOf('GUM mark'), 'performance must precede market levels');
         eq(rendered.controls, 0, 'Volty verification section must be read-only');
         if (side === 'short') {
           await page.ev('globalThis.voltyClockOffset = 21000');
@@ -522,8 +527,13 @@ try {
           'the expired mark must disappear while the owner heartbeat remains fresh');
           await page.ev('globalThis.voltyClockOffset = 61000');
           assert(await browser.waitFor(() => page.ev(`document.querySelector('[data-volty-status]').textContent.includes('Status stale') &&
-            document.querySelector('[data-volty-orders]').textContent.includes('0:e2e-fixture-transaction')`)),
+            document.querySelector('[data-volty-orders]').textContent.includes('0:e2e-fixture-transaction') &&
+            !document.querySelector('[data-volty-performance-note]').hasAttribute('data-stale')`)),
           'stale owner status must keep historical receipts visible');
+          await page.ev('globalThis.voltyClockOffset = 181000');
+          assert(await browser.waitFor(() => page.ev(`document.querySelector('[data-volty-performance-note]').textContent.includes('Performance stale') &&
+            document.querySelector('[data-volty-profitable]').textContent === '3 of 8 (37.5%)'`)),
+          'expired performance must keep the last verified trade totals visibly stale');
         }
       } finally {
         await browser.call('Target.closeTarget', { targetId: page.targetId });

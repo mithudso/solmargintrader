@@ -16,11 +16,17 @@ export function voltyLearningFixture() {
       expired: 1, capacity_drops: 0, candidate_brier: 0.55, frequency_brier: 0.66 })) };
 }
 
+export function voltyPerformanceFixture() {
+  return { schema: 1, updated_at: Math.floor(Date.now() / 1000), gross_pnl_usdc: 0.047516,
+    net_pnl_usdc: -0.012115, closed_trades: 8, profitable_trades: 3 };
+}
+
 export function voltyStatusFixture() {
   const at = Math.floor(Date.now() / 1000);
   return {
     schema: 1, mode: 'live', state: 'checking', updated_at: at,
     learning: voltyLearningFixture(),
+    performance: voltyPerformanceFixture(),
     signal: { event_id: 'e2e-volty-signal', side: 'sell', at, mark: 540, lower: 541, upper: 560 },
     telemetry: {
       market: { window_start: Math.floor(at / 300) * 300, mark_at: at, mark: 548, lower: 541, upper: 560 },

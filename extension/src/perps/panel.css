@@ -38,10 +38,13 @@ dialog::backdrop{background:#070d18b8}
 .volty-header h2,.volty-header p{margin:0}
 [data-volty-status]{color:#a2ebd0;font-weight:650;border:1px solid #527486;border-radius:4px;padding:3px 6px}
 [data-volty-status][data-stale],[data-volty-status][data-attention]{color:#ffcb83}
-.volty-market{grid-template-columns:repeat(3,minmax(0,1fr));gap:6px;margin-top:8px}
-.volty-market>div{background:#172236;border:1px solid #29374f;border-radius:4px;padding:5px 7px;overflow-wrap:anywhere}
-.volty-market dt{font-size:11px}
-.volty-market dd{font-size:14px}
+.volty-metrics{grid-template-columns:repeat(3,minmax(0,1fr));gap:6px;margin-top:8px}
+.volty-metrics>div{background:#172236;border:1px solid #29374f;border-radius:4px;padding:5px 7px;overflow-wrap:anywhere}
+.volty-metrics dt{font-size:11px}
+.volty-metrics dd{font-size:14px}
+[data-volty-gross][data-profit],[data-volty-net][data-profit]{color:#61dbac}
+[data-volty-gross][data-loss],[data-volty-net][data-loss]{color:#f69b9b}
+[data-volty-performance-note][data-stale]{color:#ffcb83}
 [data-volty-activity],[data-volty-orders],[data-volty-horizons]{list-style:none;padding:0}
 .volty-activity{border-top:1px solid #29374f;padding:5px 0}
 .volty-activity time{margin-left:8px}

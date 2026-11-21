@@ -89,13 +89,43 @@ class VoltyStatusTests(unittest.TestCase):
         learning.write_text(json.dumps({"schema": 1, **shadow, "ticks": 1}))
         self.assertEqual(self.dispatch()["result"], expected)
 
-    def test_observe_preserves_live_history_and_unverified_order_remains_pending(self):
+    def test_observe_preserves_orders_and_only_live_projects_verified_performance(self):
         order = {"event_id": "volty:1", "client_order_id": "1234", "side": "buy", "leg": "open", "state": "acknowledged",
                  "order_id": None, "requested_quantity": "0.017", "filled_quantity": None,
                  "updated_at": self.at, "fills": []}
-        self.write(self.snapshot(orders=[order]))
-        self.assertEqual(self.dispatch()["result"]["orders"], [order])
-        self.write(self.snapshot(mode="live", state="checking", orders=[order]))
-        self.assertEqual(self.dispatch()["result"]["orders"], [order])
+        path = self.path.with_name("performance.json")
+        performance = {"updated_at": self.at - 190, "closed_trades": 6, "profitable_trades": 2,
+                       "gross_pnl_usdc": 0.00947, "net_pnl_usdc": -0.013763}
+        sidecar = {"schema": 1, **performance, "account": "private"}
+        path.write_text(json.dumps(sidecar))
+        observe = self.snapshot(orders=[order])
+        self.write(observe)
+        with patch("soltui.zec_volty_status._performance", side_effect=AssertionError("observe touched funded data")):
+            self.assertEqual(self.dispatch()["result"], observe)
+
+        live = self.snapshot(mode="live", state="checking", orders=[order])
+        self.write(live)
+        self.assertEqual(self.dispatch()["result"], {**live, "performance": performance})
+        newer = {**performance, "updated_at": self.at + 2}
+        path.write_text(json.dumps({"schema": 1, **newer}))
+        self.assertEqual(self.dispatch()["result"], {**live, "performance": newer})
+        zero = {**performance, "closed_trades": 0, "profitable_trades": 0, "gross_pnl_usdc": 0, "net_pnl_usdc": 0}
+        path.write_text(json.dumps({"schema": 1, **zero}))
+        self.assertEqual(self.dispatch()["result"], {**live, "performance": zero})
+
+        for invalid in (
+            {"schema": True}, {"updated_at": self.at + 900}, {"closed_trades": True}, {"closed_trades": -1},
+            {"profitable_trades": 7}, {"net_pnl_usdc": float("nan")}, {"net_pnl_usdc": float("inf")},
+            {"gross_pnl_usdc": 10**999}, {"gross_pnl_usdc": True}, {"net_pnl_usdc": "0.1"},
+            {"closed_trades": 0, "profitable_trades": 0},
+        ):
+            with self.subTest(invalid=invalid):
+                path.write_text(json.dumps({**sidecar, **invalid}))
+                self.assertEqual(self.dispatch()["result"], live)
+        path.write_text("{")
+        self.assertEqual(self.dispatch()["result"], live)
+        path.unlink()
+        self.assertEqual(self.dispatch()["result"], live)
+
         self.write(self.snapshot(mode="live", state="checking", orders=[{**order, "state": "filled"}]))
         self.assertIsNone(self.dispatch()["result"])

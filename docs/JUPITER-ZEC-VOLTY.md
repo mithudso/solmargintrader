@@ -122,6 +122,26 @@ state. The native status command provides the same evidence:
 soltui call zec.volty.status
 ```
 
+### Realized performance
+
+The top of the funded Volty panel shows gross P&L, net P&L and profitable
+closed trades in USDC. Gross comes from GUM's realized P&L. Net subtracts
+trading fees and adds signed funding. The win rate is the number of closed
+trades with positive net P&L divided by all closed trades.
+
+Run the read-only snapshot publisher independently of the funded owner.
+On macOS, a separate LaunchAgent can run this command every minute.
+
+```sh
+python -m oracle.zec_volty_performance --config "$VOLTY_POLICY" --state-dir "$VOLTY_STATE"
+```
+
+The publisher matches complete GUM closed-position history to all settled
+entry and exit legs in the dedicated account's journal, including retained
+legs from earlier allocations. Missing, unmatched or still-indexing trades
+leave the previous snapshot and its timestamp in place. The dashboard marks
+it stale after three minutes.
+
 ## Tick learning
 
 The watcher saves every distinct fresh GUM mark it accepts, including marks that
