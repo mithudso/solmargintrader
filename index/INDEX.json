@@ -1,8 +1,8 @@
 {
-  "generatedAt": "2026-11-21T05:20:45+00:00",
+  "generatedAt": "2026-11-21T05:23:31+00:00",
   "schemaVersion": 1,
   "repoRoot": "~/dev/solmargintrader",
-  "commit": "12b77eb",
+  "commit": "e793cba",
   "counts": {
     "files": 4200,
     "bytes": 212214499,
@@ -65665,7 +65665,7 @@
       "summarySource": "derived",
       "bytes": 239528,
       "lines": 4864,
-      "sha1": "221e4f9d7696922c3c8758c4a5864052ef1f8542",
+      "sha1": "89de7a597036dd873426b5e243cba472fc72d151",
       "symbols": [],
       "imports": [],
       "internalImports": [],
@@ -66205,7 +66205,7 @@
       "summarySource": "derived",
       "bytes": 25826,
       "lines": 668,
-      "sha1": "0cede615c335c836ea72ad1dad72b37eb0f87fa2",
+      "sha1": "4a743252cdd5ff2a5d7caad98985ed63c6ad4ffc",
       "symbols": [],
       "imports": [],
       "internalImports": [],
@@ -124704,5 +124704,5 @@
       "frontmatter": {}
     }
   ],
-  "textSha256": "e36a491d24e8e2a41eab5608b4137859ee6c6fab8773425f40ada5f437b30cdd"
+  "textSha256": "989c935f5ee8c566bcd3ca62be44f001a6d9d0243cc91ee82e4d43d7b42e5250"
 }
