@@ -1,5 +1,19 @@
 # Work continuation
 
+Version: 696
+Delta: v695 to v696. Record realized Volty accounting and verification.
+
+## Volty realized performance delivery
+
+The optional native performance summary reads a separate atomic snapshot. The read-only publisher checks all journal fills and scoped GUM position history. It keeps only closed trades, verifies exact gross, fees, and signed funding, and preserves the prior timestamp on incomplete data. Chrome displays gross and net USDC and the count and share of net-profitable trades before the triggers. The fixture and real native browser runs, local lint, unit suites, and coverage counts gate delivery. The existing funded execution journal, policy, and watcher are separate. Use the PR and the local deployment receipt to confirm installed asset fingerprints, current live totals, and the unchanged funded process.
+
+Version: 695
+Delta: v694 to v695. Record the Volty performance summary scope before implementation.
+
+## Volty realized performance
+
+Show gross and net P&L, profitable closed trades, total closed trades, and win rate on the Jupiter ZEC Volty panel. Source lifetime accounting from the dedicated owner-bound venue history. Verify full page coverage, signed funding and fees, and honest handling of incomplete data. Keep the existing funded and shadow workers outside the display implementation. Stele task creation was blocked by the account write quota.
+
 Version: 694
 Delta: v693 to v694. Record the Volty v2 reset behavior and verification.
 

@@ -5,6 +5,7 @@ const MAX_AGE_SECONDS = 60;
 const MAX_MARK_AGE_SECONDS = 20;
 const WINDOW_SECONDS = 300;
 const LEARNING_HEARTBEAT_SECONDS = 20;
+const PERFORMANCE_MAX_AGE_SECONDS = 180;
 const OWNER_STATES = Object.freeze({
   watching: 'Watching for signals', armed: 'Armed', paused: 'Entries paused',
   'data-unavailable': 'Waiting for fresh GUM data', checking: 'Reconciling with GUM',
@@ -39,6 +40,9 @@ const OUTCOMES = Object.freeze({
 const stamp = seconds => new Date(seconds * 1000).toISOString().replace('T', ' ').replace(/\.\d+Z$/, ' UTC');
 const direction = side => side === 'buy' ? 'Long' : 'Short';
 const usd = new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', maximumFractionDigits: 4 });
+const pnl = new Intl.NumberFormat('en-US', { signDisplay: 'exceptZero', minimumFractionDigits: 2, maximumFractionDigits: 6 });
+const percent = new Intl.NumberFormat('en-US', { style: 'percent', maximumFractionDigits: 1 });
+const count = new Intl.NumberFormat('en-US');
 const eventLabel = event => `${direction(event.side)} · ${OUTCOMES[event.outcome] ?? 'Observed'}`;
 const orderAction = ({ leg, side }) => leg === 'open'
   ? `Open ${direction(side).toLowerCase()}`
@@ -46,6 +50,22 @@ const orderAction = ({ leg, side }) => leg === 'open'
 const setText = (node, value) => {
   if (node.textContent !== value) node.textContent = value;
 };
+
+function verifiedPerformance(performance, now) {
+  const { updated_at: updated, gross_pnl_usdc: gross, net_pnl_usdc: net,
+    closed_trades: closed, profitable_trades: profitable } = performance ?? {};
+  return Number.isFinite(updated) && updated > 0 && updated <= now + 5
+    && Number.isFinite(gross) && Number.isFinite(net)
+    && Number.isSafeInteger(closed) && Number.isSafeInteger(profitable)
+    && profitable >= 0 && profitable <= closed
+    && (closed > 0 || (gross === 0 && net === 0)) ? performance : null;
+}
+
+function setPnl(node, amount) {
+  setText(node, amount === undefined ? '—' : `${pnl.format(amount)} USDC`);
+  node.toggleAttribute('data-profit', amount > 0);
+  node.toggleAttribute('data-loss', amount < 0);
+}
 
 function orderRow(order) {
   const verified = order.fills.length && order.state !== 'filled' ? ' · Venue fill transactions recorded' : '';
@@ -67,6 +87,10 @@ export function mountVoltyStatus(section, { call = soltui, clock = Date.now } = 
   const status = section.querySelector('[data-volty-status]');
   const updated = section.querySelector('[data-volty-updated]');
   const stateNote = section.querySelector('[data-volty-state-note]');
+  const grossPnl = section.querySelector('[data-volty-gross]');
+  const netPnl = section.querySelector('[data-volty-net]');
+  const profitableTrades = section.querySelector('[data-volty-profitable]');
+  const performanceNote = section.querySelector('[data-volty-performance-note]');
   const mark = section.querySelector('[data-volty-mark]');
   const upper = section.querySelector('[data-volty-upper]');
   const lower = section.querySelector('[data-volty-lower]');
@@ -104,6 +128,19 @@ export function mountVoltyStatus(section, { call = soltui, clock = Date.now } = 
       ? current.state === 'checking' && settling ? 'Close filled. Waiting for collateral to settle back to the parent account.'
         : STATE_NOTES[current.state]
       : current ? 'Showing historical signals and order receipts.' : '');
+    const performance = verifiedPerformance(current?.performance, now);
+    setPnl(grossPnl, performance?.gross_pnl_usdc);
+    setPnl(netPnl, performance?.net_pnl_usdc);
+    const total = performance?.closed_trades;
+    const wins = performance?.profitable_trades;
+    setText(profitableTrades, performance
+      ? `${count.format(wins)} of ${count.format(total)} (${total ? percent.format(wins / total) : '—'})` : '—');
+    const oldPerformance = performance !== null && now - performance.updated_at > PERFORMANCE_MAX_AGE_SECONDS;
+    performanceNote.toggleAttribute('data-stale', !available || oldPerformance);
+    setText(performanceNote, performance
+      ? `Closed trades as of ${stamp(performance.updated_at)} · Net includes fees and funding`
+        + (oldPerformance ? ' · Performance stale' : '') + (available ? '' : ' · Local host unavailable')
+      : available ? 'Closed-trade performance unavailable.' : 'Closed-trade performance unavailable · Local host unavailable');
     const telemetry = current?.telemetry;
     const learner = current?.learning;
     const learningStatus = !learner ? 'Unavailable'

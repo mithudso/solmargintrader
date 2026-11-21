@@ -1,5 +1,12 @@
 # Prompt history
 
+Version: 316
+Delta: v315 to v316. Record the Volty performance summary request.
+
+## Volty realized performance
+
+> Near the top of the zecbot visualization page, put a net/gross profit/loss, and number and percentage of profitable trades.
+
 Version: 315
 Delta: v314 to v315. Record the Volty training reset and comparison requests.
 
