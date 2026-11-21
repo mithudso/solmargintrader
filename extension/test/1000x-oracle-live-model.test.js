@@ -17,17 +17,53 @@ test('causal warmup issues independent six-horizon frozen probes with uniform co
   assert.equal(step(next, 35000, 101).issued, 6);
   const publicView = step(s, 31000).snapshot; assert.equal(JSON.stringify(publicView).includes('weights'), false);
   assert.equal(publicView.horizons[60].direction, 'FLAT');
+});
 
-  const volty = (state, t, price = 100) => step(state, t, price, { identity: VOLTY_TICK_IDENTITY });
-  let ticks = null;
-  for (let t = 0; t <= 34000; t += 2000) ticks = volty(ticks, t).state;
-  assert.equal(ticks.metrics[60].issued, 3);
-  assert.equal(ticks.models[60].n, 0);
-  assert.equal(volty(ticks, 34000).changed, false);
-  const settled = volty(ticks, 93000, 101).state;
-  assert.equal(settled.models[60].n, 2);
-  assert.equal(settled.metrics[60].counts[0], 2);
-  assert.equal(volty(settled, 93000, 101).state.models[60].n, 2);
+const volty = (state, t, price = 100) => step(state, t, price, { identity: VOLTY_TICK_IDENTITY });
+function warmVolty() {
+  let state = null;
+  for (let t = 0; t <= 30000; t += 2000) state = volty(state, t).state;
+  return state;
+}
+
+test('Volty keeps ingesting ticks but only updates once per completed window at each horizon', () => {
+  let state = warmVolty();
+  const firstLongWindow = state.pending.find(p => p.horizon === 300);
+  for (let t = 32000; t <= 88000; t += 2000) state = volty(state, t).state;
+  assert.equal(state.lastQuote.exchangeMs, 88000);
+  assert.equal(state.metrics[60].issued, 1);
+  assert.equal(state.models[60].n, 0);
+  assert.equal(volty(state, 88000).changed, false);
+
+  state = volty(state, 90000, 101).state;
+  assert.equal(state.models[60].n, 1);
+  assert.equal(state.metrics[60].counts[0], 1);
+  assert.equal(state.pending.find(p => p.horizon === 60).issuedAtMs, 90000);
+  assert.deepEqual(state.pending.find(p => p.horizon === 300), firstLongWindow);
+  assert.equal(state.pending.length, LIVE_ORACLE.horizons.length);
+  assert.equal(volty(state, 90000, 101).state.models[60].n, 1);
+
+  for (let t = 92000; t <= 330000; t += 2000) state = volty(state, t, 99).state;
+  assert.equal(state.models[60].n, 5);
+  assert.equal(state.models[300].n, 1);
+  assert.equal(state.models[600].n, 0);
+  assert.equal(state.metrics[60].capacityDrops, 0);
+});
+
+test('Volty discards late one-minute outcomes and rejects an overlapping recovered state', () => {
+  const state = warmVolty();
+  assert.equal(volty(state, 96000, 101).state.models[60].n, 1);
+  const late = volty(state, 96001, 101).state;
+  assert.equal(late.metrics[60].expired, 1);
+  assert.equal(late.models[60].n, 0);
+  assert.ok(late.pending.every(p => p.horizon !== 60));
+
+  const broken = structuredClone(state);
+  broken.pending.pop();
+  broken.metrics[3600].issued = 0;
+  broken.pending.push({ ...broken.pending[0], id: '60:31000', issuedAtMs: 31000, targetMs: 91000 });
+  broken.metrics[60].issued++;
+  assert.throws(() => volty(broken, 32000), /invalid_live_oracle_state/);
 });
 
 test('endpoint DOWN differs from FLAT, scoring uses frozen probabilities and labels train once', () => {

@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-11-20T22:26:33+00:00",
+  "generatedAt": "2026-11-21T05:23:31+00:00",
   "schemaVersion": 1,
   "note": "Concepts are derived from the repo's own vocabulary \u2014 the FAMILY dict, strategy-card frontmatter, docs/trading-signals-concept-family.md, and terms verified to recur in the corpus. A concept matching no file is dropped, not kept.",
   "counts": {
@@ -161,7 +161,7 @@
         "universe",
         "top_coins"
       ],
-      "matchingFiles": 1909,
+      "matchingFiles": 1910,
       "shown": 30,
       "files": [
         {
@@ -439,7 +439,7 @@
         "centred",
         "shift"
       ],
-      "matchingFiles": 1581,
+      "matchingFiles": 1580,
       "shown": 30,
       "files": [
         {
@@ -603,7 +603,7 @@
         },
         {
           "path": "memory.md",
-          "hits": 522
+          "hits": 523
         },
         {
           "path": "llms/jupsol-llms.txt",
@@ -1125,7 +1125,7 @@
         "benchmark",
         "baseline"
       ],
-      "matchingFiles": 646,
+      "matchingFiles": 649,
       "shown": 30,
       "files": [
         {
@@ -1174,7 +1174,7 @@
         },
         {
           "path": "memory.md",
-          "hits": 56
+          "hits": 59
         },
         {
           "path": "research/json/tradingview-script-profiles/shard-b.jsonl",
@@ -1394,7 +1394,7 @@
         "buy_and_hold",
         "baseline"
       ],
-      "matchingFiles": 572,
+      "matchingFiles": 575,
       "shown": 30,
       "files": [
         {
@@ -1423,7 +1423,7 @@
         },
         {
           "path": "memory.md",
-          "hits": 55
+          "hits": 58
         },
         {
           "path": "research/json/eth-week-20261117/summary.json",

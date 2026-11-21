@@ -1,5 +1,21 @@
 # Work continuation
 
+Version: 694
+Delta: v693 to v694. Record the Volty v2 reset behavior and verification.
+
+## Volty shadow learner v2
+
+The worker starts a versioned empty checkpoint before reading any ticks. It retains the prior checkpoint and raw journal, admits only post-reset marks and receipts, and resumes using the same frontier after restart. Each horizon admits one forecast at a time, takes one update for a timely endpoint, and publishes both Brier scores over the same most recent 24 completed windows. It keeps forecasting in shadow. The funded policy and shared Chrome baseline remain separate. Local verification passed 758 extension tests, JavaScript lint and type checks, 28 browser checks, and the docs gate.
+
+The offline chronological holdout used 24,647 captured ticks. Spacing improved frozen-model Brier at 1 to 20 minutes on matched forecasts. The frequency baseline still led each horizon with online updates, and the 60-minute holdout contained two non-overlapping outcomes. Small feature corrections around a smoothed baseline nearly matched it; prospective advantage remains open. Use the PR and the private learner deployment receipt to verify the final merged revision and installed epoch.
+
+Version: 693
+Delta: v692 to v693. Record the Volty training reset scope before implementation.
+
+## Volty shadow training reset
+
+Keep raw GUM ticks and funded policy separate. Start a fresh shadow checkpoint and score epoch and space updates by the length of each forecast horizon. Preserve causal scoring and the shared Chrome Oracle behavior. Verify clean startup and restart against a journal with prior ticks, then check the installed worker and dashboard. Compare training alternatives with chronological replay. Stele task creation was blocked by the account write quota.
+
 Version: 692
 Delta: v691 to v692. Record the reconciled rejection and tested allocation cutover.
 

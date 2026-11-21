@@ -134,14 +134,19 @@ node extension/tools/zec-volty-learning.mjs --state-dir "$HOME/.soltui/zec-volty
 ```
 
 **Tick learning** shows processed marks and trained, pending, expired and
-capacity counts for each of the six live-Oracle horizons. The worker imports the
-same softmax model, price features and baselines as the extension's live-price
-Oracle. Its GUM mark identity uses per-tick issuance after warmup and a
-20-second endpoint grace to match the standalone feed. Marks recorded during
-warmup stay in the journal. Only later observed marks within the target window
-train an issued example. A checkpoint and the recorded tick cursor allow
-deterministic replay after interruption. Training runs in shadow. Directional
-scores do not measure executable after-cost profit.
+capacity counts for each of the six live-Oracle horizons. The worker uses
+the extension's softmax model, price features and frequency baseline. Every
+accepted tick still contributes to the feature history. Each horizon keeps
+one forecast open at a time and updates only after its endpoint is observed.
+An endpoint can arrive up to 10% of the horizon late, capped at 20 seconds.
+Missed endpoints expire. The two Brier scores use the same latest 24 resolved
+windows, or all resolved windows while there are fewer than 24.
+
+The v2 checkpoint starts a new training run at the worker's first start and
+ignores ticks at or before that boundary. The prior checkpoint and raw journal
+are retained. Restarts resume the new checkpoint and replay only unprocessed
+marks from the same run. Training is shadow-only and measures mark-price
+direction. Funded execution follows the separate Volty strategy.
 
 Planning refusals and confirmed preflight refusals before submission record an
 allowlisted diagnostic in the execution journal.
