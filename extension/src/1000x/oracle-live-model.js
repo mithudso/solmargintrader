@@ -2,8 +2,9 @@
 export const LIVE_ORACLE = Object.freeze({ schema: 1, model: 'live-softmax-l2-v1', target: 'endpoint-exact-price-v1',
   horizons: Object.freeze([60, 300, 600, 900, 1200, 3600]), cadenceMs: 5000, graceMs: 2000,
   maxPending: 1500, maxHistory: 120, recent: 128, maxBytes: 2 * 1024 * 1024, eta: 0.025, l2: 0.001, bound: 8 });
-export const VOLTY_TICK_IDENTITY = Object.freeze({ market: 'ZEC', source: 'gum-volty-accepted-mark-ticks-v1' });
-const VOLTY_SAMPLING = Object.freeze({ cadenceMs: 1, graceMs: 20000, maxPending: 7000, maxBytes: 12 * 1024 * 1024 });
+export const VOLTY_TICK_IDENTITY = Object.freeze({ market: 'ZEC', source: 'gum-volty-accepted-mark-ticks-v2' });
+const VOLTY_SAMPLING = Object.freeze({ cadenceMs: 1, graceMs: 20000, maxPending: LIVE_ORACLE.horizons.length,
+  maxBytes: LIVE_ORACLE.maxBytes, oneWindowPerHorizon: true });
 const sampling = ({ market, source }) => market === VOLTY_TICK_IDENTITY.market && source === VOLTY_TICK_IDENTITY.source
   ? VOLTY_SAMPLING : LIVE_ORACLE;
 const CLASSES = ['UP', 'DOWN', 'FLAT'];
@@ -42,7 +43,8 @@ export function liveProbabilities(m, x) {
   return e.map(v => v / sum);
 }
 function direction(p) { const max = Math.max(...p); return p.filter(v => v === max).length === 1 ? CLASSES[p.indexOf(max)] : 'FLAT'; }
-function score(p, y) { return { brier: p.reduce((s, v, i) => s + (v - Number(i === y)) ** 2, 0), hit: Number(direction(p) === CLASSES[y]) }; }
+export function liveBrier(p, y) { return p.reduce((sum, v, i) => sum + (v - Number(i === y)) ** 2, 0); }
+function score(p, y) { return { brier: liveBrier(p, y), hit: Number(direction(p) === CLASSES[y]) }; }
 function learn(m, x, y) {
   const p = liveProbabilities(m, x);
   return { weights: m.weights.map((row, c) => row.map((w, i) => clip(w - LIVE_ORACLE.eta * ((p[c] - Number(c === y)) * x[i] + LIVE_ORACLE.l2 * w), LIVE_ORACLE.bound))),
@@ -58,7 +60,7 @@ function features(history) {
   return validVector(x) ? x : null;
 }
 function validate(state, key) {
-  const { cadenceMs, graceMs, maxPending, maxBytes } = sampling(state ?? {});
+  const { cadenceMs, graceMs, maxPending, maxBytes, oneWindowPerHorizon } = sampling(state ?? {});
   if (!state || state.key !== key || state.key !== liveIdentity({ market: state.market, source: state.source }) || state.schema !== LIVE_ORACLE.schema || !Array.isArray(state.pending)
     || state.pending.length > maxPending || !Array.isArray(state.history) || state.history.length > LIVE_ORACLE.maxHistory
     || !Number.isSafeInteger(state.revision) || state.revision < 0
@@ -66,6 +68,7 @@ function validate(state, key) {
   const isProb = p => Array.isArray(p) && p.length === 3 && p.every(v => finite(v) && v >= 0 && v <= 1)
     && Math.abs(p.reduce((a, b) => a + b, 0) - 1) < 1e-9;
   const ids = new Set();
+  const horizons = new Set();
   const q = state.lastQuote;
   if ((q !== null && (!q || !finite(q.price) || q.price <= 0 || !finite(q.exchangeMs) || !finite(q.receivedMs)
     || q.exchangeMs < 0 || q.receivedMs < 0 || q.exchangeMs > q.receivedMs + 250))
@@ -74,8 +77,10 @@ function validate(state, key) {
     if (!f || !LIVE_ORACLE.horizons.includes(f.horizon) || !Number.isSafeInteger(f.issuedAtMs)
       || f.issuedAtMs < 0 || f.targetMs !== f.issuedAtMs + f.horizon * 1000 || !finite(f.reference) || f.reference <= 0
       || f.id !== `${f.horizon}:${Math.floor(f.issuedAtMs / cadenceMs)}` || ids.has(f.id)
+      || (oneWindowPerHorizon && horizons.has(f.horizon))
       || !validVector(f.x) || !isProb(f.p) || !isProb(f.baseline)) fail();
     ids.add(f.id);
+    horizons.add(f.horizon);
   }
   for (const [i, q] of state.history.entries()) if (!Number.isSafeInteger(q.t) || q.t < 0 || !finite(q.price) || q.price <= 0
     || (i && (q.t <= state.history[i - 1].t || q.t - state.history[i - 1].t > graceMs))) fail();
@@ -116,7 +121,7 @@ export function validateLiveState(state, key) { return validate(state, key); }
 export function transitionLive(previous, { identity, quote, nowMs }) {
   if (!Number.isSafeInteger(nowMs) || nowMs < 0) fail(); const key = liveIdentity(identity);
   const state = structuredClone(previous ? validate(previous, key) : newLiveState(identity));
-  const { cadenceMs, graceMs, maxPending } = sampling(state);
+  const { cadenceMs, graceMs, maxPending, oneWindowPerHorizon } = sampling(state);
   if (state.lastQuote && nowMs < state.lastQuote.receivedMs) fail();
   const valid = quote && finite(quote.price) && quote.price > 0 && finite(quote.exchangeMs) && finite(quote.receivedMs)
     && quote.exchangeMs >= 0 && quote.receivedMs >= 0 && quote.exchangeMs <= quote.receivedMs + 250 && quote.receivedMs <= nowMs
@@ -125,7 +130,9 @@ export function transitionLive(previous, { identity, quote, nowMs }) {
   let resolved = 0, expired = 0, issued = 0, changed = !previous; const pending = [];
   for (const f of state.pending) {
     const metric = state.metrics[f.horizon];
-    if (valid && nowMs <= f.targetMs + graceMs && quote.exchangeMs >= f.targetMs && quote.receivedMs >= f.targetMs && quote.exchangeMs <= f.targetMs + graceMs && quote.receivedMs <= f.targetMs + graceMs) {
+    // The same feed tolerance would allow a one-minute label to arrive a third of a horizon late.
+    const deadline = f.targetMs + (oneWindowPerHorizon ? Math.min(graceMs, f.horizon * 100) : graceMs);
+    if (valid && nowMs <= deadline && quote.exchangeMs >= f.targetMs && quote.receivedMs >= f.targetMs && quote.exchangeMs <= deadline) {
       const y = quote.price > f.reference ? 0 : quote.price < f.reference ? 1 : 2;
       for (const [name, p] of [['candidate', f.p], ['uniform', [1 / 3, 1 / 3, 1 / 3]], ['frequency', f.baseline]]) {
         const s = score(p, y); metric[name].brier += s.brier; metric[name].hits += s.hit;
@@ -133,7 +140,7 @@ export function transitionLive(previous, { identity, quote, nowMs }) {
       metric.resolved++; metric.counts[y]++; metric.recent.push({ id: f.id, ordinal: metric.resolved, y, p: f.p, baseline: f.baseline });
       metric.recent = metric.recent.slice(-LIVE_ORACLE.recent); state.models[f.horizon] = learn(state.models[f.horizon], f.x, y);
       resolved++; changed = true;
-    } else if (nowMs > f.targetMs + graceMs) { metric.expired++; expired++; changed = true; }
+    } else if (nowMs > deadline) { metric.expired++; expired++; changed = true; }
     else pending.push(f);
   }
   state.pending = pending;
@@ -147,6 +154,8 @@ export function transitionLive(previous, { identity, quote, nowMs }) {
     if (x && bucket !== state.lastProbeBucket && (state.lastProbeAtMs === null || nowMs - state.lastProbeAtMs >= cadenceMs)) {
       state.lastProbeBucket = bucket; state.lastProbeAtMs = nowMs;
       for (const h of LIVE_ORACLE.horizons) {
+        // Start a new window only after the previous endpoint resolved or expired.
+        if (oneWindowPerHorizon && pending.some(f => f.horizon === h)) continue;
         const metric = state.metrics[h]; if (!admitLiveProbe(state.pending.length, metric, maxPending)) continue;
         const n = metric.resolved, baseline = n ? metric.counts.map(v => v / n) : [1 / 3, 1 / 3, 1 / 3];
         state.pending.push({ id: `${h}:${bucket}`, horizon: h, issuedAtMs: nowMs, targetMs: nowMs + h * 1000,

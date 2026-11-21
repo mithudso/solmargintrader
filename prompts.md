@@ -1,5 +1,14 @@
 # Prompt history
 
+Version: 315
+Delta: v314 to v315. Record the Volty training reset and comparison requests.
+
+## Volty shadow training reset
+
+> Fix or reset the training so it doesn't keep using or showing old bad data. Add safeguards so it trains more evenly and time appropriately.
+
+> Are there other ways to train it that may be better?
+
 Version: 314
 Delta: v312 to v314. Record the Volty allocation request and preflight result. Version 313 belongs to a separate in-progress checkout change.
 
