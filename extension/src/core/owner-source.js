@@ -21,6 +21,7 @@ export const OWNER_SOURCE_FILES = [
   "src/1000x/oracle-disk.js",
   "src/1000x/oracle-view.js",
   "src/1000x/panel.js",
+  "src/bg/jupiter-indicator-window.js",
   "src/bg/live-windows.js",
   "src/bg/paper-venue.js",
   "src/bg/service-worker.js",

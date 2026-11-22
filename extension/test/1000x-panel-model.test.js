@@ -7,6 +7,72 @@ const bar = (i, extra = {}) => ({ time: base + i * 60, open: 100 + i, high: 102 
 const now = (base + 5 * 60 + 10) * 1000;
 const snapshot = extra => ({ symbol: 'SOL', intervalSec: 60, status: 'live', quote: { price: 106, exchangeMs: now, receivedMs: now }, candles: Array.from({ length: 6 }, (_, i) => bar(i, { closed: i < 5 })), ...extra });
 
+const currentOpen = base + 90 * 600;
+const currentMs = currentOpen * 1000 + 1000;
+function liveSnapshot(price, extra = {}) {
+  const candles = Array.from({ length: 91 }, (_, i) => ({
+    time: base + i * 600, open: 100, high: 102, low: 98, close: 100, closed: i < 90,
+  }));
+  Object.assign(candles.at(-1), { close: price, high: Math.max(102, price), low: Math.min(98, price) });
+  return {
+    ...snapshot(), intervalSec: 600, candles,
+    quote: { price, exchangeMs: currentMs, receivedMs: currentMs }, ...extra,
+  };
+}
+
+test('immediate readings include the newest forming close on the selected interval', () => {
+  const config = { bop: { smoothing: 2 } };
+  const up = panelModel(liveSnapshot(120), config, currentMs);
+  const down = panelModel(liveSnapshot(80), config, currentMs);
+  assert.equal(up.immediate.state, 'live');
+  assert.ok(Math.abs(up.immediate.zScore - 19 / Math.sqrt(20)) < 1e-12);
+  assert.ok(Math.abs(down.immediate.zScore + 19 / Math.sqrt(20)) < 1e-12);
+  assert.equal(up.immediate.rsi, 100);
+  assert.equal(down.immediate.rsi, 0);
+  assert.equal(up.immediate.bop, (20 / 22) / 2);
+  assert.equal(down.immediate.bop, (-20 / 22) / 2);
+  assert.ok(up.immediate.macdHistogram > 0);
+  assert.ok(down.immediate.macdHistogram < 0);
+  assert.equal(up.completed.rsi.latest, 50);
+  assert.equal(up.completed.bop.latest, 0);
+  assert.equal(up.completed.macd.histogramLatest, 0);
+  const flat = panelModel(liveSnapshot(100), config, currentMs).immediate;
+  assert.equal(flat.zScore, 0);
+  assert.equal(flat.macdHistogram, 0);
+});
+
+test('immediate readings reject stale quotes and must match the current candle', () => {
+  const live = liveSnapshot(120);
+  const stale = panelModel(live, {}, currentMs + 3001).immediate;
+  assert.deepEqual(stale, { state: 'stale', zScore: null, rsi: null, bop: null, bopPartial: false, macdHistogram: null });
+  const previous = { ...live.quote, exchangeMs: currentOpen * 1000 - 1 };
+  const mismatched = { ...live.quote, price: 119 };
+  for (const quote of [null, previous, mismatched]) {
+    assert.deepEqual(panelModel({ ...live, quote }, {}, currentMs).immediate, { ...stale, state: 'unavailable' });
+  }
+});
+
+test('an incomplete opening range withholds BOP while preserving the current close readings', () => {
+  const live = liveSnapshot(120);
+  live.candles.at(-1).partial = true;
+  const model = panelModel(live, {}, currentMs).immediate;
+  assert.equal(model.state, 'live');
+  assert.equal(model.rsi, 100);
+  assert.ok(model.zScore > 4);
+  assert.ok(model.macdHistogram > 0);
+  assert.equal(model.bop, null);
+  assert.equal(model.bopPartial, true);
+});
+
+test('a gap resets immediate warmup and chart settings still control enabled indicators', () => {
+  const live = liveSnapshot(120);
+  live.candles.splice(-5, 1);
+  const config = { bop: { enabled: false }, rsi: { length: 2 } };
+  assert.deepEqual(panelModel(live, config, currentMs).immediate, {
+    state: 'live', zScore: null, rsi: 100, bop: null, bopPartial: false, macdHistogram: null,
+  });
+});
+
 test('only complete candles inform signal readouts; developing chart values stay separate', () => {
   const model = panelModel(snapshot(), {}, now);
   assert.equal(model.signalEligible, true);

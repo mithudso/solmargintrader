@@ -72,11 +72,11 @@
     },
     {
       "path": "extension/package.json",
-      "sha256": "1166556f9d5a154e44508b59e0bbd4f92b4acb7c4beba5712f38124fe95e497b"
+      "sha256": "f087d8ec6c5c75a6bfd6635fe510617c6b4a282c20fed7097795d90c7a381d14"
     },
     {
       "path": "extension/src/core/commands.js",
-      "sha256": "2993c0fb6d03a65c24dd1b3ac5218b1ce520e456ba283276602389438283656f"
+      "sha256": "ba129fa6105f0d571b24e638db4aa190390eba61ca7f0032fc5a7647f91afc44"
     },
     {
       "path": "liquidity/pyproject.toml",

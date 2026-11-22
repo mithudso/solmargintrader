@@ -3,11 +3,18 @@
   if (globalThis.__smt1000xHost) return;
   globalThis.__smt1000xHost = true;
   let host, frame, body, heading, key = '', collapsed = false;
-  let fitMovedPanel;
+  let fitMovedPanel, onWindowClosed, hasWindowMarket = false;
   const version = chrome.runtime.getManifest().version;
+
+  async function controlWindow(action) {
+    const response = await chrome.runtime.sendMessage({ type: 'jupiterIndicatorWindow', action });
+    if (!response?.ok) throw new Error(response?.error ?? 'Chrome did not respond');
+    return response.result.detached;
+  }
 
   function mount({ symbol, kind, side }) {
     const perps = kind === 'perps';
+    const canDetach = !perps && Boolean(symbol);
     host = document.createElement('aside');
     host.id = perps ? 'smt-perps-panel' : 'smt-1000x-indicators';
     host.setAttribute('aria-label', perps ? 'SolMarginTrader Perps paper window' : 'SolMarginTrader indicator window');
@@ -20,6 +27,8 @@
         border:1px solid #46536c;border-radius:12px;background:#101723;color:#e7edf8;
         box-shadow:0 10px 50px #0009;font:13px system-ui,sans-serif;color-scheme:dark}
       :host([data-collapsed]){width:300px!important;height:40px!important;min-height:40px;resize:none}
+      :host([data-detached]){width:330px!important;height:40px!important;min-height:40px;resize:none}
+      :host([data-window-error]){min-height:66px}
       header{height:40px;min-height:40px;display:flex;align-items:center;gap:8px;padding:0 10px;
         cursor:move;touch-action:none;background:#1c2638;user-select:none;box-sizing:border-box}
       strong{flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-size:12px}
@@ -27,6 +36,7 @@
         min-width:30px;min-height:28px;cursor:pointer;font:12px system-ui}
       button:focus-visible{outline:2px solid #80d9ec;outline-offset:2px}
       .move-controls:not([hidden]){display:flex;gap:4px}
+      .window-status:not(:empty){padding:3px 10px;color:#f5ce85}
       main{flex:1;min-height:0}iframe{border:0;width:100%;height:100%;display:block}
     `;
     const bar = document.createElement('header');
@@ -51,6 +61,53 @@
     controls.setAttribute('role', 'group');
     controls.setAttribute('aria-label', 'Move panel');
     move.setAttribute('aria-controls', controls.id);
+    const status = document.createElement('div');
+    status.className = 'window-status';
+    status.setAttribute('role', 'status');
+    const windowButton = (id, label, action) => {
+      const button = document.createElement('button');
+      button.type = 'button';
+      button.id = `smt-1000x-${id}`;
+      button.textContent = label;
+      button.addEventListener('click', event => {
+        if (event.isTrusted) void changeWindow(action);
+      });
+      return button;
+    };
+    const popout = windowButton('popout', 'Pop out', 'open');
+    const focus = windowButton('focus', 'Focus', 'focus');
+    const dock = windowButton('dock', 'Dock', 'dock');
+    const mounted = host;
+    const active = () => mounted === host && mounted.isConnected;
+    let detached = false, pending = canDetach;
+
+    function renderWindow() {
+      mounted.toggleAttribute('data-detached', detached);
+      mounted.toggleAttribute('data-window-error', Boolean(status.textContent));
+      popout.hidden = !canDetach || detached || !controls.hidden;
+      focus.hidden = dock.hidden = !detached;
+      popout.disabled = focus.disabled = dock.disabled = pending;
+      move.hidden = detached || !controls.hidden;
+      toggle.hidden = close.hidden = detached;
+      setCollapsed(collapsed);
+    }
+    async function changeWindow(action) {
+      if (!active() || (pending && action !== 'status')) return;
+      pending = true;
+      status.textContent = '';
+      renderWindow();
+      try {
+        const isDetached = await controlWindow(action);
+        if (active()) detached = isDetached;
+      } catch {
+        if (active() && action !== 'status') status.textContent = 'Could not change the indicator window. Try again.';
+      } finally {
+        if (active()) {
+          pending = false;
+          renderWindow();
+        }
+      }
+    }
 
     function placePanel(left, top) {
       const { width } = host.getBoundingClientRect();
@@ -87,7 +144,7 @@
     const setMoving = active => {
       controls.hidden = !active;
       heading.hidden = active;
-      move.hidden = active;
+      renderWindow();
       move.setAttribute('aria-expanded', String(active));
       (active ? controls.firstElementChild : move).focus({ preventScroll: true });
     };
@@ -113,7 +170,7 @@
       toggle.textContent = value ? '+' : '−';
       toggle.title = value ? 'Open indicators' : 'Collapse indicators';
       toggle.setAttribute('aria-expanded', String(!value));
-      if (value) { frame?.remove(); frame = null; }
+      if (value || detached || pending) { frame?.remove(); frame = null; }
       else if (!frame) {
         frame = document.createElement('iframe');
         frame.title = perps ? 'Jupiter Perps paper and risk controls' : 'Jupiter indicators and auto-trading controls';
@@ -139,10 +196,17 @@
     });
     bar.addEventListener('pointerup', () => { drag = null; });
     bar.addEventListener('lostpointercapture', () => { drag = null; });
-    bar.append(heading, toggle, close, move, controls);
-    shadow.append(style, bar, body);
+    bar.append(heading, popout, focus, dock, toggle, close, move, controls);
+    shadow.append(style, bar, status, body);
     document.documentElement.append(host);
-    setCollapsed(collapsed);
+    onWindowClosed = canDetach ? () => {
+      if (!active()) return;
+      detached = false;
+      status.textContent = '';
+      renderWindow();
+    } : null;
+    renderWindow();
+    if (canDetach) void changeWindow('status');
   }
 
   function route() {
@@ -155,11 +219,16 @@
       const match = /^\/perps\/(long|short)\/(JupUSD-(SOL|ETH|BTC|ZEC|HYPE)|USDC-(ZEC|HYPE))\/?$/.exec(url.pathname);
       if (match) target = { kind: 'perps', symbol: match[3] ?? match[4], side: match[1] };
     }
-    if (!target) {
-      host?.remove(); host = frame = null; key = ''; return;
-    }
-    const next = JSON.stringify(target);
+    const next = target ? JSON.stringify(target) : '';
     if (host?.isConnected && key === next) return;
+    const nextHasMarket = target?.kind === 'yolo' && Boolean(target.symbol);
+    if (hasWindowMarket && !nextHasMarket) {
+      void controlWindow('status').catch(() => {});
+    }
+    hasWindowMarket = nextHasMarket;
+    if (!target) {
+      host?.remove(); host = frame = onWindowClosed = null; key = ''; return;
+    }
     host?.remove(); host = frame = null;
     key = next;
     mount(target);
@@ -172,8 +241,11 @@
   };
   const suspend = () => {
     clearInterval(timer); timer = null;
-    host?.remove(); host = frame = null; key = '';
+    host?.remove(); host = frame = onWindowClosed = null; key = '';
   };
+  chrome.runtime.onMessage.addListener(({ type } = {}, sender) => {
+    if (sender.id === chrome.runtime.id && type === 'jupiter1000xWindowClosed') onWindowClosed?.();
+  });
   resume();
   window.addEventListener('resize', () => {
     if (host?.isConnected) fitMovedPanel();

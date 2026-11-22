@@ -28,6 +28,7 @@ import { RequestBudget } from '../jupiter/http.js';
 import { makeSigner } from '../wallet/signer.js';
 import { restorePaperVenue } from './paper-venue.js';
 import { createLiveWindows } from './live-windows.js';
+import { createJupiterIndicatorWindows } from './jupiter-indicator-window.js';
 import { digest } from '../core/bot-manager.js';
 import { OWNER_SOURCE_SCHEMA, OWNER_SOURCE_FILES } from '../core/owner-source.js';
 import { controlRoomTransitions } from '../core/control-room.js';
@@ -86,6 +87,9 @@ const nativeTransport = createNativeTransport();
 const liveWindows = chrome.runtime.onConnect && chrome.windows && chrome.runtime.getURL
   ? createLiveWindows({ runtime: chrome.runtime, windows: chrome.windows,
     getURL: path => chrome.runtime.getURL(path) }) : null;
+const jupiterIndicatorWindows = chrome.storage?.session && chrome.windows?.onRemoved && chrome.tabs?.onUpdated
+  ? createJupiterIndicatorWindows({ runtime: chrome.runtime, storage: chrome.storage.session,
+    windows: chrome.windows, tabs: chrome.tabs }) : null;
 const browserUiStore = {};
 const zecBrowser = createZecAdvisory({ configStore, runtime: chrome.runtime });
 const zecDeps = { store: {}, zecBrowser };
@@ -442,13 +446,13 @@ chrome.runtime.onMessage.addListener((msg, sender, respond) => {
       return false;
     }
   }
-  handleMessage(msg)
+  handleMessage(msg, { sender })
     .then(respond)
     .catch((err) => respond({ ok: false, error: String(err?.message ?? err) }));
   return true; // keep the channel open for the async reply
 });
 
-export async function handleMessage(msg, { openStore, soltui } = {}) {
+export async function handleMessage(msg, { openStore, soltui, sender } = {}) {
   const requested = msg?.type;
   const name = ALIASES[requested] ?? requested;
 
@@ -471,7 +475,7 @@ export async function handleMessage(msg, { openStore, soltui } = {}) {
   // The PiP gesture crosses the synchronous message→Port relay. Opening the
   // order store first would discard it; UI commands never receive trading deps.
   const deps = COMMANDS[name].zec ? { ...zecDeps, setZecEnabled }
-    : COMMANDS[name].browserUi ? { store: browserUiStore, liveWindows }
+    : COMMANDS[name].browserUi ? { store: browserUiStore, liveWindows, jupiterIndicatorWindows, sender }
       : await chromeDeps({ passphrase, openStore, ...(soltui ? { soltui } : {}) });
 
   try {

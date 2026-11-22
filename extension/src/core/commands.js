@@ -194,6 +194,17 @@ async function soltuiRead(deps, command, params, notes) {
 /* ---------------------------------------------------------------- registry -- */
 
 export const COMMANDS = {
+  jupiterIndicatorWindow: {
+    describe: 'Move the Jupiter 1000x indicator panel into or out of a Chrome window.',
+    params: [{ name: 'action', type: TYPE.STRING, required: true }],
+    unlocked: true,
+    browserUi: true,
+    handler({ deps, args }) {
+      if (!['open', 'focus', 'status', 'dock'].includes(args.action)) throw new CommandError('Invalid indicator window action', 400);
+      if (!deps.jupiterIndicatorWindows) throw new CommandError('Indicator windows require the Chrome extension.', 501);
+      return deps.jupiterIndicatorWindows.control(args.action, deps.sender);
+    },
+  },
   openLiveWindow: {
     describe: 'Open or reuse a floating live view. An existing workspace can pin with one click.',
     params: [{ name: 'asset', type: TYPE.STRING, describe: 'Optional coin symbol.' }],
