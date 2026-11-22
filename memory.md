@@ -27,6 +27,11 @@ and full-suite Steps 3-5 (`/lca` packs, `/ldo --family` rollup, report).
 The shared research runner writes no v4 evidence spans. The binding tool
 `/Users/mitch/.global-ai-hub/research/zero-fee-perpetual-futures-venues-with-api-access/bind/bind_tool.py`
 added them by reusing the gate's own `check_spans`.
+The hub wiring in `/Users/mitch/.claude/skills/trading-and-investing` (routing row,
+triggers, v1.7.6) sits on a working-tree `SKILL.md` that was older than its
+committed HEAD (v1.6.0 against v1.7.0) and holds other sessions' uncommitted
+edits. Reconcile it against HEAD before publishing; the pre-edit copy and diff
+are in `/Users/mitch/.global-ai-hub/research/zero-fee-perpetual-futures-venues-with-api-access/hub-wiring`.
 
 Version: 717
 Delta: v716 to v717. Record the 1000x implementation and verification.

@@ -1,11 +1,11 @@
 {
-  "generatedAt": "2026-11-22T21:28:18+00:00",
+  "generatedAt": "2026-11-22T21:29:57+00:00",
   "schemaVersion": 1,
   "repoRoot": "~/dev/solmargintrader",
-  "commit": "1ca9d8e",
+  "commit": "02fd946",
   "counts": {
     "files": 7856,
-    "bytes": 231096290,
+    "bytes": 231096714,
     "byKind": {
       "strategy-card": 4434,
       "doc": 1451,
@@ -79901,9 +79901,9 @@
       "title": "Work continuation",
       "summary": "Version: 718 Delta: v717 to v718. Record the zero-fee re-read and the zero-fee venue research state. Removing exchange fees from the frozen cross-chain replay flips the Z-score(12)",
       "summarySource": "opening-prose",
-      "bytes": 939102,
-      "lines": 5210,
-      "sha1": "5e6b3d44ee30a2ec3a3cbd7933ab2b680bf5e270",
+      "bytes": 939526,
+      "lines": 5215,
+      "sha1": "fd64212b52894c8438d987be5ae4ab88b360016e",
       "symbols": [],
       "imports": [],
       "internalImports": [],
@@ -244243,5 +244243,5 @@
       "frontmatter": {}
     }
   ],
-  "textSha256": "879fd517300e0ce9dd4a021af279434c78ce34b7616a612439c9cc1838005bad"
+  "textSha256": "3efbee718ac64997b8ec6d1ce5492a0d9d871203667529e74abbbc8942f7b3b9"
 }
