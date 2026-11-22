@@ -1,17 +1,17 @@
 {
-  "generatedAt": "2026-11-22T13:45:16+00:00",
+  "generatedAt": "2026-11-22T21:28:18+00:00",
   "schemaVersion": 1,
   "repoRoot": "~/dev/solmargintrader",
-  "commit": "3c8f0f0",
+  "commit": "1ca9d8e",
   "counts": {
-    "files": 7855,
-    "bytes": 231088612,
+    "files": 7856,
+    "bytes": 231096290,
     "byKind": {
       "strategy-card": 4434,
       "doc": 1451,
       "test": 586,
       "code-python": 541,
-      "result": 315,
+      "result": 316,
       "config": 209,
       "code-js": 174,
       "other": 67,
@@ -22,7 +22,7 @@
       "code-shell": 4
     },
     "byTopDir": {
-      "research": 4529,
+      "research": 4530,
       "backtester": 1664,
       "extension": 226,
       "soltui": 215,
@@ -60,7 +60,7 @@
       "archive": 1,
       "tradingskilllist": 1
     },
-    "withSummary": 7362
+    "withSummary": 7363
   },
   "files": [
     {
@@ -79899,11 +79899,11 @@
       "ext": ".md",
       "kind": "doc",
       "title": "Work continuation",
-      "summary": "Version: 717 Delta: v716 to v717. Record the 1000x implementation and verification. The 1000x summary reads the selected interval's developing close. It shows",
+      "summary": "Version: 718 Delta: v717 to v718. Record the zero-fee re-read and the zero-fee venue research state. Removing exchange fees from the frozen cross-chain replay flips the Z-score(12)",
       "summarySource": "opening-prose",
-      "bytes": 937423,
-      "lines": 5182,
-      "sha1": "f22d560e92b21041253634ab4ab42d4d3070e8a1",
+      "bytes": 939102,
+      "lines": 5210,
+      "sha1": "5e6b3d44ee30a2ec3a3cbd7933ab2b680bf5e270",
       "symbols": [],
       "imports": [],
       "internalImports": [],
@@ -84575,11 +84575,11 @@
       "ext": ".md",
       "kind": "doc",
       "title": "Prompt history",
-      "summary": "Version: 327 Delta: v326 to v327. Record the Jupiter 1000x widget request. Version: 326",
+      "summary": "Version: 328 Delta: v327 to v328. Record the zero-fee venue request. Version: 327",
       "summarySource": "opening-prose",
-      "bytes": 306003,
-      "lines": 5101,
-      "sha1": "4000ef1860a24036df1e8d8f0e6bc8be3d71fab9",
+      "bytes": 306462,
+      "lines": 5108,
+      "sha1": "94f3862219cbfae1b13ccd6d02936ac0a135bf8a",
       "symbols": [],
       "imports": [],
       "internalImports": [],
@@ -90310,6 +90310,24 @@
       "bytes": 7016,
       "lines": 94,
       "sha1": "ac8410f268dcc7a51b1dfcc632a37ff2bd31aaea",
+      "symbols": [],
+      "imports": [],
+      "internalImports": [],
+      "frontmatter": {}
+    },
+    {
+      "id": "research/papers/results/cross_chain_short_zero_fee_reread.md",
+      "path": "research/papers/results/cross_chain_short_zero_fee_reread.md",
+      "dir": "research/papers/results",
+      "name": "cross_chain_short_zero_fee_reread.md",
+      "ext": ".md",
+      "kind": "result",
+      "title": "Cross-chain short replay re-read with exchange fees removed",
+      "summary": "Date: 2026-11-22. Source: the frozen cross-chain replay of PR #361, Reproduce with (output saved as",
+      "summarySource": "opening-prose",
+      "bytes": 5540,
+      "lines": 91,
+      "sha1": "039f331821c9f606ceb9943c1f10373b5fdd62ef",
       "symbols": [],
       "imports": [],
       "internalImports": [],
@@ -244225,5 +244243,5 @@
       "frontmatter": {}
     }
   ],
-  "textSha256": "613c2d166df0334bbd97f30227d548d7ac02b3ae1eb8128f260fe74229599b0d"
+  "textSha256": "879fd517300e0ce9dd4a021af279434c78ce34b7616a612439c9cc1838005bad"
 }

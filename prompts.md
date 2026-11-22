@@ -1,5 +1,12 @@
 # Prompt history
 
+Version: 328
+Delta: v327 to v328. Record the zero-fee venue request.
+
+## Pick the best tested strategy and research zero-fee venues
+
+> Get this repo up to date and then ❯ look at this file and tell me from the tests what would be the most profitable strategy in which coins and then do a  full-suite skill on  zero fee exchanges to make that possibler with API access ./Users/mitch/dev/solmargintrader/codex-session-01a1f7e0-9677-78f2-abf7-1b84e07caf5b.md
+
 Version: 327
 Delta: v326 to v327. Record the Jupiter 1000x widget request.
 
