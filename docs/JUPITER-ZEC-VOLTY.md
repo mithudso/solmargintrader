@@ -122,6 +122,41 @@ state. The native status command provides the same evidence:
 soltui call zec.volty.status
 ```
 
+### Stalled reconciliation and execution timing
+
+After four distinct fresh marks with the same unresolved leg, the owner clears
+its active signal and re-warms the crossing detector. It keeps polling GUM for
+the committed order. The journal retains the original client order ID, and an
+unknown outcome continues to block new entries. A late close can settle, but
+the old reversal signal has expired and a new position needs a fresh crossing.
+Only distinct fresh marks count toward the reset.
+The owner records its count and most recent reset under
+`telemetry.reconciliation` in its private `status.json`.
+
+The journal records local planning, fresh-quote and submission timings for
+new attempts. Use the read-only report to see counts, medians, 90th percentiles,
+and refusals where the price cap would have widened.
+
+```sh
+python -m oracle.zec_volty --timing --state-dir "$VOLTY_STATE"
+```
+
+Signal age starts at the venue's mark timestamp. The timing report counts local
+POST attempts. GUM receipts establish acceptance and fills. The report uses
+journal entries with the new timing fields.
+
+### Forward paper comparison
+
+Run the current two-sided entry rules, short-only entries with opposite
+signals still able to close, and a separate close-and-wait policy on the same
+prospective GUM observations. The comparison publishes separate P&L, drawdown,
+and execution counts. It simulates fills and settlement from public market
+data. Keep any live rollout decision tied to fresh after-cost evidence.
+
+```sh
+python -m oracle.zec_volty_paper --watch --state-dir "$VOLTY_PAPER_STATE"
+```
+
 ### Realized performance
 
 The top of the funded Volty panel shows gross P&L, net P&L and profitable

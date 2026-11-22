@@ -1,5 +1,21 @@
 # Prompt history
 
+Version: 318
+Delta: v317 to v318. Record the continuation request.
+
+## Resume the Volty paper comparison and watchdog
+
+> resume
+
+Version: 317
+Delta: v316 to v317. Record Volty improvements and unresolved-order recovery.
+
+## Volty paper comparison and watchdog
+
+> Implement all the changes you recommended.
+
+> Also add a stuck check so if the previous order stays unresolved for several tiks then it needs to reset.
+
 Version: 316
 Delta: v315 to v316. Record the Volty performance summary request.
 

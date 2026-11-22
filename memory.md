@@ -1,5 +1,21 @@
 # Work continuation
 
+Version: 698
+Delta: v697 to v698. Record verification and the evidence for the stalled funded order.
+
+## Volty comparison and watchdog verification
+
+The paper runner records three matched prospective books and uses public GUM quotes, modeled capped fills, fees and observed funding. The funded runner resets the crossing state after four distinct fresh marks with one unresolved committed leg. It preserves the intent and continues venue reconciliation. The timing report counts only instrumented dispatch and POST observations. All 285 Oracle tests, pinned Ruff, the documentation check and a public paper smoke passed.
+
+After reboot, the old transient funded job was absent. The single unresolved opening sell was bound to a finalized Jupnet instruction rejection by exact bytes, owner signature and committed client order ID. A private journal-copy rehearsal preserved the filled close and passed the same-policy flat venue preflight with zero outstanding rows. Use the private recovery and deployment receipts for the actual restart and installed verification.
+
+Version: 697
+Delta: v696 to v697. Record the forward-paper comparison, timing, and watchdog scope.
+
+## Volty paper comparison and watchdog
+
+Compare the current funded Volty rules with short-only entries and close-then-wait reversals on the same prospective GUM observations. Measure net P&L, drawdown and missed/refused fills. Capture execution timing without changing prices or submitting extra orders. Several fresh ticks with one unresolved order invalidate transient signal state; the durable order stays reconcilable, and venue-confirmed terminal outcomes remain the only path to reentry.
+
 Version: 696
 Delta: v695 to v696. Record realized Volty accounting and verification.
 
