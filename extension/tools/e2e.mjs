@@ -522,17 +522,36 @@ try {
         assert(rendered.text.indexOf('Gross P&L') < rendered.text.indexOf('GUM mark'), 'performance must precede market levels');
         eq(rendered.controls, 0, 'Volty verification section must be read-only');
         await browser.call('Emulation.setDeviceMetricsOverride', { width: 320, height: 690, deviceScaleFactor: 1, mobile: false }, page.sessionId);
-        const pnlFits = await page.ev(`(() => {
-          return window.innerWidth === 320 && document.documentElement.scrollWidth === 320 &&
-            ['[data-volty-net]', '[data-volty-gross]'].every(selector => {
-              const node = document.querySelector(selector).firstChild;
-              const range = document.createRange();
-              range.setStart(node, 0);
-              range.setEnd(node, node.textContent.indexOf(' USDC'));
-              return range.getClientRects().length === 1;
-            });
+        // Exercise the space taken by classic scrollbars even on macOS.
+        await page.ev(`(() => {
+          const style = document.createElement('style');
+          style.id = 'e2e-volty-scrollbar';
+          style.textContent = 'html { overflow-y: scroll } html::-webkit-scrollbar { width: 17px }';
+          document.head.append(style);
         })()`);
-        assert(pnlFits, `GUM P&L digits must stay together at 320px on the ${side} route`);
+        assert(await browser.waitFor(() => page.ev(`window.innerWidth === 320 && document.documentElement.clientWidth < window.innerWidth`)),
+          '320px Volty viewport with a reserved scrollbar gutter');
+        const layout = await page.ev(`(() => {
+          const { clientWidth, scrollWidth } = document.documentElement;
+          const amounts = ['[data-volty-net]', '[data-volty-gross]'].map(selector => {
+            const card = document.querySelector(selector);
+            const node = card.firstChild;
+            const range = document.createRange();
+            range.setStart(node, 0);
+            range.setEnd(node, node.textContent.indexOf(' USDC'));
+            const boxes = [...range.getClientRects()];
+            const bounds = card.getBoundingClientRect();
+            const sameLine = boxes.length > 0
+              && Math.max(...boxes.map(box => box.top)) < Math.min(...boxes.map(box => box.bottom));
+            return { digits: range.toString(), sameLine,
+              contained: boxes.every(box => box.left >= bounds.left && box.right <= bounds.right) };
+          });
+          return { clientWidth, scrollWidth, amounts };
+        })()`);
+        assert(layout.scrollWidth <= layout.clientWidth, `GUM P&L causes horizontal overflow on the ${side} route: ${JSON.stringify(layout)}`);
+        assert(layout.amounts.every(amount => amount.sameLine && amount.contained),
+          `GUM P&L digits must stay together at 320px on the ${side} route: ${JSON.stringify(layout)}`);
+        await page.ev(`document.getElementById('e2e-volty-scrollbar').remove()`);
         await browser.call('Emulation.clearDeviceMetricsOverride', {}, page.sessionId);
         if (side === 'short') {
           await page.ev('globalThis.voltyClockOffset = 21000');

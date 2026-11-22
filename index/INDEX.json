@@ -1,11 +1,11 @@
 {
-  "generatedAt": "2026-11-22T01:51:59+00:00",
+  "generatedAt": "2026-11-22T01:57:02+00:00",
   "schemaVersion": 1,
   "repoRoot": "~/dev/solmargintrader",
-  "commit": "e0d6d93",
+  "commit": "b68d959",
   "counts": {
     "files": 4204,
-    "bytes": 212326695,
+    "bytes": 212328016,
     "byKind": {
       "strategy-card": 1478,
       "doc": 845,
@@ -75967,9 +75967,9 @@
       "title": "e2e",
       "summary": "Real-browser end-to-end check. Loads the unpacked extension into Chrome for Testing, drives the real service worker, popup and dashboard over the DevTools pipe, and asserts what a human would otherwise have to click through at chrome://extensions.",
       "summarySource": "docstring",
-      "bytes": 44380,
-      "lines": 773,
-      "sha1": "1f3bdb53a8ce8d43b3855c0853d4ed0105cfc538",
+      "bytes": 45701,
+      "lines": 792,
+      "sha1": "0adad6d30e0a456bd0765b82ede3c220578de4a6",
       "symbols": [
         "CANARY",
         "EXT",
@@ -124907,5 +124907,5 @@
       "frontmatter": {}
     }
   ],
-  "textSha256": "03507ee5f3864c65279f70801367274175871b37de0e37a68ec2070716299076"
+  "textSha256": "3d1f23ec38722834ba4bbbc5515b5afbbe2e857fd7e500dabf328b3fad2de5c4"
 }
