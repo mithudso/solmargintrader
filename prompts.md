@@ -1,5 +1,12 @@
 # Prompt history
 
+Version: 321
+Delta: v320 to v321. Record the two-up short and three-down long test.
+
+## Test the ZEC two-up short and three-down long
+
+> Test the strategy of shorting after two consecutive up bars, and longing after three consecutive down bars.
+
 Version: 320
 Delta: v319 to v320. Record the short-only ZEC replay request.
 

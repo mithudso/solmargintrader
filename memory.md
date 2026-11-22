@@ -1,5 +1,29 @@
 # Work continuation
 
+Version: 705
+Delta: v704 to v705. Record verified two-up short and three-down long results.
+
+On the Nov. 11–18 five-minute ZEC/GUM holdout, the five-minute hold
+lost 6.30% net over 384 trades and had zero modeled liquidations. Shorts
+after two up bars lost $49.24 across 256 exits. Longs after three down
+bars lost $13.79 across 128 exits. Typical round-trip costs exceeded
+the average raw move. The 15-minute hold made $0.28 in the added week
+with three modeled liquidations. All five tested holding periods lost
+money across the four prior weekly replays and the overlapping 21-day
+continuous replay. A second run was byte-identical and an independent
+replay matched all five holdout outcomes.
+
+Version: 704
+Delta: v703 to v704. Record the streak strategy replay scope.
+
+Use the same frozen five-minute ZEC/GUM setting and one-minute fill path
+as the preceding long-only and short-only comparisons. Enter on the
+next open after the second consecutive bullish bar or the third
+consecutive bearish bar. Fire once per streak and reset on a flat bar.
+Use a five-minute hold as the baseline. Test fixed alternative holding
+times separately and apply the original fee, slippage, funding and
+liquidation model to every trade.
+
 Version: 703
 Delta: v702 to v703. Record verified short-only ZEC replay results.
 

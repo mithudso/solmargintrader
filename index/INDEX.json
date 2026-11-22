@@ -1,11 +1,11 @@
 {
-  "generatedAt": "2026-11-22T05:15:01+00:00",
+  "generatedAt": "2026-11-22T05:51:43+00:00",
   "schemaVersion": 1,
   "repoRoot": "~/dev/solmargintrader",
-  "commit": "b12ae0c",
+  "commit": "6aa39cd",
   "counts": {
     "files": 4204,
-    "bytes": 212329643,
+    "bytes": 212331113,
     "byKind": {
       "strategy-card": 1478,
       "doc": 845,
@@ -79737,11 +79737,11 @@
       "ext": ".md",
       "kind": "doc",
       "title": "Work continuation",
-      "summary": "Version: 703 Delta: v702 to v703. Record verified short-only ZEC replay results. The historical GUM short-only rerun evaluated 6,048 five-minute configurations",
+      "summary": "Version: 705 Delta: v704 to v705. Record verified two-up short and three-down long results. On the Nov. 11\u201318 five-minute ZEC/GUM holdout, the five-minute hold",
       "summarySource": "opening-prose",
-      "bytes": 926322,
-      "lines": 4970,
-      "sha1": "bcac3c0cee5a026aec7d69ccaed989af2c9f7ced",
+      "bytes": 927546,
+      "lines": 4994,
+      "sha1": "63582411407788b3dd72071b7021c46286a1db7f",
       "symbols": [],
       "imports": [],
       "internalImports": [],
@@ -84413,11 +84413,11 @@
       "ext": ".md",
       "kind": "doc",
       "title": "Prompt history",
-      "summary": "Version: 320 Delta: v319 to v320. Record the short-only ZEC replay request. Version: 319",
+      "summary": "Version: 321 Delta: v320 to v321. Record the two-up short and three-down long test. Version: 320",
       "summarySource": "opening-prose",
-      "bytes": 303688,
-      "lines": 5045,
-      "sha1": "96c3de5895cabe691408591578d394038eff5d49",
+      "bytes": 303934,
+      "lines": 5052,
+      "sha1": "a4b7c6331562d42d7efdd98a5b482fbea6468999",
       "symbols": [],
       "imports": [],
       "internalImports": [],
@@ -124907,5 +124907,5 @@
       "frontmatter": {}
     }
   ],
-  "textSha256": "756c0b6472ce5a1da4a5bc0a6a17661fecc677cb9396dffe8c84f285c3c30b56"
+  "textSha256": "37c98703f4731190a5da01a93fc30323c5b8bda3ddbc6a1759de2b80ddcc799e"
 }

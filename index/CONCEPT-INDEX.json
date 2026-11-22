@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-11-22T05:15:01+00:00",
+  "generatedAt": "2026-11-22T05:51:43+00:00",
   "schemaVersion": 1,
   "note": "Concepts are derived from the repo's own vocabulary \u2014 the FAMILY dict, strategy-card frontmatter, docs/trading-signals-concept-family.md, and terms verified to recur in the corpus. A concept matching no file is dropped, not kept.",
   "counts": {
@@ -174,7 +174,7 @@
         },
         {
           "path": "memory.md",
-          "hits": 456
+          "hits": 458
         },
         {
           "path": "llms-filemap.txt",
@@ -603,7 +603,7 @@
         },
         {
           "path": "memory.md",
-          "hits": 538
+          "hits": 539
         },
         {
           "path": "llms/jupsol-llms.txt",
@@ -1174,7 +1174,7 @@
         },
         {
           "path": "memory.md",
-          "hits": 60
+          "hits": 61
         },
         {
           "path": "research/json/tradingview-script-profiles/shard-b.jsonl",
@@ -1423,7 +1423,7 @@
         },
         {
           "path": "memory.md",
-          "hits": 59
+          "hits": 60
         },
         {
           "path": "research/json/eth-week-20261117/summary.json",
