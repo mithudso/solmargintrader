@@ -1,0 +1,95 @@
+---
+id: tv_hi8pzktb_evaluation_of_bitcoin
+name: "Evaluation of Bitcoin?"
+kind: exposure-strategy
+status: spec-only
+family: source-defined
+summary: "Specification of Evaluation of Bitcoin?; not a tested trading strategy."
+registry_key: null
+runner: null
+warmup_bars: null
+evaluation: null
+data_required: [ohlcv, point-in-time-financial-statements, point-in-time-onchain-history]
+data_available: false
+success_likelihood: low
+success_basis: a-priori
+params: {}
+presets: {}
+---
+# Evaluation of Bitcoin?
+
+Version: 1.0.0 (2026-11-08). Delta: first source-reconciled card.
+
+> **Spec-only — no strategy implementation or performance result is claimed.**
+> This card records a signal or research method. An indicator alone is not an order rule.
+
+## Mechanism and equations
+
+This publication documents the source-specific method named above. The
+author-defined mechanism and any stated inputs are preserved in the passages below.
+A similar component name does not make it equivalent to an existing strategy.
+No missing equation or trading threshold has been supplied by inference.
+
+## Documented inputs and source details
+
+> This is possibly a controversial subject as there are some super die hard bitcoin maxis out there and I understand everyone has there own opinion, not to mention there is no proof of knowing the best way to do this.
+
+> Based on the data and NVT chart it still seems like bitcoin is continuing on a positive mean due to network effect but it tends to get a little a head of it self from time to time, maybe because of the people involved in participating in this market have slightly higher risk apatite than others and are happy to pile on risk during high volatility?
+
+> I have revisited this chart a few times over the years and I find it pretty interesting that when we move into a bullish uptrend and have volatile price action we quickly fall into the over valued region but we can stay there for some time and price can continue to rise (making this indicator pointless for buy and sell signals if thats what your thinking) How ever what you can see is that every time we have finished a block of over value, we are met with some pretty length and large retracements some as far as 70% and some lasting years....
+
+> If you mention things like discount cash flow method, pe ratios, secular trends, book value, comparable or risk adjusted returns they will look at you like a stunned mullet.
+
+These are bounded passages from the author description, not independently verified
+formulas, defaults or performance. No complete repository implementation has been established for this source-specific card. Captured descriptions may include formulas and example code snippets.
+Recover every missing numerical definition before implementation.
+
+## Existence check
+
+The coverage ledger checked the existing card names, registry, indicator functions and
+Compound scorecard before this card was created. Related components do not establish
+equivalence to this complete specification. Exact matches reuse their existing entry
+in the ledger instead of receiving another card.
+
+## Data and availability
+
+Required inputs: ohlcv, point-in-time-financial-statements, point-in-time-onchain-history.
+The complete point-in-time input set has not been verified in the repository. Do not substitute current snapshots or inferred values for historical inputs.
+
+## Implementation and validation
+
+No runner or registry key is assigned. Before implementation, freeze the numerical
+formula, seeds, missing-value policy, warm-up and parameter domains. Where the source
+does not disclose an algorithm or default, recover it rather than guessing. Specify
+entry, exit, stop, holding horizon, exposure and costs separately from the indicator.
+Record which choices come from the publication and which define a new experiment.
+
+Compute with closed bars and trailing data only. Confirm pivots and higher-timeframe
+values before use; never backdate a signal to a pivot that needed later bars. Test
+prefix invariance, flat/zero inputs, unavailable data and one-bar-delayed execution.
+Evaluate chronologically out of sample, deduct transaction and financing costs and compare with
+buy-and-hold and simpler component rules. Record all searched configurations.
+
+## Failure modes and caveats
+
+An author description is not source code or independent validation. Visual styling,
+retrospective drawing anchors, repainting pivots and fitted full-history models can
+produce unavailable historical signals. A rule can be numerically correct and lose
+after costs. Venue, session, data and asset differences limit transfer to SOL.
+
+## Measured results
+
+Not measured in this repository. Publication examples, advertised accuracy and
+screenshots are not repository backtest results.
+
+## Likelihood of success: low
+
+Basis: a-priori. The mechanism has no confirming out-of-sample result here. This rating
+does not promote the source author's claims into evidence of profitability.
+
+## Sources
+
+- https://www.tradingview.com/chart/BTCUSD/hI8PZKtB-Evaluation-of-Bitcoin/
+
+The coverage ledger records canonical URLs, source-file hashes, decoded-description
+hashes and the excerpt offsets used for this card. Raw dumps remain outside Git.
