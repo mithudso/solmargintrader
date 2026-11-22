@@ -1,5 +1,34 @@
 # Work continuation
 
+Version: 709
+Delta: v708 to v709. Record verified P&L and downside for the bracket.
+
+At 25× and $250 margin, the ZEC/GUM two-up short with a 1% target,
+0.8% stop and 15-minute fallback made $87.70 net in the Nov 11–18
+retrospective week. There were 133 winners in 256 trades, 38 takes,
+46 stops, 172 timeouts and zero modeled liquidations. The timed-only
+control made $225.09 and had two modeled liquidations. With the same
+bracket, simultaneous RSI and Balance of Power lost $453.17 and the
+latched confirmation made $91.02. All variants lost in each of the
+four earlier weeks and about 75% over the overlapping 21-day run.
+
+The two independent implementations matched. The private runners,
+frozen input bindings, verification and tables are under
+`/Users/mitch/.local/share/solmargintrader/audits/zec-short-bracket-20261122`.
+This study used minute candle ranges and included both fill costs
+and recorded funding. It did not change trading code or live settings.
+
+Version: 708
+Delta: v707 to v708. Record scope for the short bracket replay.
+
+Interpret the follow-up as a 1% favorable and 0.8% adverse ZEC
+price move from the modeled short entry. Retain the 15-minute
+fallback. Compare exact two-up entries with no confirmation,
+simultaneous RSI and Balance of Power, and the earlier latched gate.
+Use the same frozen historical windows, 25× leverage, costs and
+minute fill ordering as the intrabar study. Keep the replay private
+and simulated. Record net P&L, exits, drawdown and weekly sensitivity.
+
 Version: 707
 Delta: v706 to v707. Record the verified intrabar short results.
 

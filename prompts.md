@@ -1,5 +1,12 @@
 # Prompt history
 
+Version: 323
+Delta: v322 to v323. Record the 1% target and 0.8% stop follow-up.
+
+## Replay the ZEC two-up short with a wider take-profit and stop
+
+> Ok. what about the 2 bar up shorting with a 1% take profit , and a .8% s
+
 Version: 322
 Delta: v321 to v322. Record the confirmed intrabar short replay request.
 

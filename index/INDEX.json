@@ -1,11 +1,11 @@
 {
-  "generatedAt": "2026-11-22T06:23:58+00:00",
+  "generatedAt": "2026-11-22T06:48:51+00:00",
   "schemaVersion": 1,
   "repoRoot": "~/dev/solmargintrader",
-  "commit": "fe8e0a2",
+  "commit": "b2e889c",
   "counts": {
     "files": 4204,
-    "bytes": 212333319,
+    "bytes": 212335049,
     "byKind": {
       "strategy-card": 1478,
       "doc": 845,
@@ -79737,11 +79737,11 @@
       "ext": ".md",
       "kind": "doc",
       "title": "Work continuation",
-      "summary": "Version: 707 Delta: v706 to v707. Record the verified intrabar short results. The ZEC/GUM two-up short exits 900 seconds from entry under the timed",
+      "summary": "Version: 709 Delta: v708 to v709. Record verified P&L and downside for the bracket. At 25\u00d7 and $250 margin, the ZEC/GUM two-up short with a 1% target,",
       "summarySource": "opening-prose",
-      "bytes": 929281,
-      "lines": 5027,
-      "sha1": "81e76a2ae1176ef798cd0604620b671988ed1bdb",
+      "bytes": 930788,
+      "lines": 5056,
+      "sha1": "dcfde76852a83f4da8e8e10b6d14785bd518eb0a",
       "symbols": [],
       "imports": [],
       "internalImports": [],
@@ -84413,11 +84413,11 @@
       "ext": ".md",
       "kind": "doc",
       "title": "Prompt history",
-      "summary": "Version: 322 Delta: v321 to v322. Record the confirmed intrabar short replay request. Version: 321",
+      "summary": "Version: 323 Delta: v322 to v323. Record the 1% target and 0.8% stop follow-up. Version: 322",
       "summarySource": "opening-prose",
-      "bytes": 304405,
-      "lines": 5059,
-      "sha1": "3a0dedd47b81fd5b11da1fc9fb0aaadb821f86ae",
+      "bytes": 304628,
+      "lines": 5066,
+      "sha1": "a1dcaa41c7ea09a4295eb1f34d0a79323b688243",
       "symbols": [],
       "imports": [],
       "internalImports": [],
@@ -124907,5 +124907,5 @@
       "frontmatter": {}
     }
   ],
-  "textSha256": "bee150c99966eb3ddf15eb64423d401e829a68e1e9629638e244f67953f76f4a"
+  "textSha256": "b4a1e89f60143f12df633fe7ead4c7bfb0e31348d78726e921779f96793d6f80"
 }
