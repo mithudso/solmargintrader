@@ -1,5 +1,12 @@
 # Prompt history
 
+Version: 322
+Delta: v321 to v322. Record the confirmed intrabar short replay request.
+
+## Compare the confirmed two-up short and a net-positive intrabar exit
+
+> I feel like when you're doing the 15min hold you're waiting for the end of the 15 min bar. What if you did a 2bar up - short sell strategy, and then closed the position after it was profitable inside the bar rather than waiting for it to possibly liquidate. So waiting for signal from RSI + Balance of Power.
+
 Version: 321
 Delta: v320 to v321. Record the two-up short and three-down long test.
 
