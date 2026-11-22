@@ -1,5 +1,35 @@
 # Work continuation
 
+Version: 711
+Delta: v710 to v711. Record the verified two-up z-score exit comparison.
+
+With a 0.8% price stop, a completed 20-bar return to zero and no
+timer, five-minute ZEC/GUM entries lost $754.86 in the Nov 11–18
+replay. Ten-minute entries lost $337.43. The 25× trades used $250
+margin on a $1,000 starting balance. The five-minute rule had
+106 wins in 214 trades and the ten-minute rule had 61 in 116.
+Neither logged a liquidation in the latest replay. The continuous
+21-day runs returned -79.24% and -49.20%. At a matched 100-minute
+lookback, the ten-minute rule lost $139.69 in the test week and
+lost money in each earlier week.
+
+The matched JavaScript and independent Python verification and
+replays are under
+`/Users/mitch/.local/share/solmargintrader/audits/zec-two-up-zscore-20261122`.
+They use the frozen venue terms, minute OHLC and historical funding.
+The replay did not modify executable strategy code or funded settings.
+
+Version: 710
+Delta: v709 to v710. Record the five- and ten-minute z-score replay scope.
+
+Replay the exact second green ZEC/GUM bar on five- and ten-minute
+candles. The short uses a 0.8% stop from its entry fill and exits at
+the next minute open after a subsequent completed candle closes at
+or below its 20-bar rolling mean. Remove the fixed target and timer.
+Use the same frozen windows, modeled fees and funding, 25× leverage,
+and both prior sizing bases. Separately measure equal elapsed lookback
+and skipping entries already at or below the mean. Preserve paper-only scope.
+
 Version: 709
 Delta: v708 to v709. Record verified P&L and downside for the bracket.
 

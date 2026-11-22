@@ -1,11 +1,11 @@
 {
-  "generatedAt": "2026-11-22T06:48:51+00:00",
+  "generatedAt": "2026-11-22T07:09:08+00:00",
   "schemaVersion": 1,
   "repoRoot": "~/dev/solmargintrader",
-  "commit": "b2e889c",
+  "commit": "75ece93",
   "counts": {
     "files": 4204,
-    "bytes": 212335049,
+    "bytes": 212336818,
     "byKind": {
       "strategy-card": 1478,
       "doc": 845,
@@ -79737,11 +79737,11 @@
       "ext": ".md",
       "kind": "doc",
       "title": "Work continuation",
-      "summary": "Version: 709 Delta: v708 to v709. Record verified P&L and downside for the bracket. At 25\u00d7 and $250 margin, the ZEC/GUM two-up short with a 1% target,",
+      "summary": "Version: 711 Delta: v710 to v711. Record the verified two-up z-score exit comparison. With a 0.8% price stop, a completed 20-bar return to zero and no",
       "summarySource": "opening-prose",
-      "bytes": 930788,
-      "lines": 5056,
-      "sha1": "dcfde76852a83f4da8e8e10b6d14785bd518eb0a",
+      "bytes": 932309,
+      "lines": 5086,
+      "sha1": "db4bf7bd8e906cdb8559d30cd4260e149d253d39",
       "symbols": [],
       "imports": [],
       "internalImports": [],
@@ -84413,11 +84413,11 @@
       "ext": ".md",
       "kind": "doc",
       "title": "Prompt history",
-      "summary": "Version: 323 Delta: v322 to v323. Record the 1% target and 0.8% stop follow-up. Version: 322",
+      "summary": "Version: 324 Delta: v323 to v324. Record the two-timeframe z-score exit request. Version: 323",
       "summarySource": "opening-prose",
-      "bytes": 304628,
-      "lines": 5066,
-      "sha1": "a1dcaa41c7ea09a4295eb1f34d0a79323b688243",
+      "bytes": 304876,
+      "lines": 5073,
+      "sha1": "6039d7e39bfbb51be0b63371ec08fad9cd8b3f6a",
       "symbols": [],
       "imports": [],
       "internalImports": [],
@@ -124907,5 +124907,5 @@
       "frontmatter": {}
     }
   ],
-  "textSha256": "b4a1e89f60143f12df633fe7ead4c7bfb0e31348d78726e921779f96793d6f80"
+  "textSha256": "011e5e67cb12f8e2678122a17ab318890df6bfe8fed71c2376498f46d8528f00"
 }
