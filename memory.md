@@ -1,5 +1,41 @@
 # Work continuation
 
+Version: 715
+Delta: v714 to v715. Record the verified cross-chain transfer results.
+
+The frozen CoinGecko platform census supplied 425 nonempty rankings,
+15 complete top-100 lists, and 3,165 distinct ranked identities.
+There were 300 verified Binance USD-M perpetuals across 213 of those
+chain rankings. Every matched contract scored Oct 12–Nov 16, 2026
+using one-minute OHLC and posted funding. The shared simulation used
+fixed $250 notional, modeled 25×, a 5 bp taker fee and 2 or 6 bps
+of slippage per side. Rank membership uses current platform records.
+
+The continuous baseline medians were -1.53% for Z-score and -6.39%
+for Volty. Stressed medians were -2.66% and -11.84%. Under stressed
+costs, 10 of 300 Z-score and one of 300 Volty markets were profitable.
+HBAR alone met the stricter five-week consistency screen for Z-score,
+at +0.0129% stressed. No Volty market met that screen. No executable
+leverage, depth, or independent chain trading claim is implied.
+
+The original ZEC reference reproduced exactly and the 300-market
+output repeated byte-for-byte. The rank census, replay, chain coverage
+and per-asset files are under
+`/Users/mitch/.local/share/solmargintrader/audits/cross-chain-short-20261122`.
+
+Version: 714
+Delta: v713 to v714. Record scope for the cross-chain transfer study.
+
+Keep the Z-score(12) and short-only Volty(10 × 1.5) settings frozen.
+Rank up to 100 assets per chain by circulating USD market cap among
+explicitly indexed platform deployments and native assets. Include
+every chain with a verifiable ranking, as clarified by the owner. Capture
+ranking and market identities before joining market data. Retain every
+ranked asset with its result or exclusion. Run and deduplicate verified
+perpetual instruments across chains. Freeze a shared date range, use
+baseline and stressed costs, and label execution assumptions. Keep the
+prospective ZEC and funded owners independent.
+
 Version: 713
 Delta: v712 to v713. Record close-only acceptance and the new paper design.
 
