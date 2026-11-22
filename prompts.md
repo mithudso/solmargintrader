@@ -1,5 +1,12 @@
 # Prompt history
 
+Version: 320
+Delta: v319 to v320. Record the short-only ZEC replay request.
+
+## Replay the major ZEC strategies short-only
+
+> Retry the major strategies but using only short trades.
+
 Version: 319
 Delta: v318 to v319. Record the scoped Oracle and Volty optimizer request.
 
