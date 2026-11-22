@@ -22,6 +22,7 @@ from urllib.request import HTTPRedirectHandler, Request, build_opener
 SOL_MINT = "So11111111111111111111111111111111111111112"
 USDC_MINT = "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v"
 JUPITER_PRICE_URL = f"https://api.jup.ag/price/v3?ids={SOL_MINT},{USDC_MINT}"
+JUPITER_PRICE_SOURCE = "jupiter_price_v3"
 MAX_RESPONSE_BYTES = 1_048_576
 INSTRUMENT = re.compile(r"[A-Za-z][A-Za-z0-9]{0,15}/[A-Za-z][A-Za-z0-9]{0,15}\Z")
 MINT = re.compile(r"[1-9A-HJ-NP-Za-km-z]{32,44}\Z")
@@ -222,6 +223,10 @@ class JupiterPriceFeed:
         self._blocks: dict[str, tuple[int, float]] = {}
         self._last_id: str | None = None
 
+    @property
+    def provider_mints(self) -> dict[str, str]:
+        return {"base": self.base_mint, "quote": self.quote_mint}
+
     def poll(self) -> dict | None:
         key = os.environ.get("JUPITER_API_KEY", "")
         if (
@@ -273,7 +278,8 @@ class JupiterPriceFeed:
             )
         price = prices[self.base_mint] / prices[self.quote_mint]
         _number(price)
-        provider_id = _identity(["jupiter_price_v3", self.instrument, blocks, prices])
+        mints = self.provider_mints
+        provider_id = _identity([JUPITER_PRICE_SOURCE, self.instrument, mints, blocks, prices])
         self._blocks = updates
         if provider_id == self._last_id:
             return None
@@ -283,7 +289,7 @@ class JupiterPriceFeed:
         # does not claim the old event ID with a different observation clock.
         event_id = _identity([provider_id, now])
         return {
-            "source": "jupiter_price_v3",
+            "source": JUPITER_PRICE_SOURCE,
             "instrument": self.instrument,
             "venue": "jupiter",
             "kind": "polled_reference_ratio",
@@ -293,6 +299,7 @@ class JupiterPriceFeed:
             "price": price,
             "timestamp_semantics": "local_receipt_upstream_event_time_unknown",
             "upstream_recency_verified": False,
+            "provider_mints": mints,
             "provider_block_ids": blocks,
             "provider": "https://api.jup.ag/price/v3",
             "base_usd_price": prices[self.base_mint],

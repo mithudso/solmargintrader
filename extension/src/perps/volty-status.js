@@ -67,6 +67,19 @@ function setPnl(node, amount) {
   node.toggleAttribute('data-loss', amount < 0);
 }
 
+function reconciliationNote(report, fresh) {
+  const watchdog = report?.telemetry?.reconciliation;
+  if (report?.mode !== 'live' || !watchdog) return '';
+  const { unresolved_fresh_ticks: ticks, reset_threshold: threshold, last_reset_at: reset } = watchdog;
+  if (!Number.isSafeInteger(ticks) || !Number.isSafeInteger(threshold)
+    || threshold <= 0 || ticks < 0 || ticks > threshold
+    || (reset !== null && (!Number.isSafeInteger(reset) || reset <= 0 || reset > report.updated_at))) return '';
+  const progress = fresh && ticks > 0 && ['checking', 'blocked'].includes(report.state)
+    ? `Watchdog counted ${count.format(ticks)} of ${count.format(threshold)} fresh ticks with an unresolved order.` : '';
+  const lastReset = reset === null ? '' : `${fresh ? 'Last' : 'Historical'} signal reset ${stamp(reset)}. Order outcomes require separate venue confirmation.`;
+  return [progress, lastReset].filter(Boolean).join(' ');
+}
+
 function orderRow(order) {
   const verified = order.fills.length && order.state !== 'filled' ? ' · Venue fill transactions recorded' : '';
   const status = order.settlement_pending ? 'Filled · awaiting collateral settlement'
@@ -87,6 +100,7 @@ export function mountVoltyStatus(section, { call = soltui, clock = Date.now } = 
   const status = section.querySelector('[data-volty-status]');
   const updated = section.querySelector('[data-volty-updated]');
   const stateNote = section.querySelector('[data-volty-state-note]');
+  const reconciliation = section.querySelector('[data-volty-reconciliation]');
   const grossPnl = section.querySelector('[data-volty-gross]');
   const netPnl = section.querySelector('[data-volty-net]');
   const profitableTrades = section.querySelector('[data-volty-profitable]');
@@ -128,6 +142,9 @@ export function mountVoltyStatus(section, { call = soltui, clock = Date.now } = 
       ? current.state === 'checking' && settling ? 'Close filled. Waiting for collateral to settle back to the parent account.'
         : STATE_NOTES[current.state]
       : current ? 'Showing historical signals and order receipts.' : '');
+    const watchdogNote = reconciliationNote(current, fresh);
+    reconciliation.hidden = !watchdogNote;
+    setText(reconciliation, watchdogNote);
     const performance = verifiedPerformance(current?.performance, now);
     setPnl(grossPnl, performance?.gross_pnl_usdc);
     setPnl(netPnl, performance?.net_pnl_usdc);

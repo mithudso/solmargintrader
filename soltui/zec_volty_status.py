@@ -113,7 +113,25 @@ def _order(order, observed_at):
     }
 
 
-def _telemetry(row, updated_at):
+def _reconciliation(value, updated_at):
+    if not isinstance(value, dict):
+        return None
+    ticks = value.get("unresolved_fresh_ticks")
+    threshold = value.get("reset_threshold")
+    if (
+        type(ticks) is not int or type(threshold) is not int
+        or not 1 <= threshold <= 10**12 or not 0 <= ticks <= threshold
+    ):
+        return None
+    reset = value.get("last_reset_at")
+    if "last_reset_at" not in value or (
+        reset is not None and (type(reset) is not int or not 0 < reset <= updated_at)
+    ):
+        return None
+    return {"unresolved_fresh_ticks": ticks, "reset_threshold": threshold, "last_reset_at": reset}
+
+
+def _telemetry(row, updated_at, *, live):
     if not isinstance(row, dict):
         raise TypeError
     market = row["market"]
@@ -133,8 +151,11 @@ def _telemetry(row, updated_at):
                      "mark": _price(event["mark"]), "outcome": _member(event["outcome"], _OUTCOMES)}
                     for event in activity[:_MAX_ACTIVITY]]
     capture = row.get("capture")
-    return {"market": market, "activity": activity,
-            **({"capture": capture} if capture in ("waiting", "recording", "unavailable") else {})}
+    result = {"market": market, "activity": activity,
+              **({"capture": capture} if capture in ("waiting", "recording", "unavailable") else {})}
+    if live and (reconciliation := _reconciliation(row.get("reconciliation"), updated_at)) is not None:
+        result["reconciliation"] = reconciliation
+    return result
 
 
 def _bounded_json(path):
@@ -228,7 +249,7 @@ def read_status():
         }
         if "telemetry" in row:
             try:
-                result["telemetry"] = _telemetry(row["telemetry"], updated_at)
+                result["telemetry"] = _telemetry(row["telemetry"], updated_at, live=mode == "live")
             except (KeyError, TypeError, ValueError):
                 # An unsupported optional extension must not hide valid receipts.
                 pass

@@ -512,6 +512,7 @@ try {
         assert(rendered, `ZEC Volty observation did not render on the ${side} route`);
         for (const text of ['$560.00', '$541.00', 'Last signal Short · Skipped · prior order unresolved',
           'Waiting for collateral to settle', 'Close long · Filled · awaiting collateral settlement',
+          '3 of 4 fresh ticks with an unresolved order', 'Last signal reset', 'Order outcomes require separate venue confirmation',
           'Open long · Confirmed fill', '0:e2e-fixture-transaction', 'client order 7654321',
           'Gross P&L', 'Net P&L', '-0.012115 USDC', 'Profitable trades', '3 of 8 (37.5%)',
           'Closed trades as of', 'Net includes fees and funding',
@@ -520,6 +521,38 @@ try {
         }
         assert(rendered.text.indexOf('Gross P&L') < rendered.text.indexOf('GUM mark'), 'performance must precede market levels');
         eq(rendered.controls, 0, 'Volty verification section must be read-only');
+        await browser.call('Emulation.setDeviceMetricsOverride', { width: 320, height: 690, deviceScaleFactor: 1, mobile: false }, page.sessionId);
+        // Exercise the space taken by classic scrollbars even on macOS.
+        await page.ev(`(() => {
+          const style = document.createElement('style');
+          style.id = 'e2e-volty-scrollbar';
+          style.textContent = 'html { overflow-y: scroll } html::-webkit-scrollbar { width: 17px }';
+          document.head.append(style);
+        })()`);
+        assert(await browser.waitFor(() => page.ev(`window.innerWidth === 320 && document.documentElement.clientWidth < window.innerWidth`)),
+          '320px Volty viewport with a reserved scrollbar gutter');
+        const layout = await page.ev(`(() => {
+          const { clientWidth, scrollWidth } = document.documentElement;
+          const amounts = ['[data-volty-net]', '[data-volty-gross]'].map(selector => {
+            const card = document.querySelector(selector);
+            const node = card.firstChild;
+            const range = document.createRange();
+            range.setStart(node, 0);
+            range.setEnd(node, node.textContent.indexOf(' USDC'));
+            const boxes = [...range.getClientRects()];
+            const bounds = card.getBoundingClientRect();
+            const sameLine = boxes.length > 0
+              && Math.max(...boxes.map(box => box.top)) < Math.min(...boxes.map(box => box.bottom));
+            return { digits: range.toString(), sameLine,
+              contained: boxes.every(box => box.left >= bounds.left && box.right <= bounds.right) };
+          });
+          return { clientWidth, scrollWidth, amounts };
+        })()`);
+        assert(layout.scrollWidth <= layout.clientWidth, `GUM P&L causes horizontal overflow on the ${side} route: ${JSON.stringify(layout)}`);
+        assert(layout.amounts.every(amount => amount.sameLine && amount.contained),
+          `GUM P&L digits must stay together at 320px on the ${side} route: ${JSON.stringify(layout)}`);
+        await page.ev(`document.getElementById('e2e-volty-scrollbar').remove()`);
+        await browser.call('Emulation.clearDeviceMetricsOverride', {}, page.sessionId);
         if (side === 'short') {
           await page.ev('globalThis.voltyClockOffset = 21000');
           assert(await browser.waitFor(() => page.ev(`document.querySelector('[data-volty-mark]').textContent === '—' &&
@@ -528,6 +561,8 @@ try {
           await page.ev('globalThis.voltyClockOffset = 61000');
           assert(await browser.waitFor(() => page.ev(`document.querySelector('[data-volty-status]').textContent.includes('Status stale') &&
             document.querySelector('[data-volty-orders]').textContent.includes('0:e2e-fixture-transaction') &&
+            document.querySelector('[data-volty-reconciliation]').textContent.includes('Historical signal reset') &&
+            !document.querySelector('[data-volty-reconciliation]').textContent.includes('fresh ticks') &&
             !document.querySelector('[data-volty-performance-note]').hasAttribute('data-stale')`)),
           'stale owner status must keep historical receipts visible');
           await page.ev('globalThis.voltyClockOffset = 181000');

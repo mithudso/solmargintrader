@@ -8,6 +8,7 @@ import hashlib
 import json
 import logging
 import sys
+from collections import Counter
 from collections.abc import Callable
 from contextlib import asynccontextmanager
 from pathlib import Path
@@ -149,10 +150,15 @@ class SubscriptionHub:
             if not subscriptions:
                 self._sessions.pop(session, None)
 
+    def active_uris(self) -> set[str]:
+        return {uri for subscriptions in self._sessions.values() for uri in subscriptions}
+
     async def publish(self, values: dict[str, str]) -> None:
         async with self._lock:
             for session, subscriptions in list(self._sessions.items()):
                 for uri in list(subscriptions):
+                    if uri not in values:
+                        continue
                     digest = hashlib.sha256(values[uri].encode()).hexdigest()
                     if subscriptions[uri] == digest:
                         continue
@@ -188,6 +194,8 @@ def build_server(
     if not 0.1 <= poll_seconds <= 60:
         raise ValueError("invalid poll interval")
     hub = SubscriptionHub()
+    modern_uris: Counter[str] = Counter()
+    publish_modern = close_modern = None
 
     def predictions():
         return (
@@ -214,14 +222,25 @@ def build_server(
             return envelope(error="archive_unavailable")
 
     async def watch() -> None:
+        modern_previous = {}
         while True:
             values = {}
-            for uri in RESOURCE_NAMES:
+            for uri in sorted(hub.active_uris() | modern_uris.keys()):
                 try:
                     values[uri] = encode(await asyncio.to_thread(resource, uri))
                 except (ValueError, TypeError, OverflowError):
                     values[uri] = encode(envelope(error="snapshot_unavailable"))
-            await hub.publish(values)
+            if publish_modern is not None:
+                modern_current = {
+                    uri: hashlib.sha256(value.encode()).digest()
+                    for uri, value in values.items() if uri in modern_uris
+                }
+                for uri, digest in modern_current.items():
+                    if modern_previous.get(uri) != digest:
+                        await publish_modern(uri)
+                modern_previous = modern_current
+            if values:
+                await hub.publish(values)
             await asyncio.sleep(poll_seconds)
 
     @asynccontextmanager
@@ -230,6 +249,8 @@ def build_server(
         try:
             yield {}
         finally:
+            if close_modern is not None:
+                close_modern()
             task.cancel()
             try:
                 await task
@@ -307,6 +328,18 @@ def build_server(
         return text
 
     if _SDK_V2:
+        from mcp.server.subscriptions import (
+            InMemorySubscriptionBus,
+            ListenHandler,
+            ResourceUpdated,
+        )
+
+        bus = InMemorySubscriptionBus()
+        listen = ListenHandler(bus, max_subscriptions=16, max_buffered_events=32)
+        close_modern = listen.close
+
+        async def publish_modern(uri: str) -> None:
+            await bus.publish(ResourceUpdated(uri=uri))
 
         async def on_list_tools(ctx: Any, params: Any) -> types.ListToolsResult:
             return types.ListToolsResult(tools=await list_tools())
@@ -346,6 +379,19 @@ def build_server(
             await hub.unsubscribe(session, str(params.uri))
             return types.EmptyResult()
 
+        async def on_listen(ctx: Any, params: Any) -> types.SubscriptionsListenResult:
+            requested = params.notifications.resource_subscriptions or ()
+            uris = [uri for uri in RESOURCE_NAMES if uri in requested]
+            allowed = types.SubscriptionFilter(resource_subscriptions=uris or None)
+            modern_uris.update(uris)
+            try:
+                return await listen(ctx, params.model_copy(update={"notifications": allowed}))
+            finally:
+                for uri in uris:
+                    modern_uris[uri] -= 1
+                    if not modern_uris[uri]:
+                        del modern_uris[uri]
+
         server = Server(
             "solmargintrader-oracle",
             version=VERSION,
@@ -356,6 +402,7 @@ def build_server(
             on_read_resource=on_read_resource,
             on_subscribe_resource=on_subscribe,
             on_unsubscribe_resource=on_unsubscribe,
+            on_subscriptions_listen=on_listen,
         )
     else:
         server = Server("solmargintrader-oracle", version=VERSION, lifespan=lifespan)

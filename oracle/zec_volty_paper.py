@@ -11,7 +11,7 @@ import sqlite3
 import stat
 import threading
 import time
-from contextlib import closing
+from contextlib import ExitStack, closing
 from copy import deepcopy
 from dataclasses import asdict, dataclass, field
 from decimal import ROUND_CEILING, ROUND_FLOOR, Decimal, InvalidOperation
@@ -19,7 +19,7 @@ from pathlib import Path
 from urllib.parse import urlencode
 
 from .cli import owner
-from .gum_orders import GumError, _decimal, _market, _quote_fresh
+from .gum_orders import GumError, _decimal, _integer, _market, _quote_fresh
 from .zec_volty_signal import (
     GumVoltySource,
     VoltyDataError,
@@ -42,8 +42,16 @@ HOUR = 3600
 MAX_FUNDING_MARK_GAP = 20
 MAX_PLAN_AGE = 5
 ARMS = ("funded-rules", "short-only", "close-and-wait")
-METHOD = "zec-volty-shared-gum-v1"
+LEGACY_METHOD = "zec-volty-shared-gum-v1"
+METHOD = "zec-volty-shared-gum-v2"
 GUM = "https://api.gum.ag"
+
+
+def _require_new_mark(observation: VoltyObservation, prior: VoltyObservation | None) -> None:
+    if prior is not None and observation.mark_at <= prior.mark_at:
+        if observation == prior:
+            raise VoltyDataError("gum_no_distinct_paper_mark")
+        raise VoltyDataError("gum_zec_mark_replayed")
 
 
 @dataclass(frozen=True)
@@ -81,10 +89,9 @@ class GumPaperFeed:
     def __init__(self):
         self.source = GumVoltySource()
 
-    def read(self, prior_at: int | None) -> PaperTick:
+    def read(self, prior: VoltyObservation | None) -> PaperTick:
         observation = self.source.read()
-        if prior_at is not None and observation.mark_at <= prior_at:
-            raise VoltyDataError("gum_no_distinct_paper_mark")
+        _require_new_mark(observation, prior)
         market = _market(_get_json(f"{GUM}/perps/market/ZEC"))
         market_received = time.monotonic()
         book = _get_json(f"{GUM}/perps/orderbook/ZEC")
@@ -103,9 +110,9 @@ class GumPaperFeed:
         if bid > ask:
             raise VoltyDataError("gum_crossed_paper_book")
         rate = None
-        if prior_at is not None and prior_at // HOUR != observation.mark_at // HOUR:
+        if prior is not None and prior.mark_at // HOUR != observation.mark_at // HOUR:
             boundary = observation.mark_at // HOUR * HOUR
-            if boundary - prior_at <= MAX_FUNDING_MARK_GAP and observation.mark_at - boundary <= MAX_FUNDING_MARK_GAP:
+            if boundary - prior.mark_at <= MAX_FUNDING_MARK_GAP and observation.mark_at - boundary <= MAX_FUNDING_MARK_GAP:
                 rate = self._funding(boundary)
         now = time.time()
         _validate_observation(observation, now)
@@ -171,6 +178,7 @@ class Book:
     peak: Decimal = INITIAL
     max_drawdown: Decimal = ZERO
     margin_breach: bool = False
+    maintenance_unavailable: bool = False
     refusals: dict[str, int] = field(default_factory=dict)
     position: Position | None = None
     pending: Plan | None = None
@@ -205,7 +213,7 @@ class Book:
         if not plan.close:
             if risk > MAX_OPEN or plan.margin < plan.quantity * unit_budget:
                 return self.refuse("opening_budget_changed")
-            if _risk_tier(tick.market, risk)["maxLeverage"] < LEVERAGE:
+            if not _opening_tier_allows(tick.market, risk):
                 return self.refuse("venue_leverage_limit")
         price, depth = tick.top(plan.side)
         if (
@@ -252,7 +260,7 @@ class Book:
         notional = risk_price * quantity
         if not _within_limits(tick.market, quantity, notional, close=close):
             return self.refuse("venue_order_limits")
-        if not close and _risk_tier(tick.market, notional)["maxLeverage"] < LEVERAGE:
+        if not close and not _opening_tier_allows(tick.market, notional):
             return self.refuse("venue_leverage_limit")
         self.pending = Plan(side, close, quantity, cap, margin, tick.observation.window_start, tick.received_at)
 
@@ -266,7 +274,7 @@ class Book:
         self.max_drawdown = max(self.max_drawdown, self.peak - equity)
 
     def advance(self, kind, tick, event, hours):
-        if self.margin_breach:
+        if self.margin_breach or self.maintenance_unavailable:
             return
         self.apply_funding(tick, hours)
         self.measure_drawdown(tick)
@@ -274,6 +282,11 @@ class Book:
             mark = D(str(tick.observation.mark))
             notional = mark * self.position.quantity
             tier = _risk_tier(tick.market, notional)
+            if tier is None:
+                self.maintenance_unavailable = True
+                self.pending = None
+                self.reverse = None
+                return
             maintenance = max(D(0), notional * _decimal(tier["maintenanceMarginRatioBps"]) / 10000
                               - _decimal(tier["maintenanceAmount"], zero=True))
             collateral = (self.position.margin + self.position.gross(mark)
@@ -283,14 +296,14 @@ class Book:
                 self.pending = None
                 self.reverse = None
                 return
+        if self.pending and not self.pending.close and event and event.side != self.pending.side:
+            self.pending = None
+            self.refuse("signal_superseded")
         if self.pending:
             reverse = self.submit(tick)
             self.measure_drawdown(tick)
             if reverse and kind != "close-and-wait":
-                if event is None or event.side == reverse[0]:
-                    self.reverse = reverse
-                else:
-                    self.reverse = event.side, tick.observation.window_start
+                self.reverse = reverse if event is None else (event.side, tick.observation.window_start)
             return
         if event:
             self.reverse = None
@@ -303,7 +316,7 @@ class Book:
                 self.prepare(tick, side, kind)
 
     def summary(self, tick):
-        comparable = not self.funding_missing and not self.margin_breach
+        comparable = not (self.funding_missing or self.margin_breach or self.maintenance_unavailable)
         return {
             "net_pnl_usdc": float(self.equity(tick) - INITIAL) if comparable else None,
             "realized_net_usdc": float(self.realized) if comparable else None,
@@ -315,6 +328,7 @@ class Book:
             "funding_charged": self.funding_charged,
             "funding_missing": self.funding_missing,
             "margin_breach": self.margin_breach,
+            "maintenance_unavailable": self.maintenance_unavailable,
             "position": self.position.side if self.position else None,
             "pending": self.pending.side if self.pending else None,
             "refusals": self.refusals,
@@ -333,8 +347,22 @@ def _within_limits(market, quantity, notional, *, close):
 
 
 def _risk_tier(market, notional):
-    tiers = market["riskTiers"]
-    return next((tier for tier in tiers if notional < _decimal(tier["notionalCap"])), tiers[-1])
+    previous_cap = ZERO
+    chosen = None
+    for tier in market["riskTiers"]:
+        cap = _decimal(tier["notionalCap"])
+        _integer(tier["maxLeverage"], maximum=50)
+        if cap <= previous_cap:
+            raise GumError("gum_invalid_risk_tiers")
+        previous_cap = cap
+        if chosen is None and notional < cap:
+            chosen = tier
+    return chosen
+
+
+def _opening_tier_allows(market, notional):
+    tier = _risk_tier(market, notional)
+    return tier is not None and tier["maxLeverage"] >= LEVERAGE
 
 
 def _decode_book(raw):
@@ -369,19 +397,27 @@ class PaperSession:
         self.db.execute(
             "CREATE TABLE IF NOT EXISTS paper_ticks (mark_at INTEGER PRIMARY KEY, observation TEXT NOT NULL, checkpoint TEXT NOT NULL)"
         )
-        latest = db.execute("SELECT mark_at, checkpoint FROM paper_ticks ORDER BY mark_at DESC LIMIT 1").fetchone()
-        self.last = None
+        latest = db.execute(
+            "SELECT mark_at, observation, checkpoint FROM paper_ticks ORDER BY mark_at DESC LIMIT 1"
+        ).fetchone()
+        self.last_observation = None
         self.total = 0
         self.first = None
         self.books = {name: Book() for name in ARMS}
         if latest:
-            self.last, payload = latest
+            mark_at, observation, payload = latest
+            prior = VoltyObservation(**json.loads(observation)["observation"])
+            if prior.mark_at != mark_at:
+                raise ValueError("paper checkpoint mark mismatch")
+            self.last_observation = prior
             checkpoint = json.loads(payload)
-            if checkpoint["method"] != METHOD or set(checkpoint["books"]) != set(ARMS):
+            if checkpoint["method"] not in (LEGACY_METHOD, METHOD) or set(checkpoint["books"]) != set(ARMS):
                 raise ValueError("paper checkpoint method mismatch")
-            self.total = checkpoint["ticks"]
-            self.first = checkpoint["first_mark_at"]
-            self.books = {name: _decode_book(checkpoint["books"][name]) for name in ARMS}
+            # Keep v1 rows and their mark watermark. Only v2 rows contribute to v2 totals.
+            if checkpoint["method"] == METHOD:
+                self.total = checkpoint["ticks"]
+                self.first = checkpoint["first_mark_at"]
+                self.books = {name: _decode_book(checkpoint["books"][name]) for name in ARMS}
 
     def gap(self):
         self.engine.reset()
@@ -392,12 +428,13 @@ class PaperSession:
             book.reverse = None
 
     def observe(self, tick):
-        mark_at = tick.observation.mark_at
-        if self.last is not None and mark_at <= self.last:
-            raise VoltyDataError("gum_no_distinct_paper_mark")
+        current = tick.observation
+        prior = self.last_observation
+        _require_new_mark(current, prior)
+        mark_at = current.mark_at
         engine, books = deepcopy(self.engine), deepcopy(self.books)
-        event = engine.observe(tick.observation, now=tick.received_at)
-        hours = 0 if self.last is None else mark_at // HOUR - self.last // HOUR
+        event = engine.observe(current, now=tick.received_at)
+        hours = 0 if prior is None else mark_at // HOUR - prior.mark_at // HOUR
         for kind, book in books.items():
             book.advance(kind, tick, event, hours)
         first = self.first if self.first is not None else mark_at
@@ -416,7 +453,8 @@ class PaperSession:
                 mark_at, json.dumps(observation, default=str, allow_nan=False, separators=(",", ":")),
                 json.dumps(checkpoint, default=str, allow_nan=False, separators=(",", ":")),
             ))
-        self.engine, self.books, self.first, self.last, self.total = engine, books, first, mark_at, self.total + 1
+        self.engine, self.books, self.first = engine, books, first
+        self.last_observation, self.total = current, self.total + 1
         return status
 
 
@@ -429,24 +467,34 @@ def main(argv=None):
     if not math.isfinite(args.interval) or not 1 <= args.interval <= 30:
         parser.error("interval must be between 1 and 30 seconds")
     directory = args.state_dir
-    directory.mkdir(mode=0o700, parents=True, exist_ok=True)
-    info = directory.lstat()
-    if (
-        not stat.S_ISDIR(info.st_mode) or info.st_uid != os.getuid() or info.st_mode & 0o077
-        or os.path.lexists(directory / "live.sqlite3")
-    ):
-        parser.error("paper state requires a separate private directory")
-    stop = threading.Event()
-    for sig in (signal.SIGTERM, signal.SIGINT):
-        signal.signal(sig, lambda *_: stop.set())
     journal = directory / "paper.sqlite3"
-    with owner(journal), closing(_connect(journal)) as db:
+    with ExitStack() as stack:
+        try:
+            directory.mkdir(mode=0o700, parents=True, exist_ok=True)
+            info = directory.lstat()
+            if (
+                not stat.S_ISDIR(info.st_mode) or info.st_uid != os.getuid() or info.st_mode & 0o077
+                or os.path.lexists(directory / "live.sqlite3")
+            ):
+                parser.error("paper state requires a separate private directory")
+            stack.enter_context(owner(journal))
+            db = stack.enter_context(closing(_connect(journal)))
+        except (OSError, RuntimeError, sqlite3.Error) as error:
+            reason = (
+                "paper_owner_already_running" if str(error) == "archive_owner_already_running"
+                else "paper_journal_unavailable"
+            )
+            print(json.dumps({"mode": "paper", "state": "blocked", "reason": reason}), flush=True)
+            return 2
+        stop = threading.Event()
+        for sig in (signal.SIGTERM, signal.SIGINT):
+            signal.signal(sig, lambda *_: stop.set())
         session, feed = PaperSession(db), GumPaperFeed()
         last_error = None
         last_report = float("-inf")
         while not stop.is_set():
             try:
-                status = session.observe(feed.read(session.last))
+                status = session.observe(feed.read(session.last_observation))
                 now = time.monotonic()
                 if not args.watch or last_error or now - last_report >= 60:
                     print(json.dumps(status), flush=True)

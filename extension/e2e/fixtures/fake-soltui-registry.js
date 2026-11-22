@@ -29,6 +29,7 @@ export function voltyStatusFixture() {
     performance: voltyPerformanceFixture(),
     signal: { event_id: 'e2e-volty-signal', side: 'sell', at, mark: 540, lower: 541, upper: 560 },
     telemetry: {
+      reconciliation: { unresolved_fresh_ticks: 3, reset_threshold: 4, last_reset_at: at - 30 },
       market: { window_start: Math.floor(at / 300) * 300, mark_at: at, mark: 548, lower: 541, upper: 560 },
       activity: [
         { at, side: 'sell', mark: 540, outcome: 'preceding_order_unresolved' },

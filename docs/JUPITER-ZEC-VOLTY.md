@@ -106,7 +106,9 @@ The **ZEC Volty 25×** panel shows the host heartbeat and the current GUM mark
 with its timestamp, long trigger, short trigger and five-minute window end.
 Trigger levels clear when the observation is stale or the window ends. Open
 **Signal history** for recent decisions, including skipped crossings and expired
-signals. Historical receipts remain visible if the host goes stale.
+signals. Historical receipts remain visible if the host goes stale. To move the
+panel with clicks or the keyboard, open **Move**, use the arrow buttons, then
+choose **Done**. Escape restores the prior position.
 
 Open **GUM order receipts** for the execution legs. **Acknowledged** means GUM
 accepted the request. **Pending** means the venue outcome is still being
@@ -130,8 +132,10 @@ the committed order. The journal retains the original client order ID, and an
 unknown outcome continues to block new entries. A late close can settle, but
 the old reversal signal has expired and a new position needs a fresh crossing.
 Only distinct fresh marks count toward the reset.
-The owner records its count and most recent reset under
-`telemetry.reconciliation` in its private `status.json`.
+The live panel shows the count while the owner is checking or blocked. The
+most recent reset remains visible as historical evidence if the host goes
+stale. The native status command returns these fields under
+`telemetry.reconciliation` when the live watcher provides them.
 
 The journal records local planning, fresh-quote and submission timings for
 new attempts. Use the read-only report to see counts, medians, 90th percentiles,
@@ -152,6 +156,13 @@ signals still able to close, and a separate close-and-wait policy on the same
 prospective GUM observations. The comparison publishes separate P&L, drawdown,
 and execution counts. It simulates fills and settlement from public market
 data. Keep any live rollout decision tied to fresh after-cost evidence.
+
+The `zec-volty-shared-gum-v2` method rejects regressing or conflicting marks,
+cancels an unsent opening when a newer crossing points the other way, and
+requires a published risk tier that covers the notional. When the runner
+opens an existing v1 journal, it preserves v1 rows and begins a separate v2
+comparison on the next distinct mark. Continuing a v2 journal resumes that
+comparison.
 
 ```sh
 python -m oracle.zec_volty_paper --watch --state-dir "$VOLTY_PAPER_STATE"

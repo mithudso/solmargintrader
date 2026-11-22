@@ -10,18 +10,57 @@ import unittest
 from pathlib import Path
 
 HAS_MCP = importlib.util.find_spec("mcp") is not None
+HAS_MODERN_MCP = False
 if HAS_MCP:
     from mcp import ClientSession, StdioServerParameters, types
     from mcp.client.stdio import stdio_client
     from pydantic import AnyUrl
 
-    from oracle.server import ENVELOPE_SCHEMA, TOOL_SCHEMAS, SubscriptionHub
+    from oracle.server import (
+        ENVELOPE_SCHEMA,
+        TOOL_SCHEMAS,
+        SubscriptionHub,
+        build_server,
+    )
+
+    HAS_MODERN_MCP = importlib.util.find_spec("mcp.server.subscriptions") is not None
 
 REPO = Path(__file__).resolve().parents[2]
 
 
 @unittest.skipUnless(HAS_MCP, "optional official MCP SDK is not installed")
 class SubscriptionTests(unittest.IsolatedAsyncioTestCase):
+    async def test_watcher_reads_only_subscribed_resources(self):
+        reads = []
+        notified = asyncio.Event()
+
+        class Engine:
+            def market(self):
+                reads.append("market")
+                return {"status": "available"}
+
+            def predictions(self):
+                reads.append("predictions")
+
+            def status(self):
+                reads.append("status")
+
+        class Client:
+            async def send_resource_updated(self, uri):
+                notified.set()
+
+        server, hub = build_server(Engine(), poll_seconds=0.1)
+        subscriber = Client()
+        async with server.lifespan(server):
+            await asyncio.sleep(0.2)
+            self.assertEqual(reads, [])
+            await hub.subscribe(subscriber, "oracle://market")
+            await asyncio.wait_for(notified.wait(), 1)
+            self.assertEqual(reads, ["market"])
+            await hub.unsubscribe(subscriber, "oracle://market")
+            await asyncio.sleep(0.2)
+            self.assertEqual(reads, ["market"])
+
     async def test_isolation_unsubscription_and_slow_consumer(self):
         class Session:
             def __init__(self, delay=0):
@@ -53,6 +92,45 @@ class SubscriptionTests(unittest.IsolatedAsyncioTestCase):
 
 @unittest.skipUnless(HAS_MCP, "optional official MCP SDK is not installed")
 class ProtocolTests(unittest.IsolatedAsyncioTestCase):
+    @unittest.skipUnless(HAS_MODERN_MCP, "requires modern MCP SDK subscriptions")
+    async def test_modern_stdio_stream_filters_and_resumes_after_cancellation(self):
+        from mcp import Client
+
+        from oracle.engine import OracleEngine
+
+        with tempfile.TemporaryDirectory() as temporary:
+            archive = Path(temporary) / "archive.sqlite3"
+            parameters = StdioServerParameters(
+                command=sys.executable,
+                args=["-m", "oracle.server", "--archive", str(archive), "--poll-seconds", ".1"],
+                env={"PYTHONPATH": str(REPO)},
+            )
+            uri = "oracle://status"
+            async with Client(parameters, read_timeout_seconds=2) as client:
+                self.assertEqual(client.session.protocol_version, "2026-07-28")
+                async with client.listen(
+                    tools_list_changed=True, resource_subscriptions=[uri, "oracle://unserved"]
+                ) as stream:
+                    self.assertEqual(stream.honored.resource_subscriptions, [uri])
+                    self.assertIsNone(stream.honored.tools_list_changed)
+                    initial = await asyncio.wait_for(anext(stream), 2)
+                    self.assertEqual(str(initial.uri), uri)
+                    engine = OracleEngine(archive)
+                    now = time.time()
+                    engine.ingest(
+                        {"source": "fixture", "venue": "fixture", "kind": "reference", "instrument": "SOL/USDC",
+                         "event_id": "first", "observed_at": now, "received_at": now, "price": 100},
+                        now=now,
+                    )
+                    update = await asyncio.wait_for(anext(stream), 2)
+                    self.assertEqual(str(update.uri), uri)
+                    snapshot = await client.read_resource(uri)
+                    self.assertEqual(json.loads(snapshot.contents[0].text)["data"]["counts"]["observations"], 1)
+
+                async with client.listen(resource_subscriptions=["oracle://market"]) as replacement:
+                    update = await asyncio.wait_for(anext(replacement), 2)
+                    self.assertEqual(str(update.uri), "oracle://market")
+
     async def test_real_stdio_discovery_calls_notifications_and_clean_exit(self):
         notices = []
 

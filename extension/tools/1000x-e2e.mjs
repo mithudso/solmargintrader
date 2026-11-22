@@ -218,6 +218,58 @@ try {
     }
     receipt.details.loaded_revision = { version: manifest.version, executed_sha256: loaded, served_sha256: source }; return loaded;
   });
+  if (fixture) await check('new extension panel moves with separate clicks or keyboard and stays reachable on resize', async () => {
+    const shadow = `document.querySelector('#smt-1000x-indicators').shadowRoot`;
+    const position = () => ev(portal, `(() => {
+      const { left, top, right } = ${shadow}.host.getBoundingClientRect();
+      return { left, top, right };
+    })()`);
+    const click = async label => {
+      const point = await ev(portal, `(() => {
+        const button = [...${shadow}.querySelectorAll('button')].find(node =>
+          (node.getAttribute('aria-label') || node.textContent) === ${JSON.stringify(label)});
+        const box = button?.getBoundingClientRect();
+        return box?.width && { x: box.left + box.width / 2, y: box.top + box.height / 2 };
+      })()`);
+      assert(point, `missing visible ${label} button`);
+      await browser.call('Input.dispatchMouseEvent', { type: 'mousePressed', ...point, button: 'left', clickCount: 1 }, portal.sessionId);
+      await browser.call('Input.dispatchMouseEvent', { type: 'mouseReleased', ...point, button: 'left', clickCount: 1 }, portal.sessionId);
+    };
+    const press = async (key, keyCode, text) => {
+      const params = { key, code: key, windowsVirtualKeyCode: keyCode };
+      await browser.call('Input.dispatchKeyEvent', { type: 'keyDown', ...params, ...(text && { text, unmodifiedText: text }) }, portal.sessionId);
+      await browser.call('Input.dispatchKeyEvent', { type: 'keyUp', ...params }, portal.sessionId);
+    };
+    const focus = () => ev(portal, `${shadow}.activeElement?.getAttribute('aria-label')`);
+    const original = await position();
+    await click('Move panel');
+    same(await focus(), 'Move left', 'move menu starts focused');
+    await click('Move left');
+    const byClick = await position();
+    assert(byClick.left < original.left, 'click did not move panel');
+    await press('Enter', 13, '\r');
+    const byKeyboard = await position();
+    assert(byKeyboard.left < byClick.left, 'keyboard did not move panel');
+    await browser.call('Emulation.setDeviceMetricsOverride', { width: 320, height: 844, deviceScaleFactor: 1, mobile: false }, portal.sessionId);
+    assert(await browser.waitFor(() => ev(portal, `(() => {
+      const overlay = ${shadow};
+      return overlay.host.getBoundingClientRect().right <= innerWidth &&
+        [...overlay.querySelectorAll('button')].filter(node => node.getBoundingClientRect().width).every(node => {
+          const r = node.getBoundingClientRect();
+          return r.left >= 0 && r.top >= 0 && r.right <= innerWidth && r.bottom <= innerHeight;
+        });
+    })()`)), 'moved panel controls left the narrow viewport');
+    await screenshot('08-narrow-panel-move-controls');
+    await press('Escape', 27);
+    same(await focus(), 'Move panel', 'Escape restores focus');
+    await browser.call('Emulation.setDeviceMetricsOverride', { width: 1440, height: 1100, deviceScaleFactor: 1, mobile: false }, portal.sessionId);
+    same(await position(), original, 'Escape restores original placement');
+    await click('Move panel');
+    await click('Done');
+    same(await focus(), 'Move panel', 'Done restores focus');
+    assert(await ev(portal, `${shadow}.querySelector('iframe') !== null`), 'move mode removed the panel');
+    return { original, byClick, byKeyboard, exitFocus: await focus() };
+  });
   await check('all seven chart/readout series show fresh completed-candle values and source clocks', async () => {
     await fresh();
     const s = await until(async () => { const value = await panelSnapshot(panel); return ['active', 'baseline-warmup', 'baseline-performance'].includes(value.oracle.state) ? value : null; }, 'initialized Oracle with fresh source identity');
