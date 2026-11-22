@@ -1,5 +1,38 @@
 # Work continuation
 
+Version: 707
+Delta: v706 to v707. Record the verified intrabar short results.
+
+The ZEC/GUM two-up short exits 900 seconds from entry under the timed
+rule. The early exit tests settled net P&L at every one-minute candle
+using a +1 bp target and the same timeout. At 25× with $250 margin,
+the simultaneous RSI and Balance of Power gate lost $360.04 in the
+Nov 11–18 retrospective week. It won 29 of 40 trades and had no
+modeled liquidations. The mean win was $0.62 and the mean loss was
+$34.38. The same gate with a timed exit lost $399.88. The archived
+latched confirmation gate earned $239.99 on the timed exit and lost
+$367.26 on the early exit. Both early variants also lost in each of
+the four preceding replays. Results are simulated from minute OHLC and
+include both fill costs and recorded funding.
+
+The private replay, frozen source and results are under
+`/Users/mitch/.local/share/solmargintrader/audits/zec-intrabar-shorts-20261122`.
+Two runs produced identical JSON. An independent implementation
+matched the archived confirmation results. No strategy implementation
+or live settings were changed.
+
+Version: 706
+Delta: v705 to v706. Record the confirmed intrabar short replay scope.
+
+Replay only the two-up short on the prior frozen five-minute ZEC/GUM
+captures. Treat the mirrored RSI(21) and three-bar Balance of Power
+signal as entry confirmation. Compare unfiltered and confirmed timed
+exits and intrabar net profit targets under the same 15-minute limit.
+Observe confirmation only from completed five-minute bars. Evaluate
+targets and liquidation from minute OHLC, include both fill costs and
+signed funding, and use adverse-first ordering if the minute leaves
+the event order unknown. Keep all execution simulated.
+
 Version: 705
 Delta: v704 to v705. Record verified two-up short and three-down long results.
 

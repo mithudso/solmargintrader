@@ -1,11 +1,11 @@
 {
-  "generatedAt": "2026-11-22T05:51:43+00:00",
+  "generatedAt": "2026-11-22T06:23:58+00:00",
   "schemaVersion": 1,
   "repoRoot": "~/dev/solmargintrader",
-  "commit": "6aa39cd",
+  "commit": "fe8e0a2",
   "counts": {
     "files": 4204,
-    "bytes": 212331113,
+    "bytes": 212333319,
     "byKind": {
       "strategy-card": 1478,
       "doc": 845,
@@ -79737,11 +79737,11 @@
       "ext": ".md",
       "kind": "doc",
       "title": "Work continuation",
-      "summary": "Version: 705 Delta: v704 to v705. Record verified two-up short and three-down long results. On the Nov. 11\u201318 five-minute ZEC/GUM holdout, the five-minute hold",
+      "summary": "Version: 707 Delta: v706 to v707. Record the verified intrabar short results. The ZEC/GUM two-up short exits 900 seconds from entry under the timed",
       "summarySource": "opening-prose",
-      "bytes": 927546,
-      "lines": 4994,
-      "sha1": "63582411407788b3dd72071b7021c46286a1db7f",
+      "bytes": 929281,
+      "lines": 5027,
+      "sha1": "81e76a2ae1176ef798cd0604620b671988ed1bdb",
       "symbols": [],
       "imports": [],
       "internalImports": [],
@@ -84413,11 +84413,11 @@
       "ext": ".md",
       "kind": "doc",
       "title": "Prompt history",
-      "summary": "Version: 321 Delta: v320 to v321. Record the two-up short and three-down long test. Version: 320",
+      "summary": "Version: 322 Delta: v321 to v322. Record the confirmed intrabar short replay request. Version: 321",
       "summarySource": "opening-prose",
-      "bytes": 303934,
-      "lines": 5052,
-      "sha1": "a4b7c6331562d42d7efdd98a5b482fbea6468999",
+      "bytes": 304405,
+      "lines": 5059,
+      "sha1": "3a0dedd47b81fd5b11da1fc9fb0aaadb821f86ae",
       "symbols": [],
       "imports": [],
       "internalImports": [],
@@ -124907,5 +124907,5 @@
       "frontmatter": {}
     }
   ],
-  "textSha256": "37c98703f4731190a5da01a93fc30323c5b8bda3ddbc6a1759de2b80ddcc799e"
+  "textSha256": "bee150c99966eb3ddf15eb64423d401e829a68e1e9629638e244f67953f76f4a"
 }
