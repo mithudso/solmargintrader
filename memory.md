@@ -1,5 +1,37 @@
 # Work continuation
 
+Version: 713
+Delta: v712 to v713. Record close-only acceptance and the new paper design.
+
+The funded launchd owner loaded a byte-verified close-only module with
+the existing policy, state and account binding. The PAUSE_ENTRIES marker
+blocks opens at planning and signing while fresh marks, reconciliation,
+and strategy-driven reduce-only closes continue. Signerless GUM readback
+confirmed the existing 0.007 ZEC long and zero open orders both before and
+after the handoff. The journal had no outstanding rows. The shadow learner
+continued advancing. No live exit was sent as a test.
+
+The prospective comparison uses one frozen SQLite journal for Z-score,
+Volty, both stress lanes, and cash. The public-feed smoke appended fresh
+observations across restart without resetting the cohort. The advisory
+funding gate correctly reported insufficient evidence. It looks for four
+complete UTC weeks and positive outcomes after baseline and stressed
+costs. A separate fixed-dollar estimate accounts for stressed stop risk,
+fees and venue limits. Runtime receipts are under
+`/Users/mitch/.local/share/solmargintrader/audits/zec-prospective-20261122`.
+
+Version: 712
+Delta: v711 to v712. Preserve scope for safe funded pause and fresh paper cohort.
+
+The owner approved the recommendations from the ZEC study. Preserve the
+funded account, existing fills, the reduce-only exit path and reconciliation.
+The prior status and risk rails do not themselves establish a current venue
+position. Keep the learner in shadow and preserve the existing paper owner.
+Start a separate, durable prospective Z-score(12) short and ungated
+short-only Volty(10 × 1.5) comparison at fixed $250 exposure per arm.
+Evaluate fixed coverage, cost and drawdown gates on fresh paper data.
+Keep any future fixed-loss sizing proposal advisory.
+
 Version: 711
 Delta: v710 to v711. Record the verified two-up z-score exit comparison.
 
