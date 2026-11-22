@@ -749,8 +749,9 @@ class GumOrders:
         enabled=lambda: True,
         deadline=None,
         approve_fresh=None,
+        timing=None,
     ):
-        """Submit once after the optional owner approval of rebuilt economics."""
+        """Submit once after approval, optionally marking local monotonic times."""
         _enabled(enabled, deadline)
         if self.signer is None:
             raise GumError("gum_signer_unavailable")
@@ -767,7 +768,12 @@ class GumOrders:
             raise GumError("gum_plan_expired")
         # Rebuild economics against fresh account/market state. A changed quote
         # can improve the bound; it cannot widen the already-persisted cap.
+        if type(timing) is dict:
+            timing["fresh_quote_started"] = time.monotonic()
         fresh = self.plan("ZEC", plan.get("target_side"), self.account_id)
+        if type(timing) is dict:
+            timing["fresh_quote_received"] = fresh.get("quote_monotonic_at")
+            timing["fresh_quote_finished"] = time.monotonic()
         for key in (
             "venue",
             "product_id",
@@ -895,6 +901,8 @@ class GumOrders:
         }
         fresh_and_enabled()
         try:
+            if type(timing) is dict:
+                timing["post_started"] = time.monotonic()
             result = self.call("POST", "/order/create", self.owner, body)
             if (
                 not isinstance(result, dict)

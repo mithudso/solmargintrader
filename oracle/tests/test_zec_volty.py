@@ -20,9 +20,11 @@ from oracle.gum_orders import GumError, b58encode, gum_account_owner
 from oracle.tests.test_gum_orders import ACCOUNT
 from oracle.tests.test_gum_webhook_orders import LifecycleProvider
 from oracle.zec_volty import (
+    STUCK_ORDER_TICKS,
     LivePolicy,
     VoltyRunner,
     VoltyVenue,
+    execution_timing,
     main,
     preflight,
     rotate_allocation,
@@ -209,6 +211,67 @@ class DeployedRunnerTests(unittest.TestCase):
         self.assertEqual(self.step(1000), "blocked")
         self.assertEqual(self.step(1002), "blocked")
         self.assertEqual(len(self.inert.creates), 1)
+
+    def test_stuck_close_resets_after_distinct_ticks_and_retires_the_old_reversal(self):
+        self.open_long()
+        self.assertEqual(self.step(998), "checking")
+        client_id = self.status()["orders"][0]["client_order_id"]
+        self.assertEqual(self.step(998), "checking")
+        for _ in range(STUCK_ORDER_TICKS + 1):
+            self.assertEqual(self.runner.step(), "checking")
+        self.assertEqual(self.status()["telemetry"]["reconciliation"]["unresolved_fresh_ticks"], 1)
+        self.assertIsNotNone(self.runner.active)
+        self.assertIsNone(self.runner.last_stuck_reset_at)
+        for _ in range(STUCK_ORDER_TICKS - 1):
+            self.assertEqual(self.step(998), "checking")
+        reset_at = self.now
+        self.assertIsNone(self.runner.active)
+        self.assertFalse(self.runner.checked_owner)
+        self.assertEqual(self.status()["telemetry"]["reconciliation"], {
+            "reset_threshold": STUCK_ORDER_TICKS,
+            "unresolved_fresh_ticks": STUCK_ORDER_TICKS,
+            "last_reset_at": reset_at,
+        })
+        self.assertEqual(self.step(998), "checking")
+        self.assertEqual(self.runner.last_stuck_reset_at, reset_at)
+        self.assertEqual(self.status()["orders"][0]["client_order_id"], client_id)
+        self.assertTrue(self.status()["orders"][0]["settlement_pending"])
+        self.assertEqual(len(self.inert.creates), 2)
+
+        self.inert.settle()
+        self.assertEqual(self.step(998), "checking")
+        self.assertEqual(self.step(998), "armed")
+        self.assertEqual(len(self.inert.creates), 2)
+        self.assertEqual(self.status()["orders"][0]["state"], "filled")
+        self.assertEqual(self.step(1000), "armed")
+        self.assertEqual(self.step(998), "checking")
+        self.assertEqual(len(self.inert.creates), 3)
+        self.assertEqual(self.inert.creates[-1]["side"], "Ask")
+        self.assertFalse(self.inert.creates[-1]["reduceOnly"])
+
+    def test_stuck_unknown_preserves_execution_and_never_submits_a_replacement(self):
+        self.assertEqual(self.step(1000), "armed")
+        self.inert.response_error = True
+        self.assertEqual(self.step(1002), "blocked")
+        committed = self.status()["orders"][0]["client_order_id"]
+        for _ in range(STUCK_ORDER_TICKS):
+            self.assertEqual(self.step(1002), "blocked")
+        self.assertEqual(self.runner.last_stuck_reset_at, self.now)
+        self.assertEqual(self.step(998), "blocked")
+        self.assertEqual(self.status()["orders"][0]["state"], "unknown")
+        self.assertEqual(self.status()["orders"][0]["client_order_id"], committed)
+        self.assertEqual(len(self.inert.creates), 1)
+
+    def test_timing_report_counts_only_proven_local_post_attempts(self):
+        self.open_long()
+        report = execution_timing(self.inbox)
+        self.assertEqual(report["journal_signals"], 1)
+        self.assertEqual(report["signals_with_timing"], 1)
+        self.assertEqual(report["dispatch_outcomes"], {"pending": 1})
+        self.assertEqual(report["post_attempts_observed"], 1)
+        self.assertEqual(report["latency"]["signal_to_post_ms"]["samples"], 1)
+        self.assertEqual(report["latency"]["fresh_quote_ms"]["samples"], 1)
+        self.assertNotIn("client_order_id", json.dumps(report))
 
     def test_restart_does_not_open_old_target_after_close(self):
         self.open_long()

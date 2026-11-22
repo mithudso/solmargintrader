@@ -471,8 +471,13 @@ class GumOrderTests(unittest.TestCase):
             owner, ACCOUNT, 2, leverage="2", signer=key.sign, call=self.provider
         )
         plan = venue.plan("ZEC", "buy", ACCOUNT)
-        receipt = venue.submit_leg(plan, CLIENT_ID)
+        timing = {}
+        receipt = venue.submit_leg(plan, CLIENT_ID, timing=timing)
         self.assertEqual(receipt["client_order_id"], CLIENT_ID)
+        self.assertEqual(list(timing.values()), sorted(timing.values()))
+        self.assertEqual(set(timing), {
+            "fresh_quote_started", "fresh_quote_received", "fresh_quote_finished", "post_started",
+        })
         posts = [call for call in self.provider.calls if call[0] == "POST"]
         self.assertEqual(len(posts), 1)
         body = posts[0][3]
@@ -480,14 +485,19 @@ class GumOrderTests(unittest.TestCase):
         self.assertEqual(body["collateralAmount"], 75000000)
         self.assertTrue(body["signature"].startswith("0:"))
         tampered = dict(plan, quantity="0.150")
+        timing = {}
         with self.assertRaisesRegex(GumError, "plan_lots_changed"):
-            venue.submit_leg(tampered, "2")
+            venue.submit_leg(tampered, "2", timing=timing)
+        self.assertIn("fresh_quote_finished", timing)
+        self.assertNotIn("post_started", timing)
         self.assertEqual(
             len([call for call in self.provider.calls if call[0] == "POST"]), 1
         )
         self.provider.response_error = True
+        timing = {}
         with self.assertRaises(GumAmbiguous):
-            venue.submit_leg(plan, "3")
+            venue.submit_leg(plan, "3", timing=timing)
+        self.assertIn("post_started", timing)
         self.assertEqual(
             len([call for call in self.provider.calls if call[0] == "POST"]), 2
         )

@@ -28,11 +28,59 @@ _REFUSAL_DIAGNOSTICS = {
     "gum_read_unavailable", "gum_stale_market", "gum_trading_unavailable",
     "volty_external_position_or_fill", "volty_fill_lineage_unverified",
 }
+_ADAPTER_STAGES = ("fresh_quote_started", "fresh_quote_received", "fresh_quote_finished", "post_started")
 
 
 def _diagnostic(error: GumError) -> str:
     code = str(error)
     return code if code in _REFUSAL_DIAGNOSTICS else "gum_check_failed"
+
+
+def _milliseconds(seconds):
+    # Clocks can jump or supply future-dated venue marks. Do not invent latency.
+    if 0 <= seconds <= 86400:
+        return int(seconds * 1000)
+    return None
+
+
+def _mark_timing(sample, stage, started, stamp):
+    if sample is not None and type(stamp) in (int, float):
+        elapsed = _milliseconds(stamp - started)
+        if elapsed is not None:
+            sample["elapsed_ms"][stage] = elapsed
+
+
+def _start_timing(state, row, now, started, record_timing):
+    if not record_timing:
+        return None
+    attempts = state.setdefault("execution_timing", [])
+    leg = len(state["legs"])
+    if (
+        not isinstance(attempts, list) or len(attempts) >= 2 or leg > 1
+        or any(not isinstance(attempt, dict) or attempt.get("leg") == leg for attempt in attempts)
+    ):
+        return None
+    sample = {
+        "leg": leg,
+        "signal_age_at_dispatch_ms": _milliseconds(now - row["timestamp"]),
+        "elapsed_ms": {},
+        "outcome": "prepared",
+    }
+    _mark_timing(sample, "planning_started", started, time.monotonic())
+    attempts.append(sample)
+    return sample
+
+
+def _finish_timing(sample, started, outcome, *, diagnostic=None, adapter_times=None):
+    if sample is None:
+        return
+    sample["outcome"] = outcome
+    if diagnostic is not None:
+        sample["diagnostic"] = diagnostic
+    if adapter_times is not None:
+        for stage in _ADAPTER_STAGES:
+            _mark_timing(sample, stage, started, adapter_times.get(stage))
+    _mark_timing(sample, "finished", started, time.monotonic())
 
 
 def client_order_id(binding: str, event_id: str, leg: int) -> str:
@@ -234,27 +282,37 @@ def _completed_close(state, row, venue):
         raise ValueError("missing_close_proof")
 
 
-def _prepare(path, row, venue, state, *, now, started, enabled):
+def _prepare(path, row, venue, state, *, now, started, enabled, record_timing=False):
     """No mutation has happened in this stage; a crash can safely refuse it."""
     after_close = state["phase"] == "ready_to_open"
+    timing = _start_timing(state, row, now, started, record_timing)
     try:
         plan = venue.plan(row["symbol"], row["side"], venue.account_id)
         _identity(plan, row, venue)
+        if timing is not None:
+            timing["action"] = plan["action"]
+            _mark_timing(timing, "initial_quote_received", started, plan.get("quote_monotonic_at"))
+            _mark_timing(timing, "planning_finished", started, time.monotonic())
         if after_close and plan["action"] != "open":
+            _finish_timing(timing, started, "unknown", diagnostic="position_changed_after_close")
             return _refuse(
                 path, row, state, "position_changed_after_close", ambiguous=True
             )
         if not enabled():
+            _finish_timing(timing, started, "refused", diagnostic="disarmed_before_submission")
             return _refuse(path, row, state, "disarmed_before_submission")
         if now + time.monotonic() - started - row["timestamp"] > 300:
+            _finish_timing(timing, started, "expired", diagnostic="signal_expired")
             _save(path, row, "expired", state, result={"reason": "signal_expired"})
             return "expired"
         if row["mode"] != "live":
+            _finish_timing(timing, started, "dry-run")
             state["preview"] = plan
             state["phase"] = "dry-run"
             _save(path, row, "dry-run", state)
             return "dry-run"
         if plan["action"] == "noop":
+            _finish_timing(timing, started, "noop")
             state["preview"] = plan
             state["phase"] = "complete"
             _save(
@@ -275,16 +333,26 @@ def _prepare(path, row, venue, state, *, now, started, enabled):
         # This exact leg and its id survive any exception or process death below.
         _save(path, row, "submitting", state, client_id=client_id)
     except GumError as error:
-        return _refuse(path, row, state, "gum_plan_unavailable", diagnostic=_diagnostic(error))
+        diagnostic = _diagnostic(error)
+        _finish_timing(timing, started, "refused", diagnostic=diagnostic)
+        return _refuse(path, row, state, "gum_plan_unavailable", diagnostic=diagnostic)
     except (ValueError, RuntimeError, OSError, TypeError):
+        _finish_timing(timing, started, "refused", diagnostic="plan_validation_failed")
         return _refuse(path, row, state, "gum_plan_unavailable", diagnostic="plan_validation_failed")
 
     if not enabled():
+        _finish_timing(timing, started, "refused", diagnostic="disarmed_before_submission")
         return _refuse(path, row, state, "disarmed_before_submission")
+    adapter_times = None
+    submit_options = {}
+    if timing is not None:
+        adapter_times = {}
+        submit_options["timing"] = adapter_times
+        _mark_timing(timing, "submit_preflight_started", started, time.monotonic())
     try:
         try:
             result = venue.submit_leg(
-                plan, client_id, enabled=enabled, deadline=row["timestamp"] + 300
+                plan, client_id, enabled=enabled, deadline=row["timestamp"] + 300, **submit_options
             )
         except GumAmbiguous:
             raise
@@ -293,12 +361,16 @@ def _prepare(path, row, venue, state, *, now, started, enabled):
             # to terminate. Receipt validation and writes stay outside this catch.
             state["legs"][-1]["state"] = "refused"
             state["phase"] = "refused"
-            return _refuse(path, row, state, "gum_submission_preflight_refused", diagnostic=_diagnostic(error))
+            diagnostic = _diagnostic(error)
+            _finish_timing(timing, started, "refused", diagnostic=diagnostic, adapter_times=adapter_times)
+            return _refuse(path, row, state, "gum_submission_preflight_refused", diagnostic=diagnostic)
         accepted = _acceptance(result, plan, client_id)
         state["legs"][-1]["state"] = "pending"
+        _finish_timing(timing, started, "pending", adapter_times=adapter_times)
         _save(path, row, "pending", state, result=accepted)
         return "pending"
     except Exception:  # noqa: BLE001 - any post-commit failure is ambiguous
+        _finish_timing(timing, started, "unknown", diagnostic="submission_requires_reconciliation", adapter_times=adapter_times)
         _save(
             path,
             row,
@@ -309,7 +381,7 @@ def _prepare(path, row, venue, state, *, now, started, enabled):
         return "unknown"
 
 
-def _resume(path, row, venue, state, *, now, started, enabled, allow_live):
+def _resume(path, row, venue, state, *, now, started, enabled, allow_live, record_timing=False):
     if state.get("phase") == "halted":
         return "blocked"
     if state.get("phase") == "ready_to_open":
@@ -330,7 +402,7 @@ def _resume(path, row, venue, state, *, now, started, enabled, allow_live):
             return "expired"
         _save(path, row, "planning", state)
         return _prepare(
-            path, row, venue, state, now=now, started=started, enabled=enabled
+            path, row, venue, state, now=now, started=started, enabled=enabled, record_timing=record_timing
         )
     if state.get("phase") != "awaiting_fill" or not state.get("legs"):
         return "blocked"
@@ -399,6 +471,7 @@ def process_one(
     now=None,
     enabled=lambda: True,
     allow_live=False,
+    record_timing=False,
 ) -> str:
     """Run under the inbox owner lock; submit at most one committed GUM leg."""
     now = time.time() if now is None else now
@@ -440,6 +513,7 @@ def process_one(
                 started=started,
                 enabled=enabled,
                 allow_live=allow_live,
+                record_timing=record_timing,
             )
         if not enabled():
             db.commit()
@@ -477,4 +551,6 @@ def process_one(
         "phase": "planning",
         "legs": [],
     }
-    return _prepare(path, row, venue, state, now=now, started=started, enabled=enabled)
+    return _prepare(
+        path, row, venue, state, now=now, started=started, enabled=enabled, record_timing=record_timing,
+    )

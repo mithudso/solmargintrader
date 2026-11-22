@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-11-21T07:45:24+00:00",
+  "generatedAt": "2026-11-22T01:06:45+00:00",
   "schemaVersion": 1,
   "note": "Concepts are derived from the repo's own vocabulary \u2014 the FAMILY dict, strategy-card frontmatter, docs/trading-signals-concept-family.md, and terms verified to recur in the corpus. A concept matching no file is dropped, not kept.",
   "counts": {
@@ -22,7 +22,7 @@
         "confirm",
         "fail-closed"
       ],
-      "matchingFiles": 2040,
+      "matchingFiles": 2041,
       "shown": 30,
       "files": [
         {
@@ -161,7 +161,7 @@
         "universe",
         "top_coins"
       ],
-      "matchingFiles": 1912,
+      "matchingFiles": 1914,
       "shown": 30,
       "files": [
         {
@@ -439,7 +439,7 @@
         "centred",
         "shift"
       ],
-      "matchingFiles": 1580,
+      "matchingFiles": 1581,
       "shown": 30,
       "files": [
         {
@@ -578,7 +578,7 @@
         "perps",
         "solana"
       ],
-      "matchingFiles": 1258,
+      "matchingFiles": 1260,
       "shown": 30,
       "files": [
         {
@@ -603,7 +603,7 @@
         },
         {
           "path": "memory.md",
-          "hits": 524
+          "hits": 525
         },
         {
           "path": "llms/jupsol-llms.txt",
@@ -990,7 +990,7 @@
         "monotone",
         "gap"
       ],
-      "matchingFiles": 883,
+      "matchingFiles": 885,
       "shown": 30,
       "files": [
         {

@@ -14,10 +14,12 @@ import sys
 import tempfile
 import threading
 import time
+from collections import Counter
 from contextlib import closing, nullcontext
 from dataclasses import asdict, dataclass, replace
 from decimal import Decimal
 from pathlib import Path
+from statistics import median, quantiles
 
 from .cli import owner
 from .gum_orders import GumError, GumOrders, gum_account_owner
@@ -39,6 +41,7 @@ MAX_POLICY_BYTES = 4096
 STATUS_LIMIT = 16
 MAX_FILLS_PER_ORDER = 32
 ACTIVITY_LIMIT = 6
+STUCK_ORDER_TICKS = 4
 _ACTIVITY_OUTCOMES = {
     "queued": "evaluating", "planning": "evaluating", "submitting": "pending",
     "pending": "pending", "expired": "expired", "refused": "refused",
@@ -343,6 +346,9 @@ class VoltyRunner:
         self.tick_watermark = None
         self.capture = "waiting"
         self.checked_owner = False
+        self.unresolved_order = None
+        self.unresolved_ticks = 0
+        self.last_stuck_reset_at = None
         if venue is not None:
             venue.verify_binding()
             recover_planning(self.inbox)
@@ -375,7 +381,14 @@ class VoltyRunner:
                 "updated_at": now,
                 "signal": None if self.last_signal is None else asdict(self.last_signal),
                 "orders": _orders(self.inbox),
-                "telemetry": {"market": market, "activity": activity, "capture": self.capture},
+                "telemetry": {
+                    "market": market, "activity": activity, "capture": self.capture,
+                    "reconciliation": {
+                        "unresolved_fresh_ticks": self.unresolved_ticks,
+                        "reset_threshold": STUCK_ORDER_TICKS,
+                        "last_reset_at": self.last_stuck_reset_at,
+                    },
+                },
             },
         )
         return state
@@ -383,8 +396,27 @@ class VoltyRunner:
     def _envelope(self):
         with database(self.inbox) as db:
             return db.execute(
-                "SELECT event_id,status,plan FROM signals WHERE status IN ('pending','submitting','unknown') ORDER BY rowid LIMIT 1"
+                """SELECT event_id, status, client_order_id,
+                          CASE WHEN json_valid(plan) THEN json_extract(plan, '$.phase') END AS phase
+                   FROM signals WHERE status IN ('pending','submitting','unknown') ORDER BY rowid LIMIT 1"""
             ).fetchone()
+
+    def _watch_unresolved(self, row, *, fresh: bool) -> bool:
+        # A settled close awaiting a new leg is no longer an unresolved order.
+        key = (row["event_id"], row["client_order_id"]) if row is not None and row["phase"] == "awaiting_fill" else None
+        if key != self.unresolved_order:
+            self.unresolved_order = key
+            self.unresolved_ticks = 0
+        if key is None or not fresh or self.unresolved_ticks >= STUCK_ORDER_TICKS:
+            return False
+        self.unresolved_ticks += 1
+        if self.unresolved_ticks < STUCK_ORDER_TICKS:
+            return False
+        self.active = None
+        self.engine.reset()
+        self.checked_owner = False
+        self.last_stuck_reset_at = int(self.clock())
+        return True
 
     def _paused(self) -> bool:
         # A dangling symlink is also a deliberate halt marker.
@@ -472,6 +504,7 @@ class VoltyRunner:
             if self.venue is not None:
                 self._reconcile(self._envelope())
             return self.publish("paused")
+        previous_mark = self.mark_at
         try:
             event = self._poll()
         except VoltyDataError:
@@ -483,8 +516,13 @@ class VoltyRunner:
         if self.venue is None:
             return self.publish("watching")
         outstanding = self._envelope()
+        reset = self._watch_unresolved(outstanding, fresh=previous_mark is None or self.mark_at > previous_mark)
         if outstanding is not None:
             state = self._reconcile(outstanding)
+            if reset:
+                if event is not None:
+                    self._record(event, skip="preceding_order_unresolved")
+                return self.publish(state)
             if event is None:
                 return self.publish(state)
             remaining = self._envelope()
@@ -519,7 +557,7 @@ class VoltyRunner:
 
     def _dispatch(self, enabled) -> str:
         return process_one(
-            self.inbox, self.venue, self.venue.binding, enabled=enabled, allow_live=True,
+            self.inbox, self.venue, self.venue.binding, enabled=enabled, allow_live=True, record_timing=True,
         )
 
     def _expire(self, event_id: str, reason: str) -> None:
@@ -532,9 +570,8 @@ class VoltyRunner:
     def _reconcile(self, row) -> str:
         if row is None:
             return "armed"
-        state = json.loads(row["plan"])
         owns_event = self.active is not None and self.active.event_id == row["event_id"]
-        if state["phase"] == "ready_to_open" and not (owns_event and self._enabled()):
+        if row["phase"] == "ready_to_open" and not (owns_event and self._enabled()):
             self._expire(row["event_id"], "reversal_signal_no_longer_authorized")
             return "armed"
         return _state(self._dispatch(lambda: owns_event and self._enabled()))
@@ -546,6 +583,68 @@ def _state(outcome: str) -> str:
     if outcome in {"refused", "blocked", "unknown"}:
         return "blocked"
     return "armed"
+
+
+def execution_timing(path: Path) -> dict:
+    """Report only measured local dispatch timing from the private live inbox."""
+    outcome_counts = Counter()
+    signals = measured_signals = cap_refusals = posts = 0
+    stages = {
+        "signal_to_post_ms": [],
+        "planning_ms": [],
+        "fresh_quote_ms": [],
+        "fresh_quote_to_post_ms": [],
+    }
+
+    def elapsed(value):
+        return value if type(value) is int and 0 <= value <= 86_400_000 else None
+
+    def sample(series, first, last):
+        start, end = elapsed(first), elapsed(last)
+        if start is not None and end is not None and end >= start:
+            stages[series].append(end - start)
+
+    with _read_inbox(path) as db:
+        for row in db.execute("SELECT plan FROM signals WHERE mode='live'"):
+            signals += 1
+            if row["plan"] is None:
+                continue
+            plan = json.loads(row["plan"])
+            if not isinstance(plan, dict):
+                continue
+            attempts = plan.get("execution_timing")
+            if not isinstance(attempts, list) or not attempts:
+                continue
+            measured_signals += 1
+            for attempt in attempts:
+                if not isinstance(attempt, dict) or not isinstance(attempt.get("elapsed_ms"), dict):
+                    continue
+                times = attempt["elapsed_ms"]
+                outcome = attempt.get("outcome")
+                if outcome in ("pending", "unknown", "refused", "expired", "dry-run", "prepared", "noop"):
+                    outcome_counts[outcome] += 1
+                cap_refusals += attempt.get("diagnostic") == "gum_price_cap_widened"
+                post = elapsed(times.get("post_started"))
+                age = elapsed(attempt.get("signal_age_at_dispatch_ms"))
+                if post is not None:
+                    posts += 1
+                    if age is not None:
+                        stages["signal_to_post_ms"].append(age + post)
+                sample("planning_ms", times.get("planning_started"), times.get("planning_finished"))
+                sample("fresh_quote_ms", times.get("fresh_quote_started"), times.get("fresh_quote_finished"))
+                sample("fresh_quote_to_post_ms", times.get("fresh_quote_finished"), post)
+    return {
+        "journal_signals": signals,
+        "signals_with_timing": measured_signals,
+        "post_attempts_observed": posts,
+        "price_cap_refusals_observed": cap_refusals,
+        "dispatch_outcomes": dict(outcome_counts),
+        "latency": {
+            name: {"samples": len(values), "p50": round(median(values)) if values else None,
+                   "p90": round(quantiles(values, n=10, method="inclusive")[8]) if len(values) > 1 else None}
+            for name, values in stages.items()
+        },
+    }
 
 
 def preflight(venue: VoltyVenue) -> dict:
@@ -630,6 +729,7 @@ def main(argv=None) -> int:
     mode = parser.add_mutually_exclusive_group()
     mode.add_argument("--live", action="store_true")
     mode.add_argument("--preflight", action="store_true")
+    mode.add_argument("--timing", action="store_true", help="report measured execution latency from the journal")
     mode.add_argument("--rotate-allocation-from", type=Path, metavar="OLD_CONFIG")
     parser.add_argument("--config", type=Path)
     parser.add_argument("--watch", action="store_true")
@@ -641,12 +741,20 @@ def main(argv=None) -> int:
         parser.error("--config is required with --live, --preflight, or --rotate-allocation-from")
     if args.live and not args.watch:
         parser.error("--live requires --watch")
-    if args.preflight and args.watch:
-        parser.error("--preflight runs once")
+    if (args.preflight or args.timing) and args.watch:
+        parser.error("--preflight and --timing run once")
     if rotating and args.watch:
         parser.error("--rotate-allocation-from requires an offline watcher")
     if not math.isfinite(args.interval) or not 0.5 <= args.interval <= 10:
         parser.error("interval must be between 0.5 and 10 seconds")
+    if args.timing:
+        try:
+            state_dir = _private_state(args.state_dir, create=False)
+            print(json.dumps(execution_timing(state_dir / "live.sqlite3")))
+            return 0
+        except (OSError, ValueError, TypeError, sqlite3.Error):
+            print(json.dumps({"available": False, "reason": "volty_execution_timing_unavailable"}))
+            return 2
     if args.preflight or rotating:
         try:
             policy = LivePolicy.load(args.config)
