@@ -49,6 +49,7 @@ export const FORBIDDEN_MESSAGES = Object.freeze([
   'controlRoomOpen',
   // Window creation needs a separate trusted-gesture/lifetime browser probe.
   'openLiveWindow',
+  'jupiterIndicatorWindow',
   // Delegated controls require the separate isolated paper-manager gate.
   'browserManagerSnapshot',
   'browserManagerPoll',

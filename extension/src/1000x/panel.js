@@ -1,6 +1,6 @@
 import { JupiterFeed, TIMEFRAMES } from './feed.js';
 import { DEFAULT_INDICATORS, validateIndicatorConfig } from './indicators.js';
-import { panelModel } from './panel-model.js';
+import { panelModel, Z_SCORE_LENGTH } from './panel-model.js';
 import { OracleController } from './oracle-controller.js';
 import { oracleView } from './oracle-view.js';
 import { autotradeView } from './autotrade-view.js';
@@ -13,6 +13,13 @@ import { POWERED_BY } from '../jupiter/attribution.js';
 import { createChart, CandlestickSeries, LineSeries, HistogramSeries, LineStyle } from '../../vendor/lightweight-charts/lightweight-charts.standalone.production.mjs';
 
 const $ = id => document.getElementById(id);
+const detachedPanel = window.top === window && new URLSearchParams(location.search).get('detached') === '1';
+let windowValidated = !detachedPanel;
+async function dockControl(action) {
+  const response = await chrome.runtime.sendMessage({ type: 'jupiterIndicatorWindow', action });
+  if (!response?.ok) throw new Error(response?.error ?? 'Chrome did not respond');
+  return response.result;
+}
 const renderOracle = oracleView($('streaming-oracle'));
 const auto = autotradeView($('streaming-oracle'));
 const liveView = liveOracleView($('live-oracle'));
@@ -43,6 +50,7 @@ const oracle = new OracleController({ store: new MirroredOracleStore(new OracleS
 document.querySelector('header .tag').textContent = 'Paper default';
 $('api-attribution').textContent = `${POWERED_BY} — 1000x public catalog; Pyth oracle history and stream.`;
 const SYMBOL = new URLSearchParams(location.hash.slice(1)).get('market') || '';
+if (detachedPanel && SYMBOL) document.title = `${SYMBOL} · Jupiter 1000x indicators`;
 const STORAGE = 'jupiter1000xIndicatorView';
 const FEED_ERRORS = {
   unsupported_market_or_timeframe: 'Market or interval is unsupported', ambiguous_market: 'Market selection is ambiguous',
@@ -99,6 +107,29 @@ const histogramData = series => data(series).map(p => numeric(p.value) ? { ...p,
 const utc = seconds => numeric(seconds) ? new Date(seconds * 1000).toISOString().slice(11, 16) + ' UTC' : 'unavailable';
 const shapeNames = { unknown: 'Warming up', range: 'Range', trend_up: 'Rising trend', trend_down: 'Falling trend',
   v_rebound: 'V rebound', inverted_v: 'Inverted V', bowl: 'Bowl', cap: 'Cap', compression: 'Compression' };
+const signedImmediate = new Intl.NumberFormat(undefined, { maximumFractionDigits: 3, signDisplay: 'exceptZero' });
+const roundedRsi = new Intl.NumberFormat(undefined, { maximumFractionDigits: 2 });
+
+function drawImmediate(immediate = { state: 'unavailable' }) {
+  const { state, zScore, rsi, bop, bopPartial, macdHistogram } = immediate;
+  const label = TIMEFRAMES.find(entry => entry.seconds === intervalSec)?.label;
+  $('immediate-indicators').dataset.state = state;
+  $('immediate-status').textContent = state === 'live' ? `${label} developing candle`
+    : state === 'stale' ? `${label} readings stale` : `${label} readings unavailable`;
+  $('immediate-zscore-label').textContent = `Z-score (${Z_SCORE_LENGTH})`;
+  $('immediate-rsi-label').textContent = `RSI (${config.rsi.length})`;
+  $('immediate-bop-label').textContent = `Balance of Power (SMA ${config.bop.smoothing})`;
+  const reading = (value, formatter, missing = 'Warming up') => numeric(value) ? formatter.format(value) : missing;
+  $('immediate-zscore').textContent = state === 'live' ? reading(zScore, signedImmediate) : '—';
+  $('immediate-rsi').textContent = state !== 'live' ? '—' : !config.rsi.enabled ? 'Disabled' : reading(rsi, roundedRsi);
+  $('immediate-bop').textContent = state !== 'live' ? '—' : !config.bop.enabled ? 'Disabled'
+    : reading(bop, signedImmediate, bopPartial ? 'Partial candle' : 'Warming up');
+  const macd = $('immediate-macd');
+  const direction = numeric(macdHistogram) ? macdHistogram > 0 ? 'up' : macdHistogram < 0 ? 'down' : 'neutral' : '';
+  macd.dataset.direction = direction;
+  const momentum = { up: '↑ Bullish', down: '↓ Bearish', neutral: '↔ Neutral' };
+  macd.textContent = state !== 'live' ? '—' : !config.macd.enabled ? 'Disabled' : momentum[direction] ?? 'Warming up';
+}
 
 function resetContext() {
   $('pattern').textContent = 'Reversal context unavailable until fresh complete history arrives';
@@ -167,7 +198,7 @@ function draw() {
   catch {
     // Chart arithmetic is independent of the shared minute learner. Its own
     // causal input/feature validation withholds every model on invalid minutes.
-    model = null; clearChart(); resetContext();
+    model = null; clearChart(); resetContext(); drawImmediate();
     $('status').textContent = 'Invalid candle or indicator data — signals unavailable';
     $('status').dataset.state = 'error';
     document.querySelectorAll('[data-value]').forEach(el => { el.textContent = 'Unavailable'; });
@@ -175,6 +206,7 @@ function draw() {
     document.querySelectorAll('[data-indicator][data-direction]').forEach(el => { el.dataset.direction = 'neutral'; });
     return;
   }
+  drawImmediate(model.immediate);
   const metrics = model.developing;
   candles.setData(model.candles.map(({ time, open, high, low, close }) => ({ time, open, high, low, close })));
   const pivots = model.confirmedPivots.map(({ time, value }) => ({ time, value }));
@@ -276,9 +308,10 @@ $('config-form').addEventListener('submit', event => {
   settingsError = ''; save(); queueDraw(); $('parameters').open = false;
 });
 async function restart() {
+  if (!windowValidated || disposed) return;
   oracle.suspend();
   liveOracle.suspend();
-  feed?.stop(); latest = null; model = null; viewIdentity = null; clearChart(); resetContext();
+  feed?.stop(); latest = null; model = null; viewIdentity = null; clearChart(); resetContext(); drawImmediate();
   $('status').textContent = 'Connecting to Jupiter…'; $('status').dataset.state = 'connecting';
   document.querySelectorAll('[data-value]').forEach(el => { el.textContent = 'Warming up'; });
   document.querySelectorAll('[data-signal]').forEach(el => { el.textContent = 'Waiting for live data'; });
@@ -303,8 +336,8 @@ oracle.selectHorizon(intervalSec);
 liveOracle.selectHorizon(intervalSec);
 $('timeframe').addEventListener('change', () => {
   intervalSec = Number($('timeframe').value); oracle.selectHorizon(intervalSec); liveOracle.selectHorizon(intervalSec); save();
-  model = null; viewIdentity = null; clearChart(); resetContext();
-  void feed.setInterval(intervalSec);
+  model = null; viewIdentity = null; clearChart(); resetContext(); drawImmediate();
+  void feed?.setInterval(intervalSec);
 });
 $('refresh').addEventListener('click', () => restart());
 readoutRows(); parameterForm(); visibility();
@@ -314,4 +347,27 @@ document.addEventListener('visibilitychange', () => {
   else { if (latest) oracle.observe(latest); queueDraw(); }
 });
 window.addEventListener('pagehide', () => { disposed = true; auto.close(); liveView.close(); liveOracle.stop(); disk.close(); clearInterval(staleClock); feed?.stop(); oracle.stop(); chart.remove(); }, { once: true });
-await restart();
+if (!detachedPanel) {
+  await restart();
+} else {
+  const dock = $('dock-window');
+  try {
+    if (!(await dockControl('status')).detached || disposed) throw new Error('Indicator window is no longer attached');
+    windowValidated = true;
+    dock.hidden = false;
+    dock.addEventListener('click', async event => {
+      if (!event.isTrusted || dock.disabled) return;
+      dock.disabled = true;
+      try { await dockControl('dock'); }
+      catch {
+        dock.disabled = false;
+        $('dock-error').textContent = 'Could not dock the indicator window. Try again or close this window.';
+      }
+    });
+    await restart();
+  } catch {
+    $('refresh').disabled = $('timeframe').disabled = true;
+    $('status').textContent = 'Open the indicator window from its Jupiter 1000x tab.';
+    $('status').dataset.state = 'error';
+  }
+}

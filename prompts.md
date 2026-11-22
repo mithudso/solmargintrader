@@ -1,5 +1,12 @@
 # Prompt history
 
+Version: 327
+Delta: v326 to v327. Record the Jupiter 1000x widget request.
+
+## Show current indicators and detach the Jupiter 1000x widget
+
+> On the jup.ag 1000x page widget, at the top have it show me the immediate z-score, RSI, balance of power, if the macd says it's going to go up or down, Also have widget be a popout window such that I can move it to another monitor so it stays out of the way.
+
 Version: 326
 Delta: v325 to v326. Record the cross-chain test request.
 

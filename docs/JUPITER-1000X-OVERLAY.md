@@ -1,6 +1,6 @@
 # Jupiter 1000x indicator window
 
-Version: 1.5.0. Delta: distinguish chart analysis from separate auto-trading controls, 2026-11-16.
+Version: 1.6.0. Delta: document the current indicator row and detachable window, 2026-11-22.
 
 ## Decision and scope
 
@@ -74,12 +74,19 @@ strategy research, wallets and other worktrees remain under their current owners
 | ZigZag | Close-price reversal threshold 0.5%; confirm the previous extreme only after a threshold reversal | Confirmed points carry their later confirmation time; the last endpoint is provisional |
 | RSI | Wilder smoothing of positive/negative close changes, SMA seed, length 14 | No value before 14 changes; flat=50, only gains=100, only losses=0 |
 | Balance of Power | `(close-open)/(high-low)`, optional SMA smoothing, default length 1 | Zero-range candle=0; a candle measure, not order-book pressure |
+| Z-score (20) | Latest close minus the mean of the last 20 closes, divided by their sample standard deviation | Positive is above the mean. A flat window scores zero |
 | Volty Expan Close | Active bar-t stops are prior close ± `SMA(true range,5)*0.75`, computed through t-1 | Uses the repository's stop-entry definition, not Wilder ATR; displayed levels do not simulate fills |
 | Parabolic SAR | Prior SAR + acceleration × (extreme−prior SAR), prior-two-bar clamps, reversal reset; start/step .02, cap .2 | Initial direction follows the first two closes; initialization can differ from vendor implementations |
 | EMA9 / EMA21 | First-close seed; `EMA[t] = alpha*close[t] + (1-alpha)*EMA[t-1]`, `alpha=2/(span+1)` | Same `adjust=False` recurrence as `oracle_leverage/exit50.py`; wait for 78 observations |
 | MACD12 / 26 / 9 | EMA12−EMA26; EMA9 of that line is the signal; histogram=line−signal | Same first-close seeds and 78-observation warmup as the research context |
 
 The chart may show the developing candle and its developing indicator values.
+The top row uses the selected chart interval and the latest live quote to show
+Z-score (20), RSI, Balance of Power, and MACD direction. MACD is bullish when its
+line is above its signal line, bearish when below, and neutral when equal. It
+describes current momentum. Readings wait for warm-up and clear when the feed
+goes stale. Balance of Power also waits for a reliable candle open and range.
+
 Chart history requests seed 502 completed candles and retain 503 including the
 developing candle. This covers the largest accepted period of 500, including
 Volty active levels that need 502 completed observations. With reversal context
@@ -181,6 +188,13 @@ Exact current source bindings include:
 Load `/Users/mitch/dev/solmargintrader/extension` as an unpacked extension, then
 open the 1000x route. The Indicators window opens automatically on that route.
 Its header shows the extension version. A wallet is unnecessary for public data.
+Choose **Pop out** in the widget title bar to move the panel into a separate
+Chrome window. Drag its title bar to the other monitor. **Focus** brings the
+window forward. **Dock** in either window or closing the separate window
+returns the panel to Jupiter. Changing markets or reloading the source tab
+docks the widget. Moving between windows reloads the chart and restores saved
+indicator settings.
+
 If an automation browser disables extension installation, use the normal Chrome
 profile for wallet approval; do not change browser policies or copy wallet data.
 

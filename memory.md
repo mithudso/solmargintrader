@@ -1,5 +1,33 @@
 # Work continuation
 
+Version: 717
+Delta: v716 to v717. Record the 1000x implementation and verification.
+
+The 1000x summary reads the selected interval's developing close. It shows
+Z-score (20), configured RSI and Balance of Power, and MACD direction.
+The pop-out replaces the inline frame with a browser-managed popup. A
+session record binds the popup to the verified source tab and document
+across MV3 worker eviction. Closing or docking removes the detached
+feed before restoring the inline one.
+
+The independent public SOL probe observed new exchange timestamps in a
+separate Chrome popup and fresh inline readings after Dock. Deployment
+preserves the current Chrome Beta installation and unrelated local edits.
+Acceptance receipts are under
+`/Users/mitch/.local/share/solmargintrader/audits/1000x-indicators-popout-20261122`.
+
+Version: 716
+Delta: v715 to v716. Record the Jupiter 1000x widget scope.
+
+Show the current chart interval's Z-score, RSI, Balance of Power and MACD
+direction at the top of the Jupiter 1000x widget. Keep indicator readiness
+bound to feed freshness and warm-up. Let the current widget detach into a
+separate Chrome window and dock back into the Jupiter tab. Preserve the
+market binding, existing chart controls and execution safeguards.
+
+The isolated branch starts at 3c8f0f0. Verify the indicator math and Chrome
+window lifecycle, including refresh, closing and docking, before delivery.
+
 Version: 715
 Delta: v714 to v715. Record the verified cross-chain transfer results.
 
