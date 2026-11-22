@@ -1,11 +1,11 @@
 {
-  "generatedAt": "2026-11-22T01:57:02+00:00",
+  "generatedAt": "2026-11-22T05:15:01+00:00",
   "schemaVersion": 1,
   "repoRoot": "~/dev/solmargintrader",
-  "commit": "b68d959",
+  "commit": "b12ae0c",
   "counts": {
     "files": 4204,
-    "bytes": 212328016,
+    "bytes": 212329643,
     "byKind": {
       "strategy-card": 1478,
       "doc": 845,
@@ -79737,11 +79737,11 @@
       "ext": ".md",
       "kind": "doc",
       "title": "Work continuation",
-      "summary": "Version: 701 Delta: v700 to v701. Record two follow-up fixes before delivery. The supported Oracle Jupiter recording command binds ordered base and quote",
+      "summary": "Version: 703 Delta: v702 to v703. Record verified short-only ZEC replay results. The historical GUM short-only rerun evaluated 6,048 five-minute configurations",
       "summarySource": "opening-prose",
-      "bytes": 924878,
-      "lines": 4944,
-      "sha1": "b197b917ad8919accbf504dae787adfd18185d08",
+      "bytes": 926322,
+      "lines": 4970,
+      "sha1": "bcac3c0cee5a026aec7d69ccaed989af2c9f7ced",
       "symbols": [],
       "imports": [],
       "internalImports": [],
@@ -84413,11 +84413,11 @@
       "ext": ".md",
       "kind": "doc",
       "title": "Prompt history",
-      "summary": "Version: 319 Delta: v318 to v319. Record the scoped Oracle and Volty optimizer request. Version: 318",
+      "summary": "Version: 320 Delta: v319 to v320. Record the short-only ZEC replay request. Version: 319",
       "summarySource": "opening-prose",
-      "bytes": 303505,
-      "lines": 5038,
-      "sha1": "5ca75ea226b31c652c159b6d551d405c3593075e",
+      "bytes": 303688,
+      "lines": 5045,
+      "sha1": "96c3de5895cabe691408591578d394038eff5d49",
       "symbols": [],
       "imports": [],
       "internalImports": [],
@@ -124907,5 +124907,5 @@
       "frontmatter": {}
     }
   ],
-  "textSha256": "3d1f23ec38722834ba4bbbc5515b5afbbe2e857fd7e500dabf328b3fad2de5c4"
+  "textSha256": "756c0b6472ce5a1da4a5bc0a6a17661fecc677cb9396dffe8c84f285c3c30b56"
 }

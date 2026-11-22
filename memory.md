@@ -1,5 +1,31 @@
 # Work continuation
 
+Version: 703
+Delta: v702 to v703. Record verified short-only ZEC replay results.
+
+The historical GUM short-only rerun evaluated 6,048 five-minute configurations
+at 25× with $250 target exposure on $1,000 paper equity. The four-week
+development selection preceded scoring Nov. 11–18. Z-score led that week
+at +1.24% net across 12 exits and RSI returned +0.75% across 15. The
+selected Volty/Z-score rule gained +0.72% with one modeled liquidation.
+Combined vote lost 0.50% and Balance of Power lost 0.83%. With the prior
+settings held fixed, only Z-score ended the week positive at +0.22%.
+Plain Volty short-only gained +6.92% across 21 days and lost 0.25% in the
+added week. The 21-day window includes 14 development days. Private
+audit receipts bind the original captures, short-side execution, fees,
+funding, and the reproduced published Volty baseline.
+
+Version: 702
+Delta: v701 to v702. Record the matched short-only replay scope.
+
+The short-only ZEC run uses the original two frozen GUM captures from the
+five-minute 25× panel. Freeze the original family configurations for the
+direct comparison, and keep any development-only selection separate.
+Retain native Volty shorts and mirror the signal logic of long-only
+families. Price and settle all trades on the original market candles and
+funding. The canonical Volty directional replay matched the published
+artifact byte for byte. Research uses paper equity and separate audit files.
+
 Version: 701
 Delta: v700 to v701. Record two follow-up fixes before delivery.
 
