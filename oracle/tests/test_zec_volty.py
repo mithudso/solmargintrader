@@ -324,6 +324,84 @@ class DeployedRunnerTests(unittest.TestCase):
         self.assertEqual(self.step(1002), "checking")
         self.assertEqual(self.inert.creates[-1]["side"], "Bid")
 
+    def test_close_only_skips_flat_crossings_and_keeps_tick_capture(self):
+        (self.state / "PAUSE_ENTRIES").symlink_to("missing")
+        self.assertEqual(self.step(1000), "armed")
+        self.assertEqual(self.step(1002), "armed")
+        telemetry = self.status()["telemetry"]
+        self.assertTrue(telemetry["entries_paused"])
+        self.assertEqual(telemetry["market"]["mark"], 1002)
+        self.assertEqual(telemetry["capture"], "recording")
+        self.assertFalse(self.inert.creates)
+        with closing(sqlite3.connect(self.inbox)) as db:
+            self.assertEqual(db.execute("SELECT skip_reason FROM volty_inputs").fetchall(),
+                             [("funded_entries_paused",)])
+            self.assertEqual(db.execute("SELECT count(*) FROM signals").fetchone(), (0,))
+
+    def test_close_only_allows_reduce_only_fill_and_retires_reversal(self):
+        self.open_long()
+        (self.state / "PAUSE_ENTRIES").touch()
+        self.assertEqual(self.step(1000), "armed")
+        self.assertEqual(self.step(1002), "armed")
+        self.assertEqual(len(self.inert.creates), 1)
+        self.assertEqual(self.step(998), "checking")
+        self.assertTrue(self.inert.creates[1]["reduceOnly"])
+        self.assertEqual(self.step(998), "checking")
+        self.assertTrue(self.status()["orders"][0]["settlement_pending"])
+        self.inert.settle()
+        self.assertEqual(self.step(998), "armed")
+        self.assertEqual(self.step(998), "armed")
+        self.assertEqual(len(self.inert.creates), 2)
+        self.assertEqual(self.status()["orders"][0]["state"], "filled")
+        with closing(sqlite3.connect(self.inbox)) as db:
+            result, = db.execute("SELECT result FROM signals WHERE side='sell'").fetchone()
+        self.assertEqual(json.loads(result)["reason"], "funded_entries_paused")
+
+    def test_removing_close_only_cannot_reopen_the_existing_reversal(self):
+        self.open_long()
+        marker = self.state / "PAUSE_ENTRIES"
+        marker.touch()
+        self.assertEqual(self.step(998), "checking")
+        self.assertTrue(self.inert.creates[-1]["reduceOnly"])
+        marker.unlink()
+        self.inert.settle()
+        self.assertEqual(self.step(998), "checking")
+        self.assertEqual(self.step(998), "armed")
+        self.assertEqual(len(self.inert.creates), 2)
+        self.assertFalse(self.status()["telemetry"]["entries_paused"])
+
+    def test_close_only_rechecks_marker_after_final_quote_before_signing(self):
+        marker = self.state / "PAUSE_ENTRIES"
+        plan = self.venue.plan("ZEC", "buy")
+
+        def create_marker_after_quote(method, path, owner_address, body=None):
+            result = self.inert(method, path, owner_address, body)
+            if path == "/blockhash":
+                marker.touch()
+            return result
+
+        with (patch.object(self.venue, "call", create_marker_after_quote),
+              patch.object(self.venue, "signer") as sign_call):
+            with self.assertRaisesRegex(GumError, "gum_disarmed_or_expired"):
+                self.venue.submit_leg(plan, "123")
+            sign_call.assert_not_called()
+        self.assertFalse(self.inert.creates)
+
+    def test_close_only_rechecks_marker_after_signing_before_post(self):
+        marker = self.state / "PAUSE_ENTRIES"
+        plan = self.venue.plan("ZEC", "buy")
+        signer = self.venue.signer
+
+        def sign(message):
+            marker.touch()
+            return signer(message)
+
+        with patch.object(self.venue, "signer", side_effect=sign) as sign_call:
+            with self.assertRaisesRegex(GumError, "gum_disarmed_or_expired"):
+                self.venue.submit_leg(plan, "123")
+            sign_call.assert_called_once()
+        self.assertFalse(self.inert.creates)
+
     def test_learning_ticks_are_durable_and_dedupe_after_restart(self):
         self.assertEqual(self.step(1000), "armed")
         self.assertEqual(self.runner.step(), "armed")

@@ -322,7 +322,22 @@ class VoltyVenue(GumOrders):
     def plan(self, symbol, side, account_id=None):
         plan = super().plan(symbol, side, account_id)
         self.verify_lineage(plan["position_before"])
+        if plan["action"] == "open" and self.entries_paused():
+            raise GumError("gum_disarmed_or_expired")
         return plan
+
+    def entries_paused(self) -> bool:
+        # A dangling marker must also fence openings after a restart.
+        return os.path.lexists(self.path.parent / "PAUSE_ENTRIES")
+
+    def submit_leg(self, plan, client_order_id, *, enabled=lambda: True,
+                   deadline=None, approve_fresh=None, timing=None):
+        reduce_only = isinstance(plan, dict) and plan.get("action") == "close" and plan.get("reduce_only") is True
+        return super().submit_leg(
+            plan, client_order_id,
+            enabled=lambda: enabled() and (reduce_only or not self.entries_paused()),
+            deadline=deadline, approve_fresh=approve_fresh, timing=timing,
+        )
 
 
 class VoltyRunner:
@@ -383,6 +398,7 @@ class VoltyRunner:
                 "orders": _orders(self.inbox),
                 "telemetry": {
                     "market": market, "activity": activity, "capture": self.capture,
+                    "entries_paused": self.venue is not None and self.venue.entries_paused(),
                     "reconciliation": {
                         "unresolved_fresh_ticks": self.unresolved_ticks,
                         "reset_threshold": STUCK_ORDER_TICKS,
@@ -543,6 +559,11 @@ class VoltyRunner:
                     self._record(event, skip="owner_preflight_refused")
                 raise
             self.checked_owner = True
+            if (event is not None and self.venue.entries_paused()
+                    and account["position"]["side"] in (None, event.side)):
+                self.active = None
+                self._record(event, skip="funded_entries_paused")
+                return self.publish("armed")
         if event is None or not self._record(event):
             return self.publish("armed")
         self.active = event
@@ -550,7 +571,11 @@ class VoltyRunner:
             self._expire(event.event_id, "signal_not_current")
             self.active = None
             return self.publish("armed")
+        entries_paused = self.venue.entries_paused()
         outcome = self._dispatch(self._enabled)
+        if entries_paused or self.venue.entries_paused():
+            # Removing the marker cannot revive a reversal initiated in close-only mode.
+            self.active = None
         if outcome == "disarmed":
             self._expire(event.event_id, "signal_disarmed")
         return self.publish(_state(outcome))
@@ -570,11 +595,20 @@ class VoltyRunner:
     def _reconcile(self, row) -> str:
         if row is None:
             return "armed"
+        entries_paused = self.venue.entries_paused()
+        if entries_paused:
+            self.active = None
         owns_event = self.active is not None and self.active.event_id == row["event_id"]
         if row["phase"] == "ready_to_open" and not (owns_event and self._enabled()):
-            self._expire(row["event_id"], "reversal_signal_no_longer_authorized")
+            reason = "funded_entries_paused" if entries_paused else "reversal_signal_no_longer_authorized"
+            self._expire(row["event_id"], reason)
             return "armed"
-        return _state(self._dispatch(lambda: owns_event and self._enabled()))
+        outcome = self._dispatch(lambda: owns_event and self._enabled())
+        if outcome == "closed" and (entries_paused or self.venue.entries_paused()):
+            self.active = None
+            self._expire(row["event_id"], "funded_entries_paused")
+            return "armed"
+        return _state(outcome)
 
 
 def _state(outcome: str) -> str:

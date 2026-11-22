@@ -1,5 +1,17 @@
 # Prompt history
 
+Version: 325
+Delta: v324 to v325. Record authorization for the ZEC prospective paper comparison.
+
+## Implement the ZEC GUM recommendations
+
+> Implement all of your recommendations.
+
+The preceding recommendation was to pause new funded exposure while preserving
+reconciliation and exits, compare two frozen short strategies on fresh paper
+data, keep learning in shadow mode, and require sustained net results and a
+fixed dollar loss budget before considering a funded pilot.
+
 Version: 324
 Delta: v323 to v324. Record the two-timeframe z-score exit request.
 

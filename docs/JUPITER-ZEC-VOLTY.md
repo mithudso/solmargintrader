@@ -75,9 +75,16 @@ python -m oracle.zec_volty --watch --live --config "$VOLTY_POLICY"
 ```
 
 The default journal and status file share the same private state directory.
-Keep the journal when restarting. To pause orders, create a file named `KILL`
-in the state directory. The pause does not close positions. Leave the owner
-running to reconcile outstanding submissions.
+Keep the journal when restarting. Create `PAUSE_ENTRIES` in that directory
+to keep the owner in close-only mode. It continues observing marks, reconciling
+orders, and handling strategy-driven reduce-only closes. The status reports
+`telemetry.entries_paused`. A reversal may close an existing position. The
+new opening leg remains blocked after the close settles.
+
+`KILL` pauses order dispatch globally and leaves any open position in place.
+Leave the owner running to reconcile outstanding submissions. Confirm the
+venue position, order history, and journal before using a global pause or
+changing the funded policy.
 
 ### Changing the allocation on a funded journal
 
@@ -99,6 +106,60 @@ still applies to every order. If a policy change is blocked on reconciliation,
 a signed, finalized Jupnet instruction failure can establish a rejection even
 when GUM has no order history row. Match the transaction to the original
 account and every committed instruction field before recording that outcome.
+
+## ZEC short-only paper comparison
+
+The prospective cohort starts each book with $1,000 in paper equity and uses
+five-minute ZEC GUM candles, 25× modeled leverage, and $250 of exposure per
+trade. Both candidates are short-only.
+
+| Candidate | Entry and signal exit | Price bracket |
+| --- | --- | --- |
+| Z-score(12) | Enter at z ≥ +2.5. Exit at z ≤ 0. | Take-profit 2%, stop 1.6% |
+| Ungated Volty 10 × 1.5 | The lower level opens the short. The upper level can close it. | Stop 0.8% |
+
+The two strategies use the same public observations. Each runs with baseline
+slippage of 2 basis points per side and stressed slippage of 6 basis points
+per side. Cash is the zero-return comparison. Costs include both fills and
+recorded funding. The cohort has its own SQLite evidence journal so a restart
+can continue the same fixed experiment. The tick learner keeps scoring
+predictions in shadow mode.
+
+From the repository root, use a new private output directory for the first
+launch and reuse that directory to resume the cohort.
+
+```sh
+node extension/tools/zec-gum-live.mjs --prospective --output "$ZEC_PAPER_DIR"
+node extension/tools/lib/zec-gum-funding-gate.mjs --cohort "$ZEC_PAPER_DIR"
+```
+
+The funding review uses the four latest complete Monday-start UTC weeks.
+Each baseline and stress book needs at least 40 exits overall, at least
+three every week, positive aggregate net P&L, at least three profitable
+weeks, no modeled liquidations, and peak-to-trough drawdown within 3%.
+Each week must meet the timely observation and candle coverage rules. A data
+gap during held exposure can disqualify the evidence. An incomplete sample
+reports insufficient evidence.
+
+Qualifying results allow an owner review. A future pilot needs a separate
+decision and a fixed dollar loss budget. The optional sizing estimate uses
+the smaller of the per-trade and remaining daily loss budgets. It accounts
+for fees, slippage, stressed stop gaps, funding, available margin and venue
+limits. A stop remains subject to gap risk.
+
+```sh
+node extension/tools/lib/zec-gum-funding-gate.mjs --size "$ZEC_RISK_INPUT_JSON"
+```
+
+The input JSON takes `riskBudgetUsd`, `dailyRiskRemainingUsd`,
+`availableMarginUsd`, `maxNotionalUsd`, `markUsd`, `leverage`, and
+`stopPct` in percent. Supply conservative `entrySlippageBps`,
+`exitSlippageBps`, `stopGapBps`, aggregate `adverseFundingBps`, and
+`networkUsdPerSide`. The `market` object uses current GUM terms for
+`venue`, `max`, `minOrder`, `maxOrder`, `firstTierCap`, `maxQty`,
+`stepSize`, `baseBps`, `maintenanceBps`, and `liquidationBps`.
+The estimate refuses a stressed stop that reaches the modeled liquidation
+price.
 
 ## Verify trading
 
