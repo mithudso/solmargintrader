@@ -1,5 +1,38 @@
 # Work continuation
 
+Version: 718
+Delta: v717 to v718. Record the zero-fee re-read and the zero-fee venue research state.
+
+Removing exchange fees from the frozen cross-chain replay flips the Z-score(12)
+short from a median $15.27 loss to a $2.26 profit per $1,000 coin, and
+profitable coins from 50 to 170 of 300. Results and limits are in
+`research/papers/results/cross_chain_short_zero_fee_reread.md`; the
+reproducible script is
+`/Users/mitch/.local/share/solmargintrader/audits/cross-chain-short-20261122/zero_fee_reread.py`.
+
+Every offshore zero-fee perp venue checked (Lighter, Paradex, Bullet,
+Bitfinex, Hyperliquid, GRVT, Aster) bars US persons. The US near-zero route is
+Kraken Derivatives US (Bitnomial perps, $0.0113 per contract per side, FIX
+4.4 order entry). Its list includes HBAR, XTZ and SOL but not POL or JTO.
+Retail FIX key access is unverified.
+
+The /dr run `zero-fee-perpetual-futures-venues-with-api-access` holds 660
+evidence-bound claims across 8 concepts
+(`/Users/mitch/.global-ai-hub/research/zero-fee-perpetual-futures-venues-with-api-access`).
+Gate preflight passes. The Codex judge hit its usage limit until
+2026-11-23 04:44 local, so publication is withheld. Next: run
+`python3 /Users/mitch/dev/llms-explorer/scripts/codex_dr_run.py gate zero-fee-perpetual-futures-venues-with-api-access`,
+then `/sko` on the trading-and-investing spoke, `codex_dr_run.py finish`,
+and full-suite Steps 3-5 (`/lca` packs, `/ldo --family` rollup, report).
+The shared research runner writes no v4 evidence spans. The binding tool
+`/Users/mitch/.global-ai-hub/research/zero-fee-perpetual-futures-venues-with-api-access/bind/bind_tool.py`
+added them by reusing the gate's own `check_spans`.
+The hub wiring in `/Users/mitch/.claude/skills/trading-and-investing` (routing row,
+triggers, v1.7.6) sits on a working-tree `SKILL.md` that was older than its
+committed HEAD (v1.6.0 against v1.7.0) and holds other sessions' uncommitted
+edits. Reconcile it against HEAD before publishing; the pre-edit copy and diff
+are in `/Users/mitch/.global-ai-hub/research/zero-fee-perpetual-futures-venues-with-api-access/hub-wiring`.
+
 Version: 717
 Delta: v716 to v717. Record the 1000x implementation and verification.
 
