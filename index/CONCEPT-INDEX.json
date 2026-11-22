@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-11-22T06:48:51+00:00",
+  "generatedAt": "2026-11-22T07:09:08+00:00",
   "schemaVersion": 1,
   "note": "Concepts are derived from the repo's own vocabulary \u2014 the FAMILY dict, strategy-card frontmatter, docs/trading-signals-concept-family.md, and terms verified to recur in the corpus. A concept matching no file is dropped, not kept.",
   "counts": {
@@ -174,7 +174,7 @@
         },
         {
           "path": "memory.md",
-          "hits": 464
+          "hits": 466
         },
         {
           "path": "llms-filemap.txt",
@@ -2489,7 +2489,7 @@
         "vwap_reversion",
         "ou_reversion"
       ],
-      "matchingFiles": 169,
+      "matchingFiles": 170,
       "shown": 30,
       "files": [
         {

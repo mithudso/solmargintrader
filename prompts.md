@@ -1,5 +1,12 @@
 # Prompt history
 
+Version: 324
+Delta: v323 to v324. Record the two-timeframe z-score exit request.
+
+## Compare the five- and ten-minute two-up short with a z-score exit
+
+> Ok what about 2 green 5 or 10 min bar, a .8% stop loss and waiting for the z-score to close.
+
 Version: 323
 Delta: v322 to v323. Record the 1% target and 0.8% stop follow-up.
 
