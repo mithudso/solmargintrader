@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-11-22T08:29:52+00:00",
+  "generatedAt": "2026-11-22T09:09:48+00:00",
   "schemaVersion": 1,
   "note": "Concepts are derived from the repo's own vocabulary \u2014 the FAMILY dict, strategy-card frontmatter, docs/trading-signals-concept-family.md, and terms verified to recur in the corpus. A concept matching no file is dropped, not kept.",
   "counts": {
@@ -174,7 +174,7 @@
         },
         {
           "path": "memory.md",
-          "hits": 469
+          "hits": 474
         },
         {
           "path": "llms-filemap.txt",
@@ -194,7 +194,7 @@
         },
         {
           "path": "prompts.md",
-          "hits": 174
+          "hits": 173
         },
         {
           "path": "research/papers/coin-intelligence/doge-dogecoin.md",
@@ -603,7 +603,7 @@
         },
         {
           "path": "memory.md",
-          "hits": 539
+          "hits": 540
         },
         {
           "path": "llms/jupsol-llms.txt",
@@ -1170,7 +1170,7 @@
         },
         {
           "path": "memory.md",
-          "hits": 62
+          "hits": 64
         },
         {
           "path": "FILES.md",
@@ -1423,7 +1423,7 @@
         },
         {
           "path": "memory.md",
-          "hits": 61
+          "hits": 63
         },
         {
           "path": "research/json/eth-week-20261117/summary.json",

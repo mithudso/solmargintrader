@@ -1,11 +1,11 @@
 {
-  "generatedAt": "2026-11-22T08:29:52+00:00",
+  "generatedAt": "2026-11-22T09:09:48+00:00",
   "schemaVersion": 1,
   "repoRoot": "~/dev/solmargintrader",
-  "commit": "2589d1b",
+  "commit": "ea579b4",
   "counts": {
     "files": 4208,
-    "bytes": 212403404,
+    "bytes": 212405566,
     "byKind": {
       "strategy-card": 1478,
       "doc": 845,
@@ -79839,11 +79839,11 @@
       "ext": ".md",
       "kind": "doc",
       "title": "Work continuation",
-      "summary": "Version: 713 Delta: v712 to v713. Record close-only acceptance and the new paper design. The funded launchd owner loaded a byte-verified close-only module with",
+      "summary": "Version: 715 Delta: v714 to v715. Record the verified cross-chain transfer results. The frozen CoinGecko platform census supplied 425 nonempty rankings,",
       "summarySource": "opening-prose",
-      "bytes": 934112,
-      "lines": 5118,
-      "sha1": "05db2647fc08dd9c111514c541afa7c850c67f7a",
+      "bytes": 936024,
+      "lines": 5154,
+      "sha1": "9a9f05e3b6a499753fccbdb76616e87283e96f70",
       "symbols": [],
       "imports": [],
       "internalImports": [],
@@ -84515,11 +84515,11 @@
       "ext": ".md",
       "kind": "doc",
       "title": "Prompt history",
-      "summary": "Version: 325 Delta: v324 to v325. Record authorization for the ZEC prospective paper comparison. The preceding recommendation was to pause new funded exposure while preserving",
+      "summary": "Version: 326 Delta: v325 to v326. Record the cross-chain test request. Version: 325",
       "summarySource": "opening-prose",
-      "bytes": 305351,
-      "lines": 5085,
-      "sha1": "59decb00d60c67dbfd32d554ff75f4f2c81e5388",
+      "bytes": 305601,
+      "lines": 5094,
+      "sha1": "25ad1b66028d0b24c13e1c5c2d3a27472344196d",
       "symbols": [],
       "imports": [],
       "internalImports": [],
@@ -125009,5 +125009,5 @@
       "frontmatter": {}
     }
   ],
-  "textSha256": "62b388a8644939a7df794f3edcda6950bce69bb3ae7d39863499729b1a07151f"
+  "textSha256": "6f2226d7ef6a19b01a5cabe21fadc024a8500409912a3480ee90c30d74e72435"
 }

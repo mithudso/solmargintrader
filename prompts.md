@@ -1,5 +1,14 @@
 # Prompt history
 
+Version: 326
+Delta: v325 to v326. Record the cross-chain test request.
+
+## Test the frozen short strategies across chain token rankings
+
+> Test your chosen strategies against the top 100 coins on each chain.
+
+> Every chain with a verifiable ranking
+
 Version: 325
 Delta: v324 to v325. Record authorization for the ZEC prospective paper comparison.
 
