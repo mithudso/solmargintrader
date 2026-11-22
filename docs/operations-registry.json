@@ -72,7 +72,7 @@
     },
     {
       "path": "extension/package.json",
-      "sha256": "34c7382ef3ce03521104e1e5d74c4cc70893e47093cca96399699d3d30572b79"
+      "sha256": "1166556f9d5a154e44508b59e0bbd4f92b4acb7c4beba5712f38124fe95e497b"
     },
     {
       "path": "extension/src/core/commands.js",
@@ -92,7 +92,7 @@
     },
     {
       "path": "oracle/cli.py",
-      "sha256": "cdb6aae8a784a0c6a826cca80e4ed5c23b59e0ec7b5865fe8af51d5dec48a72f"
+      "sha256": "f37b41b72862f514f8297aa4f70e9b7a13027067b1ca943337d6f57fcdeb6106"
     },
     {
       "path": "oracle/pyproject.toml",
@@ -100,7 +100,7 @@
     },
     {
       "path": "oracle/server.py",
-      "sha256": "834638111cd12719cc118527e8004ceb0fa0fcdb6f7500609295aaa37c55867b"
+      "sha256": "6b6ee5c2c0c1f5fbeb55790662194d8fd23a6dc209a893eaaa3384f8895e06b0"
     },
     {
       "path": "package.json",

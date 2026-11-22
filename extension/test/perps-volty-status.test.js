@@ -22,6 +22,9 @@ const performanceReport = (values = {}) => ({
   updated_at: at, gross_pnl_usdc: 0.012345, net_pnl_usdc: -0.000002,
   closed_trades: 3, profitable_trades: 2, ...values,
 });
+const reconciliation = (values = {}) => ({
+  unresolved_fresh_ticks: 3, reset_threshold: 4, last_reset_at: at - 30, ...values,
+});
 
 async function mount(t, snapshot, now = at) {
   const nodes = new Map();
@@ -50,6 +53,7 @@ test('observe status says the owner will only watch for signals', async t => {
   assert.equal(node('mark').textContent, '—');
   assert.match(node('market-note').textContent, /unavailable/);
   assert.equal(node('gross').textContent, '—');
+  assert.equal(node('reconciliation').hidden, true);
 });
 
 test('live receipts distinguish an unverified open from a confirmed close', async t => {
@@ -87,6 +91,29 @@ test('old live state never renders as currently armed even when an observation i
   assert.equal(node('status').textContent, 'Live · Status stale');
   assert.ok(node('status').attributes.has('data-stale'));
   assert.equal(node('mark').textContent, '—');
+});
+
+test('fresh live checks distinguish watchdog progress from the last signal reset', async t => {
+  const telemetry = { reconciliation: reconciliation() };
+  const node = await mount(t, report({ mode: 'live', state: 'checking', telemetry }));
+  assert.equal(node('reconciliation').hidden, false);
+  assert.match(node('reconciliation').textContent, /3 of 4 fresh ticks with an unresolved order/);
+  assert.match(node('reconciliation').textContent, /Last signal reset .* UTC.*Order outcomes require separate venue confirmation/);
+});
+
+test('stale watchdog telemetry only shows when the signal last reset', async t => {
+  const telemetry = { reconciliation: reconciliation() };
+  const node = await mount(t, report({ mode: 'live', state: 'checking', telemetry }), at + 61);
+  assert.equal(node('reconciliation').hidden, false);
+  assert.match(node('reconciliation').textContent, /Historical signal reset .* UTC/);
+  assert.doesNotMatch(node('reconciliation').textContent, /fresh ticks/);
+});
+
+test('armed status shows a reset without implying an unresolved order remains', async t => {
+  const telemetry = { reconciliation: reconciliation() };
+  const node = await mount(t, report({ mode: 'live', state: 'armed', telemetry }));
+  assert.match(node('reconciliation').textContent, /Last signal reset .* UTC/);
+  assert.doesNotMatch(node('reconciliation').textContent, /unresolved order/);
 });
 
 test('future snapshot is unavailable', async t => {

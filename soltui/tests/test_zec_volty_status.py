@@ -89,6 +89,30 @@ class VoltyStatusTests(unittest.TestCase):
         learning.write_text(json.dumps({"schema": 1, **shadow, "ticks": 1}))
         self.assertEqual(self.dispatch()["result"], expected)
 
+    def test_reconciliation_projects_only_valid_live_watchdog_fields(self):
+        telemetry = {"market": None, "activity": [], "capture": "recording"}
+        live = self.snapshot(mode="live", state="checking", telemetry=telemetry)
+        watchdog = {"unresolved_fresh_ticks": 4, "reset_threshold": 4, "last_reset_at": self.at - 5}
+        self.write({**live, "telemetry": {**telemetry, "reconciliation": {**watchdog, "internal": "hidden"}}})
+        self.assertEqual(self.dispatch()["result"], {**live, "telemetry": {**telemetry, "reconciliation": watchdog}})
+
+        before_reset = {**watchdog, "unresolved_fresh_ticks": 1, "last_reset_at": None}
+        self.write({**live, "telemetry": {**telemetry, "reconciliation": before_reset}})
+        self.assertEqual(self.dispatch()["result"]["telemetry"]["reconciliation"], before_reset)
+        observe = {**live, "mode": "observe", "state": "watching"}
+        self.write({**observe, "telemetry": {**telemetry, "reconciliation": watchdog}})
+        self.assertEqual(self.dispatch()["result"], observe)
+
+        for invalid in (
+            None, [], {"unresolved_fresh_ticks": 1}, {**watchdog, "unresolved_fresh_ticks": True},
+            {**watchdog, "unresolved_fresh_ticks": 5}, {**watchdog, "reset_threshold": 0},
+            {**watchdog, "reset_threshold": 10**13}, {**watchdog, "last_reset_at": self.at + 1},
+            {**watchdog, "last_reset_at": "yesterday"}, {**watchdog, "last_reset_at": self.at - 0.5},
+        ):
+            with self.subTest(invalid=invalid):
+                self.write({**live, "telemetry": {**telemetry, "reconciliation": invalid}})
+                self.assertEqual(self.dispatch()["result"], live)
+
     def test_observe_preserves_orders_and_only_live_projects_verified_performance(self):
         order = {"event_id": "volty:1", "client_order_id": "1234", "side": "buy", "leg": "open", "state": "acknowledged",
                  "order_id": None, "requested_quantity": "0.017", "filled_quantity": None,

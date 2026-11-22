@@ -1,5 +1,12 @@
 # Prompt history
 
+Version: 319
+Delta: v318 to v319. Record the scoped Oracle and Volty optimizer request.
+
+## Oracle and Volty optimizer passes
+
+> Run the deep code optimizer, the application deep optimizer, and the ui deep optimizer on the oracle and volty scripts.
+
 Version: 318
 Delta: v317 to v318. Record the continuation request.
 

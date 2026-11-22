@@ -1,5 +1,41 @@
 # Work continuation
 
+Version: 701
+Delta: v700 to v701. Record two follow-up fixes before delivery.
+
+The supported Oracle Jupiter recording command binds ordered base and quote
+mints under archive ownership. A changed pair or a legacy Jupiter archive
+with unknown ordering needs a new write target. Previous archives and the
+existing evaluator remain available for reading. An invalid Volty paper
+state directory returns a structured refusal without revealing the path.
+
+Version: 700
+Delta: v699 to v700. Record the scoped optimizer repairs and remaining evidence.
+
+## Oracle and Volty optimizer delivery
+
+Oracle guidance can run without opening an archive. Current MCP clients can
+listen to the three allowed resources, while legacy subscription clients
+retain their existing path. The publisher reads only resources with active
+subscriptions. The Volty v2 paper cohort rejects conflicting marks and
+unsupported risk tiers, expires superseded openings and preserves legacy
+journal rows. A second paper owner gets a bounded refusal. The native bridge
+and Jupiter panel expose watchdog activity, and the panel improves narrow
+P&L layout and offers click or keyboard placement.
+
+The private optimizer records distinguish sampled code review from full
+coverage and isolate application/UI runtime fixtures from production. The
+run requires no live service restart, no new market studies, and no activation
+of separate optimizer checkpoints. Continue from the method receipts for
+uncovered file-method pairs or runtime cases.
+
+Version: 699
+Delta: v698 to v699. Freeze the Oracle and Volty optimizer scope before repair.
+
+## Oracle and Volty optimizer scope
+
+Run the code, application and UI optimizers against revision `e0d6d9377793e7d27a8775da64b78ff7f0e236dc`. Cover the Oracle scripts and their directly connected operator workflows, including the Volty paper and funded watcher, native status projection, Jupiter ZEC panel, Oracle extension and Oracle TUI. Preserve the existing funded owner, training and trading policies and independent optimizer checkpoints. Verify repairs in local fixtures and an isolated browser before delivery. Keep worktree diagnostics and preimages in the private Oracle and Volty audit directory.
+
 Version: 698
 Delta: v697 to v698. Record verification and the evidence for the stalled funded order.
 

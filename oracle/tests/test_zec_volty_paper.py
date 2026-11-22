@@ -1,11 +1,16 @@
+import json
 import sqlite3
+import subprocess
+import sys
 import tempfile
 import unittest
 from contextlib import closing
+from dataclasses import replace
 from decimal import Decimal
 from pathlib import Path
 from unittest.mock import patch
 
+from oracle.cli import owner
 from oracle.zec_volty_paper import GumPaperFeed, PaperSession, PaperTick, _connect
 from oracle.zec_volty_signal import VoltyDataError, VoltyObservation
 
@@ -88,6 +93,91 @@ class VoltyPaperTests(unittest.TestCase):
         status = PaperSession(self.db).observe(tick(6, 101))
         self.assertEqual(status["variants"]["funded-rules"]["position"], "buy")
 
+    def test_only_an_identical_mark_is_a_benign_duplicate(self):
+        prior = tick(1, 101).observation
+        feed = GumPaperFeed()
+        for observation, reason in (
+            (prior, "gum_no_distinct_paper_mark"),
+            (replace(prior, mark=100), "gum_zec_mark_replayed"),
+            (tick(0).observation, "gum_zec_mark_replayed"),
+        ):
+            with (
+                self.subTest(reason=reason),
+                patch.object(feed.source, "read", return_value=observation),
+                self.assertRaisesRegex(VoltyDataError, reason),
+            ):
+                feed.read(prior)
+
+    def test_opposite_crossing_replaces_an_unsubmitted_open(self):
+        self.session.observe(tick(0))
+        self.session.observe(tick(1, 101))
+        status = self.session.observe(tick(2, 99))["variants"]["funded-rules"]
+        self.assertIsNone(status["position"])
+        self.assertEqual(status["pending"], "sell")
+        self.assertEqual(status["refusals"], {"signal_superseded": 1})
+        status = self.session.observe(tick(3, 99))["variants"]["funded-rules"]
+        self.assertEqual(status["position"], "sell")
+
+    def test_opposite_crossing_does_not_cancel_a_reduce_only_close(self):
+        for offset, mark in enumerate((100, 101, 101, 99, 101)):
+            status = self.session.observe(tick(offset, mark))["variants"]["funded-rules"]
+        self.assertIsNone(status["position"])
+        self.assertEqual(status["closed"], 1)
+        self.assertEqual(status["refusals"], {})
+        status = self.session.observe(tick(5, 101))["variants"]["funded-rules"]
+        self.assertEqual(status["pending"], "buy")
+
+    def test_venue_tier_must_cover_opening_notional_at_plan_and_fill(self):
+        def low_tier_tick(offset):
+            row = tick(offset, 101)
+            row.market["riskTiers"][0]["notionalCap"] = "3"
+            return row
+
+        self.session.observe(tick(0))
+        status = self.session.observe(low_tier_tick(1))["variants"]["funded-rules"]
+        self.assertIsNone(status["pending"])
+        self.assertEqual(status["refusals"], {"venue_leverage_limit": 1})
+
+        self.session.observe(tick(2))
+        self.session.observe(tick(3, 101))
+        status = self.session.observe(low_tier_tick(4))["variants"]["funded-rules"]
+        self.assertIsNone(status["position"])
+        self.assertEqual(status["refusals"], {"venue_leverage_limit": 2})
+
+    def test_maintenance_without_a_covering_tier_makes_results_unavailable(self):
+        for offset, mark in enumerate((100, 101, 101)):
+            self.session.observe(tick(offset, mark))
+        invalid = tick(3, 101)
+        invalid.market["riskTiers"][0]["notionalCap"] = "3"
+        status = self.session.observe(invalid)["variants"]["funded-rules"]
+        self.assertIsNone(status["net_pnl_usdc"])
+        self.assertFalse(status["margin_breach"])
+        self.assertTrue(status["maintenance_unavailable"])
+        restarted = PaperSession(self.db).observe(tick(4))
+        self.assertIsNone(restarted["variants"]["funded-rules"]["net_pnl_usdc"])
+
+    def test_old_checkpoints_remain_readable_without_mixing_method_totals(self):
+        for offset, mark in enumerate((100, 101, 101)):
+            self.session.observe(tick(offset, mark))
+        last = tick(2, 101).observation
+        for mark_at, data in self.db.execute("SELECT mark_at, checkpoint FROM paper_ticks").fetchall():
+            payload = json.loads(data)
+            payload["method"] = "zec-volty-shared-gum-v1"
+            for book in payload["books"].values():
+                book.pop("maintenance_unavailable", None)
+            self.db.execute("UPDATE paper_ticks SET checkpoint=? WHERE mark_at=?", (json.dumps(payload), mark_at))
+        resumed = PaperSession(self.db)
+        self.assertEqual(resumed.last_observation, last)
+        with self.assertRaisesRegex(VoltyDataError, "gum_no_distinct_paper_mark"):
+            resumed.observe(tick(2, 101))
+        status = resumed.observe(tick(3, 101))
+        self.assertEqual(status["method"], "zec-volty-shared-gum-v2")
+        self.assertEqual((status["ticks"], status["first_mark_at"]), (1, START + 3))
+        self.assertIsNone(status["variants"]["funded-rules"]["position"])
+        rows = self.db.execute("SELECT json_extract(checkpoint, '$.method') FROM paper_ticks ORDER BY mark_at")
+        self.assertEqual([row[0] for row in rows], ["zec-volty-shared-gum-v1"] * 3 + ["zec-volty-shared-gum-v2"])
+        self.assertEqual(PaperSession(self.db).observe(tick(4, 101))["ticks"], 2)
+
     def test_funding_charges_positions_when_known_and_invalidates_pnl_on_gap(self):
         self.session.observe(tick(-5))
         self.session.observe(tick(-4, 101))
@@ -121,3 +211,32 @@ class VoltyPaperTests(unittest.TestCase):
             link.symlink_to(path)
             with self.assertRaises(OSError):
                 _connect(link)
+
+    def test_duplicate_watcher_refuses_without_private_traceback(self):
+        with tempfile.TemporaryDirectory() as directory, owner(Path(directory) / "paper.sqlite3"):
+            result = subprocess.run(
+                [sys.executable, "-m", "oracle.zec_volty_paper", "--state-dir", directory],
+                capture_output=True,
+                check=False,
+                text=True,
+                timeout=5,
+            )
+        self.assertEqual(result.returncode, 2)
+        self.assertEqual(json.loads(result.stdout)["reason"], "paper_owner_already_running")
+        self.assertEqual(result.stderr, "")
+
+    def test_rejects_regular_file_as_state_directory_without_echoing_its_path(self):
+        with tempfile.TemporaryDirectory() as directory:
+            invalid = Path(directory) / "private-state-path"
+            invalid.touch()
+            result = subprocess.run(
+                [sys.executable, "-m", "oracle.zec_volty_paper", "--state-dir", str(invalid)],
+                capture_output=True,
+                check=False,
+                text=True,
+                timeout=5,
+            )
+        self.assertEqual(result.returncode, 2)
+        self.assertEqual(json.loads(result.stdout)["reason"], "paper_journal_unavailable")
+        self.assertNotIn(invalid.name, result.stdout)
+        self.assertEqual(result.stderr, "")

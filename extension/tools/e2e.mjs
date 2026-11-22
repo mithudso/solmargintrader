@@ -512,6 +512,7 @@ try {
         assert(rendered, `ZEC Volty observation did not render on the ${side} route`);
         for (const text of ['$560.00', '$541.00', 'Last signal Short · Skipped · prior order unresolved',
           'Waiting for collateral to settle', 'Close long · Filled · awaiting collateral settlement',
+          '3 of 4 fresh ticks with an unresolved order', 'Last signal reset', 'Order outcomes require separate venue confirmation',
           'Open long · Confirmed fill', '0:e2e-fixture-transaction', 'client order 7654321',
           'Gross P&L', 'Net P&L', '-0.012115 USDC', 'Profitable trades', '3 of 8 (37.5%)',
           'Closed trades as of', 'Net includes fees and funding',
@@ -520,6 +521,19 @@ try {
         }
         assert(rendered.text.indexOf('Gross P&L') < rendered.text.indexOf('GUM mark'), 'performance must precede market levels');
         eq(rendered.controls, 0, 'Volty verification section must be read-only');
+        await browser.call('Emulation.setDeviceMetricsOverride', { width: 320, height: 690, deviceScaleFactor: 1, mobile: false }, page.sessionId);
+        const pnlFits = await page.ev(`(() => {
+          return window.innerWidth === 320 && document.documentElement.scrollWidth === 320 &&
+            ['[data-volty-net]', '[data-volty-gross]'].every(selector => {
+              const node = document.querySelector(selector).firstChild;
+              const range = document.createRange();
+              range.setStart(node, 0);
+              range.setEnd(node, node.textContent.indexOf(' USDC'));
+              return range.getClientRects().length === 1;
+            });
+        })()`);
+        assert(pnlFits, `GUM P&L digits must stay together at 320px on the ${side} route`);
+        await browser.call('Emulation.clearDeviceMetricsOverride', {}, page.sessionId);
         if (side === 'short') {
           await page.ev('globalThis.voltyClockOffset = 21000');
           assert(await browser.waitFor(() => page.ev(`document.querySelector('[data-volty-mark]').textContent === '—' &&
@@ -528,6 +542,8 @@ try {
           await page.ev('globalThis.voltyClockOffset = 61000');
           assert(await browser.waitFor(() => page.ev(`document.querySelector('[data-volty-status]').textContent.includes('Status stale') &&
             document.querySelector('[data-volty-orders]').textContent.includes('0:e2e-fixture-transaction') &&
+            document.querySelector('[data-volty-reconciliation]').textContent.includes('Historical signal reset') &&
+            !document.querySelector('[data-volty-reconciliation]').textContent.includes('fresh ticks') &&
             !document.querySelector('[data-volty-performance-note]').hasAttribute('data-stale')`)),
           'stale owner status must keep historical receipts visible');
           await page.ev('globalThis.voltyClockOffset = 181000');
