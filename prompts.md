@@ -1,5 +1,12 @@
 # Prompt history
 
+Version: 307
+Delta: v306 to v307. Record the Todoist workstation integration request.
+
+## Todoist workstation integration
+
+> Add the https://ai.todoist.net/mcp mcp server to codex and claude and antigravity, download and install the CLI and SDKs for python and typescript, install as a service a new webhook listener for todoist as per the docs here: https://developer.todoist.com/api/v1/#tag/
+>   Webhooks and make sure the automations mcp server is installed as well: https://ai.todoist.net/mcp/automations
 Version: 328
 Delta: v327 to v328. Record the zero-fee venue request.
 
