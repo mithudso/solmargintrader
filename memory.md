@@ -1,5 +1,35 @@
 # Work continuation
 
+Version: 719
+Delta: v718 to v719. Record the gated, published zero-fee venue research.
+
+## Zero-fee perp venue research: complete
+
+The run `zero-fee-perpetual-futures-venues-with-api-access` finished COMPLETED on
+2026-11-23. research-gate/v4 attempt `20261123T105427.809450Z-d47bfe6f` validated 478
+claims (513 SUPPORTED assertions, 3 NO-FACTUAL-ASSERTION, no unresolved conflicts) after
+seven rounds. Round 1 judged 983 assertions and supported 568. Each repair only removed
+the assertions the gate listed, plus the stale side of real conflicts; no claim text was
+rewritten. The repair inputs and drop logs are in the run's `bind/repair-20261123/`.
+
+The gate first refused to re-review after the Codex usage-limit refusal ("unchanged
+failed packet"). llms-explorer PR #394 added `provider_quota_recovery()`. The local
+`~/dev/llms-explorer` checkout is a stale workstation branch without that fix, so run the
+gate and `finish` from `/Users/mitch/dev/llms-explorer-current` and run `finish` with
+`~/.global-ai-hub/.venv/bin/python` (it imports `llms_txt`).
+
+Delivered: skills PR #122 (trading-and-investing 1.8.7 routes the gated spoke),
+llms-explorer PR #395 (nine concept packs, artifacts, concept tree), keyword and vector
+indexes `concept__<slug>` for all nine packs, and the single-file rollup
+`/Users/mitch/.global-ai-hub/llms-concepts/zero-fee-perpetual-futures-venues.family/llms.txt`.
+Per-coin listing claims did not pass the gate; the coin columns in
+`research/papers/results/cross_chain_short_zero_fee_reread.md` rest on raw snapshots.
+
+Open: `~/.claude/skills` is 33 commits behind `origin/main` with other sessions'
+uncommitted edits; its working-tree hub still routes the spoke at v1.7.6. Stele outbox
+holds `c2fc2a51`, `dc9f0c30`, `80a67dac` and `d56fb0fa`. Whether a retail Kraken Pro
+account can get a FIX key is unverified.
+
 Version: 674
 Delta: v673 to v674. Record the tested Todoist OAuth callback and pending app activation.
 

@@ -63,6 +63,18 @@ Venue research ran as `/dr` slug `zero-fee-perpetual-futures-venues-with-api-acc
 Listings came from each venue's public market endpoint on 2026-11-22; the snapshot is in
 `/Users/mitch/.local/share/solmargintrader/audits/zero-fee-venues-20261122/listings-20261122T2100Z`.
 
+Evidence status, 2026-11-23. The run finished after research-gate/v4 validated 478 of
+the 660 bound claims (513 SUPPORTED assertions, no unresolved conflicts). Gated claims
+back the fee, delay, rate-limit and API cells for Lighter, Paradex, Bullet, Bitfinex and
+MEXC, the Lighter, Paradex and Hyperliquid US-person bars, and Kraken's $0.0113
+per-contract fee. These cells rest only on raw endpoint snapshots or direct page reads,
+not on gated claims: the per-coin listing column, the Bullet and Bitfinex US-person
+terms, Kraken's 16-contract list and Coinbase's coin coverage. The listing-count claims
+were dropped because they were derived from API extracts with no bound raw response.
+The gated reference is `trading-and-investing/references/zero-fee-perpetual-futures-venues-with-api-access.md`
+in the skills repository; the family index is
+`/Users/mitch/.global-ai-hub/llms-concepts/zero-fee-perpetual-futures-venues.family/llms.txt`.
+
 | Venue | Perp fee for API orders | API order entry | Lists POL / JTO / SUI / SYRUP / FARTCOIN / HBAR | US persons |
 |---|---|---|---|---|
 | Lighter (Standard account) | 0 maker / 0 taker; taker orders and cancels wait 300 ms; 60 requests/min | Signed `sendTx` (official SDKs) | yes / yes / yes / yes / yes / yes | Barred by its terms |

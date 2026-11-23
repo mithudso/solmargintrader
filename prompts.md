@@ -1,5 +1,12 @@
 # Prompt history
 
+Version: 329
+Delta: v328 to v329. Record the scheduled continuation of the zero-fee venue research.
+
+## Zero-fee venue research continuation
+
+> Resume the zero-fee perp venues full-suite. The Codex judge quota reset at 4:44 AM. Run `python3 ~/dev/llms-explorer/scripts/codex_dr_run.py gate zero-fee-perpetual-futures-venues-with-api-access` from ~. If it validates, run /sko trading-and-investing --meta --no-sync on the spoke, then `codex_dr_run.py finish` with status COMPLETED. Then run full-suite Steps 3-5 (/lca per concept from the run's units.jsonl, /ldo --family rollup, placement, report), run_state and receipts, and deliver. If the judge rejects claims, repair only the listed claims with ~/…/scratchpad/bindtool/bind_tool.py and gate again. Continuation record: /Users/mitch/dev/solmargintrader/memory.md (zero-fee venues entry).
+
 Version: 307
 Delta: v306 to v307. Record the Todoist workstation integration request.
 
