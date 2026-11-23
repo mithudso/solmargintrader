@@ -18,8 +18,8 @@
  *
  * Scope, stated plainly: this verifies LOADING and DRY-RUN behaviour. It never
  * arms the extension, never signs, never sends a message that can change mode,
- * limits or keys (see e2e/lib/guard.mjs), and it blocks every network request
- * except a stubbed Jupiter price read. It proves nothing about live orders.
+ * limits or keys (see e2e/lib/guard.mjs), and it blocks external requests
+ * and serves fixtures for public prices and candles. It proves nothing about live orders.
  *
  * Exit codes: 0 all checks passed, 1 a check failed, 2 no usable browser.
  */
@@ -33,6 +33,7 @@ import { execFile } from 'node:child_process';
 import { assertAllowedMessage, assertDisarmed, assertSoltuiCallAllowed } from '../e2e/lib/guard.mjs';
 import { isolateTargets } from '../e2e/lib/isolation.mjs';
 import { installHost } from '../e2e/lib/soltui-host.mjs';
+import { voltyLearningFixture, voltyPerformanceFixture, voltyStatusFixture } from '../e2e/fixtures/fake-soltui-registry.js';
 import { verifyDashboardWorkflows } from '../e2e/lib/dashboard-workspace.mjs';
 import { verifySignalDesk } from '../e2e/lib/signal-desk.mjs';
 
@@ -91,10 +92,23 @@ const MARKET_GETS = [
   // The shipped chart iframe attempts this keyless UI read. Interception still
   // blocks it; recognizing the exact path does not grant network access.
   (u) => u === 'https://www.tradingview-widget.com/embed-widget/advanced-chart/',
+  (u) => /^https:\/\/api\.gum\.ag\/app\/perps\/(markets|fundingRate\/ZEC|ohlcv\/ZEC)$/.test(u),
 ];
 const RPC_ORIGINS = ['https://base-rpc.publicnode.com', 'https://mainnet.base.org', 'https://api.mainnet-beta.solana.com'];
 const READ_RPC = /^(eth_(call|chainId|getBalance|blockNumber)|get[A-Z][A-Za-z]*)$/;
 const pageErrors = [];
+const chartFixtureStart = Date.parse('2026-11-19T12:00:00Z') / 1000;
+let chartFixtureEnabled = false;
+
+function gumChartFixture(url) {
+  const start = Math.max(chartFixtureStart - 4 * 3600, Number(url.searchParams.get('from')));
+  const end = Math.min(chartFixtureStart + 5 * 60, Number(url.searchParams.get('to')));
+  return JSON.stringify(Array.from({ length: Math.max(0, (end - start) / 60) }, (_, i) => {
+    const time = start + i * 60;
+    const o = 100 + (time - chartFixtureStart) / 300;
+    return { t: time * 1000, T: (time + 60) * 1000, i: '1m', s: 'ZEC', o, h: o + 1, l: o - 1, c: o + 0.5 };
+  }));
+}
 
 const priceBody = JSON.stringify({
   [SOL]: { usdPrice: STUB_PRICE, decimals: 9 },
@@ -110,13 +124,17 @@ function handleBrowserEvent(m, browser) {
   const { requestId, request } = m.params;
   const url = new URL(request.url);
   requests.push({ method: request.method, url: `${url.origin}${url.pathname}`, rpcMethods: rpcMethodsOf(request.postData) });
-  // Only the keyless price read is allowed, and it is answered locally: nothing
-  // leaves the machine, so no order endpoint is reachable even by mistake.
-  const isPriceRead =
-    request.method === 'GET' && url.origin === 'https://lite-api.jup.ag' && url.pathname === '/price/v3';
+  // Fixtures satisfy only the two allowlisted reads. External requests stay blocked.
+  let body = null;
+  if (request.method === 'GET') {
+    if (url.origin === 'https://lite-api.jup.ag' && url.pathname === '/price/v3') body = priceBody;
+    if (chartFixtureEnabled && url.origin === 'https://api.gum.ag' && url.pathname === '/app/perps/ohlcv/ZEC') {
+      body = gumChartFixture(url);
+    }
+  }
   const reply = ['chrome-extension:', 'data:', 'about:', 'blob:'].includes(url.protocol)
     ? browser.call('Fetch.continueRequest', { requestId }, m.sessionId)
-    : isPriceRead
+    : body !== null
     ? browser.call('Fetch.fulfillRequest', {
         requestId,
         responseCode: 200,
@@ -124,7 +142,7 @@ function handleBrowserEvent(m, browser) {
           { name: 'content-type', value: 'application/json' },
           { name: 'access-control-allow-origin', value: '*' },
         ],
-        body: Buffer.from(priceBody).toString('base64'),
+        body: Buffer.from(body).toString('base64'),
       }, m.sessionId)
     : browser.call('Fetch.failRequest', { requestId, errorReason: 'BlockedByClient' }, m.sessionId);
   reply.catch(() => {});
@@ -232,7 +250,8 @@ try {
     const files = ['src/bg/service-worker.js', 'src/bg/paper-venue.js', 'src/core/engine.js',
       'src/core/commands.js', 'src/core/risk.js', 'src/core/pnl.js', 'src/core/csv.js',
       'src/ui/soltui-panel.js', 'src/ui/workspace-model.js', 'src/ui/signal-desk.js',
-      'src/ui/desk-model.js', 'src/ui/signal-desk.css'];
+      'src/ui/desk-model.js', 'src/ui/signal-desk.css', 'src/perps/panel.html',
+      'src/perps/panel.css', 'src/perps/panel.js', 'src/perps/chart-candles.js', 'src/perps/volty-status.js'];
     for (const file of files) {
       const loaded = await sw.ev(`fetch(chrome.runtime.getURL(${JSON.stringify(file)})).then(r => {if(!r.ok)throw new Error('source unavailable');return r.text()})`);
       const expected = createHash('sha256').update(fs.readFileSync(path.join(EXT, file))).digest('hex');
@@ -460,6 +479,146 @@ try {
     same(res.result, JSON.parse(cli.stdout), 'extension and CLI list envelopes differ');
   });
   if (!listing) throw new Error('cannot continue without the soltui command list');
+
+  await check('ZEC Perps shows Volty closed-trade performance, decisions, settlement, and market freshness on both routes', async () => {
+    assertSoltuiCallAllowed('zec.volty.status', {}, listing);
+    for (const side of ['long', 'short']) {
+      const page = await openPage(`src/perps/panel.html#market=ZEC&side=${side}`);
+      try {
+        await browser.call('Page.enable', {}, page.sessionId);
+        await browser.call('Page.addScriptToEvaluateOnNewDocument', {
+          source: `globalThis.voltyClockOffset = 0; const realVoltyNow = Date.now; Date.now = () => realVoltyNow() + globalThis.voltyClockOffset;`,
+        }, page.sessionId);
+        fs.writeFileSync(path.join(host.env.SOLTUI_CONFIG_DIR, 'zec-volty', 'status.json'), JSON.stringify(voltyStatusFixture()));
+        fs.writeFileSync(path.join(host.env.SOLTUI_CONFIG_DIR, 'zec-volty', 'learning-status.json'), JSON.stringify(voltyLearningFixture()), { mode: 0o600 });
+        fs.writeFileSync(path.join(host.env.SOLTUI_CONFIG_DIR, 'zec-volty', 'performance.json'), JSON.stringify(voltyPerformanceFixture()), { mode: 0o600 });
+        await browser.call('Page.reload', {}, page.sessionId);
+        const rendered = await browser.waitFor(async () => {
+          try {
+            return await page.ev(`(() => {
+              const section = document.getElementById('volty');
+              if (globalThis.voltyClockOffset !== 0 || !section || section.hidden
+                || section.querySelector('[data-volty-mark]').textContent !== '$548.00'
+                || section.querySelector('[data-volty-gross]').textContent !== '+0.047516 USDC') return null;
+              for (const details of section.querySelectorAll('details')) details.open = true;
+              return { text: section.innerText, controls: section.querySelectorAll('button, input, select, form').length };
+            })()`);
+          } catch (error) {
+            // Page.reload can return while Chrome is replacing the execution context.
+            if (/Cannot find default execution context|Execution context was destroyed/.test(error.message)) return null;
+            throw error;
+          }
+        });
+        assert(rendered, `ZEC Volty observation did not render on the ${side} route`);
+        for (const text of ['$560.00', '$541.00', 'Last signal Short · Skipped · prior order unresolved',
+          'Waiting for collateral to settle', 'Close long · Filled · awaiting collateral settlement',
+          '3 of 4 fresh ticks with an unresolved order', 'Last signal reset', 'Order outcomes require separate venue confirmation',
+          'Open long · Confirmed fill', '0:e2e-fixture-transaction', 'client order 7654321',
+          'Gross P&L', 'Net P&L', '-0.012115 USDC', 'Profitable trades', '3 of 8 (37.5%)',
+          'Closed trades as of', 'Net includes fees and funding',
+          'Tick learning · Online · 120 ticks', '1m · 30 trained · 45 pending', 'Brier 0.550 vs 0.660 baseline']) {
+          assert(rendered.text.includes(text), `missing Volty evidence: ${text}`);
+        }
+        assert(rendered.text.indexOf('Gross P&L') < rendered.text.indexOf('GUM mark'), 'performance must precede market levels');
+        eq(rendered.controls, 0, 'Volty verification section must be read-only');
+        await browser.call('Emulation.setDeviceMetricsOverride', { width: 320, height: 690, deviceScaleFactor: 1, mobile: false }, page.sessionId);
+        // Exercise the space taken by classic scrollbars even on macOS.
+        await page.ev(`(() => {
+          const style = document.createElement('style');
+          style.id = 'e2e-volty-scrollbar';
+          style.textContent = 'html { overflow-y: scroll } html::-webkit-scrollbar { width: 17px }';
+          document.head.append(style);
+        })()`);
+        assert(await browser.waitFor(() => page.ev(`window.innerWidth === 320 && document.documentElement.clientWidth < window.innerWidth`)),
+          '320px Volty viewport with a reserved scrollbar gutter');
+        const layout = await page.ev(`(() => {
+          const { clientWidth, scrollWidth } = document.documentElement;
+          const amounts = ['[data-volty-net]', '[data-volty-gross]'].map(selector => {
+            const card = document.querySelector(selector);
+            const node = card.firstChild;
+            const range = document.createRange();
+            range.setStart(node, 0);
+            range.setEnd(node, node.textContent.indexOf(' USDC'));
+            const boxes = [...range.getClientRects()];
+            const bounds = card.getBoundingClientRect();
+            const sameLine = boxes.length > 0
+              && Math.max(...boxes.map(box => box.top)) < Math.min(...boxes.map(box => box.bottom));
+            return { digits: range.toString(), sameLine,
+              contained: boxes.every(box => box.left >= bounds.left && box.right <= bounds.right) };
+          });
+          return { clientWidth, scrollWidth, amounts };
+        })()`);
+        assert(layout.scrollWidth <= layout.clientWidth, `GUM P&L causes horizontal overflow on the ${side} route: ${JSON.stringify(layout)}`);
+        assert(layout.amounts.every(amount => amount.sameLine && amount.contained),
+          `GUM P&L digits must stay together at 320px on the ${side} route: ${JSON.stringify(layout)}`);
+        await page.ev(`document.getElementById('e2e-volty-scrollbar').remove()`);
+        await browser.call('Emulation.clearDeviceMetricsOverride', {}, page.sessionId);
+        if (side === 'short') {
+          await page.ev('globalThis.voltyClockOffset = 21000');
+          assert(await browser.waitFor(() => page.ev(`document.querySelector('[data-volty-mark]').textContent === '—' &&
+            document.querySelector('[data-volty-status]').textContent.includes('Reconciling with GUM')`)),
+          'the expired mark must disappear while the owner heartbeat remains fresh');
+          await page.ev('globalThis.voltyClockOffset = 61000');
+          assert(await browser.waitFor(() => page.ev(`document.querySelector('[data-volty-status]').textContent.includes('Status stale') &&
+            document.querySelector('[data-volty-orders]').textContent.includes('0:e2e-fixture-transaction') &&
+            document.querySelector('[data-volty-reconciliation]').textContent.includes('Historical signal reset') &&
+            !document.querySelector('[data-volty-reconciliation]').textContent.includes('fresh ticks') &&
+            !document.querySelector('[data-volty-performance-note]').hasAttribute('data-stale')`)),
+          'stale owner status must keep historical receipts visible');
+          await page.ev('globalThis.voltyClockOffset = 181000');
+          assert(await browser.waitFor(() => page.ev(`document.querySelector('[data-volty-performance-note]').textContent.includes('Performance stale') &&
+            document.querySelector('[data-volty-profitable]').textContent === '3 of 8 (37.5%)'`)),
+          'expired performance must keep the last verified trade totals visibly stale');
+        }
+      } finally {
+        await browser.call('Target.closeTarget', { targetId: page.targetId });
+      }
+    }
+  });
+
+  await check('ZEC Perps advances the forming candle on foreground refresh and labels stalled data', async () => {
+    const page = await openPage('src/perps/panel.html#market=ZEC');
+    try {
+      assert(await browser.waitFor(() => page.ev("Boolean(document.getElementById('chart-status'))")), 'Perps panel did not load');
+      await browser.call('Page.enable', {}, page.sessionId);
+      await browser.call('Page.addScriptToEvaluateOnNewDocument', {
+        source: `globalThis.chartClock = ${(chartFixtureStart + 62) * 1000}; Date.now = () => globalThis.chartClock;`,
+      }, page.sessionId);
+      chartFixtureEnabled = true;
+      await browser.call('Page.reload', {}, page.sessionId);
+      assert(await browser.waitFor(() => page.ev("document.getElementById('chart-status')?.textContent.includes('12:01 UTC')").catch(() => null)),
+        'initial candle did not render using the fixture clock');
+      await page.ev(`(() => {
+        const step = document.getElementById('step');
+        step.value = '300';
+        step.dispatchEvent(new Event('change'));
+      })()`);
+      const chartStatus = () => page.ev("document.getElementById('chart-status').textContent");
+      eq(await chartStatus(), 'Candles through 2026-11-19 12:01 UTC · Forming', 'opening minute');
+      const before = await page.ev(`(() => {
+        globalThis.initialChart = document.querySelector('#chart canvas').toDataURL();
+        return document.getElementById('indicators').textContent;
+      })()`);
+      const resumeAt = seconds => page.ev(`(() => {
+        chartClock = ${(chartFixtureStart + seconds) * 1000};
+        document.dispatchEvent(new Event('visibilitychange'));
+      })()`);
+      await resumeAt(122);
+      assert(await browser.waitFor(async () => (await chartStatus()).includes('12:02 UTC · Forming')), 'forming candle did not advance');
+      assert(await browser.waitFor(() => page.ev("document.querySelector('#chart canvas').toDataURL() !== initialChart")), 'chart did not redraw');
+      eq(await page.ev("document.getElementById('indicators').textContent"), before, 'indicators during a forming candle');
+
+      await resumeAt(302);
+      assert(await browser.waitFor(async () => (await chartStatus()).endsWith('12:05 UTC')), 'completed candle did not render');
+      assert(await page.ev("document.getElementById('indicators').textContent") !== before, 'closed candle did not reach indicators');
+      await resumeAt(482);
+      assert(await browser.waitFor(async () => (await chartStatus()).endsWith('12:05 UTC · Stale')), 'stale candles were not labelled');
+      eq(await page.ev("document.getElementById('chart-latest').disabled"), false, 'latest control for retained history');
+    } finally {
+      chartFixtureEnabled = false;
+      await browser.call('Target.closeTarget', { targetId: page.targetId });
+    }
+  });
 
   // A command that cannot change anything (read_only, no confirm, nothing required)
   // and whose answer is stable across two calls, so a comparison is not a race.

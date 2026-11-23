@@ -14,8 +14,14 @@ import stat
 import sys
 import tempfile
 import threading
-from contextlib import closing, contextmanager
+from contextlib import closing, contextmanager, nullcontext
 from pathlib import Path
+
+JUPITER_MINT_BINDING = "jupiter_mint_binding"
+
+
+class JupiterArchiveScopeError(ValueError):
+    """A public reason to start a fresh Jupiter archive."""
 
 
 def default_archive() -> Path:
@@ -102,9 +108,50 @@ def read_private_secret(path):
         return secret
 
 
+def _check_jupiter_mint_binding(db, mints: str) -> bool:
+    from .feeds import JUPITER_PRICE_SOURCE
+
+    tables = {row[0] for row in db.execute("SELECT name FROM sqlite_schema WHERE type='table'")}
+    metadata = dict(db.execute(
+        "SELECT key,body FROM metadata WHERE key IN ('scope',?)", (JUPITER_MINT_BINDING,),
+    )) if "metadata" in tables else {}
+    if "scope" in metadata:
+        scope = json.loads(metadata["scope"])
+        if not isinstance(scope, dict) or scope.get("source") != JUPITER_PRICE_SOURCE:
+            raise JupiterArchiveScopeError("archive_source_mismatch_use_new_archive")
+    if JUPITER_MINT_BINDING in metadata:
+        if metadata[JUPITER_MINT_BINDING] != mints:
+            raise JupiterArchiveScopeError("archive_jupiter_mint_scope_mismatch_use_new_archive")
+        return True
+    if "scope" in metadata or any(
+        db.execute(f"SELECT 1 FROM {table} LIMIT 1").fetchone() is not None
+        for table in ("events", "observations") if table in tables
+    ):
+        raise JupiterArchiveScopeError("archive_jupiter_mint_order_unverified_use_new_archive")
+    return False
+
+
+def _read_jupiter_mint_binding(archive: Path, mints: str) -> bool:
+    try:
+        mode = archive.lstat().st_mode
+    except FileNotFoundError:
+        return False
+    if not stat.S_ISREG(mode):
+        raise ValueError("archive_private_file_required")
+    with closing(sqlite3.connect(archive.as_uri() + "?mode=ro", uri=True, timeout=2)) as db:
+        db.execute("PRAGMA trusted_schema=OFF")
+        return _check_jupiter_mint_binding(db, mints)
+
+
 def run(args) -> int:
     from .engine import OracleEngine
-    from .feeds import FeedUnavailable, JupiterPriceFeed, RecorderFeed
+    from .feeds import (
+        FeedUnavailable,
+        JupiterPriceFeed,
+        RecorderFeed,
+        validate_instrument,
+    )
+    from .store import canonical
 
     stop = threading.Event()
     old = {}
@@ -112,21 +159,19 @@ def run(args) -> int:
         for sig in (signal.SIGINT, signal.SIGTERM):
             old[sig] = signal.signal(sig, lambda *_: stop.set())
     try:
-        with owner(args.archive):
-            engine = OracleEngine(args.archive, instrument=args.instrument)
-            feed = (
-                JupiterPriceFeed(
-                    instrument=args.instrument,
-                    mints={
-                        args.instrument.upper().split("/")[0]: args.base_mint,
-                        args.instrument.upper().split("/")[1]: args.quote_mint,
-                    }
-                    if args.base_mint or args.quote_mint
-                    else None,
-                )
-                if args.source == "jupiter"
-                else RecorderFeed(root=args.recorder_root, instrument=args.instrument)
-            )
+        archive = args.archive.expanduser().absolute()
+        with owner(archive):
+            mint_binding = None
+            mint_bound = False
+            if args.source == "jupiter":
+                base, quote = validate_instrument(args.instrument).split("/")
+                custom_mints = {base: args.base_mint, quote: args.quote_mint} if args.base_mint or args.quote_mint else None
+                feed = JupiterPriceFeed(instrument=args.instrument, mints=custom_mints)
+                mint_binding = canonical(feed.provider_mints)
+                mint_bound = _read_jupiter_mint_binding(archive, mint_binding)
+            else:
+                feed = RecorderFeed(root=args.recorder_root, instrument=args.instrument)
+            engine = OracleEngine(archive, instrument=args.instrument)
             attempts, failures = 0, 0
             while not stop.is_set() and (
                 args.max_ticks is None or attempts < args.max_ticks
@@ -135,6 +180,16 @@ def run(args) -> int:
                 try:
                     observation = feed.poll()
                     if observation is not None:
+                        if mint_binding is not None and not mint_bound:
+                            # A first valid provider read qualifies an empty archive for binding.
+                            with engine.store.connection() as db:
+                                db.execute("BEGIN IMMEDIATE")
+                                if not _check_jupiter_mint_binding(db, mint_binding):
+                                    scope = {key: observation[key] for key in ("source", "instrument", "venue", "kind")}
+                                    db.executemany("INSERT INTO metadata VALUES(?,?)", (
+                                        (JUPITER_MINT_BINDING, mint_binding), ("scope", canonical(scope)),
+                                    ))
+                            mint_bound = True
                         engine.ingest(observation)
                     failures = 0
                     emit(
@@ -154,6 +209,10 @@ def run(args) -> int:
                 if args.max_ticks is None or attempts < args.max_ticks:
                     stop.wait(delay)
         return 3 if failures and args.max_ticks is not None else 0
+    except JupiterArchiveScopeError as error:
+        emit({"ok": False, "status": "archive_refused", "reason": str(error),
+              "remedy": "Use a fresh archive path with --archive."})
+        return 2
     finally:
         for sig, handler in old.items():
             signal.signal(sig, handler)
@@ -265,13 +324,13 @@ def main(argv=None) -> int:
                     secret = handle.read(4097).strip()
                     if len(secret) > 4096:
                         raise ValueError("secret_file_too_large")
-            venue = None
+            venue, account_lock = None, nullcontext()
             if args.coinbase:
                 from .coinbase_orders import CoinbaseOrders
 
                 venue = CoinbaseOrders()
             if args.jupiter_perps:
-                from .gum_orders import GumOrders
+                from .gum_orders import GumOrders, gum_account_owner
                 from .gum_webhook_orders import process_one, recover_planning
 
                 def sign_action(message):
@@ -290,7 +349,9 @@ def main(argv=None) -> int:
                     signer=sign_action if args.live else None,
                 )
                 args.portfolio_id = venue.binding
-            with owner(args.inbox):
+                if args.live:
+                    account_lock = gum_account_owner(venue, "tradingview", args.inbox)
+            with account_lock, owner(args.inbox):
                 serve(
                     args.inbox,
                     secret,
@@ -318,6 +379,11 @@ def main(argv=None) -> int:
         if args.command == "snapshot":
             emit({"ok": True, "data": snapshot(args.archive, args.out)})
             return 0
+        if args.command == "guidance":
+            from .guidance import guidance
+
+            emit({"ok": True, "data": guidance(args.stage, repo=args.repo)})
+            return 0
         from .engine import OracleEngine
 
         engine = OracleEngine(args.archive, instrument=args.instrument)
@@ -328,13 +394,9 @@ def main(argv=None) -> int:
                 raise ValueError("invalid_history_limits")
             data = engine.history(limit=args.limit, after=args.after)
         else:
-            from .guidance import guidance, readiness, veto
+            from .guidance import readiness, veto
 
-            if args.command == "guidance":
-                data = guidance(
-                    args.stage, **({"repo": args.repo} if args.repo else {})
-                )
-            elif args.command == "readiness":
+            if args.command == "readiness":
                 data = readiness(engine, manager_home=args.manager_home)
             else:
                 data = veto(engine)

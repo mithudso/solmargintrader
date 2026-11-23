@@ -34,6 +34,7 @@ import { isAddress } from '../market/evm.js';
 import { MarketError } from '../market/net.js';
 import { managerSnapshot, managerPoll, paperConfigStore, MANAGER_KEY } from './bot-manager.js';
 import { controlRoomSnapshot, openControlRoom } from './control-room.js';
+import { validZecAdvice } from './zec-advice.js';
 
 /** Argument types the surfaces know how to coerce. */
 export const TYPE = { STRING: 'string', NUMBER: 'number', BOOL: 'bool', JSON: 'json' };
@@ -49,6 +50,24 @@ export const TYPE = { STRING: 'string', NUMBER: 'number', BOOL: 'bool', JSON: 'j
  */
 
 /* ----------------------------------------------------------------- helpers -- */
+
+async function zecCommand(deps, name, args = {}) {
+  if (name === 'zecAdvice' && !validZecAdvice(args.advice)) {
+    throw new CommandError('Invalid snapshot-bound Zec advisory.', 400);
+  }
+  if (deps.zecBrowser) {
+    let result;
+    if (name === 'zecSnapshot') result = await deps.zecBrowser.snapshot();
+    if (name === 'zecAdvisories') result = await deps.zecBrowser.list();
+    if (name === 'zecAdvice') result = await deps.zecBrowser.submit(args.advice);
+    if (result.error) throw new CommandError(result.error, result.status);
+    return result;
+  }
+  const reply = await deps.zecRequest?.(name, args);
+  if (reply?.ok === true && reply.result) return reply.result;
+  throw new CommandError(reply?.error ?? 'Chrome Zec bridge is unavailable.', reply?.status ?? 503);
+}
+
 
 async function currentPrice(deps) {
   const venue = await deps.buildVenue();
@@ -175,6 +194,17 @@ async function soltuiRead(deps, command, params, notes) {
 /* ---------------------------------------------------------------- registry -- */
 
 export const COMMANDS = {
+  jupiterIndicatorWindow: {
+    describe: 'Move the Jupiter 1000x indicator panel into or out of a Chrome window.',
+    params: [{ name: 'action', type: TYPE.STRING, required: true }],
+    unlocked: true,
+    browserUi: true,
+    handler({ deps, args }) {
+      if (!['open', 'focus', 'status', 'dock'].includes(args.action)) throw new CommandError('Invalid indicator window action', 400);
+      if (!deps.jupiterIndicatorWindows) throw new CommandError('Indicator windows require the Chrome extension.', 501);
+      return deps.jupiterIndicatorWindows.control(args.action, deps.sender);
+    },
+  },
   openLiveWindow: {
     describe: 'Open or reuse a floating live view. An existing workspace can pin with one click.',
     params: [{ name: 'asset', type: TYPE.STRING, describe: 'Optional coin symbol.' }],
@@ -537,6 +567,33 @@ export const COMMANDS = {
       await deps.configStore.set(ACKS_KEY, kept);
       return { acked: ids.length, total: kept.length };
     }),
+  },
+
+  zecSnapshot: {
+    describe: 'Read a timestamped ZEC market and paper snapshot from the running Chrome extension.',
+    params: [], readOnly: true, zec: true,
+    handler: ({ deps }) => zecCommand(deps, 'zecSnapshot'),
+  },
+
+  zecAdvisories: {
+    describe: 'Read Chrome Zec connection status and recent advisory records.',
+    params: [], readOnly: true, zec: true,
+    handler: ({ deps }) => zecCommand(deps, 'zecAdvisories'),
+  },
+
+  zecAdvice: {
+    describe: 'Record an advisory against a recent Chrome ZEC snapshot.',
+    params: [{ name: 'advice', type: TYPE.JSON, required: true }], unlocked: true, zec: true,
+    handler: ({ deps, args }) => zecCommand(deps, 'zecAdvice', args),
+  },
+
+  zecBridge: {
+    describe: 'Enable or disable the local Zec connection from the Chrome dashboard.',
+    params: [{ name: 'enabled', type: TYPE.BOOL, required: true }], unlocked: true, zec: true,
+    handler: ({ deps, args }) => {
+      if (!deps.setZecEnabled) throw new CommandError('Change Zec connection access in the Chrome dashboard.', 403);
+      return deps.setZecEnabled(args.enabled);
+    },
   },
 
   /* ---- soltui bridge (src/core/soltui.js) ---- */

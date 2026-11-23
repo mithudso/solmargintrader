@@ -8,6 +8,7 @@ import { parseArgs } from 'node:util';
 import { readMinutes, readSnapshot } from '../src/perps/market.js';
 import { PAPER_CAPITAL, PaperBroker } from '../src/perps/replay.js';
 import { fiveMinuteCandidates, fiveMinuteContext, fiveMinuteDecisions } from './lib/zec-gum-five-minute.mjs';
+import { paperSettings, runProspective } from './lib/zec-gum-prospective.mjs';
 
 const market = 'ZEC';
 const step = 300;
@@ -15,7 +16,7 @@ const minute = 60;
 const warmup = 720 * minute;
 const decisionGrace = 60;
 const maxMarkGap = 45;
-const settings = { sizing: 'notional', amount: 250, leverage: 25, slippageBps: 2, additiveBps: 0, networkUsd: 0.01 };
+const settings = paperSettings;
 const defaultConfig = new URL('../../research/json/results/zec_gum_25x_5m_live.json', import.meta.url);
 const wallSeconds = () => Math.floor(Date.now() / 1000);
 const floorBar = time => Math.floor(time / step) * step;
@@ -175,6 +176,7 @@ export class LivePaperSession {
 
 const sourceUrls = [
   new URL(import.meta.url), new URL('./lib/zec-gum-five-minute.mjs', import.meta.url),
+  new URL('./lib/zec-gum-prospective.mjs', import.meta.url),
   new URL('./lib/zec-perps-signals.mjs', import.meta.url), new URL('../src/perps/market.js', import.meta.url),
   new URL('../src/perps/replay.js', import.meta.url), new URL('../src/perps/model.js', import.meta.url),
   new URL('../src/perps/strategies.js', import.meta.url), new URL('../src/perps/archive-presets.js', import.meta.url),
@@ -185,18 +187,30 @@ const sourceUrls = [
 async function main() {
   const { values } = parseArgs({ options: {
     config: { type: 'string' }, output: { type: 'string' }, once: { type: 'boolean' },
+    prospective: { type: 'boolean' },
     samples: { type: 'string' }, 'poll-seconds': { type: 'string', default: '10' }, help: { type: 'boolean' },
   } });
   if (values.help) {
     console.log('node extension/tools/zec-gum-live.mjs --output NEW_DIR [--config FILE] [--once | --samples N] [--poll-seconds S]');
+    console.log('node extension/tools/zec-gum-live.mjs --prospective --output COHORT_DIR [--once | --samples N] [--poll-seconds S]');
     return;
   }
   const pollSeconds = Number(values['poll-seconds']);
-  const attempts = values.samples === undefined ? (values.once ? 1 : Infinity) : Number(values.samples);
-  if (!values.output || (values.once && values.samples !== undefined)
+  const attempts = values.samples === undefined ? (values.prospective && !values.once ? Infinity : 1) : Number(values.samples);
+  if (!values.output || (values.once && values.samples !== undefined) || (values.prospective && values.config !== undefined)
       || (values.samples !== undefined && !Number.isSafeInteger(attempts)) || attempts < 1
       || !Number.isInteger(pollSeconds) || pollSeconds < 5 || pollSeconds > 30) {
     throw new Error('Supply a new session directory, optional positive sample count and a 5–30 second poll interval.');
+  }
+  if (values.prospective) {
+    const prospectiveSource = [...sourceUrls,
+      new URL('../src/perps/managed-exits.js', import.meta.url),
+      new URL('../src/1000x/timeframes.js', import.meta.url),
+    ];
+    const sourceSha256 = Object.fromEntries(await Promise.all(prospectiveSource.map(async url =>
+      [url.pathname.split('/').at(-1), digest(await readFile(url))])));
+    await runProspective({ output: values.output, attempts, pollSeconds, sourceSha256 });
+    return;
   }
   const configSource = values.config ? resolve(values.config) : defaultConfig;
   const bytes = await readFile(configSource);

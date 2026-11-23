@@ -8,9 +8,24 @@
 </head>
 <body>
   <header>
-    <div><strong id="market">Jupiter indicators</strong><span class="tag">Read only</span></div>
+    <div><strong id="market">Jupiter indicators</strong><span class="tag">Read only</span>
+      <button id="dock-window" type="button" hidden>Dock</button></div>
+    <p id="dock-error" role="status"></p>
     <p>Jupiter Pyth oracle USD · public data · no wallet required</p>
   </header>
+  <section id="immediate-indicators" aria-label="Immediate indicators" data-state="unavailable">
+    <p id="immediate-status">Waiting for market data</p>
+    <dl>
+      <div title="Latest close in standard deviations from the mean of its last 20 closes">
+        <dt id="immediate-zscore-label">Z-score (20)</dt><dd id="immediate-zscore">—</dd>
+      </div>
+      <div><dt id="immediate-rsi-label">RSI (14)</dt><dd id="immediate-rsi">—</dd></div>
+      <div><dt id="immediate-bop-label">Balance of Power</dt><dd id="immediate-bop">—</dd></div>
+      <div title="Momentum from the MACD line relative to its signal line">
+        <dt>MACD (12/26/9)</dt><dd id="immediate-macd">—</dd>
+      </div>
+    </dl>
+  </section>
   <nav aria-label="Chart settings">
     <label>Interval <select id="timeframe" aria-label="Indicator candle interval"></select></label>
     <button id="refresh" type="button">Refresh history</button>

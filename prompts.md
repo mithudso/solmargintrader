@@ -7,6 +7,189 @@ Delta: v306 to v307. Record the Todoist workstation integration request.
 
 > Add the https://ai.todoist.net/mcp mcp server to codex and claude and antigravity, download and install the CLI and SDKs for python and typescript, install as a service a new webhook listener for todoist as per the docs here: https://developer.todoist.com/api/v1/#tag/
 >   Webhooks and make sure the automations mcp server is installed as well: https://ai.todoist.net/mcp/automations
+Version: 328
+Delta: v327 to v328. Record the zero-fee venue request.
+
+## Pick the best tested strategy and research zero-fee venues
+
+> Get this repo up to date and then ❯ look at this file and tell me from the tests what would be the most profitable strategy in which coins and then do a  full-suite skill on  zero fee exchanges to make that possibler with API access ./Users/mitch/dev/solmargintrader/codex-session-01a1f7e0-9677-78f2-abf7-1b84e07caf5b.md
+
+Version: 327
+Delta: v326 to v327. Record the Jupiter 1000x widget request.
+
+## Show current indicators and detach the Jupiter 1000x widget
+
+> On the jup.ag 1000x page widget, at the top have it show me the immediate z-score, RSI, balance of power, if the macd says it's going to go up or down, Also have widget be a popout window such that I can move it to another monitor so it stays out of the way.
+
+Version: 326
+Delta: v325 to v326. Record the cross-chain test request.
+
+## Test the frozen short strategies across chain token rankings
+
+> Test your chosen strategies against the top 100 coins on each chain.
+
+> Every chain with a verifiable ranking
+
+Version: 325
+Delta: v324 to v325. Record authorization for the ZEC prospective paper comparison.
+
+## Implement the ZEC GUM recommendations
+
+> Implement all of your recommendations.
+
+The preceding recommendation was to pause new funded exposure while preserving
+reconciliation and exits, compare two frozen short strategies on fresh paper
+data, keep learning in shadow mode, and require sustained net results and a
+fixed dollar loss budget before considering a funded pilot.
+
+Version: 324
+Delta: v323 to v324. Record the two-timeframe z-score exit request.
+
+## Compare the five- and ten-minute two-up short with a z-score exit
+
+> Ok what about 2 green 5 or 10 min bar, a .8% stop loss and waiting for the z-score to close.
+
+Version: 323
+Delta: v322 to v323. Record the 1% target and 0.8% stop follow-up.
+
+## Replay the ZEC two-up short with a wider take-profit and stop
+
+> Ok. what about the 2 bar up shorting with a 1% take profit , and a .8% s
+
+Version: 322
+Delta: v321 to v322. Record the confirmed intrabar short replay request.
+
+## Compare the confirmed two-up short and a net-positive intrabar exit
+
+> I feel like when you're doing the 15min hold you're waiting for the end of the 15 min bar. What if you did a 2bar up - short sell strategy, and then closed the position after it was profitable inside the bar rather than waiting for it to possibly liquidate. So waiting for signal from RSI + Balance of Power.
+
+Version: 321
+Delta: v320 to v321. Record the two-up short and three-down long test.
+
+## Test the ZEC two-up short and three-down long
+
+> Test the strategy of shorting after two consecutive up bars, and longing after three consecutive down bars.
+
+Version: 320
+Delta: v319 to v320. Record the short-only ZEC replay request.
+
+## Replay the major ZEC strategies short-only
+
+> Retry the major strategies but using only short trades.
+
+Version: 319
+Delta: v318 to v319. Record the scoped Oracle and Volty optimizer request.
+
+## Oracle and Volty optimizer passes
+
+> Run the deep code optimizer, the application deep optimizer, and the ui deep optimizer on the oracle and volty scripts.
+
+Version: 318
+Delta: v317 to v318. Record the continuation request.
+
+## Resume the Volty paper comparison and watchdog
+
+> resume
+
+Version: 317
+Delta: v316 to v317. Record Volty improvements and unresolved-order recovery.
+
+## Volty paper comparison and watchdog
+
+> Implement all the changes you recommended.
+
+> Also add a stuck check so if the previous order stays unresolved for several tiks then it needs to reset.
+
+Version: 316
+Delta: v315 to v316. Record the Volty performance summary request.
+
+## Volty realized performance
+
+> Near the top of the zecbot visualization page, put a net/gross profit/loss, and number and percentage of profitable trades.
+
+Version: 315
+Delta: v314 to v315. Record the Volty training reset and comparison requests.
+
+## Volty shadow training reset
+
+> Fix or reset the training so it doesn't keep using or showing old bad data. Add safeguards so it trains more evenly and time appropriately.
+
+> Are there other ways to train it that may be better?
+
+Version: 314
+Delta: v312 to v314. Record the Volty allocation request and preflight result. Version 313 belongs to a separate in-progress checkout change.
+
+## Volty allocation and reconciliation
+
+> What's the profit and loss so far, and have it use 75% of whatever is in its wallet if you're using a stop loss, if you're not using a stop loss, then use 50%.   Also what is it using to derive the brier score?  And give me ehte entire complete command to run.
+
+```text
+Last login: Fri Nov 20 02:34:00 on ttys008
+You have new mail.
+mitch@m5 solmargintrader % /Users/mitch/.local/share/solmargintrader/audits/zec-volty-funded-20261118/venv/bin/python \
+  -I -m oracle.zec_volty --preflight \
+  --config /Users/mitch/.local/share/solmargintrader/audits/zec-volty-funded-20261118/volty-pilot-policy-20261119.json \
+  --state-dir /Users/mitch/.soltui/zec-volty \
+&& /bin/launchctl kickstart gui/501/dev.solmargintrader.zec-volty-live
+{"eligible": false, "reason": "volty_execution_requires_reconciliation"}
+```
+
+Version: 312
+Delta: v311 to v312. Record the Volty refusal, profitability and tick learning request.
+
+## Volty planning diagnostics and tick learning
+
+> investigate the failure, and get the bot running profitablyl. Make sure the machine learning is turned on exactly like for the other part of the chrome extension. Eveyr tick should add to the training set and better undresatnd the potterns involved.
+
+Version: 311
+Delta: v310 to v311. Record the request for more visibility into the ZEC bot.
+
+## ZEC Volty activity on Jupiter Perps
+
+> Add more visibility into what the bot is doing on the zec page of jup.ag
+
+Version: 310
+Delta: v309 to v310. Record the Volty settlement repair request.
+
+## ZEC Volty settlement repair
+
+> Can you fix it?
+
+The request follows a bot health check that found a fully filled close still pending at the collateral settlement check.
+
+Version: 309
+Delta: v308 to v309. Record the stalled ZEC Perps chart report.
+
+## ZEC Perps paper chart updates
+
+> [Image #1]  This graph in this window has not changed in over a day.
+
+Version: 309
+Delta: v308 to v309. Record the Oraclebot public discovery portion of the fleet request.
+
+## Oraclebot search and public discovery
+
+> Also add to each to create a full sitemap for each site, as well as a llms-full.txt and  llms.txt files for each.
+
+Apply the requested deep SEO pass to oraclebot.io. Fix verified search discovery defects, publish the three public files, and verify the canonical host, www alias, unknown paths, and guest boundaries.
+
+Version: 308
+Delta: v307 to v308. Record the standalone funded Volty request.
+
+## Standalone ZEC Volty strategy
+
+> Make a bot whose sole purpose is to follow a volty 25x signal only strategy and actually puts in orders at the signals. I want a bot that will actually put in real for money orders with this specific strategy, using shorts for downs and longs for ups. Write this as a standalone ssection of the chrome plugin. so that I can verify that it is indeed trading.
+
+Version: 307
+Delta: v306 to v307. Save the optimizer request, Chrome advisory workflow and Zec correction.
+
+## Zec agent and Chrome advisory workflow
+
+> Run the /sko, agent deep optimizer, deep prompt optimizer, and application deep optimizer on the Zed agent.
+
+> Launch the Zed agent, and write a helper script that connects to the google chrome plugin such that the data can be streamed to Zed as a snapshot of market conditions and ask for how to proceed. If it's not already there, then make sure the chrome plugin has API and CLI access to every method, call, function, and read so Zed can watch or view what's going on at any time, be asked for advisorship, or inject suggestions into the auto-trading proceedings.
+
+> I made a mistake. I forgot there was an application called Zed, I meant Zec, the ZEC agent created recently. Not the application.
 
 Version: 306
 Delta: v305 to v306. Record the Perps workbench and ZEC history request.

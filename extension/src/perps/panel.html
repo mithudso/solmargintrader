@@ -8,6 +8,47 @@
 <body>
   <header><div><h1 id="market">Jupiter Perps</h1><p id="source"></p></div><strong>Paper</strong></header>
   <p id="status" role="status">Waiting for fresh market data…</p>
+  <section id="volty" aria-labelledby="volty-heading" hidden>
+    <div class="section-bar volty-header">
+      <h2 id="volty-heading">ZEC Volty 25×</h2>
+      <p data-volty-status role="status">Connecting…</p>
+    </div>
+    <p data-volty-state-note></p>
+    <p class="muted" data-volty-reconciliation hidden></p>
+    <p class="muted" data-volty-updated></p>
+    <dl class="volty-metrics" aria-label="Closed Volty trade performance">
+      <div><dt>Gross P&amp;L</dt><dd data-volty-gross>—</dd></div>
+      <div><dt>Net P&amp;L</dt><dd data-volty-net>—</dd></div>
+      <div><dt>Profitable trades</dt><dd data-volty-profitable>—</dd></div>
+    </dl>
+    <p class="muted" data-volty-performance-note>Waiting for closed-trade performance.</p>
+    <dl class="volty-metrics" aria-label="Volty five-minute trigger levels">
+      <div><dt>GUM mark</dt><dd data-volty-mark>—</dd></div>
+      <div><dt>Long trigger</dt><dd data-volty-upper>—</dd></div>
+      <div><dt>Short trigger</dt><dd data-volty-lower>—</dd></div>
+    </dl>
+    <p class="muted" data-volty-market-note></p>
+    <p data-volty-signal></p>
+    <details>
+      <summary data-volty-learning>Tick learning</summary>
+      <p class="muted">Shadow estimates. Lower Brier scores are better.</p>
+      <ol aria-label="Volty learner horizons" data-volty-horizons></ol>
+    </details>
+    <details>
+      <summary>Signal history</summary>
+      <p class="muted" data-volty-activity-note></p>
+      <ol aria-label="Recent Volty decisions" data-volty-activity></ol>
+    </details>
+    <details>
+      <summary data-volty-orders-title>GUM order receipts</summary>
+      <p class="muted" data-volty-orders-note></p>
+      <ol aria-label="Recent Volty order receipts" data-volty-orders></ol>
+    </details>
+  </section>
+  <div class="section-bar">
+    <p id="chart-status" class="muted" role="status">Waiting for candles…</p>
+    <button id="chart-latest" type="button" disabled>Latest</button>
+  </div>
   <div id="chart" aria-label="Market candles and position levels"></div>
   <details open>
     <summary>Indicators and trade learning</summary>

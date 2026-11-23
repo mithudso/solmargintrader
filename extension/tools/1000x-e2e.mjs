@@ -30,11 +30,11 @@ const HISTORY = 'https://perps-api.jup.ag/v1/pyth/fixed_rate%40200ms/history';
 const STREAM = 'wss://perps-api.jup.ag/v1/pyth/stream';
 const PORTAL = 'https://jup.ag/1000x?market=SOL&mode=classic';
 const SHA = data => createHash('sha256').update(data).digest('hex');
-const reviewedFiles = ['manifest.json', 'src/1000x/autotrade-view.js', 'src/1000x/content.js', 'src/1000x/feed.js', 'src/1000x/timeframes.js', 'src/1000x/indicators.js', 'src/1000x/panel-model.js', 'src/1000x/reversal.js', 'src/1000x/oracle-model.js', 'src/1000x/oracle-store.js', 'src/1000x/oracle-controller.js', 'src/1000x/oracle-view.js', 'src/1000x/panel.js', 'src/1000x/panel.html', 'src/1000x/panel.css', 'src/jupiter/attribution.js', 'vendor/lightweight-charts/lightweight-charts.standalone.production.mjs'];
+const reviewedFiles = ['manifest.json', 'src/1000x/autotrade-view.js', 'src/1000x/content.js', 'src/1000x/feed.js', 'src/1000x/timeframes.js', 'src/1000x/indicators.js', 'src/1000x/panel-model.js', 'src/1000x/reversal.js', 'src/1000x/oracle-model.js', 'src/1000x/oracle-store.js', 'src/1000x/oracle-controller.js', 'src/1000x/oracle-view.js', 'src/1000x/panel.js', 'src/1000x/panel.html', 'src/1000x/panel.css', 'src/bg/jupiter-indicator-window.js', 'src/jupiter/attribution.js', 'vendor/lightweight-charts/lightweight-charts.standalone.production.mjs'];
 const source = Object.fromEntries(reviewedFiles.map(file => [file, SHA(fs.readFileSync(path.join(EXT, file)))]));
 const manifest = JSON.parse(fs.readFileSync(path.join(EXT, 'manifest.json'), 'utf8'));
 const { TIMEFRAMES } = await import(pathToFileURL(path.join(EXT, 'src/1000x/timeframes.js')));
-const receipt = { runner: '1000x-browser-gate', schema_version: 1, status: 'partial', observed_at: new Date().toISOString(), mode: LIVE ? 'public-live' : 'native-browser-fixture', evidence: [], changes: [], remaining: [], checks: [], source, details: { surface: PORTAL, acceptance_condition: 'Version/source identity; seven causal indicator readouts/series; 10m DD/UU context; completed MTF shapes and closed1m momentum; settings; fresh completed-candle signals; lifecycle; responsive layout; public reads only; no trading state changes', source_revision: { git: execFileSync('git', ['rev-parse', 'HEAD'], { cwd: EXT, encoding: 'utf8' }).trim(), file_sha256: source }, loaded_revision: null, process_or_origin: null, configuration_identity: null, observations: [], mismatches: [], unverified_checks: [] } };
+const receipt = { runner: '1000x-browser-gate', schema_version: 1, status: 'partial', observed_at: new Date().toISOString(), mode: LIVE ? 'public-live' : 'native-browser-fixture', evidence: [], changes: [], remaining: [], checks: [], source, details: { surface: PORTAL, acceptance_condition: 'Version/source identity; seven causal indicator readouts/series; current indicator header; separate window and docking lifecycle; 10m DD/UU context; completed MTF shapes and closed1m momentum; settings; fresh completed-candle signals; lifecycle; responsive layout; public reads only; no trading state changes', source_revision: { git: execFileSync('git', ['rev-parse', 'HEAD'], { cwd: EXT, encoding: 'utf8' }).trim(), file_sha256: source }, loaded_revision: null, process_or_origin: null, configuration_identity: null, observations: [], mismatches: [], unverified_checks: [] } };
 const assert = (value, message) => { if (!value) throw new Error(message); };
 const same = (actual, expected, message) => assert(isDeepStrictEqual(actual, expected), `${message}: ${JSON.stringify(actual)} != ${JSON.stringify(expected)}`);
 async function check(name, fn) {
@@ -122,10 +122,16 @@ function fixtureBootstrapCode() {
 }
 async function setupTarget(sessionId, info) {
   targets.set(info.targetId, { ...info, sessionId }); owned.add(sessionId);
+  const interceptRequests = () => browser.call('Fetch.enable', { patterns: [{ urlPattern: 'http*', requestStage: 'Request' }] }, sessionId);
+  if (info.type === 'service_worker') {
+    await interceptRequests();
+    await browser.call('Runtime.runIfWaitingForDebugger', {}, sessionId);
+    return;
+  }
   await browser.call('Runtime.enable', {}, sessionId);
   await browser.call('Debugger.enable', {}, sessionId);
   await browser.call('Network.enable', {}, sessionId);
-  await browser.call('Fetch.enable', { patterns: [{ urlPattern: 'http*', requestStage: 'Request' }] }, sessionId);
+  await interceptRequests();
   if (info.type === 'page' || info.type === 'iframe') {
     await browser.call('Page.enable', {}, sessionId);
     if (fixture) {
@@ -134,7 +140,8 @@ async function setupTarget(sessionId, info) {
       await browser.evaluate(sessionId, code).catch(() => {});
     }
   }
-  await browser.call('Target.setAutoAttach', { autoAttach: true, waitForDebuggerOnStart: true, flatten: true }, sessionId).catch(() => {});
+  await browser.call('Target.setAutoAttach', { autoAttach: true, waitForDebuggerOnStart: true, flatten: true,
+    filter: [{ type: 'service_worker', exclude: true }, {}] }, sessionId).catch(() => {});
   await browser.call('Runtime.runIfWaitingForDebugger', {}, sessionId);
 }
 async function intercept(m) {
@@ -160,17 +167,63 @@ async function intercept(m) {
 }
 const ev = (page, expr) => browser.evaluate(page.sessionId, expr);
 async function until(fn, what, ms = 10000) { let last; const result = await browser.waitFor(async () => { try { return await fn(); } catch (error) { last = error; return null; } }, ms, 100); assert(result, `timed out: ${what}${last ? ` (${last.message})` : ''}`); return result; }
-async function findPanel(symbol = 'SOL') { return until(async () => { const t = (await browser.targets()).find(t => t.type === 'iframe' && t.url === `chrome-extension://${browser.extensionId}/src/1000x/panel.html#market=${symbol}`); if (!t) return null; const data = targets.get(t.targetId); if (!data) return null; await sessionReady.get(data.sessionId); if (!await ev(data, `document.querySelectorAll('#readouts tr').length === 7`).catch(() => false)) return null; return data; }, `${symbol} extension iframe`); }
+async function findPanel(symbol = 'SOL', { detached = false } = {}) {
+  const type = detached ? 'page' : 'iframe';
+  const url = `chrome-extension://${browser.extensionId}/src/1000x/panel.html${detached ? '?detached=1' : ''}#market=${symbol}`;
+  return until(async () => {
+    const target = (await browser.targets()).find(item => item.type === type && item.url === url);
+    const data = target && targets.get(target.targetId);
+    if (!data) return null;
+    await sessionReady.get(data.sessionId);
+    return await ev(data, `document.querySelectorAll('#readouts tr').length === 7`).catch(() => false) ? data : null;
+  }, `${symbol} extension ${type}`);
+}
+async function clickButton(page, selector) {
+  const point = await ev(page, `(() => {
+    const button = ${selector};
+    const box = button?.getBoundingClientRect();
+    return box?.width && box.height && { x: box.left + box.width / 2, y: box.top + box.height / 2 };
+  })()`);
+  assert(point, `missing visible button: ${selector}`);
+  await browser.call('Input.dispatchMouseEvent', { type: 'mousePressed', ...point, button: 'left', clickCount: 1 }, page.sessionId);
+  await browser.call('Input.dispatchMouseEvent', { type: 'mouseReleased', ...point, button: 'left', clickCount: 1 }, page.sessionId);
+}
+const immediateSnapshot = page => ev(page, `(() => {
+  const section = document.querySelector('#immediate-indicators');
+  const value = key => document.getElementById('immediate-' + key)?.textContent?.trim();
+  return {
+    state: section?.dataset.state,
+    status: value('status'),
+    zscore: value('zscore'),
+    rsi: value('rsi'),
+    bop: value('bop'),
+    macd: value('macd'),
+    direction: document.querySelector('#immediate-macd')?.dataset.direction,
+    settingsBelow: Boolean(section?.compareDocumentPosition(document.querySelector('nav')) & Node.DOCUMENT_POSITION_FOLLOWING),
+  };
+})()`);
+const indicatorNumber = value => value ? Number(value.replace('−', '-')) : NaN;
+async function immediateReadings(page) {
+  return until(async () => {
+    const current = await immediateSnapshot(page);
+    const numbers = [current.zscore, current.rsi, current.bop].map(indicatorNumber);
+    return current.state === 'live' && numbers.every(Number.isFinite) ? current : null;
+  }, 'three numeric current indicators');
+}
 const panelSnapshot = page => ev(page, `({url:location.href,market:document.querySelector('#market')?.textContent,status:document.querySelector('#status')?.textContent,state:document.querySelector('#status')?.dataset.state,timing:document.querySelector('#timing')?.textContent,note:document.querySelector('#candle-note')?.textContent,interval:document.querySelector('#timeframe')?.value,pattern:document.querySelector('#pattern')?.textContent,patternState:document.querySelector('#pattern')?.dataset.state,developing:document.querySelector('#developing-context')?.textContent,momentum:document.querySelector('#momentum-context')?.textContent,heuristic:document.querySelector('#heuristic')?.textContent,empirical:document.querySelector('#empirical')?.textContent,exit:document.querySelector('#exit-context')?.textContent,shapes:[...document.querySelectorAll('.shape-card')].map(card=>({minutes:card.dataset.minutes,text:card.textContent})),rows:[...document.querySelectorAll('#readouts tr')].map(row=>({key:row.dataset.indicator,value:row.querySelector('[data-value]').textContent,signal:row.querySelector('[data-signal]').textContent,enabled:row.querySelector('input').checked})),oracle:{horizon:Number(document.querySelector('#streaming-oracle')?.dataset.horizon),overview:[...document.querySelectorAll('#oracle-horizons tbody tr')].map(row=>({horizon:Number(row.dataset.horizon),state:row.dataset.state,trained:row.hasAttribute('data-trained')?Number(row.dataset.trained):null,resolved:row.hasAttribute('data-resolved')?Number(row.dataset.resolved):null,pending:row.hasAttribute('data-pending')?Number(row.dataset.pending):null,prediction:row.children[2]?.textContent,metrics:row.children[4]?.textContent})),state:document.querySelector('#streaming-oracle')?.dataset.state,status:document.querySelector('#oracle-status')?.textContent,prediction:document.querySelector('#oracle-prediction')?.textContent,counts:document.querySelector('#oracle-counts')?.textContent,trained:Number(document.querySelector('#oracle-counts')?.dataset.trained||0),resolved:Number(document.querySelector('#oracle-counts')?.dataset.resolved||0),feedback:document.querySelector('#oracle-feedback')?.textContent,metrics:document.querySelector('#oracle-metrics')?.textContent},canvas:document.querySelectorAll('canvas').length,width:innerWidth,scrollWidth:document.documentElement.scrollWidth})`);
 async function screenshot(name, page = portal, clip) {
-  if (page !== portal) {
+  if (page.type === 'iframe') {
     const origin = await ev(portal, `(()=>{const r=document.querySelector('#smt-1000x-indicators').shadowRoot.querySelector('iframe').getBoundingClientRect();return{x:r.x,y:r.y}})()`);
     if (clip) clip = { ...clip, x: clip.x + origin.x, y: clip.y + origin.y };
   }
-  const result = await browser.call('Page.captureScreenshot', { format: 'png', captureBeyondViewport: false, ...(clip ? { clip: { ...clip, scale: 1 } } : {}) }, portal.sessionId);
+  const result = await browser.call('Page.captureScreenshot', { format: 'png', captureBeyondViewport: false, ...(clip ? { clip: { ...clip, scale: 1 } } : {}) }, page.type === 'iframe' ? portal.sessionId : page.sessionId);
   const file = path.join(OUT, `${name}.png`); fs.writeFileSync(file, Buffer.from(result.data, 'base64')); receipt.evidence.push({ source: file, observed_at: new Date().toISOString(), claim: name }); return SHA(Buffer.from(result.data, 'base64'));
 }
 async function refresh() { await ev(panel, `document.querySelector('#refresh').click()`); }
+async function toggleDockedPanel() {
+  await ev(portal, `document.querySelector('#smt-1000x-indicators').shadowRoot
+    .querySelector('button[title="Collapse indicators"], button[title="Open indicators"]').click()`);
+}
 async function fresh() { return until(async () => { const s = await panelSnapshot(panel); return s.state === 'live' ? s : null; }, 'fresh completed-candle UI', LIVE ? 25000 : 10000); }
 async function releaseHistory() { fixture.state.hold = false; for (const callback of fixture.state.pending.splice(0)) await callback(); }
 
@@ -218,6 +271,49 @@ try {
     }
     receipt.details.loaded_revision = { version: manifest.version, executed_sha256: loaded, served_sha256: source }; return loaded;
   });
+  if (fixture) await check('new extension panel moves with separate clicks or keyboard and stays reachable on resize', async () => {
+    const shadow = `document.querySelector('#smt-1000x-indicators').shadowRoot`;
+    const position = () => ev(portal, `(() => {
+      const { left, top, right } = ${shadow}.host.getBoundingClientRect();
+      return { left, top, right };
+    })()`);
+    const click = label => clickButton(portal, `[...${shadow}.querySelectorAll('button')].find(node =>
+      (node.getAttribute('aria-label') || node.textContent) === ${JSON.stringify(label)})`);
+    const press = async (key, keyCode, text) => {
+      const params = { key, code: key, windowsVirtualKeyCode: keyCode };
+      await browser.call('Input.dispatchKeyEvent', { type: 'keyDown', ...params, ...(text && { text, unmodifiedText: text }) }, portal.sessionId);
+      await browser.call('Input.dispatchKeyEvent', { type: 'keyUp', ...params }, portal.sessionId);
+    };
+    const focus = () => ev(portal, `${shadow}.activeElement?.getAttribute('aria-label')`);
+    const original = await position();
+    await click('Move panel');
+    same(await focus(), 'Move left', 'move menu starts focused');
+    await click('Move left');
+    const byClick = await position();
+    assert(byClick.left < original.left, 'click did not move panel');
+    await press('Enter', 13, '\r');
+    const byKeyboard = await position();
+    assert(byKeyboard.left < byClick.left, 'keyboard did not move panel');
+    await browser.call('Emulation.setDeviceMetricsOverride', { width: 320, height: 844, deviceScaleFactor: 1, mobile: false }, portal.sessionId);
+    assert(await browser.waitFor(() => ev(portal, `(() => {
+      const overlay = ${shadow};
+      return overlay.host.getBoundingClientRect().right <= innerWidth &&
+        [...overlay.querySelectorAll('button')].filter(node => node.getBoundingClientRect().width).every(node => {
+          const r = node.getBoundingClientRect();
+          return r.left >= 0 && r.top >= 0 && r.right <= innerWidth && r.bottom <= innerHeight;
+        });
+    })()`)), 'moved panel controls left the narrow viewport');
+    await screenshot('08-narrow-panel-move-controls');
+    await press('Escape', 27);
+    same(await focus(), 'Move panel', 'Escape restores focus');
+    await browser.call('Emulation.setDeviceMetricsOverride', { width: 1440, height: 1100, deviceScaleFactor: 1, mobile: false }, portal.sessionId);
+    same(await position(), original, 'Escape restores original placement');
+    await click('Move panel');
+    await click('Done');
+    same(await focus(), 'Move panel', 'Done restores focus');
+    assert(await ev(portal, `${shadow}.querySelector('iframe') !== null`), 'move mode removed the panel');
+    return { original, byClick, byKeyboard, exitFocus: await focus() };
+  });
   await check('all seven chart/readout series show fresh completed-candle values and source clocks', async () => {
     await fresh();
     const s = await until(async () => { const value = await panelSnapshot(panel); return ['active', 'baseline-warmup', 'baseline-performance'].includes(value.oracle.state) ? value : null; }, 'initialized Oracle with fresh source identity');
@@ -229,6 +325,18 @@ try {
     await screenshot('01-fresh-overlay'); receipt.details.observations.push(s); return s;
   });
   if (fixture) {
+    await check('top indicator summary shows the current chart candle and all four readings', async () => {
+      await fresh();
+      const snapshot = await immediateReadings(panel);
+      assert(snapshot.settingsBelow, 'the immediate indicators must precede the chart settings');
+      assert(/10m developing candle/i.test(snapshot.status), 'current candle interval absent');
+      assert(indicatorNumber(snapshot.rsi) >= 0 && indicatorNumber(snapshot.rsi) <= 100, 'RSI outside its range');
+      assert(Math.abs(indicatorNumber(snapshot.bop)) <= 1, 'BOP outside its range');
+      const macd = { up: '↑ Bullish', down: '↓ Bearish', neutral: '↔ Neutral' };
+      same(snapshot.macd, macd[snapshot.direction], 'directional MACD text');
+      assert(snapshot.macd, 'current MACD momentum must have a direction or neutral label');
+      return snapshot;
+    });
     await check('default 10m context shows DD then UU from closed bars and withholds unsupported probabilities', async () => {
       const first = await fresh(); same(first.interval, '600', 'new-install chart default');
       assert(/DD → watch UP/.test(first.pattern), `DD context absent: ${first.pattern}`);
@@ -357,11 +465,19 @@ try {
     });
     await check('stale data removes all explanatory signals before feed ten-second timeout', async () => {
       fixture.state.quotes = false;
-      const stale = await until(async () => { const s = await panelSnapshot(panel); return s.state === 'stale' && s.patternState === 'unavailable' && /alignment unavailable/.test(s.heuristic) && s.rows.every(r => r.signal === 'Unavailable until feed is fresh') ? s : null; }, 'UI three-second freshness gate', 6500);
+      const stale = await until(async () => {
+        const [snapshot, immediate] = await Promise.all([panelSnapshot(panel), immediateSnapshot(panel)]);
+        return snapshot.state === 'stale' && immediate.state === 'stale' && snapshot.patternState === 'unavailable'
+          && /alignment unavailable/.test(snapshot.heuristic)
+          && snapshot.rows.every(row => row.signal === 'Unavailable until feed is fresh') ? { ...snapshot, immediate } : null;
+      }, 'UI three-second freshness gate', 6500);
       await screenshot('02-stale-no-signals'); fixture.state.quotes = true;
       // A pause may straddle a minute and leave an observed opening partial.
       // Fresh ticks alone cannot certify that missing close; request real history.
-      await refresh(); await fresh(); return stale;
+      await refresh(); await fresh();
+      const { zscore, rsi, bop, macd } = stale.immediate;
+      same([zscore, rsi, bop, macd], ['—', '—', '—', '—'], 'stale current values must clear');
+      return stale;
     });
     await check('lagging and malformed history fail closed; fresh ticks cannot revive stale readings', async () => {
       const observed = [];
@@ -389,12 +505,12 @@ try {
       await browser.call('Emulation.setDeviceMetricsOverride', { width: 1440, height: 1100, deviceScaleFactor: 1, mobile: false }, portal.sessionId); return { geometry, form };
     });
     await check('collapse removes iframe, closes native stream and preserves native portal controls', async () => {
-      await ev(portal, `document.querySelector('#smt-1000x-indicators').shadowRoot.querySelector('button').click()`);
+      await toggleDockedPanel();
       await until(() => fixture.sockets.size === 0, 'stream closed on collapse');
       same(await ev(portal, `document.querySelector('#smt-1000x-indicators').shadowRoot.querySelectorAll('iframe').length`), 0, 'collapsed iframe count');
       const sent = fixture.state.sent, reads = fixture.historyRequests.length; await sleep(1100); same(fixture.state.sent, sent, 'frames after collapse'); same(fixture.historyRequests.length, reads, 'history after collapse');
       const native = await ev(portal, `(()=>{document.querySelector('#native-control').click();return document.querySelector('#native-control').dataset.clicks})()`); same(native, '1', 'native fixture control');
-      await ev(portal, `document.querySelector('#smt-1000x-indicators').shadowRoot.querySelector('button').click()`); panel = await findPanel(); await fresh(); same(fixture.sockets.size, 1, 'stream count after reopen'); return { native_control_clicks: native, stream_count: fixture.sockets.size };
+      await toggleDockedPanel(); panel = await findPanel(); await fresh(); same(fixture.sockets.size, 1, 'stream count after reopen'); return { native_control_clicks: native, stream_count: fixture.sockets.size };
     });
     await check('SPA market/route changes replace the old session and leave no duplicates', async () => {
       await ev(portal, `history.pushState({},'', '/1000x?market=BTC&mode=classic')`); panel = await findPanel('BTC'); await fresh();
@@ -403,6 +519,97 @@ try {
       await ev(portal, `history.pushState({},'', '/swap')`); await until(() => ev(portal, `document.querySelectorAll('#smt-1000x-indicators').length===0`), 'route teardown'); await until(() => fixture.sockets.size === 0, 'route websocket teardown');
       await ev(portal, `history.pushState({},'', '/1000x?market=SOL&mode=classic')`); panel = await findPanel(); await fresh();
       same(await ev(portal, `document.querySelectorAll('#smt-1000x-indicators').length`), 1, 'host after return'); same(fixture.sockets.size, 1, 'socket after return'); return { selected_feed: fixture.subscriptions.at(-1).priceFeedIds, sockets: fixture.sockets.size };
+    });
+    await check('detached Chrome popup keeps one live feed and docks by button, close and navigation', async () => {
+      const shadow = `document.querySelector('#smt-1000x-indicators')?.shadowRoot`;
+      const sourceButton = action => `${shadow}?.querySelector('#smt-1000x-${action}')`;
+      const popupTargets = async () => (await browser.targets()).filter(target =>
+        target.type === 'page' && target.url.startsWith(`chrome-extension://${browser.extensionId}/src/1000x/panel.html?detached=1#`));
+      const windowFor = page => browser.call('Browser.getWindowForTarget', { targetId: page.targetId });
+      let detached, report, failure;
+      let phase = 'synthetic click rejection';
+      const detach = async (symbol = 'SOL') => {
+        await browser.call('Target.activateTarget', { targetId: portal.targetId });
+        await clickButton(portal, sourceButton('popout'));
+        detached = await findPanel(symbol, { detached: true });
+        await until(async () => (await panelSnapshot(detached)).state === 'live', 'detached live chart');
+        await until(() => fixture.sockets.size === 1, 'only detached stream remains');
+        same(await ev(portal, `${shadow}.querySelectorAll('iframe').length`), 0, 'docked frame must stop while detached');
+        same((await popupTargets()).length, 1, 'single detached panel');
+        return detached;
+      };
+      const restore = async (symbol = 'SOL') => {
+        await until(async () => !(await popupTargets()).length, 'detached window closes');
+        detached = null;
+        panel = await findPanel(symbol);
+        await fresh();
+        await until(() => fixture.sockets.size === 1, 'one restored docked stream');
+        same(await ev(portal, `${shadow}.querySelectorAll('iframe').length`), 1, 'one restored iframe');
+      };
+      try {
+        const original = await fresh();
+        await ev(portal, `${sourceButton('popout')}.click()`);
+        await sleep(300);
+        same((await popupTargets()).length, 0, 'synthetic page click must not open a window');
+        same(await ev(portal, `${shadow}.querySelectorAll('iframe').length`), 1, 'synthetic click must keep the iframe');
+        phase = 'real Chrome popup';
+        await detach();
+        const chromeWindow = await ev(detached, `(async()=>chrome.windows.get((await chrome.tabs.getCurrent()).windowId))()`);
+        same(chromeWindow.type, 'popup', 'Chrome window type');
+        const { windowId } = await windowFor(detached);
+        assert(windowId !== (await windowFor(portal)).windowId, 'popup must occupy a separate browser window');
+        same((await panelSnapshot(detached)).interval, original.interval, 'chart interval survives detaching');
+        same(fixture.subscriptions.at(-1).priceFeedIds, [6], 'detached SOL public feed');
+
+        phase = 'detached live indicators';
+        const quoteAt = async price => {
+          fixture.state.priceOverride = price;
+          await until(async () => (await panelSnapshot(detached)).market.endsWith(`$${price}`), `detached quote $${price}`);
+          return immediateReadings(detached);
+        };
+        const down = await quoteAt(80);
+        const up = await quoteAt(120);
+        assert(indicatorNumber(down.zscore) < 0 && indicatorNumber(up.zscore) > 0, 'detached Z-score must react to the current quote');
+        assert(indicatorNumber(down.rsi) < indicatorNumber(up.rsi), 'detached RSI must react to the current quote');
+        assert(indicatorNumber(down.bop) < indicatorNumber(up.bop), 'detached BOP must react to the current quote');
+        same([down.direction, up.direction], ['down', 'up'], 'detached MACD momentum changes direction');
+        await screenshot('09-detached-indicators', detached);
+        fixture.state.priceOverride = null;
+
+        phase = 'Dock button';
+        await browser.call('Target.activateTarget', { targetId: detached.targetId });
+        await clickButton(detached, `document.querySelector('#dock-window')`);
+        await restore();
+
+        phase = 'native window close';
+        await detach();
+        const closed = await browser.call('Target.closeTarget', { targetId: detached.targetId });
+        assert(closed.success, 'closing the popup tab must close the window');
+        await restore();
+
+        phase = 'source SPA market change';
+        await detach();
+        await ev(portal, `history.pushState({}, '', '/1000x?market=BTC&mode=classic')`);
+        await restore('BTC');
+        same(fixture.subscriptions.at(-1).priceFeedIds, [1], 'BTC restores the current market instead of stale SOL');
+
+        report = { separate_window: windowId, type: chromeWindow.type, down, up };
+      } catch (error) {
+        failure = new Error(`${phase}: ${error.message}`, { cause: error });
+      } finally {
+        try {
+          fixture.state.priceOverride = null;
+          for (const target of await popupTargets()) await browser.call('Target.closeTarget', { targetId: target.targetId }).catch(() => {});
+          await ev(portal, `if (location.href !== ${JSON.stringify(PORTAL)}) history.pushState({}, '', ${JSON.stringify(PORTAL)})`);
+          panel = await findPanel();
+          await fresh();
+        } catch (error) {
+          if (failure) console.error('Detached fixture cleanup failed:', error.message);
+          else failure = error;
+        }
+      }
+      if (failure) throw failure;
+      return report;
     });
   } else {
     await check('actual public catalog/history/stream supply SOL values from feed 6', async () => {
@@ -416,7 +623,7 @@ try {
     await check('public portal native chart/controls remain present and overlay can be collapsed', async () => {
       const before = await ev(portal, `(()=>{globalThis.__smtNativeControls=[...document.querySelectorAll('button')];return {title:document.title,buttons:globalThis.__smtNativeControls.map(e=>e.textContent?.trim()).filter(Boolean),nativeChart:!!document.querySelector('[aria-label="Live market price chart"]')}})()`);
       assert(before.nativeChart, 'actual native price canvas not found'); assert(before.buttons.length > 0, 'actual native portal controls absent');
-      await ev(portal, `document.querySelector('#smt-1000x-indicators').shadowRoot.querySelector('button').click()`);
+      await toggleDockedPanel();
       same(await ev(portal, `document.querySelector('#smt-1000x-indicators').shadowRoot.querySelectorAll('iframe').length`), 0, 'collapsed public iframe');
       // Public market buttons contain live prices. Preserve their actual DOM
       // identity instead of demanding unchanged tick text across a native feed.
@@ -624,9 +831,9 @@ try {
       clockFrozen = true;
       for (const page of [portal, panel, twin]) await ev(page, `globalThis.__smtFixtureFrozenMs=${fixture.state.frozenMs}`);
       console.log('Oracle recovery fixture: reopening the original window');
-      await ev(portal, `document.querySelector('#smt-1000x-indicators').shadowRoot.querySelector('button').click()`);
+      await toggleDockedPanel();
       await until(() => fixture.sockets.size === 1, 'collapsed original stream with twin preserved');
-      await ev(portal, `document.querySelector('#smt-1000x-indicators').shadowRoot.querySelector('button').click()`);
+      await toggleDockedPanel();
       panel = await findPanel('ORCL'); await fresh();
       assert(await ev(panel, `Date.now()===${fixture.state.frozenMs}`), 'reload did not inherit the frozen fixture clock');
       const restored = await until(async () => { const s = await oracleSnapshot(panel); return s?.model.n === before.model.n ? s : null; }, 'reloaded native learner');

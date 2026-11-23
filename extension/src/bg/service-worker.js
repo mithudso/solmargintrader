@@ -22,11 +22,13 @@ import { withStoreLock, enginePending } from '../core/engine.js';
 import { checkForUpdate } from '../core/autoreload.js';
 import { isEnvelope } from '../core/soltui.js';
 import { createNativeTransport } from './soltui-transport.js';
+import { createZecAdvisory } from './zec-advisory.js';
 import { DEFAULT_LIMITS } from '../core/risk.js';
 import { RequestBudget } from '../jupiter/http.js';
 import { makeSigner } from '../wallet/signer.js';
 import { restorePaperVenue } from './paper-venue.js';
 import { createLiveWindows } from './live-windows.js';
+import { createJupiterIndicatorWindows } from './jupiter-indicator-window.js';
 import { digest } from '../core/bot-manager.js';
 import { OWNER_SOURCE_SCHEMA, OWNER_SOURCE_FILES } from '../core/owner-source.js';
 import { controlRoomTransitions } from '../core/control-room.js';
@@ -85,7 +87,26 @@ const nativeTransport = createNativeTransport();
 const liveWindows = chrome.runtime.onConnect && chrome.windows && chrome.runtime.getURL
   ? createLiveWindows({ runtime: chrome.runtime, windows: chrome.windows,
     getURL: path => chrome.runtime.getURL(path) }) : null;
+const jupiterIndicatorWindows = chrome.storage?.session && chrome.windows?.onRemoved && chrome.tabs?.onUpdated
+  ? createJupiterIndicatorWindows({ runtime: chrome.runtime, storage: chrome.storage.session,
+    windows: chrome.windows, tabs: chrome.tabs }) : null;
 const browserUiStore = {};
+const zecBrowser = createZecAdvisory({ configStore, runtime: chrome.runtime });
+const zecDeps = { store: {}, zecBrowser };
+const zecNativeRequest = async (name, args) => {
+  try {
+    const result = await runCommand({ name, args, deps: zecDeps });
+    return { ok: true, result };
+  } catch (error) {
+    return error instanceof CommandError
+      ? { ok: false, error: error.message, status: error.status }
+      : { ok: false, error: 'Chrome Zec command failed.', status: 503 };
+  }
+};
+const reconnectZec = () => zecBrowser.reconnect(zecNativeRequest);
+const setZecEnabled = async enabled => ({ bridge: await zecBrowser.setEnabled(enabled, zecNativeRequest) });
+reconnectZec().catch(() => {});
+
 
 /**
  * Dependencies for the command registry, Chrome flavour.
@@ -378,6 +399,7 @@ export async function handleInstalled(details = {}, { store } = {}) {
 chrome.runtime.onInstalled.addListener((details) => handleInstalled(details).catch(() => reportBackgroundFailure('alarm-restore')));
 
 chrome.runtime.onStartup.addListener(() => {
+  reconnectZec().catch(() => {});
   restoreAlarms().catch(() => reportBackgroundFailure('alarm-restore'));
   runManagerPoll().catch(() => reportBackgroundFailure('manager-poll'));
 });
@@ -394,6 +416,7 @@ chrome.alarms.onAlarm.addListener((alarm) => {
   if (alarm.name === CONTROL_ROOM_ALARM) return runControlRoomMonitor().catch(() => reportBackgroundFailure('control-room-monitor'));
   if (alarm.name === MANAGER_ALARM) return runManagerPoll().catch(() => reportBackgroundFailure('manager-poll'));
   if (alarm.name === BUILD_ALARM) {
+    reconnectZec().catch(() => {});
     runBuildCheck().catch((err) => console.error('[smt] build check threw', String(err?.message ?? err)));
     return;
   }
@@ -416,24 +439,24 @@ chrome.alarms.onAlarm.addListener((alarm) => {
 const ALIASES = { tickNow: 'tick' };
 
 chrome.runtime.onMessage.addListener((msg, sender, respond) => {
-  if (['browserManagerPoll', 'browserManagerSnapshot', 'controlRoomStatus', 'controlRoomStart', 'controlRoomOpen'].includes(msg?.type)) {
+  if (COMMANDS[msg?.type]?.zec || ['browserManagerPoll', 'browserManagerSnapshot', 'controlRoomStatus', 'controlRoomStart', 'controlRoomOpen'].includes(msg?.type)) {
     const origin = chrome.runtime.getURL('').replace(/\/$/, '');
     if (sender?.origin !== origin && !String(sender?.url ?? '').startsWith(`${origin}/`)) {
       respond({ ok: false, error: 'local helper messages require an extension origin' });
       return false;
     }
   }
-  handleMessage(msg)
+  handleMessage(msg, { sender })
     .then(respond)
     .catch((err) => respond({ ok: false, error: String(err?.message ?? err) }));
   return true; // keep the channel open for the async reply
 });
 
-export async function handleMessage(msg, { openStore, soltui } = {}) {
+export async function handleMessage(msg, { openStore, soltui, sender } = {}) {
   const requested = msg?.type;
   const name = ALIASES[requested] ?? requested;
 
-  if (!name || !COMMANDS[name]) {
+  if (!name || !Object.hasOwn(COMMANDS, name)) {
     return {
       ok: false,
       error: `unknown message type "${requested}"`,
@@ -451,8 +474,9 @@ export async function handleMessage(msg, { openStore, soltui } = {}) {
   }
   // The PiP gesture crosses the synchronous message→Port relay. Opening the
   // order store first would discard it; UI commands never receive trading deps.
-  const deps = COMMANDS[name].browserUi ? { store: browserUiStore, liveWindows }
-    : await chromeDeps({ passphrase, openStore, ...(soltui ? { soltui } : {}) });
+  const deps = COMMANDS[name].zec ? { ...zecDeps, setZecEnabled }
+    : COMMANDS[name].browserUi ? { store: browserUiStore, liveWindows, jupiterIndicatorWindows, sender }
+      : await chromeDeps({ passphrase, openStore, ...(soltui ? { soltui } : {}) });
 
   try {
     const result = await runCommand({ name, args, deps });

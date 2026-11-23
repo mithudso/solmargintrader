@@ -191,7 +191,9 @@ class ProtocolSchedulingTests(unittest.IsolatedAsyncioTestCase):
         try:
             server._load_sdk()
             with mock.patch.object(server, "Server", FakeServer), mock.patch.object(server, "_SDK_V2", False):
-                protocol, _hub = server.build_server(Engine())
+                protocol, hub = server.build_server(Engine())
+            session = mock.Mock(send_resource_updated=mock.AsyncMock())
+            await hub.subscribe(session, "oracle://market")
             async with protocol.lifespan(protocol):
                 self.assertTrue(await asyncio.to_thread(entered.wait, 0.5))
                 await asyncio.sleep(0)

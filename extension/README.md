@@ -15,6 +15,14 @@ direction and managed exits, and saves paper positions, trade history and
 learning in Chrome's local database. The [Perps guide](../docs/JUPITER-PERPS-PAPER.md)
 covers the controls, separate JLP and GUM terms and replay evidence.
 
+## ZEC Volty 25× bot
+
+Open the standalone **ZEC Volty 25×** section on either ZEC Perps route. It shows
+the host heartbeat, current GUM mark and breakout levels, the latest signal decision,
+and expandable history with skipped crossings, order receipts and confirmed fills. The
+[operator guide](../docs/JUPITER-ZEC-VOLTY.md) covers observation, funded
+activation and reading the trade evidence.
+
 ## Saved learning and disk backup (0.12.4)
 
 Both browser Oracle learners retain per-coin, per-source and six-horizon models,

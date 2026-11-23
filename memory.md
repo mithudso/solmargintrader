@@ -17,6 +17,502 @@ Delta: v672 to v673. Start the Todoist workstation integration.
 ## Todoist workstation integration
 
 TASK-2651. Install both Todoist MCP endpoints in Codex, Claude Code and Antigravity. Install the official CLI and SDKs. Run a local launchd webhook listener with signature verification and private durable receipts. Check OAuth and delivery after installation.
+Version: 718
+Delta: v717 to v718. Record the zero-fee re-read and the zero-fee venue research state.
+
+Removing exchange fees from the frozen cross-chain replay flips the Z-score(12)
+short from a median $15.27 loss to a $2.26 profit per $1,000 coin, and
+profitable coins from 50 to 170 of 300. Results and limits are in
+`research/papers/results/cross_chain_short_zero_fee_reread.md`; the
+reproducible script is
+`/Users/mitch/.local/share/solmargintrader/audits/cross-chain-short-20261122/zero_fee_reread.py`.
+
+Every offshore zero-fee perp venue checked (Lighter, Paradex, Bullet,
+Bitfinex, Hyperliquid, GRVT, Aster) bars US persons. The US near-zero route is
+Kraken Derivatives US (Bitnomial perps, $0.0113 per contract per side, FIX
+4.4 order entry). Its list includes HBAR, XTZ and SOL but not POL or JTO.
+Retail FIX key access is unverified.
+
+The /dr run `zero-fee-perpetual-futures-venues-with-api-access` holds 660
+evidence-bound claims across 8 concepts
+(`/Users/mitch/.global-ai-hub/research/zero-fee-perpetual-futures-venues-with-api-access`).
+Gate preflight passes. The Codex judge hit its usage limit until
+2026-11-23 04:44 local, so publication is withheld. Next: run
+`python3 /Users/mitch/dev/llms-explorer/scripts/codex_dr_run.py gate zero-fee-perpetual-futures-venues-with-api-access`,
+then `/sko` on the trading-and-investing spoke, `codex_dr_run.py finish`,
+and full-suite Steps 3-5 (`/lca` packs, `/ldo --family` rollup, report).
+The shared research runner writes no v4 evidence spans. The binding tool
+`/Users/mitch/.global-ai-hub/research/zero-fee-perpetual-futures-venues-with-api-access/bind/bind_tool.py`
+added them by reusing the gate's own `check_spans`.
+The hub wiring in `/Users/mitch/.claude/skills/trading-and-investing` (routing row,
+triggers, v1.7.6) sits on a working-tree `SKILL.md` that was older than its
+committed HEAD (v1.6.0 against v1.7.0) and holds other sessions' uncommitted
+edits. Reconcile it against HEAD before publishing; the pre-edit copy and diff
+are in `/Users/mitch/.global-ai-hub/research/zero-fee-perpetual-futures-venues-with-api-access/hub-wiring`.
+
+Version: 717
+Delta: v716 to v717. Record the 1000x implementation and verification.
+
+The 1000x summary reads the selected interval's developing close. It shows
+Z-score (20), configured RSI and Balance of Power, and MACD direction.
+The pop-out replaces the inline frame with a browser-managed popup. A
+session record binds the popup to the verified source tab and document
+across MV3 worker eviction. Closing or docking removes the detached
+feed before restoring the inline one.
+
+The independent public SOL probe observed new exchange timestamps in a
+separate Chrome popup and fresh inline readings after Dock. Deployment
+preserves the current Chrome Beta installation and unrelated local edits.
+Acceptance receipts are under
+`/Users/mitch/.local/share/solmargintrader/audits/1000x-indicators-popout-20261122`.
+
+Version: 716
+Delta: v715 to v716. Record the Jupiter 1000x widget scope.
+
+Show the current chart interval's Z-score, RSI, Balance of Power and MACD
+direction at the top of the Jupiter 1000x widget. Keep indicator readiness
+bound to feed freshness and warm-up. Let the current widget detach into a
+separate Chrome window and dock back into the Jupiter tab. Preserve the
+market binding, existing chart controls and execution safeguards.
+
+The isolated branch starts at 3c8f0f0. Verify the indicator math and Chrome
+window lifecycle, including refresh, closing and docking, before delivery.
+
+Version: 715
+Delta: v714 to v715. Record the verified cross-chain transfer results.
+
+The frozen CoinGecko platform census supplied 425 nonempty rankings,
+15 complete top-100 lists, and 3,165 distinct ranked identities.
+There were 300 verified Binance USD-M perpetuals across 213 of those
+chain rankings. Every matched contract scored Oct 12–Nov 16, 2026
+using one-minute OHLC and posted funding. The shared simulation used
+fixed $250 notional, modeled 25×, a 5 bp taker fee and 2 or 6 bps
+of slippage per side. Rank membership uses current platform records.
+
+The continuous baseline medians were -1.53% for Z-score and -6.39%
+for Volty. Stressed medians were -2.66% and -11.84%. Under stressed
+costs, 10 of 300 Z-score and one of 300 Volty markets were profitable.
+HBAR alone met the stricter five-week consistency screen for Z-score,
+at +0.0129% stressed. No Volty market met that screen. No executable
+leverage, depth, or independent chain trading claim is implied.
+
+The original ZEC reference reproduced exactly and the 300-market
+output repeated byte-for-byte. The rank census, replay, chain coverage
+and per-asset files are under
+`/Users/mitch/.local/share/solmargintrader/audits/cross-chain-short-20261122`.
+
+Version: 714
+Delta: v713 to v714. Record scope for the cross-chain transfer study.
+
+Keep the Z-score(12) and short-only Volty(10 × 1.5) settings frozen.
+Rank up to 100 assets per chain by circulating USD market cap among
+explicitly indexed platform deployments and native assets. Include
+every chain with a verifiable ranking, as clarified by the owner. Capture
+ranking and market identities before joining market data. Retain every
+ranked asset with its result or exclusion. Run and deduplicate verified
+perpetual instruments across chains. Freeze a shared date range, use
+baseline and stressed costs, and label execution assumptions. Keep the
+prospective ZEC and funded owners independent.
+
+Version: 713
+Delta: v712 to v713. Record close-only acceptance and the new paper design.
+
+The funded launchd owner loaded a byte-verified close-only module with
+the existing policy, state and account binding. The PAUSE_ENTRIES marker
+blocks opens at planning and signing while fresh marks, reconciliation,
+and strategy-driven reduce-only closes continue. Signerless GUM readback
+confirmed the existing 0.007 ZEC long and zero open orders both before and
+after the handoff. The journal had no outstanding rows. The shadow learner
+continued advancing. No live exit was sent as a test.
+
+The prospective comparison uses one frozen SQLite journal for Z-score,
+Volty, both stress lanes, and cash. The public-feed smoke appended fresh
+observations across restart without resetting the cohort. The advisory
+funding gate correctly reported insufficient evidence. It looks for four
+complete UTC weeks and positive outcomes after baseline and stressed
+costs. A separate fixed-dollar estimate accounts for stressed stop risk,
+fees and venue limits. Runtime receipts are under
+`/Users/mitch/.local/share/solmargintrader/audits/zec-prospective-20261122`.
+
+Version: 712
+Delta: v711 to v712. Preserve scope for safe funded pause and fresh paper cohort.
+
+The owner approved the recommendations from the ZEC study. Preserve the
+funded account, existing fills, the reduce-only exit path and reconciliation.
+The prior status and risk rails do not themselves establish a current venue
+position. Keep the learner in shadow and preserve the existing paper owner.
+Start a separate, durable prospective Z-score(12) short and ungated
+short-only Volty(10 × 1.5) comparison at fixed $250 exposure per arm.
+Evaluate fixed coverage, cost and drawdown gates on fresh paper data.
+Keep any future fixed-loss sizing proposal advisory.
+
+Version: 711
+Delta: v710 to v711. Record the verified two-up z-score exit comparison.
+
+With a 0.8% price stop, a completed 20-bar return to zero and no
+timer, five-minute ZEC/GUM entries lost $754.86 in the Nov 11–18
+replay. Ten-minute entries lost $337.43. The 25× trades used $250
+margin on a $1,000 starting balance. The five-minute rule had
+106 wins in 214 trades and the ten-minute rule had 61 in 116.
+Neither logged a liquidation in the latest replay. The continuous
+21-day runs returned -79.24% and -49.20%. At a matched 100-minute
+lookback, the ten-minute rule lost $139.69 in the test week and
+lost money in each earlier week.
+
+The matched JavaScript and independent Python verification and
+replays are under
+`/Users/mitch/.local/share/solmargintrader/audits/zec-two-up-zscore-20261122`.
+They use the frozen venue terms, minute OHLC and historical funding.
+The replay did not modify executable strategy code or funded settings.
+
+Version: 710
+Delta: v709 to v710. Record the five- and ten-minute z-score replay scope.
+
+Replay the exact second green ZEC/GUM bar on five- and ten-minute
+candles. The short uses a 0.8% stop from its entry fill and exits at
+the next minute open after a subsequent completed candle closes at
+or below its 20-bar rolling mean. Remove the fixed target and timer.
+Use the same frozen windows, modeled fees and funding, 25× leverage,
+and both prior sizing bases. Separately measure equal elapsed lookback
+and skipping entries already at or below the mean. Preserve paper-only scope.
+
+Version: 709
+Delta: v708 to v709. Record verified P&L and downside for the bracket.
+
+At 25× and $250 margin, the ZEC/GUM two-up short with a 1% target,
+0.8% stop and 15-minute fallback made $87.70 net in the Nov 11–18
+retrospective week. There were 133 winners in 256 trades, 38 takes,
+46 stops, 172 timeouts and zero modeled liquidations. The timed-only
+control made $225.09 and had two modeled liquidations. With the same
+bracket, simultaneous RSI and Balance of Power lost $453.17 and the
+latched confirmation made $91.02. All variants lost in each of the
+four earlier weeks and about 75% over the overlapping 21-day run.
+
+The two independent implementations matched. The private runners,
+frozen input bindings, verification and tables are under
+`/Users/mitch/.local/share/solmargintrader/audits/zec-short-bracket-20261122`.
+This study used minute candle ranges and included both fill costs
+and recorded funding. It did not change trading code or live settings.
+
+Version: 708
+Delta: v707 to v708. Record scope for the short bracket replay.
+
+Interpret the follow-up as a 1% favorable and 0.8% adverse ZEC
+price move from the modeled short entry. Retain the 15-minute
+fallback. Compare exact two-up entries with no confirmation,
+simultaneous RSI and Balance of Power, and the earlier latched gate.
+Use the same frozen historical windows, 25× leverage, costs and
+minute fill ordering as the intrabar study. Keep the replay private
+and simulated. Record net P&L, exits, drawdown and weekly sensitivity.
+
+Version: 707
+Delta: v706 to v707. Record the verified intrabar short results.
+
+The ZEC/GUM two-up short exits 900 seconds from entry under the timed
+rule. The early exit tests settled net P&L at every one-minute candle
+using a +1 bp target and the same timeout. At 25× with $250 margin,
+the simultaneous RSI and Balance of Power gate lost $360.04 in the
+Nov 11–18 retrospective week. It won 29 of 40 trades and had no
+modeled liquidations. The mean win was $0.62 and the mean loss was
+$34.38. The same gate with a timed exit lost $399.88. The archived
+latched confirmation gate earned $239.99 on the timed exit and lost
+$367.26 on the early exit. Both early variants also lost in each of
+the four preceding replays. Results are simulated from minute OHLC and
+include both fill costs and recorded funding.
+
+The private replay, frozen source and results are under
+`/Users/mitch/.local/share/solmargintrader/audits/zec-intrabar-shorts-20261122`.
+Two runs produced identical JSON. An independent implementation
+matched the archived confirmation results. No strategy implementation
+or live settings were changed.
+
+Version: 706
+Delta: v705 to v706. Record the confirmed intrabar short replay scope.
+
+Replay only the two-up short on the prior frozen five-minute ZEC/GUM
+captures. Treat the mirrored RSI(21) and three-bar Balance of Power
+signal as entry confirmation. Compare unfiltered and confirmed timed
+exits and intrabar net profit targets under the same 15-minute limit.
+Observe confirmation only from completed five-minute bars. Evaluate
+targets and liquidation from minute OHLC, include both fill costs and
+signed funding, and use adverse-first ordering if the minute leaves
+the event order unknown. Keep all execution simulated.
+
+Version: 705
+Delta: v704 to v705. Record verified two-up short and three-down long results.
+
+On the Nov. 11–18 five-minute ZEC/GUM holdout, the five-minute hold
+lost 6.30% net over 384 trades and had zero modeled liquidations. Shorts
+after two up bars lost $49.24 across 256 exits. Longs after three down
+bars lost $13.79 across 128 exits. Typical round-trip costs exceeded
+the average raw move. The 15-minute hold made $0.28 in the added week
+with three modeled liquidations. All five tested holding periods lost
+money across the four prior weekly replays and the overlapping 21-day
+continuous replay. A second run was byte-identical and an independent
+replay matched all five holdout outcomes.
+
+Version: 704
+Delta: v703 to v704. Record the streak strategy replay scope.
+
+Use the same frozen five-minute ZEC/GUM setting and one-minute fill path
+as the preceding long-only and short-only comparisons. Enter on the
+next open after the second consecutive bullish bar or the third
+consecutive bearish bar. Fire once per streak and reset on a flat bar.
+Use a five-minute hold as the baseline. Test fixed alternative holding
+times separately and apply the original fee, slippage, funding and
+liquidation model to every trade.
+
+Version: 703
+Delta: v702 to v703. Record verified short-only ZEC replay results.
+
+The historical GUM short-only rerun evaluated 6,048 five-minute configurations
+at 25× with $250 target exposure on $1,000 paper equity. The four-week
+development selection preceded scoring Nov. 11–18. Z-score led that week
+at +1.24% net across 12 exits and RSI returned +0.75% across 15. The
+selected Volty/Z-score rule gained +0.72% with one modeled liquidation.
+Combined vote lost 0.50% and Balance of Power lost 0.83%. With the prior
+settings held fixed, only Z-score ended the week positive at +0.22%.
+Plain Volty short-only gained +6.92% across 21 days and lost 0.25% in the
+added week. The 21-day window includes 14 development days. Private
+audit receipts bind the original captures, short-side execution, fees,
+funding, and the reproduced published Volty baseline.
+
+Version: 702
+Delta: v701 to v702. Record the matched short-only replay scope.
+
+The short-only ZEC run uses the original two frozen GUM captures from the
+five-minute 25× panel. Freeze the original family configurations for the
+direct comparison, and keep any development-only selection separate.
+Retain native Volty shorts and mirror the signal logic of long-only
+families. Price and settle all trades on the original market candles and
+funding. The canonical Volty directional replay matched the published
+artifact byte for byte. Research uses paper equity and separate audit files.
+
+Version: 701
+Delta: v700 to v701. Record two follow-up fixes before delivery.
+
+The supported Oracle Jupiter recording command binds ordered base and quote
+mints under archive ownership. A changed pair or a legacy Jupiter archive
+with unknown ordering needs a new write target. Previous archives and the
+existing evaluator remain available for reading. An invalid Volty paper
+state directory returns a structured refusal without revealing the path.
+
+Version: 700
+Delta: v699 to v700. Record the scoped optimizer repairs and remaining evidence.
+
+## Oracle and Volty optimizer delivery
+
+Oracle guidance can run without opening an archive. Current MCP clients can
+listen to the three allowed resources, while legacy subscription clients
+retain their existing path. The publisher reads only resources with active
+subscriptions. The Volty v2 paper cohort rejects conflicting marks and
+unsupported risk tiers, expires superseded openings and preserves legacy
+journal rows. A second paper owner gets a bounded refusal. The native bridge
+and Jupiter panel expose watchdog activity, and the panel improves narrow
+P&L layout and offers click or keyboard placement.
+
+The private optimizer records distinguish sampled code review from full
+coverage and isolate application/UI runtime fixtures from production. The
+run requires no live service restart, no new market studies, and no activation
+of separate optimizer checkpoints. Continue from the method receipts for
+uncovered file-method pairs or runtime cases.
+
+Version: 699
+Delta: v698 to v699. Freeze the Oracle and Volty optimizer scope before repair.
+
+## Oracle and Volty optimizer scope
+
+Run the code, application and UI optimizers against revision `e0d6d9377793e7d27a8775da64b78ff7f0e236dc`. Cover the Oracle scripts and their directly connected operator workflows, including the Volty paper and funded watcher, native status projection, Jupiter ZEC panel, Oracle extension and Oracle TUI. Preserve the existing funded owner, training and trading policies and independent optimizer checkpoints. Verify repairs in local fixtures and an isolated browser before delivery. Keep worktree diagnostics and preimages in the private Oracle and Volty audit directory.
+
+Version: 698
+Delta: v697 to v698. Record verification and the evidence for the stalled funded order.
+
+## Volty comparison and watchdog verification
+
+The paper runner records three matched prospective books and uses public GUM quotes, modeled capped fills, fees and observed funding. The funded runner resets the crossing state after four distinct fresh marks with one unresolved committed leg. It preserves the intent and continues venue reconciliation. The timing report counts only instrumented dispatch and POST observations. All 285 Oracle tests, pinned Ruff, the documentation check and a public paper smoke passed.
+
+After reboot, the old transient funded job was absent. The single unresolved opening sell was bound to a finalized Jupnet instruction rejection by exact bytes, owner signature and committed client order ID. A private journal-copy rehearsal preserved the filled close and passed the same-policy flat venue preflight with zero outstanding rows. Use the private recovery and deployment receipts for the actual restart and installed verification.
+
+Version: 697
+Delta: v696 to v697. Record the forward-paper comparison, timing, and watchdog scope.
+
+## Volty paper comparison and watchdog
+
+Compare the current funded Volty rules with short-only entries and close-then-wait reversals on the same prospective GUM observations. Measure net P&L, drawdown and missed/refused fills. Capture execution timing without changing prices or submitting extra orders. Several fresh ticks with one unresolved order invalidate transient signal state; the durable order stays reconcilable, and venue-confirmed terminal outcomes remain the only path to reentry.
+
+Version: 696
+Delta: v695 to v696. Record realized Volty accounting and verification.
+
+## Volty realized performance delivery
+
+The optional native performance summary reads a separate atomic snapshot. The read-only publisher checks all journal fills and scoped GUM position history. It keeps only closed trades, verifies exact gross, fees, and signed funding, and preserves the prior timestamp on incomplete data. Chrome displays gross and net USDC and the count and share of net-profitable trades before the triggers. The fixture and real native browser runs, local lint, unit suites, and coverage counts gate delivery. The existing funded execution journal, policy, and watcher are separate. Use the PR and the local deployment receipt to confirm installed asset fingerprints, current live totals, and the unchanged funded process.
+
+Version: 695
+Delta: v694 to v695. Record the Volty performance summary scope before implementation.
+
+## Volty realized performance
+
+Show gross and net P&L, profitable closed trades, total closed trades, and win rate on the Jupiter ZEC Volty panel. Source lifetime accounting from the dedicated owner-bound venue history. Verify full page coverage, signed funding and fees, and honest handling of incomplete data. Keep the existing funded and shadow workers outside the display implementation. Stele task creation was blocked by the account write quota.
+
+Version: 694
+Delta: v693 to v694. Record the Volty v2 reset behavior and verification.
+
+## Volty shadow learner v2
+
+The worker starts a versioned empty checkpoint before reading any ticks. It retains the prior checkpoint and raw journal, admits only post-reset marks and receipts, and resumes using the same frontier after restart. Each horizon admits one forecast at a time, takes one update for a timely endpoint, and publishes both Brier scores over the same most recent 24 completed windows. It keeps forecasting in shadow. The funded policy and shared Chrome baseline remain separate. Local verification passed 758 extension tests, JavaScript lint and type checks, 28 browser checks, and the docs gate.
+
+The offline chronological holdout used 24,647 captured ticks. Spacing improved frozen-model Brier at 1 to 20 minutes on matched forecasts. The frequency baseline still led each horizon with online updates, and the 60-minute holdout contained two non-overlapping outcomes. Small feature corrections around a smoothed baseline nearly matched it; prospective advantage remains open. Use the PR and the private learner deployment receipt to verify the final merged revision and installed epoch.
+
+Version: 693
+Delta: v692 to v693. Record the Volty training reset scope before implementation.
+
+## Volty shadow training reset
+
+Keep raw GUM ticks and funded policy separate. Start a fresh shadow checkpoint and score epoch and space updates by the length of each forecast horizon. Preserve causal scoring and the shared Chrome Oracle behavior. Verify clean startup and restart against a journal with prior ticks, then check the installed worker and dashboard. Compare training alternatives with chronological replay. Stele task creation was blocked by the account write quota.
+
+Version: 692
+Delta: v691 to v692. Record the reconciled rejection and tested allocation cutover.
+
+## Volty terminal rejection and allocation verification
+
+The finalized Jupnet receipt reported custom program error 10 and matched the exact committed instruction byte for byte. The dedicated GUM account was flat with zero open orders and the complete indexed fill set matched the journal. The recovery preserved the preimage and finalized receipt locally, marked the exact leg refused and left zero unresolved entries. The old-policy venue preflight passed. A rehearsal on a private copy preserved all historical events byte for byte, rotated to 50 percent, passed fresh read-only venue preflight and rejected the retired policy. All 271 Oracle tests and pinned Ruff passed. The live cutover uses the reconciled journal backup, the merged Oracle wheel, a separate 50-percent candidate file and the existing cap. Record installed activation in the private live-service incident receipt before treating the cutover as finished.
+
+Version: 691
+Delta: v688 to v691. Record evidence requirements for a finalized rejection and allocation rotation. Versions 689 and 690 belong to a separate in-progress checkout change.
+
+## Volty recovery and allocation
+
+The live watcher has an acknowledged isolated FOK leg absent from REST order and trade history. A matching finalized Jupnet instruction failure supplies positive terminal evidence. Require exact transaction signature, committed owner/account/subaccount, every signed leg field, no residual position or open orders, and unchanged complete known-fill lineage before closing the journal entry. Keep the on-chain error as a numeric code unless the venue documents its meaning. Preserve historical fills and original client IDs. The owner requested 50 percent allocation with the current stopless policy. Keep the existing 25x leverage and separate opening-notional ceiling. Rotate allocation only with terminal history, account and journal locks, flat venue, and verified lineage. The shared-graph task create returned an account write quota limit. Verify the installed watcher, journal, sizing preview, and heartbeat before reporting recovery.
+
+Version: 688
+Delta: v687 to v688. Record installed acceptance and net funded P&L including funding.
+
+## Volty tick learner deployment
+
+PR 348 merged as `c08192322622da7d62239e42342c26aebbe44f87` after 15 active checks passed. The funded Volty watcher resumed armed after a GUM lineage check. The separate launchd shadow learner processed 39 of 39 durable GUM ticks, and one-minute training advanced from one to two examples. The installed Chrome Beta ZEC panel later showed 57 ticks, 20 one-minute examples and all six horizons. Independent acceptance matched the installed Python, Node, native bridge and browser files to the merge. GUM confirmed a flat account and zero unresolved signals. The two closed trades produced a net loss after fees and funding. The historical generic refusals cannot identify the rejected check. Future planning and definitely-unsent preflight refusals preserve safe codes. Prospective after-cost profitability remains unproven. Keep the learner in shadow and evaluate executable prices, fees, funding and missed fills before changing funded signals. See TASK-2699.
+
+Version: 687
+Delta: v686 to v687. Record the subsequent filled close and extend refusal diagnostics to submission preflight.
+
+## Volty submission preflight
+
+The funded pilot closed its second round trip at 09:58 UTC on 2026-11-20. GUM confirmed the long close and the journal recorded a preflight refusal on the new short leg. The two completed round trips produced a net loss after trading fees. Both planning and definitely-unsent preflight refusals now preserve allowlisted diagnostic codes. Keep ambiguous submissions in reconciliation and leave the learner in shadow until prospective after-cost results support a trading change.
+
+Version: 686
+Delta: v685 to v686. Record tested tick capture, exact learner reuse and browser acceptance scope.
+
+## Volty tick learner verification
+
+The watcher durably captures each distinct accepted GUM mark in a separate private SQLite file. The Node shadow worker applies the same live Oracle model code and six horizons used by Chrome, with a distinct GUM identity and per-tick cadence. A fixture verified delayed training, exact checkpoint replay and no duplicate training after restart. The browser shows tick and outcome counts and paired Brier scores. Refused plans retain allowlisted diagnostics without retrying a signal. Deploy from the merged tree, confirm live tick counts and trained outcomes advance, and bind acceptance to the installed runner and browser. One closed funded round trip is insufficient to verify profitable operation. See TASK-2699.
+
+Version: 685
+Delta: v684 to v685. Record the Volty refusal investigation and tick learner scope.
+
+## Volty planning diagnostics and tick learning
+
+TASK-2699 investigates a planning refusal with zero execution legs. The journal saved a generic reason and no contemporaneous quote/account proof. A separate fresh signal filled later. The funded pilot has one closed round trip and negative after-fee performance on that trade. The historical paper preset differs from the funded policy and cannot establish a live edge. Record bounded machine diagnostics on future refusals. Feed each distinct fresh GUM tick from the existing owner to the same live Oracle model used by the extension. Use a separate source identity, causal delayed labels and independent shadow metrics before funding any learned strategy.
+
+Version: 684
+Delta: v683 to v684. Record the validated browser and native activity view.
+
+## Volty activity verification
+
+Extension 0.16.2 shows the host heartbeat, current five-minute GUM mark and breakout levels, recent signal outcomes and filled closes waiting on collateral. The snapshot and native reader add bounded optional telemetry to schema 1. Oracle passed 265 tests, the focused SolTUI bridge passed 12 tests, and the extension passed 755 tests and 28 real-host Chrome checks. Verify the merged extension through the installed browser, the running Volty process and the actual native status reader. Use TASK-2694 for the delivery receipt.
+
+Version: 683
+Delta: v682 to v683. Record the Volty panel activity and acceptance scope.
+
+## ZEC Volty activity on Jupiter Perps
+
+TASK-2694 extends the existing read-only ZEC Volty section on both Jupiter Perps routes. Show the host's current five-minute mark and trigger prices, independent heartbeat and market freshness, and recent journal decisions including skipped crossings and unsettled closes. Keep the native command backward compatible. Verify the host projection, the native reader, and the installed extension. TASK-2692 already delivered the collateral settlement repair and verified the live service.
+
+Version: 682
+Delta: v681 to v682. Record the tested settlement patch and live read-only rehearsal.
+
+## Volty settlement verification
+
+GumOrders now confirms native parent cash to the same cent as both display balances before using the additional precision. It retains a full-precision baseline for new closes and reads the recorded baseline for existing closes. The regression covers exact micro-USDC thresholds, conflicting balance fields and isolated collateral. The patched reconciliation confirmed the existing close was fully filled and settled against GUM with the original policy and read-only journal. Deliver through the default branch, then verify that the installed launchd job reconciles the close and expires its stale reversal intent. Deployment uses the existing journal and policy.
+
+Version: 681
+Delta: v680 to v681. Record the Volty settlement repair scope and recovery plan.
+
+## Volty isolated close settlement
+
+TASK-2692 addresses a fully filled reduce-only close that remained pending when GUM supplied free collateral at cent precision and the close receipt reported returned cash in micro-USDC. Keep the existing close record, verify the native token balance against the display amounts, and preserve the full-fill, flat-position and isolated-cash checks. Add a regression for the existing journal format and verify the installed bot against the same policy and journal after delivery.
+
+Version: 680
+Delta: v679 to v680. Record the CI regeneration and installed-host checks.
+
+## Perps chart delivery checks
+
+PR 345 covers TASK-2688. The local Chrome suite also passed 28 of 28 checks with the real native host. The first CI run detected stale offline source indexes and operation inventories after the extension version bump. Regenerate both from tracked files and verify the new PR tip. The original Chrome Beta profile is registered to the primary checkout, so verify the updated panel there after the default branch advances.
+
+Version: 679
+Delta: v678 to v679. Record the Perps chart fix and acceptance.
+
+## Perps chart fix and acceptance
+
+TASK-2688 added a muted forming chart candle from closed venue minutes, a UTC freshness label, a Latest control, and immediate polling when the page becomes visible. The chart follows new candles while at the right edge. Indicators and strategy inputs still use fully closed intervals. Replay matched the screenshot to the 12:40 UTC five-minute close, one candle behind at 12:46:51 UTC. Extension unit tests passed 755 of 755 and the fixture-backed Chrome regression passed 27 of 27. An isolated Chrome profile with the actual public GUM feed rendered the 12:54 forming candle, the 12:55 completed candle and the 12:56 forming candle. Continue with the PR gates and acceptance in the existing Chrome Beta profile.
+
+Version: 678
+Delta: v677 to v678. Record the Perps chart diagnosis and scope.
+
+## Perps chart updates
+
+TASK-2688 investigates the ZEC Perps paper chart in Chrome Beta 0.16.0. The GUM adapter returned current completed minute candles and a current mark. The quoted candle close in the screenshot matched recent cached aggregates. The chart currently shows only completed intervals and has no visible candle timestamp. Add a forming display candle from completed source minutes, label stale history, and verify chart polling and foreground recovery. Keep execution, paper signals and learning on their existing inputs.
+
+Version: 679
+Delta: v678 to v679. Record the public inventory and source acceptance.
+
+## Oraclebot public discovery source verification
+
+The sitemap lists the public homepage, the crawlable journal and the already published working paper. Local Wrangler served the exact sitemap and Markdown assets and returned 404 for unsupported paths. The public journal stays linked from the workspace, with existing research hash links. JavaScript, browser and analysis source checks passed. Complete final GitHub checks and verify the deployed Worker version, aliases and file bytes.
+
+Version: 678
+Delta: v677 to v678. Start Oraclebot public discovery and bind the production baseline.
+
+## Oraclebot search and public discovery
+
+The live Worker returns the home HTML for missing discovery resources and invalid routes. Deliver typed public files, a real missing-resource response, and crawlable descriptions of the public workspace and journal. Preserve the existing hash routes, account API, and trading and billing configuration. Verify the owning release path from the exact merged source.
+
+Version: 677
+Delta: v676 to v677. Record the Volty execution, native panel and verification.
+
+## Standalone Volty execution and verification
+
+TASK-2660 adds the fixed Volty-10-1.5 breakout owner and Chrome 0.16.0 ZEC section. The host follows fresh GUM marks and closed five-minute candles. It verifies the isolated 25× venue preference and a dedicated account with explicit opening notional and slippage limits. An opposite signal reduces the owned position first and only opens after a settled close while the event remains current. The SQLite journal records intent and indexes authenticated GUM acknowledgments and fill receipts. Browser status has no signing authority.
+
+Oracle discovery passed 264 tests and Ruff 0.17.4 passed. Quote refresh regressions cover the capped opening reserve while preserving order size and price limits. The fixture-backed Chrome run passed 26 checks. Chrome with the real native host passed 27 checks. An independent test with the installed wheels and a private Chrome profile verified two advancing observe-mode heartbeats against the public GUM feed. A read-only production preflight found the existing 2× dry-run parent flat with 0 USDC and no isolated 25× preference. No funded Volty policy or order exists. Continue with GitHub CI and the dedicated owner account and size selection for a later funded run.
+
+Version: 676
+Delta: v675 to v676. Record the standalone Volty execution contract before implementation.
+
+## Standalone ZEC Volty funded owner
+
+TASK-2660 builds a single-strategy host owner and Chrome verification panel. Use completed GUM five-minute candles and fresh mark crossings with the frozen Volty-10-1.5 bands. Up targets long and down targets short. The opposite signal is the strategy exit. Do not apply the study's paper bracket or paper notional to funded execution. A dedicated subaccount, explicitly bounded order size, verified leverage, and in-venue reconciliation are required for live mode. Preserve every existing trading owner. Validate the native Chrome path and distinguish venue acknowledgments from confirmed fills.
+
+Version: 675
+Delta: v674 to v675. Record the Codex advisory path and live publication.
+
+## Live Zec advisory through Codex
+
+TASK-2658. The helper supports `ask --provider codex` and loads the canonical Zec instructions into an ephemeral standalone Codex session when chosen. It rejects tool-call events, invalid advice, absent snapshot binding and expired submission. Verified one real GUM snapshot and a returned advisory through the installed Chrome account. The installed profile reported 12 closed candles, no local paper account, funded inventory unavailable and grid disarmed. Continue with GitHub checks and confirm the final merged helper and loaded version.
+
+Version: 674
+Delta: v673 to v674. Record the Zec agent and Chrome advisory implementation and local acceptance.
+
+## Zec advisor and Chrome snapshot delivery
+
+TASK-2658. Zec v1.1.0 keeps one canonical agent definition, a Codex shim, and a snapshot-only advisory lane. The independent source recheck found no High or Medium blocker. The Chrome worker supplies timestamped GUM ZEC observations, complete five-minute candles, grid mode, and browser-owned paper state over a private native host. The native host accepts snapshot reads, advisory history reads, and suggestion submissions. Suggestions are bound to a two-minute snapshot and shown separately in the dashboard. The direct paper runner defaults to one observation.
+
+The extension has 750 passing tests. Chrome for Testing verified the native host, CLI, HTTP API, watch, fixture model, suggestion display, stale market handling and unchanged disarmed state. The general Chrome regression suite passed 25 checks. The documentation checker reports 3,769 cases across the four suites. The installed 0.15.0 bridge uses a separate Chrome profile under the local SolMarginTrader advisory directory and returned current GUM data. Claude Code reached its weekly quota. A Codex invocation without persistent thread state could not spawn the custom agent. Verify any later native result and final remote delivery before reporting completion.
+
+Version: 673
+Delta: v672 to v673. Start the Zec optimizer and Chrome advisory integration.
+
+## Zec advisor and Chrome snapshot
+
+TASK-2658 targets the Zec agent added in PR 339. The advisory channel consumes an allowlisted projection from the Chrome worker and delivers separate, snapshot-bound suggestions to the owner. Keep signing and live execution outside that channel. Review the agent definitions and prompt, implement and test the browser/API/CLI path, exercise an actual Zec invocation, then deliver the owned worktree.
 
 Version: 672
 Delta: v671 to v672. Record the Perps workbench implementation and ZEC archive coverage.

@@ -8,15 +8,20 @@ The binary layout follows jupnet/gum-perp-sdk 0.2.0 action.rs/request.rs.
 
 from __future__ import annotations
 
+import fcntl
 import hashlib
 import json
 import math
+import os
+import stat
 import struct
 import time
 import urllib.error
 import urllib.request
+from contextlib import contextmanager
 from copy import deepcopy
 from decimal import ROUND_CEILING, ROUND_FLOOR, Decimal, InvalidOperation
+from pathlib import Path
 from typing import Any
 
 BASE_URL = "https://api.gum.ag/perps"
@@ -292,6 +297,39 @@ def _enabled(enabled, deadline):
         raise GumError("gum_disarmed_or_expired")
 
 
+@contextmanager
+def gum_account_owner(venue, lane: str, inbox: Path):
+    """Fence GUM writers even when policy and inbox paths differ."""
+    root = Path.home() / ".soltui" / "gum-account-locks"
+    root.mkdir(parents=True, exist_ok=True, mode=0o700)
+    info = root.lstat()
+    if not stat.S_ISDIR(info.st_mode) or info.st_uid != os.getuid() or info.st_mode & 0o077:
+        raise GumError("gum_account_lock_not_private")
+    identity = hashlib.sha256(
+        f"{venue.owner}:{venue.account_id}:{venue.subaccount_id}".encode()
+    ).hexdigest()
+    scope = hashlib.sha256(f"{lane}:{inbox.resolve()}".encode()).hexdigest().encode()
+    path = root / f"{identity}.lock"
+    fd = os.open(path, os.O_RDWR | os.O_CREAT | os.O_NOFOLLOW | os.O_NONBLOCK, 0o600)
+    try:
+        info = os.fstat(fd)
+        if not stat.S_ISREG(info.st_mode) or info.st_uid != os.getuid() or info.st_mode & 0o077:
+            raise GumError("gum_account_lock_not_private")
+        try:
+            fcntl.flock(fd, fcntl.LOCK_EX | fcntl.LOCK_NB)
+        except BlockingIOError:
+            raise GumError("gum_account_already_running") from None
+        previous = os.read(fd, 65)
+        if previous and previous != scope:
+            raise GumError("gum_account_bound_to_another_inbox")
+        if not previous:
+            os.write(fd, scope)
+            os.fsync(fd)
+        yield
+    finally:
+        os.close(fd)
+
+
 class GumOrders:
     def __init__(
         self,
@@ -305,6 +343,8 @@ class GumOrders:
         max_slippage_bps=50,
         signer=None,
         call=None,
+        max_order_notional_usdc=None,
+        require_exact_leverage=False,
     ):
         b58decode(owner)
         if trading_account is not None:
@@ -326,6 +366,10 @@ class GumOrders:
             max_slippage_bps,
         )
         self.signer, self.call = signer, call or _http
+        self.max_order_notional_usdc = (
+            _decimal(max_order_notional_usdc) if max_order_notional_usdc is not None else None
+        )
+        self.require_exact_leverage = require_exact_leverage
 
     @property
     def binding(self):
@@ -342,6 +386,12 @@ class GumOrders:
             self.allocation_basis,
             self.max_slippage_bps,
         ]
+        if self.max_order_notional_usdc is not None or self.require_exact_leverage:
+            value.extend([
+                _text(self.max_order_notional_usdc)
+                if self.max_order_notional_usdc is not None else None,
+                self.require_exact_leverage,
+            ])
         return hashlib.sha256(
             json.dumps(value, separators=(",", ":")).encode()
         ).hexdigest()
@@ -479,12 +529,23 @@ class GumOrders:
                 selected.append(_integer(preference.get("leverage"), maximum=50))
         if len(selected) > 1:
             raise GumError("gum_ambiguous_leverage_preference")
+        if self.require_exact_leverage and selected != [self.leverage]:
+            raise GumError("gum_exact_leverage_preference_required")
         balance = self._get(f"/tradingAccount/{self.account_id}/balances")
         if not isinstance(balance, dict):
             raise GumError("gum_invalid_balance")
         free = _decimal(balance.get("freeBalance"), zero=True)
-        _decimal(balance.get("availableToTrade"), zero=True)
-        _integer(balance.get("tokenBalance"), zero=True)
+        available = _decimal(balance.get("availableToTrade"), zero=True)
+        cash = Decimal(_integer(balance.get("tokenBalance"), zero=True)) / 1000000
+        settlement_usdc = min(free, cash)
+        # Preflight excludes cross positions and open orders. Use native cash
+        # for settlement only when both display balances agree with its cents.
+        if (
+            free.as_tuple().exponent == -2
+            and free == available
+            and free <= cash < free + Decimal("0.01")
+        ):
+            settlement_usdc = cash
         residual = Decimal(0)
         for row in rows:
             if row["isolated"] and row["subaccountId"] == self.subaccount_id:
@@ -504,6 +565,7 @@ class GumOrders:
             "market": market,
             "position": position,
             "free_usdc": _text(free),
+            "settlement_usdc": _text(settlement_usdc),
             "idle_isolated_usdc": _text(residual),
             "selected_leverage": selected[0] if selected else None,
             "observed_at": received_at,
@@ -584,6 +646,10 @@ class GumOrders:
         collateral_native = 0
         if action == "close":
             quantity = _decimal(position["size"])
+            plan["settlement_usdc_before"] = _text(max(
+                _decimal(state["free_usdc"], zero=True),
+                _decimal(state["settlement_usdc"], zero=True),
+            ))
         else:
             if _decimal(state["idle_isolated_usdc"], zero=True):
                 raise GumError("gum_idle_isolated_collateral_requires_reconciliation")
@@ -603,12 +669,31 @@ class GumOrders:
             quantity = (collateral / unit_budget / step).to_integral_value(
                 rounding=ROUND_FLOOR
             ) * step
+            if self.max_order_notional_usdc is not None:
+                plan["collateral_budget_native"] = collateral_native
+                limited = (self.max_order_notional_usdc / risk_price / step).to_integral_value(
+                    rounding=ROUND_FLOOR
+                ) * step
+                if limited < quantity:
+                    quantity = limited
+                    # Keep the persisted lots executable across small quote
+                    # moves while reserving at most one configured slippage
+                    # allowance in additional collateral.
+                    reserved = quantity * (unit_budget + risk_price * slip)
+                    collateral_native = min(
+                        collateral_native,
+                        int((reserved * 1000000).to_integral_value(rounding=ROUND_CEILING)),
+                    )
             plan["unit_margin_budget_usdc"] = _text(unit_budget)
         if quantity <= 0:
             raise GumError("gum_insufficient_collateral")
         limits = market["orderLimitConfig"]["market"]
         suffix = "Close" if action == "close" else "Open"
         notional = quantity * risk_price
+        if action == "open" and self.max_order_notional_usdc is not None:
+            if notional > self.max_order_notional_usdc:
+                raise GumError("gum_order_notional_cap_exceeded")
+            plan["risk_price"] = _text(risk_price)
         if quantity < _decimal(limits["minOrderQty"]) or notional < _decimal(
             limits["minOrderNotional"]
         ):
@@ -664,8 +749,9 @@ class GumOrders:
         enabled=lambda: True,
         deadline=None,
         approve_fresh=None,
+        timing=None,
     ):
-        """Submit once after the optional owner approval of rebuilt economics."""
+        """Submit once after approval, optionally marking local monotonic times."""
         _enabled(enabled, deadline)
         if self.signer is None:
             raise GumError("gum_signer_unavailable")
@@ -682,7 +768,12 @@ class GumOrders:
             raise GumError("gum_plan_expired")
         # Rebuild economics against fresh account/market state. A changed quote
         # can improve the bound; it cannot widen the already-persisted cap.
+        if type(timing) is dict:
+            timing["fresh_quote_started"] = time.monotonic()
         fresh = self.plan("ZEC", plan.get("target_side"), self.account_id)
+        if type(timing) is dict:
+            timing["fresh_quote_received"] = fresh.get("quote_monotonic_at")
+            timing["fresh_quote_finished"] = time.monotonic()
         for key in (
             "venue",
             "product_id",
@@ -703,21 +794,26 @@ class GumOrders:
             if fresh.get(key) != plan.get(key):
                 raise GumError("gum_plan_state_changed")
         quantity_dec = _decimal(plan.get("quantity"))
+        if plan["action"] == "open" and self.max_order_notional_usdc is not None and (
+            quantity_dec * _decimal(fresh["risk_price"]) > self.max_order_notional_usdc
+            or quantity_dec * _decimal(plan["risk_price"]) > self.max_order_notional_usdc
+        ):
+            raise GumError("gum_order_notional_cap_exceeded")
         if quantity_dec * 1000 != _integer(plan.get("base_lots")):
             raise GumError("gum_plan_lots_changed")
         collateral_native = _integer(plan.get("collateral_native"), zero=True)
         if plan["action"] == "close":
             if quantity_dec != _decimal(fresh["quantity"]) or collateral_native:
                 raise GumError("gum_plan_state_changed")
-        elif (
-            collateral_native > fresh["collateral_native"]
-            or collateral_native == 0
-            or quantity_dec
-            > Decimal(collateral_native)
-            / 1000000
-            / Decimal(fresh["unit_margin_budget_usdc"])
-        ):
-            raise GumError("gum_plan_budget_changed")
+        else:
+            budget_native = fresh.get("collateral_budget_native", fresh["collateral_native"])
+            unit_margin = _decimal(fresh["unit_margin_budget_usdc"])
+            if (
+                collateral_native > budget_native
+                or collateral_native == 0
+                or quantity_dec * unit_margin * 1000000 > collateral_native
+            ):
+                raise GumError("gum_plan_budget_changed")
         price_lots = _integer(plan.get("price_lots"))
         if _decimal(plan.get("price_cap")) != Decimal(price_lots) / 100:
             raise GumError("gum_price_lots_changed")
@@ -805,6 +901,8 @@ class GumOrders:
         }
         fresh_and_enabled()
         try:
+            if type(timing) is dict:
+                timing["post_started"] = time.monotonic()
             result = self.call("POST", "/order/create", self.owner, body)
             if (
                 not isinstance(result, dict)
@@ -824,10 +922,7 @@ class GumOrders:
             "status": "pending",
         }
 
-    def reconcile(self, plan, client_order_id):
-        if not isinstance(plan, dict) or plan.get("binding") != self.binding:
-            raise GumError("gum_invalid_plan")
-        matches = []
+    def _order_history(self):
         for offset in range(0, 50000, 500):
             data = self._get(
                 f"/tradingAccount/{self.account_id}/orderHistory?symbol=ZEC&limit=500&offset={offset}"
@@ -835,15 +930,36 @@ class GumOrders:
             if not isinstance(data, dict) or not isinstance(data.get("orders"), list):
                 raise GumError("gum_invalid_order_history")
             entries = data["orders"]
-            matches.extend(
-                row
-                for row in entries
-                if isinstance(row, dict) and row.get("clientOrderId") == client_order_id
-            )
+            yield from entries
             if len(entries) < 500:
-                break
-        else:
-            raise GumError("gum_history_pagination_incomplete")
+                return
+        raise GumError("gum_history_pagination_incomplete")
+
+    def filled_order_identifiers(self):
+        """Return all filled ZEC order identities on the configured parent."""
+        filled = set()
+        for row in self._order_history():
+            if not isinstance(row, dict) or row.get("symbol") != "ZEC":
+                raise GumError("gum_invalid_order_history")
+            if _decimal(row.get("filledSize"), zero=True) == 0:
+                continue
+            order_id, client_id = row.get("orderId"), row.get("clientOrderId")
+            if (
+                not isinstance(order_id, str) or not order_id.isdigit()
+                or not isinstance(client_id, str) or not client_id.isdigit()
+                or (order_id, client_id) in filled
+            ):
+                raise GumError("gum_unrecognized_fill")
+            filled.add((order_id, client_id))
+        return filled
+
+    def reconcile(self, plan, client_order_id):
+        if not isinstance(plan, dict) or plan.get("binding") != self.binding:
+            raise GumError("gum_invalid_plan")
+        matches = [
+            row for row in self._order_history()
+            if isinstance(row, dict) and row.get("clientOrderId") == client_order_id
+        ]
         if not matches:
             return {"status": "unknown", "client_order_id": client_order_id}
         if len(matches) != 1:
@@ -948,10 +1064,13 @@ class GumOrders:
                 if not returned.is_finite() or returned < 0:
                     raise ValueError
                 state = self.preflight()
+                before = _decimal(
+                    plan.get("settlement_usdc_before", plan["free_usdc_before"]), zero=True,
+                )
                 settled = (
-                    Decimal(state["idle_isolated_usdc"]) == 0
-                    and Decimal(state["free_usdc"])
-                    >= Decimal(plan["free_usdc_before"]) + returned
+                    state["position"]["side"] is None
+                    and Decimal(state["idle_isolated_usdc"]) == 0
+                    and Decimal(state["settlement_usdc"]) >= before + returned
                 )
             except (InvalidOperation, TypeError, ValueError):
                 settled = False

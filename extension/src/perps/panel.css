@@ -14,7 +14,7 @@ button{padding:5px 9px;cursor:pointer}
 button:disabled{cursor:default;opacity:.48}
 :focus-visible{outline:2px solid #86d5ec;outline-offset:2px}
 summary{cursor:pointer;color:#c7d3e5}.muted,#source{color:#a8b7cb;font-size:11px}
-#status,#warning{min-height:1em;color:#ffcb83}
+#status,#warning,#chart-status[data-stale="true"]{min-height:1em;color:#ffcb83}
 dl{margin:0 0 6px;display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:4px}
 dt{color:#a8b7cb;font-size:10px} dd{font-variant-numeric:tabular-nums;margin:1px 0;font-weight:650}
 .actions{display:flex;flex-wrap:wrap;gap:6px}
@@ -33,3 +33,22 @@ h2{font-size:14px;margin:4px 0 6px}
 dialog{width:min(490px,calc(100% - 20px));max-height:calc(100% - 20px);overflow:auto;color:inherit;background:#101723;border:1px solid #46536c;border-radius:8px;padding:12px}
 dialog::backdrop{background:#070d18b8}
 #exit-error{color:#ffcb83}
+#volty{border-color:#527486;padding:8px 10px}
+.volty-header{flex-wrap:wrap;gap:4px 10px}
+.volty-header h2,.volty-header p{margin:0}
+[data-volty-status]{color:#a2ebd0;font-weight:650;border:1px solid #527486;border-radius:4px;padding:3px 6px}
+[data-volty-status][data-stale],[data-volty-status][data-attention]{color:#ffcb83}
+.volty-metrics{grid-template-columns:repeat(3,minmax(0,1fr));gap:6px;margin-top:8px}
+@media(max-width:360px){.volty-metrics{grid-template-columns:repeat(2,minmax(0,1fr))}}
+.volty-metrics>div{background:#172236;border:1px solid #29374f;border-radius:4px;padding:5px 7px;overflow-wrap:anywhere}
+.volty-metrics dt{font-size:11px}
+.volty-metrics dd{font-size:14px}
+[data-volty-gross][data-profit],[data-volty-net][data-profit]{color:#61dbac}
+[data-volty-gross][data-loss],[data-volty-net][data-loss]{color:#f69b9b}
+[data-volty-performance-note][data-stale]{color:#ffcb83}
+[data-volty-activity],[data-volty-orders],[data-volty-horizons]{list-style:none;padding:0}
+.volty-activity{border-top:1px solid #29374f;padding:5px 0}
+.volty-activity time{margin-left:8px}
+.volty-order{overflow-wrap:anywhere;border-top:1px solid #29374f;padding:6px 0}
+.volty-order p{margin:2px 0}
+.volty-order ul{padding-left:18px;margin:4px 0;font-size:11px}

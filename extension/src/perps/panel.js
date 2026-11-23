@@ -1,11 +1,13 @@
 import { createChart, CandlestickSeries, LineSeries } from '../../vendor/lightweight-charts/lightweight-charts.standalone.production.mjs';
 import { computeIndicators } from '../1000x/indicators.js';
+import { formingChartCandle } from './chart-candles.js';
 import { readMinutes, readSnapshot } from './market.js';
 import { liquidationPrice, MARKETS, planPosition, settle } from './model.js';
 import { PAPER_CAPITAL } from './replay.js';
 import { aggregateMinutes, INTERVALS, RISK_PRESETS, workbenchPresets } from './strategies.js';
 import { beginPaper, closePaper, freshQuote, managePaper, observePaper, stopPaperEntries } from './workbench.js';
 import { causalEntryFeatures, openWorkbenchStore, paperMarketKey } from './workbench-store.js';
+import { mountVoltyStatus } from './volty-status.js';
 
 const $ = id => document.getElementById(id);
 const args = new URLSearchParams(location.hash.slice(1));
@@ -36,7 +38,11 @@ let actionIssue = '';
 let busy = false;
 let disposed = false;
 let chartReady = false;
+let chartThrough = null;
+let chartForming = false;
+let polling = false;
 let pollTimer;
+let voltyView;
 let editing;
 let learned = [];
 let forecast = null;
@@ -49,7 +55,9 @@ const chart = createChart($('chart'), {
   grid: { vertLines: { color: '#1b263b' }, horzLines: { color: '#1b263b' } },
   timeScale: { timeVisible: true },
 });
+const scale = chart.timeScale();
 const candles = chart.addSeries(CandlestickSeries, { upColor: '#61dbac', downColor: '#f69b9b', borderVisible: false });
+$('chart-latest').addEventListener('click', () => scale.fitContent());
 const lines = {
   liquidation: candles.createPriceLine({ color: '#ff6b78', price: 0, title: 'Liquidation', lineVisible: false, axisLabelVisible: false }),
   stop: candles.createPriceLine({ color: '#ffcb83', price: 0, title: 'Stop', lineVisible: false, axisLabelVisible: false }),
@@ -82,8 +90,14 @@ function renderFields(id, fields) {
 
 const tone = value => value > 0 ? 'up' : value < 0 ? 'down' : '';
 function refreshChart(fit = false) {
-  const rows = aggregateMinutes(feedFor(asset).history, Number($('step').value)).slice(-240);
-  candles.setData(rows);
+  const { history } = feedFor(asset);
+  const step = Number($('step').value);
+  const rows = aggregateMinutes(history, step).slice(-240);
+  const forming = formingChartCandle(history, step, now());
+  const lastClosed = rows.at(-1);
+  const through = forming?.through ?? (lastClosed ? lastClosed.time + step : null);
+  const follow = scale.scrollPosition() >= -0.5;
+  candles.setData(forming ? [...rows, forming.candle] : rows);
   const result = computeIndicators(rows);
   const series = { emaFast: result.ema.fast, emaSlow: result.ema.slow, voltyUpper: result.volty.upper,
     voltyLower: result.volty.lower, zigzag: result.zigzag.confirmed, psar: result.psar.series };
@@ -100,10 +114,28 @@ function refreshChart(fit = false) {
     ['Parabolic SAR', usd(result.psar.latest), result.psar.trend],
     ['ZigZag confirmed', usd(result.zigzag.latest?.value)],
   ]);
-  if (rows.length && (fit || !chartReady)) {
-    chart.timeScale().fitContent();
+  if (through !== null) {
+    if (fit || !chartReady) scale.fitContent();
+    else if (follow && through > chartThrough) scale.scrollToPosition(0, false);
     chartReady = true;
   }
+  chartThrough = through;
+  chartForming = Boolean(forming);
+  $('chart-latest').disabled = through === null;
+  renderChartStatus();
+}
+
+function renderChartStatus() {
+  const status = $('chart-status');
+  if (chartThrough === null) {
+    delete status.dataset.stale;
+    status.textContent = feedFor(asset).historyIssue || 'Waiting for candles…';
+    return;
+  }
+  const time = new Date(chartThrough * 1000).toISOString().slice(0, 16).replace('T', ' ');
+  const stale = now() - chartThrough >= 120;
+  status.dataset.stale = String(stale);
+  status.textContent = `Candles through ${time} UTC${stale ? ' · Stale' : chartForming ? ' · Forming' : ''}`;
 }
 
 function renderPositions() {
@@ -151,6 +183,7 @@ function renderPositions() {
 
 function render() {
   if (disposed || !market) return;
+  renderChartStatus();
   const account = accounts.get(marketKey(asset));
   const broker = account?.broker;
   const held = broker?.position;
@@ -321,7 +354,9 @@ async function refreshFeed(symbol, account) {
 }
 
 async function poll() {
-  if (disposed || !market) return;
+  if (disposed || !market || polling) return;
+  clearTimeout(pollTimer);
+  polling = true;
   try {
     if (!store) store = await openWorkbenchStore(indexedDB);
     for (const { key, account } of await store.getAccounts()) accounts.set(key, account);
@@ -331,11 +366,11 @@ async function poll() {
     storageIssue = '';
   } catch (error) {
     storageIssue = `Paper storage unavailable. ${error.message}`;
+  } finally {
+    polling = false;
+    if (!disposed) pollTimer = setTimeout(poll, 5000);
   }
-  if (!disposed) {
-    render();
-    pollTimer = setTimeout(poll, 5000);
-  }
+  if (!disposed) render();
 }
 
 async function editAccount(key, reduce, inEditor = false) {
@@ -391,6 +426,7 @@ function requestEntry(allowStrategy) {
 }
 
 if (market) {
+  if (asset === 'ZEC') voltyView = mountVoltyStatus($('volty'));
   $('market').textContent = `${asset}/USD · ${market.venue === 'JLP' ? 'JLP · JupUSD input' : 'GUM Beta · USDC'}`;
   $('source').textContent = market.venue === 'JLP' ? 'Jupiter Pyth oracle candles and prices' : 'GUM trade candles · GUM sampled mark';
   $('impact-field').hidden = market.venue !== 'JLP';
@@ -460,12 +496,17 @@ if (market) {
       render();
     }
   });
+  document.addEventListener('visibilitychange', () => {
+    if (document.visibilityState === 'visible') void poll();
+  }, { signal: lifetime.signal });
   void poll();
 } else $('status').textContent = 'Unsupported Perps market.';
 
-window.addEventListener('pagehide', () => {
+window.addEventListener('pagehide', event => {
+  if (event.persisted) return;
   disposed = true;
   clearTimeout(pollTimer);
+  voltyView?.close();
   lifetime.abort();
   chart.remove();
-}, { once: true });
+}, { signal: lifetime.signal });

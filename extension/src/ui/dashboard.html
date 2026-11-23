@@ -56,6 +56,12 @@
       </div>
       <p id="workspaceWorkflowStatus" class="note" role="status"></p>
       <section id="controlRoom" class="card control-room" aria-label="Local bot control room"></section>
+      <details class="card" id="zecAdvisor">
+        <summary>Zec advisory</summary>
+        <p id="zecBridgeStatus" class="note" role="status">Checking the local connection…</p>
+        <div class="row"><button id="zecBridgeToggle" type="button" disabled>Enable local connection</button></div>
+        <ol id="zecAdviceList" aria-label="Recent Zec suggestions"></ol>
+      </details>
 
       <section id="view-soltui" class="view" data-view="soltui" hidden>
         <div class="view-head">

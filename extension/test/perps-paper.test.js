@@ -1,5 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
+import { formingChartCandle } from '../src/perps/chart-candles.js';
 import { MARKETS, barrier, carryCost, planPosition, settle } from '../src/perps/model.js';
 import { gumTerms, jlpTerms, parseGumMinutes, parseJlpPrices } from '../src/perps/market.js';
 import { PaperBroker } from '../src/perps/replay.js';
@@ -77,6 +78,19 @@ test('only complete chronological candles reach a strategy and future bars prese
   assert.equal(before.has(7500), true);
   assert.equal(marketPresets('ZEC').filter(x => x.kind === 'archive').length, 62);
   assert.ok(marketPresets('ZEC').some(x => x.step === 60));
+
+  const minutes = [bar(300, 100, 98, 104), bar(360, 105, 102, 108)];
+  const forming = formingChartCandle(minutes, 300, 427);
+  assert.equal(forming.through, 420);
+  const { color, wickColor, ...ohlc } = forming.candle;
+  assert.equal(color, wickColor);
+  assert.deepEqual(ohlc, { time: 300, open: 100, high: 108, low: 98, close: 105 });
+  assert.deepEqual(aggregateMinutes(minutes, 300), []);
+  assert.equal(formingChartCandle([minutes[0], bar(420, 95)], 300, 480), null);
+  assert.equal(formingChartCandle([minutes[0], { ...minutes[1], closed: false }], 300, 427), null);
+  assert.equal(formingChartCandle(minutes, 300, 419), null);
+  assert.equal(formingChartCandle(minutes, 300, 600), null);
+  assert.equal(formingChartCandle(minutes, 60, 427), null);
 });
 
 test('GUM candles bind symbol and minute and Pyth prices bind the feed and clock', () => {

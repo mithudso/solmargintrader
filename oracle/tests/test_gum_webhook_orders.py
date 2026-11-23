@@ -64,7 +64,7 @@ class Venue:
             "allocation_basis": "collateral",
         }
 
-    def submit_leg(self, plan, client_id, *, enabled, deadline):
+    def submit_leg(self, plan, client_id, *, enabled, deadline, timing=None):
         self.last_enabled = enabled
         self.last_deadline = deadline
         self.submissions.append((dict(plan), client_id))
@@ -336,11 +336,28 @@ class GumWebhookOrderTests(unittest.TestCase):
         )
 
     def test_known_unsent_adapter_refusal_does_not_create_a_permanent_halt(self):
-        self.enqueue()
-        self.venue.submit_error = GumError("gum_plan_expired")
-        self.assertEqual(self.process(), "refused")
-        self.assertEqual(self.state()["legs"][0]["state"], "refused")
-        self.assertEqual(self.process(), "idle")
+        for index, (code, expected) in enumerate((
+            ("gum_price_cap_widened", "gum_price_cap_widened"),
+            ("private upstream details", "gum_check_failed"),
+        )):
+            event_id = f"event-{index}"
+            self.enqueue(event_id)
+            self.venue.submit_error = GumError(code)
+            self.assertEqual(self.process(record_timing=True, now=1002), "refused")
+            with database(self.path) as db:
+                row = db.execute("SELECT plan,result FROM signals WHERE event_id=?", (event_id,)).fetchone()
+            state = json.loads(row["plan"])
+            self.assertEqual(state["legs"][0]["state"], "refused")
+            sample, = state["execution_timing"]
+            self.assertEqual(sample["signal_age_at_dispatch_ms"], 2000)
+            self.assertEqual(sample["outcome"], "refused")
+            self.assertEqual(sample["diagnostic"], expected)
+            self.assertIn("submit_preflight_started", sample["elapsed_ms"])
+            self.assertNotIn("post_started", sample["elapsed_ms"])
+            self.assertEqual(json.loads(row["result"]), {
+                "reason": "gum_submission_preflight_refused", "diagnostic": expected,
+            })
+            self.assertEqual(self.process(), "idle")
         self.assertFalse(self.venue.reconciliations)
 
     def test_ambiguous_adapter_error_is_not_a_known_unsent_refusal(self):
@@ -348,6 +365,39 @@ class GumWebhookOrderTests(unittest.TestCase):
         self.venue.submit_error = GumAmbiguous("gum_submission_requires_reconciliation")
         self.assertEqual(self.process(), "unknown")
         self.assertEqual(self.row()["status"], "unknown")
+
+    def test_timing_is_written_before_submission_and_preserved_during_reconciliation(self):
+        self.enqueue()
+
+        def submit(_plan, _client_id, *, enabled, deadline, timing):
+            self.assertTrue(enabled())
+            self.assertEqual(deadline, 1300)
+            self.assertEqual(self.row()["status"], "submitting")
+            prepared, = self.state()["execution_timing"]
+            self.assertEqual(prepared["outcome"], "prepared")
+            self.assertNotIn("post_started", prepared["elapsed_ms"])
+            timing["post_started"] = time.monotonic()
+            raise GumAmbiguous("private upstream body")
+
+        self.venue.submit_leg = submit
+        self.assertEqual(self.process(record_timing=True), "unknown")
+        captured = self.state()["execution_timing"]
+        self.assertEqual(captured[0]["outcome"], "unknown")
+        self.assertIn("post_started", captured[0]["elapsed_ms"])
+        self.assertNotIn("private upstream body", json.dumps(captured))
+        self.assertEqual(self.process(record_timing=True), "complete")
+        self.assertEqual(self.state()["execution_timing"], captured)
+
+    def test_planning_refusal_leaves_timing_without_opening_a_leg(self):
+        self.enqueue()
+        self.venue.plan_error = GumError("gum_below_minimum_order")
+        self.assertEqual(self.process(record_timing=True, now=998), "refused")
+        state = self.state()
+        sample, = state["execution_timing"]
+        self.assertEqual(state["legs"], [])
+        self.assertIsNone(sample["signal_age_at_dispatch_ms"])
+        self.assertEqual(sample["diagnostic"], "gum_below_minimum_order")
+        self.assertEqual(set(sample["elapsed_ms"]), {"planning_started", "finished"})
 
     @unittest.skipUnless(
         importlib.util.find_spec("cryptography"), "optional Jupiter signing extra"
@@ -389,7 +439,9 @@ class GumWebhookOrderTests(unittest.TestCase):
             )
 
         def process():
-            return worker.process_one(self.path, venue, venue.binding, allow_live=True)
+            return worker.process_one(
+                self.path, venue, venue.binding, allow_live=True, record_timing=True,
+            )
 
         self.assertEqual(alert("real-open", "buy"), "received")
         self.assertEqual(process(), "pending")
@@ -425,9 +477,21 @@ class GumWebhookOrderTests(unittest.TestCase):
         self.assertLess(posts[2]["collateralAmount"], posts[0]["collateralAmount"])
         self.assertEqual(len({body["clientOrderId"] for body in posts}), 3)
         reverse = records(self.path)[0]
-        legs = json.loads(reverse["plan"])["legs"]
+        reverse_plan = json.loads(reverse["plan"])
+        legs = reverse_plan["legs"]
         self.assertEqual([leg["state"] for leg in legs], ["filled", "filled"])
         self.assertTrue(legs[0]["receipt"]["settled"])
+        timing = reverse_plan["execution_timing"]
+        self.assertEqual([(t["leg"], t["action"], t["outcome"]) for t in timing],
+                         [(0, "close", "pending"), (1, "open", "pending")])
+        for sample in timing:
+            times = sample["elapsed_ms"]
+            ordered = [times[stage] for stage in (
+                "planning_started", "initial_quote_received", "planning_finished",
+                "submit_preflight_started", "fresh_quote_started", "fresh_quote_received",
+                "fresh_quote_finished", "post_started", "finished",
+            )]
+            self.assertEqual(ordered, sorted(ordered))
         self.assertGreater(Decimal(legs[1]["receipt"]["actual_fee_usdc"]), 0)
         self.assertTrue(all(leg["receipt"]["transactions"] for leg in legs))
 
@@ -569,6 +633,22 @@ class GumWebhookOrderTests(unittest.TestCase):
         self.enqueue()
         checks = iter((True, False))
         self.assertEqual(self.process(enabled=lambda: next(checks)), "refused")
+        self.assertFalse(self.venue.submissions)
+
+    def test_planning_refusal_records_only_allowlisted_diagnostics(self):
+        for index, (error, expected) in enumerate((
+            (GumError("gum_stale_market"), "gum_stale_market"),
+            (GumError("private upstream details"), "gum_check_failed"),
+            (ValueError("private parser details"), "plan_validation_failed"),
+        )):
+            event_id = f"event-{index}"
+            self.enqueue(event_id)
+            self.venue.plan_error = error
+            self.assertEqual(self.process(), "refused")
+            with database(self.path) as db:
+                row = db.execute("SELECT plan,result FROM signals WHERE event_id=?", (event_id,)).fetchone()
+            self.assertEqual(json.loads(row["plan"])["legs"], [])
+            self.assertEqual(json.loads(row["result"]), {"reason": "gum_plan_unavailable", "diagnostic": expected})
         self.assertFalse(self.venue.submissions)
 
     def test_position_changed_after_close_halts_instead_of_closing_again(self):

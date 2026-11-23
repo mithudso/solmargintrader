@@ -28,7 +28,7 @@ CLIs show usage on invalid arguments without echoing their values. MCP help
 remains available before installing the optional protocol SDK. Install Bot
 Manager separately only when using its optional read-only integration.
 
-The package pins the official MCP Python SDK to 1.30.0. The backtester supplies
+The package pins the official MCP Python SDK to 2.3.0. The backtester supplies
 NumPy, Pandas, strategy code and packaged cards. No extension or Bot Manager
 settings change on installation. No persistent service starts on installation.
 
@@ -64,6 +64,9 @@ The default archive is
 `~/.local/share/solmargintrader/oracle/history.sqlite3`. `--archive` precedes the
 command. One owner lock fences each archive. A changed source or strategy/policy
 version requires a new archive; this prevents accidentally pooling evidence.
+The Jupiter recorder binds the ordered base and quote mints and its source together after the first valid reference quote. Keep a separate `--archive` when either mint changes.
+Earlier Jupiter archives that lack ordered mint evidence remain readable.
+Start a new archive for subsequent Jupiter recording.
 The daemon runs until SIGINT/SIGTERM, retries feed failures with bounded backoff,
 and stops on archive errors. Supervise this foreground command with the host's
 service manager if unattended collection is required. `--max-ticks 1` is a bounded
@@ -148,13 +151,14 @@ Tool arguments reject unknown fields; history pagination is bounded to 1,000.
 The version-1 envelope has `schema_version`, `ok`, `data`, `error`, returned as
 both structured content and equivalent JSON text. Public errors use fixed codes.
 
-Resources `oracle://market`, `oracle://predictions`, `oracle://status` support
-`resources/subscribe` and `resources/unsubscribe`. Notifications invalidate a
-snapshot: read the resource again for current content. Changes are coalesced;
-this is not guaranteed delivery of every tick. History provides durable recovery
-using `next_after`. A slow/failed notification drops that client's subscriptions
-after a bounded timeout. Reconnect, re-read and explicitly subscribe again. EOF
-cancels the watcher. No replay or subscription state survives a client process.
+Subscribe to `oracle://market`, `oracle://predictions` or `oracle://status` with
+`subscriptions/listen` on MCP 2026-07-28. In the Python SDK, use
+`Client.listen(resource_subscriptions=[...])`. Earlier clients can use
+`resources/subscribe` and `resources/unsubscribe`. Read the resource after
+subscribing, then read it again when notified that it changed. The watcher
+coalesces updates and only polls resources with active subscriptions. Use
+`next_after` to recover durable history across gaps. If a slow or failed stream
+ends, re-subscribe and read the resource again. EOF cancels the watcher.
 
 ## Archive and lifecycle
 
@@ -252,6 +256,13 @@ Signed orders are price-capped market Fill-or-Kill Actions. No automatic account
 creation, collateral deposit, leverage-preference change or transfer is performed.
 Existing incompatible preferences, unsettled collateral and venue limits refuse
 the order rather than changing the requested allocation.
+
+## Standalone ZEC Volty 25× owner
+
+The [ZEC Volty bot](../docs/JUPITER-ZEC-VOLTY.md) derives its own five-minute
+breakouts from GUM and has a dedicated account policy and journal. Its Chrome
+section reads execution status and verified venue fills. Start it in observe
+mode with `python -m oracle.zec_volty --watch`.
 
 ## TradingView → Coinbase orders
 

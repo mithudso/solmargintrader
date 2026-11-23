@@ -121,6 +121,18 @@ class JupiterFeedTests(unittest.TestCase):
         self.assertEqual(first["provider_block_ids"], second["provider_block_ids"])
         self.assertEqual(second["observed_at"], 101)
 
+    def test_ordered_mints_are_part_of_provider_event_identity(self):
+        canonical = self.feed.poll()
+        swapped = JupiterPriceFeed(
+            clock=lambda: self.now,
+            transport=lambda *args: self.payload,
+            mints={"SOL": USDC_MINT, "USDC": SOL_MINT},
+        ).poll()
+        self.assertEqual(canonical["provider_mints"], {"base": SOL_MINT, "quote": USDC_MINT})
+        self.assertEqual(swapped["provider_mints"], {"base": USDC_MINT, "quote": SOL_MINT})
+        self.assertEqual(canonical["provider_block_ids"], swapped["provider_block_ids"])
+        self.assertNotEqual(canonical["event_id"], swapped["event_id"])
+
     def test_missing_mint_is_unavailable(self):
         del self.payload[USDC_MINT]
         with self.assertRaisesRegex(FeedUnavailable, "instrument_unavailable"):

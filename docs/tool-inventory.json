@@ -72,11 +72,11 @@
     },
     {
       "path": "extension/package.json",
-      "sha256": "e9ac0fa198826e8398db4d24579f906bfcac5b093cc5c77b47cc0a4a0ada7f4a"
+      "sha256": "f087d8ec6c5c75a6bfd6635fe510617c6b4a282c20fed7097795d90c7a381d14"
     },
     {
       "path": "extension/src/core/commands.js",
-      "sha256": "4974b050dcebbd6cbd59d4afee7d845a2f0142de04c5085af7b7b353695fce8e"
+      "sha256": "ba129fa6105f0d571b24e638db4aa190390eba61ca7f0032fc5a7647f91afc44"
     },
     {
       "path": "liquidity/pyproject.toml",
@@ -92,7 +92,7 @@
     },
     {
       "path": "oracle/cli.py",
-      "sha256": "30855ad53d29c7c35900d1e0a752bd4f30214e1337c425f5ff2b4fce6ea76764"
+      "sha256": "f37b41b72862f514f8297aa4f70e9b7a13027067b1ca943337d6f57fcdeb6106"
     },
     {
       "path": "oracle/pyproject.toml",
@@ -100,7 +100,7 @@
     },
     {
       "path": "oracle/server.py",
-      "sha256": "834638111cd12719cc118527e8004ceb0fa0fcdb6f7500609295aaa37c55867b"
+      "sha256": "6b6ee5c2c0c1f5fbeb55790662194d8fd23a6dc209a893eaaa3384f8895e06b0"
     },
     {
       "path": "package.json",
@@ -124,7 +124,7 @@
     },
     {
       "path": "soltui/commands.py",
-      "sha256": "bd4322302a6b9640487af91096497335336b5a4477c1c10aca9b3a4939a60416"
+      "sha256": "33a57ed857d0143e6c471d8b5af27697a6d31d873572b26309c9c21c285bb5ce"
     },
     {
       "path": "soltui/make_icon.py",
@@ -192,6 +192,20 @@
       "source": "extension/package.json",
       "symbol": "scripts.e2e:1000x",
       "declared_command": "node tools/1000x-e2e.mjs",
+      "help_command": null,
+      "side_effects": "script-specific; inspect declared command before invoking",
+      "signing": "not inferred from npm metadata",
+      "ambiguity": "no financial retry inferred",
+      "gate_refs": [
+        "extension/package.json"
+      ]
+    },
+    {
+      "id": "extension/package.json:e2e:zec",
+      "kind": "npm-script",
+      "source": "extension/package.json",
+      "symbol": "scripts.e2e:zec",
+      "declared_command": "node tools/zec-advisory-e2e.mjs",
       "help_command": null,
       "side_effects": "script-specific; inspect declared command before invoking",
       "signing": "not inferred from npm metadata",

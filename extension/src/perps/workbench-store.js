@@ -196,6 +196,7 @@ export async function openWorkbenchStore(indexedDB = globalThis.indexedDB) {
   });
   return {
     getAccounts: () => query(db, 'accounts', store => store.getAll()),
+    getAccount: key => query(db, 'accounts', store => store.get(key)),
     update: async (key, reduce) => update(db, key, reduce),
     advanceCandleModel: async (key, rows, mark, nowMs) => advanceCandleModel(db, key, rows, mark, nowMs),
     async metrics(key) {

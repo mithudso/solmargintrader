@@ -1,0 +1,281 @@
+# ZEC Volty 25× bot
+
+Open either [ZEC long](https://jup.ag/perps/long/USDC-ZEC) or
+[ZEC short](https://jup.ag/perps/short/USDC-ZEC) and find **ZEC Volty 25×** in
+the SolMarginTrader Perps window. The host follows one strategy on both pages.
+Chrome can be closed while the host is running.
+
+The bot uses the ungated breakout from the [frozen Volty study](../research/papers/results/zec_gum_25x_5m_card_1.md).
+The most recent completed five-minute close sets the center of the next
+five-minute window. Add and subtract 1.5 times the mean true range from the last
+ten completed bars to get the upper and lower levels. A fresh mark reaching the
+upper level targets a long. A fresh mark reaching the lower level targets a
+short. The bot waits for a fresh pair of marks in the current window after
+startup or a data gap. It ignores same-side signals while it holds a position.
+
+An opposite signal first closes the current position with a reduce-only order.
+The bot opens the new side after GUM confirms the close, the account is flat and
+collateral has settled, while the signal is still in its five-minute window and the market feed is fresh.
+Each order uses a price-capped Fill-or-Kill Action. An ambiguous submission is reconciled from GUM
+history and is never resent automatically. Take-profit and stop-loss brackets are
+disabled. The original paper return included a stop and a fixed paper size.
+
+## Observe
+
+From a checkout with the Oracle and SolTUI native runtime installed:
+
+```sh
+python -m oracle.zec_volty --watch
+```
+
+Open the ZEC panel and expect **Observe** and a recent update. Once the market
+crosses a level, the signal appears with its timestamp and direction. The
+observe process requires no account or signer and places no orders. The
+SolTUI [native messaging host](../soltui/README.md#the-command-bridge-one-registry-four-surfaces) reads
+status from the local default state directory `$HOME/.soltui/zec-volty`.
+
+## Funded mode
+
+Use a separate GUM parent and subaccount dedicated to this bot. The parent
+needs funded USDC collateral and an explicit **isolated ZEC 25×** leverage
+preference. Enter the owner and account's **public** identifiers, a local
+owner-matching key file path, and the specific size and slippage limits in a
+private JSON policy. Set its permissions to mode 600. The host reads this file
+locally. The Chrome panel has no signer or order controls.
+
+| Policy field | Meaning |
+| --- | --- |
+| `owner` | GUM owner's public address |
+| `trading_account` | Dedicated GUM parent public address |
+| `subaccount_id` | Dedicated subaccount number |
+| `key_file` | Absolute path to the owner's private signer file |
+| `allocation` | Owner-selected percentage in the range 0 to 75, excluding zero |
+| `allocation_basis` | `collateral` or `notional` |
+| `max_slippage_bps` | Owner-selected order price cap in basis points |
+| `max_order_notional_usdc` | Absolute USDC ceiling on each new entry before signing |
+
+GUM collateral is held separately from wallet USDC. Funded mode checks the
+account and venue state and refuses sizes below the venue minimum or outside
+the chosen cap. The venue preference is 25×. Fees, lot rounding, and fill
+price affect realized effective leverage. The notional ceiling uses the quote
+checked before signing. An improved short fill can execute at a higher USD
+price than that quote.
+
+With the private policy path stored in `VOLTY_POLICY`, check the account and
+size without submitting an order:
+
+```sh
+python -m oracle.zec_volty --preflight --config "$VOLTY_POLICY"
+```
+
+Stop the observe process before starting the funded owner:
+
+```sh
+python -m oracle.zec_volty --watch --live --config "$VOLTY_POLICY"
+```
+
+The default journal and status file share the same private state directory.
+Keep the journal when restarting. Create `PAUSE_ENTRIES` in that directory
+to keep the owner in close-only mode. It continues observing marks, reconciling
+orders, and handling strategy-driven reduce-only closes. The status reports
+`telemetry.entries_paused`. A reversal may close an existing position. The
+new opening leg remains blocked after the close settles.
+
+`KILL` pauses order dispatch globally and leaves any open position in place.
+Leave the owner running to reconcile outstanding submissions. Confirm the
+venue position, order history, and journal before using a global pause or
+changing the funded policy.
+
+### Changing the allocation on a funded journal
+
+Allocation is part of the binding used to identify orders. Copy the current
+private policy and change only `allocation` in the candidate. After the
+watcher stops, run the allocation rotation against the existing state directory.
+The command takes both owner locks and requires a flat account, zero open
+orders, no unresolved journal entries and verified fill lineage. It preserves
+the binding and receipts of every earlier event.
+
+```sh
+python -m oracle.zec_volty --rotate-allocation-from "$VOLTY_POLICY" \
+  --config "$VOLTY_NEW_POLICY" --state-dir "$VOLTY_STATE"
+```
+
+Run preflight with the candidate policy and the same state directory before
+restarting the watcher on that policy. The separate opening-notional ceiling
+still applies to every order. If a policy change is blocked on reconciliation,
+a signed, finalized Jupnet instruction failure can establish a rejection even
+when GUM has no order history row. Match the transaction to the original
+account and every committed instruction field before recording that outcome.
+
+## ZEC short-only paper comparison
+
+The prospective cohort starts each book with $1,000 in paper equity and uses
+five-minute ZEC GUM candles, 25× modeled leverage, and $250 of exposure per
+trade. Both candidates are short-only.
+
+| Candidate | Entry and signal exit | Price bracket |
+| --- | --- | --- |
+| Z-score(12) | Enter at z ≥ +2.5. Exit at z ≤ 0. | Take-profit 2%, stop 1.6% |
+| Ungated Volty 10 × 1.5 | The lower level opens the short. The upper level can close it. | Stop 0.8% |
+
+The two strategies use the same public observations. Each runs with baseline
+slippage of 2 basis points per side and stressed slippage of 6 basis points
+per side. Cash is the zero-return comparison. Costs include both fills and
+recorded funding. The cohort has its own SQLite evidence journal so a restart
+can continue the same fixed experiment. The tick learner keeps scoring
+predictions in shadow mode.
+
+From the repository root, use a new private output directory for the first
+launch and reuse that directory to resume the cohort.
+
+```sh
+node extension/tools/zec-gum-live.mjs --prospective --output "$ZEC_PAPER_DIR"
+node extension/tools/lib/zec-gum-funding-gate.mjs --cohort "$ZEC_PAPER_DIR"
+```
+
+The funding review uses the four latest complete Monday-start UTC weeks.
+Each baseline and stress book needs at least 40 exits overall, at least
+three every week, positive aggregate net P&L, at least three profitable
+weeks, no modeled liquidations, and peak-to-trough drawdown within 3%.
+Each week must meet the timely observation and candle coverage rules. A data
+gap during held exposure can disqualify the evidence. An incomplete sample
+reports insufficient evidence.
+
+Qualifying results allow an owner review. A future pilot needs a separate
+decision and a fixed dollar loss budget. The optional sizing estimate uses
+the smaller of the per-trade and remaining daily loss budgets. It accounts
+for fees, slippage, stressed stop gaps, funding, available margin and venue
+limits. A stop remains subject to gap risk.
+
+```sh
+node extension/tools/lib/zec-gum-funding-gate.mjs --size "$ZEC_RISK_INPUT_JSON"
+```
+
+The input JSON takes `riskBudgetUsd`, `dailyRiskRemainingUsd`,
+`availableMarginUsd`, `maxNotionalUsd`, `markUsd`, `leverage`, and
+`stopPct` in percent. Supply conservative `entrySlippageBps`,
+`exitSlippageBps`, `stopGapBps`, aggregate `adverseFundingBps`, and
+`networkUsdPerSide`. The `market` object uses current GUM terms for
+`venue`, `max`, `minOrder`, `maxOrder`, `firstTierCap`, `maxQty`,
+`stepSize`, `baseBps`, `maintenanceBps`, and `liquidationBps`.
+The estimate refuses a stressed stop that reaches the modeled liquidation
+price.
+
+## Verify trading
+
+The **ZEC Volty 25×** panel shows the host heartbeat and the current GUM mark
+with its timestamp, long trigger, short trigger and five-minute window end.
+Trigger levels clear when the observation is stale or the window ends. Open
+**Signal history** for recent decisions, including skipped crossings and expired
+signals. Historical receipts remain visible if the host goes stale. To move the
+panel with clicks or the keyboard, open **Move**, use the arrow buttons, then
+choose **Done**. Escape restores the prior position.
+
+Open **GUM order receipts** for the execution legs. **Acknowledged** means GUM
+accepted the request. **Pending** means the venue outcome is still being
+reconciled. A filled close can still be **awaiting collateral settlement**.
+Use the client order ID to correlate the request before a venue
+order ID is available. A confirmed fill shows the GUM order ID, filled
+quantity, fill price, fee and venue transaction signature.
+Compare the order ID or fill transaction with the history for the same GUM
+subaccount. A stale or unavailable panel cannot establish current execution
+state. The native status command provides the same evidence:
+
+```sh
+soltui call zec.volty.status
+```
+
+### Stalled reconciliation and execution timing
+
+After four distinct fresh marks with the same unresolved leg, the owner clears
+its active signal and re-warms the crossing detector. It keeps polling GUM for
+the committed order. The journal retains the original client order ID, and an
+unknown outcome continues to block new entries. A late close can settle, but
+the old reversal signal has expired and a new position needs a fresh crossing.
+Only distinct fresh marks count toward the reset.
+The live panel shows the count while the owner is checking or blocked. The
+most recent reset remains visible as historical evidence if the host goes
+stale. The native status command returns these fields under
+`telemetry.reconciliation` when the live watcher provides them.
+
+The journal records local planning, fresh-quote and submission timings for
+new attempts. Use the read-only report to see counts, medians, 90th percentiles,
+and refusals where the price cap would have widened.
+
+```sh
+python -m oracle.zec_volty --timing --state-dir "$VOLTY_STATE"
+```
+
+Signal age starts at the venue's mark timestamp. The timing report counts local
+POST attempts. GUM receipts establish acceptance and fills. The report uses
+journal entries with the new timing fields.
+
+### Forward paper comparison
+
+Run the current two-sided entry rules, short-only entries with opposite
+signals still able to close, and a separate close-and-wait policy on the same
+prospective GUM observations. The comparison publishes separate P&L, drawdown,
+and execution counts. It simulates fills and settlement from public market
+data. Keep any live rollout decision tied to fresh after-cost evidence.
+
+The `zec-volty-shared-gum-v2` method rejects regressing or conflicting marks,
+cancels an unsent opening when a newer crossing points the other way, and
+requires a published risk tier that covers the notional. When the runner
+opens an existing v1 journal, it preserves v1 rows and begins a separate v2
+comparison on the next distinct mark. Continuing a v2 journal resumes that
+comparison.
+
+```sh
+python -m oracle.zec_volty_paper --watch --state-dir "$VOLTY_PAPER_STATE"
+```
+
+### Realized performance
+
+The top of the funded Volty panel shows gross P&L, net P&L and profitable
+closed trades in USDC. Gross comes from GUM's realized P&L. Net subtracts
+trading fees and adds signed funding. The win rate is the number of closed
+trades with positive net P&L divided by all closed trades.
+
+Run the read-only snapshot publisher independently of the funded owner.
+On macOS, a separate LaunchAgent can run this command every minute.
+
+```sh
+python -m oracle.zec_volty_performance --config "$VOLTY_POLICY" --state-dir "$VOLTY_STATE"
+```
+
+The publisher matches complete GUM closed-position history to all settled
+entry and exit legs in the dedicated account's journal, including retained
+legs from earlier allocations. Missing, unmatched or still-indexing trades
+leave the previous snapshot and its timestamp in place. The dashboard marks
+it stale after three minutes.
+
+## Tick learning
+
+The watcher saves every distinct fresh GUM mark it accepts, including marks that
+generate no crossing. The private tick database survives a Chrome close or host
+restart. Run the read-only worker from the source checkout with Node 22.16 or
+newer to learn even while Chrome is closed:
+
+```sh
+node extension/tools/zec-volty-learning.mjs --state-dir "$HOME/.soltui/zec-volty"
+```
+
+**Tick learning** shows processed marks and trained, pending, expired and
+capacity counts for each of the six live-Oracle horizons. The worker uses
+the extension's softmax model, price features and frequency baseline. Every
+accepted tick still contributes to the feature history. Each horizon keeps
+one forecast open at a time and updates only after its endpoint is observed.
+An endpoint can arrive up to 10% of the horizon late, capped at 20 seconds.
+Missed endpoints expire. The two Brier scores use the same latest 24 resolved
+windows, or all resolved windows while there are fewer than 24.
+
+The v2 checkpoint starts a new training run at the worker's first start and
+ignores ticks at or before that boundary. The prior checkpoint and raw journal
+are retained. Restarts resume the new checkpoint and replay only unprocessed
+marks from the same run. Training is shadow-only and measures mark-price
+direction. Funded execution follows the separate Volty strategy.
+
+Planning refusals and confirmed preflight refusals before submission record an
+allowlisted diagnostic in the execution journal.
+An older row with only `gum_plan_unavailable` and no legs proves the planner
+stopped before submission. It does not identify which planning check failed.

@@ -1,6 +1,6 @@
 # Every file in this repository
 
-**Generated** from `index/INDEX.json` at commit `d8e6451` (2026-11-18T09:47:28+00:00). 4173 tracked files, 211.9 MB.
+**Generated** from `index/INDEX.json` at commit `2abe1b1` (2026-11-18T17:39:41+00:00). 4191 tracked files, 212.1 MB.
 
 Regenerate with:
 
@@ -15,8 +15,8 @@ python3 index/build.py --check      # fail if the index is stale
 Every entry marks where its description came from, because a generated one-liner and a considered one should not look alike:
 
 - **curated** (34 files) — hand-written purpose and usage, in the `CURATED` table of `index/make_files_doc.py`. Used where extraction cannot give a reader what they need: the engine, the research drivers, the order-placing path, and the files with no prose of their own.
-- **extracted** (3199 files) — the file's own module docstring, JSDoc header, or frontmatter `summary`. Trustworthy here because 780/909 Python modules and 93/222 JS files carry a substantial one. (These counts are computed at generation time, not hardcoded — an earlier revision asserted a frozen ratio and it was wrong within a day as the repo grew.)
-- **derived** (482 files) — shape only, for generated artifacts: a CSV's header and row count, a JSON's keys. Prose for a result file would be invented.
+- **extracted** (3209 files) — the file's own module docstring, JSDoc header, or frontmatter `summary`. Trustworthy here because 785/915 Python modules and 96/230 JS files carry a substantial one. (These counts are computed at generation time, not hardcoded — an earlier revision asserted a frozen ratio and it was wrong within a day as the repo grew.)
+- **derived** (483 files) — shape only, for generated artifacts: a CSV's header and row count, a JSON's keys. Prose for a result file would be invented.
 
 *How to use* is curated where it matters and otherwise inferred from the file's kind — a test gets its runner, a CLI gets `--help`, a module gets its import path.
 
@@ -34,17 +34,17 @@ To *search* rather than browse: `python3 index/search.py "your question"`.
 ## Contents
 
 - [`(root)`](#root) — 99 files
-- [`docs`](#docs) — 169 files
+- [`docs`](#docs) — 171 files
 - [`index`](#index) — 8 files
 - [`backtester`](#backtester) — 1664 files
 - [`research`](#research) — 884 files
-- [`oracle`](#oracle) — 49 files
-- [`extension`](#extension) — 207 files
+- [`oracle`](#oracle) — 53 files
+- [`extension`](#extension) — 217 files
 - [`executor`](#executor) — 54 files
 - [`liquidity`](#liquidity) — 66 files
 - [`botmanager`](#botmanager) — 95 files
 - [`ecosystem`](#ecosystem) — 73 files
-- [`soltui`](#soltui) — 213 files
+- [`soltui`](#soltui) — 215 files
 - [`mongo`](#mongo) — 24 files
 - [`website`](#website) — 99 files
 - [`.github`](#github) — 12 files
@@ -345,7 +345,7 @@ Repository-level entry points and agent instructions. `AGENTS.md` and `CLAUDE.md
 
 #### `README.md`
 
-`doc` · 256 lines · 16,997 B · description: **curated**
+`doc` · 263 lines · 17,318 B · description: **curated**
 
 **Purpose.** Entry point: what the project is, its components, and the honest summary of what the research established.
 
@@ -689,9 +689,9 @@ Repository-level entry points and agent instructions. `AGENTS.md` and `CLAUDE.md
 
 #### `memory.md`
 
-`doc` · 4718 lines · 901,824 B · description: **extracted**
+`doc` · 4757 lines · 906,502 B · description: **extracted**
 
-**Purpose.** Version: 672 Delta: v671 to v672. Record the Perps workbench implementation and ZEC archive coverage. TASK-2647. The frozen three-profile direction run still matches the accepted result byte for byte. The Perps overlay now has the exact five-minute ungated Volty preset and can admit either direction in one net paper position per market.
+**Purpose.** Version: 677 Delta: v676 to v677. Record the Volty execution, native panel and verification. TASK-2660 adds the fixed Volty-10-1.5 breakout owner and Chrome 0.16.0 ZEC section. The host follows fresh GUM marks and closed five-minute candles. It verifies the isolated 25× venue preference and a dedicated account with explicit opening notional and slippage limits.
 
 **Use.** Read it.
 
@@ -769,9 +769,9 @@ Repository-level entry points and agent instructions. `AGENTS.md` and `CLAUDE.md
 
 #### `prompts.md`
 
-`doc` · 4924 lines · 298,430 B · description: **extracted**
+`doc` · 4942 lines · 299,759 B · description: **extracted**
 
-**Purpose.** Version: 306 Delta: v305 to v306. Record the Perps workbench and ZEC history request. Version: 305
+**Purpose.** Version: 308 Delta: v307 to v308. Record the standalone funded Volty request. Version: 307
 
 **Use.** Read it.
 
@@ -877,7 +877,7 @@ Repository-level entry points and agent instructions. `AGENTS.md` and `CLAUDE.md
 
 Curated prose. `ARCHITECTURE.md` explains how the pieces fit, `TESTING.md` is the coverage contract, `SECURITY.md` covers the order-placing surface, and this file indexes everything.
 
-169 files.
+171 files.
 
 #### `docs/API.md`
 
@@ -1017,7 +1017,7 @@ Curated prose. `ARCHITECTURE.md` explains how the pieces fit, `TESTING.md` is th
 
 #### `docs/FILES.md`
 
-`doc` · 40029 lines · 1,923,740 B · description: **extracted**
+`doc` · 40207 lines · 1,930,453 B · description: **extracted**
 
 **Purpose.** Regenerate with: python3 index/build.py all # refresh the index python3 index/make_files_doc.py # rewrite this file
 
@@ -1065,9 +1065,17 @@ Curated prose. `ARCHITECTURE.md` explains how the pieces fit, `TESTING.md` is th
 
 #### `docs/JUPITER-PERPS-PAPER.md`
 
-`doc` · 70 lines · 10,110 B · description: **extracted**
+`doc` · 74 lines · 10,302 B · description: **extracted**
 
 **Purpose.** Open the [SOL JupUSD route](https://jup.ag/perps/long/JupUSD-SOL) with the unpacked SolMarginTrader extension. The floating **Perps paper** panel follows the market and side in the URL. It opens on the ETH, BTC, ZEC and HYPE routes too. The window can be dragged, resized or collapsed. Each market starts with $1,000 of virtual equity. Chrome restores the paper accounts from local IndexedDB.
+
+**Use.** Read it.
+
+#### `docs/JUPITER-ZEC-VOLTY.md`
+
+`doc` · 96 lines · 4,569 B · description: **extracted**
+
+**Purpose.** Open either [ZEC long](https://jup.ag/perps/long/USDC-ZEC) or the SolMarginTrader Perps window. The host follows one strategy on both pages. Chrome can be closed while the host is running.
 
 **Use.** Read it.
 
@@ -1569,7 +1577,7 @@ Curated prose. `ARCHITECTURE.md` explains how the pieces fit, `TESTING.md` is th
 
 #### `docs/operations-registry.json`
 
-`doc` · 4768 lines · 234,837 B · description: **derived**
+`doc` · 4864 lines · 239,528 B · description: **derived**
 
 **Purpose.** Generated JSON object, 8 keys (schema_version, version, delta, generator, scope, limits...).
 
@@ -1665,7 +1673,7 @@ Curated prose. `ARCHITECTURE.md` explains how the pieces fit, `TESTING.md` is th
 
 #### `docs/tool-inventory.json`
 
-`doc` · 654 lines · 25,327 B · description: **derived**
+`doc` · 668 lines · 25,826 B · description: **derived**
 
 **Purpose.** Generated JSON object, 8 keys (schema_version, version, delta, generator, scope, limits...).
 
@@ -2253,7 +2261,7 @@ Curated prose. `ARCHITECTURE.md` explains how the pieces fit, `TESTING.md` is th
 
 #### `docs/zec-agent/README.md`
 
-`doc` · 73 lines · 3,358 B · description: **extracted**
+`doc` · 124 lines · 6,065 B · description: **extracted**
 
 **Purpose.** Zec researches Jupiter GUM ZEC perpetuals, runs offline and forward paper tests, and reviews exit decisions for an identified position. The [agent definition](../../.claude/agents/zec.md) governs both harnesses. The
 
@@ -2264,6 +2272,16 @@ Curated prose. `ARCHITECTURE.md` explains how the pieces fit, `TESTING.md` is th
 `doc` · 26 lines · 8,532 B · description: **extracted**
 
 **Purpose.** Version 1.0.0 · Owner: repo operator · Initial contract You are the repository maintainer and a quantitative trading research engineer. Build **Zec**, a reusable ZEC specialist focused on after-cost asset growth on Jupiter, with explicit loss limits and evidence for every trading claim. Take more research risk through diverse paper experiments. Keep account risk within the owner's actual mandate.
+
+**Use.** Read it.
+
+### `docs/zec-agent/evals/`
+
+#### `docs/zec-agent/evals/agent-zec.eval.json`
+
+`doc` · 139 lines · 6,396 B · description: **derived**
+
+**Purpose.** Generated JSON object, 4 keys (agent, definition_version, trigger_evals, evals).
 
 **Use.** Read it.
 
@@ -27267,11 +27285,11 @@ Drivers that produce the numbers, and the write-ups that quote them. Everything 
 
 Forecast evidence, strategy votes, archives and separately controlled webhook execution.
 
-49 files.
+53 files.
 
 #### `oracle/README.md`
 
-`doc` · 336 lines · 19,202 B · description: **extracted**
+`doc` · 343 lines · 19,520 B · description: **extracted**
 
 **Purpose.** Oracle is a local shadow signal service, defaulting to SOL/USDC. Explicit CLI and MCP process to that instrument. No quote conversion is implied. A single foreground daemon consumes source-labelled observations into a durable historical SQLite archive.
 
@@ -27295,7 +27313,7 @@ Forecast evidence, strategy votes, archives and separately controlled webhook ex
 
 #### `oracle/cli.py`
 
-`code-python` · 353 lines · 13,942 B · description: **extracted**
+`code-python` · 355 lines · 14,134 B · description: **extracted**
 
 **Purpose.** Oracle forecasts, inert queries and explicitly enabled venue webhooks.
 
@@ -27355,11 +27373,11 @@ Forecast evidence, strategy votes, archives and separately controlled webhook ex
 
 #### `oracle/gum_orders.py`
 
-`code-python` · 976 lines · 38,157 B · description: **extracted**
+`code-python` · 1070 lines · 42,764 B · description: **extracted**
 
 **Purpose.** Exact ZEC isolated-perpetual orders through the official GUM JTX Action API. Order messages are constructed locally from checked economics. This module never signs a server-supplied transaction, creates an account, deposits, or retries a write. The optional signer signs bytes and returns 64 Ed25519 signature bytes. The binary layout follows jupnet/gum-perp-sdk 0.2.0 action.rs/request.rs.
 
-**Contents.** Defines `BASE_URL`, `PROGRAM_ID`, `MARKET_ID`, `ALPHABET`, `U64_MAX`, `MAX_RESPONSE`, `TERMINAL`, `class GumError`, `class GumAmbiguous`, `b58encode()` and 13 more.
+**Contents.** Defines `BASE_URL`, `PROGRAM_ID`, `MARKET_ID`, `ALPHABET`, `U64_MAX`, `MAX_RESPONSE`, `TERMINAL`, `class GumError`, `class GumAmbiguous`, `b58encode()` and 14 more.
 
 **Use.** `import oracle.gum_orders`
 
@@ -27375,7 +27393,7 @@ Forecast evidence, strategy votes, archives and separately controlled webhook ex
 
 #### `oracle/gum_webhook_orders.py`
 
-`code-python` · 455 lines · 17,121 B · description: **extracted**
+`code-python` · 458 lines · 17,321 B · description: **extracted**
 
 **Purpose.** Durable GUM position changes; an accepted action is never treated as a fill.
 
@@ -27498,6 +27516,26 @@ Forecast evidence, strategy votes, archives and separately controlled webhook ex
 **Contents.** Defines `_MANDATE_ID`, `_FINGERPRINT`, `_TERMINAL`, `_CREATE_LEDGER`, `class CloseMandate`, `class PositionEvidence`, `_private_ledger()`, `initialize_exit_ledger()`, `_result()`, `class ZecExitGuard`.
 
 **Use.** `import oracle.zec_exit`
+
+#### `oracle/zec_volty.py`
+
+`code-python` · 519 lines · 21,326 B · description: **extracted**
+
+**Purpose.** Run the fixed GUM ZEC Volty strategy behind an explicitly enabled local owner.
+
+**Contents.** Defines `LEVERAGE`, `MAX_POLICY_BYTES`, `STATUS_LIMIT`, `MAX_FILLS_PER_ORDER`, `class LivePolicy`, `_unique_policy_fields()`, `_private_state()`, `_write_status()`, `_read_inbox()`, `_leg_rows()` and 7 more.
+
+**Use.** `python3 oracle/zec_volty.py --help`
+
+#### `oracle/zec_volty_signal.py`
+
+`code-python` · 274 lines · 9,147 B · description: **extracted**
+
+**Purpose.** Public GUM observations and the frozen ZEC five-minute Volty breakout.
+
+**Contents.** Defines `STRATEGY_ID`, `WINDOW_SEC`, `MARK_MAX_AGE_SEC`, `_MARK_MAX_GAP_SEC`, `_MINUTE_SEC`, `_CANDLE_SETTLE_SEC`, `_RANGE_LENGTH`, `_RANGE_MULTIPLIER`, `_WARMUP_SEC`, `_GUM` and 16 more.
+
+**Use.** `import oracle.zec_volty_signal`
 
 ### `oracle/tests/`
 
@@ -27749,17 +27787,37 @@ Forecast evidence, strategy votes, archives and separately controlled webhook ex
 
 **Use.** `python3 -m pytest oracle/tests/test_zec_exit.py -q`
 
+#### `oracle/tests/test_zec_volty.py`
+
+`test` · 320 lines · 14,685 B · description: **extracted**
+
+**Purpose.** Exercise live configuration and durable fills through an inert GUM transport.
+
+**Contents.** Defines `class InertGum`, `class DeployedRunnerTests`.
+
+**Use.** `python3 -m pytest oracle/tests/test_zec_volty.py -q`
+
+#### `oracle/tests/test_zec_volty_signal.py`
+
+`test` · 206 lines · 8,533 B · description: **none**
+
+**Purpose.** _No description available._
+
+**Contents.** Defines `WINDOW`, `candle()`, `candles()`, `class PublicSourceTest`, `class CrossingTest`.
+
+**Use.** `python3 -m pytest oracle/tests/test_zec_volty_signal.py -q`
+
 ---
 
 ## extension
 
 The Chrome extension has a separately armed trading surface. Dry-run is the default, risk rails live in code and fail closed, and a fresh install must not be able to trade.
 
-207 files.
+217 files.
 
 #### `extension/README.md`
 
-`doc` · 841 lines · 57,140 B · description: **extracted**
+`doc` · 848 lines · 57,444 B · description: **extracted**
 
 **Purpose.** A Chrome MV3 extension for the owner's Base and Solana money: **holdings, profit and loss, pool discovery, backtests and strategy changes, swap quotes, and alerts** when a more profitable pool or strategy appears. It also keeps an **experimental grid trading strategy on Jupiter (Solana)** with
 
@@ -27775,7 +27833,7 @@ The Chrome extension has a separately armed trading surface. Dry-run is the defa
 
 #### `extension/package.json`
 
-`config` · 23 lines · 612 B · description: **curated**
+`config` · 24 lines · 662 B · description: **curated**
 
 **Purpose.** Node scripts for the extension's test and tooling surfaces.
 
@@ -27811,11 +27869,11 @@ The Chrome extension has a separately armed trading surface. Dry-run is the defa
 
 #### `extension/e2e/fixtures/fake-soltui-registry.js`
 
-`code-js` · 33 lines · 2,217 B · description: **extracted**
+`code-js` · 50 lines · 3,304 B · description: **extracted**
 
 **Purpose.** A stand-in for soltui's registry with the same envelope shapes as the contract. It exists so the extension's side of the bridge is tested without Python; the real host is exercised in tools/e2e.mjs.
 
-**Contents.** Defines `FAKE_COMMANDS`, `fakeHandle`.
+**Contents.** Defines `FAKE_COMMANDS`, `fakeHandle`, `voltyStatusFixture`.
 
 **Use.** Loaded by the extension; see `extension/manifest.json` for entry points.
 
@@ -27853,7 +27911,7 @@ The Chrome extension has a separately armed trading surface. Dry-run is the defa
 
 #### `extension/e2e/lib/guard.mjs`
 
-`code-js` · 115 lines · 4,193 B · description: **extracted**
+`code-js` · 120 lines · 4,323 B · description: **extracted**
 
 **Purpose.** What the e2e harness may ask the extension to do. The harness drives the real service worker through `chrome.runtime.sendMessage`. It must never arm the extension, change its mode, create a key or cancel an order, so every message goes through this allowlist first.
 
@@ -27883,7 +27941,7 @@ The Chrome extension has a separately armed trading surface. Dry-run is the defa
 
 #### `extension/e2e/lib/soltui-host.mjs`
 
-`code-js` · 89 lines · 4,279 B · description: **extracted**
+`code-js` · 93 lines · 4,565 B · description: **extracted**
 
 **Purpose.** The soltui native messaging host, for the real-browser e2e. Chrome for Testing runs with a throwaway --user-data-dir, and Chrome looks for native messaging host manifests in <user-data-dir>/NativeMessagingHosts first.
 
@@ -28147,7 +28205,7 @@ The Chrome extension has a separately armed trading surface. Dry-run is the defa
 
 #### `extension/src/bg/service-worker.js`
 
-`code-js` · 485 lines · 22,482 B · description: **extracted**
+`code-js` · 505 lines · 23,406 B · description: **extracted**
 
 **Purpose.** MV3 service worker — the extension surface of the command registry. There is no long-lived process here. The worker is woken by an alarm, runs one tick, and is free to die. Nothing may be held in module scope that the next tick depends on: everything durable lives in IndexedDB or chrome.storage.local, and the tick rebuilds its world from those plus the venue's live state.
 
@@ -28162,6 +28220,16 @@ The Chrome extension has a separately armed trading surface. Dry-run is the defa
 **Purpose.** Service-worker transport to the soltui native messaging host. Chrome starts `com.mitchhudson.soltui` (soltui/native_host.py) on demand and speaks length-prefixed JSON with it. This file owns what is Chrome-specific about that: the port, the request id, the per-call timeout and the clean error when the host is not installed.
 
 **Contents.** Defines `INSTALL_HINT`, `closeIfIdle`, `createNativeTransport`, `createOneShotTransport`, `finish`, `open`.
+
+**Use.** Loaded by the extension; see `extension/manifest.json` for entry points.
+
+#### `extension/src/bg/zec-advisory.js`
+
+`code-js` · 202 lines · 8,307 B · description: **none**
+
+**Purpose.** _No description available._
+
+**Contents.** Defines `ADVISORIES_KEY`, `CANDLE_SECONDS`, `ENABLED_KEY`, `GUM`, `HISTORY_LIMIT`, `NATIVE_HOST`, `SNAPSHOT_LIMIT`, `capture`, `connect`, `createZecAdvisory` and 5 more.
 
 **Use.** Loaded by the extension; see `extension/manifest.json` for entry points.
 
@@ -28199,11 +28267,11 @@ The Chrome extension has a separately armed trading surface. Dry-run is the defa
 
 #### `extension/src/core/commands.js`
 
-`code-js` · 1009 lines · 46,531 B · description: **extracted**
+`code-js` · 1055 lines · 48,466 B · description: **extracted**
 
 **Purpose.** The command registry — single source of truth for every action this project can perform. Three surfaces drive this one registry: extension src/bg/service-worker.js (chrome.runtime messages) CLI tools/cli.js (argv) HTTP API tools/api-server.js (POST /v1/<command>) Nothing may be reachable from one surface and not the others.
 
-**Contents.** Defines `ACKS_KEY`, `COMMANDS`, `COMMAND_NAMES`, `CONTEXT_FIELDS`, `DISARM_FIELDS`, `LADDER_FIELDS`, `MAX_ACKS`, `MAX_ALERT_ID`, `PREFS_KEY`, `SCAN_KEY` and 14 more.
+**Contents.** Defines `ACKS_KEY`, `COMMANDS`, `COMMAND_NAMES`, `CONTEXT_FIELDS`, `DISARM_FIELDS`, `LADDER_FIELDS`, `MAX_ACKS`, `MAX_ALERT_ID`, `PREFS_KEY`, `SCAN_KEY` and 15 more.
 
 **Use.** Loaded by the extension; see `extension/manifest.json` for entry points.
 
@@ -28249,7 +28317,7 @@ The Chrome extension has a separately armed trading surface. Dry-run is the defa
 
 #### `extension/src/core/owner-source.js`
 
-`code-js` · 92 lines · 2,631 B · description: **extracted**
+`code-js` · 95 lines · 2,718 B · description: **extracted**
 
 **Purpose.** Versioned source identity covers the complete shipped execution module set.
 
@@ -28284,6 +28352,16 @@ The Chrome extension has a separately armed trading surface. Dry-run is the defa
 **Purpose.** The soltui bridge, transport-free. soltui (Python) owns its own command registry and answers every call with one JSON envelope: {"ok": true, "command": "x.y", "result": <json>, "error": null} {"ok": false, "command": "x.y", "result": null, "error": {"code", "message"}} This module forwards a call to an injected transport and hands that envelope back UNCHANGED, so the extension, the extension's nod
 
 **Contents.** Defines `COMMAND_NAME`, `META_TTL_MS`, `SOLTUI_ERROR`, `SOLTUI_HOST_NAME`, `SOLTUI_TIMEOUT_MS`, `ask`, `class SoltuiTransportError`, `isEnvelope`, `isLongRunning`, `soltuiBuildHash` and 3 more.
+
+**Use.** Loaded by the extension; see `extension/manifest.json` for entry points.
+
+#### `extension/src/core/zec-advice.js`
+
+`code-js` · 29 lines · 1,374 B · description: **none**
+
+**Purpose.** _No description available._
+
+**Contents.** Defines `ZEC_ADVICE_SCHEMA`, `ZEC_ADVICE_TTL_MS`, `ZEC_REMOTE_COMMANDS`, `validZecAdvice`.
 
 **Use.** Loaded by the extension; see `extension/manifest.json` for entry points.
 
@@ -28445,7 +28523,7 @@ The Chrome extension has a separately armed trading surface. Dry-run is the defa
 
 #### `extension/src/perps/panel.css`
 
-`code-web` · 36 lines · 2,210 B · description: **none**
+`code-web` · 44 lines · 2,616 B · description: **none**
 
 **Purpose.** _No description available._
 
@@ -28453,7 +28531,7 @@ The Chrome extension has a separately armed trading surface. Dry-run is the defa
 
 #### `extension/src/perps/panel.html`
 
-`code-web` · 82 lines · 5,434 B · description: **none**
+`code-web` · 91 lines · 5,865 B · description: **none**
 
 **Purpose.** _No description available._
 
@@ -28461,7 +28539,7 @@ The Chrome extension has a separately armed trading surface. Dry-run is the defa
 
 #### `extension/src/perps/panel.js`
 
-`code-js` · 472 lines · 23,339 B · description: **none**
+`code-js` · 476 lines · 23,495 B · description: **none**
 
 **Purpose.** _No description available._
 
@@ -28489,9 +28567,19 @@ The Chrome extension has a separately armed trading surface. Dry-run is the defa
 
 **Use.** Loaded by the extension; see `extension/manifest.json` for entry points.
 
+#### `extension/src/perps/volty-status.js`
+
+`code-js` · 101 lines · 4,724 B · description: **none**
+
+**Purpose.** _No description available._
+
+**Contents.** Defines `MAX_AGE_SECONDS`, `ORDER_STATES`, `OWNER_STATES`, `POLL_MS`, `mountVoltyStatus`, `orderRow`, `refresh`, `render`.
+
+**Use.** Loaded by the extension; see `extension/manifest.json` for entry points.
+
 #### `extension/src/perps/workbench-store.js`
 
-`code-js` · 225 lines · 10,938 B · description: **extracted**
+`code-js` · 226 lines · 11,009 B · description: **extracted**
 
 **Purpose.** Local paper state, immutable fills and online learning share one IndexedDB commit.
 
@@ -28583,7 +28671,7 @@ The Chrome extension has a separately armed trading surface. Dry-run is the defa
 
 #### `extension/src/ui/dashboard.html`
 
-`code-web` · 613 lines · 37,150 B · description: **curated**
+`code-web` · 619 lines · 37,537 B · description: **curated**
 
 **Purpose.** Full-page dashboard shell for open state, ladder rungs and recent ticks. Markup only.
 
@@ -28591,11 +28679,11 @@ The Chrome extension has a separately armed trading surface. Dry-run is the defa
 
 #### `extension/src/ui/dashboard.js`
 
-`code-js` · 215 lines · 8,900 B · description: **extracted**
+`code-js` · 254 lines · 10,438 B · description: **extracted**
 
 **Purpose.** Dashboard shell: hash routing between views, the top bar, the stored scan, and Settings. Views load on first visit and on their own Refresh buttons; Overview paints from the stored scan first so the page is useful before any network answers. Every action goes through a registry command (src/core/commands.js) — this page holds no trading or alert logic of its own.
 
-**Contents.** Defines `ALIASES`, `VIEWS`, `ack`, `current`, `loadOverview`, `loadSettings`, `mountSettings`, `repaint`, `show`.
+**Contents.** Defines `ALIASES`, `VIEWS`, `ack`, `current`, `loadOverview`, `loadSettings`, `mountSettings`, `refreshZec`, `repaint`, `show`.
 
 **Use.** Loaded by the extension; see `extension/manifest.json` for entry points.
 
@@ -29315,6 +29403,16 @@ The Chrome extension has a separately armed trading surface. Dry-run is the defa
 
 **Use.** `node --test extension/test/perps-paper.test.js`
 
+#### `extension/test/perps-volty-status.test.js`
+
+`test` · 86 lines · 4,323 B · description: **none**
+
+**Purpose.** _No description available._
+
+**Contents.** Defines `class Node`, `mount`.
+
+**Use.** `node --test extension/test/perps-volty-status.test.js`
+
 #### `extension/test/perps-workbench-store.test.js`
 
 `test` · 217 lines · 10,661 B · description: **none**
@@ -29535,6 +29633,16 @@ The Chrome extension has a separately armed trading surface. Dry-run is the defa
 
 **Use.** `node --test extension/test/`.
 
+#### `extension/test/zec-transport.test.js`
+
+`test` · 134 lines · 6,049 B · description: **none**
+
+**Purpose.** _No description available._
+
+**Contents.** Defines `setup`, `spawnHost`.
+
+**Use.** `node --test extension/test/zec-transport.test.js`
+
 ### `extension/test/fixtures/`
 
 #### `extension/test/fixtures/1000x-python-parity.json`
@@ -29645,7 +29753,7 @@ The Chrome extension has a separately armed trading surface. Dry-run is the defa
 
 #### `extension/tools/deps.js`
 
-`code-js` · 95 lines · 3,633 B · description: **extracted**
+`code-js` · 98 lines · 3,739 B · description: **extracted**
 
 **Purpose.** Node dependency wiring for the command registry. The CLI and the HTTP API share this so they behave identically — the only difference between the two surfaces is how arguments arrive. Kept out of src/ because it imports node:fs, which would break the extension bundle if it were ever pulled into a browser context.
 
@@ -29665,7 +29773,7 @@ The Chrome extension has a separately armed trading surface. Dry-run is the defa
 
 #### `extension/tools/e2e.mjs`
 
-`code-js` · 633 lines · 34,675 B · description: **extracted**
+`code-js` · 654 lines · 36,025 B · description: **extracted**
 
 **Purpose.** Real-browser end-to-end check. Loads the unpacked extension into Chrome for Testing, drives the real service worker, popup and dashboard over the DevTools pipe, and asserts what a human would otherwise have to click through at chrome://extensions.
 
@@ -29693,13 +29801,63 @@ The Chrome extension has a separately armed trading surface. Dry-run is the defa
 
 **Use.** Loaded by the extension; see `extension/manifest.json` for entry points.
 
+#### `extension/tools/zec-advisor.mjs`
+
+`code-js` · 167 lines · 8,921 B · description: **none**
+
+**Purpose.** _No description available._
+
+**Contents.** Defines `DEFAULT_QUESTION`, `ROOT`, `askCodex`, `askZec`, `main`, `print`, `providerProcess`, `validateResponse`.
+
+**Use.** Loaded by the extension; see `extension/manifest.json` for entry points.
+
+#### `extension/tools/zec-advisory-e2e.mjs`
+
+`code-js` · 320 lines · 17,211 B · description: **extracted**
+
+**Purpose.** Real Chrome, real native messaging, and stubbed public GUM data in a disposable profile.
+
+**Contents.** Defines `API_TOKEN`, `CHROME`, `EXT`, `GUM`, `MARK`, `PAPER_ENTRY`, `gumResponse`, `installFakeProviders`, `verify`.
+
+**Use.** Loaded by the extension; see `extension/manifest.json` for entry points.
+
 #### `extension/tools/zec-gum-live.mjs`
 
-`code-js` · 258 lines · 12,955 B · description: **extracted**
+`code-js` · 258 lines · 12,928 B · description: **extracted**
 
 **Purpose.** Operator-run ZEC paper forward books on public GUM candles and sampled marks.
 
 **Contents.** Defines `class LivePaperSession`, `main`, `resolveProfiles`, `sampleBook`, `visibleDecision`.
+
+**Use.** Loaded by the extension; see `extension/manifest.json` for entry points.
+
+#### `extension/tools/zec-native-host.js`
+
+`code-js` · 175 lines · 6,607 B · description: **extracted**
+
+**Purpose.** Chrome owns this process. Its standard output carries native-message frames only.
+
+**Contents.** Defines `INVALID_REQUEST`, `MAX_CONNECTIONS`, `REPLY_TIMEOUT_MS`, `claimEndpoint`, `main`, `removeDeadSocket`, `runHost`, `shutDown`, `stop`, `verifyEndpointDirectory`.
+
+**Use.** Loaded by the extension; see `extension/manifest.json` for entry points.
+
+#### `extension/tools/zec-native-install.js`
+
+`code-js` · 93 lines · 4,322 B · description: **extracted**
+
+**Purpose.** Register the private Zec advisory host for one Chrome extension ID.
+
+**Contents.** Defines `SOURCE_FILES`, `defaultChromeHostDirectory`, `installZecNativeHost`, `main`, `mkdirPrivate`, `writeAtomic`.
+
+**Use.** Loaded by the extension; see `extension/manifest.json` for entry points.
+
+#### `extension/tools/zec-transport.js`
+
+`code-js` · 117 lines · 4,778 B · description: **extracted**
+
+**Purpose.** Private, per-user IPC for the three Zec advisory commands.
+
+**Contents.** Defines `CHROME_ORIGIN`, `MAX_ZEC_REPLY_BYTES`, `MAX_ZEC_REQUEST_BYTES`, `ZEC_CHROME_UNAVAILABLE`, `ZEC_NATIVE_COMMANDS`, `ZEC_NATIVE_HOST`, `ZEC_REQUEST_TIMEOUT_MS`, `encodeZecFrame`, `isPrivateZecPath`, `isZecRequest` and 5 more.
 
 **Use.** Loaded by the extension; see `extension/manifest.json` for entry points.
 
@@ -32625,7 +32783,7 @@ The local control room, pipeline supervision, telemetry and embedded documentati
 
 The local TUI, browser workspace and service interfaces. Coinbase order execution requires separate explicit arming; Jupiter live submission remains blocked.
 
-213 files.
+215 files.
 
 #### `soltui/JUPITER_ORDER_WIDGET_IMPLEMENTATION_GUIDE.md`
 
@@ -32809,7 +32967,7 @@ The local TUI, browser workspace and service interfaces. Coinbase order executio
 
 #### `soltui/commands.py`
 
-`code-python` · 3590 lines · 178,538 B · description: **extracted**
+`code-python` · 3598 lines · 178,744 B · description: **extracted**
 
 **Purpose.** The soltui command registry: one set of calls for the TUI, CLI, HTTP API and native host. Every action the console can take is a registered `Command`. Every surface goes through `dispatch(name, params, surface)`, which validates parameters, applies the confirm gate, runs the handler, wraps the outcome in the response envelope and appends one line to the call log.
 
@@ -33510,6 +33668,16 @@ The local TUI, browser workspace and service interfaces. Coinbase order executio
 **Contents.** Defines `HASH`, `SIGNATURE`, `WINDOW_DAYS`, `BUDGET_SECONDS`, `_observed()`, `_timestamp()`, `_cdp_query()`, `_rpc()`, `_base()`, `_solana()` and 1 more.
 
 **Use.** `import soltui.wallet_activity`
+
+#### `soltui/zec_volty_status.py`
+
+`code-python` · 136 lines · 4,906 B · description: **extracted**
+
+**Purpose.** Read the local Volty owner's public status snapshot without taking control.
+
+**Contents.** Defines `_MAX_BYTES`, `_MAX_ORDERS`, `_MAX_FILLS`, `_MODES`, `_STATES`, `_ORDER_STATES`, `_SIDES`, `_MAX_TIMESTAMP`, `_member()`, `_identifier()` and 7 more.
+
+**Use.** `import soltui.zec_volty_status`
 
 ### `soltui/bin/`
 
@@ -34702,6 +34870,16 @@ The local TUI, browser workspace and service interfaces. Coinbase order executio
 **Contents.** Defines `ETH`, `xprv()`, `class ValidationTests`, `class SaveAndRedactTests`, `class AddressesCommandTests`, `class KeySourceLabelTests`, `class TuiSettingsTests`. Depends on `soltui`.
 
 **Use.** `python3 -m pytest soltui/tests/test_wallet_settings.py -q`
+
+#### `soltui/tests/test_zec_volty_status.py`
+
+`test` · 74 lines · 3,655 B · description: **extracted**
+
+**Purpose.** Native Volty inspection exports only bounded public evidence.
+
+**Contents.** Defines `class VoltyStatusTests`. Depends on `soltui`.
+
+**Use.** `python3 -m pytest soltui/tests/test_zec_volty_status.py -q`
 
 ### `soltui/tests/fixtures/`
 
@@ -35983,7 +36161,7 @@ CI. Runs the test suite and the figure verifier.
 
 #### `.github/workflows/ci.yml`
 
-`ci` · 522 lines · 24,214 B · description: **curated**
+`ci` · 525 lines · 24,317 B · description: **curated**
 
 **Purpose.** The gate. Runs the Python suite and `research/verify_numbers.py`, so a documented figure that no longer matches its result file fails the build rather than surviving in prose.
 
@@ -37387,9 +37565,9 @@ Session handoff notes, newest first. Prose, not machine-read.
 
 #### `.claude/agents/zec.md`
 
-`doc` · 84 lines · 4,905 B · description: **extracted**
+`doc` · 166 lines · 9,511 B · description: **extracted**
 
-**Purpose.** Research Jupiter GUM ZEC perpetuals, compare long and short strategies, run bounded paper tests, and review exits for an explicitly identified position.
+**Purpose.** Use for Jupiter GUM ZEC perpetuals market snapshots from SolMarginTrader Chrome, ZEC strategy research and paper tests, or exit review for a specific GUM ZEC position.
 
 **Use.** Read it.
 
@@ -37403,7 +37581,7 @@ Session handoff notes, newest first. Prose, not machine-read.
 
 #### `.codex/agents/zec.toml`
 
-`config` · 11 lines · 625 B · description: **none**
+`config` · 15 lines · 934 B · description: **none**
 
 **Purpose.** _No description available._
 
