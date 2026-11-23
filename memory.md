@@ -1,7 +1,7 @@
 # Work continuation
 
-Version: 675
-Delta: v674 to v675. Record the tested Todoist OAuth callback and pending app activation.
+Version: 674
+Delta: v673 to v674. Record the tested Todoist OAuth callback and pending app activation.
 
 ## Todoist workstation installation
 
