@@ -234,6 +234,14 @@ The earlier broad family remains available alongside the five-minute suite. Its 
 |---|---|---|---|
 | llms.txt | ~/.global-ai-hub/llms-concepts/solana-margin-trading-defi.family/llms.txt | Twelve concept packs for building Solana-first lending, looping, perp-short and fast-signal tooling with EVM comparisons. Every unit in the -v4 packs passed the research-gate/v4 evidence gate on 2026-11-06 (708 claims kept of about 5,000 researched; the rest could not be bound to exact source quotes or were not judged SUPPORTED). Educational, not financial advice; leverage can lose more than the stake; private reading aid. | Members, Shared, Facts, Optional |
 
+### Zero-fee perp venues family
+
+Gate-validated venue research for running the Z-score short at zero or near-zero fees. Read it before choosing a venue or re-costing a backtest on one; check each fact's dated source before trading.
+
+| File | Path | Holds | Ask it for |
+|---|---|---|---|
+| llms.txt | ~/.global-ai-hub/llms-concepts/zero-fee-perpetual-futures-venues.family/llms.txt | Eight concept packs plus a topic pack built from 478 claims that passed research-gate/v4 on 2026-11-23: zero-fee venues a bot can trade by API, the condition each zero carries, hidden costs, post-only conversion and US-person eligibility. Educational, not financial or legal advice. | Facts, Members, Sitemap, Resources |
+
 ## Website verification and activation boundaries
 
 The hosted application is separate from the local owner control room. Read
