@@ -1,0 +1,10 @@
+[project]
+name = "oraclebot-io"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.14"
+dependencies = [
+    "mcp>=2.3.0",
+    "openai-agents>=0.25.0",
+]
