@@ -1,20 +1,20 @@
 {
-  "generatedAt": "2026-11-23T11:21:59+00:00",
+  "generatedAt": "2026-11-25T06:40:26+00:00",
   "schemaVersion": 1,
   "repoRoot": "~/dev/solmargintrader",
-  "commit": "9e55e3e",
+  "commit": "7e493635",
   "counts": {
-    "files": 7856,
-    "bytes": 231103646,
+    "files": 7860,
+    "bytes": 231278307,
     "byKind": {
       "strategy-card": 4434,
       "doc": 1451,
       "test": 586,
-      "code-python": 541,
+      "code-python": 542,
       "result": 316,
-      "config": 209,
+      "config": 210,
       "code-js": 174,
-      "other": 67,
+      "other": 69,
       "data": 32,
       "code-web": 19,
       "ci": 12,
@@ -29,7 +29,7 @@
       "docs": 171,
       ".cdo": 163,
       "website": 105,
-      "(root)": 99,
+      "(root)": 103,
       "botmanager": 95,
       "ecosystem": 73,
       "skills": 67,
@@ -3446,6 +3446,24 @@
       "bytes": 344,
       "lines": 10,
       "sha1": "fa3b91a62e9c07c307ce048479ece13a63aa6614",
+      "symbols": [],
+      "imports": [],
+      "internalImports": [],
+      "frontmatter": {}
+    },
+    {
+      "id": ".python-version",
+      "path": ".python-version",
+      "dir": "",
+      "name": ".python-version",
+      "ext": "",
+      "kind": "other",
+      "title": ".python-version",
+      "summary": "",
+      "summarySource": "none",
+      "bytes": 5,
+      "lines": 2,
+      "sha1": "c8285184fa192438f1bbf6bd2e7e0ff717b17375",
       "symbols": [],
       "imports": [],
       "internalImports": [],
@@ -79874,6 +79892,26 @@
       "frontmatter": {}
     },
     {
+      "id": "main.py",
+      "path": "main.py",
+      "dir": "",
+      "name": "main.py",
+      "ext": ".py",
+      "kind": "code-python",
+      "title": "main",
+      "summary": "",
+      "summarySource": "none",
+      "bytes": 90,
+      "lines": 7,
+      "sha1": "7f1de929ecf16a5cfd92c2443aee5c4433763539",
+      "symbols": [
+        "main()"
+      ],
+      "imports": [],
+      "internalImports": [],
+      "frontmatter": {}
+    },
+    {
       "id": "market-graph-geometry-prompt.md",
       "path": "market-graph-geometry-prompt.md",
       "dir": "",
@@ -84586,6 +84624,24 @@
       "frontmatter": {}
     },
     {
+      "id": "pyproject.toml",
+      "path": "pyproject.toml",
+      "dir": "",
+      "name": "pyproject.toml",
+      "ext": ".toml",
+      "kind": "config",
+      "title": "pyproject",
+      "summary": "",
+      "summarySource": "none",
+      "bytes": 206,
+      "lines": 11,
+      "sha1": "3ef33791b7540d8fff8e5c531bd08019f9a09678",
+      "symbols": [],
+      "imports": [],
+      "internalImports": [],
+      "frontmatter": {}
+    },
+    {
       "id": "repo-bootstrap-audit-2026-11-06.md",
       "path": "repo-bootstrap-audit-2026-11-06.md",
       "dir": "",
@@ -84667,9 +84723,9 @@
       "title": "Historical environment export; last committed update: 2026-11-10.",
       "summary": "Generated report. Opens: # Historical environment export; last committed update: 2026-11-10. / # This file is retained for provenance, not supported installation or resolution.",
       "summarySource": "derived",
-      "bytes": 4682,
-      "lines": 221,
-      "sha1": "75c03fb3e353d87f5253342d96879a0911abf40b",
+      "bytes": 4640,
+      "lines": 219,
+      "sha1": "579e5f413c46377279fadd2fdacbc9c1ef1ed586",
       "symbols": [],
       "imports": [],
       "internalImports": [],
@@ -241521,6 +241577,24 @@
       "frontmatter": {}
     },
     {
+      "id": "uv.lock",
+      "path": "uv.lock",
+      "dir": "",
+      "name": "uv.lock",
+      "ext": ".lock",
+      "kind": "other",
+      "title": "uv",
+      "summary": "",
+      "summarySource": "none",
+      "bytes": 174402,
+      "lines": 0,
+      "sha1": "b62a3b0da2e78b84de13f86411fc57f25d0f653b",
+      "symbols": [],
+      "imports": [],
+      "internalImports": [],
+      "frontmatter": {}
+    },
+    {
       "id": "website/.gitignore",
       "path": "website/.gitignore",
       "dir": "website",
@@ -244243,5 +244317,5 @@
       "frontmatter": {}
     }
   ],
-  "textSha256": "6a04d8cec6ea19a5766440d1a3c3ac6c9baad6b3f7e0a60ca50d898709de6170"
+  "textSha256": "c79093794ceb6dce731da2acd24da1781f524313687ac73527ff622f7f10b991"
 }
