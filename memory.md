@@ -1,7 +1,11 @@
 # Work continuation
 
-Version: 719
-Delta: v718 to v719. Record the gated, published zero-fee venue research.
+Version: 720
+Delta: v719 to v720. Retire OpenViking installation pins.
+
+## OpenViking retirement · 2026-11-24
+
+The root requirements listed both OpenViking and its SDK. Neither is imported by the maintained application. Removed the two lines so installing the root requirements cannot install these packages directly. The remaining requirements are byte-for-byte unchanged.
 
 ## Zero-fee perp venue research: complete
 
