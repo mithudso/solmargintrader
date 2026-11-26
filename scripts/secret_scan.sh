@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # Scan for committed credentials with a pinned, checksum-verified gitleaks.
 #
-#   scripts/secret_scan.sh            # working tree (tracked + untracked files)  [default]
+#   scripts/secret_scan.sh            # tracked files at HEAD  [default]
 #   scripts/secret_scan.sh history    # every commit reachable from any ref
 #   scripts/secret_scan.sh staged     # only what `git commit` would record
 #   scripts/secret_scan.sh all        # tree then history (what CI runs)
@@ -45,12 +45,57 @@ resolve_binary() {
 }
 
 bin="$(resolve_binary)"
-common=(--config .gitleaks.toml --redact --no-banner --exit-code 1)
+work="$(mktemp -d)"
+trap 'rm -rf "$work"' EXIT
+policy="$PWD/.gitleaks.toml"
+common=(--config "$policy" --redact --no-banner --exit-code 1 --report-format json)
+
+# Print rule, file and line for each finding (secrets already redacted), so a
+# red CI log says what to fix without anyone re-running the scan.
+summarise() {
+  python3 - "$1" <<'PY'
+import json, sys, collections
+try:
+    rows = json.load(open(sys.argv[1]))
+except (OSError, ValueError):
+    sys.exit(0)
+for r in rows[:300]:
+    where = r.get("File", "")
+    if r.get("Commit"):
+        where = r["Commit"][:8] + ":" + where
+    print(f"  {r.get('RuleID')}\t{where}:{r.get('StartLine')}")
+if len(rows) > 300:
+    print(f"  ... {len(rows) - 300} more")
+by = collections.Counter(r.get("RuleID") for r in rows)
+print("  by rule: " + ", ".join(f"{k}={v}" for k, v in by.most_common()))
+PY
+}
+
+run() {  # run <label> <gitleaks args...>
+  local label="$1"; shift
+  local report="$work/$label.json"
+  if "$bin" "$@" "${common[@]}" --report-path "$report"; then
+    echo "secret_scan: $label clean"
+  else
+    local rc=$?
+    echo "secret_scan: $label findings:" >&2
+    summarise "$report" >&2
+    return "$rc"
+  fi
+}
+
+# The tree scan reads exactly the tracked files at HEAD (git archive), so a
+# local virtualenv, node_modules or .git object store never produces noise.
+scan_tree() {
+  mkdir -p "$work/tree"
+  git archive --format=tar HEAD | tar -x -C "$work/tree"
+  (cd "$work/tree" && run tree dir .)
+}
 
 case "$mode" in
-  tree)    "$bin" dir . "${common[@]}" ;;
-  history) "$bin" git . "${common[@]}" --log-opts="--all" ;;
-  staged)  "$bin" git . "${common[@]}" --staged ;;
-  all)     "$bin" dir . "${common[@]}" && "$bin" git . "${common[@]}" --log-opts="--all" ;;
+  tree)    scan_tree ;;
+  history) run history git . --log-opts="--all" ;;
+  staged)  run staged git . --staged ;;
+  all)     rc=0; scan_tree || rc=$?; run history git . --log-opts="--all" || rc=$?; exit "$rc" ;;
   *) echo "usage: scripts/secret_scan.sh [tree|history|staged|all]" >&2; exit 2 ;;
 esac

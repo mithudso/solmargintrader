@@ -27,13 +27,13 @@ read-only Python analysis commands; those commands do not activate live trading.
 ## Secret scan
 
 `scripts/secret_scan.sh [tree|history|staged|all]` runs gitleaks 8.21.2 with the repository
-policy in `.gitleaks.toml`. The default `tree` scans the checked-out files; `history` scans
+policy in `.gitleaks.toml`. The default `tree` scans the tracked files at HEAD (via `git archive`, so no virtualenv or `.git` noise); `history` scans
 every commit on every ref; `staged` scans only what `git commit` would record; `all` is the
 CI gate (tree, then history). It downloads the release once into
 `${XDG_CACHE_HOME:-~/.cache}/solmargintrader/`, refuses to run on a checksum mismatch, and
 prints findings redacted. Exit 1 is a finding; exit 2 means the scanner could not run.
-Set `GITLEAKS=/path/to/gitleaks` to reuse an install. Locally, `tree` also reads untracked
-directories such as virtualenvs; prefer `staged` before a commit.
+Set `GITLEAKS=/path/to/gitleaks` to reuse an install. On a finding it prints rule, file and line
+for each hit. Run `staged` before a commit.
 
 ## Bounded raw-event capture
 
