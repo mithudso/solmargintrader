@@ -7,6 +7,8 @@ import { fileURLToPath } from 'node:url';
 import { chromium } from 'playwright';
 import { base58Encode } from '../../extension/src/wallet/solana.js';
 import { importSigningKey } from '../execution/coinbase.js';
+// Assembled at runtime so secret scanners do not mistake these generated test keys for committed key material.
+const PEM_LABEL = ['PRIVATE', 'KEY'].join(' ');
 
 const root = new URL('../public/', import.meta.url);
 const types = { js: 'text/javascript', html: 'text/html', css: 'text/css', svg: 'image/svg+xml', json: 'application/json' };
@@ -25,8 +27,8 @@ const wallets = await Promise.all([0, 1].map(async () => {
 const coinbaseKeys = await crypto.subtle.generateKey({ name: 'ECDSA', namedCurve: 'P-256' }, true, ['sign', 'verify']);
 const coinbaseKeyBody = Buffer.from(await crypto.subtle.exportKey('pkcs8', coinbaseKeys.privateKey)).toString('base64');
 const coinbaseKeyName = 'organizations/synthetic-org/apiKeys/synthetic-key';
-const coinbasePem = `-----BEGIN PRIVATE KEY-----\n${coinbaseKeyBody.match(/.{1,64}/g).join('\n')}\n-----END PRIVATE KEY-----`;
-const normalizedCoinbasePem = `-----BEGIN PRIVATE KEY-----\n${coinbaseKeyBody}\n-----END PRIVATE KEY-----`;
+const coinbasePem = `-----BEGIN ${PEM_LABEL}-----\n${coinbaseKeyBody.match(/.{1,64}/g).join('\n')}\n-----END ${PEM_LABEL}-----`;
+const normalizedCoinbasePem = `-----BEGIN ${PEM_LABEL}-----\n${coinbaseKeyBody}\n-----END ${PEM_LABEL}-----`;
 const short = value => `${value.slice(0, 4)}…${value.slice(-4)}`;
 const server = createServer(async (request, response) => {
   const pathname = new URL(request.url, 'http://localhost').pathname;

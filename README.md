@@ -157,6 +157,26 @@ cd extension && npm test                                # 782 tests
 Counts are asserted by CI, so a stale number here fails the build rather than
 misleading a reader. See [docs/TESTING.md](docs/TESTING.md) for what each suite covers.
 
+## Secrets and local configuration
+
+No credential is stored in this repository. Every key, token, RPC URL with a key
+and wallet path comes from your environment or an owner-only file outside git:
+
+1. Copy the names template: `cp .env.example .env` (`.env` and `.env.*` are gitignored;
+   only `.env.example` is tracked).
+2. Fill in only the values the component you run needs, then load them into your
+   shell: `set -a; . ./.env; set +a`. Components read `os.environ` / `process.env`;
+   none of them auto-loads `.env`.
+3. Keep wallet keys in mode-0600 files outside the repository and point at them with
+   the `*_KEY_FILE` / `*_KEYPAIR_PATH` variables. Hosted Worker secrets go through
+   `wrangler secret put` (see [website/README.md](website/README.md)).
+4. Before pushing, run `scripts/secret_scan.sh staged` (or `history` for every commit).
+   The `Secret scan` CI job runs `scripts/secret_scan.sh all` on every pull request.
+
+The scan uses a pinned, checksum-verified gitleaks and the policy in
+[.gitleaks.toml](.gitleaks.toml). Test canaries are allowed by word (`synthetic`,
+`fixture`, `canary`), not by path, so a real key pasted into a test still fails.
+
 ## Three surfaces, one registry
 
 Every extension action lives in `extension/src/core/commands.js`. The Chrome message handler, the
