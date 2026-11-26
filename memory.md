@@ -1,6 +1,11 @@
 # Work continuation
 
 Version: 720
+Delta: v719 to v720. Retire OpenViking installation pins.
+
+## OpenViking retirement · 2026-11-24
+
+The root requirements listed both OpenViking and its SDK. Neither is imported by the maintained application. Removed the two lines so installing the root requirements cannot install these packages directly. The remaining requirements are byte-for-byte unchanged.
 Delta: v719 to v720. Record the repository secret scan and the gitleaks CI gate.
 
 ## Credential-pattern cleanup and secret scan

@@ -1,7 +1,15 @@
 # Prompt history
 
-Version: 329
-Delta: v328 to v329. Record the scheduled continuation of the zero-fee venue research.
+Version: 330
+Delta: v329 to v330. Record the OpenViking retirement request.
+
+## OpenViking retirement · 2026-11-24
+
+> Disable and Remove openviking completely.
+
+> Stop and remove all legacy indexing hooks
+
+> delete openviking completely and totaly from this system and all 3 of my other boxes. let nothing that could activate it or launch it or run it exist on any of the systems.
 
 ## Zero-fee venue research continuation
 
