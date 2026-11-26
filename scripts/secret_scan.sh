@@ -12,7 +12,7 @@
 set -euo pipefail
 cd "$(git rev-parse --show-toplevel)"
 
-VERSION=8.21.2
+VERSION=8.28.0
 mode="${1:-tree}"
 
 resolve_binary() {
@@ -23,10 +23,10 @@ resolve_binary() {
   # Published in gitleaks_${VERSION}_checksums.txt; pinned here so a swapped
   # release asset fails closed instead of running.
   case "$os-$arch" in
-    linux-x64)    sum=5bc41815076e6ed6ef8fbecc9d9b75bcae31f39029ceb55da08086315316e3ba ;;
-    linux-arm64)  sum=654c935542c89f565aabe7bf7c6c500830f116c114f0aeb509d2460c1ac2e6da ;;
-    darwin-x64)   sum=5b42c6e4b1fd693eaeb2b5b7faa5f17a1434299d4deb2de63d4b2efd7c753128 ;;
-    darwin-arm64) sum=cad3de5dc9a4d5447d967a70a4d49499c557f04db028274cc324f9ff983f6502 ;;
+    linux-x64)    sum=a65b5253807a68ac0cafa4414031fd740aeb55f54fb7e55f386acb52e6a840eb ;;
+    linux-arm64)  sum=eff65261156100e5d94a6b3dec313d532fddfe19ae1590bf7a2b4f2699128356 ;;
+    darwin-x64)   sum=edf5a507008b0d2ef4959575772772770586409c1f6f74dabf19cbe7ec341ced ;;
+    darwin-arm64) sum=d942f3ad147250c9edbaab3fed9e482f98d3b59ba10ae97b8d75647e3ade492c ;;
   esac
   local dir="${XDG_CACHE_HOME:-$HOME/.cache}/solmargintrader/gitleaks-$VERSION"
   local bin="$dir/gitleaks"
@@ -48,7 +48,8 @@ bin="$(resolve_binary)"
 work="$(mktemp -d)"
 trap 'rm -rf "$work"' EXIT
 policy="$PWD/.gitleaks.toml"
-common=(--config "$policy" --redact --no-banner --exit-code 1 --report-format json)
+common=(--config "$policy" --redact --no-banner --exit-code 1 --report-format json \
+  --max-target-megabytes 2)  # zipped research artefacts and data dumps hold no config
 
 # Print rule, file and line for each finding (secrets already redacted), so a
 # red CI log says what to fix without anyone re-running the scan.

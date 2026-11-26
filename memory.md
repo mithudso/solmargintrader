@@ -15,10 +15,17 @@ rotating and history was not rewritten.
 The likeliest trigger was the literal PEM header in five website test files; those now
 assemble the label at runtime (`PEM_LABEL`). Added `.gitleaks.toml` (default rules plus a
 word-based canary allowlist), `scripts/secret_scan.sh [tree|history|staged|all]` (pinned,
-checksum-verified gitleaks 8.21.2) and `.github/workflows/secret-scan.yml` (runs `all`,
+checksum-verified gitleaks 8.28.0) and `.github/workflows/secret-scan.yml` (runs `all`,
 full history). README, SECURITY.md and docs/SCRIPTS.md describe the `.env` setup and scan.
-Verified: affected website Node tests (67) and `website.engine.test_research` pass. The
-gitleaks binary was not run in the cloud session; the CI job is its first run.
+Verified: affected website Node tests (67) and `website.engine.test_research` pass, and
+`scripts/secret_scan.sh all` is clean locally (tree about 3 s, history about 7 min). The policy
+was tuned against gitleaks' real findings: file-hash manifests, git SHAs, Solana public
+keys, EVM addresses, saved GitHub/jup.ag page tokens, prose and runtime PEM templates. Generated
+indexes and the wiki bundle are path-allowlisted, and blobs over 2 MB are skipped; without that,
+the first CI history scan ran 48 minutes and died. A planted AWS and Stripe key in a
+`tests/` file are still caught. Gitleaks has no default rule for `user:pass@host` URLs.
+`targetRules` in a global allowlist did not apply in 8.28.0, so rule-scoped allowlists use
+`[[rules]] id=…` plus `[[rules.allowlists]]`.
 
 Version: 719
 Delta: v718 to v719. Record the gated, published zero-fee venue research.
