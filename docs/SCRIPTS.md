@@ -33,7 +33,8 @@ CI gate (tree, then history). It downloads the release once into
 `${XDG_CACHE_HOME:-~/.cache}/solmargintrader/`, refuses to run on a checksum mismatch, and
 prints findings redacted. Exit 1 is a finding; exit 2 means the scanner could not run.
 Set `GITLEAKS=/path/to/gitleaks` to reuse an install. Blobs over 2 MB and generated indexes
-are skipped (see `.gitleaks.toml`); `history` takes about 7 minutes. On a finding it prints rule, file and line
+are skipped (see `.gitleaks.toml`); `history` takes about 7 minutes. Beyond the default rules,
+the policy adds `url-embedded-credentials` for `scheme://user:password@host` values. On a finding it prints rule, file and line
 for each hit. Run `staged` before a commit.
 
 ## Bounded raw-event capture

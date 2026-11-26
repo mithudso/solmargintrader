@@ -8,6 +8,18 @@ title = "solmargintrader"
 [extend]
 useDefault = true
 
+# Credentials embedded in a URL (scheme://user:password@host), such as a keyed RPC
+# endpoint or database URI. gitleaks has no default rule for this. Placeholders such as
+# <password>, ${VAR} and {secret} are excluded by the character class, and the entropy
+# floor drops words like "password".
+[[rules]]
+id = "url-embedded-credentials"
+description = "Password or token embedded in a URL"
+regex = '''[A-Za-z][A-Za-z0-9+.-]{1,20}://[^\s:/@'"`<>{}$]{1,64}:([^\s:/@'"`<>{}$]{8,256})@[A-Za-z0-9.-]+'''
+secretGroup = 1
+entropy = 3.0
+keywords = ["://"]
+
 # Synthetic canaries: redaction tests must feed secret-shaped strings through logs,
 # URLs and errors to prove they are stripped.
 [[allowlists]]

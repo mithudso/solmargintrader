@@ -23,7 +23,10 @@ was tuned against gitleaks' real findings: file-hash manifests, git SHAs, Solana
 keys, EVM addresses, saved GitHub/jup.ag page tokens, prose and runtime PEM templates. Generated
 indexes and the wiki bundle are path-allowlisted, and blobs over 2 MB are skipped; without that,
 the first CI history scan ran 48 minutes and died. A planted AWS and Stripe key in a
-`tests/` file are still caught. Gitleaks has no default rule for `user:pass@host` URLs.
+`tests/` file are still caught. A custom `url-embedded-credentials` rule covers
+`scheme://user:pass@host`; it skips `<…>`, `${…}`, `{…}` placeholders and low-entropy
+words. The five `scripts/referral_scripts/*.ts` files were saved GitHub HTML pages, so they
+are renamed to `.html`. Only historical `.cdo` review ledgers name the old paths.
 `targetRules` in a global allowlist did not apply in 8.28.0, so rule-scoped allowlists use
 `[[rules]] id=…` plus `[[rules.allowlists]]`.
 
