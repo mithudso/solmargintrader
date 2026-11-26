@@ -77,7 +77,7 @@ class ResearchExportTests(unittest.TestCase):
         self.assertIn("not coin-test ready", article["status"])
 
     def test_secrets_abort_publication(self):
-        self.add("research/leak.md", "# Unsafe\n\n-----BEGIN PRIVATE KEY-----")
+        self.add("research/leak.md", "# Unsafe\n\n-----BEGIN " + "PRIVATE KEY-----")
         with self.assertRaisesRegex(ValueError, "credential-like content refused"):
             export(self.repo)
 

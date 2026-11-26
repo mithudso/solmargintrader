@@ -24,6 +24,17 @@ read-only Python analysis commands; those commands do not activate live trading.
 | `executor` | [Executor](../executor/README.md), [execution rules](../executor/CLAUDE.md) | Dry-run by default; exact verifier, rails and unknown-send journal guard the separate live swap path |
 | `aero-lp` | [Archived liquidity](../liquidity/README.md), [archive constraints](../liquidity/CLAUDE.md) | Retained CLI only; daemon/scout stay disabled and killed without a new explicit owner request |
 
+## Secret scan
+
+`scripts/secret_scan.sh [tree|history|staged|all]` runs gitleaks 8.21.2 with the repository
+policy in `.gitleaks.toml`. The default `tree` scans the checked-out files; `history` scans
+every commit on every ref; `staged` scans only what `git commit` would record; `all` is the
+CI gate (tree, then history). It downloads the release once into
+`${XDG_CACHE_HOME:-~/.cache}/solmargintrader/`, refuses to run on a checksum mismatch, and
+prints findings redacted. Exit 1 is a finding; exit 2 means the scanner could not run.
+Set `GITLEAKS=/path/to/gitleaks` to reuse an install. Locally, `tree` also reads untracked
+directories such as virtualenvs; prefer `staged` before a commit.
+
 ## Bounded raw-event capture
 
 `scripts/capture_market.py` is a separate public-feed recorder and dedicated MongoDB

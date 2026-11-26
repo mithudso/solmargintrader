@@ -1,5 +1,25 @@
 # Work continuation
 
+Version: 720
+Delta: v719 to v720. Record the repository secret scan and the gitleaks CI gate.
+
+## Credential-pattern cleanup and secret scan
+
+2026-11-26, branch `claude/project-thread-u9xj0t`. A code indexer refused the repo for a
+"credential pattern". A regex scan of HEAD and all 572 commits on every ref found no live
+credential: every hit is a synthetic redaction canary (`synthetic`, `fixture`, `canary`,
+`*.invalid` hosts) or a PEM header wrapped around a key generated at test runtime. The
+Base58 88-character strings are public Solana transaction signatures. Nothing needs
+rotating and history was not rewritten.
+
+The likeliest trigger was the literal PEM header in five website test files; those now
+assemble the label at runtime (`PEM_LABEL`). Added `.gitleaks.toml` (default rules plus a
+word-based canary allowlist), `scripts/secret_scan.sh [tree|history|staged|all]` (pinned,
+checksum-verified gitleaks 8.21.2) and `.github/workflows/secret-scan.yml` (runs `all`,
+full history). README, SECURITY.md and docs/SCRIPTS.md describe the `.env` setup and scan.
+Verified: affected website Node tests (67) and `website.engine.test_research` pass. The
+gitleaks binary was not run in the cloud session; the CI job is its first run.
+
 Version: 719
 Delta: v718 to v719. Record the gated, published zero-fee venue research.
 

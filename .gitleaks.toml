@@ -1,0 +1,29 @@
+# Secret-scan policy for scripts/secret_scan.sh and the Secret scan CI job.
+#
+# Start from gitleaks' default rules, then allow only the synthetic canaries the
+# redaction tests deliberately feed through logs, URLs and errors. Those tests
+# exist to prove a secret is stripped, so they must contain secret-shaped
+# strings. Allowing by word rather than by path keeps a real key pasted into a
+# test file visible to the scan.
+title = "solmargintrader"
+
+[extend]
+useDefault = true
+
+[allowlist]
+description = "Synthetic redaction canaries and documentation placeholders"
+stopwords = [
+  "synthetic",
+  "fixture",
+  "canary",
+  "placeholder",
+  "your_private",
+  "audit-password",
+  "hunter2",
+  "sk-private-key-value",
+  "must-not-appear",
+]
+regexes = [
+  # Reserved test hosts (RFC 2606/6761) can never be a live endpoint.
+  '''(?i)[a-z0-9.-]+\.(invalid|example|test)\b''',
+]
