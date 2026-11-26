@@ -5119,3 +5119,12 @@ Answer to “Which display loses its learning/results when you change or reset i
 ```
 
 The supplied screenshots identify Minute-close Oracle — six horizons, and Live Oracle — direction estimates. Both show untrained counts. The latter includes SOL and the separate blocked Auto Long / Short session. Extend durable per-coin/horizon continuity and disk backup to both browser learners. Do not claim their IndexedDB data is absent from these screenshots alone.
+
+## Remove credential patterns from source — 2026-11-26
+
+Started from the project setup card (owner clicked Start; task text written by the project session):
+
+```text
+In https://github.com/mithudso/solmargintrader, a code indexer refused the repo with 'A credential pattern was found in the source.' Scan the repo (and git history) for hardcoded secrets: API keys, exchange keys, private keys, RPC URLs with tokens. Move each to environment variables loaded from a gitignored .env, add a .env.example with placeholder names, update README with setup steps, and add a gitleaks or similar secret-scan CI check. Open a PR. Done when no secret pattern remains in HEAD and CI passes. If a live secret was ever committed, say so clearly in the PR so Mitch can rotate it; do not rewrite history without asking.
+```
+

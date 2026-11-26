@@ -1,0 +1,99 @@
+# Secret-scan policy for scripts/secret_scan.sh and the Secret scan CI job.
+#
+# Start from gitleaks' default rules, then allow only shapes that cannot be a
+# credential. Every allowlist below names a value shape or a generated file, never
+# a source directory, so a real key pasted into code or a test still fails.
+title = "solmargintrader"
+
+[extend]
+useDefault = true
+
+# Credentials embedded in a URL (scheme://user:password@host), such as a keyed RPC
+# endpoint or database URI. gitleaks has no default rule for this. Placeholders such as
+# <password>, ${VAR} and {secret} are excluded by the character class, and the entropy
+# floor drops words like "password".
+[[rules]]
+id = "url-embedded-credentials"
+description = "Password or token embedded in a URL"
+regex = '''[A-Za-z][A-Za-z0-9+.-]{1,20}://[^\s:/@'"`<>{}$]{1,64}:([^\s:/@'"`<>{}$]{8,256})@[A-Za-z0-9.-]+'''
+secretGroup = 1
+entropy = 3.0
+keywords = ["://"]
+
+# Synthetic canaries: redaction tests must feed secret-shaped strings through logs,
+# URLs and errors to prove they are stripped.
+[[allowlists]]
+description = "Synthetic redaction canaries and documentation placeholders"
+stopwords = [
+  "synthetic", "fixture", "canary", "placeholder", "your_private",
+  "audit-password", "hunter2", "sk-private-key-value", "must-not-appear",
+]
+
+# Public values that only look random: content hashes in manifests ("file": "<sha>"),
+# Solana public keys and mints, EVM addresses (20 bytes, never a 32-byte key), RFC
+# 2606/6761 test hosts, and idempotency keys in billing tests.
+[[allowlists]]
+description = "Public identifiers and hashes"
+regexTarget = "line"
+regexes = [
+  '''"[^"]+\.[A-Za-z0-9]{1,5}"\s*:\s*"[0-9a-f]{40,64}"''',
+  '''"(source_head|head|commit|sha|git_sha)"\s*:\s*"[0-9a-f]{40}"''',
+  '''"(pubkey|ammKey|mint|inputMint|outputMint|address|owner|programId)"\s*:\s*"[1-9A-HJ-NP-Za-km-z]{32,44}"''',
+  '''pubkeyBs58''',
+  '''\b0x[0-9a-fA-F]{40}\b"''',
+  '''(?i)[a-z0-9.-]+\.(invalid|example|test)\b''',
+  '''idempotencyKey:\s*'[a-z0-9-]+'"?''',
+  # Saved public GitHub pages (logged-out viewer): uploadToken is a per-page form
+  # token, not an account credential.
+  '''"currentUser":null,"uploadToken"''',
+  '''"auth_hydro_click_hmac":"''',
+  # Saved public jup.ag page: Cloudflare analytics beacon token and HTTP etag.
+  '''data-cf-beacon='\{"version":"[0-9.]+","token":"''',
+  '''http-equiv="etag" content="''',
+]
+
+# Prose the generic rule mistakes for a value: lowercase words joined by '/' or
+# '-' ("bounded/trickled", "market/percentage") or a word with a short number
+# ("exact128byte"). A real key carries mixed case or long digit runs.
+[[allowlists]]
+description = "Prose fragments"
+regexes = [
+  '''^[a-z]+([/-][a-z]+)+$''',
+  '''^[a-z]+[0-9]{1,4}[a-z]+([/-][a-z]+)*$''',
+  '''^acknowledgments?$''',
+]
+
+# Generated derivatives of tracked source (search indexes, wiki bundle, file cards,
+# llms digests, saved page source). Each is rebuilt from files the scan already reads,
+# so a secret there is also caught at its origin; their hundreds of 10 MB revisions
+# made a full-history scan run for most of an hour.
+[[allowlists]]
+description = "Generated derivatives"
+paths = [
+  '''(^|/)index/.*\.json(\.gz)?$''',
+  '''(^|/)ecosystem/wiki_content/''',
+  '''(^|/)docs/FILES\.md$''',
+  '''(^|/)llms[^/]*\.txt$''',
+  '''(^|/)website/public/research/catalog\.json$''',
+]
+
+# Rule-scoped allowlists (a [[rules]] entry with only an id extends the default
+# rule; global `targetRules` did not apply in 8.28.0 when tested on 2026-11-26).
+
+# Bare 40-hex values are git commit SHAs here ("engine `ad6f…`", "source_head").
+# Scoped to the one rule that fires on them, so prefixed sgp_ tokens and every
+# other 40-hex rule stay strict.
+[[rules]]
+id = "sourcegraph-access-token"
+[[rules.allowlists]]
+description = "Git commit SHAs"
+regexes = ['''^[0-9a-f]{40}$''']
+
+# A PEM template wrapped around a key generated at test runtime (`${body}`), as
+# website tests did before 2026-11-26. A literal key body has no interpolation.
+[[rules]]
+id = "private-key"
+[[rules.allowlists]]
+description = "Runtime-generated PEM templates"
+regexTarget = "match"
+regexes = ['''\$\{''']

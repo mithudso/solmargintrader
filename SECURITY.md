@@ -94,8 +94,13 @@ control of your own. It has no rate limiting, no audit log, and no multi-user co
 `jup.ag/` reference dump. Before committing, confirm no key material is staged:
 
 ```bash
-git diff --cached | grep -iE 'BS58_PRIVATE_KEY|x-api-key|SMT_API_TOKEN|passphrase|seed'
+scripts/secret_scan.sh staged    # pinned gitleaks over exactly what will be committed
+scripts/secret_scan.sh history   # every commit on every ref
 ```
+
+The `Secret scan` CI job runs both tree and history scans on every pull request.
+If it ever reports a real credential in history, rotate that credential first;
+removing it from HEAD does not un-publish it.
 
 ## Reporting
 
