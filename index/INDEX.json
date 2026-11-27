@@ -1,11 +1,11 @@
 {
-  "generatedAt": "2026-11-27T09:14:32+00:00",
+  "generatedAt": "2026-11-27T09:22:53+00:00",
   "schemaVersion": 1,
   "repoRoot": "~/dev/solmargintrader",
-  "commit": "811b090",
+  "commit": "32fd673",
   "counts": {
     "files": 8020,
-    "bytes": 269858456,
+    "bytes": 269859561,
     "byKind": {
       "strategy-card": 4434,
       "doc": 1453,
@@ -79973,11 +79973,11 @@
       "ext": ".md",
       "kind": "doc",
       "title": "Work continuation",
-      "summary": "Version: 721 Delta: v720 to v721. Record the HYPE analysis: the ZEC suite repeated on HYPE. Request: `prompts.md` v331. Result: `research/papers/results/hype_suite_20261127.md`.",
+      "summary": "Version: 722 Delta: v721 to v722. Record the HYPE analysis as merged (PR #368), its CI record and the lost HYPE npz caches. PR #368 squash-merged to master as `32fd673`. Its last CI run on `d8a4d25` was green. Report:",
       "summarySource": "opening-prose",
-      "bytes": 947873,
-      "lines": 5318,
-      "sha1": "94d34712d33ddf57819848db3b5a530cf5c1d24a",
+      "bytes": 948978,
+      "lines": 5330,
+      "sha1": "d94deed6072bcd3bc23fa03e23256b343799bf68",
       "symbols": [],
       "imports": [],
       "internalImports": [],
@@ -247294,5 +247294,5 @@
       "frontmatter": {}
     }
   ],
-  "textSha256": "3454901d7c9c0d72cf49b7abef908454d97f7e8457dcb642e0a5eefdaa6e410c"
+  "textSha256": "82d18dfa308e45b1c96dd18d5f9f11b3873eda68e323bef83a2795ff6174cb63"
 }
