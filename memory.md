@@ -1,7 +1,18 @@
 # Work continuation
 
-Version: 724
-Delta: v723 to v724. Add the 31-day Binance HYPE study; the best strategy family flips with the window.
+Version: 725
+Delta: v724 to v725. Add `ecosystem/hype_forward.py`, a finite paper-only forward test of the 1h RSI(14) 30/55 dip buyer on Binance HYPEUSDT.
+
+## HYPE forward paper test (1h RSI dip buyer) · 2026-11-27
+
+Target: the forward trial that `research/papers/results/hype_study_2026-11-27.md` named as the lead candidate. The owner answered yes to the 14-day default.
+Done: `ecosystem/hype_forward.py` plus `ecosystem/tests/test_hype_forward.py` (58 tests, Ruff 0.17.4 clean). Frozen rule RSI(14), buy below 30, exit above 55, long or cash, no leverage, no funded order, closed Binance HYPEUSDT 1h candles.
+Five paper accounts: candidate at fill delay 1 (zero-latency study convention) and 2 (one hour late) crossed with 10 and 25 bps fees, plus buy-and-hold. Finite by construction: 336 closed bars after activation, hard expiry six bars later (two consecutive polls), exits 0 so launchd does not restart a finished sample.
+Integrity: atomic init, immutable candle table, whole-core implementation hash (a changed engine blocks the run), a bar counts as closed only on both the local and the venue (HTTP Date) clock, skew over 60 s refused, source gap ends the sample and is never backfilled, a late poll cannot block a complete sample.
+Parity: the engine over the last 744 hourly bars reproduces the study's +15.7% at 10 bps. cdo ran 5 iterations (High findings 4, 3, 0, 0, 1; the last was fixed and covered by a regression test, not re-audited) and exited on the iteration cap.
+Not a validated edge: the study found none. Read the result against holding and against the fee-25 and fill-2 accounts, and keep 14 days short of any claim.
+Remaining: install into a stable venv, run `init --owner`, `install-service`; read `status` at expiry and write the result up.
+
 
 ## HYPE study, 31-day Binance window (third HYPE study) · 2026-11-27
 

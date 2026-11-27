@@ -5150,3 +5150,11 @@ In https://github.com/mithudso/solmargintrader, a code indexer refused the repo 
 Perform the same suite of analysis done for ZEC, but for HYPE coin, what is the best performing strategies? What patterns, support, etc exist for it.
 ```
 
+
+## HYPE forward paper test, go-ahead — 2026-11-27
+
+```text
+Ye=s go ahead
+```
+
+Context: reply to the offer to start a paper-only forward test of the 1h RSI dip buyer from the HYPE study (default: a finite 14-day run on the paper broker, no funded orders).

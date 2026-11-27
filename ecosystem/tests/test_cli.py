@@ -46,6 +46,7 @@ class CliTests(unittest.TestCase):
                 "ecosystem.zec_forward",
                 "ecosystem.meta_forward",
                 "ecosystem.volty_forward",
+                "ecosystem.hype_forward",
             ):
                 with self.subTest(module=module):
                     result = subprocess.run(
