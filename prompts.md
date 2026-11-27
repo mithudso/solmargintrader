@@ -5158,3 +5158,10 @@ Ye=s go ahead
 ```
 
 Context: reply to the offer to start a paper-only forward test of the 1h RSI dip buyer from the HYPE study (default: a finite 14-day run on the paper broker, no funded orders).
+
+
+## HYPE paper for the oraclebot website — 2026-11-27
+
+```text
+Write a paper for the oraclebot website with your findings and walk forward tests.
+```
