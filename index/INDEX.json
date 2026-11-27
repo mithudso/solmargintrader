@@ -1,17 +1,17 @@
 {
-  "generatedAt": "2026-11-27T12:01:50+00:00",
+  "generatedAt": "2026-11-27T12:51:05+00:00",
   "schemaVersion": 1,
   "repoRoot": "~/dev/solmargintrader",
-  "commit": "372552b",
+  "commit": "ef5b284",
   "counts": {
-    "files": 8065,
-    "bytes": 271482409,
+    "files": 8068,
+    "bytes": 271576719,
     "byKind": {
       "strategy-card": 4434,
       "doc": 1454,
       "test": 590,
-      "code-python": 550,
-      "result": 353,
+      "code-python": 551,
+      "result": 355,
       "config": 275,
       "code-js": 174,
       "other": 150,
@@ -22,7 +22,7 @@
       "code-shell": 5
     },
     "byTopDir": {
-      "research": 4730,
+      "research": 4733,
       "backtester": 1664,
       "extension": 226,
       "soltui": 215,
@@ -60,7 +60,7 @@
       "archive": 1,
       "tradingskilllist": 1
     },
-    "withSummary": 7466
+    "withSummary": 7469
   },
   "files": [
     {
@@ -80115,11 +80115,11 @@
       "ext": ".md",
       "kind": "doc",
       "title": "Work continuation",
-      "summary": "Version: 726 Delta: v725 to v726. The HYPE 1h RSI forward paper test is live (PR 372 merged); record its owner, paths and dates. Target: the forward trial that `research/papers/results/hype_study_2026-11-27.md` named as the lead candidate. The owner answered yes to the 14-day default.",
+      "summary": "Version: 727 Delta: v726 to v727. Publish the HYPE walk-forward and forward-trial paper for the website; add the walk-forward runner. Target: a paper for the oraclebot.io research journal with the HYPE findings and the walk-forward tests.",
       "summarySource": "opening-prose",
-      "bytes": 956265,
-      "lines": 5369,
-      "sha1": "e697c116375d74db0020f992a6beddba8727a49a",
+      "bytes": 958124,
+      "lines": 5378,
+      "sha1": "37a5e9699ba50ca41cef8d1f75ec748b2b13d59c",
       "symbols": [],
       "imports": [],
       "internalImports": [],
@@ -84793,9 +84793,9 @@
       "title": "Prompt history",
       "summary": "Version: 331 Delta: v330 to v331. Record the HYPE analysis request: repeat the ZEC analysis suite for HYPE. Version: 330",
       "summarySource": "opening-prose",
-      "bytes": 309690,
-      "lines": 5161,
-      "sha1": "81719b32fbcb424e6112e980db884f01cbf68e2e",
+      "bytes": 309843,
+      "lines": 5168,
+      "sha1": "d1b3b8214d511492b681f35babacdfb28f431964",
       "symbols": [],
       "imports": [],
       "internalImports": [],
@@ -89337,6 +89337,24 @@
       "bytes": 12187,
       "lines": 211,
       "sha1": "d2a2b40568a08ae6116a5d125a985b1a56fa9596",
+      "symbols": [],
+      "imports": [],
+      "internalImports": [],
+      "frontmatter": {}
+    },
+    {
+      "id": "research/json/hype-walk-forward-20261127/walk_forward_summary.json",
+      "path": "research/json/hype-walk-forward-20261127/walk_forward_summary.json",
+      "dir": "research/json/hype-walk-forward-20261127",
+      "name": "walk_forward_summary.json",
+      "ext": ".json",
+      "kind": "result",
+      "title": "walk_forward_summary",
+      "summary": "Generated JSON object, 5 keys (generated, grid, min_train_trades, slippage_bps, datasets).",
+      "summarySource": "derived",
+      "bytes": 67034,
+      "lines": 2982,
+      "sha1": "69a902194aa59f5143581a021ffb9eca99f1bfdf",
       "symbols": [],
       "imports": [],
       "internalImports": [],
@@ -94183,6 +94201,24 @@
       "bytes": 13157,
       "lines": 204,
       "sha1": "489e1076314c93fdbd66284ff24d65d149895a47",
+      "symbols": [],
+      "imports": [],
+      "internalImports": [],
+      "frontmatter": {}
+    },
+    {
+      "id": "research/papers/results/hype_walk_forward_2026-11-27.md",
+      "path": "research/papers/results/hype_walk_forward_2026-11-27.md",
+      "dir": "research/papers/results",
+      "name": "hype_walk_forward_2026-11-27.md",
+      "ext": ".md",
+      "kind": "result",
+      "title": "HYPE: walk-forward tests, findings and the live forward trial (2026-11-27)",
+      "summary": "A 1-hour RSI dip buyer looked best on HYPE, so it was put through rolling walk-forward tests on three real price histories and then started as a live paper trial. Result: re-optimizing the rule's parameters adds no skill, the frozen rule earns a modest positive return mainly while HYPE falls and lags holding while it rises, and the live trial is too short to settle anything.",
+      "summarySource": "opening-prose",
+      "bytes": 14703,
+      "lines": 154,
+      "sha1": "18a48955610d0af6d31be3afb64ec49ea605ea7e",
       "symbols": [],
       "imports": [],
       "internalImports": [],
@@ -109324,6 +109360,59 @@
         "zlib"
       ],
       "internalImports": [],
+      "frontmatter": {}
+    },
+    {
+      "id": "research/scripts/hype_study/walk_forward.py",
+      "path": "research/scripts/hype_study/walk_forward.py",
+      "dir": "research/scripts/hype_study",
+      "name": "walk_forward.py",
+      "ext": ".py",
+      "kind": "code-python",
+      "title": "walk_forward",
+      "summary": "Rolling walk-forward of the HYPE RSI dip buyer on three real histories. For each block: pick RSI (period, oversold, exit) on the trailing training window only, then trade the next test window with that choice. Every test block starts flat (cash), so no position or profit carries across blocks and nothing before the block start can fill. Costs apply to every fill.",
+      "summarySource": "docstring",
+      "bytes": 10561,
+      "lines": 229,
+      "sha1": "8429fb28a807e69817fd673bffbae4268bb6eaf7",
+      "symbols": [
+        "CAPITAL",
+        "SLIPPAGE_BPS",
+        "FEES",
+        "MIN_TRAIN_TRADES",
+        "GRID",
+        "FROZEN",
+        "FIELDS",
+        "get()",
+        "binance_1h()",
+        "hyperliquid()",
+        "longest_contiguous()",
+        "arrays()",
+        "class Gated",
+        "run()",
+        "cut()",
+        "block_return()",
+        "walk()",
+        "chain()",
+        "summarize()",
+        "day()",
+        "main()"
+      ],
+      "imports": [
+        "__future__",
+        "argparse",
+        "backtester",
+        "itertools",
+        "json",
+        "numpy",
+        "pathlib",
+        "sys",
+        "time",
+        "urllib"
+      ],
+      "internalImports": [
+        "backtester"
+      ],
       "frontmatter": {}
     },
     {
@@ -248552,5 +248641,5 @@
       "frontmatter": {}
     }
   ],
-  "textSha256": "98d49537481c97040eed1f7eeb5149a4bde271cbaa752ad8c726239f8f3aeabb"
+  "textSha256": "751d20eccbf4cb41bb9d3535ecfa4eb93a5608dae2f929a216fa744eb05dca05"
 }
