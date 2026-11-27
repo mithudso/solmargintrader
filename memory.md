@@ -1,7 +1,16 @@
 # Work continuation
 
-Version: 726
-Delta: v725 to v726. The HYPE 1h RSI forward paper test is live (PR 372 merged); record its owner, paths and dates.
+Version: 727
+Delta: v726 to v727. Publish the HYPE walk-forward and forward-trial paper for the website; add the walk-forward runner.
+
+## HYPE walk-forward paper for the website · 2026-11-27
+
+Target: a paper for the oraclebot.io research journal with the HYPE findings and the walk-forward tests. Done: `research/papers/results/hype_walk_forward_2026-11-27.md` (the site publishes tracked `research/**/*.md` through `python -m website.scripts.export_research`), the runner `research/scripts/hype_study/walk_forward.py`, and its compact output `research/json/hype-walk-forward-20261127/walk_forward_summary.json`.
+Rolling walk-forward (parameters chosen on the trailing window only, every test block starts in cash, costs on every fill) on Binance HYPEUSDT 1h (4 blocks), Hyperliquid HYPE 1h (24 blocks) and 1d (18 blocks), with all 60 fixed RSI sets scored on the same blocks as a control.
+Result: re-optimizing adds no skill (pick at the 17th to 53rd percentile of fixed sets on hourly data; -11.4% and -4.7% at 25 bps). The frozen RSI 14 30/55 rule scored +11.1% and +18.0% against holding -22.6% and +3.9%, but it was chosen on overlapping history; before the 31-day window it made +10.6% against holding +46.3% (133 days, 25 bps). It is a risk-off dip buyer. No validated edge.
+Checks: a one-set grid reproduces the frozen rule exactly, removing future bars leaves an earlier block unchanged, a rerun matches the committed summary on all nine rows, Ruff 0.17.4 clean. The engine's `trades` counts fills, so round trips are fills divided by two.
+The live forward trial (memory v725 and v726) is expected to end inconclusive by the paper's own read-out rule: it will make about 3 to 5 round trips and the rule needs 8. A longer second cohort (about 6 weeks for 8 round trips) is an owner decision. Another session is writing a separate HYPE-STRATEGIES-PATTERNS-LEVELS paper with a PDF and a `PAPERS` row in `website/scripts/build_discovery.py`; this paper does not touch those files.
+
 
 ## HYPE forward paper test (1h RSI dip buyer) · 2026-11-27
 

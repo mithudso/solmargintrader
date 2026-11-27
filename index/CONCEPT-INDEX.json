@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-11-27T12:01:50+00:00",
+  "generatedAt": "2026-11-27T12:51:05+00:00",
   "schemaVersion": 1,
   "note": "Concepts are derived from the repo's own vocabulary \u2014 the FAMILY dict, strategy-card frontmatter, docs/trading-signals-concept-family.md, and terms verified to recur in the corpus. A concept matching no file is dropped, not kept.",
   "counts": {
@@ -22,7 +22,7 @@
         "confirm",
         "fail-closed"
       ],
-      "matchingFiles": 4484,
+      "matchingFiles": 4485,
       "shown": 30,
       "files": [
         {
@@ -59,7 +59,7 @@
         },
         {
           "path": "memory.md",
-          "hits": 151
+          "hits": 152
         },
         {
           "path": "research/json/tradingview-script-profiles/shard-a.jsonl",
@@ -161,7 +161,7 @@
         "universe",
         "top_coins"
       ],
-      "matchingFiles": 4236,
+      "matchingFiles": 4237,
       "shown": 30,
       "files": [
         {
@@ -300,7 +300,7 @@
         "centred",
         "shift"
       ],
-      "matchingFiles": 3955,
+      "matchingFiles": 3956,
       "shown": 30,
       "files": [
         {
@@ -439,7 +439,7 @@
         "borrow",
         "financing"
       ],
-      "matchingFiles": 3815,
+      "matchingFiles": 3818,
       "shown": 30,
       "files": [
         {
@@ -575,7 +575,7 @@
         "macd",
         "ichimoku"
       ],
-      "matchingFiles": 1937,
+      "matchingFiles": 1939,
       "shown": 30,
       "files": [
         {
@@ -713,7 +713,7 @@
         "anchor_window",
         "levels"
       ],
-      "matchingFiles": 1624,
+      "matchingFiles": 1627,
       "shown": 30,
       "files": [
         {
@@ -851,7 +851,7 @@
         "monotone",
         "gap"
       ],
-      "matchingFiles": 1588,
+      "matchingFiles": 1589,
       "shown": 30,
       "files": [
         {
@@ -990,7 +990,7 @@
         "perps",
         "solana"
       ],
-      "matchingFiles": 1405,
+      "matchingFiles": 1408,
       "shown": 30,
       "files": [
         {
@@ -1125,7 +1125,7 @@
         "stochastic",
         "oscillator"
       ],
-      "matchingFiles": 1300,
+      "matchingFiles": 1302,
       "shown": 30,
       "files": [
         {
@@ -1666,7 +1666,7 @@
         "hurst",
         "vol_regime"
       ],
-      "matchingFiles": 655,
+      "matchingFiles": 656,
       "shown": 30,
       "files": [
         {
@@ -1804,7 +1804,7 @@
         "evidence floor",
         "rankable"
       ],
-      "matchingFiles": 600,
+      "matchingFiles": 601,
       "shown": 30,
       "files": [
         {
@@ -1939,7 +1939,7 @@
         "bb_breakout",
         "keltner"
       ],
-      "matchingFiles": 568,
+      "matchingFiles": 569,
       "shown": 30,
       "files": [
         {
