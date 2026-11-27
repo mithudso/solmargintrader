@@ -1,7 +1,25 @@
 # Work continuation
 
-Version: 719
-Delta: v718 to v719. Record the gated, published zero-fee venue research.
+Version: 720
+Delta: v719 to v720. Record the HYPE analysis: the ZEC suite repeated on HYPE.
+
+## HYPE: ZEC analysis suite repeated (2026-11-27)
+
+Request: `prompts.md` v330. Result: `research/papers/results/hype_suite_20261127.md`.
+
+- No validated HYPE strategy. Every validation-selected policy in the 294-day run (HYPE, ZEC, BTC; 1h and 5m) lost on test at 10, 25 and 60 bp. The selections beat buy-and-hold only in falling test windows.
+- Only positive long-history test family: RSI(14h) 30/55 on HYPE 1h, +16.7% at 10 bp (14 exits). It had 8 validation exits, so it was ineligible under the 10-exit rule. ZEC 1h RSI 25/50 made +6.7% on test (6 exits, 5 validation exits). Candidate for a pre-registered forward paper test, not a strategy.
+- 31-day suite: HYPE 5m positive at 10 to 60 bp (+2.4% to +3.9%) on about 9 hours of test bars. Too short to count.
+- Patterns: 5m mean reversion is significant on ZEC and BTC but worth under 1 bp per bar. HYPE has no Holm-significant 5m pattern. HYPE 1h DD is +7 bp, Holm p 0.054.
+- Support/resistance: no edge over a moving-average control (HYPE, ZEC, BTC). None survives correction.
+
+Data limits: Coinbase HYPE-USD starts 2026-02-05. 1m gaps cut the 31-day runs to 46 hours (HYPE) and 70 hours (ZEC), over different spans. 5m HYPE longest run is May 13 to Aug 8 (125 gaps).
+
+Built: `research/scripts/coin_history.py`, `research/scripts/coin_levels.py`, tests `research/tests/test_coin_history.py` (5) and `test_coin_levels.py` (7), all OK. Ruff 0.17.4 clean. Research venv `/Users/mitch/.venvs/solmargin-research` lives outside the repo.
+
+Verification gap: `scripts/check_docs.py` exits 1 here. Seven soltui test modules import `executor.signer`, which is not in this venv (the executor has its own venv per CLAUDE.md). No doc counts were changed.
+
+Remaining: forward paper test of the RSI rule (not started); a second HYPE history source (Hyperliquid candles, not checked); commit and PR (in progress).
 
 ## Zero-fee perp venue research: complete
 

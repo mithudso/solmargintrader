@@ -1,0 +1,4183 @@
+{
+  "schema": "coin-levels/v1",
+  "history_manifest_sha256": "ef7efe73960dbfe5b13ec1768895855e5932f0939b810d0871fbad11d478b3e8",
+  "generated_at": "2026-11-27T09:01:54Z",
+  "coins": {
+    "HYPE": {
+      "cadences": {
+        "5m": {
+          "data": {
+            "path": "/Users/mitch/dev/solmargintrader-wt-8d638e70/research/hype-suite/history/HYPE-USD_5m.csv.gz",
+            "bars_present": 84603,
+            "expected_slots": 84728,
+            "missing_slots": 125,
+            "contiguous_runs": 124,
+            "longest_run_bars": 25059,
+            "longest_run_start": "2026-05-13T07:00:00Z",
+            "longest_run_end": "2026-08-08T07:10:00Z",
+            "zero_volume_bars": 98
+          },
+          "patterns": [
+            {
+              "pattern": "UU",
+              "n": 5558,
+              "p_next_down": 0.5172724001439367,
+              "p_next_down_ci95": [
+                0.5041279014779295,
+                0.530393039368633
+              ],
+              "p_value_vs_half": 0.01001289147705583,
+              "mean_next_return_bps": -0.5651589932510223,
+              "t_next_return": -1.3547178731136136,
+              "p_value_holm": 0.15019337215583745,
+              "holm_family_size": 24
+            },
+            {
+              "pattern": "UD",
+              "n": 5767,
+              "p_next_down": 0.49349748569446855,
+              "p_next_down_ci95": [
+                0.48060264254561263,
+                0.5064009858620652
+              ],
+              "p_value_vs_half": 0.32334278558254126,
+              "mean_next_return_bps": -0.13057604196987874,
+              "t_next_return": -0.32745737618782567,
+              "p_value_holm": 1.0,
+              "holm_family_size": 24
+            },
+            {
+              "pattern": "DU",
+              "n": 5742,
+              "p_next_down": 0.5006966213862766,
+              "p_next_down_ci95": [
+                0.48776787241253816,
+                0.5136244388889918
+              ],
+              "p_value_vs_half": 0.9159200812258539,
+              "mean_next_return_bps": 0.40959613707690495,
+              "t_next_return": 1.0187541767560624,
+              "p_value_holm": 1.0,
+              "holm_family_size": 24
+            },
+            {
+              "pattern": "DD",
+              "n": 5549,
+              "p_next_down": 0.4863939448549288,
+              "p_next_down_ci95": [
+                0.4732571732383848,
+                0.49954954182485756
+              ],
+              "p_value_vs_half": 0.042654854159864954,
+              "mean_next_return_bps": 0.6274719618543969,
+              "t_next_return": 1.441854025633648,
+              "p_value_holm": 0.5118582499183795,
+              "holm_family_size": 24
+            }
+          ],
+          "strategy": {
+            "segment_bars": 25059,
+            "selected": {
+              "10": {
+                "selected_policy": "momentum_168h",
+                "validation": {
+                  "return": -0.07626663608515927,
+                  "exits": 11,
+                  "max_drawdown": -0.1044199593675732
+                },
+                "test": {
+                  "return": -0.07004069682562031,
+                  "exits": 20,
+                  "max_drawdown": -0.08051859283716045
+                },
+                "buy_hold_test": {
+                  "return": -0.10777065878101588,
+                  "exits": 0,
+                  "max_drawdown": -0.16309854551397418
+                },
+                "configs_tested": 13
+              },
+              "25": {
+                "selected_policy": "momentum_168h",
+                "validation": {
+                  "return": -0.1076429234906574,
+                  "exits": 11,
+                  "max_drawdown": -0.1348399678323765
+                },
+                "test": {
+                  "return": -0.12297523416444145,
+                  "exits": 20,
+                  "max_drawdown": -0.1300805719837672
+                },
+                "buy_hold_test": {
+                  "return": -0.10777065878101588,
+                  "exits": 0,
+                  "max_drawdown": -0.16309854551397418
+                },
+                "configs_tested": 13
+              },
+              "60": {
+                "selected_policy": "momentum_168h",
+                "validation": {
+                  "return": -0.176938737005494,
+                  "exits": 11,
+                  "max_drawdown": -0.20202380021043465
+                },
+                "test": {
+                  "return": -0.23532922106368315,
+                  "exits": 20,
+                  "max_drawdown": -0.24152430747009035
+                },
+                "buy_hold_test": {
+                  "return": -0.10777065878101588,
+                  "exits": 0,
+                  "max_drawdown": -0.16309854551397418
+                },
+                "configs_tested": 13
+              }
+            },
+            "all": [
+              {
+                "policy": "buy_hold",
+                "fee_bps": 10,
+                "validation": {
+                  "return": -0.13806287170772458,
+                  "exits": 0,
+                  "max_drawdown": -0.19947830862163107
+                },
+                "test": {
+                  "return": -0.10777065878101588,
+                  "exits": 0,
+                  "max_drawdown": -0.16309854551397418
+                }
+              },
+              {
+                "policy": "buy_hold",
+                "fee_bps": 25,
+                "validation": {
+                  "return": -0.13806287170772458,
+                  "exits": 0,
+                  "max_drawdown": -0.19947830862163107
+                },
+                "test": {
+                  "return": -0.10777065878101588,
+                  "exits": 0,
+                  "max_drawdown": -0.16309854551397418
+                }
+              },
+              {
+                "policy": "buy_hold",
+                "fee_bps": 60,
+                "validation": {
+                  "return": -0.13806287170772458,
+                  "exits": 0,
+                  "max_drawdown": -0.19947830862163107
+                },
+                "test": {
+                  "return": -0.10777065878101588,
+                  "exits": 0,
+                  "max_drawdown": -0.16309854551397418
+                }
+              },
+              {
+                "policy": "ema_cross_12h_48h",
+                "fee_bps": 10,
+                "validation": {
+                  "return": -0.10840812205241157,
+                  "exits": 6,
+                  "max_drawdown": -0.12715826937320107
+                },
+                "test": {
+                  "return": -0.05257692431613448,
+                  "exits": 5,
+                  "max_drawdown": -0.09393394220374929
+                }
+              },
+              {
+                "policy": "ema_cross_12h_48h",
+                "fee_bps": 25,
+                "validation": {
+                  "return": -0.12567099349225952,
+                  "exits": 6,
+                  "max_drawdown": -0.1401918026017308
+                },
+                "test": {
+                  "return": -0.06671237526529816,
+                  "exits": 5,
+                  "max_drawdown": -0.1007169517666695
+                }
+              },
+              {
+                "policy": "ema_cross_12h_48h",
+                "fee_bps": 60,
+                "validation": {
+                  "return": -0.1647581589800562,
+                  "exits": 6,
+                  "max_drawdown": -0.17147424206007755
+                },
+                "test": {
+                  "return": -0.09895977173111548,
+                  "exits": 5,
+                  "max_drawdown": -0.12260574954495618
+                }
+              },
+              {
+                "policy": "ema_cross_24h_96h",
+                "fee_bps": 10,
+                "validation": {
+                  "return": -0.10905474390344327,
+                  "exits": 2,
+                  "max_drawdown": -0.14926425348079642
+                },
+                "test": {
+                  "return": -0.04889080611400454,
+                  "exits": 2,
+                  "max_drawdown": -0.07723267045668125
+                }
+              },
+              {
+                "policy": "ema_cross_24h_96h",
+                "fee_bps": 25,
+                "validation": {
+                  "return": -0.11439402779850816,
+                  "exits": 2,
+                  "max_drawdown": -0.1543625686009048
+                },
+                "test": {
+                  "return": -0.056016416300171734,
+                  "exits": 2,
+                  "max_drawdown": -0.08000605485310319
+                }
+              },
+              {
+                "policy": "ema_cross_24h_96h",
+                "fee_bps": 60,
+                "validation": {
+                  "return": -0.12675901578481819,
+                  "exits": 2,
+                  "max_drawdown": -0.1661695087167565
+                },
+                "test": {
+                  "return": -0.07247683936079419,
+                  "exits": 2,
+                  "max_drawdown": -0.08646105296299222
+                }
+              },
+              {
+                "policy": "ema_cross_24h_168h",
+                "fee_bps": 10,
+                "validation": {
+                  "return": -0.09748581585341565,
+                  "exits": 1,
+                  "max_drawdown": -0.12499242607864214
+                },
+                "test": {
+                  "return": -0.060119723268943326,
+                  "exits": 2,
+                  "max_drawdown": -0.06992403314917295
+                }
+              },
+              {
+                "policy": "ema_cross_24h_168h",
+                "fee_bps": 25,
+                "validation": {
+                  "return": -0.10154393590557176,
+                  "exits": 1,
+                  "max_drawdown": -0.1289268637239368
+                },
+                "test": {
+                  "return": -0.06575651736909527,
+                  "exits": 2,
+                  "max_drawdown": -0.06992403314917184
+                }
+              },
+              {
+                "policy": "ema_cross_24h_168h",
+                "fee_bps": 60,
+                "validation": {
+                  "return": -0.11096553581092405,
+                  "exits": 1,
+                  "max_drawdown": -0.13806131437352465
+                },
+                "test": {
+                  "return": -0.07881042040162645,
+                  "exits": 2,
+                  "max_drawdown": -0.07881042040162645
+                }
+              },
+              {
+                "policy": "ema_cross_48h_168h",
+                "fee_bps": 10,
+                "validation": {
+                  "return": -0.050418691588781095,
+                  "exits": 0,
+                  "max_drawdown": -0.09074684239428621
+                },
+                "test": {
+                  "return": -0.01623646260843603,
+                  "exits": 1,
+                  "max_drawdown": -0.06992403314917506
+                }
+              },
+              {
+                "policy": "ema_cross_48h_168h",
+                "fee_bps": 25,
+                "validation": {
+                  "return": -0.051844774851313,
+                  "exits": 0,
+                  "max_drawdown": -0.09074684239428621
+                },
+                "test": {
+                  "return": -0.017716299120695056,
+                  "exits": 1,
+                  "max_drawdown": -0.0699240331491714
+                }
+              },
+              {
+                "policy": "ema_cross_48h_168h",
+                "fee_bps": 60,
+                "validation": {
+                  "return": -0.05517230246388738,
+                  "exits": 0,
+                  "max_drawdown": -0.09074684239428621
+                },
+                "test": {
+                  "return": -0.021169250982639665,
+                  "exits": 1,
+                  "max_drawdown": -0.06992403314917284
+                }
+              },
+              {
+                "policy": "donchian_24h",
+                "fee_bps": 10,
+                "validation": {
+                  "return": -0.08775877210480199,
+                  "exits": 8,
+                  "max_drawdown": -0.13478282052306112
+                },
+                "test": {
+                  "return": -0.030945310627235822,
+                  "exits": 6,
+                  "max_drawdown": -0.069517218041376
+                }
+              },
+              {
+                "policy": "donchian_24h",
+                "fee_bps": 25,
+                "validation": {
+                  "return": -0.11077054727247015,
+                  "exits": 8,
+                  "max_drawdown": -0.14769398807542222
+                },
+                "test": {
+                  "return": -0.04826155153185485,
+                  "exits": 6,
+                  "max_drawdown": -0.07786992471545706
+                }
+              },
+              {
+                "policy": "donchian_24h",
+                "fee_bps": 60,
+                "validation": {
+                  "return": -0.16235795188497437,
+                  "exits": 8,
+                  "max_drawdown": -0.1771482954401583
+                },
+                "test": {
+                  "return": -0.08756873908753038,
+                  "exits": 6,
+                  "max_drawdown": -0.11059148374344119
+                }
+              },
+              {
+                "policy": "donchian_72h",
+                "fee_bps": 10,
+                "validation": {
+                  "return": -0.155021434466185,
+                  "exits": 3,
+                  "max_drawdown": -0.16131572314830633
+                },
+                "test": {
+                  "return": -0.025375626006558294,
+                  "exits": 2,
+                  "max_drawdown": -0.059542896024295855
+                }
+              },
+              {
+                "policy": "donchian_72h",
+                "fee_bps": 25,
+                "validation": {
+                  "return": -0.163858241194763,
+                  "exits": 3,
+                  "max_drawdown": -0.1700867040502343
+                },
+                "test": {
+                  "return": -0.03121753427020013,
+                  "exits": 2,
+                  "max_drawdown": -0.06236631329873743
+                }
+              },
+              {
+                "policy": "donchian_72h",
+                "fee_bps": 60,
+                "validation": {
+                  "return": -0.18416997072511343,
+                  "exits": 3,
+                  "max_drawdown": -0.19024713046532005
+                },
+                "test": {
+                  "return": -0.044746505489907884,
+                  "exits": 2,
+                  "max_drawdown": -0.06893778027555397
+                }
+              },
+              {
+                "policy": "donchian_168h",
+                "fee_bps": 10,
+                "validation": {
+                  "return": -0.039952647975074695,
+                  "exits": 0,
+                  "max_drawdown": -0.0692127402526066
+                },
+                "test": {
+                  "return": -0.04159055709274406,
+                  "exits": 1,
+                  "max_drawdown": -0.06810856353591199
+                }
+              },
+              {
+                "policy": "donchian_168h",
+                "fee_bps": 25,
+                "validation": {
+                  "return": -0.04139444916453949,
+                  "exits": 0,
+                  "max_drawdown": -0.0706105985722113
+                },
+                "test": {
+                  "return": -0.044463760439083844,
+                  "exits": 1,
+                  "max_drawdown": -0.06950808011049758
+                }
+              },
+              {
+                "policy": "donchian_168h",
+                "fee_bps": 60,
+                "validation": {
+                  "return": -0.044758651939957206,
+                  "exits": 0,
+                  "max_drawdown": -0.07387226798462199
+                },
+                "test": {
+                  "return": -0.05115112790193643,
+                  "exits": 1,
+                  "max_drawdown": -0.07277361878453115
+                }
+              },
+              {
+                "policy": "rsi_14h_30_55",
+                "fee_bps": 10,
+                "validation": {
+                  "return": 0.0,
+                  "exits": 0,
+                  "max_drawdown": 0.0
+                },
+                "test": {
+                  "return": 0.0,
+                  "exits": 0,
+                  "max_drawdown": 0.0
+                }
+              },
+              {
+                "policy": "rsi_14h_30_55",
+                "fee_bps": 25,
+                "validation": {
+                  "return": 0.0,
+                  "exits": 0,
+                  "max_drawdown": 0.0
+                },
+                "test": {
+                  "return": 0.0,
+                  "exits": 0,
+                  "max_drawdown": 0.0
+                }
+              },
+              {
+                "policy": "rsi_14h_30_55",
+                "fee_bps": 60,
+                "validation": {
+                  "return": 0.0,
+                  "exits": 0,
+                  "max_drawdown": 0.0
+                },
+                "test": {
+                  "return": 0.0,
+                  "exits": 0,
+                  "max_drawdown": 0.0
+                }
+              },
+              {
+                "policy": "rsi_14h_25_50",
+                "fee_bps": 10,
+                "validation": {
+                  "return": 0.0,
+                  "exits": 0,
+                  "max_drawdown": 0.0
+                },
+                "test": {
+                  "return": 0.0,
+                  "exits": 0,
+                  "max_drawdown": 0.0
+                }
+              },
+              {
+                "policy": "rsi_14h_25_50",
+                "fee_bps": 25,
+                "validation": {
+                  "return": 0.0,
+                  "exits": 0,
+                  "max_drawdown": 0.0
+                },
+                "test": {
+                  "return": 0.0,
+                  "exits": 0,
+                  "max_drawdown": 0.0
+                }
+              },
+              {
+                "policy": "rsi_14h_25_50",
+                "fee_bps": 60,
+                "validation": {
+                  "return": 0.0,
+                  "exits": 0,
+                  "max_drawdown": 0.0
+                },
+                "test": {
+                  "return": 0.0,
+                  "exits": 0,
+                  "max_drawdown": 0.0
+                }
+              },
+              {
+                "policy": "bollinger_20h_2sd",
+                "fee_bps": 10,
+                "validation": {
+                  "return": -0.13143340470941556,
+                  "exits": 10,
+                  "max_drawdown": -0.16959356858814245
+                },
+                "test": {
+                  "return": -0.0900016376986652,
+                  "exits": 10,
+                  "max_drawdown": -0.1138024755299255
+                }
+              },
+              {
+                "policy": "bollinger_20h_2sd",
+                "fee_bps": 25,
+                "validation": {
+                  "return": -0.15586866324704085,
+                  "exits": 10,
+                  "max_drawdown": -0.18269003932536976
+                },
+                "test": {
+                  "return": -0.11696111154859679,
+                  "exits": 10,
+                  "max_drawdown": -0.13009737156548218
+                }
+              },
+              {
+                "policy": "bollinger_20h_2sd",
+                "fee_bps": 60,
+                "validation": {
+                  "return": -0.21037625540540827,
+                  "exits": 10,
+                  "max_drawdown": -0.2239997727779801
+                },
+                "test": {
+                  "return": -0.176946469189738,
+                  "exits": 10,
+                  "max_drawdown": -0.18788393125491154
+                }
+              },
+              {
+                "policy": "momentum_24h",
+                "fee_bps": 10,
+                "validation": {
+                  "return": -0.1406842634166744,
+                  "exits": 58,
+                  "max_drawdown": -0.1719605068991784
+                },
+                "test": {
+                  "return": -0.16808858628921675,
+                  "exits": 55,
+                  "max_drawdown": -0.21394573172002485
+                }
+              },
+              {
+                "policy": "momentum_24h",
+                "fee_bps": 25,
+                "validation": {
+                  "return": -0.27923696704952505,
+                  "exits": 58,
+                  "max_drawdown": -0.29580588221940174
+                },
+                "test": {
+                  "return": -0.2948594744708497,
+                  "exits": 55,
+                  "max_drawdown": -0.3241770399379904
+                }
+              },
+              {
+                "policy": "momentum_24h",
+                "fee_bps": 60,
+                "validation": {
+                  "return": -0.5222826350203875,
+                  "exits": 58,
+                  "max_drawdown": -0.5283609462077816
+                },
+                "test": {
+                  "return": -0.5210191125857674,
+                  "exits": 55,
+                  "max_drawdown": -0.5261872453425616
+                }
+              },
+              {
+                "policy": "momentum_168h",
+                "fee_bps": 10,
+                "validation": {
+                  "return": -0.07626663608515927,
+                  "exits": 11,
+                  "max_drawdown": -0.1044199593675732
+                },
+                "test": {
+                  "return": -0.07004069682562031,
+                  "exits": 20,
+                  "max_drawdown": -0.08051859283716045
+                }
+              },
+              {
+                "policy": "momentum_168h",
+                "fee_bps": 25,
+                "validation": {
+                  "return": -0.1076429234906574,
+                  "exits": 11,
+                  "max_drawdown": -0.1348399678323765
+                },
+                "test": {
+                  "return": -0.12297523416444145,
+                  "exits": 20,
+                  "max_drawdown": -0.1300805719837672
+                }
+              },
+              {
+                "policy": "momentum_168h",
+                "fee_bps": 60,
+                "validation": {
+                  "return": -0.176938737005494,
+                  "exits": 11,
+                  "max_drawdown": -0.20202380021043465
+                },
+                "test": {
+                  "return": -0.23532922106368315,
+                  "exits": 20,
+                  "max_drawdown": -0.24152430747009035
+                }
+              }
+            ]
+          }
+        },
+        "1h": {
+          "data": {
+            "path": "/Users/mitch/dev/solmargintrader-wt-8d638e70/research/hype-suite/history/HYPE-USD_1h.csv.gz",
+            "bars_present": 7061,
+            "expected_slots": 7061,
+            "missing_slots": 0,
+            "contiguous_runs": 1,
+            "longest_run_bars": 7061,
+            "longest_run_start": "2026-02-05T19:00:00Z",
+            "longest_run_end": "2026-11-26T23:00:00Z",
+            "zero_volume_bars": 5
+          },
+          "patterns": [
+            {
+              "pattern": "UU",
+              "n": 1697,
+              "p_next_down": 0.5156157925751326,
+              "p_next_down_ci95": [
+                0.49182991434006773,
+                0.5393311322837957
+              ],
+              "p_value_vs_half": 0.19824262709928245,
+              "mean_next_return_bps": -1.5389469806853362,
+              "t_next_return": -0.6463013767719579,
+              "p_value_holm": 1.0,
+              "holm_family_size": 24
+            },
+            {
+              "pattern": "UD",
+              "n": 1787,
+              "p_next_down": 0.4801343033016228,
+              "p_next_down_ci95": [
+                0.45703777660812706,
+                0.5033160561402211
+              ],
+              "p_value_vs_half": 0.09304254204849517,
+              "mean_next_return_bps": 1.0315507748523478,
+              "t_next_return": 0.49886991849270657,
+              "p_value_holm": 0.9304254204849517,
+              "holm_family_size": 24
+            },
+            {
+              "pattern": "DU",
+              "n": 1785,
+              "p_next_down": 0.507563025210084,
+              "p_next_down_ci95": [
+                0.4843791015269995,
+                0.5307144663607245
+              ],
+              "p_value_vs_half": 0.5227810104666994,
+              "mean_next_return_bps": -2.061949057718162,
+              "t_next_return": -0.9746956989150487,
+              "p_value_holm": 1.0,
+              "holm_family_size": 24
+            },
+            {
+              "pattern": "DD",
+              "n": 1600,
+              "p_next_down": 0.463125,
+              "p_next_down_ci95": [
+                0.4388096077079109,
+                0.4876170354327979
+              ],
+              "p_value_vs_half": 0.0031777392947297386,
+              "mean_next_return_bps": 7.009682996981439,
+              "t_next_return": 3.1573064909457984,
+              "p_value_holm": 0.05402156801040556,
+              "holm_family_size": 24
+            }
+          ],
+          "levels": {
+            "pivot_k": 6,
+            "horizon_bars": 24,
+            "band": 0.005,
+            "break_pct": 0.01,
+            "support": {
+              "pivots": 366,
+              "real_events": 149,
+              "control_events": 175,
+              "break_rate_real": 0.6442953020134228,
+              "break_rate_control": 0.6057142857142858,
+              "difference_real_minus_control": 0.038581016299137016,
+              "z": 0.7143363119172442,
+              "p_value": 0.47501924360391207
+            },
+            "resistance": {
+              "pivots": 363,
+              "real_events": 141,
+              "control_events": 184,
+              "break_rate_real": 0.5460992907801419,
+              "break_rate_control": 0.5760869565217391,
+              "difference_real_minus_control": -0.02998766574159728,
+              "z": -0.5401732735919778,
+              "p_value": 0.5890775423149153
+            }
+          },
+          "strategy": {
+            "segment_bars": 7061,
+            "selected": {
+              "10": {
+                "selected_policy": "momentum_168h",
+                "validation": {
+                  "return": 0.38089804467091315,
+                  "exits": 29,
+                  "max_drawdown": -0.16753530933837057
+                },
+                "test": {
+                  "return": -0.10113591971924207,
+                  "exits": 17,
+                  "max_drawdown": -0.1669634958290085
+                },
+                "buy_hold_test": {
+                  "return": -0.28018988074562945,
+                  "exits": 0,
+                  "max_drawdown": -0.41409737361154375
+                },
+                "configs_tested": 13
+              },
+              "25": {
+                "selected_policy": "momentum_168h",
+                "validation": {
+                  "return": 0.26571419991003986,
+                  "exits": 29,
+                  "max_drawdown": -0.20542084981445086
+                },
+                "test": {
+                  "return": -0.14592275050296344,
+                  "exits": 17,
+                  "max_drawdown": -0.20371118113662479
+                },
+                "buy_hold_test": {
+                  "return": -0.28018988074562945,
+                  "exits": 0,
+                  "max_drawdown": -0.41409737361154375
+                },
+                "configs_tested": 13
+              },
+              "60": {
+                "selected_policy": "ema_cross_12h_48h",
+                "validation": {
+                  "return": 0.06326685790699771,
+                  "exits": 18,
+                  "max_drawdown": -0.26472106473289014
+                },
+                "test": {
+                  "return": -0.39998740821712486,
+                  "exits": 20,
+                  "max_drawdown": -0.4271952518371085
+                },
+                "buy_hold_test": {
+                  "return": -0.28018988074562945,
+                  "exits": 0,
+                  "max_drawdown": -0.41409737361154375
+                },
+                "configs_tested": 13
+              }
+            },
+            "all": [
+              {
+                "policy": "buy_hold",
+                "fee_bps": 10,
+                "validation": {
+                  "return": 0.6667309918950257,
+                  "exits": 0,
+                  "max_drawdown": -0.14450285202997493
+                },
+                "test": {
+                  "return": -0.28018988074562945,
+                  "exits": 0,
+                  "max_drawdown": -0.41409737361154375
+                }
+              },
+              {
+                "policy": "buy_hold",
+                "fee_bps": 25,
+                "validation": {
+                  "return": 0.6667309918950257,
+                  "exits": 0,
+                  "max_drawdown": -0.14450285202997493
+                },
+                "test": {
+                  "return": -0.28018988074562945,
+                  "exits": 0,
+                  "max_drawdown": -0.41409737361154375
+                }
+              },
+              {
+                "policy": "buy_hold",
+                "fee_bps": 60,
+                "validation": {
+                  "return": 0.6667309918950257,
+                  "exits": 0,
+                  "max_drawdown": -0.14450285202997493
+                },
+                "test": {
+                  "return": -0.28018988074562945,
+                  "exits": 0,
+                  "max_drawdown": -0.41409737361154375
+                }
+              },
+              {
+                "policy": "ema_cross_12h_48h",
+                "fee_bps": 10,
+                "validation": {
+                  "return": 0.27361753022500834,
+                  "exits": 18,
+                  "max_drawdown": -0.19143805608903386
+                },
+                "test": {
+                  "return": -0.2705040110316712,
+                  "exits": 20,
+                  "max_drawdown": -0.30705363131900254
+                }
+              },
+              {
+                "policy": "ema_cross_12h_48h",
+                "fee_bps": 25,
+                "validation": {
+                  "return": 0.20659425412892518,
+                  "exits": 18,
+                  "max_drawdown": -0.21301498863692092
+                },
+                "test": {
+                  "return": -0.31196780150506986,
+                  "exits": 20,
+                  "max_drawdown": -0.3454614961165198
+                }
+              },
+              {
+                "policy": "ema_cross_12h_48h",
+                "fee_bps": 60,
+                "validation": {
+                  "return": 0.06326685790699771,
+                  "exits": 18,
+                  "max_drawdown": -0.26472106473289014
+                },
+                "test": {
+                  "return": -0.39998740821712486,
+                  "exits": 20,
+                  "max_drawdown": -0.4271952518371085
+                }
+              },
+              {
+                "policy": "ema_cross_24h_96h",
+                "fee_bps": 10,
+                "validation": {
+                  "return": 0.36944635709138596,
+                  "exits": 8,
+                  "max_drawdown": -0.15500430539781618
+                },
+                "test": {
+                  "return": -0.20213184539462703,
+                  "exits": 9,
+                  "max_drawdown": -0.22572592879935116
+                }
+              },
+              {
+                "policy": "ema_cross_24h_96h",
+                "fee_bps": 25,
+                "validation": {
+                  "return": 0.3368833221364731,
+                  "exits": 8,
+                  "max_drawdown": -0.1638706224716988
+                },
+                "test": {
+                  "return": -0.22343263488242404,
+                  "exits": 9,
+                  "max_drawdown": -0.23383930793461039
+                }
+              },
+              {
+                "policy": "ema_cross_24h_96h",
+                "fee_bps": 60,
+                "validation": {
+                  "return": 0.26370387518246163,
+                  "exits": 8,
+                  "max_drawdown": -0.18424916103826527
+                },
+                "test": {
+                  "return": -0.2710648229175284,
+                  "exits": 9,
+                  "max_drawdown": -0.27109517499539537
+                }
+              },
+              {
+                "policy": "ema_cross_24h_168h",
+                "fee_bps": 10,
+                "validation": {
+                  "return": 0.5039483188511644,
+                  "exits": 5,
+                  "max_drawdown": -0.10350924932853833
+                },
+                "test": {
+                  "return": -0.0389320149629383,
+                  "exits": 5,
+                  "max_drawdown": -0.1374442022215301
+                }
+              },
+              {
+                "policy": "ema_cross_24h_168h",
+                "fee_bps": 25,
+                "validation": {
+                  "return": 0.48155101188158,
+                  "exits": 5,
+                  "max_drawdown": -0.10887404633320807
+                },
+                "test": {
+                  "return": -0.053269720088918726,
+                  "exits": 5,
+                  "max_drawdown": -0.14061550713262505
+                }
+              },
+              {
+                "policy": "ema_cross_24h_168h",
+                "fee_bps": 60,
+                "validation": {
+                  "return": 0.43045358593943406,
+                  "exits": 5,
+                  "max_drawdown": -0.12129825450544685
+                },
+                "test": {
+                  "return": -0.08597859115559037,
+                  "exits": 5,
+                  "max_drawdown": -0.14965010498547715
+                }
+              },
+              {
+                "policy": "ema_cross_48h_168h",
+                "fee_bps": 10,
+                "validation": {
+                  "return": 0.57410430777814,
+                  "exits": 3,
+                  "max_drawdown": -0.08269290692906917
+                },
+                "test": {
+                  "return": -0.11482427888058566,
+                  "exits": 5,
+                  "max_drawdown": -0.20085357847928387
+                }
+              },
+              {
+                "policy": "ema_cross_48h_168h",
+                "fee_bps": 25,
+                "validation": {
+                  "return": 0.5600244640087544,
+                  "exits": 3,
+                  "max_drawdown": -0.08407052070520649
+                },
+                "test": {
+                  "return": -0.12805352481142396,
+                  "exits": 5,
+                  "max_drawdown": -0.20684871903778024
+                }
+              },
+              {
+                "policy": "ema_cross_48h_168h",
+                "fee_bps": 60,
+                "validation": {
+                  "return": 0.5275791539106409,
+                  "exits": 3,
+                  "max_drawdown": -0.08728495284952809
+                },
+                "test": {
+                  "return": -0.15823241505271146,
+                  "exits": 5,
+                  "max_drawdown": -0.2206975286716717
+                }
+              },
+              {
+                "policy": "donchian_24h",
+                "fee_bps": 10,
+                "validation": {
+                  "return": 0.08593784923597525,
+                  "exits": 20,
+                  "max_drawdown": -0.17338276612243642
+                },
+                "test": {
+                  "return": -0.3237203203972572,
+                  "exits": 22,
+                  "max_drawdown": -0.3306089704290801
+                }
+              },
+              {
+                "policy": "donchian_24h",
+                "fee_bps": 25,
+                "validation": {
+                  "return": 0.02262884978006663,
+                  "exits": 20,
+                  "max_drawdown": -0.195135174055881
+                },
+                "test": {
+                  "return": -0.36602112047550794,
+                  "exits": 22,
+                  "max_drawdown": -0.37152338679604
+                }
+              },
+              {
+                "policy": "donchian_24h",
+                "fee_bps": 60,
+                "validation": {
+                  "return": -0.1114215962577837,
+                  "exits": 20,
+                  "max_drawdown": -0.2576497035185047
+                },
+                "test": {
+                  "return": -0.4549242779291528,
+                  "exits": 22,
+                  "max_drawdown": -0.45772833147763503
+                }
+              },
+              {
+                "policy": "donchian_72h",
+                "fee_bps": 10,
+                "validation": {
+                  "return": 0.18817544467608371,
+                  "exits": 8,
+                  "max_drawdown": -0.1476580155160213
+                },
+                "test": {
+                  "return": -0.0771439690935889,
+                  "exits": 5,
+                  "max_drawdown": -0.17394342005672692
+                }
+              },
+              {
+                "policy": "donchian_72h",
+                "fee_bps": 25,
+                "validation": {
+                  "return": 0.15994605943326534,
+                  "exits": 8,
+                  "max_drawdown": -0.15405293306362344
+                },
+                "test": {
+                  "return": -0.090930023964368,
+                  "exits": 5,
+                  "max_drawdown": -0.17765073268765164
+                }
+              },
+              {
+                "policy": "donchian_72h",
+                "fee_bps": 60,
+                "validation": {
+                  "return": 0.09650370385891316,
+                  "exits": 8,
+                  "max_drawdown": -0.17615920391236806
+                },
+                "test": {
+                  "return": -0.12237945456257915,
+                  "exits": 5,
+                  "max_drawdown": -0.18625795691961222
+                }
+              },
+              {
+                "policy": "donchian_168h",
+                "fee_bps": 10,
+                "validation": {
+                  "return": 0.5784106047756521,
+                  "exits": 2,
+                  "max_drawdown": -0.08185712631700814
+                },
+                "test": {
+                  "return": -0.05647145840987411,
+                  "exits": 2,
+                  "max_drawdown": -0.1129726980172332
+                }
+              },
+              {
+                "policy": "donchian_168h",
+                "fee_bps": 25,
+                "validation": {
+                  "return": 0.5689604435283924,
+                  "exits": 2,
+                  "max_drawdown": -0.08185712631700826
+                },
+                "test": {
+                  "return": -0.06207680766525303,
+                  "exits": 2,
+                  "max_drawdown": -0.11430483753763099
+                }
+              },
+              {
+                "policy": "donchian_168h",
+                "fee_bps": 60,
+                "validation": {
+                  "return": 0.5470751153012141,
+                  "exits": 2,
+                  "max_drawdown": -0.08185712631700826
+                },
+                "test": {
+                  "return": -0.07505881839397943,
+                  "exits": 2,
+                  "max_drawdown": -0.1174131630852282
+                }
+              },
+              {
+                "policy": "rsi_14h_30_55",
+                "fee_bps": 10,
+                "validation": {
+                  "return": 0.11079789658866157,
+                  "exits": 8,
+                  "max_drawdown": -0.04331450094161948
+                },
+                "test": {
+                  "return": 0.16721050040987895,
+                  "exits": 14,
+                  "max_drawdown": -0.1062429047565765
+                }
+              },
+              {
+                "policy": "rsi_14h_30_55",
+                "fee_bps": 25,
+                "validation": {
+                  "return": 0.08443289350518612,
+                  "exits": 8,
+                  "max_drawdown": -0.0439101634610477
+                },
+                "test": {
+                  "return": 0.11751150733878246,
+                  "exits": 14,
+                  "max_drawdown": -0.11159888640254867
+                }
+              },
+              {
+                "policy": "rsi_14h_30_55",
+                "fee_bps": 60,
+                "validation": {
+                  "return": 0.02517831419684624,
+                  "exits": 8,
+                  "max_drawdown": -0.05059723646688863
+                },
+                "test": {
+                  "return": 0.009364425385384845,
+                  "exits": 14,
+                  "max_drawdown": -0.1240025465729665
+                }
+              },
+              {
+                "policy": "rsi_14h_25_50",
+                "fee_bps": 10,
+                "validation": {
+                  "return": 0.0,
+                  "exits": 0,
+                  "max_drawdown": 0.0
+                },
+                "test": {
+                  "return": 0.05300465674155719,
+                  "exits": 7,
+                  "max_drawdown": -0.10407110091743166
+                }
+              },
+              {
+                "policy": "rsi_14h_25_50",
+                "fee_bps": 25,
+                "validation": {
+                  "return": 0.0,
+                  "exits": 0,
+                  "max_drawdown": 0.0
+                },
+                "test": {
+                  "return": 0.031109601691348576,
+                  "exits": 7,
+                  "max_drawdown": -0.10407110091743133
+                }
+              },
+              {
+                "policy": "rsi_14h_25_50",
+                "fee_bps": 60,
+                "validation": {
+                  "return": 0.0,
+                  "exits": 0,
+                  "max_drawdown": 0.0
+                },
+                "test": {
+                  "return": -0.018345478853940778,
+                  "exits": 7,
+                  "max_drawdown": -0.12321661970447118
+                }
+              },
+              {
+                "policy": "bollinger_20h_2sd",
+                "fee_bps": 10,
+                "validation": {
+                  "return": 0.028511203037089317,
+                  "exits": 22,
+                  "max_drawdown": -0.08890195209731722
+                },
+                "test": {
+                  "return": -0.07419937765171059,
+                  "exits": 30,
+                  "max_drawdown": -0.21764982209935957
+                }
+              },
+              {
+                "policy": "bollinger_20h_2sd",
+                "fee_bps": 25,
+                "validation": {
+                  "return": -0.03730169007291584,
+                  "exits": 22,
+                  "max_drawdown": -0.10747733527862458
+                },
+                "test": {
+                  "return": -0.1552883581536849,
+                  "exits": 30,
+                  "max_drawdown": -0.23984386152272452
+                }
+              },
+              {
+                "policy": "bollinger_20h_2sd",
+                "fee_bps": 60,
+                "validation": {
+                  "return": -0.17527093061269017,
+                  "exits": 22,
+                  "max_drawdown": -0.18379217363882616
+                },
+                "test": {
+                  "return": -0.3183090457417196,
+                  "exits": 30,
+                  "max_drawdown": -0.3704711129246987
+                }
+              },
+              {
+                "policy": "momentum_24h",
+                "fee_bps": 10,
+                "validation": {
+                  "return": 0.1466759379141549,
+                  "exits": 61,
+                  "max_drawdown": -0.19791063309409163
+                },
+                "test": {
+                  "return": -0.25080506041048944,
+                  "exits": 59,
+                  "max_drawdown": -0.32043546125048317
+                }
+              },
+              {
+                "policy": "momentum_24h",
+                "fee_bps": 25,
+                "validation": {
+                  "return": -0.04538384015249464,
+                  "exits": 61,
+                  "max_drawdown": -0.28123441252130954
+                },
+                "test": {
+                  "return": -0.37157236624044765,
+                  "exits": 59,
+                  "max_drawdown": -0.425701314334591
+                }
+              },
+              {
+                "policy": "momentum_24h",
+                "fee_bps": 60,
+                "validation": {
+                  "return": -0.37827102961922343,
+                  "exits": 61,
+                  "max_drawdown": -0.4743087180391907
+                },
+                "test": {
+                  "return": -0.5834354341799852,
+                  "exits": 59,
+                  "max_drawdown": -0.6126002070525083
+                }
+              },
+              {
+                "policy": "momentum_168h",
+                "fee_bps": 10,
+                "validation": {
+                  "return": 0.38089804467091315,
+                  "exits": 29,
+                  "max_drawdown": -0.16753530933837057
+                },
+                "test": {
+                  "return": -0.10113591971924207,
+                  "exits": 17,
+                  "max_drawdown": -0.1669634958290085
+                }
+              },
+              {
+                "policy": "momentum_168h",
+                "fee_bps": 25,
+                "validation": {
+                  "return": 0.26571419991003986,
+                  "exits": 29,
+                  "max_drawdown": -0.20542084981445086
+                },
+                "test": {
+                  "return": -0.14592275050296344,
+                  "exits": 17,
+                  "max_drawdown": -0.20371118113662479
+                }
+              },
+              {
+                "policy": "momentum_168h",
+                "fee_bps": 60,
+                "validation": {
+                  "return": 0.03241318546248628,
+                  "exits": 29,
+                  "max_drawdown": -0.2874449387591892
+                },
+                "test": {
+                  "return": -0.2421655985850485,
+                  "exits": 17,
+                  "max_drawdown": -0.28346447058225543
+                }
+              }
+            ]
+          }
+        }
+      }
+    },
+    "ZEC": {
+      "cadences": {
+        "5m": {
+          "data": {
+            "path": "/Users/mitch/dev/solmargintrader-wt-8d638e70/research/hype-suite/history/ZEC-USD_5m.csv.gz",
+            "bars_present": 84880,
+            "expected_slots": 84960,
+            "missing_slots": 80,
+            "contiguous_runs": 4,
+            "longest_run_bars": 58225,
+            "longest_run_start": "2026-05-08T19:55:00Z",
+            "longest_run_end": "2026-11-26T23:55:00Z",
+            "zero_volume_bars": 0
+          },
+          "patterns": [
+            {
+              "pattern": "UU",
+              "n": 13366,
+              "p_next_down": 0.5298518629358073,
+              "p_next_down_ci95": [
+                0.5213831023446316,
+                0.5383034692915569
+              ],
+              "p_value_vs_half": 5.111954529388918e-12,
+              "mean_next_return_bps": -0.09031939456637361,
+              "t_next_return": -0.2525511156752141,
+              "p_value_holm": 1.2268690870533403e-10,
+              "holm_family_size": 24
+            },
+            {
+              "pattern": "UD",
+              "n": 14899,
+              "p_next_down": 0.4962749177797168,
+              "p_next_down_ci95": [
+                0.48824854075263585,
+                0.5043032152124086
+              ],
+              "p_value_vs_half": 0.3631506578062114,
+              "mean_next_return_bps": 0.48405950458936486,
+              "t_next_return": 1.6201453924385882,
+              "p_value_holm": 1.0,
+              "holm_family_size": 24
+            },
+            {
+              "pattern": "DU",
+              "n": 14910,
+              "p_next_down": 0.5249496981891348,
+              "p_next_down_ci95": [
+                0.5169286668301686,
+                0.5329578766235264
+              ],
+              "p_value_vs_half": 1.107855436297944e-09,
+              "mean_next_return_bps": -0.7839640396193753,
+              "t_next_return": -2.516749524283036,
+              "p_value_holm": 2.548067503485271e-08,
+              "holm_family_size": 24
+            },
+            {
+              "pattern": "DD",
+              "n": 14358,
+              "p_next_down": 0.48425964619027717,
+              "p_next_down_ci95": [
+                0.47609054987372473,
+                0.4924371628646383
+              ],
+              "p_value_vs_half": 0.00016183278227217197,
+              "mean_next_return_bps": 0.4931005580526289,
+              "t_next_return": 1.449577420065059,
+              "p_value_holm": 0.0032366556454434393,
+              "holm_family_size": 24
+            }
+          ],
+          "strategy": {
+            "segment_bars": 58225,
+            "selected": {
+              "10": {
+                "selected_policy": "donchian_24h",
+                "validation": {
+                  "return": 0.09728276021498727,
+                  "exits": 13,
+                  "max_drawdown": -0.15511361208247076
+                },
+                "test": {
+                  "return": -0.297669661861812,
+                  "exits": 16,
+                  "max_drawdown": -0.3719794373864461
+                },
+                "buy_hold_test": {
+                  "return": -0.4104372720295987,
+                  "exits": 0,
+                  "max_drawdown": -0.5186209678581214
+                },
+                "configs_tested": 13
+              },
+              "25": {
+                "selected_policy": "donchian_24h",
+                "validation": {
+                  "return": 0.0536855354014627,
+                  "exits": 13,
+                  "max_drawdown": -0.16825778897193822
+                },
+                "test": {
+                  "return": -0.3306383169349535,
+                  "exits": 16,
+                  "max_drawdown": -0.3987788126561913
+                },
+                "buy_hold_test": {
+                  "return": -0.4104372720295987,
+                  "exits": 0,
+                  "max_drawdown": -0.5186209678581214
+                },
+                "configs_tested": 13
+              },
+              "60": {
+                "selected_policy": "donchian_24h",
+                "validation": {
+                  "return": -0.041651094740401295,
+                  "exits": 13,
+                  "max_drawdown": -0.20732135924500594
+                },
+                "test": {
+                  "return": -0.40184031674209175,
+                  "exits": 16,
+                  "max_drawdown": -0.45708626162545096
+                },
+                "buy_hold_test": {
+                  "return": -0.4104372720295987,
+                  "exits": 0,
+                  "max_drawdown": -0.5186209678581214
+                },
+                "configs_tested": 13
+              }
+            },
+            "all": [
+              {
+                "policy": "buy_hold",
+                "fee_bps": 10,
+                "validation": {
+                  "return": -0.026926110523756264,
+                  "exits": 0,
+                  "max_drawdown": -0.35861249703017006
+                },
+                "test": {
+                  "return": -0.4104372720295987,
+                  "exits": 0,
+                  "max_drawdown": -0.5186209678581214
+                }
+              },
+              {
+                "policy": "buy_hold",
+                "fee_bps": 25,
+                "validation": {
+                  "return": -0.026926110523756264,
+                  "exits": 0,
+                  "max_drawdown": -0.35861249703017006
+                },
+                "test": {
+                  "return": -0.4104372720295987,
+                  "exits": 0,
+                  "max_drawdown": -0.5186209678581214
+                }
+              },
+              {
+                "policy": "buy_hold",
+                "fee_bps": 60,
+                "validation": {
+                  "return": -0.026926110523756264,
+                  "exits": 0,
+                  "max_drawdown": -0.35861249703017006
+                },
+                "test": {
+                  "return": -0.4104372720295987,
+                  "exits": 0,
+                  "max_drawdown": -0.5186209678581214
+                }
+              },
+              {
+                "policy": "ema_cross_12h_48h",
+                "fee_bps": 10,
+                "validation": {
+                  "return": -0.16641716931511086,
+                  "exits": 14,
+                  "max_drawdown": -0.29718355903360694
+                },
+                "test": {
+                  "return": -0.3517328015668656,
+                  "exits": 19,
+                  "max_drawdown": -0.41535469384695367
+                }
+              },
+              {
+                "policy": "ema_cross_12h_48h",
+                "fee_bps": 25,
+                "validation": {
+                  "return": -0.20198253077573058,
+                  "exits": 14,
+                  "max_drawdown": -0.3180016276714229
+                },
+                "test": {
+                  "return": -0.38773549802814,
+                  "exits": 19,
+                  "max_drawdown": -0.443656356995625
+                }
+              },
+              {
+                "policy": "ema_cross_12h_48h",
+                "fee_bps": 60,
+                "validation": {
+                  "return": -0.27936306942317624,
+                  "exits": 14,
+                  "max_drawdown": -0.36432260911393566
+                },
+                "test": {
+                  "return": -0.46433660263587584,
+                  "exits": 19,
+                  "max_drawdown": -0.5046239836402532
+                }
+              },
+              {
+                "policy": "ema_cross_24h_96h",
+                "fee_bps": 10,
+                "validation": {
+                  "return": -0.09892172548736344,
+                  "exits": 5,
+                  "max_drawdown": -0.26292201771260815
+                },
+                "test": {
+                  "return": -0.15064781160031837,
+                  "exits": 9,
+                  "max_drawdown": -0.26452856170897543
+                }
+              },
+              {
+                "policy": "ema_cross_24h_96h",
+                "fee_bps": 25,
+                "validation": {
+                  "return": -0.11369649814141924,
+                  "exits": 5,
+                  "max_drawdown": -0.26953956263121115
+                },
+                "test": {
+                  "return": -0.17331737331984298,
+                  "exits": 9,
+                  "max_drawdown": -0.2830860694164
+                }
+              },
+              {
+                "policy": "ema_cross_24h_96h",
+                "fee_bps": 60,
+                "validation": {
+                  "return": -0.1473183423950717,
+                  "exits": 5,
+                  "max_drawdown": -0.28478818471109857
+                },
+                "test": {
+                  "return": -0.22401091579094112,
+                  "exits": 9,
+                  "max_drawdown": -0.3246875336906797
+                }
+              },
+              {
+                "policy": "ema_cross_24h_168h",
+                "fee_bps": 10,
+                "validation": {
+                  "return": 0.05066010093669271,
+                  "exits": 3,
+                  "max_drawdown": -0.20007569487321086
+                },
+                "test": {
+                  "return": -0.15678508824536752,
+                  "exits": 6,
+                  "max_drawdown": -0.2725137854790878
+                }
+              },
+              {
+                "policy": "ema_cross_24h_168h",
+                "fee_bps": 25,
+                "validation": {
+                  "return": 0.0396758461663842,
+                  "exits": 3,
+                  "max_drawdown": -0.20247785041663513
+                },
+                "test": {
+                  "return": -0.17185683811818064,
+                  "exits": 6,
+                  "max_drawdown": -0.28337121143815147
+                }
+              },
+              {
+                "policy": "ema_cross_24h_168h",
+                "fee_bps": 60,
+                "validation": {
+                  "return": 0.014428002787830518,
+                  "exits": 3,
+                  "max_drawdown": -0.20806883243540786
+                },
+                "test": {
+                  "return": -0.20606885668561592,
+                  "exits": 6,
+                  "max_drawdown": -0.30814022839802147
+                }
+              },
+              {
+                "policy": "ema_cross_48h_168h",
+                "fee_bps": 10,
+                "validation": {
+                  "return": 0.08651942495644271,
+                  "exits": 1,
+                  "max_drawdown": -0.21131047625620125
+                },
+                "test": {
+                  "return": -0.22790989493911828,
+                  "exits": 5,
+                  "max_drawdown": -0.28183726208781523
+                }
+              },
+              {
+                "policy": "ema_cross_48h_168h",
+                "fee_bps": 25,
+                "validation": {
+                  "return": 0.08164294682471329,
+                  "exits": 1,
+                  "max_drawdown": -0.2136693316396917
+                },
+                "test": {
+                  "return": -0.23942248953099032,
+                  "exits": 5,
+                  "max_drawdown": -0.29042288274009453
+                }
+              },
+              {
+                "policy": "ema_cross_48h_168h",
+                "fee_bps": 60,
+                "validation": {
+                  "return": 0.07032128731590914,
+                  "exits": 1,
+                  "max_drawdown": -0.21915958911032862
+                },
+                "test": {
+                  "return": -0.2656866869585983,
+                  "exits": 5,
+                  "max_drawdown": -0.31109924579974313
+                }
+              },
+              {
+                "policy": "donchian_24h",
+                "fee_bps": 10,
+                "validation": {
+                  "return": 0.09728276021498727,
+                  "exits": 13,
+                  "max_drawdown": -0.15511361208247076
+                },
+                "test": {
+                  "return": -0.297669661861812,
+                  "exits": 16,
+                  "max_drawdown": -0.3719794373864461
+                }
+              },
+              {
+                "policy": "donchian_24h",
+                "fee_bps": 25,
+                "validation": {
+                  "return": 0.0536855354014627,
+                  "exits": 13,
+                  "max_drawdown": -0.16825778897193822
+                },
+                "test": {
+                  "return": -0.3306383169349535,
+                  "exits": 16,
+                  "max_drawdown": -0.3987788126561913
+                }
+              },
+              {
+                "policy": "donchian_24h",
+                "fee_bps": 60,
+                "validation": {
+                  "return": -0.041651094740401295,
+                  "exits": 13,
+                  "max_drawdown": -0.20732135924500594
+                },
+                "test": {
+                  "return": -0.40184031674209175,
+                  "exits": 16,
+                  "max_drawdown": -0.45708626162545096
+                }
+              },
+              {
+                "policy": "donchian_72h",
+                "fee_bps": 10,
+                "validation": {
+                  "return": -0.23896669319789454,
+                  "exits": 6,
+                  "max_drawdown": -0.2541370418409131
+                },
+                "test": {
+                  "return": -0.2312907756172765,
+                  "exits": 6,
+                  "max_drawdown": -0.3191500824887429
+                }
+              },
+              {
+                "policy": "donchian_72h",
+                "fee_bps": 25,
+                "validation": {
+                  "return": -0.2536819877028639,
+                  "exits": 6,
+                  "max_drawdown": -0.2685590033918188
+                },
+                "test": {
+                  "return": -0.24503601408701658,
+                  "exits": 6,
+                  "max_drawdown": -0.3303241679221055
+                }
+              },
+              {
+                "policy": "donchian_72h",
+                "fee_bps": 60,
+                "validation": {
+                  "return": -0.28700219979225783,
+                  "exits": 6,
+                  "max_drawdown": -0.3012150142830031
+                },
+                "test": {
+                  "return": -0.27623659836272463,
+                  "exits": 6,
+                  "max_drawdown": -0.35575160316253374
+                }
+              },
+              {
+                "policy": "donchian_168h",
+                "fee_bps": 10,
+                "validation": {
+                  "return": 0.04179441299636277,
+                  "exits": 1,
+                  "max_drawdown": -0.18274461512406925
+                },
+                "test": {
+                  "return": -0.3018616532487818,
+                  "exits": 3,
+                  "max_drawdown": -0.34408402935917637
+                }
+              },
+              {
+                "policy": "donchian_168h",
+                "fee_bps": 25,
+                "validation": {
+                  "return": 0.03711136523959779,
+                  "exits": 1,
+                  "max_drawdown": -0.18519464430545296
+                },
+                "test": {
+                  "return": -0.30813953618560985,
+                  "exits": 3,
+                  "max_drawdown": -0.3489983501845393
+                }
+              },
+              {
+                "policy": "donchian_168h",
+                "fee_bps": 60,
+                "validation": {
+                  "return": 0.02623887617683951,
+                  "exits": 1,
+                  "max_drawdown": -0.1908970759219718
+                },
+                "test": {
+                  "return": -0.32260519588104575,
+                  "exits": 3,
+                  "max_drawdown": -0.36035060683459763
+                }
+              },
+              {
+                "policy": "rsi_14h_30_55",
+                "fee_bps": 10,
+                "validation": {
+                  "return": 0.0,
+                  "exits": 0,
+                  "max_drawdown": 0.0
+                },
+                "test": {
+                  "return": 0.0,
+                  "exits": 0,
+                  "max_drawdown": 0.0
+                }
+              },
+              {
+                "policy": "rsi_14h_30_55",
+                "fee_bps": 25,
+                "validation": {
+                  "return": 0.0,
+                  "exits": 0,
+                  "max_drawdown": 0.0
+                },
+                "test": {
+                  "return": 0.0,
+                  "exits": 0,
+                  "max_drawdown": 0.0
+                }
+              },
+              {
+                "policy": "rsi_14h_30_55",
+                "fee_bps": 60,
+                "validation": {
+                  "return": 0.0,
+                  "exits": 0,
+                  "max_drawdown": 0.0
+                },
+                "test": {
+                  "return": 0.0,
+                  "exits": 0,
+                  "max_drawdown": 0.0
+                }
+              },
+              {
+                "policy": "rsi_14h_25_50",
+                "fee_bps": 10,
+                "validation": {
+                  "return": 0.0,
+                  "exits": 0,
+                  "max_drawdown": 0.0
+                },
+                "test": {
+                  "return": 0.0,
+                  "exits": 0,
+                  "max_drawdown": 0.0
+                }
+              },
+              {
+                "policy": "rsi_14h_25_50",
+                "fee_bps": 25,
+                "validation": {
+                  "return": 0.0,
+                  "exits": 0,
+                  "max_drawdown": 0.0
+                },
+                "test": {
+                  "return": 0.0,
+                  "exits": 0,
+                  "max_drawdown": 0.0
+                }
+              },
+              {
+                "policy": "rsi_14h_25_50",
+                "fee_bps": 60,
+                "validation": {
+                  "return": 0.0,
+                  "exits": 0,
+                  "max_drawdown": 0.0
+                },
+                "test": {
+                  "return": 0.0,
+                  "exits": 0,
+                  "max_drawdown": 0.0
+                }
+              },
+              {
+                "policy": "bollinger_20h_2sd",
+                "fee_bps": 10,
+                "validation": {
+                  "return": -0.18755529755233558,
+                  "exits": 24,
+                  "max_drawdown": -0.2184789132158379
+                },
+                "test": {
+                  "return": -0.16598179720300188,
+                  "exits": 31,
+                  "max_drawdown": -0.3353293694767918
+                }
+              },
+              {
+                "policy": "bollinger_20h_2sd",
+                "fee_bps": 25,
+                "validation": {
+                  "return": -0.24412279109921464,
+                  "exits": 24,
+                  "max_drawdown": -0.26850455423259856
+                },
+                "test": {
+                  "return": -0.23902577371107891,
+                  "exits": 31,
+                  "max_drawdown": -0.3665264853375988
+                }
+              },
+              {
+                "policy": "bollinger_20h_2sd",
+                "fee_bps": 60,
+                "validation": {
+                  "return": -0.36153833879536446,
+                  "exits": 24,
+                  "max_drawdown": -0.376101013300296
+                },
+                "test": {
+                  "return": -0.3858746905063074,
+                  "exits": 31,
+                  "max_drawdown": -0.4429222602884899
+                }
+              },
+              {
+                "policy": "momentum_24h",
+                "fee_bps": 10,
+                "validation": {
+                  "return": -0.37485431859600116,
+                  "exits": 161,
+                  "max_drawdown": -0.46111995606927736
+                },
+                "test": {
+                  "return": -0.4525994221435722,
+                  "exits": 156,
+                  "max_drawdown": -0.5338339392736795
+                }
+              },
+              {
+                "policy": "momentum_24h",
+                "fee_bps": 25,
+                "validation": {
+                  "return": -0.6153089298750593,
+                  "exits": 161,
+                  "max_drawdown": -0.6327087064608634
+                },
+                "test": {
+                  "return": -0.6574876261506659,
+                  "exits": 156,
+                  "max_drawdown": -0.697154330704035
+                }
+              },
+              {
+                "policy": "momentum_24h",
+                "fee_bps": 60,
+                "validation": {
+                  "return": -0.8764485362692245,
+                  "exits": 161,
+                  "max_drawdown": -0.8789113966504962
+                },
+                "test": {
+                  "return": -0.8856204147491554,
+                  "exits": 156,
+                  "max_drawdown": -0.8898917010019926
+                }
+              },
+              {
+                "policy": "momentum_168h",
+                "fee_bps": 10,
+                "validation": {
+                  "return": -0.06338898058715614,
+                  "exits": 39,
+                  "max_drawdown": -0.18446556590374352
+                },
+                "test": {
+                  "return": -0.34142444943498695,
+                  "exits": 90,
+                  "max_drawdown": -0.37872244271149136
+                }
+              },
+              {
+                "policy": "momentum_168h",
+                "fee_bps": 25,
+                "validation": {
+                  "return": -0.1682355362612744,
+                  "exits": 39,
+                  "max_drawdown": -0.26174484162604783
+                },
+                "test": {
+                  "return": -0.49750550630200296,
+                  "exits": 90,
+                  "max_drawdown": -0.5078168930924767
+                }
+              },
+              {
+                "policy": "momentum_168h",
+                "fee_bps": 60,
+                "validation": {
+                  "return": -0.3699223375869277,
+                  "exits": 39,
+                  "max_drawdown": -0.42076504816230165
+                },
+                "test": {
+                  "return": -0.7331076443331273,
+                  "exits": 90,
+                  "max_drawdown": -0.7331076443331273
+                }
+              }
+            ]
+          }
+        },
+        "1h": {
+          "data": {
+            "path": "/Users/mitch/dev/solmargintrader-wt-8d638e70/research/hype-suite/history/ZEC-USD_1h.csv.gz",
+            "bars_present": 7075,
+            "expected_slots": 7080,
+            "missing_slots": 5,
+            "contiguous_runs": 2,
+            "longest_run_bars": 4865,
+            "longest_run_start": "2026-05-08T07:00:00Z",
+            "longest_run_end": "2026-11-26T23:00:00Z",
+            "zero_volume_bars": 0
+          },
+          "patterns": [
+            {
+              "pattern": "UU",
+              "n": 1125,
+              "p_next_down": 0.5315555555555556,
+              "p_next_down_ci95": [
+                0.5023384568515376,
+                0.560557886511296
+              ],
+              "p_value_vs_half": 0.03427588982498817,
+              "mean_next_return_bps": 2.136829514345161,
+              "t_next_return": 0.5206608888925292,
+              "p_value_holm": 0.4455865677248462,
+              "holm_family_size": 24
+            },
+            {
+              "pattern": "UD",
+              "n": 1249,
+              "p_next_down": 0.5276220976781425,
+              "p_next_down_ci95": [
+                0.49989292772085425,
+                0.5551818780423684
+              ],
+              "p_value_vs_half": 0.05089122767390822,
+              "mean_next_return_bps": -5.534365157260185,
+              "t_next_return": -1.435198218882668,
+              "p_value_holm": 0.5598035044129904,
+              "holm_family_size": 24
+            },
+            {
+              "pattern": "DU",
+              "n": 1250,
+              "p_next_down": 0.5224,
+              "p_next_down_ci95": [
+                0.49468349025682984,
+                0.5499792536677205
+              ],
+              "p_value_vs_half": 0.11321210983474539,
+              "mean_next_return_bps": 2.438674275722761,
+              "t_next_return": 0.6897986153614347,
+              "p_value_holm": 1.0,
+              "holm_family_size": 24
+            },
+            {
+              "pattern": "DD",
+              "n": 1226,
+              "p_next_down": 0.4632952691680261,
+              "p_next_down_ci95": [
+                0.43554075976764645,
+                0.4912790759517746
+              ],
+              "p_value_vs_half": 0.010158711712753187,
+              "mean_next_return_bps": 2.4874601911143293,
+              "t_next_return": 0.6761571448961166,
+              "p_value_holm": 0.15019337215583745,
+              "holm_family_size": 24
+            }
+          ],
+          "levels": {
+            "pivot_k": 6,
+            "horizon_bars": 24,
+            "band": 0.005,
+            "break_pct": 0.01,
+            "support": {
+              "pivots": 250,
+              "real_events": 95,
+              "control_events": 131,
+              "break_rate_real": 0.7157894736842105,
+              "break_rate_control": 0.5877862595419847,
+              "difference_real_minus_control": 0.12800321414222582,
+              "z": 1.980824661293174,
+              "p_value": 0.047610940179786045
+            },
+            "resistance": {
+              "pivots": 253,
+              "real_events": 97,
+              "control_events": 128,
+              "break_rate_real": 0.6494845360824743,
+              "break_rate_control": 0.6484375,
+              "difference_real_minus_control": 0.0010470360824742508,
+              "z": 0.0162949782780821,
+              "p_value": 0.9869990637642991
+            }
+          },
+          "strategy": {
+            "segment_bars": 4865,
+            "selected": {
+              "10": {
+                "selected_policy": "bollinger_20h_2sd",
+                "validation": {
+                  "return": -0.03948380114021244,
+                  "exits": 19,
+                  "max_drawdown": -0.14454418643841416
+                },
+                "test": {
+                  "return": -0.02625129707881091,
+                  "exits": 22,
+                  "max_drawdown": -0.27467659550318346
+                },
+                "buy_hold_test": {
+                  "return": -0.4098736498879191,
+                  "exits": 0,
+                  "max_drawdown": -0.49563416258627424
+                },
+                "configs_tested": 13
+              },
+              "25": {
+                "selected_policy": "momentum_168h",
+                "validation": {
+                  "return": -0.08721515443947747,
+                  "exits": 11,
+                  "max_drawdown": -0.19436697799946068
+                },
+                "test": {
+                  "return": -0.23621546506565216,
+                  "exits": 23,
+                  "max_drawdown": -0.290833001800509
+                },
+                "buy_hold_test": {
+                  "return": -0.4098736498879191,
+                  "exits": 0,
+                  "max_drawdown": -0.49563416258627424
+                },
+                "configs_tested": 13
+              },
+              "60": {
+                "selected_policy": "momentum_168h",
+                "validation": {
+                  "return": -0.15821739343383878,
+                  "exits": 11,
+                  "max_drawdown": -0.21478889290687886
+                },
+                "test": {
+                  "return": -0.3502712495140968,
+                  "exits": 23,
+                  "max_drawdown": -0.3860327146402336
+                },
+                "buy_hold_test": {
+                  "return": -0.4098736498879191,
+                  "exits": 0,
+                  "max_drawdown": -0.49563416258627424
+                },
+                "configs_tested": 13
+              }
+            },
+            "all": [
+              {
+                "policy": "buy_hold",
+                "fee_bps": 10,
+                "validation": {
+                  "return": -0.03747353967617917,
+                  "exits": 0,
+                  "max_drawdown": -0.3551878162940424
+                },
+                "test": {
+                  "return": -0.4098736498879191,
+                  "exits": 0,
+                  "max_drawdown": -0.49563416258627424
+                }
+              },
+              {
+                "policy": "buy_hold",
+                "fee_bps": 25,
+                "validation": {
+                  "return": -0.03747353967617917,
+                  "exits": 0,
+                  "max_drawdown": -0.3551878162940424
+                },
+                "test": {
+                  "return": -0.4098736498879191,
+                  "exits": 0,
+                  "max_drawdown": -0.49563416258627424
+                }
+              },
+              {
+                "policy": "buy_hold",
+                "fee_bps": 60,
+                "validation": {
+                  "return": -0.03747353967617917,
+                  "exits": 0,
+                  "max_drawdown": -0.3551878162940424
+                },
+                "test": {
+                  "return": -0.4098736498879191,
+                  "exits": 0,
+                  "max_drawdown": -0.49563416258627424
+                }
+              },
+              {
+                "policy": "ema_cross_12h_48h",
+                "fee_bps": 10,
+                "validation": {
+                  "return": -0.1928755727544038,
+                  "exits": 15,
+                  "max_drawdown": -0.3010292087495633
+                },
+                "test": {
+                  "return": -0.32550682724343627,
+                  "exits": 18,
+                  "max_drawdown": -0.393067554053839
+                }
+              },
+              {
+                "policy": "ema_cross_12h_48h",
+                "fee_bps": 25,
+                "validation": {
+                  "return": -0.22963618124225083,
+                  "exits": 15,
+                  "max_drawdown": -0.32480547300711216
+                },
+                "test": {
+                  "return": -0.3610274074973667,
+                  "exits": 18,
+                  "max_drawdown": -0.42070661316716107
+                }
+              },
+              {
+                "policy": "ema_cross_12h_48h",
+                "fee_bps": 60,
+                "validation": {
+                  "return": -0.3092200576063041,
+                  "exits": 15,
+                  "max_drawdown": -0.3773120750416681
+                },
+                "test": {
+                  "return": -0.436982245413159,
+                  "exits": 18,
+                  "max_drawdown": -0.4805436655032195
+                }
+              },
+              {
+                "policy": "ema_cross_24h_96h",
+                "fee_bps": 10,
+                "validation": {
+                  "return": -0.1258105459957196,
+                  "exits": 5,
+                  "max_drawdown": -0.261593154163704
+                },
+                "test": {
+                  "return": -0.1613613960476582,
+                  "exits": 7,
+                  "max_drawdown": -0.2668746179471272
+                }
+              },
+              {
+                "policy": "ema_cross_24h_96h",
+                "fee_bps": 25,
+                "validation": {
+                  "return": -0.14015011958380952,
+                  "exits": 5,
+                  "max_drawdown": -0.26933709566595787
+                },
+                "test": {
+                  "return": -0.17878137975974473,
+                  "exits": 7,
+                  "max_drawdown": -0.28103769220659447
+                }
+              },
+              {
+                "policy": "ema_cross_24h_96h",
+                "fee_bps": 60,
+                "validation": {
+                  "return": -0.17278128802385595,
+                  "exits": 5,
+                  "max_drawdown": -0.28713607968828114
+                },
+                "test": {
+                  "return": -0.21812978178530185,
+                  "exits": 7,
+                  "max_drawdown": -0.31310836166550404
+                }
+              },
+              {
+                "policy": "ema_cross_24h_168h",
+                "fee_bps": 10,
+                "validation": {
+                  "return": 0.018429189022213244,
+                  "exits": 3,
+                  "max_drawdown": -0.19163772112964939
+                },
+                "test": {
+                  "return": -0.15967676293691035,
+                  "exits": 6,
+                  "max_drawdown": -0.2750056561343004
+                }
+              },
+              {
+                "policy": "ema_cross_24h_168h",
+                "fee_bps": 25,
+                "validation": {
+                  "return": 0.007817970124542217,
+                  "exits": 3,
+                  "max_drawdown": -0.1940730280912617
+                },
+                "test": {
+                  "return": -0.17469407223708378,
+                  "exits": 6,
+                  "max_drawdown": -0.2858474208774784
+                }
+              },
+              {
+                "policy": "ema_cross_24h_168h",
+                "fee_bps": 60,
+                "validation": {
+                  "return": -0.01657368683198024,
+                  "exits": 3,
+                  "max_drawdown": -0.19974112384770293
+                },
+                "test": {
+                  "return": -0.2087826933130673,
+                  "exits": 6,
+                  "max_drawdown": -0.3105795922001059
+                }
+              },
+              {
+                "policy": "ema_cross_48h_168h",
+                "fee_bps": 10,
+                "validation": {
+                  "return": 0.056216205148854614,
+                  "exits": 1,
+                  "max_drawdown": -0.19362169391908268
+                },
+                "test": {
+                  "return": -0.22352627770908884,
+                  "exits": 5,
+                  "max_drawdown": -0.270958725774902
+                }
+              },
+              {
+                "policy": "ema_cross_48h_168h",
+                "fee_bps": 25,
+                "validation": {
+                  "return": 0.05153280428258178,
+                  "exits": 1,
+                  "max_drawdown": -0.19598981661584558
+                },
+                "test": {
+                  "return": -0.23517099640762407,
+                  "exits": 5,
+                  "max_drawdown": -0.2807991318138956
+                }
+              },
+              {
+                "policy": "ema_cross_48h_168h",
+                "fee_bps": 60,
+                "validation": {
+                  "return": 0.040658741596200754,
+                  "exits": 1,
+                  "max_drawdown": -0.2015019001707511
+                },
+                "test": {
+                  "return": -0.26173313810608667,
+                  "exits": 5,
+                  "max_drawdown": -0.3033023988739305
+                }
+              },
+              {
+                "policy": "donchian_24h",
+                "fee_bps": 10,
+                "validation": {
+                  "return": -0.159484747454958,
+                  "exits": 12,
+                  "max_drawdown": -0.2195377228771922
+                },
+                "test": {
+                  "return": -0.15320356341372554,
+                  "exits": 9,
+                  "max_drawdown": -0.27816624889323005
+                }
+              },
+              {
+                "policy": "donchian_24h",
+                "fee_bps": 25,
+                "validation": {
+                  "return": -0.19053909820320947,
+                  "exits": 12,
+                  "max_drawdown": -0.2392240442100637
+                },
+                "test": {
+                  "return": -0.17578091402963159,
+                  "exits": 9,
+                  "max_drawdown": -0.29423868845191725
+                }
+              },
+              {
+                "policy": "donchian_24h",
+                "fee_bps": 60,
+                "validation": {
+                  "return": -0.25877424948194816,
+                  "exits": 12,
+                  "max_drawdown": -0.283356623041896
+                },
+                "test": {
+                  "return": -0.22627056511499377,
+                  "exits": 9,
+                  "max_drawdown": -0.3343887479951646
+                }
+              },
+              {
+                "policy": "donchian_72h",
+                "fee_bps": 10,
+                "validation": {
+                  "return": 0.16798769956455617,
+                  "exits": 2,
+                  "max_drawdown": -0.16871810515393293
+                },
+                "test": {
+                  "return": -0.25966168769320186,
+                  "exits": 6,
+                  "max_drawdown": -0.335795525313073
+                }
+              },
+              {
+                "policy": "donchian_72h",
+                "fee_bps": 25,
+                "validation": {
+                  "return": 0.1592594111022978,
+                  "exits": 2,
+                  "max_drawdown": -0.17121904325409687
+                },
+                "test": {
+                  "return": -0.2729251608918102,
+                  "exits": 6,
+                  "max_drawdown": -0.34668810990336263
+                }
+              },
+              {
+                "policy": "donchian_72h",
+                "fee_bps": 60,
+                "validation": {
+                  "return": 0.13909622548963507,
+                  "exits": 2,
+                  "max_drawdown": -0.17703991322659207
+                },
+                "test": {
+                  "return": -0.30303057189756544,
+                  "exits": 6,
+                  "max_drawdown": -0.37147545234722357
+                }
+              },
+              {
+                "policy": "donchian_168h",
+                "fee_bps": 10,
+                "validation": {
+                  "return": -0.03294411426413557,
+                  "exits": 1,
+                  "max_drawdown": -0.18323331214196892
+                },
+                "test": {
+                  "return": -0.3295887478982408,
+                  "exits": 3,
+                  "max_drawdown": -0.3625760472219648
+                }
+              },
+              {
+                "policy": "donchian_168h",
+                "fee_bps": 25,
+                "validation": {
+                  "return": -0.03734409408838535,
+                  "exits": 1,
+                  "max_drawdown": -0.18572661793129952
+                },
+                "test": {
+                  "return": -0.3356086054707965,
+                  "exits": 3,
+                  "max_drawdown": -0.3673628245484719
+                }
+              },
+              {
+                "policy": "donchian_168h",
+                "fee_bps": 60,
+                "validation": {
+                  "return": -0.047558774545987115,
+                  "exits": 1,
+                  "max_drawdown": -0.191529513453377
+                },
+                "test": {
+                  "return": -0.3494799704963413,
+                  "exits": 3,
+                  "max_drawdown": -0.37842019468233123
+                }
+              },
+              {
+                "policy": "rsi_14h_30_55",
+                "fee_bps": 10,
+                "validation": {
+                  "return": 0.19615590344159695,
+                  "exits": 9,
+                  "max_drawdown": -0.10349102243615482
+                },
+                "test": {
+                  "return": -0.1887746025126361,
+                  "exits": 8,
+                  "max_drawdown": -0.3762901324493545
+                }
+              },
+              {
+                "policy": "rsi_14h_30_55",
+                "fee_bps": 25,
+                "validation": {
+                  "return": 0.16424966503069238,
+                  "exits": 9,
+                  "max_drawdown": -0.10618443323919102
+                },
+                "test": {
+                  "return": -0.206924142121786,
+                  "exits": 8,
+                  "max_drawdown": -0.38009055791097535
+                }
+              },
+              {
+                "policy": "rsi_14h_30_55",
+                "fee_bps": 60,
+                "validation": {
+                  "return": 0.09289921191305073,
+                  "exits": 9,
+                  "max_drawdown": -0.11245330053028146
+                },
+                "test": {
+                  "return": -0.24780980417594178,
+                  "exits": 8,
+                  "max_drawdown": -0.3959311377080499
+                }
+              },
+              {
+                "policy": "rsi_14h_25_50",
+                "fee_bps": 10,
+                "validation": {
+                  "return": 0.0998335892573976,
+                  "exits": 5,
+                  "max_drawdown": -0.13497526524047598
+                },
+                "test": {
+                  "return": 0.06695339309016712,
+                  "exits": 6,
+                  "max_drawdown": -0.16863934005217418
+                }
+              },
+              {
+                "policy": "rsi_14h_25_50",
+                "fee_bps": 25,
+                "validation": {
+                  "return": 0.08343425229664758,
+                  "exits": 5,
+                  "max_drawdown": -0.13757408691856576
+                },
+                "test": {
+                  "return": 0.04790411952072815,
+                  "exits": 6,
+                  "max_drawdown": -0.1736323725172394
+                }
+              },
+              {
+                "policy": "rsi_14h_25_50",
+                "fee_bps": 60,
+                "validation": {
+                  "return": 0.04602169576626314,
+                  "exits": 5,
+                  "max_drawdown": -0.14362279964919977
+                },
+                "test": {
+                  "return": 0.004661976928862499,
+                  "exits": 6,
+                  "max_drawdown": -0.18519530582986066
+                }
+              },
+              {
+                "policy": "bollinger_20h_2sd",
+                "fee_bps": 10,
+                "validation": {
+                  "return": -0.03948380114021244,
+                  "exits": 19,
+                  "max_drawdown": -0.14454418643841416
+                },
+                "test": {
+                  "return": -0.02625129707881091,
+                  "exits": 22,
+                  "max_drawdown": -0.27467659550318346
+                }
+              },
+              {
+                "policy": "bollinger_20h_2sd",
+                "fee_bps": 25,
+                "validation": {
+                  "return": -0.09299234352384123,
+                  "exits": 19,
+                  "max_drawdown": -0.15489176930323412
+                },
+                "test": {
+                  "return": -0.08726609275787955,
+                  "exits": 22,
+                  "max_drawdown": -0.29171169686610465
+                }
+              },
+              {
+                "policy": "bollinger_20h_2sd",
+                "fee_bps": 60,
+                "validation": {
+                  "return": -0.20680659550769664,
+                  "exits": 19,
+                  "max_drawdown": -0.23970438941387495
+                },
+                "test": {
+                  "return": -0.21547600120232102,
+                  "exits": 22,
+                  "max_drawdown": -0.3474568045787858
+                }
+              },
+              {
+                "policy": "momentum_24h",
+                "fee_bps": 10,
+                "validation": {
+                  "return": -0.28667742041655087,
+                  "exits": 45,
+                  "max_drawdown": -0.3833639842560673
+                },
+                "test": {
+                  "return": -0.3237029107743058,
+                  "exits": 40,
+                  "max_drawdown": -0.4237320536681969
+                }
+              },
+              {
+                "policy": "momentum_24h",
+                "fee_bps": 25,
+                "validation": {
+                  "return": -0.37784957355591553,
+                  "exits": 45,
+                  "max_drawdown": -0.44574906628607847
+                },
+                "test": {
+                  "return": -0.4002118612841171,
+                  "exits": 40,
+                  "max_drawdown": -0.4832480268660517
+                }
+              },
+              {
+                "policy": "momentum_24h",
+                "fee_bps": 60,
+                "validation": {
+                  "return": -0.5481759710739166,
+                  "exits": 45,
+                  "max_drawdown": -0.5681337119999817
+                },
+                "test": {
+                  "return": -0.5470674576085522,
+                  "exits": 40,
+                  "max_drawdown": -0.6001245212169197
+                }
+              },
+              {
+                "policy": "momentum_168h",
+                "fee_bps": 10,
+                "validation": {
+                  "return": -0.05506311984715517,
+                  "exits": 11,
+                  "max_drawdown": -0.18946159836092424
+                },
+                "test": {
+                  "return": -0.18153944193978122,
+                  "exits": 23,
+                  "max_drawdown": -0.24575704540982124
+                }
+              },
+              {
+                "policy": "momentum_168h",
+                "fee_bps": 25,
+                "validation": {
+                  "return": -0.08721515443947747,
+                  "exits": 11,
+                  "max_drawdown": -0.19436697799946068
+                },
+                "test": {
+                  "return": -0.23621546506565216,
+                  "exits": 23,
+                  "max_drawdown": -0.290833001800509
+                }
+              },
+              {
+                "policy": "momentum_168h",
+                "fee_bps": 60,
+                "validation": {
+                  "return": -0.15821739343383878,
+                  "exits": 11,
+                  "max_drawdown": -0.21478889290687886
+                },
+                "test": {
+                  "return": -0.3502712495140968,
+                  "exits": 23,
+                  "max_drawdown": -0.3860327146402336
+                }
+              }
+            ]
+          }
+        }
+      }
+    },
+    "BTC": {
+      "cadences": {
+        "5m": {
+          "data": {
+            "path": "/Users/mitch/dev/solmargintrader-wt-8d638e70/research/hype-suite/history/BTC-USD_5m.csv.gz",
+            "bars_present": 84881,
+            "expected_slots": 84960,
+            "missing_slots": 79,
+            "contiguous_runs": 4,
+            "longest_run_bars": 58225,
+            "longest_run_start": "2026-05-08T19:55:00Z",
+            "longest_run_end": "2026-11-26T23:55:00Z",
+            "zero_volume_bars": 0
+          },
+          "patterns": [
+            {
+              "pattern": "UU",
+              "n": 13906,
+              "p_next_down": 0.5202071048468287,
+              "p_next_down_ci95": [
+                0.5118991530505526,
+                0.5285038955148336
+              ],
+              "p_value_vs_half": 1.8811202530217581e-06,
+              "mean_next_return_bps": -0.18012588390005643,
+              "t_next_return": -1.603511782455819,
+              "p_value_holm": 4.138464556647868e-05,
+              "holm_family_size": 24
+            },
+            {
+              "pattern": "UD",
+              "n": 14920,
+              "p_next_down": 0.49718498659517424,
+              "p_next_down_ci95": [
+                0.48916392829177574,
+                0.5052074940908969
+              ],
+              "p_value_vs_half": 0.49164585895870644,
+              "mean_next_return_bps": -0.09548746954667797,
+              "t_next_return": -1.0074285708909902,
+              "p_value_holm": 1.0,
+              "holm_family_size": 24
+            },
+            {
+              "pattern": "DU",
+              "n": 14908,
+              "p_next_down": 0.514958411591092,
+              "p_next_down_ci95": [
+                0.5069330122389138,
+                0.522976104031523
+              ],
+              "p_value_vs_half": 0.0002594024498145158,
+              "mean_next_return_bps": -0.11792286655602309,
+              "t_next_return": -1.1885260086423686,
+              "p_value_holm": 0.0049286465464758004,
+              "holm_family_size": 24
+            },
+            {
+              "pattern": "DD",
+              "n": 14287,
+              "p_next_down": 0.4812066913977742,
+              "p_next_down_ci95": [
+                0.47301988754567004,
+                0.4894035987448262
+              ],
+              "p_value_vs_half": 7.03383159418197e-06,
+              "mean_next_return_bps": 0.19992924274511453,
+              "t_next_return": 1.7561577240581558,
+              "p_value_holm": 0.00014771046347782137,
+              "holm_family_size": 24
+            }
+          ],
+          "strategy": {
+            "segment_bars": 58225,
+            "selected": {
+              "10": {
+                "selected_policy": "ema_cross_12h_48h",
+                "validation": {
+                  "return": -0.03614222163905312,
+                  "exits": 13,
+                  "max_drawdown": -0.11875092779287866
+                },
+                "test": {
+                  "return": -0.1489841645891573,
+                  "exits": 11,
+                  "max_drawdown": -0.15920720421765022
+                },
+                "buy_hold_test": {
+                  "return": -0.2569001745032726,
+                  "exits": 0,
+                  "max_drawdown": -0.3441126018678473
+                },
+                "configs_tested": 13
+              },
+              "25": {
+                "selected_policy": "ema_cross_12h_48h",
+                "validation": {
+                  "return": -0.07446413263617946,
+                  "exits": 13,
+                  "max_drawdown": -0.14323502268999555
+                },
+                "test": {
+                  "return": -0.17543462218714445,
+                  "exits": 11,
+                  "max_drawdown": -0.18288425126752317
+                },
+                "buy_hold_test": {
+                  "return": -0.2569001745032726,
+                  "exits": 0,
+                  "max_drawdown": -0.3441126018678473
+                },
+                "configs_tested": 13
+              },
+              "60": {
+                "selected_policy": "ema_cross_12h_48h",
+                "validation": {
+                  "return": -0.15826117557044417,
+                  "exits": 13,
+                  "max_drawdown": -0.19858587280046724
+                },
+                "test": {
+                  "return": -0.23414112723385572,
+                  "exits": 11,
+                  "max_drawdown": -0.23997744679292377
+                },
+                "buy_hold_test": {
+                  "return": -0.2569001745032726,
+                  "exits": 0,
+                  "max_drawdown": -0.3441126018678473
+                },
+                "configs_tested": 13
+              }
+            },
+            "all": [
+              {
+                "policy": "buy_hold",
+                "fee_bps": 10,
+                "validation": {
+                  "return": 0.01816306504551579,
+                  "exits": 0,
+                  "max_drawdown": -0.08569628482088876
+                },
+                "test": {
+                  "return": -0.2569001745032726,
+                  "exits": 0,
+                  "max_drawdown": -0.3441126018678473
+                }
+              },
+              {
+                "policy": "buy_hold",
+                "fee_bps": 25,
+                "validation": {
+                  "return": 0.01816306504551579,
+                  "exits": 0,
+                  "max_drawdown": -0.08569628482088876
+                },
+                "test": {
+                  "return": -0.2569001745032726,
+                  "exits": 0,
+                  "max_drawdown": -0.3441126018678473
+                }
+              },
+              {
+                "policy": "buy_hold",
+                "fee_bps": 60,
+                "validation": {
+                  "return": 0.01816306504551579,
+                  "exits": 0,
+                  "max_drawdown": -0.08569628482088876
+                },
+                "test": {
+                  "return": -0.2569001745032726,
+                  "exits": 0,
+                  "max_drawdown": -0.3441126018678473
+                }
+              },
+              {
+                "policy": "ema_cross_12h_48h",
+                "fee_bps": 10,
+                "validation": {
+                  "return": -0.03614222163905312,
+                  "exits": 13,
+                  "max_drawdown": -0.11875092779287866
+                },
+                "test": {
+                  "return": -0.1489841645891573,
+                  "exits": 11,
+                  "max_drawdown": -0.15920720421765022
+                }
+              },
+              {
+                "policy": "ema_cross_12h_48h",
+                "fee_bps": 25,
+                "validation": {
+                  "return": -0.07446413263617946,
+                  "exits": 13,
+                  "max_drawdown": -0.14323502268999555
+                },
+                "test": {
+                  "return": -0.17543462218714445,
+                  "exits": 11,
+                  "max_drawdown": -0.18288425126752317
+                }
+              },
+              {
+                "policy": "ema_cross_12h_48h",
+                "fee_bps": 60,
+                "validation": {
+                  "return": -0.15826117557044417,
+                  "exits": 13,
+                  "max_drawdown": -0.19858587280046724
+                },
+                "test": {
+                  "return": -0.23414112723385572,
+                  "exits": 11,
+                  "max_drawdown": -0.23997744679292377
+                }
+              },
+              {
+                "policy": "ema_cross_24h_96h",
+                "fee_bps": 10,
+                "validation": {
+                  "return": -0.03356019691554413,
+                  "exits": 8,
+                  "max_drawdown": -0.10983387431893454
+                },
+                "test": {
+                  "return": -0.1166153349618847,
+                  "exits": 7,
+                  "max_drawdown": -0.1330452186771579
+                }
+              },
+              {
+                "policy": "ema_cross_24h_96h",
+                "fee_bps": 25,
+                "validation": {
+                  "return": -0.057938431416303615,
+                  "exits": 8,
+                  "max_drawdown": -0.12705772205946408
+                },
+                "test": {
+                  "return": -0.1337125612947685,
+                  "exits": 7,
+                  "max_drawdown": -0.1459823013373559
+                }
+              },
+              {
+                "policy": "ema_cross_24h_96h",
+                "fee_bps": 60,
+                "validation": {
+                  "return": -0.11258920680730089,
+                  "exits": 8,
+                  "max_drawdown": -0.16605731237743848
+                },
+                "test": {
+                  "return": -0.17242513005074267,
+                  "exits": 7,
+                  "max_drawdown": -0.17873176378161904
+                }
+              },
+              {
+                "policy": "ema_cross_24h_168h",
+                "fee_bps": 10,
+                "validation": {
+                  "return": -0.053738570043412426,
+                  "exits": 6,
+                  "max_drawdown": -0.10798065076935015
+                },
+                "test": {
+                  "return": -0.0993460820086779,
+                  "exits": 4,
+                  "max_drawdown": -0.11999465933467446
+                }
+              },
+              {
+                "policy": "ema_cross_24h_168h",
+                "fee_bps": 25,
+                "validation": {
+                  "return": -0.07206208141852377,
+                  "exits": 6,
+                  "max_drawdown": -0.11997867037350851
+                },
+                "test": {
+                  "return": -0.11011025443088585,
+                  "exits": 4,
+                  "max_drawdown": -0.12526783079484471
+                }
+              },
+              {
+                "policy": "ema_cross_24h_168h",
+                "fee_bps": 60,
+                "validation": {
+                  "return": -0.11355063695326417,
+                  "exits": 6,
+                  "max_drawdown": -0.14741796735826995
+                },
+                "test": {
+                  "return": -0.13478999091377997,
+                  "exits": 4,
+                  "max_drawdown": -0.13807704451768743
+                }
+              },
+              {
+                "policy": "ema_cross_48h_168h",
+                "fee_bps": 10,
+                "validation": {
+                  "return": -0.01784565177116826,
+                  "exits": 3,
+                  "max_drawdown": -0.06862540772680736
+                },
+                "test": {
+                  "return": -0.0863140536197935,
+                  "exits": 2,
+                  "max_drawdown": -0.10661370923626423
+                }
+              },
+              {
+                "policy": "ema_cross_48h_168h",
+                "fee_bps": 25,
+                "validation": {
+                  "return": -0.028117615156100007,
+                  "exits": 3,
+                  "max_drawdown": -0.07420432603614335
+                },
+                "test": {
+                  "return": -0.09178765722507798,
+                  "exits": 2,
+                  "max_drawdown": -0.10998363683910573
+                }
+              },
+              {
+                "policy": "ema_cross_48h_168h",
+                "fee_bps": 60,
+                "validation": {
+                  "return": -0.051728085860848205,
+                  "exits": 3,
+                  "max_drawdown": -0.08901219151540596
+                },
+                "test": {
+                  "return": -0.10446374398429192,
+                  "exits": 2,
+                  "max_drawdown": -0.1193182347706323
+                }
+              },
+              {
+                "policy": "donchian_24h",
+                "fee_bps": 10,
+                "validation": {
+                  "return": -0.10717018860940086,
+                  "exits": 21,
+                  "max_drawdown": -0.1554925192959975
+                },
+                "test": {
+                  "return": -0.053732049610483834,
+                  "exits": 12,
+                  "max_drawdown": -0.0636204027410685
+                }
+              },
+              {
+                "policy": "donchian_24h",
+                "fee_bps": 25,
+                "validation": {
+                  "return": -0.16304827827792145,
+                  "exits": 21,
+                  "max_drawdown": -0.19151589615003672
+                },
+                "test": {
+                  "return": -0.0872690712025267,
+                  "exits": 12,
+                  "max_drawdown": -0.08968385924706668
+                }
+              },
+              {
+                "policy": "donchian_24h",
+                "fee_bps": 60,
+                "validation": {
+                  "return": -0.2804793943881767,
+                  "exits": 21,
+                  "max_drawdown": -0.2804793943881767
+                },
+                "test": {
+                  "return": -0.1611499022845897,
+                  "exits": 12,
+                  "max_drawdown": -0.1611499022845897
+                }
+              },
+              {
+                "policy": "donchian_72h",
+                "fee_bps": 10,
+                "validation": {
+                  "return": -0.022673177684888746,
+                  "exits": 5,
+                  "max_drawdown": -0.05873798892661053
+                },
+                "test": {
+                  "return": -0.1310540349625151,
+                  "exits": 4,
+                  "max_drawdown": -0.14851544396462768
+                }
+              },
+              {
+                "policy": "donchian_72h",
+                "fee_bps": 25,
+                "validation": {
+                  "return": -0.03870364413934779,
+                  "exits": 5,
+                  "max_drawdown": -0.06579003398606043
+                },
+                "test": {
+                  "return": -0.1414528914709906,
+                  "exits": 4,
+                  "max_drawdown": -0.1574362479898057
+                }
+              },
+              {
+                "policy": "donchian_72h",
+                "fee_bps": 60,
+                "validation": {
+                  "return": -0.07518266259671491,
+                  "exits": 5,
+                  "max_drawdown": -0.08208051400821736
+                },
+                "test": {
+                  "return": -0.16529449155925002,
+                  "exits": 4,
+                  "max_drawdown": -0.1779404935131771
+                }
+              },
+              {
+                "policy": "donchian_168h",
+                "fee_bps": 10,
+                "validation": {
+                  "return": -0.0024926727885457023,
+                  "exits": 2,
+                  "max_drawdown": -0.07154222816569333
+                },
+                "test": {
+                  "return": -0.03483482832362306,
+                  "exits": 1,
+                  "max_drawdown": -0.046227244021594616
+                }
+              },
+              {
+                "policy": "donchian_168h",
+                "fee_bps": 25,
+                "validation": {
+                  "return": -0.00995075551372171,
+                  "exits": 2,
+                  "max_drawdown": -0.07432081178584549
+                },
+                "test": {
+                  "return": -0.037732904678026036,
+                  "exits": 1,
+                  "max_drawdown": -0.04765962200914764
+                }
+              },
+              {
+                "policy": "donchian_168h",
+                "fee_bps": 60,
+                "validation": {
+                  "return": -0.02717955435765762,
+                  "exits": 2,
+                  "max_drawdown": -0.08240974087799546
+                },
+                "test": {
+                  "return": -0.044478136876724195,
+                  "exits": 1,
+                  "max_drawdown": -0.05100183731343577
+                }
+              },
+              {
+                "policy": "rsi_14h_30_55",
+                "fee_bps": 10,
+                "validation": {
+                  "return": 0.0,
+                  "exits": 0,
+                  "max_drawdown": 0.0
+                },
+                "test": {
+                  "return": 0.0,
+                  "exits": 0,
+                  "max_drawdown": 0.0
+                }
+              },
+              {
+                "policy": "rsi_14h_30_55",
+                "fee_bps": 25,
+                "validation": {
+                  "return": 0.0,
+                  "exits": 0,
+                  "max_drawdown": 0.0
+                },
+                "test": {
+                  "return": 0.0,
+                  "exits": 0,
+                  "max_drawdown": 0.0
+                }
+              },
+              {
+                "policy": "rsi_14h_30_55",
+                "fee_bps": 60,
+                "validation": {
+                  "return": 0.0,
+                  "exits": 0,
+                  "max_drawdown": 0.0
+                },
+                "test": {
+                  "return": 0.0,
+                  "exits": 0,
+                  "max_drawdown": 0.0
+                }
+              },
+              {
+                "policy": "rsi_14h_25_50",
+                "fee_bps": 10,
+                "validation": {
+                  "return": 0.0,
+                  "exits": 0,
+                  "max_drawdown": 0.0
+                },
+                "test": {
+                  "return": 0.0,
+                  "exits": 0,
+                  "max_drawdown": 0.0
+                }
+              },
+              {
+                "policy": "rsi_14h_25_50",
+                "fee_bps": 25,
+                "validation": {
+                  "return": 0.0,
+                  "exits": 0,
+                  "max_drawdown": 0.0
+                },
+                "test": {
+                  "return": 0.0,
+                  "exits": 0,
+                  "max_drawdown": 0.0
+                }
+              },
+              {
+                "policy": "rsi_14h_25_50",
+                "fee_bps": 60,
+                "validation": {
+                  "return": 0.0,
+                  "exits": 0,
+                  "max_drawdown": 0.0
+                },
+                "test": {
+                  "return": 0.0,
+                  "exits": 0,
+                  "max_drawdown": 0.0
+                }
+              },
+              {
+                "policy": "bollinger_20h_2sd",
+                "fee_bps": 10,
+                "validation": {
+                  "return": -0.0836833786363883,
+                  "exits": 25,
+                  "max_drawdown": -0.1026573925398534
+                },
+                "test": {
+                  "return": -0.20208412180040058,
+                  "exits": 29,
+                  "max_drawdown": -0.24074088939148153
+                }
+              },
+              {
+                "policy": "bollinger_20h_2sd",
+                "fee_bps": 25,
+                "validation": {
+                  "return": -0.15000766094746243,
+                  "exits": 25,
+                  "max_drawdown": -0.15965426166064245
+                },
+                "test": {
+                  "return": -0.26870007175255084,
+                  "exits": 29,
+                  "max_drawdown": -0.29168916205122586
+                }
+              },
+              {
+                "policy": "bollinger_20h_2sd",
+                "fee_bps": 60,
+                "validation": {
+                  "return": -0.2870060833410867,
+                  "exits": 25,
+                  "max_drawdown": -0.29025003494311685
+                },
+                "test": {
+                  "return": -0.4036106131528494,
+                  "exits": 29,
+                  "max_drawdown": -0.41870895268532027
+                }
+              },
+              {
+                "policy": "momentum_24h",
+                "fee_bps": 10,
+                "validation": {
+                  "return": -0.3444588855572166,
+                  "exits": 164,
+                  "max_drawdown": -0.3444588855572166
+                },
+                "test": {
+                  "return": -0.46974350980297364,
+                  "exits": 198,
+                  "max_drawdown": -0.47589576272598866
+                }
+              },
+              {
+                "policy": "momentum_24h",
+                "fee_bps": 25,
+                "validation": {
+                  "return": -0.5995919746398704,
+                  "exits": 164,
+                  "max_drawdown": -0.5995919746398704
+                },
+                "test": {
+                  "return": -0.7071344275232406,
+                  "exits": 198,
+                  "max_drawdown": -0.7105323738145737
+                }
+              },
+              {
+                "policy": "momentum_24h",
+                "fee_bps": 60,
+                "validation": {
+                  "return": -0.8736172546874804,
+                  "exits": 164,
+                  "max_drawdown": -0.8736172546874804
+                },
+                "test": {
+                  "return": -0.9269563251125442,
+                  "exits": 198,
+                  "max_drawdown": -0.9278038077377302
+                }
+              },
+              {
+                "policy": "momentum_168h",
+                "fee_bps": 10,
+                "validation": {
+                  "return": -0.11111836114814111,
+                  "exits": 45,
+                  "max_drawdown": -0.13932722313179835
+                },
+                "test": {
+                  "return": -0.14176814472233035,
+                  "exits": 32,
+                  "max_drawdown": -0.14176814472233035
+                }
+              },
+              {
+                "policy": "momentum_168h",
+                "fee_bps": 25,
+                "validation": {
+                  "return": -0.2247508621750246,
+                  "exits": 45,
+                  "max_drawdown": -0.2247508621750246
+                },
+                "test": {
+                  "return": -0.22049440023389433,
+                  "exits": 32,
+                  "max_drawdown": -0.22049440023389433
+                }
+              },
+              {
+                "policy": "momentum_168h",
+                "fee_bps": 60,
+                "validation": {
+                  "return": -0.43702785205642714,
+                  "exits": 45,
+                  "max_drawdown": -0.43702785205642714
+                },
+                "test": {
+                  "return": -0.377592230615597,
+                  "exits": 32,
+                  "max_drawdown": -0.377592230615597
+                }
+              }
+            ]
+          }
+        },
+        "1h": {
+          "data": {
+            "path": "/Users/mitch/dev/solmargintrader-wt-8d638e70/research/hype-suite/history/BTC-USD_1h.csv.gz",
+            "bars_present": 7075,
+            "expected_slots": 7080,
+            "missing_slots": 5,
+            "contiguous_runs": 2,
+            "longest_run_bars": 4865,
+            "longest_run_start": "2026-05-08T07:00:00Z",
+            "longest_run_end": "2026-11-26T23:00:00Z",
+            "zero_volume_bars": 0
+          },
+          "patterns": [
+            {
+              "pattern": "UU",
+              "n": 1122,
+              "p_next_down": 0.5472370766488414,
+              "p_next_down_ci95": [
+                0.5179995872126657,
+                0.5761522129043135
+              ],
+              "p_value_vs_half": 0.0015533279332372453,
+              "mean_next_return_bps": -0.13197773308500169,
+              "t_next_return": -0.1019157172186867,
+              "p_value_holm": 0.027959902798270413,
+              "holm_family_size": 24
+            },
+            {
+              "pattern": "UD",
+              "n": 1274,
+              "p_next_down": 0.5054945054945055,
+              "p_next_down_ci95": [
+                0.47806518351110283,
+                0.5328907922108436
+              ],
+              "p_value_vs_half": 0.6948866023724736,
+              "mean_next_return_bps": -2.7900691301323715,
+              "t_next_return": -2.2996835723665137,
+              "p_value_holm": 1.0,
+              "holm_family_size": 24
+            },
+            {
+              "pattern": "DU",
+              "n": 1273,
+              "p_next_down": 0.5176747839748626,
+              "p_next_down_ci95": [
+                0.49021350933362934,
+                0.5450297071886685
+              ],
+              "p_value_vs_half": 0.20722178855484952,
+              "mean_next_return_bps": -1.023785395890235,
+              "t_next_return": -0.9400961101809555,
+              "p_value_holm": 1.0,
+              "holm_family_size": 24
+            },
+            {
+              "pattern": "DD",
+              "n": 1193,
+              "p_next_down": 0.46018440905280805,
+              "p_next_down_ci95": [
+                0.43207492165950817,
+                0.4885494857797214
+              ],
+              "p_value_vs_half": 0.0059513899979322426,
+              "mean_next_return_bps": 1.8680832927117075,
+              "t_next_return": 1.2880118688958502,
+              "p_value_holm": 0.09522223996691588,
+              "holm_family_size": 24
+            }
+          ],
+          "levels": {
+            "pivot_k": 6,
+            "horizon_bars": 24,
+            "band": 0.005,
+            "break_pct": 0.01,
+            "support": {
+              "pivots": 264,
+              "real_events": 121,
+              "control_events": 96,
+              "break_rate_real": 0.33884297520661155,
+              "break_rate_control": 0.3333333333333333,
+              "difference_real_minus_control": 0.005509641873278237,
+              "z": 0.08531764576482179,
+              "p_value": 0.9320088633896
+            },
+            "resistance": {
+              "pivots": 261,
+              "real_events": 118,
+              "control_events": 103,
+              "break_rate_real": 0.22033898305084745,
+              "break_rate_control": 0.30097087378640774,
+              "difference_real_minus_control": -0.08063189073556029,
+              "z": -1.3667945696972608,
+              "p_value": 0.17168970536451336
+            }
+          },
+          "strategy": {
+            "segment_bars": 4865,
+            "selected": {
+              "10": {
+                "selected_policy": "donchian_24h",
+                "validation": {
+                  "return": -0.016389899484925974,
+                  "exits": 12,
+                  "max_drawdown": -0.06693667338195597
+                },
+                "test": {
+                  "return": -0.072081338395515,
+                  "exits": 8,
+                  "max_drawdown": -0.07314924938905276
+                },
+                "buy_hold_test": {
+                  "return": -0.2579532021001153,
+                  "exits": 0,
+                  "max_drawdown": -0.34294286416609987
+                },
+                "configs_tested": 13
+              },
+              "25": {
+                "selected_policy": "donchian_24h",
+                "validation": {
+                  "return": -0.05125194707865155,
+                  "exits": 12,
+                  "max_drawdown": -0.08501161811386859
+                },
+                "test": {
+                  "return": -0.09414604795428116,
+                  "exits": 8,
+                  "max_drawdown": -0.09414604795428116
+                },
+                "buy_hold_test": {
+                  "return": -0.2579532021001153,
+                  "exits": 0,
+                  "max_drawdown": -0.34294286416609987
+                },
+                "configs_tested": 13
+              },
+              "60": {
+                "selected_policy": "donchian_24h",
+                "validation": {
+                  "return": -0.12805156277390495,
+                  "exits": 12,
+                  "max_drawdown": -0.12805156277390495
+                },
+                "test": {
+                  "return": -0.14373239641653401,
+                  "exits": 8,
+                  "max_drawdown": -0.14373239641653401
+                },
+                "buy_hold_test": {
+                  "return": -0.2579532021001153,
+                  "exits": 0,
+                  "max_drawdown": -0.34294286416609987
+                },
+                "configs_tested": 13
+              }
+            },
+            "all": [
+              {
+                "policy": "buy_hold",
+                "fee_bps": 10,
+                "validation": {
+                  "return": 0.019736490557798803,
+                  "exits": 0,
+                  "max_drawdown": -0.08110532220514033
+                },
+                "test": {
+                  "return": -0.2579532021001153,
+                  "exits": 0,
+                  "max_drawdown": -0.34294286416609987
+                }
+              },
+              {
+                "policy": "buy_hold",
+                "fee_bps": 25,
+                "validation": {
+                  "return": 0.019736490557798803,
+                  "exits": 0,
+                  "max_drawdown": -0.08110532220514033
+                },
+                "test": {
+                  "return": -0.2579532021001153,
+                  "exits": 0,
+                  "max_drawdown": -0.34294286416609987
+                }
+              },
+              {
+                "policy": "buy_hold",
+                "fee_bps": 60,
+                "validation": {
+                  "return": 0.019736490557798803,
+                  "exits": 0,
+                  "max_drawdown": -0.08110532220514033
+                },
+                "test": {
+                  "return": -0.2579532021001153,
+                  "exits": 0,
+                  "max_drawdown": -0.34294286416609987
+                }
+              },
+              {
+                "policy": "ema_cross_12h_48h",
+                "fee_bps": 10,
+                "validation": {
+                  "return": -0.037962858644918884,
+                  "exits": 13,
+                  "max_drawdown": -0.1225961671620166
+                },
+                "test": {
+                  "return": -0.162249321228647,
+                  "exits": 12,
+                  "max_drawdown": -0.16489698023603616
+                }
+              },
+              {
+                "policy": "ema_cross_12h_48h",
+                "fee_bps": 25,
+                "validation": {
+                  "return": -0.07624542900148534,
+                  "exits": 13,
+                  "max_drawdown": -0.14730463982203879
+                },
+                "test": {
+                  "return": -0.19072914168849475,
+                  "exits": 12,
+                  "max_drawdown": -0.19160630562431946
+                }
+              },
+              {
+                "policy": "ema_cross_12h_48h",
+                "fee_bps": 60,
+                "validation": {
+                  "return": -0.15995167109611252,
+                  "exits": 13,
+                  "max_drawdown": -0.20241918718683038
+                },
+                "test": {
+                  "return": -0.25362501946458826,
+                  "exits": 12,
+                  "max_drawdown": -0.2544340109274632
+                }
+              },
+              {
+                "policy": "ema_cross_24h_96h",
+                "fee_bps": 10,
+                "validation": {
+                  "return": -0.02911329386117978,
+                  "exits": 8,
+                  "max_drawdown": -0.10707856623360479
+                },
+                "test": {
+                  "return": -0.11837005550417878,
+                  "exits": 7,
+                  "max_drawdown": -0.12772634275857164
+                }
+              },
+              {
+                "policy": "ema_cross_24h_96h",
+                "fee_bps": 25,
+                "validation": {
+                  "return": -0.05361858580139933,
+                  "exits": 8,
+                  "max_drawdown": -0.12437531967640014
+                },
+                "test": {
+                  "return": -0.13535754029979352,
+                  "exits": 7,
+                  "max_drawdown": -0.1399102855573694
+                }
+              },
+              {
+                "policy": "ema_cross_24h_96h",
+                "fee_bps": 60,
+                "validation": {
+                  "return": -0.10855284561924616,
+                  "exits": 8,
+                  "max_drawdown": -0.16353864278189223
+                },
+                "test": {
+                  "return": -0.17382681746918172,
+                  "exits": 7,
+                  "max_drawdown": -0.17472230173507208
+                }
+              },
+              {
+                "policy": "ema_cross_24h_168h",
+                "fee_bps": 10,
+                "validation": {
+                  "return": -0.043992421910495905,
+                  "exits": 6,
+                  "max_drawdown": -0.1013122468945371
+                },
+                "test": {
+                  "return": -0.09630702461653484,
+                  "exits": 4,
+                  "max_drawdown": -0.11777818942075413
+                }
+              },
+              {
+                "policy": "ema_cross_24h_168h",
+                "fee_bps": 25,
+                "validation": {
+                  "return": -0.06249941094395772,
+                  "exits": 6,
+                  "max_drawdown": -0.11340150751268907
+                },
+                "test": {
+                  "return": -0.10710836826530012,
+                  "exits": 4,
+                  "max_drawdown": -0.12306671727941665
+                }
+              },
+              {
+                "policy": "ema_cross_24h_168h",
+                "fee_bps": 60,
+                "validation": {
+                  "return": -0.10440376153637476,
+                  "exits": 6,
+                  "max_drawdown": -0.14104939956539042
+                },
+                "test": {
+                  "return": -0.13187329532353587,
+                  "exits": 4,
+                  "max_drawdown": -0.1353141352230941
+                }
+              },
+              {
+                "policy": "ema_cross_48h_168h",
+                "fee_bps": 10,
+                "validation": {
+                  "return": -0.0271471374793667,
+                  "exits": 3,
+                  "max_drawdown": -0.07175729884050552
+                },
+                "test": {
+                  "return": -0.08551787108920794,
+                  "exits": 2,
+                  "max_drawdown": -0.10350702530657985
+                }
+              },
+              {
+                "policy": "ema_cross_48h_168h",
+                "fee_bps": 25,
+                "validation": {
+                  "return": -0.037347280271812666,
+                  "exits": 3,
+                  "max_drawdown": -0.07872099416030187
+                },
+                "test": {
+                  "return": -0.09100379803328562,
+                  "exits": 2,
+                  "max_drawdown": -0.10754354762472196
+                }
+              },
+              {
+                "policy": "ema_cross_48h_168h",
+                "fee_bps": 60,
+                "validation": {
+                  "return": -0.06079178288556719,
+                  "exits": 3,
+                  "max_drawdown": -0.09480716936772482
+                },
+                "test": {
+                  "return": -0.103708291710507,
+                  "exits": 2,
+                  "max_drawdown": -0.11691494079281628
+                }
+              },
+              {
+                "policy": "donchian_24h",
+                "fee_bps": 10,
+                "validation": {
+                  "return": -0.016389899484925974,
+                  "exits": 12,
+                  "max_drawdown": -0.06693667338195597
+                },
+                "test": {
+                  "return": -0.072081338395515,
+                  "exits": 8,
+                  "max_drawdown": -0.07314924938905276
+                }
+              },
+              {
+                "policy": "donchian_24h",
+                "fee_bps": 25,
+                "validation": {
+                  "return": -0.05125194707865155,
+                  "exits": 12,
+                  "max_drawdown": -0.08501161811386859
+                },
+                "test": {
+                  "return": -0.09414604795428116,
+                  "exits": 8,
+                  "max_drawdown": -0.09414604795428116
+                }
+              },
+              {
+                "policy": "donchian_24h",
+                "fee_bps": 60,
+                "validation": {
+                  "return": -0.12805156277390495,
+                  "exits": 12,
+                  "max_drawdown": -0.12805156277390495
+                },
+                "test": {
+                  "return": -0.14373239641653401,
+                  "exits": 8,
+                  "max_drawdown": -0.14373239641653401
+                }
+              },
+              {
+                "policy": "donchian_72h",
+                "fee_bps": 10,
+                "validation": {
+                  "return": 0.006833273900461512,
+                  "exits": 4,
+                  "max_drawdown": -0.05927875810462169
+                },
+                "test": {
+                  "return": -0.16805441849433922,
+                  "exits": 4,
+                  "max_drawdown": -0.18277405036453054
+                }
+              },
+              {
+                "policy": "donchian_72h",
+                "fee_bps": 25,
+                "validation": {
+                  "return": -0.0066931067632102215,
+                  "exits": 4,
+                  "max_drawdown": -0.06633234672200816
+                },
+                "test": {
+                  "return": -0.178010203694002,
+                  "exits": 4,
+                  "max_drawdown": -0.19132943160288352
+                }
+              },
+              {
+                "policy": "donchian_72h",
+                "fee_bps": 60,
+                "validation": {
+                  "return": -0.03762847829257032,
+                  "exits": 4,
+                  "max_drawdown": -0.08262626238477089
+                },
+                "test": {
+                  "return": -0.20083598208547382,
+                  "exits": 4,
+                  "max_drawdown": -0.21099399028157217
+                }
+              },
+              {
+                "policy": "donchian_168h",
+                "fee_bps": 10,
+                "validation": {
+                  "return": -0.01621065877279715,
+                  "exits": 2,
+                  "max_drawdown": -0.08034325005267995
+                },
+                "test": {
+                  "return": -0.0378039178902847,
+                  "exits": 1,
+                  "max_drawdown": -0.04857529744141664
+                }
+              },
+              {
+                "policy": "donchian_168h",
+                "fee_bps": 25,
+                "validation": {
+                  "return": -0.023570788838931045,
+                  "exits": 2,
+                  "max_drawdown": -0.0842902184431058
+                },
+                "test": {
+                  "return": -0.04067873633214847,
+                  "exits": 1,
+                  "max_drawdown": -0.050004149117265806
+                }
+              },
+              {
+                "policy": "donchian_168h",
+                "fee_bps": 60,
+                "validation": {
+                  "return": -0.0405732028225978,
+                  "exits": 2,
+                  "max_drawdown": -0.09392168124559819
+                },
+                "test": {
+                  "return": -0.04736991998284601,
+                  "exits": 1,
+                  "max_drawdown": -0.053338136360913335
+                }
+              },
+              {
+                "policy": "rsi_14h_30_55",
+                "fee_bps": 10,
+                "validation": {
+                  "return": 0.026713836133050117,
+                  "exits": 8,
+                  "max_drawdown": -0.04594582177343798
+                },
+                "test": {
+                  "return": -0.09612514470572919,
+                  "exits": 9,
+                  "max_drawdown": -0.17522715849832826
+                }
+              },
+              {
+                "policy": "rsi_14h_30_55",
+                "fee_bps": 25,
+                "validation": {
+                  "return": 0.0023161998460394795,
+                  "exits": 8,
+                  "max_drawdown": -0.049171900278393244
+                },
+                "test": {
+                  "return": -0.12023693300689409,
+                  "exits": 9,
+                  "max_drawdown": -0.18712714072463343
+                }
+              },
+              {
+                "policy": "rsi_14h_30_55",
+                "fee_bps": 60,
+                "validation": {
+                  "return": -0.05251436102055296,
+                  "exits": 8,
+                  "max_drawdown": -0.08022941049798105
+                },
+                "test": {
+                  "return": -0.17415682727544468,
+                  "exits": 9,
+                  "max_drawdown": -0.23426004811458334
+                }
+              },
+              {
+                "policy": "rsi_14h_25_50",
+                "fee_bps": 10,
+                "validation": {
+                  "return": -0.011347364042139763,
+                  "exits": 3,
+                  "max_drawdown": -0.05142695500595895
+                },
+                "test": {
+                  "return": -0.037169134249860014,
+                  "exits": 5,
+                  "max_drawdown": -0.13063328901528382
+                }
+              },
+              {
+                "policy": "rsi_14h_25_50",
+                "fee_bps": 25,
+                "validation": {
+                  "return": -0.020193651471613783,
+                  "exits": 3,
+                  "max_drawdown": -0.05426913798578714
+                },
+                "test": {
+                  "return": -0.051521792195046046,
+                  "exits": 5,
+                  "max_drawdown": -0.13714359614236338
+                }
+              },
+              {
+                "policy": "rsi_14h_25_50",
+                "fee_bps": 60,
+                "validation": {
+                  "return": -0.04057876807505001,
+                  "exits": 3,
+                  "max_drawdown": -0.061471532625610226
+                },
+                "test": {
+                  "return": -0.08426536270813134,
+                  "exits": 5,
+                  "max_drawdown": -0.16103707552434787
+                }
+              },
+              {
+                "policy": "bollinger_20h_2sd",
+                "fee_bps": 10,
+                "validation": {
+                  "return": -0.04740121024335198,
+                  "exits": 16,
+                  "max_drawdown": -0.07776867816348854
+                },
+                "test": {
+                  "return": -0.1648561692966467,
+                  "exits": 18,
+                  "max_drawdown": -0.22526448178076697
+                }
+              },
+              {
+                "policy": "bollinger_20h_2sd",
+                "fee_bps": 25,
+                "validation": {
+                  "return": -0.09212739102498813,
+                  "exits": 16,
+                  "max_drawdown": -0.11132585032788322
+                },
+                "test": {
+                  "return": -0.20882574710579394,
+                  "exits": 18,
+                  "max_drawdown": -0.2504479709026659
+                }
+              },
+              {
+                "policy": "bollinger_20h_2sd",
+                "fee_bps": 60,
+                "validation": {
+                  "return": -0.18872035519866748,
+                  "exits": 16,
+                  "max_drawdown": -0.19464013374942402
+                },
+                "test": {
+                  "return": -0.30284950167242297,
+                  "exits": 18,
+                  "max_drawdown": -0.3306374555295414
+                }
+              },
+              {
+                "policy": "momentum_24h",
+                "fee_bps": 10,
+                "validation": {
+                  "return": -0.12784503152249893,
+                  "exits": 51,
+                  "max_drawdown": -0.1596780116346318
+                },
+                "test": {
+                  "return": -0.20874913485227742,
+                  "exits": 52,
+                  "max_drawdown": -0.250033811098221
+                }
+              },
+              {
+                "policy": "momentum_24h",
+                "fee_bps": 25,
+                "validation": {
+                  "return": -0.25295032432244346,
+                  "exits": 51,
+                  "max_drawdown": -0.2569420713674373
+                },
+                "test": {
+                  "return": -0.3222284228690592,
+                  "exits": 52,
+                  "max_drawdown": -0.3429626592561059
+                }
+              },
+              {
+                "policy": "momentum_24h",
+                "fee_bps": 60,
+                "validation": {
+                  "return": -0.479941536356733,
+                  "exits": 51,
+                  "max_drawdown": -0.48272039016399715
+                },
+                "test": {
+                  "return": -0.5281355022300946,
+                  "exits": 52,
+                  "max_drawdown": -0.533016611073243
+                }
+              },
+              {
+                "policy": "momentum_168h",
+                "fee_bps": 10,
+                "validation": {
+                  "return": -0.028579972767310502,
+                  "exits": 11,
+                  "max_drawdown": -0.07889623357946951
+                },
+                "test": {
+                  "return": -0.06056978041646133,
+                  "exits": 6,
+                  "max_drawdown": -0.06844258073967735
+                }
+              },
+              {
+                "policy": "momentum_168h",
+                "fee_bps": 25,
+                "validation": {
+                  "return": -0.061549650423868174,
+                  "exits": 11,
+                  "max_drawdown": -0.09671356149746757
+                },
+                "test": {
+                  "return": -0.07737491965494281,
+                  "exits": 6,
+                  "max_drawdown": -0.0782020564410284
+                }
+              },
+              {
+                "policy": "momentum_168h",
+                "fee_bps": 60,
+                "validation": {
+                  "return": -0.13436778041577568,
+                  "exits": 11,
+                  "max_drawdown": -0.13899315536348955
+                },
+                "test": {
+                  "return": -0.11552077395591709,
+                  "exits": 6,
+                  "max_drawdown": -0.11552077395591709
+                }
+              }
+            ]
+          }
+        }
+      }
+    }
+  }
+}

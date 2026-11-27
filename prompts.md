@@ -1,7 +1,11 @@
 # Prompt history
 
-Version: 329
-Delta: v328 to v329. Record the scheduled continuation of the zero-fee venue research.
+Version: 330
+Delta: v329 to v330. Record the HYPE analysis request: repeat the ZEC analysis suite for HYPE.
+
+## HYPE: the ZEC analysis suite, repeated
+
+> Perform the same suite of analysis done for ZEC, but for HYPE coin, what is the best performing strategies? What patterns, support, etc exist for it.
 
 ## Zero-fee venue research continuation
 
