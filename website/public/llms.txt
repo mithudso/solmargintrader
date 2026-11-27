@@ -5,9 +5,10 @@
 ## Public resources
 
 - [Oraclebot](https://oraclebot.io/index.md): Public workspace overview and paper-trading limits.
-- [Oraclebot research journal](https://oraclebot.io/research/index.md): Research journal, working paper and study limitations.
+- [Oraclebot research journal](https://oraclebot.io/research/index.md): Research journal, working papers and study limitations.
+- [What holds up on HYPE? Strategies, patterns and price levels (PDF)](https://oraclebot.io/papers/hype-strategies-patterns-levels.pdf): Working paper on two years of HYPE backtests, price patterns and support and resistance levels.
 - [Do two candles predict a ZEC reversal? (PDF)](https://oraclebot.io/papers/zec-two-bar-reversal.pdf): Exploratory working paper based on one day of observations.
 
 ## Complete text
 
-- [Full public text](https://oraclebot.io/llms-full.txt): Readable Markdown for the public pages and working paper.
+- [Full public text](https://oraclebot.io/llms-full.txt): Readable Markdown for the public pages and working papers.

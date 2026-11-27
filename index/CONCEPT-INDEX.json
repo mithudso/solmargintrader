@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-11-27T12:51:05+00:00",
+  "generatedAt": "2026-11-27T13:16:25+00:00",
   "schemaVersion": 1,
   "note": "Concepts are derived from the repo's own vocabulary \u2014 the FAMILY dict, strategy-card frontmatter, docs/trading-signals-concept-family.md, and terms verified to recur in the corpus. A concept matching no file is dropped, not kept.",
   "counts": {
@@ -22,7 +22,7 @@
         "confirm",
         "fail-closed"
       ],
-      "matchingFiles": 4485,
+      "matchingFiles": 4486,
       "shown": 30,
       "files": [
         {
@@ -161,7 +161,7 @@
         "universe",
         "top_coins"
       ],
-      "matchingFiles": 4237,
+      "matchingFiles": 4239,
       "shown": 30,
       "files": [
         {
@@ -194,7 +194,7 @@
         },
         {
           "path": "prompts.md",
-          "hits": 179
+          "hits": 178
         },
         {
           "path": "research/papers/coin-intelligence/doge-dogecoin.md",
@@ -439,7 +439,7 @@
         "borrow",
         "financing"
       ],
-      "matchingFiles": 3818,
+      "matchingFiles": 3819,
       "shown": 30,
       "files": [
         {
@@ -575,7 +575,7 @@
         "macd",
         "ichimoku"
       ],
-      "matchingFiles": 1939,
+      "matchingFiles": 1941,
       "shown": 30,
       "files": [
         {
@@ -713,7 +713,7 @@
         "anchor_window",
         "levels"
       ],
-      "matchingFiles": 1627,
+      "matchingFiles": 1637,
       "shown": 30,
       "files": [
         {
@@ -851,7 +851,7 @@
         "monotone",
         "gap"
       ],
-      "matchingFiles": 1589,
+      "matchingFiles": 1591,
       "shown": 30,
       "files": [
         {
@@ -990,7 +990,7 @@
         "perps",
         "solana"
       ],
-      "matchingFiles": 1408,
+      "matchingFiles": 1409,
       "shown": 30,
       "files": [
         {
@@ -1125,7 +1125,7 @@
         "stochastic",
         "oscillator"
       ],
-      "matchingFiles": 1302,
+      "matchingFiles": 1305,
       "shown": 30,
       "files": [
         {
@@ -1260,7 +1260,7 @@
         "ts_momentum",
         "dual_momentum"
       ],
-      "matchingFiles": 917,
+      "matchingFiles": 919,
       "shown": 30,
       "files": [
         {
@@ -1395,7 +1395,7 @@
         "benchmark",
         "baseline"
       ],
-      "matchingFiles": 850,
+      "matchingFiles": 851,
       "shown": 30,
       "files": [
         {
@@ -1440,7 +1440,7 @@
         },
         {
           "path": "memory.md",
-          "hits": 64
+          "hits": 65
         },
         {
           "path": "FILES.md",
@@ -1529,7 +1529,7 @@
         "buy_and_hold",
         "baseline"
       ],
-      "matchingFiles": 726,
+      "matchingFiles": 727,
       "shown": 30,
       "files": [
         {
@@ -1558,7 +1558,7 @@
         },
         {
           "path": "memory.md",
-          "hits": 63
+          "hits": 64
         },
         {
           "path": "research/json/eth-week-20261117/summary.json",
@@ -1666,7 +1666,7 @@
         "hurst",
         "vol_regime"
       ],
-      "matchingFiles": 656,
+      "matchingFiles": 657,
       "shown": 30,
       "files": [
         {
@@ -1804,7 +1804,7 @@
         "evidence floor",
         "rankable"
       ],
-      "matchingFiles": 601,
+      "matchingFiles": 602,
       "shown": 30,
       "files": [
         {
@@ -1939,7 +1939,7 @@
         "bb_breakout",
         "keltner"
       ],
-      "matchingFiles": 569,
+      "matchingFiles": 571,
       "shown": 30,
       "files": [
         {
@@ -2759,7 +2759,7 @@
         "garch",
         "risk-overlay"
       ],
-      "matchingFiles": 112,
+      "matchingFiles": 114,
       "shown": 30,
       "files": [
         {

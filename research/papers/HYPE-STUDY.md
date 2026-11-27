@@ -1,11 +1,14 @@
 # HYPE: strategies, patterns and price levels
 
-Version: 1.0.0. Data frozen 2026-11-27 08:49–08:53 UTC. HYPE traded near $65.60 on
+Version: 1.0.1. Data frozen 2026-11-27 08:49–08:53 UTC. HYPE traded near $65.60 on
 Binance spot; the last completed Hyperliquid hour closed at $65.40.
 
 This repeats the ZEC candle studies on HYPE and adds a two-year look at price
 structure. Every result is a backtest or a description of past candles. None of
 it qualifies a live trading edge, and nothing here was traded.
+
+The working-paper edition, with two figures and a comparison against the
+31-day Binance run, is [What holds up on HYPE?](HYPE-STRATEGIES-PATTERNS-LEVELS.md).
 
 ## Short answers
 
@@ -211,11 +214,12 @@ oversold bounce fell to −0.3% overall.
   separates from the other, and each is within two standard errors of the
   average day.
 - **The ZEC two-bar reversal.** After one or two up ten-minute bars and a first
-  close below the open, price continued down 39% to 55% of the time over 5, 10
+  close below the open, price continued down 39% to 53% of the time over 5, 10
   and 20 minutes. The unconditional rate was 49.5% to 49.9%. Of 72 intervals,
-  70 contain the baseline. Both exceptions point the other way: 41% of 200
-  cases (one up bar, intrabar trigger, 5 minutes) and 39% of 131 cases (two up
-  bars, midpoint trigger, 20 minutes, non-overlapping).
+  66 contain the baseline. The six that do not are two results, each repeated
+  across variants, and both point the other way: 41% of 200 cases (one up bar,
+  intrabar trigger, 5 minutes) and 39% of 131 cases (two up bars, midpoint
+  trigger, 20 minutes, non-overlapping).
 - **Reversal shapes.** The rule chosen on validation (two down 5-minute bars in
   a falling shape, predict up) was right 69% of 29 times in validation and 48%
   of 25 times in the final test, and lost money there at every cost level.

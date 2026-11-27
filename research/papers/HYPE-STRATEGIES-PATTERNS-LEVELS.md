@@ -1,0 +1,378 @@
+# What holds up on HYPE? Strategies, patterns and price levels
+
+Over two years of daily HYPE candles, no tested rule beat holding the coin, and trend rules only reduced the worst decline. No short-term pattern tested passed its controls, and past price levels held no more often than arbitrary lines nearby. Rules that won on shorter windows won in one market direction or one week.
+
+Version: 1.0.0
+Date: 2026-11-27
+Author: Oraclebot Research
+Status: Working paper. Historical backtests and descriptive statistics; not peer reviewed, not prospectively validated. Nothing was traded.
+
+[Download the paper as PDF](https://oraclebot.io/papers/hype-strategies-patterns-levels.pdf)
+
+## Abstract
+
+We ask three questions about HYPE, the Hyperliquid token: which trading rules performed best, which price patterns exist, and where support and resistance lie. We use one gap-free week of Binance spot minute bars (10,080 bars; 1,707 strategy templates give 491,712 test rows), two years of Hyperliquid daily bars (722) and 208 days of hourly bars (4,999). Every rule pays modelled costs, and all are long or flat except one synthetic long/short reference model. Over two years, holding returned +389% with a 68% worst decline, and none of 30 distinct rules beat it; a 20/50-day moving-average crossover kept +173% with a 40% worst decline. On hourly bars, trend rules beat holding only because they stood aside during a 28.6% fall, and no rule made money in both the rising and the falling part. Within one week, ATR-sized trend following (stops set by average true range) on 5- and 10-minute bars returned +14% to +16% at 10 basis points (bps) per fill and passed a validation-and-test screen at 10 and 60 bps, but a separate 31-day run found the same family losing. The ZEC (Zcash) two-bar reversal, candle shapes and leading correlations fail on HYPE, and the cycle tests were inconclusive. Swing levels held 10% to 48% of the time, no better than placebo lines. We publish the level map as reference prices, not as signals.
+
+## 1. Three questions, short answers
+
+**Which strategies performed best?** The answer changes with the bar size and with whether the market was rising or falling. No rule won at every bar size. Over two years nothing beat holding.
+
+| Horizon | Leading rule | Result | How far to trust it |
+|---|---|---|---|
+| Daily, two years | Buy and hold | +389%, with a 68% worst decline | No tested rule beat it. A 20/50-day moving-average crossover kept +173% with a 40% worst decline. |
+| Hourly, 208 days | Bollinger breakout (20 bars, 2 deviations) | +107% against +59% for holding at 6 bps, with a 17% worst decline against 42% | It made all of it in the rising part and lost 1.5% in the falling part. At 25 bps it made +49% and trailed holding. |
+| 5 and 10 minutes, one week | ATR-sized trend following | +14% to +16% in a week where holding made +0.3% to +0.5% | Positive in validation and in the final test, at 10 and at 60 bps per fill. The screen uses the final test, so this is exploratory. One week only, and a separate 31-day run found the family losing. |
+| 1 hour, one week | Average of MACD, PPO and RSI | +4.6% | Positive in validation and in the final test at every fee level. Small. |
+| Falling market, hourly | Oversold bounce (RSI under 30 plus a lower-band touch) | +26.7% while holding lost 28.6% | It lost 1.2% in the rising part before that. Its result depended on the market's direction. |
+| 1 minute | Nothing | 68 of 1,707 rules made money at the lowest fee, 19 at the highest | None passed the validation-and-test screen. |
+
+Costs are charged per fill in basis points (bps; one basis point is 0.01%), as section 3 describes. "Leading" is not one measure: the daily and hourly rows name the highest total return, the falling-market row a rule that made money in the falling part, and the one-week rows the best rules that passed the strict screen in section 3. Rules that failed that screen returned more over the week at 10 bps, up to about +19%. The one-week rows come from the 1,707-template catalogue. A separate synthetic long/short model in section 4.1 returned more over the week at 10 bps in its best screened settings (+17.9% on 10-minute bars, +28.6% on 1-hour bars). It is kept apart because it goes short and pays a flat carry, not real funding.
+
+**Which patterns exist?** HYPE falls far and often: seven declines of 25% or more in two years. It has no day-to-day memory. It moves with Bitcoin and moves further. A quarter of its volume trades between 13:00 and 16:59 UTC. Weekday effects, hour-of-day direction, the ZEC two-bar reversal (section 5.3), candle shapes and leading correlations did not survive their controls, and the cycle tests were inconclusive.
+
+**Where are support and resistance?** Section 6 gives the map. At the time of the study the Hyperliquid price was $65.40. The nearest zones above were $65.43–66.14, $67.76–68.34 and $68.62–70.25; the nearest below were $64.50–65.10, $62.42–63.35, a single hourly swing low at $61.64, and $59.70–60.55. Past returns to such levels broke them more often than they held, and they held no more often than arbitrary lines nearby.
+
+## 2. Data
+
+| Study | Market | Span | Bars |
+|---|---|---|---:|
+| One week of minute bars | Binance spot HYPE/USDT | 2026-11-20 08:49 to 2026-11-27 08:49 UTC | 10,080 one-minute bars, none missing |
+| Two years of daily bars | Hyperliquid HYPE perpetual | 2024-12-05 to 2026-11-26 | 722 |
+| 208 days of hourly bars | Hyperliquid HYPE perpetual | 2026-05-03 to 2026-11-27 | 4,999 |
+| Reference coins | Hyperliquid BTC, ETH and SOL perpetuals, daily | 2023-11-14 to 2026-11-26 | 1,109 each |
+
+The data were frozen on 2026-11-27 between 08:49 and 08:53 UTC. HYPE traded near $65.60 on Binance spot, and the last completed Hyperliquid hour closed at $65.40.
+
+Choosing the source was itself a finding. We checked three venues that carry HYPE candles, and each has a limit that decides what it can be used for.
+
+- **Coinbase HYPE/USD has gaps in its minute candles.** A separate Coinbase run found that the longest gap-free minute run in 31 days was 46 hours. A minute study built on it would be a study of two days. We did not use it.
+- **Binance HYPE/USDT is gap-free but short.** Its minute history is confirmed here from 2026-10-27; a first daily candle dated 2026-09-24 was seen at fetch time and not archived. That is enough for a week or a month of minute bars and too short for a two-year history.
+- **Hyperliquid has the long history, as perpetual prices.** HYPE has traded there since late 2024. Its candle endpoint returned only the latest 5,000 hourly bars, so the hourly history reaches back 208 days.
+
+USDT is not USD, and a perpetual is not spot. The data table above names the market for each study. Hyperliquid perpetual prices can differ slightly from Binance spot: the week's high was $69.70 on Hyperliquid and $69.80 on Binance.
+
+## 3. Method
+
+The tests repeat, for HYPE, a set of studies first run on ZEC (Zcash), known as the ZEC suite.
+
+**Long or flat.** Every rule either holds HYPE or holds cash, with one exception: the synthetic long/short breakout-stop model in section 4.1. No short side with real funding was tested. This matters for reading the results: in a market that rose 389%, any rule that stays invested much of the time collects part of the rise.
+
+**Fills and costs.** A signal on a closed bar fills at the next bar's open. Costs are charged on every fill, in basis points (bps; one basis point is 0.01%). The week of minute bars is tested at 10, 15, 25 and 60 bps per fill, each with a further 2 bps execution allowance. The daily and hourly tests charge a 6 bps fee and 2 bps slippage, and are repeated at 25 bps. Reference accounts hold 10,000 units of the quote currency. There is no model of order-book depth.
+
+**Out-of-sample splits.** The week is cut in time order into a training part (60%), a validation part (20%) and a final-test part (20%). One selection rule was frozen before the final test was read: take the rule with the best validation return among those with at least ten validation exits, and never re-rank on the final test. The daily and hourly histories are cut into a first 70% and a last 30%, and every registered strategy runs with its default parameters. Each part is run on its own, so the two parts need not compound exactly to the whole.
+
+**The strict screen.** For the week we also report every rule that had at least ten validation exits and a positive return in validation, in the final test and over the whole week, at both 10 and 60 bps. Because this screen also uses the final test, it is exploratory and not out-of-sample evidence; the frozen selection rule above is the only choice made before the final test.
+
+**Strategy catalogue.** The week tests 1,707 strategy templates, each with six filter or control variants, on four bar sizes at four fee levels and over three windows (whole week, validation and final test), plus cash and holding benchmarks: 491,712 rows, of which 441,888 completed. It also runs 7,920 rows of breakout-stop, ladder-grid and dollar-cost-averaging reference models. The long histories run the 34 strategies registered in the project's backtester (the simulation code in the repository linked in section 10), of which 30 are distinct (the registry also lists holding itself and three duplicate MACD entries).
+
+**Price levels.** A swing level is a high or low that was the extreme of 5 days on each side (daily) or 24 hours on each side (hourly). Swings are grouped so that no group is wider than 3% (daily) or 1.2% (hourly). A level is tested only after the bar that confirms it, and only while it is unbroken. Section 6 describes the test and its placebo.
+
+**Corrections for many tests.** Where one question is asked many times, we say how many and what threshold that implies. Seven weekdays need a t-statistic near 2.7 and 24 hours need one above 3 before a single row counts as more than chance.
+
+## 4. Strategy results
+
+### 4.1 One week of minute bars
+
+The week ended where it began: $65.63 to $65.60, between $55.80 and $69.80. The training part fell 4.9%, the validation part fell 1.5% and the final-test part rose 6.8%.
+
+Share of the 1,707 unfiltered rules that made money over the whole week:
+
+| Bar size | At 10 bps per fill | At 60 bps per fill | Holding, 10 bps |
+|---|---:|---:|---:|
+| 1 minute | 4.0% | 1.1% | −0.2% |
+| 5 minutes | 44.1% | 4.9% | +0.3% |
+| 10 minutes | 65.4% | 10.0% | +0.5% |
+| 1 hour (1,027 completed) | 66.4% | 38.7% | +0.6% |
+
+Costs decide the one-minute result. A rule that trades every few minutes pays the fee hundreds of times in a week, and almost none of them earn it back.
+
+Twelve distinct 5-minute rules pass the strict screen (nine ATR-sized, two GARCH volatility-target, one volatility-target), with three 10-minute rules and three 1-hour rules. No 1-minute rule passes. ATR is the average true range, a measure of how far price moves per bar; an ATR-sized rule follows the trend, risks a fixed share of the account per trade and sets its stop a multiple of ATR away.
+
+| Bars | Rule | Whole week, 10 bps | Whole week, 60 bps | Validation / test, 60 bps | Worst decline | Exits |
+|---|---|---:|---:|---:|---:|---:|
+| 5m | ATR-sized: ATR 45, risk 1%, stop 2 ATR, trend 200 | +16.3% | +4.1% | +2.6% / +3.5% | −6.4% | 76 |
+| 5m | ATR-sized: ATR 30, risk 1%, stop 1.5 ATR, trend 200 | +16.5% | +4.0% | +3.6% / +3.5% | −7.4% | 40 |
+| 10m | ATR-sized: ATR 30, risk 1%, stop 2 ATR, trend 100 | +14.3% | +4.1% | +1.2% / +0.7% | −4.6% | 98 |
+| 1h | Average of MACD 12/26/9, PPO 12/26/9 and RSI 14 (30 → 50) | +4.6% | +0.5% | +1.3% / +0.6% | −5.7% | 40 |
+
+What the frozen selection rule picked, and what the pick did on the final test at each fee level:
+
+| Bars | Picked on validation | Validation, 10 bps | Final test at 10 / 15 / 25 / 60 bps | Test exits |
+|---|---|---:|---|---:|
+| 1m | Moving-average ribbon with a slope filter (a volatility-target rule at 60 bps) | +5.0% | −1.7% / −3.1% / −5.8% / −0.5% | 325 to 445 |
+| 5m | ATR-sized, ATR 30 (a momentum and swing gate at 25 bps) | +4.8% | +6.6% / +6.3% / +0.3% / +3.5% | 3 (30 at 25 bps) |
+| 10m | MACD and on-balance-volume gate | +6.7% | +0.6% / −0.1% / −1.5% / −6.2% | 17 |
+| 1h | Average of MACD, PPO and RSI | +2.6% | +1.9% / +1.8% / +1.5% / +0.6% | 14 |
+
+The 5-minute pick returned +6.6% in the final test on three exits, while holding returned +6.8%. So the test shows that the rule did not lose in a rally. It does not show that the rule beats holding in one. Under 3.2% of rules beat holding in the final test at any bar size. The 1-minute and 10-minute picks did not hold up. The 1-hour pick stayed positive at every fee level.
+
+The table gives the median whole-week return of single-rule strategies on 5-minute bars at 10 bps, grouped by rule family. About one in eight of these strategies also carries a gate or a switch, and each family spans several parameter settings:
+
+| Best families | Median | Worst families | Median |
+|---|---:|---|---:|
+| ATR-sized trend | +9.9% | PPO | −15.5% |
+| Moving-average regime | +9.0% | Dual momentum | −13.3% |
+| EMA crossover | +8.4% | MACD | −8.7% |
+| Keltner breakout | +8.1% | Z-score reversion | −8.0% |
+| Ichimoku | +6.9% | Bollinger reversion, stochastic | −7.3% |
+
+On 5-minute bars this week, slow trend filters with wide stops made money, and fast oscillators and reversion rules lost. That did not hold on 1-minute bars. There the ATR-sized family's median was −31.5%, and no family had a positive median except dollar-cost averaging.
+
+Three reference models from the ZEC suite, at 10 bps:
+
+- **Breakout stops, synthetic 1× long and short.** On 1-minute bars none of 150 runs made money. On 5-minute bars 3% did. On 1-hour bars 60% did, and 13 of 50 settings were positive in validation and in the final test even on the least favourable assumption about the order of prices inside a bar. The best of those, length 2 with 1.25 ATR, made +28.6% over the week. On 10-minute bars six settings passed the same screen; length 4 with 1.25 ATR made +17.9%. This is the only model here that goes short, and it is synthetic: it pays a flat carry, not real funding.
+- **Ladder grid.** All eight reference grids made money on 5-minute and 1-hour bars (median +2.2% and +2.7%, best +4.2%). The week's range suited a grid.
+- **Dollar-cost averaging with safety orders.** Ten of twelve were positive on 5-minute bars and all twelve on 1-hour bars (median +0.3% and +0.6%, best +4.8%).
+
+### 4.2 Two years of daily bars
+
+Hyperliquid perpetual candles, 2024-12-05 to 2026-11-26. Long or cash, 6 bps fee plus 2 bps slippage. The first 70% ends on 2026-04-23. The table shows the six highest total returns and holding; the long-history evidence in section 10 has every row.
+
+| Strategy | Total return | Sharpe | Worst decline | Trades | First 70% | Last 30% |
+|---|---:|---:|---:|---:|---:|---:|
+| Buy and hold | +389.4% | 1.29 | −68.0% | 1 | +224.7% | +51.0% |
+| Dollar-cost averaging, 10 buys 7 days apart | +194.5% | 1.04 | −64.2% | 30 | +95.4% | +19.1% |
+| Moving-average crossover 20/50 | +172.7% | 1.09 | −39.7% | 6 | +107.8% | +31.5% |
+| Moving-average ribbon 5×10 | +138.4% | 1.03 | −42.2% | 209 | +71.6% | +39.2% |
+| Time-series momentum, 60 days | +124.6% | 0.94 | −58.3% | 16 | +77.9% | +26.4% |
+| VWAP reversion 20 / 2% | +96.9% | 0.84 | −46.9% | 41 | +51.0% | +30.5% |
+| Volatility target 60% | +89.7% | 0.93 | −44.3% | 180 | +54.5% | +22.9% |
+
+Dollar-cost averaging is holding with a delayed start: it is fully invested after about ten weeks and keeps almost all of the worst decline. Fourteen of the 27 strategies with a split result made money in both parts; three could not be run on the split. None beat holding in either part, and the 50/200 EMA crossover matched it in the last 30%. Reversion rules made money here too: Z-score +83.5% and stochastic +76.4%, against +29.4% for the Bollinger breakout. That is the long-or-flat effect described in section 3, not evidence for reversion.
+
+At 25 bps the crossover still returned +166.6% and the ribbon +125.7%. The case for the crossover is risk, not return: it gave up 56% of the gain, and its worst decline was 42% smaller.
+
+### 4.3 208 days of hourly bars
+
+2026-05-03 to 2026-11-27. The first 70% (to 2026-09-25) rose 122%. The last 30% fell 28.6%. The table shows the four rules that beat holding, holding itself, and the two bounce rules.
+
+| Strategy | Total return | Sharpe | Worst decline | Trades | First 70% | Last 30% |
+|---|---:|---:|---:|---:|---:|---:|
+| Bollinger breakout 20 / 2 | +106.8% | 2.78 | −17.0% | 86 | +110.0% | −1.5% |
+| EMA crossover 50/200 | +87.9% | 2.07 | −22.7% | 10 | +91.9% | −1.3% |
+| 200-bar average regime | +83.2% | 2.02 | −25.8% | 78 | +104.2% | −10.3% |
+| ADX trend 14 / 25 | +70.8% | 2.22 | −22.6% | 82 | +103.3% | −16.0% |
+| Buy and hold | +58.8% | 1.37 | −42.1% | 1 | +122.4% | −28.6% |
+| Oversold bounce (RSI < 30 and lower-band touch) | +25.2% | 2.41 | −8.8% | 60 | −1.2% | +26.7% |
+| RSI 14 (30 → 50) | +9.1% | 0.60 | −21.9% | 35 | −3.2% | +12.7% |
+
+No strategy made money in both parts. The trend rules beat holding because they stood aside for most of the fall. The bounce rules made money only in the fall. At 25 bps only the EMA crossover (+80.9%) still beat holding (+58.2%), and the oversold bounce fell to −0.3% overall.
+
+This is the paper's clearest example of a ranking that depends on the window. On hourly bars the best rule depends on which part of the history is used to judge it. At the September split holding had the highest return and the trend rules the highest return for the risk taken. In the fall that followed, the trend rules lost money, though less than holding did, and the bounce rules that had looked worst made money.
+
+### 4.4 What borrowing costs
+
+A 1× perpetual long, run under the Jupiter-style hourly borrow fee built into the project's backtester (Jupiter is a Solana perpetuals exchange), kept +143.4% of the +389.4%. It paid $15,084 in borrow fees on a $10,000 account and was liquidated once in the model. This is a stress case for a borrow fee of that kind. It is not Hyperliquid's funding, which was not modelled. The run allowed short positions, but no registered strategy emits one at its default settings, so it tests the borrow fee and nothing else.
+
+## 5. Patterns
+
+### 5.1 Where price stood
+
+| Measure | Value |
+|---|---:|
+| Last hourly close | $65.40 |
+| Last completed daily close | $62.25 |
+| All-time high in this history | $98.00 on 2026-09-23 |
+| Daily close against that high | −36.5% |
+| Lowest low in this history | $9.31 on 2025-04-07 |
+| Annualized volatility, two years | 102% |
+| Annualized volatility, last 30 days | 83% |
+| Average true range, 14 days | 9.7% of price |
+| 20-day average close | $67.72 |
+| 50-day average close | $76.13 |
+| 100-day average close | $80.69 |
+| 200-day average close | $70.40 |
+
+The daily close was below all four averages.
+
+### 5.2 What the data supports
+
+**Large, frequent declines.** Seven declines of 25% or more since December 2024. The PDF edition charts them as Figure 1.
+
+| Peak | Trough | Depth | Days down | New high |
+|---|---|---:|---:|---|
+| $35.35 on 2024-12-21 | $9.31 on 2025-04-07 | −73.7% | 107 | 2025-05-23 |
+| $45.84 on 2025-06-16 | $30.25 on 2025-06-21 | −34.0% | 5 | 2025-07-11 |
+| $49.89 on 2025-07-14 | $35.48 on 2025-08-02 | −28.9% | 19 | 2025-08-27 |
+| $59.47 on 2025-09-18 | $20.46 on 2026-01-21 | −65.6% | 125 | 2026-05-21 |
+| $75.83 on 2026-06-01 | $52.61 on 2026-06-10 | −30.6% | 9 | 2026-06-16 |
+| $77.00 on 2026-06-16 | $51.08 on 2026-08-02 | −33.7% | 47 | 2026-08-21 |
+| $98.00 on 2026-09-23 | $55.74 on 2026-11-21 | −43.1% | 59 | not yet |
+
+The depths run from peak price to trough price, so they are not the same measure as the worst decline in the backtests of section 4. A decline is counted as finished only when price makes a new high. The six finished ones are too few to say how the present one ends.
+
+**No day-to-day memory.** The correlation between one day's return and the next is +0.009, and it stays within ±0.03 out to five days. Hourly returns are similar: −0.034 at one hour. Volatility clusters mildly: the correlation between the sizes of consecutive daily moves is +0.116.
+
+**Bitcoin beta above one.** Daily correlation with BTC is 0.54 and beta is 1.26 over two years: when Bitcoin moved 1%, HYPE moved 1.26% on average. With ETH the figures are 0.56 and 0.83, with SOL 0.56 and 0.74. Over the last 90 days the BTC figures are 0.59 and 1.04. Within the week of minute bars the same-minute correlation with BTC was 0.73. Moving together is not a signal: section 5.3 shows that neither BTC nor ZEC led HYPE within the week. ETH and SOL were not tested for a lead.
+
+**A US-hours volume peak.** 13:00–16:59 UTC carries 26.4% of hourly volume. Average absolute hourly moves peak at 0.82–0.83% at 14:00 and 15:00 UTC and bottom at 0.49–0.50% at 06:00 and 09:00 UTC. This is a fact about when HYPE moves, not about which way.
+
+**Swings of 1% a few hours apart (a description, not a test).** In the week of minute bars, 1% peaks came a median 145 minutes apart and dips 158 minutes apart. The spacing was more even than 95% of shuffled paths in 5 of 24 comparisons, uncorrected. The formal cycle tests in section 5.3 found no clock to trade on.
+
+### 5.3 What the data does not support
+
+**Weekday effects.** Wednesday averaged +1.26% (t = 2.18, 103 days), Tuesday −0.31% and Thursday −0.42%. Seven tests need a t-statistic near 2.7. None reaches it.
+
+**Hour-of-day direction.** 01:00 UTC averaged −0.13% (t = −2.17). Twenty-four tests need a t-statistic above 3. None reaches it.
+
+**Buying big down days.**
+
+| Condition | Days | Next-day average | Standard error | Next day up |
+|---|---:|---:|---:|---:|
+| All days | 720 | +0.35% | 0.20% | 51% |
+| After any up day | 367 | +0.17% | 0.28% | 49% |
+| After any down day | 353 | +0.54% | 0.29% | 53% |
+| After a gain of 5% or more | 119 | +1.06% | 0.59% | 53% |
+| After a loss of 5% or more | 89 | +0.81% | 0.63% | 55% |
+| After a gain of 10% or more | 35 | +1.86% | 1.12% | 54% |
+| After a loss of 10% or more | 18 | +2.30% | 1.26% | 61% |
+
+Days after a 10% loss and days after a 10% gain were both followed by above-average returns. Neither case separates from the other, and each is within two standard errors of the average day.
+
+**The ZEC two-bar reversal.** [An earlier working paper](ZEC-TWO-BAR-REVERSAL.md) found that ZEC's next 10-minute candle was often down after two up candles. On HYPE, after one or two up 10-minute bars and a first close below the open, price continued down 39% to 53% of the time over 5, 10 and 20 minutes. The unconditional rate was 49.5% to 49.9%. The study has 72 combinations of setup, trigger, horizon and overlap rule, and the confidence interval of 66 of them contains that baseline. The six that do not are two results, each repeated across variants, and both point the other way: 41% of 200 cases and 39% of 131 cases.
+
+**Candle shapes.** The rule chosen on validation (two down 5-minute bars in a falling shape, predict up) was right 69% of 29 times in validation and 48% of 25 times in the final test. It lost money there at every cost level.
+
+**Cycles.** 1,638 spectrum and rolling-fit tests gave a smallest corrected p-value of 1.0. The correction's floor is 0.819: with this many tests, no corrected p-value could fall below it, so the tests could not have detected a cycle. The result is inconclusive, not a proof of absence. The fitted cycle forecast was worse than assuming that price stays where it is.
+
+**Leading correlations.** We tested 18 features at six horizons. None survived the correction on the final test. The largest training correlation, the last minute's BTC return against HYPE's next hour (−0.24), kept its sign but not its significance (p = 0.95).
+
+## 6. Price levels
+
+### 6.1 The level map
+
+Sides are relative to the last hourly close, $65.40. Prices are Hyperliquid perpetual prices. Volume zones spread each bar's volume across its range. The PDF edition charts the map as Figure 2.
+
+| Zone | Side | Evidence |
+|---|---|---|
+| $95.34–98.00 | Resistance | All-time high $98.00 on 2026-09-23; three daily swing highs to 2026-10-29 |
+| $75.99–95.65 | Resistance | 70% of the last 90 days' volume traded here; most-traded price $81.10 |
+| $74.30–78.35 | Resistance | Twenty hourly swings in four adjoining groups, latest 2026-11-13; four daily swings at $75.15–77.00, including the June highs $75.83 and $77.00. 50-day average $76.13 |
+| $71.04–72.91 | Resistance | Six hourly swings, latest 2026-11-16 |
+| $68.62–70.25 | Resistance | Eight hourly swings, latest 2026-11-23; the week's high. The 200-day average is just above, at $70.40 |
+| $67.76–68.34 | Resistance | Four hourly swings from June and July; the 20-day average is just below, at $67.72 |
+| $65.43–66.14 | Resistance, just above | Five hourly swings from June and July |
+| $64.50–65.10 | Support, just below | Five hourly swings, latest 2026-11-18 |
+| $62.42–63.35 | Support | Four hourly swings from May to July |
+| $59.70–60.55 | Support | Five hourly swings and the 2026-11-14 daily low $59.70; a volume node sits just above, at $60.68 |
+| $57.96–59.47 | Support | Three daily swings, including the September 2025 high $59.47; seven hourly swings at $57.96–58.55 |
+| $55.28–56.50 | Support | Nine hourly swings, latest 2026-11-25; the 2026-11-21 low $55.74 |
+| $51.08–54.00 | Support | Five daily swings at $51.08–52.61, including the 2026-08-02 low; eight hourly swings at $52.61–54.00 |
+| $49.59–50.16 | Support | Three daily swing highs from 2025, including the July 2025 high $49.89 |
+| $42.50–45.84 | Support | Six daily swings; the most-traded price of the two years, $43.63 |
+| $38.16–41.71 | Support | Twelve daily swings; volume node $38.69 |
+
+Zones merge adjacent swing groups, so a zone can be wider than the grouping limit in section 3. The table lists selected zones; the price-structure report in section 10 lists every level. Over the full two years, 70% of volume traded between $18.01 and $54.63. Over the last 90 days, 70% traded between $75.99 and $95.65. Most recent volume therefore traded above the price at the time of the study.
+
+### 6.2 Did the levels work?
+
+Each test is a return to a swing level that was already confirmed and not yet broken, entered at that bar's close. Tests on one side do not overlap. A level held when no close in the horizon went through it by the touch tolerance (1.5% daily, 0.5% hourly).
+
+The fair comparison is not the average bar, because every test follows a move toward the level. The placebo columns apply the same rules to lines 6% (daily) or 2% (hourly) above and below each swing level. If swing levels mattered, they would hold more often than those lines.
+
+| Bars and horizon | Side | Tests | Held | Average after | Standard error | Placebo tests | Placebo held | Placebo average after |
+|---|---|---:|---:|---:|---:|---:|---:|---:|
+| Daily, 5 days | Support | 31 | 48% | +1.09% | 1.90% | 43 | 42% | +1.19% |
+| Daily, 5 days | Resistance | 30 | 37% | +3.82% | 1.95% | 49 | 39% | +1.98% |
+| Daily, 10 days | Support | 23 | 35% | +3.06% | 3.83% | 31 | 42% | +4.53% |
+| Daily, 10 days | Resistance | 23 | 39% | +5.56% | 3.77% | 32 | 31% | +3.76% |
+| Hourly, 24 hours | Support | 46 | 26% | −0.67% | 0.46% | 78 | 35% | −0.31% |
+| Hourly, 24 hours | Resistance | 45 | 33% | −0.36% | 0.83% | 65 | 28% | −0.04% |
+| Hourly, 72 hours | Support | 29 | 10% | −0.77% | 1.28% | 36 | 14% | −1.13% |
+| Hourly, 72 hours | Resistance | 29 | 17% | +0.51% | 1.75% | 37 | 22% | +0.48% |
+
+The average over all bars was +1.81% for 5 days, +3.50% for 10 days, +0.31% for 24 hours and +0.84% for 72 hours.
+
+The swing levels did no better than arbitrary lines nearby. They held between 10% and 48% of the time; the placebo lines held between 14% and 42%. The largest gap between real and placebo, in hold rate or in average return, is about one standard error. A level broke more often than it held on every row.
+
+The levels mark where price turned before. On this history they did not make a return to the level a reliable turn. They are reference prices for where price paused before. The test gives no reason to prefer them to nearby lines, and they are not an entry signal.
+
+## 7. Agreement with other runs
+
+Two other runs of the same question exist, on partly different data. They differ in venue and window but not in method: the strategy runs share one code base and catalogue. A third piece of work is a forward test that has started and has no result yet.
+
+| Question | [Coinbase run](results/hype_suite_20261127.md) | [31-day Binance run](results/hype_study_2026-11-27.md) | This paper |
+|---|---|---|---|
+| Data | Coinbase HYPE/USD: a 46-hour gap-free minute run, and 294 days of 5-minute, hourly and daily bars | Binance HYPE/USDT: 44,640 consecutive minute bars over 31 days; Hyperliquid daily and hourly | Binance HYPE/USDT: 10,080 minute bars over 7 days; Hyperliquid daily and hourly |
+| Is any strategy validated? | No. Every validation-selected rule in the 294-day run lost on test; the 46-hour minute run's 5-minute pick was positive on about 9 hours of test bars | No. Most validation-selected picks did not hold | No. Nothing beat holding over two years; no hourly rule made money in both parts |
+| Hourly RSI dip buying | RSI 14 (30 → 55) +16.7% on its test window | RSI 14 (30 → 55) +8.2% on its test window | RSI 14 (30 → 50) +12.7% in the falling last 30%, after −3.2% in the rising part |
+| Short-horizon patterns | None significant after correction | None: no cycle, no leading correlation, no usable two-bar reversal | Two-bar reversal, shapes and leading correlations fail; cycle tests inconclusive |
+| Support and resistance | No edge over a moving-average control | Out of sample, levels held 52.1% of 71 tests, inside a random-level control (mean 53.4%) | No edge over offset placebo lines |
+
+The three agree that no rule, pattern or level has an edge, wherever they overlap. Because they share a code base and the same recent weeks of market history, that is weaker than three independent confirmations, but it shows the negative result does not hinge on one venue's data.
+
+They disagree most clearly in one place, and the disagreement is the most useful thing in the comparison. This paper's week ranks ATR-sized trend following first on 5-minute bars. The 31-day run, which contains this week, reports that the trend-following families it lists (ATR-sized, EMA crossover, Ichimoku, moving-average crossover and SMA regime) lost money over the full window: none of the 5-minute ATR-sized settings was positive, and the family's median was −38%. Its best individual rules over the month were dip buyers and Keltner breakouts. **The ranking flips with the window.** The week's result describes a single week that ended in a rally. It should not be extrapolated.
+
+A 14-day forward trial of the hourly RSI dip buyer (RSI 14, buy below 30, exit above 55) began on 2026-11-27 at 13:00 UTC and ends on 2026-12-11. It uses simulated accounts only. It has no result yet, and fourteen days will hold only a few trades, enough to check a hypothesis but not to tell an edge from noise. The trial uses the exit above 55 that the two other runs tested; this paper's own hourly table used an exit above 50. [A companion paper](results/hype_walk_forward_2026-11-27.md) reports rolling walk-forward tests of that rule and how the trial will be read.
+
+## 8. Limits
+
+- **One week holds few independent market states.** The week's winners were chosen from 1,707 overlapping templates, and the best of many is biased upward.
+- **The whole-week returns include the training part.** Only the validation and final-test columns are out of sample, and each covers about 34 hours.
+- **Costs are modelled.** Spreads, depth, latency, funding and real fills are absent. The reference accounts have no capacity model.
+- **No short side with real funding.** Every registered strategy is long or flat, and the one synthetic long/short model pays a flat carry. Whether shorting the falls would have paid is untested.
+- **The long-history tests use default parameters and one split,** with no correction for testing 30 strategies at once.
+- **The level tests reuse one history.** The hourly levels come from 208 days that contain one rise and one fall.
+- **Perpetual prices stand in for spot** over the two years, because none of the three venues checked has a spot history that long.
+
+Parts of the ZEC suite could not be repeated for HYPE: the 25× five-minute walk-forward on Jupiter (it needs weeks of captured prices and funding for that market), order-book replay, and the long-history studies that need inputs HYPE does not have.
+
+## 9. What would count as evidence
+
+None of the rules above is ready to be traded. A rule would earn more trust under the following protocol.
+
+1. Freeze one rule and its parameters before looking at new data. Record the freeze.
+2. Run it forward on closed bars, on paper, for a fixed number of bars decided in advance. Do not stop early because the result looks good.
+3. Score it against holding and against cash on the same clock, at two fee levels, and again with fills one bar late.
+4. Keep every signal and every abstention. Report the number of trades, the worst decline and the result against holding, not the hit rate alone.
+5. Repeat across a rising and a falling period before drawing a conclusion. The hourly result in section 4.3 shows why one period is not enough.
+6. Test the short side with a model of real funding before making any claim about it.
+
+Two candidates are worth that test: the 5-minute ATR-sized trend rule, which this week favours and the 31-day run does not, and the hourly RSI dip buyer, which is already running on paper (section 7).
+
+## 10. Reproducibility
+
+The files behind the numbers in this paper are public.
+
+- [The underlying study](HYPE-STUDY.md), with the same tables.
+- [The weekly run report](../json/hype-week-20261127/report.md) and [the price-structure report](../json/hype-structure-20261127/structure.md).
+- [The weekly run's evidence](https://github.com/mithudso/solmargintrader/tree/master/research/json/hype-week-20261127): the report, a summary, and the complete run as one archive.
+- [The long-history evidence](https://github.com/mithudso/solmargintrader/tree/master/research/json/hype-structure-20261127): the venue's raw responses, the candles as CSV, the structure results and six backtest comparisons.
+- [The price-structure code](https://github.com/mithudso/solmargintrader/blob/master/research/scripts/coin_structure.py). It accepts any Hyperliquid perpetual with at least 60 daily and 336 hourly bars.
+
+Weekly run archive SHA-256:
+```
+bee60069b6d72d3a93e1c48ea214d5072306b35eaf326749c0f4823c4d334874
+```
+
+Hyperliquid HYPE daily candles, CSV SHA-256:
+```
+34e989c41c7c4e7cb5bac827fea1457a17d921b6293d01d8703bd8fac3779b4b
+```
+
+Hyperliquid HYPE hourly candles, CSV SHA-256:
+```
+0ed4ae5d1a0af4cb5e837ff643786ce9e4ddd2063ae61d56e8dd659fcb8d4e50
+```
+
+To verify the weekly run offline and rebuild the structure report, with Python 3.13 and the requirements in `backtester/requirements.txt`, from the root of a local clone of the repository linked above:
+
+```
+python -m zipfile -e research/json/hype-week-20261127/artifacts.zip hype-week-check
+python -m research.coin_week --output hype-week-check --phase verify
+python -m research.coin_structure analyze --output research/json/hype-structure-20261127
+```
+
+To run a fresh week and a fresh history:
+
+```
+python -m research.coin_week --coin HYPE --output hype-week-new
+python -m research.coin_structure fetch --coin HYPE --output hype-structure-new
+python -m research.coin_structure analyze --output hype-structure-new
+```
+
+The weekly run was verified offline: 78 artifacts and 491,712 strategy rows matched their recorded hashes and counts. The numbers in this paper were then checked against the stored results by a separate review, which recomputed the tables from the data. The mismatches it found were corrected before publication.
+
+## Conclusion
+
+HYPE rewarded holders over two years and punished them with seven declines of a quarter or more on the way. No tested rule turned that history into a better return than holding, and the rules that looked best on one stretch lost on the next. Over the two years, the one benefit seen for trend rules was a smaller worst decline in exchange for some of the gain. The patterns that traders look for on short charts were not found in this data, and price levels are places where price turned before, not places where it was shown to turn again. The next step is a frozen rule run forward on paper, judged against holding.
