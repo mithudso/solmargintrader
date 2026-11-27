@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-11-27T09:40:45+00:00",
+  "generatedAt": "2026-11-27T09:50:30+00:00",
   "schemaVersion": 1,
   "note": "Concepts are derived from the repo's own vocabulary \u2014 the FAMILY dict, strategy-card frontmatter, docs/trading-signals-concept-family.md, and terms verified to recur in the corpus. A concept matching no file is dropped, not kept.",
   "counts": {
@@ -161,7 +161,7 @@
         "universe",
         "top_coins"
       ],
-      "matchingFiles": 4235,
+      "matchingFiles": 4236,
       "shown": 30,
       "files": [
         {
@@ -170,7 +170,7 @@
         },
         {
           "path": "memory.md",
-          "hits": 487
+          "hits": 489
         },
         {
           "path": "docs/FILES.md",
@@ -194,7 +194,7 @@
         },
         {
           "path": "prompts.md",
-          "hits": 177
+          "hits": 179
         },
         {
           "path": "research/papers/coin-intelligence/doge-dogecoin.md",
@@ -300,7 +300,7 @@
         "centred",
         "shift"
       ],
-      "matchingFiles": 3953,
+      "matchingFiles": 3954,
       "shown": 30,
       "files": [
         {
@@ -439,7 +439,7 @@
         "borrow",
         "financing"
       ],
-      "matchingFiles": 3813,
+      "matchingFiles": 3814,
       "shown": 30,
       "files": [
         {
@@ -575,7 +575,7 @@
         "macd",
         "ichimoku"
       ],
-      "matchingFiles": 1936,
+      "matchingFiles": 1937,
       "shown": 30,
       "files": [
         {
@@ -713,7 +713,7 @@
         "anchor_window",
         "levels"
       ],
-      "matchingFiles": 1621,
+      "matchingFiles": 1624,
       "shown": 30,
       "files": [
         {
@@ -851,7 +851,7 @@
         "monotone",
         "gap"
       ],
-      "matchingFiles": 1585,
+      "matchingFiles": 1586,
       "shown": 30,
       "files": [
         {
@@ -924,7 +924,7 @@
         },
         {
           "path": "memory.md",
-          "hits": 45
+          "hits": 44
         },
         {
           "path": "research/json/tradingview-script-profiles/shard-c.jsonl",
@@ -990,7 +990,7 @@
         "perps",
         "solana"
       ],
-      "matchingFiles": 1403,
+      "matchingFiles": 1404,
       "shown": 30,
       "files": [
         {
@@ -1125,7 +1125,7 @@
         "stochastic",
         "oscillator"
       ],
-      "matchingFiles": 1297,
+      "matchingFiles": 1298,
       "shown": 30,
       "files": [
         {
@@ -1395,7 +1395,7 @@
         "benchmark",
         "baseline"
       ],
-      "matchingFiles": 847,
+      "matchingFiles": 849,
       "shown": 30,
       "files": [
         {
@@ -1529,7 +1529,7 @@
         "buy_and_hold",
         "baseline"
       ],
-      "matchingFiles": 723,
+      "matchingFiles": 725,
       "shown": 30,
       "files": [
         {
@@ -1666,7 +1666,7 @@
         "hurst",
         "vol_regime"
       ],
-      "matchingFiles": 653,
+      "matchingFiles": 655,
       "shown": 30,
       "files": [
         {
@@ -1804,7 +1804,7 @@
         "evidence floor",
         "rankable"
       ],
-      "matchingFiles": 599,
+      "matchingFiles": 600,
       "shown": 30,
       "files": [
         {
@@ -1939,7 +1939,7 @@
         "bb_breakout",
         "keltner"
       ],
-      "matchingFiles": 567,
+      "matchingFiles": 568,
       "shown": 30,
       "files": [
         {
@@ -2077,7 +2077,7 @@
         "k_test",
         "path_sharpes"
       ],
-      "matchingFiles": 314,
+      "matchingFiles": 315,
       "shown": 30,
       "files": [
         {
@@ -2759,7 +2759,7 @@
         "garch",
         "risk-overlay"
       ],
-      "matchingFiles": 111,
+      "matchingFiles": 112,
       "shown": 30,
       "files": [
         {

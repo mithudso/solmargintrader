@@ -1,17 +1,17 @@
 {
-  "generatedAt": "2026-11-27T09:40:45+00:00",
+  "generatedAt": "2026-11-27T09:50:30+00:00",
   "schemaVersion": 1,
   "repoRoot": "~/dev/solmargintrader",
-  "commit": "46eb55e",
+  "commit": "9b356fb",
   "counts": {
-    "files": 8058,
-    "bytes": 271395382,
+    "files": 8063,
+    "bytes": 271417530,
     "byKind": {
       "strategy-card": 4434,
       "doc": 1454,
       "test": 589,
-      "code-python": 545,
-      "result": 352,
+      "code-python": 549,
+      "result": 353,
       "config": 275,
       "code-js": 174,
       "other": 150,
@@ -22,7 +22,7 @@
       "code-shell": 5
     },
     "byTopDir": {
-      "research": 4725,
+      "research": 4730,
       "backtester": 1664,
       "extension": 226,
       "soltui": 215,
@@ -60,7 +60,7 @@
       "archive": 1,
       "tradingskilllist": 1
     },
-    "withSummary": 7463
+    "withSummary": 7464
   },
   "files": [
     {
@@ -79973,11 +79973,11 @@
       "ext": ".md",
       "kind": "doc",
       "title": "Work continuation",
-      "summary": "Version: 723 Delta: v722 to v723. Record the second HYPE study: gap-free Binance week, two-year Hyperliquid history and the structure runner. Same request as `prompts.md` v331, run in a second session at the same time as the Coinbase suite below. Write-up: `research/papers/HYPE-STUDY.md`.",
+      "summary": "Version: 724 Delta: v723 to v724. Add the 31-day Binance HYPE study; the best strategy family flips with the window. Target: repeat the ZEC analysis suite for HYPE. Done: `python -m research.coin_week --coin HYPE --venue binance --days 31` (491,712 rows, Binance HYPEUSDT, 44,640 real 1m bars),",
       "summarySource": "opening-prose",
-      "bytes": 952537,
-      "lines": 5347,
-      "sha1": "25710cbcd8abb2678e665516d2933cf309059504",
+      "bytes": 953764,
+      "lines": 5355,
+      "sha1": "f4b122d462b88dc72ef04eb3fcfd87e06117c0df",
       "symbols": [],
       "imports": [],
       "internalImports": [],
@@ -84651,9 +84651,9 @@
       "title": "Prompt history",
       "summary": "Version: 331 Delta: v330 to v331. Record the HYPE analysis request: repeat the ZEC analysis suite for HYPE. Version: 330",
       "summarySource": "opening-prose",
-      "bytes": 309214,
-      "lines": 5146,
-      "sha1": "f763fa2647735ebe4960f362c144df81df45b99b",
+      "bytes": 309432,
+      "lines": 5153,
+      "sha1": "8ec35675b3210f426c67dee83289ce6640898a13",
       "symbols": [],
       "imports": [],
       "internalImports": [],
@@ -94005,6 +94005,24 @@
       "bytes": 6480,
       "lines": 103,
       "sha1": "b865ad06dcbfa059684fca0fc80349adb1f42bdb",
+      "symbols": [],
+      "imports": [],
+      "internalImports": [],
+      "frontmatter": {}
+    },
+    {
+      "id": "research/papers/results/hype_study_2026-11-27.md",
+      "path": "research/papers/results/hype_study_2026-11-27.md",
+      "dir": "research/papers/results",
+      "name": "hype_study_2026-11-27.md",
+      "ext": ".md",
+      "kind": "result",
+      "title": "HYPE study: strategies, patterns and levels (2026-11-27)",
+      "summary": "Report version: 1.0.0. Research only. Not investment advice. No order was placed and no recorder, paper trial or account was touched. The ZEC suite, repeated for HYPE, in three layers: 1. **Frozen 31-day candle study.** `python -m research.coin_week --coin HYPE --venue binance --days 31 --references BTC,ETH,SOL,ZEC`.",
+      "summarySource": "opening-prose",
+      "bytes": 11170,
+      "lines": 117,
+      "sha1": "0069aa82b4e97b5d489dc8ffaa23ed29feec3026",
       "symbols": [],
       "imports": [],
       "internalImports": [],
@@ -109052,6 +109070,118 @@
       "internalImports": [
         "backtester"
       ],
+      "frontmatter": {}
+    },
+    {
+      "id": "research/scripts/hype_study/hl_fetch.py",
+      "path": "research/scripts/hype_study/hl_fetch.py",
+      "dir": "research/scripts/hype_study",
+      "name": "hl_fetch.py",
+      "ext": ".py",
+      "kind": "code-python",
+      "title": "hl_fetch",
+      "summary": "",
+      "summarySource": "none",
+      "bytes": 951,
+      "lines": 25,
+      "sha1": "7b0facb52d8c447c710ff98c5abb65e8c6a9631d",
+      "symbols": [
+        "snap()"
+      ],
+      "imports": [
+        "json",
+        "sys",
+        "time",
+        "urllib"
+      ],
+      "internalImports": [],
+      "frontmatter": {}
+    },
+    {
+      "id": "research/scripts/hype_study/levels.py",
+      "path": "research/scripts/hype_study/levels.py",
+      "dir": "research/scripts/hype_study",
+      "name": "levels.py",
+      "ext": ".py",
+      "kind": "code-python",
+      "title": "fractal pivots",
+      "summary": "",
+      "summarySource": "none",
+      "bytes": 4138,
+      "lines": 73,
+      "sha1": "84c7955b6731457249c10538b48cac18dac1f8a5",
+      "symbols": [
+        "load()",
+        "S",
+        "D",
+        "H4",
+        "H1",
+        "pivots()",
+        "cluster()"
+      ],
+      "imports": [
+        "json",
+        "numpy",
+        "pandas",
+        "sys"
+      ],
+      "internalImports": [],
+      "frontmatter": {}
+    },
+    {
+      "id": "research/scripts/hype_study/levels_control.py",
+      "path": "research/scripts/hype_study/levels_control.py",
+      "dir": "research/scripts/hype_study",
+      "name": "levels_control.py",
+      "ext": ".py",
+      "kind": "code-python",
+      "title": "levels from DAILY pivots only, strictly using data BEFORE the test span (no lookahead): learn on first 60% of 4h span, test on rest",
+      "summary": "",
+      "summarySource": "none",
+      "bytes": 1828,
+      "lines": 37,
+      "sha1": "910157815b6cc61082609bf69d51cdbef6ebb5cb",
+      "symbols": [
+        "S",
+        "load()",
+        "D",
+        "H4",
+        "pivots()",
+        "stat()"
+      ],
+      "imports": [
+        "json",
+        "numpy",
+        "pandas",
+        "sys"
+      ],
+      "internalImports": [],
+      "frontmatter": {}
+    },
+    {
+      "id": "research/scripts/hype_study/rank.py",
+      "path": "research/scripts/hype_study/rank.py",
+      "dir": "research/scripts/hype_study",
+      "name": "rank.py",
+      "ext": ".py",
+      "kind": "code-python",
+      "title": "robust across fees: positive full at 60 bps",
+      "summary": "",
+      "summarySource": "none",
+      "bytes": 2616,
+      "lines": 37,
+      "sha1": "8ba539cf761341de225f491e96fca0a244cc44e8",
+      "symbols": [
+        "HOLD",
+        "FEE"
+      ],
+      "imports": [
+        "json",
+        "numpy",
+        "pandas",
+        "zlib"
+      ],
+      "internalImports": [],
       "frontmatter": {}
     },
     {
@@ -248280,5 +248410,5 @@
       "frontmatter": {}
     }
   ],
-  "textSha256": "42244ca138b0614dd0e35d4e67174398ecf3ea9302b068ac09300821f1b4d1ab"
+  "textSha256": "e34b5070bb523fa0b8b2e07d41603cff46661b24e7216939cf880b8f444002e1"
 }
