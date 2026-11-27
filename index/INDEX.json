@@ -1,11 +1,11 @@
 {
-  "generatedAt": "2026-11-27T13:16:25+00:00",
+  "generatedAt": "2026-11-27T13:18:00+00:00",
   "schemaVersion": 1,
   "repoRoot": "~/dev/solmargintrader",
-  "commit": "3f7f81d",
+  "commit": "73a40da",
   "counts": {
     "files": 8078,
-    "bytes": 293014697,
+    "bytes": 293014759,
     "byKind": {
       "strategy-card": 4434,
       "doc": 1455,
@@ -247412,9 +247412,9 @@
       "title": "Oraclebot",
       "summary": "Generated report. Opens: <!-- Generated from the public Markdown pages and published working papers by website/scripts/build_discovery.py. --> / # Oraclebot",
       "summarySource": "derived",
-      "bytes": 52495,
+      "bytes": 52583,
       "lines": 559,
-      "sha1": "5aac0ef4f29cd831dd930dcbd83345ce51e18a3e",
+      "sha1": "197eed887d59ea283e710cefca949cee747c278a",
       "symbols": [],
       "imports": [],
       "internalImports": [],
@@ -247430,9 +247430,9 @@
       "title": "Oraclebot",
       "summary": "Generated report. Opens: # Oraclebot / > Oraclebot is a research and paper-trading workspace for market signals, strategies, and historical backtests.",
       "summarySource": "derived",
-      "bytes": 906,
+      "bytes": 893,
       "lines": 15,
-      "sha1": "24262466ac0de4cc4f187422897535c977546277",
+      "sha1": "f19eebd52fb39aa7730a2f3c3475cb187c279574",
       "symbols": [],
       "imports": [],
       "internalImports": [],
@@ -247627,9 +247627,9 @@
       "title": "One row per published working paper, newest first: its route, its slug in the",
       "summary": "Build Oraclebot's public discovery documents from the published pages.",
       "summarySource": "docstring",
-      "bytes": 4936,
+      "bytes": 4923,
       "lines": 109,
-      "sha1": "0bebde04e9471714680d786ab6b9b5d928fcd188",
+      "sha1": "c99ed4a5e9c053e6fac227d253e9e9c9bcd4bd46",
       "symbols": [
         "PUBLIC",
         "ORIGIN",
@@ -248920,5 +248920,5 @@
       "frontmatter": {}
     }
   ],
-  "textSha256": "f734e01a21593c0655175f0af1795ab87395600e06a0cd1f4a733589cfd8cef4"
+  "textSha256": "fa7762cf249bca9d08f5a6cdf40df7f23e0180de61ccba577cab1dbecc56c049"
 }

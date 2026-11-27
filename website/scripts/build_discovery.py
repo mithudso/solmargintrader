@@ -15,7 +15,7 @@ ORIGIN = "https://oraclebot.io"
 PAPERS = (
     ("/papers/hype-strategies-patterns-levels.pdf", "hype-strategies-patterns-levels-806597d4",
      "What holds up on HYPE? Strategies, patterns and price levels (PDF)",
-     "Working paper on two years of HYPE backtests, price patterns and support and resistance levels."),
+     "Working paper on HYPE backtests, price patterns and support and resistance levels."),
     ("/papers/zec-two-bar-reversal.pdf", "zec-two-bar-reversal-8b2f7af3",
      "Do two candles predict a ZEC reversal? (PDF)",
      "Exploratory working paper based on one day of observations."),
