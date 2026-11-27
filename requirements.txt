@@ -122,8 +122,6 @@ opentelemetry-instrumentation-asyncio==0.66b0
 opentelemetry-proto==1.45.0
 opentelemetry-sdk==1.45.0
 opentelemetry-semantic-conventions==0.66b0
-openviking==0.4.21
-openviking-sdk==0.1.12
 packaging==26.3
 parsel==1.12.0
 pathable==0.6.0

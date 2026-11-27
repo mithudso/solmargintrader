@@ -1,11 +1,11 @@
 # Work continuation
 
-Version: 720
-Delta: v719 to v720. Record the HYPE analysis: the ZEC suite repeated on HYPE.
+Version: 721
+Delta: v720 to v721. Record the HYPE analysis: the ZEC suite repeated on HYPE.
 
 ## HYPE: ZEC analysis suite repeated (2026-11-27)
 
-Request: `prompts.md` v330. Result: `research/papers/results/hype_suite_20261127.md`.
+Request: `prompts.md` v331. Result: `research/papers/results/hype_suite_20261127.md`.
 
 - No validated HYPE strategy. Every validation-selected policy in the 294-day run (HYPE, ZEC, BTC; 1h and 5m) lost on test at 10, 25 and 60 bp. The selections beat buy-and-hold only in falling test windows.
 - Only positive long-history test family: RSI(14h) 30/55 on HYPE 1h, +16.7% at 10 bp (14 exits). It had 8 validation exits, so it was ineligible under the 10-exit rule. ZEC 1h RSI 25/50 made +6.7% on test (6 exits, 5 validation exits). Candidate for a pre-registered forward paper test, not a strategy.
@@ -20,6 +20,44 @@ Built: `research/scripts/coin_history.py`, `research/scripts/coin_levels.py`, te
 Verification gap: `scripts/check_docs.py` exits 1 here. Seven soltui test modules import `executor.signer`, which is not in this venv (the executor has its own venv per CLAUDE.md). No doc counts were changed.
 
 Remaining: forward paper test of the RSI rule (not started); a second HYPE history source (Hyperliquid candles, not checked); commit and PR (in progress).
+
+Version: 720
+Delta: v719 to v720. Retire OpenViking installation pins.
+
+## OpenViking retirement · 2026-11-24
+
+The root requirements listed both OpenViking and its SDK. Neither is imported by the maintained application. Removed the two lines so installing the root requirements cannot install these packages directly. The remaining requirements are byte-for-byte unchanged.
+Delta: v719 to v720. Record the repository secret scan and the gitleaks CI gate.
+
+## Credential-pattern cleanup and secret scan
+
+2026-11-26, branch `claude/project-thread-u9xj0t`. A code indexer refused the repo for a
+"credential pattern". A regex scan of HEAD and all 572 commits on every ref found no live
+credential: every hit is a synthetic redaction canary (`synthetic`, `fixture`, `canary`,
+`*.invalid` hosts) or a PEM header wrapped around a key generated at test runtime. The
+Base58 88-character strings are public Solana transaction signatures. Nothing needs
+rotating and history was not rewritten.
+
+The likeliest trigger was the literal PEM header in five website test files; those now
+assemble the label at runtime (`PEM_LABEL`). Added `.gitleaks.toml` (default rules plus a
+word-based canary allowlist), `scripts/secret_scan.sh [tree|history|staged|all]` (pinned,
+checksum-verified gitleaks 8.28.0) and `.github/workflows/secret-scan.yml` (runs `all`,
+full history). README, SECURITY.md and docs/SCRIPTS.md describe the `.env` setup and scan.
+Verified: affected website Node tests (67) and `website.engine.test_research` pass, and
+`scripts/secret_scan.sh all` is clean locally (tree about 3 s, history about 7 min). The policy
+was tuned against gitleaks' real findings: file-hash manifests, git SHAs, Solana public
+keys, EVM addresses, saved GitHub/jup.ag page tokens, prose and runtime PEM templates. Generated
+indexes and the wiki bundle are path-allowlisted, and blobs over 2 MB are skipped; without that,
+the first CI history scan ran 48 minutes and died. A planted AWS and Stripe key in a
+`tests/` file are still caught. A custom `url-embedded-credentials` rule covers
+`scheme://user:pass@host`; it skips `<…>`, `${…}`, `{…}` placeholders and low-entropy
+words. The five `scripts/referral_scripts/*.ts` files were saved GitHub HTML pages, so they
+are renamed to `.html`. Only historical `.cdo` review ledgers name the old paths.
+`targetRules` in a global allowlist did not apply in 8.28.0, so rule-scoped allowlists use
+`[[rules]] id=…` plus `[[rules.allowlists]]`.
+
+Version: 719
+Delta: v718 to v719. Record the gated, published zero-fee venue research.
 
 ## Zero-fee perp venue research: complete
 
