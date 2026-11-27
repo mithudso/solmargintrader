@@ -1,5 +1,17 @@
 # Work continuation
 
+Version: 722
+Delta: v721 to v722. Record the HYPE analysis as merged (PR #368), its CI record and the lost HYPE npz caches.
+
+## HYPE analysis: merged (2026-11-27)
+
+PR #368 squash-merged to master as `32fd673`. Its last CI run on `d8a4d25` was green. Report:
+`research/papers/results/hype_suite_20261127.md`. Results match the v721 entry below.
+
+- The HYPE-31d `contexts-*.npz` and `signals-*.npz` caches were overwritten during archiving (same names as ZEC-31d). The ZEC-31d set is at `/Users/mitch/dev/solmargin-analysis-artifacts/hype-suite-npz`, hash-verified, with `NOTE.txt`. HYPE caches are regenerable and manifest-bound; they are not committed.
+- Two lessons: every `index/` or test run needs `INDEX_NO_AUTO=1`. An unguarded run attempted an embedding build against the running Ollama; it failed and wrote nothing. Any change to tracked research or records needs `INDEX_NO_AUTO=1 python3 index/build.py all` and `python3 -m website.scripts.export_research` before CI, because CI checks both.
+- Still open: the forward paper test of RSI(14h) 30/55 (not started), and a second HYPE history source.
+
 Version: 721
 Delta: v720 to v721. Record the HYPE analysis: the ZEC suite repeated on HYPE.
 
