@@ -1,5 +1,22 @@
 # Work continuation
 
+Version: 722
+Delta: v721 to v722. Record the second HYPE study: gap-free Binance week, two-year Hyperliquid history and the structure runner.
+
+## HYPE study on Binance and Hyperliquid data · 2026-11-27: complete
+
+Same request as `prompts.md` v331, run in a second session at the same time as the Coinbase suite below. Write-up: `research/papers/HYPE-STUDY.md`. It checks the "second HYPE history source" the Coinbase entry left open, and its last section compares the two.
+
+Completed. The weekly ZEC transfer ran on Binance spot HYPE/USDT, 10,080 minute bars ending 2026-11-27 08:49 UTC, strict gap policy, all 1,707 templates (491,712 rows; offline verify passed, 78 artifacts). The long history is Hyperliquid perpetual candles (722 daily bars from 2024-12-05, 4,999 hourly bars; the endpoint serves the latest 5,000 per interval). New runner `research/scripts/coin_structure.py` (`python -m research.coin_structure fetch|analyze`) freezes raw responses and CSVs with hashes, rebuilds bars from the raw responses, and writes swing levels, volume by price, causal level tests with a placebo control, calendar effects, declines and co-movement. All 34 registered strategies ran on the daily and hourly CSVs through `backtester.cli --split 0.7` at 6 and 25 bps and as a 1x perp long with borrow fee. Every registered strategy is long or flat: `--allow-short` changed nothing, so no short side was tested.
+
+Evidence: `research/json/hype-week-20261127/` (report, summary, chart, complete `artifacts.zip`, `publication.json`) and `research/json/hype-structure-20261127/` (inputs, CSVs, `structure.json`, `structure.md`, six backtest comparisons). Full local runs: `/Users/mitch/.local/share/solmargintrader/research/weekly-coin/HYPE-20261127-binance-usdt` and `/Users/mitch/.local/share/solmargintrader/research/coin-structure/HYPE-20261127`. Research environment: `/Users/mitch/.local/share/solmargintrader/venvs/research-py313` (Python 3.13, backtester and soltui requirements).
+
+Findings in one line each. Daily, two years: nothing beat holding (+389%, 68% worst decline); MA 20/50 kept +173% with a 40% worst decline. Hourly, 208 days: Bollinger breakout +107% against +59% at 6 bps, all earned in the rising part, and behind holding at 25 bps. One week: 5m and 10m ATR-sized trend following +14% to +16% in a flat week, positive in validation and test at 10 and 60 bps; on 1m bars nothing passes. The ZEC two-bar reversal, cycles and leading correlations do not transfer. Swing levels held no more often than placebo lines. Both HYPE studies agree: no validated strategy. Everything is exploratory; nothing was traded.
+
+Verification: `research.tests.test_coin_structure` (50 tests) and the two coin_week suites pass under Python 3.13; Ruff 0.17.4 is clean on the new files; `scripts/check_docs.py` exits 0 in a CI-equivalent environment; CI runs the new test module in the weekly-coin step. A code-deep-optimizer run on the runner ended BLIND-AUDIT-DISSENT after two blind audits; the three Medium items from the second audit were fixed afterwards and not re-audited. A research-contract audit of the paper checked about 430 figures; its 16 flagged items were corrected.
+
+Not transferred: the Jupiter GUM 25x five-minute walk-forward (needs weeks of captured GUM HYPE prices and funding), order-book replay, Oracle second-turn/exit50, top-50 universe, CPCV and the long-history shape router. Open: a short-side test (needs strategies that emit shorts) and a forward paper trial of the 5m ATR-sized rule and the hourly RSI bounce; neither has been started.
+
 Version: 721
 Delta: v720 to v721. Record the HYPE analysis: the ZEC suite repeated on HYPE.
 

@@ -1,0 +1,31 @@
+{
+  "schema": "weekly-coin-publication/v1",
+  "version": "2.0.0",
+  "full_local_run": "/Users/mitch/.local/share/solmargintrader/research/weekly-coin/HYPE-20261127-binance-usdt",
+  "original_manifest_sha256": "dbb064ba80bbcb8f72cf4335979b094003ddd4a51ec1e481b2c0ec8bc029dcc0",
+  "archive_entries": 79,
+  "offline_verification": {
+    "command": "python -m research.coin_week --output <extracted archive> --phase verify",
+    "status": "verified",
+    "artifact_count": 78,
+    "strategy_rows": 491712
+  },
+  "files": {
+    "artifacts.zip": {
+      "sha256": "bee60069b6d72d3a93e1c48ea214d5072306b35eaf326749c0f4823c4d334874",
+      "bytes": 20718526
+    },
+    "correlations.png": {
+      "sha256": "af47a53f667333dbe4d6fdae619341d55b3607b82548884aa42f31a11b1570e0",
+      "bytes": 258007
+    },
+    "report.md": {
+      "sha256": "f5a93600cf3139fea73006a2f2120a573a8b9b4db7ab15e2085d4a733e0b02b7",
+      "bytes": 13794
+    },
+    "summary.json": {
+      "sha256": "f35f1d6426ba15f00c1228706bdb534a21fd125f373697ca0c4cbf240d039266",
+      "bytes": 59474
+    }
+  }
+}
