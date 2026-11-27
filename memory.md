@@ -1,7 +1,7 @@
 # Work continuation
 
-Version: 725
-Delta: v724 to v725. Add `ecosystem/hype_forward.py`, a finite paper-only forward test of the 1h RSI(14) 30/55 dip buyer on Binance HYPEUSDT.
+Version: 726
+Delta: v725 to v726. The HYPE 1h RSI forward paper test is live (PR 372 merged); record its owner, paths and dates.
 
 ## HYPE forward paper test (1h RSI dip buyer) · 2026-11-27
 
@@ -11,7 +11,10 @@ Five paper accounts: candidate at fill delay 1 (zero-latency study convention) a
 Integrity: atomic init, immutable candle table, whole-core implementation hash (a changed engine blocks the run), a bar counts as closed only on both the local and the venue (HTTP Date) clock, skew over 60 s refused, source gap ends the sample and is never backfilled, a late poll cannot block a complete sample.
 Parity: the engine over the last 744 hourly bars reproduces the study's +15.7% at 10 bps. cdo ran 5 iterations (High findings 4, 3, 0, 0, 1; the last was fixed and covered by a regression test, not re-audited) and exited on the iteration cap.
 Not a validated edge: the study found none. Read the result against holding and against the fee-25 and fill-2 accounts, and keep 14 days short of any claim.
-Remaining: install into a stable venv, run `init --owner`, `install-service`; read `status` at expiry and write the result up.
+Live since 2026-11-27 13:00Z (PR 372, merge `a5e0364`). Owner label `hype-rsi-dip-forward-20261127`. Installed copy: `~/.venvs/hype-forward-20261127` (non-editable `backtester`, `oracle`, `soltui`, `botmanager`, `ecosystem`; its module hash equals the merged file, and a reinstall that changes any core file blocks the run).
+Store and log: `~/.local/share/solmargintrader/hype-forward-20261127/` (`hype-forward.sqlite3`, `daemon.log`). Service: launchd `com.solmargintrader.hype-forward.4aec98e496d4`, restarts only after a crash.
+Sample: bars from 2026-11-27 13:00Z to 2026-12-11 12:00Z (336 closed 1h bars); hard expiry 2026-12-11 19:00Z. Read it with `~/.venvs/hype-forward-20261127/bin/python -I -m ecosystem.hype_forward --home ~/.local/share/solmargintrader/hype-forward-20261127 status`.
+Remaining: after 2026-12-11 12:00Z read `status`, compare the four candidate accounts with `hold-fee10` and with cash, then write the result up. Fourteen days is a hypothesis check, not proof of an edge.
 
 
 ## HYPE study, 31-day Binance window (third HYPE study) · 2026-11-27
