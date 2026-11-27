@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-11-27T09:50:30+00:00",
+  "generatedAt": "2026-11-27T11:52:40+00:00",
   "schemaVersion": 1,
   "note": "Concepts are derived from the repo's own vocabulary \u2014 the FAMILY dict, strategy-card frontmatter, docs/trading-signals-concept-family.md, and terms verified to recur in the corpus. A concept matching no file is dropped, not kept.",
   "counts": {
@@ -22,7 +22,7 @@
         "confirm",
         "fail-closed"
       ],
-      "matchingFiles": 4482,
+      "matchingFiles": 4484,
       "shown": 30,
       "files": [
         {
@@ -170,7 +170,7 @@
         },
         {
           "path": "memory.md",
-          "hits": 489
+          "hits": 488
         },
         {
           "path": "docs/FILES.md",
@@ -300,7 +300,7 @@
         "centred",
         "shift"
       ],
-      "matchingFiles": 3954,
+      "matchingFiles": 3955,
       "shown": 30,
       "files": [
         {
@@ -439,7 +439,7 @@
         "borrow",
         "financing"
       ],
-      "matchingFiles": 3814,
+      "matchingFiles": 3815,
       "shown": 30,
       "files": [
         {
@@ -851,7 +851,7 @@
         "monotone",
         "gap"
       ],
-      "matchingFiles": 1586,
+      "matchingFiles": 1588,
       "shown": 30,
       "files": [
         {
@@ -924,7 +924,7 @@
         },
         {
           "path": "memory.md",
-          "hits": 44
+          "hits": 45
         },
         {
           "path": "research/json/tradingview-script-profiles/shard-c.jsonl",
@@ -990,7 +990,7 @@
         "perps",
         "solana"
       ],
-      "matchingFiles": 1404,
+      "matchingFiles": 1405,
       "shown": 30,
       "files": [
         {
@@ -1125,7 +1125,7 @@
         "stochastic",
         "oscillator"
       ],
-      "matchingFiles": 1298,
+      "matchingFiles": 1300,
       "shown": 30,
       "files": [
         {
@@ -1395,7 +1395,7 @@
         "benchmark",
         "baseline"
       ],
-      "matchingFiles": 849,
+      "matchingFiles": 850,
       "shown": 30,
       "files": [
         {
@@ -1529,7 +1529,7 @@
         "buy_and_hold",
         "baseline"
       ],
-      "matchingFiles": 725,
+      "matchingFiles": 726,
       "shown": 30,
       "files": [
         {
