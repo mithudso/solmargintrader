@@ -5143,3 +5143,10 @@ Started from the project setup card (owner clicked Start; task text written by t
 In https://github.com/mithudso/solmargintrader, a code indexer refused the repo with 'A credential pattern was found in the source.' Scan the repo (and git history) for hardcoded secrets: API keys, exchange keys, private keys, RPC URLs with tokens. Move each to environment variables loaded from a gitignored .env, add a .env.example with placeholder names, update README with setup steps, and add a gitleaks or similar secret-scan CI check. Open a PR. Done when no secret pattern remains in HEAD and CI passes. If a live secret was ever committed, say so clearly in the PR so Mitch can rotate it; do not rewrite history without asking.
 ```
 
+
+## HYPE coin study, same suite as ZEC — 2026-11-27
+
+```text
+Perform the same suite of analysis done for ZEC, but for HYPE coin, what is the best performing strategies? What patterns, support, etc exist for it.
+```
+
