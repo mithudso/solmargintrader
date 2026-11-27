@@ -1,0 +1,153 @@
+{
+  "fetched_at": "2026-11-27T08:58:11Z",
+  "files": {
+    "BTC-USD_1d.csv.gz": {
+      "expected_slots": 295,
+      "first_bar": "2026-02-05T00:00:00Z",
+      "first_missing_slots": [],
+      "granularity_seconds": 86400,
+      "last_bar": "2026-11-26T00:00:00Z",
+      "missing_slots": 0,
+      "product": "BTC-USD",
+      "rows": 295,
+      "sha256": "cbdd9223cd37fa0c7170d886b6d172f0edd533c701e8c4451a786d54e9ef22ee",
+      "zero_volume_bars": 0
+    },
+    "BTC-USD_1h.csv.gz": {
+      "expected_slots": 7080,
+      "first_bar": "2026-02-05T00:00:00Z",
+      "first_missing_slots": [
+        "2026-05-08T02:00:00Z",
+        "2026-05-08T03:00:00Z",
+        "2026-05-08T04:00:00Z",
+        "2026-05-08T05:00:00Z",
+        "2026-05-08T06:00:00Z"
+      ],
+      "granularity_seconds": 3600,
+      "last_bar": "2026-11-26T23:00:00Z",
+      "missing_slots": 5,
+      "product": "BTC-USD",
+      "rows": 7075,
+      "sha256": "bd911985516d886217fe0d972dd4980eaba3df36d2a7531ec4ac2219289885b1",
+      "zero_volume_bars": 0
+    },
+    "BTC-USD_5m.csv.gz": {
+      "expected_slots": 84960,
+      "first_bar": "2026-02-05T00:00:00Z",
+      "first_missing_slots": [
+        "2026-02-19T22:20:00Z",
+        "2026-05-08T01:20:00Z",
+        "2026-05-08T01:25:00Z",
+        "2026-05-08T01:30:00Z",
+        "2026-05-08T01:35:00Z"
+      ],
+      "granularity_seconds": 300,
+      "last_bar": "2026-11-26T23:55:00Z",
+      "missing_slots": 79,
+      "product": "BTC-USD",
+      "rows": 84881,
+      "sha256": "e353b3922fcff1bf8bf986049c194d76676a3f93b24e2a47fdb99230021c1580",
+      "zero_volume_bars": 0
+    },
+    "HYPE-USD_1d.csv.gz": {
+      "expected_slots": 295,
+      "first_bar": "2026-02-05T00:00:00Z",
+      "first_missing_slots": [],
+      "granularity_seconds": 86400,
+      "last_bar": "2026-11-26T00:00:00Z",
+      "missing_slots": 0,
+      "product": "HYPE-USD",
+      "rows": 295,
+      "sha256": "dc055e9c542773f72d13312309851f606d6c6236c67641e75a9e70a2df446244",
+      "zero_volume_bars": 0
+    },
+    "HYPE-USD_1h.csv.gz": {
+      "expected_slots": 7080,
+      "first_bar": "2026-02-05T19:00:00Z",
+      "first_missing_slots": [
+        "2026-02-05T00:00:00Z",
+        "2026-02-05T01:00:00Z",
+        "2026-02-05T02:00:00Z",
+        "2026-02-05T03:00:00Z",
+        "2026-02-05T04:00:00Z"
+      ],
+      "granularity_seconds": 3600,
+      "last_bar": "2026-11-26T23:00:00Z",
+      "missing_slots": 19,
+      "product": "HYPE-USD",
+      "rows": 7061,
+      "sha256": "d6711d0e14a5ac54d55d298aaa530db99dd14ac3d651ad854627ca86e869b844",
+      "zero_volume_bars": 5
+    },
+    "HYPE-USD_5m.csv.gz": {
+      "expected_slots": 84960,
+      "first_bar": "2026-02-05T19:20:00Z",
+      "first_missing_slots": [
+        "2026-02-05T00:00:00Z",
+        "2026-02-05T00:05:00Z",
+        "2026-02-05T00:10:00Z",
+        "2026-02-05T00:15:00Z",
+        "2026-02-05T00:20:00Z"
+      ],
+      "granularity_seconds": 300,
+      "last_bar": "2026-11-26T23:55:00Z",
+      "missing_slots": 357,
+      "product": "HYPE-USD",
+      "rows": 84603,
+      "sha256": "b502b73e7bd8c6a2f1e0f8aff28da7928831a0237a965d12efd4f9106f66a9e1",
+      "zero_volume_bars": 98
+    },
+    "ZEC-USD_1d.csv.gz": {
+      "expected_slots": 295,
+      "first_bar": "2026-02-05T00:00:00Z",
+      "first_missing_slots": [],
+      "granularity_seconds": 86400,
+      "last_bar": "2026-11-26T00:00:00Z",
+      "missing_slots": 0,
+      "product": "ZEC-USD",
+      "rows": 295,
+      "sha256": "9b2b70d3837f934edf04f1e62c7330314dd5be47565faaad972218cda59f1f02",
+      "zero_volume_bars": 0
+    },
+    "ZEC-USD_1h.csv.gz": {
+      "expected_slots": 7080,
+      "first_bar": "2026-02-05T00:00:00Z",
+      "first_missing_slots": [
+        "2026-05-08T02:00:00Z",
+        "2026-05-08T03:00:00Z",
+        "2026-05-08T04:00:00Z",
+        "2026-05-08T05:00:00Z",
+        "2026-05-08T06:00:00Z"
+      ],
+      "granularity_seconds": 3600,
+      "last_bar": "2026-11-26T23:00:00Z",
+      "missing_slots": 5,
+      "product": "ZEC-USD",
+      "rows": 7075,
+      "sha256": "4c71eef201ba6bccaff5d8d3dcc1848b4b458926019b7eb2206243a1783c54b2",
+      "zero_volume_bars": 0
+    },
+    "ZEC-USD_5m.csv.gz": {
+      "expected_slots": 84960,
+      "first_bar": "2026-02-05T00:00:00Z",
+      "first_missing_slots": [
+        "2026-02-19T22:20:00Z",
+        "2026-05-08T01:20:00Z",
+        "2026-05-08T01:25:00Z",
+        "2026-05-08T01:30:00Z",
+        "2026-05-08T01:35:00Z"
+      ],
+      "granularity_seconds": 300,
+      "last_bar": "2026-11-26T23:55:00Z",
+      "missing_slots": 80,
+      "product": "ZEC-USD",
+      "rows": 84880,
+      "sha256": "4df2ff62ab19404e137477839d15a1c886473336d76d5705161b15611740a337",
+      "zero_volume_bars": 0
+    }
+  },
+  "schema": "coinbase-history/v1",
+  "source": "https://api.exchange.coinbase.com",
+  "window_end_exclusive": "2026-11-27T00:00:00Z",
+  "window_start": "2026-02-05T00:00:00Z"
+}
