@@ -7,7 +7,9 @@
 
 ## HYPE study
 
-Read [HYPE: strategies, patterns and price levels](papers/HYPE-STUDY.md). It repeats the ZEC candle studies on one week of Binance HYPE/USDT minute bars, runs every registered strategy over two years of daily and 208 days of hourly Hyperliquid candles, and maps swing levels, volume by price and calendar effects. The [weekly report](json/hype-week-20261127/report.md) and the [price-structure report](json/hype-structure-20261127/structure.md) sit beside their data. `python -m research.coin_structure` produces the same structure report for any coin Hyperliquid lists. The [Coinbase HYPE suite](papers/results/hype_suite_20261127.md) is a second run of the same request on Coinbase HYPE-USD; the paper's last section compares the two.
+The working paper is [What holds up on HYPE? Strategies, patterns and price levels](papers/HYPE-STRATEGIES-PATTERNS-LEVELS.md), published with two figures at https://oraclebot.io/papers/hype-strategies-patterns-levels.pdf . Rebuild its figures with `python -m research.hype_paper_figures` and its PDF with `python -m website.scripts.build_paper research/json/hype-paper-20261127/paper.json`.
+
+The study behind it is [HYPE: strategies, patterns and price levels](papers/HYPE-STUDY.md). It repeats the ZEC candle studies on one week of Binance HYPE/USDT minute bars, runs every registered strategy over two years of daily and 208 days of hourly Hyperliquid candles, and maps swing levels, volume by price and calendar effects. The [weekly report](json/hype-week-20261127/report.md) and the [price-structure report](json/hype-structure-20261127/structure.md) sit beside their data. `python -m research.coin_structure` produces the same structure report for any coin Hyperliquid lists. The [Coinbase HYPE suite](papers/results/hype_suite_20261127.md) is a second run of the same request on Coinbase HYPE-USD; the paper's last section compares the two.
 
 ## ZEC GUM 25× five-minute study
 

@@ -242,8 +242,10 @@ npm --prefix website test
 npm --prefix website run check
 npm --prefix website run test:browser
 node --test website/runtime/worker.test.js
-python3 -m unittest website.engine.test_server website.engine.test_research website.engine.test_state website.engine.test_jobs website.engine.test_runtime website.engine.test_signals
+python3 -m unittest website.engine.test_server website.engine.test_research website.engine.test_state website.engine.test_jobs website.engine.test_runtime website.engine.test_signals website.scripts.test_build_paper
 python3 -m website.scripts.export_research --check
+python3 -m website.scripts.build_discovery --check
+python3 -m research.hype_paper_figures --check
 ```
 
 The canonical homepage and research journal carry public Markdown twins. When
@@ -251,6 +253,17 @@ those texts or the published working paper change, regenerate the discovery
 files with `python3 -m website.scripts.build_discovery`. CI checks that the
 sitemap, robots file and both LLMS files match the source. Hash workspace views
 use the homepage. Unrecognized path routes return 404.
+
+To publish a working paper: write it in `research/papers/` in the Markdown
+subset the library reads, give it a build file such as
+`research/json/hype-paper-20261127/paper.json`, and run
+`python3 -m website.scripts.build_paper <build file>` to print the PDF into
+`website/public/papers/` with headless Chrome. Then add the paper's row to
+`PAPERS` in `website/scripts/build_discovery.py` and its paragraph to
+`website/public/research/index.md` and `index.html`, and regenerate with
+`export_research` followed by `build_discovery`. A PDF in `papers/` without a
+`PAPERS` row fails the discovery check. Chrome stamps each PDF with its creation
+time, so the PDF itself has no byte-for-byte check.
 
 Set `CHROME` to an installed Chromium executable or install the pinned Playwright
 browser. Browser fixtures block external calls and use synthetic wallet keys.

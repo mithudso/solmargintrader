@@ -1,0 +1,18 @@
+{
+  "schema": "paper-build/v1",
+  "source": "research/papers/HYPE-STRATEGIES-PATTERNS-LEVELS.md",
+  "output": "website/public/papers/hype-strategies-patterns-levels.pdf",
+  "footer": "Oraclebot Research · Working paper",
+  "figures": [
+    {
+      "after_text": "charts them as Figure 1",
+      "svg": "fig1-declines.svg",
+      "caption": "Figure 1. HYPE daily close on the Hyperliquid perpetual, December 2024 to November 2026, on a logarithmic price axis. Each shaded band runs from the peak to the trough of a decline of 25% or more and is labelled with its depth. Peaks and troughs are intraday prices, so the marked high and low sit beyond the line of closes."
+    },
+    {
+      "after_text": "charts the map as Figure 2",
+      "svg": "fig2-levels.svg",
+      "caption": "Figure 2. HYPE hourly close over the last 90 days of the study, with the swing-level zones of the table below. Zones above the last close are resistance and zones below it are support. The two deepest support zones, below $48, are in the table only."
+    }
+  ]
+}

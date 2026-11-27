@@ -1,0 +1,23 @@
+{
+  "schema": "paper-level-zones/v1",
+  "note": "Level-map rows of research/papers/HYPE-STRATEGIES-PATTERNS-LEVELS.md, section 6.1. Each bound is a swing-level bound or a volume value-area bound in research/json/hype-structure-20261127/structure.json; research/scripts/hype_paper_figures.py refuses a bound that is not.",
+  "reference_close": 65.402,
+  "zones": [
+    {"low": 95.34, "high": 98.00, "side": "resistance", "kind": "swing"},
+    {"low": 75.99, "high": 95.65, "side": "resistance", "kind": "volume"},
+    {"low": 74.30, "high": 78.35, "side": "resistance", "kind": "swing"},
+    {"low": 71.04, "high": 72.91, "side": "resistance", "kind": "swing"},
+    {"low": 68.62, "high": 70.25, "side": "resistance", "kind": "swing"},
+    {"low": 67.76, "high": 68.34, "side": "resistance", "kind": "swing"},
+    {"low": 65.43, "high": 66.14, "side": "resistance", "kind": "swing"},
+    {"low": 64.50, "high": 65.10, "side": "support", "kind": "swing"},
+    {"low": 62.42, "high": 63.35, "side": "support", "kind": "swing"},
+    {"low": 59.70, "high": 60.55, "side": "support", "kind": "swing"},
+    {"low": 57.96, "high": 59.47, "side": "support", "kind": "swing"},
+    {"low": 55.28, "high": 56.50, "side": "support", "kind": "swing"},
+    {"low": 51.08, "high": 54.00, "side": "support", "kind": "swing"},
+    {"low": 49.59, "high": 50.16, "side": "support", "kind": "swing"},
+    {"low": 42.50, "high": 45.84, "side": "support", "kind": "swing"},
+    {"low": 38.16, "high": 41.71, "side": "support", "kind": "swing"}
+  ]
+}

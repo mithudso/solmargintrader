@@ -1,5 +1,12 @@
 # Prompt history
 
+Version: 332
+Delta: v331 to v332. Record the request for an oraclebot.io paper on the HYPE findings.
+
+## HYPE working paper for oraclebot.io
+
+> Write a paper for the oraclebot site, with all of your findings.
+
 Version: 331
 Delta: v330 to v331. Record the HYPE analysis request: repeat the ZEC analysis suite for HYPE.
 

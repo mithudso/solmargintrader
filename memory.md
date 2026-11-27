@@ -1,5 +1,19 @@
 # Work continuation
 
+Version: 728
+Delta: v727 to v728. Record the HYPE working paper published to the oraclebot.io journal and the reusable paper builder.
+
+## HYPE working paper for oraclebot.io · 2026-11-27: complete
+
+Request (`prompts.md` v332): write a paper for the oraclebot site with all findings of the HYPE study in `research/papers/HYPE-STUDY.md`.
+Paper: `research/papers/HYPE-STRATEGIES-PATTERNS-LEVELS.md` ("What holds up on HYPE? Strategies, patterns and price levels"), library slug `hype-strategies-patterns-levels-806597d4`. PDF: `website/public/papers/hype-strategies-patterns-levels.pdf` (13 pages, two figures, SHA-256 `e086b8c0c31c47a9edad142c8a7505faa875c2cbb756f491df65308175030318` at build time; Chrome stamps a creation time, so a rebuild differs). Public address after deploy: https://oraclebot.io/papers/hype-strategies-patterns-levels.pdf
+Site wiring: the journal page (`website/public/research/index.md` and `index.html`) now has a "Working papers" section with one paragraph per paper; `website/scripts/build_discovery.py` takes a `PAPERS` tuple (route, catalogue slug, link title, summary) and fails when a PDF in `website/public/papers/` has no row.
+New tools: `python -m website.scripts.build_paper <paper.json>` reads the same Markdown subset as `website/public/app.js` and prints the PDF with headless Chrome (`CHROME` selects the binary); `python -m research.hype_paper_figures [--check]` draws the two SVG figures from the frozen candles and `research/json/hype-paper-20261127/zones.json`. Build file: `research/json/hype-paper-20261127/paper.json`. CI (`.github/workflows/website.yml`) runs `website.scripts.test_build_paper` (40 tests) and the figure check.
+Review: an independent audit recomputed about 400 figures from the stored runs. It found two wrong numbers in the reversal paragraph (66 of 72 intervals contain the baseline, not 70; the range is 39% to 53%, not 55%), both also corrected in `HYPE-STUDY.md` (now 1.0.1), and sixteen wordings that said more than the evidence, all reworded. The daily table gained the dollar-cost-averaging row (+194.5%, second to holding) and the hourly table the ADX trend row. A document pass and a code pass (8 Medium fixes, clean on re-audit) ran before delivery.
+Repair found on the way: `research/json/hype-week-20261127/artifacts.zip` was cited by the study but never committed, because `.gitignore` excludes `*.zip` and PR 371 added the folder without `-f`. It is rebuilt byte-for-byte from the local run (SHA-256 `bee60069b6d72d3a93e1c48ea214d5072306b35eaf326749c0f4823c4d334874`, 79 entries) and force-added, as the ETH archive was.
+A second paper from the forward-test session, `research/papers/results/hype_walk_forward_2026-11-27.md`, publishes through the library only; adding it to the journal page needs a PDF and a `PAPERS` row.
+Remaining: none for this request. The paper's two forward candidates stand as before: the 5-minute ATR-sized rule (not started) and the hourly RSI dip buyer (running, entry below).
+
 Version: 727
 Delta: v726 to v727. Publish the HYPE walk-forward and forward-trial paper for the website; add the walk-forward runner.
 
@@ -11,6 +25,8 @@ Result: re-optimizing adds no skill (pick at the 17th to 53rd percentile of fixe
 Checks: a one-set grid reproduces the frozen rule exactly, removing future bars leaves an earlier block unchanged, a rerun matches the committed summary on all nine rows, Ruff 0.17.4 clean. The engine's `trades` counts fills, so round trips are fills divided by two.
 The live forward trial (memory v725 and v726) is expected to end inconclusive by the paper's own read-out rule: it will make about 3 to 5 round trips and the rule needs 8. A longer second cohort (about 6 weeks for 8 round trips) is an owner decision. Another session is writing a separate HYPE-STRATEGIES-PATTERNS-LEVELS paper with a PDF and a `PAPERS` row in `website/scripts/build_discovery.py`; this paper does not touch those files.
 
+Version: 726
+Delta: v725 to v726. The HYPE 1h RSI forward paper test is live (PR 372 merged); record its owner, paths and dates.
 
 ## HYPE forward paper test (1h RSI dip buyer) · 2026-11-27
 
