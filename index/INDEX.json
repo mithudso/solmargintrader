@@ -1,11 +1,11 @@
 {
-  "generatedAt": "2026-11-27T11:52:40+00:00",
+  "generatedAt": "2026-11-27T12:01:50+00:00",
   "schemaVersion": 1,
   "repoRoot": "~/dev/solmargintrader",
-  "commit": "10c09c2",
+  "commit": "372552b",
   "counts": {
     "files": 8065,
-    "bytes": 271481563,
+    "bytes": 271482409,
     "byKind": {
       "strategy-card": 4434,
       "doc": 1454,
@@ -80115,11 +80115,11 @@
       "ext": ".md",
       "kind": "doc",
       "title": "Work continuation",
-      "summary": "Version: 725 Delta: v724 to v725. Add `ecosystem/hype_forward.py`, a finite paper-only forward test of the 1h RSI(14) 30/55 dip buyer on Binance HYPEUSDT. Target: the forward trial that `research/papers/results/hype_study_2026-11-27.md` named as the lead candidate. The owner answered yes to the 14-day default.",
+      "summary": "Version: 726 Delta: v725 to v726. The HYPE 1h RSI forward paper test is live (PR 372 merged); record its owner, paths and dates. Target: the forward trial that `research/papers/results/hype_study_2026-11-27.md` named as the lead candidate. The owner answered yes to the 14-day default.",
       "summarySource": "opening-prose",
-      "bytes": 955419,
-      "lines": 5366,
-      "sha1": "73681008afe144939982f4e400c9f9ecbacea128",
+      "bytes": 956265,
+      "lines": 5369,
+      "sha1": "e697c116375d74db0020f992a6beddba8727a49a",
       "symbols": [],
       "imports": [],
       "internalImports": [],
@@ -248552,5 +248552,5 @@
       "frontmatter": {}
     }
   ],
-  "textSha256": "6f584b1b8a019a59b9754f5a1d5818c8171b6e68b5b4546238f52e6d0d943ff8"
+  "textSha256": "98d49537481c97040eed1f7eeb5149a4bde271cbaa752ad8c726239f8f3aeabb"
 }
