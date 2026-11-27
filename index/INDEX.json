@@ -1,11 +1,11 @@
 {
-  "generatedAt": "2026-11-27T09:30:29+00:00",
+  "generatedAt": "2026-11-27T09:40:45+00:00",
   "schemaVersion": 1,
   "repoRoot": "~/dev/solmargintrader",
-  "commit": "db8f1f5",
+  "commit": "46eb55e",
   "counts": {
     "files": 8058,
-    "bytes": 271394277,
+    "bytes": 271395382,
     "byKind": {
       "strategy-card": 4434,
       "doc": 1454,
@@ -79973,11 +79973,11 @@
       "ext": ".md",
       "kind": "doc",
       "title": "Work continuation",
-      "summary": "Version: 722 Delta: v721 to v722. Record the second HYPE study: gap-free Binance week, two-year Hyperliquid history and the structure runner. Same request as `prompts.md` v331, run in a second session at the same time as the Coinbase suite below. Write-up: `research/papers/HYPE-STUDY.md`.",
+      "summary": "Version: 723 Delta: v722 to v723. Record the second HYPE study: gap-free Binance week, two-year Hyperliquid history and the structure runner. Same request as `prompts.md` v331, run in a second session at the same time as the Coinbase suite below. Write-up: `research/papers/HYPE-STUDY.md`.",
       "summarySource": "opening-prose",
-      "bytes": 951432,
-      "lines": 5335,
-      "sha1": "dc961a84bc10ab27a3de74f04399be50969ad1a1",
+      "bytes": 952537,
+      "lines": 5347,
+      "sha1": "25710cbcd8abb2678e665516d2933cf309059504",
       "symbols": [],
       "imports": [],
       "internalImports": [],
@@ -248280,5 +248280,5 @@
       "frontmatter": {}
     }
   ],
-  "textSha256": "ce3d6c54f271986dc2c9dc97e53721a573f1423773b2912cb865175f51626659"
+  "textSha256": "42244ca138b0614dd0e35d4e67174398ecf3ea9302b068ac09300821f1b4d1ab"
 }

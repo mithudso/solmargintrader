@@ -1,7 +1,7 @@
 # Work continuation
 
-Version: 722
-Delta: v721 to v722. Record the second HYPE study: gap-free Binance week, two-year Hyperliquid history and the structure runner.
+Version: 723
+Delta: v722 to v723. Record the second HYPE study: gap-free Binance week, two-year Hyperliquid history and the structure runner.
 
 ## HYPE study on Binance and Hyperliquid data · 2026-11-27: complete
 
@@ -16,6 +16,18 @@ Findings in one line each. Daily, two years: nothing beat holding (+389%, 68% wo
 Verification: `research.tests.test_coin_structure` (50 tests) and the two coin_week suites pass under Python 3.13; Ruff 0.17.4 is clean on the new files; `scripts/check_docs.py` exits 0 in a CI-equivalent environment; CI runs the new test module in the weekly-coin step. A code-deep-optimizer run on the runner ended BLIND-AUDIT-DISSENT after two blind audits; the three Medium items from the second audit were fixed afterwards and not re-audited. A research-contract audit of the paper checked about 430 figures; its 16 flagged items were corrected.
 
 Not transferred: the Jupiter GUM 25x five-minute walk-forward (needs weeks of captured GUM HYPE prices and funding), order-book replay, Oracle second-turn/exit50, top-50 universe, CPCV and the long-history shape router. Open: a short-side test (needs strategies that emit shorts) and a forward paper trial of the 5m ATR-sized rule and the hourly RSI bounce; neither has been started.
+
+Version: 722
+Delta: v721 to v722. Record the HYPE analysis as merged (PR #368), its CI record and the lost HYPE npz caches.
+
+## HYPE analysis: merged (2026-11-27)
+
+PR #368 squash-merged to master as `32fd673`. Its last CI run on `d8a4d25` was green. Report:
+`research/papers/results/hype_suite_20261127.md`. Results match the v721 entry below.
+
+- The HYPE-31d `contexts-*.npz` and `signals-*.npz` caches were overwritten during archiving (same names as ZEC-31d). The ZEC-31d set is at `/Users/mitch/dev/solmargin-analysis-artifacts/hype-suite-npz`, hash-verified, with `NOTE.txt`. HYPE caches are regenerable and manifest-bound; they are not committed.
+- Two lessons: every `index/` or test run needs `INDEX_NO_AUTO=1`. An unguarded run attempted an embedding build against the running Ollama; it failed and wrote nothing. Any change to tracked research or records needs `INDEX_NO_AUTO=1 python3 index/build.py all` and `python3 -m website.scripts.export_research` before CI, because CI checks both.
+- Still open: the forward paper test of RSI(14h) 30/55 (not started), and a second HYPE history source.
 
 Version: 721
 Delta: v720 to v721. Record the HYPE analysis: the ZEC suite repeated on HYPE.
