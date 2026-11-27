@@ -106,6 +106,7 @@ python3 research/scripts/cross_asset_cpcv.py --self-test     # the harness repro
 | `python3 research/scripts/leverage_economics.py` | what leverage costs before it earns; the viable region | no |
 | `python3 research/scripts/ratio_rotation.py` | multi-asset numeraire-switching rotation; chained-vs-direct routing | no |
 | `python3 research/scripts/short_horizon_economics.py` | the same cost question below one hour, where turnover dominates | no |
+| `python3 -m research.scripts.target_1pct_day` | leveraged, cost-complete check of the current strategies against 1%/day | no |
 | `python3 index/build.py` | build the four repo indexes | localhost only |
 | `python3 index/search.py` | search the repo three ways | localhost only |
 | `python3 scripts/check_docs.py` | **gate:** doc drift, test counts, dead index paths | no |
@@ -469,6 +470,31 @@ exactly like a long one.
 ---
 
 ## Research and evaluation
+
+### `python3 -m research.scripts.target_1pct_day` — the 1%/day target check
+
+**Purpose.** Replays the strategies the repository is running or preparing (ZEC Volty 10 × 1.5
+5m, HYPE RSI 1h dip buyer) plus buy-and-hold and a few experiments, from fresh accounts at
+1x to 25x, with taker fees, slippage, funding on held notional and path-checked liquidation.
+Reports compounded daily return against the target, drawdown, Sharpe, Sortino, trades,
+liquidations, fees, funding, and a one-year block bootstrap per account.
+
+**When *not* to use it.** As proof of an edge: it uses committed Coinbase candles as a mark
+proxy and a flat funding scenario. Venue-exact replays live in `research/scripts/perps/`.
+
+**Options.** `--history DIR`, `--out DIR` (default `research/json/target-1pct-day/`),
+`--target 0.01`, `--leverages 1,2,3,5,10,25`, `--fee-bps 3.5`, `--slip-bps 2`,
+`--funding-bps-h 0.1`, `--mc-paths 4000`, `--seed 7`. Every flag has a default; no network.
+
+```bash
+python3 -m research.scripts.target_1pct_day
+python3 -m unittest research.tests.test_target_1pct_day -v
+```
+
+**Output.** `report.md` and `results.json` in the output directory (about 35 s). The
+2026-11-27 run is written up in `research/papers/results/target_1pct_day_2026-11-27.md`:
+nothing reached 1%/day; Volty 5m lost 97% at 1x and liquidated at 25x in every window.
+
 
 ### `python3 research/scripts/sweep.py` — the parameter tables
 

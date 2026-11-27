@@ -1,7 +1,15 @@
 # Work continuation
 
-Version: 726
-Delta: v725 to v726. The HYPE 1h RSI forward paper test is live (PR 372 merged); record its owner, paths and dates.
+Version: 727
+Delta: v726 to v727. Record the 1%/day target backtest of the current strategies.
+
+## 1%/day target check · 2026-11-27
+
+Target: backtest the current strategies against the project goal of more than 1%/day with fees, slippage, funding, liquidation and out-of-sample windows.
+Done: `research/scripts/target_1pct_day.py` (`python3 -m research.scripts.target_1pct_day`, offline, defaults = GUM terms) and `research/tests/test_target_1pct_day.py` (7 tests, Ruff 0.17.4 clean; Volty parity with `backtester/core/volty.py` to 1e-9). Output `research/json/target-1pct-day/`; write-up `research/papers/results/target_1pct_day_2026-11-27.md`.
+Result: nothing reaches 1%/day. ZEC Volty(10 x 1.5) 5m: -97% at 1x over 295 days (fees 94% of start), -95% before selection, liquidated at 25x in every window. HYPE RSI 1h: +5.8% at 1x. Best full-period accounts were leveraged ZEC buy-and-hold (+0.59%/day at 3x, 85% drawdown, -66% in the last 30%). Kelly on ZEC's own hindsight drift gives 0.43%/day; 1%/day needs annualised Sharpe about 2.7 at full Kelly.
+Recommendation: do not fund the 25x Volty owner; next leads are lower turnover (1h/4h or maker fills), a daily trend filter at up to 2x, and delta-neutral funding carry. Remaining: observed GUM funding for the 295 days; walk-forward of the leads on the two-year Hyperliquid daily history.
+
 
 ## HYPE forward paper test (1h RSI dip buyer) · 2026-11-27
 

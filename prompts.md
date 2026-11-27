@@ -5158,3 +5158,12 @@ Ye=s go ahead
 ```
 
 Context: reply to the offer to start a paper-only forward test of the 1h RSI dip buyer from the HYPE study (default: a finite 14-day run on the paper broker, no funded orders).
+
+
+## Backtest the current strategy against the 1%/day target — 2026-11-27
+
+```text
+Yes start it
+```
+
+Context: reply to the project session's recommendation to backtest the current solmargintrader strategy against the project goal of more than 1%/day, with fees, slippage, funding/borrow, liquidation and an out-of-sample period, and to report max drawdown and risk metrics honestly.
