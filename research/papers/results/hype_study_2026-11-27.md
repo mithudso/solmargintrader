@@ -26,6 +26,11 @@ Hyperliquid candles are the perpetual's prices, so they differ slightly from Bin
 It reaches the same conclusion: no validated strategy, no tradable pattern or support edge after costs, and RSI(14) 30/55 on HYPE 1h as the one forward-test candidate (+16.7% on its test window there, +8.2% on this study's test window).
 This study adds a gap-free 31-day Binance 1m window, the full 491,712-row catalogue, and the Hyperliquid daily/hourly cross-check that its notes listed as not yet checked.
 
+A third study, `research/papers/HYPE-STUDY.md` (PR 371), ran the same Binance catalogue on only the last seven days (2026-11-20 to 2026-11-27) and found ATR-sized trend following best there.
+That is consistent with this 31-day run, and the pair shows the main caveat: **the best family flips with the window.** Over the 31 days every trend-following family lost money over the full window
+(0% of configurations positive for 5m ATR-sized, EMA crossover, Ichimoku, MA crossover and SMA regime; the 5m ATR-sized median is -38%), yet the same families gained 5% to 12% (median) on this study's final test window, the rally days that dominate the other study's week.
+Dip buying and Keltner breakouts led over the month; trend following led over the last rally week. Neither ranking should be extrapolated.
+
 ## Answer: best performing strategies
 
 Context that decides everything: **HYPE fell 16.0% over the 31 days** (passive hold, 10 bps: full -16.0%, validation -9.6%, test about +15%).
