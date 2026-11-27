@@ -1,7 +1,15 @@
 # Work continuation
 
-Version: 723
-Delta: v722 to v723. Record the second HYPE study: gap-free Binance week, two-year Hyperliquid history and the structure runner.
+Version: 724
+Delta: v723 to v724. Add the 31-day Binance HYPE study; the best strategy family flips with the window.
+
+## HYPE study, 31-day Binance window (third HYPE study) · 2026-11-27
+
+Target: repeat the ZEC analysis suite for HYPE. Done: `python -m research.coin_week --coin HYPE --venue binance --days 31` (491,712 rows, Binance HYPEUSDT, 44,640 real 1m bars),
+a Hyperliquid daily/hourly `backtester.cli --strategy all` cross-check, pivot/volume/fib levels with an out-of-sample random-level control, seasonality, cycles and reversal reads.
+Result and caveats: `research/papers/results/hype_study_2026-11-27.md`. Raw 50 MB outputs stay untracked in the main checkout at `research/new-hype-study/`. Repro scripts: `research/scripts/hype_study/`.
+Verified: coin_week manifest written, strategy rows counted, paper numbers checked against the CSV/report outputs. Remaining: forward paper trial of the 1h RSI dip buyer; a Hyperliquid perp study with real funding (no GUM HYPE market).
+Complements `research/papers/HYPE-STUDY.md` (last-7-day Binance week plus Hyperliquid history) and `research/papers/results/hype_suite_20261127.md` (Coinbase, 294 days): same conclusion (no validated strategy; RSI 1h dip buyer is the forward-test lead). This run adds gap-free Binance 1m (their Coinbase 1m runs were 46 h) and the Hyperliquid check their notes listed as remaining.
 
 ## HYPE study on Binance and Hyperliquid data · 2026-11-27: complete
 
