@@ -1,0 +1,279 @@
+{
+  "artifact_sha256": {
+    "comparison.csv": "2399f0fa9433065226e2d2002584fa1ada17d826fd9c7c9b71d86cf4a32ee9d3",
+    "equity_adx_trend_14_25.csv": "5035c5ae60e5683302c9f5ce9142ea9d425dbfb79517ff740f25d317cc69f6b6",
+    "equity_atr_sized_14_0.01.csv": "26d26cef3ed190d3b439c33c6aac90856403bc255b71d739aa9ad447b664ec4c",
+    "equity_bb_breakout_20_2.csv": "e7270698b939b6da1115c2a4e0ebd9e432e1f0facca9dbea097dd59a0382840f",
+    "equity_bb_reversion_20_2.csv": "22342cab8bfcf61bc34ef4a4e362f648a9ef1776990cb0642f266cf3c76cc52f",
+    "equity_breakout_20_10.csv": "c0cb1fdc2640dd6a2d917dec8403182883b196faf86d1d985a94e12facc5d301",
+    "equity_buy_and_hold.csv": "4936c83eecef4f2818d45ecc780cf3415d22ff256f75bec49f437ca78d1b3b2b",
+    "equity_dca_10x7.csv": "d159a853e6aac0748f73402f1af0c2c916c36aa2d09200cc49213b6965fa401b",
+    "equity_dual_momentum_12_1.csv": "5b8157669c30e4e0665031c1fccf6ab0d607c8b9b7ed1d5a6e0f08308ac34364",
+    "equity_ema_crossover_50_200.csv": "b7a4d9fcdabdb8ce1c640ebfb944d3d40550b5d901758bc3391445a90842ce3f",
+    "equity_fib_60_0.382_0.786.csv": "7deb0acff4faca4d501f71a0d6abd5f4b8dae2f7809edeb700c2b78e3551b3f7",
+    "equity_garch_voltarget_0.94_0.6.csv": "db0b30fa2aa72b0451f40254f1f6d810ea8ad0544d4356c120b4247a26ead6a7",
+    "equity_grid_50_4_0.05.csv": "3784ee9fd595c47e543bdc6eac8d1d7c18bcfa6a0a0e4ea03ae8f35ff43fe61b",
+    "equity_hurst_switch_250_0.55_0.45.csv": "b63d7f349e898df5e7bc85a393cdda26e052bb4b077a694b69b47d3b1a0ef1ca",
+    "equity_ichimoku_9_26_52.csv": "906fe3f8a71f913816683e4813ff1e2d72aa8fd4539c376db2d3a55dd57c9f6b",
+    "equity_keltner_20_14_2.csv": "7ea191743f956a4d52eeb92b07e683203d4a598086817e8ff91ec9c83dbecff8",
+    "equity_lev_high_20x_macd_12_26_9.csv": "9ed82b6299e0c7597776139abe442d612f923429736127f9fc276b09d03af7ff",
+    "equity_lev_low_2x_macd_12_26_9.csv": "9ed82b6299e0c7597776139abe442d612f923429736127f9fc276b09d03af7ff",
+    "equity_lev_medium_5x_macd_12_26_9.csv": "9ed82b6299e0c7597776139abe442d612f923429736127f9fc276b09d03af7ff",
+    "equity_ma_crossover_20_50.csv": "cda484339262c6b785f699f9f4f943284aa11b49adf74ca88150a592ab5d56a3",
+    "equity_ma_ribbon_5x10.csv": "11e1204135ab287e59467a9fb9fece876bea7f121a3fcad2ded7d97d1b5ca444",
+    "equity_macd_12_26_9.csv": "9ed82b6299e0c7597776139abe442d612f923429736127f9fc276b09d03af7ff",
+    "equity_obv_trend_20.csv": "071d6724bb30648a2216b2055f2ce154ff240a3ef3cd2219a305b49a6ed1effa",
+    "equity_ou_reversion_250_2.5.csv": "8a2bf4821f63dd578fe73efe1f365d14433ba587df2d800dd1006946e108b388",
+    "equity_ppo_12_26_9.csv": "a13782acd782abd66471fb650613bed96264775c45e1789140fffbac02c27699",
+    "equity_rsi_14_30_50.csv": "0b02691b5cc0bbe7b33e65471c6ead3a460853e3146e4b293c9bbbe78cb416e9",
+    "equity_sma_regime_200.csv": "aeaff35402b720d3e1c6820d65e00683daf1a538443c80912c22f5ccd4c53eba",
+    "equity_stoch_14_3.csv": "8be4b26f8332139361d1d4fe1754c1025f9417a2a78224bb52b011ba5c434b2c",
+    "equity_swing_20_10_50_2.csv": "f9f05526400df2d42cfdaa991159423dcdde364e9ce833fc7a9218624601421d",
+    "equity_trigger_rsi_lt30+bb_touch_lo_L3.csv": "882d34b445a5320125c77e83d323612c2a888e8418844970faf7a5c82914f985",
+    "equity_ts_momentum_60.csv": "f657f859f554c1fb70865514a6a1f371f561248d826cd9b106ae2ecb58134842",
+    "equity_vol_regime_20_0.5.csv": "9bb19bb5beee5971c7a8f290005074bf44b568092bc0b7ab1acbf1e14253fc19",
+    "equity_voltarget_100_20_0.6.csv": "8e62d34c198c46961ce4053964f84c5df0d155362a6ff9e0cd1fd17e8a54d40d",
+    "equity_vwap_reversion_20_0.02.csv": "b6ce0b40416f6d8eae3c71f5c53caf4e21dbea4d08653cff475cafcd37210a5d",
+    "equity_zscore_20_-2.csv": "2b6194224cf8b67d9d0577840e55bd4c9db6fe4d5b3503661ff26ecf42620da6",
+    "report.md": "d31a24f0bf63a0a5c7f3c4f1c304c20ba556b3dcde618783825273501b033015",
+    "trades_adx_trend_14_25.csv": "11866da33522efac4eaf6218cd0d835e440a24c649557dfb0deb007789cdbd3f",
+    "trades_atr_sized_14_0.01.csv": "8578e311b4c7d9fa0481d4f4e0cead02ead6a4c7260b4f7c2db9bb6751befff4",
+    "trades_bb_breakout_20_2.csv": "d508c141aeda40d1da89cd317779904e2e86451f5c42bb32055d068b47e2bf9b",
+    "trades_bb_reversion_20_2.csv": "873bce4581a7b3638481106d8b97a0a4c325b90da5f106360c3b8ccea168dee4",
+    "trades_breakout_20_10.csv": "4826ea3d085a667a08d0debaf5e0a43d8ea26a18cb5c6e19aa6cbdb6c10d1ea1",
+    "trades_buy_and_hold.csv": "fa5e28d73f4ecec1a435af31720a992c107a91cbe87cab6ee31b99c68d33f236",
+    "trades_dca_10x7.csv": "ca5b3a44c980176747cc06b0d116b0172a55ac1fd356fb40aa6d1a018c29dc1d",
+    "trades_dual_momentum_12_1.csv": "4ab657a77f0c821c757561c14203e9836839c858f6d0730987d7a1bd916058bf",
+    "trades_ema_crossover_50_200.csv": "acbe63c8bac5a6aa833d466f8d1277473733d1763dc13c4897e02a2c5256ad8c",
+    "trades_fib_60_0.382_0.786.csv": "2f82dc128ec0dd2302f147d7116742bf459db4eb513d5e7de0bee9403bbd85bf",
+    "trades_garch_voltarget_0.94_0.6.csv": "4fac8b2cdf5c211b90a87accfb066d490823a3204c7102332ce2621506119b9f",
+    "trades_grid_50_4_0.05.csv": "0b7864c73800d9b024e146c5a524559b5e1f45c56d59a5ad0097900b9b2509d5",
+    "trades_hurst_switch_250_0.55_0.45.csv": "7a2b6c281e92ebccd2b0fbe92aa28550e8ebed019e26199f95a9baa49eaf9bec",
+    "trades_ichimoku_9_26_52.csv": "a593b15877e0dfea517b72681b213f55847c0a3bd078cbdd8d59c63a00951f69",
+    "trades_keltner_20_14_2.csv": "1981875ded04101fd6cc178a823a2aa42181e9d7d7edf0b20d190f6424a8ce97",
+    "trades_lev_high_20x_macd_12_26_9.csv": "8384bbb5ac5ab0d8fb409de86c50a0298cf5f04acef15305269b48694a8e0d6a",
+    "trades_lev_low_2x_macd_12_26_9.csv": "8384bbb5ac5ab0d8fb409de86c50a0298cf5f04acef15305269b48694a8e0d6a",
+    "trades_lev_medium_5x_macd_12_26_9.csv": "8384bbb5ac5ab0d8fb409de86c50a0298cf5f04acef15305269b48694a8e0d6a",
+    "trades_ma_crossover_20_50.csv": "4cbcc7e4a70c05bde4957c4abbb3fa33c10b76b9afbadc72b017012665a5cfb7",
+    "trades_ma_ribbon_5x10.csv": "3297d8193392eb88ab021cf79c18cb91a10e845c3301ac921212ec3352daead0",
+    "trades_macd_12_26_9.csv": "8384bbb5ac5ab0d8fb409de86c50a0298cf5f04acef15305269b48694a8e0d6a",
+    "trades_obv_trend_20.csv": "e4703b290f029b5181d96bf9b6364b2d8dcc57a1a68fdbd7dec52c961395f95f",
+    "trades_ou_reversion_250_2.5.csv": "b88b569892473a31a3e2c69ca9b59437926ab425e0766f880dadc7cdad029d6c",
+    "trades_ppo_12_26_9.csv": "b00c7fdba52369a0a601da85aef84665bddeda3db781ef99265d36e70f524b13",
+    "trades_rsi_14_30_50.csv": "1fa26a38151c1baeb7648084a637dae3f2de1e3a262950282ae0128e9dfb455c",
+    "trades_sma_regime_200.csv": "96e75a931a99f2cd47796c24e241fc1b13c1766493e74c0d962b4b4283b1a40d",
+    "trades_stoch_14_3.csv": "a6ffb3aa4490f57d53a3c73b117b70ccac4e8d4e24f40b65f58915fcf3a4238c",
+    "trades_swing_20_10_50_2.csv": "cd4876002efef6f142a4bd07e06cda112201192a8abc2efa4d2b6277745e50f1",
+    "trades_trigger_rsi_lt30+bb_touch_lo_L3.csv": "cc2179580dc7775abfda62cd945c569eafee3908446daf188dcc7a88cf177a6a",
+    "trades_ts_momentum_60.csv": "8b4781a1ab3a5111553148eeeb4d742dc9e4bb1fcad3a30ea977f22ae0d6158d",
+    "trades_vol_regime_20_0.5.csv": "40f61c818c33ee340d7cfe808a879f2dfe3e5b1b58438720cc0b39134aa6581c",
+    "trades_voltarget_100_20_0.6.csv": "6287796900104de2750ee103ec03026e3c77f88d9eb20a00bbaa70eb69dd3348",
+    "trades_vwap_reversion_20_0.02.csv": "af5a4f7cf6559e36a9a7101432f8fa324c700e6bab066600c633668cc4babdc8",
+    "trades_zscore_20_-2.csv": "30744a19a6100e4359541c1340dbc7665d5306e09371de3cc102174850223fae"
+  },
+  "asset": "HYPE",
+  "bar_count": 4999,
+  "costs": {
+    "fee_bps": 25.0,
+    "kink_slope_multiplier": 3.0,
+    "kink_utilization": null,
+    "liquidation_forfeits_collateral": false,
+    "liquidation_penalty_bps": 0.0,
+    "max_hourly_rate_bps_long": 1.6,
+    "max_hourly_rate_bps_short": 0.3,
+    "max_lev_constant": 500.0,
+    "min_hourly_rate_bps": 0.0,
+    "perp_base_fee_bps": 25.0,
+    "slippage_bps": 2.0,
+    "utilization": 0.5
+  },
+  "data_checksum": "71ca7fe81dce9ba9",
+  "data_source": "csv:HYPE_1h.csv",
+  "end": "2026-11-27",
+  "fill_delay": 1,
+  "first_bar_ts": 1777770000,
+  "initial_capital": 10000.0,
+  "interval": "1h",
+  "last_bar_ts": 1795762800,
+  "leverage": 1.0,
+  "library_versions": {
+    "matplotlib": "3.11.2",
+    "numpy": "2.5.5",
+    "pandas": "3.1.1",
+    "python": "3.13.12"
+  },
+  "mode": "spot",
+  "periods_per_year": 8760.0,
+  "quote_currency": "USD",
+  "rebalance_threshold": 0.0,
+  "seed": 0,
+  "sharpe_convention": "mean(excess)/stdev(excess, ddof=1) * sqrt(periods_per_year); 365-day crypto year; risk-free rate is an explicit parameter",
+  "split": 0.7,
+  "start": "2026-05-03",
+  "strategies": {
+    "adx_trend_14_25": {
+      "adx_period": 14,
+      "adx_threshold": 25.0
+    },
+    "atr_sized_14_0.01": {
+      "atr_period": 14,
+      "risk_per_trade": 0.01,
+      "stop_atr_multiple": 2.0,
+      "trend_window": 100
+    },
+    "bb_breakout_20_2": {
+      "num_std": 2.0,
+      "squeeze_lookback": 0,
+      "squeeze_quantile": 0.25,
+      "window": 20
+    },
+    "bb_reversion_20_2": {
+      "num_std": 2.0,
+      "window": 20
+    },
+    "breakout_20_10": {
+      "entry_lookback": 20,
+      "exit_lookback": 10
+    },
+    "buy_and_hold": {},
+    "dca_10x7": {
+      "instalments": 10,
+      "interval": 7
+    },
+    "dual_momentum_12_1": {
+      "formation": 12,
+      "skip": 1
+    },
+    "ema_crossover_50_200": {
+      "fast": 50,
+      "slow": 200
+    },
+    "fib_60_0.382_0.786": {
+      "entry_ratio": 0.382,
+      "invalid_ratio": 0.786,
+      "lookback": 60
+    },
+    "garch_voltarget_0.94_0.6": {
+      "lam": 0.94,
+      "target_vol": 0.6,
+      "trend_window": 100
+    },
+    "grid_50_4_0.05": {
+      "anchor_window": 50,
+      "levels": 4,
+      "step": 0.05
+    },
+    "hurst_switch_250_0.55_0.45": {
+      "entry_z": -2.0,
+      "lag": 5,
+      "revert_threshold": 0.45,
+      "trend_threshold": 0.55,
+      "trend_window": 50,
+      "window": 250
+    },
+    "ichimoku_9_26_52": {
+      "displacement": 26,
+      "kijun": 26,
+      "senkou_b": 52,
+      "tenkan": 9
+    },
+    "keltner_20_14_2": {
+      "atr_period": 14,
+      "ema_span": 20,
+      "mult": 2.0
+    },
+    "lev_high_20x_macd_12_26_9": {
+      "base": "macd",
+      "base_params": "",
+      "leverage": 20.0
+    },
+    "lev_low_2x_macd_12_26_9": {
+      "base": "macd",
+      "base_params": "",
+      "leverage": 2.0
+    },
+    "lev_medium_5x_macd_12_26_9": {
+      "base": "macd",
+      "base_params": "",
+      "leverage": 5.0
+    },
+    "ma_crossover_20_50": {
+      "fast": 20,
+      "short_when_below": false,
+      "slow": 50
+    },
+    "ma_ribbon_5x10": {
+      "base": 10,
+      "windows": 5
+    },
+    "macd_12_26_9": {
+      "fast": 12,
+      "signal": 9,
+      "slow": 26
+    },
+    "obv_trend_20": {
+      "ma_window": 20
+    },
+    "ou_reversion_250_2.5": {
+      "entry_z": -2.0,
+      "fit_window": 250,
+      "hold_multiple": 2.5,
+      "max_half_life_bars": 30
+    },
+    "ppo_12_26_9": {
+      "fast": 12,
+      "signal": 9,
+      "slow": 26
+    },
+    "rsi_14_30_50": {
+      "exit_level": 50.0,
+      "oversold": 30.0,
+      "period": 14
+    },
+    "sma_regime_200": {
+      "window": 200
+    },
+    "stoch_14_3": {
+      "d_period": 3,
+      "exit_level": 80.0,
+      "k_period": 14,
+      "oversold": 20.0
+    },
+    "swing_20_10_50_2": {
+      "breakout": 20,
+      "exit_lookback": 10,
+      "ma_window": 50,
+      "min_confirms": 2
+    },
+    "trigger_rsi_lt30+bb_touch_lo_L3": {
+      "conditions": "rsi_lt30&bb_touch_lo",
+      "direction": 1,
+      "horizon": 3,
+      "stop": 0.0
+    },
+    "ts_momentum_60": {
+      "threshold": 0.0,
+      "window": 60
+    },
+    "vol_regime_20_0.5": {
+      "calm_quantile": 0.5,
+      "lookback": 250,
+      "trend_window": 100,
+      "vol_window": 20
+    },
+    "voltarget_100_20_0.6": {
+      "target_vol": 0.6,
+      "trend_window": 100,
+      "vol_window": 20
+    },
+    "vwap_reversion_20_0.02": {
+      "entry_discount": 0.02,
+      "window": 20
+    },
+    "zscore_20_-2": {
+      "entry_z": -2.0,
+      "exit_z": 0.0,
+      "window": 20
+    }
+  }
+}

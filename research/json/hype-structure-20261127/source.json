@@ -1,0 +1,95 @@
+{
+  "schema": "coin-structure-source/v1",
+  "venue": "Hyperliquid perpetual",
+  "source_url": "https://api.hyperliquid.xyz/info",
+  "coin": "HYPE",
+  "references": [
+    "BTC",
+    "ETH",
+    "SOL"
+  ],
+  "fetched_at": "2026-11-27T08:53Z",
+  "fetched_at_ms": 1795769619870,
+  "series": {
+    "HYPE_1d": {
+      "request": {
+        "type": "candleSnapshot",
+        "req": {
+          "coin": "HYPE",
+          "interval": "1d",
+          "startTime": 1700000000000,
+          "endTime": 1795769619870
+        }
+      },
+      "raw_sha256": "8d645497c6cf861c4af05f7cdf71000e8138018ebdcc2bf22b1b3aa26e83033c",
+      "csv_sha256": "34e989c41c7c4e7cb5bac827fea1457a17d921b6293d01d8703bd8fac3779b4b",
+      "bars": 722,
+      "first": "2024-12-05T00:00Z",
+      "last_open": "2026-11-26T00:00Z"
+    },
+    "HYPE_1h": {
+      "request": {
+        "type": "candleSnapshot",
+        "req": {
+          "coin": "HYPE",
+          "interval": "1h",
+          "startTime": 1700000000000,
+          "endTime": 1795769619870
+        }
+      },
+      "raw_sha256": "fe5cbf3c9657f02585e6f8c704cd994e3e053d5ea219e36895fa8652a1636a48",
+      "csv_sha256": "0ed4ae5d1a0af4cb5e837ff643786ce9e4ddd2063ae61d56e8dd659fcb8d4e50",
+      "bars": 4999,
+      "first": "2026-05-03T01:00Z",
+      "last_open": "2026-11-27T07:00Z"
+    },
+    "BTC_1d": {
+      "request": {
+        "type": "candleSnapshot",
+        "req": {
+          "coin": "BTC",
+          "interval": "1d",
+          "startTime": 1700000000000,
+          "endTime": 1795769619870
+        }
+      },
+      "raw_sha256": "b8903feb92b9ce55de245b9a6908e803e34cf0728c71992d5d78bf0ba1d28377",
+      "csv_sha256": "2b6bc941f23f1c2d2cf025965daaadc5811caadce49dd31e84ec1c22bbd70a59",
+      "bars": 1109,
+      "first": "2023-11-14T00:00Z",
+      "last_open": "2026-11-26T00:00Z"
+    },
+    "ETH_1d": {
+      "request": {
+        "type": "candleSnapshot",
+        "req": {
+          "coin": "ETH",
+          "interval": "1d",
+          "startTime": 1700000000000,
+          "endTime": 1795769619870
+        }
+      },
+      "raw_sha256": "deccfa0073d55e6b564bdce83b3f2eeeff04e080b7b131d75ac4dd61045bf439",
+      "csv_sha256": "0fb37995e62983c3498b5b1a6e219837bb57d52de1c927345c1e4e7bdbe7dd7f",
+      "bars": 1109,
+      "first": "2023-11-14T00:00Z",
+      "last_open": "2026-11-26T00:00Z"
+    },
+    "SOL_1d": {
+      "request": {
+        "type": "candleSnapshot",
+        "req": {
+          "coin": "SOL",
+          "interval": "1d",
+          "startTime": 1700000000000,
+          "endTime": 1795769619870
+        }
+      },
+      "raw_sha256": "6b2279c9a0711b6bb9adc96896993419689e85067fc4a8b81e0ea4447ad2ffd1",
+      "csv_sha256": "e1382d807878d7e419dd0d525df42246ca15fb45d42c195cb4f6f8ad6e413285",
+      "bars": 1109,
+      "first": "2023-11-14T00:00Z",
+      "last_open": "2026-11-26T00:00Z"
+    }
+  }
+}

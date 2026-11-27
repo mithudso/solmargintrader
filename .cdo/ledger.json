@@ -13141,6 +13141,31 @@
    "sha": "2813f5ca48e1c5a1cd49e25bd72d5c4b3bfcd703",
    "verdict": "REVIEWED-FIXED"
   },
+  "research/scripts/coin_structure.py": {
+   "date": "2026-11-27",
+   "findings": 18,
+   "mode": "full",
+   "passes": [
+    "C1",
+    "C2",
+    "C3",
+    "M1",
+    "M2",
+    "M4",
+    "M5",
+    "P1",
+    "P2",
+    "S1",
+    "S2",
+    "S3",
+    "S4",
+    "S5",
+    "T1",
+    "T4"
+   ],
+   "sha": "65cfe7d692312c6f21aa8bf775abe0ff1769a715",
+   "verdict": ""
+  },
   "research/shape_report.py": {
    "date": "2026-11-12",
    "findings": 0,
@@ -13403,6 +13428,31 @@
    ],
    "sha": "714e3a6ada1c6a5a633598167100d4fa3b2022c9",
    "verdict": "REVIEWED"
+  },
+  "research/tests/test_coin_structure.py": {
+   "date": "2026-11-27",
+   "findings": 18,
+   "mode": "full",
+   "passes": [
+    "C1",
+    "C2",
+    "C3",
+    "M1",
+    "M2",
+    "M4",
+    "M5",
+    "P1",
+    "P2",
+    "S1",
+    "S2",
+    "S3",
+    "S4",
+    "S5",
+    "T1",
+    "T4"
+   ],
+   "sha": "fcb264a6eff6ee8fa50bcde646814bda10c33b8a",
+   "verdict": ""
   },
   "research/tests/test_coinbase50_study.py": {
    "date": "2026-11-12",
@@ -19365,200 +19415,6 @@
  "runs": [
   {
    "deferred": 0,
-   "finished": "2026-11-10T18:20:08Z",
-   "id": "2026-11-10T18:20:08Z",
-   "mode": "incremental",
-   "passes": {
-    "C1": {
-     "files": 6,
-     "state": "ran"
-    },
-    "C2": {
-     "files": 6,
-     "state": "ran"
-    },
-    "C3": {
-     "files": 6,
-     "state": "ran"
-    },
-    "M1": {
-     "files": 6,
-     "state": "ran"
-    },
-    "M2": {
-     "files": 6,
-     "state": "ran"
-    },
-    "M3": {
-     "files": 0,
-     "reason": "Scoped manager/UI ownership and import boundaries inspected; no architecture redesign.",
-     "state": "ran"
-    },
-    "M4": {
-     "files": 6,
-     "state": "ran"
-    },
-    "M5": {
-     "files": 0,
-     "reason": "Reviewed suite/main and registered CLI entry points, installed-environment refusal and bounded startup usage.",
-     "state": "ran"
-    },
-    "P1": {
-     "files": 6,
-     "state": "ran"
-    },
-    "P2": {
-     "files": 6,
-     "state": "ran"
-    },
-    "S1": {
-     "files": 6,
-     "state": "ran"
-    },
-    "S2": {
-     "files": 6,
-     "state": "ran"
-    },
-    "S3": {
-     "files": 6,
-     "state": "ran"
-    },
-    "S4": {
-     "files": 0,
-     "reason": "Reviewed supported POSIX descriptors, O_NONBLOCK behavior, macOS/Linux branches and explicit native-Windows refusal; classification corrected from the original receipt.",
-     "state": "ran"
-    },
-    "S5": {
-     "files": 6,
-     "state": "ran"
-    },
-    "T1": {
-     "files": 6,
-     "state": "ran"
-    },
-    "T2": {
-     "files": 0,
-     "reason": "No third-party dependency change; current vulnerability lookup unavailable and no supply-chain safety claim made.",
-     "state": "na"
-    },
-    "T3": {
-     "files": 0,
-     "reason": "Detected existing unittest, Ruff and CI gates; no missing harness introduced.",
-     "state": "ran"
-    },
-    "T4": {
-     "files": 0,
-     "reason": "Reviewed timeout-isolated FIFO regression cases; timeout is the behavior under test, not replaceable sleep.",
-     "state": "ran"
-    }
-   },
-   "reconciles_run_ids": [
-    "2026-11-10T18:08:26Z",
-    "2026-11-10T18:15:00Z"
-   ],
-   "reconciliation_note": "Reconstructs the same six-file review receipt after an erroneous post-receipt pass command created a partial run. No additional coverage or audit iteration.",
-   "reviewed": 6,
-   "silent_drops": [],
-   "skipped_unchanged": 0,
-   "started": "2026-11-10T18:20:08Z",
-   "status": "CAPPED"
-  },
-  {
-   "deferred": 0,
-   "finished": "2026-11-12T21:35:50Z",
-   "id": "2026-11-12T08:20:47Z",
-   "mode": "full",
-   "passes": {
-    "C1": {
-     "files": 866,
-     "state": "ran"
-    },
-    "C2": {
-     "files": 866,
-     "state": "ran"
-    },
-    "C3": {
-     "files": 866,
-     "state": "ran"
-    },
-    "M1": {
-     "files": 886,
-     "state": "ran"
-    },
-    "M2": {
-     "files": 866,
-     "state": "ran"
-    },
-    "M3": {
-     "files": 0,
-     "reason": "Repository architecture assessed; Medium centralized settings and shared runtime operation/error/remediation/sink residuals remain. Full inspection does not imply convergence.",
-     "state": "ran"
-    },
-    "M4": {
-     "files": 891,
-     "state": "ran"
-    },
-    "M5": {
-     "files": 169,
-     "reason": "Conditional ergonomics assessed and bounded tools fixed;41 current per-file installed-environment/prerequisite qualification limits remain in remaining-source-dispositions.json. No universal CLEAN claim.",
-     "state": "ran"
-    },
-    "P1": {
-     "files": 850,
-     "state": "ran"
-    },
-    "P2": {
-     "files": 816,
-     "state": "ran"
-    },
-    "S1": {
-     "files": 871,
-     "state": "ran"
-    },
-    "S2": {
-     "files": 866,
-     "state": "ran"
-    },
-    "S3": {
-     "files": 866,
-     "state": "ran"
-    },
-    "S4": {
-     "files": 866,
-     "state": "ran"
-    },
-    "S5": {
-     "files": 771,
-     "state": "ran"
-    },
-    "T1": {
-     "files": 853,
-     "state": "ran"
-    },
-    "T2": {
-     "files": 0,
-     "reason": "Current bounded advisory, pin, lock, import and notice evidence completed with explicit firstparty/private/native/transitive/legal limits; see final dispositions.",
-     "state": "ran"
-    },
-    "T3": {
-     "files": 0,
-     "reason": "Pinned Python407-rule baseline and JavaScript lint/gradual strict interface tooling qualified locally; final CI remains distinct.",
-     "state": "ran"
-    },
-    "T4": {
-     "files": 392,
-     "reason": "Canonical BLOCKED ambiguous equivalence: no proven universal thread-parallel/setup-hoisting rewrite over global mocks, async state, actual child processes and leases. Existing separate-process shards retained.",
-     "state": "blocked"
-    }
-   },
-   "reviewed": 891,
-   "silent_drops": [],
-   "skipped_unchanged": 0,
-   "started": "2026-11-12T08:20:47Z",
-   "status": "FULL_SOURCE_INSPECTION_PARTIAL_CONVERGENCE_INTEGRATION_PENDING"
-  },
-  {
-   "deferred": 0,
    "finished": "2026-11-12T22:06:19Z",
    "id": "2026-11-12T22:05:00Z",
    "mode": "incremental",
@@ -20185,7 +20041,7 @@
   },
   {
    "deferred": 0,
-   "finished": null,
+   "finished": "abandoned",
    "id": "2026-11-13T05:40:43Z",
    "mode": "incremental",
    "passes": {
@@ -20366,6 +20222,98 @@
    "skipped_unchanged": 0,
    "started": "2026-11-16T17:00:08Z",
    "status": "PARTIAL"
+  },
+  {
+   "deferred": 0,
+   "finished": "2026-11-27T09:27:32Z",
+   "id": "2026-11-27T09:12:53Z",
+   "mode": "incremental",
+   "passes": {
+    "C1": {
+     "files": 2,
+     "state": "ran"
+    },
+    "C2": {
+     "files": 2,
+     "state": "ran"
+    },
+    "C3": {
+     "files": 2,
+     "state": "ran"
+    },
+    "M1": {
+     "files": 2,
+     "state": "ran"
+    },
+    "M2": {
+     "files": 2,
+     "state": "ran"
+    },
+    "M3": {
+     "files": 0,
+     "reason": "repo-scope pass; run scoped to two files",
+     "state": "na"
+    },
+    "M4": {
+     "files": 2,
+     "state": "ran"
+    },
+    "M5": {
+     "files": 2,
+     "state": "ran"
+    },
+    "P1": {
+     "files": 2,
+     "state": "ran"
+    },
+    "P2": {
+     "files": 2,
+     "state": "ran"
+    },
+    "S1": {
+     "files": 2,
+     "state": "ran"
+    },
+    "S2": {
+     "files": 2,
+     "state": "ran"
+    },
+    "S3": {
+     "files": 2,
+     "state": "ran"
+    },
+    "S4": {
+     "files": 2,
+     "state": "ran"
+    },
+    "S5": {
+     "files": 2,
+     "state": "ran"
+    },
+    "T1": {
+     "files": 2,
+     "state": "ran"
+    },
+    "T2": {
+     "files": 0,
+     "reason": "repo-scope pass; run scoped to two files",
+     "state": "na"
+    },
+    "T3": {
+     "files": 0,
+     "reason": "repo-scope pass; run scoped to two files",
+     "state": "na"
+    },
+    "T4": {
+     "files": 2,
+     "state": "ran"
+    }
+   },
+   "reviewed": 2,
+   "silent_drops": [],
+   "skipped_unchanged": 0,
+   "started": "2026-11-27T09:12:53Z",
+   "status": "BLIND-AUDIT-DISSENT"
   }
  ],
  "version": 1
