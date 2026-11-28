@@ -764,12 +764,25 @@ def main(argv=None) -> int:
                 "n": live_row["n"],
             }
     model = {
-        "version": 2,
+        "version": 3,
         "horizon_s": HORIZON,
         "warmup_s": TILE_WARMUP,
         "lean": LEAN,
         "strong": STRONG,
-        "tiles": [{"key": k, "feature": nm, "label": lab} for k, nm, lab in TILES],
+        # Each tile's own record: how often following its sign alone was right, per slice.
+        "tiles": [
+            {
+                "key": k,
+                "feature": nm,
+                "label": lab,
+                "hit": {
+                    part: table[nm][part]["hit_follow"]
+                    for part in ("train", "valid", "test", "live")
+                    if "hit_follow" in table[nm].get(part, {})
+                },
+            }
+            for k, nm, lab in TILES
+        ],
         "measured": measured,
         "cone": cone["rv_30"],
         "slopes": ladder_model,

@@ -46,7 +46,7 @@ export function positionKey(position) {
  * Check a requested pair of levels against the position and the current price.
  * Returns { ok, errors, takeProfit, stopLoss }; a level left empty is null.
  */
-export function validateLevels({ position, price, takeProfit = null, stopLoss = null }) {
+export function validateLevels({ position, price, takeProfit = null, stopLoss = null, allowCrossed = false }) {
   const errors = [];
   if (!position || !['long', 'short'].includes(position.side)) return { ok: false, errors: ['No position selected.'] };
   if (!positive(price)) errors.push('No live price.');
@@ -60,11 +60,13 @@ export function validateLevels({ position, price, takeProfit = null, stopLoss = 
     errors.push('The entry price on the page is far from the live price; it was probably misread.');
   }
   const long = position.side === 'long';
-  if (takeProfit !== null && (long ? takeProfit <= price : takeProfit >= price)) {
+  // allowCrossed: the levels were fixed before the fill, and price may have passed one since.
+  // The side checks are skipped so the guard can arm and act at once instead of leaving the position bare.
+  if (!allowCrossed && takeProfit !== null && (long ? takeProfit <= price : takeProfit >= price)) {
     errors.push(`Take profit must be ${long ? 'above' : 'below'} the current price for a ${position.side}.`);
   }
   if (stopLoss !== null) {
-    if (long ? stopLoss >= price : stopLoss <= price) {
+    if (!allowCrossed && (long ? stopLoss >= price : stopLoss <= price)) {
       errors.push(`Stop loss must be ${long ? 'below' : 'above'} the current price for a ${position.side}.`);
     } else if (!positive(position.bust)) {
       // Without the bust price the stop cannot be shown to sit inside it.
@@ -74,6 +76,41 @@ export function validateLevels({ position, price, takeProfit = null, stopLoss = 
     }
   }
   return { ok: errors.length === 0, errors, takeProfit, stopLoss };
+}
+
+/** A distance in basis points: a plain positive decimal up to 10,000, or null. */
+export function parseDistance(text) {
+  const value = parseLevel(text);
+  return value !== null && value <= 10_000 ? value : null;
+}
+
+/**
+ * Turn the order form's two fields into price levels for a position.
+ * unit 'bp' reads each field as a distance from the position's entry, in the
+ * winning direction for the take profit and the losing direction for the stop.
+ * unit 'price' reads plain prices. An empty field is "no level". Returns
+ * { takeProfit, stopLoss, errors }.
+ */
+export function resolveLevels({ unit, takeProfitText = '', stopLossText = '', position }) {
+  const errors = [], out = { takeProfit: null, stopLoss: null, errors };
+  if (unit !== 'bp' && unit !== 'price') { errors.push('Unknown level unit.'); return out; }
+  const long = position?.side === 'long';
+  for (const [key, label, text, direction] of [['takeProfit', 'Take profit', takeProfitText, 1], ['stopLoss', 'Stop loss', stopLossText, -1]]) {
+    if (!String(text).trim()) continue;
+    if (unit === 'price') {
+      out[key] = parseLevel(text);
+      if (out[key] === null) errors.push(`${label} is not a plain price.`);
+      continue;
+    }
+    const distance = parseDistance(text);
+    if (distance === null) { errors.push(`${label} is not a plain distance in basis points.`); continue; }
+    if (!position || !positive(position.entry) || !['long', 'short'].includes(position.side)) {
+      errors.push('The position’s entry price could not be read from the page.');
+      continue;
+    }
+    out[key] = position.entry * (1 + (long ? 1 : -1) * direction * distance / 1e4);
+  }
+  return out;
 }
 
 /** Which level, if any, this price has reached. */
@@ -113,12 +150,12 @@ export class ExitGuard {
    * Arm for one position. mode 'alert' only notifies; 'close' presses the page's
    * Close button. Returns { ok, errors }.
    */
-  arm({ position, price, takeProfit = null, stopLoss = null, mode = 'alert', nowMs }) {
+  arm({ position, price, takeProfit = null, stopLoss = null, mode = 'alert', allowCrossed = false, nowMs }) {
     if (!['idle', 'closed', 'alerted', 'unconfirmed', 'failed'].includes(this.#state)) {
       return { ok: false, errors: ['The guard is already armed.'] };
     }
     if (!['alert', 'close'].includes(mode)) return { ok: false, errors: ['Unknown guard mode.'] };
-    const check = validateLevels({ position, price, takeProfit, stopLoss });
+    const check = validateLevels({ position, price, takeProfit, stopLoss, allowCrossed });
     if (!check.ok) return { ok: false, errors: check.errors };
     this.#position = { ...position, key: positionKey(position) };
     this.#levels = { takeProfit, stopLoss };

@@ -274,8 +274,23 @@
     let reply;
     try {
       if (!bridge || !/^\/1000x\/?$/.test(location.pathname)) reply = { ok: false, reason: 'not_on_1000x' };
-      else if (message.action === 'positions') reply = { ok: true, ...bridge.readPositions(document) };
-      else if (message.action === 'closePosition') reply = { ok: true, ...bridge.closePosition(document, message.expect) };
+      else if (message.action === 'positions') {
+        // The order form opens a position in the page's current market, so report which one that is.
+        // A fault in the order-form read must not cost the guard its positions read.
+        let form;
+        try { form = bridge.readOrderForm(document); } catch { form = { recognized: false, reason: 'order_form_not_found' }; }
+        reply = { ok: true, ...bridge.readPositions(document), form: { ...form, market: new URL(location.href).searchParams.get('market') } };
+      } else if (message.action === 'closePosition') reply = { ok: true, ...bridge.closePosition(document, message.expect) };
+      else if (message.action === 'openPosition') {
+        const onMarket = () => /^\/1000x\/?$/.test(location.pathname) && new URL(location.href).searchParams.get('market') === message.request?.coin;
+        if (!onMarket()) reply = { ok: true, clicked: false, reason: 'market_mismatch' };
+        else {
+          // The market is checked again just before the press: the page can navigate while the form settles.
+          bridge.openPosition(document, message.request, { stillValid: onMarket }).then(result => respond({ ok: true, ...result }),
+            () => respond({ ok: false, reason: 'page_read_failed' }));
+          return true; // the reply follows once the page's form has settled
+        }
+      }
       else reply = { ok: false, reason: 'unknown_action' };
     } catch {
       reply = { ok: false, reason: 'page_read_failed' };

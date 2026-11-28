@@ -206,16 +206,18 @@ export const COMMANDS = {
     },
   },
   jupiterScalpWindow: {
-    describe: 'Open the Jupiter 1000x 1s scalp window, or relay its position read and one Close click to the owning Jupiter tab.',
+    describe: 'Open the Jupiter 1000x 1s scalp window, or relay its position read, one Close click or one Long/Short press to the owning Jupiter tab.',
     params: [
-      { name: 'action', type: TYPE.STRING, required: true, describe: 'open, close, status, positions, closePosition, showJupiter or guardState.' },
+      { name: 'action', type: TYPE.STRING, required: true, describe: 'open, close, status, positions, closePosition, openPosition, showJupiter or guardState.' },
+      { name: 'side', type: TYPE.STRING, describe: 'For openPosition: long or short.' },
+      { name: 'fraction', type: TYPE.NUMBER, describe: 'For openPosition: share of the page\'s Max amount, 0.25, 0.5, 0.75 or 1.' },
       { name: 'expect', type: TYPE.JSON, describe: 'For closePosition: the listed position to match (coin, side, leverage, entryText).' },
       { name: 'live', type: TYPE.BOOL, describe: 'For guardState: whether a take profit or stop loss is live in the window.' },
     ],
     unlocked: true,
     browserUi: true,
     handler({ deps, args }) {
-      if (!['open', 'close', 'status', 'positions', 'closePosition', 'showJupiter', 'guardState'].includes(args.action)) {
+      if (!['open', 'close', 'status', 'positions', 'closePosition', 'openPosition', 'showJupiter', 'guardState'].includes(args.action)) {
         throw new CommandError('Invalid scalp window action', 400);
       }
       const expect = args.expect;
@@ -227,9 +229,14 @@ export const COMMANDS = {
       }
       if (args.action !== 'closePosition' && expect !== undefined) throw new CommandError('expect is only valid with closePosition', 400);
       if ((args.action === 'guardState') !== (typeof args.live === 'boolean')) throw new CommandError('live is required with guardState and invalid elsewhere', 400);
+      const opening = args.action === 'openPosition';
+      if (opening !== (args.side !== undefined) || opening !== (args.fraction !== undefined)) throw new CommandError('side and fraction are required with openPosition and invalid elsewhere', 400);
+      if (opening && (!['long', 'short'].includes(args.side) || ![0.25, 0.5, 0.75, 1].includes(args.fraction))) {
+        throw new CommandError('openPosition needs side long or short and fraction 0.25, 0.5, 0.75 or 1', 400);
+      }
       // The page bridge lives in a Chrome tab; the CLI and the HTTP API have none.
       if (!deps.jupiterScalpWindows) throw new CommandError('The scalp window requires the Chrome extension.', 501);
-      return deps.jupiterScalpWindows.control(args.action, deps.sender, { expect, live: args.live });
+      return deps.jupiterScalpWindows.control(args.action, deps.sender, { expect, live: args.live, side: args.side, fraction: args.fraction });
     },
   },
   openLiveWindow: {

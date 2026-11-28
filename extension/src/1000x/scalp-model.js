@@ -161,6 +161,49 @@ export class SlopeHistory {
 }
 
 /**
+ * Running accuracy of each ladder window: every second's slope sign is scored
+ * against the move over the following 30 seconds, like the grid's own calls.
+ * A flat slope makes no call. Seconds overlap, so n is not independent trials.
+ */
+export class SlopeScore {
+  #entries = new Map();
+  #retain;
+
+  constructor(retainSeconds = 600) {
+    this.#retain = retainSeconds;
+    for (const row of SCALP_MODEL.slopes) this.#entries.set(row.window_s, []);
+  }
+
+  /** One call per closed bar, with that bar and its readSlopes() rows. */
+  observe(bar, rows) {
+    if (!bar || !Number.isSafeInteger(bar.time) || !(bar.close > 0)) return;
+    for (const row of rows) {
+      const list = this.#entries.get(row.window);
+      if (!list || (list.length && bar.time <= list.at(-1).time)) continue;
+      for (const entry of list) {
+        if (entry.outcome !== null) continue;
+        if (entry.time + HORIZON_S === bar.time) entry.outcome = bar.close === entry.price ? 'flat' : (bar.close > entry.price) === (entry.vote > 0) ? 'hit' : 'miss';
+        else if (entry.time + HORIZON_S < bar.time) entry.outcome = 'unknown';
+      }
+      if (row.ready && row.slopeVote) list.push({ time: bar.time, price: bar.close, vote: row.slopeVote, outcome: null });
+      while (list.length && list[0].time < bar.time - this.#retain) list.shift();
+    }
+  }
+
+  /** The feed lost continuity: calls still waiting can no longer be settled. */
+  reset() {
+    for (const list of this.#entries.values()) for (const entry of list) if (entry.outcome === null) entry.outcome = 'unknown';
+  }
+
+  stats() {
+    return new Map([...this.#entries].map(([window, list]) => {
+      const hit = list.filter(entry => entry.outcome === 'hit').length, miss = list.filter(entry => entry.outcome === 'miss').length;
+      return [window, { hit, miss, n: hit + miss, rate: hit + miss ? hit / (hit + miss) : null }];
+    }));
+  }
+}
+
+/**
  * Price bands for each of the next 30 seconds. sigmaBps is the standard
  * deviation of recent 1s returns; the multipliers are the recorded 68% and 90%
  * quantiles of |30s move| / (sigma * sqrt(30)). The centre drifts by the tier's

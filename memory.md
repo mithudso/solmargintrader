@@ -1,5 +1,18 @@
 # Work continuation
 
+Version: 730
+Delta: v729 to v730. Record entry buttons, size presets, bp levels, hover help and the slope accuracy gauge in the 1s scalp window.
+
+## Jupiter 1000x 1s scalp window: entries, size presets, hover help · 2026-11-27
+
+Request (`prompts.md` v336): Long and Short buttons, size presets of a quarter, half, three quarters or all of the available funds, entries that start with the order form's take profit and stop loss, the order form to the right of the chart, hover descriptions for every indicator and column title with the explanatory text hidden, "No TP/SL" buttons, and a running accuracy gauge in the slope ladder.
+Done, extension 0.18.0. The window can now open positions, which 0.17.0 could not: `extension/src/1000x/entry-plan.js` (pure checks and a one-request tracker), new `readOrderForm` and `openPosition` in `extension/src/1000x/page-bridge.js`, an `openPosition` action on the `jupiterScalpWindow` command, `resolveLevels` in `exit-guard.js` (levels as basis points from entry, or as prices), `SlopeScore` in `scalp-model.js`, and a two-column `scalp.html` with the order form beside the chart. Guide: `docs/JUPITER-1000X-SCALP.md` (v2.0.0).
+How an entry works: the window asks the Jupiter tab once; the tab checks market and Classic mode, presses the page's own 25%, Half or Max (three quarters is typed from the page's Max and must show up in the page's derived line), checks the shown amount against that share of the shown balance, and presses the page's own Long or Short button at the page's leverage. When exactly one new row for that market, side and leverage is listed, the levels are armed from its real entry.
+Rails: Long and Short locked in every window (Unlock, Confirm and size are never stored); trusted click; confirming second press at least 0.6 s later by default; one request, never repeated; no entry while a guard is live or the positions list is incomplete; a reply that does not say whether the page pressed leaves the entry out and watched; a position listed up to ten minutes late is still adopted; a level already crossed at listing arms and acts at once.
+Verification: 824 extension tests (12 new), `npm run e2e:scalp -- --full` 14 of 14 in Chrome for Testing against a fixture page. An independent read-only review of the entry path found four High defects (settings restored from storage left entries one click away; a re-entrant press could double an entry; the size was not checked against the balance; a hidden positions table broke new-position matching) and six Medium; all fixed, not re-audited.
+Not verified: an open or a close on the real page. The three-quarter amount has only been typed into a stand-in for the page's input. The selectors come from the public bundle `1000x-Bz57naGJ.js` in the local archive.
+Remaining: the owner's first real use is the first live test. Start with a quarter, alert-only.
+
 Version: 729
 Delta: v728 to v729. Record the Jupiter 1000x 1s scalp window, its exit guard and the 1s study behind it.
 

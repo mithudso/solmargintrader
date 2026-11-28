@@ -1,11 +1,12 @@
 /**
- * Reads the Jupiter 1000x positions table and presses its Close button.
+ * Reads the Jupiter 1000x positions table and order form, and presses their buttons.
  *
  * A classic content script: it defines one object in the isolated world and
  * does nothing until content.js relays a request from this extension's own
  * background worker. It reads text the page already shows and clicks a button
- * the owner could click; it never opens a position, never touches the wallet
- * and never reads page storage. Anything it cannot read exactly is refused.
+ * the owner could click: one position's Close, the order form's size buttons
+ * and its Long or Short button. It never touches the wallet and never reads
+ * page storage. Anything it cannot read exactly is refused.
  *
  * The table layout is the one observed in the public bundle (English labels):
  * docs/JUPITER-1000X-SCALP.md records the evidence and its limits.
@@ -144,5 +145,151 @@
     return { clicked: true, label };
   }
 
-  globalThis.__smt1000xBridge = Object.freeze({ money, closeState, parseRow, readPositions, closePosition });
+  /* ------------------------------------------------------------ order form -- */
+
+  const FORM_LABEL = 'Degen market order';
+  // The page's own quick-size buttons. It has none for three quarters.
+  const SIZE_BUTTON = { 0.25: '25%', 0.5: 'Half', 1: 'Max' };
+  const REOPEN_MS = 5000;
+  let lastOpenMs = -Infinity;
+
+  /** "15.80352" or "1,234.5" -> the plain decimal string, or null. */
+  function amount(text) {
+    const match = /^((?:\d{1,3}(?:,\d{3})+|\d+)(?:\.\d+)?)$/.exec(clean(text));
+    if (!match) return null;
+    const plain = match[1].replaceAll(',', '');
+    return Number(plain) > 0 ? plain : null;
+  }
+
+  /** Three quarters of a decimal string, rounded down at six decimals (or the input's own, if finer). */
+  function threeQuarters(plain) {
+    const [whole, fraction = ''] = plain.split('.');
+    const places = Math.max(fraction.length, 6);
+    const digits = (BigInt(whole + fraction.padEnd(places, '0')) * 3n / 4n).toString().padStart(places + 1, '0');
+    return `${digits.slice(0, -places)}.${digits.slice(-places)}`.replace(/0+$/, '').replace(/\.$/, '');
+  }
+
+  function leverageOf(text) {
+    const match = /^([\d.,\s]+)×$/.exec(clean(text));
+    if (!match) return null;
+    const digits = match[1].replace(/\s/g, '');
+    const value = /^(?:\d{1,3}(?:[.,]\d{3})+|\d+)$/.test(digits) ? Number(digits.replace(/[.,]/g, '')) : NaN;
+    return Number.isInteger(value) && value >= 1 && value <= 1000 ? value : null;
+  }
+
+  function findForm(doc) {
+    const forms = [...doc.querySelectorAll('form')].filter(form => form.getAttribute('aria-label') === FORM_LABEL
+      && form.querySelector('#degen-amount') && form.getClientRects().length > 0);
+    return forms.length === 1 ? forms[0] : null;
+  }
+
+  function formParts(doc) {
+    const form = findForm(doc);
+    if (!form) return null;
+    const buttons = [...form.querySelectorAll('button')];
+    const side = name => buttons.find(button => button.getAttribute('data-side') === name) ?? null;
+    const mode = doc.querySelector('nav[aria-label="Trading mode"] a[aria-current="page"]');
+    const balance = buttons.find(button => /^Available balance: /.test(button.getAttribute('aria-label') ?? ''));
+    const pressed = buttons.find(button => button.getAttribute('aria-pressed') === 'true' && leverageOf(button.textContent) !== null);
+    const balanceText = balance ? clean(balance.getAttribute('aria-label')).replace(/^Available balance: /, '') : null;
+    return { form, buttons, input: form.querySelector('#degen-amount'), long: side('long'), short: side('short'),
+      // The mode link can carry a badge after its name; the first word is the mode.
+      mode: clean(mode?.textContent).split(' ')[0] || null,
+      balanceText, balance: balanceText === null ? null : amount(balanceText.split(' ')[0]),
+      // The line under the amount is drawn from the page's own state, so it shows what the page accepted.
+      hint: clean(form.querySelector('#degen-amount-hint')?.textContent),
+      leverage: pressed ? leverageOf(pressed.textContent) : leverageOf(form.querySelector('output')?.textContent),
+      error: clean(form.querySelector('#degen-amount-error')?.textContent) };
+  }
+
+  /** What the page's order form currently shows. Read only. */
+  function readOrderForm(doc) {
+    const parts = formParts(doc);
+    if (!parts || !parts.input || !parts.long || !parts.short) return { recognized: false, reason: 'order_form_not_found' };
+    const disabled = button => button.disabled || button.getAttribute('aria-disabled') === 'true';
+    return { recognized: true, mode: parts.mode, amountText: clean(parts.input.value), balanceText: parts.balanceText, leverage: parts.leverage,
+      longEnabled: !disabled(parts.long), shortEnabled: !disabled(parts.short),
+      busy: [parts.long, parts.short].some(button => button.getAttribute('aria-busy') === 'true'), error: parts.error };
+  }
+
+  // The page's Max can sit a little under the balance (fee reserve, size cap). Further off than this is not the size asked for.
+  const SIZE_FLOOR = 0.85, SIZE_CEILING = 1.0001, OPEN_DEADLINE_MS = 6000;
+  let opening = false;
+
+  /**
+   * Set the size with the page's own button, then press its Long or Short
+   * button once. The amount the page then shows must match the chosen share of
+   * the balance it shows. Three quarters has no page button: the page's Max is
+   * read and three quarters of it is typed, and the page's own derived line
+   * must change before the press. Anything unexpected stops before the press.
+   * One call at a time, never within five seconds of the last, never late.
+   */
+  async function openPosition(doc, request, { now = Date.now, wait = ms => new Promise(resolve => setTimeout(resolve, ms)), stillValid = () => true } = {}) {
+    if (!request || !['long', 'short'].includes(request.side) || ![0.25, 0.5, 0.75, 1].includes(request.fraction)) {
+      return { clicked: false, reason: 'invalid_request' };
+    }
+    const started = now();
+    if (opening) return { clicked: false, reason: 'page_busy' };
+    if (started - lastOpenMs < REOPEN_MS) return { clicked: false, reason: 'recently_opened' };
+    // Claimed before the first wait: a second call cannot slip in while this one is parked.
+    opening = true;
+    lastOpenMs = started;
+    try {
+      let parts = formParts(doc);
+      if (!parts || !parts.input || !parts.long || !parts.short) return { clicked: false, reason: 'order_form_not_found' };
+      if (parts.mode !== 'Classic') return { clicked: false, reason: 'mode_not_classic' };
+      if ([parts.long, parts.short].some(button => button.getAttribute('aria-busy') === 'true')) return { clicked: false, reason: 'page_busy' };
+      if (parts.balance === null) return { clicked: false, reason: 'balance_unreadable' };
+      const balance = Number(parts.balance);
+      const near = (text, share) => {
+        const value = amount(text);
+        return value !== null && Number(value) >= share * balance * SIZE_FLOOR && Number(value) <= share * balance * SIZE_CEILING;
+      };
+      /** Poll the form until `ready` holds, for at most a second and a half. */
+      const settle = async ready => {
+        for (let i = 0; i < 30; i++) {
+          await wait(50);
+          parts = formParts(doc);
+          if (!parts || !parts.input) return false;
+          if (ready()) return true;
+        }
+        return false;
+      };
+      const typed = request.fraction === 0.75;
+      const label = typed ? 'Max' : SIZE_BUTTON[request.fraction];
+      const quick = parts.buttons.find(candidate => clean(candidate.textContent) === label);
+      if (!quick || quick.disabled) return { clicked: false, reason: 'size_button_unavailable' };
+      quick.click();
+      // A value left in the field from before only passes if it is the size this button gives.
+      if (!await settle(() => near(parts.input.value, typed ? 1 : request.fraction))) return { clicked: false, reason: parts ? 'amount_unexpected' : 'order_form_not_found' };
+      if (typed) {
+        const target = threeQuarters(amount(parts.input.value)), before = parts.hint;
+        if (!near(target, 0.75)) return { clicked: false, reason: 'amount_unexpected' };
+        // The value setter on the prototype reaches the element without the page framework's own wrapper,
+        // so the following input event is seen as a real change.
+        Object.getOwnPropertyDescriptor(Object.getPrototypeOf(parts.input), 'value').set.call(parts.input, target);
+        parts.input.dispatchEvent(new Event('input', { bubbles: true }));
+        // The field alone only shows what was typed. The page's derived line changing shows it took the amount.
+        if (!await settle(() => amount(parts.input.value) === target && parts.hint !== '' && parts.hint !== before)) {
+          return { clicked: false, reason: parts ? 'amount_not_accepted' : 'order_form_not_found' };
+        }
+      }
+      await settle(() => parts.error !== '' || !parts[request.side].disabled);
+      if (!parts || !parts.input) return { clicked: false, reason: 'order_form_not_found' };
+      if (parts.error) return { clicked: false, reason: 'amount_rejected', detail: parts.error.slice(0, 120) };
+      const button = parts[request.side];
+      if (!button || button.disabled) return { clicked: false, reason: 'side_disabled' };
+      if (!near(parts.input.value, request.fraction)) return { clicked: false, reason: 'amount_unexpected' };
+      // Timers crawl in a hidden tab. A press that comes late is one the owner has stopped expecting.
+      if (now() - started > OPEN_DEADLINE_MS) return { clicked: false, reason: 'too_slow' };
+      if (parts.mode !== 'Classic' || !stillValid()) return { clicked: false, reason: 'page_changed' };
+      button.click();
+      return { clicked: true, amountText: amount(parts.input.value), leverage: parts.leverage };
+    } finally {
+      opening = false;
+    }
+  }
+
+  globalThis.__smt1000xBridge = Object.freeze({ money, closeState, parseRow, readPositions, closePosition,
+    amount, threeQuarters, readOrderForm, openPosition });
 })();

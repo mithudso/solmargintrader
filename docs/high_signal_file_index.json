@@ -1053,8 +1053,14 @@
       "path": "extension/src/1000x/page-bridge.js",
       "component": "extension",
       "kind": "javascript",
-      "summary": "Content script that reads the 1000x positions table and presses one exactly matched row's own Close button",
+      "summary": "Content script that reads the 1000x positions table and order form, presses one exactly matched row's own Close button, and presses the form's own size and Long or Short buttons",
       "lines": 148
+    },
+    {
+      "path": "extension/src/1000x/entry-plan.js",
+      "component": "extension",
+      "kind": "javascript",
+      "summary": "Pure checks before an entry request and the tracker that sends it once and finds the position it opened"
     },
     {
       "path": "extension/src/1000x/scalp.js",
@@ -1083,6 +1089,12 @@
       "kind": "javascript",
       "summary": "Guard levels, triggers, lock wait, confirmation and failure states; page-bridge row parsing and close selection",
       "lines": 275
+    },
+    {
+      "path": "extension/test/1000x-entry.test.js",
+      "component": "extension",
+      "kind": "javascript",
+      "summary": "Levels in basis points, entry validation, confirm-then-send tracker, new-position matching, order-form reads and presses, slope accuracy score"
     },
     {
       "path": "extension/test/jupiter-scalp-window.test.js",

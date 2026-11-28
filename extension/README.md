@@ -127,26 +127,37 @@ See [design, formulas and verification](../docs/JUPITER-1000X-OVERLAY.md),
 [optimized execution prompt](../docs/JUPITER-1000X-OVERLAY-PROMPT.md), and
 [SDK create/close capabilities and remaining gates](../docs/JUPITER-1000X-SDK.md).
 
-## Jupiter 1000x 1s scalp window and exit guard (0.17.0)
+## Jupiter 1000x 1s scalp window, entries and exit guard (0.18.0)
 
 The Indicators overlay on `https://jup.ag/1000x` has a **1s scalp** button. It
-opens a separate compact window for that market with two jobs.
+opens a separate window for that market: read-outs on the left, the order form
+to the right of the chart. Every tile, column title and control explains itself
+on hover.
 
 It reads the next 30 seconds from one-second oracle bars: sixteen trend readings
-vote, the window shows the vote, a 1s chart with the expected 30 second range
+vote, and the window shows the vote, a 1s chart with the expected 30 second range
 drawn ahead of price, a slope ladder (5s to 5m, with each slope's second
-derivative, range and time since its last reversal) and a score of its own
-calls. The grid needs about 80 seconds of live ticks to warm up. In the study a
-one-sided grid was right about 53% of the time, which the 1000x payout does not
-reward: treat it as a lean.
+derivative, range, time since its last reversal and a running accuracy gauge)
+and a score of its own calls. The grid needs about 80 seconds of live ticks to
+warm up. In the study a one-sided grid was right about 53% of the time, which
+the 1000x payout does not reward: treat it as a lean.
 
-It adds a take profit and a stop loss for one listed position. Alert only is
-the default. In close mode the window asks the Jupiter tab to press that
-position's own Close button when the oracle price reaches a level. Jupiter
-builds the close and the wallet signs it; the extension never signs, never
-opens a position and never presses "Close all". A stale price, an ambiguous
-row or an unreadable page is refused and reported. The guard stops when its
-window closes. A close on a real open position has not been exercised.
+It opens a position on request. **Long** and **Short** are locked until you tick
+Unlock and, by default, need a confirming second press. A quarter, half or all
+of the available funds press the page's own 25%, Half and Max buttons; three
+quarters is typed from the page's Max. The window then presses the page's own
+Long or Short button once, at the leverage the page shows.
+
+It adds a take profit and a stop loss, as basis points from entry or as prices,
+with **No TP**, **No SL** and **No TP/SL**. A position opened from the window has
+them armed from its real entry once it is listed. Alert only is the default; in
+close mode the window asks the Jupiter tab to press that position's own Close
+button when the oracle price reaches a level.
+
+Jupiter builds every trade and the wallet signs it; the extension never signs
+and never presses "Close all". A stale price, an ambiguous row, the wrong market
+or mode, or an unreadable page is refused and reported. The guard stops when its
+window closes. Neither an open nor a close has been exercised on the real page.
 
 See [the window, its rails and its limits](../docs/JUPITER-1000X-SCALP.md) and
 [the study](../research/papers/SCALP-1S-STUDY.md). Run `npm run e2e:scalp` for

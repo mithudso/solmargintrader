@@ -9,7 +9,10 @@
  * the listed position, arms only on a trusted click, alerts without pressing in
  * alert mode, presses the row's own Close exactly once in close mode (after the
  * minimum-hold lock clears), never presses "Close all", and reports an armed
- * guard as unprotected when the price goes stale.
+ * guard as unprotected when the price goes stale. For entries it proves that
+ * Long and Short stay locked until unlocked, need a confirming second press,
+ * press the page's own size and side buttons once, and arm the levels from the
+ * new position's real entry.
  *
  * It never visits the real site, connects no wallet and can place no order.
  * --full also waits out the 78 second warm-up and checks the call and the cone.
@@ -40,22 +43,49 @@ async function check(name, fn) {
   catch (error) { checks.push({ name, ok: false, error: error.message }); console.log(`FAIL - ${name}: ${error.message}`); }
 }
 
-/** The positions table as the public bundle renders it; buttons count their own clicks. */
-const portalHtml = `<!doctype html><html><head><meta charset="utf-8"><title>1000x fixture</title><style>body{margin:0;background:#080c14;color:#fff;font:14px system-ui}table{margin:120px 20px;border-collapse:collapse}td,th{padding:8px 12px;border-bottom:1px solid #333}</style></head><body>
+/** The positions table and order form as the public bundle renders them; buttons count their own clicks. */
+const portalHtml = `<!doctype html><html><head><meta charset="utf-8"><title>1000x fixture</title><style>body{margin:0;background:#080c14;color:#fff;font:14px system-ui}table{margin:20px;border-collapse:collapse}td,th{padding:8px 12px;border-bottom:1px solid #333}form{margin:90px 20px 0;display:flex;gap:8px;align-items:center}</style></head><body>
+<nav aria-label="Trading mode"><a id="mode" aria-current="page">Classic</a><a>Double or Nothing</a></nav>
+<form aria-label="Degen market order" onsubmit="return false">
+  <label for="degen-amount">You're paying</label>
+  <button type="button" id="quick-25">25%</button><button type="button" id="quick-half">Half</button><button type="button" id="quick-max">Max</button>
+  <button type="button" aria-label="Available balance: 15.80352 JupUSD" title="Available balance: 15.80352 JupUSD"><span>15.80352</span></button>
+  <input id="degen-amount" name="amount" placeholder="0.00" aria-label="Collateral amount"><span id="degen-amount-hint"></span>
+  <button type="button" aria-pressed="false">500×</button><button type="button" aria-pressed="true">1,000×</button>
+  <button type="button" data-side="long">Long</button><button type="button" data-side="short">Short</button>
+</form>
 <button id="close-all" type="button" onclick="window.__clicks.all++">Close all</button>
 <button id="positions-tab" type="button">Positions (1)</button>
 <table><thead><tr><th>Position</th><th>Value / PnL</th><th>Entry / Mark price</th><th>Bust price</th><th>Size</th><th>Collateral</th><th>Held</th><th>Status</th></tr></thead><tbody id="rows"></tbody></table>
 <script>
-window.__clicks = { close: 0, all: 0, share: 0 };
-window.__addRow = (label = 'Close in 3s', disabled = true) => {
-  document.getElementById('rows').innerHTML = '<tr><td><button type="button" data-row-action aria-label="Focus SOL position on chart"><span><strong>SOL<span> #1</span></strong><span class="text-success">1,000× Long</span> <span>Classic</span></span></button></td>'
-    + '<td><span>$10.00</span><span>+$0.00</span></td><td>$100.0000 / <span>$100.0000</span></td><td>$99.9020</td><td>$10,000.00</td><td><span>$10.00</span><span>JupUSD</span></td><td>12s</td>'
-    + '<td><div><button type="button" id="share" onclick="window.__clicks.share++"></button><button type="button" id="row-close"></button></div></td></tr>';
-  const button = document.getElementById('row-close');
+window.__clicks = { close: 0, all: 0, share: 0, long: 0, short: 0, quick: [], amounts: [] };
+const rowHtml = (side, entry, bust) => '<tr><td><button type="button" data-row-action aria-label="Focus SOL position on chart"><span><strong>SOL<span> #1</span></strong><span class="text-success">1,000× ' + side + '</span> <span>Classic</span></span></button></td>'
+    + '<td><span>$10.00</span><span>+$0.00</span></td><td>' + entry + ' / <span>' + entry + '</span></td><td>' + bust + '</td><td>$10,000.00</td><td><span>$10.00</span><span>JupUSD</span></td><td>12s</td>'
+    + '<td><div><button type="button" class="share" onclick="window.__clicks.share++"></button><button type="button" class="row-close"></button></div></td></tr>';
+const wire = (label, disabled) => {
+  const button = document.querySelector('#rows .row-close');
   button.textContent = label; button.disabled = disabled;
   button.addEventListener('click', () => { window.__clicks.close++; button.textContent = 'Closing…'; button.disabled = true; setTimeout(() => { document.getElementById('rows').innerHTML = ''; }, 1200); });
 };
-window.__unlock = () => { const button = document.getElementById('row-close'); button.textContent = 'Close'; button.disabled = false; };
+window.__addRow = (label = 'Close in 3s', disabled = true) => { document.getElementById('rows').innerHTML = rowHtml('Long', '$100.0000', '$99.9020'); wire(label, disabled); };
+window.__unlock = () => { const button = document.querySelector('#rows .row-close'); button.textContent = 'Close'; button.disabled = false; };
+// The order form: quick sizes fill the amount a moment later, and a side press lists the position after an "opening" row.
+const amount = document.getElementById('degen-amount'), hint = document.getElementById('degen-amount-hint');
+// The line under the amount is drawn from the page's own state, as on the real page.
+amount.addEventListener('input', () => { hint.textContent = amount.value ? '≈ $' + amount.value : ''; });
+for (const [id, value] of [['quick-25', '3.95088'], ['quick-half', '7.90176'], ['quick-max', '15.80352']]) {
+  document.getElementById(id).addEventListener('click', () => { window.__clicks.quick.push(id); setTimeout(() => { amount.value = value; hint.textContent = '≈ $' + value; }, 40); });
+}
+for (const button of document.querySelectorAll('[data-side]')) button.addEventListener('click', () => {
+  const side = button.dataset.side;
+  window.__clicks[side]++; window.__clicks.amounts.push(amount.value);
+  document.getElementById('rows').innerHTML = '<tr aria-busy="true"><td>SOL opening</td><td></td><td>Pending / $100.01</td><td></td><td></td><td></td><td></td><td><button type="button" disabled>Opening</button></td></tr>';
+  setTimeout(() => {
+    document.getElementById('rows').innerHTML = rowHtml(side === 'long' ? 'Long' : 'Short', '$100.0100', side === 'long' ? '$99.9120' : '$100.1080');
+    wire('Close in 2s', true);
+    setTimeout(window.__unlock, 1500);
+  }, 800);
+});
 window.__addRow();
 </script></body></html>`;
 
@@ -198,35 +228,67 @@ try {
     return state;
   });
 
-  await check('it reads the listed position from the page and installs disarmed in alert-only mode', async () => {
-    try { await until(() => ev(scalp, `document.getElementById('guard-position').options.length === 1`), 'position option'); }
-    catch (error) { throw new Error(`${error.message}: ${await text(scalp, 'guard-page')}`); }
-    const state = await ev(scalp, `({ option: document.getElementById('guard-position').selectedOptions[0].textContent, page: document.getElementById('guard-page').textContent, detail: document.getElementById('guard-position-detail').textContent, mode: document.querySelector('input[name="guard-mode"]:checked').value, guard: document.getElementById('guard').dataset.state })`);
-    assert(/SOL · 1,000× long · entry \$100\.0000/.test(state.option), `position not read: ${state.option}`);
-    assert(/bust 99\.902/.test(state.detail) && /Close button: locked \(Close in 3s\)/.test(state.detail), `detail: ${state.detail}`);
-    assert(state.mode === 'alert' && state.guard === 'idle', 'the guard did not start disarmed in alert-only mode');
-    return state;
+  const state = expression => ev(scalp, expression);
+  const setSelect = (id, value) => ev(scalp, `(() => { const el = document.getElementById(${JSON.stringify(id)}); el.value = ${JSON.stringify(value)}; el.dispatchEvent(new Event('change', { bubbles: true })); })()`);
+
+  await check('the order form sits to the right of the chart, and help lives in hover text, not in paragraphs', async () => {
+    if (await state('innerWidth') < 900) await browser.call('Emulation.setDeviceMetricsOverride', { width: 980, height: 940, deviceScaleFactor: 1, mobile: false }, scalp.sessionId);
+    const layout = await until(() => state(`(() => { const chart = document.getElementById('chart').getBoundingClientRect(), order = document.getElementById('guard').getBoundingClientRect();
+      return order.left >= chart.right - 1 && Math.abs(order.top - document.getElementById('call').getBoundingClientRect().top) < 40 ? { chartRight: Math.round(chart.right), orderLeft: Math.round(order.left), overflow: document.documentElement.scrollWidth > innerWidth } : null; })()`), 'two-column layout');
+    assert(!layout.overflow, 'the page overflows sideways');
+    const help = await state(`({ tiles: [...document.querySelectorAll('.tile')].map(tile => tile.title.length), heads: [...document.querySelectorAll('#slopes thead th')].map(th => th.title.length),
+      rows: [...document.querySelectorAll('#slopes tbody th')].map(th => th.title.length), prose: document.querySelectorAll('.legend, #slopes-note, #guard-help, #call-detail').length,
+      labelled: [...document.querySelectorAll('#guard legend, #guard label[title], #guard button[title], #guard fieldset[title]')].length, tile: document.querySelector('.tile').title })`);
+    assert(help.tiles.length === 16 && help.tiles.every(length => length > 120), 'a tile lacks a detailed description');
+    assert(help.heads.length === 8 && help.heads.every(length => length > 60), 'a ladder column title lacks a description');
+    assert(help.rows.length === 6 && help.rows.every(length => length > 60), 'a ladder row lacks its baseline');
+    assert(help.prose === 0, 'explanatory paragraphs are still in the window');
+    assert(/right \d+\.\d%, \d+\.\d% and \d+\.\d%/.test(help.tile), 'a tile does not state its own record');
+    return { layout, labelled: help.labelled };
   });
 
-  await check('arming needs a trusted click and valid levels', async () => {
-    await setInput(scalp, 'guard-tp', '100.05');
+  await check('it reads the listed position and the order form, and installs disarmed, alert-only, with entries locked', async () => {
+    try { await until(() => state(`document.getElementById('guard-position').options.length === 1`), 'position option'); }
+    catch (error) { throw new Error(`${error.message}: ${await text(scalp, 'guard-page')}`); }
+    const seen = await state(`({ option: document.getElementById('guard-position').selectedOptions[0].textContent, page: document.getElementById('guard-page').textContent, detail: document.getElementById('guard-position-detail').textContent,
+      mode: document.querySelector('input[name="guard-mode"]:checked').value, guard: document.getElementById('guard').dataset.state, unit: document.getElementById('guard-unit').value,
+      unlocked: document.getElementById('entry-unlock').checked, confirm: document.getElementById('entry-confirm').checked, long: document.getElementById('entry-long').disabled, short: document.getElementById('entry-short').disabled })`);
+    assert(/SOL · 1,000× long · entry \$100\.0000/.test(seen.option), `position not read: ${seen.option}`);
+    assert(/bust 99\.902/.test(seen.detail) && /Close button: locked \(Close in 3s\)/.test(seen.detail), `detail: ${seen.detail}`);
+    assert(/Available 15\.80352 JupUSD · page leverage 1,000× · Classic/.test(seen.page), `order form not read: ${seen.page}`);
+    assert(seen.mode === 'alert' && seen.guard === 'idle' && seen.unit === 'bp', 'the guard did not start disarmed, alert-only, in bp');
+    assert(!seen.unlocked && seen.confirm && seen.long && seen.short, 'entries did not start locked and confirmed');
+    return seen;
+  });
+
+  await check('arming needs a trusted click and valid levels, in price or in basis points', async () => {
+    await setInput(scalp, 'guard-tp', '5');
     await ev(scalp, `document.getElementById('guard-arm').click()`);
     await sleep(300);
     assert(await guardState(scalp) === 'idle', 'a scripted click armed the guard');
+    assert(/at 100\.0500/.test(await text(scalp, 'guard-tp-note')), `bp level not priced: ${await text(scalp, 'guard-tp-note')}`);
+    await setInput(scalp, 'guard-tp', '');
+    await setInput(scalp, 'guard-sl', '12');
+    await trustedClick(scalp, `document.getElementById('guard-arm')`);
+    await until(() => state(`/beyond the bust price/.test(document.getElementById('guard-errors').textContent)`), 'beyond-bust error');
+    await setSelect('guard-unit', 'price');
+    await setInput(scalp, 'guard-sl', '');
     await setInput(scalp, 'guard-tp', '99.5');
     await trustedClick(scalp, `document.getElementById('guard-arm')`);
-    await until(() => ev(scalp, `/above the current price/.test(document.getElementById('guard-errors').textContent)`), 'wrong-side error');
-    await setInput(scalp, 'guard-sl', '99.80');
-    await setInput(scalp, 'guard-tp', '');
-    await trustedClick(scalp, `document.getElementById('guard-arm')`);
-    await until(() => ev(scalp, `/beyond the bust price/.test(document.getElementById('guard-errors').textContent)`), 'beyond-bust error');
+    await until(() => state(`/above the current price/.test(document.getElementById('guard-errors').textContent)`), 'wrong-side error');
     assert(await guardState(scalp) === 'idle', 'an invalid level armed the guard');
+    await setSelect('guard-unit', 'bp');
+    await setInput(scalp, 'guard-tp', '7');
+    await trustedClick(scalp, `document.querySelector('.chips [data-clear="both"]')`);
+    assert(await state(`document.getElementById('guard-tp').value === '' && document.getElementById('guard-sl').value === ''`), 'No TP/SL did not clear both fields');
+    await trustedClick(scalp, `document.querySelector('.chips [data-sl="0.5"]')`);
+    assert(await state(`document.getElementById('guard-sl').value`) === '4.90', 'half way to bust is not 4.90 bp at 1,000×');
     return { note: await text(scalp, 'guard-sl-note') };
   });
 
   await check('alert-only mode reports the level and presses nothing', async () => {
     await setInput(scalp, 'guard-sl', '');
-    await setInput(scalp, 'guard-tp', '100.05');
+    await setInput(scalp, 'guard-tp', '5');
     await trustedClick(scalp, `document.getElementById('guard-arm')`);
     await until(async () => await guardState(scalp) === 'armed', 'armed');
     fixture.state.price = 100.07;
@@ -242,8 +304,8 @@ try {
   await check('close mode waits out the minimum-hold lock, presses the row’s own Close once, and confirms when the row leaves', async () => {
     await sleep(1200);
     await trustedClick(scalp, `document.querySelector('input[name="guard-mode"][value="close"]')`);
-    await setInput(scalp, 'guard-tp', '100.05');
-    await setInput(scalp, 'guard-sl', '99.95');
+    await setInput(scalp, 'guard-tp', '5');
+    await setInput(scalp, 'guard-sl', '5');
     await trustedClick(scalp, `document.getElementById('guard-arm')`);
     await until(async () => await guardState(scalp) === 'armed', 'armed in close mode');
     assert(/will press Close/.test(await text(scalp, 'guard-badge')), 'badge does not show close mode');
@@ -264,28 +326,103 @@ try {
   await check('an armed guard with a stale price says it is not protected and presses nothing', async () => {
     await ev(portal, `window.__addRow('Close', false)`);
     await sleep(1500);
-    await until(() => ev(scalp, `document.getElementById('guard-position').options.length === 1 && !document.getElementById('guard-arm').hidden && !document.getElementById('guard-arm').disabled`), 'position listed again');
+    await until(() => state(`document.getElementById('guard-position').options.length === 1 && !document.getElementById('guard-arm').hidden && !document.getElementById('guard-arm').disabled`), 'position listed again');
     await setInput(scalp, 'guard-tp', '');
-    await setInput(scalp, 'guard-sl', '99.95');
+    await setInput(scalp, 'guard-sl', '5');
     await trustedClick(scalp, `document.getElementById('guard-arm')`);
     await until(async () => await guardState(scalp) === 'armed', 'armed');
     fixture.state.quotes = false;
     fixture.state.price = 99.9;
-    await until(() => ev(scalp, `document.getElementById('guard').hasAttribute('data-unprotected') && /NOT PROTECTED/.test(document.getElementById('guard-status').textContent)`), 'unprotected warning', 12_000);
+    await until(() => state(`document.getElementById('guard').hasAttribute('data-unprotected') && /NOT PROTECTED/.test(document.getElementById('guard-status').textContent)`), 'unprotected warning', 12_000);
     assert((await clicks()).close === 1, 'a stale price pressed Close');
     fixture.state.price = 100;
     fixture.state.quotes = true;
-    await until(() => ev(scalp, `!document.getElementById('guard').hasAttribute('data-unprotected')`), 'protection restored', 30_000);
+    await until(() => state(`!document.getElementById('guard').hasAttribute('data-unprotected')`), 'protection restored', 30_000);
     await trustedClick(scalp, `document.getElementById('guard-disarm')`);
     await until(async () => await guardState(scalp) === 'idle', 'disarmed');
     return { clicks: await clicks() };
   });
 
+  await check('Long and Short stay locked until unlocked, and a first press only asks for confirmation', async () => {
+    await ev(portal, `document.getElementById('rows').innerHTML = ''`);
+    await until(() => state(`document.getElementById('guard-position').options.length === 0`), 'no position listed');
+    await ev(scalp, `document.getElementById('entry-long').click()`);
+    await sleep(300);
+    assert((await clicks()).long === 0, 'a locked, scripted press reached the page');
+    await trustedClick(scalp, `document.getElementById('entry-unlock')`);
+    await until(() => state(`!document.getElementById('entry-long').disabled && !document.getElementById('entry-short').disabled`), 'entries unlocked');
+    await ev(scalp, `document.getElementById('entry-long').click()`);
+    await sleep(300);
+    assert(await state(`document.getElementById('entry-status').dataset.state`) === 'idle', 'a scripted press started an entry');
+    await trustedClick(scalp, `document.querySelector('input[name="entry-size"][value="0.75"]')`);
+    await setInput(scalp, 'guard-tp', '5');
+    await setInput(scalp, 'guard-sl', '5');
+    await trustedClick(scalp, `document.getElementById('entry-long')`);
+    await until(() => state(`document.getElementById('entry-long').textContent === 'Confirm long ¾'`), 'confirm prompt');
+    await sleep(600);
+    const counted = await clicks();
+    assert(counted.long === 0 && counted.quick.length === 0, `the first press reached the page: ${JSON.stringify(counted)}`);
+    await sleep(4200);
+    assert(await state(`document.getElementById('entry-long').textContent`) === 'long', 'an unconfirmed press did not lapse');
+    return counted;
+  });
+
+  await check('a confirmed Long sets three quarters from the page’s Max, presses Long once, and arms the levels from the real entry', async () => {
+    await trustedClick(scalp, `document.getElementById('entry-long')`);
+    await until(() => state(`document.getElementById('entry-long').hasAttribute('data-confirming')`), 'confirm prompt');
+    // A second press straight away is the same gesture, not a confirmation.
+    await trustedClick(scalp, `document.getElementById('entry-long')`);
+    await sleep(400);
+    assert((await clicks()).long === 0 && (await clicks()).quick.length === 0, 'a double-click confirmed the entry');
+    await sleep(400);
+    await trustedClick(scalp, `document.getElementById('entry-long')`);
+    await until(async () => (await clicks()).long === 1, 'one Long press on the page');
+    await until(async () => await guardState(scalp) === 'armed', 'levels armed from the new position', 20_000);
+    const counted = await clicks();
+    assert(JSON.stringify(counted.quick) === '["quick-max"]' && JSON.stringify(counted.amounts) === '["11.85264"]', `size not three quarters of Max: ${JSON.stringify(counted)}`);
+    assert(counted.long === 1 && counted.short === 0, 'more than one side press');
+    const seen = await state(`({ status: document.getElementById('entry-status').textContent, guard: document.getElementById('guard-status').textContent, option: document.getElementById('guard-position').selectedOptions[0]?.textContent, badge: document.getElementById('guard-badge').textContent })`);
+    assert(/entry \$100\.0100/.test(seen.option) && /TP 100\.06\d* · SL 99\.95\d*/.test(seen.guard), `levels not taken from the real entry: ${JSON.stringify(seen)}`);
+    assert(/will press Close/.test(seen.badge) && /Opened long\. Levels armed/.test(seen.status), JSON.stringify(seen));
+    assert(await state(`document.getElementById('entry-long').disabled`), 'another entry is possible while a guard is live');
+    fixture.state.price = 100.08;
+    await until(async () => (await clicks()).close === 2, 'the take profit closed the new position', 20_000);
+    await until(async () => await guardState(scalp) === 'closed', 'closed', 20_000);
+    fixture.state.price = 100;
+    return { counted, seen };
+  });
+
+  await check('with Confirm off and “No TP/SL”, Short opens in one press with nothing armed; other modes are refused', async () => {
+    await until(() => state(`document.getElementById('guard-position').options.length === 0`), 'position gone', 10_000);
+    await sleep(5200); // the bridge refuses a second entry within five seconds of the last
+    await trustedClick(scalp, `document.querySelector('.chips [data-clear="both"]')`);
+    await trustedClick(scalp, `document.getElementById('entry-confirm')`);
+    await trustedClick(scalp, `document.querySelector('input[name="entry-size"][value="0.5"]')`);
+    await until(() => state(`!document.getElementById('entry-short').disabled`), 'short enabled');
+    await trustedClick(scalp, `document.getElementById('entry-short')`);
+    await until(async () => (await clicks()).short === 1, 'one Short press');
+    await until(() => state(`/Opened short\. No take profit or stop loss is armed/.test(document.getElementById('entry-status').textContent)`), 'opened without levels', 20_000);
+    const counted = await clicks();
+    assert(counted.quick.at(-1) === 'quick-half' && counted.amounts.at(-1) === '7.90176' && counted.long === 1, `unexpected presses: ${JSON.stringify(counted)}`);
+    assert(await guardState(scalp) === 'closed' || await guardState(scalp) === 'idle', 'a guard was armed with no levels');
+    await ev(portal, `document.getElementById('mode').textContent = 'Blitz'`);
+    await until(() => state(`document.getElementById('entry-long').disabled && /^Switch the Jupiter page to Classic mode/.test(document.getElementById('entry-long').title)`), 'refused outside Classic');
+    await ev(portal, `document.getElementById('mode').textContent = 'Classic'`);
+    return counted;
+  });
+
+  await check('the slope ladder shows a running accuracy gauge once calls settle', async () => {
+    const cell = await until(() => state(`(() => { const td = document.querySelector('#slopes tbody tr td.hit'); return /[0-9]+% · [0-9]+/.test(td.textContent) ? { text: td.textContent, width: td.querySelector('.gauge i').style.width, title: td.title } : null; })()`), 'a settled 5s slope call', 60_000);
+    assert(/matched the move over the next 30 seconds/.test(cell.title), 'the gauge does not explain itself');
+    return cell;
+  });
+
   if (FULL) await check('after the warm-up the grid makes a call and draws the 30 second range', async () => {
     await until(() => ev(scalp, `document.getElementById('call').dataset.tier !== 'warming'`), 'call ready', 120_000);
-    const state = await ev(scalp, `({ tier: document.getElementById('call').dataset.tier, direction: document.getElementById('call').dataset.direction, text: document.getElementById('call-text').textContent, detail: document.getElementById('call-detail').textContent, warm: document.querySelectorAll('.tile[data-vote=warming]').length, count: document.getElementById('tiles-count').textContent, title: document.title })`);
+    const state = await ev(scalp, `({ tier: document.getElementById('call').dataset.tier, direction: document.getElementById('call').dataset.direction, text: document.getElementById('call-text').textContent, detail: document.getElementById('call').title, meta: document.getElementById('call-meta').textContent, warm: document.querySelectorAll('.tile[data-vote=warming]').length, count: document.getElementById('tiles-count').textContent, title: document.title })`);
     assert(state.warm === 0 && ['strong', 'lean', 'mixed'].includes(state.tier), JSON.stringify(state));
-    assert(/On the recording the grid was chosen from/.test(state.detail) && /separate short live check/.test(state.detail), 'the call does not state its measured hit rate and the untouched check');
+    assert(/On the recording the grid was chosen from/.test(state.detail) && /separate short live check/.test(state.detail), 'the hover text does not state the measured hit rate and the untouched check');
+    assert(/recorded [0-9.]+% · live check [0-9.]+% ± [0-9.]+/.test(state.meta), `the line under the call lacks its numbers: ${state.meta}`);
     return state;
   });
 

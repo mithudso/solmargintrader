@@ -3,14 +3,16 @@
  * oracle bars, and a take-profit / stop-loss guard for one listed position.
  *
  * Market data is the public Jupiter oracle stream (the same validated feed the
- * indicator panel uses). The only thing this window can do to the Jupiter page
- * is ask the background worker to read its positions table and to press one
- * position's own Close button; see exit-guard.js and page-bridge.js.
+ * indicator panel uses). The only things this window can do to the Jupiter page
+ * go through the background worker: read its positions table and order form,
+ * press one position's own Close button, and press the order form's own size
+ * and Long or Short buttons. See exit-guard.js, entry-plan.js and page-bridge.js.
  */
 import { JupiterFeed } from './feed.js';
 import { SecondBars, realizedVolBps } from './scalp-indicators.js';
-import { TILES, WARMUP_BARS, SCALP_MODEL, HORIZON_S, readTiles, readSlopes, SlopeHistory, scalpCall, cone, ScoreBook, payoutPercent } from './scalp-model.js';
-import { ExitGuard, GUARD_LIMITS, parseLevel, validateLevels, positionKey, quoteFresh } from './exit-guard.js';
+import { TILES, WARMUP_BARS, SCALP_MODEL, HORIZON_S, readTiles, readSlopes, SlopeHistory, SlopeScore, scalpCall, cone, ScoreBook, payoutPercent, bustFraction } from './scalp-model.js';
+import { ExitGuard, parseLevel, parseDistance, resolveLevels, positionKey, quoteFresh } from './exit-guard.js';
+import { EntryTracker, validateEntry } from './entry-plan.js';
 import { POWERED_BY } from '../jupiter/attribution.js';
 import { createChart, CandlestickSeries, LineSeries, LineStyle } from '../../vendor/lightweight-charts/lightweight-charts.standalone.production.mjs';
 
@@ -36,6 +38,14 @@ const REASONS = {
   position_market_mismatch: 'the position is not in this window’s market', extension_error: 'the extension refused the request',
   extension_unreachable: 'the extension background did not answer', page_read_failed: 'the Jupiter page could not be read',
   no_reply: 'no reply from the Jupiter tab', still_listed: 'the position is still listed',
+  market_mismatch: 'the Jupiter tab is showing another market', mode_not_classic: 'the Jupiter page is not in Classic mode',
+  page_busy: 'the Jupiter page is busy with another request', size_button_unavailable: 'the page’s size button is unavailable (no balance read yet?)',
+  amount_not_set: 'the page did not fill in an amount', amount_not_accepted: 'the page did not accept the three-quarter amount',
+  amount_rejected: 'the page rejected the amount', side_disabled: 'the page has that button disabled',
+  recently_opened: 'an entry was pressed moments ago', order_form_not_found: 'the order form is not visible on the Jupiter tab',
+  position_not_seen: 'no new position was listed', invalid_request: 'the request was not valid', pending: 'an entry request is already out',
+  amount_unexpected: 'the amount the page showed was not the chosen share of the balance', balance_unreadable: 'the available balance could not be read',
+  too_slow: 'the Jupiter page took too long to accept the size (is its tab hidden?)', page_changed: 'the Jupiter page changed market or mode',
   page_unreadable: 'the Jupiter page can no longer be read',
 };
 const TRANSIENT = new Set(['page_timeout', 'page_unreachable', 'page_no_reply', 'extension_unreachable']);
@@ -49,10 +59,14 @@ const voteName = vote => vote === null || vote === undefined ? 'warming' : vote 
 const clock = ms => new Date(ms).toLocaleTimeString(undefined, { hour12: false });
 const windowLabel = seconds => seconds >= 60 && seconds % 60 === 0 ? `${seconds / 60}m` : `${seconds}s`;
 
-const seconds = new SecondBars(), book = new ScoreBook(), slopeHistory = new SlopeHistory(), guard = new ExitGuard();
+const seconds = new SecondBars(), book = new ScoreBook(), slopeHistory = new SlopeHistory(), slopeScore = new SlopeScore();
+const guard = new ExitGuard(), entry = new EntryTracker(), events = [];
 let feed, latest = null, lastQuoteMs = 0, view = null, disposed = false, drawQueued = false, barsVersion = 0, drawnVersion = -1;
 let attached = false, pageState = { ok: false, reason: 'not_started' }, positions = [], polling = false, lastPollMs = 0, closing = false;
-let settings = { mode: 'alert', drafts: {} }, audio = null, priceLines = [], lastStatus = '';
+// Only these are remembered between windows. Unlock, Confirm and the size are never stored:
+// every window starts locked, confirming and at a quarter, whatever the last one was left at.
+const DEFAULT_SETTINGS = Object.freeze({ mode: 'alert', unit: 'bp', takeProfit: '', stopLoss: '' });
+let settings = { ...DEFAULT_SETTINGS }, audio = null, priceLines = [], lastStatus = '', opening = false, logCount = -1;
 let lastFeedStartMs = 0, unprotectedAlertMs = 0, reportedLive = null, releaseLock = null, readoutError = '';
 
 /* ------------------------------------------------------------------ chart -- */
@@ -100,7 +114,7 @@ function drawPriceLines() {
   const position = selectedPosition();
   const snap = guard.snapshot();
   const active = LIVE_STATES.includes(snap.state);
-  const levels = active ? snap.levels : { takeProfit: parseLevel($('guard-tp').value), stopLoss: parseLevel($('guard-sl').value) };
+  const levels = active ? snap.levels : fieldLevels(position);
   const add = (price, color, title, style = LineStyle.Solid) => {
     if (numeric(price) && price > 0) priceLines.push(candles.createPriceLine({ price, color, title, lineWidth: 1, lineStyle: style, axisLabelVisible: true }));
   };
@@ -139,10 +153,19 @@ function drawRibbon() {
 /* ------------------------------------------------------------- read-outs -- */
 
 const tileNodes = new Map();
+const pct = value => `${(value * 100).toFixed(1)}%`;
+/** The hover text of a tile: what it measures, how it votes and how it did on its own. */
+function tileHelp(tile) {
+  const hit = tile.hit ?? {};
+  const record = ['train', 'valid', 'test'].every(part => numeric(hit[part]))
+    ? ` Followed on its own over the next 30 seconds it was right ${pct(hit.train)}, ${pct(hit.valid)} and ${pct(hit.test)} of the time on the three slices of the base recording${numeric(hit.live) ? `, and ${pct(hit.live)} on the short live check` : ''}.`
+    : '';
+  return `${tile.label}. ${tile.describe} It votes up (green) when the reading is positive and down (red) when negative; grey is neutral.${record} Needs ${tile.need} closed one-second bars.`;
+}
 function buildTiles() {
   for (const tile of TILES) {
     const node = document.createElement('div');
-    node.className = 'tile'; node.setAttribute('role', 'listitem'); node.dataset.vote = 'warming'; node.title = tile.describe;
+    node.className = 'tile'; node.setAttribute('role', 'listitem'); node.dataset.vote = 'warming'; node.title = tileHelp(tile);
     const name = document.createElement('span'); name.className = 'name'; name.textContent = tile.label;
     const value = document.createElement('span'); value.className = 'value'; value.textContent = 'warming';
     node.append(name, value); $('tiles').append(node); tileNodes.set(tile.key, { node, value });
@@ -162,7 +185,7 @@ function drawTiles() {
     const { node, value } = tileNodes.get(tile.key);
     node.dataset.vote = voteName(tile.ready ? tile.vote : null);
     value.textContent = tileText(tile);
-    node.setAttribute('aria-label', `${tile.label}: ${tile.ready ? `${voteName(tile.vote)}, ${tileText(tile)}` : 'warming up'}`);
+    node.setAttribute('aria-label', `${tile.label}: ${tile.ready ? `${voteName(tile.vote)}, ${tileText(tile)}` : 'warming up'}. ${tile.describe}`);
   }
   const call = view?.call;
   $('tiles-count').textContent = call ? `${call.up} up · ${call.down} down · ${call.flat} flat` : '';
@@ -173,24 +196,27 @@ function buildSlopes() {
   for (const row of SCALP_MODEL.slopes) {
     const tr = document.createElement('tr'); tr.dataset.state = 'warming';
     const head = document.createElement('th'); head.scope = 'row'; head.textContent = windowLabel(row.window_s);
-    const cells = ['slope', 'slopeRange', 'change', 'changeRange', 'held', 'runs'].map(key => {
-      const td = document.createElement('td'); td.dataset.cell = key; if (key.endsWith('Range')) td.className = 'range'; if (key === 'runs') td.className = 'runs'; return td;
+    const cells = ['slope', 'slopeRange', 'change', 'changeRange', 'held', 'runs', 'hit'].map(key => {
+      const td = document.createElement('td'); td.dataset.cell = key; if (key.endsWith('Range')) td.className = 'range'; if (key === 'runs') td.className = 'runs';
+      if (key === 'hit') { td.className = 'hit'; const gauge = document.createElement('span'); gauge.className = 'gauge'; gauge.append(document.createElement('i')); const text = document.createElement('span'); td.append(gauge, text); }
+      return td;
     });
     const pct = stat => stat ? `${(stat.hit * 100).toFixed(1)}%` : 'n/a';
-    tr.title = `Recorded baseline for the ${windowLabel(row.window_s)} slope: it kept its sign ${row.runs.mean_s.toFixed(1)} s on average and ${row.runs.max_s.toFixed(0)} s at most `
+    head.title = `Recorded baseline for the ${windowLabel(row.window_s)} slope: it kept its sign ${row.runs.mean_s.toFixed(1)} s on average and ${row.runs.max_s.toFixed(0)} s at most `
       + `(${row.runs.count.toLocaleString()} runs). Following the slope was right ${pct(row.slope)} over the next 30 s; ${pct(row.accelerating)} while it steepened, ${pct(row.fading)} while it faded.`;
     tr.append(head, ...cells); $('slopes').tBodies[0].append(tr);
     slopeRows.set(row.window_s, { tr, cells: Object.fromEntries(cells.map(td => [td.dataset.cell, td])) });
   }
 }
 function drawSlopes() {
-  const rows = view?.slopes ?? readSlopes([]), stats = new Map(slopeHistory.stats().map(entry => [entry.window, entry]));
+  const rows = view?.slopes ?? readSlopes([]), stats = new Map(slopeHistory.stats().map(row => [row.window, row])), scores = slopeScore.stats();
   for (const row of rows) {
     const { tr, cells } = slopeRows.get(row.window), history = stats.get(row.window);
     tr.dataset.state = row.state;
     if (!row.ready) {
       cells.slope.textContent = `${row.have}/${row.window}s`; delete cells.slope.dataset.vote; delete cells.change.dataset.vote;
       for (const key of ['slopeRange', 'change', 'changeRange', 'held', 'runs']) cells[key].textContent = '—';
+      drawGauge(cells.hit, null, row);
       continue;
     }
     cells.slope.dataset.vote = voteName(row.slopeVote);
@@ -207,7 +233,19 @@ function drawSlopes() {
     cells.runs.textContent = history?.runs.count ? `${history.runs.meanS.toFixed(0)} / ${history.runs.maxS}s` : 'none yet';
     cells.runs.title = history?.runs.count ? `${history.runs.count} completed runs this session. Up: ${history.runs.up.count ? `${history.runs.up.meanS.toFixed(0)} s avg, ${history.runs.up.maxS} s max` : 'none'}. `
       + `Down: ${history.runs.down.count ? `${history.runs.down.meanS.toFixed(0)} s avg, ${history.runs.down.maxS} s max` : 'none'}.` : 'No completed slope run yet in this session';
+    drawGauge(cells.hit, scores.get(row.window), row);
   }
+}
+
+/** The running-accuracy cell of a ladder row: a bar centred on 50% and the count behind it. */
+function drawGauge(cell, score, row) {
+  const [gauge, text] = cell.children, rate = score?.rate ?? null;
+  gauge.firstElementChild.style.width = `${rate === null ? 0 : Math.round(rate * 100)}%`;
+  gauge.dataset.vote = rate === null ? 'flat' : rate >= 0.52 ? 'up' : rate <= 0.48 ? 'down' : 'flat';
+  text.textContent = rate === null ? '—' : `${Math.round(rate * 100)}% · ${score.n}`;
+  const baseline = row.measured?.slope ? ` Recorded baseline for this window: ${(row.measured.slope.hit * 100).toFixed(1)}%.` : '';
+  cell.title = rate === null ? `No ${windowLabel(row.window)} slope call has settled yet: each needs 30 seconds.${baseline}`
+    : `${score.hit} of ${score.n} settled ${windowLabel(row.window)} slope calls in the last ten minutes matched the move over the next 30 seconds.${baseline} Seconds overlap, so this is a gauge and not a trade record.`;
 }
 
 function drawCall(live) {
@@ -240,11 +278,14 @@ function drawCall(live) {
     if (numeric(view.sigma)) detail += ` Typical 30 s move now: ±${(SCALP_MODEL.cone.p50 * view.sigma * Math.sqrt(HORIZON_S)).toFixed(1)} bp.`;
   }
   section.dataset.direction = direction; section.dataset.tier = tier;
-  $('call-arrow').textContent = mark; $('call-text').textContent = text; $('call-detail').textContent = detail;
-  const stats = book.stats(), rate = row => `${row.hit} of ${row.n} (${(row.rate * 100).toFixed(0)}%)`;
-  $('call-score').textContent = stats.all.n
-    ? `This session: ${stats.strong.n ? `strong calls right ${rate(stats.strong)}, ` : ''}all calls right ${rate(stats.all)}. Seconds overlap, so treat it as a rough guide.`
-    : 'No settled calls yet in this session.';
+  $('call-arrow').textContent = mark; $('call-text').textContent = text;
+  // The explanation lives in the hover text; the line under the call keeps only the numbers.
+  section.title = `${detail} The call is the net vote of the sixteen readings below for the next 30 seconds. It is a lean: the 1000x payout needs a hit rate far above these figures.`;
+  $('call-meta').textContent = !live || readoutError || !call?.ready ? ''
+    : `${call.up}▲ ${call.down}▼ of ${call.total} · recorded ${percent(call.measured)}${call.measured.live ? ` · live check ${percent(call.measured.live)} ± ${(call.measured.live.hit_se * 100).toFixed(1)}` : ''}`
+      + `${numeric(view.sigma) ? ` · typical move ±${(SCALP_MODEL.cone.p50 * view.sigma * Math.sqrt(HORIZON_S)).toFixed(1)} bp` : ''}`;
+  const stats = book.stats(), rate = row => `${row.hit}/${row.n} ${(row.rate * 100).toFixed(0)}%`;
+  $('call-score').textContent = stats.all.n ? `session: ${stats.strong.n ? `strong ${rate(stats.strong)} · ` : ''}all ${rate(stats.all)}` : '';
   return { mark, text };
 }
 
@@ -266,6 +307,24 @@ const selectedPosition = () => positions.find(position => positionKey(position) 
 const currentPrice = () => latest?.quote && quoteFresh(latest.quote, Date.now()) ? latest.quote.price : null;
 const mode = () => document.querySelector('input[name="guard-mode"]:checked').value;
 const decimalsOf = position => Math.max(4, (/\.(\d+)$/.exec(position?.entryText ?? '')?.[1].length) ?? 4);
+const unit = () => $('guard-unit').value;
+const size = () => Number(document.querySelector('input[name="entry-size"]:checked').value);
+const form = () => pageState?.ok ? pageState.form ?? null : null;
+/** The fields read as price levels for a position; null for an empty or unusable field. */
+const fieldLevels = position => {
+  const levels = resolveLevels({ unit: unit(), takeProfitText: $('guard-tp').value, stopLossText: $('guard-sl').value, position });
+  return { takeProfit: levels.takeProfit, stopLoss: levels.stopLoss };
+};
+/** Leverage the levels are judged against: the selected position's, else what the page's form shows. */
+const planLeverage = () => selectedPosition()?.leverage ?? form()?.leverage ?? null;
+const note = (event, detail = {}) => {
+  events.push({ at: Date.now(), event, ...detail });
+  if (events.length > 60) events.shift();
+  void chrome.storage.local.get(LOG_STORAGE).then(stored => {
+    const log = Array.isArray(stored[LOG_STORAGE]) ? stored[LOG_STORAGE] : [];
+    return chrome.storage.local.set({ [LOG_STORAGE]: [...log, { ...events.at(-1), symbol: SYMBOL }].slice(-200) });
+  }).catch(() => {});
+};
 
 async function persist() {
   try { await chrome.storage.local.set({ [STORAGE]: settings }); } catch { /* the guard still runs; only the draft is lost */ }
@@ -334,6 +393,13 @@ async function pollPositions() {
     const listed = readable ? pageState.positions : null;
     positions = readable ? listed.filter(position => position.coin === SYMBOL) : positions;
     const change = guard.onPositions(listed, Date.now(), readable && !pageState.pending && !pageState.unreadable);
+    {
+      // Every poll, readable or not: the wait for a new position must end even when the page cannot be read.
+      const whole = readable && !pageState.pending && !pageState.unreadable, was = entry.snapshot().state;
+      const opened = entry.onPositions({ positions: whole ? listed : null, coin: SYMBOL, keyOf: positionKey, nowMs: Date.now() });
+      if (opened) onOpened(opened);
+      else if (was === 'sent' && entry.snapshot().state === 'unseen') { note('entry-unseen', {}); alertOwner(`${SYMBOL} entry not confirmed`, 'No new position was listed within 60 seconds. Check your wallet and the Jupiter tab.'); }
+    }
     if (change) {
       void record(guard.snapshot());
       if (change === 'closed') alertOwner(`${SYMBOL} position closed`, 'It left the Jupiter list. Check History for the fill.');
@@ -358,13 +424,18 @@ function drawPositions() {
       return option;
     }));
     if (keys.includes(keep)) select.value = keep;
-    restoreDraft();
   }
   const readable = pageState?.ok && pageState.recognized;
   $('guard-page').textContent = !attached ? 'Open this window from the “1s scalp” button on the Jupiter 1000x tab to use the guard.'
     : !readable ? `Cannot read positions: ${reasonText(pageState?.reason)}.`
       : positions.length ? `${positions.length} open ${SYMBOL} position${positions.length > 1 ? 's' : ''} on the Jupiter tab.`
         : `No open ${SYMBOL} position is listed on the Jupiter tab${pageState.pending ? ' (one is still opening)' : ''}.`;
+  const order = form();
+  if (attached && readable) {
+    $('guard-page').textContent += !order?.recognized ? ' Order form not readable.'
+      : order.market !== SYMBOL ? ` The Jupiter tab is on ${order.market || 'another market'}.`
+        : ` Available ${order.balanceText ?? 'n/a'} · page leverage ${order.leverage ? `${order.leverage.toLocaleString()}×` : 'n/a'} · ${order.mode ?? 'mode n/a'}.`;
+  }
   if (readable && pageState.unreadable) $('guard-page').textContent += ` ${pageState.unreadable} listed row${pageState.unreadable > 1 ? 's' : ''} could not be read (${pageState.problems.map(reasonText).join(', ')}).`;
   const position = selectedPosition();
   $('guard-position-detail').textContent = position
@@ -372,22 +443,30 @@ function drawPositions() {
     : '';
 }
 
+/** The computed line under a level field: its price or distance and the page formula's estimate. */
 function levelNote(position, text, kind) {
   if (!text.trim()) return kind === 'tp' ? 'No take profit.' : 'No stop loss.';
+  const bp = unit() === 'bp', leverage = planLeverage();
+  if (bp) {
+    const distance = parseDistance(text);
+    if (distance === null) return 'Enter a distance in basis points, for example 10.';
+    const move = (kind === 'tp' ? 1 : -1) * distance;
+    // Before a position exists the estimate uses a unit entry: the formula depends only on the move.
+    const estimate = leverage ? payoutPercent({ entry: 1e6, mark: 1e6 * (1 + move / 1e4), side: 'long', leverage }) : null;
+    let text2 = position ? `at ${(position.entry * (1 + (position.side === 'long' ? 1 : -1) * move / 1e4)).toFixed(decimalsOf(position))}` : 'from the fill';
+    if (estimate) text2 += estimate.liquidated ? ' · beyond bust' : ` · est. ${signed(estimate.percent, 0)}%`;
+    if (kind === 'sl' && leverage) text2 += ` · ${Math.round(distance / (bustFraction(leverage) * 1e4) * 100)}% to bust`;
+    return text2;
+  }
   const level = parseLevel(text);
   if (level === null) return 'Enter a plain price, for example 71.85.';
-  if (!position) return '';
+  if (!position) return 'Price levels need an open position.';
   const favourable = (position.side === 'long' ? 1 : -1) * (level / position.entry - 1) * 1e4;
   const estimate = payoutPercent({ entry: position.entry, mark: level, side: position.side, leverage: position.leverage });
-  let note = `${signed(favourable, 1)} bp from entry`;
-  if (estimate) note += estimate.liquidated ? ' · beyond bust' : ` · est. ${signed(estimate.percent, 0)}% of collateral`;
-  if (kind === 'sl' && numeric(position.bust)) note += ` · ${Math.round(Math.abs(level - position.entry) / Math.abs(position.bust - position.entry) * 100)}% of the way to bust`;
-  return note;
-}
-
-function restoreDraft() {
-  const draft = settings.drafts[$('guard-position').value];
-  if (draft && guard.snapshot().state === 'idle') { $('guard-tp').value = draft.takeProfit ?? ''; $('guard-sl').value = draft.stopLoss ?? ''; }
+  let text2 = `${signed(favourable, 1)} bp from entry`;
+  if (estimate) text2 += estimate.liquidated ? ' · beyond bust' : ` · est. ${signed(estimate.percent, 0)}%`;
+  if (kind === 'sl' && numeric(position.bust)) text2 += ` · ${Math.round(Math.abs(level - position.entry) / Math.abs(position.bust - position.entry) * 100)}% to bust`;
+  return text2;
 }
 
 /** Tell the worker when a guard is live, and hold a Web Lock so Chrome does not freeze this window under it. */
@@ -407,11 +486,12 @@ function drawGuard() {
   reportLive(busy);
   $('guard-badge').textContent = { idle: 'Disarmed', armed: snap.mode === 'close' ? 'Armed · will press Close' : 'Armed · alert only', triggered: 'Triggered',
     clicked: 'Close pressed', closed: 'Closed', alerted: 'Level reached', unconfirmed: 'Not confirmed', failed: 'Failed' }[snap.state];
-  for (const id of ['guard-position', 'guard-tp', 'guard-sl']) $(id).disabled = busy;
+  for (const id of ['guard-position', 'guard-tp', 'guard-sl', 'guard-unit']) $(id).disabled = busy;
   for (const input of document.querySelectorAll('input[name="guard-mode"], .chips button')) input.disabled = busy;
+  drawEntry(busy);
   $('guard-arm').hidden = busy; $('guard-disarm').hidden = !busy; $('guard-disarm').disabled = snap.state !== 'armed';
   $('guard-arm').disabled = !attached || !position;
-  $('guard-arm').textContent = mode() === 'close' ? 'Arm · press Close at the level' : 'Arm · alert only';
+  $('guard-arm').textContent = mode() === 'close' ? 'Arm · press Close' : 'Arm · alert only';
   $('guard-show').disabled = !attached;
   $('guard-tp-note').textContent = levelNote(position, $('guard-tp').value, 'tp');
   $('guard-sl-note').textContent = levelNote(position, $('guard-sl').value, 'sl');
@@ -431,11 +511,12 @@ function drawGuard() {
   else if (snap.state === 'unconfirmed') status = `Close was pressed but ${snap.note === 'page_unreadable' ? 'the Jupiter page can no longer be read, so the outcome is unknown' : 'the position is still listed'}. Check the wallet prompt and the Jupiter tab. The guard will not press again.`;
   else status = `COULD NOT CLOSE: ${reasonText(snap.note)}. The position may still be open; act on the Jupiter tab.`;
   if (status !== lastStatus) { $('guard-status').textContent = status; lastStatus = status; }
-  const list = $('guard-log').querySelector('ol');
-  if (list.childElementCount !== snap.journal.length) {
-    list.replaceChildren(...snap.journal.map(entry => {
+  const merged = [...snap.journal, ...events].sort((a, b) => a.at - b.at);
+  if (merged.length !== logCount) {
+    logCount = merged.length;
+    $('guard-log').querySelector('ol').replaceChildren(...merged.map(row => {
       const item = document.createElement('li');
-      const { at, event, ...rest } = entry;
+      const { at, event, ...rest } = row;
       item.textContent = `${clock(at)} ${event} ${Object.entries(rest).filter(([, value]) => value !== null && value !== undefined).map(([key, value]) => `${key}=${value}`).join(' ')}`;
       return item;
     }));
@@ -446,14 +527,9 @@ function drawGuard() {
 function arm(event) {
   if (!event.isTrusted) return;
   const errors = [], position = selectedPosition();
-  const read = (id, label) => {
-    const text = $(id).value;
-    if (!text.trim()) return null;
-    const level = parseLevel(text);
-    if (level === null) errors.push(`${label} is not a plain price.`);
-    return level;
-  };
-  const takeProfit = read('guard-tp', 'Take profit'), stopLoss = read('guard-sl', 'Stop loss');
+  const levels = resolveLevels({ unit: unit(), takeProfitText: $('guard-tp').value, stopLossText: $('guard-sl').value, position });
+  errors.push(...(position ? levels.errors : []));
+  const { takeProfit, stopLoss } = levels;
   if (position && positions.filter(row => positionKey(row) === positionKey(position)).length !== 1) {
     errors.push('Two listed positions look identical (same market, side, leverage and entry), so the guard could not tell them apart.');
   }
@@ -464,9 +540,7 @@ function arm(event) {
     const result = guard.arm({ position, price: currentPrice(), takeProfit, stopLoss, mode: mode(), nowMs: Date.now() });
     errors.push(...result.errors);
     if (result.ok) {
-      settings.mode = mode();
-      settings.drafts = { [positionKey(position)]: { takeProfit: $('guard-tp').value.trim(), stopLoss: $('guard-sl').value.trim() } };
-      void persist(); void record(guard.snapshot());
+      saveSettings(); void record(guard.snapshot());
       // Arming is the gesture that lets the alert sound play later.
       try { audio ??= new AudioContext(); void audio.resume(); } catch { /* no audio device */ }
     }
@@ -476,14 +550,143 @@ function arm(event) {
 }
 
 function fillLevel(button) {
-  const position = selectedPosition(), price = currentPrice();
-  if (!position || price === null) { $('guard-errors').textContent = 'Select a position and wait for a live price first.'; return; }
-  const digits = decimalsOf(position), long = position.side === 'long';
-  if (button.dataset.tp) $('guard-tp').value = (price * (1 + (long ? 1 : -1) * Number(button.dataset.tp) / 1e4)).toFixed(digits);
-  else if (!numeric(position.bust)) { $('guard-errors').textContent = 'The bust price could not be read from the page.'; return; }
-  else $('guard-sl').value = (price + Number(button.dataset.sl) * (position.bust - price)).toFixed(digits);
   $('guard-errors').textContent = '';
+  if (button.dataset.clear) {
+    if (button.dataset.clear !== 'sl') $('guard-tp').value = '';
+    if (button.dataset.clear !== 'tp') $('guard-sl').value = '';
+  } else if (unit() === 'bp') {
+    const leverage = planLeverage();
+    if (button.dataset.tp) $('guard-tp').value = button.dataset.tp;
+    else if (!leverage) $('guard-errors').textContent = 'The leverage could not be read from the Jupiter page, so the bust distance is unknown.';
+    else $('guard-sl').value = (Number(button.dataset.sl) * bustFraction(leverage) * 1e4).toFixed(2);
+  } else {
+    const position = selectedPosition(), price = currentPrice();
+    if (!position || price === null) $('guard-errors').textContent = 'Price levels need an open position and a live price.';
+    else if (button.dataset.tp) $('guard-tp').value = (price * (1 + (position.side === 'long' ? 1 : -1) * Number(button.dataset.tp) / 1e4)).toFixed(decimalsOf(position));
+    else if (!numeric(position.bust)) $('guard-errors').textContent = 'The bust price could not be read from the page.';
+    else $('guard-sl').value = (price + Number(button.dataset.sl) * (position.bust - price)).toFixed(decimalsOf(position));
+  }
+  saveSettings();
   drawGuard();
+}
+
+/* ------------------------------------------------------------------ entry -- */
+
+function saveSettings() {
+  settings = { mode: mode(), unit: unit(), takeProfit: $('guard-tp').value.trim(), stopLoss: $('guard-sl').value.trim() };
+  void persist();
+}
+
+/** Why Long or Short cannot be pressed right now, or '' when they can. */
+function entryBlock(guardLive) {
+  const order = form();
+  if (!attached) return 'Open this window from the Jupiter 1000x tab.';
+  if (!$('entry-unlock').checked) return 'Tick Unlock to enable Long and Short.';
+  if (guardLive) return 'A take profit or stop loss is live. Disarm it first.';
+  if (entry.pending || opening) return 'An entry request is out.';
+  // The new position is found by comparing the list before and after, so the list must be whole now.
+  if (!pageState?.ok || !pageState.recognized) return `Cannot read the positions list: ${reasonText(pageState?.reason)}. Show the Positions tab on the Jupiter page.`;
+  if (pageState.pending || pageState.unreadable) return 'A listed position is still opening or could not be read.';
+  if (!order?.recognized) return `Cannot read the order form: ${reasonText(order?.reason ?? pageState?.reason)}.`;
+  if (order.market !== SYMBOL) return `The Jupiter tab is on ${order.market || 'another market'}, not ${SYMBOL}.`;
+  if (order.mode !== 'Classic') return 'Switch the Jupiter page to Classic mode.';
+  if (!order.leverage) return 'The page’s leverage could not be read.';
+  if (currentPrice() === null) return 'No fresh price.';
+  return '';
+}
+
+function drawEntry(guardLive) {
+  const snap = entry.snapshot(), block = entryBlock(guardLive), order = form();
+  const label = { 0.25: '¼', 0.5: '½', 0.75: '¾', 1: 'all' };
+  for (const side of ['long', 'short']) {
+    const button = $(`entry-${side}`), confirming = snap.state === 'confirming' && snap.request.side === side;
+    button.disabled = Boolean(block) || (order?.recognized && !order[`${side}Enabled`]);
+    // A disabled button says why on hover, ahead of its standing description.
+    button.dataset.help ??= button.title;
+    const why = block || (button.disabled ? `The Jupiter page has its ${side} button disabled.` : '');
+    button.title = why ? `${why} — ${button.dataset.help}` : button.dataset.help;
+    button.toggleAttribute('data-confirming', confirming);
+    button.textContent = confirming ? `Confirm ${side} ${label[snap.request.fraction]}` : side;
+  }
+  for (const input of document.querySelectorAll('input[name="entry-size"]')) input.disabled = entry.pending || opening;
+  const request = snap.request, status = $('entry-status');
+  status.dataset.state = snap.state;
+  status.textContent = snap.state === 'confirming' ? `Press ${request.side} again within 4 s to open ${label[request.fraction]} of the available funds at the page’s ${order?.leverage ? `${order.leverage.toLocaleString()}×` : 'leverage'}.`
+    : snap.state === 'sent' ? (request.uncertain
+      ? `The Jupiter tab did not answer (${reasonText(snap.note)}), so the ${request.side} may or may not have been pressed. Check the Jupiter tab; watching for a new position.`
+      : request.clickedAt
+        ? `${request.side} pressed for ${request.amountText ?? '?'} at ${request.leverage ? `${request.leverage.toLocaleString()}×` : 'the page’s leverage'}. Approve in your wallet if it asks; waiting for the position to be listed.`
+        : `Asking the Jupiter page to open a ${request.side}…`)
+      : snap.state === 'opened' ? `Opened ${request.side}. ${guard.snapshot().state === 'armed' ? 'Levels armed from its entry.' : 'No take profit or stop loss is armed.'}`
+        : snap.state === 'unseen' ? `No new ${request.side} was listed within 60 s. Check the wallet prompt and the Jupiter tab; a position listed in the next ten minutes still gets its levels.`
+          : snap.state === 'failed' ? `NOT OPENED: ${reasonText(snap.note)}. The page’s ${request.side} button was not pressed.`
+            : block && $('entry-unlock').checked ? block : '';
+}
+
+async function pressSide(event) {
+  // detail counts clicks in one burst: the second half of a double-click is not a new decision.
+  if (!event.isTrusted || event.detail > 1 || opening) return;
+  const side = event.currentTarget.dataset.side, errors = [], guardLive = LIVE_STATES.includes(guard.snapshot().state);
+  const block = entryBlock(guardLive);
+  if (block) errors.push(block);
+  const takeProfitText = $('guard-tp').value.trim(), stopLossText = $('guard-sl').value.trim();
+  // A new position has no entry until it fills, so its levels must be distances.
+  if ((takeProfitText || stopLossText) && unit() !== 'bp') errors.push('A new position needs its levels as distances: switch “as” to bp from entry, or clear them.');
+  const takeProfitBps = takeProfitText ? parseDistance(takeProfitText) : null, stopLossBps = stopLossText ? parseDistance(stopLossText) : null;
+  if (takeProfitText && takeProfitBps === null) errors.push('Take profit is not a plain distance in basis points.');
+  if (stopLossText && stopLossBps === null) errors.push('Stop loss is not a plain distance in basis points.');
+  const order = form(), leverage = order?.leverage ?? null;
+  if (!errors.length) {
+    errors.push(...validateEntry({ side, fraction: size(), takeProfitBps, stopLossBps, bustBps: leverage ? bustFraction(leverage) * 1e4 : null,
+      form: order, guardLive, pending: entry.pending }).errors);
+  }
+  $('guard-errors').textContent = errors.join(' ');
+  if (errors.length) { drawGuard(); return; }
+  const before = (pageState.positions ?? []).map(positionKey);
+  const step = entry.begin({ side, fraction: size(), takeProfitBps, stopLossBps, mode: mode(), before, confirm: $('entry-confirm').checked, nowMs: Date.now() });
+  saveSettings();
+  try { audio ??= new AudioContext(); void audio.resume(); } catch { /* no audio device */ }
+  if (!step.send) { drawGuard(); return; }
+  opening = true;
+  note('entry-requested', { side, fraction: size(), takeProfitBps, stopLossBps, mode: mode() });
+  drawGuard();
+  try {
+    // One request, never repeated: a missing reply is reported, and the owner checks the Jupiter tab.
+    const reply = await send('openPosition', { side, fraction: size() });
+    entry.onReply(reply?.ok === false ? { clicked: false, reason: reply.reason } : reply, Date.now());
+    const snap = entry.snapshot();
+    if (snap.state === 'failed') { note('entry-failed', { reason: snap.note, detail: reply?.detail }); alertOwner(`${SYMBOL} ${side} was not opened`, `Reason: ${reasonText(snap.note)}.`); }
+    else if (snap.request.uncertain) { note('entry-unknown', { reason: snap.note }); alertOwner(`${SYMBOL} ${side}: outcome unknown`, 'The Jupiter tab did not answer. Check it: the position may have opened.'); }
+    else note('entry-pressed', { side, amount: snap.request.amountText, leverage: snap.request.leverage });
+  } finally {
+    opening = false;
+    drawGuard();
+  }
+}
+
+/** A position this window opened has been listed: select it and arm its levels from the real entry. */
+function onOpened({ position, request }) {
+  note('entry-listed', { key: positionKey(position), entry: position.entryText });
+  positions = pageState.positions.filter(row => row.coin === SYMBOL);
+  drawPositions();
+  $('guard-position').value = positionKey(position);
+  if (request.takeProfitBps === null && request.stopLossBps === null) { alertOwner(`${SYMBOL} ${request.side} opened`, `Entry ${position.entryText}. No take profit or stop loss is armed.`); return; }
+  const levels = resolveLevels({ unit: 'bp', takeProfitText: request.takeProfitBps === null ? '' : String(request.takeProfitBps),
+    stopLossText: request.stopLossBps === null ? '' : String(request.stopLossBps), position });
+  const result = levels.errors.length ? { ok: false, errors: levels.errors }
+    // Price may already be past a level set before the fill. Arm anyway and let the next line act on it.
+    : guard.arm({ position, price: currentPrice(), takeProfit: levels.takeProfit, stopLoss: levels.stopLoss, mode: request.mode, allowCrossed: true, nowMs: Date.now() });
+  if (result.ok) {
+    void record(guard.snapshot());
+    alertOwner(`${SYMBOL} ${request.side} opened`, `Entry ${position.entryText}. Levels armed (${request.mode === 'close' ? 'will press Close' : 'alert only'}).`);
+    if (latest?.quote) handleGuard(guard.onQuote(latest.quote, Date.now()));
+  }
+  else {
+    // The position is open with no protection: say so as loudly as a failed close.
+    $('guard-errors').textContent = `The position opened but its levels could not be armed: ${result.errors.join(' ')}`;
+    note('arm-failed', { reason: result.errors.join(' ') });
+    alertOwner(`${SYMBOL} ${request.side} opened WITHOUT its levels`, result.errors.join(' '));
+  }
 }
 
 /* ------------------------------------------------------------------- loop -- */
@@ -495,6 +698,7 @@ function onClosed(count) {
     const tiles = readTiles(prefix), call = scalpCall(tiles), slopes = readSlopes(prefix);
     book.observe(prefix.at(-1), call);
     slopeHistory.observe(slopes);
+    slopeScore.observe(prefix.at(-1), slopes);
     if (k === 1) view = { tiles, call, slopes, sigma: realizedVolBps(bars, 30) };
   }
   barsVersion++;
@@ -509,11 +713,11 @@ function onUpdate(snapshot) {
     handleGuard(guard.onQuote(quote, Date.now()));
     try {
       const closed = seconds.push(quote);
-      if (closed === -1) { book.reset(); slopeHistory.reset(); view = null; barsVersion++; }
+      if (closed === -1) { book.reset(); slopeHistory.reset(); slopeScore.reset(); view = null; barsVersion++; }
       else if (closed > 0) onClosed(closed);
       readoutError = '';
     } catch (error) {
-      seconds.reset(); book.reset(); slopeHistory.reset(); view = null; barsVersion++;
+      seconds.reset(); book.reset(); slopeHistory.reset(); slopeScore.reset(); view = null; barsVersion++;
       readoutError = `The read-out failed and restarted (${String(error?.message ?? error).slice(0, 80)}). The guard is unaffected.`;
     }
     // Quotes keep arriving in a hidden window where timers are throttled; use them as the clock too.
@@ -535,7 +739,8 @@ function tick() {
   if (disposed) return;
   const now = Date.now(), snap = guard.snapshot();
   if (guard.onTimeout(now)) { void record(guard.snapshot()); alertOwner(`${SYMBOL} guard could not close`, 'The Close button stayed unavailable. The position may still be open.'); }
-  if (now - lastPollMs >= (snap.state === 'idle' ? 1000 : 400)) void pollPositions();
+  if (entry.onTick(now)) drawGuard();
+  if (now - lastPollMs >= (snap.state === 'idle' && !entry.pending ? 1000 : 400)) void pollPositions();
   if (feed && FEED_RESTART.has(latest?.error) && now - lastFeedStartMs >= 15_000) void startFeed();
   const unprotected = snap.state === 'armed' && (currentPrice() === null || (snap.mode === 'close' && !(pageState?.ok && pageState.recognized)));
   if (!unprotected) unprotectedAlertMs = 0;
@@ -575,20 +780,33 @@ $('api-attribution').textContent = `${POWERED_BY} — 1000x public catalog; Pyth
 buildTiles(); buildSlopes();
 try {
   const stored = (await chrome.storage.local.get(STORAGE))[STORAGE];
-  if (stored && typeof stored === 'object' && ['alert', 'close'].includes(stored.mode) && stored.drafts && typeof stored.drafts === 'object') settings = stored;
-} catch { /* defaults: alert only, no draft */ }
+  if (stored && typeof stored === 'object') {
+    settings = { mode: ['alert', 'close'].includes(stored.mode) ? stored.mode : 'alert', unit: ['bp', 'price'].includes(stored.unit) ? stored.unit : 'bp',
+      takeProfit: typeof stored.takeProfit === 'string' ? stored.takeProfit.slice(0, 24) : '', stopLoss: typeof stored.stopLoss === 'string' ? stored.stopLoss.slice(0, 24) : '' };
+  }
+} catch { /* defaults: alert only */ }
 document.querySelector(`input[name="guard-mode"][value="${settings.mode}"]`).checked = true;
+$('guard-unit').value = settings.unit;
+$('guard-tp').value = settings.takeProfit; $('guard-sl').value = settings.stopLoss;
 
 $('guard-arm').addEventListener('click', arm);
 $('guard-disarm').addEventListener('click', event => { if (event.isTrusted && guard.disarm('user', Date.now())) { void record(guard.snapshot()); drawGuard(); } });
 $('guard-show').addEventListener('click', () => void send('showJupiter'));
-$('guard-position').addEventListener('change', () => { restoreDraft(); drawPositions(); drawGuard(); });
-for (const id of ['guard-tp', 'guard-sl']) $(id).addEventListener('input', () => { $('guard-errors').textContent = ''; drawGuard(); });
-for (const input of document.querySelectorAll('input[name="guard-mode"]')) input.addEventListener('change', drawGuard);
+$('guard-position').addEventListener('change', () => { drawPositions(); drawGuard(); });
+for (const id of ['guard-tp', 'guard-sl']) $(id).addEventListener('input', () => { $('guard-errors').textContent = ''; saveSettings(); drawGuard(); });
+for (const input of document.querySelectorAll('input[name="guard-mode"], input[name="entry-size"], #entry-unlock, #entry-confirm, #guard-unit')) {
+  input.addEventListener('change', () => {
+    // A number typed as a price must not be re-read as a distance, or the reverse.
+    if (input.id === 'guard-unit') { $('guard-tp').value = ''; $('guard-sl').value = ''; }
+    entry.reset(); saveSettings(); drawGuard();
+  });
+}
+for (const side of ['long', 'short']) $(`entry-${side}`).addEventListener('click', pressSide);
 for (const button of document.querySelectorAll('.chips button')) button.addEventListener('click', () => fillLevel(button));
 // Closing the window ends the guard, so ask first while one is live.
 window.addEventListener('beforeunload', event => {
-  if (LIVE_STATES.includes(guard.snapshot().state)) { event.preventDefault(); event.returnValue = ''; }
+  // An entry that is out would open with nothing watching it if this window went away.
+  if (LIVE_STATES.includes(guard.snapshot().state) || entry.pending || opening) { event.preventDefault(); event.returnValue = ''; }
 });
 window.addEventListener('resize', drawRibbon);
 window.addEventListener('pagehide', () => { disposed = true; clearInterval(timer); releaseLock?.(); feed?.stop(); chart.remove(); }, { once: true });
