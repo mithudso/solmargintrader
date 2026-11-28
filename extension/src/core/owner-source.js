@@ -5,6 +5,7 @@ export const OWNER_SOURCE_FILES = [
   "vendor/lightweight-charts/lightweight-charts.standalone.production.mjs",
   "src/1000x/autotrade-view.js",
   "src/1000x/content.js",
+  "src/1000x/entry-plan.js",
   "src/1000x/exit-guard.js",
   "src/1000x/feed.js",
   "src/1000x/timeframes.js",

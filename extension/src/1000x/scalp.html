@@ -8,69 +8,103 @@
 </head>
 <body>
   <header>
-    <div class="title"><strong id="market">1s scalp</strong><span id="price">—</span><span class="tag" id="version"></span></div>
-    <p id="feed" role="status" aria-live="polite" data-state="connecting">Connecting to Jupiter…</p>
+    <div class="title"><strong id="market">1s scalp</strong><span id="price" title="Latest Jupiter Pyth oracle price for this market. Opens and closes fill against this feed, about two seconds after a request.">—</span><span class="tag" id="version" title="Version of the loaded extension."></span></div>
+    <p id="feed" role="status" aria-live="polite" data-state="connecting" title="State of the public oracle stream. One-second bars are built only from live ticks, so the read-outs need about 80 seconds after opening and after any gap of more than three seconds.">Connecting to Jupiter…</p>
   </header>
 
-  <section id="call" aria-labelledby="call-title" data-direction="flat" data-tier="warming">
-    <h2 id="call-title" class="sr-only">Next 30 seconds</h2>
-    <p id="call-main" role="status" aria-live="polite"><span id="call-arrow" aria-hidden="true">·</span> <span id="call-text">Warming up</span></p>
-    <p id="call-detail">Collecting one-second bars from the live oracle stream.</p>
-    <p id="call-score" class="muted">No settled calls yet in this session.</p>
-  </section>
+  <main>
+    <div class="readout">
+      <section id="call" aria-labelledby="call-title" data-direction="flat" data-tier="warming">
+        <h2 id="call-title" class="sr-only">Next 30 seconds</h2>
+        <p id="call-main" role="status" aria-live="polite"><span id="call-arrow" aria-hidden="true">·</span> <span id="call-text">Warming up</span></p>
+        <p id="call-meta" class="muted"></p>
+        <p id="call-score" class="muted" title="Calls made in this window that have settled: each second's call is scored against the price 30 seconds later. Seconds overlap heavily, so this is a rough guide and not a count of independent trades."></p>
+      </section>
 
-  <section aria-label="One-second price with the 30 second range">
-    <div id="chart" aria-label="One-second oracle candles for the last two and a half minutes, with the expected 30 second range drawn ahead of price"></div>
-    <canvas id="ribbon" width="440" height="26" role="img" aria-label="Calls for the last 120 seconds and how each turned out"></canvas>
-    <p class="legend">Strips: the call each second (<i class="up">■</i> up <i class="down">■</i> down <i class="flat">■</i> mixed), then <i class="up">■</i> right or <i class="down">■</i> wrong 30 s later. Lines ahead of price: where 68% and 90% of recorded 30 s moves ended.</p>
-  </section>
+      <section aria-label="One-second price with the 30 second range">
+        <div id="chart" title="One-second oracle candles for the last 150 seconds. Ahead of the last bar: a dashed centre line, solid lines inside which 68% of recorded 30 second moves ended, and dotted lines for 90%, all scaled by the last 30 seconds of volatility. Entry, bust, take profit and stop loss are drawn as price lines." aria-label="One-second oracle candles with the expected 30 second range drawn ahead of price"></div>
+        <canvas id="ribbon" width="440" height="26" role="img" title="Top strip: the call made each second for the last 120 seconds (green up, red down, grey mixed; lean calls are fainter). Bottom strip: whether that call was right 30 seconds later (green right, red wrong, dark not yet settled)." aria-label="Calls for the last 120 seconds and how each turned out"></canvas>
+      </section>
 
-  <section aria-labelledby="tiles-title">
-    <h2 id="tiles-title">Trend grid <span id="tiles-count" class="muted"></span></h2>
-    <div id="tiles" role="list"></div>
-  </section>
+      <section aria-labelledby="tiles-title">
+        <h2 id="tiles-title" title="Sixteen trend readings on closed one-second bars. Each votes up (green), down (red) or neutral (grey); dashed tiles are warming up. The call above is their net vote: 12 or more one way is strong, 6 to 11 is a lean, fewer is mixed. Hover a tile for its definition and its own record.">Trend grid <span id="tiles-count" class="muted"></span></h2>
+        <div id="tiles" role="list"></div>
+      </section>
 
-  <section aria-labelledby="slopes-title">
-    <h2 id="slopes-title">Slope ladder <span class="muted">bp per second · change in bp per second²</span></h2>
-    <table id="slopes">
-      <thead><tr><th scope="col">Window</th><th scope="col">Slope</th><th scope="col">Low / high</th><th scope="col">Change</th><th scope="col">Low / high</th><th scope="col">Held</th><th scope="col">Avg / max</th></tr></thead>
-      <tbody></tbody>
-    </table>
-    <p id="slopes-note" class="muted">Held: time this slope has kept its sign. Avg / max: completed runs before a reversal this session. Hover a row for the recorded baseline.</p>
-  </section>
-
-  <section id="guard" aria-labelledby="guard-title" data-state="idle">
-    <h2 id="guard-title">Take profit / stop loss <span id="guard-badge" class="tag">Disarmed</span></h2>
-    <p id="guard-page" class="muted">Reading positions from the Jupiter tab…</p>
-    <label class="row">Position <select id="guard-position" aria-describedby="guard-page"></select></label>
-    <p id="guard-position-detail" class="muted"></p>
-    <div class="levels">
-      <label>Take profit <input id="guard-tp" inputmode="decimal" autocomplete="off" placeholder="price" aria-describedby="guard-tp-note"></label>
-      <label>Stop loss <input id="guard-sl" inputmode="decimal" autocomplete="off" placeholder="price" aria-describedby="guard-sl-note"></label>
-      <p id="guard-tp-note" class="muted"></p>
-      <p id="guard-sl-note" class="muted"></p>
+      <section aria-labelledby="slopes-title">
+        <h2 id="slopes-title" title="A straight line and a parabola fitted to the closes of each window. Slope is in basis points of price per second; change is the slope's own rate of change in basis points per second squared. Hover a column title or a row for detail.">Slope ladder</h2>
+        <table id="slopes">
+          <thead><tr>
+            <th scope="col" title="Length of the window the line is fitted to: the last 5, 10, 20, 30 or 60 seconds, or 5 minutes. A row needs that many closed one-second bars before it shows a value.">Window</th>
+            <th scope="col" title="Least-squares slope of the closes in this window, in basis points of price per second. Green rising, red falling. The arrow is its sign.">Slope</th>
+            <th scope="col" title="Lowest and highest slope this window has shown in this session (up to the last hour).">Low / high</th>
+            <th scope="col" title="Second derivative: how fast the slope itself is changing, from a parabola fitted to the same window, in basis points per second squared. Green means the slope is increasing, red decreasing. When slope and change share a colour the move is steepening; when they differ it is fading.">Change</th>
+            <th scope="col" title="Lowest and highest change (second derivative) this window has shown in this session.">Low / high</th>
+            <th scope="col" title="How long this window's slope has kept its current sign. A ≥ means the run was already under way when the window opened or the feed last broke, so its true length is at least this.">Held</th>
+            <th scope="col" title="Time before a reversal: the average and the longest completed run of one slope sign in this session, timed from one sign flip to the next. Only runs with both ends observed are counted. Hover a row for the recorded baseline.">Avg / max</th>
+            <th scope="col" title="Running accuracy: of the seconds where this slope pointed up or down, the share where price then moved that way over the following 30 seconds, for calls settled in the last ten minutes. The bar is centred on 50%; n counts overlapping seconds, so read it as a gauge, not a trade record.">Hit</th>
+          </tr></thead>
+          <tbody></tbody>
+        </table>
+      </section>
     </div>
-    <div class="chips" role="group" aria-label="Fill a level from a distance">
-      <span class="muted">TP</span><button type="button" data-tp="5">+5 bp</button><button type="button" data-tp="10">+10 bp</button><button type="button" data-tp="20">+20 bp</button><button type="button" data-tp="50">+50 bp</button>
-      <span class="muted">SL</span><button type="button" data-sl="0.25">¼ to bust</button><button type="button" data-sl="0.5">½ to bust</button><button type="button" data-sl="0.75">¾ to bust</button>
-    </div>
-    <fieldset>
-      <legend>When a level is reached</legend>
-      <label><input type="radio" name="guard-mode" value="alert" checked> Alert me only</label>
-      <label><input type="radio" name="guard-mode" value="close"> Press Close on the Jupiter page</label>
-    </fieldset>
-    <div class="actions">
-      <button id="guard-arm" type="button">Arm</button>
-      <button id="guard-disarm" type="button" hidden>Disarm</button>
-      <button id="guard-show" type="button">Show Jupiter tab</button>
-    </div>
-    <p id="guard-errors" role="alert"></p>
-    <p id="guard-status" role="status" aria-live="assertive">Disarmed. Nothing is watched.</p>
-    <details id="guard-log"><summary>Guard log</summary><ol></ol></details>
-    <details id="guard-help"><summary>How the guard works and what it cannot do</summary><p class="muted">The guard watches the oracle price in this window and presses the page’s own Close button; Jupiter builds the close and your wallet signs it, so a wallet prompt may still need your approval. Closes fill at the oracle price about two seconds later with no price limit, and not before the 15 second minimum hold. It stops when this window closes.</p></details>
-  </section>
 
-  <footer><span id="api-attribution"></span> A lean, not a signal that pays: see the notes in the repository’s scalp study.
+    <aside id="guard" aria-labelledby="guard-title" data-state="idle">
+      <h2 id="guard-title" title="Open a position with the page's own order form, and protect a listed position with a take profit and stop loss. The window presses buttons on the Jupiter tab; Jupiter builds each trade and your wallet signs it. Closes fill at the oracle price about two seconds later with no price limit, and not before the 15 second minimum hold. The guard runs only while this window is open.">Order <span id="guard-badge" class="tag">Disarmed</span></h2>
+      <p id="guard-page" class="muted" role="status">Reading the Jupiter tab…</p>
+
+      <fieldset id="entry-size" title="How much of the funds available for the pay token selected on the Jupiter page to use. A quarter, half and all press the page's own 25%, Half and Max buttons. Three quarters has no page button: the window reads the page's Max and types three quarters of it. Max already leaves what the page reserves for fees.">
+        <legend>Size</legend>
+        <label><input type="radio" name="entry-size" value="0.25" checked> ¼</label>
+        <label><input type="radio" name="entry-size" value="0.5"> ½</label>
+        <label><input type="radio" name="entry-size" value="0.75"> ¾</label>
+        <label><input type="radio" name="entry-size" value="1"> All</label>
+      </fieldset>
+
+      <div class="levels">
+        <label title="Take profit. In bp mode: how far price must move in your favour from the position's entry, in basis points (1 bp = 0.01%). In price mode: the oracle price at which to act. Leave empty for none.">Take profit <input id="guard-tp" inputmode="decimal" autocomplete="off" aria-describedby="guard-tp-note"></label>
+        <label title="Stop loss. In bp mode: how far price may move against you from the position's entry, in basis points. It must be inside the bust distance (9.8 bp at 1,000×). In price mode: the oracle price at which to act. Leave empty for none.">Stop loss <input id="guard-sl" inputmode="decimal" autocomplete="off" aria-describedby="guard-sl-note"></label>
+        <p id="guard-tp-note" class="muted"></p>
+        <p id="guard-sl-note" class="muted"></p>
+      </div>
+      <div class="chips" role="group" aria-label="Fill or clear a level">
+        <label class="unit" title="How the two fields are read. bp: distance from the position's entry, which is what a new position needs because its entry is not known until it fills. Price: a plain oracle price, for a position that is already open.">as <select id="guard-unit"><option value="bp">bp from entry</option><option value="price">price</option></select></label>
+        <button type="button" data-tp="5" title="Take profit 5 basis points beyond entry (in price mode: beyond the current price).">+5</button><button type="button" data-tp="10" title="Take profit 10 basis points beyond entry.">+10</button><button type="button" data-tp="20" title="Take profit 20 basis points beyond entry.">+20</button><button type="button" data-tp="50" title="Take profit 50 basis points beyond entry.">+50</button>
+        <button type="button" data-sl="0.25" title="Stop loss a quarter of the way to the bust price.">¼ bust</button><button type="button" data-sl="0.5" title="Stop loss half way to the bust price.">½ bust</button><button type="button" data-sl="0.75" title="Stop loss three quarters of the way to the bust price.">¾ bust</button>
+        <button type="button" data-clear="tp" title="Clear the take profit: the position will have none.">No TP</button><button type="button" data-clear="sl" title="Clear the stop loss: the position will have none.">No SL</button><button type="button" data-clear="both" title="Clear both: open or hold with no take profit and no stop loss.">No TP/SL</button>
+      </div>
+
+      <fieldset title="What the window does when the oracle price reaches a level. Alert only: a notification and a tone, nothing is pressed. Press Close: the window asks the Jupiter tab to press that position's own Close button; your wallet may still ask you to approve.">
+        <legend>At a level</legend>
+        <label><input type="radio" name="guard-mode" value="alert" checked> Alert only</label>
+        <label><input type="radio" name="guard-mode" value="close"> Press Close</label>
+      </fieldset>
+
+      <fieldset title="Long and Short open a real leveraged position with real funds. They stay locked until you tick Unlock. With Confirm on, the first press arms the button and a second press within four seconds sends it.">
+        <legend>Open</legend>
+        <label><input type="checkbox" id="entry-unlock"> Unlock</label>
+        <label><input type="checkbox" id="entry-confirm" checked> Confirm</label>
+        <div class="sides">
+          <button id="entry-long" type="button" data-side="long" disabled title="Open a long: the window sets the size on the Jupiter page's order form and presses its Long button once, at the leverage the page shows. When the position is listed, the take profit and stop loss above are armed from its real entry.">Long</button>
+          <button id="entry-short" type="button" data-side="short" disabled title="Open a short: the window sets the size on the Jupiter page's order form and presses its Short button once, at the leverage the page shows. When the position is listed, the take profit and stop loss above are armed from its real entry.">Short</button>
+        </div>
+      </fieldset>
+      <p id="entry-status" role="status" aria-live="assertive"></p>
+
+      <label class="row" title="The listed position the take profit and stop loss apply to. Only positions in this window's market are shown.">Position <select id="guard-position"></select></label>
+      <p id="guard-position-detail" class="muted"></p>
+      <div class="actions">
+        <button id="guard-arm" type="button" title="Start watching the levels above for the selected position. Needs a real click, a fresh price and at least one level.">Arm</button>
+        <button id="guard-disarm" type="button" hidden title="Stop watching. Not possible once a close request is out.">Disarm</button>
+        <button id="guard-show" type="button" title="Bring the Jupiter tab to the front, for example to approve a wallet prompt.">Jupiter tab</button>
+      </div>
+      <p id="guard-errors" role="alert"></p>
+      <p id="guard-status" role="status" aria-live="assertive">Disarmed. Nothing is watched.</p>
+      <details id="guard-log"><summary title="What the window asked the Jupiter tab to do in this session, and what came back.">Log</summary><ol></ol></details>
+    </aside>
+  </main>
+
+  <footer><span id="api-attribution"></span>
     <a href="https://www.tradingview.com/" target="_blank" rel="noopener noreferrer">Charts by TradingView</a>
   </footer>
   <script type="module" src="scalp.js"></script>

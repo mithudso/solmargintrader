@@ -7452,89 +7452,185 @@
   "tiles": [
    {
     "feature": "roc_2",
+    "hit": {
+     "live": 0.5309072357792705,
+     "test": 0.5224653522083325,
+     "train": 0.5194722071783763,
+     "valid": 0.5197735134063319
+    },
     "key": "impulse",
     "label": "Impulse 2s"
    },
    {
     "feature": "roc_5",
+    "hit": {
+     "live": 0.5266233766233767,
+     "test": 0.5216497440631032,
+     "train": 0.5130902486728136,
+     "valid": 0.5152300153271593
+    },
     "key": "momentum5",
     "label": "Momentum 5s"
    },
    {
     "feature": "roc_60",
+    "hit": {
+     "live": 0.5127652784426361,
+     "test": 0.5135581181582686,
+     "train": 0.5112472292728633,
+     "valid": 0.5060261597413996
+    },
     "key": "momentum60",
     "label": "Momentum 60s"
    },
    {
     "feature": "brk_20",
+    "hit": {
+     "live": 0.572503008423586,
+     "test": 0.534090031657787,
+     "train": 0.5280052739673927,
+     "valid": 0.5342239685658153
+    },
     "key": "breakout20",
     "label": "Breakout 20s"
    },
    {
     "feature": "brk_60",
+    "hit": {
+     "live": 0.5765853658536585,
+     "test": 0.5488433575677462,
+     "train": 0.5273910214703968,
+     "valid": 0.5510043324143363
+    },
     "key": "breakout60",
     "label": "Breakout 60s"
    },
    {
     "feature": "ha",
+    "hit": {
+     "live": 0.5329957148422283,
+     "test": 0.52141305256121,
+     "train": 0.5170121126799827,
+     "valid": 0.5201158605413925
+    },
     "key": "heikin",
     "label": "Heikin-Ashi run"
    },
    {
     "feature": "bop_5",
+    "hit": {
+     "live": 0.5220804710500491,
+     "test": 0.5201177840771749,
+     "train": 0.5132241444922573,
+     "valid": 0.5126124251462394
+    },
     "key": "bop",
     "label": "Balance of power"
    },
    {
     "feature": "zzdir_1",
+    "hit": {
+     "live": 0.5343098856337145,
+     "test": 0.5156054148909501,
+     "train": 0.5144215685590982,
+     "valid": 0.5050810626557873
+    },
     "key": "zigzag",
     "label": "ZigZag leg"
    },
    {
     "feature": "don_60",
+    "hit": {
+     "live": 0.5150621613006057,
+     "test": 0.5106542993231387,
+     "train": 0.5090335752541567,
+     "valid": 0.5024293144410437
+    },
     "key": "donchian",
     "label": "Range position"
    },
    {
     "feature": "er_60",
+    "hit": {
+     "live": 0.5127652784426361,
+     "test": 0.5135581181582686,
+     "train": 0.5112472292728633,
+     "valid": 0.5060261597413996
+    },
     "key": "efficiency",
     "label": "Efficiency"
    },
    {
     "feature": "slope_60",
+    "hit": {
+     "live": 0.49792795664647754,
+     "test": 0.514916019052394,
+     "train": 0.5070828264183133,
+     "valid": 0.509385501166499
+    },
     "key": "slope",
     "label": "Slope 60s"
    },
    {
     "feature": "rsi_7",
+    "hit": {
+     "live": 0.5273935130910512,
+     "test": 0.5168588618701428,
+     "train": 0.5129045301802869,
+     "valid": 0.5047198960131262
+    },
     "key": "rsi",
     "label": "RSI 7"
    },
    {
     "feature": "z_20",
+    "hit": {
+     "live": 0.528318167555695,
+     "test": 0.5129105038856856,
+     "train": 0.509278508741332,
+     "valid": 0.5026670649483657
+    },
     "key": "zscore",
     "label": "Z-score 20"
    },
    {
     "feature": "macdh_1",
+    "hit": {
+     "live": 0.5146893562369562,
+     "test": 0.5057867468872733,
+     "train": 0.5026946065874383,
+     "valid": 0.5114793457523206
+    },
     "key": "macd",
     "label": "MACD hist"
    },
    {
     "feature": "psar",
+    "hit": {
+     "live": 0.5236018071350678,
+     "test": 0.5123046711790757,
+     "train": 0.509018301437074,
+     "valid": 0.5024599067152259
+    },
     "key": "psar",
     "label": "Parabolic SAR"
    },
    {
     "feature": "super_10",
+    "hit": {
+     "live": 0.5150023441162682,
+     "test": 0.5106542993231387,
+     "train": 0.5088828771039311,
+     "valid": 0.5073634406768824
+    },
     "key": "supertrend",
     "label": "Supertrend"
    }
   ],
-  "version": 2,
+  "version": 3,
   "warmup_s": 90
  },
- "model_sha256": "e9869568e6e21e440867736aec39c00b340c9009afa86978b9ffbda116fcac20",
+ "model_sha256": "bf86e4ad6f8fa361d99f2e80e9e768da8c2bba76f948bcbc558929c78f172398",
  "moves": {
   "base_BTC": {
    "median_abs_bps": 2.6767128851296063,

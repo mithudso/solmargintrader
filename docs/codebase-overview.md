@@ -244,11 +244,13 @@ command registry. No npm runtime dependencies by design; one vendored charting l
 | `extension/src/1000x/scalp-model.js` | Sixteen-tile vote, tiers, 30 second cone, slope ladder history and reversal timing, session score and the BigInt payout port |
 | `extension/src/1000x/scalp-model-data.js` | Generated study constants: tiles, thresholds, measured hit rates, cone quantiles and slope baselines |
 | `extension/src/1000x/exit-guard.js` | Pure take-profit / stop-loss state machine: fresh-quote trigger, one close request, bounded lock wait, no retry of an unconfirmed press |
-| `extension/src/1000x/page-bridge.js` | Content script that reads the 1000x positions table and presses one exactly matched row's own Close button |
+| `extension/src/1000x/page-bridge.js` | Content script that reads the 1000x positions table and order form, presses one exactly matched row's own Close button, and presses the form's own size and Long or Short buttons |
+| `extension/src/1000x/entry-plan.js` | Pure checks before an entry request and the tracker that sends it once and finds the position it opened |
 | `extension/src/1000x/scalp.js` | The 1s scalp window: feed to bars to read-outs, chart with cone, grid, slope ladder and the guard panel |
 | `extension/src/bg/jupiter-scalp-window.js` | One scalp window per Jupiter tab and the only relay from that window to the tab's page bridge |
 | `extension/test/1000x-scalp.test.js` | Python parity of every reading, slope ladder and payout; causality; vote tiers; cone; score book; reversal timing |
 | `extension/test/1000x-exit-guard.test.js` | Guard levels, triggers, lock wait, confirmation and failure states; page-bridge row parsing and close selection |
+| `extension/test/1000x-entry.test.js` | Levels in basis points, entry validation, confirm-then-send tracker, new-position matching, order-form reads and presses, slope accuracy score |
 | `extension/test/jupiter-scalp-window.test.js` | Window ownership across worker eviction, relay refusal for strangers, explicit failures and the registry command's validation |
 | `extension/tools/1000x-scalp-e2e.mjs` | Chrome for Testing gate: trusted-click arming, alert mode presses nothing, close mode presses the row's Close once |
 | `research/scripts/scalp_1s_features.py` | Causal 1s-bar feature definitions shared by the study and the extension port |

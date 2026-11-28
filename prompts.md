@@ -1,5 +1,12 @@
 # Prompt history
 
+Version: 336
+Delta: v335 to v336. Record the request for long and short entry buttons, size presets, hover descriptions and a slope accuracy gauge in the 1s scalp window.
+
+## Jupiter 1000x 1s scalp window: entry buttons, size presets, hover help
+
+> Add a button to start a long or a short position, and have settings that automatically choose 1/4, 1/2, 3/4, or all of the funds available for the selected coin, and have it start with the tp/sl settings as listed in the order form. Also move the order form to be to the right of the graph. Also for each indicator and column title have a mouse scrollover give a detailed description of what it is, hide the expository info text in the window itself. Also add "No tp/sl" buttons. Also in the slowpe ladder have a running accuracy gauge for how well it's predicted trends.
+
 Version: 335
 Delta: v334 to v335. Record the follow-up request for slope and acceleration extremes and reversal timing in the 1s scalp view.
 

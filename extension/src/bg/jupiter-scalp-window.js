@@ -3,6 +3,8 @@ const PAGE = 'src/1000x/scalp.html';
 const BRIDGE = 'jupiter1000xPage';
 const SYMBOL = /^[A-Z0-9]{1,12}$/;
 const RELAY_TIMEOUT_MS = 4000;
+// An open waits for the page's form to settle and gives up on its own after six seconds.
+const OPEN_TIMEOUT_MS = 8000;
 
 function jupiterMarket(value) {
   try {
@@ -18,8 +20,9 @@ function jupiterMarket(value) {
 /**
  * One 1s scalp window per Jupiter 1000x tab, and the only route from that
  * window to the tab's page bridge. The window can read the tab's listed
- * positions and ask for one Close click; nothing else is relayed, and only the
- * window this module opened for that tab may ask. Session state survives MV3
+ * positions and order form, ask for one Close click, and ask for one Long or
+ * Short press; nothing else is relayed, and only the window this module opened
+ * for that tab may ask. Session state survives MV3
  * worker eviction.
  */
 export function createJupiterScalpWindows({ runtime, storage, tabs, windows, setTimeoutImpl = globalThis.setTimeout, clearTimeoutImpl = globalThis.clearTimeout }) {
@@ -62,12 +65,12 @@ export function createJupiterScalpWindows({ runtime, storage, tabs, windows, set
   }
 
   /** Ask the owning tab's content script; a missing or late reply is an explicit failure. */
-  async function relay(tabId, message) {
+  async function relay(tabId, message, timeoutMs = RELAY_TIMEOUT_MS) {
     // Without the "tabs" permission the worker cannot read the tab's address. The
     // content script only exists on jup.ag and answers only on the 1000x route.
     if (!await tabs.get(tabId).catch(() => null)) return { ok: false, reason: 'jupiter_tab_unavailable' };
     let timer;
-    const timeout = new Promise(resolve => { timer = setTimeoutImpl(() => resolve({ ok: false, reason: 'page_timeout' }), RELAY_TIMEOUT_MS); });
+    const timeout = new Promise(resolve => { timer = setTimeoutImpl(() => resolve({ ok: false, reason: 'page_timeout' }), timeoutMs); });
     try {
       const reply = await Promise.race([tabs.sendMessage(tabId, { type: BRIDGE, ...message }, { frameId: 0 }), timeout]);
       return reply && typeof reply === 'object' ? reply : { ok: false, reason: 'page_no_reply' };
@@ -103,6 +106,10 @@ export function createJupiterScalpWindows({ runtime, storage, tabs, windows, set
             const expect = args.expect;
             if (!expect || expect.coin !== entry.symbol) return { ok: false, reason: 'position_market_mismatch' };
             return relay(Number(sourceTabId), { action: 'closePosition', expect });
+          }
+          if (action === 'openPosition') {
+            // The page opens in its own current market; the content script refuses unless that is this window's.
+            return relay(Number(sourceTabId), { action: 'openPosition', request: { side: args.side, fraction: args.fraction, coin: entry.symbol } }, OPEN_TIMEOUT_MS);
           }
           if (action === 'showJupiter') {
             const tab = await tabs.get(Number(sourceTabId)).catch(() => null);
@@ -141,7 +148,7 @@ export function createJupiterScalpWindows({ runtime, storage, tabs, windows, set
         let popup;
         try {
           // Register the owner before the page loads, so its first status request is answered.
-          popup = await windows.create({ type: 'popup', url: 'about:blank', width: 500, height: 1000, focused: true });
+          popup = await windows.create({ type: 'popup', url: 'about:blank', width: 980, height: 940, focused: true });
           const panelTabId = (popup?.tabs ?? (await windows.get(popup.id, { populate: true })).tabs)?.[0]?.id;
           if (!Number.isInteger(popup?.id) || !Number.isInteger(panelTabId)) throw new Error('Chrome did not create a scalp window');
           entries[tabId] = { windowId: popup.id, panelTabId, symbol: market };

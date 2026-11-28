@@ -43,6 +43,17 @@ test('a take profit must be on the winning side and a stop loss between price an
   }
 });
 
+test('levels fixed before a fill can be armed after price has passed one, and then act at once', () => {
+  const past = { position: long, price: 99.96, takeProfit: 100.2, stopLoss: 99.97 };
+  assert.match(validateLevels(past).errors.join(' '), /below the current price/);
+  assert.equal(validateLevels({ ...past, allowCrossed: true }).ok, true);
+  assert.match(validateLevels({ ...past, stopLoss: 99.9, allowCrossed: true }).errors.join(' '), /beyond the bust price/, 'the bust check still holds');
+  const guard = new ExitGuard();
+  assert.equal(guard.arm({ ...past, mode: 'close', nowMs: NOW }).ok, false);
+  assert.equal(guard.arm({ ...past, mode: 'close', allowCrossed: true, nowMs: NOW }).ok, true);
+  assert.equal(guard.onQuote(quote(99.96, NOW + 100), NOW + 100).reason, 'stopLoss', 'the stop that was already crossed closes on the next quote');
+});
+
 test('crossing is inclusive, side-aware and prefers the stop when both are reached', () => {
   assert.equal(crossed({ side: 'long', price: 100.2, takeProfit: 100.2, stopLoss: 99.95 }), 'takeProfit');
   assert.equal(crossed({ side: 'long', price: 99.95, takeProfit: 100.2, stopLoss: 99.95 }), 'stopLoss');
