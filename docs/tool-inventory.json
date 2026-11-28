@@ -72,11 +72,11 @@
     },
     {
       "path": "extension/package.json",
-      "sha256": "f087d8ec6c5c75a6bfd6635fe510617c6b4a282c20fed7097795d90c7a381d14"
+      "sha256": "cf805bd761722a6e511a090f3236675d983931e51ed14837ad18ce22d9f909bb"
     },
     {
       "path": "extension/src/core/commands.js",
-      "sha256": "ba129fa6105f0d571b24e638db4aa190390eba61ca7f0032fc5a7647f91afc44"
+      "sha256": "43bdaab476b4ece8dd45080063f72a09d768f601d48cfd483e184426525b47a7"
     },
     {
       "path": "liquidity/pyproject.toml",
@@ -192,6 +192,20 @@
       "source": "extension/package.json",
       "symbol": "scripts.e2e:1000x",
       "declared_command": "node tools/1000x-e2e.mjs",
+      "help_command": null,
+      "side_effects": "script-specific; inspect declared command before invoking",
+      "signing": "not inferred from npm metadata",
+      "ambiguity": "no financial retry inferred",
+      "gate_refs": [
+        "extension/package.json"
+      ]
+    },
+    {
+      "id": "extension/package.json:e2e:scalp",
+      "kind": "npm-script",
+      "source": "extension/package.json",
+      "symbol": "scripts.e2e:scalp",
+      "declared_command": "node tools/1000x-scalp-e2e.mjs",
       "help_command": null,
       "side_effects": "script-specific; inspect declared command before invoking",
       "signing": "not inferred from npm metadata",

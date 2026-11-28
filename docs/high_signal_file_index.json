@@ -1040,35 +1040,35 @@
       "component": "extension",
       "kind": "javascript",
       "summary": "Generated study constants: tiles, thresholds, measured hit rates, cone quantiles and slope baselines",
-      "lines": 273
+      "lines": 288
     },
     {
       "path": "extension/src/1000x/exit-guard.js",
       "component": "extension",
       "kind": "javascript",
       "summary": "Pure take-profit / stop-loss state machine: fresh-quote trigger, one close request, bounded lock wait, no retry of an unconfirmed press",
-      "lines": 234
+      "lines": 258
     },
     {
       "path": "extension/src/1000x/page-bridge.js",
       "component": "extension",
       "kind": "javascript",
       "summary": "Content script that reads the 1000x positions table and presses one exactly matched row's own Close button",
-      "lines": 146
+      "lines": 148
     },
     {
       "path": "extension/src/1000x/scalp.js",
       "component": "extension",
       "kind": "javascript",
       "summary": "The 1s scalp window: feed to bars to read-outs, chart with cone, grid, slope ladder and the guard panel",
-      "lines": 555
+      "lines": 604
     },
     {
       "path": "extension/src/bg/jupiter-scalp-window.js",
       "component": "extension",
       "kind": "javascript",
       "summary": "One scalp window per Jupiter tab and the only relay from that window to the tab's page bridge",
-      "lines": 146
+      "lines": 159
     },
     {
       "path": "extension/test/1000x-scalp.test.js",
@@ -1082,14 +1082,14 @@
       "component": "extension",
       "kind": "javascript",
       "summary": "Guard levels, triggers, lock wait, confirmation and failure states; page-bridge row parsing and close selection",
-      "lines": 238
+      "lines": 275
     },
     {
       "path": "extension/test/jupiter-scalp-window.test.js",
       "component": "extension",
       "kind": "javascript",
       "summary": "Window ownership across worker eviction, relay refusal for strangers, explicit failures and the registry command's validation",
-      "lines": 149
+      "lines": 173
     },
     {
       "path": "extension/tools/1000x-scalp-e2e.mjs",
@@ -1110,7 +1110,7 @@
       "component": "research",
       "kind": "python",
       "summary": "Scores every 1s feature against the next 30 seconds on recorded Jupiter oracle ticks and writes the extension's model constants and parity fixture",
-      "lines": 844
+      "lines": 853
     },
     {
       "path": "extension/test/1000x-oracle-model.test.js",
@@ -1173,14 +1173,14 @@
       "component": "repo",
       "kind": "markdown",
       "summary": "The 1s scalp window: readings, slope ladder, exit guard rails, limits and verification",
-      "lines": 193
+      "lines": 203
     },
     {
       "path": "extension/src/core/commands.js",
       "component": "extension",
       "kind": "javascript",
       "summary": "The single registry. Every action lives here or the parity test fails",
-      "lines": 1090
+      "lines": 1092
     },
     {
       "path": "extension/src/core/risk.js",

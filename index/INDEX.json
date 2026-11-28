@@ -1,11 +1,11 @@
 {
-  "generatedAt": "2026-11-28T01:48:11+00:00",
+  "generatedAt": "2026-11-28T01:58:02+00:00",
   "schemaVersion": 1,
   "repoRoot": "~/dev/solmargintrader",
-  "commit": "1020fd5",
+  "commit": "318b093",
   "counts": {
     "files": 8100,
-    "bytes": 293819388,
+    "bytes": 293820892,
     "byKind": {
       "strategy-card": 4434,
       "doc": 1457,
@@ -3301,7 +3301,7 @@
       "summarySource": "opening-prose",
       "bytes": 7668,
       "lines": 131,
-      "sha1": "13d3c3cdef52061dcc93e8c1f14d7ab24a663976",
+      "sha1": "ee164f52e5327e543ac15616abf9ec2939401a09",
       "symbols": [],
       "imports": [],
       "internalImports": [],
@@ -4525,7 +4525,7 @@
       "summarySource": "opening-prose",
       "bytes": 5027,
       "lines": 77,
-      "sha1": "11d613e33e2cf2e690ad99f8e284a9ac43207537",
+      "sha1": "4807f788db54f8dbc54300be37686ee61bb887f2",
       "symbols": [],
       "imports": [],
       "internalImports": [],
@@ -65629,7 +65629,7 @@
       "summarySource": "derived",
       "bytes": 75410,
       "lines": 2417,
-      "sha1": "f20755ddfdc88f4257b70c41d242369a7a8f6955",
+      "sha1": "ac856aa9dc12253a04b8bb46ca5fd97fd0f97ef2",
       "symbols": [],
       "imports": [],
       "internalImports": [],
@@ -65735,9 +65735,9 @@
       "title": "operations-registry",
       "summary": "Generated JSON object, 8 keys (schema_version, version, delta, generator, scope, limits...).",
       "summarySource": "derived",
-      "bytes": 240499,
-      "lines": 4883,
-      "sha1": "874613a2c8e4b796948de4c573feac0db85ae31f",
+      "bytes": 241501,
+      "lines": 4902,
+      "sha1": "c62d4c366200018b81fe6158a7d2a0223ce6b62f",
       "symbols": [],
       "imports": [],
       "internalImports": [],
@@ -66275,9 +66275,9 @@
       "title": "tool-inventory",
       "summary": "Generated JSON object, 8 keys (schema_version, version, delta, generator, scope, limits...).",
       "summarySource": "derived",
-      "bytes": 25826,
-      "lines": 668,
-      "sha1": "9eed9ed46bc10cf35edd9c6c2ae97786cf6b7d88",
+      "bytes": 26328,
+      "lines": 682,
+      "sha1": "82921acb93265590b8f752453b8a22eb188eeda8",
       "symbols": [],
       "imports": [],
       "internalImports": [],
@@ -249534,5 +249534,5 @@
       "frontmatter": {}
     }
   ],
-  "textSha256": "7ec09ac52cfb67e5aa3030ce5febbc078fedeee208f2948aa1865879e4ebb8ba"
+  "textSha256": "cfe774fc4c370edcbdea52a574daaf5298f59fdfba0ab0af25fb705d8dc5ff6b"
 }
