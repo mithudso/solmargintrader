@@ -21,13 +21,19 @@
         <p id="call-score" class="muted" title="Calls made in this window that have settled: each second's call is scored against the price 30 seconds later. Seconds overlap heavily, so this is a rough guide and not a count of independent trades."></p>
       </section>
 
+      <div class="tabs" role="tablist" aria-label="View">
+        <button id="tab-live" type="button" role="tab" aria-selected="true" aria-controls="panel-live" title="The chart, the trend grid and the slope ladder.">Live</button>
+        <button id="tab-experiments" type="button" role="tab" aria-selected="false" aria-controls="panel-experiments" tabindex="-1" title="Every setting of every reading, tested on live ticks all the time: its hit rate at twelve intervals from 3 seconds to 5 minutes, which setting each tile uses, and what has been switched.">Experiments <span id="tab-experiments-count" class="tag"></span></button>
+      </div>
+
+      <div id="panel-live" role="tabpanel" aria-labelledby="tab-live" tabindex="0">
       <section aria-label="One-second price with the 30 second range">
         <div id="chart" title="One-second oracle candles for the last 150 seconds. Ahead of the last bar: a thick line marked “likely”, the most likely price over the next 30 seconds (the current price plus the average move that followed calls like the current one in the recording, which is under one basis point and mostly arrives in the first ten seconds); thin solid lines inside which 68% of recorded 30 second moves ended; and dotted lines for 90%, scaled by the last 30 seconds of volatility. With a mixed grid the likely line is flat. Entry, bust, take profit and stop loss are drawn as price lines." aria-label="One-second oracle candles with the expected 30 second range drawn ahead of price"></div>
         <canvas id="ribbon" width="440" height="26" role="img" title="Top strip: the call made each second for the last 120 seconds (green up, red down, grey mixed; lean calls are fainter). Bottom strip: whether that call was right 30 seconds later (green right, red wrong, dark not yet settled)." aria-label="Calls for the last 120 seconds and how each turned out"></canvas>
       </section>
 
       <section aria-labelledby="tiles-title">
-        <h2 id="tiles-title" title="Sixteen trend readings on closed one-second bars. Each votes up (green), down (red) or neutral (grey); dashed tiles are warming up. The call above is their net vote: 12 or more one way is strong, 6 to 11 is a lean, fewer is mixed. The six small numbers under each reading are its own running hit rate, in percent, over the next 5 s, 10 s, 20 s, 30 s, 1 min and 5 min: green at 52 or more, red at 48 or less. Hover a tile for its definition and its record, or a number for its count.">Trend grid <span id="tiles-count" class="muted"></span></h2>
+        <h2 id="tiles-title" title="Sixteen trend readings on closed one-second bars. Each votes up (green), down (red) or neutral (grey); dashed tiles are warming up. The call above is their weighted vote: each reading counts by how far its running 30 second hit rate is above 50%, and one at or under 50% does not count. The thin bar under a reading is its say in the call, relative to the reading with the most. A ★ marks a reading whose setting the Experiments tab switched in. The six small numbers are the reading's own running hit rate, in percent, over the next 5 s, 10 s, 20 s, 30 s, 1 min and 5 min: green at 52 or more, red at 48 or less. Hover a tile for its definition, record and say, or a number for its count.">Trend grid <span id="tiles-count" class="muted"></span></h2>
         <div id="tiles" role="list"></div>
       </section>
 
@@ -47,6 +53,42 @@
           <tbody></tbody>
         </table>
       </section>
+      </div>
+
+      <div id="panel-experiments" role="tabpanel" aria-labelledby="tab-experiments" tabindex="0" hidden>
+        <p id="exp-status" class="muted" role="status"></p>
+        <div class="exp-controls">
+          <label title="When on, a setting that is clearly ahead of the one a tile uses takes its place on the Live tab: same kind of reading, enough settled calls on both, a cautious estimate above the current setting's live rate, and no contradiction from the recording. It changes only what the read-outs show; it never touches an order, a take profit or a stop loss."><input type="checkbox" id="exp-auto" checked> Switch clear winners in</label>
+          <label title="Which interval the table below is ranked by. Tiles are always chosen on the 30 second interval, the one the call is made for.">Rank by <select id="exp-horizon"></select></label>
+          <button id="exp-defaults" type="button" title="Put every tile back on its starting setting. What live testing has learned is kept.">Starting settings</button>
+          <button id="exp-forget" type="button" title="Throw away everything live testing has learned for this coin and return to the starting settings. Needs a second press.">Forget results</button>
+        </div>
+
+        <section aria-labelledby="exp-slots-title">
+          <h2 id="exp-slots-title" title="The sixteen readings of the Live tab and the setting each one uses now.">In use</h2>
+          <table id="exp-slots">
+            <thead><tr>
+              <th scope="col" title="The kind of reading. A setting only ever replaces another of the same kind.">Reading</th>
+              <th scope="col" title="The setting this tile uses now. A ★ means it was switched in for the starting one.">Setting</th>
+              <th scope="col" title="This tile's share of the call right now: how far its running 30 second hit rate is above 50%, as a share of all tiles' edges. 0% means its hit rate is not above 50%.">Say</th>
+              <th scope="col" title="Live hit rate of this setting over the next 30 seconds, in percent, once enough calls have settled.">Live</th>
+              <th scope="col" title="Hit rate of this setting over the next 30 seconds on the base recording: its starting point before live results.">Recorded</th>
+              <th scope="col" title="The best unused setting of the same kind by current estimate, and whether it is clearly ahead yet.">Best other</th>
+            </tr></thead>
+            <tbody></tbody>
+          </table>
+        </section>
+
+        <section aria-labelledby="exp-board-title">
+          <h2 id="exp-board-title" title="Every setting under test, best first at the chosen interval by its current estimate: the live hit rate pulled toward the recorded one until enough calls settle. Each number is a hit rate in percent: of the seconds where the setting pointed up or down, the share where price then moved that way over that interval. Filled cells are live results; plain coloured numbers are from the recording until enough live calls settle. Green at 52 or more, red at 48 or less. ● marks a setting a tile uses. A high hit rate over a few seconds comes with a move too small to trade.">All settings</h2>
+          <div class="exp-scroll"><table id="exp-board">
+            <thead><tr><th scope="col" title="The setting: the reading and its window or parameters.">Setting</th></tr></thead>
+            <tbody></tbody>
+          </table></div>
+        </section>
+
+        <details id="exp-log" open><summary title="Settings switched in on this coin, newest first.">Switches</summary><ol></ol></details>
+      </div>
     </div>
 
     <aside id="guard" aria-labelledby="guard-title" data-state="idle">

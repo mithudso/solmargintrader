@@ -1,6 +1,8 @@
 /**
  * The 1s scalp window: a compact read-out of the next 30 seconds from one-second
  * oracle bars, and a take-profit / stop-loss guard for one listed position.
+ * The call weighs each reading by its running hit rate, and the Experiments tab
+ * keeps testing other settings of every reading (scalp-experiments.js).
  *
  * Market data is the public Jupiter oracle stream (the same validated feed the
  * indicator panel uses). The only things this window can do to the Jupiter page
@@ -10,7 +12,9 @@
  */
 import { JupiterFeed, JUPITER_ENDPOINTS } from './feed.js';
 import { SecondBars, realizedVolBps } from './scalp-indicators.js';
-import { TILES, WARMUP_BARS, SCALP_MODEL, HORIZON_S, readTiles, readSlopes, SlopeHistory, SlopeScore, HorizonScore, SCORE_HORIZONS, scalpCall, cone, ScoreBook, payoutPercent, bustFraction } from './scalp-model.js';
+import { SCALP_MODEL, HORIZON_S, readSlopes, SlopeHistory, SlopeScore, SCORE_HORIZONS, cone, ScoreBook, payoutPercent, bustFraction } from './scalp-model.js';
+import { SCALP_EXPERIMENTS, VARIANTS, HORIZONS, DEFAULT_ASSIGNMENTS, PROMOTION, ExperimentBook, variantById, validAssignments, readSlots, weightedCall,
+  findPromotions, leaderboard } from './scalp-experiments.js';
 import { ExitGuard, parseLevel, parseDistance, resolveLevels, priceLike, positionKey, quoteFresh } from './exit-guard.js';
 import { EntryTracker, validateEntry } from './entry-plan.js';
 import { POWERED_BY } from '../jupiter/attribution.js';
@@ -20,6 +24,8 @@ const $ = id => document.getElementById(id);
 const SYMBOL = new URLSearchParams(location.hash.slice(1)).get('market') || '';
 const STORAGE = 'jupiter1000xScalp';
 const LOG_STORAGE = 'jupiter1000xScalpLog';
+const EXPERIMENT_STORAGE = 'jupiter1000xScalpExperiments';
+const SYMBOL_OK = /^[A-Z][A-Z0-9]{0,11}$/.test(SYMBOL);
 const COLORS = { up: '#61dbac', down: '#f69b9b', flat: '#8796b0', band: '#8fa3c7', warm: '#27344a' };
 const FEED_TEXT = {
   unsupported_market_or_timeframe: 'This market is not supported', market_unavailable: 'Market is unavailable', market_closed: 'Market is closed',
@@ -62,7 +68,14 @@ const clock = ms => new Date(ms).toLocaleTimeString(undefined, { hour12: false }
 const windowLabel = seconds => seconds >= 60 && seconds % 60 === 0 ? `${seconds / 60}m` : `${seconds}s`;
 
 const seconds = new SecondBars(), book = new ScoreBook(), slopeHistory = new SlopeHistory(), slopeScore = new SlopeScore();
-const tileScore = new HorizonScore(TILES.map(tile => tile.key));
+const experiments = new ExperimentBook();
+// Which setting each tile of the grid uses. The Experiments tab may switch a clear winner in.
+let assignments = { ...DEFAULT_ASSIGNMENTS }, slotLocks = {}, tuneLog = [], autoApply = true, activeTab = 'live';
+let experimentsSavedMs = Date.now(), experimentsDrawnMs = 0, rankHorizon = HORIZON_S, boardOrder = '', forgetArmedMs = 0;
+/** The oracle clock of the last closed bar, which is what the switch rule's locks are kept in. */
+const barClock = () => seconds.bars.at(-1)?.time ?? Math.floor(Date.now() / 1000);
+const warmupBars = () => Math.max(...Object.values(assignments).map(id => variantById(id).need));
+const emptyTiles = () => readSlots(assignments, new Map(), 0);
 const guard = new ExitGuard(), entry = new EntryTracker(), events = [];
 let feed, latest = null, lastQuoteMs = 0, view = null, disposed = false, drawQueued = false, barsVersion = 0, drawnVersion = -1;
 let attached = false, pageState = { ok: false, reason: 'not_started' }, positions = [], polling = false, lastPollMs = 0, closing = false;
@@ -101,7 +114,8 @@ function drawChart() {
   candles.setData(rows);
   const last = bars.at(-1);
   const steps = last && view?.call.ready && numeric(view.sigma)
-    ? cone({ price: last.close, sigmaBps: view.sigma, direction: view.call.direction, tier: view.call.tier }) : [];
+    // The centre line follows the average path after weighted calls of this tier; with none measured it stays flat.
+    ? cone({ price: last.close, sigmaBps: view.sigma, direction: view.call.direction, tier: view.call.tier, path: view.call.measured?.path_bps ?? [] }) : [];
   for (const [key, series] of Object.entries(bands)) {
     series.setData(steps.length ? [{ time: last.time, value: last.close }, ...steps.map(step => ({ time: last.time + step.seconds, value: step[key] }))] : []);
   }
@@ -158,51 +172,63 @@ function drawRibbon() {
 
 const tileNodes = new Map();
 const pct = value => `${(value * 100).toFixed(1)}%`;
-/** The hover text of a tile: what it measures, how it votes and how it did on its own. */
-function tileHelp(tile) {
-  const hit = tile.hit ?? {};
-  const record = ['train', 'valid', 'test'].every(part => numeric(hit[part]))
-    ? ` Followed on its own over the next 30 seconds it was right ${pct(hit.train)}, ${pct(hit.valid)} and ${pct(hit.test)} of the time on the three slices of the base recording${numeric(hit.live) ? `, and ${pct(hit.live)} on the short live check` : ''}.`
-    : '';
-  return `${tile.label}. ${tile.describe} It votes up (green) when the reading is positive and down (red) when negative; grey is neutral.${record} Needs ${tile.need} closed one-second bars.`;
+const CALL_AT = HORIZONS.indexOf(HORIZON_S);
+const tone = rate => rate >= 0.52 ? 'up' : rate <= 0.48 ? 'down' : 'flat';
+/** The hover text of a tile: what it measures, how it votes, its record and its say in the call. */
+function tileHelp(tile, share) {
+  const recorded = variantById(tile.variant).prior[CALL_AT], live = experiments.stats(tile.variant);
+  const record = (numeric(recorded) ? ` On the recording, following it over the next 30 seconds was right ${pct(recorded)} of the time.` : '')
+    + (live.rate === null ? ' None of its own calls has settled yet in live testing.'
+      : ` In live testing it has been right ${pct(live.rate)} of the time, over about ${Math.max(1, Math.round(live.eff))} independent calls’ worth of seconds.`);
+  const say = numeric(share) ? ` Its say in the call right now: ${Math.round(share * 100)}%${share === 0 ? ', because its hit rate is not above 50%' : ''}.` : '';
+  const tuned = tile.tuned ? ' The Experiments tab switched this setting in for the starting one (marked ★).' : '';
+  return `${tile.label}. ${tile.describe} It votes up (green) when the reading is positive and down (red) when negative; grey is neutral.${record}${say}${tuned} Needs ${tile.need} closed one-second bars.`;
 }
 function buildTiles() {
-  for (const tile of TILES) {
+  for (const slot of SCALP_EXPERIMENTS.slots) {
     const node = document.createElement('div');
-    node.className = 'tile'; node.setAttribute('role', 'listitem'); node.dataset.vote = 'warming'; node.title = tileHelp(tile);
-    const name = document.createElement('span'); name.className = 'name'; name.textContent = tile.label;
+    node.className = 'tile'; node.setAttribute('role', 'listitem'); node.dataset.vote = 'warming';
+    const name = document.createElement('span'); name.className = 'name';
     const value = document.createElement('span'); value.className = 'value'; value.textContent = 'warming';
-    // One cell per horizon: this tile's own running hit rate over the next 5 s, 10 s, ... 5 min.
+    // A bar for this tile's say in the call, relative to the tile with the most.
+    const weight = document.createElement('span'); weight.className = 'weight'; weight.setAttribute('aria-hidden', 'true'); weight.append(document.createElement('i'));
+    // One cell per horizon: this setting's own running hit rate over the next 5 s, 10 s, ... 5 min.
     const hits = document.createElement('span'); hits.className = 'hits';
     const cells = SCORE_HORIZONS.map(() => { const cell = document.createElement('i'); cell.textContent = '·'; hits.append(cell); return cell; });
-    node.append(name, value, hits); $('tiles').append(node); tileNodes.set(tile.key, { node, value, cells });
+    node.append(name, value, weight, hits); $('tiles').append(node); tileNodes.set(slot.key, { node, name, value, weight: weight.firstElementChild, cells });
   }
 }
 function tileText(tile) {
   if (!tile.ready) return `${tile.have}/${tile.need}s`;
   const mark = arrow(tile.vote);
-  if (tile.key.startsWith('breakout')) return tile.vote > 0 ? '▲ above' : tile.vote < 0 ? '▼ below' : '◆ inside';
-  if (['zigzag', 'psar', 'supertrend'].includes(tile.key)) return tile.vote > 0 ? '▲ up' : '▼ down';
+  if (tile.kind === 'breakout') return tile.vote > 0 ? '▲ above' : tile.vote < 0 ? '▼ below' : '◆ inside';
+  if (['zigzag', 'psar', 'supertrend'].includes(tile.kind)) return tile.vote > 0 ? '▲ up' : '▼ down';
   if (tile.unit === 'bars') return `${mark} ${Math.abs(tile.value)}`;
   return `${mark} ${signed(tile.value, 2)}${tile.unit ? ' ' + tile.unit : ''}`;
 }
 function drawTiles() {
-  const tiles = view?.tiles ?? readTiles([]);
-  for (const tile of tiles) {
-    const { node, value, cells } = tileNodes.get(tile.key);
+  const tiles = view?.tiles ?? emptyTiles(), call = view?.call, weights = call?.ready ? call.weights : null;
+  const top = weights ? Math.max(...weights) : 0;
+  for (const [index, tile] of tiles.entries()) {
+    const { node, name, value, weight, cells } = tileNodes.get(tile.key), share = weights ? weights[index] : null;
     node.dataset.vote = voteName(tile.ready ? tile.vote : null);
+    node.toggleAttribute('data-tuned', tile.tuned);
+    name.textContent = tile.tuned ? `${tile.label} ★` : tile.label;
     value.textContent = tileText(tile);
-    for (const [i, score] of tileScore.stats(tile.key).entries()) {
-      const cell = cells[i], label = windowLabel(score.horizon);
-      cell.textContent = score.rate === null ? '·' : String(Math.round(score.rate * 100));
-      cell.dataset.vote = score.rate === null ? 'warming' : score.rate >= 0.52 ? 'up' : score.rate <= 0.48 ? 'down' : 'flat';
-      cell.title = score.rate === null ? `${label}: no ${tile.label} call has settled yet at this interval.`
-        : `${label}: following ${tile.label} was right ${Math.round(score.rate * 100)}% of the time over the next ${label} (${score.hit} of ${score.n} calls settled in the last ten minutes; seconds overlap).`;
+    weight.style.width = `${share !== null && top > 0 ? Math.round(share / top * 100) : 0}%`;
+    node.title = tileHelp(tile, share);
+    for (const [i, horizon] of SCORE_HORIZONS.entries()) {
+      const score = experiments.stats(tile.variant, horizon), cell = cells[i], label = windowLabel(horizon), shown = score.rate !== null && score.n >= 10;
+      cell.textContent = shown ? String(Math.round(score.rate * 100)) : '·';
+      cell.dataset.vote = shown ? tone(score.rate) : 'warming';
+      cell.title = shown ? `${label}: following ${tile.label} was right ${Math.round(score.rate * 100)}% of the time over the next ${label} (about ${Math.round(score.n)} calls counted, recent ones weighing most; seconds overlap).`
+        : `${label}: too few ${tile.label} calls have settled at this interval yet.${numeric(score.prior) ? ` On the recording it was right ${pct(score.prior)} of the time.` : ''}`;
     }
     node.setAttribute('aria-label', `${tile.label}: ${tile.ready ? `${voteName(tile.vote)}, ${tileText(tile)}` : 'warming up'}. ${tile.describe}`);
   }
-  const call = view?.call;
   $('tiles-count').textContent = call ? `${call.up} up · ${call.down} down · ${call.flat} flat` : '';
+  const switched = tiles.filter(tile => tile.tuned).length;
+  $('tab-experiments-count').textContent = switched ? `${switched} switched in` : '';
 }
 
 const slopeRows = new Map();
@@ -263,44 +289,176 @@ function drawGauge(cell, score, row) {
 }
 
 function drawCall(live) {
-  const section = $('call'), call = view?.call, have = seconds.bars.length;
+  const section = $('call'), call = view?.call, have = seconds.bars.length, need = warmupBars();
   const percent = stat => `${(stat.hit * 100).toFixed(1)}%`;
   // The only sample that played no part in choosing the grid; short, so it carries its error bar.
   const liveCheck = stat => stat.live ? ` On a separate short live check: ${percent(stat.live)} ± ${(stat.live.hit_se * 100).toFixed(1)}.` : '';
+  // The weighted tiers' own replay figures; a tier too rare to measure shows none, never the unweighted one.
+  const measured = call?.ready ? call.measured ?? null : null;
   let direction = 'flat', tier = 'warming', mark = '·', text, detail;
   if (!live) {
     text = 'No live price'; detail = 'The read-out resumes when the oracle stream is fresh again.';
   } else if (readoutError) {
     text = 'Read-out unavailable'; detail = readoutError;
   } else if (!call?.ready) {
-    text = `Warming up · ${Math.min(have, WARMUP_BARS)} / ${WARMUP_BARS} s`;
-    detail = 'One-second bars come only from the live stream, so the grid needs about 80 seconds after opening or after a gap.';
+    text = `Warming up · ${Math.min(have, need)} / ${need} s`;
+    detail = `One-second bars come only from the live stream, so the grid needs ${need} seconds after opening or after a gap.`;
   } else {
     ({ direction, tier } = call);
-    const agree = Math.max(call.up, call.down), side = call.up >= call.down ? 'up' : 'down';
+    const score = `${signed(call.score * 100, 0)}%`, basis = 'On the later part of the recording, replayed without looking ahead, a weighted call like this';
     if (tier === 'mixed') {
       mark = '◆'; text = 'MIXED';
-      detail = `Readings disagree (${call.up} up, ${call.down} down). On the recording the grid was chosen from, a mixed grid was a coin flip: ${percent(call.measured)} right.${liveCheck(call.measured)}`;
+      detail = `Readings disagree once weighed (${call.up} up, ${call.down} down, weighted score ${score}). `
+        + (measured ? `${basis} was a coin flip: ${percent(measured)} right.${liveCheck(measured)}` : 'This tier was too rare on the recording to measure.');
     } else {
       mark = direction === 'up' ? '▲' : '▼';
       text = tier === 'strong' ? `${direction.toUpperCase()} · strong` : `${direction} · lean`;
-      detail = `${agree} of ${call.total} readings point ${side}. On the recording the grid was chosen from, a grid like this was right ${percent(call.measured)} of the time over the next 30 s`
-        + ` (average move ${signed(call.measured.mean_follow_bps, 2)} bp).${liveCheck(call.measured)}`;
-      const breakout = view.tiles.find(tile => tile.key === 'breakout60');
-      if (breakout?.vote && (breakout.vote > 0) === (direction === 'up')) detail += ' A 60 s breakout is in play, the strongest single reading.';
+      detail = `The weighted score is ${score} (${call.up} readings up, ${call.down} down). `
+        + (measured ? `${basis} was right ${percent(measured)} of the time over the next 30 s (average move ${signed(measured.mean_follow_bps, 2)} bp).${liveCheck(measured)}`
+          : 'This tier was too rare on the recording to measure.');
+      const breakout = view.tiles.find(tile => tile.kind === 'breakout' && tile.vote && (tile.vote > 0) === (direction === 'up'));
+      if (breakout) detail += ` ${breakout.label} is in play; breakouts have the best record and the most say.`;
     }
+    const switched = view.tiles.filter(tile => tile.tuned).length;
+    if (switched) detail += ` ${switched} reading${switched === 1 ? ' uses' : 's use'} a setting the Experiments tab switched in; the recorded figures were measured on the starting settings, so read them as a guide.`;
     if (numeric(view.sigma)) detail += ` Typical 30 s move now: ±${(SCALP_MODEL.cone.p50 * view.sigma * Math.sqrt(HORIZON_S)).toFixed(1)} bp.`;
   }
   section.dataset.direction = direction; section.dataset.tier = tier;
   $('call-arrow').textContent = mark; $('call-text').textContent = text;
   // The explanation lives in the hover text; the line under the call keeps only the numbers.
-  section.title = `${detail} The call is the net vote of the sixteen readings below for the next 30 seconds. It is a lean: the 1000x payout needs a hit rate far above these figures.`;
+  section.title = `${detail} The call weighs each of the sixteen readings by how far its running 30 second hit rate is above 50%; a reading at or under 50% has no say. `
+    + 'A weighted score of 75% or more one way is strong, 37.5% or more is a lean, less is mixed. It is a lean: the 1000x payout needs a hit rate far above these figures.';
   $('call-meta').textContent = !live || readoutError || !call?.ready ? ''
-    : `${call.up}▲ ${call.down}▼ of ${call.total} · recorded ${percent(call.measured)}${call.measured.live ? ` · live check ${percent(call.measured.live)} ± ${(call.measured.live.hit_se * 100).toFixed(1)}` : ''}`
+    : `${call.up}▲ ${call.down}▼ · weighted ${signed(call.score * 100, 0)}%`
+      + (measured ? ` · recorded ${percent(measured)}${measured.live ? ` · live check ${percent(measured.live)} ± ${(measured.live.hit_se * 100).toFixed(1)}` : ''}` : ' · not measured')
       + `${numeric(view.sigma) ? ` · typical move ±${(SCALP_MODEL.cone.p50 * view.sigma * Math.sqrt(HORIZON_S)).toFixed(1)} bp` : ''}`;
   const stats = book.stats(), rate = row => `${row.hit}/${row.n} ${(row.rate * 100).toFixed(0)}%`;
   $('call-score').textContent = stats.all.n ? `session: ${stats.strong.n ? `strong ${rate(stats.strong)} · ` : ''}all ${rate(stats.all)}` : '';
   return { mark, text };
+}
+
+/* ------------------------------------------------------------ experiments -- */
+
+const boardRows = new Map(), slotRows = new Map();
+const element = (tag, text = '', title = '') => { const node = document.createElement(tag); node.textContent = text; if (title) node.title = title; return node; };
+/** A hit-rate cell: filled when enough live calls have settled, plain coloured text when it is the recorded rate. */
+function hitCell(cell, stats, horizon, label) {
+  const live = stats.rate !== null && stats.eff >= 2 && stats.n >= 30, rate = live ? stats.rate : stats.prior, span = windowLabel(horizon);
+  cell.textContent = numeric(rate) ? String(Math.round(rate * 100)) : '·';
+  cell.dataset.vote = numeric(rate) ? tone(rate) : 'warming';
+  cell.classList.toggle('rec', !live);
+  cell.title = live ? `${label}, next ${span}: right ${pct(stats.rate)} of the time in live testing (about ${Math.round(stats.n)} calls counted, worth about ${Math.round(stats.eff)} independent ones).${numeric(stats.prior) ? ` Recorded: ${pct(stats.prior)}.` : ''}`
+    : `${label}, next ${span}: ${numeric(stats.prior) ? `right ${pct(stats.prior)} of the time on the recording (shown as a plain number)` : 'no live figure yet'}. Live testing has ${Math.round(stats.n)} calls at this interval so far; a live figure is shown after about ${Math.max(30, 2 * horizon)} calls.`;
+  cell.setAttribute('aria-label', `${numeric(rate) ? `${Math.round(rate * 100)} percent` : 'no figure'}, ${live ? 'live' : numeric(stats.prior) ? 'recorded' : 'waiting for calls'}`);
+}
+function buildExperiments() {
+  const select = $('exp-horizon');
+  for (const horizon of HORIZONS) { const option = element('option', windowLabel(horizon)); option.value = String(horizon); select.append(option); }
+  select.value = String(rankHorizon);
+  const head = $('exp-board').tHead.rows[0];
+  for (const horizon of HORIZONS) {
+    const th = element('th', windowLabel(horizon), `Hit rate, in percent, of following the setting over the next ${windowLabel(horizon)}. Filled cells are live results; plain coloured numbers are from the recording until enough live calls settle.`);
+    th.scope = 'col'; th.dataset.horizon = String(horizon); head.append(th);
+  }
+  const calls = element('th', 'Calls', 'Live calls counted at the ranking interval, recent ones weighing most. Seconds overlap, so the number of independent calls is this divided by the interval length.'); calls.scope = 'col'; head.append(calls);
+  for (const variant of VARIANTS) {
+    const tr = document.createElement('tr'), name = element('th', variant.label, `${variant.label}. ${variant.describe} Needs ${variant.need} closed one-second bars.`); name.scope = 'row';
+    const cells = HORIZONS.map(() => document.createElement('td')), count = document.createElement('td');
+    tr.append(name, ...cells, count); boardRows.set(variant.id, { tr, name, cells, count });
+  }
+  for (const slot of SCALP_EXPERIMENTS.slots) {
+    const tr = document.createElement('tr'), head = element('th', variantById(slot.variant).kindName); head.scope = 'row';
+    const cells = Object.fromEntries(['setting', 'weight', 'live', 'recorded', 'rival'].map(key => [key, document.createElement('td')]));
+    tr.append(head, ...Object.values(cells)); $('exp-slots').tBodies[0].append(tr); slotRows.set(slot.key, { tr, cells });
+  }
+}
+function drawExperiments() {
+  experimentsDrawnMs = Date.now();
+  const tiles = view?.tiles ?? emptyTiles(), weights = view?.call?.ready ? view.call.weights : null, inUse = new Set(Object.values(assignments));
+  const board = leaderboard(experiments, HORIZON_S), minutes = Math.floor(experiments.seconds / 60);
+  const status = `Testing ${VARIANTS.length} settings at ${HORIZONS.length} intervals each second · ${minutes >= 120 ? `${(minutes / 60).toFixed(1)} h` : `${minutes} min`} of ${SYMBOL || 'no'} ticks scored so far`
+    + ` · ${tiles.filter(tile => tile.tuned).length} of ${tiles.length} readings switched`;
+  // A status region is announced when it changes, so it is written only then.
+  if ($('exp-status').textContent !== status) $('exp-status').textContent = status;
+  // What the switch rule itself would do at this moment, so the table never says otherwise.
+  const pending = new Map(findPromotions({ assignments, book: experiments, locks: slotLocks, nowS: barClock() }).map(change => [change.slot, change.to]));
+  $('exp-auto').checked = autoApply;
+  for (const [index, tile] of tiles.entries()) {
+    const { tr, cells } = slotRows.get(tile.key), stats = experiments.stats(tile.variant), share = weights ? weights[index] : null;
+    tr.toggleAttribute('data-tuned', tile.tuned);
+    cells.setting.textContent = tile.tuned ? `${tile.label} ★` : tile.label;
+    cells.setting.title = tile.tuned ? `Switched in for ${variantById(DEFAULT_ASSIGNMENTS[tile.key]).label}, the starting setting.` : 'The starting setting.';
+    cells.weight.textContent = share === null ? '—' : `${Math.round(share * 100)}%`;
+    hitCell(cells.live, { ...stats, prior: null }, HORIZON_S, tile.label);
+    cells.recorded.textContent = numeric(stats.prior) ? pct(stats.prior) : '—';
+    // The setting the rule is about to switch in, else the unused one of the same kind with the best current estimate.
+    const rival = board.find(row => row.id === pending.get(tile.key)) ?? board.find(row => row.kind === tile.kind && !inUse.has(row.id) && variantById(row.id).need <= PROMOTION.maxNeed);
+    if (!rival) { cells.rival.textContent = '—'; cells.rival.title = 'No other setting of this kind can take this slot.'; continue; }
+    const short = rival.eff < PROMOTION.minEff || stats.eff < PROMOTION.minEff, clear = pending.get(tile.key) === rival.id;
+    cells.rival.textContent = rival.rate === null ? `${rival.label} · no live calls yet`
+      : `${rival.label} · ${Math.round(rival.rate * 100)}%${clear ? (autoApply ? ' · clear winner, switching' : ' · clear winner') : short ? ' · needs more calls' : ' · not clearly ahead'}`;
+    cells.rival.title = `${rival.label}: ${rival.rate === null ? 'no live calls yet' : `right ${pct(rival.rate)} live over about ${Math.round(rival.eff)} independent calls’ worth; its cautious estimate is ${pct(rival.lower)}`}. `
+      + `It takes this slot when both it and the setting in use have ${PROMOTION.minEff} independent calls’ worth, its cautious estimate is above the setting in use’s live rate, it is at least ${Math.round(PROMOTION.minRate * 100)}% right, the recording does not say the opposite, and the slot has not changed in the last ${PROMOTION.lockS / 60} minutes. Settings that need more than ${PROMOTION.maxNeed} bars are tested but never switched in.`;
+  }
+  const ranked = rankHorizon === HORIZON_S ? board : leaderboard(experiments, rankHorizon), order = ranked.map(row => row.id).join(' '), body = $('exp-board').tBodies[0];
+  for (const row of ranked) {
+    const node = boardRows.get(row.id), variant = variantById(row.id);
+    node.tr.toggleAttribute('data-in-use', inUse.has(row.id));
+    node.name.textContent = inUse.has(row.id) ? `● ${variant.label}` : variant.label;
+    for (const [i, horizon] of HORIZONS.entries()) hitCell(node.cells[i], experiments.stats(row.id, horizon), horizon, variant.label);
+    node.count.textContent = String(Math.round(row.n));
+  }
+  // Rows are moved only when the ranking changed, so a hover is not interrupted every refresh.
+  if (order !== boardOrder) { boardOrder = order; body.replaceChildren(...ranked.map(row => boardRows.get(row.id).tr)); }
+  for (const th of $('exp-board').tHead.rows[0].cells) th.toggleAttribute('data-rank', th.dataset.horizon === String(rankHorizon));
+  const list = $('exp-log').querySelector('ol');
+  list.replaceChildren(...tuneLog.slice(-20).reverse().map(entry => element('li',
+    `${clock(entry.at)} ${variantById(entry.from).kindName}: ${variantById(entry.from).label} → ${variantById(entry.to).label}`
+    + (numeric(entry.rate) && numeric(entry.incumbentRate) ? ` (${Math.round(entry.rate * 100)}% against ${Math.round(entry.incumbentRate * 100)}% live)` : ''))));
+  if (!tuneLog.length) list.append(element('li', 'No setting has been switched yet.'));
+}
+function showTab(name) {
+  activeTab = name;
+  for (const tab of ['live', 'experiments']) {
+    $(`tab-${tab}`).setAttribute('aria-selected', String(tab === name)); $(`tab-${tab}`).tabIndex = tab === name ? 0 : -1;
+    $(`panel-${tab}`).hidden = tab !== name;
+  }
+  if (name === 'experiments') drawExperiments(); else { drawRibbon(); queueDraw(); }
+}
+/** Switch in every setting that is clearly ahead of the one its tile uses. */
+function tune(nowS) {
+  if (!autoApply) return;
+  const changes = findPromotions({ assignments, book: experiments, locks: slotLocks, nowS });
+  for (const change of changes) {
+    assignments = { ...assignments, [change.slot]: change.to };
+    slotLocks[change.slot] = nowS;
+    tuneLog.push({ at: Date.now(), slot: change.slot, from: change.from, to: change.to, rate: change.rate, incumbentRate: change.incumbentRate });
+  }
+  if (changes.length) { tuneLog = tuneLog.slice(-50); void saveExperiments(); }
+}
+/**
+ * Keep what live testing has learned for this coin, so the next window carries on from it.
+ * One key per coin and one write: two windows on different coins never overwrite each other.
+ */
+const coinKey = () => `${EXPERIMENT_STORAGE}.${SYMBOL}`;
+async function saveExperiments() {
+  experimentsSavedMs = Date.now();
+  if (!SYMBOL_OK) return;
+  try {
+    await chrome.storage.local.set({ [coinKey()]: { savedAt: Date.now(), book: experiments.toJSON(), assignments, log: tuneLog.slice(-50) }, [EXPERIMENT_STORAGE]: { auto: autoApply } });
+  } catch { /* learning is a convenience: the read-outs and the guard run without it */ }
+}
+async function loadExperiments() {
+  try {
+    const stored = await chrome.storage.local.get(SYMBOL_OK ? [EXPERIMENT_STORAGE, coinKey()] : [EXPERIMENT_STORAGE]);
+    const shared = stored[EXPERIMENT_STORAGE], coin = SYMBOL_OK ? stored[coinKey()] : null;
+    autoApply = !(shared && typeof shared === 'object' && shared.auto === false);
+    // Saved rates that do not fit this version's grid are dropped, and the settings chosen from them with them.
+    if (!coin || typeof coin !== 'object' || !experiments.restore(coin.book)) return;
+    assignments = validAssignments(coin.assignments);
+    tuneLog = (Array.isArray(coin.log) ? coin.log : []).filter(entry => entry && numeric(entry.at) && variantById(entry.from) && variantById(entry.to)).slice(-50)
+      .map(entry => ({ at: entry.at, slot: String(entry.slot).slice(0, 24), from: entry.from, to: entry.to, rate: numeric(entry.rate) ? entry.rate : null, incumbentRate: numeric(entry.incumbentRate) ? entry.incumbentRate : null }));
+  } catch { /* start from the recorded rates */ }
 }
 
 /* ------------------------------------------------------------------ guard -- */
@@ -725,14 +883,16 @@ function onClosed(count) {
   const bars = seconds.bars;
   for (let k = count; k >= 1; k--) {
     const prefix = k === 1 ? bars : bars.slice(0, bars.length - k + 1);
-    const tiles = readTiles(prefix), call = scalpCall(tiles), slopes = readSlopes(prefix);
-    book.observe(prefix.at(-1), call);
+    const bar = prefix.at(-1), readings = experiments.observe(prefix);
+    if (bar.time % PROMOTION.everyS === 0) tune(bar.time);
+    const tiles = readSlots(assignments, readings, prefix.length), call = weightedCall(tiles, experiments), slopes = readSlopes(prefix);
+    book.observe(bar, call);
     slopeHistory.observe(slopes);
-    slopeScore.observe(prefix.at(-1), slopes);
-    tileScore.observe(prefix.at(-1), Object.fromEntries(tiles.map(tile => [tile.key, tile.ready ? tile.vote : null])));
+    slopeScore.observe(bar, slopes);
     if (k === 1) view = { tiles, call, slopes, sigma: realizedVolBps(bars, 30) };
   }
   barsVersion++;
+  if (Date.now() - experimentsSavedMs >= 60_000) void saveExperiments();
 }
 
 function onUpdate(snapshot) {
@@ -744,11 +904,11 @@ function onUpdate(snapshot) {
     handleGuard(guard.onQuote(quote, Date.now()));
     try {
       const closed = seconds.push(quote);
-      if (closed === -1) { book.reset(); slopeHistory.reset(); slopeScore.reset(); tileScore.reset(); view = null; barsVersion++; }
+      if (closed === -1) { book.reset(); slopeHistory.reset(); slopeScore.reset(); experiments.reset(); view = null; barsVersion++; }
       else if (closed > 0) onClosed(closed);
       readoutError = '';
     } catch (error) {
-      seconds.reset(); book.reset(); slopeHistory.reset(); slopeScore.reset(); tileScore.reset(); view = null; barsVersion++;
+      seconds.reset(); book.reset(); slopeHistory.reset(); slopeScore.reset(); experiments.reset(); view = null; barsVersion++;
       readoutError = `The read-out failed and restarted (${String(error?.message ?? error).slice(0, 80)}). The guard is unaffected.`;
     }
     // Quotes keep arriving in a hidden window where timers are throttled; use them as the clock too.
@@ -793,10 +953,16 @@ function draw() {
   $('feed').dataset.state = state;
   $('feed').textContent = live ? `Live oracle price · ${((Date.now() - quote.exchangeMs) / 1000).toFixed(1)} s old · ${seconds.bars.length} one-second bars`
     : FEED_TEXT[latest?.error] ?? (quote ? 'Price is stale; waiting for a fresh update' : 'Connecting to Jupiter…');
-  const { mark, text } = drawCall(live);
-  document.title = `${mark} ${SYMBOL} ${quote ? quote.price : ''} · ${text}`;
-  drawChart();
-  if (drawnVersion !== barsVersion) { drawnVersion = barsVersion; drawRibbon(); drawTiles(); drawSlopes(); }
+  // A fault in drawing a read-out must never keep the order panel from refreshing.
+  try {
+    const { mark, text } = drawCall(live);
+    document.title = `${mark} ${SYMBOL} ${quote ? quote.price : ''} · ${text}`;
+    if (activeTab === 'live') drawChart();
+    if (drawnVersion !== barsVersion) { drawnVersion = barsVersion; drawRibbon(); drawTiles(); drawSlopes(); }
+    if (activeTab === 'experiments' && Date.now() - experimentsDrawnMs >= 2000) drawExperiments();
+  } catch (error) {
+    readoutError = `A read-out could not be drawn (${String(error?.message ?? error).slice(0, 80)}). The guard is unaffected.`;
+  }
   drawGuard();
 }
 function queueDraw() {
@@ -840,7 +1006,37 @@ async function changeCoin() {
 $('coin').addEventListener('change', () => void changeCoin());
 void loadCoins();
 $('api-attribution').textContent = `${POWERED_BY} — 1000x public catalog; Pyth oracle stream.`;
-buildTiles(); buildSlopes();
+await loadExperiments();
+// The read-outs are built inside a guard of their own: a fault here must not stop the order panel being wired below.
+try { buildTiles(); buildSlopes(); buildExperiments(); }
+catch (error) { readoutError = `The read-outs could not be built (${String(error?.message ?? error).slice(0, 80)}). The guard is unaffected.`; }
+for (const tab of ['live', 'experiments']) {
+  $(`tab-${tab}`).addEventListener('click', () => showTab(tab));
+  $(`tab-${tab}`).addEventListener('keydown', event => {
+    const other = { ArrowLeft: tab === 'live' ? 'experiments' : 'live', ArrowRight: tab === 'live' ? 'experiments' : 'live', Home: 'live', End: 'experiments' }[event.key];
+    if (!other) return;
+    event.preventDefault();
+    showTab(other); $(`tab-${other}`).focus();
+  });
+}
+$('exp-auto').addEventListener('change', () => { autoApply = $('exp-auto').checked; void saveExperiments(); });
+$('exp-horizon').addEventListener('change', () => { rankHorizon = HORIZONS.includes(Number($('exp-horizon').value)) ? Number($('exp-horizon').value) : HORIZON_S; drawExperiments(); });
+$('exp-defaults').addEventListener('click', () => {
+  // Back to the starting settings; each tile is then left alone for the usual lock time.
+  const nowS = barClock();
+  assignments = { ...DEFAULT_ASSIGNMENTS }; slotLocks = Object.fromEntries(Object.keys(assignments).map(key => [key, nowS]));
+  view = null; barsVersion++; void saveExperiments(); drawExperiments(); queueDraw();
+});
+$('exp-forget').addEventListener('click', event => {
+  const button = $('exp-forget'), now = Date.now();
+  // Two separate presses within four seconds: this throws away everything live testing has learned for this coin.
+  // A double-click is one decision, not two.
+  if (event.detail > 1 || (forgetArmedMs && now - forgetArmedMs < 600)) return;
+  if (now - forgetArmedMs > 4000) { forgetArmedMs = now; button.textContent = 'Press again to forget'; setTimeout(() => { if (Date.now() - forgetArmedMs >= 4000) button.textContent = 'Forget results'; }, 4100); return; }
+  forgetArmedMs = 0; button.textContent = 'Forget results';
+  experiments.clear(); assignments = { ...DEFAULT_ASSIGNMENTS }; slotLocks = {}; tuneLog = [];
+  view = null; barsVersion++; void saveExperiments(); drawExperiments(); queueDraw();
+});
 try {
   const stored = (await chrome.storage.local.get(STORAGE))[STORAGE];
   if (stored && typeof stored === 'object') {
@@ -872,13 +1068,13 @@ window.addEventListener('beforeunload', event => {
   if (LIVE_STATES.includes(guard.snapshot().state) || entry.pending || opening) { event.preventDefault(); event.returnValue = ''; }
 });
 window.addEventListener('resize', drawRibbon);
-window.addEventListener('pagehide', () => { disposed = true; clearInterval(timer); releaseLock?.(); feed?.stop(); chart.remove(); }, { once: true });
+window.addEventListener('pagehide', () => { void saveExperiments(); disposed = true; clearInterval(timer); releaseLock?.(); feed?.stop(); chart.remove(); }, { once: true });
 
 const timer = setInterval(() => { tick(); queueDraw(); }, 250);
 
 attached = (await send('status'))?.attached === true;
 drawPositions(); draw();
-if (/^[A-Z][A-Z0-9]{0,11}$/.test(SYMBOL)) {
+if (SYMBOL_OK) {
   await startFeed();
 } else {
   $('feed').textContent = 'Open this window from the “1s scalp” button on a Jupiter 1000x market.'; $('feed').dataset.state = 'error';

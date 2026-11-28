@@ -90,7 +90,7 @@ input[type=radio]{min-height:16px;accent-color:#6bd9ea}
 #guard-log ol{margin:4px 0;padding-left:18px;font-size:11px;color:var(--muted);max-height:120px;overflow:auto}
 summary{cursor:pointer;font-size:11px}
 footer{font-size:10px;color:var(--muted);margin-top:8px}
-@media(max-width:380px){#tiles{grid-template-columns:repeat(2,minmax(0,1fr))}.levels{grid-template-columns:1fr}th:nth-child(3),td:nth-child(3),th:nth-child(5),td:nth-child(5){display:none}}
+@media(max-width:380px){#tiles{grid-template-columns:repeat(2,minmax(0,1fr))}.levels{grid-template-columns:1fr}#slopes th:nth-child(3),#slopes td:nth-child(3),#slopes th:nth-child(5),#slopes td:nth-child(5){display:none}}
 
 #call-meta{font-variant-numeric:tabular-nums}
 .chips .unit{display:flex;align-items:center;gap:4px;font-size:11px;color:var(--muted);margin-inline-end:4px}
@@ -116,3 +116,30 @@ th:last-child{padding-inline-start:10px}
 
 .levels label span{font-size:10px}
 #guard-tp-note,#guard-sl-note{overflow-wrap:anywhere}
+
+.tabs{display:flex;gap:4px;margin:8px 0 6px;border-bottom:1px solid var(--line)}
+.tabs button{border-radius:6px 6px 0 0;border-bottom:0;background:#141e2d;color:#d4ddec;min-height:30px;padding:3px 14px}
+.tabs button[aria-selected=true]{background:#24344d;color:#fff;font-weight:700;border-color:#8fa3c7}
+.tabs .tag:empty{display:none}
+.tile .weight{height:3px;margin-top:3px;background:#1d2738;border-radius:2px;overflow:hidden}
+.tile .weight i{display:block;height:100%;width:0;background:#8ce2f1;border-radius:2px}
+.tile[data-tuned]{border-style:double;border-width:3px}
+.exp-controls{display:flex;flex-wrap:wrap;align-items:center;gap:6px 14px;margin:6px 0}
+.exp-controls label{display:flex;align-items:center;gap:5px}
+.exp-scroll{max-height:440px;overflow:auto;border:1px solid #35435d;border-radius:5px}
+#exp-board th,#exp-board td{padding:2px 5px}
+#exp-board thead th{position:sticky;top:0;z-index:1;background:#172133}
+#exp-board thead th[data-rank]{color:#fff;font-weight:700;box-shadow:inset 0 -2px #8ce2f1}
+#exp-board tbody th,#exp-slots tbody th{font-weight:500;color:#e7edf8;white-space:nowrap}
+#exp-board tr[data-in-use] th{font-weight:700}
+#exp-slots tr[data-tuned] td:first-of-type{font-weight:700}
+#exp-slots td:nth-child(2),#exp-slots td:last-child,#exp-slots th:nth-child(2),#exp-slots th:last-child{text-align:left;padding-inline-start:8px}
+#exp-slots td:last-child{white-space:normal}
+td[data-vote=warming]{color:var(--muted)}
+td.rec[data-vote=up]{background:transparent;color:var(--up)}
+td.rec[data-vote=down]{background:transparent;color:var(--down)}
+td.rec[data-vote=flat]{background:transparent;color:#d4ddec}
+#exp-log ol{margin:4px 0;padding-left:18px;font-size:11px;color:#d4ddec;max-height:140px;overflow:auto}
+
+#exp-board thead th:last-child{text-align:right}
+[role=tabpanel]:focus-visible{outline:2px solid #79ddf1;outline-offset:2px}

@@ -1,6 +1,6 @@
 # One-second bars and the next 30 seconds on Jupiter 1000x
 
-Version: 1.1.0. Data: Jupiter Pyth oracle ticks, 2026-11-16 to 2026-11-17 and 2026-11-27.
+Version: 1.2.0. Data: Jupiter Pyth oracle ticks, 2026-11-16 to 2026-11-17 and 2026-11-27.
 
 On one-second bars of the Jupiter 1000x oracle price, recent direction persists a little: when twelve or more of sixteen trend readings agreed, the next 30 seconds went their way about 53% of the time. Fading an extreme lost. The 1000x payout needs 61% to 84% on moves of that size, so the read-out is a lean and not a rule that pays.
 
@@ -96,6 +96,37 @@ Most of that move arrives early. Average move in the direction of the call, in b
 
 After a strong call three quarters of the 30 second average is in by 5 seconds and it is flat from 15 seconds on. The window draws this path as its most-likely price line.
 
+### Weighting the vote by each reading's hit rate
+
+The window now weighs each reading by how far its running hit rate over 30 seconds is above 50%; a reading at or under 50% has no say. The running rate is a decayed count (half-life 7,200 seconds of ticks) blended with a starting rate that counts as 300 calls. Strong is a weighted score of 0.75 or more one way, lean 0.375 or more.
+
+The replay is causal. A reading's rate at second *t* counts only calls made 30 or more seconds earlier, the starting rates come from the first 60% of the base recording, and the calls scored are those of the last 40%. Rates are kept per market.
+
+| Aggregate | Strong | Lean | Mixed | Settings switched |
+|---|---|---|---|---|
+| One reading, one vote | 53.3% ± 1.5, 34% of seconds, +0.77 bp | 50.7% ± 1.4 | 49.3% ± 1.9 | |
+| Weighted | 54.4% ± 2.0, 20%, +0.90 bp | 51.8% ± 1.4 | 50.0% ± 1.4 | |
+| Weighted, clear winners switched in | 54.4% ± 1.9, 22%, +0.87 bp | 51.8% ± 1.4 | 50.2% ± 1.4 | 2 |
+| Live, one vote | 54.3% ± 4.3, 33% | 52.3% ± 4.0 | 48.4% ± 4.9 | |
+| Live, weighted | 53.8% ± 4.7, 27% | 50.1% ± 4.0 | 49.5% ± 4.2 | 0 |
+
+Weighting gained about one point for strong and lean calls on the base recording and made "strong" rarer. Each gain is within one standard error, and the live recording shows no difference. After a weighted strong call the average move was +0.56 bp at 5 seconds and +0.90 bp at 30 (lean: +0.21 and +0.49); the window's most-likely line now follows these paths. A score under the lean threshold is scored here by its sign to fill the mixed column; the window shows no direction for it. The thresholds 0.75 and 0.375 and the two constants were fixed before the replay and were not tuned on it; they were also not chosen by any search, so a better pair may exist.
+
+### A wider grid of settings and intervals
+
+The same recording scored 79 settings of fourteen kinds of reading at twelve intervals from 3 seconds to 5 minutes (`experiments` in `summary.json`). Hit rate of following one setting, whole base recording:
+
+| Interval | 3 s | 5 s | 10 s | 30 s | 60 s | 5 min |
+|---|---|---|---|---|---|---|
+| Median of the 79 settings | 53.7% | 53.0% | 52.0% | 50.9% | 51.0% | 50.3% |
+| 60 s breakout | 62.8% | 61.0% | 58.0% | 53.6% | 53.8% | 50.3% |
+| 2 s momentum | 56.8% | 55.6% | 54.1% | 52.0% | 51.8% | 50.9% |
+| 60 s slope | 50.8% | 50.8% | 50.6% | 50.9% | 51.0% | 49.2% |
+
+Persistence is strongest over the first few seconds and is gone by five minutes. A breakout is the best single setting at every interval, and its window matters little: 10 to 300 second breakouts were right 52.7% to 53.2% over 30 seconds on the first 60% and 53.4% to 55.6% afterwards. A short interval is not a better trade for that: the average move over 3 seconds is a fraction of a basis point, a position cannot be closed before 15 seconds, and wins under 0.2 bp pay nothing.
+
+The window keeps running this grid on live ticks and switches a setting into a tile when it is clearly ahead of the one in use: same kind, at least 40 independent calls' worth on both, the lower end of its 90% Wilson interval above the incumbent's live rate, at least 52% right, not ranked below the incumbent on the recording, and needing no more than the grid's 78 bars of warm-up (61 of the 79 settings qualify). Replayed on the base recording the rule fired twice in two days (60 second slope to 5 second, 60 second momentum to 3 second) and left the call's hit rate unchanged (table above). A parity fixture ties the extension's record, weights and switch rule to this module's (`rule` in `extension/test/fixtures/1000x-scalp-parity.json`). Sixty-second momentum and sixty-second efficiency vote identically, since both are the sign of the 60 second change.
+
 ## Slope ladder
 
 For each window, the share of seconds on which following the slope's sign was right over the next 30 seconds, then the same when the slope's second derivative agreed with it ("steepening") and when it disagreed ("fading"). Train, validation, held-out.
@@ -178,7 +209,8 @@ A fixed rule (strong call, or 60 second breakout with the grid agreeing), a fixe
 ```sh
 python -m research.scalp_1s_study --base ~/.local/state/oracle-leverage/dual-quotes \
   --live research/json/scalp-1s-20261127/ticks-live.jsonl.gz --out research/json/scalp-1s-20261127 \
-  --fixture extension/test/fixtures/1000x-scalp-parity.json --js extension/src/1000x/scalp-model-data.js
+  --fixture extension/test/fixtures/1000x-scalp-parity.json --js extension/src/1000x/scalp-model-data.js \
+  --experiments-js extension/src/1000x/scalp-experiments-data.js
 python -m unittest research.tests.test_scalp_1s
 ```
 

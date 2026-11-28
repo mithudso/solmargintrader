@@ -1,5 +1,12 @@
 # Prompt history
 
+Version: 339
+Delta: v338 to v339. Record the request for a hit-rate-weighted aggregate and an Experiments tab in the 1s scalp window.
+
+## 1s scalp window: weighted aggregate and an Experiments tab · 2026-11-28
+
+> Weight the aggregate prediction scores based on the hit rate of each indicator used. Also, since we have effectivley unlimited computing power for this type of analysis, have an experiments tab where you test out a wide range of settings and time frames for each indicator in an ongoing way. Don't be locked into just the time scales I chose either. try different ones. If one is clearly the winner then update the main window with those settings dynamically.
+
 Version: 338
 Delta: v337 to v338. Add the request for a most likely price line on the projection. Earlier: Record the extension error report, the main-checkout sync approval and the follow-up asks for leverage choice, per-indicator hit rates, a coin dropdown and the Perps page.
 

@@ -1,7 +1,26 @@
 # Work continuation
 
-Version: 732
-Delta: v731 to v732. Record the merge of PR 379, the main checkout sync and the most-likely price line. Earlier: Record the owner's local project files kept on master, the cause of the manager-poll error, and the 0.19.0 scalp window additions; the Perps page view is still to do.
+Version: 733
+Delta: v732 to v733. Record the hit-rate-weighted call and the Experiments tab of the 1s scalp window (extension 0.20.0). Earlier:
+
+## 1s scalp window 0.20.0: weighted call and Experiments tab · 2026-11-28
+
+Request (`prompts.md` v339): weight the aggregate by each indicator's hit rate; an Experiments tab that keeps testing a wide range of settings and time frames; update the main window when one is clearly the winner.
+
+Done:
+- **Weighted call.** Each of the sixteen readings counts by how far its running 30 second hit rate is above 50% (`weightedCall` in `extension/src/1000x/scalp-experiments.js`); at or under 50% it has no say. The rate is a decayed count (half-life 7,200 s of ticks) blended with the recorded rate, which counts as 300 calls. Strong at a weighted score of 0.75, lean at 0.375.
+- **Experiments tab.** `ExperimentBook` reads 79 settings (`VARIANTS` in `research/scripts/scalp_1s_features.py`, exported to `extension/src/1000x/scalp-experiments-data.js`) on every closed 1s bar and scores each at twelve intervals, 3 s to 5 min. The tab shows the table, what each tile uses, and the switches made. Results are saved per coin under `jupiter1000xScalpExperiments` in `chrome.storage.local`.
+- **Switching.** `findPromotions`: same kind, unused, 40 independent calls' worth on both sides, Wilson lower bound (z 1.64) above the incumbent's live rate, at least 52%, not ranked below the incumbent on the recording, need of at most 78 bars, ten minute lock. On by default; it changes read-outs only. The Python replay runs the same rule and `rule` in the parity fixture ties the two.
+
+Measured (`research/json/scalp-1s-20261127/summary.json`, `weighted_vote`): causal replay on the last 40% of the base recording gave strong calls 53.3% ± 1.5 unweighted, 54.4% ± 2.0 weighted, 54.4% ± 1.9 with switching (two switches in two days). The 43 minute live check shows no difference (54.3% ± 4.3 against 53.8% ± 4.7). The gain is within one standard error.
+
+Found on the way: hit rate rises as the interval shortens (median setting 53.7% at 3 s, 50.9% at 30 s, 50.3% at 5 min; best breakout 63% at 3 s). The call stays on 30 s because a 3 s move is a fraction of a basis point and a position cannot be closed before 15 s.
+
+Verification: 848 extension tests; 21 research tests (`research.tests.test_scalp_1s`); `npm run e2e:scalp -- --full` 17 of 17. Independent review of the new code: 0 Critical, 0 High, 2 Medium, 13 Low; both Mediums and nine Lows fixed, not re-reviewed.
+Not done: the weighting constants and tier thresholds were set before the replay and not searched; the switch rule is same-kind only; saving and loading the record in the window has no automated test beyond the restore checks.
+Remaining: the same view and function on the Jupiter Perps page (25× and 50×).
+
+Earlier delta, v731 to v732. Record the merge of PR 379, the main checkout sync and the most-likely price line. Earlier: Record the owner's local project files kept on master, the cause of the manager-poll error, and the 0.19.0 scalp window additions; the Perps page view is still to do.
 
 ## Main checkout sync and scalp window 0.19.0 · 2026-11-28
 

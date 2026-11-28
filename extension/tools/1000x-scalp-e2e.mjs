@@ -30,6 +30,7 @@ const option = (name, fallback) => args.includes(name) ? args[args.indexOf(name)
 const EXT = path.resolve(option('--extension', path.resolve(here, '..')));
 const FULL = args.includes('--full');
 const OUT = option('--evidence', null);
+if (OUT) fs.mkdirSync(OUT, { recursive: true });
 const { launch, findChromeForTesting, sleep } = await import(pathToFileURL(path.join(EXT, 'e2e/lib/cdp.mjs')));
 const CATALOG = 'https://yolo-api.jup.ag/markets';
 const HISTORY = 'https://perps-api.jup.ag/v1/pyth/fixed_rate%40200ms/history';
@@ -249,7 +250,7 @@ try {
     assert(help.heads.length === 8 && help.heads.every(length => length > 60), 'a ladder column title lacks a description');
     assert(help.rows.length === 6 && help.rows.every(length => length > 60), 'a ladder row lacks its baseline');
     assert(help.prose === 0, 'explanatory paragraphs are still in the window');
-    assert(/right \d+\.\d%, \d+\.\d% and \d+\.\d%/.test(help.tile), 'a tile does not state its own record');
+    assert(/On the recording, following it over the next 30 seconds was right \d+\.\d% of the time/.test(help.tile), 'a tile does not state its own record');
     return { layout, labelled: help.labelled };
   });
 
@@ -437,7 +438,7 @@ try {
     const seen = await until(() => state(`(() => { const tiles = [...document.querySelectorAll('.tile')]; const cells = tiles.map(tile => [...tile.querySelectorAll('.hits i')].map(cell => cell.textContent));
       return cells.length === 16 && cells.every(row => row.length === 6) && /^[0-9]+$/.test(cells[0][0]) && /^[0-9]+$/.test(cells[0][2])
         ? { impulse: cells[0], title: tiles[0].querySelector('.hits i').title, late: cells[0][5] } : null; })()`), 'settled hit rates on the first tile', 60_000);
-    assert(/Impulse 2s was right [0-9]+% of the time over the next 5s/.test(seen.title), `a hit-rate cell does not explain itself: ${seen.title}`);
+    assert(/Momentum 2s was right [0-9]+% of the time over the next 5s/.test(seen.title), `a hit-rate cell does not explain itself: ${seen.title}`);
     assert(seen.late === '·', 'the 5 minute interval showed a rate before five minutes had passed');
     return seen;
   });
@@ -446,9 +447,36 @@ try {
     await until(() => ev(scalp, `document.getElementById('call').dataset.tier !== 'warming'`), 'call ready', 120_000);
     const state = await ev(scalp, `({ tier: document.getElementById('call').dataset.tier, direction: document.getElementById('call').dataset.direction, text: document.getElementById('call-text').textContent, detail: document.getElementById('call').title, meta: document.getElementById('call-meta').textContent, warm: document.querySelectorAll('.tile[data-vote=warming]').length, count: document.getElementById('tiles-count').textContent, title: document.title })`);
     assert(state.warm === 0 && ['strong', 'lean', 'mixed'].includes(state.tier), JSON.stringify(state));
-    assert(/On the recording the grid was chosen from/.test(state.detail) && /separate short live check/.test(state.detail), 'the hover text does not state the measured hit rate and the untouched check');
-    assert(/recorded [0-9.]+% · live check [0-9.]+% ± [0-9.]+/.test(state.meta), `the line under the call lacks its numbers: ${state.meta}`);
+    assert(/replayed without looking ahead/.test(state.detail) && /separate short live check/.test(state.detail) && /weighs each of the sixteen readings/.test(state.detail), 'the hover text does not state the measured hit rate, the untouched check and the weighting');
+    assert(/weighted [+−]?[0-9]+% · recorded [0-9.]+% · live check [0-9.]+% ± [0-9.]+/.test(state.meta), `the line under the call lacks its numbers: ${state.meta}`);
     return state;
+  });
+
+  await check('the Experiments tab tests every setting at every interval, shows what each tile uses, and stays out of the order panel', async () => {
+    await trustedClick(scalp, `document.getElementById('tab-experiments')`);
+    const seen = await until(() => state(`(() => { const board = document.getElementById('exp-board'), rows = [...board.tBodies[0].rows];
+      return !document.getElementById('panel-experiments').hidden && rows.length > 70 ? { hidden: document.getElementById('panel-live').hidden, rows: rows.length,
+        columns: board.tHead.rows[0].cells.length, intervals: [...board.tHead.rows[0].cells].slice(1, -1).map(th => th.textContent),
+        slots: document.querySelectorAll('#exp-slots tbody tr').length, inUse: document.querySelectorAll('#exp-board tr[data-in-use]').length,
+        status: document.getElementById('exp-status').textContent, auto: document.getElementById('exp-auto').checked, cell: rows[0].cells[6].textContent, cellTitle: rows[0].cells[6].title,
+        liveCells: document.querySelectorAll('#exp-board td[data-vote]:not(.rec):not([data-vote=warming])').length,
+        says: [...document.querySelectorAll('#exp-slots tbody tr')].map(tr => tr.cells[2].textContent), rival: document.querySelector('#exp-slots tbody tr').cells[5].title,
+        guard: getComputedStyle(document.getElementById('guard')).display, call: getComputedStyle(document.getElementById('call')).display } : null; })()`), 'the Experiments tab');
+    assert(seen.hidden && seen.rows === 79 && seen.slots === 16 && seen.inUse === 16, `tab contents: ${JSON.stringify(seen)}`);
+    assert(seen.columns === 14 && seen.intervals.join(' ') === '3s 5s 10s 15s 20s 30s 45s 1m 90s 2m 3m 5m', `intervals: ${seen.intervals}`);
+    assert(/Testing 79 settings at 12 intervals/.test(seen.status) && seen.auto === true, seen.status);
+    assert(/^[0-9]+$/.test(seen.cell) && /next 30s/.test(seen.cellTitle), `a cell does not explain itself: ${seen.cellTitle}`);
+    assert(seen.liveCells > 0, 'no live result replaced a recorded figure');
+    assert(/cautious estimate/.test(seen.rival), 'the switch rule is not explained');
+    assert(seen.guard !== 'none' && seen.call !== 'none', 'the order panel or the call left the screen');
+    if (FULL) assert(seen.says.every(text => /^[0-9]+%$/.test(text)) && Math.abs(seen.says.reduce((sum, text) => sum + Number.parseInt(text, 10), 0) - 100) <= 8, `says: ${seen.says}`);
+    if (OUT) {
+      const shot = await browser.call('Page.captureScreenshot', { format: 'png', captureBeyondViewport: true }, scalp.sessionId);
+      fs.writeFileSync(path.join(OUT, 'experiments.png'), Buffer.from(shot.data, 'base64'));
+    }
+    await trustedClick(scalp, `document.getElementById('tab-live')`);
+    await until(() => state(`!document.getElementById('panel-live').hidden && document.getElementById('panel-experiments').hidden && document.querySelector('.tile .weight i') !== null`), 'back on the Live tab');
+    return { rows: seen.rows, intervals: seen.intervals.length, liveCells: seen.liveCells, status: seen.status };
   });
 
   await check('the coin dropdown switches the watched coin and blocks entries while the Jupiter tab shows another', async () => {
