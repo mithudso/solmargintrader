@@ -1,7 +1,27 @@
 # Work continuation
 
-Version: 735
-Delta: v734 to v735. Record that Jupiter's own TP/SL does not exist on HYPE or ZEC, which blocks the owner's chosen design for those markets. Earlier:
+Version: 736
+Delta: v735 to v736. Record the entry and arming wording fix (0.21.2), the consecutive-strong and fade studies, and the owner's choice of a window-run TP/SL for ZEC and HYPE. Earlier:
+
+## Scalp window 0.21.2, two studies, and the ZEC/HYPE decision · 2026-11-28
+
+Request (`prompts.md` v341). The owner could not tell how to open a trade: the badge read "Disarmed" and the buttons were off with no visible reason (the reason was hover-only, and hidden entirely while Unlock was unticked).
+
+Done (0.21.2): the line under Long and Short always says why they are off or that they are ready; the badge and status read "TP/SL off" and say that this does not block an entry; Arm's hover says it needs a listed position. `docs/JUPITER-1000X-SCALP.md` has a six-step how-to.
+
+Studies (`research/json/scalp-1s-20261127/summary.json`, keys `consecutive_strong` and `fade_below_half`; `research/papers/SCALP-1S-STUDY.md` v1.3.0):
+- Two strong calls in a row were right 54.7% ± 1.0 at 30 s against 54.5% for the first: no gain from waiting. Reversed 45.3%; a strong call the other way within 60 s 55.6%; price reached the 1000x bust distance against the call inside the 30 s in 12.9% (9.7% live).
+- Betting against a reading whose running hit rate is under 50% won 49.0% ± 0.6 on the base recording and 46% to 47% live. Negative weights in the aggregate did not help. Not adopted.
+
+Data note: the window does not save its per-second calls, so "data so far" is the recorded ticks (base 2026-11-16/17, live 2026-11-27). A further 45 minute recording was started at `~/.local/share/solmargintrader/research/scalp-1s-20261127/ticks-live-20261128.jsonl`; `--extra-live` scores it for these two studies only.
+
+Owner's decisions, 2026-11-28: remove the temporary extension copy (done: `/Users/mitch/dev/worktrees/scalp-extension-0170` is gone, so Chrome must load `/Users/mitch/dev/solmargintrader/extension`); build Long, Short and TP/SL for ZEC and HYPE on the Perps page with a programmatic (window-run) TP/SL, since Jupiter offers none there.
+
+Remaining: the ZEC/HYPE Perps build. Known: order form controls (read live). Not known: a position row and the close flow on a beta market; no position was open.
+
+Verification: 851 extension tests; 25 research tests; `npm run e2e:scalp` 17 of 17.
+
+Earlier delta, v734 to v735. Record that Jupiter's own TP/SL does not exist on HYPE or ZEC, which blocks the owner's chosen design for those markets. Earlier:
 
 ## Perps TP/SL: not offered on HYPE or ZEC · 2026-11-28
 

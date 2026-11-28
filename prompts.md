@@ -1,5 +1,13 @@
 # Prompt history
 
+Version: 341
+Delta: v340 to v341. Record the owner's question about arming and entries, and the request to analyse consecutive strong signals and betting against an indicator with a sub-50% hit rate.
+
+## 1s scalp window: arming, consecutive strong signals, fading a losing indicator · 2026-11-28
+
+> It says that it's disarmed and I can't arm it or make the scalper initiate a trade, how do I disarm it and tell it to make the trade? Also look at the data so far as it's been accumulated so far, and identify how often two consecutive strong buy/sell signals were correct 30s later, and also how often two consecutive strong buy/sell signals were followed by a reversal.
+> Also model what would happen if when an indicator goes into the negative hit rate, what happens if you start betting against that indicator?
+
 Version: 340
 Delta: v339 to v340. Record the owner's decision that the Perps page uses Jupiter's own TP/SL.
 

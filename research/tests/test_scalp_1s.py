@@ -366,5 +366,156 @@ class ScalpExperimentTests(unittest.TestCase):
         )
 
 
+class ScalpStreakAndFadeTests(unittest.TestCase):
+    def _series(self, score, sign, fwd=None, lowest=None, highest=None):
+        n = len(score)
+        return {
+            "group": 0,
+            "time": np.arange(1_800_000_000, 1_800_000_000 + n, dtype=np.int64),
+            "ready": np.ones(n, dtype=bool),
+            "weighted": np.array(score, dtype=float),
+            "plain": np.zeros(n),
+            "sign": np.array(sign, dtype=float),
+            "fwd": np.array(
+                fwd if fwd is not None else [float(v) for v in sign], dtype=float
+            ),
+            "lowest": np.array(
+                lowest if lowest is not None else [-1.0] * n, dtype=float
+            ),
+            "highest": np.array(
+                highest if highest is not None else [1.0] * n, dtype=float
+            ),
+        }
+
+    def test_strong_calls_are_counted_by_their_place_in_a_run(self):
+        # Sixty one-second runs, sixty runs of three and sixty of seven, all strong up, spaced by quiet seconds.
+        score, sign = [], []
+        for length, right in ((1, 1), (3, -1), (7, 1)):
+            for _ in range(60):
+                score += [0.9] * length + [0.0] * 3
+                sign += [right] * length + [0] * 3
+        out = X.streaks([self._series(score, sign)], 30)["weighted"]
+        self.assertEqual(
+            out["runs"],
+            {
+                "count": 180,
+                "mean_s": (60 + 180 + 420) / 180,
+                "median_s": 3.0,
+                "one_second_only": 60,
+            },
+        )
+        self.assertEqual(
+            [out[b]["n"] for b in ("1", "2", "3-5", "6-10", "2+")],
+            [180, 120, 60 * 1 + 60 * 3, 60 * 2, 480],
+        )
+        # The second second in a row: sixty in runs that went against, sixty in runs that went with.
+        self.assertAlmostEqual(out["2"]["correct"], 0.5)
+        self.assertAlmostEqual(out["2"]["reversed"], 0.5)
+        self.assertAlmostEqual(out["6-10"]["correct"], 1.0)
+        self.assertEqual(out["11+"], {"n": 0})
+        # A lean, or a strong call the other way, breaks the run.
+        broken = X.streaks(
+            [self._series(([0.9, 0.5, 0.9, -0.9, -0.9] + [0.0] * 5) * 60, [1] * 600)],
+            30,
+        )["weighted"]
+        self.assertEqual([broken[b]["n"] for b in ("1", "2")], [180, 60])
+        self.assertAlmostEqual(broken["2"]["correct"], 0.0)
+
+    def test_a_reversal_is_measured_three_ways(self):
+        # A strong up call every ten seconds; a strong down call follows forty seconds after every other one.
+        n = 1200
+        score = np.zeros(n)
+        score[::20] = 0.9
+        score[40::40] = -0.9
+        lowest = np.full(n, -1.0)
+        lowest[
+            ::80
+        ] = -12.0  # some up calls see price fall past the bust distance on the way
+        highest = np.full(n, 6.0)  # every down call sees price rise 6 bp on the way
+        out = X.streaks(
+            [self._series(score, np.sign(score) * -1, lowest=lowest, highest=highest)],
+            30,
+        )["weighted"]["1"]
+        self.assertAlmostEqual(out["reversed"], 1.0)
+        self.assertAlmostEqual(out["correct"], 0.0)
+        ups = int((score > 0).sum())
+        downs = int((score < 0).sum())
+        self.assertEqual(out["n"], ups + downs)
+        # Up calls at 0, 20, 60, 100...: a down call within sixty seconds follows each of them.
+        self.assertGreater(out["flipped_within_60s"], 0.9)
+        busted = int(((score > 0) & (lowest <= -9.8)).sum())
+        self.assertAlmostEqual(out["adverse_bust"], busted / (ups + downs))
+        self.assertAlmostEqual(out["adverse_5bp"], (busted + downs) / (ups + downs))
+
+    def test_the_call_series_is_the_replay_second_by_second(self):
+        prior = {variant["id"]: 0.52 for variant in F.VARIANTS}
+        slots = [F.TILE_VARIANTS[key] for key, _, _ in S.TILES]
+        groups = [[_frame(_walk(1500, 11))], [_frame(_walk(1500, 12))]]
+        replayed = X.replay(groups, slots, prior, S.HORIZON)
+        # A switch changes only the tuned grid; the weighted call keeps the starting one.
+        strong = [0, 0]
+        for fr in X.call_series(groups, slots, prior, S.HORIZON):
+            mask = (
+                fr["ready"]
+                & (np.abs(fr["weighted"]) >= X.WEIGHTED_STRONG)
+                & (fr["sign"] != 0)
+            )
+            strong[0] += int(mask.sum())
+            strong[1] += int((np.sign(fr["weighted"][mask]) == fr["sign"][mask]).sum())
+        row = replayed["weighted"]["strong"]
+        self.assertEqual(strong[0], row["n"])
+        if "hit" in row:
+            self.assertAlmostEqual(strong[1] / strong[0], row["hit"], places=12)
+
+    def test_fading_wins_exactly_when_the_reading_was_wrong(self):
+        slots = [F.TILE_VARIANTS[key] for key, _, _ in S.TILES]
+        frame = _frame(
+            100.0 * np.exp(np.cumsum(np.random.default_rng(13).normal(0.0, 2e-5, 8000)))
+        )
+        out = X.fade([[frame]], slots, S.HORIZON)
+        self.assertEqual(len(out["cases"]), len(X.FADE_HALF_LIVES) * len(X.FADE_BELOW))
+        for case in out["cases"]:
+            for name in ("tiles", "all"):
+                row = case[name]
+                if row["below_calls"]:
+                    self.assertAlmostEqual(
+                        row["follow_when_below"] + row["fade_when_below"],
+                        1.0,
+                        places=12,
+                    )
+        # One reading, one memory, recomputed call by call from the definition.
+        case = next(
+            c for c in out["cases"] if c["half_life_s"] == 600 and c["below"] == 0.5
+        )
+        self.assertTrue(
+            case["tiles_each"], "some reading spent time under 50% on a random walk"
+        )
+        chosen = case["tiles_each"][0][0]
+        ids = [variant["id"] for variant in F.VARIANTS]
+        _, sign, counted, correct = X.outcomes(frame, ids, S.HORIZON)
+        v = ids.index(chosen)
+        decay = math.exp(-math.log(2) / 600)
+        hit = calls = 0.0
+        below = right = 0
+        for t in range(sign.size):
+            hit *= decay
+            calls *= decay
+            if t >= S.HORIZON:
+                hit += float(correct[t - S.HORIZON, v])
+                calls += float(counted[t - S.HORIZON, v])
+            if (
+                sign[t] != 0
+                and counted[t, v]
+                and calls >= X.FADE_MIN_CALLS
+                and hit / calls < 0.5
+            ):
+                below += 1
+                right += int(correct[t, v])
+        mine = [row for row in case["tiles_each"] if row[0] == chosen]
+        self.assertGreaterEqual(below, 600)
+        self.assertEqual(mine[0][1], below)
+        self.assertAlmostEqual(mine[0][2], 1.0 - right / below, places=12)
+
+
 if __name__ == "__main__":
     unittest.main()

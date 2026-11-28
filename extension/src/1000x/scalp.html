@@ -92,7 +92,7 @@
     </div>
 
     <aside id="guard" aria-labelledby="guard-title" data-state="idle">
-      <h2 id="guard-title" title="Open a position with the page's own order form, and protect a listed position with a take profit and stop loss. The window presses buttons on the Jupiter tab; Jupiter builds each trade and your wallet signs it. Closes fill at the oracle price about two seconds later with no price limit, and not before the 15 second minimum hold. The guard runs only while this window is open.">Order <span id="guard-badge" class="tag">Disarmed</span></h2>
+      <h2 id="guard-title" title="Open a position with the page's own order form, and protect a listed position with a take profit and stop loss. The window presses buttons on the Jupiter tab; Jupiter builds each trade and your wallet signs it. Closes fill at the oracle price about two seconds later with no price limit, and not before the 15 second minimum hold. The guard runs only while this window is open.">Order <span id="guard-badge" class="tag" title="State of the take profit and stop loss watch only. “TP/SL off” means no level is being watched; it does not block Long or Short.">TP/SL off</span></h2>
       <p id="guard-page" class="muted" role="status">Reading the Jupiter tab…</p>
       <p id="perps-note" hidden>Read-outs only. On the Jupiter Perps page this window presses nothing.</p>
 
@@ -149,7 +149,7 @@
         <button id="guard-show" type="button" title="Bring the Jupiter tab to the front, for example to approve a wallet prompt.">Jupiter tab</button>
       </div>
       <p id="guard-errors" role="alert"></p>
-      <p id="guard-status" role="status" aria-live="assertive">Disarmed. Nothing is watched.</p>
+      <p id="guard-status" role="status" aria-live="assertive">TP/SL off.</p>
       <details id="guard-log"><summary title="What the window asked the Jupiter tab to do in this session, and what came back.">Log</summary><ol></ol></details>
     </aside>
   </main>

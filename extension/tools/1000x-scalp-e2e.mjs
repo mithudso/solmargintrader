@@ -259,12 +259,16 @@ try {
     catch (error) { throw new Error(`${error.message}: ${await text(scalp, 'guard-page')}`); }
     const seen = await state(`({ option: document.getElementById('guard-position').selectedOptions[0].textContent, page: document.getElementById('guard-page').textContent, detail: document.getElementById('guard-position-detail').textContent,
       mode: document.querySelector('input[name="guard-mode"]:checked').value, guard: document.getElementById('guard').dataset.state, unit: document.getElementById('guard-unit').value,
-      unlocked: document.getElementById('entry-unlock').checked, confirm: document.getElementById('entry-confirm').checked, long: document.getElementById('entry-long').disabled, short: document.getElementById('entry-short').disabled })`);
+      unlocked: document.getElementById('entry-unlock').checked, confirm: document.getElementById('entry-confirm').checked, long: document.getElementById('entry-long').disabled, short: document.getElementById('entry-short').disabled,
+      why: document.getElementById('entry-status').textContent, badge: document.getElementById('guard-badge').textContent, watch: document.getElementById('guard-status').textContent })`);
     assert(/SOL · 1,000× long · entry \$100\.0000/.test(seen.option), `position not read: ${seen.option}`);
     assert(/bust 99\.902/.test(seen.detail) && /Close button: locked \(Close in 3s\)/.test(seen.detail), `detail: ${seen.detail}`);
     assert(/Available 15\.80352 JupUSD · page leverage 1,000× · Classic/.test(seen.page), `order form not read: ${seen.page}`);
     assert(seen.mode === 'alert' && seen.guard === 'idle' && seen.unit === 'bp', 'the guard did not start disarmed, alert-only, in bp');
     assert(!seen.unlocked && seen.confirm && seen.long && seen.short, 'entries did not start locked and confirmed');
+    // The reason the buttons are off is on screen, and the take profit and stop loss state does not read as a block on entries.
+    assert(/^Long and Short are off: Tick Unlock/.test(seen.why), `the window does not say how to enable entries: ${seen.why}`);
+    assert(seen.badge === 'TP/SL off' && /does not block Long or Short/.test(seen.watch), `guard wording: ${seen.badge} | ${seen.watch}`);
     return seen;
   });
 
