@@ -1,7 +1,7 @@
 # Prompt history
 
-Version: 337
-Delta: v336 to v337. Record the extension error report, the main-checkout sync approval and the follow-up asks for leverage choice, per-indicator hit rates, a coin dropdown and the Perps page.
+Version: 338
+Delta: v337 to v338. Add the request for a most likely price line on the projection. Earlier: Record the extension error report, the main-checkout sync approval and the follow-up asks for leverage choice, per-indicator hit rates, a coin dropdown and the Perps page.
 
 ## 1s scalp window follow-ups and main checkout sync · 2026-11-28
 
@@ -16,6 +16,8 @@ Delta: v336 to v337. Record the extension error report, the main-checkout sync a
 > Also for each of the indicators have it also display a running hit rate for each. at each of the different time intervals.
 
 > Also add the option to change which coin is being watched with a drop down of the coin name at the very top.
+
+> Also for the right facing parabolic projection in the graph, project a most likely price line.
 
 The owner also forwarded a side agent's note that the take profit and stop loss boxes default to distances in basis points, so a typed price would be misread.
 

@@ -1,6 +1,6 @@
 # One-second bars and the next 30 seconds on Jupiter 1000x
 
-Version: 1.0.0. Data: Jupiter Pyth oracle ticks, 2026-11-16 to 2026-11-17 and 2026-11-27.
+Version: 1.1.0. Data: Jupiter Pyth oracle ticks, 2026-11-16 to 2026-11-17 and 2026-11-27.
 
 On one-second bars of the Jupiter 1000x oracle price, recent direction persists a little: when twelve or more of sixteen trend readings agreed, the next 30 seconds went their way about 53% of the time. Fading an extreme lost. The 1000x payout needs 61% to 84% on moves of that size, so the read-out is a lean and not a rule that pays.
 
@@ -85,6 +85,16 @@ Net votes out of sixteen. "Strong" is a net 12 or more, "lean" 6 to 11, "mixed" 
 The order mixed, lean, strong held on every slice, and the live recording agrees with the base in direction. Its error bars are wide: on their own the live figures do not separate 54% from 50%. The effect was larger for BTC than for ZEC.
 
 The average move in the direction of a strong call was 0.45 to 0.96 basis points on the base slices and 0.24 on the live one. That is a fraction of the typical 30 second move.
+
+Most of that move arrives early. Average move in the direction of the call, in basis points, over the whole base recording:
+
+| Seconds after the call | 5 | 10 | 15 | 20 | 25 | 30 |
+|---|---|---|---|---|---|---|
+| Strong | 0.43 | 0.52 | 0.57 | 0.58 | 0.58 | 0.58 |
+| Lean | 0.17 | 0.22 | 0.23 | 0.25 | 0.27 | 0.26 |
+| Mixed | 0.05 | 0.08 | 0.09 | 0.10 | 0.07 | 0.03 |
+
+After a strong call three quarters of the 30 second average is in by 5 seconds and it is flat from 15 seconds on. The window draws this path as its most-likely price line.
 
 ## Slope ladder
 

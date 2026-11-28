@@ -1,6 +1,6 @@
 # Jupiter 1000x: 1s scalp window and exit guard
 
-Version: 2.1.0. Delta: coin dropdown, 500× or 1,000× leverage choice, a running hit rate per reading at six intervals, and a refusal when a price is typed into a distance field; extension 0.19.0, 2026-11-28.
+Version: 2.2.0. Delta: the projection's centre is now a labelled most-likely price line drawn from the measured average path after a call; extension 0.19.1, 2026-11-28.
 
 ## What it is
 
@@ -60,7 +60,7 @@ opening, and after any gap.
 | Part | What it shows |
 | --- | --- |
 | Call | **UP** or **DOWN · strong** when at least 12 of 16 readings net one way, **lean** from 6, **MIXED** below. The line under it gives the vote count, the hit rate for that tier on the recording the grid was chosen from, the figure from the separate short live check with its error bar, and the typical 30 second move now. Hover the box for the full sentence. |
-| Chart | 1s candles for the last 150 seconds. Ahead of price: a dashed centre line and the bands inside which 68% and 90% of recorded 30 second moves ended, scaled by the last 30 seconds' volatility. Entry, bust, take profit and stop loss appear as price lines. |
+| Chart | 1s candles for the last 150 seconds. Ahead of price: a thick **likely** line, the most likely price over the next 30 seconds, and the bands inside which 68% and 90% of recorded 30 second moves ended, scaled by the last 30 seconds' volatility. The likely line is the current price plus the average move that followed calls of the current tier in the recording: +0.43 bp after 5 seconds and +0.58 bp after 30 for a strong call, so most of it arrives early and it is small next to the bands. With a mixed grid it is flat. Entry, bust, take profit and stop loss appear as price lines. |
 | Strips | Top: the call made each second for the last 120 seconds. Bottom: whether that call was right 30 seconds later. |
 | Trend grid | The sixteen readings. Green votes up, red votes down, grey is neutral, dashed is warming up. Every tile also carries an arrow and its value, and six small numbers: its own running hit rate, in percent, over the next 5 s, 10 s, 20 s, 30 s, 1 min and 5 min. |
 | Slope ladder | Per window (5s, 10s, 20s, 30s, 1m, 5m): the fitted slope, the range it has moved in, its second derivative, that range, how long the slope has held its sign, the average and longest completed run this session, and a running accuracy gauge. |

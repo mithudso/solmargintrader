@@ -35,6 +35,8 @@ ENTRY_DELAY = (
 )
 MAX_LOOKBACK = 120  # the extension warms up from live ticks only; keep that wait short
 SPLIT = (0.6, 0.8)
+# Seconds ahead at which the average move after a call is measured, for the chart's most-likely line.
+PATH_STEPS = (5, 10, 15, 20, 25, 30)
 # The extension grid. Every tile votes +1, -1 or 0 with the sign of its feature
 # ("follow": a rising reading votes up). The set was fixed after reading the
 # base recording: one parameter set per family, at most 90 s of warm-up, kept
@@ -144,6 +146,11 @@ def frames(ticks) -> list:
         c = seg["close"]
         fwd = np.full(n, np.nan)
         fwd[: n - HORIZON] = (c[HORIZON:] / c[:-HORIZON] - 1.0) * 1e4
+        # Move to each intermediate step, kept as pseudo-features so the same split and masks apply.
+        for step in PATH_STEPS:
+            ahead = np.full(n, np.nan)
+            ahead[: n - step] = (c[step:] / c[:-step] - 1.0) * 1e4
+            feats[f"ahead_{step}"] = ahead
         result.append(
             {
                 "time": seg["time"],
@@ -317,7 +324,7 @@ def main(argv=None) -> int:
         max(fr["time"][-1] for fr in all_base),
     )
     names = sorted(all_base[0]["features"])
-    directional = [n for n in names if not n.startswith("rv_")]
+    directional = [n for n in names if not n.startswith(("rv_", "ahead_"))]
 
     def lookback(name):
         tail = [int(p) for p in name.split("_")[1:] if p.isdigit()]
@@ -754,6 +761,22 @@ def main(argv=None) -> int:
                 )
                 / sum(vote_eval[k]["n"] for k in pooled),
             }
+    # The average move in the direction of the call at each step ahead, per tier, on the base recording.
+    # This is the chart's most-likely line: where price went on average after a grid like this one.
+    ahead_names = [f"ahead_{step}" for step in PATH_STEPS]
+    xa, _, _ = stack(all_base, grid_names + ahead_names, 0.0, 1.0, span)
+    net_all = F.vote(xa[:, : len(grid_names)]).sum(axis=1)
+    for tier, (floor, ceil) in (
+        ("mixed", (1, LEAN)),
+        ("lean", (LEAN, STRONG)),
+        ("strong", (STRONG, len(TILES) + 1)),
+    ):
+        mask = (np.abs(net_all) >= floor) & (np.abs(net_all) < ceil)
+        if tier in measured and mask.sum() >= 300:
+            signed = np.sign(net_all[mask])[:, None] * xa[mask][:, len(grid_names) :]
+            measured[tier]["path_bps"] = [
+                [step, float(signed[:, k].mean())] for k, step in enumerate(PATH_STEPS)
+            ]
     # The live recording is the only sample that played no part in choosing the tiles.
     for tier, row in measured.items():
         live_row = vote_eval.get("live_all", {}).get(tier, {})
@@ -764,7 +787,7 @@ def main(argv=None) -> int:
                 "n": live_row["n"],
             }
     model = {
-        "version": 3,
+        "version": 4,
         "horizon_s": HORIZON,
         "warmup_s": TILE_WARMUP,
         "lean": LEAN,
