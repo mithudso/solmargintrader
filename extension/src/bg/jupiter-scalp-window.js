@@ -6,27 +6,40 @@ const RELAY_TIMEOUT_MS = 4000;
 // An open waits for the page's form to settle and gives up on its own after six seconds.
 const OPEN_TIMEOUT_MS = 8000;
 
-function jupiterMarket(value) {
+const PERPS_ROUTE = /^\/perps\/(?:long|short)\/(?:JupUSD-(SOL|ETH|BTC|ZEC|HYPE)|USDC-(ZEC|HYPE))\/?$/;
+
+/**
+ * The Jupiter page a request came from: its venue and market, or null when the
+ * address is not a Jupiter trading page this module serves. A 1000x address
+ * with no market gives an empty symbol.
+ */
+function jupiterPage(value) {
   try {
     const url = new URL(value);
-    if (url.origin !== 'https://jup.ag' || !/^\/1000x\/?$/.test(url.pathname)) return null;
-    const symbol = url.searchParams.get('market') ?? '';
-    return SYMBOL.test(symbol) ? symbol : '';
+    if (url.origin !== 'https://jup.ag') return null;
+    if (/^\/1000x\/?$/.test(url.pathname)) {
+      const symbol = url.searchParams.get('market') ?? '';
+      return { venue: '1000x', symbol: SYMBOL.test(symbol) ? symbol : '' };
+    }
+    const perps = PERPS_ROUTE.exec(url.pathname);
+    return perps ? { venue: 'perps', symbol: perps[1] ?? perps[2] } : null;
   } catch {
     return null;
   }
 }
 
 /**
- * One 1s scalp window per Jupiter 1000x tab, and the only route from that
- * window to the tab's page bridge. The window can read the tab's listed
+ * One 1s scalp window per Jupiter tab, and the only route from that window to
+ * the tab's page bridge. On a 1000x tab the window can read the listed
  * positions and order form, ask for one Close click, and ask for one Long or
  * Short press; nothing else is relayed, and only the window this module opened
- * for that tab may ask. Session state survives MV3
- * worker eviction.
+ * for that tab may ask. On a Perps tab the window is read-outs only: nothing
+ * is read from or pressed on that page. Session state survives MV3 worker
+ * eviction.
  */
 export function createJupiterScalpWindows({ runtime, storage, tabs, windows, setTimeoutImpl = globalThis.setTimeout, clearTimeoutImpl = globalThis.clearTimeout }) {
-  const pageURL = symbol => `${runtime.getURL(PAGE)}#market=${encodeURIComponent(symbol)}`;
+  const pageURL = (symbol, venue = '1000x') => `${runtime.getURL(PAGE)}#market=${encodeURIComponent(symbol)}${venue === 'perps' ? '&venue=perps' : ''}`;
+  const venueOf = entry => entry.venue === 'perps' ? 'perps' : '1000x';
   const load = async () => (await storage.get(STORAGE))[STORAGE] ?? {};
   const save = entries => storage.set({ [STORAGE]: entries });
   let queue = Promise.resolve();
@@ -61,7 +74,7 @@ export function createJupiterScalpWindows({ runtime, storage, tabs, windows, set
 
   function panelEntry(entries, sender) {
     return Object.entries(entries).find(([, entry]) => entry.panelTabId === sender.tab.id
-      && entry.windowId === sender.tab.windowId && sender.url === pageURL(entry.symbol));
+      && entry.windowId === sender.tab.windowId && sender.url === pageURL(entry.symbol, venueOf(entry)));
   }
 
   /** Ask the owning tab's content script; a missing or late reply is an explicit failure. */
@@ -87,14 +100,14 @@ export function createJupiterScalpWindows({ runtime, storage, tabs, windows, set
         const tabId = sender?.tab?.id;
         if (sender?.frameId !== 0 || !Number.isInteger(tabId)) throw new Error('The scalp window requires its owning browser tab');
         const entries = await load();
-        const market = jupiterMarket(sender.url);
+        const page = jupiterPage(sender.url), market = page ? page.symbol : null;
 
         if (market === null) {
           // Requests from the scalp window itself.
           const match = panelEntry(entries, sender);
-          if (!match) throw new Error('This scalp window is not attached to a Jupiter 1000x tab');
+          if (!match) throw new Error('This scalp window is not attached to a Jupiter tab');
           const [sourceTabId, entry] = match;
-          if (action === 'status') return { attached: true, symbol: entry.symbol };
+          if (action === 'status') return { attached: true, symbol: entry.symbol, venue: venueOf(entry) };
           if (action === 'setMarket') {
             // The window is about to reload on another coin; its address is checked against this symbol.
             if (!SYMBOL.test(args.market ?? '') || !/^[A-Z]/.test(args.market)) return { ok: false, reason: 'invalid_request' };
@@ -109,6 +122,8 @@ export function createJupiterScalpWindows({ runtime, storage, tabs, windows, set
             await save(entries);
             return { ok: true, live: entry.guardLive };
           }
+          // A window opened from the Perps page shows read-outs only: its page is never read or pressed.
+          if (venueOf(entry) === 'perps' && ['positions', 'closePosition', 'openPosition'].includes(action)) return { ok: false, reason: 'view_only' };
           if (action === 'positions') return relay(Number(sourceTabId), { action: 'positions' });
           if (action === 'closePosition') {
             const expect = args.expect;
@@ -144,7 +159,7 @@ export function createJupiterScalpWindows({ runtime, storage, tabs, windows, set
         }
         if (action !== 'open') throw new Error('Invalid scalp window action');
         if (!market) throw new Error('Select a Jupiter 1000x market first');
-        if (entry && entry.symbol === market) {
+        if (entry && entry.symbol === market && venueOf(entry) === page.venue) {
           await windows.update(entry.windowId, { focused: true });
           return { open: true };
         }
@@ -159,9 +174,9 @@ export function createJupiterScalpWindows({ runtime, storage, tabs, windows, set
           popup = await windows.create({ type: 'popup', url: 'about:blank', width: 980, height: 940, focused: true });
           const panelTabId = (popup?.tabs ?? (await windows.get(popup.id, { populate: true })).tabs)?.[0]?.id;
           if (!Number.isInteger(popup?.id) || !Number.isInteger(panelTabId)) throw new Error('Chrome did not create a scalp window');
-          entries[tabId] = { windowId: popup.id, panelTabId, symbol: market };
+          entries[tabId] = { windowId: popup.id, panelTabId, symbol: market, venue: page.venue };
           await save(entries);
-          await tabs.update(panelTabId, { url: pageURL(market) });
+          await tabs.update(panelTabId, { url: pageURL(market, page.venue) });
           return { open: true };
         } catch (error) {
           if (entries[tabId]) await drop(entries, tabId, { closeWindow: true });

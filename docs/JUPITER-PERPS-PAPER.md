@@ -14,6 +14,8 @@ The ZEC routes also show the standalone [ZEC Volty 25×
 bot](JUPITER-ZEC-VOLTY.md). Its order evidence comes from a separate local GUM
 owner. The paper controls have no effect on that owner.
 
+The panel's **1s scalp** button opens the [1s scalp window](JUPITER-1000X-SCALP.md#on-the-jupiter-perps-page) for the market in view: a next-30-second read-out from one-second oracle bars and its Experiments tab. On the Perps page that window is read-outs only and presses nothing.
+
 ## Indicators and learning
 
 The chart shows its newest source minute in UTC. The muted forming candle updates as consecutive one-minute source candles close. The chart flags stale candles after two minutes. It refreshes when the tab comes back into view, and **Latest** returns the chart to the newest candles. Indicators use completed candles at the selected interval. The chart uses the 1000x calculations for EMA 9/21, MACD, RSI, Balance of Power, Volty, Parabolic SAR and confirmed ZigZag. Each market has a separate prospective closed-minute price learner for the six 1000x horizons. The learner waits for enough consecutive native bars and a fresh source mark. It resolves samples only from complete future closes after their forecast was issued. The separate 1000x high-frequency quote learner needs its own faster feed.

@@ -79,7 +79,8 @@
     scalp.type = 'button';
     scalp.id = 'smt-1000x-scalp';
     scalp.textContent = '1s scalp';
-    scalp.title = 'Open the 1s scalp window: next-30s read-out, take profit and stop loss';
+    scalp.title = perps ? 'Open the 1s scalp window for this market: next-30s read-out and the Experiments tab. Read-outs only on the Perps page.'
+      : 'Open the 1s scalp window: next-30s read-out, take profit and stop loss';
     scalp.addEventListener('click', async event => {
       if (!event.isTrusted || scalp.disabled) return;
       scalp.disabled = true;
@@ -104,7 +105,7 @@
       mounted.toggleAttribute('data-detached', detached);
       mounted.toggleAttribute('data-window-error', Boolean(status.textContent));
       popout.hidden = !canDetach || detached || !controls.hidden;
-      scalp.hidden = !canDetach || !controls.hidden;
+      scalp.hidden = !(canDetach || (perps && Boolean(symbol))) || !controls.hidden;
       focus.hidden = dock.hidden = !detached;
       popout.disabled = focus.disabled = dock.disabled = pending;
       move.hidden = detached || !controls.hidden;

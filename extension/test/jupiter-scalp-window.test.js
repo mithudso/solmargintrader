@@ -69,7 +69,7 @@ test('only the window this worker opened may read positions or ask for a close',
   const panel = panelOf(state);
   // A rebuilt worker (MV3 eviction) still knows the window.
   const recovered = createJupiterScalpWindows(options);
-  assert.deepEqual(await recovered.control('status', panel), { attached: true, symbol: 'SOL' });
+  assert.deepEqual(await recovered.control('status', panel), { attached: true, symbol: 'SOL', venue: '1000x' });
   assert.deepEqual(await recovered.control('positions', panel), { ok: true, recognized: true, positions: [{ coin: 'SOL' }] });
   assert.deepEqual(state.sent.at(-1), [2, { type: 'jupiter1000xPage', action: 'positions' }, { frameId: 0 }]);
   await recovered.control('closePosition', panel, { expect });
@@ -124,7 +124,7 @@ test('the window can be re-bound to another coin, but not under a live guard', a
   // The window reloads on its new address; the old one is no longer this window's.
   await assert.rejects(scalp.control('status', panel), /not attached/);
   const moved = { ...panel, url: 'chrome-extension://fixture/src/1000x/scalp.html#market=BTC' };
-  assert.deepEqual(await scalp.control('status', moved), { attached: true, symbol: 'BTC' });
+  assert.deepEqual(await scalp.control('status', moved), { attached: true, symbol: 'BTC', venue: '1000x' });
   await scalp.control('openPosition', moved, { side: 'long', fraction: 1 });
   assert.equal(state.sent.at(-1)[1].request.coin, 'BTC', 'entries go to the coin the window now watches');
   await scalp.control('guardState', moved, { live: true });
@@ -204,4 +204,55 @@ test('the registry command validates before anything reaches a page', async () =
   // Outside Chrome (CLI, HTTP API) there is no page to act on.
   await assert.rejects(runCommand({ name: 'jupiterScalpWindow', args: { action: 'open' }, deps: { store: {} } }),
     error => error instanceof CommandError && error.status === 501);
+});
+
+test('a Perps tab opens a read-outs-only window: nothing on that page is read or pressed', async () => {
+  const perps = { ...source, url: 'https://jup.ag/perps/long/USDC-HYPE' };
+  const { state, scalp } = harness({ tabUrl: perps.url });
+  assert.deepEqual(await scalp.control('open', perps), { open: true });
+  assert.equal(panelOf(state).url, 'chrome-extension://fixture/src/1000x/scalp.html#market=HYPE&venue=perps');
+  const panel = panelOf(state);
+  assert.deepEqual(await scalp.control('status', panel), { attached: true, symbol: 'HYPE', venue: 'perps' });
+  // No relay to the page for any of the three page actions.
+  for (const [action, args] of [['positions', {}], ['closePosition', { expect: { ...expect, coin: 'HYPE' } }], ['openPosition', { side: 'long', fraction: 0.25 }]]) {
+    assert.deepEqual(await scalp.control(action, panel, args), { ok: false, reason: 'view_only' }, action);
+  }
+  assert.equal(state.sent.length, 0);
+  // Bringing the Jupiter tab forward still works.
+  assert.deepEqual(await scalp.control('showJupiter', panel), { ok: true });
+  // The same window address without the venue is a stranger, and so is the 1000x form of it.
+  await assert.rejects(scalp.control('status', { ...panel, url: 'chrome-extension://fixture/src/1000x/scalp.html#market=HYPE' }), /not attached/);
+  // Switching the coin keeps the window read-outs only.
+  assert.deepEqual(await scalp.control('setMarket', panel, { market: 'ZEC' }), { ok: true, symbol: 'ZEC' });
+  const moved = { ...panel, url: 'chrome-extension://fixture/src/1000x/scalp.html#market=ZEC&venue=perps' };
+  assert.deepEqual(await scalp.control('status', moved), { attached: true, symbol: 'ZEC', venue: 'perps' });
+  assert.deepEqual(await scalp.control('positions', moved), { ok: false, reason: 'view_only' });
+});
+
+test('Perps routes: every listed market and both sides open, anything else is refused', async () => {
+  for (const [path, symbol] of [['/perps/long/JupUSD-SOL', 'SOL'], ['/perps/short/JupUSD-BTC', 'BTC'], ['/perps/long/JupUSD-ETH', 'ETH'],
+    ['/perps/short/USDC-ZEC', 'ZEC'], ['/perps/long/JupUSD-HYPE', 'HYPE'], ['/perps/long/USDC-HYPE/', 'HYPE']]) {
+    const { state, scalp } = harness();
+    await scalp.control('open', { ...source, url: `https://jup.ag${path}` });
+    assert.equal(panelOf(state).url, `chrome-extension://fixture/src/1000x/scalp.html#market=${symbol}&venue=perps`, path);
+  }
+  for (const path of ['/perps', '/perps/long/USDC-SOL', '/perps/long/USDC-DOGE', '/perps/flat/USDC-HYPE', '/perps/long/USDC-HYPE/extra', '/swap/SOL-USDC']) {
+    const { state, scalp } = harness();
+    await assert.rejects(scalp.control('open', { ...source, url: `https://jup.ag${path}` }), /not attached|Invalid scalp window action|Select a Jupiter/, path);
+    assert.equal(state.opened.size, 0, path);
+  }
+  await assert.rejects(harness().scalp.control('open', { ...source, url: 'https://evil.example/perps/long/USDC-HYPE' }), /not attached/);
+});
+
+test('moving a tab between 1000x and Perps replaces the window instead of reusing the wrong mode', async () => {
+  const { state, scalp } = harness();
+  await scalp.control('open', { ...source, url: 'https://jup.ag/1000x?market=HYPE' });
+  assert.equal(panelOf(state).url.endsWith('#market=HYPE'), true);
+  await scalp.control('open', { ...source, url: 'https://jup.ag/perps/long/USDC-HYPE' });
+  assert.deepEqual([state.opened.size, panelOf(state).url.endsWith('#market=HYPE&venue=perps')], [1, true]);
+  await scalp.control('open', { ...source, url: 'https://jup.ag/1000x?market=HYPE' });
+  assert.deepEqual([state.opened.size, panelOf(state).url.endsWith('#market=HYPE')], [1, true]);
+  // A 1000x window still relays; the Perps restriction did not leak into it.
+  assert.equal((await scalp.control('positions', panelOf(state))).ok, true);
+  assert.equal(state.sent.length, 1);
 });
