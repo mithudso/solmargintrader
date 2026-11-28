@@ -3,10 +3,10 @@ import assert from 'node:assert/strict';
 import { importSource } from './helpers/import-source.js';
 import { MemoryStore } from '../src/storage/memoryStore.js';
 import { ConfigStore } from '../src/storage/store.js';
-async function worker() {
+async function worker(extraRuntime = {}) {
   const listeners={}, alarms=new Map(), data=new Map(), events=[], logs=[];
   const store = new MemoryStore();
-  globalThis.chrome={runtime:{onInstalled:{addListener:fn=>listeners.installed=fn},onStartup:{addListener:fn=>listeners.startup=fn},onMessage:{addListener:fn=>listeners.message=fn}},
+  globalThis.chrome={runtime:{...extraRuntime,onInstalled:{addListener:fn=>listeners.installed=fn},onStartup:{addListener:fn=>listeners.startup=fn},onMessage:{addListener:fn=>listeners.message=fn}},
     storage:{local:{get:async key=>({[key]:data.get(key)}),set:async values=>{for(const [k,v] of Object.entries(values))data.set(k,v);}}},
     alarms:{get:async name=>alarms.get(name),create:async(name,options)=>alarms.set(name,options),clear:async name=>alarms.delete(name),onAlarm:{addListener:fn=>listeners.alarm=fn}},
     action:{setBadgeText:async()=>{},setBadgeBackgroundColor:async()=>{}}};
@@ -37,6 +37,27 @@ test('CDO-9ca6f8975f alarm failures emit fixed safe diagnostics and a durable co
   finally{console.error=original;}
   assert.ok(errors.length);assert.ok(!JSON.stringify(errors).includes('synthetic-secret'));
   assert.ok((await f.store.recentEvents()).some(e=>e.type==='background-failure'&&e.operation==='manager-poll'));
+});
+test('files changed under the loaded extension are a quiet notice with a reload request, never an error entry',async()=>{
+  // The packaged files read one way when the worker starts and another way afterwards, as after an update on disk.
+  let body='loaded'; const originalFetch=globalThis.fetch;
+  globalThis.fetch=async()=>({ok:true,text:async()=>body});
+  const errors=[], infos=[], originalError=console.error, originalInfo=console.info;
+  try{
+    // getURL exists when the worker takes its baseline, as it does in Chrome.
+    const fresh=await worker({getURL:path=>`chrome-extension://fixture/${path}`,connectNative:()=>{throw new Error('no native host in this test');}});
+    console.error=(...args)=>errors.push(args); console.info=(...args)=>infos.push(args);
+    body='changed on disk';
+    await fresh.listeners.alarm({name:'solmargintrader-manager'});
+    for(let i=0;i<80;i++)await Promise.resolve();
+    await new Promise(resolve=>setTimeout(resolve,20));
+    assert.deepEqual(errors,[],'a changed source must not be logged as an error');
+    assert.equal(infos.length,1);
+    assert.match(String(infos[0][0]),/files on disk changed since it was loaded; it reloads itself when idle/);
+    const events=await fresh.store.recentEvents();
+    assert.ok(events.some(e=>e.type==='source-changed'&&e.operation==='manager-poll'));
+    assert.ok(!events.some(e=>e.type==='background-failure'));
+  } finally { console.error=originalError; console.info=originalInfo; globalThis.fetch=originalFetch; }
 });
 test('CDO-7947b7c6b5 actual installed listener forwards update details and preserves owner KILL',async()=>{
   const f=await worker(); f.data.set('runtime',{armed:true,killSwitch:true});f.data.set('config',{mode:'full-auto'});
