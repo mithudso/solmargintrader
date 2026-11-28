@@ -127,6 +127,31 @@ See [design, formulas and verification](../docs/JUPITER-1000X-OVERLAY.md),
 [optimized execution prompt](../docs/JUPITER-1000X-OVERLAY-PROMPT.md), and
 [SDK create/close capabilities and remaining gates](../docs/JUPITER-1000X-SDK.md).
 
+## Jupiter 1000x 1s scalp window and exit guard (0.17.0)
+
+The Indicators overlay on `https://jup.ag/1000x` has a **1s scalp** button. It
+opens a separate compact window for that market with two jobs.
+
+It reads the next 30 seconds from one-second oracle bars: sixteen trend readings
+vote, the window shows the vote, a 1s chart with the expected 30 second range
+drawn ahead of price, a slope ladder (5s to 5m, with each slope's second
+derivative, range and time since its last reversal) and a score of its own
+calls. The grid needs about 80 seconds of live ticks to warm up. In the study a
+one-sided grid was right about 53% of the time, which the 1000x payout does not
+reward: treat it as a lean.
+
+It adds a take profit and a stop loss for one listed position. Alert only is
+the default. In close mode the window asks the Jupiter tab to press that
+position's own Close button when the oracle price reaches a level. Jupiter
+builds the close and the wallet signs it; the extension never signs, never
+opens a position and never presses "Close all". A stale price, an ambiguous
+row or an unreadable page is refused and reported. The guard stops when its
+window closes. A close on a real open position has not been exercised.
+
+See [the window, its rails and its limits](../docs/JUPITER-1000X-SCALP.md) and
+[the study](../research/papers/SCALP-1S-STUDY.md). Run `npm run e2e:scalp` for
+the real-browser gate.
+
 ## Shared automatic paper trading (0.11.0)
 
 **Start Paper** runs the selected BTC/ZEC 10x or 1000x observed-price model through

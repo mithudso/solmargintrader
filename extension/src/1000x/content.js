@@ -74,6 +74,25 @@
       });
       return button;
     };
+    // The 1s scalp view is its own window; this button only asks the worker to open it.
+    const scalp = document.createElement('button');
+    scalp.type = 'button';
+    scalp.id = 'smt-1000x-scalp';
+    scalp.textContent = '1s scalp';
+    scalp.title = 'Open the 1s scalp window: next-30s read-out, take profit and stop loss';
+    scalp.addEventListener('click', async event => {
+      if (!event.isTrusted || scalp.disabled) return;
+      scalp.disabled = true;
+      status.textContent = '';
+      try {
+        const response = await chrome.runtime.sendMessage({ type: 'jupiterScalpWindow', action: 'open' });
+        if (!response?.ok) throw new Error(response?.error ?? 'Chrome did not respond');
+      } catch {
+        if (active()) status.textContent = 'Could not open the 1s scalp window. Try again.';
+      } finally {
+        if (active()) { scalp.disabled = false; renderWindow(); }
+      }
+    });
     const popout = windowButton('popout', 'Pop out', 'open');
     const focus = windowButton('focus', 'Focus', 'focus');
     const dock = windowButton('dock', 'Dock', 'dock');
@@ -85,6 +104,7 @@
       mounted.toggleAttribute('data-detached', detached);
       mounted.toggleAttribute('data-window-error', Boolean(status.textContent));
       popout.hidden = !canDetach || detached || !controls.hidden;
+      scalp.hidden = !canDetach || !controls.hidden;
       focus.hidden = dock.hidden = !detached;
       popout.disabled = focus.disabled = dock.disabled = pending;
       move.hidden = detached || !controls.hidden;
@@ -196,7 +216,7 @@
     });
     bar.addEventListener('pointerup', () => { drag = null; });
     bar.addEventListener('lostpointercapture', () => { drag = null; });
-    bar.append(heading, popout, focus, dock, toggle, close, move, controls);
+    bar.append(heading, scalp, popout, focus, dock, toggle, close, move, controls);
     shadow.append(style, bar, status, body);
     document.documentElement.append(host);
     onWindowClosed = canDetach ? () => {
@@ -245,6 +265,23 @@
   };
   chrome.runtime.onMessage.addListener(({ type } = {}, sender) => {
     if (sender.id === chrome.runtime.id && type === 'jupiter1000xWindowClosed') onWindowClosed?.();
+  });
+  // Page bridge for the 1s scalp window. Only this extension's background worker
+  // may use it (a tab, even one of ours, is refused), and only on the 1000x route.
+  chrome.runtime.onMessage.addListener((message, sender, respond) => {
+    if (sender.id !== chrome.runtime.id || sender.tab || message?.type !== 'jupiter1000xPage') return undefined;
+    const bridge = globalThis.__smt1000xBridge;
+    let reply;
+    try {
+      if (!bridge || !/^\/1000x\/?$/.test(location.pathname)) reply = { ok: false, reason: 'not_on_1000x' };
+      else if (message.action === 'positions') reply = { ok: true, ...bridge.readPositions(document) };
+      else if (message.action === 'closePosition') reply = { ok: true, ...bridge.closePosition(document, message.expect) };
+      else reply = { ok: false, reason: 'unknown_action' };
+    } catch {
+      reply = { ok: false, reason: 'page_read_failed' };
+    }
+    respond(reply);
+    return false;
   });
   resume();
   window.addEventListener('resize', () => {

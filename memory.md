@@ -1,5 +1,19 @@
 # Work continuation
 
+Version: 729
+Delta: v728 to v729. Record the Jupiter 1000x 1s scalp window, its exit guard and the 1s study behind it.
+
+## Jupiter 1000x 1s scalp window and exit guard · 2026-11-27
+
+Request (`prompts.md` v333 to v335): a compact separate view on https://jup.ag/1000x with 1s-window analysis, a colour-coded indicator grid and chart for the next 30 seconds, a take profit and stop loss that act on the page, a slope ladder (5s to 5 min) with its second derivative, per-window slope and acceleration extremes, and average and maximum time before a slope reversal.
+Done, extension 0.17.0: `extension/src/1000x/scalp.html`, `scalp.css`, `scalp.js` (the window), `scalp-indicators.js` and `scalp-model.js` (pure readings, vote, cone, slope history, score book, BigInt payout port), `scalp-model-data.js` (generated study constants), `exit-guard.js` (pure guard), `page-bridge.js` (content script: reads the positions table, presses one row's own Close), `extension/src/bg/jupiter-scalp-window.js` (one window per Jupiter tab and the only relay to the bridge), the `jupiterScalpWindow` command, and a **1s scalp** button in the overlay title bar. Guide: `docs/JUPITER-1000X-SCALP.md`.
+Study: `research/papers/SCALP-1S-STUDY.md`, runner `python -m research.scalp_1s_study`, features `research/scripts/scalp_1s_features.py`, outputs `research/json/scalp-1s-20261127/` (summary, model, and the live ticks). Base data is the local `~/.local/state/oracle-leverage/dual-quotes` capture (BTC and ZEC, 33 hours, outside git); the live check is 43 minutes of five markets recorded on 2026-11-27.
+Findings: at 1s only trend persistence shows. A net 12 or more of 16 readings was right 52.5%, 53.1% and 53.6% on the three base slices and 54.3% ± 4.3 on the untouched live sample; a 60 second breakout alone about 55%; fading extremes lost (46% to 47%); the two-bar reversal rule failed. A slope keeps its sign for about one window length (5.9 s for 5s, 287 s for 5 min), as a random walk would. The 1000x payout needs 61% to 84% on moves of 2 to 10 bp, and one call per 30 seconds lost about 5% of collateral per trade. The window says so in its own text.
+Guard rails: alert only by default; arming needs a trusted click; quotes older than two seconds never trigger and show ARMED BUT NOT PROTECTED; the bridge presses only an enabled button reading exactly "Close" on the one row matching market, side, leverage and entry text; no second press within ten seconds or after an unconfirmed press; every refusal ends in a visible failure. The extension never signs: Jupiter builds the close and the wallet signs it.
+Verification: 811 extension tests (29 new, including Python parity of all sixteen readings, the slope ladder and the payout on recorded bars), 12 research tests, and `npm run e2e:scalp` (Chrome for Testing, fixture page and loopback oracle; 8 checks, 9 with `--full`): alert mode presses nothing, close mode presses the row's Close once after the hold lock clears, never "Close all". The browser gate found two defects before delivery: the worker cannot read a tab's address without the `tabs` permission, and a relayed `{ ok: false }` reply was treated as an extension error.
+Not verified: a close on a real open position. None was opened; the live page showed the expected table headers with no rows. The table layout comes from the public bundle `1000x-Bz57naGJ.js` in the local archive and has no compatibility promise.
+Remaining: the owner's first real use is the first live test of the press, the wallet prompt and the confirmation. The main checkout still loads extension 0.16.7 until it is synced (it has local files that collide with master).
+
 Version: 728
 Delta: v727 to v728. Record the HYPE working paper published to the oraclebot.io journal and the reusable paper builder.
 

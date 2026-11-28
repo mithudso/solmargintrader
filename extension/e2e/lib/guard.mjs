@@ -50,6 +50,8 @@ export const FORBIDDEN_MESSAGES = Object.freeze([
   // Window creation needs a separate trusted-gesture/lifetime browser probe.
   'openLiveWindow',
   'jupiterIndicatorWindow',
+  // Opens a window and can relay one Close click to a page; tools/1000x-scalp-e2e.mjs is its own gate.
+  'jupiterScalpWindow',
   // Delegated controls require the separate isolated paper-manager gate.
   'browserManagerSnapshot',
   'browserManagerPoll',
