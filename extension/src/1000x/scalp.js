@@ -25,7 +25,16 @@ const $ = id => document.getElementById(id);
 const PARAMS = new URLSearchParams(location.hash.slice(1));
 const SYMBOL = PARAMS.get('market') || '';
 // Opened from the Jupiter Perps page: read-outs only. That page's order form and positions are never read or pressed.
-const VIEW_ONLY = PARAMS.get('venue') === 'perps';
+const PERPS = PARAMS.get('venue') === 'perps';
+// The beta markets (HYPE, ZEC) have no take profit or stop loss of their own, so there this window opens,
+// watches and closes as it does on 1000x. Every other Perps market stays read-outs only.
+const PERPS_BETA = PERPS && Object.hasOwn(PERPS_MARKETS, SYMBOL) && PERPS_MARKETS[SYMBOL].venue === 'GUM';
+const VIEW_ONLY = PERPS && !PERPS_BETA;
+// First maintenance tier and taker fee, in basis points of position size (docs/JUPITER-PERPS-PAPER.md).
+const PERPS_TERMS = { HYPE: { maintenanceBps: 200, takerBps: 3.5 }, ZEC: { maintenanceBps: 100, takerBps: 3.5 } };
+const PAGE_NAME = PERPS ? 'Perps' : '1000x', EDGE = PERPS_BETA ? 'liquidation' : 'bust';
+// The oracle this window watches is not the venue's own mark price. Further apart than this and a level is not armed.
+const MAX_BASIS_BPS = 25;
 const STORAGE = 'jupiter1000xScalp';
 const LOG_STORAGE = 'jupiter1000xScalpLog';
 const EXPERIMENT_STORAGE = 'jupiter1000xScalpExperiments';
@@ -59,6 +68,11 @@ const REASONS = {
   leverage_button_unavailable: 'the page has no such leverage preset', leverage_not_set: 'the page did not switch leverage',
   guard_live: 'a take profit or stop loss is live', page_changed: 'the Jupiter page changed market or mode',
   page_unreadable: 'the Jupiter page can no longer be read',
+  positions_tab_not_shown: 'the Positions tab is not showing on the Jupiter Perps page', mode_not_market: 'the Jupiter order form is not on its Market tab',
+  no_balance: 'no USDC is available on the Jupiter Perps page', side_not_set: 'the page did not switch to that side',
+  close_dialog_already_open: 'a “Close Entire Position?” question is already open on the Jupiter page', close_confirm_unavailable: 'the page asked to confirm the close and its Confirm button could not be pressed',
+  view_only: 'this market is read-outs only on the Perps page', not_on_perps: 'the Jupiter tab is not on this window’s Perps market',
+  leverage_unreadable: 'the leverage on the Jupiter order form could not be read', row_unreadable: 'a position row could not be read',
 };
 const TRANSIENT = new Set(['page_timeout', 'page_unreachable', 'page_no_reply', 'extension_unreachable']);
 const FEED_RESTART = new Set(['reconnect_exhausted', 'subscription_refused']);
@@ -78,6 +92,32 @@ let assignments = { ...DEFAULT_ASSIGNMENTS }, slotLocks = {}, tuneLog = [], auto
 let experimentsSavedMs = Date.now(), experimentsDrawnMs = 0, rankHorizon = HORIZON_S, boardOrder = '', forgetArmedMs = 0;
 /** The oracle clock of the last closed bar, which is what the switch rule's locks are kept in. */
 const barClock = () => seconds.bars.at(-1)?.time ?? Math.floor(Date.now() / 1000);
+/** Distance from entry to the bust (1000x) or to the estimated liquidation (Perps), in basis points. */
+const bustBps = leverage => !leverage ? null : PERPS_BETA ? Math.max(0, 1e4 / leverage - PERPS_TERMS[SYMBOL].maintenanceBps) : bustFraction(leverage) * 1e4;
+/** Estimated result of a move as a percent of collateral: the 1000x payout formula, or a straight leveraged move less both taker fees. */
+function estimateResult({ entry, mark, side, leverage }) {
+  if (!PERPS_BETA) return payoutPercent({ entry, mark, side, leverage });
+  if (!(entry > 0) || !(mark > 0) || !leverage) return null;
+  const move = (side === 'long' ? 1 : -1) * (mark / entry - 1) * 1e4;
+  return { liquidated: move <= -bustBps(leverage), percent: (move - 2 * PERPS_TERMS[SYMBOL].takerBps) * leverage / 100 };
+}
+/** How far the watched oracle price is from the page's own mark price for a position, in basis points; null when unknown. */
+const basisBps = position => { const price = currentPrice(); return price !== null && numeric(position?.mark) && position.mark > 0 ? (price / position.mark - 1) * 1e4 : null; };
+/** On Perps the levels are judged on the oracle price, so it must be close to the page's mark price. */
+function basisErrors(position) {
+  if (!PERPS_BETA || !position) return [];
+  // The mark price comes from the last read of the page: it must be a whole, current read.
+  if (!(pageState?.ok && pageState.recognized) || pageState.unreadable || Date.now() - lastPollMs > 5000) return ['The Jupiter page has not been read in the last few seconds, so its mark price is not current. Show its Positions tab and try again.'];
+  const basis = basisBps(position);
+  return basis === null ? ['The page’s mark price or the oracle price could not be read, so the levels cannot be checked against each other.']
+    : Math.abs(basis) > MAX_BASIS_BPS ? [`The oracle price this window watches is ${signed(basis, 1)} bp from the page’s mark price for ${SYMBOL} (limit ${MAX_BASIS_BPS} bp). The levels would act at the wrong price.`] : [];
+}
+/** On Perps a stop must clear the listed liquidation price by the basis limit, or the venue could liquidate before the oracle reaches it. */
+function stopMarginErrors(position, stopLoss) {
+  if (!PERPS_BETA || !position || !numeric(stopLoss) || !numeric(position.bust) || !(position.entry > 0)) return [];
+  const room = Math.abs(stopLoss - position.bust) / position.entry * 1e4;
+  return room < MAX_BASIS_BPS ? [`Stop loss is only ${room.toFixed(0)} bp from the liquidation price. Keep it at least ${MAX_BASIS_BPS} bp inside, because the levels are judged on the oracle price, not the page’s mark price.`] : [];
+}
 const warmupBars = () => Math.max(...Object.values(assignments).map(id => variantById(id).need));
 const emptyTiles = () => readSlots(assignments, new Map(), 0);
 const guard = new ExitGuard(), entry = new EntryTracker(), events = [];
@@ -85,7 +125,7 @@ let feed, latest = null, lastQuoteMs = 0, view = null, disposed = false, drawQue
 let attached = false, linked = false, pageState = { ok: false, reason: 'not_started' }, positions = [], polling = false, lastPollMs = 0, closing = false;
 // Only these are remembered between windows. Unlock, Confirm and the size are never stored:
 // every window starts locked, confirming and at a quarter, whatever the last one was left at.
-const DEFAULT_SETTINGS = Object.freeze({ mode: 'alert', unit: 'bp', takeProfit: '', stopLoss: '' });
+const DEFAULT_SETTINGS = Object.freeze({ mode: 'alert', unit: 'bp', takeProfit: '', stopLoss: '', muted: false });
 let settings = { ...DEFAULT_SETTINGS }, audio = null, priceLines = [], lastStatus = '', opening = false, logCount = -1;
 let lastFeedStartMs = 0, unprotectedAlertMs = 0, reportedLive = null, releaseLock = null, readoutError = '';
 
@@ -531,8 +571,10 @@ async function record(snapshot) {
 function alertOwner(title, message) {
   try {
     chrome.notifications?.create(`smt-scalp-${Date.now()}`, { type: 'basic', iconUrl: chrome.runtime.getURL('icons/icon-128.png'),
-      title, message, priority: 2, requireInteraction: true });
+      title, message, priority: 2, requireInteraction: true, silent: settings.muted === true });
   } catch { /* the status line and the sound still report it */ }
+  // Muted: the notification and the on-screen status still report it, without sound.
+  if (settings.muted) return;
   try {
     audio ??= new AudioContext();
     for (let i = 0; i < 3; i++) {
@@ -617,7 +659,7 @@ function drawPositions() {
   }
   const readable = pageState?.ok && pageState.recognized;
   $('guard-page').textContent = VIEW_ONLY ? `Opened from the Jupiter Perps page for ${SYMBOL || 'no market'}.`
-    : !attached ? 'Open this window from the “1s scalp” button on the Jupiter 1000x tab to use the guard.'
+    : !attached ? `Open this window from the “1s scalp” button on the Jupiter ${PAGE_NAME} tab to use the guard.`
     : !readable ? `Cannot read positions: ${reasonText(pageState?.reason)}.`
       : positions.length ? `${positions.length} open ${SYMBOL} position${positions.length > 1 ? 's' : ''} on the Jupiter tab.`
         : `No open ${SYMBOL} position is listed on the Jupiter tab${pageState.pending ? ' (one is still opening)' : ''}.`;
@@ -630,7 +672,7 @@ function drawPositions() {
   if (readable && pageState.unreadable) $('guard-page').textContent += ` ${pageState.unreadable} listed row${pageState.unreadable > 1 ? 's' : ''} could not be read (${pageState.problems.map(reasonText).join(', ')}).`;
   const position = selectedPosition();
   $('guard-position-detail').textContent = position
-    ? `Mark ${numeric(position.mark) ? position.mark : 'n/a'} · bust ${numeric(position.bust) ? position.bust : 'n/a'} · collateral ${position.collateral || 'n/a'} · ${position.mode || 'mode n/a'} · Close button: ${position.close.state}${position.close.label && position.close.state !== 'ready' ? ` (${position.close.label})` : ''}`
+    ? `Mark ${numeric(position.mark) ? position.mark : 'n/a'}${PERPS_BETA && basisBps(position) !== null ? ` (oracle ${signed(basisBps(position), 1)} bp from it)` : ''} · ${EDGE} ${numeric(position.bust) ? position.bust : 'n/a'} · collateral ${position.collateral || 'n/a'} · ${position.mode || 'mode n/a'} · Close button: ${position.close.state}${position.close.label && position.close.state !== 'ready' ? ` (${position.close.label})` : ''}`
     : '';
 }
 
@@ -644,20 +686,20 @@ function levelNote(position, text, kind) {
     if (priceLike(distance, latest?.quote?.price ?? null)) return `Looks like a price. Read as ${distance} bp from entry: switch “as” to price.`;
     const move = (kind === 'tp' ? 1 : -1) * distance;
     // Before a position exists the estimate uses a unit entry: the formula depends only on the move.
-    const estimate = leverage ? payoutPercent({ entry: 1e6, mark: 1e6 * (1 + move / 1e4), side: 'long', leverage }) : null;
+    const estimate = leverage ? estimateResult({ entry: 1e6, mark: 1e6 * (1 + move / 1e4), side: 'long', leverage }) : null;
     let text2 = position ? `at ${(position.entry * (1 + (position.side === 'long' ? 1 : -1) * move / 1e4)).toFixed(decimalsOf(position))}` : 'from the fill';
-    if (estimate) text2 += estimate.liquidated ? ' · beyond bust' : ` · est. ${signed(estimate.percent, 0)}%`;
-    if (kind === 'sl' && leverage) text2 += ` · ${Math.round(distance / (bustFraction(leverage) * 1e4) * 100)}% to bust`;
+    if (estimate) text2 += estimate.liquidated ? ` · beyond ${EDGE}` : ` · est. ${signed(estimate.percent, 0)}%`;
+    if (kind === 'sl' && leverage && bustBps(leverage) > 0) text2 += ` · ${Math.round(distance / bustBps(leverage) * 100)}% to ${EDGE}${PERPS_BETA ? ' (est.)' : ''}`;
     return text2;
   }
   const level = parseLevel(text);
   if (level === null) return 'Enter a plain price, for example 71.85.';
   if (!position) return 'Price levels need an open position.';
   const favourable = (position.side === 'long' ? 1 : -1) * (level / position.entry - 1) * 1e4;
-  const estimate = payoutPercent({ entry: position.entry, mark: level, side: position.side, leverage: position.leverage });
+  const estimate = estimateResult({ entry: position.entry, mark: level, side: position.side, leverage: position.leverage });
   let text2 = `${signed(favourable, 1)} bp from entry`;
-  if (estimate) text2 += estimate.liquidated ? ' · beyond bust' : ` · est. ${signed(estimate.percent, 0)}%`;
-  if (kind === 'sl' && numeric(position.bust)) text2 += ` · ${Math.round(Math.abs(level - position.entry) / Math.abs(position.bust - position.entry) * 100)}% to bust`;
+  if (estimate) text2 += estimate.liquidated ? ` · beyond ${EDGE}` : ` · est. ${signed(estimate.percent, 0)}%`;
+  if (kind === 'sl' && numeric(position.bust)) text2 += ` · ${Math.round(Math.abs(level - position.entry) / Math.abs(position.bust - position.entry) * 100)}% to ${EDGE}`;
   return text2;
 }
 
@@ -684,7 +726,7 @@ function drawGuard() {
   $('guard-arm').hidden = busy; $('guard-disarm').hidden = !busy; $('guard-disarm').disabled = snap.state !== 'armed';
   $('guard-arm').disabled = !attached || !position;
   $('guard-arm').dataset.help ??= $('guard-arm').title;
-  $('guard-arm').title = !attached ? `Open this window from the Jupiter 1000x tab first. — ${$('guard-arm').dataset.help}`
+  $('guard-arm').title = !attached ? `Open this window from the Jupiter ${PAGE_NAME} tab first. — ${$('guard-arm').dataset.help}`
     : !position ? `Arm protects a position that is already open, and none is listed for ${SYMBOL}. Open one with Long or Short; its levels are then armed automatically. — ${$('guard-arm').dataset.help}`
       : $('guard-arm').dataset.help;
   $('guard-arm').textContent = mode() === 'close' ? 'Arm · press Close' : 'Arm · alert only';
@@ -699,7 +741,7 @@ function drawGuard() {
   let status;
   // "Off" here is only the take profit and stop loss watch. It never blocks Long or Short.
   if (snap.state === 'idle') status = snap.note === 'position_gone' ? 'TP/SL off: the position is no longer listed on the Jupiter page.'
-    : !attached ? 'TP/SL off. Open this window from the “1s scalp” button on the Jupiter 1000x tab.'
+    : !attached ? `TP/SL off. Open this window from the “1s scalp” button on the Jupiter ${PAGE_NAME} tab.`
       : position ? 'TP/SL off for the selected position. Enter a take profit or stop loss above and press Arm. This does not block Long or Short.'
         : 'TP/SL off: no open position to protect yet. This does not block Long or Short. A position opened here gets the levels above armed automatically.';
   else if (snap.state === 'armed') status = unprotected
@@ -729,8 +771,9 @@ function arm(event) {
   if (!event.isTrusted) return;
   const errors = [], position = selectedPosition();
   const levels = resolveLevels({ unit: unit(), takeProfitText: $('guard-tp').value, stopLossText: $('guard-sl').value, position });
-  errors.push(...(position ? levels.errors : []), ...priceLikeErrors());
+  errors.push(...(position ? levels.errors : []), ...priceLikeErrors(), ...basisErrors(position));
   const { takeProfit, stopLoss } = levels;
+  errors.push(...stopMarginErrors(position, stopLoss));
   if (position && positions.filter(row => positionKey(row) === positionKey(position)).length !== 1) {
     errors.push('Two listed positions look identical (same market, side, leverage and entry), so the guard could not tell them apart.');
   }
@@ -758,8 +801,8 @@ function fillLevel(button) {
   } else if (unit() === 'bp') {
     const leverage = planLeverage();
     if (button.dataset.tp) $('guard-tp').value = button.dataset.tp;
-    else if (!leverage) $('guard-errors').textContent = 'The leverage could not be read from the Jupiter page, so the bust distance is unknown.';
-    else $('guard-sl').value = (Number(button.dataset.sl) * bustFraction(leverage) * 1e4).toFixed(2);
+    else if (!leverage || !(bustBps(leverage) > 0)) $('guard-errors').textContent = `The leverage could not be read from the Jupiter page, so the ${EDGE} distance is unknown.`;
+    else $('guard-sl').value = (Number(button.dataset.sl) * bustBps(leverage)).toFixed(2);
   } else {
     const position = selectedPosition(), price = currentPrice();
     if (!position || price === null) $('guard-errors').textContent = 'Price levels need an open position and a live price.';
@@ -774,14 +817,14 @@ function fillLevel(button) {
 /* ------------------------------------------------------------------ entry -- */
 
 function saveSettings() {
-  settings = { mode: mode(), unit: unit(), takeProfit: $('guard-tp').value.trim(), stopLoss: $('guard-sl').value.trim() };
+  settings = { mode: mode(), unit: unit(), takeProfit: $('guard-tp').value.trim(), stopLoss: $('guard-sl').value.trim(), muted: settings.muted === true };
   void persist();
 }
 
 /** Why Long or Short cannot be pressed right now, or '' when they can. */
 function entryBlock(guardLive) {
   const order = form();
-  if (!attached) return 'Open this window from the Jupiter 1000x tab.';
+  if (!attached) return `Open this window from the Jupiter ${PAGE_NAME} tab.`;
   if (!$('entry-unlock').checked) return 'Tick Unlock to enable Long and Short.';
   if (guardLive) return 'A take profit or stop loss is live. Disarm it first.';
   if (entry.pending || opening) return 'An entry request is out.';
@@ -790,7 +833,10 @@ function entryBlock(guardLive) {
   if (pageState.pending || pageState.unreadable) return 'A listed position is still opening or could not be read.';
   if (!order?.recognized) return `Cannot read the order form: ${reasonText(order?.reason ?? pageState?.reason)}.`;
   if (order.market !== SYMBOL) return `The Jupiter tab is on ${order.market || 'another market'}, not ${SYMBOL}.`;
-  if (order.mode !== 'Classic') return 'Switch the Jupiter page to Classic mode.';
+  if (PERPS_BETA ? order.mode !== 'Market' : order.mode !== 'Classic') return PERPS_BETA ? 'Select the Market tab on the Jupiter order form.' : 'Switch the Jupiter page to Classic mode.';
+  if (PERPS_BETA && !/[1-9]/.test((order.balanceText ?? '').split(' ')[0])) return 'No USDC is available on the Jupiter Perps page.';
+  // This venue keeps one net position per market: a second entry would add to, shrink or flip the open one, and its levels with it.
+  if (PERPS_BETA && (pageState.positions ?? []).some(row => row.coin === SYMBOL)) return `A ${SYMBOL} position is already open on the Jupiter page. Close it there before opening another from this window.`;
   if (!order.leverage) return 'The page’s leverage could not be read.';
   if (currentPrice() === null) return 'No fresh price.';
   return '';
@@ -809,7 +855,7 @@ function drawEntry(guardLive) {
     button.toggleAttribute('data-confirming', confirming);
     button.textContent = confirming ? `Confirm ${side} ${label[snap.request.fraction]}` : side;
   }
-  for (const input of document.querySelectorAll('input[name="entry-size"], input[name="entry-leverage"]')) input.disabled = entry.pending || opening;
+  for (const input of document.querySelectorAll('input[name="entry-size"], input[name="entry-leverage"]')) input.disabled = entry.pending || opening || input.dataset.unavailable === 'true';
   const request = snap.request, status = $('entry-status');
   status.dataset.state = snap.state;
   const planned = chosenLeverage() ?? order?.leverage;
@@ -842,8 +888,10 @@ async function pressSide(event) {
   errors.push(...priceLikeErrors());
   const order = form(), leverage = chosenLeverage() ?? order?.leverage ?? null;
   if (!errors.length) {
-    errors.push(...validateEntry({ side, fraction: size(), takeProfitBps, stopLossBps, bustBps: leverage ? bustFraction(leverage) * 1e4 : null,
-      form: order, guardLive, pending: entry.pending }).errors);
+    // On Perps the oracle the stop is judged on can sit up to the basis limit from the page's mark, so the stop must clear the
+    // estimated liquidation by at least that much.
+    errors.push(...validateEntry({ side, fraction: size(), takeProfitBps, stopLossBps, bustBps: PERPS_BETA && bustBps(leverage) !== null ? Math.max(0, bustBps(leverage) - MAX_BASIS_BPS) : bustBps(leverage),
+      form: order, guardLive, pending: entry.pending, expectMode: PERPS_BETA ? 'Market' : 'Classic' }).errors);
   }
   $('guard-errors').textContent = errors.join(' ');
   if (errors.length) { drawGuard(); return; }
@@ -878,7 +926,8 @@ function onOpened({ position, request }) {
   if (request.takeProfitBps === null && request.stopLossBps === null) { alertOwner(`${SYMBOL} ${request.side} opened`, `Entry ${position.entryText}. No take profit or stop loss is armed.`); return; }
   const levels = resolveLevels({ unit: 'bp', takeProfitText: request.takeProfitBps === null ? '' : String(request.takeProfitBps),
     stopLossText: request.stopLossBps === null ? '' : String(request.stopLossBps), position });
-  const result = levels.errors.length ? { ok: false, errors: levels.errors }
+  const refused = [...levels.errors, ...basisErrors(position), ...stopMarginErrors(position, levels.stopLoss)];
+  const result = refused.length ? { ok: false, errors: refused }
     // Price may already be past a level set before the fill. Arm anyway and let the next line act on it.
     : guard.arm({ position, price: currentPrice(), takeProfit: levels.takeProfit, stopLoss: levels.stopLoss, mode: request.mode, allowCrossed: true, nowMs: Date.now() });
   if (result.ok) {
@@ -950,12 +999,16 @@ function tick() {
   if (entry.onTick(now)) drawGuard();
   if (now - lastPollMs >= (snap.state === 'idle' && !entry.pending ? 1000 : 400)) void pollPositions();
   if (feed && FEED_RESTART.has(latest?.error) && now - lastFeedStartMs >= 15_000) void startFeed();
-  const unprotected = snap.state === 'armed' && (currentPrice() === null || (snap.mode === 'close' && !(pageState?.ok && pageState.recognized)));
+  // On Perps an armed level also loses its meaning when the oracle drifts too far from the page's mark price.
+  const drift = PERPS_BETA && snap.state === 'armed' ? basisBps(positions.find(row => positionKey(row) === snap.position?.key)) : null;
+  const drifted = drift !== null && Math.abs(drift) > MAX_BASIS_BPS;
+  const unprotected = snap.state === 'armed' && (currentPrice() === null || drifted || (snap.mode === 'close' && !(pageState?.ok && pageState.recognized)));
   if (!unprotected) unprotectedAlertMs = 0;
   else if (unprotectedAlertMs === 0) unprotectedAlertMs = now + 4000; // ride out a one-quote hiccup before sounding
   else if (now >= unprotectedAlertMs) {
     unprotectedAlertMs = now + 30_000;
     alertOwner(`${SYMBOL} guard is NOT protecting`, currentPrice() === null ? 'No fresh price is arriving. The levels are not being watched.'
+      : drifted ? `The oracle price is ${signed(drift, 0)} bp from the page’s mark price (limit ${MAX_BASIS_BPS} bp). The levels would act at the wrong price.`
       : `The Jupiter page cannot be read (${reasonText(pageState?.reason)}). A level could not be acted on.`);
   }
 }
@@ -1058,13 +1111,25 @@ try {
   const stored = (await chrome.storage.local.get(STORAGE))[STORAGE];
   if (stored && typeof stored === 'object') {
     settings = { mode: ['alert', 'close'].includes(stored.mode) ? stored.mode : 'alert', unit: ['bp', 'price'].includes(stored.unit) ? stored.unit : 'bp',
-      takeProfit: typeof stored.takeProfit === 'string' ? stored.takeProfit.slice(0, 24) : '', stopLoss: typeof stored.stopLoss === 'string' ? stored.stopLoss.slice(0, 24) : '' };
+      takeProfit: typeof stored.takeProfit === 'string' ? stored.takeProfit.slice(0, 24) : '', stopLoss: typeof stored.stopLoss === 'string' ? stored.stopLoss.slice(0, 24) : '', muted: stored.muted === true };
   }
 } catch { /* defaults: alert only */ }
 document.querySelector(`input[name="guard-mode"][value="${settings.mode}"]`).checked = true;
 $('guard-unit').value = settings.unit;
 $('guard-tp').value = settings.takeProfit; $('guard-sl').value = settings.stopLoss;
 
+/** The window's only sound is its alert tone. Muting keeps every alert on screen and as a silent notification. */
+function drawMute() {
+  $('mute').setAttribute('aria-pressed', String(settings.muted === true));
+  $('mute').textContent = settings.muted ? 'Muted' : 'Sound on';
+}
+drawMute();
+$('mute').addEventListener('click', () => {
+  settings = { ...settings, muted: !settings.muted };
+  // Unmuting is a user gesture, which is what lets a later alert tone play.
+  if (!settings.muted) { try { audio ??= new AudioContext(); void audio.resume(); } catch { /* no audio device */ } }
+  drawMute(); void persist();
+});
 $('guard-arm').addEventListener('click', arm);
 $('guard-disarm').addEventListener('click', event => { if (event.isTrusted && guard.disarm('user', Date.now())) { void record(guard.snapshot()); drawGuard(); } });
 $('guard-show').addEventListener('click', () => void send('showJupiter'));
@@ -1090,7 +1155,7 @@ window.addEventListener('pagehide', () => { void saveExperiments(); disposed = t
 const timer = setInterval(() => { tick(); queueDraw(); }, 250);
 
 linked = (await send('status'))?.attached === true;
-// The guard and the entry buttons need the 1000x page bridge; a Perps view never gets one.
+// The guard and the entry buttons need a page bridge: 1000x and the Perps beta markets have one, other Perps markets do not.
 attached = linked && !VIEW_ONLY;
 if (VIEW_ONLY) {
   $('guard').dataset.venue = 'perps';
@@ -1104,6 +1169,26 @@ if (VIEW_ONLY) {
         : 'Check on the page whether its positions list offers Add TP / SL for this market.');
   $('market').textContent = '1s scalp · Perps view';
   $('guard-page').textContent = `Opened from the Jupiter Perps page for ${SYMBOL || 'no market'}.`;
+}
+if (PERPS_BETA) {
+  const max = PERPS_MARKETS[SYMBOL].max, presets = max >= 50 ? [25, 50] : [10, 25];
+  $('market').textContent = '1s scalp · Perps';
+  $('perps-note').hidden = false;
+  $('perps-note').textContent = `Jupiter offers no take profit or stop loss on ${SYMBOL}, so this window runs them itself: it watches the price and, in Press Close mode, presses the position’s own Quick close on the Jupiter page (a market order; your wallet may still ask). `
+    + 'They work only while this window and the Jupiter tab stay open. The levels are judged on the oracle price, which can sit a few basis points from the page’s mark price. Neither an open nor a close has been exercised on the real page.';
+  // Size: the page has only HALF and MAX buttons, and no amount is typed on this page.
+  for (const input of document.querySelectorAll('input[name="entry-size"]')) {
+    if (!['0.5', '1'].includes(input.value)) { input.dataset.unavailable = 'true'; input.disabled = true; input.parentElement.title = 'Not available on the Perps page: its order form has only HALF and MAX buttons, and this window never types an amount there.'; }
+    input.checked = input.value === '0.5';
+  }
+  $('entry-size').title = 'How much of the USDC available on the Jupiter Perps page to put up as collateral. Half and All press the page’s own HALF and MAX buttons. A quarter and three quarters are not offered here because the page has no button for them and this window never types an amount on it.';
+  // Leverage: the page's own presets for this market.
+  const radios = [...document.querySelectorAll('input[name="entry-leverage"]')].filter(input => input.value !== '');
+  radios.forEach((input, i) => { input.value = String(presets[i]); input.nextSibling.textContent = ` ${presets[i]}×`; });
+  $('entry-leverage').title = `Leverage for a position opened from this window. Page: whatever the Jupiter order form shows. ${presets[0]}× or ${presets[1]}×: the window presses that preset on the page first. ${SYMBOL} allows up to ${max}×. At ${presets[1]}× the estimated liquidation distance is about ${bustBps(presets[1]).toFixed(0)} bp. This choice is never remembered.`;
+  for (const button of document.querySelectorAll('.chips button[data-sl]')) button.title = button.title.replace('bust price', 'estimated liquidation price');
+  for (const button of document.querySelectorAll('.chips button[data-sl]')) button.textContent = button.textContent.replace('bust', 'liq.');
+  for (const side of ['long', 'short']) $(`entry-${side}`).title = $(`entry-${side}`).title.replace('at the leverage the page shows', 'at the leverage chosen above');
 }
 drawPositions(); draw();
 if (SYMBOL_OK) {

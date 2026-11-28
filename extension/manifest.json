@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "SolMarginTrader",
-  "version": "0.21.2",
+  "version": "0.22.0",
   "description": "Signal Desk: live signals, backtests, paper forward tests and bot monitoring. Experimental grid installs disarmed in dry-run.",
   "minimum_chrome_version": "120",
   "background": {
@@ -53,6 +53,7 @@
       ],
       "js": [
         "src/1000x/page-bridge.js",
+        "src/1000x/perps-bridge.js",
         "src/1000x/content.js"
       ],
       "run_at": "document_idle"

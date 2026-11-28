@@ -1,7 +1,30 @@
 # Work continuation
 
-Version: 736
-Delta: v735 to v736. Record the entry and arming wording fix (0.21.2), the consecutive-strong and fade studies, and the owner's choice of a window-run TP/SL for ZEC and HYPE. Earlier:
+Version: 737
+Delta: v736 to v737. Record the ZEC/HYPE Perps build with a window-run TP/SL (extension 0.22.0), the mute button and the manager-poll cause. Earlier:
+
+## Perps beta markets: entries and a window-run TP/SL; mute button · 2026-11-28
+
+Requests (`prompts.md` v342): build Long, Short and TP/SL for ZEC and HYPE with a programmatic TP/SL; a mute button on any page that makes noise; the manager-poll error again.
+
+Done (0.22.0):
+- `extension/src/1000x/perps-bridge.js`: a page bridge for the Perps beta markets with the 1000x bridge's contract. Entry: side switch, a leverage preset, HALF or MAX, then the form's Long/Buy or Short/Sell once; no amount is ever typed. Close: the matched row's `Quick close <SYMBOL>` once, then Confirm of the "Close Entire Position?" dialog if the page asks. Strict reads; a decimal-comma misread is caught by comparing entry with mark.
+- `extension/src/1000x/content.js` relays to it on `/perps/(long|short)/(JupUSD|USDC)-(ZEC|HYPE)`; the worker lets a Perps window reach its page only for HYPE and ZEC and checks size and leverage per venue; the registry accepts a whole-number leverage and the worker narrows it.
+- `extension/src/1000x/scalp.js`: `PERPS_BETA` mode. Sizes half and all; leverage Page, 10×/25× (HYPE) or 25×/50× (ZEC); liquidation price in place of bust (estimate 1 / leverage less maintenance before a position exists); result estimate is the leveraged move less both 3.5 bp taker fees; levels judged on the oracle price with a 25 bp limit on its distance from the page's mark.
+- Mute: the scalp window's alert tone is the only sound in the extension; a header button mutes it (notifications go silent, alerts stay on screen); remembered.
+- The worker's `manager-poll` console line now names its commonest cause.
+
+Manager-poll cause, confirmed in code: `managerPoll` calls `loadedSourceHash`, which throws "browser source changed; extension reload required" whenever the files on disk differ from what the worker loaded. Every update of `/Users/mitch/dev/solmargintrader/extension` under a loaded extension, and removing a folder Chrome loads from, produces it until the extension is reloaded. "Extension context invalidated" comes from tabs opened before the reload.
+
+New evidence, 2026-11-28: a second live recording (45 min, five markets, `research/json/scalp-1s-20261127/ticks-live-20261128.jsonl.gz`) had strong calls right 49.6% ± 4.8 weighted and 46.9% ± 4.2 unweighted, and two strong calls in a row right 49.9% ± 2.7. It disagrees with the first live recording (53.8%). Pooled live evidence for the strong call is about 52% ± 3: not distinguishable from a coin flip. Say so whenever the call is described.
+
+Not verified: any press on the real Perps page. The position row and the close steps come from the page's code; no position was open. SOL, ETH and BTC on Perps stay read-outs only (Jupiter's own Add TP / SL is not pressed).
+
+Independent review of this code: 0 Critical, 1 High, 7 Medium, 9 Low. The High (a Positions tab label with a count was not recognised) and all seven Mediums are fixed, with five Lows; not re-reviewed. Left: no page-busy read on the Perps form, a refused entry leaves the form's side, leverage and size changed, and the liquidation estimate uses the first maintenance tier only.
+
+Verification: 868 extension tests; `npm run e2e:scalp` 19 of 19 including a ZEC Perps stand-in (one submit, levels armed from the listed entry, one Quick close and one Confirm, nothing typed).
+
+Earlier delta, v735 to v736. Record the entry and arming wording fix (0.21.2), the consecutive-strong and fade studies, and the owner's choice of a window-run TP/SL for ZEC and HYPE. Earlier:
 
 ## Scalp window 0.21.2, two studies, and the ZEC/HYPE decision · 2026-11-28
 

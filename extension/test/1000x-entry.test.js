@@ -56,6 +56,16 @@ test('an entry is checked before anything is sent', () => {
   }
 });
 
+test('a Perps order form must be on its Market tab, as a 1000x page must be in Classic mode', () => {
+  const perps = over => validateEntry(plan({ form: form({ mode: 'Market', leverage: 25 }), bustBps: 275, stopLossBps: 150, expectMode: 'Market', ...over }));
+  assert.deepEqual(perps({}), { ok: true, errors: [] });
+  assert.match(perps({ form: form({ mode: 'Limit', leverage: 25 }) }).errors.join(' '), /Only Market orders are supported/);
+  assert.match(perps({ form: form({ mode: 'Classic', leverage: 25 }) }).errors.join(' '), /Only Market orders/);
+  assert.match(perps({ stopLossBps: 275 }).errors.join(' '), /liquidated first/);
+  // Without the argument the 1000x rule still applies.
+  assert.match(validateEntry(plan({ form: form({ mode: 'Market' }) })).errors.join(' '), /Only Classic/);
+});
+
 test('the first press only arms the button; the second sends once', () => {
   const tracker = new EntryTracker();
   const request = { side: 'long', fraction: 0.5, takeProfitBps: 10, stopLossBps: 5, mode: 'close', before: ['a'], confirm: true };

@@ -5,7 +5,12 @@ const SYMBOL = /^[A-Z0-9]{1,12}$/;
 const RELAY_TIMEOUT_MS = 4000;
 // An open waits for the page's form to settle and gives up on its own after six seconds.
 const OPEN_TIMEOUT_MS = 8000;
+// The Perps bridge gives the page six seconds to ask "Close Entire Position?" before it reports.
+const CLOSE_TIMEOUT_MS = 9000;
 
+// Perps markets where the window may ask the page to open or close: the beta markets, which have no
+// take profit or stop loss of their own. Every other Perps market stays read-outs only.
+const PERPS_TRADABLE = new Set(['HYPE', 'ZEC']);
 const PERPS_ROUTE = /^\/perps\/(?:long|short)\/(?:JupUSD-(SOL|ETH|BTC|ZEC|HYPE)|USDC-(ZEC|HYPE))\/?$/;
 
 /**
@@ -122,17 +127,25 @@ export function createJupiterScalpWindows({ runtime, storage, tabs, windows, set
             await save(entries);
             return { ok: true, live: entry.guardLive };
           }
-          // A window opened from the Perps page shows read-outs only: its page is never read or pressed.
-          if (venueOf(entry) === 'perps' && ['positions', 'closePosition', 'openPosition'].includes(action)) return { ok: false, reason: 'view_only' };
-          if (action === 'positions') return relay(Number(sourceTabId), { action: 'positions' });
+          // A Perps window may reach its page only on the beta markets; on the others the page is never read or pressed.
+          if (venueOf(entry) === 'perps' && !PERPS_TRADABLE.has(entry.symbol) && ['positions', 'closePosition', 'openPosition'].includes(action)) return { ok: false, reason: 'view_only' };
+          // The page answers only for the venue this window was opened on, wherever its tab has gone since.
+          const venue = venueOf(entry);
+          if (action === 'positions') return relay(Number(sourceTabId), { action: 'positions', venue });
           if (action === 'closePosition') {
             const expect = args.expect;
             if (!expect || expect.coin !== entry.symbol) return { ok: false, reason: 'position_market_mismatch' };
-            return relay(Number(sourceTabId), { action: 'closePosition', expect });
+            // A Perps close waits for the page's own question, so it gets longer than a read.
+            return relay(Number(sourceTabId), { action: 'closePosition', expect, venue }, venue === 'perps' ? CLOSE_TIMEOUT_MS : RELAY_TIMEOUT_MS);
           }
           if (action === 'openPosition') {
+            // Each page has its own leverage presets and size buttons; anything else never reaches the page.
+            const perps = venueOf(entry) === 'perps', leverage = args.leverage ?? null;
+            const allowed = perps ? (leverage === null || (Number.isInteger(leverage) && leverage >= 2 && leverage <= 100)) && [0.5, 1].includes(args.fraction)
+              : [null, 500, 1000].includes(leverage);
+            if (!allowed) return { ok: false, reason: 'invalid_request' };
             // The page opens in its own current market; the content script refuses unless that is this window's.
-            return relay(Number(sourceTabId), { action: 'openPosition', request: { side: args.side, fraction: args.fraction, leverage: args.leverage ?? null, coin: entry.symbol } }, OPEN_TIMEOUT_MS);
+            return relay(Number(sourceTabId), { action: 'openPosition', venue, request: { side: args.side, fraction: args.fraction, leverage: args.leverage ?? null, coin: entry.symbol } }, OPEN_TIMEOUT_MS);
           }
           if (action === 'showJupiter') {
             const tab = await tabs.get(Number(sourceTabId)).catch(() => null);

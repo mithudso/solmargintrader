@@ -71,14 +71,14 @@ test('only the window this worker opened may read positions or ask for a close',
   const recovered = createJupiterScalpWindows(options);
   assert.deepEqual(await recovered.control('status', panel), { attached: true, symbol: 'SOL', venue: '1000x' });
   assert.deepEqual(await recovered.control('positions', panel), { ok: true, recognized: true, positions: [{ coin: 'SOL' }] });
-  assert.deepEqual(state.sent.at(-1), [2, { type: 'jupiter1000xPage', action: 'positions' }, { frameId: 0 }]);
+  assert.deepEqual(state.sent.at(-1), [2, { type: 'jupiter1000xPage', action: 'positions', venue: '1000x' }, { frameId: 0 }]);
   await recovered.control('closePosition', panel, { expect });
-  assert.deepEqual(state.sent.at(-1), [2, { type: 'jupiter1000xPage', action: 'closePosition', expect }, { frameId: 0 }]);
+  assert.deepEqual(state.sent.at(-1), [2, { type: 'jupiter1000xPage', action: 'closePosition', expect, venue: '1000x' }, { frameId: 0 }]);
   assert.deepEqual(await recovered.control('closePosition', panel, { expect: { ...expect, coin: 'BTC' } }), { ok: false, reason: 'position_market_mismatch' });
   assert.deepEqual(await recovered.control('closePosition', panel, {}), { ok: false, reason: 'position_market_mismatch' });
   // An entry is relayed with this window's market, so the page can refuse when it shows another one.
   await recovered.control('openPosition', panel, { side: 'long', fraction: 0.5 });
-  assert.deepEqual(state.sent.at(-1), [2, { type: 'jupiter1000xPage', action: 'openPosition', request: { side: 'long', fraction: 0.5, leverage: null, coin: 'SOL' } }, { frameId: 0 }]);
+  assert.deepEqual(state.sent.at(-1), [2, { type: 'jupiter1000xPage', action: 'openPosition', venue: '1000x', request: { side: 'long', fraction: 0.5, leverage: null, coin: 'SOL' } }, { frameId: 0 }]);
   await recovered.control('openPosition', panel, { side: 'short', fraction: 1, leverage: 500 });
   assert.equal(state.sent.at(-1)[1].request.leverage, 500);
   await assert.rejects(recovered.control('openPosition', source, { side: 'long', fraction: 0.5 }), /Invalid scalp window action/);
@@ -196,7 +196,7 @@ test('the registry command validates before anything reaches a page', async () =
     { action: 'closePosition', expect: [] }, { action: 'positions', expect }, { action: 'guardState' }, { action: 'open', live: true },
     { action: 'openPosition' }, { action: 'openPosition', side: 'long' }, { action: 'openPosition', side: 'up', fraction: 0.5 },
     { action: 'openPosition', side: 'long', fraction: 0.6 }, { action: 'openPosition', side: 'long', fraction: 2 },
-    { action: 'openPosition', side: 'long', fraction: 1, leverage: 750 }, { action: 'openPosition', side: 'long', fraction: 1, leverage: 2000 }, { action: 'positions', leverage: 500 },
+    { action: 'openPosition', side: 'long', fraction: 1, leverage: 1.5 }, { action: 'openPosition', side: 'long', fraction: 1, leverage: 1 }, { action: 'openPosition', side: 'long', fraction: 1, leverage: 2000 }, { action: 'positions', leverage: 500 },
     { action: 'setMarket' }, { action: 'setMarket', market: 'btc' }, { action: 'setMarket', market: 'BTC/USD' }, { action: 'open', market: 'BTC' },
     { action: 'positions', side: 'long', fraction: 0.5 }, { action: 'closePosition', expect, side: 'long', fraction: 1 },
   ]) await assert.rejects(run(bad), error => error instanceof CommandError && error.status === 400, JSON.stringify(bad));
@@ -206,27 +206,51 @@ test('the registry command validates before anything reaches a page', async () =
     error => error instanceof CommandError && error.status === 501);
 });
 
-test('a Perps tab opens a read-outs-only window: nothing on that page is read or pressed', async () => {
-  const perps = { ...source, url: 'https://jup.ag/perps/long/USDC-HYPE' };
+test('a Perps tab on SOL, ETH or BTC opens a read-outs-only window: nothing on that page is read or pressed', async () => {
+  const perps = { ...source, url: 'https://jup.ag/perps/long/JupUSD-BTC' };
   const { state, scalp } = harness({ tabUrl: perps.url });
   assert.deepEqual(await scalp.control('open', perps), { open: true });
-  assert.equal(panelOf(state).url, 'chrome-extension://fixture/src/1000x/scalp.html#market=HYPE&venue=perps');
+  assert.equal(panelOf(state).url, 'chrome-extension://fixture/src/1000x/scalp.html#market=BTC&venue=perps');
   const panel = panelOf(state);
-  assert.deepEqual(await scalp.control('status', panel), { attached: true, symbol: 'HYPE', venue: 'perps' });
+  assert.deepEqual(await scalp.control('status', panel), { attached: true, symbol: 'BTC', venue: 'perps' });
   // No relay to the page for any of the three page actions.
-  for (const [action, args] of [['positions', {}], ['closePosition', { expect: { ...expect, coin: 'HYPE' } }], ['openPosition', { side: 'long', fraction: 0.25 }]]) {
+  for (const [action, args] of [['positions', {}], ['closePosition', { expect: { ...expect, coin: 'BTC' } }], ['openPosition', { side: 'long', fraction: 0.5 }]]) {
     assert.deepEqual(await scalp.control(action, panel, args), { ok: false, reason: 'view_only' }, action);
   }
   assert.equal(state.sent.length, 0);
   // Bringing the Jupiter tab forward still works.
   assert.deepEqual(await scalp.control('showJupiter', panel), { ok: true });
-  // The same window address without the venue is a stranger, and so is the 1000x form of it.
-  await assert.rejects(scalp.control('status', { ...panel, url: 'chrome-extension://fixture/src/1000x/scalp.html#market=HYPE' }), /not attached/);
-  // Switching the coin keeps the window read-outs only.
-  assert.deepEqual(await scalp.control('setMarket', panel, { market: 'ZEC' }), { ok: true, symbol: 'ZEC' });
-  const moved = { ...panel, url: 'chrome-extension://fixture/src/1000x/scalp.html#market=ZEC&venue=perps' };
-  assert.deepEqual(await scalp.control('status', moved), { attached: true, symbol: 'ZEC', venue: 'perps' });
+  // The same window address without the venue is a stranger.
+  await assert.rejects(scalp.control('status', { ...panel, url: 'chrome-extension://fixture/src/1000x/scalp.html#market=BTC' }), /not attached/);
+  // Switching the coin to another read-outs-only market keeps it so.
+  assert.deepEqual(await scalp.control('setMarket', panel, { market: 'ETH' }), { ok: true, symbol: 'ETH' });
+  const moved = { ...panel, url: 'chrome-extension://fixture/src/1000x/scalp.html#market=ETH&venue=perps' };
   assert.deepEqual(await scalp.control('positions', moved), { ok: false, reason: 'view_only' });
+});
+
+test('a Perps tab on HYPE or ZEC may reach its page: positions, one open and one close are relayed', async () => {
+  for (const symbol of ['HYPE', 'ZEC']) {
+    const perps = { ...source, url: `https://jup.ag/perps/short/USDC-${symbol}` };
+    const { state, scalp } = harness({ tabUrl: perps.url });
+    await scalp.control('open', perps);
+    const panel = panelOf(state);
+    assert.equal(panel.url, `chrome-extension://fixture/src/1000x/scalp.html#market=${symbol}&venue=perps`);
+    assert.equal((await scalp.control('positions', panel)).ok, true);
+    await scalp.control('openPosition', panel, { side: 'short', fraction: 0.5, leverage: 25 });
+    await scalp.control('closePosition', panel, { expect: { coin: symbol, side: 'short', leverage: 21.9, entryText: '$63.529' } });
+    assert.deepEqual(state.sent.map(([tabId, message]) => [tabId, message.type, message.action]), [[2, 'jupiter1000xPage', 'positions'], [2, 'jupiter1000xPage', 'openPosition'], [2, 'jupiter1000xPage', 'closePosition']]);
+    assert.deepEqual(state.sent[1][1].request, { side: 'short', fraction: 0.5, leverage: 25, coin: symbol });
+    // Every relayed message names the venue, so the page can refuse a window from the other one.
+    assert.deepEqual(state.sent.map(([, message]) => message.venue), ['perps', 'perps', 'perps']);
+    // A size or leverage the Perps page has no button for never reaches the page.
+    for (const bad of [{ side: 'short', fraction: 0.25 }, { side: 'short', fraction: 0.75 }, { side: 'short', fraction: 0.5, leverage: 500 }, { side: 'short', fraction: 0.5, leverage: 12.5 }]) {
+      assert.deepEqual(await scalp.control('openPosition', panel, bad), { ok: false, reason: 'invalid_request' }, JSON.stringify(bad));
+    }
+    assert.equal(state.sent.length, 3);
+    // A close for another market is refused before it reaches the page.
+    assert.deepEqual(await scalp.control('closePosition', panel, { expect: { coin: 'BTC', side: 'short', leverage: 25, entryText: '$1' } }), { ok: false, reason: 'position_market_mismatch' });
+    assert.equal(state.sent.length, 3);
+  }
 });
 
 test('Perps routes: every listed market and both sides open, anything else is refused', async () => {
@@ -252,6 +276,10 @@ test('moving a tab between 1000x and Perps replaces the window instead of reusin
   assert.deepEqual([state.opened.size, panelOf(state).url.endsWith('#market=HYPE&venue=perps')], [1, true]);
   await scalp.control('open', { ...source, url: 'https://jup.ag/1000x?market=HYPE' });
   assert.deepEqual([state.opened.size, panelOf(state).url.endsWith('#market=HYPE')], [1, true]);
+  // A 1000x window refuses anything but its own two presets.
+  assert.deepEqual(await scalp.control('openPosition', panelOf(state), { side: 'long', fraction: 0.5, leverage: 750 }), { ok: false, reason: 'invalid_request' });
+  assert.deepEqual(await scalp.control('openPosition', panelOf(state), { side: 'long', fraction: 0.5, leverage: 25 }), { ok: false, reason: 'invalid_request' });
+  assert.equal(state.sent.length, 0);
   // A 1000x window still relays; the Perps restriction did not leak into it.
   assert.equal((await scalp.control('positions', panelOf(state))).ok, true);
   assert.equal(state.sent.length, 1);

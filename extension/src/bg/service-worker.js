@@ -324,10 +324,15 @@ export async function runManagerPoll() {
 
 // Listener registration stays synchronous. Re-create missing alarms after every
 // worker activation, because Chrome does not guarantee alarm persistence.
-async function reportBackgroundFailure(operation) {
+async function reportBackgroundFailure(operation, error) {
   const allowed = new Set(['alarm-restore', 'manager-poll', 'control-room-monitor']);
   const code = allowed.has(operation) ? operation : 'background-operation';
-  console.error('[smt] background operation failed', code);
+  // Only a fixed hint is printed, never the error's own text. The one cause worth naming is the commonest:
+  // the files on disk changed under the loaded extension, which stops manager work until a reload.
+  const hint = /browser source changed|loaded browser source unavailable/.test(String(error?.message ?? ''))
+    ? 'the extension files on disk changed or moved since it was loaded: reload the extension at chrome://extensions, then reload open Jupiter tabs' : '';
+  if (hint) console.error('[smt] background operation failed', code, '-', hint);
+  else console.error('[smt] background operation failed', code);
   try { await (await Store.open()).logEvent({ type: 'background-failure', operation: code }); } catch { /* Persistence may be the failing component. */ }
 }
 async function restoreAlarms() {
@@ -405,7 +410,7 @@ chrome.runtime.onInstalled.addListener((details) => handleInstalled(details).cat
 chrome.runtime.onStartup.addListener(() => {
   reconnectZec().catch(() => {});
   restoreAlarms().catch(() => reportBackgroundFailure('alarm-restore'));
-  runManagerPoll().catch(() => reportBackgroundFailure('manager-poll'));
+  runManagerPoll().catch(error => reportBackgroundFailure('manager-poll', error));
 });
 
 // A notification opens the dashboard on the Alerts tab.
@@ -418,7 +423,7 @@ chrome.notifications?.onClicked?.addListener((id) => {
 
 chrome.alarms.onAlarm.addListener((alarm) => {
   if (alarm.name === CONTROL_ROOM_ALARM) return runControlRoomMonitor().catch(() => reportBackgroundFailure('control-room-monitor'));
-  if (alarm.name === MANAGER_ALARM) return runManagerPoll().catch(() => reportBackgroundFailure('manager-poll'));
+  if (alarm.name === MANAGER_ALARM) return runManagerPoll().catch(error => reportBackgroundFailure('manager-poll', error));
   if (alarm.name === BUILD_ALARM) {
     reconnectZec().catch(() => {});
     runBuildCheck().catch((err) => console.error('[smt] build check threw', String(err?.message ?? err)));

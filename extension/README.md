@@ -127,7 +127,7 @@ See [design, formulas and verification](../docs/JUPITER-1000X-OVERLAY.md),
 [optimized execution prompt](../docs/JUPITER-1000X-OVERLAY-PROMPT.md), and
 [SDK create/close capabilities and remaining gates](../docs/JUPITER-1000X-SDK.md).
 
-## Jupiter 1000x 1s scalp window, entries and exit guard (0.21.2)
+## Jupiter 1000x 1s scalp window, entries and exit guard (0.22.0)
 
 The Indicators overlay on `https://jup.ag/1000x` has a **1s scalp** button. It
 opens a separate window for that market: read-outs on the left, the order form
@@ -153,11 +153,17 @@ for strong calls, within one standard error) and switching changed nothing
 measurable.
 
 The **Perps paper** overlay on a Jupiter Perps market has the same **1s scalp**
-button. There the window is read-outs only: it shows the call, chart, grid,
-slope ladder and Experiments tab for that market and presses nothing on the
-Perps page. Use the page's own order form. Jupiter's own Add TP / SL exists on
-SOL, ETH and BTC only; on HYPE and ZEC the page states that take profit and
-stop loss are not available, and the window's note says so.
+button. On **HYPE and ZEC**, where Jupiter offers no take profit or stop loss,
+the window opens a position with the page's own buttons (HALF or MAX, a leverage
+preset, Long/Buy or Short/Sell) and runs the take profit and stop loss itself:
+in Press Close mode it presses the position's own Quick close and answers the
+page's confirmation. That protection lasts only while the window stays open,
+and neither press has been exercised on the real page. On SOL, ETH and BTC the
+window is read-outs only; those markets have Jupiter's own Add TP / SL.
+
+A **Sound on / Muted** button in the window's header silences its alert tone,
+the only sound any extension page makes. Alerts still show on screen and as
+silent notifications.
 
 It opens a position on request. **Long** and **Short** are locked until you tick
 Unlock and, by default, need a confirming second press. A quarter, half or all

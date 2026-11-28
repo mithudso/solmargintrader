@@ -138,9 +138,72 @@ async function oracleFixture() {
   };
   return { state, history, url: `ws://127.0.0.1:${server.address().port}/oracle`,
     catalog: { markets: [{ symbol: 'SOL', address: 'Ew8sRjpuBttpmhSUeaAn4dLAegWnz55AuafVcGuojCPS', feedId: 6, closed: false },
-      { symbol: 'BTC', address: 'Ew8sRjpuBttpmhSUeaAn4dLAegWnz55AuafVcGuojCPS', feedId: 1, closed: false }] },
+      { symbol: 'BTC', address: 'Ew8sRjpuBttpmhSUeaAn4dLAegWnz55AuafVcGuojCPS', feedId: 1, closed: false },
+      { symbol: 'ZEC', address: 'Ew8sRjpuBttpmhSUeaAn4dLAegWnz55AuafVcGuojCPS', feedId: 66, closed: false }] },
     close: async () => { for (const socket of sockets) socket.destroy(); await new Promise(resolve => server.close(resolve)); } };
 }
+
+/**
+ * A Perps beta market as the live order form (read 2026-11-28) and the page's own code render it: side radios,
+ * Market and Limit tabs, a balance button, HALF and MAX, a labelled amount input, a leverage slider with presets
+ * and a submit button; a position row of eight cells with a "Quick close" button; and the close question.
+ */
+const perpsHtml = `<!doctype html><html><head><meta charset="utf-8"><title>Perps fixture</title><style>body{margin:0;background:#080c14;color:#fff;font:14px system-ui}.perps-position-table-row{display:grid;grid-template-columns:repeat(8,1fr);gap:8px;padding:8px 12px}#form{margin:20px;display:flex;flex-wrap:wrap;gap:8px;max-width:520px}[role=dialog]{position:fixed;top:120px;left:120px;padding:20px;background:#223;border:1px solid #889}</style></head><body>
+<div><button role="tab" aria-selected="true" id="positions-tab">Positions</button><button role="tab" aria-selected="false">Open Orders</button><button type="button" id="close-all">Close All</button></div>
+<div id="list"><p id="empty">No positions</p></div>
+<div id="form">
+  <button type="button" role="radio" aria-label="Long" data-checked="">Long/Buy</button><input type="radio" value="long" hidden>
+  <button type="button" role="radio" aria-label="Short">Short/Sell</button><input type="radio" value="short" hidden>
+  <button type="button" role="tab" aria-selected="true">Market</button><button type="button" role="tab" aria-selected="false">Limit</button>
+  <button type="button" id="balance">40 USDC</button><button type="button" id="half">HALF</button><button type="button" id="max">MAX</button>
+  <input type="text" aria-label="Collateral amount" inputmode="decimal" placeholder="0.00" id="amount">
+  <input type="range" aria-label="Leverage" min="1.1" max="50" step="0.1" value="10" id="leverage">
+  <button type="button" aria-label="Set leverage to 10x" class="preset">10x</button><button type="button" aria-label="Set leverage to 25x" class="preset">25x</button><button type="button" aria-label="Set leverage to 50x" class="preset">50x</button>
+  <button type="button" id="submit" disabled>Long/Buy</button>
+</div>
+<script>
+window.__perps = { submit: 0, quick: 0, confirm: 0, dismiss: 0, all: 0, typed: 0, side: null, leverage: null, amount: null };
+const $ = id => document.getElementById(id), amount = $('amount'), submit = $('submit'), lever = $('leverage');
+const radios = [...document.querySelectorAll('[role=radio]')];
+for (const radio of radios) radio.addEventListener('click', () => setTimeout(() => {
+  for (const other of radios) other.toggleAttribute('data-checked', other === radio);
+  submit.textContent = radio.getAttribute('aria-label') === 'Long' ? 'Long/Buy' : 'Short/Sell';
+}, 40));
+for (const preset of document.querySelectorAll('.preset')) preset.addEventListener('click', () => setTimeout(() => { lever.value = preset.textContent.replace('x', ''); }, 40));
+$('half').addEventListener('click', () => setTimeout(() => { amount.value = '20.0000'; submit.disabled = false; }, 40));
+$('max').addEventListener('click', () => setTimeout(() => { amount.value = '39.9200'; submit.disabled = false; }, 40));
+amount.addEventListener('input', () => { window.__perps.typed += 1; });
+$('close-all').addEventListener('click', () => { window.__perps.all += 1; });
+submit.addEventListener('click', () => {
+  const side = radios.find(radio => radio.hasAttribute('data-checked')).getAttribute('aria-label');
+  Object.assign(window.__perps, { submit: window.__perps.submit + 1, side, leverage: lever.value, amount: amount.value });
+  submit.disabled = true;
+  setTimeout(() => {
+    $('empty').remove();
+    const row = document.createElement('div');
+    row.className = 'grid perps-position-table-row h-[62px]';
+    row.innerHTML = '<div><button type="button">ZEC</button><span>' + side + ' ' + lever.value + 'x</span></div><div><span>$20.10</span><span>(+$0.10)</span></div>'
+      + '<div><span>$100.0100<span>/</span></span><span>$100.0200</span></div><div><span>' + (side === 'Long' ? '$97.10' : '$102.90') + '</span></div>'
+      + '<div><span>$500.00</span><span>5 ZEC</span></div><div><span>$20.00</span></div><div><span>-- / --</span></div>'
+      + '<div><button type="button" aria-label="Share ZEC">s</button><button type="button" aria-label="Quick close ZEC">x</button><button type="button">Close</button></div>';
+    row.querySelector('[aria-label="Quick close ZEC"]').addEventListener('click', () => {
+      window.__perps.quick += 1;
+      setTimeout(() => {
+        const dialog = document.createElement('div');
+        dialog.setAttribute('role', 'dialog');
+        dialog.innerHTML = '<h2>Close Entire Position?</h2><p>This will send an order to close your ZEC position.</p><button type="button">Confirm</button><button type="button">Dismiss</button>';
+        const [confirm, dismiss] = dialog.querySelectorAll('button');
+        confirm.addEventListener('click', () => { window.__perps.confirm += 1; dialog.remove(); setTimeout(() => { row.remove(); $('positions-tab').textContent = 'Positions'; const empty = document.createElement('p'); empty.id = 'empty'; empty.textContent = 'No positions'; $('list').append(empty); }, 300); });
+        dismiss.addEventListener('click', () => { window.__perps.dismiss += 1; dialog.remove(); });
+        document.body.append(dialog);
+      }, 150);
+    });
+    $('list').append(row);
+    // With a position listed the tab carries a count.
+    $('positions-tab').textContent = 'Positions (1)';
+  }, 400);
+});
+</script></body></html>`;
 
 let browser, fixture, fatal;
 const targets = new Map(), ready = new Map(), requests = [], errors = [];
@@ -173,7 +236,7 @@ try {
       responseHeaders: [{ name: 'content-type', value: type }, { name: 'access-control-allow-origin', value: '*' }],
       body: Buffer.from(typeof body === 'string' ? body : JSON.stringify(body)).toString('base64') }, m.sessionId); };
     if (request.method === 'GET') {
-      if (new URL(request.url).origin === 'https://jup.ag' && m.params.resourceType === 'Document') return fulfill(portalHtml, 'text/html');
+      if (new URL(request.url).origin === 'https://jup.ag' && m.params.resourceType === 'Document') return fulfill(new URL(request.url).pathname.startsWith('/perps/') ? perpsHtml : portalHtml, 'text/html');
       if (request.url === CATALOG) return fulfill(fixture.catalog);
       if (request.url.startsWith(HISTORY + '?')) return fulfill(fixture.history(request.url));
     }
@@ -270,6 +333,17 @@ try {
     assert(/^Long and Short are off: Tick Unlock/.test(seen.why), `the window does not say how to enable entries: ${seen.why}`);
     assert(seen.badge === 'TP/SL off' && /does not block Long or Short/.test(seen.watch), `guard wording: ${seen.badge} | ${seen.watch}`);
     return seen;
+  });
+
+  await check('the window’s one sound has a mute button, and the choice is kept', async () => {
+    const before = await state(`({ text: document.getElementById('mute').textContent, pressed: document.getElementById('mute').getAttribute('aria-pressed'), title: document.getElementById('mute').title.length })`);
+    assert(before.text === 'Sound on' && before.pressed === 'false' && before.title > 120, JSON.stringify(before));
+    await trustedClick(scalp, `document.getElementById('mute')`);
+    await until(() => state(`document.getElementById('mute').getAttribute('aria-pressed') === 'true' && document.getElementById('mute').textContent === 'Muted'`), 'muted');
+    await until(async () => (await state(`chrome.storage.local.get('jupiter1000xScalp').then(stored => stored.jupiter1000xScalp?.muted === true)`)) === true, 'mute saved');
+    await trustedClick(scalp, `document.getElementById('mute')`);
+    await until(async () => (await state(`chrome.storage.local.get('jupiter1000xScalp').then(stored => stored.jupiter1000xScalp?.muted === false && document.getElementById('mute').textContent === 'Sound on')`)) === true, 'unmuted and saved');
+    return before;
   });
 
   await check('arming needs a trusted click and valid levels, in price or in basis points', async () => {
@@ -484,8 +558,8 @@ try {
   });
 
   await check('the coin dropdown switches the watched coin and blocks entries while the Jupiter tab shows another', async () => {
-    const options = await until(() => state(`(() => { const select = document.getElementById('coin'); return select.options.length === 2 ? [...select.options].map(option => option.value) : null; })()`), 'coin list');
-    assert(options.join() === 'SOL,BTC', `coins: ${options}`);
+    const options = await until(() => state(`(() => { const select = document.getElementById('coin'); return select.options.length === 3 ? [...select.options].map(option => option.value) : null; })()`), 'coin list');
+    assert(options.join() === 'SOL,BTC,ZEC', `coins: ${options}`);
     await ev(scalp, `(() => { const select = document.getElementById('coin'); select.value = 'BTC'; select.dispatchEvent(new Event('change', { bubbles: true })); })()`);
     await until(() => state(`location.hash === '#market=BTC' && document.getElementById('coin')?.value === 'BTC' && document.getElementById('feed')?.dataset.state === 'live'`), 'window reloaded on BTC', 30_000);
     await until(() => state(`/The Jupiter tab is on SOL/.test(document.getElementById('guard-page').textContent)`), 'market mismatch shown');
@@ -527,11 +601,66 @@ try {
     return seen;
   });
 
+  await check('on a Perps beta market the window opens with the page’s own buttons, arms from the real entry, and closes with Quick close and its question', async () => {
+    const betaUrl = scalpUrl.replace(/#market=.*$/, '#market=ZEC&venue=perps');
+    await browser.call('Page.navigate', { url: 'https://jup.ag/perps/long/USDC-ZEC' }, portal.sessionId);
+    const button = `document.querySelector('#smt-perps-panel')?.shadowRoot.querySelector('#smt-1000x-scalp')`;
+    await until(() => ev(portal, `Boolean(${button}) && !${button}.hidden && Boolean(window.__perps)`), 'scalp button on the ZEC Perps overlay', 20_000);
+    await trustedClick(portal, button);
+    const beta = await until(async () => { const target = (await browser.targets()).find(item => item.type === 'page' && item.url === betaUrl); return target && targets.get(target.targetId); }, 'ZEC Perps scalp window');
+    await ready.get(beta.sessionId);
+    scalp = beta;
+    await until(() => state(`document.getElementById('feed')?.dataset.state === 'live' && /Available 40 USDC/.test(document.getElementById('guard-page').textContent)`), 'order form read', 30_000);
+    const panel = await state(`({ market: document.getElementById('market').textContent, page: document.getElementById('guard-page').textContent, note: document.getElementById('perps-note').textContent,
+      sizes: [...document.querySelectorAll('input[name="entry-size"]')].map(input => [input.value, input.disabled, input.checked]),
+      leverage: [...document.querySelectorAll('input[name="entry-leverage"]')].map(input => input.value), long: document.getElementById('entry-long').disabled,
+      why: document.getElementById('entry-status').textContent, chips: [...document.querySelectorAll('.chips button[data-sl]')].map(chip => chip.textContent) })`);
+    assert(panel.market === '1s scalp · Perps' && /Market/.test(panel.page) && /runs them itself/.test(panel.note) && /only while this window/.test(panel.note), JSON.stringify(panel));
+    assert(JSON.stringify(panel.sizes) === JSON.stringify([['0.25', true, false], ['0.5', false, true], ['0.75', true, false], ['1', false, false]]), `sizes: ${JSON.stringify(panel.sizes)}`);
+    assert(panel.leverage.join() === ',25,50' && panel.long && /Tick Unlock/.test(panel.why) && panel.chips.every(text => /liq\./.test(text)), JSON.stringify(panel));
+    await trustedClick(scalp, `document.querySelector('input[name="entry-leverage"][value="25"]')`);
+    await trustedClick(scalp, `document.querySelector('.chips [data-tp="50"]')`);
+    await trustedClick(scalp, `document.querySelector('.chips [data-sl="0.5"]')`);
+    await trustedClick(scalp, `document.querySelector('input[name="guard-mode"][value="close"]')`);
+    // Half of the estimated liquidation distance at 25x on ZEC: (10000 / 25 - 100) / 2 = 150 bp.
+    assert(await state(`document.getElementById('guard-sl').value`) === '150.00', 'the stop chip did not use the Perps liquidation estimate');
+    await trustedClick(scalp, `document.getElementById('entry-unlock')`);
+    await until(() => state(`!document.getElementById('entry-long').disabled`), 'Long enabled');
+    await trustedClick(scalp, `document.getElementById('entry-long')`);
+    await sleep(900);
+    assert((await ev(portal, 'window.__perps.submit')) === 0, 'the first press already sent the order');
+    await trustedClick(scalp, `document.getElementById('entry-long')`);
+    try { await until(() => ev(portal, 'window.__perps.submit === 1'), 'one submit press', 15_000); }
+    catch (error) { throw new Error(`${error.message}: ${await text(scalp, 'entry-status')} | ${await text(scalp, 'guard-errors')} | ${JSON.stringify(await ev(portal, 'window.__perps'))}`); }
+    const sent = await ev(portal, 'window.__perps');
+    assert(sent.side === 'Long' && sent.leverage === '25' && sent.amount === '20.0000' && sent.typed === 0, `order sent: ${JSON.stringify(sent)}`);
+    await until(async () => await guardState(scalp) === 'armed', 'levels armed from the listed entry', 20_000);
+    const armed = await text(scalp, 'guard-status');
+    // The page's mark sits 2 bp from the oracle here; the window shows that distance beside the mark.
+    assert(/oracle [+−]?[0-9.]+ bp from it/.test(await text(scalp, 'guard-position-detail')), 'the distance between oracle and mark is not shown');
+    // With a position open, a second entry from the window is blocked: this venue keeps one net position per market.
+    assert(await state(`document.getElementById('entry-long').disabled && document.getElementById('entry-short').disabled`), 'a second entry was possible on an open position');
+    assert(/TP 100\.51/.test(armed) && /SL 98\.50/.test(armed) && /will press Close/.test(armed), `armed levels: ${armed}`);
+    // Through the stop: one Quick close, one Confirm, and the row leaves.
+    fixture.state.price = 98.3;
+    await until(() => ev(portal, 'window.__perps.quick === 1 && window.__perps.confirm === 1'), 'quick close and its confirmation', 20_000);
+    await until(async () => await guardState(scalp) === 'closed', 'closed', 20_000);
+    await sleep(2500);
+    const counted = await ev(portal, 'window.__perps');
+    assert(counted.submit === 1 && counted.quick === 1 && counted.confirm === 1 && counted.dismiss === 0 && counted.all === 0 && counted.typed === 0, `unexpected presses: ${JSON.stringify(counted)}`);
+    fixture.state.price = 100;
+    if (OUT) {
+      const shot = await browser.call('Page.captureScreenshot', { format: 'png', captureBeyondViewport: true }, scalp.sessionId);
+      fs.writeFileSync(path.join(OUT, 'perps-beta.png'), Buffer.from(shot.data, 'base64'));
+    }
+    return { panel: panel.page, sent, armed, counted };
+  });
+
   await check('only public GET reads left the browser and no page error occurred', async () => {
     const sent = requests.filter(request => request.action !== 'blocked');
     assert(requests.every(request => request.method === 'GET'), 'a non-GET request was attempted');
     assert(sent.every(request => request.url === CATALOG || request.url.startsWith(HISTORY + '?') || request.url.startsWith('https://jup.ag/')), 'an unexpected host was read');
-    assert(fixture.state.subscriptions.every(payload => payload.type === 'subscribe' && ['6', '1'].includes(String(payload.priceFeedIds))), 'unexpected stream message');
+    assert(fixture.state.subscriptions.every(payload => payload.type === 'subscribe' && ['6', '1', '66'].includes(String(payload.priceFeedIds))), 'unexpected stream message');
     assert(errors.length === 0, `page errors: ${errors.join(' | ')}`);
     return { requests: requests.length, blocked: requests.filter(request => request.action === 'blocked').map(request => request.url) };
   });
