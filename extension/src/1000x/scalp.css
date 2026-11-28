@@ -143,3 +143,7 @@ td.rec[data-vote=flat]{background:transparent;color:#d4ddec}
 
 #exp-board thead th:last-child{text-align:right}
 [role=tabpanel]:focus-visible{outline:2px solid #79ddf1;outline-offset:2px}
+
+#guard[data-venue=perps]>:not(h2,#guard-page,#perps-note,.actions){display:none}
+#guard[data-venue=perps] #guard-arm,#guard[data-venue=perps] #guard-disarm,#guard[data-venue=perps] #guard-badge{display:none}
+#perps-note{padding:6px 8px;border-left:3px solid #e5c575;background:#1b2434}

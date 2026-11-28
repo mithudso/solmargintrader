@@ -493,6 +493,34 @@ try {
     return { options, seen };
   });
 
+  await check('from the Perps page the same window opens for read-outs only, with no order controls', async () => {
+    const perpsUrl = scalpUrl.replace(/#market=.*$/, '#market=BTC&venue=perps');
+    await browser.call('Page.navigate', { url: 'https://jup.ag/perps/long/JupUSD-BTC' }, portal.sessionId);
+    const button = `document.querySelector('#smt-perps-panel')?.shadowRoot.querySelector('#smt-1000x-scalp')`;
+    await until(() => ev(portal, `Boolean(${button}) && !${button}.hidden`), 'scalp button on the Perps overlay', 20_000);
+    await trustedClick(portal, button);
+    const view = await until(async () => { const target = (await browser.targets()).find(item => item.type === 'page' && item.url === perpsUrl); return target && targets.get(target.targetId); }, 'Perps scalp window');
+    await ready.get(view.sessionId);
+    await until(() => ev(view, `document.getElementById('feed')?.dataset.state === 'live' && document.getElementById('guard')?.dataset.venue === 'perps'`), 'Perps view live', 30_000);
+    await sleep(1500);
+    const seen = await ev(view, `(() => { const shown = id => { const node = document.getElementById(id); return Boolean(node && node.offsetParent !== null); };
+      return { market: document.getElementById('market').textContent, note: shown('perps-note'), noteText: document.getElementById('perps-note').textContent.slice(0, 60),
+        page: document.getElementById('guard-page').textContent, long: shown('entry-long'), short: shown('entry-short'), arm: shown('guard-arm'), unlock: shown('entry-unlock'),
+        levels: shown('guard-tp'), size: shown('entry-size'), show: shown('guard-show'), tiles: document.querySelectorAll('.tile').length, tabs: shown('tab-experiments'),
+        coin: document.getElementById('coin').value, title: document.getElementById('call').title }; })()`);
+    assert(seen.market === '1s scalp · Perps view' && seen.note && /^Read-outs only/.test(seen.noteText) && /Opened from the Jupiter Perps page for BTC/.test(seen.page), JSON.stringify(seen));
+    assert(!seen.long && !seen.short && !seen.arm && !seen.unlock && !seen.levels && !seen.size, `an order control is visible on the Perps view: ${JSON.stringify(seen)}`);
+    assert(seen.show && seen.tiles === 16 && seen.tabs && seen.coin === 'BTC', JSON.stringify(seen));
+    assert((await browser.targets()).filter(target => target.url.startsWith(scalpUrl.replace(/#market=.*$/, ''))).length === 1, 'the 1000x window was left open beside the Perps one');
+    if (OUT) {
+      const shot = await browser.call('Page.captureScreenshot', { format: 'png', captureBeyondViewport: true }, view.sessionId);
+      fs.writeFileSync(path.join(OUT, 'perps.png'), Buffer.from(shot.data, 'base64'));
+    }
+    // The 1000x window was replaced; later steps look at the window that is open now.
+    scalp = view;
+    return seen;
+  });
+
   await check('only public GET reads left the browser and no page error occurred', async () => {
     const sent = requests.filter(request => request.action !== 'blocked');
     assert(requests.every(request => request.method === 'GET'), 'a non-GET request was attempted');

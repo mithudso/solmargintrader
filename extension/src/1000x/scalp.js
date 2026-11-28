@@ -21,7 +21,10 @@ import { POWERED_BY } from '../jupiter/attribution.js';
 import { createChart, CandlestickSeries, LineSeries, LineStyle } from '../../vendor/lightweight-charts/lightweight-charts.standalone.production.mjs';
 
 const $ = id => document.getElementById(id);
-const SYMBOL = new URLSearchParams(location.hash.slice(1)).get('market') || '';
+const PARAMS = new URLSearchParams(location.hash.slice(1));
+const SYMBOL = PARAMS.get('market') || '';
+// Opened from the Jupiter Perps page: read-outs only. That page's order form and positions are never read or pressed.
+const VIEW_ONLY = PARAMS.get('venue') === 'perps';
 const STORAGE = 'jupiter1000xScalp';
 const LOG_STORAGE = 'jupiter1000xScalpLog';
 const EXPERIMENT_STORAGE = 'jupiter1000xScalpExperiments';
@@ -78,7 +81,7 @@ const warmupBars = () => Math.max(...Object.values(assignments).map(id => varian
 const emptyTiles = () => readSlots(assignments, new Map(), 0);
 const guard = new ExitGuard(), entry = new EntryTracker(), events = [];
 let feed, latest = null, lastQuoteMs = 0, view = null, disposed = false, drawQueued = false, barsVersion = 0, drawnVersion = -1;
-let attached = false, pageState = { ok: false, reason: 'not_started' }, positions = [], polling = false, lastPollMs = 0, closing = false;
+let attached = false, linked = false, pageState = { ok: false, reason: 'not_started' }, positions = [], polling = false, lastPollMs = 0, closing = false;
 // Only these are remembered between windows. Unlock, Confirm and the size are never stored:
 // every window starts locked, confirming and at a quarter, whatever the last one was left at.
 const DEFAULT_SETTINGS = Object.freeze({ mode: 'alert', unit: 'bp', takeProfit: '', stopLoss: '' });
@@ -327,7 +330,9 @@ function drawCall(live) {
   $('call-arrow').textContent = mark; $('call-text').textContent = text;
   // The explanation lives in the hover text; the line under the call keeps only the numbers.
   section.title = `${detail} The call weighs each of the sixteen readings by how far its running 30 second hit rate is above 50%; a reading at or under 50% has no say. `
-    + 'A weighted score of 75% or more one way is strong, 37.5% or more is a lean, less is mixed. It is a lean: the 1000x payout needs a hit rate far above these figures.';
+    + 'A weighted score of 75% or more one way is strong, 37.5% or more is a lean, less is mixed. '
+    + (VIEW_ONLY ? 'It is a lean: the average move after a strong call was under one basis point on the recording, less than the fees to open and close a Perps position (about 7 bp of position size on HYPE and ZEC, more on SOL, ETH and BTC). The figures were measured on the 1000x oracle price, not on the Perps mark price.'
+      : 'It is a lean: the 1000x payout needs a hit rate far above these figures.');
   $('call-meta').textContent = !live || readoutError || !call?.ready ? ''
     : `${call.up}▲ ${call.down}▼ · weighted ${signed(call.score * 100, 0)}%`
       + (measured ? ` · recorded ${percent(measured)}${measured.live ? ` · live check ${percent(measured.live)} ± ${(measured.live.hit_se * 100).toFixed(1)}` : ''}` : ' · not measured')
@@ -610,7 +615,8 @@ function drawPositions() {
     if (keys.includes(keep)) select.value = keep;
   }
   const readable = pageState?.ok && pageState.recognized;
-  $('guard-page').textContent = !attached ? 'Open this window from the “1s scalp” button on the Jupiter 1000x tab to use the guard.'
+  $('guard-page').textContent = VIEW_ONLY ? `Opened from the Jupiter Perps page for ${SYMBOL || 'no market'}.`
+    : !attached ? 'Open this window from the “1s scalp” button on the Jupiter 1000x tab to use the guard.'
     : !readable ? `Cannot read positions: ${reasonText(pageState?.reason)}.`
       : positions.length ? `${positions.length} open ${SYMBOL} position${positions.length > 1 ? 's' : ''} on the Jupiter tab.`
         : `No open ${SYMBOL} position is listed on the Jupiter tab${pageState.pending ? ' (one is still opening)' : ''}.`;
@@ -677,7 +683,7 @@ function drawGuard() {
   $('guard-arm').hidden = busy; $('guard-disarm').hidden = !busy; $('guard-disarm').disabled = snap.state !== 'armed';
   $('guard-arm').disabled = !attached || !position;
   $('guard-arm').textContent = mode() === 'close' ? 'Arm · press Close' : 'Arm · alert only';
-  $('guard-show').disabled = !attached;
+  $('guard-show').disabled = !linked;
   for (const id of ['guard-tp-unit', 'guard-sl-unit']) $(id).textContent = unit() === 'bp' ? '(bp from entry)' : '(price)';
   $('guard-tp-note').textContent = levelNote(position, $('guard-tp').value, 'tp');
   $('guard-sl-note').textContent = levelNote(position, $('guard-sl').value, 'sl');
@@ -994,12 +1000,12 @@ async function changeCoin() {
   const next = $('coin').value;
   if (next === SYMBOL || !/^[A-Z][A-Z0-9]{0,11}$/.test(next)) return;
   if (LIVE_STATES.includes(guard.snapshot().state) || entry.pending || opening) { $('coin').value = SYMBOL; return; }
-  if (attached) {
+  if (linked) {
     const reply = await send('setMarket', { market: next });
     if (reply?.ok !== true) { $('coin').value = SYMBOL; $('guard-errors').textContent = `Could not switch coin: ${reasonText(reply?.reason)}.`; return; }
   }
   const url = new URL(location.href);
-  url.hash = `market=${next}`;
+  url.hash = VIEW_ONLY ? `market=${next}&venue=perps` : `market=${next}`;
   location.replace(url.href);
   location.reload();
 }
@@ -1072,7 +1078,16 @@ window.addEventListener('pagehide', () => { void saveExperiments(); disposed = t
 
 const timer = setInterval(() => { tick(); queueDraw(); }, 250);
 
-attached = (await send('status'))?.attached === true;
+linked = (await send('status'))?.attached === true;
+// The guard and the entry buttons need the 1000x page bridge; a Perps view never gets one.
+attached = linked && !VIEW_ONLY;
+if (VIEW_ONLY) {
+  $('guard').dataset.venue = 'perps';
+  $('guard-title').firstChild.textContent = 'Perps page ';
+  $('perps-note').hidden = false;
+  $('market').textContent = '1s scalp · Perps view';
+  $('guard-page').textContent = `Opened from the Jupiter Perps page for ${SYMBOL || 'no market'}.`;
+}
 drawPositions(); draw();
 if (SYMBOL_OK) {
   await startFeed();

@@ -1,7 +1,21 @@
 # Work continuation
 
-Version: 733
-Delta: v732 to v733. Record the hit-rate-weighted call and the Experiments tab of the 1s scalp window (extension 0.20.0). Earlier:
+Version: 734
+Delta: v733 to v734. Record the Perps read-outs-only view of the 1s scalp window (extension 0.21.0) and what the full Perps function still needs. Earlier:
+
+## 1s scalp window on the Jupiter Perps page: view only · 2026-11-28
+
+Request (`prompts.md` v337): "also do this same view and function in the perps page https://jup.ag/perps/long/USDC-HYPE in case I want to do the 25x or 50x margin."
+
+Done (0.21.0): the Perps paper overlay has the **1s scalp** button; the worker (`extension/src/bg/jupiter-scalp-window.js`, `jupiterPage`) accepts the Perps routes and marks the window `venue=perps`; the window shows every read-out and the Experiments tab for that market and hides the order panel. For a Perps window the worker answers `positions`, `closePosition` and `openPosition` with `view_only` and relays nothing to the page.
+
+Not done, on purpose: Long, Short, Close and a take profit or stop loss on the Perps page. Read on the live HYPE page on 2026-11-28 (read-only, nothing clicked, wallet connected, 0 USDC available, no position open): the order form's controls (side radios labelled Long and Short, "Collateral amount" input, HALF and MAX, leverage slider 1.1 to 25 with "Set leverage to Nx" presets, submit Long/Buy or Short/Sell) and the positions header (Position, Value, Entry / Mark Price, Liq. Price, Size, Collateral, TP / SL). The positions list is not a table element and no row could be read. The page's code (`https://jup.ag/assets/-v2-trade-route-Cqn6-RAV.js`) shows a row Close that opens an editor, a "Close Entire Position?" dialog with a confirm step, and a native Add TP / SL editor (take profit and stop loss, full or partial).
+
+Open decision for the owner: on Perps, whether the window should press the page's own Add TP / SL (recommended: Jupiter then runs the exit with no window open) or run its own guard as on 1000x. Either needs a real open Perps position to read its row before the presses can be written; the owner opens it, the agent reads it.
+
+Verification: 851 extension tests; `npm run e2e:scalp` 17 of 17 including the Perps view.
+
+Earlier delta, v732 to v733. Record the hit-rate-weighted call and the Experiments tab of the 1s scalp window (extension 0.20.0). Earlier:
 
 ## 1s scalp window 0.20.0: weighted call and Experiments tab · 2026-11-28
 

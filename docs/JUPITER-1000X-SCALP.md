@@ -1,6 +1,6 @@
 # Jupiter 1000x: 1s scalp window and exit guard
 
-Version: 2.3.0. Delta: the call weighs each reading by its running hit rate, and a new Experiments tab tests 79 settings at 12 intervals on live ticks and switches a clear winner into the grid; extension 0.20.0, 2026-11-28.
+Version: 2.4.0. Delta: the same window opens from the Jupiter Perps page as read-outs only; extension 0.21.0, 2026-11-28.
 
 ## What it is
 
@@ -230,6 +230,44 @@ slope makes no call, and calls open when the feed breaks are dropped. Seconds
 overlap, so the gauge is a running read and not a trade record. In the recording
 the 5 second slope matched 51.6% of the time and the 5 minute slope about 50%.
 
+## On the Jupiter Perps page
+
+The **Perps paper** overlay on a Perps market (`https://jup.ag/perps/long/USDC-HYPE`
+and the other SOL, ETH, BTC, ZEC and HYPE routes) has the same **1s scalp**
+button. It opens this window for that market with every read-out: the call, the
+chart with its projection, the trend grid, the slope ladder and the Experiments
+tab. The price is the same public oracle stream, which covers all five markets.
+
+On the Perps page the window is **read-outs only**. It reads nothing from that
+page and presses nothing on it: no Long or Short, no Close, no take profit or
+stop loss. The order panel is replaced by a note saying so. Open, size and
+close a Perps position with the page's own order form, where leverage goes up
+to 25× on HYPE and 50× on ZEC.
+
+Why it stops there. The Perps page is a different product from 1000x:
+
+- Its order form and its close flow are different. Close opens an editor or a
+  "Close Entire Position?" dialog with its own confirm step, and there are two
+  row layouts in the page's code. No position was open when the page was
+  read on 2026-11-28, so no position row could be read, and none was opened
+  for this work.
+- The page has its own **Add TP / SL** control in the positions list, which
+  Jupiter runs without any window staying open. That is the better tool for a
+  Perps take profit or stop loss. It was seen in the page's code and the column
+  is on the HYPE page; it was not checked on an open HYPE or ZEC position, and
+  the Perps paper guide notes that the beta venue documents no native TP/SL.
+- The read-out's figures were measured on the 1000x oracle price, not on the
+  Perps mark price, and the average move after a strong call (under 1 bp) is
+  smaller than the fees to open and close a Perps position: about 7 bp of
+  position size on HYPE and ZEC, more on SOL, ETH and BTC.
+
+Read on the live HYPE page on 2026-11-28, for a later version: side buttons
+`role="radio"` labelled Long and Short; Market and Limit tabs; an available
+balance button; HALF and MAX; an input labelled "Collateral amount"; a leverage
+slider from 1.1 to 25 with preset buttons labelled "Set leverage to 5x" through
+25x; a "Lock leverage" checkbox; and a submit button reading Long/Buy or
+Short/Sell.
+
 ## Opening a position
 
 | Step | What happens |
@@ -384,7 +422,8 @@ unlocked and need the confirming press, that a confirmed Long presses the page's
 Max, types three quarters, presses Long once and arms the levels from the new
 entry, that the slope gauge fills in, and that the Experiments tab lists 79
 settings at 12 intervals with live results while the call and the order panel
-stay on screen. `--full` also waits out the warm-up.
+stay on screen, and that the window opened from a Perps route shows the
+read-outs with no order control. `--full` also waits out the warm-up.
 It never visits the real site and connects no wallet.
 
 Sources:

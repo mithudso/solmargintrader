@@ -949,7 +949,7 @@
       "component": "extension",
       "kind": "markdown",
       "summary": "Includes the Verification status section; read it before extending",
-      "lines": 895
+      "lines": 900
     },
     {
       "path": "extension/src/1000x/feed.js",
@@ -1033,21 +1033,21 @@
       "component": "extension",
       "kind": "javascript",
       "summary": "Sixteen-tile vote, tiers, 30 second cone, slope ladder history and reversal timing, session score and the BigInt payout port",
-      "lines": 393
+      "lines": 392
     },
     {
       "path": "extension/src/1000x/scalp-experiments.js",
       "component": "extension",
       "kind": "javascript",
       "summary": "The Experiments engine: 79 settings read each second and scored at twelve intervals, the hit-rate-weighted call, and the rule that switches a clear winner into a tile",
-      "lines": 254
+      "lines": 261
     },
     {
       "path": "extension/src/1000x/scalp-experiments-data.js",
       "component": "extension",
       "kind": "javascript",
       "summary": "Generated: the experiment grid, its intervals, each setting's recorded hit rate and the switch rule's constants",
-      "lines": 1960
+      "lines": 2039
     },
     {
       "path": "extension/src/1000x/scalp-model-data.js",
@@ -1082,14 +1082,14 @@
       "component": "extension",
       "kind": "javascript",
       "summary": "The 1s scalp window: feed to bars to read-outs, chart with cone, weighted grid, slope ladder, the Experiments tab and the guard panel",
-      "lines": 1059
+      "lines": 1096
     },
     {
       "path": "extension/src/bg/jupiter-scalp-window.js",
       "component": "extension",
       "kind": "javascript",
       "summary": "One scalp window per Jupiter tab and the only relay from that window to the tab's page bridge",
-      "lines": 174
+      "lines": 189
     },
     {
       "path": "extension/test/1000x-scalp.test.js",
@@ -1117,21 +1117,21 @@
       "component": "extension",
       "kind": "javascript",
       "summary": "Python parity of every experiment setting; scoring without lookahead; save and restore; the weighted call; the switch rule",
-      "lines": 268
+      "lines": 375
     },
     {
       "path": "extension/test/jupiter-scalp-window.test.js",
       "component": "extension",
       "kind": "javascript",
       "summary": "Window ownership across worker eviction, relay refusal for strangers, explicit failures and the registry command's validation",
-      "lines": 207
+      "lines": 258
     },
     {
       "path": "extension/tools/1000x-scalp-e2e.mjs",
       "component": "extension",
       "kind": "other",
       "summary": "Chrome for Testing gate: trusted-click arming, alert mode presses nothing, close mode presses the row's Close once",
-      "lines": 518
+      "lines": 547
     },
     {
       "path": "research/scripts/scalp_1s_features.py",
@@ -1145,14 +1145,14 @@
       "component": "research",
       "kind": "python",
       "summary": "Scores the experiment grid at every interval and replays the weighted call and the switch rule on recorded ticks without looking ahead",
-      "lines": 260
+      "lines": 353
     },
     {
       "path": "research/scripts/scalp_1s_study.py",
       "component": "research",
       "kind": "python",
       "summary": "Scores every 1s feature against the next 30 seconds on recorded Jupiter oracle ticks and writes the extension's model constants and parity fixture",
-      "lines": 962
+      "lines": 982
     },
     {
       "path": "extension/test/1000x-oracle-model.test.js",
@@ -1215,7 +1215,7 @@
       "component": "repo",
       "kind": "markdown",
       "summary": "The 1s scalp window: readings, slope ladder, exit guard rails, limits and verification",
-      "lines": 383
+      "lines": 435
     },
     {
       "path": "extension/src/core/commands.js",

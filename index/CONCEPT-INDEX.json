@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-11-28T05:24:08+00:00",
+  "generatedAt": "2026-11-28T05:32:53+00:00",
   "schemaVersion": 1,
   "note": "Concepts are derived from the repo's own vocabulary \u2014 the FAMILY dict, strategy-card frontmatter, docs/trading-signals-concept-family.md, and terms verified to recur in the corpus. A concept matching no file is dropped, not kept.",
   "counts": {
@@ -51,7 +51,7 @@
         },
         {
           "path": "memory.md",
-          "hits": 165
+          "hits": 167
         },
         {
           "path": "llms-filemap.txt",
@@ -63,7 +63,7 @@
         },
         {
           "path": "extension/src/1000x/scalp.js",
-          "hits": 131
+          "hits": 135
         },
         {
           "path": "research/json/tradingview-script-profiles/shard-a.jsonl",
@@ -82,12 +82,12 @@
           "hits": 113
         },
         {
-          "path": "research/json/tradingview-script-profiles/shard-b.jsonl",
-          "hits": 100
+          "path": "extension/tools/1000x-scalp-e2e.mjs",
+          "hits": 101
         },
         {
-          "path": "extension/tools/1000x-scalp-e2e.mjs",
-          "hits": 96
+          "path": "research/json/tradingview-script-profiles/shard-b.jsonl",
+          "hits": 100
         },
         {
           "path": ".cdo/reviews-2026-11-12/soltui-worker.json",
@@ -161,7 +161,7 @@
         "universe",
         "top_coins"
       ],
-      "matchingFiles": 4241,
+      "matchingFiles": 4246,
       "shown": 30,
       "files": [
         {
@@ -810,7 +810,7 @@
         },
         {
           "path": "extension/README.md",
-          "hits": 64
+          "hits": 66
         },
         {
           "path": "research/json/strategy_experiment/results/auxiliary.json",
@@ -990,7 +990,7 @@
         "perps",
         "solana"
       ],
-      "matchingFiles": 1425,
+      "matchingFiles": 1426,
       "shown": 30,
       "files": [
         {
@@ -1011,7 +1011,7 @@
         },
         {
           "path": "memory.md",
-          "hits": 566
+          "hits": 586
         },
         {
           "path": "research/json/strategy_experiment/results/results.json",
@@ -1090,16 +1090,16 @@
           "hits": 109
         },
         {
+          "path": "extension/README.md",
+          "hits": 105
+        },
+        {
           "path": "soltui/JUPITER_ORDER_WIDGET_IMPLEMENTATION_GUIDE.md",
           "hits": 105
         },
         {
           "path": "research/json/zec-expanded-20261113.llms/special-runner-summary.json",
           "hits": 104
-        },
-        {
-          "path": "extension/README.md",
-          "hits": 101
         },
         {
           "path": ".cdo/scope-20261111-task1423.json",

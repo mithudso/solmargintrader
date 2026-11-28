@@ -127,7 +127,7 @@ See [design, formulas and verification](../docs/JUPITER-1000X-OVERLAY.md),
 [optimized execution prompt](../docs/JUPITER-1000X-OVERLAY-PROMPT.md), and
 [SDK create/close capabilities and remaining gates](../docs/JUPITER-1000X-SDK.md).
 
-## Jupiter 1000x 1s scalp window, entries and exit guard (0.20.0)
+## Jupiter 1000x 1s scalp window, entries and exit guard (0.21.0)
 
 The Indicators overlay on `https://jup.ag/1000x` has a **1s scalp** button. It
 opens a separate window for that market: read-outs on the left, the order form
@@ -151,6 +151,11 @@ when it is clearly ahead of the one in use. Results are kept per coin between
 windows. On the recording, weighting gained about one point (54.4% against 53.3%
 for strong calls, within one standard error) and switching changed nothing
 measurable.
+
+The **Perps paper** overlay on a Jupiter Perps market has the same **1s scalp**
+button. There the window is read-outs only: it shows the call, chart, grid,
+slope ladder and Experiments tab for that market and presses nothing on the
+Perps page. Use the page's own order form and its Add TP / SL.
 
 It opens a position on request. **Long** and **Short** are locked until you tick
 Unlock and, by default, need a confirming second press. A quarter, half or all
