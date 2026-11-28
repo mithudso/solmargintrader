@@ -261,6 +261,9 @@ command registry. No npm runtime dependencies by design; one vendored charting l
 | `research/scripts/scalp_1s_features.py` | Causal 1s-bar feature definitions shared by the study and the extension port |
 | `research/scripts/scalp_1s_experiments.py` | Scores the experiment grid at every interval and replays the weighted call and the switch rule on recorded ticks without looking ahead |
 | `research/scripts/scalp_1s_study.py` | Scores every 1s feature against the next 30 seconds on recorded Jupiter oracle ticks and writes the extension's model constants and parity fixture |
+| `research/scripts/scalp_1s_questions.py` | Follow-up counts on the same recordings: combinations of readings, agreement, the seconds before large moves, Coinbase's book against the oracle; learned on the first 60%, read on the last 40% |
+| `research/scripts/scalp_1s_coins.py` | The window's own call scored market by market on recorded oracle ticks, with each market compared against the others pooled |
+| `research/tests/test_scalp_1s_questions.py` | No figure learned before the split moves when later prices change; error bars count clock seconds, not calls; the book is read only as it was received |
 | `extension/test/1000x-oracle-model.test.js` | Analytical gradient/scoring, delayed current-weight learning, flat/unknown labels, prefix invariance and bounded recovery |
 | `extension/test/1000x-oracle-controller.test.js` | Concurrent/reloaded controllers, stored forecast reuse, quote coalescing and obsolete-session fences |
 | `docs/EXTENSION-STREAMING-ORACLE.md` | Streaming learner target, equations, atomic persistence, bounds, research status and verification limits |

@@ -22,6 +22,7 @@ import gzip
 import hashlib
 import json
 import math
+import zlib
 from pathlib import Path
 
 import numpy as np
@@ -117,13 +118,20 @@ def input_receipt(base: Path, live: Path | None) -> dict:
 def read_live(path: Path) -> dict:
     out: dict[str, list] = {}
     opener = gzip.open if path.suffix == ".gz" else open
-    with opener(path, "rt", encoding="utf-8") as stream:
-        for line in stream:
-            try:
-                row = json.loads(line)
-            except json.JSONDecodeError:
-                continue  # the recorder may still be appending the last line
-            out.setdefault(row["a"], []).append((row["e"] / 1000.0, float(row["p"])))
+    try:
+        with opener(path, "rt", encoding="utf-8") as stream:
+            for line in stream:
+                try:
+                    row = json.loads(line)
+                    tick = (float(row["e"]) / 1000.0, float(row["p"]))
+                    asset = row["a"]
+                except (json.JSONDecodeError, KeyError, TypeError, ValueError):
+                    continue  # the recorder may still be appending the last line
+                if isinstance(asset, str) and tick[1] > 0 and math.isfinite(tick[0]):
+                    out.setdefault(asset, []).append(tick)
+    except (EOFError, zlib.error):
+        # A gzip cut off mid-write keeps the rows already read, as read_base does.
+        pass
     return {a: _dedupe(rows) for a, rows in out.items()}
 
 

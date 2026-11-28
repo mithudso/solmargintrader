@@ -7,7 +7,7 @@
 
 ## One-second bars on Jupiter 1000x
 
-[One-second bars and the next 30 seconds on Jupiter 1000x](papers/SCALP-1S-STUDY.md) scores sixteen trend readings, a slope ladder and its second derivative against the next 30 seconds on recorded Jupiter oracle ticks, and prices a 30 second call with the product's payout formula. `python -m research.scalp_1s_study` writes [the tables](json/scalp-1s-20261127/summary.json), the extension's model constants and its parity fixture. The Chrome window built on it is described in [the 1s scalp window guide](../docs/JUPITER-1000X-SCALP.md).
+[One-second bars and the next 30 seconds on Jupiter 1000x](papers/SCALP-1S-STUDY.md) scores sixteen trend readings, a slope ladder and its second derivative against the next 30 seconds on recorded Jupiter oracle ticks, and prices a 30 second call with the product's payout formula. `python -m research.scalp_1s_study` writes [the tables](json/scalp-1s-20261127/summary.json), the extension's model constants and its parity fixture. The Chrome window built on it is described in [the 1s scalp window guide](../docs/JUPITER-1000X-SCALP.md). `python -m research.scalp_1s_questions` and `python -m research.scalp_1s_coins` write the paper's follow-up section ([tables](json/scalp-1s-questions-20261128/summary.json)): combinations of readings, agreement, large moves, Coinbase's book against the oracle, and one coin against another.
 
 ## HYPE study
 

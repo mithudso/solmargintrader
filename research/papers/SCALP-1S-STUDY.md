@@ -1,6 +1,6 @@
 # One-second bars and the next 30 seconds on Jupiter 1000x
 
-Version: 1.5.0. Data: Jupiter Pyth oracle ticks, 2026-11-16 to 2026-11-17, 2026-11-27 and 2026-11-28.
+Version: 1.6.0. Data: Jupiter Pyth oracle ticks, 2026-11-16 to 2026-11-17, 2026-11-27 and 2026-11-28; Coinbase top-of-book rows from the 2026-11-16 to 2026-11-17 capture.
 
 On one-second bars of the Jupiter 1000x oracle price, recent direction persists a little: when twelve or more of sixteen trend readings agreed, the next 30 seconds went their way about 53% of the time. Fading an extreme lost. The 1000x payout needs 61% to 84% on moves of that size, so the read-out is a lean and not a rule that pays.
 
@@ -17,6 +17,11 @@ Nothing here was traded. Every figure is a count over recorded prices or the pag
 | How long before a slope reverses? | About as long as its own window: 5.9 s on average for the 5 second slope, 11 s for 10, 21 s for 20, 31 s for 30, 62 s for 60 and 287 s for 5 minutes. That is what a random walk gives. |
 | Does always taking the setting with the highest hit rate help? | Not measurably. With 380 settings under test and each tile given the best of its kind, strong calls were right 55.1% ± 1.9 against 54.4% ± 2.0 with no switching on the base recording, 53.0% against 53.8% on the first live recording and 48.3% against 49.6% on the second. Switching with no waiting at all changed a tile's setting 1,994 times in 26 market-hours for the same result; the rule the window uses changed one 61 times. |
 | Does a reading that is usually wrong work as an inverse reading? | No. No setting was reliably wrong: the worst of 380 was right 48.9% of the time. Betting against the 26 that were under 50% on the first 60% was right 49.7% ± 0.9 afterwards. Turning under-50% readings round inside the call changed strong calls from 54.4% to 54.6% on fewer seconds. |
+| Is some combination of readings right more often than the call? | Not measurably. The best pairs and triples are a breakout of the last 120 seconds confirmed by fast readings: 55.3% to 56.2% on 6% to 12% of seconds afterwards, against 55.3% ± 3.1 for that breakout alone and 54.4% ± 2.2 for the strong call on 20% of seconds. A weighted fit of all 380 settings looked best where it was fitted (59.5%) and was 52.7% ± 2.1 afterwards. |
+| Do more strong calls, or more agreement, mean more hits? | More agreeing readings, yes, weakly: all sixteen agreeing was right 55.6% ± 2.9, fourteen or fifteen 53.3%, fewer than twelve about 50%. More strong calls in a row, no: one strong call in the last 30 seconds was right 54.9% ± 6.9, six to fifteen 55.3% ± 3.0, sixteen or more 50.2% ± 7.4. BTC and ZEC both strong the same way was 57.0% ± 4.6 against 52.9% ± 2.5 for one alone, and that did not repeat on the second live recording. |
+| Does anything point the right way before a large move? | Nothing that can be used. Looking back from the largest 5% of moves, the strong call had been right 61.3% ± 4.2 and the 60 second breakout 63.9% ± 4.4, but those seconds are picked by the move that followed. Looking forward, high volatility says a large move is coming (17.4% of seconds in the most volatile fifth against 1.6% in the calmest) and says nothing about which way: the strong call was right 52.6% there and 57.1% in the calmest fifth. |
+| Does the feed carry volume or an order book? | No. The Jupiter oracle stream is a price and a time. Coinbase's best bid and ask, recorded beside it in the base capture, moved before the oracle did: the book's own 2 second change called the oracle's next 3 seconds 62.0% of the time. With the 2 second wait an order has, that is 53.6%, and with the book one second late the lead is mostly gone. |
+| Is the call right more often on one coin? | Not that these recordings can show. Base capture, 33 hours each, scored with rates chosen on that same capture: BTC 54.8% ± 1.4, ZEC 52.4% ± 1.8. Live, an hour and a half each: HYPE 57.1% ± 8.3, the other four 48.8% to 50.4% ± 7 to 9. Telling two coins two points apart takes about nine days of ticks per coin. |
 | Would following the call have made money at 1000x? | No. One call every 30 seconds lost 5.3% of collateral per trade on the held-out slice, with one trade in five liquidated inside 30 seconds. Strong calls alone averaged +0.7% with a standard error of 3.8, which is not distinguishable from zero. |
 
 ## Data
@@ -219,6 +224,132 @@ Every row is within one standard error of every other, and of no switching. The 
 
 The earlier cautious rule is still in the window ("Only when clearly ahead"): same kind, at least 40 independent calls' worth on both, the lower end of the challenger's 90% Wilson interval above the incumbent's live rate, at least 52% right, not ranked below the incumbent on the recording, and ten minutes between changes of one tile. Replayed on the wider grid it switched three settings in the first 60% of the recording and none afterwards, and left the call unchanged. A parity fixture ties the extension's record, weights, both switch rules and the inverse-vote score to this module's (`rule` in `extension/test/fixtures/1000x-scalp-parity.json`), and `switch_rule_limits` in `summary.json` holds the table above. Sixty-second momentum and sixty-second efficiency vote identically, since both are the sign of the 60 second change.
 
+## Combinations, agreement, large moves, the order book and coins
+
+Five questions asked of the same recordings after the window shipped. Rankings, fits, thresholds and cut-offs were learned on the first 60% of the base recording (BTC and ZEC, 33 hours) and read on the last 40%. The tiles and the settings were chosen with the whole base recording in view, so the last 40% is not a clean test either; only the two live recordings (five coins, about 45 minutes each) are untouched, and they are short.
+
+Error bars in this section count seconds of the clock, not calls. Two markets that call in the same second are one look, because they move together, and 30 consecutive seconds are one look, because their outcomes overlap. That makes these bars wider than the ones in the tables above, which treat each market's calls as its own.
+
+### A combination of readings
+
+Twenty-nine readings went in: the sixteen tiles and the best setting of each kind on the first 60%. A combination speaks when all its members agree. All 29 single readings, 406 pairs and 3,654 triples were ranked on the first 60% by hit rate, among those that spoke on at least 5% of seconds (3% for triples).
+
+| Combination, best of its size on the first 60% | First 60% | Last 40% | Share of seconds | Live 11-27 | Live 11-28 |
+|---|---|---|---|---|---|
+| Breakout, 120 s | 53.2% | 55.3% ± 3.1 | 11.5% | 55.6% ± 11.5 | 52.0% ± 11.8 |
+| Breakout, 120 s, with balance of power, 2 s | 53.7% | 55.5% ± 3.7 | 7.7% | 56.1% ± 13.5 | 52.6% ± 14.1 |
+| Breakout, 120 s, with balance of power, 2 s, and MACD 3/17/5 | 54.1% | 56.2% ± 4.1 | 6.4% | 56.2% ± 15.0 | 52.3% ± 15.2 |
+| Strong call, for comparison | | 54.4% ± 2.2 | 20% | 53.8% | 49.6% |
+
+Every combination at the top is the 120 second breakout with fast readings that agree with it. Adding members makes it speak less often and moves the hit rate by less than one standard error. The strong call is within one standard error of all of them on three times the seconds.
+
+A weighted fit (ridge regression of the outcome on the votes, fitted on the first 60%, "confident" being the top fifth of its scores there) did no better:
+
+| Fit | First 60%, confident | Last 40%, all | Last 40%, confident | Live 11-27, confident | Live 11-28, confident |
+|---|---|---|---|---|---|
+| The sixteen tiles | 53.3% | 51.9% ± 1.3 | 52.4% ± 2.2 | 53.3% ± 7.3 | 47.2% ± 7.1 |
+| All 380 settings | 59.5% | 51.4% ± 1.3 | 52.7% ± 2.1 | 50.6% ± 6.7 | 48.2% ± 6.4 |
+
+The 380-setting fit is the pattern to remember: 59.5% where it was fitted, 52.7% afterwards. More freedom fitted more noise.
+
+### More agreement, and more strong calls
+
+The plain count of agreeing readings, last 40%:
+
+| Net readings one way, of 16 | Right | Seconds |
+|---|---|---|
+| 16 | 55.6% ± 2.9 | 10,431 |
+| 14 or 15 | 53.3% ± 2.8 | 10,749 |
+| 12 or 13 | 51.2% ± 2.7 | 11,381 |
+| 8 to 11 | 50.5% ± 2.0 | 21,133 |
+| 4 to 7 | 50.2% ± 1.9 | 26,376 |
+| 1 to 3 | 49.5% ± 2.8 | 10,348 |
+
+Full agreement was right most often, and under twelve the count says nothing. On the first 60% full agreement was 52.5%, and on the live recordings 58.0% ± 10.0 and 50.7% ± 10.2, so the step from fourteen to sixteen is not established.
+
+A strong call that follows other strong calls is no better than one alone. Counting strong calls the same way in the 30 seconds up to and including the call, last 40%:
+
+| Strong calls in the last 30 s | Right | Live 11-27 | Live 11-28 |
+|---|---|---|---|
+| 1 | 54.9% ± 6.9 | | |
+| 2 to 5 | 54.0% ± 3.5 | 52.2% ± 10.5 | 51.0% ± 10.4 |
+| 6 to 15 | 55.3% ± 3.0 | 55.6% ± 8.7 | 49.6% ± 8.6 |
+| 16 to 30 | 50.2% ± 7.4 | 52.3% ± 13.8 | 45.7% ± 14.1 |
+
+A call that has been strong for most of the last half minute was the worst row on the base recording and on the second live one. This agrees with the earlier finding on two strong calls in a row.
+
+Two markets agreeing looked better on the base recording and did not hold up. A strong call on BTC or ZEC while the other was strong the same way was right 57.0% ± 4.6; one alone, 52.9% ± 2.5. On the live recordings, with five coins, a strong call with at least one other coin strong the same way was 54.8% ± 9.5 against 53.0% ± 10.3 alone, then 48.3% ± 9.7 against 50.7% ± 9.9.
+
+### Before a large move
+
+A large move is one of the largest 5% of 30 second moves of its market, with the size learned on the first 60%: 10.1 basis points on BTC, 25.3 on ZEC. Looking back from the large moves of the last 40% (about 216 separate looks):
+
+| Reading | Right before a large move | Spoke before | Right over all seconds |
+|---|---|---|---|
+| 60 s breakout | 63.9% ± 4.4 | 18.6% | 55.0% ± 2.5 |
+| Strong call | 61.3% ± 4.2 | 23.3% | 54.4% ± 2.2 |
+| Any call | 56.3% ± 3.4 | 100% | 51.6% ± 1.3 |
+| 5 s momentum | 55.9% ± 3.4 | 99.9% | 51.8% ± 1.3 |
+| 60 s momentum | 53.7% ± 3.4 | 100% | 51.0% ± 1.3 |
+
+These are not usable figures. The seconds were picked by what followed them: a large move is a continuation more often than a small one is, so any trend reading scores higher when only large outcomes are counted. On the live recordings the strong call before a large move was right 45.9% ± 13.1 and 55.6% ± 12.4, and the breakout 43.7% ± 14.2 and 66.7% ± 13.4, on 14 and 25 looks.
+
+The usable form of the question is what can be seen beforehand. Volatility over the last 30 seconds, cut into fifths on the first 60%:
+
+| Volatility fifth | Followed by a large move | Strong call right |
+|---|---|---|
+| Calmest | 1.6% | 57.1% ± 3.5 |
+| 2 | 2.0% | 53.8% ± 4.9 |
+| 3 | 2.2% | 53.1% ± 5.6 |
+| 4 | 5.1% | 52.1% ± 5.5 |
+| Most volatile | 17.4% | 52.6% ± 4.9 |
+
+Volatility says how large the next move is likely to be: eleven times as many large moves follow the most volatile fifth as the calmest. It does not say which way, and the strong call was, if anything, better when the market was calm. On the live recordings the cut-offs are those recordings' own, and the fifths show no pattern.
+
+### Volume and the order book
+
+The Jupiter oracle stream carries a price and the oracle's time for each market, about twice a second. It has no volume and no order book: the 1000x and pool markets are priced by the oracle. Jupiter's catalogs give open interest and 24 hour volume for each market every few seconds, and its order-book Perps markets give a best bid and ask. None of that was in these recordings.
+
+The base capture does hold Coinbase's best bid and ask for BTC and ZEC beside the oracle ticks. Each book reading's direction was scored against the oracle's move over the next 3 to 30 seconds, last 40%. The oracle's ticks reached the recorder a median 0.21 seconds after the oracle's own time, and the book is placed on the recorder's clock with that allowed for.
+
+| Book reading | 3 s | 5 s | 10 s | 30 s | 3 s, after a 2 s wait | 30 s, after a 2 s wait |
+|---|---|---|---|---|---|---|
+| Book's own change over 2 s | 62.0% | 59.7% | 56.9% | 53.9% | 53.6% | 51.2% |
+| Size at the bid against size at the ask | 57.4% | 56.5% | 55.0% | 52.4% | 53.5% | 51.1% |
+| Book above or below its usual distance from the oracle | 57.2% | 55.8% | 54.2% | 52.9% | 51.2% | 50.9% |
+
+Standard errors are 0.4 points at 3 seconds and 1.3 at 30. The book leads: Coinbase moves, and the oracle follows within seconds. An order on the 1000x page fills at an oracle price about two seconds later, and by then most of the lead is spent. With the book held back one second, as a slower connection would have it, its own change still called the next 3 seconds 55.7% of the time, and the distance from the oracle fell under 50%. The lead is about a second long.
+
+Beside the call, over 30 seconds:
+
+| Seconds | Right | Share of seconds | Mean move the call's way | After a 2 s wait |
+|---|---|---|---|---|
+| Strong call | 54.4% ± 2.2 | 20.0% | +0.90 bp | 51.8%, +0.50 bp |
+| Strong call, book agrees | 56.9% ± 3.1 | 9.6% | +1.43 bp | 52.5%, +0.62 bp |
+| Strong call, book disagrees | 52.4% ± 2.9 | 10.2% | +0.46 bp | 51.6%, +0.45 bp |
+| Book far from its usual distance, alone | 58.2% ± 2.2 | 19.2% | +1.59 bp | 52.8%, +0.41 bp |
+| Book far, and a strong call the same way | 61.3% ± 5.9 | 2.5% | +2.74 bp | 53.2%, +1.09 bp |
+
+"Far" is the top fifth of the deviation on the first 60%. The book is the first input in this study that beats the price's own history at the moment it is read. What is left after the wait an order has is within two standard errors of the strong call alone. It was measured on two markets over 13 hours, and it is not in the window.
+
+### One coin against another
+
+The window's own call, with switching, scored per market:
+
+| Recording | Market | Hours | Strong call right | Strong calls |
+|---|---|---|---|---|
+| Base (rates and tiles chosen on it) | BTC | 33.2 | 54.8% ± 1.4 | 39,702 |
+| | ZEC | 33.2 | 52.4% ± 1.8 | 24,071 |
+| Live, both days | HYPE | 1.5 | 57.1% ± 8.3 | 1,095 |
+| | ZEC | 1.5 | 50.4% ± 6.6 | 1,745 |
+| | ETH | 1.5 | 49.4% ± 7.3 | 1,414 |
+| | BTC | 1.5 | 48.9% ± 7.2 | 1,445 |
+| | SOL | 1.5 | 48.8% ± 8.6 | 1,023 |
+
+BTC against ZEC on the base recording is 1.1 standard errors apart (p = 0.55 after allowing for two markets compared), and that recording is the one the rates were chosen on. On the live recordings no coin is distinguishable from the others; the highest of five is always somewhere, and HYPE's lead is 0.8 standard errors.
+
+A strong call is made on about one second in five, and 30 of them make one independent look. To tell two coins two points apart with error bars of 0.7 points takes about 5,000 looks per coin, which is about nine days of ticks. A continuous recording of every Jupiter 1000x and Perps market, with Coinbase's book and trades beside them, was started on 2026-11-28 to supply that; `research/scripts/scalp_1s_coins.py` reads its oracle files directly.
+
 ## Slope ladder
 
 For each window, the share of seconds on which following the slope's sign was right over the next 30 seconds, then the same when the slope's second derivative agreed with it ("steepening") and when it disagreed ("fading"). Train, validation, held-out.
@@ -288,7 +419,9 @@ The cone on the chart scales the last 30 seconds' 1s volatility by √30. In the
 - **The held-out slice was seen.** Only the live recording is untouched, and it cannot confirm a three point edge by itself.
 - **Selection.** About twenty families and seventy parameter sets were tried when the tiles were chosen, and a family needed only to beat 50% on two slices to earn a tile. The window now picks among 380 settings as it runs, which is more selection, not less: the best of many noisy rates overstates itself. A reading with no information passes that rule about one time in four, and no correction for the number of tries was applied. The base figures, including the ones the window quotes, are therefore optimistic.
 - **Oracle prices, not fills.** Opens and closes fill at a later oracle price with no price limit.
-- **Overlapping seconds.** Error bars assume one independent observation per 30 seconds, which is approximate.
+- **Overlapping seconds.** Error bars assume one independent observation per 30 seconds, which is approximate. The follow-up section also counts two markets calling in the same second as one observation; the earlier tables do not, and their bars are narrower for it.
+- **The order book was Coinbase's, for two markets, over 13 scored hours.** Its lead over the oracle is a fact about that venue and those hours. Nothing was measured on fills.
+- **Many questions, one recording.** The follow-up section reads the same last 40% five more ways. A row that stands out among dozens is expected by chance.
 - **No costs beyond the page formula.** Network fees, rent and the wait for queued profit are left out.
 - **One horizon.** Only 30 seconds was studied.
 
@@ -307,4 +440,19 @@ python -m research.scalp_1s_study --base ~/.local/state/oracle-leverage/dual-quo
 python -m unittest research.tests.test_scalp_1s
 ```
 
-`research/json/scalp-1s-20261127/summary.json` holds every table above and the input hashes; `model.json` holds the constants the extension ships. The feature definitions are in `research/scripts/scalp_1s_features.py` and are ported to `extension/src/1000x/scalp-indicators.js`, with a parity test on recorded bars.
+The follow-up section:
+
+```sh
+python -m research.scalp_1s_questions --base ~/.local/state/oracle-leverage/dual-quotes \
+  --live research/json/scalp-1s-20261127/ticks-live.jsonl.gz \
+  --live research/json/scalp-1s-20261127/ticks-live-20261128.jsonl.gz \
+  --out research/json/scalp-1s-questions-20261128/summary.json
+python -m research.scalp_1s_coins --ticks research/json/scalp-1s-20261127/ticks-live.jsonl.gz \
+  --ticks research/json/scalp-1s-20261127/ticks-live-20261128.jsonl.gz \
+  --out research/json/scalp-1s-questions-20261128/coins-live.json
+python -m research.scalp_1s_coins --base ~/.local/state/oracle-leverage/dual-quotes \
+  --out research/json/scalp-1s-questions-20261128/coins-base.json
+python -m unittest research.tests.test_scalp_1s_questions
+```
+
+`research/json/scalp-1s-20261127/summary.json` holds every table of the earlier sections and the input hashes; `research/json/scalp-1s-questions-20261128/` holds the follow-up section's. `research/json/scalp-1s-20261127/model.json` holds the constants the extension ships. The feature definitions are in `research/scripts/scalp_1s_features.py` and are ported to `extension/src/1000x/scalp-indicators.js`, with a parity test on recorded bars.
