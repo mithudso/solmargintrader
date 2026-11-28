@@ -27,6 +27,7 @@ from pathlib import Path
 import numpy as np
 
 from oracle_leverage.exit50 import quote_position
+from research import scalp_1s_experiments as X
 from research import scalp_1s_features as F
 
 HORIZON = 30
@@ -238,6 +239,7 @@ def write_fixture(
     names,
     digest: str,
     model: dict,
+    experiments: dict,
     bars: int = 420,
     start: int = 5000,
 ) -> None:
@@ -270,6 +272,29 @@ def write_fixture(
     payout = {
         str(m): payout_pct(m) for m in (-12, -9.8, -5, -1, 0, 0.2, 1, 3, 10, 50, 400)
     }
+    # The same window as one frame, scored by the experiment module, with the priors the extension ships.
+    window = {**seg, "fwd": np.full(bars, np.nan)}
+    X.variant_votes([window])
+    call_at = experiments["horizons"].index(experiments["call_horizon_s"])
+    shipped = {
+        variant["id"]: variant["prior"][call_at]
+        if variant["prior"][call_at] is not None
+        else 0.5
+        for variant in experiments["variants"]
+    }
+    rule = X.rule_fixture(
+        window,
+        shipped,
+        [slot["variant"] for slot in experiments["slots"]],
+        experiments["call_horizon_s"],
+    )
+    variant_votes = {
+        variant["id"]: [
+            int(v) if math.isfinite(v) else None
+            for v in F.vote(F.variant_values(seg, variant))[-40:]
+        ]
+        for variant in F.VARIANTS
+    }
     runs = {
         str(w): [[sign, length] for sign, length in F.sign_runs(feats[f"lsl_{w}"])]
         for w in F.SLOPE_WINDOWS
@@ -296,6 +321,8 @@ def write_fixture(
                 "net": net,
                 "payout_pct": payout,
                 "slope_runs": runs,
+                "variant_votes": variant_votes,
+                "rule": rule,
                 "slope_ranges": ranges,
             }
         )
@@ -313,12 +340,19 @@ def main(argv=None) -> int:
     parser.add_argument(
         "--js", type=Path, help="write the extension's model constants here"
     )
+    parser.add_argument(
+        "--experiments-js",
+        type=Path,
+        help="write the extension's experiment grid and recorded priors here",
+    )
     args = parser.parse_args(argv)
     args.out.mkdir(parents=True, exist_ok=True)
 
     base = {a: frames(t) for a, t in read_base(args.base).items()}
     live = {a: frames(t) for a, t in read_live(args.live).items()} if args.live else {}
     all_base = [fr for frs in base.values() for fr in frs]
+    X.variant_votes(all_base)
+    X.variant_votes([fr for frs in live.values() for fr in frs])
     span = (
         min(fr["time"][0] for fr in all_base),
         max(fr["time"][-1] for fr in all_base),
@@ -786,6 +820,45 @@ def main(argv=None) -> int:
                 "hit_se": live_row["hit_se"],
                 "n": live_row["n"],
             }
+    # Experiments: every variant at every horizon. The prior the extension ships is the whole
+    # base recording: a starting point for live testing, not a held-out result. The weighted
+    # aggregate is replayed with a prior from the first 60% only and read on what follows.
+    experiments_all = X.experiment_table(all_base)
+    experiments_train = X.experiment_table(all_base, 0.0, SPLIT[0], span)
+    experiments_late = X.experiment_table(all_base, SPLIT[0], 1.0, span)
+    experiments_live = X.experiment_table(live_frames) if live_frames else {}
+    train_prior = {
+        key: (rows[HORIZON][0] if rows[HORIZON][0] is not None else 0.5)
+        for key, rows in experiments_train.items()
+    }
+    slot_ids = [F.TILE_VARIANTS[key] for key, _, _ in TILES]
+    weighted = {
+        "base_after_60pct": X.replay(
+            list(base.values()), slot_ids, train_prior, HORIZON, SPLIT[0], 1.0, span
+        )
+    }
+    if live_frames:
+        weighted["live_all"] = X.replay(
+            list(live.values()), slot_ids, train_prior, HORIZON
+        )
+    weighted_measured = {}
+    for tier in ("mixed", "lean", "strong"):
+        row = weighted["base_after_60pct"]["weighted"].get(tier, {})
+        if "hit" in row:
+            weighted_measured[tier] = {
+                key: row[key] for key in ("hit", "share", "mean_follow_bps", "path_bps")
+            }
+            live_row = weighted.get("live_all", {}).get("weighted", {}).get(tier, {})
+            if "hit" in live_row:
+                weighted_measured[tier]["live"] = {
+                    "hit": live_row["hit"],
+                    "hit_se": live_row["hit_se"],
+                    "n": live_row["n"],
+                }
+    experiments_model = X.experiments_model(
+        [key for key, _, _ in TILES], experiments_all, HORIZON, weighted_measured
+    )
+
     model = {
         "version": 4,
         "horizon_s": HORIZON,
@@ -826,6 +899,13 @@ def main(argv=None) -> int:
         "vote_eval": vote_eval,
         "ladder_eval": ladder_eval,
         "ladder_history": ladder_history,
+        "experiments": {
+            "base": experiments_all,
+            "base_first_60pct": experiments_train,
+            "base_after_60pct": experiments_late,
+            "live": experiments_live,
+        },
+        "weighted_vote": weighted,
         "fade_z20_beyond_2": fade_eval,
         "trades_1000x": trades,
         "window_agreement": window_agreement,
@@ -841,7 +921,20 @@ def main(argv=None) -> int:
         json.dumps(model, indent=1, sort_keys=True) + "\n", encoding="utf-8"
     )
     if args.fixture:
-        write_fixture(args.fixture, longest, grid_names, digest, model)
+        write_fixture(
+            args.fixture, longest, grid_names, digest, model, experiments_model
+        )
+    (args.out / "experiments.json").write_text(
+        json.dumps(experiments_model, indent=1, sort_keys=True) + "\n", encoding="utf-8"
+    )
+    if args.experiments_js:
+        body = json.dumps(experiments_model, indent=1, sort_keys=True)
+        args.experiments_js.write_text(
+            "// Generated by `python -m research.scalp_1s_study --experiments-js`. Do not edit by hand.\n"
+            "// Every setting the Experiments tab keeps testing, with its hit rate on the base recording per horizon.\n"
+            f"export const SCALP_EXPERIMENTS = Object.freeze({body});\n",
+            encoding="utf-8",
+        )
     if args.js:
         body = json.dumps({**model, "sha256": digest}, indent=2, sort_keys=True)
         args.js.write_text(

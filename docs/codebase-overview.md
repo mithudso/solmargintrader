@@ -242,18 +242,22 @@ command registry. No npm runtime dependencies by design; one vendored charting l
 | `extension/src/1000x/oracle-view.js` | Rolling10m UP/NON-UP forecasts, candidate/served/baseline metrics and explicit fallback/unknown states |
 | `extension/src/1000x/scalp-indicators.js` | Pure causal readings on 1s oracle bars and the tick-to-second aggregator; a port of the research feature definitions |
 | `extension/src/1000x/scalp-model.js` | Sixteen-tile vote, tiers, 30 second cone, slope ladder history and reversal timing, session score and the BigInt payout port |
+| `extension/src/1000x/scalp-experiments.js` | The Experiments engine: 79 settings read each second and scored at twelve intervals, the hit-rate-weighted call, and the rule that switches a clear winner into a tile |
+| `extension/src/1000x/scalp-experiments-data.js` | Generated: the experiment grid, its intervals, each setting's recorded hit rate and the switch rule's constants |
 | `extension/src/1000x/scalp-model-data.js` | Generated study constants: tiles, thresholds, measured hit rates, cone quantiles and slope baselines |
 | `extension/src/1000x/exit-guard.js` | Pure take-profit / stop-loss state machine: fresh-quote trigger, one close request, bounded lock wait, no retry of an unconfirmed press |
 | `extension/src/1000x/page-bridge.js` | Content script that reads the 1000x positions table and order form, presses one exactly matched row's own Close button, and presses the form's own size and Long or Short buttons |
 | `extension/src/1000x/entry-plan.js` | Pure checks before an entry request and the tracker that sends it once and finds the position it opened |
-| `extension/src/1000x/scalp.js` | The 1s scalp window: feed to bars to read-outs, chart with cone, grid, slope ladder and the guard panel |
+| `extension/src/1000x/scalp.js` | The 1s scalp window: feed to bars to read-outs, chart with cone, weighted grid, slope ladder, the Experiments tab and the guard panel |
 | `extension/src/bg/jupiter-scalp-window.js` | One scalp window per Jupiter tab and the only relay from that window to the tab's page bridge |
 | `extension/test/1000x-scalp.test.js` | Python parity of every reading, slope ladder and payout; causality; vote tiers; cone; score book; reversal timing |
 | `extension/test/1000x-exit-guard.test.js` | Guard levels, triggers, lock wait, confirmation and failure states; page-bridge row parsing and close selection |
 | `extension/test/1000x-entry.test.js` | Levels in basis points, entry validation, confirm-then-send tracker, new-position matching, order-form reads and presses, slope accuracy score |
+| `extension/test/1000x-experiments.test.js` | Python parity of every experiment setting; scoring without lookahead; save and restore; the weighted call; the switch rule |
 | `extension/test/jupiter-scalp-window.test.js` | Window ownership across worker eviction, relay refusal for strangers, explicit failures and the registry command's validation |
 | `extension/tools/1000x-scalp-e2e.mjs` | Chrome for Testing gate: trusted-click arming, alert mode presses nothing, close mode presses the row's Close once |
 | `research/scripts/scalp_1s_features.py` | Causal 1s-bar feature definitions shared by the study and the extension port |
+| `research/scripts/scalp_1s_experiments.py` | Scores the experiment grid at every interval and replays the weighted call and the switch rule on recorded ticks without looking ahead |
 | `research/scripts/scalp_1s_study.py` | Scores every 1s feature against the next 30 seconds on recorded Jupiter oracle ticks and writes the extension's model constants and parity fixture |
 | `extension/test/1000x-oracle-model.test.js` | Analytical gradient/scoring, delayed current-weight learning, flat/unknown labels, prefix invariance and bounded recovery |
 | `extension/test/1000x-oracle-controller.test.js` | Concurrent/reloaded controllers, stored forecast reuse, quote coalescing and obsolete-session fences |

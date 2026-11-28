@@ -623,3 +623,121 @@ FAMILIES = {
     "EMA ribbon": "ribbon",
     "Two-bar reversal": "twobar_",
 }
+
+
+# ---------------------------------------------------------------------------
+# The Experiments tab's grid: every setting it keeps testing, defined once here
+# and exported to the extension by the study. `kind` selects the reader on both
+# sides; `params` are that reader's arguments. Horizons are seconds ahead.
+EXPERIMENT_HORIZONS = (3, 5, 10, 15, 20, 30, 45, 60, 90, 120, 180, 300)
+
+
+def _variant(kind, label, need, **params):
+    tag = "_".join(str(v).replace(".", "p") for v in params.values())
+    return {
+        "id": f"{kind}_{tag}" if tag else kind,
+        "kind": kind,
+        "label": label,
+        "need": need,
+        "params": params,
+    }
+
+
+VARIANTS = (
+    *[
+        _variant("roc", f"Momentum {n}s", n + 1, n=n)
+        for n in (1, 2, 3, 5, 8, 13, 21, 34, 60, 90, 120)
+    ],
+    *[
+        _variant("breakout", f"Breakout {w}s", w + 1, w=w)
+        for w in (10, 20, 30, 45, 60, 90, 120, 180, 300)
+    ],
+    _variant("heikin", "Heikin-Ashi run", 60),
+    *[_variant("bop", f"Balance of power {n}s", n, n=n) for n in (3, 5, 8, 15, 30)],
+    *[_variant("zigzag", f"ZigZag {bps} bp", 60, bps=bps) for bps in (0.5, 1, 2, 3, 5)],
+    *[
+        _variant("donchian", f"Range position {w}s", w, w=w)
+        for w in (10, 20, 30, 60, 120, 300)
+    ],
+    *[
+        _variant("efficiency", f"Efficiency {w}s", w + 1, w=w)
+        for w in (10, 20, 30, 60, 120)
+    ],
+    *[_variant("slope", f"Slope {w}s", w, w=w) for w in (5, 10, 20, 30, 60, 120, 300)],
+    *[
+        _variant("rsi", f"RSI {n}", max(60, n + 1), n=n)
+        for n in (5, 7, 10, 14, 21, 30, 60)
+    ],
+    *[_variant("zscore", f"Z-score {w}", w, w=w) for w in (10, 20, 30, 60, 120, 300)],
+    *[_variant("macd", f"MACD x{k}", 78 * k, scale=k) for k in (1, 2, 3, 5)],
+    *[
+        _variant("psar", f"SAR {a}/{c}", 60, start=a, cap=c)
+        for a, c in ((0.02, 0.2), (0.01, 0.1), (0.05, 0.3))
+    ],
+    *[
+        _variant("supertrend", f"Supertrend {n}x{m}", max(60, n), n=n, mult=m)
+        for n, m in ((10, 3), (10, 2), (20, 3), (30, 3), (30, 2), (60, 3))
+    ],
+    *[
+        _variant("emacross", f"EMA {f}/{sl}", EMA_WARMUP_SPANS * sl, fast=f, slow=sl)
+        for f, sl in ((3, 10), (5, 20), (10, 30), (20, 60))
+    ],
+)
+# The variant each grid tile starts on, by tile key.
+TILE_VARIANTS = {
+    "impulse": "roc_2",
+    "momentum5": "roc_5",
+    "momentum60": "roc_60",
+    "breakout20": "breakout_20",
+    "breakout60": "breakout_60",
+    "heikin": "heikin",
+    "bop": "bop_5",
+    "zigzag": "zigzag_1",
+    "donchian": "donchian_60",
+    "efficiency": "efficiency_60",
+    "slope": "slope_60",
+    "rsi": "rsi_7",
+    "zscore": "zscore_20",
+    "macd": "macd_1",
+    "psar": "psar_0p02_0p2",
+    "supertrend": "supertrend_10_3",
+}
+
+
+def variant_values(seg, variant):
+    """The reading of one experiment variant on a segment; NaN before its `need` bars."""
+    o, h, lo, c = seg["open"], seg["high"], seg["low"], seg["close"]
+    kind, p = variant["kind"], variant["params"]
+    if kind == "roc":
+        out = roc_bps(c, p["n"])
+    elif kind == "breakout":
+        out = breakout(h, lo, c, p["w"])
+    elif kind == "heikin":
+        out = heikin_ashi_streak(o, h, lo, c)
+    elif kind == "bop":
+        out = bop_sma(o, h, lo, c, p["n"])
+    elif kind == "zigzag":
+        out = zigzag_leg(c, p["bps"])[0]
+    elif kind == "donchian":
+        out = donchian_pos(h, lo, c, p["w"])
+    elif kind == "efficiency":
+        out = efficiency_ratio(c, p["w"])
+    elif kind == "slope":
+        out = slope_t(c, p["w"])
+    elif kind == "rsi":
+        out = rsi_centered(c, p["n"])
+    elif kind == "zscore":
+        out = zscore(c, p["w"])
+    elif kind == "macd":
+        out = macd_hist_bps(c, p["scale"])
+    elif kind == "psar":
+        out = psar_dir(h, lo, c, p["start"], p["start"], p["cap"])
+    elif kind == "supertrend":
+        out = supertrend_dir(h, lo, c, p["n"], p["mult"])
+    elif kind == "emacross":
+        out = ema_cross_bps(c, p["fast"], p["slow"])
+    else:
+        raise ValueError(f"unknown variant kind {kind}")
+    out = np.array(out, dtype=np.float64)
+    out[: min(out.size, variant["need"] - 1)] = np.nan
+    return out

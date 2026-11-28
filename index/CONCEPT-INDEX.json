@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-11-28T04:40:04+00:00",
+  "generatedAt": "2026-11-28T05:24:08+00:00",
   "schemaVersion": 1,
   "note": "Concepts are derived from the repo's own vocabulary \u2014 the FAMILY dict, strategy-card frontmatter, docs/trading-signals-concept-family.md, and terms verified to recur in the corpus. A concept matching no file is dropped, not kept.",
   "counts": {
@@ -63,7 +63,7 @@
         },
         {
           "path": "extension/src/1000x/scalp.js",
-          "hits": 127
+          "hits": 131
         },
         {
           "path": "research/json/tradingview-script-profiles/shard-a.jsonl",
@@ -87,7 +87,7 @@
         },
         {
           "path": "extension/tools/1000x-scalp-e2e.mjs",
-          "hits": 93
+          "hits": 96
         },
         {
           "path": ".cdo/reviews-2026-11-12/soltui-worker.json",
@@ -300,7 +300,7 @@
         "centred",
         "shift"
       ],
-      "matchingFiles": 3969,
+      "matchingFiles": 3970,
       "shown": 30,
       "files": [
         {
@@ -575,7 +575,7 @@
         "macd",
         "ichimoku"
       ],
-      "matchingFiles": 1954,
+      "matchingFiles": 1958,
       "shown": 30,
       "files": [
         {
@@ -713,7 +713,7 @@
         "anchor_window",
         "levels"
       ],
-      "matchingFiles": 1652,
+      "matchingFiles": 1656,
       "shown": 30,
       "files": [
         {
@@ -810,7 +810,7 @@
         },
         {
           "path": "extension/README.md",
-          "hits": 63
+          "hits": 64
         },
         {
           "path": "research/json/strategy_experiment/results/auxiliary.json",
@@ -851,7 +851,7 @@
         "monotone",
         "gap"
       ],
-      "matchingFiles": 1600,
+      "matchingFiles": 1601,
       "shown": 30,
       "files": [
         {
@@ -1011,7 +1011,7 @@
         },
         {
           "path": "memory.md",
-          "hits": 565
+          "hits": 566
         },
         {
           "path": "research/json/strategy_experiment/results/results.json",
@@ -1031,7 +1031,7 @@
         },
         {
           "path": "prompts.md",
-          "hits": 273
+          "hits": 272
         },
         {
           "path": ".cdo/reviews-2026-11-12/oracle.json",
@@ -1125,7 +1125,7 @@
         "stochastic",
         "oscillator"
       ],
-      "matchingFiles": 1315,
+      "matchingFiles": 1319,
       "shown": 30,
       "files": [
         {
@@ -1260,7 +1260,7 @@
         "ts_momentum",
         "dual_momentum"
       ],
-      "matchingFiles": 927,
+      "matchingFiles": 933,
       "shown": 30,
       "files": [
         {
@@ -1804,7 +1804,7 @@
         "evidence floor",
         "rankable"
       ],
-      "matchingFiles": 607,
+      "matchingFiles": 608,
       "shown": 30,
       "files": [
         {
@@ -1939,7 +1939,7 @@
         "bb_breakout",
         "keltner"
       ],
-      "matchingFiles": 584,
+      "matchingFiles": 588,
       "shown": 30,
       "files": [
         {
@@ -2011,6 +2011,10 @@
           "hits": 43
         },
         {
+          "path": "research/json/scalp-1s-20261127/summary.json",
+          "hits": 40
+        },
+        {
           "path": "research/json/strategy_experiment/FILES.md",
           "hits": 40
         },
@@ -2035,6 +2039,14 @@
           "hits": 32
         },
         {
+          "path": "extension/src/1000x/scalp-experiments-data.js",
+          "hits": 29
+        },
+        {
+          "path": "research/json/scalp-1s-20261127/experiments.json",
+          "hits": 29
+        },
+        {
           "path": "TRADINGVIEW-CARD-COVERAGE.md",
           "hits": 28
         },
@@ -2049,18 +2061,6 @@
         {
           "path": "backtester/core/scorecard.py",
           "hits": 24
-        },
-        {
-          "path": "research/strategy_experiment/candidate/core/scorecard.py",
-          "hits": 24
-        },
-        {
-          "path": "research/strategy_experiment/original/core/scorecard.py",
-          "hits": 24
-        },
-        {
-          "path": "research/papers/STRATEGIES.md",
-          "hits": 23
         }
       ],
       "source": "backtester/core/strategies/__init__.py FAMILY"
@@ -2485,7 +2485,7 @@
         "vwap_reversion",
         "ou_reversion"
       ],
-      "matchingFiles": 241,
+      "matchingFiles": 244,
       "shown": 30,
       "files": [
         {
@@ -2523,6 +2523,10 @@
         {
           "path": "research/results/minute_sweep_x1_common.txt",
           "hits": 35
+        },
+        {
+          "path": "research/json/scalp-1s-20261127/summary.json",
+          "hits": 25
         },
         {
           "path": "docs/FILES.md",
@@ -2569,12 +2573,24 @@
           "hits": 16
         },
         {
+          "path": "extension/test/fixtures/1000x-scalp-parity.json",
+          "hits": 15
+        },
+        {
           "path": "extension/tools/lib/zec-perps-signals.mjs",
           "hits": 15
         },
         {
           "path": "research/json/strategy_experiment/results/auxiliary.json",
           "hits": 15
+        },
+        {
+          "path": "extension/src/1000x/scalp-experiments-data.js",
+          "hits": 14
+        },
+        {
+          "path": "research/json/scalp-1s-20261127/experiments.json",
+          "hits": 14
         },
         {
           "path": "backtester/strategy_cards/ou_half_life_sizing.md",
@@ -2591,22 +2607,6 @@
         {
           "path": "research/strategy_experiment/original/strategy_cards/ou_half_life_sizing.md",
           "hits": 13
-        },
-        {
-          "path": "llms-filemap.txt",
-          "hits": 12
-        },
-        {
-          "path": "COMPOUND-5M-PAPER.md",
-          "hits": 11
-        },
-        {
-          "path": "docs/COMPOUND-5M-PAPER.md",
-          "hits": 11
-        },
-        {
-          "path": "research/json/tradingview-card-coverage.json",
-          "hits": 11
         }
       ],
       "source": "backtester/core/strategies/__init__.py FAMILY"

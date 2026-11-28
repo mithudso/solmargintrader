@@ -5,6 +5,7 @@ import unittest
 
 import numpy as np
 
+from research import scalp_1s_experiments as X
 from research import scalp_1s_features as F
 from research import scalp_1s_study as S
 
@@ -152,6 +153,217 @@ class ScalpStudyTests(unittest.TestCase):
         for window in F.SLOPE_WINDOWS:
             self.assertIn(f"lsl_{window}", table)
             self.assertIn(f"acc_{window}", table)
+
+
+def _frame(close, start=1_800_000_000):
+    """A one-segment frame from closes, shaped like the study's, with every variant's vote attached."""
+    close = np.asarray(close, dtype=np.float64)
+    open_ = np.concatenate([close[:1], close[:-1]])
+    seg = {
+        "time": np.arange(start, start + close.size, dtype=np.int64),
+        "open": open_,
+        "high": np.maximum(open_, close),
+        "low": np.minimum(open_, close),
+        "close": close,
+    }
+    fwd = np.full(close.size, np.nan)
+    fwd[: close.size - S.HORIZON] = (
+        close[S.HORIZON :] / close[: -S.HORIZON] - 1.0
+    ) * 1e4
+    frame = {**seg, "fwd": fwd}
+    X.variant_votes([frame])
+    return frame
+
+
+def _walk(n, seed):
+    rng = np.random.default_rng(seed)
+    return 100.0 * np.exp(
+        np.cumsum(rng.normal(0.0, 2e-5, n) + 4e-6 * np.sin(np.arange(n) / 40.0))
+    )
+
+
+class ScalpExperimentTests(unittest.TestCase):
+    def test_the_grid_is_unique_and_covers_every_tile(self):
+        ids = [variant["id"] for variant in F.VARIANTS]
+        self.assertEqual(len(ids), len(set(ids)))
+        self.assertGreaterEqual(len(ids), 70)
+        self.assertEqual(set(F.TILE_VARIANTS), {key for key, _, _ in S.TILES})
+        self.assertTrue(set(F.TILE_VARIANTS.values()) <= set(ids))
+        self.assertEqual(len(set(F.TILE_VARIANTS.values())), len(F.TILE_VARIANTS))
+        self.assertEqual(
+            F.EXPERIMENT_HORIZONS, tuple(sorted(set(F.EXPERIMENT_HORIZONS)))
+        )
+        self.assertIn(S.HORIZON, F.EXPERIMENT_HORIZONS)
+
+    def test_a_tile_and_its_starting_variant_vote_alike(self):
+        frame = _frame(_walk(700, 1))
+        seg = {key: frame[key] for key in ("time", "open", "high", "low", "close")}
+        table = F.feature_table(seg)
+        for key, feature, _ in S.TILES:
+            tile = np.nan_to_num(F.vote(table[feature]), nan=0.0)
+            variant = frame["variants"][F.TILE_VARIANTS[key]]
+            np.testing.assert_array_equal(variant[400:], tile[400:], err_msg=key)
+
+    def test_a_variant_is_silent_until_it_has_its_bars(self):
+        frame = _frame(_walk(400, 2))
+        for variant in F.VARIANTS:
+            self.assertFalse(
+                frame["variants"][variant["id"]][: variant["need"] - 1].any(),
+                variant["id"],
+            )
+
+    def test_the_table_scores_a_vote_against_the_later_close_only(self):
+        rising = _frame(100.0 + 0.01 * np.arange(700))
+        table = X.experiment_table([rising])
+        hit, calls = table["roc_2"][30]
+        self.assertEqual(hit, 1.0)
+        # 700 bars: two are warm-up, thirty have no outcome yet.
+        self.assertEqual(calls, 700 - 2 - 30)
+        self.assertEqual(table["roc_2"][300][1], 700 - 2 - 300)
+        np.testing.assert_array_equal(
+            X.forward_sign(np.array([1.0, 2.0, 2.0, 1.0]), 1), [1, 0, -1, 0]
+        )
+
+    def test_the_replay_cannot_see_past_the_slice_it_scores(self):
+        prior = {variant["id"]: 0.52 for variant in F.VARIANTS}
+        slots = [F.TILE_VARIANTS[key] for key, _, _ in S.TILES]
+        a = _walk(2400, 3)
+        b = a.copy()
+        # Same market for the first 1,300 seconds, then a different one.
+        b[1300:] = b[1299] * np.exp(
+            np.cumsum(np.random.default_rng(9).normal(0.0, 6e-5, 1100))
+        )
+        span = (1_800_000_000, 1_800_000_000 + 2400)
+        first = X.replay([[_frame(a)]], slots, prior, S.HORIZON, 0.0, 0.5, span)
+        second = X.replay([[_frame(b)]], slots, prior, S.HORIZON, 0.0, 0.5, span)
+        self.assertGreater(first["seconds"], 500)
+        for name in ("plain", "weighted", "tuned"):
+            self.assertEqual(first[name], second[name], name)
+        self.assertEqual(first["changes"], second["changes"])
+        # And the later slice does differ, so the comparison is not vacuous.
+        self.assertNotEqual(
+            X.replay([[_frame(a)]], slots, prior, S.HORIZON, 0.5, 1.0, span)["plain"],
+            X.replay([[_frame(b)]], slots, prior, S.HORIZON, 0.5, 1.0, span)["plain"],
+        )
+
+    def test_a_setting_takes_a_slot_only_when_clearly_ahead(self):
+        kinds = ["slope", "slope", "slope", "roc", "slope"]
+        prior = np.array([0.52, 0.52, 0.50, 0.52, 0.52])
+        need = np.array([60, 5, 20, 3, X.PROMOTE_MAX_NEED + 1])
+        horizon = 30
+        enough = X.PROMOTE_MIN_EFF * horizon * 6.0
+
+        def run(rates, counts=None, locks=None, assign=(0,), now=10_000, priors=prior):
+            calls = np.array(
+                counts if counts is not None else [enough] * 5, dtype=float
+            )
+            hit = np.array(rates) * calls
+            return X.find_promotions(
+                list(assign),
+                hit,
+                calls,
+                priors,
+                kinds,
+                locks or [-math.inf] * len(assign),
+                now,
+                horizon,
+                need,
+            )
+
+        self.assertEqual(run([0.50, 0.62, 0.50, 0.50, 0.50]), [(0, 1)])
+        # Ahead but not clearly; too few calls on either side; no edge; contradicted by the recording.
+        self.assertEqual(run([0.50, 0.53, 0.50, 0.50, 0.50]), [])
+        self.assertEqual(
+            run(
+                [0.50, 0.90, 0.50, 0.50, 0.50],
+                counts=[enough, 100, enough, enough, enough],
+            ),
+            [],
+        )
+        self.assertEqual(
+            run(
+                [0.50, 0.90, 0.50, 0.50, 0.50],
+                counts=[100, enough, enough, enough, enough],
+            ),
+            [],
+        )
+        self.assertEqual(run([0.30, 0.45, 0.30, 0.30, 0.30]), [])
+        self.assertEqual(run([0.50, 0.50, 0.62, 0.50, 0.50]), [])
+        # Another kind never takes the slot, and a recently changed slot is left alone.
+        self.assertEqual(run([0.50, 0.50, 0.50, 0.90, 0.50]), [])
+        self.assertEqual(
+            run([0.50, 0.62, 0.50, 0.50, 0.50], locks=[10_000 - X.PROMOTE_LOCK_S + 1]),
+            [],
+        )
+        # A setting that needs a longer warm-up than the grid is never switched in.
+        self.assertEqual(run([0.50, 0.50, 0.50, 0.50, 0.90]), [])
+        # One setting is never given to two slots.
+        self.assertEqual(
+            run(
+                [0.50, 0.62, 0.50, 0.50, 0.50],
+                assign=(0, 2),
+                priors=np.array([0.52] * 5),
+            ),
+            [(0, 1)],
+        )
+        self.assertAlmostEqual(X.wilson_lower(0.5, 100, 1.96), 0.40383, places=5)
+        self.assertEqual(X.wilson_lower(0.6, 0), 0.0)
+
+    def test_the_running_record_fades_then_scores_the_calls_one_horizon_old(self):
+        frame = _frame(100.0 + 0.01 * np.arange(200))
+        counts = X.decayed_counts(frame, 30)
+        decay = math.exp(-math.log(2) / X.WEIGHT_HALF_LIFE_S)
+        # Momentum 2s votes up from bar 2; the call at bar i is scored at bar i + 30 and fades after.
+        expected = sum(decay ** (199 - (i + 30)) for i in range(2, 170))
+        self.assertAlmostEqual(counts["roc_2"][1], expected, places=9)
+        self.assertAlmostEqual(counts["roc_2"][0], expected, places=9)
+        np.testing.assert_allclose(
+            X.weights_of([0.6, 0.55, 0.5, 0.4]), [2 / 3, 1 / 3, 0, 0]
+        )
+        np.testing.assert_allclose(X.weights_of([0.5, 0.4]), [0.5, 0.5])
+        self.assertEqual(
+            [X.tier_of(v) for v in (0.8, -0.75, 0.5, -0.375, 0.2)],
+            ["strong", "strong", "lean", "lean", "mixed"],
+        )
+
+    def test_the_replay_reports_the_path_after_each_tier(self):
+        prior = {variant["id"]: 0.52 for variant in F.VARIANTS}
+        slots = [F.TILE_VARIANTS[key] for key, _, _ in S.TILES]
+        out = X.replay([[_frame(_walk(3000, 5))]], slots, prior, S.HORIZON)
+        for name in ("plain", "weighted", "tuned"):
+            for tier, row in out[name].items():
+                if "hit" not in row:
+                    continue
+                self.assertEqual(
+                    [step for step, _ in row["path_bps"]],
+                    list(X.PATH_STEPS),
+                    f"{name} {tier}",
+                )
+                self.assertAlmostEqual(
+                    row["path_bps"][-1][1], row["mean_follow_bps"], places=9
+                )
+
+    def test_the_rule_fixture_makes_the_switch_rule_choose(self):
+        frame = _frame(_walk(420, 6))
+        prior = {
+            variant["id"]: 0.5 + 0.03 * math.cos(k)
+            for k, variant in enumerate(F.VARIANTS)
+        }
+        slots = [F.TILE_VARIANTS[key] for key, _, _ in S.TILES]
+        rule = X.rule_fixture(frame, prior, slots, S.HORIZON)
+        self.assertEqual(len(rule["weights"]), len(slots))
+        self.assertAlmostEqual(sum(rule["weights"]), 1.0, places=9)
+        self.assertAlmostEqual(sum(rule["made_up"]["weights"]), 1.0, places=9)
+        self.assertTrue(all(value in (-1, 0, 1) for value in rule["votes"]))
+        self.assertGreaterEqual(len(rule["switches"]), 1)
+        needs = {variant["id"]: variant["need"] for variant in F.VARIANTS}
+        for start, switched in rule["switches"]:
+            self.assertIn(start, slots)
+            self.assertNotIn(switched, slots)
+            self.assertLessEqual(needs[switched], X.PROMOTE_MAX_NEED)
+        self.assertEqual(
+            len({switched for _, switched in rule["switches"]}), len(rule["switches"])
+        )
 
 
 if __name__ == "__main__":

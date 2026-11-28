@@ -1,6 +1,6 @@
 # Jupiter 1000x: 1s scalp window and exit guard
 
-Version: 2.2.0. Delta: the projection's centre is now a labelled most-likely price line drawn from the measured average path after a call; extension 0.19.1, 2026-11-28.
+Version: 2.3.0. Delta: the call weighs each reading by its running hit rate, and a new Experiments tab tests 79 settings at 12 intervals on live ticks and switches a clear winner into the grid; extension 0.20.0, 2026-11-28.
 
 ## What it is
 
@@ -59,10 +59,10 @@ opening, and after any gap.
 
 | Part | What it shows |
 | --- | --- |
-| Call | **UP** or **DOWN · strong** when at least 12 of 16 readings net one way, **lean** from 6, **MIXED** below. The line under it gives the vote count, the hit rate for that tier on the recording the grid was chosen from, the figure from the separate short live check with its error bar, and the typical 30 second move now. Hover the box for the full sentence. |
-| Chart | 1s candles for the last 150 seconds. Ahead of price: a thick **likely** line, the most likely price over the next 30 seconds, and the bands inside which 68% and 90% of recorded 30 second moves ended, scaled by the last 30 seconds' volatility. The likely line is the current price plus the average move that followed calls of the current tier in the recording: +0.43 bp after 5 seconds and +0.58 bp after 30 for a strong call, so most of it arrives early and it is small next to the bands. With a mixed grid it is flat. Entry, bust, take profit and stop loss appear as price lines. |
+| Call | A weighted vote of the sixteen readings (see [The weighted call](#the-weighted-call)). **UP** or **DOWN · strong** at a weighted score of 75% or more one way, **lean** from 37.5%, **MIXED** below. The line under it gives the vote count, the weighted score, the hit rate for that tier when the weighted call was replayed on the recording, the figure from the separate short live check with its error bar, and the typical 30 second move now. Hover the box for the full sentence. It stays in view on both tabs. |
+| Chart | 1s candles for the last 150 seconds. Ahead of price: a thick **likely** line, the most likely price over the next 30 seconds, and the bands inside which 68% and 90% of recorded 30 second moves ended, scaled by the last 30 seconds' volatility. The likely line is the current price plus the average move that followed weighted calls of the current tier in the replay: +0.56 bp after 5 seconds and +0.90 bp after 30 for a strong call, +0.21 and +0.49 for a lean, so much of it arrives early and it is small next to the bands. With a mixed grid it is flat. Entry, bust, take profit and stop loss appear as price lines. |
 | Strips | Top: the call made each second for the last 120 seconds. Bottom: whether that call was right 30 seconds later. |
-| Trend grid | The sixteen readings. Green votes up, red votes down, grey is neutral, dashed is warming up. Every tile also carries an arrow and its value, and six small numbers: its own running hit rate, in percent, over the next 5 s, 10 s, 20 s, 30 s, 1 min and 5 min. |
+| Trend grid | The sixteen readings. Green votes up, red votes down, grey is neutral, dashed is warming up. Every tile also carries an arrow and its value, a thin bar for its say in the call, and six small numbers: its own running hit rate, in percent, over the next 5 s, 10 s, 20 s, 30 s, 1 min and 5 min. A ★ and a double border mark a tile whose setting the Experiments tab switched in. |
 | Slope ladder | Per window (5s, 10s, 20s, 30s, 1m, 5m): the fitted slope, the range it has moved in, its second derivative, that range, how long the slope has held its sign, the average and longest completed run this session, and a running accuracy gauge. |
 | Session score | Calls settled in this window so far. Seconds overlap, so it is a rough guide. |
 
@@ -71,9 +71,11 @@ opening, and after any gap.
 Every reading is positive when price has been rising, and votes with its sign.
 All are computed on closed 1s bars only.
 
+These are the starting settings. The Experiments tab can switch another setting of the same reading in, and the tile then shows that setting's name.
+
 | Tile | Definition | Warm-up |
 | --- | --- | --- |
-| Impulse 2s, Momentum 5s, Momentum 60s | Percent change over 2, 5 and 60 seconds, in basis points | 3, 6, 61 s |
+| Momentum 2s, Momentum 5s, Momentum 60s | Percent change over 2, 5 and 60 seconds, in basis points | 3, 6, 61 s |
 | Breakout 20s, Breakout 60s | +1 when the close exceeds the high of the previous 20 or 60 seconds, −1 below their low, else neutral | 21, 61 s |
 | Heikin-Ashi run | Signed count of consecutive Heikin-Ashi bars of one colour, capped at 20 | 60 s |
 | Balance of power | Mean of (close − open) / (high − low) over 5 seconds; a zero-range second counts as 0 | 5 s |
@@ -95,14 +97,112 @@ the momentum tiles.
 
 ### Running hit rate per reading
 
-Under each tile, six cells score that reading alone. Its vote at one second is
+Under each tile, six cells score that setting alone. Its vote at one second is
 checked against the move from that second's close to the close 5, 10, 20, 30, 60
-and 300 seconds later. Each cell shows the share that matched among the calls
-settled in the last ten minutes: green at 52 or more, red at 48 or less, a dot
-until a first call has settled at that interval (the 5 minute cell needs five
-minutes). A neutral tile makes no call, a flat outcome is not counted, and
-nothing is scored across a feed break. Hover a cell for its count. Seconds
-overlap, so these are running reads and not trade records.
+and 300 seconds later. Each cell shows the share that matched: green at 52 or
+more, red at 48 or less, a dot until ten calls have settled at that interval
+(the 5 minute cell needs more than five minutes). Counts fade with a half-life
+of two hours of ticks, so recent calls weigh most, and they are saved per coin,
+so a new window carries on where the last one stopped. A neutral tile makes no
+call, a flat outcome is not counted, and nothing is scored across a feed break.
+Hover a cell for its count. Seconds overlap, so these are running reads and not
+trade records.
+
+### The weighted call
+
+Each reading's say in the call is how far its hit rate over the next 30 seconds
+is above 50%, as a share of all sixteen edges. A reading at or under 50% has no
+say. The hit rate is the live one pulled toward the recorded one: the recording
+counts as 300 calls, so a new window starts on the recorded rates and live
+results take over within minutes. The weighted score is the sum of each
+reading's say times its vote, from −100% to +100%.
+
+On the recorded rates the two breakout readings carry 29% of the say between
+them, because breakouts have the best record; MACD carries 2%.
+
+Replayed without looking ahead on the last 40% of the base recording (rates
+learned only from earlier seconds, starting rates from the first 60%):
+
+| Call | Strong: right, share of seconds, average move | Lean | Mixed |
+| --- | --- | --- | --- |
+| One reading, one vote (the earlier call) | 53.3% ± 1.5, 34%, +0.77 bp | 50.7% ± 1.4 | 49.3% ± 1.9 |
+| Weighted | 54.4% ± 2.0, 20%, +0.90 bp | 51.8% ± 1.4 | 50.0% ± 1.4 |
+| Weighted, with winners switched in | 54.4% ± 1.9, 22%, +0.87 bp | 51.8% ± 1.4 | 50.2% ± 1.4 |
+
+Weighting gained about one point and calls "strong" less often. That gain is
+within one standard error, and on the 43 minute live check there was no visible
+difference (strong 53.8% ± 4.7 weighted against 54.3% ± 4.3 unweighted). Read
+it as a small improvement in the read-out, not as an edge: the payout arithmetic
+in [the study](../research/papers/SCALP-1S-STUDY.md) still needs a hit rate far
+above these figures.
+
+The replay and the window differ in ways that keep those figures a guide. The
+replay's starting rates come from the first 60% of the recording; the window
+ships rates from all of it. The replay starts each market with no record; the
+window carries its record from one session to the next. The replay scores a
+mixed score by its sign to report the mixed tier; the window shows no direction
+for it. The replay skips recorded stretches shorter than ten minutes; the window
+scores every second.
+
+## The Experiments tab
+
+The second tab keeps testing other settings of every reading, all the time the
+window is open, on the same live ticks.
+
+- **What is tested.** 79 settings: momentum over 1 to 120 seconds, breakouts of
+  10 seconds to 5 minutes, slopes of 5 seconds to 5 minutes, RSI 5 to 60, Z-score
+  10 to 300, range position, efficiency, balance of power, ZigZag thresholds of
+  0.5 to 5 bp, four MACD speeds, three Parabolic SAR and six Supertrend settings,
+  four EMA crosses and the Heikin-Ashi run.
+- **At which intervals.** Each setting is scored at twelve: 3, 5, 10, 15, 20, 30,
+  45, 60, 90 and 120 seconds, 3 and 5 minutes. These are not limited to the
+  windows on the Live tab.
+- **All settings.** One row per setting, one column per interval, each cell a
+  hit rate in percent. A filled cell is a live result. A plain coloured number is
+  the figure from the recording, shown until about two intervals' worth of live
+  calls have settled. Rows are ranked at the interval chosen in **Rank by**, best
+  current estimate first. ● marks a setting a tile uses.
+- **In use.** The sixteen tiles: the setting each one uses, its say in the call,
+  its live and recorded hit rate at 30 seconds, and the best unused setting of
+  the same kind with what it still needs.
+- **Switch clear winners in** (on by default). Every 30 seconds the window looks
+  for a setting that is clearly ahead of the one a tile uses, and switches it in.
+  All of these must hold: it is the same kind of reading and no other tile uses
+  it; both settings have at least 40 independent calls' worth of settled 30
+  second calls (1,200 call-seconds, so at least 20 minutes); the challenger's
+  cautious estimate (the lower end of a 90% Wilson interval) is above the current
+  setting's live rate; the challenger is at least 52% right; and the recording
+  does not rank it below the current setting. A setting that needs more than 78
+  one-second bars (18 of the 79, such as a 5 minute breakout) is tested and
+  listed but never switched in, so the grid's warm-up never grows. A tile that
+  just changed is left alone for ten minutes. Each switch is listed under
+  **Switches**. **Best other** uses the same rule, so it says "clear winner"
+  only for a setting about to be switched in.
+- **Starting settings** puts every tile back. **Forget results** (two presses)
+  throws away what was learned for this coin.
+
+Switching changes only the read-outs. It never touches the order panel, an
+armed level or a press on the Jupiter page.
+
+What to expect: switches are rare. The rule fired twice in the two-day base
+recording (Slope 60s to 5s, Momentum 60s to 3s) and never in the 43 minute live
+check, and the replay above shows it made no
+measurable difference to the call. Settings of one kind usually differ by a
+point or two, which takes hours of ticks to tell apart.
+
+What the intervals show on the recording: every reading is right more often
+over a few seconds than over 30. The median setting was right 53.7% of the time
+over 3 seconds, 50.9% over 30 seconds and 50.3% over 5 minutes; the best
+breakout 63% over 3 seconds and 54% over 30. A higher hit rate over a shorter
+interval is not a better trade: the move in 3 seconds is a fraction of a basis
+point, positions cannot be closed before 15 seconds, and the 1000x payout pays
+nothing on wins under 0.2 bp. The call therefore stays on 30 seconds; the tab
+shows the other intervals so they can be judged.
+
+Results are kept in the browser's local storage, one record per coin. Two
+windows on one coin each save their own results and the last one to save wins.
+A stored record that does not fit this version's grid, or holds counts larger
+than a live record can reach, is ignored.
 
 ### Slope ladder and reversal timing
 
@@ -270,8 +370,9 @@ npm run e2e:scalp -- --evidence /tmp/smt-scalp
 npm run e2e:scalp -- --full --evidence /tmp/smt-scalp-full
 ```
 
-`npm test` includes the Python parity of all sixteen readings, the slope ladder
-and the payout arithmetic on recorded oracle bars, the guard state machine, the
+`npm test` includes the Python parity of all sixteen readings and all 79
+experiment settings, the slope ladder and the payout arithmetic on recorded
+oracle bars, the scoring, weighting and switch rule of the Experiments tab, the guard state machine, the
 page bridge and the window ownership rules. `npm run e2e:scalp` loads the
 extension into Chrome for Testing against a local stand-in for the Jupiter page
 and a loopback oracle stream. It checks that the window opens on a real click
@@ -281,7 +382,9 @@ own Close exactly once after the hold lock clears and never "Close all", that a
 stale price shows the unprotected warning, that Long and Short stay locked until
 unlocked and need the confirming press, that a confirmed Long presses the page's
 Max, types three quarters, presses Long once and arms the levels from the new
-entry, and that the slope gauge fills in. `--full` also waits out the warm-up.
+entry, that the slope gauge fills in, and that the Experiments tab lists 79
+settings at 12 intervals with live results while the call and the order panel
+stay on screen. `--full` also waits out the warm-up.
 It never visits the real site and connects no wallet.
 
 Sources:

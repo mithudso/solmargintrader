@@ -13,6 +13,8 @@ export const OWNER_SOURCE_FILES = [
   "src/1000x/panel-model.js",
   "src/1000x/reversal.js",
   "src/1000x/scalp-indicators.js",
+  "src/1000x/scalp-experiments-data.js",
+  "src/1000x/scalp-experiments.js",
   "src/1000x/scalp-model-data.js",
   "src/1000x/scalp-model.js",
   "src/1000x/scalp.js",

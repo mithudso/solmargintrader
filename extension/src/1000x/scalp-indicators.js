@@ -266,14 +266,21 @@ export function zScore(bars, window) {
   return sd > close * 1e-12 ? (close - mean) / sd : 0;
 }
 
-/** MACD(12,26,9) histogram in basis points of price; EMAs seeded with the first close. */
-export function macdHistogramBps(bars) {
-  if (bars.length < 78) return null;
+/** MACD(12,26,9) histogram in basis points of price, every span times `scale`; EMAs seeded with the first close. */
+export function macdHistogramBps(bars, scale = 1) {
+  if (bars.length < 78 * scale) return null;
   const values = closes(bars);
-  const fast = rawEma(values, 12), slow = rawEma(values, 26);
+  const fast = rawEma(values, 12 * scale), slow = rawEma(values, 26 * scale);
   const line = fast.map((value, i) => value - slow[i]);
-  const signal = rawEma(line, 9);
+  const signal = rawEma(line, 9 * scale);
   return (line.at(-1) - signal.at(-1)) / values.at(-1) * 1e4;
+}
+
+/** Fast EMA minus slow EMA in basis points of price; shown once the seed's weight has faded (three slow spans). */
+export function emaCrossBps(bars, fast, slow) {
+  if (bars.length < 3 * slow) return null;
+  const values = closes(bars);
+  return (rawEma(values, fast).at(-1) - rawEma(values, slow).at(-1)) / values.at(-1) * 1e4;
 }
 
 /** Parabolic SAR state: +1 while the stop is below price. Start/step 0.02, cap 0.2. */
