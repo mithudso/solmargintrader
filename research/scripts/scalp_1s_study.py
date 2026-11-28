@@ -345,6 +345,12 @@ def main(argv=None) -> int:
         type=Path,
         help="write the extension's experiment grid and recorded priors here",
     )
+    parser.add_argument(
+        "--extra-live",
+        type=Path,
+        action="append",
+        help="further live recordings, scored for the streak and fade studies only",
+    )
     args = parser.parse_args(argv)
     args.out.mkdir(parents=True, exist_ok=True)
 
@@ -841,6 +847,50 @@ def main(argv=None) -> int:
         weighted["live_all"] = X.replay(
             list(live.values()), slot_ids, train_prior, HORIZON
         )
+    # Consecutive strong calls, and what betting against a reading under 50% returns. Extra live
+    # recordings are scored here only: the model's own figures keep their one live file.
+    whole_prior = {
+        key: (rows[HORIZON][0] if rows[HORIZON][0] is not None else 0.5)
+        for key, rows in experiments_all.items()
+    }
+    extra = {}
+    for path in args.extra_live or []:
+        extra_groups = [frames(t) for t in read_live(path).values()]
+        for frame_list in extra_groups:
+            X.variant_votes(frame_list)
+        extra[path.name] = extra_groups
+    streak_study = {
+        "base_after_60pct": X.streaks(
+            X.call_series(list(base.values()), slot_ids, train_prior, HORIZON),
+            HORIZON,
+            SPLIT[0],
+            1.0,
+            span,
+        )
+    }
+    fade_study = {
+        "base_after_60pct": X.fade(
+            list(base.values()), slot_ids, HORIZON, SPLIT[0], 1.0, span
+        ),
+        "base_all": X.fade(list(base.values()), slot_ids, HORIZON),
+    }
+    live_sets = ({"live_all": list(live.values())} if live_frames else {}) | extra
+    for name, groups in live_sets.items():
+        streak_study[name] = X.streaks(
+            X.call_series(
+                groups,
+                slot_ids,
+                whole_prior if name != "live_all" else train_prior,
+                HORIZON,
+            ),
+            HORIZON,
+        )
+        fade_study[name] = X.fade(groups, slot_ids, HORIZON)
+    signed_extra = {
+        name: X.replay(groups, slot_ids, whole_prior, HORIZON)
+        for name, groups in extra.items()
+    }
+
     weighted_measured = {}
     for tier in ("mixed", "lean", "strong"):
         row = weighted["base_after_60pct"]["weighted"].get(tier, {})
@@ -906,6 +956,9 @@ def main(argv=None) -> int:
             "live": experiments_live,
         },
         "weighted_vote": weighted,
+        "weighted_vote_extra_live": signed_extra,
+        "consecutive_strong": streak_study,
+        "fade_below_half": fade_study,
         "fade_z20_beyond_2": fade_eval,
         "trades_1000x": trades,
         "window_agreement": window_agreement,

@@ -1,6 +1,6 @@
 # Jupiter 1000x: 1s scalp window and exit guard
 
-Version: 2.4.1. Delta: corrects the Perps section: Jupiter's own TP/SL is not offered on HYPE or ZEC, and the window's Perps note now says so per market; extension 0.21.1, 2026-11-28.
+Version: 2.5.0. Delta: the window says on screen why Long, Short or Arm is off, and the take profit and stop loss state reads "TP/SL off" in place of "Disarmed"; a how-to for opening a position; extension 0.21.2, 2026-11-28.
 
 ## What it is
 
@@ -274,6 +274,17 @@ slider from 1.1 to 25 with preset buttons labelled "Set leverage to 5x" through
 Short/Sell.
 
 ## Opening a position
+
+In short, on the Jupiter 1000x tab (not the Perps page):
+
+1. Put the Jupiter page on the market you want, in **Classic** mode, with its **Positions** tab showing, and connect your wallet there.
+2. Press **1s scalp** on the overlay. The window must be opened this way; a window opened by its address alone cannot reach the page.
+3. In the window choose **Size** and **Leverage**, and type a take profit and stop loss if you want them (or press **No TP/SL**).
+4. Tick **Unlock**. Until then Long and Short stay off.
+5. Press **Long** or **Short**. With **Confirm** ticked the first press arms the button and a second press within four seconds sends it.
+6. Approve in your wallet if it asks. When the position is listed, the levels you typed are armed from its real entry.
+
+The line under the buttons always says why they are off ("Long and Short are off: …") or that they are ready. The badge beside **Order** is only the take profit and stop loss watch: **TP/SL off** means no level is being watched and does not block an entry. **Arm** is for a position that is already listed; it is off while none is.
 
 | Step | What happens |
 | --- | --- |

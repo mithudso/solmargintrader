@@ -676,13 +676,17 @@ function drawGuard() {
   const busy = LIVE_STATES.includes(snap.state);
   $('guard').dataset.state = snap.state;
   reportLive(busy);
-  $('guard-badge').textContent = { idle: 'Disarmed', armed: snap.mode === 'close' ? 'Armed · will press Close' : 'Armed · alert only', triggered: 'Triggered',
+  $('guard-badge').textContent = { idle: 'TP/SL off', armed: snap.mode === 'close' ? 'Armed · will press Close' : 'Armed · alert only', triggered: 'Triggered',
     clicked: 'Close pressed', closed: 'Closed', alerted: 'Level reached', unconfirmed: 'Not confirmed', failed: 'Failed' }[snap.state];
   for (const id of ['guard-position', 'guard-tp', 'guard-sl', 'guard-unit']) $(id).disabled = busy;
   for (const input of document.querySelectorAll('input[name="guard-mode"], .chips button')) input.disabled = busy;
   drawEntry(busy);
   $('guard-arm').hidden = busy; $('guard-disarm').hidden = !busy; $('guard-disarm').disabled = snap.state !== 'armed';
   $('guard-arm').disabled = !attached || !position;
+  $('guard-arm').dataset.help ??= $('guard-arm').title;
+  $('guard-arm').title = !attached ? `Open this window from the Jupiter 1000x tab first. — ${$('guard-arm').dataset.help}`
+    : !position ? `Arm protects a position that is already open, and none is listed for ${SYMBOL}. Open one with Long or Short; its levels are then armed automatically. — ${$('guard-arm').dataset.help}`
+      : $('guard-arm').dataset.help;
   $('guard-arm').textContent = mode() === 'close' ? 'Arm · press Close' : 'Arm · alert only';
   $('guard-show').disabled = !linked;
   for (const id of ['guard-tp-unit', 'guard-sl-unit']) $(id).textContent = unit() === 'bp' ? '(bp from entry)' : '(price)';
@@ -693,7 +697,11 @@ function drawGuard() {
   const unprotected = snap.state === 'armed' && (!live || (snap.mode === 'close' && !readable));
   $('guard').toggleAttribute('data-unprotected', unprotected);
   let status;
-  if (snap.state === 'idle') status = snap.note === 'position_gone' ? 'Disarmed: the position is no longer listed on the Jupiter page.' : 'Disarmed. Nothing is watched.';
+  // "Off" here is only the take profit and stop loss watch. It never blocks Long or Short.
+  if (snap.state === 'idle') status = snap.note === 'position_gone' ? 'TP/SL off: the position is no longer listed on the Jupiter page.'
+    : !attached ? 'TP/SL off. Open this window from the “1s scalp” button on the Jupiter 1000x tab.'
+      : position ? 'TP/SL off for the selected position. Enter a take profit or stop loss above and press Arm. This does not block Long or Short.'
+        : 'TP/SL off: no open position to protect yet. This does not block Long or Short. A position opened here gets the levels above armed automatically.';
   else if (snap.state === 'armed') status = unprotected
     ? `ARMED BUT NOT PROTECTED: ${!live ? 'no fresh price' : `cannot read the Jupiter page (${reasonText(pageState?.reason)})`}. ${levels}`
     : `Armed · ${levels} · ${snap.mode === 'close' ? 'will press Close on the Jupiter page' : 'alert only'} · price ${((now - latest.quote.exchangeMs) / 1000).toFixed(1)} s old`;
@@ -814,7 +822,9 @@ function drawEntry(guardLive) {
       : snap.state === 'opened' ? `Opened ${request.side}. ${guard.snapshot().state === 'armed' ? 'Levels armed from its entry.' : 'No take profit or stop loss is armed.'}`
         : snap.state === 'unseen' ? `No new ${request.side} was listed within 60 s. Check the wallet prompt and the Jupiter tab; a position listed in the next ten minutes still gets its levels.`
           : snap.state === 'failed' ? `NOT OPENED: ${reasonText(snap.note)}. The page’s ${request.side} button was not pressed.`
-            : block && $('entry-unlock').checked ? block : '';
+            // Idle: say in plain sight what is needed to open, or that the buttons are ready. Hover is not enough.
+            : block ? `Long and Short are off: ${block}`
+              : `Ready: press Long or Short${$('entry-confirm').checked ? ' twice (the second press confirms)' : ' once'} to open ${label[size()]} of the available funds.`;
 }
 
 async function pressSide(event) {

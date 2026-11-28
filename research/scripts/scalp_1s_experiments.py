@@ -203,7 +203,7 @@ def replay(groups, slot_ids, prior, horizon, lo=0.0, hi=1.0, span=None) -> dict:
     need = np.array([variant["need"] for variant in F.VARIANTS])
     r0 = np.array([prior[key] for key in ids])
     decay = math.exp(-math.log(2) / WEIGHT_HALF_LIFE_S)
-    names = ("plain", "weighted", "tuned")
+    names = ("plain", "weighted", "tuned", "signed")
     tiers = ("mixed", "lean", "strong")
     tally = {name: {tier: [0, 0, 0.0] for tier in tiers} for name in names}
     # Sum of the move in the direction of the call at each step ahead, for the likely-price line.
@@ -245,6 +245,13 @@ def replay(groups, slot_ids, prior, horizon, lo=0.0, hi=1.0, span=None) -> dict:
                 scores = {"plain": float(votes[t, start].mean())}
                 for name, slots in (("weighted", start), ("tuned", tuned)):
                     scores[name] = float(weights_of(blended[slots]) @ votes[t, slots])
+                # A reading under 50% bets the other way instead of sitting out: signed edges.
+                edge = blended[start] - 0.5
+                scores["signed"] = (
+                    float(edge @ votes[t, start] / np.abs(edge).sum())
+                    if np.abs(edge).sum() > 0
+                    else scores["plain"]
+                )
                 for name, value in scores.items():
                     if value == 0:
                         continue
@@ -273,6 +280,288 @@ def replay(groups, slot_ids, prior, horizon, lo=0.0, hi=1.0, span=None) -> dict:
                 else {"n": n}
             )
     return result
+
+
+def call_series(groups, slot_ids, prior, horizon):
+    """The call of each second, replayed without looking ahead: one dict per frame with the
+    weighted score, the plain score, whether every tile had a reading, and what price did next."""
+    ids = [variant["id"] for variant in F.VARIANTS]
+    index = {key: k for k, key in enumerate(ids)}
+    need = np.array([variant["need"] for variant in F.VARIANTS])
+    r0 = np.array([prior[key] for key in ids])
+    decay = math.exp(-math.log(2) / WEIGHT_HALF_LIFE_S)
+    start = [index[key] for key in slot_ids]
+    warm = int(need[start].max())
+    out = []
+    for group, frames in enumerate(groups):
+        hit = np.zeros(len(ids))
+        calls = np.zeros(len(ids))
+        for fr in frames:
+            votes, sign, counted, correct = outcomes(fr, ids, horizon)
+            n = votes.shape[0]
+            weighted = np.zeros(n)
+            for t in range(n):
+                settle(hit, calls, correct, counted, t, horizon, decay)
+                if t + 1 >= warm:
+                    weighted[t] = float(
+                        weights_of(blend(hit, calls, r0)[start]) @ votes[t, start]
+                    )
+            close = fr["close"]
+            lowest = np.full(n, np.nan)
+            highest = np.full(n, np.nan)
+            if n > horizon:
+                ahead = np.lib.stride_tricks.sliding_window_view(close[1:], horizon)
+                lowest[: n - horizon] = (
+                    ahead.min(axis=1) / close[: n - horizon] - 1.0
+                ) * 1e4
+                highest[: n - horizon] = (
+                    ahead.max(axis=1) / close[: n - horizon] - 1.0
+                ) * 1e4
+            ready = np.arange(n) + 1 >= warm
+            out.append(
+                {
+                    "group": group,
+                    "time": fr["time"],
+                    "ready": ready,
+                    "weighted": weighted,
+                    "plain": np.where(ready, votes[:, start].mean(axis=1), 0.0),
+                    "sign": sign,
+                    "fwd": fr["fwd"],
+                    "lowest": lowest,
+                    "highest": highest,
+                }
+            )
+    return out
+
+
+STREAK_BUCKETS = ("1", "2", "3-5", "6-10", "11+", "2+")
+BUST_BP_1000X = 9.8  # how far price may go against a 1000x position before it is bust
+FLIP_WINDOW_S = 60
+
+
+def _bucket(position: int) -> str:
+    return (
+        "1"
+        if position == 1
+        else "2"
+        if position == 2
+        else "3-5"
+        if position <= 5
+        else "6-10"
+        if position <= 10
+        else "11+"
+    )
+
+
+def streaks(series, horizon, lo=0.0, hi=1.0, span=None) -> dict:
+    """How strong calls did by how many seconds in a row they had been strong the same way.
+
+    Bucket "1" is the first strong second of a run, "2" the second in a row (one sample per run
+    that lasts that long), "2+" every strong second after the first. For each: the share where
+    price was with the call `horizon` seconds later (`correct`), against it (`reversed`), how
+    often a strong call the other way came within a minute (`flipped`), and how often price went
+    5 bp or the 1000x bust distance against the call at any second on the way.
+    """
+    result = {}
+    for name in ("weighted", "plain"):
+        tally = {
+            bucket: {
+                "n": 0,
+                "correct": 0,
+                "reversed": 0,
+                "flat": 0,
+                "flipped": 0,
+                "adverse_5bp": 0,
+                "adverse_bust": 0,
+                "moved": 0.0,
+                "blocks": set(),
+            }
+            for bucket in STREAK_BUCKETS
+        }
+        runs = []
+        for fr in series:
+            score = fr[name]
+            direction = np.where(
+                fr["ready"] & (np.abs(score) >= WEIGHTED_STRONG), np.sign(score), 0.0
+            )
+            n = direction.size
+            position = np.zeros(n, dtype=np.int64)
+            for t in range(n):
+                if direction[t] != 0:
+                    position[t] = (
+                        position[t - 1] + 1
+                        if t > 0 and direction[t - 1] == direction[t]
+                        else 1
+                    )
+                    if t + 1 == n or direction[t + 1] != direction[t]:
+                        runs.append(int(position[t]))
+            # Index of the next strong call each way, scanning back from the end.
+            upcoming = {1.0: np.full(n, n + 10**9), -1.0: np.full(n, n + 10**9)}
+            for side, later in upcoming.items():
+                seen = n + 10**9
+                for t in range(n - 1, -1, -1):
+                    later[t] = seen
+                    if direction[t] == side:
+                        seen = t
+            inside = _window({"time": fr["time"]}, horizon, lo, hi, span)
+            for t in np.flatnonzero((direction != 0) & np.isfinite(fr["fwd"]) & inside):
+                side = direction[t]
+                against = -fr["lowest"][t] if side > 0 else fr["highest"][t]
+                for bucket in (
+                    _bucket(int(position[t])),
+                    *(["2+"] if position[t] >= 2 else []),
+                ):
+                    row = tally[bucket]
+                    row["n"] += 1
+                    row["correct"] += int(fr["sign"][t] == side)
+                    row["reversed"] += int(fr["sign"][t] == -side)
+                    row["flat"] += int(fr["sign"][t] == 0)
+                    row["flipped"] += int(upcoming[-side][t] - t <= FLIP_WINDOW_S)
+                    row["adverse_5bp"] += int(against >= 5.0)
+                    row["adverse_bust"] += int(against >= BUST_BP_1000X)
+                    row["moved"] += float(side * fr["fwd"][t])
+                    row["blocks"].add((fr["group"], int(fr["time"][t]) // horizon))
+        result[name] = {
+            "runs": {
+                "count": len(runs),
+                "mean_s": float(np.mean(runs)) if runs else None,
+                "median_s": float(np.median(runs)) if runs else None,
+                "one_second_only": sum(1 for r in runs if r == 1),
+            }
+        }
+        for bucket, row in tally.items():
+            n = row["n"]
+            if n < 50:
+                result[name][bucket] = {"n": n}
+                continue
+            independent = max(1, len(row["blocks"]))
+            result[name][bucket] = {
+                "n": n,
+                "independent": independent,
+                "correct": row["correct"] / n,
+                "reversed": row["reversed"] / n,
+                "flat": row["flat"] / n,
+                "se": math.sqrt(0.25 / independent),
+                "flipped_within_60s": row["flipped"] / n,
+                "adverse_5bp": row["adverse_5bp"] / n,
+                "adverse_bust": row["adverse_bust"] / n,
+                "mean_follow_bps": row["moved"] / n,
+            }
+    return result
+
+
+FADE_HALF_LIVES = (
+    600,
+    7200,
+)  # seconds of ticks: ten minutes, and the two hours the window uses
+FADE_MIN_CALLS = 300  # a running rate is read only after this many settled calls (ten horizons' worth)
+FADE_BELOW = (
+    0.50,
+    0.48,
+)  # "negative": under a coin flip, and the window's red threshold
+
+
+def fade(groups, slot_ids, horizon, lo=0.0, hi=1.0, span=None) -> dict:
+    """What betting against a reading returns once its own running hit rate has gone under 50%.
+
+    For every setting and second: its running rate (decayed counts, no starting rate, known only
+    from calls already settled) and, when that rate is under the threshold, whether the reading
+    was then right. Betting against it wins exactly when it was wrong. Flat outcomes are left out.
+    """
+    ids = [variant["id"] for variant in F.VARIANTS]
+    index = {key: k for k, key in enumerate(ids)}
+    tiles = np.zeros(len(ids), dtype=bool)
+    tiles[[index[key] for key in slot_ids]] = True
+    decays = [math.exp(-math.log(2) / half) for half in FADE_HALF_LIVES]
+    shape = (len(FADE_HALF_LIVES), len(FADE_BELOW), len(ids))
+    below_n, below_right, above_n, above_right = (np.zeros(shape) for _ in range(4))
+    blocks = [
+        [{"tiles": set(), "all": set()} for _ in FADE_BELOW] for _ in FADE_HALF_LIVES
+    ]
+    for group, frames in enumerate(groups):
+        hit = [np.zeros(len(ids)) for _ in decays]
+        calls = [np.zeros(len(ids)) for _ in decays]
+        for fr in frames:
+            votes, sign, counted, correct = outcomes(fr, ids, horizon)
+            keep = (sign != 0) & _window(fr, horizon, lo, hi, span)
+            for t in range(votes.shape[0]):
+                for h, decay in enumerate(decays):
+                    settle(hit[h], calls[h], correct, counted, t, horizon, decay)
+                if not keep[t]:
+                    continue
+                voting = counted[t]
+                right = correct[t]
+                for h in range(len(decays)):
+                    known = voting & (calls[h] >= FADE_MIN_CALLS)
+                    rate = np.divide(
+                        hit[h], calls[h], out=np.full(len(ids), 0.5), where=calls[h] > 0
+                    )
+                    for k, threshold in enumerate(FADE_BELOW):
+                        low = known & (
+                            rate < threshold if threshold == 0.5 else rate <= threshold
+                        )
+                        high = known & (
+                            rate > 1.0 - threshold
+                            if threshold != 0.5
+                            else rate > threshold
+                        )
+                        below_n[h, k] += low
+                        below_right[h, k] += low & right
+                        above_n[h, k] += high
+                        above_right[h, k] += high & right
+                        block = (group, int(fr["time"][t]) // horizon)
+                        if (low & tiles).any():
+                            blocks[h][k]["tiles"].add(block)
+                        if low.any():
+                            blocks[h][k]["all"].add(block)
+    out = {"min_calls": FADE_MIN_CALLS, "cases": []}
+    for h, half in enumerate(FADE_HALF_LIVES):
+        for k, threshold in enumerate(FADE_BELOW):
+            case = {
+                "half_life_s": half,
+                "below": threshold,
+                "above": threshold if threshold == 0.5 else 1.0 - threshold,
+            }
+            for name, mask in (
+                ("tiles", tiles),
+                ("all", np.ones(len(ids), dtype=bool)),
+            ):
+                low_n = float(below_n[h, k][mask].sum())
+                high_n = float(above_n[h, k][mask].sum())
+                independent = max(1, len(blocks[h][k][name]))
+                case[name] = {
+                    "below_calls": low_n,
+                    "below_independent": independent,
+                    "follow_when_below": float(below_right[h, k][mask].sum() / low_n)
+                    if low_n
+                    else None,
+                    "fade_when_below": float(
+                        1.0 - below_right[h, k][mask].sum() / low_n
+                    )
+                    if low_n
+                    else None,
+                    "se": math.sqrt(0.25 / independent),
+                    "above_calls": high_n,
+                    "follow_when_above": float(above_right[h, k][mask].sum() / high_n)
+                    if high_n
+                    else None,
+                    "share_of_calls_below": low_n / (low_n + high_n)
+                    if low_n + high_n
+                    else None,
+                }
+            per = []
+            for v in np.flatnonzero(tiles):
+                if below_n[h, k, v] >= 600:
+                    per.append(
+                        [
+                            ids[v],
+                            int(below_n[h, k, v]),
+                            float(1.0 - below_right[h, k, v] / below_n[h, k, v]),
+                        ]
+                    )
+            case["tiles_each"] = sorted(per, key=lambda row: -row[2])
+            out["cases"].append(case)
+    return out
 
 
 def rule_fixture(frame, prior, slot_ids, horizon) -> dict:
