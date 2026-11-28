@@ -192,6 +192,24 @@ See [the window, its rails and its limits](../docs/JUPITER-1000X-SCALP.md) and
 [the study](../research/papers/SCALP-1S-STUDY.md). Run `npm run e2e:scalp` for
 the real-browser gate.
 
+## Market recorder
+
+`tools/market-recorder.mjs` is a separate, long-running program, not part of the
+loaded extension. It records every Jupiter 1000x and Perps market, with Coinbase's
+order book and trades for the same coins, to one folder per coin as hourly JSON
+lines files:
+
+```bash
+node tools/market-recorder.mjs --out /Volumes/dasdata/CoinTradingData
+```
+
+It reads public data only: no wallet, no key, no order. It refuses to start when
+the output folder is missing, never writes anywhere else, and exits when the disk
+goes away so a supervisor can start it again. `tools/market-recorder-fill.mjs`
+fills gaps in that recording from a second machine's short-lived copy
+(`--keep-hours`) and compares the two. See
+[what it records, its files and its failure behaviour](../docs/MARKET-RECORDER.md).
+
 ## Shared automatic paper trading (0.11.0)
 
 **Start Paper** runs the selected BTC/ZEC 10x or 1000x observed-price model through
