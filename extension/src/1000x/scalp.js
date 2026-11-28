@@ -18,6 +18,7 @@ import { SCALP_EXPERIMENTS, VARIANTS, HORIZONS, DEFAULT_ASSIGNMENTS, PROMOTION, 
 import { ExitGuard, parseLevel, parseDistance, resolveLevels, priceLike, positionKey, quoteFresh } from './exit-guard.js';
 import { EntryTracker, validateEntry } from './entry-plan.js';
 import { POWERED_BY } from '../jupiter/attribution.js';
+import { MARKETS as PERPS_MARKETS } from '../perps/model.js';
 import { createChart, CandlestickSeries, LineSeries, LineStyle } from '../../vendor/lightweight-charts/lightweight-charts.standalone.production.mjs';
 
 const $ = id => document.getElementById(id);
@@ -1085,6 +1086,12 @@ if (VIEW_ONLY) {
   $('guard').dataset.venue = 'perps';
   $('guard-title').firstChild.textContent = 'Perps page ';
   $('perps-note').hidden = false;
+  // Jupiter's own take profit and stop loss exist only on the JLP markets; the page says so itself on the beta ones.
+  const venue = Object.hasOwn(PERPS_MARKETS, SYMBOL) ? PERPS_MARKETS[SYMBOL].venue : null;
+  $('perps-note').textContent = 'Read-outs only. On the Jupiter Perps page this window presses nothing: it does not open or close a position there and runs no take profit or stop loss. Use the page’s own order form. '
+    + (venue === 'GUM' ? `Jupiter’s own take profit and stop loss are NOT offered on ${SYMBOL}: the page’s positions list shows “Take Profit / Stop Loss is not available for ${SYMBOL}”. The venue takes market, limit and post-only orders only, so nothing on the page acts as a stop loss. A position there is protected only by what you do yourself.`
+      : venue === 'JLP' ? `On ${SYMBOL} the page’s positions list has its own Add TP / SL, which Jupiter runs without this window (seen in the page’s code; not exercised).`
+        : 'Check on the page whether its positions list offers Add TP / SL for this market.');
   $('market').textContent = '1s scalp · Perps view';
   $('guard-page').textContent = `Opened from the Jupiter Perps page for ${SYMBOL || 'no market'}.`;
 }

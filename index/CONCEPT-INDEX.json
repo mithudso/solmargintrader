@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-11-28T05:32:53+00:00",
+  "generatedAt": "2026-11-28T05:56:04+00:00",
   "schemaVersion": 1,
   "note": "Concepts are derived from the repo's own vocabulary \u2014 the FAMILY dict, strategy-card frontmatter, docs/trading-signals-concept-family.md, and terms verified to recur in the corpus. A concept matching no file is dropped, not kept.",
   "counts": {
@@ -51,7 +51,7 @@
         },
         {
           "path": "memory.md",
-          "hits": 167
+          "hits": 168
         },
         {
           "path": "llms-filemap.txt",
@@ -161,7 +161,7 @@
         "universe",
         "top_coins"
       ],
-      "matchingFiles": 4246,
+      "matchingFiles": 4245,
       "shown": 30,
       "files": [
         {
@@ -170,7 +170,7 @@
         },
         {
           "path": "memory.md",
-          "hits": 489
+          "hits": 496
         },
         {
           "path": "docs/FILES.md",
@@ -1011,7 +1011,7 @@
         },
         {
           "path": "memory.md",
-          "hits": 586
+          "hits": 597
         },
         {
           "path": "research/json/strategy_experiment/results/results.json",
@@ -1031,7 +1031,7 @@
         },
         {
           "path": "prompts.md",
-          "hits": 272
+          "hits": 284
         },
         {
           "path": ".cdo/reviews-2026-11-12/oracle.json",
@@ -1091,7 +1091,7 @@
         },
         {
           "path": "extension/README.md",
-          "hits": 105
+          "hits": 106
         },
         {
           "path": "soltui/JUPITER_ORDER_WIDGET_IMPLEMENTATION_GUIDE.md",

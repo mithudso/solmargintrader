@@ -504,13 +504,15 @@ try {
     await until(() => ev(view, `document.getElementById('feed')?.dataset.state === 'live' && document.getElementById('guard')?.dataset.venue === 'perps'`), 'Perps view live', 30_000);
     await sleep(1500);
     const seen = await ev(view, `(() => { const shown = id => { const node = document.getElementById(id); return Boolean(node && node.offsetParent !== null); };
-      return { market: document.getElementById('market').textContent, note: shown('perps-note'), noteText: document.getElementById('perps-note').textContent.slice(0, 60),
+      return { market: document.getElementById('market').textContent, note: shown('perps-note'), noteText: document.getElementById('perps-note').textContent,
         page: document.getElementById('guard-page').textContent, long: shown('entry-long'), short: shown('entry-short'), arm: shown('guard-arm'), unlock: shown('entry-unlock'),
         levels: shown('guard-tp'), size: shown('entry-size'), show: shown('guard-show'), tiles: document.querySelectorAll('.tile').length, tabs: shown('tab-experiments'),
         coin: document.getElementById('coin').value, title: document.getElementById('call').title }; })()`);
     assert(seen.market === '1s scalp · Perps view' && seen.note && /^Read-outs only/.test(seen.noteText) && /Opened from the Jupiter Perps page for BTC/.test(seen.page), JSON.stringify(seen));
     assert(!seen.long && !seen.short && !seen.arm && !seen.unlock && !seen.levels && !seen.size, `an order control is visible on the Perps view: ${JSON.stringify(seen)}`);
     assert(seen.show && seen.tiles === 16 && seen.tabs && seen.coin === 'BTC', JSON.stringify(seen));
+    // BTC is a JLP market: the note points at the page's own Add TP / SL, and makes no such claim for the beta markets.
+    assert(/On BTC the page’s positions list has its own Add TP \/ SL/.test(seen.noteText) && !/NOT offered/.test(seen.noteText), `Perps note: ${seen.noteText}`);
     assert((await browser.targets()).filter(target => target.url.startsWith(scalpUrl.replace(/#market=.*$/, ''))).length === 1, 'the 1000x window was left open beside the Perps one');
     if (OUT) {
       const shot = await browser.call('Page.captureScreenshot', { format: 'png', captureBeyondViewport: true }, view.sessionId);

@@ -1,5 +1,14 @@
 # Prompt history
 
+Version: 340
+Delta: v339 to v340. Record the owner's decision that the Perps page uses Jupiter's own TP/SL.
+
+## Perps page: use Jupiter's own TP/SL · 2026-11-28
+
+Asked whether, on the Perps page, the window should press Jupiter's own "Add TP / SL" rather than run its own guard, the owner answered:
+
+> Yes, it should set Jupiter's own TP/SL for the perps page.
+
 Version: 339
 Delta: v338 to v339. Record the request for a hit-rate-weighted aggregate and an Experiments tab in the 1s scalp window.
 
