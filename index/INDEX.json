@@ -1,8 +1,8 @@
 {
-  "generatedAt": "2026-11-28T09:19:17+00:00",
+  "generatedAt": "2026-11-28T09:19:39+00:00",
   "schemaVersion": 1,
   "repoRoot": "~/dev/solmargintrader",
-  "commit": "42ac3bf",
+  "commit": "75de109",
   "counts": {
     "files": 8110,
     "bytes": 296092684,
@@ -249862,5 +249862,5 @@
       "frontmatter": {}
     }
   ],
-  "textSha256": "52a4c46bee87e1c9ce77be766b20f03b5032b755e287f67210704a89ee759ab3"
+  "textSha256": "fe7dbf30df75bad593bcc2f5ab769f81f6f0efc19efd429e361fcabb65d46802"
 }
