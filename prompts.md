@@ -1,5 +1,18 @@
 # Prompt history
 
+Version: 346
+Delta: v345 to v346. Record three follow-up questions about the scalp read-out and the request for combinations, strong-call counts, large-move pointers, volume and order book, and a per-coin recording.
+
+## Scalp read-out: inverse votes, strong calls, combinations, large moves, book, per coin · 2026-11-28
+
+> How does the voting the other way test out in the backtest?
+
+> Are the strong buy/sells more likely to be correct?
+
+> From the backtests and currently running experiments, can you identify any combination of the indicators that when tested together are right more often? Do higher humber of strong calls lead to more hits than singletons? Is there any indication before a large move that would indicate a direction? Is volume or the order book available from the feed you read from? Can you record from the different coins and find out if one of them has a higher success rate than the others using the sclaper methodology?
+
+The first two were answered from the study's existing tables. The third started a 24 hour five-market recording and a new analysis module.
+
 Version: 345
 Delta: v344 to v345. Record the owner's mid-task choice of a calmer switch rule.
 

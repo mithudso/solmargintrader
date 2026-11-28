@@ -1,7 +1,31 @@
 # Work continuation
 
-Version: 739
-Delta: v738 to v739. Record the wider scalp experiment grid (380 settings), the highest-hit-rate switch rule as the default, the inverse-vote experiment and what the replay measured (extension 0.23.0). Earlier:
+Version: 740
+Delta: v739 to v740. Record the five follow-up questions on the scalp recordings (combinations, agreement, large moves, the order book, coins) and what they measured (study 1.6.0). Earlier:
+
+## Scalp follow-up: combinations, agreement, large moves, the order book, coins · 2026-11-28
+
+Request (`prompts.md` v346): is some combination of readings right more often; do more strong calls mean more hits; does anything point the right way before a large move; does the feed carry volume or an order book; is the call right more often on one coin.
+
+Done: `research/scripts/scalp_1s_questions.py` and `research/scripts/scalp_1s_coins.py`, tables in `research/json/scalp-1s-questions-20261128/`, a new section and five short answers in `research/papers/SCALP-1S-STUDY.md` (1.6.0). No extension change.
+
+Measured (learned on the first 60% of the base recording, read on the last 40%; live recordings whole):
+- Combinations: best triple (120 s breakout with balance of power 2 s and MACD 3/17/5) 56.2% ± 4.1 on 6.4% of seconds; that breakout alone 55.3% ± 3.1; strong call 54.4% ± 2.2 on 20%. A ridge fit of all 380 settings: 59.5% where fitted, 52.7% ± 2.1 afterwards.
+- Agreement: all sixteen readings one way 55.6% ± 2.9, fourteen or fifteen 53.3%, under twelve about 50%. Strong calls in the last 30 s: one 54.9% ± 6.9, six to fifteen 55.3% ± 3.0, sixteen or more 50.2% ± 7.4. BTC and ZEC both strong 57.0% ± 4.6 against 52.9% ± 2.5 alone; not repeated on the second live recording.
+- Large moves (top 5% of 30 s moves): looking back, strong call 61.3% ± 4.2 and 60 s breakout 63.9% ± 4.4, which is selection by the outcome. Looking forward, the most volatile fifth is followed by a large move 17.4% of the time against 1.6% for the calmest, with no direction: strong call 52.6% there, 57.1% in the calmest.
+- Order book: the Jupiter stream has none. Coinbase's top of book in the base capture leads the oracle by about a second: its 2 s change called the oracle's next 3 s 62.0%, 53.6% after the 2 s fill wait, 55.7% with the book one second late. Strong call with the book agreeing 56.9% ± 3.1, disagreeing 52.4% ± 2.9. Not in the window.
+- Coins: base BTC 54.8% ± 1.4, ZEC 52.4% ± 1.8 (in-sample, p 0.55); live HYPE 57.1% ± 8.3, the rest 48.8% to 50.4%. About nine days of ticks per coin are needed to tell two coins two points apart.
+Say so when any of these is described: none is established on untouched data, and the error bars count clock seconds, so they are wider than the earlier tables'.
+
+A 24-hour five-coin tick recording started 2026-11-28T10:18Z under `/Users/mitch/.local/share/solmargintrader/research/scalp-1s-coins-20261128/`; when it ends it runs `research.scalp_1s_coins` from the main checkout and writes `coins.json` beside the ticks. The continuous NAS recording is separate work (`prompts.md`, the market recorder entry).
+
+Independent review of this code, four passes: 1 Critical, 7 High and many Medium (look-ahead in a ranking, cut-offs learned on the scored slice, book and oracle clocks), then 5 Medium, then 3 Medium, all fixed; the fourth pass is recorded in the pull request.
+
+Verification: 71 research scalp tests (`research.tests.test_scalp_1s_questions`, `research.tests.test_scalp_1s`), now in CI; ruff clean on the changed files. The main study's outputs were regenerated and are unchanged.
+
+Not verified: any of it on fills, or on more than two markets for the book.
+
+Earlier delta, v738 to v739. Record the wider scalp experiment grid (380 settings), the highest-hit-rate switch rule as the default, the inverse-vote experiment and what the replay measured (extension 0.23.0). Earlier:
 
 ## Scalp experiments: highest hit rate wins, 380 settings, inverse votes · 2026-11-28
 
