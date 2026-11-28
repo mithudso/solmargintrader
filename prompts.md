@@ -1,5 +1,23 @@
 # Prompt history
 
+Version: 345
+Delta: v344 to v345. Record the owner's mid-task choice of a calmer switch rule.
+
+## Scalp experiments: the less cumbersome switch rule · 2026-11-28
+
+Sent while the work above was running, in reply to a side agent's note that the always-switch rule replayed with about 6,000 switches and no gain, ending "Say so now if you want a minimum number of calls before a switch.":
+
+> Yes, switch it to the less cumbersome, but still effective rule.
+
+Read as: keep taking the setting with the higher hit rate, but only after a minimum number of calls and without constant switching.
+
+Version: 344
+Delta: v343 to v344. Record the owner's request to always switch a scalp tile to the setting with the higher hit rate, widen the experiment grid, and test inverse votes.
+
+## Scalp experiments: always take the higher hit rate, many more settings, inverse votes · 2026-11-28
+
+> For the scalper chrome plugin, if an experiment's hit rate is higher than the one currently used, change to the experiment's settings, have this done all the time. Also for the indicators that have the most settings to change, have way more of those going. Have 100, or 1000 if needed to get and test them all. If it becomes too much of a burden to process I have 3 other entire machines that can do the processing. But things like MACD should ahve at least 3 dozen different experiments testing different combinations of the long and short averages. Also run an experiment of what happens if an indicator that usually guesses wrong is used as an inverse indicator and we use those votes away from their guess.
+
 Version: 343
 Delta: v342 to v343. Record the owner's report that the manager-poll error still shows on the extension's Errors page.
 

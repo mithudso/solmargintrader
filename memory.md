@@ -1,7 +1,36 @@
 # Work continuation
 
-Version: 738
-Delta: v737 to v738. Record that the manager-poll entry after an update is now a quiet notice with an immediate gated reload (extension 0.22.1). Earlier:
+Version: 739
+Delta: v738 to v739. Record the wider scalp experiment grid (380 settings), the highest-hit-rate switch rule as the default, the inverse-vote experiment and what the replay measured (extension 0.23.0). Earlier:
+
+## Scalp experiments: highest hit rate wins, 380 settings, inverse votes · 2026-11-28
+
+Request (`prompts.md` v344): always switch a tile to the experiment with the higher hit rate; many more settings for the readings with the most parameters (at least three dozen MACD pairings); an experiment in which a reading that is usually wrong votes the other way.
+
+Done (0.23.0):
+- Grid: 79 to 380 settings (`research/scripts/scalp_1s_features.py`, exported to `extension/src/1000x/scalp-experiments-data.js`). MACD 123 (41 fast/slow pairs by signal 5, 9, 13), EMA cross 51, Parabolic SAR 48 (start, step, cap separately), Supertrend 40, the one-parameter readings 11 to 20 each. `macd_hist_bps` / `macdHistogramBps` now take fast, slow, signal. Old ids map to new ones (`VARIANT_ALIASES`), and `ExperimentBook.restore` carries a version 2 record over setting by setting, so live counts were not lost.
+- Switch rule: `best` is the default in `findPromotions` / `find_promotions`: a tile takes the unused setting of its kind with the highest blended estimate when it is at least 1 point ahead, once both have 40 independent calls' worth (20 min), and holds it 30 min (`BEST_MIN_EFF`, `BEST_LOCK_S`, `BEST_MARGIN`). The first version had no limits and switched 1,994 times in 26 market-hours; the owner asked mid-task for "the less cumbersome, but still effective rule" (`prompts.md` v345), and these limits cut that to 61 with tiles still on a switched setting 89% of the time. The earlier rule is `clear`; `off` exists. A chosen setting without its bars leaves the tile on the starting setting, or on the first free setting of its kind if another tile reads that one (`readSlots`, `waiting`), so the warm-up stays 78 s and no setting is counted twice.
+- Inverse votes: `weightedCall(tiles, book, { inverse: true })` turns an under-50% tile's vote round, weighted by its distance from 50%. Both aggregates are made every second and scored by `CallTally` (saved per coin). A select in the Experiments tab puts the inverse call in charge; default is sit out.
+- Experiments tab: rule select, inverse select, reading filter, inverse-vote table.
+
+Measured (study 1.5.0, `research/papers/SCALP-1S-STUDY.md`), strong calls right:
+- Base, last 40%: no switching 54.4% ± 2.0 (20% of seconds); highest hit rate (shipped limits) 55.1% ± 1.9 (23%, 61 switches in 26 market-hours); the same with no limits 54.7% ± 1.9 (1,994 switches); cautious rule 54.4% ± 1.9; inverse votes 54.6% ± 2.3 (15%).
+- Live 2026-11-27: 53.8 / 53.0 / 53.8 / 49.7 (no switching / shipped rule / cautious / inverse). Live 2026-11-28: 49.6 / 48.3 / 49.5 / 49.2.
+- Six combinations of the limits were replayed (`switch_rule_limits` in `summary.json`); all within one standard error. The limits were chosen for calm, not score.
+- No setting was reliably wrong over 30 s: 26 of 380 under 50% on the first 60%, lowest 48.9%; betting against them afterwards was right 49.7% ± 0.9.
+Say so when either feature is described: neither improved the call measurably, and neither hurt it measurably.
+
+Cost: about 1 ms per second of ticks for all 380 settings in the window; the study replays in about a minute. The owner's other three machines are not needed.
+
+Environment: the study needs numpy; on this box `/opt/homebrew/bin/python3` has it and `/usr/local/bin/python3` (first on PATH) does not. Ruff is pinned to 0.17.4 (`uvx ruff@0.17.4`). `scripts/check_docs.py` cannot import every soltui test module locally; CI runs it.
+
+Independent review of this code: 0 High, 2 Medium, 6 Low; all fixed, not re-reviewed.
+
+Verification: 874 extension tests; 32 research scalp tests; `npm run e2e:scalp -- --full` 20 of 20; `npm run check:js` clean.
+
+Not verified: the new window in the owner's own Chrome on a live Jupiter stream.
+
+Earlier delta, v737 to v738. Record that the manager-poll entry after an update is now a quiet notice with an immediate gated reload (extension 0.22.1). Earlier:
 
 ## manager-poll after an update: a notice, not an error · 2026-11-28
 

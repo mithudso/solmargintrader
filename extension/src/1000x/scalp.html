@@ -23,7 +23,7 @@
 
       <div class="tabs" role="tablist" aria-label="View">
         <button id="tab-live" type="button" role="tab" aria-selected="true" aria-controls="panel-live" title="The chart, the trend grid and the slope ladder.">Live</button>
-        <button id="tab-experiments" type="button" role="tab" aria-selected="false" aria-controls="panel-experiments" tabindex="-1" title="Every setting of every reading, tested on live ticks all the time: its hit rate at twelve intervals from 3 seconds to 5 minutes, which setting each tile uses, and what has been switched.">Experiments <span id="tab-experiments-count" class="tag"></span></button>
+        <button id="tab-experiments" type="button" role="tab" aria-selected="false" aria-controls="panel-experiments" tabindex="-1" title="Hundreds of settings of the sixteen readings, tested on live ticks all the time: each one’s hit rate at twelve intervals from 3 seconds to 5 minutes, which setting each tile uses, what has been switched, and the inverse-vote experiment.">Experiments <span id="tab-experiments-count" class="tag"></span></button>
       </div>
 
       <div id="panel-live" role="tabpanel" aria-labelledby="tab-live" tabindex="0">
@@ -33,7 +33,7 @@
       </section>
 
       <section aria-labelledby="tiles-title">
-        <h2 id="tiles-title" title="Sixteen trend readings on closed one-second bars. Each votes up (green), down (red) or neutral (grey); dashed tiles are warming up. The call above is their weighted vote: each reading counts by how far its running 30 second hit rate is above 50%, and one at or under 50% does not count. The thin bar under a reading is its say in the call, relative to the reading with the most. A ★ marks a reading whose setting the Experiments tab switched in. The six small numbers are the reading's own running hit rate, in percent, over the next 5 s, 10 s, 20 s, 30 s, 1 min and 5 min: green at 52 or more, red at 48 or less. Hover a tile for its definition, record and say, or a number for its count.">Trend grid <span id="tiles-count" class="muted"></span></h2>
+        <h2 id="tiles-title" title="Sixteen trend readings on closed one-second bars. Each votes up (green), down (red) or neutral (grey); dashed tiles are warming up. The call above is their weighted vote: each reading counts by how far its running 30 second hit rate is above 50%, and one at or under 50% does not count unless inverse votes are turned on in the Experiments tab, where it then votes the other way (marked ⇄). The thin bar under a reading is its say in the call, relative to the reading with the most. A ★ marks a reading whose setting the Experiments tab switched in. The six small numbers are the reading's own running hit rate, in percent, over the next 5 s, 10 s, 20 s, 30 s, 1 min and 5 min: green at 52 or more, red at 48 or less. Hover a tile for its definition, record and say, or a number for its count.">Trend grid <span id="tiles-count" class="muted"></span></h2>
         <div id="tiles" role="list"></div>
       </section>
 
@@ -58,10 +58,19 @@
       <div id="panel-experiments" role="tabpanel" aria-labelledby="tab-experiments" tabindex="0" hidden>
         <p id="exp-status" class="muted" role="status"></p>
         <div class="exp-controls">
-          <label title="When on, a setting that is clearly ahead of the one a tile uses takes its place on the Live tab: same kind of reading, enough settled calls on both, a cautious estimate above the current setting's live rate, and no contradiction from the recording. It changes only what the read-outs show; it never touches an order, a take profit or a stop loss."><input type="checkbox" id="exp-auto" checked> Switch clear winners in</label>
+          <label title="When a tile changes to another setting of its reading. Highest hit rate: a tile takes the unused setting of its kind with the highest current estimate over the next 30 seconds when that is at least 1 point above the estimate of the setting in use, once both have 40 independent calls’ worth (at least 20 minutes of ticks), and then keeps it for 30 minutes. Only when clearly ahead: the earlier, cautious rule, which also asks for a cautious estimate above the current setting’s live rate and almost never switches. Never: tiles stay as they are. This changes only what the read-outs show; it never touches an order, a take profit or a stop loss.">Switch settings <select id="exp-rule">
+            <option value="best">Highest hit rate</option>
+            <option value="clear">Only when clearly ahead</option>
+            <option value="off">Never</option>
+          </select></label>
+          <label title="What a reading does in the call when its hit rate is under 50%. Sit out: it has no say, as before. Vote the other way: its vote is turned round and counts by how far under 50% it is. Both are scored all the time in the inverse-vote experiment below, whichever is chosen here.">Readings under 50% <select id="exp-inverse">
+            <option value="off">Sit out</option>
+            <option value="on">Vote the other way</option>
+          </select></label>
           <label title="Which interval the table below is ranked by. Tiles are always chosen on the 30 second interval, the one the call is made for.">Rank by <select id="exp-horizon"></select></label>
-          <button id="exp-defaults" type="button" title="Put every tile back on its starting setting. What live testing has learned is kept.">Starting settings</button>
-          <button id="exp-forget" type="button" title="Throw away everything live testing has learned for this coin and return to the starting settings. Needs a second press.">Forget results</button>
+          <label title="Show one kind of reading in the table of all settings, or every kind. The number is how many settings of that kind are tested.">Show <select id="exp-kind"></select></label>
+          <button id="exp-defaults" type="button" title="Put every tile back on its starting setting. What live testing has learned is kept. The tiles then stay on them for the rule’s hold time (30 minutes for “Highest hit rate”); choose “Never” to keep them longer.">Starting settings</button>
+          <button id="exp-forget" type="button" title="Throw away everything live testing has learned for this coin, including the inverse-vote record, and return to the starting settings. Needs a second press. Tiles are switched again once enough new calls have settled.">Forget results</button>
         </div>
 
         <section aria-labelledby="exp-slots-title">
@@ -70,13 +79,28 @@
             <thead><tr>
               <th scope="col" title="The kind of reading. A setting only ever replaces another of the same kind.">Reading</th>
               <th scope="col" title="The setting this tile uses now. A ★ means it was switched in for the starting one.">Setting</th>
-              <th scope="col" title="This tile's share of the call right now: how far its running 30 second hit rate is above 50%, as a share of all tiles' edges. 0% means its hit rate is not above 50%.">Say</th>
+              <th scope="col" title="This tile's share of the call right now: how far its running 30 second hit rate is above 50%, as a share of all tiles' edges. 0% means its hit rate is not above 50%. With “Vote the other way” chosen, a tile under 50% has a say too, by how far under it is, and is marked ⇄ because its vote counts the other way.">Say</th>
               <th scope="col" title="Live hit rate of this setting over the next 30 seconds, in percent, once enough calls have settled.">Live</th>
               <th scope="col" title="Hit rate of this setting over the next 30 seconds on the base recording: its starting point before live results.">Recorded</th>
-              <th scope="col" title="The best unused setting of the same kind by current estimate, and whether it is clearly ahead yet.">Best other</th>
+              <th scope="col" title="The best unused setting of the same kind by current estimate, and whether the chosen rule is about to switch it in.">Best other</th>
             </tr></thead>
             <tbody></tbody>
           </table>
+        </section>
+
+        <section aria-labelledby="exp-inverse-title">
+          <h2 id="exp-inverse-title" title="What happens if a reading that is wrong more often than right is used the other way round. Each second the window makes the call twice from the same sixteen readings: once with readings under 50% sitting out, once with them voting the other way. Each call is scored against the price 30 seconds later.">Inverse-vote experiment</h2>
+          <table id="exp-inverse-table">
+            <thead><tr>
+              <th scope="col" title="The two ways of treating a reading whose hit rate is under 50%. ● marks the one the call on the Live tab uses now.">Readings under 50%</th>
+              <th scope="col" title="Live hit rate of this aggregate’s strong calls over the next 30 seconds on this coin, in percent, with the calls counted. Recent calls weigh most; seconds overlap, so independent calls are the count divided by 30.">Strong, live</th>
+              <th scope="col" title="Live hit rate of its strong and lean calls together.">Strong + lean, live</th>
+              <th scope="col" title="Hit rate of its strong calls on the later part of the base recording, replayed without looking ahead, with the share of seconds that were strong.">Strong, recorded</th>
+              <th scope="col" title="Hit rate of its strong calls on a separate short live recording, with its error.">Live check</th>
+            </tr></thead>
+            <tbody></tbody>
+          </table>
+          <p id="exp-inverse-note" class="muted"></p>
         </section>
 
         <section aria-labelledby="exp-board-title">
@@ -87,7 +111,7 @@
           </table></div>
         </section>
 
-        <details id="exp-log" open><summary title="Settings switched in on this coin, newest first.">Switches</summary><ol></ol></details>
+        <details id="exp-log" open><summary title="Settings switched in on this coin, newest first, each with the two estimates it was decided on.">Switches</summary><ol></ol></details>
       </div>
     </div>
 

@@ -13,8 +13,8 @@
 import { JupiterFeed, JUPITER_ENDPOINTS } from './feed.js';
 import { SecondBars, realizedVolBps } from './scalp-indicators.js';
 import { SCALP_MODEL, HORIZON_S, readSlopes, SlopeHistory, SlopeScore, SCORE_HORIZONS, cone, ScoreBook, payoutPercent, bustFraction } from './scalp-model.js';
-import { SCALP_EXPERIMENTS, VARIANTS, HORIZONS, DEFAULT_ASSIGNMENTS, PROMOTION, ExperimentBook, variantById, validAssignments, readSlots, weightedCall,
-  findPromotions, leaderboard } from './scalp-experiments.js';
+import { SCALP_EXPERIMENTS, VARIANTS, KINDS, HORIZONS, DEFAULT_ASSIGNMENTS, PROMOTION, RULES, WARMUP_BARS, ExperimentBook, CallTally, variantById, validAssignments,
+  readSlots, weightedCall, measuredFor, findPromotions, leaderboard } from './scalp-experiments.js';
 import { ExitGuard, parseLevel, parseDistance, resolveLevels, priceLike, positionKey, quoteFresh } from './exit-guard.js';
 import { EntryTracker, validateEntry } from './entry-plan.js';
 import { POWERED_BY } from '../jupiter/attribution.js';
@@ -86,10 +86,11 @@ const clock = ms => new Date(ms).toLocaleTimeString(undefined, { hour12: false }
 const windowLabel = seconds => seconds >= 60 && seconds % 60 === 0 ? `${seconds / 60}m` : `${seconds}s`;
 
 const seconds = new SecondBars(), book = new ScoreBook(), slopeHistory = new SlopeHistory(), slopeScore = new SlopeScore();
-const experiments = new ExperimentBook();
-// Which setting each tile of the grid uses. The Experiments tab may switch a clear winner in.
-let assignments = { ...DEFAULT_ASSIGNMENTS }, slotLocks = {}, tuneLog = [], autoApply = true, activeTab = 'live';
-let experimentsSavedMs = Date.now(), experimentsDrawnMs = 0, rankHorizon = HORIZON_S, boardOrder = '', forgetArmedMs = 0;
+const experiments = new ExperimentBook(), tally = new CallTally();
+// Which setting each tile of the grid uses, the rule that changes it, and whether a reading under 50% votes the other way.
+let assignments = { ...DEFAULT_ASSIGNMENTS }, slotLocks = {}, tuneLog = [], switchRule = PROMOTION.rule, inverseVotes = false, activeTab = 'live';
+let experimentsSavedMs = Date.now(), experimentsDrawnMs = 0, rankHorizon = HORIZON_S, kindFilter = '', boardOrder = '', forgetArmedMs = 0;
+const LOG_KEPT = 200, LOG_SHOWN = 30;
 /** The oracle clock of the last closed bar, which is what the switch rule's locks are kept in. */
 const barClock = () => seconds.bars.at(-1)?.time ?? Math.floor(Date.now() / 1000);
 /** Distance from entry to the bust (1000x) or to the estimated liquidation (Perps), in basis points. */
@@ -118,7 +119,6 @@ function stopMarginErrors(position, stopLoss) {
   const room = Math.abs(stopLoss - position.bust) / position.entry * 1e4;
   return room < MAX_BASIS_BPS ? [`Stop loss is only ${room.toFixed(0)} bp from the liquidation price. Keep it at least ${MAX_BASIS_BPS} bp inside, because the levels are judged on the oracle price, not the page’s mark price.`] : [];
 }
-const warmupBars = () => Math.max(...Object.values(assignments).map(id => variantById(id).need));
 const emptyTiles = () => readSlots(assignments, new Map(), 0);
 const guard = new ExitGuard(), entry = new EntryTracker(), events = [];
 let feed, latest = null, lastQuoteMs = 0, view = null, disposed = false, drawQueued = false, barsVersion = 0, drawnVersion = -1;
@@ -219,14 +219,16 @@ const pct = value => `${(value * 100).toFixed(1)}%`;
 const CALL_AT = HORIZONS.indexOf(HORIZON_S);
 const tone = rate => rate >= 0.52 ? 'up' : rate <= 0.48 ? 'down' : 'flat';
 /** The hover text of a tile: what it measures, how it votes, its record and its say in the call. */
-function tileHelp(tile, share) {
+function tileHelp(tile, share, inverted = false) {
   const recorded = variantById(tile.variant).prior[CALL_AT], live = experiments.stats(tile.variant);
   const record = (numeric(recorded) ? ` On the recording, following it over the next 30 seconds was right ${pct(recorded)} of the time.` : '')
     + (live.rate === null ? ' None of its own calls has settled yet in live testing.'
       : ` In live testing it has been right ${pct(live.rate)} of the time, over about ${Math.max(1, Math.round(live.eff))} independent calls’ worth of seconds.`);
-  const say = numeric(share) ? ` Its say in the call right now: ${Math.round(share * 100)}%${share === 0 ? ', because its hit rate is not above 50%' : ''}.` : '';
+  const say = numeric(share) ? ` Its say in the call right now: ${Math.round(share * 100)}%${share === 0 ? (inverseVotes ? ', because its hit rate is at 50%' : ', because its hit rate is not above 50%') : ''}.` : '';
+  const turned = inverted ? ' Its hit rate is under 50%, so its vote counts the other way in the call (marked ⇄): inverse votes are on in the Experiments tab.' : '';
   const tuned = tile.tuned ? ' The Experiments tab switched this setting in for the starting one (marked ★).' : '';
-  return `${tile.label}. ${tile.describe} It votes up (green) when the reading is positive and down (red) when negative; grey is neutral.${record}${say}${tuned} Needs ${tile.need} closed one-second bars.`;
+  const waiting = tile.waiting ? ` ${variantById(tile.waiting).label} is chosen for this tile and takes over once the window has its ${variantById(tile.waiting).need} bars.` : '';
+  return `${tile.label}. ${tile.describe} It votes up (green) when the reading is positive and down (red) when negative; grey is neutral.${record}${say}${turned}${tuned}${waiting} Needs ${tile.need} closed one-second bars.`;
 }
 function buildTiles() {
   for (const slot of SCALP_EXPERIMENTS.slots) {
@@ -254,13 +256,14 @@ function drawTiles() {
   const tiles = view?.tiles ?? emptyTiles(), call = view?.call, weights = call?.ready ? call.weights : null;
   const top = weights ? Math.max(...weights) : 0;
   for (const [index, tile] of tiles.entries()) {
-    const { node, name, value, weight, cells } = tileNodes.get(tile.key), share = weights ? weights[index] : null;
+    const { node, name, value, weight, cells } = tileNodes.get(tile.key), share = weights ? weights[index] : null, inverted = Boolean(weights && call.inverted[index]);
     node.dataset.vote = voteName(tile.ready ? tile.vote : null);
     node.toggleAttribute('data-tuned', tile.tuned);
-    name.textContent = tile.tuned ? `${tile.label} ★` : tile.label;
+    node.toggleAttribute('data-inverted', inverted);
+    name.textContent = `${tile.label}${tile.tuned ? ' ★' : ''}${inverted ? ' ⇄' : ''}`;
     value.textContent = tileText(tile);
     weight.style.width = `${share !== null && top > 0 ? Math.round(share / top * 100) : 0}%`;
-    node.title = tileHelp(tile, share);
+    node.title = tileHelp(tile, share, inverted);
     for (const [i, horizon] of SCORE_HORIZONS.entries()) {
       const score = experiments.stats(tile.variant, horizon), cell = cells[i], label = windowLabel(horizon), shown = score.rate !== null && score.n >= 10;
       cell.textContent = shown ? String(Math.round(score.rate * 100)) : '·';
@@ -268,7 +271,7 @@ function drawTiles() {
       cell.title = shown ? `${label}: following ${tile.label} was right ${Math.round(score.rate * 100)}% of the time over the next ${label} (about ${Math.round(score.n)} calls counted, recent ones weighing most; seconds overlap).`
         : `${label}: too few ${tile.label} calls have settled at this interval yet.${numeric(score.prior) ? ` On the recording it was right ${pct(score.prior)} of the time.` : ''}`;
     }
-    node.setAttribute('aria-label', `${tile.label}: ${tile.ready ? `${voteName(tile.vote)}, ${tileText(tile)}` : 'warming up'}. ${tile.describe}`);
+    node.setAttribute('aria-label', `${tile.label}: ${tile.ready ? `${voteName(tile.vote)}, ${tileText(tile)}` : 'warming up'}${inverted ? ', counted the other way' : ''}. ${tile.describe}`);
   }
   $('tiles-count').textContent = call ? `${call.up} up · ${call.down} down · ${call.flat} flat` : '';
   const switched = tiles.filter(tile => tile.tuned).length;
@@ -333,7 +336,7 @@ function drawGauge(cell, score, row) {
 }
 
 function drawCall(live) {
-  const section = $('call'), call = view?.call, have = seconds.bars.length, need = warmupBars();
+  const section = $('call'), call = view?.call, have = seconds.bars.length, need = WARMUP_BARS;
   const percent = stat => `${(stat.hit * 100).toFixed(1)}%`;
   // The only sample that played no part in choosing the grid; short, so it carries its error bar.
   const liveCheck = stat => stat.live ? ` On a separate short live check: ${percent(stat.live)} ± ${(stat.live.hit_se * 100).toFixed(1)}.` : '';
@@ -349,7 +352,8 @@ function drawCall(live) {
     detail = `One-second bars come only from the live stream, so the grid needs ${need} seconds after opening or after a gap.`;
   } else {
     ({ direction, tier } = call);
-    const score = `${signed(call.score * 100, 0)}%`, basis = 'On the later part of the recording, replayed without looking ahead, a weighted call like this';
+    const score = `${signed(call.score * 100, 0)}%`, replayed = call.inverse ? (switchRule === 'best' ? ' with the same switch rule and inverse votes' : ' with inverse votes and no switching') : switchRule === 'off' ? '' : ' with the same switch rule';
+    const basis = `On the later part of the recording, replayed without looking ahead${replayed}, a weighted call like this`;
     if (tier === 'mixed') {
       mark = '◆'; text = 'MIXED';
       detail = `Readings disagree once weighed (${call.up} up, ${call.down} down, weighted score ${score}). `
@@ -363,14 +367,15 @@ function drawCall(live) {
       const breakout = view.tiles.find(tile => tile.kind === 'breakout' && tile.vote && (tile.vote > 0) === (direction === 'up'));
       if (breakout) detail += ` ${breakout.label} is in play; breakouts have the best record and the most say.`;
     }
-    const switched = view.tiles.filter(tile => tile.tuned).length;
-    if (switched) detail += ` ${switched} reading${switched === 1 ? ' uses' : 's use'} a setting the Experiments tab switched in; the recorded figures were measured on the starting settings, so read them as a guide.`;
+    const switched = view.tiles.filter(tile => tile.tuned).length, turned = call.inverted.filter(Boolean).length;
+    if (switched) detail += ` ${switched} reading${switched === 1 ? ' uses' : 's use'} a setting the Experiments tab switched in.`;
+    if (turned) detail += ` ${turned} reading${turned === 1 ? ' is' : 's are'} under 50% and vote${turned === 1 ? 's' : ''} the other way.`;
     if (numeric(view.sigma)) detail += ` Typical 30 s move now: ±${(SCALP_MODEL.cone.p50 * view.sigma * Math.sqrt(HORIZON_S)).toFixed(1)} bp.`;
   }
   section.dataset.direction = direction; section.dataset.tier = tier;
   $('call-arrow').textContent = mark; $('call-text').textContent = text;
   // The explanation lives in the hover text; the line under the call keeps only the numbers.
-  section.title = `${detail} The call weighs each of the sixteen readings by how far its running 30 second hit rate is above 50%; a reading at or under 50% has no say. `
+  section.title = `${detail} The call weighs each of the sixteen readings by how far its running 30 second hit rate is ${inverseVotes ? 'from 50%; a reading under 50% votes the other way' : 'above 50%; a reading at or under 50% has no say'}. `
     + 'A weighted score of 75% or more one way is strong, 37.5% or more is a lean, less is mixed. '
     + (VIEW_ONLY ? 'It is a lean: the average move after a strong call was under one basis point on the recording, less than the fees to open and close a Perps position (about 7 bp of position size on HYPE and ZEC, more on SOL, ETH and BTC). The figures were measured on the 1000x oracle price, not on the Perps mark price.'
       : 'It is a lean: the 1000x payout needs a hit rate far above these figures.');
@@ -385,7 +390,7 @@ function drawCall(live) {
 
 /* ------------------------------------------------------------ experiments -- */
 
-const boardRows = new Map(), slotRows = new Map();
+const boardRows = new Map(), slotRows = new Map(), inverseRows = new Map();
 const element = (tag, text = '', title = '') => { const node = document.createElement(tag); node.textContent = text; if (title) node.title = title; return node; };
 /** A hit-rate cell: filled when enough live calls have settled, plain coloured text when it is the recorded rate. */
 function hitCell(cell, stats, horizon, label) {
@@ -401,6 +406,13 @@ function buildExperiments() {
   const select = $('exp-horizon');
   for (const horizon of HORIZONS) { const option = element('option', windowLabel(horizon)); option.value = String(horizon); select.append(option); }
   select.value = String(rankHorizon);
+  const all = element('option', `All readings (${VARIANTS.length})`); all.value = ''; $('exp-kind').append(all);
+  for (const row of KINDS) { const option = element('option', `${row.name} (${row.count})`); option.value = row.kind; $('exp-kind').append(option); }
+  for (const [name, label] of [['sitout', 'Sit out'], ['inverse', 'Vote the other way']]) {
+    const tr = document.createElement('tr'), head = element('th', label); head.scope = 'row';
+    const cells = Object.fromEntries(['strong', 'called', 'recorded', 'check'].map(key => [key, document.createElement('td')]));
+    tr.append(head, ...Object.values(cells)); $('exp-inverse-table').tBodies[0].append(tr); inverseRows.set(name, { tr, head, label, cells });
+  }
   const head = $('exp-board').tHead.rows[0];
   for (const horizon of HORIZONS) {
     const th = element('th', windowLabel(horizon), `Hit rate, in percent, of following the setting over the next ${windowLabel(horizon)}. Filled cells are live results; plain coloured numbers are from the recording until enough live calls settle.`);
@@ -418,6 +430,37 @@ function buildExperiments() {
     tr.append(head, ...Object.values(cells)); $('exp-slots').tBodies[0].append(tr); slotRows.set(slot.key, { tr, cells });
   }
 }
+/** A live cell of the inverse-vote table: the rate, its tone and the calls behind it. */
+function tallyCell(cell, stats, what) {
+  const shown = stats.rate !== null && stats.n >= 30;
+  cell.textContent = shown ? `${Math.round(stats.rate * 100)}% · ${Math.round(stats.n)}` : stats.n >= 1 ? `· ${Math.round(stats.n)}` : '—';
+  cell.dataset.vote = shown ? tone(stats.rate) : 'warming';
+  cell.title = shown ? `${what}: right ${pct(stats.rate)} of the time over the next 30 seconds on this coin (about ${Math.round(stats.n)} calls counted, worth about ${Math.max(1, Math.round(stats.eff))} independent ones; recent calls weigh most).`
+    : `${what}: ${Math.round(stats.n)} calls have settled so far. A rate is shown after 30.`;
+  cell.setAttribute('aria-label', shown ? `${Math.round(stats.rate * 100)} percent over ${Math.round(stats.n)} calls` : `no rate yet, ${Math.round(stats.n)} calls settled`);
+}
+function drawInverse(tiles) {
+  const live = tally.stats(), turned = view?.call?.ready ? null : [];
+  for (const [name, row] of inverseRows) {
+    const inverse = name === 'inverse', inUse = inverse === inverseVotes, measured = measuredFor({ rule: switchRule, inverse });
+    row.tr.toggleAttribute('data-in-use', inUse);
+    row.head.textContent = inUse ? `● ${row.label}` : row.label;
+    row.head.title = inverse ? 'A reading whose hit rate is under 50% votes the other way, counting by how far under 50% it is.' : 'A reading whose hit rate is at or under 50% has no say in the call.';
+    tallyCell(row.cells.strong, live[name].strong, `${row.label}, strong calls`);
+    tallyCell(row.cells.called, live[name].called, `${row.label}, strong and lean calls`);
+    const strong = measured.strong;
+    row.cells.recorded.textContent = strong ? `${pct(strong.hit)} · ${Math.round(strong.share * 100)}% of seconds` : '—';
+    row.cells.recorded.title = strong ? `Replayed on the later part of the base recording with the ${switchRule === 'best' ? 'highest-hit-rate' : switchRule === 'clear' ? 'cautious' : 'no-switch'} rule${inverse && switchRule === 'clear' ? ' (the figure is for no switching: this pair was not replayed)' : ''}: strong calls were right ${pct(strong.hit)} of the time and came on ${Math.round(strong.share * 100)}% of seconds, with an average move of ${signed(strong.mean_follow_bps, 2)} bp.` : 'Too rare on the recording to measure.';
+    row.cells.check.textContent = strong?.live ? `${pct(strong.live.hit)} ± ${(strong.live.hit_se * 100).toFixed(1)}` : '—';
+    row.cells.check.title = strong?.live ? 'The same on a separate 43 minute live recording of five markets. Its error is several points, so it cannot tell 54% from 50%.' : 'No live check.';
+  }
+  // Which readings the inverse aggregate is turning round at this moment.
+  const names = tiles.filter(tile => tile.ready && experiments.blended(tile.variant) < 0.5).map(tile => `${tile.label} (${Math.round(experiments.blended(tile.variant) * 100)}%)`);
+  const wrong = SCALP_EXPERIMENTS.usually_wrong;
+  const recorded = wrong && numeric(wrong.inverse_hit_later) ? ` On the recording ${wrong.settings} of ${wrong.of} settings were under 50% on the first part${numeric(wrong.lowest_hit) ? `, the lowest at ${pct(wrong.lowest_hit)}` : ''}; betting against those afterwards was right ${pct(wrong.inverse_hit_later)} ± ${(wrong.se * 100).toFixed(1)} of the time.` : '';
+  const note = `${turned ? 'Warming up. ' : names.length ? `Under 50% now, so turned round by the inverse vote: ${names.join(', ')}.` : 'No reading in use is under 50% now, so both give the same call.'}${recorded}`;
+  if ($('exp-inverse-note').textContent !== note) $('exp-inverse-note').textContent = note;
+}
 function drawExperiments() {
   experimentsDrawnMs = Date.now();
   const tiles = view?.tiles ?? emptyTiles(), weights = view?.call?.ready ? view.call.weights : null, inUse = new Set(Object.values(assignments));
@@ -427,28 +470,42 @@ function drawExperiments() {
   // A status region is announced when it changes, so it is written only then.
   if ($('exp-status').textContent !== status) $('exp-status').textContent = status;
   // What the switch rule itself would do at this moment, so the table never says otherwise.
-  const pending = new Map(findPromotions({ assignments, book: experiments, locks: slotLocks, nowS: barClock() }).map(change => [change.slot, change.to]));
-  $('exp-auto').checked = autoApply;
+  const pending = new Map(findPromotions({ assignments, book: experiments, locks: slotLocks, nowS: barClock(), rule: switchRule }).map(change => [change.slot, change.to]));
+  $('exp-rule').value = switchRule; $('exp-inverse').value = inverseVotes ? 'on' : 'off'; $('exp-kind').value = kindFilter;
+  const best = switchRule === 'best';
   for (const [index, tile] of tiles.entries()) {
     const { tr, cells } = slotRows.get(tile.key), stats = experiments.stats(tile.variant), share = weights ? weights[index] : null;
     tr.toggleAttribute('data-tuned', tile.tuned);
-    cells.setting.textContent = tile.tuned ? `${tile.label} ★` : tile.label;
-    cells.setting.title = tile.tuned ? `Switched in for ${variantById(DEFAULT_ASSIGNMENTS[tile.key]).label}, the starting setting.` : 'The starting setting.';
-    cells.weight.textContent = share === null ? '—' : `${Math.round(share * 100)}%`;
+    cells.setting.textContent = tile.waiting ? `${tile.label} · ${variantById(tile.waiting).label} at ${variantById(tile.waiting).need} bars` : tile.tuned ? `${tile.label} ★` : tile.label;
+    cells.setting.title = tile.waiting ? `${variantById(tile.waiting).label} is chosen for this tile and takes over once the window has its ${variantById(tile.waiting).need} bars. Until then the tile reads the starting setting.`
+      : tile.tuned ? `Switched in for ${variantById(DEFAULT_ASSIGNMENTS[tile.key]).label}, the starting setting.` : 'The starting setting.';
+    cells.weight.textContent = share === null ? '—' : `${Math.round(share * 100)}%${view.call.inverted[index] ? ' ⇄' : ''}`;
+    cells.weight.title = share !== null && view.call.inverted[index] ? 'Its hit rate is under 50%, so its vote counts the other way.' : '';
     hitCell(cells.live, { ...stats, prior: null }, HORIZON_S, tile.label);
     cells.recorded.textContent = numeric(stats.prior) ? pct(stats.prior) : '—';
     // The setting the rule is about to switch in, else the unused one of the same kind with the best current estimate.
-    const rival = board.find(row => row.id === pending.get(tile.key)) ?? board.find(row => row.kind === tile.kind && !inUse.has(row.id) && variantById(row.id).need <= PROMOTION.maxNeed);
+    // A tile still reading its starting setting, while the chosen one gathers bars, does not list that starting setting as a rival.
+    const rival = board.find(row => row.id === pending.get(tile.key)) ?? board.find(row => row.kind === tile.kind && !inUse.has(row.id) && row.id !== tile.variant);
     if (!rival) { cells.rival.textContent = '—'; cells.rival.title = 'No other setting of this kind can take this slot.'; continue; }
     const short = rival.eff < PROMOTION.minEff || stats.eff < PROMOTION.minEff, clear = pending.get(tile.key) === rival.id;
-    cells.rival.textContent = rival.rate === null ? `${rival.label} · no live calls yet`
-      : `${rival.label} · ${Math.round(rival.rate * 100)}%${clear ? (autoApply ? ' · clear winner, switching' : ' · clear winner') : short ? ' · needs more calls' : ' · not clearly ahead'}`;
-    cells.rival.title = `${rival.label}: ${rival.rate === null ? 'no live calls yet' : `right ${pct(rival.rate)} live over about ${Math.round(rival.eff)} independent calls’ worth; its cautious estimate is ${pct(rival.lower)}`}. `
-      + `It takes this slot when both it and the setting in use have ${PROMOTION.minEff} independent calls’ worth, its cautious estimate is above the setting in use’s live rate, it is at least ${Math.round(PROMOTION.minRate * 100)}% right, the recording does not say the opposite, and the slot has not changed in the last ${PROMOTION.lockS / 60} minutes. Settings that need more than ${PROMOTION.maxNeed} bars are tested but never switched in.`;
+    const mine = experiments.blended(assignments[tile.key]);
+    const held = PROMOTION.bestLockS - (barClock() - (slotLocks[tile.key] ?? -Infinity));
+    const unknown = rival.eff < PROMOTION.bestMinEff || experiments.stats(assignments[tile.key]).eff < PROMOTION.bestMinEff;
+    cells.rival.textContent = best ? `${rival.label} · ${pct(rival.blended)}${clear ? ' · higher, switching' : unknown ? ' · needs more calls' : held > 0 ? ` · tile holds ${Math.ceil(held / 60)} min more` : ' · not a point higher'}`
+      : rival.rate === null ? `${rival.label} · no live calls yet`
+        : `${rival.label} · ${Math.round(rival.rate * 100)}%${clear ? (switchRule === 'clear' ? ' · clear winner, switching' : ' · clear winner') : short ? ' · needs more calls' : ' · not clearly ahead'}`;
+    cells.rival.title = best ? `${rival.label}: current estimate ${pct(rival.blended)} over the next 30 seconds, against ${pct(mine)} for the setting this tile has chosen. `
+        + `The estimate is the live hit rate, pulled toward the recorded one (the recording counts as ${SCALP_EXPERIMENTS.prior_seconds} calls). The tile takes the unused setting of its kind with the highest estimate when that is at least ${Math.round(PROMOTION.bestMargin * 100)} point above its own, once both have ${PROMOTION.bestMinEff} independent calls’ worth (at least ${PROMOTION.bestMinEff * HORIZON_S / 60} minutes of ticks), and then keeps it for ${PROMOTION.bestLockS / 60} minutes. The window looks every ${PROMOTION.everyS} seconds.`
+      : `${rival.label}: ${rival.rate === null ? 'no live calls yet' : `right ${pct(rival.rate)} live over about ${Math.round(rival.eff)} independent calls’ worth; its cautious estimate is ${pct(rival.lower)}`}. `
+        + `Under the cautious rule it takes this slot when both it and the setting in use have ${PROMOTION.minEff} independent calls’ worth, its cautious estimate is above the setting in use’s live rate, it is at least ${Math.round(PROMOTION.minRate * 100)}% right, the recording does not say the opposite, and the slot has not changed in the last ${PROMOTION.lockS / 60} minutes.`;
   }
+  drawInverse(tiles);
   const ranked = rankHorizon === HORIZON_S ? board : leaderboard(experiments, rankHorizon), order = ranked.map(row => row.id).join(' '), body = $('exp-board').tBodies[0];
   for (const row of ranked) {
-    const node = boardRows.get(row.id), variant = variantById(row.id);
+    const node = boardRows.get(row.id), variant = variantById(row.id), hidden = Boolean(kindFilter) && variant.kind !== kindFilter;
+    node.tr.hidden = hidden;
+    // Hidden rows are not redrawn: with one kind shown, a refresh touches tens of rows, not hundreds.
+    if (hidden) continue;
     node.tr.toggleAttribute('data-in-use', inUse.has(row.id));
     node.name.textContent = inUse.has(row.id) ? `● ${variant.label}` : variant.label;
     for (const [i, horizon] of HORIZONS.entries()) hitCell(node.cells[i], experiments.stats(row.id, horizon), horizon, variant.label);
@@ -458,9 +515,9 @@ function drawExperiments() {
   if (order !== boardOrder) { boardOrder = order; body.replaceChildren(...ranked.map(row => boardRows.get(row.id).tr)); }
   for (const th of $('exp-board').tHead.rows[0].cells) th.toggleAttribute('data-rank', th.dataset.horizon === String(rankHorizon));
   const list = $('exp-log').querySelector('ol');
-  list.replaceChildren(...tuneLog.slice(-20).reverse().map(entry => element('li',
+  list.replaceChildren(...tuneLog.slice(-LOG_SHOWN).reverse().map(entry => element('li',
     `${clock(entry.at)} ${variantById(entry.from).kindName}: ${variantById(entry.from).label} → ${variantById(entry.to).label}`
-    + (numeric(entry.rate) && numeric(entry.incumbentRate) ? ` (${Math.round(entry.rate * 100)}% against ${Math.round(entry.incumbentRate * 100)}% live)` : ''))));
+    + (numeric(entry.rate) && numeric(entry.incumbentRate) ? ` (${pct(entry.rate)} against ${pct(entry.incumbentRate)})` : ''))));
   if (!tuneLog.length) list.append(element('li', 'No setting has been switched yet.'));
 }
 function showTab(name) {
@@ -471,16 +528,15 @@ function showTab(name) {
   }
   if (name === 'experiments') drawExperiments(); else { drawRibbon(); queueDraw(); }
 }
-/** Switch in every setting that is clearly ahead of the one its tile uses. */
+/** Apply the chosen switch rule: by default a tile takes the setting of its kind with the highest hit rate, once both are known and it is a point ahead. */
 function tune(nowS) {
-  if (!autoApply) return;
-  const changes = findPromotions({ assignments, book: experiments, locks: slotLocks, nowS });
+  const changes = findPromotions({ assignments, book: experiments, locks: slotLocks, nowS, rule: switchRule });
   for (const change of changes) {
     assignments = { ...assignments, [change.slot]: change.to };
     slotLocks[change.slot] = nowS;
     tuneLog.push({ at: Date.now(), slot: change.slot, from: change.from, to: change.to, rate: change.rate, incumbentRate: change.incumbentRate });
   }
-  if (changes.length) { tuneLog = tuneLog.slice(-50); void saveExperiments(); }
+  if (changes.length) { tuneLog = tuneLog.slice(-LOG_KEPT); void saveExperiments(); }
 }
 /**
  * Keep what live testing has learned for this coin, so the next window carries on from it.
@@ -491,18 +547,24 @@ async function saveExperiments() {
   experimentsSavedMs = Date.now();
   if (!SYMBOL_OK) return;
   try {
-    await chrome.storage.local.set({ [coinKey()]: { savedAt: Date.now(), book: experiments.toJSON(), assignments, log: tuneLog.slice(-50) }, [EXPERIMENT_STORAGE]: { auto: autoApply } });
+    await chrome.storage.local.set({ [coinKey()]: { savedAt: Date.now(), book: experiments.toJSON(), tally: tally.toJSON(), assignments, log: tuneLog.slice(-LOG_KEPT) },
+      [EXPERIMENT_STORAGE]: { rule: switchRule, inverse: inverseVotes } });
   } catch { /* learning is a convenience: the read-outs and the guard run without it */ }
 }
 async function loadExperiments() {
   try {
     const stored = await chrome.storage.local.get(SYMBOL_OK ? [EXPERIMENT_STORAGE, coinKey()] : [EXPERIMENT_STORAGE]);
     const shared = stored[EXPERIMENT_STORAGE], coin = SYMBOL_OK ? stored[coinKey()] : null;
-    autoApply = !(shared && typeof shared === 'object' && shared.auto === false);
-    // Saved rates that do not fit this version's grid are dropped, and the settings chosen from them with them.
+    // A choice saved before there were two rules: "off" stays off, and "on" becomes the default rule.
+    if (shared && typeof shared === 'object') {
+      switchRule = RULES.includes(shared.rule) ? shared.rule : shared.auto === false ? 'off' : PROMOTION.rule;
+      inverseVotes = shared.inverse === true;
+    }
+    // Saved rates are carried over setting by setting; a record that cannot be read is dropped, and the settings chosen from it with it.
     if (!coin || typeof coin !== 'object' || !experiments.restore(coin.book)) return;
+    tally.restore(coin.tally);
     assignments = validAssignments(coin.assignments);
-    tuneLog = (Array.isArray(coin.log) ? coin.log : []).filter(entry => entry && numeric(entry.at) && variantById(entry.from) && variantById(entry.to)).slice(-50)
+    tuneLog = (Array.isArray(coin.log) ? coin.log : []).filter(entry => entry && numeric(entry.at) && variantById(entry.from) && variantById(entry.to)).slice(-LOG_KEPT)
       .map(entry => ({ at: entry.at, slot: String(entry.slot).slice(0, 24), from: entry.from, to: entry.to, rate: numeric(entry.rate) ? entry.rate : null, incumbentRate: numeric(entry.incumbentRate) ? entry.incumbentRate : null }));
   } catch { /* start from the recorded rates */ }
 }
@@ -951,7 +1013,12 @@ function onClosed(count) {
     const prefix = k === 1 ? bars : bars.slice(0, bars.length - k + 1);
     const bar = prefix.at(-1), readings = experiments.observe(prefix);
     if (bar.time % PROMOTION.everyS === 0) tune(bar.time);
-    const tiles = readSlots(assignments, readings, prefix.length), call = weightedCall(tiles, experiments), slopes = readSlopes(prefix);
+    const tiles = readSlots(assignments, readings, prefix.length), slopes = readSlopes(prefix);
+    // Both aggregates are made every second from the same tiles, so the inverse-vote experiment never stops; one of them is the call.
+    const sitout = weightedCall(tiles, experiments, { measured: measuredFor({ rule: switchRule }) });
+    const inverse = weightedCall(tiles, experiments, { inverse: true, measured: measuredFor({ rule: switchRule, inverse: true }) });
+    const call = inverseVotes ? inverse : sitout;
+    tally.observe(bar, { sitout, inverse });
     book.observe(bar, call);
     slopeHistory.observe(slopes);
     slopeScore.observe(bar, slopes);
@@ -970,11 +1037,11 @@ function onUpdate(snapshot) {
     handleGuard(guard.onQuote(quote, Date.now()));
     try {
       const closed = seconds.push(quote);
-      if (closed === -1) { book.reset(); slopeHistory.reset(); slopeScore.reset(); experiments.reset(); view = null; barsVersion++; }
+      if (closed === -1) { book.reset(); slopeHistory.reset(); slopeScore.reset(); experiments.reset(); tally.reset(); view = null; barsVersion++; }
       else if (closed > 0) onClosed(closed);
       readoutError = '';
     } catch (error) {
-      seconds.reset(); book.reset(); slopeHistory.reset(); slopeScore.reset(); experiments.reset(); view = null; barsVersion++;
+      seconds.reset(); book.reset(); slopeHistory.reset(); slopeScore.reset(); experiments.reset(); tally.reset(); view = null; barsVersion++;
       readoutError = `The read-out failed and restarted (${String(error?.message ?? error).slice(0, 80)}). The guard is unaffected.`;
     }
     // Quotes keep arriving in a hidden window where timers are throttled; use them as the clock too.
@@ -1089,10 +1156,13 @@ for (const tab of ['live', 'experiments']) {
     showTab(other); $(`tab-${other}`).focus();
   });
 }
-$('exp-auto').addEventListener('change', () => { autoApply = $('exp-auto').checked; void saveExperiments(); });
+$('exp-rule').addEventListener('change', () => { switchRule = RULES.includes($('exp-rule').value) ? $('exp-rule').value : PROMOTION.rule; void saveExperiments(); drawExperiments(); });
+// The call changes with this choice, so the session score starts again: it must not mix the two.
+$('exp-inverse').addEventListener('change', () => { inverseVotes = $('exp-inverse').value === 'on'; book.reset(); void saveExperiments(); drawExperiments(); queueDraw(); });
+$('exp-kind').addEventListener('change', () => { kindFilter = KINDS.some(row => row.kind === $('exp-kind').value) ? $('exp-kind').value : ''; drawExperiments(); });
 $('exp-horizon').addEventListener('change', () => { rankHorizon = HORIZONS.includes(Number($('exp-horizon').value)) ? Number($('exp-horizon').value) : HORIZON_S; drawExperiments(); });
 $('exp-defaults').addEventListener('click', () => {
-  // Back to the starting settings; each tile is then left alone for the usual lock time.
+  // Back to the starting settings; each tile is then left alone for the chosen rule's hold time.
   const nowS = barClock();
   assignments = { ...DEFAULT_ASSIGNMENTS }; slotLocks = Object.fromEntries(Object.keys(assignments).map(key => [key, nowS]));
   view = null; barsVersion++; void saveExperiments(); drawExperiments(); queueDraw();
@@ -1104,7 +1174,7 @@ $('exp-forget').addEventListener('click', event => {
   if (event.detail > 1 || (forgetArmedMs && now - forgetArmedMs < 600)) return;
   if (now - forgetArmedMs > 4000) { forgetArmedMs = now; button.textContent = 'Press again to forget'; setTimeout(() => { if (Date.now() - forgetArmedMs >= 4000) button.textContent = 'Forget results'; }, 4100); return; }
   forgetArmedMs = 0; button.textContent = 'Forget results';
-  experiments.clear(); assignments = { ...DEFAULT_ASSIGNMENTS }; slotLocks = {}; tuneLog = [];
+  experiments.clear(); tally.clear(); assignments = { ...DEFAULT_ASSIGNMENTS }; slotLocks = {}; tuneLog = [];
   view = null; barsVersion++; void saveExperiments(); drawExperiments(); queueDraw();
 });
 try {

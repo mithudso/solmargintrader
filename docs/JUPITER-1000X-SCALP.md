@@ -112,7 +112,7 @@ trade records.
 
 Each reading's say in the call is how far its hit rate over the next 30 seconds
 is above 50%, as a share of all sixteen edges. A reading at or under 50% has no
-say. The hit rate is the live one pulled toward the recorded one: the recording
+say, unless inverse votes are turned on in the Experiments tab. The hit rate is the live one pulled toward the recorded one: the recording
 counts as 300 calls, so a new window starts on the recorded rates and live
 results take over within minutes. The weighted score is the sum of each
 reading's say times its vote, from −100% to +100%.
@@ -127,7 +127,9 @@ learned only from earlier seconds, starting rates from the first 60%):
 | --- | --- | --- | --- |
 | One reading, one vote (the earlier call) | 53.3% ± 1.5, 34%, +0.77 bp | 50.7% ± 1.4 | 49.3% ± 1.9 |
 | Weighted | 54.4% ± 2.0, 20%, +0.90 bp | 51.8% ± 1.4 | 50.0% ± 1.4 |
-| Weighted, with winners switched in | 54.4% ± 1.9, 22%, +0.87 bp | 51.8% ± 1.4 | 50.2% ± 1.4 |
+| Weighted, clear winners switched in (the cautious rule) | 54.4% ± 1.9, 23%, +0.86 bp | 51.8% ± 1.4 | 50.1% ± 1.5 |
+| Weighted, highest hit rate switched in (the default) | 55.1% ± 1.9, 23%, +0.78 bp | 51.6% ± 1.4 | 50.0% ± 1.5 |
+| Weighted, readings under 50% voting the other way | 54.6% ± 2.3, 15%, +0.70 bp | 51.5% ± 1.5 | 50.6% ± 1.3 |
 
 Weighting gained about one point and calls "strong" less often. That gain is
 within one standard error, and on the 43 minute live check there was no visible
@@ -149,11 +151,22 @@ scores every second.
 The second tab keeps testing other settings of every reading, all the time the
 window is open, on the same live ticks.
 
-- **What is tested.** 79 settings: momentum over 1 to 120 seconds, breakouts of
-  10 seconds to 5 minutes, slopes of 5 seconds to 5 minutes, RSI 5 to 60, Z-score
-  10 to 300, range position, efficiency, balance of power, ZigZag thresholds of
-  0.5 to 5 bp, four MACD speeds, three Parabolic SAR and six Supertrend settings,
-  four EMA crosses and the Heikin-Ashi run.
+- **What is tested.** 380 settings of the sixteen readings. The readings with
+  the most parameters have the most settings:
+
+  | Reading | Settings | What is varied |
+  |---|---|---|
+  | MACD | 123 | 41 pairings of a fast average (3, 5, 8, 12, 16 or 20 s) with a slow one (10 to 90 s), each with a signal average of 5, 9 and 13 |
+  | EMA cross | 51 | Fast 2 to 30 s against slow 5 to 120 s |
+  | Parabolic SAR | 48 | Start and step each 0.005 to 0.05, cap 0.1, 0.2 or 0.4 |
+  | Supertrend | 40 | Range of 5 to 60 s, multiplier 1 to 4 |
+  | Momentum | 20 | 1 s to 5 min |
+  | Breakout | 14 | 5 s to 10 min |
+  | Slope, RSI, Z-score, range position, balance of power, ZigZag | 12 each | Windows of 2 s to 10 min; ZigZag 0.25 to 15 bp |
+  | Efficiency | 11 | 5 s to 5 min |
+  | Heikin-Ashi run | 1 | Has no setting |
+
+  A MACD row reads fast / slow / signal, a SAR row start / step / cap.
 - **At which intervals.** Each setting is scored at twelve: 3, 5, 10, 15, 20, 30,
   45, 60, 90 and 120 seconds, 3 and 5 minutes. These are not limited to the
   windows on the Live tab.
@@ -161,38 +174,97 @@ window is open, on the same live ticks.
   hit rate in percent. A filled cell is a live result. A plain coloured number is
   the figure from the recording, shown until about two intervals' worth of live
   calls have settled. Rows are ranked at the interval chosen in **Rank by**, best
-  current estimate first. ● marks a setting a tile uses.
+  current estimate first. ● marks a setting a tile uses. **Show** limits the
+  table to one reading, for example the 123 MACD rows.
 - **In use.** The sixteen tiles: the setting each one uses, its say in the call,
   its live and recorded hit rate at 30 seconds, and the best unused setting of
-  the same kind with what it still needs.
-- **Switch clear winners in** (on by default). Every 30 seconds the window looks
-  for a setting that is clearly ahead of the one a tile uses, and switches it in.
-  All of these must hold: it is the same kind of reading and no other tile uses
-  it; both settings have at least 40 independent calls' worth of settled 30
-  second calls (1,200 call-seconds, so at least 20 minutes); the challenger's
-  cautious estimate (the lower end of a 90% Wilson interval) is above the current
-  setting's live rate; the challenger is at least 52% right; and the recording
-  does not rank it below the current setting. A setting that needs more than 78
-  one-second bars (18 of the 79, such as a 5 minute breakout) is tested and
-  listed but never switched in, so the grid's warm-up never grows. A tile that
-  just changed is left alone for ten minutes. Each switch is listed under
-  **Switches**. **Best other** uses the same rule, so it says "clear winner"
-  only for a setting about to be switched in.
-- **Starting settings** puts every tile back. **Forget results** (two presses)
-  throws away what was learned for this coin.
+  the same kind with what the rule will do with it.
+- **Switch settings.** Three choices, kept for the next window:
+  - **Highest hit rate** (the default). A tile takes the unused setting of
+    its kind with the highest current estimate over the next 30 seconds when
+    that is at least 1 point above the estimate of the setting it has. Both
+    settings need 40 independent calls' worth of settled 30 second calls
+    first (1,200 call-seconds, so at least 20 minutes of ticks), and a tile
+    that changed keeps its setting for 30 minutes. The estimate is the live
+    hit rate, pulled toward the recorded one (the recording counts as 300
+    calls). Any setting may be chosen, however many bars it needs. The window
+    looks every 30 seconds; **Best other** says what it is waiting for.
+  - **Only when clearly ahead.** The earlier rule, which almost never
+    switches. Both settings need the same 40 independent calls' worth; the
+    challenger's cautious estimate (the lower end of a 90% Wilson interval)
+    must be above the current setting's live rate; the challenger must be at
+    least 52% right; the recording must not rank it below the current setting;
+    and a tile that just changed is left alone for ten minutes.
+  - **Never.** Tiles stay as they are.
 
-Switching changes only the read-outs. It never touches the order panel, an
-armed level or a press on the Jupiter page.
+  A setting never replaces another kind of reading, and no two tiles use the
+  same one. Each switch is listed under **Switches**.
+- **Warm-up.** The grid is ready 78 seconds after opening or after a feed
+  break, whatever is switched in. A chosen setting that needs more bars than
+  the window has (MACD 20 / 90 needs 270) leaves its tile on the starting
+  setting until it has them; **In use** says which setting is waiting.
+- **Readings under 50%.** **Sit out** (the default): a reading whose hit rate
+  is at or under 50% has no say in the call. **Vote the other way**: its vote
+  is turned round and counts by how far under 50% it is. A tile counted that
+  way is marked ⇄.
+- **Inverse-vote experiment.** Both versions of the call are made every second
+  from the same sixteen readings, whichever is in use, and each is scored
+  against the price 30 seconds later. The table shows the live hit rate of
+  each one's strong calls and of its strong and lean calls together on this
+  coin, beside what the replay of the recording gave. ● marks the one in use.
+  The line under it names the readings that are under 50% at that moment.
+- **Starting settings** puts every tile back; the tiles then stay on them for
+  the rule's hold time (30 minutes for **Highest hit rate**), so choose
+  **Never** to keep them longer. **Forget results** (two presses) throws away
+  what was learned for this coin, including the inverse-vote record.
 
-What to expect: switches are rare. The rule fired twice in the two-day base
-recording (Slope 60s to 5s, Momentum 60s to 3s) and never in the 43 minute live
-check, and the replay above shows it made no
-measurable difference to the call. Settings of one kind usually differ by a
-point or two, which takes hours of ticks to tell apart.
+Switching and inverse votes change only the read-outs. They never touch the
+order panel, an armed level or a press on the Jupiter page.
+
+What was learned by an earlier version of the grid is kept: a saved record is
+carried over setting by setting, and the new settings start from their recorded
+rates.
+
+What to expect from the default rule: a tile changes about once in seven
+hours of ticks, mostly early on, and the call is no better for it. Replayed on
+the later part of the base recording the rule changed a tile's setting 61
+times in 26 market-hours, tiles ran on a switched-in setting 89% of the time,
+and strong calls were right 55.1% ± 1.9 of the time against 54.4% ± 2.0 with no
+switching. On the two short live recordings it was 53.0% against 53.8%, and
+48.3% against 49.6%. None of those differences is larger than its error.
+
+The first version of this rule had no limits: it switched whenever another
+setting's estimate was higher. Replayed, that changed a tile 1,994 times in the
+same 26 hours, about five times per tile per hour, for the same result (54.7% ±
+1.9). The three limits were added to stop the churn, and
+[the study](../research/papers/SCALP-1S-STUDY.md) lists the six combinations
+that were replayed; they were chosen for calm, not for a higher score.
+
+Why it does not help: settings of one reading differ by a point or two over 30
+seconds (MACD 12 / 26 / 9 was right 50.5% of the time on the recording and the
+best of the 123 MACD settings 51.6%), and a hit rate measured over two hours of
+ticks is uncertain by more than that, so the highest of many rates is partly
+the luckiest. The setting a tile shows is the one that has done best lately,
+not one known to be better.
+
+What to expect from inverse votes: nothing to gain so far. Over 30 seconds no
+setting was reliably wrong. On the first 60% of the recording 26 of the 380
+were under 50%, the lowest at 48.9%, and betting against those on the rest was
+right 49.7% ± 0.9 of the time. Inside the call, turning under-50% readings
+round made strong calls 54.6% ± 2.3 on 15% of seconds against 54.4% ± 2.0 on
+20%; on the first live recording 49.7% ± 5.4 against 53.8% ± 4.7. Together
+with the default switch rule it was 55.1% on the recording, the same as
+without inverse votes, and 50.6% ± 5.3 and 44.3% ± 5.6 on the two live
+recordings. The live table is there to show if that changes.
+
+Processing: reading all 380 settings takes about one millisecond per second of
+ticks in the window, and the whole study replays in about a minute on one
+machine. No second machine is needed for a grid this size or one several times
+larger.
 
 What the intervals show on the recording: every reading is right more often
-over a few seconds than over 30. The median setting was right 53.7% of the time
-over 3 seconds, 50.9% over 30 seconds and 50.3% over 5 minutes; the best
+over a few seconds than over 30. The median setting was right 53.4% of the time
+over 3 seconds, 50.8% over 30 seconds and 50.4% over 5 minutes; the best
 breakout 63% over 3 seconds and 54% over 30. A higher hit rate over a shorter
 interval is not a better trade: the move in 3 seconds is a fraction of a basis
 point, positions cannot be closed before 15 seconds, and the 1000x payout pays
@@ -466,9 +538,9 @@ npm run e2e:scalp -- --evidence /tmp/smt-scalp
 npm run e2e:scalp -- --full --evidence /tmp/smt-scalp-full
 ```
 
-`npm test` includes the Python parity of all sixteen readings and all 79
+`npm test` includes the Python parity of all sixteen readings and all 380
 experiment settings, the slope ladder and the payout arithmetic on recorded
-oracle bars, the scoring, weighting and switch rule of the Experiments tab, the guard state machine, the
+oracle bars, the scoring, weighting, both switch rules and the inverse-vote call of the Experiments tab, the guard state machine, the
 page bridge and the window ownership rules. `npm run e2e:scalp` loads the
 extension into Chrome for Testing against a local stand-in for the Jupiter page
 and a loopback oracle stream. It checks that the window opens on a real click
@@ -478,9 +550,9 @@ own Close exactly once after the hold lock clears and never "Close all", that a
 stale price shows the unprotected warning, that Long and Short stay locked until
 unlocked and need the confirming press, that a confirmed Long presses the page's
 Max, types three quarters, presses Long once and arms the levels from the new
-entry, that the slope gauge fills in, and that the Experiments tab lists 79
-settings at 12 intervals with live results while the call and the order panel
-stay on screen, that the window opened from a SOL, ETH or BTC Perps route shows the
+entry, that the slope gauge fills in, and that the Experiments tab lists 380
+settings at 12 intervals with live results, filters them by reading and shows
+the inverse-vote experiment while the call and the order panel stay on screen, that the window opened from a SOL, ETH or BTC Perps route shows the
 read-outs with no order control, that on a ZEC Perps stand-in a confirmed Long
 presses the page's side, preset, HALF and submit buttons once with nothing typed,
 the levels are armed from the listed entry, and a stop presses Quick close once

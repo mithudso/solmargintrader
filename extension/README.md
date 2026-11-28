@@ -127,7 +127,7 @@ See [design, formulas and verification](../docs/JUPITER-1000X-OVERLAY.md),
 [optimized execution prompt](../docs/JUPITER-1000X-OVERLAY-PROMPT.md), and
 [SDK create/close capabilities and remaining gates](../docs/JUPITER-1000X-SDK.md).
 
-## Jupiter 1000x 1s scalp window, entries and exit guard (0.22.1)
+## Jupiter 1000x 1s scalp window, entries and exit guard (0.23.0)
 
 The Indicators overlay on `https://jup.ag/1000x` has a **1s scalp** button. It
 opens a separate window for that market: read-outs on the left, the order form
@@ -145,12 +145,17 @@ the 1000x payout does not reward: treat it as a lean.
 
 The call weighs each reading by how far its running 30 second hit rate is above
 50%; a reading at or under 50% has no say. An **Experiments** tab keeps testing
-79 settings of the readings at twelve intervals from 3 seconds to 5 minutes on
-the live ticks, shows each one's hit rate, and switches a setting into the grid
-when it is clearly ahead of the one in use. Results are kept per coin between
-windows. On the recording, weighting gained about one point (54.4% against 53.3%
-for strong calls, within one standard error) and switching changed nothing
-measurable.
+380 settings of the readings (123 of them MACD pairings of fast, slow and signal
+averages) at twelve intervals from 3 seconds to 5 minutes on the live ticks and
+shows each one's hit rate. A tile takes the setting of its kind with the
+highest hit rate once both have 20 minutes' worth of settled calls and it is a
+point ahead, and then keeps it for 30 minutes; the earlier cautious rule and
+"never" are a choice in the tab. The tab also runs an inverse-vote experiment all the time:
+the call made with readings under 50% voting the other way, scored beside the
+call in use. Results are kept per coin between windows. On the recording,
+weighting gained about one point (54.4% against 53.3% for strong calls, within
+one standard error); taking the highest hit rate gave 55.1% against 54.4%,
+and inverse votes 54.6% on fewer seconds, both inside the error.
 
 The **Perps paper** overlay on a Jupiter Perps market has the same **1s scalp**
 button. On **HYPE and ZEC**, where Jupiter offers no take profit or stop loss,

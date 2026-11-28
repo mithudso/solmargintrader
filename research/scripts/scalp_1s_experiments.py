@@ -70,7 +70,19 @@ def experiment_table(frame_list, lo=0.0, hi=1.0, span=None) -> dict:
     return table
 
 
-# When a setting may take a slot from the one in use. The extension uses the same numbers.
+# Two rules decide when a setting takes a slot from the one in use; the extension has both.
+#
+# "best" is the owner's rule and the default: a slot takes the unused setting of its kind with
+# the highest current estimate (`blend`) when that is at least BEST_MARGIN above the estimate
+# of the setting in use, once both have BEST_MIN_EFF independent-equivalent calls, and then
+# keeps it for BEST_LOCK_S. With all three limits at zero the rule switched a tile about five
+# times an hour for no gain (`rule_limits` in the study), which is why they are not zero.
+#
+# "clear" is the cautious rule it replaced as the default: both settings need PROMOTE_MIN_EFF
+# independent-equivalent calls, the challenger's Wilson lower bound must beat the incumbent's
+# plain rate, and a slot that just changed is left alone.
+RULES = ("clear", "best")
+DEFAULT_RULE = "best"
 PROMOTE_MIN_EFF = (
     40  # independent-equivalent calls both settings need (calls / horizon)
 )
@@ -79,9 +91,19 @@ PROMOTE_MIN_RATE = 0.52
 PROMOTE_PRIOR_SLACK = 0.002  # the recording must not say the opposite
 PROMOTE_LOCK_S = 600  # a slot that just changed is left alone this long
 PROMOTE_EVERY_S = 30
-# A setting that needs more bars than this is tested and listed but never switched in: the grid's
-# warm-up after opening, or after a feed break, must not grow. It is the starting grid's own need.
-PROMOTE_MAX_NEED = 78
+# The "best" rule's limits: (independent-equivalent calls both settings need before their
+# rates are compared, seconds a slot that just changed is left alone, how far above the
+# incumbent's estimate the challenger's must be). Chosen for calm, not for a higher score:
+# every combination in BEST_LIMITS_TRIED replayed within one standard error of the others.
+BEST_MIN_EFF, BEST_LOCK_S, BEST_MARGIN = 40, 1800, 0.01
+BEST_LIMITS_TRIED = (
+    (0, 0, 0.0),
+    (40, 600, 0.0),
+    (40, 1800, 0.0),
+    (40, 1800, 0.005),
+    (BEST_MIN_EFF, BEST_LOCK_S, BEST_MARGIN),
+    (120, 1800, 0.01),
+)
 # Seconds ahead at which the average move after a call is measured, for the chart's likely line.
 PATH_STEPS = (5, 10, 15, 20, 25, 30)
 
@@ -96,12 +118,56 @@ def wilson_lower(rate: float, n: float, z: float = PROMOTE_Z) -> float:
     ) / (1 + z2 / n)
 
 
+def same_kind(kinds) -> list:
+    """For every variant, the indices of all variants of its kind, in grid order."""
+    by_kind = {}
+    for v, kind in enumerate(kinds):
+        by_kind.setdefault(kind, []).append(v)
+    arrays = {kind: np.array(rows) for kind, rows in by_kind.items()}
+    return [arrays[kind] for kind in kinds]
+
+
 def find_promotions(
-    assign, hit, calls, prior, kinds, locks, now, horizon, need
+    assign,
+    hit,
+    calls,
+    prior,
+    peers,
+    locks,
+    now,
+    horizon,
+    rule=DEFAULT_RULE,
+    limits=None,
 ) -> list:
-    """Slots whose setting is clearly beaten by an unused setting of the same kind: [(slot, variant)]."""
-    used = set(assign)
+    """Slots that change setting under `rule`: [(slot, variant)]. One setting never fills two slots.
+
+    ``peers`` is ``same_kind(kinds)``. Slots are visited in grid order and a setting taken by an
+    earlier slot is no longer on offer to a later one. ``limits`` overrides the "best" rule's
+    (minimum calls, lock, margin), for the study's comparison of them.
+    """
+    if rule not in RULES:
+        raise ValueError(f"unknown switch rule {rule}")
+    used = np.zeros(len(peers), dtype=bool)
+    used[list(assign)] = True
     out = []
+    if rule == "best":
+        min_eff, lock_s, margin = limits or (BEST_MIN_EFF, BEST_LOCK_S, BEST_MARGIN)
+        estimate = blend(hit, calls, prior)
+        known = calls / horizon >= min_eff
+        for slot, incumbent in enumerate(assign):
+            if now - locks[slot] < lock_s or not known[incumbent]:
+                continue
+            free = peers[incumbent]
+            free = free[~used[free] & known[free]]
+            if not free.size:
+                continue
+            # argmax returns the first of equal estimates: the earlier setting in the grid.
+            best = int(free[np.argmax(estimate[free])])
+            if estimate[best] > estimate[incumbent] + margin:
+                used[incumbent] = False
+                used[best] = True
+                out.append((slot, best))
+        return out
     for slot, incumbent in enumerate(assign):
         if (
             now - locks[slot] < PROMOTE_LOCK_S
@@ -110,13 +176,8 @@ def find_promotions(
             continue
         mine = hit[incumbent] / calls[incumbent]
         best = None
-        for v, kind in enumerate(kinds):
-            if (
-                kind != kinds[incumbent]
-                or v in used
-                or need[v] > PROMOTE_MAX_NEED
-                or calls[v] / horizon < PROMOTE_MIN_EFF
-            ):
+        for v in peers[incumbent]:
+            if used[v] or calls[v] / horizon < PROMOTE_MIN_EFF:
                 continue
             rate = hit[v] / calls[v]
             if (
@@ -126,10 +187,10 @@ def find_promotions(
                 continue
             lower = wilson_lower(rate, calls[v] / horizon)
             if lower > mine and (best is None or lower > best[1]):
-                best = (v, lower)
+                best = (int(v), lower)
         if best:
-            used.discard(incumbent)
-            used.add(best[0])
+            used[incumbent] = False
+            used[best[0]] = True
             out.append((slot, best[0]))
     return out
 
@@ -176,6 +237,14 @@ def weights_of(blended) -> np.ndarray:
     return edge / total if total > 0 else np.full(edge.size, 1.0 / edge.size)
 
 
+def signed_score(blended, votes) -> float | None:
+    """The inverse-vote aggregate: a reading under 50% votes the other way, by how far under it is.
+    None when no reading is off 50%, where the caller falls back to one reading, one vote."""
+    edge = np.asarray(blended, dtype=np.float64) - 0.5
+    total = np.abs(edge).sum()
+    return float(edge @ votes / total) if total > 0 else None
+
+
 def tier_of(score: float) -> str:
     return (
         "strong"
@@ -186,36 +255,88 @@ def tier_of(score: float) -> str:
     )
 
 
-def replay(groups, slot_ids, prior, horizon, lo=0.0, hi=1.0, span=None) -> dict:
-    """Replay three aggregates without looking ahead, by tier: the plain vote, the
-    hit-rate-weighted vote, and the weighted vote with clear winners switched in.
+REPLAY_NAMES = ("plain", "weighted", "tuned", "best", "signed", "best_signed")
+
+
+def settings_in_effect(assigned, start, need, peers, bars: int):
+    """The setting each tile reads once `bars` bars have closed.
+
+    A chosen setting without its bars leaves its tile on the starting setting. If another tile
+    is reading that one, the waiting tile takes the first free setting of its kind that has its
+    bars, so no setting is counted twice in the call. The extension's readSlots does the same.
+    """
+    ready = need[assigned] <= bars
+    if ready.all():
+        return assigned
+    out = assigned.copy()
+    taken = {int(v) for v in assigned[ready]}
+    for slot in np.flatnonzero(~ready):
+        choice = int(start[slot])
+        if choice in taken:
+            choice = next(
+                (
+                    int(v)
+                    for v in peers[choice]
+                    if int(v) not in taken and need[v] <= bars
+                ),
+                choice,
+            )
+        out[slot] = choice
+        taken.add(choice)
+    return out
+
+
+def replay(
+    groups, slot_ids, prior, horizon, lo=0.0, hi=1.0, span=None, limits=None
+) -> dict:
+    """Replay the aggregates without looking ahead, by tier.
+
+    "plain" is one reading, one vote on the starting settings; "weighted" weighs each by its
+    running hit rate; "tuned" and "best" are the weighted vote with settings switched in by the
+    "clear" and "best" rules; "signed" is the weighted vote with a reading under 50% voting the
+    other way in place of sitting out, and "best_signed" is that on the "best" rule's settings.
 
     ``groups`` is one list of frames per market: running rates are per market and
     survive a feed break, as in the extension. A setting's rate at second t counts
     only calls made `horizon` or more seconds earlier. ``prior`` maps a variant id
-    to its recorded rate at the call horizon. A score under the lean threshold is
-    still scored by its sign and reported as "mixed"; the window shows no direction
-    for it.
+    to its recorded rate at the call horizon. A switched-in setting that does not
+    have its bars yet (after a feed break) leaves its tile on the starting setting
+    until it does, so the grid's warm-up never grows. A score under the lean
+    threshold is still scored by its sign and reported as "mixed"; the window shows
+    no direction for it.
     """
     ids = [variant["id"] for variant in F.VARIANTS]
     index = {key: k for k, key in enumerate(ids)}
-    kinds = [variant["kind"] for variant in F.VARIANTS]
+    peers = same_kind([variant["kind"] for variant in F.VARIANTS])
     need = np.array([variant["need"] for variant in F.VARIANTS])
     r0 = np.array([prior[key] for key in ids])
     decay = math.exp(-math.log(2) / WEIGHT_HALF_LIFE_S)
-    names = ("plain", "weighted", "tuned", "signed")
     tiers = ("mixed", "lean", "strong")
-    tally = {name: {tier: [0, 0, 0.0] for tier in tiers} for name in names}
+    tally = {name: {tier: [0, 0, 0.0] for tier in tiers} for name in REPLAY_NAMES}
     # Sum of the move in the direction of the call at each step ahead, for the likely-price line.
-    path = {name: {tier: np.zeros(len(PATH_STEPS)) for tier in tiers} for name in names}
+    path = {
+        name: {tier: np.zeros(len(PATH_STEPS)) for tier in tiers}
+        for name in REPLAY_NAMES
+    }
     seconds = 0
-    changes = []
-    start = [index[key] for key in slot_ids]
+    changes = {rule: [] for rule in RULES}
+    switched_seconds = dict.fromkeys(RULES, 0.0)
+    start = np.array([index[key] for key in slot_ids])
+    warm = int(need[start].max())
+    # Switches are made all the way through, and counted only inside the slice being scored.
+    first, last = (
+        (-math.inf, math.inf)
+        if span is None
+        else (
+            span[0] + lo * (span[1] - span[0]),
+            span[0] + hi * (span[1] - span[0]),
+        )
+    )
     for frames in groups:
         hit = np.zeros(len(ids))
         calls = np.zeros(len(ids))
-        tuned = list(start)
-        locks = [-math.inf] * len(start)
+        assigned = {rule: start.copy() for rule in RULES}
+        locks = {rule: [-math.inf] * len(start) for rule in RULES}
         for fr in frames:
             votes, sign, counted, correct = outcomes(fr, ids, horizon)
             close = fr["close"]
@@ -229,29 +350,51 @@ def replay(groups, slot_ids, prior, horizon, lo=0.0, hi=1.0, span=None) -> dict:
                 settle(hit, calls, correct, counted, t, horizon, decay)
                 now = int(fr["time"][t])
                 if now % PROMOTE_EVERY_S == 0:
-                    for slot, variant in find_promotions(
-                        tuned, hit, calls, r0, kinds, locks, now, horizon, need
-                    ):
-                        changes.append(
-                            {"time": now, "from": ids[tuned[slot]], "to": ids[variant]}
-                        )
-                        tuned[slot] = variant
-                        locks[slot] = now
-                # Every tile of both grids must have a reading, as the window requires.
-                if not keep[t] or t + 1 < max(need[start].max(), need[tuned].max()):
+                    for rule in RULES:
+                        for slot, variant in find_promotions(
+                            assigned[rule],
+                            hit,
+                            calls,
+                            r0,
+                            peers,
+                            locks[rule],
+                            now,
+                            horizon,
+                            rule,
+                            limits,
+                        ):
+                            if first <= now < last:
+                                changes[rule].append(
+                                    {
+                                        "time": now,
+                                        "from": ids[assigned[rule][slot]],
+                                        "to": ids[variant],
+                                    }
+                                )
+                            assigned[rule][slot] = variant
+                            locks[rule][slot] = now
+                # Every tile of the starting grid must have a reading, as the window requires.
+                if not keep[t] or t + 1 < warm:
                     continue
                 seconds += 1
                 blended = blend(hit, calls, r0)
+                # A switched-in setting without its bars yet leaves the tile on the starting one.
+                slots = {
+                    rule: settings_in_effect(assigned[rule], start, need, peers, t + 1)
+                    for rule in RULES
+                }
+                for rule in RULES:
+                    switched_seconds[rule] += float((slots[rule] != start).mean())
                 scores = {"plain": float(votes[t, start].mean())}
-                for name, slots in (("weighted", start), ("tuned", tuned)):
-                    scores[name] = float(weights_of(blended[slots]) @ votes[t, slots])
-                # A reading under 50% bets the other way instead of sitting out: signed edges.
-                edge = blended[start] - 0.5
-                scores["signed"] = (
-                    float(edge @ votes[t, start] / np.abs(edge).sum())
-                    if np.abs(edge).sum() > 0
-                    else scores["plain"]
-                )
+                for name, use in (
+                    ("weighted", start),
+                    ("tuned", slots["clear"]),
+                    ("best", slots["best"]),
+                ):
+                    scores[name] = float(weights_of(blended[use]) @ votes[t, use])
+                for name, use in (("signed", start), ("best_signed", slots["best"])):
+                    value = signed_score(blended[use], votes[t, use])
+                    scores[name] = scores["plain"] if value is None else value
                 for name, value in scores.items():
                     if value == 0:
                         continue
@@ -260,9 +403,26 @@ def replay(groups, slot_ids, prior, horizon, lo=0.0, hi=1.0, span=None) -> dict:
                     row[1] += 1
                     row[2] += float(np.sign(value) * fr["fwd"][t])
                     path[name][tier_of(value)] += np.sign(value) * ahead[t]
-    result = {"seconds": seconds, "changes": len(changes), "change_log": changes[:40]}
+    result = {
+        "seconds": seconds,
+        "changes": {rule: len(rows) for rule, rows in changes.items()},
+        "change_log": {rule: rows[:40] for rule, rows in changes.items()},
+        # Share of tile-seconds that ran on a switched-in setting.
+        "switched_share": {
+            rule: (total / seconds if seconds else 0.0)
+            for rule, total in switched_seconds.items()
+        },
+    }
     for name, by_tier in tally.items():
         result[name] = {}
+        hits_all = sum(row[0] for row in by_tier.values())
+        n_all = sum(row[1] for row in by_tier.values())
+        if n_all >= 300:
+            result[name]["any"] = {
+                "n": n_all,
+                "hit": hits_all / n_all,
+                "hit_se": math.sqrt(0.25 / max(1.0, n_all / horizon)),
+            }
         for tier, (hits, n, moved) in by_tier.items():
             result[name][tier] = (
                 {
@@ -280,6 +440,112 @@ def replay(groups, slot_ids, prior, horizon, lo=0.0, hi=1.0, span=None) -> dict:
                 else {"n": n}
             )
     return result
+
+
+def rule_limits(samples: dict, slot_ids, horizon) -> list:
+    """The "best" rule replayed under each of BEST_LIMITS_TRIED: how often it switched and how
+    its calls did. ``samples`` maps a name to replay arguments (groups, prior, lo, hi, span)."""
+    rows = []
+    for limits in BEST_LIMITS_TRIED:
+        row = {
+            "min_eff": limits[0],
+            "lock_s": limits[1],
+            "margin": limits[2],
+            "shipped": limits == (BEST_MIN_EFF, BEST_LOCK_S, BEST_MARGIN),
+        }
+        for name, (groups, prior, lo, hi, span) in samples.items():
+            out = replay(groups, slot_ids, prior, horizon, lo, hi, span, limits)
+            row[name] = {
+                "seconds": out["seconds"],
+                "changes": out["changes"]["best"],
+                "switched_share": out["switched_share"]["best"],
+                "strong": {
+                    key: out["best"]["strong"].get(key)
+                    for key in ("hit", "hit_se", "share", "mean_follow_bps")
+                },
+                "any": out["best"].get("any"),
+            }
+        rows.append(row)
+    return rows
+
+
+def measured_tiers(base: dict, live: dict | None, name: str) -> dict:
+    """One aggregate's replayed tiers in the shape the extension ships, with the live check beside each."""
+    out = {}
+    for tier in ("mixed", "lean", "strong"):
+        row = base.get(name, {}).get(tier, {})
+        if "hit" not in row:
+            continue
+        out[tier] = {
+            key: row[key] for key in ("hit", "share", "mean_follow_bps", "path_bps")
+        }
+        live_row = (live or {}).get(name, {}).get(tier, {})
+        if "hit" in live_row:
+            out[tier]["live"] = {
+                "hit": live_row["hit"],
+                "hit_se": live_row["hit_se"],
+                "n": live_row["n"],
+            }
+    return out
+
+
+def inverse_study(train: dict, later: dict, horizons=None) -> dict:
+    """Does a setting that was usually wrong stay wrong, so that betting against it pays?
+
+    ``train`` and ``later`` are ``experiment_table`` results for two samples that do not overlap.
+    Per horizon: the settings whose hit rate on ``train`` was under 50% (and at or under 48%), and
+    what betting against each of those returned on ``later``. Settings vote on the same seconds,
+    so the error bar treats the busiest setting's calls / horizon as the independent count.
+    """
+    out = {}
+    for horizon in horizons or F.EXPERIMENT_HORIZONS:
+        row = {}
+        for label, limit in (("under_50", 0.5), ("at_most_48", 0.48)):
+            picked = [
+                key
+                for key, rows in train.items()
+                if rows[horizon][0] is not None
+                and rows[horizon][1] >= 300
+                and (
+                    rows[horizon][0] < limit
+                    if limit == 0.5
+                    else rows[horizon][0] <= limit
+                )
+                and later.get(key, {}).get(horizon, [None, 0])[0] is not None
+            ]
+            calls = sum(later[key][horizon][1] for key in picked)
+            wrong = sum(
+                (1.0 - later[key][horizon][0]) * later[key][horizon][1]
+                for key in picked
+            )
+            busiest = max((later[key][horizon][1] for key in picked), default=0)
+            each = sorted(
+                (
+                    [
+                        key,
+                        round(train[key][horizon][0], 4),
+                        round(1.0 - later[key][horizon][0], 4),
+                        later[key][horizon][1],
+                    ]
+                    for key in picked
+                ),
+                key=lambda item: -item[2],
+            )
+            row[label] = {
+                "settings": len(picked),
+                "of": len(train),
+                "calls_later": calls,
+                "inverse_hit_later": wrong / calls if calls else None,
+                "se": math.sqrt(0.25 / max(1.0, busiest / horizon)) if calls else None,
+                "still_under_50_later": sum(1 for item in each if item[2] > 0.5),
+                # The lowest hit rate any of them had on the first sample.
+                "lowest_hit": min((item[1] for item in each), default=None),
+                # [setting, hit rate on the first sample, inverse hit rate later, calls later]
+                "best": each[:8],
+                "worst": each[-3:],
+            }
+        out[str(horizon)] = row
+    return out
 
 
 def call_series(groups, slot_ids, prior, horizon):
@@ -566,26 +832,41 @@ def fade(groups, slot_ids, horizon, lo=0.0, hi=1.0, span=None) -> dict:
 
 def rule_fixture(frame, prior, slot_ids, horizon) -> dict:
     """Numbers the extension's tests reproduce with its own code: the running record after the
-    frame, the weighted call at its last bar, and what the switch rule does with a made-up record."""
+    frame, the weighted and inverse-vote calls at its last bar, and what each switch rule does
+    with a made-up record."""
     ids = [variant["id"] for variant in F.VARIANTS]
     index = {key: k for k, key in enumerate(ids)}
-    kinds = [variant["kind"] for variant in F.VARIANTS]
-    need = np.array([variant["need"] for variant in F.VARIANTS])
+    peers = same_kind([variant["kind"] for variant in F.VARIANTS])
     r0 = np.array([prior[key] for key in ids])
     counts = decayed_counts(frame, horizon)
     hit = np.array([counts[key][0] for key in ids])
     calls = np.array([counts[key][1] for key in ids])
     slots = [index[key] for key in slot_ids]
-    weights = weights_of(blend(hit, calls, r0)[slots])
+    blended = blend(hit, calls, r0)[slots]
+    weights = weights_of(blended)
     votes = np.array([frame["variants"][key][-1] for key in slot_ids], dtype=np.float64)
     # A made-up record with plenty of calls everywhere and rates that differ by setting, so the
-    # rule has real choices to make: several clear winners, near misses and contradicted ones.
+    # rules have real choices to make: several clear winners, near misses and contradicted ones.
     many = np.full(len(ids), 9000.0)
     rates = np.array([0.5 + 0.09 * math.sin(1.7 * k + 0.4) for k in range(len(ids))])
-    start = list(slots)
-    switches = find_promotions(
-        start, rates * many, many, r0, kinds, [-math.inf] * len(slots), 0, horizon, need
-    )
+    made = blend(rates * many, many, r0)[slots]
+    switches = {
+        rule: [
+            [slot_ids[slot], ids[variant]]
+            for slot, variant in find_promotions(
+                list(slots),
+                rates * many,
+                many,
+                r0,
+                peers,
+                [-math.inf] * len(slots),
+                0,
+                horizon,
+                rule,
+            )
+        ]
+        for rule in RULES
+    }
     return {
         "horizon": horizon,
         "counts": {key: [round(value, 9) for value in counts[key]] for key in ids},
@@ -593,22 +874,28 @@ def rule_fixture(frame, prior, slot_ids, horizon) -> dict:
         "votes": [int(value) for value in votes],
         "score": float(weights @ votes),
         "tier": tier_of(float(weights @ votes)),
+        "inverse_score": signed_score(blended, votes),
         "made_up": {
             "calls": 9000.0,
             "rates": [float(value) for value in rates],
-            "weights": [
-                float(value)
-                for value in weights_of(blend(rates * many, many, r0)[slots])
-            ],
+            "weights": [float(value) for value in weights_of(made)],
+            "inverse_score_all_up": signed_score(made, np.ones(len(slots))),
         },
-        "switches": [[slot_ids[slot], ids[variant]] for slot, variant in switches],
+        "switches": switches,
     }
 
 
-def experiments_model(tile_keys, table, horizon, weighted) -> dict:
-    """What the extension ships: the grid, the slots and each variant's recorded hit rate per horizon."""
+def experiments_model(
+    tile_keys, table, horizon, measured: dict, replayed: dict, usually_wrong: dict
+) -> dict:
+    """What the extension ships: the grid, the slots and each variant's recorded hit rate per horizon.
+
+    ``measured`` maps an aggregate's replay name to its tiers (``measured_tiers``); ``replayed``
+    is the base replay itself, for how often each rule switched; ``usually_wrong`` is the
+    ``inverse_study`` row at the call horizon.
+    """
     return {
-        "version": 2,
+        "version": 3,
         "horizons": list(F.EXPERIMENT_HORIZONS),
         "call_horizon_s": horizon,
         "half_life_s": WEIGHT_HALF_LIFE_S,
@@ -616,17 +903,45 @@ def experiments_model(tile_keys, table, horizon, weighted) -> dict:
         "strong": WEIGHTED_STRONG,
         "lean": WEIGHTED_LEAN,
         "promotion": {
+            "rule": DEFAULT_RULE,
+            "every_s": PROMOTE_EVERY_S,
+            "best_min_eff": BEST_MIN_EFF,
+            "best_lock_s": BEST_LOCK_S,
+            "best_margin": BEST_MARGIN,
             "min_eff": PROMOTE_MIN_EFF,
             "z": PROMOTE_Z,
             "min_rate": PROMOTE_MIN_RATE,
             "prior_slack": PROMOTE_PRIOR_SLACK,
             "lock_s": PROMOTE_LOCK_S,
-            "every_s": PROMOTE_EVERY_S,
-            "max_need": PROMOTE_MAX_NEED,
         },
+        "aliases": dict(F.VARIANT_ALIASES),
         "slots": [{"key": key, "variant": F.TILE_VARIANTS[key]} for key in tile_keys],
-        # How the weighted aggregate did, tier by tier, when replayed without looking ahead.
-        "measured": weighted,
+        # How each aggregate did, tier by tier, when replayed without looking ahead: the weighted
+        # vote on the starting settings, then with each switch rule, then with inverse votes.
+        "measured": measured["weighted"],
+        "measured_rules": {"clear": measured["tuned"], "best": measured["best"]},
+        "measured_inverse": {
+            "off": measured["signed"],
+            "best": measured["best_signed"],
+        },
+        # Settings under 50% on the first 60% of the recording, and what betting against them
+        # returned on the rest.
+        "usually_wrong": {
+            key: usually_wrong[key]
+            for key in (
+                "settings",
+                "of",
+                "inverse_hit_later",
+                "se",
+                "still_under_50_later",
+                "lowest_hit",
+            )
+        },
+        "replay": {
+            "seconds": replayed["seconds"],
+            "changes": replayed["changes"],
+            "switched_share": replayed["switched_share"],
+        },
         "variants": [
             {
                 **variant,

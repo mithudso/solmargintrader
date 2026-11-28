@@ -243,7 +243,7 @@ command registry. No npm runtime dependencies by design; one vendored charting l
 | `extension/src/1000x/scalp-indicators.js` | Pure causal readings on 1s oracle bars and the tick-to-second aggregator; a port of the research feature definitions |
 | `extension/src/1000x/scalp-model.js` | Sixteen-tile vote, tiers, 30 second cone, slope ladder history and reversal timing, session score and the BigInt payout port |
 | `extension/src/1000x/perps-bridge.js` | Page bridge for the Perps beta markets (HYPE, ZEC): strict reads of the positions list and order form, one Long or Short press, one Quick close with its confirmation |
-| `extension/src/1000x/scalp-experiments.js` | The Experiments engine: 79 settings read each second and scored at twelve intervals, the hit-rate-weighted call, and the rule that switches a clear winner into a tile |
+| `extension/src/1000x/scalp-experiments.js` | The Experiments engine: 380 settings read each second and scored at twelve intervals, the hit-rate-weighted call, the two rules that switch a setting into a tile (highest hit rate by default), and the inverse-vote call with its live record |
 | `extension/src/1000x/scalp-experiments-data.js` | Generated: the experiment grid, its intervals, each setting's recorded hit rate and the switch rule's constants |
 | `extension/src/1000x/scalp-model-data.js` | Generated study constants: tiles, thresholds, measured hit rates, cone quantiles and slope baselines |
 | `extension/src/1000x/exit-guard.js` | Pure take-profit / stop-loss state machine: fresh-quote trigger, one close request, bounded lock wait, no retry of an unconfirmed press |
