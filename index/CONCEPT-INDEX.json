@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-11-28T07:24:12+00:00",
+  "generatedAt": "2026-11-28T09:11:50+00:00",
   "schemaVersion": 1,
   "note": "Concepts are derived from the repo's own vocabulary \u2014 the FAMILY dict, strategy-card frontmatter, docs/trading-signals-concept-family.md, and terms verified to recur in the corpus. A concept matching no file is dropped, not kept.",
   "counts": {
@@ -300,7 +300,7 @@
         "centred",
         "shift"
       ],
-      "matchingFiles": 3970,
+      "matchingFiles": 3971,
       "shown": 30,
       "files": [
         {
@@ -575,7 +575,7 @@
         "macd",
         "ichimoku"
       ],
-      "matchingFiles": 1958,
+      "matchingFiles": 1960,
       "shown": 30,
       "files": [
         {
@@ -591,6 +591,10 @@
           "hits": 574
         },
         {
+          "path": "research/json/scalp-1s-20261127/summary.json",
+          "hits": 543
+        },
+        {
           "path": "llms-filemap.txt",
           "hits": 423
         },
@@ -601,6 +605,18 @@
         {
           "path": "docs/FILES.md",
           "hits": 376
+        },
+        {
+          "path": "extension/src/1000x/scalp-experiments-data.js",
+          "hits": 373
+        },
+        {
+          "path": "research/json/scalp-1s-20261127/experiments.json",
+          "hits": 373
+        },
+        {
+          "path": "extension/test/fixtures/1000x-scalp-parity.json",
+          "hits": 248
         },
         {
           "path": "research/json/tradingview-card-readiness.json",
@@ -681,22 +697,6 @@
         {
           "path": "research/papers/results/tables.md",
           "hits": 114
-        },
-        {
-          "path": "backtester/core/scorecard.py",
-          "hits": 110
-        },
-        {
-          "path": "research/strategy_experiment/candidate/core/scorecard.py",
-          "hits": 110
-        },
-        {
-          "path": "research/strategy_experiment/original/core/scorecard.py",
-          "hits": 110
-        },
-        {
-          "path": "llms-sitemap.txt",
-          "hits": 100
         }
       ],
       "source": "backtester/core/strategies/__init__.py FAMILY"
@@ -810,15 +810,15 @@
         },
         {
           "path": "extension/README.md",
-          "hits": 64
+          "hits": 63
+        },
+        {
+          "path": "memory.md",
+          "hits": 61
         },
         {
           "path": "research/json/strategy_experiment/results/auxiliary.json",
           "hits": 59
-        },
-        {
-          "path": "memory.md",
-          "hits": 58
         },
         {
           "path": "backtester/guides/ladder_grid.md",
@@ -1011,7 +1011,7 @@
         },
         {
           "path": "memory.md",
-          "hits": 611
+          "hits": 612
         },
         {
           "path": "research/json/strategy_experiment/results/results.json",
@@ -1245,8 +1245,8 @@
           "hits": 110
         },
         {
-          "path": "TRADINGVIEW-SCRIPT-CARD-FILES.md",
-          "hits": 104
+          "path": "research/json/scalp-1s-20261127/summary.json",
+          "hits": 106
         }
       ],
       "source": "backtester/core/strategies/__init__.py FAMILY"
@@ -1804,7 +1804,7 @@
         "evidence floor",
         "rankable"
       ],
-      "matchingFiles": 608,
+      "matchingFiles": 610,
       "shown": 30,
       "files": [
         {
@@ -1951,6 +1951,10 @@
           "hits": 409
         },
         {
+          "path": "research/json/scalp-1s-20261127/summary.json",
+          "hits": 94
+        },
+        {
           "path": "research/json/tradingview-script-understanding.json",
           "hits": 89
         },
@@ -1995,10 +1999,6 @@
           "hits": 45
         },
         {
-          "path": "research/json/scalp-1s-20261127/summary.json",
-          "hits": 45
-        },
-        {
           "path": "research/json/strategy_experiment/results/initial-gapped-run/manifest.json",
           "hits": 45
         },
@@ -2009,6 +2009,14 @@
         {
           "path": "research/papers/results/tables.md",
           "hits": 45
+        },
+        {
+          "path": "extension/src/1000x/scalp-experiments-data.js",
+          "hits": 44
+        },
+        {
+          "path": "research/json/scalp-1s-20261127/experiments.json",
+          "hits": 44
         },
         {
           "path": "research/json/strategy_experiment/results/auxiliary.json",
@@ -2031,20 +2039,16 @@
           "hits": 40
         },
         {
+          "path": "extension/test/fixtures/1000x-scalp-parity.json",
+          "hits": 32
+        },
+        {
           "path": "research/json/tradingview-script-profiles/shard-c.jsonl",
           "hits": 32
         },
         {
           "path": "research/results/minute_sweep_x1_common.txt",
           "hits": 32
-        },
-        {
-          "path": "extension/src/1000x/scalp-experiments-data.js",
-          "hits": 29
-        },
-        {
-          "path": "research/json/scalp-1s-20261127/experiments.json",
-          "hits": 29
         },
         {
           "path": "TRADINGVIEW-CARD-COVERAGE.md",
@@ -2057,10 +2061,6 @@
         {
           "path": "research/json/tradingview-script-profiles/shard-b.jsonl",
           "hits": 28
-        },
-        {
-          "path": "backtester/core/scorecard.py",
-          "hits": 24
         }
       ],
       "source": "backtester/core/strategies/__init__.py FAMILY"
@@ -2485,12 +2485,16 @@
         "vwap_reversion",
         "ou_reversion"
       ],
-      "matchingFiles": 244,
+      "matchingFiles": 245,
       "shown": 30,
       "files": [
         {
           "path": "research/json/strategy_experiment/audit_realism.json",
           "hits": 696
+        },
+        {
+          "path": "research/json/scalp-1s-20261127/summary.json",
+          "hits": 123
         },
         {
           "path": "extension/src/perps/archive-presets.js",
@@ -2521,12 +2525,20 @@
           "hits": 41
         },
         {
-          "path": "research/json/scalp-1s-20261127/summary.json",
-          "hits": 40
-        },
-        {
           "path": "research/results/minute_sweep_x1_common.txt",
           "hits": 35
+        },
+        {
+          "path": "extension/test/fixtures/1000x-scalp-parity.json",
+          "hits": 29
+        },
+        {
+          "path": "extension/src/1000x/scalp-experiments-data.js",
+          "hits": 26
+        },
+        {
+          "path": "research/json/scalp-1s-20261127/experiments.json",
+          "hits": 26
         },
         {
           "path": "docs/FILES.md",
@@ -2573,24 +2585,12 @@
           "hits": 16
         },
         {
-          "path": "extension/test/fixtures/1000x-scalp-parity.json",
-          "hits": 15
-        },
-        {
           "path": "extension/tools/lib/zec-perps-signals.mjs",
           "hits": 15
         },
         {
           "path": "research/json/strategy_experiment/results/auxiliary.json",
           "hits": 15
-        },
-        {
-          "path": "extension/src/1000x/scalp-experiments-data.js",
-          "hits": 14
-        },
-        {
-          "path": "research/json/scalp-1s-20261127/experiments.json",
-          "hits": 14
         },
         {
           "path": "backtester/strategy_cards/ou_half_life_sizing.md",
