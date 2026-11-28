@@ -1,5 +1,16 @@
 # Prompt history
 
+Version: 335
+Delta: v334 to v335. Record the follow-up request for slope and acceleration extremes and reversal timing in the 1s scalp view.
+
+## Jupiter 1000x: 1s scalp view with take profit and stop loss
+
+> For the chrome plugin on the https://jup.ag/1000x site, Create a view that does 1s window analysis, and create a compact, single page view, separate from the ones already created that I can open and have it interact with the webpage such that I can set a take profit and stop loss since the site doesn't have that. Make the indicators show a graph like the one near the bottom of the popout window witha  grid of indicators all of which color coordinate to tell if it's about to go up or down. Look at all the swing and trend trading strategies and devise the most effective 1s window trend/swing trade visual to indicate its activity in the next 30s.
+
+> Add slope analysis for incrementally large ranges starting with 5s, 10s, 20, 30, 60, and 5 min. And then add 2nd derivative slope analysis for each of those to see if the slow is increasing or decreasing.
+
+> Also in the streaming analysis show the maximum and minimum slopes and acceleration history for that timeframe. And also derive from the data the maximum and average time before a reversal, which would be the time periods between slopes that go from positive to negative.
+
 Version: 332
 Delta: v331 to v332. Record the request for an oraclebot.io paper on the HYPE findings.
 

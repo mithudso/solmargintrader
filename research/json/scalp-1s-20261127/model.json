@@ -1,0 +1,285 @@
+{
+ "cone": {
+  "p50": 0.8918748929380573,
+  "p68": 1.38998693367932,
+  "p90": 2.673948555660227,
+  "p95": 3.588445828506543
+ },
+ "horizon_s": 30,
+ "lean": 6,
+ "measured": {
+  "lean": {
+   "hit": 0.5095750783214932,
+   "live": {
+    "hit": 0.5231026552372988,
+    "hit_se": 0.03959865556926878,
+    "n": 4783
+   },
+   "mean_follow_bps": 0.2600006431022448,
+   "share": 0.38183732782949326
+  },
+  "mixed": {
+   "hit": 0.5016379485850715,
+   "live": {
+    "hit": 0.48409090909090907,
+    "hit_se": 0.04934637712198267,
+    "n": 3080
+   },
+   "mean_follow_bps": 0.03232116653155074,
+   "share": 0.22758519017733037
+  },
+  "strong": {
+   "hit": 0.5283748505623734,
+   "live": {
+    "hit": 0.5425608873884736,
+    "hit_se": 0.04252688903852376,
+    "n": 4147
+   },
+   "mean_follow_bps": 0.5777540234080657,
+   "share": 0.34528452887409966
+  }
+ },
+ "slopes": [
+  {
+   "accelerating": {
+    "hit": 0.527361982244692,
+    "mean_follow_bps": 0.48002027865253105
+   },
+   "change": {
+    "hit": 0.5107244593524027,
+    "mean_follow_bps": 0.1864033113451894
+   },
+   "fading": {
+    "hit": 0.5053454287083395,
+    "mean_follow_bps": 0.0953246164203851
+   },
+   "runs": {
+    "count": 40764,
+    "max_s": 72.0,
+    "mean_s": 5.8540869394563835,
+    "median_s": 4.0,
+    "p90_s": 12.0
+   },
+   "slope": {
+    "hit": 0.5160675266386009,
+    "mean_follow_bps": 0.2832383519202703
+   },
+   "window_s": 5
+  },
+  {
+   "accelerating": {
+    "hit": 0.5208077245869398,
+    "mean_follow_bps": 0.3790167218726089
+   },
+   "change": {
+    "hit": 0.5105299640809124,
+    "mean_follow_bps": 0.18765513998331182
+   },
+   "fading": {
+    "hit": 0.4995710656727606,
+    "mean_follow_bps": 0.0003420947948535216
+   },
+   "runs": {
+    "count": 21541,
+    "max_s": 100.0,
+    "mean_s": 11.069402534701267,
+    "median_s": 9.0,
+    "p90_s": 23.0
+   },
+   "slope": {
+    "hit": 0.510078053452752,
+    "mean_follow_bps": 0.18788000474923808
+   },
+   "window_s": 10
+  },
+  {
+   "accelerating": {
+    "hit": 0.5086632931496202,
+    "mean_follow_bps": 0.1896553462248935
+   },
+   "change": {
+    "hit": 0.5072203227513672,
+    "mean_follow_bps": 0.13430313491938728
+   },
+   "fading": {
+    "hit": 0.49420649440699066,
+    "mean_follow_bps": -0.07958089075830069
+   },
+   "runs": {
+    "count": 11348,
+    "max_s": 188.0,
+    "mean_s": 20.9881036305957,
+    "median_s": 17.0,
+    "p90_s": 42.0
+   },
+   "slope": {
+    "hit": 0.5013945126766243,
+    "mean_follow_bps": 0.05428519015876633
+   },
+   "window_s": 20
+  },
+  {
+   "accelerating": {
+    "hit": 0.502241471012841,
+    "mean_follow_bps": 0.06954118559225714
+   },
+   "change": {
+    "hit": 0.502800761437318,
+    "mean_follow_bps": 0.0664060769137122
+   },
+   "fading": {
+    "hit": 0.49664496912702266,
+    "mean_follow_bps": -0.06329911344368185
+   },
+   "runs": {
+    "count": 7695,
+    "max_s": 253.0,
+    "mean_s": 30.92254710851202,
+    "median_s": 25.0,
+    "p90_s": 62.0
+   },
+   "slope": {
+    "hit": 0.49943060288858726,
+    "mean_follow_bps": 0.0028215507570314106
+   },
+   "window_s": 30
+  },
+  {
+   "accelerating": {
+    "hit": 0.5008192107009923,
+    "mean_follow_bps": 0.12419386278436355
+   },
+   "change": {
+    "hit": 0.4917070337652718,
+    "mean_follow_bps": -0.13129082631415195
+   },
+   "fading": {
+    "hit": 0.5174376444002227,
+    "mean_follow_bps": 0.387686775876845
+   },
+   "runs": {
+    "count": 3846,
+    "max_s": 446.0,
+    "mean_s": 61.65236609464379,
+    "median_s": 48.0,
+    "p90_s": 126.5
+   },
+   "slope": {
+    "hit": 0.5091136353114966,
+    "mean_follow_bps": 0.2557057815730128
+   },
+   "window_s": 60
+  },
+  {
+   "accelerating": {
+    "hit": 0.5036716507433272,
+    "mean_follow_bps": 0.258256254999793
+   },
+   "change": {
+    "hit": 0.5064840454990841,
+    "mean_follow_bps": 0.18959643693898195
+   },
+   "fading": {
+    "hit": 0.49073501376826945,
+    "mean_follow_bps": -0.12170451516997578
+   },
+   "runs": {
+    "count": 802,
+    "max_s": 1616.0,
+    "mean_s": 287.05610972568576,
+    "median_s": 238.5,
+    "p90_s": 560.6999999999999
+   },
+   "slope": {
+    "hit": 0.49716483975273823,
+    "mean_follow_bps": 0.06718541154828256
+   },
+   "window_s": 300
+  }
+ ],
+ "strong": 12,
+ "tiles": [
+  {
+   "feature": "roc_2",
+   "key": "impulse",
+   "label": "Impulse 2s"
+  },
+  {
+   "feature": "roc_5",
+   "key": "momentum5",
+   "label": "Momentum 5s"
+  },
+  {
+   "feature": "roc_60",
+   "key": "momentum60",
+   "label": "Momentum 60s"
+  },
+  {
+   "feature": "brk_20",
+   "key": "breakout20",
+   "label": "Breakout 20s"
+  },
+  {
+   "feature": "brk_60",
+   "key": "breakout60",
+   "label": "Breakout 60s"
+  },
+  {
+   "feature": "ha",
+   "key": "heikin",
+   "label": "Heikin-Ashi run"
+  },
+  {
+   "feature": "bop_5",
+   "key": "bop",
+   "label": "Balance of power"
+  },
+  {
+   "feature": "zzdir_1",
+   "key": "zigzag",
+   "label": "ZigZag leg"
+  },
+  {
+   "feature": "don_60",
+   "key": "donchian",
+   "label": "Range position"
+  },
+  {
+   "feature": "er_60",
+   "key": "efficiency",
+   "label": "Efficiency"
+  },
+  {
+   "feature": "slope_60",
+   "key": "slope",
+   "label": "Slope 60s"
+  },
+  {
+   "feature": "rsi_7",
+   "key": "rsi",
+   "label": "RSI 7"
+  },
+  {
+   "feature": "z_20",
+   "key": "zscore",
+   "label": "Z-score 20"
+  },
+  {
+   "feature": "macdh_1",
+   "key": "macd",
+   "label": "MACD hist"
+  },
+  {
+   "feature": "psar",
+   "key": "psar",
+   "label": "Parabolic SAR"
+  },
+  {
+   "feature": "super_10",
+   "key": "supertrend",
+   "label": "Supertrend"
+  }
+ ],
+ "version": 2,
+ "warmup_s": 90
+}

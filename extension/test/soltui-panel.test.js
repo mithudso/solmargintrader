@@ -69,7 +69,9 @@ test('the manifest asks for exactly the permissions and hosts it uses, and widen
     // The 1000x window only reads the public market catalog and oracle candles/stream.
     'https://yolo-api.jup.ag/*', 'https://perps-api.jup.ag/*', 'https://api.gum.ag/app/perps/*',
   ]);
-  assert.deepEqual(manifest.content_scripts, [{ matches: ['https://jup.ag/*'], js: ['src/1000x/content.js'], run_at: 'document_idle' }]);
+  assert.deepEqual(manifest.content_scripts, [{ matches: ['https://jup.ag/*'], js: ['src/1000x/page-bridge.js', 'src/1000x/content.js'], run_at: 'document_idle' }]);
+  // page-bridge.js reads the 1000x positions table and presses one Close button; it is not web accessible.
+  assert.ok(!manifest.web_accessible_resources[0].resources.some(path => /scalp|page-bridge|exit-guard/.test(path)));
   assert.deepEqual(manifest.web_accessible_resources[0].matches, ['https://jup.ag/*']);
   assert.ok(manifest.web_accessible_resources[0].resources.every(path => path.startsWith('src/1000x/') || path === 'src/perps/panel.html' || path.startsWith('vendor/lightweight-charts/')));
   assert.equal(manifest.content_security_policy.extension_pages, "script-src 'self'; object-src 'self'; base-uri 'none'; frame-src https://www.tradingview-widget.com");

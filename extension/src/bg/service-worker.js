@@ -29,6 +29,7 @@ import { makeSigner } from '../wallet/signer.js';
 import { restorePaperVenue } from './paper-venue.js';
 import { createLiveWindows } from './live-windows.js';
 import { createJupiterIndicatorWindows } from './jupiter-indicator-window.js';
+import { createJupiterScalpWindows } from './jupiter-scalp-window.js';
 import { digest } from '../core/bot-manager.js';
 import { OWNER_SOURCE_SCHEMA, OWNER_SOURCE_FILES } from '../core/owner-source.js';
 import { controlRoomTransitions } from '../core/control-room.js';
@@ -89,6 +90,9 @@ const liveWindows = chrome.runtime.onConnect && chrome.windows && chrome.runtime
     getURL: path => chrome.runtime.getURL(path) }) : null;
 const jupiterIndicatorWindows = chrome.storage?.session && chrome.windows?.onRemoved && chrome.tabs?.onUpdated
   ? createJupiterIndicatorWindows({ runtime: chrome.runtime, storage: chrome.storage.session,
+    windows: chrome.windows, tabs: chrome.tabs }) : null;
+const jupiterScalpWindows = chrome.storage?.session && chrome.windows?.onRemoved && chrome.tabs?.onRemoved
+  ? createJupiterScalpWindows({ runtime: chrome.runtime, storage: chrome.storage.session,
     windows: chrome.windows, tabs: chrome.tabs }) : null;
 const browserUiStore = {};
 const zecBrowser = createZecAdvisory({ configStore, runtime: chrome.runtime });
@@ -475,7 +479,7 @@ export async function handleMessage(msg, { openStore, soltui, sender } = {}) {
   // The PiP gesture crosses the synchronous message→Port relay. Opening the
   // order store first would discard it; UI commands never receive trading deps.
   const deps = COMMANDS[name].zec ? { ...zecDeps, setZecEnabled }
-    : COMMANDS[name].browserUi ? { store: browserUiStore, liveWindows, jupiterIndicatorWindows, sender }
+    : COMMANDS[name].browserUi ? { store: browserUiStore, liveWindows, jupiterIndicatorWindows, jupiterScalpWindows, sender }
       : await chromeDeps({ passphrase, openStore, ...(soltui ? { soltui } : {}) });
 
   try {

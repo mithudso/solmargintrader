@@ -5,6 +5,10 @@
 - [JSON evidence](json/) holds configurations, manifests and structured results. The sealed [ETH](json/eth-week-20261117/report.md), [HYPE](json/hype-week-20261127/report.md), [native-pair](json/native-pairs-week-20261117/report.md) and [strategy-comparison](json/strategy_experiment/REPORT.md) bundles keep their reports beside their data.
 - [Tabular results](results/) holds CSVs consumed by the research tools and SolTUI.
 
+## One-second bars on Jupiter 1000x
+
+[One-second bars and the next 30 seconds on Jupiter 1000x](papers/SCALP-1S-STUDY.md) scores sixteen trend readings, a slope ladder and its second derivative against the next 30 seconds on recorded Jupiter oracle ticks, and prices a 30 second call with the product's payout formula. `python -m research.scalp_1s_study` writes [the tables](json/scalp-1s-20261127/summary.json), the extension's model constants and its parity fixture. The Chrome window built on it is described in [the 1s scalp window guide](../docs/JUPITER-1000X-SCALP.md).
+
 ## HYPE study
 
 The working paper is [What holds up on HYPE? Strategies, patterns and price levels](papers/HYPE-STRATEGIES-PATTERNS-LEVELS.md), published with two figures at https://oraclebot.io/papers/hype-strategies-patterns-levels.pdf . Rebuild its figures with `python -m research.hype_paper_figures` and its PDF with `python -m website.scripts.build_paper research/json/hype-paper-20261127/paper.json`.

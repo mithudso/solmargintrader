@@ -1,6 +1,6 @@
 {
   "name": "solmargintrader",
-  "version": "0.16.7",
+  "version": "0.17.0",
   "private": true,
   "type": "module",
   "description": "Signal Desk: live signals, backtests, paper forward tests and bot monitoring. Experimental grid installs disarmed in dry-run.",
@@ -15,7 +15,8 @@
     "dryrun": "node tools/dryrun.js",
     "e2e": "node tools/e2e.mjs",
     "e2e:zec": "node tools/zec-advisory-e2e.mjs",
-    "e2e:1000x": "node tools/1000x-e2e.mjs"
+    "e2e:1000x": "node tools/1000x-e2e.mjs",
+    "e2e:scalp": "node tools/1000x-scalp-e2e.mjs"
   },
   "engines": {
     "node": ">=20"

@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-11-27T13:18:00+00:00",
+  "generatedAt": "2026-11-28T01:58:02+00:00",
   "schemaVersion": 1,
   "note": "Concepts are derived from the repo's own vocabulary \u2014 the FAMILY dict, strategy-card frontmatter, docs/trading-signals-concept-family.md, and terms verified to recur in the corpus. A concept matching no file is dropped, not kept.",
   "counts": {
@@ -22,7 +22,7 @@
         "confirm",
         "fail-closed"
       ],
-      "matchingFiles": 4486,
+      "matchingFiles": 4496,
       "shown": 30,
       "files": [
         {
@@ -54,12 +54,12 @@
           "hits": 164
         },
         {
-          "path": "FILES.md",
-          "hits": 157
+          "path": "memory.md",
+          "hits": 162
         },
         {
-          "path": "memory.md",
-          "hits": 152
+          "path": "FILES.md",
+          "hits": 157
         },
         {
           "path": "research/json/tradingview-script-profiles/shard-a.jsonl",
@@ -80,6 +80,10 @@
         {
           "path": "research/json/tradingview-script-profiles/shard-b.jsonl",
           "hits": 100
+        },
+        {
+          "path": "extension/src/1000x/scalp.js",
+          "hits": 94
         },
         {
           "path": ".cdo/reviews-2026-11-12/soltui-worker.json",
@@ -103,6 +107,10 @@
         },
         {
           "path": "research/json/tradingview-strategy-understanding.json",
+          "hits": 66
+        },
+        {
+          "path": "extension/test/1000x-exit-guard.test.js",
           "hits": 66
         },
         {
@@ -136,14 +144,6 @@
         {
           "path": ".cdo/reviews-2026-11-12/liquidity.iter1.json",
           "hits": 52
-        },
-        {
-          "path": "skills/trading-and-investing/SKILL.md",
-          "hits": 51
-        },
-        {
-          "path": "executor/src/executor/engine.py",
-          "hits": 44
         }
       ],
       "source": "curated-from-repo-vocabulary"
@@ -161,7 +161,7 @@
         "universe",
         "top_coins"
       ],
-      "matchingFiles": 4239,
+      "matchingFiles": 4241,
       "shown": 30,
       "files": [
         {
@@ -170,7 +170,7 @@
         },
         {
           "path": "memory.md",
-          "hits": 488
+          "hits": 489
         },
         {
           "path": "docs/FILES.md",
@@ -300,7 +300,7 @@
         "centred",
         "shift"
       ],
-      "matchingFiles": 3956,
+      "matchingFiles": 3968,
       "shown": 30,
       "files": [
         {
@@ -575,7 +575,7 @@
         "macd",
         "ichimoku"
       ],
-      "matchingFiles": 1941,
+      "matchingFiles": 1954,
       "shown": 30,
       "files": [
         {
@@ -713,7 +713,7 @@
         "anchor_window",
         "levels"
       ],
-      "matchingFiles": 1637,
+      "matchingFiles": 1650,
       "shown": 30,
       "files": [
         {
@@ -810,7 +810,7 @@
         },
         {
           "path": "extension/README.md",
-          "hits": 60
+          "hits": 63
         },
         {
           "path": "research/json/strategy_experiment/results/auxiliary.json",
@@ -851,7 +851,7 @@
         "monotone",
         "gap"
       ],
-      "matchingFiles": 1591,
+      "matchingFiles": 1598,
       "shown": 30,
       "files": [
         {
@@ -990,7 +990,7 @@
         "perps",
         "solana"
       ],
-      "matchingFiles": 1409,
+      "matchingFiles": 1424,
       "shown": 30,
       "files": [
         {
@@ -1011,7 +1011,7 @@
         },
         {
           "path": "memory.md",
-          "hits": 549
+          "hits": 558
         },
         {
           "path": "research/json/strategy_experiment/results/results.json",
@@ -1035,7 +1035,7 @@
         },
         {
           "path": "prompts.md",
-          "hits": 267
+          "hits": 268
         },
         {
           "path": "llms-infra.txt",
@@ -1098,6 +1098,10 @@
           "hits": 104
         },
         {
+          "path": "extension/README.md",
+          "hits": 101
+        },
+        {
           "path": ".cdo/scope-20261111-task1423.json",
           "hits": 99
         },
@@ -1108,10 +1112,6 @@
         {
           "path": ".cdo/reviews-2026-11-12/pipeline-pr241-ui-current.json",
           "hits": 98
-        },
-        {
-          "path": ".cdo/reviews-2026-11-12/coverage.json",
-          "hits": 97
         }
       ],
       "source": "curated-from-repo-vocabulary"
@@ -1125,7 +1125,7 @@
         "stochastic",
         "oscillator"
       ],
-      "matchingFiles": 1305,
+      "matchingFiles": 1315,
       "shown": 30,
       "files": [
         {
@@ -1260,7 +1260,7 @@
         "ts_momentum",
         "dual_momentum"
       ],
-      "matchingFiles": 919,
+      "matchingFiles": 927,
       "shown": 30,
       "files": [
         {
@@ -1395,7 +1395,7 @@
         "benchmark",
         "baseline"
       ],
-      "matchingFiles": 851,
+      "matchingFiles": 856,
       "shown": 30,
       "files": [
         {
@@ -1529,7 +1529,7 @@
         "buy_and_hold",
         "baseline"
       ],
-      "matchingFiles": 727,
+      "matchingFiles": 732,
       "shown": 30,
       "files": [
         {
@@ -1804,7 +1804,7 @@
         "evidence floor",
         "rankable"
       ],
-      "matchingFiles": 602,
+      "matchingFiles": 604,
       "shown": 30,
       "files": [
         {
@@ -1939,7 +1939,7 @@
         "bb_breakout",
         "keltner"
       ],
-      "matchingFiles": 571,
+      "matchingFiles": 584,
       "shown": 30,
       "files": [
         {
@@ -2475,6 +2475,143 @@
       "source": "backtester/core/strategies/__init__.py FAMILY"
     },
     {
+      "id": "family:mean-reversion",
+      "label": "Strategy family: mean-reversion",
+      "why": "A value of the FAMILY dict in backtester/core/strategies/__init__.py, which is the repo's own taxonomy rather than one imposed here.",
+      "terms": [
+        "mean-reversion",
+        "zscore",
+        "bb_reversion",
+        "vwap_reversion",
+        "ou_reversion"
+      ],
+      "matchingFiles": 241,
+      "shown": 30,
+      "files": [
+        {
+          "path": "research/json/strategy_experiment/audit_realism.json",
+          "hits": 696
+        },
+        {
+          "path": "extension/src/perps/archive-presets.js",
+          "hits": 103
+        },
+        {
+          "path": "research/papers/RANKED_LISTS.md",
+          "hits": 101
+        },
+        {
+          "path": "research/json/strategy_experiment/results/initial-gapped-run/results.json",
+          "hits": 64
+        },
+        {
+          "path": "research/json/strategy_experiment/results/results.json",
+          "hits": 64
+        },
+        {
+          "path": "research/papers/results/tables.md",
+          "hits": 55
+        },
+        {
+          "path": "research/papers/results/cpcv_combos_tables.md",
+          "hits": 49
+        },
+        {
+          "path": "backtester/tests/test_sweep_pair_gate.py",
+          "hits": 41
+        },
+        {
+          "path": "research/results/minute_sweep_x1_common.txt",
+          "hits": 35
+        },
+        {
+          "path": "docs/FILES.md",
+          "hits": 22
+        },
+        {
+          "path": "FILES.md",
+          "hits": 21
+        },
+        {
+          "path": "TRADINGVIEW-REFERENCE.md",
+          "hits": 21
+        },
+        {
+          "path": "docs/TRADINGVIEW-REFERENCE.md",
+          "hits": 21
+        },
+        {
+          "path": "backtester/tests/test_strategy_duplication.py",
+          "hits": 20
+        },
+        {
+          "path": "research/json/native-pairs-week-20261117/markets/ZEC-USD/summary.json",
+          "hits": 18
+        },
+        {
+          "path": "research/json/results/compound-10coin-fullhistory-2026-11-07.json",
+          "hits": 18
+        },
+        {
+          "path": "research/scripts/sweep.py",
+          "hits": 18
+        },
+        {
+          "path": "research/json/strategy_experiment/results/comparison.md",
+          "hits": 16
+        },
+        {
+          "path": "research/json/strategy_experiment/results/initial-gapped-run/comparison.md",
+          "hits": 16
+        },
+        {
+          "path": "soltui/signals.py",
+          "hits": 16
+        },
+        {
+          "path": "extension/tools/lib/zec-perps-signals.mjs",
+          "hits": 15
+        },
+        {
+          "path": "research/json/strategy_experiment/results/auxiliary.json",
+          "hits": 15
+        },
+        {
+          "path": "backtester/strategy_cards/ou_half_life_sizing.md",
+          "hits": 13
+        },
+        {
+          "path": "extension/test/zec-gum-prospective.test.js",
+          "hits": 13
+        },
+        {
+          "path": "research/strategy_experiment/candidate/strategy_cards/ou_half_life_sizing.md",
+          "hits": 13
+        },
+        {
+          "path": "research/strategy_experiment/original/strategy_cards/ou_half_life_sizing.md",
+          "hits": 13
+        },
+        {
+          "path": "llms-filemap.txt",
+          "hits": 12
+        },
+        {
+          "path": "COMPOUND-5M-PAPER.md",
+          "hits": 11
+        },
+        {
+          "path": "docs/COMPOUND-5M-PAPER.md",
+          "hits": 11
+        },
+        {
+          "path": "research/json/tradingview-card-coverage.json",
+          "hits": 11
+        }
+      ],
+      "source": "backtester/core/strategies/__init__.py FAMILY"
+    },
+    {
       "id": "overfitting-pbo",
       "label": "Overfitting and PBO",
       "why": "PBO measured 0.700 at daily horizons against a 0.500 noise line, so in-sample rank is anti-informative. This is the finding that governs how every other number here may be read.",
@@ -2611,143 +2748,6 @@
         }
       ],
       "source": "curated-from-repo-vocabulary"
-    },
-    {
-      "id": "family:mean-reversion",
-      "label": "Strategy family: mean-reversion",
-      "why": "A value of the FAMILY dict in backtester/core/strategies/__init__.py, which is the repo's own taxonomy rather than one imposed here.",
-      "terms": [
-        "mean-reversion",
-        "zscore",
-        "bb_reversion",
-        "vwap_reversion",
-        "ou_reversion"
-      ],
-      "matchingFiles": 233,
-      "shown": 30,
-      "files": [
-        {
-          "path": "research/json/strategy_experiment/audit_realism.json",
-          "hits": 696
-        },
-        {
-          "path": "extension/src/perps/archive-presets.js",
-          "hits": 103
-        },
-        {
-          "path": "research/papers/RANKED_LISTS.md",
-          "hits": 101
-        },
-        {
-          "path": "research/json/strategy_experiment/results/initial-gapped-run/results.json",
-          "hits": 64
-        },
-        {
-          "path": "research/json/strategy_experiment/results/results.json",
-          "hits": 64
-        },
-        {
-          "path": "research/papers/results/tables.md",
-          "hits": 55
-        },
-        {
-          "path": "research/papers/results/cpcv_combos_tables.md",
-          "hits": 49
-        },
-        {
-          "path": "backtester/tests/test_sweep_pair_gate.py",
-          "hits": 41
-        },
-        {
-          "path": "research/results/minute_sweep_x1_common.txt",
-          "hits": 35
-        },
-        {
-          "path": "docs/FILES.md",
-          "hits": 22
-        },
-        {
-          "path": "FILES.md",
-          "hits": 21
-        },
-        {
-          "path": "TRADINGVIEW-REFERENCE.md",
-          "hits": 21
-        },
-        {
-          "path": "docs/TRADINGVIEW-REFERENCE.md",
-          "hits": 21
-        },
-        {
-          "path": "backtester/tests/test_strategy_duplication.py",
-          "hits": 20
-        },
-        {
-          "path": "research/json/native-pairs-week-20261117/markets/ZEC-USD/summary.json",
-          "hits": 18
-        },
-        {
-          "path": "research/json/results/compound-10coin-fullhistory-2026-11-07.json",
-          "hits": 18
-        },
-        {
-          "path": "research/scripts/sweep.py",
-          "hits": 18
-        },
-        {
-          "path": "research/json/strategy_experiment/results/comparison.md",
-          "hits": 16
-        },
-        {
-          "path": "research/json/strategy_experiment/results/initial-gapped-run/comparison.md",
-          "hits": 16
-        },
-        {
-          "path": "soltui/signals.py",
-          "hits": 16
-        },
-        {
-          "path": "extension/tools/lib/zec-perps-signals.mjs",
-          "hits": 15
-        },
-        {
-          "path": "research/json/strategy_experiment/results/auxiliary.json",
-          "hits": 15
-        },
-        {
-          "path": "backtester/strategy_cards/ou_half_life_sizing.md",
-          "hits": 13
-        },
-        {
-          "path": "extension/test/zec-gum-prospective.test.js",
-          "hits": 13
-        },
-        {
-          "path": "research/strategy_experiment/candidate/strategy_cards/ou_half_life_sizing.md",
-          "hits": 13
-        },
-        {
-          "path": "research/strategy_experiment/original/strategy_cards/ou_half_life_sizing.md",
-          "hits": 13
-        },
-        {
-          "path": "llms-filemap.txt",
-          "hits": 12
-        },
-        {
-          "path": "COMPOUND-5M-PAPER.md",
-          "hits": 11
-        },
-        {
-          "path": "docs/COMPOUND-5M-PAPER.md",
-          "hits": 11
-        },
-        {
-          "path": "research/json/tradingview-card-coverage.json",
-          "hits": 11
-        }
-      ],
-      "source": "backtester/core/strategies/__init__.py FAMILY"
     },
     {
       "id": "family:risk-overlay",

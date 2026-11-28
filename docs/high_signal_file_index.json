@@ -86,7 +86,7 @@
       "component": "website",
       "kind": "markdown",
       "summary": "Implemented website scope, independent readiness gates, setup and deployment",
-      "lines": 253
+      "lines": 272
     },
     {
       "path": "website/package.json",
@@ -121,7 +121,7 @@
       "component": "website",
       "kind": "javascript",
       "summary": "Wallet authentication, tenant API, Stripe entitlement and read-only analysis proxy",
-      "lines": 667
+      "lines": 679
     },
     {
       "path": "website/public/app.js",
@@ -156,7 +156,7 @@
       "component": "website",
       "kind": "python",
       "summary": "Deterministic public research catalog/body export and hash checks",
-      "lines": 124
+      "lines": 135
     },
     {
       "path": "website/test/api.test.js",
@@ -191,7 +191,7 @@
       "component": "repo",
       "kind": "yaml",
       "summary": "Website Node/Python/export CI gates",
-      "lines": 34
+      "lines": 36
     },
     {
       "path": "ecosystem/cli.py",
@@ -240,7 +240,7 @@
       "component": "ecosystem",
       "kind": "python",
       "summary": "Validated packaged documentation catalog and page reads",
-      "lines": 339
+      "lines": 349
     },
     {
       "path": "scripts/build_ecosystem_wiki.py",
@@ -261,7 +261,7 @@
       "component": "oracle",
       "kind": "python",
       "summary": "Explicit source/archive CLI",
-      "lines": 352
+      "lines": 414
     },
     {
       "path": "oracle/engine.py",
@@ -289,7 +289,7 @@
       "component": "oracle",
       "kind": "python",
       "summary": "Read-only MCP tools and subscriptions",
-      "lines": 536
+      "lines": 583
     },
     {
       "path": "oracle/guidance.py",
@@ -331,14 +331,14 @@
       "component": "oracle",
       "kind": "python",
       "summary": "Durable GUM close/settle/open position transitions",
-      "lines": 454
+      "lines": 556
     },
     {
       "path": "oracle/gum_orders.py",
       "component": "oracle",
       "kind": "python",
       "summary": "Verified locally constructed ZEC order Actions and fill read-back",
-      "lines": 958
+      "lines": 1094
     },
     {
       "path": "oracle/gum_signer.py",
@@ -706,181 +706,211 @@
       "path": "research/scripts/meta_analysis.py",
       "component": "research",
       "kind": "python",
-      "summary": "Source-bound trial consolidation preserving original units, exclusions and explicit extra receipts"
+      "summary": "Source-bound trial consolidation preserving original units, exclusions and explicit extra receipts",
+      "lines": 176
     },
     {
       "path": "research/scripts/meta_followups.py",
       "component": "research",
       "kind": "python",
-      "summary": "Actual-fee canonical spot replays and fixed-slot concentration attribution"
+      "summary": "Actual-fee canonical spot replays and fixed-slot concentration attribution",
+      "lines": 277
     },
     {
       "path": "research/papers/META-ANALYSIS.md",
       "component": "research",
       "kind": "markdown",
-      "summary": "Evidence synthesis, independent comparison, implemented followups and investment decision"
+      "summary": "Evidence synthesis, independent comparison, implemented followups and investment decision",
+      "lines": 400
     },
     {
       "path": "research/scripts/decide.py",
       "component": "research",
       "kind": "python",
-      "summary": "Per-bar readout: what every strategy, signal and indicator says about the last bar"
+      "summary": "Per-bar readout: what every strategy, signal and indicator says about the last bar",
+      "lines": 1303
     },
     {
       "path": "research/scripts/sweep.py",
       "component": "research",
       "kind": "python",
-      "summary": "Parameter sweeps"
+      "summary": "Parameter sweeps",
+      "lines": 890
     },
     {
       "path": "research/scripts/cpcv_sweep.py",
       "component": "research",
       "kind": "python",
-      "summary": "CPCV sweep plus interpret(), which exists to kill the \"lots of strategies work\" misreading"
+      "summary": "CPCV sweep plus interpret(), which exists to kill the \"lots of strategies work\" misreading",
+      "lines": 530
     },
     {
       "path": "research/scripts/cross_asset_cpcv.py",
       "component": "research",
       "kind": "python",
-      "summary": "Whether a result on one coin transfers to another"
+      "summary": "Whether a result on one coin transfers to another",
+      "lines": 838
     },
     {
       "path": "research/scripts/turnover_table.py",
       "component": "research",
       "kind": "python",
-      "summary": "One turnover pull shared by all ten coin spokes"
+      "summary": "One turnover pull shared by all ten coin spokes",
+      "lines": 203
     },
     {
       "path": "research/scripts/verify_numbers.py",
       "component": "research",
       "kind": "python",
-      "summary": "Re-derives every figure quoted in the research docs; exit 0 means they all check out"
+      "summary": "Re-derives every figure quoted in the research docs; exit 0 means they all check out",
+      "lines": 1123
     },
     {
       "path": "research/scripts/full_suite.py",
       "component": "research",
       "kind": "python",
-      "summary": "One command: fetch fresh candles and funding for the universe, then the registry sweep and the compound 5m sweep on every asset"
+      "summary": "One command: fetch fresh candles and funding for the universe, then the registry sweep and the compound 5m sweep on every asset",
+      "lines": 254
     },
     {
       "path": "research/scripts/geometry.py",
       "component": "research",
       "kind": "python",
-      "summary": "Grid geometry helpers"
+      "summary": "Grid geometry helpers",
+      "lines": 321
     },
     {
       "path": "research/scripts/shape_study.py",
       "component": "research",
       "kind": "python",
-      "summary": "Causal OHLC price-path labels, shape intervals and train-only spot strategy routing with execution-cost sensitivity"
+      "summary": "Causal OHLC price-path labels, shape intervals and train-only spot strategy routing with execution-cost sensitivity",
+      "lines": 667
     },
     {
       "path": "research/scripts/shape_report.py",
       "component": "research",
       "kind": "python",
-      "summary": "Verify artifact/source hashes and regenerate the measured shape-study report"
+      "summary": "Verify artifact/source hashes and regenerate the measured shape-study report",
+      "lines": 341
     },
     {
       "path": "research/papers/SHAPE-AWARE-SPOT.md",
       "component": "research",
       "kind": "markdown",
-      "summary": "Eight-coin Coinbase spot geometry study, shape-conditioned comparisons and cost limits"
+      "summary": "Eight-coin Coinbase spot geometry study, shape-conditioned comparisons and cost limits",
+      "lines": 214
     },
     {
       "path": "research/scripts/zec_cycles.py",
       "component": "research",
       "kind": "python",
-      "summary": "Irregular-time ZEC periodicity tests, searched-frequency nulls and frozen harmonic forecasts"
+      "summary": "Irregular-time ZEC periodicity tests, searched-frequency nulls and frozen harmonic forecasts",
+      "lines": 477
     },
     {
       "path": "research/scripts/coinbase50_data.py",
       "component": "research",
       "kind": "python",
-      "summary": "Identity-bound Coinbase universe and resumable native-candle evidence collection"
+      "summary": "Identity-bound Coinbase universe and resumable native-candle evidence collection",
+      "lines": 163
     },
     {
       "path": "research/scripts/coinbase50_stats.py",
       "component": "research",
       "kind": "python",
-      "summary": "Cross-coin period stability, frozen forecasts and corrected hour-of-day tests"
+      "summary": "Cross-coin period stability, frozen forecasts and corrected hour-of-day tests",
+      "lines": 179
     },
     {
       "path": "research/scripts/coinbase50_grid.py",
       "component": "research",
       "kind": "python",
-      "summary": "Training-only recovery ranking, shape/cycle/calendar/H1 gates and normalized canonical grids"
+      "summary": "Training-only recovery ranking, shape/cycle/calendar/H1 gates and normalized canonical grids",
+      "lines": 185
     },
     {
       "path": "research/scripts/coinbase50_study.py",
       "component": "research",
       "kind": "python",
-      "summary": "Protected-window study runner, matched-budget factorial portfolios and source-bound manifests"
+      "summary": "Protected-window study runner, matched-budget factorial portfolios and source-bound manifests",
+      "lines": 332
     },
     {
       "path": "research/scripts/coinbase50_report.py",
       "component": "research",
       "kind": "python",
-      "summary": "Top50 numerical report and standalone scientific figures"
+      "summary": "Top50 numerical report and standalone scientific figures",
+      "lines": 141
     },
     {
       "path": "research/papers/COINBASE50-GRID-CYCLES.md",
       "component": "research",
       "kind": "markdown",
-      "summary": "Measured wavelength, grid-combination and time-of-day findings with exclusions and costs"
+      "summary": "Measured wavelength, grid-combination and time-of-day findings with exclusions and costs",
+      "lines": 585
     },
     {
       "path": "research/scripts/zec_cycle_report.py",
       "component": "research",
       "kind": "python",
-      "summary": "Verify cycle artifacts and render the evidence report and figures"
+      "summary": "Verify cycle artifacts and render the evidence report and figures",
+      "lines": 440
     },
     {
       "path": "research/papers/ZEC-CYCLE-VALIDATION.md",
       "component": "research",
       "kind": "markdown",
-      "summary": "Yesterday's ZEC swing spacing compared with no-clock controls and later prediction"
+      "summary": "Yesterday's ZEC swing spacing compared with no-clock controls and later prediction",
+      "lines": 155
     },
     {
       "path": "research/scripts/perturb.py",
       "component": "research",
       "kind": "python",
-      "summary": "Parameter perturbation for robustness"
+      "summary": "Parameter perturbation for robustness",
+      "lines": 468
     },
     {
       "path": "research/papers/STRATEGIES.md",
       "component": "research",
       "kind": "markdown",
-      "summary": "The strategy survey"
+      "summary": "The strategy survey",
+      "lines": 801
     },
     {
       "path": "research/papers/RANKED_LISTS.md",
       "component": "research",
       "kind": "markdown",
-      "summary": "Ranked results"
+      "summary": "Ranked results",
+      "lines": 1083
     },
     {
       "path": "research/papers/TOP_COINS.md",
       "component": "research",
       "kind": "markdown",
-      "summary": "Coin shortlist"
+      "summary": "Coin shortlist",
+      "lines": 141
     },
     {
       "path": "research/papers/TOP5-RECOMMENDATION.md",
       "component": "research",
       "kind": "markdown",
-      "summary": "The narrowed recommendation"
+      "summary": "The narrowed recommendation",
+      "lines": 107
     },
     {
       "path": "research/papers/CROSS-ASSET-TRANSFER.md",
       "component": "research",
       "kind": "markdown",
-      "summary": "Cross-asset transfer findings"
+      "summary": "Cross-asset transfer findings",
+      "lines": 224
     },
     {
       "path": "research/papers/PROMPT_STRATEGIES.md",
       "component": "research",
       "kind": "markdown",
-      "summary": "The prompt the strategy work was built from"
+      "summary": "The prompt the strategy work was built from",
+      "lines": 174
     },
     {
       "path": "research/papers/coin-intelligence",
@@ -905,21 +935,21 @@
       "component": "extension",
       "kind": "json",
       "summary": "MV3 manifest; validated in CI",
-      "lines": 83
+      "lines": 84
     },
     {
       "path": "extension/package.json",
       "component": "extension",
       "kind": "json",
       "summary": "Scripts only \u2014 no runtime and no dev dependencies",
-      "lines": 22
+      "lines": 24
     },
     {
       "path": "extension/README.md",
       "component": "extension",
       "kind": "markdown",
       "summary": "Includes the Verification status section; read it before extending",
-      "lines": 838
+      "lines": 873
     },
     {
       "path": "extension/src/1000x/feed.js",
@@ -947,14 +977,14 @@
       "component": "extension",
       "kind": "javascript",
       "summary": "Independent quote/history freshness and closed/developing eligibility checks",
-      "lines": 53
+      "lines": 86
     },
     {
       "path": "extension/src/1000x/panel.js",
       "component": "extension",
       "kind": "javascript",
       "summary": "Floating read-only chart, labeled reversal/shape/momentum cards and local view settings",
-      "lines": 317
+      "lines": 373
     },
     {
       "path": "extension/src/1000x/timeframes.js",
@@ -992,6 +1022,97 @@
       "lines": 93
     },
     {
+      "path": "extension/src/1000x/scalp-indicators.js",
+      "component": "extension",
+      "kind": "javascript",
+      "summary": "Pure causal readings on 1s oracle bars and the tick-to-second aggregator; a port of the research feature definitions",
+      "lines": 336
+    },
+    {
+      "path": "extension/src/1000x/scalp-model.js",
+      "component": "extension",
+      "kind": "javascript",
+      "summary": "Sixteen-tile vote, tiers, 30 second cone, slope ladder history and reversal timing, session score and the BigInt payout port",
+      "lines": 279
+    },
+    {
+      "path": "extension/src/1000x/scalp-model-data.js",
+      "component": "extension",
+      "kind": "javascript",
+      "summary": "Generated study constants: tiles, thresholds, measured hit rates, cone quantiles and slope baselines",
+      "lines": 288
+    },
+    {
+      "path": "extension/src/1000x/exit-guard.js",
+      "component": "extension",
+      "kind": "javascript",
+      "summary": "Pure take-profit / stop-loss state machine: fresh-quote trigger, one close request, bounded lock wait, no retry of an unconfirmed press",
+      "lines": 258
+    },
+    {
+      "path": "extension/src/1000x/page-bridge.js",
+      "component": "extension",
+      "kind": "javascript",
+      "summary": "Content script that reads the 1000x positions table and presses one exactly matched row's own Close button",
+      "lines": 148
+    },
+    {
+      "path": "extension/src/1000x/scalp.js",
+      "component": "extension",
+      "kind": "javascript",
+      "summary": "The 1s scalp window: feed to bars to read-outs, chart with cone, grid, slope ladder and the guard panel",
+      "lines": 604
+    },
+    {
+      "path": "extension/src/bg/jupiter-scalp-window.js",
+      "component": "extension",
+      "kind": "javascript",
+      "summary": "One scalp window per Jupiter tab and the only relay from that window to the tab's page bridge",
+      "lines": 159
+    },
+    {
+      "path": "extension/test/1000x-scalp.test.js",
+      "component": "extension",
+      "kind": "javascript",
+      "summary": "Python parity of every reading, slope ladder and payout; causality; vote tiers; cone; score book; reversal timing",
+      "lines": 229
+    },
+    {
+      "path": "extension/test/1000x-exit-guard.test.js",
+      "component": "extension",
+      "kind": "javascript",
+      "summary": "Guard levels, triggers, lock wait, confirmation and failure states; page-bridge row parsing and close selection",
+      "lines": 275
+    },
+    {
+      "path": "extension/test/jupiter-scalp-window.test.js",
+      "component": "extension",
+      "kind": "javascript",
+      "summary": "Window ownership across worker eviction, relay refusal for strangers, explicit failures and the registry command's validation",
+      "lines": 173
+    },
+    {
+      "path": "extension/tools/1000x-scalp-e2e.mjs",
+      "component": "extension",
+      "kind": "other",
+      "summary": "Chrome for Testing gate: trusted-click arming, alert mode presses nothing, close mode presses the row's Close once",
+      "lines": 315
+    },
+    {
+      "path": "research/scripts/scalp_1s_features.py",
+      "component": "research",
+      "kind": "python",
+      "summary": "Causal 1s-bar feature definitions shared by the study and the extension port",
+      "lines": 625
+    },
+    {
+      "path": "research/scripts/scalp_1s_study.py",
+      "component": "research",
+      "kind": "python",
+      "summary": "Scores every 1s feature against the next 30 seconds on recorded Jupiter oracle ticks and writes the extension's model constants and parity fixture",
+      "lines": 853
+    },
+    {
       "path": "extension/test/1000x-oracle-model.test.js",
       "component": "extension",
       "kind": "javascript",
@@ -1024,13 +1145,14 @@
       "component": "extension",
       "kind": "other",
       "summary": "Native Chrome fixture and actual-public-portal gates with exact executed module hashes",
-      "lines": 708
+      "lines": 915
     },
     {
       "path": "research/scripts/perps/1000x-reference.py",
       "component": "research",
       "kind": "python",
-      "summary": "Offline independent Python numerical-vector generator for extension analytics"
+      "summary": "Offline independent Python numerical-vector generator for extension analytics",
+      "lines": 82
     },
     {
       "path": "extension/test/1000x-reversal.test.js",
@@ -1044,14 +1166,21 @@
       "component": "repo",
       "kind": "markdown",
       "summary": "Public feed contracts, causal indicator/reversal formulas, browser evidence and installation",
-      "lines": 240
+      "lines": 254
+    },
+    {
+      "path": "docs/JUPITER-1000X-SCALP.md",
+      "component": "repo",
+      "kind": "markdown",
+      "summary": "The 1s scalp window: readings, slope ladder, exit guard rails, limits and verification",
+      "lines": 203
     },
     {
       "path": "extension/src/core/commands.js",
       "component": "extension",
       "kind": "javascript",
       "summary": "The single registry. Every action lives here or the parity test fails",
-      "lines": 1008
+      "lines": 1092
     },
     {
       "path": "extension/src/core/risk.js",
@@ -1086,7 +1215,7 @@
       "component": "extension",
       "kind": "javascript",
       "summary": "MV3 service worker and its timer constraints",
-      "lines": 484
+      "lines": 512
     },
     {
       "path": "extension/src/jupiter/http.js",
@@ -1205,7 +1334,7 @@
       "component": "extension",
       "kind": "javascript",
       "summary": "Signal Desk shell and hash router; four priority workflows and advanced views",
-      "lines": 214
+      "lines": 253
     },
     {
       "path": "extension/src/ui/view-overview.js",
@@ -1275,7 +1404,7 @@
       "component": "extension",
       "kind": "javascript",
       "summary": "Dependency wiring",
-      "lines": 94
+      "lines": 97
     },
     {
       "path": "extension/test/core.test.js",
@@ -1533,7 +1662,7 @@
       "component": "mongo",
       "kind": "python",
       "summary": "The loader. Drops and rebuilds, stamping provenance on every document",
-      "lines": 885
+      "lines": 888
     },
     {
       "path": "mongo/requirements.txt",
@@ -1610,14 +1739,14 @@
       "component": "repo",
       "kind": "markdown",
       "summary": "Agent instructions and the per-component non-negotiables",
-      "lines": 256
+      "lines": 264
     },
     {
       "path": "AGENTS.md",
       "component": "repo",
       "kind": "markdown",
       "summary": "Points at CLAUDE.md",
-      "lines": 28
+      "lines": 29
     },
     {
       "path": "GEMINI.md",
@@ -1638,7 +1767,7 @@
       "component": "repo",
       "kind": "yaml",
       "summary": "Extension, backtester, soltui, mongo, liquidity, executor and doc/index drift jobs",
-      "lines": 521
+      "lines": 527
     },
     {
       "path": "CONTRIBUTING.md",
@@ -2133,7 +2262,8 @@
       "path": "research/scripts/zec_leverage_panel.py",
       "component": "research",
       "kind": "python",
-      "summary": "Responsive ZEC/BTC paper monitor and explicit Preview/Submit/Close controls."
+      "summary": "Responsive ZEC/BTC paper monitor and explicit Preview/Submit/Close controls.",
+      "lines": 1745
     },
     {
       "path": "oracle_leverage/console.py",
@@ -2202,19 +2332,22 @@
       "path": "research/scripts/reversal_shapes.py",
       "component": "research",
       "kind": "python",
-      "summary": "Causal48bar shape conditioning, four bar intervals and fixed64-candidate selection."
+      "summary": "Causal48bar shape conditioning, four bar intervals and fixed64-candidate selection.",
+      "lines": 470
     },
     {
       "path": "research/scripts/reversal_inputs.py",
       "component": "research",
       "kind": "python",
-      "summary": "Bounded liquidBTC minute acquisition with exact raw-response hashes."
+      "summary": "Bounded liquidBTC minute acquisition with exact raw-response hashes.",
+      "lines": 126
     },
     {
       "path": "research/papers/REVERSAL-SHAPES.md",
       "component": "research",
       "kind": "markdown",
-      "summary": "Independently reproduced ZEC/BTC rates, final-split results and cost scenarios."
+      "summary": "Independently reproduced ZEC/BTC rates, final-split results and cost scenarios.",
+      "lines": 101
     },
     {
       "path": "extension/src/ui/signal-desk.js",
@@ -2263,7 +2396,7 @@
       "component": "website",
       "kind": "html",
       "summary": "Accessible static application shell",
-      "lines": 48
+      "lines": 60
     },
     {
       "path": "website/public/styles.css",
