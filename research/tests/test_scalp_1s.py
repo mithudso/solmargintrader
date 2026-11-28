@@ -186,7 +186,20 @@ class ScalpExperimentTests(unittest.TestCase):
     def test_the_grid_is_unique_and_covers_every_tile(self):
         ids = [variant["id"] for variant in F.VARIANTS]
         self.assertEqual(len(ids), len(set(ids)))
-        self.assertGreaterEqual(len(ids), 70)
+        self.assertGreaterEqual(len(ids), 300)
+        # MACD is tested over at least three dozen pairings of its fast and slow averages.
+        macd = [v["params"] for v in F.VARIANTS if v["kind"] == "macd"]
+        self.assertGreaterEqual(len({(p["fast"], p["slow"]) for p in macd}), 36)
+        self.assertGreaterEqual(len({p["signal"] for p in macd}), 3)
+        self.assertTrue(all(p["slow"] > p["fast"] for p in macd))
+        for kind in ("psar", "supertrend", "emacross"):
+            self.assertGreaterEqual(
+                sum(1 for v in F.VARIANTS if v["kind"] == kind), 36, kind
+            )
+        # No setting needs more bars than the window keeps, and old names lead to new ones.
+        self.assertLessEqual(max(v["need"] for v in F.VARIANTS), 900)
+        self.assertTrue(set(F.VARIANT_ALIASES.values()) <= set(ids))
+        self.assertFalse(set(F.VARIANT_ALIASES) & set(ids))
         self.assertEqual(set(F.TILE_VARIANTS), {key for key, _, _ in S.TILES})
         self.assertTrue(set(F.TILE_VARIANTS.values()) <= set(ids))
         self.assertEqual(len(set(F.TILE_VARIANTS.values())), len(F.TILE_VARIANTS))
@@ -205,7 +218,7 @@ class ScalpExperimentTests(unittest.TestCase):
             np.testing.assert_array_equal(variant[400:], tile[400:], err_msg=key)
 
     def test_a_variant_is_silent_until_it_has_its_bars(self):
-        frame = _frame(_walk(400, 2))
+        frame = _frame(_walk(700, 2))
         for variant in F.VARIANTS:
             self.assertFalse(
                 frame["variants"][variant["id"]][: variant["need"] - 1].any(),
@@ -237,9 +250,10 @@ class ScalpExperimentTests(unittest.TestCase):
         first = X.replay([[_frame(a)]], slots, prior, S.HORIZON, 0.0, 0.5, span)
         second = X.replay([[_frame(b)]], slots, prior, S.HORIZON, 0.0, 0.5, span)
         self.assertGreater(first["seconds"], 500)
-        for name in ("plain", "weighted", "tuned"):
+        for name in X.REPLAY_NAMES:
             self.assertEqual(first[name], second[name], name)
         self.assertEqual(first["changes"], second["changes"])
+        self.assertEqual(first["switched_share"], second["switched_share"])
         # And the later slice does differ, so the comparison is not vacuous.
         self.assertNotEqual(
             X.replay([[_frame(a)]], slots, prior, S.HORIZON, 0.5, 1.0, span)["plain"],
@@ -248,8 +262,8 @@ class ScalpExperimentTests(unittest.TestCase):
 
     def test_a_setting_takes_a_slot_only_when_clearly_ahead(self):
         kinds = ["slope", "slope", "slope", "roc", "slope"]
+        peers = X.same_kind(kinds)
         prior = np.array([0.52, 0.52, 0.50, 0.52, 0.52])
-        need = np.array([60, 5, 20, 3, X.PROMOTE_MAX_NEED + 1])
         horizon = 30
         enough = X.PROMOTE_MIN_EFF * horizon * 6.0
 
@@ -263,11 +277,11 @@ class ScalpExperimentTests(unittest.TestCase):
                 hit,
                 calls,
                 priors,
-                kinds,
+                peers,
                 locks or [-math.inf] * len(assign),
                 now,
                 horizon,
-                need,
+                "clear",
             )
 
         self.assertEqual(run([0.50, 0.62, 0.50, 0.50, 0.50]), [(0, 1)])
@@ -295,8 +309,6 @@ class ScalpExperimentTests(unittest.TestCase):
             run([0.50, 0.62, 0.50, 0.50, 0.50], locks=[10_000 - X.PROMOTE_LOCK_S + 1]),
             [],
         )
-        # A setting that needs a longer warm-up than the grid is never switched in.
-        self.assertEqual(run([0.50, 0.50, 0.50, 0.50, 0.90]), [])
         # One setting is never given to two slots.
         self.assertEqual(
             run(
@@ -308,6 +320,124 @@ class ScalpExperimentTests(unittest.TestCase):
         )
         self.assertAlmostEqual(X.wilson_lower(0.5, 100, 1.96), 0.40383, places=5)
         self.assertEqual(X.wilson_lower(0.6, 0), 0.0)
+
+    def test_the_default_rule_takes_the_highest_estimate_as_soon_as_it_is_higher(self):
+        self.assertEqual(X.DEFAULT_RULE, "best")
+        kinds = ["slope", "slope", "slope", "roc", "slope"]
+        peers = X.same_kind(kinds)
+        np.testing.assert_array_equal(peers[0], [0, 1, 2, 4])
+        np.testing.assert_array_equal(peers[3], [3])
+        flat = np.full(5, 0.52)
+
+        def run(rates, counts=None, assign=(0,), priors=flat, locks=None):
+            calls = np.array(counts if counts is not None else [3000.0] * 5)
+            return X.find_promotions(
+                list(assign),
+                np.array(rates) * calls,
+                calls,
+                priors,
+                peers,
+                locks or [10_000] * len(assign),
+                10_000,
+                30,
+                "best",
+            )
+
+        # One point ahead is enough, a recent change does not block it, and the best of several wins.
+        self.assertEqual(run([0.52, 0.53, 0.50, 0.50, 0.50]), [(0, 1)])
+        self.assertEqual(run([0.50, 0.60, 0.50, 0.90, 0.66]), [(0, 4)])
+        # The setting in use stays when it is the best, or level with the best.
+        self.assertEqual(run([0.70, 0.60, 0.50, 0.50, 0.66]), [])
+        self.assertEqual(run([0.55, 0.55, 0.55, 0.50, 0.55]), [])
+        # With nothing live the recorded rate decides; a few live calls barely move it.
+        self.assertEqual(
+            run(
+                [0.0] * 5,
+                counts=[0.0] * 5,
+                priors=np.array([0.51, 0.5, 0.55, 0.6, 0.5]),
+            ),
+            [(0, 2)],
+        )
+        self.assertEqual(
+            run(
+                [0.5, 1.0, 0.5, 0.5, 0.5],
+                counts=[3.0] * 5,
+                priors=np.array([0.56, 0.5, 0.5, 0.5, 0.5]),
+            ),
+            [],
+        )
+        # Two slots of one kind take different settings, the first slot the better one.
+        self.assertEqual(
+            run([0.50, 0.60, 0.50, 0.50, 0.70], assign=(0, 2)), [(0, 4), (1, 1)]
+        )
+        with self.assertRaises(ValueError):
+            X.find_promotions([0], flat, flat, flat, peers, [0], 0, 30, "sometimes")
+
+    def test_a_reading_under_half_votes_the_other_way_in_the_inverse_aggregate(self):
+        # Edges +0.10, +0.05, 0 and -0.10: the last reading says down, so it counts as up.
+        self.assertAlmostEqual(
+            X.signed_score([0.6, 0.55, 0.5, 0.4], np.array([1.0, 1.0, -1.0, -1.0])), 1.0
+        )
+        self.assertAlmostEqual(
+            X.signed_score([0.6, 0.55, 0.5, 0.4], np.array([1.0, 1.0, 1.0, 1.0])), 0.2
+        )
+        self.assertIsNone(X.signed_score([0.5, 0.5], np.array([1.0, -1.0])))
+
+    def test_a_switched_setting_without_its_bars_leaves_the_tile_on_the_starting_one(
+        self,
+    ):
+        # Every prior equal except one long MACD: the default rule switches the MACD tile to it
+        # at once, long before it has its 270 bars. The grid must still be scored from second 78.
+        prior = {variant["id"]: 0.52 for variant in F.VARIANTS}
+        prior["macd_20_90_9"] = 0.60
+        slots = [F.TILE_VARIANTS[key] for key, _, _ in S.TILES]
+        frame = _frame(_walk(400, 4))
+        out = X.replay([[frame]], slots, prior, S.HORIZON)
+        warm = max(v["need"] for v in F.VARIANTS if v["id"] in slots)
+        scored = int(
+            (
+                (np.arange(400) + 1 >= warm)
+                & (X.forward_sign(frame["close"], S.HORIZON) != 0)
+            ).sum()
+        )
+        self.assertEqual(out["seconds"], scored)
+        self.assertIn(
+            {
+                "time": int(frame["time"][0]),
+                "from": "macd_12_26_9",
+                "to": "macd_20_90_9",
+            },
+            out["change_log"]["best"],
+        )
+        self.assertEqual(out["changes"]["clear"], 0)
+        self.assertGreater(out["switched_share"]["best"], 0.0)
+
+    def test_betting_against_a_setting_that_was_usually_wrong(self):
+        train = {
+            "a": {30: [0.46, 1000], 60: [0.55, 1000]},
+            "b": {30: [0.49, 1000], 60: [0.52, 1000]},
+            "c": {30: [0.55, 1000], 60: [0.47, 1000]},
+            "d": {30: [0.40, 10], 60: [None, 0]},
+        }
+        later = {
+            "a": {30: [0.45, 600], 60: [0.5, 600]},
+            "b": {30: [0.53, 300], 60: [0.5, 300]},
+            "c": {30: [0.60, 600], 60: [0.52, 600]},
+            "d": {30: [0.40, 600], 60: [0.5, 600]},
+        }
+        out = X.inverse_study(train, later, horizons=(30, 60))
+        row = out["30"]["under_50"]
+        # a and b were under half; d had too few calls to say. Against a: 55% of 600; against b: 47% of 300.
+        self.assertEqual([row["settings"], row["of"], row["calls_later"]], [2, 4, 900])
+        self.assertAlmostEqual(
+            row["inverse_hit_later"], (0.55 * 600 + 0.47 * 300) / 900
+        )
+        self.assertEqual(row["still_under_50_later"], 1)
+        self.assertEqual(row["lowest_hit"], 0.46)
+        self.assertEqual(row["best"][0][0], "a")
+        self.assertAlmostEqual(row["se"], math.sqrt(0.25 / (600 / 30)))
+        self.assertEqual(out["30"]["at_most_48"]["settings"], 1)
+        self.assertEqual(out["60"]["under_50"]["best"][0][0], "c")
 
     def test_the_running_record_fades_then_scores_the_calls_one_horizon_old(self):
         frame = _frame(100.0 + 0.01 * np.arange(200))
@@ -330,9 +460,9 @@ class ScalpExperimentTests(unittest.TestCase):
         prior = {variant["id"]: 0.52 for variant in F.VARIANTS}
         slots = [F.TILE_VARIANTS[key] for key, _, _ in S.TILES]
         out = X.replay([[_frame(_walk(3000, 5))]], slots, prior, S.HORIZON)
-        for name in ("plain", "weighted", "tuned"):
+        for name in X.REPLAY_NAMES:
             for tier, row in out[name].items():
-                if "hit" not in row:
+                if "path_bps" not in row:
                     continue
                 self.assertEqual(
                     [step for step, _ in row["path_bps"]],
@@ -343,7 +473,7 @@ class ScalpExperimentTests(unittest.TestCase):
                     row["path_bps"][-1][1], row["mean_follow_bps"], places=9
                 )
 
-    def test_the_rule_fixture_makes_the_switch_rule_choose(self):
+    def test_the_rule_fixture_makes_the_switch_rules_choose(self):
         frame = _frame(_walk(420, 6))
         prior = {
             variant["id"]: 0.5 + 0.03 * math.cos(k)
@@ -355,15 +485,44 @@ class ScalpExperimentTests(unittest.TestCase):
         self.assertAlmostEqual(sum(rule["weights"]), 1.0, places=9)
         self.assertAlmostEqual(sum(rule["made_up"]["weights"]), 1.0, places=9)
         self.assertTrue(all(value in (-1, 0, 1) for value in rule["votes"]))
-        self.assertGreaterEqual(len(rule["switches"]), 1)
-        needs = {variant["id"]: variant["need"] for variant in F.VARIANTS}
-        for start, switched in rule["switches"]:
-            self.assertIn(start, slots)
-            self.assertNotIn(switched, slots)
-            self.assertLessEqual(needs[switched], X.PROMOTE_MAX_NEED)
-        self.assertEqual(
-            len({switched for _, switched in rule["switches"]}), len(rule["switches"])
+        self.assertLessEqual(abs(rule["inverse_score"]), 1.0)
+        self.assertEqual(set(rule["switches"]), set(X.RULES))
+        for name, switches in rule["switches"].items():
+            self.assertGreaterEqual(len(switches), 1, name)
+            for start, switched in switches:
+                self.assertIn(start, slots)
+                self.assertNotIn(switched, slots)
+            self.assertEqual(len({switched for _, switched in switches}), len(switches))
+        self.assertGreaterEqual(
+            len(rule["switches"]["best"]), len(rule["switches"]["clear"])
         )
+
+    def test_the_shipped_model_carries_each_choice_its_own_replayed_record(self):
+        prior = {variant["id"]: 0.52 for variant in F.VARIANTS}
+        slots = [F.TILE_VARIANTS[key] for key, _, _ in S.TILES]
+        frame = _frame(_walk(3000, 8))
+        base = X.replay([[frame]], slots, prior, S.HORIZON)
+        measured = {name: X.measured_tiers(base, base, name) for name in X.REPLAY_NAMES}
+        table = X.experiment_table([frame])
+        usually_wrong = X.inverse_study(table, table)[str(S.HORIZON)]["under_50"]
+        model = X.experiments_model(
+            [key for key, _, _ in S.TILES],
+            table,
+            S.HORIZON,
+            measured,
+            base,
+            usually_wrong,
+        )
+        self.assertEqual(model["version"], 3)
+        self.assertEqual(model["promotion"]["rule"], "best")
+        self.assertEqual(set(model["measured_rules"]), {"clear", "best"})
+        self.assertEqual(set(model["measured_inverse"]), {"off", "best"})
+        self.assertEqual(model["aliases"], F.VARIANT_ALIASES)
+        self.assertEqual(len(model["variants"]), len(F.VARIANTS))
+        self.assertEqual(model["replay"]["changes"], base["changes"])
+        for tier, row in model["measured"].items():
+            self.assertEqual(row["live"]["hit"], base["weighted"][tier]["hit"])
+        self.assertIn("inverse_hit_later", model["usually_wrong"])
 
 
 class ScalpStreakAndFadeTests(unittest.TestCase):

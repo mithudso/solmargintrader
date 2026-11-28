@@ -240,7 +240,7 @@ def write_fixture(
     digest: str,
     model: dict,
     experiments: dict,
-    bars: int = 420,
+    bars: int = 720,
     start: int = 5000,
 ) -> None:
     """Real 1s bars and the tile readings computed on exactly that window, for the JS port."""
@@ -891,24 +891,32 @@ def main(argv=None) -> int:
         for name, groups in extra.items()
     }
 
-    weighted_measured = {}
-    for tier in ("mixed", "lean", "strong"):
-        row = weighted["base_after_60pct"]["weighted"].get(tier, {})
-        if "hit" in row:
-            weighted_measured[tier] = {
-                key: row[key] for key in ("hit", "share", "mean_follow_bps", "path_bps")
-            }
-            live_row = weighted.get("live_all", {}).get("weighted", {}).get(tier, {})
-            if "hit" in live_row:
-                weighted_measured[tier]["live"] = {
-                    "hit": live_row["hit"],
-                    "hit_se": live_row["hit_se"],
-                    "n": live_row["n"],
-                }
-    experiments_model = X.experiments_model(
-        [key for key, _, _ in TILES], experiments_all, HORIZON, weighted_measured
-    )
+    measured_by_name = {
+        name: X.measured_tiers(
+            weighted["base_after_60pct"], weighted.get("live_all"), name
+        )
+        for name in X.REPLAY_NAMES
+    }
+    # A setting that was usually wrong on the first 60%: does betting against it pay afterwards?
+    inverse_study = {
+        "base_after_60pct": X.inverse_study(experiments_train, experiments_late)
+    }
+    if live_frames:
+        inverse_study["live_all"] = X.inverse_study(experiments_all, experiments_live)
+    for name, groups in extra.items():
+        inverse_study[name] = X.inverse_study(
+            experiments_all,
+            X.experiment_table([fr for frames_ in groups for fr in frames_]),
+        )
 
+    experiments_model = X.experiments_model(
+        [key for key, _, _ in TILES],
+        experiments_all,
+        HORIZON,
+        measured_by_name,
+        weighted["base_after_60pct"],
+        inverse_study["base_after_60pct"][str(HORIZON)]["under_50"],
+    )
     model = {
         "version": 4,
         "horizon_s": HORIZON,
@@ -959,6 +967,7 @@ def main(argv=None) -> int:
         "weighted_vote_extra_live": signed_extra,
         "consecutive_strong": streak_study,
         "fade_below_half": fade_study,
+        "inverse_settings": inverse_study,
         "fade_z20_beyond_2": fade_eval,
         "trades_1000x": trades,
         "window_agreement": window_agreement,

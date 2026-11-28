@@ -162,12 +162,12 @@ def ema_cross_bps(close, fast: int, slow: int):
     return (ema(close, fast) - ema(close, slow)) / np.asarray(close) * 1e4
 
 
-def macd_hist_bps(close, scale: int = 1):
-    """MACD(12,26,9) histogram with every span multiplied by ``scale``."""
+def macd_hist_bps(close, fast: int = 12, slow: int = 26, signal: int = 9):
+    """MACD histogram in basis points of price: the fast EMA less the slow one, less its own signal EMA."""
     close = np.asarray(close, dtype=np.float64)
-    line = _ema_raw(close, 12 * scale) - _ema_raw(close, 26 * scale)
-    hist = (line - _ema_raw(line, 9 * scale)) / close * 1e4
-    hist[: min(close.size, EMA_WARMUP_SPANS * 26 * scale - 1)] = np.nan
+    line = _ema_raw(close, fast) - _ema_raw(close, slow)
+    hist = (line - _ema_raw(line, signal)) / close * 1e4
+    hist[: min(close.size, EMA_WARMUP_SPANS * slow - 1)] = np.nan
     return hist
 
 
@@ -565,7 +565,7 @@ def feature_table(seg) -> dict:
     for a, b in ((3, 10), (5, 20), (10, 30), (20, 60), (30, 120), (60, 300)):
         f[f"emax_{a}_{b}"] = ema_cross_bps(c, a, b)
     for k in (1, 2, 5):
-        f[f"macdh_{k}"] = macd_hist_bps(c, k)
+        f[f"macdh_{k}"] = macd_hist_bps(c, 12 * k, 26 * k, 9 * k)
     for w in (15, 30, 60, 120):
         f[f"slope_{w}"] = slope_t(c, w)
     for w in SLOPE_WINDOWS:
@@ -643,44 +643,113 @@ def _variant(kind, label, need, **params):
     }
 
 
+# Readings with more than one parameter get a grid over all of them: these are the
+# ones where a single hand-picked setting says least about the family.
+MACD_SIGNALS = (5, 9, 13)
+MACD_PAIRS = tuple(
+    (fast, slow)
+    for fast in (3, 5, 8, 12, 16, 20)
+    for slow in (10, 13, 17, 21, 26, 34, 45, 60, 90)
+    if slow > 1.6 * fast
+)
+EMA_PAIRS = tuple(
+    (fast, slow)
+    for fast in (2, 3, 5, 8, 10, 13, 20, 30)
+    for slow in (5, 8, 10, 13, 20, 30, 45, 60, 90, 120)
+    if slow >= 2 * fast
+)
+SAR_GRID = tuple(
+    (start, step, cap)
+    for start in (0.005, 0.01, 0.02, 0.05)
+    for step in (0.005, 0.01, 0.02, 0.05)
+    for cap in (0.1, 0.2, 0.4)
+)
+SUPERTREND_GRID = tuple(
+    (n, mult) for n in (5, 7, 10, 14, 20, 30, 45, 60) for mult in (1, 1.5, 2, 3, 4)
+)
+
 VARIANTS = (
     *[
         _variant("roc", f"Momentum {n}s", n + 1, n=n)
-        for n in (1, 2, 3, 5, 8, 13, 21, 34, 60, 90, 120)
+        for n in (
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            8,
+            10,
+            13,
+            16,
+            21,
+            26,
+            34,
+            45,
+            60,
+            75,
+            90,
+            120,
+            180,
+            300,
+        )
     ],
     *[
         _variant("breakout", f"Breakout {w}s", w + 1, w=w)
-        for w in (10, 20, 30, 45, 60, 90, 120, 180, 300)
+        for w in (5, 10, 15, 20, 30, 45, 60, 90, 120, 180, 240, 300, 450, 600)
     ],
     _variant("heikin", "Heikin-Ashi run", 60),
-    *[_variant("bop", f"Balance of power {n}s", n, n=n) for n in (3, 5, 8, 15, 30)],
-    *[_variant("zigzag", f"ZigZag {bps} bp", 60, bps=bps) for bps in (0.5, 1, 2, 3, 5)],
+    *[
+        _variant("bop", f"Balance of power {n}s", n, n=n)
+        for n in (2, 3, 4, 5, 6, 8, 10, 15, 20, 30, 45, 60)
+    ],
+    *[
+        _variant("zigzag", f"ZigZag {bps} bp", 60, bps=bps)
+        for bps in (0.25, 0.5, 0.75, 1, 1.5, 2, 3, 4, 5, 7.5, 10, 15)
+    ],
     *[
         _variant("donchian", f"Range position {w}s", w, w=w)
-        for w in (10, 20, 30, 60, 120, 300)
+        for w in (5, 10, 15, 20, 30, 45, 60, 90, 120, 180, 300, 600)
     ],
     *[
         _variant("efficiency", f"Efficiency {w}s", w + 1, w=w)
-        for w in (10, 20, 30, 60, 120)
+        for w in (5, 10, 15, 20, 30, 45, 60, 90, 120, 180, 300)
     ],
-    *[_variant("slope", f"Slope {w}s", w, w=w) for w in (5, 10, 20, 30, 60, 120, 300)],
+    *[
+        _variant("slope", f"Slope {w}s", w, w=w)
+        for w in (5, 8, 10, 15, 20, 30, 45, 60, 90, 120, 180, 300)
+    ],
     *[
         _variant("rsi", f"RSI {n}", max(60, n + 1), n=n)
-        for n in (5, 7, 10, 14, 21, 30, 60)
+        for n in (3, 5, 7, 9, 10, 14, 21, 30, 45, 60, 90, 120)
     ],
-    *[_variant("zscore", f"Z-score {w}", w, w=w) for w in (10, 20, 30, 60, 120, 300)],
-    *[_variant("macd", f"MACD x{k}", 78 * k, scale=k) for k in (1, 2, 3, 5)],
     *[
-        _variant("psar", f"SAR {a}/{c}", 60, start=a, cap=c)
-        for a, c in ((0.02, 0.2), (0.01, 0.1), (0.05, 0.3))
+        _variant("zscore", f"Z-score {w}", w, w=w)
+        for w in (5, 10, 15, 20, 30, 45, 60, 90, 120, 180, 300, 600)
+    ],
+    *[
+        _variant(
+            "macd",
+            f"MACD {f}/{sl}/{sig}",
+            EMA_WARMUP_SPANS * sl,
+            fast=f,
+            slow=sl,
+            signal=sig,
+        )
+        for f, sl in MACD_PAIRS
+        for sig in MACD_SIGNALS
+    ],
+    *[
+        _variant("psar", f"SAR {a}/{b}/{c}", 60, start=a, step=b, cap=c)
+        for a, b, c in SAR_GRID
     ],
     *[
         _variant("supertrend", f"Supertrend {n}x{m}", max(60, n), n=n, mult=m)
-        for n, m in ((10, 3), (10, 2), (20, 3), (30, 3), (30, 2), (60, 3))
+        for n, m in SUPERTREND_GRID
     ],
     *[
         _variant("emacross", f"EMA {f}/{sl}", EMA_WARMUP_SPANS * sl, fast=f, slow=sl)
-        for f, sl in ((3, 10), (5, 20), (10, 30), (20, 60))
+        for f, sl in EMA_PAIRS
     ],
 )
 # The variant each grid tile starts on, by tile key.
@@ -698,9 +767,15 @@ TILE_VARIANTS = {
     "slope": "slope_60",
     "rsi": "rsi_7",
     "zscore": "zscore_20",
-    "macd": "macd_1",
-    "psar": "psar_0p02_0p2",
+    "macd": "macd_12_26_9",
+    "psar": "psar_0p02_0p02_0p2",
     "supertrend": "supertrend_10_3",
+}
+# Ids a setting had in an earlier grid, so a saved live record follows it to its new name.
+VARIANT_ALIASES = {
+    "macd_1": "macd_12_26_9",
+    "psar_0p02_0p2": "psar_0p02_0p02_0p2",
+    "psar_0p01_0p1": "psar_0p01_0p01_0p1",
 }
 
 
@@ -729,9 +804,9 @@ def variant_values(seg, variant):
     elif kind == "zscore":
         out = zscore(c, p["w"])
     elif kind == "macd":
-        out = macd_hist_bps(c, p["scale"])
+        out = macd_hist_bps(c, p["fast"], p["slow"], p["signal"])
     elif kind == "psar":
-        out = psar_dir(h, lo, c, p["start"], p["start"], p["cap"])
+        out = psar_dir(h, lo, c, p["start"], p["step"], p["cap"])
     elif kind == "supertrend":
         out = supertrend_dir(h, lo, c, p["n"], p["mult"])
     elif kind == "emacross":

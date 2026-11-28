@@ -515,8 +515,9 @@ try {
   await check('every tile shows its own running hit rate at each interval', async () => {
     const seen = await until(() => state(`(() => { const tiles = [...document.querySelectorAll('.tile')]; const cells = tiles.map(tile => [...tile.querySelectorAll('.hits i')].map(cell => cell.textContent));
       return cells.length === 16 && cells.every(row => row.length === 6) && /^[0-9]+$/.test(cells[0][0]) && /^[0-9]+$/.test(cells[0][2])
-        ? { impulse: cells[0], title: tiles[0].querySelector('.hits i').title, late: cells[0][5] } : null; })()`), 'settled hit rates on the first tile', 60_000);
-    assert(/Momentum 2s was right [0-9]+% of the time over the next 5s/.test(seen.title), `a hit-rate cell does not explain itself: ${seen.title}`);
+        ? { impulse: cells[0], name: tiles[0].querySelector('.name').textContent, title: tiles[0].querySelector('.hits i').title, late: cells[0][5] } : null; })()`), 'settled hit rates on the first tile', 60_000);
+    // The first tile is a momentum reading; which window it uses is the switch rule's choice (a ★ marks a switched one).
+    assert(/^Momentum [0-9]+s( ★)?$/.test(seen.name) && new RegExp(`^5s: following ${seen.name.replace(' ★', '')} was right [0-9]+% of the time over the next 5s`).test(seen.title), `a hit-rate cell does not explain itself: ${seen.name}: ${seen.title}`);
     assert(seen.late === '·', 'the 5 minute interval showed a rate before five minutes had passed');
     return seen;
   });
@@ -536,16 +537,32 @@ try {
       return !document.getElementById('panel-experiments').hidden && rows.length > 70 ? { hidden: document.getElementById('panel-live').hidden, rows: rows.length,
         columns: board.tHead.rows[0].cells.length, intervals: [...board.tHead.rows[0].cells].slice(1, -1).map(th => th.textContent),
         slots: document.querySelectorAll('#exp-slots tbody tr').length, inUse: document.querySelectorAll('#exp-board tr[data-in-use]').length,
-        status: document.getElementById('exp-status').textContent, auto: document.getElementById('exp-auto').checked, cell: rows[0].cells[6].textContent, cellTitle: rows[0].cells[6].title,
+        status: document.getElementById('exp-status').textContent, rule: document.getElementById('exp-rule').value, inverse: document.getElementById('exp-inverse').value,
+        kinds: document.getElementById('exp-kind').options.length, macd: rows.filter(row => /^(● )?MACD [0-9]+[/][0-9]+[/][0-9]+$/.test(row.cells[0].textContent)).length,
+        inverseRows: [...document.querySelectorAll('#exp-inverse-table tbody tr')].map(tr => [tr.cells[0].textContent, tr.hasAttribute('data-in-use'), tr.cells[3].textContent]),
+        inverseNote: document.getElementById('exp-inverse-note').textContent, cell: rows[0].cells[6].textContent, cellTitle: rows[0].cells[6].title,
         liveCells: document.querySelectorAll('#exp-board td[data-vote]:not(.rec):not([data-vote=warming])').length,
         says: [...document.querySelectorAll('#exp-slots tbody tr')].map(tr => tr.cells[2].textContent), rival: document.querySelector('#exp-slots tbody tr').cells[5].title,
         guard: getComputedStyle(document.getElementById('guard')).display, call: getComputedStyle(document.getElementById('call')).display } : null; })()`), 'the Experiments tab');
-    assert(seen.hidden && seen.rows === 79 && seen.slots === 16 && seen.inUse === 16, `tab contents: ${JSON.stringify(seen)}`);
+    assert(seen.hidden && seen.rows === 380 && seen.slots === 16 && seen.inUse === 16, `tab contents: ${JSON.stringify(seen)}`);
+    assert(seen.macd === 123 && seen.kinds === 15, `MACD settings ${seen.macd}, kinds ${seen.kinds}`);
     assert(seen.columns === 14 && seen.intervals.join(' ') === '3s 5s 10s 15s 20s 30s 45s 1m 90s 2m 3m 5m', `intervals: ${seen.intervals}`);
-    assert(/Testing 79 settings at 12 intervals/.test(seen.status) && seen.auto === true, seen.status);
+    assert(/Testing 380 settings at 12 intervals/.test(seen.status) && seen.rule === 'best' && seen.inverse === 'off', `${seen.status} ${seen.rule} ${seen.inverse}`);
+    // The inverse-vote experiment: both aggregates listed, the one in use marked, each with its recorded figure.
+    assert(seen.inverseRows.length === 2 && seen.inverseRows[0][0] === '● Sit out' && seen.inverseRows[0][1] && seen.inverseRows[1][0] === 'Vote the other way' && !seen.inverseRows[1][1]
+      && seen.inverseRows.every(row => /^[0-9.]+% · [0-9]+% of seconds$/.test(row[2])) && /betting against those afterwards was right/.test(seen.inverseNote), `inverse experiment: ${JSON.stringify(seen.inverseRows)} ${seen.inverseNote}`);
     assert(/^[0-9]+$/.test(seen.cell) && /next 30s/.test(seen.cellTitle), `a cell does not explain itself: ${seen.cellTitle}`);
     assert(seen.liveCells > 0, 'no live result replaced a recorded figure');
-    assert(/cautious estimate/.test(seen.rival), 'the switch rule is not explained');
+    assert(/highest estimate, whenever that is higher than its own/.test(seen.rival), 'the switch rule is not explained');
+    // The kind filter shows one reading's settings and brings the rest back.
+    await state(`(() => { const select = document.getElementById('exp-kind'); select.value = 'macd'; select.dispatchEvent(new Event('change', { bubbles: true })); })()`);
+    const shown = await until(() => state(`(() => { const rows = [...document.querySelectorAll('#exp-board tbody tr')].filter(tr => !tr.hidden); return rows.length < 380 ? { rows: rows.length, macd: rows.every(tr => /MACD/.test(tr.cells[0].textContent)), height: rows[0].getBoundingClientRect().height } : null; })()`), 'the kind filter');
+    assert(shown.rows === 123 && shown.macd && shown.height > 0, `kind filter: ${JSON.stringify(shown)}`);
+    // Turning inverse votes on moves the mark, and off again restores the default.
+    await state(`(() => { const select = document.getElementById('exp-inverse'); select.value = 'on'; select.dispatchEvent(new Event('change', { bubbles: true })); })()`);
+    await until(() => state(`document.querySelector('#exp-inverse-table tbody tr:nth-child(2)').hasAttribute('data-in-use') && !document.querySelector('#exp-inverse-table tbody tr').hasAttribute('data-in-use')`), 'inverse votes in use');
+    await state(`(() => { for (const [id, value] of [['exp-inverse', 'off'], ['exp-kind', '']]) { const select = document.getElementById(id); select.value = value; select.dispatchEvent(new Event('change', { bubbles: true })); } })()`);
+    await until(() => state(`document.querySelector('#exp-inverse-table tbody tr').hasAttribute('data-in-use') && [...document.querySelectorAll('#exp-board tbody tr')].every(tr => !tr.hidden)`), 'defaults restored');
     assert(seen.guard !== 'none' && seen.call !== 'none', 'the order panel or the call left the screen');
     if (FULL) assert(seen.says.every(text => /^[0-9]+%$/.test(text)) && Math.abs(seen.says.reduce((sum, text) => sum + Number.parseInt(text, 10), 0) - 100) <= 8, `says: ${seen.says}`);
     if (OUT) {

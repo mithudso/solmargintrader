@@ -1,7 +1,33 @@
 # Work continuation
 
-Version: 738
-Delta: v737 to v738. Record that the manager-poll entry after an update is now a quiet notice with an immediate gated reload (extension 0.22.1). Earlier:
+Version: 739
+Delta: v738 to v739. Record the wider scalp experiment grid (380 settings), the highest-hit-rate switch rule as the default, the inverse-vote experiment and what the replay measured (extension 0.23.0). Earlier:
+
+## Scalp experiments: highest hit rate wins, 380 settings, inverse votes · 2026-11-28
+
+Request (`prompts.md` v344): always switch a tile to the experiment with the higher hit rate; many more settings for the readings with the most parameters (at least three dozen MACD pairings); an experiment in which a reading that is usually wrong votes the other way.
+
+Done (0.23.0):
+- Grid: 79 to 380 settings (`research/scripts/scalp_1s_features.py`, exported to `extension/src/1000x/scalp-experiments-data.js`). MACD 123 (41 fast/slow pairs by signal 5, 9, 13), EMA cross 51, Parabolic SAR 48 (start, step, cap separately), Supertrend 40, the one-parameter readings 11 to 20 each. `macd_hist_bps` / `macdHistogramBps` now take fast, slow, signal. Old ids map to new ones (`VARIANT_ALIASES`), and `ExperimentBook.restore` carries a version 2 record over setting by setting, so live counts were not lost.
+- Switch rule: `best` is the default in `findPromotions` / `find_promotions`: every 30 s a tile takes the unused setting of its kind with the highest blended estimate, as soon as it is higher. No margin, no lock, no warm-up cap. The earlier rule is `clear`; `off` exists. A chosen setting without its bars leaves the tile on the starting setting (`readSlots`, `waiting`), so the warm-up stays 78 s.
+- Inverse votes: `weightedCall(tiles, book, { inverse: true })` turns an under-50% tile's vote round, weighted by its distance from 50%. Both aggregates are made every second and scored by `CallTally` (saved per coin). A select in the Experiments tab puts the inverse call in charge; default is sit out.
+- Experiments tab: rule select, inverse select, reading filter, inverse-vote table.
+
+Measured (study 1.5.0, `research/papers/SCALP-1S-STUDY.md`), strong calls right:
+- Base, last 40%: no switching 54.4% ± 2.0 (20% of seconds); highest hit rate 54.7% ± 1.9 (23%, 1,994 switches in 26 market-hours); cautious rule 54.4% ± 1.9; inverse votes 54.6% ± 2.3 (15%).
+- Live 2026-11-27: 53.8 / 53.9 / 53.8 / 49.7. Live 2026-11-28: 49.6 / 47.6 / 49.5 / 49.2.
+- No setting was reliably wrong over 30 s: 26 of 380 under 50% on the first 60%, lowest 48.9%; betting against them afterwards was right 49.7% ± 0.9.
+Say so when either feature is described: neither improved the call measurably, and neither hurt it measurably.
+
+Cost: about 1 ms per second of ticks for all 380 settings in the window; the study replays in about a minute. The owner's other three machines are not needed.
+
+Environment: the study needs numpy; on this box `/opt/homebrew/bin/python3` has it and `/usr/local/bin/python3` (first on PATH) does not. Ruff is pinned to 0.17.4 (`uvx ruff@0.17.4`). `scripts/check_docs.py` cannot import every soltui test module locally; CI runs it.
+
+Verification: 874 extension tests; 30 research scalp tests; `npm run e2e:scalp -- --full` 20 of 20.
+
+Not verified: the new window in the owner's own Chrome on a live Jupiter stream.
+
+Earlier delta, v737 to v738. Record that the manager-poll entry after an update is now a quiet notice with an immediate gated reload (extension 0.22.1). Earlier:
 
 ## manager-poll after an update: a notice, not an error · 2026-11-28
 

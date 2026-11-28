@@ -1046,7 +1046,7 @@
       "path": "extension/src/1000x/scalp-experiments.js",
       "component": "extension",
       "kind": "javascript",
-      "summary": "The Experiments engine: 79 settings read each second and scored at twelve intervals, the hit-rate-weighted call, and the rule that switches a clear winner into a tile",
+      "summary": "The Experiments engine: 380 settings read each second and scored at twelve intervals, the hit-rate-weighted call, the two rules that switch a setting into a tile (highest hit rate by default), and the inverse-vote call with its live record",
       "lines": 261
     },
     {
@@ -1271,7 +1271,7 @@
       "component": "extension",
       "kind": "javascript",
       "summary": "MV3 service worker and its timer constraints",
-      "lines": 517
+      "lines": 521
     },
     {
       "path": "extension/src/jupiter/http.js",

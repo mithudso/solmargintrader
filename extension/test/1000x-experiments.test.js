@@ -1,8 +1,8 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
-import { SCALP_EXPERIMENTS, VARIANTS, HORIZONS, CALL_HORIZON, DEFAULT_ASSIGNMENTS, PROMOTION, ExperimentBook, variantById,
-  validAssignments, readSlots, weightedCall, findPromotions, leaderboard, wilsonLower } from '../src/1000x/scalp-experiments.js';
+import { SCALP_EXPERIMENTS, VARIANTS, KINDS, HORIZONS, CALL_HORIZON, DEFAULT_ASSIGNMENTS, PROMOTION, RULES, WARMUP_BARS, ExperimentBook, CallTally, variantById,
+  validAssignments, readSlots, weightedCall, measuredFor, findPromotions, leaderboard, wilsonLower } from '../src/1000x/scalp-experiments.js';
 import { vote } from '../src/1000x/scalp-indicators.js';
 import { TILES, SCORE_HORIZONS, HORIZON_S, readTiles, cone, likelyMoveBps } from '../src/1000x/scalp-model.js';
 
@@ -23,8 +23,24 @@ function feed(book, list) {
   return readings;
 }
 
-test('the experiment grid is wide: many settings, horizons beyond the six on the main view', () => {
-  assert.ok(VARIANTS.length >= 70);
+test('the experiment grid is wide: hundreds of settings, most for the readings with the most parameters', () => {
+  assert.ok(VARIANTS.length >= 300);
+  const count = Object.fromEntries(KINDS.map(row => [row.kind, row.count]));
+  assert.equal(KINDS.reduce((sum, row) => sum + row.count, 0), VARIANTS.length);
+  // MACD is tested over every pairing of its fast and slow averages, each with several signal spans.
+  const macd = VARIANTS.filter(variant => variant.kind === 'macd');
+  const pairs = new Set(macd.map(variant => `${variant.params.fast}/${variant.params.slow}`));
+  assert.ok(pairs.size >= 36, `${pairs.size} fast/slow pairs`);
+  assert.ok(macd.length >= 100 && new Set(macd.map(variant => variant.params.signal)).size >= 3);
+  assert.ok(macd.every(variant => variant.params.slow > variant.params.fast && variant.need === 3 * variant.params.slow));
+  assert.ok(pairs.has('12/26') && variantById('macd_12_26_9').label === 'MACD 12/26/9');
+  // The other readings with more than one parameter get a grid too.
+  assert.ok(count.psar >= 36 && count.supertrend >= 36 && count.emacross >= 36, JSON.stringify(count));
+  assert.ok(new Set(VARIANTS.filter(variant => variant.kind === 'psar').map(variant => variant.params.step)).size >= 3, 'the SAR step is varied on its own');
+  for (const kind of ['roc', 'breakout', 'bop', 'zigzag', 'donchian', 'efficiency', 'slope', 'rsi', 'zscore']) assert.ok(count[kind] >= 10, `${kind}: ${count[kind]}`);
+  // No setting needs more bars than the window keeps.
+  assert.ok(Math.max(...VARIANTS.map(variant => variant.need)) <= 900);
+  assert.equal(WARMUP_BARS, 78, 'the grid still warms up on its starting settings');
   assert.equal(new Set(VARIANTS.map(variant => variant.id)).size, VARIANTS.length);
   assert.deepEqual(HORIZONS, [3, 5, 10, 15, 20, 30, 45, 60, 90, 120, 180, 300]);
   assert.equal(CALL_HORIZON, 30);
@@ -120,7 +136,8 @@ test('saved counts restore exactly, and anything that does not fit this grid is 
   assert.ok(Math.abs(copy.stats('roc_2', 30).n - book.stats('roc_2', 30).n) < 1e-3);
   assert.ok(Math.abs(copy.stats('roc_2', 30).hit - book.stats('roc_2', 30).hit) < 1e-3);
   assert.equal(copy.seconds, 150);
-  for (const bad of [null, {}, { ...saved, version: 99 }, { ...saved, ids: saved.ids.slice(1) }, { ...saved, horizons: [1] },
+  for (const bad of [null, {}, { ...saved, version: 99 }, { ...saved, ids: saved.ids.slice(1) }, { ...saved, horizons: [1] }, { ...saved, ids: saved.ids.map(() => 'roc_2') },
+    { ...saved, ids: saved.ids.map(id => `old_${id}`) }, { ...saved, horizons: saved.horizons.map(String) },
     { ...saved, hit: saved.hit.slice(1) }, { ...saved, n: saved.n.map(() => -1) }, { ...saved, hit: saved.hit.map(() => 'x') },
     { ...saved, hit: saved.n.map(value => value + 5) }, { ...saved, n: saved.n.map(() => Infinity) }]) {
     assert.equal(new ExperimentBook().restore(bad), false);
@@ -128,6 +145,32 @@ test('saved counts restore exactly, and anything that does not fit this grid is 
   copy.clear();
   assert.equal(copy.stats('roc_2', 30).n, 0);
   assert.equal(copy.seconds, 0);
+});
+
+test('a record saved by the grid before this one is carried over setting by setting', () => {
+  // The earlier grid: fewer settings, two of them under names that have since changed, one that is gone.
+  const ids = ['roc_2', 'macd_1', 'psar_0p02_0p2', 'psar_0p05_0p3', 'slope_60'], horizons = [...HORIZONS], at = horizons.indexOf(30);
+  const old = { version: 2, ids, horizons, seconds: 5000, hit: new Array(ids.length * horizons.length).fill(0), n: new Array(ids.length * horizons.length).fill(0) };
+  for (const [row] of ids.entries()) { old.n[row * horizons.length + at] = 1000 + row; old.hit[row * horizons.length + at] = 500 + 10 * row; }
+  const book = new ExperimentBook();
+  assert.equal(book.restore(old), true);
+  assert.deepEqual([book.stats('roc_2').n, book.stats('roc_2').hit], [1000, 500]);
+  assert.deepEqual([book.stats('macd_12_26_9').n, book.stats('macd_12_26_9').hit], [1001, 510], 'MACD x1 is MACD 12/26/9');
+  assert.equal(book.stats('psar_0p02_0p02_0p2').n, 1002, 'the old SAR used one number for start and step');
+  assert.equal(book.stats('slope_60').n, 1004);
+  assert.equal(book.stats('macd_3_10_5').n, 0, 'a new setting starts empty');
+  assert.equal(book.stats('roc_2', 60).n, 0);
+  assert.equal(book.seconds, 5000);
+  // An interval the old grid lacked starts empty; one this grid lacks is dropped.
+  const narrow = { ...old, horizons: [30, 7], hit: ids.flatMap((_, row) => [500 + row, 1]), n: ids.flatMap((_, row) => [1000 + row, 2]) };
+  const other = new ExperimentBook();
+  assert.equal(other.restore(narrow), true);
+  assert.equal(other.stats('roc_2', 30).n, 1000); assert.equal(other.stats('roc_2', 3).n, 0);
+  // A failed restore leaves the book as it was.
+  assert.equal(book.restore({ ...old, hit: old.hit.map(() => -1) }), false);
+  assert.equal(book.stats('roc_2').n, 1000);
+  // Saved choices follow the renamed settings too.
+  assert.deepEqual(validAssignments({ macd: 'macd_1', psar: 'psar_0p01_0p1', slope: 7 }), { ...DEFAULT_ASSIGNMENTS, psar: 'psar_0p01_0p01_0p1' });
 });
 
 test('with no live record, a tile weighs in by how far its recorded rate is above a coin flip', () => {
@@ -191,14 +234,58 @@ test('Wilson lower bound', () => {
 
 /** A stand-in book with chosen records at the call horizon. */
 function fakeBook(records) {
-  return { stats: id => { const row = records[id]; return row ? { ...row, rate: row.n > 0.5 ? row.hit / row.n : null, eff: row.n / CALL_HORIZON, prior: row.prior ?? 0.52 } : { hit: 0, n: 0, rate: null, eff: 0, prior: 0.52 }; } };
+  const stats = id => { const row = records[id]; return row ? { ...row, rate: row.n > 0.5 ? row.hit / row.n : null, eff: row.n / CALL_HORIZON, prior: row.prior ?? 0.52 } : { hit: 0, n: 0, rate: null, eff: 0, prior: 0.52 }; };
+  // The same blend as the real book: the live record pulled toward the recorded rate.
+  return { stats, blended: id => { const row = stats(id); return (row.hit + SCALP_EXPERIMENTS.prior_seconds * row.prior) / (row.n + SCALP_EXPERIMENTS.prior_seconds); } };
 }
 
-test('a setting takes a slot only when it is clearly ahead of the one in use', () => {
+test('the default rule: a tile takes the setting of its kind with the highest hit rate, as soon as it is higher', () => {
+  assert.equal(PROMOTION.rule, 'best');
+  assert.deepEqual(RULES, ['best', 'clear', 'off']);
+  const record = (rate, n = 3000, prior = 0.52) => ({ hit: rate * n, n, prior });
+  const run = (records, extra = {}) => findPromotions({ assignments: { ...DEFAULT_ASSIGNMENTS }, book: fakeBook(records), nowS: 10_000, ...extra });
+  const only = (changes, slot) => changes.filter(change => change.slot === slot).map(change => [change.from, change.to]);
+  // One point ahead is enough: no margin, no cautious estimate.
+  let changes = run({ slope_60: record(0.52), slope_5: record(0.53) });
+  assert.deepEqual(only(changes, 'slope'), [['slope_60', 'slope_5']]);
+  assert.ok(changes.find(change => change.slot === 'slope').rate > changes.find(change => change.slot === 'slope').incumbentRate);
+  // A handful of live calls is enough too: the recorded rate carries the estimate until more settle.
+  assert.deepEqual(only(run({ slope_60: record(0.5, 30), slope_5: record(0.9, 30) }), 'slope'), [['slope_60', 'slope_5']]);
+  // With nothing live it goes by the recording alone.
+  assert.deepEqual(only(run({ slope_60: record(0, 0, 0.51), slope_10: record(0, 0, 0.55) }), 'slope'), [['slope_60', 'slope_10']]);
+  // A slot that just changed may change again, and a setting that needs many bars may take a slot.
+  assert.equal(only(run({ slope_60: record(0.5), slope_5: record(0.53) }, { locks: { slope: 9_999 } }), 'slope').length, 1);
+  assert.ok(variantById('macd_20_90_9').need > WARMUP_BARS);
+  assert.deepEqual(only(run({ macd_12_26_9: record(0.5), macd_20_90_9: record(0.6) }), 'macd'), [['macd_12_26_9', 'macd_20_90_9']]);
+  // The best of several wins; the setting in use stays when it is the best, or tied for it.
+  assert.deepEqual(only(run({ slope_60: record(0.5), slope_5: record(0.6), slope_10: record(0.66) }), 'slope'), [['slope_60', 'slope_10']]);
+  assert.deepEqual(only(run({ slope_60: record(0.7) }), 'slope'), []);
+  const level = Object.fromEntries(VARIANTS.filter(variant => variant.kind === 'slope').map(variant => [variant.id, record(0.55)]));
+  assert.deepEqual(only(run(level), 'slope'), [], 'equal estimates change nothing');
+  // Another kind never takes the slot, however good.
+  assert.deepEqual(only(run({ slope_60: record(0.6), breakout_120: record(0.9) }), 'slope'), []);
+  // Off changes nothing, and an unknown rule is refused.
+  assert.deepEqual(run({ slope_60: record(0.5), slope_5: record(0.9) }, { rule: 'off' }), []);
+  assert.throws(() => run({}, { rule: 'sometimes' }), RangeError);
+});
+
+test('the default rule fills the slots of one kind with different settings, best first', () => {
+  const record = rate => ({ hit: rate * 3000, n: 3000, prior: 0.52 });
+  // Momentum has three slots. The three best momentum settings end up in them, each once.
+  const records = { roc_2: record(0.5), roc_5: record(0.5), roc_60: record(0.5), roc_13: record(0.7), roc_21: record(0.65), roc_34: record(0.6), roc_8: record(0.55) };
+  let assignments = { ...DEFAULT_ASSIGNMENTS };
+  for (const change of findPromotions({ assignments, book: fakeBook(records), nowS: 0 })) assignments = { ...assignments, [change.slot]: change.to };
+  assert.deepEqual([assignments.impulse, assignments.momentum5, assignments.momentum60], ['roc_13', 'roc_21', 'roc_34']);
+  assert.equal(new Set(Object.values(assignments)).size, TILES.length);
+  // A second look changes nothing for those slots: the rule has settled.
+  assert.deepEqual(findPromotions({ assignments, book: fakeBook(records), nowS: 30 }).filter(change => change.from.startsWith('roc_')), []);
+});
+
+test('the cautious rule: a setting takes a slot only when it is clearly ahead of the one in use', () => {
   const enough = PROMOTION.minEff * CALL_HORIZON * 6;
   const record = (rate, n = enough, prior = 0.52) => ({ hit: rate * n, n, prior });
   const assignments = { ...DEFAULT_ASSIGNMENTS };
-  const run = (records, extra = {}) => findPromotions({ assignments, book: fakeBook(records), nowS: 10_000, ...extra });
+  const run = (records, extra = {}) => findPromotions({ assignments, book: fakeBook(records), nowS: 10_000, rule: 'clear', ...extra });
   // slope_60 is in use at 50%; slope_5 at 62% over plenty of calls is clearly ahead.
   let changes = run({ slope_60: record(0.5), slope_5: record(0.62) });
   assert.deepEqual(changes.map(change => [change.slot, change.from, change.to]), [['slope', 'slope_60', 'slope_5']]);
@@ -222,15 +309,15 @@ test('a setting takes a slot only when it is clearly ahead of the one in use', (
   assert.equal(changes[0].to, 'slope_10');
 });
 
-test('one setting is never used by two slots', () => {
+test('the cautious rule never puts one setting in two slots', () => {
   const enough = PROMOTION.minEff * CALL_HORIZON * 6, record = rate => ({ hit: rate * enough, n: enough, prior: 0.52 });
   // Both breakout slots are weak and breakout_45 is the only clear winner: one slot gets it.
-  const changes = findPromotions({ assignments: { ...DEFAULT_ASSIGNMENTS }, nowS: 0,
+  const changes = findPromotions({ assignments: { ...DEFAULT_ASSIGNMENTS }, nowS: 0, rule: 'clear',
     book: fakeBook({ breakout_20: record(0.5), breakout_60: record(0.5), breakout_45: record(0.64) }) });
   assert.equal(changes.length, 1);
   assert.equal(changes[0].to, 'breakout_45');
   // A setting in use elsewhere is not a candidate: roc_5 is the momentum5 slot's.
-  assert.deepEqual(findPromotions({ assignments: { ...DEFAULT_ASSIGNMENTS }, nowS: 0,
+  assert.deepEqual(findPromotions({ assignments: { ...DEFAULT_ASSIGNMENTS }, nowS: 0, rule: 'clear',
     book: fakeBook({ roc_2: record(0.5), roc_5: record(0.7) }) }), []);
 });
 
@@ -295,9 +382,78 @@ test('the Python study and this module run the same record, the same weighted ca
   assert.equal(made.restore(saved), true);
   const allUp = tiles.map(tile => ({ ...tile, ready: true, vote: 1 }));
   for (const [i, weight] of rule.made_up.weights.entries()) near(weightedCall(allUp, made).weights[i], weight, `made-up weight ${tiles[i].key}`);
-  const switches = findPromotions({ assignments: { ...DEFAULT_ASSIGNMENTS }, book: made, nowS: 0 });
-  assert.deepEqual(switches.map(change => [DEFAULT_ASSIGNMENTS[change.slot], change.to]), rule.switches);
-  assert.ok(rule.switches.length >= 3 && rule.switches.length < TILES.length, 'the made-up record makes the rule choose');
+  for (const name of ['clear', 'best']) {
+    const switches = findPromotions({ assignments: { ...DEFAULT_ASSIGNMENTS }, book: made, nowS: 0, rule: name });
+    assert.deepEqual(switches.map(change => [DEFAULT_ASSIGNMENTS[change.slot], change.to]), rule.switches[name], `${name} rule`);
+  }
+  assert.ok(rule.switches.clear.length >= 3 && rule.switches.clear.length < TILES.length, 'the made-up record makes the cautious rule choose');
+  assert.ok(rule.switches.best.length >= rule.switches.clear.length, 'the default rule switches at least as often');
+  // 4. The inverse-vote aggregate: the same score as the study's, on the real record and the made-up one.
+  near(weightedCall(tiles, book, { inverse: true }).score, rule.inverse_score, 'inverse score');
+  near(weightedCall(allUp, made, { inverse: true }).score, rule.made_up.inverse_score_all_up, 'made-up inverse score');
+  assert.ok(Math.abs(rule.made_up.inverse_score_all_up) < 1, 'some made-up tiles are under half and vote the other way');
+});
+
+test('inverse votes: a reading under half votes the other way, by how far under it is', () => {
+  const rates = { a: 0.6, b: 0.55, c: 0.5, d: 0.4 };
+  const book = { blended: id => rates[id] };
+  const tile = (variant, vote, ready = true) => ({ key: variant, variant, vote, ready });
+  // Edges 0.10, 0.05, 0 and 0.10 the wrong way: d carries as much say as a, turned round.
+  const tiles = [tile('a', 1), tile('b', 1), tile('c', -1), tile('d', -1)];
+  const call = weightedCall(tiles, book, { inverse: true });
+  near(call.weights[0], 0.4, 'a'); near(call.weights[1], 0.2, 'b'); assert.equal(call.weights[2], 0); near(call.weights[3], 0.4, 'd');
+  assert.deepEqual(call.inverted, [false, false, false, true]);
+  near(call.score, 1, 'd says down, so its inverse vote is up');
+  assert.deepEqual([call.tier, call.direction, call.inverse], ['strong', 'up', true]);
+  // The same tiles without inverse votes: d sits out, and nothing is marked.
+  const plain = weightedCall(tiles, book);
+  near(plain.score, 1, 'a and b only'); assert.deepEqual(plain.inverted, [false, false, false, false]); assert.equal(plain.inverse, false);
+  // The wrong reading agreeing with the good ones now pulls against them.
+  near(weightedCall([tile('a', 1), tile('b', 1), tile('c', 1), tile('d', 1)], book, { inverse: true }).score, 0.2, 'a + b - d');
+  // Nobody off a coin flip: one tile, one vote, nothing inverted.
+  const flat = weightedCall([tile('c', 1), tile('c', -1), tile('c', 1), tile('c', 1)], book, { inverse: true });
+  near(flat.score, 0.5, 'unweighted'); assert.deepEqual(flat.inverted, [false, false, false, false]);
+  // Each choice quotes its own replayed record.
+  assert.equal(weightedCall(tiles, book).measured, SCALP_EXPERIMENTS.measured.strong);
+  assert.equal(weightedCall(tiles, book, { measured: measuredFor({ rule: 'best' }) }).measured, SCALP_EXPERIMENTS.measured_rules.best.strong);
+  assert.equal(measuredFor({ rule: 'clear' }), SCALP_EXPERIMENTS.measured_rules.clear);
+  assert.equal(measuredFor({ rule: 'off' }), SCALP_EXPERIMENTS.measured);
+  assert.equal(measuredFor({ rule: 'best', inverse: true }), SCALP_EXPERIMENTS.measured_inverse.best);
+  assert.equal(measuredFor({ rule: 'clear', inverse: true }), SCALP_EXPERIMENTS.measured_inverse.off);
+  for (const table of [SCALP_EXPERIMENTS.measured_rules.best, SCALP_EXPERIMENTS.measured_rules.clear, SCALP_EXPERIMENTS.measured_inverse.off, SCALP_EXPERIMENTS.measured_inverse.best]) {
+    assert.ok(table.strong.hit > 0.45 && table.strong.hit < 0.6 && table.strong.live && table.strong.path_bps.length === 6);
+  }
+});
+
+test('the inverse-vote experiment keeps a live record of both aggregates, call by call', () => {
+  const tally = new CallTally(), call = (tier, score) => ({ ready: true, tier, score });
+  // Price rises one cent a second. Sit-out calls up (right); inverse calls down (wrong).
+  const list = series(100);
+  for (const bar of list) tally.observe(bar, { sitout: call('strong', 0.9), inverse: call('lean', -0.5) });
+  let stats = tally.stats();
+  assert.ok(stats.sitout.strong.n > 60 && stats.sitout.strong.n <= 70, `settled only after 30 s: ${stats.sitout.strong.n}`);
+  assert.equal(stats.sitout.strong.rate, 1); assert.equal(stats.inverse.lean.rate, 0);
+  assert.equal(stats.sitout.lean.n, 0); assert.equal(stats.sitout.lean.rate, null);
+  near(stats.sitout.called.n, stats.sitout.strong.n, 'called is strong and lean together');
+  near(stats.sitout.strong.eff, stats.sitout.strong.n / CALL_HORIZON, 'independent calls');
+  // A mixed score is scored by its sign; a warming call, or a zero score, is not scored.
+  const quiet = new CallTally();
+  for (const bar of list) quiet.observe(bar, { sitout: call('mixed', 0.1), inverse: { ready: false, tier: 'warming', score: 0 } });
+  assert.equal(quiet.stats().sitout.mixed.rate, 1); assert.equal(quiet.stats().sitout.called.n, 0); assert.equal(quiet.stats().inverse.called.n, 0);
+  // A feed break settles nothing across the gap, the same bar twice is ignored, and counts are kept.
+  const before = stats.sitout.strong.n;
+  tally.reset();
+  for (const bar of series(20, i => 50 - i, 1_800_000_000 + 1000)) tally.observe(bar, { sitout: call('strong', 0.9), inverse: call('strong', -0.9) });
+  stats = tally.stats();
+  assert.ok(stats.sitout.strong.n < before && stats.sitout.strong.n > before - 1 && stats.sitout.strong.rate === 1, 'only decay moved the count');
+  // Saved and restored exactly; anything else is refused.
+  const saved = JSON.parse(JSON.stringify(tally)), copy = new CallTally();
+  assert.equal(copy.restore(saved), true);
+  assert.ok(Math.abs(copy.stats().sitout.strong.n - stats.sitout.strong.n) < 1e-3);
+  for (const bad of [null, {}, { ...saved, version: 2 }, { ...saved, tiers: ['strong'] }, { ...saved, hit: saved.hit.slice(1) }, { ...saved, n: saved.n.map(() => -1) },
+    { ...saved, hit: saved.n.map(value => value + 5) }, { ...saved, n: saved.n.map(() => 1e300) }]) assert.equal(new CallTally().restore(bad), false);
+  copy.clear();
+  assert.equal(copy.stats().sitout.strong.n, 0);
 });
 
 test('a reversal is scored call by call: exact counts, not just a rising market', () => {
@@ -346,13 +502,16 @@ test('every setting gives a number once it has its bars, and the measured tiers 
   assert.ok(cone({ price: 100, sigmaBps: 1, direction: 'up', tier: 'strong', path: [] }).every(step => step.mid === 100));
 });
 
-test('a setting that needs a longer warm-up than the grid is never switched in, and a switched tile never holds the call back', () => {
-  const enough = PROMOTION.minEff * CALL_HORIZON * 6, record = rate => ({ hit: rate * enough, n: enough, prior: 0.52 });
-  assert.ok(variantById('macd_5').need > PROMOTION.maxNeed && variantById('breakout_120').need > PROMOTION.maxNeed);
-  assert.deepEqual(findPromotions({ assignments: { ...DEFAULT_ASSIGNMENTS }, nowS: 0,
-    book: fakeBook({ macd_1: record(0.5), macd_5: record(0.7), breakout_20: record(0.5), breakout_60: record(0.5), breakout_120: record(0.7), breakout_300: record(0.7) }) }), []);
-  assert.equal(findPromotions({ assignments: { ...DEFAULT_ASSIGNMENTS }, nowS: 0,
-    book: fakeBook({ breakout_20: record(0.5), breakout_45: record(0.7) }) })[0].to, 'breakout_45');
+test('a switched-in setting never lengthens the warm-up or holds the call back', () => {
+  // MACD 20/90/9 needs 270 bars. Until the window has them its tile stays on the starting setting.
+  const long = variantById('macd_20_90_9'), assignments = { ...DEFAULT_ASSIGNMENTS, macd: long.id };
+  assert.equal(long.need, 270);
+  const early = new ExperimentBook(), first = readSlots(assignments, feed(early, bars.slice(0, 100)), 100).find(slot => slot.key === 'macd');
+  assert.deepEqual([first.variant, first.tuned, first.waiting, first.ready, first.need], ['macd_12_26_9', false, long.id, true, 78]);
+  assert.equal(weightedCall(readSlots(assignments, feed(new ExperimentBook(), bars.slice(0, 100)), 100), early).ready, true, 'the call is ready on the starting warm-up');
+  const later = readSlots(assignments, feed(new ExperimentBook(), bars.slice(0, 300)), 300).find(slot => slot.key === 'macd');
+  assert.deepEqual([later.variant, later.tuned, later.waiting, later.ready], [long.id, true, null, true]);
+  assert.equal(readSlots(DEFAULT_ASSIGNMENTS, new Map(), 0).every(slot => slot.waiting === null), true);
   // ZigZag has no reading before its first swing. As a starting tile that is warming; as a switched-in one it is neutral.
   const flat = series(80, () => 100), book = new ExperimentBook(), readings = feed(book, flat);
   const starting = readSlots(DEFAULT_ASSIGNMENTS, readings, flat.length).find(slot => slot.key === 'zigzag');

@@ -1,6 +1,6 @@
 # One-second bars and the next 30 seconds on Jupiter 1000x
 
-Version: 1.4.0. Data: Jupiter Pyth oracle ticks, 2026-11-16 to 2026-11-17 and 2026-11-27.
+Version: 1.5.0. Data: Jupiter Pyth oracle ticks, 2026-11-16 to 2026-11-17, 2026-11-27 and 2026-11-28.
 
 On one-second bars of the Jupiter 1000x oracle price, recent direction persists a little: when twelve or more of sixteen trend readings agreed, the next 30 seconds went their way about 53% of the time. Fading an extreme lost. The 1000x payout needs 61% to 84% on moves of that size, so the read-out is a lean and not a rule that pays.
 
@@ -15,6 +15,8 @@ Nothing here was traded. Every figure is a count over recorded prices or the pag
 | What is the most effective combined read-out? | A count of agreeing trend readings. Mixed grids were a coin flip (50.2%); grids with a net 12 or more of 16 one way were right 52.5%, 53.1% and 53.6%. |
 | Does the slope ladder add anything? | A little at 5 and 10 seconds, when the slope and its second derivative agree: 52.5% to 53.4% at 5 seconds. From 20 seconds up, and for the 5 minute slope, following it was within a point of a coin flip. |
 | How long before a slope reverses? | About as long as its own window: 5.9 s on average for the 5 second slope, 11 s for 10, 21 s for 20, 31 s for 30, 62 s for 60 and 287 s for 5 minutes. That is what a random walk gives. |
+| Does always taking the setting with the highest hit rate help? | Not measurably. With 380 settings under test and each tile switched every 30 seconds to the best of its kind, strong calls were right 54.7% ± 1.9 against 54.4% ± 2.0 with no switching on the base recording, 53.9% against 53.8% on the first live recording and 47.6% against 49.6% on the second. |
+| Does a reading that is usually wrong work as an inverse reading? | No. No setting was reliably wrong: the worst of 380 was right 48.9% of the time. Betting against the 26 that were under 50% on the first 60% was right 49.7% ± 0.9 afterwards. Turning under-50% readings round inside the call changed strong calls from 54.4% to 54.6% on fewer seconds. |
 | Would following the call have made money at 1000x? | No. One call every 30 seconds lost 5.3% of collateral per trade on the held-out slice, with one trade in five liquidated inside 30 seconds. Strong calls alone averaged +0.7% with a standard error of 3.8, which is not distinguishable from zero. |
 
 ## Data
@@ -106,9 +108,11 @@ The replay is causal. A reading's rate at second *t* counts only calls made 30 o
 |---|---|---|---|---|
 | One reading, one vote | 53.3% ± 1.5, 34% of seconds, +0.77 bp | 50.7% ± 1.4 | 49.3% ± 1.9 | |
 | Weighted | 54.4% ± 2.0, 20%, +0.90 bp | 51.8% ± 1.4 | 50.0% ± 1.4 | |
-| Weighted, clear winners switched in | 54.4% ± 1.9, 22%, +0.87 bp | 51.8% ± 1.4 | 50.2% ± 1.4 | 2 |
+| Weighted, clear winners switched in | 54.4% ± 1.9, 23%, +0.86 bp | 51.8% ± 1.4 | 50.1% ± 1.5 | 0 (3 before the slice) |
+| Weighted, highest hit rate switched in | 54.7% ± 1.9, 23%, +0.76 bp | 52.0% ± 1.4 | 49.6% ± 1.5 | 1,994 |
 | Live, one vote | 54.3% ± 4.3, 33% | 52.3% ± 4.0 | 48.4% ± 4.9 | |
 | Live, weighted | 53.8% ± 4.7, 27% | 50.1% ± 4.0 | 49.5% ± 4.2 | 0 |
+| Live, highest hit rate switched in | 53.9% ± 4.4, 32% | 50.4% ± 4.1 | 50.5% ± 4.3 | 1,152 |
 
 Weighting gained about one point for strong and lean calls on the base recording and made "strong" rarer. Each gain is within one standard error, and the live recording shows no difference. After a weighted strong call the average move was +0.56 bp at 5 seconds and +0.90 bp at 30 (lean: +0.21 and +0.49); the window's most-likely line now follows these paths. A score under the lean threshold is scored here by its sign to fill the mixed column; the window shows no direction for it. The thresholds 0.75 and 0.375 and the two constants were fixed before the replay and were not tuned on it; they were also not chosen by any search, so a better pair may exist.
 
@@ -139,28 +143,69 @@ For every reading and second, its own running hit rate was computed from calls a
 | Sixteen tiles, whole base recording | 2 h | 20% | 49.0% ± 0.6 | 51.3% |
 | Sixteen tiles, last 40% | 10 min | 36% | 48.6% ± 1.0 | 51.1% |
 | Sixteen tiles, at or under 48% | 10 min | 32% | 48.8% ± 0.7 | 51.5% |
-| All 79 settings, whole base recording | 10 min | | 49.3% ± 0.6 | 51.1% |
+| All 380 settings, whole base recording | 10 min | | 49.5% ± 0.6 | 51.1% |
 | Sixteen tiles, live 2026-11-27 | 10 min | 32% | 46.9% ± 2.8 | 52.1% |
 | Sixteen tiles, live 2026-11-27 | 2 h | 29% | 45.7% ± 2.7 | 51.3% |
 | Sixteen tiles, live 2026-11-28 | 10 min | 54% | 52.4% ± 2.6 | 47.1% |
 | Sixteen tiles, live 2026-11-28 | 2 h | 43% | 52.0% ± 2.6 | 46.9% |
 
-Betting against a reading that has dipped under 50% lost on the two-day base recording (49%) and on the first live recording (46% to 47%), and won on the second (52%). On that second recording every trend reading was wrong more often than right, above 50% or below it, so fading anything would have won: that is a stretch where the market reversed, not evidence that a reading's own dip predicts its next call. Over all three samples fading is a coin flip. A reading under 50% is mostly a reading having a normal bad stretch, and it goes back to being right about 51% of the time. No single tile's fade beat 50.6%. The aggregate says the same: giving a tile under 50% a negative say, in place of none, made strong calls 54.6% ± 2.3 on 15% of seconds against 54.4% ± 2.0 on 20% on the base recording, and 49.7% ± 5.4 against 53.8% ± 4.7 live. The window keeps giving such a tile no say.
+Betting against a reading that has dipped under 50% lost on the two-day base recording (49%) and on the first live recording (46% to 47%), and won on the second (52%). On that second recording every trend reading was wrong more often than right, above 50% or below it, so fading anything would have won: that is a stretch where the market reversed, not evidence that a reading's own dip predicts its next call. Over all three samples fading is a coin flip. A reading under 50% is mostly a reading having a normal bad stretch, and it goes back to being right about 51% of the time. No single tile's fade beat 50.6%. The aggregate says the same: giving a tile under 50% a negative say, in place of none, made strong calls 54.6% ± 2.3 on 15% of seconds against 54.4% ± 2.0 on 20% on the base recording, 49.7% ± 5.4 against 53.8% ± 4.7 on the first live recording and 49.2% ± 6.7 against 49.6% ± 4.8 on the second. The window keeps giving such a tile no say by default. Since version 1.5.0 it also makes the inverse-vote call every second and scores it beside the default, and a setting in the Experiments tab puts it in charge.
+
+#### A setting that was usually wrong
+
+The test above asks whether a reading's bad stretch predicts its next call. A plainer version of the question: take every setting that was wrong more often than right on the first 60% of the base recording, and bet against it on the rest.
+
+| Interval | Settings under 50% on the first 60% (of 380) | Lowest hit rate among them | Betting against them afterwards | Of those, still under 50% afterwards |
+|---|---|---|---|---|
+| 5 s | 1 | 49.7% | 49.8% ± 0.4 | 0 |
+| 30 s | 26 | 48.9% | 49.7% ± 0.9 | 0 |
+| 60 s | 18 | 48.4% | 50.0% ± 1.3 | 12 |
+| 5 min | 106 | 47.2% | 51.0% ± 2.8 | 92 |
+
+There is nothing to invert at the interval the call uses. Over 30 seconds 354 of the 380 settings were right more often than wrong, the 26 others were between 48.9% and 50.0%, and every one of those 26 was back above 50% on the rest of the recording. Nine are slow settings of other readings (5 and 10 minute Z-score and range position, 5 minute slope, momentum and efficiency, a 15 bp ZigZag, RSI 120, a 30 second slope) and seventeen are MACD settings with a fast average of 12 to 20 seconds. They are a coin flip, not a contrary signal, and betting against a coin flip is a coin flip. At 5 minutes more settings sit under 50%, which is the weak mean reversion the wider grid shows at that interval, and betting against them was right 51.0% ± 2.8: one third of a standard error from nothing. On the two live recordings, betting against the settings that were under 50% on the whole base recording was right 48.4% ± 2.4 and 51.7% ± 2.4 over 30 seconds. The second is the stretch where every trend reading lost.
 
 ### A wider grid of settings and intervals
 
-The same recording scored 79 settings of fourteen kinds of reading at twelve intervals from 3 seconds to 5 minutes (`experiments` in `summary.json`). Hit rate of following one setting, whole base recording:
+The same recording scored 380 settings of fourteen kinds of reading at twelve intervals from 3 seconds to 5 minutes (`experiments` in `summary.json`). The readings with more than one parameter have the most: 123 MACD settings (41 pairings of a fast average of 3 to 20 seconds with a slow one of 10 to 90, each with a signal average of 5, 9 and 13), 51 EMA crosses, 48 Parabolic SAR settings (start, step and cap varied separately) and 40 Supertrend settings (8 lengths by 5 multipliers). The readings with one parameter have 11 to 20 settings each. Hit rate of following one setting, whole base recording:
 
 | Interval | 3 s | 5 s | 10 s | 30 s | 60 s | 5 min |
 |---|---|---|---|---|---|---|
-| Median of the 79 settings | 53.7% | 53.0% | 52.0% | 50.9% | 51.0% | 50.3% |
+| Median of the 380 settings | 53.4% | 52.8% | 51.9% | 50.8% | 51.0% | 50.4% |
 | 60 s breakout | 62.8% | 61.0% | 58.0% | 53.6% | 53.8% | 50.3% |
 | 2 s momentum | 56.8% | 55.6% | 54.1% | 52.0% | 51.8% | 50.9% |
 | 60 s slope | 50.8% | 50.8% | 50.6% | 50.9% | 51.0% | 49.2% |
 
-Persistence is strongest over the first few seconds and is gone by five minutes. A breakout is the best single setting at every interval, and its window matters little: 10 to 300 second breakouts were right 52.7% to 53.2% over 30 seconds on the first 60% and 53.4% to 55.6% afterwards. A short interval is not a better trade for that: the average move over 3 seconds is a fraction of a basis point, a position cannot be closed before 15 seconds, and wins under 0.2 bp pay nothing.
+Persistence is strongest over the first few seconds and is gone by five minutes. A breakout is the best single setting at every interval, and its window matters little: the fourteen breakout windows from 5 seconds to 10 minutes were right 52.2% to 53.2% over 30 seconds on the first 60% and a median of 54.0% afterwards. A short interval is not a better trade for that: the average move over 3 seconds is a fraction of a basis point, a position cannot be closed before 15 seconds, and wins under 0.2 bp pay nothing.
 
-The window keeps running this grid on live ticks and switches a setting into a tile when it is clearly ahead of the one in use: same kind, at least 40 independent calls' worth on both, the lower end of its 90% Wilson interval above the incumbent's live rate, at least 52% right, not ranked below the incumbent on the recording, and needing no more than the grid's 78 bars of warm-up (61 of the 79 settings qualify). Replayed on the base recording the rule fired twice in two days (60 second slope to 5 second, 60 second momentum to 3 second) and left the call's hit rate unchanged (table above). A parity fixture ties the extension's record, weights and switch rule to this module's (`rule` in `extension/test/fixtures/1000x-scalp-parity.json`). Sixty-second momentum and sixty-second efficiency vote identically, since both are the sign of the 60 second change.
+How much the setting matters within one kind of reading, over 30 seconds. The first two columns are the first 60% of the recording; the last two are the rest.
+
+| Reading | Settings | Worst to best, first 60% | Best setting on the first 60% | That setting afterwards | Median setting afterwards |
+|---|---|---|---|---|---|
+| Breakout | 14 | 52.2% to 53.2% | 120 s | 55.3% | 54.0% |
+| Balance of power | 12 | 50.7% to 52.3% | 2 s | 52.7% | 51.5% |
+| Momentum | 20 | 49.6% to 52.1% | 1 s | 52.2% | 51.1% |
+| Supertrend | 40 | 50.6% to 51.8% | 20 s × 1 | 51.9% | 51.4% |
+| MACD | 123 | 49.7% to 51.4% | 3 / 17 / 5 | 52.0% | 51.3% |
+| ZigZag | 12 | 49.3% to 51.9% | 0.25 bp | 51.9% | 50.7% |
+| Z-score | 12 | 48.9% to 51.8% | 5 s | 52.1% | 50.7% |
+| RSI | 12 | 49.9% to 51.7% | 3 s | 52.0% | 50.6% |
+| Range position | 12 | 49.3% to 51.7% | 5 s | 52.0% | 50.7% |
+| Slope | 12 | 49.3% to 51.5% | 5 s | 51.8% | 50.6% |
+| EMA cross | 51 | 50.2% to 51.5% | 2 / 5 | 51.7% | 50.4% |
+| Parabolic SAR | 48 | 50.2% to 51.4% | 0.02 / 0.05 / 0.4 | 51.6% | 50.6% |
+| Efficiency | 11 | 49.6% to 51.3% | 5 s | 51.8% | 50.8% |
+
+Two things stand out. The fastest setting of almost every reading was the best one, on both parts of the recording: a 3 second fast average for MACD, 2 / 5 for the EMA cross, 5 second windows for slope, Z-score, range position and efficiency. That is the same few seconds of persistence seen from fourteen angles, so a grid of sixteen fast settings holds less than sixteen opinions. And the whole spread within a reading is one to three points, with the standard MACD 12 / 26 / 9 at 50.5% and the best MACD at 51.6% over the whole recording. A standard error for one setting on the later 40% is about 0.9 points.
+
+#### Always taking the setting with the highest hit rate
+
+Since version 1.5.0 the window's default rule is the plain one: every 30 seconds each tile takes the unused setting of its kind with the highest current estimate, whenever that is above the estimate of the setting it has. The estimate is the running 30 second hit rate (half-life 7,200 seconds) pulled toward the recorded rate, which counts as 300 calls. There is no waiting, no margin and no lock, and a setting of any length may be chosen. A chosen setting that does not have its bars yet, after opening or a feed break, leaves the tile on its starting setting until it does, so the grid's warm-up stays at 78 seconds.
+
+Replayed without looking ahead (starting rates from the first 60%, calls scored on the last 40%), the rule made 1,994 switches in 26 market-hours, about five per tile per hour, and tiles ran on a switched-in setting 90% of the time. The table under "Weighting the vote" has the result: strong calls 54.7% ± 1.9 on 23% of seconds against 54.4% ± 2.0 on 20% with no switching, lean 52.0% against 51.8%, all calls together 51.7% against 51.6%. The average move after a strong call was smaller, +0.76 bp against +0.90. On the first live recording it was 53.9% ± 4.4 against 53.8% ± 4.7, and on the second 47.6% ± 4.8 against 49.6% ± 4.8.
+
+So the rule does no measurable good and no measurable harm. Every difference is a fraction of a standard error. The reason is in the table above: within a reading the settings differ by a point or two, a running rate over two hours of ticks is uncertain by more than that, and the highest of 123 noisy rates is mostly the luckiest one. The rule is the default because the owner asked for it, and because it costs nothing measurable. It should not be read as tuning that has improved the call.
+
+The earlier cautious rule is still in the window ("Only when clearly ahead"): same kind, at least 40 independent calls' worth on both, the lower end of the challenger's 90% Wilson interval above the incumbent's live rate, at least 52% right, not ranked below the incumbent on the recording, and ten minutes between changes of one tile. Replayed on the wider grid it switched three settings in the first 60% of the recording and none afterwards, and left the call unchanged. A parity fixture ties the extension's record, weights, both switch rules and the inverse-vote score to this module's (`rule` in `extension/test/fixtures/1000x-scalp-parity.json`). Sixty-second momentum and sixty-second efficiency vote identically, since both are the sign of the 60 second change.
 
 ## Slope ladder
 
@@ -229,7 +274,7 @@ The cone on the chart scales the last 30 seconds' 1s volatility by √30. In the
 
 - **Two days.** The base recording covers 33 hours of two markets and the live one 43 minutes of five. Persistence at this scale may depend on the session and on how the oracle aggregates venues.
 - **The held-out slice was seen.** Only the live recording is untouched, and it cannot confirm a three point edge by itself.
-- **Selection.** About twenty families and seventy parameter sets were tried, and a family needed only to beat 50% on two slices to earn a tile. A reading with no information passes that rule about one time in four, and no correction for the number of tries was applied. The base figures, including the ones the window quotes, are therefore optimistic.
+- **Selection.** About twenty families and seventy parameter sets were tried when the tiles were chosen, and a family needed only to beat 50% on two slices to earn a tile. The window now picks among 380 settings as it runs, which is more selection, not less: the best of many noisy rates overstates itself. A reading with no information passes that rule about one time in four, and no correction for the number of tries was applied. The base figures, including the ones the window quotes, are therefore optimistic.
 - **Oracle prices, not fills.** Opens and closes fill at a later oracle price with no price limit.
 - **Overlapping seconds.** Error bars assume one independent observation per 30 seconds, which is approximate.
 - **No costs beyond the page formula.** Network fees, rent and the wait for queued profit are left out.
@@ -243,7 +288,8 @@ A fixed rule (strong call, or 60 second breakout with the grid agreeing), a fixe
 
 ```sh
 python -m research.scalp_1s_study --base ~/.local/state/oracle-leverage/dual-quotes \
-  --live research/json/scalp-1s-20261127/ticks-live.jsonl.gz --out research/json/scalp-1s-20261127 \
+  --live research/json/scalp-1s-20261127/ticks-live.jsonl.gz \
+  --extra-live research/json/scalp-1s-20261127/ticks-live-20261128.jsonl.gz --out research/json/scalp-1s-20261127 \
   --fixture extension/test/fixtures/1000x-scalp-parity.json --js extension/src/1000x/scalp-model-data.js \
   --experiments-js extension/src/1000x/scalp-experiments-data.js
 python -m unittest research.tests.test_scalp_1s

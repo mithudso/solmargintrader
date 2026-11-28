@@ -75,16 +75,6 @@ export class SecondBars {
 
 const closes = bars => bars.map(bar => bar.close);
 
-function rawEma(values, span) {
-  const alpha = 2 / (span + 1), out = new Array(values.length);
-  let previous = values[0];
-  for (let i = 0; i < values.length; i++) {
-    previous = i === 0 ? values[0] : alpha * values[i] + (1 - alpha) * previous;
-    out[i] = previous;
-  }
-  return out;
-}
-
 function trueRanges(bars) {
   return bars.map((bar, i) => {
     const previous = i ? bars[i - 1].close : bar.close;
@@ -266,21 +256,37 @@ export function zScore(bars, window) {
   return sd > close * 1e-12 ? (close - mean) / sd : 0;
 }
 
-/** MACD(12,26,9) histogram in basis points of price, every span times `scale`; EMAs seeded with the first close. */
-export function macdHistogramBps(bars, scale = 1) {
-  if (bars.length < 78 * scale) return null;
-  const values = closes(bars);
-  const fast = rawEma(values, 12 * scale), slow = rawEma(values, 26 * scale);
-  const line = fast.map((value, i) => value - slow[i]);
-  const signal = rawEma(line, 9 * scale);
-  return (line.at(-1) - signal.at(-1)) / values.at(-1) * 1e4;
+/**
+ * MACD histogram in basis points of price: the fast EMA less the slow one, less
+ * that line's own signal EMA. EMAs are seeded with the first close and the
+ * reading is shown once the seed's weight has faded (three slow spans). One
+ * pass and no arrays: the Experiments tab reads over a hundred of these a second.
+ */
+export function macdHistogramBps(bars, fast = 12, slow = 26, signal = 9) {
+  if (bars.length < 3 * slow) return null;
+  const a = 2 / (fast + 1), b = 2 / (slow + 1), c = 2 / (signal + 1);
+  let quick = bars[0].close, slack = quick, line = 0, smooth = 0;
+  for (let i = 1; i < bars.length; i++) {
+    const close = bars[i].close;
+    quick = a * close + (1 - a) * quick;
+    slack = b * close + (1 - b) * slack;
+    line = quick - slack;
+    smooth = c * line + (1 - c) * smooth;
+  }
+  return (line - smooth) / bars.at(-1).close * 1e4;
 }
 
 /** Fast EMA minus slow EMA in basis points of price; shown once the seed's weight has faded (three slow spans). */
 export function emaCrossBps(bars, fast, slow) {
   if (bars.length < 3 * slow) return null;
-  const values = closes(bars);
-  return (rawEma(values, fast).at(-1) - rawEma(values, slow).at(-1)) / values.at(-1) * 1e4;
+  const a = 2 / (fast + 1), b = 2 / (slow + 1);
+  let quick = bars[0].close, slack = quick;
+  for (let i = 1; i < bars.length; i++) {
+    const close = bars[i].close;
+    quick = a * close + (1 - a) * quick;
+    slack = b * close + (1 - b) * slack;
+  }
+  return (quick - slack) / bars.at(-1).close * 1e4;
 }
 
 /** Parabolic SAR state: +1 while the stop is below price. Start/step 0.02, cap 0.2. */
