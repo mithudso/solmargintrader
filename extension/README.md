@@ -147,14 +147,15 @@ The call weighs each reading by how far its running 30 second hit rate is above
 50%; a reading at or under 50% has no say. An **Experiments** tab keeps testing
 380 settings of the readings (123 of them MACD pairings of fast, slow and signal
 averages) at twelve intervals from 3 seconds to 5 minutes on the live ticks and
-shows each one's hit rate. Every 30 seconds each tile takes the setting of its
-kind with the highest hit rate; the earlier cautious rule and "never" are a
-choice in the tab. The tab also runs an inverse-vote experiment all the time:
+shows each one's hit rate. A tile takes the setting of its kind with the
+highest hit rate once both have 20 minutes' worth of settled calls and it is a
+point ahead, and then keeps it for 30 minutes; the earlier cautious rule and
+"never" are a choice in the tab. The tab also runs an inverse-vote experiment all the time:
 the call made with readings under 50% voting the other way, scored beside the
 call in use. Results are kept per coin between windows. On the recording,
 weighting gained about one point (54.4% against 53.3% for strong calls, within
-one standard error); always taking the highest hit rate gave 54.7% against
-54.4%, and inverse votes 54.6% on fewer seconds, both inside the error.
+one standard error); taking the highest hit rate gave 55.1% against 54.4%,
+and inverse votes 54.6% on fewer seconds, both inside the error.
 
 The **Perps paper** overlay on a Jupiter Perps market has the same **1s scalp**
 button. On **HYPE and ZEC**, where Jupiter offers no take profit or stop loss,

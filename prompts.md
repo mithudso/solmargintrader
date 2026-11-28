@@ -1,5 +1,16 @@
 # Prompt history
 
+Version: 345
+Delta: v344 to v345. Record the owner's mid-task choice of a calmer switch rule.
+
+## Scalp experiments: the less cumbersome switch rule · 2026-11-28
+
+Sent while the work above was running, in reply to a side agent's note that the always-switch rule replayed with about 6,000 switches and no gain, ending "Say so now if you want a minimum number of calls before a switch.":
+
+> Yes, switch it to the less cumbersome, but still effective rule.
+
+Read as: keep taking the setting with the higher hit rate, but only after a minimum number of calls and without constant switching.
+
 Version: 344
 Delta: v343 to v344. Record the owner's request to always switch a scalp tile to the setting with the higher hit rate, widen the experiment grid, and test inverse votes.
 

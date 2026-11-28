@@ -128,7 +128,7 @@ learned only from earlier seconds, starting rates from the first 60%):
 | One reading, one vote (the earlier call) | 53.3% ± 1.5, 34%, +0.77 bp | 50.7% ± 1.4 | 49.3% ± 1.9 |
 | Weighted | 54.4% ± 2.0, 20%, +0.90 bp | 51.8% ± 1.4 | 50.0% ± 1.4 |
 | Weighted, clear winners switched in (the cautious rule) | 54.4% ± 1.9, 23%, +0.86 bp | 51.8% ± 1.4 | 50.1% ± 1.5 |
-| Weighted, highest hit rate switched in (the default) | 54.7% ± 1.9, 23%, +0.76 bp | 52.0% ± 1.4 | 49.6% ± 1.5 |
+| Weighted, highest hit rate switched in (the default) | 55.1% ± 1.9, 23%, +0.78 bp | 51.6% ± 1.4 | 50.0% ± 1.5 |
 | Weighted, readings under 50% voting the other way | 54.6% ± 2.3, 15%, +0.70 bp | 51.5% ± 1.5 | 50.6% ± 1.3 |
 
 Weighting gained about one point and calls "strong" less often. That gain is
@@ -180,20 +180,21 @@ window is open, on the same live ticks.
   its live and recorded hit rate at 30 seconds, and the best unused setting of
   the same kind with what the rule will do with it.
 - **Switch settings.** Three choices, kept for the next window:
-  - **Highest hit rate** (the default). Every 30 seconds each tile takes the
-    unused setting of its kind with the highest current estimate over the next
-    30 seconds, as soon as that is above the estimate of the setting it has.
-    The estimate is the live hit rate, pulled toward the recorded one while
-    live calls are few (the recording counts as 300 calls). There is no
-    waiting and no margin, so a tile can change every 30 seconds, and any
-    setting may be chosen, however many bars it needs.
-  - **Only when clearly ahead.** The earlier rule. Both settings need at least
-    40 independent calls' worth of settled 30 second calls (1,200 call-seconds,
-    so at least 20 minutes); the challenger's cautious estimate (the lower end
-    of a 90% Wilson interval) must be above the current setting's live rate;
-    the challenger must be at least 52% right; the recording must not rank it
-    below the current setting; and a tile that just changed is left alone for
-    ten minutes.
+  - **Highest hit rate** (the default). A tile takes the unused setting of
+    its kind with the highest current estimate over the next 30 seconds when
+    that is at least 1 point above the estimate of the setting it has. Both
+    settings need 40 independent calls' worth of settled 30 second calls
+    first (1,200 call-seconds, so at least 20 minutes of ticks), and a tile
+    that changed keeps its setting for 30 minutes. The estimate is the live
+    hit rate, pulled toward the recorded one (the recording counts as 300
+    calls). Any setting may be chosen, however many bars it needs. The window
+    looks every 30 seconds; **Best other** says what it is waiting for.
+  - **Only when clearly ahead.** The earlier rule, which almost never
+    switches. Both settings need the same 40 independent calls' worth; the
+    challenger's cautious estimate (the lower end of a 90% Wilson interval)
+    must be above the current setting's live rate; the challenger must be at
+    least 52% right; the recording must not rank it below the current setting;
+    and a tile that just changed is left alone for ten minutes.
   - **Never.** Tiles stay as they are.
 
   A setting never replaces another kind of reading, and no two tiles use the
@@ -212,10 +213,10 @@ window is open, on the same live ticks.
   each one's strong calls and of its strong and lean calls together on this
   coin, beside what the replay of the recording gave. ● marks the one in use.
   The line under it names the readings that are under 50% at that moment.
-- **Starting settings** puts every tile back; with **Highest hit rate** chosen
-  they are picked again within 30 seconds, so choose **Never** first to stay
-  on them. **Forget results** (two presses) throws away what was learned for
-  this coin, including the inverse-vote record.
+- **Starting settings** puts every tile back; the tiles then stay on them for
+  the rule's hold time (30 minutes for **Highest hit rate**), so choose
+  **Never** to keep them longer. **Forget results** (two presses) throws away
+  what was learned for this coin, including the inverse-vote record.
 
 Switching and inverse votes change only the read-outs. They never touch the
 order panel, an armed level or a press on the Jupiter page.
@@ -224,27 +225,37 @@ What was learned by an earlier version of the grid is kept: a saved record is
 carried over setting by setting, and the new settings start from their recorded
 rates.
 
-What to expect from the default rule: many switches and no better call.
-Replayed on the later part of the base recording it changed a tile's setting
-1,994 times in 26 market-hours, about five times per tile per hour, and strong
-calls were right 54.7% ± 1.9 of the time against 54.4% ± 2.0 with no switching.
-On the two short live recordings it was 53.9% against 53.8%, and 47.6% against
-49.6%. None of those differences is larger than its error. Settings of one
-reading differ by a point or two over 30 seconds (MACD 12 / 26 / 9 was right
-50.5% of the time on the recording and the best of the 123 MACD settings
-51.6%), and a hit rate measured over two hours of ticks is uncertain by more
-than that, so the highest of many rates is partly the luckiest. The setting a
-tile shows is the one that has done best lately, not one known to be better.
+What to expect from the default rule: a tile changes about once in seven
+hours of ticks, mostly early on, and the call is no better for it. Replayed on
+the later part of the base recording the rule changed a tile's setting 61
+times in 26 market-hours, tiles ran on a switched-in setting 89% of the time,
+and strong calls were right 55.1% ± 1.9 of the time against 54.4% ± 2.0 with no
+switching. On the two short live recordings it was 53.0% against 53.8%, and
+48.3% against 49.6%. None of those differences is larger than its error.
+
+The first version of this rule had no limits: it switched whenever another
+setting's estimate was higher. Replayed, that changed a tile 1,994 times in the
+same 26 hours, about five times per tile per hour, for the same result (54.7% ±
+1.9). The three limits were added to stop the churn, and
+[the study](../research/papers/SCALP-1S-STUDY.md) lists the six combinations
+that were replayed; they were chosen for calm, not for a higher score.
+
+Why it does not help: settings of one reading differ by a point or two over 30
+seconds (MACD 12 / 26 / 9 was right 50.5% of the time on the recording and the
+best of the 123 MACD settings 51.6%), and a hit rate measured over two hours of
+ticks is uncertain by more than that, so the highest of many rates is partly
+the luckiest. The setting a tile shows is the one that has done best lately,
+not one known to be better.
 
 What to expect from inverse votes: nothing to gain so far. Over 30 seconds no
 setting was reliably wrong. On the first 60% of the recording 26 of the 380
 were under 50%, the lowest at 48.9%, and betting against those on the rest was
 right 49.7% ± 0.9 of the time. Inside the call, turning under-50% readings
 round made strong calls 54.6% ± 2.3 on 15% of seconds against 54.4% ± 2.0 on
-20%; on the first live recording 49.7% ± 5.4 against 53.8% ± 4.7. With the
-default switch rule there is seldom a reading under 50% to turn round, because
-each tile already holds the best setting of its kind. The live table is there
-to show if that changes.
+20%; on the first live recording 49.7% ± 5.4 against 53.8% ± 4.7. Together
+with the default switch rule it was 55.1% on the recording, the same as
+without inverse votes, and 50.6% ± 5.3 and 44.3% ± 5.6 on the two live
+recordings. The live table is there to show if that changes.
 
 Processing: reading all 380 settings takes about one millisecond per second of
 ticks in the window, and the whole study replays in about a minute on one

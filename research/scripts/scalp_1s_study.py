@@ -890,6 +890,15 @@ def main(argv=None) -> int:
         name: X.replay(groups, slot_ids, whole_prior, HORIZON)
         for name, groups in extra.items()
     }
+    # The default switch rule under several limits, on the scored slice and every live file.
+    limit_samples = {
+        "base_after_60pct": (list(base.values()), train_prior, SPLIT[0], 1.0, span)
+    }
+    if live_frames:
+        limit_samples["live_all"] = (list(live.values()), train_prior, 0.0, 1.0, None)
+    for name, groups in extra.items():
+        limit_samples[name] = (groups, whole_prior, 0.0, 1.0, None)
+    rule_limits = X.rule_limits(limit_samples, slot_ids, HORIZON)
 
     measured_by_name = {
         name: X.measured_tiers(
@@ -965,6 +974,7 @@ def main(argv=None) -> int:
         },
         "weighted_vote": weighted,
         "weighted_vote_extra_live": signed_extra,
+        "switch_rule_limits": rule_limits,
         "consecutive_strong": streak_study,
         "fade_below_half": fade_study,
         "inverse_settings": inverse_study,

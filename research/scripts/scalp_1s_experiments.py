@@ -72,9 +72,11 @@ def experiment_table(frame_list, lo=0.0, hi=1.0, span=None) -> dict:
 
 # Two rules decide when a setting takes a slot from the one in use; the extension has both.
 #
-# "best" is the owner's rule and the default: every PROMOTE_EVERY_S seconds a slot takes the
-# unused setting of its kind with the highest current estimate (`blend`), whenever that is
-# above the estimate of the setting in use. No waiting, no margin.
+# "best" is the owner's rule and the default: a slot takes the unused setting of its kind with
+# the highest current estimate (`blend`) when that is at least BEST_MARGIN above the estimate
+# of the setting in use, once both have BEST_MIN_EFF independent-equivalent calls, and then
+# keeps it for BEST_LOCK_S. With all three limits at zero the rule switched a tile about five
+# times an hour for no gain (`rule_limits` in the study), which is why they are not zero.
 #
 # "clear" is the cautious rule it replaced as the default: both settings need PROMOTE_MIN_EFF
 # independent-equivalent calls, the challenger's Wilson lower bound must beat the incumbent's
@@ -89,6 +91,19 @@ PROMOTE_MIN_RATE = 0.52
 PROMOTE_PRIOR_SLACK = 0.002  # the recording must not say the opposite
 PROMOTE_LOCK_S = 600  # a slot that just changed is left alone this long
 PROMOTE_EVERY_S = 30
+# The "best" rule's limits: (independent-equivalent calls both settings need before their
+# rates are compared, seconds a slot that just changed is left alone, how far above the
+# incumbent's estimate the challenger's must be). Chosen for calm, not for a higher score:
+# every combination in BEST_LIMITS_TRIED replayed within one standard error of the others.
+BEST_MIN_EFF, BEST_LOCK_S, BEST_MARGIN = 40, 1800, 0.01
+BEST_LIMITS_TRIED = (
+    (0, 0, 0.0),
+    (40, 600, 0.0),
+    (40, 1800, 0.0),
+    (40, 1800, 0.005),
+    (BEST_MIN_EFF, BEST_LOCK_S, BEST_MARGIN),
+    (120, 1800, 0.01),
+)
 # Seconds ahead at which the average move after a call is measured, for the chart's likely line.
 PATH_STEPS = (5, 10, 15, 20, 25, 30)
 
@@ -113,12 +128,22 @@ def same_kind(kinds) -> list:
 
 
 def find_promotions(
-    assign, hit, calls, prior, peers, locks, now, horizon, rule=DEFAULT_RULE
+    assign,
+    hit,
+    calls,
+    prior,
+    peers,
+    locks,
+    now,
+    horizon,
+    rule=DEFAULT_RULE,
+    limits=None,
 ) -> list:
     """Slots that change setting under `rule`: [(slot, variant)]. One setting never fills two slots.
 
     ``peers`` is ``same_kind(kinds)``. Slots are visited in grid order and a setting taken by an
-    earlier slot is no longer on offer to a later one.
+    earlier slot is no longer on offer to a later one. ``limits`` overrides the "best" rule's
+    (minimum calls, lock, margin), for the study's comparison of them.
     """
     if rule not in RULES:
         raise ValueError(f"unknown switch rule {rule}")
@@ -126,14 +151,19 @@ def find_promotions(
     used[list(assign)] = True
     out = []
     if rule == "best":
+        min_eff, lock_s, margin = limits or (BEST_MIN_EFF, BEST_LOCK_S, BEST_MARGIN)
         estimate = blend(hit, calls, prior)
+        known = calls / horizon >= min_eff
         for slot, incumbent in enumerate(assign):
-            free = peers[incumbent][~used[peers[incumbent]]]
+            if now - locks[slot] < lock_s or not known[incumbent]:
+                continue
+            free = peers[incumbent]
+            free = free[~used[free] & known[free]]
             if not free.size:
                 continue
             # argmax returns the first of equal estimates: the earlier setting in the grid.
             best = int(free[np.argmax(estimate[free])])
-            if estimate[best] > estimate[incumbent]:
+            if estimate[best] > estimate[incumbent] + margin:
                 used[incumbent] = False
                 used[best] = True
                 out.append((slot, best))
@@ -228,7 +258,37 @@ def tier_of(score: float) -> str:
 REPLAY_NAMES = ("plain", "weighted", "tuned", "best", "signed", "best_signed")
 
 
-def replay(groups, slot_ids, prior, horizon, lo=0.0, hi=1.0, span=None) -> dict:
+def settings_in_effect(assigned, start, need, peers, bars: int):
+    """The setting each tile reads once `bars` bars have closed.
+
+    A chosen setting without its bars leaves its tile on the starting setting. If another tile
+    is reading that one, the waiting tile takes the first free setting of its kind that has its
+    bars, so no setting is counted twice in the call. The extension's readSlots does the same.
+    """
+    ready = need[assigned] <= bars
+    if ready.all():
+        return assigned
+    out = assigned.copy()
+    taken = {int(v) for v in assigned[ready]}
+    for slot in np.flatnonzero(~ready):
+        choice = int(start[slot])
+        if choice in taken:
+            choice = next(
+                (
+                    int(v)
+                    for v in peers[choice]
+                    if int(v) not in taken and need[v] <= bars
+                ),
+                choice,
+            )
+        out[slot] = choice
+        taken.add(choice)
+    return out
+
+
+def replay(
+    groups, slot_ids, prior, horizon, lo=0.0, hi=1.0, span=None, limits=None
+) -> dict:
     """Replay the aggregates without looking ahead, by tier.
 
     "plain" is one reading, one vote on the starting settings; "weighted" weighs each by its
@@ -301,6 +361,7 @@ def replay(groups, slot_ids, prior, horizon, lo=0.0, hi=1.0, span=None) -> dict:
                             now,
                             horizon,
                             rule,
+                            limits,
                         ):
                             if first <= now < last:
                                 changes[rule].append(
@@ -319,7 +380,7 @@ def replay(groups, slot_ids, prior, horizon, lo=0.0, hi=1.0, span=None) -> dict:
                 blended = blend(hit, calls, r0)
                 # A switched-in setting without its bars yet leaves the tile on the starting one.
                 slots = {
-                    rule: np.where(need[assigned[rule]] <= t + 1, assigned[rule], start)
+                    rule: settings_in_effect(assigned[rule], start, need, peers, t + 1)
                     for rule in RULES
                 }
                 for rule in RULES:
@@ -379,6 +440,33 @@ def replay(groups, slot_ids, prior, horizon, lo=0.0, hi=1.0, span=None) -> dict:
                 else {"n": n}
             )
     return result
+
+
+def rule_limits(samples: dict, slot_ids, horizon) -> list:
+    """The "best" rule replayed under each of BEST_LIMITS_TRIED: how often it switched and how
+    its calls did. ``samples`` maps a name to replay arguments (groups, prior, lo, hi, span)."""
+    rows = []
+    for limits in BEST_LIMITS_TRIED:
+        row = {
+            "min_eff": limits[0],
+            "lock_s": limits[1],
+            "margin": limits[2],
+            "shipped": limits == (BEST_MIN_EFF, BEST_LOCK_S, BEST_MARGIN),
+        }
+        for name, (groups, prior, lo, hi, span) in samples.items():
+            out = replay(groups, slot_ids, prior, horizon, lo, hi, span, limits)
+            row[name] = {
+                "seconds": out["seconds"],
+                "changes": out["changes"]["best"],
+                "switched_share": out["switched_share"]["best"],
+                "strong": {
+                    key: out["best"]["strong"].get(key)
+                    for key in ("hit", "hit_se", "share", "mean_follow_bps")
+                },
+                "any": out["best"].get("any"),
+            }
+        rows.append(row)
+    return rows
 
 
 def measured_tiers(base: dict, live: dict | None, name: str) -> dict:
@@ -817,6 +905,9 @@ def experiments_model(
         "promotion": {
             "rule": DEFAULT_RULE,
             "every_s": PROMOTE_EVERY_S,
+            "best_min_eff": BEST_MIN_EFF,
+            "best_lock_s": BEST_LOCK_S,
+            "best_margin": BEST_MARGIN,
             "min_eff": PROMOTE_MIN_EFF,
             "z": PROMOTE_Z,
             "min_rate": PROMOTE_MIN_RATE,

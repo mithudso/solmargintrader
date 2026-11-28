@@ -542,7 +542,8 @@ try {
         inverseRows: [...document.querySelectorAll('#exp-inverse-table tbody tr')].map(tr => [tr.cells[0].textContent, tr.hasAttribute('data-in-use'), tr.cells[3].textContent]),
         inverseNote: document.getElementById('exp-inverse-note').textContent, cell: rows[0].cells[6].textContent, cellTitle: rows[0].cells[6].title,
         liveCells: document.querySelectorAll('#exp-board td[data-vote]:not(.rec):not([data-vote=warming])').length,
-        says: [...document.querySelectorAll('#exp-slots tbody tr')].map(tr => tr.cells[2].textContent), rival: document.querySelector('#exp-slots tbody tr').cells[5].title,
+        says: [...document.querySelectorAll('#exp-slots tbody tr')].map(tr => tr.cells[2].textContent), rival: document.querySelector('#exp-slots tbody tr').cells[5].title, rivalText: document.querySelector('#exp-slots tbody tr').cells[5].textContent,
+        switched: document.querySelectorAll('#exp-slots tr[data-tuned]').length,
         guard: getComputedStyle(document.getElementById('guard')).display, call: getComputedStyle(document.getElementById('call')).display } : null; })()`), 'the Experiments tab');
     assert(seen.hidden && seen.rows === 380 && seen.slots === 16 && seen.inUse === 16, `tab contents: ${JSON.stringify(seen)}`);
     assert(seen.macd === 123 && seen.kinds === 15, `MACD settings ${seen.macd}, kinds ${seen.kinds}`);
@@ -553,7 +554,9 @@ try {
       && seen.inverseRows.every(row => /^[0-9.]+% · [0-9]+% of seconds$/.test(row[2])) && /betting against those afterwards was right/.test(seen.inverseNote), `inverse experiment: ${JSON.stringify(seen.inverseRows)} ${seen.inverseNote}`);
     assert(/^[0-9]+$/.test(seen.cell) && /next 30s/.test(seen.cellTitle), `a cell does not explain itself: ${seen.cellTitle}`);
     assert(seen.liveCells > 0, 'no live result replaced a recorded figure');
-    assert(/highest estimate, whenever that is higher than its own/.test(seen.rival), 'the switch rule is not explained');
+    assert(/highest estimate when that is at least 1 point above its own, once both have 40 independent calls’ worth \(at least 20 minutes of ticks\), and then keeps it for 30 minutes/.test(seen.rival), `the switch rule is not explained: ${seen.rival}`);
+    // A new window has no settled calls, so the default rule has switched nothing yet and says what it is waiting for.
+    assert(seen.rivalText.endsWith('needs more calls') && seen.switched === 0, `rule state: ${seen.rivalText}, ${seen.switched} switched`);
     // The kind filter shows one reading's settings and brings the rest back.
     await state(`(() => { const select = document.getElementById('exp-kind'); select.value = 'macd'; select.dispatchEvent(new Event('change', { bubbles: true })); })()`);
     const shown = await until(() => state(`(() => { const rows = [...document.querySelectorAll('#exp-board tbody tr')].filter(tr => !tr.hidden); return rows.length < 380 ? { rows: rows.length, macd: rows.every(tr => /MACD/.test(tr.cells[0].textContent)), height: rows[0].getBoundingClientRect().height } : null; })()`), 'the kind filter');

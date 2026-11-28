@@ -321,54 +321,86 @@ class ScalpExperimentTests(unittest.TestCase):
         self.assertAlmostEqual(X.wilson_lower(0.5, 100, 1.96), 0.40383, places=5)
         self.assertEqual(X.wilson_lower(0.6, 0), 0.0)
 
-    def test_the_default_rule_takes_the_highest_estimate_as_soon_as_it_is_higher(self):
+    def test_the_default_rule_takes_the_highest_estimate_once_known_and_ahead(self):
         self.assertEqual(X.DEFAULT_RULE, "best")
+        self.assertEqual(
+            (X.BEST_MIN_EFF, X.BEST_LOCK_S, X.BEST_MARGIN), (40, 1800, 0.01)
+        )
+        self.assertIn(
+            (X.BEST_MIN_EFF, X.BEST_LOCK_S, X.BEST_MARGIN), X.BEST_LIMITS_TRIED
+        )
         kinds = ["slope", "slope", "slope", "roc", "slope"]
         peers = X.same_kind(kinds)
         np.testing.assert_array_equal(peers[0], [0, 1, 2, 4])
         np.testing.assert_array_equal(peers[3], [3])
         flat = np.full(5, 0.52)
+        enough = X.BEST_MIN_EFF * 30 * 6.0
 
-        def run(rates, counts=None, assign=(0,), priors=flat, locks=None):
-            calls = np.array(counts if counts is not None else [3000.0] * 5)
+        def run(
+            rates,
+            counts=None,
+            assign=(0,),
+            priors=flat,
+            locks=None,
+            now=10_000,
+            limits=None,
+        ):
+            calls = np.array(counts if counts is not None else [enough] * 5)
             return X.find_promotions(
                 list(assign),
                 np.array(rates) * calls,
                 calls,
                 priors,
                 peers,
-                locks or [10_000] * len(assign),
-                10_000,
+                locks or [-math.inf] * len(assign),
+                now,
                 30,
                 "best",
+                limits,
             )
 
-        # One point ahead is enough, a recent change does not block it, and the best of several wins.
-        self.assertEqual(run([0.52, 0.53, 0.50, 0.50, 0.50]), [(0, 1)])
+        # Two points ahead is enough: no cautious estimate. The best of several wins.
+        self.assertEqual(run([0.52, 0.54, 0.50, 0.50, 0.50]), [(0, 1)])
         self.assertEqual(run([0.50, 0.60, 0.50, 0.90, 0.66]), [(0, 4)])
-        # The setting in use stays when it is the best, or level with the best.
+        # Under a point ahead is not, and nor is a setting level with the one in use.
+        self.assertEqual(run([0.52, 0.527, 0.50, 0.50, 0.50]), [])
         self.assertEqual(run([0.70, 0.60, 0.50, 0.50, 0.66]), [])
         self.assertEqual(run([0.55, 0.55, 0.55, 0.50, 0.55]), [])
-        # With nothing live the recorded rate decides; a few live calls barely move it.
+        # Both settings need their calls first: 40 independent ones' worth, 1,200 at 30 seconds.
+        few = [enough, 1199.0, enough, enough, enough]
+        self.assertEqual(run([0.50, 0.90, 0.50, 0.50, 0.50], counts=few), [])
+        few[1] = 1200.0
+        self.assertEqual(run([0.50, 0.90, 0.50, 0.50, 0.50], counts=few), [(0, 1)])
+        self.assertEqual(
+            run(
+                [0.50, 0.90, 0.50, 0.50, 0.50],
+                counts=[100.0, enough, enough, enough, enough],
+            ),
+            [],
+        )
+        # A slot that just changed keeps its setting for half an hour.
+        self.assertEqual(
+            run([0.50, 0.60, 0.50, 0.50, 0.50], locks=[10_000 - X.BEST_LOCK_S + 1]),
+            [],
+        )
+        self.assertEqual(
+            run([0.50, 0.60, 0.50, 0.50, 0.50], locks=[10_000 - X.BEST_LOCK_S]),
+            [(0, 1)],
+        )
+        # Two slots of one kind take different settings, the first slot the better one.
+        self.assertEqual(
+            run([0.50, 0.60, 0.50, 0.50, 0.70], assign=(0, 2)), [(0, 4), (1, 1)]
+        )
+        # With every limit at zero it is the rule with no waiting: the recorded rate alone decides.
         self.assertEqual(
             run(
                 [0.0] * 5,
                 counts=[0.0] * 5,
                 priors=np.array([0.51, 0.5, 0.55, 0.6, 0.5]),
+                locks=[10_000],
+                limits=(0, 0, 0.0),
             ),
             [(0, 2)],
-        )
-        self.assertEqual(
-            run(
-                [0.5, 1.0, 0.5, 0.5, 0.5],
-                counts=[3.0] * 5,
-                priors=np.array([0.56, 0.5, 0.5, 0.5, 0.5]),
-            ),
-            [],
-        )
-        # Two slots of one kind take different settings, the first slot the better one.
-        self.assertEqual(
-            run([0.50, 0.60, 0.50, 0.50, 0.70], assign=(0, 2)), [(0, 4), (1, 1)]
         )
         with self.assertRaises(ValueError):
             X.find_promotions([0], flat, flat, flat, peers, [0], 0, 30, "sometimes")
@@ -386,13 +418,14 @@ class ScalpExperimentTests(unittest.TestCase):
     def test_a_switched_setting_without_its_bars_leaves_the_tile_on_the_starting_one(
         self,
     ):
-        # Every prior equal except one long MACD: the default rule switches the MACD tile to it
-        # at once, long before it has its 270 bars. The grid must still be scored from second 78.
+        # Every prior equal except one long MACD. With the rule's limits at zero the MACD tile
+        # switches to it at once, long before it has its 270 bars. The grid must still be
+        # scored from second 78.
         prior = {variant["id"]: 0.52 for variant in F.VARIANTS}
         prior["macd_20_90_9"] = 0.60
         slots = [F.TILE_VARIANTS[key] for key, _, _ in S.TILES]
         frame = _frame(_walk(400, 4))
-        out = X.replay([[frame]], slots, prior, S.HORIZON)
+        out = X.replay([[frame]], slots, prior, S.HORIZON, limits=(0, 0, 0.0))
         warm = max(v["need"] for v in F.VARIANTS if v["id"] in slots)
         scored = int(
             (
@@ -411,6 +444,59 @@ class ScalpExperimentTests(unittest.TestCase):
         )
         self.assertEqual(out["changes"]["clear"], 0)
         self.assertGreater(out["switched_share"]["best"], 0.0)
+        # With the shipped limits nothing has its calls yet in 400 seconds, so nothing switches.
+        calm = X.replay([[frame]], slots, prior, S.HORIZON)
+        self.assertEqual(calm["changes"]["best"], 0)
+        self.assertEqual(calm["best"], calm["weighted"])
+
+    def test_the_rule_is_replayed_under_each_set_of_limits(self):
+        prior = {variant["id"]: 0.52 for variant in F.VARIANTS}
+        slots = [F.TILE_VARIANTS[key] for key, _, _ in S.TILES]
+        frame = _frame(_walk(3000, 11))
+        rows = X.rule_limits(
+            {"sample": ([[frame]], prior, 0.0, 1.0, None)}, slots, S.HORIZON
+        )
+        self.assertEqual(len(rows), len(X.BEST_LIMITS_TRIED))
+        self.assertEqual(sum(1 for row in rows if row["shipped"]), 1)
+        eager, shipped = rows[0], next(row for row in rows if row["shipped"])
+        self.assertEqual(
+            (eager["min_eff"], eager["lock_s"], eager["margin"]), (0, 0, 0.0)
+        )
+        # No waiting switches far more often than the shipped limits do.
+        self.assertGreater(
+            eager["sample"]["changes"], 10 * max(1, shipped["sample"]["changes"])
+        )
+        self.assertEqual(eager["sample"]["seconds"], shipped["sample"]["seconds"])
+
+    def test_a_waiting_tile_never_reads_a_setting_another_tile_is_reading(self):
+        # Five settings of one kind and one of another. need = bars each must have.
+        peers = X.same_kind(["b", "b", "b", "b", "b", "r"])
+        need = np.array([21, 61, 451, 6, 500, 3])
+        start = np.array([0, 1, 5])
+        # Nothing waiting: the choices themselves.
+        chosen = np.array([3, 1, 5])
+        np.testing.assert_array_equal(
+            X.settings_in_effect(chosen, start, need, peers, 100), chosen
+        )
+        # The first tile waits for setting 2 and falls back to its starting setting 0.
+        np.testing.assert_array_equal(
+            X.settings_in_effect(np.array([2, 1, 5]), start, need, peers, 100),
+            [0, 1, 5],
+        )
+        # The second tile has taken setting 0, so the waiting first tile reads the next free
+        # setting with its bars: 1 is free and has them at 100 bars, and at 50 bars only 3 does.
+        crossed = np.array([2, 0, 5])
+        np.testing.assert_array_equal(
+            X.settings_in_effect(crossed, start, need, peers, 100), [1, 0, 5]
+        )
+        np.testing.assert_array_equal(
+            X.settings_in_effect(crossed, start, need, peers, 50), [3, 0, 5]
+        )
+        # With its bars the chosen setting is read, and the input is never changed in place.
+        np.testing.assert_array_equal(
+            X.settings_in_effect(crossed, start, need, peers, 451), [2, 0, 5]
+        )
+        np.testing.assert_array_equal(crossed, [2, 0, 5])
 
     def test_betting_against_a_setting_that_was_usually_wrong(self):
         train = {
@@ -515,6 +601,13 @@ class ScalpExperimentTests(unittest.TestCase):
         )
         self.assertEqual(model["version"], 3)
         self.assertEqual(model["promotion"]["rule"], "best")
+        self.assertEqual(
+            [
+                model["promotion"][key]
+                for key in ("best_min_eff", "best_lock_s", "best_margin")
+            ],
+            [X.BEST_MIN_EFF, X.BEST_LOCK_S, X.BEST_MARGIN],
+        )
         self.assertEqual(set(model["measured_rules"]), {"clear", "best"})
         self.assertEqual(set(model["measured_inverse"]), {"off", "best"})
         self.assertEqual(model["aliases"], F.VARIANT_ALIASES)

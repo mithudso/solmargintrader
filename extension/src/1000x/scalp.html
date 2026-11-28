@@ -58,7 +58,7 @@
       <div id="panel-experiments" role="tabpanel" aria-labelledby="tab-experiments" tabindex="0" hidden>
         <p id="exp-status" class="muted" role="status"></p>
         <div class="exp-controls">
-          <label title="When a tile changes to another setting of its reading. Highest hit rate: every 30 seconds each tile takes the unused setting of its kind with the highest current estimate over the next 30 seconds, as soon as that is above the estimate of the setting in use. Only when clearly ahead: the earlier, cautious rule, which waits for 40 independent calls’ worth on both settings and a cautious estimate above the current setting’s live rate. Never: tiles stay as they are. This changes only what the read-outs show; it never touches an order, a take profit or a stop loss.">Switch settings <select id="exp-rule">
+          <label title="When a tile changes to another setting of its reading. Highest hit rate: a tile takes the unused setting of its kind with the highest current estimate over the next 30 seconds when that is at least 1 point above the estimate of the setting in use, once both have 40 independent calls’ worth (at least 20 minutes of ticks), and then keeps it for 30 minutes. Only when clearly ahead: the earlier, cautious rule, which also asks for a cautious estimate above the current setting’s live rate and almost never switches. Never: tiles stay as they are. This changes only what the read-outs show; it never touches an order, a take profit or a stop loss.">Switch settings <select id="exp-rule">
             <option value="best">Highest hit rate</option>
             <option value="clear">Only when clearly ahead</option>
             <option value="off">Never</option>
@@ -69,8 +69,8 @@
           </select></label>
           <label title="Which interval the table below is ranked by. Tiles are always chosen on the 30 second interval, the one the call is made for.">Rank by <select id="exp-horizon"></select></label>
           <label title="Show one kind of reading in the table of all settings, or every kind. The number is how many settings of that kind are tested.">Show <select id="exp-kind"></select></label>
-          <button id="exp-defaults" type="button" title="Put every tile back on its starting setting. What live testing has learned is kept. With “Highest hit rate” chosen the tiles are picked again within 30 seconds; choose “Never” first to stay on the starting settings.">Starting settings</button>
-          <button id="exp-forget" type="button" title="Throw away everything live testing has learned for this coin and return to the starting settings. Needs a second press.">Forget results</button>
+          <button id="exp-defaults" type="button" title="Put every tile back on its starting setting. What live testing has learned is kept. The tiles then stay on them for the rule’s hold time (30 minutes for “Highest hit rate”); choose “Never” to keep them longer.">Starting settings</button>
+          <button id="exp-forget" type="button" title="Throw away everything live testing has learned for this coin, including the inverse-vote record, and return to the starting settings. Needs a second press. Tiles are switched again once enough new calls have settled.">Forget results</button>
         </div>
 
         <section aria-labelledby="exp-slots-title">
@@ -79,7 +79,7 @@
             <thead><tr>
               <th scope="col" title="The kind of reading. A setting only ever replaces another of the same kind.">Reading</th>
               <th scope="col" title="The setting this tile uses now. A ★ means it was switched in for the starting one.">Setting</th>
-              <th scope="col" title="This tile's share of the call right now: how far its running 30 second hit rate is above 50%, as a share of all tiles' edges. 0% means its hit rate is not above 50%.">Say</th>
+              <th scope="col" title="This tile's share of the call right now: how far its running 30 second hit rate is above 50%, as a share of all tiles' edges. 0% means its hit rate is not above 50%. With “Vote the other way” chosen, a tile under 50% has a say too, by how far under it is, and is marked ⇄ because its vote counts the other way.">Say</th>
               <th scope="col" title="Live hit rate of this setting over the next 30 seconds, in percent, once enough calls have settled.">Live</th>
               <th scope="col" title="Hit rate of this setting over the next 30 seconds on the base recording: its starting point before live results.">Recorded</th>
               <th scope="col" title="The best unused setting of the same kind by current estimate, and whether the chosen rule is about to switch it in.">Best other</th>
@@ -111,7 +111,7 @@
           </table></div>
         </section>
 
-        <details id="exp-log" open><summary title="Settings switched in on this coin, newest first. With the highest-hit-rate rule a tile can change every 30 seconds, so this list moves quickly.">Switches</summary><ol></ol></details>
+        <details id="exp-log" open><summary title="Settings switched in on this coin, newest first, each with the two estimates it was decided on.">Switches</summary><ol></ol></details>
       </div>
     </div>
 

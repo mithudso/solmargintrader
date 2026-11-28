@@ -61,7 +61,8 @@ const BY_ID = new Map(VARIANTS.map(variant => [variant.id, variant]));
 // Ids a setting had in an earlier grid: a saved record or a saved choice follows it to its new name.
 const ALIASES = new Map(Object.entries(SCALP_EXPERIMENTS.aliases ?? {}));
 const resolve = id => BY_ID.get(ALIASES.get(id) ?? id) ?? null;
-export const variantById = id => BY_ID.get(id) ?? null;
+/** A setting by id. An id from an earlier grid leads to the setting it is now. */
+export const variantById = id => resolve(id);
 /** The kinds of reading in grid order, with how many settings of each are tested. */
 export const KINDS = Object.freeze([...new Set(VARIANTS.map(variant => variant.kind))].map(kind => Object.freeze({ kind,
   name: KIND[kind][0], count: VARIANTS.filter(variant => variant.kind === kind).length })));
@@ -182,36 +183,58 @@ export class ExperimentBook {
     }
     if (!kept) return false;
     this.#hit.set(hit); this.#n.set(n);
-    this.#seconds = Number.isSafeInteger(saved.seconds) && saved.seconds >= 0 ? saved.seconds : 0;
+    this.#seconds = Number.isSafeInteger(saved.seconds) && saved.seconds >= 0 && saved.seconds <= MAX_SECONDS ? saved.seconds : 0;
     return true;
   }
 }
 
 /** A saved slot-to-setting map, kept only where each setting exists, is the slot's own kind and is used once. */
 export function validAssignments(saved) {
-  const out = { ...DEFAULT_ASSIGNMENTS }, used = new Set();
+  const out = {}, used = new Set();
+  // Every usable saved choice is kept first, so one bad entry cannot cost the others.
   for (const [key, fallback] of Object.entries(DEFAULT_ASSIGNMENTS)) {
-    const wanted = typeof saved?.[key] === 'string' ? resolve(saved[key]) : null;
-    const id = wanted && wanted.kind === BY_ID.get(fallback).kind && !used.has(wanted.id) ? wanted.id : fallback;
-    out[key] = used.has(id) ? fallback : id;
-    used.add(out[key]);
+    const wanted = Object.hasOwn(saved ?? {}, key) && typeof saved[key] === 'string' ? resolve(saved[key]) : null;
+    if (wanted && wanted.kind === BY_ID.get(fallback).kind && !used.has(wanted.id)) { out[key] = wanted.id; used.add(wanted.id); }
   }
-  return new Set(Object.values(out)).size === Object.keys(out).length ? out : { ...DEFAULT_ASSIGNMENTS };
+  // A slot left without one starts on its own setting, or on the first free setting of its kind when another slot holds that.
+  for (const [key, fallback] of Object.entries(DEFAULT_ASSIGNMENTS)) {
+    if (out[key]) continue;
+    const id = used.has(fallback) ? VARIANTS.find(variant => variant.kind === BY_ID.get(fallback).kind && !used.has(variant.id))?.id : fallback;
+    if (!id) return { ...DEFAULT_ASSIGNMENTS };
+    out[key] = id; used.add(id);
+  }
+  return Object.fromEntries(Object.keys(DEFAULT_ASSIGNMENTS).map(key => [key, out[key]]));
 }
 
 // The grid is ready once every starting setting has its bars. A switched-in setting never adds to that.
 export const WARMUP_BARS = Math.max(...SCALP_EXPERIMENTS.slots.map(slot => BY_ID.get(slot.variant).need));
 
 /**
- * The grid's tiles from the settings currently assigned to its slots. A
- * switched-in setting that does not have its bars yet (just after opening, or
- * after a feed break) leaves its tile on the starting setting until it does
- * (`waiting` names it), so a switch can never lengthen the grid's warm-up.
+ * The setting each tile reads now. A chosen setting that does not have its bars
+ * yet (just after opening, or after a feed break) leaves its tile on the
+ * starting setting until it does, so a switch can never lengthen the grid's
+ * warm-up. If another tile is reading that starting setting, the waiting tile
+ * takes the first free setting of its kind that has its bars instead: no
+ * setting is ever counted twice in the call. The study's replay does the same.
  */
+function settingsInEffect(assignments, barCount) {
+  const slots = SCALP_EXPERIMENTS.slots, wanted = slots.map(slot => BY_ID.get(assignments[slot.key]) ?? BY_ID.get(slot.variant));
+  const taken = new Set(wanted.filter(variant => barCount >= variant.need).map(variant => variant.id));
+  return slots.map((slot, i) => {
+    if (barCount >= wanted[i].need) return { wanted: wanted[i], variant: wanted[i] };
+    const starting = BY_ID.get(slot.variant);
+    const variant = !taken.has(starting.id) ? starting
+      : VARIANTS.find(other => other.kind === starting.kind && !taken.has(other.id) && other.need <= barCount) ?? starting;
+    taken.add(variant.id);
+    return { wanted: wanted[i], variant };
+  });
+}
+
+/** The grid's tiles from the settings currently assigned to its slots; `waiting` names a chosen setting still gathering its bars. */
 export function readSlots(assignments, readings, barCount) {
-  return SCALP_EXPERIMENTS.slots.map(slot => {
-    const starting = BY_ID.get(slot.variant), wanted = BY_ID.get(assignments[slot.key]) ?? starting;
-    const variant = wanted !== starting && barCount < wanted.need ? starting : wanted;
+  const effective = settingsInEffect(assignments, barCount);
+  return SCALP_EXPERIMENTS.slots.map((slot, i) => {
+    const starting = BY_ID.get(slot.variant), { wanted, variant } = effective[i];
     const reading = readings.get(variant.id) ?? { value: null, vote: null, ready: false }, tuned = variant !== starting;
     // A switched-in setting with its bars but no reading yet (a ZigZag before its first swing) is
     // neutral, not warming: a switch must never hold the whole call back.
@@ -255,10 +278,13 @@ export function weightedCall(tiles, book, { inverse = false, measured = SCALP_EX
  * When a setting takes a slot. Two rules, and `off`.
  *
  * `best` (the default, the owner's rule): the unused setting of the slot's kind
- * with the highest current estimate takes it whenever that estimate is above the
- * estimate of the setting in use. The estimate is `blended`: the live hit rate
- * at the call horizon, pulled toward the recorded one while live calls are few.
- * No waiting and no margin, so a slot can change at every check.
+ * with the highest current estimate takes it when that estimate is at least
+ * `bestMargin` above the estimate of the setting in use. Both settings need
+ * `bestMinEff` independent-equivalent calls first, and a slot that changed keeps
+ * its setting for `bestLockS`. The estimate is `blended`: the live hit rate at
+ * the call horizon, pulled toward the recorded one. Without those three limits
+ * the rule changed a tile about five times an hour on the recording, for no
+ * gain; with them, about once in seven hours.
  *
  * `clear` (cautious): both settings need `minEff` independent-equivalent calls
  * at the call horizon (calls / horizon); the challenger's cautious (Wilson
@@ -271,11 +297,13 @@ export function weightedCall(tiles, book, { inverse = false, measured = SCALP_EX
 const rule = SCALP_EXPERIMENTS.promotion;
 export const RULES = Object.freeze(['best', 'clear', 'off']);
 export const PROMOTION = Object.freeze({ rule: rule.rule, minEff: rule.min_eff, z: rule.z, minRate: rule.min_rate, priorSlack: rule.prior_slack,
-  lockS: rule.lock_s, everyS: rule.every_s });
+  lockS: rule.lock_s, everyS: rule.every_s, bestMinEff: rule.best_min_eff, bestLockS: rule.best_lock_s, bestMargin: rule.best_margin });
 // A live count can never exceed the sum of the decay series; anything larger in storage is not ours.
 const MAX_COUNT = 1.01 / (1 - Math.exp(-Math.LN2 / SCALP_EXPERIMENTS.half_life_s));
 // Records of the grid before this one are carried over by setting id.
 const RESTORABLE = new Set([2, SCALP_EXPERIMENTS.version]);
+// Seconds of ticks scored: ten years is more than any record of ours can hold.
+const MAX_SECONDS = 10 * 365 * 86_400;
 
 /**
  * The changes a rule makes now: at most one per slot, same kind only, and one
@@ -288,15 +316,16 @@ export function findPromotions({ assignments, book, locks = {}, nowS, rule: chos
   for (const slot of SCALP_EXPERIMENTS.slots) {
     const incumbent = BY_ID.get(assignments[slot.key]);
     if (chosen === 'best') {
+      if (nowS - (locks[slot.key] ?? -Infinity) < PROMOTION.bestLockS || book.stats(incumbent.id).eff < PROMOTION.bestMinEff) continue;
       const mine = book.blended(incumbent.id);
       let best = null;
       // Strictly above: of equal estimates the earlier setting in the grid wins, as in the study.
       for (const variant of VARIANTS) {
-        if (variant.kind !== incumbent.kind || used.has(variant.id)) continue;
+        if (variant.kind !== incumbent.kind || used.has(variant.id) || book.stats(variant.id).eff < PROMOTION.bestMinEff) continue;
         const estimate = book.blended(variant.id);
         if (!best || estimate > best.estimate) best = { variant, estimate };
       }
-      if (!best || !(best.estimate > mine)) continue;
+      if (!best || !(best.estimate > mine + PROMOTION.bestMargin)) continue;
       changes.push({ slot: slot.key, from: incumbent.id, to: best.variant.id, rate: best.estimate, incumbentRate: mine, rule: chosen });
       used.delete(incumbent.id); used.add(best.variant.id);
       continue;
