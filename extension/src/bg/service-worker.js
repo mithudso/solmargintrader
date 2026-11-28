@@ -327,12 +327,16 @@ export async function runManagerPoll() {
 async function reportBackgroundFailure(operation, error) {
   const allowed = new Set(['alarm-restore', 'manager-poll', 'control-room-monitor']);
   const code = allowed.has(operation) ? operation : 'background-operation';
-  // Only a fixed hint is printed, never the error's own text. The one cause worth naming is the commonest:
-  // the files on disk changed under the loaded extension, which stops manager work until a reload.
-  const hint = /browser source changed|loaded browser source unavailable/.test(String(error?.message ?? ''))
-    ? 'the extension files on disk changed or moved since it was loaded: reload the extension at chrome://extensions, then reload open Jupiter tabs' : '';
-  if (hint) console.error('[smt] background operation failed', code, '-', hint);
-  else console.error('[smt] background operation failed', code);
+  // The files on disk changed under the loaded extension. That happens on every update and heals itself: the
+  // worker reloads when the engine is idle. It is a notice, not an error, so it stays off Chrome's Errors page,
+  // and the gated reload is asked for now instead of at the next minute. Only fixed text is printed.
+  if (/browser source changed|loaded browser source unavailable/.test(String(error?.message ?? ''))) {
+    console.info('[smt] the extension files on disk changed since it was loaded; it reloads itself when idle, or reload it at chrome://extensions. Reload open Jupiter tabs afterwards.');
+    try { await (await Store.open()).logEvent({ type: 'source-changed', operation: code }); } catch { /* Persistence may be the failing component. */ }
+    runBuildCheck().catch(() => {});
+    return;
+  }
+  console.error('[smt] background operation failed', code);
   try { await (await Store.open()).logEvent({ type: 'background-failure', operation: code }); } catch { /* Persistence may be the failing component. */ }
 }
 async function restoreAlarms() {

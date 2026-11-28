@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-11-28T06:55:10+00:00",
+  "generatedAt": "2026-11-28T07:24:12+00:00",
   "schemaVersion": 1,
   "note": "Concepts are derived from the repo's own vocabulary \u2014 the FAMILY dict, strategy-card frontmatter, docs/trading-signals-concept-family.md, and terms verified to recur in the corpus. A concept matching no file is dropped, not kept.",
   "counts": {
@@ -166,7 +166,7 @@
       "files": [
         {
           "path": "memory.md",
-          "hits": 507
+          "hits": 505
         },
         {
           "path": "llms-executable.txt",
@@ -194,7 +194,7 @@
         },
         {
           "path": "prompts.md",
-          "hits": 182
+          "hits": 181
         },
         {
           "path": "research/papers/coin-intelligence/doge-dogecoin.md",
@@ -1011,7 +1011,7 @@
         },
         {
           "path": "memory.md",
-          "hits": 612
+          "hits": 611
         },
         {
           "path": "research/json/strategy_experiment/results/results.json",
@@ -1395,7 +1395,7 @@
         "benchmark",
         "baseline"
       ],
-      "matchingFiles": 857,
+      "matchingFiles": 858,
       "shown": 30,
       "files": [
         {
@@ -1529,7 +1529,7 @@
         "buy_and_hold",
         "baseline"
       ],
-      "matchingFiles": 733,
+      "matchingFiles": 734,
       "shown": 30,
       "files": [
         {

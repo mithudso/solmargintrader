@@ -1,5 +1,14 @@
 # Prompt history
 
+Version: 343
+Delta: v342 to v343. Record the owner's report that the manager-poll error still shows on the extension's Errors page.
+
+## manager-poll error on the extension's Errors page · 2026-11-28
+
+> This error is in the extensions window for the plugin:
+
+followed by the pasted entry `[smt] background operation failed manager-poll` (context `src/bg/service-worker.js`, stack trace line 330) and the file's listing.
+
 Version: 342
 Delta: v341 to v342. Record the owner's choices for the temporary folder and the ZEC/HYPE build, the pasted manager-poll error, and the request for a mute button.
 

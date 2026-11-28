@@ -127,7 +127,7 @@ See [design, formulas and verification](../docs/JUPITER-1000X-OVERLAY.md),
 [optimized execution prompt](../docs/JUPITER-1000X-OVERLAY-PROMPT.md), and
 [SDK create/close capabilities and remaining gates](../docs/JUPITER-1000X-SDK.md).
 
-## Jupiter 1000x 1s scalp window, entries and exit guard (0.22.0)
+## Jupiter 1000x 1s scalp window, entries and exit guard (0.22.1)
 
 The Indicators overlay on `https://jup.ag/1000x` has a **1s scalp** button. It
 opens a separate window for that market: read-outs on the left, the order form

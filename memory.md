@@ -1,7 +1,19 @@
 # Work continuation
 
-Version: 737
-Delta: v736 to v737. Record the ZEC/HYPE Perps build with a window-run TP/SL (extension 0.22.0), the mute button and the manager-poll cause. Earlier:
+Version: 738
+Delta: v737 to v738. Record that the manager-poll entry after an update is now a quiet notice with an immediate gated reload (extension 0.22.1). Earlier:
+
+## manager-poll after an update: a notice, not an error · 2026-11-28
+
+The owner reported the Errors-page entry `[smt] background operation failed manager-poll` a third time (`prompts.md` v343). Its stack line 330 is the old worker's `console.error`, and the text has no hint, so the worker that logged it was the one loaded before the files changed. Checked: the native host answers `ping` and `buildHash` (114 files); nothing else was wrong.
+
+Cause, unchanged: after every update of `/Users/mitch/dev/solmargintrader/extension` the loaded worker's source check fails until the minute-by-minute auto-reload (`extension/src/core/autoreload.js`) reloads it. In that minute the 30 second manager poll fails once or twice, and Chrome keeps the entries until they are cleared.
+
+Done (0.22.1): `reportBackgroundFailure` in `extension/src/bg/service-worker.js` treats "browser source changed" as a notice (`console.info`, event type `source-changed`), not an error, and asks the gated reload to run at once. Any other failure is still `console.error` with its fixed code.
+
+Verification: 869 extension tests.
+
+Earlier delta, v736 to v737. Record the ZEC/HYPE Perps build with a window-run TP/SL (extension 0.22.0), the mute button and the manager-poll cause. Earlier:
 
 ## Perps beta markets: entries and a window-run TP/SL; mute button · 2026-11-28
 
