@@ -43,6 +43,11 @@ header .tag{margin-inline-start:auto}
 .tile span{display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .tile .name{font-size:10px;color:#d4ddec}
 .tile .value{font-size:13px;font-weight:650;font-variant-numeric:tabular-nums}
+.tile .hits{display:grid;grid-template-columns:repeat(6,1fr);gap:2px;margin-top:3px;overflow:visible}
+.tile .hits i{font-style:normal;font-size:9px;line-height:13px;text-align:center;border-radius:2px;background:#1d2738;color:#c4d1e5;font-variant-numeric:tabular-nums}
+.tile .hits i[data-vote=up]{background:#1b7056;color:#eafff6}
+.tile .hits i[data-vote=down]{background:#873d48;color:#ffecec}
+.coin select{font-size:16px;font-weight:700;min-height:30px;padding:0 4px}
 .tile[data-vote=up]{background:var(--up-bg);border-color:var(--up)}
 .tile[data-vote=down]{background:var(--down-bg);border-color:var(--down)}
 .tile[data-vote=warming]{background:#172133;border-style:dashed}
@@ -108,3 +113,6 @@ td.hit,th:last-child{text-align:left;white-space:nowrap}
 td.hit{padding-inline-start:10px}
 th:last-child{padding-inline-start:10px}
 @media(max-width:760px){main{grid-template-columns:1fr}#guard{position:static}}
+
+.levels label span{font-size:10px}
+#guard-tp-note,#guard-sl-note{overflow-wrap:anywhere}

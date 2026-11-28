@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-11-28T03:27:51+00:00",
+  "generatedAt": "2026-11-28T04:29:19+00:00",
   "schemaVersion": 1,
   "note": "Concepts are derived from the repo's own vocabulary \u2014 the FAMILY dict, strategy-card frontmatter, docs/trading-signals-concept-family.md, and terms verified to recur in the corpus. A concept matching no file is dropped, not kept.",
   "counts": {
@@ -62,16 +62,16 @@
           "hits": 157
         },
         {
+          "path": "extension/src/1000x/scalp.js",
+          "hits": 127
+        },
+        {
           "path": "research/json/tradingview-script-profiles/shard-a.jsonl",
           "hits": 126
         },
         {
           "path": ".cdo/reviews-2026-11-12/ecosystem-full-final.json",
           "hits": 124
-        },
-        {
-          "path": "extension/src/1000x/scalp.js",
-          "hits": 119
         },
         {
           "path": "research/json/tradingview-script-profiles/shard-c.jsonl",
@@ -86,6 +86,10 @@
           "hits": 100
         },
         {
+          "path": "extension/tools/1000x-scalp-e2e.mjs",
+          "hits": 93
+        },
+        {
           "path": ".cdo/reviews-2026-11-12/soltui-worker.json",
           "hits": 86
         },
@@ -96,10 +100,6 @@
         {
           "path": "skills/trading-and-investing/references/trading-risk-management.md",
           "hits": 84
-        },
-        {
-          "path": "extension/tools/1000x-scalp-e2e.mjs",
-          "hits": 82
         },
         {
           "path": "research/json/tradingview-card-readiness.json",
@@ -821,12 +821,12 @@
           "hits": 57
         },
         {
-          "path": "memory.md",
+          "path": "research/json/native-pairs-week-20261117/markets/ETH-USD/summary.json",
           "hits": 57
         },
         {
-          "path": "research/json/native-pairs-week-20261117/markets/ETH-USD/summary.json",
-          "hits": 57
+          "path": "memory.md",
+          "hits": 56
         },
         {
           "path": "botmanager/tests/test_legacy.py",
@@ -1011,7 +1011,7 @@
         },
         {
           "path": "memory.md",
-          "hits": 560
+          "hits": 565
         },
         {
           "path": "research/json/strategy_experiment/results/results.json",
@@ -1030,12 +1030,12 @@
           "hits": 284
         },
         {
-          "path": ".cdo/reviews-2026-11-12/oracle.json",
-          "hits": 271
+          "path": "prompts.md",
+          "hits": 273
         },
         {
-          "path": "prompts.md",
-          "hits": 269
+          "path": ".cdo/reviews-2026-11-12/oracle.json",
+          "hits": 271
         },
         {
           "path": "llms-infra.txt",

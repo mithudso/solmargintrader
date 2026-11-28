@@ -160,6 +160,60 @@ export class SlopeHistory {
   }
 }
 
+// Horizons at which every tile's own vote is scored, matching the slope ladder's windows.
+export const SCORE_HORIZONS = Object.freeze(SCALP_MODEL.slopes.map(row => row.window_s));
+
+/**
+ * Running hit rate of every tile at every horizon: a tile's vote at one second
+ * is scored against the move from that second's close to the close H seconds
+ * later, for each H. A neutral or warming tile makes no call, a flat outcome is
+ * not counted, and nothing is scored across a feed break. Seconds overlap, so n
+ * is not independent trials.
+ */
+export class HorizonScore {
+  #history = new Map();
+  #results = new Map();
+  #horizons;
+  #retain;
+
+  constructor(keys, horizons = SCORE_HORIZONS, retainSeconds = 600) {
+    this.#horizons = [...horizons];
+    this.#retain = retainSeconds;
+    for (const key of keys) this.#results.set(key, new Map(this.#horizons.map(horizon => [horizon, []])));
+  }
+
+  /** One call per closed bar, with each tile's vote at that bar (+1, -1, 0 or null). */
+  observe(bar, votes) {
+    if (!bar || !Number.isSafeInteger(bar.time) || !(bar.close > 0) || this.#history.has(bar.time)) return;
+    for (const horizon of this.#horizons) {
+      const past = this.#history.get(bar.time - horizon);
+      if (!past || bar.close === past.close) continue;
+      const up = bar.close > past.close;
+      for (const [key, vote] of Object.entries(past.votes)) {
+        const list = this.#results.get(key)?.get(horizon);
+        if (!list || !vote) continue;
+        list.push({ time: bar.time, hit: (vote > 0) === up });
+        while (list.length && list[0].time < bar.time - this.#retain) list.shift();
+      }
+    }
+    this.#history.set(bar.time, { close: bar.close, votes: { ...votes } });
+    const oldest = bar.time - Math.max(...this.#horizons);
+    for (const time of this.#history.keys()) { if (time >= oldest) break; this.#history.delete(time); }
+  }
+
+  /** The feed lost continuity: calls still waiting can no longer be settled. */
+  reset() { this.#history.clear(); }
+
+  /** Per horizon for one tile: { horizon, hit, n, rate }. */
+  stats(key) {
+    const rows = this.#results.get(key);
+    return this.#horizons.map(horizon => {
+      const list = rows?.get(horizon) ?? [], hit = list.filter(entry => entry.hit).length;
+      return { horizon, hit, n: list.length, rate: list.length ? hit / list.length : null };
+    });
+  }
+}
+
 /**
  * Running accuracy of each ladder window: every second's slope sign is scored
  * against the move over the following 30 seconds, like the grid's own calls.

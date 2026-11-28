@@ -225,7 +225,8 @@
    * One call at a time, never within five seconds of the last, never late.
    */
   async function openPosition(doc, request, { now = Date.now, wait = ms => new Promise(resolve => setTimeout(resolve, ms)), stillValid = () => true } = {}) {
-    if (!request || !['long', 'short'].includes(request.side) || ![0.25, 0.5, 0.75, 1].includes(request.fraction)) {
+    if (!request || !['long', 'short'].includes(request.side) || ![0.25, 0.5, 0.75, 1].includes(request.fraction)
+        || ![undefined, null, 500, 1000].includes(request.leverage)) {
       return { clicked: false, reason: 'invalid_request' };
     }
     const started = now();
@@ -255,6 +256,13 @@
         }
         return false;
       };
+      if (request.leverage && parts.leverage !== request.leverage) {
+        // The page's own leverage preset, pressed before the size: the page caps the amount by leverage.
+        const preset = parts.buttons.find(candidate => candidate.getAttribute('aria-pressed') !== null && leverageOf(candidate.textContent) === request.leverage);
+        if (!preset || preset.disabled) return { clicked: false, reason: 'leverage_button_unavailable' };
+        preset.click();
+        if (!await settle(() => parts.leverage === request.leverage)) return { clicked: false, reason: parts ? 'leverage_not_set' : 'order_form_not_found' };
+      }
       const typed = request.fraction === 0.75;
       const label = typed ? 'Max' : SIZE_BUTTON[request.fraction];
       const quick = parts.buttons.find(candidate => clean(candidate.textContent) === label);
@@ -282,7 +290,7 @@
       if (!near(parts.input.value, request.fraction)) return { clicked: false, reason: 'amount_unexpected' };
       // Timers crawl in a hidden tab. A press that comes late is one the owner has stopped expecting.
       if (now() - started > OPEN_DEADLINE_MS) return { clicked: false, reason: 'too_slow' };
-      if (parts.mode !== 'Classic' || !stillValid()) return { clicked: false, reason: 'page_changed' };
+      if (parts.mode !== 'Classic' || !stillValid() || (request.leverage && parts.leverage !== request.leverage)) return { clicked: false, reason: 'page_changed' };
       button.click();
       return { clicked: true, amountText: amount(parts.input.value), leverage: parts.leverage };
     } finally {

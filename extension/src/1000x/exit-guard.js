@@ -85,6 +85,16 @@ export function parseDistance(text) {
 }
 
 /**
+ * True when a number typed as a distance in basis points sits within 3% of the
+ * market's price. "71.90" with SOL at 71.70 is far more likely a price typed
+ * into the wrong unit than a 71.9 bp level, and reading it as a distance would
+ * put the level about 0.7% away instead of at 71.90.
+ */
+export function priceLike(distanceBps, price) {
+  return positive(distanceBps) && positive(price) && Math.abs(distanceBps / price - 1) < 0.03;
+}
+
+/**
  * Turn the order form's two fields into price levels for a position.
  * unit 'bp' reads each field as a distance from the position's entry, in the
  * winning direction for the take profit and the losing direction for the stop.

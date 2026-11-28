@@ -95,6 +95,14 @@ export function createJupiterScalpWindows({ runtime, storage, tabs, windows, set
           if (!match) throw new Error('This scalp window is not attached to a Jupiter 1000x tab');
           const [sourceTabId, entry] = match;
           if (action === 'status') return { attached: true, symbol: entry.symbol };
+          if (action === 'setMarket') {
+            // The window is about to reload on another coin; its address is checked against this symbol.
+            if (!SYMBOL.test(args.market ?? '') || !/^[A-Z]/.test(args.market)) return { ok: false, reason: 'invalid_request' };
+            if (entry.guardLive) return { ok: false, reason: 'guard_live' };
+            entry.symbol = args.market;
+            await save(entries);
+            return { ok: true, symbol: entry.symbol };
+          }
           if (action === 'guardState') {
             // The worker cannot see the guard; the window says when one is live so it is not closed under it.
             entry.guardLive = args.live === true;
@@ -109,7 +117,7 @@ export function createJupiterScalpWindows({ runtime, storage, tabs, windows, set
           }
           if (action === 'openPosition') {
             // The page opens in its own current market; the content script refuses unless that is this window's.
-            return relay(Number(sourceTabId), { action: 'openPosition', request: { side: args.side, fraction: args.fraction, coin: entry.symbol } }, OPEN_TIMEOUT_MS);
+            return relay(Number(sourceTabId), { action: 'openPosition', request: { side: args.side, fraction: args.fraction, leverage: args.leverage ?? null, coin: entry.symbol } }, OPEN_TIMEOUT_MS);
           }
           if (action === 'showJupiter') {
             const tab = await tabs.get(Number(sourceTabId)).catch(() => null);

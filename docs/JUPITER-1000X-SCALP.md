@@ -1,6 +1,6 @@
 # Jupiter 1000x: 1s scalp window and exit guard
 
-Version: 2.0.0. Delta: Long and Short entry buttons with size presets, levels in basis points, order form beside the chart, hover descriptions and a slope accuracy gauge; extension 0.18.0, 2026-11-27.
+Version: 2.1.0. Delta: coin dropdown, 500× or 1,000× leverage choice, a running hit rate per reading at six intervals, and a refusal when a price is typed into a distance field; extension 0.19.0, 2026-11-28.
 
 ## What it is
 
@@ -30,7 +30,7 @@ that the 1000x payout needs far more than that. Read
 ## Open it
 
 1. Load or reload the unpacked extension from
-   `/Users/mitch/dev/solmargintrader/extension` (version 0.18.0 or later), then
+   `/Users/mitch/dev/solmargintrader/extension` (version 0.19.0 or later), then
    reload the Jupiter tab.
 2. On https://jup.ag/1000x?market=SOL&mode=classic the Indicators overlay has a
    new **1s scalp** button in its title bar. Press it.
@@ -40,6 +40,11 @@ that the 1000x payout needs far more than that. Read
 
 Every tile, column title, field and button explains itself on hover. The window
 itself carries no explanatory paragraphs.
+
+The dropdown at the top left chooses the coin the window watches. Choosing
+another reloads the window on that market, so read-outs and scores start again.
+Long and Short work only while the Jupiter tab shows the same market, and the
+dropdown is locked while a take profit, stop loss or entry is live.
 
 The window closes when its Jupiter tab closes. It stays open when the tab
 reloads, so an armed guard can report that it lost the page.
@@ -57,7 +62,7 @@ opening, and after any gap.
 | Call | **UP** or **DOWN · strong** when at least 12 of 16 readings net one way, **lean** from 6, **MIXED** below. The line under it gives the vote count, the hit rate for that tier on the recording the grid was chosen from, the figure from the separate short live check with its error bar, and the typical 30 second move now. Hover the box for the full sentence. |
 | Chart | 1s candles for the last 150 seconds. Ahead of price: a dashed centre line and the bands inside which 68% and 90% of recorded 30 second moves ended, scaled by the last 30 seconds' volatility. Entry, bust, take profit and stop loss appear as price lines. |
 | Strips | Top: the call made each second for the last 120 seconds. Bottom: whether that call was right 30 seconds later. |
-| Trend grid | The sixteen readings. Green votes up, red votes down, grey is neutral, dashed is warming up. Every tile also carries an arrow and its value. |
+| Trend grid | The sixteen readings. Green votes up, red votes down, grey is neutral, dashed is warming up. Every tile also carries an arrow and its value, and six small numbers: its own running hit rate, in percent, over the next 5 s, 10 s, 20 s, 30 s, 1 min and 5 min. |
 | Slope ladder | Per window (5s, 10s, 20s, 30s, 1m, 5m): the fitted slope, the range it has moved in, its second derivative, that range, how long the slope has held its sign, the average and longest completed run this session, and a running accuracy gauge. |
 | Session score | Calls settled in this window so far. Seconds overlap, so it is a rough guide. |
 
@@ -87,6 +92,17 @@ the recording, fading an extreme lost. The repository's two-bar reversal rule,
 Keltner position and directional movement failed the selection rule and have no
 tile. A 3/10 EMA cross passed narrowly and was left out as a near-duplicate of
 the momentum tiles.
+
+### Running hit rate per reading
+
+Under each tile, six cells score that reading alone. Its vote at one second is
+checked against the move from that second's close to the close 5, 10, 20, 30, 60
+and 300 seconds later. Each cell shows the share that matched among the calls
+settled in the last ten minutes: green at 52 or more, red at 48 or less, a dot
+until a first call has settled at that interval (the 5 minute cell needs five
+minutes). A neutral tile makes no call, a flat outcome is not counted, and
+nothing is scored across a feed break. Hover a cell for its count. Seconds
+overlap, so these are running reads and not trade records.
 
 ### Slope ladder and reversal timing
 
@@ -120,7 +136,8 @@ the 5 second slope matched 51.6% of the time and the 5 minute slope about 50%.
 | --- | --- |
 | Unlock | Tick **Unlock**. Long and Short are disabled until you do, in every window: Unlock, Confirm and the size are never remembered, so each window starts locked, confirming and at a quarter. Hover a disabled button to see why it is disabled. |
 | Size | Choose ¼, ½, ¾ or All of the funds available for the pay token selected on the Jupiter page. A quarter, half and all press the page's own **25%**, **Half** and **Max**. Three quarters has no page button: the window presses **Max**, reads the amount, types three quarters of it and waits for the page's own line under the amount to change. In every case the amount the page then shows must be within 85% to 100% of that share of the balance it shows, or nothing is pressed. |
-| Levels | Leave **as** on *bp from entry* and type a take profit and a stop loss in basis points, or press **No TP**, **No SL** or **No TP/SL**. A stop loss at or beyond the bust distance (9.8 bp at 1,000×) is refused before anything is sent. |
+| Leverage | **Page** uses whatever the Jupiter page's order form shows. **500×** or **1,000×** presses that preset on the page before the size is set, and refuses if the page does not switch. The choice is never remembered: each window starts on Page. |
+| Levels | Leave **as** on *bp from entry* and type a take profit and a stop loss in basis points, or press **No TP**, **No SL** or **No TP/SL**. A stop loss at or beyond the bust distance (9.8 bp at 1,000×, 19.8 bp at 500×) is refused before anything is sent. |
 | Press | With **Confirm** ticked, the first press turns the button into *Confirm long ½* for four seconds and a second press at least 0.6 seconds later sends. A double-click does not confirm. Untick it for one-press entries. |
 | Send | The window asks the Jupiter tab once. The tab checks that it is on this window's market and in Classic mode, sets the size, waits for the page to accept it and presses the page's own Long or Short button. The page uses the leverage it shows. |
 | Arm | When exactly one new position for that market, side and leverage is listed, the window selects it and arms the levels from its real entry price, in the mode chosen under **At a level**. If price has already passed a level by then, the guard arms anyway and acts on the next quote. If arming fails, it says the position is open without its levels, with a notification and tone. |
@@ -155,7 +172,8 @@ after. Chrome asks before closing the window while an entry is out.
 - **Entries use the page's own controls.** The window presses the page's size
   button and its Long or Short button. It types an amount only for three
   quarters, from the page's own Max, and refuses if the page does not show that
-  amount back. The leverage is whatever the page shows; the window never sets it.
+  amount back. The leverage is the page's own: either what it shows, or its
+  500× or 1,000× preset pressed for you.
 - **One entry request, never repeated**, and none within five seconds of the last.
 - **Right market, right mode.** The tab refuses an entry when it shows another
   market than the window's, or a mode other than Classic.
@@ -169,6 +187,10 @@ after. Chrome asks before closing the window while an entry is out.
 - **No guessed numbers.** Levels are plain decimals you typed. An entry or bust
   price the page shows in another format is refused. An entry more than 20% from
   the live price counts as misread.
+- **A price typed as a distance is refused.** The two fields show their unit.
+  In *bp from entry*, a number within 3% of the coin's price (71.90 with SOL at
+  71.70) is refused with a prompt to switch **as** to *price*: read as a
+  distance it would put the level about 0.7% away.
 - **Levels must make sense.** Take profit on the winning side of the current
   price; stop loss on the losing side and inside the bust price. A stop loss is
   refused when the page's bust price cannot be read.
@@ -194,9 +216,10 @@ it has its own arm switch and the grid's kill switch does not affect it.
 - **It cannot sign.** Each open and each close needs your wallet's signature.
   If the wallet asks, nothing happens until you approve. Keep the Jupiter tab
   and the wallet reachable.
-- **It cannot set an entry price or the leverage.** An open fills at the oracle
-  price recorded about two seconds after submission, at the page's leverage. A
-  level in basis points is measured from that real entry.
+- **It cannot set an entry price.** An open fills at the oracle price recorded
+  about two seconds after submission. A level in basis points is measured from
+  that real entry. Leverage is limited to the page's own 500× and 1,000× presets
+  or whatever the page already shows.
 - **Large sizes may stop at a page dialog.** The page can ask for a message
   before opening a large position. The window then reports that no new position
   was listed; finish on the Jupiter tab.

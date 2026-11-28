@@ -78,7 +78,9 @@ test('only the window this worker opened may read positions or ask for a close',
   assert.deepEqual(await recovered.control('closePosition', panel, {}), { ok: false, reason: 'position_market_mismatch' });
   // An entry is relayed with this window's market, so the page can refuse when it shows another one.
   await recovered.control('openPosition', panel, { side: 'long', fraction: 0.5 });
-  assert.deepEqual(state.sent.at(-1), [2, { type: 'jupiter1000xPage', action: 'openPosition', request: { side: 'long', fraction: 0.5, coin: 'SOL' } }, { frameId: 0 }]);
+  assert.deepEqual(state.sent.at(-1), [2, { type: 'jupiter1000xPage', action: 'openPosition', request: { side: 'long', fraction: 0.5, leverage: null, coin: 'SOL' } }, { frameId: 0 }]);
+  await recovered.control('openPosition', panel, { side: 'short', fraction: 1, leverage: 500 });
+  assert.equal(state.sent.at(-1)[1].request.leverage, 500);
   await assert.rejects(recovered.control('openPosition', source, { side: 'long', fraction: 0.5 }), /Invalid scalp window action/);
   const before = state.sent.length;
   for (const stranger of [
@@ -112,6 +114,23 @@ test('a window with a live guard is not closed or replaced under it', async () =
   assert.deepEqual(await calm.scalp.control('guardState', calmPanel, { live: false }), { ok: true, live: false });
   assert.deepEqual(await calm.scalp.control('close', source), { open: false });
   await assert.rejects(calm.scalp.control('guardState', source, { live: true }), /Invalid scalp window action/);
+});
+
+test('the window can be re-bound to another coin, but not under a live guard', async () => {
+  const { state, scalp } = harness();
+  await scalp.control('open', source);
+  const panel = panelOf(state);
+  assert.deepEqual(await scalp.control('setMarket', panel, { market: 'BTC' }), { ok: true, symbol: 'BTC' });
+  // The window reloads on its new address; the old one is no longer this window's.
+  await assert.rejects(scalp.control('status', panel), /not attached/);
+  const moved = { ...panel, url: 'chrome-extension://fixture/src/1000x/scalp.html#market=BTC' };
+  assert.deepEqual(await scalp.control('status', moved), { attached: true, symbol: 'BTC' });
+  await scalp.control('openPosition', moved, { side: 'long', fraction: 1 });
+  assert.equal(state.sent.at(-1)[1].request.coin, 'BTC', 'entries go to the coin the window now watches');
+  await scalp.control('guardState', moved, { live: true });
+  assert.deepEqual(await scalp.control('setMarket', moved, { market: 'ETH' }), { ok: false, reason: 'guard_live' });
+  for (const market of [undefined, '', 'eth', '1INCH', 'A'.repeat(13)]) assert.deepEqual(await scalp.control('setMarket', moved, { market }), { ok: false, reason: 'invalid_request' });
+  await assert.rejects(scalp.control('setMarket', source, { market: 'BTC' }), /Invalid scalp window action/);
 });
 
 test('a lost page is an explicit failure, never a silent success', async () => {
@@ -163,9 +182,13 @@ test('the registry command validates before anything reaches a page', async () =
   await run({ action: 'closePosition', expect });
   await run({ action: 'guardState', live: true });
   await run({ action: 'openPosition', side: 'short', fraction: 0.75 });
-  const none = { expect: undefined, live: undefined, side: undefined, fraction: undefined };
+  const none = { expect: undefined, live: undefined, side: undefined, fraction: undefined, leverage: undefined, market: undefined };
+  await run({ action: 'openPosition', side: 'long', fraction: 1, leverage: 500 });
+  await run({ action: 'setMarket', market: 'BTC' });
+  assert.deepEqual(calls.pop().slice(0, 1).concat(calls.length), ['setMarket', 5]);
   assert.deepEqual(calls.map(call => [call[0], call[2]]), [['open', none], ['closePosition', { ...none, expect }],
-    ['guardState', { ...none, live: true }], ['openPosition', { ...none, side: 'short', fraction: 0.75 }]]);
+    ['guardState', { ...none, live: true }], ['openPosition', { ...none, side: 'short', fraction: 0.75 }],
+    ['openPosition', { ...none, side: 'long', fraction: 1, leverage: 500 }]]);
   for (const bad of [
     { action: 'closeAll' }, { action: 'closePosition' }, { action: 'closePosition', expect: { ...expect, leverage: 5000 } },
     { action: 'closePosition', expect: { ...expect, side: 'both' } }, { action: 'closePosition', expect: { ...expect, coin: 'sol' } },
@@ -173,9 +196,11 @@ test('the registry command validates before anything reaches a page', async () =
     { action: 'closePosition', expect: [] }, { action: 'positions', expect }, { action: 'guardState' }, { action: 'open', live: true },
     { action: 'openPosition' }, { action: 'openPosition', side: 'long' }, { action: 'openPosition', side: 'up', fraction: 0.5 },
     { action: 'openPosition', side: 'long', fraction: 0.6 }, { action: 'openPosition', side: 'long', fraction: 2 },
+    { action: 'openPosition', side: 'long', fraction: 1, leverage: 750 }, { action: 'openPosition', side: 'long', fraction: 1, leverage: 2000 }, { action: 'positions', leverage: 500 },
+    { action: 'setMarket' }, { action: 'setMarket', market: 'btc' }, { action: 'setMarket', market: 'BTC/USD' }, { action: 'open', market: 'BTC' },
     { action: 'positions', side: 'long', fraction: 0.5 }, { action: 'closePosition', expect, side: 'long', fraction: 1 },
   ]) await assert.rejects(run(bad), error => error instanceof CommandError && error.status === 400, JSON.stringify(bad));
-  assert.equal(calls.length, 4);
+  assert.equal(calls.length, 5);
   // Outside Chrome (CLI, HTTP API) there is no page to act on.
   await assert.rejects(runCommand({ name: 'jupiterScalpWindow', args: { action: 'open' }, deps: { store: {} } }),
     error => error instanceof CommandError && error.status === 501);

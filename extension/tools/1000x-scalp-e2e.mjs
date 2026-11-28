@@ -51,15 +51,20 @@ const portalHtml = `<!doctype html><html><head><meta charset="utf-8"><title>1000
   <button type="button" id="quick-25">25%</button><button type="button" id="quick-half">Half</button><button type="button" id="quick-max">Max</button>
   <button type="button" aria-label="Available balance: 15.80352 JupUSD" title="Available balance: 15.80352 JupUSD"><span>15.80352</span></button>
   <input id="degen-amount" name="amount" placeholder="0.00" aria-label="Collateral amount"><span id="degen-amount-hint"></span>
-  <button type="button" aria-pressed="false">500×</button><button type="button" aria-pressed="true">1,000×</button>
+  <button type="button" class="lev" aria-pressed="false">500×</button><button type="button" class="lev" aria-pressed="true">1,000×</button>
   <button type="button" data-side="long">Long</button><button type="button" data-side="short">Short</button>
 </form>
 <button id="close-all" type="button" onclick="window.__clicks.all++">Close all</button>
 <button id="positions-tab" type="button">Positions (1)</button>
 <table><thead><tr><th>Position</th><th>Value / PnL</th><th>Entry / Mark price</th><th>Bust price</th><th>Size</th><th>Collateral</th><th>Held</th><th>Status</th></tr></thead><tbody id="rows"></tbody></table>
 <script>
-window.__clicks = { close: 0, all: 0, share: 0, long: 0, short: 0, quick: [], amounts: [] };
-const rowHtml = (side, entry, bust) => '<tr><td><button type="button" data-row-action aria-label="Focus SOL position on chart"><span><strong>SOL<span> #1</span></strong><span class="text-success">1,000× ' + side + '</span> <span>Classic</span></span></button></td>'
+window.__clicks = { close: 0, all: 0, share: 0, long: 0, short: 0, quick: [], amounts: [], leverage: [] };
+const pressedLeverage = () => document.querySelector('.lev[aria-pressed="true"]').textContent;
+for (const preset of document.querySelectorAll('.lev')) preset.addEventListener('click', () => {
+  window.__clicks.leverage.push(preset.textContent);
+  setTimeout(() => { for (const other of document.querySelectorAll('.lev')) other.setAttribute('aria-pressed', String(other === preset)); }, 40);
+});
+const rowHtml = (side, entry, bust) => '<tr><td><button type="button" data-row-action aria-label="Focus SOL position on chart"><span><strong>SOL<span> #1</span></strong><span class="text-success">' + pressedLeverage() + ' ' + side + '</span> <span>Classic</span></span></button></td>'
     + '<td><span>$10.00</span><span>+$0.00</span></td><td>' + entry + ' / <span>' + entry + '</span></td><td>' + bust + '</td><td>$10,000.00</td><td><span>$10.00</span><span>JupUSD</span></td><td>12s</td>'
     + '<td><div><button type="button" class="share" onclick="window.__clicks.share++"></button><button type="button" class="row-close"></button></div></td></tr>';
 const wire = (label, disabled) => {
@@ -131,7 +136,8 @@ async function oracleFixture() {
     return { s: 'ok', t, o: t.map(() => 100), h: t.map(() => 100.01), l: t.map(() => 99.99), c: t.map(() => 100) };
   };
   return { state, history, url: `ws://127.0.0.1:${server.address().port}/oracle`,
-    catalog: { markets: [{ symbol: 'SOL', address: 'Ew8sRjpuBttpmhSUeaAn4dLAegWnz55AuafVcGuojCPS', feedId: 6, closed: false }] },
+    catalog: { markets: [{ symbol: 'SOL', address: 'Ew8sRjpuBttpmhSUeaAn4dLAegWnz55AuafVcGuojCPS', feedId: 6, closed: false },
+      { symbol: 'BTC', address: 'Ew8sRjpuBttpmhSUeaAn4dLAegWnz55AuafVcGuojCPS', feedId: 1, closed: false }] },
     close: async () => { for (const socket of sockets) socket.destroy(); await new Promise(resolve => server.close(resolve)); } };
 }
 
@@ -271,7 +277,14 @@ try {
     await setInput(scalp, 'guard-sl', '12');
     await trustedClick(scalp, `document.getElementById('guard-arm')`);
     await until(() => state(`/beyond the bust price/.test(document.getElementById('guard-errors').textContent)`), 'beyond-bust error');
+    // A price typed while the fields are read as distances is refused, not read as 100.05 bp.
+    await setInput(scalp, 'guard-sl', '');
+    await setInput(scalp, 'guard-tp', '100.05');
+    await trustedClick(scalp, `document.getElementById('guard-arm')`);
+    await until(() => state(`/looks like a price/.test(document.getElementById('guard-errors').textContent) && /Looks like a price/.test(document.getElementById('guard-tp-note').textContent)`), 'price typed as a distance is flagged');
+    assert(await guardState(scalp) === 'idle' && await text(scalp, 'guard-tp-unit') === '(bp from entry)', 'a price-like distance armed the guard');
     await setSelect('guard-unit', 'price');
+    assert(await text(scalp, 'guard-tp-unit') === '(price)', 'the field does not show its unit');
     await setInput(scalp, 'guard-sl', '');
     await setInput(scalp, 'guard-tp', '99.5');
     await trustedClick(scalp, `document.getElementById('guard-arm')`);
@@ -398,12 +411,15 @@ try {
     await trustedClick(scalp, `document.querySelector('.chips [data-clear="both"]')`);
     await trustedClick(scalp, `document.getElementById('entry-confirm')`);
     await trustedClick(scalp, `document.querySelector('input[name="entry-size"][value="0.5"]')`);
+    await trustedClick(scalp, `document.querySelector('input[name="entry-leverage"][value="500"]')`);
     await until(() => state(`!document.getElementById('entry-short').disabled`), 'short enabled');
     await trustedClick(scalp, `document.getElementById('entry-short')`);
     await until(async () => (await clicks()).short === 1, 'one Short press');
     await until(() => state(`/Opened short\. No take profit or stop loss is armed/.test(document.getElementById('entry-status').textContent)`), 'opened without levels', 20_000);
     const counted = await clicks();
     assert(counted.quick.at(-1) === 'quick-half' && counted.amounts.at(-1) === '7.90176' && counted.long === 1, `unexpected presses: ${JSON.stringify(counted)}`);
+    assert(JSON.stringify(counted.leverage) === '["500×"]', `the 500× preset was not pressed exactly once: ${JSON.stringify(counted.leverage)}`);
+    assert(/500× short/.test(await state(`document.getElementById('guard-position').selectedOptions[0]?.textContent ?? ''`)), 'the position opened at 500× was not adopted');
     assert(await guardState(scalp) === 'closed' || await guardState(scalp) === 'idle', 'a guard was armed with no levels');
     await ev(portal, `document.getElementById('mode').textContent = 'Blitz'`);
     await until(() => state(`document.getElementById('entry-long').disabled && /^Switch the Jupiter page to Classic mode/.test(document.getElementById('entry-long').title)`), 'refused outside Classic');
@@ -417,6 +433,15 @@ try {
     return cell;
   });
 
+  await check('every tile shows its own running hit rate at each interval', async () => {
+    const seen = await until(() => state(`(() => { const tiles = [...document.querySelectorAll('.tile')]; const cells = tiles.map(tile => [...tile.querySelectorAll('.hits i')].map(cell => cell.textContent));
+      return cells.length === 16 && cells.every(row => row.length === 6) && /^[0-9]+$/.test(cells[0][0]) && /^[0-9]+$/.test(cells[0][2])
+        ? { impulse: cells[0], title: tiles[0].querySelector('.hits i').title, late: cells[0][5] } : null; })()`), 'settled hit rates on the first tile', 60_000);
+    assert(/Impulse 2s was right [0-9]+% of the time over the next 5s/.test(seen.title), `a hit-rate cell does not explain itself: ${seen.title}`);
+    assert(seen.late === '·', 'the 5 minute interval showed a rate before five minutes had passed');
+    return seen;
+  });
+
   if (FULL) await check('after the warm-up the grid makes a call and draws the 30 second range', async () => {
     await until(() => ev(scalp, `document.getElementById('call').dataset.tier !== 'warming'`), 'call ready', 120_000);
     const state = await ev(scalp, `({ tier: document.getElementById('call').dataset.tier, direction: document.getElementById('call').dataset.direction, text: document.getElementById('call-text').textContent, detail: document.getElementById('call').title, meta: document.getElementById('call-meta').textContent, warm: document.querySelectorAll('.tile[data-vote=warming]').length, count: document.getElementById('tiles-count').textContent, title: document.title })`);
@@ -426,11 +451,25 @@ try {
     return state;
   });
 
+  await check('the coin dropdown switches the watched coin and blocks entries while the Jupiter tab shows another', async () => {
+    const options = await until(() => state(`(() => { const select = document.getElementById('coin'); return select.options.length === 2 ? [...select.options].map(option => option.value) : null; })()`), 'coin list');
+    assert(options.join() === 'SOL,BTC', `coins: ${options}`);
+    await ev(scalp, `(() => { const select = document.getElementById('coin'); select.value = 'BTC'; select.dispatchEvent(new Event('change', { bubbles: true })); })()`);
+    await until(() => state(`location.hash === '#market=BTC' && document.getElementById('coin')?.value === 'BTC' && document.getElementById('feed')?.dataset.state === 'live'`), 'window reloaded on BTC', 30_000);
+    await until(() => state(`/The Jupiter tab is on SOL/.test(document.getElementById('guard-page').textContent)`), 'market mismatch shown');
+    await trustedClick(scalp, `document.getElementById('entry-unlock')`);
+    await sleep(600);
+    const seen = await state(`({ unlock: document.getElementById('entry-unlock').checked, long: document.getElementById('entry-long').disabled, why: document.getElementById('entry-long').title.slice(0, 60), positions: document.getElementById('guard-position').options.length })`);
+    assert(seen.unlock && seen.long && /The Jupiter tab is on SOL, not BTC/.test(seen.why), `entries were possible on the wrong market: ${JSON.stringify(seen)}`);
+    assert(seen.positions === 0, 'a SOL position was offered in the BTC window');
+    return { options, seen };
+  });
+
   await check('only public GET reads left the browser and no page error occurred', async () => {
     const sent = requests.filter(request => request.action !== 'blocked');
     assert(requests.every(request => request.method === 'GET'), 'a non-GET request was attempted');
     assert(sent.every(request => request.url === CATALOG || request.url.startsWith(HISTORY + '?') || request.url.startsWith('https://jup.ag/')), 'an unexpected host was read');
-    assert(fixture.state.subscriptions.every(payload => payload.type === 'subscribe' && String(payload.priceFeedIds) === '6'), 'unexpected stream message');
+    assert(fixture.state.subscriptions.every(payload => payload.type === 'subscribe' && ['6', '1'].includes(String(payload.priceFeedIds))), 'unexpected stream message');
     assert(errors.length === 0, `page errors: ${errors.join(' | ')}`);
     return { requests: requests.length, blocked: requests.filter(request => request.action === 'blocked').map(request => request.url) };
   });

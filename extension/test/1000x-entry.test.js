@@ -2,8 +2,8 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 
 import { EntryTracker, ENTRY_LIMITS, SIZE_FRACTIONS, validateEntry, newPosition } from '../src/1000x/entry-plan.js';
-import { resolveLevels, parseDistance, positionKey } from '../src/1000x/exit-guard.js';
-import { SlopeScore, HORIZON_S, bustFraction } from '../src/1000x/scalp-model.js';
+import { resolveLevels, parseDistance, priceLike, positionKey } from '../src/1000x/exit-guard.js';
+import { SlopeScore, HorizonScore, SCORE_HORIZONS, HORIZON_S, bustFraction } from '../src/1000x/scalp-model.js';
 import '../src/1000x/page-bridge.js';
 
 const bridge = globalThis.__smt1000xBridge;
@@ -28,6 +28,14 @@ test('levels in basis points become prices on the right side of the entry', () =
   assert.match(resolveLevels({ unit: 'ticks', takeProfitText: '10', position: row() }).errors.join(' '), /Unknown level unit/);
   assert.equal(parseDistance('9.8'), 9.8);
   for (const bad of ['0', '-5', '10001', '5 bp', '', '1e2']) assert.equal(parseDistance(bad), null, bad);
+});
+
+test('a distance that looks like the market price is flagged as a price typed into the wrong unit', () => {
+  assert.equal(priceLike(71.9, 71.7), true, 'SOL at 71.70 with 71.90 typed as bp');
+  assert.equal(priceLike(70, 71.7), true);
+  assert.equal(priceLike(73.8, 71.7), true);
+  for (const [distance, price] of [[5, 71.7], [9.8, 71.7], [50, 71.7], [69, 71.7], [75, 71.7], [50, 59_900], [10, 735]]) assert.equal(priceLike(distance, price), false, `${distance} bp at ${price}`);
+  for (const [distance, price] of [[null, 71.7], [71.9, null], [NaN, 71.7], [71.9, 0], [-71.9, 71.7]]) assert.equal(priceLike(distance, price), false);
 });
 
 test('an entry is checked before anything is sent', () => {
@@ -146,6 +154,36 @@ test('the slope gauge scores each slope sign against the next 30 seconds', () =>
   assert.equal(score.stats().size, 6);
 });
 
+test('each tile is scored at every interval against the move that followed', () => {
+  assert.deepEqual(SCORE_HORIZONS, [5, 10, 20, 30, 60, 300]);
+  const score = new HorizonScore(['a', 'b']);
+  // Price rises one unit a second for 12 seconds: an up vote is right at 5 s and 10 s, a down vote wrong.
+  for (let t = 0; t <= 12; t++) score.observe({ time: 100 + t, close: 100 + t }, { a: 1, b: t < 3 ? -1 : 0, c: 1 });
+  const at = (key, horizon) => score.stats(key).find(row => row.horizon === horizon);
+  assert.deepEqual(at('a', 5), { horizon: 5, hit: 8, n: 8, rate: 1 });
+  assert.deepEqual(at('a', 10), { horizon: 10, hit: 3, n: 3, rate: 1 });
+  assert.deepEqual(at('a', 20), { horizon: 20, hit: 0, n: 0, rate: null }, 'nothing settles before its interval has passed');
+  assert.deepEqual(at('b', 5), { horizon: 5, hit: 0, n: 3, rate: 0 }, 'a neutral vote makes no call');
+  assert.equal(score.stats('c').every(row => row.n === 0), true, 'an unknown tile is not scored');
+  score.observe({ time: 112, close: 1 }, { a: -1 });
+  assert.equal(at('a', 5).n, 8, 'a repeated second is ignored');
+  // A flat outcome is not counted, and nothing is scored across a feed break.
+  const flat = new HorizonScore(['a'], [5]);
+  for (let t = 0; t <= 5; t++) flat.observe({ time: t + 1, close: 100 }, { a: 1 });
+  assert.equal(flat.stats('a')[0].n, 0);
+  const broken = new HorizonScore(['a'], [5]);
+  for (let t = 1; t <= 4; t++) broken.observe({ time: t, close: 100 + t }, { a: 1 });
+  broken.reset();
+  for (let t = 5; t <= 9; t++) broken.observe({ time: t, close: 100 + t }, { a: 1 });
+  assert.equal(broken.stats('a')[0].n, 0, 'calls made before the break are dropped');
+  broken.observe({ time: 10, close: 200 }, { a: 1 });
+  assert.deepEqual(broken.stats('a')[0], { horizon: 5, hit: 1, n: 1, rate: 1 });
+  // Old results leave the running window.
+  const rolling = new HorizonScore(['a'], [1], 10);
+  for (let t = 1; t <= 40; t++) rolling.observe({ time: t, close: 100 + t }, { a: 1 });
+  assert.equal(rolling.stats('a')[0].n, 11);
+});
+
 /* ------------------------------------------------------------- order form -- */
 
 test('amounts are read exactly and three quarters is rounded down', () => {
@@ -164,8 +202,9 @@ test('amounts are read exactly and three quarters is rounded down', () => {
 
 /** A stand-in for the page's order form: quick-size buttons fill the input a moment later, as the page does. */
 function fakeForm({ mode = 'Classic', max = '16', balance = max, leverage = '1,000×', sideDisabled = false, busy = false, error = '', acceptTyped = true,
-  stateFollows = true, visible = true, quickWorks = true, start = '' } = {}) {
+  stateFollows = true, visible = true, quickWorks = true, start = '', presetWorks = true } = {}) {
   const pressed = [], pending = [];
+  const shown = { leverage };
   const element = (textContent, attrs = {}, extra = {}) => ({ textContent, disabled: false, getAttribute: name => attrs[name] ?? null, ...extra });
   // `state` is what the page's own model holds; the line under the amount is drawn from it.
   const page = { state: start, mode };
@@ -174,7 +213,10 @@ function fakeForm({ mode = 'Classic', max = '16', balance = max, leverage = '1,0
   const fill = (label, text) => element(label, {}, { click() { pressed.push(label); if (quickWorks) pending.push(() => { input.shown = text; page.state = text; }); } });
   const side = name => element(name, { 'data-side': name, 'aria-busy': busy ? 'true' : null }, { disabled: sideDisabled, click() { pressed.push(`side:${name}`); } });
   const buttons = [fill('25%', (Number(max) / 4).toString()), fill('Half', (Number(max) / 2).toString()), fill('Max', max),
-    element('', { 'aria-label': `Available balance: ${balance} JupUSD` }), element(leverage, { 'aria-pressed': 'true' }), element('500×', { 'aria-pressed': 'false' }), side('long'), side('short')];
+    element('', { 'aria-label': `Available balance: ${balance} JupUSD` }), side('long'), side('short'),
+    // The page's leverage presets: pressing one moves aria-pressed a moment later.
+    ...[leverage, '500×', '700×'].map(text => ({ textContent: text, disabled: false, getAttribute: name => name === 'aria-pressed' ? String(shown.leverage === text) : null,
+      click() { pressed.push(text); if (presetWorks) pending.push(() => { shown.leverage = text; }); } }))];
   const formNode = { getAttribute: name => name === 'aria-label' ? 'Degen market order' : null, getClientRects: () => visible ? [{}] : [],
     querySelector: selector => selector === '#degen-amount' ? input : selector === '#degen-amount-error' ? (error ? { textContent: error } : null)
       : selector === '#degen-amount-hint' ? { textContent: page.state ? `≈ $${page.state}` : '' } : null,
@@ -217,6 +259,27 @@ test('an entry presses the page’s own size button, then its side button once',
   clock += 4000;
   assert.deepEqual(await bridge.openPosition(again.doc, { side: 'long', fraction: 1 }, options(again)), { clicked: false, reason: 'recently_opened' });
   assert.deepEqual(again.pressed, [], 'nothing is pressed inside five seconds of the last entry');
+});
+
+test('a chosen leverage presses the page’s own preset before the size', async () => {
+  let clock = 2_000_000;
+  const fake = fakeForm();
+  assert.deepEqual(await bridge.openPosition(fake.doc, { side: 'long', fraction: 0.5, leverage: 500 }, { now: () => clock, wait: fake.wait }), { clicked: true, amountText: '8', leverage: 500 });
+  assert.deepEqual(fake.pressed, ['500×', 'Half', 'side:long']);
+  const same = fakeForm();
+  clock += 10_000;
+  assert.equal((await bridge.openPosition(same.doc, { side: 'long', fraction: 1, leverage: 1000 }, { now: () => clock, wait: same.wait })).leverage, 1000);
+  assert.deepEqual(same.pressed, ['Max', 'side:long'], 'a preset that is already selected is not pressed');
+  const stuck = fakeForm({ presetWorks: false });
+  clock += 10_000;
+  assert.deepEqual(await bridge.openPosition(stuck.doc, { side: 'short', fraction: 1, leverage: 500 }, { now: () => clock, wait: stuck.wait }), { clicked: false, reason: 'leverage_not_set' });
+  assert.deepEqual(stuck.pressed, ['500×'], 'nothing else is pressed when the page keeps its leverage');
+  for (const leverage of [700, 250, '500', 0]) {
+    const bad = fakeForm();
+    clock += 10_000;
+    assert.deepEqual(await bridge.openPosition(bad.doc, { side: 'long', fraction: 1, leverage }, { now: () => clock, wait: bad.wait }), { clicked: false, reason: 'invalid_request' });
+    assert.deepEqual(bad.pressed, []);
+  }
 });
 
 test('two requests at once press once, and a slow page is not pressed late', async () => {
