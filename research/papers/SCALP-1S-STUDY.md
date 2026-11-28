@@ -153,6 +153,7 @@ The cone on the chart scales the last 30 seconds' 1s volatility by √30. In the
 
 - **Two days.** The base recording covers 33 hours of two markets and the live one 43 minutes of five. Persistence at this scale may depend on the session and on how the oracle aggregates venues.
 - **The held-out slice was seen.** Only the live recording is untouched, and it cannot confirm a three point edge by itself.
+- **Selection.** About twenty families and seventy parameter sets were tried, and a family needed only to beat 50% on two slices to earn a tile. A reading with no information passes that rule about one time in four, and no correction for the number of tries was applied. The base figures, including the ones the window quotes, are therefore optimistic.
 - **Oracle prices, not fills.** Opens and closes fill at a later oracle price with no price limit.
 - **Overlapping seconds.** Error bars assume one independent observation per 30 seconds, which is approximate.
 - **No costs beyond the page formula.** Network fees, rent and the wait for queued profit are left out.

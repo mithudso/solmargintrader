@@ -47,11 +47,12 @@ export function createJupiterScalpWindows({ runtime, storage, tabs, windows, set
     }).catch(() => {});
   });
   // The window stays open when its Jupiter tab reloads or navigates: an armed
-  // guard must report that it lost the page, not vanish. It closes with the tab.
+  // guard must report that it lost the page, not vanish. It closes with the tab,
+  // unless a guard is live: then it stays to say that the page is gone.
   tabs.onRemoved.addListener(tabId => {
     void serialize(async () => {
       const entries = await load();
-      if (entries[tabId]) await drop(entries, tabId, { closeWindow: true });
+      if (entries[tabId]) await drop(entries, tabId, { closeWindow: entries[tabId].guardLive !== true });
     }).catch(() => {});
   });
 
@@ -91,6 +92,12 @@ export function createJupiterScalpWindows({ runtime, storage, tabs, windows, set
           if (!match) throw new Error('This scalp window is not attached to a Jupiter 1000x tab');
           const [sourceTabId, entry] = match;
           if (action === 'status') return { attached: true, symbol: entry.symbol };
+          if (action === 'guardState') {
+            // The worker cannot see the guard; the window says when one is live so it is not closed under it.
+            entry.guardLive = args.live === true;
+            await save(entries);
+            return { ok: true, live: entry.guardLive };
+          }
           if (action === 'positions') return relay(Number(sourceTabId), { action: 'positions' });
           if (action === 'closePosition') {
             const expect = args.expect;
@@ -114,7 +121,9 @@ export function createJupiterScalpWindows({ runtime, storage, tabs, windows, set
           entry = null;
         }
         if (action === 'status') return { open: Boolean(entry) };
+        const LIVE = 'A take profit or stop loss is live in the open 1s scalp window. Disarm it there first.';
         if (action === 'close') {
+          if (entry?.guardLive) throw new Error(LIVE);
           if (entry) await drop(entries, tabId, { closeWindow: true });
           return { open: false };
         }
@@ -123,6 +132,10 @@ export function createJupiterScalpWindows({ runtime, storage, tabs, windows, set
         if (entry && entry.symbol === market) {
           await windows.update(entry.windowId, { focused: true });
           return { open: true };
+        }
+        if (entry?.guardLive) {
+          await windows.update(entry.windowId, { focused: true });
+          throw new Error(LIVE);
         }
         if (entry) await drop(entries, tabId, { closeWindow: true });
         let popup;

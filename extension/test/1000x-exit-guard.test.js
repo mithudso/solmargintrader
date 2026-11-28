@@ -21,6 +21,7 @@ test('a take profit must be on the winning side and a stop loss between price an
   assert.deepEqual([ok.ok, ok.errors], [true, []]);
   assert.equal(validateLevels({ position: short, price: 100, takeProfit: 99.8, stopLoss: 100.05 }).ok, true);
   assert.equal(validateLevels({ position: long, price: 100, takeProfit: 100.2 }).ok, true, 'one level is enough');
+  assert.equal(validateLevels({ position: { ...long, bust: null }, price: 100, takeProfit: 100.2 }).ok, true, 'a take profit does not need the bust price');
   const cases = [
     [{ position: long, price: 100 }, /take profit, a stop loss/],
     [{ position: long, price: 100, takeProfit: 99.9 }, /above the current price/],
@@ -32,6 +33,7 @@ test('a take profit must be on the winning side and a stop loss between price an
     [{ position: { ...long, entry: null }, price: 100, takeProfit: 101 }, /entry price could not be read/],
     [{ position: { ...long, entry: 10_000 }, price: 100, takeProfit: 101 }, /probably misread/],
     [{ position: long, price: 100, takeProfit: -1 }, /positive price/],
+    [{ position: { ...long, bust: null }, price: 100, stopLoss: 99.95 }, /bust price could not be read/],
     [{ position: null, price: 100, takeProfit: 101 }, /No position/],
   ];
   for (const [input, pattern] of cases) {
@@ -74,12 +76,17 @@ test('auto-close: one trigger, one click request, closed only when the row leave
   assert.equal(guard.onQuote(quote(100.4, NOW + 1200), NOW + 1200), null, 'a trigger is not issued twice');
   assert.equal(guard.onCloseResult({ clicked: false, retry: true, reason: 'close_locked' }, NOW + 1300), true);
   assert.equal(guard.snapshot().state, 'triggered');
+  assert.equal(guard.disarm('user', NOW + 1400), false, 'a close request that is out cannot be withdrawn');
   assert.equal(guard.onCloseResult({ clicked: true, label: 'Close' }, NOW + 4000), false);
   assert.equal(guard.snapshot().state, 'clicked');
   assert.equal(guard.disarm('user', NOW + 4100), false, 'a click that is out cannot be withdrawn');
+  const others = [{ ...long, entryText: '$101.00' }];
   assert.equal(guard.onPositions([long], NOW + 5000), null);
   assert.equal(guard.onPositions(null, NOW + 6000), null, 'an unreadable list proves nothing');
-  assert.equal(guard.onPositions([{ ...long, entryText: '$101.00' }], NOW + 7000), 'closed');
+  assert.equal(guard.onPositions(others, NOW + 6100, false), null, 'a list with an opening or unreadable row proves nothing');
+  assert.equal(guard.onPositions(others, NOW + 6200), null);
+  assert.equal(guard.onPositions(others, NOW + 6600), null, 'one or two misses can be a table mid-render');
+  assert.equal(guard.onPositions(others, NOW + 7000), 'closed');
   assert.equal(guard.snapshot().state, 'closed');
   assert.deepEqual(guard.snapshot().journal.map(entry => entry.event), ['armed', 'triggered', 'clicked', 'closed']);
   assert.equal(guard.arm({ position: long, price: 100, stopLoss: 99.95, mode: 'close', nowMs: NOW + 8000 }).ok, true, 'a finished guard can be armed again');
@@ -92,6 +99,7 @@ test('a click that the page never confirms is reported, never repeated', () => {
   guard.onCloseResult({ clicked: true }, NOW + 200);
   assert.equal(guard.onPositions([short], NOW + 200 + GUARD_LIMITS.confirmMs - 1), null);
   assert.equal(guard.onPositions([short], NOW + 200 + GUARD_LIMITS.confirmMs), 'unconfirmed');
+  assert.equal(guard.snapshot().note, 'still_listed');
   assert.equal(guard.onQuote(quote(100.2, NOW + 60_000), NOW + 60_000), null);
   assert.equal(guard.onCloseResult({ clicked: true }, NOW + 60_100), false);
   assert.equal(guard.snapshot().state, 'unconfirmed');
@@ -121,6 +129,26 @@ test('close failures end the guard loudly; the lock wait is bounded', () => {
   already.onQuote(quote(99.94, NOW + 100), NOW + 100);
   already.onCloseResult({ clicked: false, already: true, label: 'Closing…' }, NOW + 200);
   assert.equal(already.snapshot().state, 'clicked');
+  // A press that lands after the wait ran out is still a press: the guard must not read "could not close".
+  const late = new ExitGuard();
+  late.arm({ position: long, price: 100, stopLoss: 99.95, mode: 'close', nowMs: NOW });
+  late.onQuote(quote(99.94, NOW + 100), NOW + 100);
+  assert.equal(late.onTimeout(NOW + 100 + GUARD_LIMITS.closeWaitMs), true);
+  assert.equal(late.onCloseResult({ clicked: false, reason: 'close_unavailable' }, NOW + 40_000), false);
+  assert.equal(late.snapshot().state, 'failed');
+  assert.equal(late.onCloseResult({ clicked: true, label: 'Close' }, NOW + 40_100), false);
+  assert.equal(late.snapshot().state, 'clicked');
+  // A request whose reply was lost, then a row that is gone: the position left after the guard asked.
+  const lost = new ExitGuard();
+  lost.arm({ position: long, price: 100, stopLoss: 99.95, mode: 'close', nowMs: NOW });
+  lost.onQuote(quote(99.94, NOW + 100), NOW + 100);
+  assert.equal(lost.onCloseResult({ clicked: false, retry: true, reason: 'page_timeout' }, NOW + 4200), true);
+  assert.equal(lost.onCloseResult({ clicked: false, reason: 'position_not_listed' }, NOW + 4500), false);
+  assert.equal(lost.snapshot().state, 'clicked');
+  // With no page at all the outcome is reported as unknown, not as "still listed".
+  for (let i = 0; i < 5; i++) assert.equal(lost.onPositions(null, NOW + 5000 + i * 400), null);
+  assert.equal(lost.onPositions(null, NOW + 4500 + GUARD_LIMITS.confirmMs), 'unconfirmed');
+  assert.equal(lost.snapshot().note, 'page_unreadable');
 });
 
 test('alert mode never asks for a click, and a vanished position disarms', () => {
@@ -134,7 +162,14 @@ test('alert mode never asks for a click, and a vanished position disarms', () =>
   const gone = new ExitGuard();
   gone.arm({ position: long, price: 100, stopLoss: 99.95, mode: 'close', nowMs: NOW });
   assert.equal(gone.onPositions(null, NOW + 100), null);
-  assert.equal(gone.onPositions([], NOW + 200), 'position_gone');
+  assert.equal(gone.onPositions([], NOW + 200), null);
+  assert.equal(gone.onPositions([], NOW + 600, false), null, 'an incomplete read does not count');
+  assert.equal(gone.onPositions([], NOW + 1000), null);
+  assert.equal(gone.onPositions([long], NOW + 1400), null, 'seeing the row again starts the count over');
+  assert.equal(gone.onPositions([], NOW + 1800), null);
+  assert.equal(gone.onPositions([], NOW + 2200), null);
+  assert.equal(gone.snapshot().state, 'armed');
+  assert.equal(gone.onPositions([], NOW + 2600), 'position_gone');
   assert.equal(gone.snapshot().state, 'idle');
   assert.equal(gone.onQuote(quote(99.9, NOW + 300), NOW + 300), null);
   assert.equal(new ExitGuard().arm({ position: long, price: 100, takeProfit: 101, mode: 'market', nowMs: NOW }).ok, false);
@@ -155,10 +190,12 @@ test('a table row is read exactly or refused', () => {
     mode: 'Classic', close: 'ready' });
   assert.equal(bridge.parseRow(cells({ coinText: 'GOLD', sideText: '500× Short' })).row.coin, 'XAU');
   assert.equal(bridge.parseRow(cells({ sideText: '500× Short' })).row.leverage, 500);
+  assert.equal(bridge.parseRow(cells({ sideText: '1.000× Long' })).row.leverage, 1000);
   assert.equal(bridge.parseRow(cells({ entryMarkText: '$59,905.26 / $59,900.00' })).row.entry, 59905.26);
   for (const [over, reason] of [
     [{ coinText: 'SOL #21,000× Long' }, 'coin_unreadable'], [{ coinText: '' }, 'coin_unreadable'],
     [{ sideText: '1,000× Largo' }, 'side_unreadable'], [{ sideText: '5,000× Long' }, 'leverage_unreadable'],
+    [{ sideText: '1.5× Long' }, 'leverage_unreadable'], [{ sideText: '2,5× Short' }, 'leverage_unreadable'], [{ sideText: '0× Long' }, 'leverage_unreadable'],
     [{ entryMarkText: 'Pending / $71.70' }, 'entry_unreadable'], [{ entryMarkText: '71,6802 / 71,70' }, 'entry_unreadable'],
     [{ entryMarkText: '$71.68' }, 'entry_unreadable'],
   ]) assert.deepEqual(bridge.parseRow(cells(over)), { ok: false, reason });

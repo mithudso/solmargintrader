@@ -22,7 +22,7 @@ const COLORS = { up: '#61dbac', down: '#f69b9b', flat: '#8796b0', band: '#8fa3c7
 const FEED_TEXT = {
   unsupported_market_or_timeframe: 'This market is not supported', market_unavailable: 'Market is unavailable', market_closed: 'Market is closed',
   public_read_failed: 'Public market request failed; retrying', subscription_refused: 'Live subscription was refused',
-  reconnect_exhausted: 'Reconnect attempts stopped; reopen this window', stream_disconnected: 'Live stream disconnected; reconnecting',
+  reconnect_exhausted: 'Price stream lost; starting it again', stream_disconnected: 'Live stream disconnected; reconnecting',
   stale_quote: 'Price is stale; waiting for a fresh update',
 };
 const REASONS = {
@@ -35,9 +35,12 @@ const REASONS = {
   page_no_reply: 'the Jupiter tab did not answer', not_on_1000x: 'the Jupiter tab left the 1000x page',
   position_market_mismatch: 'the position is not in this window’s market', extension_error: 'the extension refused the request',
   extension_unreachable: 'the extension background did not answer', page_read_failed: 'the Jupiter page could not be read',
-  no_reply: 'no reply from the Jupiter tab',
+  no_reply: 'no reply from the Jupiter tab', still_listed: 'the position is still listed',
+  page_unreadable: 'the Jupiter page can no longer be read',
 };
 const TRANSIENT = new Set(['page_timeout', 'page_unreachable', 'page_no_reply', 'extension_unreachable']);
+const FEED_RESTART = new Set(['reconnect_exhausted', 'subscription_refused']);
+const LIVE_STATES = ['armed', 'triggered', 'clicked'];
 const numeric = value => typeof value === 'number' && Number.isFinite(value);
 const signed = (value, digits) => `${value > 0 ? '+' : value < 0 ? '−' : ''}${Math.abs(value).toFixed(digits)}`;
 const small = value => { const v = Number(Math.abs(value).toPrecision(2)); return `${value > 0 ? '+' : value < 0 ? '−' : ''}${v}`; };
@@ -50,6 +53,7 @@ const seconds = new SecondBars(), book = new ScoreBook(), slopeHistory = new Slo
 let feed, latest = null, lastQuoteMs = 0, view = null, disposed = false, drawQueued = false, barsVersion = 0, drawnVersion = -1;
 let attached = false, pageState = { ok: false, reason: 'not_started' }, positions = [], polling = false, lastPollMs = 0, closing = false;
 let settings = { mode: 'alert', drafts: {} }, audio = null, priceLines = [], lastStatus = '';
+let lastFeedStartMs = 0, unprotectedAlertMs = 0, reportedLive = null, releaseLock = null, readoutError = '';
 
 /* ------------------------------------------------------------------ chart -- */
 
@@ -95,7 +99,7 @@ function drawPriceLines() {
   priceLines = [];
   const position = selectedPosition();
   const snap = guard.snapshot();
-  const active = ['armed', 'triggered', 'clicked'].includes(snap.state);
+  const active = LIVE_STATES.includes(snap.state);
   const levels = active ? snap.levels : { takeProfit: parseLevel($('guard-tp').value), stopLoss: parseLevel($('guard-sl').value) };
   const add = (price, color, title, style = LineStyle.Solid) => {
     if (numeric(price) && price > 0) priceLines.push(candles.createPriceLine({ price, color, title, lineWidth: 1, lineStyle: style, axisLabelVisible: true }));
@@ -209,9 +213,13 @@ function drawSlopes() {
 function drawCall(live) {
   const section = $('call'), call = view?.call, have = seconds.bars.length;
   const percent = stat => `${(stat.hit * 100).toFixed(1)}%`;
+  // The only sample that played no part in choosing the grid; short, so it carries its error bar.
+  const liveCheck = stat => stat.live ? ` On a separate short live check: ${percent(stat.live)} ± ${(stat.live.hit_se * 100).toFixed(1)}.` : '';
   let direction = 'flat', tier = 'warming', mark = '·', text, detail;
   if (!live) {
     text = 'No live price'; detail = 'The read-out resumes when the oracle stream is fresh again.';
+  } else if (readoutError) {
+    text = 'Read-out unavailable'; detail = readoutError;
   } else if (!call?.ready) {
     text = `Warming up · ${Math.min(have, WARMUP_BARS)} / ${WARMUP_BARS} s`;
     detail = 'One-second bars come only from the live stream, so the grid needs about 80 seconds after opening or after a gap.';
@@ -220,12 +228,12 @@ function drawCall(live) {
     const agree = Math.max(call.up, call.down), side = call.up >= call.down ? 'up' : 'down';
     if (tier === 'mixed') {
       mark = '◆'; text = 'MIXED';
-      detail = `Readings disagree (${call.up} up, ${call.down} down). In the recording a mixed grid was a coin flip: ${percent(call.measured)} right.`;
+      detail = `Readings disagree (${call.up} up, ${call.down} down). On the recording the grid was chosen from, a mixed grid was a coin flip: ${percent(call.measured)} right.${liveCheck(call.measured)}`;
     } else {
       mark = direction === 'up' ? '▲' : '▼';
       text = tier === 'strong' ? `${direction.toUpperCase()} · strong` : `${direction} · lean`;
-      detail = `${agree} of ${call.total} readings point ${side}. In the recording a grid like this was right ${percent(call.measured)} of the time over the next 30 s`
-        + ` (average move ${signed(call.measured.mean_follow_bps, 2)} bp).`;
+      detail = `${agree} of ${call.total} readings point ${side}. On the recording the grid was chosen from, a grid like this was right ${percent(call.measured)} of the time over the next 30 s`
+        + ` (average move ${signed(call.measured.mean_follow_bps, 2)} bp).${liveCheck(call.measured)}`;
       const breakout = view.tiles.find(tile => tile.key === 'breakout60');
       if (breakout?.vote && (breakout.vote > 0) === (direction === 'up')) detail += ' A 60 s breakout is in play, the strongest single reading.';
     }
@@ -325,11 +333,11 @@ async function pollPositions() {
     const readable = pageState?.ok && pageState.recognized;
     const listed = readable ? pageState.positions : null;
     positions = readable ? listed.filter(position => position.coin === SYMBOL) : positions;
-    const change = guard.onPositions(listed, Date.now());
+    const change = guard.onPositions(listed, Date.now(), readable && !pageState.pending && !pageState.unreadable);
     if (change) {
       void record(guard.snapshot());
       if (change === 'closed') alertOwner(`${SYMBOL} position closed`, 'It left the Jupiter list. Check History for the fill.');
-      if (change === 'unconfirmed') alertOwner(`${SYMBOL} close not confirmed`, 'The position is still listed. Check your wallet and the Jupiter tab.');
+      if (change === 'unconfirmed') alertOwner(`${SYMBOL} close not confirmed`, `Close was pressed but ${reasonText(guard.snapshot().note)}. Check your wallet and the Jupiter tab.`);
       if (change === 'position_gone') alertOwner(`${SYMBOL} guard disarmed`, 'The position is no longer listed on the Jupiter page.');
     }
     drawPositions();
@@ -382,16 +390,26 @@ function restoreDraft() {
   if (draft && guard.snapshot().state === 'idle') { $('guard-tp').value = draft.takeProfit ?? ''; $('guard-sl').value = draft.stopLoss ?? ''; }
 }
 
+/** Tell the worker when a guard is live, and hold a Web Lock so Chrome does not freeze this window under it. */
+function reportLive(live) {
+  if (live === reportedLive) return;
+  reportedLive = live;
+  if (attached) void send('guardState', { live });
+  if (live && !releaseLock) void navigator.locks?.request('smt-1000x-scalp-guard', () => new Promise(resolve => { releaseLock = resolve; }));
+  if (!live && releaseLock) { releaseLock(); releaseLock = null; }
+}
+
 function drawGuard() {
   const snap = guard.snapshot(), now = Date.now(), position = selectedPosition();
   const live = currentPrice() !== null, readable = pageState?.ok && pageState.recognized;
-  const busy = ['armed', 'triggered', 'clicked'].includes(snap.state);
+  const busy = LIVE_STATES.includes(snap.state);
   $('guard').dataset.state = snap.state;
+  reportLive(busy);
   $('guard-badge').textContent = { idle: 'Disarmed', armed: snap.mode === 'close' ? 'Armed · will press Close' : 'Armed · alert only', triggered: 'Triggered',
     clicked: 'Close pressed', closed: 'Closed', alerted: 'Level reached', unconfirmed: 'Not confirmed', failed: 'Failed' }[snap.state];
   for (const id of ['guard-position', 'guard-tp', 'guard-sl']) $(id).disabled = busy;
   for (const input of document.querySelectorAll('input[name="guard-mode"], .chips button')) input.disabled = busy;
-  $('guard-arm').hidden = busy; $('guard-disarm').hidden = !busy; $('guard-disarm').disabled = snap.state === 'clicked';
+  $('guard-arm').hidden = busy; $('guard-disarm').hidden = !busy; $('guard-disarm').disabled = snap.state !== 'armed';
   $('guard-arm').disabled = !attached || !position;
   $('guard-arm').textContent = mode() === 'close' ? 'Arm · press Close at the level' : 'Arm · alert only';
   $('guard-show').disabled = !attached;
@@ -410,7 +428,7 @@ function drawGuard() {
   else if (snap.state === 'clicked') status = `${which} reached at ${snap.trigger.price}. Close pressed at ${clock(snap.clickedAt)}. Approve in your wallet if it asks; waiting for the position to leave the list.`;
   else if (snap.state === 'closed') status = `Closed: the position left the Jupiter list after the ${which.toLowerCase()} at ${snap.trigger.price}. Check History for the fill.`;
   else if (snap.state === 'alerted') status = `${which} reached at ${snap.trigger.price} (${clock(snap.trigger.at)}). Alert only: nothing was pressed.`;
-  else if (snap.state === 'unconfirmed') status = 'Close was pressed but the position is still listed. Check the wallet prompt and the Jupiter tab. The guard will not press again.';
+  else if (snap.state === 'unconfirmed') status = `Close was pressed but ${snap.note === 'page_unreadable' ? 'the Jupiter page can no longer be read, so the outcome is unknown' : 'the position is still listed'}. Check the wallet prompt and the Jupiter tab. The guard will not press again.`;
   else status = `COULD NOT CLOSE: ${reasonText(snap.note)}. The position may still be open; act on the Jupiter tab.`;
   if (status !== lastStatus) { $('guard-status').textContent = status; lastStatus = status; }
   const list = $('guard-log').querySelector('ol');
@@ -436,6 +454,9 @@ function arm(event) {
     return level;
   };
   const takeProfit = read('guard-tp', 'Take profit'), stopLoss = read('guard-sl', 'Stop loss');
+  if (position && positions.filter(row => positionKey(row) === positionKey(position)).length !== 1) {
+    errors.push('Two listed positions look identical (same market, side, leverage and entry), so the guard could not tell them apart.');
+  }
   if (mode() === 'close' && position && !['ready', 'locked', 'disabled'].includes(position.close.state)) {
     errors.push('This position has no Close button the guard can press (it may be a locked mode or already closing).');
   }
@@ -484,12 +505,46 @@ function onUpdate(snapshot) {
   const quote = snapshot.quote;
   if (quote && quote.exchangeMs > lastQuoteMs) {
     lastQuoteMs = quote.exchangeMs;
-    const closed = seconds.push(quote);
-    if (closed === -1) { book.reset(); slopeHistory.reset(); view = null; barsVersion++; }
-    else if (closed > 0) onClosed(closed);
+    // The guard comes first: a fault in the read-outs must never cost a trigger.
     handleGuard(guard.onQuote(quote, Date.now()));
+    try {
+      const closed = seconds.push(quote);
+      if (closed === -1) { book.reset(); slopeHistory.reset(); view = null; barsVersion++; }
+      else if (closed > 0) onClosed(closed);
+      readoutError = '';
+    } catch (error) {
+      seconds.reset(); book.reset(); slopeHistory.reset(); view = null; barsVersion++;
+      readoutError = `The read-out failed and restarted (${String(error?.message ?? error).slice(0, 80)}). The guard is unaffected.`;
+    }
+    // Quotes keep arriving in a hidden window where timers are throttled; use them as the clock too.
+    tick();
   }
   queueDraw();
+}
+
+/** (Re)start the public feed. A terminal feed is replaced, never left dead under an armed guard. */
+async function startFeed() {
+  lastFeedStartMs = Date.now();
+  feed?.stop();
+  feed = new JupiterFeed({ symbol: SYMBOL, intervalSec: 60, onUpdate });
+  try { await feed.start(); } catch { $('feed').textContent = 'Jupiter data unavailable'; $('feed').dataset.state = 'error'; }
+}
+
+/** Guard timeouts, the positions poll, the feed watchdog and the repeated unprotected alarm. */
+function tick() {
+  if (disposed) return;
+  const now = Date.now(), snap = guard.snapshot();
+  if (guard.onTimeout(now)) { void record(guard.snapshot()); alertOwner(`${SYMBOL} guard could not close`, 'The Close button stayed unavailable. The position may still be open.'); }
+  if (now - lastPollMs >= (snap.state === 'idle' ? 1000 : 400)) void pollPositions();
+  if (feed && FEED_RESTART.has(latest?.error) && now - lastFeedStartMs >= 15_000) void startFeed();
+  const unprotected = snap.state === 'armed' && (currentPrice() === null || (snap.mode === 'close' && !(pageState?.ok && pageState.recognized)));
+  if (!unprotected) unprotectedAlertMs = 0;
+  else if (unprotectedAlertMs === 0) unprotectedAlertMs = now + 4000; // ride out a one-quote hiccup before sounding
+  else if (now >= unprotectedAlertMs) {
+    unprotectedAlertMs = now + 30_000;
+    alertOwner(`${SYMBOL} guard is NOT protecting`, currentPrice() === null ? 'No fresh price is arriving. The levels are not being watched.'
+      : `The Jupiter page cannot be read (${reasonText(pageState?.reason)}). A level could not be acted on.`);
+  }
 }
 
 function draw() {
@@ -533,23 +588,17 @@ for (const input of document.querySelectorAll('input[name="guard-mode"]')) input
 for (const button of document.querySelectorAll('.chips button')) button.addEventListener('click', () => fillLevel(button));
 // Closing the window ends the guard, so ask first while one is live.
 window.addEventListener('beforeunload', event => {
-  if (['armed', 'triggered', 'clicked'].includes(guard.snapshot().state)) { event.preventDefault(); event.returnValue = ''; }
+  if (LIVE_STATES.includes(guard.snapshot().state)) { event.preventDefault(); event.returnValue = ''; }
 });
 window.addEventListener('resize', drawRibbon);
-window.addEventListener('pagehide', () => { disposed = true; clearInterval(timer); feed?.stop(); chart.remove(); }, { once: true });
+window.addEventListener('pagehide', () => { disposed = true; clearInterval(timer); releaseLock?.(); feed?.stop(); chart.remove(); }, { once: true });
 
-const timer = setInterval(() => {
-  const now = Date.now(), snap = guard.snapshot();
-  if (guard.onTimeout(now)) { void record(guard.snapshot()); alertOwner(`${SYMBOL} guard could not close`, 'The Close button stayed unavailable. The position may still be open.'); }
-  if (now - lastPollMs >= (snap.state === 'idle' ? 1000 : 400)) void pollPositions();
-  queueDraw();
-}, 250);
+const timer = setInterval(() => { tick(); queueDraw(); }, 250);
 
 attached = (await send('status'))?.attached === true;
 drawPositions(); draw();
 if (/^[A-Z][A-Z0-9]{0,11}$/.test(SYMBOL)) {
-  feed = new JupiterFeed({ symbol: SYMBOL, intervalSec: 60, onUpdate });
-  try { await feed.start(); } catch { $('feed').textContent = 'Jupiter data unavailable'; $('feed').dataset.state = 'error'; }
+  await startFeed();
 } else {
   $('feed').textContent = 'Open this window from the “1s scalp” button on a Jupiter 1000x market.'; $('feed').dataset.state = 'error';
 }

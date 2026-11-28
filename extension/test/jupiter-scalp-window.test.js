@@ -88,6 +88,28 @@ test('only the window this worker opened may read positions or ask for a close',
   await assert.rejects(recovered.control('open', panel), /Invalid scalp window action/);
 });
 
+test('a window with a live guard is not closed or replaced under it', async () => {
+  const { state, listeners, scalp } = harness();
+  await scalp.control('open', source);
+  const panel = panelOf(state);
+  assert.deepEqual(await scalp.control('guardState', panel, { live: true }), { ok: true, live: true });
+  await assert.rejects(scalp.control('open', { ...source, url: 'https://jup.ag/1000x?market=BTC' }), /Disarm it there first/);
+  await assert.rejects(scalp.control('close', source), /Disarm it there first/);
+  assert.equal(state.opened.size, 1);
+  assert.deepEqual(await scalp.control('open', source), { open: true }, 'the same market still just focuses it');
+  // Closing the Jupiter tab cannot be refused; the window stays to report that its page is gone.
+  listeners.tabRemoved[0](2);
+  await assert.rejects(scalp.control('status', panel), /not attached/);
+  assert.equal(state.opened.size, 1);
+  const calm = harness();
+  await calm.scalp.control('open', source);
+  const calmPanel = panelOf(calm.state);
+  await calm.scalp.control('guardState', calmPanel, { live: true });
+  assert.deepEqual(await calm.scalp.control('guardState', calmPanel, { live: false }), { ok: true, live: false });
+  assert.deepEqual(await calm.scalp.control('close', source), { open: false });
+  await assert.rejects(calm.scalp.control('guardState', source, { live: true }), /Invalid scalp window action/);
+});
+
 test('a lost page is an explicit failure, never a silent success', async () => {
   const gone = harness({ tabUrl: null });
   await gone.scalp.control('open', source);
@@ -135,14 +157,16 @@ test('the registry command validates before anything reaches a page', async () =
   const run = args => runCommand({ name: 'jupiterScalpWindow', args, deps });
   await run({ action: 'open' });
   await run({ action: 'closePosition', expect });
-  assert.deepEqual(calls.map(call => [call[0], call[2]]), [['open', { expect: undefined }], ['closePosition', { expect }]]);
+  await run({ action: 'guardState', live: true });
+  assert.deepEqual(calls.map(call => [call[0], call[2]]), [['open', { expect: undefined, live: undefined }],
+    ['closePosition', { expect, live: undefined }], ['guardState', { expect: undefined, live: true }]]);
   for (const bad of [
     { action: 'closeAll' }, { action: 'closePosition' }, { action: 'closePosition', expect: { ...expect, leverage: 5000 } },
     { action: 'closePosition', expect: { ...expect, side: 'both' } }, { action: 'closePosition', expect: { ...expect, coin: 'sol' } },
     { action: 'closePosition', expect: { ...expect, entryText: '' } }, { action: 'closePosition', expect: { ...expect, extra: 1 } },
-    { action: 'closePosition', expect: [] }, { action: 'positions', expect },
+    { action: 'closePosition', expect: [] }, { action: 'positions', expect }, { action: 'guardState' }, { action: 'open', live: true },
   ]) await assert.rejects(run(bad), error => error instanceof CommandError && error.status === 400, JSON.stringify(bad));
-  assert.equal(calls.length, 2);
+  assert.equal(calls.length, 3);
   // Outside Chrome (CLI, HTTP API) there is no page to act on.
   await assert.rejects(runCommand({ name: 'jupiterScalpWindow', args: { action: 'open' }, deps: { store: {} } }),
     error => error instanceof CommandError && error.status === 501);

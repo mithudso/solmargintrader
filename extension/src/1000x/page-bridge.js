@@ -46,7 +46,9 @@
     if (!coinMatch) return { ok: false, reason: 'coin_unreadable' };
     const sideMatch = /^([\d.,\s]+)×\s*(Long|Short)$/.exec(clean(cells.sideText));
     if (!sideMatch) return { ok: false, reason: 'side_unreadable' };
-    const leverage = Number(sideMatch[1].replace(/\D/g, ''));
+    // "1,000" or "500": a separator is accepted only before a group of three digits, so "1.5" is refused.
+    const leverageText = sideMatch[1].replace(/\s/g, '');
+    const leverage = /^(?:\d{1,3}(?:[.,]\d{3})+|\d+)$/.test(leverageText) ? Number(leverageText.replace(/[.,]/g, '')) : NaN;
     if (!Number.isInteger(leverage) || leverage < 1 || leverage > 1000) return { ok: false, reason: 'leverage_unreadable' };
     const parts = clean(cells.entryMarkText).split(' / ');
     if (parts.length !== 2) return { ok: false, reason: 'entry_unreadable' };

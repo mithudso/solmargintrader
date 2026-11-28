@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-11-28T01:35:23+00:00",
+  "generatedAt": "2026-11-28T01:48:11+00:00",
   "schemaVersion": 1,
   "note": "Concepts are derived from the repo's own vocabulary \u2014 the FAMILY dict, strategy-card frontmatter, docs/trading-signals-concept-family.md, and terms verified to recur in the corpus. A concept matching no file is dropped, not kept.",
   "counts": {
@@ -22,7 +22,7 @@
         "confirm",
         "fail-closed"
       ],
-      "matchingFiles": 4495,
+      "matchingFiles": 4496,
       "shown": 30,
       "files": [
         {
@@ -54,12 +54,12 @@
           "hits": 164
         },
         {
-          "path": "FILES.md",
-          "hits": 157
+          "path": "memory.md",
+          "hits": 162
         },
         {
-          "path": "memory.md",
-          "hits": 152
+          "path": "FILES.md",
+          "hits": 157
         },
         {
           "path": "research/json/tradingview-script-profiles/shard-a.jsonl",
@@ -82,16 +82,16 @@
           "hits": 100
         },
         {
+          "path": "extension/src/1000x/scalp.js",
+          "hits": 94
+        },
+        {
           "path": ".cdo/reviews-2026-11-12/soltui-worker.json",
           "hits": 86
         },
         {
           "path": "skills/trading-and-investing/references/jlp-risk-profile-and-anti-patterns.md",
           "hits": 86
-        },
-        {
-          "path": "extension/src/1000x/scalp.js",
-          "hits": 85
         },
         {
           "path": "skills/trading-and-investing/references/trading-risk-management.md",
@@ -111,7 +111,7 @@
         },
         {
           "path": "extension/test/1000x-exit-guard.test.js",
-          "hits": 57
+          "hits": 66
         },
         {
           "path": "skills/trading-and-investing/references/strategies-and-risk.md",
@@ -170,7 +170,7 @@
         },
         {
           "path": "memory.md",
-          "hits": 488
+          "hits": 489
         },
         {
           "path": "docs/FILES.md",
@@ -1011,7 +1011,7 @@
         },
         {
           "path": "memory.md",
-          "hits": 549
+          "hits": 558
         },
         {
           "path": "research/json/strategy_experiment/results/results.json",

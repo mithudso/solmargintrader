@@ -285,7 +285,7 @@ try {
     await until(() => ev(scalp, `document.getElementById('call').dataset.tier !== 'warming'`), 'call ready', 120_000);
     const state = await ev(scalp, `({ tier: document.getElementById('call').dataset.tier, direction: document.getElementById('call').dataset.direction, text: document.getElementById('call-text').textContent, detail: document.getElementById('call-detail').textContent, warm: document.querySelectorAll('.tile[data-vote=warming]').length, count: document.getElementById('tiles-count').textContent, title: document.title })`);
     assert(state.warm === 0 && ['strong', 'lean', 'mixed'].includes(state.tier), JSON.stringify(state));
-    assert(/In the recording/.test(state.detail), 'the call does not state its measured hit rate');
+    assert(/On the recording the grid was chosen from/.test(state.detail) && /separate short live check/.test(state.detail), 'the call does not state its measured hit rate and the untouched check');
     return state;
   });
 

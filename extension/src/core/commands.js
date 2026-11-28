@@ -208,13 +208,14 @@ export const COMMANDS = {
   jupiterScalpWindow: {
     describe: 'Open the Jupiter 1000x 1s scalp window, or relay its position read and one Close click to the owning Jupiter tab.',
     params: [
-      { name: 'action', type: TYPE.STRING, required: true, describe: 'open, close, status, positions, closePosition or showJupiter.' },
+      { name: 'action', type: TYPE.STRING, required: true, describe: 'open, close, status, positions, closePosition, showJupiter or guardState.' },
       { name: 'expect', type: TYPE.JSON, describe: 'For closePosition: the listed position to match (coin, side, leverage, entryText).' },
+      { name: 'live', type: TYPE.BOOL, describe: 'For guardState: whether a take profit or stop loss is live in the window.' },
     ],
     unlocked: true,
     browserUi: true,
     handler({ deps, args }) {
-      if (!['open', 'close', 'status', 'positions', 'closePosition', 'showJupiter'].includes(args.action)) {
+      if (!['open', 'close', 'status', 'positions', 'closePosition', 'showJupiter', 'guardState'].includes(args.action)) {
         throw new CommandError('Invalid scalp window action', 400);
       }
       const expect = args.expect;
@@ -225,9 +226,10 @@ export const COMMANDS = {
         throw new CommandError('closePosition needs the exact listed position', 400);
       }
       if (args.action !== 'closePosition' && expect !== undefined) throw new CommandError('expect is only valid with closePosition', 400);
+      if ((args.action === 'guardState') !== (typeof args.live === 'boolean')) throw new CommandError('live is required with guardState and invalid elsewhere', 400);
       // The page bridge lives in a Chrome tab; the CLI and the HTTP API have none.
       if (!deps.jupiterScalpWindows) throw new CommandError('The scalp window requires the Chrome extension.', 501);
-      return deps.jupiterScalpWindows.control(args.action, deps.sender, { expect });
+      return deps.jupiterScalpWindows.control(args.action, deps.sender, { expect, live: args.live });
     },
   },
   openLiveWindow: {

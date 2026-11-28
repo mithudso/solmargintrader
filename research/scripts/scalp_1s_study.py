@@ -754,6 +754,15 @@ def main(argv=None) -> int:
                 )
                 / sum(vote_eval[k]["n"] for k in pooled),
             }
+    # The live recording is the only sample that played no part in choosing the tiles.
+    for tier, row in measured.items():
+        live_row = vote_eval.get("live_all", {}).get(tier, {})
+        if "hit" in live_row:
+            row["live"] = {
+                "hit": live_row["hit"],
+                "hit_se": live_row["hit_se"],
+                "n": live_row["n"],
+            }
     model = {
         "version": 2,
         "horizon_s": HORIZON,

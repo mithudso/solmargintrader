@@ -1,6 +1,6 @@
 # Jupiter 1000x: 1s scalp window and exit guard
 
-Version: 1.0.0. Delta: first version, for extension 0.17.0, 2026-11-27.
+Version: 1.1.0. Delta: record the review fixes (unprotected alarm, three-read confirmation, live-guard window rule), extension 0.17.0, 2026-11-27.
 
 ## What it is
 
@@ -46,7 +46,7 @@ opening, and after any gap.
 
 | Part | What it shows |
 | --- | --- |
-| Call | **UP** or **DOWN · strong** when at least 12 of 16 readings net one way, **lean** from 6, **MIXED** below. The line under it gives the measured hit rate for that tier and the typical 30 second move now. |
+| Call | **UP** or **DOWN · strong** when at least 12 of 16 readings net one way, **lean** from 6, **MIXED** below. The line under it gives the hit rate for that tier on the recording the grid was chosen from, the figure from the separate short live check with its error bar, and the typical 30 second move now. |
 | Chart | 1s candles for the last 150 seconds. Ahead of price: a dashed centre line and the bands inside which 68% and 90% of recorded 30 second moves ended, scaled by the last 30 seconds' volatility. Entry, bust, take profit and stop loss appear as price lines. |
 | Strips | Top: the call made each second for the last 120 seconds. Bottom: whether that call was right 30 seconds later. |
 | Trend grid | The sixteen readings. Green votes up, red votes down, grey is neutral, dashed is warming up. Every tile also carries an arrow and its value. |
@@ -103,16 +103,16 @@ is what a random walk produces. The longest runs were 72 s and 1,616 s.
 | Read | Once a second the window asks the Jupiter tab for the rows of its positions table: market, side, leverage, entry, mark, bust and the state of the row's button. |
 | Set | Type a take profit, a stop loss, or both. The quick buttons fill a level from the current price or from the distance to bust. Each level shows its distance from entry and the page formula's estimated result. |
 | Arm | Choose **Alert me only** (the default) or **Press Close on the Jupiter page**, then press Arm. Arming needs a real click. |
-| Watch | Each oracle quote is compared with the levels. A quote older than two seconds is ignored and the panel says **ARMED BUT NOT PROTECTED**. |
+| Watch | Each oracle quote is compared with the levels. A quote older than two seconds is ignored. When no fresh price arrives, or the Jupiter page cannot be read, the panel says **ARMED BUT NOT PROTECTED**, and after four seconds it notifies you and sounds a tone, repeating every 30 seconds. A price stream that gave up is started again every 15 seconds. |
 | Act | At a level the window notifies you and sounds a tone. In close mode it asks the tab to press Close for that one row. If the page still shows the 15 second hold countdown it retries every 250 ms for up to 30 seconds. |
-| Confirm | After the press, the guard waits for the row to leave the list and then reports **Closed**. If the row is still listed after 25 seconds it reports **Not confirmed** and does not press again. |
+| Confirm | After the press, the guard waits for the row to leave the list and then reports **Closed**. The row counts as gone only after three complete reads in a row miss it; a read with a row still opening or unreadable proves nothing. If the row is still listed after 25 seconds, or the page stopped answering, it reports **Not confirmed** and does not press again. |
 
 ### Rails, in code
 
 - **Alert only is the default.** A fresh install presses nothing.
 - **One position, exact match.** The bridge presses only when exactly one listed
   row matches the armed market, side, leverage and entry text. Two identical
-  rows are refused as ambiguous.
+  rows cannot be armed, and are refused as ambiguous at the press.
 - **Only the row's own button, only when it says exactly "Close" and is
   enabled.** "Close all", "Close position" and locked modes are never pressed.
 - **No second press** for the same row within ten seconds, and never after a
@@ -121,7 +121,14 @@ is what a random walk produces. The longest runs were 72 s and 1,616 s.
   price the page shows in another format is refused. An entry more than 20% from
   the live price counts as misread.
 - **Levels must make sense.** Take profit on the winning side of the current
-  price; stop loss on the losing side and inside the bust price.
+  price; stop loss on the losing side and inside the bust price. A stop loss is
+  refused when the page's bust price cannot be read.
+- **A request that is out cannot be withdrawn.** Disarm works only while the
+  guard is armed and waiting. A press that lands after the 30 second wait ran
+  out is still recorded as a press.
+- **The window is not closed under a live guard.** Opening the scalp window for
+  another market is refused until you disarm. If the Jupiter tab itself closes,
+  the window stays open and reports that it lost the page.
 - **Only the extension's own worker** can reach the page bridge, and only the
   window that worker opened for that tab can ask for a close.
 - **Failures are loud.** Every refusal ends in a visible **COULD NOT CLOSE**
@@ -141,8 +148,11 @@ it has its own arm switch and the grid's kill switch does not affect it.
   the oracle price recorded about two seconds after submission, with no price
   limit. A stop loss near the bust price can still be liquidated first.
 - **It cannot close inside the first 15 seconds** of a position.
-- **It stops when its window closes**, when the Jupiter tab closes, and when
-  Chrome quits. Chrome asks before closing a window with a live guard.
+- **It stops when its window closes** and when Chrome quits. Chrome asks before
+  closing a window with a live guard. With the Jupiter tab closed it can only
+  alert. Keep the window open; it may sit behind other windows. In a hidden
+  window Chrome slows timers to about once a second, which delays retries and
+  confirmation but not the trigger, which runs on each arriving quote.
 - **It reads the English desktop table.** On a narrow window (card layout) or
   another language it reports that it cannot read positions.
 - **One guard at a time**, for one position of the window's market.

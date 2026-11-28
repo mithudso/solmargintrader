@@ -19,6 +19,9 @@ export const GUARD_LIMITS = Object.freeze({
   confirmMs: 25_000,
   // The page's entry price must sit this close to the oracle price, or it was misread.
   entryTolerance: 0.2,
+  // Complete reads in a row that must miss the position before it counts as gone.
+  // One read can catch the table mid-render.
+  goneReads: 3,
 });
 
 export const GUARD_STATES = Object.freeze(['idle', 'armed', 'triggered', 'clicked', 'closed', 'alerted', 'unconfirmed', 'failed']);
@@ -63,7 +66,10 @@ export function validateLevels({ position, price, takeProfit = null, stopLoss = 
   if (stopLoss !== null) {
     if (long ? stopLoss >= price : stopLoss <= price) {
       errors.push(`Stop loss must be ${long ? 'below' : 'above'} the current price for a ${position.side}.`);
-    } else if (positive(position.bust) && (long ? stopLoss <= position.bust : stopLoss >= position.bust)) {
+    } else if (!positive(position.bust)) {
+      // Without the bust price the stop cannot be shown to sit inside it.
+      errors.push('The bust price could not be read from the page, so a stop loss cannot be checked.');
+    } else if (long ? stopLoss <= position.bust : stopLoss >= position.bust) {
       errors.push('Stop loss is at or beyond the bust price; the position would be liquidated first.');
     }
   }
@@ -94,6 +100,8 @@ export class ExitGuard {
   #trigger = null;
   #clickedAt = null;
   #note = '';
+  #misses = 0;
+  #attempts = 0;
   #journal = [];
 
   #log(event, detail, nowMs) {
@@ -117,6 +125,8 @@ export class ExitGuard {
     this.#mode = mode;
     this.#trigger = null;
     this.#clickedAt = null;
+    this.#misses = 0;
+    this.#attempts = 0;
     this.#state = 'armed';
     this.#note = '';
     this.#log('armed', { key: this.#position.key, takeProfit, stopLoss, mode, price }, nowMs);
@@ -124,8 +134,8 @@ export class ExitGuard {
   }
 
   disarm(reason, nowMs) {
-    // A click that is out cannot be recalled; only its outcome may end that state.
-    if (this.#state === 'clicked') return false;
+    // A close request that is out cannot be recalled; only its outcome may end these states.
+    if (this.#state === 'clicked' || this.#state === 'triggered') return false;
     if (this.#state === 'idle') return true;
     this.#log('disarmed', { reason }, nowMs);
     this.#state = 'idle';
@@ -163,18 +173,24 @@ export class ExitGuard {
    * ask again (the page still shows the 15 second close lock).
    */
   onCloseResult(result, nowMs) {
-    if (this.#state !== 'triggered') return false;
-    if (result?.clicked === true) {
+    const pressed = result?.clicked === true || result?.already === true;
+    // A reply can arrive after the wait ran out. A press that happened is still recorded.
+    if (this.#state !== 'triggered' && !(pressed && this.#state === 'failed' && this.#trigger)) return false;
+    const earlier = this.#attempts++;
+    if (pressed) {
       this.#state = 'clicked';
       this.#clickedAt = nowMs;
-      this.#log('clicked', { label: result.label ?? null }, nowMs);
+      this.#misses = 0;
+      // already: the page was closing this position before the guard pressed.
+      this.#log(result.clicked === true ? 'clicked' : 'already-closing', { label: result.label ?? null }, nowMs);
       return false;
     }
-    if (result?.already === true) {
-      // The page is already closing this position (the owner pressed Close first).
+    if (result?.reason === 'position_not_listed' && earlier > 0) {
+      // An earlier request went out and its reply was lost; the row is gone now.
       this.#state = 'clicked';
       this.#clickedAt = nowMs;
-      this.#log('already-closing', { label: result.label ?? null }, nowMs);
+      this.#misses = 0;
+      this.#log('gone-after-request', {}, nowMs);
       return false;
     }
     if (result?.retry === true && nowMs - this.#trigger.at < GUARD_LIMITS.closeWaitMs) {
@@ -189,26 +205,34 @@ export class ExitGuard {
 
   /**
    * Reconcile with the page's current position list. `positions` is null when
-   * the list could not be read. Returns a change the UI should announce, or null.
+   * the list could not be read; `complete` is false when some row was still
+   * opening or unreadable, so an absent position proves nothing. Returns a
+   * change the UI should announce, or null.
    */
-  onPositions(positions, nowMs) {
+  onPositions(positions, nowMs, complete = true) {
     if (!this.#position) return null;
-    const listed = Array.isArray(positions) ? positions.some(row => positionKey(row) === this.#position.key) : null;
-    if (this.#state === 'armed' && listed === false) {
+    const readable = Array.isArray(positions);
+    const listed = readable && positions.some(row => positionKey(row) === this.#position.key);
+    if (listed) this.#misses = 0;
+    else if (readable && complete) this.#misses += 1;
+    const gone = this.#misses >= GUARD_LIMITS.goneReads;
+    if (this.#state === 'armed' && gone) {
       this.#state = 'idle';
       this.#note = 'position_gone';
       this.#log('position-gone', {}, nowMs);
       return 'position_gone';
     }
     if (this.#state === 'clicked') {
-      if (listed === false) {
+      if (gone) {
         this.#state = 'closed';
         this.#log('closed', {}, nowMs);
         return 'closed';
       }
       if (nowMs - this.#clickedAt >= GUARD_LIMITS.confirmMs) {
         this.#state = 'unconfirmed';
-        this.#log('unconfirmed', {}, nowMs);
+        // Still listed, or the page stopped answering: say which.
+        this.#note = listed ? 'still_listed' : 'page_unreadable';
+        this.#log('unconfirmed', { reason: this.#note }, nowMs);
         return 'unconfirmed';
       }
     }
