@@ -1,8 +1,8 @@
 {
-  "generatedAt": "2026-11-28T09:12:29+00:00",
+  "generatedAt": "2026-11-28T09:19:17+00:00",
   "schemaVersion": 1,
   "repoRoot": "~/dev/solmargintrader",
-  "commit": "bc7c4f9",
+  "commit": "42ac3bf",
   "counts": {
     "files": 8110,
     "bytes": 296092684,
@@ -3301,7 +3301,7 @@
       "summarySource": "opening-prose",
       "bytes": 7668,
       "lines": 131,
-      "sha1": "1f6da2170e3115fdd9a1975121c5ef53ec9d5808",
+      "sha1": "30313d9ccff5371ef04f9a24ca3a960c93d7a421",
       "symbols": [],
       "imports": [],
       "internalImports": [],
@@ -65737,7 +65737,7 @@
       "summarySource": "derived",
       "bytes": 241522,
       "lines": 4902,
-      "sha1": "b198ba650ee0ff1e40a1dee0ca5c73a3f69da129",
+      "sha1": "3859e96c29c658c3089102f5ed3dd688232b8394",
       "symbols": [],
       "imports": [],
       "internalImports": [],
@@ -66277,7 +66277,7 @@
       "summarySource": "derived",
       "bytes": 26328,
       "lines": 682,
-      "sha1": "d6252a9b3d00276f5e02664eb20898beea4dcd2a",
+      "sha1": "1d00583ff2fced7bfa913e5e202704fb268c6832",
       "symbols": [],
       "imports": [],
       "internalImports": [],
@@ -249862,5 +249862,5 @@
       "frontmatter": {}
     }
   ],
-  "textSha256": "294c319deaaaa4cfaa227ddcaaa34c4d054376babb96098b3634d194b78e9705"
+  "textSha256": "52a4c46bee87e1c9ce77be766b20f03b5032b755e287f67210704a89ee759ab3"
 }
