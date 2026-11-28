@@ -1,6 +1,6 @@
 # Jupiter 1000x: 1s scalp window and exit guard
 
-Version: 2.4.0. Delta: the same window opens from the Jupiter Perps page as read-outs only; extension 0.21.0, 2026-11-28.
+Version: 2.4.1. Delta: corrects the Perps section: Jupiter's own TP/SL is not offered on HYPE or ZEC, and the window's Perps note now says so per market; extension 0.21.1, 2026-11-28.
 
 ## What it is
 
@@ -251,11 +251,16 @@ Why it stops there. The Perps page is a different product from 1000x:
   row layouts in the page's code. No position was open when the page was
   read on 2026-11-28, so no position row could be read, and none was opened
   for this work.
-- The page has its own **Add TP / SL** control in the positions list, which
-  Jupiter runs without any window staying open. That is the better tool for a
-  Perps take profit or stop loss. It was seen in the page's code and the column
-  is on the HYPE page; it was not checked on an open HYPE or ZEC position, and
-  the Perps paper guide notes that the beta venue documents no native TP/SL.
+- Jupiter's own take profit and stop loss exist only on SOL, ETH and BTC. There
+  the positions list has **Add TP / SL**, which Jupiter runs without any window
+  staying open. On **HYPE and ZEC** (the beta markets, 25× and 50×) the page's
+  own code renders the TP / SL cell as `-- / --` with the text "Take Profit /
+  Stop Loss is not available for HYPE" (or ZEC), and the venue's public market
+  terms at `https://api.gum.ag/app/perps/markets` list market, limit and
+  post-only orders only: no stop or trigger order. A reduce-only limit order
+  (the page calls it "Limit Close") can serve as a take profit there. Nothing
+  on the page or the venue acts as a stop loss. The window says this in its
+  Perps note. Neither control was exercised.
 - The read-out's figures were measured on the 1000x oracle price, not on the
   Perps mark price, and the average move after a strong call (under 1 bp) is
   smaller than the fees to open and close a Perps position: about 7 bp of

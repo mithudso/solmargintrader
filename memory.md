@@ -1,7 +1,21 @@
 # Work continuation
 
-Version: 734
-Delta: v733 to v734. Record the Perps read-outs-only view of the 1s scalp window (extension 0.21.0) and what the full Perps function still needs. Earlier:
+Version: 735
+Delta: v734 to v735. Record that Jupiter's own TP/SL does not exist on HYPE or ZEC, which blocks the owner's chosen design for those markets. Earlier:
+
+## Perps TP/SL: not offered on HYPE or ZEC · 2026-11-28
+
+Owner's decision (`prompts.md` v340): on the Perps page the window should set Jupiter's own TP/SL.
+
+Found before writing any press: Jupiter's own TP/SL exists only on the JLP markets (SOL, ETH, BTC). For the beta markets the page's code (`https://jup.ag/assets/-v2-trade-route-Cqn6-RAV.js`, read 2026-11-28) renders the positions row's TP / SL cell as `-- / --` inside a tooltip button whose text is "Take Profit / Stop Loss is not available for {marketSymbol}", and `https://api.gum.ag/app/perps/markets` lists `orderLimitConfig` for `market`, `limit` and `postOnly` only. The page labels a reduce-only limit order "Limit Close", which can act as a take profit. Nothing native acts as a stop loss on HYPE or ZEC.
+
+Shipped (0.21.1): the Perps note in the window and `docs/JUPITER-1000X-SCALP.md` now state this per market, in place of the earlier line that pointed at Add TP / SL for every Perps market.
+
+Open decision for the owner (HYPE and ZEC cannot use the chosen design): (a) use SOL, ETH or BTC at 25× or 50×, where the window can press Jupiter's own Add TP / SL; (b) on HYPE and ZEC, take profit as the page's Limit Close and stop loss by a window-run guard as on 1000x, which works only while the window is open; (c) a stop run by the repo's local GUM owner outside Chrome (`docs/JUPITER-ZEC-WEBHOOK.md`), a larger build with its own signing boundary. Each needs one real open position to read its row before presses are written.
+
+Verification: 851 extension tests; `npm run e2e:scalp` 17 of 17.
+
+Earlier delta, v733 to v734. Record the Perps read-outs-only view of the 1s scalp window (extension 0.21.0) and what the full Perps function still needs. Earlier:
 
 ## 1s scalp window on the Jupiter Perps page: view only · 2026-11-28
 
