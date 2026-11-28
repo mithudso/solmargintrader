@@ -1,7 +1,7 @@
 # Work continuation
 
-Version: 731
-Delta: v730 to v731. Record the owner's local project files kept on master, the cause of the manager-poll error, and the 0.19.0 scalp window additions; the Perps page view is still to do.
+Version: 732
+Delta: v731 to v732. Record the merge of PR 379, the main checkout sync and the most-likely price line. Earlier: Record the owner's local project files kept on master, the cause of the manager-poll error, and the 0.19.0 scalp window additions; the Perps page view is still to do.
 
 ## Main checkout sync and scalp window 0.19.0 · 2026-11-28
 
@@ -10,6 +10,8 @@ Request (`prompts.md` v337). Done in one change:
 - **Extension error `[smt] background operation failed manager-poll`.** Cause: the extension was loaded from `/Users/mitch/dev/worktrees/scalp-extension-0170/extension`, which gives it the ID `pckfpnnfggilfcmekgdcnlpmaadchboe`; the native host `com.mitchhudson.soltui` allows only `pnokcppamfghgaimmmghoegjllhonhbh`, the ID of `/Users/mitch/dev/solmargintrader/extension`. An unpacked extension's ID comes from its folder path. Fix: load it from the main checkout again once that is synced; no code change.
 - **Scalp window 0.19.0.** Leverage choice for entries (Page, 500×, 1,000×: the bridge presses the page's own preset and refuses if it does not switch); a coin dropdown at the top (the worker re-binds the window with `setMarket`, then the window reloads on the new market); a running hit rate under every tile at 5 s, 10 s, 20 s, 30 s, 1 min and 5 min (`HorizonScore`); and a refusal when a number typed as a distance in basis points is within 3% of the coin's price (`priceLike`), with the unit shown beside each field.
 Verification: 828 extension tests; `npm run e2e:scalp -- --full` 16 of 16.
+Delivered as PR 379 (merge `981d0bb`); the main checkout `/Users/mitch/dev/solmargintrader` was then fast-forwarded and holds extension 0.19.0, with the owner's seven files byte-identical to before.
+Follow-up 0.19.1: the projection's centre is a labelled most-likely price line, drawn from the measured average path after a call (`measured[tier].path_bps` in the model; strong calls: +0.43 bp at 5 s, +0.58 bp at 30 s).
 Remaining: the same view and function on the Jupiter Perps page (https://jup.ag/perps/long/USDC-HYPE, 25× and 50×). It is a different product with its own page layout, order form, price source and liquidation rules, so it needs its own page read before any button is pressed there. Not started.
 
 Version: 730

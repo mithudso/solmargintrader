@@ -90,7 +90,8 @@ const bands = {
   outerLow: chart.addSeries(LineSeries, { ...quiet, color: '#8fa3c766', lineWidth: 1, lineStyle: LineStyle.Dotted }),
   innerHigh: chart.addSeries(LineSeries, { ...quiet, color: COLORS.band, lineWidth: 1 }),
   innerLow: chart.addSeries(LineSeries, { ...quiet, color: COLORS.band, lineWidth: 1 }),
-  mid: chart.addSeries(LineSeries, { ...quiet, color: COLORS.flat, lineWidth: 2, lineStyle: LineStyle.Dashed }),
+  // The most likely price line: labelled on the price axis with where it ends in 30 seconds.
+  mid: chart.addSeries(LineSeries, { ...quiet, color: COLORS.flat, lineWidth: 3, lastValueVisible: true, title: 'likely' }),
 };
 
 function drawChart() {

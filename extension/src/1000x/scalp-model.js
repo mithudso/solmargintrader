@@ -258,17 +258,34 @@ export class SlopeScore {
 }
 
 /**
- * Price bands for each of the next 30 seconds. sigmaBps is the standard
- * deviation of recent 1s returns; the multipliers are the recorded 68% and 90%
- * quantiles of |30s move| / (sigma * sqrt(30)). The centre drifts by the tier's
- * measured mean move, which is a fraction of a basis point.
+ * The average move, in basis points, that followed a call of this tier after
+ * `seconds`, in the direction of the call: the recorded path, interpolated.
+ * Most of it arrives in the first five to ten seconds and then it levels off.
+ */
+export function likelyMoveBps(tier, seconds) {
+  const path = SCALP_MODEL.measured[tier]?.path_bps;
+  if (!Array.isArray(path) || !path.length || !(seconds > 0)) return 0;
+  let previous = [0, 0];
+  for (const point of path) {
+    if (seconds <= point[0]) return previous[1] + (point[1] - previous[1]) * (seconds - previous[0]) / (point[0] - previous[0]);
+    previous = point;
+  }
+  return previous[1];
+}
+
+/**
+ * Price bands and the most likely price for each of the next 30 seconds.
+ * sigmaBps is the standard deviation of recent 1s returns; the multipliers are
+ * the recorded 68% and 90% quantiles of |30s move| / (sigma * sqrt(30)). The
+ * centre (`mid`) is the most likely line: the price plus the average move that
+ * followed calls of this tier in the recording, a fraction of a basis point.
  */
 export function cone({ price, sigmaBps, direction = 'flat', tier = 'mixed' }) {
   if (!(price > 0) || !(sigmaBps >= 0) || !Number.isFinite(sigmaBps)) return [];
-  const drift = direction === 'flat' ? 0 : (direction === 'up' ? 1 : -1) * (SCALP_MODEL.measured[tier]?.mean_follow_bps ?? 0);
+  const sign = direction === 'flat' ? 0 : direction === 'up' ? 1 : -1;
   const at = bps => price * (1 + bps / 1e4);
   return Array.from({ length: HORIZON_S }, (_, i) => {
-    const seconds = i + 1, sigma = sigmaBps * Math.sqrt(seconds), centre = drift * seconds / HORIZON_S;
+    const seconds = i + 1, sigma = sigmaBps * Math.sqrt(seconds), centre = sign * likelyMoveBps(tier, seconds);
     return { seconds, mid: at(centre),
       innerLow: at(centre - SCALP_MODEL.cone.p68 * sigma), innerHigh: at(centre + SCALP_MODEL.cone.p68 * sigma),
       outerLow: at(centre - SCALP_MODEL.cone.p90 * sigma), outerHigh: at(centre + SCALP_MODEL.cone.p90 * sigma) };

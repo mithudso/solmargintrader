@@ -949,7 +949,7 @@
       "component": "extension",
       "kind": "markdown",
       "summary": "Includes the Verification status section; read it before extending",
-      "lines": 884
+      "lines": 886
     },
     {
       "path": "extension/src/1000x/feed.js",
@@ -1033,7 +1033,7 @@
       "component": "extension",
       "kind": "javascript",
       "summary": "Sixteen-tile vote, tiers, 30 second cone, slope ladder history and reversal timing, session score and the BigInt payout port",
-      "lines": 322
+      "lines": 376
     },
     {
       "path": "extension/src/1000x/scalp-model-data.js",
@@ -1047,14 +1047,14 @@
       "component": "extension",
       "kind": "javascript",
       "summary": "Pure take-profit / stop-loss state machine: fresh-quote trigger, one close request, bounded lock wait, no retry of an unconfirmed press",
-      "lines": 295
+      "lines": 305
     },
     {
       "path": "extension/src/1000x/page-bridge.js",
       "component": "extension",
       "kind": "javascript",
       "summary": "Content script that reads the 1000x positions table and order form, presses one exactly matched row's own Close button, and presses the form's own size and Long or Short buttons",
-      "lines": 295
+      "lines": 303
     },
     {
       "path": "extension/src/1000x/entry-plan.js",
@@ -1068,14 +1068,14 @@
       "component": "extension",
       "kind": "javascript",
       "summary": "The 1s scalp window: feed to bars to read-outs, chart with cone, grid, slope ladder and the guard panel",
-      "lines": 822
+      "lines": 884
     },
     {
       "path": "extension/src/bg/jupiter-scalp-window.js",
       "component": "extension",
       "kind": "javascript",
       "summary": "One scalp window per Jupiter tab and the only relay from that window to the tab's page bridge",
-      "lines": 166
+      "lines": 174
     },
     {
       "path": "extension/test/1000x-scalp.test.js",
@@ -1096,21 +1096,21 @@
       "component": "extension",
       "kind": "javascript",
       "summary": "Levels in basis points, entry validation, confirm-then-send tracker, new-position matching, order-form reads and presses, slope accuracy score",
-      "lines": 273
+      "lines": 336
     },
     {
       "path": "extension/test/jupiter-scalp-window.test.js",
       "component": "extension",
       "kind": "javascript",
       "summary": "Window ownership across worker eviction, relay refusal for strangers, explicit failures and the registry command's validation",
-      "lines": 182
+      "lines": 207
     },
     {
       "path": "extension/tools/1000x-scalp-e2e.mjs",
       "component": "extension",
       "kind": "other",
       "summary": "Chrome for Testing gate: trusted-click arming, alert mode presses nothing, close mode presses the row's Close once",
-      "lines": 452
+      "lines": 491
     },
     {
       "path": "research/scripts/scalp_1s_features.py",
@@ -1187,14 +1187,14 @@
       "component": "repo",
       "kind": "markdown",
       "summary": "The 1s scalp window: readings, slope ladder, exit guard rails, limits and verification",
-      "lines": 270
+      "lines": 293
     },
     {
       "path": "extension/src/core/commands.js",
       "component": "extension",
       "kind": "javascript",
       "summary": "The single registry. Every action lives here or the parity test fails",
-      "lines": 1099
+      "lines": 1105
     },
     {
       "path": "extension/src/core/risk.js",

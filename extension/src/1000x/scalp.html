@@ -22,7 +22,7 @@
       </section>
 
       <section aria-label="One-second price with the 30 second range">
-        <div id="chart" title="One-second oracle candles for the last 150 seconds. Ahead of the last bar: a dashed centre line, solid lines inside which 68% of recorded 30 second moves ended, and dotted lines for 90%, all scaled by the last 30 seconds of volatility. Entry, bust, take profit and stop loss are drawn as price lines." aria-label="One-second oracle candles with the expected 30 second range drawn ahead of price"></div>
+        <div id="chart" title="One-second oracle candles for the last 150 seconds. Ahead of the last bar: a thick line marked “likely”, the most likely price over the next 30 seconds (the current price plus the average move that followed calls like the current one in the recording, which is under one basis point and mostly arrives in the first ten seconds); thin solid lines inside which 68% of recorded 30 second moves ended; and dotted lines for 90%, scaled by the last 30 seconds of volatility. With a mixed grid the likely line is flat. Entry, bust, take profit and stop loss are drawn as price lines." aria-label="One-second oracle candles with the expected 30 second range drawn ahead of price"></div>
         <canvas id="ribbon" width="440" height="26" role="img" title="Top strip: the call made each second for the last 120 seconds (green up, red down, grey mixed; lean calls are fainter). Bottom strip: whether that call was right 30 seconds later (green right, red wrong, dark not yet settled)." aria-label="Calls for the last 120 seconds and how each turned out"></canvas>
       </section>
 

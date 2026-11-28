@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 
 import { SecondBars, MAX_GAP_S, RETAIN_BARS, vote, VOTE_EPSILON, breakout, realizedVolBps, slopeBps, curvatureBps } from '../src/1000x/scalp-indicators.js';
-import { TILES, WARMUP_BARS, SCALP_MODEL, HORIZON_S, readTiles, readSlopes, SlopeHistory, scalpCall, cone, ScoreBook,
+import { TILES, WARMUP_BARS, SCALP_MODEL, HORIZON_S, readTiles, readSlopes, SlopeHistory, scalpCall, cone, likelyMoveBps, ScoreBook,
   quotePosition, payoutPercent, bustFraction } from '../src/1000x/scalp-model.js';
 
 const fixture = JSON.parse(readFileSync(new URL('./fixtures/1000x-scalp-parity.json', import.meta.url), 'utf8'));
@@ -179,7 +179,19 @@ test('the cone widens with the square root of time and leans with the call', () 
   near((flat.at(-1).outerHigh / 100 - 1) * 1e4, SCALP_MODEL.cone.p90 * Math.sqrt(30), 'outer band');
   assert.ok(flat.every((step, i) => !i || step.outerHigh > flat[i - 1].outerHigh));
   const up = cone({ price: 100, sigmaBps: 1, direction: 'up', tier: 'strong' });
-  near((up.at(-1).mid / 100 - 1) * 1e4, SCALP_MODEL.measured.strong.mean_follow_bps, 'drift');
+  // The most likely line follows the recorded average path: most of the move early, then level.
+  const path = SCALP_MODEL.measured.strong.path_bps;
+  assert.deepEqual(path.map(point => point[0]), [5, 10, 15, 20, 25, 30]);
+  near((up.at(-1).mid / 100 - 1) * 1e4, path.at(-1)[1], 'likely price at 30 s');
+  near((up[4].mid / 100 - 1) * 1e4, path[0][1], 'likely price at 5 s');
+  near(likelyMoveBps('strong', 2.5), path[0][1] / 2, 'interpolated from zero');
+  near(likelyMoveBps('strong', 7.5), (path[0][1] + path[1][1]) / 2, 'interpolated between steps');
+  assert.equal(likelyMoveBps('strong', 0), 0);
+  assert.equal(likelyMoveBps('strong', 99), path.at(-1)[1]);
+  assert.equal(likelyMoveBps('warming', 10), 0);
+  assert.ok(path[0][1] > path.at(-1)[1] / 2, 'more than half of the average move arrives in the first five seconds');
+  const lean = cone({ price: 100, sigmaBps: 1, direction: 'down', tier: 'lean' });
+  near((lean.at(-1).mid / 100 - 1) * 1e4, -SCALP_MODEL.measured.lean.path_bps.at(-1)[1], 'a down call leans the line down');
   assert.ok(cone({ price: 100, sigmaBps: 1, direction: 'down', tier: 'strong' }).at(-1).mid < 100);
   assert.deepEqual(cone({ price: 0, sigmaBps: 1 }), []);
   assert.deepEqual(cone({ price: 100, sigmaBps: NaN }), []);
