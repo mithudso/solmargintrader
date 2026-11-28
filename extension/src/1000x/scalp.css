@@ -20,7 +20,8 @@ a{color:#8ce2f1}
 header .title{display:flex;align-items:baseline;gap:10px}
 header strong{font-size:16px}
 #price{font-size:16px;font-variant-numeric:tabular-nums}
-header .tag{margin-inline-start:auto}
+#mute{margin-inline-start:auto;min-height:24px;padding:1px 9px;font-size:11px}
+#mute[aria-pressed=true]{background:#5a3a12;border-color:#e5c575;color:#ffe9b8;font-weight:700}
 #feed{font-weight:600;border-left:3px solid #e5c575;padding:4px 8px;background:#1b2434}
 #feed[data-state=live]{border-color:var(--up)}
 #feed[data-state=stale],#feed[data-state=error]{border-color:var(--down)}

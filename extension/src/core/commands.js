@@ -210,9 +210,9 @@ export const COMMANDS = {
     params: [
       { name: 'action', type: TYPE.STRING, required: true, describe: 'open, close, status, positions, closePosition, openPosition, showJupiter, guardState or setMarket.' },
       { name: 'side', type: TYPE.STRING, describe: 'For openPosition: long or short.' },
-      { name: 'fraction', type: TYPE.NUMBER, describe: 'For openPosition: share of the page\'s Max amount, 0.25, 0.5, 0.75 or 1.' },
+      { name: 'fraction', type: TYPE.NUMBER, describe: 'For openPosition: share of the page\'s Max amount, 0.25, 0.5, 0.75 or 1 (0.5 or 1 on Perps).' },
       { name: 'market', type: TYPE.STRING, describe: 'For setMarket: the coin the window will watch next.' },
-      { name: 'leverage', type: TYPE.NUMBER, describe: 'For openPosition, optional: press the page\'s 500 or 1000 leverage preset first. Omit to use what the page shows.' },
+      { name: 'leverage', type: TYPE.NUMBER, describe: 'For openPosition, optional: press the page\'s leverage preset first (500 or 1000 on 1000x; a whole number up to 100 on Perps). Omit to use what the page shows.' },
       { name: 'expect', type: TYPE.JSON, describe: 'For closePosition: the listed position to match (coin, side, leverage, entryText).' },
       { name: 'live', type: TYPE.BOOL, describe: 'For guardState: whether a take profit or stop loss is live in the window.' },
     ],
@@ -224,7 +224,7 @@ export const COMMANDS = {
       }
       const expect = args.expect;
       if (args.action === 'closePosition' && !(plainObject(expect) && /^[A-Z0-9]{1,12}$/.test(expect.coin ?? '')
-          && ['long', 'short'].includes(expect.side) && Number.isInteger(expect.leverage) && expect.leverage >= 1 && expect.leverage <= 1000
+          && ['long', 'short'].includes(expect.side) && Number.isFinite(expect.leverage) && expect.leverage >= 1 && expect.leverage <= 1000
           && typeof expect.entryText === 'string' && expect.entryText.length >= 1 && expect.entryText.length <= 40
           && Object.keys(expect).length === 4)) {
         throw new CommandError('closePosition needs the exact listed position', 400);
@@ -239,7 +239,10 @@ export const COMMANDS = {
       if ((args.action === 'setMarket') !== (args.market !== undefined) || (args.market !== undefined && !/^[A-Z][A-Z0-9]{0,11}$/.test(args.market))) {
         throw new CommandError('market is a coin symbol, required with setMarket and invalid elsewhere', 400);
       }
-      if (args.leverage !== undefined && (!opening || ![500, 1000].includes(args.leverage))) throw new CommandError('leverage is 500 or 1000 and only valid with openPosition', 400);
+      // Which presets exist depends on the page the window is bound to; the window module checks that. Here: a whole number in range.
+      if (args.leverage !== undefined && (!opening || !Number.isInteger(args.leverage) || args.leverage < 2 || args.leverage > 1000)) {
+        throw new CommandError('leverage is a whole number from 2 to 1000 and only valid with openPosition', 400);
+      }
       // The page bridge lives in a Chrome tab; the CLI and the HTTP API have none.
       if (!deps.jupiterScalpWindows) throw new CommandError('The scalp window requires the Chrome extension.', 501);
       return deps.jupiterScalpWindows.control(args.action, deps.sender, { expect, live: args.live, side: args.side, fraction: args.fraction, leverage: args.leverage, market: args.market });

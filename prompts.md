@@ -1,5 +1,16 @@
 # Prompt history
 
+Version: 342
+Delta: v341 to v342. Record the owner's choices for the temporary folder and the ZEC/HYPE build, the pasted manager-poll error, and the request for a mute button.
+
+## Temporary folder, ZEC/HYPE with a programmatic TP/SL, manager-poll error, mute button · 2026-11-28
+
+> Yes remove the temporary work folder, also yes, build it for ZEC/HYPE, but for those do a programatic TP/SL instead of using theirs.
+
+The owner then pasted the extension error `[smt] background operation failed manager-poll` (context `src/bg/service-worker.js`, stack trace line 330, with the file's listing) followed by two lines `Uncaught (in promise) Error: Extension context invalidated.`
+
+> If any of the tabs make noise, add a mute button.
+
 Version: 341
 Delta: v340 to v341. Record the owner's question about arming and entries, and the request to analyse consecutive strong signals and betting against an indicator with a sub-50% hit rate.
 

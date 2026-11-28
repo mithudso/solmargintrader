@@ -14,7 +14,7 @@ The ZEC routes also show the standalone [ZEC Volty 25×
 bot](JUPITER-ZEC-VOLTY.md). Its order evidence comes from a separate local GUM
 owner. The paper controls have no effect on that owner.
 
-The panel's **1s scalp** button opens the [1s scalp window](JUPITER-1000X-SCALP.md#on-the-jupiter-perps-page) for the market in view: a next-30-second read-out from one-second oracle bars and its Experiments tab. On the Perps page that window is read-outs only and presses nothing.
+The panel's **1s scalp** button opens the [1s scalp window](JUPITER-1000X-SCALP.md#on-the-jupiter-perps-page) for the market in view: a next-30-second read-out from one-second oracle bars and its Experiments tab. On HYPE and ZEC that window can also open a position and run a take profit and stop loss of its own; on SOL, ETH and BTC it is read-outs only.
 
 ## Indicators and learning
 

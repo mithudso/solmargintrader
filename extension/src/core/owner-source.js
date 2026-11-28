@@ -29,6 +29,7 @@ export const OWNER_SOURCE_FILES = [
   "src/1000x/oracle-disk.js",
   "src/1000x/oracle-view.js",
   "src/1000x/page-bridge.js",
+  "src/1000x/perps-bridge.js",
   "src/1000x/panel.js",
   "src/bg/jupiter-indicator-window.js",
   "src/bg/jupiter-scalp-window.js",

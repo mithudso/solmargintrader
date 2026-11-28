@@ -33,7 +33,7 @@ const positive = value => typeof value === 'number' && Number.isFinite(value) &&
  * position is listed with its real entry. `bustBps` is the adverse move that
  * liquidates at the page's current leverage.
  */
-export function validateEntry({ side, fraction, takeProfitBps = null, stopLossBps = null, bustBps, form, guardLive, pending }) {
+export function validateEntry({ side, fraction, takeProfitBps = null, stopLossBps = null, bustBps, form, guardLive, pending, expectMode = 'Classic' }) {
   const errors = [];
   if (side !== 'long' && side !== 'short') errors.push('Choose long or short.');
   if (!SIZE_FRACTIONS.includes(fraction)) errors.push('Choose a size: a quarter, half, three quarters or all.');
@@ -42,7 +42,8 @@ export function validateEntry({ side, fraction, takeProfitBps = null, stopLossBp
   if (!form?.recognized) errors.push('The order form on the Jupiter tab could not be read.');
   else {
     if (!positive(form.leverage)) errors.push('The page’s leverage could not be read.');
-    if (form.mode !== 'Classic') errors.push('Only Classic mode is supported. Switch the Jupiter page to Classic.');
+    // 1000x must be in its Classic mode; a Perps order form must be on its Market tab.
+    if (form.mode !== expectMode) errors.push(expectMode === 'Classic' ? 'Only Classic mode is supported. Switch the Jupiter page to Classic.' : `Only ${expectMode} orders are supported. Select ${expectMode} on the Jupiter order form.`);
     if (form.busy) errors.push('The Jupiter page is busy with another request.');
     if (side === 'long' && !form.longEnabled) errors.push('The page has its Long button disabled.');
     if (side === 'short' && !form.shortEnabled) errors.push('The page has its Short button disabled.');

@@ -284,3 +284,60 @@ test('the bridge refuses ambiguity, locks, other modes and unknown pages', () =>
     assert.deepEqual(bridge.closePosition(fakeDocument([row()]), bad, 1), { clicked: false, reason: 'invalid_request' });
   }
 });
+
+/* ---- Perps beta markets: the same guard, fed by perps-bridge.js ---- */
+
+const perpsLong = { coin: 'ZEC', side: 'long', leverage: 25, entry: 100, entryText: '$100.0100', bust: 97.1, mode: 'Perps' };
+
+test('on Perps a position is the same position when only its displayed leverage moves', () => {
+  assert.equal(positionKey(perpsLong), 'ZEC|long|$100.0100');
+  assert.equal(positionKey({ ...perpsLong, leverage: 24.93 }), positionKey(perpsLong));
+  assert.notEqual(positionKey({ ...perpsLong, entryText: '$100.0200' }), positionKey(perpsLong));
+  // 1000x keeps leverage in the identity: two positions there can differ only by it.
+  assert.notEqual(positionKey({ ...long, leverage: 500 }), positionKey(long));
+  const guard = new ExitGuard();
+  assert.equal(guard.arm({ position: perpsLong, price: 100, takeProfit: 100.5, stopLoss: 98.5, mode: 'close', nowMs: NOW }).ok, true);
+  // The row comes back with another leverage figure on every read: still listed, never "gone".
+  for (let i = 1; i <= 6; i++) assert.equal(guard.onPositions([{ ...perpsLong, leverage: 25 - i / 100 }], NOW + i * 400, true), null);
+  assert.equal(guard.snapshot().state, 'armed');
+  // The request for a close names the position without relying on that figure.
+  assert.deepEqual({ coin: guard.expect.coin, side: guard.expect.side, entryText: guard.expect.entryText }, { coin: 'ZEC', side: 'long', entryText: '$100.0100' });
+});
+
+test('each reply the Perps bridge can give leads the guard to press once, ask again, or fail loudly', () => {
+  const triggered = () => {
+    const guard = new ExitGuard();
+    guard.arm({ position: perpsLong, price: 100, takeProfit: 100.5, stopLoss: 98.5, mode: 'close', nowMs: NOW });
+    const fired = guard.onQuote(quote(98.4, NOW + 1000), NOW + 1000);
+    assert.deepEqual([fired.type, fired.reason, fired.price], ['close', 'stopLoss', 98.4]);
+    return guard;
+  };
+  // Pressed, with or without the page's question.
+  for (const reply of [{ clicked: true, label: 'Quick close', confirmed: true }, { clicked: true, label: 'Quick close', confirmed: false }]) {
+    const guard = triggered();
+    assert.equal(guard.onCloseResult(reply, NOW + 1500), false);
+    assert.equal(guard.snapshot().state, 'clicked');
+  }
+  // Ask again: the tab was switched to Positions, the list was mid-render, the button was disabled, Confirm was not ready, another close was in hand.
+  for (const reason of ['opened_positions_tab', 'positions_table_not_found', 'close_disabled', 'close_confirm_unavailable', 'page_busy']) {
+    const guard = triggered();
+    assert.equal(guard.onCloseResult({ clicked: false, retry: true, reason }, NOW + 1500), true, reason);
+    assert.equal(guard.snapshot().state, 'triggered', reason);
+  }
+  // Refused for good: the guard ends in failed, which the window reports with its alarm.
+  for (const reason of ['close_confirm_unavailable', 'close_dialog_already_open', 'close_unavailable', 'ambiguous_position', 'position_not_listed']) {
+    const guard = triggered();
+    assert.equal(guard.onCloseResult({ clicked: false, reason }, NOW + 1500), false, reason);
+    assert.equal(guard.snapshot().state, 'failed', reason);
+  }
+  // "Ask again" stops after the bounded wait.
+  const guard = triggered();
+  assert.equal(guard.onCloseResult({ clicked: false, retry: true, reason: 'page_busy' }, NOW + 1000 + GUARD_LIMITS.closeWaitMs + 1), false);
+  assert.equal(guard.snapshot().state, 'failed');
+});
+
+test('a Perps stop is checked against the liquidation price read from the row', () => {
+  assert.equal(validateLevels({ position: perpsLong, price: 100, takeProfit: 100.5, stopLoss: 98.5 }).ok, true);
+  assert.match(validateLevels({ position: perpsLong, price: 100, stopLoss: 97.1 }).errors.join(' '), /liquidated first/);
+  assert.match(validateLevels({ position: { ...perpsLong, bust: null }, price: 100, stopLoss: 98.5 }).errors.join(' '), /could not be read/);
+});

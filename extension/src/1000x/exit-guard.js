@@ -39,7 +39,10 @@ export function parseLevel(text) {
 
 /** Identity of a listed position. The page exposes no id, so two identical rows are ambiguous. */
 export function positionKey(position) {
-  return [position.coin, position.side, position.leverage, position.entryText].join('|');
+  // On Perps the row's leverage is a displayed ratio that can drift while the position is unchanged,
+  // and the venue keeps one net position per market and side: the figure is left out of the identity there.
+  return position.mode === 'Perps' ? [position.coin, position.side, position.entryText].join('|')
+    : [position.coin, position.side, position.leverage, position.entryText].join('|');
 }
 
 /**

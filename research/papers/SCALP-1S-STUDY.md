@@ -1,6 +1,6 @@
 # One-second bars and the next 30 seconds on Jupiter 1000x
 
-Version: 1.3.0. Data: Jupiter Pyth oracle ticks, 2026-11-16 to 2026-11-17 and 2026-11-27.
+Version: 1.4.0. Data: Jupiter Pyth oracle ticks, 2026-11-16 to 2026-11-17 and 2026-11-27.
 
 On one-second bars of the Jupiter 1000x oracle price, recent direction persists a little: when twelve or more of sixteen trend readings agreed, the next 30 seconds went their way about 53% of the time. Fading an extreme lost. The 1000x payout needs 61% to 84% on moves of that size, so the read-out is a lean and not a rule that pays.
 
@@ -123,10 +123,11 @@ Does waiting for a second strong call help? A strong run is a stretch of consecu
 | Third to fifth | 54.3% ± 1.2 | 45.7% | 54.2% | 26.9% | 12.4% |
 | Sixth to tenth | 53.9% ± 2.0 | 46.0% | 52.1% | 26.9% | 10.7% |
 | Eleventh on (193 seconds) | 48.2% ± 5.5 | 51.8% | 54.4% | 33.7% | 13.0% |
-| Live, second in a row | 52.7% ± 2.7 | 47.3% | 59.3% | 20.1% | 9.7% |
+| Live 2026-11-27 (43 min), second in a row | 52.7% ± 2.7 | 47.3% | 59.3% | 20.1% | 9.7% |
+| Live 2026-11-28 (45 min), second in a row | 49.9% ± 2.7 | 50.0% | 69.2% | 20.2% | 6.4% |
 | Unweighted vote, second in a row | 53.5% ± 0.9 | 46.5% | 55.2% | 31.5% | 14.0% |
 
-A second strong call in a row is no better than the first: 54.7% against 54.5%, well inside the error. Longer runs are not better either. After two in a row price was against the call 30 seconds later 45% of the time, a strong call the other way followed within a minute more often than not, and in about one case in eight (one in ten on the live recording) price reached the 1000x bust distance against the call inside the 30 seconds. The bust share depends on how volatile the market is; BTC and ZEC here. Errors use one sample per 30 second block.
+A second strong call in a row is no better than the first: 54.7% against 54.5%, well inside the error. On a second live recording, made on 2026-11-28 after these studies were written, two in a row were right only half the time and strong calls as a whole were right 49.6% ± 4.8 (unweighted: 46.9% ± 4.2). The two short live recordings disagree with each other, which is what a 45 minute sample can do: its error is about five points, so it cannot tell 54% from 50%. Taken together the live evidence for the strong call is about 52% ± 3. Longer runs are not better either. After two in a row price was against the call 30 seconds later 45% of the time, a strong call the other way followed within a minute more often than not, and in about one case in eight (one in ten on the live recording) price reached the 1000x bust distance against the call inside the 30 seconds. The bust share depends on how volatile the market is; BTC and ZEC here. Errors use one sample per 30 second block.
 
 ### Betting against a reading whose hit rate is under 50%
 
@@ -139,10 +140,12 @@ For every reading and second, its own running hit rate was computed from calls a
 | Sixteen tiles, last 40% | 10 min | 36% | 48.6% ± 1.0 | 51.1% |
 | Sixteen tiles, at or under 48% | 10 min | 32% | 48.8% ± 0.7 | 51.5% |
 | All 79 settings, whole base recording | 10 min | | 49.3% ± 0.6 | 51.1% |
-| Sixteen tiles, live | 10 min | 32% | 46.9% ± 2.8 | 52.1% |
-| Sixteen tiles, live | 2 h | 29% | 45.7% ± 2.7 | 51.3% |
+| Sixteen tiles, live 2026-11-27 | 10 min | 32% | 46.9% ± 2.8 | 52.1% |
+| Sixteen tiles, live 2026-11-27 | 2 h | 29% | 45.7% ± 2.7 | 51.3% |
+| Sixteen tiles, live 2026-11-28 | 10 min | 54% | 52.4% ± 2.6 | 47.1% |
+| Sixteen tiles, live 2026-11-28 | 2 h | 43% | 52.0% ± 2.6 | 46.9% |
 
-Betting against a reading that has dipped under 50% loses: it won 49% on the base recording and 46% to 47% live. A reading under 50% is mostly a reading having a normal bad stretch, and it goes back to being right about 51% of the time. No single tile's fade beat 50.6%. The aggregate says the same: giving a tile under 50% a negative say, in place of none, made strong calls 54.6% ± 2.3 on 15% of seconds against 54.4% ± 2.0 on 20% on the base recording, and 49.7% ± 5.4 against 53.8% ± 4.7 live. The window keeps giving such a tile no say.
+Betting against a reading that has dipped under 50% lost on the two-day base recording (49%) and on the first live recording (46% to 47%), and won on the second (52%). On that second recording every trend reading was wrong more often than right, above 50% or below it, so fading anything would have won: that is a stretch where the market reversed, not evidence that a reading's own dip predicts its next call. Over all three samples fading is a coin flip. A reading under 50% is mostly a reading having a normal bad stretch, and it goes back to being right about 51% of the time. No single tile's fade beat 50.6%. The aggregate says the same: giving a tile under 50% a negative say, in place of none, made strong calls 54.6% ± 2.3 on 15% of seconds against 54.4% ± 2.0 on 20% on the base recording, and 49.7% ± 5.4 against 53.8% ± 4.7 live. The window keeps giving such a tile no say.
 
 ### A wider grid of settings and intervals
 

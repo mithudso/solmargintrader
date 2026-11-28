@@ -1,6 +1,6 @@
 # Jupiter 1000x: 1s scalp window and exit guard
 
-Version: 2.5.0. Delta: the window says on screen why Long, Short or Arm is off, and the take profit and stop loss state reads "TP/SL off" in place of "Disarmed"; a how-to for opening a position; extension 0.21.2, 2026-11-28.
+Version: 2.6.0. Delta: on the Perps page the window now opens positions and runs a take profit and stop loss for HYPE and ZEC, where Jupiter offers none; a mute button; extension 0.22.0, 2026-11-28.
 
 ## What it is
 
@@ -238,40 +238,82 @@ button. It opens this window for that market with every read-out: the call, the
 chart with its projection, the trend grid, the slope ladder and the Experiments
 tab. The price is the same public oracle stream, which covers all five markets.
 
-On the Perps page the window is **read-outs only**. It reads nothing from that
-page and presses nothing on it: no Long or Short, no Close, no take profit or
-stop loss. The order panel is replaced by a note saying so. Open, size and
-close a Perps position with the page's own order form, where leverage goes up
-to 25× on HYPE and 50× on ZEC.
+What the order panel does there depends on the market.
 
-Why it stops there. The Perps page is a different product from 1000x:
+### HYPE and ZEC: entries and a window-run take profit and stop loss
 
-- Its order form and its close flow are different. Close opens an editor or a
-  "Close Entire Position?" dialog with its own confirm step, and there are two
-  row layouts in the page's code. No position was open when the page was
-  read on 2026-11-28, so no position row could be read, and none was opened
-  for this work.
-- Jupiter's own take profit and stop loss exist only on SOL, ETH and BTC. There
-  the positions list has **Add TP / SL**, which Jupiter runs without any window
-  staying open. On **HYPE and ZEC** (the beta markets, 25× and 50×) the page's
-  own code renders the TP / SL cell as `-- / --` with the text "Take Profit /
-  Stop Loss is not available for HYPE" (or ZEC), and the venue's public market
-  terms at `https://api.gum.ag/app/perps/markets` list market, limit and
-  post-only orders only: no stop or trigger order. A reduce-only limit order
-  (the page calls it "Limit Close") can serve as a take profit there. Nothing
-  on the page or the venue acts as a stop loss. The window says this in its
-  Perps note. Neither control was exercised.
-- The read-out's figures were measured on the 1000x oracle price, not on the
-  Perps mark price, and the average move after a strong call (under 1 bp) is
-  smaller than the fees to open and close a Perps position: about 7 bp of
-  position size on HYPE and ZEC, more on SOL, ETH and BTC.
+Jupiter offers no take profit or stop loss on these two beta markets. The page's
+own code renders the positions row's TP / SL cell as `-- / --` with the text
+"Take Profit / Stop Loss is not available for HYPE" (or ZEC), and the venue's
+public market terms at `https://api.gum.ag/app/perps/markets` list market,
+limit and post-only orders only. So on these markets the window runs the take
+profit and stop loss itself, as it does on 1000x.
 
-Read on the live HYPE page on 2026-11-28, for a later version: side buttons
-`role="radio"` labelled Long and Short; Market and Limit tabs; an available
-balance button; HALF and MAX; an input labelled "Collateral amount"; a leverage
-slider from 1.1 to 25 with preset buttons labelled "Set leverage to 5x" through
-25x; a "Lock leverage" checkbox; and a submit button reading Long/Buy or
-Short/Sell.
+| Step | What the window presses on the Jupiter page |
+| --- | --- |
+| Long or Short | The side switch if it is on the other side, a leverage preset if you chose one, **HALF** or **MAX**, then the form's own **Long/Buy** or **Short/Sell** button, once |
+| A level is reached (Press Close mode) | That position's own **Quick close** button, once, then **Confirm** if the page asks "Close Entire Position?" |
+
+- **Size** is half or all of the USDC the page shows as available. A quarter and
+  three quarters are not offered: the page has no button for them, and the
+  window never types an amount on this page, because nothing on it would prove
+  the page took a typed figure.
+- **Leverage** is Page (whatever the form shows) or two of the page's presets:
+  10× and 25× on HYPE, 25× and 50× on ZEC.
+- **Stop loss** must sit inside the liquidation price, which the window reads
+  from the position's row. Before a position exists, the "¼ liq." chips and the
+  notes use an estimate: 1 / leverage less the first maintenance tier (200 bp on
+  HYPE, 100 bp on ZEC). At 25× on ZEC that is 300 bp.
+- **Estimated result** is the leveraged move less both taker fees (3.5 bp of
+  position size each way).
+- **Which price.** Levels are judged on the oracle price the window watches,
+  not on the page's own mark price. The window shows how far apart the two are,
+  refuses to arm when they differ by more than 25 bp or when the page has not
+  been read in the last few seconds, requires a stop to sit at least 25 bp
+  inside the liquidation price, and sounds its "not protecting" alarm if the
+  two drift further apart than that while a level is armed.
+- **One position per market.** This venue keeps one net position per market,
+  so while a position in the window's market is listed, Long and Short are
+  off: a second order would add to, shrink or flip it.
+- **Leverage "Page".** The leverage the form shows when you press must still be
+  there at the submit press, or nothing is pressed.
+- The order form must be on its **Market** tab and the **Positions** tab must be
+  showing.
+
+The same rails as on 1000x apply: Long and Short are locked in every new window,
+alert-only is the default, only real clicks count, one request is never
+repeated, the extension never signs, and "Close All" is never pressed. A close
+request finds its position by market, side and entry price; it selects the
+Positions tab if another tab is showing; it confirms only a "Close Entire
+Position?" question that names the same market and that its own press caused;
+and a window opened on one venue is refused by the other venue's page.
+
+**The window must stay open.** The take profit and stop loss exist only while
+this window and the Jupiter tab are open and the price stream is fresh. A close
+is a market order and the wallet may still ask for approval; until it is
+approved nothing closes. At 25× to 50× that is a real limit: treat the stop as
+a helper, not as a guarantee.
+
+**Not verified on the real page.** The order form's controls were read on the
+live HYPE page on 2026-11-28. No position was open, so the position row and the
+close steps were taken from the page's code alone, and neither an open nor a
+close has been exercised. The first real use is the first live test of each
+press. Start in alert-only mode with a small balance, and check that the
+listed position, its entry and its liquidation price read correctly in the
+window before relying on Press Close. If the page's markup differs, the bridge
+refuses and says why; it does not guess.
+
+### SOL, ETH and BTC: read-outs only
+
+There the window presses nothing and its order panel is replaced by a note.
+These markets have Jupiter's own **Add TP / SL** in the positions list, which
+Jupiter runs without any window staying open (seen in the page's code; not
+exercised). Pressing that control from the window is not built.
+
+The read-out's figures were measured on the 1000x oracle price, not on the
+Perps mark price, and the average move after a strong call (under 1 bp) is
+smaller than the fees to open and close a Perps position: about 7 bp of
+position size on HYPE and ZEC, more on SOL, ETH and BTC.
 
 ## Opening a position
 
@@ -438,8 +480,11 @@ unlocked and need the confirming press, that a confirmed Long presses the page's
 Max, types three quarters, presses Long once and arms the levels from the new
 entry, that the slope gauge fills in, and that the Experiments tab lists 79
 settings at 12 intervals with live results while the call and the order panel
-stay on screen, and that the window opened from a Perps route shows the
-read-outs with no order control. `--full` also waits out the warm-up.
+stay on screen, that the window opened from a SOL, ETH or BTC Perps route shows the
+read-outs with no order control, that on a ZEC Perps stand-in a confirmed Long
+presses the page's side, preset, HALF and submit buttons once with nothing typed,
+the levels are armed from the listed entry, and a stop presses Quick close once
+and Confirm once, and that the mute button is kept. `--full` also waits out the warm-up.
 It never visits the real site and connects no wallet.
 
 Sources:

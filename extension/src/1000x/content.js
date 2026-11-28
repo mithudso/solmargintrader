@@ -267,14 +267,43 @@
   chrome.runtime.onMessage.addListener(({ type } = {}, sender) => {
     if (sender.id === chrome.runtime.id && type === 'jupiter1000xWindowClosed') onWindowClosed?.();
   });
+  /** The same three requests on a Perps beta market, answered by perps-bridge.js. */
+  function perpsRelay(message, respond, symbol) {
+    const bridge = globalThis.__smtPerpsBridge;
+    const onMarket = () => new RegExp(`^/perps/(?:long|short)/(?:JupUSD|USDC)-${symbol}/?$`).test(location.pathname);
+    const settle = promise => { promise.then(result => respond({ ok: true, ...result }), () => respond({ ok: false, reason: 'page_read_failed' })); return true; };
+    try {
+      if (!bridge) respond({ ok: false, reason: 'page_read_failed' });
+      else if (message.action === 'positions') {
+        let form;
+        try { form = bridge.readOrderForm(document); } catch { form = { recognized: false, reason: 'order_form_not_found' }; }
+        respond({ ok: true, ...bridge.readPositions(document), form: { ...form, market: symbol } });
+      } else if (message.action === 'closePosition') {
+        if (message.expect?.coin !== symbol) respond({ ok: true, clicked: false, reason: 'position_market_mismatch' });
+        else return settle(bridge.closePosition(document, message.expect));
+      } else if (message.action === 'openPosition') {
+        if (message.request?.coin !== symbol) respond({ ok: true, clicked: false, reason: 'market_mismatch' });
+        // The market is checked again just before the press: the page can navigate while the form settles.
+        else return settle(bridge.openPosition(document, message.request, { stillValid: onMarket }));
+      } else respond({ ok: false, reason: 'unknown_action' });
+    } catch {
+      respond({ ok: false, reason: 'page_read_failed' });
+    }
+    return false;
+  }
+
   // Page bridge for the 1s scalp window. Only this extension's background worker
   // may use it (a tab, even one of ours, is refused), and only on the 1000x route.
   chrome.runtime.onMessage.addListener((message, sender, respond) => {
     if (sender.id !== chrome.runtime.id || sender.tab || message?.type !== 'jupiter1000xPage') return undefined;
+    // The Perps beta markets have their own bridge with the same contract; every other Perps market is read-outs only.
+    const beta = /^\/perps\/(?:long|short)\/(?:JupUSD|USDC)-(ZEC|HYPE)\/?$/.exec(location.pathname);
+    // A window opened on one venue never drives the other's page, even if its tab has navigated there.
+    if (beta) return message.venue === 'perps' ? perpsRelay(message, respond, beta[1]) : (respond({ ok: false, reason: 'not_on_1000x' }), false);
     const bridge = globalThis.__smt1000xBridge;
     let reply;
     try {
-      if (!bridge || !/^\/1000x\/?$/.test(location.pathname)) reply = { ok: false, reason: 'not_on_1000x' };
+      if (!bridge || !/^\/1000x\/?$/.test(location.pathname) || message.venue === 'perps') reply = { ok: false, reason: message.venue === 'perps' ? 'not_on_perps' : 'not_on_1000x' };
       else if (message.action === 'positions') {
         // The order form opens a position in the page's current market, so report which one that is.
         // A fault in the order-form read must not cost the guard its positions read.
