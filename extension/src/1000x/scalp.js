@@ -8,10 +8,10 @@
  * press one position's own Close button, and press the order form's own size
  * and Long or Short buttons. See exit-guard.js, entry-plan.js and page-bridge.js.
  */
-import { JupiterFeed } from './feed.js';
+import { JupiterFeed, JUPITER_ENDPOINTS } from './feed.js';
 import { SecondBars, realizedVolBps } from './scalp-indicators.js';
-import { TILES, WARMUP_BARS, SCALP_MODEL, HORIZON_S, readTiles, readSlopes, SlopeHistory, SlopeScore, scalpCall, cone, ScoreBook, payoutPercent, bustFraction } from './scalp-model.js';
-import { ExitGuard, parseLevel, parseDistance, resolveLevels, positionKey, quoteFresh } from './exit-guard.js';
+import { TILES, WARMUP_BARS, SCALP_MODEL, HORIZON_S, readTiles, readSlopes, SlopeHistory, SlopeScore, HorizonScore, SCORE_HORIZONS, scalpCall, cone, ScoreBook, payoutPercent, bustFraction } from './scalp-model.js';
+import { ExitGuard, parseLevel, parseDistance, resolveLevels, priceLike, positionKey, quoteFresh } from './exit-guard.js';
 import { EntryTracker, validateEntry } from './entry-plan.js';
 import { POWERED_BY } from '../jupiter/attribution.js';
 import { createChart, CandlestickSeries, LineSeries, LineStyle } from '../../vendor/lightweight-charts/lightweight-charts.standalone.production.mjs';
@@ -45,7 +45,9 @@ const REASONS = {
   recently_opened: 'an entry was pressed moments ago', order_form_not_found: 'the order form is not visible on the Jupiter tab',
   position_not_seen: 'no new position was listed', invalid_request: 'the request was not valid', pending: 'an entry request is already out',
   amount_unexpected: 'the amount the page showed was not the chosen share of the balance', balance_unreadable: 'the available balance could not be read',
-  too_slow: 'the Jupiter page took too long to accept the size (is its tab hidden?)', page_changed: 'the Jupiter page changed market or mode',
+  too_slow: 'the Jupiter page took too long to accept the size (is its tab hidden?)',
+  leverage_button_unavailable: 'the page has no such leverage preset', leverage_not_set: 'the page did not switch leverage',
+  guard_live: 'a take profit or stop loss is live', page_changed: 'the Jupiter page changed market or mode',
   page_unreadable: 'the Jupiter page can no longer be read',
 };
 const TRANSIENT = new Set(['page_timeout', 'page_unreachable', 'page_no_reply', 'extension_unreachable']);
@@ -60,6 +62,7 @@ const clock = ms => new Date(ms).toLocaleTimeString(undefined, { hour12: false }
 const windowLabel = seconds => seconds >= 60 && seconds % 60 === 0 ? `${seconds / 60}m` : `${seconds}s`;
 
 const seconds = new SecondBars(), book = new ScoreBook(), slopeHistory = new SlopeHistory(), slopeScore = new SlopeScore();
+const tileScore = new HorizonScore(TILES.map(tile => tile.key));
 const guard = new ExitGuard(), entry = new EntryTracker(), events = [];
 let feed, latest = null, lastQuoteMs = 0, view = null, disposed = false, drawQueued = false, barsVersion = 0, drawnVersion = -1;
 let attached = false, pageState = { ok: false, reason: 'not_started' }, positions = [], polling = false, lastPollMs = 0, closing = false;
@@ -168,7 +171,10 @@ function buildTiles() {
     node.className = 'tile'; node.setAttribute('role', 'listitem'); node.dataset.vote = 'warming'; node.title = tileHelp(tile);
     const name = document.createElement('span'); name.className = 'name'; name.textContent = tile.label;
     const value = document.createElement('span'); value.className = 'value'; value.textContent = 'warming';
-    node.append(name, value); $('tiles').append(node); tileNodes.set(tile.key, { node, value });
+    // One cell per horizon: this tile's own running hit rate over the next 5 s, 10 s, ... 5 min.
+    const hits = document.createElement('span'); hits.className = 'hits';
+    const cells = SCORE_HORIZONS.map(() => { const cell = document.createElement('i'); cell.textContent = '·'; hits.append(cell); return cell; });
+    node.append(name, value, hits); $('tiles').append(node); tileNodes.set(tile.key, { node, value, cells });
   }
 }
 function tileText(tile) {
@@ -182,9 +188,16 @@ function tileText(tile) {
 function drawTiles() {
   const tiles = view?.tiles ?? readTiles([]);
   for (const tile of tiles) {
-    const { node, value } = tileNodes.get(tile.key);
+    const { node, value, cells } = tileNodes.get(tile.key);
     node.dataset.vote = voteName(tile.ready ? tile.vote : null);
     value.textContent = tileText(tile);
+    for (const [i, score] of tileScore.stats(tile.key).entries()) {
+      const cell = cells[i], label = windowLabel(score.horizon);
+      cell.textContent = score.rate === null ? '·' : String(Math.round(score.rate * 100));
+      cell.dataset.vote = score.rate === null ? 'warming' : score.rate >= 0.52 ? 'up' : score.rate <= 0.48 ? 'down' : 'flat';
+      cell.title = score.rate === null ? `${label}: no ${tile.label} call has settled yet at this interval.`
+        : `${label}: following ${tile.label} was right ${Math.round(score.rate * 100)}% of the time over the next ${label} (${score.hit} of ${score.n} calls settled in the last ten minutes; seconds overlap).`;
+    }
     node.setAttribute('aria-label', `${tile.label}: ${tile.ready ? `${voteName(tile.vote)}, ${tileText(tile)}` : 'warming up'}. ${tile.describe}`);
   }
   const call = view?.call;
@@ -310,13 +323,25 @@ const decimalsOf = position => Math.max(4, (/\.(\d+)$/.exec(position?.entryText 
 const unit = () => $('guard-unit').value;
 const size = () => Number(document.querySelector('input[name="entry-size"]:checked').value);
 const form = () => pageState?.ok ? pageState.form ?? null : null;
+/** Leverage chosen for the next entry: 500, 1000, or null to use what the page shows. */
+const chosenLeverage = () => Number(document.querySelector('input[name="entry-leverage"]:checked').value) || null;
 /** The fields read as price levels for a position; null for an empty or unusable field. */
 const fieldLevels = position => {
   const levels = resolveLevels({ unit: unit(), takeProfitText: $('guard-tp').value, stopLossText: $('guard-sl').value, position });
   return { takeProfit: levels.takeProfit, stopLoss: levels.stopLoss };
 };
 /** Leverage the levels are judged against: the selected position's, else what the page's form shows. */
-const planLeverage = () => selectedPosition()?.leverage ?? form()?.leverage ?? null;
+const planLeverage = () => selectedPosition()?.leverage ?? chosenLeverage() ?? form()?.leverage ?? null;
+/** In bp mode, the fields whose number looks like this market's price rather than a distance. */
+const priceLikeErrors = () => {
+  if (unit() !== 'bp') return [];
+  const price = latest?.quote?.price ?? null;
+  return [['Take profit', 'guard-tp'], ['Stop loss', 'guard-sl']].flatMap(([label, id]) => {
+    const distance = parseDistance($(id).value.trim());
+    return distance !== null && priceLike(distance, price)
+      ? [`${label} ${$(id).value.trim()} would be read as ${distance} bp from entry, but it looks like a price (${SYMBOL} is ${price}). Switch “as” to price to type prices, or enter the distance in basis points.`] : [];
+  });
+};
 const note = (event, detail = {}) => {
   events.push({ at: Date.now(), event, ...detail });
   if (events.length > 60) events.shift();
@@ -450,6 +475,7 @@ function levelNote(position, text, kind) {
   if (bp) {
     const distance = parseDistance(text);
     if (distance === null) return 'Enter a distance in basis points, for example 10.';
+    if (priceLike(distance, latest?.quote?.price ?? null)) return `Looks like a price. Read as ${distance} bp from entry: switch “as” to price.`;
     const move = (kind === 'tp' ? 1 : -1) * distance;
     // Before a position exists the estimate uses a unit entry: the formula depends only on the move.
     const estimate = leverage ? payoutPercent({ entry: 1e6, mark: 1e6 * (1 + move / 1e4), side: 'long', leverage }) : null;
@@ -493,6 +519,7 @@ function drawGuard() {
   $('guard-arm').disabled = !attached || !position;
   $('guard-arm').textContent = mode() === 'close' ? 'Arm · press Close' : 'Arm · alert only';
   $('guard-show').disabled = !attached;
+  for (const id of ['guard-tp-unit', 'guard-sl-unit']) $(id).textContent = unit() === 'bp' ? '(bp from entry)' : '(price)';
   $('guard-tp-note').textContent = levelNote(position, $('guard-tp').value, 'tp');
   $('guard-sl-note').textContent = levelNote(position, $('guard-sl').value, 'sl');
   const levels = [snap.levels.takeProfit !== null ? `TP ${snap.levels.takeProfit}` : null, snap.levels.stopLoss !== null ? `SL ${snap.levels.stopLoss}` : null].filter(Boolean).join(' · ');
@@ -528,7 +555,7 @@ function arm(event) {
   if (!event.isTrusted) return;
   const errors = [], position = selectedPosition();
   const levels = resolveLevels({ unit: unit(), takeProfitText: $('guard-tp').value, stopLossText: $('guard-sl').value, position });
-  errors.push(...(position ? levels.errors : []));
+  errors.push(...(position ? levels.errors : []), ...priceLikeErrors());
   const { takeProfit, stopLoss } = levels;
   if (position && positions.filter(row => positionKey(row) === positionKey(position)).length !== 1) {
     errors.push('Two listed positions look identical (same market, side, leverage and entry), so the guard could not tell them apart.');
@@ -608,10 +635,11 @@ function drawEntry(guardLive) {
     button.toggleAttribute('data-confirming', confirming);
     button.textContent = confirming ? `Confirm ${side} ${label[snap.request.fraction]}` : side;
   }
-  for (const input of document.querySelectorAll('input[name="entry-size"]')) input.disabled = entry.pending || opening;
+  for (const input of document.querySelectorAll('input[name="entry-size"], input[name="entry-leverage"]')) input.disabled = entry.pending || opening;
   const request = snap.request, status = $('entry-status');
   status.dataset.state = snap.state;
-  status.textContent = snap.state === 'confirming' ? `Press ${request.side} again within 4 s to open ${label[request.fraction]} of the available funds at the page’s ${order?.leverage ? `${order.leverage.toLocaleString()}×` : 'leverage'}.`
+  const planned = chosenLeverage() ?? order?.leverage;
+  status.textContent = snap.state === 'confirming' ? `Press ${request.side} again within 4 s to open ${label[request.fraction]} of the available funds at ${planned ? `${planned.toLocaleString()}×` : 'the page’s leverage'}.`
     : snap.state === 'sent' ? (request.uncertain
       ? `The Jupiter tab did not answer (${reasonText(snap.note)}), so the ${request.side} may or may not have been pressed. Check the Jupiter tab; watching for a new position.`
       : request.clickedAt
@@ -635,7 +663,8 @@ async function pressSide(event) {
   const takeProfitBps = takeProfitText ? parseDistance(takeProfitText) : null, stopLossBps = stopLossText ? parseDistance(stopLossText) : null;
   if (takeProfitText && takeProfitBps === null) errors.push('Take profit is not a plain distance in basis points.');
   if (stopLossText && stopLossBps === null) errors.push('Stop loss is not a plain distance in basis points.');
-  const order = form(), leverage = order?.leverage ?? null;
+  errors.push(...priceLikeErrors());
+  const order = form(), leverage = chosenLeverage() ?? order?.leverage ?? null;
   if (!errors.length) {
     errors.push(...validateEntry({ side, fraction: size(), takeProfitBps, stopLossBps, bustBps: leverage ? bustFraction(leverage) * 1e4 : null,
       form: order, guardLive, pending: entry.pending }).errors);
@@ -648,11 +677,11 @@ async function pressSide(event) {
   try { audio ??= new AudioContext(); void audio.resume(); } catch { /* no audio device */ }
   if (!step.send) { drawGuard(); return; }
   opening = true;
-  note('entry-requested', { side, fraction: size(), takeProfitBps, stopLossBps, mode: mode() });
+  note('entry-requested', { side, fraction: size(), leverage, takeProfitBps, stopLossBps, mode: mode() });
   drawGuard();
   try {
     // One request, never repeated: a missing reply is reported, and the owner checks the Jupiter tab.
-    const reply = await send('openPosition', { side, fraction: size() });
+    const reply = await send('openPosition', { side, fraction: size(), ...(chosenLeverage() ? { leverage: chosenLeverage() } : {}) });
     entry.onReply(reply?.ok === false ? { clicked: false, reason: reply.reason } : reply, Date.now());
     const snap = entry.snapshot();
     if (snap.state === 'failed') { note('entry-failed', { reason: snap.note, detail: reply?.detail }); alertOwner(`${SYMBOL} ${side} was not opened`, `Reason: ${reasonText(snap.note)}.`); }
@@ -699,6 +728,7 @@ function onClosed(count) {
     book.observe(prefix.at(-1), call);
     slopeHistory.observe(slopes);
     slopeScore.observe(prefix.at(-1), slopes);
+    tileScore.observe(prefix.at(-1), Object.fromEntries(tiles.map(tile => [tile.key, tile.ready ? tile.vote : null])));
     if (k === 1) view = { tiles, call, slopes, sigma: realizedVolBps(bars, 30) };
   }
   barsVersion++;
@@ -713,11 +743,11 @@ function onUpdate(snapshot) {
     handleGuard(guard.onQuote(quote, Date.now()));
     try {
       const closed = seconds.push(quote);
-      if (closed === -1) { book.reset(); slopeHistory.reset(); slopeScore.reset(); view = null; barsVersion++; }
+      if (closed === -1) { book.reset(); slopeHistory.reset(); slopeScore.reset(); tileScore.reset(); view = null; barsVersion++; }
       else if (closed > 0) onClosed(closed);
       readoutError = '';
     } catch (error) {
-      seconds.reset(); book.reset(); slopeHistory.reset(); slopeScore.reset(); view = null; barsVersion++;
+      seconds.reset(); book.reset(); slopeHistory.reset(); slopeScore.reset(); tileScore.reset(); view = null; barsVersion++;
       readoutError = `The read-out failed and restarted (${String(error?.message ?? error).slice(0, 80)}). The guard is unaffected.`;
     }
     // Quotes keep arriving in a hidden window where timers are throttled; use them as the clock too.
@@ -756,7 +786,7 @@ function draw() {
   drawQueued = false;
   if (disposed) return;
   const quote = latest?.quote, live = Boolean(quote && latest.streamStatus === 'live' && quoteFresh(quote, Date.now()));
-  $('market').textContent = `${SYMBOL || 'No market'} · 1s scalp`;
+  $('coin').disabled = LIVE_STATES.includes(guard.snapshot().state) || entry.pending || opening;
   $('price').textContent = quote ? `$${quote.price.toLocaleString(undefined, { maximumFractionDigits: 6 })}` : '—';
   const state = live ? 'live' : latest?.status === 'error' || latest?.status === 'unsupported' ? 'error' : quote ? 'stale' : 'connecting';
   $('feed').dataset.state = state;
@@ -776,6 +806,38 @@ function queueDraw() {
 }
 
 $('version').textContent = `v${chrome.runtime.getManifest().version}`;
+
+/** The coin dropdown: the public catalog's markets, with the watched one selected. */
+async function loadCoins() {
+  const select = $('coin');
+  const option = (symbol, text = symbol) => { const node = document.createElement('option'); node.value = symbol; node.textContent = text; return node; };
+  select.replaceChildren(option(SYMBOL || '', SYMBOL || 'No market'));
+  try {
+    const response = await fetch(JUPITER_ENDPOINTS.markets, { credentials: 'omit', cache: 'no-store' });
+    const markets = (await response.json())?.markets;
+    if (!response.ok || !Array.isArray(markets)) return;
+    const listed = markets.filter(market => /^[A-Z][A-Z0-9]{0,11}$/.test(market?.symbol ?? '')).slice(0, 40);
+    if (!listed.some(market => market.symbol === SYMBOL)) return;
+    select.replaceChildren(...listed.map(market => option(market.symbol, market.closed ? `${market.symbol} (closed)` : market.symbol)));
+    select.value = SYMBOL;
+  } catch { /* the list is a convenience; the watched coin stays selected */ }
+}
+/** Watch another coin: the worker re-binds this window to it, then the window reloads clean. */
+async function changeCoin() {
+  const next = $('coin').value;
+  if (next === SYMBOL || !/^[A-Z][A-Z0-9]{0,11}$/.test(next)) return;
+  if (LIVE_STATES.includes(guard.snapshot().state) || entry.pending || opening) { $('coin').value = SYMBOL; return; }
+  if (attached) {
+    const reply = await send('setMarket', { market: next });
+    if (reply?.ok !== true) { $('coin').value = SYMBOL; $('guard-errors').textContent = `Could not switch coin: ${reasonText(reply?.reason)}.`; return; }
+  }
+  const url = new URL(location.href);
+  url.hash = `market=${next}`;
+  location.replace(url.href);
+  location.reload();
+}
+$('coin').addEventListener('change', () => void changeCoin());
+void loadCoins();
 $('api-attribution').textContent = `${POWERED_BY} — 1000x public catalog; Pyth oracle stream.`;
 buildTiles(); buildSlopes();
 try {
@@ -794,7 +856,7 @@ $('guard-disarm').addEventListener('click', event => { if (event.isTrusted && gu
 $('guard-show').addEventListener('click', () => void send('showJupiter'));
 $('guard-position').addEventListener('change', () => { drawPositions(); drawGuard(); });
 for (const id of ['guard-tp', 'guard-sl']) $(id).addEventListener('input', () => { $('guard-errors').textContent = ''; saveSettings(); drawGuard(); });
-for (const input of document.querySelectorAll('input[name="guard-mode"], input[name="entry-size"], #entry-unlock, #entry-confirm, #guard-unit')) {
+for (const input of document.querySelectorAll('input[name="guard-mode"], input[name="entry-size"], input[name="entry-leverage"], #entry-unlock, #entry-confirm, #guard-unit')) {
   input.addEventListener('change', () => {
     // A number typed as a price must not be re-read as a distance, or the reverse.
     if (input.id === 'guard-unit') { $('guard-tp').value = ''; $('guard-sl').value = ''; }

@@ -1,5 +1,5 @@
 def main():
-    print("Hello from oraclebot-io!")
+    print("Hello from solmargintrader!")
 
 
 if __name__ == "__main__":

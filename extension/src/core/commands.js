@@ -208,16 +208,18 @@ export const COMMANDS = {
   jupiterScalpWindow: {
     describe: 'Open the Jupiter 1000x 1s scalp window, or relay its position read, one Close click or one Long/Short press to the owning Jupiter tab.',
     params: [
-      { name: 'action', type: TYPE.STRING, required: true, describe: 'open, close, status, positions, closePosition, openPosition, showJupiter or guardState.' },
+      { name: 'action', type: TYPE.STRING, required: true, describe: 'open, close, status, positions, closePosition, openPosition, showJupiter, guardState or setMarket.' },
       { name: 'side', type: TYPE.STRING, describe: 'For openPosition: long or short.' },
       { name: 'fraction', type: TYPE.NUMBER, describe: 'For openPosition: share of the page\'s Max amount, 0.25, 0.5, 0.75 or 1.' },
+      { name: 'market', type: TYPE.STRING, describe: 'For setMarket: the coin the window will watch next.' },
+      { name: 'leverage', type: TYPE.NUMBER, describe: 'For openPosition, optional: press the page\'s 500 or 1000 leverage preset first. Omit to use what the page shows.' },
       { name: 'expect', type: TYPE.JSON, describe: 'For closePosition: the listed position to match (coin, side, leverage, entryText).' },
       { name: 'live', type: TYPE.BOOL, describe: 'For guardState: whether a take profit or stop loss is live in the window.' },
     ],
     unlocked: true,
     browserUi: true,
     handler({ deps, args }) {
-      if (!['open', 'close', 'status', 'positions', 'closePosition', 'openPosition', 'showJupiter', 'guardState'].includes(args.action)) {
+      if (!['open', 'close', 'status', 'positions', 'closePosition', 'openPosition', 'showJupiter', 'guardState', 'setMarket'].includes(args.action)) {
         throw new CommandError('Invalid scalp window action', 400);
       }
       const expect = args.expect;
@@ -234,9 +236,13 @@ export const COMMANDS = {
       if (opening && (!['long', 'short'].includes(args.side) || ![0.25, 0.5, 0.75, 1].includes(args.fraction))) {
         throw new CommandError('openPosition needs side long or short and fraction 0.25, 0.5, 0.75 or 1', 400);
       }
+      if ((args.action === 'setMarket') !== (args.market !== undefined) || (args.market !== undefined && !/^[A-Z][A-Z0-9]{0,11}$/.test(args.market))) {
+        throw new CommandError('market is a coin symbol, required with setMarket and invalid elsewhere', 400);
+      }
+      if (args.leverage !== undefined && (!opening || ![500, 1000].includes(args.leverage))) throw new CommandError('leverage is 500 or 1000 and only valid with openPosition', 400);
       // The page bridge lives in a Chrome tab; the CLI and the HTTP API have none.
       if (!deps.jupiterScalpWindows) throw new CommandError('The scalp window requires the Chrome extension.', 501);
-      return deps.jupiterScalpWindows.control(args.action, deps.sender, { expect, live: args.live, side: args.side, fraction: args.fraction });
+      return deps.jupiterScalpWindows.control(args.action, deps.sender, { expect, live: args.live, side: args.side, fraction: args.fraction, leverage: args.leverage, market: args.market });
     },
   },
   openLiveWindow: {

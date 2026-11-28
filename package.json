@@ -14,5 +14,8 @@
     "eslint": "9.39.5",
     "globals": "17.14.0",
     "typescript": "7.0.2"
+  },
+  "dependencies": {
+    "@paypal/paypal-server-sdk": "^2.0.0"
   }
 }

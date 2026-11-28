@@ -127,12 +127,13 @@ See [design, formulas and verification](../docs/JUPITER-1000X-OVERLAY.md),
 [optimized execution prompt](../docs/JUPITER-1000X-OVERLAY-PROMPT.md), and
 [SDK create/close capabilities and remaining gates](../docs/JUPITER-1000X-SDK.md).
 
-## Jupiter 1000x 1s scalp window, entries and exit guard (0.18.0)
+## Jupiter 1000x 1s scalp window, entries and exit guard (0.19.0)
 
 The Indicators overlay on `https://jup.ag/1000x` has a **1s scalp** button. It
 opens a separate window for that market: read-outs on the left, the order form
-to the right of the chart. Every tile, column title and control explains itself
-on hover.
+to the right of the chart. A dropdown at the top switches the watched coin.
+Every tile, column title and control explains itself on hover, and every reading
+shows its own running hit rate over the next 5 s to 5 min.
 
 It reads the next 30 seconds from one-second oracle bars: sixteen trend readings
 vote, and the window shows the vote, a 1s chart with the expected 30 second range
@@ -146,7 +147,8 @@ It opens a position on request. **Long** and **Short** are locked until you tick
 Unlock and, by default, need a confirming second press. A quarter, half or all
 of the available funds press the page's own 25%, Half and Max buttons; three
 quarters is typed from the page's Max. The window then presses the page's own
-Long or Short button once, at the leverage the page shows.
+Long or Short button once, at the leverage the page shows or at its 500× or
+1,000× preset if you choose one.
 
 It adds a take profit and a stop loss, as basis points from entry or as prices,
 with **No TP**, **No SL** and **No TP/SL**. A position opened from the window has

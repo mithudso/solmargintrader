@@ -72,11 +72,11 @@
     },
     {
       "path": "extension/package.json",
-      "sha256": "ff776fdb545e2c2fcf04daad7b9015f1a219101d4eb66b41cdc1225daf46dbc5"
+      "sha256": "517af8938ffc353a51d5ee11119c23344a124e8de4c8532e057701c04eb09201"
     },
     {
       "path": "extension/src/core/commands.js",
-      "sha256": "223640f165844277b6afe9b3c2d221516310d0901aecd5b3dc593c971aeb4336"
+      "sha256": "f15a7dd0d6921d0382ce45fbe8283190cb217257e7d47b26fba4080b6d902077"
     },
     {
       "path": "liquidity/pyproject.toml",
@@ -104,7 +104,7 @@
     },
     {
       "path": "package.json",
-      "sha256": "4f26d803a45fcba085e9bbabf6bf1e34a7916d705ba2ecb851db2af4cf08ac7d"
+      "sha256": "01fad3383a70292d1b2a9f6f1f4b4f4018eaf7647429320210dc2361e9597a35"
     },
     {
       "path": "scripts/build_operation_inventories.py",

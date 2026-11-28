@@ -1,5 +1,24 @@
 # Prompt history
 
+Version: 337
+Delta: v336 to v337. Record the extension error report, the main-checkout sync approval and the follow-up asks for leverage choice, per-indicator hit rates, a coin dropdown and the Perps page.
+
+## 1s scalp window follow-ups and main checkout sync · 2026-11-28
+
+> Error in the extension page:
+
+(The owner pasted the extension's error page for `src/bg/service-worker.js`, stack line 434, ending in `[smt] background operation failed manager-poll`. The pasted file listing is not repeated here.)
+
+> Do I not need to do a handoff if using the skaas memory service?  Also Yes keep my changes, fast forawrd, commit the changes resolve conflict, merge and sync.
+
+> Also add the option to do 500 or 1000x leverage, and also do this same view and function in the perps page https://jup.ag/perps/long/USDC-HYPE in case I want to do the 25x or 50x margin.
+
+> Also for each of the indicators have it also display a running hit rate for each. at each of the different time intervals.
+
+> Also add the option to change which coin is being watched with a drop down of the coin name at the very top.
+
+The owner also forwarded a side agent's note that the take profit and stop loss boxes default to distances in basis points, so a typed price would be misread.
+
 Version: 336
 Delta: v335 to v336. Record the request for long and short entry buttons, size presets, hover descriptions and a slope accuracy gauge in the 1s scalp window.
 
