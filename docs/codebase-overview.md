@@ -258,6 +258,14 @@ command registry. No npm runtime dependencies by design; one vendored charting l
 | `extension/test/1000x-experiments.test.js` | Python parity of every experiment setting; scoring without lookahead; save and restore; the weighted call; the switch rule |
 | `extension/test/jupiter-scalp-window.test.js` | Window ownership across worker eviction, relay refusal for strangers, explicit failures and the registry command's validation |
 | `extension/tools/1000x-scalp-e2e.mjs` | Chrome for Testing gate: trusted-click arming, alert mode presses nothing, close mode presses the row's Close once |
+| `extension/tools/market-recorder.mjs` | Entry script of the market recorder: options, the output-folder check, signals, the hang watchdog |
+| `extension/tools/lib/market-recorder.mjs` | Recorder helpers without I/O: endpoints, catalog and stream parsing, the Coinbase book, file naming, options |
+| `extension/tools/lib/market-recorder-run.mjs` | The recorder: polls, the two streams, hourly files, crash-safe compression, the folder lock, the sweep |
+| `extension/test/market-recorder.test.js` | Parsing, the Coinbase book, rotation, every crash point of compression, reconnect waits, the lock, a missing folder, the backlog limit, the short-lived copy and its safeguards, the watchdog |
+| `extension/tools/market-recorder-fill.mjs` | Entry script of the fill job: options, the optional rsync copy from the second machine, the JSON report |
+| `extension/tools/lib/market-recorder-fill.mjs` | Fills an archive's gaps from a short-lived second recording and compares the two: venue outages, rows taken, checked replacement of an hour file |
+| `extension/test/market-recorder-fill.test.js` | Which stretches are gaps, which rows are taken, no line of an hour file lost, a second run adds nothing, comparison counts, folders the wrong way round refused |
+| `docs/MARKET-RECORDER.md` | The market recorder: what is recorded, the file layout and row fields, running it as a service, failure behaviour, the second recording that fills gaps, why files and not a database |
 | `research/scripts/scalp_1s_features.py` | Causal 1s-bar feature definitions shared by the study and the extension port |
 | `research/scripts/scalp_1s_experiments.py` | Scores the experiment grid at every interval and replays the weighted call and the switch rule on recorded ticks without looking ahead |
 | `research/scripts/scalp_1s_study.py` | Scores every 1s feature against the next 30 seconds on recorded Jupiter oracle ticks and writes the extension's model constants and parity fixture |

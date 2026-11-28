@@ -1,5 +1,28 @@
 # Prompt history
 
+Version: 346
+Delta: v345 to v346. Record the owner's request for a continuous market recorder to the NAS, the database question, and the follow-ups about gaps and a second listener.
+
+## Market recorder to the NAS, and which store suits it · 2026-11-28
+
+> Write a script to record all data in a streaming fashion for the coins listed in Jup.ags perps with margin, and the 1000x list  and save it to /Volumes/dasdata/CoinTradingData per coin. Or would it be better to stream it to a timeseries mongodb database? Or is there another database that would be better suited?
+
+Sent while that work was running, in reply to a side agent's note that a 24-hour recording cannot rank the coins (about ±2 points per coin; a week or more is needed):
+
+> This is why I want a continuous recording going to my NAS, it'll be a lot of data, but hopefully it'll be worth it.
+
+A side agent's note, forwarded without added text, said the recorder saved only Jupiter data and left out the Coinbase order book, "the one signal that showed a real lead in today's tests", and suggested adding a Coinbase stream before the recorder became the permanent service. Read as: add it.
+
+In reply to a side agent's note that the recorder runs on this Mac, so recording stops when the Mac sleeps or restarts and missed stretches are never filled in:
+
+> This mac does stay awake, and this is just being used for training backtests, which so if some data is skippped for a reboot then oh well.
+
+Then:
+
+> Or setup a parallel listener on the 5080 and have it keep its data for an hour or two till it rotates it off, so it can be used to fill in gaps and validate
+
+Read as: the recorder stays on this Mac and gaps from a restart are acceptable; a second, short-lived copy on the 5080 machine that fills gaps and checks the first is wanted as a follow-up.
+
 Version: 345
 Delta: v344 to v345. Record the owner's mid-task choice of a calmer switch rule.
 
